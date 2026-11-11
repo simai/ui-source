@@ -94,3 +94,12 @@ test('Reference and download documentation uses native destinations and decorati
     }
   }
 });
+
+test('Download File keeps the focus when the button is redrawn as the link', async () => {
+  const source = await read('src/smart/file-download/index.js');
+  assert.match(source, /const REDRAWN_BY = new Set\(\['href', 'disabled', 'state', 'target'\]\);/u);
+  // Read before the change draws anything, and only when the focus was on the file.
+  const hook = source.slice(source.indexOf('attributeChangedCallback(name, oldValue, newValue) {'));
+  assert.ok(hook.indexOf('this.ownerDocument.activeElement === this._boundRoot') < hook.indexOf('super.attributeChangedCallback'));
+  assert.match(source, /if \(this\._boundRoot && \(!active \|\| active === document\.body\)\) \{\n\s+this\._boundRoot\.focus\(\{ preventScroll: true \}\);/u);
+});
