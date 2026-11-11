@@ -10399,6 +10399,82 @@
       },
       "owner": "ui-source",
       "source": "src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
+    },
+    {
+      "id": "utility-c65-gradient-names",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "The gradient stops have one name each and the palette's names (owner decision C65, 2026-11-11). gr1-*, gr2-* and gr3-* set the same three stops as from-*, via-* and to-*; the stop colours surface-0 and surface-1 are the C16 places surface-page and surface-area; surface-2 is the former neutral step 95 (dark 15), which no place matches in both themes. The former classes set the same colour as before until remove_after; the new stop list also opens every palette at every tone (from-teal-40), error, white, black and the place names surface-card, surface-popup, surface-popup-nested and surface-inverse.",
+      "items": [
+        {
+          "from": "gr1-*",
+          "to": "from-*"
+        },
+        {
+          "from": "gr2-*",
+          "to": "via-*"
+        },
+        {
+          "from": "gr3-*",
+          "to": "to-*"
+        },
+        {
+          "from": "from-surface-0",
+          "to": "from-surface-page",
+          "match": "(?<![a-z0-9:-])from-surface-0(?![a-z0-9-])"
+        },
+        {
+          "from": "via-surface-0",
+          "to": "via-surface-page",
+          "match": "(?<![a-z0-9:-])via-surface-0(?![a-z0-9-])"
+        },
+        {
+          "from": "to-surface-0",
+          "to": "to-surface-page",
+          "match": "(?<![a-z0-9:-])to-surface-0(?![a-z0-9-])"
+        },
+        {
+          "from": "from-surface-1",
+          "to": "from-surface-area",
+          "match": "(?<![a-z0-9:-])from-surface-1(?![a-z0-9-])"
+        },
+        {
+          "from": "via-surface-1",
+          "to": "via-surface-area",
+          "match": "(?<![a-z0-9:-])via-surface-1(?![a-z0-9-])"
+        },
+        {
+          "from": "to-surface-1",
+          "to": "to-surface-area",
+          "match": "(?<![a-z0-9:-])to-surface-1(?![a-z0-9-])"
+        },
+        {
+          "from": "from-surface-2",
+          "to": null,
+          "match": "(?<![a-z0-9:-])from-surface-2(?![a-z0-9-])"
+        },
+        {
+          "from": "via-surface-2",
+          "to": null,
+          "match": "(?<![a-z0-9:-])via-surface-2(?![a-z0-9-])"
+        },
+        {
+          "from": "to-surface-2",
+          "to": null,
+          "match": "(?<![a-z0-9:-])to-surface-2(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-utility",
+      "examples": {
+        "before": "<div class=\"gr-line-2 gr1-primary gr2-surface-0\">",
+        "after": "<div class=\"gr-line-2 from-primary via-surface-page\">"
+      },
+      "manual": "gr1-<colour>, gr2-<colour> and gr3-<colour> become from-, via- and to-<colour> mechanically. surface-0 and surface-1 become surface-page and surface-area. surface-2 has no place of the same colour in both themes: take surface-area or surface-card for a place, or a palette tone such as neutral-95 for a fixed light step.",
+      "owner": "ui-source",
+      "source": "src/utility/gradient-stops/default/scss/_sf_var__gradient_stops.scss; src/utility/gradient-color/default/scss/_sf_var__gradient.scss; ui-control control/docs-review/decisions.md C65"
     }
   ]
 }

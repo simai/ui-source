@@ -1,0 +1,46 @@
+// SIMAI Framework
+// https://simai.io
+
+// GRADIENT KINDS (owner decision C65, 2026-11-11; research
+// control/research/2026-11-11-gradients.md; standard simai.backgrounds)
+
+@use 'sass:list';
+@use '../../../../core/scss/vars/sf_var__hue' as hue;
+
+// The colours a kind takes: the theme's palettes and the sixteen static hues,
+// the names .sf-hue-<name> takes (C17). Status roles are left out: a status is
+// a colour and an icon, a second colour dilutes it.
+$gradient-kind-colors: list.join(hue.$sf-theme-hues, hue.$sf-static-hues);
+
+// The partner of a colour, for the two-colour kinds (glow, duo): a neighbour,
+// never a far hue. Primary's partner is tertiary, the dynamic palette's own
+// pair; a static hue takes the hue two steps along the wheel; brown and gray
+// sit outside the wheel.
+$gradient-wheel: ('red', 'orange', 'amber', 'yellow', 'lime', 'green', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'pink');
+
+@function gradient-partner($color) {
+    @if $color == 'primary' { @return 'tertiary'; }
+    @if $color == 'secondary' or $color == 'tertiary' { @return 'primary'; }
+    @if $color == 'brown' { @return 'orange'; }
+    @if $color == 'gray' { @return 'blue'; }
+    $at: list.index($gradient-wheel, $color);
+    @return list.nth($gradient-wheel, ($at + 1) % list.length($gradient-wheel) + 1);
+}
+
+// The tones a kind reads from its colour (c) and from the partner (p).
+$gradient-color-tones: (10, 20, 30, 40, 50, 80, 90);
+$gradient-partner-tones: (30, 40, 50);
+
+// Alpha kinds: strength 8 | 12 | 16 (default) | 24, the fill steps.
+$gradient-strengths: (8, 12, 16, 24);
+
+// Scrim: the three black steps under white text on a photo; 64 is the
+// default, 80 for an unknown photo.
+$gradient-scrims: (
+    48: (48, 28, 8),
+    64: (64, 48, 16),
+    80: (80, 64, 28),
+);
+
+// Linear directions.
+$gradient-dirs: ('t': 0deg, 'tr': 45deg, 'r': 90deg, 'br': 135deg, 'b': 180deg, 'bl': 225deg, 'l': 270deg, 'tl': 315deg);

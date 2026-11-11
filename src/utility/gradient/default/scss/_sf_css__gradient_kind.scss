@@ -1,0 +1,140 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sf_var__gradient_kind' as *;
+@use '../../../gradient-type/default/scss/sf_mix__gradient' as *;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// GRADIENT KINDS (owner decision C65, 2026-11-11; standard simai.backgrounds,
+// Gradients)
+//
+//   gradient-glow       two soft spots of the colour and its partner (hero,
+//                       sign-in); gradient-glow-spot: one spot, centred above
+//                       the middle (an empty state's icon)
+//   gradient-tint       the colour fading down to nothing (a section head)
+//   gradient-duo        the colour into its partner, solid, white text (promo)
+//   gradient-cover      two near tones of the colour, solid, its own ink (a
+//                       cover or placeholder from 64 px)
+//   gradient-scrim      black steps up from the bottom, white text on a photo
+//   gradient-fade       a mask: the content fades out at the end ("there is more")
+//
+//   gradient-color-<c>  the colour: primary (the default), secondary, tertiary
+//                       or a static hue; .sf-hue-<c> on the element or above it
+//                       gives the same
+//   gradient-to-<c>     the partner instead of the default neighbour
+//   gradient-strength-<n>  8 | 12 | 16 (default) | 24, the alpha kinds
+//   gradient-dir-<side> t | tr | r | br | b | bl | l | tl, the linear kinds
+//   gradient-scrim-<n>  48 | 64 (default) | 80
+//
+// Variables for components: --sf-gradient--from and --sf-gradient--to (the
+// colours), --sf-gradient--angle, --sf-gradient--strength.
+//
+// Only palette tones and the alpha steps: an alpha kind is tone 50 of its
+// colour at a fill step, one step (+8) stronger in the dark theme, mixed with
+// transparent; a solid kind takes deeper tones in the dark theme. Every kind
+// is a background-image (fade: a mask) laid over a solid place colour: the
+// alpha kinds over the element's place, duo and cover over their own first
+// colour. Forced colours drop the image and keep the colour.
+
+$s: 'var(--sf-gradient--strength, 16)';
+$c: 'var(--sf-gradient--from)';
+$p: 'var(--sf-gradient--to)';
+
+// The colour at an alpha step: light and dark steps as calc() expressions.
+@function ink($color, $light, $dark) {
+    @return 'light-dark(color-mix(in oklab, #{$color} calc((#{$light}) * 1%), transparent), color-mix(in oklab, #{$color} calc((#{$dark}) * 1%), transparent))';
+}
+@function tone($set, $light, $dark, $fallback) {
+    @return 'light-dark(var(--sf-gradient--#{$set}-#{$light}, var(--sf-#{$fallback}-#{$light})), var(--sf-gradient--#{$set}-#{$dark}, var(--sf-#{$fallback}-#{$dark})))';
+}
+
+// The colour inputs, inherited: .sf-hue-<c> first, so a gradient-color-<c>
+// on the same element wins, and gradient-to-<c> after both.
+@each $color in $gradient-kind-colors {
+    .sf-hue-#{$color}, .gradient-color-#{$color} {
+        @each $tone in $gradient-color-tones {
+            --sf-gradient--c-#{$tone}: var(--sf-#{$color}-#{$tone});
+        }
+        @each $tone in $gradient-partner-tones {
+            --sf-gradient--p-#{$tone}: var(--sf-#{gradient-partner($color)}-#{$tone});
+        }
+    }
+}
+@each $color in $gradient-kind-colors {
+    .gradient-to-#{$color} {
+        @each $tone in $gradient-partner-tones {
+            --sf-gradient--p-#{$tone}: var(--sf-#{$color}-#{$tone});
+        }
+    }
+}
+
+// The kinds. Each names its colours and angle on itself; the settings below
+// come later and win.
+.gradient-glow, .gradient-tint {
+    --sf-gradient--from: var(--sf-gradient--c-50, var(--sf-primary-50));
+    --sf-gradient--to: var(--sf-gradient--p-50, var(--sf-tertiary-50));
+}
+.gradient-glow {
+    // The alpha stops are color-mix(), CSS Color 4 as the interpolation is,
+    // so there is no plain fallback line: without it the place shows alone.
+    background-image:
+        radial-gradient(ellipse 55% 90% at 20% 0% in oklab, #{ink($c, '#{$s} + 8', 'min(32, #{$s} + 16)')} 0%, #{ink($c, 'max(4, #{$s} - 4)', '#{$s} + 4')} 40%, transparent 100%),
+        radial-gradient(ellipse 45% 80% at 85% 10% in oklab, #{ink($p, '#{$s} + 8', 'min(32, #{$s} + 16)')} 0%, #{ink($p, 'max(4, #{$s} - 4)', '#{$s} + 4')} 40%, transparent 100%);
+}
+.gradient-glow.gradient-glow-spot {
+    background-image: radial-gradient(ellipse 42% 42% at 50% 33% in oklab, #{ink($c, '#{$s} + 8', 'min(32, #{$s} + 16)')} 0%, #{ink($c, 'max(4, #{$s} - 8)', 'max(4, #{$s})')} 45%, transparent 100%);
+}
+.gradient-tint {
+    --sf-gradient--angle: 180deg;
+    background-image: linear-gradient(var(--sf-gradient--angle) in oklab, #{ink($c, $s, '#{$s} + 8')} 0%, transparent 85%);
+}
+.gradient-duo {
+    --sf-gradient--from: #{tone('c', 40, 30, 'primary')};
+    --sf-gradient--to: #{tone('p', 40, 30, 'tertiary')};
+    --sf-gradient--angle: 120deg;
+    background-color: var(--sf-gradient--from);
+    color: var(--sf-white);
+    @include sf-gradient-image(linear-gradient, 'var(--sf-gradient--angle)', 'var(--sf-gradient--from), var(--sf-gradient--to)');
+}
+.gradient-cover {
+    --sf-gradient--from: #{tone('c', 90, 30, 'primary')};
+    --sf-gradient--to: #{tone('c', 80, 20, 'primary')};
+    --sf-gradient--angle: 135deg;
+    background-color: var(--sf-gradient--from);
+    color: #{tone('c', 10, 90, 'primary')};
+    @include sf-gradient-image(linear-gradient, 'var(--sf-gradient--angle)', 'var(--sf-gradient--from), var(--sf-gradient--to)');
+}
+.gradient-scrim {
+    --sf-gradient--angle: 0deg;
+    color: var(--sf-white);
+    @include sf-gradient-image(linear-gradient, 'var(--sf-gradient--angle)',
+        'var(--sf-gradient--scrim-1, var(--sf-black--alfa-64)) 0%, var(--sf-gradient--scrim-2, var(--sf-black--alfa-48)) 25%, var(--sf-gradient--scrim-3, var(--sf-black--alfa-16)) 50%, transparent 75%');
+}
+// The fade is a mask, so it fades the content on any place -- a card, glass,
+// a pattern -- instead of painting a guess of the place colour. The mask reads
+// only the alpha of its stops: an opaque token, no raw colour.
+.gradient-fade {
+    --sf-gradient--angle: 180deg;
+    mask-image: linear-gradient(var(--sf-gradient--angle), var(--sf-black) calc(100% - var(--sf-gradient--fade-size, var(--sf-space-4))), transparent);
+}
+
+// Settings.
+@each $step in $gradient-strengths {
+    .gradient-strength-#{$step} {
+        --sf-gradient--strength: #{$step};
+    }
+}
+@each $side, $angle in $gradient-dirs {
+    .gradient-dir-#{$side} {
+        --sf-gradient--angle: #{$angle};
+    }
+}
+@each $scrim, $steps in $gradient-scrims {
+    .gradient-scrim-#{$scrim} {
+        --sf-gradient--scrim-1: var(--sf-black--alfa-#{list.nth($steps, 1)});
+        --sf-gradient--scrim-2: var(--sf-black--alfa-#{list.nth($steps, 2)});
+        --sf-gradient--scrim-3: var(--sf-black--alfa-#{list.nth($steps, 3)});
+    }
+}
+}
