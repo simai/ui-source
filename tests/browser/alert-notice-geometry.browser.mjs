@@ -134,7 +134,9 @@ const MEASURE = () => {
       const last = text ? box(text) : titleBox;
       Object.assign(result, {action: r(a.height), actionLabel: r(parseFloat(getComputedStyle(actions[0].querySelector('.sf-button-text-container') ?? actions[0]).fontSize)),
         textToAction: r(a.top - last.bottom), actionEdge: r(a.left - titleBox.left), actionToBottom: r(inner.bottom - a.bottom - parseFloat(style.paddingBottom))});
-      result.looks = actions.map((one) => ['tonal', 'link', 'default', 'outline'].find((look) => one.classList.contains(`sf-button--${look}`))
+      // ghost is the look without a fill (C15, CB-01 d584b340); sf-button--link
+      // is its former name, written beside it until 2027-01-01.
+      result.looks = actions.map((one) => ['tonal', 'ghost', 'link', 'default', 'outline'].find((look) => one.classList.contains(`sf-button--${look}`))
         + '/' + ['primary', 'on-surface'].find((scheme) => one.classList.contains(`sf-button--${scheme}`)));
       if (actions[1]) result.betweenActions = r(box(actions[1]).left - a.right);
     }
@@ -230,7 +232,7 @@ try {
             check(`${name} action plate - text edge`, t.actionEdge, 0);
             check(`${name} action to padding`, t.actionToBottom, 0);
             if (t.looks[0] !== 'tonal/primary') failures.push(`${key} ${zone}: ${name} first action ${t.looks[0]}, expected tonal/primary`);
-            if (t.looks[1] !== undefined && t.looks[1] !== 'link/on-surface') failures.push(`${key} ${zone}: ${name} second action ${t.looks[1]}, expected link/on-surface (ghost)`);
+            if (t.looks[1] !== undefined && t.looks[1] !== 'ghost/on-surface') failures.push(`${key} ${zone}: ${name} second action ${t.looks[1]}, expected ghost/on-surface`);
           }
           if (t.betweenActions !== undefined) check(`${name} between actions`, t.betweenActions, want.between);
         }
