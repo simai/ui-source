@@ -18,6 +18,7 @@ export function renderTextareaTemplate(context) {
     wrap,
     hint,
     value,
+    defaultValue = '',
     controlName,
     rows,
     disabled,
@@ -103,7 +104,7 @@ export function renderTextareaTemplate(context) {
         .spellcheck=${spellCheck}
         wrap=${wrap}
         .value=${value}
-        .defaultValue=${value}
+        .defaultValue=${defaultValue}
         name=${controlName || nothing}
         rows=${autoGrow ? minRows : rows}
         ?disabled=${disabled}

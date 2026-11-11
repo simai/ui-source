@@ -483,7 +483,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-textarea/index.js",
-        "sha256": "8b4c4b3db96a05fd2edb9985d55c9a78992275abee6843552998f75a9f548b19"
+        "sha256": "78bb4388068afbbf8f8dd40fd958439eea2302cc8713285776203b0dc96a3b48"
       },
       {
         "path": "src/smart/input-textarea/rule.js",
@@ -491,7 +491,7 @@
       },
       {
         "path": "src/smart/input-textarea/js/templates/default.js",
-        "sha256": "a8232c0d6f93295422e59c06e0c47bf0a34ce5133b933f681d3d7968fc0ad65f"
+        "sha256": "f71ff09136ec98b055be7a00fd950c10e99e10e1f2a8d5970e8664890dc8dfa5"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

@@ -211,14 +211,18 @@ export const ShownRequired = (Base) => class extends Base {
       this.__sfMissingShown = true;
       this.requestComponentUpdate?.('invalid');
     });
-    // FormField's own listeners ran first, so the validity is the edit's.
-    const clear = () => {
-      if (!this.__sfMissingShown || this.validity?.valueMissing) return;
-      this.__sfMissingShown = false;
-      this.requestComponentUpdate?.('input');
-    };
-    this.addEventListener('input', clear);
-    this.addEventListener('change', clear);
+  }
+
+  // The shown required error goes once the value is no longer missing,
+  // whatever filled it: the person's input or change, a value set from
+  // script, a value attribute (C55 acceptance F1 R2, D1; sf-dropdown 1.9.0's
+  // shownMissing reads the value the same way). Every one of them ends in
+  // this sync, so the check is here and not on the events.
+  sfSyncFormState() {
+    super.sfSyncFormState?.();
+    if (!this.__sfMissingShown || this.validity?.valueMissing) return;
+    this.__sfMissingShown = false;
+    this.requestComponentUpdate?.('value');
   }
 
   /** The required error is shown now. */

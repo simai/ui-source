@@ -147,6 +147,11 @@ class SfTextarea extends ShownRequired(FormField(TextareaElement)) {
       // The size the field draws: a retired size (1/3) is the one it keeps.
       size: this.size,
       value: this.hasAttribute('value') || !textarea ? props.value : textarea.value,
+      // The default form.reset() puts back is the declared value, never the
+      // live one: a render while the person types (the shown required error
+      // clearing) made the first typed character the default (C55
+      // acceptance F1 R2, D2).
+      defaultValue: props.value ?? '',
       // The host is the form control where the browser has ElementInternals,
       // so the textarea carries no name (§17.1 item 6).
       controlName: innerControlName(this, props.name),
