@@ -5,7 +5,8 @@
    medium weight. No badges, no strikethrough.
 
    inline: the arrow is glued to the new value's first word, so it never
-   ends a line; the values themselves wrap. list: a description list on one grid,
+   ends a line; a short value (up to 20 characters) stays whole, a longer
+   one wraps. list: a description list on one grid,
    the labels' column as wide as the longest label; under a 24rem container
    the label stands over its pair. folded: a long value is revealed in place
    as two outlined blocks.
@@ -65,6 +66,12 @@ sf-change[data-block] {
 .sf-change--inline .sf-change__before,
 .sf-change--inline .sf-change__after {
   overflow-wrap: anywhere;
+}
+
+/* A short value (up to 20 characters: «4,6 кг», «+7 900 000-00-00») is kept
+   whole; only a longer one wraps. */
+.sf-change__whole {
+  white-space: nowrap;
 }
 
 /* list: one grid, the labels' column max-content. */

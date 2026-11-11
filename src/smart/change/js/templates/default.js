@@ -3,7 +3,8 @@ import {html, nothing} from 'lit';
 // sf-change's markup (scss/ draws it).
 //
 // - inline: [label: ] old value, then the arrow glued to the start of the new
-//   value; the values wrap. The arrow is a picture; a visually hidden
+//   value; a value of up to WHOLE characters stays on one line, a longer one
+//   wraps. The arrow is a picture; a visually hidden
 //   word between the values says the change to a screen reader.
 // - list: a dl, a term (the label) and a description (the pair) per change.
 // - folded (a long value in a sentence): the button «Показать изменения»
@@ -11,9 +12,14 @@ import {html, nothing} from 'lit';
 //   labelled «Было» and «Стало».
 // An empty value is the word «пусто».
 
+// A short value (a weight with its unit, a phone number, a city) is kept whole
+// on one line: «4,6 кг» must not read «4,6 / кг». Only a longer value wraps.
+export const WHOLE = 20;
+export const isWhole = (text) => text !== null && Array.from(text).length <= WHOLE;
+
 const value = (context, text, part) => (text === null
   ? html`<span class=${`sf-change__${part} sf-change__empty`}>${context.words.empty}</span>`
-  : html`<span class=${`sf-change__${part}`}>${text}</span>`);
+  : html`<span class=${`sf-change__${part}${isWhole(text) ? ' sf-change__whole' : ''}`}>${text}</span>`);
 
 // The arrow and the new value are joined by a no-break space (the hidden word
 // is out of flow and makes no break), so the arrow never ends a line alone;

@@ -15,6 +15,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {renderChangeTemplate} from './js/templates/default';
+export {WHOLE, isWhole} from './js/templates/default';
 import manifest from './component.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';

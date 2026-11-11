@@ -204,15 +204,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/change/index.js",
-        "sha256": "6538e38d7fc4e3a2b77c3e6fccf92788103bf71599e55b8fecdb7d6ba62f394d"
+        "sha256": "e1a5ee80118159790815acf1f875ee8dbe9dab2b9935e2dd78f514fc0c944fbc"
       },
       {
         "path": "src/smart/change/js/templates/default.js",
-        "sha256": "9dc5cdcf1369b07d137fedf4499f37ce20ab79faa9b69691ea510f4a5bfeb1be"
+        "sha256": "8eed699b699413473636e8b4834ac6315f7c956e575d0d7f6b9dd506e8d73151"
       },
       {
         "path": "src/smart/change/scss/_smart__change.scss",
-        "sha256": "e14ea590b9973769e49b25c5683919fa388b4eaee2df9bf287bdddd69fca3288"
+        "sha256": "3369fe4df6bad1604b6496b496f8c1c59d7b163c061c242d16be4177544f9764"
       },
       {
         "path": "src/smart/change/rule.js",
@@ -220,7 +220,7 @@
       },
       {
         "path": "src/smart/change/docs.md",
-        "sha256": "34ece361737df571770f3405fb748c88b98d7c7aa5cdc8a2e89e76ae2350596d"
+        "sha256": "198ada43b8b115f16ffde376016d0fda0ab313697c8235e23e0adc6c9d7cc5ce"
       }
     ],
     "generated_runtime": []
