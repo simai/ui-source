@@ -135,6 +135,9 @@
     },
     {
       "name": "cl-icon"
+    },
+    {
+      "name": "tooltip"
     }
   ],
   "templates": {
@@ -288,7 +291,8 @@
     "version 1.2.2 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
     "version 1.2.3 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint snapshots follow the actions block (docs review R031, R032; decisions C13-C15): the sf-button and sf-button-icon it draws ask for the screen-reader-only utility sheet (sf-button 1.9.0, sf-button-icon 1.7.0), an sf-button-close it draws asks for its own sheet (C14), and sf-input's classes follow its outer sizes (sf-input 1.6.0). Settings, values, events and keys unchanged.",
     "version 1.3.0 (2026-11-09): a minor (decisions C15, C22; docs review pre-check 2026-11-09 CB-01, CB-02, CB-05, CB-09). appearance is ghost, outline or tonal, and ghost is the default: link drew exactly as ghost, and is now ghost's dated alias until 2027-01-01 (aliases.json, change journal value-button-copy-link-to-ghost). The default size is 1, the step of a field and a button (it was 1/2, one step below them): a compact region (data-sf-density) takes it down with the rest. The glyph is the quiet neutral on-surface-variant (C15), which darkens to on-surface under the pointer as the icon button's does; the result's ink (success, error) is unchanged. The examples and first-paint snapshots copy npm i @simai-studio/ui, the published package (they said @simai/ui). The tooltip «Копировать» → «Скопировано» on an icon-only button waits for the tooltip fixes (fix/tooltip-light); the native title stays until then.",
-    "version 1.4.0 (2026-11-10): a minor (docs pre-check 2026-11-10 CB-13; rule C18, one ladder per family). size gains 3, the step sf-button and sf-button-icon already have: the copy button stands as tall as a button or a field of size 3 beside it (56, phone 52). Nothing else changes."
+    "version 1.4.0 (2026-11-10): a minor (docs pre-check 2026-11-10 CB-13; rule C18, one ladder per family). size gains 3, the step sf-button and sf-button-icon already have: the copy button stands as tall as a button or a field of size 3 beside it (56, phone 52). Nothing else changes.",
+    "version 1.4.0, continued (2026-11-11; one version per unit above the released pair, which has 1.3.0) (docs pre-check copy anatomy, research ui-control control/research/2026-11-10-copy-anatomy.md; DEV msg-c13342ab items 3-5). The icon-only button's name is the Framework tooltip (component.tooltip, the plain dark surface at 1/3), shown on hover and on keyboard focus and hidden on a press and on Escape, where it was the browser's title (hover only). A failed copy's words (the denied hint «Выделено — нажмите Ctrl+C», or error-text) show above the control in the same tooltip surface for the result's duration, aria-hidden beside the polite status that still says them; the component places it with SF.Position. The success and error glyphs are asked of the icon subset with the first drawing (SF.Loader.preloadIcons), so the error glyph is drawn with the refusal, not about a second later. The default size stays 1 (version 1.3.0, decision C22). Settings, events, keys unchanged; the relation tooltip is new. The copy and what it says (the phase, the two seconds, the words, the selection on a refusal) are core's SF.copyFeedback (core/js/copy-feedback.js, owner decision C48), shared with the clipboard component's attribute route data-sf-copy / data-sf-copy-target, so a plain button that copies says the same."
   ],
   "x-registry": {
     "capabilities": [

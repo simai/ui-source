@@ -28,6 +28,9 @@ import './sanitize.js';
 import {publishFormat} from './format.js';
 import './breakpoints.js';
 import './clipboard.js';
+// What a copy says, one feedback for sf-button-copy and the attribute route
+// data-sf-copy (owner decision C48, 2026-11-11): SF.copyFeedback.
+import './copy-feedback.js';
 // Copy on click for code in running text, where a container opts in with
 // data-sf-code-copy (owner, 2026-11-07, R024): SF.codeCopy.
 import './code-copy.js';

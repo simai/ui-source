@@ -53,7 +53,9 @@ test('Highlight composes native Clipboard and supports dynamic refresh', async (
   ]);
 
   assert.match(source, /button\.type = 'button'/);
-  assert.match(source, /sf-clipboard/);
+  // The clipboard component's attribute route (decision C48), not the deprecated class.
+  assert.match(source, /button\.dataset\.sfCopyTarget = /);
+  assert.doesNotMatch(source, /className = '[^']*\bsf-clipboard\b/);
   assert.match(source, /sf-icon-button/);
   assert.match(source, /createElement\('span'\)/);
   assert.match(source, /icon\.className = 'sf-icon'/);
@@ -112,8 +114,9 @@ test('Highlight documentation uses executable Framework-only variants', {
 });
 
 test('a numbered block copies its code, one line per row, without the numbers', async () => {
-  const clipboard = await read('src/component/clipboard/js/index.js');
-  const reader = clipboard.slice(clipboard.indexOf('function readTargetText'), clipboard.indexOf('function resolveCopySource'));
+  // The reader is core's, shared by sf-button-copy and the clipboard component.
+  const helper = await read('src/core/js/copy-feedback.js');
+  const reader = helper.slice(helper.indexOf('export function readCopyText'), helper.indexOf('export function selectCopySource'));
   assert.match(reader, /\.sf-code-line__content/);
   assert.match(reader, /\.join\('\\n'\)/);
 });

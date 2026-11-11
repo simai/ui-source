@@ -1,5 +1,5 @@
 @layer sf.components {
-  .sf-clipboard {
+  :is(.sf-clipboard, [data-sf-copy], [data-sf-copy-target]) {
     cursor: pointer;
   }
 
@@ -36,7 +36,7 @@
     outline-offset: calc(var(--sf-focus--width) * -1);
   }
 
-  .sf-clipboard[aria-disabled='true'] {
+  :is(.sf-clipboard, [data-sf-copy], [data-sf-copy-target])[aria-disabled='true'] {
     cursor: wait;
     opacity: var(--sf-opacity-60);
   }
@@ -83,18 +83,42 @@
     --sf-icon--width: var(--sf-clipboard--icon);
   }
 
-  .sf-clipboard-status {
-    color: var(--sf-on-surface-variant);
-    display: block;
-    font-size: var(--sf-text-small--size);
-    line-height: var(--sf-text-small--height);
-    margin-block-start: var(--sf-space-1\/2);
-    min-block-size: var(--sf-text-small--height);
+  /* The status a screen reader hears takes no room (decision C48): the words
+     a person reads stand above the button as a tooltip, so nothing moves. */
+  .sf-clipboard-status,
+  .sf-clipboard-holder {
+    block-size: var(--sf-px);
+    clip-path: inset(50%);
+    inline-size: var(--sf-px);
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
   }
 
   .sf-clipboard-status:empty {
     margin-block-start: 0;
-    min-block-size: 0;
+  }
+
+  /* The name and the result: the Framework tooltip, placed over the page by
+     SF.Position (fixed), outside an .sf-tooltip-anchor. */
+  .sf-clipboard-name,
+  .sf-clipboard-result {
+    inline-size: max-content;
+    max-inline-size: min(
+      var(--sf-tooltip--max-inline-size, var(--sf-g0)),
+      calc(100vw - var(--sf-space-2))
+    );
+    pointer-events: none;
+    z-index: var(--sf-z-index-9);
+  }
+
+  /* The result's ink is the glyph's own, as sf-button-copy's. */
+  :is(.sf-clipboard, [data-sf-copy], [data-sf-copy-target])[data-copy-state='success'] .sf-icon {
+    color: var(--sf-success);
+  }
+
+  :is(.sf-clipboard, [data-sf-copy], [data-sf-copy-target])[data-copy-state='error'] .sf-icon {
+    color: var(--sf-error);
   }
 
   .sf-clipboard-fallback {

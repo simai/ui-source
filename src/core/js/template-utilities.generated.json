@@ -64,6 +64,9 @@
     "place-items/default",
     "pointer-events/default"
   ],
+  "cl-button-copy": [
+    "display/default"
+  ],
   "cl-button-icon": [
     "align-items/default",
     "display/default",

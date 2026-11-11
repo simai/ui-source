@@ -405,6 +405,7 @@
       "composition": {
         "public_parts": [],
         "uses": [
+          "component.tooltip",
           "smart.button",
           "smart.button-icon",
           "smart.icon"
@@ -419,7 +420,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-copy/smart.manifest.json",
-      "manifest_sha256": "17d85fb32aeb3161f033e14474d41011531169c0f765fab5ab67eda1a569404d",
+      "manifest_sha256": "c774667280c9c31423b6fe7dd8e2d36243e9048bb8dd7cde10bb283d97bcb5c2",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

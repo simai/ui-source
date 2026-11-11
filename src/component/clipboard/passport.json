@@ -12,7 +12,7 @@
     "src/component/clipboard/scss/_sf_copy.scss",
     "src/component/clipboard/scss/index.scss"
   ],
-  "content_sha256": "caa7719d3355af25c50dfccb6061c04e1bbfef7876365f5bdb935ada5182b240",
+  "content_sha256": "2d4f594cf4635459725fe5dcba8f8950a6f05b1243029f636a9b98d66ee7dd4e",
   "dependencies": [
     {
       "id": "component.buttons",
@@ -25,6 +25,10 @@
     {
       "id": "component.icons",
       "range": "^1.0.0"
+    },
+    {
+      "id": "component.tooltip",
+      "range": "^1.2.3"
     },
     {
       "id": "core.runtime",
@@ -60,7 +64,7 @@
     },
     {
       "id": "tokens.typography",
-      "range": "^1.0.0"
+      "range": "^1.6.3"
     }
   ]
 }

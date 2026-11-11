@@ -59,7 +59,11 @@ test('a fallback that copied nothing rejects, and a throwing one rethrows', asyn
 
 test('sf-button-copy and the clipboard class copy through the core helper', () => {
   const button = readFileSync(new URL('../src/smart/button-copy/index.js', import.meta.url), 'utf8');
-  assert.match(button, /import \{copyText\} from '\.\.\/\.\.\/core\/js\/clipboard\.js'/u);
+  // Through the copy feedback (decision C48), which copies with copyText.
+  const feedback = readFileSync(new URL('../src/core/js/copy-feedback.js', import.meta.url), 'utf8');
+  assert.match(button, /import \{createCopyFeedback, readCopyText\} from '\.\.\/\.\.\/core\/js\/copy-feedback\.js'/u);
+  assert.match(feedback, /import \{copyText\} from '\.\/clipboard\.js'/u);
   assert.doesNotMatch(button, /execCommand/u);
+  assert.doesNotMatch(feedback, /execCommand/u);
   assert.equal(globalThis.SF?.copyText, copyText);
 });
