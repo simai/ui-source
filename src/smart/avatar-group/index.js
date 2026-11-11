@@ -5,7 +5,9 @@ import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
-import '../../component/avatars/scss/index.scss';
+// No sheet import: the rule has no css, so a sheet in this bundle never
+// reached a page; the avatars class sheet comes by the rule's relation
+// (audit 2026-11-11, dead Smart sheets).
 
 // sf-avatar-group from its component.json (standard simai.smart-component 1.3.8 §3,
 // §4): the settings are the attributes and properties

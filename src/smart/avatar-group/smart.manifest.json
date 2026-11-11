@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.avatar-group",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "title": "Avatars",
   "summary": "Ready combinations of avatars: a person with a source, a stacked group with a remainder, an avatar with two lines of label, and a profile avatar with a verified badge. Drawn from sf-avatar's parts; for a single avatar with a name or a card use sf-avatar.",
   "kind": "smart",
@@ -231,7 +231,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/avatar-group/index.js",
-        "sha256": "ce12814aafc6892bf4e000ddd9f8b13d5d0caba606b619faf856b3853a31db14"
+        "sha256": "c7e667fafc3c57bc75a3d5c6b9a3ee97cfc204850e4448a26b68dafff50d35fc"
       }
     ],
     "generated_runtime": [

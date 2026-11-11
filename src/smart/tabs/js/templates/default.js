@@ -1,6 +1,5 @@
 import { html, nothing } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
-import './default.css';
 
 function joinClasses(...tokens) {
   return tokens.flat().filter(Boolean).join(' ');
