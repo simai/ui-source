@@ -15,7 +15,7 @@
     "src/component/download-file/scss/_css_download-file.scss",
     "src/component/download-file/scss/index.scss"
   ],
-  "content_sha256": "c0372e562b3d642826966cc8fe477726ac8ef19464a73421a9605714fc768bf6",
+  "content_sha256": "01a3d3d449204eda3c8ca492636de36e27aa491ed3a320f9a1c1e9728a9f49b6",
   "dependencies": [
     {
       "id": "core.runtime",
@@ -27,6 +27,10 @@
     },
     {
       "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.breakpoint",
       "range": "^1.0.0"
     },
     {
