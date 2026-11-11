@@ -165,14 +165,15 @@ class SfTime extends TimeElement {
     this._said = said;
     this.sfHostState('data-empty', !said);
     this.sfHostState('data-relative', Boolean(said?.relative));
-    const tooltip = Boolean(said) && this.tooltip !== 'none' && said.kind !== 'datetime';
+    // hasTip, not tooltip: the tooltip prop keeps its own value (auto) in the context.
+    const hasTip = Boolean(said) && this.tooltip !== 'none' && said.kind !== 'datetime';
     const nested = Boolean(this.parentElement?.closest?.('a[href], button, summary, [role="button"], [role="link"]'));
     return this.createTemplateContext({
       ...this.getPropsContext(),
       component: this,
       said,
-      tooltip,
-      focusable: tooltip && !nested,
+      hasTip,
+      focusable: hasTip && !nested,
       tipId: `${this._uid}-tip`,
       rootClass: this.getRootClass(),
     });

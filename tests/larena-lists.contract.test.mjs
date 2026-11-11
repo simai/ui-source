@@ -98,7 +98,7 @@ test('sf-list-timeline: the host\'s order, runs of one day, the shared parts (C4
   assert.match(source, /export const KIND_ICONS = \{comment: 'chat_bubble', sms: 'phone_iphone'\};/u);
   assert.match(source, /noteDeprecated\(\{component: 'sf-list-timeline', kind: 'attribute', from: 'density', to: 'data-sf-density'/u);
   const template = code('src/smart/list-timeline/js/templates/default.js');
-  assert.match(template, /<sf-time class="sf-list-timeline-time" datetime=\$\{item\.iso\} format=\$\{context\.timeFormat\}/u);
+  assert.match(template, /<sf-time class="sf-list-timeline-time" datetime=\$\{item\.iso\} format=\$\{context\.itemFormat\}/u);
   assert.match(template, /sf-featured-icon sf-featured-icon--circle sf-featured-icon--size-\$\{BELOW\[context\.size\]\}/u);
   assert.match(template, /<sf-avatar inert aria-hidden="true"/u);
   assert.match(template, /<sf-change class="sf-list-timeline-change"/u);

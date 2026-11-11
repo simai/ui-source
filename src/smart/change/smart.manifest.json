@@ -204,11 +204,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/change/index.js",
-        "sha256": "6538e38d7fc4e3a2b77c3e6fccf92788103bf71599e55b8fecdb7d6ba62f394d"
+        "sha256": "5f7cc5744b8250a3ff2fd102872bd93895b0d4809ecefcab1b669132c0400d05"
       },
       {
         "path": "src/smart/change/js/templates/default.js",
-        "sha256": "f00c6ea0fe851902d66172453bd612ff10acbcdd21c38e97fd2c251b5c3be38c"
+        "sha256": "9d17f24d7197ba1601659925f13ff61b07ba1fc618203a6a8fd4de5b87c2ceb3"
       },
       {
         "path": "src/smart/change/scss/_smart__change.scss",

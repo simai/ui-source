@@ -251,7 +251,8 @@ class SfListTimeline extends ListTimelineElement {
       label: this.label,
       runs,
       now: text(this.now),
-      timeFormat: this.timeFormatFor(group === 'day'),
+      // itemFormat, not timeFormat: the time-format prop keeps its own value (auto) in the context.
+      itemFormat: this.timeFormatFor(group === 'day'),
       sticky: Boolean(this.stickyHeadings),
       steps: list.some((item) => item.state),
       count: list.length,

@@ -10374,6 +10374,31 @@
       },
       "owner": "ui-source",
       "source": "src/component/clipboard/js/index.js copySources, noteLegacy; ui-control control/docs-review/decisions.md C48"
+    },
+    {
+      "id": "behaviour-timeline-stage-dots",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-list-timeline: a step (state) without an icon tells its state by the dot's shape, as an icon step does (owner decision C61, variant A): done a solid dot in --sf-primary, current the same dot ringed through a gap, upcoming an empty dot with a --sf-on-surface-variant ring. Before, every such dot was the neutral grey and only the line told the state. A status tone (success, warning, error) still wins.",
+      "items": [
+        {
+          "component": "sf-list-timeline",
+          "attribute": "items[].state",
+          "from": "a neutral dot for every state",
+          "to": "done solid, current ringed, upcoming empty"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite in markup or data. A page that coloured its own step dots over .sf-list-timeline-dot can drop that rule.",
+      "examples": {
+        "before": "<sf-list-timeline steps></sf-list-timeline> (items with state, no icon: grey dots)",
+        "after": "<sf-list-timeline steps></sf-list-timeline> (the same items: solid, ringed, empty dots)"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
     }
   ]
 }

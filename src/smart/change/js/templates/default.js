@@ -59,7 +59,7 @@ export function renderChangeTemplate(context) {
   if (context.empty) return nothing;
   if (context.layout === 'list') {
     return html`<dl class=${['sf-change', 'sf-change--list', context.rootClass].filter(Boolean).join(' ')}>
-      ${context.changes.map((change) => html`<div class="sf-change__row"><dt class="sf-change__term">${change.label}</dt><dd
+      ${context.rows.map((change) => html`<div class="sf-change__row"><dt class="sf-change__term">${change.label}</dt><dd
         class="sf-change__value">${pair(context, change)}</dd></div>`)}
     </dl>`;
   }
