@@ -377,6 +377,11 @@ class SfBaseElement extends HTMLElement {
   static externalTemplateCssMisses = new Set();
   static waitForStylesBeforeRenderReady = true;
   static styleReadyTimeout = 3000;
+  // How long a box of the element's own outside the host (a window's
+  // portal) stays out of view waiting for its sheets (holdPortalUntilStyled):
+  // longer than the host's gate, since a box shown before its sheets is a
+  // whole window drawn as a card in the page flow, not a few lines of text.
+  static portalStyleTimeout = 15000;
   // A component that takes the page's children into its markup can keep
   // them where the page wrote them until it draws, instead of taking them out
   // when it connects (holdSlotNode, releaseHeldSlotNodes). Between the two the
@@ -1432,6 +1437,13 @@ class SfBaseElement extends HTMLElement {
         ? loader.ensureStylesReady(this, { autoLoad })
         : true,
     );
+    // The sheets applied, without the time limit (holdPortalUntilStyled).
+    if (autoLoad) {
+      this._styleAppliedPromise = readiness.then(
+        () => { this._styleApplied = true; },
+        () => {},
+      );
+    }
     const timeout = Number(this.constructor.styleReadyTimeout ?? 3000);
     // The time limit is cleared once the sheets are in: a timer left behind
     // per element was a leak of its own (gate 36).
@@ -2661,16 +2673,32 @@ class SfBaseElement extends HTMLElement {
   // the page flow, and a closed drawer's panel stood in view beside the page
   // (ui-control evidence 2026-11-11-modal-followups, N2). Call it before the
   // drawing; `shown` runs once the box shows.
+  //
+  // The host's gate gives up after styleReadyTimeout (3 s); the box waits for
+  // the sheets themselves, at the latest portalStyleTimeout: under sheets
+  // that came after 3 s the window showed as a card for a few frames (DEV's
+  // acceptance 2026-11-11, L2: 5 of 72 hostile loads).
   holdPortalUntilStyled(target, shown) {
-    if (this._styleReady || !target || target === this) return;
-    const styles = this.stylesReadiness();
+    if (this._styleApplied || !target || target === this) return;
+    // After the host's gate gave up the sheets may still be on their way.
+    const styles = this.stylesReadiness() ?? this._styleAppliedPromise;
     if (!styles) return;
     target.setAttribute("data-sf-style-pending", "");
     (this._styleHeldTargets ??= new Set()).add(target);
     if (shown) (this._styleHeldShown ??= new Set()).add(shown);
     if (this._styleHeldWait) return;
-    this._styleHeldWait = styles.then(() => {
+    const guard = Number(this.constructor.portalStyleTimeout ?? 15000);
+    let timer = null;
+    const applied = Promise.race([
+      this._styleAppliedPromise || styles,
+      new Promise((resolve) => {
+        timer = setTimeout(resolve, guard > 0 ? guard : 0);
+      }),
+    ]).finally(() => clearTimeout(timer));
+    this._styleHeldWait = Promise.all([styles, applied]).then(() => {
       this._styleReady = true;
+      // Applied or given up: later boxes do not wait again.
+      this._styleApplied = true;
       this._styleHeldTargets.forEach((one) => one.removeAttribute("data-sf-style-pending"));
       this._styleHeldTargets.clear();
       this._styleHeldWait = null;
