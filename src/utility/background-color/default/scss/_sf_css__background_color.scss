@@ -55,7 +55,7 @@
         .#{$infix}bg-#{$class} {
             @if $place == 'surface-4' {
                 @include places.sf-place(var(--sf-#{$surface}), places.$sf-place-step4-variant,
-                    places.$sf-place-step-outline, places.$sf-place-step4-container-variant);
+                    places.$sf-place-step-outline, places.$sf-place-step4-container-variant, $popup: true);
             } @else {
                 @include places.sf-place(var(--sf-#{$surface}), if($variant, var(--sf-#{$variant}), null),
                     if(index(('surface-2', 'surface-3', 'surface-4'), $place), places.$sf-place-step-outline, null));

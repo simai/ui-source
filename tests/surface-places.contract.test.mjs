@@ -112,6 +112,13 @@ test('the popover, a sheet that is not Sass, writes the place out as the mixin d
       assert.match(popover, /sf-popover > \[slot='content'\] > \* \{[^}]*--sf-surface-popup: var\(--sf-surface-popup-nested\);[^}]*--sf-place--popup-container-variant: light-dark\(var\(--sf-neutral-35\), var\(--sf-neutral-95\)\);/u);
       continue;
     }
+    // A popup reads its boundary through --sf-place--popup-outline, and a
+    // popup opened from it draws the nested edge (contrast R3b, 2026-11-11).
+    if (role === 'outline') {
+      assert.ok(popover.includes(`--sf-outline: var(--sf-place--popup-outline, ${value});`), 'popover outline');
+      assert.match(popover, /sf-popover > \[slot='content'\] > \* \{[^}]*--sf-place--popup-outline: light-dark\(var\(--sf-neutral-50--alfa-80\), var\(--sf-neutral-70\)\);/u);
+      continue;
+    }
     assert.ok(popover.includes(`--sf-${role}: ${value};`), `popover --sf-${role}`);
   }
   assert.match(popover, /--sf-surface-place: var\(--sf-popover-background-color, var\(--sf-surface-popup\)\);/u);
@@ -139,4 +146,15 @@ test('places own the accent and the boundary line only on a coloured place (D1, 
   assert.doesNotMatch(main, /--sf-(primary|on-primary|outline-variant):/u);
   assert.match(popover, /:where\(\.bg-primary, [^{]*\.sf-surface-media\) sf-popover > \[slot='content'\] \{\s*--sf-outline-variant: /u);
   assert.match(popover, /--sf-primary: var\(--sf-place--outer-primary, light-dark\(var\(--sf-primary-40\), var\(--sf-primary-80\)\)\);/u);
+});
+
+test('bg-surface-4 nests a popup inside it, and a nested popup draws the nested edge (contrast R3b, DEV 2026-11-11)', () => {
+  // R3-1: bg-surface-4 passes its own ink, so it says it is a popup step.
+  assert.match(utility, /places\.\$sf-place-step4-container-variant, \$popup: true\)/u);
+  assert.match(mix, /\$sf-place-step4-container-variant: 'light-dark\(var\(--sf-neutral-30\), var\(--sf-place--popup-container-variant, var\(--sf-neutral-90\)\)\)'/u);
+  // R3-2: the children of a popup carry the nested boundary, which a popup place reads.
+  const children = mix.slice(mix.indexOf('@mixin sf-place-popup-children'), mix.indexOf('\n}\n', mix.indexOf('@mixin sf-place-popup-children')));
+  assert.match(children, /--sf-place--popup-outline: #\{\$sf-place-popup-nested-outline\};/u);
+  assert.match(mix, /\$sf-place-popup-outline: 'var\(--sf-place--popup-outline, light-dark\(var\(--sf-neutral-50--alfa-80\), var\(--sf-neutral-90--alfa-48\)\)\)'/u);
+  assert.match(mix, /\$sf-place-popup-nested-outline: 'light-dark\(var\(--sf-neutral-50--alfa-80\), var\(--sf-neutral-70\)\)'/u);
 });
