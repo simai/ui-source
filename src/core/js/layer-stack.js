@@ -616,21 +616,94 @@ function whenPageIdle(fn) {
 
 //
 // A page may keep the old timing, the content fetched when the layer opens:
-// SF_BOOT_CONFIG.startClosedContent = false. The first-paint snapshots do
+// SF_BOOT_CONFIG.startClosedLayerContent = false. The first-paint snapshots do
 // (scripts/first-paint-lib.mjs): a closed layer's first paint is the layer as
 // it rests before anything in it starts, and a start at idle time made the
 // picture and its sheet list depend on how soon the browser was idle.
+//
+// Content the page puts into the closed layer later (a list filled from its
+// data, a part loaded into it) starts the same way: the layer watches its
+// closed root and walks it again, a few rounds, once the page is idle after
+// an addition (ui-control evidence 2026-11-11-modal-followups-2-accept, L2).
+// An open root is the Loader's, as any part of the page.
 export function startClosedLayerContent(rootOf) {
   const view = globalThis.window;
-  if (!view?.document || view.SF_BOOT_CONFIG?.startClosedContent === false) return;
+  if (!view?.document || view.SF_BOOT_CONFIG?.startClosedLayerContent === false) return;
   let round = 0;
+  let walking = false;
+  let again = false;
+  let watched = null;
+  let watcher = null;
   const next = () => {
     const loader = view.SF?.Loader;
     const root = rootOf();
+    walking = false;
     if (!root?.isConnected || !loader?.ensure || !loader.getSmartElementRuleName) return;
+    watch(root);
+    if (!root.matches(CLOSED_LAYER)) return;
     const tags = contentTags(root, loader);
-    if (!tags.length || ++round > CONTENT_ROUNDS) return;
+    if (!tags.length || ++round > CONTENT_ROUNDS) {
+      if (again) walk();
+      return;
+    }
+    walking = true;
     loader.ensure(tags, {timeout: 10000}).then(() => whenPageIdle(next));
   };
+  const walk = () => {
+    again = false;
+    if (walking) {
+      again = true;
+      return;
+    }
+    round = 0;
+    walking = true;
+    whenPageIdle(next);
+  };
+  const watch = (root) => {
+    if (watched === root || typeof view.MutationObserver !== 'function') return;
+    watcher?.disconnect();
+    watched = root;
+    watcher = new view.MutationObserver((records) => {
+      if (!watched.isConnected) {
+        watcher.disconnect();
+        watcher = null;
+        watched = null;
+        return;
+      }
+      if (watched.matches(CLOSED_LAYER) && records.some((record) => record.addedNodes.length)) walk();
+    });
+    watcher.observe(root, {childList: true, subtree: true});
+  };
+  walking = true;
   whenPageIdle(next);
+}
+
+// A closed window's root or drawer's panel: inert while closed (and while a
+// window is minimised).
+const CLOSED_LAYER = '.sf-modal[inert], [data-sf-drawer-panel][inert]';
+
+// A component that fetches its own data (sf-include) and stands in a closed
+// window or drawer fetches it once the layer opens, not at page load: the
+// layer starts its content early so the page can reach its code
+// (startClosedLayerContent), but a part, a list's rows or a user's data the
+// page never opens should not cost the server a request (ui-control
+// evidence 2026-11-11-modal-followups-2-accept, M2). Null when the element is
+// not in a closed layer, or when the page keeps the old timing
+// (SF_BOOT_CONFIG.startClosedLayerContent = false: then nothing in a closed
+// layer starts before it opens); otherwise a promise that settles when the
+// layer opens, or never once `signal` aborts.
+export function whenClosedLayerOpens(element, signal) {
+  const view = globalThis.window;
+  if (!view?.document || view.SF_BOOT_CONFIG?.startClosedLayerContent === false) return null;
+  const layer = element?.closest?.(CLOSED_LAYER);
+  if (!layer || typeof view.MutationObserver !== 'function') return null;
+  return new Promise((resolve) => {
+    const watcher = new view.MutationObserver(() => {
+      if (layer.matches(CLOSED_LAYER) && layer.isConnected) return;
+      watcher.disconnect();
+      resolve();
+    });
+    watcher.observe(layer, {attributes: true, attributeFilter: ['inert']});
+    signal?.addEventListener('abort', () => watcher.disconnect(), {once: true});
+  });
 }
