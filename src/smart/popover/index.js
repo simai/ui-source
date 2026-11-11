@@ -5,6 +5,7 @@ import {tagSelector} from '../../core/js/tag-aliases.js';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 import {hasLayerAbove} from '../../core/js/layer-stack';
 import BundledPosition from '../../core/js/position.js';
+import {anchorFloating} from '../../core/js/float-anchor.js';
 import {renderPopoverTemplate} from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -20,6 +21,10 @@ import ru from './lang/ru.json';
 const positioning = () => globalThis.SF?.Position || BundledPosition;
 
 // Where the surface hangs from, as the shared helper's side and alignment.
+// top, bottom, start and end centre it on the trigger; -start and -end align
+// its start or end edge with the trigger's (C59, research 2026-11-11). The
+// first six are the names it had; inline-start and inline-end are start-start
+// and end-start.
 const ANCHOR_PLACEMENTS = {
     'bottom-start': {side: 'block-end', align: 'start'},
     'bottom-end': {side: 'block-end', align: 'end'},
@@ -27,7 +32,20 @@ const ANCHOR_PLACEMENTS = {
     'top-end': {side: 'block-start', align: 'end'},
     'inline-end': {side: 'inline-end', align: 'start'},
     'inline-start': {side: 'inline-start', align: 'start'},
+    bottom: {side: 'block-end', align: 'center'},
+    top: {side: 'block-start', align: 'center'},
 };
+// start and end, and each with -start and -end. Composed, not written out:
+// start-start and end-end are also flex-align utility classes, and a literal
+// here would load that sheet with every popover
+// (scripts/generate-template-utilities.mjs reads words loosely).
+for (const [name, side] of [['start', 'inline-start'], ['end', 'inline-end']]) {
+    ANCHOR_PLACEMENTS[name] = {side, align: 'center'};
+    for (const align of ['start', 'end']) ANCHOR_PLACEMENTS[`${name}-${align}`] = {side, align};
+}
+
+// The gap an arrow needs when no offset is given: the arrow's own reach.
+const ARROW_OFFSET = 'var(--sf-space-1\\/2)';
 
 const PopoverElement = elementFromManifest(manifest, {
     base: SfBaseElement,
@@ -134,6 +152,8 @@ class SfPopover extends PopoverElement {
     onDisconnected() {
         this._watchSheet(null);
         this._releaseAnchor();
+        this._lower();
+        cancelAnimationFrame(this._focusFrame);
         this.removeEventListener('click', this._onTriggerClick);
         this._releaseDismissal();
         super.onDisconnected?.();
@@ -166,7 +186,30 @@ class SfPopover extends PopoverElement {
         this._opener = this.querySelector('[slot="trigger"]') ?? null;
         this.toggleAttribute('open', true);
         this.requestComponentUpdate('open');
+        this._focusInSoon();
         return applied();
+    }
+
+    // A dialog surface takes the focus when it is opened (C59: the popover
+    // kind is a non-modal dialog): Tab goes on into its content and Escape
+    // brings the focus back to the trigger. It waits a frame, so a consumer
+    // that focuses its own field on sf-popover-opened (sf-input-rich's link
+    // editor) keeps it; a menu or a list moves its own focus, and a surface
+    // opened by writing the open attribute leaves the focus where it is.
+    _focusInSoon() {
+        if (this.surfaceRole !== 'dialog') return;
+        cancelAnimationFrame(this._focusFrame);
+        this._focusFrame = requestAnimationFrame(() => {
+            const surface = this.querySelector(':scope > [slot="content"]');
+            if (!this.open || !surface?.isConnected) return;
+            const active = this.ownerDocument.activeElement;
+            if (active && active !== this.ownerDocument.body && surface.contains(active)) return;
+            if (!surface.hasAttribute('tabindex')) {
+                surface.setAttribute('tabindex', '-1');
+                surface.setAttribute('data-sf-popover-focus', '');
+            }
+            surface.focus({preventScroll: true});
+        });
     }
 
     // options.reason says why (standard 1.3.8 §19.3): escape, outside, close
@@ -201,7 +244,7 @@ class SfPopover extends PopoverElement {
             return;
         }
         if (this._onDocumentPointerDown) return;
-        holdOpenSurfaceMark(this, true);
+        holdOpenSurfaceMark(this, true, {place: this._onLayerPlace});
         this._onDocumentPointerDown = (event) => {
             const path = event.composedPath?.() ?? [];
             if (path.includes(this)) return;
@@ -236,6 +279,7 @@ class SfPopover extends PopoverElement {
         }
         this._onDocumentPointerDown = null;
         this._onDocumentKeyDown = null;
+        this._under = false;
     }
 
     // It draws no markup of its own, so it takes the base's own patch path and
@@ -264,16 +308,61 @@ class SfPopover extends PopoverElement {
         }
         const surface = this.querySelector('[slot="content"]');
         if (!surface) return true;
+        if (control && surface.id) control.setAttribute('aria-controls', surface.id);
         surface.setAttribute('role', this.surfaceRole);
         if (this.label) surface.setAttribute('aria-label', this.label);
         else surface.removeAttribute('aria-label');
         surface.style.setProperty('--sf-popover--width', this.width || '');
         // The gap to the trigger (#69), a margin on the trigger's side.
-        if (this.offset) surface.style.setProperty('--sf-popover--offset', this.offset);
+        const offset = this._offset();
+        if (offset) surface.style.setProperty('--sf-popover--offset', offset);
         else surface.style.removeProperty('--sf-popover--offset');
+        if (!this.open && surface.hasAttribute('data-sf-popover-focus')) {
+            surface.removeAttribute('tabindex');
+            surface.removeAttribute('data-sf-popover-focus');
+        }
         this._syncAnchor(surface);
         return true;
     }
+
+    // The gap: the offset given, or with an arrow the arrow's reach.
+    _offset() {
+        return this.offset || (this.arrow ? ARROW_OFFSET : '');
+    }
+
+    // The top layer (C59): an open surface is drawn over the whole page, so no
+    // ancestor's overflow, z-index, transform or contain clips or covers it.
+    // It stays where it is in the document, so it keeps the host's variables,
+    // theme, language, direction and density. While a window or a drawer
+    // stands above it in the layer stack -- one opened from its content -- it
+    // steps down out of the top layer, so that window is drawn over it; it
+    // comes back up when the window closes.
+    _lift(surface) {
+        if (this._lowerSurface && this._liftedSurface === surface) return;
+        this._lower();
+        this._lowerSurface = positioning().liftToTopLayer?.(surface) ?? null;
+        this._liftedSurface = this._lowerSurface ? surface : null;
+    }
+
+    _lower() {
+        const lower = this._lowerSurface;
+        this._lowerSurface = null;
+        this._liftedSurface = null;
+        lower?.();
+    }
+
+    // The layer stack tells every open layer where it stands (layer-stack
+    // sync); a window or a drawer above sends the surface down.
+    _onLayerPlace = () => {
+        const under = hasLayerAbove(this);
+        if (under === Boolean(this._under)) return;
+        this._under = under;
+        const surface = this.querySelector(':scope > [slot="content"]');
+        if (surface) {
+            this._releaseAnchor();
+            this._syncAnchor(surface);
+        }
+    };
 
     // An open surface is kept on screen as every other floating surface is
     // (core/js/position.js): it hangs from the corner its placement names and
@@ -291,14 +380,23 @@ class SfPopover extends PopoverElement {
     // trigger (it hung at the top of a 390 screen). The attribute can arrive
     // after the surface opened, so it is watched while the surface is open.
     _syncAnchor(surface) {
-        this._watchSheet(this.open && surface?.isConnected ? surface : null);
+        const live = this.open && surface?.isConnected;
+        this._watchSheet(live ? surface : null);
+        // In the top layer while open, a sheet included (it was lifted by its
+        // consumer before; now the popover holds it); down when closed or
+        // while a window stands above it.
+        if (live && !this._under) this._lift(surface);
+        else this._lower();
         const sheet = surface?.hasAttribute?.('data-sf-sheet');
-        const want = this.open && surface?.isConnected && !sheet ? `${this.placement}|${this.offset || ''}` : null;
+        const want = live && !sheet ? `${this.placement}|${this._offset()}|${this.arrow}|${Boolean(this._under)}` : null;
         if (this._anchor && (this._anchorSurface !== surface || this._anchorKey !== want)) this._releaseAnchor();
         if (!want || this._anchor) return;
         const {side, align} = ANCHOR_PLACEMENTS[this.placement] || ANCHOR_PLACEMENTS['bottom-end'];
-        this._anchor = positioning().anchor(this, surface, {
-            side, align, offset: this.offset || 0, flip: true, shift: true, fitHeight: false, topLayer: false,
+        // The floating-surface engine (core/js/float-anchor.js, internal):
+        // CSS anchor positioning in the top layer, SF.Position elsewhere.
+        this._anchor = anchorFloating(this, surface, {
+            side, align, offset: this._offset() || 0, flip: true, shift: true, fitHeight: false, topLayer: false,
+            arrow: this.arrow,
         });
         this._anchorSurface = surface;
         this._anchorKey = want;

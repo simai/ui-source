@@ -257,7 +257,7 @@
     {
       "id": "measured-runtime-geometry",
       "category": "runtime-review",
-      "filePattern": "^(?:component/(?:country-code/js/_country_code|menu/js/_menu|range-slider/js/_range_slider|scrollbar/js/_scrollbar|textarea/js/_textarea|tooltip/js/_tooltip)\\.js|core/js/(?:code-copy|effects|layer-stack|position)\\.js|core/js/composition/(?:inline-editor|overlay|sortable-inserter|sortable)\\.mjs|smart/(?:menu|menu-context|profile-picker|resizer|segmented)/index\\.js|smart/tree/js/templates/default\\.js)$",
+      "filePattern": "^(?:component/(?:country-code/js/_country_code|menu/js/_menu|range-slider/js/_range_slider|scrollbar/js/_scrollbar|textarea/js/_textarea|tooltip/js/_tooltip)\\.js|core/js/(?:code-copy|effects|float-anchor|layer-stack|position)\\.js|core/js/composition/(?:inline-editor|overlay|sortable-inserter|sortable)\\.mjs|smart/(?:menu|menu-context|profile-picker|resizer|segmented)/index\\.js|smart/tree/js/templates/default\\.js)$",
       "contextPattern": ".*",
       "status": "accepted-runtime-geometry",
       "reason": "Coordinates and sizes measured from the rendered page or the pointer (a floating panel's place, a drag ghost, a virtual list's spacer, a tooltip tail); the browser reports them in CSS pixels."

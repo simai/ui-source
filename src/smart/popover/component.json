@@ -14,10 +14,18 @@
         "top-start",
         "top-end",
         "inline-start",
-        "inline-end"
+        "inline-end",
+        "bottom",
+        "top",
+        "start",
+        "start-start",
+        "start-end",
+        "end",
+        "end-start",
+        "end-end"
       ],
       "default": "bottom-end",
-      "summary": "Which corner of the trigger the surface hangs from."
+      "summary": "Where the surface stands beside the trigger: top, bottom, start or end, centred on it, or with -start or -end its start or end edge on the trigger's (inline-start and inline-end are start-start and end-start). Logical: start and end follow the writing direction. At the window's edge it moves along the trigger's edge, or to the other side."
     },
     "label": {
       "type": "string",
@@ -32,7 +40,12 @@
     "offset": {
       "type": "string",
       "default": "",
-      "summary": "The gap between the trigger and the surface: a token (var(--sf-space-1\\/3)) or a CSS length. Left empty, the surface touches the trigger as before."
+      "summary": "The gap between the trigger and the surface: a token (var(--sf-space-1\\/3)) or a CSS length. Left empty, the surface touches the trigger as before; with an arrow it is the arrow's reach."
+    },
+    "arrow": {
+      "type": "boolean",
+      "default": false,
+      "summary": "An arrow toward the trigger, off by default. It carries the surface's own shadow (the overlay shadow drawn as a filter over the surface and the arrow); with an arrow the surface does not scroll by itself, and the gap is the arrow's reach (space 1/2) unless offset gives one."
     },
     "dismissible": {
       "type": "boolean",
@@ -319,7 +332,8 @@
     "version 1.4.5 (2026-11-10, pair next integration): one number above every claim for the notes above, which separate branches each claimed: the menus snapshot patch (1.4.2) and the C43 bubble changes (1.4.2 underlay reset, 1.4.3 dim ink one step up in dark, 1.4.4 muted is the disabled ink). The integration had first numbered the two 1.4.2 notes 1.4.3, which C43 then claimed with other content. They ship together in this release; 1.4.2, 1.4.3 and 1.4.4 are never published alone. Settings, values, events and keys unchanged.",
     "version 1.5.0 (2026-11-10): an open surface is kept on screen by the shared anchored positioning (core/js/position.js, Floating UI: flip and shift, as every other floating surface): it hangs from the corner its placement names and moves along the trigger's edge, or to the other side, when the window has no room there. Placed by the stylesheet alone, a 320px panel from a trigger near the window's edge ran past it (ui-doc «Рецепты», «Уведомления», 2026-11-10). With room it stands exactly where it stood; the offset stays the gap; it is not lifted into the top layer, so a window or a drawer opened from it is still drawn over it; closed, the inline placement is removed and the stylesheet's is back. Settings, values, events and keys unchanged; tests/browser/popover-on-screen.browser.mjs. (1.4.2 and 1.4.3 are taken on integration/pair-next.) A surface its consumer draws as a sheet (data-sf-sheet, sf-input-rich's link editor on a phone, C32 RT-02) is not anchored: the sheet rule places it, and the attribute is watched while the surface is open (pair next 2, DEV forms round 2 D3: the anchor held the phone sheet at the top of the screen).",
     "version 1.5.0 (2026-11-10, C41 + C42, owner): the popup place in the template writes the neutral fill at 8/12/16 (was 16/20/24) and takes the theme's accent back (--sf-primary, -hover, -active, --sf-on-primary), as core sf-place does; a popup opened from the content is a nested popup: on the content's children --sf-surface-popup and its dim ink are the nested popup's (DEV surfaces audit defect 3).",
-    "version 1.5.0, also (2026-11-11, written on the pair's 1.5.0): the bubble declares --sf-surface-place-ground, the nearest opaque place, with its own colour, as every solid place does, so a status dot on a soft coloured place inside it lies over the bubble. Settings, values, events and keys unchanged."
+    "version 1.5.0, also (2026-11-11, written on the pair's 1.5.0): the bubble declares --sf-surface-place-ground, the nearest opaque place, with its own colour, as every solid place does, so a status dot on a soft coloured place inside it lies over the bubble. Settings, values, events and keys unchanged.",
+    "version 1.5.0, also (2026-11-11, C59 stage S1, owner decision): one positioning engine and the popover kind. An open surface stands in the browser's top layer (a manual popover, core/js/position.js liftToTopLayer): an ancestor's overflow: hidden, a scroll container, a z-index, a transform or contain no longer clip or cover it; it stays where it was written in the document, so the host's variables, theme, lang, dir and density reach it as before. It is placed by the Framework's floating-surface engine, core/js/float-anchor.js (internal: not on window.SF and not in the public JS API contract until the later kinds prove its shape; built on SF.Position's public API, position.js unchanged): CSS anchor positioning (anchor-name on the host, position-area, position-try-fallbacks flip-inline / flip-block) where the browser has it, Floating UI where it has not, and Floating UI for the rest of an opening when no CSS area keeps the surface inside the window (CSS has no shift); both flip and shift at the four edges and say the side they took in data-sf-side. While a window or a drawer stands above it in the layer stack (one opened from its content) it steps down out of the top layer, so the window is drawn over it, and back up when the window closes. Placement takes top, bottom, start and end (centred) and start-start, start-end, end-start, end-end beside the six it had (default bottom-end, unchanged). The setting arrow (boolean, off): a square of the surface's fill at the trigger's centre (--sf-position-arrow-x/-y from the engine), and the overlay shadow drawn as --sf-shadow-overlay-filter (drop-shadow, the same two layers as --sf-shadow-overlay) over the surface and the arrow; with an arrow the surface has no scroll of its own and the gap defaults to space 1/2. A dialog surface takes the focus a frame after show(), toggle() or the trigger opened it (unless its content took it); the trigger says aria-controls when the surface has an id. The dismissal stays the Framework's own (Escape and an outside press through the layer stack, cancelable sf-popover-close with its reasons): a native auto popover's light dismiss can be neither cancelled nor given a reason. sf-input-rich's phone sheet is held in the top layer by the popover while it is open. Events, values, keys and the six public variables unchanged; tests/browser/popover-top-layer.browser.mjs, tests/popover-top-layer.contract.test.mjs."
   ],
   "x-rule": {
     "$comment": [
@@ -428,7 +442,7 @@
         "Space",
         "Escape"
       ],
-      "focus": "label names the surface. surface-role sets the surface's role (dialog by default; menu, listbox, group); the trigger gets aria-haspopup to match and aria-expanded. Opening moves focus into the surface; Escape or a press outside closes it and returns focus to the trigger. While it is open a modal or drawer behind it leaves Escape alone."
+      "focus": "label names the surface. surface-role sets the surface's role (dialog by default; menu, listbox, group); the trigger gets aria-haspopup to match, aria-expanded, and aria-controls when the surface has an id. Opening it with show(), toggle() or the trigger moves focus into a dialog surface (the surface itself, a frame later, unless its content took the focus first); a menu or a list moves its own. Tab goes on into its content and out to the page; Escape or a press outside closes it and returns focus to the trigger. While it is open a modal or drawer behind it leaves Escape alone."
     },
     "inputs": {
       "template": {
