@@ -195,3 +195,16 @@ test('a foreign Markdown raw that is not one block of itself goes in the carrier
   assert.ok(again.losses.some(({ code }) => code === 'form_normalized'));
   assert.equal((await toMarkdown(again.value)).value, '- one ![img](/i.png)\n- two\n');
 });
+
+test('Editor.js data keys are an allow-list, not an order: the same keys in another order import alike, an extra key is carried', async () => {
+  const types = async (block) => (await fromEditorJs({ blocks: [block] })).value.root.slots.default.map((node) => [node.type, node.data]);
+  const known = await types({ id: 'h1', type: 'header', data: { text: 'A', level: 2 } });
+  assert.deepEqual(await types({ id: 'h1', type: 'header', data: { level: 2, text: 'A' } }), known, 'key order does not count');
+  assert.deepEqual(await types({ id: 'h1', data: { level: 2, text: 'A' }, type: 'header' }), known, 'block key order does not count');
+  assert.equal(known[0][0], 'content.heading');
+  // An optional key may be absent; a key the tool does not define is carried, not dropped.
+  assert.equal((await types({ id: 'q1', type: 'quote', data: { text: 'Q' } }))[0][0], 'content.quote');
+  const extra = await types({ id: 'h1', type: 'header', data: { level: 2, text: 'A', x: 1 } });
+  assert.equal(extra[0][0], 'content.foreign');
+  assert.match(extra[0][1].raw, /"x":1/u);
+});
