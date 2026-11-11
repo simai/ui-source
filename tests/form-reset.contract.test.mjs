@@ -160,6 +160,8 @@ test('a class field taken out of the page lets its reset subscription go (gate 3
   const inputs = await read('component/inputs/js/_inputs.js');
   const observer = inputs.slice(inputs.indexOf('const inputObserver'));
   assert.match(observer, /mutation\.removedNodes\.forEach\(releaseRemovedInputs\)/);
+  // A node added and removed before the observer ran is not bound (it was, detached, for good).
+  assert.match(observer, /!\(node instanceof Element\) \|\| !node\.isConnected\) return/);
   const release = inputs.slice(inputs.indexOf('function releaseRemovedInputs'), inputs.indexOf('const inputObserver'));
   assert.match(release, /node\.isConnected\) return/);
   assert.match(release, /unbindInput\(node\)/);

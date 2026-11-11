@@ -435,7 +435,10 @@ const inputObserver = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     mutation.removedNodes.forEach(releaseRemovedInputs);
     mutation.addedNodes.forEach((node) => {
-      if (!(node instanceof Element)) return;
+      // Added and taken out again before this ran (a window's portal moving
+      // its content, an instance removed at once): nothing to bind. Bound
+      // detached, no removal would ever let it go (gate 36, 2026-11-12).
+      if (!(node instanceof Element) || !node.isConnected) return;
       if (node.matches?.(INPUT_SELECTOR)) {
         bindInput(node);
       }
