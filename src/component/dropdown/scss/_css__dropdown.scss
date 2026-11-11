@@ -162,7 +162,7 @@
 }
 
 .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field {
-  --sf-dropdown-field--border-color: var(--sf-outline-disable);
+  --sf-dropdown-field--border-color: var(--sf-outline-disabled);
 }
 
 .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon > .sf-icon, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon:not(:defined) {
@@ -175,7 +175,7 @@
 
 .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field {
   --sf-dropdown-field--background-color: var(--sf-dropdown-background-color, var(--sf-surface-container));
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   --sf-dropdown-field--border-color: var(--sf-dropdown-border-color, var(--sf-transparent-for-focus));
 }
 
@@ -184,15 +184,15 @@
 }
 
 .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field input::placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field input::placeholder {
-  --sf-dropdown-placeholder--color: var(--sf-on-disable);
+  --sf-dropdown-placeholder--color: var(--sf-on-surface-disabled);
 }
 
 .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) input, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) input {
-  --sf-dropdown-input--color: var(--sf-on-disable);
+  --sf-dropdown-input--color: var(--sf-on-surface-disabled);
 }
 
 .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field {
-  --sf-dropdown-field--background-color: var(--sf-disable);
+  --sf-dropdown-field--background-color: var(--sf-surface-disabled);
 }
 
 .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field input:enabled:not(:disabled):not(.disabled):focus-visible) .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:has(> .sf-dropdown-field input:enabled:not(:disabled):not(.disabled):focus-visible) .sf-dropdown-field {
@@ -235,11 +235,11 @@
 }
 
 .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag .sf-dropdown-field .sf-dropdown-tag-container .sf-tag {
-  --sf-tag--background-color: var(--sf-disable);
+  --sf-tag--background-color: var(--sf-surface-disabled);
 }
 
 .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon > .sf-icon, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon:not(:defined), .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon > .sf-icon, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon:not(:defined), .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon > .sf-icon, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon:not(:defined) {
-  --sf-icon--color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--text > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--tag > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--text > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--tag > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--text > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon > .sf-icon, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--text > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon:not(:defined), .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--tag > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon > .sf-icon, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--tag > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon:not(:defined), .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--text > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon > .sf-icon, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--text > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon:not(:defined), .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--tag > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon > .sf-icon, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--tag > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon:not(:defined) {

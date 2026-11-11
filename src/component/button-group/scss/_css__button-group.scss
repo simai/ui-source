@@ -230,7 +230,7 @@
     /* The track is a translucent container fill, so the dimmed ink on it is the
        container's: 4.5:1 over the surfaces 0 to 3 in both themes. */
     background-color: var(--sf-button-group-background-color, var(--sf-surface-container));
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
 
   /* The size ladder: the track takes the button's height, its padding the
@@ -513,11 +513,11 @@
   }
 
   .sf-button-group--segmented > .sf-button-group-segment:disabled {
-    color: var(--sf-on-disable);
+    color: var(--sf-on-surface-disabled);
   }
 
   .sf-button-group--segmented > .sf-button-group-segment.active:disabled {
-    --sf-button--background-color: var(--sf-disable);
+    --sf-button--background-color: var(--sf-surface-disabled);
     --sf-button--box-shadow: none;
   }
 

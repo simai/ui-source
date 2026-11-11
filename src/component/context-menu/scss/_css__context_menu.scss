@@ -156,8 +156,8 @@
 }
 
 .sf-context-menu-item:disabled {
-  color: var(--sf-on-disable);
-  --sf-icon--color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
+  --sf-icon--color: var(--sf-on-surface-disabled);
   cursor: default;
 }
 
@@ -547,12 +547,12 @@
 }
 
 .sf-context-menu-item:disabled > .sf-context-menu-item-switch {
-  border-color: var(--sf-outline-disable);
+  border-color: var(--sf-outline-disabled);
   background-color: transparent;
 }
 
 .sf-context-menu-item:disabled .sf-context-menu-item-switch-thumb {
-  background-color: var(--sf-on-disable);
+  background-color: var(--sf-on-surface-disabled);
 }
 
 /* ─── a number in a range: the slider and its number ──────────────────── */
@@ -574,7 +574,7 @@
 }
 
 .sf-context-menu-range-input:disabled {
-  accent-color: var(--sf-on-disable);
+  accent-color: var(--sf-on-surface-disabled);
 }
 
 .sf-context-menu-range-value {
@@ -627,7 +627,7 @@
   padding-block: var(--sf-space-1\/3);
   padding-inline: var(--sf-a4);
   background-color: var(--sf-surface-container);
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   color: var(--sf-on-surface-variant);
   white-space: normal;
 }
@@ -673,8 +673,8 @@
 
 .sf-context-menu-tile.sf-context-menu-item:disabled .sf-context-menu-tile-icon,
 .sf-context-menu-tile.sf-context-menu-item:disabled .sf-context-menu-tile-name {
-  color: var(--sf-on-disable);
-  --sf-icon--color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 .sf-context-menu-note {

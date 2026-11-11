@@ -151,7 +151,7 @@ test('button group offers a segmented appearance with the same semantics', async
   // The track: container fill with its own dimmed ink, padding equal to the gap,
   // concentric corners, a size ladder, states from the alpha ramp.
   assert.match(styles, /background-color: var\(--sf-button-group-background-color, var\(--sf-surface-container\)\)/);
-  assert.match(styles, /--sf-on-surface-variant: var\(--sf-on-surface-container--variant\)/);
+  assert.match(styles, /--sf-on-surface-variant: var\(--sf-on-surface-container-variant\)/);
   assert.match(styles, /gap: var\(--sf-button-group--padding\);\s*padding: var\(--sf-button-group--padding\)/);
   // The plate takes a button's radius; the track is that radius plus the
   // padding, so the corners stay concentric.

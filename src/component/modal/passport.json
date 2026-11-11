@@ -18,7 +18,7 @@
     "src/component/modal/scss/_css__modal_custom.scss",
     "src/component/modal/scss/index.scss"
   ],
-  "content_sha256": "559520edc87f2f9207baee1f7baf36a2513b44bdda71e9401e54387aeefe196d",
+  "content_sha256": "9b7c4e6c46a780e3ac3468be2265174143f9608a8b36fac85ea4055b695b4334",
   "dependencies": [
     {
       "id": "component.close",

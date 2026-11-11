@@ -3,20 +3,33 @@
   "schema_version": 1,
   "id": "component.close",
   "kind": "component",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/close/docs/docs.md",
     "src/component/close/index.scss",
     "src/component/close/rule.js",
     "src/component/close/scss/_css__close.scss",
+    "src/component/close/scss/_css__close_looks.scss",
     "src/component/close/scss/index.scss"
   ],
-  "content_sha256": "273c323b41fe2d1bcccde1d08f9d4d03ecf5a18f4856780cb666575e43aff1d0",
+  "content_sha256": "1cec60df696491881e6fcc3c6a642d9cb3da15b2105481ece4e7f5ee70372a21",
   "dependencies": [
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
     {
       "id": "tokens.colour",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.radius",
+      "range": "^1.1.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.3.0"
     },
     {
       "id": "tokens.typography",

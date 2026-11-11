@@ -18,7 +18,7 @@ const read = (path) => withoutPublicVariables(readFileSync(resolve(root, path), 
 // written down. tests/alpha-scale.contract.test.mjs holds the scale itself.
 const steps = [4, 8, 12, 16];
 
-// The three families that carry the appearances. Each names the selector fragment
+// The families that carry the appearances. Each names the selector fragment
 // that marks an appearance rule, and how that family draws its boundary: the
 // button and the icon button have a border, the tag is built with `border: 0` and
 // draws an inset shadow instead so a tag never grows taller than its neighbour.
@@ -31,14 +31,9 @@ const families = [
     boundary: (step) => new RegExp(`--sf-button--border-color: var\\(--sf-alpha-${step}\\)`, 'u'),
     interactive: true,
   },
-  {
-    name: 'icon button',
-    css: 'src/component/icon-buttons/scss/_css_icon_buttons.scss',
-    mark: /--(?:surface|ghost)\b/u,
-    fill: '--sf-icon-button--background-color',
-    boundary: (step) => new RegExp(`--sf-icon-button--border-color: var\\(--sf-alpha-${step}\\)`, 'u'),
-    interactive: true,
-  },
+  // The icon button left this list with component.icon-buttons 1.6.0 (C15): it has
+  // no surface look, its former class draws as tonal (journal
+  // class-icon-button-retired-looks-c15).
   {
     name: 'tag',
     css: 'src/component/tags/scss/_css__tags.scss',
@@ -208,7 +203,7 @@ test('the states rise through the ramp', () => {
 });
 
 test('a status tag keeps its colour: the appearance is only for the neutral types', () => {
-  for (const {selector} of appearanceRules(families[2])) {
+  for (const {selector} of appearanceRules(families.find(({name}) => name === 'tag'))) {
     for (const status of ['success', 'error', 'warning']) {
       assert.ok(
         !selector.includes(`sf-tag--${status}`),
@@ -217,7 +212,7 @@ test('a status tag keeps its colour: the appearance is only for the neutral type
     }
   }
   // And the neutral types are named, so a new type does not silently inherit one.
-  const neutral = appearanceRules(families[2])
+  const neutral = appearanceRules(families.find(({name}) => name === 'tag'))
     .filter(({selector}) => !/:hover|:active|\.active|:disabled|\.disabled/u.test(selector));
   for (const {selector} of neutral) {
     assert.match(selector, /sf-tag--default/u, 'the neutral types are listed explicitly');

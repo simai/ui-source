@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button-close",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "title": "Close",
   "summary": "The close button of the SIMAI Framework: a real button (focus, Enter and Space, the name «Закрыть» by default) drawing the cross with a 2px line, in three looks -- ghost, plain and media. Inside a native button it stays the decorative cross it was before 1.2.0.",
   "kind": "smart",
