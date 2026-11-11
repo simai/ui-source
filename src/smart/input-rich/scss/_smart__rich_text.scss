@@ -378,6 +378,17 @@
 }
 
 @layer sf.states {
+  /* While the link editor is open the link tool is the only one that looks
+     active (R121, owner review 2026-11-11): the other tools draw at rest --
+     no pressed fill, no hover or focus fill -- though they keep aria-pressed,
+     so a list or the paragraph the caret is in still says so. The pressed
+     look is the icon button's own, in this layer (C12), hence the repeated
+     class to stand above it. */
+  .sf-rich-text .sf-rich-text-toolbar:has(sf-popover.sf-rich-text-link[data-open='true']) .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-rich-text-tool:not([data-sf-tool='link']):not(:disabled):is(*, :hover, :active, :focus-visible) {
+    --sf-icon-button--background-color: transparent;
+    --sf-icon--color: var(--sf-on-surface);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .sf-rich-text .sf-rich-text-frame {
       transition-duration: 0s;
@@ -398,4 +409,10 @@
       border-block-start: var(--sf-px) solid CanvasText;
     }
   }
+}
+
+/* The second cue of a pressed tool, its filled glyph, rests too while the
+   link editor is open (R121); outside the layers, as the icon button's fill rule is. */
+.sf-rich-text .sf-rich-text-toolbar:has(sf-popover.sf-rich-text-link[data-open='true']) .sf-rich-text-tool:not([data-sf-tool='link'])[aria-pressed='true'] .sf-icon {
+  --sf-icon--fill: 0;
 }

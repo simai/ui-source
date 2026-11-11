@@ -265,6 +265,11 @@ test('1.3.0: the toolbar, the headings and the link editor are drawn by the syst
   const panel = sheet.match(/\.sf-rich-text \.sf-rich-text-link-panel \{([^}]*)\}/u)[1];
   assert.match(panel, /gap: var\(--sf-space-1\);/u);
   assert.match(panel, /padding: var\(--sf-space-1\);/u);
+  // R121 (owner review 2026-11-11): the form is the toolbar's rung, the link button's size.
+  assert.match(template, /const linkSize = buttonSize;/u);
+  // While the link editor is open only the link tool looks active: the others rest, glyph unfilled.
+  assert.match(sheet, /:has\(sf-popover\.sf-rich-text-link\[data-open='true'\]\) \.sf-icon-button\.sf-icon-button\.sf-icon-button\.sf-icon-button\.sf-rich-text-tool:not\(\[data-sf-tool='link'\]\)[^{]*\{\s*--sf-icon-button--background-color: transparent;/u);
+  assert.match(sheet, /\[aria-pressed='true'\] \.sf-icon \{\s*--sf-icon--fill: 0;/u);
 });
 
 test('Bold and Italic say the marks only: a heading, bold by its type, is not a mark', () => {

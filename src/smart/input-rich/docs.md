@@ -105,7 +105,8 @@ nothing.
   the mark goes to the text typed next.
 - In the link editor Enter applies and Escape closes; the caret goes back to
   the text. The link editor is a popup form of the form's width; on a phone
-  it is a sheet at the bottom of the screen.
+  it is a sheet at the bottom of the screen. Its field and buttons are the
+  toolbar's size, and while it is open only the link tool looks active.
 
 ## Accessibility
 
