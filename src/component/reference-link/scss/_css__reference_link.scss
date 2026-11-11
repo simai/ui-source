@@ -246,8 +246,12 @@
     /* The path gives way first, but not to nothing: it keeps one control
        height, room for its start and the ellipsis, so the reader sees that a
        path was cut (acceptance 2026-11-11 D7: in a 300 box line-1's path
-       shrank to 0 and vanished without a trace). It is the line's last part,
-       so a short path's spare room shows nothing. */
+       shrank to 0 and vanished without a trace). The floor is the smaller of
+       the path's own width and one control height (review D2): a short path
+       such as /a/ keeps its own width and the link gets the rest back.
+       calc-size() reads the path's width; a browser without it keeps the
+       plain floor of one control height (the line before). */
     min-inline-size: var(--sf-ui-1--control-height);
+    min-inline-size: calc-size(max-content, min(size, var(--sf-ui-1--control-height)));
   }
 }

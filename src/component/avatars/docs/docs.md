@@ -9,7 +9,12 @@ a real destination or action.
 
 - content: image (`.sf-avatar-image`), initials (`.sf-avatar--text`) or
   placeholder (`.sf-avatar--placeholder`);
-- size: `1/4`, `1/3`, `1/2`, `1`, `2` or `3`;
+- size: `1/4`, `1/3`, `1/2`, `1`, `2` or `3`. Compact does not shrink
+  avatars below 1/3: in a `data-sf-density="compact"` region sizes 1/2 and up
+  move one step down like every control, while the two bottom steps keep
+  their normal value, 1/4 = 20 and 1/3 = 24 (so the compact ladder is 20 / 24
+  / 28 / 32 / 40 / 48, with no skipped step). The phone ladder does not
+  change under compact;
 - shape: circular by default or `.sf-avatar--square` with the UI radius;
 - composition: `.sf-avatar-label-group`, `.sf-avatar-group` and
   `.sf-avatar-card`;
