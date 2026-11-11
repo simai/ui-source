@@ -876,7 +876,9 @@ export interface SFGlobal {
       name: TName,
       params?: SmartComponentCreateParams,
   ): Promise<SmartComponentCreateResult<TName>>;
+  /** @deprecated Write whenDefined; the older name stays until 2027-01-01 (journal global-sf-when-define). */
   whenDefine(name: string): Promise<string[]>;
+  /** @deprecated Write whenDefined; the older name stays until 2027-01-01 (journal global-sf-when-define). */
   whenDefine(names: string[]): Promise<string[]>;
   whenDefined(name: string): Promise<string[]>;
   whenDefined(names: string[]): Promise<string[]>;

@@ -10257,6 +10257,30 @@
       },
       "manual": "In a composition type manifest write catalogue.group \"layout\" instead of \"structure\", and \"layout\" in a slot's groups; a smart element a block prints goes under \"elements\".",
       "source": "src/core/js/composition/catalogue.mjs CATALOGUE_GROUP_ALIASES; docs/developer/block-author-guide.md"
+    },
+    {
+      "id": "global-sf-when-define",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "global",
+      "summary": "SF.whenDefine is the older name of SF.whenDefined (a promise that settles when the named Smart elements are defined, with their tag names). It keeps working as a dated alias of the same function until the sweep, and every read is noted in SF.deprecations (dispatcher, D17 follow-up, 2026-11-11: the documentation lists one name).",
+      "items": [
+        {
+          "from": "SF.whenDefine",
+          "to": "SF.whenDefined",
+          "match": "\\bSF\\??\\.whenDefine\\b"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "await SF.whenDefine('sf-input');",
+        "after": "await SF.whenDefined('sf-input');"
+      },
+      "manual": "Write SF.whenDefined where a page calls SF.whenDefine; the arguments and the promise are the same.",
+      "owner": "ui-control",
+      "source": "src/core/js/loader.js (WHEN_DEFINE_ALIAS)"
     }
   ]
 }

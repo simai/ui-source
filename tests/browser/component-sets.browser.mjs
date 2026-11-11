@@ -25,6 +25,7 @@
 const {chromium} = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 import {existsSync, readFileSync} from 'node:fs';
 import {extname, join, resolve, sep} from 'node:path';
+import {checkSetExports, compareSetExports} from '../../scripts/set-exports-kit.mjs';
 
 const OUTPUT = process.argv[2] ? resolve(process.argv[2]) : null;
 if (!OUTPUT || !existsSync(join(OUTPUT, 'core', 'core'))) throw new Error('Build output root is required (the directory holding core/, smart/, component/, utility/)');
@@ -168,6 +169,41 @@ check('index', 'the index is read once', indexed.requests.filter((url) => url.en
 check('index', 'an undeclared set rejects with the line to add', /not declared on this page; add data-sf-sets="other"/u.test(indexed.other.error ?? ''), true);
 check('index', 'no request leaves the stand', indexed.requests.filter((url) => !url.startsWith(ORIGIN)), []);
 check('index', 'no page error', indexed.errors, []);
+
+// Standard 1.3.0 (owner decision D17): a set lists its exports in set.json,
+// and its probe holds the list against SF.package('<set>') with the kit.
+const DEMO_EXPORTS = {
+  id: 'demo',
+  components: [{element: 'sf-demo-card', rule: 'cl-demo-card', folder: 'demo-card'}],
+  exports: [
+    {name: 'version', status: 'public', layer: 'set', audience: 'public', kind: 'value', summary: 'The demo release a page runs.'},
+    {name: 'hello', status: 'public', layer: 'component', component: 'sf-demo-card', audience: 'public', kind: 'function', summary: 'Greets from the demo card.'},
+  ],
+};
+{
+  const tab = await browser.newPage();
+  await tab.route('**/*', (route) => {
+    const url = route.request().url();
+    if (!url.startsWith(ORIGIN)) return route.abort();
+    const answer = serve(new URL(url).pathname.slice(1));
+    return answer ? route.fulfill({contentType: answer[0], body: answer[1]}) : route.fulfill({status: 404, body: ''});
+  });
+  await tab.goto(`${ORIGIN}index.html`);
+  await tab.waitForFunction(() => window.SF?.package, null, {timeout: 15000});
+  check('exports', 'the listed exports are what SF.package gives', await checkSetExports(tab, DEMO_EXPORTS), []);
+  const wrong = structuredClone(DEMO_EXPORTS);
+  wrong.exports[0].kind = 'function';
+  wrong.exports.pop();
+  wrong.exports.push({name: 'ghost', status: 'internal', layer: 'set', audience: 'public', kind: 'object', summary: 'Never exported by the demo.', members: ['x']});
+  check('exports', 'a wrong list is reported line by line', await checkSetExports(tab, wrong), [
+    'demo: export version: listed as function, exported as value',
+    'demo: export ghost: internal, so its audience must be internal',
+    "demo: export ghost: listed but not exported by SF.package('demo')",
+    "demo: SF.package('demo').hello is exported but not listed in set.json exports",
+  ]);
+  check('exports', 'a missing member is reported', compareSetExports({id: 'demo', exports: [{name: 'api', status: 'public', layer: 'set', audience: 'public', kind: 'object', summary: 'An object export.', members: ['open', 'close']}]}, {api: {kind: 'object', members: ['open']}}), ['demo: export api: member close is not there']);
+  await tab.close();
+}
 
 const versioned = await open('version.html');
 check('version', 'a version is its npm base', versioned.record && {base: versioned.record.base, version: versioned.record.version}, {base: `${ORIGIN}npm/@simai-studio/demo@1.0.0/dist/smart`, version: '1.0.0'});
