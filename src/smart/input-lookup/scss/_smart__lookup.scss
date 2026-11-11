@@ -147,6 +147,20 @@
   --sf-lookup--border-color: var(--sf-outline);
 }
 
+/* As on sf-input filled, the focus boundary is lighter than the pointer's
+   states: hover still colours a focused field, and a press colours the
+   border --sf-primary-active. The bottom line (C52, --sf-lookup--line-color)
+   takes the state's colour with the border, so the edge is one colour. */
+.sf-lookup:not(.error).sf-lookup--filled:not(.sf-lookup--disabled):not(.sf-lookup--readonly):focus-within .sf-lookup-frame:hover {
+  --sf-lookup--border-color: var(--sf-primary-hover);
+  --sf-lookup--line-color: var(--sf-lookup--border-color);
+}
+
+.sf-lookup:not(.error).sf-lookup--filled:not(.sf-lookup--disabled):not(.sf-lookup--readonly) .sf-lookup-frame:active {
+  --sf-lookup--border-color: var(--sf-primary-active);
+  --sf-lookup--line-color: var(--sf-lookup--border-color);
+}
+
 /* The keyboard ring is the frame's; a click into it draws none, as on sf-input. */
 .sf-lookup:not(.sf-lookup--pointer-focus):has(.sf-lookup-input:focus-visible) .sf-lookup-frame {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
