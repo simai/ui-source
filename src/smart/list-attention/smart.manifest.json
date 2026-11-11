@@ -391,7 +391,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-attention/index.js",
-        "sha256": "f217acc5c606d301d60b701e14771cf189431dcd961862239ca16496f29bc1a8"
+        "sha256": "65658587b399784c37ccaa2b5f75bf6deb29d630c6297ef03f3b59bd3e0a8458"
       },
       {
         "path": "src/smart/list-attention/js/templates/default.js",

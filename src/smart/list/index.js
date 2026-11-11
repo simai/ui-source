@@ -68,6 +68,11 @@ const COUNT_CAP = 99;
 // Below this many rem of the list's own width a row's badge and count stand
 // under its text (C47; the width the owner's prototype drew it at).
 const NARROW_REM = 20;
+// A wider list goes narrow too when a row's title would keep less than half
+// of the row's text column, or less than this many rem (C47 follow-up: a
+// long badge on a 366 px phone column left the title 55 px, «Порта…»).
+const TITLE_MIN_REM = 10;
+const NARROW = "data-sf-list-narrow";
 
 /**
  * The item's picture, or null: {image-url?, text?, shape?, icon?}. A sign
@@ -443,6 +448,15 @@ class SfList extends ListElement {
         return renderListTemplate(this.templateContext());
     }
 
+    // The rows are drawn; the list's sheets may still be on their way. The
+    // width is watched from now (C47): when the sheet comes, the observer
+    // measures the frame before it is painted with it, so no frame of a
+    // squeezed title is shown first.
+    whenRenderedStylesReady(target) {
+        this.watchWidth();
+        return super.whenRenderedStylesReady(target);
+    }
+
     afterRender(changed) {
         super.afterRender?.(changed);
         this.watchEnd();
@@ -489,6 +503,7 @@ class SfList extends ListElement {
         this._widthObserver?.disconnect();
         this._widthObserver = null;
         this._widthFrame = null;
+        this._widthMetas = null;
         clearTimeout(this._dayTimer);
         this._dayTimer = 0;
         super.onDisconnected?.();
@@ -509,26 +524,100 @@ class SfList extends ListElement {
     // A narrow list (owner decision C47, 2026-11-10): below 20rem of its own
     // width the list marks its frame, and a row's badge and count go under
     // its second line, at the text's start, so the title keeps the row's
-    // width and the badge stays whole. The list measures itself: no page
-    // breakpoint and no setting. A ResizeObserver, not a container query: an
-    // inline-size container takes no width from its rows, and a list in a
-    // shrink-to-fit place (a popover, an auto-width flex item) would fold to
-    // nothing. The observer reports before the frame is painted, so the
-    // first frame is already laid out narrow. The mark is an attribute the
-    // template does not bind, so a redraw keeps it.
+    // width and the badge stays whole. A wider list is narrow too when, laid
+    // out on one line, a row's title would keep less than half of the row's
+    // text column or less than 10rem (a long badge in a phone column). The
+    // list measures itself: no page breakpoint and no setting. A
+    // ResizeObserver, not a container query: an inline-size container takes
+    // no width from its rows, and a list in a shrink-to-fit place (a popover,
+    // an auto-width flex item) would fold to nothing. It watches the frame
+    // and every row's badge and count, and is started as soon as the rows are
+    // drawn, before the list's sheet is in: the observer reports before the
+    // frame is painted, so the frame painted with the sheet is already laid
+    // out narrow or wide. The mark is an attribute the template does not
+    // bind, so a redraw keeps it.
     watchWidth() {
         const frame = this.querySelector(":scope > .sf-list__frame");
-        if (!frame || this._widthFrame === frame) return;
-        this._widthObserver?.disconnect();
-        this._widthFrame = frame;
-        if (typeof ResizeObserver !== "function") return;
-        this._widthObserver = new ResizeObserver((entries) => {
-            const entry = entries[entries.length - 1];
-            const width = entry.contentBoxSize?.[0]?.inlineSize ?? entry.contentRect.width;
-            const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-            frame.toggleAttribute("data-sf-list-narrow", width > 0 && width < NARROW_REM * rem);
-        });
-        this._widthObserver.observe(frame);
+        if (!frame) return;
+        if (this._widthFrame !== frame) {
+            this._widthObserver?.disconnect();
+            this._widthObserver = null;
+            this._widthFrame = frame;
+            this._widthMetas = new Set();
+            if (typeof ResizeObserver !== "function") return;
+            this._widthObserver = new ResizeObserver(() => {
+                this.watchMetas();
+                this.measureNarrow();
+            });
+            this._widthObserver.observe(frame);
+        }
+        this.watchMetas();
+    }
+
+    // The badges and counts drawn now are watched, the ones gone are let go:
+    // a row drawn later, or a badge whose sheet came late, measures again.
+    watchMetas() {
+        const observer = this._widthObserver;
+        const frame = this._widthFrame;
+        if (!observer || !frame) return;
+        const now = new Set(frame.querySelectorAll(".sf-list__row .sf-list__meta"));
+        for (const meta of this._widthMetas) {
+            if (!now.has(meta)) observer.unobserve(meta);
+        }
+        for (const meta of now) {
+            if (!this._widthMetas.has(meta)) observer.observe(meta);
+        }
+        this._widthMetas = now;
+    }
+
+    // Narrow below 20rem of the frame's content width, or when a row's title
+    // would keep less than half of its text column (or 10rem) beside its
+    // badge and count. The one-line layout is measured with the mark taken
+    // off and put back in the same task, so nothing of it is painted and the
+    // answer does not depend on the layout it chooses.
+    measureNarrow() {
+        const frame = this._widthFrame;
+        if (!frame?.isConnected) return;
+        const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+        const style = getComputedStyle(frame);
+        const width = frame.clientWidth - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0);
+        if (!(width > 0)) {
+            frame.removeAttribute(NARROW);
+            return;
+        }
+        let narrow = width < NARROW_REM * rem;
+        if (!narrow) {
+            const was = frame.hasAttribute(NARROW);
+            if (was) frame.removeAttribute(NARROW);
+            narrow = [...frame.querySelectorAll(".sf-list__row .sf-list-item-wrap > .sf-list__meta:not(:empty)")]
+                .some((meta) => this.titleSqueezed(meta, rem));
+            if (was && !narrow) return;
+        }
+        frame.toggleAttribute(NARROW, narrow);
+    }
+
+    // On one line: the title's room is what the badge and count leave of the
+    // text column, the row's gap before them kept (their own start padding is
+    // in their box).
+    titleSqueezed(meta, rem) {
+        const wrap = meta.parentElement;
+        const text = wrap?.querySelector(":scope > .sf-list-item-container");
+        if (!text) return false;
+        const wrapStyle = getComputedStyle(wrap);
+        const textStyle = getComputedStyle(text);
+        const rtl = wrapStyle.direction === "rtl";
+        const box = wrap.getBoundingClientRect();
+        const textBox = text.getBoundingClientRect();
+        const metaBox = meta.getBoundingClientRect();
+        const gap = parseFloat(wrapStyle.columnGap) || 0;
+        const inset = (parseFloat(textStyle.paddingLeft) || 0) + (parseFloat(textStyle.paddingRight) || 0);
+        const end = rtl
+            ? box.left + (parseFloat(wrapStyle.borderLeftWidth) || 0) + (parseFloat(wrapStyle.paddingLeft) || 0)
+            : box.right - (parseFloat(wrapStyle.borderRightWidth) || 0) - (parseFloat(wrapStyle.paddingRight) || 0);
+        const column = (rtl ? textBox.right - end : end - textBox.left) - inset;
+        const title = (rtl ? textBox.right - metaBox.right : metaBox.left - textBox.left) - gap - inset;
+        if (!(column > 0)) return false;
+        return title < Math.max(column / 2, TITLE_MIN_REM * rem);
     }
 
     // The end of the list asks for the next page when it comes within reach,

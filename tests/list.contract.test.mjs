@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.4.0'], ['list-feed', 'sf-list-feed', '1.1.1']]) {
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.5.0'], ['list-feed', 'sf-list-feed', '1.1.1']]) {
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -141,13 +141,22 @@ test('sf-list-feed: sf-message-log\'s behaviour under the list family\'s names, 
   assert.match(read('src/core/js/index.js'), /import '\.\/reading-position\.js';/u);
 });
 
-test('sf-list 1.4.0: a narrow list puts a row\'s badge and count under its text, measured by the list itself (C47)', () => {
+test('sf-list 1.5.0: a narrow list puts a row\'s badge and count under its text, measured by the list itself (C47)', () => {
   const source = read('src/smart/list/index.js');
   // The list measures its own frame: no page breakpoint and no setting.
   assert.match(source, /const NARROW_REM = 20;/u);
   assert.match(source, /new ResizeObserver\(/u);
-  assert.match(source, /frame\.toggleAttribute\("data-sf-list-narrow", width > 0 && width < NARROW_REM \* rem\)/u);
+  assert.match(source, /let narrow = width < NARROW_REM \* rem;/u);
   assert.match(source, /this\._widthObserver\?\.disconnect\(\);/u);
+  // Also narrow when a row's title would keep less than half its text column
+  // or 10rem on one line (follow-up: 55 px titles on a 366 px phone column).
+  assert.match(source, /const TITLE_MIN_REM = 10;/u);
+  assert.match(source, /return title < Math\.max\(column \/ 2, TITLE_MIN_REM \* rem\);/u);
+  // The badges and counts are watched too, and the watch starts before the
+  // sheets are in, so a late sheet paints no squeezed frame first.
+  assert.match(source, /whenRenderedStylesReady\(target\) \{\s*this\.watchWidth\(\);\s*return super\.whenRenderedStylesReady\(target\);/u);
+  assert.match(source, /observer\.observe\(meta\)/u);
+  assert.match(source, /observer\.unobserve\(meta\)/u);
   const contract = json('src/smart/list/component.json');
   assert.equal(Object.keys(contract.settings).some((name) => /narrow|breakpoint/u.test(name)), false);
   // The template never binds the mark, so a redraw keeps it.

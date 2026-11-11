@@ -114,6 +114,12 @@ test('sf-list-attention: ordered by severity, nothing when empty, navigate and a
   // narrow recheck's native control, the narrow one shows it.
   assert.match(sheet, /\.sf-list-attention \.sf-list-attention-recheck--narrow > button \{\s*display: none;/u);
   assert.match(narrow, /\.sf-list-attention \.sf-list-attention-recheck--narrow > button \{\s*display: inline-flex;/u);
+  // Until the sheet is in, the narrow parts are hidden, so a late sheet shows
+  // one form; a ResizeObserver shows them in the frame the sheet is in.
+  assert.match(source, /'\.sf-list-attention-summary-line',\s*'\.sf-list-attention-quiet-title',\s*'\.sf-list-attention-quiet-meta',\s*'\.sf-list-attention-recheck--narrow',/u);
+  assert.match(source, /whenRenderedStylesReady\(target\) \{\s*this\.holdNarrowParts\(\);\s*return super\.whenRenderedStylesReady\(target\);/u);
+  assert.match(source, /getComputedStyle\(root\)\.containerType === 'inline-size'/u);
+  assert.match(sheet, /container-type: inline-size;/u);
 });
 
 test('sf-progress-run: host-driven, its run-state, chunk, step and clear, and the reading position', () => {
