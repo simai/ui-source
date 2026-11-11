@@ -88,7 +88,7 @@ history and a context:
 | `copyNodes` | ids | Returns a clipboard `{schema, type: 'application/x-simai-composition', nodes, text}`. A node inside another copied node goes once. The state does not change. | none | empty, unknown |
 | `cutNodes` | ids | Copies, then removes. | one step | as copy and remove |
 | `pasteNodes` | clipboard or nodes, place | Pastes copies with new ids all through. No id of the Document or of the clipboard is reused, and the content is unchanged. Either every node is pasted or none. | one step | empty, unknown, place, lock |
-| `duplicateNode` | id | Copies the node and pastes it right after itself, in its own slot: the slot's type rule is not asked again (so an unknown type is duplicated as it moves, within its slot), its `max` is. | one step | unknown, lock, place |
+| `duplicateNode` | id | Copies the node and pastes it right after itself, in its own slot. A known type is asked the slot's whole rule, as a paste is; for a type the registry does not know only the slot's `max` is asked (it is duplicated as it moves, within its slot). | one step | unknown, lock, place |
 
 Each refusal reason is listed with its meaning in `REFUSALS`. A place takes a
 type by `slotAccepts` (types, categories, catalogue groups) and the slot's
@@ -101,10 +101,12 @@ block it takes away (`required`).
 
 - A child of an island may do nothing on its own: every operation aimed
   at it, or at a place inside an island, is refused `place`. New
-  `islandAround(state, id)`.
+  `islandAround(state, id)`: the outermost island a node lies in, so an
+  editor can always select what it names, also when islands nest.
 - `splitBlock` asks the slot rule for the block it adds (`place`);
   `joinBack` asks the slot's `min` (`required`).
-- `duplicateNode` of an unknown type succeeds within its own slot.
+- `duplicateNode` of an unknown type succeeds within its own slot; a known
+  type is still asked the slot's type rule.
 - Inline extension keys compare by value; key order does not count.
 
 ## Islands
@@ -121,7 +123,7 @@ not know. The rules are those of assessment Q5:
 | Copy / cut | the whole node; the clipboard carries the node JSON plus a text fallback | `copyNodes` and `cutNodes` |
 | Paste | a copy with fresh ids for the node and all its descendants; ids already in the Document are never reused; content unchanged | `pasteNodes` |
 | Undo / redo | the exact node is restored, with the same id | the history's snapshots |
-| Its children | **a child of an island may do nothing on its own** (contract call 2026-11-11). A known node inside an island, at any depth, is closed with it: no caret, typing, format, split, join, removal, move out, reorder, insert, paste, duplicate or block type change, and nothing moves in | every operation aimed at such a node, or at a place inside an island, returns `place` and changes nothing; `copyNodes` of it reads and is allowed. `islandAround(state, id)` names the island a node lies in (or null), so an editor chooses that island instead |
+| Its children | **a child of an island may do nothing on its own** (contract call 2026-11-11). A known node inside an island, at any depth, is closed with it: no caret, typing, format, split, join, removal, move out, reorder, insert, paste, duplicate or block type change, and nothing moves in | every operation aimed at such a node, or at a place inside an island, returns `place` and changes nothing; `copyNodes` of it reads and is allowed. `islandAround(state, id)` names the outermost island a node lies in (or null); it lies inside no island, so an editor chooses it instead and `select` of it succeeds, also when islands nest |
 
 An unknown type is accepted by no slot, so a paste of it is refused
 `place` everywhere; the clipboard does not say which slot it came from. It

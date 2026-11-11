@@ -82,16 +82,19 @@ export function islandOf(node, registry) {
 const islandIn = (node, context) => (context?.isIsland ?? islandOf)(node, registryOf(context));
 
 /**
- * The island a node lies inside: its nearest ancestor that is an island, or
- * null. An island is closed as a whole, so a node inside one (a known child of
- * an unknown block too) may do nothing on its own: every operation aimed at
- * it, or at a place inside it, is refused with `place`. Copying it reads and
- * is allowed. An editor that meets this refusal chooses the island instead.
+ * The island a node lies inside: its outermost ancestor that is an island,
+ * or null. An island is closed as a whole, so a node inside one (a known child
+ * of an unknown block too, or an island inside another island) may do nothing
+ * on its own: every operation aimed at it, or at a place inside it, is refused
+ * with `place`. Copying it reads and is allowed. An editor that meets this
+ * refusal chooses the island this returns instead: it is the outermost, so it
+ * lies inside no island and may be selected, moved and removed as a whole.
  */
 export function islandAround(state, id, context) {
   const at = locate(state?.document?.root, id);
   if (!at) return null;
-  for (let index = at.ancestors.length - 1; index >= 0; index -= 1) {
+  // From the root down: the first island met is the outermost.
+  for (let index = 0; index < at.ancestors.length; index += 1) {
     if (islandIn(at.ancestors[index], context)) return at.ancestors[index].id ?? null;
   }
   return null;
@@ -502,9 +505,10 @@ export function pasteNodes(state, clipboard, place, context) {
 }
 
 // ownSlot: the copies go into the slot their original stands in (a
-// duplicate), so the slot's type rule is not asked again; its max still is.
-// That lets an unknown type, which no slot takes, be duplicated beside itself,
-// as it may move within its own slot.
+// duplicate). A type the registry does not know is taken by no slot, yet it
+// may move within its own slot, so for an unknown type only the slot's max is
+// asked; a known type is asked the slot's whole rule, as a paste is (a
+// content.table stored in a slot that does not take tables is not copied).
 function pasteInto(state, clipboard, place, context, ownSlot) {
   const nodes = Array.isArray(clipboard) ? clipboard : clipboard?.nodes;
   if (!Array.isArray(nodes) || !nodes.length) return refused('empty');
@@ -512,11 +516,14 @@ function pasteInto(state, clipboard, place, context, ownSlot) {
   const lock = placeLock(place.parent, context);
   if (lock) return refused(lock);
   if (closedPlace(state, place.parent, context)) return refused('place');
+  const known = (type) => registryOf(context).types.has(type);
   if (ownSlot) {
     const max = manifestOf(nodeOf(state, place.parent).type, context)?.slots?.[place.slot]?.max;
     if (Number.isInteger(max) && (nodeOf(state, place.parent).slots?.[place.slot]?.length ?? 0) + nodes.length > max) return refused('place');
-  } else {
-    for (const node of nodes) if (!accepts(state, place.parent, place.slot, node.type, context, nodes.length)) return refused('place');
+  }
+  for (const node of nodes) {
+    if (ownSlot && !known(node.type)) continue;
+    if (!accepts(state, place.parent, place.slot, node.type, context, nodes.length)) return refused('place');
   }
   const next = draft(state);
   const makeId = idMaker(rootOf(next), context?.idPrefix ?? 'e');

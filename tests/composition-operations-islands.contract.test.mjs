@@ -178,3 +178,105 @@ test('joinBack asks the slot rule: a join that would leave a slot under its min 
   assert.equal(editing.apply(joinBack, 'x2').reason, 'required');
   assert.equal(json(editing.document), before);
 });
+
+// Islands inside islands (review D1 of round 2): islandAround names the
+// outermost island, the one an editor can select; every island inside it is
+// closed with it. Depth 2 to 5: vendor.i1 > quote > vendor.i2 > quote > ...
+function nested(depth) {
+  let inner = { id: 'leaf', type: 'content.paragraph', data: { content: t('deep') } };
+  for (let level = depth; level >= 1; level -= 1) {
+    inner = { id: `i${level}`, type: `vendor.i${level}`, slots: { body: [
+      { id: `q${level}`, type: 'content.quote', slots: { default: [
+        { id: `p${level}`, type: 'content.paragraph', data: { content: t(`level ${level}`) } },
+        inner,
+      ] } },
+    ] } };
+  }
+  return {
+    schema: 'simai.composition.document', schema_version: 1, id: 'doc', profile: 'ui-layout', locale: 'en',
+    root: { id: 'a1', type: 'layout.area', slots: { default: [
+      { id: 'p0', type: 'content.paragraph', data: { content: t('before') } },
+      inner,
+    ] } },
+  };
+}
+
+test('nested islands: islandAround names the outermost island, which is selected, moved, duplicated and removed whole', () => {
+  for (let depth = 2; depth <= 5; depth += 1) {
+    const editing = createSession({ document: nested(depth), context: { registry }, history: { now: () => 0 } });
+    const state = { document: editing.document };
+    const inside = [];
+    for (let level = 1; level <= depth; level += 1) inside.push(`q${level}`, `p${level}`);
+    for (let level = 2; level <= depth; level += 1) inside.push(`i${level}`);
+    inside.push('leaf');
+    for (const id of inside) assert.equal(islandAround(state, id, { registry }), 'i1', `depth ${depth}: ${id} lies in i1`);
+    for (const id of ['a1', 'p0', 'i1']) assert.equal(islandAround(state, id, { registry }), null, `depth ${depth}: ${id} lies in no island`);
+    const before = json(editing.document);
+    // What islandAround names may be chosen: no second refusal.
+    for (const id of inside) {
+      const chosen = islandAround(state, id, { registry });
+      assert.equal(editing.select(chosen).ok, true, `depth ${depth}: select(${chosen}) for ${id}`);
+    }
+    // Every island inside the outermost, and every node in them, is refused place.
+    for (let level = 2; level <= depth; level += 1) {
+      for (const [label, operation, args] of [
+        ['select', select, [`i${level}`]],
+        ['remove', removeNode, [`i${level}`]],
+        ['duplicate', duplicateNode, [`i${level}`]],
+        ['move out', moveNode, [`i${level}`, { parent: 'a1', slot: 'default', index: 0 }]],
+        ['reorder', moveBy, [`i${level}`, -1]],
+        ['type in its paragraph', setText, [`p${level}`, 'content', t('changed')]],
+      ]) {
+        const result = editing.apply(operation, ...args);
+        assert.equal(result.ok, false, `depth ${depth}: ${label} i${level} refused`);
+        assert.ok(['place', 'edge'].includes(result.reason), `depth ${depth}: ${label} i${level}: ${result.reason}`);
+        assert.equal(json(editing.document), before, `depth ${depth}: ${label} i${level} changes nothing`);
+      }
+    }
+    assert.equal(editing.canUndo, false, `depth ${depth}: no history step`);
+    // The outermost island whole: moved, duplicated, removed; each undo exact.
+    for (const [label, operation, args] of [
+      ['moveBy', moveBy, ['i1', -1]],
+      ['duplicate', duplicateNode, ['i1']],
+      ['remove', removeNode, ['i1']],
+    ]) {
+      const result = editing.apply(operation, ...args);
+      assert.equal(result.ok, true, `depth ${depth}: ${label} i1 (${result.reason})`);
+      editing.undo();
+      assert.equal(json(editing.document), before, `depth ${depth}: undo of ${label} is exact`);
+    }
+  }
+});
+
+// The duplicate's own-slot pass skips the type rule only for a type the
+// registry does not know (review D2 of round 2): a content.table stored in a
+// slot that does not take tables is refused place, as a paste there is.
+test('duplicate asks a known type the slot rule; only an unknown type skips it', () => {
+  const document = {
+    schema: 'simai.composition.document', schema_version: 1, id: 'doc', profile: 'ui-layout', locale: 'en',
+    root: { id: 'a1', type: 'layout.area', slots: { default: [
+      { id: 'cards', type: 'sample.cards', slots: { intro: [
+        { id: 'tb', type: 'content.table', data: { head: [['a']], rows: [['1']] } },
+        { id: 'ip', type: 'content.paragraph', data: { content: t('intro') } },
+        { id: 'vx', type: 'vendor.thing', data: { any: 1 } },
+      ] } },
+      { id: 'tb2', type: 'content.table', data: { head: [['b']], rows: [['2']] } },
+    ] } },
+  };
+  const editing = createSession({ document, context: { registry }, history: { now: () => 0 } });
+  const before = json(editing.document);
+  const tableInIntro = editing.apply(duplicateNode, 'tb');
+  assert.equal(tableInIntro.ok, false);
+  assert.equal(tableInIntro.reason, 'place', 'the intro slot does not take a table');
+  assert.equal(json(editing.document), before);
+  assert.equal(editing.apply(pasteNodes, { nodes: [document.root.slots.default[0].slots.intro[0]] }, { parent: 'cards', slot: 'intro', index: 1 }).reason, 'place', 'a paste there is refused the same way');
+  // A paragraph is taken by the intro, an unknown type moves and is duplicated within its own slot.
+  assert.equal(editing.apply(duplicateNode, 'ip').ok, true, 'a paragraph in the intro');
+  editing.undo();
+  assert.equal(editing.apply(duplicateNode, 'vx').ok, true, 'an unknown type in its own slot');
+  editing.undo();
+  // A table where tables are taken.
+  assert.equal(editing.apply(duplicateNode, 'tb2').ok, true, 'a table in the area');
+  editing.undo();
+  assert.equal(json(editing.document), before);
+});
