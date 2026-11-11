@@ -534,15 +534,24 @@ class SfList extends ListElement {
     // list measures itself: no page breakpoint and no setting. A
     // ResizeObserver, not a container query: an inline-size container takes
     // no width from its rows, and a list in a shrink-to-fit place (a popover,
-    // an auto-width flex item) would fold to nothing. It watches the frame
-    // and every row's badge and count, and is started as soon as the rows are
-    // drawn, before the list's sheet is in: the observer reports before the
-    // frame is painted, so the frame painted with the sheet is already laid
-    // out narrow or wide. The mark is an attribute the template does not
-    // bind, so a redraw keeps it.
+    // an auto-width flex item) would fold to nothing. It watches the frame's
+    // width and every row's badge and count, and is started as soon as the
+    // rows are drawn, before the list's sheet is in: the observer reports
+    // before the frame is painted, so the frame painted with the sheet is
+    // already laid out narrow or wide. The mark is an attribute the template
+    // does not bind, so a redraw keeps it.
+    // 1.5.1: the frame's width is read from .sf-list__width, a box of no
+    // height across the frame, not from the frame. The narrow layout changes
+    // the frame's height; a frame observed itself then changed size inside the
+    // observer's own callback, at the shallowest depth it reports, and the
+    // browser raised «ResizeObserver loop completed with undelivered
+    // notifications» on every page with a narrow list. The width box keeps its
+    // size whatever the layout; the badges and counts sit deeper and are
+    // reported in the same frame.
     watchWidth() {
         const frame = this.querySelector(":scope > .sf-list__frame");
         if (!frame) return;
+        const width = frame.querySelector(":scope > .sf-list__width") ?? frame;
         if (this._widthFrame !== frame) {
             this._widthObserver?.disconnect();
             this._widthObserver = null;
@@ -553,7 +562,7 @@ class SfList extends ListElement {
                 this.watchMetas();
                 this.measureNarrow();
             });
-            this._widthObserver.observe(frame);
+            this._widthObserver.observe(width);
         }
         this.watchMetas();
     }

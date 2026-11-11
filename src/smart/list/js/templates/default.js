@@ -182,6 +182,7 @@ export function renderListTemplate(context) {
              role=${context.grouped ? "group" : nothing}
              aria-label=${context.grouped ? context.label : nothing}
              aria-busy=${context.loading ? "true" : "false"}>
+            <span class="sf-list__width" aria-hidden="true"></span>
             ${context.loading
                 ? html`<div class="sf-list__skeleton" aria-hidden="true"><span></span><span></span><span></span></div>
                        <p class="sr-only" role="status">${context.loadingText}</p>`
