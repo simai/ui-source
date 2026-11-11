@@ -1270,7 +1270,11 @@ class SfDatepicker extends FormField(DatepickerElement) {
                 date,
                 value: formatIsoDate(date),
                 formattedValue: formatDateValue(date, this.format),
-                label: getDateLabel(date, this.locale),
+                // A day off says so in its name (DP-02): the ink is no longer
+                // the only cue, and the error red is gone from it.
+                label: [0, 6].includes(date.getDay())
+                    ? `${getDateLabel(date, this.locale)}, ${this.sfWord('day-off')}`
+                    : getDateLabel(date, this.locale),
                 day: date.getDate(),
                 today: sameDay(date, today),
                 currentMonth: date.getMonth() === this.month,
