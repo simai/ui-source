@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.5.0'], ['list-feed', 'sf-list-feed', '1.1.2']]) {
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.5.1'], ['list-feed', 'sf-list-feed', '1.1.2']]) {
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -157,6 +157,14 @@ test('sf-list 1.5.0: a narrow list puts a row\'s badge and count under its text,
   assert.match(source, /whenRenderedStylesReady\(target\) \{\s*this\.watchWidth\(\);\s*return super\.whenRenderedStylesReady\(target\);/u);
   assert.match(source, /observer\.observe\(meta\)/u);
   assert.match(source, /observer\.unobserve\(meta\)/u);
+  // 1.5.1: the frame's width is watched on .sf-list__width, a box of no height
+  // out of the flow; the frame itself, whose height the narrow layout changes,
+  // is not observed (a ResizeObserver loop error on every narrow list).
+  assert.match(source, /this\._widthObserver\.observe\(width\);/u);
+  assert.doesNotMatch(source, /_widthObserver\.observe\(frame\)/u);
+  assert.match(read('src/smart/list/js/templates/default.js'), /<span class="sf-list__width" aria-hidden="true"><\/span>/u);
+  const widthRule = read('src/smart/list/js/templates/default.css').match(/\.sf-list__width \{([^}]*)\}/u)?.[1] ?? '';
+  for (const declaration of ['position: absolute;', 'block-size: 0;', 'inset-inline: 0;']) assert.ok(widthRule.includes(declaration), declaration);
   const contract = json('src/smart/list/component.json');
   assert.equal(Object.keys(contract.settings).some((name) => /narrow|breakpoint/u.test(name)), false);
   // The template never binds the mark, so a redraw keeps it.
