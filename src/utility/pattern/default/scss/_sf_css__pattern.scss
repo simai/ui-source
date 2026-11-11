@@ -1,23 +1,129 @@
-@use '../../../../core/scss/vars/sf_var__breakpoint' as *;
-@use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use 'sass:list';
+@use 'sass:map';
 @use 'sf_var__pattern' as *;
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
 
-// PATTERN
+// PATTERN (owner decisions C57 and C60, 2026-11-11; standard simai.backgrounds)
+//
+//   pattern-<shape>              dots | grid | cross | grain | hatch | checker
+//   pattern-color-<role|hue>     neutral (default), primary ... gray
+//   pattern-strength-<step>      8 | 12 (default) | 16 | 24
+//   pattern-size-<step>          a step of the space ladder, 1/4 ... 8
+//   pattern-fade-<fade>          none | spot | clear | down
+//
+// The pattern is a layer under the element's content (::before), so the
+// element keeps its own background (the former pattern-1...9 replaced it).
+// Its shape is a mask; its ink is --sf-pattern--color, a role or a hue at an
+// alpha step; its cell is --sf-pattern--size. A component sets either
+// variable in its own sheet (a later layer than this one), or a page on the
+// element.
 
-$infix: xs;
+$shapes: map.keys($pattern-shapes);
+$hosts: ();
+@each $shape in $shapes {
+    $hosts: list.append($hosts, '.pattern-#{$shape}', comma);
+}
 
-// @include layer-priority(utility,default) {
-    @include breakpoint-media($infix) {
-        $infix: breakpoint-infix($infix, $breakpoint-array);
+// The host: a positioning context for the layer and a stacking context of
+// its own, so the layer sits above the element's background and under its
+// content. Zero specificity: a position utility (absolute, sticky ...) or a
+// component's position wins, and stays the layer's containing block.
+:where(#{$hosts}) {
+    position: relative;
+    isolation: isolate;
+}
 
-        @each $pattern_number, $pattern_value in $background-pattern-array {
-            .#{$infix}pattern-#{$pattern_number} {
-                background: $pattern_value;
+// Neutral at the default strength, unless a colour or strength says otherwise.
+#{$hosts} {
+    @each $step in $pattern-strengths {
+        --sf-pattern--color-#{$step}: light-dark(var(--sf-neutral-50--alfa-#{$step}), var(--sf-neutral-90--alfa-#{$step}));
+    }
+    --sf-pattern--color: var(--sf-pattern--color-12);
+    --sf-pattern--glow: light-dark(var(--sf-primary-50--alfa-#{list.nth($pattern-glow-steps, 1)}), var(--sf-primary-50--alfa-#{list.nth($pattern-glow-steps, 1) + $pattern-dark-step}));
+    --sf-pattern--glow-weak: light-dark(var(--sf-primary-50--alfa-#{list.nth($pattern-glow-steps, 2)}), var(--sf-primary-50--alfa-#{list.nth($pattern-glow-steps, 2) + $pattern-dark-step}));
+}
+
+@each $shape, $spec in $pattern-shapes {
+    .pattern-#{$shape} {
+        --sf-pattern--tile: #{map.get($spec, tile)};
+        --sf-pattern--size: #{map.get($spec, size)};
+        --sf-pattern--fade: #{map.get($pattern-fades, map.get($spec, fade))};
+    }
+}
+
+// The layer.
+:is(#{$hosts})::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+    background-color: var(--sf-pattern--color);
+    mask-image: var(--sf-pattern--tile), var(--sf-pattern--fade);
+    mask-size: var(--sf-pattern--size) var(--sf-pattern--size), 100% 100%;
+    mask-repeat: repeat, no-repeat;
+    // The lattice is centred on the element: the marks stand in the middle of
+    // their cells and the edges get the same part of a cell, so no mark is cut
+    // on one side only.
+    mask-position: center, 0 0;
+    mask-composite: intersect;
+}
+
+// Grain lies over a soft colour spot; its noise image keeps its own size
+// (--sf-pattern--size is auto).
+.pattern-grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    border-radius: inherit;
+    background-image:
+        radial-gradient(120% 90% at 15% 0%, var(--sf-pattern--glow), transparent 60%),
+        radial-gradient(90% 80% at 100% 100%, var(--sf-pattern--glow-weak), transparent 55%);
+    mask-image: var(--sf-pattern--fade);
+}
+
+// Colour: a role or a hue, tone 50, one fill step stronger in the dark theme.
+@each $color in $pattern-colors {
+    @if $color != 'neutral' {
+        .pattern-color-#{$color} {
+            @each $step in $pattern-strengths {
+                --sf-pattern--color-#{$step}: light-dark(var(--sf-#{$color}-50--alfa-#{$step}), var(--sf-#{$color}-50--alfa-#{$step + $pattern-dark-step}));
+            }
+            --sf-pattern--glow: light-dark(var(--sf-#{$color}-50--alfa-#{list.nth($pattern-glow-steps, 1)}), var(--sf-#{$color}-50--alfa-#{list.nth($pattern-glow-steps, 1) + $pattern-dark-step}));
+            --sf-pattern--glow-weak: light-dark(var(--sf-#{$color}-50--alfa-#{list.nth($pattern-glow-steps, 2)}), var(--sf-#{$color}-50--alfa-#{list.nth($pattern-glow-steps, 2) + $pattern-dark-step}));
+        }
+    } @else {
+        .pattern-color-neutral {
+            @each $step in $pattern-strengths {
+                --sf-pattern--color-#{$step}: light-dark(var(--sf-neutral-50--alfa-#{$step}), var(--sf-neutral-90--alfa-#{$step}));
             }
         }
     }
-// }
+}
+
+// Strength.
+@each $step in $pattern-strengths {
+    .pattern-strength-#{$step} {
+        --sf-pattern--color: var(--sf-pattern--color-#{$step});
+    }
+}
+
+// Size.
+@each $size in $pattern-sizes {
+    .pattern-size-#{$size} {
+        --sf-pattern--size: var(--sf-space-#{$size});
+    }
+}
+
+// Fade.
+@each $fade, $mask in $pattern-fades {
+    .pattern-fade-#{$fade} {
+        --sf-pattern--fade: #{$mask};
+    }
+}
 }

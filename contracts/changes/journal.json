@@ -10399,6 +10399,190 @@
       },
       "owner": "ui-source",
       "source": "src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
+    },
+    {
+      "id": "utility-c57-pattern-numbered",
+      "recorded_on": "2026-11-11",
+      "stage": "removed",
+      "kind": "utility",
+      "summary": "The numbered patterns pattern-1 ... pattern-9 (SF4's bg-p3, p4, p1, p2, p16, p11, p12, p20, p13, and their sm: ... xxl: forms) are gone. They were 2-4 px black pixel tiles set with the background shorthand, so they wiped the element's own background, took no colour, vanished on a dark surface and shimmered at fractional screen scaling. Owner decision C57 (2026-11-11): they are replaced by the six patterns of the pattern utility, not carried over, so no alias was kept. Each item names the nearest new pattern; the look is not the same.",
+      "items": [
+        {
+          "from": "pattern-1",
+          "to": "pattern-grid",
+          "match": "(?<![a-z0-9-])pattern-1(?![a-z0-9-])"
+        },
+        {
+          "from": "pattern-2",
+          "to": "pattern-grid",
+          "match": "(?<![a-z0-9-])pattern-2(?![a-z0-9-])"
+        },
+        {
+          "from": "pattern-3",
+          "to": "pattern-dots",
+          "match": "(?<![a-z0-9-])pattern-3(?![a-z0-9-])"
+        },
+        {
+          "from": "pattern-4",
+          "to": "pattern-checker",
+          "match": "(?<![a-z0-9-])pattern-4(?![a-z0-9-])"
+        },
+        {
+          "from": "pattern-5",
+          "to": "pattern-hatch",
+          "match": "(?<![a-z0-9-])pattern-5(?![a-z0-9-])"
+        },
+        {
+          "from": "pattern-6",
+          "to": "pattern-dots",
+          "match": "(?<![a-z0-9-])pattern-6(?![a-z0-9-])"
+        },
+        {
+          "from": "pattern-7",
+          "to": "pattern-dots",
+          "match": "(?<![a-z0-9-])pattern-7(?![a-z0-9-])"
+        },
+        {
+          "from": "pattern-8",
+          "to": "pattern-grid",
+          "match": "(?<![a-z0-9-])pattern-8(?![a-z0-9-])"
+        },
+        {
+          "from": "pattern-9",
+          "to": "pattern-checker",
+          "match": "(?<![a-z0-9-])pattern-9(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "removed_on": "2026-11-11",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<section class=\"pattern-6\">",
+        "after": "<section class=\"pattern-dots pattern-fade-clear\">"
+      },
+      "manual": "Replace the class with pattern-<shape> and, where wanted, pattern-color-<role|hue>, pattern-strength-8|12|16|24, pattern-size-<space step> and pattern-fade-none|spot|clear|down (standard simai.backgrounds, Patterns). The nearest shapes: pattern-1, -2 and -8 (lines, maze) pattern-grid; pattern-3, -6 and -7 (dots, blocks) pattern-dots; pattern-4 and -9 (checker, blocks) pattern-checker; pattern-5 (diagonals) pattern-hatch. The new layer lies under the content and keeps the element's background. Used over a photo to darken it, use a gradient scrim or the C16 glass instead.",
+      "owner": "ui-source",
+      "source": "src/utility/pattern/default/scss/_sf_var__pattern.scss"
+    },
+    {
+      "id": "utility-c60-stripe-into-pattern",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "The stripe utilities join the patterns (owner decision C60, 2026-11-11): stripe-3 (lines both ways) is pattern-grid and stripe-4 (135-degree lines) is pattern-hatch, drawn right: a vector tile, a 1.25 px line, the colour a role at an alpha step and a layer under the content. stripe-1 and stripe-2 (lines one way) have no pattern of their own. The colours stripe-<role> become pattern-color-<role> with a pattern-strength, the sizes stripe-size-1 ... 4 (2 to 5 px primitives) a step of the space ladder, pattern-size-<step>. Until remove_after every stripe class draws as before.",
+      "items": [
+        {
+          "from": "stripe-3",
+          "to": "pattern-grid",
+          "match": "(?<![a-z0-9-])stripe-3(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-4",
+          "to": "pattern-hatch",
+          "match": "(?<![a-z0-9-])stripe-4(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-1",
+          "to": null,
+          "match": "(?<![a-z0-9-])stripe-1(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-2",
+          "to": null,
+          "match": "(?<![a-z0-9-])stripe-2(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-size-1",
+          "to": null,
+          "match": "(?<![a-z0-9-])stripe-size-1(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-size-2",
+          "to": null,
+          "match": "(?<![a-z0-9-])stripe-size-2(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-size-3",
+          "to": null,
+          "match": "(?<![a-z0-9-])stripe-size-3(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-size-4",
+          "to": null,
+          "match": "(?<![a-z0-9-])stripe-size-4(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-primary",
+          "to": "pattern-color-primary",
+          "match": "(?<![a-z0-9-])stripe-primary(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-primary-container",
+          "to": "pattern-color-primary",
+          "match": "(?<![a-z0-9-])stripe-primary-container(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-secondary",
+          "to": "pattern-color-secondary",
+          "match": "(?<![a-z0-9-])stripe-secondary(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-secondary-container",
+          "to": "pattern-color-secondary",
+          "match": "(?<![a-z0-9-])stripe-secondary-container(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-tertiary",
+          "to": "pattern-color-tertiary",
+          "match": "(?<![a-z0-9-])stripe-tertiary(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-tertiary-container",
+          "to": "pattern-color-tertiary",
+          "match": "(?<![a-z0-9-])stripe-tertiary-container(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-on-surface",
+          "to": "pattern-color-neutral",
+          "match": "(?<![a-z0-9-])stripe-on-surface(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-surface-container-strong",
+          "to": "pattern-color-neutral",
+          "match": "(?<![a-z0-9-])stripe-surface-container-strong(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-surface-transparent-overlay",
+          "to": "pattern-color-neutral",
+          "match": "(?<![a-z0-9-])stripe-surface-transparent-overlay(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-transparent",
+          "to": null,
+          "match": "(?<![a-z0-9-])stripe-transparent(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-current",
+          "to": null,
+          "match": "(?<![a-z0-9-])stripe-current(?![a-z0-9-])"
+        },
+        {
+          "from": "stripe-inherit",
+          "to": null,
+          "match": "(?<![a-z0-9-])stripe-inherit(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<div class=\"stripe-4 stripe-primary stripe-size-2\">",
+        "after": "<div class=\"pattern-hatch pattern-color-primary pattern-size-1/3\">"
+      },
+      "manual": "Replace stripe-3 with pattern-grid and stripe-4 with pattern-hatch; a colour stripe-<role> with pattern-color-<role> and a strength (pattern-strength-8|12|16|24; the stripe drew the role at full strength), a size stripe-size-N with pattern-size-<space step>. stripe-1, stripe-2, stripe-transparent, stripe-current and stripe-inherit have no successor: draw the lines in the component's own sheet, or take pattern-grid. The pattern lies under the content as ::before; the stripe was the element's background-image, so an element whose own background-image the stripe replaced keeps it now.",
+      "owner": "ui-source",
+      "source": "src/utility/stripe/default/scss/_sf_css__stripe.scss"
     }
   ]
 }

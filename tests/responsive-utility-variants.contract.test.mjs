@@ -15,7 +15,9 @@ test('xxl variants match every existing responsive utility family', () => {
         repositoryRoot,
     });
 
-    assert.equal(result.families.length, 86);
+    // 85 since the numbered patterns left (C57, 2026-11-11): the pattern
+    // utility has no breakpoint forms.
+    assert.equal(result.families.length, 85);
 
     const ruleRegistry = fs.readFileSync(
         path.join(repositoryRoot, 'src/core/js/rule.src.js'),
@@ -26,8 +28,8 @@ test('xxl variants match every existing responsive utility family', () => {
         'utf8',
     );
 
-    assert.equal((ruleRegistry.match(/utility\/.+\/xxl\/rule\.js/g) || []).length, 86);
-    assert.equal((fullUtilityRegistry.match(/utility\/.+\/xxl\/index\.scss/g) || []).length, 85);
+    assert.equal((ruleRegistry.match(/utility\/.+\/xxl\/rule\.js/g) || []).length, 85);
+    assert.equal((fullUtilityRegistry.match(/utility\/.+\/xxl\/index\.scss/g) || []).length, 84);
 
     const loader = fs.readFileSync(
         path.join(repositoryRoot, 'src/core/js/loader.js'),

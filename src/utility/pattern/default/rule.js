@@ -1,1 +1,1 @@
-SF.RuleLoader['pattern/default'] = new RegExp("^(?:pattern-(?:1|2|3|4|5|6|7|8|9))(?![\\s\\S])");
+SF.RuleLoader['pattern/default'] = new RegExp("^(?:pattern-(?:c(?:hecker|olor-(?:amber|b(?:lue|rown)|cyan|error|gr(?:ay|een)|in(?:digo|fo)|lime|neutral|orange|p(?:ink|rimary|urple)|red|s(?:econdary|ky|uccess)|te(?:al|rtiary)|violet|warning|yellow)|ross)|dots|fade-(?:clear|down|none|spot)|gr(?:ain|id)|hatch|s(?:ize-(?:1(?:\\/(?:2|3|4))?|2|3|4|5|6|7|8)|trength-(?:1(?:2|6)|24|8))))(?![\\s\\S])");

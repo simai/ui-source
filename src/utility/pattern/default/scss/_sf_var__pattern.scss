@@ -1,16 +1,92 @@
 // SIMAI Framework
 // https://simai.io
 
-// PATTERN
+// PATTERN (owner decisions C57 and C60, 2026-11-11; standard simai.backgrounds)
+//
+// Six static patterns. The shape is a mask with no colour of its own: a CSS
+// gradient or a vector tile drawn in black, which says only where the ink
+// goes. The ink is a role or hue of the palette at a step of the fill family
+// of the alpha scale (8, 12, 16, 24). Anything that moves is the effects
+// package's, not this.
 
-$background-pattern-array: (
-	1: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect x='0' y='0' width='1' height='2'/></svg>"),
-	2: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect x='0' y='0' width='2' height='1'/></svg>"),
-    3: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect x='0' y='0' width='1' height='1'/></svg>"),
-    4: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect x='0' y='1' width='1' height='1' /><rect x='1' y='0' width='1' height='1'/></svg>"),
-    5: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><rect x='0' y='0' width='1' height='1' /><rect x='1' y='1' width='1' height='1' /><rect x='2' y='2' width='1' height='1' /><rect x='3' y='1' width='1' height='1' /><rect x='1' y='3' width='1' height='1' /><rect x='3' y='3' width='1' height='1' /></svg>"),
-    6: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><rect x='0' y='0' width='1' height='1' /></svg>"),
-    7: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><rect x='0' y='0' width='2' height='2' /></svg>"),
-    8: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><rect x='0' y='0' width='3' height='1'/><rect x='0' y='2' width='3' height='1'/><rect x='0' y='0' width='1' height='3'/>><rect x='2' y='0' width='1' height='3'/>><rect x='2' y='0' width='1' height='1'/></svg>"),
-    9: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><rect x='0' y='0' width='3' height='3' /></svg>"),
+@use 'sass:list';
+@use '../../../../core/scss/vars/sf_var__hue' as *;
+
+// The shapes: the mask tile, its default size (a step of the space ladder;
+// the ladder follows the phone density) and its default fade.
+//
+// dots     a 1 px dot (2 px across) in each cell, centred on the cell
+// grid     1 px lines; the tile is vector, crisp at fractional scaling
+// cross    a 1 px "+" in each cell, its arms 3/16 of the step
+// grain    noise over a soft colour spot (the spot is the class's own
+//          ::after): grain on a flat colour reads as dirt, so never alone.
+//          Its tile is the noise image at its own 180 px, not a ladder step.
+// hatch    45-degree lines 1.25 px wide: forecast, no data, unavailable,
+//          reserved. A sign, not decoration.
+// checker  a two-by-two checker per step: transparency (an image with alpha,
+//          a colour swatch). A sign, not decoration; neutral only.
+$pattern-shapes: (
+    'dots': (
+        tile: radial-gradient(circle at center, #000 0 var(--sf-px), transparent calc(var(--sf-px) * 1.6)),
+        size: var(--sf-space-1),
+        fade: 'clear',
+    ),
+    'grid': (
+        tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M0 8H16M8 0V16' stroke='%23000' stroke-width='1' vector-effect='non-scaling-stroke' shape-rendering='crispEdges' fill='none'/%3E%3C/svg%3E"),
+        size: var(--sf-space-4),
+        fade: 'clear',
+    ),
+    'cross': (
+        tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5 8H11M8 5V11' stroke='%23000' stroke-width='1' vector-effect='non-scaling-stroke' shape-rendering='crispEdges' fill='none'/%3E%3C/svg%3E"),
+        size: var(--sf-space-5),
+        fade: 'clear',
+    ),
+    'grain': (
+        tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2.2 -0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+        size: auto,
+        fade: 'none',
+    ),
+    'hatch': (
+        tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M-1 1L1 -1M0 8L8 0M7 9L9 7' stroke='%23000' stroke-width='1.25' vector-effect='non-scaling-stroke' stroke-linecap='square' fill='none'/%3E%3C/svg%3E"),
+        size: var(--sf-space-1\/2),
+        fade: 'none',
+    ),
+    'checker': (
+        tile: conic-gradient(#000 0 25%, transparent 0 50%, #000 0 75%, transparent 0),
+        size: var(--sf-space-2),
+        fade: 'none',
+    ),
 );
+
+// The fades: a second mask over the whole layer. Under text the pattern
+// clears where the text stands (clear) or is no stronger than 8.
+//
+// none   the pattern everywhere
+// spot   a soft spot, the edges clear
+// clear  the centre clear, the pattern at the edges (the hero default)
+// down   strongest at the top, gone towards the bottom
+$pattern-fades: (
+    'none': linear-gradient(#000, #000),
+    'spot': radial-gradient(ellipse 70% 70% at 50% 40%, #000 0%, transparent 75%),
+    'clear': radial-gradient(ellipse 48% 42% at 50% 46%, transparent 0 45%, #000 100%),
+    'down': linear-gradient(to bottom, #000 0%, transparent 85%),
+);
+
+// The strengths: the neutral fill family of the alpha scale, the same in
+// both themes (C41). A role or a hue is one fill step stronger in the dark
+// theme (+8), where the same tint over a dark surface reads as the same
+// strength.
+$pattern-strengths: (8, 12, 16, 24);
+$pattern-dark-step: 8;
+
+// The colours: neutral (the default), the theme's palettes, the status roles
+// and the sixteen static hues. Neutral is tone 50 in the light theme and 90
+// in the dark; every other colour is tone 50.
+$pattern-colors: list.join(list.join(('neutral',), $sf-theme-hues), list.join(('error', 'warning', 'success', 'info'), $sf-static-hues));
+
+// The soft spot under grain: the colour at 24 and 12 (dark 32 and 20);
+// neutral's spot is primary, since grey under grain is dirt.
+$pattern-glow-steps: (24, 12);
+
+// The sizes: the steps of the space ladder.
+$pattern-sizes: ('1\\/4', '1\\/3', '1\\/2', '1', '2', '3', '4', '5', '6', '7', '8');
