@@ -206,7 +206,8 @@ test('quantity: the public variables wrap the values the class sheet drew before
     '--sf-quantity-wrap--border: var(--sf-quantity-border-width, var(--sf-px)) solid;',
     '--sf-quantity-wrap--border-color: var(--sf-quantity-border-color, var(--sf-outline));',
     '--sf-quantity-wrap--border-start-start-radius: var(--sf-quantity-radius, var(--sf-radius--ui));',
-    // C53 F2: the steppers hug the number.
+    // The class component keeps its gap; sf-input-quantity's steppers hug the number (C53 F2, D1 of its review).
+    '--sf-quantity-wrap--gap: var(--sf-quantity-gap, var(--sf-space-2));',
     '--sf-quantity-wrap--gap: var(--sf-quantity-gap, calc(var(--sf-px) * 0));',
     '--sf-quantity-input--color: var(--sf-quantity-color, var(--sf-on-surface));',
     '--sf-icon-button--border-start-start-radius: var(--sf-quantity-stepper-radius, var(--sf-radius-1\\/2));',
@@ -244,4 +245,20 @@ test('quantity: the public variables wrap the values the class sheet drew before
   }
   const docs = read('src/smart/input-quantity/docs.md');
   for (const variable of entry.variables) assert.ok(docs.includes(`| \`${variable.name}\` |`), variable.name);
+});
+
+test('quantity: C53 is the Smart field\'s look; the class component keeps its own (D1 of the C53 review)', async () => {
+  const {readFileSync} = await import('node:fs');
+  const sheet = readFileSync(new URL('../src/component/quantity/scss/_css__quantity.scss', import.meta.url), 'utf8');
+  const custom = readFileSync(new URL('../src/component/quantity/scss/_css__custom.scss', import.meta.url), 'utf8');
+  // The class markup (label.sf-quantity > .sf-quantity-wrap) keeps base's stretched number and text inset.
+  assert.match(custom, /\.sf-quantity \.sf-quantity-wrap input \{\s*flex: 1 1 auto;\s*min-width: 0;\s*width: auto;/u);
+  for (const size of ['1', '2', '1\\/2']) {
+    assert.ok(sheet.includes(`.sf-quantity.sf-quantity--size-${size} input {\n  --sf-quantity-input--padding-inline-end: var(--sf-ui-${size}--text-space-x);`), size);
+  }
+  assert.doesNotMatch(sheet, /\.sf-quantity > \.sf-quantity-wrap \{/u);
+  // Every C53 rule on the box reaches it through the Smart row.
+  const c53 = sheet.slice(sheet.indexOf('/* Owner decision C53'), sheet.indexOf('/* The steppers are drawn by the script'));
+  assert.doesNotMatch(c53, /\.sf-quantity(\.[\w-]+)* \.sf-quantity-wrap[ >{]/u);
+  assert.ok(c53.includes('.sf-quantity .sf-quantity-row > .sf-quantity-wrap > input {\n    --sf-quantity-input--padding-inline-end: var(--sf-space-1\\/4);'));
 });

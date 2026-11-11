@@ -78,11 +78,8 @@
   --sf-quantity-wrap--border-end-start-radius: var(--sf-quantity-radius, var(--sf-radius--ui));
   --sf-quantity-wrap--border-start-end-radius: var(--sf-quantity-radius, var(--sf-radius--ui));
   --sf-quantity-wrap--border-start-start-radius: var(--sf-quantity-radius, var(--sf-radius--ui));
-  /* C53 (F2): the steppers hug the number. The gap was a layout space
-     (--sf-space-2, 20 px on a desktop) on both sides, plus the text inset:
-     in a 160 px cell 32 px were left for the digits. The number place
-     carries its own --sf-space-1/4 on each side instead. */
-  --sf-quantity-wrap--gap: var(--sf-quantity-gap, calc(var(--sf-px) * 0));
+  /* The class component's gap; the Smart field's is 0 (C53 F2, below). */
+  --sf-quantity-wrap--gap: var(--sf-quantity-gap, var(--sf-space-2));
   background-color: var(--sf-quantity-wrap--background-color);
   border: var(--sf-quantity-wrap--border);
   border-color: var(--sf-quantity-wrap--border-color, transparent);
@@ -202,8 +199,8 @@
 }
 
 .sf-quantity.sf-quantity--size-1 input {
-  --sf-quantity-input--padding-inline-end: var(--sf-space-1\/4);
-  --sf-quantity-input--padding-inline-start: var(--sf-space-1\/4);
+  --sf-quantity-input--padding-inline-end: var(--sf-ui-1--text-space-x);
+  --sf-quantity-input--padding-inline-start: var(--sf-ui-1--text-space-x);
 }
 
 /* The number's type is set on the box, so the unit beside the number
@@ -259,8 +256,8 @@
 }
 
 .sf-quantity.sf-quantity--size-2 input {
-  --sf-quantity-input--padding-inline-end: var(--sf-space-1\/4);
-  --sf-quantity-input--padding-inline-start: var(--sf-space-1\/4);
+  --sf-quantity-input--padding-inline-end: var(--sf-ui-2--text-space-x);
+  --sf-quantity-input--padding-inline-start: var(--sf-ui-2--text-space-x);
 }
 
 .sf-quantity.sf-quantity--size-2 .sf-quantity-wrap {
@@ -308,8 +305,8 @@
 }
 
 .sf-quantity.sf-quantity--size-1\/2 input {
-  --sf-quantity-input--padding-inline-end: var(--sf-space-1\/4);
-  --sf-quantity-input--padding-inline-start: var(--sf-space-1\/4);
+  --sf-quantity-input--padding-inline-end: var(--sf-ui-1\/2--text-space-x);
+  --sf-quantity-input--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
 }
 
 .sf-quantity.sf-quantity--size-1\/2 .sf-quantity-wrap {
@@ -424,6 +421,19 @@
    bound) or the digits setting, which a column of fields sets to one
    number so the column is straight (F6). */
 @layer sf.components {
+  /* C53 is the Smart field's look (sf-input-quantity renders the box in a
+     .sf-quantity-row); the class component (label.sf-quantity with the box
+     as its own child) keeps its own: the column's width, the layout gap and
+     the field's text inset (DEV review D1 of the C53 round). */
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap {
+    --sf-quantity-wrap--gap: var(--sf-quantity-gap, calc(var(--sf-px) * 0));
+  }
+
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap > input {
+    --sf-quantity-input--padding-inline-end: var(--sf-space-1\/4);
+    --sf-quantity-input--padding-inline-start: var(--sf-space-1\/4);
+  }
+
   .sf-quantity .sf-quantity-row {
     display: flex;
     flex-direction: row;
@@ -443,26 +453,15 @@
     max-inline-size: 100%;
   }
 
-  /* The class component (label.sf-quantity with the box as its own child,
-     no .sf-quantity-row) hugs its parts too, at the start of its column:
-     the same box as the Smart field, not the column's width with the
-     steppers pulled into its middle. */
-  .sf-quantity > .sf-quantity-wrap {
-    align-self: flex-start;
-    inline-size: fit-content;
-    min-inline-size: 0;
-    max-inline-size: 100%;
-  }
-
-  .sf-quantity .sf-quantity-wrap > .sf-quantity-count,
-  .sf-quantity .sf-quantity-wrap > .sf-quantity-unit {
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap > .sf-quantity-count,
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap > .sf-quantity-unit {
     flex: none;
   }
 
   /* The number place (F4): as tall as a stepper, the steppers' corner, the
      surface hover fill under a pointer and the text cursor, so it reads as a
      place to type. */
-  .sf-quantity .sf-quantity-wrap > input {
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap > input {
     flex: 0 1 auto;
     box-sizing: content-box;
     inline-size: calc((var(--sf-quantity--digits, 6) + 0.5) * 1ch);
@@ -481,7 +480,7 @@
   .sf-quantity.sf-quantity--size-2 { --sf-quantity--number-height: var(--sf-ui-1--control-height); }
   .sf-quantity.sf-quantity--size-1\/2 { --sf-quantity--number-height: var(--sf-icon-size-3); }
 
-  .sf-quantity .sf-quantity-wrap > input:enabled:not(:read-only):not(:focus-visible):hover {
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap > input:enabled:not(:read-only):not(:focus-visible):hover {
     --sf-quantity-input--background-color: var(--sf-surface-state-hover);
   }
 
@@ -515,21 +514,21 @@
      where sf-input's does (the field's space-x, then the text inset), the
      unit follows the number as sf-input's end text does, and the keys still
      step. */
-  .sf-quantity.sf-quantity--steppers-none .sf-quantity-wrap > input {
+  .sf-quantity.sf-quantity--steppers-none .sf-quantity-row > .sf-quantity-wrap > input {
     text-align: start;
   }
 
-  .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-1 .sf-quantity-wrap {
+  .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-1 .sf-quantity-row > .sf-quantity-wrap {
     --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x) - var(--sf-space-1\/4)));
     --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x) - var(--sf-space-1\/4)));
   }
 
-  .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-2 .sf-quantity-wrap {
+  .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-2 .sf-quantity-row > .sf-quantity-wrap {
     --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--text-space-x) - var(--sf-space-1\/4)));
     --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--text-space-x) - var(--sf-space-1\/4)));
   }
 
-  .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-1\/2 .sf-quantity-wrap {
+  .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-1\/2 .sf-quantity-row > .sf-quantity-wrap {
     --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--text-space-x) - var(--sf-space-1\/4)));
     --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--text-space-x) - var(--sf-space-1\/4)));
   }
@@ -542,23 +541,23 @@
 
   /* F8: under a finger a stepper answers on the box's whole height and to
      the box's outer edge; the picture keeps its rung. */
-  .sf-quantity .sf-quantity-wrap > .sf-quantity-count {
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap > .sf-quantity-count {
     position: relative;
   }
 
   @media (pointer: coarse) {
-    .sf-quantity .sf-quantity-wrap > .sf-quantity-count::before {
+    .sf-quantity .sf-quantity-row > .sf-quantity-wrap > .sf-quantity-count::before {
       content: '';
       position: absolute;
       inset-block: calc(-1 * (var(--sf-quantity-wrap--padding-inline-start) + var(--sf-px)));
       inset-inline: 0;
     }
 
-    .sf-quantity .sf-quantity-wrap > .sf-quantity-count:first-child::before {
+    .sf-quantity .sf-quantity-row > .sf-quantity-wrap > .sf-quantity-count:first-child::before {
       inset-inline-start: calc(-1 * (var(--sf-quantity-wrap--padding-inline-start) + var(--sf-px)));
     }
 
-    .sf-quantity .sf-quantity-wrap > .sf-quantity-count:last-child::before {
+    .sf-quantity .sf-quantity-row > .sf-quantity-wrap > .sf-quantity-count:last-child::before {
       inset-inline-end: calc(-1 * (var(--sf-quantity-wrap--padding-inline-end) + var(--sf-px)));
     }
   }
