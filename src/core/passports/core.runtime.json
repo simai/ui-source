@@ -117,6 +117,7 @@
     "src/core/js/composition/sortable.mjs",
     "src/core/js/composition/utilities.mjs",
     "src/core/js/control-spacing.js",
+    "src/core/js/copy-feedback.js",
     "src/core/js/core-modules.js",
     "src/core/js/density.js",
     "src/core/js/deprecations.js",
@@ -209,7 +210,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "87e430e57f9ce460ab6b9517030df1f15fe6b6e6c98a1a996b81553d86e62d41",
+  "content_sha256": "afa5059e992f3f7a53b10c1ef67481f8888967422f741f502d516ec4e82ea9f1",
   "dependencies": [
     {
       "id": "core.styles",
