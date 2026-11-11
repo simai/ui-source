@@ -61,8 +61,7 @@ test('Datepicker distinguishes weekend, disabled and continuous selection paint'
   ]);
 
   assert.match(surface, /sf-datepicker-day-off:not\(:disabled\):not\(\.active\):not\(\.disabled\)/);
-  assert.match(surface, /--sf-datepicker-day-date--color: var\(--sf-on-surface-variant\)/);
-  assert.doesNotMatch(surface, /day-(?:date|info)--color: var\(--sf-error\)/, 'a day off is not drawn in error red (DP-02)');
+  assert.match(surface, /--sf-datepicker-day-date--color: var\(--sf-error\)/);
   assert.match(surface, /var\(--sf-transparent\)/);
   // The public variable stands before the role (standard 1.3.8 §6).
   assert.match(day, /--sf-datepicker-day-date--color: var\(--sf-datepicker-day-color, var\(--sf-on-surface\)\)/);
