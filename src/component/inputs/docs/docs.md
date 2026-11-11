@@ -21,6 +21,12 @@ Registration: `registerComponent('Inputs', Inputs)`
   `--sf-on-surface` (1.3.1, FA-08).
 - Read-only inputs remain focusable and selectable but do not use editable
   hover or active feedback.
+- A label row (`.sf-input-label`) that holds its text in `.sf-input-text`
+  and an `sf-help-mark` is running text, not a flex row: the mark stands
+  `--sf-input-label--gap` after the label's last word, centred on the line it
+  stands on, so on a wrapped label it follows the last word on the last line
+  (1.4.0, C33; written as 1.3.1 on fix/c33-wrapped-help-mark). A label row with bare text (the `label` slot of `sf-input`)
+  stays a flex row.
 
 ## Global helper
 
