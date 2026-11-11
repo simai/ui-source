@@ -165,8 +165,9 @@
    and is never cut while the card holds it (review D2 of the preloader
    round: «Популярный» was cut in the narrowest three-tile fields). On a line
    of its own it may run under the control, which stands on the name's first
-   line only; past that room it shortens as before. */
-.sf-choice:not([data-layout='list']) .sf-choice-badge {
+   line only; past that room it shortens as before. The wrapper draws no box
+   (display: contents): the rule is the badge's, the title's flex item. */
+.sf-choice:not([data-layout='list']) .sf-choice-badge > .sf-badge {
   flex-shrink: 0;
   max-inline-size: calc(100% + var(--sf-text-height-1) + var(--sf-space-1\/2));
 }
