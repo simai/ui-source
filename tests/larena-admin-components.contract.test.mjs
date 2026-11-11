@@ -110,6 +110,10 @@ test('sf-list-attention: ordered by severity, nothing when empty, navigate and a
   assert.match(narrow, /padding-block: calc\(\(var\(--sf-list-attention--row\) - var\(--sf-list-attention--line\) - var\(--sf-list-attention--meta-line\)\) \/ 2\);/u);
   assert.match(narrow, /\.sf-list-attention-quiet-line,\s*\.sf-list-attention-recheck-text,\s*\.sf-list-attention-recheck-text > \* \{\s*display: none;/u);
   assert.doesNotMatch(narrow, /sf-list-attention-action[^{]*\{[^}]*display: none/u);
+  // sf-button-icon's host is display: contents: the wide column hides the
+  // narrow recheck's native control, the narrow one shows it.
+  assert.match(sheet, /\.sf-list-attention \.sf-list-attention-recheck--narrow > button \{\s*display: none;/u);
+  assert.match(narrow, /\.sf-list-attention \.sf-list-attention-recheck--narrow > button \{\s*display: inline-flex;/u);
 });
 
 test('sf-progress-run: host-driven, its run-state, chunk, step and clear, and the reading position', () => {

@@ -128,7 +128,7 @@ sf-list-attention {
 .sf-list-attention-summary-line,
 .sf-list-attention-quiet-title,
 .sf-list-attention-quiet-meta,
-.sf-list-attention .sf-list-attention-recheck--narrow {
+.sf-list-attention .sf-list-attention-recheck--narrow > button {
   display: none;
 }
 
@@ -536,7 +536,9 @@ a.sf-list-attention-object:focus-visible {
     line-height: var(--sf-list-attention--meta-line);
   }
 
-  .sf-list-attention .sf-list-attention-recheck--narrow {
+  /* sf-button-icon's host is display: contents (an inline style): its
+     native control is the box. */
+  .sf-list-attention .sf-list-attention-recheck--narrow > button {
     display: inline-flex;
   }
 
