@@ -148,3 +148,17 @@ test('a Loader that arrives after the element left the region hands nothing over
   assert.equal(adopted.length, 0);
 });
 
+
+// Bundles the page includes itself before core.js wait for sf-runtime-ready;
+// when every part stands in an ignored region the Loader never asks for the
+// runtime, so core starts it for them once the Loader is ready (N4). Held on
+// the built bytes by tests/browser/ignored-region-glyphs.browser.mjs case 3.
+test('a hand-included Smart bundle still waiting has the runtime started once the Loader is ready', () => {
+  const core = read('src/core/js/index.js');
+  const block = core.slice(core.indexOf('const handBundleWaiting = () =>'), core.indexOf('}, {once: true});', core.indexOf('const handBundleWaiting = () =>')) + 20);
+  assert.ok(block.length > 20);
+  assert.match(block, /window\.addEventListener\('sf-loader-ready', \(\) => \{/u);
+  assert.match(block, /if \(SF\.__internal\.runtimeModules \|\| SF\.__internal\.runtimeLoading\) return;/u);
+  assert.match(block, /if \(!handBundleWaiting\(\) \|\| !smartPartWaiting\(\)\) return;/u);
+  assert.match(block, /SF\.loadRuntime\(\)\.catch\(/u);
+});
