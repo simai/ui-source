@@ -1,11 +1,13 @@
 {
   "schema": "simai.framework.public-js-api",
   "schema_version": 1,
-  "summary": "What a page may call on window.SF. A public name keeps its meaning and is renamed or removed only through the change journal, as an attribute is; an internal one is the runtime's and may change in any release. tests/browser/public-js-api.browser.mjs holds the list against the runtime: every name the runtime puts on window.SF is here, and every public name and member the probe loads is there. A component's script API (SF.Input, SF.Carousel, ...) arrives with its component and is listed with it. loaded_by says when a name exists: core -- as soon as core.js has run, before the next script on the page; core-loader -- when the Loader has started, at the window event sf-loader-init (core.js loads it); smart-base -- when the Smart base has loaded (SF.loadSmartBase(), or the first Smart element on the page); component/<name>, smart/<name> -- with that component. The probe takes the names at each of those moments (documentation trial 6, 2026-10-18: the Loader's names were listed under core).",
+  "summary": "What a page may call on window.SF. A public name keeps its meaning and is renamed or removed only through the change journal, as an attribute is; an internal one is the runtime's and may change in any release. tests/browser/public-js-api.browser.mjs holds the list against the runtime: every name the runtime puts on window.SF is here, and every public name and member the probe loads is there. A component's script API (SF.Input, SF.Carousel, ...) arrives with its component and is listed with it. loaded_by says when a name exists: core -- as soon as core.js has run, before the next script on the page; core-loader -- when the Loader has started, at the window event sf-loader-init (core.js loads it); smart-base -- when the Smart base has loaded (SF.loadSmartBase(), or the first Smart element on the page); component/<name>, smart/<name> -- with that component. The probe takes the names at each of those moments (documentation trial 6, 2026-10-18: the Loader's names were listed under core). layer and doc say where the documentation lists a name (owner decision D17, 2026-11-11): layer is core, loader, smart-base or component -- the documentation's Functions section lists the Framework's own names grouped by the first three, and a component's script API (layer component) is documented on its component's page; doc is public (listed for authors) or internal (not listed). Both are derived from loaded_by and status by scripts/generate-public-js-api-layers.mjs, whose exception table says why a name differs; public-js-api.schema.json is the shape.",
   "globals": [
     {
       "name": "SF.Loader",
       "status": "public",
+      "layer": "loader",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core-loader",
       "summary": "The runtime loader: loads what a page uses, components and utilities, on demand, and the theme. ensure(tags, {timeout}) asks for elements and settles with {ready, missing}, never rejecting; watch(root) marks a box an element renders into as a portal the Loader reads as the page (unwatch unmarks it). Once a theme is set (setTheme, changeTheme), SF.Loader.theme and SF.Loader.themePreference read it.",
@@ -29,6 +31,8 @@
     {
       "name": "SF.RuleLoader",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "The load rules by name: what a class, a tag or a component needs. A component set adds its own rules here (its rule.js) with SF.RuleLoader.registerPackage(name, {rules, api, aliases, exports, base}); SF.RuleLoader.packageOf(name) answers where a set is served ({name, base, declared, registered, version, release, api, exported}, frozen). Both are functions, not rules, and are not enumerated (since core.runtime 1.25.0)."
@@ -36,6 +40,8 @@
     {
       "name": "SF.Preferences",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "The person's view preferences: kept in this browser and, when the host keeps them, for the person (simai.interaction-rules).",
@@ -55,6 +61,8 @@
     {
       "name": "SF.RegionNavigation",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "Moves between pages by swapping the content region, not the page (simai.interface-fragment).",
@@ -68,6 +76,8 @@
     {
       "name": "SF.workspace",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "core",
       "summary": "The workspace layout's controller for an .sf-workspace element: show('list' | 'main') sets the narrow view, panel(open) opens or closes the panel (a column when wide, a drawer below); view, panelOpen and layout read the state. The events sf-workspace-view {view} and sf-workspace-panel {open} fire on the element (docs/developer/workspace-layout.md)."
@@ -75,6 +85,8 @@
     {
       "name": "SF.Composition",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "The composition helpers: fragment descriptors, the page host's outputs, registries of component types and ports, field kinds and the words of the built-in editor manifests (editorFieldMessages; owner sf-composition in SF.language); since core.runtime 1.23.0 the one block editor's contracts: the catalogue and variants, layout parameters as utilities, own modifiers, site blocks, named places and the data source port (docs/developer/block-author-guide.md); since core.runtime 1.26.0 the catalogue's groups with their icons and words (CATALOGUE_GROUP_TABLE, Elements and Layout replace Structure, a dated alias until 2027-01-01), each built-in type's icon, and parameter defaults a type prints unset (effectiveProps); since core.runtime 1.27.0 a type in more than one section (catalogue.also_in, BUILTIN_CATALOGUE_ALSO_IN, entryGroups; catalogue() gives sections), the built-in form types and the accent background.",
@@ -129,6 +141,8 @@
     {
       "name": "SF.Effects",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "Background effects (simai.effect): check a manifest, read stored settings, resolve a placement's theme, mount an effect or a windows group under the rules, load one from the pinned catalogue with integrity, run a foreign one only in a sandboxed frame. Since core.runtime 1.25.0 a dated alias of the set effects: the engine lives in simai/ui-effects, SF.package('effects') answers the same functions, and every read of SF.Effects is noted in SF.deprecations (journal global-sf-effects-to-package, remove_after 2027-01-01).",
@@ -160,6 +174,8 @@
     {
       "name": "SF.package",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "core",
       "summary": "A component set's scripted API: SF.package('<set>') is a Promise of what the set's bundle registered as its exports (SF.RuleLoader.registerPackage(name, {exports})), asking for the set's api element when it has not loaded. Rejects when the page has not declared the set, naming the line to add (data-sf-sets on the core script, or SF_BOOT_CONFIG.packages.<set>). Callable as soon as core.js has run; it waits for the Loader (since core.runtime 1.25.0)."
@@ -167,6 +183,8 @@
     {
       "name": "SF.Position",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "Anchored positioning of a floating surface beside its anchor, flipping at the edge.",
@@ -180,6 +198,8 @@
     {
       "name": "SF.Mask",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "Input masks: load the mask library and attach a mask to a field.",
@@ -193,6 +213,8 @@
     {
       "name": "SF.notify",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "core",
       "summary": "Shows a message in the page's one notification area: a string is its text, an object carries status, title, text and the rest."
@@ -200,6 +222,8 @@
     {
       "name": "SF.notifications",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "The notification area: its settings, closing a message and the messages shown.",
@@ -212,6 +236,8 @@
     {
       "name": "SF.sanitizeHtml",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "core",
       "summary": "Cleans untrusted HTML into a DocumentFragment from an allowlist: SF.sanitizeHtml(html, {elements?, codeLanguage?, document?}). Scripts and foreign content are dropped with their content, other unknown elements unwrapped, and only safe links and table spans kept."
@@ -219,6 +245,8 @@
     {
       "name": "SF.safeHref",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "core",
       "summary": "The href SF.sanitizeHtml keeps, or null: http, https and mailto URLs and root-relative paths, never //host or /\\host."
@@ -226,6 +254,8 @@
     {
       "name": "SF.format",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "Dates, days, numbers and file sizes in the page's language (the locale named, else the node's page language), through Intl. date(value, {date, time, intl, locale, node}); relativeDay(value, {now, today, yesterday, tomorrow, weekday, capital}) says today, yesterday, a weekday of the last week or the date, and msUntilNextDay(now) when that changes; relativeTime(value, {now}); dayOffset(value, {now}) counts calendar days; number(value, format, {step, grouping, gap}) by a format word (number, integer, decimal-<n>, percent, compact, currency-<CODE>, unit-<unit>); fileSize(size, {units}) in B, KB, MB, GB. docs/developer/format.md.",
@@ -244,6 +274,8 @@
     {
       "name": "SF.breakpoints",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "The Framework's breakpoint ladder for scripts, the same steps the sheets switch at (xs 0, sm 32rem, md 44rem, lg 60rem, xl 72rem, xxl 80rem): ladder; query(name, {below}) the media query; media(name, {below}) its MediaQueryList; matches(name, {below}) whether the page is that wide now. docs/developer/format.md.",
@@ -257,6 +289,8 @@
     {
       "name": "SF.copyText",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "core",
       "summary": "Copies text: SF.copyText(text, {document}) settles with 'native' (the Clipboard API) or 'legacy' (execCommand over a hidden field, where the API is absent or refused), or rejects (copy_unsupported, or the platform's NotAllowedError). The copy sf-copy-button and the clipboard class make. docs/developer/format.md."
@@ -264,6 +298,8 @@
     {
       "name": "SF.codeCopy",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "Copy on click for code in running text, opt-in with data-sf-code-copy on a container (owner 2026-11-07, R024): refresh(root) marks the code under root that copies and unmarks what no longer should (added and changed containers are followed on their own); copy(code) copies one code's text with SF.copyText and says so in sf-button-copy's words, settling true when copied; isCopyable(code) answers whether a code is a copy control. docs/developer/typography-5.4.md.",
@@ -276,6 +312,8 @@
     {
       "name": "SF.readingPosition",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "The reading position of a scrolling column, the one rule sf-list-feed and sf-list keep a person's place by: create(scroller, {nearEnd, nearStart, onStart}) answers a controller with atEnd(), atStart(), keep(mutate) (content changed above what is read without moving it), toEnd({instant, settle, then}) (smooth unless reduced motion), hold(), release() and check() (call on scroll: onStart once the start is in reach); watchEdge(sentinel, callback, {root, margin}) reports a sentinel coming within reach and answers the way to stop; scrollerOf(node) is the box that scrolls a node (null for the page), the root a watch inside a scroller takes. NEAR_END 96, NEAR_START 240, EDGE_MARGIN 200px. docs/developer/reading-position.md.",
@@ -291,6 +329,8 @@
     {
       "name": "SF.icons",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "The icon helpers every set shares. SF.icons.choices: the frozen list of the hundred and twenty glyph names a person chooses from (a record section, a menu row), drawn as sf-dropdown options of kind icon; raised from sf-view-properties (duplication audit 2026-11-03, A-1).",
@@ -301,6 +341,8 @@
     {
       "name": "SF.language",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "The page's language and the words registered for components.",
@@ -318,6 +360,8 @@
     {
       "name": "SF.pageLanguage",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "core",
       "summary": "The language that applies to a node: the nearest lang."
@@ -325,6 +369,8 @@
     {
       "name": "SF.pageText",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "core",
       "summary": "A component's word in the language of a node, with the page's registered words first."
@@ -332,6 +378,8 @@
     {
       "name": "SF.EarlyPort",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "Ports declared on elements (a <script type=\"application/json\" data-sf-port> island: port, version, url, capabilities, first {intent, payload}): Core sends the first call when it runs, before any component's code, and hands the element the port with connect-port when it is defined; the port's first matching call takes that answer (one request). register(id, adapter) is the page's port registry for an island without a url; start and take are the adoption contract for a product's own adapter (one early answer per port, taken once, matched by port, version, intent and canonical payload, younger than 10 s). docs/developer/early-port.md.",
@@ -353,6 +401,8 @@
     {
       "name": "SF.ready",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "core",
       "summary": "The Loader's readiness (simai/ui-source#16), on window.SF as soon as core.js has run. A thenable: await SF.ready (or SF.ready.then) settles with window.SF exactly when the Loader sends sf-loader-init -- SF.Loader, SF.loadSmartBase and the other core-loader names are there by then -- and a script that asks later gets it already settled; it never rejects. One per page: created once on the shared global, kept by every later bundle (a second core.js included) and never replaced. Called as SF.ready(fn), it runs fn once the Loader is up and the document has been parsed, synchronously when both have happened. A script that runs before core.js queues a function with (window.SF_ON_READY = window.SF_ON_READY || []).push(fn); fn is called with window.SF at the same moment.",
@@ -365,6 +415,8 @@
     {
       "name": "SF.whenDefined",
       "status": "public",
+      "layer": "loader",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "core-loader",
       "summary": "A promise of a Smart element's definition, loading it when the page has not."
@@ -372,6 +424,8 @@
     {
       "name": "SF.whenDefine",
       "status": "public",
+      "layer": "loader",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "core-loader",
       "summary": "The older name of SF.whenDefined, kept."
@@ -379,6 +433,8 @@
     {
       "name": "SF.whenFieldRenderers",
       "status": "public",
+      "layer": "loader",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "core-loader",
       "summary": "A promise of the field renderer set (SF.fieldRenderers), loading it on demand."
@@ -386,6 +442,8 @@
     {
       "name": "SF.create",
       "status": "public",
+      "layer": "loader",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "core-loader",
       "summary": "Creates a component element by name with attributes."
@@ -393,6 +451,8 @@
     {
       "name": "SF.createAsync",
       "status": "public",
+      "layer": "loader",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "core-loader",
       "summary": "SF.create that waits for the element to be defined."
@@ -400,6 +460,8 @@
     {
       "name": "SF.deprecations",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "Old names still accepted and what replaced them, as the change journal declares them."
@@ -407,6 +469,8 @@
     {
       "name": "SF.tags",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "Dated tag aliases: a Smart component renamed to a new tag keeps its old tag until remove_after. names(tag) lists the tag and its open old names, selector(tag) is a selector matching all of them, is(element, tag) tests an element, canonical(tag) gives the current name of an old one, list() every open alias.",
@@ -421,6 +485,8 @@
     {
       "name": "SF.aliases",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "Dated aliases of an element (standard simai.smart-component 1.3.8 §16.20): install(element, table) keeps a component's old event, setting, attribute, action and value names working until remove_after and notes each use in SF.deprecations with its dates; strict = true withholds expired names.",
@@ -438,6 +504,8 @@
     {
       "name": "SF.Assembly",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core",
       "summary": "The assembly runtime of standard simai.smart-component 1.3.8 (owner decision 2026-10-27): define(manifest, {layouts, lang}) defines an assembly's tag from its manifest alone; its parts are any custom elements with a declared interface (interfaces.register). The journal records every turn in development mode (?sf-debug). Not yet: undoable steps and slots in the runtime.",
@@ -462,6 +530,8 @@
     {
       "name": "SF.SfBaseElement",
       "status": "public",
+      "layer": "smart-base",
+      "doc": "public",
       "kind": "class",
       "loaded_by": "smart-base",
       "summary": "The base class of every Smart element; a product's own Smart components extend it."
@@ -469,6 +539,8 @@
     {
       "name": "SF.html",
       "status": "public",
+      "layer": "smart-base",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "smart-base",
       "summary": "Lit's html tag, the one the Smart elements render with."
@@ -476,6 +548,8 @@
     {
       "name": "SF.render",
       "status": "public",
+      "layer": "smart-base",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "smart-base",
       "summary": "Lit's render."
@@ -483,6 +557,8 @@
     {
       "name": "SF.nothing",
       "status": "public",
+      "layer": "smart-base",
+      "doc": "public",
       "kind": "value",
       "loaded_by": "smart-base",
       "summary": "Lit's nothing."
@@ -490,6 +566,8 @@
     {
       "name": "SF.fieldRenderers",
       "status": "public",
+      "layer": "smart-base",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "smart/field-renderers",
       "summary": "The field renderer set: a value in a cell, in a record's view, in its edit control and in a filter.",
@@ -504,6 +582,8 @@
     {
       "name": "SF.ThemePalette",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/theme-palette (SF.Loader.ensurePlugin('theme-palette') or data-sf-theme-palette), and smart/theme-generator",
       "summary": "A whole theme from one colour: the eight tonal palettes as the 128 --sf-<palette>-<tone> primitives and the 160 translucent steps core defines on them (--sf-<palette>-<tone>--alfa-<n>, listed in THEME_ALPHA), 288 variables in all.",
@@ -524,6 +604,8 @@
     {
       "name": "SF.litHtml",
       "status": "internal",
+      "layer": "core",
+      "doc": "internal",
       "kind": "function",
       "loaded_by": "core",
       "summary": "The Lit module, for the runtime's own use. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
@@ -531,6 +613,8 @@
     {
       "name": "SF.loadRuntime",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "core",
       "summary": "Loads the shared Smart runtime (core/js/smart-base.js) and resolves with its modules."
@@ -538,6 +622,8 @@
     {
       "name": "SF.loadSmartBase",
       "status": "public",
+      "layer": "loader",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "core-loader",
       "summary": "Loads the Smart base when the page has no Smart element yet; resolves with SF.smart. A project's own Smart component waits for it."
@@ -545,6 +631,8 @@
     {
       "name": "SF.send",
       "status": "internal",
+      "layer": "core",
+      "doc": "internal",
       "kind": "function",
       "loaded_by": "core",
       "summary": "The runtime's internal message bus. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
@@ -552,6 +640,8 @@
     {
       "name": "SF.receive",
       "status": "internal",
+      "layer": "core",
+      "doc": "internal",
       "kind": "function",
       "loaded_by": "core",
       "summary": "The runtime's internal message bus. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
@@ -559,6 +649,8 @@
     {
       "name": "SF.runtimeModule",
       "status": "public",
+      "layer": "core",
+      "doc": "public",
       "kind": "function",
       "loaded_by": "core",
       "summary": "A promise of one module of the shared Smart runtime by its id (lit, smart-base, page-language, ...), or of a package's shared core by <package>/<module>; what a built Smart bundle imports through. SF.runtimeModule.register(<package>, <abi>, {<module>: namespace}) registers a package's shared core (core.runtime 1.38.0)."
@@ -566,6 +658,8 @@
     {
       "name": "SF.runtimeModules",
       "status": "internal",
+      "layer": "core",
+      "doc": "internal",
       "kind": "object",
       "loaded_by": "core",
       "summary": "The runtime's module registry. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
@@ -573,6 +667,8 @@
     {
       "name": "SF.runtimeArrived",
       "status": "internal",
+      "layer": "core",
+      "doc": "internal",
       "kind": "function",
       "loaded_by": "core",
       "summary": "The runtime's module registry. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
@@ -580,6 +676,8 @@
     {
       "name": "SF.runtimeLoading",
       "status": "internal",
+      "layer": "core",
+      "doc": "internal",
       "kind": "object",
       "loaded_by": "core",
       "summary": "The runtime's module registry. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
@@ -587,6 +685,8 @@
     {
       "name": "SF.runtimeSettled",
       "status": "internal",
+      "layer": "core",
+      "doc": "internal",
       "kind": "function",
       "loaded_by": "core",
       "summary": "The runtime's module registry. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
@@ -594,6 +694,8 @@
     {
       "name": "SF.smart",
       "status": "public",
+      "layer": "smart-base",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "smart-base",
       "summary": "The Smart base: SfBaseElement and the helpers a project's own Smart component extends."
@@ -601,6 +703,8 @@
     {
       "name": "SF.smartBaseAnnounced",
       "status": "internal",
+      "layer": "smart-base",
+      "doc": "internal",
       "kind": "value",
       "loaded_by": "smart-base",
       "summary": "The Smart base's own state. Moved to SF.__internal; the old name reads through to it, noted as deprecated, until 2026-12-01 (journal global-sf-internal)."
@@ -608,6 +712,8 @@
     {
       "name": "SF.smartBaseReady",
       "status": "public",
+      "layer": "loader",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "core-loader",
       "summary": "A promise of the Smart base, however it arrives (a Smart element or SF.loadSmartBase())."
@@ -615,6 +721,8 @@
     {
       "name": "SF.AdminMenu",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/admin-menu",
       "summary": "The AdminMenu component's script API, loaded with the component (component/admin-menu); its methods are the component's documentation."
@@ -622,6 +730,8 @@
     {
       "name": "SF.AnchoredBadge",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/badges",
       "summary": "The counts and dots of component/badges kept from markup (simai/ui-source#12): a .sf-badge with data-count or data-dot is drawn, capped, hidden at 0 and named by the runtime as soon as it is in the page. init(scope) takes a subtree at once, update(badge) one badge, state({count, dot, cap, label}, node) answers what a badge shows and says without touching the page.",
@@ -634,6 +744,8 @@
     {
       "name": "SF.Ajax",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "object",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
@@ -641,6 +753,8 @@
     {
       "name": "SF.Blocks",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "object",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
@@ -648,6 +762,8 @@
     {
       "name": "SF.ButtonGroup",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/button-group",
       "summary": "The ButtonGroup component's script API, loaded with the component (component/button-group); its methods are the component's documentation."
@@ -655,6 +771,8 @@
     {
       "name": "SF.Carousel",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/carousel",
       "summary": "The Carousel component's script API, loaded with the component (component/carousel); its methods are the component's documentation."
@@ -662,6 +780,8 @@
     {
       "name": "SF.Checkbox",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/checkbox",
       "summary": "The Checkbox component's script API, loaded with the component (component/checkbox); its methods are the component's documentation."
@@ -669,6 +789,8 @@
     {
       "name": "SF.Clipboard",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/clipboard",
       "summary": "The Clipboard component's script API, loaded with the component (component/clipboard); its methods are the component's documentation."
@@ -676,6 +798,8 @@
     {
       "name": "SF.CompositionOverlay",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "smart/composition-overlay",
       "summary": "The CompositionOverlay component's script API, loaded with the component (smart/composition-overlay); its methods are the component's documentation."
@@ -683,6 +807,8 @@
     {
       "name": "SF.Controller",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "object",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
@@ -690,6 +816,8 @@
     {
       "name": "SF.CountryCode",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/country-code",
       "summary": "The CountryCode component's script API, loaded with the component (component/country-code); its methods are the component's documentation."
@@ -697,6 +825,8 @@
     {
       "name": "SF.DownloadFile",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/download-file",
       "summary": "The DownloadFile component's script API, loaded with the component (component/download-file); its methods are the component's documentation."
@@ -704,6 +834,8 @@
     {
       "name": "SF.Events",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "object",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
@@ -711,6 +843,8 @@
     {
       "name": "SF.FileUpload",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/file-upload",
       "summary": "The FileUpload component's script API, loaded with the component (component/file-upload); its methods are the component's documentation."
@@ -718,6 +852,8 @@
     {
       "name": "SF.Flag",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/flag",
       "summary": "The Flag component's script API, loaded with the component (component/flag); its methods are the component's documentation."
@@ -725,6 +861,8 @@
     {
       "name": "SF.Gallery",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "object",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
@@ -732,6 +870,8 @@
     {
       "name": "SF.Highlight",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/highlight",
       "summary": "The Highlight component's script API, loaded with the component (component/highlight); its methods are the component's documentation."
@@ -739,6 +879,8 @@
     {
       "name": "SF.InlineEditor",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "smart/inline-editor",
       "summary": "The InlineEditor component's script API, loaded with the component (smart/inline-editor); its methods are the component's documentation."
@@ -746,6 +888,8 @@
     {
       "name": "SF.Input",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/inputs",
       "summary": "The Input component's script API, loaded with the component (component/inputs); its methods are the component's documentation."
@@ -753,6 +897,8 @@
     {
       "name": "SF.Methods",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "object",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
@@ -760,6 +906,8 @@
     {
       "name": "SF.Overbox",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "object",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
@@ -767,6 +915,8 @@
     {
       "name": "SF.Param",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "object",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
@@ -774,6 +924,8 @@
     {
       "name": "SF.Parameters",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "object",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
@@ -781,6 +933,8 @@
     {
       "name": "SF.ProgressBar",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/progress-bar",
       "summary": "The ProgressBar component's script API, loaded with the component (component/progress-bar); its methods are the component's documentation."
@@ -788,6 +942,8 @@
     {
       "name": "SF.ProgressScale",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/progress-scale",
       "summary": "The ProgressScale component's script API, loaded with the component (component/progress-scale); its methods are the component's documentation."
@@ -795,6 +951,8 @@
     {
       "name": "SF.Provider",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "object",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
@@ -802,6 +960,8 @@
     {
       "name": "SF.Radio",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/radio",
       "summary": "The Radio component's script API, loaded with the component (component/radio); its methods are the component's documentation."
@@ -809,6 +969,8 @@
     {
       "name": "SF.RangeSlider",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/range-slider",
       "summary": "The RangeSlider component's script API, loaded with the component (component/range-slider); its methods are the component's documentation."
@@ -816,6 +978,8 @@
     {
       "name": "SF.Resizer",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "smart/resizer",
       "summary": "The Resizer component's script API, loaded with the component (smart/resizer); its methods are the component's documentation."
@@ -823,6 +987,8 @@
     {
       "name": "SF.Scrollbar",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/scrollbar",
       "summary": "The Scrollbar component's script API, loaded with the component (component/scrollbar); its methods are the component's documentation."
@@ -830,6 +996,8 @@
     {
       "name": "SF.Search",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "object",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
@@ -837,6 +1005,8 @@
     {
       "name": "SF.Slider",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/slider",
       "summary": "The Slider component's script API, loaded with the component (component/slider); its methods are the component's documentation."
@@ -844,6 +1014,8 @@
     {
       "name": "SF.Sortable",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "smart/sortable",
       "summary": "The Sortable component's script API, loaded with the component (smart/sortable); its methods are the component's documentation."
@@ -851,6 +1023,8 @@
     {
       "name": "SF.Special",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "object",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
@@ -858,6 +1032,8 @@
     {
       "name": "SF.Spinner",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/spinner",
       "summary": "The Spinner component's script API, loaded with the component (component/spinner); its methods are the component's documentation."
@@ -865,6 +1041,8 @@
     {
       "name": "SF.Switch",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/switch",
       "summary": "The Switch component's script API, loaded with the component (component/switch); its methods are the component's documentation."
@@ -872,6 +1050,8 @@
     {
       "name": "SF.Tab",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/tab",
       "summary": "The Tab component's script API, loaded with the component (component/tab); its methods are the component's documentation."
@@ -879,6 +1059,8 @@
     {
       "name": "SF.Tabs",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/tabs",
       "summary": "The Tabs component's script API, loaded with the component (component/tabs); its methods are the component's documentation."
@@ -886,6 +1068,8 @@
     {
       "name": "SF.Textarea",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/textarea",
       "summary": "The Textarea component's script API, loaded with the component (component/textarea); its methods are the component's documentation."
@@ -893,6 +1077,8 @@
     {
       "name": "SF.Toast",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/toast",
       "summary": "The Toast component's script API, loaded with the component (component/toast); its methods are the component's documentation."
@@ -900,6 +1086,8 @@
     {
       "name": "SF.Tree",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/tree",
       "summary": "The Tree component's script API, loaded with the component (component/tree); its methods are the component's documentation."
@@ -907,6 +1095,8 @@
     {
       "name": "SF.Verification",
       "status": "public",
+      "layer": "component",
+      "doc": "public",
       "kind": "object",
       "loaded_by": "component/verification",
       "summary": "The Verification component's script API, loaded with the component (component/verification); its methods are the component's documentation."
@@ -914,6 +1104,8 @@
     {
       "name": "SF.cloneDeep",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "function",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
@@ -921,6 +1113,8 @@
     {
       "name": "SF.curpos",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "function",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
@@ -928,6 +1122,8 @@
     {
       "name": "SF.extend",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "function",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
@@ -935,6 +1131,8 @@
     {
       "name": "SF.flag",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "function",
       "loaded_by": "component/flag",
       "summary": "A helper of the legacy system scripts (component/flag); the runtime's."
@@ -942,6 +1140,8 @@
     {
       "name": "SF.quickkey",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "function",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
@@ -949,6 +1149,8 @@
     {
       "name": "SF.topZIndex",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "function",
       "loaded_by": "component/sf-system",
       "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
@@ -956,6 +1158,8 @@
     {
       "name": "SF.ComponentRegistry",
       "status": "internal",
+      "layer": "component",
+      "doc": "internal",
       "kind": "object",
       "loaded_by": "component/register",
       "summary": "A helper of the legacy system scripts (component/register); the runtime's."
@@ -963,6 +1167,8 @@
     {
       "name": "SF.__internal",
       "status": "internal",
+      "layer": "core",
+      "doc": "internal",
       "kind": "object",
       "loaded_by": "core",
       "summary": "The runtime's own names (the message bus, the runtime module registry's state, the Smart base's announcement, litHtml); nothing a page calls."

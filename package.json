@@ -50,6 +50,7 @@
     "dimensions:audit": "node scripts/audit-dimensions.mjs --summary",
     "static-palette:generate": "node scripts/generate-static-palette.mjs",
     "static-palette:check": "node scripts/generate-static-palette.mjs --check",
+    "public-js-api:check": "node scripts/generate-public-js-api-layers.mjs --check",
     "linkage:check": "node scripts/linkage.mjs passports --check",
     "linkage:write": "node scripts/linkage.mjs passports --write",
     "test:linkage": "node --test tests/linkage.contract.test.mjs",

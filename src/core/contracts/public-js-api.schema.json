@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "simai.framework.public-js-api",
+  "title": "SIMAI Framework public JS API",
+  "description": "The names a page may call on window.SF (src/core/contracts/public-js-api.json). Each name says whether it is public or internal (status), what it is (kind), when it exists (loaded_by), where the documentation lists it (layer, owner decision D17, 2026-11-11) and whether authors see it listed (doc).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "schema_version", "summary", "globals"],
+  "properties": {
+    "schema": {"const": "simai.framework.public-js-api"},
+    "schema_version": {"const": 1},
+    "summary": {"type": "string", "minLength": 1},
+    "globals": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "status", "layer", "doc", "kind", "loaded_by", "summary"],
+        "properties": {
+          "name": {"type": "string", "pattern": "^SF\\.[A-Za-z_]+$"},
+          "status": {"enum": ["public", "internal"]},
+          "layer": {
+            "description": "core: core.js; loader: the Loader, at sf-loader-init; smart-base: the Smart base and the shared Smart runtime; component: a component's script API, documented on its component's page.",
+            "enum": ["core", "loader", "smart-base", "component"]
+          },
+          "doc": {
+            "description": "public: listed for authors; internal: not listed. An internal status is never listed.",
+            "enum": ["public", "internal"]
+          },
+          "kind": {"enum": ["object", "function", "class", "value"]},
+          "loaded_by": {"type": "string", "minLength": 1},
+          "summary": {"type": "string", "minLength": 11},
+          "members": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "deprecated": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["since", "remove_after", "journal"],
+            "properties": {
+              "since": {"type": "string", "format": "date"},
+              "remove_after": {"type": "string", "format": "date"},
+              "journal": {"type": "string", "minLength": 1},
+              "to": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        "if": {"properties": {"status": {"const": "internal"}}},
+        "then": {"properties": {"doc": {"const": "internal"}}}
+      }
+    }
+  }
+}
