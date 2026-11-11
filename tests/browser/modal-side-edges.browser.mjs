@@ -6,7 +6,9 @@
 //        variant B): no border on the screen's edge, the top and the bottom,
 //        square corners there, the inner corners the window's radius and the
 //        inner side its border; inline-start and inline-end follow the
-//        writing direction; on a phone (390) the panel is the whole screen
+//        writing direction (and so do left and right, which the window
+//        places at the line's start and end; an open inline-start or
+//        inline-end panel in a right-to-left page stood off the screen); on a phone (390) the panel is the whole screen
 //        with no radius and no border. The centre window keeps all four.
 //   L1   the body's scroll box never stands outside the window's frame: a
 //        page's --sf-modal-padding-inline below 1/4 (2px, 0px) keeps it
@@ -26,7 +28,7 @@ const mounts = [
   ['/distr/smart/', join(out, 'smart', 'smart')],
 ];
 let current = '';
-const shell = (dir, theme, body) => `<!doctype html><html lang="ru" dir="${dir}" class="theme-${theme}"><head><meta charset="utf-8"><title>modal edges</title>
+const shell = (dir, theme, body) => `<!doctype html><html lang="ru" dir="${dir}" class="theme-${theme}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>modal edges</title>
 <link rel="stylesheet" href="/distr/core/css/core.css">
 <script>window.sfPath = '/distr/'; window.SF_BOOT_CONFIG = {preloader: {enabled: false}, smart: {base: true}, theme: false};</script>
 <script src="/distr/core/js/core.js"></script>
@@ -98,7 +100,9 @@ try {
       ['right', 'ltr', 'r'], ['left', 'ltr', 'l'],
       ['inline-end', 'ltr', 'r'], ['inline-start', 'ltr', 'l'],
       ['inline-end', 'rtl', 'l'], ['inline-start', 'rtl', 'r'],
-      ['right', 'rtl', 'r'],
+      // right and left stand at the end and the start of the line, as the
+      // window places them (justify-content), in a right-to-left page too.
+      ['right', 'rtl', 'l'], ['left', 'rtl', 'r'],
     ];
     for (const [position, dir, edge] of sides) {
       const m = await measure(1440, false, dir, theme, `<sf-modal position="${position}" heading="Панель" width="25rem" open>${content}</sf-modal>`);

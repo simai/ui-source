@@ -197,11 +197,11 @@
   transform: translateX(100%);
 }
 
-.sf-modal[data-sf-modal-position='inline-start']:dir(rtl) [data-sf-modal-panel] {
+.sf-modal[data-sf-modal-position='inline-start']:where(:dir(rtl)) [data-sf-modal-panel] {
   transform: translateX(100%);
 }
 
-.sf-modal[data-sf-modal-position='inline-end']:dir(rtl) [data-sf-modal-panel] {
+.sf-modal[data-sf-modal-position='inline-end']:where(:dir(rtl)) [data-sf-modal-panel] {
   transform: translateX(-100%);
 }
 
@@ -365,30 +365,17 @@
    screen's edge are square and the panel draws no edge there, nor along the
    top and the bottom; the inner corners keep the window's radius
    (--sf-modal-radius, the theme's --sf-radius--surface) and the inner side
-   its border. left and right are the screen's sides; inline-start and
-   inline-end follow the writing direction. */
-.sf-modal[data-sf-modal-position='right'] > [data-sf-modal-panel] > [data-sf-modal-surface] {
-  border-block-width: 0;
-  border-right-width: 0;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-.sf-modal[data-sf-modal-position='left'] > [data-sf-modal-panel] > [data-sf-modal-surface] {
-  border-block-width: 0;
-  border-left-width: 0;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.sf-modal[data-sf-modal-position='inline-end'] > [data-sf-modal-panel] > [data-sf-modal-surface] {
+   its border. The edge is the one the panel stands at: right and inline-end
+   at the end of the line (justify-content: flex-end), left and inline-start
+   at its start, so in a right-to-left page as well. */
+.sf-modal:is([data-sf-modal-position='right'], [data-sf-modal-position='inline-end']) > [data-sf-modal-panel] > [data-sf-modal-surface] {
   border-block-width: 0;
   border-inline-end-width: 0;
   border-start-end-radius: 0;
   border-end-end-radius: 0;
 }
 
-.sf-modal[data-sf-modal-position='inline-start'] > [data-sf-modal-panel] > [data-sf-modal-surface] {
+.sf-modal:is([data-sf-modal-position='left'], [data-sf-modal-position='inline-start']) > [data-sf-modal-panel] > [data-sf-modal-surface] {
   border-block-width: 0;
   border-inline-start-width: 0;
   border-start-start-radius: 0;
