@@ -1,0 +1,39 @@
+{
+  "schema": "simai.composite.host-port.conformance.v1",
+  "port": "simai.document-port",
+  "version": "1.0.0",
+  "transport": "neutral",
+  "summary": "The draft first edition: load, resolve, save with one revision for every language and a conflict that carries the current element, history, restore, publish and rollback with a client_key, area inheritance by the Recipe rule, and the limits per language value.",
+  "answers": [
+    "applied",
+    "conflict",
+    "refused",
+    "unavailable"
+  ],
+  "cases": [
+    "load-answers-every-language-under-one-revision",
+    "load-leaves-a-missing-translation-absent",
+    "save-moves-one-revision-for-all-languages",
+    "save-removes-a-language-with-null",
+    "save-stale-revision-is-a-conflict-with-the-current",
+    "save-refused-as-invalid-changes-nothing",
+    "save-over-the-node-limit-is-refused",
+    "save-over-the-byte-limit-is-refused",
+    "save-unknown-language-is-refused",
+    "save-languages-disagree-on-areas-is-refused",
+    "load-marks-every-area-with-its-origin",
+    "resolve-follows-the-recipe-inherit-replace-clear",
+    "save-into-a-locked-area-is-refused",
+    "history-lists-drafts-and-publications-apart",
+    "restore-is-a-new-draft",
+    "publish-repeat-with-the-same-key-is-one-publication",
+    "publish-same-key-other-revision-is-an-idempotency-conflict",
+    "publish-against-a-moved-publication-is-a-conflict",
+    "publish-leaves-out-a-missing-translation",
+    "rollback-is-a-new-publication",
+    "publish-at-without-scheduling-is-refused",
+    "capability-absent-is-refused-by-name",
+    "unknown-intent-is-refused",
+    "storage-down-is-unavailable"
+  ]
+}

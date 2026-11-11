@@ -1,0 +1,491 @@
+{
+  "schema": "simai.composite.host-port.v1",
+  "port": "simai.document-port",
+  "version": "1.0.0",
+  "component": "smart.editor",
+  "element": "sf-editor",
+  "summary": "The host storage seam of a composition document: a site, section or page level held as one storage element with a value per language and one revision for all languages. The editor holds no storage: it asks to load, resolve, save, list the history, restore, publish and roll back, and one host answers with one of four answers. A save names the revision it was prepared against, so two writers meet as a conflict, never as a silent overwrite; a publish, a restore and a rollback carry a client_key, so a repeat after a lost answer is the same operation. A level inherits its areas the way a Recipe fills regions: an area the value leaves out inherits, an area it carries replaces, an area it carries empty clears; the resolved document marks every area with its origin. There is no record lock: two writers are told apart by the revision, and a level above may lock an area. The editor that reads the port is sf-editor (simai/ui-editor); Larena, Bitrix (simai.layout) and Docara answer it.",
+  "capabilities": {
+    "levels": {
+      "summary": "The element has parent levels (section, site) and the host resolves inheritance: load answers resolved and areas, and document.resolve previews an unsaved value over its parents. A host of single pages (a folder) does not announce it, and its documents carry every area themselves.",
+      "intents": [
+        "document.resolve"
+      ],
+      "data": [
+        "resolved",
+        "areas"
+      ]
+    },
+    "history": {
+      "summary": "The drafts of the element are kept, and one can be taken back as a new draft.",
+      "intents": [
+        "history.list",
+        "document.restore"
+      ],
+      "data": [
+        "drafts",
+        "publications"
+      ]
+    },
+    "publish": {
+      "summary": "The element has a public state apart from its draft: a revision is published, and an earlier publication can be published again as a new one. A host that publishes keeps its publications, so rollback is part of it.",
+      "intents": [
+        "document.publish",
+        "document.rollback"
+      ],
+      "data": [
+        "publication",
+        "published"
+      ]
+    },
+    "scheduled-publish": {
+      "summary": "document.publish accepts at, a time in the future: the publication is answered scheduled and takes effect then. Without it a publish that carries at is refused capability-not-provided."
+    }
+  },
+  "data": {
+    "target": {
+      "summary": "The storage element the editor works on, bound by the host; its level and the parent levels it inherits from.",
+      "required": true,
+      "schema": {
+        "$ref": "document-port.schema.json#/$defs/target"
+      }
+    },
+    "revision": {
+      "summary": "The revision of the whole element after the answer: one for every language.",
+      "required": true,
+      "schema": {
+        "$ref": "document-port.schema.json#/$defs/revision"
+      }
+    },
+    "languages": {
+      "summary": "The languages the element may hold, in the host's order; the first is the main one. A language may be listed with no value yet (no translation).",
+      "required": true,
+      "schema": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "$ref": "document-port.schema.json#/$defs/language"
+        }
+      }
+    },
+    "values": {
+      "summary": "The stored value per language, as the level wrote it (areas it inherits left out). A language without a value is absent.",
+      "required": true,
+      "schema": {
+        "$ref": "document-port.schema.json#/$defs/values"
+      }
+    },
+    "rights": {
+      "summary": "What the reader may do here, from the host on every load.",
+      "required": true,
+      "schema": {
+        "$ref": "document-port.schema.json#/$defs/rights"
+      }
+    },
+    "limits": {
+      "summary": "The size a language value may have: 200 nodes and 262144 bytes at most in 1.0.0.",
+      "required": true,
+      "schema": {
+        "$ref": "document-port.schema.json#/$defs/limits"
+      }
+    },
+    "resolved": {
+      "summary": "Per language, the value over its parents, every layout.region marked under extensions[\"simai:area\"]. Only with levels.",
+      "schema": {
+        "$ref": "document-port.schema.json#/$defs/resolved"
+      }
+    },
+    "areas": {
+      "summary": "The same marks by area name: origin, state (inherited, replaced, cleared) and locked. Only with levels.",
+      "schema": {
+        "$ref": "document-port.schema.json#/$defs/areas"
+      }
+    },
+    "published": {
+      "summary": "The live publication of the element, or null when it has none. Only with publish.",
+      "schema": {
+        "oneOf": [
+          {
+            "type": "null"
+          },
+          {
+            "$ref": "document-port.schema.json#/$defs/publication"
+          }
+        ]
+      }
+    },
+    "publication": {
+      "summary": "The publication a publish or a rollback made or, for a repeat of the same client_key, the one it made before.",
+      "schema": {
+        "$ref": "document-port.schema.json#/$defs/publication"
+      }
+    },
+    "drafts": {
+      "summary": "The draft revisions, newest first.",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "document-port.schema.json#/$defs/draft"
+        }
+      }
+    },
+    "publications": {
+      "summary": "The publications, newest first, apart from the drafts.",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "document-port.schema.json#/$defs/publication"
+        }
+      }
+    },
+    "diagnostics": {
+      "summary": "What the host's validation found in a refused save, with the language each is about.",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "document-port.schema.json#/$defs/diagnostic"
+        }
+      }
+    }
+  },
+  "intents": {
+    "document.load": {
+      "summary": "The element as stored: its target, languages, values, revision, rights and limits; with levels also resolved and areas, with publish also published.",
+      "event": "document-port:load",
+      "payload": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": null,
+      "answer_data": {
+        "type": "object",
+        "required": [
+          "target",
+          "revision",
+          "languages",
+          "values",
+          "rights",
+          "limits"
+        ]
+      }
+    },
+    "document.resolve": {
+      "summary": "Preview an unsaved value over its parents without writing anything: the resolved document and the area marks, as a save would give them.",
+      "event": "document-port:resolve",
+      "payload": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "values"
+        ],
+        "properties": {
+          "values": {
+            "$ref": "document-port.schema.json#/$defs/values"
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "levels",
+      "answer_data": {
+        "type": "object",
+        "required": [
+          "resolved",
+          "areas"
+        ]
+      }
+    },
+    "document.save": {
+      "summary": "Write the languages given, against the revision the editor has. The host compares it with what it stored, never trusts it; an applied save is a new revision for the whole element. Languages left out keep their values; null removes one. Every language must agree on which areas it inherits, replaces or clears.",
+      "event": "document-port:save",
+      "payload": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "values",
+          "expected_revision"
+        ],
+        "properties": {
+          "values": {
+            "$ref": "document-port.schema.json#/$defs/values_write"
+          },
+          "expected_revision": {
+            "$ref": "document-port.schema.json#/$defs/revision"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": null,
+      "answer_data": {
+        "type": "object",
+        "required": [
+          "revision",
+          "values"
+        ]
+      }
+    },
+    "history.list": {
+      "summary": "The drafts and the publications of the element, apart, newest first.",
+      "event": "document-port:history",
+      "payload": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "before": {
+            "$ref": "document-port.schema.json#/$defs/revision"
+          }
+        }
+      },
+      "carries_revision": false,
+      "answers": [
+        "applied",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "history",
+      "answer_data": {
+        "type": "object",
+        "required": [
+          "drafts",
+          "publications"
+        ]
+      }
+    },
+    "document.restore": {
+      "summary": "Take a draft revision back: a new draft revision with that revision's values, never a rewind; the history keeps both.",
+      "event": "document-port:restore",
+      "payload": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "revision",
+          "expected_revision",
+          "client_key"
+        ],
+        "properties": {
+          "revision": {
+            "$ref": "document-port.schema.json#/$defs/revision"
+          },
+          "expected_revision": {
+            "$ref": "document-port.schema.json#/$defs/revision"
+          },
+          "client_key": {
+            "$ref": "document-port.schema.json#/$defs/client_key"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "history",
+      "answer_data": {
+        "type": "object",
+        "required": [
+          "revision",
+          "values"
+        ]
+      }
+    },
+    "document.publish": {
+      "summary": "Publish a draft revision, in the languages that have a value or the ones asked; at, with scheduled-publish, for a later time. expected_published is the publication the editor saw (null for none): a live state that moved since is a conflict environment-changed.",
+      "event": "document-port:publish",
+      "payload": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "revision",
+          "client_key",
+          "expected_published"
+        ],
+        "properties": {
+          "revision": {
+            "$ref": "document-port.schema.json#/$defs/revision"
+          },
+          "client_key": {
+            "$ref": "document-port.schema.json#/$defs/client_key"
+          },
+          "expected_published": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "document-port.schema.json#/$defs/key"
+              }
+            ]
+          },
+          "languages": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "document-port.schema.json#/$defs/language"
+            }
+          },
+          "at": {
+            "$ref": "document-port.schema.json#/$defs/at"
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "publish",
+      "answer_data": {
+        "type": "object",
+        "required": [
+          "publication"
+        ]
+      }
+    },
+    "document.rollback": {
+      "summary": "Publish an earlier publication again: a new publication of that publication's revision; the draft is left alone.",
+      "event": "document-port:rollback",
+      "payload": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "publication",
+          "client_key",
+          "expected_published"
+        ],
+        "properties": {
+          "publication": {
+            "$ref": "document-port.schema.json#/$defs/key"
+          },
+          "client_key": {
+            "$ref": "document-port.schema.json#/$defs/client_key"
+          },
+          "expected_published": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "document-port.schema.json#/$defs/key"
+              }
+            ]
+          }
+        }
+      },
+      "carries_revision": true,
+      "answers": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable"
+      ],
+      "capability": "publish",
+      "answer_data": {
+        "type": "object",
+        "required": [
+          "publication"
+        ]
+      }
+    }
+  },
+  "answer": {
+    "summary": "Every intent is answered with one object. answer says what happened; data carries what an applied answer supplies (the intent's answer_data). A conflict carries current_revision and current, the element as it is now, so the editor keeps the unsaved input and shows the stored one beside it; its reason is stale-revision (the draft moved), environment-changed (the live publication moved) or idempotency-conflict (a client_key reused with other parameters). A refused and an unavailable answer carry reason and message; a refusal the validation explains carries data.diagnostics, and the element is left exactly as it was. Refusal reasons of 1.0.0: invalid, too-large, structure-mismatch, area-locked, unknown-language, not-found, access-denied, capability-not-provided, unknown-intent. Unavailable: storage-unavailable. Reasons are codes compared without regard to - and _. A host answers unavailable rather than throwing, and never answers applied to something it did not do. An answer lost on the way is not a failure: the editor repeats the same write with the same client_key (or, for a save, reads the element and compares) and never invents a new key for it.",
+    "schema": {
+      "type": "object",
+      "required": [
+        "answer"
+      ],
+      "properties": {
+        "answer": {
+          "enum": [
+            "applied",
+            "conflict",
+            "refused",
+            "unavailable"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+        },
+        "message": {
+          "type": "string",
+          "description": "Words for the reader in the reader's language; never server diagnostics, paths or SQL."
+        },
+        "data": {
+          "type": "object"
+        },
+        "current_revision": {
+          "$ref": "document-port.schema.json#/$defs/revision"
+        },
+        "current": {
+          "$ref": "document-port.schema.json#/$defs/current"
+        }
+      }
+    }
+  },
+  "settings": {
+    "layers": [
+      "personal"
+    ],
+    "shared_only_fields": [],
+    "reset": {
+      "semantics": "compare-and-set",
+      "summary": "The port keeps no settings of the editor: the element is the document, its languages and levels are the host's, and the theme and the interface language are the page's. Declared the way the chat and mail ports declare the same case."
+    },
+    "target": {
+      "kinds": [
+        "personal"
+      ],
+      "carries_revision": false
+    }
+  },
+  "conformance": {
+    "kit": "kit",
+    "sha256": "9b8bea2ff2014e3b62611d38cc7dd9c4c8d83ccfebb26f8d17212418df0a25dd",
+    "cases": 24
+  },
+  "compatibility": {
+    "previous_major": null,
+    "supported_until": null,
+    "recheck": [
+      "a draft edition (fix/document-port): no host or editor implements it yet; it becomes 1.0.0 of record when the first adapter passes the kit",
+      "a new intent, capability or refusal reason is a minor edition; removing one, or changing what an answer must carry, is a major edition",
+      "the editor never names a target: the host binds the element, and a different element is a different binding",
+      "one revision for the whole element; a save of one language moves it for all, and keeps the languages it does not carry",
+      "a missing translation is absent, never another language's value; a publication publishes only languages that have one",
+      "areas follow the Recipe: left out inherits, carried replaces, carried empty clears; the mark lives only in the resolved document",
+      "no record lock in 1.0.0 (owner decision 2026-11-10, item 4): areas and levels lock; writers are told apart by the revision",
+      "publish, restore and rollback carry a client_key; a repeat is the same operation and gets the stored answer",
+      "restore and rollback make new revisions and new publications; nothing is rewound",
+      "limits per language value: 200 nodes, 262144 bytes; a host may announce less"
+    ]
+  }
+}

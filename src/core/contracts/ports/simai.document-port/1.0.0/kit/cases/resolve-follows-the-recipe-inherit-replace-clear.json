@@ -1,0 +1,716 @@
+{
+  "id": "resolve-follows-the-recipe-inherit-replace-clear",
+  "intent": "document.resolve",
+  "capability": "levels",
+  "summary": "An area the value leaves out inherits, an area it carries replaces, an area it carries empty clears, as Recipe fills a slot.",
+  "given": {
+    "capabilities": [
+      "levels"
+    ],
+    "target": {
+      "level": "page",
+      "ref": "page:/about/team/",
+      "parents": [
+        {
+          "level": "section",
+          "ref": "section:/about/"
+        },
+        {
+          "level": "site",
+          "ref": "site:s1"
+        }
+      ]
+    },
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "revision": "7",
+    "at": "2026-11-11T09:00:00Z",
+    "values": {
+      "ru": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "ru",
+        "root": {
+          "id": "root",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "shell",
+                "type": "layout.regions",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "r-main",
+                      "type": "layout.region",
+                      "props": {
+                        "name": "main",
+                        "landmark": "main"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "id": "main-1",
+                            "type": "content.paragraph",
+                            "data": {
+                              "content": [
+                                {
+                                  "text": "Команда"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "en": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "en",
+        "root": {
+          "id": "root",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "shell",
+                "type": "layout.regions",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "r-main",
+                      "type": "layout.region",
+                      "props": {
+                        "name": "main",
+                        "landmark": "main"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "id": "main-1",
+                            "type": "content.paragraph",
+                            "data": {
+                              "content": [
+                                {
+                                  "text": "Team"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "limits": {
+      "max_nodes": 200,
+      "max_bytes": 262144
+    },
+    "parents": {
+      "section:/about/": {
+        "values": {
+          "ru": {
+            "schema": "simai.composition.document",
+            "schema_version": 1,
+            "id": "section",
+            "profile": "ui-layout",
+            "locale": "ru",
+            "root": {
+              "id": "root",
+              "type": "layout.page",
+              "slots": {
+                "default": [
+                  {
+                    "id": "shell",
+                    "type": "layout.regions",
+                    "slots": {
+                      "regions": [
+                        {
+                          "id": "r-aside",
+                          "type": "layout.region",
+                          "props": {
+                            "name": "aside",
+                            "landmark": "complementary"
+                          },
+                          "slots": {
+                            "default": [
+                              {
+                                "id": "aside-1",
+                                "type": "content.paragraph",
+                                "data": {
+                                  "content": [
+                                    {
+                                      "text": "Колонка раздела"
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "en": {
+            "schema": "simai.composition.document",
+            "schema_version": 1,
+            "id": "section",
+            "profile": "ui-layout",
+            "locale": "en",
+            "root": {
+              "id": "root",
+              "type": "layout.page",
+              "slots": {
+                "default": [
+                  {
+                    "id": "shell",
+                    "type": "layout.regions",
+                    "slots": {
+                      "regions": [
+                        {
+                          "id": "r-aside",
+                          "type": "layout.region",
+                          "props": {
+                            "name": "aside",
+                            "landmark": "complementary"
+                          },
+                          "slots": {
+                            "default": [
+                              {
+                                "id": "aside-1",
+                                "type": "content.paragraph",
+                                "data": {
+                                  "content": [
+                                    {
+                                      "text": "Section column"
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "locked": []
+      },
+      "site:s1": {
+        "values": {
+          "ru": {
+            "schema": "simai.composition.document",
+            "schema_version": 1,
+            "id": "site",
+            "profile": "ui-layout",
+            "locale": "ru",
+            "root": {
+              "id": "root",
+              "type": "layout.page",
+              "slots": {
+                "default": [
+                  {
+                    "id": "shell",
+                    "type": "layout.regions",
+                    "slots": {
+                      "regions": [
+                        {
+                          "id": "r-header",
+                          "type": "layout.region",
+                          "props": {
+                            "name": "header",
+                            "landmark": "banner"
+                          },
+                          "slots": {
+                            "default": [
+                              {
+                                "id": "header-1",
+                                "type": "content.paragraph",
+                                "data": {
+                                  "content": [
+                                    {
+                                      "text": "Шапка сайта"
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "r-main",
+                          "type": "layout.region",
+                          "props": {
+                            "name": "main",
+                            "landmark": "main"
+                          },
+                          "slots": {
+                            "default": []
+                          }
+                        },
+                        {
+                          "id": "r-aside",
+                          "type": "layout.region",
+                          "props": {
+                            "name": "aside",
+                            "landmark": "complementary"
+                          },
+                          "slots": {
+                            "default": [
+                              {
+                                "id": "aside-1",
+                                "type": "content.paragraph",
+                                "data": {
+                                  "content": [
+                                    {
+                                      "text": "Колонка сайта"
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "r-footer",
+                          "type": "layout.region",
+                          "props": {
+                            "name": "footer",
+                            "landmark": "contentinfo"
+                          },
+                          "slots": {
+                            "default": [
+                              {
+                                "id": "footer-1",
+                                "type": "content.paragraph",
+                                "data": {
+                                  "content": [
+                                    {
+                                      "text": "Подвал сайта"
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "en": {
+            "schema": "simai.composition.document",
+            "schema_version": 1,
+            "id": "site",
+            "profile": "ui-layout",
+            "locale": "en",
+            "root": {
+              "id": "root",
+              "type": "layout.page",
+              "slots": {
+                "default": [
+                  {
+                    "id": "shell",
+                    "type": "layout.regions",
+                    "slots": {
+                      "regions": [
+                        {
+                          "id": "r-header",
+                          "type": "layout.region",
+                          "props": {
+                            "name": "header",
+                            "landmark": "banner"
+                          },
+                          "slots": {
+                            "default": [
+                              {
+                                "id": "header-1",
+                                "type": "content.paragraph",
+                                "data": {
+                                  "content": [
+                                    {
+                                      "text": "Site header"
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "r-main",
+                          "type": "layout.region",
+                          "props": {
+                            "name": "main",
+                            "landmark": "main"
+                          },
+                          "slots": {
+                            "default": []
+                          }
+                        },
+                        {
+                          "id": "r-aside",
+                          "type": "layout.region",
+                          "props": {
+                            "name": "aside",
+                            "landmark": "complementary"
+                          },
+                          "slots": {
+                            "default": [
+                              {
+                                "id": "aside-1",
+                                "type": "content.paragraph",
+                                "data": {
+                                  "content": [
+                                    {
+                                      "text": "Site column"
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "id": "r-footer",
+                          "type": "layout.region",
+                          "props": {
+                            "name": "footer",
+                            "landmark": "contentinfo"
+                          },
+                          "slots": {
+                            "default": [
+                              {
+                                "id": "footer-1",
+                                "type": "content.paragraph",
+                                "data": {
+                                  "content": [
+                                    {
+                                      "text": "Site footer"
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "locked": []
+      }
+    }
+  },
+  "when": {
+    "intent": "document.resolve",
+    "payload": {
+      "values": {
+        "ru": {
+          "schema": "simai.composition.document",
+          "schema_version": 1,
+          "id": "page",
+          "profile": "ui-layout",
+          "locale": "ru",
+          "root": {
+            "id": "root",
+            "type": "layout.page",
+            "slots": {
+              "default": [
+                {
+                  "id": "shell",
+                  "type": "layout.regions",
+                  "slots": {
+                    "regions": [
+                      {
+                        "id": "r-main",
+                        "type": "layout.region",
+                        "props": {
+                          "name": "main",
+                          "landmark": "main"
+                        },
+                        "slots": {
+                          "default": [
+                            {
+                              "id": "main-1",
+                              "type": "content.paragraph",
+                              "data": {
+                                "content": [
+                                  {
+                                    "text": "Команда"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "r-header",
+                        "type": "layout.region",
+                        "props": {
+                          "name": "header",
+                          "landmark": "banner"
+                        },
+                        "slots": {
+                          "default": [
+                            {
+                              "id": "header-1",
+                              "type": "content.paragraph",
+                              "data": {
+                                "content": [
+                                  {
+                                    "text": "Своя шапка"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "r-footer",
+                        "type": "layout.region",
+                        "props": {
+                          "name": "footer",
+                          "landmark": "contentinfo"
+                        },
+                        "slots": {
+                          "default": []
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "en": {
+          "schema": "simai.composition.document",
+          "schema_version": 1,
+          "id": "page",
+          "profile": "ui-layout",
+          "locale": "en",
+          "root": {
+            "id": "root",
+            "type": "layout.page",
+            "slots": {
+              "default": [
+                {
+                  "id": "shell",
+                  "type": "layout.regions",
+                  "slots": {
+                    "regions": [
+                      {
+                        "id": "r-main",
+                        "type": "layout.region",
+                        "props": {
+                          "name": "main",
+                          "landmark": "main"
+                        },
+                        "slots": {
+                          "default": [
+                            {
+                              "id": "main-1",
+                              "type": "content.paragraph",
+                              "data": {
+                                "content": [
+                                  {
+                                    "text": "Team"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "r-header",
+                        "type": "layout.region",
+                        "props": {
+                          "name": "header",
+                          "landmark": "banner"
+                        },
+                        "slots": {
+                          "default": [
+                            {
+                              "id": "header-1",
+                              "type": "content.paragraph",
+                              "data": {
+                                "content": [
+                                  {
+                                    "text": "Own header"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "r-footer",
+                        "type": "layout.region",
+                        "props": {
+                          "name": "footer",
+                          "landmark": "contentinfo"
+                        },
+                        "slots": {
+                          "default": []
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "resolved",
+      "areas"
+    ],
+    "expect": [
+      {
+        "area": "header",
+        "language": "ru",
+        "mark": {
+          "origin": "page",
+          "state": "replaced",
+          "locked": false
+        },
+        "texts": [
+          "Своя шапка"
+        ]
+      },
+      {
+        "area": "footer",
+        "language": "en",
+        "mark": {
+          "origin": "page",
+          "state": "cleared",
+          "locked": false
+        },
+        "texts": []
+      },
+      {
+        "area": "aside",
+        "language": "ru",
+        "mark": {
+          "origin": "section",
+          "state": "inherited",
+          "locked": false
+        },
+        "texts": [
+          "Колонка раздела"
+        ]
+      }
+    ],
+    "note": "resolve writes nothing: a load after it answers revision 7 and the stored values."
+  },
+  "after": [
+    {
+      "when": {
+        "intent": "document.load",
+        "payload": {}
+      },
+      "then": {
+        "answer": "applied",
+        "expect": [
+          {
+            "path": "data.revision",
+            "equals": "7"
+          },
+          {
+            "path": "data.values.ru",
+            "equals": {
+              "schema": "simai.composition.document",
+              "schema_version": 1,
+              "id": "page",
+              "profile": "ui-layout",
+              "locale": "ru",
+              "root": {
+                "id": "root",
+                "type": "layout.page",
+                "slots": {
+                  "default": [
+                    {
+                      "id": "shell",
+                      "type": "layout.regions",
+                      "slots": {
+                        "regions": [
+                          {
+                            "id": "r-main",
+                            "type": "layout.region",
+                            "props": {
+                              "name": "main",
+                              "landmark": "main"
+                            },
+                            "slots": {
+                              "default": [
+                                {
+                                  "id": "main-1",
+                                  "type": "content.paragraph",
+                                  "data": {
+                                    "content": [
+                                      {
+                                        "text": "Команда"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

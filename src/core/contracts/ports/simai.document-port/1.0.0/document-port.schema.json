@@ -1,0 +1,358 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/contracts/ports/simai.document-port/1.0.0/document-port.schema.json",
+  "title": "SIMAI Document Port 1.0.0: the stored element, its levels and its answers",
+  "description": "The data a host of simai.document-port answers with. One storage element holds one page, section or site level: a value per language, every value a simai.composition.document, and one revision for all of them. A level's value is written the way a Recipe fills regions: an area the value leaves out inherits, an area it carries replaces, an area it carries empty ([]) clears. The resolved document is what the editor shows: the level's value over its parents, every layout.region marked with where it came from.",
+  "$defs": {
+    "key": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]{1,100}$",
+      "description": "An opaque token: a revision, a client key, a host reference. Compared exactly; a host that counts revisions sends the number as a decimal string."
+    },
+    "ref": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:/-]{1,300}$",
+      "description": "A host reference to a storage element or a level (site:s1, section:/catalog/, page:/catalog/item/). Opaque to the editor."
+    },
+    "revision": {
+      "$ref": "#/$defs/key",
+      "description": "The revision of the whole storage element: every language under one revision. It changes with every applied write and is never reused."
+    },
+    "client_key": {
+      "$ref": "#/$defs/key",
+      "description": "A stable key per write the editor makes once and keeps until the write is answered. A repeat with the same key and the same parameters is the same write and is answered with the stored result; the same key with other parameters is an idempotency-conflict."
+    },
+    "language": {
+      "type": "string",
+      "pattern": "^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$"
+    },
+    "level": {
+      "enum": [
+        "site",
+        "section",
+        "page"
+      ]
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "level",
+        "ref"
+      ],
+      "description": "The storage element the editor works on. The host binds it (a signed context, a route); the editor never names a target in a write.",
+      "properties": {
+        "level": {
+          "$ref": "#/$defs/level"
+        },
+        "ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "parents": {
+          "type": "array",
+          "maxItems": 32,
+          "description": "The levels this one inherits from, nearest first; the site last.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "level",
+              "ref"
+            ],
+            "properties": {
+              "level": {
+                "$ref": "#/$defs/level"
+              },
+              "ref": {
+                "$ref": "#/$defs/ref"
+              },
+              "title": {
+                "type": "string",
+                "maxLength": 300
+              }
+            }
+          }
+        }
+      }
+    },
+    "document": {
+      "$ref": "../../../composition-document.v1.schema.json",
+      "description": "One language's value. Its locale, when present, is the language it stands under."
+    },
+    "values": {
+      "type": "object",
+      "maxProperties": 64,
+      "propertyNames": {
+        "$ref": "#/$defs/language"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/document"
+      },
+      "description": "The value per language. A language without a value is absent: a missing translation is never answered with another language's value."
+    },
+    "values_write": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 64,
+      "propertyNames": {
+        "$ref": "#/$defs/language"
+      },
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/document"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "description": "The languages a save writes. A language left out keeps its stored value; null removes that language's value. The write is one revision for the whole element."
+    },
+    "area_state": {
+      "enum": [
+        "inherited",
+        "replaced",
+        "cleared"
+      ],
+      "description": "Recipe's three outcomes for a slot: missing inherits, passed replaces, [] clears."
+    },
+    "area_mark": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "origin",
+        "state",
+        "locked"
+      ],
+      "description": "The mark on a layout.region of the resolved document, under extensions[\"simai:area\"]. A stored value never carries it; a host strips it from a save.",
+      "properties": {
+        "origin": {
+          "$ref": "#/$defs/level"
+        },
+        "origin_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "state": {
+          "$ref": "#/$defs/area_state"
+        },
+        "locked": {
+          "type": "boolean",
+          "description": "A level above holds the area: this level may not replace or clear it."
+        }
+      }
+    },
+    "areas": {
+      "type": "object",
+      "maxProperties": 32,
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9-]{0,31}$"
+      },
+      "additionalProperties": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/area_mark"
+          }
+        ],
+        "description": "The same mark, keyed by the region's name, for an editor that shows the areas apart from the canvas."
+      },
+      "description": "Every area of the resolved document by its name. An area's state is the same in every language; its content is each language's."
+    },
+    "resolved": {
+      "type": "object",
+      "maxProperties": 64,
+      "propertyNames": {
+        "$ref": "#/$defs/language"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/document"
+      },
+      "description": "Per language, the level's value over its parents with the area marks. Only for the languages the element has a value in."
+    },
+    "rights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "save",
+        "publish"
+      ],
+      "properties": {
+        "save": {
+          "type": "boolean"
+        },
+        "publish": {
+          "type": "boolean"
+        },
+        "languages": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/language"
+          },
+          "description": "The languages the reader may write; absent: every language of the element."
+        }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_nodes",
+        "max_bytes"
+      ],
+      "description": "Per language value. 1.0.0 holds a host to at most 200 nodes and 262144 bytes of UTF-8 JSON; a host may announce less, never more.",
+      "properties": {
+        "max_nodes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        },
+        "max_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 262144
+        }
+      }
+    },
+    "publication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "state",
+        "languages"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/key",
+          "description": "The publication itself; a rollback makes a new one."
+        },
+        "revision": {
+          "$ref": "#/$defs/revision",
+          "description": "The draft revision it publishes."
+        },
+        "state": {
+          "enum": [
+            "published",
+            "scheduled",
+            "superseded"
+          ]
+        },
+        "at": {
+          "$ref": "#/$defs/at"
+        },
+        "languages": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/language"
+          },
+          "description": "The languages it published: those with a value at that revision, or the ones asked."
+        },
+        "client_key": {
+          "$ref": "#/$defs/client_key"
+        },
+        "from": {
+          "$ref": "#/$defs/key",
+          "description": "A rollback: the publication it repeats."
+        }
+      }
+    },
+    "draft": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision",
+        "at",
+        "languages"
+      ],
+      "properties": {
+        "revision": {
+          "$ref": "#/$defs/revision"
+        },
+        "at": {
+          "$ref": "#/$defs/at"
+        },
+        "languages": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/language"
+          }
+        },
+        "author": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 300
+        },
+        "restored_from": {
+          "$ref": "#/$defs/revision"
+        }
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "code",
+        "severity",
+        "path"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "severity": {
+          "enum": [
+            "error",
+            "warning"
+          ]
+        },
+        "path": {
+          "type": "string"
+        },
+        "language": {
+          "$ref": "#/$defs/language"
+        }
+      }
+    },
+    "current": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision"
+      ],
+      "description": "What a conflict carries beside current_revision: the stored element as it is now, so the editor shows it next to the unsaved input and loses neither.",
+      "properties": {
+        "revision": {
+          "$ref": "#/$defs/revision"
+        },
+        "values": {
+          "$ref": "#/$defs/values"
+        },
+        "published": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/publication"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
