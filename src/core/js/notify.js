@@ -381,24 +381,33 @@ function announce(entry) {
 
 // The toast's script can be there before its sheet: drawn meanwhile, a message
 // stood unstyled in the middle of the window and jumped into its corner. The
-// area waits hidden until the sheet places it (fixed), and the first message
-// until the fonts it uses are in (its icon's font came later and the message
-// changed height while it slid in, a 21 px step back), at most two seconds.
+// area waits hidden until the sheet places it (fixed). The first message also
+// waits for its parts (the icon, the close button, their utilities): the
+// Loader found them only after its 100 ms watch, and the message changed
+// height while it slid in, a 21 px step back. They are asked for at once and
+// the message shows when every sheet and font is in, at most two seconds.
 async function sheetApplied(area) {
   const placed = () => globalThis.getComputedStyle(area).position === 'fixed';
   const fonts = globalThis.document?.fonts;
+  const first = state.shown.filter((entry) => entry.toast?.isConnected).length <= 1;
+  if (first) globalThis.SF?.Loader?.scanDom?.(area);
+  const sheetsIn = () => ![...document.querySelectorAll('link[rel="stylesheet"]')].some((link) => !link.sheet);
+  const ready = () => placed() && (!fonts || fonts.status === 'loaded') && sheetsIn();
   // Laid out, the message asks for its fonts.
   void area.offsetHeight;
-  const fontsIn = () => !fonts || fonts.status === 'loaded';
-  if (placed() && fontsIn()) return;
-  // Other messages on view stay; only an area with nothing shown yet waits hidden.
-  const alone = state.shown.filter((entry) => entry.toast?.isConnected).length <= 1;
-  if (!placed() || alone) area.style.visibility = 'hidden';
+  if (!first && ready()) return;
+  // Other messages on view stay; an area with nothing shown yet waits hidden.
+  if (!placed() || first) area.style.visibility = 'hidden';
   const started = Date.now();
-  const left = () => Math.max(0, 2000 - (Date.now() - started));
-  while (!placed() && left()) await new Promise((resolve) => setTimeout(resolve, 16));
-  void area.offsetHeight;
-  if (!fontsIn() && left()) await Promise.race([fonts.ready, new Promise((resolve) => setTimeout(resolve, left()))]);
+  // Ready three checks in a row: the sheets the scan asked for are linked a
+  // frame after it.
+  let calm = 0;
+  while (Date.now() - started < 2000) {
+    await new Promise((resolve) => setTimeout(resolve, 16));
+    void area.offsetHeight;
+    calm = ready() ? calm + 1 : 0;
+    if (calm >= 3) break;
+  }
 }
 
 // The slot is taken at once and the toast drawn when its component is there:

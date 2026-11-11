@@ -133,7 +133,7 @@ call returns `null` and warns in the console.
   (`role="status"`). Messages arriving together are said together. The toasts
   of the area are not live regions of their own, so nothing is said twice.
 - Until the toast's stylesheet is applied, and for the first message until
-  the fonts it uses are in, the area waits hidden (at most two seconds), so a
+  its parts' sheets (icon, close button) and fonts are in, the area waits hidden (at most two seconds), so a
   message never shows unstyled in the middle of the window or changes height
   while it slides in.
 - Every message is announced on the document as `sf-notification` with
