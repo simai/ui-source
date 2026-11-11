@@ -97,6 +97,13 @@ class SfModal extends ModalElement {
   // Kept for code that reads it: the z-index comes from the one layer scale of
   // the core now (--sf-z-index-layer, whose default is this same 9000).
   static baseZIndex = 9000;
+  // The page's children -- slotted and loose -- stay where the page wrote them
+  // until the window draws, and the drawing takes them out and places them in
+  // the same task (smart-base holdSlotNode, as sf-header-site): they were out
+  // of the document from the window's connection to its first drawing, and a
+  // page that found its sf-menu by id once sf-modal was defined got null on
+  // 20 of 20 loads (ui-control evidence 2026-11-11-modal-followups, item 3).
+  static holdsSlotNodesUntilDrawn = true;
 
   static defaultTrueAttributes = new Set([
     "overlay",
@@ -300,11 +307,8 @@ class SfModal extends ModalElement {
     if (!this._liveSlotNodes.has("content")) this._liveSlotNodes.set("content", []);
     this._liveSlotNodes.get("content").push(...loose);
     // Through the base's hold, as the slotted children go (smart-base.js
-    // holdSlotNode): out of the element now while sf-modal does not hold its
-    // children until it draws (static holdsSlotNodesUntilDrawn, off), so
-    // nothing changes today; a hold turned on later takes the loose content
-    // too instead of leaving it out of the document between connect and the
-    // first drawing (ui-control evidence 2026-11-11-modal-followups, item 3).
+    // holdSlotNode): left where the page wrote them until the first drawing
+    // (static holdsSlotNodesUntilDrawn).
     loose.forEach((node) => this.holdSlotNode(node));
   }
 
@@ -717,6 +721,9 @@ class SfModal extends ModalElement {
     }
     const target = this.resolveRenderTarget();
     this.holdPortalUntilStyled(target);
+    // The held children leave the host and are placed by the drawing in the
+    // same task, as the base's render does (releaseHeldSlotNodes).
+    this.releaseHeldSlotNodes();
     this.drawInto(templateResult, target);
     this.afterRender(changedAttributes);
     this.runExternalHook("afterRender", {

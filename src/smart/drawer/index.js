@@ -281,6 +281,15 @@ const drawerManager = {
 };
 
 class SfDrawer extends DrawerElement {
+  // A slotted child (slot="edge", or any other slot the page names) stays
+  // where the page wrote it until the drawer draws, and the drawing takes it
+  // to the panel in the same task (smart-base holdSlotNode, as sf-modal and
+  // sf-header-site). The base took it out of the document when the drawer
+  // connected, and a page that found it by id once sf-drawer was defined got
+  // null (ui-control evidence 2026-11-11-modal-followups). Unslotted content
+  // already stayed in the host until the drawing (_contentNodes).
+  static holdsSlotNodesUntilDrawn = true;
+
   // The manifest's settings, and what the drawer reads more closely: the size
   // ladder's legacy words, the base's template name.
   static get props() {
