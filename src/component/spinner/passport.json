@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.spinner",
   "kind": "component",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/spinner/index.js",

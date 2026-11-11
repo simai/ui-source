@@ -139,8 +139,9 @@ the size of its icon (simai/ui-source#10):
 
 The spinner takes the label's ink (the disabled ink on a disabled button)
 unless `--sf-loader--color` is set; its background ring is that ink at 16 %
-(1.9.1, the fill family of the alpha scale, drawn whole, so it shows on a light
-filled button in dark; `--sf-spinner-track-color` wins),
+(the fill family of the alpha scale, drawn whole, so it shows on a light
+filled button in dark; since 1.9.2 it is the spinner's own ring, the button
+sets only the colour; `--sf-spinner-track-color` wins),
 and under `prefers-reduced-motion` it is a still arc. The constructor draws it;
 in hand-written markup put it where the icon was, or before the label with the
 `--overlay` class:

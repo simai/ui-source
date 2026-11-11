@@ -10136,6 +10136,31 @@
           "to": "sf-view-save"
         }
       ]
+    },
+    {
+      "id": "token-spinner-track-carries-alpha",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "The spinner's ring under the arc has no opacity of its own: --sf-spinner-track-color carries colour and alpha together, by default the spinner's ink at 16 % (the fill family of the alpha scale, DEV J1/S1). A stand-alone spinner's ring was --sf-surface-container under an opacity of 30 %, about 5 % of grey, and now shows (1.40 light, 1.48 dark against the page). A page that sets --sf-spinner-track-color to a solid colour now gets it whole, where the sheet drew it at 30 %. Rings in sf-button and sf-button-icon were already this and draw as before; the ring of a busy badge is the ink at 16 % where it was the ink at 30 %. The words under a spinner take the ink of the place (--sf-spinner-text-color defaults to currentColor, was --sf-on-surface).",
+      "items": [
+        {
+          "component": "sf-spinner",
+          "from": "--sf-spinner-track-color",
+          "to": "--sf-spinner-track-color",
+          "match": "--sf-spinner-track-color(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": ".panel { --sf-spinner-track-color: var(--sf-outline-variant); }",
+        "after": ".panel { --sf-spinner-track-color: color-mix(in srgb, var(--sf-outline-variant) 30%, transparent); }"
+      },
+      "manual": "Where a page sets --sf-spinner-track-color, give the colour its alpha in the value (color-mix(in srgb, <colour> 30%, transparent) keeps the former look); or remove it to take the spinner's ink at 16 %.",
+      "owner": "ui-source",
+      "source": "src/component/spinner/scss/_css__spinner.scss, _css__spinner_custom.scss; src/core/contracts/public-variables.v1.json"
     }
   ]
 }
