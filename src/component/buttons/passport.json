@@ -16,7 +16,7 @@
     "src/component/buttons/scss/_css__buttons_custom.scss",
     "src/component/buttons/scss/index.scss"
   ],
-  "content_sha256": "c678f33ba72aeaf3265fe84cf7e594a3ef6fc7784c7d2aeded39ac3d27652d1e",
+  "content_sha256": "fa2c82e6c08ee0027da74589967cda4aec72c9dc3f47088cc95f59645067e8ac",
   "dependencies": [
     {
       "id": "component.spinner",
