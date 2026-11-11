@@ -13,8 +13,12 @@
     "src/utility/pattern/default/scss/_sf_var__pattern.scss",
     "src/utility/pattern/default/scss/index.scss"
   ],
-  "content_sha256": "373806856d03c1e838a1ef7261163f7b682cb6d9d87f66cca25e21e9d09cc2c7",
+  "content_sha256": "2d652aec9445d51208289ac6fa1406001da966a04f9d3fa8c6fcc247d5741bd6",
   "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
     {
       "id": "tokens.colour",
       "range": "^1.12.0"

@@ -65,10 +65,15 @@ $pattern-shapes: (
 // spot   a soft spot, the edges clear
 // clear  the centre clear, the pattern at the edges (the hero default)
 // down   strongest at the top, gone towards the bottom
+//
+// The clear centre is wider below the desktop breakpoint: there a line of
+// text runs nearly edge to edge, and the desktop ellipse left the dots at
+// 10 to 11 under a phone's lead text (evidence 2026-11-11-patterns-c57).
+$pattern-clear: (mobile: 66% 66%, desktop: 48% 42%);
 $pattern-fades: (
     'none': linear-gradient(#000, #000),
     'spot': radial-gradient(ellipse 70% 70% at 50% 40%, #000 0%, transparent 75%),
-    'clear': radial-gradient(ellipse 48% 42% at 50% 46%, transparent 0 45%, #000 100%),
+    'clear': radial-gradient(ellipse var(--sf-pattern--clear) at 50% 46%, transparent 0 45%, #000 100%),
     'down': linear-gradient(to bottom, #000 0%, transparent 85%),
 );
 

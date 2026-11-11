@@ -1,6 +1,7 @@
 @use 'sass:list';
 @use 'sass:map';
 @use 'sf_var__pattern' as *;
+@use '../../../../core/scss/mix/mix__breakpoint' as *;
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
@@ -41,8 +42,15 @@ $hosts: ();
         --sf-pattern--color-#{$step}: light-dark(var(--sf-neutral-50--alfa-#{$step}), var(--sf-neutral-90--alfa-#{$step}));
     }
     --sf-pattern--color: var(--sf-pattern--color-12);
+    --sf-pattern--clear: #{map.get($pattern-clear, mobile)};
     --sf-pattern--glow: light-dark(var(--sf-primary-50--alfa-#{list.nth($pattern-glow-steps, 1)}), var(--sf-primary-50--alfa-#{list.nth($pattern-glow-steps, 1) + $pattern-dark-step}));
     --sf-pattern--glow-weak: light-dark(var(--sf-primary-50--alfa-#{list.nth($pattern-glow-steps, 2)}), var(--sf-primary-50--alfa-#{list.nth($pattern-glow-steps, 2) + $pattern-dark-step}));
+}
+
+@include breakpoint-device-media(desktop) {
+    #{$hosts} {
+        --sf-pattern--clear: #{map.get($pattern-clear, desktop)};
+    }
 }
 
 @each $shape, $spec in $pattern-shapes {

@@ -71,6 +71,11 @@ test('the cell is a step of the space ladder, and a fade clears text', () => {
   const steps = [...ladder.matchAll(/'([^']+)'/gu)].map(([, step]) => step).filter((step) => step !== '0');
   assert.deepEqual([...vars.match(/\$pattern-sizes: \(([^)]*)\)/u)[1].matchAll(/'([^']+)'/gu)].map(([, step]) => step), steps);
   assert.match(sheet, /--sf-pattern--size: var\(--sf-space-#\{\$size\}\);/u);
+  // The clear centre is wider below the desktop breakpoint, where a line of
+  // text runs nearly edge to edge.
+  assert.match(vars, /\$pattern-clear: \(mobile: 66% 66%, desktop: 48% 42%\);/u);
+  assert.match(sheet, /--sf-pattern--clear: #\{map\.get\(\$pattern-clear, mobile\)\};/u);
+  assert.match(sheet, /@include breakpoint-device-media\(desktop\) \{\n    #\{\$hosts\} \{\n        --sf-pattern--clear: #\{map\.get\(\$pattern-clear, desktop\)\};/u);
   const fades = block('$pattern-fades');
   assert.deepEqual([...fades.matchAll(/^    '([a-z]+)': /gmu)].map(([, name]) => name), FADES);
   // Decoration clears the centre by default (the hero: faint dots fading to
