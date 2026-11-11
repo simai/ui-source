@@ -22,14 +22,17 @@
   }
   /* On the number itself: the number declares its own colour, so a colour
      set on the day never reached it, and the neighbouring month read like
-     this one in both themes. A neighbouring day off takes the same ink as a
-     day off of this month (DP-02). */
+     this one in both themes. A neighbouring day off takes the day-off ink of
+     this month (DP-02, one name) at the ink step 80, so it stays a muted red
+     beside this month's full one, as before DP-02 (dispatcher ruling
+     2026-11-11: the shared ink and the DEV hold 7fddefd9 had made both the
+     same full error red); still 4.5:1 on the panel in both themes. */
   .sf-datepicker .sf-datepicker-day.sf-datepicker-another-month:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected) .sf-datepicker-day-date {
     --sf-datepicker-day-date--color: var(--sf-on-surface-variant);
   }
   .sf-datepicker .sf-datepicker-day.sf-datepicker-another-month.sf-datepicker-day-off:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected) :is(.sf-datepicker-day-date, .sf-datepicker-day-info) {
-    --sf-datepicker-day-date--color: var(--sf-datepicker--day-off-color);
-    --sf-datepicker-day-info--color: var(--sf-datepicker--day-off-color);
+    --sf-datepicker-day-date--color: color-mix(in srgb, var(--sf-datepicker--day-off-color) 80%, transparent);
+    --sf-datepicker-day-info--color: color-mix(in srgb, var(--sf-datepicker--day-off-color) 80%, transparent);
   }
   .sf-datepicker-day.sf-datepicker-day-start .sf-datepicker-day-date, .sf-datepicker-day.sf-datepicker-day-end .sf-datepicker-day-date {
     --sf-datepicker-day-date--color: var(--sf-on-primary);
