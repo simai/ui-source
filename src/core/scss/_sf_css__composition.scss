@@ -145,49 +145,17 @@
 // A block on the accent fill (the background parameter's accent, 1.1.0;
 // layout.section 1.3.0's accent variant, 2026-11-04): the primary role's own
 // fill with on-primary text, as the accepted prototype draws it. The text
-// over it reads in on-primary (color-on-primary, a utility). The dimmed text,
-// the icons and the controls on it are the coloured place's since C16
-// (bg-primary is a place, mix/_mix__places.scss): on-primary, and its 80 step
-// for dim ink. What stays here is the button that would be the accent's own
-// colour.
-@layer sf.components {
-    // A primary button on the accent would be the accent's own colour. It
-    // inverts, as the prototype draws a button on a primary section: the
-    // on-primary plate with primary ink; an outlined, link or ghost primary
-    // takes the on-primary ink and edge. Roles only, no colour of its own,
-    // and the button's public variables an author sets still win.
-    [data-sf-composition-id].bg-primary.color-on-primary .sf-button.sf-button--default.sf-button--primary {
-        --sf-button--background-color: var(--sf-button-background-color, var(--sf-on-primary));
-    }
-
-    [data-sf-composition-id].bg-primary.color-on-primary .sf-button.sf-button--default.sf-button--primary .sf-button-text-container {
-        --sf-button-text-container--color: var(--sf-button-color, var(--sf-primary));
-    }
-
-    [data-sf-composition-id].bg-primary.color-on-primary .sf-button.sf-button--default.sf-button--primary .sf-icon {
-        --sf-icon--color: var(--sf-primary);
-    }
-
-    [data-sf-composition-id].bg-primary.color-on-primary .sf-button.sf-button--outline.sf-button--primary {
-        --sf-button--border-color: var(--sf-button-border-color, var(--sf-on-primary));
-    }
-
-    [data-sf-composition-id].bg-primary.color-on-primary .sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link).sf-button--primary .sf-button-text-container {
-        --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-primary));
-    }
-
-    [data-sf-composition-id].bg-primary.color-on-primary .sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link).sf-button--primary .sf-icon {
-        --sf-icon--color: var(--sf-on-primary);
-    }
-}
-
-// Its hover lifts to the primary container, the tonal plate primary ink reads
-// on, not the primary hover the accent already is.
-@layer sf.states {
-    [data-sf-composition-id].bg-primary.color-on-primary .sf-button.sf-button--default.sf-button--primary:not(:disabled):not(.disabled):hover {
-        --sf-button--background-color: var(--sf-primary-container);
-    }
-}
+// over it reads in on-primary (color-on-primary, a utility). Everything on
+// it is the coloured place's (bg-primary is a strong accent place,
+// mix/_mix__places.scss): the dimmed text, the icons and the controls, and
+// since the backgrounds work (C41/C42 round 2) the buttons too -- inside an
+// accent place --sf-primary is the on-primary ink and --sf-on-primary the
+// place's solid, so a primary button is the on-primary plate with primary
+// ink and an outlined, link or ghost primary takes the on-primary ink and
+// edge, from the roles alone. The rules that inverted the button here once
+// more (composition 1.1.0) turned it back into the accent's own colour: the
+// plate and the outline's edge stood at 1:1 on the fill (composition-parity,
+// 2026-11-11). They are gone; an author's public button variables still win.
 
 // A routing scope is a non-visual common parent; it must not change layout.
 @layer sf.components {

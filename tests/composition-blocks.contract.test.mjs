@@ -824,6 +824,10 @@ test('the accent section is the primary fill with on-primary text; a grid keeps 
   // C16: bg-primary is a coloured place, so the on-surface roles on the accent
   // come from the utility (on-primary, its 80 step for dim ink), not from here.
   assert.doesNotMatch(sheet, /\[data-sf-composition-id\]\.bg-primary\.color-on-primary\) \{\s*--sf-on-surface:/u, 'the accent re-declares no role of its own');
+  // The buttons on the accent invert by the place's roles (bg-primary is a
+  // strong accent place); a second inversion here turned them back into the
+  // accent's own colour, 1:1 on the fill (2026-11-11).
+  assert.doesNotMatch(sheet, /\.bg-primary\.color-on-primary \.sf-button/u, 'the accent inverts no button of its own');
   const places = readFileSync(new URL('src/utility/background-color/default/scss/_sf_css__background_color.scss', root), 'utf8');
   assert.match(places, /bg-#\{\$c\} \{\s*@include places\.sf-place-strong\(\$c\);/u, 'the on-surface roles read on the accent');
   const grid = BUILTIN_TYPE_MANIFESTS.find(({ type }) => type === 'layout.grid');
