@@ -19,10 +19,16 @@ test('inter: every script file the faces name is in the source', async () => {
   }
   assert.equal((faces.match(/font-family: "Inter Variable"/g) || []).length, SCRIPTS.length);
   assert.match(faces, /font-display: optional/);
-  // The metric fallback has a regular and a bold face: one face at 400 drew
-  // bold Latin at 400 on a cold visit (2026-10-19).
-  assert.match(faces, /font-family: "Inter Fallback";\s*font-weight: 100 549;\s*src: local\("Arial"\)/);
-  assert.match(faces, /font-family: "Inter Fallback";\s*font-weight: 550 1000;\s*src: local\("Arial Bold"\)/);
+  // The metric fallback has regular and bold faces: one face at 400 drew
+  // bold Latin at 400 on a cold visit (2026-10-19). Since font.inter 1.1.0 a
+  // face per weight band (and per band for Cyrillic), each sized to Inter
+  // (tests/text-fonts.test.mjs checks the line box).
+  for (const band of ['100 449', '450 549']) {
+    assert.match(faces, new RegExp(`font-family: "Inter Fallback";\\s*font-weight: ${band};\\s*src: local\\("Arial"\\)`), band);
+  }
+  for (const band of ['550 649', '650 1000']) {
+    assert.match(faces, new RegExp(`font-family: "Inter Fallback";\\s*font-weight: ${band};\\s*src: local\\("Arial Bold"\\)`), band);
+  }
 });
 
 test('inter: the family tokens lead with the shipped face and its metric fallback', async () => {
