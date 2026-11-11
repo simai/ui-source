@@ -3,6 +3,7 @@ import {existsSync, readdirSync, readFileSync} from 'node:fs';
 import test from 'node:test';
 
 import tagAliases from '../src/core/js/tag-aliases.generated.js';
+import {compareSetExports, kindOf} from '../scripts/set-exports-kit.mjs';
 
 // Standard simai.component-set 1.0.0: a set describes its own components in its
 // passport (set.json), and SIMAI Framework keeps only the standard and the shared
@@ -15,7 +16,7 @@ const root = new URL('../', import.meta.url);
 const read = (relative) => readFileSync(new URL(relative, root));
 const json = (relative) => JSON.parse(read(relative).toString('utf8'));
 
-const STANDARD = 'contracts/standards/simai.component-set/1.2.0/standard.json';
+const STANDARD = 'contracts/standards/simai.component-set/1.3.0/standard.json';
 const PASSPORT_SCHEMA = 'contracts/schema/component-set.v1.schema.json';
 const REGISTRY_SCHEMA = 'contracts/schema/name-registry.v1.schema.json';
 const REGISTRY = 'contracts/registry/names.json';
@@ -94,7 +95,7 @@ test('the standard pins the passport and registry forms as frozen copies of the 
 });
 
 test('the standards index lists the set standard', () => {
-  assert.match(read('contracts/standards/README.md').toString('utf8'), /\| `simai\.component-set` \| 1\.2\.0 \|/u);
+  assert.match(read('contracts/standards/README.md').toString('utf8'), /\| `simai\.component-set` \| 1\.3\.0 \|/u);
 });
 
 test('a set passport takes the pinned form and its own rules', () => {
@@ -236,4 +237,37 @@ test('a set passport agrees with the registry', () => {
   // A new name inside an owned family needs no registry change before the set
   // releases it; a name in a family the set does not own is refused.
   for (const {element} of passport.components) assert.ok(owner.families.includes(familyOf(element)), `${element}: family owned by ${passport.id} in the registry`);
+});
+
+// Standard 1.3.0 (owner decision D17, 2026-11-11): a set that gives a scripted
+// API lists it in set.json exports, in the entry shape of public-js-api, and
+// its browser probe holds the list with scripts/set-exports-kit.mjs
+// (tests/browser/component-sets.browser.mjs runs the kit on a real page).
+test('a set lists its exports in the passport, and the kit holds them', () => {
+  const standard = json(STANDARD);
+  assert.equal(standard.version, '1.3.0');
+  assert.ok(existsSync(new URL('contracts/standards/history/simai.component-set/1.2.0/standard.json', root)), '1.2.0 keeps its bytes');
+  const requirement = standard.requirements.find(({id}) => id === 'exports-listed');
+  assert.ok(requirement && requirement.level === 'must', 'exports-listed');
+  const schema = json(PASSPORT_SCHEMA);
+  assert.equal(schema['x-simai-version'], '1.1.0');
+  assert.ok(!schema.required.includes('exports'), 'exports is optional');
+  const passport = json(FIXTURE);
+  assert.ok(passport.exports.length > 0, 'the fixture lists exports');
+  assert.deepEqual(validate(schema, passport), []);
+  const without = structuredClone(passport); delete without.exports;
+  assert.deepEqual(validate(schema, without), [], 'a passport without exports holds');
+  const broken = (change) => validate(schema, change(structuredClone(passport)));
+  assert.notDeepEqual(broken((value) => { delete value.exports[0].audience; return value; }), [], 'an export without its audience');
+  assert.notDeepEqual(broken((value) => { value.exports[0].layer = 'core'; return value; }), [], 'a set export on a Framework layer');
+  assert.notDeepEqual(broken((value) => { value.exports[0].name = 'SF.mountEffect'; return value; }), [], 'a name that is not a key');
+  assert.notDeepEqual(broken((value) => { value.exports[0].doc = '/ru/functions/'; return value; }), [], 'a doc slug with the language and slashes');
+
+  // The kit's comparison, without a browser.
+  const seen = {mountEffect: {kind: 'function', members: []}, EFFECT_FORMAT: {kind: 'value', members: []}};
+  assert.deepEqual(compareSetExports(passport, seen), []);
+  assert.deepEqual(compareSetExports(passport, {...seen, extra: {kind: 'object', members: []}}), ["effects: SF.package('effects').extra is exported but not listed in set.json exports"]);
+  const stray = structuredClone(passport); stray.exports[1].component = 'sf-ghost';
+  assert.deepEqual(compareSetExports(stray, seen), ['effects: export EFFECT_FORMAT: layer component names no element of this set (sf-ghost)']);
+  assert.deepEqual([kindOf(class {}), kindOf(() => 1), kindOf({}), kindOf('x'), kindOf(null)], ['class', 'function', 'object', 'value', 'value']);
 });

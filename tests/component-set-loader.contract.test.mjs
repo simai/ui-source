@@ -85,7 +85,7 @@ test('an index that is not one is refused before a base is made from it', () => 
 });
 
 test('the index schema is pinned by the set standard and the fixture takes it', () => {
-  const standard = json('contracts/standards/simai.component-set/1.2.0/standard.json');
+  const standard = json('contracts/standards/simai.component-set/1.3.0/standard.json');
   const pin = standard.uses.find(({id}) => id === 'simai.framework.set-index-schema');
   assert.ok(pin, 'the standard pins the index form');
   assert.equal(readFileSync(new URL('contracts/standards/pinned/set-index-1.2.0.schema.json', root), 'utf8'),

@@ -16,5 +16,9 @@
   "docs": "https://effects.simai.io/",
   "components": [
     {"element": "sf-effect", "rule": "cl-effect", "folder": "effect", "status": "preview", "requires": ["cl-menu-context"]}
+  ],
+  "exports": [
+    {"name": "mountEffect", "status": "public", "layer": "set", "audience": "public", "author": "Mounts an effect on a host element.", "doc": "functions/mount-effect", "kind": "function", "summary": "mountEffect(host, {manifest, module}) mounts an effect and resolves with its controller."},
+    {"name": "EFFECT_FORMAT", "status": "public", "layer": "component", "component": "sf-effect", "audience": "public", "author": "Names the effect manifest format.", "kind": "value", "summary": "The format name an effect.json declares (simai.effect)."}
   ]
 }
