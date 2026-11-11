@@ -373,6 +373,18 @@ try {
     }
     editor.dispatchEvent(new CompositionEvent('compositionend', {bubbles: true, data: list.at(-1)}));
   }, steps);
+  // The caret at the end of the last text, where a click puts it.
+  const caretInText = (page) => page.evaluate(() => {
+    const editor = document.querySelector('#r .sf-rich-text-editor');
+    editor.focus();
+    const walker = document.createTreeWalker(editor, 4);
+    let last = null;
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) last = node;
+    const range = document.createRange();
+    range.setStart(last, last.data.length);
+    getSelection().removeAllRanges();
+    getSelection().addRange(range);
+  });
   const imeCases = [
     {name: 'Bold then composed', value: '<p>alpha</p>', keys: [`${mod}+b`], steps: ['n', 'に'], expected: '<p>alpha<strong>に</strong></p>'},
     {name: 'Italic then composed', value: '<p>alpha</p>', keys: [`${mod}+i`], steps: ['k', 'か', 'かな'], expected: '<p>alpha<em>かな</em></p>'},
@@ -383,8 +395,11 @@ try {
   ];
   for (const one of imeCases) {
     await open(page, 'theme-light', `<sf-input-rich id="r" label="Page text" value="${one.value}"></sf-input-rich>`);
-    await focusEnd(page);
-    for (const key of one.keys) await page.keyboard.press(key);
+    await caretInText(page);
+    for (const key of one.keys) {
+      await page.keyboard.press(key);
+      await page.waitForTimeout(50);
+    }
     await page.evaluate(() => { window.__said = []; document.getElementById('r').addEventListener('input', (event) => window.__said.push(event.inputType)); });
     await compose(page, one.steps);
     await page.waitForTimeout(50);
