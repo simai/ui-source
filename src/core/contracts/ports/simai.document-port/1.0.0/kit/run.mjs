@@ -1,4 +1,4 @@
-// Conformance runner of simai.document-port 1.0.0 (draft). Dependency-free.
+// Conformance runner of simai.document-port 1.0.0 (draft 2). Dependency-free.
 //
 // A host adapter gives the runner three functions and nothing else:
 //
@@ -61,8 +61,6 @@ export function findRegion(node, name) {
 }
 const textsOf = (region) => (region?.slots?.default ?? []).map((node) => (node.data?.content ?? []).map((run) => run.text ?? '').join(''));
 
-const sameReason = (left, right) => typeof left === 'string' && left.replace(/_/gu, '-') === right;
-
 function check(answer, then, steps) {
   const failures = [];
   if (answer?.answer !== then.answer) failures.push(`answer is ${JSON.stringify(answer?.answer)}, expected ${then.answer}`);
@@ -80,8 +78,8 @@ function check(answer, then, steps) {
       continue;
     }
     const value = at(answer, rule.path);
-    const reason = rule.path === 'reason';
-    if ('equals' in rule && !(reason ? sameReason(value, rule.equals) : same(value, rule.equals))) failures.push(`${rule.path} is ${JSON.stringify(value)?.slice(0, 200)}, expected ${JSON.stringify(rule.equals).slice(0, 200)}`);
+    // Reasons are codes matched exactly (draft 2): a host maps its own codes to the port's.
+    if ('equals' in rule && !same(value, rule.equals)) failures.push(`${rule.path} is ${JSON.stringify(value)?.slice(0, 200)}, expected ${JSON.stringify(rule.equals).slice(0, 200)}`);
     if ('not_equals' in rule && same(value, rule.not_equals)) failures.push(`${rule.path} must not be ${JSON.stringify(rule.not_equals)}`);
     if ('not_in' in rule && rule.not_in.some((one) => same(value, one))) failures.push(`${rule.path} is ${JSON.stringify(value)}, one of ${JSON.stringify(rule.not_in)}`);
     if (rule.absent && value !== undefined) failures.push(`${rule.path} must be absent`);
@@ -93,6 +91,18 @@ function check(answer, then, steps) {
     }
   }
   return failures;
+}
+
+// A step's payload may take values from earlier answers: when.bind maps a payload
+// key to {step, path}, the step being "when" or "after.<n>" (1-based).
+function payloadOf(when, steps) {
+  const payload = structuredClone(when.payload ?? {});
+  for (const [key, {step, path}] of Object.entries(when.bind ?? {})) {
+    const value = at(steps[step], path);
+    if (value === undefined) throw new Error(`bind ${key}: ${step} has no ${path}`);
+    payload[key] = value;
+  }
+  return payload;
 }
 
 export async function runCase(adapter, kase) {
@@ -107,8 +117,9 @@ export async function runCase(adapter, kase) {
     if (answer !== undefined) failures.push(...check(answer, kase.then, steps));
     for (const [index, step] of (kase.after ?? []).entries()) {
       let next;
-      try { next = await adapter.send(step.when.intent, structuredClone(step.when.payload)); }
+      try { next = await adapter.send(step.when.intent, payloadOf(step.when, steps)); }
       catch (error) { failures.push(`after ${index + 1}: the host threw: ${error?.message ?? error}`); continue; }
+      steps[`after.${index + 1}`] = next;
       failures.push(...check(next, step.then, steps).map((failure) => `after ${index + 1} (${step.when.intent}): ${failure}`));
     }
   } finally {

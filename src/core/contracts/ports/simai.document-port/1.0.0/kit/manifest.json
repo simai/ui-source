@@ -3,7 +3,7 @@
   "port": "simai.document-port",
   "version": "1.0.0",
   "transport": "neutral",
-  "summary": "The draft first edition: load, resolve, save with one revision for every language and a conflict that carries the current element, history, restore, publish and rollback with a client_key, area inheritance by the Recipe rule, and the limits per language value.",
+  "summary": "The first edition, draft 2, and its acceptance gate: load, resolve, save with one revision for every language and a conflict that carries the current element, the round trip of unknown content, saving a resolved document, rights, history with paging, restore, publish and rollback with a client_key, area inheritance by the Recipe rule, and the limits per language value.",
   "answers": [
     "applied",
     "conflict",
@@ -34,6 +34,21 @@
     "publish-at-without-scheduling-is-refused",
     "capability-absent-is-refused-by-name",
     "unknown-intent-is-refused",
-    "storage-down-is-unavailable"
+    "storage-down-is-unavailable",
+    "save-keeps-unknown-content-through-load-history-and-restore",
+    "save-of-a-resolved-document-keeps-inherited-areas-inherited",
+    "save-of-an-edited-inherited-area-is-refused",
+    "save-without-the-right-to-save-is-refused",
+    "save-of-a-language-outside-rights-is-refused",
+    "restore-of-an-unknown-revision-is-not-found",
+    "rollback-to-an-unknown-publication-is-not-found",
+    "restore-against-a-moved-draft-is-a-conflict",
+    "rollback-against-a-moved-publication-is-a-conflict",
+    "history-pages-with-limit-and-before",
+    "save-repeat-with-the-same-key-is-one-save",
+    "save-removing-the-main-language-is-refused",
+    "save-language-keys-are-exact-and-match-the-locale",
+    "publish-edges-are-refused-or-conflicts",
+    "session-expired-is-refused-by-name"
   ]
 }

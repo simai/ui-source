@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/contracts/ports/simai.document-port/1.0.0/document-port.schema.json",
-  "title": "SIMAI Document Port 1.0.0: the stored element, its levels and its answers",
-  "description": "The data a host of simai.document-port answers with. One storage element holds one page, section or site level: a value per language, every value a simai.composition.document, and one revision for all of them. A level's value is written the way a Recipe fills regions: an area the value leaves out inherits, an area it carries replaces, an area it carries empty ([]) clears. The resolved document is what the editor shows: the level's value over its parents, every layout.region marked with where it came from.",
+  "title": "SIMAI Document Port 1.0.0 (draft 2): the stored element, its levels and its answers",
+  "description": "The data a host of simai.document-port answers with. One storage element holds one page, section or site level: a value per language, every value a simai.composition.document, and one revision for all of them. A level's value is written the way a Recipe fills regions: an area the value leaves out inherits, an area it carries replaces, an area it carries empty ([]) clears. The resolved document is what the editor shows: the level's value over its parents, every layout.region marked with where it came from. A host answers every stored value back as it was sent, unknown content included, or refuses the write would-lose; nothing is stored with less.",
   "$defs": {
     "key": {
       "type": "string",
@@ -11,8 +11,8 @@
     },
     "ref": {
       "type": "string",
-      "pattern": "^[A-Za-z0-9._:/-]{1,300}$",
-      "description": "A host reference to a storage element or a level (site:s1, section:/catalog/, page:/catalog/item/). Opaque to the editor."
+      "pattern": "^(?:[A-Za-z0-9._:/-]|%[0-9A-F]{2}){1,300}$",
+      "description": "A host reference to a storage element or a level: a host id (site:s1, page:4217) or a path, percent-encoded as in a URL (section:/catalog/, section:/%D0%BA%D0%B0%D1%82%D0%B0%D0%BB%D0%BE%D0%B3/, upper-case hex). Opaque to the editor: it never builds or splits one."
     },
     "revision": {
       "$ref": "#/$defs/key",
@@ -24,7 +24,8 @@
     },
     "language": {
       "type": "string",
-      "pattern": "^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$"
+      "pattern": "^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$",
+      "description": "A language tag. As a key of values, resolved or a write it is one of the element's languages exactly as listed: tags are not folded by case, so RU beside ru is unknown-language."
     },
     "level": {
       "enum": [
@@ -96,7 +97,7 @@
       "additionalProperties": {
         "$ref": "#/$defs/document"
       },
-      "description": "The value per language. A language without a value is absent: a missing translation is never answered with another language's value."
+      "description": "The value per language. A language without a value is absent: a missing translation is never answered with another language's value. Each value is answered back as it was stored, equal to what was sent (key order aside, the simai:area key removed), whatever node types, data, props, extensions and bindings it holds. A value's locale, when present, is its key; one that differs is refused structure-mismatch. Until the media edition a media file is referred to by an opaque media:<id> string in props or data, kept like any other value."
     },
     "values_write": {
       "type": "object",
@@ -115,7 +116,7 @@
           }
         ]
       },
-      "description": "The languages a save writes. A language left out keeps its stored value; null removes that language's value. The write is one revision for the whole element."
+      "description": "The languages a save writes. A language left out keeps its stored value; null removes that language's value (not the main language's, the first of languages: that is refused invalid; a removal is kept in history, and rights.languages applies to it as to a write). The write is one revision for the whole element. A value may be the resolved document as shown: its simai:area marks are read and removed, never stored."
     },
     "area_state": {
       "enum": [
@@ -133,7 +134,7 @@
         "state",
         "locked"
       ],
-      "description": "The mark on a layout.region of the resolved document, under extensions[\"simai:area\"]. A stored value never carries it; a host strips it from a save.",
+      "description": "The mark on a layout.region of the resolved document, under extensions[\"simai:area\"]. A stored value never carries it. On a save the host removes the simai:area key and keeps every other key of the region's extensions; a region marked state inherited is not stored (the area goes on inheriting), unless its content differs from the parent's area, which is refused would-lose.",
       "properties": {
         "origin": {
           "$ref": "#/$defs/level"
@@ -208,7 +209,7 @@
         "max_nodes",
         "max_bytes"
       ],
-      "description": "Per language value. 1.0.0 holds a host to at most 200 nodes and 262144 bytes of UTF-8 JSON; a host may announce less, never more.",
+      "description": "Per stored language value. 1.0.0 holds a host to at most 200 nodes and 262144 bytes; a host may announce less, never more. Nodes are every node of the document (root, layout shells, regions and content). Bytes are the UTF-8 bytes of the compact serialization of the value as sent, simai:area keys removed: JSON with no spacing and non-ASCII written as itself (JSON.stringify), not escaped. resolved is not limited.",
       "properties": {
         "max_nodes": {
           "type": "integer",
@@ -264,6 +265,14 @@
         "from": {
           "$ref": "#/$defs/key",
           "description": "A rollback: the publication it repeats."
+        },
+        "author": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 300,
+          "description": "Who published or rolled back, as the host names people; null when it does not say."
         }
       }
     },
@@ -334,7 +343,7 @@
       "required": [
         "revision"
       ],
-      "description": "What a conflict carries beside current_revision: the stored element as it is now, so the editor shows it next to the unsaved input and loses neither.",
+      "description": "What a conflict carries beside current_revision: the stored element as it is now, so the editor shows it next to the unsaved input and loses neither. A stale-revision conflict carries values, and with levels resolved and areas; an environment-changed one carries published.",
       "properties": {
         "revision": {
           "$ref": "#/$defs/revision"
@@ -351,6 +360,29 @@
               "$ref": "#/$defs/publication"
             }
           ]
+        },
+        "resolved": {
+          "$ref": "#/$defs/resolved"
+        },
+        "areas": {
+          "$ref": "#/$defs/areas"
+        }
+      }
+    },
+    "more": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "drafts",
+        "publications"
+      ],
+      "description": "Whether each list of history.list goes on past the page answered.",
+      "properties": {
+        "drafts": {
+          "type": "boolean"
+        },
+        "publications": {
+          "type": "boolean"
         }
       }
     }

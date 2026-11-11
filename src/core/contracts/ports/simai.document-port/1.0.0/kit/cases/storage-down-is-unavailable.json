@@ -190,6 +190,6 @@
         "equals": "storage-unavailable"
       }
     ],
-    "note": "given.fault is put on the host by its test harness, the way the mail port kit does."
+    "note": "given.fault is put on the host by its test harness, the way the mail port kit does. The answer may carry retry_after (seconds); the editor repeats after it."
   }
 }

@@ -5,7 +5,7 @@ import {join, resolve} from 'node:path';
 import test from 'node:test';
 import {findRegion, loadCases, runKit} from '../src/core/contracts/ports/simai.document-port/1.0.0/kit/run.mjs';
 
-// simai.document-port 1.0.0 (draft): the host storage seam of a composition
+// simai.document-port 1.0.0 (draft 2): the host storage seam of a composition
 // document. One storage element per site, section or page level, a value per
 // language, one revision for every language (owner decision 2026-11-10, item 7),
 // no record lock (item 4), areas inherited by the Recipe rule. The port is
@@ -26,7 +26,7 @@ const BASE = 'https://simai.io/contracts/ports/simai.document-port/1.0.0/';
 const SCHEMAS = new Map();
 const KEYWORDS = new Set(['type', 'properties', 'required', 'additionalProperties', 'propertyNames', 'items', 'minItems', 'maxItems', 'uniqueItems',
   'enum', 'const', 'pattern', 'minLength', 'maxLength', 'minimum', 'maximum', 'minProperties', 'maxProperties', '$ref', 'oneOf', 'anyOf', 'allOf', 'format',
-  '$schema', '$id', 'title', 'description', '$defs', 'x-simai-version']);
+  '$schema', '$id', 'title', 'description', '$defs', 'x-simai-version', 'if', 'then', 'else', 'not']);
 const kindOf = (value) => (value === null ? 'null' : Array.isArray(value) ? 'array' : Number.isInteger(value) ? 'integer' : typeof value);
 function validator(schema, base) {
   const errors = [];
@@ -78,6 +78,8 @@ function validator(schema, base) {
     }
     for (const part of node.allOf ?? []) check(part, data, path, from);
     const passes = (part) => { const mark = errors.length; check(part, data, path, from); const ok = errors.length === mark; errors.length = mark; return ok; };
+    if (node.if) { if (passes(node.if)) { if (node.then) check(node.then, data, path, from); } else if (node.else) check(node.else, data, path, from); }
+    if (node.not && passes(node.not)) errors.push(`${path} must not match not`);
     if (node.oneOf && node.oneOf.filter(passes).length !== 1) errors.push(`${path} must match exactly one of oneOf`);
     if (node.anyOf && !node.anyOf.some(passes)) errors.push(`${path} must match one of anyOf`);
     return errors.length === before;
@@ -172,6 +174,15 @@ const regionsOf = (document) => {
 };
 const stateOf = (region) => (region ? (region.slots?.default?.length ? 'replaced' : 'cleared') : 'inherited');
 const validDocument = ajv.getSchema('https://simai.io/contracts/composition-document.v1.schema.json');
+// Equal, key order aside (the round-trip rule).
+const canonical = (value) => (Array.isArray(value) ? value.map(canonical)
+  : value && typeof value === 'object' ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonical(value[key])])) : value);
+const same = (left, right) => JSON.stringify(canonical(left)) === JSON.stringify(canonical(right));
+const unmarked = (region) => {
+  const copy = structuredClone(region);
+  if (copy.extensions) { delete copy.extensions['simai:area']; if (!Object.keys(copy.extensions).length) delete copy.extensions; }
+  return copy;
+};
 const stripMarks = (document) => {
   const copy = structuredClone(document);
   for (const region of regionsOf(copy)) if (region.extensions) { delete region.extensions['simai:area']; if (!Object.keys(region.extensions).length) delete region.extensions; }
@@ -182,10 +193,12 @@ function memoryHost() {
   let state;
   let counter;
   const ok = (data) => ({answer: 'applied', data});
-  const refused = (reason, data) => ({answer: 'refused', reason, message: reason, ...(data ? {data} : {})});
+  const refused = (reason, data) => ({answer: 'refused', reason, message: `refused: ${reason}`, ...(data ? {data} : {})});
   const has = (capability) => state.capabilities.includes(capability);
   const published = () => state.publications.find((one) => one.id === state.published) ?? null;
-  const current = () => ({revision: state.revision, values: structuredClone(state.values), published: published()});
+  const current = () => ({revision: state.revision, values: structuredClone(state.values), published: published(), ...(has('levels') ? resolveAll(state.values) : {})});
+  const rights = () => state.rights ?? {save: true, publish: has('publish')};
+  const mayWrite = (language) => rights().save && (!rights().languages || rights().languages.includes(language));
   const conflict = (reason) => ({answer: 'conflict', reason, message: reason, current_revision: state.revision, current: current()});
   const chain = () => [state.target, ...(state.target.parents ?? [])];
   const valuesOf = (level, values) => (level.ref === state.target.ref ? values : state.parents?.[level.ref]?.values ?? {});
@@ -213,17 +226,43 @@ function memoryHost() {
     }
     return {resolved, areas};
   }
-  function checkValues(values) {
+  // The parent's area a region marked inherited stands for, in one language.
+  const parentArea = (language, name) => {
+    for (const level of state.target.parents ?? []) {
+      const region = regionsOf(state.parents?.[level.ref]?.values?.[language]).find((one) => one.props.name === name);
+      if (region) return region;
+    }
+    return null;
+  };
+  // A save of a resolved document: inherited regions are not stored (refused would-lose when edited); the
+  // simai:area key goes, every other extensions key stays.
+  function levelValue(language, document) {
+    const copy = structuredClone(document);
+    const shell = (copy.root?.slots?.default ?? []).find((node) => node.type === 'layout.regions');
+    const diagnostics = [];
+    if (shell?.slots?.regions) {
+      shell.slots.regions = shell.slots.regions.filter((region, index) => {
+        if (region.extensions?.['simai:area']?.state !== 'inherited') return true;
+        const bare = unmarked(region);
+        if (!same(bare, parentArea(language, region.props?.name))) diagnostics.push({code: 'inherited-area-changed', severity: 'error', path: `/root/slots/default/0/slots/regions/${index}`, language});
+        return false;
+      });
+    }
+    return diagnostics.length ? {diagnostics} : {value: stripMarks(copy)};
+  }
+  function checkValues(values, writing = false) {
     for (const [language, document] of Object.entries(values)) {
       if (!state.languages.includes(language)) return refused('unknown-language');
-      if (document === null) continue;
+      if (writing && !mayWrite(language)) return refused('access-denied');
+      if (document === null) { if (writing && language === state.languages[0]) return refused('invalid', {diagnostics: [{code: 'main-language-removed', severity: 'error', path: `/values/${language}`, language}]}); continue; }
+      if (document.locale !== undefined && document.locale !== language) return refused('structure-mismatch');
       if (!validDocument(document)) return refused('invalid', {diagnostics: [{code: 'schema', severity: 'error', path: validDocument.errors?.[0]?.instancePath ?? '', language}]});
-      if (countNodes(document.root) > state.limits.max_nodes || bytes(document) > state.limits.max_bytes) return refused('too-large');
+      if (countNodes(document.root) > state.limits.max_nodes || bytes(stripMarks(document)) > state.limits.max_bytes) return refused('too-large');
     }
     return null;
   }
   const load = () => ok({target: state.target, revision: state.revision, languages: state.languages, values: structuredClone(state.values),
-    rights: {save: true, publish: has('publish')}, limits: state.limits,
+    rights: rights(), limits: state.limits,
     ...(has('levels') ? resolveAll(state.values) : {}), ...(has('publish') ? {published: published()} : {})});
   const remembered = (key, params) => {
     const seen = state.keys.get(key);
@@ -253,24 +292,46 @@ function memoryHost() {
   const handlers = {
     'document.load': load,
     'document.resolve': ({values}) => checkValues(values) ?? ok(resolveAll(Object.fromEntries(Object.entries(values).map(([language, document]) => [language, stripMarks(document)])))),
-    'document.save': ({values, expected_revision: expected}) => {
+    'document.save': (payload) => {
+      const {values, expected_revision: expected, client_key: key} = payload;
+      if (key) { const again = remembered(key, payload); if (again) return again; }
+      if (!rights().save) return refused('access-denied');
       if (expected !== state.revision) return conflict('stale-revision');
-      const refusal = checkValues(values);
+      const refusal = checkValues(values, true);
       if (refusal) return refusal;
       const next = structuredClone(state.values);
-      for (const [language, document] of Object.entries(values)) if (document === null) delete next[language]; else next[language] = stripMarks(document);
+      for (const [language, document] of Object.entries(values)) {
+        if (document === null) { delete next[language]; continue; }
+        const level = levelValue(language, document);
+        if (level.diagnostics) return refused('would-lose', {diagnostics: level.diagnostics});
+        next[language] = level.value;
+      }
       if (has('levels') || state.parents) {
         const shapes = Object.values(next).map((document) => JSON.stringify(regionsOf(document).map((region) => [region.props.name, stateOf(region)]).sort()));
         if (new Set(shapes).size > 1) return refused('structure-mismatch');
         for (const region of regionsOf(Object.values(next)[0] ?? {})) if (lockedAbove(region.props.name)) return refused('area-locked');
       }
-      return draft(next);
+      const answer = draft(next);
+      return key ? remember(key, payload, answer) : answer;
     },
-    'history.list': () => ok({drafts: [{revision: state.revision, at: state.at, languages: Object.keys(state.values), ...(state.current ?? {})}, ...state.drafts.map(({values, ...entry}) => entry)],
-      publications: state.publications.map((one) => ({...one}))}),
+    'history.list': ({limit = 20, before, before_publication: beforePublication} = {}) => {
+      const drafts = [{revision: state.revision, at: state.at, languages: Object.keys(state.values), ...(state.current ?? {})}, ...state.drafts.map(({values, ...entry}) => entry)];
+      const publications = state.publications.map((one) => ({...one}));
+      const from = (list, at, key) => {
+        if (at === undefined) return 0;
+        const index = list.findIndex((one) => one[key] === at);
+        return index < 0 ? -1 : index + 1;
+      };
+      const d = from(drafts, before, 'revision');
+      const p = from(publications, beforePublication, 'id');
+      if (d < 0 || p < 0) return refused('not-found');
+      return ok({drafts: drafts.slice(d, d + limit), publications: publications.slice(p, p + limit),
+        more: {drafts: drafts.length > d + limit, publications: publications.length > p + limit}});
+    },
     'document.restore': (payload) => {
       const again = remembered(payload.client_key, payload);
       if (again) return again;
+      if (!rights().save) return refused('access-denied');
       if (payload.expected_revision !== state.revision) return conflict('stale-revision');
       const values = valuesAt(payload.revision);
       if (!values) return refused('not-found');
@@ -280,14 +341,20 @@ function memoryHost() {
       const again = remembered(payload.client_key, payload);
       if (again) return again;
       if (payload.at && !has('scheduled-publish')) return refused('capability-not-provided');
+      if (!rights().publish) return refused('access-denied');
       if (payload.expected_published !== state.published) return conflict('environment-changed');
       if (payload.revision !== state.revision) return conflict('stale-revision');
+      for (const language of payload.languages ?? []) {
+        if (!state.languages.includes(language)) return refused('unknown-language');
+        if (!(language in state.values)) return refused('missing-translation');
+      }
       const languages = (payload.languages ?? state.languages).filter((language) => language in state.values);
       return remember(payload.client_key, payload, ok({publication: {...publish(payload.revision, languages), client_key: payload.client_key}}));
     },
     'document.rollback': (payload) => {
       const again = remembered(payload.client_key, payload);
       if (again) return again;
+      if (!rights().publish) return refused('access-denied');
       if (payload.expected_published !== state.published) return conflict('environment-changed');
       const from = state.publications.find((one) => one.id === payload.publication);
       if (!from) return refused('not-found');
@@ -304,7 +371,8 @@ function memoryHost() {
       if (!(intent in port.intents)) return refused('unknown-intent');
       const capability = port.intents[intent].capability;
       if (capability && !state.capabilities.includes(capability)) return refused('capability-not-provided');
-      if (state.fault) return {answer: 'unavailable', reason: state.fault, message: state.fault};
+      if (state.fault === 'session-expired') return refused('session-expired');
+      if (state.fault) return {answer: 'unavailable', reason: state.fault, message: `unavailable: ${state.fault}`, retry_after: 30};
       return handlers[intent](payload);
     },
   };
@@ -342,4 +410,62 @@ test('the port edition pins its kit, the runner included', () => {
   lines.sort();
   assert.ok(lines.some((line) => line.startsWith('run.mjs ')));
   assert.equal(sha(lines.join('')), port.conformance.sha256);
+});
+
+// ---------------------------------------------------------------------------
+// Draft 2: the answer schema, and the kit catching the hosts the review named.
+
+const answerOf = compile(port.answer.schema, 'answer');
+const watched = (host, seen) => ({
+  setup: (given) => host.setup(given),
+  async send(intent, payload) { const answer = await host.send(intent, payload); seen.push([intent, answer]); return answer; },
+});
+
+test('every answer of the reference host, after steps included, fits the answer schema', async () => {
+  const seen = [];
+  await runKit(watched(memoryHost(), seen));
+  assert.ok(seen.length > cases.length);
+  for (const [intent, answer] of seen) assert.ok(answerOf(answer), `${intent}: ${JSON.stringify(answerOf.errors)} ${JSON.stringify(answer).slice(0, 200)}`);
+  assert.equal(answerOf({answer: 'conflict', reason: 'stale-revision', current_revision: '8', current: {revision: '8'}}), false, 'a stale-revision conflict carries current.values');
+  assert.equal(answerOf({answer: 'refused', reason: 'area_locked'}), false, 'reasons are hyphenated codes, matched exactly');
+  assert.equal(answerOf({answer: 'applied', reason: 'invalid'}), false, 'an applied answer carries no reason');
+  assert.ok(answerOf({answer: 'unavailable', reason: 'storage-unavailable', retry_after: 30}));
+});
+
+// A host that wraps the reference host and changes what it stores.
+function altered(change) {
+  const host = memoryHost();
+  return {
+    setup: (given) => host.setup(given),
+    send: (intent, payload) => host.send(intent, intent === 'document.save' ? change(structuredClone(payload)) : payload),
+  };
+}
+const failing = async (adapter, ids) => (await runKit(adapter, {only: ids})).results.filter((one) => !one.ok).map((one) => one.id);
+
+test('the kit refuses a host that drops what it does not know (M1)', async () => {
+  // Validates against its own registry: unknown node types go, unknown props and extensions keys go.
+  const known = (node) => {
+    if (node.props) node.props = Object.fromEntries(Object.entries(node.props).filter(([key]) => !key.startsWith('x-') && key !== 'cover'));
+    delete node.extensions; delete node.bindings; delete node.presentation;
+    for (const [slot, list] of Object.entries(node.slots ?? {})) node.slots[slot] = list.filter((child) => !child.type.startsWith('vendor.')).map(known);
+    return node;
+  };
+  const lossy = altered((payload) => { for (const document of Object.values(payload.values)) if (document) known(document.root); return payload; });
+  assert.deepEqual(await failing(lossy, ['save-keeps-unknown-content-through-load-history-and-restore']), ['save-keeps-unknown-content-through-load-history-and-restore']);
+});
+
+test('the kit refuses a host that stores a resolved document as replaced areas (M2)', async () => {
+  // Strips the marks and stores every region: inherited areas silently become replaced.
+  const stripOnly = altered((payload) => {
+    for (const document of Object.values(payload.values)) for (const region of regionsOf(document ?? {})) if (region.extensions?.['simai:area']) region.extensions['simai:area'].state = 'replaced';
+    return payload;
+  });
+  const ids = ['save-of-a-resolved-document-keeps-inherited-areas-inherited', 'save-of-an-edited-inherited-area-is-refused'];
+  assert.deepEqual(await failing(stripOnly, ids), ids);
+});
+
+test('reasons are matched exactly: a host answering area_locked fails', async () => {
+  const host = memoryHost();
+  const underscored = {setup: (given) => host.setup(given), async send(intent, payload) { const answer = await host.send(intent, payload); return answer.reason ? {...answer, reason: answer.reason.replaceAll('-', '_')} : answer; }};
+  assert.deepEqual(await failing(underscored, ['save-into-a-locked-area-is-refused']), ['save-into-a-locked-area-is-refused']);
 });

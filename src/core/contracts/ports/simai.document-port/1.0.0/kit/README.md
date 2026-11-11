@@ -1,6 +1,8 @@
-# Conformance kit — document host port 1.0.0 (draft)
+# Conformance kit — document host port 1.0.0 (draft 2)
 
-Twenty-four cases a host runs to show it speaks `simai.document-port`. The kit
+Thirty-nine cases a host runs to show it speaks `simai.document-port`. The kit
+is the port's acceptance gate: an adapter (Larena, Bitrix) is accepted against
+1.0.0 when it passes every case. The kit
 is transport-neutral: it describes intents, payloads and answers, not HTTP and
 not a framework. `run.mjs` beside it reads the cases for a host adapter written
 in JavaScript; a host in another language (Larena, Bitrix) reads `cases/*.json`
@@ -14,20 +16,25 @@ and applies the same checks in its own test harness.
   - `target` — the bound storage element and its `parents`, nearest first;
   - `languages`, `revision`, `at`, `values` — the element as stored;
   - `limits` — `max_nodes` and `max_bytes` per language value;
+  - `rights` — what the reader may do (`save`, `publish`, `languages`); absent:
+    the reader may save, and publish when the host announces `publish`;
   - `parents` — with `levels`: each parent level's stored `values` and the
     areas it `locked`;
   - `drafts`, `publications`, `published` — with `history` and `publish`: the
     earlier drafts (with their values), the publications (newest first) and the
     id of the live one;
-  - `fault` — a store failure the harness puts on the host (`storage-unavailable`).
-- `when` — the intent and its payload.
+  - `fault` — a failure the harness puts on the host: `storage-unavailable`
+    (answered `unavailable`) or `session-expired` (answered `refused`).
+- `when` — the intent and its payload. A step may take payload values from
+  earlier answers: `bind` maps a payload key to `{step, path}`, the step being
+  `when` or `after.<n>` (1-based), for the revisions a host makes itself.
 - `then` — what the answer must be:
   - `answer` — one of `applied`, `conflict`, `refused`, `unavailable`;
   - `answer_must_include` — fields beside `answer` (`reason`, `current_revision`, `current`);
   - `data_must_include` — keys of `data`;
   - `expect` — machine checks: `{path, equals | not_equals | not_in | absent | at_most | length}`
-    on the answer (dot paths, numbers index arrays), `{path, equals_step: "when", step_path}`
-    to compare with the first answer, and `{area, language, mark, texts}` for
+    on the answer (dot paths, numbers index arrays; `equals` on objects is key order aside),
+    `{path, equals_step, step_path}` to compare with an earlier answer (`when`, `after.<n>`), and `{area, language, mark, texts}` for
     the layout.region named `area` in `data.resolved[language]`: its
     `extensions["simai:area"]` mark and the texts of its paragraphs;
   - `note` — what else the case means, in words.
@@ -35,7 +42,8 @@ and applies the same checks in its own test harness.
   and `then`: what a refused write must have left alone, what a repeat must
   answer.
 
-Reasons are compared without regard to `-` and `_` (vocabulary 1.1.5 §3).
+Reasons are hyphenated codes from the port's list, matched exactly: a host
+maps its own codes (`area_locked`, `document_access_denied`) to them.
 
 ## Running it
 
@@ -60,7 +68,7 @@ every file, sorted by path, the line `<path relative to the kit> <sha256 of the
 bytes>\n`, then the sha256 of that listing (`tests/host-port-kits.contract.test.mjs`).
 `run.mjs` is part of the kit and of the digest.
 
-## 1.0.0
+## 1.0.0 (draft 2)
 
 | case | what it holds the host to |
 |:---|:---|
@@ -88,3 +96,18 @@ bytes>\n`, then the sha256 of that listing (`tests/host-port-kits.contract.test.
 | `capability-absent-is-refused-by-name` | an intent of a capability not announced is `capability-not-provided` |
 | `unknown-intent-is-refused` | an intent the port does not declare (there is no `document.lock`) is `unknown-intent` |
 | `storage-down-is-unavailable` | a store that cannot be reached is `unavailable storage-unavailable`, never thrown |
+| `save-keeps-unknown-content-through-load-history-and-restore` | round trip: an undeclared node type, unknown data/props keys, a foreign extensions key, bindings and a `media:<id>` come back equal on save, load and restore |
+| `save-of-a-resolved-document-keeps-inherited-areas-inherited` | a resolved document saved as shown stores only this level's areas; inherited ones go on inheriting; other extensions keys stay |
+| `save-of-an-edited-inherited-area-is-refused` | an area marked inherited whose content changed is `would-lose` with a diagnostic; nothing written |
+| `save-without-the-right-to-save-is-refused` | `rights.save` false is `access-denied` |
+| `save-of-a-language-outside-rights-is-refused` | a language outside `rights.languages`, written or removed, is `access-denied`; an allowed one is applied |
+| `restore-of-an-unknown-revision-is-not-found` | an unknown (or pruned) revision is `not-found` |
+| `rollback-to-an-unknown-publication-is-not-found` | an unknown publication is `not-found`; nothing published |
+| `restore-against-a-moved-draft-is-a-conflict` | a stale `expected_revision` on restore is `conflict stale-revision` with the current values |
+| `rollback-against-a-moved-publication-is-a-conflict` | a moved `expected_published` on rollback is `conflict environment-changed` |
+| `history-pages-with-limit-and-before` | `limit` per list, `more`, `before` (drafts) and `before_publication` (publications); an unknown cursor is `not-found` |
+| `save-repeat-with-the-same-key-is-one-save` | an optional `client_key` on save: the same key and values is the same save; other values `idempotency-conflict` |
+| `save-removing-the-main-language-is-refused` | `null` for the first of `languages` is `invalid` |
+| `save-language-keys-are-exact-and-match-the-locale` | `RU` beside `ru` is `unknown-language`; a value whose `locale` is not its key is `structure-mismatch` |
+| `publish-edges-are-refused-or-conflicts` | a language with no value is `missing-translation`; a revision that is not the current draft is `conflict stale-revision` |
+| `session-expired-is-refused-by-name` | a session that ended is `session-expired`, not `access-denied` |
