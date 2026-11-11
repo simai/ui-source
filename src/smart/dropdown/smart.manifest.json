@@ -487,7 +487,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "b94c84190aa7f8e774603a526c8e8d0a76286010ad3a67b86d0a0127239ca445"
+        "sha256": "56c19a5d738b6aa656184a62c0fe7775cf0bc9b517fe7f60f70cb0468a617e92"
       },
       {
         "path": "src/smart/dropdown/rule.js",
@@ -495,7 +495,7 @@
       },
       {
         "path": "src/smart/dropdown/js/templates/default.js",
-        "sha256": "d704efcc601e99de43ea713c72c02d520601c9669d8a768047c842a6fbad8b65"
+        "sha256": "a1bfad263c4b2027f43cb48e6286321b4019941edd639a5b9178c9ee60da166e"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
