@@ -72,9 +72,10 @@ none.
   `--sf-on-primary` the place's colour; hover and press are one and two
   five-tone steps towards the place (95/90 light, 25/30 dark). A filled
   button, a checked checkbox and a switch that is on are white on a blue
-  header. A tonal button there is the place's own-ink fill (12/16/20) under
-  the place's ink, as `--sf-primary-container` and
-  `--sf-on-primary-container`.
+  header. A tonal button there is the place's own-ink fill (12) under the
+  place's ink, as `--sf-primary-container` and `--sf-on-primary-container`;
+  its hover and press go a step darker in both themes (light: white 8 and
+  4, so the white label gains contrast; dark: the place's ink 16 and 20).
 - **Places own the accent only on a strong place.** A card, a window, a
   drawer or a popup on a neutral place declares no `--sf-primary` and no
   `--sf-outline-variant`, so a project that re-brands through the roles (on
@@ -84,6 +85,12 @@ none.
   it takes back the theme's boundary line, because a coloured place
   re-declares that line on itself and its former value cannot be read below
   it.
+- **Set a site colour per theme.** A project that brands through the role
+  writes it for both themes, `--sf-primary: light-dark(<light>, <dark>)` on
+  `.theme-light, .theme-dark` (or brands the palette tones, which reaches
+  every step). One colour on `:root` serves the light theme only: in the dark
+  the theme's ink stays tone 20, and a banner button with the brand label
+  reads 2.23:1 (`#002f67` under `#c2185b`); a per-theme brand gives 7.67.
 - **The surface look of buttons, icon buttons, segments and tags** reads the
   surface roles, not `--sf-alpha-*`: rest 4 is `--sf-surface-state-hover`, 8
   `--sf-surface-state-select`, 12 `--sf-surface-state-active`, 16
