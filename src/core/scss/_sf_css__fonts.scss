@@ -75,11 +75,9 @@
 //
 // A cold visit draws in this family. Chrome uses an `optional` face only when
 // it is in by the first frame, and it starts the file only when text set in
-// it is laid out, which is the first frame itself. core/js/text-fonts.js asks
-// for the faces from the first script, so a quick network wins the frame. A
-// face Inter misses stays on this family for the visit, so the widths here
-// decide where lines break and how wide buttons are on a first visit (R074
-// F-3).
+// it is laid out, which is the first frame itself. A face Inter misses stays
+// on this family for the visit, so the widths here decide where lines break
+// and how wide buttons are on a first visit (R074 F-3).
 //
 // Measured against Inter Variable (fontsource 5.3.0) in Chrome over 400
 // Russian and 400 English lines of the docs (2026-11-11, control/evidence/

@@ -167,7 +167,6 @@
     "src/core/js/tag-aliases.js",
     "src/core/js/tailwind-map.js",
     "src/core/js/template-utilities.generated.json",
-    "src/core/js/text-fonts.js",
     "src/core/js/theme-palette.js",
     "src/core/js/upgrade-properties.js",
     "src/core/js/utilityModuleAliases.js",
@@ -210,7 +209,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "3252f33e063ecf9d2fab34acade5479001d90aa65a5090d1e7ad9101664b6abd",
+  "content_sha256": "4500496a3cb9e96d342b653259eb48f0764dcbb1133364526771fddccf6ad00e",
   "dependencies": [
     {
       "id": "core.styles",

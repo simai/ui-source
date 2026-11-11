@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFile, stat} from 'node:fs/promises';
@@ -22,7 +23,7 @@ test('inter: every script file the faces name is in the source', async () => {
   // The metric fallback has regular and bold faces: one face at 400 drew
   // bold Latin at 400 on a cold visit (2026-10-19). Since font.inter 1.1.0 a
   // face per weight band (and per band for Cyrillic), each sized to Inter
-  // (tests/text-fonts.test.mjs checks the line box).
+  // (the line-box test below).
   for (const band of ['100 449', '450 549']) {
     assert.match(faces, new RegExp(`font-family: "Inter Fallback";\\s*font-weight: ${band};\\s*src: local\\("Arial"\\)`), band);
   }
@@ -48,4 +49,28 @@ test('inter: the licence ships with the notices', async () => {
   assert.match(inter.license_text, /SIL OPEN FONT LICENSE Version 1\.1/);
   const ofl = await readFile(new URL('core/fonts/inter/OFL.txt', SRC), 'utf8');
   assert.equal(inter.license_text, ofl);
+});
+
+// The fallback faces: one per weight band and script, with the line box of
+// Inter (ascent 1984/2048 plus 0.12 %, descent 494/2048, no gap) once size-adjust
+// scales it.
+test('every Inter Fallback face keeps Inter\'s line box under its own size-adjust', () => {
+  const scss = readFileSync(new URL('../src/core/scss/_sf_css__fonts.scss', import.meta.url), 'utf8');
+  const faces = [...scss.matchAll(/@font-face\s*\{([^}]*"Inter Fallback"[^}]*)\}/g)].map((m) => m[1]);
+  assert.equal(faces.length, 8);
+  const bands = new Set();
+  for (const body of faces) {
+    const value = (name) => Number(new RegExp(`${name}:\\s*([\\d.]+)%`).exec(body)?.[1]);
+    const size = value('size-adjust') / 100;
+    // 0.12 % above Inter's ascent: an exact quotient rounds 15.5 px down (16 px text).
+    const ascent = value('ascent-override') / 100 * size / (1984 / 2048);
+    assert.ok(ascent > 1.0008 && ascent < 1.0016, `${body}: ascent ${ascent}`);
+    assert.ok(Math.abs(value('descent-override') / 100 * size - 494 / 2048) < 1e-5, body);
+    assert.equal(value('line-gap-override'), 0);
+    const weight = /font-weight:\s*([\d ]+);/.exec(body)[1].trim();
+    const bold = /local\("Arial Bold"\)/.test(body);
+    assert.equal(bold, Number(weight.split(' ')[0]) >= 550, `${weight} takes Arial${bold ? ' Bold' : ''}`);
+    bands.add(`${weight}|${/unicode-range/.test(body) ? 'cyrillic' : 'latin'}`);
+  }
+  assert.equal(bands.size, 8);
 });

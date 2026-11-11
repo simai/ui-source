@@ -1,7 +1,4 @@
 import './public-path';
-// The text faces the page needs, started before anything else runs, so a
-// quick network brings Inter in before the first frame (core/js/text-fonts.js).
-import './text-fonts.js';
 import './internal.js';
 import './core-modules.js';
 import './aliases.js';
