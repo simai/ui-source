@@ -65,7 +65,9 @@ try {
     await settle(600);
     window.SF.Toast.dismiss(toasts()[0]);
     await settle(800);
-    const after = {count: toasts().length, error: toasts().find((toast) => toast.textContent.includes('Не удалось'))?.getAttribute('role') ?? null};
+    const assertive = area?.querySelector('.sf-notifications-live[data-live="assertive"]');
+    const after = {count: toasts().length, error: assertive?.getAttribute('aria-live') === 'assertive' && assertive.textContent.includes('Не удалось') ? 'alert' : null,
+      toastRoles: toasts().filter((toast) => toast.hasAttribute('role')).length};
     return {before, after, history: window.SF.notifications.history().length};
   });
   console.log(JSON.stringify(seen, null, 1));
@@ -74,7 +76,8 @@ try {
   if (seen.before.heard !== 7 || seen.history !== 7) failures.push('every message is announced and kept');
   if (seen.before.label !== 'Уведомления') failures.push('the area is named in the page language');
   if (!(seen.before.gap > 0)) failures.push('messages stack with a gap');
-  if (seen.after.count !== 4 || seen.after.error !== 'alert') failures.push('closing one shows the next; an error is an alert');
+  if (seen.after.count !== 4 || seen.after.error !== 'alert') failures.push('closing one shows the next; an error is said at once by the area\'s live copy');
+  if (seen.after.toastRoles !== 0) failures.push('the toasts of the area are not live regions of their own (said once, by the live copy)');
 
   // A string is the message's text; nothing to show is said, not swallowed.
   const warnings = [];

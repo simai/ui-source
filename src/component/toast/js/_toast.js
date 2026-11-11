@@ -120,7 +120,26 @@ function bindToast(root, removalTarget = root) {
   root.__sfToastPauseReasons = new Set();
   root.__sfToastRemaining = readDuration(root);
   root.dataset[TOAST_BOUND_FLAG] = '1';
+  watchPageVisibility();
+  // A message raised while the page is out of sight waits for it.
+  if (document.hidden) root.__sfToastPauseReasons.add('page-hidden');
   startToastTimer(root);
+}
+
+// A message's time runs only while the page is in sight: hidden (another tab,
+// a minimised window) every timer stands and resumes with what was left (C50
+// call). One listener for the document.
+let pageVisibilityWatched = false;
+function watchPageVisibility() {
+  if (pageVisibilityWatched || typeof document === 'undefined') return;
+  pageVisibilityWatched = true;
+  document.addEventListener('visibilitychange', () => {
+    for (const root of document.querySelectorAll(TOAST_SELECTOR)) {
+      if (root.dataset[TOAST_BOUND_FLAG] !== '1') continue;
+      if (document.hidden) pauseToastTimer(root, 'page-hidden');
+      else resumeToastTimer(root, 'page-hidden');
+    }
+  });
 }
 
 function unbindToast(root) {

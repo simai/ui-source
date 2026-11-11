@@ -120,7 +120,9 @@ function layout() {
       scale = 1 - STACK_STEP * layer;
       clip = Math.max(0, heights[at] - front);
     }
-    if (toast.dataset.stackEntering !== undefined) away -= gap;
+    // A message coming in starts outside the window's edge (C50): its own
+    // height and the area's distance from that edge past where it will stand.
+    if (toast.dataset.stackEntering !== undefined) away = -(heights[at] + edgeDistance(area, top));
     toast.style.transform = `translateY(${top ? away : -away}px) scale(${scale})`;
     toast.style.clipPath = clip ? (top ? `inset(${clip}px 0 0 0)` : `inset(0 0 ${clip}px 0)`) : '';
     toast.style.zIndex = String(toasts.length - at);
@@ -133,6 +135,12 @@ function layout() {
   const layers = Math.min(toasts.length, STACK_LAYERS);
   const size = open ? Math.max(0, reach - gap) : (toasts.length ? front + gap * (layers - 1) : 0);
   area.style.blockSize = `${size}px`;
+}
+
+// How far the area stands from the window edge it grows from.
+function edgeDistance(area, top) {
+  const box = area.getBoundingClientRect();
+  return Math.max(0, top ? box.top : (globalThis.innerHeight || 0) - box.bottom);
 }
 
 function layoutSoon() {
@@ -218,10 +226,20 @@ function region() {
     state.hover = true;
     setOpen();
   });
+  // The gaps of an open stack take no pointer (they would swallow the page's
+  // clicks), so the pointer crossing one leaves the area for a moment: the
+  // stack closes only when it has not come back within two frames' time.
+  let leaving = 0;
+  area.addEventListener('pointerover', () => { clearTimeout(leaving); leaving = 0; });
   area.addEventListener('pointerleave', (event) => {
     if (event.pointerType === 'touch') return;
-    state.hover = false;
-    setOpen();
+    clearTimeout(leaving);
+    leaving = setTimeout(() => {
+      leaving = 0;
+      if (area.matches(':hover')) return;
+      state.hover = false;
+      setOpen();
+    }, 100);
   });
   let touched = false;
   area.addEventListener('pointerdown', (event) => { touched = event.pointerType === 'touch'; });
@@ -241,6 +259,15 @@ function region() {
     setOpen();
   });
   area.addEventListener('keydown', closeFocused);
+  for (const politeness of ['polite', 'assertive']) {
+    const live = document.createElement('div');
+    live.className = 'sf-notifications-live sr-only';
+    live.dataset.live = politeness;
+    live.setAttribute('aria-live', politeness);
+    live.setAttribute('aria-atomic', 'true');
+    live.setAttribute('role', politeness === 'assertive' ? 'alert' : 'status');
+    area.append(live);
+  }
   document.addEventListener('pointerdown', (event) => {
     if (!state.pinned || area.contains(event.target)) return;
     state.pinned = false;
@@ -304,6 +331,39 @@ function actionsOf(options) {
     .map((one, at) => ({...one, label: String(one.label).trim(), id: String(one.id ?? (at ? `action-${at + 1}` : 'action'))}));
 }
 
+// Every message is said through the area's live copy, whatever slot it takes
+// (M2: the fourth of a stack is hidden and was never in the tree while three
+// were on view). An error is said at once, the rest politely. The copy is
+// visually hidden and written after a frame, so a live region already in the
+// tree changes and is read.
+function announce(record) {
+  const area = region();
+  const live = area.querySelector(record.status === 'error' ? '.sf-notifications-live[data-live="assertive"]' : '.sf-notifications-live[data-live="polite"]');
+  if (!live) return;
+  const words = [record.title, record.text].filter(Boolean).join('. ');
+  live.textContent = '';
+  const write = () => { live.textContent = words; };
+  if (globalThis.requestAnimationFrame) globalThis.requestAnimationFrame(write);
+  else setTimeout(write, 16);
+}
+
+// The toast's script can be there before its sheet: drawn meanwhile, a message
+// stood unstyled in the middle of the window and jumped into its corner. The
+// area waits hidden until the sheet places it (fixed), at most two seconds.
+function sheetApplied(area) {
+  const placed = () => globalThis.getComputedStyle(area).position === 'fixed';
+  if (placed()) return Promise.resolve();
+  area.style.visibility = 'hidden';
+  return new Promise((resolve) => {
+    const started = Date.now();
+    const check = () => {
+      if (placed() || Date.now() - started > 2000) resolve();
+      else setTimeout(check, 16);
+    };
+    check();
+  });
+}
+
 // The slot is taken at once and the toast drawn when its component is there:
 // taken after the fetch, every message raised meanwhile found the area empty
 // and all of them were shown, the same one twice.
@@ -322,7 +382,9 @@ async function display(entry) {
     actions: link ? [] : actions.map((one) => ({text: one.label, action: one.id})),
     closable: true,
     duration: options.duration,
-    role: record.status === 'error' ? 'alert' : 'status',
+    // Not a live region of its own: the area's live copy says every message
+    // (announce), the one behind the stack too.
+    role: '',
   });
   toast.dataset.sfNotification = record.id;
   if (entry.count > 1) toast.dataset.count = String(entry.count);
@@ -334,12 +396,27 @@ async function display(entry) {
   // In a stack the newest comes in from outside the edge and fades in; the
   // first frame stands it there, the next lets it move (no jump: every move
   // is a transition from where the message stood).
-  if (stack) toast.dataset.stackEntering = '';
-  if (state.placement.startsWith('top')) area.prepend(toast);
+  // layout() reads every height, and that read commits the styles: the
+  // message is laid at its start outside the edge with no transition, the
+  // start committed, and only then let move (M1: it was committed at its
+  // final place first and dipped 3.4 px back to it).
+  if (stack) {
+    toast.dataset.stackEntering = '';
+    toast.style.transition = 'none';
+  }
+  // In a stack the newest is first in the focus order, then the older ones
+  // (C50 call): its place is the transform's, so the document order is free.
+  if (state.layout === 'stack' || state.placement.startsWith('top')) area.prepend(toast);
   else area.append(toast);
   state.resize?.observe(toast);
+  await sheetApplied(area);
+  if (!state.shown.includes(entry)) return;
+  area.style.visibility = '';
+  announce(record);
   layout();
   if (stack) {
+    void toast.offsetHeight;
+    toast.style.transition = '';
     const settle = () => {
       delete toast.dataset.stackEntering;
       layout();

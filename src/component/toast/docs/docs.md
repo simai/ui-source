@@ -107,10 +107,13 @@ call returns `null` and warns in the console.
 - The messages of the corner are a stack (core.runtime 1.55.0, owner decision
   C50): the newest in front, the two before it peeking out behind it by
   `--sf-space-1/2` (12; compact and phone 8), each 5 % narrower, their content
-  out of sight; a fourth waits hidden behind them. The stack opens into the
+  out of sight; a fourth waits hidden behind them. A new message slides in from
+  outside the window's edge and fades in. The stack opens into the
   list (every message whole, `--sf-space-1/2` apart) while the pointer is over
   it or the focus is in it, and on a tap until a tap elsewhere; while it is
-  open every timer in it stands. Escape closes the message in focus and moves
+  open every timer in it stands. The gaps between open messages take no
+  pointer, so a click there reaches the page. Tab enters the open stack at the
+  newest message, then the older ones. Escape closes the message in focus and moves
   the focus to the next, or back where it came from when none is left. With
   reduced motion nothing moves, it only changes. There is no «ещё N».
   `SF.notifications.configure({layout: 'list'})` keeps the list of earlier
@@ -119,9 +122,16 @@ call returns `null` and warns in the console.
   as a link at the end of the text; `action: {label, onSelect}` or
   `actions: [one, two]` are buttons under the text. `onSelect(record)` runs on
   either, and the message closes.
-- A timer pauses while the pointer or the focus is on its toast. An error is
-  announced at once (`role="alert"`), everything else politely
-  (`role="status"`).
+- A timer pauses while the pointer or the focus is on its toast, and every
+  timer stands while the page is out of sight (another tab, a minimised
+  window) and resumes with the time it had left.
+- Every message is said through the area's own live copy, visually hidden and
+  in the accessibility tree, whatever place it takes (the fourth, hidden
+  behind the stack, too): an error at once (`role="alert"`), everything else
+  politely (`role="status"`). The toasts of the area are not live regions of
+  their own, so nothing is said twice.
+- Until the toast's stylesheet is applied the area waits hidden (at most two
+  seconds), so a message never shows unstyled in the middle of the window.
 - Every message is announced on the document as `sf-notification` with
   `{id, status, title, text, source, time}` before it is shown. A notification
   centre records it there; cancelling the event keeps the record and skips the
