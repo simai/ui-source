@@ -524,8 +524,14 @@ function bindCountryViewport(root) {
       applyDropdownViewport(root);
       // Shared Framework geometry: below the field, flipped above when the
       // rows do not fit and there is more room, shifted inside the viewport.
+      // The height is the list's own: eight rows (the stylesheet and
+      // applyDropdownViewport), never the room left in the viewport. A frame
+      // that grows with its document is that room: a list that took it
+      // followed the frame and the frame followed the list -- 9.8k px in a
+      // documentation example, or squeezed to 16 px with no row in a frame
+      // that counts only the list's box (DEV acceptance 2026-11-11, CC-01).
       anchor = positioning().anchor(root, list, {
-        side: 'block-end', align: 'start', matchWidth: true, fitHeight: true,
+        side: 'block-end', align: 'start', matchWidth: true, fitHeight: false,
         onPosition: () => {
           const box = root.getBoundingClientRect();
           if (box.bottom <= 0 || box.top >= window.innerHeight) setOpenState(root, false);

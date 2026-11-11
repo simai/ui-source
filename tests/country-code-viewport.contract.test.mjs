@@ -25,11 +25,15 @@ test('Country rows are capped at eight real rows and scroll inside the list',()=
 });
 
 test('Country list uses shared positioning while open and restores author styles',()=>{
-  // The list is a flex column while open so SF.Position can cap its height and
-  // the rows shrink; right/bottom come from the helper, not stylesheet insets.
+  // The list is a flex column while open and its rows scroll inside it;
+  // right/bottom come from the helper, not stylesheet insets. Its height is its
+  // own eight rows, never the viewport's room: a frame that grows with its
+  // document is that room, and the list and the frame followed each other
+  // (CC-01, DEV acceptance 2026-11-11: 9.8k px, or 16 px with no row).
   assert.match(source,/import BundledPosition from '\.\.\/\.\.\/\.\.\/core\/js\/position\.js';/);
   assert.match(source,/globalThis\.SF\?\.Position \|\| BundledPosition/);
-  assert.match(source,/positioning\(\)\.anchor\(root, list, \{\s*side: 'block-end', align: 'start', matchWidth: true, fitHeight: true,/);
+  assert.match(source,/positioning\(\)\.anchor\(root, list, \{\s*side: 'block-end', align: 'start', matchWidth: true, fitHeight: false,/);
+  assert.doesNotMatch(source,/fitHeight: true/);
   assert.match(source,/Object\.assign\(list\.style, \{display: 'flex', flexDirection: 'column', overflow: 'hidden'\}\)/);
   assert.match(source,/anchor\.stop\(\);/);
   assert.match(source,/list\.style\.setProperty\(name, value, priority\)/);
