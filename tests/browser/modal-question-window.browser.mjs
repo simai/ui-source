@@ -13,8 +13,8 @@
 //   frame                 --sf-space-3 on every side; the × on its corner
 //   title                 the h4 step of the heading ladder, bold (C39, the
 //                         question window's title; C21: 20 on a desktop, 16
-//                         on a phone), its line the title ladder's
-//                         --sf-title--height-6 the rule names; density moves
+//                         on a phone), on the h4 step's own line
+//                         --sf-heading-4--height (24 / 18); density moves
 //                         neither (C44): a compact title is the normal one
 //   title -> plate        --sf-space-1
 //   plate                 surface-container, --sf-radius--surface,
@@ -142,7 +142,7 @@ async function measure(page) {
       tokens: {
         width: token('--sf-popup-question-width'), space3: token('--sf-space-3'), space2: token('--sf-space-2'), space1: token('--sf-space-1'),
         space13: token('--sf-space-1\\/3'), space12: token('--sf-space-1\\/2'), radius: token('--sf-radius--surface'), control: token('--sf-ui-1--control-height'),
-        heading4Size: token('--sf-heading-4--size'), title6: token('--sf-title--height-6'), container: colour('--sf-surface-container'),
+        heading4Size: token('--sf-heading-4--size'), heading4Height: token('--sf-heading-4--height'), container: colour('--sf-surface-container'),
       },
       surface: {...rect(surface), padding: [sc.paddingTop, sc.paddingRight, sc.paddingBottom, sc.paddingLeft].map(parseFloat),
         radius: [sc.borderTopLeftRadius, sc.borderTopRightRadius, sc.borderBottomRightRadius, sc.borderBottomLeftRadius].map(parseFloat),
@@ -198,7 +198,7 @@ function check(m, ctx) {
   // not a token density moves, and the line is the normal window's.
   want('title size = C21 h4 (20 desktop, 16 phone), density-independent (C44)', m.title.size, phone ? 16 : 20, 0.1);
   want('title size = --sf-heading-4--size', m.title.size, t.heading4Size, 0.1);
-  want('title line = --sf-title--height-6', m.title.height, t.title6, 0.1);
+  want('title line = --sf-heading-4--height', m.title.height, t.heading4Height, 0.1);
   const lineKey = `${ctx.view}/${ctx.theme}/${ctx.kind}/${ctx.load}`;
   if (ctx.density === 'normal') normalTitleLine.set(lineKey, m.title.height);
   else if (normalTitleLine.has(lineKey)) want('title line in a compact region = the normal one (C44)', m.title.height, normalTitleLine.get(lineKey), 0.1);
