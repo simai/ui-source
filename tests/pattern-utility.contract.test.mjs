@@ -55,6 +55,8 @@ test('six shapes, each a mask tile with no colour of its own', () => {
 test('the ink is a role or a hue at a fill step of the alpha scale', () => {
   assert.match(vars, /\$pattern-strengths: \(8, 12, 16, 24\);/u);
   assert.match(vars, /\$pattern-dark-step: 8;/u);
+  // Grain's colour spot stays a fill step that keeps text readable on it.
+  assert.match(vars, /\$pattern-glow-steps: \(16, 8\);/u);
   // The fill family (tests/alpha-scale.contract.test.mjs): 8 ... 32.
   for (const step of [8, 12, 16, 24]) assert.ok(step + 8 <= 32);
   assert.match(sheet, /background-color: var\(--sf-pattern--color\);/u);
