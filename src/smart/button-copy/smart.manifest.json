@@ -354,7 +354,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button-copy/index.js",
-        "sha256": "e8f6eb389ff89c89cb12695f3c18c36302283b0d58fa94f88c2bb513bfb54b45"
+        "sha256": "d2e27cc8d2a6645868831d0c31b99203df99e9596cea6f1cd71e3db4309c36e1"
       },
       {
         "path": "src/smart/button-copy/js/templates/default.js",
@@ -370,7 +370,7 @@
       },
       {
         "path": "src/smart/button-copy/docs.md",
-        "sha256": "c8ae3411d33d91386bfb7f3acd9f98357e3420960c2b48a6c34179552855275e"
+        "sha256": "ee4bd5d86b656867c1ff760dd0cc4b2438b0b702af30a7ad1129be5ff80fb234"
       }
     ],
     "generated_runtime": []

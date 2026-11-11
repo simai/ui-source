@@ -1,4 +1,4 @@
-# Shared display helpers: `SF.format`, `SF.breakpoints`, `SF.copyText`, initials
+# Shared display helpers: `SF.format`, `SF.breakpoints`, `SF.copyText`, `SF.copyFeedback`, initials
 
 What more than one set of components needs is one shared part (owner's rule;
 reuse audit 2026-11-02, findings 6, 7, 10 and 11). Dates, days, numbers and
@@ -131,7 +131,7 @@ try {
   const how = await SF.copyText(text, {document: element.ownerDocument}); // 'native' | 'legacy'
 } catch (error) {
   // 'copy_unsupported', or the platform's NotAllowedError / SecurityError:
-  // select the text and tell the person to press Ctrl+C (sf-copy-button does).
+  // select the text and tell the person to press Ctrl+C (SF.copyFeedback does).
 }
 ```
 
@@ -139,6 +139,36 @@ The Clipboard API on a secure page; where it is absent or refused (a policy, an
 embedded frame), `execCommand('copy')` over a hidden read-only field that is
 removed again. `SF.Clipboard`, with a capital C, is the clipboard class
 component's script API, not this function.
+
+## `SF.copyFeedback` (`core/js/copy-feedback.js`)
+
+What a copy says (owner decision C48, 2026-11-11), for every control that
+copies: sf-button-copy, and any `<button>`, sf-button or sf-button-icon with
+`data-sf-copy="text"` or `data-sf-copy-target="#id"` (the clipboard component's
+attribute route, no class needed).
+
+```js
+const feedback = SF.copyFeedback.create({
+  duration: 2000,                                  // ms the result stays
+  onPhase: (phase, message) => draw(phase, message), // pending | success | error | idle
+});
+const result = await feedback.run({
+  read: () => SF.copyFeedback.readText(field),     // the text, or throw 'missing_target' ...
+  element: () => field,                            // selected when the browser refuses
+  node: button,                                    // where the page's language is read
+});
+// {outcome: 'applied', text, method} or {outcome: 'refused', reason}
+```
+
+Copied: success for two seconds (the control shows a check) and "Скопировано"
+is said politely. Refused by the browser: the source is selected -- a field's
+value, an element's text, or the value itself in a hidden holder (`host`) --
+and the words say which keys copy it ("Выделено — нажмите Ctrl+C"); the control
+shows them near itself without moving anything. A source error
+(`missing_source`, `missing_target`, `empty_source`, `ambiguous_source`) is an
+error with "Не удалось скопировать". `readText(element)` copies an element
+whole: a field's value, a numbered code block without its numbers, else its
+text. The words are sf-button-copy's, in the page's language.
 
 ## Initials (`smart/helpers/text.js getInitials`)
 

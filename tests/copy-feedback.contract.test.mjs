@@ -1,0 +1,97 @@
+// SF.copyFeedback (core/js/copy-feedback.js, owner decision C48): one
+// feedback for sf-button-copy and the clipboard component's attribute route.
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import test from 'node:test';
+
+const root = new URL('../', import.meta.url);
+const read = (path) => readFile(new URL(path, root), 'utf8');
+
+const {WORDS, DURATION, SOURCE_ERRORS, createCopyFeedback} = await import('../src/core/js/copy-feedback.js');
+
+// A document for copyText: secure, with a Clipboard API that copies or refuses,
+// and no body, so the execCommand fallback has nowhere to work.
+const page = (writeText) => ({defaultView: {isSecureContext: true, navigator: {clipboard: {writeText}}}});
+
+function recorder(duration = 30) {
+  const phases = [];
+  const feedback = createCopyFeedback({duration, onPhase: (phase, message) => phases.push([phase, message])});
+  return {phases, feedback};
+}
+
+test('the words are sf-button-copy\'s, in both languages', async () => {
+  for (const locale of ['en', 'ru']) {
+    const words = JSON.parse(await read(`src/smart/button-copy/lang/${locale}.json`)).runtime;
+    for (const key of ['copy', 'copied', 'failed', 'selected']) assert.equal(WORDS[locale][key], words[key], `${locale}.${key}`);
+  }
+  assert.equal(DURATION, 2000);
+  assert.deepEqual([...SOURCE_ERRORS].sort(), ['ambiguous_source', 'empty_source', 'missing_source', 'missing_target']);
+});
+
+test('a copy: pending, success with the copied words, idle after the duration', async () => {
+  const {phases, feedback} = recorder();
+  let copied = null;
+  const result = await feedback.run({read: () => 'npm i', document: page(async (text) => { copied = text; }), words: (key) => key});
+  assert.deepEqual(result, {outcome: 'applied', text: 'npm i', method: 'native'});
+  assert.equal(copied, 'npm i');
+  assert.deepEqual(phases, [['pending', ''], ['success', 'copied']]);
+  await new Promise((resolve) => setTimeout(resolve, 60));
+  assert.deepEqual(phases.at(-1), ['idle', '']);
+});
+
+test('a refusal selects the source and says which keys copy it', async () => {
+  const {phases, feedback} = recorder();
+  const denied = Object.assign(new Error('denied'), {name: 'NotAllowedError'});
+  let asked = 0;
+  const result = await feedback.run({
+    read: () => 'sk_test', element: () => { asked++; return null; },
+    document: page(async () => { throw denied; }),
+    words: (key, vars) => `${key}:${vars?.keys ?? ''}`,
+  });
+  assert.equal(result.outcome, 'refused');
+  assert.equal(result.reason, 'denied');
+  assert.equal(asked, 1, 'the source to select is asked for');
+  assert.match(phases.at(-1)[1], /^selected:(Ctrl\+C|⌘C)$/u);
+  feedback.cancel();
+});
+
+test('a source error is the failed words, and nothing is selected', async () => {
+  const {phases, feedback} = recorder();
+  let asked = 0;
+  const result = await feedback.run({read: () => { throw new Error('missing_target'); }, element: () => { asked++; return null; }, words: (key) => key, messages: {failed: 'Нет поля'}});
+  assert.equal(result.reason, 'missing_target');
+  assert.equal(asked, 0);
+  assert.deepEqual(phases.at(-1), ['error', 'Нет поля']);
+  const empty = await feedback.run({read: () => '', words: (key) => key});
+  assert.equal(empty.reason, 'empty_source');
+  feedback.cancel();
+});
+
+test('a press while a copy is under way is busy and changes nothing', async () => {
+  const {phases, feedback} = recorder();
+  let release;
+  const first = feedback.run({read: () => 'a', document: page(() => new Promise((resolve) => { release = resolve; })), words: (key) => key});
+  const second = await feedback.run({read: () => 'b', words: (key) => key});
+  assert.deepEqual(second, {outcome: 'refused', reason: 'busy'});
+  assert.deepEqual(phases, [['pending', '']]);
+  release();
+  await first;
+  feedback.cancel();
+});
+
+test('sf-button-copy, the attribute route and code copy say it through the helper', async () => {
+  const [button, route, code, index] = await Promise.all([
+    read('src/smart/button-copy/index.js'),
+    read('src/component/clipboard/js/index.js'),
+    read('src/core/js/code-copy.js'),
+    read('src/core/js/index.js'),
+  ]);
+  assert.match(button, /createCopyFeedback\(\{/u);
+  assert.match(route, /createCopyFeedback\(\{/u);
+  assert.match(code, /import \{WORDS as COPY_WORDS, copyKeys\} from '\.\/copy-feedback\.js'/u);
+  assert.match(index, /import '\.\/copy-feedback\.js';/u);
+  const api = JSON.parse(await read('src/core/contracts/public-js-api.json'));
+  const entry = api.globals.find((global) => global.name === 'SF.copyFeedback');
+  assert.ok(entry, 'SF.copyFeedback is in the public JS API');
+  assert.deepEqual(entry.members, ['create', 'readText', 'select', 'words']);
+});

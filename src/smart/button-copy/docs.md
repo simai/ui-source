@@ -41,6 +41,14 @@ macOS), чтобы человек мог скопировать сам: подс
 У кнопки без подписи имя (`label`) показывает подсказка SIMAI Framework — при
 наведении и при переходе с клавиатуры; нажатие и Escape её прячут.
 
+Так же копирует и отвечает любая кнопка — `<button>`, `sf-button` или
+`sf-button-icon` — с атрибутом `data-sf-copy="текст"` или
+`data-sf-copy-target="#id"`, без отдельного класса: та же галочка на две
+секунды, то же «Скопировано» для экранного диктора и та же подсказка с
+клавишами при отказе браузера (общий помощник `SF.copyFeedback`). Класс
+`sf-clipboard` и атрибуты `data-copy`, `data-target`, `data-clipboard-target`
+работают до 2027-01-01.
+
 События: `sf-button-copy-copied {text, method}` — текст скопирован, и
 `sf-button-copy-copy-failed {code}` — не удалось. Коды ошибок:
 `empty_source`, `missing_target`, `ambiguous_source`, `denied`. Прежние имена

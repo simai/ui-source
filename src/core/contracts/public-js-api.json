@@ -259,7 +259,20 @@
       "status": "public",
       "kind": "function",
       "loaded_by": "core",
-      "summary": "Copies text: SF.copyText(text, {document}) settles with 'native' (the Clipboard API) or 'legacy' (execCommand over a hidden field, where the API is absent or refused), or rejects (copy_unsupported, or the platform's NotAllowedError). The copy sf-copy-button and the clipboard class make. docs/developer/format.md."
+      "summary": "Copies text: SF.copyText(text, {document}) settles with 'native' (the Clipboard API) or 'legacy' (execCommand over a hidden field, where the API is absent or refused), or rejects (copy_unsupported, or the platform's NotAllowedError). The copy sf-button-copy and the clipboard component make; SF.copyFeedback says how it went. docs/developer/format.md."
+    },
+    {
+      "name": "SF.copyFeedback",
+      "status": "public",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "What a copy says, one feedback for sf-button-copy and the clipboard component's attribute route (data-sf-copy, data-sf-copy-target; owner decision C48): create({onPhase, duration}) answers a control's feedback, whose run({read, element, host, node, words, messages}) copies with SF.copyText and settles with {outcome: 'applied', text, method} or {outcome: 'refused', reason} -- the phase is success for two seconds and the words say it was copied; on a refusal the source is selected and the words say which keys copy it; pending, reset() and cancel() too. readText(element) is the text an element copies whole (a field's value, a numbered code block without its numbers, else its text); select(element, {text, host}) selects it; words(key, node, vars) are sf-button-copy's words in the page's language. docs/developer/format.md.",
+      "members": [
+        "create",
+        "readText",
+        "select",
+        "words"
+      ]
     },
     {
       "name": "SF.codeCopy",
