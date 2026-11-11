@@ -323,10 +323,44 @@ function capitalizeFirstLetter(value = '') {
     return `${text.charAt(0).toLocaleUpperCase()}${text.slice(1)}`;
 }
 
+// One formatter per locale and options: a render names 42 days, 12 months,
+// 7 weekdays and the month, and made 63 new Intl.DateTimeFormat for it every
+// time (datepicker audit 2026-11-11, §4). A locale Intl refuses throws here as
+// it threw before, and the callers keep their fall-backs.
+const dateFormats = new Map();
+
+function dateFormat(locale, options) {
+    const key = `${locale}|${JSON.stringify(options)}`;
+    let format = dateFormats.get(key);
+    if (!format) {
+        format = new Intl.DateTimeFormat(locale, options);
+        dateFormats.set(key, format);
+    }
+    return format;
+}
+
+// The first day of the locale's week, read once per locale: the grid asks it
+// several times a render.
+const weekStarts = new Map();
+
+function localeWeekStart(code) {
+    if (weekStarts.has(code)) return weekStarts.get(code);
+    let first = 1;
+    try {
+        const locale = new Intl.Locale(code);
+        const info = typeof locale.getWeekInfo === 'function' ? locale.getWeekInfo() : locale.weekInfo;
+        if (info?.firstDay) first = info.firstDay % 7;
+    } catch {
+        // An unknown locale keeps the Monday the grid always had.
+    }
+    weekStarts.set(code, first);
+    return first;
+}
+
 function getMonthLabel(month, locale) {
     try {
         return capitalizeFirstLetter(
-            new Intl.DateTimeFormat(locale, {month: 'long'}).format(
+            dateFormat(locale, {month: 'long'}).format(
                 new Date(2026, month, 1),
             ),
         );
@@ -337,7 +371,7 @@ function getMonthLabel(month, locale) {
 
 function getDateLabel(date, locale) {
     try {
-        return new Intl.DateTimeFormat(locale, {
+        return dateFormat(locale, {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
@@ -348,13 +382,13 @@ function getDateLabel(date, locale) {
     }
 }
 
-function getWeekdays(locale, weekStart = 1) {
+function getWeekdays(locale, weekStart = 1, weekday = 'short') {
     const sunday = new Date(2026, 0, 4);
     return Array.from({length: 7}, (_, index) => {
         const day = new Date(sunday);
         day.setDate(sunday.getDate() + ((weekStart + index) % 7));
         try {
-            return new Intl.DateTimeFormat(locale, {weekday: 'short'}).format(day);
+            return dateFormat(locale, {weekday}).format(day);
         } catch {
             return String((weekStart + index) % 7);
         }
@@ -451,6 +485,8 @@ class SfDatepicker extends FormField(DatepickerElement) {
         this._input = null;
         this._documentClickHandler = this.handleDocumentClick.bind(this);
         this._documentKeydownHandler = this.handleDocumentKeydown.bind(this);
+        this._focusoutHandler = this.handleFocusout.bind(this);
+        this.addEventListener('focusout', this._focusoutHandler);
         this._viewportHandler = this.positionPanel.bind(this);
         this._focusCalendarOnOpen = false;
         this._focusDateAfterRender = false;
@@ -1110,14 +1146,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
             const day = this.getNumberAttr('week-start', 1);
             return Number.isInteger(day) && day >= 0 && day <= 7 ? day % 7 : 1;
         }
-        try {
-            const locale = new Intl.Locale(this.locale);
-            const info = typeof locale.getWeekInfo === 'function' ? locale.getWeekInfo() : locale.weekInfo;
-            if (info?.firstDay) return info.firstDay % 7;
-        } catch {
-            // An unknown locale keeps the Monday the grid always had.
-        }
-        return 1;
+        return localeWeekStart(this.locale);
     }
 
     get locale() {
@@ -1204,7 +1233,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
 
     get calendarLabel() {
         try {
-            return new Intl.DateTimeFormat(this.locale, {
+            return dateFormat(this.locale, {
                 month: 'long',
                 year: 'numeric',
             }).format(this.displayDate);
@@ -1380,8 +1409,48 @@ class SfDatepicker extends FormField(DatepickerElement) {
             nextState.yearPageStart = this.getYearPageStart(this.year);
         }
 
+        // The list that opens takes the focus on its chosen month or year; the
+        // one that closes gives it back to its toggle (audit S11b: the lists
+        // could not be reached by keyboard, and the focus fell to the page).
+        if (nextMode) this._focusContextAfterRender = true;
+        else this._focusToggleAfterRender = nextContext;
         this.setState(nextState);
         return this;
+    }
+
+    // The month or year list is one tab stop (the chosen item, or the first
+    // that can be chosen); the arrows move in its three columns, Home and End
+    // go to its ends, Enter and Space choose (they are buttons).
+    focusContextItem() {
+        this._focusContextAfterRender = false;
+        const items = [...this.querySelectorAll('.sf-datepicker-context .sf-datepicker-text')];
+        (items.find((item) => item.tabIndex === 0) || items.find((item) => !item.disabled))?.focus?.();
+    }
+
+    handleContextKeydown(event) {
+        const items = [...this.querySelectorAll('.sf-datepicker-context .sf-datepicker-text')];
+        const index = items.indexOf(event.target.closest?.('.sf-datepicker-text'));
+        if (index < 0) return;
+        const horizontal = this.isRtl ? -1 : 1;
+        const steps = {ArrowLeft: -horizontal, ArrowRight: horizontal, ArrowUp: -3, ArrowDown: 3};
+        let next = -1;
+        if (event.key in steps) {
+            const step = steps[event.key];
+            for (let at = index + step; at >= 0 && at < items.length; at += step) {
+                if (!items[at].disabled) { next = at; break; }
+            }
+        } else if (event.key === 'Home') {
+            next = items.findIndex((item) => !item.disabled);
+        } else if (event.key === 'End') {
+            next = items.findLastIndex((item) => !item.disabled);
+        } else {
+            return;
+        }
+        event.preventDefault();
+        if (next < 0 || next === index) return;
+        items[index].tabIndex = -1;
+        items[next].tabIndex = 0;
+        items[next].focus();
     }
 
     shiftYearPage(direction = 1) {
@@ -1599,16 +1668,27 @@ class SfDatepicker extends FormField(DatepickerElement) {
             this.moveActiveDate(keySteps[event.key]);
             return;
         }
+        // Home and End take the first and last day of the week, held to the
+        // bounds: a week that starts before min-date stops at min-date instead
+        // of doing nothing (datepicker audit S05e).
         if (event.key === 'Home' || event.key === 'End') {
             event.preventDefault();
             const date = day?.date || this.activeDate;
             const offset = (date.getDay() - this.weekStart + 7) % 7;
-            this.moveActiveDate(event.key === 'Home' ? -offset : 6 - offset);
+            const next = new Date(date);
+            next.setDate(next.getDate() + (event.key === 'Home' ? -offset : 6 - offset));
+            const minDate = this.setMinDate();
+            const maxDate = this.setMaxDate();
+            if (minDate && compareDates(next, minDate) < 0) next.setTime(minDate.getTime());
+            if (maxDate && compareDates(next, maxDate) > 0) next.setTime(maxDate.getTime());
+            this.moveActiveDate(Math.round((new Date(next.getFullYear(), next.getMonth(), next.getDate()) - new Date(date.getFullYear(), date.getMonth(), date.getDate())) / 86400000));
             return;
         }
+        // PageUp and PageDown turn a month, with Shift a year (APG date picker
+        // dialog; audit S05d).
         if (event.key === 'PageUp' || event.key === 'PageDown') {
             event.preventDefault();
-            const direction = event.key === 'PageUp' ? -1 : 1;
+            const direction = (event.key === 'PageUp' ? -1 : 1) * (event.shiftKey ? 12 : 1);
             let next = shiftDateByMonth(this.activeDate, direction);
             const minDate = this.setMinDate();
             const maxDate = this.setMaxDate();
@@ -1621,6 +1701,19 @@ class SfDatepicker extends FormField(DatepickerElement) {
             });
             this.set({activeDate: formatIsoDate(next)});
         }
+    }
+
+    // The calendar is a non-modal dialog under its field: Tab moves through the
+    // field and the panel, and the focus going anywhere else closes the panel,
+    // as a click outside does. It stayed open behind the next field (audit
+    // S08). The focus is not taken back: the person went where Tab took them.
+    // A focus that goes nowhere (a removed button, the window losing focus)
+    // keeps the panel.
+    handleFocusout(event) {
+        if (!this.open || !this.input) return;
+        const next = event.relatedTarget;
+        if (!next || this.contains(next) || this.refs.datePickerPanel.value?.contains?.(next)) return;
+        this._closePanel();
     }
 
     handlePanelClick(event) {
@@ -1660,6 +1753,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
         event.stopPropagation();
 
         if (this.contextMode) {
+            this._focusToggleAfterRender = this.contextMode;
             this.setContext('');
             return;
         }
@@ -1858,6 +1952,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
             return this;
         }
 
+        this._focusToggleAfterRender = 'month';
         this.setState({
             month: month.index,
             context: '',
@@ -1882,6 +1977,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
             nextState.month = nextMonth;
         }
 
+        this._focusToggleAfterRender = 'year';
         this.setState(nextState);
         this.set({activeDate: formatIsoDate(new Date(year.year, nextMonth, 1))});
         return this;
@@ -2113,6 +2209,8 @@ class SfDatepicker extends FormField(DatepickerElement) {
             calendarLabel: this.calendarLabel,
             labels: this.labels,
             weekdays: this.weekdays,
+            // The column headers a screen reader reads: the full names.
+            weekdayNames: getWeekdays(this.locale, this.weekStart, 'long'),
             panelId: this._panelId,
             previousIcon: this.isRtl ? 'chevron_right' : 'chevron_left',
             nextIcon: this.isRtl ? 'chevron_left' : 'chevron_right',
@@ -2184,8 +2282,20 @@ class SfDatepicker extends FormField(DatepickerElement) {
         yearToggle?.setAttribute('aria-expanded', this.contextMode === 'year' ? 'true' : 'false');
         this.syncOverlayListeners();
         this.sfSyncFormState();
+        // The panel is placed when it opens, not after every render: SF.Position
+        // follows scroll, resize and the panel's own size from then on (Floating
+        // UI autoUpdate, its element resize included). A full update after each
+        // arrow key, month or render cost 50-180 ms (datepicker audit
+        // 2026-11-11, P1).
+        const placed = this._panelAnchor && this._panelAnchorPanel === this.refs.datePickerPanel.value;
         requestAnimationFrame(() => {
-            this.positionPanel();
+            if (!placed || !this.open) this.positionPanel();
+            if (this._focusContextAfterRender) {
+                this.focusContextItem();
+            } else if (this._focusToggleAfterRender) {
+                this.querySelector(`.sf-datepicker-${this._focusToggleAfterRender}-toggle button`)?.focus?.();
+                this._focusToggleAfterRender = '';
+            }
             if (this._focusTimeAfterRender || (this._focusCalendarOnOpen && this.mode === 'time')) {
                 this.focusTimePart(this._focusTimeAfterRender || 'hours');
                 this._focusCalendarOnOpen = false;

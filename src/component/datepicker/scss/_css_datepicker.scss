@@ -88,6 +88,28 @@
       min-block-size: var(--sf-ui-1\/2--control-height);
       padding-block: 0;
     }
+    /* Under the row of ranges the calendar keeps its own width, seven
+       squares of the control height, in the middle: grown to the panel's
+       width its days were 56 x 32 (audit G9). */
+    .sf-datepicker.sf-datepicker--presets > .sf-datepicker-container {
+      flex: 0 1 calc(var(--sf-ui-1--control-height) * 7);
+      margin-inline: auto;
+    }
+  }
+
+  /* The calendar column takes the panel's width. It shrank to the width of its
+     header's content, so the grid followed the month's name: 248 px in May,
+     280 in September, in a 296 panel, the columns 35.5 to 40 and the arrows
+     moving (datepicker audit 2026-11-11, G1/G2/G8). */
+  .sf-datepicker > .sf-datepicker-container {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  /* A week is a row for a screen reader (role row) and nothing for the
+     layout: its days are the grid's own cells. */
+  .sf-datepicker .sf-datepicker-week {
+    display: contents;
   }
 
   .sf-datepicker .sf-datepicker-main {
@@ -103,10 +125,13 @@
   .sf-datepicker .sf-datepicker-top {
     --sf-datepicker-top--background-color: var(--sf-surface-popup);
     --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
-    --sf-datepicker-top--padding-bottom: var(--sf-space-1);
+    /* One band of 1/2 buttons with a quarter step over and under it: a
+       control height of size 1, a day's height (audit G4: 72 = 16 + 40 + 16
+       with 40 and 32 buttons in the band). */
+    --sf-datepicker-top--padding-bottom: var(--sf-space-1\/4);
     --sf-datepicker-top--padding-inline-end: var(--sf-space-1\/3);
     --sf-datepicker-top--padding-inline-start: var(--sf-space-1\/3);
-    --sf-datepicker-top--padding-top: var(--sf-space-1);
+    --sf-datepicker-top--padding-top: var(--sf-space-1\/4);
     background-color: var(--sf-datepicker-top--background-color);
     padding-bottom: var(--sf-datepicker-top--padding-bottom);
     padding-inline-end: var(--sf-datepicker-top--padding-inline-end);
@@ -166,6 +191,11 @@
   }
 
  .sf-datepicker .sf-datepicker-context {
+   /* The months or years spread over the whole box, each in the middle of its
+      row: packed at the top they left a band of 100 px empty under them
+      (audit G3). */
+   align-content: stretch;
+   align-items: center;
    /* Opaque, to cover the days under it, in the panel's own colour. */
    --sf-datepicker-context--background-color: var(--sf-datepicker--background-color, var(--sf-datepicker-background-color, var(--sf-surface-popup)));
    background: var(--sf-datepicker-context--background-color);
