@@ -331,18 +331,32 @@ function actionsOf(options) {
     .map((one, at) => ({...one, label: String(one.label).trim(), id: String(one.id ?? (at ? `action-${at + 1}` : 'action'))}));
 }
 
-// Every message is said through the area's live copy, whatever slot it takes
-// (M2: the fourth of a stack is hidden and was never in the tree while three
-// were on view). An error is said at once, the rest politely. The copy is
-// visually hidden and written after a frame, so a live region already in the
-// tree changes and is read.
-function announce(record) {
+// Every message is said through the area's live copy once, when it arrives,
+// whatever slot it takes (M2: the fourth of a stack is hidden and was never in
+// the tree while three were on view) -- one waiting its turn behind four too.
+// An error is said at once, the rest politely. The copy is visually hidden and
+// written after a frame, so a live region already in the tree changes and is
+// read; messages arriving in the same frame are said together, none lost.
+const pendingWords = new WeakMap();
+function announce(entry) {
+  if (entry.announced) return;
+  entry.announced = true;
+  const {record} = entry;
   const area = region();
   const live = area.querySelector(record.status === 'error' ? '.sf-notifications-live[data-live="assertive"]' : '.sf-notifications-live[data-live="polite"]');
   if (!live) return;
   const words = [record.title, record.text].filter(Boolean).join('. ');
+  const pending = pendingWords.get(live);
+  if (pending) {
+    pending.push(words);
+    return;
+  }
+  pendingWords.set(live, [words]);
   live.textContent = '';
-  const write = () => { live.textContent = words; };
+  const write = () => {
+    live.textContent = pendingWords.get(live).join(' ');
+    pendingWords.delete(live);
+  };
   if (globalThis.requestAnimationFrame) globalThis.requestAnimationFrame(write);
   else setTimeout(write, 16);
 }
@@ -412,7 +426,7 @@ async function display(entry) {
   await sheetApplied(area);
   if (!state.shown.includes(entry)) return;
   area.style.visibility = '';
-  announce(record);
+  announce(entry);
   layout();
   if (stack) {
     void toast.offsetHeight;
@@ -486,8 +500,10 @@ export function notify(input = {}) {
   }
 
   const entry = {record, key, options: {...options, duration}, actions: actionsOf(options), count: 1, toast: null};
-  if (state.shown.length >= state.max) state.waiting.push(entry);
-  else display(entry);
+  if (state.shown.length >= state.max) {
+    state.waiting.push(entry);
+    announce(entry);
+  } else display(entry);
   return handle;
 }
 

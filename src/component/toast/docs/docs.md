@@ -125,11 +125,12 @@ call returns `null` and warns in the console.
 - A timer pauses while the pointer or the focus is on its toast, and every
   timer stands while the page is out of sight (another tab, a minimised
   window) and resumes with the time it had left.
-- Every message is said through the area's own live copy, visually hidden and
-  in the accessibility tree, whatever place it takes (the fourth, hidden
-  behind the stack, too): an error at once (`role="alert"`), everything else
-  politely (`role="status"`). The toasts of the area are not live regions of
-  their own, so nothing is said twice.
+- Every message is said once, when it arrives, through the area's own live
+  copy, visually hidden and in the accessibility tree, whatever place it takes
+  (the fourth, hidden behind the stack, and one waiting its turn behind four,
+  too): an error at once (`role="alert"`), everything else politely
+  (`role="status"`). Messages arriving together are said together. The toasts
+  of the area are not live regions of their own, so nothing is said twice.
 - Until the toast's stylesheet is applied the area waits hidden (at most two
   seconds), so a message never shows unstyled in the middle of the window.
 - Every message is announced on the document as `sf-notification` with
