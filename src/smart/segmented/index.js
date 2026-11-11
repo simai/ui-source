@@ -525,8 +525,10 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
 
   focus(options) {
     if (this.folded) {
-      const field = this.querySelector(':scope > .sf-button-group-narrow sf-dropdown');
-      field?.focus?.(options);
+      // sf-dropdown's host draws no box (display: contents); its trigger
+      // is the focus stop that owns the dropdown keyboard.
+      const trigger = this.querySelector(':scope > .sf-button-group-narrow [aria-haspopup="listbox"]');
+      trigger?.focus?.(options);
       return this;
     }
     const button = this.querySelector('button[role="radio"][tabindex="0"]:not(:disabled)');
