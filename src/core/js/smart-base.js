@@ -1790,7 +1790,21 @@ class SfBaseElement extends HTMLElement {
     const target = this.focusDelegate?.();
 
     if (target && typeof target.focus === "function") {
+      const activeWhenAsked = this.ownerDocument?.activeElement || null;
       target.focus(options);
+      // A host still drawing has its control in place but not shown until its
+      // sheets apply (the style gate): the control takes no focus yet, and the
+      // focus stayed where it was (sf-file-download's «Повторить», probe
+      // 2026-11-11). Focus it once it is drawn -- only if nothing else took
+      // the focus meanwhile.
+      if (!this.isRendered && (this.ownerDocument?.activeElement || null) === activeWhenAsked && activeWhenAsked !== target) {
+        this.whenRendered(() => {
+          const ready = this.focusDelegate?.();
+          if (!ready || typeof ready.focus !== "function") return;
+          if ((this.ownerDocument?.activeElement || null) !== activeWhenAsked) return;
+          ready.focus(options);
+        });
+      }
       return;
     }
 

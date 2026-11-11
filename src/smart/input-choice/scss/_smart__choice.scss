@@ -64,6 +64,17 @@
   min-inline-size: 0;
 }
 
+/* Three tiles to a row from a 30rem field (C28, prototypes/input-choice-
+   world.html; input-choice audit 2026-11-11, item 3): the minimum gives way
+   to a third of the row, so a 480 px field holds three, not one (before,
+   three only from 736 px). A wider field still fits more where a card keeps
+   its minimum. */
+@container sf-choice (inline-size >= 30rem) {
+  .sf-choice[data-columns='auto'] .sf-choice-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(var(--sf-choice--min-inline-size), calc((100% - 2 * var(--sf-choice--gap)) / 3)), 1fr));
+  }
+}
+
 .sf-choice[data-columns='1'] { --sf-choice--columns: 1; }
 .sf-choice[data-columns='2'] { --sf-choice--columns: 2; }
 .sf-choice[data-columns='3'] { --sf-choice--columns: 3; }
@@ -227,9 +238,13 @@
   border-color: var(--sf-choice--selected-border-color);
   background-color: var(--sf-choice--selected-background-color);
   box-shadow: inset 0 0 0 var(--sf-px) var(--sf-choice--selected-border-color);
-  /* A translucent fill: a tonal badge on the checked card («Популярный»)
-     keeps its own tone (C43, owner 2026-11-10). */
-  @include places.sf-place-fill(var(--sf-choice--selected-background-color));
+  /* No solid underlay for what stands on it (input-choice audit 2026-11-11,
+     item 2): the card's fill is the lowest step of primary-container, the
+     tonal primary badge («Популярный») the same step, so a badge laid over
+     the page's solid colour came out the card's own colour and its plate
+     vanished in light. Laid over the card's fill it is the step above it, as
+     the agreed composition draws it (C28, prototypes/input-choice-world.html:
+     12 % plate over 12 % fill). */
 }
 
 .sf-choice.sf-choice--invalid .sf-choice-card:not(.sf-choice-card--checked, .sf-choice-card--disabled) {

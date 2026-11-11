@@ -974,7 +974,7 @@ export function installIconSubsetRuntime(
     const prevKey = this.staticIconDescriptorKeys.get(el);
 
     if (prevKey && prevKey !== nextKey && !this.isTrackedIconLoaded(tracked)) {
-      el.classList.remove("sf-icon-loaded");
+      this.unmarkIconLoaded(el);
     }
 
     this.staticIconDescriptorKeys.set(el, nextKey);
@@ -1099,6 +1099,26 @@ export function installIconSubsetRuntime(
     return this.trackIconDescriptor(tracked.icon, tracked.attrs);
   };
 
+  // sf-icon-loaded has one owner per glyph (input-choice audit 2026-11-11,
+  // item 5): the runtime takes back only the marks it wrote. A host that
+  // draws a glyph's font itself and marks it -- Docara's example frames
+  // deliver the icon font as bytes and mark their glyphs -- keeps its mark:
+  // the runtime's tracker never saw that font load, removed the class, the
+  // frame's script wrote it again, twelve writes every ~104 ms for good.
+  SFLoaderPlugin.prototype.markIconLoaded = function (el) {
+    if (!el?.classList) return;
+    if (!this.iconsMarkedLoaded) this.iconsMarkedLoaded = new WeakSet();
+    this.iconsMarkedLoaded.add(el);
+    el.classList.add("sf-icon-loaded");
+  };
+
+  SFLoaderPlugin.prototype.unmarkIconLoaded = function (el) {
+    if (!el?.classList?.contains("sf-icon-loaded")) return;
+    if (!this.iconsMarkedLoaded?.has(el)) return;
+    this.iconsMarkedLoaded.delete(el);
+    el.classList.remove("sf-icon-loaded");
+  };
+
   SFLoaderPlugin.prototype.processStaticIconMutation = function (
     node,
     autoLoad = true,
@@ -1118,7 +1138,7 @@ export function installIconSubsetRuntime(
     const tracked = this.getTrackedStaticIconAttrs(iconElement);
     if (!tracked) {
       this.staticIconDescriptorKeys?.delete?.(iconElement);
-      iconElement.classList.remove("sf-icon-loaded");
+      this.unmarkIconLoaded(iconElement);
       return { handled: true, iconCount: 0 };
     }
 
@@ -1142,7 +1162,7 @@ export function installIconSubsetRuntime(
     if (!el || !el.classList.contains("sf-icon-loaded")) return;
     const tracked = this.getTrackedStaticIconAttrs(el);
     if (!tracked || !this.isTrackedIconLoaded(tracked)) {
-      el.classList.remove("sf-icon-loaded");
+      this.unmarkIconLoaded(el);
     }
   };
 
@@ -1157,9 +1177,9 @@ export function installIconSubsetRuntime(
       }
 
       if (shouldBeLoaded) {
-        el.classList.add("sf-icon-loaded");
+        this.markIconLoaded(el);
       } else {
-        el.classList.remove("sf-icon-loaded");
+        this.unmarkIconLoaded(el);
       }
     };
 
@@ -1230,7 +1250,7 @@ export function installIconSubsetRuntime(
             return;
           }
           if (this.isTrackedIconLoaded(tracked)) {
-            el.classList.add("sf-icon-loaded");
+            this.markIconLoaded(el);
             this.adoptedIconsPending.delete(el);
           }
         });
@@ -1242,7 +1262,7 @@ export function installIconSubsetRuntime(
     glyphs.forEach((el) => {
       const tracked = this.getTrackedStaticIconAttrs(el);
       if (!tracked) {
-        el.classList.remove("sf-icon-loaded");
+        this.unmarkIconLoaded(el);
         this.adoptedIconsPending.delete(el);
         return;
       }
@@ -1250,12 +1270,12 @@ export function installIconSubsetRuntime(
         added += this.trackIconDescriptor(tracked.icon, tracked.attrs);
       }
       if (this.isTrackedIconLoaded(tracked)) {
-        el.classList.add("sf-icon-loaded");
+        this.markIconLoaded(el);
         this.adoptedIconsPending.delete(el);
       } else {
         // A glyph whose new name the font in place does not draw waits
         // unseen, as holdChangedStaticIcon makes a page icon wait.
-        el.classList.remove("sf-icon-loaded");
+        this.unmarkIconLoaded(el);
         this.adoptedIconsPending.add(el);
       }
     });

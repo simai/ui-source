@@ -212,9 +212,14 @@ test('a tonal badge on a translucent fill lays its tone over the solid place (C4
     ['src/component/tree/scss/_css__tree.scss', /\[aria-selected='true'\] > \.sf-tree-item-container \{[^}]*@include places\.sf-place-fill\(/u],
     ['src/component/menu/scss/_css__menu.scss', /@mixin current-plate \{[^}]*@include places\.sf-place-fill\(/u],
     ['src/smart/list/js/templates/default.css', /\.sf-list__row--current \{[^}]*--sf-surface-underlay: var\(--sf-surface-place-solid\); --sf-surface-place-fill: var\(--sf-list--current\);/u],
-    ['src/smart/input-choice/scss/_smart__choice.scss', /\.sf-choice \.sf-choice-card--checked:hover \{[^}]*@include places\.sf-place-fill\(/u],
   ];
   for (const [path, pattern] of rows) assert.match(await read(path), pattern, path);
+  // A checked choice card is not such a row (input-choice audit 2026-11-11):
+  // its tonal badge stacks over the card's fill, so the plate shows (C28).
+  const checked = await read('src/smart/input-choice/scss/_smart__choice.scss');
+  const rule = checked.slice(checked.indexOf('.sf-choice .sf-choice-card--checked:hover {'), checked.indexOf('}', checked.indexOf('.sf-choice .sf-choice-card--checked:hover {')));
+  assert.ok(rule.includes('border-color: var(--sf-choice--selected-border-color);'), 'the checked rule found');
+  assert.doesNotMatch(rule, /sf-place-fill|--sf-surface-underlay/u);
 });
 
 // C43 D3 and D4 (2026-11-11): the anchored badge's ring on a translucent row is

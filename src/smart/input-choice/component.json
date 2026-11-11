@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-choice's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14: choice cards, Larena's request of 2026-11-02 (Federation bus msg-993e1e39151942c19b23, item 3), named sf-input-choice in the dispatcher's plan of 2026-11-03 (msg-05e76ea0bc0746a690b8).",
   "id": "smart.input-choice",
   "tag": "sf-input-choice",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -300,7 +300,8 @@
     "control: the class markup, not a nested <sf-radio>/<sf-checkbox> element. Those hosts are form controls of their own (ElementInternals) and make their native group by their name: nested in this field they would either submit beside it or, without a name, lose the arrow-key group. The class radio and checkbox are what those elements draw, at the same size class, so the look, the density and the states are theirs.",
     "caption stays the item field for the description (see the first decision): description is a key every Smart bundle drops, and the runtime may not read it (tests/shared-runtime.contract.test.mjs), so it is not taken as an alias either.",
     "version 1.1.2 (2026-11-10, C16 leftovers; written as a note on 1.1.1, which is released): a patch; nothing draws differently. Its sheet reads the C16 role name --sf-surface-area where it read the former --sf-surface-1 (an alias of it until 2027-01-01, token-c16-theme-role-names), so a page that sets the new name reaches it; the value is the same in both themes and on every place. Settings, values, events and keys unchanged.",
-    "version 1.1.2, also (2026-11-11, written on the pair's 1.1.2, C43 D3 and D4): the checked card names its fill to core mix sf-place-fill (--sf-surface-place-fill), so an anchored badge's ring on it is the card's colour; an unchecked card under the pointer includes the mix too, so a tonal badge on it keeps its tone. Settings, values, events and keys unchanged."
+    "version 1.1.2, also (2026-11-11, written on the pair's 1.1.2, C43 D3 and D4): the checked card names its fill to core mix sf-place-fill (--sf-surface-place-fill), so an anchored badge's ring on it is the card's colour; an unchecked card under the pointer includes the mix too, so a tonal badge on it keeps its tone. Settings, values, events and keys unchanged.",
+    "version 1.2.0 (2026-11-11, DEV input-choice audit, control/evidence/2026-11-11-input-choice-audit): three tiles to a row from a 30rem field (C28): with columns auto the minimum card width gives way to a third of the row in a field of 30rem or more, so a 480 px field holds three tiles (before, three only from 736 px); a wider field still fits more where a card keeps its minimum (--sf-choice-min-inline-size). The checked card no longer declares a solid underlay (core mix sf-place-fill): its fill is the lowest step of primary-container and the tonal primary badge the same step, so the badge laid over the page's colour came out the card's colour and its plate vanished in light; it now stacks over the card's fill, the step above, as the agreed composition draws it. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "reuse_mode": "whole",

@@ -70,7 +70,7 @@ test('the page is never hidden: Core holds undefined elements, not the body', ()
   // SF_PRELOADED pages define their modules at once and are left as they were.
   assert.match(
     index,
-    /const holdUndefinedUntilDefined = \(\) => \{\s*if \(\s*window\.SF_PRELOADED &&\s*Object\.keys\(window\.SF_PRELOADED\.modules \|\| \{\}\)\.length\s*\) \{\s*return;\s*\}\s*installPendingTags\(window\);\s*holdUndefinedElements\(window\);\s*\};\s*holdUndefinedUntilDefined\(\);/u,
+    /const holdUndefinedUntilDefined = \(\) => \{\s*if \(pageHasPreloadedModules\(window\)\) \{\s*return;\s*\}\s*installPendingTags\(window\);\s*holdUndefinedElements\(window\);\s*\};\s*holdUndefinedUntilDefined\(\);/u,
   );
 });
 
@@ -399,16 +399,33 @@ test('the skeleton class fetches its sheet alone; the script comes with the API 
 });
 
 // ---------- the boot preloader (§5.4) ----------
-test('the boot preloader never covers a page with static markup or skeletons; a bare page keeps it', async () => {
-  const {pageHasFirstPaint, FIRST_PAINT_SELECTOR} = await import('../src/core/js/preloader.js');
+test('the boot preloader never covers a page with static markup, skeletons, preloaded modules or drawn Smart elements; a bare page keeps it', async () => {
+  const {pageHasFirstPaint, pageHasPreloadedModules, pageHasRenderedSmart, pageShowsContent, FIRST_PAINT_SELECTOR} = await import('../src/core/js/preloader.js');
   assert.equal(FIRST_PAINT_SELECTOR, '[data-sf-static], [data-sf-skeleton]');
   const doc = (found) => ({querySelector: (selector) => (selector === FIRST_PAINT_SELECTOR && found ? {} : null)});
   assert.equal(pageHasFirstPaint(doc(true)), true);
   assert.equal(pageHasFirstPaint(doc(false)), false);
   assert.equal(pageHasFirstPaint(null), false);
+  // Preloaded modules (SF_PRELOADED, Docara's example frames): input-choice audit 2026-11-11.
+  assert.equal(pageHasPreloadedModules({SF_PRELOADED: {modules: {'smart/input-choice': {}}}}), true);
+  assert.equal(pageHasPreloadedModules({SF_PRELOADED: {modules: {}}}), false);
+  assert.equal(pageHasPreloadedModules({}), false);
+  // A drawn Smart element: marked by the style gate, or isRendered without it.
+  const tree = (nodes, marked = false) => ({
+    body: {},
+    querySelector: (selector) => (selector === '[data-sf-style-ready]' && marked ? {} : null),
+    createTreeWalker: () => { let i = -1; return {nextNode: () => (++i < nodes.length), get currentNode() { return nodes[i]; }}; },
+  });
+  assert.equal(pageHasRenderedSmart(tree([], true)), true);
+  assert.equal(pageHasRenderedSmart(tree([{localName: 'div'}, {localName: 'sf-input-choice', isRendered: true}])), true);
+  assert.equal(pageHasRenderedSmart(tree([{localName: 'sf-input-choice', isRendered: false}, {localName: 'div', isRendered: true}])), false);
+  assert.equal(pageHasRenderedSmart(null), false);
+  assert.equal(pageShowsContent(tree([{localName: 'sf-button', isRendered: true}])), true);
+  assert.equal(pageShowsContent(tree([])), false);
   const index = read('src/core/js/index.js');
   const build = slice(index, 'const buildPreloader = () => {', 'wrap = document.createElement');
-  assert.match(build, /if \(pageHasFirstPaint\(document\)\) return;/, 'checked when the preloader would show');
+  assert.match(build, /if \(pageShowsContent\(document\) \|\| pageHasPreloadedModules\(window\)\) return;/, 'checked when the preloader would show');
+  assert.match(index, /if \(cfg\.enabled === false \|\| document\.querySelector\('\.sf-loader'\)\) return;\s*(?:\/\/[^\n]*\n\s*)*if \(pageHasPreloadedModules\(window\)\) return;/, 'a page with preloaded modules mounts none');
   assert.match(index, /if \(cfg\.enabled === false \|\| document\.querySelector\('\.sf-loader'\)\) return;/, 'SF_BOOT_CONFIG.preloader.enabled = false still turns it off');
-  assert.match(index, /'DOMContentLoaded',\s*\(\) => \{\s*if \(!pageHasFirstPaint\(document\)\) return;\s*cancelBuild\(\);/, 'an early preloader gives way to a parsed first paint');
+  assert.match(index, /'DOMContentLoaded',\s*\(\) => \{\s*if \(!pageShowsContent\(document\)\) return;\s*cancelBuild\(\);/, 'an early preloader gives way to a parsed first paint');
 });

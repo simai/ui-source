@@ -989,3 +989,34 @@ test('D2: a Smart tag whose module failed to load lets the first request go at o
     assert.deepEqual(store.asked(), []);
   });
 });
+
+// One owner per glyph (input-choice audit 2026-11-11, item 5): the runtime
+// takes back only the sf-icon-loaded marks it wrote. A host that marks its own
+// glyphs (Docara's example frames deliver the icon font as bytes) keeps them;
+// before, the runtime removed the class and the frame wrote it again for good.
+test('the icon runtime removes only the sf-icon-loaded marks it wrote', async () => {
+  const {readFile} = await import('node:fs/promises');
+  const source = await readFile(new URL('../src/core/js/iconSubsetRuntime.js', import.meta.url), 'utf8');
+  const writes = [...source.matchAll(/classList\.(add|remove|toggle)\("sf-icon-loaded"/gu)];
+  assert.equal(writes.length, 2, 'only markIconLoaded and unmarkIconLoaded write the class');
+  const plugin = {};
+  const body = (name) => {
+    const start = source.indexOf(`SFLoaderPlugin.prototype.${name} = function`);
+    return source.slice(source.indexOf('{', start) + 1, source.indexOf('\n  };', start));
+  };
+  plugin.markIconLoaded = new Function('el', body('markIconLoaded'));
+  plugin.unmarkIconLoaded = new Function('el', body('unmarkIconLoaded'));
+  const glyph = () => {
+    const names = new Set();
+    return {classList: {add: (n) => names.add(n), remove: (n) => names.delete(n), contains: (n) => names.has(n)}};
+  };
+  const own = glyph();
+  plugin.markIconLoaded(own);
+  assert.equal(own.classList.contains('sf-icon-loaded'), true);
+  plugin.unmarkIconLoaded(own);
+  assert.equal(own.classList.contains('sf-icon-loaded'), false, 'its own mark is taken back');
+  const hosts = glyph();
+  hosts.classList.add('sf-icon-loaded');
+  plugin.unmarkIconLoaded(hosts);
+  assert.equal(hosts.classList.contains('sf-icon-loaded'), true, "a host's mark stays");
+});
