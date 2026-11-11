@@ -160,7 +160,7 @@
 }
 
 .sf-radio-button:has(input:disabled) .sf-radio-button-text {
-  --sf-radio-button-text--color: var(--sf-on-disable);
+  --sf-radio-button-text--color: var(--sf-on-surface-disabled);
 }
 
 
@@ -248,19 +248,19 @@
 }
 
 .sf-radio-button:has(input:disabled) .sf-radio-button-box {
-  --sf-radio-button-box--border-color: var(--sf-outline-disable);
+  --sf-radio-button-box--border-color: var(--sf-outline-disabled);
 }
 
 .sf-radio-button:has(input:disabled) .sf-radio-button-mark {
-  --sf-radio-button-mark--background-color: var(--sf-on-disable);
+  --sf-radio-button-mark--background-color: var(--sf-on-surface-disabled);
 }
 
 .sf-radio-button:has(input:disabled) > .sf-radio-button-container > .sf-radio-button-top > .sf-icon {
-  --sf-icon--color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 .sf-radio-button:has(input:disabled) .sf-radio-button-description {
-  --sf-radio-button-description--color: var(--sf-on-disable);
+  --sf-radio-button-description--color: var(--sf-on-surface-disabled);
 }
 
 .sf-radio-button.error .sf-radio-button-box {

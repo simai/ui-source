@@ -95,6 +95,27 @@ function layerContents(css, layerName) {
   return contents.join('\n');
 }
 
+// A selector list's arms: the commas at the top level only. A comma inside
+// :where(...) or :is(...) is part of one arm -- `:where(.bg-error, .x .y)
+// .bg-surface-page` is one arm that the bg-surface-page class owns.
+function selectorArms(selector) {
+  const arms = [];
+  let depth = 0;
+  let start = 0;
+  for (let at = 0; at < selector.length; at += 1) {
+    const char = selector[at];
+    if (char === '\\') at += 1;
+    else if (char === '(' || char === '[') depth += 1;
+    else if (char === ')' || char === ']') depth -= 1;
+    else if (char === ',' && depth === 0) {
+      arms.push(selector.slice(start, at));
+      start = at + 1;
+    }
+  }
+  arms.push(selector.slice(start));
+  return arms;
+}
+
 function selectorClassGroupsFromCss(css) {
   const groups = [];
   const utilities = layerContents(css, 'sf.utilities');
@@ -102,7 +123,7 @@ function selectorClassGroupsFromCss(css) {
   for (const block of withoutComments.matchAll(/([^{}]+)\{/g)) {
     const selector = block[1].trim();
     if (!selector || selector.startsWith('@')) continue;
-    for (const arm of selector.split(',')) {
+    for (const arm of selectorArms(selector)) {
       const classes = [];
       for (const match of arm.matchAll(/\.((?:\\.|[a-zA-Z0-9_-])+)/g)) {
         classes.push(

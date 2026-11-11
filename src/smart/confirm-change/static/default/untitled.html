@@ -3,21 +3,11 @@
 <section class="sf-change-confirm sf-change-confirm--open" aria-label="Что изменится" data-state="open" data-sf-static>
 
 
-<dl class="sf-change-confirm__changes" aria-label="Что изменится">
-
-<div class="sf-change-confirm__change">
-<dt class="sf-change-confirm__label">Цена</dt>
-<dd class="sf-change-confirm__before">
-<span class="sf-change-confirm__tag">Было</span>
-<span class="sf-change-confirm__value sf-change-confirm__value--empty">пусто</span>
-</dd>
-<dd class="sf-change-confirm__after">
-<span class="sf-change-confirm__tag">Станет</span>
-<span class="sf-change-confirm__value">1200</span>
-</dd>
+<div class="sf-change-confirm__changes" role="group" aria-label="Что изменится">
+<sf-change class="sf-change-confirm__list" layout="list" style="display: contents;" data-block="true"><script type="application/json" data-sf-settings>{"changes":[{"label":"Цена","before":null,"after":"1200"}]}</script><dl class="sf-change sf-change--list" data-sf-static>
+<div class="sf-change__row"><dt class="sf-change__term">Цена</dt><dd class="sf-change__value"><span class="sf-change__before sf-change__empty">пусто</span><span class="sf-change__pair"> <span class="sf-change__arrow" aria-hidden="true">→</span><span class="sr-only"> на</span> <span class="sf-change__after sf-change__whole">1200</span></span></dd></div>
+</dl></sf-change>
 </div>
-
-</dl>
 
 <footer class="sf-change-confirm__footer">
 

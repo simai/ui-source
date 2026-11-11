@@ -1,0 +1,144 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "auto: сегодня — часы, подсказка с точной датой",
+      "settings": {
+        "datetime": "2026-11-09T14:32:00+03:00",
+        "now": "2026-11-09T15:00:00+03:00",
+        "threshold": "PT15M"
+      },
+      "studio": {
+        "title": "time reference",
+        "scenario": {
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      }
+    },
+    {
+      "name": "relative",
+      "title": "Первый час — относительно («28 минут назад»)",
+      "settings": {
+        "datetime": "2026-11-09T14:32:00+03:00",
+        "now": "2026-11-09T15:00:00+03:00"
+      }
+    },
+    {
+      "name": "yesterday",
+      "title": "Вчера — «вчера, 19:40»",
+      "settings": {
+        "datetime": "2026-11-08T19:40:00+03:00",
+        "now": "2026-11-09T15:00:00+03:00"
+      }
+    },
+    {
+      "name": "older",
+      "title": "Прошлый год — дата с годом",
+      "settings": {
+        "datetime": "2025-12-30T10:00:00+03:00",
+        "now": "2026-11-09T15:00:00+03:00"
+      }
+    },
+    {
+      "name": "datetime",
+      "title": "format datetime — полный момент, без подсказки",
+      "settings": {
+        "datetime": "2026-11-09T14:32:00+03:00",
+        "format": "datetime",
+        "now": "2026-11-09T15:00:00+03:00"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-time against component.json (standard simai.smart-component 1.3.15 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main style=\"inline-size: 40rem\">",
+          "  <p>Формат auto: <sf-time id=\"rel\" datetime=\"2026-11-09T14:32:00+03:00\" now=\"2026-11-09T15:00:00+03:00\"></sf-time>, <sf-time id=\"today\" datetime=\"2026-11-09T09:12:00+03:00\" now=\"2026-11-09T15:00:00+03:00\"></sf-time>, <sf-time id=\"yday\" datetime=\"2026-11-08T19:40:00+03:00\" now=\"2026-11-09T15:00:00+03:00\"></sf-time>, <sf-time id=\"year\" datetime=\"2026-11-05T10:00:00+03:00\" now=\"2026-11-09T15:00:00+03:00\"></sf-time>, <sf-time id=\"old\" datetime=\"2025-12-30T10:00:00+03:00\" now=\"2026-11-09T15:00:00+03:00\"></sf-time>.</p>",
+          "  <p>Форматы: <sf-time id=\"f-time\" format=\"time\" datetime=\"2026-11-09T14:32:00+03:00\"></sf-time> <sf-time id=\"f-date\" format=\"date\" datetime=\"2026-11-09T14:32:00+03:00\" now=\"2026-11-09T15:00:00+03:00\"></sf-time> <sf-time id=\"f-full\" format=\"datetime\" datetime=\"2026-11-09T14:32:00+03:00\"></sf-time> <sf-time id=\"f-rel\" format=\"relative\" datetime=\"2026-11-08T15:00:00+03:00\" now=\"2026-11-09T15:00:00+03:00\"></sf-time> <sf-time id=\"short\" threshold=\"PT15M\" datetime=\"2026-11-09T14:32:00+03:00\" now=\"2026-11-09T15:00:00+03:00\"></sf-time></p>",
+          "  <p><button id=\"before\" type=\"button\">До</button> <sf-time id=\"tip\" format=\"time\" datetime=\"2026-11-09T14:32:00+03:00\"></sf-time> <a id=\"link\" href=\"#x\">Изменено <sf-time id=\"inlink\" datetime=\"2026-11-09T14:32:00+03:00\" now=\"2026-11-09T15:00:00+03:00\"></sf-time></a> <sf-time id=\"quiet\" tooltip=\"none\" format=\"date\" datetime=\"2026-11-09T14:32:00+03:00\"></sf-time> <sf-time id=\"bad\" datetime=\"не дата\"></sf-time></p>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-auto",
+          "title": "auto: the first hour relative, today the time, yesterday «вчера, 19:40», this year the day and month, older the date with the year; each a time element whose datetime is the moment",
+          "covers": "settings.datetime, settings.format auto, settings.now",
+          "steps": [
+            {
+              "check": "(() => { const t = (id) => document.querySelector(`#${id} time`); return t('rel').textContent === '28 минут назад' && t('today').textContent === '09:12' && t('yday').textContent === 'вчера, 19:40' && t('year').textContent === '5 ноября' && /^30 дек\\.? 2025/u.test(t('old').textContent) && t('rel').getAttribute('datetime') === '2026-11-09T11:32:00.000Z' && document.querySelector('#rel').hasAttribute('data-relative') && !document.querySelector('#today').hasAttribute('data-relative'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-formats",
+          "title": "time, date, datetime and relative say what they name; threshold ends the relative words; datetime has no tooltip",
+          "covers": "settings.format, settings.threshold, settings.tooltip",
+          "steps": [
+            {
+              "check": "(() => { const t = (id) => document.querySelector(`#${id} time`); return t('f-time').textContent === '14:32' && t('f-date').textContent === '9 ноября' && t('f-full').textContent.includes('2026') && t('f-full').textContent.includes('14:32') && !document.querySelector('#f-full .sf-tooltip') && t('f-rel').textContent === 'вчера' && t('short').textContent === '14:32'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p3-tooltip",
+          "title": "the tooltip says the full moment; the time is a Tab stop outside a link only; keyboard focus shows the tooltip and Escape hides it",
+          "covers": "settings.tooltip, keyboard.host, accessibility",
+          "steps": [
+            {
+              "script": "(document.querySelector('#before').focus(), true)"
+            },
+            {
+              "user": "keyboard:Tab",
+              "wait": 150,
+              "check": "(() => { const time = document.querySelector('#tip time'); const tip = document.querySelector('#tip .sf-tooltip'); return document.activeElement === time && time.getAttribute('tabindex') === '0' && !tip.hidden && tip.getAttribute('role') === 'tooltip' && time.getAttribute('aria-describedby') === tip.id && tip.textContent.includes('9 ноября 2026') && tip.textContent.includes('14:32') && !time.hasAttribute('title'); })()"
+            },
+            {
+              "user": "keyboard:Escape",
+              "wait": 100,
+              "check": "document.querySelector('#tip .sf-tooltip').hidden === true && document.activeElement === document.querySelector('#tip time')"
+            },
+            {
+              "check": "!document.querySelector('#inlink time').hasAttribute('tabindex') && document.querySelector('#inlink .sf-tooltip') !== null && !document.querySelector('#quiet .sf-tooltip') && !document.querySelector('#quiet time').hasAttribute('tabindex')"
+            }
+          ]
+        },
+        {
+          "id": "p4-empty",
+          "title": "a datetime that is no date draws nothing and sets data-empty",
+          "covers": "host-states data-empty",
+          "steps": [
+            {
+              "check": "document.querySelector('#bad').hasAttribute('data-empty') && !document.querySelector('#bad time')"
+            }
+          ]
+        },
+        {
+          "id": "p5-redraw",
+          "title": "a new datetime or now draws again: the relative words follow now",
+          "covers": "settings.now, settings.datetime",
+          "steps": [
+            {
+              "script": "(document.querySelector('#rel').setAttribute('now', '2026-11-09T14:42:00+03:00'), true)",
+              "wait": 150,
+              "check": "document.querySelector('#rel time').textContent === '10 минут назад'"
+            },
+            {
+              "script": "(document.querySelector('#rel').setAttribute('now', '2026-11-10T00:10:00+03:00'), true)",
+              "wait": 150,
+              "check": "document.querySelector('#rel time').textContent === 'вчера, 14:32'"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

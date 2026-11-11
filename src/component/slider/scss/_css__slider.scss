@@ -155,8 +155,14 @@
 }
 
 .sf-slider .sf-slider-arrows .sf-icon-button.swiper-button-disabled {
-  opacity: 0.4;
   pointer-events: none;
+}
+
+/* A button arrow with nowhere to go is a disabled button (the script sets
+   `disabled`, SL-04) and draws the system's disabled look; an arrow drawn
+   with another element keeps the pale mark. */
+.sf-slider .sf-slider-arrows .sf-icon-button.swiper-button-disabled:not(:disabled) {
+  opacity: 0.4;
 }
 
 .sf-slider .sf-slider-thumbnails .swiper-slide {

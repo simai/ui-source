@@ -91,7 +91,7 @@ for (const [folder, spec] of Object.entries(COMPONENTS)) {
     for (const row of table.aliases) {
       // The tag rename of 2026-11-03 (the old tag and the events named after
       // it) has its own dates.
-      if (row.since === '2026-11-03' || row.since === '2026-11-08') {
+      if (row.since === '2026-11-03' || row.since === '2026-11-08' || row.since === '2026-11-11') {
         assert.equal(row.remove_after, '2027-01-01', `${row.from}`);
         continue;
       }
@@ -145,7 +145,9 @@ test('sf-slider-range: prefix is prefix-text; step is a number or null; disabled
   const manifest = json('src/smart/slider-range/component.json');
   assert.deepEqual(manifest.settings.step, {type: 'number', nullable: true, default: null});
   assert.equal(manifest.settings['prefix-text'].type, 'string');
-  assert.equal(manifest.form, undefined, 'not a form control in this version');
+  // A form control since 1.3.1 (docs pre-check 2026-11-10 RS-03): it submits its value under name.
+  assert.deepEqual(manifest.form, {value: 'value', name: 'name', default: 'value', submits: 'value', reset: 'default', disabled: 'disabled'});
+  assert.match(source, /sfSyncForm\(/u);
   const {rows} = readAliasTable(json('src/smart/slider-range/aliases.json'), {tag: 'sf-slider-range'});
   assert.deepEqual(rows.map((row) => [row.kind, row.from, row.to]), [['setting', 'prefix', 'prefix-text'], ['event', 'sf-range-slider-change', 'change'], ['event', 'onSliderChange', 'change']]);
 });

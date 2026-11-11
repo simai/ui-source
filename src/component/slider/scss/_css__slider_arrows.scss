@@ -25,6 +25,18 @@
   --sf-icon-button--background-color: var(--sf-surface-page);
 }
 
+/* The names promise a fixed colour over a picture, which does not change with
+   the theme: --light is light circles with dark arrows, --dark dark circles
+   with light arrows. The buttons drew from the theme's roles, so in the dark
+   theme the two swapped (docs pre-check 2026-11-10 CSL-01): the page surface
+   under --light turned dark, the inverse fill under --dark turned light. Both
+   take the light scheme, the one their looks were drawn in, so light-dark()
+   inside them answers the same in either theme; the roles stay the system's. */
+.sf-slider-arrows.sf-slider-arrows--light,
+.sf-slider-arrows.sf-slider-arrows--dark {
+  color-scheme: light;
+}
+
 .sf-slider-arrows--light, .sf-slider-arrows--dark {
   --sf-slider-arrows--backdrop-filter: var(--sf-ui-blur-medium);
   /* The raised place (C20). It read --sf-blur-medium, a length (4px), which

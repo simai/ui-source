@@ -25,8 +25,10 @@
   border-bottom-width: var(--sf-list-item--border-bottom-width);
   border-style: var(--sf-list-item--border-style, solid);
   box-shadow: var(--sf-list-item--box-shadow);
-  --sf-list-item--background-color: var(--sf-list-item-background-color, var(--sf-elevation-1--surface));
-  --sf-on-surface-variant: var(--sf-on-elevation-1--variant);
+  /* A row stands on the place it is in (C16, DEV audit 2026-11-10 defect 2):
+     no fill of its own and the place's dim ink. It painted the card place
+     everywhere -- a band 1.36 darker in a dark popup. */
+  --sf-list-item--background-color: var(--sf-list-item-background-color, var(--sf-transparent));
   --sf-list-item--border-color: var(--sf-list-item-border-color, var(--sf-outline-variant));
   --sf-list-item--border-bottom-width: var(--sf-px);
   --sf-list-item--border-style: solid;
@@ -134,15 +136,15 @@
 }
 
 .sf-list-item.disabled.sf-list-item--checkbox .sf-list-item-container, .sf-list-item.disabled.sf-list-item--text .sf-list-item-container, .sf-list-item.disabled.sf-list-item--icon .sf-list-item-container {
-  --sf-list-item-container--color: var(--sf-on-disable);
+  --sf-list-item-container--color: var(--sf-on-surface-disabled);
 }
 
 .sf-list-item.disabled.sf-list-item--avatar .sf-avatar-label-group-title {
-  --sf-avatar-label-group-title--color: var(--sf-on-disable);
+  --sf-avatar-label-group-title--color: var(--sf-on-surface-disabled);
 }
 
 .sf-list-item.disabled.sf-list-item--icon > .sf-list-item-wrap > .sf-icon, .sf-list-item.disabled.sf-list-item--icon > .sf-list-item-wrap > sf-icon > .sf-icon, .sf-list-item.disabled.sf-list-item--icon > .sf-list-item-wrap > sf-icon:not(:defined) {
-  --sf-icon--color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
@@ -171,7 +173,7 @@
 }
 
 .sf-list-item.disabled.sf-list-item--checkbox .sf-checkbox-box {
-  --sf-checkbox-box--border-color: var(--sf-on-disable);
+  --sf-checkbox-box--border-color: var(--sf-on-surface-disabled);
 }
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
@@ -325,7 +327,7 @@
 }
 
 .sf-list-item.disabled {
-  --sf-list-item--border-color: var(--sf-outline-disable);
+  --sf-list-item--border-color: var(--sf-outline-disabled);
 }
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/space-between (.justify-between) align-items/center (.items-center) justify-content/flex-start (.justify-start) */
@@ -512,7 +514,7 @@
 }
 
 .sf-list-item.disabled .sf-list-item-supporting {
-  color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
 }
 
 /* The handle's slot is a line of the size square, before the row's content. */
@@ -550,7 +552,7 @@
 }
 
 .sf-list-item.disabled .sf-list-item-handle {
-  --sf-icon--color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 /* Where a pointer can hover, the handle shows on the row under it and on the
@@ -569,8 +571,9 @@
 }
 
 @layer sf.states {
+  /* One row hover for every list and menu (C42 (5), owner 2026-11-10). */
   .sf-list-item:is(.sf-list-item--interactive, .sf-list-item--sortable):not(.disabled):not(.selected):hover {
-    --sf-list-item--background-color: var(--sf-surface-container-hover);
+    --sf-list-item--background-color: var(--sf-surface-state-select);
   }
 
   /* A row of a list draws its ring inside itself, as an option does: rows sit

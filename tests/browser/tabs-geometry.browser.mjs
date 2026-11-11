@@ -19,7 +19,7 @@ import {chromium} from 'playwright';
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'component/component/buttons/css/buttons.css', 'component/component/icon-buttons/css/icon-buttons.css',
-  'component/component/tabs/css/tabs.css', 'smart/smart/tabs/css/tabs.css', 'component/component/context-menu/css/context-menu.css',
+  'component/component/tabs/css/tabs.css', 'component/component/context-menu/css/context-menu.css',
   'component/component/checkbox/css/checkbox.css', 'smart/smart/sortable/css/sortable.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
   'smart/smart/button-icon/js/button-icon.js', 'smart/smart/checkbox/js/checkbox.js', 'smart/smart/menu-context/js/menu-context.js',

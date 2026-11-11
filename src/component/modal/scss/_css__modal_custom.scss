@@ -98,7 +98,10 @@
   --sf-modal-surface-border-style: solid;
   --sf-modal-surface-border-width: var(--sf-modal-border-width, var(--sf-border-width, var(--sf-px)));
   --sf-modal-surface-gap: var(--sf-modal-gap, var(--sf-space-1));
-  --sf-modal-surface-padding: var(--sf-modal-padding-block, var(--sf-space-2)) var(--sf-modal-padding-inline, var(--sf-space-2));
+  /* The frame is the question window's (decision C39; dispatcher decision,
+     docs pre-check 2026-11-10): --sf-space-3, 24 on a desktop and 16 on a
+     phone; it was --sf-space-2. */
+  --sf-modal-surface-padding: var(--sf-modal-padding-block, var(--sf-space-3)) var(--sf-modal-padding-inline, var(--sf-space-3));
   --sf-modal-surface-radius: var(--sf-modal-radius, var(--sf-radius--surface));
   --sf-modal-surface-shadow: var(--sf-shadow-flat);
 
@@ -348,7 +351,7 @@
 }
 
 .sf-modal[data-sf-modal-position='bottom'] [data-sf-modal-surface]:not([data-sf-modal-own-padding]) {
-  padding-block-end: calc(var(--sf-modal--padding-end, var(--sf-modal-padding-block, var(--sf-space-2))) + env(safe-area-inset-bottom, 0px));
+  padding-block-end: calc(var(--sf-modal--padding-end, var(--sf-modal-padding-block, var(--sf-space-3))) + env(safe-area-inset-bottom, 0px));
 }
 
 /* A question window (sf-modal size="question", decision C39; ui-control
@@ -397,8 +400,20 @@
   padding-block-end: var(--sf-space-1\/4);
 }
 
-/* The default title of a question window: text step 2 in bold (C21's h4
-   size), not the page-level title-3. */
+/* A window's own title (decision C39 by dispatcher decision d, docs
+   pre-check 2026-11-10) stands on the close button's line, centred on it, as
+   a question window's does: the class window's title is the header's content,
+   sf-modal's is the one heading inside it. */
+.sf-modal-header > .sf-modal-header-content.sf-modal-title,
+.sf-modal-header > .sf-modal-header-content:has(> .sf-modal-title) {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--sf-ui-1\/3--control-height);
+}
+
+/* The default title of a window: text step 2 in bold (C21's h4 size), not
+   the page-level title-3 -- a question window's since C39, every window's
+   since the docs pre-check 2026-11-10. */
 .sf-modal-title {
   font-size: var(--sf-text--size-2);
   line-height: var(--sf-text--height-2);

@@ -19,7 +19,9 @@ export function renderRadioTemplate(context) {
 
   const descriptionContent =
     context.component?.hasSlotContent?.('description')
-      ? context.component.getSlotContent('description')
+      // A slotted description is held in a plain span so the input can name it
+      // as its description (aria-describedby): a bare text node has no id.
+      ? html`<span data-sf-radio-description>${context.component.getSlotContent('description')}</span>`
       : description
         ? html`<span class="sf-radio-button-description">${description}</span>`
         : '';

@@ -129,6 +129,15 @@ sf-profile-picker {
   outline: none;
 }
 
+/* A profile with a caption under its name keeps a one-line row's space above
+   and below its text, (row step - line) / 2, and is taller by the caption's
+   line: 48 at 1440, 60 under a coarse pointer at 390 (owner decision C49,
+   2026-11-10; docs/foundation-composition-geometry.md §4). It was the row's
+   2px, 40 [2/2]. */
+.sf-profile-picker-row:where(:has(.sf-profile-picker-caption)) {
+  padding-block: calc((var(--sf-profile-picker--row-step, var(--sf-profile-picker--row-height)) - var(--sf-profile-picker--line)) / 2);
+}
+
 .sf-profile-picker-row:hover {
   background-color: var(--sf-surface-container-hover);
 }
@@ -335,7 +344,8 @@ sf-profile-picker {
 @media (pointer: coarse) {
   @layer sf.states {
     .sf-profile-picker-row {
-      min-block-size: max(var(--sf-profile-picker--row-height), var(--sf-d1));
+      --sf-profile-picker--row-step: max(var(--sf-profile-picker--row-height), var(--sf-d1));
+      min-block-size: var(--sf-profile-picker--row-step);
     }
   }
 }

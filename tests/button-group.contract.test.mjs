@@ -141,7 +141,7 @@ test('button group offers a segmented appearance with the same semantics', async
   // Segments are buttons of the same size and text classes, all of one look, so
   // the plate never changes a width; an icon-only label stays the name.
   assert.match(template, /`sf-button--size-\$\{context\.size\}`/);
-  assert.match(template, /'sf-button--link',\s*'sf-button--on-surface'/);
+  assert.match(template, /'sf-button--ghost',\s*'sf-button--link',\s*'sf-button--on-surface'/);
   assert.match(template, /sf-button-group-label--hidden/);
   assert.match(template, /sf-button-group-count/);
   assert.match(template, /\[item\.ariaLabel \|\| item\.label, item\.count\]/);
@@ -151,7 +151,7 @@ test('button group offers a segmented appearance with the same semantics', async
   // The track: container fill with its own dimmed ink, padding equal to the gap,
   // concentric corners, a size ladder, states from the alpha ramp.
   assert.match(styles, /background-color: var\(--sf-button-group-background-color, var\(--sf-surface-container\)\)/);
-  assert.match(styles, /--sf-on-surface-variant: var\(--sf-on-surface-container--variant\)/);
+  assert.match(styles, /--sf-on-surface-variant: var\(--sf-on-surface-container-variant\)/);
   assert.match(styles, /gap: var\(--sf-button-group--padding\);\s*padding: var\(--sf-button-group--padding\)/);
   // The plate takes a button's radius; the track is that radius plus the
   // padding, so the corners stay concentric.
@@ -173,8 +173,8 @@ test('button group offers a segmented appearance with the same semantics', async
   assert.match(styles, /--sf-button-group--segment-padding-block: max\(calc\(var\(--sf-px\) \* 0\), calc\(var\(--sf-button--padding-top\) - var\(--sf-button-group--padding\)\)\);/);
   assert.match(styles, /padding-block: var\(--sf-button-group--segment-padding-block\);/);
   assert.match(styles, /\.sf-button-group-icon-only \{\s*padding-inline: var\(--sf-button-group--segment-padding-block\);/);
-  assert.match(styles, /--sf-button--background-color: var\(--sf-alpha-8\)/);
-  assert.match(styles, /--sf-button--background-color: var\(--sf-alpha-12\)/);
+  assert.match(styles, /--sf-button--background-color: var\(--sf-surface-state-select\)/);
+  assert.match(styles, /--sf-button--background-color: var\(--sf-surface-state-active\)/);
   assert.match(styles, /sf-button-group--plate-raised[^{]*\{[^}]*--sf-surface-raised[^}]*--sf-shadow-raised/);
   assert.match(styles, /font-variant-numeric: tabular-nums/);
   assert.match(styles, /\.sf-button-group-segment:focus-visible \{\s*outline-offset: 0;/);

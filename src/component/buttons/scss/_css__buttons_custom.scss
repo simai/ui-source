@@ -148,17 +148,17 @@
     --sf-button--border-inline-start-width: 0;
   }
 
-  /* Link segments beside an outline one form one closed control: they draw
+  /* Ghost segments (--link, the former name, until 2027-01-01) beside an outline one form one closed control: they draw
      the group's perimeter -- top, bottom and their end edge, the first one
      its start edge too -- in the role the group draws it, --sf-outline. */
-  .sf-button.sf-button--link[class*="segment-"] {
+  .sf-button:is(.sf-button--ghost, .sf-button--link)[class*="segment-"] {
     border-color: var(--sf-outline);
     --sf-button--border-top-width: var(--sf-px);
     --sf-button--border-bottom-width: var(--sf-px);
     --sf-button--border-inline-end-width: var(--sf-px);
   }
 
-  .sf-button.sf-button--link.segment-start {
+  .sf-button:is(.sf-button--ghost, .sf-button--link).segment-start {
     --sf-button--border-inline-start-width: var(--sf-px);
   }
 
@@ -215,11 +215,11 @@
   /* Secondary outline, surface and link keep the secondary ink when hovered
      or pressed: the fill steps as on-surface's do, the label does not turn
      grey. Same weight as the on-surface state rules, later in the layer. */
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary:not(:disabled):not(.disabled):is(:hover, :active, .active) :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):is(:hover, :active, .active) :is(.sf-button-text-container, .sf-button-shortcut) {
     --sf-button-text-container--color: var(--sf-secondary);
   }
 
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary:not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-icon {
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-icon {
     --sf-icon--color: var(--sf-secondary);
   }
 }
@@ -248,11 +248,11 @@
      pressed. Before, these three looks of secondary had no rule at all: no
      padding, shorter than the size's control height, the browser's text colour. Filled
      (default) and tonal secondary are unchanged. */
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-secondary));
   }
 
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--link, .sf-button--ghost).sf-button--secondary .sf-icon {
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary .sf-icon {
     --sf-icon--color: var(--sf-secondary);
   }
 

@@ -344,15 +344,17 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
   // R070: a column's group headings are a row.
   assert.match(column, /\.sf-menu-group-heading \{\n  min-block-size: var\(--sf-ui-1--control-height\);\n  padding-inline: var\(--sf-menu--row-padding\);/u);
   // (The current page's medium label is the current-plate mixin's, above the block.)
-  // The states are the alpha scale's role tokens: state 4 and 12; an open
-  // branch is not filled (C23) -- never a number of its own.
-  assert.match(rule(`${enabled}:hover`), /var\(--sf-surface-transparent-hover\)/u);
-  assert.match(rule(`${enabled}:active`), /var\(--sf-surface-transparent-active\)/u);
+  // The states are the alpha scale's role tokens: the one row hover, select 8
+  // (C42 item 5), and press 12 (--sf-surface-state-active); an open branch is not filled (C23) -- never a
+  // number of its own.
+  assert.match(rule(`${enabled}:hover`), /var\(--sf-surface-state-select\)/u);
+  assert.match(rule(`${enabled}:active`), /var\(--sf-surface-state-active\)/u);
   assert.doesNotMatch(block, /:is\(\.open, \[aria-expanded='true'\]\)/u);
   // A column's open branch is not filled; a row's open branch -- first level
-  // and panel row -- has the neutral select plate (C30, R060), and only there.
-  assert.equal((block.match(/--sf-surface-transparent-select/gu) || []).length, 1);
-  assert.match(rule(".sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu-element.open:not(:disabled):not(.disabled):not([aria-disabled='true'])"), /--sf-menu-element--background-color: var\(--sf-surface-transparent-select\);/u);
+  // and panel row -- has the neutral select plate (C30, R060); beside the
+  // hover (C42 item 5) nothing else in the block reads it.
+  assert.equal((block.match(/--sf-surface-state-select/gu) || []).length, 2);
+  assert.match(rule(".sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu-element.open:not(:disabled):not(.disabled):not([aria-disabled='true'])"), /--sf-menu-element--background-color: var\(--sf-surface-state-select\);/u);
   // The current page (C23, owner 2026-11-09): the primary plate of the fill
   // family (primary-container-active, 20 light / 32 dark), its ink and a
   // medium label, written once in the current-plate mixin; the path's line,

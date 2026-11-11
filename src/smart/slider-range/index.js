@@ -342,6 +342,27 @@ class SfRangeSlider extends RangeSliderElement {
         this._boundRoot.noUiSlider.disable();
       }
     }
+    this.sfSyncForm();
+  }
+
+  // A form control (1.3.1, §17.1): the value a form gets is the one the slider
+  // shows, the number or both joined by a comma; nothing while disabled or
+  // without a name's form. The value written first is the one a reset puts back.
+  connectedCallback() {
+    if (this._defaultValue === undefined) this._defaultValue = this.getAttribute('value');
+    super.connectedCallback?.();
+  }
+
+  sfFormValue() {
+    if (this.disabled || this.sfFormDisabled) return null;
+    const value = this.value;
+    return value === undefined || value === null ? null : String(value);
+  }
+
+  formResetCallback() {
+    const initial = this._defaultValue;
+    this.setValue(initial === null || initial === undefined ? (this.start || this.min || '0') : initial);
+    this.sfSyncForm();
   }
 
   onDisconnected() {
@@ -425,6 +446,7 @@ class SfRangeSlider extends RangeSliderElement {
     this._syncingValueAttribute = true;
     this.setAttribute('value', serialized);
     this._syncingValueAttribute = false;
+    this.sfSyncForm();
   };
 
   // The class component's change and sf-range-slider-change stop at the
@@ -512,10 +534,12 @@ class SfRangeSlider extends RangeSliderElement {
       // Reflect the value actually admitted by range/step/margin constraints.
       this.setAttribute('value', serializeValue(getRangeSliderValue(root)));
       this._syncingValueAttribute = false;
+      this.sfSyncForm();
       return this;
     }
 
     this.setAttribute('value', serialized);
+    this.sfSyncForm();
     return this;
   }
 

@@ -32,7 +32,7 @@ function resolveIcon(context) {
 // control/research/2026-11-09-notice-actions.md). The class toast writes the
 // same classes (component/toast/js/_toast.js).
 const ALERT_ACTION_CLASSES = 'sf-button sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low flex items-cross-center';
-const ALERT_SECONDARY_ACTION_CLASSES = 'sf-button sf-button--link sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center';
+const ALERT_SECONDARY_ACTION_CLASSES = 'sf-button sf-button--ghost sf-button--link sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center';
 
 export function renderAlertTemplate(context) {
   const rootClasses = joinClasses(

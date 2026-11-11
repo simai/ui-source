@@ -79,11 +79,11 @@
 // the disc: 8% on hover, 12% while the handle is held.
 .sf-thumb:not(:disabled):not([disabled]):not(.disabled):not([disabled] *):not(.disabled *):hover .sf-thumb-handle {
   background-color: var(--sf-thumb-handle--hover-background-color, var(--sf-primary-hover));
-  box-shadow: 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-place)), 0 0 0 var(--sf-a8) var(--sf-primary-transparent-select), var(--sf-shadow-raised);
+  box-shadow: 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-place)), 0 0 0 var(--sf-a8) var(--sf-primary-state-select), var(--sf-shadow-raised);
 }
 
 .sf-thumb:not(:disabled):not([disabled]):not(.disabled):not([disabled] *):not(.disabled *):active .sf-thumb-handle {
-  box-shadow: 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-place)), 0 0 0 var(--sf-a8) var(--sf-primary-transparent-active), var(--sf-shadow-raised);
+  box-shadow: 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-place)), 0 0 0 var(--sf-a8) var(--sf-primary-state-active), var(--sf-shadow-raised);
 }
 
 .sf-thumb:not(:disabled):not([disabled]):not(.disabled):not([disabled] *):not(.disabled *):hover .sf-thumb-inner {
@@ -95,7 +95,7 @@
 // disabled content role, laid over the surface so the fill does not show
 // through it. No centre, no shadow.
 .sf-range-slider:is([disabled], .disabled) .sf-thumb-handle {
-  background: linear-gradient(var(--sf-on-disable), var(--sf-on-disable)) var(--sf-thumb-handle--ring-color, var(--sf-surface-place));
+  background: linear-gradient(var(--sf-on-surface-disabled), var(--sf-on-surface-disabled)) var(--sf-thumb-handle--ring-color, var(--sf-surface-place));
   box-shadow: 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-place));
 }
 

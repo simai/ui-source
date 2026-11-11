@@ -159,7 +159,7 @@ export function createSortableInserter(list) {
     // surface one a row action has, so it reads the same on any canvas.
     button = document_().createElement('button');
     button.type = 'button';
-    button.className = 'sf-icon-button sf-icon-button--icon sf-icon-button--surface sf-icon-button--on-surface sf-icon-button--size-1/3 sf-sortable-insert-button';
+    button.className = 'sf-icon-button sf-icon-button--icon sf-icon-button--tonal sf-icon-button--on-surface sf-icon-button--size-1/3 sf-sortable-insert-button';
     button.setAttribute('aria-haspopup', 'menu');
     button.setAttribute('aria-expanded', 'false');
     const glyph = document_().createElement('i');

@@ -14,6 +14,13 @@ $infix:'';
     }
 }
 
+// The hue roles (C17; the map's note in _sf_var__border_color.scss).
+@each $border-color-name, $border-color-var in $border-color-hue-array {
+    .#{$infix}border-#{$border-color-name} {
+        border-color: var(--sf-#{$border-color-var});
+    }
+}
+
 // The legacy palette classes, on the static palette (C17; the shade map in
 // core/scss/vars/_sf_var__color.scss).
 @each $palette-name, $palette-map in $color-array {

@@ -39,7 +39,7 @@ acknowledged. **The bar stores nothing.**
 | `level` | required | `danger`, `warning` or `info`. |
 | `text` | required | What is wrong, as a sentence. |
 | `source` | | Where it comes from: «Сервер», «Сайт demo.test». |
-| `time` | | When it began, ISO 8601. Within a day it reads «5 минут назад», older as a date and a time. |
+| `time` | | When it began, ISO 8601, drawn by `sf-time`: within a day «5 минут назад», older «вчера, 19:40» or «5 ноября»; the full moment in its tooltip (pointer and Tab, Escape hides it). |
 | `action` | | `{label, href}`: the one action link. |
 | `acknowledge` | | `{label}`: an «Отметить, что видели» button. |
 | `dismissible` | | `false` keeps a warning or an info item from being closed. |

@@ -91,11 +91,11 @@
 
 
   .sf-datepicker-day:is(:disabled, .disabled) .sf-datepicker-day-date {
-    --sf-datepicker-day-date--color: var(--sf-on-disable);
+    --sf-datepicker-day-date--color: var(--sf-on-surface-disabled);
   }
 
   .sf-datepicker-day:is(:disabled, .disabled) .sf-datepicker-day-info {
-    --sf-datepicker-day-info--color: var(--sf-on-disable);
+    --sf-datepicker-day-info--color: var(--sf-on-surface-disabled);
   }
 
   @media (forced-colors: active) {

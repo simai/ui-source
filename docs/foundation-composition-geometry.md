@@ -25,6 +25,24 @@ At size 1 on desktop that is a 24px line and 24px pictures in a 40px control.
 A part never takes a size of its own to fit: if the ladder size does not fit,
 the padding is wrong, not the part.
 
+### Indicator sizes
+
+A non-interactive indicator is not a control: nothing is pressed, so it has
+no control height and may stand below the ladder's lowest rung. Its sizes are
+still steps of the size scale, never raw lengths, and they are listed here so
+the exception has one place (DEV decision on the docs pre-check, 2026-11-10):
+
+| Indicator | Sizes | Why it is below the ladder |
+| --- | --- | --- |
+| status dot `sf-dot` | 4 / 6 / 8 / 10 (`--sf-a4`, `--sf-a6`, `--sf-a8`, `--sf-b0`) at sizes 1/3, 1/2, 1, 2; the same on a phone | a mark beside a label, read by its colour, not a picture of the row |
+| inline or anchored badge (`sf-badge--line-1/2`, a counter on an icon or an avatar) | `sf-badge--line-1/2` 20 on a desktop, 16 on a phone; an anchored counter 16 or 20 | it sits inside a text line or on the corner of another part and must not raise it |
+| progress tracks: `sf-progress-bar`, `sf-progress-scale` | the track is `--sf-text-size-1/7` … `--sf-text-size-1/3`; with the value line the block is the track plus that line | a track is a rule, not a control; only its value line is text of the ladder |
+
+A colour dot that stands for a picture inside a control (a list row's colour,
+a swatch in a field) is a part of that control and takes `L`, as in the table
+above. An indicator that can be pressed or focused is a control and takes the
+ladder.
+
 ## 2. Padding gives up the border
 
 A control's height counts its border. The block padding is what is left:
@@ -54,7 +72,39 @@ edge, like a dropdown's options. The context menu publishes the axis on its
 content (`--sf-context-menu--item-inset-start-S`, `--sf-context-menu--label-inset-S`)
 so anything else a window puts in the panel reads it instead of copying it.
 
-## 4. Verification
+## 4. Multi-line rows
+
+A row has one height per rung, `H`, for one line (rule 2). A row that holds
+more than one line keeps the one-line row's block inset and grows by whole
+bands, never by a padding or a size of its own (owner decisions C18, C47,
+C49):
+
+    height = H + Σ bands          (H = (H − L) / 2 + L + (H − L) / 2)
+    text band    = the line height of that text's step
+                   (a supporting line, a wrapped line)
+    part band    = step + the part's height
+                   (a badge or a count under the text: step --sf-space-1/4,
+                    the meta's own gap; a control under the text: step
+                    --sf-space-1/3)
+
+Every term is a token of the ladder or the space scale, so the height is a
+sum the reader can check. The ladder at size 1:
+
+| Row | Desktop | Phone |
+| --- | --- | --- |
+| one line: `H` | 40 = 8 + 24 + 8 | 36 = 8 + 20 + 8 |
+| title + supporting line | 60 = 40 + 20 | 52 = 36 + 16 |
+| title + supporting line + badge band (sf-list, narrow) | 88 = 60 + 4 + 24 | 76 = 52 + 4 + 20 |
+
+A block that takes a taller rung for its rows keeps the same sum on its own
+`H`: sf-list-attention's row is rung 3 (56, compact 48, phone 52), whose `H`
+holds the title and the meta line, `(H − L − l) / 2` above and below; its
+head with the summary as a meta line is that `H`, the group page's head adds
+one meta line (52 + 16 = 68 on a phone), and a row whose action stands
+under its text adds a control band (52 + 8 + 28 = 88). A menu row with a
+caption under its name is the same rule (C49).
+
+## 5. Verification
 
 - A contract test holds each mechanism (the rule that produces the geometry).
 - A browser probe measures the result for every kind, size and look at a

@@ -3,33 +3,11 @@
 <section class="sf-change-confirm sf-change-confirm--accepted" aria-labelledby="sf-confirm-change-accepted-1" data-state="accepted" data-sf-static>
 <div class="sf-change-confirm__heading" role="heading" id="sf-confirm-change-accepted-1" aria-level="3">Переименовать раздел</div>
 
-<dl class="sf-change-confirm__changes" aria-label="Что изменится">
-
-<div class="sf-change-confirm__change">
-<dt class="sf-change-confirm__label">Название</dt>
-<dd class="sf-change-confirm__before">
-<span class="sf-change-confirm__tag">Было</span>
-<span class="sf-change-confirm__value">Новости</span>
-</dd>
-<dd class="sf-change-confirm__after">
-<span class="sf-change-confirm__tag">Станет</span>
-<span class="sf-change-confirm__value">События</span>
-</dd>
+<div class="sf-change-confirm__changes" role="group" aria-label="Что изменится">
+<sf-change class="sf-change-confirm__list" layout="list" style="display: contents;" data-block="true"><script type="application/json" data-sf-settings>{"changes":[{"label":"Название","before":"Новости","after":"События"},{"label":"Адрес","before":"/news/","after":"/events/"}]}</script><dl class="sf-change sf-change--list" data-sf-static>
+<div class="sf-change__row"><dt class="sf-change__term">Название</dt><dd class="sf-change__value"><span class="sf-change__before sf-change__whole">Новости</span><span class="sf-change__pair"> <span class="sf-change__arrow" aria-hidden="true">→</span><span class="sr-only"> на</span> <span class="sf-change__after sf-change__whole">События</span></span></dd></div><div class="sf-change__row"><dt class="sf-change__term">Адрес</dt><dd class="sf-change__value"><span class="sf-change__before sf-change__whole">/news/</span><span class="sf-change__pair"> <span class="sf-change__arrow" aria-hidden="true">→</span><span class="sr-only"> на</span> <span class="sf-change__after sf-change__whole">/events/</span></span></dd></div>
+</dl></sf-change>
 </div>
-
-<div class="sf-change-confirm__change">
-<dt class="sf-change-confirm__label">Адрес</dt>
-<dd class="sf-change-confirm__before">
-<span class="sf-change-confirm__tag">Было</span>
-<span class="sf-change-confirm__value">/news/</span>
-</dd>
-<dd class="sf-change-confirm__after">
-<span class="sf-change-confirm__tag">Станет</span>
-<span class="sf-change-confirm__value">/events/</span>
-</dd>
-</div>
-
-</dl>
 
 <footer class="sf-change-confirm__footer">
 

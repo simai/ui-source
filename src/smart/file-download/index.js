@@ -27,6 +27,8 @@ const DownloadFileElement = elementFromManifest(manifest, {
 });
 
 const STATES = ['ready', 'preparing', 'error'];
+// The settings that can draw the file as another element (a button or a link).
+const REDRAWN_BY = new Set(['href', 'disabled', 'state', 'target']);
 
 class SfDownloadFile extends DownloadFileElement {
   constructor() {
@@ -105,6 +107,14 @@ class SfDownloadFile extends DownloadFileElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
+    // The file is a button until it has an address and a link after (a host
+    // that prepares the file sets href when it is ready): the new element
+    // takes the focus the old one held, so a keyboard user is not dropped to
+    // the page's body. Only when the focus was on the file; read before the
+    // change draws anything.
+    if (oldValue !== newValue && REDRAWN_BY.has(name) && this._boundRoot && this.ownerDocument.activeElement === this._boundRoot) {
+      this._refocus = true;
+    }
     super.attributeChangedCallback?.(name, oldValue, newValue);
     if (name !== 'state' || oldValue === newValue) return;
     const next = STATES.includes(newValue) ? newValue : 'ready';
@@ -163,9 +173,10 @@ class SfDownloadFile extends DownloadFileElement {
       bindDownloadFile(this._boundRoot, { onActivate: this.requestDownload });
     }
 
-    // After «Повторить»: once the notice is gone, the file takes the focus the
-    // button held -- only if the focus was lost with it, never taken from
-    // where the person has moved since.
+    // After «Повторить», or when the file was redrawn as another element
+    // while it held the focus (the button became the link): once the notice
+    // is gone, the file takes the focus back -- only if the focus was lost
+    // with it, never taken from where the person has moved since.
     if (this._refocus && !this.querySelector('.sf-download-file__error')) {
       this._refocus = false;
       const active = document.activeElement;

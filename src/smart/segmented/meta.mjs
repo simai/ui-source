@@ -107,7 +107,7 @@ const sfSegmentedMeta = {
         "scheme"
       ],
       "default": "raised",
-      "description": "The plate under the selected option on the track. raised, the default: a neutral raised surface with its shadow (white in the light theme). scheme: the scheme's fill, an accent for the one switch on a screen that needs it."
+      "description": "The plate under the selected option on the track. raised, the default: a neutral raised surface with its shadow (white in the light theme; in the dark the fill's pressed step, lighter than the track on any place, C42). scheme: the scheme's fill, an accent for the one switch on a screen that needs it."
     },
     "backdrop": {
       "kind": "enum",

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-pagination's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/pagination (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.pagination",
   "tag": "sf-pagination",
-  "version": "1.3.13",
+  "version": "1.3.14",
   "kind": "leaf",
   "family": "pagination",
   "settings": {
@@ -631,7 +631,8 @@
     "version 1.3.10: the sf-button and sf-button-icon it draws are asked for their current names (appearance ghost for link, status danger for error; actions block, decisions C13 and C15), so the template uses no dated alias; nothing it draws changes.",
     "version 1.3.11 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, goToPage({page}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, goToPage(<number>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged.",
     "version 1.3.12 (2026-11-09): a patch; nothing in the component changed. The sf-input it draws asks for the kbd sheet since sf-input 1.7.0 (C38, the shortcut setting; component.kbd 1.3.0), so its first-paint snapshots name that sheet and carry one more empty line where the field's shortcut would stand; the component takes a patch with them. Settings, values, events and keys unchanged.",
-    "version 1.3.13 (2026-11-10): a patch; nothing in the component changed. The sf-dropdown it draws shows its arrow glyph as sf-icon since sf-dropdown 1.8.1, so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged."
+    "version 1.3.13 (2026-11-10): a patch; nothing in the component changed. The sf-dropdown it draws shows its arrow glyph as sf-icon since sf-dropdown 1.8.1, so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged.",
+    "version 1.3.14 (2026-11-11): a patch; nothing in the component changed. The sf-button it draws writes sf-button--ghost beside the dated sf-button--link since sf-button 1.13.0 (CB-01), so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

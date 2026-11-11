@@ -195,7 +195,7 @@ test('code input: the class verification\'s public variables wrap the values it 
   assert.equal(entry.variables.length, 8);
   for (const variable of entry.variables) assert.equal(variable.since, variable.state ? '2026-10-27' : '2026-10-25', variable.name);
   for (const line of [
-    '--sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-title-height-6));',
+    '--sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-ui-1--control-height));',
     '--sf-verification--gap: var(--sf-verification-gap, var(--sf-space-1\\/3));',
     '--sf-verification--radius: var(--sf-verification-radius, var(--sf-radius--ui));',
     '--sf-verification--border-width: var(--sf-verification-border-width, var(--sf-px));',
@@ -203,8 +203,8 @@ test('code input: the class verification\'s public variables wrap the values it 
     'background: var(--sf-verification-background-color, var(--sf-transparent));',
     'background: var(--sf-verification-background-color, var(--sf-surface-container));',
     'color: var(--sf-verification-color, var(--sf-on-surface));',
-    '--sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-title-height-4));',
-    '--sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-title-height-7));',
+    '--sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-ui-1\\/2--control-height));',
+    '--sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-ui-2--control-height));',
   ]) assert.ok(classSheet.includes(line), line);
   // Hover, the current cell, error and disabled write their own.
   for (const state of ['.sf-verification-cell.current {', '.sf-verification-form-wrap .sf-verification:hover {']) {

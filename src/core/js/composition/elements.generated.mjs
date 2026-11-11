@@ -308,7 +308,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button",
-    "version": "1.12.1"
+    "version": "1.13.0"
   },
   "sf-button-icon": {
     "inputs": {
@@ -467,7 +467,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button-icon",
-    "version": "1.8.2"
+    "version": "1.8.3"
   },
   "sf-checkbox": {
     "inputs": {
@@ -535,7 +535,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.checkbox",
-    "version": "1.1.6"
+    "version": "1.1.7"
   },
   "sf-divider": {
     "component": "component.content-divider",
@@ -1135,6 +1135,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "type": "string"
         },
+        "short": {
+          "default": false,
+          "type": "boolean"
+        },
         "size": {
           "default": "1",
           "enum": [
@@ -1153,6 +1157,6 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.switch",
-    "version": "1.3.4"
+    "version": "1.4.0"
   }
 });

@@ -73,6 +73,16 @@ $back-color-array:(
     'warning-container-strong': 'warning-container-strong',
     'success-state-select': 'success-state-select',
     'success-container-strong': 'success-container-strong',
+    // The hue roles (C17, owner 2026-11-08; R087 item 1, option A): the role
+    // set .sf-hue-<name> gives an element (core/scss/_sf_css__hue.scss). The
+    // class reads the hue the element, or an ancestor, chose:
+    // class="sf-hue-teal bg-hue-container color-on-hue-container". Without a
+    // .sf-hue-<name> the role is not declared: a background or a border is
+    // then transparent or current, a text or fill colour the parent's. They
+    // only paint: a hue is not a place (C16 keeps places to the theme's seven
+    // colours).
+    'hue': 'hue',
+    'hue-container': 'hue-container',
 );
 
 $back-color-hover-active-array:(
@@ -107,4 +117,7 @@ $back-color-hover-active-array:(
     'error-state': 'error-state',
     'warning-state': 'warning-state',
     'success-state': 'success-state',
+    // The hue plate's pointer-over and pressed steps (--sf-hue-container-hover,
+    // --sf-hue-container-active).
+    'hue-container': 'hue-container',
 );

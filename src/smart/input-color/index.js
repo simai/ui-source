@@ -64,7 +64,7 @@ class SfColor extends FormField(ColorElement) {
     }
 
     static get observedAttributes() {
-        return [...(super.observedAttributes ?? []), "value", "inherited-value", "swatches", "disabled"];
+        return [...(super.observedAttributes ?? []), "value", "inherited-value", "swatches", "disabled", "aria-label"];
     }
 
     attributeChangedCallback(name, previous, next) {
@@ -385,6 +385,8 @@ class SfColor extends FormField(ColorElement) {
             // ElementInternals; the hidden input is drawn only without them.
             hiddenName: this.sfInternals ? "" : this.name,
             label: this.label,
+            // aria-label stays a host attribute read here, never a setting (§3.1).
+            ariaLabel: this.getAttribute("aria-label") || "",
             variant: this.variant,
             themeLabel: this.themeLabel,
             themeResetLabel: this.themeResetLabel,

@@ -95,15 +95,15 @@ try {
       named: section.getAttribute('aria-labelledby') === heading.id,
       level: heading.getAttribute('aria-level'),
       terms: [...card.querySelectorAll('dt')].map((node) => node.textContent),
-      before: [...card.querySelectorAll('.sf-change-confirm__before')].map((node) => node.textContent.replace(/\s+/g, ' ').trim()),
-      after: [...card.querySelectorAll('.sf-change-confirm__after')].map((node) => node.textContent.replace(/\s+/g, ' ').trim()),
+      before: [...card.querySelectorAll('.sf-change__before')].map((node) => node.textContent.replace(/\s+/g, ' ').trim()),
+      after: [...card.querySelectorAll('.sf-change__after')].map((node) => node.textContent.replace(/\s+/g, ' ').trim()),
       bold: Boolean(document.getElementById('bold')),
       buttons: [...card.querySelectorAll('.sf-change-confirm__actions button')].map((node) => node.textContent.trim()),
       live: card.querySelector('.sf-change-confirm__status').getAttribute('role'),
     };
   });
-  const expected = {named: true, level: '3', terms: ['Название', 'Описание'], before: ['Было Новости', 'Было пусто'],
-    after: ['Станет События', 'Станет <b id="bold">жирно</b>'], bold: false, buttons: ['Подтвердить', 'Отклонить'], live: 'status'};
+  const expected = {named: true, level: '3', terms: ['Название', 'Описание'], before: ['Новости', 'пусто'],
+    after: ['События', '<b id="bold">жирно</b>'], bold: false, buttons: ['Подтвердить', 'Отклонить'], live: 'status'};
   for (const [key, value] of Object.entries(expected)) {
     if (JSON.stringify(shape[key]) !== JSON.stringify(value)) note({case: `what is read: ${key}`, got: shape[key], expected: value});
   }
@@ -205,9 +205,9 @@ try {
   const english = await page.evaluate(() => ({
     label: document.querySelector('#card section').getAttribute('aria-label'),
     buttons: [...document.querySelectorAll('#card .sf-change-confirm__actions button')].map((node) => node.textContent.trim()),
-    tags: [...document.querySelectorAll('#card .sf-change-confirm__tag')].slice(0, 2).map((node) => node.textContent),
+    tags: [...document.querySelectorAll('#card .sf-change .sr-only')].slice(0, 1).map((node) => node.textContent.trim()),
   }));
-  if (JSON.stringify(english) !== JSON.stringify({label: 'What will change', buttons: ['Confirm', 'Decline'], tags: ['Was', 'Will be']})) note({case: 'an English page speaks English', got: english});
+  if (JSON.stringify(english) !== JSON.stringify({label: 'What will change', buttons: ['Confirm', 'Decline'], tags: ['to']})) note({case: 'an English page speaks English', got: english});
 
   if (errors.length) note({case: 'no page errors', got: errors});
   console.log(JSON.stringify({checked: 7}));

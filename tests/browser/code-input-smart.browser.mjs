@@ -33,7 +33,7 @@ const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css',
   'component/component/verification/css/verification.css', 'smart/smart/input-code/css/input-code.css'];
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js',
   'component/component/verification/js/verification.js', 'smart/smart/input-code/js/input-code.js'];
-const SIZES = [['1/2', '--sf-title-height-4'], ['1', '--sf-title-height-6'], ['2', '--sf-title-height-7']];
+const SIZES = [['1/2', '--sf-ui-1\\/2--control-height'], ['1', '--sf-ui-1--control-height'], ['2', '--sf-ui-2--control-height']];
 
 const failures = [];
 const evidence = {};

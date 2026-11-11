@@ -49,7 +49,10 @@ test('the confirm surface applies nothing and keeps the question open when the h
 test('sf-confirm-change keeps its tag, API and former tag after the move from package pro', () => {
   const contract = json('src/smart/confirm-change/component.json');
   assert.equal(contract.tag, 'sf-confirm-change');
-  assert.equal(contract.version, '1.6.0');
+  assert.equal(contract.version, '1.7.1');
+  // 1.7.0 (C40): the values are sf-change's list, which it fetches.
+  assert.ok(contract.relations.some(({name}) => name === 'cl-change'));
+  assert.match(read('src/smart/confirm-change/js/templates/default.js'), /<sf-change class="sf-change-confirm__list" layout="list" \.changes=/u);
   assert.deepEqual(Object.keys(contract.settings).sort(),
     ['accept-text', 'change-id', 'changes', 'decline-text', 'disabled', 'expires-at', 'heading', 'heading-level', 'state']);
   const tags = json('src/smart/confirm-change/aliases.json').aliases.filter((row) => row.kind === 'tag');

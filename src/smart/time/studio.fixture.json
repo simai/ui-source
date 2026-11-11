@@ -1,0 +1,15 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.time",
+  "title": "time reference",
+  "summary": "Deterministic reference fixture for sf-time.",
+  "locale": "ru",
+  "props": {
+    "datetime": "2026-11-09T14:32:00+03:00",
+    "now": "2026-11-09T15:00:00+03:00",
+    "threshold": "PT15M"
+  },
+  "children": [],
+  "state": "default"
+}

@@ -105,3 +105,12 @@
     }
 // }
 }
+// The accent on a strong coloured place (C42 (4)): on its children, in
+// sf.base, so an opaque place among them takes the theme's accent back.
+@layer sf.base {
+    @each $c in places.$sf-place-colours {
+        .bg-#{$c} > * {
+            @include places.sf-place-strong-accent($c);
+        }
+    }
+}

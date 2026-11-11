@@ -23,7 +23,8 @@ Loading model:
 - `tone`: the former name of `hue` until 2027-01-01, read when `hue` is empty;
   its `rose` is `pink` and its `violet` is `purple`
 - `status`: `none | online | offline | company | verified`
-  (the offline dot is the disabled ink over the place colour; its layers are
+  (the offline dot is the disabled ink over the place colour, laid over the
+  nearest opaque place, so it is opaque on a soft coloured place too; its layers are
   `--sf-avatar-offline-background-color` and `--sf-avatar-offline-overlay`,
   set the overlay to `none` for a dot of exactly your colour)
 - `aria-label` — a host attribute: the button's name, «Аватар» / "Avatar" when unset
