@@ -76,6 +76,17 @@
    desktop); the field's block padding gives up the border instead, so the
    control stays at its height: 40 = 1 + 7 + 24 + 7 + 1. */
 
+/* A field of text is the control height of its size, as sf-input's field is:
+   the minimum alone let the input's own line push it. On a phone the input
+   takes 16 px type (no zoom on focus) on a 16 px line, and a text input lays
+   out its type's natural line, about 20 px, so size 1/2 stood 31-32 px beside
+   a 28 px sf-input, sf-button and segmented track (DEV acceptance 2026-11-11,
+   C47 C). The input stays centred on the line, as in sf-input. A field of tags
+   keeps the minimum: its chips may take more than one line. */
+.sf-dropdown.sf-dropdown--text.sf-dropdown--size-1\/2 > .sf-dropdown-field { block-size: var(--sf-ui-1\/2--control-height); }
+.sf-dropdown.sf-dropdown--text.sf-dropdown--size-1 > .sf-dropdown-field { block-size: var(--sf-ui-1--control-height); }
+.sf-dropdown.sf-dropdown--text.sf-dropdown--size-2 > .sf-dropdown-field { block-size: var(--sf-ui-2--control-height); }
+
 .sf-dropdown.sf-dropdown--size-1\/2 { --sf-dropdown-tag-line--height: var(--sf-text-height-1\/2); }
 .sf-dropdown.sf-dropdown--size-1 { --sf-dropdown-tag-line--height: var(--sf-text-height-1); }
 .sf-dropdown.sf-dropdown--size-2 { --sf-dropdown-tag-line--height: var(--sf-text-height-2); }
