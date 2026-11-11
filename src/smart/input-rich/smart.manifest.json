@@ -321,7 +321,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-rich/index.js",
-        "sha256": "dede7e1b1ba8413417c85e98237f68a311ba250b25f5cc6bbeb7f05deff285d7"
+        "sha256": "b513d90a2a660e4a34ea0e08f737c5179edd86208616bccd92a368a00d07f766"
       },
       {
         "path": "src/smart/input-rich/js/templates/default.js",
@@ -345,7 +345,7 @@
       },
       {
         "path": "src/smart/input-rich/docs.md",
-        "sha256": "eeec747cc041fa628c1bd12480485eb2eee30d6304f8d956cba59d26dbefa70d"
+        "sha256": "e33dad2fbfd5f6d8dca843e58295142a207c615a6f8c96fb084345903c51d0f4"
       }
     ],
     "generated_runtime": []

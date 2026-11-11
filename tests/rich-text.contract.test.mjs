@@ -285,4 +285,7 @@ test('Bold and Italic say the marks only: a heading, bold by its type, is not a 
   assert.equal(editor('<p><em>a<span style="font-style: normal">b</span></em></p>'), '<p><em>a</em>b</p>');
   // A caret's pending marks go to the typed text and are forgotten when the caret moves.
   assert.match(source, /case 'insertText':\n\s+if \(this\._pending && event\.data\) this\._typePending\(event\);/u);
+  // Composed text (an IME) takes the marks pending when the composition started.
+  assert.match(source, /on\('compositionstart', \(\) => \{ this\._composing = this\._pendingMarks\(\); \}\);/u);
+  assert.match(source, /on\('compositionend', \(event\) => this\._onCompositionEnd\(event\)\);/u);
 });
