@@ -49,7 +49,7 @@ const PLAIN = [
 const failures = [];
 const note = (detail) => failures.push(detail);
 const browser = await chromium.launch();
-async function check(label, markup) {
+async function check(label, markup, wanted) {
   const page = await browser.newPage({viewport: {width: 1440, height: 4000}});
   page.on('pageerror', (error) => note({page: label, said: `page error: ${error.message}`}));
   await page.route('http://probe.test/**', (route) => {
@@ -65,7 +65,9 @@ async function check(label, markup) {
   await page.setContent(`<!doctype html><html lang="ru"><head><meta charset="utf-8"><link rel="stylesheet" href="/distr/core/css/core.css">
     <script>window.sfPath = '/distr/'; window.SF_BOOT_CONFIG = {cacheVersion: 'js-api-components', pluginListVersion: 'js-api-components', preloader: {enabled: false}, icons: {enabled: false}};</script>
     </head><body>${markup}<script src="/distr/core/js/core.js"></script></body></html>`);
-  await page.waitForFunction(() => window.SF?.Loader && window.SF?.SfBaseElement, null, {timeout: 20000});
+  // A page with no Smart element never loads the Smart base: the plain page
+  // waits for its components' names instead.
+  await page.waitForFunction((names) => window.SF?.Loader && (names.length ? names.every((name) => window.SF[name.slice(3)]) : window.SF.SfBaseElement), wanted, {timeout: 20000});
   if (label === 'smart') await page.evaluate((list) => Promise.all(list.map((tag) => Promise.race([window.SF.whenDefined(tag), new Promise((done) => setTimeout(done, 8000))]))), tags);
   await page.evaluate(() => window.SF.whenFieldRenderers?.());
   // Wait until window.SF stops gaining names: a component's script API is set
@@ -113,7 +115,7 @@ try {
     ['smart', tags.map((tag) => `<div><${tag}></${tag}></div>`).join(''), []],
     ['plain', PLAIN, ['SF.AdminMenu', 'SF.Clipboard', 'SF.Flag', 'SF.Highlight', 'SF.Tab']],
   ]) {
-    const runtime = await check(label, markup);
+    const runtime = await check(label, markup, expected);
     for (const name of expected) if (!runtime.present.includes(name)) note({page: label, case: 'the page loads the component that gives this name', absent: name});
     if (runtime.missing.length) note({page: label, case: 'every member the contract lists is on window.SF', missing: runtime.missing});
     if (runtime.undeclared.length) note({page: label, case: 'every enumerable member at runtime is declared, as a member or an internal member', undeclared: runtime.undeclared});
