@@ -513,6 +513,60 @@ function defineActions(target, actions, implementations, events) {
 
 // The nearest closed container (§7.2.1): `hidden`, a closed <details> or
 // <dialog>. What has no box in an opened container is not shown.
+// A region the Loader's page scan passes by (loader.js OBSERVER_IGNORE_SELECTOR).
+const IGNORED_REGION = '[data-sf-observer="ignore"]';
+
+/**
+ * The class-markup glyphs (<i class="sf-icon">) of an element that is not on
+ * the Smart base -- sf-sortable, sf-editor-inline, sf-editor-overlay,
+ * sf-resizer -- inside a data-sf-observer="ignore" region. The Loader's page
+ * scan and mutation observer pass such a region by, and these elements have no
+ * drawing the Smart base could hand over (smart-base.js adoptIgnoredGlyphs),
+ * so they draw when they like: the sortable's inserter, a toolbar on a
+ * selection. While the element is placed in such a region, what it holds now
+ * and every glyph added or renamed under it later goes to
+ * SF.Loader.adoptStaticIcons, which asks for it and marks it loaded. Outside
+ * a region the page scan finds them, and nothing is watched. Answers the
+ * observer to stop, or null.
+ */
+function watchIgnoredGlyphs(element) {
+  if (!element.closest?.(IGNORED_REGION)) return null;
+  const Observer = globalThis.MutationObserver;
+  const adopt = (root) => {
+    const loader = globalThis.SF?.Loader;
+    if (typeof loader?.adoptStaticIcons === 'function') {
+      loader.adoptStaticIcons(root);
+      return;
+    }
+    // Placed before the Loader is ready: the whole element once it is.
+    if (element.__sfGlyphsAwaitLoader) return;
+    element.__sfGlyphsAwaitLoader = true;
+    globalThis.addEventListener?.('sf-loader-ready', () => {
+      element.__sfGlyphsAwaitLoader = false;
+      if (element.isConnected && element.closest?.(IGNORED_REGION)) adopt(element);
+    }, {once: true});
+  };
+  adopt(element);
+  if (typeof Observer !== 'function') return null;
+  const observer = new Observer((records) => {
+    const roots = new Set();
+    for (const record of records) {
+      if (record.type === 'characterData') {
+        const glyph = record.target.parentElement?.closest?.('.sf-icon');
+        if (glyph) roots.add(glyph);
+        continue;
+      }
+      for (const node of record.addedNodes) {
+        if (node.nodeType === 1) roots.add(node);
+        else if (node.nodeType === 3 && node.parentElement?.classList?.contains('sf-icon')) roots.add(node.parentElement);
+      }
+    }
+    for (const root of roots) if (root.isConnected) adopt(root);
+  });
+  observer.observe(element, {childList: true, subtree: true, characterData: true});
+  return observer;
+}
+
 function isShown(element) {
   if (!element.isConnected) return false;
   for (let node = element; node && node.nodeType === 1; node = node.parentElement || node.getRootNode?.()?.host) {
@@ -587,6 +641,18 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
       super.connectedCallback();
       // A leaf outside an assembly starts with the page (§7.2.1 `now`).
       this.toggleAttribute('data-sf-started', true);
+      // An element on the Smart base hands its glyphs over after each drawing;
+      // one on a plain base is watched while it sits in an ignored region.
+      if (typeof this.adoptIgnoredGlyphs !== 'function') {
+        this.__sfGlyphWatch?.disconnect();
+        this.__sfGlyphWatch = watchIgnoredGlyphs(this);
+      }
+    }
+
+    disconnectedCallback() {
+      super.disconnectedCallback?.();
+      this.__sfGlyphWatch?.disconnect();
+      this.__sfGlyphWatch = null;
     }
 
     /**

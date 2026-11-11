@@ -37,3 +37,25 @@ test('the Loader asks for adopted glyphs and marks them when their font is in', 
   assert.match(body, /window\.addEventListener\("sf-icons-subset:ready", settle\);/u);
   assert.match(body, /if \(added > 0\) this\.mutate\(\(\) => this\.loadFonts\(\)\);/u);
 });
+
+// sf-sortable, sf-editor-inline, sf-editor-overlay and sf-resizer are not on
+// the Smart base (manifest-host.mjs, resizer/index.js): they draw when they
+// like, so the manifest layer they share watches them while they sit in an
+// ignored region and hands what they add or rename to the same Loader method
+// (the sortable's inserter "+" stayed blank in a late ignored copy).
+test('an element on a plain base hands an ignored region\'s glyphs to the Loader as it adds them', () => {
+  const manifest = read('src/core/js/element-manifest.js');
+  assert.match(manifest, /const IGNORED_REGION = '\[data-sf-observer="ignore"\]';/u);
+  const watch = manifest.slice(manifest.indexOf('function watchIgnoredGlyphs(element) {'), manifest.indexOf('function isShown(element) {'));
+  assert.ok(watch.length > 0);
+  assert.match(watch, /if \(!element\.closest\?\.\(IGNORED_REGION\)\) return null;/u);
+  assert.match(watch, /loader\.adoptStaticIcons\(root\);/u);
+  assert.match(watch, /addEventListener\?\.\('sf-loader-ready', [\s\S]*?\{once: true\}\);/u);
+  assert.match(watch, /observer\.observe\(element, \{childList: true, subtree: true, characterData: true\}\);/u);
+  // Only where the Smart base does not hand them over itself, and stopped when the element leaves.
+  assert.match(manifest, /if \(typeof this\.adoptIgnoredGlyphs !== 'function'\) \{\s*this\.__sfGlyphWatch\?\.disconnect\(\);\s*this\.__sfGlyphWatch = watchIgnoredGlyphs\(this\);/u);
+  assert.match(manifest, /disconnectedCallback\(\) \{\s*super\.disconnectedCallback\?\.\(\);\s*this\.__sfGlyphWatch\?\.disconnect\(\);\s*this\.__sfGlyphWatch = null;/u);
+  for (const path of ['src/core/js/composition/manifest-host.mjs', 'src/smart/resizer/index.js']) {
+    assert.match(read(path), /elementFromManifest\(manifest, \{/u, `${path} builds its element through elementFromManifest`);
+  }
+});
