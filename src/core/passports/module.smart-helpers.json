@@ -26,7 +26,7 @@
     "src/smart/helpers/refs.js",
     "src/smart/helpers/text.js"
   ],
-  "content_sha256": "f61fa8133ba1a93afdcbb129179774868aac9a4d0bdc201377ca7ad27b0ce45f",
+  "content_sha256": "8634e021acdea7717d4456016eaa177be2b689fc1c63a0464aec69e736099cf4",
   "dependencies": [
     {
       "id": "component.badges",

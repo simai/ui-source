@@ -15,7 +15,7 @@
     "src/component/switch/scss/_css_switch_custom.scss",
     "src/component/switch/scss/index.scss"
   ],
-  "content_sha256": "336b066ad854eb04133b6326177e57fa2cea9d417abac50ac54aeb941a32a9ff",
+  "content_sha256": "d72a752da5ec84fccc0fd6e29cf80cd9704ce899a617b2b713188bca3f34a01e",
   "dependencies": [
     {
       "id": "core.runtime",
