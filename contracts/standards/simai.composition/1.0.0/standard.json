@@ -68,7 +68,7 @@
     {
       "id": "foreign-block",
       "level": "must",
-      "text": "A block of another source the model cannot hold is content.foreign {source: markdown|editorjs|html, raw, hash}. raw is the exact source slice for markdown and html and the block value for editorjs; hash is sha256: of raw as UTF-8, written by normalize and every adapter. A public page draws nothing of it and an editor an inert placeholder; raw is never parsed into markup. It goes back only to its own source format, and there as it came only while it reads back as itself beside its neighbours; otherwise, and in any other format, in a reported carrier that nothing beside it can join; a block whose hash does not match (foreign_hash_mismatch) is kept, not drawn and not written.",
+      "text": "A block of another source the model cannot hold is content.foreign {source: markdown|editorjs|html, raw, hash}. raw is the exact source slice for markdown and html and the block value for editorjs; hash is sha256: of raw as UTF-8, written by normalize and every adapter. It is kept, never dropped (C75): an editor shows it as an inert plate; a public page draws nothing of it and render returns the notice preserved_not_shown for it, so a site build warns; raw is never parsed into markup. It goes back only to its own source format, and there as it came only while it reads back as itself beside its neighbours; otherwise, and in any other format, in a reported carrier that nothing beside it can join (in Markdown :::preserved {source=...} around one fenced block, no other spelling); a block whose hash does not match (foreign_hash_mismatch) is kept, not drawn and not written.",
       "verification": "manual"
     },
     {
@@ -217,7 +217,7 @@
           "pair": "JSON <-> Markdown",
           "guarantee": "content set and single text areas; lossless but for node ids of blocks without a directive, presentation, bindings, extensions, figure size, table header column/both/none and caption; a block the model cannot hold is content.foreign with its source text",
           "ids": "directive blocks {#id}",
-          "unknown": "foreign carrier; others not_expressible"
+          "unknown": ":::preserved {source=...} carrier (C75); others not_expressible"
         },
         {
           "pair": "JSON <-> Editor.js",

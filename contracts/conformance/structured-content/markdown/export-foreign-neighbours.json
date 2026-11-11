@@ -91,7 +91,7 @@
     }
   },
   "expect": {
-    "markdown": ":::foreign {source=markdown}\n```markdown\n- one ![img](/i.png)\n- two\n```\n:::\n\n- three\n\n1. a\n2. b\n\n:::foreign {source=markdown}\n```markdown\n    indented code\n```\n:::\n",
+    "markdown": ":::preserved {source=markdown}\n```markdown\n- one ![img](/i.png)\n- two\n```\n:::\n\n- three\n\n1. a\n2. b\n\n:::preserved {source=markdown}\n```markdown\n    indented code\n```\n:::\n",
     "losses": [
       {
         "code": "not_expressible",
@@ -101,12 +101,12 @@
       {
         "code": "not_expressible",
         "path": "$.root.slots.default[0]",
-        "what": "foreign markdown block, written in a carrier"
+        "what": "foreign markdown block, written in a :::preserved carrier"
       },
       {
         "code": "not_expressible",
         "path": "$.root.slots.default[3]",
-        "what": "foreign markdown block, written in a carrier"
+        "what": "foreign markdown block, written in a :::preserved carrier"
       }
     ]
   }

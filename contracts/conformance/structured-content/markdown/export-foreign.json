@@ -45,7 +45,7 @@
     }
   },
   "expect": {
-    "markdown": ":::example\nx\n:::\n\n:::foreign {source=editorjs}\n```json\n{\"id\":\"e\",\"type\":\"checklist\",\"data\":{\"items\":[]}}\n```\n:::\n",
+    "markdown": ":::example\nx\n:::\n\n:::preserved {source=editorjs}\n```json\n{\"id\":\"e\",\"type\":\"checklist\",\"data\":{\"items\":[]}}\n```\n:::\n",
     "losses": [
       {
         "code": "not_expressible",
@@ -55,7 +55,7 @@
       {
         "code": "not_expressible",
         "path": "$.root.slots.default[1]",
-        "what": "foreign editorjs block, written in a carrier"
+        "what": "foreign editorjs block, written in a :::preserved carrier"
       },
       {
         "code": "foreign_hash_mismatch",
