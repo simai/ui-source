@@ -45,3 +45,23 @@ test('Native search box keeps its own change inside, as sf-dropdown does (simai/
   // Only the search box: the selection change the component dispatches still bubbles.
   assert.match(base,/new CustomEvent\("change", \{[\s\S]*?bubbles: true/);
 });
+test('the keyboard brings the focused option into view and keeps it there',async()=>{
+  const s=await read('src/component/dropdown/interaction.js');
+  // Nearest and instant: a smooth reveal is still on its way when the next key moves on.
+  assert.ok(s.includes("node.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'})"));
+  assert.ok(s.includes("['PageDown','PageUp'].includes(event.key)"));
+  assert.match(s,/const typeahead = \(key,option\) =>/);
+  // Space still selects unless a type-ahead prefix is being typed.
+  assert.ok(s.includes("event.key!==' '||(typed&&Date.now()-typedAt<=500)"));
+  // The list's own scroll does not re-fit the panel in either owner.
+  const base=await read('src/component/dropdown/js/_dropdown.js'),smart=await read('src/smart/dropdown/index.js');
+  assert.ok(base.includes("event?.type==='scroll'&&getList(root)?.contains(event.target)"));
+  assert.ok(smart.includes("event?.type === 'scroll' && this._list?.contains(event.target)"));
+  // SF.Position keeps the scroll its uncapped measurement would clamp.
+  const position=await read('src/core/js/position.js');
+  assert.match(position,/const scrolled = settings\.fitHeight \? scrolledWithin\(floating\) : \[\];\s*if \(settings\.fitHeight\) floating\.style\.maxHeight/);
+  assert.match(position,/style\.maxHeight = `\$\{Math\.max\(0, fits \? whole : room\)\}px`;\s*restoreScroll\(scrolled\);/);
+  const manifest=JSON.parse(await read('src/smart/dropdown/component.json'));
+  assert.equal(manifest.keyboard.host.PageDown,'focus:next-page');
+  assert.equal(manifest.accessibility.keys.PageUp,'focus:prev-page');
+});

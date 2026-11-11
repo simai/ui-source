@@ -192,6 +192,24 @@ export function anchorReference(element) {
   };
 }
 
+// The panel and the elements inside it that stand scrolled, with their
+// offsets: what an uncapped measurement would clamp.
+function scrolledWithin(floating) {
+  const found = [];
+  const walker = document.createTreeWalker(floating, NodeFilter.SHOW_ELEMENT);
+  for (let node = floating; node; node = walker.nextNode()) {
+    if (node.scrollTop || node.scrollLeft) found.push([node, node.scrollTop, node.scrollLeft]);
+  }
+  return found;
+}
+
+function restoreScroll(found) {
+  for (const [node, top, left] of found) {
+    if (node.scrollTop !== top) node.scrollTop = top;
+    if (node.scrollLeft !== left) node.scrollLeft = left;
+  }
+}
+
 /**
  * Keeps `floating` anchored to `reference`.
  * options: {side, align, offset, alignmentOffset, padding, flip, shift,
@@ -247,6 +265,12 @@ export function anchor(reference, floating, options = {}) {
     const gap = resolveLength(settings.offset, reference.parentElement);
     const padding = resolveLength(settings.padding, reference.parentElement);
     // Measure the natural size so flipping compares the real panel height.
+    // Uncapped, a scroller inside the panel no longer overflows and the
+    // browser clamps its scroll to the top; the offsets are kept and put back
+    // once the cap is written again. Without it every update -- a page
+    // scroll, a resize, the list's own scroll -- threw a list scrolled to a
+    // keyboard-focused option back to its first row.
+    const scrolled = settings.fitHeight ? scrolledWithin(floating) : [];
     if (settings.fitHeight) floating.style.maxHeight = authored.maxHeight || '';
     const natural = settings.fitHeight ? floating.getBoundingClientRect().height : 0;
     // alignmentOffset moves a start/end-aligned panel along its edge (mirrored
@@ -289,6 +313,7 @@ export function anchor(reference, floating, options = {}) {
           const whole = Math.ceil(natural);
           const fits = whole > room && whole <= availableHeight + padding && whole <= heightCap;
           elements.floating.style.maxHeight = `${Math.max(0, fits ? whole : room)}px`;
+          restoreScroll(scrolled);
         }
       },
     }));

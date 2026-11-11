@@ -136,7 +136,12 @@ class SfDropdown extends DropdownElement {
     this._dropdownRoot = null;
     this._list = null;
     this._documentClickHandler = this.handleDocumentClick.bind(this);
-    this._viewportHandler = this.positionPortalList.bind(this);
+    // The list's own scroll moves nothing it is anchored to: re-fitting on it
+    // only re-measured the panel under the option the keyboard had reached.
+    this._viewportHandler = (event) => {
+      if (event?.type === 'scroll' && this._list?.contains(event.target)) return;
+      this.positionPortalList();
+    };
   }
 
   // The manifest's settings, and what the dropdown reads more closely (the

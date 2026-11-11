@@ -136,7 +136,10 @@ function ensurePortalList(root) {
     list.addEventListener('keydown',onRootKeydown);
   }
   if (!root.__sfDropdownPortalOnViewportChange) {
-    root.__sfDropdownPortalOnViewportChange=()=>{
+    // The list's own scroll moves nothing it is anchored to: re-fitting on it
+    // only re-measured the panel under the option the keyboard had reached.
+    root.__sfDropdownPortalOnViewportChange=event=>{
+      if(event?.type==='scroll'&&getList(root)?.contains(event.target))return;
       if(root.classList.contains('sf-dropdown--open'))positionPortalList(root);
     };
   }
