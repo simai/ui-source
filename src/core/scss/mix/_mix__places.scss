@@ -275,7 +275,7 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
 // own rule (sf-place-back-on-colour), and a card on a neutral place never
 // declares the accent: a project's --sf-primary reaches it (D1).
 // The tonal accent (DEV acceptance 2026-11-10, D2) is the place's own-ink
-// fill, 12/16/20 as the place's container, under the place's ink: the
+// fill at 12 under the place's ink (states below): the
 // theme's primary container is a primary tint, blue on blue (2.78:1 light,
 // 1.66:1 dark on bg-primary).
 @mixin sf-place-strong-accent($c) {
@@ -287,8 +287,13 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   // too); the tones only where a child is no solid place.
   --sf-on-primary: var(--sf-surface-place-solid, light-dark(var(--sf-#{$c}-40), var(--sf-#{$c}-80)));
   --sf-primary-container: #{sf-ink($c, 12)};
-  --sf-primary-container-hover: #{sf-ink($c, 16)};
-  --sf-primary-container-active: #{sf-ink($c, 20)};
+  // Hover and press (DEV acceptance 2026-11-11, D2b): in the light theme a
+  // step darker, the white fill going down 12 -> 8 -> 4 towards the place,
+  // so the white label gains contrast (more white under white text lost it:
+  // 4.44 hover, 4.06-4.31 press). In the dark the place's dark ink rises
+  // 16 / 20 as before, darker as well (>= 5.34).
+  --sf-primary-container-hover: light-dark(var(--sf-white--alfa-8), var(--sf-#{$c}-20--alfa-16));
+  --sf-primary-container-active: light-dark(var(--sf-white--alfa-4), var(--sf-#{$c}-20--alfa-20));
   --sf-on-primary-container: light-dark(var(--sf-white), var(--sf-#{$c}-20));
   // A raised plate on the place (a segmented thumb; DEV acceptance
   // 2026-11-10, D4): lighter than the track in both themes, as C42 (3) asks
