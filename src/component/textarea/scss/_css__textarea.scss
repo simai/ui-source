@@ -148,15 +148,15 @@
 }
 
 .sf-textarea.sf-textarea--bordered:has(textarea:disabled) textarea, .sf-textarea.sf-textarea--filled:has(textarea:disabled) textarea, .sf-textarea.sf-textarea--flush:has(textarea:disabled) textarea {
-  --sf-textarea-textarea--color: var(--sf-on-disable);
+  --sf-textarea-textarea--color: var(--sf-on-surface-disabled);
 }
 
 .sf-textarea.sf-textarea--bordered:has(textarea:disabled) textarea {
-  --sf-textarea-textarea--border-color: var(--sf-outline-disable);
+  --sf-textarea-textarea--border-color: var(--sf-outline-disabled);
 }
 
 .sf-textarea.sf-textarea--filled:has(textarea:disabled) textarea {
-  --sf-textarea-textarea--background-color: var(--sf-disable);
+  --sf-textarea-textarea--background-color: var(--sf-surface-disabled);
 }
 
 .sf-textarea.sf-textarea--bordered:has(textarea:enabled:not(:disabled):not(.disabled):focus-visible) textarea {
@@ -175,7 +175,7 @@
 
 .sf-textarea.sf-textarea--filled textarea {
   --sf-textarea-textarea--background-color: var(--sf-textarea-background-color, var(--sf-surface-container));
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   --sf-textarea-textarea--border-color: var(--sf-textarea-border-color, var(--sf-transparent-for-focus));
 }
 
@@ -308,7 +308,7 @@
 }
 
 .sf-textarea:has(textarea:disabled) textarea::placeholder {
-  --sf-textarea-placeholder--color: var(--sf-on-disable);
+  --sf-textarea-placeholder--color: var(--sf-on-surface-disabled);
 }
 
 .sf-textarea:not(.error):has(textarea:enabled:not(:disabled):not(.disabled):not(:read-only):hover) textarea {

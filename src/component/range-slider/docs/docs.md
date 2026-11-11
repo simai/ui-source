@@ -57,7 +57,7 @@ and `--sf-thumb-handle--ring-color` on an enclosing element. For a hollow thumb,
 `--sf-range-slider-handle-inner-color` to the colour of its centre:
 
 ```html
-<div style="--sf-range-slider-handle-inner-color: var(--sf-surface-0)">
+<div style="--sf-range-slider-handle-inner-color: var(--sf-surface-page)">
   <div class="sf-range-slider" data-start="40" aria-label="Volume"></div>
 </div>
 ```

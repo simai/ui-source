@@ -17,6 +17,12 @@ same form.
 - `.sf-radio-button--size-2` is the larger size, for forms built on size-2 fields.
 - The constructor retains `type: "font"` for choosing among visual font
   previews; it still creates native radios and one submitted value.
+  Deprecated since 2026-11-10 (change journal
+  `class-radio-type-font-to-segmented`, decision D11b): a choice of one value
+  from buttons is `sf-segmented`. The font-sample classes
+  (`sf-radio-wrap--type-font`, `sf-radio-group--font`,
+  `sf-radio-button--type-font`) keep working until 2027-01-01; new pages use
+  `sf-segmented`, and the docs page shows the variant only as a former name.
 
 The native input owns selection, disabled state, arrow-key behavior, form data
 and reset. `.active` is only a synchronized visual projection. Invalid choices

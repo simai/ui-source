@@ -98,6 +98,21 @@
     width: var(--sf-icon--width, var(--sf-icon-size-3));
   }
 
+  /* A label written straight into the button, without its text container,
+     took the browser's button font (13.33 px, line normal) and stood 31 px
+     high in a size 1 slot (docs pre-check 2026-11-10 CQT-01). The bare text
+     gets the size's own text step, so the button keeps its control height;
+     the text container stays the markup the docs teach. */
+  .sf-button:not(:has(> *)) {
+    font-family: var(--sf-text--family);
+    font-weight: var(--sf-font-weight-medium);
+  }
+  .sf-button.sf-button--size-1\/3:not(:has(> *)) { font-size: var(--sf-text-size-1\/3); line-height: var(--sf-text-height-1\/3); }
+  .sf-button.sf-button--size-1\/2:not(:has(> *)) { font-size: var(--sf-text-size-1\/2); line-height: var(--sf-text-height-1\/2); }
+  .sf-button.sf-button--size-1:not(:has(> *)) { font-size: var(--sf-text-size-1); line-height: var(--sf-text-height-1); }
+  .sf-button.sf-button--size-2:not(:has(> *)) { font-size: var(--sf-text-size-2); line-height: var(--sf-text-height-2); }
+  .sf-button.sf-button--size-3:not(:has(> *)) { font-size: var(--sf-text-size-3); line-height: var(--sf-text-height-3); }
+
   .sf-button.sf-button--default.sf-button--primary {
     --sf-button--background-color: var(--sf-button-background-color, var(--sf-primary));
   }

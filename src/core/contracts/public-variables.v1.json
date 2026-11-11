@@ -1622,7 +1622,7 @@
           "name": "--sf-verification-cell-size",
           "role": "size",
           "summary": "A cell's width and height, the same at every size when set.",
-          "default": "var(--sf-title-height-6)",
+          "default": "var(--sf-ui-1--control-height)",
           "since": "2026-10-25",
           "varies_with": [
             "size"
@@ -1811,14 +1811,14 @@
           "name": "--sf-file-upload-dragged-over-background-color",
           "role": "background",
           "summary": "The area's fill while files are held over it.",
-          "default": "var(--sf-primary-transparent-select)",
+          "default": "var(--sf-primary-state-select)",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-file-upload-dragged-over-border-color",
           "role": "border-color",
           "summary": "The area's boundary while files are held over it.",
-          "default": "var(--sf-outline-primary)",
+          "default": "var(--sf-primary-outline)",
           "since": "2026-10-27"
         }
       ]

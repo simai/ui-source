@@ -11,7 +11,7 @@ for(const [component,file,roles] of [
     assert.ok(source.includes(`--sf-${role}--color: var(--sf-on-surface-variant);`));
     assert.ok(!source.includes(`--sf-${role}--color: var(--sf-on-surface-muted);`));
   }
-  assert.ok(source.includes('var(--sf-on-disable)'),'Explicit disabled styling remains separate');
+  assert.ok(source.includes('var(--sf-on-surface-disabled)'),'Explicit disabled styling remains separate');
   // The filled placeholder is the place's dim ink, kept on the host above the
   // field's fill (forms batch round 2, item C, 2026-11-10); a strong coloured
   // place keeps its full ink there.

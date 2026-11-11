@@ -25,6 +25,24 @@ At size 1 on desktop that is a 24px line and 24px pictures in a 40px control.
 A part never takes a size of its own to fit: if the ladder size does not fit,
 the padding is wrong, not the part.
 
+### Indicator sizes
+
+A non-interactive indicator is not a control: nothing is pressed, so it has
+no control height and may stand below the ladder's lowest rung. Its sizes are
+still steps of the size scale, never raw lengths, and they are listed here so
+the exception has one place (DEV decision on the docs pre-check, 2026-11-10):
+
+| Indicator | Sizes | Why it is below the ladder |
+| --- | --- | --- |
+| status dot `sf-dot` | 4 / 6 / 8 / 10 (`--sf-a4`, `--sf-a6`, `--sf-a8`, `--sf-b0`) at sizes 1/3, 1/2, 1, 2; the same on a phone | a mark beside a label, read by its colour, not a picture of the row |
+| inline or anchored badge (`sf-badge--line-1/2`, a counter on an icon or an avatar) | `sf-badge--line-1/2` 20 on a desktop, 16 on a phone; an anchored counter 16 or 20 | it sits inside a text line or on the corner of another part and must not raise it |
+| progress tracks: `sf-progress-bar`, `sf-progress-scale` | the track is `--sf-text-size-1/7` … `--sf-text-size-1/3`; with the value line the block is the track plus that line | a track is a rule, not a control; only its value line is text of the ladder |
+
+A colour dot that stands for a picture inside a control (a list row's colour,
+a swatch in a field) is a part of that control and takes `L`, as in the table
+above. An indicator that can be pressed or focused is a control and takes the
+ladder.
+
 ## 2. Padding gives up the border
 
 A control's height counts its border. The block padding is what is left:

@@ -10,7 +10,8 @@ class Element {
   getAttribute(key){return this.attrs[key]??null;}
   hasAttribute(key){return key in this.attrs;}
 }
-const runtime=vm.createContext({HTMLElement:Element,getComputedStyle:()=>({direction:'ltr'})});
+// The page language comes from core (page-language.js); here it is English.
+const runtime=vm.createContext({HTMLElement:Element,getComputedStyle:()=>({direction:'ltr'}),pageLocale:()=>'en'});
 vm.runInContext(source.slice(source.indexOf('const '),source.indexOf("if (typeof window !== 'undefined')")),runtime);
 
 test('range values preserve scientific step precision',()=>{
@@ -21,6 +22,12 @@ test('range values preserve scientific step precision',()=>{
   const root=new Element({'data-step':'1e-3'});
   assert.equal(runtime.getNumericValues([0.002])[0],0.002);
   assert.equal(runtime.formatValue(root,0.002),'0.002');
+});
+
+test('a value is written in the page language, or in data-locale',()=>{
+  assert.equal(runtime.formatValue(new Element({'data-step':'0.01','data-suffix':' кг','data-locale':'ru'}),1.234),'1,23 кг');
+  assert.equal(runtime.formatValue(new Element({'data-step':'1e-3','data-locale':'ru'}),0.002),'0,002');
+  assert.equal(runtime.formatValue(new Element({'data-step':'0.01'}),1.234),'1.23');
 });
 
 test('display precision does not change values emitted by the engine',()=>{

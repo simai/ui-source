@@ -1,4 +1,5 @@
 import { createNativeSlider } from './native-slider';
+import { pageLocale } from '../../../core/js/page-language';
 
 const RANGE_SLIDER_SELECTOR = '.sf-range-slider';
 const RANGE_SLIDER_BOUND_FLAG = 'sfRangeSliderBound';
@@ -123,9 +124,23 @@ function formatValue(root, value) {
     return `${prefix}${value ?? ''}${suffix}`;
   }
 
-  const baseValue = numeric.toFixed(decimals);
+  return `${prefix}${formatDecimal(root, numeric, decimals)}${suffix}`;
+}
 
-  return `${prefix}${baseValue}${suffix}`;
+// The number in the page's language, as sf-quantity writes it: a Russian page
+// reads «1,23 кг», not «1.23 кг» (docs pre-check 2026-11-10 CRS-01). The
+// `data-locale` of the slider wins over the page's `lang`. Grouping follows
+// the locale. Number.toFixed is the fallback where Intl refuses the digits.
+function formatDecimal(root, numeric, decimals) {
+  const locale = root.getAttribute('data-locale') || pageLocale(root);
+  try {
+    return new Intl.NumberFormat(locale, {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    }).format(numeric);
+  } catch {
+    return numeric.toFixed(decimals);
+  }
 }
 
 function createVisualNode(mode = 'none', position = 'top') {
@@ -376,7 +391,7 @@ function createSliderOptions(root) {
     start: handleCount > 1 ? start : [start[0]],
     direction: getComputedStyle(root).direction === 'rtl' ? 'rtl' : 'ltr',
     ariaFormat: {
-      to: (value) => `${root.getAttribute('data-prefix') || ''}${value}${root.getAttribute('data-suffix') || ''}`,
+      to: (value) => formatValue(root, value),
     },
     connect: getConnect(root, multiple),
     step: root.hasAttribute('data-step') &&

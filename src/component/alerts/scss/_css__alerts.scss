@@ -163,14 +163,14 @@
 
 .sf-alert:is(.sf-alert--neutral, .sf-alert--clear).sf-alert--default {
   --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-surface-container));
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-outline));
 }
 
 
 .sf-alert.sf-alert--info.sf-alert--default {
   --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-info-container));
-  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-outline-info));
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-info-outline));
   --sf-alert--color: var(--sf-alert-color, var(--sf-on-info-container));
 }
 
@@ -182,7 +182,7 @@
 
 .sf-alert:is(.sf-alert--error, .sf-alert--danger).sf-alert--default {
   --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-error-container));
-  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-outline-error));
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-error-outline));
   --sf-alert--color: var(--sf-alert-color, var(--sf-on-error-container));
 }
 
@@ -193,7 +193,7 @@
 
 .sf-alert.sf-alert--warning.sf-alert--default {
   --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-warning-container));
-  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-outline-warning));
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-warning-outline));
   --sf-alert--color: var(--sf-alert-color, var(--sf-on-warning-container));
 }
 
@@ -204,7 +204,7 @@
 
 .sf-alert.sf-alert--success.sf-alert--default {
   --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-success-container));
-  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-outline-success));
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-success-outline));
   --sf-alert--color: var(--sf-alert-color, var(--sf-on-success-container));
 }
 
@@ -218,24 +218,24 @@
 }
 
 .sf-alert.sf-alert--info.sf-alert--outlined {
-  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-outline-info));
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-info-outline));
 }
 
 .sf-alert:is(.sf-alert--error, .sf-alert--danger).sf-alert--outlined {
-  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-outline-error));
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-error-outline));
 }
 
 .sf-alert.sf-alert--warning.sf-alert--outlined {
-  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-outline-warning));
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-warning-outline));
 }
 
 .sf-alert.sf-alert--success.sf-alert--outlined {
-  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-outline-success));
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-success-outline));
 }
 
 .sf-alert:is(.sf-alert--neutral, .sf-alert--clear).sf-alert--flat {
   --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-surface-container));
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
 }
 
 .sf-alert.sf-alert--info.sf-alert--flat {

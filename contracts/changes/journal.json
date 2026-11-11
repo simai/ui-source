@@ -10102,6 +10102,40 @@
           "to": "sf-view-save"
         }
       ]
+    },
+    {
+      "id": "class-radio-type-font-to-segmented",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The radio's font-sample variant (sf-radio-wrap--type-font with sf-radio-group--font and sf-radio-button--type-font tiles, the constructor's type: \"font\") is deprecated: choosing one value from buttons is sf-segmented (DEV decision D11a/b, docs pre-check 2026-11-10 CRB-01, where the «Aa» tiles stood 24 high with doubled borders). The variant keeps drawing and submitting as before until remove_after; there is no automatic rewrite, a page moves the choice to an sf-segmented of the same values.",
+      "items": [
+        {
+          "component": "sf-radio",
+          "from": "sf-radio-wrap--type-font",
+          "to": null
+        },
+        {
+          "component": "sf-radio",
+          "from": "sf-radio-group--font",
+          "to": null
+        },
+        {
+          "component": "sf-radio",
+          "from": "sf-radio-button--type-font",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Replace the group of font-sample tiles with sf-segmented (one segment per value, the sample as the segment's label); keep the name and the values of the radios as the segmented control's name and values.",
+      "examples": {
+        "before": "<div class=\"sf-radio-button sf-radio-wrap--type-font sf-radio-button--size-1\"><div class=\"sf-radio-group sf-radio-group--font\"><label class=\"sf-radio-button sf-radio-button--size-1 sf-radio-button--type-font\">…</label></div></div>",
+        "after": "<sf-segmented name=\"font\" size=\"1\">…</sf-segmented>"
+      },
+      "owner": "ui-source",
+      "source": "src/component/radio/scss/_css_radio_custom.scss, src/component/radio/js/_radio.js; ui-control control/docs-review/decisions.md D11b"
     }
   ]
 }

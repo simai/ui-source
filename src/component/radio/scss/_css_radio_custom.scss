@@ -112,9 +112,9 @@
 }
 
 .sf-radio-button--type-font:has(input:disabled) .sf-radio-text {
-  color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
   background-color: var(--sf-surface-place);
-  border-color: var(--sf-outline-disable);
+  border-color: var(--sf-outline-disabled);
 }
 
 @media (forced-colors: active) {
