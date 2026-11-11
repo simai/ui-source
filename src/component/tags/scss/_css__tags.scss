@@ -11,7 +11,11 @@
    so sizes 1 and up are at least 8 (--sf-a8) in every context and keep a
    larger step where theirs is larger (DEV 2026-11-11, C58 B: 4 to a leading
    picture, then 8). The tag reads them, not the text step, so a change of
-   the text inset leaves the picture gap where it is. */
+   the text inset leaves the picture gap where it is.
+   --sf-tag--close-optical-<size> is the blank a Material symbol keeps inside
+   its box on the side facing the label, which the remove cross (its mark
+   fills its box) does not have: 1 px (--sf-a1) where the leading icon is
+   24 px or more, none below. */
 @layer sf.base {
   :root {
     --sf-tag--picture-gap-1\/3: var(--sf-a5);
@@ -19,6 +23,11 @@
     --sf-tag--picture-gap-1: var(--sf-a8);
     --sf-tag--picture-gap-2: var(--sf-a8);
     --sf-tag--picture-gap-3: var(--sf-b0);
+    --sf-tag--close-optical-1\/3: calc(var(--sf-px) * 0);
+    --sf-tag--close-optical-1\/2: calc(var(--sf-px) * 0);
+    --sf-tag--close-optical-1: calc(var(--sf-px) * 0);
+    --sf-tag--close-optical-2: var(--sf-a1);
+    --sf-tag--close-optical-3: var(--sf-a1);
   }
 
   @media (min-width: map.get(bp.$breakpoint-array, lg)) {
@@ -28,6 +37,11 @@
       --sf-tag--picture-gap-1: var(--sf-a8);
       --sf-tag--picture-gap-2: var(--sf-b0);
       --sf-tag--picture-gap-3: var(--sf-b2);
+      --sf-tag--close-optical-1\/3: calc(var(--sf-px) * 0);
+      --sf-tag--close-optical-1\/2: calc(var(--sf-px) * 0);
+      --sf-tag--close-optical-1: var(--sf-a1);
+      --sf-tag--close-optical-2: var(--sf-a1);
+      --sf-tag--close-optical-3: var(--sf-a1);
     }
 
     [data-sf-density="compact"] {
@@ -36,6 +50,11 @@
       --sf-tag--picture-gap-1: var(--sf-a8);
       --sf-tag--picture-gap-2: var(--sf-a8);
       --sf-tag--picture-gap-3: var(--sf-b0);
+      --sf-tag--close-optical-1\/3: calc(var(--sf-px) * 0);
+      --sf-tag--close-optical-1\/2: calc(var(--sf-px) * 0);
+      --sf-tag--close-optical-1: calc(var(--sf-px) * 0);
+      --sf-tag--close-optical-2: var(--sf-a1);
+      --sf-tag--close-optical-3: var(--sf-a1);
     }
 
     [data-sf-density="compact"] :not(input, select, textarea)[size]:not([data-sf-size-relative], [data-sf-size-scale], [data-sf-static] *),
@@ -45,6 +64,11 @@
       --sf-tag--picture-gap-1: var(--sf-a8);
       --sf-tag--picture-gap-2: var(--sf-b0);
       --sf-tag--picture-gap-3: var(--sf-b2);
+      --sf-tag--close-optical-1\/3: calc(var(--sf-px) * 0);
+      --sf-tag--close-optical-1\/2: calc(var(--sf-px) * 0);
+      --sf-tag--close-optical-1: var(--sf-a1);
+      --sf-tag--close-optical-2: var(--sf-a1);
+      --sf-tag--close-optical-3: var(--sf-a1);
     }
   }
 }
@@ -68,6 +92,7 @@
     font: inherit;
     gap: var(--sf-tag--gap, var(--sf-tag-gap, var(--sf-a1)));
     --sf-tag--picture-gap: var(--sf-tag-picture-gap, var(--sf-tag--picture-gap-1));
+    --sf-tag--close-optical: var(--sf-tag--close-optical-1);
     padding-inline-start: var(--sf-tag--inline-start, var(--sf-tag-padding-inline, var(--sf-tag--padding-inline-start)));
     padding-top: var(--sf-tag--block, var(--sf-tag-padding-block, var(--sf-tag--padding-top)));
     padding-inline-end: var(--sf-tag--inline-end, var(--sf-tag-padding-inline, var(--sf-tag--padding-inline-end)));
@@ -761,6 +786,7 @@
 .sf-tag.sf-tag--size-1\/3 {
   --sf-tag--gap: var(--sf-tag-gap, 0);
   --sf-tag--picture-gap: var(--sf-tag-picture-gap, var(--sf-tag--picture-gap-1\/3));
+  --sf-tag--close-optical: var(--sf-tag--close-optical-1\/3);
 }
 
 .sf-tag.sf-tag--size-1\/3 .sf-tag-container {
@@ -796,6 +822,7 @@
 .sf-tag.sf-tag--size-1\/2 {
   --sf-tag--gap: var(--sf-tag-gap, 0);
   --sf-tag--picture-gap: var(--sf-tag-picture-gap, var(--sf-tag--picture-gap-1\/2));
+  --sf-tag--close-optical: var(--sf-tag--close-optical-1\/2);
 }
 
 .sf-tag.sf-tag--size-1\/2 .sf-tag-container {
@@ -831,6 +858,7 @@
 .sf-tag.sf-tag--size-1 {
   --sf-tag--gap: var(--sf-tag-gap, 0);
   --sf-tag--picture-gap: var(--sf-tag-picture-gap, var(--sf-tag--picture-gap-1));
+  --sf-tag--close-optical: var(--sf-tag--close-optical-1);
 }
 
 .sf-tag.sf-tag--size-1 .sf-tag-container {
@@ -866,6 +894,7 @@
 .sf-tag.sf-tag--size-2 {
   --sf-tag--gap: var(--sf-tag-gap, 0);
   --sf-tag--picture-gap: var(--sf-tag-picture-gap, var(--sf-tag--picture-gap-2));
+  --sf-tag--close-optical: var(--sf-tag--close-optical-2);
 }
 
 .sf-tag.sf-tag--size-2 .sf-tag-container {
@@ -901,6 +930,7 @@
 .sf-tag.sf-tag--size-3 {
   --sf-tag--gap: var(--sf-tag-gap, 0);
   --sf-tag--picture-gap: var(--sf-tag-picture-gap, var(--sf-tag--picture-gap-3));
+  --sf-tag--close-optical: var(--sf-tag--close-optical-3);
 }
 
 .sf-tag.sf-tag--size-3 .sf-tag-container {
@@ -955,6 +985,23 @@
    keeps the label start its host gives it. */
 .sf-tag :is(.sf-icon, sf-icon, .sf-tag-check, .sf-dot, .sf-tag-color-icon, .sf-avatar) + .sf-tag-container {
   --sf-tag-container--padding-inline-start: var(--sf-tag--picture-gap);
+}
+
+/* A label between a leading picture and the remove cross ends at the same
+   picture gap, so it stands between two equal gaps (the end inset was the
+   text step, 6 against the picture gap's 8 at size 1/2 on the phone). After
+   an icon the cross moves on by --sf-tag--close-optical: the symbol keeps a
+   blank inside its box facing the label, the cross fills its box, so equal
+   boxes read as a larger gap on the icon's side (owner, text-space-x review
+   2026-11-11). Measured ink to ink with the tag's own icon and the star the
+   two visible gaps are within 1 px at every size; narrower symbols (person,
+   check) keep their own wider blank. */
+.sf-tag :is(.sf-icon, sf-icon, .sf-tag-check, .sf-dot, .sf-tag-color-icon, .sf-avatar) + .sf-tag-container:has(+ :is(:is(sf-button-close, sf-close), :is(sf-button-icon, sf-icon-button), .sf-icon-button--close)) {
+  --sf-tag-container--padding-inline-end: var(--sf-tag--picture-gap);
+}
+
+.sf-tag :is(.sf-icon, sf-icon) + .sf-tag-container:has(+ :is(:is(sf-button-close, sf-close), :is(sf-button-icon, sf-icon-button), .sf-icon-button--close)) {
+  --sf-tag-container--padding-inline-end: calc(var(--sf-tag--picture-gap) + var(--sf-tag--close-optical));
 }
 }
 

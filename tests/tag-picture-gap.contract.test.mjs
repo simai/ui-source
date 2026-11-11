@@ -37,6 +37,12 @@ test('the label after a leading picture starts at the tag picture gap', async ()
     /interactive:is\(\.sf-tag--appearance-outline, \.sf-tag--appearance-surface\):not\(:disabled\):not\(\.disabled\):hover \{\s*--sf-tag--box-shadow/u,
     /\.sf-tag:is\(\.sf-tag--appearance-outline, \.sf-tag--appearance-surface\):is\(:disabled, \.disabled\),/u]) assert.match(css, state);
   assert.doesNotMatch(css, /\.sf-tag--appearance-surface:(?:not|is)\(:disabled/u);
+  // Ink (owner, 2026-11-11): between a leading picture and the remove cross
+  // the label ends at the picture gap too, and after an icon the cross moves
+  // on by the close-optical step (1 px where the icon is 24 or more).
+  assert.match(css, /\+ \.sf-tag-container:has\(\+ :is\(:is\(sf-button-close, sf-close\), :is\(sf-button-icon, sf-icon-button\), \.sf-icon-button--close\)\) \{\s*--sf-tag-container--padding-inline-end: var\(--sf-tag--picture-gap\);/u);
+  assert.match(css, /:is\(\.sf-icon, sf-icon\) \+ \.sf-tag-container:has\([^{]*\{\s*--sf-tag-container--padding-inline-end: calc\(var\(--sf-tag--picture-gap\) \+ var\(--sf-tag--close-optical\)\);/u);
+  assert.equal([...ladder.matchAll(/--sf-tag--close-optical-[^:]+: (?:var\(--sf-a1\)|calc\(var\(--sf-px\) \* 0\));/gu)].length, 20);
   assert.match(css, /\.sf-tag :is\(\.sf-icon, sf-icon, \.sf-tag-check, \.sf-dot, \.sf-tag-color-icon, \.sf-avatar\) \+ \.sf-tag-container \{\s*--sf-tag-container--padding-inline-start: var\(--sf-tag--picture-gap\);\s*\}/u);
   const contract = JSON.parse(await read('src/core/contracts/public-variables.v1.json'));
   const tag = contract.components.find((c) => c.component === 'tag');

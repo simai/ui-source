@@ -25,7 +25,11 @@ A picture before the label is the label's line high. The label after it starts a
 `--sf-tag-picture-gap`, not at the label's text inset: per size, screen and
 density it has the text inset's values of 2026-11-11, with 8 at size 1/2, and it
 never shrinks as the tag grows: from size 1 up it is at least 8 on every screen
-and density (size 1: 8 on the phone and in compact too), so a
+and density (size 1: 8 on the phone and in compact too). A removable tag with a
+leading picture ends its label at the same gap before the cross, and after an
+icon the cross sits 1 px further on where the icon is 24 px or more: the symbol
+keeps a blank inside its box, the cross does not, so the two visible gaps match.
+So a
 later change of the text inset does not move the picture's gap. On another control's text
 line (`sf-tag--inline`, `line` on `sf-tag`) an avatar is that line, as the remove
 button is, so a chip in a field and the field's list rows show one avatar step.
