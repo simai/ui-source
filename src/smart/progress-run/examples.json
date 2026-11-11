@@ -79,6 +79,10 @@
         "output-open": true,
         "retryable": true,
         "hideable": true
+      },
+      "first-paint": {
+        "max-bytes": 10240,
+        "why": "a failed run with its output open: the steps, the reason, the open output and the retry print as the page reads them, so the card holds its height; the ghost action writes its former class beside it until 2027-01-01 (class-button-link-to-ghost), which took it 4 bytes over 8 KB"
       }
     },
     {

@@ -74,7 +74,7 @@
       "covers": "aliases.json type, icon-left, tightness, ghost (now link to ghost), danger (now error to danger), right",
       "steps": [
         {
-          "check": "(() => { const b = document.querySelector('#b-old button'); return b.classList.contains('sf-button--link') && b.classList.contains('sf-button--danger') && b.classList.contains('sf-button--error') && b.classList.contains('spacing-comfortable') && Boolean(b.querySelector('sf-icon[icon=add]')); })()",
+          "check": "(() => { const b = document.querySelector('#b-old button'); return b.classList.contains('sf-button--ghost') && b.classList.contains('sf-button--danger') && b.classList.contains('sf-button--error') && b.classList.contains('spacing-comfortable') && Boolean(b.querySelector('sf-icon[icon=add]')); })()",
           "expect": {
             "values": {
               "#b-old.appearance": "ghost",
@@ -215,7 +215,7 @@
       "covers": "settings.status danger, settings.appearance ghost, aliases.json error, link",
       "steps": [
         {
-          "check": "(() => { const e = document.querySelector('#b-err button'); const l = document.querySelector('#b-link button'); return e.classList.contains('sf-button--danger') && e.classList.contains('sf-button--error') && l.classList.contains('sf-button--link'); })()",
+          "check": "(() => { const e = document.querySelector('#b-err button'); const l = document.querySelector('#b-link button'); return e.classList.contains('sf-button--danger') && e.classList.contains('sf-button--error') && l.classList.contains('sf-button--ghost') && l.classList.contains('sf-button--link'); })()",
           "expect": {
             "values": {
               "#b-err.status": "danger",

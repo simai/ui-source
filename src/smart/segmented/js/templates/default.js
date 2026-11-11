@@ -43,6 +43,8 @@ function renderSegment(item, context) {
   const classes = [
     'sf-button',
     `sf-button--size-${context.size}`,
+    // ghost (C15); sf-button--link, its former name, beside it until 2027-01-01.
+    'sf-button--ghost',
     'sf-button--link',
     'sf-button--on-surface',
     'flex',

@@ -44,11 +44,13 @@ the Smart `sf-button` projection.
 ## Public axes
 
 - emphasis: `sf-button--default`, `sf-button--tonal`,
-  `sf-button--outline`, `sf-button--link`, `sf-button--surface`;
-  `sf-button--ghost` is a compatibility name for `link`;
+  `sf-button--outline`, `sf-button--ghost`, `sf-button--surface`;
+  `sf-button--link` is the former name of `ghost` (decision C15), drawn the
+  same until 2027-01-01 (journal `class-button-link-to-ghost`); the Smart
+  `sf-button` writes both until then;
 - scheme: `primary`, `on-surface` and `secondary` for every emphasis.
   `default` and `tonal` secondary have a secondary fill of their own;
-  `outline`, `surface` and `link` secondary are the on-surface button --
+  `outline`, `surface` and `ghost` secondary are the on-surface button --
   edge, fill, padding, height, hover, press and disabled -- with the label and
   the icons in `--sf-secondary` (1.4.0, owner decision 2026-11-07; before,
   these three had no rule: no padding, about 32px at size 1 and the browser's

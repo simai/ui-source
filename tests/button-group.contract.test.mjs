@@ -141,7 +141,7 @@ test('button group offers a segmented appearance with the same semantics', async
   // Segments are buttons of the same size and text classes, all of one look, so
   // the plate never changes a width; an icon-only label stays the name.
   assert.match(template, /`sf-button--size-\$\{context\.size\}`/);
-  assert.match(template, /'sf-button--link',\s*'sf-button--on-surface'/);
+  assert.match(template, /'sf-button--ghost',\s*'sf-button--link',\s*'sf-button--on-surface'/);
   assert.match(template, /sf-button-group-label--hidden/);
   assert.match(template, /sf-button-group-count/);
   assert.match(template, /\[item\.ariaLabel \|\| item\.label, item\.count\]/);

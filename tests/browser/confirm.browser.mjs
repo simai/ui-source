@@ -92,7 +92,7 @@ try {
       buttons: [...ask.querySelectorAll('.sf-confirm__actions button')].map((node) => node.textContent.trim()),
       error: accept.classList.contains('sf-button--error'),
       filled: accept.classList.contains('sf-button--default') && accept.classList.contains('sf-button--danger'),
-      quiet: ask.querySelector('[data-action="decline"]').classList.contains('sf-button--link'),
+      quiet: ask.querySelector('[data-action="decline"]').classList.contains('sf-button--ghost'),
       live: ask.querySelector('.sf-confirm__status').getAttribute('role'),
       frame: getComputedStyle(group).borderTopWidth,
     };
