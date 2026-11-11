@@ -95,7 +95,8 @@ test('quantity: it is a form field like sf-input, with the inherited value', () 
     assert.ok(source.includes(`  ${seam} {`), seam);
   }
   assert.match(source, /clearOwnValue\(\) \{\n    this\.writeValue\(null, 'reset', \{change: true\}\);/u);
-  assert.match(template, /renderInheritedSlot\(component, \{size: context\.size, disabled: !context\.interactive\}\)/u);
+  // C53 F3: the marker and its reset stand after the box, never inside it.
+  assert.match(template, /renderInheritedSlot\(component, \{size: context\.size, disabled: !context\.interactive, className: 'sf-quantity-inherited'\}\)/u);
   // The form gets the number with a point from a hidden input; the box has no name.
   assert.match(template, /<input type="hidden" class="sf-quantity-value" name=\$\{context\.controlName\} value=\$\{context\.formValue\} \?disabled=\$\{context\.disabled\}>/u);
   const box = template.slice(template.indexOf('<input type="text"'), template.indexOf('${inheritedSlot}'));
@@ -205,7 +206,8 @@ test('quantity: the public variables wrap the values the class sheet drew before
     '--sf-quantity-wrap--border: var(--sf-quantity-border-width, var(--sf-px)) solid;',
     '--sf-quantity-wrap--border-color: var(--sf-quantity-border-color, var(--sf-outline));',
     '--sf-quantity-wrap--border-start-start-radius: var(--sf-quantity-radius, var(--sf-radius--ui));',
-    '--sf-quantity-wrap--gap: var(--sf-quantity-gap, var(--sf-space-2));',
+    // C53 F2: the steppers hug the number.
+    '--sf-quantity-wrap--gap: var(--sf-quantity-gap, calc(var(--sf-px) * 0));',
     '--sf-quantity-input--color: var(--sf-quantity-color, var(--sf-on-surface));',
     '--sf-icon-button--border-start-start-radius: var(--sf-quantity-stepper-radius, var(--sf-radius-1\\/2));',
   ]) assert.ok(sheet.includes(line), line);
