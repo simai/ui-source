@@ -36,7 +36,10 @@ test('legacy Smart transport remains source-backed without physical inline place
     read('src/smart/avatar-group/template/user/index.html'),
   ]);
 
-  assert.match(avatarsSource, /import '\.\.\/\.\.\/component\/avatars\/scss\/index\.scss';/);
+  // The avatars class sheet comes by the rule's relation; a copy in the
+  // bundle never loaded (the rule has no css; dead Smart sheets 2026-11-11).
+  assert.doesNotMatch(avatarsSource, /import '[^']*\.s?css';/);
+  assert.match(await read('src/smart/avatar-group/rule.js'), /\{ name: 'avatars' \}/);
   assert.match(sliderTemplate, /--inset-inline-start: var\(--sf-a4\)/);
   assert.match(sliderTemplate, /--inset-inline-end: var\(--sf-g3\)/);
   assert.doesNotMatch(sliderTemplate, /(?:^|[;\s])(?:left|right)\s*:/m);

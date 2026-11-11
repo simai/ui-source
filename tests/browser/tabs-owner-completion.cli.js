@@ -20,8 +20,6 @@ async page => {
       for (const name of ['buttons', 'tabs']) {
         await page.addStyleTag({ url: `${base}/component/${name}/css/${name}.css` });
       }
-      await page.addStyleTag({ url: `${base}/smart/tabs/css/tabs.css` });
-      await page.addStyleTag({ url: `${base}/smart/tabs/template/default.css` });
       await page.addScriptTag({ url: `${base}/component/tabs/js/tabs.js` });
       for (const name of ['icons', 'close', 'buttons', 'icon-buttons', 'tabs']) {
         await page.addScriptTag({ url: `${base}/smart/${name}/js/${name}.js` });
