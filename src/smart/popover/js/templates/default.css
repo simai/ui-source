@@ -68,6 +68,18 @@
     --sf-outline-variant: light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24));
   }
 
+  /* Inside bg-surface-4 the content takes back the accent the step found
+     (mix sf-place-step-4-accent-back; DEV acceptance 2026-11-11, M3): the
+     step's one-tone-darker accent is for neutral-85, not for a popup. */
+  :where(.bg-surface-4) sf-popover > [slot='content'] {
+    --sf-primary: var(--sf-place--found-primary);
+    --sf-primary-hover: var(--sf-place--found-primary-hover);
+    --sf-primary-active: var(--sf-place--found-primary-active);
+    --sf-link: var(--sf-place--found-link);
+    --sf-link-hover: var(--sf-place--found-link-hover);
+    --sf-link-active: var(--sf-place--found-link-active);
+  }
+
   :where(.bg-primary, .bg-secondary, .bg-tertiary, .bg-info, .bg-success, .bg-warning, .bg-error, :is(.sf-alert-bar--error, .sf-alert-bar--danger, .sf-alert-bar--warning, .sf-alert-bar--info) :is(.sf-alert-bar-row, .sf-alert-bar-strip)) sf-popover > [slot='content'] {
     --sf-primary: var(--sf-place--outer-primary, light-dark(var(--sf-primary-40), var(--sf-primary-80)));
     --sf-primary-hover: var(--sf-place--outer-primary-hover, light-dark(var(--sf-primary-35), var(--sf-primary-85)));

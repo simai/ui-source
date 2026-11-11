@@ -362,7 +362,7 @@
       },
       {
         "path": "src/smart/popover/js/templates/default.css",
-        "sha256": "9efc96908d6cd94105b7b64606f47412d4fc325bdd2b3a08bc4ace8fe09c05cd"
+        "sha256": "b9132994913165cf18e1be0f414f8cf28bbe3df0ba778e63807e57a24bfefef4"
       }
     ],
     "generated_runtime": []

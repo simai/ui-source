@@ -219,9 +219,11 @@ $sf-place-container-outline: $sf-place-step-outline;
 // lows, 2026-11-11): primary-40 as ink -- an outline, ghost or link button's
 // label, a text link -- gave 4.39:1 at rest and 4.39 hovered over its
 // container step, under 4.5. In the light theme the accent moves one step
-// along its own ladder: rest takes the hover tone, hover the press tone, press
-// stays (theme: 35 / 30 / 30, 5.26 at rest, 5.31 hovered, 5.07 pressed); a
-// text link moves along the link's ladder the same way. A visited link
+// along its own ladder: rest takes the hover tone, hover the press tone, and
+// press one step beyond, tone 25 of the primary ramp (35 / 30 / 25, 5.26 at
+// rest, 5.31 hovered); press stays one step beyond hover, as C16's state
+// steps do (dispatcher 2026-11-11: hover == press is not allowed). A text
+// link moves along the link's ladder the same way. A visited link
 // (tertiary-40, 4.40) has no darker role of its own and stays. Read
 // from the roles, not the tones, so a project that re-brands --sf-primary keeps
 // its brand there (D1: a neutral place declares no accent of its own). The
@@ -229,12 +231,30 @@ $sf-place-container-outline: $sf-place-step-outline;
 // as the strong places' children do, because a role re-declared on the place
 // itself could not read the value it replaces. Surface-3 (neutral-90) holds
 // 5.03 with 40 and keeps the accent; the dark half is the accent as found.
+//
+// The step stops at a place (DEV acceptance 2026-11-11, M3): a card, a popup,
+// a popover's content or a soft container inside bg-surface-4 is not on
+// neutral-85 and takes back the accent the step found, kept on the step as
+// --sf-place--found-* (sf-place-step-4-accent-back, in every opaque, soft and
+// strong place). A step nested in a step inherits the outer one's found
+// accent, so the accent moves once, not twice.
+$sf-place-step-4-roles: ('primary', 'primary-hover', 'primary-active', 'link', 'link-hover', 'link-active');
+
 @mixin sf-place-step-4-accent-found {
+  @each $role in $sf-place-step-4-roles {
+    --sf-place--found-#{$role}: var(--sf-#{$role});
+  }
+  :where(.bg-surface-4) & {
+    @each $role in $sf-place-step-4-roles {
+      --sf-place--found-#{$role}: inherit;
+    }
+  }
   --sf-place--step-primary: light-dark(var(--sf-primary-hover), var(--sf-primary));
   --sf-place--step-primary-hover: light-dark(var(--sf-primary-active), var(--sf-primary-hover));
-  --sf-place--step-primary-active: var(--sf-primary-active);
+  --sf-place--step-primary-active: light-dark(var(--sf-primary-25), var(--sf-primary-active));
   --sf-place--step-link: light-dark(var(--sf-link-hover), var(--sf-link));
   --sf-place--step-link-hover: light-dark(var(--sf-link-active), var(--sf-link-hover));
+  --sf-place--step-link-active: light-dark(var(--sf-primary-25), var(--sf-link-active));
 }
 
 @mixin sf-place-step-4-accent {
@@ -243,6 +263,16 @@ $sf-place-container-outline: $sf-place-step-outline;
   --sf-primary-active: var(--sf-place--step-primary-active);
   --sf-link: var(--sf-place--step-link);
   --sf-link-hover: var(--sf-place--step-link-hover);
+  --sf-link-active: var(--sf-place--step-link-active);
+}
+
+// A place inside bg-surface-4 takes back the accent the step found (M3).
+@mixin sf-place-step-4-accent-back {
+  :where(.bg-surface-4) & {
+    @each $role in $sf-place-step-4-roles {
+      --sf-#{$role}: var(--sf-place--found-#{$role});
+    }
+  }
 }
 
 
@@ -300,6 +330,7 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
   @include aliases.sf-role-aliases($sf-place-aliased);
   --sf-place--container-outline: initial;
   @include sf-place-back-on-colour;
+  @include sf-place-step-4-accent-back;
   @if $popup == null {
     $popup: $container-variant and string.index(meta.inspect($variant), 'popup-variant') and not string.index(meta.inspect($variant), 'nested');
   }
@@ -344,6 +375,7 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
   --sf-outline-variant: var(--sf-#{$c}-container-strong);
   --sf-place--container-outline: var(--sf-outline);
   @include aliases.sf-role-aliases(('surface-state-hover', 'surface-state-select', 'surface-state-active'));
+  @include sf-place-step-4-accent-back;
 }
 
 // A step of a strong place's ink: on-<c>, white in the light theme and tone 20
@@ -389,6 +421,9 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
   @each $role, $value in $sf-place-accent-roles {
     --sf-place--outer-#{$role}: var(--sf-#{$role});
   }
+  // Inside bg-surface-4 the place paints and hands down the accent the step
+  // found, not the step's (M3): bg-primary there is primary-40 again.
+  @include sf-place-step-4-accent-back;
 }
 
 // The accent on a strong coloured place (C42 (4), owner 2026-11-10): what
