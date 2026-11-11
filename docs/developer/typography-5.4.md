@@ -141,14 +141,31 @@ them with `unicode-range`, so a page fetches only the scripts its text uses —
 Latin and Cyrillic come to about 67 KB. The contract does not load Google Fonts
 or another remote font service. The licence travels in the third-party notices.
 
-Before Inter is available, Framework uses a local `Inter Fallback` face: Arial
-with metric overrides. It keeps the natural font-driven geometry of controls
-and text while preventing the webfont swap from moving the header, navigation,
-or page columns. Inter uses `font-display: optional`: a cold page keeps the
-metric fallback for that document instead of swapping late, while cached
-visits use Inter immediately. Projects do not need to preload the font or
-reserve fixed heights, and custom font-family overrides continue to work as
-before. The stack ends in the system fonts for an environment without Arial.
+Before Inter is available, SIMAI Framework uses a local `Inter Fallback`
+family: Arial (or Helvetica, Liberation Sans, Arimo, which share Arial's
+widths) with metric overrides. It keeps the natural font-driven geometry of
+controls and text while preventing the webfont swap from moving the header,
+navigation, or page columns. Inter uses `font-display: optional`: a page keeps
+the metric fallback for that document when Inter is not in by the first frame,
+instead of swapping late, while cached visits use Inter immediately.
+
+- The fallback has a face per weight band (400, 500 on Arial; 600, 700 on
+  Arial Bold) and a Cyrillic face per band, each sized to Inter: the mean width
+  of a line matches Inter's to 0.1 %, and the line box (ascent, descent, no
+  line gap) matches to the pixel, so line pitch is the same in either face and
+  in a line that mixes them (font.inter 1.1.0).
+- The widths still differ per letter, not by a scale: a line varies by about
+  0.7 % (Russian) and 1.5 % (English). A line within about 1 % of its box can
+  break in one face and not in the other.
+- core.js asks for the Latin face, and the Cyrillic face on a page whose
+  `<html lang>` is written in Cyrillic, from its first line, so a quick network
+  brings Inter in before the first frame of a cold visit. It uses
+  `FontFace.load()`, so there is no preload link and no "preloaded but not
+  used" warning. Turn it off with `SF_BOOT_CONFIG = {fonts: {early: false}}`.
+
+Projects do not need to preload the font or reserve fixed heights, and custom
+font-family overrides continue to work as before. The stack ends in the system
+fonts for an environment without Arial.
 
 First-party typography does not declare a literal `13px`. Historical vendor
 sources outside active Framework build roots are not part of this contract.
