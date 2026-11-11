@@ -2,7 +2,8 @@
   "title": "Выпадающий список",
   "runtime": {
     "search": "Поиск",
-    "empty": "Не выбрано"
+    "empty": "Не выбрано",
+    "value-missing": "Выберите вариант"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",

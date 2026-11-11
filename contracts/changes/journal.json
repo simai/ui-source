@@ -10374,6 +10374,36 @@
       },
       "owner": "ui-source",
       "source": "src/component/clipboard/js/index.js copySources, noteLegacy; ui-control control/docs-review/decisions.md C48"
+    },
+    {
+      "id": "behaviour-dropdown-form-field",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-dropdown 1.9.0 is a form field through ElementInternals, as sf-input is (owner decision C55): the host submits the value under its name, and `required` now stops a submit while nothing is chosen (value-missing; the browser focuses the trigger and the field shows «Выберите вариант»). It drew a required mark only before. The hidden input .sf-dropdown-hidden-input is still drawn and holds the value, but carries no name while the host submits, so form.elements[name] and [name=…] find the sf-dropdown host, not the hidden input.",
+      "items": [
+        {
+          "component": "sf-dropdown",
+          "attribute": "required",
+          "from": "required as a mark only",
+          "to": "required as a constraint (value-missing)"
+        },
+        {
+          "component": "sf-dropdown",
+          "from": "input.sf-dropdown-hidden-input[name] as the form control",
+          "to": "the sf-dropdown host (value, validity, form)"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a required sf-dropdown may stay empty on submit, remove required (or choose a default); where a page read the hidden input by its name, read the host instead: form.elements[name].value, or the host's value property. FormData is unchanged: the same name carries the same value.",
+      "examples": {
+        "before": "form.querySelector('input[name=\"city\"]').value",
+        "after": "form.elements.city.value"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/dropdown/index.js"
     }
   ]
 }

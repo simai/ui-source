@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.dropdown",
-  "version": "1.8.1",
+  "version": "1.9.0",
   "title": "Dropdown",
   "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
   "kind": "smart",
@@ -67,6 +67,16 @@
       "disabled": {
         "type": "boolean",
         "default": false
+      },
+      "error-message": {
+        "type": "string",
+        "default": "",
+        "description": "The text shown under the field while it is invalid, in the error colour, in the field-message style; it is the trigger's error message for assistive technology (aria-describedby, aria-errormessage)."
+      },
+      "invalid": {
+        "type": "boolean",
+        "default": false,
+        "description": "Marks the choice as wrong: the error border (filled: the error fill), aria-invalid on the trigger and error-message under the field. No error icon is drawn."
       },
       "label": {
         "type": "string",
@@ -228,6 +238,31 @@
     "toggleDropdown": {
       "summary": "Closes the list when open, opens it otherwise. Returns the element.",
       "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "setError": {
+      "summary": "Show an error message and the invalid state, or clear both with an empty message. Writes error-message and invalid and sets the custom error the form will not submit over. Returns the element.",
+      "arguments": [
+        {
+          "name": "args",
+          "type": "object",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "message"
+            ]
+          }
+        }
+      ],
       "returns": {
         "type": "object",
         "description": "The element, for chaining."
