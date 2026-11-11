@@ -42,6 +42,11 @@ test('the status dot draws as before, over the ground', async () => {
   assert.match(base, /background-color: var\(--sf-surface-place-ground, transparent\);/u);
   assert.match(base, /background-image: linear-gradient\(var\(--sf-online-indicator--background-color\) 0 0\);/u);
   assert.doesNotMatch(base, /background-clip/u);
+  // On a row with a fill the ring takes the row's fill over the place colour,
+  // read only where the underlay is set (C43 D3 follow-up, 2026-11-11).
+  assert.match(base, /--sf-online-indicator--ring-fill: color-mix\(in srgb, var\(--sf-surface-place-fill\) 100%, var\(--sf-surface-underlay\) 0%\);/u);
+  assert.match(base, /outline: var\(--sf-px\) solid var\(--sf-online-indicator--ring-fill, transparent\);/u);
+  assert.match(base, /outline-offset: calc\(-1 \* var\(--sf-px\)\);/u);
   const offline = dot.slice(dot.indexOf('.sf-online-indicator--offline {'), dot.indexOf('}', dot.indexOf('.sf-online-indicator--offline {')));
   assert.match(offline, /--sf-online-indicator--background-color: var\(--sf-avatar-offline-background-color, var\(--sf-surface-place\)\);/u);
   assert.match(offline, /background-image: var\(--sf-avatar-offline-overlay, linear-gradient\(var\(--sf-on-surface-disabled\) 0 0\)\), linear-gradient\(var\(--sf-online-indicator--background-color\) 0 0\);/u);
