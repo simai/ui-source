@@ -73,6 +73,19 @@
   .sf-choice[data-columns='auto'] .sf-choice-grid {
     grid-template-columns: repeat(auto-fill, minmax(min(var(--sf-choice--min-inline-size), calc((100% - 2 * var(--sf-choice--gap)) / 3)), 1fr));
   }
+
+  /* The share never makes more tracks than there are options (review D1 of
+     the preloader round): two options give way to a half of the row, so they
+     take half each with no empty third track, and one option keeps the
+     plain rule and fills a field that holds one card. From the width where
+     the minimum is the smaller term, both are the plain rule again. */
+  .sf-choice[data-columns='auto'] .sf-choice-grid:has(> :nth-child(2)):not(:has(> :nth-child(3))) {
+    grid-template-columns: repeat(auto-fill, minmax(min(var(--sf-choice--min-inline-size), calc((100% - var(--sf-choice--gap)) / 2)), 1fr));
+  }
+
+  .sf-choice[data-columns='auto'] .sf-choice-grid:not(:has(> :nth-child(2))) {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--sf-choice--min-inline-size)), 1fr));
+  }
 }
 
 .sf-choice[data-columns='1'] { --sf-choice--columns: 1; }
@@ -146,6 +159,16 @@
 .sf-choice .sf-choice-title-text {
   min-inline-size: 0;
   overflow-wrap: anywhere;
+}
+
+/* Tile and picture: a badge that does not fit beside the name drops under it
+   and is never cut while the card holds it (review D2 of the preloader
+   round: «Популярный» was cut in the narrowest three-tile fields). On a line
+   of its own it may run under the control, which stands on the name's first
+   line only; past that room it shortens as before. */
+.sf-choice:not([data-layout='list']) .sf-choice-badge {
+  flex-shrink: 0;
+  max-inline-size: calc(100% + var(--sf-text-height-1) + var(--sf-space-1\/2));
 }
 
 /* An option's icon stands on the name line at the line's height, as the class
