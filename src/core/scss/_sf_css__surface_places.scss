@@ -31,6 +31,11 @@
     // avatar's status dot -- is dark glass, not the photo (DEV, 2026-11-11).
     --sf-surface-place-ground: var(--sf-black);
     --sf-surface-underlay: initial;
+    // The place hooks (mix/_mix__places.scss): white on glass, coloured text
+    // one colour, as on a strong place.
+    --sf-place--fill-variant: var(--sf-white--alfa-80);
+    --sf-place--ink: var(--sf-on-surface-media);
+    --sf-place--fill-surface: initial;
     --sf-on-surface: var(--sf-on-surface-media);
     --sf-on-surface-variant: var(--sf-white--alfa-80);
     --sf-on-surface-container-variant: var(--sf-white--alfa-80);

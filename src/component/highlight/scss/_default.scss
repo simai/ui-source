@@ -15,7 +15,7 @@
     flex: none;
     min-inline-size: var(--sf-code-line--number-size, 3ch);
     padding-inline-end: var(--sf-space-1\/2);
-    color: var(--sf-on-surface-variant);
+    color: var(--sf-place--fill-variant, var(--sf-on-surface-variant));
     text-align: end;
     user-select: none;
   }
@@ -114,7 +114,9 @@
     min-width: 0;
     overflow: hidden;
     margin: 0;
-    background: var(--sf-highlight-background-color, var(--sf-surface-container));
+    /* On a grey plate the plate is the fill: the place hook draws none
+       (--sf-place--fill-surface, core mix/_mix__places.scss). */
+    background: var(--sf-highlight-background-color, var(--sf-place--fill-surface, var(--sf-surface-container)));
     --sf-on-surface-variant: var(--sf-on-surface-container--variant);
     border: var(--sf-highlight-border-width, var(--sf-px)) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
     border-radius: var(--sf-highlight-radius, var(--sf-radius--surface));
@@ -183,7 +185,7 @@
     padding-bottom: 0;
 
     text-align: center;
-    color: var(--sf-highlight-line-number);
+    color: var(--sf-highlight--line-number);
     vertical-align: top;
 
     div {

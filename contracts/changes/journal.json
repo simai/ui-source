@@ -10399,6 +10399,43 @@
       },
       "owner": "ui-source",
       "source": "src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
+    },
+    {
+      "id": "behaviour-highlight-follows-the-place",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "Highlighted code follows the place it stands on (DEV 2026-11-11, variant C of the code comment contrast study). The highlight roles were resolved on the theme root, so on a popup, the grey plate, a strong colour or the inverse the code kept the page's inks: comments 3.21:1 on a dark popup, 2.86 on the dark grey plate, 1.27 / 1.10 on bg-primary, text 3.38 / 1.61 on bg-primary. The code now reads them through three core place hooks the page does not declare (--sf-place--fill-variant, --sf-place--ink, --sf-place--fill-surface): on a card, a popup and the grey plate the comment, the punctuation and the line numbers take the place's dim ink on a fill; on a strong colour and on glass the text and every hue take the place's ink, one colour; on the grey plate and on a dark popup the block lays no fill of its own. On the page nothing changes.",
+      "items": [
+        {
+          "component": "highlight",
+          "attribute": "--sf-highlight-comment, --sf-highlight-punctuation, --sf-highlight-line-number",
+          "from": "the page's dim ink on every place",
+          "to": "the place's dim ink on a fill (--sf-place--fill-variant); the page's on the page"
+        },
+        {
+          "component": "highlight",
+          "attribute": "--sf-highlight-text and the hue roles",
+          "from": "the page's ink and the theme's hues on every place",
+          "to": "the place's ink on a strong colour and on glass (--sf-place--ink), one colour; elsewhere as before"
+        },
+        {
+          "component": "highlight",
+          "attribute": ".sf-code-surface background",
+          "from": "the container fill on every place",
+          "to": "none on the grey plate and on a popup in the dark theme (--sf-place--fill-surface)"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite. The roles --sf-highlight-* are still the page's and a project's override of one still applies on the page; on a place the place's ink wins. A page that wants the former look on a place can set --sf-place--fill-variant, --sf-place--ink and --sf-place--fill-surface to initial on the code block.",
+      "examples": {
+        "before": "<div class=\"bg-primary\"><pre class=\"sf-code-surface\"><code class=\"hljs\">... (comments 1.27:1, keywords 1.26:1)",
+        "after": "<div class=\"bg-primary\"><pre class=\"sf-code-surface\"><code class=\"hljs\">... (the same markup: every role on-primary, 5:1 and above)"
+      },
+      "owner": "ui-source",
+      "source": "src/component/highlight/scss/_theme.scss; src/core/scss/mix/_mix__places.scss; ui-control prototypes/code-comment-contrast.html"
     }
   ]
 }

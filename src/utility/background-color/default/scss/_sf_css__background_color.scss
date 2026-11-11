@@ -21,8 +21,14 @@
 
     // A container fill switches the dimmed text over it, as elevation-N does
     // (simai/ui-source#3): color-on-surface-variant on it read 3.06:1.
+    // The grey plate is a fill, not a place: what would draw the container
+    // fill on it draws nothing (a code block laid a second fill, which took
+    // its comments to 2.86:1 in the dark), and text on it takes the dim ink
+    // on a fill (mix/_mix__places.scss, the place hooks).
     .#{$infix}bg-surface-container {
         --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+        --sf-place--fill-variant: var(--sf-on-surface-container-variant);
+        --sf-place--fill-surface: transparent;
     }
 
     // A place class is a place (C16): what stands on it reads its colour as

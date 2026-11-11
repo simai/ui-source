@@ -38,6 +38,27 @@
 // dot) lays --sf-surface-place over it, which is exactly the soft place's
 // look over its ground. It is never initial; glass declares black.
 //
+// Three hooks tell a component what a place is, where the page keeps the
+// component's own value (code highlighting, DEV 2026-11-11, variant C). The
+// page declares none of them, so a component reading
+// var(--sf-place--<hook>, <its own value>) is unchanged on the page.
+//   --sf-place--fill-variant  the dim ink on a fill on this place: every place
+//                             declares it, the opaque ones as their
+//                             --sf-on-surface-container-variant, a strong one
+//                             as its full ink (its dim ink 80 over a fill
+//                             stays under 4.5:1, as for a placeholder).
+//   --sf-place--ink           the ink that stands in for a hue on this place:
+//                             a strong place and glass declare their full ink
+//                             (a hue on a colour is that colour or near it, so
+//                             coloured text there is one colour); an opaque
+//                             place takes it back (initial).
+//   --sf-place--fill-surface  what a block that draws the container fill draws
+//                             here instead: transparent on a grey plate
+//                             (bg-surface-container), so the fill is not laid
+//                             twice, and on a popup in the dark theme (a
+//                             raised step: hues over it and a fill fell under
+//                             4.5:1); the other places take it back (initial).
+//
 // --sf-surface-place-fill is the translucent fill itself (C43 D3, D4,
 // 2026-11-11): sf-place-fill($fill) declares it with the underlay on a
 // selected, open, current or hovered row. It is read only together with the
@@ -201,6 +222,17 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   --sf-surface-place-solid: #{$surface};
   --sf-surface-place-ground: #{$surface};
   $container-variant: sf-place-container-variant($variant);
+  // Read where it is declared: the place's own dim ink on a fill, below.
+  --sf-place--fill-variant: var(--sf-on-surface-container-variant);
+  --sf-place--ink: initial;
+  // A popup in the dark theme is a raised step already: a fill on it took the
+  // hues of code to 4.3:1 (the theme's tone 80 over the popup and the fill),
+  // so a block that would lay the container fill there lays none.
+  @if $container-variant {
+    --sf-place--fill-surface: light-dark(var(--sf-surface-container), transparent);
+  } @else {
+    --sf-place--fill-surface: initial;
+  }
   @each $role, $value in $sf-place-theme-roles {
     @if $role == 'on-surface-variant' and $variant {
       --sf-on-surface-variant: #{$variant};
@@ -273,6 +305,9 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   --sf-surface-place-solid: var(--sf-#{$c});
   --sf-surface-place-ground: var(--sf-#{$c});
   --sf-surface-underlay: initial;
+  --sf-place--fill-variant: var(--sf-on-#{$c});
+  --sf-place--ink: var(--sf-on-#{$c});
+  --sf-place--fill-surface: initial;
   --sf-on-surface: var(--sf-on-#{$c});
   --sf-on-surface-variant: #{sf-ink($c, 80)};
   --sf-on-surface-container-variant: #{sf-ink($c, 80)};
