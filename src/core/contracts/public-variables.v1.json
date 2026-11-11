@@ -1074,15 +1074,15 @@
         {
           "name": "--sf-avatar-offline-background-color",
           "role": "background",
-          "summary": "The colour under the offline dot: the place the avatar stands on, laid over the nearest opaque place (--sf-surface-place-ground), so neither the photo nor the initials show through the dot (C43), on a soft coloured place too.",
-          "default": "var(--sf-surface-place)",
+          "summary": "The colour of the offline dot: the place's dim ink (since 2026-11-11; it was the place colour under the disabled ink, under 3:1), laid over the nearest opaque place (--sf-surface-place-ground), so neither the photo nor the initials show through the dot, on a soft coloured place too.",
+          "default": "var(--sf-on-surface-variant)",
           "since": "2026-11-10"
         },
         {
           "name": "--sf-avatar-offline-overlay",
           "role": "overlay",
-          "summary": "The layer over that colour: the disabled ink. Set it to none for an offline dot of exactly --sf-avatar-offline-background-color.",
-          "default": "linear-gradient(var(--sf-on-surface-disabled) 0 0)",
+          "summary": "A layer over that colour, none by default (it was the disabled ink until 2026-11-11). A page may lay an image or a gradient over the dot here.",
+          "default": "none",
           "since": "2026-11-10"
         }
       ]

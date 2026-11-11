@@ -14,16 +14,15 @@ a real destination or action.
 - composition: `.sf-avatar-label-group`, `.sf-avatar-group` and
   `.sf-avatar-card`;
 - state: online/offline indicator and company/verification badge. The
-  offline dot is the disabled ink laid over the colour of the place the
-  avatar stands on (C43), so a photo or the initials do not show through it.
-  The dot lies over the nearest opaque place
-  (`--sf-surface-place-ground`), so on a soft coloured place
-  (`bg-<colour>-container`) the dot is that place's colour, opaque.
+  offline dot is the dim ink of the place the avatar stands on
+  (`--sf-on-surface-variant`), at least 3:1 against the place and the avatar
+  (since 2026-11-11; the disabled ink it had before was under 3:1). The dot
+  lies over the nearest opaque place (`--sf-surface-place-ground`), so a
+  photo or the initials do not show through it.
   Its two layers are public variables: `--sf-avatar-offline-background-color`
-  (default `var(--sf-surface-place)`) and `--sf-avatar-offline-overlay`
-  (default `linear-gradient(var(--sf-on-surface-disabled) 0 0)`). For a dot of
-  your own colour set both, the overlay to `none`:
-  `--sf-avatar-offline-background-color: #e53935; --sf-avatar-offline-overlay: none`;
+  (default `var(--sf-on-surface-variant)`) and `--sf-avatar-offline-overlay`
+  (default `none`, a layer over the colour). For a dot of your own colour set
+  the first: `--sf-avatar-offline-background-color: #e53935`;
 - hue, on initials only: `.sf-avatar--text.sf-hue-<name>`, where name is a
   hue of the static palette (`red`, `orange`, `amber`, `yellow`, `lime`,
   `green`, `teal`, `cyan`, `sky`, `blue`, `indigo`, `violet`, `purple`, `pink`,

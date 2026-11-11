@@ -47,8 +47,8 @@ names (`tiny`, `extra_small`, `small`, `big`, `extra_big`).
 
 The look is the avatar sheet's public variables: `--sf-avatar-background-color`,
 `-color`, `-border-color`, `-border-width` and `-radius`, and for the offline dot
-`--sf-avatar-offline-background-color` (the place colour) and
-`--sf-avatar-offline-overlay` (the disabled ink over it; `none` for a dot of
-exactly the colour you set).
+`--sf-avatar-offline-background-color` (the dot's colour, the place's dim
+ink by default) and `--sf-avatar-offline-overlay` (`none` by default, a layer
+over it).
 
 The interface is `component.json`; examples are `examples.json`.
