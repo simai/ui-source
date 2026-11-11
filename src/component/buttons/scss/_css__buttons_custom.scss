@@ -199,7 +199,7 @@
   /* A disabled button's spinner (disabled and loading) takes the disabled
      ink, the ink of its label -- unless --sf-loader--color is set. */
   .sf-button:is(:disabled:not(.sf-button-state-loading:not(.disabled)), .disabled) .sf-button-spinner {
-    color: var(--sf-loader--color, var(--sf-on-disable));
+    color: var(--sf-loader--color, var(--sf-on-surface-disabled));
   }
 
   /* The label under an overlaid spinner: in its place and in the accessibility

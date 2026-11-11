@@ -309,7 +309,8 @@
     "version 1.1.0 background-color-names: the public variable --sf-pager-card-background-color (C16 naming: a variable that sets a colour ends in -color, as the other 53 do). The former name --sf-pager-card-background is still read under the new one until 2027-01-01 (change journal token-component-background-color-names, src/core/contracts/token-aliases.v1.json); nothing draws differently.",
     "version 1.1.1 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, goTo({index}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged.",
     "version 1.2.1 (2026-11-09): cards stand on --sf-surface-card and the current dot takes the place's colour (C16, the background system, owner 2026-11-08).",
-    "version 1.2.2 (2026-11-10, C16 leftovers): a patch; nothing draws or works differently. Its docs gave a stale default: the cards' fill is --sf-surface-card (since 1.2.1), not --sf-surface-0."
+    "version 1.2.2 (2026-11-10, C16 leftovers): a patch; nothing draws or works differently. Its docs gave a stale default: the cards' fill is --sf-surface-card (since 1.2.1), not --sf-surface-0.",
+    "version 1.2.2 (2026-11-11, note; no new number: 1.2.2 is not released yet): nothing drawn differently. The sheet reads the C16 roles by their current names where it read the former ones, which are var() of them wherever they are declared (src/core/contracts/token-aliases.v1.json, sf-role-aliases): --sf-outline-primary → --sf-primary-outline. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

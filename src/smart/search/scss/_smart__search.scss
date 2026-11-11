@@ -237,7 +237,7 @@
   block-size: var(--sf-search--square);
   border-radius: var(--sf-radius-1);
   background: var(--sf-surface-container);
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   --sf-icon--color: var(--sf-on-surface-variant);
   --sf-icon--font-size: var(--sf-search--row-glyph);
   --sf-icon--width: var(--sf-search--row-glyph);
@@ -325,7 +325,7 @@
 }
 
 .sf-search-remove:hover {
-  background: var(--sf-surface-transparent-active);
+  background: var(--sf-surface-state-active);
 }
 
 /* Pills: the scopes (pressed is the filter in force) and the popular
@@ -354,7 +354,7 @@
   border: 0;
   border-radius: var(--sf-radius-rounded);
   background: var(--sf-surface-container);
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   color: var(--sf-on-surface-variant);
   font: inherit;
   font-size: var(--sf-text-size-1\/2);
@@ -371,7 +371,7 @@
 }
 
 .sf-search-scope:hover {
-  background: var(--sf-surface-transparent-hover);
+  background: var(--sf-surface-state-hover);
 }
 
 .sf-search-scope[aria-pressed='true'] {

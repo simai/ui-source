@@ -125,7 +125,7 @@
 .sf-lookup.sf-lookup--filled .sf-lookup-frame {
   --sf-lookup--background-color: var(--sf-lookup-background-color, var(--sf-surface-container));
   --sf-lookup--border-color: var(--sf-lookup-border-color, var(--sf-transparent-for-focus));
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
 }
 
 .sf-lookup:not(.error):not(.sf-lookup--disabled):not(.sf-lookup--readonly) .sf-lookup-frame:hover {
@@ -175,17 +175,17 @@
 }
 
 .sf-lookup.sf-lookup--disabled .sf-lookup-frame {
-  color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
   cursor: default;
-  --sf-on-surface-variant: var(--sf-on-disable);
+  --sf-on-surface-variant: var(--sf-on-surface-disabled);
 }
 
 .sf-lookup.sf-lookup--disabled.sf-lookup--bordered .sf-lookup-frame {
-  --sf-lookup--border-color: var(--sf-outline-disable);
+  --sf-lookup--border-color: var(--sf-outline-disabled);
 }
 
 .sf-lookup.sf-lookup--disabled.sf-lookup--filled .sf-lookup-frame {
-  --sf-lookup--background-color: var(--sf-disable);
+  --sf-lookup--background-color: var(--sf-surface-disabled);
 }
 
 /* The search box: the field's text, inset as sf-input's value is. */
@@ -317,7 +317,7 @@
 }
 
 .sf-lookup .sf-lookup-option:hover {
-  background-color: var(--sf-surface-transparent-hover);
+  background-color: var(--sf-surface-state-hover);
 }
 
 .sf-lookup .sf-lookup-option.sf-lookup-option--chosen {

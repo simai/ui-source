@@ -18,9 +18,9 @@
 // A disabled section: its header is not a control, and says so as every
 // disabled control does -- the disabled colour, nothing to press, no hover.
 .sf-accordion.sf-accordion--disabled .sf-accordion-trigger:disabled {
-  --sf-icon--color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 
-  color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
   cursor: not-allowed;
 }
 

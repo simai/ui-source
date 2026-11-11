@@ -1203,7 +1203,7 @@
           "name": "--sf-button-group-color",
           "role": "color",
           "summary": "The label and icon colour of a segment that is not selected, at rest; hover, pressed and disabled keep their own.",
-          "default": "var(--sf-on-surface-container--variant)",
+          "default": "var(--sf-on-surface-container-variant)",
           "since": "2026-10-19",
           "varies_with": [
             "appearance"
@@ -3302,7 +3302,7 @@
           "name": "--sf-contents-background-color",
           "role": "background",
           "summary": "The bar's fill and the compact view's open list. The former name --sf-contents-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-surface-page)",
           "since": "2026-11-08"
         },
         {

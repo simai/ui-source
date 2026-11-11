@@ -39,7 +39,7 @@
   }
 
   .sf-checkbox:has(input:disabled) > .sf-checkbox-container > .sf-checkbox-top > sf-icon > .sf-icon, .sf-checkbox:has(input:disabled):has(input:indeterminate) > .sf-checkbox-box > sf-icon > .sf-icon, .sf-checkbox:has(input:disabled):has(input:checked) > .sf-checkbox-box > sf-icon > .sf-icon {
-    --sf-icon--color: var(--sf-on-disable);
+    --sf-icon--color: var(--sf-on-surface-disabled);
   }
 
   .sf-checkbox:not(.error).sf-checkbox--size-2:has(input:indeterminate) > .sf-checkbox-box > sf-icon > .sf-icon {

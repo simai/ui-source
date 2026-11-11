@@ -104,7 +104,7 @@
 
   .sf-reference-link:not(.sf-reference-link--plain):has(:where(.sf-reference-link__link, .sf-reference-link-left > a):hover) {
     --sf-reference-link--background-color: var(--sf-surface-container-hover);
-    --sf-reference-link--border-color: var(--sf-outline-primary);
+    --sf-reference-link--border-color: var(--sf-primary-outline);
   }
 
   .sf-reference-link:not(.sf-reference-link--plain):has(:where(.sf-reference-link__link, .sf-reference-link-left > a):active) {
@@ -123,14 +123,14 @@
   }
 
   .sf-reference-link:is(.disabled, [aria-disabled='true']) {
-    --sf-reference-link--border-color: var(--sf-outline-disable);
+    --sf-reference-link--border-color: var(--sf-outline-disabled);
 
-    color: var(--sf-on-disable);
+    color: var(--sf-on-surface-disabled);
   }
 
   .sf-reference-link:is(.disabled, [aria-disabled='true'])
     :where(.sf-reference-link__main, .sf-reference-link-left, .sf-reference-link__meta, .sf-reference-link-text, .sf-icon) {
-    color: var(--sf-on-disable);
+    color: var(--sf-on-surface-disabled);
   }
 
   @media (width < 32rem) { // below sm
