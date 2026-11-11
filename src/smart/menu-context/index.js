@@ -1,5 +1,5 @@
 import SfBaseElement from "../../core/js/smart-base";
-import { densityOf, followDensity, RELATIVE } from "../../core/js/density.js";
+import { densityOf, followDensity } from "../../core/js/density.js";
 import { elementFromManifest } from "../../core/js/element-manifest";
 import BundledPosition from "../../core/js/position.js";
 import { renderContextMenuTemplate } from "./js/templates/default";
@@ -853,11 +853,10 @@ class SfContextMenu extends ContextMenuElement {
     // The density of the control that opens it (C22): the panel is drawn
     // where the menu element stands -- often on <body>, outside the compact
     // region of the toolbar or table that opens it -- so two menus of one
-    // compact page drew at two sizes. A size the page gave the menu wins.
-    if (!this.hasAttribute("size") || this.hasAttribute(RELATIVE)) {
-      this._owned.density = surface.getAttribute("data-sf-density");
-      surface.setAttribute("data-sf-density", densityOf(anchor) ?? "normal");
-    }
+    // compact page drew at two sizes. A size the page gave the menu is a step
+    // on that region's ladder too (C79), so every menu takes it.
+    this._owned.density = surface.getAttribute("data-sf-density");
+    surface.setAttribute("data-sf-density", densityOf(anchor) ?? "normal");
     // The top layer, where the platform has it: above every stacking context
     // and every clipping box, so a menu in a scrolled card is never cut and
     // never under the table it belongs to.

@@ -277,9 +277,9 @@ try {
         check('sf-button-icon kind=close height=low', c['icon-close-low']?.h, want.close);
         // Without a size, a height takes the place's step (DEV D1): 32 / 28 / 28.
         check('sf-button-close height=low (no size)', c['close-placed']?.h, want.close);
-        // An explicit size is stronger than the density (C22): size="1"
-        // keeps its desktop step in a compact region.
-        const sized = EXPECT[label === 'phone' ? 'phone' : 'desktop'];
+        // An explicit size follows the region (C79, changing C22): size="1"
+        // comes down a step in a compact region, as the unsized controls do.
+        const sized = want;
         check('sf-button-close size=1 height=low', c['close-low']?.h, sized.close);
         check('sf-button-icon default', c['icon-default']?.h, want.iconDefault);
         check('sf-button-close size=1 default', c['close-default']?.h, sized.iconDefault);

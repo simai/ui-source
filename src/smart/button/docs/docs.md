@@ -69,7 +69,9 @@ Main attributes:
   steps -- its usual step (`default`) and the neighbours on the UI height
   ladder. The side padding grows by half of what the height adds, so the gap
   from the end to the icon stays the same. A compact region
-  (`data-sf-density="compact"`) moves the steps one down and the height picks
+  (`data-sf-density="compact"`) moves the steps one down, an explicit size's
+  too (owner decision C79: `size="2"` is 40 there; `data-sf-density="normal"`
+  takes the normal steps back), and the height picks
   the neighbour there -- on the desktop only: below 60rem the phone ladder
   already is the dense one, and a phone button stands where it stands in a
   normal region (owner decision C36). Another value reads as `default`, with
