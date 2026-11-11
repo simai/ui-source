@@ -169,18 +169,18 @@
   /* Preparing: the status is words, not two short facts, and it never takes
      the name's whole room (docs acceptance 2026-11-10, L3). Before, the name
      fell to 0-6 px in a 160-200 px cell and the status stood past the box.
-     Now the status keeps its line beside the name while the name has its
-     floor (--sf-e8, 9rem) and moves under the name when it has not -- a whole
-     line of the size's text, no row gap -- as C51 puts the facts under the
-     name on a narrow screen. A wide cell is unchanged. */
+     Now the status keeps its line beside the name while both fit, and moves
+     under the name when they do not -- a whole line of the size's text, no
+     row gap -- as C51 puts the facts under the name on a narrow screen. The
+     name takes its own width, not a floor: a floor (--sf-e8) as its basis
+     made the row two lines tall where one fitted, and in the phone's column
+     a basis is a height (probe 2026-11-11: 44 for 28 at size 1/3, 168 tall
+     at 390). */
   .sf-download-file.sf-download-file--preparing :where(.sf-download-file__text) {
     flex-wrap: wrap;
     row-gap: var(--sf-0);
   }
 
-  .sf-download-file.sf-download-file--preparing :where(.sf-download-file__name) {
-    flex: 1 1 var(--sf-e8);
-  }
 
   .sf-download-file.sf-download-file--preparing :where(.sf-download-file__meta) {
     flex: 0 1 auto;
