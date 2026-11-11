@@ -109,7 +109,9 @@ const DRAW = {
     html: '<sf-file-download file-name="Отчёт.pdf" file-size="2 МБ" href="#"></sf-file-download>'},
   'copy-button': {css: ['icon-buttons', 'icons', 'smart/smart/button-copy/css/button-copy.css'], js: 'button-copy',
     html: '<sf-button-copy value="a" label="Копировать" duration="60000"></sf-button-copy><sf-button-copy value="b" label="Копировать" duration="60000"></sf-button-copy><sf-button-copy value="c" label="Копировать" duration="60000"></sf-button-copy>',
-    open: 'const [, ok, failed] = document.querySelectorAll("sf-button-copy"); ok.setPhase("success", ""); failed.setPhase("error", "")'},
+    // Through the action copy (setPhase went with C48, c2c0b936): the page's
+    // clipboard answers at once, and the second has nothing to copy.
+    open: '(async () => { const [, ok, failed] = document.querySelectorAll("sf-button-copy"); if (navigator.clipboard) navigator.clipboard.writeText = async () => {}; failed.removeAttribute("value"); await Promise.all([ok.copy(), failed.copy()]); })()'},
   'help-mark': {css: ['icon-buttons', 'icons', 'smart/smart/help-mark/css/help-mark.css'], js: 'help-mark',
     html: '<sf-help-mark id="hm" heading="Заголовок" text="Пояснение"></sf-help-mark>', open: 'document.getElementById("hm").open()'},
   datepicker: {css: ['datepicker', 'buttons', 'icon-buttons'], js: 'input-date',
@@ -215,12 +217,16 @@ const DRAW = {
   'list-timeline': {css: ['buttons', 'icons', 'featured-icon', 'group-heading', 'avatars', 'tooltip', 'smart/smart/time/css/time.css', 'smart/smart/change/css/change.css', 'smart/smart/list-timeline/css/list-timeline.css'], js: ['list-timeline', 'time', 'change', 'avatar'],
     html: `<sf-list-timeline now="2026-10-27T12:00:00+03:00"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', time: '2026-10-27T11:58:00+03:00', icon: 'edit', title: 'A', actor: 'Анна'}, {id: 'b', time: '2026-10-27T11:00:00+03:00', status: 'success', title: 'B'}]})}</script></sf-list-timeline>`},
   // .sf-group-heading (C40): a sticky heading with its date, then a divider.
+  // Not the first child: a first heading has no space above by design.
   'group-heading': {css: ['group-heading'], js: [],
-    html: '<div class="sf-group-heading sf-group-heading--sticky" role="heading" aria-level="3">Сегодня <span class="sf-group-heading-date">9 ноября</span></div><div class="sf-group-heading sf-group-heading--divider" role="separator">Вчера</div>'},
+    html: '<p style="margin:0">Лента</p><div class="sf-group-heading sf-group-heading--sticky" role="heading" aria-level="3">Сегодня <span class="sf-group-heading-date">9 ноября</span></div><div class="sf-group-heading sf-group-heading--divider" role="separator">Вчера</div>'},
   // sf-time (2026-11-10, C40): a time with its tooltip, so the ring and the
   // tooltip's anchor are drawn.
+  // The ring is drawn at :focus-visible only, so the time is focused as the
+  // keyboard focuses it.
   time: {css: ['tooltip', 'smart/smart/time/css/time.css'], js: 'time',
-    html: '<sf-time format="time" datetime="2026-11-09T14:32:00+03:00"></sf-time>'},
+    html: '<sf-time format="time" datetime="2026-11-09T14:32:00+03:00"></sf-time>',
+    open: 'document.querySelector("sf-time .sf-time[tabindex], sf-time .sf-time, sf-time [tabindex]")?.focus({focusVisible: true})'},
   // sf-change (2026-11-10, C40): a list of two changes, so the terms, the
   // arrow and both values are drawn.
   change: {css: ['smart/smart/change/css/change.css'], js: 'change',
@@ -306,7 +312,9 @@ const ROLES = {
   radius: {properties: ['border-top-left-radius'], value: '13px'},
   'padding-inline': {properties: ['padding-inline-start', 'padding-left'], value: '17px'},
   'padding-block': {properties: ['padding-top'], value: '19px'},
-  gap: {properties: ['column-gap', 'row-gap'], value: '23px'},
+  // A gap may be the room after each entry but the last (sf-list-timeline's
+  // events, padding-block-end).
+  gap: {properties: ['column-gap', 'row-gap', 'padding-block-end', 'padding-bottom'], value: '23px'},
   // A level's indent: a flat tree's row stands in by a margin (sf-tree), a
   // nested group by its padding.
   indent: {properties: ['margin-inline-start', 'margin-left', 'padding-inline-start'], value: '31px'},
@@ -326,8 +334,9 @@ const ROLES = {
   'ring-gap': {properties: ['--sf-progress-ring--gap'], value: '11px'},
   'indicator-color': {properties: ['border-bottom-color', 'background-color'], value: 'rgb(10, 11, 12)'},
   'indicator-width': {properties: ['border-bottom-width', 'block-size', 'height'], value: '5px'},
-  // The ring of an anchored badge is a spread shadow in the surface's colour.
-  'ring-color': {properties: ['box-shadow'], value: 'rgb(13, 14, 15)'},
+  // The ring of an anchored badge is a spread shadow in the surface's colour;
+  // a focus ring is an outline (sf-time).
+  'ring-color': {properties: ['box-shadow', 'outline-color'], value: 'rgb(13, 14, 15)'},
   // The space above an entry of a feed (sf-list-feed): a run and a turn.
   'margin-block-start': {properties: ['margin-block-start', 'margin-top'], value: '37px'},
 };
@@ -374,7 +383,9 @@ try {
         const after = read();
         document.documentElement.style.removeProperty(variable.name);
         // Taken by some element that did not have it before.
-        const ok = after.some((value, at) => (value === role.value || value.startsWith(`${role.value} `) || value.includes(`(${role.value}`) || value.includes(` ${role.value}`)) && before[at] !== value);
+        // A layer of several (background-image: the offline dot's disabled ink
+        // over its place, 5a9953ef) is the value followed by a comma.
+        const ok = after.some((value, at) => (value === role.value || value.startsWith(`${role.value} `) || value.startsWith(`${role.value},`) || value.includes(`(${role.value}`) || value.includes(` ${role.value}`)) && before[at] !== value);
         answers.push({name: variable.name, role: variable.role, ok});
       }
       return {answers};
