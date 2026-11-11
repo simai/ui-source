@@ -6,14 +6,17 @@
    the screens and densities of the core ladders (C22: the phone ladder below
    the lg breakpoint; on a desktop normal, compact one step down, an explicit size or a
    normal region back to normal). The values are the label's text step of
-   2026-11-11 (the ui ladder's text-space-x) with 8 at size 1/2 everywhere; the
-   tag reads them, not the text step, so a change of the text inset leaves
-   the picture gap where it is. */
+   2026-11-11 (the ui ladder's text-space-x) with 8 at size 1/2 everywhere,
+   and the ladder is monotone: no size has a smaller gap than a smaller size,
+   so sizes 1 and up are at least 8 (--sf-a8) in every context and keep a
+   larger step where theirs is larger (DEV 2026-11-11, C58 B: 4 to a leading
+   picture, then 8). The tag reads them, not the text step, so a change of
+   the text inset leaves the picture gap where it is. */
 @layer sf.base {
   :root {
     --sf-tag--picture-gap-1\/3: var(--sf-a5);
     --sf-tag--picture-gap-1\/2: var(--sf-a8);
-    --sf-tag--picture-gap-1: var(--sf-a6);
+    --sf-tag--picture-gap-1: var(--sf-a8);
     --sf-tag--picture-gap-2: var(--sf-a8);
     --sf-tag--picture-gap-3: var(--sf-b0);
   }
@@ -30,7 +33,7 @@
     [data-sf-density="compact"] {
       --sf-tag--picture-gap-1\/3: var(--sf-a6);
       --sf-tag--picture-gap-1\/2: var(--sf-a8);
-      --sf-tag--picture-gap-1: var(--sf-a7);
+      --sf-tag--picture-gap-1: var(--sf-a8);
       --sf-tag--picture-gap-2: var(--sf-a8);
       --sf-tag--picture-gap-3: var(--sf-b0);
     }
@@ -400,7 +403,7 @@
      The boundary is an inset shadow rather than a border, because the tag is
      built with `border: 0` and a real border would make every tag two pixels
      taller than the one beside it. */
-  .sf-tag.sf-tag--appearance-surface:is(.sf-tag--color, .sf-tag--icon, .sf-tag--default, .sf-tag--avatar, .sf-tag--checkbox) {
+  .sf-tag:is(.sf-tag--appearance-outline, .sf-tag--appearance-surface):is(.sf-tag--color, .sf-tag--icon, .sf-tag--default, .sf-tag--avatar, .sf-tag--checkbox) {
     /* The rest fill and the boundary are the surface roles of the same steps
        (C16; DEV audit 2026-11-10 defect 8 and Q3), so they follow the place:
        --sf-alpha-4/8/12 are black or white, outside the surface roles, and
@@ -582,13 +585,13 @@
 
   /* The states of the two ramp appearances: one step up on hover, with surface
      raising its boundary alongside. */
-  .sf-tag.sf-tag--interactive.sf-tag--appearance-surface:not(:disabled):not(.disabled):hover,
+  .sf-tag.sf-tag--interactive:is(.sf-tag--appearance-outline, .sf-tag--appearance-surface):not(:disabled):not(.disabled):hover,
   .sf-tag.sf-tag--interactive.sf-tag--appearance-ghost:not(:disabled):not(.disabled):hover {
     /* The surface role of the step (C16; DEV audit 2026-11-10 defect 8). */
     --sf-tag--background-color: var(--sf-surface-state-select);
   }
 
-  .sf-tag.sf-tag--interactive.sf-tag--appearance-surface:not(:disabled):not(.disabled):hover {
+  .sf-tag.sf-tag--interactive:is(.sf-tag--appearance-outline, .sf-tag--appearance-surface):not(:disabled):not(.disabled):hover {
     --sf-tag--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-surface-state-active);
   }
 
@@ -598,7 +601,11 @@
      differently from the one beside it. So the ramp governs rest and hover here,
      not selection. */
 
-  .sf-tag.sf-tag--appearance-surface:is(:disabled, .disabled),
+  /* outline is the name the Smart sf-tag writes (surface is its former name
+     until 2027-01-01, fix/content-precheck): every state rule names both, so
+     an outline tag takes the outline hover step, the raised boundary and the
+     disabled look, not the default tag's (backgrounds round 2 acceptance M1). */
+  .sf-tag:is(.sf-tag--appearance-outline, .sf-tag--appearance-surface):is(:disabled, .disabled),
   .sf-tag.sf-tag--appearance-ghost:is(:disabled, .disabled) {
     --sf-tag--background-color: transparent;
     --sf-tag--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-surface-state-hover);

@@ -21,6 +21,22 @@ test('the label after a leading picture starts at the tag picture gap', async ()
   const ladder = css.slice(0, css.indexOf('@layer sf.components'));
   assert.doesNotMatch(ladder, /var\(--sf-ui-[^)]*text-space-x/u);
   assert.equal([...ladder.matchAll(/--sf-tag--picture-gap-1\\\/2: var\(--sf-a8\);/gu)].length, 4);
+  // Monotone (DEV 2026-11-11): in every context (phone, desktop, compact,
+  // explicit size / normal region) no size has a smaller gap than a smaller
+  // size, and sizes 1 and up are at least 8.
+  const step = (token) => ({a: 0, b: 10, c: 20})[token[0]] + Number(token.slice(1));
+  const blocks = [...ladder.matchAll(/\{([^{}]*--sf-tag--picture-gap-[^{}]*)\}/gu)].map((m) => m[1]);
+  assert.equal(blocks.length, 4);
+  for (const block of blocks) {
+    const gaps = ['1\\/3', '1\\/2', '1', '2', '3'].map((size) => step(block.match(new RegExp(`--sf-tag--picture-gap-${size.replace('/', '\\/')}: var\\(--sf-([abc]\\d)\\);`, 'u'))[1]));
+    for (let i = 1; i < gaps.length; i++) assert.ok(gaps[i] >= gaps[i - 1], `monotone ${gaps}`);
+    assert.ok(gaps.slice(2).every((gap) => gap >= 8), `sizes 1+ at least 8: ${gaps}`);
+  }
+  // Every appearance state rule names outline beside its former name surface.
+  for (const state of [/interactive:is\(\.sf-tag--appearance-outline, \.sf-tag--appearance-surface\):not\(:disabled\):not\(\.disabled\):hover,/u,
+    /interactive:is\(\.sf-tag--appearance-outline, \.sf-tag--appearance-surface\):not\(:disabled\):not\(\.disabled\):hover \{\s*--sf-tag--box-shadow/u,
+    /\.sf-tag:is\(\.sf-tag--appearance-outline, \.sf-tag--appearance-surface\):is\(:disabled, \.disabled\),/u]) assert.match(css, state);
+  assert.doesNotMatch(css, /\.sf-tag--appearance-surface:(?:not|is)\(:disabled/u);
   assert.match(css, /\.sf-tag :is\(\.sf-icon, sf-icon, \.sf-tag-check, \.sf-dot, \.sf-tag-color-icon, \.sf-avatar\) \+ \.sf-tag-container \{\s*--sf-tag-container--padding-inline-start: var\(--sf-tag--picture-gap\);\s*\}/u);
   const contract = JSON.parse(await read('src/core/contracts/public-variables.v1.json'));
   const tag = contract.components.find((c) => c.component === 'tag');
