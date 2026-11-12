@@ -24,3 +24,7 @@ test('the icon is as far from the name as the text of sf-button size 1 from its 
   const buttons = readFileSync(new URL('../src/component/buttons/scss/_css__buttons.scss', import.meta.url), 'utf8');
   assert.match(buttons, /--sf-button-text-container--padding-inline-start: var\(--sf-ui-1--text-space-x\);/u);
 });
+
+test('the name stays beside its icon in a narrow tile', () => {
+  assert.match(rule('.sf-choice .sf-choice-icon + .sf-choice-title-text'), /max-inline-size: calc\(100% - var\(--sf-text-height-1\) - var\(--sf-ui-1--text-space-x\)\);/u);
+});

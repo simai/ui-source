@@ -166,6 +166,14 @@
   overflow-wrap: anywhere;
 }
 
+/* The name stays beside its icon: in a narrow tile with a badge that does not
+   fit, the name took its whole width, did not fit beside the icon and went
+   under it, the icon alone on the first line (C72 probe, a third of a 480
+   field). Held to the room beside the icon, it wraps there instead. */
+.sf-choice .sf-choice-icon + .sf-choice-title-text {
+  max-inline-size: calc(100% - var(--sf-text-height-1) - var(--sf-ui-1--text-space-x));
+}
+
 /* Tile and picture: a badge that does not fit beside the name drops under it
    and is never cut while the card holds it (review D2 of the preloader
    round: «Популярный» was cut in the narrowest three-tile fields). On a line
