@@ -206,15 +206,19 @@ class SfTabs extends TabsElement {
     this.addEventListener('click', this.handleRootClick);
     this.addEventListener('keydown', this.handleRootKeyDown);
     this._settings = { order: [], hidden: [] };
-    // A resize is laid out in the observer's own callback, which runs after
-    // the browser's layout and before it paints: the row is never painted as
-    // it stood before the change. Laid out a frame later, the first frame of
-    // every row showed all its tabs clipped (C54 D3): the Smart base defines
-    // its elements in a frame callback, so the tabs and their buttons are
-    // drawn in one, and a layout asked for from there came a frame later,
-    // after a paint.
+    // A change of the row's box or of a tab's box is laid out in the
+    // observer's own callback, which runs after the browser's layout and
+    // before it paints: the row is never painted as it stood before the
+    // change. Laid out a frame later, the first frame of every row showed all
+    // its tabs clipped (C54 D3): the Smart base defines its elements in a
+    // frame callback, so the tabs and their buttons are drawn in one, and a
+    // layout asked for from there came a frame later, after a paint. The
+    // trigger's own resize -- «Ещё (n)» drawing its new count, which the
+    // layout already took into account (D2) -- is laid out a frame later as
+    // before: laid out in the callback too, every pass of a large page ran
+    // before its first paint (470 rows at 390: painted after 24 s, not 11 s).
     this._resizeObserver = typeof ResizeObserver === 'function'
-      ? new ResizeObserver((entries) => { if (!this.onlyOwnSizes(entries)) this.layoutOverflowNow(); })
+      ? new ResizeObserver((entries) => this.onResize(entries))
       : null;
     this.addEventListener('sf-after-render', (event) => {
       // Built-in Smart buttons can finish rendering after their owning Tabs.
@@ -327,6 +331,22 @@ class SfTabs extends TabsElement {
     this._expectedTabSizes = expected;
   }
 
+  // The trigger's own resize (its new count, «Ещё (7)») is laid out a frame
+  // later, unless the row now stands past its room: then a tab would be
+  // painted clipped for that frame (2 rows of 470 at 390), and it is laid out
+  // now. The row was just laid out, so reading its widths costs nothing.
+  onResize(entries) {
+    if (this.onlyOwnSizes(entries)) return;
+    const later = entries.every((entry) => entry.target === this._observedTrigger || this.ownSize(entry));
+    if (later && !this.rowOverflows()) this.scheduleOverflow();
+    else this.layoutOverflowNow();
+  }
+
+  rowOverflows() {
+    const list = this.tabList;
+    return Boolean(list) && list.scrollWidth > list.clientWidth;
+  }
+
   // The observer's report of the layout's own work -- tabs it hid or showed
   // again, at the widths it left them -- is not a change to lay out again:
   // laid out for it, every row was laid out twice for each resize and the
@@ -335,11 +355,14 @@ class SfTabs extends TabsElement {
   onlyOwnSizes(entries) {
     const expected = this._expectedTabSizes;
     if (!expected) return false;
-    return entries.every((entry) => {
-      if (!expected.has(entry.target)) return false;
-      const size = entry.borderBoxSize?.[0]?.inlineSize ?? entry.contentRect.width;
-      return Math.abs(size - expected.get(entry.target)) <= 0.5;
-    });
+    return entries.every((entry) => this.ownSize(entry));
+  }
+
+  ownSize(entry) {
+    const expected = this._expectedTabSizes;
+    if (!expected?.has(entry.target)) return false;
+    const size = entry.borderBoxSize?.[0]?.inlineSize ?? entry.contentRect.width;
+    return Math.abs(size - expected.get(entry.target)) <= 0.5;
   }
 
   disconnectedCallback() {

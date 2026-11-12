@@ -465,6 +465,15 @@
     overflow-x: clip;
   }
 
+  // The row is laid out once the element's sheets are in (the base's style
+  // gate, data-sf-style-pending on the host). Until then its tabs keep their
+  // room and are not shown: with the sheets held back, the frames between this
+  // sheet and the last of the others painted every tab of the row clipped,
+  // 2029 tabs on 376 rows (C54 D3, 470 rows at 1440).
+  [data-sf-style-pending] > .sf-tabs--overflow-more:not(.sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top > * {
+    visibility: hidden;
+  }
+
   .sf-tabs-top > .sf-tabs-overflowed,
   .sf-tabs-top > .sf-tabs-overflowed > * {
     display: none !important;

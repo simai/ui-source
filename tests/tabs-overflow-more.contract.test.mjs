@@ -56,7 +56,17 @@ test('the row is laid out again when the trigger, a late tab or the text face ch
 // laid out in the observer's callback, before the paint, and each tab's box is
 // watched, so a late sheet or text face is laid out before its frame is painted.
 test('the row is laid out before the paint: in the resize observer, with every tab box watched', () => {
-  assert.match(source, /new ResizeObserver\(\(entries\) => \{ if \(!this\.onlyOwnSizes\(entries\)\) this\.layoutOverflowNow\(\); \}\)/u);
+  assert.match(source, /new ResizeObserver\(\(entries\) => this\.onResize\(entries\)\)/u);
+  // The trigger's own resize (its new count, already taken into account) is
+  // laid out a frame later: in the callback, every pass of a large page ran
+  // before its first paint. Unless the row now stands past its room: then it
+  // is laid out at once (2 rows of 470 painted a tab clipped at 390).
+  assert.match(source, /onResize\(entries\) \{\s*if \(this\.onlyOwnSizes\(entries\)\) return;\s*const later = entries\.every\(\(entry\) => entry\.target === this\._observedTrigger \|\| this\.ownSize\(entry\)\);\s*if \(later && !this\.rowOverflows\(\)\) this\.scheduleOverflow\(\);\s*else this\.layoutOverflowNow\(\);/u);
+  assert.match(source, /rowOverflows\(\) \{\s*const list = this\.tabList;\s*return Boolean\(list\) && list\.scrollWidth > list\.clientWidth;/u);
+  // While the host waits for its sheets the row is not laid out yet: its tabs
+  // keep their room and are not shown (2029 tabs painted clipped, sheets late).
+  const sheet = read('src/component/tabs/scss/_css__tabs.scss');
+  assert.match(sheet, /\[data-sf-style-pending\] > \.sf-tabs--overflow-more:not\(\.sf-tabs--vertical\) > \.sf-tabs-top-container > \.sf-tabs-top > \* \{\s*visibility: hidden;\s*\}/u);
   // Its own echo -- the tabs it hid or showed, at the widths it left them --
   // is not laid out again (each row was laid out twice per resize).
   assert.match(source, /this\._resizeObserver\.observe\(box, \{box: 'border-box'\}\)/u);
