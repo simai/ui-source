@@ -55,7 +55,7 @@
   }
 
   .sf-color-field:has(.sf-color-input:disabled) .sf-color-label {
-    color: var(--sf-on-disable);
+    color: var(--sf-on-surface-disabled);
   }
 
   .sf-color-swatch {

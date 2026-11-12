@@ -118,7 +118,7 @@
   background-color: var(--sf-image-field-thumbnail-background-color, var(--sf-surface-container));
   /* The glyph stands on the container fill, so the dimmed role is the
      container's own: on-surface-variant alone falls under 4.5:1 there. */
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   --sf-icon--color: var(--sf-on-surface-variant);
 }
 
@@ -177,8 +177,8 @@
 /* A file held over the field: the fill and edge of a selection, and the name
    line says to let go. */
 .sf-image-field.dragover {
-  --sf-image-field--background-color: var(--sf-primary-transparent-select);
-  --sf-image-field--border-color: var(--sf-outline-primary);
+  --sf-image-field--background-color: var(--sf-primary-state-select);
+  --sf-image-field--border-color: var(--sf-primary-outline);
   /* A drop target keeps its dashed edge in the primary outline (C16, surfaces
      research 5.2), as sf-file-upload's does. */
   --sf-image-field--border-style: dashed;
@@ -189,18 +189,18 @@
 }
 
 .sf-image-field.disabled {
-  --sf-image-field--background-color: var(--sf-disable);
-  --sf-image-field--border-color: var(--sf-outline-disable);
+  --sf-image-field--background-color: var(--sf-surface-disabled);
+  --sf-image-field--border-color: var(--sf-outline-disabled);
 }
 
 .sf-image-field.disabled .sf-image-field-name,
 .sf-image-field.disabled .sf-image-field-meta,
 .sf-image-field.disabled .sf-image-field-label {
-  color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
 }
 
 .sf-image-field.disabled .sf-image-field-thumb {
-  --sf-icon--color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 .sf-image-field-message {

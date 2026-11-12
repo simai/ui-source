@@ -57,7 +57,7 @@ sf-profile-picker {
 }
 
 .sf-profile-picker-trigger:disabled {
-  color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
   cursor: default;
 }
 
@@ -312,7 +312,7 @@ sf-profile-picker {
 }
 
 .sf-profile-picker-segmented > button:disabled {
-  color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
   cursor: default;
 }
 

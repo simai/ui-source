@@ -2,7 +2,7 @@
   "$comment": "The source of sf-contents's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.11 and vocabulary 1.1.5; the design target is tab 1 of ui-control prototypes/docara-four.html (owner-approved 2026-10-30).",
   "id": "smart.contents",
   "tag": "sf-contents",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "kind": "leaf",
   "family": "navigation",
   "settings": {
@@ -248,7 +248,8 @@
     "version 1.3.0 (2026-11-09): the bar and the compact view's open list stand over the page: the overlay place (C20, the shadow system, owner 2026-11-08) -- --sf-shadow-overlay on the popup surface (--sf-surface-popup, a step lighter in the dark theme than the level-2 surface it had). No setting, value or event changes.",
     "version 1.4.0 (2026-11-09): the panel declares a popup place (C16, the background system, owner 2026-11-08) (--sf-surface-place and the theme's roles back); the current entry is primary-container with its ink.",
     "version 1.4.1 (2026-11-10): a patch; nothing in the component changed. Its built sheet is a place (sf-place) and, with C43 (component.badges 1.5.0, tokens.colour 1.8.0), takes back the core role --sf-surface-underlay with one line, --sf-surface-underlay: initial, so a tonal badge inside it lays its tone over its own surface and not over a row further out. Nothing is drawn differently outside a selected row. Settings, values, events and keys unchanged.",
-    "version 1.4.2 (2026-11-10): a patch, nothing drawn differently. The panel's last fallback background reads --sf-surface-page, the current name of the page surface (C16), where it read the former --sf-surface-0, which is var() of it everywhere; --sf-contents-background-color and --sf-contents-background still win."
+    "version 1.4.2 (2026-11-10): a patch, nothing drawn differently. The panel's last fallback background reads --sf-surface-page, the current name of the page surface (C16), where it read the former --sf-surface-0, which is var() of it everywhere; --sf-contents-background-color and --sf-contents-background still win.",
+    "version 1.4.3 (2026-11-11): a patch, nothing drawn differently. docs.md names the fallbacks of --sf-contents-background-color by their current names, --sf-surface-page and --sf-surface-popup (C16, C20), where it named the former --sf-surface-0 and --sf-elevation-2--surface; the sheet already reads them (1.4.2, 1.3.0)."
   ],
   "x-registry": {
     "capabilities": [

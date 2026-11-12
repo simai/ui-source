@@ -9,7 +9,7 @@
 .sample-cards-card {
   padding: var(--sf-space-4);
   border-radius: var(--sf-radius-2);
-  background: var(--sf-surface-1, transparent);
+  background: var(--sf-surface-area, transparent);
   color: var(--sf-on-surface, inherit);
 }
 

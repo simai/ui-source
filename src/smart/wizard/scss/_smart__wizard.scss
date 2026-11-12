@@ -194,19 +194,19 @@
 }
 
 .sf-wizard-list-step:not(:disabled):hover {
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   background-color: var(--sf-surface-container);
 }
 
 .sf-wizard-list-step[aria-current="step"] {
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   background-color: var(--sf-surface-container);
   color: var(--sf-on-surface);
   font-weight: 600;
 }
 
 .sf-wizard-list-step:disabled {
-  color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
   cursor: default;
 }
 
@@ -238,7 +238,7 @@
 }
 
 .sf-wizard-list-step:disabled .sf-icon {
-  --sf-icon--color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 .sf-wizard-list-number {
