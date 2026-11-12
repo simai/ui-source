@@ -252,4 +252,87 @@
 .sf-range-slider-scale-mark--end {
   justify-content: flex-end;
 }
+
+// The from/to field (owner decision C80, #r2-fields): a bordered field of the
+// step at the end of the track line -- sf-input's edge, radius, inline space
+// and text of the step -- holding one number or «5 000 – 20 000» and the unit
+// once. Hover and focus as a field; read-only and disabled as a field.
+.sf-range-slider-field {
+  align-items: center;
+  background-color: var(--sf-transparent);
+  block-size: var(--sf-range-slider--row, var(--sf-ui-1--control-height));
+  border: var(--sf-px) solid var(--sf-outline);
+  border-radius: var(--sf-radius--ui);
+  box-sizing: border-box;
+  color: var(--sf-on-surface);
+  display: inline-flex;
+  flex: none;
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-range-slider--text-size, var(--sf-text-size-1));
+  font-variant-numeric: tabular-nums;
+  gap: var(--sf-space-1\/4);
+  line-height: var(--sf-range-slider--text-height, var(--sf-text-height-1));
+  max-inline-size: 50%;
+  min-inline-size: 0;
+  padding-inline: calc(var(--sf-range-slider--space-x, var(--sf-ui-1--space-x)) - var(--sf-px));
+  transition: border-color var(--sf-duration-fast) var(--sf-animation);
+}
+
+.sf-range-slider-field-input {
+  background: var(--sf-transparent);
+  border: 0;
+  color: inherit;
+  font: inherit;
+  margin: 0;
+  min-inline-size: 0;
+  padding: 0;
+}
+
+.sf-range-slider-field-input:first-of-type:not(:last-of-type) {
+  text-align: end;
+}
+
+// The ring belongs to the field, not to the bare box inside it (as sf-input).
+.sf-range-slider-field-input:focus-visible {
+  outline: none !important;
+}
+
+.sf-range-slider-field-unit,
+.sf-range-slider-field-dash {
+  color: var(--sf-on-surface-variant);
+  flex: none;
+}
+
+.sf-range-slider-group:not(.disabled):not(.readonly) .sf-range-slider-field:hover {
+  border-color: var(--sf-primary-hover);
+}
+
+.sf-range-slider-group:not(.disabled):not(.readonly) .sf-range-slider-field:focus-within {
+  border-color: var(--sf-primary);
+}
+
+.sf-range-slider-field:has(.sf-range-slider-field-input:focus-visible) {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+}
+
+.sf-range-slider-group.readonly .sf-range-slider-field {
+  border-color: var(--sf-outline-variant);
+}
+
+.sf-range-slider-group.disabled .sf-range-slider-field {
+  border-color: var(--sf-outline-disabled);
+  color: var(--sf-on-surface-disabled);
+}
+
+.sf-range-slider-group.disabled .sf-range-slider-field-unit,
+.sf-range-slider-group.disabled .sf-range-slider-field-dash {
+  color: var(--sf-on-surface-disabled);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-range-slider-field {
+    transition: none;
+  }
+}
 }

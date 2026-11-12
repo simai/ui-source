@@ -57,3 +57,11 @@ test('C80 T1: ticks are cut out in the colour of the place; the scale is logical
   assert.match(rule('.sf-range-slider .sf-range-slider-tick'), /background-color: var\(--sf-range-slider-tick--background-color, var\(--sf-surface-place\)\);[\s\S]*margin-inline-start:/u);
   assert.match(rule('.sf-range-slider-scale-mark--end'), /justify-content: flex-end;/u);
 });
+
+test('C80: the from/to field is a field of the step at the end of the track line', () => {
+  const field = rule('.sf-range-slider-field');
+  assert.match(field, /block-size: var\(--sf-range-slider--row, var\(--sf-ui-1--control-height\)\);/u);
+  assert.match(field, /border: var\(--sf-px\) solid var\(--sf-outline\);/u);
+  assert.match(field, /padding-inline: calc\(var\(--sf-range-slider--space-x, var\(--sf-ui-1--space-x\)\) - var\(--sf-px\)\);/u);
+  assert.match(rule('.sf-range-slider-group.readonly .sf-range-slider-field'), /--sf-outline-variant/u);
+});

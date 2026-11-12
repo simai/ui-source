@@ -86,6 +86,27 @@ function scaleMarks(element) {
   }));
 }
 
+// A number typed in the from/to field, read the way the slider writes it:
+// the locale's group marks and spaces go, its decimal mark (and the other of
+// «.» and «,» where the locale does not group with it) is a point. NaN for
+// text that is not a number.
+function parseTyped(text, locale) {
+  let group = ',';
+  let decimal = '.';
+  try {
+    const parts = new Intl.NumberFormat(locale || undefined).formatToParts(12345.6);
+    group = parts.find((part) => part.type === 'group')?.value ?? group;
+    decimal = parts.find((part) => part.type === 'decimal')?.value ?? decimal;
+  } catch { /* the platform's default marks */ }
+  let value = String(text ?? '').replace(/[\s\u00a0\u202f]/gu, '').replace(/[\u2212\u2013]/gu, '-');
+  const groupMark = group.replace(/[\s\u00a0\u202f]/gu, '');
+  if (groupMark && groupMark !== decimal) value = value.split(groupMark).join('');
+  value = value.split(decimal).join('.');
+  if (decimal !== ',' && groupMark !== ',') value = value.split(',').join('.');
+  if (!/^-?\d*(?:\.\d*)?$/u.test(value) || !/\d/u.test(value)) return Number.NaN;
+  return Number(value);
+}
+
 function getSliderHandleCount(root) {
   if (!(root instanceof HTMLElement)) {
     return 0;
@@ -317,8 +338,61 @@ class SfRangeSlider extends RangeSliderElement {
       handleLabel: valueDisplay === 'tooltip' ? 'tooltip' : 'none',
       outputText: this.outputText(),
       scaleMarks: scaleMarks(this),
+      field: this.hasAttribute('field') && this.getAttribute('field') !== 'false',
+      fieldLabels: this.fieldLabels(),
+      fieldDecimal: String(this.step ?? '').includes('.') || Number(this.getAttribute('precision')) > 0,
       ticks: this.hasAttribute('ticks') && this.getAttribute('ticks') !== 'false',
     });
+  }
+
+  // Each number of the from/to field is named as its handle is: lower-label and
+  // upper-label, else the field's name or the host's aria-label with «от»/«до».
+  fieldLabels() {
+    const name = this.label || this.getAttribute('aria-label') || '';
+    if (!this.multiple) return [name];
+    const words = [this.sfWord?.('from') || 'от', this.sfWord?.('to') || 'до'];
+    return [this.lowerLabel, this.upperLabel].map((own, index) => own || [words[index], name].filter(Boolean).join(' '));
+  }
+
+  // The numbers of the from/to field follow the handles; the box being typed in
+  // is left alone. Each box is as wide as the longest number it can hold.
+  syncField(values) {
+    const root = this.getSliderRoot();
+    const inputs = this.querySelectorAll('.sf-range-slider-field-input');
+    if (!root || !inputs.length) return;
+    const list = values ?? String(this.value || '').split(',').map(Number).filter(Number.isFinite);
+    const width = Math.max(...[this.min, this.max].map((bound) => formatRangeSliderNumber(root, bound).length)) + 1;
+    inputs.forEach((input, index) => {
+      input.style.inlineSize = `${width}ch`;
+      if (document.activeElement !== input && list[index] !== undefined) input.value = formatRangeSliderNumber(root, list[index]);
+    });
+  }
+
+  onFieldKeyDown(event, index) {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    this.commitField(index);
+  }
+
+  // Enter or leaving the box puts the typed number on the handle (C80): the
+  // slider admits it within range, step and the other handle, the box then shows
+  // what was admitted, and a person's change is a change.
+  commitField(index) {
+    const root = this.getSliderRoot();
+    const input = this.querySelectorAll('.sf-range-slider-field-input')[index];
+    if (!root || !input || this.disabled || this.readonly) return;
+    const typed = parseTyped(input.value, root.getAttribute('data-locale') || root.closest('[lang]')?.getAttribute('lang'));
+    const before = getRangeSliderValue(root);
+    const current = Array.isArray(before) ? [...before] : [before];
+    if (Number.isFinite(typed)) current[index] = typed;
+    this.setValue(this.multiple ? current : current[0]);
+    const after = getRangeSliderValue(root);
+    const values = Array.isArray(after) ? after : [after];
+    input.value = formatRangeSliderNumber(root, values[index]);
+    if (String(after) !== String(before)) {
+      this.syncOutput(values);
+      this.emitChange({values, value: this.multiple ? values : values[0], handleCount: values.length, handle: index});
+    }
   }
 
   // A mark without text of its own writes its number the slider's way.
@@ -394,6 +468,7 @@ class SfRangeSlider extends RangeSliderElement {
         'ticks',
         'scale',
         'marks',
+        'field',
       ].includes(name),
     );
 
@@ -444,6 +519,7 @@ class SfRangeSlider extends RangeSliderElement {
       // The first render had no slider to format with.
       this.syncOutput();
       this.syncScale();
+      this.syncField();
     }
     this.sfSyncForm();
   }
@@ -551,6 +627,7 @@ class SfRangeSlider extends RangeSliderElement {
     }
 
     this.syncOutput(this.multiple ? values : values.slice(0, 1));
+    this.syncField(this.multiple ? values : values.slice(0, 1));
     const serialized = serializeValue(this.multiple ? values : values[0]);
 
     if ((this.getAttribute('value') || '') === serialized) {
@@ -571,9 +648,14 @@ class SfRangeSlider extends RangeSliderElement {
     event.stopPropagation();
     if (event.type !== 'change' || event.target !== this.getSliderRoot()) return;
     const {values, value, handleCount, handle} = event.detail || {};
-    // change keeps its native name (§8, §17.3).
-    this.sfEmit('change', { values, value, handleCount, handle });
+    this.emitChange({ values, value, handleCount, handle });
   };
+
+  // change keeps its native name (§8, §17.3); a drag, a key or the from/to
+  // field all send it from here, once per person's change.
+  emitChange(detail) {
+    this.sfEmit('change', detail);
+  }
 
   _handleSliderAlias = (event) => {
     const alias = sliderEventAliases[event.type];

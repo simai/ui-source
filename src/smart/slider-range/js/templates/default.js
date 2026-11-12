@@ -14,7 +14,8 @@ function valueOrNothing(value) {
 // (component/range-slider); the name line belongs to the host.
 function renderHead(context) {
     const showName = Boolean(context.name);
-    const showOutput = context.valueDisplay === 'text';
+    // With the from/to field the numbers are in the field; the line keeps the name.
+    const showOutput = context.valueDisplay === 'text' && !context.field;
     if (!showName && !showOutput) return nothing;
     return html`
         <div class="sf-range-slider-head">
@@ -44,6 +45,41 @@ function renderScale(context) {
                     data-value=${String(mark.value)}
             >${mark.text ?? ''}</span>`)}
         </div>
+    `;
+}
+
+// The from/to field (owner decision C80, #r2-fields): one field
+// «5 000 – 20 000 ₽» at the end of the track line, the field height of the
+// step, as a period is one field (C62). Typing a number and Enter (or leaving
+// the box) moves the handle; dragging rewrites the number. The numbers are
+// written by the host after the slider is bound.
+function renderField(context) {
+    if (!context.field) return nothing;
+    const {component} = context;
+    const input = (index) => html`<input
+            type="text"
+            class="sf-range-slider-field-input"
+            data-handle=${String(index)}
+            inputmode=${context.fieldDecimal ? 'decimal' : 'numeric'}
+            autocomplete="off"
+            spellcheck="false"
+            aria-label=${context.fieldLabels[index] || nothing}
+            ?disabled=${context.disabled}
+            ?readonly=${context.readonly}
+            @focus=${(event) => event.target.select?.()}
+            @keydown=${(event) => component.onFieldKeyDown(event, index)}
+            @input=${(event) => event.stopPropagation()}
+            @change=${(event) => { event.stopPropagation(); component.commitField(index); }}
+    >`;
+    return html`
+        <span class="sf-range-slider-field">
+            ${context.prefixText ? html`<span class="sf-range-slider-field-unit" aria-hidden="true">${context.prefixText.trim()}</span>` : nothing}
+            ${input(0)}
+            ${context.multiple
+                ? html`<span class="sf-range-slider-field-dash" aria-hidden="true">–</span>${input(1)}`
+                : nothing}
+            ${context.suffix ? html`<span class="sf-range-slider-field-unit" aria-hidden="true">${context.suffix.trim()}</span>` : nothing}
+        </span>
     `;
 }
 
@@ -96,6 +132,7 @@ export function renderRangeSliderTemplate(context) {
                 ></div>
                 ${renderScale(context)}
               </div>
+              ${renderField(context)}
             </div>
         </div>
     `;

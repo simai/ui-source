@@ -30,3 +30,14 @@ test('a range submits both numbers under one name; one handle submits its number
   assert.equal(element({name: 'volume', value: '30'}, 30).sfFormValue(), '30');
   assert.equal(element({name: 'price', disabled: ''}, [1, 2]).sfFormValue(), null);
 });
+
+test('the from/to field reads numbers typed the page\'s way (C80)', () => {
+  const context = vm.createContext({Intl});
+  vm.runInContext(source.slice(source.indexOf('function parseTyped'), source.indexOf('function getSliderHandleCount')) + '\nglobalThis.parseTyped=parseTyped;', context);
+  assert.equal(context.parseTyped('12 500', 'ru'), 12500);
+  assert.equal(context.parseTyped('12 500', 'ru'), 12500);
+  assert.equal(context.parseTyped('2,5', 'ru'), 2.5);
+  assert.equal(context.parseTyped('2.5', 'ru'), 2.5);
+  assert.equal(context.parseTyped('12,500', 'en'), 12500);
+  assert.ok(Number.isNaN(context.parseTyped('abc', 'ru')));
+});

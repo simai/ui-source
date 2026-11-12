@@ -47,6 +47,11 @@
       "default": "",
       "summary": "Labels under the track at chosen values, \"value:text\" joined by commas (\"1:плохо,3:нормально,5:отлично\"); a value without text writes its number. Replaces the two ends of scale."
     },
+    "field": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The from/to field at the end of the track line (owner decision C80): one field «5 000 – 20 000 ₽» (or one number), the field height of the step; typing a number and Enter or leaving the box moves the handle, dragging rewrites the number. Hides the value at the end of the name line."
+    },
     "margin": {
       "type": "string",
       "default": ""

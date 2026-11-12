@@ -187,6 +187,46 @@
       }
     },
     {
+      "id": "field-enter-moves-the-handle",
+      "covers": "settings.field (C80): typing a number in the from/to field and Enter moves its handle; one change",
+      "field": "<sf-slider-range label=\"Цена\" name=\"price\" min=\"0\" max=\"50000\" step=\"500\" value=\"5000,20000\" suffix=\" ₽\" field></sf-slider-range>",
+      "given": [
+        {
+          "user": "focus:.sf-range-slider-field-input[data-handle='1']"
+        }
+      ],
+      "user": [
+        "type:12500",
+        "keyboard:Enter"
+      ],
+      "expect": {
+        "value": "5000,12500",
+        "events": [
+          {
+            "type": "change",
+            "value": [
+              5000,
+              12500
+            ],
+            "handle": 1
+          }
+        ],
+        "evaluate": {
+          "el.querySelectorAll('[role=slider]')[1].getAttribute('aria-valuenow')": "12500"
+        }
+      }
+    },
+    {
+      "id": "range-submits-two-entries",
+      "covers": "form (S3): a range with a name submits two entries under it",
+      "field": "<sf-slider-range label=\"Цена\" name=\"price\" min=\"0\" max=\"50000\" step=\"500\" value=\"5000,20000\"></sf-slider-range>",
+      "expect": {
+        "evaluate": {
+          "JSON.stringify([...new FormData(document.getElementById('f'))])": "[[\"price\",\"5000\"],[\"price\",\"20000\"]]"
+        }
+      }
+    },
+    {
       "id": "value-from-code-is-silent",
       "covers": "§8: a value set from outside is not reported back, under no name",
       "field": "<sf-slider-range aria-label=\"Громкость\" value=\"50\"></sf-slider-range>",
