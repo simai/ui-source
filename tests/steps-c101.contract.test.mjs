@@ -133,7 +133,7 @@ test('C101 (6) states: by shape and the progress colour; running is the spinner;
   assert.match(rule(stepCss, '.sf-steps--marker-number .sf-step--state-skipped .sf-step-marker'), /border-style: dashed;/);
   assert.match(rule(stepCss, '.sf-steps--marker-dot .sf-step--state-skipped .sf-step-marker::before'), /border-style: dashed;/);
   // Running: the Framework spinner at the rung's size, no ring of its own.
-  assert.match(template, /<sf-spinner size=\$\{context\.size\} infinite label=""><\/sf-spinner>/);
+  assert.match(template, /<sf-spinner size=\$\{context\.size\} \?infinite=\$\{true\} label=""><\/sf-spinner>/);
   const running = rule(stepCss, '.sf-steps .sf-step--state-running .sf-step-marker');
   assert.match(running, /border: 0;\n  background: none;\n  outline: 0;/);
   assert.ok(component.relations.some(({name}) => name === 'cl-spinner'));

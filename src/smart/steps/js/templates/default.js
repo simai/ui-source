@@ -30,7 +30,7 @@ function renderMarker(item, context) {
   if (item.state === 'running') {
     // The Framework spinner at the marker's own size (the spinner's ladder is
     // the text line of each rung), centred, with no ring of its own.
-    return html`<span class="sf-step-marker" aria-hidden="true"><sf-spinner size=${context.size} infinite label=""></sf-spinner></span>`;
+    return html`<span class="sf-step-marker" aria-hidden="true"><sf-spinner size=${context.size} ?infinite=${true} label=""></sf-spinner></span>`;
   }
   if (context.marker === 'dot') {
     return html`<span class="sf-step-marker" aria-hidden="true"></span>`;
