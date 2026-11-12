@@ -770,7 +770,7 @@
       },
       {
         "path": "src/smart/input-image/scss/_smart__image_field.scss",
-        "sha256": "7e35af361fd2325644e0252c2fa9abe0687dd81d340f4cf9f3f024e8756da61c"
+        "sha256": "5e84487af93e05ec014aab2cb8892f9f953f73cefa402302385f560ab0148b3a"
       },
       {
         "path": "src/smart/input-image/rule.js",
