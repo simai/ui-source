@@ -195,6 +195,17 @@ test('a tonal badge on a translucent fill lays its tone over the solid place (C4
     assert.match(body, /--sf-surface-underlay: initial;/u, name);
   }
   assert.match(popover, /--sf-surface-underlay: initial;/u);
+  // Every place takes the row's fill back too (C43 later, 2026-11-12): the
+  // theme map an opaque place re-declares, the soft and strong places, glass
+  // and the popover, so the ring reads it on its own.
+  assert.match(theme, /\s--sf-surface-place-fill: initial;/u);
+  assert.match(mix, /'surface-place-fill': 'initial'/u);
+  for (const name of ['sf-place-soft', 'sf-place-strong']) {
+    const body = mix.slice(mix.indexOf(`@mixin ${name}`), mix.indexOf('\n}\n', mix.indexOf(`@mixin ${name}`)));
+    assert.match(body, /--sf-surface-place-fill: initial;/u, name);
+  }
+  assert.match(popover, /--sf-surface-place-fill: initial;/u);
+  assert.match(await read('src/core/scss/_sf_css__surface_places.scss'), /\.sf-surface-media \{[^}]*--sf-surface-place-fill: initial;/u);
   // A translucent fill declares the place it stands on.
   assert.match(mix, /@mixin sf-place-fill\(\$fill\) \{\s*--sf-surface-underlay: var\(--sf-surface-place-solid\);[^}]*--sf-surface-place-fill: #\{\$fill\};\s*\}/u);
   // The solid colour: the page's, an opaque or strong place's; initial on a
@@ -230,9 +241,11 @@ test('an anchored badge rings with the row it stands on, and hover rows keep a t
     read('src/smart/input-choice/scss/_smart__choice.scss'),
     read('src/smart/list/js/templates/default.css'),
   ]);
-  // The fill is read only where the underlay is set, then laid over the ring.
-  assert.match(geometry, /--sf-badge--ring-fill: color-mix\(in srgb, var\(--sf-surface-place-fill\) 100%, var\(--sf-surface-underlay\) 0%\);/u);
-  assert.match(geometry, /box-shadow: 0 0 0 var\(--sf-badge--ring-width\) var\(--sf-badge--ring-fill, transparent\), 0 0 0 var\(--sf-badge--ring-width\) var\(--sf-badge--ring\);/u);
+  // The fill is read on its own (every place takes it back, C43 later), laid
+  // over the ring, and both over the nearest opaque place.
+  assert.match(geometry, /--sf-badge--ring-fill: var\(--sf-surface-place-fill, transparent\);/u);
+  assert.match(geometry, /box-shadow: 0 0 0 var\(--sf-badge--ring-width\) var\(--sf-badge--ring-fill\), 0 0 0 var\(--sf-badge--ring-width\) var\(--sf-badge--ring\), 0 0 0 var\(--sf-badge--ring-width\) var\(--sf-surface-place-ground, transparent\);/u);
+  assert.doesNotMatch(geometry, /--sf-badge--ring-fill: [^;]*underlay/u);
   // Every include names its fill.
   for (const [name, css] of Object.entries({cm, tree, list, item, menu, choice})) {
     assert.doesNotMatch(css, /sf-place-fill;/u, name);

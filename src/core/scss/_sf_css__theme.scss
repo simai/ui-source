@@ -171,8 +171,9 @@
     --sf-surface-underlay: initial;
     /* The row's own translucent fill (C43 D3, D4): declared with the underlay
        by mix sf-place-fill on a selected, open, current or hovered row, and
-       read only with it (the anchored badge's ring). Everywhere else it is
-       initial, as the underlay is, so the page declares the role a component
+       read on its own by the anchored badge's ring: every place takes it
+       back (initial), the soft and glass ones too (C43 later, 2026-11-12).
+       Everywhere else it is initial, so the page declares the role a component
        sheet reads (pair next 2 integration: it was declared in component
        sheets only, which the declared-tokens contract reads as undeclared). */
     --sf-surface-place-fill: initial;

@@ -40,8 +40,10 @@
 //
 // --sf-surface-place-fill is the translucent fill itself (C43 D3, D4,
 // 2026-11-11): sf-place-fill($fill) declares it with the underlay on a
-// selected, open, current or hovered row. It is read only together with the
-// underlay, so where the underlay is initial it does nothing.
+// selected, open, current or hovered row. Every place takes it back
+// (initial), the soft and glass ones too (C43 later, 2026-11-12), so it is
+// read on its own: on a row of any place it is that row's fill, and a popup
+// or a place opened from the row does not inherit it.
 //
 // The theme's values live in _sf_css__theme.scss, one light-dark() each;
 // $sf-place-theme-roles repeats the ones a place re-declares, so an opaque
@@ -70,6 +72,7 @@ $sf-place-theme-roles: (
   'on-surface-disabled': 'light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48))',
   'on-surface-muted': 'var(--sf-on-surface-disabled)',
   'surface-underlay': 'initial',
+  'surface-place-fill': 'initial',
 );
 
 // Roles an opaque place takes back only where it stands on a coloured place
@@ -228,9 +231,9 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   // The fill itself, the colour the row lays over its place (C43 D3, D4,
   // 2026-11-11). An anchored badge's ring lays it over the place colour, so
   // on the row the ring is the row's own colour, not a halo of the place
-  // around the badge. $fill is the row's background in that rule; where the
-  // underlay is initial (a soft place, glass, a place nested in the row) the
-  // badge does not read it, so it needs no taking back.
+  // around the badge. $fill is the row's background in that rule. Every
+  // place takes it back (C43 later, 2026-11-12), so it holds on a row of a
+  // soft place too, where the underlay is initial.
   --sf-surface-place-fill: #{$fill};
 }
 
@@ -245,6 +248,7 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   --sf-surface-place-solid: initial;
   // --sf-surface-place-ground is not declared: it is the opaque place below.
   --sf-surface-underlay: initial;
+  --sf-surface-place-fill: initial;
   --sf-surface-container: var(--sf-#{$c}-container);
   --sf-surface-container-hover: var(--sf-#{$c}-container-hover);
   --sf-surface-container-active: var(--sf-#{$c}-container-active);
@@ -273,6 +277,7 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   --sf-surface-place-solid: var(--sf-#{$c});
   --sf-surface-place-ground: var(--sf-#{$c});
   --sf-surface-underlay: initial;
+  --sf-surface-place-fill: initial;
   --sf-on-surface: var(--sf-on-#{$c});
   --sf-on-surface-variant: #{sf-ink($c, 80)};
   --sf-on-surface-container-variant: #{sf-ink($c, 80)};

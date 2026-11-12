@@ -129,13 +129,18 @@ base of its tone: the dot there is solid dark glass, not the photo.
 `--sf-surface-place-fill` is the translucent fill a row lays over its place.
 The core mix `sf-place-fill($fill)` declares it with `--sf-surface-underlay`
 on a selected, open, current or hovered row, `$fill` being the row's
-background in that rule. It is read only together with the underlay, so where
-the underlay is initial (a soft coloured place, glass, a place nested in the
-row) it does nothing and needs no taking back.
+background in that rule. Every place takes it back (initial): the page, every
+opaque place through the theme roles it re-declares, the soft and strong
+coloured places, glass and the popover (C43 later, 2026-11-12). So it is read
+on its own: on a row of any place, a soft one too, it is that row's fill, and a
+popup or a place opened from the row does not inherit it.
 
-- **The anchored badge's ring** lays the fill over the place colour, so on a
-  row the ring is the row's own colour, not a halo of the place around the
-  badge (C43 D3). Off a row it is the place colour, as before.
+- **The anchored badge's ring** lays the fill over the place colour, and both
+  over the nearest opaque place (`--sf-surface-place-ground`), so on a row the
+  ring is the row's own colour, not a halo of the place around the badge
+  (C43 D3). Off a row it is the place colour; on a soft place that is the soft
+  tone over its ground, the place's own look, and on glass the glass tone over
+  black, as under the avatar's status dot.
 - **Hovered and open rows** of the list, the dropdown, the context menu, the
   tree, the menu, the admin menu, sf-list and the choice card include the mix
   as their selected rows do (C43 D4): a tonal badge on them keeps its tone,
