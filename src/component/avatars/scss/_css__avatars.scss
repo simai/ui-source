@@ -171,17 +171,25 @@ $sf-avatar-hue-classes: ();
     --sf-avatar--width: var(--sf-icon-size-2);
   }
 
-  /* Compact does not shrink avatars below 1/3 (dispatcher call 2026-11-11,
-     review D1). Density moves each step to the one below, and 1/4 read
-     --sf-icon-size-2, so compact drew 1/4 at 16 while 1/3 stayed 24: the
-     ladder skipped 20 and its bottom went below the control ladder's. Both
-     bottom steps keep their normal value in a compact region, 1/4 = 20 and
-     1/3 = 24, as the control ladder keeps its bottom step. 20 is the normal
-     --sf-icon-size-2 (--sf-c0); the phone ladder is not compacted. */
+  /* Compact moves every avatar one step down its own ladder (dispatcher call
+     2026-11-12; density, C22): 20 / 24 / 32 / 40 / 48 / 56 become 16 / 20 /
+     24 / 32 / 40 / 48, no step skipped. 1/4 already did it through
+     --sf-icon-size-2; on a desktop 1/3 reads --sf-icon-size-3 (24, compact
+     20) and 1/2 the text line of 1/2 and --sf-space-1/2 (20 + 12, compact
+     16 + 8). Before, compact kept 1/4 at 20 and 1/3 at 24, and 1/2 read
+     its control height (28): the compact ladder stood 20 / 24 / 28. The steps are the
+     region's tokens, so an explicit size and data-sf-density="normal" take
+     the normal values back with them; the phone ladder (below 60rem) keeps
+     the rules above. */
   @media (min-width: 60rem) {
-    [data-sf-density="compact"] .sf-avatar--size-1\/4 {
-      --sf-avatar--height: var(--sf-c0);
-      --sf-avatar--width: var(--sf-c0);
+    .sf-avatar--size-1\/3 {
+      --sf-avatar--height: var(--sf-icon-size-3);
+      --sf-avatar--width: var(--sf-icon-size-3);
+    }
+
+    .sf-avatar--size-1\/2 {
+      --sf-avatar--height: calc(var(--sf-text-height-1\/2) + var(--sf-space-1\/2));
+      --sf-avatar--width: calc(var(--sf-text-height-1\/2) + var(--sf-space-1\/2));
     }
   }
 
