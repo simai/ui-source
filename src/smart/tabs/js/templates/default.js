@@ -51,6 +51,7 @@ function renderPanel(item, context) {
       tabindex="0"
       data-sf-tab-panel=${String(item.index)}
       data-entry=${item.key}
+      slot=${context.panelSlot?.(item) || nothing}
       ?hidden=${!item.selected}
     >
       ${panelContent === nothing ? dataContent : panelContent}

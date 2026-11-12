@@ -405,6 +405,7 @@ class SfTabs extends TabsElement {
   captureSlotTemplates() {
     const first = !this._slotTemplatesCaptured;
     super.captureSlotTemplates();
+    if (first) this.notePanelSlots();
     if (first) {
       this.capturePagePanels();
       if (typeof MutationObserver === 'function') {
@@ -416,6 +417,25 @@ class SfTabs extends TabsElement {
       this.requestComponentUpdate('panels');
     }
     this._panelObserver?.observe(this, { childList: true });
+  }
+
+  // A panel slot whose host carried only its slot attribute -- <p
+  // slot="panel-0"> -- gives the panel its children, and the host is dropped
+  // (the base unwraps it). The panel the content goes into carries that slot
+  // name instead, so a page that finds its panel by [slot="panel-0"] after the
+  // drawing still finds it (R184 T15: it got null). A host the content keeps
+  // (one with other attributes) carries its own slot attribute.
+  notePanelSlots() {
+    this._unwrappedPanelSlots = new Set();
+    for (const [name, nodes] of this._liveSlotNodes ?? []) {
+      if (!/^panel-\d+$/u.test(name)) continue;
+      if (!nodes.some((node) => node?.nodeType === 1 && node.getAttribute('slot') === name)) this._unwrappedPanelSlots.add(name);
+    }
+  }
+
+  // The slot name a panel carries (see notePanelSlots), or none.
+  panelSlotOf(item) {
+    return this._unwrappedPanelSlots?.has(item.slotName) && this.hasSlotContent?.(item.slotName) ? item.slotName : null;
   }
 
   capturePagePanels() {
@@ -1038,6 +1058,7 @@ class SfTabs extends TabsElement {
       component: this,
       tabsId: this.tabsId,
       pagePanel: (item, index) => this.pagePanelFor(item, index),
+      panelSlot: (item) => this.panelSlotOf(item),
       activeIndex: this.activeIndex,
       displayItems: this.displayItems,
       overflow: this.overflow,
@@ -1139,10 +1160,38 @@ class SfTabs extends TabsElement {
     // The attribute the page uses keeps being the one written.
     if (this.hasAttribute('selected')) this.setAttribute('selected', item.key);
     else this.setAttribute('active-index', String(requested));
+    // The page sees the new selection in the change's handler: the tabs say
+    // aria-selected and the panels are shown or hidden now, not at the next
+    // drawing (R184 T12: in the handler the previous tab was still selected
+    // and the new panel hidden, so a field in it could not take the focus).
+    this.showSelection();
     if (person) {
-      this.sfEmit('change', { selected: item.key, previous, current: requested, item, items });
+      const detail = { selected: item.key, previous, current: requested, item, items };
+      this.sfEmit('change', detail);
     }
     return { outcome: 'applied' };
+  }
+
+  // The selection written on the drawn tabs and panels at once; the next
+  // drawing writes the same.
+  showSelection() {
+    this.syncTabSemantics();
+    const active = this.activeIndex;
+    for (const host of Array.from(this.tabList?.children || [])) {
+      const index = tabIndexOf(host);
+      if (!Number.isInteger(index)) continue;
+      const box = tabBox(host);
+      box?.classList?.toggle('selected', index === active);
+    }
+    for (const panel of this.drawnPanels()) {
+      const selected = Number(panel.dataset.sfTabPanel) === active;
+      panel.hidden = !selected;
+      panel.classList.toggle('selected', selected);
+    }
+  }
+
+  drawnPanels() {
+    return Array.from(this.querySelectorAll(':scope > .sf-tabs > .sf-tabs-main-container > [data-sf-tab-panel]'));
   }
 
   // The old name keeps its old detail (§16.20 split row): the element and its

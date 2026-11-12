@@ -511,7 +511,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tabs/index.js",
-        "sha256": "ffb3ee8df80d9caa1c323e913185aa1bc909dde2a887b18746d00757bc11898c"
+        "sha256": "fd59cce0b2426a66767b99b90e94c0c9d097d5ebeeb29eb3c36f16e45a601e85"
       }
     ],
     "generated_runtime": [
