@@ -19,7 +19,7 @@
     "src/component/register-helper.js",
     "src/component/register.js"
   ],
-  "content_sha256": "342781628d1f582beb06355c56bab3d36a59f0c77f25fd0d7de22966aa8f614e",
+  "content_sha256": "8720d7f6dfcb2469b43c9b4dfd442b4d34c51be1ae82b86772885cde7dae269c",
   "dependencies": [
     {
       "id": "component.badges",

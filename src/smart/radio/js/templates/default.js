@@ -1,4 +1,9 @@
 import { html, nothing } from 'lit';
+import { keepHelpOutOfLabel } from '../../../../component/checkable-text-helper';
+
+// The help mark keeps the label's line: 1/3 beside the lines of sizes 1/2 and
+// 1, 1/2 beside size 2 (the mark adds no height of its own).
+const HELP_SIZE = { '1/2': '1/3', 1: '1/3', 2: '1/2' };
 
 export function renderRadioTemplate(context) {
   const { size, label, description, help, checked, disabled, controlName, value, invalid, innerForm } =
@@ -12,7 +17,9 @@ export function renderRadioTemplate(context) {
 
   const labelContent =
     context.component?.hasSlotContent?.('label')
-      ? context.component.getSlotContent('label')
+      // A slotted label is held in a plain span so the input is named by the
+      // label alone (aria-labelledby), not by the help beside it.
+      ? html`<span data-sf-radio-label>${context.component.getSlotContent('label')}</span>`
       : label
         ? html`<span class="sf-radio-button-text">${label}</span>`
         : '';
@@ -29,14 +36,16 @@ export function renderRadioTemplate(context) {
   const helpContent =
     context.component?.hasSlotContent?.('help')
       ? context.component.getSlotContent('help')
+      // help is the explanation: a «?» button after the label text that opens
+      // it (sf-help-mark), outside the control's activation.
       : help
-        ? html`<i class="sf-icon" aria-hidden="true">${help}</i>`
+        ? html`<sf-help-mark class="sf-radio-button-help" size=${HELP_SIZE[size] || '1/3'} text=${help} label=${context.helpLabel || nothing}></sf-help-mark>`
         : '';
 
   const showContainer = !!(labelContent || descriptionContent || helpContent);
 
   return html`
-    <label class=${rootClasses.filter(Boolean).join(' ')} style=${context.rootStyle || nothing}>
+    <label class=${rootClasses.filter(Boolean).join(' ')} style=${context.rootStyle || nothing} @click=${keepHelpOutOfLabel}>
       <span class="sf-radio-button-box transition flex items-cross-center content-main-center">
         <input
           type="radio"

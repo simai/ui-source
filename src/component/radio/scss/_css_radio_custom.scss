@@ -35,6 +35,14 @@
   cursor: inherit;
 }
 
+/* The help mark («?», sf-help-mark) is the help's own button: it stands above
+   the native control's hit area, so a press on it is never a press on the
+   box. */
+.sf-radio-button .sf-radio-button-top .sf-help-mark {
+  position: relative;
+  z-index: var(--sf-z-index-1);
+}
+
 .sf-radio-button .sf-radio-button-text {
   white-space: var(--sf-radio-button-text--white-space, normal);
   overflow-wrap: anywhere;

@@ -35,22 +35,26 @@
     cursor: pointer;
   }
 
+  /* The check is a checkbox box of the tag's size: the text line of the size
+     (sf-checkbox draws its box as the line of its step), the radius and the
+     border of the checkbox, the mark at the tag's text size. It was 16 at
+     every size, 16 in a 32 tag and in a 56 one (audit 2026-11-11, W8). */
   .sf-tag .sf-tag-check {
     align-items: center;
-    block-size: var(--sf-icon-size-1);
+    block-size: var(--sf-tag--line-height, var(--sf-text-height-1\/2));
     border: var(--sf-px) solid var(--sf-outline);
     border-radius: var(--sf-radius--ui);
     color: var(--sf-on-primary-container);
     display: inline-flex;
     flex: 0 0 auto;
-    inline-size: var(--sf-icon-size-1);
+    inline-size: var(--sf-tag--line-height, var(--sf-text-height-1\/2));
     justify-content: center;
   }
 
   .sf-tag .sf-tag-check::before {
     content: '\2713';
-    font-size: var(--sf-text-size-1\/2);
-    line-height: var(--sf-text-height-1\/2);
+    font-size: var(--sf-tag--font-size, var(--sf-text-size-1\/2));
+    line-height: var(--sf-tag--line-height, var(--sf-text-height-1\/2));
     opacity: 0;
   }
 

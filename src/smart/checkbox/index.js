@@ -62,6 +62,8 @@ class SfCheckbox extends FormField(CheckboxElement) {
       name: innerControlName(this, context.name),
       stateIcon: this.stateIcon,
       ariaLabel: this.ariaLabel,
+      // The help button is named by its subject («Подробнее: Сохранять черновики»).
+      helpLabel: context.help && context.label ? this.sfWord('help', { vars: { label: context.label } }) : '',
     });
   }
 

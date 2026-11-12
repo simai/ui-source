@@ -14,7 +14,9 @@ groups in different forms independent.
 - `size`
 - `label`
 - `description`
-- `help`
+- `help` — the explanation: a «?» button (sf-help-mark) after the label opens
+  it; a press on it never selects the option. The `help` slot takes an
+  sf-help-mark of your own (links, a heading).
 - `checked`
 - `disabled`
 - `name`

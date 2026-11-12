@@ -121,6 +121,8 @@ class SfSwitch extends SwitchElement {
       // 6); elsewhere the checkbox is named, and not while inherited.
       checked: inherited ? this.inheritedOn : props.checked,
       checkboxName: this.sfInternals || inherited ? '' : props.name,
+      // The help button is named by its subject («Подробнее: Синхронизация»).
+      helpLabel: props.help && props.label ? this.sfWord('help', { vars: { label: props.label } }) : '',
       component: this,
     });
   }

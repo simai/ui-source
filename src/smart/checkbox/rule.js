@@ -8,5 +8,6 @@ SF.RuleLoader['cl-checkbox'] = {
   relation: [
     { name: 'checkbox' },
     { name: 'cl-icon' },
+    { name: 'cl-help-mark' },
   ],
 };

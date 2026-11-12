@@ -10,7 +10,7 @@ Smart Switch проецирует обычный `.sf-switch` поверх на�
 <sf-switch
   label="Default switch"
   description="Description text"
-  help="info"
+  help="Short explanation shown by the «?» button"
 ></sf-switch>
 ```
 
@@ -19,7 +19,9 @@ Smart Switch проецирует обычный `.sf-switch` поверх на�
 - `size`
 - `label`
 - `description`
-- `help`
+- `help` — the explanation: a «?» button (sf-help-mark) after the label opens
+  it; a press on it never flips the switch. The `help` slot takes an
+  sf-help-mark of your own (links, a heading).
 - `checked`
 - `disabled`
 - `name`

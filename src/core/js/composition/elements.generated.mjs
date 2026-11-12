@@ -535,7 +535,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.checkbox",
-    "version": "1.1.8"
+    "version": "1.2.0"
   },
   "sf-divider": {
     "component": "component.content-divider",

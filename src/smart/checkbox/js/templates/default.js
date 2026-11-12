@@ -1,5 +1,10 @@
 import {html, nothing} from 'lit';
+import {keepHelpOutOfLabel} from '../../../../component/checkable-text-helper';
 import './default.css'
+
+// The help mark keeps the label's line: 1/3 beside the lines of sizes 1/2 and
+// 1, 1/2 beside size 2 (the mark adds no height of its own).
+const HELP_SIZE = {'1/2': '1/3', 1: '1/3', 2: '1/2'};
 
 export function renderCheckboxTemplate(context) {
     const {
@@ -31,7 +36,9 @@ export function renderCheckboxTemplate(context) {
 
     const labelContent =
         context.component?.hasSlotContent?.('label')
-            ? context.component.getSlotContent('label')
+            // A slotted label is held in a plain span so the input is named
+            // by the label alone (aria-labelledby), not by the help beside it.
+            ? html`<span data-sf-checkbox-label>${context.component.getSlotContent('label')}</span>`
             : label
                 ? html`<span class="sf-checkbox-label">${label}</span>`
                 : '';
@@ -49,9 +56,10 @@ export function renderCheckboxTemplate(context) {
     const helpContent =
         context.component?.hasSlotContent?.('help')
             ? context.component.getSlotContent('help')
+            // help is the explanation: a «?» button after the label text that
+            // opens it (sf-help-mark), outside the control's activation.
             : help
-                ? html`
-                            <sf-icon aria-hidden="true" icon="${help}"></sf-icon>`
+                ? html`<sf-help-mark class="sf-checkbox-help" size=${HELP_SIZE[size] || '1/3'} text=${help} label=${context.helpLabel || nothing}></sf-help-mark>`
                 : '';
 
     const showContainer = !!(labelContent || descriptionContent || helpContent);
@@ -71,7 +79,7 @@ export function renderCheckboxTemplate(context) {
           <sf-icon aria-hidden="true" icon=${stateIcon || ''}></sf-icon>
       </span>`
     return html`
-        <label class=${rootClasses.filter(Boolean).join(' ')} style=${rootStyle || nothing}>
+        <label class=${rootClasses.filter(Boolean).join(' ')} style=${rootStyle || nothing} @click=${keepHelpOutOfLabel}>
             ${isStart ? input : ''}
             ${showContainer
                     ? html`

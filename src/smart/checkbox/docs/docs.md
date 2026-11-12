@@ -11,8 +11,11 @@ Smart checkbox built on top of the base `.sf-checkbox` component.
 - `size`
 - `label`
 - `description`
-- `help`
-- `position="start|end"`
+- `help` — the explanation: a «?» button (sf-help-mark) after the label opens
+  it; a press on it never toggles the box. The `help` slot takes an
+  sf-help-mark of your own (links, a heading).
+- `position="start|end"` — `end` puts the box at the end of the row (the text
+  column takes the rest).
 - `checked`
 - `disabled`
 - `indeterminate`

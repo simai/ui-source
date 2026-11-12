@@ -1,3 +1,6 @@
 {
-  "title": "Checkbox"
+  "title": "Checkbox",
+  "runtime": {
+    "help": "More about: {label}"
+  }
 }

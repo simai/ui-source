@@ -2,7 +2,8 @@
   "title": "Switch",
   "runtime": {
     "off": "off",
-    "on": "on"
+    "on": "on",
+    "help": "More about: {label}"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",
