@@ -3,6 +3,7 @@ import registerComponent from '../../register-helper';
 import { fieldSize, retireFieldSizeClass } from '../../field-size';
 import { pageText, pageWord } from '../../../core/js/page-language';
 import { formatFileSize } from '../../../core/js/format-file-size.js';
+import { fileIcon } from '../../../core/js/composition/file-size.mjs';
 // Every word this part says. A product adds a language with
 // SF.language.register('sf-file-upload', code, words); a ternary on «ru» allowed two
 // and no more.
@@ -285,9 +286,35 @@ function describeUploadItem(item, owner = null, fallbackState = 'process') {
     line,
     message,
     progress,
-    icon: String(item?.icon || 'cloud_upload'),
+    icon: uploadItemIcon(item, state),
     retryText: String(item?.retryText || fileUploadWord(owner, 'retry')),
   };
+}
+
+// A row's glyph says what the file is (C81: a type icon where there is no
+// thumbnail): the core file icons by media type, the type guessed from the
+// extension when the item has none, a plain file otherwise; an error row
+// shows the error glyph. It was cloud_upload in every state, in the primary
+// colour, outside the three icon roles (FU-12).
+const EXTENSION_TYPES = Object.freeze({
+  pdf: 'application/pdf',
+  png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp', svg: 'image/svg+xml', heic: 'image/heic', avif: 'image/avif',
+  mp4: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska',
+  mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg', m4a: 'audio/mp4',
+  zip: 'application/zip', rar: 'application/vnd.rar', '7z': 'application/x-7z-compressed', gz: 'application/gzip', tar: 'application/x-tar',
+  csv: 'text/csv', xls: 'application/vnd.ms-excel', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', ods: 'application/vnd.oasis.opendocument.spreadsheet',
+  ppt: 'application/vnd.ms-powerpoint', pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', odp: 'application/vnd.oasis.opendocument.presentation',
+  doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', odt: 'application/vnd.oasis.opendocument.text', rtf: 'application/rtf', txt: 'text/plain', md: 'text/markdown',
+});
+
+function uploadItemIcon(item, state) {
+  if (item?.icon) return String(item.icon);
+  if (state === 'error') return 'error';
+  const name = String(item?.name || item?.fileName || item?.file?.name || '');
+  const extension = name.includes('.') ? name.split('.').pop().toLowerCase() : '';
+  const type = String(item?.file?.type || item?.mime || EXTENSION_TYPES[extension] || '');
+  const icon = fileIcon(type);
+  return icon === 'download' ? 'draft' : icon;
 }
 
 function createUploadProgressItem(item, size = '1', owner = null) {
@@ -1014,7 +1041,9 @@ class FileUpload extends ComponentObserver {
     } = this.params || {};
     const step = normalizeSize(size);
     const wrapper = document.createElement('div');
-    wrapper.className = 'sf-file-upload-wrap flex flex-col gap-1';
+    // The list keeps its distance from the area itself (FU-12), the same
+    // inside this wrapper and under a Smart host.
+    wrapper.className = 'sf-file-upload-wrap flex flex-col';
     const root = document.createElement('div');
     if (this.id) root.id = this.id;
     root.className = `sf-file-upload sf-file-upload--size-${step} flex flex-col items-cross-center cursor-pointer`;

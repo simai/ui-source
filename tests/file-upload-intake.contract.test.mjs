@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 import vm from 'node:vm';
+import {fileIcon} from '../src/core/js/composition/file-size.mjs';
 
 const source = await readFile(new URL('../src/component/file-upload/js/_file_upload.js', import.meta.url), 'utf8');
 const words = source.slice(source.indexOf('const FILE_UPLOAD_ITEM_TEXT'), source.indexOf('const FILE_UPLOAD_SELECTOR'));
@@ -61,6 +62,7 @@ function load() {
     document: {querySelector: () => null},
     Element: class Element {},
     fieldSize: (value) => String(value || '1'),
+    fileIcon,
     formatFileSize: (size) => `${Math.round(Number(size) / 1024)} КБ`,
     pageText: (dictionary, key, node) => dictionary[node?.lang || 'ru']?.[key] ?? key,
     pageWord: (dictionary, key, node, {vars, count} = {}) => {
@@ -208,4 +210,24 @@ test('FU-5: an error says its message on its own line; Retry is the retry word, 
   assert.equal(bare.line, 'Not uploaded');
   assert.equal(bare.retryText, 'Try again');
   assert.equal(api.describeUploadItem({name: 'x', state: 'error', retryText: 'Отправить ещё раз'}, area()).retryText, 'Отправить ещё раз');
+});
+
+test('FU-12: the row glyph is the file kind (or the error glyph), not cloud_upload in every state', () => {
+  const api = load();
+  const icon = (item) => api.describeUploadItem(item, area()).icon;
+  assert.equal(icon({name: 'Акт.pdf', state: 'process', progress: 40}), 'picture_as_pdf');
+  assert.equal(icon({name: 'Фото.png', state: 'done'}), 'image');
+  assert.equal(icon({name: 'Смета.xlsx', state: 'ready'}), 'table_chart');
+  assert.equal(icon({name: 'Ролик', state: 'ready', file: {name: 'Ролик', type: 'video/mp4'}}), 'movie');
+  assert.equal(icon({name: 'README', state: 'ready'}), 'draft');
+  assert.equal(icon({name: 'Акт.pdf', state: 'error'}), 'error');
+  assert.equal(icon({name: 'Акт.pdf', state: 'done', icon: 'description'}), 'description');
+});
+
+test('FU-12: the row glyph is in the on-surface-variant role and the list keeps its distance from the area', async () => {
+  const rows = await readFile(new URL('../src/component/file-upload/scss/_css__upload_progress.scss', import.meta.url), 'utf8');
+  assert.doesNotMatch(rows, /--sf-icon--color: var\(--sf-primary\)/u);
+  assert.match(rows, /color: var\(--sf-icon--color, var\(--sf-on-surface-variant\)\)/u);
+  const zone = await readFile(new URL('../src/component/file-upload/scss/_css__file_upload.scss', import.meta.url), 'utf8');
+  assert.match(zone, /\.sf-file-upload ~ \.sf-file-upload-files:has\(> \.sf-upload-progress\) \{\s*margin-block-start: var\(--sf-file-upload-files--gap, var\(--sf-space-1\)\);/u);
 });

@@ -103,7 +103,7 @@ and keeps the `File` object on each.
 | `state` (or `status`) | `ready` (chosen, not sent: no bar), `process` (the bar), `done` (the check), `error` (the retry button). A choice or a drop lists its files `ready`; the host (or the `uploader`) moves them to `process`. Missing or anything else reads `process`, for the row and for the events alike. |
 | `errorMessage` (or `error`) | Why an `error` item did not go, on its own line in the error colour: «Не загрузился: <message>». It was the retry button's label before 1.2.0, so the reason was the control a person pressed to send the same file again. |
 | `retryText` | The retry button's label; the component's own «Повторить» / «Try again» when not set. |
-| `icon` | The glyph on the row; `cloud_upload` when not set. |
+| `icon` | The glyph on the row. When not set: the file's kind by its type or extension (`picture_as_pdf`, `image`, `movie`, `table_chart`, `folder_zip`, `description`, … ; `draft` for any other), `error` on an error row. |
 | `file` | The `File` itself, for the consumer's own transport. The component never reads it. |
 
 Transport, progress and server validation belong to the consumer: it sets the
