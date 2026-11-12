@@ -145,6 +145,7 @@
     "src/core/js/notify.js",
     "src/core/js/on-view.js",
     "src/core/js/open-surface-mark.js",
+    "src/core/js/overflow-row.js",
     "src/core/js/package-modules.js",
     "src/core/js/page-actions.js",
     "src/core/js/page-language.js",
@@ -211,7 +212,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "0844f0106a799e241b6a698cd444ee07d0d3539f7eeddf7c435f683e6bd640fc",
+  "content_sha256": "a91fe3f76149cb9f013977528b6b69ea1852d651b71550e09ae7a4e1d3a396a4",
   "dependencies": [
     {
       "id": "core.styles",
