@@ -232,7 +232,8 @@ test('an anchored badge rings with the row it stands on, and hover rows keep a t
   ]);
   // The fill is read only where the underlay is set, then laid over the ring.
   assert.match(geometry, /--sf-badge--ring-fill: color-mix\(in srgb, var\(--sf-surface-place-fill\) 100%, var\(--sf-surface-underlay\) 0%\);/u);
-  assert.match(geometry, /box-shadow: 0 0 0 var\(--sf-badge--ring-width\) var\(--sf-badge--ring-fill, transparent\), 0 0 0 var\(--sf-badge--ring-width\) var\(--sf-badge--ring\);/u);
+  // ... over the place colour, over the nearest opaque place (2026-11-12: a soft place's alpha was laid twice).
+  assert.match(geometry, /box-shadow: 0 0 0 var\(--sf-badge--ring-width\) var\(--sf-badge--ring-fill, transparent\), 0 0 0 var\(--sf-badge--ring-width\) var\(--sf-badge--ring\), 0 0 0 var\(--sf-badge--ring-width\) var\(--sf-surface-place-ground, transparent\);/u);
   // Every include names its fill.
   for (const [name, css] of Object.entries({cm, tree, list, item, menu, choice})) {
     assert.doesNotMatch(css, /sf-place-fill;/u, name);

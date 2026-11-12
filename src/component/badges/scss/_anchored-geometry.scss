@@ -79,7 +79,14 @@ $diagonal: 0.29289; // 1 - 1/sqrt(2)
   line-height: var(--sf-badge--anchored-size);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
-  box-shadow: 0 0 0 var(--sf-badge--ring-width) var(--sf-badge--ring-fill, transparent), 0 0 0 var(--sf-badge--ring-width) var(--sf-badge--ring);
+  // Under the ring the nearest opaque place (2026-11-12): on a soft coloured
+  // place --sf-surface-place is the container's alpha, and the ring laid it
+  // over the place's own tint a second time -- 27 light, 30 dark darker than
+  // the place around it, on a row and off it. Over the ground it is exactly
+  // the soft place's look, as the avatar's status dot. On a solid place the
+  // ground is the place colour, so nothing changes; on glass it is black, the
+  // dot's dark glass.
+  box-shadow: 0 0 0 var(--sf-badge--ring-width) var(--sf-badge--ring-fill, transparent), 0 0 0 var(--sf-badge--ring-width) var(--sf-badge--ring), 0 0 0 var(--sf-badge--ring-width) var(--sf-surface-place-ground, transparent);
 
   // RTL: the end is the left, and the badge is centred from its right edge.
   &:dir(rtl) {
