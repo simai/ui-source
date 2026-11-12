@@ -48,6 +48,8 @@
         "collapse": "lg",
         "levels": "2-3",
         "sticky": true,
+        "line": "own",
+        "expand": "all",
         "hash": "choose",
         "size": "1/2",
         "overflow": "more",

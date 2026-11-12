@@ -2,6 +2,21 @@
   "title": "Contents",
   "runtime": {
     "label": "On this page",
-    "more": "More"
+    "more": "More",
+    "count-error": {
+      "one": "{n} error",
+      "other": "{n} errors"
+    },
+    "count-warning": {
+      "one": "{n} warning",
+      "other": "{n} warnings"
+    },
+    "count-success": {
+      "one": "{n}, done",
+      "other": "{n}, done"
+    },
+    "status-error": "has errors",
+    "status-warning": "has warnings",
+    "status-success": "done"
   }
 }

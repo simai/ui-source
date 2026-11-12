@@ -39,6 +39,15 @@ import './scss/index.scss';
 // attribute, the boolean of 1.4, read as the default.
 const HASH_MODES = ['choose', 'scroll', 'false'];
 
+// The statuses an entry may carry (C95 point 6, CT-07); error also sends a
+// chosen entry to the first invalid field of its section.
+const STATUSES = ['error', 'warning', 'success'];
+
+// A field that says it is invalid: a Framework field's invalid setting, an
+// aria-invalid control, a control the browser found invalid after the person
+// touched it.
+const INVALID = '[invalid]:not([invalid="false"]), [aria-invalid="true"], :user-invalid';
+
 // A chosen section holds the answer while its scroll moves -- each scroll
 // event extends the hold by this long, so a long smooth scroll keeps it and a
 // section already in place lets it go at once -- and, once the scroll ended,
@@ -113,6 +122,7 @@ class SfContents extends ContentsElement {
     this._scroller = null;
     this._frame = 0;
     this._revealCurrent = false;
+    this._focusCurrent = false;
     this._onMedia = () => this.syncCompact();
     this._onScroll = (event) => {
       if (this._hold && event?.type === 'scroll') {
@@ -181,6 +191,8 @@ class SfContents extends ContentsElement {
         id: decodeURIComponent(link.getAttribute('href').slice(1)),
         text: link.textContent.replace(/\s+/gu, ' ').trim(),
         level: Number(link.dataset.level || link.getAttribute('aria-level')) || 2,
+        count: Number(link.dataset.count) || 0,
+        status: link.dataset.status || '',
       })).filter((item) => item.id);
       nodes.forEach((node) => node.remove());
     }
@@ -217,6 +229,7 @@ class SfContents extends ContentsElement {
     if (name === 'layout' || name === 'collapse') this.watchMedia();
     if (name === 'layout' && this.isOpen && !this.canOpen) this.closeList({restoreFocus: false});
     if (name === 'target' || name === 'levels') this.collect();
+    if (name === 'expand') this.requestComponentUpdate('expand');
   }
 
   watchMedia() {
@@ -256,7 +269,13 @@ class SfContents extends ContentsElement {
   collect() {
     const given = (Array.isArray(this.items) && this.items.length ? this.items : this._childItems)
       .filter((item) => item && item.id)
-      .map((item) => ({id: String(item.id), text: String(item.text ?? item.label ?? item.id), level: Number(item.level) || 2}));
+      .map((item) => ({
+        id: String(item.id),
+        text: String(item.text ?? item.label ?? item.id),
+        level: Number(item.level) || 2,
+        count: Number(item.count) || 0,
+        status: STATUSES.includes(item.status) ? item.status : '',
+      }));
     let sections;
     if (given.length) {
       sections = given.map((item) => ({...item, element: document.getElementById(item.id)}));
@@ -426,12 +445,44 @@ class SfContents extends ContentsElement {
     this.jumpTo(id, event);
   }
 
+  // The first invalid field of a section: after its element (or inside it)
+  // and before the next section's.
+  firstInvalid(section) {
+    const at = this._sections.indexOf(section);
+    const start = section.element;
+    const end = this._sections.slice(at + 1).find((one) => one.element)?.element ?? null;
+    const scope = this.targetElement() ?? document.body;
+    let fields;
+    try {
+      fields = Array.from(scope.querySelectorAll(INVALID));
+    } catch {
+      // A browser without :user-invalid.
+      fields = Array.from(scope.querySelectorAll(INVALID.replace(/, :user-invalid$/u, '')));
+    }
+    const after = (node) => start === node || start.contains(node)
+      || Boolean(start.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING);
+    const before = (node) => !end || Boolean(node.compareDocumentPosition(end) & Node.DOCUMENT_POSITION_FOLLOWING);
+    return fields.find((node) => !this.contains(node) && after(node) && before(node)
+      // A field inside a Framework field is the field's own control: the outer one is focused.
+      && !fields.some((outer) => outer !== node && outer.contains(node))) ?? null;
+  }
+
+  // An entry's accessible name with its mark (C95 point 6): «Контакты: 2
+  // ошибки», «Оплата: есть предупреждения», «Доставка: 3».
+  markedName(text, {count = 0, status = ''} = {}) {
+    if (status && count) return `${text}: ${this.sfWord(`count-${status}`, {count})}`;
+    if (status) return `${text}: ${this.sfWord(`status-${status}`)}`;
+    return `${text}: ${count}`;
+  }
+
   // The device has no hover: a touch screen, where :hover never comes.
   hovers() {
     return globalThis.matchMedia?.('(hover: hover)').matches === true;
   }
 
-  // The section of id: scrolled to, focused, current, in the address.
+  // The section of id: scrolled to, focused, current, in the address. A
+  // section marked error goes to its first invalid field instead of its
+  // heading (C95 point 6, CT-07), centred, the field focused.
   jumpTo(id, event = null) {
     const section = this._sections.find((one) => one.id === id);
     const element = section?.element ?? document.getElementById(id);
@@ -439,8 +490,17 @@ class SfContents extends ContentsElement {
     if (!element) return;
     event?.preventDefault();
     this._hold = {id, until: Date.now() + HOLD_MS};
+    const field = section?.status === 'error' ? this.firstInvalid(section) : null;
     // instant, not auto: auto is the page's scroll-behavior, which may be smooth.
-    element.scrollIntoView({behavior: reducedMotion() ? 'instant' : 'smooth', block: 'start'});
+    const behavior = reducedMotion() ? 'instant' : 'smooth';
+    if (field) {
+      field.scrollIntoView({behavior, block: 'center'});
+      field.focus({preventScroll: true});
+      this.setCurrent(id, {emit: true, via: 'choose'});
+      this.writeHash(id);
+      return;
+    }
+    element.scrollIntoView({behavior, block: 'start'});
     if (!element.matches('a[href], button, input, select, textarea, [tabindex]')) element.setAttribute('tabindex', '-1');
     element.focus({preventScroll: true});
     this.setCurrent(id, {emit: true, via: 'choose'});
@@ -461,7 +521,24 @@ class SfContents extends ContentsElement {
     this.sfHostState('data-open', true);
     document.addEventListener('pointerdown', this._onOutside, true);
     this.requestComponentUpdate('open');
+    // The compact list (a bottom sheet on a phone) opens on the current
+    // entry: focus goes to its link, so the keyboard and a screen reader start
+    // where the reader is (C95 point 4, CT-08). The rail keeps focus.
+    if (this.compact) this._focusCurrent = true;
     return applied();
+  }
+
+  focusCurrent() {
+    if (!this.isOpen || !this.compact) return;
+    const list = this.querySelector(':scope .sf-contents-list');
+    const link = list?.querySelector('[aria-current="location"]') ?? list?.querySelector('.sf-contents-link');
+    link?.focus({preventScroll: true});
+    // The current entry in view inside the list, never the page.
+    if (link && list && list.scrollHeight > list.clientHeight) {
+      const box = list.getBoundingClientRect();
+      const at = link.getBoundingClientRect();
+      if (at.top < box.top || at.bottom > box.bottom) list.scrollTop += at.top - box.top - (box.height - at.height) / 2;
+    }
   }
 
   closeList({restoreFocus = true} = {}) {
@@ -495,6 +572,10 @@ class SfContents extends ContentsElement {
   // with overflow more it is laid out instead, the current tab in the row.
   afterRender(changed) {
     const result = super.afterRender?.(changed);
+    if (this._focusCurrent) {
+      this._focusCurrent = false;
+      this.focusCurrent();
+    }
     this.watchRow();
     if (this.overflowsToMore()) {
       this._revealCurrent = false;
@@ -627,8 +708,10 @@ class SfContents extends ContentsElement {
       label: this.label,
       headingLevel: this.headingLevel,
       overflow: this.overflow,
+      line: this.line,
+      expand: this.expand,
       moreText: this.sfWord('more'),
-      sections: this._sections.map(({id, text, level}) => ({id, text, level})),
+      sections: this._sections.map(({id, text, level, count, status}) => ({id, text, level, count, status})),
       current: this._current,
       progress: this._progress,
       rootClass: this.getRootClass(),

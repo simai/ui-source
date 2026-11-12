@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.badge",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "title": "Badges",
   "summary": "A short non-interactive label for a status, a run's state, a category, a version or a count beside an object, drawn in a size, appearance and colour role or status. It adds no keyboard or pointer behaviour.",
   "kind": "smart",
@@ -57,12 +57,13 @@
       "line": {
         "type": "string",
         "default": "",
-        "description": "Takes the text line of this form size, for a table cell or a row of fields, so the row keeps its control height.",
+        "description": "Takes the text line of this form size, for a table cell or a row of fields, so the row keeps its control height. text takes the line of the text it stands beside: the text's own size and line height, inherited, no block padding, so a count in a contents entry, a tab or a list row is as high as that row's line and one figure is a circle (owner decision C95 point 6).",
         "enum": [
           "",
           "1/2",
           "1",
-          "2"
+          "2",
+          "text"
         ]
       },
       "appearance": {
@@ -278,7 +279,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/badge/index.js",
-        "sha256": "5e4579bdda929f531adbf214ad304844cedb553a3a5e1c1819a8dcab27664b64"
+        "sha256": "797e9ebb139fa768ebee3de8bd4da630ea2196fbaa53f86c290f4775b5b66c26"
       }
     ],
     "generated_runtime": [

@@ -10449,6 +10449,31 @@
       },
       "owner": "ui-source",
       "source": "src/smart/contents/index.js layoutOverflow; src/core/js/overflow-row.js"
+    },
+    {
+      "id": "behaviour-contents-current-line-only",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-contents 1.6.0 marks the current section with the primary colour on its 2 px line only (owner decision C95 point 2, CT-06): the text is the surface's ink at medium weight, as sf-menu's column and sf-tabs. The text was the primary colour in the column, the bar and the rail, and the compact list's current row was the primary-container fill. --sf-contents-current-color now colours the line, the stroke and the reading line, not the text.",
+      "items": [
+        {
+          "component": "sf-contents",
+          "attribute": "--sf-contents-current-color",
+          "from": "the current link's text and its line; the compact list's current row primary-container",
+          "to": "the current link's line only; the text on-surface, medium; the compact list's row a 2 px line, no fill"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite for the new look. A page that set --sf-contents-current-color to colour the current text colours .sf-contents-link[aria-current=\"location\"] itself, or keeps the line colour alone.",
+      "examples": {
+        "before": "<sf-contents target=\"article\"></sf-contents> (current text primary)",
+        "after": "<sf-contents target=\"article\"></sf-contents> (current text on-surface, primary line)"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/contents/scss/_smart__contents.scss"
     }
   ]
 }

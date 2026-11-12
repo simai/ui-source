@@ -3286,7 +3286,7 @@
         {
           "name": "--sf-contents-current-color",
           "role": "indicator-color",
-          "summary": "The current link, its bar, stroke or underline, and the reading progress.",
+          "summary": "The current section's line -- its bar, stroke or underline -- and the reading progress; since sf-contents 1.6.0 not the text, which is the surface's ink (C95 point 2).",
           "default": "var(--sf-primary)",
           "state": "current",
           "since": "2026-10-30"
@@ -3311,6 +3311,13 @@
           "summary": "The step of a deeper level.",
           "default": "var(--sf-space-1\\/2)",
           "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-contents-inset-inline",
+          "role": "padding-inline",
+          "summary": "The text's distance from the line, for the heading and the links (C95 point 1): a host whose divider is the line (line=\"edge\") sets it on its column, and its own parts under the contents read it too.",
+          "default": "var(--sf-space-1\\/2)",
+          "since": "2026-11-12"
         },
         {
           "name": "--sf-contents-gap",
