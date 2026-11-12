@@ -18,7 +18,9 @@ Use the short `multiple` behavior attribute for several values. The list is
 positioned by the shared Framework positioning (`SF.Position`, built on Floating
 UI): below the field, flipped above when it does not fit and there is more
 room, shifted and height-limited inside the viewport, following scroll and
-resize. This is the default; `portal="false"` keeps the legacy in-flow list. The historical
+resize. This is the default; `portal="false"` keeps the legacy in-flow list, below
+the field with the positioned list's height (the larger room above or below the
+field; its rows scroll beyond it). The historical
 `data-multiple` and `data-portal` forms remain compatibility aliases. Native
 Popover is preferred; the fallback projection is reversible, remains inside a
 modal interaction boundary, and preserves Framework tokens, direction and

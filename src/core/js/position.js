@@ -171,11 +171,15 @@ function scrollOffsets(floating) {
   return found;
 }
 
+// Put back at once: the Framework sheet makes every box scroll smoothly
+// (* {scroll-behavior: smooth}, core scroll), and an assigned scrollTop glided
+// from the start the measurement threw it to. After a page scroll the list ran
+// 0 -> 800 over half a second and read 784 when the probe looked; a reposition
+// during the glide kept the value it had reached (R171 follow-up, 2026-11-12).
 function restoreScrollOffsets(found) {
   for (const [element, top, left] of found) {
     if (!element.isConnected) continue;
-    if (element.scrollTop !== top) element.scrollTop = top;
-    if (element.scrollLeft !== left) element.scrollLeft = left;
+    if (element.scrollTop !== top || element.scrollLeft !== left) element.scrollTo({top, left, behavior: 'instant'});
   }
 }
 

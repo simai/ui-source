@@ -106,3 +106,38 @@ test('The list\'s own scroll does not reposition the panel (R171)',async()=>{
   const base=await readFile(new URL('../src/component/dropdown/js/_dropdown.js',import.meta.url),'utf8');
   assert.match(base,/if\(scrolledInside\(getList\(root\),event\)\)return;/);
 });
+
+// A list in place has the anchored list's height rule (R171 follow-up,
+// 2026-11-12): the larger room the screen gives above or below the field, less
+// the panel's edge padding; a list short of it by less than the padding keeps
+// its whole height (R018). Measured with a stubbed screen and SF.Position.
+test('A list in place takes the anchored list\'s room as its height cap',async()=>{
+  const source=(await read('src/component/dropdown/portal.js')).replace("import BundledPosition from '../../core/js/position.js';","const BundledPosition=null;").replace("import {PanelScrollbar} from '../panel-scrollbar.js';","const PanelScrollbar=class{watch(){}mark(){}disconnect(){}};");
+  globalThis.SF={Position:{resolveLength:value=>value.includes('1\\/2')?8:4}};
+  globalThis.document={documentElement:{clientHeight:900,clientWidth:1440}};
+  const {fitDropdownInPlace}=await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
+  const make=(fieldTop,height,hidden=0)=>{
+    const props={};
+    const field={getBoundingClientRect:()=>({top:fieldTop,bottom:fieldTop+40})};
+    const root={querySelector:()=>field};
+    return {props,list:{parentElement:root,closest:()=>root,style:{setProperty:(name,value)=>{props[name]=value;}},
+      querySelector:()=>({scrollHeight:height+hidden,clientHeight:height}),getBoundingClientRect:()=>({top:fieldTop+44,height})}};
+  };
+  // Field at the top: the room below (900 - 8 - 104).
+  let {props,list}=make(60,2400);
+  assert.equal(fitDropdownInPlace(list,list.getBoundingClientRect()),788);
+  assert.equal(props['--sf-dropdown-available-block-size'],'788px');
+  // Near the bottom: the room the anchored list would take above (760 - 4 - 8).
+  ({props,list}=make(760,2400));
+  assert.equal(fitDropdownInPlace(list,list.getBoundingClientRect()),748);
+  // Capped earlier, the hidden rows still count toward its whole height.
+  ({props,list}=make(60,500,1900));
+  assert.equal(fitDropdownInPlace(list,list.getBoundingClientRect()),788);
+  // Short of the room by less than the padding: its whole height.
+  ({props,list}=make(60,794));
+  assert.equal(fitDropdownInPlace(list,list.getBoundingClientRect()),794);
+  delete globalThis.SF;delete globalThis.document;
+  const css=await read('src/component/dropdown/scss/_css__custom.scss');
+  assert.match(css,/\.sf-dropdown \.sf-list:not\(\[data-sf-portal\]\) \{\s*display: flex;\s*flex-direction: column;\s*max-block-size: var\(--sf-dropdown-available-block-size, calc\(100dvh - 2 \* var\(--sf-space-1\\\/2\)\)\);/);
+  assert.match(css,/\.sf-dropdown \.sf-list:not\(\[data-sf-portal\]\) > \.sf-list-container-wrap \{\s*overflow-y: auto;/);
+});

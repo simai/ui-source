@@ -187,6 +187,23 @@
   max-inline-size: var(--sf-popup-list-max-width);
 }
 
+/* A list in place has the anchored list's height (R171 follow-up,
+   2026-11-12): the room the screen gives it, less the panel's edge padding,
+   which the dropdown measures on opening (--sf-dropdown-available-block-size,
+   component/dropdown/portal.js); unmeasured, the screen less that padding on
+   both sides. Only the rows scroll, as anchored (C06); the scrollbar is the
+   shared panel's (C106). Without a cap sixty options stood 2.4k px tall and
+   the wheel scrolled the page. */
+.sf-dropdown .sf-list:not([data-sf-portal]) {
+  display: flex;
+  flex-direction: column;
+  max-block-size: var(--sf-dropdown-available-block-size, calc(100dvh - 2 * var(--sf-space-1\/2)));
+}
+
+.sf-dropdown .sf-list:not([data-sf-portal]) > .sf-list-container-wrap {
+  overflow-y: auto;
+}
+
 .sf-dropdown .sf-list:has(.sf-list-container--grid),
 .sf-list[data-sf-portal]:has(.sf-list-container--grid) {
   max-inline-size: none;

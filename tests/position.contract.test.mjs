@@ -100,5 +100,8 @@ test('measuring the natural height puts back what was scrolled inside the panel 
   // Put back before onPosition: sf-menu scrolls its panel there (syncScroll).
   assert.match(position, /putBack\(\);\s*settings\.onPosition\?\.\(/);
   assert.match(position, /function scrollOffsets\(floating\) \{[\s\S]*?floating\.querySelectorAll\('\*'\)/);
-  assert.match(position, /if \(element\.scrollTop !== top\) element\.scrollTop = top;/);
+  // At once, never through the sheet's smooth scrolling (R171 follow-up):
+  // an assigned scrollTop glided from 0 and a reposition kept a value short.
+  assert.match(position, /if \(element\.scrollTop !== top \|\| element\.scrollLeft !== left\) element\.scrollTo\(\{top, left, behavior: 'instant'\}\);/);
+  assert.doesNotMatch(position, /element\.scrollTop = top;/);
 });
