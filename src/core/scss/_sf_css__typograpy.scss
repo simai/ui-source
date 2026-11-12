@@ -178,6 +178,20 @@
     ); //var(--sf-text--margin-end-default);
   }
 
+  // The words of a table are whole: `word-break: break-word` lowered every
+  // cell's min-content to a letter, so the auto layout squeezed a label column
+  // below its longest word. A table keeps its words and breaks a word only
+  // when it cannot fit the column it was given (overflow-wrap: break-word,
+  // which does not lower min-content); room for a long value comes from the
+  // code rule below (C10 variant A, 2026-11-11). Set on the table, not on its
+  // cells, so the cells inherit it and a table that keeps every word whole --
+  // a .table-frame, whose frame scrolls instead -- says so once, on the table
+  // (the cell rule beat the frame's own and broke its words, pair-next-3).
+  table {
+    word-break: normal;
+    overflow-wrap: break-word;
+  }
+
   .label-small {
     font-size: var(--sf-label-small--size);
     line-height: var(--sf-label-small--height);
@@ -293,17 +307,6 @@
   // block of code) is left alone, as in running text.
   :where(td, th) code:where(:not([class*='sf-'], [class*='sf-'] > code, pre code, .sf-highlight code, .sf-code-surface code)) {
     overflow-wrap: anywhere;
-  }
-
-  // The words of a cell are whole: the table's `word-break: break-word`
-  // (above) lowered every cell's min-content to a letter, so the auto layout
-  // squeezed a label column below its longest word. A cell keeps its words
-  // and breaks a word only when it cannot fit the column it was given
-  // (break-word, which does not lower min-content); room for a long value
-  // comes from the code rule above (C10 variant A, 2026-11-11).
-  :where(td, th) {
-    word-break: normal;
-    overflow-wrap: break-word;
   }
 
   // Copy on click, only where a container asks for it with

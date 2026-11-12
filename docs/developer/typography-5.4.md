@@ -106,10 +106,13 @@ was ready at the first layout, so a line with code grew 24 -> 25 at 1440.
 In a table cell (`td`, `th`) code takes `overflow-wrap: anywhere` (owner
 decision C10, variant A, 2026-11-11): a long value -- a JSON default, a rule
 address -- lowers the cell's min-content and never widens the table, so a
-label column beside it keeps its words. For that the cell's own text resets
-the table's `word-break: break-word` (which lowered every cell to a letter) to
-`overflow-wrap: break-word`: a cell keeps its words and breaks one only when
-it cannot fit the column. Cells never get `nowrap`.
+label column beside it keeps its words. For that the table resets its
+`word-break: break-word` (which lowered every cell to a letter) to
+`overflow-wrap: break-word`, and its cells inherit it: a cell keeps its words
+and breaks one only when it cannot fit the column. The rule is on the table,
+not on the cells, so `.table-frame`, whose frame scrolls and which keeps every
+word whole (`overflow-wrap: normal` on its table), is not beaten by it.
+Cells never get `nowrap`.
 
 The public variables have one dash and are never set by the Framework; set
 them on `:root` or any container. The `--sf-code--*` names with two dashes
