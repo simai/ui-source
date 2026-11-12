@@ -71,7 +71,7 @@ function load() {
       return fill(form, {...vars, n: count});
     },
   });
-  vm.runInContext(`${words.replace('const FILE_UPLOAD_ITEM_TEXT', 'var FILE_UPLOAD_ITEM_TEXT')}\n${helpers}\nthis.api = {applySelectedFiles, normalizeFileItems, getItemEventKey, takeFiles, formatAcceptWords, normalizeItemState, describeUploadItem};`, context);
+  vm.runInContext(`${words.replace('const FILE_UPLOAD_ITEM_TEXT', 'var FILE_UPLOAD_ITEM_TEXT')}\n${helpers}\nthis.api = {applySelectedFiles, normalizeFileItems, getItemEventKey, takeFiles, formatAcceptWords, normalizeItemState, describeUploadItem, syncFileUploadInteraction};`, context);
   return context.api;
 }
 
@@ -230,4 +230,41 @@ test('FU-12: the row glyph is in the on-surface-variant role and the list keeps 
   assert.match(rows, /color: var\(--sf-icon--color, var\(--sf-on-surface-variant\)\)/u);
   const zone = await readFile(new URL('../src/component/file-upload/scss/_css__file_upload.scss', import.meta.url), 'utf8');
   assert.match(zone, /\.sf-file-upload ~ \.sf-file-upload-files:has\(> \.sf-upload-progress\) \{\s*margin-block-start: var\(--sf-file-upload-files--gap, var\(--sf-space-1\)\);/u);
+});
+
+test('FU-10: Remove and Retry are named with their file; every glyph is out of the accessible text', async () => {
+  const api = load();
+  const element = (attrs = {}, text = '') => {
+    const map = new Map(Object.entries(attrs));
+    return {
+      dataset: {}, disabled: false, textContent: text,
+      getAttribute: (name) => (map.has(name) ? map.get(name) : null),
+      hasAttribute: (name) => map.has(name),
+      setAttribute: (name, value) => map.set(name, String(value)),
+      removeAttribute: (name) => map.delete(name),
+      querySelectorAll: () => [],
+    };
+  };
+  const row = {querySelector: (selector) => (selector === '.sf-upload-progress-name' ? {textContent: 'Скан.pdf'} : null)};
+  const remove = Object.assign(element(), {closest: () => row});
+  remove.dataset.action = 'remove';
+  const retry = Object.assign(element({}, '\n  Повторить\n'), {closest: () => row});
+  retry.dataset.action = 'retry';
+  const root = area();
+  root.nextElementSibling = {
+    classList: {contains: (name) => name === 'sf-file-upload-files'},
+    querySelectorAll: (selector) => (selector.startsWith('button') ? [remove, retry] : []),
+  };
+  api.syncFileUploadInteraction(root);
+  assert.equal(remove.getAttribute('aria-label'), 'Удалить Скан.pdf');
+  assert.equal(retry.getAttribute('aria-label'), 'Повторить Скан.pdf');
+
+  for (const path of ['../src/component/file-upload/js/_file_upload.js', '../src/smart/file-upload/js/templates/default.js']) {
+    const text = await readFile(new URL(path, import.meta.url), 'utf8');
+    const html = [...text.matchAll(/<i class="sf-icon[^"]*"[^>]*>/gu)].map((match) => match[0]);
+    for (const tag of html) assert.match(tag, /aria-hidden="true"/u, `${path}: ${tag}`);
+    const dom = text.split(/\n/u).filter((line) => /className = 'sf-icon|classList\.add\('sf-icon'\)/u.test(line)).length;
+    const hidden = (text.match(/Icon\.setAttribute\('aria-hidden', 'true'\)|glyph\.setAttribute\('aria-hidden', 'true'\)/gu) || []).length;
+    assert.ok(hidden >= dom, `${path}: every DOM glyph is aria-hidden (${hidden} of ${dom})`);
+  }
 });

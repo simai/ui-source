@@ -216,11 +216,15 @@ function syncFileUploadInteraction(root) {
     const nextDisabled = disabled || previous.disabled;
     if (button.disabled !== nextDisabled) button.disabled = nextDisabled;
     previous.managedDisabled = disabled;
-    if (button.dataset.action !== 'remove') return;
+    // Remove and Retry are named with their file: three rows said «Удалить»
+    // three times, and the retry button said only its word (FU-10).
     const currentLabel = button.getAttribute('aria-label');
     if (!button.hasAttribute('aria-labelledby') && (!currentLabel || currentLabel === previous.label)) {
       const name = button.closest('.sf-upload-progress')?.querySelector('.sf-upload-progress-name')?.textContent?.trim() || '';
-      const label = `${pageText(FILE_UPLOAD_ITEM_TEXT, 'remove', root, 'sf-file-upload')} ${name}`.trim();
+      const word = button.dataset.action === 'retry'
+        ? button.textContent.trim() || pageText(FILE_UPLOAD_ITEM_TEXT, 'retry', root, 'sf-file-upload')
+        : pageText(FILE_UPLOAD_ITEM_TEXT, 'remove', root, 'sf-file-upload');
+      const label = `${word} ${name}`.trim();
       if (currentLabel !== label) button.setAttribute('aria-label', label);
       previous.label = label;
     }

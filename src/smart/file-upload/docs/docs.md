@@ -33,8 +33,12 @@ file drops are cancelled without accepting files or firing selection events.
 The shared ordinary binder also owns keyboard focus and disabled controls. Tab
 reaches the enabled drop zone, Enter/Space opens the picker, and nested file-action
 keys do not open it. disabled updates native controls and aria-disabled without
-discarding items; re-enabling restores prior tab/action settings. Remove buttons
-receive file-specific localized names unless the author supplied an ARIA name.
+discarding items; re-enabling restores prior tab/action settings. Remove and
+Retry buttons receive file-specific localized names («Удалить Скан.pdf»,
+«Повторить Скан.pdf») unless the author supplied an ARIA name; every glyph is
+aria-hidden, so a reader hears the words, not «upload_file» or «check_circle»;
+the row's state line says «загружен» / «Не загрузился: …» in words; files left
+out are said in the polite status line under the area.
 Focus uses :focus-visible with a real outline in forced colors. These rules are
 shared, not template-specific overrides.
 
