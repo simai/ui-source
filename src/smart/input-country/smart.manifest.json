@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-country",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "title": "Country Code",
   "summary": "A telephone field with a country picker: a button opens a searchable listbox of countries, and the chosen country sets the dial code, flag and, optionally, the input mask of the native tel input.",
   "kind": "smart",
@@ -171,26 +171,6 @@
         "type": "string",
         "default": "",
         "description": "Accessible name for a telephone field rendered without a visible label."
-      },
-      "multi-country=\"false\"": {
-        "type": "boolean",
-        "default": false,
-        "description": "Dated alias of fixed-country until 2027-01-01."
-      },
-      "use-country-masks=\"false\"": {
-        "type": "boolean",
-        "default": false,
-        "description": "Dated alias of fixed-mask until 2027-01-01."
-      },
-      "show-code=\"false\"": {
-        "type": "boolean",
-        "default": false,
-        "description": "Dated alias of hide-code until 2027-01-01."
-      },
-      "lazy-flags=\"false\"": {
-        "type": "boolean",
-        "default": false,
-        "description": "Dated alias of eager-flags until 2027-01-01."
       }
     },
     "additionalProperties": false

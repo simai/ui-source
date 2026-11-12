@@ -37,7 +37,7 @@
       "note": "the element is sf-input-country; sf-country-code is a subclass defined beside it until the date"
     },
     {
-      "from": "multi-country=\"false\"",
+      "from": "multi-country",
       "to": "fixed-country",
       "kind": "attribute",
       "component": "sf-input-country",
@@ -46,10 +46,11 @@
       "mode": "manifest-only",
       "section": "§4.2, change journal attribute-input-country-presence-booleans",
       "note": "the string form switches the default-on multi-country off; the element reads it itself until the date (no shim: the value is inverted, not renamed)",
+      "value": "false",
       "shim": "none"
     },
     {
-      "from": "use-country-masks=\"false\"",
+      "from": "use-country-masks",
       "to": "fixed-mask",
       "kind": "attribute",
       "component": "sf-input-country",
@@ -58,10 +59,11 @@
       "mode": "manifest-only",
       "section": "§4.2, change journal attribute-input-country-presence-booleans",
       "note": "the string form switches the default-on use-country-masks off; the element reads it itself until the date (no shim: the value is inverted, not renamed)",
+      "value": "false",
       "shim": "none"
     },
     {
-      "from": "show-code=\"false\"",
+      "from": "show-code",
       "to": "hide-code",
       "kind": "attribute",
       "component": "sf-input-country",
@@ -70,10 +72,11 @@
       "mode": "manifest-only",
       "section": "§4.2, change journal attribute-input-country-presence-booleans",
       "note": "the string form switches the default-on show-code off; the element reads it itself until the date (no shim: the value is inverted, not renamed)",
+      "value": "false",
       "shim": "none"
     },
     {
-      "from": "lazy-flags=\"false\"",
+      "from": "lazy-flags",
       "to": "eager-flags",
       "kind": "attribute",
       "component": "sf-input-country",
@@ -82,6 +85,7 @@
       "mode": "manifest-only",
       "section": "§4.2, change journal attribute-input-country-presence-booleans",
       "note": "the string form switches the default-on lazy-flags off; the element reads it itself until the date (no shim: the value is inverted, not renamed)",
+      "value": "false",
       "shim": "none"
     }
   ]
