@@ -376,11 +376,11 @@
 
   .sf-list__frame.sf-list--size-1 { --sf-list--inset: var(--sf-space-1); }
   .sf-list__frame.sf-list--size-2 { --sf-list--inset: var(--sf-space-2); }
-  .sf-list__frame.sf-list--size-1\/2 { --sf-list--inset: var(--sf-space-1\/2); }
-
-  @media not all and (min-width: 60rem) {
-    .sf-list__frame.sf-list--size-1\/2 { --sf-list--inset: var(--sf-space-1); }
-  }
+  /* Size 1/2 never goes below 12 (--sf-b2): on a phone, and in a compact
+     region, where C79 brings it down a step to 28 and --sf-space-1/2 is 8.
+     The inset follows the field's step with that floor: compact 1/2 and 1
+     are 12, compact 2 (40) keeps 16 (intent acceptance 2026-11-12). */
+  .sf-list__frame.sf-list--size-1\/2 { --sf-list--inset: max(var(--sf-space-1\/2), var(--sf-b2)); }
 
   .sf-list__frame:is(.sf-list--size-1, .sf-list--size-2, .sf-list--size-1\/2) {
     --sf-list--text-inset: calc(var(--sf-list--inset) - var(--sf-space-1\/4) - var(--sf-list--edge));
