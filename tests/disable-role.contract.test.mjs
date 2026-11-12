@@ -236,8 +236,10 @@ test('the disabled roles keep the alphas the owner chose', () => {
     const match = theme.match(new RegExp(`--sf-${name}: ([^;]+);`, 'u'));
     return match ? match[1].trim() : null;
   };
+  // The disabled plate is the state family's 8, a step under the lightest
+  // working plate (C113 item 3, TB-2; it was 12 over a resting plate of 8).
   assert.equal(value('disable'),
-    'light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12))');
+    'light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8))');
   assert.equal(value('on-disable'),
     'light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48))');
   assert.equal(value('outline-disable'),

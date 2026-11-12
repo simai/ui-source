@@ -32,15 +32,38 @@ in. The `bg-surface-page/-area/-card/-popup/-popup-nested` utilities declare
 it and the place's dim ink; the cards and popups declare it themselves in a
 later stage.
 
-Translucent roles on a place: the fill `--sf-surface-container` (8/12/16 since
-C41), the state layers `--sf-surface-state-hover/-select/-active` (4/8/12), the
+Translucent roles on a place: the fill `--sf-surface-container` (12/16/20 since
+C113), the state layers `--sf-surface-state-hover/-select/-active` (4/8/12), the
 stronger fill `--sf-surface-container-strong` (24 since C41), the veil
 `--sf-surface-veil` (glass under a sticky header), disabled
-`--sf-surface-disabled` / `--sf-on-surface-disabled` / `--sf-outline-disabled`.
+`--sf-surface-disabled` (8 since C113) / `--sf-on-surface-disabled` /
+`--sf-outline-disabled`.
 Each colour has the same family: `--sf-<colour>-state-*`,
 `--sf-<colour>-container-strong`, `--sf-<colour>-outline`. Information has its
 state layers now (`--sf-info-state-*`, `--sf-info-container-strong`); it had
 none.
+
+### What changed with C113 (2026-11-13)
+
+- **The neutral fill weighs as much as the coloured ones.** The study of tonal
+  buttons (`ui-control` research 2026-11-12-tonal-buttons, TB-1, TB-2) found
+  the neutral plate at 8 lighter than every coloured container at 12 in the
+  light theme (1.10:1 on the page against 1.16-1.19). Two plates weigh the
+  same when they differ from the place by the same lightness: grey 50 and
+  blue 50 are equally dark, so the neutral takes the fill family's first
+  steps, `--sf-surface-container` 12, hover 16, press 20, strong 24. In the
+  dark theme the neutral is laid with grey 90, which lightens far more per
+  percent than a 50 tone, so "+12 dark" is not applied to it: 12/16/20 there
+  too. Every reader moves with the role (badges, tags, tabs, segmented
+  controls, fields, menus, tonal buttons; about 60 sheets), and every place
+  that writes the roles out (cards, popups, windows, `bg-surface-*`, the
+  popover, glass at white 12/16/20). The press state (12) now equals the
+  plate; a state is drawn over a plate, not instead of it.
+- **The disabled plate is lighter than rest.** `--sf-surface-disabled` is the
+  state family's 8 (was 12, heavier than the resting plate at 8), on a strong
+  coloured place the place's ink at 8 and on glass white 8.
+- The fills stay translucent: on a coloured place a neutral plate takes that
+  place's hue.
 
 ### What changed with C41 and C42 (2026-11-10)
 
@@ -263,8 +286,8 @@ primary, secondary or tertiary. The hue role utilities (R087 item 1, option A,
 `--sf-on-surface-media` (white), the same in both themes because a picture
 does not change with the theme. The class `.sf-surface-media` paints the glass
 with a blur (`--sf-blur-large`) and re-declares the roles a control on it
-reads from white on the alpha scale: states 4/8/12, fill 8/12/16, line 24,
-boundary 64, dim ink 80. An icon keeps its three roles.
+reads from white on the alpha scale: states 4/8/12, fill 12/16/20 (C113),
+disabled plate 8, line 24, boundary 64, dim ink 80. An icon keeps its three roles.
 
 Coloured places (a header in the brand colour, a status banner) are held for
 the owner's answer: the proposal is that the `bg-<role>` and
@@ -278,8 +301,9 @@ layer adds white 4/12/16/20/64/80 (white had 8 and 24), black 48/64/80 and the
 missing information steps (info-50 at 4/8, info-90 at 4/8/12/24); the theme
 generator writes the information steps for any theme colour. Two rules hold in
 `tests/alpha-scale.contract.test.mjs`: an ink step (48 and above) is a fill
-only for glass and the scrim; and the neutral fill family is 8/12/16 with the
-strong step 24 (C41), above every state but the press.
+only for glass and the scrim; and the neutral fill family is 12/16/20 with the
+strong step 24 (C113; 8/12/16 under C41), the plate at the press state's step
+and above every other state.
 
 The generator (`src/core/js/theme-palette.js`) also gives the greys no more
 chroma than the colour they come from (`min(5, source chroma)`): a near-grey
