@@ -381,33 +381,74 @@ function announce(entry) {
 
 // The toast's script can be there before its sheet: drawn meanwhile, a message
 // stood unstyled in the middle of the window and jumped into its corner. The
-// area waits hidden until the sheet places it (fixed). The first message also
-// waits for its parts (the icon, the close button, their utilities): the
-// Loader found them only after its 100 ms watch, and the message changed
-// height while it slid in, a 21 px step back. They are asked for at once and
-// the message shows when every sheet and font is in, at most two seconds.
-async function sheetApplied(area) {
-  const placed = () => globalThis.getComputedStyle(area).position === 'fixed';
+// area waits hidden until the toast sheet is applied to it. An open popover is
+// already position: fixed by the browser's own style, so the area is known
+// placed by a value only the toast sheet gives it: it takes no pointer.
+// The first message also waits for its parts (the icon, the close button,
+// their utilities): the Loader found them only after its 100 ms watch, and the
+// message changed height while it slid in, a 21 px step back. They are asked
+// for at once and the message shows when every sheet and font is in, at most
+// two seconds.
+//
+// Every message raised while a wait runs joins it (T1, C50 acceptance r3): two
+// messages of one task found each other connected, so neither was the first;
+// the second did not wait, showed the area unstyled and opaque, and the first
+// jumped 408-434 px into place. A message is the first when it finds no
+// settled message on view, and the area shows when the one wait ends.
+function areaPlaced(area) {
+  const style = globalThis.getComputedStyle(area);
+  return style.position === 'fixed' && style.pointerEvents === 'none';
+}
+
+// A stylesheet link that will never give a sheet -- switched off, or answered
+// with an error -- is not waited for: one broken link held the first message
+// for the whole two seconds (C50 acceptance r3, N3).
+const failedSheets = new WeakSet();
+if (typeof document !== 'undefined') {
+  document.addEventListener('error', (event) => {
+    if (event.target?.localName === 'link') failedSheets.add(event.target);
+  }, true);
+}
+function sheetPending(link) {
+  if (link.sheet || link.disabled || failedSheets.has(link)) return false;
+  const entry = globalThis.performance?.getEntriesByName?.(link.href, 'resource')?.at?.(-1);
+  return !(entry?.responseStatus >= 400);
+}
+
+let areaWait = null;
+let areaWaitFirst = false;
+function sheetApplied(area) {
+  if (areaWait) {
+    // A message joining the first wait has parts of its own (buttons, say):
+    // the Loader is asked for them too, and the wait counts their sheets.
+    if (areaWaitFirst) globalThis.SF?.Loader?.scanDom?.(area);
+    return areaWait;
+  }
+  const settled = state.shown.some((entry) => entry.settled && entry.toast?.isConnected);
+  if (settled && areaPlaced(area)) return Promise.resolve();
+  areaWaitFirst = !settled;
+  areaWait = waitForSheets(area, areaWaitFirst).finally(() => { areaWait = null; });
+  return areaWait;
+}
+
+async function waitForSheets(area, first) {
   const fonts = globalThis.document?.fonts;
-  const first = state.shown.filter((entry) => entry.toast?.isConnected).length <= 1;
   if (first) globalThis.SF?.Loader?.scanDom?.(area);
-  const sheetsIn = () => ![...document.querySelectorAll('link[rel="stylesheet"]')].some((link) => !link.sheet);
-  const ready = () => placed() && (!fonts || fonts.status === 'loaded') && sheetsIn();
-  // A later message finds its parts in: it waits only for the sheet that
-  // places the area (it stood two frames at its place and then waited for
-  // sheets of other parts of the page, out of sight but late).
-  if (!first && placed()) return;
+  const sheetsIn = () => ![...document.querySelectorAll('link[rel="stylesheet"]')].some(sheetPending);
+  const ready = () => areaPlaced(area) && (!fonts || fonts.status === 'loaded') && sheetsIn();
   // Laid out, the message asks for its fonts.
   void area.offsetHeight;
   area.style.visibility = 'hidden';
   const started = Date.now();
   // Ready three checks in a row: the sheets the scan asked for are linked a
-  // frame after it.
+  // frame after it. A later message finds its parts in: it waits only for
+  // the sheet that places the area (it stood two frames at its place and then
+  // waited for sheets of other parts of the page, out of sight but late).
   let calm = 0;
   while (Date.now() - started < 2000) {
     await new Promise((resolve) => setTimeout(resolve, 16));
     void area.offsetHeight;
-    calm = (first ? ready() : placed()) ? calm + 1 : 0;
+    calm = (first ? ready() : areaPlaced(area)) ? calm + 1 : 0;
     if (calm >= (first ? 3 : 1)) break;
   }
 }
@@ -459,6 +500,7 @@ async function display(entry) {
   state.resize?.observe(toast);
   await sheetApplied(area);
   if (!state.shown.includes(entry)) return;
+  entry.settled = true;
   area.style.visibility = '';
   announce(entry);
   layout();

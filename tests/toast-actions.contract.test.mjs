@@ -28,7 +28,7 @@ const buttons = (html) => (html.match(/data-toast-action=/g) ?? []).length - lin
 
 test('the manifest declares the action model (sf-toast 1.3.0)', () => {
   const manifest = json('src/smart/toast/component.json');
-  assert.equal(manifest.version, '1.3.0');
+  assert.equal(manifest.version, '1.3.1');
   assert.deepEqual(manifest.settings['action-href'], {...manifest.settings['action-href'], type: 'string', default: ''});
   assert.equal(manifest.settings['secondary-action-text'].default, '');
   assert.equal(manifest.settings['secondary-action'].default, 'secondary');
@@ -43,9 +43,11 @@ test('one light navigation action is a link at the end of the text, with no butt
   assert.equal(links(html), 1);
   assert.equal(buttons(html), 0);
   assert.doesNotMatch(html, /sf-toast-bottom/);
-  assert.match(html, /<div class="sf-toast-supporting-text">Выгрузка собрана\. <a\s+class="sf-toast-link"\s+href=\/reports\/11\s+data-action=open\s+data-toast-action=open\s*>Открыть<\/a><\/div>/);
+  assert.match(html, /<div class="sf-toast-supporting-text">Выгрузка собрана\.\u00a0<a\s+class="sf-toast-link"\s+href=\/reports\/11\s+data-action=open\s+data-toast-action=open\s*>Открыть<\/a><\/div>/);
+  // A no-break space keeps the link with the last word (T2, C50 acceptance r3).
+  assert.doesNotMatch(html, / <a\s/);
   // Without supporting text the link ends the heading.
-  assert.match(draw({actionText: 'Открыть', actionHref: '#r'}), /<div class="sf-toast-text">Отчёт готов <a\s+class="sf-toast-link"/);
+  assert.match(draw({actionText: 'Открыть', actionHref: '#r'}), /<div class="sf-toast-text">Отчёт готов\u00a0<a\s+class="sf-toast-link"/);
 });
 
 test('undo, retry, extend and two actions are buttons; a toast never mixes the two', () => {
@@ -63,6 +65,7 @@ test('undo, retry, extend and two actions are buttons; a toast never mixes the t
 test('the class toast draws the same link and buttons (component.toast 1.3.0)', () => {
   const source = readFileSync(new URL('../src/component/toast/js/_toast.js', import.meta.url), 'utf8');
   assert.match(source, /anchor\.className = 'sf-toast-link'/);
+  assert.match(source, /line\.append\('\\u00a0'\)/, 'the link keeps to the last word');
   assert.match(source, /const buttons = linkText\s*\? \[\]/);
   const css = readFileSync(new URL('../src/component/toast/scss/_css__toast.scss', import.meta.url), 'utf8');
   assert.match(css, /\.sf-toast \.sf-toast-link \{\s*color: inherit;/);
@@ -74,6 +77,7 @@ test('the first paint holds the link and the two buttons', () => {
   const link = readFileSync(new URL('link.html', folder), 'utf8');
   assert.match(link, /<a class="sf-toast-link" href="#report" data-action="open" data-toast-action="open">Открыть<\/a>/);
   assert.doesNotMatch(link, /sf-toast-bottom/);
+  assert.match(link, /собрана\.(?:\u00a0|&nbsp;)<a class="sf-toast-link"/, 'the link keeps to the last word');
   const two = readFileSync(new URL('two-actions.html', folder), 'utf8');
   assert.equal((two.match(/<button type="button" class="sf-button/g) ?? []).length, 2);
   assert.doesNotMatch(two, /sf-toast-link/);

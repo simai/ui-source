@@ -20,9 +20,9 @@ const page = () => `<!doctype html><html lang="ru"><head><meta charset="utf-8">
 <link rel="stylesheet" href="/distr/core/css/core.css">
 <script src="/distr/core/js/core.js"></script></head><body><main>Страница</main></body></html>`;
 const types = {'.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2'};
-const server = createServer((request, response) => {
+const server = createServer(async (request, response) => {
   const path = decodeURIComponent(new URL(request.url, 'http://probe').pathname);
-  if (path === '/') {
+  if (path === '/' || path === '/late') {
     response.writeHead(200, {'content-type': 'text/html; charset=utf-8'});
     return response.end(page());
   }
@@ -32,6 +32,8 @@ const server = createServer((request, response) => {
     response.writeHead(404);
     return response.end();
   }
+  // The late page gets the toast sheet 800 ms after it asked (T1).
+  if (/\/late$/u.test(request.headers.referer ?? '') && /^toast\/css\//u.test(match[2])) await new Promise((done) => setTimeout(done, 800));
   response.writeHead(200, {'content-type': types[extname(file)] ?? 'application/octet-stream'});
   return response.end(readFileSync(file));
 }).listen(0, '127.0.0.1');
@@ -161,6 +163,37 @@ try {
   });
   if (!keys.expanded) failures.push('focus opens the stack');
   if (keys.after !== keys.before - 1 || !keys.moved) failures.push(`Escape closes the focused message and moves the focus: ${JSON.stringify(keys)}`);
+
+  // T1 (C50 acceptance r3): two messages of one task while the toast sheet is
+  // late. The area stays hidden until the sheet is applied, and then each
+  // message comes in from the edge, transparent at first: none is drawn
+  // unstyled and opaque, and none jumps into place.
+  const late = await browser.newPage({viewport: {width: 1200, height: 800}});
+  await late.goto(`http://127.0.0.1:${server.address().port}/late`);
+  await late.waitForFunction(() => typeof window.SF?.notify === 'function', null, {timeout: 10000});
+  const pair = await late.evaluate(async () => {
+    window.SF.notify({status: 'info', title: 'Первое', text: 'Текст первого сообщения.', duration: 0});
+    window.SF.notify({status: 'success', title: 'Второе', text: 'Текст второго сообщения.', duration: 0});
+    const frames = [];
+    const started = performance.now();
+    while (performance.now() - started < 2500) {
+      await new Promise((done) => requestAnimationFrame(done));
+      const area = document.querySelector('.sf-notifications');
+      if (!area) continue;
+      const style = getComputedStyle(area);
+      const shown = area.matches(':popover-open') && style.visibility !== 'hidden';
+      frames.push({shown, styled: style.pointerEvents === 'none',
+        toasts: [...area.querySelectorAll('.sf-toast')].map((toast) => ({id: toast.dataset.sfNotification, opacity: Number(getComputedStyle(toast).opacity), top: Math.round(toast.getBoundingClientRect().top)}))});
+    }
+    return {frames, height: innerHeight};
+  });
+  const shownFrames = pair.frames.filter((frame) => frame.shown && frame.toasts.length);
+  const unstyled = shownFrames.filter((frame) => !frame.styled).length;
+  const firstSeen = {};
+  for (const frame of shownFrames) for (const toast of frame.toasts) firstSeen[toast.id] ??= toast;
+  const entries = Object.values(firstSeen);
+  if (unstyled) failures.push(`a late toast sheet: ${unstyled} frames show the area unstyled`);
+  if (entries.length !== 2 || entries.some((toast) => toast.opacity > 0.5 || toast.top < pair.height - 1)) failures.push(`a late toast sheet: both messages come in from the edge, transparent: ${JSON.stringify(entries)}`);
 } finally {
   await browser.close();
   server.close();

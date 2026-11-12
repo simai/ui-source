@@ -51,7 +51,8 @@ of the text: `action-text` with `action-href`, and no secondary action.
 The link is `a.sf-toast-link` in the text's own ink, medium weight,
 underlined, with the Framework focus ring; it is followed as a link and its
 press is `sf-toast-action` with its `action`. `action-href="#"` does not jump:
-the page answers the event. Undo, retry, extend and two actions are buttons
+the page answers the event. A no-break space keeps the link with the last word
+of the text (1.3.1), so it never stands alone on a line. Undo, retry, extend and two actions are buttons
 under the text (C35, C46): `action-text` alone is one button;
 `secondary-action-text` and `secondary-action` add a second, and then both are
 buttons and `action-href` does not apply. A toast never shows a link and

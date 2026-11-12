@@ -263,7 +263,10 @@ function createToastElement(options = {}) {
     anchor.setAttribute('data-toast-action', link.action || 'action');
     anchor.textContent = linkText;
     const line = wrap.querySelector('.sf-toast-supporting-text') ?? wrap.lastElementChild;
-    if (line.textContent) line.append(' ');
+    // A no-break space keeps the link with the text's last word: after a plain
+    // space a full line sent the link alone onto a line of its own (T2, C50
+    // acceptance r3).
+    if (line.textContent) line.append('\u00a0');
     line.append(anchor);
   }
 
