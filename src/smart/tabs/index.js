@@ -4,6 +4,8 @@ import { elementFromManifest } from '../../core/js/element-manifest';
 import { instancePath, partId } from '../../core/js/instance-path';
 import { isTag } from '../../core/js/tag-aliases.js';
 import { followDensity, RELATIVE } from '../../core/js/density.js';
+import { breakpointMedia } from '../../core/js/breakpoints.js';
+import { noteDeprecated } from '../../core/js/deprecations';
 import { renderTabsTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -30,6 +32,15 @@ const TabsElement = elementFromManifest(manifest, {
 const isPagePanel = (node) => node?.nodeType === 1 && node.getAttribute('role') === 'tabpanel'
   && !node.hasAttribute('slot') && !node.hasAttribute('data-sf-static');
 const OVERFLOWS = ['scroll', 'wrap', 'more'];
+// fit (owner decision C96 item 7): the tabs share the row equally -- auto on
+// a phone when two to four fit, always, or never.
+const FITS = ['auto', 'always', 'never'];
+// The looks of sf-tabs 1.3.0 (owner decision C96 item 1): the line (the
+// default) and the plate (pills); vertical is the menu column. The filled
+// look without a type, full and the scheme fills are retired.
+const RETIRED = { since: '2026-11-12', remove_after: '2027-01-01' };
+// A field that says it is wrong, inside a panel (goToError).
+const INVALID = '[aria-invalid="true"], [invalid]:not([invalid="false"]), :invalid';
 // What takes the focus inside a panel: a panel holding one is not a tab stop
 // of its own (APG tabs; R184 T8).
 const FOCUSABLE = [
@@ -185,6 +196,7 @@ class SfTabs extends TabsElement {
       // does not fit goes into «Ещё (n)» whole; scroll keeps the former
       // scrolling row, wrap wraps the rows.
       overflow: { default: 'more' },
+      fit: { default: 'auto' },
       // A gear at the end of the tabs: the person orders and hides them; the
       // host keeps the choice (sf-tabs-settings-change, setSettings).
       configurable: { type: Boolean, default: false },
@@ -394,6 +406,19 @@ class SfTabs extends TabsElement {
   }
 
   connectedCallback() {
+    // The phone's width (core/js/breakpoints, md): vertical tabs become a row
+    // with «Ещё», and fit auto shares the row (C96 items 5 and 7).
+    if (!this._narrowMedia) {
+      this._narrowMedia = breakpointMedia('md', { below: true });
+      this._narrow = this._narrowMedia?.matches === true;
+      this._onNarrow = () => {
+        const narrow = this._narrowMedia?.matches === true;
+        if (narrow === this._narrow) return;
+        this._narrow = narrow;
+        this.requestComponentUpdate('narrow');
+      };
+      this._narrowMedia?.addEventListener?.('change', this._onNarrow);
+    }
     super.connectedCallback?.();
     // The address is read again when it changes (Back, Forward, a link to
     // #<id> on the page); the listener answers only with hash on.
@@ -405,6 +430,8 @@ class SfTabs extends TabsElement {
   }
 
   disconnectedCallback() {
+    this._narrowMedia?.removeEventListener?.('change', this._onNarrow);
+    this._narrowMedia = null;
     if (this._addressListener) {
       globalThis.removeEventListener?.('hashchange', this._addressListener);
       globalThis.removeEventListener?.('popstate', this._addressListener);
@@ -731,6 +758,8 @@ class SfTabs extends TabsElement {
     return Array.from({ length: this.tabCount }).map((_, index) => {
       const item = items[index] || {};
 
+      const own = String(item.id ?? item.key ?? index);
+      const errors = Number(this._errors?.has(own) ? this._errors.get(own) : item.errors);
       return {
         ...item,
         // A tab without a label is named in the page's language (R184 T14:
@@ -738,6 +767,9 @@ class SfTabs extends TabsElement {
         label: item.label || this.sfWord('tab', {vars: {n: index + 1}}),
         // The entry's id (§16 item 42); key is its old name.
         key: String(item.id ?? item.key ?? index),
+        // The errors in the tab's panel (C96 item 6): a count on the tab, said
+        // with its name.
+        errors: Number.isFinite(errors) && errors > 0 ? Math.floor(errors) : 0,
         pinned: Boolean(item.pinned),
         count: item.count ?? null,
         href: item.href || '',
@@ -790,6 +822,45 @@ class SfTabs extends TabsElement {
   set selected(value) {
     if (value === null || value === undefined || value === '') this.removeAttribute('selected');
     else this.setAttribute('selected', String(value));
+  }
+
+  // The look drawn (C96 item 1): line unless pills or vertical; vertical on a
+  // phone is the line with «Ещё» (item 5). type="full" is the line with fit
+  // always; no type and the scheme fills draw the line.
+  get look() {
+    const type = this.getAttribute('type');
+    if (type === 'pills') return 'pills';
+    if (type === 'vertical') return this._narrow ? 'underline' : 'vertical';
+    return 'underline';
+  }
+
+  get fit() {
+    const value = this.getAttribute('fit');
+    if (FITS.includes(value)) return value;
+    return this.getAttribute('type') === 'full' ? 'always' : 'auto';
+  }
+
+  // The retired looks, each noted once per element (SF.deprecations).
+  noteRetiredLooks() {
+    const type = this.getAttribute('type');
+    const scheme = this.getAttribute('scheme');
+    const notes = [];
+    if (type === 'full') notes.push({ attribute: 'type', from: 'full', to: 'underline' });
+    if (scheme === 'outline' || scheme === 'link') notes.push({ attribute: 'scheme', from: scheme, to: null });
+    this._retiredNoted ??= new Set();
+    for (const note of notes) {
+      const key = `${note.attribute}=${note.from}`;
+      if (this._retiredNoted.has(key)) continue;
+      this._retiredNoted.add(key);
+      noteDeprecated({ component: 'sf-tabs', tag: 'sf-tabs', kind: 'value', ...note, ...RETIRED });
+    }
+  }
+
+  // fit: the tabs share the row equally (C96 item 7).
+  fitsEqually(count) {
+    const fit = this.fit;
+    if (fit === 'never' || this.look === 'vertical') return false;
+    return fit === 'always' ? count > 1 : Boolean(this._narrow) && count >= 2 && count <= 4;
   }
 
   get overflow() {
@@ -978,11 +1049,13 @@ class SfTabs extends TabsElement {
     for (const host of hosts) host.classList.remove('sf-tabs-overflowed', 'sf-tabs-squeezed');
     this._overflowed = [];
     const container = list.parentElement;
+    // The tabs are measured at their own widths; fit shares the row after.
+    container?.removeAttribute('data-sf-tabs-fit');
     const showMore = (shown) => {
       if (shown) container?.setAttribute('data-sf-tabs-more', '');
       else container?.removeAttribute('data-sf-tabs-more');
     };
-    if (this.overflow !== 'more' || this.getAttribute('type') === 'vertical') {
+    if (this.overflow !== 'more' || this.look === 'vertical') {
       showMore(false);
       this._expectedTabSizes = null;
       return;
@@ -1014,7 +1087,12 @@ class SfTabs extends TabsElement {
     };
     showMore(false);
     let kept = fits(room());
-    if (!kept) this.expectTabSizes(hosts, widths, null);
+    if (!kept && this.fitsEqually(hosts.length)) {
+      // Every tab fits: they share the row, each at least its own width. The
+      // shared widths are what the observer will report, not a change.
+      container?.setAttribute('data-sf-tabs-fit', '');
+      this.expectTabSizes(hosts, hosts.map(width), null);
+    } else if (!kept) this.expectTabSizes(hosts, widths, null);
     if (kept) {
       showMore(true);
       const items = this.computedItems;
@@ -1228,6 +1306,7 @@ class SfTabs extends TabsElement {
 
   templateContext() {
     const props = this.getPropsContext();
+    this.noteRetiredLooks();
     // The open panel is drawn now and kept drawn (lazy).
     const open = this.computedItems[this.activeIndex];
     if (open) this._openedPanels.add(open.key);
@@ -1245,6 +1324,11 @@ class SfTabs extends TabsElement {
       configurable: this.configurable,
       links: this.links,
       sticky: this.sticky,
+      look: this.look,
+      // The scheme fills are retired (C96 item 1): the tabs' buttons take one
+      // look, and the tabs' sheet draws line, plate or column on it.
+      scheme: 'default',
+      errorWords: (count) => this.errorWords(count),
       moreText: this.text('more'),
       customizeText: this.text('customize'),
       rootClass: this.getRootClass(),
@@ -1319,6 +1403,38 @@ class SfTabs extends TabsElement {
     });
 
     return this;
+  }
+
+  // The errors in each panel, by entry id ({profile: 0, access: 2}): the
+  // tabs show the count and say it with the tab's name (C96 item 6). An id
+  // not given keeps the item's own errors.
+  setErrors(errors = {}) {
+    this._errors = new Map(Object.entries(errors && typeof errors === 'object' ? errors : {})
+      .map(([key, value]) => [String(key), Number(value) || 0]));
+    this.requestComponentUpdate('errors');
+    return this;
+  }
+
+  // The action go-to-error (C96 item 6): opens the first tab, in the order
+  // the tabs stand, with an error and focuses the first wrong field in its
+  // panel, as a form's Save does after a failed check. Not reported (§8).
+  goToError() {
+    const target = this.arrangedItems.find((item) => item.errors > 0 && !item.disabled);
+    if (!target) return { outcome: 'refused', reason: 'no-errors' };
+    if (target.index !== this.activeIndex) this.selectTab(target.index, { person: false });
+    this.whenPanelDrawn(target, () => {
+      const panel = this.drawnPanels().find((one) => Number(one.dataset.sfTabPanel) === target.index);
+      const field = panel?.querySelector(INVALID);
+      if (!field) return;
+      const own = field.matches('input, select, textarea, button, [tabindex], [contenteditable]') ? field
+        : field.querySelector('input, select, textarea, [contenteditable], [tabindex]:not([tabindex="-1"])');
+      (own ?? field).focus?.();
+    });
+    return { outcome: 'applied' };
+  }
+
+  errorWords(count) {
+    return this.sfWord('errors', { count, vars: { n: count } });
   }
 
   // The action go-to {index} (§4.4): selects the tab and answers an outcome.

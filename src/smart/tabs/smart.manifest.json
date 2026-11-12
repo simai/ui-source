@@ -55,6 +55,7 @@
       "type": {
         "type": "string",
         "default": "",
+        "description": "The look (owner decision C96 item 1): no type or underline is the line (the default: a primary 2 px line under the selected label, on-surface ink), pills the plate (the selected tab on primary-container), vertical the menu's column (the current tab on the menu's current fill, labels at the start; on a phone the line with «Ещё»). full is retired: it draws the line with fit always (noted in SF.deprecations until 2027-01-01, journal value-tabs-full-to-underline).",
         "enum": [
           "underline",
           "pills",
@@ -78,7 +79,7 @@
       "scheme": {
         "type": "string",
         "default": "default",
-        "description": "Built-in button appearance: default, outline or link. Historical name retained; this is not a semantic color selector. Custom templates may interpret it separately."
+        "description": "Retired (owner decision C96 item 1): the tabs draw one look per type whatever the scheme, so default, outline or link draw the same; outline and link are noted in SF.deprecations until 2027-01-01 (journal value-tabs-scheme-retired). The value is not a semantic color selector; custom templates may still read it."
       },
       "top-position": {
         "type": "string",
@@ -105,6 +106,16 @@
           "scroll",
           "wrap",
           "more"
+        ]
+      },
+      "fit": {
+        "type": "string",
+        "default": "auto",
+        "description": "Whether the tabs share the row equally when they all fit, each at least its own width (owner decision C96 item 7): auto on a phone (below the md breakpoint) with two to four tabs, always, or never. What does not fit still goes into «Ещё (n)». Not for vertical tabs.",
+        "enum": [
+          "auto",
+          "always",
+          "never"
         ]
       },
       "configurable": {
@@ -139,7 +150,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "An item (set with setItems) may carry key (a stable id for the settings; the index otherwise), icon, count (a small counter after the label), href (an address; when every item has one the row is a strip of links -- a <nav> of <a> with the same look, the current one aria-current=\"page\", no tablist, no arrows, Tab and Enter as links; one item with href among tabs is a tab that goes to its address) and pinned (never hidden, fixed in the settings); disabled (the tab stays focusable, says aria-disabled and selects nothing) and hint (a short text in the Framework tooltip on the tab, read as its description: for a disabled tab, why it is off)."
+        "description": "An item (set with setItems) may carry key (a stable id for the settings; the index otherwise), icon, count (a small counter after the label), href (an address; when every item has one the row is a strip of links -- a <nav> of <a> with the same look, the current one aria-current=\"page\", no tablist, no arrows, Tab and Enter as links; one item with href among tabs is a tab that goes to its address) and pinned (never hidden, fixed in the settings); disabled (the tab stays focusable, says aria-disabled and selects nothing) and hint (a short text in the Framework tooltip on the tab, read as its description: for a disabled tab, why it is off); errors (the number of errors in the tab's panel: a count on the error container after the label, said with the name -- «Доступ, 2 ошибки»; setErrors({id: n}) gives them by id)."
       },
       "settings": {
         "type": "object"
@@ -231,6 +242,14 @@
         "description": "The element, for chaining."
       }
     },
+    "goToError": {
+      "summary": "Opens the first tab, in the order the tabs stand, whose item has errors and focuses the first wrong field in its panel ([aria-invalid=true], [invalid] or :invalid), as a form's Save does after a failed check; refused with no-errors when none has. Not reported as a change.",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
     "getData": {
       "summary": "Returns the data set with setData: {tabs, panels, ...}; {tabs: [], panels: []} when none was set.",
       "arguments": [],
@@ -295,6 +314,20 @@
       "arguments": [
         {
           "name": "settings",
+          "type": "object",
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "setErrors": {
+      "summary": "Gives the errors of each panel by entry id ({profile: 0, access: 2}); the tabs show the count and say it with the tab's name. An id not given keeps the item's own errors.",
+      "arguments": [
+        {
+          "name": "errors",
           "type": "object",
           "required": true
         }
@@ -527,7 +560,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tabs/index.js",
-        "sha256": "bd23efaf12e875392a94c3576e7822d2d54a134c6b69245fb60cab2e8ef0de68"
+        "sha256": "82c1dc81f671b3a5591a704dd33449963ae908e3068efccdfdc7eda0377d8003"
       }
     ],
     "generated_runtime": [

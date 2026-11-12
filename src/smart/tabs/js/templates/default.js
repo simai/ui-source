@@ -116,9 +116,17 @@ function renderTab(item, context) {
     `;
   }
 
-  // A count after the label, when the item has one; the tab's own slot wins.
-  const counted = tabContent === nothing && item.count !== null && item.count !== undefined && item.count !== ''
-    ? html`<span slot="text" class="sf-tabs-label">${item.label}<span class="sf-tabs-count">${String(item.count)}</span></span>`
+  // The label, a count after it when the item has one, and the errors of its
+  // panel (C96 item 6: the count on the error colours, said with the name --
+  // «Доступ, 2 ошибки»); the tab's own slot wins. The name keeps the width
+  // of its medium face, so selecting a tab, whose label alone is medium
+  // (C96 item 3), moves nothing (sf-tabs-name, data-text).
+  const hasCount = item.count !== null && item.count !== undefined && item.count !== '';
+  const counted = tabContent === nothing
+    ? html`<span slot="text" class="sf-tabs-label"><span class="sf-tabs-name" data-text=${item.label}>${item.label}</span>${hasCount
+      ? html`<span class="sf-tabs-count">${String(item.count)}</span>` : nothing}${item.errors
+      ? html`<span class="sf-tabs-count sf-tabs-count--error" aria-hidden="true">${String(item.errors)}</span><span class="sf-tabs-said">, ${context.errorWords?.(item.errors) ?? item.errors}</span>`
+      : nothing}</span>`
     : nothing;
 
   if(context.variant !== 'icons') {
@@ -164,7 +172,7 @@ function renderTab(item, context) {
 }
 
 function topClasses(context) {
-  return joinClasses(`sf-tabs-top flex content-main-${context.topPosition}`, context.type === 'vertical' ? 'flex-col' : '', context.topClass);
+  return joinClasses(`sf-tabs-top flex content-main-${context.topPosition}`, (context.look ?? context.type) === 'vertical' ? 'flex-col' : '', context.topClass);
 }
 
 function renderTabs(context) {
@@ -197,13 +205,16 @@ function hasPanelContent(context) {
 }
 
 export function renderTabsTemplate(context) {
-  const vertical = context.type === 'vertical';
+  // The look drawn (C96 item 1): line, plate (pills) or the menu column
+  // (vertical); a custom template still reads context.type.
+  const look = context.look ?? context.type;
+  const vertical = look === 'vertical';
   const sizeClass = `sf-tabs--size-${String(context.size || '1').replace('/', '-')}`;
   const rootClasses = joinClasses(
     'sf-tabs',
     sizeClass,
     context.overflow && context.overflow !== 'scroll' ? `sf-tabs--overflow-${context.overflow}` : '',
-    context.type ? `sf-tabs--${context.type}` : '',
+    look ? `sf-tabs--${look}` : '',
     vertical ? 'sf-tabs--vertical flex' : 'flex flex-col',
     context.links ? 'sf-tabs--links' : '',
     context.sticky ? 'sf-tabs--sticky' : '',

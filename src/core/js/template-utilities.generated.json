@@ -415,6 +415,8 @@
     "container/default",
     "display/default",
     "flex-direction/default",
+    "position/default",
+    "text-decoration/default",
     "visibility/default"
   ],
   "cl-tag": [

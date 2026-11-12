@@ -1,7 +1,7 @@
 // sf-tabs 1.3.0: the defects of the R184 tabs study (ui-control
 // control/research/2026-11-12-tabs.md §4, prototype prototypes/tabs-study.html),
-// one test per defect. T1, T2, T6, T7 and T11 are the owner's look questions
-// and are not here.
+// one test per defect; T1, T2, T6, T7 and T11 follow owner decision C96
+// (2026-11-12), one test per item.
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
@@ -281,4 +281,108 @@ test('sticky: the tab row stays in sight, below --sf-tabs-sticky-top', () => {
   const text = JSON.stringify(variables);
   assert.match(text, /"name":"--sf-tabs-sticky-top"/u);
   assert.ok(manifest['css-variables']['--sf-tabs-sticky-top']);
+});
+
+// --- owner decision C96 (2026-11-12) ---------------------------------------
+const sheet = read('src/component/tabs/scss/_css__tabs.scss');
+const journal = JSON.parse(read('contracts/changes/journal.json'));
+const getter = (name) => new Function(
+  'FITS',
+  `return function () {${source.split(`\n  get ${name}() {`)[1].split('\n  }\n')[0]}\n};`,
+)(['auto', 'always', 'never']);
+const host = (attributes, extra = {}) => ({getAttribute: (name) => attributes[name] ?? null, ...extra});
+
+test('C96 1 (T1): two looks, the line by default and the plate; full and the scheme fills are retired aliases', () => {
+  const look = getter('look');
+  assert.equal(look.call(host({})), 'underline', 'no type draws the line');
+  assert.equal(look.call(host({type: 'underline'})), 'underline');
+  assert.equal(look.call(host({type: 'full'})), 'underline');
+  assert.equal(look.call(host({type: 'pills'})), 'pills');
+  assert.equal(look.call(host({type: 'vertical'})), 'vertical');
+  // The scheme no longer reaches the drawing.
+  assert.match(source, /scheme: 'default',/u);
+  const ids = journal.records.map((record) => record.id);
+  for (const id of ['behaviour-tabs-line-default', 'value-tabs-full-to-underline', 'value-tabs-scheme-retired']) {
+    const record = journal.records.find((one) => one.id === id);
+    assert.ok(ids.includes(id), id);
+    assert.equal(record.remove_after, '2027-01-01');
+  }
+  const noted = method('noteRetiredLooks');
+  assert.match(noted, /noteDeprecated\(/u);
+  assert.match(noted, /from: 'full', to: 'underline'/u);
+  assert.match(noted, /scheme === 'outline' \|\| scheme === 'link'/u);
+  assert.match(manifest.settings.scheme.summary, /Retired/u);
+  // One selected rule per look: the line is primary with on-surface ink, the plate primary-container.
+  assert.match(sheet, /sf-tabs--underline[^{]*\.selected[^{]*\{[^}]*--sf-button--border-color: var\(--sf-tabs-indicator-color, var\(--sf-primary\)\)/u);
+  assert.match(sheet, /sf-tabs--underline[^{]*\.selected[^{]*\.sf-button-text-container \{\s*--sf-button-text-container--color: var\(--sf-on-surface\)/u);
+  assert.match(sheet, /sf-tabs--pills[^{]*\.selected[^{]*\{[^}]*--sf-button--background-color: var\(--sf-primary-container\)/u);
+});
+
+test('C96 2 (T6): the line is 2 px at every size and switches at once', () => {
+  assert.doesNotMatch(sheet, /calc\(var\(--sf-px\) \* 3\)/u);
+  assert.match(sheet, /sf-tabs--underline > \.sf-tabs-top-container > \.sf-tabs-top :is\(\.sf-button, \.sf-icon-button\) \{\s*transition-property: background-color, box-shadow, color;/u);
+});
+
+test('C96 3 (T11): only the selected label is medium, with its width reserved', () => {
+  assert.match(template, /<span class="sf-tabs-name" data-text=\$\{item\.label\}>/u);
+  assert.match(sheet, /\.sf-tabs-top \.sf-tabs-name \{\s*display: inline-grid;\s*font-weight: var\(--sf-font-weight-regular\);/u);
+  assert.match(sheet, /\.sf-tabs-top \.sf-tabs-name::after \{\s*content: attr\(data-text\) \/ "";\s*grid-area: 1 \/ 1;\s*block-size: 0;\s*visibility: hidden;\s*font-weight: var\(--sf-font-weight-medium\);/u);
+  assert.match(sheet, /\.sf-tabs-top \.selected \.sf-tabs-name \{\s*font-weight: var\(--sf-font-weight-medium\);/u);
+});
+
+test('C96 4: hover darkens the ink only, no grey line', () => {
+  const hover = sheet.split('// Under the pointer or the keyboard a line tab')[1].split('// A tab sits flush')[0];
+  assert.doesNotMatch(hover, /outline-variant/u);
+  assert.match(hover, /--sf-button--border-color: transparent;/u);
+  assert.match(hover, /--sf-button-text-container--color: var\(--sf-on-surface\)/u);
+  assert.match(hover, /--sf-icon--color: var\(--sf-on-surface\)/u);
+});
+
+test('C96 5 (T2): vertical tabs are the menu column, and a row with More on the phone', () => {
+  const look = getter('look');
+  assert.equal(look.call(host({type: 'vertical'}, {_narrow: true})), 'underline');
+  assert.match(source, /breakpointMedia\('md', \{ below: true \}\)/u);
+  const column = sheet.split('// Vertical tabs are the menu')[1];
+  assert.match(column, /\.selected[^{]*\{[^}]*--sf-button--background-color: var\(--sf-primary-container-active\)/u);
+  assert.match(column, /:hover[^{]*\{[^}]*--sf-button--background-color: var\(--sf-surface-state-hover\)/u);
+  assert.match(column, /justify-content: flex-start/u);
+  assert.match(column, /text-align: start/u);
+  assert.match(source, /if \(type === 'vertical'\) return this\._narrow \? 'underline' : 'vertical';/u);
+});
+
+test('C96 6 (T7): a per-tab error count is said with the name; go-to-error opens the first and focuses its field', () => {
+  assert.deepEqual(Object.keys(manifest.settings.items.of).includes('errors'), true);
+  assert.equal(ru.runtime.errors.few, '{n} ошибки');
+  assert.equal(en.runtime.errors.one, '{n} error');
+  assert.match(template, /class="sf-tabs-count sf-tabs-count--error" aria-hidden="true"/u);
+  assert.match(template, /<span class="sf-tabs-said">, \$\{context\.errorWords/u);
+  // Sized by the label (C95): the count inherits the label's size and line.
+  assert.match(sheet, /\.sf-tabs-count \{[^}]*font-size: inherit;\s*line-height: inherit;/u);
+  assert.doesNotMatch(sheet, /\.sf-tabs-count \{[^}]*--sf-text-size-1\\\/3/u);
+  const computed = computedItems.call({
+    dataTabs: [], items: [{id: 'a', label: 'Профиль'}, {id: 'b', label: 'Доступ', errors: 1}],
+    dataPanels: [], activeIndex: 0, tabCount: 2, sfWord: () => '', _errors: new Map([['b', 2]]),
+  });
+  assert.deepEqual(computed.map((item) => item.errors), [0, 2]);
+  const go = method('goToError');
+  assert.match(go, /this\.arrangedItems\.find\(\(item\) => item\.errors > 0 && !item\.disabled\)/u);
+  assert.match(go, /this\.selectTab\(target\.index, \{ person: false \}\)/u);
+  assert.match(go, /this\.whenPanelDrawn\(target,/u);
+  assert.match(go, /querySelector\(INVALID\)/u);
+  assert.match(go, /\.focus\?\.\(\)/u);
+  assert.ok(manifest.actions['go-to-error']);
+});
+
+test('C96 7: two to four tabs share the phone row (fit); overflow stays More', () => {
+  const fits = new Function('count', `${method('fitsEqually', 'count').replace(/^[^{]*\{/u, '').replace(/\}\s*$/u, '')}`);
+  const at = (attributes, narrow, count) => fits.call({fit: getter('fit').call(host(attributes)), look: getter('look').call(host(attributes, {_narrow: narrow})), _narrow: narrow}, count);
+  assert.equal(at({}, true, 3), true);
+  assert.equal(at({}, true, 5), false, 'five on the phone go to More');
+  assert.equal(at({}, false, 3), false, 'auto: only on the phone');
+  assert.equal(at({fit: 'always'}, false, 3), true);
+  assert.equal(at({fit: 'never'}, true, 3), false);
+  assert.equal(at({type: 'full'}, false, 6), true, 'full is the line with fit always');
+  assert.equal(manifest.settings.fit.default, 'auto');
+  assert.match(source, /container\?\.setAttribute\('data-sf-tabs-fit', ''\);/u);
+  assert.match(sheet, /\.sf-tabs-top-container\[data-sf-tabs-fit\] > \.sf-tabs-top \{/u);
 });
