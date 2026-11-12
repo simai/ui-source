@@ -6,6 +6,22 @@ function numericList(value) {
   return (Array.isArray(value) ? value : [value]).map(Number);
 }
 
+// Digits after the point a number is written with: 0.1 has one, 2.5e-3 four,
+// 500 none. A value is rounded to the digits of its step and its minimum, so
+// three steps of 0.1 are 0.3, not 0.30000000000000004 (S2).
+export function decimalPlaces(value) {
+  const text = String(value ?? '').trim().toLowerCase();
+  if (!text || !Number.isFinite(Number(text))) return 0;
+  const [coefficient, exponent = '0'] = text.split('e');
+  const fraction = coefficient.split('.')[1]?.length || 0;
+  return Math.min(20, Math.max(0, fraction - Number(exponent)));
+}
+
+export function roundToDigits(value, digits) {
+  const rounded = Number(Number(value).toFixed(Math.min(20, Math.max(0, digits))));
+  return Object.is(rounded, -0) ? 0 : rounded;
+}
+
 function createNode(tag, className) {
   const node = document.createElement(tag);
   node.className = className;
@@ -17,6 +33,7 @@ export function createNativeSlider(root, options) {
   const range = options.range;
   const margin = Number(options.margin || 0);
   const step = Number(options.step || 1);
+  const digits = Math.max(decimalPlaces(step), decimalPlaces(range.min));
   const listeners = new Map();
   let disabled = false;
   let values = numericList(options.start).map((value) => clamp(value, range.min, range.max));
@@ -50,14 +67,14 @@ export function createNativeSlider(root, options) {
   };
 
   const boundsFor = (index) => ({
-    min: index > 0 ? values[index - 1] + margin : range.min,
-    max: index < values.length - 1 ? values[index + 1] - margin : range.max,
+    min: index > 0 ? roundToDigits(values[index - 1] + margin, digits) : range.min,
+    max: index < values.length - 1 ? roundToDigits(values[index + 1] - margin, digits) : range.max,
   });
 
   const normalize = (value, index) => {
     const bounds = boundsFor(index);
-    const stepped = range.min + Math.round((Number(value) - range.min) / step) * step;
-    return clamp(stepped, bounds.min, bounds.max);
+    const stepped = roundToDigits(range.min + Math.round((Number(value) - range.min) / step) * step, digits);
+    return roundToDigits(clamp(stepped, bounds.min, bounds.max), digits);
   };
 
   const render = () => {

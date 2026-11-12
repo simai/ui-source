@@ -510,8 +510,11 @@ function bindRangeSlider(root, accessibilityOwner) {
     const { range, margin = 0 } = slider.options;
     getHandles(root).forEach((node, index) => {
       node.setAttribute('aria-valuenow', String(numericValues[index]));
-      node.setAttribute('aria-valuemin', String(index > 0 ? Math.max(range.min, numericValues[index - 1] + margin) : range.min));
-      node.setAttribute('aria-valuemax', String(index < numericValues.length - 1 ? Math.min(range.max, numericValues[index + 1] - margin) : range.max));
+      // Rounded to the step's digits, as the values are (S2): 0.2 + 0.1 is 0.3.
+      const digits = Math.max(getDecimalPlaces(slider.options.step ?? ''), getDecimalPlaces(range.min));
+      const bound = (number) => String(Number(Number(number).toFixed(Math.min(20, Math.max(digits, getDecimalPlaces(margin))))));
+      node.setAttribute('aria-valuemin', index > 0 ? bound(Math.max(range.min, numericValues[index - 1] + margin)) : String(range.min));
+      node.setAttribute('aria-valuemax', index < numericValues.length - 1 ? bound(Math.min(range.max, numericValues[index + 1] - margin)) : String(range.max));
     });
     updateHandleLabels(root, numericValues);
     dispatchSliderEvent(root, 'update', numericValues, { handle });
