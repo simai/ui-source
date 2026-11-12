@@ -27,7 +27,9 @@ compact and phone 20) and stands with the first line of text and the close in
 the box of a low size-1 control (32, compact and phone 28). The title and its
 text (`.sf-alert-content`) are one block (no gap); `.sf-alert-buttons` follow
 at `--sf-space-1/2`, `--sf-space-1/3` apart. Actions: `sf-button
-sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low`,
+sf-button--tonal sf-button--on-surface sf-button--size-1 sf-button--height-low`
+(tonal surface, the same neutral plate on every status: a status alert is a
+soft coloured place, and the action takes the theme's neutral container back),
 a second one `sf-button sf-button--ghost sf-button--on-surface
 sf-button--size-1 sf-button--height-low`. The close is `sf-icon-button
 sf-icon-button--close sf-icon-button--size-1 sf-icon-button--height-low` with

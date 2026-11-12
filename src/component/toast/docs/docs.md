@@ -23,8 +23,8 @@ the status icon is the line's size (`--sf-text-height-1`: 24, compact and
 phone 20) and stands with the first line of text and the close in the box of a
 low size-1 control (32, compact and phone 28). The title and its text are one
 block (no gap); the actions follow at `--sf-space-1/2`, `--sf-space-1/3`
-apart: `sf-button sf-button--tonal sf-button--primary sf-button--size-1
-sf-button--height-low`. The close is `sf-icon-button sf-icon-button--close
+apart: `sf-button sf-button--tonal sf-button--on-surface sf-button--size-1
+sf-button--height-low` (tonal surface, the same neutral plate on every level). The close is `sf-icon-button sf-icon-button--close
 sf-icon-button--size-1 sf-icon-button--height-low` with `sf-close
 sf-close--size-1`; its plate hangs out over the inline padding. The public
 `--sf-toast-padding-block`, `--sf-toast-padding-inline` and `--sf-toast-gap`

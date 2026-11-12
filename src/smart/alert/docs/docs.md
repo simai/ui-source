@@ -57,7 +57,10 @@ covers every notice), all in tokens, so a compact region
 | close: `sf-button-icon kind="close" height="low"`, centred on the first line | 32 | 28 |
 | one-line alert, without the border | 56 | 44 |
 
-The first action is tonal primary, the second ghost on-surface. The first line
+The first action is tonal surface (`tonal on-surface`, the theme's neutral
+plate, the same on every status), the second ghost on-surface. A notice never
+holds a destructive or a filled action: it leads to the decision, and
+`sf-confirm` takes it. The first line
 stands in the box of the low control, so the icon, the first line of text and
 the close share one centre; the first action's plate starts at the text edge;
 the close's plate hangs out over the inline padding, so its cross stands where

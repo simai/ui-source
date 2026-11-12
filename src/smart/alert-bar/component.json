@@ -2,7 +2,7 @@
   "$comment": "The source of sf-alert-bar's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the page alert bar the Larena storage thread asked for (Federation bus msg-f8fd87ae998c44438cc7), from the owner-approved prototype «Плашка важных уведомлений» (claude.ai artifact BAtvwTPsumKqguQgDwngaM, 2026-11-05).",
   "id": "smart.alert-bar",
   "tag": "sf-alert-bar",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "kind": "leaf",
   "family": "alert",
   "settings": {

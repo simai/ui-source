@@ -45,7 +45,7 @@ const block = (id) => `
     <div class="sf-toast-container flex flex-col flex-1">
       <div class="sf-toast-wrap flex flex-col"><div class="sf-toast-text">Сессия закончится</div><div class="sf-toast-supporting-text">Несохранённые изменения пропадут.</div></div>
       <div class="sf-toast-bottom flex items-center">
-        <button type="button" class="sf-button sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low flex items-cross-center" data-action="a"><span class="sf-button-text-container">Продлить</span></button>
+        <button type="button" class="sf-button sf-button--tonal sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center" data-action="a"><span class="sf-button-text-container">Продлить</span></button>
         <button type="button" class="sf-button sf-button--ghost sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center" data-action="b"><span class="sf-button-text-container">Выйти</span></button>
       </div>
     </div>

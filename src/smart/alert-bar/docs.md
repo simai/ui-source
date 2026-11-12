@@ -59,6 +59,11 @@ Up to 608 px (38rem, the size step g9) of the bar's own width the icon, the text
 the first line, the actions go under the text, the arrows are not drawn and
 «Все N» stands at the line's end.
 
+The action is a tonal surface button (`tonal on-surface`) and acknowledge and
+close are ghost, as on sf-alert and sf-toast; in the list of all the same. On
+the bar's strong colour the tonal plate's hover and press go towards the bar's
+colour in the light theme, so the white label keeps 4.5:1 and more.
+
 An action is always as wide as its label: it is never shrunk or cut with an
 ellipsis. When the bar is short of room, the message wraps first, down to
 10rem (the size step f0), and then the actions wrap onto a line of their own.

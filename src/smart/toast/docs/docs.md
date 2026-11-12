@@ -28,7 +28,7 @@ compact region (`data-sf-density="compact"`) moves it by itself:
 | icon to text (`--sf-space-1/2`) | 12 | 8 |
 | title to text | 0 | 0 |
 | text to the action (`--sf-space-1/2`) | 12 | 8 |
-| action: size 1, `height="low"`, tonal primary; label = text | 32 · 16 | 28 · 14 |
+| action: size 1, `height="low"`, tonal surface (`tonal on-surface`); label = text | 32 · 16 | 28 · 14 |
 | close: size 1, `height="low"`, centred on the first line | 32 | 28 |
 | one-line toast, without the border | 56 | 44 |
 

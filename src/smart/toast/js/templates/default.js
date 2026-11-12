@@ -6,10 +6,11 @@ function joinClasses(...tokens) {
 
 // The notice's action and close (owner decision C35): the action is an
 // unsized (size 1) low button -- 32, compact and phone 28 -- whose label is
-// the notice's text size, tonal primary, its plate starting at the text edge;
+// the notice's text size, tonal surface (C110 variant E: tonal on-surface),
+// its plate starting at the text edge;
 // the close a size-1 low icon button, 32 / 28 / 28, centred on the first line.
 // The same classes as the class toast (component/toast/js/_toast.js).
-const TOAST_ACTION_CLASSES = 'sf-button sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low flex items-cross-center';
+const TOAST_ACTION_CLASSES = 'sf-button sf-button--tonal sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center';
 const TOAST_CLOSE_CLASSES = 'sf-icon-button sf-icon-button--close sf-icon-button--variant-close sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 sf-icon-button--height-low flex items-cross-center';
 
 export function renderToastTemplate(context) {

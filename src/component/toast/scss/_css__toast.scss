@@ -128,17 +128,14 @@
     gap: var(--sf-space-1\/3);
   }
 
-  /* The tonal action on a notice of any level is a solid light plate (owner
-     decision C46, 2026-11-10, option D of the C35 acceptance): its translucent
-     fill, --sf-primary-container and its states, is laid over the solid colour
-     of the toast's own place, its popup plate (the C43 rule), not over the
-     level's tint. A toast of a level is a soft coloured place (below), whose
-     --sf-surface-place-solid is initial, so the plate reads
-     --sf-surface-place-ground, the popup the toast declares as its place. So the plate is the same on every level and the
-     level's tone does not show through it. The second action stays ghost
-     on-surface (C35). A loading button keeps its own stripes. */
-  .sf-toast .sf-toast-bottom .sf-button.sf-button--tonal.sf-button--primary:not(.sf-button-state-loading) {
-    background-image: linear-gradient(var(--sf-button--background-color), var(--sf-button--background-color)), linear-gradient(var(--sf-surface-place-ground), var(--sf-surface-place-ground));
+  /* The action is tonal surface on a toast of any level (owner decision
+     C110 as amended 2026-11-12, variant E; replaces C46): the theme's neutral
+     tonal plate, the same on every level, as on sf-alert. A toast of a level
+     is a soft coloured place (below), which re-declares the surface container
+     as the level's container, so the action takes the theme's neutral
+     container back on itself. */
+  .sf-toast .sf-toast-bottom .sf-button.sf-button--tonal.sf-button--on-surface {
+    @include places.sf-place-neutral-container;
   }
 
   /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-toast-wrap--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */

@@ -77,18 +77,17 @@
   gap: var(--sf-alert-buttons--gap);
 }
 
-/* The tonal action on a notice of any level is a solid light plate (owner
-   decision C46, 2026-11-10, option D of the C35 acceptance): its translucent
-   fill, --sf-primary-container and its states, is laid over the solid colour
-   of the place under the notice (the C43 rule), not over the notice's tint.
-   A status notice is itself a soft coloured place (below), whose
-   --sf-surface-place-solid is initial, so the plate reads the opaque place
-   beneath it, --sf-surface-place-ground: the same colour the solid role gave
-   on every solid place. So the plate is the same on every level and the
-   level's tone does not show through it. The second action stays ghost
-   on-surface (C35). A loading button keeps its own stripes. */
-.sf-alert .sf-alert-buttons .sf-button.sf-button--tonal.sf-button--primary:not(.sf-button-state-loading) {
-  background-image: linear-gradient(var(--sf-button--background-color), var(--sf-button--background-color)), linear-gradient(var(--sf-surface-place-ground), var(--sf-surface-place-ground));
+/* The primary action is tonal surface on a notice of any level (owner
+   decision C110 as amended 2026-11-12, variant E; replaces C46): the theme's
+   neutral tonal plate, --sf-surface-container and its states, the same on
+   every level; the second action ghost on-surface (C35). A status notice is
+   a soft coloured place (below), which re-declares the surface container as
+   the level's container -- a plate in the status tone, the cancelled variant
+   D -- so the action takes the theme's neutral container back on itself. A
+   strong place's tonal step is not read here (an alert inside a bg-<c>
+   region). */
+.sf-alert .sf-alert-buttons .sf-button.sf-button--tonal.sf-button--on-surface {
+  @include places.sf-place-neutral-container;
 }
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-alert-content--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
