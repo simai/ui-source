@@ -41,6 +41,7 @@ export function treeItemNodeToData(node) {
     selected: node.hasAttribute('selected') && node.getAttribute('selected') !== 'false',
     active: node.hasAttribute('active') && node.getAttribute('active') !== 'false',
     disabled: node.hasAttribute('disabled') && node.getAttribute('disabled') !== 'false',
+    hasChildren: node.hasAttribute('has-children') && node.getAttribute('has-children') !== 'false',
     openIcon: node.getAttribute('open-icon') || '',
     closedIcon: node.getAttribute('closed-icon') || '',
     icon: !node.hasAttribute('icon') || node.getAttribute('icon') !== 'false',

@@ -4,6 +4,7 @@
 // for the chevron. sf-tree-item children are read as data, not drawn; the
 // item's bundle still comes with the tree, so the markup's sf-tree-item is a
 // defined element (a page may wait for it) before the tree reads it.
+// The tooltip component shows a cut name whole (TR-14).
 SF.RuleLoader['cl-tree'] = {
   tags: ['sf-tree'],
   type: 'smart',
@@ -16,5 +17,6 @@ SF.RuleLoader['cl-tree'] = {
     { name: 'icon-buttons' },
     { name: 'icons' },
     { name: 'cl-tree-item' },
+    { name: 'tooltip' },
   ],
 };

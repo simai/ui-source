@@ -116,8 +116,9 @@ class SfTreeItem extends TreeItemElement {
     return true;
   }
 
-  get hasChildren() {
-    return !this.isFile && this.childItems.length > 0;
+  // A branch: children, or has-children before they are loaded (TR-5).
+  get isBranch() {
+    return !this.isFile && (this.childItems.length > 0 || Boolean(this.hasChildren));
   }
 
   get content() {
@@ -161,6 +162,7 @@ class SfTreeItem extends TreeItemElement {
       selected: this.selected || sourceData.selected || false,
       active: this.active || sourceData.active || false,
       disabled: this.disabled || sourceData.disabled || false,
+      hasChildren: Boolean(this.hasChildren) || sourceData.hasChildren || false,
       openIcon: this.getAttribute('open-icon') || sourceData.openIcon || '',
       closedIcon: this.getAttribute('closed-icon') || sourceData.closedIcon || '',
       icon: this.icon,
@@ -198,7 +200,7 @@ class SfTreeItem extends TreeItemElement {
       containerClass: this.containerClass,
       nameClass: this.nameClass,
       children: this.childItems,
-      hasChildren: this.hasChildren,
+      hasChildren: this.isBranch,
       rootClass: this.getRootClass(),
       rootStyle: this.getRootStyle(),
       onToggle: this.handleToggle,
@@ -239,7 +241,7 @@ class SfTreeItem extends TreeItemElement {
   // The actions expand, collapse and toggle-open.
   setOpen(open = true) {
     const next = Boolean(open);
-    if (this.isFile || !this.hasChildren) return {outcome: 'refused', reason: 'leaf'};
+    if (!this.isBranch) return {outcome: 'refused', reason: 'leaf'};
     if (this.disabled) return {outcome: 'refused', reason: 'disabled'};
     if (this.open === next) return {outcome: 'applied'};
     this.toggleAttribute('open', next);

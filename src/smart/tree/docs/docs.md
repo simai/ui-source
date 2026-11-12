@@ -14,8 +14,9 @@
 
 Пункты — дочерние `<sf-tree-item>` (читаются один раз и убираются) или свойство
 `items`: массив записей `{id, label, value, href, target, rel, kind, open,
-selected, active, disabled, icon, open-icon, closed-icon, chevron-open-icon,
-chevron-closed-icon, open-label, close-label, revision, children}`. Поля в
+selected, active, disabled, has-children, icon, open-icon, closed-icon,
+chevron-open-icon, chevron-closed-icon, open-label, close-label, revision,
+children}`. Поля в
 camelCase (`openIcon`, …) и `type` тоже читаются. Идентификатор записи — `id`,
 иначе `value`, иначе место записи.
 
@@ -30,6 +31,27 @@ camelCase (`openIcon`, …) и `type` тоже читаются. Идентиф�
 `sf-tree-window {first, last}` говорит, какие нарисованы. Дерево из 2 000
 узлов рисуется за кадр (было 14 с на этой машине и 33 с в замере стенда 20,
 simai/ui-source#43).
+
+## Подгрузка ветвей
+
+Ветвь, дети которой ещё не загружены, помечают `has-children: true` (у
+`<sf-tree-item>` — атрибут `has-children`). У неё есть стрелка, она
+раскрывается, и приходит `sf-tree-toggle` с `open: true` — по нему приложение
+загружает детей и задаёт новый `items`; ветвь остаётся раскрытой.
+
+```js
+tree.addEventListener('sf-tree-toggle', async ({detail}) => {
+  if (!detail.open) return;
+  const children = await loadChildren(detail.id);
+  tree.items = withChildren(tree.items, detail.id, children);
+});
+```
+
+## Длинные имена
+
+Имя — одна строка, не поместившееся обрезается многоточием. У строки с
+обрезанным именем полное имя — её `aria-label` и подсказка Framework при
+наведении и фокусе с клавиатуры.
 
 ## Выбор
 

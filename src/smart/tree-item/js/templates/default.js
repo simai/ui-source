@@ -26,6 +26,7 @@ function renderTreeItemData(item = {}) {
       ?selected=${Boolean(item.selected)}
       ?active=${Boolean(item.active)}
       ?disabled=${Boolean(item.disabled)}
+      ?has-children=${Boolean(item.hasChildren ?? item['has-children'])}
       .itemsData=${item.children || []}
     ></sf-tree-item>
   `;

@@ -65,6 +65,15 @@ const sfTreeItemMeta = {
       ],
       "default": "false"
     },
+    "has-children": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "A branch whose children are not loaded yet: the chevron shows, the branch opens and its toggle event is the cue to load them"
+    },
     "open-icon": {
       "kind": "custom",
       "valueType": "string",

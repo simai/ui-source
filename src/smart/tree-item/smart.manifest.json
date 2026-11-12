@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tree-item",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "title": "Tree item",
   "summary": "A node of a tree: a folder that opens a group of nodes, or a file or link. Inside sf-tree it is read once as data and the tree draws its row; alone it draws itself.",
   "kind": "smart",
@@ -82,6 +82,11 @@
       "disabled": {
         "type": "boolean",
         "default": false
+      },
+      "has-children": {
+        "type": "boolean",
+        "default": false,
+        "description": "A branch whose children are not loaded yet: the chevron shows, the branch opens and its toggle event is the cue to load them"
       },
       "open-icon": {
         "type": "string",
@@ -448,11 +453,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/tree-item/index.js",
-        "sha256": "10cde6f7e0db07ef343eb851551065e24ca462e99de3286859b30f003f4d7a88"
+        "sha256": "c7d6c3c68f012fdf44bd486a7dd9f5524872c6cea73f74de526c4913440b0001"
       },
       {
         "path": "src/smart/tree-item/js/templates/default.js",
-        "sha256": "4e7acb47d3e12b801c3b4c4c29bd6593774f8775a24a8ef09443563b92a278a6"
+        "sha256": "320b1f0f3f82df7e23c4421d07ec826f3a2065cc8a08db722c83fd3461c811b0"
       },
       {
         "path": "src/smart/tree-item/rule.js",

@@ -16,6 +16,8 @@ import { html, nothing } from 'lit';
 //   openLabel, closeLabel, hasChildren
 //   level, setsize, posinset   aria-level and the rest, for a flat tree
 //   tabStop                    the one row Tab reaches
+//   tipId                      a name cut to one line (TR-14): the id of the
+//                              Framework tooltip that holds the whole name
 //   selection                  'none' leaves aria-selected out
 //   rootClass, itemClass, containerClass, nameClass, rootStyle
 //   content                    what a standalone item draws for its name
@@ -34,6 +36,17 @@ function joinClasses(...tokens) {
 export function renderIcon(icon, className = '') {
   if (!icon) return nothing;
   return html`<i class=${joinClasses('sf-icon', className)} aria-hidden="true">${icon}</i>`;
+}
+
+// The whole name of a row whose name the line cuts (TR-14): the Framework's
+// tooltip surface (component.tooltip), hidden in the markup and shown by its
+// controller on hover and keyboard focus of the row, which names it with
+// data-tooltip. No tail (C59). The row's aria-label is the same name, so the
+// controller does not make the tooltip a description that repeats it.
+function renderTip(row) {
+  if (!row.tipId || !row.label) return nothing;
+  return html`<span class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-tree-item-tip" id=${row.tipId} hidden><span
+      class="sf-tooltip-content"><span class="sf-tooltip-text">${row.label}</span></span></span>`;
 }
 
 function renderName(row) {
@@ -73,6 +86,8 @@ export function renderTreeRow(row, children = nothing) {
       aria-selected=${row.selection === 'none' ? nothing : String(Boolean(row.selected))}
       aria-current=${row.active ? 'page' : nothing}
       aria-disabled=${row.disabled ? 'true' : nothing}
+      aria-label=${row.tipId && row.label ? row.label : nothing}
+      data-tooltip=${row.tipId && row.label ? row.tipId : nothing}
       data-open-icon=${row.openIcon || nothing}
       data-closed-icon=${row.closedIcon || nothing}
       data-value=${row.value || nothing}
@@ -82,5 +97,5 @@ export function renderTreeRow(row, children = nothing) {
         ? html`<button type="button" tabindex="-1" class="sf-icon-button sf-tree-toggle" ?disabled=${row.disabled} aria-expanded=${String(open)} aria-label=${open ? row.closeLabel : row.openLabel} @click=${row.onToggle}>${renderIcon(chevronIcon, 'sf-tree-chevron')}</button>`
         : html`<span class="sf-tree-toggle-spacer" aria-hidden="true"></span>`}${row.icon === false ? nothing : renderIcon(nodeIcon, 'sf-tree-node-icon')}${row.href && !row.disabled
         ? html`<a class=${nameClasses} href=${row.href} target=${row.target || nothing} rel=${row.rel || nothing} tabindex="-1" @click=${row.onName}>${renderName(row)}</a>`
-        : html`<span class=${nameClasses} @click=${row.onName}>${renderName(row)}</span>`}</div>${children}</div>`;
+        : html`<span class=${nameClasses} @click=${row.onName}>${renderName(row)}</span>`}${renderTip(row)}</div>${children}</div>`;
 }

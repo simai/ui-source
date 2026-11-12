@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tree",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "title": "Tree",
   "summary": "A tree of entries: folders that open, files and links; one Tab stop walked with the arrows, optional selection, drops of records and files on an entry. Thousands of entries: keyed rows, a window over more than 300.",
   "kind": "smart",
@@ -26,6 +26,7 @@
     "uses": [
       "component.icon-buttons",
       "component.icons",
+      "component.tooltip",
       "component.tree",
       "component.tree-item",
       "smart.tree-item"
@@ -509,7 +510,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tree/index.js",
-        "sha256": "1a475d4073866f0eeaca1d85e3328e84aca4c8bc508dc71d98f78fb6e1cab87b"
+        "sha256": "664f33c882bfa7818fff475febfa7aff332f9e83c355ac42e4e44230ca5b4785"
       },
       {
         "path": "src/smart/tree/js/templates/default.js",
@@ -517,15 +518,15 @@
       },
       {
         "path": "src/smart/tree/js/templates/default.css",
-        "sha256": "d3afbb0a397dc96f3744c5fd66b2e27fead78d147a42e7469f6ac877f7887682"
+        "sha256": "2965dd72937aabb69c1320b3cc52bc3ec7e34d85c1096071afadcbc76a15f33b"
       },
       {
         "path": "src/smart/tree/rule.js",
-        "sha256": "3b2e3bbbdfd0155e8ad3527fe8606f0f50f712388580baf7be504fb689b2b30c"
+        "sha256": "486e6dc5edbea70d56752d1fc430aba144d87c5d0d857fd941a5629dba56bbfd"
       },
       {
         "path": "src/smart/tree/docs/docs.md",
-        "sha256": "2a1c288eeb460c6e3629cdf9f2795054764fe78f9adc64783339181d5d4e704c"
+        "sha256": "10331d0d042a27e8ba5f5aad4fac8c70a2b22c672eca7c7522dc877fe614c360"
       }
     ],
     "generated_runtime": [

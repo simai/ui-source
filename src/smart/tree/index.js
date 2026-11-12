@@ -18,6 +18,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {isTreeItemNode, treeItemNodeToData} from '../tree-item/js/node-data.js';
+import {instancePath, partId} from '../../core/js/instance-path.js';
 import { renderTreeTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -35,6 +36,14 @@ const WINDOW_FROM = 300;
 // have before one has been measured.
 const WINDOW_MARGIN = 20;
 const ROW_GUESS = 48;
+
+// An entry id as the local part of an element id: every character outside
+// [A-Za-z0-9_-] written as _<hex>, so two ids never meet in one.
+const idWord = (id) => String(id).replace(/[^A-Za-z0-9_-]/gu, (char) => `_${char.codePointAt(0).toString(16)}`);
+
+// A branch: an entry with children, or one that says it has them before they
+// are loaded (has-children). A file is never one.
+const isBranch = (entry) => entry.kind !== 'file' && (entry.childIds.length > 0 || entry.hasChildren);
 
 const text = (value) => (value === undefined || value === null ? '' : String(value));
 const pick = (item, kebab, camel) => (item[kebab] !== undefined ? item[kebab] : item[camel]);
@@ -59,6 +68,9 @@ function normalizeEntry(item, place) {
     selected: Boolean(item.selected),
     active: Boolean(item.active),
     disabled: Boolean(item.disabled),
+    // A branch whose children are not here yet (TR-5): it shows the chevron
+    // and opens, and its toggle is the host's cue to load them.
+    hasChildren: Boolean(pick(item, 'has-children', 'hasChildren')),
     icon: item.icon !== false,
     openIcon: text(pick(item, 'open-icon', 'openIcon')),
     closedIcon: text(pick(item, 'closed-icon', 'closedIcon')),
@@ -104,6 +116,10 @@ class SfTree extends TreeElement {
     this._rowHeight = 0;
     this._scroller = null;
     this._frame = 0;
+    // The drawn entries whose name the line cuts (TR-14): their rows carry a
+    // tooltip with the whole name.
+    this._cut = new Set();
+    this._resize = null;
   }
 
   // ---- the entries -------------------------------------------------------
@@ -175,14 +191,14 @@ class SfTree extends TreeElement {
     const rows = [];
     const visit = (ids, level) => ids.forEach((id, index) => {
       const entry = this._entries.get(id);
-      const branch = entry.kind !== 'file' && entry.childIds.length > 0;
+      const branch = isBranch(entry);
       const open = branch && this._open.get(id) === true;
       rows.push({id, entry, level, setsize: ids.length, posinset: index + 1, branch, open});
       if (open) visit(entry.childIds, level + 1);
     });
     visit(this._roots || [], 1);
     this._rows = rows;
-    this._hasBranches = rows.some((row) => row.branch) || [...this._entries.values()].some((entry) => entry.childIds.length);
+    this._hasBranches = rows.some((row) => row.branch) || [...this._entries.values()].some(isBranch);
     return rows;
   }
 
@@ -249,7 +265,7 @@ class SfTree extends TreeElement {
   setEntryOpen(id, open) {
     const entry = this._entries.get(text(id));
     if (!entry) return {outcome: 'refused', reason: 'unknown'};
-    if (entry.kind === 'file' || !entry.childIds.length) return {outcome: 'refused', reason: 'leaf'};
+    if (!isBranch(entry)) return {outcome: 'refused', reason: 'leaf'};
     if (entry.disabled) return {outcome: 'refused', reason: 'disabled'};
     if (this._open.get(entry.id) === Boolean(open)) return {outcome: 'applied'};
     this._open.set(entry.id, Boolean(open));
@@ -377,6 +393,8 @@ class SfTree extends TreeElement {
     this._itemObserver?.disconnect();
     this._itemObserver = null;
     this.unwatchScroll();
+    this._resize?.disconnect();
+    this._resize = null;
     super.disconnectedCallback();
   }
 
@@ -586,7 +604,7 @@ class SfTree extends TreeElement {
       case 'End': target = last; break;
       case 'ArrowRight':
         if (row.branch && !row.open) this.setEntryOpen(row.id, true);
-        else if (row.open) target = index + 1;
+        else if (row.open && row.entry.childIds.length) target = index + 1;
         break;
       case 'ArrowLeft':
         if (row.branch && row.open) this.setEntryOpen(row.id, false);
@@ -642,6 +660,7 @@ class SfTree extends TreeElement {
       setsize: row.setsize,
       posinset: row.posinset,
       tabStop: row.id === tabStopId,
+      tipId: this._cut.has(row.id) ? partId(this._tipPath, `tip-${idWord(row.id)}`) : '',
       selection: this.selection,
       onToggle: row.onToggle,
       onName: row.onName,
@@ -675,6 +694,8 @@ class SfTree extends TreeElement {
     const rows = this.flatten();
     for (const id of [...(this._handlers?.keys() ?? [])]) if (!this._entries.has(id)) this._handlers.delete(id);
     this._words = {open: this.sfWord('open-label'), close: this.sfWord('close-label')};
+    // The tooltips' ids start with the tree's path (§7.1.1), read once a drawing.
+    this._tipPath = this._cut.size ? instancePath(this, {kind: 'sf-tree'}) : '';
     const tabStopId = rows[this.tabStopIndex()]?.id;
     let first = 0;
     let last = rows.length - 1;
@@ -714,10 +735,47 @@ class SfTree extends TreeElement {
   // the spacers again.
   afterRender(changedAttributes) {
     super.afterRender?.(changedAttributes);
+    this.watchWidth();
     if (!this._rows.length) return;
     const before = this._rowHeight;
     this.measureRow();
-    if (this.windowed() && Math.abs((this._rowHeight || 0) - (before || 0)) > 0.5) this.requestComponentUpdate('window');
+    const cut = this.measureCut();
+    if (cut || (this.windowed() && Math.abs((this._rowHeight || 0) - (before || 0)) > 0.5)) this.requestComponentUpdate(cut ? 'cut' : 'window');
+  }
+
+  // ---- long names (TR-14) ------------------------------------------------
+
+  // A name is one line, cut with an ellipsis (the tree sheet); a drawn row
+  // whose name does not fit gets the whole name as its tooltip and its
+  // aria-label. Whether it fits is read from the drawn name: the column, the
+  // font and the indent decide it, not the length of the text. True when the
+  // set of cut rows changed and the rows are to be drawn again.
+  measureCut() {
+    let changed = false;
+    for (const node of this.getRenderedItems()) {
+      const name = node.querySelector(':scope > .sf-tree-item-container > .sf-tree-item-name');
+      if (!name) continue;
+      const id = node.dataset.sfEntry;
+      const cut = name.scrollWidth - name.clientWidth > 0.5;
+      if (cut === this._cut.has(id)) continue;
+      if (cut) this._cut.add(id);
+      else this._cut.delete(id);
+      changed = true;
+    }
+    for (const id of [...this._cut]) if (!this._entries.has(id)) this._cut.delete(id);
+    return changed;
+  }
+
+  // A column that narrows or widens cuts other names, and so does the sheet
+  // that arrives after the first drawing (the names wrapped until then, and
+  // nothing was cut): the tree's box changes either way, and is measured again.
+  watchWidth() {
+    const list = this.querySelector(':scope > .sf-tree');
+    if (this._resize || !list || typeof ResizeObserver === 'undefined') return;
+    this._resize = new ResizeObserver(() => {
+      if (this.measureCut()) this.requestComponentUpdate('cut');
+    });
+    this._resize.observe(list);
   }
 }
 

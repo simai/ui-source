@@ -2,7 +2,7 @@
   "$comment": "The source of sf-tree's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/tree (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.tree",
   "tag": "sf-tree",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "kind": "leaf",
   "family": "tree",
   "settings": {
@@ -37,6 +37,7 @@
         "selected": "boolean",
         "active": "boolean",
         "disabled": "boolean",
+        "has-children": "boolean",
         "icon": "boolean",
         "open-icon": "icon",
         "closed-icon": "icon",
@@ -199,6 +200,9 @@
     },
     {
       "name": "cl-tree-item"
+    },
+    {
+      "name": "tooltip"
     }
   ],
   "templates": {
@@ -391,7 +395,9 @@
     "version 2.0.3: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
     "version 2.0.5: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
     "version 2.1.1: the selection is read as a set (simai/ui-source#43): with selection many, every drawn row and the tab stop asked a list of every selected id, and a tree of 10 000 entries with 9 800 checked took 73 ms for each check (tests/browser/tree-scale.browser.mjs, x1). Now 32 ms, two frames, like any other change. Public API, events and look unchanged. Also: a patch, nothing drawn or done differently. The generated reference gives each action's method its one object argument, expand({id}), collapse({id}), focusEntry({id}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged.",
-    "version 2.1.2 (2026-11-10, docs pre-check, through component.tree 1.2.0): a patch. A row is a size 1 control on the height ladder (C01, C18): 40 on a desktop and 36 on a phone, where it was 40 at every width; the virtual list measures the drawn row, as before. Settings, values, events and keys unchanged."
+    "version 2.1.2 (2026-11-10, docs pre-check, through component.tree 1.2.0): a patch. A row is a size 1 control on the height ladder (C01, C18): 40 on a desktop and 36 on a phone, where it was 40 at every width; the virtual list measures the drawn row, as before. Settings, values, events and keys unchanged.",
+    "version 2.2.0, has-children (owner remark R186, research control/research/2026-11-12-tree.md TR-5): an entry with has-children: true is a branch before its children are loaded -- the chevron shows, aria-expanded is said, expand applies and toggle {id, open, value} is sent, so a host that loads children on toggle (the docs' recipe) gets its cue. A new items with the children keeps the branch open (entry-state open by id). No new event: toggle is the cue. A file is never a branch. The loading and error rows of the research are the owner's (q-lazy), not here.",
+    "version 2.2.0, long names (TR-14, C18/C22 ladder): a name is one line cut with an ellipsis (js/templates/default.css, the element's rows only); a drawn row whose name the line cuts (measured after each drawing and when the tree's width changes) carries the whole name as aria-label and as a Framework tooltip (component.tooltip: a hidden .sf-tooltip surface in the row, data-tooltip on the treeitem, no tail per C59). Hence the relation tooltip. No setting: a row on the ladder is one line."
   ],
   "x-measured": {
     "$comment": "stand 20's method (control/smart-architecture/stands/20-performance/bench.mjs, lists): Playwright Chromium, headless, macOS, the time from setting items to a stable DOM confirmed by a frame; medians; the dev build of this branch against the build of b237d0e (ui-8a77add77500). The first change is the stand's: the whole items with one label changed.",
@@ -453,7 +459,8 @@
       "tree and tree-item sheets, the icon font's icons and the icon button's sheet",
       "for the chevron. sf-tree-item children are read as data, not drawn; the",
       "item's bundle still comes with the tree, so the markup's sf-tree-item is a",
-      "defined element (a page may wait for it) before the tree reads it."
+      "defined element (a page may wait for it) before the tree reads it.",
+      "The tooltip component shows a cut name whole (TR-14)."
     ]
   },
   "x-registry": {
