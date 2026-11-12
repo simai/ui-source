@@ -109,4 +109,17 @@
     inset-inline: calc((var(--sf-thumb-handle--width, var(--sf-icon-size-3)) - var(--sf-range-slider--hit)) / 2);
   }
 }
+
+// Disabled (S7, C16 disabled roles): the name, the value and the scale take
+// the disabled content role, as a disabled field's label and text do; the
+// value no longer stays full ink beside a greyed handle.
+.sf-range-slider-group.disabled .sf-range-slider-name,
+.sf-range-slider-group.disabled .sf-range-slider-output,
+.sf-range-slider-group.disabled .sf-range-slider-scale {
+  color: var(--sf-on-surface-disabled);
+}
+
+.sf-range-slider:is([disabled], .disabled) .sf-thumb-text {
+  --sf-thumb-text--color: var(--sf-on-surface-disabled);
+}
 }

@@ -32,3 +32,8 @@ test('S6: under a finger the hit area is at least the size-2 control height, the
   assert.match(coarse, /--sf-range-slider--hit: max\(var\(--sf-range-slider--row, var\(--sf-ui-1--control-height\)\), var\(--sf-ui-2--control-height\)\);/u);
   assert.match(coarse, /inset-block: calc\(\(var\(--sf-thumb-handle--height, var\(--sf-icon-size-3\)\) - var\(--sf-range-slider--hit\)\) \/ 2\);/u);
 });
+
+test('S7: disabled name, value and scale take the disabled content role', () => {
+  assert.match(sheet, /\.sf-range-slider-group\.disabled \.sf-range-slider-name,\n\.sf-range-slider-group\.disabled \.sf-range-slider-output,\n\.sf-range-slider-group\.disabled \.sf-range-slider-scale \{\n {2}color: var\(--sf-on-surface-disabled\);/u);
+  assert.match(sheet, /\.disabled\) \.sf-thumb-text \{\n {2}--sf-thumb-text--color: var\(--sf-on-surface-disabled\);/u);
+});
