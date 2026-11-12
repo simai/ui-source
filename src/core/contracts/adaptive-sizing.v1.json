@@ -2,7 +2,7 @@
   "$schema": "./adaptive-sizing.schema.json",
   "meta": {
     "contractId": "simai.vertical-sizing",
-    "version": "1.6.0",
+    "version": "1.7.0",
     "unit": "rem",
     "nominalRootPx": 16,
     "rootPolicy": "preserve-user-agent-default",
@@ -77,7 +77,8 @@
       "9": { "mobile": "d0", "desktop": "d6" },
       "10": { "mobile": "d2", "desktop": "d9" },
       "11": { "mobile": "d3", "desktop": "e0" },
-      "12": { "mobile": "d4", "desktop": "e2" }
+      "12": { "mobile": "d4", "desktop": "e2" },
+      "card": { "mobile": "c0", "desktop": "c2" }
     },
     "roles": {
       "label": {
