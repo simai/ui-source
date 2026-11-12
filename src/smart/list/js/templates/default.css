@@ -394,4 +394,12 @@
   .sf-list__frame .sf-list__row > sf-list-item > .sf-list-item.sf-list-item--text .sf-list-item-container {
     padding-inline-start: 0;
   }
+
+  /* The text block's end stands at the row's inset too (R191 HS-2): its
+     --sf-ui-<S>--text-space-x at the end is gone in every row. The step after
+     a picture stays (the picture-to-text gap, R191 HS-1, waits for the
+     owner). */
+  .sf-list__frame .sf-list__row > sf-list-item > .sf-list-item .sf-list-item-container {
+    padding-inline-end: 0;
+  }
 }

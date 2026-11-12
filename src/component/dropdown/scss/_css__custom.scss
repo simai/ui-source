@@ -473,12 +473,15 @@
   }
 }
 
-/* C77, section 3: an option's text keeps the field's value edge. A rounder
-   field moves its value in by half of what its corner adds over the control
-   radius; its options move by the same amount. Doubled class: the R029 rule
-   above sets the same variable in this layer. */
+/* C77, section 3: an option's text keeps the field's value edge at every
+   size (R191 HS-8): the row stands on the panel's plate, --sf-space-1/4 in,
+   so its padding is the field's inset less the plate -- 12 / 16 / 20 from the
+   panel's edge at 1/2, 1, 2 (it was --sf-space-1/2 at every size, 16). A
+   rounder field moves its value in by half of what its corner adds over the
+   control radius; its options move by the same amount. Doubled class: the
+   R029 rule above sets the same variable in this layer. */
 @layer sf.states {
   .sf-dropdown.sf-dropdown .sf-list .sf-list-item {
-    --sf-list-item--padding-inline-start: calc(var(--sf-space-1\/2) + max(calc(var(--sf-px) * 0), var(--sf-dropdown--line-radius, var(--sf-radius-1\/2)) - var(--sf-radius-1\/2)) / 2);
+    --sf-list-item--padding-inline-start: calc(var(--sf-dropdown--inset, var(--sf-space-1)) - var(--sf-space-1\/4) + max(calc(var(--sf-px) * 0), var(--sf-dropdown--line-radius, var(--sf-radius-1\/2)) - var(--sf-radius-1\/2)) / 2);
   }
 }
