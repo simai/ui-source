@@ -24,7 +24,10 @@ function renderHead(context) {
                 : nothing}
             ${showOutput
                 // Each handle reads its own value out (aria-valuetext); this is the sighted copy.
-                ? html`<span class="sf-range-slider-output" aria-hidden="true">${context.outputText}</span>`
+                // A property, not a text part: the host rewrites the text as the
+                // handles move, and a text part's markers would go with it, so the
+                // next render (a setting changed after the first) had nowhere to write.
+                ? html`<span class="sf-range-slider-output" aria-hidden="true" .textContent=${context.outputText ?? ''}></span>`
                 : nothing}
         </div>
     `;
@@ -43,7 +46,8 @@ function renderScale(context) {
                     class=${joinClasses('sf-range-slider-scale-mark', mark.edge ? `sf-range-slider-scale-mark--${mark.edge}` : '')}
                     style=${`inset-inline-start: ${mark.percent}%`}
                     data-value=${String(mark.value)}
-            >${mark.text ?? ''}</span>`)}
+                    .textContent=${mark.text ?? ''}
+            ></span>`)}
         </div>
     `;
 }
@@ -56,8 +60,16 @@ function renderScale(context) {
 function renderField(context) {
     if (!context.field) return nothing;
     const {component} = context;
-    const input = (index) => html`<input
+    // Each box sits in a one-cell grid with two hidden rulers holding the ends
+    // of the range, written by the host: the cell is as wide as the wider end
+    // in the box's own font, and follows a late web font, a size or a density
+    // by layout alone. The box fills the cell (acceptance R2: 8ch clipped).
+    const input = (index) => html`<span class="sf-range-slider-field-box"
+        ><span class="sf-range-slider-field-ruler" aria-hidden="true"></span
+        ><span class="sf-range-slider-field-ruler" aria-hidden="true"></span
+        ><input
             type="text"
+            size="1"
             class="sf-range-slider-field-input"
             data-handle=${String(index)}
             inputmode=${context.fieldDecimal ? 'decimal' : 'numeric'}
@@ -70,7 +82,7 @@ function renderField(context) {
             @keydown=${(event) => component.onFieldKeyDown(event, index)}
             @input=${(event) => event.stopPropagation()}
             @change=${(event) => { event.stopPropagation(); component.commitField(index); }}
-    >`;
+    ></span>`;
     return html`
         <span class="sf-range-slider-field">
             ${context.prefixText ? html`<span class="sf-range-slider-field-unit" aria-hidden="true">${context.prefixText.trim()}</span>` : nothing}

@@ -355,15 +355,25 @@ class SfRangeSlider extends RangeSliderElement {
   }
 
   // The numbers of the from/to field follow the handles; the box being typed in
-  // is left alone. Each box is as wide as the longest number it can hold.
+  // is left alone. The rulers beside each box hold the ends of the range in the
+  // slider's writing, so every box is as wide as the wider end: a value never
+  // outgrows its box (C80, acceptance R2). A ruler takes the box's text size,
+  // which core raises to 16px on a touch phone (touch_fields, no zoom on focus).
   syncField(values) {
     const root = this.getSliderRoot();
     const inputs = this.querySelectorAll('.sf-range-slider-field-input');
     if (!root || !inputs.length) return;
     const list = values ?? String(this.value || '').split(',').map(Number).filter(Number.isFinite);
-    const width = Math.max(...[this.min, this.max].map((bound) => formatRangeSliderNumber(root, bound).length)) + 1;
+    const ends = [this.min, this.max].map((bound) => formatRangeSliderNumber(root, bound));
+    this.querySelectorAll('.sf-range-slider-field-box').forEach((box) => {
+      const input = box.querySelector('.sf-range-slider-field-input');
+      const size = input ? getComputedStyle(input).fontSize : '';
+      box.querySelectorAll('.sf-range-slider-field-ruler').forEach((ruler, index) => {
+        if (ruler.textContent !== ends[index]) ruler.textContent = ends[index];
+        if (size && getComputedStyle(ruler).fontSize !== size) ruler.style.fontSize = size;
+      });
+    });
     inputs.forEach((input, index) => {
-      input.style.inlineSize = `${width}ch`;
       if (document.activeElement !== input && list[index] !== undefined) input.value = formatRangeSliderNumber(root, list[index]);
     });
   }

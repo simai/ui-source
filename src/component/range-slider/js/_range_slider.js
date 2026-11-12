@@ -66,14 +66,16 @@ function getDecimalPlaces(value) {
 
 // Digits after the decimal mark: data-precision, as sf-input-quantity names it
 // (S1); data-decimals is its former name and is still read until 2027-01-01.
-// Unset, the step's digits (0.5 has one).
+// Unset, the step's digits (0.5 has one). Never fewer than the step's: a value
+// on its step is not shown rounded off it (2.6 with step 0.1 is «2,6», not «3»).
 function getValueDecimals(root) {
+  const stepDecimals = getDecimalPlaces(root.getAttribute('data-step'));
   const decimalsAttr = root.getAttribute('data-precision') ?? root.getAttribute('data-decimals');
   if (decimalsAttr !== null && decimalsAttr !== '') {
-    return Math.min(100, Math.max(0, Math.trunc(toNumber(decimalsAttr, 0))));
+    return Math.min(100, Math.max(stepDecimals, Math.trunc(toNumber(decimalsAttr, 0))));
   }
 
-  return getDecimalPlaces(root.getAttribute('data-step'));
+  return stepDecimals;
 }
 
 function isMultipleRoot(root) {

@@ -50,6 +50,9 @@ test('C80 R2: read-only is the light outline at field height with a neutral hand
   const frame = rule('.sf-range-slider-group.readonly .sf-range-slider');
   assert.match(frame, /border: var\(--sf-px\) solid var\(--sf-outline-variant\);/u);
   assert.match(frame, /block-size: var\(--sf-range-slider--row, var\(--sf-ui-1--control-height\)\);/u);
+  // Acceptance R1: the root is a flex-1 item of the track column, so the height
+  // holds only as a minimum; min-block-size 0 drew the frame 26 / 22 px.
+  assert.match(frame, /\n {2}min-block-size: var\(--sf-range-slider--row, var\(--sf-ui-1--control-height\)\);/u);
   assert.match(rule('.sf-range-slider.readonly .sf-thumb-handle,\n.sf-range-slider[data-readonly="true"] .sf-thumb-handle'), /background-color: var\(--sf-on-surface-variant\);/u);
 });
 
@@ -64,4 +67,17 @@ test('C80: the from/to field is a field of the step at the end of the track line
   assert.match(field, /border: var\(--sf-px\) solid var\(--sf-outline\);/u);
   assert.match(field, /padding-inline: calc\(var\(--sf-range-slider--space-x, var\(--sf-ui-1--space-x\)\) - var\(--sf-px\)\);/u);
   assert.match(rule('.sf-range-slider-group.readonly .sf-range-slider-field'), /--sf-outline-variant/u);
+});
+
+test('C80 acceptance R2: the from/to numbers stay whole -- the box is as wide as its widest end', () => {
+  const field = rule('.sf-range-slider-field');
+  assert.match(field, /flex: none;/u);
+  assert.doesNotMatch(field, /max-inline-size/u);
+  assert.match(rule('.sf-range-slider-field-box'), /display: inline-grid;\n {2}flex: none;/u);
+  assert.match(rule('.sf-range-slider-field-box > *'), /grid-area: 1 \/ 1;/u);
+  assert.match(rule('.sf-range-slider-field-ruler'), /visibility: hidden;\n {2}white-space: pre;/u);
+  assert.match(rule('.sf-range-slider-field-input'), /inline-size: 100%;/u);
+  // The track gives way down to a finger's target, then the line wraps.
+  assert.match(rule('.sf-range-slider-line'), /flex-wrap: wrap;/u);
+  assert.match(rule('.sf-range-slider-track-column'), /min-inline-size: var\(--sf-ui-2--control-height\);/u);
 });

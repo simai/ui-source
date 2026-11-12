@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.slider-range",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "title": "Range Slider",
   "summary": "A slider for one number or a range of two on a track, as a form field: a visible name above, drag, click or keys move a handle by step (PageUp/PageDown by ten), the value shown at the end of the name line, in a bubble while dragging, or in a from/to field beside the track; ticks and a scale on request; sizes 1/2, 1, 2; read-only and disabled.",
   "kind": "smart",
@@ -142,7 +142,7 @@
       },
       "precision": {
         "type": "integer",
-        "description": "Digits after the decimal mark in the value shown and read out; empty takes them from `step` (0.5 has one), as sf-input-quantity. Formerly `decimals`, an alias until 2027-01-01.",
+        "description": "Digits after the decimal mark in the value shown and read out; empty takes them from `step` (0.5 has one), as sf-input-quantity, and fewer than the step's are never shown, so a value is not rounded off its step. Formerly `decimals`, an alias until 2027-01-01.",
         "minimum": 0,
         "maximum": 20
       },
@@ -680,7 +680,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/slider-range/index.js",
-        "sha256": "f474093784dd09c975c745d936b8dbf81370e8b23dbe1b64ec9e9092b3035061"
+        "sha256": "4101efe9d5bac95831096c9545add167b195dd5f79125d52abbc2b432f56ade0"
       }
     ],
     "generated_runtime": [

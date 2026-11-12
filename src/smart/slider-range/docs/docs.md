@@ -32,15 +32,23 @@ Smart wrapper for the project-owned `range-slider` component.
 - `page-step` — PageUp, PageDown and Shift with an arrow; ten steps when empty.
 - `prefix-text`, `suffix` — joined to the number by a no-break space.
 - `precision`, `grouping`, `locale` — as `sf-input-quantity`; `decimals` is a
-  dated alias of `precision` until 2027-01-01.
+  dated alias of `precision` until 2027-01-01. Empty, the digits come from
+  `step` (2.6 with `step="0.1"` reads «2,6»); fewer digits than the step's are
+  never shown, so a value is not rounded off its step.
 - `lower-label`, `upper-label`
 - `field` — one from/to field «5 000 – 20 000 ₽» at the end of the track line;
-  Enter or leaving the box moves the handle (owner decision C80).
+  Enter or leaving the box moves the handle (owner decision C80). Each number
+  box is as wide as the wider end of the range, so the numbers stay whole and
+  the track gives way; where the track would be narrower than a finger's
+  target (a size-2 field in a narrow column) the field stands under the track.
+  The host is `display: contents`, so a grid placement (a `class` spanning two
+  columns) goes on a wrapper element, not on `<sf-slider-range>`.
 - `ticks` — a dot per step (at most twenty) cut out of the track.
 - `scale` — min and max under the track; `marks="1:bad,3:fine,5:great"` —
   labels at chosen values.
 - `readonly` — focusable and read out, keys and pointer change nothing; a
-  read-only field's light outline and a neutral handle.
+  read-only field's light outline at the field's height (32/40/48) and a
+  neutral handle.
 - `disabled`
 - `name` — a form control: one number, or two entries under the name for a
   range (`price=5000&price=20000`).

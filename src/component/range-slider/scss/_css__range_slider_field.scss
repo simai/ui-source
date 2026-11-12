@@ -40,20 +40,26 @@
   white-space: nowrap;
 }
 
+// The line wraps only where the from/to field and the narrowest track do not
+// fit side by side (a size-2 field in a single 260 px form column): the field
+// then stands under the track, its numbers whole.
 .sf-range-slider-line {
   align-items: flex-start;
   display: flex;
+  flex-wrap: wrap;
   gap: var(--sf-space-1);
   min-inline-size: 0;
 }
 
-// The track and the scale under it; the from/to field stands beside them.
+// The track and the scale under it; the from/to field stands beside them. The
+// track gives way to the field down to one size-2 control height -- the target
+// a finger needs (S6) -- and is never narrower.
 .sf-range-slider-track-column {
   display: flex;
-  flex: 1 1 auto;
+  flex: 1 1 0;
   flex-direction: column;
   gap: var(--sf-space-1\/4);
-  min-inline-size: 0;
+  min-inline-size: var(--sf-ui-2--control-height);
 }
 
 .sf-range-slider-track-column > .sf-range-slider {
@@ -169,13 +175,16 @@
 // Read-only, look R2 (owner decision C80, #r2-readonly): the same sign as a
 // read-only sf-input -- the light outline of a region at field height, no
 // fill -- and a neutral handle and fill that say "cannot move". The value
-// keeps full ink; the handles stay focusable and are read out.
+// keeps full ink; the handles stay focusable and are read out. The frame is
+// the field's height (32 / 40 / 48) from its minimum: the root is a flex item
+// of the track column (flex-1, basis 0), where block-size alone gave way to the
+// content and drew the frame 26 / 22 px high.
 .sf-range-slider-group.readonly .sf-range-slider {
   block-size: var(--sf-range-slider--row, var(--sf-ui-1--control-height));
   border: var(--sf-px) solid var(--sf-outline-variant);
   border-radius: var(--sf-radius--ui);
   box-sizing: border-box;
-  min-block-size: 0;
+  min-block-size: var(--sf-range-slider--row, var(--sf-ui-1--control-height));
   padding-inline: calc(var(--sf-range-slider--space-x, var(--sf-ui-1--space-x)) - var(--sf-px));
 }
 
@@ -256,7 +265,10 @@
 // The from/to field (owner decision C80, #r2-fields): a bordered field of the
 // step at the end of the track line -- sf-input's edge, radius, inline space
 // and text of the step -- holding one number or «5 000 – 20 000» and the unit
-// once. Hover and focus as a field; read-only and disabled as a field.
+// once. Hover and focus as a field; read-only and disabled as a field. The
+// field keeps its numbers whole and the track gives way: each box is as wide as
+// the wider end of the range (its rulers), and neither the field nor a box
+// shrinks below that.
 .sf-range-slider-field {
   align-items: center;
   background-color: var(--sf-transparent);
@@ -272,10 +284,26 @@
   font-variant-numeric: tabular-nums;
   gap: var(--sf-space-1\/4);
   line-height: var(--sf-range-slider--text-height, var(--sf-text-height-1));
-  max-inline-size: 50%;
-  min-inline-size: 0;
   padding-inline: calc(var(--sf-range-slider--space-x, var(--sf-ui-1--space-x)) - var(--sf-px));
   transition: border-color var(--sf-duration-fast) var(--sf-animation);
+}
+
+// A box and its two rulers share one grid cell: the cell takes the wider ruler,
+// the box fills it. The caret has a pixel of its own after the last digit.
+.sf-range-slider-field-box {
+  display: inline-grid;
+  flex: none;
+}
+
+.sf-range-slider-field-box > * {
+  grid-area: 1 / 1;
+}
+
+.sf-range-slider-field-ruler {
+  padding-inline-end: var(--sf-px);
+  pointer-events: none;
+  visibility: hidden;
+  white-space: pre;
 }
 
 .sf-range-slider-field-input {
@@ -283,12 +311,14 @@
   border: 0;
   color: inherit;
   font: inherit;
+  inline-size: 100%;
   margin: 0;
   min-inline-size: 0;
   padding: 0;
 }
 
-.sf-range-slider-field-input:first-of-type:not(:last-of-type) {
+// In «5 000 – 20 000» the lower number stands against the dash.
+.sf-range-slider-field:has(.sf-range-slider-field-dash) .sf-range-slider-field-input[data-handle="0"] {
   text-align: end;
 }
 

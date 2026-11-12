@@ -30,6 +30,25 @@ test('a value is written in the page language, or in data-locale',()=>{
   assert.equal(runtime.formatValue(new Element({'data-step':'0.01'}),1.234),'1.23');
 });
 
+// Acceptance R3 (S1): the decimals come from the step, and a value on its step
+// is never shown rounded off it -- 2.6 with step 0.1 is «2,6», not «3».
+test('step 0.1 writes 2.6 as «2,6 кг», with or without a smaller precision',()=>{
+  const ru={'data-step':'0.1','data-suffix':' кг','data-locale':'ru'};
+  assert.equal(runtime.formatValue(new Element(ru),2.6),'2,6\u00a0кг');
+  assert.equal(runtime.formatValue(new Element(ru),2.5),'2,5\u00a0кг');
+  assert.equal(runtime.formatValue(new Element({...ru,'data-precision':'1'}),2.6),'2,6\u00a0кг');
+  assert.equal(runtime.formatValue(new Element({...ru,'data-precision':'0'}),2.6),'2,6\u00a0кг');
+  assert.equal(runtime.formatValue(new Element({...ru,'data-precision':'2'}),2.6),'2,60\u00a0кг');
+  assert.equal(runtime.formatRangeText(new Element(ru),[2.6,7.4]),'2,6 – 7,4\u00a0кг');
+});
+
+test('the Smart element writes no precision unless it is set',async()=>{
+  const manifest=JSON.parse(await readFile(new URL('../src/smart/slider-range/component.json',import.meta.url),'utf8'));
+  // A number setting without a default reads as 0 (core element-manifest), and
+  // data-precision="0" rounded 2.6 to «3» for step 0.1.
+  assert.equal(manifest.settings.precision.default,null);
+});
+
 test('display precision does not change values emitted by the engine',()=>{
   assert.deepEqual(Array.from(runtime.getNumericValues([1.25,8.75])),[1.25,8.75]);
   assert.equal(runtime.formatValue(new Element({'data-decimals':'1'}),1.25),'1.3');

@@ -51,3 +51,13 @@ test('C78: label is the visible name, value-display shows the value; the former 
   assert.match(template,/data-labelledby=\$\{context\.name \? context\.nameId : nothing\}/);
   assert.ok(source.includes("const visibleName = root.getAttribute('data-labelledby');"));
 });
+// Acceptance R4: the host rewrites the value line and the scale numbers as the
+// handles move. Written as text parts, that rewrite took lit's markers with it,
+// and the next render (prefix set after the first, through its alias) threw on
+// insertBefore and never reached the root's data-prefix.
+test('texts the host rewrites are property bindings, not text parts',async()=>{
+  const template=await readFile(new URL('../src/smart/slider-range/js/templates/default.js',import.meta.url),'utf8');
+  assert.match(template,/<span class="sf-range-slider-output" aria-hidden="true" \.textContent=\$\{context\.outputText \?\? ''\}><\/span>/u);
+  assert.match(template,/\.textContent=\$\{mark\.text \?\? ''\}\n\s*><\/span>/u);
+  assert.doesNotMatch(template,/sf-range-slider-output"[^>]*>\$\{/u);
+});

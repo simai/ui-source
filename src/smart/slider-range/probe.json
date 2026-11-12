@@ -188,7 +188,7 @@
     },
     {
       "id": "field-enter-moves-the-handle",
-      "covers": "settings.field (C80): typing a number in the from/to field and Enter moves its handle; one change",
+      "covers": "settings.field (C80): typing a number in the from/to field and Enter moves its handle; one change, then the dated sf-range-slider-change and onSliderChange with its detail",
       "field": "<sf-slider-range label=\"Цена\" name=\"price\" min=\"0\" max=\"50000\" step=\"500\" value=\"5000,20000\" suffix=\" ₽\" field></sf-slider-range>",
       "given": [
         {
@@ -204,6 +204,22 @@
         "events": [
           {
             "type": "change",
+            "value": [
+              5000,
+              12500
+            ],
+            "handle": 1
+          },
+          {
+            "type": "sf-range-slider-change",
+            "value": [
+              5000,
+              12500
+            ],
+            "handle": 1
+          },
+          {
+            "type": "onSliderChange",
             "value": [
               5000,
               12500
