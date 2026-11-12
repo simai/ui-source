@@ -527,8 +527,10 @@
   }
 
 
+  /* A menu row's icon is one step paler than its label (C107, owner
+     2026-11-12), as in sf-menu and sf-menu-context. */
   .sf-admin-menu-item > .sf-icon {
-    --sf-icon--color: var(--sf-on-surface);
+    --sf-icon--color: var(--sf-on-surface-variant);
   }
 
   .sf-admin-menu-item.segment-start {
@@ -570,7 +572,7 @@
   }
 
   .sf-admin-menu-item-container .sf-icon {
-    --sf-icon--color: var(--sf-on-surface);
+    --sf-icon--color: var(--sf-on-surface-variant);
   }
 
   .sf-admin-menu-direction-icon:dir(rtl),

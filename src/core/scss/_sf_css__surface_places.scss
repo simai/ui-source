@@ -10,8 +10,9 @@
 // .sf-surface-media is glass over a photo or a video: black at 48 with a blur,
 // white ink, the same in both themes (C16, C14). It re-declares the roles the
 // controls on it read from white on the alpha scale -- states 4/8/12, fill
-// 8/12/16 (the neutral fill family, C41), line 24, boundary 64, dim ink 80 -- so an icon keeps its three
-// roles and a control needs no new one. In sf.base with the theme, so a
+// 8/12/16 (the neutral fill family, C41), line 24, boundary 64, dim ink 80 -- so an icon keeps its four
+// roles (C107: the icon role is the glass's ink, the alpha scale has no half
+// step) and a control needs no new one. In sf.base with the theme, so a
 // utility on the same element still wins.
 //
 // Coloured places are the bg-<role> and bg-<role>-container utilities (owner,
@@ -32,6 +33,9 @@
     --sf-surface-place-ground: var(--sf-black);
     --sf-surface-underlay: initial;
     --sf-on-surface: var(--sf-on-surface-media);
+    // The icon role (C107): no half step between white and white at 80 on
+    // the alpha scale, so a control's glyph on glass is the glass's ink.
+    --sf-on-surface-icon: var(--sf-on-surface-media);
     --sf-on-surface-variant: var(--sf-white--alfa-80);
     --sf-on-surface-container-variant: var(--sf-white--alfa-80);
     --sf-surface-state-hover: var(--sf-white--alfa-4);

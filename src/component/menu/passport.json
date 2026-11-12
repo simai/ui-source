@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.menu",
   "kind": "component",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/menu/docs/docs.md",
@@ -19,7 +19,7 @@
     "src/component/menu/scss/_css__menu_group.scss",
     "src/component/menu/scss/index.scss"
   ],
-  "content_sha256": "5e474a67279853a0361290c1f350a036fa90d055b5ffa0d58a6362a7b493fffe",
+  "content_sha256": "b2cb8187d6e9aa31cf29cdd0a32419d9c8f1659f6c0f25bb102c7d1149991f6c",
   "dependencies": [
     {
       "id": "component.badges",

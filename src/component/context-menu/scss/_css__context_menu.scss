@@ -662,7 +662,13 @@
   @include places.sf-place-fill(var(--sf-surface-container-hover));
 }
 
+/* A tile is a control: its icon is half a step paler than its name (C107,
+   owner 2026-11-12), and takes the name's colour under a pointer. */
 .sf-context-menu-tile-icon {
+  --sf-icon--color: var(--sf-on-surface-icon);
+}
+
+.sf-context-menu-tile.sf-context-menu-item:not(.sf-context-menu-tile--on):not(:disabled):is(:hover, :active) .sf-context-menu-tile-icon {
   --sf-icon--color: var(--sf-on-surface);
 }
 

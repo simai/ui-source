@@ -288,6 +288,21 @@
     --sf-on-surface-fixed: var(--sf-neutral-10);
     --sf-on-surface-hover: light-dark(var(--sf-neutral-15), var(--sf-neutral-85));
     --sf-on-surface-active: light-dark(var(--sf-neutral-20), var(--sf-neutral-80));
+    /* The icon role (C107, owner 2026-11-12, replacing the three-role rule of
+       2026-10-08): a neutral glyph inside a control -- a button, a segment, a
+       tab, a header tool, and an icon button with no text -- is half a step
+       paler than its label, to make up for the glyph's size and filled areas
+       (R192; research 2026-11-12-icon-colour.md). Light neutral-25 between the
+       label's 10 and the variant's 40; dark neutral-80, the popup variant's
+       tone. Over the surfaces 0 to 3, a hovered plate and a selected one it
+       measures 9.23 to 11.17:1 light and 7.49 to 11.10:1 dark, over WCAG
+       1.4.11's 3:1 everywhere. A row's leading icon (list, menu, tree, field,
+       tag, crumbs, toast, file row) is --sf-on-surface-variant; a hovered or
+       pressed control's icon takes the label's colour; painted, selected,
+       status and disabled glyphs keep their own roles. A coloured place and
+       glass have no half step on the alpha scale: there the role is the
+       place's ink (core mix/_mix__places.scss, _sf_css__surface_places.scss). */
+    --sf-on-surface-icon: light-dark(var(--sf-neutral-25), var(--sf-neutral-80));
     /* Dark tone 70 since C43 (owner 2026-11-10, palette steps research): tone
        60 gave Lc 42 on the page against Lc 82 for the light pair, and a quiet
        key (its fill an 8 % of this ink) 4.25:1 on a card. Light unchanged. */

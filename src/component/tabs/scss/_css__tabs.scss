@@ -286,13 +286,23 @@
     --sf-icon-button--background-color: var(--sf-transparent);
   }
 
+  // The icon beside a tab's label is half a step paler than the label where
+  // the label is --sf-on-surface (C107, owner 2026-11-12): --sf-on-surface-icon.
+  // A quieter label (underline, at rest) keeps its icon at its own ink; a
+  // filled tab keeps the fill's on-colour. Hovered and pressed, the icon takes
+  // the label's colour.
   .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-icon,
   .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) .sf-icon {
-    --sf-icon--color: var(--sf-tabs-color, var(--sf-on-surface));
+    --sf-icon--color: var(--sf-tabs-color, var(--sf-on-surface-icon));
   }
 
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) .sf-icon,
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled) .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-icon);
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled):is(:hover, :active) .sf-icon,
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled):is(:hover, :active) .sf-icon {
     --sf-icon--color: var(--sf-on-surface);
   }
 
@@ -631,8 +641,15 @@
     --sf-button-text-container--color: var(--sf-tabs-color, var(--sf-on-surface));
   }
 
+  // C107: the pill's icon half a step paler than its label at rest, the
+  // label's colour under a pointer.
   .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-icon,
   .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) .sf-icon {
+    --sf-icon--color: var(--sf-tabs-color, var(--sf-on-surface-icon));
+  }
+
+  .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-icon,
+  .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-icon {
     --sf-icon--color: var(--sf-tabs-color, var(--sf-on-surface));
   }
 }
