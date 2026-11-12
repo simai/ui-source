@@ -349,7 +349,7 @@
   --sf-quantity-wrap--border-color: var(--sf-primary-hover);
 }
 
-.sf-quantity:has(input:enabled:not(:disabled):not(.disabled):active) .sf-quantity-wrap input::placeholder {
+.sf-quantity:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-quantity-wrap input::placeholder {
   --sf-quantity-placeholder--color: var(--sf-on-surface);
 }
 
@@ -402,9 +402,13 @@
   --sf-icon--width: var(--sf-text-height-1\/2);
 }
 
-/* A read-only field draws its edge with the region line, as sf-input's
-   read-only field does (QT-08): it is not a control to press. */
+/* A read-only field is sf-input's read-only field (QT-08, the rule in
+   _css__inputs.scss): not filled -- a fill reads as a control to press (C16)
+   -- and the line of a region for its edge; the value keeps its full ink.
+   No hover or press colour reaches it (the hover, press and number-place
+   rules skip :read-only), and its steppers are disabled buttons. */
 .sf-quantity:not(.error):has(input:read-only:not(:disabled)) .sf-quantity-wrap {
+  --sf-quantity-wrap--background-color: var(--sf-transparent);
   --sf-quantity-wrap--border-color: var(--sf-outline-variant);
 }
 }

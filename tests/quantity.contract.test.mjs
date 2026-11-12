@@ -262,3 +262,36 @@ test('quantity: C53 is the Smart field\'s look; the class component keeps its ow
   assert.doesNotMatch(c53, /\.sf-quantity(\.[\w-]+)* \.sf-quantity-wrap[ >{]/u);
   assert.ok(c53.includes('.sf-quantity .sf-quantity-row > .sf-quantity-wrap > input {\n    --sf-quantity-input--padding-inline-end: var(--sf-space-1\\/4);'));
 });
+
+test('quantity: read-only is sf-input\'s read-only look and changes nothing (range-slider study #r2-readonly)', () => {
+  // The same rule and tokens as sf-input's read-only field: no fill, the
+  // region line (outline-variant, 24 %) for the edge, the value in full ink.
+  const inputSheet = read('src/component/inputs/scss/_css__inputs.scss');
+  const inputRule = inputSheet.slice(inputSheet.indexOf('.sf-input:not(.error).sf-input--bordered:has(input:read-only:not(:disabled)) .sf-input-field {')).split('}')[0];
+  assert.ok(inputRule.includes('--sf-input-field--background-color: var(--sf-transparent);'));
+  assert.ok(inputRule.includes('--sf-input-field--border-color: var(--sf-outline-variant);'));
+  const rule = sheet.slice(sheet.indexOf('.sf-quantity:not(.error):has(input:read-only:not(:disabled)) .sf-quantity-wrap {')).split('}')[0];
+  assert.ok(rule.includes('--sf-quantity-wrap--background-color: var(--sf-transparent);'));
+  assert.ok(rule.includes('--sf-quantity-wrap--border-color: var(--sf-outline-variant);'));
+  const ink = sheet.slice(sheet.indexOf('.sf-quantity input {')).split('}')[0];
+  assert.ok(ink.includes('--sf-quantity-input--color: var(--sf-quantity-color, var(--sf-on-surface));'));
+  assert.doesNotMatch(sheet, /:read-only[^{]*\{[^}]*--sf-quantity-input--color/u);
+  // No hover or press state reaches a read-only box, number place or placeholder.
+  for (const line of sheet.split('\n').filter((one) => /\.sf-quantity[^{]*:(?:hover|active)\)?[^{]*\{/u.test(one) && /\binput\b/u.test(one))) {
+    if (/\.sf-quantity-count|focus-visible/u.test(line)) continue;
+    assert.match(line, /:not\(:read-only\)/u, line);
+  }
+  // The steppers are disabled buttons, so the icon button draws no hover or
+  // press; the keys and the steppers do not step; the box stays focusable and
+  // selectable (a read-only input, not a disabled one).
+  assert.match(template, /\?disabled=\$\{!context\.interactive \|\| reached\}/u);
+  assert.match(template, /\?readonly=\$\{context\.readonly\}/u);
+  assert.match(source, /get interactive\(\) \{\n    return !this\.disabled && !this\.readonly;\n  \}/u);
+  assert.match(source, /stepBy\(count, source, \{change = true\} = \{\}\) \{\n    if \(!this\.interactive\) return false;/u);
+  assert.match(source, /onStepPointerDown\(event, direction\) \{\n    if \(event\.button !== 0 \|\| !this\.interactive\) return;/u);
+  // The class component: the steppers turn disabled with the input's
+  // read-only, and a step or a typed character does nothing.
+  assert.match(classSource, /const isDisabled = Boolean\(input\.disabled \|\| input\.readOnly\);/u);
+  assert.match(classSource, /function adjustValue\(root, deltaSign\) \{\n  const input = root\.querySelector\('\.sf-quantity-wrap input'\);\n  if \(!input \|\| input\.disabled \|\| input\.readOnly\) return;/u);
+  assert.match(classSource, /attributeFilter: \['disabled', 'readonly'\]/u);
+});

@@ -92,6 +92,10 @@ old markup that still carries it keeps working without the hover.
 
 A read-only field draws its edge with the region line `--sf-outline-variant`,
 as an Input's read-only field does, and takes no hover border (1.1.2, QT-08).
+Like that field it has no fill (`--sf-transparent`, also over
+`--sf-quantity-background-color`), keeps the value in full ink, shows no hover
+or press colour on the box, the number or the placeholder, and its steppers
+are disabled buttons; the value stays focusable and selectable (1.2.1).
 
 The composite control uses the UI radius token `--sf-radius--ui`, the hairline
 token `--sf-px`, semantic typography and spacing tokens. Pointer activation
