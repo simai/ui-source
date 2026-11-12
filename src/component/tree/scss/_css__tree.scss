@@ -15,18 +15,57 @@
     outline: none;
   }
 
+  /* The row's step on the size ladder (owner decision C109 point 3, NI-6):
+     the first column -- the chevron's slot, or the type icon in a static
+     tree -- is the icon of the rung, the row the rung's control height, the
+     name the rung's text. 1/2 and 2 below; 1 is the default. */
+  .sf-tree {
+    --sf-tree--column: var(--sf-icon-size-3);
+    --sf-tree--row: var(--sf-ui-1--control-height);
+    --sf-tree--text-size: var(--sf-text-size-1);
+    --sf-tree--text-height: var(--sf-text-height-1);
+    --sf-tree--code-size: var(--sf-text-size-1\/2);
+  }
+
+  .sf-tree.sf-tree--size-1\/2 {
+    --sf-tree--column: var(--sf-icon-size-2);
+    --sf-tree--row: var(--sf-ui-1\/2--control-height);
+    --sf-tree--text-size: var(--sf-text-size-1\/2);
+    --sf-tree--text-height: var(--sf-text-height-1\/2);
+    --sf-tree--code-size: var(--sf-text-size-1\/3);
+  }
+
+  .sf-tree.sf-tree--size-2 {
+    --sf-tree--column: var(--sf-icon-size-4);
+    --sf-tree--row: var(--sf-ui-2--control-height);
+    --sf-tree--text-size: var(--sf-text-size-2);
+    --sf-tree--text-height: var(--sf-text-height-2);
+    --sf-tree--code-size: var(--sf-text-size-1);
+  }
+
   /* sf-tree draws its entries flat (standard 1.3.8 §18.4): a row says its
      level, and each level below the first is one indent in, the indent a
      nested group takes.
 
-     The step is never narrower than the chevron's slot (NI-2): --sf-space-3
-     is 24 on a desktop but 16 on a phone, and a child's chevron then stood 8
-     into its parent's, its name only 16 right of the parent's. The full rule
-     of the level indent (under the parent's text, or a plain step) is the
-     owner's question (C102 open item); this keeps the phone from overlapping
-     until it is decided. */
+     The step is derived from the row, never a number of its own (owner
+     decision C109 points 1, 4 and 5; NI-1, NI-2): a child's first column
+     stands under its parent's second column -- the check box, the type icon,
+     or the name when there are no icons. So the step is the first column
+     (the chevron's slot, which a leaf keeps) and the one row gap after it:
+     36 on a desktop, 28 in the compact density, 32 on a phone at size 1.
+     It was --sf-space-3: 24 against a 24 chevron and an 8 gap, so a child's
+     chevron stood 8 left of its parent's icon, 4 in compact, and on a phone
+     (16) inside its parent's chevron. A phone takes the same rule, with no
+     smaller step of its own.
+
+     The row gap is H2 of the horizontal-spacing standard (C105): 12 on a
+     desktop, 8 in compact and on a phone. --sf-tree-item-gap is the one
+     variable for it: sf-tree-item's sheet draws it between a row's parts,
+     and the step here reads the same variable, so a tree that sets another
+     gap moves its levels with it. */
   .sf-tree {
-    --sf-tree--indent: var(--sf-tree-indent, var(--sf-tree-item--nested-padding-inline-start, max(var(--sf-space-3), var(--sf-icon-size-3))));
+    --sf-tree--part-gap: var(--sf-tree-item-gap, var(--sf-space-1\/2));
+    --sf-tree--indent: var(--sf-tree-indent, var(--sf-tree-item--nested-padding-inline-start, calc(var(--sf-tree--column) + var(--sf-tree--part-gap))));
   }
 
   .sf-tree .sf-tree-item[data-sf-tree-level] {
@@ -44,19 +83,17 @@
   }
 
   /* The gap between a row's parts (chevron, icon, name) has one owner, the
-     tree-item sheet (.sf-tree-item .sf-tree-item-container, --sf-tree-item-gap,
-     --sf-space-1/3), which draws the row inside a tree and alone (NI-3). This
-     sheet set it too, 12 against 8, with the same weight: the sheet loaded
-     last won, and 8 was what pages showed. The value stays 8 until the row
-     gap of the horizontal standard is decided (nested-indent #q-gap). */
+     tree-item sheet (.sf-tree-item .sf-tree-item-container,
+     --sf-tree-item-gap), which draws the row inside a tree and alone (NI-3). */
   .sf-tree .sf-tree-item-container {
     /* The row is a step of the height ladder (C01, C18; docs pre-check
-       2026-11-10, navigation item 5): the size 1 control, 40 on a desktop and
-       36 on a phone. It was a fixed 40 (--sf-b6) at every width, and space-1/3
-       above and below the 24 chevron made it 40 on a phone as well: the block
-       padding is what the step leaves around the chevron. */
-    min-block-size: var(--sf-tree-item--min-block-size, var(--sf-ui-1--control-height));
-    padding-block: var(--sf-tree-item--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-icon-size-3)) / 2));
+       2026-11-10, navigation item 5): the control of the tree's size, 40 on
+       a desktop and 36 on a phone at size 1. It was a fixed 40 (--sf-b6) at
+       every width, and space-1/3 above and below the 24 chevron made it 40
+       on a phone as well: the block padding is what the step leaves around
+       the chevron. */
+    min-block-size: var(--sf-tree-item--min-block-size, var(--sf-tree--row));
+    padding-block: var(--sf-tree-item--padding-block, calc((var(--sf-tree--row) - var(--sf-tree--column)) / 2));
     padding-inline: var(--sf-tree-item--padding-inline, var(--sf-space-1\/2));
     border-radius: inherit;
   }
@@ -71,6 +108,8 @@
     min-inline-size: 0;
     color: inherit;
     text-decoration: none;
+    font-size: var(--sf-tree-item-name--font-size, var(--sf-tree--text-size));
+    line-height: var(--sf-tree-item-name--line-height, var(--sf-tree--text-height));
   }
 
   .sf-tree:not(.sf-tree--static) .sf-tree-item:not([aria-disabled='true']) > .sf-tree-item-container {
@@ -79,6 +118,8 @@
 
   .sf-tree:not(.sf-tree--static) .sf-tree-item:not([aria-disabled='true']):hover > .sf-tree-item-container {
     background: var(--sf-surface-container-hover);
+    /* On hover the glyphs catch up with the name's ink (C107 point 4). */
+    --sf-tree-item-icon--color: currentColor;
     /* A translucent fill, as the selected row: a tonal badge keeps its tone
        and an anchored badge's ring is the row's colour (C43 D4). */
     @include places.sf-place-fill(var(--sf-surface-container-hover));
@@ -90,6 +131,8 @@
     background: var(--sf-tree-selected-background-color, var(--sf-primary-container));
     color: var(--sf-on-primary-container);
     --sf-icon--color: var(--sf-on-primary-container);
+    /* A selected row's glyphs are the ink of its fill (C107 point 4). */
+    --sf-tree-item-icon--color: currentColor;
     /* A translucent fill: a tonal badge on it keeps its own tone (C43), an
        anchored badge's ring is the row's colour (C43 D3). */
     @include places.sf-place-fill(var(--sf-tree-selected-background-color, var(--sf-primary-container)));
@@ -114,10 +157,22 @@
   .sf-tree .sf-tree-item[aria-disabled='true'] {
     color: var(--sf-on-surface-disabled);
     cursor: not-allowed;
+    /* Its glyphs are disabled with it, not the variant ink. */
+    --sf-tree-item-icon--color: currentColor;
   }
 
   .sf-tree .sf-tree-chevron {
-    flex: 0 0 var(--sf-icon-size-3);
+    flex: 0 0 var(--sf-tree--column);
+  }
+
+  /* The chevron and the type icon are the column of the tree's size (C109
+     point 3). .sf-icon is unlayered and sizes itself from these; a width
+     written here would lose to it. */
+  .sf-tree .sf-tree-chevron,
+  .sf-tree .sf-tree-node-icon {
+    --sf-icon--font-size: var(--sf-tree--column);
+    --sf-icon--width: var(--sf-tree--column);
+    --sf-icon--height: var(--sf-tree--column);
   }
 
   /* A leaf keeps the chevron's column so names line up with the branches beside
@@ -126,9 +181,9 @@
      then starts a chevron's width in from its own edge. */
   .sf-tree .sf-tree-toggle-spacer {
     display: inline-block;
-    flex: 0 0 var(--sf-icon-size-3);
-    block-size: var(--sf-icon-size-3);
-    inline-size: var(--sf-icon-size-3);
+    flex: 0 0 var(--sf-tree--column);
+    block-size: var(--sf-tree--column);
+    inline-size: var(--sf-tree--column);
   }
 
   .sf-tree[data-sf-tree-flat='true'] .sf-tree-toggle-spacer {
@@ -137,10 +192,10 @@
 
   .sf-tree .sf-tree-chevron .sf-icon,
   .sf-tree .sf-tree-chevron.sf-icon {
-    font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
-    height: var(--sf-icon--height, var(--sf-icon-size-3));
+    font-size: var(--sf-icon--font-size, var(--sf-tree--column));
+    height: var(--sf-icon--height, var(--sf-tree--column));
     pointer-events: none;
-    width: var(--sf-icon--width, var(--sf-icon-size-3));
+    width: var(--sf-icon--width, var(--sf-tree--column));
   }
 
   /* A second text after the name (C102 §7 items 7-8): a comment, a count, a
@@ -181,12 +236,12 @@
   /* The rows of a lazy branch (C102 item 6): «Загрузка…» with the spinner in
      the icon's place, and the error with its retry button. */
   .sf-tree .sf-tree-item-spinner {
-    --sf-loader-svg-width: var(--sf-icon-size-3);
-    --sf-loader-svg-height: var(--sf-icon-size-3);
+    --sf-loader-svg-width: var(--sf-tree--column);
+    --sf-loader-svg-height: var(--sf-tree--column);
     display: inline-flex;
     flex: none;
-    inline-size: var(--sf-icon-size-3);
-    block-size: var(--sf-icon-size-3);
+    inline-size: var(--sf-tree--column);
+    block-size: var(--sf-tree--column);
     color: var(--sf-primary);
   }
 
@@ -240,10 +295,10 @@
      (ul/li), nothing to press, no Tab stop, no hover; rows are text lines,
      not controls; names in the code face; a note after the name wraps under
      it when the line is short. sf-tree static draws it; Docara writes the
-     same class markup. The step is the icon and the gap, the column the
-     static tree has instead of a chevron. */
+     same class markup. The step is the interactive tree's (C109 point 1):
+     the first column -- here the type icon, there is no chevron -- and the
+     row gap, so a child's icon stands under its parent's name. */
   .sf-tree.sf-tree--static {
-    --sf-tree--indent: var(--sf-tree-indent, calc(var(--sf-icon-size-3) + var(--sf-tree-item-gap, var(--sf-space-1\/3))));
     gap: 0;
   }
 
@@ -266,9 +321,9 @@
 
   .sf-tree.sf-tree--static .sf-tree-item > .sf-tree-item-container {
     flex-wrap: wrap;
-    column-gap: var(--sf-tree-item-gap, var(--sf-space-1\/3));
+    column-gap: var(--sf-tree--part-gap);
     row-gap: 0;
-    min-block-size: var(--sf-text-height-1);
+    min-block-size: var(--sf-tree--text-height);
     padding: 0;
     cursor: auto;
   }
@@ -276,9 +331,9 @@
   /* The icon keeps its glyph size and stands a text line tall, so a row is
      the name's line; .sf-icon sizes itself from these (unlayered). */
   .sf-tree.sf-tree--static .sf-tree-node-icon {
-    --sf-icon--width: var(--sf-icon-size-3);
-    --sf-icon--height: var(--sf-text-height-1);
-    --sf-icon--font-size: var(--sf-icon-size-3);
+    --sf-icon--width: var(--sf-tree--column);
+    --sf-icon--height: var(--sf-tree--text-height);
+    --sf-icon--font-size: var(--sf-tree--column);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -288,15 +343,15 @@
   .sf-tree.sf-tree--static .sf-tree-item .sf-tree-item-name {
     flex: 0 1 auto;
     font-family: var(--sf-code-font-family, var(--sf-mono));
-    font-size: var(--sf-text-size-1\/2);
-    line-height: var(--sf-text-height-1);
+    font-size: var(--sf-tree--code-size);
+    line-height: var(--sf-tree--text-height);
     overflow-wrap: anywhere;
   }
 
   .sf-tree.sf-tree--static .sf-tree-item-note {
     flex: 0 1 auto;
     min-inline-size: 0;
-    line-height: var(--sf-text-height-1);
+    line-height: var(--sf-tree--text-height);
     white-space: normal;
   }
 }

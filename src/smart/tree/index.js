@@ -902,6 +902,8 @@ class SfTree extends TreeElement {
       pageHidden: entry.hidden,
       hiddenWord: this._words.hidden,
       check: check ? this._checks?.get(row.id) ?? 'false' : '',
+      // The check box takes the tree's step (C109 point 3).
+      checkSize: this.size,
       draggable: Boolean(this.reorder) && !entry.disabled,
       openIcon: entry.openIcon || 'folder_open',
       closedIcon: entry.closedIcon || 'folder',

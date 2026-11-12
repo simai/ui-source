@@ -24,6 +24,7 @@ import { html, nothing } from 'lit';
 //   pageHidden, hiddenWord     a hidden page, greyed, with its word (C102 8)
 //   check                      'true' | 'false' | 'mixed': a check box in the
 //                              row and aria-checked (selection="check")
+//   checkSize                  the check box's step: the tree's size (C109)
 //   placeholder, spinner       'loading' | 'error': the row a lazy branch
 //                              shows while its children load or failed
 //                              (C102 6); spinner is the Framework's spinner
@@ -76,7 +77,8 @@ function renderCheck(row) {
   if (!row.check) return nothing;
   const on = row.check === 'true';
   const mixed = row.check === 'mixed';
-  return html`<span class="sf-checkbox sf-checkbox--size-1 sf-tree-check flex" aria-hidden="true"><span class="sf-checkbox-box flex"><input
+  const size = row.checkSize === '1/2' || row.checkSize === '2' ? row.checkSize : '1';
+  return html`<span class=${`sf-checkbox sf-checkbox--size-${size} sf-tree-check flex`} aria-hidden="true"><span class="sf-checkbox-box flex"><input
       type="checkbox" tabindex="-1" .checked=${on} .indeterminate=${mixed} ?disabled=${row.disabled}><i class="sf-icon" aria-hidden="true">${mixed ? 'remove' : on ? 'check' : ''}</i></span></span>`;
 }
 

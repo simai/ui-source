@@ -7,11 +7,17 @@ function joinClasses(...tokens) {
   return tokens.flat().filter(Boolean).join(' ');
 }
 
+// The tree's step on the size ladder (C109 point 3): 1 is the sheet's
+// default and writes no class.
+function sizeClass(size) {
+  return size === '1/2' || size === '2' ? `sf-tree--size-${size}` : '';
+}
+
 // The tree's entries, flat and keyed by id (standard 1.3.8 §18.4): a row that
 // stays keeps its element, and only what changed in it is written. Over 300
 // visible entries the rows outside the view are two spacers.
 export function renderTreeTemplate(context) {
-  const rootClasses = joinClasses('sf-tree flex flex-col', context.rootClass);
+  const rootClasses = joinClasses('sf-tree flex flex-col', sizeClass(context.size), context.rootClass);
   const rows = context.tabStopDrawn || !context.rows.length
     ? context.rows
     : [{...context.rows[0], tabStop: true}, ...context.rows.slice(1)];
@@ -59,7 +65,7 @@ function renderStaticNode(node) {
 }
 
 export function renderStaticTreeTemplate(context) {
-  const rootClasses = joinClasses('sf-tree sf-tree--static flex flex-col', context.rootClass);
+  const rootClasses = joinClasses('sf-tree sf-tree--static flex flex-col', sizeClass(context.size), context.rootClass);
   return html`<div class=${rootClasses} style=${context.rootStyle || nothing}><ul
       class="sf-tree-group" role="list" aria-label=${context.ariaLabel || nothing}>${context.nodes.map(renderStaticNode)}</ul></div>`;
 }

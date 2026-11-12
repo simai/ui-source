@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tree",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "title": "Tree",
   "summary": "A tree of entries: folders that open, files and links; one Tab stop walked with the arrows, optional selection, drops of records and files on an entry. Thousands of entries: keyed rows, a window over more than 300.",
   "kind": "smart",
@@ -81,6 +81,16 @@
         "enum": [
           "name",
           "none"
+        ]
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "The rows' step on the size ladder: the chevron's column and the type icon are the icon of the step, the row its control height, the name its text; the level step follows (column + row gap)",
+        "enum": [
+          "1/2",
+          "1",
+          "2"
         ]
       },
       "static": {
@@ -573,11 +583,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/tree/index.js",
-        "sha256": "495f82ef55b79685abec2b5da433a230f2d173506ae9a2989eeb60bfa73a7987"
+        "sha256": "631b0e2476f11db2f8077edcac5b4c8e8d7f03cf9986e284c5fd09a57103b305"
       },
       {
         "path": "src/smart/tree/js/templates/default.js",
-        "sha256": "9856883d7aa15ac478884887655d5ea95d9ac24392617df036af9576b9b38808"
+        "sha256": "bf8e9edfdd25eb7dd243e4ec025754236b6da912b95ce9e0173880d3836f98c6"
       },
       {
         "path": "src/smart/tree/js/templates/default.css",
@@ -589,7 +599,7 @@
       },
       {
         "path": "src/smart/tree/docs/docs.md",
-        "sha256": "06d15e223c423769b0043df6b362a56d4f4f807bdc5535327fb3e0803b99a2d2"
+        "sha256": "ccddf218e1e3133009b3ecd17698da980d829acff0d03a37ef838c37e355155f"
       }
     ],
     "generated_runtime": [

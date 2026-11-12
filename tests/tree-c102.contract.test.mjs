@@ -1,7 +1,9 @@
 // sf-tree, owner decision C102 (ui-control control/docs-review/decisions.md,
 // research control/research/2026-11-12-tree.md section 7) and the defects found
 // with it: TR-15 (row icon colour reached a nested checkbox), NI-2 (phone level
-// step under the chevron), NI-3 (row gap with two owners). The behaviour is
+// step under the chevron), NI-3 (row gap with two owners); owner decision C109
+// (the level step, sizes, the row gap; NI-1, NI-6) and the tree part of C107
+// (IC-1, IC-4). The behaviour is
 // measured in a browser by tests/browser/tree-c102.browser.mjs on a build;
 // these pin the source that makes it.
 import assert from 'node:assert/strict';
@@ -16,27 +18,79 @@ test('TR-15: the row colours only its own glyphs, never what the row holds', asy
   const override = item.match(/@layer sf\.override \{([\s\S]*?)\n\}/u)[1];
   // No rule of the row reaches every .sf-icon inside it.
   assert.doesNotMatch(item, /\.sf-tree-item \.sf-icon\s*[,{]/u);
-  assert.match(override, /\.sf-tree-item-container > \.sf-tree-node-icon,\s*\.sf-tree-item-container > \.sf-tree-toggle > \.sf-tree-chevron \{\s*--sf-icon--color: var\(--sf-tree-item-icon-color, var\(--sf-tree-item-icon--color, currentColor\)\);/u);
+  assert.match(override, /\.sf-tree-item-container > \.sf-tree-node-icon,\s*\.sf-tree-item-container > \.sf-tree-toggle > \.sf-tree-chevron \{\s*--sf-icon--color: var\(--sf-tree-item-icon-color, var\(--sf-tree-item-icon--color, var\(--sf-on-surface-variant\)\)\);/u);
 });
 
-test('NI-2: a level step is never narrower than the chevron slot', async () => {
+test('C109 / NI-1 / NI-2: the level step is the first column and the row gap', async () => {
   const tree = await read('src/component/tree/scss/_css__tree.scss');
-  assert.match(tree, /--sf-tree--indent: var\(--sf-tree-indent, var\(--sf-tree-item--nested-padding-inline-start, max\(var\(--sf-space-3\), var\(--sf-icon-size-3\)\)\)\);/u);
+  assert.match(tree, /--sf-tree--part-gap: var\(--sf-tree-item-gap, var\(--sf-space-1\\\/2\)\);/u);
+  assert.match(tree, /--sf-tree--indent: var\(--sf-tree-indent, var\(--sf-tree-item--nested-padding-inline-start, calc\(var\(--sf-tree--column\) \+ var\(--sf-tree--part-gap\)\)\)\);/u);
   // Both the flat rows and a nested group step by it.
   assert.match(tree, /margin-inline-start: calc\(\(var\(--sf-tree-level, 1\) - 1\) \* var\(--sf-tree--indent\)\);/u);
   assert.match(tree, /\.sf-tree > \.sf-tree-item \.sf-tree-group \{\s*padding-inline-start: var\(--sf-tree--indent\);/u);
-  assert.doesNotMatch(tree, /var\(--sf-tree-indent, var\(--sf-tree-item--nested-padding-inline-start, var\(--sf-space-3\)\)\)/u);
+  // No free number: neither --sf-space-3 nor a max() of one survives, and
+  // the static tree has no step of its own.
+  assert.doesNotMatch(tree.replace(/\/\*[\s\S]*?\*\//gu, ''), /--sf-space-3/u);
+  assert.equal((tree.match(/--sf-tree--indent:/gu) || []).length, 1);
+  // The chevron's slot, the spacer a leaf keeps, the type icon and the
+  // spinner are the one column.
+  for (const part of ['\\.sf-tree-chevron \\{\\s*flex: 0 0 var\\(--sf-tree--column\\)', '\\.sf-tree-toggle-spacer \\{[^}]*flex: 0 0 var\\(--sf-tree--column\\)', '\\.sf-tree-node-icon \\{\\s*--sf-icon--font-size: var\\(--sf-tree--column\\)', '--sf-loader-svg-width: var\\(--sf-tree--column\\)']) {
+    assert.match(tree, new RegExp(part, 'u'));
+  }
 });
 
-test('NI-3: the gap between a row\'s parts has one owner, the tree-item sheet', async () => {
-  const [tree, item] = await Promise.all([
+test('C109 point 3 / NI-6: sizes 1/2, 1 and 2 on the ladder, the rule in rung tokens', async () => {
+  const [tree, manifest, template, row] = await Promise.all([
+    read('src/component/tree/scss/_css__tree.scss'),
+    json('src/smart/tree/component.json'),
+    read('src/smart/tree/js/templates/default.js'),
+    read('src/smart/tree-item/js/templates/row.js'),
+  ]);
+  assert.deepEqual(manifest.settings.size, {type: 'enum', values: ['1/2', '1', '2'], default: '1', summary: manifest.settings.size.summary});
+  const rung = (selector) => tree.match(new RegExp(`\\n  ${selector} \\{([\\s\\S]*?)\\n  \\}`, 'u'))[1];
+  assert.match(tree, /\n  \.sf-tree \{\s*--sf-tree--column: var\(--sf-icon-size-3\);\s*--sf-tree--row: var\(--sf-ui-1--control-height\);\s*--sf-tree--text-size: var\(--sf-text-size-1\);\s*--sf-tree--text-height: var\(--sf-text-height-1\);/u);
+  assert.match(rung('\\.sf-tree\\.sf-tree--size-1\\\\\\/2'), /--sf-tree--column: var\(--sf-icon-size-2\);\s*--sf-tree--row: var\(--sf-ui-1\\\/2--control-height\);\s*--sf-tree--text-size: var\(--sf-text-size-1\\\/2\);/u);
+  assert.match(rung('\\.sf-tree\\.sf-tree--size-2'), /--sf-tree--column: var\(--sf-icon-size-4\);\s*--sf-tree--row: var\(--sf-ui-2--control-height\);\s*--sf-tree--text-size: var\(--sf-text-size-2\);/u);
+  // The row is the rung's control, its block padding what the column leaves.
+  assert.match(tree, /min-block-size: var\(--sf-tree-item--min-block-size, var\(--sf-tree--row\)\);\s*padding-block: var\(--sf-tree-item--padding-block, calc\(\(var\(--sf-tree--row\) - var\(--sf-tree--column\)\) \/ 2\)\);/u);
+  // The element writes the class for 1/2 and 2; the check box follows.
+  assert.match(template, /size === '1\/2' \|\| size === '2' \? `sf-tree--size-\$\{size\}` : ''/u);
+  assert.match(row, /sf-checkbox--size-\$\{size\}/u);
+});
+
+test('C109 point 4 / NI-3: one row gap, --sf-tree-item-gap, H2 of the standard', async () => {
+  const [tree, item, variables] = await Promise.all([
     read('src/component/tree/scss/_css__tree.scss'),
     read('src/component/tree-item/scss/_css__tree_item.scss'),
+    json('src/core/contracts/public-variables.v1.json'),
   ]);
   const container = tree.match(/\n  \.sf-tree \.sf-tree-item-container \{([\s\S]*?)\n  \}/u)[1];
   assert.doesNotMatch(container.replace(/\/\*[\s\S]*?\*\//gu, ''), /(^|\s)gap:/u);
   assert.doesNotMatch(tree, /--sf-tree-item--container-gap/u);
-  assert.match(item, /\.sf-tree-item \.sf-tree-item-container \{\s*gap: var\(--sf-tree-item-gap, var\(--sf-tree-item-container--gap, var\(--sf-space-1\\\/3\)\)\);/u);
+  // One variable, no second name and no other value.
+  assert.match(item, /\.sf-tree-item \.sf-tree-item-container \{\s*gap: var\(--sf-tree-item-gap, var\(--sf-space-1\\\/2\)\);/u);
+  assert.doesNotMatch(item, /--sf-tree-item-container--gap/u);
+  assert.doesNotMatch(tree + item, /--sf-tree-item-gap, var\(--sf-space-1\\\/3\)/u);
+  // The static tree reads the same gap.
+  assert.match(tree, /column-gap: var\(--sf-tree--part-gap\);/u);
+  const all = variables.components ? Object.values(variables.components).flatMap((one) => one.variables || []) : JSON.stringify(variables);
+  const text = JSON.stringify(all);
+  assert.match(text, /"name":"--sf-tree-item-gap","role":"gap","summary":"[^"]*","default":"var\(--sf-space-1\\\\\/2\)"/u);
+  assert.match(text, /"name":"--sf-tree-indent","role":"indent","summary":"[^"]*","default":"calc\(var\(--sf-icon-size-3\) \+ var\(--sf-tree-item-gap\)\)"/u);
+});
+
+test('C107 / IC-1 / IC-4: the row glyphs are variant, the row ink when hovered, selected or disabled', async () => {
+  const [tree, item] = await Promise.all([
+    read('src/component/tree/scss/_css__tree.scss'),
+    read('src/component/tree-item/scss/_css__tree_item.scss'),
+  ]);
+  assert.match(item, /--sf-icon--color: var\(--sf-tree-item-icon-color, var\(--sf-tree-item-icon--color, var\(--sf-on-surface-variant\)\)\);/u);
+  const states = [
+    /:hover > \.sf-tree-item-container \{[^}]*--sf-tree-item-icon--color: currentColor;/u,
+    /\[aria-selected='true'\] > \.sf-tree-item-container \{[^}]*--sf-tree-item-icon--color: currentColor;/u,
+    /\.sf-tree-item\[aria-disabled='true'\] \{[^}]*--sf-tree-item-icon--color: currentColor;/u,
+  ];
+  for (const state of states) assert.match(tree, state);
 });
 
 // core file-types is plain JavaScript over a JSON map; node reads the map as
@@ -141,7 +195,7 @@ test('C102 5 (§7 item 7): static, list semantics and the .sf-tree--static class
   assert.match(staticPart, /entry\.mark \? 'sf-tree-item--mark'/u);
   assert.match(staticPart, /const icon = entry\.more \? 'more_horiz' : node\.nodeIcon;/u);
   // Text-height rows in the code face, no pointer, no hover.
-  assert.match(sheet, /\.sf-tree\.sf-tree--static \.sf-tree-item > \.sf-tree-item-container \{[^}]*min-block-size: var\(--sf-text-height-1\);[^}]*cursor: auto;/u);
+  assert.match(sheet, /\.sf-tree\.sf-tree--static \.sf-tree-item > \.sf-tree-item-container \{[^}]*min-block-size: var\(--sf-tree--text-height\);[^}]*cursor: auto;/u);
   assert.match(sheet, /\.sf-tree\.sf-tree--static \.sf-tree-item \.sf-tree-item-name \{[^}]*font-family: var\(--sf-code-font-family, var\(--sf-mono\)\);/u);
   assert.match(sheet, /\.sf-tree:not\(\.sf-tree--static\) \.sf-tree-item:not\(\[aria-disabled='true'\]\):hover > \.sf-tree-item-container/u);
   // The class tree leaves static markup alone.
@@ -182,7 +236,7 @@ test('C102 7 (§7 item 9): selection="check", aria-checked with mixed, cascade',
   assert.match(row, /aria-selected=\$\{row\.selection === 'none' \|\| row\.check \? nothing : String\(Boolean\(row\.selected\)\)\}\n\s+aria-checked=\$\{checked\}/u);
   assert.match(template, /aria-multiselectable=\$\{context\.selection === 'many' \|\| context\.selection === 'check' \? 'true' : nothing\}/u);
   // The checkbox's own class markup, its mark check / remove.
-  assert.match(row, /class="sf-checkbox sf-checkbox--size-1 sf-tree-check flex" aria-hidden="true"/u);
+  assert.match(row, /class=\$\{`sf-checkbox sf-checkbox--size-\$\{size\} sf-tree-check flex`\} aria-hidden="true"/u);
   assert.match(row, /\$\{mixed \? 'remove' : on \? 'check' : ''\}/u);
   // A branch is its children: all, none or mixed; a press cascades.
   assert.match(source, /function branchCheck\(states\) \{\n\s+if \(states\.every\(\(state\) => state === 'true'\)\) return 'true';\n\s+return states\.some\(\(state\) => state !== 'false'\) \? 'mixed' : 'false';/u);

@@ -20,8 +20,13 @@
 //   pages   kind page on a branch, home, link, a hidden page with its word
 //   keys    * opens the siblings; expand-all / collapse-all
 //   reorder before / after / inside, never into itself
-//   NI-2    a level step is not narrower than the chevron (390 too)
-//   NI-3    the gap between a row's parts is the tree-item sheet's 8
+//   C109    the level step is the chevron and the row gap: a child's chevron
+//           stands under its parent's icon (NI-1, NI-2); the gap is H2 of
+//           C105, 12 at 1440 and 8 at 390, one variable (NI-3); sizes 1/2,
+//           1 and 2 on the ladder (NI-6); the static tree steps by its icon
+//           and the gap, a child's icon under its parent's name
+//   C107    the type icon and the chevron are on-surface-variant; a selected
+//           row's glyphs take its ink
 // Prints TREE_C102_OK and a JSON report.
 import {resolve, join} from 'node:path';
 import {existsSync, readFileSync} from 'node:fs';
@@ -54,6 +59,10 @@ const PAGE = `<!doctype html><html lang="ru" class="__THEME__"><head><meta chars
 <div class="box"><sf-tree id="pages" selection="one" aria-label="Страницы сайта"></sf-tree></div>
 <div class="box"><sf-tree id="reorder" reorder aria-label="Порядок"></sf-tree></div>
 <div class="box"><sf-tree id="deep" aria-label="Уровни"></sf-tree></div>
+<div class="box"><sf-tree id="deep-half" size="1/2" aria-label="Уровни 1/2"></sf-tree></div>
+<div class="box"><sf-tree id="deep-two" size="2" aria-label="Уровни 2"></sf-tree></div>
+<div class="box"><sf-tree id="deep-none" icons="none" aria-label="Уровни без значков"></sf-tree></div>
+<div class="box" data-sf-density="compact"><sf-tree id="deep-compact" aria-label="Уровни плотно"></sf-tree></div>
 </body></html>`;
 
 const DEMO = [
@@ -124,6 +133,7 @@ try {
           const r = {};
           $('icons').items = DEMO; $('branches').items = DEMO; $('none').items = DEMO; $('bytype').items = DEMO;
           $('static').items = PROJECT; $('check').items = PERM; $('pages').items = PAGES; $('reorder').items = ORDER; $('deep').items = DEEP;
+          for (const id of ['deep-half', 'deep-two', 'deep-none', 'deep-compact']) $(id).items = DEEP;
           let lazySource = [{id: 'p', label: 'Проекты', hasChildren: true}, {id: 'x', label: 'Архив', 'has-children': true}];
           $('lazy').items = lazySource;
           await document.fonts.ready;
@@ -157,6 +167,56 @@ try {
           const chevronLeft = (row) => (row.querySelector('.sf-tree-toggle, .sf-tree-toggle-spacer')).getBoundingClientRect().left;
           r.step = [Math.round(chevronLeft(deep.l2) - chevronLeft(deep.l1)), Math.round(chevronLeft(deep.l3) - chevronLeft(deep.l2))];
           r.chevronWidth = Math.round(deep.l1.querySelector('.sf-tree-toggle').getBoundingClientRect().width);
+          // C109: where a child's first column lands on its parent's row, and
+          // the step, the gap, the column and the row of every size
+          // The left of an element's first letter (a text Range on its first
+          // non-blank character).
+          const firstGlyph = (el) => {
+            const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+            for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+              const i = node.data.search(/\S/u);
+              if (i < 0) continue;
+              const range = document.createRange();
+              range.setStart(node, i); range.setEnd(node, i + 1);
+              return Math.round(range.getBoundingClientRect().left);
+            }
+            return null;
+          };
+          const colsOf = (row) => {
+            const box = row.querySelector(':scope > .sf-tree-item-container');
+            const at = (el) => (el ? Math.round(el.getBoundingClientRect().left) : null);
+            const name = box.querySelector('.sf-tree-item-name');
+            return {tog: at(box.querySelector(':scope > .sf-tree-toggle, :scope > .sf-tree-toggle-spacer')), icon: at(box.querySelector(':scope > .sf-tree-node-icon')), text: firstGlyph(name)};
+          };
+          r.levels = {};
+          for (const id of ['deep', 'deep-half', 'deep-two', 'deep-none', 'deep-compact']) {
+            const rowsOf = byId($(id));
+            const [p, c] = [colsOf(rowsOf.l1), colsOf(rowsOf.l2)];
+            const box = rowsOf.l1.querySelector(':scope > .sf-tree-item-container');
+            r.levels[id] = {
+              step: c.tog - p.tog,
+              childOnIcon: p.icon === null ? null : c.tog - p.icon,
+              childOnText: c.tog - p.text,
+              gap: parseFloat(getComputedStyle(box).columnGap),
+              column: Math.round(box.querySelector('.sf-tree-toggle').getBoundingClientRect().width),
+              row: Math.round(box.getBoundingClientRect().height),
+              name: getComputedStyle(box.querySelector('.sf-tree-item-name')).fontSize,
+            };
+          }
+          // the static tree: a child's icon under its parent's name
+          const sl = [...$('static').querySelectorAll('li.sf-tree-item')];
+          const sParent = sl.find((li) => li.querySelector(':scope > ul'));
+          const sChild = sParent.querySelector(':scope > ul > li');
+          const sp = sParent.querySelector(':scope > .sf-tree-item-container');
+          r.staticChildOnText = Math.round(sChild.querySelector('.sf-tree-node-icon').getBoundingClientRect().left) - firstGlyph(sp.querySelector('.sf-tree-item-name'));
+          // C107: the row glyphs' ink against the variant role
+          const ink = document.createElement('span');
+          ink.style.color = 'var(--sf-on-surface-variant)';
+          document.body.append(ink);
+          r.variant = getComputedStyle(ink).color;
+          ink.remove();
+          const plainRow = deep.l1.querySelector(':scope > .sf-tree-item-container');
+          r.glyphInk = {icon: getComputedStyle(plainRow.querySelector('.sf-tree-node-icon')).color, chevron: getComputedStyle(plainRow.querySelector('.sf-tree-chevron')).color, name: getComputedStyle(plainRow.querySelector('.sf-tree-item-name')).color};
           // static
           const st = $('static');
           const lines = [...st.querySelectorAll('li.sf-tree-item')];
@@ -305,9 +365,23 @@ for (const [key, r] of Object.entries(report)) {
   if (r.noneIcons !== 0 || r.noneChevrons !== r.iconsChevrons || !r.noneChevrons) fail(`icons=none: ${r.noneIcons} icons, ${r.noneChevrons} chevrons`);
   if (r.bytypeXlsx !== 'draft') fail(`file-types=none xlsx ${r.bytypeXlsx}`);
   if (r.missingGlyphs.length) fail(`glyphs missing ${r.missingGlyphs}`);
-  if (r.rowGap !== 8) fail(`row gap ${r.rowGap}`);
+  const gap = width === '1440' ? 12 : 8;
+  if (r.rowGap !== gap) fail(`row gap ${r.rowGap} (want H2 ${gap})`);
   if (r.rowHeight !== ladder) fail(`row ${r.rowHeight}`);
-  if (r.step.some((step) => step < r.chevronWidth)) fail(`level step ${r.step} < chevron ${r.chevronWidth}`);
+  if (r.step.some((step) => step !== r.chevronWidth + gap)) fail(`level step ${r.step} (want chevron ${r.chevronWidth} + gap ${gap})`);
+  // C109: rung column · row · gap at 1440 and 390. Compact is 20 · 32 · 8 on
+  // a desktop; a phone has one density, so compact there is size 1's.
+  const RUNGS = width === '1440'
+    ? {deep: [24, 40, 12], 'deep-half': [20, 32, 12], 'deep-two': [28, 48, 12], 'deep-none': [24, 40, 12], 'deep-compact': [20, 32, 8]}
+    : {deep: [24, 36, 8], 'deep-half': [20, 28, 8], 'deep-two': [28, 44, 8], 'deep-none': [24, 36, 8], 'deep-compact': [24, 36, 8]};
+  for (const [id, [column, row, g]] of Object.entries(RUNGS)) {
+    const lv = r.levels[id];
+    const on = id === 'deep-none' ? lv.childOnText : lv.childOnIcon;
+    if (lv.column !== column || lv.gap !== g || lv.step !== column + g || on !== 0) fail(`C109 ${id} ${JSON.stringify(lv)} (want column ${column}, gap ${g}, step ${column + g}, child under the parent's ${id === 'deep-none' ? 'name' : 'icon'})`);
+    if (lv.row !== row) fail(`C109 ${id} row ${lv.row} (want ${row})`);
+  }
+  if (r.staticChildOnText !== 0) fail(`C109 static child icon ${r.staticChildOnText} off the parent's name`);
+  if (r.glyphInk.icon !== r.variant || r.glyphInk.chevron !== r.variant || r.glyphInk.name === r.variant) fail(`C107 glyph ink ${JSON.stringify(r.glyphInk)} variant ${r.variant}`);
   const s = r.static;
   // A row is one text line (24 desktop, 20 phone); a note that wraps under
   // its name on a phone makes that row two lines.

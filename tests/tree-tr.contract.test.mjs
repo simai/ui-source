@@ -83,15 +83,15 @@ test('TR-14: a long name is one line with an ellipsis, its whole name the aria-l
   assert.match(rule, /\{ name: 'tooltip' \}/);
 });
 
-test('tree versions: sf-tree 2.3.0, sf-tree-item 1.3.0 (C102 on top of TR-5, TR-14)', async () => {
+test('tree versions: sf-tree 2.3.1, sf-tree-item 1.3.1 (C109 and C107 on top of C102, TR-5, TR-14)', async () => {
   const [tree, item, treeManifest, itemManifest] = await Promise.all([
     json('src/smart/tree/component.json'),
     json('src/smart/tree-item/component.json'),
     json('src/smart/tree/smart.manifest.json'),
     json('src/smart/tree-item/smart.manifest.json'),
   ]);
-  assert.equal(tree.version, '2.3.0');
-  assert.equal(item.version, '1.3.0');
-  assert.equal(treeManifest.version, '2.3.0');
-  assert.equal(itemManifest.version, '1.3.0');
+  assert.equal(tree.version, '2.3.1');
+  assert.equal(item.version, '1.3.1');
+  assert.equal(treeManifest.version, '2.3.1');
+  assert.equal(itemManifest.version, '1.3.1');
 });
