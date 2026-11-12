@@ -161,7 +161,7 @@
       "covers": "accessibility.role list, accessibility.name, settings.navigation, lang runtime, C101 (5)",
       "steps": [
         {
-          "check": "document.querySelector('#st ol[role=\"list\"]').getAttribute('aria-label') === 'Этапы публикации' && document.querySelector('#st-pass ol[role=\"list\"]').getAttribute('aria-label') === 'Шаги' && document.querySelectorAll('#st-pass button').length === 0 && document.querySelector('#st-pass li[aria-current=\"step\"]') === null && document.querySelector('#st-pass [data-step-index=\"0\"] .sf-step-container').textContent === 'Корзина' && document.querySelector('#st-pass [data-step-index=\"0\"] .sr-only').textContent === ', Пройден' && document.querySelector('#st-pass [data-step-index=\"0\"] .sf-step-marker .sf-icon').textContent === 'check' && document.querySelector('#st-pass [data-step-index=\"2\"] .sr-only').textContent === ', Ошибка' && document.querySelectorAll('#st ol > li').length === 4 && document.querySelectorAll('#st ol > :not(li)').length === 0 && document.querySelector('#st ol > li:nth-child(2)').getAttribute('aria-current') === 'step' && document.querySelector('#st [role=\"group\"]') === null"
+          "check": "document.querySelector('#st ol[role=\"list\"]').getAttribute('aria-label') === 'Этапы публикации' && document.querySelector('#st-pass ol[role=\"list\"]').getAttribute('aria-label') === 'Шаги' && document.querySelectorAll('#st-pass button').length === 0 && document.querySelector('#st-pass li[aria-current=\"step\"]').dataset.stepIndex === '2' && document.querySelector('#st-pass [data-step-index=\"0\"] .sf-step-container').textContent === 'Корзина' && document.querySelector('#st-pass [data-step-index=\"0\"] .sr-only').textContent === ', Пройден' && document.querySelector('#st-pass [data-step-index=\"0\"] .sf-step-marker .sf-icon').textContent === 'check' && document.querySelector('#st-pass [data-step-index=\"2\"] .sr-only').textContent === ', Ошибка' && document.querySelectorAll('#st ol > li').length === 4 && document.querySelectorAll('#st ol > :not(li)').length === 0 && document.querySelector('#st ol > li:nth-child(2)').getAttribute('aria-current') === 'step' && document.querySelector('#st [role=\"group\"]') === null"
         },
         {
           "script": "(document.getElementById('st-pass').setAttribute('lang', 'en'), true)",
@@ -207,7 +207,7 @@
         {
           "script": "(document.getElementById('narrow').style.inlineSize = '24rem', true)",
           "wait": 300,
-          "check": "document.querySelector('#st-auto .sf-steps').classList.contains('sf-steps--layout-column') && [...document.querySelectorAll('#st-auto .sf-step-container')].every((label) => label.textContent.split(/\\s+/).every((word) => { const node = label.firstChild; const at = node.textContent.indexOf(word); const range = document.createRange(); range.setStart(node, at); range.setEnd(node, at + word.length); return range.getClientRects().length === 1; }))"
+          "check": "document.querySelector('#st-auto .sf-steps').classList.contains('sf-steps--layout-column') && [...document.querySelectorAll('#st-auto .sf-step-container')].every((label) => label.textContent.split(/\\s+/).every((word) => { const node = [...label.childNodes].find((one) => one.nodeType === 3 && one.textContent.trim()); const at = node.textContent.indexOf(word); const range = document.createRange(); range.setStart(node, at); range.setEnd(node, at + word.length); return range.getClientRects().length === 1; }))"
         },
         {
           "script": "(document.getElementById('narrow').style.inlineSize = '15rem', true)",
@@ -237,7 +237,7 @@
       "covers": "C101 (3), (6) running",
       "steps": [
         {
-          "check": "[...document.querySelectorAll('#st .sf-step, #st-run .sf-step')].every((step) => { const box = step.querySelector('.sf-step-marker').getBoundingClientRect(); const line = parseFloat(getComputedStyle(step).lineHeight); return Math.abs(box.width - line) < 0.5 && Math.abs(box.height - line) < 0.5; }) && (() => { const mark = document.querySelector('#st-run .sf-step--state-running .sf-step-marker').getBoundingClientRect(); const svg = document.querySelector('#st-run .sf-step--state-running svg').getBoundingClientRect(); return Math.abs(svg.width - mark.width) < 0.5 && Math.abs((svg.left + svg.width / 2) - (mark.left + mark.width / 2)) < 0.5 && Math.abs((svg.top + svg.height / 2) - (mark.top + mark.height / 2)) < 0.5; })()"
+          "check": "[...document.querySelectorAll('#st .sf-step, #st-run .sf-step')].every((step) => { const box = step.querySelector('.sf-step-marker').getBoundingClientRect(); const line = parseFloat(getComputedStyle(step.querySelector('.sf-step-container')).lineHeight); return Math.abs(box.width - line) < 0.5 && Math.abs(box.height - line) < 0.5; }) && (() => { const mark = document.querySelector('#st-run .sf-step--state-running .sf-step-marker').getBoundingClientRect(); const glyph = document.querySelector('#st-run .sf-step--state-running svg'); const svg = glyph.getBoundingClientRect(); return Math.abs(glyph.width.baseVal.value - mark.width) < 0.5 && Math.abs((svg.left + svg.width / 2) - (mark.left + mark.width / 2)) < 0.5 && Math.abs((svg.top + svg.height / 2) - (mark.top + mark.height / 2)) < 0.5; })()"
         }
       ]
     },
