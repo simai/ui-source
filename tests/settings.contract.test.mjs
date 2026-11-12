@@ -23,21 +23,29 @@ const ITEMS = [
   {id: 'night', type: 'switch', text: 'Ночь', value: false},
 ];
 
-test('the manifest: a leaf of family settings with items, look, size, for, remember, label; change, changed, reset; four actions', () => {
+test('the manifest: a leaf of family settings with items, look, apply, search, size, for, remember, label; change, changed, reset; four actions', () => {
   assert.equal(manifest.tag, 'sf-settings');
   assert.equal(manifest.family, 'settings');
-  assert.equal(manifest.version, '1.1.0');
-  assert.deepEqual(Object.keys(manifest.settings), ['items', 'look', 'size', 'for', 'remember', 'label']);
-  assert.deepEqual(manifest.settings.look.values, ['drill', 'rows', 'tiles']);
+  assert.equal(manifest.version, '1.2.0');
+  assert.deepEqual(Object.keys(manifest.settings), ['items', 'look', 'apply', 'search', 'size', 'for', 'remember', 'label']);
+  // C106: the panel is a value of look (the setting «вид»); view is reserved (standard §3.1).
+  assert.deepEqual(manifest.settings.look.values, ['drill', 'rows', 'tiles', 'panel']);
+  assert.equal(manifest.settings.view, undefined);
+  assert.deepEqual(manifest.settings.apply.values, ['instant', 'button']);
+  assert.equal(manifest.settings.apply.default, 'instant');
+  assert.equal(manifest.settings.search.type, 'boolean');
+  assert.equal(manifest.settings.search.default, false);
+  assert.ok(manifest.settings.items.schema.items.properties.type.enum.includes('fields'));
   assert.deepEqual(manifest.settings.size.values, ['1/2', '1']);
   assert.deepEqual(Object.keys(manifest.events), ['change', 'changed', 'reset']);
   assert.equal(manifest.events.change.cancelable, true);
   assert.equal(manifest.events.reset.cancelable, true);
   assert.equal(manifest.events.changed.cancelable, undefined);
   assert.deepEqual(Object.keys(manifest.actions), ['set-value', 'set-all', 'show', 'reset']);
-  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-menu-context']);
-  assert.equal(manifest['css-variables'], undefined, 'no sheet of its own');
-  assert.equal(existsSync(new URL('../src/smart/settings/scss', import.meta.url)), false);
+  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-menu-context', 'cl-button', 'cl-button-icon', 'cl-tabs', 'cl-switch']);
+  assert.ok(manifest.relations.slice(1).every((relation) => relation.lazy), 'the panel look\'s parts do not hold up a menu look');
+  assert.equal(manifest['css-variables'], undefined, 'no public variables');
+  assert.equal(manifest.styles, 'scss/_smart__settings.scss');
 });
 
 test('the name is registered in the Framework\'s family settings; sf-settings-menu stays removed', () => {

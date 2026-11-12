@@ -2662,7 +2662,11 @@
       "composition": {
         "public_parts": [],
         "uses": [
-          "smart.menu-context"
+          "smart.button",
+          "smart.button-icon",
+          "smart.menu-context",
+          "smart.switch",
+          "smart.tabs"
         ]
       },
       "contract_schema": {
@@ -2674,20 +2678,21 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/settings/smart.manifest.json",
-      "manifest_sha256": "af7b258fe05251c6a5d23a247de320aa250c915a9526e7323a6699f81f138419",
+      "manifest_sha256": "87c8a25ec6c2c342f0782251c39cbb20c1705fed9870931454f27f73d1cda61f",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of three looks -- drill (the value under the name, the options in the same panel), rows (the control at the row's end) or tiles (the switches used most as tiles on top). With a trigger it opens over the page; without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person.",
+      "summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of three looks -- drill (the value under the name, the options in the same panel), rows (the control at the row's end) or tiles (the switches used most as tiles on top). With a trigger it opens over the page; without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person. The panel look (C106) draws a panel of its own for a list's view settings: sections or tabs, fields lists with a check, a handle, a pin and a search, applied at once or by «Применить».",
       "tags": [
         "settings",
         "preferences",
         "options",
         "quick-settings",
         "menu",
-        "switch"
+        "switch",
+        "panel"
       ],
       "title": "Settings"
     },

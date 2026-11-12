@@ -2,7 +2,7 @@
   "$comment": "The source of sf-settings' element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: compact settings of the owner decision of 2026-11-06 (Federation bus msg-cbe15ae81eab468fbbe8), composed over sf-menu-context.",
   "id": "smart.settings",
   "tag": "sf-settings",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "settings",
   "settings": {
@@ -23,7 +23,8 @@
                 "range",
                 "heading",
                 "separator",
-                "group"
+                "group",
+                "fields"
               ]
             },
             "text": {
@@ -59,6 +60,15 @@
             },
             "disabled": {
               "type": "boolean"
+            },
+            "sortable": {
+              "type": "boolean"
+            },
+            "pinnable": {
+              "type": "boolean"
+            },
+            "keywords": {
+              "type": "array"
             }
           },
           "required": [
@@ -67,17 +77,32 @@
         }
       },
       "default": [],
-      "summary": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option, tile: true on a switch the tiles look puts on top. A property, or the JSON island a server prints"
+      "summary": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option, tile: true on a switch the tiles look puts on top. A property, or the JSON island a server prints; in the panel look also {id, type: fields, text, options: [{id, text, checked, pinned, disabled}], sortable, pinnable}: a list of many to check (a table's columns), ordered by a handle and Alt+arrows when sortable, pinned on top when pinnable; its value is [{id, checked, pinned}] in order, the pinned first"
     },
     "look": {
       "type": "enum",
       "values": [
         "drill",
         "rows",
-        "tiles"
+        "tiles",
+        "panel"
       ],
       "default": "drill",
-      "summary": "The arrangement. drill: the current value under the name and a chevron, the options open in the same panel with a way back. rows: the name at the start, the control at the end -- quiet pills, a switch, a slider. tiles: the switches used most as tiles on top (those marked tile, else the top level's), the rest as rows"
+      "summary": "The arrangement. drill: the current value under the name and a chevron, the options open in the same panel with a way back. rows: the name at the start, the control at the end -- quiet pills, a switch, a slider. tiles: the switches used most as tiles on top (those marked tile, else the top level's), the rest as rows. panel (owner decision C106): a list's view settings in a panel of its own -- the groups as sections in one scroll, or as tabs when the panel has a search and a group holds a fields list; a checked field is the theme's light fill with a check at the inline end, a choice of one the fill alone; a dialog over the page, a bottom sheet on a phone"
+    },
+    "apply": {
+      "type": "enum",
+      "values": [
+        "instant",
+        "button"
+      ],
+      "default": "instant",
+      "summary": "How the panel look applies a change (C106 (4)). instant: at once, as every look -- change, then changed; the footer holds one «Сбросить» (the declared values back). button: a filter's -- the changes wait in the panel until «Применить (N)» (N: the checked fields and the switches on), then go out as change and changed and the popup closes; «Сбросить» puts the declared values into the panel, and closing drops what was not applied. The other looks apply at once"
+    },
+    "search": {
+      "type": "boolean",
+      "default": false,
+      "summary": "A search over the panel look's rows (C106 (7), C30 R071: a setting, never by the number of rows; the docs advise it from ten rows): a header over the body; the rows are filtered as the field is typed in -- no case, ё as е, on a row's text, caption and keywords. With it, a group that holds a fields list makes the groups tabs. Down from the field enters the rows"
     },
     "size": {
       "type": "enum",
@@ -250,12 +275,39 @@
       "Enter": "select",
       "Space": "select",
       "Escape": "close",
-      "Tab": "reach"
+      "Tab": "reach",
+      "Alt+ArrowUp": "move:prev",
+      "Alt+ArrowDown": "move:next"
     }
   },
   "relations": [
     {
       "name": "cl-menu-context"
+    },
+    {
+      "name": "cl-button",
+      "lazy": true,
+      "$comment": [
+        "The panel look's footer and the close button: fetched after the page is ready, not held up front for every menu look."
+      ]
+    },
+    {
+      "name": "cl-button-icon",
+      "lazy": true
+    },
+    {
+      "name": "cl-tabs",
+      "lazy": true,
+      "$comment": [
+        "The panel look's groups as tabs."
+      ]
+    },
+    {
+      "name": "cl-switch",
+      "lazy": true,
+      "$comment": [
+        "The panel look's switch rows."
+      ]
     }
   ],
   "templates": {
@@ -268,7 +320,7 @@
   "docs": "docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "The panel is sf-menu-context named by label (role menu): a switch is a menuitemcheckbox, a choice's options menuitemradio, a range the platform's slider, a drilling choice a menuitem that opens its level. One tab stop, the arrows move, Enter and Space change, Right and Left go in and out of a level, Escape goes back a level and then closes a popup with the focus back on the trigger. The trigger the page gives gets aria-haspopup menu and aria-expanded.",
+    "$comment": "The panel is sf-menu-context named by label (role menu): a switch is a menuitemcheckbox, a choice's options menuitemradio, a range the platform's slider, a drilling choice a menuitem that opens its level. One tab stop, the arrows move, Enter and Space change, Right and Left go in and out of a level, Escape goes back a level and then closes a popup with the focus back on the trigger. The trigger the page gives gets aria-haspopup menu and aria-expanded. The panel look (C106, DP-7) is not a menu: a popup is a dialog named by label (a group in the page's flow) with its own closing -- the close button, Escape, a press outside, Tab out of it (a phone's sheet keeps Tab inside). Each list is one Tab stop (DP-4): the arrows walk its rows (a radio group chooses as it moves), Home and End go to its ends, Space and Enter check a field or turn a switch; a field is a checkbox, a choice's option a radio, a switch a switch. In a list that orders, Alt+Up and Alt+Down move the row within its block and a live region says its place («Срок: 3 из 8»); the inline-end arrow reaches the row's pin, a toggle button.",
     "role": "menu",
     "name": {
       "from": [
@@ -291,7 +343,7 @@
   "host-states": {
     "data-look": "string"
   },
-  "x-summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of three looks -- drill (the value under the name, the options in the same panel), rows (the control at the row's end) or tiles (the switches used most as tiles on top). With a trigger it opens over the page; without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person.",
+  "x-summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of three looks -- drill (the value under the name, the options in the same panel), rows (the control at the row's end) or tiles (the switches used most as tiles on top). With a trigger it opens over the page; without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person. The panel look (C106) draws a panel of its own for a list's view settings: sections or tabs, fields lists with a check, a handle, a pin and a search, applied at once or by «Применить».",
   "x-source": {
     "package": "framework",
     "folder": "settings",
@@ -310,14 +362,15 @@
     "width: the panel is 280 px in every look -- the drilling menu's own width (--sf-context-menu-inline-size, f7 + a8), given to the menu as its lower and upper bound -- so a long name wraps and a long value ends in an ellipsis with the whole of it in title.",
     "geometry: the menu's two rungs, size 1/2 (32 px rows) and 1 (40 px); every sub-element is the menu's own, on the ladder.",
     "remember: SF.Preferences key sf-settings/<name>, the whole value map, written after every change, setValue, setAll and reset, and put back into the items the first time the element meets them, before its first drawing (no flash of the declared values). The declared values stay the page's for reset.",
-    "css-variables: none of its own -- it has no sheet; sf-menu-context's public variables reach it (--sf-context-menu-inline-size sets the panel's width).",
+    "css-variables: none of its own. The menu looks have no sheet (sf-menu-context's public variables reach them, --sf-context-menu-inline-size sets their width); the panel look's sheet has only internal variables (--sf-settings-panel--*).",
     "version 1.0.1 (2026-11-07): the drill look's option level marks the chosen option by the soft fill of a chosen row, not a check mark (sf-menu-context 1.7.0, owner decision R016; rule 1 applied to the drill look: it reads as the language list does, and the options use the whole width); a search in the panel keeps its field and scrolls the rows under it. Settings, values and events unchanged; docs and first-paint snapshots follow.",
     "version 1.0.2 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
     "version 1.0.3 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint snapshots follow the actions block (docs review R031, R032; decisions C13-C15): the sf-button and sf-button-icon it draws ask for the screen-reader-only utility sheet (sf-button 1.9.0, sf-button-icon 1.7.0), an sf-button-close it draws asks for its own sheet (C14), and sf-input's classes follow its outer sizes (sf-input 1.6.0). Settings, values, events and keys unchanged.",
     "version 1.0.4 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives each action's method its one object argument, setValue({id, value}), setAll({values}), show({id}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, show(<string>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged.",
     "version 1.0.5 (2026-11-09): a patch, nothing drawn or done differently. show reads sf-menu-context's openFor answer as an outcome (sf-menu-context 1.12.2) and still as the boolean an earlier menu gave. Settings, values, events and keys unchanged.",
     "version 1.0.6 (2026-11-10, folded into 1.1.0 in the same pair, never released alone): a patch; nothing in the component changed. Its panels are sf-menu-context, which since 1.14.1 draws the context-menu frame without the late utility classes, so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged.",
-    "version 1.1.0 (2026-11-10, owner decision C32, addendum 2026-11-09): the panel's default width is the menu's ceiling of the popup widths, core's --sf-popup-menu-max-width: 18rem (288 px), 16rem (256 px) in compact density. It was 280 px at every density (f7 + a8). --sf-context-menu-inline-size still sets it. Settings, values, events and keys unchanged."
+    "version 1.1.0 (2026-11-10, owner decision C32, addendum 2026-11-09): the panel's default width is the menu's ceiling of the popup widths, core's --sf-popup-menu-max-width: 18rem (288 px), 16rem (256 px) in compact density. It was 280 px at every density (f7 + a8). --sf-context-menu-inline-size still sets it. Settings, values, events and keys unchanged.",
+    "version 1.2.0 (2026-11-12, owner decision C106, R193; defects DP-1..DP-9 of the dropdown-panels study): a fourth look, panel -- a list's view settings in a panel of this element's own rather than a mode of the action menu: the groups as sections in one scroll by default, as tabs when the panel has a search and a group holds a fields list (more than three groups belong in sf-drawer, the docs say); a new item type fields -- the one row data API for a list of many to check, order and pin, so a product stops drawing its own rows (sf-table-column-option, sf-table-settings-row); a checked field is the theme's light fill (--sf-primary-container) with a check at the inline end, the handle at the row's start, a choice of one the fill alone, a switch row its switch; the hover plate and the inset of C05, the H4 text inset of C77/C105, the popup panel's step of the widths of C32 (--sf-popup-panel-width); one Tab stop per list with the arrows inside, Alt+arrows with a live announcement, a drag by the handle; apply instant (one «Сбросить») or button (a filter: «Сбросить» and «Применить (N)»); search; a sheet at the bottom on a phone. The scroll area follows the inset rule (I on every side; a scrollbar that takes room is I + thumb + I = 14, and the body drops its inline-end padding; no scrollbar-gutter). It has a sheet of its own now (scss/_smart__settings.scss) and the panel's words in lang. The drill, rows and tiles looks are unchanged; view, the name C106 used for the look, is reserved by standard §3.1 (and refused by the runtime), so the panel is a value of look, the setting C106 calls «вид»."
   ],
   "x-registry": {
     "capabilities": [
@@ -339,14 +392,20 @@
       "options",
       "quick-settings",
       "menu",
-      "switch"
+      "switch",
+      "panel"
     ],
     "state": {
       "machines": {
         "look": [
           "drill",
           "rows",
-          "tiles"
+          "tiles",
+          "panel"
+        ],
+        "apply": [
+          "instant",
+          "button"
         ]
       },
       "visual_states": [
@@ -422,5 +481,6 @@
     "action-calls": {
       "show": "object|string"
     }
-  }
+  },
+  "styles": "scss/_smart__settings.scss"
 }
