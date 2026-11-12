@@ -72,6 +72,9 @@ right half as it is over a checkerboard (C86).
 | `target` | — | `theme` and `brand`: a selector of the element the theme goes on; empty, `<html>`. |
 
 `openPicker()` and `closePicker()` open and close the window from code.
+`openPicker({view: 'own'})` opens it on «Своё»; `{anchor}` places it against
+another element of the page and returns focus there on close (the «Свой
+цвет…» row of `sf-settings`, C85).
 
 ## Inherited value
 

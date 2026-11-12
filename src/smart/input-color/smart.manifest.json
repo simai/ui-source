@@ -204,8 +204,14 @@
       }
     },
     "openPicker": {
-      "summary": "Opens the colour window on the view the value comes from. Returns whether it is open (false while disabled).",
-      "arguments": [],
+      "summary": "Opens the colour window on the view the value comes from, or on {view: 'palette' | 'own'}. {anchor} places it against an element of the page and gives focus back to it on close (a settings menu row, C85), instead of the field. Returns whether it is open (false while disabled).",
+      "arguments": [
+        {
+          "name": "options",
+          "type": "object",
+          "required": false
+        }
+      ],
       "returns": {
         "type": "boolean"
       }
@@ -460,7 +466,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-color/index.js",
-        "sha256": "c24c34373844a711b5dcd61b70c879eee1f5299c8a09cd2883e7b100610359cb"
+        "sha256": "deffe59a5068c613f9e419ff060613da122e1c442d0f0e270d76dc414a468bf6"
       },
       {
         "path": "src/smart/input-color/rule.js",

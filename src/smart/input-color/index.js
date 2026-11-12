@@ -539,16 +539,24 @@ class SfColor extends FormField(ColorElement) {
         return Boolean(this._open);
     }
 
-    /** Opens the window, on the view the value comes from. Returns whether it is open. */
-    openPicker() {
+    /**
+     * Opens the window, on the view the value comes from, or on `view`
+     * ('palette' or 'own') when the caller names one. `anchor` is an element of
+     * the page the window is placed against and gives focus back to -- a row of
+     * a settings menu (C85) -- instead of the field. Returns whether it is open.
+     */
+    openPicker({anchor = null, view = ""} = {}) {
         if (this.disabled || this._open) return Boolean(this._open);
         const value = this.value || this.inheritedValue;
         this._seed(value);
         this._format ??= "hex";
         this._codeError = "";
-        this._view = this.offersCustom && (!this.offersPalette || (value && !isPaletteName(value)
-            && !this.swatchList.some((swatch) => swatch.value === value)))
-            ? "own" : "palette";
+        this._anchor = anchor && typeof anchor.getBoundingClientRect === "function" ? anchor : null;
+        const own = this.offersCustom && (!this.offersPalette || (value && !isPaletteName(value)
+            && !this.swatchList.some((swatch) => swatch.value === value)));
+        this._view = view === "own" && this.offersCustom ? "own"
+            : view === "palette" && this.offersPalette ? "palette"
+                : own ? "own" : "palette";
         this._open = true;
         holdOpenSurfaceMark(this, true, {
             root: () => this.querySelector(".sf-color-window"),
@@ -577,7 +585,9 @@ class SfColor extends FormField(ColorElement) {
         if (!this._open) return true;
         this._closeQuietly();
         this.requestComponentUpdate("open");
-        if (restoreFocus) this.querySelector(".sf-color-trigger")?.focus({preventScroll: true});
+        const back = this._anchor?.isConnected ? this._anchor : this.querySelector(".sf-color-trigger");
+        this._anchor = null;
+        if (restoreFocus) back?.focus?.({preventScroll: true});
         this._lastClose = {reason, at: Date.now()};
         return true;
     }
@@ -602,7 +612,7 @@ class SfColor extends FormField(ColorElement) {
     // layer so no box of the page clips it; on a phone a sheet at the bottom.
     _placeWindow(force = false) {
         const panel = this.querySelector(".sf-color-window");
-        const anchor = this.querySelector(".sf-color-frame, .sf-color-dot");
+        const anchor = this._anchor?.isConnected ? this._anchor : this.querySelector(".sf-color-frame, .sf-color-dot");
         if (!panel || !anchor) return;
         const sheet = onPhone(this.ownerDocument);
         if (!force && this._placed?.panel === panel && this._sheetMode === sheet) {

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-settings' element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: compact settings of the owner decision of 2026-11-06 (Federation bus msg-cbe15ae81eab468fbbe8), composed over sf-menu-context.",
   "id": "smart.settings",
   "tag": "sf-settings",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "settings",
   "settings": {
@@ -21,6 +21,7 @@
                 "switch",
                 "choice",
                 "range",
+                "color",
                 "heading",
                 "separator",
                 "group"
@@ -57,6 +58,9 @@
             "tile": {
               "type": "boolean"
             },
+            "custom": {
+              "type": "boolean"
+            },
             "disabled": {
               "type": "boolean"
             }
@@ -67,7 +71,7 @@
         }
       },
       "default": [],
-      "summary": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option, tile: true on a switch the tiles look puts on top. A property, or the JSON island a server prints"
+      "summary": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {id, type: color, text, value: <palette hue name or #rrggbb>, options?: [hue names], custom?: false} (C85: the current colour as the row's circle, a level of hue circles and «Свой цвет…», which opens sf-input-color's window on «Своё»; ten hues by default), {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option, tile: true on a switch the tiles look puts on top. A property, or the JSON island a server prints"
     },
     "look": {
       "type": "enum",
@@ -256,6 +260,10 @@
   "relations": [
     {
       "name": "cl-menu-context"
+    },
+    {
+      "name": "cl-input-color",
+      "lazy": true
     }
   ],
   "templates": {
@@ -317,7 +325,8 @@
     "version 1.0.4 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives each action's method its one object argument, setValue({id, value}), setAll({values}), show({id}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, show(<string>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged.",
     "version 1.0.5 (2026-11-09): a patch, nothing drawn or done differently. show reads sf-menu-context's openFor answer as an outcome (sf-menu-context 1.12.2) and still as the boolean an earlier menu gave. Settings, values, events and keys unchanged.",
     "version 1.0.6 (2026-11-10, folded into 1.1.0 in the same pair, never released alone): a patch; nothing in the component changed. Its panels are sf-menu-context, which since 1.14.1 draws the context-menu frame without the late utility classes, so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged.",
-    "version 1.1.0 (2026-11-10, owner decision C32, addendum 2026-11-09): the panel's default width is the menu's ceiling of the popup widths, core's --sf-popup-menu-max-width: 18rem (288 px), 16rem (256 px) in compact density. It was 280 px at every density (f7 + a8). --sf-context-menu-inline-size still sets it. Settings, values, events and keys unchanged."
+    "version 1.1.0 (2026-11-10, owner decision C32, addendum 2026-11-09): the panel's default width is the menu's ceiling of the popup widths, core's --sf-popup-menu-max-width: 18rem (288 px), 16rem (256 px) in compact density. It was 280 px at every density (f7 + a8). --sf-context-menu-inline-size still sets it. Settings, values, events and keys unchanged.",
+    "version 1.2.0 (2026-11-12, owner decision C85, prototype theme-generator-study #practice-menu): a minor. A new item type color: a colour setting beside the theme, as compact as «Настройки чтения». Its row leads with the current colour as a circle (sf-menu-context 1.15.0 swatch), the value under the name in the drill look; it opens a level of palette hues, each a circle and its word -- options (hue names, or {id, text}) or the ten of the accepted menu: red, orange, amber, green, teal, sky, blue, violet, pink, gray -- and, unless custom is false, «Свой цвет…», which closes the menu and opens sf-input-color's window on «Своё» against the trigger (palette=\"false\": the level is the palette). The value is what sf-input-color stores (C83): a hue by its name, the same in every language, or an own colour's code #rrggbb; a hue it does not offer or a code with custom false is refused. A colour chosen in the window is asked (change) and written (changed) as a row's value is. The window's holder is inert while closed. Words: the hue names, own-color, own-color-value. Settings, events and the other types unchanged."
   ],
   "x-registry": {
     "capabilities": [

@@ -6,5 +6,6 @@ SF.RuleLoader['cl-settings'] = {
   js: true,
   relation: [
     { name: 'cl-menu-context' },
+    { name: 'cl-input-color', lazy: true },
   ],
 };

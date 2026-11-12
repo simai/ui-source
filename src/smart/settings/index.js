@@ -28,13 +28,15 @@ import {elementFromManifest} from '../../core/js/element-manifest';
 import BundledPreferences from '../../core/js/preferences.js';
 import {tagSelector} from '../../core/js/tag-aliases.js';
 import {renderSettingsTemplate} from './js/templates/default';
-import {LOOKS, SIZES, entriesFor, findItem, itemValue, rewriteValues, valueMap, valuePatch} from './js/settings';
+import {LOOKS, OWN_COLOR, SIZES, colorCode, entriesFor, findItem, itemValue, rewriteValues, valueMap, valuePatch} from './js/settings';
 import manifest from './component.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
 
 // The menu it draws, found under its current name and its former one.
 const MENU = `:scope > .sf-settings-parts > ${tagSelector('sf-menu-context')}`;
+// The colour window of the colour rows (C85): sf-input-color's own, opened on «Своё».
+const PICKER = `:scope > .sf-settings-parts > .sf-settings-color > ${tagSelector('sf-input-color')}`;
 const FOCUSABLE = 'button, a[href], input, select, textarea, [tabindex]';
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
@@ -85,6 +87,8 @@ class SfSettings extends SettingsElement {
   }
 
   disconnectedCallback() {
+    this._colorWatch?.disconnect();
+    this._colorWatch = null;
     document.removeEventListener('click', this._onDocumentClick);
     this.removeEventListener('click', this._onHostClick);
     super.disconnectedCallback?.();
@@ -159,6 +163,13 @@ class SfSettings extends SettingsElement {
     const {id, value, previous} = event.detail ?? {};
     const item = findItem(this.items, id);
     if (!item) return;
+    // «Свой цвет…» is not a value: it closes the menu and opens the colour
+    // window on «Своё»; what is chosen there is the change.
+    if (item.type === 'color' && value === OWN_COLOR) {
+      event.preventDefault();
+      this._openOwnColor(item);
+      return;
+    }
     const patch = valuePatch(item, value);
     const detail = {id, value, previous: previous ?? itemValue(item), item: {...item, ...(patch ?? {})}};
     if (!patch || !this.sfEmit('change', detail, {cancelable: true})) event.preventDefault();
@@ -261,6 +272,74 @@ class SfSettings extends SettingsElement {
     return {outcome: 'applied'};
   }
 
+  // ------------------------------------------------------------- the colour
+
+  get _colorPicker() {
+    return this.querySelector(PICKER);
+  }
+
+  /** Whether one of the items is a colour row: then the colour window is drawn beside the menu. */
+  get _hasColor() {
+    const walk = (list) => (Array.isArray(list) ? list : []).some((item) => item?.type === 'color' || (item?.type === 'group' && walk(item.items)));
+    return walk(this.items);
+  }
+
+  /**
+   * Opens sf-input-color's window on «Своё» for a colour row (C85), against
+   * the trigger (or the panel when the element stands inline); the menu
+   * closes first. Returns an outcome.
+   */
+  async _openOwnColor(given) {
+    const id = given && typeof given === 'object' ? given.id : given;
+    const item = findItem(this.items, id);
+    if (!item || item.type !== 'color') return {outcome: 'refused', reason: 'not-found'};
+    if (item.custom === false || item.disabled) return {outcome: 'refused', reason: 'not-allowed'};
+    await this.whenRendered?.();
+    const picker = this._colorPicker;
+    if (!picker) return {outcome: 'unavailable', reason: 'no-picker'};
+    const menu = this.menu;
+    const anchor = (this.popup && this.anchor()) || menu;
+    if (this.popup && menu?.isOpen) menu.close?.({restoreFocus: false, reason: 'own-color'});
+    await customElements.whenDefined('sf-input-color');
+    this._colorItem = item.id;
+    picker.setAttribute('aria-label', item.text ?? '');
+    picker.value = colorCode(itemValue(item));
+    await picker.whenRendered?.();
+    const holder = picker.parentElement;
+    holder.inert = false;
+    if (!picker.openPicker({anchor, view: 'own'})) {
+      holder.inert = true;
+      return {outcome: 'unavailable', reason: 'disabled'};
+    }
+    // Inert again once the window has closed.
+    this._colorWatch?.disconnect();
+    this._colorWatch = new MutationObserver(() => {
+      if (picker.isOpen) return;
+      holder.inert = true;
+      this._colorWatch?.disconnect();
+      this._colorWatch = null;
+    });
+    this._colorWatch.observe(picker, {childList: true, subtree: true});
+    return {outcome: 'applied'};
+  }
+
+  // A colour chosen in the window: asked for and written as a row's value
+  // is (change, then changed). The window's input stays inside.
+  _onColorPicked(event) {
+    event.stopPropagation();
+    if (event.type !== 'change') return;
+    const item = findItem(this.items, this._colorItem);
+    const value = event.detail?.value;
+    if (!item || !value) return;
+    const patch = valuePatch(item, value);
+    if (!patch || patch.value === itemValue(item)) return;
+    const previous = itemValue(item);
+    const asked = {id: item.id, value: patch.value, previous, item: {...item, ...patch}};
+    if (!this.sfEmit('change', asked, {cancelable: true})) return;
+    this.writeItems(rewriteValues(this.items, (one) => (one.id === item.id ? patch : null)).list);
+    this.sfEmit('changed', asked);
+  }
+
   // ------------------------------------------------------------- the popup
 
   get menu() {
@@ -325,7 +404,8 @@ class SfSettings extends SettingsElement {
   entries(look, tilesLabel) {
     const cache = this._entries;
     if (cache.items !== this.items || cache.look !== look || cache.label !== tilesLabel) {
-      this._entries = {items: this.items, look, label: tilesLabel, list: entriesFor(this.items, look, {tilesLabel})};
+      const word = (key, vars) => this.sfWord(key, vars ? {vars} : undefined);
+      this._entries = {items: this.items, look, label: tilesLabel, list: entriesFor(this.items, look, {tilesLabel, word})};
     }
     return this._entries.list;
   }
@@ -344,6 +424,7 @@ class SfSettings extends SettingsElement {
       popup,
       label: this.label,
       entries: this.entries(look, this.sfWord('tiles')),
+      hasColor: this._hasColor,
       slot: (name) => this.getSlotContent(name),
       hasSlot: (name) => name === 'trigger' && this.hasSlotContent(name),
       rootClass: this.getRootClass(),

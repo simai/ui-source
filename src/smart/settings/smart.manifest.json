@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.settings",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "title": "Settings",
   "summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of three looks -- drill (the value under the name, the options in the same panel), rows (the control at the row's end) or tiles (the switches used most as tiles on top). With a trigger it opens over the page; without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person.",
   "kind": "smart",
@@ -29,6 +29,7 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "smart.input-color",
       "smart.menu-context"
     ],
     "public_parts": []
@@ -87,7 +88,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option, tile: true on a switch the tiles look puts on top. A property, or the JSON island a server prints"
+        "description": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {id, type: color, text, value: <palette hue name or #rrggbb>, options?: [hue names], custom?: false} (C85: the current colour as the row's circle, a level of hue circles and «Свой цвет…», which opens sf-input-color's window on «Своё»; ten hues by default), {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option, tile: true on a switch the tiles look puts on top. A property, or the JSON island a server prints"
       }
     },
     "additionalProperties": false
@@ -358,19 +359,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/settings/index.js",
-        "sha256": "a5bfc04329b9a5c4598efa7ff36ef942e02a2bab88ab242b6b59af155b4e1848"
+        "sha256": "95e7ce8381794cb1d90e4b60496fbe7553d97a1a40f071d160275cec8d85206a"
       },
       {
         "path": "src/smart/settings/js/templates/default.js",
-        "sha256": "c78177e75a7aacec90a2d073398ca6fed784b22a554b12ac662c7ad7989ebb40"
+        "sha256": "c11a51b26e404f89cb074f57fa2527eed0d4323f7abbcd2d6ffd1002285107c4"
       },
       {
         "path": "src/smart/settings/rule.js",
-        "sha256": "e5c515c6afa1fb60afdb32ca31f9bb8093c02be7fd487b42a178f2e233d49908"
+        "sha256": "2e54d184b5f225db96345236f3f871c55961a7700461d5f137343f633f805cf4"
       },
       {
         "path": "src/smart/settings/docs.md",
-        "sha256": "5469dd95550048b0d2d2eacda70191546e4e984a56fd91113c4c9b166bc63d1c"
+        "sha256": "c81bbef6bb931fb3f324416562107171c05b35144855102adb2fd14827acbd62"
       }
     ],
     "generated_runtime": []
