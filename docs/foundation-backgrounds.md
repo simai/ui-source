@@ -170,6 +170,33 @@ row) it does nothing and needs no taking back.
   boundary `--sf-outline` is opaque neutral-50 in the light theme (3.94, 3.47
   and 3.03 : 1 against the block), so a checkbox, a switch or a field keeps
   3:1. The inside of a control stays the block's colour. Dark unchanged.
+- **Boundary on a container fill (contrast lows, 2026-11-11).**
+  `bg-surface-container` takes the same boundary on a neutral place: opaque
+  neutral-50 in the light theme (4.07 : 1 over the page, 3.61 over
+  surface-2, 3.20 over surface-3; was 2.90 to 2.44), the theme's in the dark.
+  On a coloured place it keeps the place's boundary (the place hands it down
+  as `--sf-place--container-outline`; an opaque place takes it back).
+- **The accent on bg-surface-4 (contrast lows).** On the children of
+  `bg-surface-4`, light theme, the accent moves one step along its own
+  ladder: rest reads `--sf-primary-hover`, hover `--sf-primary-active`, and
+  press one step beyond, tone 25 (theme: 35 / 30 / 25; press stays a step
+  beyond hover, as C16's states do), so a primary label or a text link holds
+  4.5 (5.26 : 1; 40 gave 4.39); a text link moves along the link's ladder the
+  same way (a visited link, 4.40, has no darker role and stays). Rest and
+  hover are read from the roles, so a project's brand stays.
+  The step stops at a place: a card, a popup, a popover's content, a soft
+  container or a `bg-<colour>` inside `bg-surface-4` takes back the accent
+  the step found (`--sf-place--found-*`), so the brand tone there is the
+  page's. A step inside a step moves the accent once. Dark unchanged.
+- **Hover and press in a container on a strong place (contrast lows).** In
+  the light theme a hovered or pressed control in `bg-surface-container` on
+  `bg-<colour>` keeps the theme's ink (4.01 / 3.74; the place's white gave
+  3.78 / 3.52); the dark half is the place's ink.
+- **Hovered and pressed ink on a strong place and glass (contrast lows).**
+  `bg-<colour>`, the alert bar's levels and `.sf-surface-media` declare
+  `--sf-on-surface-hover` and `--sf-on-surface-active` as their ink; every
+  opaque place takes the theme's back. A pressed outline or link button on a
+  danger bar read neutral 20 / 80 on red (2.80 light, 1.44 dark).
 
 ## Hue roles: a colour that is not a place
 

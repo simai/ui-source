@@ -23,6 +23,20 @@
     // (simai/ui-source#3): color-on-surface-variant on it read 3.06:1.
     .#{$infix}bg-surface-container {
         --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+        // Its boundary holds 3:1 on the fill (contrast lows, 2026-11-11;
+        // mix/_mix__places.scss): the steps' boundary on a neutral place,
+        // the place's own on a coloured one.
+        --sf-outline: var(--sf-place--container-outline, #{places.$sf-place-container-outline});
+        // On a strong place, light theme, a hovered or pressed control keeps
+        // the theme's ink (DEV acceptance 2026-11-11, M2): the place's white
+        // over its own ink at 12 + 16 / 20 gave 3.78 / 3.52, the theme's
+        // neutral 15 / 20 gives 4.01 / 3.74, as before this branch. The dark
+        // half stays the place's ink (4.93 / 4.58, where the theme's gave
+        // 1.80 / 1.68).
+        :where(#{places.$sf-place-strong-selectors}) & {
+            --sf-on-surface-hover: light-dark(var(--sf-neutral-15), var(--sf-on-surface));
+            --sf-on-surface-active: light-dark(var(--sf-neutral-20), var(--sf-on-surface));
+        }
     }
 
     // A place class is a place (C16): what stands on it reads its colour as
@@ -56,6 +70,8 @@
             @if $place == 'surface-4' {
                 @include places.sf-place(var(--sf-#{$surface}), places.$sf-place-step4-variant,
                     places.$sf-place-step-outline, places.$sf-place-step4-container-variant, $popup: true);
+                // The darkest light step moves the accent a step (contrast lows).
+                @include places.sf-place-step-4-accent-found;
             } @else {
                 @include places.sf-place(var(--sf-#{$surface}), if($variant, var(--sf-#{$variant}), null),
                     if(index(('surface-2', 'surface-3', 'surface-4'), $place), places.$sf-place-step-outline, null));
@@ -120,5 +136,13 @@
         .bg-#{$c} > * {
             @include places.sf-place-strong-accent($c);
         }
+    }
+    // The accent on the darkest light step, on its children (contrast lows);
+    // a bg-primary block among them paints the primary it found. Without
+    // specificity, so a place among the children takes back the accent the
+    // step found by its own rule (sf-place-step-4-accent-back, M3) and a
+    // component that names its own accent keeps it.
+    :where(.bg-surface-4 > :not(.bg-primary)) {
+        @include places.sf-place-step-4-accent;
     }
 }
