@@ -11,9 +11,10 @@ import './default.css';
 // circle of the current colour that opens the same window (C84).
 
 // One painter for every swatch (R167, C86): an opaque colour is a plain fill;
-// a translucent one is split -- its left half the colour as it is over the
-// checkerboard, its right half the same colour without alpha -- so a 20 %
-// colour still shows its hue. The paint stays inside the 1 px border (R169).
+// a translucent one is split -- its left half the same colour without alpha,
+// its right half the colour as it is over the checkerboard (the prototype's
+// round 4 sides, C86 as corrected on 2026-11-12) -- so a 20 % colour still
+// shows its hue. The paint stays inside the 1 px border (R169).
 export function paintStyle(value) {
     if (!value) return '';
     if (isPaletteName(value)) return `--sf-color-fill: ${paletteFill(value)}; --sf-color-solid: ${paletteFill(value)}`;

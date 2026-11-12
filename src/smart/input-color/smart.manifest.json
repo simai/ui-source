@@ -430,11 +430,11 @@
       },
       {
         "path": "src/smart/input-color/js/templates/default.js",
-        "sha256": "2bb90d42adaadd05747de9119d1348d8ccb72c6a0129933fdee7d4dfec277300"
+        "sha256": "ad2026e16ea2270afb347dc29d4d764242e221c78c358d192e0e8bc1b2a740f9"
       },
       {
         "path": "src/smart/input-color/js/templates/default.css",
-        "sha256": "064d65aba8be8733649b28aa40b8667a97f9eeaead12f80e15ad2807b7f0671f"
+        "sha256": "ddbd67569eb1b5c913b6076109d9cae4924221e2064b4513f359efa93640f63b"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

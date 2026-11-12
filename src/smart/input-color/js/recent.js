@@ -2,10 +2,11 @@ import BundledPreferences from '../../../core/js/preferences.js';
 import {normaliseHex} from './color-math.js';
 
 // The recent own colours (owner decision C83, round 4 R168). One list for every
-// colour field of the site, kept as a view preference (SF.Preferences under
-// sf-input-color/recent: the browser's copy, and the host's when one keeps
-// preferences for its user), holding own colours only (a palette colour is
-// always in the grid): lowercase #rrggbb, or #rrggbbaa below full alpha (the
+// colour field of the site, kept as a view preference under the key R168
+// decided, sf-color-recent (SF.Preferences: the browser's copy is
+// sf-pref:sf-color-recent, as for every preference, and the host's when one
+// keeps preferences for its user), holding own colours only (a palette colour
+// is always in the grid): lowercase #rrggbb, or #rrggbbaa below full alpha (the
 // same hue at another alpha is another colour), newest first, a repeat moved
 // to the top, sixteen kept and eight shown. Picking a recent colour counts as
 // using it.
@@ -13,7 +14,7 @@ import {normaliseHex} from './color-math.js';
 // Every bundle carries its own copy of this module, so the list and its
 // listeners live on one shared global: two fields drawn by two bundles of the
 // page still show the same row.
-export const RECENT_KEY = 'sf-input-color/recent';
+export const RECENT_KEY = 'sf-color-recent';
 export const RECENT_KEEP = 16;
 export const RECENT_SHOW = 8;
 

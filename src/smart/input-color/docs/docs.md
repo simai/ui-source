@@ -49,11 +49,12 @@ screen. `Escape` closes it and focus returns to the field.
   Arrows move the area and the strips by one, `Shift` by ten.
 
 Recent own colours are one list for every colour field of the site (a view
-preference, `SF.Preferences` key `sf-input-color/recent`): own colours only, newest first, sixteen kept,
+preference, `SF.Preferences` key `sf-color-recent`; the browser keeps it as
+`sf-pref:sf-color-recent`): own colours only, newest first, sixteen kept,
 eight shown. A field without `alpha` does not show translucent ones.
 
-A translucent colour is drawn split everywhere: the left half as it is over a
-checkerboard, the right half without alpha (C86).
+A translucent colour is drawn split everywhere: the left half without alpha, the
+right half as it is over a checkerboard (C86).
 
 ## Settings
 

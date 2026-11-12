@@ -76,7 +76,7 @@ test('recent own colours: one list per site (a view preference), own colours onl
     delete globalThis[Symbol.for('sf.input-color.recent')];
     if (globalThis.SF) delete globalThis.SF.Preferences;
     const recent = await import('../src/smart/input-color/js/recent.js');
-    assert.equal(recent.RECENT_KEY, 'sf-input-color/recent');
+    assert.equal(recent.RECENT_KEY, 'sf-color-recent', 'the key R168 decided');
     assert.equal(recent.RECENT_KEEP, 16);
     assert.equal(recent.RECENT_SHOW, 8);
     let told = 0;
@@ -92,11 +92,11 @@ test('recent own colours: one list per site (a view preference), own colours onl
     recent.rememberColour('#1F6FEB80');
     assert.equal(recent.recentColours({alpha: true})[0], '#1f6feb80');
     assert.ok(!recent.recentColours().includes('#1f6feb80'), 'a field without alpha hides translucent colours');
-    assert.deepEqual(JSON.parse(stored.get('sf-pref:sf-input-color/recent')).slice(0, 2), ['#1f6feb80', '#00000a']);
+    assert.deepEqual(JSON.parse(stored.get('sf-pref:sf-color-recent')).slice(0, 2), ['#1f6feb80', '#00000a']);
     assert.ok(told >= 21);
     recent.forgetRecentColours();
     assert.deepEqual(recent.recentColours({alpha: true}), []);
-    assert.equal(stored.get('sf-pref:sf-input-color/recent') ?? null, null);
+    assert.equal(stored.get('sf-pref:sf-color-recent') ?? null, null);
 });
 
 test('the browser colour dialog is gone; the window is the Framework\'s own (C83)', () => {
@@ -131,8 +131,8 @@ test('the sheet: one height in the row (CO-03), three swatch bounds (CO-06), pai
     assert.match(sheet, /\.sf-color--outlined \.sf-color-chip \{\s*border-color: var\(--sf-outline\)/u);
     assert.match(sheet, /\.sf-color--plain \.sf-color-chip \{\s*border-width: 0/u);
     assert.match(sheet, /\.sf-color-chip \{[^}]*background-clip: padding-box/u);
-    assert.match(sheet, /\[data-alpha\] \{\s*background:\s*linear-gradient\(90deg, transparent 50%, var\(--sf-color-solid\) 50%\)/u,
-        'C86: left as it is over the checkerboard, right without alpha');
+    assert.match(sheet, /\[data-alpha\] \{\s*background:\s*linear-gradient\(90deg, var\(--sf-color-solid\) 50%, transparent 50%\)/u,
+        'C86: left without alpha, right as it is over the checkerboard');
     // 304 on a desktop: eight 1/3-rung swatches, 8 apart, 12 inside.
     assert.match(sheet, /inline-size: calc\(8 \* var\(--sf-color--swatch\) \+ 7 \* var\(--sf-color--swatch-gap\) \+ 2 \* var\(--sf-color--window-padding\)\)/u);
     assert.doesNotMatch(sheet.replace(/\/\*[\s\S]*?\*\//gu, ''), /\d+px/u, 'no raw px (C18)');

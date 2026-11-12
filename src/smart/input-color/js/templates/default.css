@@ -207,12 +207,13 @@
     );
   }
 
-  /* A translucent colour, everywhere it is drawn (R167, C86): the left half
-     the colour as it is over the checkerboard, the right half the same colour
-     without alpha, so a faint colour still shows its hue. */
+  /* A translucent colour, everywhere it is drawn (R167, C86 as corrected on
+     2026-11-12): the left half the same colour without alpha, the right half
+     the colour as it is over the checkerboard, so a faint colour still shows
+     its hue. */
   :is(.sf-color-chip, .sf-color-option, .sf-color-thumb)[data-alpha] {
     background:
-      linear-gradient(90deg, transparent 50%, var(--sf-color-solid) 50%),
+      linear-gradient(90deg, var(--sf-color-solid) 50%, transparent 50%),
       linear-gradient(var(--sf-color-fill), var(--sf-color-fill)),
       conic-gradient(var(--sf-outline-variant) 25%, transparent 0 50%, var(--sf-outline-variant) 0 75%, transparent 0) 0 0 / var(--sf-a8) var(--sf-a8),
       var(--sf-surface-card);
