@@ -19,9 +19,12 @@ test('overflow defaults to more; scroll and wrap stay as written values', () => 
   assert.deepEqual(manifest.settings.overflow.values, ['scroll', 'wrap', 'more']);
   assert.match(source, /overflow: \{ default: 'more' \}/u);
   assert.match(source, /return OVERFLOWS\.includes\(value\) \? value : 'more';/u);
-  assert.equal(manifest.version, '1.2.0');
+  // 1.2.0 brought the default; later minors keep it (1.3.0: R184).
+  const minor = (version) => version.split('.').slice(0, 2).map(Number);
+  const [major, at] = minor(manifest.version);
+  assert.ok(major === 1 && at >= 2, `sf-tabs ${manifest.version} is 1.2.0 or later`);
   const generated = JSON.parse(read('src/smart/tabs/smart.manifest.json'));
-  assert.equal(generated.version, '1.2.0');
+  assert.equal(generated.version, manifest.version);
 });
 
 test('the default change is in the change journal', () => {
@@ -87,7 +90,7 @@ test('a pinned tab gives way to the current one, and only a lone current tab is 
   assert.match(layout, /host\.classList\.remove\('sf-tabs-overflowed', 'sf-tabs-squeezed'\);/u);
   const docs = read('src/smart/tabs/docs/docs.md');
   assert.match(docs, /закреплённая уступает место выбранной/u);
-  assert.match(JSON.stringify(manifest['x-decisions'][0]), /C54 return D1/u);
+  assert.match(JSON.stringify(manifest['x-decisions']), /C54 return D1/u);
 });
 
 test('the row is laid out with the width «Ещё (n)» will have with its new count', () => {
@@ -99,5 +102,5 @@ test('the row is laid out with the width «Ещё (n)» will have with its new c
   assert.match(layout, /if \(hosts\.length - chosen\.length === count\) kept = chosen;/u);
   assert.match(layout, /kept \?\?= choose\(free - Math\.max\(\.\.\.besides\)\);/u);
   assert.match(source, /function textWidth\(element\) \{/u);
-  assert.match(JSON.stringify(manifest['x-decisions'][0]), /C54 return D2/u);
+  assert.match(JSON.stringify(manifest['x-decisions']), /C54 return D2/u);
 });

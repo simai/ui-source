@@ -635,7 +635,9 @@ class SfTabs extends TabsElement {
 
       return {
         ...item,
-        label: item.label || `Tab ${index + 1}`,
+        // A tab without a label is named in the page's language (R184 T14:
+        // the English «Tab N» on every page).
+        label: item.label || this.sfWord('tab', {vars: {n: index + 1}}),
         // The entry's id (§16 item 42); key is its old name.
         key: String(item.id ?? item.key ?? index),
         pinned: Boolean(item.pinned),

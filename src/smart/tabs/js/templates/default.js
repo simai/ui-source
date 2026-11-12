@@ -113,12 +113,16 @@ function renderTab(item, context) {
           </sf-button>
       `;
   } else {
+      // An icon tab draws the item's icon however it was given: icon, or the
+      // icon-start / icon-end of the "label::icon-start=home" form, which the
+      // parser keeps as iconStart (R184 T3: the docs example drew the
+      // button-icon default `add` on every tab).
       return html`
           <sf-button-icon
                   appearance="primary"
                   size=${context.size}
                   scheme=${context.scheme}
-                  icon=${item.icon || nothing}
+                  icon=${item.iconStart || item.icon || item.iconEnd || nothing}
                   data-tab-label=${item.label}
                   root-class=${joinClasses(item.selected ? 'selected' : '')}
                   data-sf-tab-index=${String(item.index)}
