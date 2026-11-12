@@ -82,6 +82,13 @@ try {
     }
   });
   const events = () => page.evaluate(() => window.__events.splice(0));
+  // K1: the focus ring is the current cell's, and only for a keyboard focus.
+  const rings = (id) => page.evaluate((key) => {
+    const host = document.getElementById(key);
+    const outlined = (node) => getComputedStyle(node).outlineStyle !== 'none' && parseFloat(getComputedStyle(node).outlineWidth) > 0;
+    return {frame: outlined(host.querySelector('.sf-verification')),
+      cells: [...host.querySelectorAll('.sf-verification-cell')].map((cell) => (outlined(cell) ? 1 : 0)).join('')};
+  }, id);
   const settle = () => page.waitForTimeout(60);
 
   const state = (id) => page.evaluate((key) => {
@@ -131,6 +138,8 @@ try {
   const typedEvents = await events();
   check('typing: each character fills the next cell', typed.value === '12' && typed.cells.join(',') === '1,2,,,,' && typed.current === 2, {typed});
   check('typing: the caret\'s cell is spoken', typed.position === 'цифра 3 из 6', {typed});
+  const keyboardRing = await rings('basic');
+  check('K1 keyboard focus: the ring is on the current cell only, not on the row', !keyboardRing.frame && keyboardRing.cells === '001000', {keyboardRing});
   check('typing: an input event from the native input for each character', typedEvents.length === 2
     && typedEvents.every((event) => event.type === 'input' && event.host === 'basic' && event.target === 'input'), {typedEvents});
   // K5: no pattern, so no browser tooltip; the host says the code is too short.
@@ -188,6 +197,8 @@ try {
   await settle();
   const clicked = await state('basic');
   check('click: the caret lands in the cell under the pointer', clicked.focused && clicked.caret === 2 && clicked.current === 2 && clicked.position === 'цифра 3 из 6', {clicked});
+  const pointerRing = await rings('basic');
+  check('K1 pointer focus: no ring at all, the current cell keeps its primary border', !pointerRing.frame && pointerRing.cells === '000000', {pointerRing});
   await page.keyboard.press('Tab');
   await events();
 

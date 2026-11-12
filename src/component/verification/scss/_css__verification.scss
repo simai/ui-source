@@ -56,7 +56,15 @@
    2026-11-01). */
 .sf-verification-input:focus { outline: 0 !important; }
 
-.sf-verification:has(.sf-verification-input:focus-visible),
+/* The focus ring is the active cell's, not the row's (K1, owner R136), and
+   only when the focus came from the keyboard: a text input matches
+   :focus-visible after a click too, so the runtime that owns the field
+   (sf-input-code, or the class runtime) marks a pointer focus with
+   .sf-verification--pointer-focus until the field loses the focus, as
+   sf-input does with .sf-input--pointer-focus; a pointer focus keeps the
+   primary border of the current cell only. The retired one-input-per-cell
+   markup rings its focused cell, which is already one cell. */
+.sf-verification:not(.sf-verification--pointer-focus):has(.sf-verification-input:focus-visible) .sf-verification-cell.current,
 .sf-verification-form-wrap .sf-verification:has(input:focus-visible) {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
   outline-offset: var(--sf-focus--offset);
@@ -107,7 +115,7 @@
 @media (forced-colors: active) {
   .sf-verification-cell,
   .sf-verification-form-wrap .sf-verification { border-color: CanvasText; }
-  .sf-verification:has(.sf-verification-input:focus-visible),
+  .sf-verification:not(.sf-verification--pointer-focus):has(.sf-verification-input:focus-visible) .sf-verification-cell.current,
   .sf-verification-form-wrap .sf-verification:has(input:focus-visible) {
     outline: var(--sf-px) solid Highlight;
     outline-offset: var(--sf-px);

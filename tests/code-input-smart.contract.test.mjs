@@ -166,6 +166,13 @@ test('code input: input and change are the native input\'s, complete once per co
     assert.match(source, new RegExp(`\\n  ${method}\\(\\) \\{`, 'u'), method);
   }
   assert.match(source, /focusDelegate\(\) \{\n    return this\.getInputElement\(\);/u);
+  // K1: a pointer focus rings no cell (the sheet rings the current cell for a
+  // keyboard focus only), as sf-input's .sf-input--pointer-focus.
+  assert.match(source, /classList\.add\('sf-verification--pointer-focus'\)/u);
+  assert.match(source, /classList\.remove\('sf-verification--pointer-focus'\)/u);
+  assert.match(classRuntime, /control\.classList\.add\('sf-verification--pointer-focus'\)/u);
+  assert.match(classSheet, /\.sf-verification:not\(\.sf-verification--pointer-focus\):has\(\.sf-verification-input:focus-visible\) \.sf-verification-cell\.current,/u);
+  assert.doesNotMatch(classSheet, /^\.sf-verification:has\(\.sf-verification-input:focus-visible\)/mu, 'no ring on the row');
   // K6: the current cell only while the field has the focus.
   assert.match(source, /cell\.classList\.toggle\('current', focused && index === current\);/u);
 });

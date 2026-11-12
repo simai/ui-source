@@ -98,13 +98,22 @@ function bindCanonical(root, input) {
     onInput();
   };
   const onReset = () => requestAnimationFrame(() => renderCanonical(root, state));
+  // A pointer focus rings no cell, only marks the current one (K1), until the
+  // focus leaves, as sf-input's .sf-input--pointer-focus.
+  const onPointerDown = () => control.classList.add('sf-verification--pointer-focus');
+  const onBlur = () => control.classList.remove('sf-verification--pointer-focus');
   input.addEventListener('input', onInput);
   input.addEventListener('paste', onPaste);
+  input.addEventListener('pointerdown', onPointerDown);
+  input.addEventListener('blur', onBlur);
   input.form?.addEventListener('reset', onReset);
   state.destroy = () => {
     input.removeEventListener('input', onInput);
     input.removeEventListener('paste', onPaste);
+    input.removeEventListener('pointerdown', onPointerDown);
+    input.removeEventListener('blur', onBlur);
     input.form?.removeEventListener('reset', onReset);
+    control.classList.remove('sf-verification--pointer-focus');
   };
   renderCanonical(root, state);
   return state;

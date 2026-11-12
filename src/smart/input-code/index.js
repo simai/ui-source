@@ -93,6 +93,7 @@ class SfCodeInput extends FormField(CodeInputElement) {
     this.addEventListener('select', this.onCaret);
     this.addEventListener('selectionchange', this.onCaret);
     this.addEventListener('keyup', this.onCaret);
+    this.addEventListener('pointerdown', this.onPointerDown);
   }
 
   get length() {
@@ -306,7 +307,19 @@ class SfCodeInput extends FormField(CodeInputElement) {
     if (changed && !this._changeSent) input.dispatchEvent(new Event('change', {bubbles: true}));
     this._focusValue = null;
     this._changeSent = false;
+    input.closest('.sf-verification')?.classList.remove('sf-verification--pointer-focus');
     this.syncCells();
+    // While focusout runs the input may still be the active element.
+    setTimeout(this.onCaret, 0);
+  };
+
+  // A press on the field: its focus is the pointer's, so the sheet draws no
+  // ring on the active cell, only its primary border, until the focus leaves
+  // (K1, as sf-input's .sf-input--pointer-focus).
+  onPointerDown = (event) => {
+    const input = this.ownInput(event.target);
+    if (!input) return;
+    input.closest('.sf-verification')?.classList.add('sf-verification--pointer-focus');
   };
 
   onCaret = () => {
