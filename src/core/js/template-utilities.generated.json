@@ -322,15 +322,18 @@
     "z-index/default"
   ],
   "cl-pager": [
+    "align-items/default",
+    "display/default",
     "sr-only/default"
   ],
   "cl-pagination": [
     "align-items/default",
     "display/default",
     "flex-direction/default",
+    "flex/default",
     "justify-content/default",
     "pointer-events/default",
-    "position/default"
+    "text-align/default"
   ],
   "cl-popover": [
     "display/default",

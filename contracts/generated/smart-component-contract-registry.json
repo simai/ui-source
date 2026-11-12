@@ -2156,13 +2156,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/pager/smart.manifest.json",
-      "manifest_sha256": "f11fba921999aade9d423f31f6e7f6a7e5ecdd7d034a4efd5897ff1934225c4c",
+      "manifest_sha256": "cfaa6e3bcad4984e78fd15689b8f206f602fbc7d9a2ce51cbfa466f5535b0c0d",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "Navigation to the neighbouring page or step by meaning: the previous and the next documentation page as two cards or one row of links, a wizard's Back and Next with its step track, a course's lesson dots and next lesson, or a record counter. Not list paging: sf-pagination keeps 1, 2, 3 ….",
+      "summary": "Navigation to the neighbouring document by meaning (decision C97): the previous and the next documentation page as two cards, the previous and the next article as one row of titles, or a record's place in its list («‹ 3 из 240 ›»). Not list paging: sf-pagination keeps 1, 2, 3 ….",
       "tags": [
         "pager",
         "navigation",
@@ -2195,6 +2195,8 @@
           "smart.icon",
           "smart.input",
           "smart.list-item",
+          "smart.menu-context",
+          "smart.progress-bar",
           "smart.spinner"
         ]
       },
@@ -2207,13 +2209,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/pagination/smart.manifest.json",
-      "manifest_sha256": "38780568b37346ca31a6cf28bfb622ed2c01d6aac47bd776f9e97da00c236219",
+      "manifest_sha256": "3fddd3c054828bcd7dda551c675f56a9ef6802a21a8ffcbd0a08da5d82a9d1e4",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "Source-driven navigation for a collection split into numbered pages.",
+      "summary": "Page navigation for a collection split into pages, in five appearances: field (a dense table), numbers (sites, search), arrows (an unknown count), cursor (a cursor list) and more (Show more).",
       "tags": [
         "pagination"
       ],
