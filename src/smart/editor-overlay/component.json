@@ -2,7 +2,7 @@
   "$comment": "The source of sf-editor-overlay's interface (core/js/element-manifest.js over core/js/composition/manifest-host.mjs). Taken from simai/ui-control control/smart-architecture/migration/out/composition-overlay (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.editor-overlay",
   "tag": "sf-editor-overlay",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "kind": "leaf",
   "family": "editor",
   "settings": {
@@ -588,7 +588,7 @@
     "version 1.7.2 (2026-11-09): a patch, nothing drawn differently. The layer stack it reads (core.runtime 1.49.0) gives focus back to the body when a modal layer opened while nothing had focus, instead of the first <main> with a temporary tabindex: on an editor page that <main> is the canvas, which then stays byte-identical after a drawer or window over it closes (lab composition-overlay). Settings, values, events and keys unchanged.",
     "version 1.7.3 (2026-11-10): a patch; nothing in the component changed. Its built sheet is a place (sf-place) and, with C43 (component.badges 1.5.0, tokens.colour 1.8.0), takes back the core role --sf-surface-underlay with one line, --sf-surface-underlay: initial, so a tonal badge inside it lays its tone over its own surface and not over a row further out. Nothing is drawn differently outside a selected row. Settings, values, events and keys unchanged.",
     "version 1.7.4 (2026-11-10, C16 leftovers; written as a note on 1.7.3, which is released): a patch; nothing draws differently. Its sheet reads the C16 role name --sf-surface-area where it read the former --sf-surface-1 (an alias of it until 2027-01-01, token-c16-theme-role-names), so a page that sets the new name reaches it; the value is the same in both themes and on every place. Settings, values, events and keys unchanged.",
-    "version 1.7.4 (2026-11-11, note; no new number: 1.7.4 is not released yet): nothing drawn differently. The sheet reads the C16 roles by their current names where it read the former ones, which are var() of them wherever they are declared (src/core/contracts/token-aliases.v1.json, sf-role-aliases): --sf-on-disable → --sf-on-surface-disabled; --sf-outline-disable → --sf-outline-disabled. Settings, values, events and keys unchanged."
+    "version 1.7.5 (2026-11-11): a patch, nothing drawn differently. The sheet reads the C16 roles by their current names where it read the former ones, which are var() of them wherever they are declared (src/core/contracts/token-aliases.v1.json, sf-role-aliases): --sf-on-disable → --sf-on-surface-disabled; --sf-outline-disable → --sf-outline-disabled. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

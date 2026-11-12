@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.doc",
   "kind": "component",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/doc/index.js",
