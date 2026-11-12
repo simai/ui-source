@@ -69,7 +69,13 @@ the status icon stands on the other side.
 ## Accessibility
 
 The root is a live region: `role="status"` (polite) for `neutral`, `info` and
-`success`, `role="alert"` (assertive) for `warning` and `error`. Its name is the
+`success`, `role="alert"` (assertive) for `warning` and `error` -- for an alert
+put in the page after it has loaded (or taken out and put back). An alert
+printed with the page, in it at the load event or carrying its server-printed
+first paint, is `role="status"` at every level (1.2.2, NS-1): it is not news,
+and an assertive region at load would interrupt the person. To have a notice
+present at load speak as an alert, or a late one stay polite, set the host's
+own `role="alert"` or `role="status"`; it always wins. Its name is the
 heading, else the host's `aria-label`. The close control is a native button
 inside sf-icon-button; pointer, Enter and Space use the same path.
 

@@ -44,14 +44,17 @@ role `--sf-<status>` (neutral: the quiet `--sf-on-surface-variant` of its
 place), which reads 5.2:1 or more on its container in the light theme and
 7.7:1 or more in the dark one.
 
-The close's cross is a service glyph (1.1.4, owner decision C107, AA-12): one
-step paler than the text, `--sf-on-surface-variant` of the place it stands on
--- the theme's dim ink on a status alert, the container's on a neutral one,
-the page's on an outlined one -- level with the status icon (5.4:1 or more
-against the notice in light, 6.4:1 in dark). Under a pointer it catches the
-text ink. It painted the text ink before, two to three times darker than the
-status icon. The cross is reached inside any close host, so the Smart alert's
-close (an `sf-button-icon`) takes it too.
+The close's cross is a service glyph (1.1.4, owner decision C112, AA-12; it
+refines C107 for service glyphs on coloured places): the on-surface ink at 64
+of the alpha scale's ink family (48/64/80) --
+`light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64))` -- the same
+translucent tone on every status and look, so it reads evenly on the neutral
+container, a status container and the page under an outlined alert. Its size
+is the size-1 close, 16 in the 24 box of the status icon (C103, C112). Under a
+pointer it catches the text ink. Earlier it painted the text ink (two to three
+times darker than the status icon), then `--sf-on-surface-variant`. The cross
+is reached inside any close host, so the Smart alert's close (an
+`sf-button-icon`) takes it too.
 
 The status colour is the alert's own icon only (1.1.2, C35 acceptance A-F1):
 `.sf-alert > .sf-icon` and `.sf-alert > sf-icon > .sf-icon`. An icon inside an

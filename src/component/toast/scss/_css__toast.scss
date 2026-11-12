@@ -173,21 +173,19 @@
     overflow-wrap: anywhere;
   }
 
-  /* The cross is a service glyph of the notice (owner decision C107 (1),
-     R198, AA-13): one step paler than the text, level with the status icon --
-     --sf-on-surface-variant of a toast of a level (a soft place keeps the
-     theme's dim ink), and on a neutral toast the theme's dim ink on a fill,
-     the neutral icon's (a popup place raises its own variant to the text's
-     ink in dark, C43). It painted the text ink before (14.71:1 light). Not
-     the level's graphic tone: on a dark toast that is 2.93:1, under 3. Under
-     a pointer it catches the text ink (C107 (4), as the quiet icon button
-     does, C15). */
+  /* The cross is a service glyph of the notice (owner decision C112, R198,
+     AA-13; it refines C107 (1) for service glyphs on coloured places): the
+     on-surface ink at 64 of the alpha scale's ink family (48/64/80), black in
+     the light theme and white in the dark, on every level and on a neutral
+     toast alike -- translucent, so it reads as one tone over the popup and
+     any status tint. 64 holds 3:1 on every toast and on the strong alert bar
+     that shares the rule; 48 does not on the bar. Before it was the place's
+     --sf-on-surface-variant (C107 (1)), and before that the text ink (14.71:1
+     light). The glyph stays the size-1 close (16 in the 24 box of the status
+     icon, C103 and C112 (1)). Under a pointer it catches the text ink (C107
+     (4), as the quiet icon button does, C15). */
   .sf-toast > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-on-surface-variant);
-  }
-
-  .sf-toast:is(.sf-toast--neutral, .sf-toast--default) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: #{string.unquote(map.get(places.$sf-place-theme-roles, 'on-surface-container-variant'))};
+    --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
   }
 
   .sf-toast > .sf-icon-button.sf-icon-button--close:not(:disabled):is(:hover, :active) > .sf-close > .sf-close-icon {
