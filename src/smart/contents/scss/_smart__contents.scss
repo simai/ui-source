@@ -27,6 +27,18 @@
   line-height: var(--sf-contents--text-height);
 }
 
+/* Fewer than two sections (CT-03, C95 point 5): nothing is drawn. The host
+   says data-empty once the script counted; the printed markup is counted by
+   the sheet, so the first paint draws no heading over one entry either. */
+sf-contents[data-empty] > .sf-contents {
+  display: none;
+}
+
+/* A rule of its own: a browser without :has drops only this one. */
+.sf-contents:not(:has(.sf-contents-item + .sf-contents-item)) {
+  display: none;
+}
+
 .sf-contents--size-1 {
   --sf-contents--text-size: var(--sf-text-size-1);
   --sf-contents--text-height: var(--sf-text-height-1);
@@ -311,10 +323,20 @@
   .sf-contents-list:is(:hover, :focus-within) .sf-contents-text {
     opacity: 1;
   }
+
+  /* Where nothing hovers (CT-04): the first tap on a stroke opens the rail
+     (data-open, the toggle action) and the names show as on hover; a shown
+     name is pressed as its link. */
+  &.sf-contents--open .sf-contents-text {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 /* Bar: a sticky row of anchor tabs on the page's surface with a region edge
-   under it; the current tab's line lies on the edge. The row scrolls sideways. */
+   under it; the current tab's line lies on the edge. What does not fit goes
+   into «Ещё (n)» (overflow more, the default, C54 as sf-tabs); with overflow
+   scroll the row scrolls sideways. */
 @mixin bar {
   &.sf-contents--sticky {
     position: sticky;
@@ -333,6 +355,59 @@
 
   .sf-contents-item {
     flex: none;
+  }
+
+  /* overflow more: the row and «Ещё (n)» side by side on one edge. The edge
+     and the surface move from the row to the navigation, so the trigger
+     stands on them; the row clips sideways only, so the current tab's line
+     still lies on the edge (overflow-y stays visible). */
+  &.sf-contents--overflow-more {
+    display: flex;
+    align-items: flex-end;
+    border-block-end: var(--sf-px) solid var(--sf-contents--line);
+    background-color: var(--sf-contents-background-color, var(--sf-contents-background, var(--sf-surface-page)));
+
+    .sf-contents-list {
+      flex: 1 1 auto;
+      min-inline-size: 0;
+      overflow-x: clip;
+      border-block-end: none;
+      background-color: transparent;
+    }
+  }
+
+  .sf-contents-overflowed {
+    display: none;
+  }
+
+  /* The current tab alone wider than the row beside «Ещё»: it alone is cut
+     with an ellipsis; every other tab is whole or in «Ещё». */
+  .sf-contents-squeezed {
+    flex: 0 1 auto;
+    min-inline-size: 0;
+
+    .sf-contents-link {
+      min-inline-size: 0;
+      max-inline-size: 100%;
+    }
+
+    .sf-contents-text {
+      min-inline-size: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .sf-contents-more > button {
+    flex: none;
+    white-space: nowrap;
+  }
+
+  /* «Ещё (n)» stands only while something is in it; the sf-button host is
+     display: contents, so the button inside is what is hidden. */
+  &:not([data-more]) .sf-contents-more,
+  &:not([data-more]) .sf-contents-more > button {
+    display: none;
   }
 
   .sf-contents-link {

@@ -641,7 +641,8 @@
         "public_parts": [],
         "uses": [
           "smart.button",
-          "smart.icon"
+          "smart.icon",
+          "smart.menu-context"
         ]
       },
       "contract_schema": {
@@ -653,7 +654,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/contents/smart.manifest.json",
-      "manifest_sha256": "deaae49e5b7dca3811eb17c51ea80be2efd34dba454d559580d713b3778f1564",
+      "manifest_sha256": "dff7ad1d6338f194062a988cc714798ed6ddb18c96bbd0c5b9319aeb8dd00156",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

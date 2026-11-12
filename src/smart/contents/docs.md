@@ -23,8 +23,8 @@ ways, for documentation, help, long articles and long settings forms.
 | --- | --- | --- |
 | `column` | a heading and the list on a line, the current section's bar on it; sticky | documentation and help on a wide screen |
 | `compact` | one button with the current section and a reading-progress line under it; it opens the list | a phone, a narrow column |
-| `rail` | a short stroke per section at the inline end, longer for the current one; the names show on hover and focus | articles and landings, where the contents should not compete |
-| `bar` | a sticky row of anchor tabs with the current tab underlined | long forms and settings pages in an admin |
+| `rail` | a short stroke per section at the inline end, longer for the current one; the names show on hover and focus, and on a touch screen on the first tap on a stroke | articles and landings, where the contents should not compete |
+| `bar` | a sticky row of anchor tabs with the current tab underlined; what does not fit goes into «Ещё (n)» | long forms and settings pages in an admin |
 | `auto` (default) | `column` at and above the `collapse` step, `compact` below it | a documentation page that serves every width |
 
 `collapse` is the Framework breakpoint of `auto`: `sm` (32rem), `md` (44rem),
@@ -120,10 +120,10 @@ is used.
 
 A chosen link scrolls to its section, smoothly unless the person asked for
 reduced motion, moves focus to the section (it gets `tabindex="-1"` when it has
-none) without scrolling again, and, with `hash` on (the default), writes
-`#id` to the address with `history.replaceState`, so no history entry is
-added. The section scrolled to writes it too. `hash="false"` leaves the
-address alone. A press with a modifier key keeps the browser's own behaviour.
+none) without scrolling again, and writes `#id` to the address with
+`history.replaceState`, so no history entry is added (`hash="choose"`, the
+default). Scrolling does not touch the address unless `hash="scroll"`;
+`hash="false"` leaves the address alone. A press with a modifier key keeps the browser's own behaviour.
 
 ## Settings
 
@@ -135,7 +135,14 @@ address alone. A press with a modifier key keeps the browser's own behaviour.
 - `size="1/2|1"` — the ladder rung of the text and of the compact button;
   `1/2` by default
 - `sticky` — every layout stays in view while the page scrolls: the column, the rail, the bar and the compact button; on by default
-- `hash` — the address shows the current section; on by default
+- `hash="choose|scroll|false"` — when the address shows the current
+  section: on a chosen section (default), also while scrolling, or never.
+  Before 1.5.0 it was a boolean and on meant scroll; `true` now reads as
+  `choose`
+- `overflow="more|scroll"` — the bar: sections that do not fit go whole into a
+  trailing «Ещё (n)» menu, the current one staying in the row (default, as
+  sf-tabs); `scroll` lets the row scroll sideways
+- `heading-level` — the outline level of the heading (2 by default)
 - `label` — the heading and the navigation's name; «На этой странице» /
   «On this page» in the page language when not set
 
@@ -143,17 +150,30 @@ address alone. A press with a modifier key keeps the browser's own behaviour.
 
 - `refresh()` — collects the headings again, for content that changed after
   the contents drew.
-- `toggle()` — opens or closes the compact view's list; refused in another
-  view.
+- `toggle()` — opens or closes the compact view's list, and shows or hides
+  the rail's names; refused in the column and the bar.
+
+## Fewer than two sections
+
+With none or one section nothing is drawn: a contents of one entry says
+nothing the page does not. The host carries `data-empty`, so a column that
+holds only the contents can hide itself with
+`aside:has(> sf-contents[data-empty])`. The printed markup is hidden by the
+sheet as well, before the script counts.
 
 ## Accessibility
 
-The element draws a `<nav>` named by `label`: a navigation landmark. Do not
+The element draws a `<nav>` named by its heading (`aria-labelledby`): a
+navigation landmark. The heading is `role="heading"` at `heading-level`, so in
+the column it is in a screen reader's list of headings; in the other layouts
+it is not shown and still names the navigation. Do not
 wrap it in a second `<nav>`. Tab reaches each link. In the compact view the
 button says «label: section» and `aria-expanded`; Enter or Space opens the
 list, Escape closes it and gives focus back to the button, a press outside or
 a chosen section closes it. In the rail view the names are hidden until hover
-or focus but stay the links' names. The progress line is decoration.
+or focus but stay the links' names; on a screen without hover the first tap on
+a stroke shows them and a tap on a name goes there. In the bar, «Ещё (n)»
+comes after the row in Tab order and opens a menu of the sections it holds. The progress line is decoration.
 
 ## Public CSS variables
 

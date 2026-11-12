@@ -48,8 +48,10 @@
         "collapse": "lg",
         "levels": "2-3",
         "sticky": true,
-        "hash": true,
-        "size": "1/2"
+        "hash": "choose",
+        "size": "1/2",
+        "overflow": "more",
+        "heading-level": 2
       },
       "studio": {
         "title": "contents reference",
@@ -254,6 +256,8 @@
           "</div>",
           "<sf-contents id=\"compact\" layout=\"compact\"><a href=\"#c-intro\">Введение</a><a href=\"#c-install\">Подключение</a></sf-contents>",
           "<sf-contents id=\"given\" layout=\"rail\" hash=\"false\"><a href=\"#g-intro\">Введение</a><a href=\"#g-cdn\" data-level=\"3\">Через CDN</a></sf-contents>",
+          "<div style=\"inline-size:15rem\"><sf-contents id=\"bar\" layout=\"bar\" sticky=\"false\"><a href=\"#b-general\">Основное</a><a href=\"#b-access\">Доступ</a><a href=\"#b-notifications\">Уведомления</a><a href=\"#b-integrations\">Интеграции</a><a href=\"#b-removal\">Удаление</a></sf-contents></div>",
+          "<sf-contents id=\"one\" layout=\"column\"><a href=\"#intro\">Введение</a></sf-contents>",
           "<div lang=\"en\"><sf-contents id=\"en\" layout=\"column\" target=\"#nothing\"></sf-contents></div>"
         ]
       },
@@ -264,7 +268,7 @@
           "covers": "settings.target, settings.levels, accessibility.role navigation",
           "steps": [
             {
-              "check": "(() => { const t = document.querySelector('#toc'); const nav = t.querySelector('nav.sf-contents'); const links = [...t.querySelectorAll('.sf-contents-link')]; return nav && nav.getAttribute('aria-label') === 'На этой странице' && links.map((a) => a.getAttribute('href')).join() === '#intro,#install,#cdn,#npm,#settings,#events,#a11y' && t.querySelector('a[href=\"#cdn\"]').closest('li').dataset.depth === '1'; })()"
+              "check": "(() => { const t = document.querySelector('#toc'); const nav = t.querySelector('nav.sf-contents'); const links = [...t.querySelectorAll('.sf-contents-link')]; return nav && document.getElementById(nav.getAttribute('aria-labelledby'))?.textContent.trim() === 'На этой странице' && links.map((a) => a.getAttribute('href')).join() === '#intro,#install,#cdn,#npm,#settings,#events,#a11y' && t.querySelector('a[href=\"#cdn\"]').closest('li').dataset.depth === '1'; })()"
             }
           ]
         },
@@ -280,7 +284,7 @@
         },
         {
           "id": "p3-choose",
-          "title": "a chosen link makes its section current and sends sf-contents-change once with {id, previous}",
+          "title": "a chosen link makes its section current and sends sf-contents-change once with {id, previous}; the address is written on choose (hash choose, the default, CT-10)",
           "covers": "events.change, settings.hash",
           "steps": [
             {
@@ -356,7 +360,7 @@
           "covers": "settings.label default-from runtime.label",
           "steps": [
             {
-              "check": "document.querySelector('#en nav').getAttribute('aria-label') === 'On this page'"
+              "check": "(() => { const nav = document.querySelector('#en nav'); return document.getElementById(nav.getAttribute('aria-labelledby'))?.textContent.trim() === 'On this page'; })()"
             }
           ]
         },
@@ -370,6 +374,57 @@
             },
             {
               "check": "getComputedStyle(document.querySelector('#toc [aria-current=\"location\"]')).color === 'rgb(1, 2, 3)'"
+            }
+          ]
+        },
+        {
+          "id": "p9-empty",
+          "title": "fewer than two sections draw nothing: the host says data-empty and the navigation takes no box (CT-03)",
+          "covers": "host-states data-empty",
+          "steps": [
+            {
+              "check": "(() => { const one = document.querySelector('#one'); const none = document.querySelector('#en'); const toc = document.querySelector('#toc'); return one.getAttribute('data-empty') === 'true' && none.getAttribute('data-empty') === 'true' && !toc.hasAttribute('data-empty') && one.querySelector('nav').getClientRects().length === 0 && none.querySelector('nav').getClientRects().length === 0; })()"
+            }
+          ]
+        },
+        {
+          "id": "p10-heading",
+          "title": "the heading is a heading at heading-level and names the navigation (CT-09)",
+          "covers": "settings.heading-level, accessibility.name",
+          "steps": [
+            {
+              "check": "(() => { const nav = document.querySelector('#toc nav'); const h = document.getElementById(nav.getAttribute('aria-labelledby')); return Boolean(h) && h.getAttribute('role') === 'heading' && h.getAttribute('aria-level') === '2' && !h.hasAttribute('aria-hidden') && !nav.hasAttribute('aria-label') && h.getClientRects().length > 0; })()"
+            }
+          ]
+        },
+        {
+          "id": "p11-rail-names",
+          "title": "the rail opens: toggle shows the names as hover does, data-open on the host (CT-04)",
+          "covers": "actions.toggle, host-states data-open",
+          "steps": [
+            {
+              "action": {
+                "name": "toggle"
+              },
+              "target": "#given",
+              "expect": {
+                "returns": {
+                  "outcome": "applied"
+                }
+              }
+            },
+            {
+              "check": "(() => { const g = document.querySelector('#given'); return g.getAttribute('data-open') === 'true'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p12-bar-more",
+          "title": "the bar puts what does not fit into «Ещё (n)», the current tab in the row (CT-05, overflow more)",
+          "covers": "settings.overflow",
+          "steps": [
+            {
+              "check": "(() => { const b = document.querySelector('#bar'); const nav = b.querySelector('nav'); const hidden = b.querySelectorAll('.sf-contents-overflowed').length; const more = b.querySelector('.sf-contents-more'); const list = b.querySelector('.sf-contents-list'); return nav.hasAttribute('data-more') && hidden > 0 && more.getAttribute('text') === `Ещё (${hidden})` && !b.querySelector('[aria-current=\"location\"]').closest('.sf-contents-overflowed') && list.scrollWidth <= list.clientWidth + 1; })()"
             }
           ]
         }

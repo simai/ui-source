@@ -26,11 +26,18 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {breakpointMedia} from '../../core/js/breakpoints.js';
+import {fitInOrder, fitBesideMore, rowRoom, standardMenu, triggerExtra} from '../../core/js/overflow-row.js';
+import {followDensity} from '../../core/js/density.js';
 import {renderContentsTemplate} from './js/templates/default';
 import manifest from './component.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
+
+// The values of hash (CT-10): choose writes the address when a section is
+// chosen, scroll also while the page scrolls, false never. true and an empty
+// attribute, the boolean of 1.4, read as the default.
+const HASH_MODES = ['choose', 'scroll', 'false'];
 
 // A chosen section holds the answer while its scroll moves -- each scroll
 // event extends the hold by this long, so a long smooth scroll keeps it and a
@@ -124,6 +131,21 @@ class SfContents extends ContentsElement {
       if (!path.includes(this)) this.closeList({restoreFocus: false});
     };
     this._onReady = () => this.collect();
+    this._lastPointer = '';
+    this._onPointer = (event) => {
+      this._lastPointer = event.pointerType || '';
+    };
+    this._overflowed = [];
+    this._overflowFrame = 0;
+    this._resizeObserver = typeof ResizeObserver === 'function'
+      ? new ResizeObserver(() => this.layoutOverflowNow())
+      : null;
+  }
+
+  // The mode of the address (CT-10); the boolean of 1.4 reads as choose.
+  get hashMode() {
+    const value = this.getAttribute('hash');
+    return HASH_MODES.includes(value) ? value : 'choose';
   }
 
   // The read-only value current (component.json values).
@@ -162,6 +184,7 @@ class SfContents extends ContentsElement {
       })).filter((item) => item.id);
       nodes.forEach((node) => node.remove());
     }
+    this.addEventListener('pointerdown', this._onPointer, true);
     this.watchMedia();
     this.collect();
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', this._onReady, {once: true});
@@ -173,6 +196,17 @@ class SfContents extends ContentsElement {
     this._media = null;
     document.removeEventListener('DOMContentLoaded', this._onReady);
     document.removeEventListener('pointerdown', this._onOutside, true);
+    this.removeEventListener('pointerdown', this._onPointer, true);
+    this._resizeObserver?.disconnect();
+    this._observedRow = null;
+    this._observedTrigger = null;
+    if (this._fontsListener) globalThis.document?.fonts?.removeEventListener?.('loadingdone', this._fontsListener);
+    this._fontsListener = null;
+    if (this._overflowFrame) globalThis.cancelAnimationFrame?.(this._overflowFrame);
+    this._overflowFrame = 0;
+    this._moreMenu?.close?.({restoreFocus: false});
+    this._moreMenu?.remove?.();
+    this._moreMenu = null;
     this.isOpen = false;
     super.onDisconnected?.();
   }
@@ -181,6 +215,7 @@ class SfContents extends ContentsElement {
     super.attributeChangedCallback(name, oldValue, newValue);
     if (oldValue === newValue || !this._isMounted) return;
     if (name === 'layout' || name === 'collapse') this.watchMedia();
+    if (name === 'layout' && this.isOpen && !this.canOpen) this.closeList({restoreFocus: false});
     if (name === 'target' || name === 'levels') this.collect();
   }
 
@@ -197,7 +232,7 @@ class SfContents extends ContentsElement {
   // longer opens closes.
   syncCompact() {
     this.sfHostState('data-compact', this.compact);
-    if (!this.compact && this.isOpen) this.closeList({restoreFocus: false});
+    if (!this.canOpen && this.isOpen) this.closeList({restoreFocus: false});
     this.requestComponentUpdate('compact');
   }
 
@@ -247,6 +282,9 @@ class SfContents extends ContentsElement {
         .filter((section) => section.text);
     }
     this._sections = sections;
+    // Fewer than two sections say nothing the page does not (CT-03, C95
+    // point 5): the host says so and the sheet draws nothing.
+    this.sfHostState('data-empty', sections.length < 2);
     this.startSpy();
     this.spy({emit: false});
     this.requestComponentUpdate('sections');
@@ -346,7 +384,9 @@ class SfContents extends ContentsElement {
     this.querySelector(':scope .sf-contents-progress-value')?.style.setProperty('--sf-contents--progress', String(progress));
   }
 
-  setCurrent(id, {emit = true, hash = true} = {}) {
+  // via: scroll (the spy) or choose (a section chosen). The address follows a
+  // scroll only with hash="scroll" (CT-10).
+  setCurrent(id, {emit = true, via = 'scroll'} = {}) {
     const previous = this._current;
     const first = !this._answered;
     this._answered = true;
@@ -355,37 +395,68 @@ class SfContents extends ContentsElement {
     this._revealCurrent = true;
     this.requestComponentUpdate('current');
     if (first || !emit || !id) return;
-    if (hash && this.hash && globalThis.location?.hash !== `#${id}`) {
-      try {
-        globalThis.history?.replaceState(globalThis.history.state, '', `#${encodeURIComponent(id)}`);
-      } catch {
-        // A sandboxed frame may refuse; the address is a convenience.
-      }
-    }
+    if (via === 'scroll' && this.hashMode === 'scroll') this.writeHash(id);
     this.sfEmit('change', {id, previous: previous || null});
+  }
+
+  // #id in the address, with replaceState: no history entry.
+  writeHash(id) {
+    if (!id || this.hashMode === 'false' || globalThis.location?.hash === `#${encodeURIComponent(id)}`) return;
+    try {
+      globalThis.history?.replaceState(globalThis.history.state, '', `#${encodeURIComponent(id)}`);
+    } catch {
+      // A sandboxed frame may refuse; the address is a convenience.
+    }
   }
 
   // A link chosen: its section, smoothly unless the person asked for less
   // motion, focus there, the address and the answer at once.
   choose(event, id) {
     if (event.defaultPrevented || event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    // The rail where nothing hovers (CT-04): the first tap on a stroke shows
+    // the names, as the hover does; a tap on a shown name goes there. A
+    // keyboard's Enter (no pointer) goes at once: focus already shows them.
+    if (this.layout === 'rail' && !this.isOpen && this._lastPointer === 'touch' && !this.hovers()) {
+      event.preventDefault();
+      this._lastPointer = '';
+      this.openList();
+      return;
+    }
+    this._lastPointer = '';
+    this.jumpTo(id, event);
+  }
+
+  // The device has no hover: a touch screen, where :hover never comes.
+  hovers() {
+    return globalThis.matchMedia?.('(hover: hover)').matches === true;
+  }
+
+  // The section of id: scrolled to, focused, current, in the address.
+  jumpTo(id, event = null) {
     const section = this._sections.find((one) => one.id === id);
     const element = section?.element ?? document.getElementById(id);
     if (this.isOpen) this.closeList({restoreFocus: false});
     if (!element) return;
-    event.preventDefault();
+    event?.preventDefault();
     this._hold = {id, until: Date.now() + HOLD_MS};
     // instant, not auto: auto is the page's scroll-behavior, which may be smooth.
     element.scrollIntoView({behavior: reducedMotion() ? 'instant' : 'smooth', block: 'start'});
     if (!element.matches('a[href], button, input, select, textarea, [tabindex]')) element.setAttribute('tabindex', '-1');
     element.focus({preventScroll: true});
-    this.setCurrent(id, {emit: true});
+    this.setCurrent(id, {emit: true, via: 'choose'});
+    this.writeHash(id);
   }
 
-  // The action toggle opens the compact view's list.
+  // The compact view's list, or the rail's names (CT-04), can open.
+  get canOpen() {
+    return this.compact || this.layout === 'rail';
+  }
+
+  // The action toggle opens the compact view's list, and in the rail shows
+  // the names.
   openList() {
     if (this.isOpen) return applied();
-    if (!this.compact) return refused('not-compact');
+    if (!this.canOpen) return refused('not-compact');
     this.isOpen = true;
     this.sfHostState('data-open', true);
     document.addEventListener('pointerdown', this._onOutside, true);
@@ -399,7 +470,7 @@ class SfContents extends ContentsElement {
     this.sfHostState('data-open', false);
     document.removeEventListener('pointerdown', this._onOutside, true);
     this.requestComponentUpdate('close');
-    if (restoreFocus) this.toggleButton()?.focus({preventScroll: true});
+    if (restoreFocus && this.compact) this.toggleButton()?.focus({preventScroll: true});
     return applied();
   }
 
@@ -420,10 +491,15 @@ class SfContents extends ContentsElement {
     return this.compact ? this.toggleButton() : this.querySelector(':scope .sf-contents-link');
   }
 
-  // The bar keeps the current tab in view by scrolling itself, never the page.
+  // The bar keeps the current tab in view by scrolling itself, never the page;
+  // with overflow more it is laid out instead, the current tab in the row.
   afterRender(changed) {
     const result = super.afterRender?.(changed);
-    if (this._revealCurrent && this.layout === 'bar') {
+    this.watchRow();
+    if (this.overflowsToMore()) {
+      this._revealCurrent = false;
+      this.layoutOverflow();
+    } else if (this._revealCurrent && this.layout === 'bar') {
       this._revealCurrent = false;
       const list = this.querySelector(':scope .sf-contents-list');
       const link = list?.querySelector('[aria-current="location"]');
@@ -439,6 +515,104 @@ class SfContents extends ContentsElement {
     return result;
   }
 
+  // ─── «Ещё (n)» of the bar (CT-05) ───────────────────────────────────────
+  overflowsToMore() {
+    return this.layout === 'bar' && this.overflow !== 'scroll';
+  }
+
+  row() {
+    return this.querySelector(':scope .sf-contents-list');
+  }
+
+  trigger() {
+    return this.querySelector(':scope .sf-contents-more');
+  }
+
+  // The row and the trigger's button are watched: a resize lays the row out
+  // in the observer's callback, before the paint; a font arriving later too.
+  watchRow() {
+    if (!this._resizeObserver) return;
+    const row = this.overflowsToMore() ? this.row() : null;
+    const button = row ? this.trigger()?.querySelector(':scope > button') : null;
+    if (row !== this._observedRow) {
+      if (this._observedRow) this._resizeObserver.unobserve(this._observedRow);
+      if (row) this._resizeObserver.observe(row);
+      this._observedRow = row;
+    }
+    if (button !== this._observedTrigger) {
+      if (this._observedTrigger) this._resizeObserver.unobserve(this._observedTrigger);
+      if (button) this._resizeObserver.observe(button);
+      this._observedTrigger = button;
+    }
+    if (row && !this._fontsListener && globalThis.document?.fonts?.addEventListener) {
+      this._fontsListener = () => this.scheduleOverflow();
+      document.fonts.addEventListener('loadingdone', this._fontsListener);
+    }
+  }
+
+  scheduleOverflow() {
+    if (this._overflowFrame || typeof globalThis.requestAnimationFrame !== 'function') return;
+    this._overflowFrame = globalThis.requestAnimationFrame(() => {
+      this._overflowFrame = 0;
+      this.layoutOverflow();
+    });
+  }
+
+  layoutOverflowNow() {
+    if (this._overflowFrame) globalThis.cancelAnimationFrame?.(this._overflowFrame);
+    this._overflowFrame = 0;
+    this.layoutOverflow();
+  }
+
+  // The sections in their order up to the first that does not fit, the
+  // current one always kept; the rest whole in «Ещё (n)» (core/js/overflow-row.js).
+  layoutOverflow() {
+    const row = this.row();
+    const nav = row?.parentElement;
+    if (!row || !nav) return;
+    const items = Array.from(row.children);
+    for (const item of items) item.classList.remove('sf-contents-overflowed', 'sf-contents-squeezed');
+    this._overflowed = [];
+    nav.removeAttribute('data-more');
+    if (!this.overflowsToMore() || items.length < 2) return;
+    const widths = items.map((item) => item.getBoundingClientRect().width);
+    const gap = parseFloat(getComputedStyle(row).columnGap) || 0;
+    if (!fitInOrder(widths, gap, rowRoom(row))) return;
+    nav.setAttribute('data-more', '');
+    const current = items.findIndex((item) => item.querySelector('[aria-current="location"]'));
+    const more = this.trigger();
+    const label = (count) => `${this.sfWord('more')} (${count})`;
+    const {kept, squeezed} = fitBesideMore({
+      widths, gap, room: rowRoom(row), current,
+      must: current >= 0 ? [current] : [],
+      extra: triggerExtra(more?.querySelector(':scope > button .sf-button-text-container'), label),
+    });
+    items.forEach((item, at) => {
+      if (!kept.includes(at)) item.classList.add('sf-contents-overflowed');
+    });
+    if (squeezed >= 0) items[squeezed].classList.add('sf-contents-squeezed');
+    this._overflowed = items.map((_, at) => at).filter((at) => !kept.includes(at)).map((at) => this._sections[at]?.id).filter(Boolean);
+    if (more) {
+      const text = label(this._overflowed.length);
+      if (more.getAttribute('text') !== text) more.setAttribute('text', text);
+      more.setAttribute('aria-label', text);
+    }
+  }
+
+  // «Ещё (n)»: the standard menu of the sections it holds; one chosen goes
+  // there as its link would.
+  async openMore(anchor) {
+    const entries = this._overflowed.map((id) => this._sections.find((section) => section.id === id)).filter(Boolean)
+      .map((section) => ({id: section.id, text: section.text}));
+    if (!entries.length) return;
+    const menu = await standardMenu(this, '_moreMenu', (id) => this.jumpTo(String(id)));
+    menu.setAttribute('aria-label', this.sfWord('more'));
+    menu.setAttribute('size', this.size === '1' ? '1' : '1/2');
+    followDensity(menu, this);
+    menu.entries = entries;
+    menu.toggleFor(anchor?.querySelector?.(':scope > button') ?? anchor);
+  }
+
   templateContext() {
     return this.createTemplateContext({
       ...this.getPropsContext(),
@@ -451,6 +625,9 @@ class SfContents extends ContentsElement {
       open: this.isOpen,
       compact: this.compact,
       label: this.label,
+      headingLevel: this.headingLevel,
+      overflow: this.overflow,
+      moreText: this.sfWord('more'),
       sections: this._sections.map(({id, text, level}) => ({id, text, level})),
       current: this._current,
       progress: this._progress,

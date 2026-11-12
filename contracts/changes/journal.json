@@ -10399,6 +10399,56 @@
       },
       "owner": "ui-source",
       "source": "src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
+    },
+    {
+      "id": "behaviour-contents-hash-choose",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-contents 1.5.0 writes the address only when a section is chosen (hash=\"choose\", the default; CT-10 of the R181 study). It wrote #id on every scroll change too; hash is now an enum choose|scroll|false, and true or an empty attribute read as choose.",
+      "items": [
+        {
+          "component": "sf-contents",
+          "attribute": "hash",
+          "from": "true (the default): the address follows the scroll and the choice",
+          "to": "choose (the default): the address follows the choice; scroll written out"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a page relied on the address following the scroll, write hash=\"scroll\" on the sf-contents. hash=\"false\" (Docara) is unchanged.",
+      "examples": {
+        "before": "<sf-contents target=\"article\"></sf-contents> (the address follows the scroll)",
+        "after": "<sf-contents target=\"article\" hash=\"scroll\"></sf-contents>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/contents/index.js setCurrent, writeHash"
+    },
+    {
+      "id": "behaviour-contents-bar-overflow-more",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-contents 1.5.0 lays out the bar's sections that do not fit with overflow=\"more\" by default: they go whole into a trailing «Ещё (n)» menu and the current section stays in the row, as sf-tabs (owner decision C54; CT-05 of the R181 study). The row scrolled sideways with a hidden scrollbar before; a page that wants it writes overflow=\"scroll\".",
+      "items": [
+        {
+          "component": "sf-contents",
+          "attribute": "overflow",
+          "from": "none: the bar's row scrolled sideways, its scrollbar hidden",
+          "to": "more (the default); scroll written out"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a page relied on the scrolling row of layout=\"bar\", write overflow=\"scroll\" on the sf-contents. Nothing is needed for the new behaviour.",
+      "examples": {
+        "before": "<sf-contents layout=\"bar\">…</sf-contents> (the row scrolls)",
+        "after": "<sf-contents layout=\"bar\" overflow=\"scroll\">…</sf-contents>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/contents/index.js layoutOverflow; src/core/js/overflow-row.js"
     }
   ]
 }
