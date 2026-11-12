@@ -653,11 +653,13 @@ async function applyMaskForRoot(root, input, maskPattern, config = null) {
     const showMaskTemplate = resolvedConfig.showMaskPlaceholder && hasInitialValue;
     if (!hasInitialValue && maskPattern) {
       const dialCode = root?.dataset?.dialCode || resolvedConfig.fixedDialCode || '';
-      input.placeholder = buildPlaceholderFromMask(
+      const masked = buildPlaceholderFromMask(
         maskPattern,
         resolvedConfig.maskPlaceholderChar || '_',
         dialCode,
       );
+      if (root.__sfCountryOwnPlaceholder) writeCountryPlaceholder(input, masked);
+      else input.placeholder = masked;
     }
     const instance = await service.create(input, {
       mask: maskPattern,
@@ -725,6 +727,40 @@ function countryFromNumber(root, value) {
   return null;
 }
 
+// The national number laid out by the country's pattern (owner C87: «дальше
+// просто номер по маске страны»): «+7 9031234567» reads «+7 903 123-45-67».
+// The pattern's first group is the dial code; the rest places the national
+// digits. The pattern stops where the digits stop, so no separator waits
+// ahead of the caret, and digits beyond the pattern stay at the end: a
+// number is never cut. Any spacing the person typed is laid out again, so a
+// space typed after the code's own space is not doubled.
+function formatByPattern(text, country, pattern = country?.maskPattern) {
+  const code = String(country?.dialCode || '').replace(/\D/gu, '');
+  const all = String(text || '').replace(/\D/gu, '');
+  const rest = all.startsWith(code) ? all.slice(code.length) : all;
+  const tail = String(pattern || '').trim().replace(/^\+0*\s*/u, '');
+  if (!tail) return `${country.dialCode} ${rest}`.trimEnd();
+  let out = '', index = 0;
+  for (const char of tail) {
+    if (index >= rest.length) break;
+    out += char === '0' ? rest[index++] : char;
+  }
+  return `${country.dialCode} ${out}${rest.slice(index)}`.trimEnd();
+}
+
+// Where the caret goes after the text is laid out again: after the same
+// count of digits it followed before.
+function caretAfterDigits(text, count) {
+  if (count <= 0) return /^\s*\+/u.test(text) ? text.indexOf('+') + 1 : 0;
+  let seen = 0;
+  for (let index = 0; index < text.length; index += 1) {
+    if (!/\d/u.test(text[index])) continue;
+    seen += 1;
+    if (seen === count) return index + 1;
+  }
+  return text.length;
+}
+
 // The number text names its country (owner C87, variant V4 of ui-control
 // prototypes/phone-country-study.html#r3-variant): the code is the first group
 // of the text and the flag follows it.
@@ -735,10 +771,13 @@ function countryFromNumber(root, value) {
 //                       lone «8» waits for the next digit;
 //   «903 …» (no «+»)    the current country's code goes in front;
 //   «+ 30 123456»       the code was erased: no country, the number is kept.
-// A code the person has finished gets a space after it, unless a longer code
-// starts with it (+1 and +1242 Bahamas). Digits are never cut.
+// A code the person has finished gets one space after it, unless a longer
+// code starts with it (+1 and +1242 Bahamas); after the code the national
+// digits follow the country's pattern (formatByPattern). Digits are never cut.
+// `patternFor(country)` gives the pattern where the field has its own (a
+// fixed mask, the brackets style); the country's pattern otherwise.
 // Returns {text, country, wait}; country null is an unknown code.
-function readTypedNumber(root, value, current = null, {deleting = false} = {}) {
+function readTypedNumber(root, value, current = null, {deleting = false, patternFor = null} = {}) {
   let text = String(value ?? '');
   const options = root?.__sfCountryOptions?.length ? root.__sfCountryOptions : COUNTRY_ITEMS;
   if (!text.trim()) return {text, country: current, wait: false};
@@ -768,19 +807,13 @@ function readTypedNumber(root, value, current = null, {deleting = false} = {}) {
   if (!country || deleting) return {text, country, wait: false};
   const code = digitsOf(country.dialCode);
   if (digits.length === code.length) {
+    // One space after a finished code: «+49» and «+49  » both read «+49 ».
     const longer = options.some((item) => item.dialCode !== country.dialCode && digitsOf(item.dialCode).startsWith(code));
-    if (!longer && !/\s$/u.test(text)) text = `${text.trimEnd()} `;
+    if (!longer) text = `${text.trim()} `;
   } else if (digits.length > code.length) {
-    // The space after the code: «+79031234567» reads «+7 9031234567».
-    let seen = 0;
-    for (let index = 0; index < text.length; index += 1) {
-      if (!/\d/u.test(text[index])) continue;
-      seen += 1;
-      if (seen === code.length) {
-        if (/\d/u.test(text[index + 1] || '')) text = `${text.slice(0, index + 1)} ${text.slice(index + 1)}`;
-        break;
-      }
-    }
+    // «+79031234567» and «+7 903 123 45 67» read «+7 903 123-45-67».
+    const pattern = typeof patternFor === 'function' ? patternFor(country) : country.maskPattern;
+    text = formatByPattern(text, country, pattern);
   }
   return {text, country, wait: false};
 }
@@ -793,6 +826,7 @@ function markCountryUnknown(root) {
   root.dataset.iso2 = '';
   root.dataset.dialCode = '';
   root.__sfCountrySelected = null;
+  syncCodePlaceholder(root, getNodes(root).input, null);
   syncCountryAccessibility(root);
 }
 
@@ -845,6 +879,34 @@ function keepCaretAfterPrefix(input, prefix) {
   input.setSelectionRange(safePos, safePos);
 }
 
+// The pattern the typed text is laid out by: the field's own where it fixes
+// one (fixed-mask with mask-pattern), the country's otherwise, in the field's
+// mask style.
+function countryTextPattern(config, country) {
+  const base = !config?.useCountryMasks && config?.fixedMaskPattern ? config.fixedMaskPattern : country?.maskPattern;
+  return normalizeMaskPatternByStyle(base, config?.maskStyle);
+}
+
+// A field without a placeholder of its own hints the chosen country's code
+// (owner C87: «код «+994» стоит в начале номера»): an empty Azerbaijan field
+// shows «+994», never another country's pattern. An unknown code hints «+».
+// The placeholder the field wrote is remembered, so a later bind tells it
+// from one the author gave.
+const countryWrittenPlaceholders = new WeakMap();
+function placeholderIsOwn(input) {
+  const current = input.getAttribute('placeholder') || '';
+  return !current || current === countryWrittenPlaceholders.get(input);
+}
+function writeCountryPlaceholder(input, text) {
+  if (!input) return;
+  countryWrittenPlaceholders.set(input, text);
+  if (input.placeholder !== text) input.placeholder = text;
+}
+function syncCodePlaceholder(root, input, country) {
+  if (!input || !root.__sfCountryOwnPlaceholder) return;
+  writeCountryPlaceholder(input, country?.dialCode || '+');
+}
+
 function applyCountrySelection(root, country, source = 'runtime') {
   if (!root || !country) return;
   const { input, leftFlag } = getNodes(root);
@@ -860,6 +922,7 @@ function applyCountrySelection(root, country, source = 'runtime') {
   const maskConfiguration = countryMaskConfiguration.get(root);
   if (maskConfiguration) maskConfiguration.selected = root.dataset.maskPattern;
   root.__sfCountrySelected = country;
+  syncCodePlaceholder(root, input, country);
 
   if (config.showCode && leftFlag) {
     const flagNode = createFlagNode(country, config, false);
@@ -1063,6 +1126,7 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
   config.fixedMaskPattern = fixedPattern;
   countryMaskConfiguration.set(root, {fixed: fixedPattern, selected: root.dataset.maskPattern});
   root.__sfCountryConfig = config;
+  root.__sfCountryOwnPlaceholder = placeholderIsOwn(input);
 
   renderDatasetItems(root, config);
   applyDropdownViewport(root, 8);
@@ -1216,12 +1280,14 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
     // The text decides the country (owner C87, readTypedNumber).
     const deleting = /^delete/u.test(event?.inputType || '');
     const before = input.value;
-    const read = readTypedNumber(root, before, root.__sfCountryLast || root.__sfCountrySelected || null, {deleting});
+    const read = readTypedNumber(root, before, root.__sfCountryLast || root.__sfCountrySelected || null,
+      {deleting, patternFor: (country) => countryTextPattern(config, country)});
     if (read.text !== before) {
       const caret = input.selectionStart ?? before.length;
       const atEnd = caret >= before.length;
       input.value = read.text;
-      const at = atEnd ? read.text.length : Math.max(0, caret + read.text.length - before.length);
+      // Laid out again, the caret stays after the same digit it followed.
+      const at = atEnd ? read.text.length : caretAfterDigits(read.text, before.slice(0, caret).replace(/\D/gu, '').length);
       if (document.activeElement === input) input.setSelectionRange(at, at);
     }
     if (!read.wait && before.trim()) {
@@ -1483,7 +1549,7 @@ class CountryCode extends ComponentObserver {
       form = '',
       hint = '',
       value = '',
-      placeholder = '+7(___)___-__-__',
+      placeholder = '',
       disabled = false,
       active = false,
       open = active,

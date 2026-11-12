@@ -81,14 +81,18 @@ The manifest lifecycle remains experimental.
 ## Field and list (C87)
 
 The flag stays in the field as a rectangular image with a small caret beside it;
-the dial code is part of the number text (`+7 903 123 45 67`). Flag, caret and
+the dial code is part of the number text (`+7 903 123-45-67`). Flag, caret and
 the start of the text follow the value inset of the field size (`--sf-space-1/2`,
 `--sf-space-1`, `--sf-space-2`; `--sf-space-1` on a phone and in compact density).
 
 Typing reads the country from the number and never cuts a digit: the first digit
 group gives the code (`+3745` is not read as `+374`), `+7` decides Russia or
 Kazakhstan by the next digit, `8 9…` becomes `+7 9…`, digits without `+` take the
-current country's code, and a space follows a finished code. Erasing the code
+current country's code, and one space follows a finished code. After the code the
+digits follow the country's pattern as they are typed or pasted (`8 903 123 45 67`
+reads `+7 903 123-45-67`, `+49 30 123456` stays as it is); digits beyond the
+pattern stay at the end. A field without its own `placeholder` hints the chosen
+country's code, `+994` for Azerbaijan, and `+` while the code is unknown. Erasing the code
 leaves the field without a country: the flag turns into a dashed frame and the
 button is named "Country code not recognised. Choose a country". Pasting a number
 that starts with `+` or has ten or more digits replaces the whole value. With

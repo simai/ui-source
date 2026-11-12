@@ -11,6 +11,7 @@ const source = await read('src/component/country-code/js/_country_code.js');
 const template = await read('src/smart/input-country/js/templates/default.js');
 const css = await read('src/component/country-code/scss/_css_country_code.scss');
 const custom = await read('src/component/country-code/scss/_css_country_code_custom.scss');
+const langs = {en: await read('src/smart/input-country/lang/en.json'), ru: await read('src/smart/input-country/lang/ru.json')};
 const {items} = JSON.parse(await read('src/component/country-code/data/countries.json'));
 
 function runtime() {
@@ -43,7 +44,7 @@ test('the code is the first group of the number and the flag follows it', () => 
 });
 
 test('«8 9…» is Russia from any country, a lone 8 waits, digits take the current code', () => {
-  assert.deepEqual(readNumber('8 903 123 45 67', 'AZ'), {text: '+7 903 123 45 67', iso: 'RU', wait: false});
+  assert.deepEqual(readNumber('8 903 123 45 67', 'AZ'), {text: '+7 903 123-45-67', iso: 'RU', wait: false});
   assert.equal(readNumber('8', 'AZ').wait, true);
   assert.deepEqual(readNumber('903', 'RU'), {text: '+7 903', iso: 'RU', wait: false});
   assert.deepEqual(readNumber('50 123456', 'AM'), {text: '+374 50 123456', iso: 'AM', wait: false});
@@ -56,7 +57,7 @@ test('an erased code leaves no country and keeps the number', () => {
 
 test('a finished code gets its space, unless a longer code starts with it', () => {
   assert.equal(readNumber('+374', null).text, '+374 ');
-  assert.equal(readNumber('+79031234567', null).text, '+7 9031234567');
+  assert.equal(readNumber('+79031234567', null).text, '+7 903 123-45-67');
   assert.equal(readNumber('+1', null).text, '+1 ');
   // Where a longer code starts with the one typed (a list that gives the
   // Bahamas +1242), the person may still be typing: no space yet.
@@ -68,8 +69,79 @@ test('a finished code gets its space, unless a longer code starts with it', () =
 });
 
 test('extra digits are never cut', () => {
-  const text = '+7 903 123 45 67 89 01';
-  assert.equal(readNumber(text, 'RU').text, text);
+  // Digits beyond the pattern stay at the end of the number.
+  assert.equal(readNumber('+7 903 123 45 67 89 01', 'RU').text, '+7 903 123-45-678901');
+});
+
+// DEV intent acceptance 2026-11-12 (ui-control control/evidence/
+// 2026-11-12-input-country-intent, points 3 and 4): typed text must read as
+// pasted text, and the country's pattern lays out the national digits.
+const typeInto = (sequence, current) => {
+  let value = '', iso = current;
+  const seen = [];
+  for (const char of sequence) {
+    const read = readNumber(value + char, iso);
+    if (!read.wait && read.iso) iso = read.iso;
+    value = read.text;
+    seen.push(value);
+  }
+  return {value, iso, seen};
+};
+
+test('P3: typing «+49 30 123456» gives one space after the code, as pasting does', () => {
+  const typed = typeInto('+49 30 123456', 'AZ');
+  assert.equal(typed.value, '+49 30 123456');
+  assert.equal(typed.iso, 'DE');
+  assert.deepEqual(typed.seen.filter((text) => /\s{2}/u.test(text)), []);
+  assert.equal(readNumber('+49 30 123456', 'AZ').text, typed.value);
+  // The code's own space and a typed one are one space.
+  assert.equal(readNumber('+49  ', 'DE').text, '+49 ');
+  assert.equal(readNumber('+49  30', 'DE').text, '+49 30');
+});
+
+test('P4: the country pattern lays out the number, typed or pasted', () => {
+  const typed = typeInto('8 903 123 45 67', 'AZ');
+  assert.equal(typed.value, '+7 903 123-45-67');
+  assert.equal(typed.iso, 'RU');
+  assert.deepEqual(typed.seen.filter((text) => /\s{2}/u.test(text)), []);
+  assert.equal(readNumber('+7 903 123 45 67', 'RU').text, '+7 903 123-45-67');
+  assert.equal(readNumber('+994501234567', 'AZ').text, '+994 50 123 45 67');
+  assert.equal(readNumber('+374 50 123456', 'AZ').text, '+374 50 123456');
+  // A half-typed number stops where its digits stop: no separator ahead.
+  assert.equal(readNumber('+7 903 12', 'RU').text, '+7 903 12');
+  assert.equal(readNumber('+7 903 123', 'RU').text, '+7 903 123');
+  assert.equal(readNumber('+7 903 1234', 'RU').text, '+7 903 123-4');
+  // The field's own pattern (fixed-mask, the brackets style) is used where given.
+  const brackets = () => '+0 (000) 000-00-00';
+  assert.equal(ctx.readTypedNumber(root, '+79031234567', country('RU'), {patternFor: brackets}).text, '+7 (903) 123-45-67');
+  // Deleting leaves the text as the person made it.
+  assert.equal(readNumber('+7 903 123-45-6', 'RU', {deleting: true}).text, '+7 903 123-45-6');
+  // The caret stays after the digit it followed.
+  assert.equal(ctx.caretAfterDigits('+7 903 123-45-67', 4), 6);
+  assert.equal(ctx.caretAfterDigits('+7 903 123-45-67', 9), 13);
+});
+
+test('P4: an empty field hints the chosen country code, not another country pattern', () => {
+  for (const locale of ['en', 'ru']) {
+    assert.equal(JSON.parse(langs[locale]).runtime.placeholder, '', locale);
+  }
+  assert.match(source, /placeholder = '',\n/u);
+  assert.match(source, /function syncCodePlaceholder\(root, input, country\) \{[\s\S]*?writeCountryPlaceholder\(input, country\?\.dialCode \|\| '\+'\);/u);
+  const select = source.slice(source.indexOf('function applyCountrySelection'), source.indexOf('// ─── The list'));
+  assert.match(select, /syncCodePlaceholder\(root, input, country\);/u);
+  assert.match(source, /function markCountryUnknown[\s\S]*?syncCodePlaceholder\(root, getNodes\(root\)\.input, null\);/u);
+  // An authored placeholder stays; the one the field wrote is told from it.
+  assert.match(source, /root\.__sfCountryOwnPlaceholder = placeholderIsOwn\(input\);/u);
+  const own = source.slice(source.indexOf('const countryWrittenPlaceholders'), source.indexOf('function syncCodePlaceholder'));
+  const sandbox = vm.createContext({WeakMap});
+  vm.runInContext(own, sandbox);
+  const input = {attrs: {}, getAttribute(name) { return this.attrs[name] ?? null; }, set placeholder(v) { this.attrs.placeholder = v; }, get placeholder() { return this.attrs.placeholder ?? ''; }};
+  assert.equal(sandbox.placeholderIsOwn(input), true);
+  sandbox.writeCountryPlaceholder(input, '+994');
+  assert.equal(input.placeholder, '+994');
+  assert.equal(sandbox.placeholderIsOwn(input), true);
+  input.attrs.placeholder = 'Mobile';
+  assert.equal(sandbox.placeholderIsOwn(input), false);
 });
 
 test('the search finds a country by its name in either language, its ISO code and its dial code', () => {

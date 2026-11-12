@@ -49,7 +49,7 @@ Available as:
 - `form`: optional owning form id for an externally placed field
 - `hint`: hint text
 - `value`: input value
-- `placeholder`: input placeholder
+- `placeholder`: input placeholder; without one the field hints the chosen country's dial code (`+994`), and an unknown code hints `+`
 - `disabled`: disabled state
 - `open`: open list on init
 - `countries`: list of items:

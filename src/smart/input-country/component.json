@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-country's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/country-code (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/country-code/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.input-country",
   "tag": "sf-input-country",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -337,7 +337,7 @@
     "settings.form: a host attribute the browser reads for a form-associated element (§17.1); the host joins the form it names, the inner tel input no longer does"
   ],
   "x-decisions": [
-    "lang-ru: runtime.placeholder in Russian is the same mask, +7(___)___-__-__; value-missing says «Введите номер телефона.» as the class script did",
+    "lang-ru: runtime.placeholder is empty in both languages: a field without a placeholder of its own hints the chosen country's dial code (+994), the class script writes it (C87, DEV P4); value-missing says «Введите номер телефона.» as the class script did",
     "a11y-role: textbox -- the native tel input carries the role and the name; the country toggle is a button with a listbox popup inside it (keyboard.panel)",
     "key-effects: host Enter/Space/ArrowDown/ArrowUp open the list, Escape closes it; in the list (panel) arrows, Home and End move focus, Enter and Space select, Escape closes",
     "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates (one source of markup, not two)",

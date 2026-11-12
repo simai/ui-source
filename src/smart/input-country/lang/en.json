@@ -7,7 +7,7 @@
     "frequent": "Frequently chosen",
     "phone-label": "Phone number",
     "phone-required": "Enter a phone number.",
-    "placeholder": "+7(___)___-__-__",
+    "placeholder": "",
     "search-placeholder": "Country or code",
     "value-missing": "Enter a phone number."
   }
