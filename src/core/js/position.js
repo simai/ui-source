@@ -264,16 +264,21 @@ export function anchor(reference, floating, options = {}) {
     // its scroll back to the start. Every reposition -- one per wheel step
     // for a dropdown that follows the page's scroll in capture -- threw the
     // list back to its top, so it never moved and shook in place (owner
-    // R171, 2026-11-12). What was scrolled is put back once the cap is.
-    const scrolled = settings.fitHeight ? scrollOffsets(floating) : null;
-    try {
-      return await place();
-    } finally {
+    // R171, 2026-11-12). What was scrolled is put back once the cap is, and
+    // before onPosition, so a component that scrolls there has the last word.
+    let scrolled = settings.fitHeight ? scrollOffsets(floating) : null;
+    const putBack = () => {
       if (scrolled) restoreScrollOffsets(scrolled);
+      scrolled = null;
+    };
+    try {
+      return await place(putBack);
+    } finally {
+      putBack();
     }
   };
 
-  const place = async () => {
+  const place = async (putBack) => {
     // The panel is fixed before it is measured, so it is measured in the box
     // it will be placed in: left absolute by the stylesheet (a tooltip in its
     // anchor), its first position was taken from the anchor and written as
@@ -346,6 +351,7 @@ export function anchor(reference, floating, options = {}) {
     Object.assign(floating.style, {position: 'fixed', left: `${result.x}px`, top: `${result.y}px`, right: 'auto', bottom: 'auto', margin: '0'});
     controller.side = logicalSide(result.placement, rtl);
     floating.dataset.sfSide = controller.side;
+    putBack();
     settings.onPosition?.({side: controller.side, placement: result.placement, x: result.x, y: result.y});
     return result;
   };
