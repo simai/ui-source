@@ -41,7 +41,7 @@ test('a status is its hue: the status primitive is var() of the hue, and no them
   const palettes = staticPalette();
   const primitives = read('src/core/scss/_sf_figma_colors_variables.scss');
   for (const [status, hue] of Object.entries(STATUS_HUES)) {
-    assert.equal(theme.palettes[status], undefined, `${status}: not a theme palette`);
+    assert.ok(!Object.keys(theme.palettes).includes(status), `${status}: not a theme palette`);
     assert.equal(THEME_ALPHA[status], undefined, `${status}: no theme steps`);
     for (const tone of THEME_TONES) {
       assert.match(primitives, new RegExp(`--sf-${status}-${tone}: var\\(--sf-${hue}-${tone}\\);`, 'u'));

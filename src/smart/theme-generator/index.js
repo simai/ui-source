@@ -26,6 +26,7 @@ import {
   themeFromHct,
   themeToCss,
   themeVariables,
+  withStatusCompat,
   DEFAULT_THEME_COLOR,
   THEME_PALETTES,
 } from '../../core/js/theme-palette.js';
@@ -62,6 +63,9 @@ const readNumber = (value, [min, max], clamp = false) => {
 };
 
 const copy = (value) => JSON.parse(JSON.stringify(value));
+// A copy of the theme for a host: the four theme palettes, and until
+// 2027-01-01 the former status palettes as read-only, warned reads (TG-01).
+const themeCopy = (theme) => withStatusCompat(copy(theme));
 
 const ThemeGeneratorElement = elementFromManifest(manifest, {
   base: SfBaseElement,
@@ -127,7 +131,7 @@ class SfThemeGenerator extends ThemeGeneratorElement {
 
   /** The theme shown now (a copy: changing it changes nothing). */
   get theme() {
-    return copy(this._currentTheme());
+    return themeCopy(this._currentTheme());
   }
 
   /** The theme as one stylesheet rule of its 128 primitives. */
@@ -137,7 +141,7 @@ class SfThemeGenerator extends ThemeGeneratorElement {
 
   /** The theme object (simai.framework.theme.v1). */
   toJSON() {
-    return copy(this._currentTheme());
+    return themeCopy(this._currentTheme());
   }
 
   /** The action reset: back to SIMAI Framework's own colour; a committed choice. */
@@ -177,7 +181,7 @@ class SfThemeGenerator extends ThemeGeneratorElement {
       value: this.value,
       hue: this.hue,
       chroma: this.chroma,
-      theme: copy(theme),
+      theme: themeCopy(theme),
       variables: themeVariables(theme),
       css: themeToCss(theme, this.selector),
       checks: themeChecks(theme),

@@ -471,7 +471,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/theme-generator/index.js",
-        "sha256": "47f7f9e06885532fa1e6b78430ee5e57819f48f3c1f233199897c139a17ae625"
+        "sha256": "8f29e909d651ef788f92965be75e028141820a3784dbb30a968fd3f154442fcf"
       },
       {
         "path": "src/smart/theme-generator/js/templates/default.js",
@@ -487,11 +487,11 @@
       },
       {
         "path": "src/smart/theme-generator/docs.md",
-        "sha256": "95d3f3cd6d8600ea367d311d712183ac894a2d0f8dccacfd48a8648bbd87cfe0"
+        "sha256": "dbb9734d131c45ecd6393eb8b537dd4d59cb1853481604e6a757d34238242a62"
       },
       {
         "path": "src/core/js/theme-palette.js",
-        "sha256": "e262cae76e2a7f781453b0f2ae4b2c99b27062f5c973ec3c4291a80dcd6a91f5"
+        "sha256": "84b50265dac7d72bf95a383ea018e173129c1e388c75dd9cf5819c806eda66fa"
       }
     ],
     "generated_runtime": []

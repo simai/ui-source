@@ -4,8 +4,14 @@
 palettes -- primary, secondary, tertiary and neutral -- as the 64
 `--sf-<palette>-<tone>` primitives and their 80 translucent steps. The four
 status palettes are not part of a theme: core declares them as the static hues
-below, and no theme writes them (a status override passed to `themeFromColor`
-or `themeFromHct` is refused with a `TypeError`).
+below, and no theme writes them. Until 2027-01-01 the former shape still
+works with a warning: a status override passed to `themeFromColor` or
+`themeFromHct` (`{error: {...}}`) is ignored, and `theme.palettes.error`
+(`warning`, `success`, `info`) reads the static hue core draws that status
+with -- read-only, not enumerable. Each says so once per call site in the
+console and in `SF.deprecations.list()`; read
+`staticPalette()[STATUS_HUES.error]` instead. After that date the override
+throws a `TypeError` and the read is gone.
 
 A grey makes a grey theme (C16): a colour no more chromatic than the greys
 (HCT chroma under 5 -- black, white and the near-greys) keeps its own chroma,

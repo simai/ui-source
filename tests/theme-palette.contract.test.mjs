@@ -80,11 +80,9 @@ test('info is the static hue sky under every brand colour (C17 as amended 2026-1
   assert.ok(Math.min(apart, 360 - apart) >= 90, `info and error are ${Math.min(apart, 360 - apart)} deg apart`);
 });
 
-test('a dynamic palette rule can be overridden, a status one is refused, and a bad colour is refused', () => {
+test('a dynamic palette rule can be overridden, and a bad colour is refused', () => {
   const theme = themeFromColor('#005bbe', {secondary: {chroma: 30}});
   assert.equal(Math.round(theme.palettes.secondary.chroma), 30);
-  assert.throws(() => themeFromColor('#005bbe', {error: {hue: 10}}), /error: a status palette is core's static hue red/u);
-  assert.throws(() => themeFromHct({hue: 265, chroma: 85}, {info: {hue: 235}}), TypeError);
   assert.throws(() => themeFromColor('blue'), TypeError);
   assert.throws(() => themeFromColor('#12345'), TypeError);
 });
@@ -178,4 +176,55 @@ test('themeChecks says what a person should know about a colour (TG-04)', async 
   assert.ok(contrast[0].ratio < THEME_CHECKS.contrast);
   assert.equal(Math.round(contrastRatio('#ffffff', '#000000')), 21);
   assert.deepEqual(themeChecks(null), []);
+});
+
+// TG-01 compatibility until 2027-01-01 (journal option-theme-status-override,
+// property-theme-status-palettes): a status override is ignored, not refused,
+// and the former theme.palettes.<status> reads the static hue; each says so
+// once per call site in the console and in SF.deprecations.
+test('a status override is ignored and a status palette still reads, with one warning per call site (TG-01 compat)', async (t) => {
+  const {STATUS_COMPAT, withStatusCompat} = await import('../src/core/js/theme-palette.js');
+  const warnings = [];
+  t.mock.method(console, 'warn', (message) => warnings.push(String(message)));
+  globalThis.SF?.deprecations?.clear?.();
+  assert.equal(STATUS_COMPAT.remove_after, '2027-01-01');
+
+  // The override: ignored, the theme is the one without it; one warning for this line.
+  const plain = themeFromColor(DEFAULT_THEME_COLOR);
+  const overridden = [];
+  for (let run = 0; run < 3; run += 1) overridden.push(themeFromColor(DEFAULT_THEME_COLOR, {error: {hue: 10}, info: {hue: 200}}));
+  for (const theme of overridden) assert.deepEqual(themeVariables(theme), themeVariables(plain));
+  const optionWarnings = warnings.filter((message) => message.includes('override'));
+  assert.equal(optionWarnings.length, 1, optionWarnings.join('\n'));
+  assert.match(optionWarnings[0], /error, info are ignored/u);
+  assert.match(optionWarnings[0], /staticPalette\(\)\[SF\.ThemePalette\.STATUS_HUES\.<status>\]/u);
+  assert.match(optionWarnings[0], /until 2027-01-01/u);
+  assert.match(optionWarnings[0], /https:\/\/ui\.simai\.io\/ru\/smart-components\/forms\/theme-generator\//u);
+  assert.match(optionWarnings[0], /theme-palette\.contract\.test\.mjs:\d+:\d+/u, 'names the call site');
+  // Another call site warns again.
+  themeFromHct({hue: 265, chroma: 85}, {warning: {chroma: 10}});
+  assert.equal(warnings.filter((message) => message.includes('override')).length, 2);
+
+  // The read: the static hue core draws the status with, read-only and not
+  // enumerable (Object.keys, JSON and the CSS see four palettes).
+  warnings.length = 0;
+  const theme = themeFromColor('#2e7d32');
+  const statics = staticPalette();
+  for (let run = 0; run < 3; run += 1) assert.deepEqual(theme.palettes.error.tones, statics.red.tones);
+  assert.deepEqual(theme.palettes.info.tones, statics.sky.tones);
+  assert.deepEqual(Object.keys(theme.palettes), ['primary', 'secondary', 'tertiary', 'neutral']);
+  assert.doesNotMatch(JSON.stringify(theme), /"error"/u);
+  theme.palettes.error.tones[40] = '#000000';
+  assert.deepEqual(theme.palettes.error.tones, statics.red.tones, 'a read gives a copy');
+  const readWarnings = warnings.filter((message) => message.includes('theme.palettes.'));
+  // error read on two lines (the loop and the copy check), info on one.
+  assert.deepEqual(readWarnings.map((message) => message.match(/theme\.palettes\.(\w+)/u)[1]), ['error', 'info', 'error', 'error']);
+  // A copy made for a host (the generator's theme value) keeps the reads.
+  const copied = withStatusCompat(JSON.parse(JSON.stringify(theme)));
+  assert.deepEqual(copied.palettes.success.tones, statics.green.tones);
+
+  // SF.deprecations has the records, with the dates.
+  const notes = globalThis.SF.deprecations.list().filter((note) => note.component === 'theme-palette');
+  assert.ok(notes.some((note) => note.kind === 'option' && note.remove_after === '2027-01-01'));
+  assert.ok(notes.some((note) => note.kind === 'property' && note.from === 'theme.palettes.error'));
 });
