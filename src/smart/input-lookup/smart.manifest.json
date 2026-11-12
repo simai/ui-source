@@ -421,7 +421,7 @@
       },
       {
         "path": "src/smart/input-lookup/scss/_smart__lookup.scss",
-        "sha256": "f3c85b46190b7c521635d39aa658bcab0f0b68244cfc1625e77ff2dcc1dc1e62"
+        "sha256": "f159bbabef1a45ef384e9fda21fd5b42b690de53bb600be6e41ba95d01b3e750"
       },
       {
         "path": "src/smart/input-lookup/rule.js",
@@ -429,7 +429,7 @@
       },
       {
         "path": "src/smart/input-lookup/docs.md",
-        "sha256": "38569bf1f1c73fe62114862ebd5332d5e57b43b509ed1279320d00edc5681f14"
+        "sha256": "874d54fd491f0a34892e5396fb86b18e00250dd78ead991bbc70fd413cfcbbcd"
       }
     ],
     "generated_runtime": []

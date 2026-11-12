@@ -1,3 +1,4 @@
+@use 'sass:string';
 @use 'sf_var__background_color' as *;
 @use '../../../../core/scss/vars/sf_var__color' as *;
 @use '../../../../core/scss/mix/mix__places' as places;
@@ -21,6 +22,11 @@
 
     // A container fill switches the dimmed text over it, as elevation-N does
     // (simai/ui-source#3): color-on-surface-variant on it read 3.06:1.
+    // On the plate a bordered field is the rule (C42 (1)), and the theme's
+    // boundary, neutral-50 at 80, measured 2.90:1 on the plate in a card in
+    // the light theme (2.70 at the former 16 %; DEV 2026-11-10). The plate takes
+    // the boundary of the light grey steps, opaque neutral-50 (C43); the dark
+    // half is the theme's.
     .#{$infix}bg-surface-container {
         --sf-on-surface-variant: var(--sf-on-surface-container-variant);
         // Its boundary holds 3:1 on the fill (contrast lows, 2026-11-11;
@@ -77,6 +83,15 @@
                     if(index(('surface-2', 'surface-3', 'surface-4'), $place), places.$sf-place-step-outline, null));
             }
         }
+    }
+
+    // The inverse places (C16): the other theme's surface and its roles
+    // (mix/_mix__places.scss, sf-place-inverse).
+    .#{$infix}bg-surface-inverse {
+        @include places.sf-place-inverse(var(--sf-surface-inverse));
+    }
+    .#{$infix}bg-surface-inverse-fixed {
+        @include places.sf-place-inverse(var(--sf-surface-inverse-fixed), true);
     }
 
     // A coloured place (C16; owner 2026-11-08): bg-<role> and
@@ -144,5 +159,11 @@
     // component that names its own accent keeps it.
     :where(.bg-surface-4 > :not(.bg-primary)) {
         @include places.sf-place-step-4-accent;
+    }
+    .bg-surface-inverse > * {
+        @include places.sf-place-inverse-accent;
+    }
+    .bg-surface-inverse-fixed > * {
+        @include places.sf-place-inverse-accent(true);
     }
 }

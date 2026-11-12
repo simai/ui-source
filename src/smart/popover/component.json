@@ -322,7 +322,8 @@
     "version 1.5.0, also (2026-11-11, written on the pair's 1.5.0): the bubble declares --sf-surface-place-ground, the nearest opaque place, with its own colour, as every solid place does, so a status dot on a soft coloured place inside it lies over the bubble. Settings, values, events and keys unchanged.",
     "version 1.5.1 (2026-11-12): a patch. A popup standing in a bg-surface-4 block is a nested popup again, and a nested popup draws its controls' edges in the nested-popup outline (Contrast R3b, R3-1 and R3-2); the template's sheet reads --sf-place--popup-outline. Settings, values, events and keys unchanged.",
     "version 1.5.1, also (2026-11-11, contrast lows): the bubble writes out the theme's --sf-on-surface-hover and --sf-on-surface-active, which a strong place and glass now re-declare, and takes back --sf-place--container-outline, as every opaque place does. Settings, values, events and keys unchanged.",
-    "version 1.5.1, also (2026-11-11, contrast lows return): inside bg-surface-4 the content takes back the accent the step found (--sf-place--found-*), as every place there does, so a popover on the darkest light step keeps the page's primary and link tones. Settings, values, events and keys unchanged."
+    "version 1.5.1, also (2026-11-11, contrast lows return): inside bg-surface-4 the content takes back the accent the step found (--sf-place--found-*), as every place there does, so a popover on the darkest light step keeps the page's primary and link tones. Settings, values, events and keys unchanged.",
+    "version 1.5.1, also (2026-11-11, C41 inverse places): the content takes the theme's accent and boundary line back on the inverse places too (bg-surface-inverse, bg-surface-inverse-fixed), as the mixin sf-place-back-on-colour writes it."
   ],
   "x-rule": {
     "$comment": [

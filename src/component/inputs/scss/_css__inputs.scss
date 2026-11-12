@@ -25,6 +25,7 @@
     background-color: var(--sf-input-field--background-color);
     border: var(--sf-input-field--border, 0 solid);
     border-color: var(--sf-input-field--border-color, transparent);
+    border-block-end-color: var(--sf-input-field--line-color, var(--sf-input-field--border-color, transparent));
     border-end-end-radius: var(--sf-input-field--border-end-end-radius);
     border-end-start-radius: var(--sf-input-field--border-end-start-radius);
     border-start-end-radius: var(--sf-input-field--border-start-end-radius);
@@ -371,18 +372,27 @@
     --sf-input-field--background-color: var(--sf-surface-disabled);
   }
 
+  /* The filled field's bottom line (C52, owner 2026-11-10): with the fill at 8 %
+     (C41) the fill alone stands 1.10 to 1.23 from its place, so at rest the
+     field also draws its bottom edge in --sf-outline, the bordered field's
+     boundary. Only the bottom: the other edges stay the transparent border
+     that a state colours. A state that colours the border (hover, press)
+     takes the line with it, so the edge is one colour. */
   .sf-input:not(.error).sf-input--filled:not(:has(input:disabled)) .sf-input-field {
     --sf-input-field--background-color: var(--sf-input-background-color, var(--sf-surface-container));
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     --sf-input-field--border-color: var(--sf-input-border-color, var(--sf-transparent-for-focus));
+    --sf-input-field--line-color: var(--sf-input-border-color, var(--sf-outline));
   }
 
   .sf-input:not(.error).sf-input--filled:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):hover) .sf-input-field {
     --sf-input-field--background-color: var(--sf-surface-container-hover);
+    --sf-input-field--line-color: var(--sf-input-field--border-color);
   }
 
   .sf-input:not(.error).sf-input--filled:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-input-field {
     --sf-input-field--border-color: var(--sf-primary-active);
+    --sf-input-field--line-color: var(--sf-input-field--border-color);
   }
 
   .sf-input:has(input:disabled) > .sf-input-field > .sf-input-hint > .sf-icon, .sf-input:has(input:disabled) > .sf-input-field > .sf-input-left .sf-icon {

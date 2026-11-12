@@ -10422,6 +10422,86 @@
       "manual": "Nothing to rewrite in markup. A site theme written by themeToCss or sf-theme-generator before this pair carries the blue information tones as literal values: make the theme again (or drop its --sf-info-* lines) to take sky. A page that wants an information block in the brand colour uses the primary roles, not info.",
       "owner": "ui-source",
       "source": "src/core/scss/_sf_figma_colors_variables.scss, src/core/js/theme-palette.js"
+    },
+    {
+      "id": "behaviour-filled-field-bottom-line",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "A filled field draws its bottom edge in --sf-outline at rest (owner decision C52, with C41's 8 % fill): sf-input, sf-input-textarea, sf-dropdown, sf-input-lookup and sf-input-rich with appearance=\"filled\". The fill alone stood 1.10 to 1.23 from its place. Hover and press colour the line with the border, focus and an open list turn the whole border --sf-outline as before; error and disabled fields have no line. A project's --sf-input-border-color (and the other fields' border variables) colours the line too. The filled look is for a search or filter field over a table or a list; a form keeps the bordered default.",
+      "items": [
+        {
+          "component": "sf-input",
+          "attribute": "appearance",
+          "from": "filled without a boundary at rest",
+          "to": "filled with a bottom line"
+        },
+        {
+          "component": "sf-input-textarea",
+          "attribute": "appearance",
+          "from": "filled without a boundary at rest",
+          "to": "filled with a bottom line"
+        },
+        {
+          "component": "sf-dropdown",
+          "attribute": "appearance",
+          "from": "filled without a boundary at rest",
+          "to": "filled with a bottom line"
+        },
+        {
+          "component": "sf-input-lookup",
+          "attribute": "appearance",
+          "from": "filled without a boundary at rest",
+          "to": "filled with a bottom line"
+        },
+        {
+          "component": "sf-input-rich",
+          "attribute": "appearance",
+          "from": "filled without a boundary at rest",
+          "to": "filled with a bottom line"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite for a search or filter field. A filled field in a form (C52: forms are bordered) becomes appearance=\"bordered\".",
+      "examples": {
+        "before": "<sf-input appearance=\"filled\" label=\"Имя\"></sf-input>",
+        "after": "<sf-input label=\"Имя\"></sf-input>"
+      },
+      "owner": "ui-source",
+      "source": "src/component/inputs/scss/_css__inputs.scss, src/component/textarea/scss/_css__textarea.scss, src/component/dropdown/scss/_css__dropdown.scss, src/smart/input-lookup/scss/_smart__lookup.scss, src/smart/input-rich/scss/_smart__rich_text.scss; ui-control control/docs-review/decisions.md C52"
+    },
+    {
+      "id": "behaviour-inverse-place-roles",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "bg-surface-inverse and bg-surface-inverse-fixed are places (C16): what stands on them takes the other theme's roles -- ink, dim ink, state layers, fill, lines and, on the children, the accent (the fixed one, the dark theme's in both themes). They painted only the background, and a field's label on bg-surface-inverse measured 1.31:1 light and 1.00:1 dark. A card or a popup on them takes the theme's roles back. Also: the grey plate bg-surface-container takes the boundary of the light grey steps (opaque neutral-50 in the light theme), so a bordered field's edge on it holds 3:1.",
+      "items": [
+        {
+          "component": "background-color",
+          "attribute": "class",
+          "from": "bg-surface-inverse paints only",
+          "to": "bg-surface-inverse is a place"
+        },
+        {
+          "component": "background-color",
+          "attribute": "class",
+          "from": "bg-surface-inverse-fixed paints only",
+          "to": "bg-surface-inverse-fixed is a place"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove the colour overrides a page wrote for text or controls on bg-surface-inverse (color-on-surface-inverse on each label, a light --sf-outline); the place gives them.",
+      "examples": {
+        "before": "<div class=\"bg-surface-inverse\"><span class=\"color-on-surface-inverse\">Подпись</span></div>",
+        "after": "<div class=\"bg-surface-inverse\"><span>Подпись</span></div>"
+      },
+      "owner": "ui-source",
+      "source": "src/core/scss/mix/_mix__places.scss sf-place-inverse; src/utility/background-color/default/scss/_sf_css__background_color.scss"
     }
   ]
 }

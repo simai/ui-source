@@ -68,7 +68,8 @@ again with the same subset: a request can be written by anyone.
   text: h4 is the field's text, h3 a rung above, h2 two rungs above, all
   bold, so no heading is smaller than the text. The link editor is one
   rung: its address field, hint and buttons are the field's size (at most 1).
-- `appearance="bordered|filled"` -- sf-textarea's two boxes.
+- `appearance="bordered|filled"` -- sf-textarea's two boxes (filled with its
+  bottom line in `--sf-outline`, C52).
 - `rows` -- the fewest lines shown (6); the field grows with its text.
   `max-rows` -- the most before the text scrolls inside.
 
