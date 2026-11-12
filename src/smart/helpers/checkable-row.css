@@ -81,6 +81,83 @@
   .sf-checkable-row:has(> .sf-checkable:not(.sf-checkable--text)) > .sf-checkable-help {
     margin-block-start: 0;
   }
+
+  /* With help and text, the «?» stands right after the name (C59, intent
+     acceptance 2026-11-12): beside the name's line when a description is
+     longer than the name, and before the box's space with position="end".
+     The row is a grid; the <label> and its text column hand their parts to it
+     (display: contents), so the help, a sibling of the label (C59), can sit
+     between the name and the end. The label is still the target: its
+     ::before covers the label's place in the row with the row's padding, so a
+     press on the control, the name or the description toggles and the empty
+     rest of the row does not (W1); with position="end" the label's place is
+     the whole row (W4). The «?» is drawn above it, outside the label. */
+  .sf-checkable-row:has(> .sf-checkable--text) {
+    display: grid;
+    grid-template-columns: auto minmax(0, auto) auto 1fr;
+    grid-template-areas:
+      "box name help ."
+      ". desc desc desc";
+    align-items: start;
+    inline-size: fit-content;
+    padding-block: var(--sf-checkable--pad);
+  }
+
+  .sf-checkable-row > .sf-checkable--text,
+  .sf-checkable-row > .sf-checkable--text > :is(.sf-checkbox-container, .sf-radio-button-container, .sf-switch-container-wrap) {
+    display: contents;
+  }
+
+  .sf-checkable-row > .sf-checkable--text::before {
+    content: "";
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+    align-self: stretch;
+    margin-block: calc(-1 * var(--sf-checkable--pad));
+  }
+
+  .sf-checkable-row > .sf-checkable--text > :is(.sf-checkbox-box, .sf-radio-button-box, .sf-switch-toggler) {
+    grid-area: box;
+  }
+
+  .sf-checkable-row > .sf-checkable--text > .sf-checkbox-box:first-child {
+    margin-inline-end: var(--sf-checkbox--gap);
+  }
+
+  .sf-checkable-row > .sf-checkable--text > .sf-radio-button-box {
+    margin-inline-end: var(--sf-radio-button--gap);
+  }
+
+  .sf-checkable-row > .sf-checkable--text > .sf-switch-toggler {
+    margin-inline-end: var(--sf-switch--gap);
+  }
+
+  .sf-checkable-row > .sf-checkable--text > * > :is(.sf-checkbox-top, .sf-radio-button-top, .sf-switch-top) {
+    grid-area: name;
+  }
+
+  .sf-checkable-row > .sf-checkable--text > * > :is(.sf-checkbox-description, .sf-radio-button-description, .sf-switch-description) {
+    grid-area: desc;
+  }
+
+  .sf-checkable-row:has(> .sf-checkable--text) > .sf-checkable-help {
+    grid-area: help;
+    margin-block-start: 0;
+  }
+
+  /* position="end" (sf-checkbox): the name, the «?», the free space, then the
+     box at the row's end; the description under the name. */
+  .sf-checkable-row:has(> .sf-checkable--text > .sf-checkbox-container + .sf-checkbox-box:last-child) {
+    grid-template-columns: minmax(0, auto) auto 1fr auto;
+    grid-template-areas:
+      "name help . box"
+      "desc desc desc .";
+    inline-size: auto;
+  }
+
+  .sf-checkable-row > .sf-checkable--text > .sf-checkbox-container + .sf-checkbox-box:last-child {
+    margin-inline-start: var(--sf-checkbox--gap);
+  }
 }
 
 @media (pointer: coarse) {

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-wizard's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the universal step-by-step wizard of the owner decision 2026-11-06 (ui-control control/decisions/2026-11-06-sf-wizard.md), phase 1.0.",
   "id": "smart.wizard",
   "tag": "sf-wizard",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "kind": "leaf",
   "family": "wizard",
   "settings": {
@@ -387,7 +387,8 @@
     "version 1.2.0 background-color-names: the public variable --sf-wizard-background-color (C16 naming: a variable that sets a colour ends in -color, as the other 53 do). The former name --sf-wizard-background is still read under the new one until 2027-01-01 (change journal token-component-background-color-names, src/core/contracts/token-aliases.v1.json); nothing draws differently.",
     "version 1.2.2: the size rule C18 (2026-11-09): the plan's first column grows from the size step f6 (16rem, 256 px, as before); the steps row's room reads --sf-focus--width with no raw fallback (nothing moves). Also: a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, goToStep({name}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, goToStep(<string>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged.",
     "version 1.2.3 (2026-11-09): a patch; nothing in the component changed. The sf-input it draws asks for the kbd sheet since sf-input 1.7.0 (C38, the shortcut setting; component.kbd 1.3.0), so its first-paint snapshots name that sheet and carry one more empty line where the field's shortcut would stand; the component takes a patch with them. Settings, values, events and keys unchanged.",
-    "version 1.2.4 (2026-11-10, C16 leftovers): a patch; nothing draws differently. Its sheet reads the C16 role name --sf-surface-area where it read the former --sf-surface-1 (an alias of it until 2027-01-01, token-c16-theme-role-names), so a page that sets the new name reaches it; the value is the same in both themes and on every place. Settings, values, events and keys unchanged. Its docs and the colour line name --sf-surface-area too."
+    "version 1.2.4 (2026-11-10, C16 leftovers): a patch; nothing draws differently. Its sheet reads the C16 role name --sf-surface-area where it read the former --sf-surface-1 (an alias of it until 2027-01-01, token-c16-theme-role-names), so a page that sets the new name reaches it; the value is the same in both themes and on every place. Settings, values, events and keys unchanged. Its docs and the colour line name --sf-surface-area too.",
+    "version 1.2.5, also (2026-11-12, fix/choice-controls-w): a patch, nothing in the component changed. The «server-backups» first-paint snapshot follows the sf-checkbox it draws (1.2.0, C59/C63: the shared .sf-checkable row of its control height); retaken from the group build 2026-11-12. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

@@ -339,6 +339,7 @@ export function renderPaginationTemplate(context) {
                 ? html`
                     <span class="sf-pagination-actions-separator" aria-hidden="true"></span>
                     <sf-checkbox
+                      size=${context.size}
                       label=${context.countKnown
                         ? `${context.actionForAllLabel} (${context.shownTotal})`
                         : context.actionForAllLabel}
