@@ -870,6 +870,8 @@
         "colorToHct",
         "themeToCss",
         "themeVariables",
+        "themeChecks",
+        "contrastRatio",
         "applyTheme",
         "isThemeColor",
         "THEME_TONES",
@@ -881,7 +883,8 @@
         "STATIC_HUES",
         "STATIC_HUE_NAMES",
         "STATUS_HUES",
-        "STATIC_ALPHA"
+        "STATIC_ALPHA",
+        "THEME_CHECKS"
       ]
     },
     {

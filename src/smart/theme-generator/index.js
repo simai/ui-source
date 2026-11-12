@@ -21,6 +21,7 @@ import {
   applyTheme,
   colorToHct,
   isThemeColor,
+  themeChecks,
   themeFromColor,
   themeFromHct,
   themeToCss,
@@ -179,7 +180,28 @@ class SfThemeGenerator extends ThemeGeneratorElement {
       theme: copy(theme),
       variables: themeVariables(theme),
       css: themeToCss(theme, this.selector),
+      checks: themeChecks(theme),
     };
+  }
+
+  /** What a person should know about the theme now (core themeChecks, TG-04). */
+  get checks() {
+    return themeChecks(this._currentTheme());
+  }
+
+  // A check in words: the language file's check-<code>, with its numbers.
+  _checkText(check) {
+    const word = (key) => this.sfWord(key);
+    switch (check.code) {
+      case 'contrast':
+        return this.sfWord('check-contrast', {vars: {scheme: word(`scheme-${check.scheme}`), ratio: String(check.ratio).replace('.', word('decimal'))}});
+      case 'adjusted':
+        return this.sfWord(check.lighter ? 'check-adjusted-light' : 'check-adjusted-dark', {vars: {from: check.from, to: check.to}});
+      case 'close-to-status':
+        return this.sfWord(`check-status-${check.status}`);
+      default:
+        return this.sfWord(`check-${check.code}`);
+    }
   }
 
   _emitChange() {
@@ -335,7 +357,9 @@ class SfThemeGenerator extends ThemeGeneratorElement {
         chromaHint: text('chroma-hint'),
         reset: text('reset'),
         preview: text('preview'),
+        checks: text('checks'),
       },
+      checks: themeChecks(theme).map((check) => ({...check, text: this._checkText(check)})),
       palettes: THEME_PALETTES.map((name) => ({
         name,
         label: text(name),

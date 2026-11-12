@@ -157,7 +157,40 @@ try {
   if (reset.primary40 !== '#005bbe' || resetApply.length !== 1 || resetApply[0].value !== '' || resetApply[0].primary40 !== '#005bbe' || reset.hue !== '265') {
     note({case: 'Reset gives back #005bbe', got: reset});
   }
-  console.log(JSON.stringify({unset, chosen, applied, removed, tuned, reset}, null, 1));
+  // 6. The checks (TG-04): a light yellow says its buttons get tone 40, a red
+  // says it is close to error; Framework's own colour says nothing, and the
+  // empty region takes no room.
+  const checksOf = () => page.evaluate(() => {
+    const region = document.querySelector('#plain .sf-theme-generator-checks');
+    return {role: region?.getAttribute('role'), count: region?.dataset.count, height: Math.round(region?.getBoundingClientRect().height ?? -1),
+      items: [...document.querySelectorAll('#plain .sf-theme-generator-check')].map((item) => ({code: item.dataset.check, level: item.dataset.level,
+        status: item.dataset.status ?? null, text: item.textContent.trim()})),
+      value: document.querySelector('#plain').checks.map((check) => check.code)};
+  });
+  const quiet = await checksOf();
+  if (quiet.role !== 'status' || quiet.count !== '0' || quiet.height > 1 || quiet.items.length || quiet.value.length) note({case: 'no checks for #005bbe, an empty status region of no height', got: quiet});
+  await page.evaluate(() => document.querySelector('#plain sf-input-color').setValue('#ffd600'));
+  await settle();
+  const yellow = {checks: await checksOf(), events: await taken()};
+  const yellowChange = yellow.events.find((event) => event.type === 'sf-theme-generator-change');
+  if (!yellow.checks.items.some((item) => item.code === 'adjusted' && item.level === 'warning' && item.text.includes('#705d00') && item.text.includes('#ffd600'))
+    || !yellow.checks.value.includes('adjusted')) note({case: '#ffd600: adjusted to #705d00, in words', got: yellow.checks});
+  if (!yellowChange) note({case: '#ffd600: a change event', got: yellow.events});
+  await page.evaluate(() => document.querySelector('#plain sf-input-color').setValue('#bb171d'));
+  await settle();
+  const red = await checksOf();
+  await taken();
+  if (!red.items.some((item) => item.code === 'close-to-status' && item.status === 'error' && item.text.includes('ошибки'))) note({case: '#bb171d: close to error', got: red});
+  const detailChecks = await page.evaluate(() => new Promise((done) => {
+    const host = document.querySelector('#plain');
+    const heard = (event) => { if (event.target !== host || !event.detail?.theme) return; host.removeEventListener('change', heard); done(event.detail.checks); };
+    host.addEventListener('change', heard);
+    host.querySelector('sf-input-color').setValue('#ffd600');
+  }));
+  await settle();
+  await taken();
+  if (!Array.isArray(detailChecks) || !detailChecks.some((check) => check.code === 'adjusted' && check.to === '#705d00')) note({case: 'the change detail carries checks', got: detailChecks});
+  console.log(JSON.stringify({unset, chosen, applied, removed, tuned, reset, quiet, yellow: yellow.checks, red}, null, 1));
 } finally {
   await browser.close();
 }

@@ -63,6 +63,10 @@
     "theme": {
       "type": "object",
       "summary": "The theme shown now (simai.framework.theme.v1), a copy"
+    },
+    "checks": {
+      "type": "list",
+      "summary": "What a person should know about the theme now (core themeChecks): [{code, level, ...}] -- contrast, adjusted, close-to-status, grey; empty when there is nothing to say"
     }
   },
   "events": {
@@ -73,7 +77,8 @@
         "chroma": "number",
         "theme": "object",
         "variables": "object",
-        "css": "string"
+        "css": "string",
+        "checks": "list"
       },
       "summary": "The choice changed -- a drag in the picker, a swatch, a number typed (vocabulary 1.1.5 §5.1: sf-theme-change → change on the theme generator); the browser's name, with the theme in the detail"
     },
@@ -84,7 +89,8 @@
         "chroma": "number",
         "theme": "object",
         "variables": "object",
-        "css": "string"
+        "css": "string",
+        "checks": "list"
       },
       "own-verb": true,
       "summary": "The choice was committed -- the picker's change, a swatch, Enter or leaving a field, Reset: the theme the host keeps"
@@ -266,7 +272,7 @@
     "version 1.1.12 (2026-11-09): a patch; nothing in the component changed. The sf-input it draws asks for the kbd sheet since sf-input 1.7.0 (C38, the shortcut setting; component.kbd 1.3.0), so its first-paint snapshots name that sheet and carry one more empty line where the field's shortcut would stand; the component takes a patch with them. Settings, values, events and keys unchanged.",
     "version 1.1.13 (2026-11-11): one reset for one action (docs pre-check 2026-11-10 TG-02): the colour field's own inherited reset is not drawn beside «Сбросить»; the colour field draws its own label (sf-input-color 1.6.0), so the generator's copy of it is gone. Its events were already change and sf-theme-generator-committed, the former names dated aliases (TG-01 is the page's).",
     "version 1.1.14 (2026-11-11): the information palette is the static hue sky (owner decision C17 as amended 2026-11-11: info is not blue, or it reads as the Framework's own primary); core STATUS_HUES info is sky, so the generator's «Информация» row and every theme it writes carry sky's tones (tone 40 is sky's, --sf-sky-40, where it was blue's). Settings, values, events and keys unchanged.",
-    "version 1.2.0 (2026-11-12) TG-01: a theme is the four dynamic palettes -- primary, secondary, tertiary, neutral -- and no status palette. Core declares error, warning, success and info as var() of the static hues red, amber, green and sky (C17, C90), and a theme that wrote them as literal colours froze them at the day it was made: after core moved info to sky, a page themed by the generator kept the old blue. The theme value, toJSON(), toCSS() and the events' theme, variables and css now hold 144 variables (64 tones, 80 translucent steps), where they held 288; the preview has four rows, not eight (the status rows never moved, docs study R132 TG-06). A theme object stored before (eight palettes) applies only its four theme palettes. Settings, events and keys unchanged; journal behaviour-theme-writes-no-status-palette. TG-03 (same version): a grey colour makes a grey theme -- #000000 and #ffffff are no longer read as vivid (they made a pink and a teal theme), and a colour under chroma 5 gives secondary and tertiary its own chroma (journal behaviour-grey-colour-makes-grey-theme)."
+    "version 1.2.0 (2026-11-12) TG-01: a theme is the four dynamic palettes -- primary, secondary, tertiary, neutral -- and no status palette. Core declares error, warning, success and info as var() of the static hues red, amber, green and sky (C17, C90), and a theme that wrote them as literal colours froze them at the day it was made: after core moved info to sky, a page themed by the generator kept the old blue. The theme value, toJSON(), toCSS() and the events' theme, variables and css now hold 144 variables (64 tones, 80 translucent steps), where they held 288; the preview has four rows, not eight (the status rows never moved, docs study R132 TG-06). A theme object stored before (eight palettes) applies only its four theme palettes. Settings, events and keys unchanged; journal behaviour-theme-writes-no-status-palette. TG-03 (same version): a grey colour makes a grey theme -- black and white are no longer read as vivid (they made a pink and a teal theme), and a colour under chroma 5 gives secondary and tertiary its own chroma (journal behaviour-grey-colour-makes-grey-theme). TG-04 (same version): the generator says what a person should know about the colour -- text on a button under 4.5 in either theme (contrast), a light or a very dark colour whose buttons get tone 40 instead (adjusted: a light yellow gives dark olive buttons), a vivid colour within 16 degrees of a status hue (close-to-status: a red primary beside the error red), a nearly grey colour (grey). The checks are core's themeChecks(theme); the element draws them in words between the choice and the preview, in a polite status region, carries them as checks in the detail of change and sf-theme-generator-committed, and as the value checks."
   ],
   "x-rule": {
     "$comment": [
@@ -409,6 +415,10 @@
             "css": {
               "type": "string",
               "description": "The theme as a rule under `selector`."
+            },
+            "checks": {
+              "type": "array",
+              "description": "The theme's checks (core themeChecks): {code: contrast|adjusted|close-to-status|grey, level: error|warning|notice, and the check's numbers}."
             }
           }
         }
@@ -439,6 +449,10 @@
             "css": {
               "type": "string",
               "description": "The theme as a rule under `selector`."
+            },
+            "checks": {
+              "type": "array",
+              "description": "The theme's checks (core themeChecks): {code: contrast|adjusted|close-to-status|grey, level: error|warning|notice, and the check's numbers}."
             }
           }
         }
@@ -469,6 +483,10 @@
             "css": {
               "type": "string",
               "description": "The theme as a rule under `selector`."
+            },
+            "checks": {
+              "type": "array",
+              "description": "The theme's checks (core themeChecks): {code: contrast|adjusted|close-to-status|grey, level: error|warning|notice, and the check's numbers}."
             }
           }
         }
@@ -499,6 +517,10 @@
             "css": {
               "type": "string",
               "description": "The theme as a rule under `selector`."
+            },
+            "checks": {
+              "type": "array",
+              "description": "The theme's checks (core themeChecks): {code: contrast|adjusted|close-to-status|grey, level: error|warning|notice, and the check's numbers}."
             }
           }
         }

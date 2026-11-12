@@ -1,6 +1,9 @@
 import {html, nothing} from 'lit';
 
-// The choice above, the palettes below. The colour is sf-color: the
+// The choice above, what to know about it (core themeChecks: contrast, a
+// colour its buttons do not get, a colour near a status, a grey; TG-04), the
+// palettes below. The checks are a polite status region that is always in the
+// tree, so a check that appears is announced; empty, it takes no room. The colour is sf-color: the
 // platform's picker and the product's own swatches, unset while the
 // Framework's colour applies. Hue and chroma, the generator's own inputs, are
 // folded away: most people choose a colour and are done. The <details> is not
@@ -42,6 +45,18 @@ export function renderThemeGeneratorTemplate(context) {
           ${field('chroma', context.chroma, text.chromaHint)}
         </div>
       </details>
+      <div class="sf-theme-generator-checks" role="status" aria-label=${text.checks}
+           data-count=${context.checks.length}>
+        ${context.checks.length ? html`
+          <ul class="sf-theme-generator-check-list">
+            ${context.checks.map((check) => html`
+              <li class="sf-theme-generator-check" data-check=${check.code} data-level=${check.level}
+                  data-status=${check.status || nothing}>
+                <sf-icon icon=${check.level === 'notice' ? 'info' : check.level} size="1/2" aria-hidden="true"></sf-icon>
+                <span class="sf-theme-generator-check-text">${check.text}</span>
+              </li>`)}
+          </ul>` : nothing}
+      </div>
       <section class="sf-theme-generator-preview" aria-label=${text.preview}>
         ${context.palettes.map((palette) => html`
           <div class="sf-theme-generator-row" data-palette=${palette.name}>

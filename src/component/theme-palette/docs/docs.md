@@ -32,10 +32,20 @@ An element with `data-sf-theme-palette` on the page loads it too. The
 ## API
 
 `themeFromColor`, `themeFromHct`, `colorToHct`, `themeToCss`,
-`themeVariables`, `applyTheme`, `isThemeColor`, `staticPalette`,
-`staticVariables`, and the constants `THEME_TONES`, `THEME_PALETTES`,
-`THEME_ALPHA`, `STATIC_HUES`, `STATIC_HUE_NAMES`, `STATUS_HUES`,
-`STATIC_ALPHA`, `DEFAULT_THEME_COLOR`.
+`themeVariables`, `themeChecks`, `contrastRatio`, `applyTheme`,
+`isThemeColor`, `staticPalette`, `staticVariables`, and the constants
+`THEME_TONES`, `THEME_PALETTES`, `THEME_ALPHA`, `THEME_CHECKS`,
+`STATIC_HUES`, `STATIC_HUE_NAMES`, `STATUS_HUES`, `STATIC_ALPHA`,
+`DEFAULT_THEME_COLOR`.
+
+`themeChecks(theme)` says what a person should know about a theme, as
+`[{code, level, ...}]`: `contrast` (error: the text on a filled control is
+under 4.5 : 1 in the `light` or `dark` scheme, with its `ratio`), `adjusted`
+(warning: a light or a very dark colour whose buttons get tone 40, `to`,
+instead of the colour, `from`), `close-to-status` (warning: a vivid colour
+within 16 degrees of a status hue, `status`) and `grey` (notice: a nearly grey
+colour). `THEME_CHECKS` holds their numbers, `contrastRatio(a, b)` is the WCAG
+2 ratio of two colours.
 
 ## The static palette
 

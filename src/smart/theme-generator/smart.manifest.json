@@ -150,7 +150,8 @@
           "chroma",
           "theme",
           "variables",
-          "css"
+          "css",
+          "checks"
         ],
         "properties": {
           "value": {
@@ -170,6 +171,9 @@
           },
           "css": {
             "type": "string"
+          },
+          "checks": {
+            "type": "array"
           }
         },
         "additionalProperties": true
@@ -186,7 +190,8 @@
           "chroma",
           "theme",
           "variables",
-          "css"
+          "css",
+          "checks"
         ],
         "properties": {
           "value": {
@@ -206,6 +211,9 @@
           },
           "css": {
             "type": "string"
+          },
+          "checks": {
+            "type": "array"
           }
         },
         "additionalProperties": true
@@ -238,6 +246,10 @@
           "css": {
             "type": "string",
             "description": "The theme as a rule under `selector`."
+          },
+          "checks": {
+            "type": "array",
+            "description": "The theme's checks (core themeChecks): {code: contrast|adjusted|close-to-status|grey, level: error|warning|notice, and the check's numbers}."
           }
         }
       },
@@ -269,6 +281,10 @@
           "css": {
             "type": "string",
             "description": "The theme as a rule under `selector`."
+          },
+          "checks": {
+            "type": "array",
+            "description": "The theme's checks (core themeChecks): {code: contrast|adjusted|close-to-status|grey, level: error|warning|notice, and the check's numbers}."
           }
         }
       },
@@ -300,6 +316,10 @@
           "css": {
             "type": "string",
             "description": "The theme as a rule under `selector`."
+          },
+          "checks": {
+            "type": "array",
+            "description": "The theme's checks (core themeChecks): {code: contrast|adjusted|close-to-status|grey, level: error|warning|notice, and the check's numbers}."
           }
         }
       },
@@ -331,6 +351,10 @@
           "css": {
             "type": "string",
             "description": "The theme as a rule under `selector`."
+          },
+          "checks": {
+            "type": "array",
+            "description": "The theme's checks (core themeChecks): {code: contrast|adjusted|close-to-status|grey, level: error|warning|notice, and the check's numbers}."
           }
         }
       },
@@ -447,15 +471,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/theme-generator/index.js",
-        "sha256": "d4a1630534af9295cf9e10c9344cd617526fcf61f0e462004f6a3dbd4daae9df"
+        "sha256": "47f7f9e06885532fa1e6b78430ee5e57819f48f3c1f233199897c139a17ae625"
       },
       {
         "path": "src/smart/theme-generator/js/templates/default.js",
-        "sha256": "b53ae97edfc135c0027aa10a587089ab2d8ef97cd9b869a3585d00c13e81a101"
+        "sha256": "c93278ba375c85f92f81a0956cd50407990857f5cef066acf0d07b965b1cec9a"
       },
       {
         "path": "src/smart/theme-generator/scss/_smart__theme_generator.scss",
-        "sha256": "9cada5060f71a2c55970f3ce397ea551f3e596beb382e826072334c921ffbc73"
+        "sha256": "83ccb807e421f01ad4179b459be7fc03aa589733e86deccfa6987d3f4bffc389"
       },
       {
         "path": "src/smart/theme-generator/rule.js",
@@ -463,11 +487,11 @@
       },
       {
         "path": "src/smart/theme-generator/docs.md",
-        "sha256": "dd2a45d2643e106b7e521aad81b3fe2b9c34df84e297b0f90364991ba8d3ac81"
+        "sha256": "0e3a31f97a8e8db45d51034ee8139daa180114bc037b418c1072e27c14656f1b"
       },
       {
         "path": "src/core/js/theme-palette.js",
-        "sha256": "700183ba507fae0b07a8d09973190fb6d5a1c2f210ce6aa5153143af1c0b6ee3"
+        "sha256": "e262cae76e2a7f781453b0f2ae4b2c99b27062f5c973ec3c4291a80dcd6a91f5"
       }
     ],
     "generated_runtime": []

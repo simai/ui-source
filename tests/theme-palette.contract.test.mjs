@@ -156,3 +156,26 @@ test('a grey colour makes a grey theme: black, white and near-greys are not read
   // A near-black brand colour of real hue is still read as its vivid palette.
   assert.equal(colorToHct('#0a1f44').chroma >= 5, true);
 });
+
+// TG-04 (docs study 2026-11-11): the generator took #ffd600 to buttons of
+// #705d00 and #bb171d to a primary beside error's #bb1919, and said nothing.
+test('themeChecks says what a person should know about a colour (TG-04)', async () => {
+  const {themeChecks, contrastRatio, THEME_CHECKS} = await import('../src/core/js/theme-palette.js');
+  const codes = (color) => themeChecks(themeFromColor(color));
+  assert.deepEqual(codes(DEFAULT_THEME_COLOR), []);
+  assert.deepEqual(codes('#ffd600'), [{code: 'adjusted', level: 'warning', from: '#ffd600', to: '#705d00', lighter: true}]);
+  assert.deepEqual(codes('#bb171d'), [{code: 'close-to-status', level: 'warning', status: 'error', hue: 'red'}]);
+  assert.deepEqual(codes('#00668a').map((check) => check.status), ['info']);
+  assert.deepEqual(codes('#111111').map((check) => check.code), ['adjusted', 'grey']);
+  // A colour made from a hue and a chroma has no hex to be adjusted from.
+  assert.equal(themeChecks(themeFromHct({hue: 96, chroma: 85})).some((check) => check.code === 'adjusted'), false);
+  // The contrast check reads the roles core draws a filled control with:
+  // light --sf-on-primary (white) on --sf-primary (40), dark 20 on 80.
+  const weak = themeFromColor(DEFAULT_THEME_COLOR);
+  const forced = {...weak, palettes: {...weak.palettes, primary: {...weak.palettes.primary, tones: {...weak.palettes.primary.tones, 40: '#8a8a8a'}}}};
+  const contrast = themeChecks(forced).filter((check) => check.code === 'contrast');
+  assert.deepEqual(contrast.map((check) => check.scheme), ['light']);
+  assert.ok(contrast[0].ratio < THEME_CHECKS.contrast);
+  assert.equal(Math.round(contrastRatio('#ffffff', '#000000')), 21);
+  assert.deepEqual(themeChecks(null), []);
+});

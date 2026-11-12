@@ -250,6 +250,74 @@ export function staticVariables(palettes = staticPalette()) {
   return variables;
 }
 
+// What a person should know about the theme a colour makes (docs study
+// 2026-11-11 TG-04; the checks of prototypes/theme-generator-study.html, C84):
+// the generator took a light colour to a darker button or a red one to a
+// button beside «Удалить» and said nothing.
+const relativeLuminance = (hex) => {
+  const channel = (at) => {
+    const value = parseInt(hex.slice(at, at + 2), 16) / 255;
+    return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * channel(1) + 0.7152 * channel(3) + 0.0722 * channel(5);
+};
+
+/** WCAG 2 contrast ratio of two #rrggbb colours. */
+export function contrastRatio(a, b) {
+  const [high, low] = [relativeLuminance(expand(a)), relativeLuminance(expand(b))].sort((x, y) => y - x);
+  return (high + 0.05) / (low + 0.05);
+}
+
+const hueDistance = (a, b) => {
+  const apart = Math.abs(a - b) % 360;
+  return apart > 180 ? 360 - apart : apart;
+};
+
+// The numbers of the checks: text on a filled control at 4.5 (WCAG AA); a
+// colour lighter than tone 58 or darker than 25 is not the one its buttons
+// get (tone 40); a vivid colour (chroma over 40) within 16 degrees of a
+// status hue reads as that status; under chroma 8 the accent is a grey.
+export const THEME_CHECKS = Object.freeze({contrast: 4.5, light: 58, dark: 25, statusHue: 16, statusChroma: 40, grey: 8});
+
+// The light scheme's --sf-on-primary is --sf-white: tone 100 of any palette.
+const ON_PRIMARY_LIGHT = hexFromArgb(TonalPalette.fromHueAndChroma(0, 0).tone(100));
+
+/**
+ * The checks of a theme, [{code, level, ...}], in this order:
+ * - {code: 'contrast', level: 'error', scheme: 'light'|'dark', ratio}: the
+ *   text on a filled control (--sf-on-primary on --sf-primary) is under 4.5;
+ * - {code: 'adjusted', level: 'warning', from, to, lighter}: the colour is
+ *   light or dark, and its buttons get tone 40 (`to`), not the colour itself;
+ * - {code: 'close-to-status', level: 'warning', status, hue}: the colour is
+ *   near a status hue (error red, warning amber, success green, info sky),
+ *   which no theme moves (C17, C90);
+ * - {code: 'grey', level: 'notice'}: the colour is nearly grey, so are its
+ *   accents.
+ * The ratios are rounded to a tenth. A theme made from a hue and a chroma
+ * (no hex) has no 'adjusted' check.
+ */
+export function themeChecks(theme) {
+  const checks = [];
+  const primary = theme?.palettes?.primary?.tones;
+  const source = theme?.source ?? {};
+  if (!primary) return checks;
+  const light = contrastRatio(ON_PRIMARY_LIGHT, primary[40]);
+  const dark = contrastRatio(primary[20], primary[80]);
+  if (light < THEME_CHECKS.contrast) checks.push({code: 'contrast', level: 'error', scheme: 'light', ratio: round(light)});
+  if (dark < THEME_CHECKS.contrast) checks.push({code: 'contrast', level: 'error', scheme: 'dark', ratio: round(dark)});
+  if (source.hex && Number.isFinite(source.tone) && (source.tone > THEME_CHECKS.light || source.tone < THEME_CHECKS.dark)
+    && source.hex !== primary[40]) {
+    checks.push({code: 'adjusted', level: 'warning', from: source.hex, to: primary[40], lighter: source.tone > THEME_CHECKS.light});
+  }
+  if (source.chroma > THEME_CHECKS.statusChroma) {
+    for (const [status, hueName] of Object.entries(STATUS_HUES)) {
+      if (hueDistance(source.hue, STATIC_HUES[hueName].hue) < THEME_CHECKS.statusHue) checks.push({code: 'close-to-status', level: 'warning', status, hue: hueName});
+    }
+  }
+  if (source.chroma < THEME_CHECKS.grey) checks.push({code: 'grey', level: 'notice'});
+  return checks;
+}
+
 /** The theme as a stylesheet rule, for a page's or a site's own CSS. */
 export function themeToCss(theme, selector = ':root') {
   const lines = Object.entries(themeVariables(theme)).map(([name, value]) => `  ${name}: ${value};`);
@@ -275,5 +343,5 @@ export function applyTheme(theme, target = globalThis.document?.documentElement)
 
 if (typeof window !== 'undefined') {
   window.SF = window.SF || {};
-  window.SF.ThemePalette = Object.freeze({themeFromColor, themeFromHct, colorToHct, themeToCss, themeVariables, applyTheme, isThemeColor, staticPalette, staticVariables, THEME_TONES, THEME_PALETTES, THEME_ALPHA, STATIC_HUES, STATIC_HUE_NAMES, STATUS_HUES, STATIC_ALPHA, DEFAULT_THEME_COLOR});
+  window.SF.ThemePalette = Object.freeze({themeFromColor, themeFromHct, colorToHct, themeToCss, themeVariables, themeChecks, contrastRatio, applyTheme, isThemeColor, staticPalette, staticVariables, THEME_TONES, THEME_PALETTES, THEME_ALPHA, STATIC_HUES, STATIC_HUE_NAMES, STATUS_HUES, STATIC_ALPHA, THEME_CHECKS, DEFAULT_THEME_COLOR});
 }
