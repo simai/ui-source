@@ -10,9 +10,15 @@ import {
   MASK_GLYPH,
   applyEdit,
   applyPaste,
+  CODE_GROUPS_MAX,
+  codeCharset,
+  codeGroups,
   codeInputMode,
+  codeKind,
   codeLength,
   codeMode,
+  keepCharacters,
+  separatorAfter,
   currentCell,
   normaliseCode,
   positionWords,
@@ -49,6 +55,43 @@ test('code input: a mode keeps its characters, a code its length', () => {
   assert.equal(currentCell(6, 6), 5, 'a whole code keeps the caret in the last cell');
   assert.equal(currentCell(Number.NaN, 6), 0);
   assert.equal(MASK_GLYPH, '•');
+});
+
+// Owner C82 (2026-11-12): an own alphabet, letters in capitals, a separator
+// between groups of cells.
+test('code input: charset, uppercase and groups (C82)', () => {
+  const steam = {charset: '23456789BCDFGHJKMNPQRTVWXY', uppercase: true};
+  assert.equal(codeCharset(' 2 3 B B c '), '23Bc', 'each character once, no spaces');
+  assert.deepEqual(codeKind('alphanumeric'), {mode: 'alphanumeric', charset: '', uppercase: false});
+  assert.deepEqual(codeKind({mode: 'x', charset: '12', uppercase: 1}), {mode: 'numeric', charset: '12', uppercase: true});
+  assert.equal(keepCharacters('b0c2o1df7', steam), 'BC2DF7');
+  assert.equal(keepCharacters('b0c2', {charset: steam.charset}), '2', 'without uppercase a lower-case letter is not in the alphabet');
+  assert.equal(normaliseCode('b0c2o1df7', steam, 5), 'BC2DF');
+  assert.equal(normaliseCode('ab-12 cd', {mode: 'alphanumeric', uppercase: true}, 6), 'AB12CD');
+  assert.equal(normaliseCode('ab-12 cd', 'alphanumeric', 6), 'ab12cd', 'case kept without uppercase');
+  assert.equal(codeInputMode({charset: '0123'}), 'numeric');
+  assert.equal(codeInputMode(steam), 'text');
+  assert.deepEqual(applyPaste({previous: '', text: 'ab-12-cd', mode: {mode: 'alphanumeric', uppercase: true}, length: 6}), {value: 'AB12CD', caret: 6});
+  assert.deepEqual(applyEdit({previous: 'BC', raw: 'BCd', caret: 3, data: 'd', inputType: 'insertText', mode: steam, length: 5}), {value: 'BCD', caret: 3});
+  assert.deepEqual(applyEdit({previous: 'BC', raw: 'BCa', caret: 3, data: 'a', inputType: 'insertText', mode: steam, length: 5}), {value: 'BC', caret: 2}, 'not in the alphabet');
+  assert.equal(CODE_GROUPS_MAX, 6);
+  for (const [groups, length, want] of [[3, 6, 3], [4, 8, 4], [0, 6, 0], [1, 6, 0], [6, 6, 0], [7, 12, 0], ['x', 6, 0], [3, 3, 0]]) {
+    assert.equal(codeGroups(groups, length), want, `${groups} of ${length}`);
+  }
+  assert.deepEqual([...Array(8).keys()].filter((index) => separatorAfter(index, 4, 8)), [3]);
+  assert.deepEqual([...Array(6).keys()].filter((index) => separatorAfter(index, 3, 6)), [2]);
+  assert.deepEqual([...Array(6).keys()].filter((index) => separatorAfter(index, 0, 6)), []);
+  // The separators are drawn with the cells, aria-hidden, never in the value.
+  assert.match(template, /html`<span class="sf-verification-separator"><\/span>`/u);
+  assert.match(template, /if \(separators\.includes\(index\)\) parts\.push/u);
+  assert.match(template, /autocapitalize=\$\{uppercase \? 'characters' : 'off'\}/u);
+  assert.match(source, /get kind\(\) \{\n    return codeKind\(\{mode: this\.mode, charset: this\.charset, uppercase: this\.uppercase\}\);/u);
+  assert.match(classSheet, /\.sf-verification-separator \{[^}]*inline-size: var\(--sf-space-1\\\/2\);[^}]*background: var\(--sf-on-surface-variant\);/u);
+  const settings = JSON.parse(read('src/smart/input-code/component.json')).settings;
+  assert.equal(settings.charset.type, 'string');
+  assert.equal(settings.uppercase.type, 'boolean');
+  assert.equal(settings.groups.type, 'number');
+  assert.equal(settings.groups.default, 0);
 });
 
 test('code input: typing fills a cell, over a filled one, never past the end', () => {
@@ -93,7 +136,8 @@ test('code input: each cell is spoken by its place, in Russian and English', () 
   // the same as code.mjs keeps for these unit checks.
   assert.match(source, /text\(key\) \{\n    return this\.sfWord\(key\);/u);
   for (const lang of ['ru', 'en']) assert.deepEqual(JSON.parse(read(`src/smart/input-code/lang/${lang}.json`)).runtime, CODE_INPUT_TEXT[lang], lang);
-  assert.match(source, /this\.text\(this\.mode === 'numeric' \? 'digit' : 'character'\)/u);
+  // A digit for a numeric code or an alphabet of digits only (C82).
+  assert.match(source, /this\.text\(this\.numeric \? 'digit' : 'character'\)/u);
 });
 
 test('code input: the class markup, one native input, the class runtime kept off it', () => {
@@ -116,7 +160,7 @@ test('code input: the class markup, one native input, the class runtime kept off
   assert.match(template, /type=\$\{mask \? 'password' : 'text'\}/u);
   assert.match(template, /<span class="sf-verification-cells" aria-hidden="true">/u);
   // The cells are drawn empty; the element writes the code into them.
-  assert.match(template, /html`<span class="sf-verification-cell"><\/span>`/u);
+  assert.match(template, /: html`<span class="sf-verification-cell"><\/span>`/u);
   // Every size is one the class sheet draws, and the field sizes are sf-input's.
   for (const size of manifest.inputs.properties.size.enum) {
     assert.ok(classSheet.includes(`.sf-verification--size-${size.replace('/', '\\/')}`), size);

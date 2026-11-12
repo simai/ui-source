@@ -28,7 +28,22 @@
         "alphanumeric"
       ],
       "default": "numeric",
-      "summary": "numeric: digits, a digit keyboard; alphanumeric: Latin letters and digits. Anything else typed or pasted is left out. The inner input carries no pattern: a code that is not whole is too-short on the host, in the page's words."
+      "summary": "numeric: digits, a digit keyboard; alphanumeric: Latin letters and digits. A charset takes its place. Anything else typed or pasted is left out. The inner input carries no pattern: a code that is not whole is too-short on the host, in the page's words."
+    },
+    "charset": {
+      "type": "string",
+      "default": "",
+      "summary": "An own alphabet (owner C82): only these characters are kept, each written once, for example 23456789BCDFGHJKMNPQRTVWXY (Steam Guard, without 0 O 1 I). Set, it takes the place of mode; the keyboard is a digit one when the alphabet holds digits only, and a cell is spoken as a digit then."
+    },
+    "uppercase": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Letters typed or pasted become capitals before the characters are kept (owner C82): a pasted ab12cd is AB12CD, and the keyboard offers capitals (autocapitalize characters). With an upper-case charset set it too, so a lower-case letter is taken."
+    },
+    "groups": {
+      "type": "number",
+      "default": 0,
+      "summary": "Cells per group, with a separator drawn between the groups (owner C82): 3 for 3 + 3, 4 for 4 + 4; 2 to 6 and shorter than the code. 0 (the default) draws none. The separator is a picture only: never in the value, a copy, a paste or what a screen reader reads."
     },
     "size": {
       "type": "enum",
@@ -452,7 +467,7 @@
         "Home",
         "End"
       ],
-      "focus": "The group (role group) and the one native input are named by the label, or by aria-label without one. The input is described by a polite line that says the caret's cell -- «цифра 3 из 6», «digit 3 of 6», «символ» or «character» for an alphanumeric code -- in the page's language, said again each time the caret changes cell; then by the hint or the error message. Typing fills the caret's cell and moves on, Backspace clears the cell before the caret and steps back, the arrows, Home and End move between the cells, a click puts the caret in the cell clicked. The cells are aria-hidden; the characters run left to right in a right-to-left page too."
+      "focus": "The group (role group) and the one native input are named by the label, or by aria-label without one. The input is described by a polite line that says the caret's cell -- «цифра 3 из 6», «digit 3 of 6», «символ» or «character» for an alphanumeric code -- in the page's language, said again each time the caret changes cell; then by the hint or the error message. Typing fills the caret's cell and moves on, Backspace clears the cell before the caret and steps back, the arrows, Home and End move between the cells, a click puts the caret in the cell clicked. The cells and the group separators are aria-hidden; a selection is painted on the cells, and a copy gives the selected code (never a masked one); the characters run left to right in a right-to-left page too."
     },
     "event-fields": {
       "change": {

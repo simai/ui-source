@@ -59,6 +59,9 @@ try {
     <sf-input-code id="disabled" label="Код" disabled value="12"></sf-input-code>
     <sf-input-code id="readonly" label="Код" readonly value="12"></sf-input-code>
     <div lang="en"><sf-input-code id="en" length="4" aria-label="Sign-in code"></sf-input-code></div>
+    <sf-input-code id="steam" label="Код Steam Guard" length="5" charset="23456789BCDFGHJKMNPQRTVWXY" uppercase></sf-input-code>
+    <sf-input-code id="grouped" label="Код из приложения" groups="3"></sf-input-code>
+    <sf-input-code id="grouped8" label="Код из письма" length="8" groups="4" mode="alphanumeric" uppercase></sf-input-code>
     <span id="error-ink" style="color:var(--sf-error)">x</span>
     ${sized}
   </body></html>`);
@@ -329,6 +332,41 @@ try {
   await page.keyboard.press('Tab');
   await events();
 
+  // C82: an own alphabet in capitals, groups with a separator.
+  await paste('steam', 'b0c2-o1df7');
+  await page.waitForTimeout(100);
+  const steam = await state('steam');
+  const steamKeys = await page.evaluate(() => document.querySelector('#steam input').getAttribute('autocapitalize'));
+  check('C82 charset + uppercase: only the alphabet, in capitals, a text keyboard offering capitals', steam.value === 'BC2DF'
+    && steam.cells.join('') === 'BC2DF' && steam.inputmode === 'text' && steamKeys === 'characters', {steam, steamKeys});
+  await page.keyboard.press('Home');
+  await settle();
+  check('C82 charset: a cell is spoken as a character', (await state('steam')).position === 'символ 1 из 5');
+  await page.keyboard.press('Tab');
+  await events();
+  await paste('grouped', '123 456');
+  await page.waitForTimeout(100);
+  const grouped = await page.evaluate(() => {
+    const host = document.getElementById('grouped');
+    const row = host.querySelector('.sf-verification-cells');
+    const parts = [...row.children].map((node) => (node.classList.contains('sf-verification-separator') ? '|' : node.textContent || '_')).join('');
+    const input = host.querySelector('input');
+    input.setSelectionRange(0, 6);
+    const data = new DataTransfer();
+    input.dispatchEvent(new ClipboardEvent('copy', {clipboardData: data, bubbles: true, cancelable: true}));
+    const separator = host.querySelector('.sf-verification-separator').getBoundingClientRect();
+    const cell = host.querySelector('.sf-verification-cell').getBoundingClientRect();
+    return {parts, hidden: row.getAttribute('aria-hidden'), value: input.value, copied: data.getData('text/plain'),
+      middle: Math.abs((separator.top + separator.bottom) / 2 - (cell.top + cell.bottom) / 2)};
+  });
+  check('C82 groups: 3 + 3 with one separator, hidden, outside the value and the copy', grouped.parts === '123|456' && grouped.hidden === 'true'
+    && grouped.value === '123456' && grouped.copied === '123456' && grouped.middle < 1, {grouped});
+  await page.keyboard.press('Tab');
+  await events();
+  const grouped8 = await page.evaluate(() => [...document.querySelectorAll('#grouped8 .sf-verification-cells > *')]
+    .map((node) => (node.classList.contains('sf-verification-separator') ? '|' : 'c')).join(''));
+  check('C82 groups: 4 + 4 for eight cells', grouped8 === 'cccc|cccc', {grouped8});
+
   // English, mask, invalid.
   const en = await state('en');
   check('English page: «digit N of M», the group named by aria-label', en.position === 'digit 1 of 4' && en.groupName === 'Sign-in code' && en.inputName === 'Sign-in code', {en});
@@ -411,6 +449,11 @@ try {
         bordered.background !== filled.background && bordered.border !== 'rgba(0, 0, 0, 0)' && filled.border === 'rgba(0, 0, 0, 0)', {bordered, filled});
     }
     check(`${width}px: the page does not scroll sideways`, !measured.scroll);
+    const eight = await page.evaluate(() => {
+      const cells = [...document.querySelectorAll('#grouped8 .sf-verification-cell')].map((cell) => cell.getBoundingClientRect());
+      return {right: Math.max(...cells.map((cell) => cell.right)), viewport: document.documentElement.clientWidth};
+    });
+    check(`${width}px: eight cells in 4 + 4 stay inside the page`, eight.right <= eight.viewport, {eight});
   }
   const classEvents = await page.evaluate(() => window.__classEvents);
   check('the class runtime sent no event of its own', classEvents === 0, {classEvents});

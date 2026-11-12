@@ -21,6 +21,21 @@
   direction: ltr;
 }
 
+/* A separator between groups of cells (C82: 3 + 3, 4 + 4): a short dash on
+   the cells' middle line, a picture only (aria-hidden with the cells). */
+.sf-verification-separator {
+  flex: none;
+  align-self: center;
+  inline-size: var(--sf-space-1\/2);
+  block-size: var(--sf-px);
+  border-radius: var(--sf-radius-circle);
+  background: var(--sf-on-surface-variant);
+}
+
+.sf-verification:has(.sf-verification-input:disabled) .sf-verification-separator {
+  background: var(--sf-on-surface-disabled);
+}
+
 .sf-verification-cell,
 .sf-verification-form-wrap .sf-verification {
   position: relative;
@@ -185,7 +200,8 @@
 @media (forced-colors: active) {
   .sf-verification-cell,
   .sf-verification-form-wrap .sf-verification { border-color: CanvasText; }
-  .sf-verification-cell.caret::after { background: CanvasText; }
+  .sf-verification-cell.caret::after,
+  .sf-verification-separator { background: CanvasText; }
   .sf-verification:has(.sf-verification-input:focus) .sf-verification-cell.selected {
     background: Highlight;
     color: HighlightText;

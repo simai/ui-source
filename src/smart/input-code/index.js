@@ -43,12 +43,16 @@ import {
   MASK_GLYPH,
   applyEdit,
   applyPaste,
+  codeCharset,
+  codeGroups,
   codeInputMode,
+  codeKind,
   codeLength,
   codeMode,
   currentCell,
   normaliseCode,
   positionWords,
+  separatorAfter,
 } from './code.mjs';
 import './scss/index.scss';
 
@@ -116,6 +120,27 @@ class SfCodeInput extends FormField(CodeInputElement) {
     return codeMode(this.getAttribute('mode'));
   }
 
+  // An own alphabet (C82): only these characters are kept; set, it takes the
+  // place of the mode.
+  get charset() {
+    return codeCharset(this.getAttribute('charset'));
+  }
+
+  // Cells per group, a separator between the groups (C82: 3 + 3, 4 + 4), or 0.
+  get groups() {
+    return codeGroups(this.getAttribute('groups'), this.length);
+  }
+
+  // What the code is made of: the mode, the alphabet and whether letters
+  // become capitals (C82), as code.mjs reads it.
+  get kind() {
+    return codeKind({mode: this.mode, charset: this.charset, uppercase: this.uppercase});
+  }
+
+  get numeric() {
+    return codeInputMode(this.kind) === 'numeric';
+  }
+
   get size() {
     return fieldSize(this.getAttribute('size') || '1', 'sf-input-code');
   }
@@ -125,14 +150,14 @@ class SfCodeInput extends FormField(CodeInputElement) {
   // The code: the native input's, kept to the mode and the length.
   get value() {
     const input = this.getInputElement();
-    return normaliseCode(input ? input.value : (this.getAttribute('value') ?? this.defaultValue), this.mode, this.length);
+    return normaliseCode(input ? input.value : (this.getAttribute('value') ?? this.defaultValue), this.kind, this.length);
   }
 
   // Setting the value writes the field and its cells, as the native input's
   // own value does: no input, change or complete event, which are the
   // person's.
   set value(next) {
-    const value = next === null || next === undefined ? '' : normaliseCode(next, this.mode, this.length);
+    const value = next === null || next === undefined ? '' : normaliseCode(next, this.kind, this.length);
     if (next === null || next === undefined) this.removeAttribute('value');
     else this.setAttribute('value', value);
     const input = this.getInputElement();
@@ -171,7 +196,7 @@ class SfCodeInput extends FormField(CodeInputElement) {
 
   // «цифра 3 из 6» -- the cell the caret is in, in the page's language.
   positionText(cell) {
-    return positionWords(this.text(this.mode === 'numeric' ? 'digit' : 'character'), cell, this.length);
+    return positionWords(this.text(this.numeric ? 'digit' : 'character'), cell, this.length);
   }
 
   ownInput(target) {
@@ -189,7 +214,7 @@ class SfCodeInput extends FormField(CodeInputElement) {
     this._selection = {start: input.selectionStart ?? 0, end: input.selectionEnd ?? 0};
     // A typed character the mode does not keep is not written at all.
     if (event.inputType === 'insertText' && typeof event.data === 'string'
-      && event.data.length > 0 && normaliseCode(event.data, this.mode, this.length) === '') {
+      && event.data.length > 0 && normaliseCode(event.data, this.kind, this.length) === '') {
       event.preventDefault();
     }
   };
@@ -208,7 +233,7 @@ class SfCodeInput extends FormField(CodeInputElement) {
       data: event.data ?? null,
       inputType: event.inputType || '',
       selection: this._selection,
-      mode: this.mode,
+      mode: this.kind,
       length: this.length,
     });
     this._selection = null;
@@ -231,7 +256,7 @@ class SfCodeInput extends FormField(CodeInputElement) {
       text,
       start: input.selectionStart ?? 0,
       end: input.selectionEnd ?? 0,
-      mode: this.mode,
+      mode: this.kind,
       length: this.length,
     });
     if (!next || next.value === input.value) return;
@@ -562,10 +587,10 @@ class SfCodeInput extends FormField(CodeInputElement) {
     // The template's defaultValue is the component's, as written; what the
     // native input starts from is that code cleaned to the mode and length,
     // under its own name, so a template never reads a resolved prop changed.
-    const defaultCode = normaliseCode(this.defaultValue, this.mode, this.length);
+    const defaultCode = normaliseCode(this.defaultValue, this.kind, this.length);
     const value = hasControlledValue
-      ? normaliseCode(this.getAttribute('value'), this.mode, this.length)
-      : (input ? normaliseCode(input.value, this.mode, this.length) : defaultCode);
+      ? normaliseCode(this.getAttribute('value'), this.kind, this.length)
+      : (input ? normaliseCode(input.value, this.kind, this.length) : defaultCode);
 
     return this.createTemplateContext({
       ...props,
@@ -590,7 +615,12 @@ class SfCodeInput extends FormField(CodeInputElement) {
       mode: this.mode,
       length: this.length,
       mask: this.mask,
-      inputMode: codeInputMode(this.mode),
+      inputMode: codeInputMode(this.kind),
+      uppercase: this.kind.uppercase,
+      groups: this.groups,
+      // The cells a group separator follows (C82).
+      separators: Array.from({length: this.length}, (_, index) => index)
+        .filter((index) => separatorAfter(index, this.groups, this.length)),
       ariaLabel: this.ariaLabel,
       groupLabel: this.ariaLabel || this.text('group'),
       messageContent: messageIsError ? errorContent : hint,
