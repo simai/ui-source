@@ -1656,7 +1656,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.switch",
-      "version": "1.4.0"
+      "version": "1.5.0"
     }
   },
   "parameter_sets": {

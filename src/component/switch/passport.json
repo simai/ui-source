@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.switch",
   "kind": "component",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/switch/docs/docs.md",

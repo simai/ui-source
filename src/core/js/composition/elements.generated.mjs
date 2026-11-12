@@ -1157,6 +1157,6 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.switch",
-    "version": "1.4.0"
+    "version": "1.5.0"
   }
 });
