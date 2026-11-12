@@ -47,7 +47,7 @@ The input is transparent (text, caret, selection and autofill fill), not
 runtime) paints its state on the cells:
 
 - `.current` -- the cell typing replaces, only while the field has the focus,
-  two pixels of primary (error on a refused code);
+  a primary border (error on a refused code);
 - `.caret`, `.caret-end` -- the drawn caret in that cell, or after the last
   character of a whole code; it blinks unless motion is reduced;
 - `.selected` -- a selection of more than one cell (primary-container);

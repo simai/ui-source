@@ -18,7 +18,7 @@
     "src/component/verification/scss/_css__verification_custom.scss",
     "src/component/verification/scss/index.scss"
   ],
-  "content_sha256": "0305d11b80132241c95b84c608bead64cca83425bfcb64f826883eba1ce67264",
+  "content_sha256": "9a68f3783cbf719c344976ddd0c0a9f68e1f350d6a60c17719bfcdad92212c2a",
   "dependencies": [
     {
       "id": "core.runtime",
