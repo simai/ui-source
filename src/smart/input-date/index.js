@@ -1299,8 +1299,9 @@ class SfDatepicker extends FormField(DatepickerElement) {
                 date,
                 value: formatIsoDate(date),
                 formattedValue: formatDateValue(date, this.format),
-                // A day off says so in its name (DP-02): the ink is no longer
-                // the only cue, and the error red is gone from it.
+                // A day off says so in its name (DP-02): the ink is not the
+                // only cue. The ink is the calendar's day-off role
+                // (--sf-datepicker-day-off, C67 H2), not the error red.
                 label: [0, 6].includes(date.getDay())
                     ? `${getDateLabel(date, this.locale)}, ${this.sfWord('day-off')}`
                     : getDateLabel(date, this.locale),

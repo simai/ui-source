@@ -1868,6 +1868,13 @@
           "summary": "The weekday names over the grid.",
           "default": "var(--sf-on-surface-variant)",
           "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-datepicker-day-off",
+          "role": "color",
+          "summary": "The calendar's day-off role: the number of a weekend day, from the palette's red, not the error role (C67 H2). A day of the next or previous month takes it at 80 %.",
+          "default": "light-dark(var(--sf-red-40), var(--sf-red-80))",
+          "since": "2026-11-12"
         }
       ]
     },

@@ -209,12 +209,16 @@
 }
 
 @layer sf.overrides {
-  /* A day off says «выходной» in its name (DP-02 a11y). One ink for the days
-     off of this month and of the next or previous one: the colour is named
-     once, here. It stays the error red in pair next 2: the move to the
-     variant ink (DP-02 colour, acfb591e) is on hold with DEV. */
+  /* A day off says «выходной» in its name (DP-02 a11y). Its ink is the
+     calendar's own day-off role, from the palette's red (owner C67 H2,
+     2026-11-11): the same tone people see in a production calendar, but not
+     the error role -- error means something went wrong (C13). A theme or a
+     product sets --sf-datepicker-day-off; the default is red 40 in the light
+     theme and red 80 in the dark one, the tones the error role had, so the
+     look does not change. One ink for the days off of this month and of the
+     next or previous one: the colour is named once, here. */
   .sf-datepicker {
-    --sf-datepicker--day-off-color: var(--sf-error);
+    --sf-datepicker--day-off-color: var(--sf-datepicker-day-off, light-dark(var(--sf-red-40), var(--sf-red-80)));
   }
   .sf-datepicker .sf-datepicker-day.sf-datepicker-day-off:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected) .sf-datepicker-day-date {
     --sf-datepicker-day-date--color: var(--sf-datepicker--day-off-color);
