@@ -182,6 +182,49 @@ the same way whichever control it is. The marker and the reset are one step
 down the size ladder and sit inside the field's box with the same gap above,
 below and after them.
 
+## In a form: required, errors and validity
+
+Since 1.9.0 the host is the form control through ElementInternals, as
+`sf-input` is (owner decision C55). It submits `value` under `name`;
+`form.elements[name]` is the `sf-dropdown`. The hidden input is still drawn
+and holds the value, but carries no name while the host submits. A browser
+without ElementInternals submits through the named hidden input, as before.
+
+- `required` is a constraint: an empty field is `value-missing`, so the form
+  does not submit. On the attempt the browser focuses the field's trigger and
+  the field shows «Выберите вариант» under it («Choose an option»). An
+  inherited value does not count as a value.
+- `invalid` and `error-message` show the page's error: the error outline (on
+  `appearance="filled"` the error fill) and the message under the field, in
+  sf-input's field-message type, at the field's own gap. No error icon is
+  drawn, as sf-input draws none.
+- `setError({message})` (the action `set-error`) writes both and sets a
+  custom error the form will not submit over; an empty message clears them.
+- A person's choice that leaves a value clears the shown error, the page's
+  included. Form reset clears the required error.
+- The trigger carries `aria-invalid="true"` and names the message in
+  `aria-describedby` and `aria-errormessage`.
+- `checkValidity()`, `reportValidity()`, `validity`, `validationMessage` and
+  `setCustomValidity()` are the host's.
+- The focus ring shows on the field when focus comes from the keyboard and
+  also when code moves it there after a pointer press elsewhere (the browser
+  going to the first invalid field after a click on submit).
+
+```html
+<form>
+  <sf-dropdown name="city" label="Город" required>
+    <sf-list-item text="Казань" value="kazan"></sf-list-item>
+    <sf-list-item text="Москва" value="moscow"></sf-list-item>
+  </sf-dropdown>
+  <sf-button native-type="submit" text="Отправить"></sf-button>
+</form>
+<script>
+  // A server's answer: the error under the field until the person chooses.
+  document.querySelector('sf-dropdown[name="city"]')
+    .setError({message: 'Доставка в этот город недоступна'});
+</script>
+```
+
 ## The change event
 
 A selection emits `change` on the host — bubbling and composed, the name to
@@ -223,6 +266,8 @@ Main attributes:
 - `multiple`
 - `label`
 - `required`
+- `invalid`
+- `error-message`
 - `placeholder`
 - `search`
 - `disabled`

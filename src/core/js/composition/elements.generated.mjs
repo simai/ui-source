@@ -579,6 +579,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": false,
           "type": "boolean"
         },
+        "error-message": {
+          "default": "",
+          "type": "string"
+        },
         "inherited-text": {
           "default": "",
           "type": "string"
@@ -586,6 +590,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
         "inherited-value": {
           "default": "",
           "type": "string"
+        },
+        "invalid": {
+          "default": false,
+          "type": "boolean"
         },
         "label": {
           "default": "",
@@ -658,7 +666,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.8.1"
+    "version": "1.9.0"
   },
   "sf-icon": {
     "inputs": {

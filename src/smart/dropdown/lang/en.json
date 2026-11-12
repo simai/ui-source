@@ -2,7 +2,8 @@
   "title": "Dropdown",
   "runtime": {
     "search": "Search",
-    "empty": "Not selected"
+    "empty": "Not selected",
+    "value-missing": "Choose an option"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",
