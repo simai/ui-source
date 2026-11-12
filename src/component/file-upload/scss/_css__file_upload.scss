@@ -16,6 +16,8 @@
   padding-bottom: var(--sf-file-upload--padding-bottom);
   background-color: var(--sf-file-upload--background-color);
   border-color: var(--sf-file-upload--border-color, transparent);
+  /* A drop zone, not a box (owner C81, 2026-11-12: «Рамка зоны — пунктир»). */
+  border-style: dashed;
   box-shadow: var(--sf-file-upload--box-shadow);
   --sf-file-upload--background-color: var(--sf-file-upload-background-color, var(--sf-transparent));
   --sf-file-upload--border-color: var(--sf-file-upload-border-color, var(--sf-outline));
