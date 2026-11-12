@@ -1,7 +1,9 @@
-// Gradients (owner decision C65, 2026-11-11; standard simai.backgrounds,
-// Gradients): six kinds over the gradient engine, only palette tones and the
-// alpha steps, mixed in OKLab, laid over a solid place; the engine mixes in
-// OKLab and opens the palette in from/via/to; the former names stay dated.
+// Gradients (owner decisions C65, 2026-11-11, C91 and C92, 2026-11-12;
+// standard simai.backgrounds, Gradients): six kinds and a filled heading over
+// the gradient engine, only palette tones and the alpha steps, mixed in OKLab,
+// laid over a solid place; text on a picture only as the long soft scrim or
+// the plate; the engine mixes in OKLab and opens the palette in from/via/to;
+// the former names stay dated.
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {resolve, dirname} from 'node:path';
@@ -21,18 +23,18 @@ const COLOURS = ['primary', 'secondary', 'tertiary', ...WHEEL, 'brown', 'gray'];
 test('six kinds and their settings load by an exact rule', () => {
   const rule = ruleOf('src/utility/gradient/default/rule.js');
   const names = [
-    ...['glow', 'glow-spot', 'tint', 'duo', 'cover', 'scrim', 'fade'].map((kind) => `gradient-${kind}`),
+    ...['glow', 'glow-spot', 'tint', 'duo', 'cover', 'scrim', 'scrim-plate', 'fade', 'text'].map((kind) => `gradient-${kind}`),
     ...COLOURS.flatMap((colour) => [`gradient-color-${colour}`, `gradient-to-${colour}`]),
     ...[8, 12, 16, 24].map((step) => `gradient-strength-${step}`),
     ...['t', 'tr', 'r', 'br', 'b', 'bl', 'l', 'tl'].map((side) => `gradient-dir-${side}`),
-    ...[48, 64, 80].map((step) => `gradient-scrim-${step}`),
     // .sf-hue-<c> gives the kinds their colour too, so the sheet owns those
     // selectors and its rule names them (the utility rules audit).
     ...COLOURS.map((colour) => `sf-hue-${colour}`),
   ];
-  assert.equal(names.length, 79);
+  assert.equal(names.length, 78);
   for (const name of names) assert.match(name, rule, name);
-  for (const name of ['gradient-color-error', 'gradient-strength-32', 'gradient-scrim-32', 'gradient-glow ']) assert.doesNotMatch(name, rule, name);
+  // C92: the linear 48 and the strength settings of the scrim are gone.
+  for (const name of ['gradient-color-error', 'gradient-strength-32', 'gradient-scrim-48', 'gradient-scrim-64', 'gradient-scrim-80', 'gradient-glow ']) assert.doesNotMatch(name, rule, name);
 });
 
 test('the alpha kinds reach only the alpha steps, one step stronger in the dark theme', () => {
@@ -40,8 +42,8 @@ test('the alpha kinds reach only the alpha steps, one step stronger in the dark 
   const steps = {
     'glow light': (s) => [s + 8, Math.max(4, s - 4)],
     'glow dark': (s) => [Math.min(32, s + 16), s + 4],
-    'spot light': (s) => [s + 8, Math.max(4, s - 8)],
-    'spot dark': (s) => [Math.min(32, s + 16), Math.max(4, s)],
+    'spot light': (s) => [Math.max(4, s - 4)],
+    'spot dark': (s) => [s + 4],
     'tint light': (s) => [s],
     'tint dark': (s) => [s + 8],
   };
@@ -52,7 +54,10 @@ test('the alpha kinds reach only the alpha steps, one step stronger in the dark 
   }
   assert.match(kinds, /\$s: 'var\(--sf-gradient--strength, 16\)';/u, 'strength 16 by default');
   assert.match(kinds, /ink\(\$c, '#\{\$s\} \+ 8', 'min\(32, #\{\$s\} \+ 16\)'\)\} 0%, #\{ink\(\$c, 'max\(4, #\{\$s\} - 4\)', '#\{\$s\} \+ 4'\)\} 40%/u, 'glow');
-  assert.match(kinds, /ink\(\$c, \$s, '#\{\$s\} \+ 8'\)\} 0%, transparent 85%/u, 'tint');
+  // The round-2 spot: one circle, straight to nothing (R160); 12 / dark 20 at 16.
+  assert.match(kinds, /radial-gradient\(circle var\(--sf-gradient--spot-size, calc\(var\(--sf-space-4\) \* 2\.5\)\) at var\(--sf-gradient--spot-x, 50%\) var\(--sf-gradient--spot-y, 33%\) in oklab, #\{ink\(\$c, 'max\(4, #\{\$s\} - 4\)', '#\{\$s\} \+ 4'\)\} 0%, transparent 100%\)/u, 'spot');
+  // The tint fades over a fixed length, not a share of the height (R164).
+  assert.match(kinds, /ink\(\$c, \$s, '#\{\$s\} \+ 8'\)\} 0, transparent var\(--sf-gradient--tint-size, calc\(var\(--sf-space-4\) \* 6\)\)\)/u, 'tint');
   assert.match(kindVars, /\$gradient-strengths: \(8, 12, 16, 24\);/u);
   // Tone 50 of the colour mixed with transparent at the step: the alpha
   // primitive's colour, not a new one.
@@ -79,11 +84,24 @@ test('the solid kinds stand on their own first colour, deeper in the dark theme'
   assert.match(cover, /--sf-gradient--to: #\{tone\('c', 80, 20, 'primary'\)\};/u);
   assert.match(cover, /background-color: var\(--sf-gradient--from\);/u);
   assert.match(cover, /color: #\{tone\('c', 10, 90, 'primary'\)\};/u);
-  // The scrim: black alpha steps that exist; the second holds up to the ramp
-  // at the top, so text below the ramp stands on at least that step.
-  assert.ok(block('gradient-scrim').includes("var(--sf-gradient--scrim-2, var(--sf-black--alfa-48)) calc(100% - var(--sf-gradient--scrim-ramp, var(--sf-space-4))), var(--sf-gradient--scrim-3, var(--sf-black--alfa-16)) calc(100% - var(--sf-gradient--scrim-ramp, var(--sf-space-4)) / 2), transparent 100%"));
-  assert.match(kindVars, /48: \(48, 28, 8\),\n {4}64: \(64, 48, 16\),\n {4}80: \(80, 64, 28\),/u);
-  for (const step of [48, 28, 8, 64, 16, 80]) assert.ok(ALPHA.includes(step));
+  // The scrim (C92 look 3): black 64 held under the text, then a long ramp
+  // down the alpha scale above it; the plate (look 5) is flat black 64.
+  const scrim = block('gradient-scrim');
+  const stops = [...scrim.matchAll(/var\(--sf-black--alfa-(\d+)\)/gu)].map(([, step]) => Number(step));
+  assert.deepEqual(stops, [64, 64, 48, 28, 16, 8], 'the scrim steps, bottom to top');
+  for (const step of stops) assert.ok(ALPHA.includes(step), `scrim step ${step}`);
+  assert.ok(scrim.includes('var(--sf-black--alfa-64) 0%, var(--sf-black--alfa-64) calc(100% - #{$ramp})'), 'held under the text');
+  assert.match(kinds, /\$ramp: 'var\(--sf-gradient--scrim-ramp, calc\(var\(--sf-space-4\) \* 4\)\)';/u, 'the ramp is four times space-4');
+  assert.doesNotMatch(kinds + kindVars, /gradient-scrims|scrim-1|scrim-2|scrim-3/u, 'no strength settings of the scrim');
+  const plate = kinds.slice(kinds.indexOf('.gradient-scrim.gradient-scrim-plate {'), kinds.indexOf('}', kinds.indexOf('.gradient-scrim.gradient-scrim-plate {')));
+  assert.match(plate, /background-color: var\(--sf-black--alfa-64\);\n {4}background-image: none;/u, 'the plate');
+  // The filled heading: tone 40 into the partner's 40, dark 80, through the
+  // glyphs, the ink kept for forced colours.
+  const text = block('gradient-text');
+  assert.ok(text.includes("--sf-gradient--from: #{tone('c', 40, 80, 'primary')};"));
+  assert.ok(text.includes("--sf-gradient--to: #{tone('p', 40, 80, 'tertiary')};"));
+  assert.ok(text.includes('background-clip: text;'));
+  assert.match(kinds, /@media \(forced-colors: active\) \{\n {4}\.gradient-text \{\n {8}-webkit-text-fill-color: currentColor;/u);
   // The fade is a mask, never a paint.
   assert.match(block('gradient-fade'), /mask-image: linear-gradient\(var\(--sf-gradient--angle\), var\(--sf-black\) calc\(100% - var\(--sf-gradient--fade-size, var\(--sf-space-4\)\)\), transparent\);/u);
   assert.doesNotMatch(block('gradient-fade'), /background/u);

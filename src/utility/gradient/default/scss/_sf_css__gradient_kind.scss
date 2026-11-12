@@ -1,4 +1,3 @@
-@use 'sass:list';
 @use 'sass:map';
 @use 'sf_var__gradient_kind' as *;
 @use '../../../gradient-type/default/scss/sf_mix__gradient' as *;
@@ -8,19 +7,33 @@
 // SIMAI Framework
 // https://simai.io
 
-// GRADIENT KINDS (owner decision C65, 2026-11-11; standard simai.backgrounds,
-// Gradients)
+// GRADIENT KINDS (owner decisions C65, 2026-11-11, and C91/C92, 2026-11-12;
+// standard simai.backgrounds, Gradients)
 //
-//   gradient-glow       two soft spots of the colour and its partner (hero,
-//                       sign-in); gradient-glow-spot: one spot, centred above
-//                       the middle (an empty state's icon)
-//   gradient-tint       the colour fading down to nothing (a section head)
+// Building parts. Components use two of them by default, both functional
+// (C91 level 1): the fade at a scroll edge and the scrim under text laid on a
+// picture. The decorative ones (level 2: the empty state's spot, cover
+// placeholders, a tinted section head) are off in components until a
+// component's expressive attribute (sf-<name>--expressive on a CSS component)
+// or data-sf-style="expressive" on the root or a container turns them on. Hero banners, promo and intro plates, gradient headings and
+// chart areas are recipes built from these classes (level 3), not components.
+//
+//   gradient-glow       two soft spots of the colour and its partner (a hero
+//                       recipe); gradient-glow-spot: one circle and straight
+//                       to nothing, centred on --sf-gradient--spot-x/-y
+//   gradient-tint       the colour fading down to nothing over a fixed length
+//                       (--sf-gradient--tint-size), not a share of the height
 //   gradient-duo        the colour into its partner, solid, white text (promo)
 //   gradient-cover      two near tones of the colour, solid, its own ink (a
 //                       cover or placeholder from 64 px)
-//   gradient-scrim      black steps up from the bottom, white text on a photo;
-//                       the text stands below the ramp (--sf-gradient--scrim-ramp)
+//   gradient-scrim      text on a picture (C92 look 3, long and soft): black 64
+//                       under the text, a long ramp of alpha steps above it;
+//                       the element's top padding is the ramp
+//                       (--sf-gradient--scrim-ramp); gradient-scrim-plate: a
+//                       flat band of black 64 instead (C92 look 5)
 //   gradient-fade       a mask: the content fades out at the end ("there is more")
+//   gradient-text       a large heading filled with the colour into its partner
+//                       (a recipe part: from 24 px, 3:1 at every point)
 //
 //   gradient-color-<c>  the colour: primary (the default), secondary, tertiary
 //                       or a static hue; .sf-hue-<c> on the element or above it
@@ -28,11 +41,11 @@
 //   gradient-to-<c>     the partner instead of the default neighbour
 //   gradient-strength-<n>  8 | 12 | 16 (default) | 24, the alpha kinds
 //   gradient-dir-<side> t | tr | r | br | b | bl | l | tl, the linear kinds
-//   gradient-scrim-<n>  48 | 64 (default) | 80
 //
 // Variables for components: --sf-gradient--from and --sf-gradient--to (the
 // colours), --sf-gradient--angle, --sf-gradient--strength; the fade reads
-// --sf-gradient--fade-size and the scrim --sf-gradient--scrim-ramp.
+// --sf-gradient--fade-size, the tint --sf-gradient--tint-size, the spot
+// --sf-gradient--spot-size/-x/-y and the scrim --sf-gradient--scrim-ramp.
 //
 // Only palette tones and the alpha steps: an alpha kind is tone 50 of its
 // colour at a fill step, one step (+8) stronger in the dark theme, mixed with
@@ -44,6 +57,7 @@
 $s: 'var(--sf-gradient--strength, 16)';
 $c: 'var(--sf-gradient--from)';
 $p: 'var(--sf-gradient--to)';
+$ramp: 'var(--sf-gradient--scrim-ramp, calc(var(--sf-space-4) * 4))';
 
 // The colour at an alpha step: light and dark steps as calc() expressions.
 @function ink($color, $light, $dark) {
@@ -89,11 +103,15 @@ $p: 'var(--sf-gradient--to)';
         radial-gradient(ellipse 45% 80% at 85% 10% in oklab, #{ink($p, '#{$s} + 8', 'min(32, #{$s} + 16)')} 0%, #{ink($p, 'max(4, #{$s} - 4)', '#{$s} + 4')} 40%, transparent 100%);
 }
 .gradient-glow.gradient-glow-spot {
-    background-image: radial-gradient(ellipse 42% 42% at 50% 33% in oklab, #{ink($c, '#{$s} + 8', 'min(32, #{$s} + 16)')} 0%, #{ink($c, 'max(4, #{$s} - 8)', 'max(4, #{$s})')} 45%, transparent 100%);
+    // One circle and straight to nothing (round 2, R160): no second step and
+    // no ellipse reaching under the text. At strength 16: 12, dark 20.
+    background-image: radial-gradient(circle var(--sf-gradient--spot-size, calc(var(--sf-space-4) * 2.5)) at var(--sf-gradient--spot-x, 50%) var(--sf-gradient--spot-y, 33%) in oklab, #{ink($c, 'max(4, #{$s} - 4)', '#{$s} + 4')} 0%, transparent 100%);
 }
 .gradient-tint {
     --sf-gradient--angle: 180deg;
-    background-image: linear-gradient(var(--sf-gradient--angle) in oklab, #{ink($c, $s, '#{$s} + 8')} 0%, transparent 85%);
+    // A fixed length (R164): on a tall narrow plate a share of the height was
+    // a long coloured tail.
+    background-image: linear-gradient(var(--sf-gradient--angle) in oklab, #{ink($c, $s, '#{$s} + 8')} 0, transparent var(--sf-gradient--tint-size, calc(var(--sf-space-4) * 6)));
 }
 .gradient-duo {
     --sf-gradient--from: #{tone('c', 40, 30, 'primary')};
@@ -146,14 +164,23 @@ $p: 'var(--sf-gradient--to)';
     @include sf-gradient-image(linear-gradient, 'var(--sf-gradient--angle)', 'var(--sf-gradient--from), var(--sf-gradient--to)');
 }
 .gradient-scrim {
-    // The ramp is a length at the top (--sf-gradient--scrim-ramp, space-4 by
-    // default): below it the scrim is at least its second step, so text keeps
-    // its contrast however many lines it takes; the element's top padding is
-    // the ramp, with no text in it.
+    // Long and soft (C92 look 3). Under the text the scrim holds black 64, so
+    // every line stands on the full step however many lines there are (the
+    // eased 64 -> 48 under a five-line caption left the title at 4.15:1 over
+    // a bright sky). Above the text the ramp, four times space-4 by default,
+    // steps down the alpha scale 48 -> 28 -> 16 -> 8 -> 0, weaker at the top
+    // (black 4 is a step kept for consumers, read by no sheet). The element's
+    // top padding is the ramp, with no text in it.
     --sf-gradient--angle: 0deg;
     color: var(--sf-white);
     @include sf-gradient-image(linear-gradient, 'var(--sf-gradient--angle)',
-        'var(--sf-gradient--scrim-1, var(--sf-black--alfa-64)) 0%, var(--sf-gradient--scrim-2, var(--sf-black--alfa-48)) calc(100% - var(--sf-gradient--scrim-ramp, var(--sf-space-4))), var(--sf-gradient--scrim-3, var(--sf-black--alfa-16)) calc(100% - var(--sf-gradient--scrim-ramp, var(--sf-space-4)) / 2), transparent 100%');
+        'var(--sf-black--alfa-64) 0%, var(--sf-black--alfa-64) calc(100% - #{$ramp}), var(--sf-black--alfa-48) calc(100% - #{$ramp} * 0.85), var(--sf-black--alfa-28) calc(100% - #{$ramp} * 0.7), var(--sf-black--alfa-16) calc(100% - #{$ramp} * 0.45), var(--sf-black--alfa-8) calc(100% - #{$ramp} * 0.25), transparent 100%');
+}
+// The plate (C92 look 5): one flat band of black 64 under the text, for long
+// captions and busy photos; no ramp, so no top padding is needed.
+.gradient-scrim.gradient-scrim-plate {
+    background-color: var(--sf-black--alfa-64);
+    background-image: none;
 }
 // The fade is a mask, so it fades the content on any place -- a card, glass,
 // a pattern -- instead of painting a guess of the place colour. The mask reads
@@ -161,6 +188,26 @@ $p: 'var(--sf-gradient--to)';
 .gradient-fade {
     --sf-gradient--angle: 180deg;
     mask-image: linear-gradient(var(--sf-gradient--angle), var(--sf-black) calc(100% - var(--sf-gradient--fade-size, var(--sf-space-4))), transparent);
+}
+
+// A filled heading (a recipe part, R166): tone 40 of the colour into the
+// partner's 40, dark 80 -> 80, mixed in OKLab, painted through the glyphs.
+// Only for large text, 24 px and up, where 3:1 holds at every point; the
+// heading keeps its own ink underneath, which forced colours show.
+.gradient-text {
+    --sf-gradient--from: #{tone('c', 40, 80, 'primary')};
+    --sf-gradient--to: #{tone('p', 40, 80, 'tertiary')};
+    --sf-gradient--angle: 90deg;
+    @include sf-gradient-image(linear-gradient, 'var(--sf-gradient--angle)', 'var(--sf-gradient--from), var(--sf-gradient--to)');
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+@media (forced-colors: active) {
+    .gradient-text {
+        -webkit-text-fill-color: currentColor;
+        background-image: none;
+    }
 }
 
 // Settings.
@@ -172,13 +219,6 @@ $p: 'var(--sf-gradient--to)';
 @each $side, $angle in $gradient-dirs {
     .gradient-dir-#{$side} {
         --sf-gradient--angle: #{$angle};
-    }
-}
-@each $scrim, $steps in $gradient-scrims {
-    .gradient-scrim-#{$scrim} {
-        --sf-gradient--scrim-1: var(--sf-black--alfa-#{list.nth($steps, 1)});
-        --sf-gradient--scrim-2: var(--sf-black--alfa-#{list.nth($steps, 2)});
-        --sf-gradient--scrim-3: var(--sf-black--alfa-#{list.nth($steps, 3)});
     }
 }
 }
