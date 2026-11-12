@@ -142,6 +142,11 @@
         "minimum": 0,
         "maximum": 6
       },
+      "weekend": {
+        "type": "string",
+        "default": "",
+        "description": "The days drawn as days off (red, and «выходной» in the day's name). Empty: the locale's (Intl week info; Saturday and Sunday where it does not say, Friday and Saturday in ar-EG). none: no day off, for a product whose weekends are working days. Or the days, comma separated, 0 or 7 Sunday to 6 Saturday: 6,7 or 5,6."
+      },
       "locale": {
         "type": "string",
         "default": "",
@@ -737,7 +742,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-date/index.js",
-        "sha256": "a4ebc9c2d200d4ee43c5ba304e89f94983c74e9df7bf8c25d9d108b8f037d964"
+        "sha256": "adcf996d7a3ec5922aea6b053f0b73d3a7540498d4af237ccd236fa6f3beb3be"
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",
@@ -749,7 +754,7 @@
       },
       {
         "path": "src/smart/input-date/docs/smart-datepicker-guide.md",
-        "sha256": "ceef3885788bf0771231bcab9e287b0ed06d6f3129da6fc312021ff691de14a6"
+        "sha256": "2fbf7c287a3921ee3355ce50bb2c178fcd8bf5459de965546496c4f69c25490e"
       }
     ],
     "generated_runtime": [

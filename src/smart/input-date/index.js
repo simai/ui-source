@@ -4,6 +4,7 @@ import {instancePath, partId} from '../../core/js/instance-path';
 import {fieldSize} from '../../component/field-size';
 import {FormField} from '../helpers/form-field';
 import {renderDatepickerTemplate} from './js/templates/default';
+import {localeWeekStart, weekendDays} from './js/locale-calendar.js';
 import BundledPosition from '../../core/js/position.js';
 import {pageLocale} from '../../core/js/page-language';
 import manifest from './component.json';
@@ -339,24 +340,6 @@ function dateFormat(locale, options) {
     return format;
 }
 
-// The first day of the locale's week, read once per locale: the grid asks it
-// several times a render.
-const weekStarts = new Map();
-
-function localeWeekStart(code) {
-    if (weekStarts.has(code)) return weekStarts.get(code);
-    let first = 1;
-    try {
-        const locale = new Intl.Locale(code);
-        const info = typeof locale.getWeekInfo === 'function' ? locale.getWeekInfo() : locale.weekInfo;
-        if (info?.firstDay) first = info.firstDay % 7;
-    } catch {
-        // An unknown locale keeps the Monday the grid always had.
-    }
-    weekStarts.set(code, first);
-    return first;
-}
-
 function getMonthLabel(month, locale) {
     try {
         return capitalizeFirstLetter(
@@ -527,6 +510,9 @@ class SfDatepicker extends FormField(DatepickerElement) {
             context: {default: ''},
             // No default: the page's language says it (see get weekStart).
             weekStart: {type: Number, default: null},
+            // The days off, drawn red: the locale's when empty, "none", or a
+            // list of days 0-7 (see get weekendDays).
+            weekend: {default: ''},
             locale: {default: ''},
             format: {default: 'DD.MM.YYYY'},
             rootClass: {default: ''},
@@ -1153,6 +1139,19 @@ class SfDatepicker extends FormField(DatepickerElement) {
         return normalizeLocale(this.getAttribute('locale'), this);
     }
 
+    get weekend() {
+        return this.getAttribute('weekend') || '';
+    }
+
+    // The days drawn as days off (owner decision C62): the locale's
+    // (Intl.Locale#getWeekInfo, Saturday and Sunday where it does not say),
+    // none for weekend="none" -- a product whose weekends are working days --
+    // or the days the attribute lists, 0 or 7 Sunday to 6 Saturday. They
+    // were Saturday and Sunday for every locale and every product.
+    get weekendDays() {
+        return weekendDays(this.weekend, this.locale);
+    }
+
     // The display format of the mode. A written format the mode cannot use is
     // completed: datetime adds « HH:mm» to a date format, time takes HH:mm.
     get format() {
@@ -1280,6 +1279,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
         const maxDate = this.setMaxDate();
         const activeDate = this.activeDate;
         const today = new Date();
+        const daysOff = this.weekendDays;
         return Array.from({length: 42}).map((_, index) => {
             const date = new Date(
                 gridStartDate.getFullYear(),
@@ -1295,6 +1295,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
                 (minDate && time < minDate.getTime()) ||
                 (maxDate && time > maxDate.getTime()),
             );
+            const weekend = daysOff.has(date.getDay());
             return {
                 date,
                 value: formatIsoDate(date),
@@ -1302,13 +1303,13 @@ class SfDatepicker extends FormField(DatepickerElement) {
                 // A day off says so in its name (DP-02): the ink is not the
                 // only cue. The ink is the calendar's day-off role
                 // (--sf-datepicker-day-off, C67 H2), not the error red.
-                label: [0, 6].includes(date.getDay())
+                label: weekend
                     ? `${getDateLabel(date, this.locale)}, ${this.sfWord('day-off')}`
                     : getDateLabel(date, this.locale),
                 day: date.getDate(),
                 today: sameDay(date, today),
                 currentMonth: date.getMonth() === this.month,
-                weekend: [0, 6].includes(date.getDay()),
+                weekend,
                 disabled: disabled,
                 selected: this.range
                     ? sameDay(date, startDate) || sameDay(date, endDate)
@@ -2338,6 +2339,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
             maxTime: this.maxTime,
             minuteStep: this.minuteStep,
             locale: this.locale,
+            weekend: this.weekend,
             input: this.input,
             open: this.open,
             portal: this.portal,

@@ -164,6 +164,21 @@ and emits nothing. Where the panel has no room for the list beside the grid,
 the list wraps above it as a row. The list is one tab stop; arrows move along
 it.
 
+## Days off
+
+Days off are drawn in the calendar's day-off ink (`--sf-datepicker-day-off`,
+the palette red, not the error role) and their name says «выходной». Which days
+they are follows the locale: Saturday and Sunday for `ru`, `de` and `en-US`,
+Friday and Saturday for `ar-EG` (`Intl.Locale#getWeekInfo`; Saturday and Sunday
+where the browser does not say). A product sets them with `weekend`:
+
+- `weekend="none"` -- no day off, for a product whose weekends are working days;
+- `weekend="5,6"` -- the days listed, `0` or `7` Sunday, `1` Monday to `6`
+  Saturday (Intl writes Saturday and Sunday as `6,7`).
+
+Holidays and transferred days off are not drawn yet: they are an open owner
+question (C67).
+
 ## Interaction and accessibility
 
 The popup field exposes `aria-haspopup`, `aria-expanded` and `aria-controls`.
