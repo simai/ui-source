@@ -327,7 +327,8 @@
   flex: none;
 }
 
-/* ── counter: ‹ 3 of 12 › ── */
+/* ── counter: «‹ 3 из 240 ›» in a record card (C97), the way back to the list
+   before it when list-href is given. ── */
 .sf-pager--counter {
   display: inline-flex;
   align-items: center;
@@ -339,6 +340,11 @@
    containment gives the icon a baseline of its box, so the first paint holds. */
 .sf-pager--counter .sf-icon {
   contain: layout;
+}
+
+.sf-pager--counter .sf-pager-list {
+  margin-inline-end: var(--sf-pager--gap);
+  text-decoration: none;
 }
 
 .sf-pager--counter .sf-pager-place {

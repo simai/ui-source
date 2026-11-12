@@ -1,9 +1,11 @@
 # Pager Smart Component
 
-`sf-pager` leads to the neighbouring page or step by meaning: the previous
-and the next page of a documentation site, a post or a product, a wizard's
-steps, a course's lessons, the next record in an admin card. It is not list
-paging: `sf-pagination` pages a list by number (1, 2, 3 …).
+`sf-pager` leads to the neighbouring document by meaning (decision C97): the
+previous and the next page of a documentation site, the previous and the next
+article, the next record in an admin card. It is not list paging:
+`sf-pagination` pages a list by number (1, 2, 3 …). A wizard's steps are
+`sf-wizard`'s; an image counter and carousel dots are `sf-gallery`'s and
+`sf-slider`'s.
 
 The page picks the look with `appearance`; the input is one of two forms:
 
@@ -11,8 +13,10 @@ The page picks the look with `appearance`; the input is one of two forms:
   (cards, row). A server prints them as plain links that work without the
   script;
 - **items and current** — `items`, a list of `{id, title, href?, meta?}`,
-  and `current`, a place in it from 0 (steps, course, counter; cards and
-  row take their sides from it when the side attributes are not given).
+  and `current`, a place in it from 0 (counter; cards and row take their
+  sides from it when the side attributes are not given);
+- **a place in a list** — counter with `total` (or `has-next`): `current` is
+  the record's place in the whole list, across the list's pages.
 
 The component owns the drawing, the place line, the keyboard and the
 request before every move. The page owns the pages themselves, whether a
@@ -24,31 +28,44 @@ step is valid, loading the next record and keeping a course's progress.
   title», under a documentation page. A missing side keeps its place: on
   the first page the «Далее» card stays in the second column. On a phone
   (below the sm step) the cards stack, the previous one first.
-- `row` — the two titles at the two ends, each whole up to two lines: under
-  a post, a news item, a product. On a phone the sides stack, the next one
-  at the end of the line below.
-- `steps` — a wizard: Back, «Шаг 2 из 5 · title» over a segmented track
-  (the line wraps rather than cutting the title; steps moves to sf-wizard,
-  decision C97),
-  and the primary Next, which says «Готово» on the last step. Pressing it
-  there finishes the walk (`complete`).
-- `course` — lesson dots (done, current, ahead) with «Урок 3 из 5», and a
-  card for the next lesson with its note (`meta`, such as «6 минут») and the
-  primary «Начать». On the last lesson the card offers «Готово»; a finished
-  course says «Курс пройден» with «Сначала».
-- `counter` — «‹ 3 из 12 ›» with two icon buttons, for browsing records one
-  by one. With `keys`, ArrowLeft and ArrowRight on the page move too.
+- `row` — the previous and the next article by their titles, at the two
+  ends, each whole up to two lines: under a post, a news item, a product. On
+  a phone the sides stack, the next one at the end of the line below.
+- `counter` — «‹ 3 из 240 ›» in a record card: the record's place in the
+  list it was opened from. With `total` the place is in the whole list, so
+  the arrows cross the list's pages: a move past the records the page holds
+  is still asked (`sf-pager-navigate` carries `index`), and the host loads
+  that page of the list or cancels and goes there itself. Without `total`
+  and with `has-next` the place reads «3 из многих» and Next stays on while
+  `has-next` is said. `list-href` puts a quiet «К списку» icon link before
+  the arrows. With `keys`, ArrowLeft / ArrowRight and `[` / `]` on the page
+  move too.
+
+Deprecated until 2027-01-01 (change journal `value-pager-steps-course-retired`),
+still drawn, each use noted in `SF.deprecations`:
+
+- `steps` — a wizard's Back, «Шаг 2 из 5 · title» over a segmented track and
+  Next («Готово» on the last step). Use `sf-wizard`.
+- `course` — lesson dots and a card for the next lesson. No product walks a
+  course; a list of lessons is a page of its own.
 
 ```html
 <sf-pager prev-href="/docs/install/" prev-title="Подключение"
   next-href="/docs/fields/" next-title="Поля ввода"></sf-pager>
 
-<sf-pager appearance="steps" current="1">
-  <script type="application/json" data-sf-settings>
-    {"items": [{"id": "source", "title": "Источник"}, {"id": "fields", "title": "Поля"},
-               {"id": "check", "title": "Проверка"}, {"id": "import", "title": "Импорт"}]}
-  </script>
-</sf-pager>
+<!-- A record card opened from a list of 240 (its filter kept by the host):
+     record 20, the list's page 1 of 20 records. -->
+<sf-pager appearance="counter" size="1/2" current="19" total="240"
+  list-href="/admin/articles/?page=1" keys></sf-pager>
+```
+
+```js
+pager.addEventListener('sf-pager-navigate', async (event) => {
+  // index is the record's place in the whole list: load its page when needed.
+  const {index} = event.detail;
+  if (!loaded.has(Math.floor(index / 20))) await loadPage(Math.floor(index / 20));
+  openRecord(index);
+});
 ```
 
 ## Attributes
@@ -61,15 +78,19 @@ step is valid, loading the next record and keeping a course's progress.
   empty.
 - `items` (a property, or the JSON island) — the pages, steps, lessons or
   records in order.
-- `current` — the current place in `items`, from 0.
+- `current` — the current place in `items`, from 0 (counter with `total`:
+  in the whole list).
+- `total` — counter: how many records the list has across its pages.
+- `has-next` — counter without `total`: another record follows.
+- `list-href` — counter: the address of the list the record was opened from.
 - `complete` — the walk is finished (steps, course).
 - `label` — the navigation landmark's name; «Соседние страницы» /
   «Adjacent pages» when not set.
 - `prev-label`, `next-label`, `done-label` — the words «Назад», «Далее»,
   «Готово» (English: Back, Next, Done) when not set.
 - `keys` — ArrowLeft and ArrowRight on the page move to the previous and the
-  next item (mirrored on a right-to-left page). A key pressed in a field, or
-  one another component took, is left alone.
+  next item (mirrored on a right-to-left page), and `[` / `]` on counter. A
+  key pressed in a field, or one another component took, is left alone.
 
 ## Events
 
@@ -107,7 +128,7 @@ The element draws a `<nav>` named by `label`. Links carry `rel="prev"` and
 direction to a screen reader only). The place line of steps, course and
 counter is a polite live region; the track and the dots are its picture and
 are hidden from assistive technology. The counter's icon buttons are named
-«Предыдущая запись» and «Следующая запись». A control that turns disabled
+«Предыдущая запись» and «Следующая запись», the list link «К списку». A control that turns disabled
 after a move (Back on the first step, an end of the counter) hands focus to
 the other one, so focus never falls to the page. Transitions stand still
 under `prefers-reduced-motion`.

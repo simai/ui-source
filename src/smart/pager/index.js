@@ -1,6 +1,14 @@
-// sf-pager: navigation to the neighbouring page or step by meaning -- the
-// previous and the next documentation page, a wizard's steps, a course's
-// lessons, a record counter. Not list paging: sf-pagination keeps 1, 2, 3 ….
+// sf-pager: navigation to the neighbouring document by meaning (decision C97,
+// 2026-11-12), in three looks: cards (the previous and the next page at the
+// bottom of documentation), row (the previous and the next article) and
+// counter («‹ 3 из 240 ›» in a record card: the record's place in its list,
+// across the list's pages, with keys and the way back to the list). Not list
+// paging: sf-pagination keeps 1, 2, 3 ….
+//
+// steps and course still draw until 2027-01-01, each use noted in
+// SF.deprecations (change journal value-pager-steps-course-retired): a
+// wizard's steps are sf-wizard's, and no product walks a course. Image
+// counters and dots are sf-gallery's and sf-slider's.
 //
 // One input, two forms. cards and row take two sides from string settings
 // (prev-href, prev-title, next-href, next-title), so a server prints plain
@@ -20,6 +28,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {renderPagerTemplate} from './js/templates/default';
+import {noteDeprecated} from '../../core/js/deprecations.js';
 import manifest from './component.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
@@ -43,6 +52,10 @@ export function normalizeItems(value) {
       meta: text(item.meta),
     }));
 }
+
+// The looks that leave sf-pager (C97): steps for sf-wizard, course with no
+// product to walk one.
+const RETIRED = {steps: 'sf-wizard', course: null};
 
 // current clamped to items (0 with no items).
 export function clampIndex(value, length) {
@@ -94,9 +107,34 @@ class SfPager extends PagerElement {
     return normalizeItems(this.items);
   }
 
-  // The current place clamped to items; the template reads it as `at`.
+  // The current place clamped to what there is; the template reads it as
+  // `at`.
   get at() {
-    return clampIndex(this.current, this.list.length);
+    const {count, open} = this.span;
+    if (open) return Math.max(0, Math.trunc(Number(this.current)) || 0);
+    return clampIndex(this.current, count);
+  }
+
+  // How many places the walk has. counter's records are the list's: total
+  // says how many there are across the list's pages, so a record card walks
+  // past the page it was opened from and the host loads the next one when
+  // asked (navigate carries the index). Without total the count is not
+  // known unless items is the whole list and has-next is off: the walk is
+  // then open ahead («3 из многих»), Next while has-next says so. Every other
+  // look walks items.
+  get span() {
+    const length = this.list.length;
+    if (this.appearance !== 'counter') return {count: length, open: false};
+    const total = Math.trunc(Number(this.total));
+    if (Number.isFinite(total) && total > 0) return {count: total, open: false};
+    if (length && !this.hasNext) return {count: length, open: false};
+    return {count: Math.max(length, this.at0 + 1), open: true};
+  }
+
+  // current as written, a whole number from 0.
+  get at0() {
+    const number = Math.trunc(Number(this.current));
+    return Number.isFinite(number) && number > 0 ? number : 0;
   }
 
   // One side of cards or row: the settings first, else the neighbour in items.
@@ -133,6 +171,7 @@ class SfPager extends PagerElement {
   // an action called by a page asks the same request and moves silently (§8:
   // a value set from outside is not reported back).
   move(direction, wanted, {person = false} = {}) {
+    if (this.appearance === 'counter') return this.moveRecord(direction, wanted, {person});
     const list = this.list;
     if (!list.length) return refused('empty');
     const from = this.at;
@@ -166,13 +205,43 @@ class SfPager extends PagerElement {
     return applied();
   }
 
+  // A move of counter: one record back or on, or to a place, in the list's
+  // records (total, or items). The request names the record's place in the
+  // whole list; a host that has not loaded that page loads it, or cancels and
+  // goes there itself. An item with an address is opened.
+  moveRecord(direction, wanted, {person = false} = {}) {
+    const {count, open} = this.span;
+    if (!count && !open) return refused('empty');
+    const from = this.at;
+    let index;
+    if (direction === 'prev') {
+      if (from <= 0) return refused('first');
+      index = from - 1;
+    } else if (direction === 'next') {
+      if (open ? !this.hasNext : from >= count - 1) return refused('last');
+      index = from + 1;
+    } else {
+      const number = Math.max(0, Math.trunc(Number(wanted)) || 0);
+      index = open ? number : Math.min(count - 1, number);
+      if (index === from) return refused('current');
+      direction = 'go-to';
+    }
+    const item = this.list[index] ?? null;
+    const allowed = this.sfEmit('navigate', {direction, index, id: item?.id ?? null, href: item?.href || null}, {cancelable: true});
+    if (!allowed) return refused('prevented');
+    this.apply(index, false, person);
+    if (item?.href) globalThis.location?.assign?.(item.href);
+    return applied();
+  }
+
   apply(index, complete, person) {
     const previous = this.at;
     const focused = this.focusedControl();
     this.current = index;
     this.complete = complete;
     this.sfHostState('data-complete', complete);
-    if (person) this.sfEmit('change', {previous, current: index, complete, item: {...this.list[index]}});
+    const item = this.list[index];
+    if (person) this.sfEmit('change', {previous, current: index, complete, item: item ? {...item} : null});
     this.keepFocus(focused);
   }
 
@@ -227,10 +296,20 @@ class SfPager extends PagerElement {
     this._keysBound = false;
   }
 
-  // ArrowLeft / ArrowRight on the page (keys set): never in a field, never a
-  // key another component took, never while the pager is not shown.
+  // ArrowLeft / ArrowRight on the page (keys set), and for counter [ and ]
+  // as well (the record keys of mail and trackers, which a record page does
+  // not give to text): never in a field, never a key another component took,
+  // never while the pager is not shown.
   onKey(event) {
     if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    if (this.appearance === 'counter' && (event.key === '[' || event.key === ']')) {
+      const target = event.target instanceof Element ? event.target : null;
+      if (target?.closest(EDITABLE) || target?.isContentEditable) return;
+      if (!this.shown || !this.querySelector(':scope > nav')?.getClientRects().length) return;
+      const outcome = this.press(event.key === ']' ? 'next' : 'prev');
+      if (outcome.outcome === 'applied') event.preventDefault();
+      return;
+    }
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
     const target = event.target instanceof Element ? event.target : null;
     if (target?.closest(EDITABLE) || target?.isContentEditable) return;
@@ -241,16 +320,33 @@ class SfPager extends PagerElement {
     if (outcome.outcome === 'applied') event.preventDefault();
   }
 
+  // A retired look still draws; its use is noted once (C97).
+  noteRetired(appearance) {
+    if (!(appearance in RETIRED)) return;
+    noteDeprecated({
+      component: 'sf-pager',
+      tag: 'sf-pager',
+      kind: 'value',
+      attribute: 'appearance',
+      from: appearance,
+      to: RETIRED[appearance],
+      since: '2026-11-12',
+      remove_after: '2027-01-01',
+    });
+  }
+
   templateContext() {
     const list = this.list;
-    const current = clampIndex(this.current, list.length);
-    const count = list.length;
-    const n = count ? current + 1 : 0;
     const appearance = this.appearance;
+    const {count: spanCount, open} = this.span;
+    const current = appearance === 'counter' ? this.at : clampIndex(this.current, list.length);
+    const count = appearance === 'counter' ? spanCount : list.length;
+    const n = count || open ? current + 1 : 0;
     const word = (key, vars) => this.sfWord(key, vars ? {vars} : {});
+    this.noteRetired(appearance);
     const place = appearance === 'steps' ? word('step', {n, count})
       : appearance === 'course' ? word('lesson', {n, count})
-        : appearance === 'counter' ? word('position', {n, count}) : '';
+        : appearance === 'counter' ? (open ? word('position-many', {n}) : word('position', {n, count})) : '';
     return this.createTemplateContext({
       ...this.getPropsContext(),
       component: this,
@@ -264,6 +360,9 @@ class SfPager extends PagerElement {
       next: appearance === 'cards' || appearance === 'row' ? this.sideOf('next') : null,
       list,
       at: current,
+      count,
+      hasNextRecord: open ? Boolean(this.hasNext) : current < count - 1,
+      listHref: appearance === 'counter' ? text(this.listHref) : '',
       complete: Boolean(this.complete),
       placeText: place,
       words: {
@@ -274,6 +373,7 @@ class SfPager extends PagerElement {
         restart: word('restart'),
         prevItem: word('prev-item'),
         nextItem: word('next-item'),
+        toList: word('to-list'),
       },
       rootClass: this.getRootClass(),
     });
