@@ -92,6 +92,9 @@ class SfFileUpload extends FileUploadElement {
     this._onRetry = null;
     // The streams the entries are (§10.8): id -> {state, progress}.
     this._streams = new Map();
+    // The transfers the uploader runs: id -> AbortController.
+    this._uploads = new Map();
+    this._uploader = null;
     this._lastAttach = null;
     // A file held over the area is said on the host (§5.3).
     this.addEventListener('dragover', this._onDragState);
@@ -156,7 +159,98 @@ class SfFileUpload extends FileUploadElement {
     this._items = Array.isArray(value) ? value : [];
     this.syncRuntimeItems();
     this._trackStreams(this._items);
+    this._abortGone();
     this.requestComponentUpdate('items');
+    this._pumpUploads();
+  }
+
+  // The page's transfer (FU-11): async (file, {signal, onProgress, item}) =>
+  // the stored value ({value, href} or an id). With it the component sends
+  // each file it lists, ready or retried, and moves the row itself: process
+  // with the share onProgress(done, total) reports, done with the value, error
+  // with the thrown error's message (and its reason when it has one). Remove
+  // aborts the transfer through the signal. Without it the host drives the
+  // rows through items, and Retry is a retry event the page answers.
+  get uploader() {
+    return this._uploader;
+  }
+
+  set uploader(value) {
+    this._uploader = typeof value === 'function' ? value : null;
+    this._pumpUploads();
+  }
+
+  _patchItem(id, changes) {
+    const index = this.items.findIndex((item, at) => itemId(item, at) === id);
+    if (index < 0) return;
+    const next = Array.from(this.items);
+    next[index] = {...next[index], ...changes};
+    this.items = next;
+  }
+
+  _abortGone() {
+    if (!this._uploads.size) return;
+    const listed = new Set(this.items.map((item, index) => itemId(item, index)));
+    for (const [id, controller] of [...this._uploads]) {
+      if (listed.has(id)) continue;
+      this._uploads.delete(id);
+      controller.abort();
+    }
+  }
+
+  // Starts every listed file that is ready, or in process with no transfer (a
+  // retry), when the page gave an uploader.
+  _pumpUploads() {
+    const send = this._uploader;
+    if (!send || this._pumping) return;
+    const due = this.items
+      .map((item, index) => ({item, id: itemId(item, index), state: itemState(item)}))
+      .filter(({item, id, state}) => item?.file && !this._uploads.has(id) && (state === 'ready' || state === 'process'));
+    if (!due.length) return;
+    due.forEach(({id}) => this._uploads.set(id, new AbortController()));
+    this._pumping = true;
+    try {
+      const starting = new Set(due.map(({id}) => id));
+      this.items = this.items.map((item, index) => (starting.has(itemId(item, index))
+        ? {...item, state: 'process', progress: null, errorMessage: undefined, reason: undefined}
+        : item));
+    } finally {
+      this._pumping = false;
+    }
+    due.forEach(({item, id}) => this._send(send, item, id));
+  }
+
+  _send(send, item, id) {
+    const controller = this._uploads.get(id);
+    if (!controller) return;
+    const {signal} = controller;
+    const onProgress = (done, total) => {
+      if (signal.aborted) return;
+      const share = Number(total) > 0 ? Math.round((Number(done) / Number(total)) * 100) : null;
+      this._patchItem(id, {progress: share === null ? null : Math.max(0, Math.min(100, share))});
+    };
+    Promise.resolve()
+      .then(() => send.call(null, item.file, {signal, onProgress, item}))
+      .then((answer) => {
+        if (signal.aborted || this._uploads.get(id) !== controller) return;
+        this._uploads.delete(id);
+        const stored = answer !== null && typeof answer === 'object' ? answer : {value: answer};
+        this._patchItem(id, {
+          state: 'done',
+          progress: 100,
+          value: stored.value === undefined || stored.value === null ? '' : String(stored.value),
+          ...(stored.href ? {href: String(stored.href)} : {}),
+        });
+      })
+      .catch((error) => {
+        if (signal.aborted || this._uploads.get(id) !== controller) return;
+        this._uploads.delete(id);
+        this._patchItem(id, {
+          state: 'error',
+          errorMessage: String(error?.message || ''),
+          reason: String(error?.reason || 'network'),
+        });
+      });
   }
 
   // The stream facts of §10.8 that the class component does not send: begun
@@ -336,6 +430,7 @@ class SfFileUpload extends FileUploadElement {
     const refresh = () => {
       this._items = Array.from(this._boundRoot?.__sfFileUploadItems || []);
       this._trackStreams(this._items);
+      this._abortGone();
       if (this._lastAttach) {
         const chosen = this._lastAttach;
         this._lastAttach = null;
@@ -343,6 +438,7 @@ class SfFileUpload extends FileUploadElement {
         this.sfEmit('change', chosen);
       }
       this.requestComponentUpdate('items');
+      this._pumpUploads();
     };
     this._onSelect = refresh;
     this._onRemove = refresh;

@@ -99,7 +99,7 @@ and keeps the `File` object on each.
 | `id` | The item's identity across `setItems()` calls, which is how state transitions become `file-error`, `file-complete` and `complete` events. A selection uses `<name>-<size>-<lastModified>`. Without an `id`, the name and position identify the item. |
 | `name` (or `fileName`) | The file name shown. `File` is shown when neither is set. |
 | `fileSize` (or `sizeText`) | The size as text, already formatted ("348KB"). The component does not format a number here. |
-| `progress` | `0`–`100`: a fraction is kept, a value outside is clamped, and a value that is not a number reads 0. Reaching 100 does not make an item `done`. Without it, a `done` item reads 100 and any other 0. |
+| `progress` | `0`–`100`: a fraction is kept, a value outside is clamped, and a value that is not a number reads 0. `null`: the share is not known yet, and the bar runs without a number (a retry before its first report). Reaching 100 does not make an item `done`. Without it, a `done` item reads 100 and any other 0. |
 | `state` (or `status`) | `ready` (chosen, not sent: no bar), `process` (the bar), `done` (the check), `error` (the retry button). A choice or a drop lists its files `ready`; the host (or the `uploader`) moves them to `process`. Missing or anything else reads `process`, for the row and for the events alike. |
 | `errorMessage` (or `error`) | Why an `error` item did not go, on its own line in the error colour: «Не загрузился: <message>». It was the retry button's label before 1.2.0, so the reason was the control a person pressed to send the same file again. |
 | `retryText` | The retry button's label; the component's own «Повторить» / «Try again» when not set. |
@@ -128,7 +128,27 @@ Event names: `sf-file-upload:file-add`, `:file-error`, `:file-complete`,
 `:remove`, `:retry`, `:complete` — removal and retry are `sf-file-upload:remove`
 and `sf-file-upload:retry`, not `:file-remove` / `:file-retry`. Their detail is
 `{item, index, items}`: the removed item, or the retried one already back at
-`state: 'process'` and `progress: 0`, and the list after the change.
+`state: 'process'` and `progress: null` (the bar runs without a number until a
+share is reported), and the list after the change.
+
+## Sending the files: `uploader`
+
+Give the element the page's transfer and it sends the files itself:
+
+```js
+const upload = document.querySelector('sf-file-upload');
+upload.uploader = async (file, {signal, onProgress}) => {
+  const answer = await send('/upload', file, {signal, onProgress}); // XHR for progress
+  return {value: answer.id, href: answer.url};                      // or just the id
+};
+```
+
+Each listed file -- chosen, dropped or retried -- goes to `process` with its
+share unknown, then follows `onProgress(done, total)`; the answer makes it
+`done` and keeps `value` (and `href`) on the item; a thrown error makes it
+`error` with the error's `message` and `reason`. «Повторить» sends the file
+again; Remove aborts the transfer through `signal`. Without an `uploader` the
+page drives the rows through `items`, as below, and answers `retry`.
 
 ## A browser-only import: select → validate → store → retry
 

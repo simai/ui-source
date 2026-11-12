@@ -560,10 +560,16 @@ function retryFileUploadItem(root, index) {
   const nextItems = currentItems.map((item) => ({ ...item }));
   const currentItem = nextItems[normalizedIndex];
 
+  // Back in process with its share not known yet: the bar runs without a
+  // number until the transfer reports one. It went to 0 % and stood there,
+  // which read as a second failure when nothing sent the file again (FU-11);
+  // sf-file-upload's uploader sends it, an ordinary area's page answers
+  // retry.
   currentItem.state = 'process';
-  currentItem.progress = 0;
+  currentItem.progress = null;
   delete currentItem.errorMessage;
-  delete currentItem.retryText;
+  delete currentItem.error;
+  delete currentItem.reason;
 
   const previousItems = Array.from(root.__sfFileUploadItems || []);
   root.__sfFileUploadItems = nextItems;
