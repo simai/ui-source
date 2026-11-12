@@ -28,9 +28,11 @@ function renderOptions(options = [], multiple = false) {
     // so on a long list nothing on screen told the person what they had picked
     // (Larena storage QA, 2026-10-22). An option that draws a picture of its
     // own -- an icon, a colour, an avatar -- keeps it, because that is the
-    // place the box would take.
+    // place the box would take; an avatar or a colour row then draws its box
+    // after the picture, and only in a multiple list (C08: a single choice
+    // is the row's fill, no box).
     const withBox = multiple && (!option.type || option.type === "text");
-    parts.push(renderListItemOption(withBox ? {...option, type: "checkbox"} : option));
+    parts.push(renderListItemOption(withBox ? {...option, type: "checkbox"} : option, {multiple}));
   }
 
   return parts;
