@@ -40,6 +40,8 @@ export function createNativeSlider(root, options) {
   const digits = Math.max(decimalPlaces(step), decimalPlaces(range.min));
   const listeners = new Map();
   let disabled = false;
+  // Read-only (C80): focusable and read out, but neither keys nor a pointer move it.
+  let readonly = Boolean(options.readonly);
   let values = numericList(options.start).map((value) => clamp(value, range.min, range.max));
 
   root.classList.add(classes.target, classes.horizontal,
@@ -90,6 +92,8 @@ export function createNativeSlider(root, options) {
       handle.setAttribute('aria-valuemin', String(boundsFor(index).min));
       handle.setAttribute('aria-valuemax', String(boundsFor(index).max));
       handle.setAttribute('aria-valuetext', options.ariaFormat?.to?.(values[index]) || String(values[index]));
+      if (readonly) handle.setAttribute('aria-readonly', 'true');
+      else handle.removeAttribute('aria-readonly');
     });
     const start = values.length > 1 ? percents[0] : options.connect === 'upper' ? percents[0] : 0;
     const end = values.length > 1 ? percents[1] : options.connect === false ? percents[0] : options.connect === 'upper' ? 100 : percents[0];
@@ -116,7 +120,7 @@ export function createNativeSlider(root, options) {
   };
 
   const beginPointer = (event) => {
-    if (disabled || event.button !== 0) return;
+    if (disabled || readonly || event.button !== 0) return;
     const value = valueFromPointer(event);
     const index = values.length === 1 || Math.abs(values[0] - value) <= Math.abs(values[1] - value) ? 0 : 1;
     event.preventDefault();
@@ -151,6 +155,7 @@ export function createNativeSlider(root, options) {
     if (event.key === 'End') next = boundsFor(index).max;
     if (next === null) return;
     event.preventDefault();
+    if (readonly) return;
     emit('start', index);
     setHandle(index, next, true);
     emit('end', index);
@@ -183,6 +188,10 @@ export function createNativeSlider(root, options) {
         handle.tabIndex = -1;
         handle.setAttribute('aria-disabled', 'true');
       });
+    },
+    setReadonly(next = true) {
+      readonly = Boolean(next);
+      render();
     },
     enable() {
       disabled = false;

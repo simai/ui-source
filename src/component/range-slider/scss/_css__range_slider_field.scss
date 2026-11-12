@@ -157,4 +157,36 @@
     transition: none;
   }
 }
+
+// Read-only, look R2 (owner decision C80, #r2-readonly): the same sign as a
+// read-only sf-input -- the light outline of a region at field height, no
+// fill -- and a neutral handle and fill that say "cannot move". The value
+// keeps full ink; the handles stay focusable and are read out.
+.sf-range-slider-group.readonly .sf-range-slider-line {
+  block-size: var(--sf-range-slider--row, var(--sf-ui-1--control-height));
+  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-radius: var(--sf-radius--ui);
+  box-sizing: border-box;
+  padding-inline: calc(var(--sf-range-slider--space-x, var(--sf-ui-1--space-x)) - var(--sf-px));
+}
+
+.sf-range-slider-group.readonly .sf-range-slider {
+  min-block-size: calc(var(--sf-range-slider--row, var(--sf-ui-1--control-height)) - 2 * var(--sf-px));
+}
+
+.sf-range-slider.readonly .sf-thumb-handle,
+.sf-range-slider[data-readonly="true"] .sf-thumb-handle {
+  background-color: var(--sf-on-surface-variant);
+  box-shadow: none;
+}
+
+.sf-range-slider.readonly .sf-range-slider-progress-line,
+.sf-range-slider[data-readonly="true"] .sf-range-slider-progress-line {
+  background-color: var(--sf-on-surface-variant);
+}
+
+.sf-range-slider.readonly .sf-range-slider-handle,
+.sf-range-slider[data-readonly="true"] .sf-range-slider-handle {
+  cursor: default;
+}
 }

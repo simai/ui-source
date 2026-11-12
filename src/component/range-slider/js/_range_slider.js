@@ -420,6 +420,12 @@ function isDisabledRoot(root) {
   return root.hasAttribute('disabled') || root.classList.contains('disabled');
 }
 
+function isReadonlyRoot(root) {
+  if (typeof root?.hasAttribute !== 'function') return false;
+  return root.hasAttribute('readonly') || Boolean(root.classList?.contains?.('readonly')) ||
+    toBoolean(root.getAttribute('data-readonly'), false);
+}
+
 function createSliderOptions(root) {
   const {min, max} = getNormalizedRange(root);
   const multiple = isMultipleRoot(root);
@@ -448,6 +454,7 @@ function createSliderOptions(root) {
       ? Math.min(max - min, toNumber(root.getAttribute('data-margin'), 0))
       : undefined,
     range: { min, max },
+    readonly: isReadonlyRoot(root),
     keyboardSupport:
       !root.hasAttribute('data-keyboard') ||
       toBoolean(root.getAttribute('data-keyboard'), true),

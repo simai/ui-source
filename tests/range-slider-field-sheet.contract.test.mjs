@@ -45,3 +45,10 @@ test('C78: the value bubble shows only while its handle is dragged or keyboard-f
   assert.ok(sheet.includes('.sf-range-slider-labels--merged.sf-thumb--label-tooltip > [data-handle="0"]'));
   assert.match(sheet, /@media \(prefers-reduced-motion: reduce\) \{\n {2}\.sf-range-slider \.sf-range-slider-labels\.sf-thumb--label-tooltip > \.sf-tooltip \{\n {4}transition: none;/u);
 });
+
+test('C80 R2: read-only is the light outline at field height with a neutral handle and fill', () => {
+  const frame = rule('.sf-range-slider-group.readonly .sf-range-slider-line');
+  assert.match(frame, /border: var\(--sf-px\) solid var\(--sf-outline-variant\);/u);
+  assert.match(frame, /block-size: var\(--sf-range-slider--row, var\(--sf-ui-1--control-height\)\);/u);
+  assert.match(rule('.sf-range-slider.readonly .sf-thumb-handle,\n.sf-range-slider[data-readonly="true"] .sf-thumb-handle'), /background-color: var\(--sf-on-surface-variant\);/u);
+});

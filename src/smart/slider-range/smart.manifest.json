@@ -154,6 +154,11 @@
         "type": "boolean",
         "default": false
       },
+      "readonly": {
+        "type": "boolean",
+        "default": false,
+        "description": "Shown and not changed (owner decision C80, look R2): a read-only field's light outline at field height, a neutral handle and fill; the handles stay focusable, carry aria-readonly and are read out, keys and the pointer change nothing. The value is still submitted."
+      },
       "name": {
         "type": "string",
         "default": "",

@@ -269,6 +269,24 @@
             }
           },
           {
+            "id": "readonly-keys-change-nothing",
+            "covers": "settings.readonly (C80 R2): the handle stays focusable and carries aria-readonly; ArrowRight changes nothing and sends no change",
+            "field": "<sf-slider-range aria-label=\"Громкость\" min=\"0\" max=\"100\" value=\"40\" readonly></sf-slider-range>",
+            "given": [
+              {
+                "user": "focus:[role=slider]"
+              }
+            ],
+            "user": "keyboard:ArrowRight",
+            "expect": {
+              "value": "40",
+              "events": [],
+              "evaluate": {
+                "el.querySelector('[role=slider]').getAttribute('aria-readonly')": "true"
+              }
+            }
+          },
+          {
             "id": "value-from-code-is-silent",
             "covers": "§8: a value set from outside is not reported back, under no name",
             "field": "<sf-slider-range aria-label=\"Громкость\" value=\"50\"></sf-slider-range>",

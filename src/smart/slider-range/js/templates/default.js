@@ -34,6 +34,7 @@ export function renderRangeSliderTemplate(context) {
         'sf-range-slider-group',
         `sf-range-slider-group--size-${context.size}`,
         context.disabled ? 'disabled' : '',
+        context.readonly && !context.disabled ? 'readonly' : '',
     );
     const rootClasses = joinClasses(
         'sf-range-slider',
@@ -41,6 +42,7 @@ export function renderRangeSliderTemplate(context) {
         `sf-range-slider--size-${context.size}`,
         context.rootClass,
         context.disabled ? 'disabled' : '',
+        context.readonly && !context.disabled ? 'readonly' : '',
     );
 
     return html`

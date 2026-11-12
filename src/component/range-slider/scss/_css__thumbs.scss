@@ -77,16 +77,16 @@
 
 // Hover and press grow a halo of the primary state layer around the disc, not
 // the disc: 8% on hover, 12% while the handle is held.
-.sf-thumb:not(:disabled):not([disabled]):not(.disabled):not([disabled] *):not(.disabled *):hover .sf-thumb-handle {
+.sf-thumb:not(:disabled):not([disabled]):not(.disabled):not([disabled] *):not(.disabled *):not(.readonly *):hover .sf-thumb-handle {
   background-color: var(--sf-thumb-handle--hover-background-color, var(--sf-primary-hover));
   box-shadow: 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-place)), 0 0 0 var(--sf-a8) var(--sf-primary-state-select), var(--sf-shadow-raised);
 }
 
-.sf-thumb:not(:disabled):not([disabled]):not(.disabled):not([disabled] *):not(.disabled *):active .sf-thumb-handle {
+.sf-thumb:not(:disabled):not([disabled]):not(.disabled):not([disabled] *):not(.disabled *):not(.readonly *):active .sf-thumb-handle {
   box-shadow: 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-place)), 0 0 0 var(--sf-a8) var(--sf-primary-state-active), var(--sf-shadow-raised);
 }
 
-.sf-thumb:not(:disabled):not([disabled]):not(.disabled):not([disabled] *):not(.disabled *):hover .sf-thumb-inner {
+.sf-thumb:not(:disabled):not([disabled]):not(.disabled):not([disabled] *):not(.disabled *):not(.readonly *):hover .sf-thumb-inner {
   height: var(--sf-thumb-inner--height, 75%);
   width: var(--sf-thumb-inner--width, 75%);
 }

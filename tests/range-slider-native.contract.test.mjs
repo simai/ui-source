@@ -78,3 +78,15 @@ test('PageUp, PageDown and Shift+arrow move by ten steps or page-step (S4)', () 
   paged.handles[0].key('PageDown');
   assert.equal(paged.instance.get(true), 25);
 });
+
+test('read-only: focusable and read out, keys change nothing (C80)', () => {
+  const {instance, handles} = slider({range: {min: 0, max: 100}, step: 1, start: [40], readonly: true});
+  assert.equal(handles[0].tabIndex, 0);
+  assert.equal(handles[0].attrs['aria-readonly'], 'true');
+  assert.equal(handles[0].key('ArrowRight'), true, 'the key is taken, so the page does not scroll');
+  assert.equal(instance.get(true), 40);
+  instance.setReadonly(false);
+  handles[0].key('ArrowRight');
+  assert.equal(instance.get(true), 41);
+  assert.equal(handles[0].attrs['aria-readonly'], undefined);
+});

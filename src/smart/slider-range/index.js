@@ -355,6 +355,7 @@ class SfRangeSlider extends RangeSliderElement {
         // Disabled is drawn by the template from the setting (§5.3), not
         // toggled on the root by a script.
         'disabled',
+        'readonly',
       ].includes(name),
     );
 
@@ -654,6 +655,7 @@ class SfRangeSlider extends RangeSliderElement {
       textPosition: this.textPosition,
       labelPosition: this.labelPosition,
       disabled: this.disabled,
+      readonly: this.readonly,
       rootClass: this.getRootClass(),
     };
   }
