@@ -1,3 +1,5 @@
+@use 'sass:map';
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @use 'var__tags' as *;
 @layer sf.components {
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-a1) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
@@ -962,5 +964,117 @@
 
 .sf-tag.sf-tag--line-2 {
   --sf-tag--line: var(--sf-text-height-2);
+}
+}
+
+@layer sf.states {
+/* One rule by paint for every kind and step (owner decision C76,
+   control/research/2026-11-11-tags-placement.md §11, §11.1; prototype
+   tags-placement.html#tags-uniform). Steps 1/3, 1/2, 1 and 2 of a tag that
+   stands on its own (not inline, not on a text line):
+   - height: the control height of the next step less --sf-a8 -- 24 / 32 /
+     40 / 48 on a desktop, 20 / 24 / 32 / 40 compact, 20 / 28 / 36 / 44 on a
+     phone (compact as sf-button: the tokens move with the region);
+   - picture: the step's text line (avatar, icon); the dot --sf-a8; the
+     checkbox the picture less --sf-a4; the cross half the picture, drawn
+     with a 1.5 px line where it is 8 and the 2 px line of every cross above;
+     its press target stays --sf-c2 square (the ::after of the button);
+   - edge (before the first paint = after the last) and the gap between any
+     two parts read the tag height, so every density and the phone take them
+     without selectors: edge 8 / 12 / 16 / 20 for 20-24 / 28-32 / 36-40 /
+     44-48, gap 4 up to 28, 8 from 32, 12 at 48 -- the text-space-x of ladder
+     A (C69) at every step, compact and phone included, until the core token
+     carries C69;
+   - optical offsets: a circle (avatar, dot) stands out by its diameter / 16
+     at the tag edge, an icon by its size / 12 on both sides (Material
+     Symbols paint 20 of 24), the text by 1/20 of its size (its side bearings). A
+     glyph's own shape (sell: 1.5-3.5 more blank) needs sf-icon to report its
+     ink insets (C76, a separate sf-icon item).
+   The public --sf-tag-padding-inline, --sf-tag-padding-block and
+   --sf-tag-gap still win. Before, the tag lent the paddings of a button of
+   its step: 1/2 desktop edges 21 / 22 by paint, compact 1/3 and 1/2 at 24 /
+   28. */
+.sf-tag.sf-tag--size-1\/3:not(.sf-tag--inline) {
+  --sf-tag--c76-height: calc(var(--sf-ui-1\/2--control-height) - var(--sf-a8));
+  --sf-tag--c76-picture: var(--sf-text-height-1\/3);
+}
+
+.sf-tag.sf-tag--size-1\/2:not(.sf-tag--inline) {
+  --sf-tag--c76-height: calc(var(--sf-ui-1--control-height) - var(--sf-a8));
+  --sf-tag--c76-picture: var(--sf-text-height-1\/2);
+}
+
+.sf-tag.sf-tag--size-1:not(.sf-tag--inline) {
+  --sf-tag--c76-height: calc(var(--sf-ui-2--control-height) - var(--sf-a8));
+  --sf-tag--c76-picture: var(--sf-text-height-1);
+}
+
+.sf-tag.sf-tag--size-2:not(.sf-tag--inline) {
+  --sf-tag--c76-height: calc(var(--sf-ui-3--control-height) - var(--sf-a8));
+  --sf-tag--c76-picture: var(--sf-text-height-2);
+}
+
+.sf-tag:is(.sf-tag--size-1\/3, .sf-tag--size-1\/2, .sf-tag--size-1, .sf-tag--size-2):not(.sf-tag--inline):not([class*="sf-tag--line-"]) {
+  --sf-tag--c76-edge: round(down, calc((var(--sf-tag--c76-height) - var(--sf-a4)) / 2), var(--sf-a4));
+  --sf-tag--c76-gap: round(down, calc(var(--sf-tag--c76-height) / 4), var(--sf-a4));
+  --sf-tag--gap: var(--sf-tag-gap, var(--sf-tag--c76-gap));
+  --sf-tag--close-size: calc(var(--sf-tag--c76-picture) / 2);
+  gap: var(--sf-tag--gap);
+  min-block-size: var(--sf-tag--c76-height);
+  padding-block: var(--sf-tag-padding-block, calc((var(--sf-tag--c76-height) - var(--sf-tag--c76-picture)) / 2));
+  padding-inline: var(--sf-tag-padding-inline, var(--sf-tag--c76-edge));
+}
+
+.sf-tag:is(.sf-tag--size-1\/3, .sf-tag--size-1\/2, .sf-tag--size-1, .sf-tag--size-2):not(.sf-tag--inline):not([class*="sf-tag--line-"]) .sf-tag-container {
+  margin-inline: calc(var(--sf-tag--font-size) / -20);
+  padding-inline: 0;
+  line-height: var(--sf-tag--c76-picture);
+}
+
+.sf-tag:is(.sf-tag--size-1\/3, .sf-tag--size-1\/2, .sf-tag--size-1, .sf-tag--size-2):not(.sf-tag--inline):not([class*="sf-tag--line-"]) .sf-tag-count {
+  padding-inline: 0;
+}
+
+.sf-tag:is(.sf-tag--size-1\/3, .sf-tag--size-1\/2, .sf-tag--size-1, .sf-tag--size-2):not(.sf-tag--inline):not([class*="sf-tag--line-"]) > .sf-avatar {
+  --sf-avatar--height: var(--sf-tag--c76-picture);
+  --sf-avatar--width: var(--sf-tag--c76-picture);
+  margin-inline-start: calc(var(--sf-tag--c76-picture) / -16);
+}
+
+.sf-tag:is(.sf-tag--size-1\/3, .sf-tag--size-1\/2, .sf-tag--size-1, .sf-tag--size-2):not(.sf-tag--inline):not([class*="sf-tag--line-"]) > :is(sf-icon, .sf-icon) {
+  margin-inline: calc(var(--sf-tag--c76-picture) / -12);
+}
+
+.sf-tag:is(.sf-tag--size-1\/3, .sf-tag--size-1\/2, .sf-tag--size-1, .sf-tag--size-2):not(.sf-tag--inline):not([class*="sf-tag--line-"]) > .sf-tag-color-icon {
+  --sf-tag-color-icon--height: var(--sf-a8);
+  --sf-tag-color-icon--width: var(--sf-a8);
+  margin-inline-start: calc(var(--sf-a8) / -16);
+}
+
+.sf-tag:is(.sf-tag--size-1\/3, .sf-tag--size-1\/2, .sf-tag--size-1, .sf-tag--size-2):not(.sf-tag--inline):not([class*="sf-tag--line-"]) > .sf-tag-check {
+  inline-size: calc(var(--sf-tag--c76-picture) - var(--sf-a4));
+  block-size: calc(var(--sf-tag--c76-picture) - var(--sf-a4));
+}
+
+/* The cross of 8 (step 1/3 everywhere, 1/2 on a phone and in compact) is
+   drawn with a 1.5 px line (C76, research §10.1): the 2 px line of every
+   cross made the small cross read heavier than its 12 px text. */
+.sf-tag.sf-tag--size-1\/3:not(.sf-tag--inline):not([class*="sf-tag--line-"]) .sf-close-icon {
+  --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cdefs%3E%3Cmask%20id=%27m%27%3E%3Crect%20width=%27100%25%27%20height=%27100%25%27%20fill=%27white%27/%3E%3Cpolygon%20points=%270,0%201.4142,0%200,1.4142%27/%3E%3Csvg%20x=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%20-1.4142,0%200,1.4142%27/%3E%3C/svg%3E%3Csvg%20y=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%201.4142,0%200,-1.4142%27/%3E%3C/svg%3E%3Csvg%20x=%27100%25%27%20y=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%20-1.4142,0%200,-1.4142%27/%3E%3C/svg%3E%3C/mask%3E%3C/defs%3E%3Cg%20mask=%27url(%23m)%27%20stroke=%27black%27%20stroke-width=%271.5%27%3E%3Cline%20x1=%270%27%20y1=%270%27%20x2=%27100%25%27%20y2=%27100%25%27/%3E%3Cline%20x1=%27100%25%27%20y1=%270%27%20x2=%270%27%20y2=%27100%25%27/%3E%3C/g%3E%3C/svg%3E");
+  --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cdefs%3E%3Cmask%20id=%27m%27%3E%3Crect%20width=%27100%25%27%20height=%27100%25%27%20fill=%27white%27/%3E%3Cpolygon%20points=%270,0%201.4142,0%200,1.4142%27/%3E%3Csvg%20x=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%20-1.4142,0%200,1.4142%27/%3E%3C/svg%3E%3Csvg%20y=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%201.4142,0%200,-1.4142%27/%3E%3C/svg%3E%3Csvg%20x=%27100%25%27%20y=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%20-1.4142,0%200,-1.4142%27/%3E%3C/svg%3E%3C/mask%3E%3C/defs%3E%3Cg%20mask=%27url(%23m)%27%20stroke=%27black%27%20stroke-width=%271.5%27%3E%3Cline%20x1=%270%27%20y1=%270%27%20x2=%27100%25%27%20y2=%27100%25%27/%3E%3Cline%20x1=%27100%25%27%20y1=%270%27%20x2=%270%27%20y2=%27100%25%27/%3E%3C/g%3E%3C/svg%3E");
+}
+
+@media (width < map.get(bp.$breakpoint-array, lg)) {
+  .sf-tag.sf-tag--size-1\/2:not(.sf-tag--inline):not([class*="sf-tag--line-"]) .sf-close-icon {
+    --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cdefs%3E%3Cmask%20id=%27m%27%3E%3Crect%20width=%27100%25%27%20height=%27100%25%27%20fill=%27white%27/%3E%3Cpolygon%20points=%270,0%201.4142,0%200,1.4142%27/%3E%3Csvg%20x=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%20-1.4142,0%200,1.4142%27/%3E%3C/svg%3E%3Csvg%20y=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%201.4142,0%200,-1.4142%27/%3E%3C/svg%3E%3Csvg%20x=%27100%25%27%20y=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%20-1.4142,0%200,-1.4142%27/%3E%3C/svg%3E%3C/mask%3E%3C/defs%3E%3Cg%20mask=%27url(%23m)%27%20stroke=%27black%27%20stroke-width=%271.5%27%3E%3Cline%20x1=%270%27%20y1=%270%27%20x2=%27100%25%27%20y2=%27100%25%27/%3E%3Cline%20x1=%27100%25%27%20y1=%270%27%20x2=%270%27%20y2=%27100%25%27/%3E%3C/g%3E%3C/svg%3E");
+    --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cdefs%3E%3Cmask%20id=%27m%27%3E%3Crect%20width=%27100%25%27%20height=%27100%25%27%20fill=%27white%27/%3E%3Cpolygon%20points=%270,0%201.4142,0%200,1.4142%27/%3E%3Csvg%20x=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%20-1.4142,0%200,1.4142%27/%3E%3C/svg%3E%3Csvg%20y=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%201.4142,0%200,-1.4142%27/%3E%3C/svg%3E%3Csvg%20x=%27100%25%27%20y=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%20-1.4142,0%200,-1.4142%27/%3E%3C/svg%3E%3C/mask%3E%3C/defs%3E%3Cg%20mask=%27url(%23m)%27%20stroke=%27black%27%20stroke-width=%271.5%27%3E%3Cline%20x1=%270%27%20y1=%270%27%20x2=%27100%25%27%20y2=%27100%25%27/%3E%3Cline%20x1=%27100%25%27%20y1=%270%27%20x2=%270%27%20y2=%27100%25%27/%3E%3C/g%3E%3C/svg%3E");
+  }
+}
+
+@media (min-width: map.get(bp.$breakpoint-array, lg)) {
+  [data-sf-density="compact"] .sf-tag.sf-tag--size-1\/2:not(.sf-tag--inline):not([class*="sf-tag--line-"]):not([data-sf-density="normal"] .sf-tag) .sf-close-icon {
+    --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cdefs%3E%3Cmask%20id=%27m%27%3E%3Crect%20width=%27100%25%27%20height=%27100%25%27%20fill=%27white%27/%3E%3Cpolygon%20points=%270,0%201.4142,0%200,1.4142%27/%3E%3Csvg%20x=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%20-1.4142,0%200,1.4142%27/%3E%3C/svg%3E%3Csvg%20y=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%201.4142,0%200,-1.4142%27/%3E%3C/svg%3E%3Csvg%20x=%27100%25%27%20y=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%20-1.4142,0%200,-1.4142%27/%3E%3C/svg%3E%3C/mask%3E%3C/defs%3E%3Cg%20mask=%27url(%23m)%27%20stroke=%27black%27%20stroke-width=%271.5%27%3E%3Cline%20x1=%270%27%20y1=%270%27%20x2=%27100%25%27%20y2=%27100%25%27/%3E%3Cline%20x1=%27100%25%27%20y1=%270%27%20x2=%270%27%20y2=%27100%25%27/%3E%3C/g%3E%3C/svg%3E");
+    --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cdefs%3E%3Cmask%20id=%27m%27%3E%3Crect%20width=%27100%25%27%20height=%27100%25%27%20fill=%27white%27/%3E%3Cpolygon%20points=%270,0%201.4142,0%200,1.4142%27/%3E%3Csvg%20x=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%20-1.4142,0%200,1.4142%27/%3E%3C/svg%3E%3Csvg%20y=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%201.4142,0%200,-1.4142%27/%3E%3C/svg%3E%3Csvg%20x=%27100%25%27%20y=%27100%25%27%20overflow=%27visible%27%3E%3Cpolygon%20points=%270,0%20-1.4142,0%200,-1.4142%27/%3E%3C/svg%3E%3C/mask%3E%3C/defs%3E%3Cg%20mask=%27url(%23m)%27%20stroke=%27black%27%20stroke-width=%271.5%27%3E%3Cline%20x1=%270%27%20y1=%270%27%20x2=%27100%25%27%20y2=%27100%25%27/%3E%3Cline%20x1=%27100%25%27%20y1=%270%27%20x2=%270%27%20y2=%27100%25%27/%3E%3C/g%3E%3C/svg%3E");
+  }
 }
 }

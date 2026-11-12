@@ -15,10 +15,14 @@
     "src/component/tags/scss/_var__tags.scss",
     "src/component/tags/scss/index.scss"
   ],
-  "content_sha256": "51ddd0e5e2485087a1778d390430b15fa30308bf5c02fb7cfeaca149c28561c5",
+  "content_sha256": "6f9c28db7ec9e90346deaf898d7f745d780a9492e87536930e9b414324bfe35a",
   "dependencies": [
     {
       "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.breakpoint",
       "range": "^1.0.0"
     },
     {
