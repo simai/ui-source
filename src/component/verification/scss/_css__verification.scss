@@ -27,13 +27,12 @@
   flex: none;
   align-self: center;
   inline-size: var(--sf-space-1\/2);
-  block-size: var(--sf-px);
-  border-radius: var(--sf-radius-circle);
-  background: var(--sf-on-surface-variant);
+  block-size: 0;
+  border-block-start: var(--sf-px) solid var(--sf-on-surface-variant);
 }
 
 .sf-verification:has(.sf-verification-input:disabled) .sf-verification-separator {
-  background: var(--sf-on-surface-disabled);
+  border-block-start-color: var(--sf-outline-disabled);
 }
 
 .sf-verification-cell,
@@ -103,19 +102,14 @@
 
 /* The cell the next character goes to is marked only while the field has the
    focus: a field at rest drew a primary cell, so three fields on one page all
-   looked focused (docs pre-check 2026-11-10 CI-02). The mark is two pixels
-   (the border and an inset line of the same colour), so it reads over the
-   hover of a neighbour (K3, owner R138). */
-.sf-verification:has(.sf-verification-input:focus) .sf-verification-cell.current {
-  border-color: var(--sf-primary);
-  box-shadow: inset 0 0 0 var(--sf-verification--border-width) var(--sf-primary);
-}
+   looked focused (docs pre-check 2026-11-10 CI-02). Hover no longer covers
+   it (K3, owner R138): a hover marks one other cell. */
+.sf-verification:has(.sf-verification-input:focus) .sf-verification-cell.current { border-color: var(--sf-primary); }
 
 /* A refused code marks its current cell in the error colour, as its border. */
 .sf-verification-form.error .sf-verification:has(.sf-verification-input:focus) .sf-verification-cell.current,
 .sf-verification.error:has(.sf-verification-input:focus) .sf-verification-cell.current {
   border-color: var(--sf-verification-invalid-border-color, var(--sf-error));
-  box-shadow: inset 0 0 0 var(--sf-verification--border-width) var(--sf-verification-invalid-border-color, var(--sf-error));
 }
 
 /* The caret, drawn by the runtime that owns the field in the cell the next
@@ -200,8 +194,8 @@
 @media (forced-colors: active) {
   .sf-verification-cell,
   .sf-verification-form-wrap .sf-verification { border-color: CanvasText; }
-  .sf-verification-cell.caret::after,
-  .sf-verification-separator { background: CanvasText; }
+  .sf-verification-cell.caret::after { background: CanvasText; }
+  .sf-verification-separator { border-block-start-color: CanvasText; }
   .sf-verification:has(.sf-verification-input:focus) .sf-verification-cell.selected {
     background: Highlight;
     color: HighlightText;

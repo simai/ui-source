@@ -84,9 +84,9 @@ test('code input: charset, uppercase and groups (C82)', () => {
   // The separators are drawn with the cells, aria-hidden, never in the value.
   assert.match(template, /html`<span class="sf-verification-separator"><\/span>`/u);
   assert.match(template, /if \(separators\.includes\(index\)\) parts\.push/u);
-  assert.match(template, /autocapitalize=\$\{uppercase \? 'characters' : 'off'\}/u);
-  assert.match(source, /get kind\(\) \{\n    return codeKind\(\{mode: this\.mode, charset: this\.charset, uppercase: this\.uppercase\}\);/u);
-  assert.match(classSheet, /\.sf-verification-separator \{[^}]*inline-size: var\(--sf-space-1\\\/2\);[^}]*background: var\(--sf-on-surface-variant\);/u);
+  assert.match(template, /autocapitalize=\$\{capitals \? 'characters' : 'off'\}/u);
+  assert.match(source, /settings\.uppercase = this\.uppercase;\n    return codeKind\(settings\);/u);
+  assert.match(classSheet, /\.sf-verification-separator \{[^}]*inline-size: var\(--sf-space-1\\\/2\);[^}]*border-block-start: var\(--sf-px\) solid var\(--sf-on-surface-variant\);/u);
   const settings = JSON.parse(read('src/smart/input-code/component.json')).settings;
   assert.equal(settings.charset.type, 'string');
   assert.equal(settings.uppercase.type, 'boolean');

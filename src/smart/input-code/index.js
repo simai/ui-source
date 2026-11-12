@@ -133,8 +133,13 @@ class SfCodeInput extends FormField(CodeInputElement) {
 
   // What the code is made of: the mode, the alphabet and whether letters
   // become capitals (C82), as code.mjs reads it.
+  // (The setting is copied in by member, not as an object key: the loader
+  // reads a bare word of this file as a utility class, and the bare
+  // `uppercase` asked for utility.font-transform.)
   get kind() {
-    return codeKind({mode: this.mode, charset: this.charset, uppercase: this.uppercase});
+    const settings = {mode: this.mode, charset: this.charset};
+    settings.uppercase = this.uppercase;
+    return codeKind(settings);
   }
 
   get numeric() {
@@ -616,7 +621,9 @@ class SfCodeInput extends FormField(CodeInputElement) {
       length: this.length,
       mask: this.mask,
       inputMode: codeInputMode(this.kind),
-      uppercase: this.kind.uppercase,
+      // Letters become capitals: the keyboard offers them (C82). Not named
+      // after the setting: the loader reads template words as utility classes.
+      capitals: this.kind.uppercase,
       groups: this.groups,
       // The cells a group separator follows (C82).
       separators: Array.from({length: this.length}, (_, index) => index)

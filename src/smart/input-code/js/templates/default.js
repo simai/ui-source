@@ -36,7 +36,7 @@ export function renderCodeInputTemplate(context) {
     length,
     mask,
     inputMode,
-    uppercase,
+    capitals,
     groups,
     separators = [],
     ariaLabel,
@@ -86,7 +86,7 @@ export function renderCodeInputTemplate(context) {
           type=${mask ? 'password' : 'text'}
           inputmode=${inputMode}
           autocomplete="one-time-code"
-          autocapitalize=${uppercase ? 'characters' : 'off'}
+          autocapitalize=${capitals ? 'characters' : 'off'}
           autocorrect="off"
           spellcheck="false"
           dir="ltr"

@@ -18,7 +18,7 @@
     "src/component/verification/scss/_css__verification_custom.scss",
     "src/component/verification/scss/index.scss"
   ],
-  "content_sha256": "476bbab763caa87e405ffa8ae45c06a914b8633f3b67ed97df81f286966d1b88",
+  "content_sha256": "0305d11b80132241c95b84c608bead64cca83425bfcb64f826883eba1ce67264",
   "dependencies": [
     {
       "id": "core.runtime",
@@ -35,10 +35,6 @@
     {
       "id": "tokens.colour",
       "range": "^1.0.0"
-    },
-    {
-      "id": "tokens.radius",
-      "range": "^1.1.0"
     },
     {
       "id": "tokens.size",
