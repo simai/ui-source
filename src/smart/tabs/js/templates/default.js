@@ -42,6 +42,8 @@ function renderPanel(item, context) {
         ? item.panel.text
         : nothing;
 
+  // Beside a strip of links a panel is the current page's content, not a
+  // tabpanel: no tab names it.
   return html`
     <div
       class=${joinClasses(
@@ -49,9 +51,9 @@ function renderPanel(item, context) {
         item.selected ? 'selected' : '',
         context.panelClass,
       )}
-      role="tabpanel"
+      role=${context.links ? nothing : 'tabpanel'}
       id=${`${context.tabsId}--panel-${item.index}`}
-      aria-labelledby=${`${context.tabsId}--tab-${item.index}`}
+      aria-labelledby=${context.links ? nothing : `${context.tabsId}--tab-${item.index}`}
       data-sf-tab-panel=${String(item.index)}
       data-entry=${item.key}
       slot=${context.panelSlot?.(item) || nothing}
@@ -65,7 +67,8 @@ function renderPanel(item, context) {
 // A disabled tab stays focusable and says aria-disabled (R184 T9: a native
 // disabled button could not be reached, so nobody learnt why it was off). It
 // is not the native disabled: the tabs' sheet gives the class the disabled
-// look, and a press on it selects nothing.
+// look, and a press on it selects nothing. A disabled link of a strip of
+// links is sf-button's disabled link: no href, aria-disabled.
 function tabClasses(item) {
   return joinClasses(item.selected ? 'selected' : '', item.disabled ? 'disabled' : '');
 }
@@ -124,6 +127,8 @@ function renderTab(item, context) {
                   appearance="primary"
                   size=${context.size}
                   scheme=${context.scheme}
+                  href=${context.links ? item.href : nothing}
+                  ?disabled=${Boolean(context.links && item.disabled)}
                   text=${item.label}
                   icon=${item.icon || nothing}
                   icon-start=${item.iconLeft || nothing}
@@ -158,6 +163,39 @@ function renderTab(item, context) {
   }
 }
 
+function topClasses(context) {
+  return joinClasses(`sf-tabs-top flex content-main-${context.topPosition}`, context.type === 'vertical' ? 'flex-col' : '', context.topClass);
+}
+
+function renderTabs(context) {
+  return repeat(context.displayItems ?? context.items,
+    // Keyed by the tab, so a reordered tab keeps its own button: by
+    // position, the buttons kept their old labels and counts while the
+    // hosts' text was already the new one (docs trial 4).
+    (item) => item.key ?? item.index,
+    (item) => renderTab(item, context));
+}
+
+// Every item an address (sf-tabs 1.3.0, owner decision C96 item 8): a <nav>
+// of links with the same look, the current one aria-current="page"; no
+// tablist, no arrows, no panels named by tabs.
+function renderLinkRow(context) {
+  return html`<nav
+          class=${topClasses(context)}
+          aria-label=${context.component?.getAttribute('aria-label') || nothing}
+          aria-labelledby=${context.component?.getAttribute('aria-labelledby') || nothing}
+        >
+          ${renderTabs(context)}
+        </nav>`;
+}
+
+// A strip of links draws its panel row only when a panel has content.
+function hasPanelContent(context) {
+  return context.items.some((item) => context.pagePanel?.(item, item.index)
+    || context.component?.hasSlotContent?.(item.slotName)
+    || item.panel?.component || typeof item.panel?.text !== 'undefined');
+}
+
 export function renderTabsTemplate(context) {
   const vertical = context.type === 'vertical';
   const sizeClass = `sf-tabs--size-${String(context.size || '1').replace('/', '-')}`;
@@ -167,6 +205,7 @@ export function renderTabsTemplate(context) {
     context.overflow && context.overflow !== 'scroll' ? `sf-tabs--overflow-${context.overflow}` : '',
     context.type ? `sf-tabs--${context.type}` : '',
     vertical ? 'sf-tabs--vertical flex' : 'flex flex-col',
+    context.links ? 'sf-tabs--links' : '',
     context.rootClass,
   );
 
@@ -179,20 +218,15 @@ export function renderTabsTemplate(context) {
       role="group"
     >
       <div class=${joinClasses('sf-tabs-top-container', context.overflow === 'more' || context.configurable ? 'sf-tabs-top-container--tools' : '')}>
-        <div
-          class=${joinClasses(`sf-tabs-top flex content-main-${context.topPosition}`,  context.type === 'vertical' ? 'flex-col' : '', context.topClass)}
+        ${context.links ? renderLinkRow(context) : html`<div
+          class=${topClasses(context)}
           role="tablist"
           aria-label=${context.component?.getAttribute('aria-label') || nothing}
           aria-labelledby=${context.component?.getAttribute('aria-labelledby') || nothing}
           aria-orientation=${vertical ? 'vertical' : 'horizontal'}
         >
-          ${repeat(context.displayItems ?? context.items,
-            // Keyed by the tab, so a reordered tab keeps its own button: by
-            // position, the buttons kept their old labels and counts while the
-            // hosts' text was already the new one (docs trial 4).
-            (item) => item.key ?? item.index,
-            (item) => renderTab(item, context))}
-        </div>
+          ${renderTabs(context)}
+        </div>`}
         ${context.overflow === 'more' && !vertical
           ? html`<sf-button class="sf-tabs-more" appearance="ghost" scheme="on-surface" size=${context.size}
                             icon-end="expand_more" text=${context.moreText} aria-haspopup="menu"></sf-button>`
@@ -205,9 +239,9 @@ export function renderTabsTemplate(context) {
           : nothing}
       </div>
 
-      <div class="sf-tabs-main-container">
+      ${context.links && !hasPanelContent(context) ? nothing : html`<div class="sf-tabs-main-container">
         ${context.items.map((item) => renderPanel(item, context))}
-      </div>
+      </div>`}
     </div>
   `;
 }

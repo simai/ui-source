@@ -129,7 +129,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "An item (set with setItems) may carry key (a stable id for the settings; the index otherwise), icon, count (a small counter after the label), href (the tab is a link: activating it goes to the address; aria-current=page on the active one) and pinned (never hidden, fixed in the settings); disabled (the tab stays focusable, says aria-disabled and selects nothing) and hint (a short text in the Framework tooltip on the tab, read as its description: for a disabled tab, why it is off)."
+        "description": "An item (set with setItems) may carry key (a stable id for the settings; the index otherwise), icon, count (a small counter after the label), href (an address; when every item has one the row is a strip of links -- a <nav> of <a> with the same look, the current one aria-current=\"page\", no tablist, no arrows, Tab and Enter as links; one item with href among tabs is a tab that goes to its address) and pinned (never hidden, fixed in the settings); disabled (the tab stays focusable, says aria-disabled and selects nothing) and hint (a short text in the Framework tooltip on the tab, read as its description: for a disabled tab, why it is off)."
       },
       "settings": {
         "type": "object"
@@ -517,7 +517,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tabs/index.js",
-        "sha256": "0bba96f7fe4a01e77cb4d8dbf848b811e59ebf531e66d21a87a5fc0fc88b92c1"
+        "sha256": "674993dbdd1c6efc7f7736f6d451be71c4548dd5a82decdc243739a25b4cadb9"
       }
     ],
     "generated_runtime": [

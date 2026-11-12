@@ -30,7 +30,7 @@ function setup({vertical = false, rtl = false, selected = 0, disabled = [1]} = {
   const host = new Constructor(), list = {getAttribute: () => vertical ? 'vertical' : 'horizontal'};
   const tabs = [0, 1, 2].map(index => {
     const tab = new Element(); tab.dataset = {sfTabIndex: String(index)};
-    tab.closest = selector => selector === 'sf-tabs' ? host : selector === '[role="tablist"]' ? list : tab;
+    tab.closest = selector => selector === 'sf-tabs' ? host : selector === '.sf-tabs-top' ? list : tab;
     return tab;
   });
   Object.defineProperties(host, {
@@ -103,7 +103,8 @@ test('Tabs all-disabled and independent instances keep valid local semantics', (
   const id = second.tabs[0].id; second.host.syncTabSemantics(); assert.equal(second.tabs[0].id, id);
 });
 test('Tabs template links panels and gives icon-only tabs their text name, without host tabstops', () => {
-  assert.match(template, /aria-labelledby=\$\{`\$\{context.tabsId\}--tab-\$\{item.index\}`\}/);
+  // A strip of links (sf-tabs 1.3.0, R184 T4) has no tabpanel; the tabs' panels are named by their tab.
+  assert.match(template, /aria-labelledby=\$\{context\.links \? nothing : `\$\{context.tabsId\}--tab-\$\{item.index\}`\}/);
   assert.match(template, /aria-label=\$\{item.label\}/);
   for (const tag of ['sf-button', 'sf-button-icon']) {
     const branch = template.split(`<${tag}\n`)[1].split(`</${tag}>`)[0];

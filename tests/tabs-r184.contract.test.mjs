@@ -175,7 +175,8 @@ test('T9: a disabled tab is focusable, says aria-disabled, and tells why in a to
   // Not the native disabled: the class, and aria-disabled from syncTabSemantics.
   for (const tag of ['sf-button', 'sf-button-icon']) {
     const branch = template.split(`<${tag}\n`)[1].split(`</${tag}>`)[0];
-    assert.doesNotMatch(branch, /\?disabled=/u, `${tag}: no native disabled`);
+    // The native disabled only for a link of a strip of links (T4).
+    assert.doesNotMatch(branch.replace('?disabled=${Boolean(context.links && item.disabled)}', ''), /\?disabled=/u, `${tag}: no native disabled`);
     assert.match(branch, /root-class=\$\{tabClasses\(item\)\}/u);
     assert.match(branch, /data-tooltip=\$\{item\.hint \? hintId\(item, context\) : nothing\}/u);
   }
@@ -199,4 +200,39 @@ test('T9: a disabled tab is focusable, says aria-disabled, and tells why in a to
   assert.match(source, /const enabledItems = this\.displayItems\.filter\(\(item\) => !overflowed\.has\(item\.index\)\);/u);
   assert.match(method('selectTab', 'index, { person = false } = {}'), /if \(item\.disabled\) return \{ outcome: 'refused', reason: 'disabled' \};/u);
   assert.match(method('activate', 'index, event = null, { person = true } = {}'), /if \(!item \|\| item\.disabled\) return;/u);
+});
+
+test('T4: when every item has an address the row is a nav of links with aria-current, not a tablist', () => {
+  const body = source.slice(source.indexOf('  get links() {') + '  get links() {'.length, source.indexOf('\n  }\n', source.indexOf('  get links() {')));
+  const linksOf = new Function(`return function () {${body}}`)();
+  assert.equal(linksOf.call({computedItems: [{href: '/a'}, {href: '/b'}]}), true);
+  assert.equal(linksOf.call({computedItems: [{href: '/a'}, {href: ''}]}), false);
+  assert.equal(linksOf.call({computedItems: []}), false);
+  // The row: <nav> with the tabs' own name and classes; sf-button draws <a href>.
+  assert.match(template, /\$\{context\.links \? renderLinkRow\(context\) : html`<div\s*class=\$\{topClasses\(context\)\}\s*role="tablist"/u);
+  const row = template.slice(template.indexOf('function renderLinkRow'), template.indexOf('// A strip of links draws its panel row'));
+  assert.match(row, /<nav\s*class=\$\{topClasses\(context\)\}\s*aria-label=/u);
+  assert.doesNotMatch(row, /role=|aria-orientation/u);
+  assert.match(template, /href=\$\{context\.links \? item\.href : nothing\}/u);
+  assert.match(template, /context\.links \? 'sf-tabs--links' : ''/u);
+  // No tabpanel beside links; no panel row when no panel has content.
+  assert.match(template, /role=\$\{context\.links \? nothing : 'tabpanel'\}/u);
+  assert.match(template, /\$\{context\.links && !hasPanelContent\(context\) \? nothing :/u);
+  // The row is found by its class, so the overflow layout and «Ещё» work for both.
+  assert.match(source, /return this\.querySelector\(':scope > \.sf-tabs > \.sf-tabs-top-container > \.sf-tabs-top'\);/u);
+
+  // Semantics: no tab roles; the current link aria-current="page".
+  const sync = new Function(`return function () {${method('syncLinkSemantics')}}`)();
+  const link = (localName) => ({localName, attrs: new Map([['role', 'tab'], ['aria-selected', 'false'], ['tabindex', '-1'], ['aria-controls', 'x']]),
+    getAttribute(name) { return this.attrs.get(name) ?? null; }, setAttribute(name, value) { this.attrs.set(name, String(value)); },
+    removeAttribute(name) { this.attrs.delete(name); }, querySelector: () => ({})});
+  const anchors = [link('a'), link('a')];
+  sync.call({computedItems: [{selected: false, label: 'A'}, {selected: true, label: 'B'}], tabTargets: anchors});
+  assert.deepEqual(anchors.map((one) => Object.fromEntries(one.attrs)), [{}, {'aria-current': 'page'}]);
+  assert.match(source, /syncTabSemantics\(\) \{\s*if \(this\.links\) \{\s*this\.syncLinkSemantics\(\);\s*return;/u);
+  // Links are walked with Tab, not arrows; a pressed link is followed by the
+  // browser, the strip only marks it current (a modifier opens a new tab natively).
+  assert.match(source, /\/\/ A strip of links is walked with Tab and followed with Enter, as links are\.\s*if \(this\.links\) return;/u);
+  const activate = method('activate', 'index, event = null, { person = true } = {}');
+  assert.match(activate, /if \(item\.href && event\?\.target\?\.closest\?\.\('a\[href\]'\) && this\.links\) \{\s*if \(!\(event\.metaKey \|\| event\.ctrlKey \|\| event\.shiftKey \|\| event\.altKey\)\) this\.selectTab\(index, \{ person \}\);\s*return;/u);
 });

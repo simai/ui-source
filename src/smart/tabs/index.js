@@ -260,7 +260,8 @@ class SfTabs extends TabsElement {
   }
 
   get tabList() {
-    return this.querySelector(':scope > .sf-tabs > .sf-tabs-top-container > [role="tablist"]');
+    // The row: a tablist, or the nav of a strip of links (R184 T4).
+    return this.querySelector(':scope > .sf-tabs > .sf-tabs-top-container > .sf-tabs-top');
   }
 
   // The tab of each item, by the item's index: the tabs are drawn in the
@@ -269,7 +270,7 @@ class SfTabs extends TabsElement {
     const targets = [];
     for (const element of Array.from(this.tabList?.children || [])) {
       const target = (element.matches('sf-button') || isTag(element, 'sf-button-icon'))
-        ? element.querySelector(':scope > button')
+        ? element.querySelector(':scope > button, :scope > a')
         : element.matches('[role="tab"]') ? element : null;
       const index = tabIndexOf(element);
       if (Number.isInteger(index)) targets[index] = target;
@@ -489,7 +490,20 @@ class SfTabs extends TabsElement {
     return (this.getAttribute('size') ?? '1') === '1/2' ? '1/2' : '1';
   }
 
+  // Every item an address: the row is a strip of links -- a <nav> of <a>,
+  // the current one aria-current="page" -- not a tablist (owner decision C96
+  // item 8; R184 T4: a tab with href was a role=tab button that promised a
+  // panel and had no link to open in a new tab).
+  get links() {
+    const items = this.computedItems;
+    return items.length > 0 && items.every((item) => item.href);
+  }
+
   syncTabSemantics() {
+    if (this.links) {
+      this.syncLinkSemantics();
+      return;
+    }
     const items = this.computedItems;
     const shown = new Set(this.displayItems.map((item) => item.index));
     const tabStop = items.find(item => item.selected && !item.disabled && shown.has(item.index))
@@ -521,10 +535,30 @@ class SfTabs extends TabsElement {
     });
   }
 
+  // A strip of links: no tab roles and no roving tab stop; the current link
+  // says aria-current="page". A disabled link is sf-button's: no href,
+  // aria-disabled.
+  syncLinkSemantics() {
+    const items = this.computedItems;
+    this.tabTargets.forEach((link, index) => {
+      const item = items[index];
+      if (!link || !item) return;
+      for (const name of ['role', 'aria-controls', 'aria-selected', 'aria-labelledby', 'tabindex']) {
+        if (name === 'role' && link.getAttribute('role') === 'link') continue;
+        link.removeAttribute(name);
+      }
+      if (link.localName !== 'a') link.removeAttribute('aria-disabled');
+      if (item.disabled) link.setAttribute('aria-disabled', 'true');
+      if (item.selected) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+      if (!link.querySelector(':scope > .sf-button-text-container') && item.label) link.setAttribute('aria-label', item.label);
+    });
+  }
+
   ownedTab(event) {
     const tab = event.target?.closest?.('[data-sf-tab-index]');
     if (!(tab instanceof HTMLElement) || tab.closest('sf-tabs') !== this
-      || tab.closest('[role="tablist"]') !== this.tabList) return null;
+      || tab.closest('.sf-tabs-top') !== this.tabList) return null;
     return this.tabTargets.includes(tab) ? tab : null;
   }
 
@@ -756,9 +790,10 @@ class SfTabs extends TabsElement {
   // (APG tabs; R184 T8: every panel was, even one that starts with a field).
   // A page's panel written with a tabindex keeps it.
   syncPanelFocus() {
+    const links = this.links;
     for (const panel of this.drawnPanels()) {
       if (this._authoredPanelFocus.has(panel)) continue;
-      if (panel.querySelector(FOCUSABLE)) panel.removeAttribute('tabindex');
+      if (links || panel.querySelector(FOCUSABLE)) panel.removeAttribute('tabindex');
       else panel.setAttribute('tabindex', '0');
     }
   }
@@ -1027,6 +1062,12 @@ class SfTabs extends TabsElement {
   activate(index, event = null, { person = true } = {}) {
     const item = this.computedItems[index];
     if (!item || item.disabled) return;
+    // A link of the strip pressed by the person: the browser follows it (and
+    // opens it in a new tab with a modifier); the strip only marks it current.
+    if (item.href && event?.target?.closest?.('a[href]') && this.links) {
+      if (!(event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) this.selectTab(index, { person });
+      return;
+    }
     if (item.href) {
       if (event && (event.metaKey || event.ctrlKey || event.shiftKey || event.button === 1)) {
         globalThis.open?.(item.href, '_blank', 'noopener');
@@ -1134,6 +1175,7 @@ class SfTabs extends TabsElement {
       displayItems: this.displayItems,
       overflow: this.overflow,
       configurable: this.configurable,
+      links: this.links,
       moreText: this.text('more'),
       customizeText: this.text('customize'),
       rootClass: this.getRootClass(),
@@ -1332,6 +1374,8 @@ class SfTabs extends TabsElement {
 
   handleRootKeyDown = (event) => {
     if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+    // A strip of links is walked with Tab and followed with Enter, as links are.
+    if (this.links) return;
     const more = this.moreTarget;
     if (more && (event.target === more || more.contains(event.target)) && this.tabList.getAttribute('aria-orientation') !== 'vertical') {
       const rtl = getComputedStyle(this.tabList).direction === 'rtl';
