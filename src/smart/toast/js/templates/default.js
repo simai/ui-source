@@ -29,7 +29,10 @@ export function toastActions(context) {
 
 // A no-break space keeps the link with the text's last word: after a plain
 // space a full line sent the link alone onto a line of its own (T2, C50
-// acceptance r3).
+// acceptance r3). It is written into the text's own node, not a node of its
+// own: a text node of white space alone is the template's indentation to the
+// first-paint snapshot, which prints it as one plain space (group build
+// 2026-11-12, toast/link).
 const LINK_SPACE = '\u00a0';
 
 function renderLink(link) {
@@ -74,10 +77,10 @@ export function renderToastTemplate(context) {
       <div class="sf-toast-container flex flex-col flex-1">
         <div class="sf-toast-wrap flex flex-col">
           ${context.title
-            ? html`<div class="sf-toast-text">${context.title}${link && !context.supportingText ? html`${LINK_SPACE}${renderLink(link)}` : nothing}</div>`
+            ? html`<div class="sf-toast-text">${link && !context.supportingText ? `${context.title}${LINK_SPACE}` : context.title}${link && !context.supportingText ? renderLink(link) : nothing}</div>`
             : nothing}
           ${context.supportingText || (link && !context.title)
-            ? html`<div class="sf-toast-supporting-text">${context.supportingText}${link ? html`${context.supportingText ? LINK_SPACE : nothing}${renderLink(link)}` : nothing}</div>`
+            ? html`<div class="sf-toast-supporting-text">${link && context.supportingText ? `${context.supportingText}${LINK_SPACE}` : context.supportingText}${link ? renderLink(link) : nothing}</div>`
             : nothing}
         </div>
 
