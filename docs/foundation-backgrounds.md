@@ -164,8 +164,10 @@ row) it does nothing and needs no taking back.
 - **Muted is disabled.** `--sf-on-surface-muted` is
   `var(--sf-on-surface-disabled)` and is deprecated
   (`token-c43-muted-is-disabled`, remove after 2027-01-01): it follows the
-  place it stands on. A disabled tree item and the offline dot of an avatar
-  read the disabled ink.
+  place it stands on. A disabled tree item reads the disabled ink; the
+  offline dot of an avatar read it too until 2026-11-11 and is now the dim
+  ink `--sf-on-surface-variant` (the disabled ink was under 3:1 for a status
+  mark).
 - **Boundary on the light grey steps.** On `bg-surface-2/3/4` the resting
   boundary `--sf-outline` is opaque neutral-50 in the light theme (3.94, 3.47
   and 3.03 : 1 against the block), so a checkbox, a switch or a field keeps

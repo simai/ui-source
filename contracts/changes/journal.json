@@ -10569,6 +10569,37 @@
       },
       "owner": "ui-source",
       "source": "src/smart/dropdown/index.js"
+    },
+    {
+      "id": "value-avatar-offline-dot-dim-ink",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-avatar: the offline dot is the place's dim ink, --sf-on-surface-variant, not the disabled ink laid over the place colour (defect fix: the disabled ink was under 3:1 for a status mark, light 3.10 against the page and 2.56 against the avatar, the dark grey plate 2.48 / 1.67; the dim ink is at least 6.44 / 4.43 on the page, a card and the grey plate in both themes). The two public variables stay: --sf-avatar-offline-background-color defaults to var(--sf-on-surface-variant) (was var(--sf-surface-place)) and --sf-avatar-offline-overlay to none (was the disabled ink).",
+      "items": [
+        {
+          "component": "sf-avatar",
+          "attribute": "--sf-avatar-offline-background-color",
+          "from": "var(--sf-surface-place)",
+          "to": "var(--sf-on-surface-variant)"
+        },
+        {
+          "component": "sf-avatar",
+          "attribute": "--sf-avatar-offline-overlay",
+          "from": "linear-gradient(var(--sf-on-surface-disabled) 0 0)",
+          "to": "none"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite in markup. A page that set only --sf-avatar-offline-background-color under the disabled ink now gets that colour alone; to keep the former dot set --sf-avatar-offline-background-color: var(--sf-surface-place) and --sf-avatar-offline-overlay: linear-gradient(var(--sf-on-surface-disabled) 0 0). A page that set the overlay to none sees no change.",
+      "examples": {
+        "before": "<sf-avatar text=\"АЗ\" status=\"offline\"></sf-avatar> (a light grey dot, rgb(145,146,150) on a white page)",
+        "after": "<sf-avatar text=\"АЗ\" status=\"offline\"></sf-avatar> (the same markup: a dot in the dim ink, neutral-40 light / neutral-70 dark)"
+      },
+      "owner": "ui-source",
+      "source": "src/component/avatars/scss/_css__avatar_online_indicator.scss; ui-control prototypes/avatar-offline.html"
     }
   ]
 }

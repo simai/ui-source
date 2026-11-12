@@ -48,8 +48,11 @@ test('the status dot draws as before, over the ground', async () => {
   assert.match(base, /outline: var\(--sf-px\) solid var\(--sf-online-indicator--ring-fill, transparent\);/u);
   assert.match(base, /outline-offset: calc\(-1 \* var\(--sf-px\)\);/u);
   const offline = dot.slice(dot.indexOf('.sf-online-indicator--offline {'), dot.indexOf('}', dot.indexOf('.sf-online-indicator--offline {')));
-  assert.match(offline, /--sf-online-indicator--background-color: var\(--sf-avatar-offline-background-color, var\(--sf-surface-place\)\);/u);
-  assert.match(offline, /background-image: var\(--sf-avatar-offline-overlay, linear-gradient\(var\(--sf-on-surface-disabled\) 0 0\)\), linear-gradient\(var\(--sf-online-indicator--background-color\) 0 0\);/u);
+  // Offline is the place's dim ink (defect fix 2026-11-11: the disabled ink
+  // was under 3:1); the overlay stays a public layer, none by default.
+  assert.match(offline, /--sf-online-indicator--background-color: var\(--sf-avatar-offline-background-color, var\(--sf-on-surface-variant\)\);/u);
+  assert.match(offline, /background-image: var\(--sf-avatar-offline-overlay, none\), linear-gradient\(var\(--sf-online-indicator--background-color\) 0 0\);/u);
+  assert.doesNotMatch(offline, /--sf-on-surface-disabled/u);
   // No later rule paints the dot's background over the stack.
   const avatars = await read('src/component/avatars/scss/_css__avatars.scss');
   assert.doesNotMatch(avatars, /\.sf-online-indicator \{\s*background-color:/u);
