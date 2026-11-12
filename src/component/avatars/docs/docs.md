@@ -37,6 +37,15 @@ a real destination or action.
   is `purple`) and the
   tokens `--sf-tone-<name>-container` and `--sf-on-tone-<name>-container`
   draw the same until 2027-01-01.
+- cover, the decorative level (owner decision C91, level 2):
+  `.sf-avatar--text.sf-avatar--size-3.sf-hue-<name>` under
+  `.sf-avatar--expressive`, or under `data-sf-style="expressive"` on the root or
+  a container, stands on a cover of its hue -- the `--sf-hue-container` plate
+  with a second container step laid over it towards the far corner, mixed in
+  OKLab, roles only -- in the same ink. C65 gives covers to placeholders from
+  64 px; size 3 (56 px, 52 on a phone) is the largest step of the ladder, so it
+  is the only one. Strict, the default, keeps the plate flat; the nearest
+  `data-sf-style` wins.
 
 Use `.sf-avatar-card--square` and `.sf-avatar-card--portrait` for new card
 markup. The older classes without the BEM modifier separator remain compatible.

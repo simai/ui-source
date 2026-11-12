@@ -88,6 +88,12 @@ export function avatarClasses(context, options = {}) {
         );
     }
 
+    // The decorative level (C91 level 2): the sheet turns the initials'
+    // plate of the largest size into a cover of its hue.
+    if (context.expressive) {
+        classes.push("sf-avatar--expressive");
+    }
+
     if (context.status !== "none") {
         classes.push("relative");
     }

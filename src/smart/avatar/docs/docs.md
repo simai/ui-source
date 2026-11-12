@@ -20,6 +20,12 @@ Loading model:
 - `hue`: empty `| auto` or a hue of the static palette: `red | orange | amber |
   yellow | lime | green | teal | cyan | sky | blue | indigo | violet | purple |
   pink | brown | gray` -- see "Hues"
+- `expressive`: the decorative level (owner decision C91, level 2): initials
+  at `size="3"` with a hue stand on a cover of that hue: the plate stepping
+  into a second container step towards the far corner, the ink unchanged. Smaller sizes, a photo, the
+  placeholder and the neutral look stay flat. Off by default;
+  `data-sf-style="expressive"` on the root or a container turns it on for every
+  avatar under it, `data-sf-style="strict"` turns it off again
 - `tone`: the former name of `hue` until 2027-01-01, read when `hue` is empty;
   its `rose` is `pink` and its `violet` is `purple`
 - `status`: `none | online | offline | company | verified`
