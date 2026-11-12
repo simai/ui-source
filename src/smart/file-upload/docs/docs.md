@@ -18,9 +18,22 @@ selection events. A clone of the default rendered host starts with its own empty
 items and one picker, not a second copy of the old render. DOM cloning is not a
 File-state copy API. Smart owns binding after render and cleanup on disconnect;
 ordinary automatic discovery does not also bind its internal drop zone.
-The component does not upload to a server: transport, progress updates and server
-validation belong to the consumer. Native accept is a picker hint, not a security
-check. No native form-submission or persistence contract is implied.
+The component sends no bytes by itself: the page's `uploader` does, or the
+consumer drives the rows. Native accept is a picker hint, not a security check.
+
+## In a form
+
+With `name`, sf-file-upload is a form control (ElementInternals): the form
+gets one entry per file under that name -- the `File` of a chosen (`ready`)
+file, sent with the form as multipart, and the stored id (`value`) of a sent
+(`done`) one. `required` keeps the form from submitting while nothing is
+listed («Добавьте файл»); a file still in `process` («Дождитесь, пока файлы
+загрузятся») and a failed one («Уберите или повторите файлы с ошибкой») do
+too, and the browser points at the area. `value` is the list in the
+sf-input-image shape (`{value, label, mime, size, href}`); written, or given
+as the `value` attribute (JSON or addresses), it lists stored files as done
+rows, and `form.reset()` returns to it. The inner native input carries no
+name, so nothing is sent twice.
 
 The neutral default icon is upload_file. The error glyph is reserved for an
 actual failed item rather than the idle picker state.

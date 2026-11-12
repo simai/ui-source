@@ -47,6 +47,11 @@
         "default": "",
         "description": "Inline style declarations set on the root element the component draws, custom properties included."
       },
+      "name": {
+        "type": "string",
+        "default": "",
+        "description": "The form name the files are submitted under: one entry per file -- the File of a chosen one, the stored id (value) of a sent one."
+      },
       "size": {
         "type": "string",
         "default": "1",
@@ -109,6 +114,11 @@
         "type": "boolean",
         "default": false
       },
+      "required": {
+        "type": "boolean",
+        "default": false,
+        "description": "The form will not submit without a file: value-missing «Добавьте файл» (multiple: «Добавьте хотя бы один файл»), and the browser points at the area."
+      },
       "aria-label": {
         "type": "string",
         "default": ""
@@ -122,6 +132,11 @@
         "type": "object",
         "default": null,
         "description": "The page's transfer, a property: async function (file, {signal, onProgress, item}) answering the stored value ({value, href} or an id). With it the component sends each listed file (ready, or retried) and moves the row itself: process with the share onProgress(done, total) reports, done with the value, error with the thrown error's message and reason. Remove aborts it through signal. Without it the host drives the rows through items and answers retry."
+      },
+      "value": {
+        "type": "array",
+        "default": [],
+        "description": "The files the form gets, in the sf-input-image shape: {label, mime, size, file} for a chosen file sent with the form, {value, label, mime, size, href} for a stored one. Written, it lists stored files as done rows; the attribute takes the list as JSON or addresses separated by commas."
       }
     },
     "additionalProperties": false

@@ -6,6 +6,11 @@
   "kind": "leaf",
   "family": "file",
   "settings": {
+    "name": {
+      "type": "string",
+      "default": "",
+      "summary": "The form name the files are submitted under: one entry per file -- the File of a chosen one, the stored id (value) of a sent one."
+    },
     "size": {
       "type": "enum",
       "values": [
@@ -70,6 +75,11 @@
       "type": "boolean",
       "default": false
     },
+    "required": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The form will not submit without a file: value-missing «Добавьте файл» (multiple: «Добавьте хотя бы один файл»), and the browser points at the area."
+    },
     "items": {
       "type": "list",
       "default": [],
@@ -116,7 +126,13 @@
       "summary": "The page's transfer, a property: async function (file, {signal, onProgress, item}) answering the stored value ({value, href} or an id). With it the component sends each listed file (ready, or retried) and moves the row itself: process with the share onProgress(done, total) reports, done with the value, error with the thrown error's message and reason. Remove aborts it through signal. Without it the host drives the rows through items and answers retry."
     }
   },
-  "values": {},
+  "values": {
+    "value": {
+      "type": "list",
+      "default": [],
+      "summary": "The files the form gets, in the sf-input-image shape: {label, mime, size, file} for a chosen file sent with the form, {value, label, mime, size, href} for a stored one. Written, it lists stored files as done rows; the attribute takes the list as JSON or addresses separated by commas."
+    }
+  },
   "events": {
     "change": {
       "carries": {
@@ -533,7 +549,6 @@
     "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates",
     "examples: examples.json from studio.fixture.json, studio.scenario.json and the docs",
     "css-variables: seven public variables read by the class sheet with the role as fallback, the dragged-over pair among them (§6)",
-    "form: none -- the area uploads nothing and submits nothing; the host uploads each file and writes items back (its x-summary)",
     "actions answer outcomes (§4.4): remove-item {index} and clear are applied, or refused no-item / unchanged",
     "host-states: data-dragged-over while files are held over the area (§5.3); the class component keeps its .dragover class",
     "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
@@ -928,5 +943,18 @@
         }
       }
     }
+  },
+  "form": {
+    "value": "value",
+    "name": "name",
+    "default": "value",
+    "submits": "value",
+    "reset": "default",
+    "required": "required",
+    "disabled": "disabled",
+    "validity": [
+      "value-missing",
+      "custom-error"
+    ]
   }
 }

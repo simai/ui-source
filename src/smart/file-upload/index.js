@@ -9,6 +9,8 @@ import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderFileUploadTemplate } from './js/templates/default';
 import { FIELD_SIZES, fieldSize } from '../../component/field-size';
+import { FormField } from '../helpers/form-field';
+import { fileNameFromAddress, formatFileSize } from '../../core/js/composition/file-size.mjs';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -72,7 +74,35 @@ const FileUploadElement = elementFromManifest(manifest, {
   },
 });
 
-class SfFileUpload extends FileUploadElement {
+// A stored file in the sf-input-image shape {value, label, mime, size, href}
+// as a done row.
+function storedItem(entry, index, node) {
+  const shape = entry && typeof entry === 'object' ? entry : {value: entry};
+  const href = shape.href ? String(shape.href) : '';
+  const name = String(shape.label || shape.name || (href ? fileNameFromAddress(href) : '') || shape.value || 'File');
+  return {
+    id: String(shape.value || href || `${name}-${index}`),
+    name,
+    fileSize: shape.size === undefined || shape.size === null ? '' : formatFileSize(shape.size, {node}),
+    state: 'done',
+    value: shape.value === undefined || shape.value === null ? '' : String(shape.value),
+    ...(href ? {href} : {}),
+    ...(shape.mime ? {mime: String(shape.mime)} : {}),
+    ...(Number.isFinite(Number(shape.size)) && shape.size !== '' && shape.size !== null ? {size: Number(shape.size)} : {}),
+  };
+}
+
+function readValueAttribute(raw) {
+  if (raw === null || raw === undefined || raw === '') return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [parsed];
+  } catch {
+    return String(raw).split(',').map((part) => part.trim()).filter(Boolean).map((href) => ({href}));
+  }
+}
+
+class SfFileUpload extends FormField(FileUploadElement) {
   static get props() {
     return {
       ...super.props,
@@ -114,6 +144,16 @@ class SfFileUpload extends FileUploadElement {
 
   get componentName() {
     return 'file-upload';
+  }
+
+  // Stored files written in the markup (value="[...]") are listed once, when
+  // the page set no items first.
+  connectedCallback() {
+    super.connectedCallback();
+    if (!this._valueRead) {
+      this._valueRead = true;
+      if (this.hasAttribute('value') && !this._items.length) this.value = this.getAttribute('value');
+    }
   }
 
   shouldClearLightDomBeforeFirstRender() {
@@ -162,6 +202,88 @@ class SfFileUpload extends FileUploadElement {
     this._abortGone();
     this.requestComponentUpdate('items');
     this._pumpUploads();
+    this.sfSyncFormState?.();
+  }
+
+  // The files the form gets, in the sf-input-image shape (FU-9): a chosen file
+  // that is sent with the form ({label, mime, size, file}) and a stored one
+  // ({value, label, mime, size, href}). Written, it lists stored files as done
+  // rows; the attribute takes the list as JSON or addresses separated by
+  // commas.
+  get value() {
+    return this.items
+      .map((item) => {
+        const state = itemState(item);
+        const label = String(item?.name || item?.fileName || '');
+        const mime = String(item?.file?.type || item?.mime || '');
+        const size = Number(item?.file?.size ?? item?.size);
+        const shape = {label, mime, ...(Number.isFinite(size) ? {size} : {})};
+        if (state === 'done' && (item?.value || item?.href)) {
+          return {value: String(item.value || ''), ...shape, ...(item.href ? {href: String(item.href)} : {})};
+        }
+        if (state === 'ready' && item?.file) return {value: '', ...shape, file: item.file};
+        return null;
+      })
+      .filter(Boolean);
+  }
+
+  set value(list) {
+    const entries = Array.isArray(list) ? list : readValueAttribute(list);
+    this.items = entries.map((entry, index) => storedItem(entry, index, this));
+  }
+
+  // What the form gets (§17.1): under name, one entry per file -- the File
+  // for a chosen one (sent with the form), the stored id for a sent one;
+  // nothing while disabled. The files did not reach the form at all: no name,
+  // no form association, the native input cleared after each choice.
+  sfFormValue() {
+    const name = this.getAttribute('name') || '';
+    if (!name || this.disabled || this.sfFormDisabled) return null;
+    const data = new FormData();
+    for (const entry of this.value) {
+      if (entry.file) data.append(name, entry.file, entry.file.name);
+      else if (entry.value) data.append(name, entry.value);
+    }
+    return [...data.keys()].length ? data : null;
+  }
+
+  // The field's own validity (§17.2): required and nothing to send; a file
+  // still going (the form would leave without it); a file that failed. The
+  // browser points at the area.
+  sfSyncValidity() {
+    const internals = this.sfInternals;
+    if (!internals) return;
+    const states = this.items.map((item) => itemState(item));
+    const required = this.hasAttribute('required') && this.getAttribute('required') !== 'false';
+    const anchor = this._boundRoot && this.contains(this._boundRoot) ? this._boundRoot : undefined;
+    let flags = {};
+    let message = '';
+    if (this.sfCustomError) {
+      flags = {customError: true};
+      message = this.sfCustomError;
+    } else if (!this.disabled && states.includes('process')) {
+      flags = {customError: true};
+      message = this.sfWord('wait-for-uploads');
+    } else if (!this.disabled && states.includes('error')) {
+      flags = {customError: true};
+      message = this.sfWord('remove-failed');
+    } else if (required && !this.disabled && !this.value.length) {
+      flags = {valueMissing: true};
+      message = this.sfWord(this.multiple ? 'value-missing-many' : 'value-missing');
+    }
+    try {
+      if (Object.keys(flags).length) internals.setValidity(flags, message, anchor);
+      else internals.setValidity({});
+    } catch (error) {
+      this.reportComponentError?.(error, 'validity');
+    }
+  }
+
+  // form.reset(): back to the stored files the field was written with.
+  fieldReset() {
+    for (const controller of this._uploads.values()) controller.abort();
+    this._uploads.clear();
+    this.items = readValueAttribute(this.getAttribute('value')).map((entry, index) => storedItem(entry, index, this));
   }
 
   // The page's transfer (FU-11): async (file, {signal, onProgress, item}) =>
@@ -439,6 +561,7 @@ class SfFileUpload extends FileUploadElement {
       }
       this.requestComponentUpdate('items');
       this._pumpUploads();
+      this.sfSyncFormState?.();
     };
     this._onSelect = refresh;
     this._onRemove = refresh;
@@ -450,6 +573,7 @@ class SfFileUpload extends FileUploadElement {
     this._boundRoot.addEventListener('sf-file-upload:select', this._onSelect);
     this._boundRoot.addEventListener('sf-file-upload:remove', this._onRemove);
     this._boundRoot.addEventListener('sf-file-upload:retry', this._onRetry);
+    this.sfSyncFormState?.();
   }
 
   onDisconnected() {
