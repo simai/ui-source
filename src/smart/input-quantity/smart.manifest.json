@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-quantity",
-  "version": "1.3.4",
+  "version": "1.4.0",
   "title": "Quantity",
   "summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
   "kind": "smart",
@@ -99,6 +99,26 @@
         "type": "boolean",
         "default": true,
         "description": "Group thousands the page's language's way («2 567»); `grouping=\"false\"` writes the digits together, for a year or a code."
+      },
+      "steppers": {
+        "type": "string",
+        "default": "sides",
+        "description": "The look (owner decision C53): `sides` puts «−» and «+» on both sides of the number, for a quantity changed by a few steps (a cart line, guests, records per page); `none` is a plain number field for an exact value (a year, a weight, a price) -- the arrow keys, PageUp/PageDown and Home/End still step.",
+        "enum": [
+          "sides",
+          "none"
+        ]
+      },
+      "unit": {
+        "type": "string",
+        "default": "",
+        "description": "A unit written after the number, inside the box, in the quiet ink («кг», «%», «₽»); the spinbutton says it with the value («2,5 кг»)."
+      },
+      "digits": {
+        "type": "integer",
+        "description": "How many characters the number place holds. Empty: the longest of min, max, the value and the inherited value at the field's decimals, at least 2, and 6 with no max. A column of fields gives each the same number so the column is straight.",
+        "minimum": 1,
+        "maximum": 20
       },
       "locale": {
         "type": "string",
@@ -589,7 +609,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-quantity/index.js",
-        "sha256": "9e6e060f3608538e763255ff38b519390a715296301de82d0e75848e2a8e71b2"
+        "sha256": "1731c805485bafc3a803a526b7f07bbc9902e998219533b926725c49988943f9"
       },
       {
         "path": "src/smart/input-quantity/value.mjs",
@@ -597,7 +617,7 @@
       },
       {
         "path": "src/smart/input-quantity/js/templates/default.js",
-        "sha256": "658441c34db3f7fd61d04a72c11505611a3a6f4f2450f5b19862a4bab38e9d18"
+        "sha256": "a68919c95ec49b285fc7eed691fe5647d9679da1f841c712d8be66557722e540"
       },
       {
         "path": "src/smart/input-quantity/rule.js",
@@ -605,7 +625,7 @@
       },
       {
         "path": "src/smart/input-quantity/docs.md",
-        "sha256": "dea5427c9281d0609918f182a34e1266b486dbee6481150cc5e6a6a9ea2123a9"
+        "sha256": "25db0638f20f33e1bceb67623e83b37502f8d10db1063dfd2177f5a18629976b"
       }
     ],
     "generated_runtime": []

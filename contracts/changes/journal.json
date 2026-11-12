@@ -10600,6 +10600,35 @@
       },
       "owner": "ui-source",
       "source": "src/component/avatars/scss/_css__avatar_online_indicator.scss; ui-control prototypes/avatar-offline.html"
+    },
+    {
+      "id": "behaviour-c53-quantity-width-by-digits",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-input-quantity 1.4.0 and component.quantity 1.2.0 (owner decision C53, remarks R111-R115): the field is as wide as the longest number it holds, not as its container; the steppers hug the number (--sf-quantity-gap defaults to 0, was --sf-space-2) and the number place carries --sf-space-1/4 on each side; the inherited marker and reset stand after the box. New settings steppers (sides | none), unit and digits. A page that relied on the field filling its cell, or on the 20 px gap, sees a narrower box.",
+      "items": [
+        {
+          "component": "sf-input-quantity",
+          "from": "the box as wide as its container",
+          "to": "digits"
+        },
+        {
+          "component": "sf-input-quantity",
+          "from": "--sf-quantity-gap: var(--sf-space-2)",
+          "to": "--sf-quantity-gap: 0"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite for most pages. Where a field must keep a wider box (a column of fields, a long expected number), set digits=\"N\" on the field (the same N on every field of a column); where the old gap was wanted, set --sf-quantity-gap. A year, a weight or a price reads better as steppers=\"none\" with unit=\"…\".",
+      "examples": {
+        "before": "<sf-input-quantity label=\"Год выпуска\" value=\"2026\" min=\"1900\" max=\"2100\">",
+        "after": "<sf-input-quantity label=\"Год выпуска\" value=\"2026\" min=\"1900\" max=\"2100\" grouping=\"false\" steppers=\"none\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/quantity/scss/_css__quantity.scss, src/smart/input-quantity/index.js"
     }
   ]
 }

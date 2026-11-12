@@ -238,6 +238,52 @@ class SfQuantity extends FormField(QuantityElement) {
     return formatNumber(this.value, this.numberOptions);
   }
 
+  // The look (owner decision C53): steppers on both sides for a quantity, or
+  // none for an exact value (a year, a weight, a price), where the keys still
+  // step.
+  get steppers() {
+    return this.getAttribute('steppers') === 'none' ? 'none' : 'sides';
+  }
+
+  // A unit written after the number, inside the box («кг», «%»).
+  get unit() {
+    return (this.getAttribute('unit') || '').trim();
+  }
+
+  // The value as the spinbutton says it: the number and its unit.
+  get valueText() {
+    const text = this.text;
+    return text && this.unit ? `${text} ${this.unit}` : text;
+  }
+
+  // The characters the number place holds (C53, F1): the attribute, else the
+  // longest of the bounds, the value and the inherited value written at the
+  // field's digits, at least 2, and 6 when the field has no upper bound. The
+  // box is as wide as that number, not as its container.
+  get digits() {
+    const own = readNumber(this.getAttribute('digits'));
+    return own !== null && own >= 1 ? Math.min(20, Math.floor(own)) : null;
+  }
+
+  get autoDigits() {
+    const options = this.numberOptions;
+    const lengths = [this.min, this.max, this.value, readNumber(this.inheritedValue)]
+      .filter((number) => typeof number === 'number' && Number.isFinite(number))
+      .map((number) => formatNumber(number, options).length);
+    let digits = Math.max(2, ...lengths);
+    if (this.max === null) digits = Math.max(digits, 6);
+    return Math.min(20, digits);
+  }
+
+  // The width is written on the box, from the own setting or the reckoned
+  // number (F6: a column of fields gives each the same digits). The
+  // quantity's public variables are at the ten the standard allows, so the
+  // width is a setting, not an eleventh variable.
+  get digitsStyle() {
+    const own = this.digits;
+    return `--sf-quantity--digits: ${own ?? this.autoDigits}`;
+  }
+
   setValue(next) {
     this._value = this.readValue(next);
     this._draft = null;
@@ -289,6 +335,24 @@ class SfQuantity extends FormField(QuantityElement) {
 
   focusDelegate() {
     return this.getInputElement();
+  }
+
+  // Focus selects the whole number (C53, F4), so a new one is typed at once,
+  // without erasing the old. A pointer that focuses the box would drop the
+  // selection on its mouseup: that one mouseup is held back. A second press
+  // places the caret as usual.
+  onInputMouseDown(event) {
+    this._selectOnUp = event.currentTarget !== document.activeElement;
+  }
+
+  onInputMouseUp(event) {
+    if (this._selectOnUp) event.preventDefault();
+    this._selectOnUp = false;
+  }
+
+  onInputFocus(event) {
+    const input = event.currentTarget;
+    if (input?.value) input.select();
   }
 
   get state() {
@@ -596,7 +660,7 @@ class SfQuantity extends FormField(QuantityElement) {
         input.removeAttribute('aria-valuetext');
       } else {
         input.setAttribute('aria-valuenow', String(value));
-        input.setAttribute('aria-valuetext', this.text);
+        input.setAttribute('aria-valuetext', this.valueText);
       }
     }
     const [minus, plus] = this.querySelectorAll(':scope .sf-quantity-count');
@@ -605,6 +669,10 @@ class SfQuantity extends FormField(QuantityElement) {
     // At a bound, said on the host (§5.3, simai/ui-source#46 item 4).
     this.sfHostState('data-at-min', this.atMin(value));
     this.sfHostState('data-at-max', this.atMax(value));
+    // A value longer than the bounds foresaw (no upper bound) widens the box
+    // without a redraw.
+    const wrap = this.querySelector(':scope .sf-quantity-wrap');
+    if (wrap && this.digits === null) wrap.style.setProperty('--sf-quantity--digits', String(this.autoDigits));
     const hidden = this.querySelector(':scope .sf-quantity-value');
     if (hidden) hidden.value = this.formValue;
     this.sfSyncFormState();
@@ -659,6 +727,10 @@ class SfQuantity extends FormField(QuantityElement) {
       field,
       value,
       text: this.text,
+      valueText: this.valueText,
+      steppers: this.steppers,
+      unit: this.unit,
+      digitsStyle: this.digitsStyle,
       formValue: this.formValue,
       size: this.size,
       // The host is the form control where the browser has ElementInternals:
