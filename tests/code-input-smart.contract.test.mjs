@@ -166,6 +166,8 @@ test('code input: input and change are the native input\'s, complete once per co
     assert.match(source, new RegExp(`\\n  ${method}\\(\\) \\{`, 'u'), method);
   }
   assert.match(source, /focusDelegate\(\) \{\n    return this\.getInputElement\(\);/u);
+  // K6: the current cell only while the field has the focus.
+  assert.match(source, /cell\.classList\.toggle\('current', focused && index === current\);/u);
 });
 
 test('code input: its own sheet draws only the required star, from tokens', () => {

@@ -326,19 +326,22 @@ class SfCodeInput extends FormField(CodeInputElement) {
   }
 
   // The cells show the code (or a dot for each character when masked), the
-  // filled ones `active`, the caret's `current`; the position line says the
-  // caret's cell, spoken once each time it moves.
+  // filled ones `active`, the caret's `current` -- only while the field has
+  // the focus: a field at rest marked the next cell and looked focused (K6);
+  // the sheet gates it on focus too. The position line says the caret's cell,
+  // spoken once each time it moves.
   syncCells() {
     const input = this.getInputElement();
     if (!input) return;
     const value = input.value;
+    const focused = input.ownerDocument?.activeElement === input;
     const current = this.caretCell(input);
     this.cells().forEach((cell, index) => {
       const character = value[index] || '';
       const shown = character && this.mask ? MASK_GLYPH : character;
       if (cell.textContent !== shown) cell.textContent = shown;
       cell.classList.toggle('active', index < value.length);
-      cell.classList.toggle('current', index === current);
+      cell.classList.toggle('current', focused && index === current);
     });
     // A live line: a screen reader says it each time the caret changes cell,
     // and reads it with the field when the field takes focus.

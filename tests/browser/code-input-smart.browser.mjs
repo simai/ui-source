@@ -120,6 +120,8 @@ try {
   check('markup: the class runtime left the field to the element', basic.owner === 'smart'
     && await page.evaluate(() => document.querySelectorAll('#basic .sf-verification-cells').length === 1), {basic});
   check('markup: required and empty is missing', basic.required && basic.valueMissing, {basic});
+  // K6: a field at rest marks no cell.
+  check('at rest: no cell is marked current', basic.current === -1 && (await state('controlled')).current === -1, {basic});
 
   // Typing.
   await page.focus('#basic input');
