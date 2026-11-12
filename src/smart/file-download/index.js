@@ -11,6 +11,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { instancePath, partId } from '../../core/js/instance-path.js';
 import { renderDownloadFileTemplate } from './js/templates/default';
+import { errorFit, NAME_KEEPS_CHARS } from './js/error-fit.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -43,9 +44,6 @@ const REDRAWN_BY = new Set(['href', 'disabled', 'state', 'target']);
 // «Скачать» (decision C51): a download that arrives unasked surprises, and a
 // phone may ask first.
 const FETCH_ITSELF_WITHIN = 10000;
-// A failed row in a column narrower than this (22.5rem, 360 px) puts
-// «Повторить» under its text, from the text's edge (owner decision C88).
-const NARROW_BELOW_REM = 22.5;
 
 // The box that holds the row: the first ancestor that draws one (the host is
 // display: contents).
@@ -68,6 +66,18 @@ function maxContentWidth(element) {
   if (saved[0]) style.setProperty('inline-size', saved[0], saved[1]); else style.removeProperty('inline-size');
   if (saved[2]) style.setProperty('max-inline-size', saved[2], saved[3]); else style.removeProperty('max-inline-size');
   return width;
+}
+
+// The width of `count` characters (ch) in an element's own font: ch is the
+// advance of the digit zero, read from a canvas in the element's font -- no
+// probe in the page.
+let charsContext = null;
+function charsWidth(element, count) {
+  const style = getComputedStyle(element);
+  charsContext ??= element.ownerDocument.createElement('canvas').getContext('2d');
+  if (!charsContext) return 0;
+  charsContext.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+  return charsContext.measureText('0').width * count;
 }
 
 function contentWidth(element) {
@@ -441,12 +451,8 @@ class SfDownloadFile extends DownloadFileElement {
     }
   }
 
-  // A failed row's fit (decision C88), measured after it is drawn and again
-  // when its column or the row changes size: narrow below 22.5rem of the
-  // column, and the icon alone only while narrow and the button with its
-  // words is wider than the text column it would stand under (it reaches
-  // into the gap before the text by its own padding, so its words line up
-  // with the text).
+  // A failed row's fit (decision C88; the rule is js/error-fit.js), measured
+  // after it is drawn and again when its column or the row changes size.
   fitError() {
     const row = this.view === 'error' ? this.querySelector('.sf-download-file--error') : null;
     if (!row) {
@@ -456,7 +462,6 @@ class SfDownloadFile extends DownloadFileElement {
     const column = layoutParent(this);
     const rem = parseFloat(getComputedStyle(this.ownerDocument.documentElement).fontSize) || 16;
     const width = column ? contentWidth(column) : 0;
-    const narrow = width > 0 && width < NARROW_BELOW_REM * rem;
 
     // The button's own width with its words (max-content): under the text a
     // button wider than its column is squeezed to it, so its drawn width
@@ -470,21 +475,39 @@ class SfDownloadFile extends DownloadFileElement {
       }
     }
 
-    let retryIcon = false;
-    if (narrow && this._narrow && this._retryWidth > 0) {
-      const text = row.querySelector('.sf-download-file__text');
-      // The text column the row would have at the column's whole width: the
-      // column less what the row draws beside the text (border, padding, sign
-      // and gap).
-      const beside = text ? row.getBoundingClientRect().width - text.getBoundingClientRect().width : 0;
-      const room = width - beside + this._retryReach;
-      retryIcon = this._retryWidth > room + 0.5;
-    }
+    const text = row.querySelector('.sf-download-file__text');
+    const name = row.querySelector('.sf-download-file__name');
+    // Until the button has drawn with its words there is nothing to weigh:
+    // the button's first size calls the fit again.
+    if (!(width > 0) || !text || !name || !(this._retryWidth > 0)) return;
+    // The text column at the column's whole width, the same in both layouts:
+    // the column less the row's border and padding, the sign and the gap
+    // before the text, and the border and padding after it.
+    const rowBox = row.getBoundingClientRect();
+    const textBox = text.getBoundingClientRect();
+    const rowStyle = getComputedStyle(row);
+    const rtl = rowStyle.direction === 'rtl';
+    const lead = rtl ? rowBox.right - textBox.right : textBox.left - rowBox.left;
+    const padEnd = parseFloat(rowStyle.paddingInlineEnd) || 0;
+    const trail = padEnd + (parseFloat(rowStyle.borderInlineEndWidth) || 0);
+    const textColumn = width - lead - trail;
+    const body = row.querySelector('.sf-download-file__body');
+    const gap = body ? parseFloat(getComputedStyle(body).columnGap) || 0 : 0;
+    const { narrow, retryIcon } = errorFit({
+      width,
+      rem,
+      textColumn,
+      gap,
+      retryWidth: this._retryWidth,
+      reach: this._retryReach,
+      padEnd,
+      chars: charsWidth(name, NAME_KEEPS_CHARS),
+    });
 
     if (narrow === this._narrow && retryIcon === this._retryIcon) return;
     if ((retryIcon !== this._retryIcon) && this.holdsFocus()) this._refocus = true;
     this._narrow = narrow;
-    this._retryIcon = narrow ? retryIcon : false;
+    this._retryIcon = retryIcon;
     this.requestComponentUpdate?.('fit');
   }
 
@@ -510,11 +533,16 @@ class SfDownloadFile extends DownloadFileElement {
     const retry = this.querySelector('.sf-download-file__retry');
     if (column) this._fitObserver.observe(column);
     if (row) this._fitObserver.observe(row);
-    // The button draws itself after the row: its first size starts the fit.
+    // The button draws itself after the row (its host is display: contents
+    // and has no size of its own): its first drawn size starts the fit.
     if (retry) customElements.whenDefined(retry.localName).then(() => {
-      const inner = retry.querySelector(':scope > button');
-      if (inner && this._fitObserver) this._fitObserver.observe(inner);
-      this.fitError();
+      const drawn = () => {
+        const inner = retry.querySelector(':scope > button');
+        if (inner && this._fitObserver) this._fitObserver.observe(inner);
+        this.fitError();
+      };
+      if (retry.isRendered === false && typeof retry.whenRendered === 'function') retry.whenRendered(drawn);
+      else drawn();
     });
     this.fitError();
   }

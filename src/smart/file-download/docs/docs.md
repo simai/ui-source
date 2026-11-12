@@ -50,7 +50,9 @@ A file the application makes on demand: cancel the request, set
   its tooltip and for a screen reader), «Не удалось собрать» and `error-text`
   a step smaller under it, inside the frame, and «Повторить» at the end of the
   first line. The padding is the same on every side. In a column narrower
-  than 360 px «Повторить» goes under the text, its words on the text's edge;
+  than 360 px, or where the name beside it would keep fewer than 16
+  characters at its size, «Повторить» goes under the text, its words on the
+  text's edge; the name breaks only between words;
   only when they do not fit there either is it the icon alone, its name in
   `aria-label` and a tooltip. The row stands in a column of the component's
   own (`.sf-download-file__stack`), so a flex row around the element does not

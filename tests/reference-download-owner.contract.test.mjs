@@ -58,7 +58,12 @@ test('Download File owns native/button semantics, canonical structure and tokens
   // never cut -- it wraps -- and the type and size go under it on a phone.
   assert.match(css, /inline-size: fit-content;/);
   assert.match(css, /\.sf-download-file\.sf-download-file--full-width \{\s*inline-size: 100%;/);
-  assert.doesNotMatch(css, /text-overflow: ellipsis|word-break: break-all/);
+  // A failed row's name is the one exception (owner decision C88): two lines,
+  // then an ellipsis, the whole name in its tooltip -- also for a single word
+  // wider than its line, since it never breaks by letters (F2 2026-11-12).
+  const failedName = /\.sf-download-file\.sf-download-file--error :where\(\.sf-download-file__name\) \{[^}]*\}/u;
+  assert.match(css, failedName);
+  assert.doesNotMatch(css.replace(failedName, ''), /text-overflow: ellipsis|word-break: break-all/);
   // A name narrows to its longest word, never to letters (C51 return D1).
   assert.match(css, /overflow-wrap: break-word;/);
   assert.doesNotMatch(css, /overflow-wrap: anywhere;/);

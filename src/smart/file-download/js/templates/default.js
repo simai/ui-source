@@ -18,7 +18,8 @@ import { createInlineSpinner } from '../../../../component/spinner/js/_spinner-d
 //              name in its tooltip and for a screen reader), «Не удалось
 //              собрать» and error-text a step smaller under it, inside the
 //              frame. «Повторить» ends the first line; in a column narrower
-//              than 360 px it goes under the text, and only when its words do
+//              than 360 px, or where the name beside it would keep fewer than
+//              16 characters, it goes under the text, and only when its words do
 //              not fit there either is it the icon alone, its name in
 //              aria-label and a tooltip.
 // A file link downloads in the same tab; target="_blank" is a file opened to

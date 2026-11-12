@@ -326,9 +326,15 @@
     min-inline-size: var(--sf-0);
   }
 
+  /* The name breaks only between its words, at every size (dispatcher rule
+     F2 2026-11-12): a word wider than its line ends in an ellipsis, and the
+     whole name stays in the tooltip and for a screen reader. */
   .sf-download-file.sf-download-file--error :where(.sf-download-file__name) {
     display: -webkit-box;
     overflow: hidden;
+    overflow-wrap: normal;
+    word-break: normal;
+    text-overflow: ellipsis;
     font-weight: var(--sf-font-weight-medium);
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
@@ -350,7 +356,8 @@
     margin-inline-start: var(--sf-0);
   }
 
-  /* A column narrower than 360 px (the element measures it): «Повторить»
+  /* When the name's column beside «Повторить» would hold fewer than 16
+     characters at the name's size (the element measures it): «Повторить»
      goes under the text and starts at the text's edge -- its plate reaches
      into the gap by its own padding, so its words line up with the name. When
      its words do not fit there either, the element draws the icon alone (its
