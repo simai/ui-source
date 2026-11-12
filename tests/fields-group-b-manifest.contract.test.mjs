@@ -91,7 +91,7 @@ for (const [folder, spec] of Object.entries(COMPONENTS)) {
     for (const row of table.aliases) {
       // The tag rename of 2026-11-03 (the old tag and the events named after
       // it) has its own dates.
-      if (row.since === '2026-11-03' || row.since === '2026-11-08' || row.since === '2026-11-11') {
+      if (row.since === '2026-11-03' || row.since === '2026-11-08' || row.since === '2026-11-11' || row.since === '2026-11-12') {
         assert.equal(row.remove_after, '2027-01-01', `${row.from}`);
         continue;
       }
@@ -189,6 +189,9 @@ test('sf-input-image: vocabulary names with dated colon aliases, error is invali
     ['sf-image-field', 'sf-input-image'],
     ['sf-image-field-attach', 'sf-input-image-attach'],
     ['sf-image-field-detach', 'sf-input-image-detach'],
+    // library is new in 1.4.0 (C94 point 5); a page still on the old tag
+    // hears it under the old name too, until the tag alias goes.
+    ['sf-image-field-library', 'sf-input-image-library'],
     ['sf-image-field-rejected', 'sf-input-image-rejected'],
   ]);
 });
