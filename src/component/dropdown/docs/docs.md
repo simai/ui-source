@@ -50,6 +50,9 @@ while it takes room in the layout the scroll area is marked
 `sf-list-container-wrap--scrollbar` and gives up its inline-end padding, the
 track being the inset, the page scrollbar's thumb (`--sf-scroll-thumb-width`)
 and the inset again: 14, the page's `--sf-scroll-bg-width` (owner decision C106).
+A projected list follows the page's scroll, never its own: a scroll inside the
+list does not place the panel again, and placing keeps the rows' scroll
+position (owner remark R171).
 
 Native form reset restores the selection captured at first connection. `change`
 bubbles after user selection and is the name to bind; `sf-dropdown:change` is

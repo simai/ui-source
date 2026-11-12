@@ -4,7 +4,7 @@ import { fieldSize } from '../../component/field-size';
 import { renderDropdownTemplate } from './js/templates/default';
 import { createDropdownInteraction } from '../../component/dropdown/interaction';
 import { bindFormReset } from '../../component/form-reset-helper';
-import { openDropdownPortal, closeDropdownPortal, alignDropdownInPlace } from '../../component/dropdown/portal';
+import { openDropdownPortal, closeDropdownPortal, alignDropdownInPlace, scrolledInside } from '../../component/dropdown/portal';
 import { holdOpenSurfaceMark } from '../../core/js/open-surface-mark';
 import { PanelScrollbar } from '../../component/panel-scrollbar';
 import { InheritedValueField } from '../helpers/inherited-value';
@@ -136,7 +136,13 @@ class SfDropdown extends DropdownElement {
     this._dropdownRoot = null;
     this._list = null;
     this._documentClickHandler = this.handleDocumentClick.bind(this);
-    this._viewportHandler = this.positionPortalList.bind(this);
+    // The page's scroll moves the field, so the list follows it; the list's
+    // own scroll moves nothing, and placing the panel for it only interrupts
+    // the wheel (owner R171).
+    this._viewportHandler = (event) => {
+      if (scrolledInside(this._list, event)) return;
+      this.positionPortalList();
+    };
   }
 
   // The manifest's settings, and what the dropdown reads more closely (the

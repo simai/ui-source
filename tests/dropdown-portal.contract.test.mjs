@@ -97,3 +97,12 @@ test('Both projection paths dismiss through their owner when ancestors become un
     assert.match(await read(path),/openDropdownPortal\([^;]+\(\)=>[^;]*closeDropdown\(/);
   }
 });
+
+test('The list\'s own scroll does not reposition the panel (R171)',async()=>{
+  const portal=await readFile(new URL('../src/component/dropdown/portal.js',import.meta.url),'utf8');
+  assert.match(portal,/export function scrolledInside\(list, event\) \{[\s\S]*?event\?\.type !== 'scroll'[\s\S]*?list\.contains\(target\)/);
+  const smart=await readFile(new URL('../src/smart/dropdown/index.js',import.meta.url),'utf8');
+  assert.match(smart,/this\._viewportHandler = \(event\) => \{\s*if \(scrolledInside\(this\._list, event\)\) return;\s*this\.positionPortalList\(\);/);
+  const base=await readFile(new URL('../src/component/dropdown/js/_dropdown.js',import.meta.url),'utf8');
+  assert.match(base,/if\(scrolledInside\(getList\(root\),event\)\)return;/);
+});

@@ -158,6 +158,27 @@ export function liftToTopLayer(floating) {
   };
 }
 
+// The scroll positions inside a floating surface (the surface itself and every
+// box in it that is scrolled), to be put back after a measurement that lifted
+// its height cap. Only boxes away from their start are kept.
+function scrollOffsets(floating) {
+  const found = [];
+  const keep = (element) => {
+    if (element.scrollTop || element.scrollLeft) found.push([element, element.scrollTop, element.scrollLeft]);
+  };
+  keep(floating);
+  for (const element of floating.querySelectorAll('*')) keep(element);
+  return found;
+}
+
+function restoreScrollOffsets(found) {
+  for (const [element, top, left] of found) {
+    if (!element.isConnected) continue;
+    if (element.scrollTop !== top) element.scrollTop = top;
+    if (element.scrollLeft !== left) element.scrollLeft = left;
+  }
+}
+
 function fixedContainingBlock(element) {
   const view = element.ownerDocument.defaultView;
   if (inTopLayer(element)) return view;
@@ -238,6 +259,21 @@ export function anchor(reference, floating, options = {}) {
   let pending = false;
 
   const run = async () => {
+    // Measuring the natural height takes the cap off for a moment: a list
+    // that scrolls inside the panel stops overflowing, and the browser puts
+    // its scroll back to the start. Every reposition -- one per wheel step
+    // for a dropdown that follows the page's scroll in capture -- threw the
+    // list back to its top, so it never moved and shook in place (owner
+    // R171, 2026-11-12). What was scrolled is put back once the cap is.
+    const scrolled = settings.fitHeight ? scrollOffsets(floating) : null;
+    try {
+      return await place();
+    } finally {
+      if (scrolled) restoreScrollOffsets(scrolled);
+    }
+  };
+
+  const place = async () => {
     // The panel is fixed before it is measured, so it is measured in the box
     // it will be placed in: left absolute by the stylesheet (a tooltip in its
     // anchor), its first position was taken from the anchor and written as

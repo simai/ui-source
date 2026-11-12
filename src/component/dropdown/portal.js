@@ -61,6 +61,15 @@ export function alignDropdownInPlace(list) {
   if (over && room > (rtl ? field.right : screen - field.left)) list.setAttribute('data-sf-align', 'end');
 }
 
+// A scroll that happened inside the list itself (its rows' scroll area): the
+// field did not move, so the panel stays where it is. Repositioning for it
+// interrupted the wheel on every step (owner R171, 2026-11-12).
+export function scrolledInside(list, event) {
+  if (event?.type !== 'scroll' || !list) return false;
+  const target = event.composedPath?.()[0] ?? event.target;
+  return target instanceof Node && list.contains(target);
+}
+
 export function positionDropdownPortal(root, list) {
   const state = portals.get(list);
   if (!state || !root.isConnected || list.hidden) return false;

@@ -90,3 +90,13 @@ test('a container query box is asked whether it contains fixed panels, not assum
   assert.doesNotMatch(source, /\|\| \(Boolean\(css\.containerType\) && css\.containerType !== 'normal'\);/);
   assert.match(source, /probe\.style\.cssText = 'position:fixed;left:0;top:0;/);
 });
+
+test('measuring the natural height puts back what was scrolled inside the panel (R171)', async () => {
+  const position = await readFile(new URL('../src/core/js/position.js', import.meta.url), 'utf8');
+  // The cap comes off to measure; a list scrolling inside the panel would be
+  // thrown back to its start on every reposition.
+  assert.match(position, /const scrolled = settings\.fitHeight \? scrollOffsets\(floating\) : null;/);
+  assert.match(position, /return await place\(\);\s*\} finally \{\s*if \(scrolled\) restoreScrollOffsets\(scrolled\);/);
+  assert.match(position, /function scrollOffsets\(floating\) \{[\s\S]*?floating\.querySelectorAll\('\*'\)/);
+  assert.match(position, /if \(element\.scrollTop !== top\) element\.scrollTop = top;/);
+});
