@@ -2963,6 +2963,7 @@
       "composition": {
         "public_parts": [],
         "uses": [
+          "component.badges",
           "component.tabs",
           "component.tooltip",
           "smart.button",
@@ -2981,7 +2982,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tabs/smart.manifest.json",
-      "manifest_sha256": "0c67710727c5283a03026c9d282716b55d77da7ae92e113f5cca4ab756962c1b",
+      "manifest_sha256": "229eab457054a7b556d5f1f15d44262391b8efb666757b432d16efceaf7762ba",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
