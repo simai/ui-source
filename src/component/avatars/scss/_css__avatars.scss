@@ -34,6 +34,15 @@ $sf-avatar-hue-classes: ();
        circle (docs precheck AV-03: line avatars became 12.7x16 ovals on a
        phone, squeezed by the text beside them). */
     flex-shrink: 0;
+    /* A picture drawn as the background (dropdown, list and tag rows set
+       background-image with bg-cover) fills the whole circle, ring included,
+       once and centred. With the defaults it was tiled from the inner edge of
+       the transparent ring, so slivers of the next copies showed above and
+       below the circle ("ears", R155, flags in the country list at 8x). The
+       ring, when coloured, is drawn over the picture's edge. */
+    background-origin: border-box;
+    background-position: center;
+    background-repeat: no-repeat;
     --sf-avatar--background-color: var(--sf-avatar-background-color, transparent);
     --sf-avatar--border-top-width: var(--sf-avatar-border-width, var(--sf-px));
     --sf-avatar--border-bottom-width: var(--sf-avatar-border-width, var(--sf-px));
@@ -259,11 +268,25 @@ $sf-avatar-hue-classes: ();
     --sf-avatar--border-top-left-radius: var(--sf-avatar-radius, var(--sf-radius--ui));
   }
 
+  /* An <img> picture fills the same circle as a background one. The ring is
+     taken off the avatar and drawn by the picture itself as an inset outline,
+     over its edge: an image inside the ring was a circle one ring smaller
+     than its size, and a lookup row clips its avatar to the inner edge. The
+     outline has the ring's width and colour, so hover still shows. */
+  .sf-avatar:has(> .sf-avatar-image) {
+    --sf-avatar--border-top-width: 0;
+    --sf-avatar--border-bottom-width: 0;
+    --sf-avatar--border-inline-start-width: 0;
+    --sf-avatar--border-inline-end-width: 0;
+  }
+
   .sf-avatar-image {
     inline-size: 100%;
     block-size: 100%;
     object-fit: cover;
     border-radius: inherit;
+    outline: var(--sf-avatar-border-width, var(--sf-px)) solid var(--sf-avatar--border-color, var(--sf-avatar-border-color, transparent));
+    outline-offset: calc(var(--sf-avatar-border-width, var(--sf-px)) * -1);
   }
 }
 

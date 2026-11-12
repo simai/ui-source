@@ -120,3 +120,31 @@ test('Avatar documentation uses real Framework-only examples', {
   assert.match(cards, /radius-(?:default|surface)/); // ui-doc moves to radius-surface with the 2026-11-01 sweep
   assert.doesNotMatch(examples, /<style\b|style=/);
 });
+
+test('An avatar picture fills its circle once, ring included (R155, no ears)', async () => {
+  const styles = await read('src/component/avatars/scss/_css__avatars.scss');
+  const base = styles.match(/\n {2}\.sf-avatar \{([\s\S]*?)\n {2}\}/)[1];
+
+  // A background picture (dropdown, list and tag rows) is drawn once, centred,
+  // from the outer edge of the transparent ring.
+  assert.match(base, /background-repeat: no-repeat;/);
+  assert.match(base, /background-origin: border-box;/);
+  assert.match(base, /background-position: center;/);
+
+  // An <img> picture takes the ring off the avatar and draws it as its own
+  // inset outline, so it fills the same circle and hover still shows.
+  const holder = styles.match(/\.sf-avatar:has\(> \.sf-avatar-image\) \{([\s\S]*?)\}/)?.[1] ?? '';
+  for (const side of ['top', 'bottom', 'inline-start', 'inline-end']) {
+    assert.match(holder, new RegExp(`--sf-avatar--border-${side}-width: 0;`));
+  }
+  const image = styles.match(/\n {2}\.sf-avatar-image \{([\s\S]*?)\n {2}\}/)[1];
+  assert.match(image, /outline: var\(--sf-avatar-border-width, var\(--sf-px\)\) solid var\(--sf-avatar--border-color, var\(--sf-avatar-border-color, transparent\)\);/);
+  assert.match(image, /outline-offset: calc\(var\(--sf-avatar-border-width, var\(--sf-px\)\) \* -1\);/);
+
+  // Every renderer that draws a background picture uses the avatar's class.
+  for (const path of ['src/smart/dropdown/js/templates/default.js', 'src/smart/list-item/js/templates/default.js', 'src/smart/tag/js/templates/default.js']) {
+    const source = await read(path);
+    assert.match(source, /sf-avatar[^"`]*bg-cover|class=\$\{avatarClasses/, path);
+    assert.doesNotMatch(source, /background-repeat|background-origin/, `${path} leaves the picture to the avatar`);
+  }
+});

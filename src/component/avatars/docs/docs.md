@@ -9,6 +9,10 @@ a real destination or action.
 
 - content: image (`.sf-avatar-image`), initials (`.sf-avatar--text`) or
   placeholder (`.sf-avatar--placeholder`);
+- picture: an `<img class="sf-avatar-image">` or a `background-image` with
+  `bg-cover` fills the whole circle once, centred, ring included; a
+  non-square picture (a flag) is cut to the circle, never tiled. A coloured
+  ring (hover, `--sf-avatar-border-color`) is drawn over the picture's edge;
 - size: `1/4`, `1/3`, `1/2`, `1`, `2` or `3`: 20 / 24 / 32 / 40 / 48 / 56 on
   a desktop. In a `data-sf-density="compact"` region every size moves one
   step down the avatar's own ladder, the bottom steps too: 16 / 20 / 24 / 32
