@@ -36,7 +36,6 @@ export function renderCodeInputTemplate(context) {
     length,
     mask,
     inputMode,
-    pattern,
     ariaLabel,
     groupLabel,
     messageContent,
@@ -81,7 +80,6 @@ export function renderCodeInputTemplate(context) {
           autocorrect="off"
           spellcheck="false"
           dir="ltr"
-          pattern=${pattern}
           name=${controlName || nothing}
           .defaultValue=${defaultCode}
           .value=${live(value)}

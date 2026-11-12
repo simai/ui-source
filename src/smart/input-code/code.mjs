@@ -17,11 +17,6 @@ const MODE_FILTER = {
   alphanumeric: /[^A-Za-z0-9]/gu,
 };
 
-const MODE_PATTERN = {
-  numeric: '[0-9]',
-  alphanumeric: '[A-Za-z0-9]',
-};
-
 export function codeMode(value) {
   const mode = String(value ?? '').trim().toLowerCase();
   return CODE_MODES.includes(mode) ? mode : 'numeric';
@@ -37,12 +32,6 @@ export function codeLength(value) {
 // pasting and autofill leave in the field.
 export function normaliseCode(value, mode = 'numeric', length = CODE_LENGTH_DEFAULT) {
   return String(value ?? '').replace(MODE_FILTER[codeMode(mode)], '').slice(0, codeLength(length));
-}
-
-// The native constraint the field carries: exactly `length` characters of the
-// mode, so a required code that is not whole is invalid as the form sees it.
-export function codePattern(mode, length) {
-  return `${MODE_PATTERN[codeMode(mode)]}{${codeLength(length)}}`;
 }
 
 // What the keyboard offers: digits for a numeric code, letters otherwise.
@@ -131,11 +120,13 @@ export const CODE_INPUT_TEXT = {
     digit: 'digit {n} of {m}',
     character: 'character {n} of {m}',
     group: 'Code',
+    'too-short': 'Enter the whole code',
   },
   ru: {
     digit: 'цифра {n} из {m}',
     character: 'символ {n} из {m}',
     group: 'Код',
+    'too-short': 'Введите код целиком',
   },
 };
 

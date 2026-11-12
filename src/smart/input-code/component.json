@@ -28,7 +28,7 @@
         "alphanumeric"
       ],
       "default": "numeric",
-      "summary": "numeric: digits, a digit keyboard; alphanumeric: Latin letters and digits. Anything else typed or pasted is left out; the native pattern asks for exactly length characters of the mode."
+      "summary": "numeric: digits, a digit keyboard; alphanumeric: Latin letters and digits. Anything else typed or pasted is left out. The inner input carries no pattern: a code that is not whole is too-short on the host, in the page's words."
     },
     "size": {
       "type": "enum",
@@ -126,7 +126,7 @@
     "readonly": "readonly",
     "validity": [
       "value-missing",
-      "pattern-mismatch",
+      "too-short",
       "custom-error"
     ]
   },
@@ -292,7 +292,7 @@
     "examples: examples.json from studio.fixture.json (three of six digits) plus a complete code, alphanumeric, masked, four cells, filled, invalid, disabled and size 2.",
     "css-variables: the seven --sf-verification-* variables of the class sheet sf-code-input draws with, plus --sf-verification-invalid-border-color for the invalid state (§6).",
     "error -> invalid (§17.2): a dated setting alias.",
-    "form.validity: value-missing and pattern-mismatch (an incomplete code) from the input, and custom-error (§17.2).",
+    "form.validity: value-missing from the input, too-short (a code that is not whole, said by the host since 1.3.0: the input's pattern showed the browser's English tooltip, K5) and custom-error (§17.2).",
     "form: the host submits the code through ElementInternals; the input carries no name (§17.1 item 6).",
     "ids: the label, position line and message ids come from the field's instance path (field.base), not the module counter it had (§7.1.1, simai/ui-source#41).",
     "words: digit, character and group are lang runtime words read with sfWord; CODE_INPUT_TEXT stays in code.mjs for its unit tests only.",

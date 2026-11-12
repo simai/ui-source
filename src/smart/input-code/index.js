@@ -33,7 +33,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {fieldSize} from '../../component/field-size';
 import {createFieldContract} from '../../component/field-contract';
-import {FormField, innerControlName} from '../helpers/form-field';
+import {FormField, innerControlName, syncFieldValidity} from '../helpers/form-field';
 import {renderCodeInputTemplate} from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -46,7 +46,6 @@ import {
   codeInputMode,
   codeLength,
   codeMode,
-  codePattern,
   currentCell,
   normaliseCode,
   positionWords,
@@ -348,6 +347,18 @@ class SfCodeInput extends FormField(CodeInputElement) {
     if (position && position.textContent !== words) position.textContent = words;
   }
 
+  // A code that is not whole is too short. The inner input carries no
+  // pattern: its mismatch was the browser's English tooltip over the cells
+  // («Please match the requested format.», K5), and the characters are already
+  // kept to the mode. The host says it through ElementInternals, in the page's
+  // words; a custom error and an empty required field come first, as before.
+  sfSyncValidity() {
+    const input = this.getInputElement();
+    const value = input?.value ?? '';
+    const short = Boolean(input) && !input.disabled && value.length > 0 && value.length < this.length;
+    syncFieldValidity(this, input, short ? {tooShort: this.text('too-short')} : {});
+  }
+
   onFormReset = () => {
     // The browser writes the default back after the reset event.
     requestAnimationFrame(() => {
@@ -423,7 +434,6 @@ class SfCodeInput extends FormField(CodeInputElement) {
       length: this.length,
       mask: this.mask,
       inputMode: codeInputMode(this.mode),
-      pattern: codePattern(this.mode, this.length),
       ariaLabel: this.ariaLabel,
       groupLabel: this.ariaLabel || this.text('group'),
       messageContent: messageIsError ? errorContent : hint,

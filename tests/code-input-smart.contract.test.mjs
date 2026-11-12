@@ -13,7 +13,6 @@ import {
   codeInputMode,
   codeLength,
   codeMode,
-  codePattern,
   currentCell,
   normaliseCode,
   positionWords,
@@ -44,8 +43,6 @@ test('code input: a mode keeps its characters, a code its length', () => {
   }
   assert.equal(codeMode('ALPHANUMERIC'), 'alphanumeric');
   assert.equal(codeMode('text'), 'numeric', 'the class text mode is not a one-time code');
-  assert.equal(codePattern('numeric', 6), '[0-9]{6}');
-  assert.equal(codePattern('alphanumeric', 4), '[A-Za-z0-9]{4}');
   assert.equal(codeInputMode('numeric'), 'numeric');
   assert.equal(codeInputMode('alphanumeric'), 'text');
   assert.equal(currentCell(0, 6), 0);
@@ -109,7 +106,12 @@ test('code input: the class markup, one native input, the class runtime kept off
   assert.equal((template.match(/<input\b/gu) || []).length, 1, 'one native input');
   assert.match(template, /autocomplete="one-time-code"/u);
   assert.match(template, /inputmode=\$\{inputMode\}/u);
-  assert.match(template, /pattern=\$\{pattern\}/u);
+  // No pattern on the inner input: its mismatch was the browser's English
+  // tooltip over the cells (K5); a code that is not whole is too-short on the
+  // host, in the page's words.
+  assert.doesNotMatch(template, /pattern=/u);
+  assert.match(source, /syncFieldValidity\(this, input, short \? \{tooShort: this\.text\('too-short'\)\} : \{\}\);/u);
+  assert.deepEqual(JSON.parse(read('src/smart/input-code/component.json')).form.validity, ['value-missing', 'too-short', 'custom-error']);
   assert.match(template, /dir="ltr"/u);
   assert.match(template, /type=\$\{mask \? 'password' : 'text'\}/u);
   assert.match(template, /<span class="sf-verification-cells" aria-hidden="true">/u);

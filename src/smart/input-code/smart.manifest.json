@@ -68,7 +68,7 @@
       "mode": {
         "type": "string",
         "default": "numeric",
-        "description": "numeric: digits, a digit keyboard; alphanumeric: Latin letters and digits. Anything else typed or pasted is left out; the native pattern asks for exactly length characters of the mode.",
+        "description": "numeric: digits, a digit keyboard; alphanumeric: Latin letters and digits. Anything else typed or pasted is left out. The inner input carries no pattern: a code that is not whole is too-short on the host, in the page's words.",
         "enum": [
           "numeric",
           "alphanumeric"

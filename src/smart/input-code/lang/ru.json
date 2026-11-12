@@ -3,6 +3,7 @@
   "runtime": {
     "character": "символ {n} из {m}",
     "digit": "цифра {n} из {m}",
-    "group": "Код"
+    "group": "Код",
+    "too-short": "Введите код целиком"
   }
 }

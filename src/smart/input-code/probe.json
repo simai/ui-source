@@ -106,14 +106,14 @@
       }
     },
     {
-      "id": "incomplete-code-is-pattern-mismatch",
-      "covers": "form.validity pattern-mismatch",
+      "id": "incomplete-code-is-too-short",
+      "covers": "form.validity too-short",
       "field": "<sf-input-code name=\"code\" label=\"Код\" value=\"12\"></sf-input-code>",
       "form": "submit",
       "expect": {
         "submitted": false,
         "validity": {
-          "patternMismatch": true
+          "tooShort": true
         }
       }
     },

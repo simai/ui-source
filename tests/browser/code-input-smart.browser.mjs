@@ -5,7 +5,7 @@
 // sf-code-input (owner, 2026-10-25), measured on the built bytes, with the
 // class verification's runtime loaded beside it as the loader loads it:
 // - the class markup: a group named by its label, one native input
-//   (one-time-code, inputmode, pattern, name) over six aria-hidden cells; the
+//   (one-time-code, inputmode, no pattern, no name) over six aria-hidden cells; the
 //   class runtime binds nothing to it;
 // - typing fills the next cell and moves on, a character the mode does not
 //   keep is not written, a character typed into a filled cell takes its
@@ -103,6 +103,7 @@ try {
       invalid: input.getAttribute('aria-invalid'), errormessage: input.getAttribute('aria-errormessage') ? document.getElementById(input.getAttribute('aria-errormessage'))?.textContent.trim() : null,
       error: root.classList.contains('error'), owner: root.dataset.sfVerificationOwner,
       required: input.required, valueMissing: input.validity.valueMissing, patternMismatch: input.validity.patternMismatch,
+      tooShort: host.validity?.tooShort ?? null, hostValid: host.validity?.valid ?? null, title: input.validationMessage,
     };
   }, id);
 
@@ -113,7 +114,7 @@ try {
   check('markup: one native input for a one-time code', basic.type === 'text' && basic.inputmode === 'numeric' && basic.autocomplete === 'one-time-code'
     // The host submits the code through ElementInternals (standard 1.3.8
     // §17.1), so the native input carries no name.
-    && basic.pattern === '[0-9]{6}' && basic.name === '' && basic.dir === 'ltr', {basic});
+    && basic.pattern === '' && basic.name === '' && basic.dir === 'ltr', {basic});
   check('markup: six empty cells hidden from assistive technology', basic.cells.length === 6 && basic.cells.every((cell) => cell === '') && basic.cellsHidden === 'true', {basic});
   check('markup: described by the caret\'s cell, then the hint', basic.described.join('|') === 'цифра 1 из 6|Шесть цифр из сообщения' && basic.live === 'polite', {basic});
   check('markup: the class runtime left the field to the element', basic.owner === 'smart'
@@ -130,7 +131,8 @@ try {
   check('typing: the caret\'s cell is spoken', typed.position === 'цифра 3 из 6', {typed});
   check('typing: an input event from the native input for each character', typedEvents.length === 2
     && typedEvents.every((event) => event.type === 'input' && event.host === 'basic' && event.target === 'input'), {typedEvents});
-  check('typing: a partial code does not match the pattern', typed.patternMismatch, {typed});
+  // K5: no pattern, so no browser tooltip; the host says the code is too short.
+  check('typing: a partial code is too short on the host, the inner input has no message', typed.tooShort === true && !typed.patternMismatch && typed.title === '', {typed});
   await page.keyboard.type('a- ');
   await settle();
   check('typing: what the mode does not keep is not written', (await state('basic')).value === '12' && (await events()).length === 0);
@@ -161,7 +163,7 @@ try {
   await page.waitForTimeout(100);
   const whole = await state('basic');
   const completeEvents = await events();
-  check('complete: the sixth character completes the code', whole.value === '923456' && whole.complete && !whole.patternMismatch && whole.current === 5, {whole});
+  check('complete: the sixth character completes the code', whole.value === '923456' && whole.complete && whole.tooShort === false && whole.current === 5, {whole});
   check('complete: one sf-code-input:complete {value} after the input event', JSON.stringify(completeEvents.map((event) => [event.type, event.value]))
     === JSON.stringify([['input', '923456'], ['sf-code-input:complete', '923456']]), {completeEvents});
   await page.keyboard.type('7');
@@ -217,7 +219,7 @@ try {
   await page.waitForTimeout(100);
   const alpha = await state('alpha');
   check('alphanumeric: Latin letters and digits, four cells, a text keyboard', alpha.value === 'ab12' && alpha.cells.length === 4
-    && alpha.inputmode === 'text' && alpha.pattern === '[A-Za-z0-9]{4}', {alpha});
+    && alpha.inputmode === 'text' && alpha.pattern === '', {alpha});
   await page.keyboard.press('Home');
   await settle();
   check('alphanumeric: the cell is spoken as a character', (await state('alpha')).position === 'символ 1 из 4');
