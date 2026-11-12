@@ -282,17 +282,19 @@
   }
 
   /* «Повторить» goes under the name when the row has no room for both on one
-     line, as the facts do, and the name keeps at least its longest word: the
-     button no longer squeezes «Смета.csv» to a letter a line (acceptance
-     2026-11-11 D1, D2: 9 lines in a 200 px box). The gap between the lines
-     is the button's reach into them, so the button meets the line above. */
+     line, as the facts do: the button no longer squeezes «Смета.csv» to a
+     letter a line (acceptance 2026-11-11 D1, D2: 9 lines in a 200 px box).
+     The wrap is decided on the main part's whole width, so the button leaves
+     the line before the name has to narrow. The gap between the lines is the
+     button's reach into them, so the button meets the line above.
+     The main part keeps no floor of its own: on its line it narrows to the
+     row, and the name breaks inside its longest word only when the icon and
+     that word do not fit the row together (acceptance 2026-11-12 D3: with a
+     min-content floor «выгрузки.csv» and the icon stood 24 px past a 200 px
+     box at size 3). */
   .sf-download-file.sf-download-file--error :where(.sf-download-file__body) {
     flex-wrap: wrap;
     row-gap: var(--sf-download-file--end-inset);
-  }
-
-  .sf-download-file.sf-download-file--error :where(.sf-download-file__main) {
-    min-inline-size: min-content;
   }
 
   /* «Не удалось собрать» is words: they wrap, so the row's narrowest is its
