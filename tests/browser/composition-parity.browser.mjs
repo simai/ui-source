@@ -28,7 +28,7 @@
 //     (content.heading 1.2.0, content.paragraph 1.3.0);
 //   - G-39: a lead paragraph is the large body text (20 px at the desktop,
 //     the prototype's 19, 16 on the phone) in the variant ink;
-//   - a heading in a card is its title (16 px semibold) at every width, and
+//   - a heading in a card is its title (16 px semibold, 14 on a phone), and
 //     three titled cards on a phone keep every line inside and never meet;
 //   - on the accent a primary button inverts and an outlined one takes the
 //     on-primary edge: 3:1 off the fill, the words at 4.5:1.
@@ -212,9 +212,9 @@ try {
       // prototype draws features and cards at 380 (a phone rule is the author's).
       const [a, b, c] = m.cards;
       check(width >= 1024 ? 'the grid draws three columns' : 'the grid keeps three columns on the phone, as the prototype', near(a.top, b.top) && near(b.top, c.top) && a.right < b.left && b.right < c.left && near(a.width, c.width) && c.right <= m.grid.right + 1, {cards: m.cards, grid: m.grid});
-      // A card's title is the prototype's (16 px, semibold, one body line) at every width, and in three
-      // cards on a phone no line leaves its card and the titles never meet.
-      check('a heading inside a card is its title: 16 px, semibold', m.titled.every((card) => near(card.title.size, 16) && card.title.weight >= 600 && card.title.weight < 700), {titles: m.titled.map((card) => card.title)});
+      // A card's title is the title step of the text ladder (R082): 16 px semibold on a desktop, 14 on a
+      // phone, and in three cards on a phone no line leaves its card and the titles never meet.
+      check(`a heading inside a card is its title: ${width >= 1024 ? 16 : 14} px, semibold`, m.titled.every((card) => near(card.title.size, width >= 1024 ? 16 : 14) && card.title.weight >= 600 && card.title.weight < 700), {titles: m.titled.map((card) => card.title)});
       check('no line of a card leaves it', m.titled.every((card) => card.lines.every((line) => line.left >= card.card.left - 0.5 && line.right <= card.card.right + 0.5 && line.scroll <= 0)), {titled: m.titled.map((card) => ({card: card.card, lines: card.lines}))});
       check('a one-word card title stays on one line, three cards on a phone too', m.titled.every((card) => card.title.box.height <= card.title.line + 1), {titles: m.titled.map((card) => card.title)});
       check('the card titles do not overlap', m.titled.every((card, index) => index === 0 || card.title.box.left >= m.titled[index - 1].title.box.right), {titles: m.titled.map((card) => card.title.box)});
