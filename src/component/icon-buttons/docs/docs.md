@@ -47,6 +47,10 @@ class of that name and the `--sf-radius-default` token were removed on
 composition and use an inset keyboard focus ring. A join is one line, the end
 edge of the segment before it, as on the button.
 
+A link drawn as an icon button, `<a class="sf-icon-button" href>` (what
+`sf-button-icon` draws for its `href`, decision C51), takes no link underline,
+as `a.sf-button` does; its ink is the icon button's own (1.6.1).
+
 ## States
 
 Native `disabled` is the source of truth for an unavailable action. Loading

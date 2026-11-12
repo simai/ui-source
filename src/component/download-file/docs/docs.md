@@ -50,8 +50,8 @@ Since component.download-file 1.3.0 (docs pre-check 2026-11-10):
 - Nor is an address that leads back to the page itself (`#`, `#part`, the
   page's own URL).
 
-Decision C51 (2026-11-11, still component.download-file 1.3.0, not released
-yet):
+Decision C51 (2026-11-11, component.download-file 1.4.0; 1.3.0 is the
+released docs pre-check above):
 
 - The row is as wide as its text (`inline-size: fit-content`, up to its
   container); `--full-width` (the class and the `fullWidth` parameter) fills
@@ -77,7 +77,7 @@ yet):
   so the row keeps its height; `__line` puts a button beside the row;
   `__live` the hidden live regions.
 
-Decision C88 (2026-11-12, still component.download-file 1.3.0): a failed row
+Decision C88 (2026-11-12, still component.download-file 1.4.0): a failed row
 (`--error`) is one grid of the sign, `__text` and `__end`.
 
 - The padding is the same on every side: `--sf-space-1/2` up to size 1,
