@@ -265,7 +265,8 @@
         "note": "the element is sf-input-country; sf-country-code is a subclass defined beside it until the date"
       },
       {
-        "from": "multi-country=\"false\"",
+        "from": "multi-country",
+        "value": "false",
         "to": "fixed-country",
         "kind": "attribute",
         "mode": "manifest-only",
@@ -277,7 +278,8 @@
         "note": "the string form switches the default-on multi-country off; the element reads it itself until the date (no shim: the value is inverted, not renamed)"
       },
       {
-        "from": "use-country-masks=\"false\"",
+        "from": "use-country-masks",
+        "value": "false",
         "to": "fixed-mask",
         "kind": "attribute",
         "mode": "manifest-only",
@@ -289,7 +291,8 @@
         "note": "the string form switches the default-on use-country-masks off; the element reads it itself until the date (no shim: the value is inverted, not renamed)"
       },
       {
-        "from": "show-code=\"false\"",
+        "from": "show-code",
+        "value": "false",
         "to": "hide-code",
         "kind": "attribute",
         "mode": "manifest-only",
@@ -301,7 +304,8 @@
         "note": "the string form switches the default-on show-code off; the element reads it itself until the date (no shim: the value is inverted, not renamed)"
       },
       {
-        "from": "lazy-flags=\"false\"",
+        "from": "lazy-flags",
+        "value": "false",
         "to": "eager-flags",
         "kind": "attribute",
         "mode": "manifest-only",

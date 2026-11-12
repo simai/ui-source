@@ -176,26 +176,6 @@
         "type": "string",
         "default": "",
         "description": "Accessible name for a telephone field rendered without a visible label."
-      },
-      "multi-country=\"false\"": {
-        "type": "boolean",
-        "default": false,
-        "description": "Dated alias of fixed-country until 2027-01-01."
-      },
-      "use-country-masks=\"false\"": {
-        "type": "boolean",
-        "default": false,
-        "description": "Dated alias of fixed-mask until 2027-01-01."
-      },
-      "show-code=\"false\"": {
-        "type": "boolean",
-        "default": false,
-        "description": "Dated alias of hide-code until 2027-01-01."
-      },
-      "lazy-flags=\"false\"": {
-        "type": "boolean",
-        "default": false,
-        "description": "Dated alias of eager-flags until 2027-01-01."
       }
     },
     "additionalProperties": false
