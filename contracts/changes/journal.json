@@ -10405,11 +10405,11 @@
       "recorded_on": "2026-11-12",
       "stage": "compat",
       "kind": "behaviour",
-      "summary": "Glass over media (.sf-surface-media) takes its own white ink as the accent, as a strong coloured place does (owner decision C70, variant B of prototypes/glass-accent.html): on its children --sf-primary is white (hover neutral 95, press neutral 90), --sf-on-primary black, the tonal fill white at 12/16/20 under white, and the link and the focus ring are white too (a visited link white at 80). Before, glass kept the theme's blue accent, link and ring: a primary label read 1.16-1.75 on glass in the light theme. An opaque place on glass (a card, a popup, a popover's content) takes back the accent, link and ring the page had there.",
+      "summary": "Glass over media (.sf-surface-media) takes its own white ink as the accent, as a strong coloured place does (owner decision C70, variant B of prototypes/glass-accent.html): on its children --sf-primary is white (hover neutral 95, press neutral 90), --sf-on-primary black, the tonal fill white at 12 under white (hover 8, press 4, going down as on a strong place in the light theme), and the link and the focus ring are white too (a visited link white at 80). Before, glass kept the theme's blue accent, link and ring: a primary label read 1.16-1.75 on glass in the light theme. An opaque place on glass (a card, a popup, a popover's content) takes back the accent, link and ring the page had there.",
       "items": [
         {
           "component": ".sf-surface-media",
-          "attribute": "--sf-primary, --sf-on-primary, --sf-primary-container*, --sf-on-primary-container, --sf-link*, --sf-focus (on its children)",
+          "attribute": "--sf-primary, --sf-on-primary, --sf-primary-container*, --sf-on-primary-container, --sf-link*, --sf-focus, --sf-focus--color, --sf-ui-focus-inset (on its children)",
           "from": "the theme's blue accent, link and focus ring",
           "to": "the glass's white ink"
         }

@@ -27,8 +27,8 @@ const ACCENT = {
   'primary-active': 'var(--sf-neutral-90)',
   'on-primary': 'var(--sf-black)',
   'primary-container': 'var(--sf-white--alfa-12)',
-  'primary-container-hover': 'var(--sf-white--alfa-16)',
-  'primary-container-active': 'var(--sf-white--alfa-20)',
+  'primary-container-hover': 'var(--sf-white--alfa-8)',
+  'primary-container-active': 'var(--sf-white--alfa-4)',
   'on-primary-container': 'var(--sf-white)',
   link: 'var(--sf-white)',
   'link-hover': 'var(--sf-neutral-95)',
@@ -43,6 +43,13 @@ test('glass takes its white ink as the accent, on its children, from the palette
     assert.ok(accent.includes(`--sf-${role}: ${value};`), `--sf-${role} on glass is ${value}`);
   }
   assert.doesNotMatch(accent, /#[0-9a-f]{3,8}\b|rgb|hsl/iu, 'no literal colour');
+  // The ring reads --sf-focus--color and --sf-ui-focus-inset, resolved at the
+  // root (_sf_css__border.scss): both are re-declared on glass's children.
+  const border = read('src/core/scss/_sf_css__border.scss');
+  const inset = border.match(/--sf-ui-focus-inset: ([^;]+);/u)[1];
+  assert.match(border, /--sf-focus--color: var\(--sf-focus\);/u);
+  assert.ok(accent.includes('--sf-focus--color: var(--sf-focus);'), 'the ring colour follows --sf-focus on glass');
+  assert.ok(mix.includes(`$sf-place-focus-inset: '${inset}';`), 'the inset ring as the root writes it');
   assert.match(places, /\.sf-surface-media > \* \{\s*@include places\.sf-place-glass-accent;/u, 'on the children of glass');
   // The glass itself keeps what it found, and never re-declares an accent role.
   const glass = block(places, '  .sf-surface-media {');
@@ -63,6 +70,9 @@ test('an opaque place on glass, and a popover in it, take the page accent, link 
     assert.ok(mix.includes(`'${role}': '${value}',`), `take-back fallback of --sf-${role} is the theme's ${value}`);
     assert.ok(popover.includes(`--sf-${role}: var(--sf-place--outer-${role}, ${value});`), `popover takes --sf-${role} back`);
   }
+  assert.match(back, /--sf-focus--color: var\(--sf-place--outer-focus--color, var\(--sf-focus\)\);/u);
+  assert.match(back, /--sf-ui-focus-inset: var\(--sf-place--outer-ui-focus-inset, /u);
+  assert.ok(popover.includes('--sf-focus--color: var(--sf-place--outer-focus--color, var(--sf-focus));'), 'popover takes the ring colour back');
   const pop = block(popover, ":where(.sf-surface-media) sf-popover > [slot='content'] {");
   for (const role of Object.keys(ACCENT)) {
     assert.ok(pop.includes(`--sf-${role}: var(--sf-place--outer-${role}, `), `popover on glass takes --sf-${role} back`);
