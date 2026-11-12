@@ -1,5 +1,11 @@
 #!/usr/bin/env node
-// Usage: PLAYWRIGHT_BROWSERS_PATH=… node this-file <build-output-root> <output-dir>
+// Usage: PLAYWRIGHT_BROWSERS_PATH=… node this-file <build-output-root> [<output-dir>]
+//
+// Without an output dir the report and the screenshot go to a fresh folder in
+// the system's temporary directory, named on stdout: the probe sweep
+// (scripts/run-browser-probes.mjs) gives a probe the roots its own error names,
+// and this one named none it knows, so a pair's sweep listed it as unknown
+// (pair-next-3).
 //
 // A utility's base sheet stands before its breakpoint sheets, whatever order
 // they arrive in (2026-11-10 composition review, P9; core.runtime 1.51.1).
@@ -15,13 +21,14 @@
 // or brings the base class in a later pass, after the md sheet has arrived.
 // Every frame from the moment both sheets apply must show two columns at
 // 1440. Each scenario is loaded three times; the console must stay clean.
-import {existsSync, mkdirSync, readFileSync, writeFileSync} from 'node:fs';
+import {existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync} from 'node:fs';
+import {tmpdir} from 'node:os';
 import {join, resolve} from 'node:path';
 import {chromium} from 'playwright';
 
-if (!process.argv[2] || !process.argv[3]) throw new Error('Usage: <build-output-root> <output-dir>');
+if (!process.argv[2]) throw new Error('Build output root is required (usage: <build-output-root> [<output-dir>])');
 const out = resolve(process.argv[2]);
-const outputDir = resolve(process.argv[3]);
+const outputDir = process.argv[3] ? resolve(process.argv[3]) : mkdtempSync(join(tmpdir(), 'loader-utility-sheet-order-'));
 mkdirSync(outputDir, {recursive: true});
 const file = (path) => {
   const [product, ...rest] = path.split('/');
@@ -118,6 +125,7 @@ try {
 } finally {
   await browser.close();
 }
+console.log(`report: ${resolve(outputDir, 'loader-utility-sheet-order.json')}`);
 writeFileSync(resolve(outputDir, 'loader-utility-sheet-order.json'), `${JSON.stringify({status: failures.length ? 'failed' : 'passed', failures, runs}, null, 2)}\n`);
 console.log(JSON.stringify(runs.map(({pass, delayed, load, framesAfterBoth, framesNotTwo, columns, links}) => ({pass, delayed, load, framesAfterBoth, framesNotTwo, columns, order: links.map((path) => path.split('/').at(-1))}))));
 if (failures.length) {
