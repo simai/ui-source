@@ -8,6 +8,8 @@
        container overlay. --sf-surface is not a token, so this was transparent
        already -- now it says so. */
     --sf-download-file--background-color: var(--sf-file-download-background-color, var(--sf-download-file-background-color, transparent));
+    /* The accent of the name and the icon; a state steps it (below). */
+    --sf-download-file--accent: var(--sf-primary);
     --sf-download-file--border-color: var(--sf-file-download-border-color, var(--sf-download-file-border-color, var(--sf-outline-variant)));
     /* One height per size, the button's (rule C01): the size's control height
        is its text height and the default block step on each side, and the
@@ -31,7 +33,7 @@
     min-inline-size: var(--sf-0);
     max-inline-size: 100%;
     padding: var(--sf-file-download-padding, var(--sf-download-file-padding, calc(var(--sf-download-file--padding-block) - var(--sf-download-file--border-width)) calc(var(--sf-download-file--padding-inline) - var(--sf-download-file--border-width))));
-    color: var(--sf-primary);
+    color: var(--sf-download-file--accent);
     background-color: var(--sf-download-file--background-color);
     border: var(--sf-px) solid var(--sf-download-file--border-color);
     border-radius: var(--sf-file-download-radius, var(--sf-download-file-radius, var(--sf-radius--ui)));
@@ -77,7 +79,7 @@
     align-items: center;
     gap: var(--sf-file-download-gap, var(--sf-download-file-gap, var(--sf-download-file--gap)));
     min-inline-size: var(--sf-0);
-    color: var(--sf-primary);
+    color: var(--sf-download-file--accent);
     font: inherit;
   }
 
@@ -168,7 +170,7 @@
     flex: none;
     inline-size: var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size)));
     block-size: var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size)));
-    color: var(--sf-file-download-icon-color, var(--sf-download-file-icon-color, var(--sf-primary)));
+    color: var(--sf-file-download-icon-color, var(--sf-download-file-icon-color, var(--sf-download-file--accent)));
   }
 
   .sf-download-file :where(.sf-download-file__spinner) :is(.sf-loader--loading-indicator, .sf-loader-svg) {
@@ -181,7 +183,7 @@
     flex: none;
     block-size: var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size)));
     inline-size: var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size)));
-    color: var(--sf-file-download-icon-color, var(--sf-download-file-icon-color, var(--sf-primary)));
+    color: var(--sf-file-download-icon-color, var(--sf-download-file-icon-color, var(--sf-download-file--accent)));
     font-size: var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size)));
     /* The glyph's own sheet is unlayered and sizes .sf-icon from these, so the
        size reaches it (as in reference-link). */
@@ -228,13 +230,25 @@
 }
 
 @layer sf.states {
+  /* The ink on the hover and press plates (C113 follow-up). The plates are
+     the neutral fill's 16 and 20, which the dark theme lightens, and the
+     resting inks lost 4.5:1 on them: the type and size (the place's dim ink)
+     3.78 pressed on a card, the name (--sf-primary) 3.90 pressed on a popup.
+     The name and icon step along the accent's own ladder, as an outline
+     primary button's label does (--sf-primary-hover / -active: dark 85 / 90,
+     light 35 / 30), and the dim ink takes the one made for a fill,
+     --sf-on-surface-container-variant (dark 85, 90 on a popup; light 35). */
   .sf-download-file:not(:disabled):not(.disabled):not([aria-disabled='true']):not([aria-busy='true']):hover {
     --sf-download-file--background-color: var(--sf-surface-container-hover);
     --sf-download-file--border-color: var(--sf-primary-outline);
+    --sf-download-file--accent: var(--sf-primary-hover);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
 
   .sf-download-file:not(:disabled):not(.disabled):not([aria-disabled='true']):not([aria-busy='true']):active {
     --sf-download-file--background-color: var(--sf-surface-container-active);
+    --sf-download-file--accent: var(--sf-primary-active);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
 
   .sf-download-file:focus {

@@ -190,8 +190,16 @@
   --sf-textarea-textarea--line-color: var(--sf-textarea-border-color, var(--sf-outline));
 }
 
+/* Under the pointer the plate is the hover step (16), and in the dark theme
+   the place's dim ink lost 4.5:1 on it: 4.25 on a card, 4.32 on a popup
+   (C113 acceptance). The placeholder then takes the dim ink made for a
+   fill, --sf-on-surface-container-variant, as the dropdown's and lookup's
+   filled fields do (dark 85 on a page or card, 90 on a popup, 95 on a
+   nested one; light 35): 6.59 on a card, 5.70 on a popup, 5.57 nested.
+   A strong coloured place keeps its full ink. */
 .sf-textarea:not(.error).sf-textarea--filled:has(textarea:enabled:not(:disabled):not(.disabled):not(:read-only):hover) textarea {
   --sf-textarea-textarea--background-color: var(--sf-surface-container-hover);
+  --sf-textarea--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-container-variant));
   --sf-textarea-textarea--line-color: var(--sf-textarea-textarea--border-color);
 }
 
