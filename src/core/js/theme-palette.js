@@ -87,16 +87,25 @@ export const STATIC_ALPHA = Object.freeze({
   90: Object.freeze([4, 8, 12, 24]),
 });
 
+// The greys' chroma, and the line under which a colour is a grey (C16): a
+// colour no more chromatic than the greys has no hue to give a theme.
+const NEUTRAL_CHROMA = 5;
+
+// A grey colour makes a grey theme (C16, TG-03): its secondary and tertiary
+// take its own chroma, not 20 and 40 in a hue it barely has -- #111111 is HCT
+// hue 209, and a chroma-20 secondary of it is a bluish grey.
+const accent = (chroma) => (source) => (source.chroma < NEUTRAL_CHROMA ? source.chroma : chroma);
+
 // The generator's defaults. `hue` and `chroma` are either a number or a
 // function of the primary's; a caller may override any of them.
 export const THEME_RULES = Object.freeze({
   primary: {hue: (source) => source.hue, chroma: (source) => source.chroma},
-  secondary: {hue: (source) => source.hue, chroma: 20},
-  tertiary: {hue: (source) => (source.hue + 60) % 360, chroma: 40},
+  secondary: {hue: (source) => source.hue, chroma: accent(20)},
+  tertiary: {hue: (source) => (source.hue + 60) % 360, chroma: accent(40)},
   // The greys take the source's hue at chroma 5, or at the source's own chroma
   // when that is lower (C16): a near-grey brand colour made teal or violet
   // greys out of a hue it barely has.
-  neutral: {hue: (source) => source.hue, chroma: (source) => Math.min(5, source.chroma)},
+  neutral: {hue: (source) => source.hue, chroma: (source) => Math.min(NEUTRAL_CHROMA, source.chroma)},
   // No status rule: the four statuses are four hues of the static palette
   // (C17: error red, warning amber, success green, info sky), declared by core
   // and moved by no theme (TG-01).
@@ -150,9 +159,14 @@ export function colorToHct(color) {
   const hex = expand(color);
   const hct = Hct.fromInt(argbFromHex(hex));
   // As vivid as the hue holds at this tone: asked for far more, the tone
-  // comes back no more chromatic than the colour itself.
+  // comes back no more chromatic than the colour itself. Not a grey, though
+  // (C16, TG-03): at black and white the gamut holds no chroma at all, so
+  // #000000 and #ffffff are "as vivid as they can be" and read as chroma 85
+  // -- a pink theme from black, a teal one from white. A colour no more
+  // chromatic than the greys keeps its own chroma.
   const limit = Hct.from(hct.hue, 200, hct.tone).chroma;
-  const chroma = hct.chroma >= limit - 1 ? Math.max(VIVID_CHROMA, Math.round(hct.chroma)) : Math.round(hct.chroma);
+  const vivid = hct.chroma >= NEUTRAL_CHROMA && hct.chroma >= limit - 1;
+  const chroma = vivid ? Math.max(VIVID_CHROMA, Math.round(hct.chroma)) : Math.round(hct.chroma);
   return {hex, hue: Math.round(hct.hue) % 360, chroma, tone: round(hct.tone)};
 }
 

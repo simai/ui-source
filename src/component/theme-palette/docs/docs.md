@@ -6,6 +6,12 @@ palettes -- primary, secondary, tertiary and neutral -- as the 64
 status palettes are not part of a theme: core declares them as the static hues
 below, and no theme writes them (a status override passed to `themeFromColor`
 or `themeFromHct` is refused with a `TypeError`).
+
+A grey makes a grey theme (C16): a colour no more chromatic than the greys
+(HCT chroma under 5 -- black, white and the near-greys) keeps its own chroma,
+and the secondary and tertiary palettes take it too, so no palette of the theme
+is more chromatic than the colour it was made from. Every other colour gives
+the neutral palette at most chroma 5 and never more than its own.
 The theme generator uses it, and a page can load it alone -- a main-colour
 swatch that applies the theme from the picked colour needs the calculation,
 not the generator's panel.

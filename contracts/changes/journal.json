@@ -10456,6 +10456,31 @@
       },
       "owner": "ui-source",
       "source": "src/core/js/theme-palette.js; src/smart/theme-generator; ui-control control/research/2026-11-11-theme-generator.md TG-01"
+    },
+    {
+      "id": "behaviour-grey-colour-makes-grey-theme",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "A grey colour makes a grey theme (C16, docs study 2026-11-11 TG-03). colorToHct took a colour as vivid as its hue holds at its tone for the vivid palette (chroma 85); at black and white the gamut holds no chroma, so #000000 made a pink theme (hue 0, chroma 85) and #ffffff a teal one. A colour under HCT chroma 5 (the neutral palette's chroma) now keeps its own chroma, and its secondary and tertiary palettes take that chroma instead of 20 and 40 -- a near-black like #111111 (hue 209) no longer gets bluish secondary containers. Every colour at chroma 5 or more, the Framework's own #005bbe among them, makes the same theme as before.",
+      "items": [
+        {
+          "component": "theme-palette",
+          "from": "colorToHct('#000000').chroma = 85",
+          "to": "0"
+        },
+        {
+          "component": "theme-palette",
+          "from": "themeFromColor('#111111').palettes.secondary.chroma = 20",
+          "to": "1 (the colour's own)"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite. A site whose stored brand colour is black, white or a near-grey and whose theme was written as CSS before this pair makes the theme again to drop the tinted palettes.",
+      "owner": "ui-source",
+      "source": "src/core/js/theme-palette.js (colorToHct, THEME_RULES); ui-control control/docs-review/decisions.md C16"
     }
   ]
 }

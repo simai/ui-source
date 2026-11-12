@@ -129,3 +129,30 @@ test('the neutral palette is no more chromatic than its source', () => {
   }
   assert.equal(Math.round(themeFromColor(DEFAULT_THEME_COLOR).palettes.neutral.chroma), 5);
 });
+
+// TG-03 (docs study 2026-11-11): black and white sit where the gamut holds no
+// chroma, so the "as vivid as the hue holds" reading took them for vivid
+// colours -- #000000 made a pink theme (hue 0, chroma 85), #ffffff a teal one.
+// A colour no more chromatic than the greys (chroma under 5) is a grey: it
+// keeps its own chroma, and its secondary and tertiary are greys too, not
+// chroma 20 and 40 in a hue it barely has (#111111 is HCT hue 209: a
+// chroma-20 secondary of it was a bluish grey).
+test('a grey colour makes a grey theme: black, white and near-greys are not read as vivid (C16, TG-03)', async () => {
+  const {colorToHct} = await import('../src/core/js/theme-palette.js');
+  for (const color of ['#000000', '#ffffff', '#111111', '#222222', '#808080', '#f5f5f5']) {
+    const read = colorToHct(color);
+    assert.ok(read.chroma < 5, `${color} read as chroma ${read.chroma}`);
+    const theme = themeFromColor(color);
+    for (const name of THEME_PALETTES) {
+      assert.ok(theme.palettes[name].chroma <= read.chroma + 0.5, `${color}: ${name} chroma ${theme.palettes[name].chroma} over the colour's ${read.chroma}`);
+    }
+  }
+  // A tinted grey and a muted colour keep the accents they had.
+  for (const color of ['#6b6f76', '#1a1a2e', '#b8c4dc']) {
+    const theme = themeFromColor(color);
+    assert.equal(Math.round(theme.palettes.secondary.chroma), 20, `${color} secondary`);
+    assert.equal(Math.round(theme.palettes.tertiary.chroma), 40, `${color} tertiary`);
+  }
+  // A near-black brand colour of real hue is still read as its vivid palette.
+  assert.equal(colorToHct('#0a1f44').chroma >= 5, true);
+});
