@@ -371,19 +371,24 @@ sf-list-timeline {
   /* High contrast drops shadows and forces fills: a step keeps its shape in
      the system colours -- done filled, current filled and ringed through a
      gap (an outline), upcoming empty with a ring. A dot is filled text
-     colour, as a plain event's is. */
+     colour, as a plain event's is. forced-color-adjust: none keeps the
+     normal-mode shadows, so every marker drops them here: the rings are
+     outlines in system colours, the gap is the Canvas behind. */
   .sf-list-timeline-dot {
     forced-color-adjust: none;
     background: CanvasText;
+    box-shadow: none;
   }
 
   .sf-list-timeline-item[data-state="current"] .sf-list-timeline-marker--dot:is(.sf-list-timeline-marker--neutral, .sf-list-timeline-marker--info) .sf-list-timeline-dot {
+    box-shadow: none;
     outline: calc(var(--sf-px) * 2) solid CanvasText;
     outline-offset: calc(var(--sf-px) * 2);
   }
 
   .sf-list-timeline-item[data-state="upcoming"] .sf-list-timeline-marker--dot:is(.sf-list-timeline-marker--neutral, .sf-list-timeline-marker--info) .sf-list-timeline-dot {
     background: Canvas;
+    box-shadow: none;
     outline: calc(var(--sf-px) * 2) solid CanvasText;
     outline-offset: calc(var(--sf-px) * -2);
   }
@@ -392,14 +397,17 @@ sf-list-timeline {
     forced-color-adjust: none;
     --sf-featured-icon--background-color: CanvasText;
     --sf-featured-icon--foreground-color: Canvas;
+    box-shadow: none;
   }
 
   .sf-list-timeline-marker--current .sf-featured-icon {
+    box-shadow: none;
     outline: calc(var(--sf-px) * 2) solid CanvasText;
     outline-offset: calc(var(--sf-px) * 2);
   }
 
   .sf-list-timeline-marker--upcoming .sf-featured-icon {
+    box-shadow: none;
     outline-width: calc(var(--sf-px) * 2);
     outline-offset: calc(var(--sf-px) * -2);
   }
