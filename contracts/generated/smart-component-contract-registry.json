@@ -2885,7 +2885,9 @@
         "public_parts": [],
         "uses": [
           "component.icons",
-          "component.step"
+          "component.step",
+          "smart.progress-bar",
+          "smart.spinner"
         ]
       },
       "contract_schema": {
@@ -2897,13 +2899,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/steps/smart.manifest.json",
-      "manifest_sha256": "e98aff81fec5da2b031a9d0ab502dbce3f51c23d78081bd25bc905b04af47b05",
+      "manifest_sha256": "f0ee4b68bc861d3c4e825c03167724b3eb1e4c8b3c06e348ec1978685ff0373a",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "An ordered list of labelled steps for a multi-step process, drawn as a row of step buttons separated by an icon: marks the current, completed, skipped, running and error steps and moves to an enabled step when it is pressed.",
+      "summary": "Where a person is in an ordered process of their own: a list of steps, each a marker (number or dot) and a label joined by a progress line, drawn as a row, a column or a «Step N of M» line by its own width. Passive by default; navigation makes the reachable steps buttons.",
       "tags": [
         "steps"
       ],
@@ -3345,7 +3347,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/wizard/smart.manifest.json",
-      "manifest_sha256": "eeb80d008c7f05e4ce6388fc234134941044f9755b12145715f41a4dcee89633",
+      "manifest_sha256": "4915d7dd4ccee7925d630c5835a6459b61208d478c87cfca76b0b783e6d28ebc",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

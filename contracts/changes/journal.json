@@ -10399,6 +10399,53 @@
       },
       "owner": "ui-source",
       "source": "src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
+    },
+    {
+      "id": "value-steps-one-list-format",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-steps 1.4.0 (owner decision C101): one list format, JSON items with a state per item. The item state words are done, ahead, skipped, running and error; completed and default are their former words. The string form label::flag|label and error-step are the old form; separator-icon draws nothing (the steps are joined by a line). Each use is noted in SF.deprecations. The steps are passive by default: a page that let a person press them writes navigation=\"visited\" or \"free\".",
+      "items": [
+        {
+          "component": "sf-steps",
+          "attribute": "items.state",
+          "from": "completed",
+          "to": "done"
+        },
+        {
+          "component": "sf-steps",
+          "attribute": "items.state",
+          "from": "default",
+          "to": "ahead"
+        },
+        {
+          "component": "sf-steps",
+          "attribute": "items",
+          "from": "label::flag|label",
+          "to": "items as JSON [{label, state}]"
+        },
+        {
+          "component": "sf-steps",
+          "from": "error-step",
+          "to": "items[i].state = \"error\""
+        },
+        {
+          "component": "sf-steps",
+          "from": "separator-icon",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write items as JSON: [{\"label\": \"Корзина\", \"state\": \"done\"}, ...]. completed is done, default is ahead; error-step=\"2\" is \"state\": \"error\" on the third item; remove separator-icon. Steps a person may press need navigation=\"visited\" (back to the steps behind) or \"free\".",
+      "examples": {
+        "before": "<sf-steps current=\"2\" error-step=\"1\" items=\"Корзина::completed|Доставка|Оплата\"></sf-steps>",
+        "after": "<sf-steps current=\"2\" items='[{\"label\":\"Корзина\",\"state\":\"done\"},{\"label\":\"Доставка\",\"state\":\"error\"},{\"label\":\"Оплата\"}]'></sf-steps>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/steps/index.js; ui-control control/docs-review/decisions.md C101"
     }
   ]
 }

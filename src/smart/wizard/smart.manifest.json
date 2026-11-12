@@ -510,7 +510,7 @@
       },
       {
         "path": "src/smart/wizard/js/templates/default.js",
-        "sha256": "c7c41abab7c701ec8dee68c67f0249f9a0da176185babce180d67a7c96cad441"
+        "sha256": "4283d8fa4dd1edfac33ff6951d5e860a44f7626bcd40b65cead1750f638cdbe8"
       },
       {
         "path": "src/smart/wizard/scss/_smart__wizard.scss",

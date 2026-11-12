@@ -6,25 +6,28 @@
     "lang": "ru",
     "body": [
       "<main>",
-      "  <div id=\"area\"><sf-steps id=\"st\" aria-label=\"Этапы публикации\" current=\"1\" items=\"Черновик|Проверка|Готово|Архив::disabled\"></sf-steps></div>",
-      "  <sf-steps id=\"st-err\" current=\"2\" error-step=\"2\" items='[{\"label\":\"Корзина\"},{\"label\":\"Доставка\"},{\"label\":\"Оплата\"}]'></sf-steps>",
+      "  <div id=\"area\"><sf-steps id=\"st\" aria-label=\"Этапы публикации\" current=\"1\" navigation=\"free\" items='[{\"label\":\"Черновик\"},{\"label\":\"Проверка\"},{\"label\":\"Готово\"},{\"label\":\"Архив\",\"disabled\":true}]'></sf-steps></div>",
+      "  <sf-steps id=\"st-pass\" current=\"2\" items='[{\"label\":\"Корзина\"},{\"label\":\"Доставка\"},{\"label\":\"Оплата\",\"state\":\"error\"}]'></sf-steps>",
+      "  <sf-steps id=\"st-done\" aria-label=\"Публикация\" current=\"3\" items='[{\"label\":\"Черновик\"},{\"label\":\"Проверка\"},{\"label\":\"Публикация\"}]'></sf-steps>",
+      "  <div id=\"narrow\"><sf-steps id=\"st-auto\" aria-label=\"Создание сайта\" current=\"2\" items='[{\"label\":\"Создание сайта\"},{\"label\":\"Установка WordPress\"},{\"label\":\"Настройка HTTPS\"},{\"label\":\"Проверка сайта\"}]'></sf-steps></div>",
+      "  <sf-steps id=\"st-run\" size=\"1/2\" current=\"1\" items='[{\"label\":\"Копия\",\"state\":\"done\"},{\"label\":\"Файлы\",\"state\":\"running\"},{\"label\":\"База\"}]'></sf-steps>",
       "</main>"
     ]
   },
   "probes": [
     {
       "id": "p1-enter-moves",
-      "title": "Tab reaches a step, Enter moves there: sf-steps-change once, sf-step-change once, noted with its dates",
-      "covers": "keyboard.host Tab reach, Enter select, events.change, aliases sf-step-change",
+      "title": "Tab reaches a step button, Enter moves there: sf-steps-change once, sf-step-change once, noted with its dates",
+      "covers": "keyboard.host Tab reach, Enter select, navigation free, events.change, aliases sf-step-change",
       "steps": [
         {
-          "script": "(document.querySelector('#st [data-step-index=\"1\"]').focus(), true)",
+          "script": "(document.querySelector('#st [data-step-index=\"0\"] button').focus(), true)",
           "wait": 60
         },
         {
           "user": "keyboard:Tab",
           "wait": 60,
-          "check": "document.activeElement === document.querySelector('#st [data-step-index=\"2\"]')"
+          "check": "document.activeElement === document.querySelector('#st [data-step-index=\"2\"] button')"
         },
         {
           "user": "keyboard:Enter",
@@ -69,11 +72,11 @@
     },
     {
       "id": "p2-space-moves",
-      "title": "Space on a step moves there too",
+      "title": "Space on a step button moves there too",
       "covers": "keyboard.host Space select",
       "steps": [
         {
-          "script": "(document.querySelector('#st [data-step-index=\"0\"]').focus(), true)",
+          "script": "(document.querySelector('#st [data-step-index=\"0\"] button').focus(), true)",
           "wait": 60
         },
         {
@@ -97,12 +100,12 @@
       ]
     },
     {
-      "id": "p3-disabled-skipped",
-      "title": "a disabled step is not reachable and go-to-step refuses it",
-      "covers": "settings.items disabled, actions.go-to-step",
+      "id": "p3-disabled-and-current",
+      "title": "a disabled step and the current one are no buttons; go-to-step refuses a disabled step",
+      "covers": "settings.items disabled, settings.navigation, actions.go-to-step",
       "steps": [
         {
-          "check": "document.querySelector('#st [data-step-index=\"3\"]').disabled === true"
+          "check": "document.querySelector('#st [data-step-index=\"3\"] button') === null && document.querySelector('#st [data-step-index=\"1\"] button') === null && document.querySelectorAll('#st button.sf-step-control').length === 2"
         },
         {
           "action": {
@@ -153,17 +156,17 @@
       ]
     },
     {
-      "id": "p5-name-and-words",
-      "title": "the list is an ordered list named by aria-label, else by the language file; the current step says aria-current; the states have their words",
-      "covers": "accessibility.role list, accessibility.name, lang runtime",
+      "id": "p5-passive-list",
+      "title": "passive by default: an ordered list named by aria-label, else by the language file; no button; the current item says aria-current; each item its state word",
+      "covers": "accessibility.role list, accessibility.name, settings.navigation, lang runtime, C101 (5)",
       "steps": [
         {
-          "check": "document.querySelector('#st ol[role=\"list\"]').getAttribute('aria-label') === 'Этапы публикации' && document.querySelector('#st-err ol[role=\"list\"]').getAttribute('aria-label') === 'Шаги' && document.querySelector('#st-err [data-step-index=\"0\"]').getAttribute('aria-label') === 'Корзина, Завершено' && document.querySelector('#st-err [data-step-index=\"2\"]').getAttribute('aria-label') === 'Оплата, Ошибка' && document.querySelectorAll('#st ol > li').length === 4 && document.querySelectorAll('#st ol > :not(li)').length === 0 && document.querySelector('#st ol > li:nth-child(2) [aria-current=\"step\"]') !== null && document.querySelector('#st [role=\"group\"]') === null"
+          "check": "document.querySelector('#st ol[role=\"list\"]').getAttribute('aria-label') === 'Этапы публикации' && document.querySelector('#st-pass ol[role=\"list\"]').getAttribute('aria-label') === 'Шаги' && document.querySelectorAll('#st-pass button').length === 0 && document.querySelector('#st-pass li[aria-current=\"step\"]') === null && document.querySelector('#st-pass [data-step-index=\"0\"] .sf-step-container').textContent === 'Корзина' && document.querySelector('#st-pass [data-step-index=\"0\"] .sr-only').textContent === ', Пройден' && document.querySelector('#st-pass [data-step-index=\"0\"] .sf-step-marker .sf-icon').textContent === 'check' && document.querySelector('#st-pass [data-step-index=\"2\"] .sr-only').textContent === ', Ошибка' && document.querySelectorAll('#st ol > li').length === 4 && document.querySelectorAll('#st ol > :not(li)').length === 0 && document.querySelector('#st ol > li:nth-child(2)').getAttribute('aria-current') === 'step' && document.querySelector('#st [role=\"group\"]') === null"
         },
         {
-          "script": "(document.getElementById('st-err').setAttribute('lang', 'en'), true)",
+          "script": "(document.getElementById('st-pass').setAttribute('lang', 'en'), true)",
           "wait": 300,
-          "check": "document.querySelector('#st-err ol[role=\"list\"]').getAttribute('aria-label') === 'Steps' && document.querySelector('#st-err [data-step-index=\"0\"]').getAttribute('aria-label') === 'Корзина, Completed'"
+          "check": "document.querySelector('#st-pass ol[role=\"list\"]').getAttribute('aria-label') === 'Steps' && document.querySelector('#st-pass [data-step-index=\"1\"] .sr-only').textContent === ', Completed'"
         }
       ]
     },
@@ -173,9 +176,9 @@
       "covers": "settings.items (list)",
       "steps": [
         {
-          "script": "(document.getElementById('st-err').items = [{label: 'Один'}, {label: 'Два'}], true)",
+          "script": "(document.getElementById('st-pass').items = [{label: 'Один'}, {label: 'Два'}], true)",
           "wait": 200,
-          "check": "document.querySelectorAll('#st-err .sf-step').length === 2 && document.querySelector('#st-err [data-step-index=\"1\"]').textContent.includes('Два')"
+          "check": "document.querySelectorAll('#st-pass .sf-step').length === 2 && document.querySelector('#st-pass [data-step-index=\"1\"]').textContent.includes('Два')"
         }
       ]
     },
@@ -187,23 +190,87 @@
         {
           "script": "(document.getElementById('area').style.setProperty('--sf-steps-current-border-color', 'rgb(1, 2, 3)'), document.getElementById('area').style.setProperty('--sf-steps-gap', '17px'), true)",
           "wait": 500,
-          "check": "getComputedStyle(document.querySelector('#st .sf-step.selected')).borderTopColor === 'rgb(1, 2, 3)' && getComputedStyle(document.querySelector('#st .sf-steps-container')).columnGap === '17px'"
+          "check": "getComputedStyle(document.querySelector('#st .sf-step--state-current .sf-step-marker')).outlineColor === 'rgb(1, 2, 3)' && getComputedStyle(document.querySelector('#st .sf-steps-container')).columnGap === '17px'"
         }
       ]
     },
     {
-      "id": "p8-whole-words",
-      "title": "in a narrow row a step goes to the next line whole: no label breaks inside a word and every step keeps its control height",
-      "covers": "R185 ST-1, ST-10",
+      "id": "p8-auto-layout",
+      "title": "layout auto: a row while it fits, a column when it does not, the count line under 20rem; no label breaks inside a word",
+      "covers": "settings.layout, R185 ST-1, ST-2, C101 (4)",
       "steps": [
         {
-          "script": "(document.getElementById('area').style.inlineSize = '15rem', true)",
+          "script": "(document.getElementById('narrow').style.inlineSize = '60rem', true)",
           "wait": 300,
-          "check": "[...document.querySelectorAll('#st .sf-step')].every((step) => { const label = step.querySelector('.sf-step-container'); const line = parseFloat(getComputedStyle(label).lineHeight); return label.getBoundingClientRect().height <= line + 0.5 && label.scrollWidth <= label.clientWidth + 0.5; }) && new Set([...document.querySelectorAll('#st .sf-step')].map((step) => Math.round(step.getBoundingClientRect().height))).size === 1 && document.querySelector('#st .sf-steps-container').scrollWidth <= document.querySelector('#st .sf-steps-container').clientWidth + 0.5"
+          "check": "document.querySelector('#st-auto .sf-steps').classList.contains('sf-steps--layout-row') && document.querySelector('#st-auto .sf-steps-container').scrollWidth <= document.querySelector('#st-auto .sf-steps-container').clientWidth + 1"
         },
         {
-          "script": "(document.getElementById('area').style.removeProperty('inline-size'), true)",
-          "wait": 100
+          "script": "(document.getElementById('narrow').style.inlineSize = '24rem', true)",
+          "wait": 300,
+          "check": "document.querySelector('#st-auto .sf-steps').classList.contains('sf-steps--layout-column') && [...document.querySelectorAll('#st-auto .sf-step-container')].every((label) => label.textContent.split(/\\s+/).every((word) => { const node = label.firstChild; const at = node.textContent.indexOf(word); const range = document.createRange(); range.setStart(node, at); range.setEnd(node, at + word.length); return range.getClientRects().length === 1; }))"
+        },
+        {
+          "script": "(document.getElementById('narrow').style.inlineSize = '15rem', true)",
+          "wait": 300,
+          "check": "document.querySelector('#st-auto .sf-steps').classList.contains('sf-steps--layout-count') && getComputedStyle(document.querySelector('#st-auto .sf-steps-container')).display === 'none' && document.querySelector('#st-auto .sf-steps-count-line').textContent.replace(/\\s+/g, ' ').trim() === 'Шаг 3 из 4 · Настройка HTTPS' && document.querySelector('#st-auto sf-progress-bar') !== null"
+        },
+        {
+          "script": "(document.getElementById('narrow').style.removeProperty('inline-size'), true)",
+          "wait": 300,
+          "check": "document.querySelector('#st-auto .sf-steps').classList.contains('sf-steps--layout-row') || document.querySelector('#st-auto .sf-steps').classList.contains('sf-steps--layout-column')"
+        }
+      ]
+    },
+    {
+      "id": "p9-all-done",
+      "title": "current equal to the number of steps: every step done, none current, every line the progress line",
+      "covers": "values.current, C101 (6) ST-4",
+      "steps": [
+        {
+          "check": "document.querySelector('#st-done [aria-current]') === null && document.querySelectorAll('#st-done .sf-step--state-done').length === 3 && document.querySelectorAll('#st-done .sf-step--passed').length === 3 && document.getElementById('st-done').current === 3"
+        }
+      ]
+    },
+    {
+      "id": "p10-marker-is-the-text-line",
+      "title": "the marker box is the rung's text line, at both sizes; the running spinner is the marker's size and centred in it",
+      "covers": "C101 (3), (6) running",
+      "steps": [
+        {
+          "check": "[...document.querySelectorAll('#st .sf-step, #st-run .sf-step')].every((step) => { const box = step.querySelector('.sf-step-marker').getBoundingClientRect(); const line = parseFloat(getComputedStyle(step).lineHeight); return Math.abs(box.width - line) < 0.5 && Math.abs(box.height - line) < 0.5; }) && (() => { const mark = document.querySelector('#st-run .sf-step--state-running .sf-step-marker').getBoundingClientRect(); const svg = document.querySelector('#st-run .sf-step--state-running svg').getBoundingClientRect(); return Math.abs(svg.width - mark.width) < 0.5 && Math.abs((svg.left + svg.width / 2) - (mark.left + mark.width / 2)) < 0.5 && Math.abs((svg.top + svg.height / 2) - (mark.top + mark.height / 2)) < 0.5; })()"
+        }
+      ]
+    },
+    {
+      "id": "p11-old-forms",
+      "title": "the old forms still draw and are noted with their dates: the string items, completed, error-step, separator-icon",
+      "covers": "C101 (7), ST-12",
+      "steps": [
+        {
+          "script": "(document.getElementById('area').insertAdjacentHTML('beforeend', '<sf-steps id=\"st-old\" current=\"2\" error-step=\"1\" separator-icon=\"chevron_right\" items=\"Корзина::completed|Доставка|Оплата\"></sf-steps>'), true)",
+          "wait": 500,
+          "expect": {
+            "journal": [
+              {
+                "from": "label::flag|label",
+                "remove_after": "2027-01-01"
+              },
+              {
+                "from": "completed",
+                "to": "done",
+                "remove_after": "2027-01-01"
+              },
+              {
+                "from": "error-step",
+                "remove_after": "2027-01-01"
+              },
+              {
+                "from": "separator-icon",
+                "remove_after": "2027-01-01"
+              }
+            ]
+          },
+          "check": "document.querySelector('#st-old [data-step-index=\"0\"]').classList.contains('sf-step--state-done') && document.querySelector('#st-old [data-step-index=\"1\"]').classList.contains('sf-step--state-error') && document.querySelector('#st-old .sf-steps-separator') === null"
         }
       ]
     }

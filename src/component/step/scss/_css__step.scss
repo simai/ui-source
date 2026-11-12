@@ -1,216 +1,257 @@
 @layer sf.components {
-/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/center (.justify-center) align-items/center (.items-center) */
+/* One step of sf-steps (owner decision C101, 2026-11-12; R185 steps study):
+   a marker, the label in whole words, an optional second line, and the line
+   to the next step (drawn by the list's layout, _css__steps.scss). The state
+   is told by shape and the primary colour (C61, C73): done is a filled marker
+   with a check, current a filled marker with a ring through a gap, ahead an
+   empty one; error is the error colour, skipped a dashed outline, running the
+   Framework spinner. Green is not a step's colour: it belongs to a real
+   success status of the whole job, which the host says.
+
+   The marker box is the rung's text line (24 at size 1, 20 at size 1/2 on a
+   desktop; the text ladder moves on a phone and in compact density). */
 .sf-step {
-  max-inline-size: 100%;
-  box-shadow: var(--sf-step--box-shadow);
-  border-bottom-width: var(--sf-step--border-bottom-width, var(--sf-px));
-  border-end-end-radius: var(--sf-step--border-bottom-right-radius, var(--sf-steps-step-radius, var(--sf-radius-circle)));
-  border-end-start-radius: var(--sf-step--border-bottom-left-radius, var(--sf-steps-step-radius, var(--sf-radius-circle)));
-  border-inline-end-width: var(--sf-step--border-right-width, var(--sf-px));
-  border-inline-start-width: var(--sf-step--border-left-width, var(--sf-px));
-  border-start-end-radius: var(--sf-step--border-top-right-radius, var(--sf-steps-step-radius, var(--sf-radius-circle)));
-  border-start-start-radius: var(--sf-step--border-top-left-radius, var(--sf-steps-step-radius, var(--sf-radius-circle)));
-  border-style: var(--sf-step--border-style, solid);
-  border-top-width: var(--sf-step--border-top-width, var(--sf-px));
-  border-width: var(--sf-step--border-width, var(--sf-px));
-  font-family: var(--sf-step--font-family, var(--sf-text--family));
-  font-weight: var(--sf-step--font-weight, var(--sf-font-weight-regular));
-  gap: var(--sf-step--gap, var(--sf-space-1\/4));
-  min-width: var(--sf-step--min-width, var(--sf-c2));
-  padding-inline-end: var(--sf-step--padding-right, var(--sf-step--padding-inline, var(--sf-space-1\/4)));
-  padding-inline-start: var(--sf-step--padding-left, var(--sf-step--padding-inline, var(--sf-space-1\/4)));
-  padding-top: var(--sf-step--padding-top);
-  padding-bottom: var(--sf-step--padding-bottom);
-  /* A step is a control of the height ladder (C01, C18; docs pre-check
-     2026-11-10, navigation item 6): the size's control height on a desktop and
-     on a phone, its border inside. It was its padding, line and border -- 34 at
-     size 1, and on a phone 34 beside 30 in one row, as a step with an icon
-     stood taller than one without. */
-  box-sizing: border-box;
-  min-block-size: var(--sf-step--block-size);
-  border-color: var(--sf-step--border-color, transparent);
-  background-color: var(--sf-step--background-color);
-  color: var(--sf-step--color);
-  font-size: var(--sf-step--font-size);
-  line-height: var(--sf-step--line-height);
-  transition-duration: var(--sf-duration-fast);
-  transition-property: background-color, border-color, box-shadow, color;
-  transition-timing-function: var(--sf-animation);
-  /* The public variables of sf-steps (component.json css-variables, standard
-     1.3.8 §6) over the role tokens. */
-  --sf-step--border-color: var(--sf-steps-step-border-color, var(--sf-outline-variant));
-  --sf-step--background-color: transparent;
-  --sf-step--color: var(--sf-on-surface-variant);
-}
-
-.sf-step .sf-icon {
-  flex-shrink: 0;
-  color: var(--sf-icon--color, var(--sf-on-surface-variant));
-  /* The icon is the size's text line, a step of the same ladder (C18): 24 at
-     size 1, 20 at size 1/2 on a desktop. It is given through the icon's own
-     variables (component.icons): the icon sheet's size rule is unlayered and
-     outranks any font-size, width or height a layered component rule writes,
-     so the size 1/2 icon drew at the icon default, 24 (R185 ST-10). */
-  --sf-icon--font-size: var(--sf-step--icon-size, var(--sf-text-height-1));
-  --sf-icon--height: var(--sf-step--icon-size, var(--sf-text-height-1));
-  --sf-icon--width: var(--sf-step--icon-size, var(--sf-text-height-1));
-}
-
-/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
-.sf-step .sf-step-container {
-  /* A label breaks between words only, never inside one (R185 ST-1): it broke at any
-     letter over a step that shrank to 24 px, so four short
-     steps under 547 px read «Кор/зина», «WordPre/ss». The label's narrowest
-     width is its longest word; the list moves a step that does not fit to
-     the next line whole (component/step _css__steps.scss). */
-  overflow-wrap: normal;
-  word-break: normal;
-  --sf-step-container--background-color: transparent;
-  background-color: var(--sf-step-container--background-color);
-  color: var(--sf-step-container--color);
-  font-family: var(--sf-step-container--font-family);
-  font-size: var(--sf-step-container--font-size);
-  font-weight: var(--sf-step-container--font-weight);
-  line-height: var(--sf-step-container--line-height);
-}
-
-.sf-step.sf-step--size-1 .sf-step-container {
-  --sf-step-container--font-size: var(--sf-text-size-1);
-  --sf-step-container--line-height: var(--sf-text-height-1);
-}
-
-.sf-step.sf-step--stage-default .sf-step-container, .sf-step.sf-step--stage-completed .sf-step-container, .sf-step.sf-step--stage-skipped .sf-step-container, .sf-step.sf-step--stage-running .sf-step-container, .sf-step.sf-step--stage-error .sf-step-container {
-  --sf-step-container--color: var(--sf-steps-step-color, var(--sf-on-surface-variant));
-}
-
-.sf-step.sf-step--stage-completed .sf-icon {
-  --sf-icon--color: var(--sf-steps-completed-icon-color, var(--sf-success));
-}
-
-.sf-step.selected.sf-step--stage-default .sf-step-container, .sf-step.selected.sf-step--stage-completed .sf-step-container, .sf-step.selected.sf-step--stage-skipped .sf-step-container, .sf-step.selected.sf-step--stage-running .sf-step-container, .sf-step.selected.sf-step--stage-error .sf-step-container {
-  --sf-step-container--color: var(--sf-on-primary-container);
-}
-
-.sf-step.disabled.sf-step--stage-default .sf-step-container, .sf-step.disabled.sf-step--stage-completed .sf-step-container, .sf-step.disabled.sf-step--stage-skipped .sf-step-container, .sf-step.disabled.sf-step--stage-running .sf-step-container, .sf-step.disabled.sf-step--stage-error .sf-step-container {
-  --sf-step-container--color: var(--sf-on-surface-disabled);
-}
-
-.sf-step.disabled.sf-step--stage-completed .sf-icon, .sf-step.disabled.sf-step--stage-skipped .sf-icon, .sf-step.disabled.sf-step--stage-running .sf-icon, .sf-step.disabled.sf-step--stage-error .sf-icon {
-  --sf-icon--color: var(--sf-on-surface-disabled);
-}
-
-.sf-step.sf-step--size-1\/2 .sf-step-container {
-  --sf-step-container--font-size: var(--sf-text-size-1\/2);
-  --sf-step-container--line-height: var(--sf-text-height-1\/2);
-}
-
-.sf-step.sf-step--size-1\/2 .sf-icon {
-  --sf-step--icon-size: var(--sf-text-height-1\/2);
-}
-
-.sf-step--size-1 {
+  --sf-step--marker: var(--sf-text-height-1);
+  --sf-step--dot: var(--sf-a8);
   --sf-step--font-size: var(--sf-text-size-1);
   --sf-step--line-height: var(--sf-text-height-1);
-  --sf-step--block-size: var(--sf-ui-1--control-height);
-  --sf-step--padding-inline: var(--sf-ui-1--text-space-x);
-  --sf-step--padding-bottom: 0;
-  --sf-step--padding-top: 0;
+  --sf-step--small-size: var(--sf-text-size-1\/2);
+  --sf-step--small-height: var(--sf-text-height-1\/2);
+  --sf-step--icon: var(--sf-text-height-1\/2);
+  /* The ring of the current marker: 2 px through a 2 px gap (C73). */
+  --sf-step--ring: calc(var(--sf-px) * 2);
+  /* The progress colour: done and current markers, the line behind current. */
+  --sf-step--progress: var(--sf-steps-completed-icon-color, var(--sf-primary));
+  position: relative;
+  min-inline-size: 0;
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-step--font-size);
+  line-height: var(--sf-step--line-height);
+  color: var(--sf-on-surface);
 }
 
-.sf-step--size-1\/2 {
+.sf-step.sf-step--size-1\/2 {
+  --sf-step--marker: var(--sf-text-height-1\/2);
+  --sf-step--dot: var(--sf-a6);
   --sf-step--font-size: var(--sf-text-size-1\/2);
   --sf-step--line-height: var(--sf-text-height-1\/2);
-  --sf-step--block-size: var(--sf-ui-1\/2--control-height);
-  --sf-step--padding-inline: var(--sf-ui-1\/2--text-space-x);
-  --sf-step--padding-bottom: 0;
-  --sf-step--padding-top: 0;
+  --sf-step--small-size: var(--sf-text-size-1\/3);
+  --sf-step--small-height: var(--sf-text-height-1\/3);
+  --sf-step--icon: var(--sf-text-height-1\/3);
 }
 
-.sf-step:is(button, a, [role="button"]):not(:disabled):not(.disabled):hover {
-  --sf-step--background-color: var(--sf-surface-container);
-  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+/* The body: a span, or the native button of a step a person may go to. */
+.sf-step .sf-step-body {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-space-1\/3);
+  min-inline-size: 0;
+  color: inherit;
 }
 
-/* The current step is the selected role (C16, C23; dispatcher decision a,
-   docs pre-check 2026-11-10): the primary container under on-primary-container
-   words, the border transparent over the fill. It was a thin primary outline
-   alone. --sf-steps-current-border-color still draws a border where a page
-   sets one. */
-.sf-step.selected {
-  --sf-step--background-color: var(--sf-primary-container);
-  --sf-step--border-color: var(--sf-steps-current-border-color, var(--sf-transparent));
-  --sf-step--color: var(--sf-on-primary-container);
-  --sf-icon--color: var(--sf-on-primary-container);
+.sf-step .sf-step-control {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: start;
+  cursor: pointer;
+  border-radius: var(--sf-radius--ui);
 }
 
-.sf-step.disabled,
-.sf-step:disabled {
-  --sf-step--border-color: var(--sf-outline-disabled);
-  --sf-step--color: var(--sf-on-surface-disabled);
-  cursor: default;
+.sf-step .sf-step-control:hover .sf-step-container {
+  text-decoration: underline;
 }
 
-.sf-step.sf-step--stage-error .sf-icon {
-  --sf-icon--color: var(--sf-error);
+/* The marker. */
+.sf-step .sf-step-marker {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  inline-size: var(--sf-step--marker);
+  block-size: var(--sf-step--marker);
+  border-radius: var(--sf-steps-step-radius, var(--sf-radius-circle));
+  font-size: var(--sf-step--small-size);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--sf-steps-step-color, var(--sf-on-surface-variant));
 }
 
-/* A skipped step and a running one (sf-steps 1.2.0): the quiet icon role, not
-   a status colour. The running mark turns while its action is under way. */
-.sf-step.sf-step--stage-skipped .sf-icon,
-.sf-step.sf-step--stage-running .sf-icon {
-  --sf-icon--color: var(--sf-on-surface-variant);
+.sf-step .sf-step-marker .sf-icon {
+  /* Given through the icon's own variables: the icon sheet's size rule is
+     unlayered and outranks a layered font-size, width or height (R185 ST-10). */
+  --sf-icon--font-size: var(--sf-step--icon);
+  --sf-icon--height: var(--sf-step--icon);
+  --sf-icon--width: var(--sf-step--icon);
+  --sf-icon--color: currentColor;
+  color: currentColor;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .sf-step.sf-step--stage-running .sf-icon {
-    animation: sf-step-running calc(var(--sf-duration-slow) * 4) linear infinite;
-  }
+/* Numbers: an outlined circle; done and current filled, error in its colour. */
+.sf-steps--marker-number .sf-step .sf-step-marker {
+  border: var(--sf-px) solid var(--sf-steps-step-border-color, var(--sf-outline));
 }
 
-@keyframes sf-step-running {
-  to {
-    transform: rotate(1turn);
-  }
+.sf-steps--marker-number .sf-step--state-done .sf-step-marker,
+.sf-steps--marker-number .sf-step--state-current .sf-step-marker {
+  border-color: var(--sf-step--progress);
+  background-color: var(--sf-step--progress);
+  color: var(--sf-on-primary);
 }
 
-/* A disabled step dims all of it, whatever its stage and however it is
-   disabled. The dimming lived on stage-scoped rules for the class alone: a
-   default-stage icon kept its colour, a step disabled natively or by
-   aria-disabled dimmed only its border, and the error stage's icon rule, later
-   in the sheet, outranked the disabled one. Last in the layer and one class
-   heavier than the selected and stage rules, so it wins over both. */
-.sf-step.sf-step:is(.disabled, :disabled, [aria-disabled="true"]) {
-  --sf-step--border-color: var(--sf-outline-disabled);
-  --sf-step--color: var(--sf-on-surface-disabled);
-  cursor: default;
+.sf-steps--marker-number .sf-step--state-current .sf-step-marker {
+  outline: var(--sf-step--ring) solid var(--sf-steps-current-border-color, var(--sf-step--progress));
+  outline-offset: var(--sf-step--ring);
 }
 
-.sf-step.sf-step:is(.disabled, :disabled, [aria-disabled="true"]) .sf-step-container {
-  --sf-step-container--color: var(--sf-on-surface-disabled);
+.sf-steps--marker-number .sf-step--state-error .sf-step-marker {
+  border-color: var(--sf-error);
+  background-color: var(--sf-error);
+  color: var(--sf-on-error);
 }
 
-.sf-step.sf-step:is(.disabled, :disabled, [aria-disabled="true"]) .sf-icon {
-  --sf-icon--color: var(--sf-on-surface-disabled);
+.sf-steps--marker-number .sf-step--state-skipped .sf-step-marker {
+  border-style: dashed;
+}
+
+/* Dots: the .sf-dot ladder (8 at size 1, 6 at 1/2) centred in the marker
+   box; the same three shapes. */
+.sf-steps--marker-dot .sf-step .sf-step-marker::before {
+  content: "";
+  display: block;
+  box-sizing: border-box;
+  inline-size: var(--sf-step--dot);
+  block-size: var(--sf-step--dot);
+  border-radius: var(--sf-steps-step-radius, var(--sf-radius-circle));
+  border: var(--sf-step--ring) solid var(--sf-steps-step-border-color, var(--sf-outline));
+}
+
+.sf-steps--marker-dot .sf-step--state-done .sf-step-marker::before,
+.sf-steps--marker-dot .sf-step--state-current .sf-step-marker::before {
+  border-color: var(--sf-step--progress);
+  background-color: var(--sf-step--progress);
+}
+
+.sf-steps--marker-dot .sf-step--state-current .sf-step-marker::before {
+  outline: var(--sf-step--ring) solid var(--sf-steps-current-border-color, var(--sf-step--progress));
+  outline-offset: var(--sf-step--ring);
+}
+
+.sf-steps--marker-dot .sf-step--state-error .sf-step-marker::before {
+  border-color: var(--sf-error);
+  background-color: var(--sf-error);
+}
+
+.sf-steps--marker-dot .sf-step--state-skipped .sf-step-marker::before {
+  border-style: dashed;
+}
+
+/* Running: the Framework spinner at the marker's size, centred, no ring or
+   outline of its own (owner correction to C101: the spun glyph was larger
+   than the marker and off centre). */
+.sf-steps .sf-step--state-running .sf-step-marker {
+  border: 0;
+  background: none;
+  outline: 0;
+  color: var(--sf-step--progress);
+}
+
+.sf-steps .sf-step--state-running .sf-step-marker::before {
+  content: none;
+}
+
+.sf-step .sf-step-marker sf-spinner,
+.sf-step .sf-step-marker .sf-loader-container {
+  display: grid;
+  place-items: center;
+  inline-size: var(--sf-step--marker);
+  block-size: var(--sf-step--marker);
+  color: inherit;
+}
+
+/* The label and its second line: whole words only, never broken inside a
+   word (R185 ST-1). */
+.sf-step .sf-step-content {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.sf-step .sf-step-container {
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: manual;
+  color: var(--sf-on-surface);
+}
+
+.sf-step .sf-step-text {
+  font-size: var(--sf-step--small-size);
+  line-height: var(--sf-step--small-height);
+  color: var(--sf-on-surface-variant);
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.sf-step.sf-step--state-current .sf-step-container,
+.sf-step.sf-step--state-running .sf-step-container {
+  font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-step.sf-step--state-ahead .sf-step-container,
+.sf-step.sf-step--state-skipped .sf-step-container {
+  color: var(--sf-steps-step-color, var(--sf-on-surface-variant));
+}
+
+.sf-step.sf-step--state-error .sf-step-container,
+.sf-step.sf-step--state-error .sf-step-text {
+  color: var(--sf-error);
+}
+
+/* A disabled step: everything on the disabled roles, whatever its state. */
+.sf-step.sf-step--disabled .sf-step-container,
+.sf-step.sf-step--disabled .sf-step-text,
+.sf-step.sf-step--disabled .sf-step-marker {
+  color: var(--sf-on-surface-disabled);
+}
+
+.sf-steps--marker-number .sf-step.sf-step--disabled .sf-step-marker,
+.sf-steps--marker-dot .sf-step.sf-step--disabled .sf-step-marker::before {
+  border-color: var(--sf-outline-disabled);
+  background-color: transparent;
 }
 }
 
 @layer sf.states {
-  .sf-step:not(:disabled):not(.disabled):not([aria-disabled="true"]):focus-visible {
+  .sf-step .sf-step-control:not(:disabled):not([aria-disabled="true"]):focus-visible {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
     outline-offset: var(--sf-focus--offset);
   }
 
+  /* Forced colours drop backgrounds: a filled marker keeps its fill as the
+     system's text colour, so done and current stay unlike ahead. */
   @media (forced-colors: active) {
-    .sf-step:not(:disabled):not(.disabled):not([aria-disabled="true"]):focus-visible {
+    .sf-steps--marker-number .sf-step:is(.sf-step--state-done, .sf-step--state-current, .sf-step--state-error) .sf-step-marker,
+    .sf-steps--marker-dot .sf-step:is(.sf-step--state-done, .sf-step--state-current, .sf-step--state-error) .sf-step-marker::before {
+      forced-color-adjust: none;
+      border-color: CanvasText;
+      background-color: CanvasText;
+      color: Canvas;
+    }
+
+    .sf-steps .sf-step--state-current .sf-step-marker,
+    .sf-steps .sf-step--state-current .sf-step-marker::before {
+      outline-color: CanvasText;
+    }
+
+    .sf-step .sf-step-control:not(:disabled):not([aria-disabled="true"]):focus-visible {
       outline: var(--sf-focus-outline-width) solid currentColor;
       outline-offset: var(--sf-focus-outline-width);
-      --sf-step--box-shadow: none;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .sf-step {
-      transition-duration: 0s;
     }
   }
 }

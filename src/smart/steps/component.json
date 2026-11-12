@@ -2,7 +2,7 @@
   "$comment": "The source of sf-steps's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/steps (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.steps",
   "tag": "sf-steps",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "kind": "leaf",
   "family": "navigation",
   "settings": {
@@ -12,13 +12,18 @@
         "1",
         "1/2"
       ],
-      "default": "1"
+      "default": "1",
+      "summary": "The rung: 1, or 1/2 for dense cards and panels. The marker is the rung's text line (24 at 1, 20 at 1/2 on a desktop)."
     },
     "items": {
       "type": "list",
       "default": [],
       "of": {
         "label": "string",
+        "text": {
+          "type": "string",
+          "optional": true
+        },
         "disabled": {
           "type": "boolean",
           "optional": true
@@ -26,47 +31,97 @@
         "state": {
           "type": "enum",
           "values": [
-            "default",
-            "completed",
+            "done",
+            "ahead",
             "skipped",
             "running",
-            "error"
+            "error",
+            "completed",
+            "default"
           ],
           "optional": true
         }
       },
-      "x-markup": "the attribute also takes the old \"label::disabled|label\" form (flags disabled, completed, skipped, error), or the same list as JSON"
+      "summary": "The steps in order, as JSON: {label, text?, state?, disabled?}. text is the second line a column shows (a date, a time, «optional», the reason of an error). state is the step's own: done, skipped, running or error, or ahead for a step before current that was never done; without it the place decides (before current: done, at current: current, after: ahead). completed and default are the former words of done and ahead, read until 2027-01-01.",
+      "x-markup": "the attribute also takes the former string form \"label::flag|label\" (flags disabled, completed, skipped, running, error), read until 2027-01-01 and noted in SF.deprecations"
+    },
+    "marker": {
+      "type": "enum",
+      "values": [
+        "number",
+        "dot"
+      ],
+      "default": "number",
+      "summary": "What marks a step: its number (a check when done, «!» on an error), or a dot for a passive status and dense cards. The same three shapes either way: filled done, filled with a ring current, empty ahead."
+    },
+    "layout": {
+      "type": "enum",
+      "values": [
+        "auto",
+        "row",
+        "column",
+        "count"
+      ],
+      "default": "auto",
+      "summary": "auto: a row while the steps fit their own width on one line, else a column (label and a second line); under 20rem of its own width the count line «Шаг N из M · label» over sf-progress-bar. row, column and count draw that layout always; an explicit row wider than its place scrolls inside itself."
+    },
+    "navigation": {
+      "type": "enum",
+      "values": [
+        "",
+        "visited",
+        "free"
+      ],
+      "default": "",
+      "summary": "Empty: the steps are a passive list, nothing is pressed. visited: a step behind current, or one done, skipped or failed, is a button that moves there; free: every step not disabled is. As in sf-wizard; the current step is never a button."
     },
     "error-step": {
       "type": "number",
       "integer": true,
       "min": 0,
       "nullable": true,
-      "default": null
+      "default": null,
+      "summary": "The former way to mark one step failed (sf-steps 1.3 and before): read until 2027-01-01 and noted in SF.deprecations. Today an item says state \"error\"."
     },
     "separator-icon": {
       "type": "icon",
-      "default": "chevron_right"
+      "default": "",
+      "summary": "Former: the glyph between steps (chevron_right). Since 1.4.0 steps are joined by a line and the setting is ignored; noted in SF.deprecations, removed after 2027-01-01."
     },
     "completed-label": {
       "type": "string",
       "default-from": "runtime.completed-label",
-      "summary": "Empty: the text of the page's language (\"Completed\" in English)."
+      "summary": "The word a screen reader hears after a done step's label. Empty: the text of the page's language (\"Completed\" in English)."
+    },
+    "current-label": {
+      "type": "string",
+      "default-from": "runtime.current-label",
+      "summary": "The word a screen reader hears after a current step's label. Empty: the text of the page's language (\"Current\" in English)."
+    },
+    "ahead-label": {
+      "type": "string",
+      "default-from": "runtime.ahead-label",
+      "summary": "The word a screen reader hears after a not yet started step's label. Empty: the text of the page's language (\"Not started\" in English)."
     },
     "error-label": {
       "type": "string",
       "default-from": "runtime.error-label",
-      "summary": "Empty: the text of the page's language (\"Error\" in English)."
+      "summary": "The word a screen reader hears after a failed step's label. Empty: the text of the page's language (\"Error\" in English)."
     },
     "skipped-label": {
       "type": "string",
       "default-from": "runtime.skipped-label",
-      "summary": "Empty: the text of the page's language (\"Skipped\" in English)."
+      "summary": "The word a screen reader hears after a skipped step's label. Empty: the text of the page's language (\"Skipped\" in English)."
     },
     "running-label": {
       "type": "string",
       "default-from": "runtime.running-label",
-      "summary": "Empty: the text of the page's language (\"In progress\" in English)."
+      "summary": "The word a screen reader hears after a running step's label. Empty: the text of the page's language (\"In progress\" in English)."
+    },
+    "count-label": {
+      "type": "string",
+      "default-from": "runtime.count-label",
+      "summary": "The count line's position, {n} and {count} filled in. Empty: the text of the page's language (\"Step {n} of {count}\" in English)."
     }
   },
   "values": {
@@ -74,7 +129,8 @@
       "type": "number",
       "integer": true,
       "min": 0,
-      "default": 0
+      "default": 0,
+      "summary": "The current step, from 0. Equal to the number of steps: all are done and none is current."
     }
   },
   "events": {
@@ -97,7 +153,7 @@
         "applied",
         "refused"
       ],
-      "summary": "Moves current to the step at index, clamped to the list; does nothing for a disabled or the current step. Emits sf-steps-change.",
+      "summary": "Moves current to the step at index, clamped to the list; refuses a disabled or the current step. It moves whatever navigation says (navigation is what a person may press). Sends no sf-steps-change: that is a person's press.",
       "x-returns": {
         "type": "object",
         "description": "The element, for chaining."
@@ -117,6 +173,15 @@
     },
     {
       "name": "icons"
+    },
+    {
+      "name": "cl-spinner"
+    },
+    {
+      "name": "cl-progress-bar"
+    },
+    {
+      "name": "sr-only/default"
     }
   ],
   "templates": {
@@ -189,7 +254,7 @@
       }
     ]
   },
-  "x-summary": "An ordered list of labelled steps for a multi-step process, drawn as a row of step buttons separated by an icon: marks the current, completed, skipped, running and error steps and moves to an enabled step when it is pressed.",
+  "x-summary": "Where a person is in an ordered process of their own: a list of steps, each a marker (number or dot) and a label joined by a progress line, drawn as a row, a column or a «Step N of M» line by its own width. Passive by default; navigation makes the reachable steps buttons.",
   "x-source": {
     "package": "framework",
     "folder": "steps",
@@ -198,9 +263,12 @@
   },
   "x-words": [
     "completed-label",
+    "current-label",
+    "ahead-label",
     "error-label",
     "skipped-label",
-    "running-label"
+    "running-label",
+    "count-label"
   ],
   "x-renamed": [
     "settings.items: type string with a list default → list (§4.2)",
@@ -229,7 +297,8 @@
     "version 1.2.0 (sf-wizard, owner decision 2026-11-06, ui-control control/decisions/2026-11-06-sf-wizard.md): an item may carry its own state -- default (not started), completed, skipped, running or error -- which wins over the one derived from its place (before current: completed; error-step: error). skipped and running are new. skipped: a step a person passed over on purpose, the do_not_disturb_on glyph in on-surface-variant. running: the step's action is under way, the progress_activity glyph in on-surface-variant, turning (still under prefers-reduced-motion: reduce). The icon roles are on-surface, on-surface-variant and on-disable; completed and error keep their status colours. Each new state is named in the step's accessible name (skipped-label «Пропущен» / «Skipped», running-label «Выполняется» / «In progress»). A wizard passes a state for every step, so a step before current that was never done reads as not started. The string form takes the states as flags (label::skipped). Additions only: a minor.",
     "version 1.2.1 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, goToStep({index}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, goToStep(<number>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged.",
     "version 1.2.2 (2026-11-10, docs pre-check, through component.step 1.2.0): a patch. A step is a size 1 control on the height ladder (C01, C18): 40 on a desktop and 36 on a phone, size 1/2 at the 1/2 step; it was 34 on a desktop and 34 and 30 in one row on a phone. The current step is the selected role (C16, C23): a primary-container plate under on-primary-container words, where it was a thin primary outline; --sf-steps-current-border-color still draws a border where a page sets one, and its stated default is transparent. Settings, values, events and keys unchanged.",
-    "version 1.3.0 (2026-11-12, R185 steps study, ui-control control/research/2026-11-12-steps.md, the items the study names independent of the open look questions): a minor. ST-13: the steps are an ordered list -- <ol class=\"sf-steps-container\" role=\"list\"> named by aria-label (else the language file's «Шаги» / «Steps»), one <li> per step holding its native button and the separator after it -- where they were a role group of buttons; the current step keeps aria-current=step, the root .sf-steps carries no role. The steps stay buttons and a press still moves current: a passive list without buttons waits on the owner's answer to the study's question q-click. ST-1: a label breaks between words only, never inside one (overflow-wrap normal where it was anywhere over a step that shrank to 24 px, «Кор/зина», «WordPre/ss»); a step that does not fit goes to the next line whole with its separator (the list wraps), and a label wraps between its words only when its step alone is wider than the row; sf-wizard keeps its row on one line and scrolls it, as before. ST-10 (component.step 1.2.1): the size 1/2 state icon is the size's text line, 20 on a desktop, where it drew the icon default 24 (the step gave it font-size, width and height, which the icon sheet's unlayered rule outranks; it now gives the icon's own variables); the size 1/2 gap between steps is --sf-space-1/4, as at size 1, where it was --sf-space-1/3 (8 beside 4); a step whose label fits stands at its control height in a narrow row too, where wrapped labels grew it to 74-122 px. The side padding and the other rungs wait on the look questions. Settings, values, events, actions and keys unchanged; a page rule that read .sf-steps-container > button or > .sf-icon reads .sf-steps-container > li > button and .sf-steps-separator."
+    "version 1.3.0 (2026-11-12, R185 steps study, ui-control control/research/2026-11-12-steps.md, the items the study names independent of the open look questions): a minor. ST-13: the steps are an ordered list -- <ol class=\"sf-steps-container\" role=\"list\"> named by aria-label (else the language file's «Шаги» / «Steps»), one <li> per step holding its native button and the separator after it -- where they were a role group of buttons; the current step keeps aria-current=step, the root .sf-steps carries no role. The steps stay buttons and a press still moves current: a passive list without buttons waits on the owner's answer to the study's question q-click. ST-1: a label breaks between words only, never inside one (overflow-wrap normal where it was anywhere over a step that shrank to 24 px, «Кор/зина», «WordPre/ss»); a step that does not fit goes to the next line whole with its separator (the list wraps), and a label wraps between its words only when its step alone is wider than the row; sf-wizard keeps its row on one line and scrolls it, as before. ST-10 (component.step 1.2.1): the size 1/2 state icon is the size's text line, 20 on a desktop, where it drew the icon default 24 (the step gave it font-size, width and height, which the icon sheet's unlayered rule outranks; it now gives the icon's own variables); the size 1/2 gap between steps is --sf-space-1/4, as at size 1, where it was --sf-space-1/3 (8 beside 4); a step whose label fits stands at its control height in a narrow row too, where wrapped labels grew it to 74-122 px. The side padding and the other rungs wait on the look questions. Settings, values, events, actions and keys unchanged; a page rule that read .sf-steps-container > button or > .sf-icon reads .sf-steps-container > li > button and .sf-steps-separator.",
+    "version 1.4.0 (2026-11-12, owner decision C101 on the R185 steps study, ui-control control/research/2026-11-12-steps.md and prototypes/steps-study.html): a minor; the old forms are read with dated notes until 2027-01-01. (1) Role: an ordered process a person goes through; a server job is sf-progress-run, tasks in any order are a task list. (2) Look: a marker, the label in whole words and a line to the next step -- 2 px of the progress colour behind current, 1 px outline-variant after it; the pills, the separator glyph and separator-icon are gone (ST-6, ST-7). (3) marker: number (default; a check when done, priority_high on an error) or dot (the .sf-dot ladder, 8 / 6); the marker box is the rung's text line, 24 at size 1 and 20 at 1/2 (ST-8, ST-10). (4) layout: auto (default) is a row while it fits its own width on one line, a column with the second line (item text) otherwise, and under 20rem of its own width the count line «Шаг N из M · label» over sf-progress-bar 1/3 as sf-wizard's compact head; row, column and count draw always (ST-1, ST-2, ST-9). (5) Passive by default: the steps are an ol with aria-current=step on the current item and a state word in each item (sr-only), no buttons; navigation visited or free makes the reachable steps native buttons, as in sf-wizard, and only a pressed button sends sf-steps-change (ST-3, ST-13). (6) State by shape and the primary colour (C61, C73): done filled with a check, current filled with a 2 px ring through a 2 px gap, ahead empty, error the error colour, skipped a dashed outline, running the Framework spinner (sf-spinner at the rung's size, centred, no ring); current equal to the number of steps is all done, no step current (ST-4); no green in the steps, a success status of the whole job is the host's (ST-5). (7) One list format: items as JSON with a state per item; the item state words are done, ahead, skipped, running and error (completed and default are read as done and ahead), the string form label::flag|label and error-step are the old form, separator-icon is ignored -- each use is noted in SF.deprecations, since 2026-11-12, remove after 2027-01-01 (ST-12). New words current-label «Текущий» / «Current», ahead-label «Впереди» / «Not started», count-label «Шаг {n} из {count}» / «Step {n} of {count}». Public variables keep their names and read the new drawing: --sf-steps-gap the space between steps of a row, --sf-steps-separator-color the line after current, --sf-steps-step-color the label and number ahead, --sf-steps-step-border-color the empty marker's outline, --sf-steps-step-radius the marker's corners, --sf-steps-current-border-color the current ring, --sf-steps-completed-icon-color the progress colour (done and current markers, the line behind current). Relations add cl-spinner, cl-progress-bar and sr-only/default. sf-wizard draws its row with layout=\"row\" navigation=\"free\" and today's state words."
   ],
   "x-registry": {
     "capabilities": [
@@ -243,9 +312,10 @@
       "machines": {},
       "visual_states": [
         "default",
-        "success",
+        "active",
         "selected",
         "error",
+        "loading",
         "disabled"
       ]
     },
@@ -285,7 +355,7 @@
       }
     },
     "ai_guidance": {
-      "use_when": "Use sf-steps when the interface needs the steps behavior.",
+      "use_when": "Use sf-steps to show where a person is in an ordered process they go through (checkout, a setup, a form in steps, an order's status). Not for a server job (sf-progress-run) or tasks done in any order (a task list).",
       "do_not": [
         "Do not copy generated ui-smart code",
         "Do not move host data or access decisions into the component"
@@ -297,7 +367,7 @@
         "ownership",
         "provenance"
       ],
-      "minimal_example": "<sf-steps></sf-steps>",
+      "minimal_example": "<sf-steps aria-label=\"Оформление заказа\" current=\"1\" items='[{\"label\":\"Корзина\"},{\"label\":\"Доставка\"},{\"label\":\"Оплата\"}]'></sf-steps>",
       "owner_commands": [
         "npm run contract:verify",
         "npm test"
@@ -305,7 +375,7 @@
     },
     "accessibility": {
       "accessible_name": "required",
-      "focus": "Each enabled native step button remains keyboard reachable and uses the shared focus-visible indicator. The current step exposes aria-current=step; completed and error status are included in accessible names."
+      "focus": "Passive by default: no step is focusable. With navigation, each reachable step is a native button reached by Tab, with the shared focus-visible indicator. The current item has aria-current=step; every item carries its state word for a screen reader."
     },
     "alias-events": {
       "sf-step-change": {
@@ -369,7 +439,7 @@
     },
     "methods": {
       "setState": {
-        "summary": "Writes each key as its kebab-case attribute; an array (items) is serialised as label::disabled entries joined by |. false, null, undefined or empty removes the attribute, true sets it empty.",
+        "summary": "Writes each key as its kebab-case attribute; an array (items) is written as JSON. false, null, undefined or empty removes the attribute, true sets it empty.",
         "arguments": [
           {
             "name": "nextState",

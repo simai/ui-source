@@ -22,9 +22,11 @@ for (const [owner, file] of [['step', '_css__step.scss'], ['breadcrumbs', '_css_
   });
 }
 
-test('Smart step status icons and separators are decorative', async () => {
+test('Smart step markers are decorative and there is no separator glyph (sf-steps 1.4.0, C101)', async () => {
   const template = await read('smart/steps/js/templates/default.js');
-  assert.match(template, /class="sf-icon" aria-hidden="true">\$\{iconName\}/);
-  assert.match(template, /'sf-steps-separator'/);
-  assert.match(template, /aria-hidden="true"[\s\S]*\$\{context.separatorIcon\}/);
+  assert.match(template, /<span class="sf-step-marker" aria-hidden="true">/);
+  assert.doesNotMatch(template, /sf-steps-separator/);
+  assert.doesNotMatch(template, /separatorIcon/);
+  // The state is said in words, for a screen reader, in every item.
+  assert.match(template, /<span class="sr-only">, \$\{word\}<\/span>/);
 });
