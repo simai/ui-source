@@ -158,6 +158,72 @@
   }
 }
 
+// The phone (R179, sf-menu 1.6.2): the parts the element itself writes --
+// the split control's link and chevron, which the class has not, and the
+// levels it marks data-sf-menu-in-place -- take the room a finger needs and
+// stay inside the viewport. The class menu's rows are not redrawn.
+@layer sf.components {
+  // The split control's link is the row's height (R179 D2): it takes the
+  // row's block padding into its own box, as the chevron beside it does, so
+  // a press anywhere on the row's line before the chevron is the link's --
+  // in the phone's drawer 44 tall, not the 20 of its words. It reaches the
+  // row's start edge the same way. The row's look does not move: the link
+  // draws no plate of its own.
+  .sf-smart-menu .sf-menu-element:has(> a.sf-menu-element-wrap + button.sf-icon-button) > a.sf-menu-element-wrap {
+    align-self: stretch;
+    margin-block: calc(-1 * var(--sf-menu-element--padding-top, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width))))) calc(-1 * var(--sf-menu-element--padding-bottom, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))));
+    padding-block: var(--sf-menu-element--padding-top, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))) var(--sf-menu-element--padding-bottom, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width))));
+    margin-inline-start: calc(-1 * var(--sf-menu-element--padding-inline-start, var(--sf-space-1)));
+    padding-inline-start: var(--sf-menu-element--padding-inline-start, var(--sf-space-1));
+  }
+
+  // Under a coarse pointer the split control's chevron in a column is a
+  // square of the row's height (44 x 44 in the phone's drawer, R179 D2; WCAG
+  // 2.5.8). It reaches the row's inner end edge and grows toward the link,
+  // its glyph kept where it stood (at the row's end padding, over the plain
+  // branches' glyphs), and the link keeps its room: the margins give back
+  // what the box grew. A row and its panels keep the class menu's own coarse
+  // width.
+  @media (pointer: coarse) {
+    .sf-smart-menu .sf-menu:not(.sf-menu--horizontal):not(.sf-menu--horizontal .sf-menu) > .sf-menu-item > .sf-menu-element > a.sf-menu-element-wrap + button.sf-icon-button {
+      --sf-menu--split-toggle: calc(var(--sf-menu-element--line-height, var(--sf-text-height-1)) + var(--sf-menu-element--padding-top, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))) + var(--sf-menu-element--padding-bottom, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))) + 2 * var(--sf-menu-element--border-width, var(--sf-px)));
+      --sf-menu--split-end: var(--sf-menu-element--padding-right, var(--sf-menu-element--padding-inline-end, var(--sf-space-1)));
+      text-align: end;
+      min-inline-size: var(--sf-menu--split-toggle);
+      padding-inline-end: var(--sf-menu--split-end);
+      margin-inline: calc(var(--sf-menu-element--line-height, var(--sf-text-height-1)) - var(--sf-menu--split-toggle) + var(--sf-menu--split-end)) calc(-1 * var(--sf-menu--split-end));
+    }
+  }
+
+  // A row below md (R179 D1, C30): the levels under the first panel open in
+  // place inside it, as a column's levels do, a step in per level; sf-menu
+  // marks them (data-sf-menu-in-place) instead of anchoring them beside the
+  // panel. They are the panel's rows, not a panel: no frame, no surface, no
+  // shadow, and the path's line lies on the first panel's border.
+  .sf-smart-menu .sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item > .sf-menu[data-sf-menu-in-place] {
+    position: static;
+    z-index: auto;
+    inset: auto;
+    inline-size: auto;
+    min-inline-size: var(--sf-0);
+    max-inline-size: none;
+    padding: var(--sf-0);
+    border: var(--sf-0);
+    border-radius: var(--sf-0);
+    background: none;
+    box-shadow: none;
+    --sf-menu--line-border: inherit;
+  }
+
+  .sf-smart-menu .sf-menu.sf-menu--horizontal .sf-menu[data-sf-menu-in-place] .sf-menu-element--level-3 {
+    --sf-menu-element--padding-inline-start: calc(var(--sf-space-1) * 2);
+  }
+
+  .sf-smart-menu .sf-menu.sf-menu--horizontal .sf-menu[data-sf-menu-in-place] .sf-menu-element--level-4 {
+    --sf-menu-element--padding-inline-start: calc(var(--sf-space-1) * 3);
+  }
+}
+
 // sticky (sf-menu 1.3.0): the host stays in sight while the page scrolls and
 // scrolls inside itself when it is taller than the view. The host's place on
 // the page, not a part the class draws.
