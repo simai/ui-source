@@ -22,6 +22,16 @@
   // transparent: exactly the former dot.
   background-color: var(--sf-surface-place-ground, transparent);
   background-image: linear-gradient(var(--sf-online-indicator--background-color) 0 0);
+  // On a translucent fill (a selected, open or hovered row, core mix
+  // sf-place-fill) the place under the dot is the row: its fill over the place
+  // colour (C43 D3, 2026-11-11, as the anchored badge's ring). The fill is laid
+  // over the ring as an outline on the border's own band. It is read only
+  // where the underlay is set (100% fill, 0% underlay: invalid where the
+  // underlay is initial), so off a row, on a soft place and on glass the
+  // outline is transparent and the ring is exactly the place colour.
+  --sf-online-indicator--ring-fill: color-mix(in srgb, var(--sf-surface-place-fill) 100%, var(--sf-surface-underlay) 0%);
+  outline: var(--sf-px) solid var(--sf-online-indicator--ring-fill, transparent);
+  outline-offset: calc(-1 * var(--sf-px));
   --sf-online-indicator--height: var(--sf-b6);
   --sf-online-indicator--width: var(--sf-b6);
 }

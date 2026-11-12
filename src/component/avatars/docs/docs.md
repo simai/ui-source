@@ -19,6 +19,9 @@ a real destination or action.
   The dot lies over the nearest opaque place
   (`--sf-surface-place-ground`), so on a soft coloured place
   (`bg-<colour>-container`) the dot is that place's colour, opaque.
+  On a row with a fill (selected, open or hovered: core mix `sf-place-fill`)
+  the dot's ring lays the row's fill (`--sf-surface-place-fill`) over the place
+  colour, so the ring is the row's colour, as the anchored badge's ring is.
   Its two layers are public variables: `--sf-avatar-offline-background-color`
   (default `var(--sf-surface-place)`) and `--sf-avatar-offline-overlay`
   (default `linear-gradient(var(--sf-on-surface-disabled) 0 0)`). For a dot of
