@@ -145,7 +145,10 @@ component's script API, not this function.
 What a copy says (owner decision C48, 2026-11-11), for every control that
 copies: sf-button-copy, and any `<button>`, sf-button or sf-button-icon with
 `data-sf-copy="text"` or `data-sf-copy-target="#id"` (the clipboard component's
-attribute route, no class needed).
+attribute route, no class needed). The size of such an sf-button or
+sf-button-icon follows decision C103: beside a value in a line of text, give it
+the line's step (`size="1/2"` beside text 1/2, `size="1"` beside text 1); in a
+row of buttons or a field it takes their size; density moves it with the row.
 
 ```js
 const feedback = SF.copyFeedback.create({

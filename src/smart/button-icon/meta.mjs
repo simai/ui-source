@@ -40,7 +40,7 @@ const sfButtonIconMeta = {
         "3"
       ],
       "default": "1",
-      "description": "Icon button size token."
+      "description": "The icon size and the control's step on the ladder: 1 by default. Beside a value in a line of text, give it the line's step (size=\"1/2\" beside text 1/2: 32, icon 20; size 1 beside text 1: 40, icon 24); in a row of buttons or a field it takes their size; density moves it with the row (decision C103)."
     },
     "height": {
       "kind": "enum",
