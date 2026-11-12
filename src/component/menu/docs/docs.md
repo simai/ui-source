@@ -16,9 +16,10 @@ the link and disclosure button as separate siblings inside the row.
 `sf-menu`, `sf-menu-item`, `sf-menu-element`, `sf-menu-element-wrap` and
 `sf-menu-element-text` form a complete layout without flex utilities. Levels
 one through four step in by one `space-1` each; deeper levels draw as the
-fourth. A column whose first-level rows carry an icon starts its second level
-under the first level's words (icon size plus the wrap gap), so the simple
-admin column reads as one text axis. Compact rows use `--sf-radius--ui`,
+fourth. A row that carries an icon starts its children under its own words
+(icon size plus the wrap gap, `--sf-menu-element-wrap--gap`, `space-1/2` by
+default: C105 H2), on every level (C30, C109), so a column with icons reads as
+one text axis. Compact rows use `--sf-radius--ui`,
 Framework typography and role colors.
 
 Add `sf-menu--horizontal` only to the root `sf-menu` for navigation in a page

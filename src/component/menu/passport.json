@@ -19,7 +19,7 @@
     "src/component/menu/scss/_css__menu_group.scss",
     "src/component/menu/scss/index.scss"
   ],
-  "content_sha256": "5e474a67279853a0361290c1f350a036fa90d055b5ffa0d58a6362a7b493fffe",
+  "content_sha256": "6b288f2b72366a72d1f8877b350de1ad66bd89c7f3f0507e8507c719b1fac8a6",
   "dependencies": [
     {
       "id": "component.badges",
