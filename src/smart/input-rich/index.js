@@ -20,6 +20,17 @@ const markElement = (doc, tag, on) => {
   if (!on) element.style[MARKS[tag].off[0]] = MARKS[tag].off[1];
   return element;
 };
+// Content inside the pending marks ({strong?, em?}), strong outside em.
+const wrapMarks = (doc, marks, content) => {
+  let wrap = content;
+  for (const tag of Object.keys(MARKS)) {
+    if (marks[tag] === undefined) continue;
+    const element = markElement(doc, tag, marks[tag]);
+    element.append(wrap);
+    wrap = element;
+  }
+  return wrap;
+};
 
 // On a phone -- below the md breakpoint, where core declares
 // --sf-breakpoint-md -- a form in a popup is a sheet at the bottom of the
@@ -325,7 +336,8 @@ class SfRichText extends FormField(RichTextElement) {
     const on = (type, handler) => editor.addEventListener(type, handler, {signal});
     on('beforeinput', (event) => this._onBeforeInput(event));
     on('input', (event) => this._onInput(event));
-    on('compositionend', () => this._afterTyping('insertCompositionText'));
+    on('compositionstart', () => this._onCompositionStart());
+    on('compositionend', (event) => this._onCompositionEnd(event));
     on('keydown', (event) => this._onKeydown(event));
     on('paste', (event) => this._onPaste(event));
     on('dragstart', () => { this._dragFromSelf = true; });
@@ -401,9 +413,36 @@ class SfRichText extends FormField(RichTextElement) {
   }
 
   _onSelectionChange() {
-    if (!this._range()) return;
+    const range = this._range();
+    if (!range) return;
+    if (!this._inComposition) this._caretIntoMark(range);
     this._lastSelection = this._saveSelection();
     this._updateState();
+  }
+
+  // A caret on a mark's end edge -- at the block's level right after a bold
+  // run, or at the start of the text after it -- is a place the browser types
+  // into the mark, while the state read there said plain (E1; C12: the state
+  // is the one aria-pressed says). It is put at the end of the mark's text,
+  // the same character, so Bold reads the place the text goes.
+  _caretIntoMark(range) {
+    if (!range.collapsed) return;
+    const {startContainer: node, startOffset: offset} = range;
+    let before = null;
+    if (node.nodeType === 1) before = node.childNodes[offset - 1] ?? null;
+    else if (node.nodeType === 3 && offset === 0) before = node.previousSibling;
+    if (!before || before.nodeType !== 1 || !before.matches?.('strong, b, em, i, span')) return;
+    const doc = this.ownerDocument;
+    const walker = doc.createTreeWalker(before, 4);
+    let last = null;
+    for (let text = walker.nextNode(); text; text = walker.nextNode()) last = text;
+    if (!last?.data.length) return;
+    const caret = doc.createRange();
+    caret.setStart(last, last.data.length);
+    caret.collapse(true);
+    const selection = doc.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(caret);
   }
 
   _within(node, selector) {
@@ -466,6 +505,9 @@ class SfRichText extends FormField(RichTextElement) {
   // pressed ({at, strong?, em?}); forgotten once the caret moves.
   _pendingMarks(range = this._range()) {
     if (!this._pending) return null;
+    // A composition moves the caret with its text: the marks stand until it
+    // ends, and Bold and Italic stay pressed meanwhile (M1, M2).
+    if (this._inComposition) return this._pending;
     if (!range?.collapsed || this._saveSelection()?.start !== this._pending.at) {
       this._pending = null;
       return null;
@@ -606,14 +648,7 @@ class SfRichText extends FormField(RichTextElement) {
     event.preventDefault();
     const doc = this.ownerDocument;
     const text = doc.createTextNode(event.data);
-    let wrap = text;
-    for (const tag of Object.keys(MARKS)) {
-      if (pending[tag] === undefined) continue;
-      const element = markElement(doc, tag, pending[tag]);
-      element.append(wrap);
-      wrap = element;
-    }
-    range.insertNode(wrap);
+    range.insertNode(wrapMarks(doc, pending, text));
     const caret = doc.createRange();
     caret.setStart(text, text.data.length);
     caret.collapse(true);
@@ -622,6 +657,70 @@ class SfRichText extends FormField(RichTextElement) {
     selection.addRange(caret);
     this._afterTyping('insertText');
     this._say('insertText');
+  }
+
+  _onCompositionStart() {
+    this._composing = this._pendingMarks();
+    this._inComposition = true;
+    this._composedFrom = this.editor?.innerHTML ?? '';
+  }
+
+  // Composed text (an IME) cannot be inserted by hand: the browser writes
+  // it. The marks pending when the composition started go round it once it
+  // ends, as typed text takes them; a composition that did not end at the
+  // pending caret plus its text keeps the text plain. A cancelled one (no
+  // text, the caret back where it began) keeps the marks pending (M1).
+  _onCompositionEnd(event) {
+    const pending = this._composing;
+    const before = this._composedFrom;
+    this._composing = null;
+    this._inComposition = false;
+    this._composedFrom = null;
+    this._pending = null;
+    const text = String(event.data ?? '');
+    const editor = this.editor;
+    const end = this._saveSelection();
+    const collapsed = Boolean(end && end.start === end.end);
+    if (pending && !text && collapsed && end.start === pending.at) this._pending = pending;
+    if (!pending || !text || !editor || !collapsed || end.start - text.length !== pending.at) {
+      this._afterTyping('insertCompositionText');
+      this._sayComposed(before);
+      return;
+    }
+    const doc = this.ownerDocument;
+    const range = doc.createRange();
+    const [startNode, startOffset] = pointAt(editor, pending.at);
+    const [endNode, endOffset] = pointAt(editor, end.start);
+    range.setStart(startNode, startOffset);
+    range.setEnd(endNode, endOffset);
+    if (range.toString() !== text) {
+      this._afterTyping('insertCompositionText');
+      this._sayComposed(before);
+      return;
+    }
+    range.insertNode(wrapMarks(doc, pending, range.extractContents()));
+    this._clean(end);
+    this._restoreSelection(end);
+    this._afterTyping('insertCompositionText');
+    this._sayComposed(before);
+  }
+
+  // One input that is not composing after every composition that changed
+  // the text, marks or none (M3): a listener that skips composing inputs, as
+  // many do, still hears an IME's edit. It waits one task: a browser that
+  // says the commit itself after compositionend (WebKit) is that input, and
+  // the component's is not sent. A cancel that left the text as it was says
+  // nothing, as nothing changed.
+  _sayComposed(before) {
+    const editor = this.editor;
+    if (!editor || editor.innerHTML === before) return;
+    const turn = {said: false};
+    this._composedSay = turn;
+    setTimeout(() => {
+      if (this._composedSay !== turn) return;
+      this._composedSay = null;
+      if (!turn.said) this._say('insertCompositionText');
+    }, 0);
   }
 
   _onInput(event) {
@@ -633,6 +732,7 @@ class SfRichText extends FormField(RichTextElement) {
     }
     if (this._dispatching) return;
     if (event.isComposing) return;
+    if (this._composedSay) this._composedSay.said = true;
     this._afterTyping(event.inputType);
   }
 
@@ -669,7 +769,7 @@ class SfRichText extends FormField(RichTextElement) {
   // Cleaned HTML in place of the selection: the first paragraph joins the
   // text at the caret, what follows stands as blocks (the cleaner splits the
   // paragraph around them, so the text after the caret follows the last).
-  _insertClean(clean, inputType) {
+  _insertClean(clean, inputType, marks = null) {
     if (!clean) return;
     this._edit(() => {
       const range = this._range();
@@ -686,6 +786,16 @@ class SfRichText extends FormField(RichTextElement) {
       const template = doc.createElement('template');
       // The string is the subset's own output: nothing in it runs or loads.
       template.innerHTML = clean;
+      // Plain text pasted at a caret with pending marks takes them, as typed
+      // text does (M4): each paragraph's text inside the marks.
+      if (marks) {
+        for (const block of [...template.content.children]) {
+          if (block.localName !== 'p' || !block.firstChild) continue;
+          const content = doc.createDocumentFragment();
+          content.append(...block.childNodes);
+          block.append(wrapMarks(doc, marks, content));
+        }
+      }
       const nodes = [...template.content.childNodes];
       const fragment = doc.createDocumentFragment();
       nodes.forEach((node, index) => {
@@ -707,7 +817,10 @@ class SfRichText extends FormField(RichTextElement) {
   _onPaste(event) {
     event.preventDefault();
     if (this.effectiveDisabled || this.readonly) return;
-    this._insertClean(this._cleanTransfer(event.clipboardData), 'insertFromPaste');
+    const data = event.clipboardData;
+    // Rich paste keeps its own marks; plain text takes the pending ones.
+    const marks = data?.getData?.('text/html') ? null : this._pendingMarks();
+    this._insertClean(this._cleanTransfer(data), 'insertFromPaste', marks);
   }
 
   _onDrop(event) {

@@ -265,6 +265,11 @@ test('1.3.0: the toolbar, the headings and the link editor are drawn by the syst
   const panel = sheet.match(/\.sf-rich-text \.sf-rich-text-link-panel \{([^}]*)\}/u)[1];
   assert.match(panel, /gap: var\(--sf-space-1\);/u);
   assert.match(panel, /padding: var\(--sf-space-1\);/u);
+  // R121 (owner review 2026-11-11): the form is the toolbar's rung, the link button's size.
+  assert.match(template, /const linkSize = buttonSize;/u);
+  // While the link editor is open only the link tool looks active: the others rest, glyph unfilled.
+  assert.match(sheet, /:has\(sf-popover\.sf-rich-text-link\[data-open='true'\]\) \.sf-icon-button\.sf-icon-button\.sf-icon-button\.sf-icon-button\.sf-rich-text-tool:not\(\[data-sf-tool='link'\]\)[^{]*\{\s*--sf-icon-button--background-color: transparent;/u);
+  assert.match(sheet, /\[aria-pressed='true'\] \.sf-icon \{\s*--sf-icon--fill: 0;/u);
 });
 
 test('Bold and Italic say the marks only: a heading, bold by its type, is not a mark', () => {
@@ -280,4 +285,20 @@ test('Bold and Italic say the marks only: a heading, bold by its type, is not a 
   assert.equal(editor('<p><em>a<span style="font-style: normal">b</span></em></p>'), '<p><em>a</em>b</p>');
   // A caret's pending marks go to the typed text and are forgotten when the caret moves.
   assert.match(source, /case 'insertText':\n\s+if \(this\._pending && event\.data\) this\._typePending\(event\);/u);
+  // Composed text (an IME) takes the marks pending when the composition started.
+  assert.match(source, /on\('compositionstart', \(\) => this\._onCompositionStart\(\)\);/u);
+  assert.match(source, /_onCompositionStart\(\) \{\n\s+this\._composing = this\._pendingMarks\(\);\n\s+this\._inComposition = true;/u);
+  assert.match(source, /on\('compositionend', \(event\) => this\._onCompositionEnd\(event\)\);/u);
+  // M1, M2: a composition moves the caret, the pending marks stand until it ends (Bold stays pressed);
+  // a cancelled composition (no text, caret back) keeps them.
+  assert.match(source, /if \(this\._inComposition\) return this\._pending;/u);
+  assert.match(source, /if \(pending && !text && collapsed && end\.start === pending\.at\) this\._pending = pending;/u);
+  // M3: one input that is not composing after every composition that changed the text, unless the browser said it.
+  assert.equal((source.match(/this\._sayComposed\(before\);/gu) || []).length, 3);
+  assert.match(source, /if \(this\._composedSay\) this\._composedSay\.said = true;/u);
+  assert.doesNotMatch(source, /this\._say\('insertCompositionText'\);\n\s+\}\n\n\s+_onInput/u);
+  // M4: plain-text paste takes the pending marks, rich paste keeps its own.
+  assert.match(source, /const marks = data\?\.getData\?\.\('text\/html'\) \? null : this\._pendingMarks\(\);/u);
+  // E1: a caret on a mark's end edge reads (and types) in the mark.
+  assert.match(source, /if \(!this\._inComposition\) this\._caretIntoMark\(range\);/u);
 });

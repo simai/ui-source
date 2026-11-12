@@ -321,11 +321,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-rich/index.js",
-        "sha256": "dede7e1b1ba8413417c85e98237f68a311ba250b25f5cc6bbeb7f05deff285d7"
+        "sha256": "c9069dc5dd4b13d2759cda3ada3816712ebb86743286bb4cecc33dba05f22a01"
       },
       {
         "path": "src/smart/input-rich/js/templates/default.js",
-        "sha256": "f38ff5a45934eecda496a22a19e11858beb531bcd7b9b11792af5668982b7021"
+        "sha256": "98525c7e1778aeebd8a2552c3b31ac945cf81bebb551af95420dd6c5dcfc4291"
       },
       {
         "path": "src/smart/input-rich/js/rich-text-html.mjs",
@@ -337,7 +337,7 @@
       },
       {
         "path": "src/smart/input-rich/scss/_smart__rich_text.scss",
-        "sha256": "7e09a4074c8a99bd09635411a75d533826d045c59a240f320c850c4fa8257ca8"
+        "sha256": "f1fb5a867a2c0905f61dc5d8a7b522649b032fa40e54e44a4b58973ce991dc26"
       },
       {
         "path": "src/smart/input-rich/rule.js",
@@ -345,7 +345,7 @@
       },
       {
         "path": "src/smart/input-rich/docs.md",
-        "sha256": "6e79f7b229959209b0f9a3813335a4aeddead91a4fcc5ecd27fd0cf21bdfb734"
+        "sha256": "7cdc74fad2d2fc4333bf568901b51b41235ab654dcba4d3ed618c986415af625"
       }
     ],
     "generated_runtime": []

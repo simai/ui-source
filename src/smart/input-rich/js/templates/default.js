@@ -80,10 +80,11 @@ export function renderRichTextTemplate(context) {
   const linkId = `${field.base}--link`;
   const message = field.invalid && errorMessage ? errorMessage : hint;
   const buttonSize = BUTTON_SIZE[size] || '1/2';
-  // The link editor is one small form on one rung (R121): its address field,
-  // the field's own label and hint, and Apply / Remove are all the field's
-  // size, capped at 1 because a popup form is at most the form step.
-  const linkSize = size === '2' ? '1' : size;
+  // The link editor is one small form on one rung (R121, owner review
+  // 2026-11-11): its address field, the field's own label and hint, and
+  // Apply / Remove stand on the toolbar's rung -- the rung of the link button
+  // that opens it -- so the form is the toolbar's scale, not the field's.
+  const linkSize = buttonSize;
   const rootClasses = [
     'sf-rich-text',
     `sf-rich-text--size-${size}`,
