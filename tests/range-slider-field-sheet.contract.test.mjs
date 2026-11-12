@@ -26,3 +26,9 @@ test('S5: the row is the control height of the step, the handle the icon of the 
   assert.match(rule('.sf-range-slider-group--size-2,\n.sf-range-slider--size-2'), /--sf-range-slider--row: var\(--sf-ui-2--control-height\);[\s\S]*--sf-thumb-handle--height: var\(--sf-icon-size-4\);/u);
   assert.match(rule('.sf-range-slider'), /min-block-size: var\(--sf-range-slider--row, var\(--sf-ui-1--control-height\)\);/u);
 });
+
+test('S6: under a finger the hit area is at least the size-2 control height, the disc unchanged', () => {
+  const coarse = sheet.slice(sheet.indexOf('@media (pointer: coarse)'));
+  assert.match(coarse, /--sf-range-slider--hit: max\(var\(--sf-range-slider--row, var\(--sf-ui-1--control-height\)\), var\(--sf-ui-2--control-height\)\);/u);
+  assert.match(coarse, /inset-block: calc\(\(var\(--sf-thumb-handle--height, var\(--sf-icon-size-3\)\) - var\(--sf-range-slider--hit\)\) \/ 2\);/u);
+});

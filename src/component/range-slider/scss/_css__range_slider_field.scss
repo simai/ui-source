@@ -98,4 +98,15 @@
   --sf-thumb-handle--height: var(--sf-icon-size-4);
   --sf-thumb-handle--width: var(--sf-icon-size-4);
 }
+
+// Touch (S6): under a finger the handle takes a target of the larger of its
+// row and the size-2 control height (48, 44 on the phone ladder; platforms ask
+// 44-48), centred on the disc. Only the hit area grows; the disc is drawn as before.
+@media (pointer: coarse) {
+  .sf-range-slider .sf-range-slider-touch-area {
+    --sf-range-slider--hit: max(var(--sf-range-slider--row, var(--sf-ui-1--control-height)), var(--sf-ui-2--control-height));
+    inset-block: calc((var(--sf-thumb-handle--height, var(--sf-icon-size-3)) - var(--sf-range-slider--hit)) / 2);
+    inset-inline: calc((var(--sf-thumb-handle--width, var(--sf-icon-size-3)) - var(--sf-range-slider--hit)) / 2);
+  }
+}
 }
