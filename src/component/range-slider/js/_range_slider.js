@@ -346,8 +346,11 @@ function bindHandleLabels(root) {
   row.className = `sf-range-slider-labels sf-thumb sf-thumb--label-${mode} sf-range-slider-labels--${position}`;
   // Each handle exposes its exact value and units through ARIA already.
   row.setAttribute('aria-hidden', 'true');
-  const entries = getHandles(root).map((handle) => {
+  const entries = getHandles(root).map((handle, index) => {
     const label = handle.querySelector(mode === 'tooltip' ? '.sf-tooltip' : '.sf-thumb-text');
+    // The sheet shows a tooltip only while its own handle is dragged or
+    // keyboard-focused (C78), so each label knows its handle.
+    label.dataset.handle = String(index);
     const text = mode === 'tooltip' ? label.querySelector('.sf-tooltip-text') : label;
     row.append(label);
     return {handle, label, text};
@@ -370,6 +373,7 @@ function bindHandleLabels(root) {
     const sizes = entries.map(({label}) => label.getBoundingClientRect().width);
     const gap = Number.parseFloat(getComputedStyle(row).columnGap) || 0;
     const plan = planLabelPositions(bounds.width, centers, sizes, gap);
+    row.classList.toggle('sf-range-slider-labels--merged', plan.merged);
     if (plan.merged) {
       entries[0].text.textContent = state.values.join(' – ');
       entries[1].label.style.display = 'none';

@@ -37,3 +37,11 @@ test('S7: disabled name, value and scale take the disabled content role', () => 
   assert.match(sheet, /\.sf-range-slider-group\.disabled \.sf-range-slider-name,\n\.sf-range-slider-group\.disabled \.sf-range-slider-output,\n\.sf-range-slider-group\.disabled \.sf-range-slider-scale \{\n {2}color: var\(--sf-on-surface-disabled\);/u);
   assert.match(sheet, /\.disabled\) \.sf-thumb-text \{\n {2}--sf-thumb-text--color: var\(--sf-on-surface-disabled\);/u);
 });
+
+test('C78: the value bubble shows only while its handle is dragged or keyboard-focused, without room of its own', () => {
+  assert.match(rule('.sf-range-slider .sf-range-slider-labels.sf-thumb--label-tooltip'), /position: absolute;/u);
+  assert.match(rule('.sf-range-slider .sf-range-slider-labels.sf-thumb--label-tooltip > .sf-tooltip'), /opacity: 0;/u);
+  assert.ok(sheet.includes('.sf-range-slider:has(.sf-range-slider-handle-lower:is(.sf-range-slider-handle--dragging, :focus-visible))'));
+  assert.ok(sheet.includes('.sf-range-slider-labels--merged.sf-thumb--label-tooltip > [data-handle="0"]'));
+  assert.match(sheet, /@media \(prefers-reduced-motion: reduce\) \{\n {2}\.sf-range-slider \.sf-range-slider-labels\.sf-thumb--label-tooltip > \.sf-tooltip \{\n {4}transition: none;/u);
+});

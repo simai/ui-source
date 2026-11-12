@@ -122,4 +122,39 @@
 .sf-range-slider:is([disabled], .disabled) .sf-thumb-text {
   --sf-thumb-text--color: var(--sf-on-surface-disabled);
 }
+
+// The value bubble (owner decision C78, #p-bubble): value-display="tooltip"
+// shows a handle's value over it only while that handle is dragged or has the
+// keyboard focus, where a finger would cover a label under it. It floats over
+// the row and takes no room, so the slider row stays the control height.
+.sf-range-slider .sf-range-slider-labels.sf-thumb--label-tooltip {
+  inset-block-end: calc(100% + var(--sf-space-1\/4));
+  inset-inline: 0;
+  margin: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 3;
+}
+
+.sf-range-slider .sf-range-slider-labels--bottom.sf-thumb--label-tooltip {
+  inset-block-end: auto;
+  inset-block-start: calc(100% + var(--sf-space-1\/4));
+}
+
+.sf-range-slider .sf-range-slider-labels.sf-thumb--label-tooltip > .sf-tooltip {
+  opacity: 0;
+  transition: opacity var(--sf-duration-fast) var(--sf-animation);
+}
+
+.sf-range-slider:has(.sf-range-slider-handle-lower:is(.sf-range-slider-handle--dragging, :focus-visible)) .sf-range-slider-labels.sf-thumb--label-tooltip > [data-handle="0"],
+.sf-range-slider:has(.sf-range-slider-handle-upper:is(.sf-range-slider-handle--dragging, :focus-visible)) .sf-range-slider-labels.sf-thumb--label-tooltip > [data-handle="1"],
+.sf-range-slider:has(.sf-range-slider-handle:is(.sf-range-slider-handle--dragging, :focus-visible)) .sf-range-slider-labels--merged.sf-thumb--label-tooltip > [data-handle="0"] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-range-slider .sf-range-slider-labels.sf-thumb--label-tooltip > .sf-tooltip {
+    transition: none;
+  }
+}
 }

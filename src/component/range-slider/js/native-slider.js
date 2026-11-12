@@ -120,11 +120,15 @@ export function createNativeSlider(root, options) {
     const value = valueFromPointer(event);
     const index = values.length === 1 || Math.abs(values[0] - value) <= Math.abs(values[1] - value) ? 0 : 1;
     event.preventDefault();
+    // Marks the handle being dragged: its value bubble shows only meanwhile (C78).
+    const dragged = handles[index].handle;
+    dragged.classList.add('sf-range-slider-handle--dragging');
     emit('start', index);
     setHandle(index, value);
     const move = (next) => setHandle(index, valueFromPointer(next));
     const end = (next) => {
       setHandle(index, valueFromPointer(next), true);
+      dragged.classList.remove('sf-range-slider-handle--dragging');
       emit('end', index);
       window.removeEventListener('pointermove', move);
       window.removeEventListener('pointerup', end);
