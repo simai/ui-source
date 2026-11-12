@@ -1,6 +1,8 @@
 @use 'sass:map';
 @use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
+@use '../../../utility/container/default/scss/sf_var__container' as container;
 
 @layer sf.components {
 /* The top bar of a SIMAI site (standard simai.smart-component 1.3.11 §6).
@@ -17,6 +19,10 @@
   position: relative;
   display: block;
   box-sizing: border-box;
+  /* The row's gutter, the .container ladder read from the utility's own
+     steps, for the side panel's head (its close button on the menu button's
+     axis). */
+  --sf-site-header--gutter: var(--sf-container-gutter, var(--sf-space-1));
   min-block-size: var(--sf-site-header--block-size);
   border-block-end: var(--sf-px) solid var(--sf-site-header-border-color, var(--sf-outline-variant));
   background: var(--sf-site-header-background-color, var(--sf-site-header-background, var(--sf-surface-page)));
@@ -229,18 +235,27 @@
   }
 
   /* The panel's head is as tall as the bar, its close button on the axis of
-     the menu button. */
+     the menu button (R189 MP-3): first in the head, at the bar's own gutter
+     (the .container inset of the row, --sf-container-gutter when a product
+     sets it), so the close stands where the menu button stood and the heading
+     follows it. The DOM keeps the heading first: the close is the head's only
+     focusable part, and a reader still hears the panel's name before it. */
   &.sf-site-header--open .sf-site-header-panel-head {
     display: flex;
     flex: none;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: var(--sf-space-2);
     box-sizing: border-box;
     min-block-size: var(--sf-site-header--block-size);
     padding-block: var(--sf-space-1);
-    padding-inline: var(--sf-space-2) var(--sf-space-1);
+    padding-inline: var(--sf-site-header--gutter);
     border-block-end: var(--sf-px) solid var(--sf-site-header-border-color, var(--sf-outline-variant));
+  }
+
+  /* On the button: the sf-button-icon host is display: contents. */
+  .sf-site-header-close-button > button {
+    order: -1;
   }
 
   .sf-site-header-panel-heading {
@@ -282,6 +297,14 @@
 
 .sf-site-header--collapse-always {
   @include collapsed;
+}
+
+@each $step, $space in container.$container-array {
+  @include mq.breakpoint-media($step) {
+    .sf-site-header {
+      --sf-site-header--gutter: var(--sf-container-gutter, var(--sf-space-#{$space}));
+    }
+  }
 }
 
 @each $step in (sm, md, lg, xl) {
