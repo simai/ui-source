@@ -4,7 +4,7 @@ import {instancePath, partId} from '../../core/js/instance-path';
 import {fieldSize} from '../../component/field-size';
 import {FormField} from '../helpers/form-field';
 import {renderDatepickerTemplate} from './js/templates/default';
-import {localeWeekStart, weekendDays} from './js/locale-calendar.js';
+import {formatPlaceholder, localeDateFormat, localeWeekStart, weekendDays} from './js/locale-calendar.js';
 import BundledPosition from '../../core/js/position.js';
 import {pageLocale} from '../../core/js/page-language';
 import manifest from './component.json';
@@ -517,7 +517,8 @@ class SfDatepicker extends FormField(DatepickerElement) {
             // list of days 0-7 (see get weekendDays).
             weekend: {default: ''},
             locale: {default: ''},
-            format: {default: 'DD.MM.YYYY'},
+            // No default: the locale's order and signs (see get format).
+            format: {default: ''},
             rootClass: {default: ''},
             closeOnSelect: {type: Boolean, default: true},
             input: {type: Boolean, default: true},
@@ -995,8 +996,14 @@ class SfDatepicker extends FormField(DatepickerElement) {
         return this.getAttribute('input-name') || this.getAttribute('name') || '';
     }
 
+    // The hint in an empty field: the host's, or -- where a date is typed --
+    // the format in the letters of the locale (ДД.ММ.ГГГГ, MM/DD/YYYY,
+    // TT.MM.JJJJ), so the person sees the order the field reads (owner
+    // decision C62). A range or a read-only field is not typed: no hint.
     get placeholder() {
-        return this.getAttribute('placeholder') || '';
+        const written = this.getAttribute('placeholder') || '';
+        if (written || !this.typed) return written;
+        return formatPlaceholder(this.format, this.locale);
     }
 
     // What the form gets (§17.1): the ISO date, never the display text; a
@@ -1157,13 +1164,18 @@ class SfDatepicker extends FormField(DatepickerElement) {
 
     // The display format of the mode. A written format the mode cannot use is
     // completed: datetime adds « HH:mm» to a date format, time takes HH:mm.
+    // Without one the date's format is the locale's (owner decision C62): the
+    // order of the parts and the signs between them from Intl formatToParts --
+    // DD.MM.YYYY in ru and de, MM/DD/YYYY in en-US, YYYY-MM-DD in sv-SE. It was
+    // DD.MM.YYYY for every language, so an en-US page showed 03.09.2026 for
+    // September 3 and read 09/03/2026 as March 9.
     get format() {
         const written = this.getAttribute('format') || '';
         const mode = this.mode;
-        if (mode === 'date') return written || 'DD.MM.YYYY';
+        if (mode === 'date') return written || localeDateFormat(this.locale);
         if (mode === 'time') return written && formatPattern(written, 'time') ? written : 'HH:mm';
         if (written && formatPattern(written, 'datetime')) return written;
-        return `${written && formatPattern(written, 'date') ? written : 'DD.MM.YYYY'} HH:mm`;
+        return `${written && formatPattern(written, 'date') ? written : localeDateFormat(this.locale)} HH:mm`;
     }
 
     // The name for a field whose label is drawn outside it -- a record panel

@@ -29,7 +29,18 @@ the usual `change`, whose detail `value` is `''`.
 
 The field of a single-date picker accepts typing. What is typed is read through
 `format`, and an ISO date is accepted as well, so both `14.10.2026` and
-`2026-10-14` land on the same value. The whole text has to be one date in that
+`2026-10-14` land on the same value.
+
+Without `format` the field writes and reads the date as the page's language
+and country do (owner decision C62): the order of day, month and year and the
+signs between them come from the browser's
+`Intl.DateTimeFormat(locale).formatToParts` -- `DD.MM.YYYY` for `ru` and `de`,
+`MM/DD/YYYY` for `en-US` (September 3 is `09/03/2026`), `DD/MM/YYYY` for
+`en-GB` and `fr`, `YYYY-MM-DD` for `sv-SE`. The locale is `locale`, else the
+nearest `lang`. An empty field shows that format in the letters of the
+language's names for the parts -- `ДД.ММ.ГГГГ`, `MM/DD/YYYY`, `TT.MM.JJJJ` --
+unless `placeholder` says otherwise, and `mask` (digits only, the signs typed
+for the person) follows it too. An explicit `format` wins over the locale. The whole text has to be one date in that
 format: `YYYY` is four digits, `YY` two, the day and the month one or two, and
 between them any of `.` `/` `-` `,` or a space. The year is 1000 to 9999. Text
 that is not such a date -- two dates glued together by a paste

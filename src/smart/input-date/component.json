@@ -108,8 +108,8 @@
     },
     "format": {
       "type": "string",
-      "default": "DD.MM.YYYY",
-      "summary": "How the value is shown in the field and read when typed, e.g. DD.MM.YYYY: the whole text one value, a four-digit year from 1000 to 9999, HH hours (00-23) and mm minutes. The default follows the mode: DD.MM.YYYY, DD.MM.YYYY HH:mm, HH:mm; a date format given to datetime mode gets « HH:mm». The value stays ISO."
+      "default": "",
+      "summary": "How the value is shown in the field and read when typed, e.g. DD.MM.YYYY: the whole text one value, a four-digit year from 1000 to 9999, HH hours (00-23) and mm minutes. Empty: the locale's order of day, month and year and the signs between them (Intl formatToParts: DD.MM.YYYY in ru and de, MM/DD/YYYY in en-US, YYYY-MM-DD in sv-SE); datetime adds « HH:mm», time is HH:mm. A date format given to datetime mode gets « HH:mm». The value stays ISO."
     },
     "close-on-select": {
       "type": "boolean",
@@ -159,7 +159,7 @@
     "placeholder": {
       "type": "string",
       "default": "",
-      "summary": "The field's placeholder text."
+      "summary": "The field's placeholder text. Empty, in a field a date is typed in: the format in the letters of the locale's names for the parts (ДД.ММ.ГГГГ in ru, MM/DD/YYYY in en-US, TT.MM.JJJJ in de); a range or a read-only field has none."
     },
     "label": {
       "type": "string",
@@ -218,8 +218,8 @@
     },
     "mask-pattern": {
       "type": "string",
-      "default": "00.00.0000",
-      "summary": "Input mask; when not set it is derived from format, so the default format DD.MM.YYYY gives 00.00.0000."
+      "default": "",
+      "summary": "Input mask; when not set it is derived from format, every letter a digit: DD.MM.YYYY gives 00.00.0000, the en-US MM/DD/YYYY 00/00/0000."
     },
     "mask-lazy": {
       "type": "boolean",
@@ -568,7 +568,7 @@
     "version 1.4.6 (2026-11-11): the calendar drawn without a field is the flat place of C20 (no overlay shadow, an outline-variant hairline; component.datepicker 1.3.4, docs pre-check 2026-11-10 DP-06): the panel carries sf-datepicker--inline. The popup is unchanged. The field wrapper is top-aligned (component.datepicker 1.3.4): on the text baseline its height followed the calendar icon held at font-size 0 before the icon font, 49 held and 48 loaded at 390. A day off of the next or previous month takes the same ink as one of this month (component.datepicker 1.3.4; days off stay in the error red, the DP-02 colour being on hold), and a day off says «выходной» (en «day off») after its date in its name, a new word day-off in ru and en.",
     "version 1.4.6, also (2026-11-11): the sf-button it draws writes sf-button--ghost beside the dated sf-button--link since sf-button 1.13.0 (CB-01), so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged.",
     "version 1.5.0 (2026-11-11): a minor; the datepicker audit's defects (control/evidence/2026-11-11-datepicker-audit). Keyboard and screen reader: the days are an ARIA grid (role grid, a row per week, column headers with the weekdays' full names, each day a gridcell with aria-selected, where it said aria-pressed); the shown month is said when it changes (a polite live region); Shift+PageUp and Shift+PageDown move a year; Home and End stop at min-date and max-date instead of doing nothing; the month and year lists are one tab stop each, the arrows move in their three columns, the list that opens takes the focus on its chosen item and gives it back to its toggle when it closes or a month or year is chosen (the focus fell to the page); the focus leaving the field and the panel by Tab closes the panel, as a click outside does (it stayed open behind the next field). Cost: the panel is placed when it opens and SF.Position follows it from then on (it was updated after every render: 50-180 ms per arrow key or month); one Intl.DateTimeFormat per locale and options (63 were made per render). Drawn: the header's arrows are size 1/2 like the month and year toggles, the header one control height of size 1 (component.datepicker 1.4.0). Settings, values and events unchanged.",
-    "version 1.6.0 (2026-11-12): a minor; owner decision C62 (control/docs-review/decisions.md). The day-off ink is the calendar's own role --sf-datepicker-day-off, from the palette red (red 40 light, red 80 dark: the tones the error role had, so the look is the same), not the error role (C67 H2; component.datepicker 1.5.0). The days off follow the locale (Intl week info: Saturday and Sunday in ru, de and en-US, Friday and Saturday in ar-EG), and a product sets them with the new setting weekend: none for working weekends, or a list of days 0-7; they were Saturday and Sunday everywhere. A period is one field «с – по»: the two dates with an en dash between spaces (01.09.2026 – 07.09.2026), where a hyphen stood; the field's mask and the change detail's formattedValue follow. Two fields (check-in and check-out) are a recipe in the guide, not a component."
+    "version 1.6.0 (2026-11-12): a minor; owner decision C62 (control/docs-review/decisions.md). The day-off ink is the calendar's own role --sf-datepicker-day-off, from the palette red (red 40 light, red 80 dark: the tones the error role had, so the look is the same), not the error role (C67 H2; component.datepicker 1.5.0). The days off follow the locale (Intl week info: Saturday and Sunday in ru, de and en-US, Friday and Saturday in ar-EG), and a product sets them with the new setting weekend: none for working weekends, or a list of days 0-7; they were Saturday and Sunday everywhere. A period is one field «с – по»: the two dates with an en dash between spaces (01.09.2026 – 07.09.2026), where a hyphen stood; the field's mask and the change detail's formattedValue follow. Two fields (check-in and check-out) are a recipe in the guide, not a component. Typing follows the locale: without format the date's format is the locale's order of day, month and year and the signs between them (Intl formatToParts: DD.MM.YYYY in ru and de, MM/DD/YYYY in en-US, YYYY-MM-DD in sv-SE; a sign before the first or after the last part is left out), so the field shows, reads and masks the date as the page's country writes it; an explicit format still wins. An empty field a date is typed in shows the format in the letters of the locale's names for the parts (Intl.DisplayNames: ДД.ММ.ГГГГ, MM/DD/YYYY, TT.MM.JJJJ) unless the host gives a placeholder. The defaults of format and mask-pattern are therefore empty."
   ],
   "x-registry": {
     "kind": "composite",

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
-import {localeWeekStart, localeWeekend, weekendDays} from '../src/smart/input-date/js/locale-calendar.js';
+import {formatPlaceholder, localeDateFormat, localeWeekStart, localeWeekend, weekendDays} from '../src/smart/input-date/js/locale-calendar.js';
 
 // Owner decision C62 (2026-11-11, ui-control control/docs-review/decisions.md):
 // the calendar and the date field. Each point of the gap analysis
@@ -65,4 +65,48 @@ test('a period is one field with an en dash between spaces', () => {
   assert.ok(guide.includes('## A period: one field, or two as a recipe'));
   assert.ok(guide.includes('id="check-in"') && guide.includes('id="check-out"'));
   assert.ok(guide.includes("checkOut.setAttribute('min-date', start)"));
+});
+
+// Point 4: typing follows the locale -- the parts' order and the signs from
+// Intl formatToParts, not a fixed DD.MM.YYYY.
+test('the date format is the locale\'s order and signs', () => {
+  assert.equal(localeDateFormat('ru'), 'DD.MM.YYYY');
+  assert.equal(localeDateFormat('ru-RU'), 'DD.MM.YYYY');
+  assert.equal(localeDateFormat('de'), 'DD.MM.YYYY');
+  assert.equal(localeDateFormat('en-US'), 'MM/DD/YYYY');
+  assert.equal(localeDateFormat('en-GB'), 'DD/MM/YYYY');
+  assert.equal(localeDateFormat('fr'), 'DD/MM/YYYY');
+  assert.equal(localeDateFormat('sv-SE'), 'YYYY-MM-DD');
+  assert.equal(localeDateFormat('en-CA'), 'YYYY-MM-DD');
+  // A sign after the last part is not typed: «12.11.2026 г.», «2026. 11. 12.».
+  assert.equal(localeDateFormat('bg'), 'DD.MM.YYYY');
+  assert.equal(localeDateFormat('hu'), 'YYYY. MM. DD');
+  // Right-to-left marks are not signs.
+  assert.equal(localeDateFormat('ar-EG'), 'DD/MM/YYYY');
+  assert.equal(localeDateFormat('not a locale'), 'DD.MM.YYYY');
+});
+
+test('the hint is the format in the locale\'s letters', () => {
+  assert.equal(formatPlaceholder('DD.MM.YYYY', 'ru'), 'ДД.ММ.ГГГГ');
+  assert.equal(formatPlaceholder('MM/DD/YYYY', 'en-US'), 'MM/DD/YYYY');
+  assert.equal(formatPlaceholder('DD.MM.YYYY', 'de'), 'TT.MM.JJJJ');
+  assert.equal(formatPlaceholder('DD/MM/YYYY', 'fr'), 'JJ/MM/AAAA');
+  assert.equal(formatPlaceholder('DD.MM.YYYY HH:mm', 'ru'), 'ДД.ММ.ГГГГ ЧЧ:ММ');
+  assert.equal(formatPlaceholder('HH:mm', 'en-US'), 'HH:MM');
+  // A script without initials gives the Latin letters.
+  assert.equal(formatPlaceholder('YYYY/MM/DD', 'ja'), 'YYYY/MM/DD');
+});
+
+test('the field takes the locale\'s format, its mask and its hint where no host sets them', () => {
+  const source = read('src/smart/input-date/index.js');
+  assert.match(source, /if \(mode === 'date'\) return written \|\| localeDateFormat\(this\.locale\);/u);
+  assert.match(source, /: localeDateFormat\(this\.locale\)\} HH:mm`;/u);
+  assert.doesNotMatch(source, /return written \|\| 'DD\.MM\.YYYY';/u);
+  assert.match(source, /format: \{default: ''\},/u);
+  assert.match(source, /get maskPattern\(\) \{\s*return this\.getAttribute\('mask-pattern'\) \|\| this\.formatToMask\(this\.format\);/u);
+  assert.match(source, /if \(written \|\| !this\.typed\) return written;\s*return formatPlaceholder\(this\.format, this\.locale\);/u);
+  const manifest = JSON.parse(read('src/smart/input-date/component.json'));
+  assert.equal(manifest.settings.format.default, '');
+  assert.equal(manifest.settings['mask-pattern'].default, '');
+  assert.match(manifest.settings.format.summary, /formatToParts/u);
 });

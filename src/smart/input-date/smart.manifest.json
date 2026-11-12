@@ -154,8 +154,8 @@
       },
       "format": {
         "type": "string",
-        "default": "DD.MM.YYYY",
-        "description": "How the value is shown in the field and read when typed, e.g. DD.MM.YYYY: the whole text one value, a four-digit year from 1000 to 9999, HH hours (00-23) and mm minutes. The default follows the mode: DD.MM.YYYY, DD.MM.YYYY HH:mm, HH:mm; a date format given to datetime mode gets « HH:mm». The value stays ISO."
+        "default": "",
+        "description": "How the value is shown in the field and read when typed, e.g. DD.MM.YYYY: the whole text one value, a four-digit year from 1000 to 9999, HH hours (00-23) and mm minutes. Empty: the locale's order of day, month and year and the signs between them (Intl formatToParts: DD.MM.YYYY in ru and de, MM/DD/YYYY in en-US, YYYY-MM-DD in sv-SE); datetime adds « HH:mm», time is HH:mm. A date format given to datetime mode gets « HH:mm». The value stays ISO."
       },
       "close-on-select": {
         "type": "boolean",
@@ -205,7 +205,7 @@
       "placeholder": {
         "type": "string",
         "default": "",
-        "description": "The field's placeholder text."
+        "description": "The field's placeholder text. Empty, in a field a date is typed in: the format in the letters of the locale's names for the parts (ДД.ММ.ГГГГ in ru, MM/DD/YYYY in en-US, TT.MM.JJJJ in de); a range or a read-only field has none."
       },
       "label": {
         "type": "string",
@@ -264,8 +264,8 @@
       },
       "mask-pattern": {
         "type": "string",
-        "default": "00.00.0000",
-        "description": "Input mask; when not set it is derived from format, so the default format DD.MM.YYYY gives 00.00.0000."
+        "default": "",
+        "description": "Input mask; when not set it is derived from format, every letter a digit: DD.MM.YYYY gives 00.00.0000, the en-US MM/DD/YYYY 00/00/0000."
       },
       "mask-lazy": {
         "type": "boolean",
@@ -742,7 +742,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-date/index.js",
-        "sha256": "81214c3c4b3b693b6bc764b2b713c130b2350a857f45052d4a2015563e09d439"
+        "sha256": "b4bfd9d783724efb0023aeb7c3b2bc963742e1affed760403d42c6e2ab9a08c3"
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",
@@ -754,7 +754,7 @@
       },
       {
         "path": "src/smart/input-date/docs/smart-datepicker-guide.md",
-        "sha256": "5d405faf71178db9c948473dccdef62c768a216a73bfe7d4a99ad7de5467a9bb"
+        "sha256": "c1c914c4abeffea1ac4ca8cd56ba926352f23418694a8c3b7444067ca52b26a2"
       }
     ],
     "generated_runtime": [
