@@ -17,6 +17,15 @@ function getDirectLabel(node) {
     .trim();
 }
 
+function readIcon(value) {
+  if (value === 'false') return false;
+  return value && value !== 'true' ? value : '';
+}
+
+function readFlag(node, name) {
+  return node.hasAttribute(name) && node.getAttribute(name) !== 'false';
+}
+
 export function treeItemNodeToData(node) {
   if (typeof node?.toTreeItemData === 'function') {
     return node.toTreeItemData();
@@ -44,7 +53,13 @@ export function treeItemNodeToData(node) {
     hasChildren: node.hasAttribute('has-children') && node.getAttribute('has-children') !== 'false',
     openIcon: node.getAttribute('open-icon') || '',
     closedIcon: node.getAttribute('closed-icon') || '',
-    icon: !node.hasAttribute('icon') || node.getAttribute('icon') !== 'false',
+    // A name, or false for none (C102); absent or true: chosen.
+    icon: readIcon(node.getAttribute('icon')),
+    note: node.getAttribute('note') || '',
+    mark: readFlag(node, 'mark'),
+    more: readFlag(node, 'more'),
+    hidden: readFlag(node, 'hidden'),
+    error: readFlag(node, 'error'),
     chevronOpenIcon: node.getAttribute('chevron-open-icon') || '',
     chevronClosedIcon: node.getAttribute('chevron-closed-icon') || '',
     openLabel: node.getAttribute('open-label') || '',

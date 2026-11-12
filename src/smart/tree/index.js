@@ -19,7 +19,9 @@ import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {isTreeItemNode, treeItemNodeToData} from '../tree-item/js/node-data.js';
 import {instancePath, partId} from '../../core/js/instance-path.js';
-import { renderTreeTemplate } from './js/templates/default';
+import {fileKind, fileType} from '../../core/js/file-types/index.js';
+import {createInlineSpinner} from '../../component/spinner/js/_spinner-draw';
+import { renderTreeTemplate, renderStaticTreeTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -44,6 +46,11 @@ const idWord = (id) => String(id).replace(/[^A-Za-z0-9_-]/gu, (char) => `_${char
 // A branch: an entry with children, or one that says it has them before they
 // are loaded (has-children). A file is never one.
 const isBranch = (entry) => entry.kind !== 'file' && (entry.childIds.length > 0 || entry.hasChildren);
+// A folder: a branch, or an entry the host calls one with nothing in it
+// (C102: no children is a leaf unless kind="folder").
+const isFolder = (entry) => isBranch(entry) || entry.kind === 'folder';
+// The rows a lazy branch shows under itself (C102 item 6) are keyed by its id.
+const PLACEHOLDER = '\u0000';
 
 const text = (value) => (value === undefined || value === null ? '' : String(value));
 const pick = (item, kebab, camel) => (item[kebab] !== undefined ? item[kebab] : item[camel]);
@@ -62,8 +69,10 @@ function normalizeEntry(item, place) {
     href: text(item.href),
     target: text(item.target),
     rel: text(item.rel),
-    // `kind` is the axis; `type` the legacy name.
-    kind: text(item.kind || item.type) === 'file' ? 'file' : 'folder',
+    // `kind` is one of the twelve words of core file-types (C102); `type` the
+    // legacy name. No kind: the entry's place says it -- children make a
+    // folder, none a leaf whose name may say its type.
+    kind: fileKind(item.kind || item.type),
     open: Boolean(item.open),
     selected: Boolean(item.selected),
     active: Boolean(item.active),
@@ -71,7 +80,16 @@ function normalizeEntry(item, place) {
     // A branch whose children are not here yet (TR-5): it shows the chevron
     // and opens, and its toggle is the host's cue to load them.
     hasChildren: Boolean(pick(item, 'has-children', 'hasChildren')),
-    icon: item.icon !== false,
+    // A name (C102), or false for none; empty or true: chosen by kind,
+    // extension and place.
+    icon: item.icon === false || item.icon === 'false' ? false : typeof item.icon === 'string' && item.icon !== 'true' ? item.icon : '',
+    // A second text after the name, a highlighted line, the «…» line, a
+    // hidden page, and a lazy branch whose children failed to load (C102).
+    note: text(item.note),
+    mark: Boolean(item.mark),
+    more: Boolean(item.more),
+    hidden: Boolean(item.hidden),
+    error: Boolean(item.error),
     openIcon: text(pick(item, 'open-icon', 'openIcon')),
     closedIcon: text(pick(item, 'closed-icon', 'closedIcon')),
     chevronOpenIcon: text(pick(item, 'chevron-open-icon', 'chevronOpenIcon')),
@@ -92,6 +110,8 @@ const TreeElement = elementFromManifest(manifest, {
   actions: {
     expand({id}) { return this.setEntryOpen(id, true); },
     collapse({id}) { return this.setEntryOpen(id, false); },
+    'expand-all'() { return this.setAllOpen(true); },
+    'collapse-all'() { return this.setAllOpen(false); },
     'focus-entry'({id}) {
       const at = this._rows.findIndex((row) => row.id === text(id));
       if (at < 0) return {outcome: 'refused', reason: 'unknown'};
@@ -120,6 +140,10 @@ class SfTree extends TreeElement {
     // tooltip with the whole name.
     this._cut = new Set();
     this._resize = null;
+    // Lazy branches whose retry was pressed: they show «Загрузка…» again
+    // until the host answers with a new items (C102 item 6).
+    this._retrying = new Set();
+    this._spinners = new Map();
   }
 
   // ---- the entries -------------------------------------------------------
@@ -175,9 +199,11 @@ class SfTree extends TreeElement {
     this._rowsDirty = true;
     for (const id of [...this._open.keys()]) if (!entries.has(id)) this._open.delete(id);
     this._entries = entries;
+    this._retrying.clear();
+    for (const id of [...this._spinners.keys()]) if (!entries.has(id)) this._spinners.delete(id);
     const before = this.selectionIds();
     let next;
-    if (said.length) next = this.selection === 'many' ? said : [said.at(-1)];
+    if (said.length) next = this.multiple() ? said : [said.at(-1)];
     else next = before.filter((id) => entries.has(id));
     this.writeSelection(next, {quiet: !fromData || same(before, next)});
   }
@@ -195,6 +221,12 @@ class SfTree extends TreeElement {
       const open = branch && this._open.get(id) === true;
       rows.push({id, entry, level, setsize: ids.length, posinset: index + 1, branch, open});
       if (open) visit(entry.childIds, level + 1);
+      // An open lazy branch with nothing loaded yet: a «Загрузка…» row, or the
+      // error row with its retry when the host said the load failed.
+      if (open && !entry.childIds.length && entry.hasChildren) {
+        const placeholder = entry.error && !this._retrying.has(id) ? 'error' : 'loading';
+        rows.push({id: `${id}${PLACEHOLDER}${placeholder}`, placeholder, entry: {id: `${id}${PLACEHOLDER}`, parent: id, childIds: [], label: '', value: entry.value, disabled: placeholder === 'loading', placeholder}, level: level + 1, setsize: 1, posinset: 1, branch: false, open: false});
+      }
     });
     visit(this._roots || [], 1);
     this._rows = rows;
@@ -204,8 +236,13 @@ class SfTree extends TreeElement {
 
   // ---- selection (§18.2) -------------------------------------------------
 
+  // many and check keep a list of ids; one keeps one.
+  multiple() {
+    return this.selection === 'many' || this.selection === 'check';
+  }
+
   selectionIds() {
-    if (this.selection === 'many') return Array.isArray(this.selectedIds) ? this.selectedIds.map(text) : [];
+    if (this.multiple()) return Array.isArray(this.selectedIds) ? this.selectedIds.map(text) : [];
     const one = text(this.selected);
     return one ? [one] : [];
   }
@@ -215,7 +252,7 @@ class SfTree extends TreeElement {
   // tree of 10 000 entries all checked scanned a 10 000-id list per row and
   // per entry -- 73 ms a change (simai/ui-source#43, tests/browser/tree-scale).
   selectionSet() {
-    const source = this.selection === 'many' ? this.selectedIds : text(this.selected);
+    const source = this.multiple() ? this.selectedIds : text(this.selected);
     if (this._selectionSource !== source || !this._selectionSet) {
       this._selectionSource = source;
       this._selectionSet = new Set(this.selectionIds());
@@ -250,8 +287,55 @@ class SfTree extends TreeElement {
     return this.selection !== 'none' && this.selectionSet().has(id);
   }
 
+  // ---- checks (selection="check", C102 item 7) ---------------------------
+
+  // Every entry's check: 'true', 'false' or 'mixed'. A branch is what its
+  // children are -- all checked, none, or some (mixed); a branch in the list
+  // whose children are not in it checks them (children that arrived after it
+  // was checked, or a list that names only the parent).
+  checkStates() {
+    const set = this.selectionSet();
+    const states = new Map();
+    const visit = (id, inherited) => {
+      const entry = this._entries.get(id);
+      const own = inherited || set.has(id);
+      if (!entry.childIds.length) {
+        states.set(id, own ? 'true' : 'false');
+        return;
+      }
+      for (const child of entry.childIds) visit(child, own);
+      states.set(id, branchCheck(entry.childIds.map((child) => states.get(child))));
+    };
+    for (const id of this._roots || []) visit(id, false);
+    return states;
+  }
+
+  // A press or Space on a row: it and everything under it take the opposite
+  // of its check, and every branch above it is what its children now are.
+  checkRow(row) {
+    const states = this.checkStates();
+    const on = states.get(row.id) !== 'true';
+    const mark = (id) => {
+      states.set(id, on ? 'true' : 'false');
+      for (const child of this._entries.get(id).childIds) mark(child);
+    };
+    mark(row.id);
+    for (let parent = row.entry.parent; parent !== null && parent !== undefined; parent = this._entries.get(parent)?.parent) {
+      const entry = this._entries.get(parent);
+      if (!entry) break;
+      states.set(parent, branchCheck(entry.childIds.map((child) => states.get(child))));
+    }
+    const ordered = this.writeSelection([...states].filter(([, state]) => state === 'true').map(([id]) => id), {quiet: false});
+    this.sfEmit('select', {ids: ordered, id: row.id, selected: on});
+  }
+
   selectRow(row) {
     const mode = this.selection;
+    if (row.placeholder) return;
+    if (mode === 'check') {
+      this.checkRow(row);
+      return;
+    }
     if (mode !== 'one' && mode !== 'many') return;
     const ids = this.selectionIds();
     const on = mode === 'many' ? !ids.includes(row.id) : true;
@@ -273,6 +357,33 @@ class SfTree extends TreeElement {
     this.requestComponentUpdate('open');
     this.sfEmit('toggle', {id: entry.id, open: Boolean(open), value: entry.value});
     return {outcome: 'applied'};
+  }
+
+  // The actions expand-all and collapse-all, and * on a row (its siblings):
+  // every branch named that is not disabled; a toggle for each that changed.
+  setAllOpen(open, ids = null) {
+    const changed = [];
+    for (const entry of ids ? ids.map((id) => this._entries.get(id)).filter(Boolean) : this._entries.values()) {
+      if (!isBranch(entry) || entry.disabled || this._open.get(entry.id) === Boolean(open)) continue;
+      this._open.set(entry.id, Boolean(open));
+      changed.push(entry);
+    }
+    if (!changed.length) return {outcome: 'applied'};
+    this._rowsDirty = true;
+    this.requestComponentUpdate('open');
+    for (const entry of changed) this.sfEmit('toggle', {id: entry.id, open: Boolean(open), value: entry.value});
+    return {outcome: 'applied'};
+  }
+
+  // The error row's retry (C102 item 6): the branch shows «Загрузка…» again
+  // and the host is asked to load it once more, retry {id, value}.
+  retryEntry(id) {
+    const entry = this._entries.get(text(id));
+    if (!entry || !entry.error || this._retrying.has(entry.id)) return;
+    this._retrying.add(entry.id);
+    this._rowsDirty = true;
+    this.requestComponentUpdate('retry');
+    this.sfEmit('retry', {id: entry.id, value: entry.value});
   }
 
   // ---- the old details (aliases.json) ------------------------------------
@@ -316,6 +427,8 @@ class SfTree extends TreeElement {
   // itself; it asks: move {ids, parent} and attach {files, parent}. The
   // records travel as application/x-sf-records+json, which sf-view-table writes.
   dropKind(event) {
+    if (this.static) return null;
+    if (this._dragId !== undefined && this.reorder) return 'entry';
     const types = [...(event.dataTransfer?.types ?? [])];
     if (this.acceptRecords && types.includes(RECORDS_TYPE)) return 'records';
     if (this.acceptFiles && types.includes('Files')) return 'files';
@@ -327,17 +440,71 @@ class SfTree extends TreeElement {
     return node && this.contains(node) && node.getAttribute('aria-disabled') !== 'true' ? node : null;
   }
 
-  markDropTarget(node) {
-    if (this._dropTarget === node) return;
+  markDropTarget(node, position = '') {
+    if (this._dropTarget === node && this._dropPosition === position) return;
     this._dropTarget?.removeAttribute('data-sf-drop-target');
+    this._dropTarget?.removeAttribute('data-sf-drop-position');
     this._dropTarget = node;
-    node?.setAttribute('data-sf-drop-target', '');
+    this._dropPosition = position;
+    if (node && position) node.setAttribute('data-sf-drop-position', position);
+    if (node && (!position || position === 'inside')) node.setAttribute('data-sf-drop-target', '');
   }
+
+  // ---- reorder inside the tree (C102 §7 item 11) -------------------------
+
+  // Where a dragged entry lands on a row: the upper quarter puts it before
+  // the row, the lower quarter after it, the middle into it -- only an entry
+  // that can hold others (a folder, a page; not a file). Never into itself or
+  // anything under it.
+  dropPlace(event, node) {
+    const dragged = this._entries.get(this._dragId);
+    const target = this._entries.get(node.dataset.sfEntry);
+    if (!dragged || !target) return null;
+    for (let id = target.id; id !== null && id !== undefined; id = this._entries.get(id)?.parent) {
+      if (id === dragged.id) return null;
+    }
+    const box = node.querySelector(':scope > .sf-tree-item-container')?.getBoundingClientRect() ?? node.getBoundingClientRect();
+    const at = (event.clientY - box.top) / (box.height || 1);
+    const holds = isFolder(target) || target.kind === 'page' || (!target.kind && this.typeOf(target, false, false).kind === 'file');
+    let position = at < 0.25 ? 'before' : at > 0.75 ? 'after' : holds ? 'inside' : at < 0.5 ? 'before' : 'after';
+    if (position === 'inside') return {position, parent: target.id, before: null};
+    const siblings = target.parent === null ? this._roots : this._entries.get(target.parent).childIds;
+    let before = target.id;
+    if (position === 'after') {
+      const rest = siblings.slice(siblings.indexOf(target.id) + 1).filter((id) => id !== dragged.id);
+      before = rest[0] ?? null;
+    }
+    if (before === dragged.id) return null;
+    return {position, parent: target.parent, before};
+  }
+
+  handleTreeDragStart = (event) => {
+    const node = event.target?.closest?.('.sf-tree-item[data-sf-entry][draggable="true"]');
+    if (!this.reorder || !node || !this.contains(node)) return;
+    const entry = this._entries.get(node.dataset.sfEntry);
+    if (!entry || entry.disabled) return;
+    this._dragId = entry.id;
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', entry.label);
+  };
+
+  handleTreeDragEnd = () => {
+    this._dragId = undefined;
+    this.markDropTarget(null);
+  };
 
   handleTreeDragOver = (event) => {
     const kind = this.dropKind(event);
     const node = kind ? this.dropNode(event) : null;
     if (!node) { this.markDropTarget(null); return; }
+    if (kind === 'entry') {
+      const place = this.dropPlace(event, node);
+      if (!place) { this.markDropTarget(null); return; }
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'move';
+      this.markDropTarget(node, place.position);
+      return;
+    }
     event.preventDefault();
     event.dataTransfer.dropEffect = kind === 'files' ? 'copy' : 'move';
     this.markDropTarget(node);
@@ -350,6 +517,18 @@ class SfTree extends TreeElement {
   handleTreeDrop = (event) => {
     const kind = this.dropKind(event);
     const node = kind ? this.dropNode(event) : null;
+    if (kind === 'entry') {
+      const place = node ? this.dropPlace(event, node) : null;
+      const id = this._dragId;
+      this.markDropTarget(null);
+      this._dragId = undefined;
+      if (!place) return;
+      event.preventDefault();
+      // The tree moves nothing itself: the host moves the entry and gives a
+      // new items. parent null is the tree's top level; before null, the end.
+      this.sfEmit('move', {ids: [id], parent: place.parent, before: place.before, source: null});
+      return;
+    }
     this.markDropTarget(null);
     if (!node) return;
     event.preventDefault();
@@ -373,6 +552,8 @@ class SfTree extends TreeElement {
     this.addEventListener('dragover', this.handleTreeDragOver);
     this.addEventListener('dragleave', this.handleTreeDragLeave);
     this.addEventListener('drop', this.handleTreeDrop);
+    this.addEventListener('dragstart', this.handleTreeDragStart);
+    this.addEventListener('dragend', this.handleTreeDragEnd);
     this.addEventListener('keydown', this.handleTreeKeydown);
     this.addEventListener('focusin', this.handleTreeFocusIn);
     this.addEventListener('click', this.handleTreeClick);
@@ -385,6 +566,8 @@ class SfTree extends TreeElement {
     this.removeEventListener('dragover', this.handleTreeDragOver);
     this.removeEventListener('dragleave', this.handleTreeDragLeave);
     this.removeEventListener('drop', this.handleTreeDrop);
+    this.removeEventListener('dragstart', this.handleTreeDragStart);
+    this.removeEventListener('dragend', this.handleTreeDragEnd);
     this.markDropTarget(null);
     this.removeEventListener('keydown', this.handleTreeKeydown);
     this.removeEventListener('focusin', this.handleTreeFocusIn);
@@ -433,7 +616,7 @@ class SfTree extends TreeElement {
   }
 
   windowed() {
-    return this._rows.length > WINDOW_FROM;
+    return !this.static && this._rows.length > WINDOW_FROM;
   }
 
   // The rows in view of the scroller, plus the margin: [first, last].
@@ -483,7 +666,7 @@ class SfTree extends TreeElement {
     const at = (id) => (id ? this._rows.findIndex((row) => row.id === id) : -1);
     const stop = at(this._tabStop);
     if (stop >= 0) return stop;
-    const chosen = this._rows.findIndex((row) => this.isSelected(row.id) || row.entry.active);
+    const chosen = this._rows.findIndex((row) => !row.placeholder && (this.isSelected(row.id) || row.entry.active));
     return chosen >= 0 ? chosen : this._rows.length ? 0 : -1;
   }
 
@@ -554,8 +737,12 @@ class SfTree extends TreeElement {
     const row = this._rows[at];
     this._tabStop = row.id;
     this.syncTabStop();
-    if (row.entry.disabled) return;
-    if (this.selection === 'one' || this.selection === 'many') this.selectRow(row);
+    if (row.placeholder === 'error') {
+      this.retryEntry(row.entry.parent);
+      return;
+    }
+    if (row.entry.disabled || row.placeholder) return;
+    if (this.selection === 'one' || this.selection === 'many' || this.selection === 'check') this.selectRow(row);
   };
 
   // A press on a name: the request open {id}. A link still follows itself.
@@ -570,7 +757,11 @@ class SfTree extends TreeElement {
   }
 
   activateRow(row) {
-    if (row.entry.disabled) return;
+    if (row.placeholder === 'error') {
+      this.retryEntry(row.entry.parent);
+      return;
+    }
+    if (row.entry.disabled || row.placeholder) return;
     const link = this.rowElement(row.id)?.querySelector(':scope > .sf-tree-item-container > a[href]');
     if (link) link.click();
     else this.pressName(row, null);
@@ -583,7 +774,7 @@ class SfTree extends TreeElement {
     const count = this._rows.length;
     for (let step = 1; step <= count; step += 1) {
       const at = (index + step) % count;
-      if (this._rows[at].entry.label.trim().toLocaleLowerCase().startsWith(this._typeahead)) {
+      if (!this._rows[at].placeholder && this._rows[at].entry.label.trim().toLocaleLowerCase().startsWith(this._typeahead)) {
         this.focusRow(at);
         return;
       }
@@ -615,9 +806,15 @@ class SfTree extends TreeElement {
         else this.activateRow(row);
         break;
       case ' ':
-        if (this.selection === 'none') this.activateRow(row);
+        if (this.selection === 'none' || row.placeholder) this.activateRow(row);
         else if (!row.entry.disabled) this.selectRow(row);
         break;
+      case '*': {
+        // APG: every sibling branch of the row opens.
+        const siblings = row.entry.parent === null || row.entry.parent === undefined ? this._roots : this._entries.get(row.entry.parent)?.childIds ?? [];
+        this.setAllOpen(true, siblings);
+        break;
+      }
       default:
         handled = false;
     }
@@ -633,9 +830,58 @@ class SfTree extends TreeElement {
 
   // ---- drawing -----------------------------------------------------------
 
+  // The kind and icon an entry is shown with (core file-types, C102): icon,
+  // kind, the name's extension (file-types="name"), its place. The tree's
+  // icons setting keeps them on every row, on folders only, or on none. An
+  // entry's own open-icon / closed-icon still name its glyph (a section icon
+  // a host passed that way before icon took a name).
+  typeOf(entry, branch, open) {
+    const folder = branch || entry.kind === 'folder';
+    const custom = folder ? (open ? entry.openIcon : entry.closedIcon) : entry.closedIcon || entry.openIcon;
+    return fileType({
+      icon: entry.icon === false ? false : entry.icon || custom || '',
+      kind: entry.kind,
+      name: entry.label,
+      folder,
+      open,
+      byName: this.fileTypes !== 'none',
+    });
+  }
+
+  iconOf(entry, branch, open) {
+    const mode = this.icons;
+    if (mode === 'none') return '';
+    if (mode === 'branches' && !(branch || entry.kind === 'folder')) return '';
+    return this.typeOf(entry, branch, open).icon;
+  }
+
+  // The spinner of a lazy branch's «Загрузка…» row: one element per branch,
+  // so a redraw does not start it again.
+  spinnerFor(id) {
+    let spinner = this._spinners.get(id);
+    if (!spinner) {
+      spinner = createInlineSpinner({className: 'sf-tree-item-spinner-ring'});
+      this._spinners.set(id, spinner);
+    }
+    return spinner;
+  }
+
   rowContext(row, tabStopId) {
     const entry = row.entry;
-    const selected = this.isSelected(row.id);
+    if (row.placeholder) {
+      return {
+        id: row.id,
+        placeholder: row.placeholder,
+        label: row.placeholder === 'error' ? this._words.error : this._words.loading,
+        retryLabel: this._words.retry,
+        spinner: row.placeholder === 'loading' ? this.spinnerFor(entry.parent) : null,
+        onRetry: row.onRetry,
+        level: row.level,
+        tabStop: row.id === tabStopId,
+      };
+    }
+    const check = this.selection === 'check';
+    const selected = !check && this.isSelected(row.id);
     return {
       id: row.id,
       value: entry.value,
@@ -648,7 +894,15 @@ class SfTree extends TreeElement {
       selected,
       active: entry.active,
       disabled: entry.disabled,
-      icon: entry.icon,
+      nodeIcon: this.iconOf(entry, row.branch, row.open),
+      folder: row.branch || entry.kind === 'folder',
+      note: entry.note,
+      mark: entry.mark,
+      more: entry.more,
+      pageHidden: entry.hidden,
+      hiddenWord: this._words.hidden,
+      check: check ? this._checks?.get(row.id) ?? 'false' : '',
+      draggable: Boolean(this.reorder) && !entry.disabled,
       openIcon: entry.openIcon || 'folder_open',
       closedIcon: entry.closedIcon || 'folder',
       chevronOpenIcon: entry.chevronOpenIcon || 'keyboard_arrow_down',
@@ -684,16 +938,59 @@ class SfTree extends TreeElement {
           const row = this._rows.find((one) => one.id === id);
           if (row) this.pressName(row, event);
         },
+        onRetry: (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          const row = this._rows.find((one) => one.id === id);
+          if (row?.placeholder === 'error') this.retryEntry(row.entry.parent);
+        },
       };
       this._handlers.set(id, handlers);
     }
     return handlers;
   }
 
+  // The static tree (C102 item 5): the entries as a nested list, all of
+  // them, nothing to press.
+  staticContext() {
+    const node = (id) => {
+      const entry = this._entries.get(id);
+      const branch = entry.childIds.length > 0;
+      return {
+        entry,
+        nodeIcon: this.iconOf(entry, isBranch(entry), branch),
+        folder: isFolder(entry),
+        hiddenWord: this._words.hidden,
+        children: entry.childIds.map(node),
+      };
+    };
+    return this.createTemplateContext({
+      ...this.getPropsContext(),
+      component: this,
+      nodes: (this._roots || []).map(node),
+      ariaLabel: this.getAttribute('aria-label') || '',
+      rootClass: this.getRootClass(),
+      rootStyle: this.getRootStyle(),
+    });
+  }
+
   templateContext() {
+    this._words = {
+      open: this.sfWord('open-label'),
+      close: this.sfWord('close-label'),
+      loading: this.sfWord('loading'),
+      error: this.sfWord('load-error'),
+      retry: this.sfWord('retry'),
+      hidden: this.sfWord('hidden'),
+    };
+    if (this.static) {
+      this._rows = [];
+      this._rowsDirty = true;
+      return this.staticContext();
+    }
     const rows = this.flatten();
-    for (const id of [...(this._handlers?.keys() ?? [])]) if (!this._entries.has(id)) this._handlers.delete(id);
-    this._words = {open: this.sfWord('open-label'), close: this.sfWord('close-label')};
+    for (const id of [...(this._handlers?.keys() ?? [])]) if (!this._entries.has(id.split(PLACEHOLDER)[0])) this._handlers.delete(id);
+    this._checks = this.selection === 'check' ? this.checkStates() : null;
     // The tooltips' ids start with the tree's path (§7.1.1), read once a drawing.
     this._tipPath = this._cut.size ? instancePath(this, {kind: 'sf-tree'}) : '';
     const tabStopId = rows[this.tabStopIndex()]?.id;
@@ -727,7 +1024,8 @@ class SfTree extends TreeElement {
   }
 
   template() {
-    return renderTreeTemplate(this.templateContext());
+    const context = this.templateContext();
+    return this.static ? renderStaticTreeTemplate(context) : renderTreeTemplate(context);
   }
 
   // A row is measured after every drawing: the first one may be drawn before
@@ -781,6 +1079,12 @@ class SfTree extends TreeElement {
 
 function same(a, b) {
   return a.length === b.length && a.every((one, index) => one === b[index]);
+}
+
+// A branch's check from its children's: all checked, none, or some.
+function branchCheck(states) {
+  if (states.every((state) => state === 'true')) return 'true';
+  return states.some((state) => state !== 'false') ? 'mixed' : 'false';
 }
 
 SfTree.define('sf-tree');

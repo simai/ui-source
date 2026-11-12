@@ -13,7 +13,7 @@
     "src/component/tree/scss/_css__tree.scss",
     "src/component/tree/scss/index.scss"
   ],
-  "content_sha256": "3bcafa5ecb9a662255aedbc852d33d97be9c5b65257de22ce86e33433188be23",
+  "content_sha256": "24c362cfbf647a5505432d0ccd4def04e430bc3757e2f13a5f5db0742c842668",
   "dependencies": [
     {
       "id": "component.icon-buttons",
@@ -50,6 +50,10 @@
     {
       "id": "tokens.space",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.6.3"
     }
   ]
 }

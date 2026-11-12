@@ -21,7 +21,7 @@ function renderTreeItemData(item = {}) {
       chevron-closed-icon=${item.chevronClosedIcon || nothing}
       open-label=${item.openLabel || nothing}
       close-label=${item.closeLabel || nothing}
-      icon=${item.icon === false ? 'false' : nothing}
+      icon=${item.icon === false ? 'false' : item.icon && item.icon !== true ? item.icon : nothing}
       ?open=${Boolean(item.open)}
       ?selected=${Boolean(item.selected)}
       ?active=${Boolean(item.active)}
@@ -49,7 +49,8 @@ export function renderTreeItemTemplate(context) {
     selected: context.selected,
     active: context.active,
     disabled: context.disabled,
-    icon: context.icon,
+    nodeIcon: context.nodeIcon,
+    folder: context.folder,
     openIcon: context.openIcon,
     closedIcon: context.closedIcon,
     chevronOpenIcon: context.chevronOpenIcon,

@@ -56,7 +56,7 @@ test('TR-14: a long name is one line with an ellipsis, its whole name the aria-l
   ]);
 
   // One line, cut: the element's rows only (class markup has no tooltip).
-  const rule14 = sheet.match(/sf-tree > \.sf-tree \.sf-tree-item-name \{([^}]*)\}/);
+  const rule14 = sheet.match(/sf-tree > \.sf-tree:not\(\.sf-tree--static\) \.sf-tree-item-name \{([^}]*)\}/);
   assert.ok(rule14, 'the name rule of the element rows');
   for (const declaration of ['overflow: hidden', 'white-space: nowrap', 'text-overflow: ellipsis', 'overflow-wrap: normal']) {
     assert.ok(rule14[1].includes(declaration), declaration);
@@ -83,15 +83,15 @@ test('TR-14: a long name is one line with an ellipsis, its whole name the aria-l
   assert.match(rule, /\{ name: 'tooltip' \}/);
 });
 
-test('tree versions: sf-tree 2.2.0, sf-tree-item 1.2.0', async () => {
+test('tree versions: sf-tree 2.3.0, sf-tree-item 1.3.0 (C102 on top of TR-5, TR-14)', async () => {
   const [tree, item, treeManifest, itemManifest] = await Promise.all([
     json('src/smart/tree/component.json'),
     json('src/smart/tree-item/component.json'),
     json('src/smart/tree/smart.manifest.json'),
     json('src/smart/tree-item/smart.manifest.json'),
   ]);
-  assert.equal(tree.version, '2.2.0');
-  assert.equal(item.version, '1.2.0');
-  assert.equal(treeManifest.version, '2.2.0');
-  assert.equal(itemManifest.version, '1.2.0');
+  assert.equal(tree.version, '2.3.0');
+  assert.equal(item.version, '1.3.0');
+  assert.equal(treeManifest.version, '2.3.0');
+  assert.equal(itemManifest.version, '1.3.0');
 });

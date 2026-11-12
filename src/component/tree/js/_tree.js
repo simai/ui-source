@@ -22,6 +22,12 @@ function isSmartTreeRoot(root) {
   return Boolean(root?.closest?.('sf-tree'));
 }
 
+// A static tree (.sf-tree--static, owner decision C102) is a structure shown
+// in text: a list, nothing to press, no Tab stop. It is never made a tree.
+function isStaticTree(root) {
+  return Boolean(root?.classList?.contains('sf-tree--static'));
+}
+
 function getItemContainer(item) {
   return item?.querySelector?.(':scope > .sf-tree-item-container') || null;
 }
@@ -178,7 +184,7 @@ function syncTreeItem(item) {
 }
 
 function syncTree(root) {
-  if (isSmartTreeRoot(root)) return;
+  if (isSmartTreeRoot(root) || isStaticTree(root)) return;
 
   root.querySelectorAll(TREE_ITEM_SELECTOR).forEach(syncTreeItem);
   const current = root.querySelector(`${TREE_ITEM_SELECTOR}[tabindex="0"]`);
@@ -328,7 +334,8 @@ function bindTree(root) {
   if (
     !(root instanceof HTMLElement) ||
     root.dataset[TREE_BOUND_FLAG] === '1' ||
-    isSmartTreeRoot(root)
+    isSmartTreeRoot(root) ||
+    isStaticTree(root)
   ) {
     return;
   }
@@ -425,7 +432,7 @@ const treeObserver = new MutationObserver((mutations) => {
       initTree(node);
 
       const tree = node.closest?.(TREE_SELECTOR);
-      if (tree && !isSmartTreeRoot(tree)) {
+      if (tree && !isSmartTreeRoot(tree) && !isStaticTree(tree)) {
         syncTree(tree);
       }
     });

@@ -73,11 +73,11 @@
     text-decoration: none;
   }
 
-  .sf-tree .sf-tree-item:not([aria-disabled='true']) > .sf-tree-item-container {
+  .sf-tree:not(.sf-tree--static) .sf-tree-item:not([aria-disabled='true']) > .sf-tree-item-container {
     cursor: pointer;
   }
 
-  .sf-tree .sf-tree-item:not([aria-disabled='true']):hover > .sf-tree-item-container {
+  .sf-tree:not(.sf-tree--static) .sf-tree-item:not([aria-disabled='true']):hover > .sf-tree-item-container {
     background: var(--sf-surface-container-hover);
     /* A translucent fill, as the selected row: a tonal badge keeps its tone
        and an anchored badge's ring is the row's colour (C43 D4). */
@@ -141,6 +141,163 @@
     height: var(--sf-icon--height, var(--sf-icon-size-3));
     pointer-events: none;
     width: var(--sf-icon--width, var(--sf-icon-size-3));
+  }
+
+  /* A second text after the name (C102 §7 items 7-8): a comment, a count, a
+     size, at the row's end in the variant ink. It keeps its width -- a
+     count or a size is short -- and the name is the part that is cut. */
+  .sf-tree .sf-tree-item-note {
+    flex: none;
+    color: var(--sf-on-surface-variant);
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* A highlighted line (mark) and the «…» line (more). */
+  .sf-tree .sf-tree-item--mark > .sf-tree-item-container > .sf-tree-item-name {
+    font-weight: var(--sf-font-weight-bold);
+  }
+
+  .sf-tree .sf-tree-item--more > .sf-tree-item-container {
+    color: var(--sf-on-surface-variant);
+  }
+
+  /* A hidden page of a page tree (C102 item 8): greyed, with its word. It is
+     still a page that can be chosen and edited, so it is not disabled. */
+  .sf-tree .sf-tree-item--hidden > .sf-tree-item-container > .sf-tree-item-name {
+    color: var(--sf-on-surface-variant);
+  }
+
+  /* selection="check" (C102 item 9): the Framework's check box in the row.
+     The row is its label and takes the press, so the box lets it through. */
+  .sf-tree .sf-tree-check {
+    flex: none;
+    align-items: center;
+    pointer-events: none;
+  }
+
+  /* The rows of a lazy branch (C102 item 6): «Загрузка…» with the spinner in
+     the icon's place, and the error with its retry button. */
+  .sf-tree .sf-tree-item-spinner {
+    --sf-loader-svg-width: var(--sf-icon-size-3);
+    --sf-loader-svg-height: var(--sf-icon-size-3);
+    display: inline-flex;
+    flex: none;
+    inline-size: var(--sf-icon-size-3);
+    block-size: var(--sf-icon-size-3);
+    color: var(--sf-primary);
+  }
+
+  .sf-tree .sf-tree-item-spinner :is(.sf-loader-container, .sf-loader--loading-indicator, .sf-loader-svg) {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .sf-tree .sf-tree-item--loading > .sf-tree-item-container,
+  .sf-tree .sf-tree-item--error > .sf-tree-item-container {
+    color: var(--sf-on-surface-variant);
+  }
+
+  .sf-tree .sf-tree-item-retry {
+    flex: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--sf-primary);
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  /* Reorder inside the tree (C102 §7 item 11): where a dragged entry would
+     land -- a line of the focus width along the top or the bottom of a row.
+     Into a row (the new parent) is the drop target's own look
+     (data-sf-drop-target, the tree-item sheet). */
+  .sf-tree .sf-tree-item[data-sf-drop-position='before'] > .sf-tree-item-container::before,
+  .sf-tree .sf-tree-item[data-sf-drop-position='after'] > .sf-tree-item-container::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    block-size: var(--sf-focus--width);
+    background-color: var(--sf-primary);
+    pointer-events: none;
+  }
+
+  .sf-tree .sf-tree-item[data-sf-drop-position='before'] > .sf-tree-item-container::before {
+    inset-block-start: 0;
+  }
+
+  .sf-tree .sf-tree-item[data-sf-drop-position='after'] > .sf-tree-item-container::before {
+    inset-block-end: 0;
+  }
+
+  /* The static tree (C102 item 5, §7 item 7): a structure shown in text, for
+     documentation -- Docara's :::tree, a project's files. List semantics
+     (ul/li), nothing to press, no Tab stop, no hover; rows are text lines,
+     not controls; names in the code face; a note after the name wraps under
+     it when the line is short. sf-tree static draws it; Docara writes the
+     same class markup. The step is the icon and the gap, the column the
+     static tree has instead of a chevron. */
+  .sf-tree.sf-tree--static {
+    --sf-tree--indent: var(--sf-tree-indent, calc(var(--sf-icon-size-3) + var(--sf-tree-item-gap, var(--sf-space-1\/3))));
+    gap: 0;
+  }
+
+  .sf-tree.sf-tree--static .sf-tree-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sf-tree.sf-tree--static .sf-tree-group .sf-tree-group {
+    padding-inline-start: var(--sf-tree--indent);
+  }
+
+  .sf-tree.sf-tree--static .sf-tree-item {
+    gap: 0;
+  }
+
+  .sf-tree.sf-tree--static .sf-tree-item > .sf-tree-item-container {
+    flex-wrap: wrap;
+    column-gap: var(--sf-tree-item-gap, var(--sf-space-1\/3));
+    row-gap: 0;
+    min-block-size: var(--sf-text-height-1);
+    padding: 0;
+    cursor: auto;
+  }
+
+  /* The icon keeps its glyph size and stands a text line tall, so a row is
+     the name's line; .sf-icon sizes itself from these (unlayered). */
+  .sf-tree.sf-tree--static .sf-tree-node-icon {
+    --sf-icon--width: var(--sf-icon-size-3);
+    --sf-icon--height: var(--sf-text-height-1);
+    --sf-icon--font-size: var(--sf-icon-size-3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .sf-tree.sf-tree--static .sf-tree-item .sf-tree-item-name {
+    flex: 0 1 auto;
+    font-family: var(--sf-code-font-family, var(--sf-mono));
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1);
+    overflow-wrap: anywhere;
+  }
+
+  .sf-tree.sf-tree--static .sf-tree-item-note {
+    flex: 0 1 auto;
+    min-inline-size: 0;
+    line-height: var(--sf-text-height-1);
+    white-space: normal;
   }
 }
 

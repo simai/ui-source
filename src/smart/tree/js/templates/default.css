@@ -10,8 +10,9 @@
      took the row off the ladder (88 px in a 12rem column), and an unbroken
      file name ran out of the column. The tree gives a cut name's row its
      whole name as a tooltip and as its aria-label (index.js measureCut). Only
-     the element's rows: class markup has no one to give it the tooltip. */
-  sf-tree > .sf-tree .sf-tree-item-name {
+     the element's rows: class markup has no one to give it the tooltip. A
+     static tree's names wrap: it is text on a page (C102). */
+  sf-tree > .sf-tree:not(.sf-tree--static) .sf-tree-item-name {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

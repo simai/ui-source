@@ -11,9 +11,23 @@ import { html, nothing } from 'lit';
 // (simai/ui-source#43).
 //
 // row:
-//   id, value, label, href, target, rel, kind, open, selected, active,
-//   disabled, icon, openIcon, closedIcon, chevronOpenIcon, chevronClosedIcon,
-//   openLabel, closeLabel, hasChildren
+//   id, value, label, href, target, rel, open, selected, active, disabled,
+//   openIcon, closedIcon, chevronOpenIcon, chevronClosedIcon, openLabel,
+//   closeLabel, hasChildren
+//   nodeIcon                   the type icon the caller chose (core
+//                              file-types: icon, kind, extension, place);
+//                              '' draws none (C102)
+//   folder                     a branch or an empty folder: the row's class
+//   note                       a second text after the name: a comment, a
+//                              count, a size (C102 §7 items 7-8)
+//   mark, more                 a highlighted line; the «…» line
+//   pageHidden, hiddenWord     a hidden page, greyed, with its word (C102 8)
+//   check                      'true' | 'false' | 'mixed': a check box in the
+//                              row and aria-checked (selection="check")
+//   placeholder, spinner       'loading' | 'error': the row a lazy branch
+//                              shows while its children load or failed
+//                              (C102 6); spinner is the Framework's spinner
+//   retryLabel, onRetry        the error row's button
 //   level, setsize, posinset   aria-level and the rest, for a flat tree
 //   tabStop                    the one row Tab reaches
 //   tipId                      a name cut to one line (TR-14): the id of the
@@ -54,25 +68,75 @@ function renderName(row) {
   return row.content !== undefined && row.content !== nothing ? row.content : nothing;
 }
 
+// A check box of the Framework's class markup (component.checkbox): its box
+// and mark only -- the row is the label, the press and the keys are the
+// tree's, so the box is hidden from assistive technology and the treeitem
+// says aria-checked.
+function renderCheck(row) {
+  if (!row.check) return nothing;
+  const on = row.check === 'true';
+  const mixed = row.check === 'mixed';
+  return html`<span class="sf-checkbox sf-checkbox--size-1 sf-tree-check flex" aria-hidden="true"><span class="sf-checkbox-box flex"><input
+      type="checkbox" tabindex="-1" .checked=${on} .indeterminate=${mixed} ?disabled=${row.disabled}><i class="sf-icon" aria-hidden="true">${mixed ? 'remove' : on ? 'check' : ''}</i></span></span>`;
+}
+
+function renderNote(row) {
+  const word = row.pageHidden && row.hiddenWord
+    ? html`<span class="sf-tree-item-note sf-tree-item-hidden-word">${row.hiddenWord}</span>`
+    : nothing;
+  const note = row.note ? html`<span class="sf-tree-item-note">${row.note}</span>` : nothing;
+  return html`${word}${note}`;
+}
+
+// The row a lazy branch shows under itself: «Загрузка…» with the spinner, or
+// the error with its retry button (C102 item 6).
+function renderPlaceholder(row) {
+  const level = row.level ? String(row.level) : nothing;
+  const error = row.placeholder === 'error';
+  return html`<div
+      class=${joinClasses('sf-tree-item flex flex-col', `sf-tree-item--${row.placeholder}`)}
+      style=${row.level ? `--sf-tree-level:${row.level}` : nothing}
+      role="treeitem"
+      tabindex=${row.tabStop ? '0' : '-1'}
+      aria-level=${level}
+      aria-setsize="1"
+      aria-posinset="1"
+      aria-busy=${error ? nothing : 'true'}
+      aria-disabled=${error ? nothing : 'true'}
+      data-sf-entry=${row.id}
+      data-sf-tree-level=${level}
+    ><div class="sf-tree-item-container flex items-cross-center relative"><span class="sf-tree-toggle-spacer" aria-hidden="true"></span>${error
+        ? renderIcon('error', 'sf-tree-node-icon')
+        : html`<span class="sf-tree-node-icon sf-tree-item-spinner" aria-hidden="true">${row.spinner ?? nothing}</span>`}<span class="sf-tree-item-name">${row.label}</span>${error
+        ? html`<button type="button" tabindex="-1" class="sf-tree-item-retry" @click=${row.onRetry}>${row.retryLabel}</button>`
+        : nothing}</div></div>`;
+}
+
 export function renderTreeRow(row, children = nothing) {
+  if (row.placeholder) return renderPlaceholder(row);
   const isFile = row.kind === 'file';
   const canToggle = !isFile && Boolean(row.hasChildren);
   const open = canToggle && Boolean(row.open);
+  const folder = row.folder ?? canToggle;
   const itemClasses = joinClasses(
     'sf-tree-item flex flex-col',
-    row.kind ? `sf-tree-item--${row.kind}` : '',
+    folder ? 'sf-tree-item--folder' : 'sf-tree-item--file',
     open ? 'open' : '',
     canToggle ? 'has-children' : '',
     row.selected || row.active ? 'active' : '',
     row.disabled ? 'disabled' : '',
+    row.mark ? 'sf-tree-item--mark' : '',
+    row.more ? 'sf-tree-item--more' : '',
+    row.pageHidden ? 'sf-tree-item--hidden' : '',
     row.rootClass,
     row.itemClass,
   );
   const containerClasses = joinClasses('sf-tree-item-container flex items-cross-center relative', row.containerClass);
   const nameClasses = joinClasses('sf-tree-item-name', row.nameClass);
-  const nodeIcon = isFile ? 'draft' : open ? row.openIcon : row.closedIcon;
+  const nodeIcon = row.more ? 'more_horiz' : row.nodeIcon;
   const chevronIcon = open ? row.chevronOpenIcon : row.chevronClosedIcon;
   const level = row.level ? String(row.level) : nothing;
+  const checked = row.check ? row.check : nothing;
 
   return html`<div
       class=${itemClasses}
@@ -83,19 +147,21 @@ export function renderTreeRow(row, children = nothing) {
       aria-setsize=${row.setsize ? String(row.setsize) : nothing}
       aria-posinset=${row.posinset ? String(row.posinset) : nothing}
       aria-expanded=${canToggle ? String(open) : nothing}
-      aria-selected=${row.selection === 'none' ? nothing : String(Boolean(row.selected))}
+      aria-selected=${row.selection === 'none' || row.check ? nothing : String(Boolean(row.selected))}
+      aria-checked=${checked}
       aria-current=${row.active ? 'page' : nothing}
       aria-disabled=${row.disabled ? 'true' : nothing}
       aria-label=${row.tipId && row.label ? row.label : nothing}
       data-tooltip=${row.tipId && row.label ? row.tipId : nothing}
-      data-open-icon=${row.openIcon || nothing}
-      data-closed-icon=${row.closedIcon || nothing}
+      data-open-icon=${folder ? row.openIcon || nothing : nothing}
+      data-closed-icon=${folder ? row.closedIcon || nothing : nothing}
       data-value=${row.value || nothing}
       data-sf-entry=${row.id ?? nothing}
       data-sf-tree-level=${level}
+      draggable=${row.draggable ? 'true' : nothing}
     ><div class=${containerClasses}>${canToggle
         ? html`<button type="button" tabindex="-1" class="sf-icon-button sf-tree-toggle" ?disabled=${row.disabled} aria-expanded=${String(open)} aria-label=${open ? row.closeLabel : row.openLabel} @click=${row.onToggle}>${renderIcon(chevronIcon, 'sf-tree-chevron')}</button>`
-        : html`<span class="sf-tree-toggle-spacer" aria-hidden="true"></span>`}${row.icon === false ? nothing : renderIcon(nodeIcon, 'sf-tree-node-icon')}${row.href && !row.disabled
+        : html`<span class="sf-tree-toggle-spacer" aria-hidden="true"></span>`}${renderCheck(row)}${renderIcon(nodeIcon, 'sf-tree-node-icon')}${row.href && !row.disabled
         ? html`<a class=${nameClasses} href=${row.href} target=${row.target || nothing} rel=${row.rel || nothing} tabindex="-1" @click=${row.onName}>${renderName(row)}</a>`
-        : html`<span class=${nameClasses} @click=${row.onName}>${renderName(row)}</span>`}${renderTip(row)}</div>${children}</div>`;
+        : html`<span class=${nameClasses} @click=${row.onName}>${renderName(row)}</span>`}${renderNote(row)}${renderTip(row)}</div>${children}</div>`;
 }
