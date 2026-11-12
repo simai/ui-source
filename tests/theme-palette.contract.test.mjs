@@ -51,26 +51,27 @@ test('another colour moves the brand palettes; a theme holds and writes no statu
 
 // Information is a status, not the brand (owner, 2026-10-21, simai/ui-source#14):
 // derived from the source colour, info went red under a red primary and read as
-// danger. Since C17 as amended 2026-11-11 it is the static hue sky (blue read
-// as the Framework's own primary): these are sky's tones, and no brand colour
-// moves them.
+// danger. It is the static hue blue (C17; C100, 2026-11-12: info stays blue,
+// not sky): these are the owner-approved tones of #005bbe, and no brand
+// colour moves them, a blue one included (C90).
 const INFO_PALETTE = Object.freeze({
-  98: '#f5faff', 95: '#e3f3ff', 90: '#c4e7ff', 85: '#a2dcff', 80: '#7cd0ff', 70: '#00b7f7',
-  60: '#009bd1', 50: '#0080ad', 40: '#00668a', 35: '#005979', 30: '#004c69', 25: '#004059',
-  20: '#00344a', 15: '#00293b', 10: '#001e2c', 5: '#00131d',
+  98: '#f9f9ff', 95: '#edf0ff', 90: '#d7e2ff', 85: '#c2d4ff', 80: '#acc7ff', 70: '#7eabff',
+  60: '#538ff5', 50: '#3375d9', 40: '#005bbe', 35: '#0050a8', 30: '#004492', 25: '#00397c',
+  20: '#002f67', 15: '#002453', 10: '#001a40', 5: '#00102c',
 });
 
-test('info is the static hue sky under every brand colour (C17 as amended 2026-11-11, C90), and stays far from error', () => {
+test('info is the static hue blue, the fixed palette of #005bbe, under every brand colour (C17, C90, C100), and stays far from error', () => {
   const shipped = readFileSync(join(root, 'src/core/scss/_sf_figma_colors_variables.scss'), 'utf8');
-  const sky = staticPalette()[STATUS_HUES.info];
+  assert.equal(STATUS_HUES.info, 'blue');
+  const blue = staticPalette()[STATUS_HUES.info];
   for (const tone of THEME_TONES) {
-    assert.equal(sky.tones[tone], INFO_PALETTE[tone], `sky ${tone}`);
-    // Core's info primitive is var() of sky's, and the resolved value is sky's.
-    assert.match(shipped, new RegExp(`--sf-info-${tone}: var\\(--sf-sky-${tone}\\);`, 'u'));
+    assert.equal(blue.tones[tone], INFO_PALETTE[tone], `blue ${tone}`);
+    // Core's info primitive is var() of blue's, and the resolved value is blue's.
+    assert.match(shipped, new RegExp(`--sf-info-${tone}: var\\(--sf-blue-${tone}\\);`, 'u'));
     assert.match(primitives, new RegExp(`--sf-info-${tone}: ${INFO_PALETTE[tone]};`, 'u'));
   }
   // No brand colour moves it: no theme writes an info primitive at all.
-  const primaries = {red: '#b3261e', green: '#2e7d32', yellow: '#f9a825', violet: '#6a1b9a', blue: DEFAULT_THEME_COLOR, sky: '#00668a'};
+  const primaries = {red: '#b3261e', green: '#2e7d32', yellow: '#f9a825', violet: '#6a1b9a', blue: DEFAULT_THEME_COLOR, sky: '#00668a', navy: '#1e3a8a'};
   for (const [name, color] of Object.entries(primaries)) {
     const variables = themeVariables(themeFromColor(color));
     assert.deepEqual(Object.keys(variables).filter((key) => key.startsWith('--sf-info-')), [], name);
@@ -163,7 +164,10 @@ test('themeChecks says what a person should know about a colour (TG-04)', async 
   assert.deepEqual(codes(DEFAULT_THEME_COLOR), []);
   assert.deepEqual(codes('#ffd600'), [{code: 'adjusted', level: 'warning', from: '#ffd600', to: '#705d00', lighter: true}]);
   assert.deepEqual(codes('#bb171d'), [{code: 'close-to-status', level: 'warning', status: 'error', hue: 'red'}]);
-  assert.deepEqual(codes('#00668a').map((check) => check.status), ['info']);
+  // Info is blue like the Framework's own colour: a blue brand colour is not
+  // warned of (C90, C100), while a vivid green one still is.
+  assert.deepEqual(codes('#1e5bd6').filter((check) => check.code === 'close-to-status'), []);
+  assert.deepEqual(codes('#2e7d32').map((check) => check.status), ['success']);
   assert.deepEqual(codes('#111111').map((check) => check.code), ['adjusted', 'grey']);
   // A colour made from a hue and a chroma has no hex to be adjusted from.
   assert.equal(themeChecks(themeFromHct({hue: 96, chroma: 85})).some((check) => check.code === 'adjusted'), false);
@@ -198,7 +202,7 @@ test('a status override is ignored and a status palette still reads; noted in SF
     themeFromHct({hue: 265, chroma: 85}, {warning: {chroma: 10}});
     const theme = themeFromColor('#2e7d32');
     for (let run = 0; run < 2; run += 1) assert.deepEqual(theme.palettes.error.tones, statics.red.tones);
-    assert.deepEqual(theme.palettes.info.tones, statics.sky.tones);
+    assert.deepEqual(theme.palettes.info.tones, statics.blue.tones);
     assert.deepEqual(Object.keys(theme.palettes), ['primary', 'secondary', 'tertiary', 'neutral']);
     assert.doesNotMatch(JSON.stringify(theme), /"error"/u);
     theme.palettes.error.tones[40] = '#000000';

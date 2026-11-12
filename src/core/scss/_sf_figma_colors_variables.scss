@@ -179,47 +179,47 @@
     --sf-primary-90--alfa-24: #d7e2ff3d;
     --sf-primary-85: #c2d5ff;
     --sf-primary-80: #acc7ff;
-    /* Information is a status with its own palette, not the brand colour
-       (owner, 2026-10-21, simai/ui-source#14): it is the static hue sky (HCT
-       hue 235, chroma 60; owner decision C17 as amended 2026-11-11 -- info
-       is not blue, or it reads as the Framework's own primary, #005bbe).
-       theme-palette.js writes the same palette (STATUS_HUES). */
-    --sf-info-98: var(--sf-sky-98);
-    --sf-info-95: var(--sf-sky-95);
-    --sf-info-90: var(--sf-sky-90);
-    --sf-info-90--alfa-4: var(--sf-sky-90--alfa-4);
-    --sf-info-90--alfa-8: var(--sf-sky-90--alfa-8);
-    --sf-info-90--alfa-12: var(--sf-sky-90--alfa-12);
-    --sf-info-90--alfa-24: var(--sf-sky-90--alfa-24);
-    --sf-info-85: var(--sf-sky-85);
-    --sf-info-80: var(--sf-sky-80);
-    --sf-info-70: var(--sf-sky-70);
-    --sf-info-60: var(--sf-sky-60);
-    --sf-info-50: var(--sf-sky-50);
-    --sf-info-50--alfa-4: var(--sf-sky-50--alfa-4);
-    --sf-info-50--alfa-8: var(--sf-sky-50--alfa-8);
-    --sf-info-50--alfa-12: var(--sf-sky-50--alfa-12);
-    --sf-info-50--alfa-16: var(--sf-sky-50--alfa-16);
-    --sf-info-50--alfa-20: var(--sf-sky-50--alfa-20);
-    --sf-info-50--alfa-24: var(--sf-sky-50--alfa-24);
-    --sf-info-50--alfa-28: var(--sf-sky-50--alfa-28);
-    --sf-info-50--alfa-32: var(--sf-sky-50--alfa-32);
-    --sf-info-40: var(--sf-sky-40);
-    --sf-info-35: var(--sf-sky-35);
-    --sf-info-30: var(--sf-sky-30);
-    --sf-info-25: var(--sf-sky-25);
-    --sf-info-20: var(--sf-sky-20);
-    --sf-info-20--alfa-4: var(--sf-sky-20--alfa-4);
-    --sf-info-20--alfa-8: var(--sf-sky-20--alfa-8);
-    --sf-info-20--alfa-12: var(--sf-sky-20--alfa-12);
-    --sf-info-20--alfa-16: var(--sf-sky-20--alfa-16);
-    --sf-info-20--alfa-20: var(--sf-sky-20--alfa-20);
-    --sf-info-20--alfa-24: var(--sf-sky-20--alfa-24);
-    --sf-info-20--alfa-64: var(--sf-sky-20--alfa-64);
-    --sf-info-20--alfa-80: var(--sf-sky-20--alfa-80);
-    --sf-info-15: var(--sf-sky-15);
-    --sf-info-10: var(--sf-sky-10);
-    --sf-info-5: var(--sf-sky-5);
+    /* Information is a status with its own palette of #005bbe, not the brand
+       colour (owner, 2026-10-21, simai/ui-source#14). These primitives used to
+       equal primary's, so the theme generator told information in red under a
+       red brand colour. The owner approved this HCT tonal palette (hue 265.1,
+       chroma 58.6) whole, and theme-palette.js writes the same one. */
+    --sf-info-98: var(--sf-blue-98);
+    --sf-info-95: var(--sf-blue-95);
+    --sf-info-90: var(--sf-blue-90);
+    --sf-info-90--alfa-4: var(--sf-blue-90--alfa-4);
+    --sf-info-90--alfa-8: var(--sf-blue-90--alfa-8);
+    --sf-info-90--alfa-12: var(--sf-blue-90--alfa-12);
+    --sf-info-90--alfa-24: var(--sf-blue-90--alfa-24);
+    --sf-info-85: var(--sf-blue-85);
+    --sf-info-80: var(--sf-blue-80);
+    --sf-info-70: var(--sf-blue-70);
+    --sf-info-60: var(--sf-blue-60);
+    --sf-info-50: var(--sf-blue-50);
+    --sf-info-50--alfa-4: var(--sf-blue-50--alfa-4);
+    --sf-info-50--alfa-8: var(--sf-blue-50--alfa-8);
+    --sf-info-50--alfa-12: var(--sf-blue-50--alfa-12);
+    --sf-info-50--alfa-16: var(--sf-blue-50--alfa-16);
+    --sf-info-50--alfa-20: var(--sf-blue-50--alfa-20);
+    --sf-info-50--alfa-24: var(--sf-blue-50--alfa-24);
+    --sf-info-50--alfa-28: var(--sf-blue-50--alfa-28);
+    --sf-info-50--alfa-32: var(--sf-blue-50--alfa-32);
+    --sf-info-40: var(--sf-blue-40);
+    --sf-info-35: var(--sf-blue-35);
+    --sf-info-30: var(--sf-blue-30);
+    --sf-info-25: var(--sf-blue-25);
+    --sf-info-20: var(--sf-blue-20);
+    --sf-info-20--alfa-4: var(--sf-blue-20--alfa-4);
+    --sf-info-20--alfa-8: var(--sf-blue-20--alfa-8);
+    --sf-info-20--alfa-12: var(--sf-blue-20--alfa-12);
+    --sf-info-20--alfa-16: var(--sf-blue-20--alfa-16);
+    --sf-info-20--alfa-20: var(--sf-blue-20--alfa-20);
+    --sf-info-20--alfa-24: var(--sf-blue-20--alfa-24);
+    --sf-info-20--alfa-64: var(--sf-blue-20--alfa-64);
+    --sf-info-20--alfa-80: var(--sf-blue-20--alfa-80);
+    --sf-info-15: var(--sf-blue-15);
+    --sf-info-10: var(--sf-blue-10);
+    --sf-info-5: var(--sf-blue-5);
     --sf-primary-70: #7eabff;
     --sf-primary-60: #488fff;
     --sf-primary-50: #0073ed;

@@ -11,7 +11,7 @@
     "src/component/theme-palette/js/index.js",
     "src/component/theme-palette/rule.js"
   ],
-  "content_sha256": "3588de01e1ab9ee1a700755a67abc43ac0b05f5a8b2a4c71e942f69955190953",
+  "content_sha256": "086dc52e49b099e1e1e97b5f1eeb5ac1ed047d0c741498596b652c07de65399c",
   "dependencies": [
     {
       "id": "core.runtime",

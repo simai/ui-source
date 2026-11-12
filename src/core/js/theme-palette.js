@@ -9,7 +9,7 @@
 // change. The four status palettes are not the theme's: core declares them as
 // var() of the static hues (C17), and a theme that wrote them as literal
 // colours froze them at the hues of the day it was made (TG-01, 2026-11-11:
-// info stayed blue on a themed page after core moved it to sky).
+// a themed page kept its old status tones whatever core declared).
 //
 // The palettes are made the way the SIMAI generator makes them (ui-doc,
 // fundamentals/color/color-generator), on Google's HCT colour space: the chosen
@@ -41,11 +41,12 @@ export const THEME_TONES = Object.freeze([98, 95, 90, 85, 80, 70, 60, 50, 40, 35
 // the same generator as the theme, so every hue has the same sixteen tones and
 // the same translucent steps, and no theme colour moves them. Every colour in
 // the product comes from this palette or from the dynamic one the theme makes
-// (C18). The status hues keep their numbers, byte for byte: red is error,
-// amber warning, green success, sky info. Information is a status, not the
-// brand (owner, 2026-10-21, simai/ui-source#14), and not blue either: blue
-// reads as the Framework's own primary (C17 as amended by the owner
-// 2026-11-11), so info is sky. Blue is the fixed palette of #005bbe, HCT hue 265.1 at chroma 58.6 -- the nearest tenth above #005bbe's
+// (C18). The four status hues keep their numbers, byte for byte: red is error,
+// amber warning, green success, blue info. Information is a status, not the
+// brand (owner, 2026-10-21, simai/ui-source#14), and it stays blue (owner
+// decision C100, 2026-11-12: blue reads best as information; the sky amendment
+// of 2026-11-11 is withdrawn), with no shift on a site whose brand colour is
+// blue (C90). Blue is the fixed palette of #005bbe, HCT hue 265.1 at chroma 58.6 -- the nearest tenth above #005bbe's
 // own 58.5, the one that puts tone 40 on #005bbe itself. Every added hue is
 // chroma 60, brown 30 and gray 0. No hue is shifted toward the theme colour
 // (research 3.3): a hue keeps its name on every site.
@@ -76,7 +77,7 @@ export const STATIC_HUE_NAMES = Object.freeze(Object.keys(STATIC_HUES));
 
 // The hue each status is. Core's --sf-<status>-<tone> are var() of these
 // hues' primitives; a theme does not write them (TG-01).
-export const STATUS_HUES = Object.freeze({error: 'red', warning: 'amber', success: 'green', info: 'sky'});
+export const STATUS_HUES = Object.freeze({error: 'red', warning: 'amber', success: 'green', info: 'blue'});
 
 // The translucent steps of every static hue: the status steps, tone 50 at the
 // state and fill families (4 to 32), tone 90 at 4, 8, 12 and 24, and tone 20
@@ -108,7 +109,7 @@ export const THEME_RULES = Object.freeze({
   // greys out of a hue it barely has.
   neutral: {hue: (source) => source.hue, chroma: (source) => Math.min(NEUTRAL_CHROMA, source.chroma)},
   // No status rule: the four statuses are four hues of the static palette
-  // (C17: error red, warning amber, success green, info sky), declared by core
+  // (C17, C100: error red, warning amber, success green, info blue), declared by core
   // and moved by no theme (TG-01).
 });
 
@@ -326,6 +327,11 @@ const hueDistance = (a, b) => {
 // status hue reads as that status; under chroma 8 the accent is a grey.
 export const THEME_CHECKS = Object.freeze({contrast: 4.5, light: 58, dark: 25, statusHue: 16, statusChroma: 40, grey: 8});
 
+// The statuses a brand colour is checked against. Info is not one of them
+// (C90, C100): info is blue like the Framework's own colour, and a blue brand
+// beside a blue information block is the intended look, not a warning.
+const CHECKED_STATUSES = Object.freeze(['error', 'warning', 'success']);
+
 // The light scheme's --sf-on-primary is --sf-white: tone 100 of any palette.
 const ON_PRIMARY_LIGHT = hexFromArgb(TonalPalette.fromHueAndChroma(0, 0).tone(100));
 
@@ -336,8 +342,10 @@ const ON_PRIMARY_LIGHT = hexFromArgb(TonalPalette.fromHueAndChroma(0, 0).tone(10
  * - {code: 'adjusted', level: 'warning', from, to, lighter}: the colour is
  *   light or dark, and its buttons get tone 40 (`to`), not the colour itself;
  * - {code: 'close-to-status', level: 'warning', status, hue}: the colour is
- *   near a status hue (error red, warning amber, success green, info sky),
- *   which no theme moves (C17, C90);
+ *   near the hue of error (red), warning (amber) or success (green), which
+ *   no theme moves (C17). Not info: info is blue, the Framework's own colour,
+ *   and stays blue beside a blue brand colour with nothing to warn of (C90,
+ *   C100);
  * - {code: 'grey', level: 'notice'}: the colour is nearly grey, so are its
  *   accents.
  * The ratios are rounded to a tenth. A theme made from a hue and a chroma
@@ -357,7 +365,8 @@ export function themeChecks(theme) {
     checks.push({code: 'adjusted', level: 'warning', from: source.hex, to: primary[40], lighter: source.tone > THEME_CHECKS.light});
   }
   if (source.chroma > THEME_CHECKS.statusChroma) {
-    for (const [status, hueName] of Object.entries(STATUS_HUES)) {
+    for (const status of CHECKED_STATUSES) {
+      const hueName = STATUS_HUES[status];
       if (hueDistance(source.hue, STATIC_HUES[hueName].hue) < THEME_CHECKS.statusHue) checks.push({code: 'close-to-status', level: 'warning', status, hue: hueName});
     }
   }
