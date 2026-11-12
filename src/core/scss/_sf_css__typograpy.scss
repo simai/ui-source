@@ -270,9 +270,40 @@
     color: var(--sf-code-color, var(--sf-code--color));
     font-family: var(--sf-code-font-family, var(--sf-code--font-family));
     font-size: var(--sf-code-font-size, var(--sf-code--font-size));
-    // A name is one word: sf-button-press never parts at its hyphens. The
-    // line breaks before the code instead (owner, 2026-11-07, R024).
-    white-space: nowrap;
+    // Code stays inline (a box of its own would take the line's no-break
+    // with the punctuation around it and grow the line) and wraps as text
+    // does: at its spaces and hyphens. A run that cannot fit a line of its
+    // own -- a URL, a token -- breaks where it must (C10, 2026-11-10), so it
+    // never runs out of a narrow column. break-word, not anywhere, in
+    // running text (a cell takes anywhere, below).
+    overflow-wrap: break-word;
+    // The code's own line box stays inside the text line: inheriting the
+    // text line (24px at 16px text) around the mono face's baseline, it rose
+    // a pixel above the strut whenever Inter was ready at the first layout,
+    // and every line with code grew 24 -> 25 (C10, 2026-11-11). The plate is
+    // the font's box with its padding, so this does not change how it looks.
+    line-height: 1;
+  }
+
+  // In a table cell a long value -- a JSON default, a rule address -- may
+  // break anywhere, so it lowers the cell's min-content and never widens the
+  // table; the table's auto layout gives the room to the column that needs
+  // it, and a label column keeps its words (owner decision C10, variant A,
+  // 2026-11-11). Text the Framework draws in a cell (a class of its own, a
+  // block of code) is left alone, as in running text.
+  :where(td, th) code:where(:not([class*='sf-'], [class*='sf-'] > code, pre code, .sf-highlight code, .sf-code-surface code)) {
+    overflow-wrap: anywhere;
+  }
+
+  // The words of a cell are whole: the table's `word-break: break-word`
+  // (above) lowered every cell's min-content to a letter, so the auto layout
+  // squeezed a label column below its longest word. A cell keeps its words
+  // and breaks a word only when it cannot fit the column it was given
+  // (break-word, which does not lower min-content); room for a long value
+  // comes from the code rule above (C10 variant A, 2026-11-11).
+  :where(td, th) {
+    word-break: normal;
+    overflow-wrap: break-word;
   }
 
   // Copy on click, only where a container asks for it with
