@@ -1,10 +1,13 @@
 {
   "title": "Datepicker",
   "runtime": {
+    "choose-end": "choose the end",
     "choose-month": "Choose a month",
+    "choose-start": "Choose the start of the period",
     "choose-year": "Choose a year",
     "custom-range": "Custom range",
     "day-off": "day off",
+    "done": "Done",
     "earlier-hour": "Previous hour",
     "earlier-minute": "Previous minutes",
     "hours": "Hours",
@@ -13,6 +16,7 @@
     "minutes": "Minutes",
     "next-month": "Next month",
     "next-years": "Next years",
+    "period": "Period",
     "preset-last-month": "Last month",
     "preset-last30-days": "Last 30 days",
     "preset-last7-days": "Last 7 days",

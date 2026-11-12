@@ -190,6 +190,105 @@
     line-height: var(--sf-text-height-1);
   }
 
+  /* The period on a phone (owner decision C62; ui-control prototypes/
+     datepicker.html#lenta): a ribbon of months in the Framework's bottom sheet
+     (sf-drawer placement="bottom" snap="full"). This box is the sheet's
+     content: no plate, edge or shadow of its own -- the sheet is the surface,
+     and the box takes the sheet's colour (the drawer's own variable, read, not
+     set) so the pinned rows over the ribbon are opaque. Three rows: the
+     weekdays pinned at the top, the ribbon that scrolls, the period and
+     «Готово» pinned at the bottom. The days are the grid's own cells at the
+     control height of size 2, a finger's target. The sheet's body keeps a
+     step 3 under its content; the box gives back all of it but a step 1. */
+  .sf-datepicker.sf-datepicker--sheet {
+    --sf-datepicker--background-color: var(--sf-drawer-background, var(--sf-surface-popup));
+    --sf-datepicker--box-shadow: none;
+    --sf-datepicker--border-top-left-radius: var(--sf-0);
+    --sf-datepicker--border-top-right-radius: var(--sf-0);
+    --sf-datepicker--border-bottom-left-radius: var(--sf-0);
+    --sf-datepicker--border-bottom-right-radius: var(--sf-0);
+    --sf-datepicker--padding-top: var(--sf-0);
+    --sf-datepicker--padding-bottom: var(--sf-0);
+    --sf-datepicker--padding-left: var(--sf-0);
+    --sf-datepicker--padding-right: var(--sf-0);
+    --sf-datepicker-day--height: var(--sf-ui-2--control-height);
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-block-size: 0;
+    inline-size: auto;
+    margin-block-end: calc(var(--sf-space-1) - var(--sf-space-3));
+  }
+  .sf-datepicker .sf-datepicker-sheet-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    flex: none;
+    border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+  }
+  .sf-datepicker .sf-datepicker-ribbon {
+    position: relative;
+    flex: 1 1 auto;
+    min-block-size: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    /* The component places the ribbon itself (the month it opens on, months
+       added above the one in view): the browser's own anchoring would move it
+       a second time, and a smooth scroll set on the page would animate what
+       must be instant. */
+    overflow-anchor: none;
+    scroll-behavior: auto;
+    touch-action: pan-y;
+    padding-block-end: var(--sf-space-1\/2);
+  }
+  .sf-datepicker .sf-datepicker-ribbon-month + .sf-datepicker-ribbon-month {
+    margin-block-start: var(--sf-space-1\/2);
+  }
+  /* The month's title rides at the top while its month is in view, then the
+     next one pushes it out. Over the days' focus ring (z-index 1). */
+  .sf-datepicker .sf-datepicker-ribbon-title {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--sf-z-index-2);
+    display: flex;
+    align-items: center;
+    block-size: var(--sf-ui-1--control-height);
+    background-color: var(--sf-datepicker--background-color, var(--sf-surface-popup));
+    color: var(--sf-on-surface);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1);
+    font-weight: var(--sf-font-weight-medium);
+    line-height: var(--sf-text-height-1);
+  }
+  .sf-datepicker .sf-datepicker-sheet-foot {
+    display: flex;
+    flex-direction: column;
+    flex: none;
+    gap: var(--sf-space-1\/2);
+    padding-block-start: var(--sf-space-1\/2);
+    border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+  }
+  .sf-datepicker .sf-datepicker-sheet-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: var(--sf-space-1\/3);
+    min-block-size: var(--sf-text-height-1);
+    color: var(--sf-on-surface);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+    font-variant-numeric: tabular-nums;
+  }
+  .sf-datepicker .sf-datepicker-sheet-summary b {
+    font-weight: var(--sf-font-weight-medium);
+  }
+  .sf-datepicker .sf-datepicker-sheet-summary span {
+    color: var(--sf-on-surface-variant);
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+  }
+
  .sf-datepicker .sf-datepicker-context {
    /* The months or years spread over the whole box, each in the middle of its
       row: packed at the top they left a band of 100 px empty under them

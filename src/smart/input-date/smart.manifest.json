@@ -36,6 +36,7 @@
       "component.datepicker",
       "smart.button",
       "smart.button-icon",
+      "smart.drawer",
       "smart.icon",
       "smart.input"
     ],
@@ -742,7 +743,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-date/index.js",
-        "sha256": "07015d12f708bd43b64739b11f9567f68785da91ba46908e4a0fb3775dcdd262"
+        "sha256": "9bb5e869f9a41fb08c56f22b6978a28da36136eae8f97041b3d9a9f224de2d00"
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",
@@ -750,11 +751,11 @@
       },
       {
         "path": "src/smart/input-date/rule.js",
-        "sha256": "7d163d5b9a341a6055b174ea308f358858e7a92c668e6840b791e6cc5ef42bc7"
+        "sha256": "a5aad8677a5cdd5f5548e0e44d01aefcb17693275b8da55c1d161d2e5ca80b43"
       },
       {
         "path": "src/smart/input-date/docs/smart-datepicker-guide.md",
-        "sha256": "d393217e621d110b063b59c6d7ffc7c6f297b2650f9792fe9eaf8d44f1266603"
+        "sha256": "f291e2035b18af7f7e0736c46be9e66a9f628f23185542fceebb0156ca65b7f8"
       }
     ],
     "generated_runtime": [

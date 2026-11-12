@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {URL} from 'node:url';
 import {formatPlaceholder, localeDateFormat, localeWeekStart, localeWeekend, weekendDays} from '../src/smart/input-date/js/locale-calendar.js';
 
 // Owner decision C62 (2026-11-11, ui-control control/docs-review/decisions.md):
@@ -118,7 +119,7 @@ test('a read-only field opens no calendar and an inline one takes no choice', ()
   assert.match(source, /get valueLocked\(\) \{\s*return this\.getBooleanAttr\('readonly', false\);/u);
   assert.match(source, /_openPanel\(\{focusCalendar = false\} = \{\}\) \{\s*if \(this\.disabled \|\| this\.valueLocked\) return this;/u);
   assert.match(source, /'open-panel'\(\{options\} = \{\}\) \{\s*if \(this\.disabled\) return 'disabled';\s*if \(this\.valueLocked\) return 'readonly';/u);
-  assert.match(source, /if \(!this\.open && this\.valueLocked\) return 'readonly';/u);
+  assert.match(source, /const open = this\.open \|\| this\._sheetOpen;\s*if \(!open && this\.disabled\) return 'disabled';\s*if \(!open && this\.valueLocked\) return 'readonly';/u);
   assert.match(source, /return this\.getBooleanAttr\('open', false\) && !\(this\.input && this\.valueLocked\);/u);
   assert.match(source, /if \(this\.disabled \|\| this\.valueLocked \|\| !day\?\.date \|\| day\.disabled\)/u);
   assert.match(source, /if \(this\.disabled \|\| this\.valueLocked \|\| !item \|\| item\.disabled\) return this;/u);
@@ -131,4 +132,42 @@ test('a read-only field opens no calendar and an inline one takes no choice', ()
   assert.ok(template.includes("aria-readonly=${context.valueLocked ? 'true' : nothing}"));
   const manifest = JSON.parse(read('src/smart/input-date/component.json'));
   assert.match(manifest.settings.readonly.summary, /opens no calendar/u);
+});
+
+// Point 6: on a phone a period opens a ribbon of months in the Framework's
+// bottom sheet, a draft until «Готово».
+test('a period on a phone opens a ribbon of months in the bottom sheet', () => {
+  const source = read('src/smart/input-date/index.js');
+  assert.match(source, /if \(!this\.range \|\| !this\.input \|\| this\._ribbonUnavailable\) return false;\s*return globalThis\.matchMedia\?\.\('\(min-width: 60rem\)'\)\?\.matches === false;/u);
+  assert.match(source, /await globalThis\.SF\?\.Loader\?\.ensure\?\.\(\['sf-drawer'\]\)/u);
+  assert.match(source, /sheet\.setAttribute\('placement', 'bottom'\);/u);
+  assert.match(source, /body\.className = 'sf-datepicker sf-datepicker--sheet';/u);
+  // No drawer on the page: the popup.
+  assert.match(source, /this\._ribbonUnavailable = true;\s*this\._openPanel\(\);/u);
+  // The value changes on «Готово» only, once.
+  assert.match(source, /commitRibbon\(\) \{\s*const ribbon = this\._ribbon;\s*if \(!ribbon\?\.start \|\| !ribbon\.end\) return;/u);
+  assert.match(source, /this\.emitChange\(\);\s*this\._sheet\?\.close\?\.\(\{reason: 'close'\}\);/u);
+  // The window grows only after the anchor month stands at the top.
+  assert.match(source, /if \(!scroller \|\| !ribbon \|\| !ribbon\.shown \|\| this\._ribbonGrowing\) return;/u);
+  assert.doesNotMatch(source, /__ribbonLog/u);
+
+  const template = read('src/smart/input-date/js/templates/ribbon.js');
+  assert.ok(template.includes('class="sf-datepicker-sheet-weekdays"'));
+  assert.ok(template.includes('class="sf-datepicker-ribbon-title"'));
+  assert.ok(template.includes('class="sf-datepicker-sheet-summary" aria-live="polite"'));
+  assert.ok(template.includes('text=${context.labels.done} ?disabled=${!context.complete}'));
+
+  const scss = read('src/component/datepicker/scss/_css_datepicker.scss');
+  assert.ok(scss.includes('.sf-datepicker--sheet'));
+  assert.ok(scss.includes('overflow-anchor: none;'));
+
+  const manifest = JSON.parse(read('src/smart/input-date/component.json'));
+  const drawer = manifest.relations.find((relation) => relation.name === 'cl-drawer');
+  assert.equal(drawer?.lazy, true);
+  for (const lang of ['ru', 'en']) {
+    const words = JSON.parse(read(`src/smart/input-date/lang/${lang}.json`));
+    for (const word of ['period', 'done', 'choose-start', 'choose-end']) assert.ok(JSON.stringify(words).includes(`"${word}"`), `${lang}: ${word}`);
+  }
+  const guide = read('src/smart/input-date/docs/smart-datepicker-guide.md');
+  assert.ok(guide.includes('## A period on a phone: a ribbon of months'));
 });

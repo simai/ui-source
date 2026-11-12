@@ -100,6 +100,28 @@ Use the one field when the period is one thing to the person (a report's
 dates, a filter); use two when each end is a decision of its own and is read
 on its own (a booking).
 
+## A period on a phone: a ribbon of months
+
+Below 60rem (the `lg` breakpoint) a `range` field with a typed input opens no
+popup. It opens a ribbon of months in the Framework's bottom sheet
+(`sf-drawer placement="bottom"`; owner decision C62). The sheet's heading is
+the field's label. The weekday row is pinned at the top, and the months stand
+one under another with their names held over them while they are in view.
+The period chosen and «Готово» are pinned at the bottom. The ribbon opens on
+the start's month, or today's, and grows by six months as it is scrolled to
+either end, within `min-date` and `max-date`.
+
+The period is a draft until «Готово»: the first day is the start, the second
+the end, and a day before the start starts again. «Готово» makes the value
+and fires one `change`. Closing the sheet any other way (its close button,
+the scrim, Escape, a swipe down) keeps the value the field had. The keys are
+the grid's: the arrows move a day or a week across the months' borders,
+PageUp and PageDown a month, with Shift a year.
+
+The sheet is a lazy relation (`cl-drawer`): it is loaded when a phone first
+opens a period. A page without `sf-drawer` gets the popup, as on a wide
+screen. A single date keeps the popup on every screen.
+
 ## A date and a time, or a time
 
 `mode` says what is chosen:
