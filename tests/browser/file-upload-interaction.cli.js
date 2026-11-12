@@ -13,7 +13,7 @@ async page => {
       document.querySelector('main').innerHTML='<button id="start">Начало</button>'+(mode==='smart'?'<sf-file-upload id="host" aria-label="Приложения"></sf-file-upload>':zone+(mode==='nested'?files:'')+'</div>'+(mode==='markup'?files:''))+'<button id="end">Конец</button>';
     },{mode,theme,dir});
     await page.waitForFunction(()=>document.querySelector('.sf-file-upload-input'));
-    await page.evaluate(mode=>{const root=document.querySelector('.sf-file-upload');window.pickers=0;root.querySelector('input').click=()=>pickers++;const items=[{name:'example.txt',state:'error',errorMessage:'Повторить'},{name:'second.txt',state:'process'}];if(mode==='smart')document.querySelector('#host').items=items;else SF.FileUpload.setItems(root,items);},mode);
+    await page.evaluate(mode=>{const root=document.querySelector('.sf-file-upload');window.pickers=0;root.querySelector('input').click=()=>pickers++;const items=[{name:'example.txt',state:'error',retryText:'Повторить'},{name:'second.txt',state:'process'}];if(mode==='smart')document.querySelector('#host').items=items;else SF.FileUpload.setItems(root,items);},mode);
     await page.waitForFunction(()=>document.querySelectorAll('[data-action=remove]').length===2);
     await page.locator('.sf-file-upload').click({position:{x:5,y:5}});
     const pointer=await page.locator('.sf-file-upload').evaluate(r=>({shadow:getComputedStyle(r).boxShadow,visible:r.matches(':focus-visible'),width:r.getBoundingClientRect().width}));

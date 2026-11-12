@@ -12,7 +12,7 @@ async page => {
       document.querySelector('main').innerHTML=`<section id="ordinary"><div class="sf-file-upload sf-file-upload--size-${size} flex flex-col"><span>Выбрать файлы</span></div><div class="sf-file-upload-files grid gap-1"></div></section><section id="smart"><sf-file-upload size="${size}" link-text="Выбрать файлы"></sf-file-upload></section>`;
     },{theme,dir,size});
     await page.waitForFunction(()=>document.querySelectorAll('.sf-file-upload-input').length===2);
-    await page.evaluate(()=>{const items=['process','error','done'].map(state=>({name:'Отчёт_'+ 'ДлинноеИмя'.repeat(20)+'.txt',state,fileSize:'123 MB',progress:state==='done'?100:30,errorMessage:'Повторить '+ 'Сообщение'.repeat(18)}));SF.FileUpload.setItems(document.querySelector('#ordinary .sf-file-upload'),items);document.querySelector('sf-file-upload').items=items;});
+    await page.evaluate(()=>{const items=['process','error','done'].map(state=>({name:'Отчёт_'+ 'ДлинноеИмя'.repeat(20)+'.txt',state,fileSize:'123 MB',progress:state==='done'?100:30,retryText:'Повторить '+ 'Сообщение'.repeat(18)}));SF.FileUpload.setItems(document.querySelector('#ordinary .sf-file-upload'),items);document.querySelector('sf-file-upload').items=items;});
     await page.waitForFunction(()=>document.querySelectorAll('.sf-upload-progress').length===6);
     await page.evaluate(async()=>{await document.fonts.load('24px "Material Symbols Outlined"');document.querySelectorAll('.sf-icon').forEach(e=>e.classList.add('sf-icon-loaded'));});
     const inspect=()=>page.evaluate(()=>{
