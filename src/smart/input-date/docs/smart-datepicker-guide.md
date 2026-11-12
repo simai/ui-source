@@ -179,9 +179,14 @@ field stays. The open calendar holds the shared open-surface mark
 (`document.documentElement.dataset.sfPopoverOpen`) and acts only as the
 innermost open layer, so a calendar inside a popover closes before the popover.
 
-Every day has a full localized date name. The current date uses
-`aria-current="date"`; selection uses `aria-pressed`. Only the active day is in
-the tab order.
+Every day has a full localized date name. The days are an ARIA grid: a row per
+week, column headers with the weekdays' full names, each day a `gridcell`. The
+current date uses `aria-current="date"`; selection uses `aria-selected`. Only
+the active day is in the tab order. PageUp and PageDown turn a month, with Shift
+a year; Home and End go to the week's ends, held to `min-date` and `max-date`.
+The shown month is said when it changes. The month and year lists are one tab
+stop each; the arrows move in them, and the focus goes back to the toggle when
+one closes. Tab out of the field and the panel closes the panel.
 
 ## Visual contract
 

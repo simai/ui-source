@@ -205,7 +205,6 @@
     "transition-property/default"
   ],
   "cl-input-date": [
-    "align-content/default",
     "align-items/default",
     "display/default",
     "element-position/default",
@@ -214,7 +213,8 @@
     "grid-template-columns/default",
     "justify-content/default",
     "overflow/default",
-    "position/default"
+    "position/default",
+    "sr-only/default"
   ],
   "cl-input-lookup": [
     "align-items/default",
