@@ -45,5 +45,7 @@ export function checkableClasses(size, hasText) {
 // painted pressed and the value does not change.
 export function renderCheckableRow(size, control, help) {
   if (!help) return control;
-  return html`<span class=${`sf-checkable-row sf-checkable--size-${size} flex flex-nowrap items-cross-start`}>${control}${help}</span>`;
+  // The help sits in a box of its own: sf-help-mark's host draws no box
+  // (display: contents), so the row places this one.
+  return html`<span class=${`sf-checkable-row sf-checkable--size-${size} flex flex-nowrap items-cross-start`}>${control}<span class="sf-checkable-help">${help}</span></span>`;
 }

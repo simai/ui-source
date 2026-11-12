@@ -48,7 +48,7 @@
 
   /* position="end" (sf-checkbox, W4): the box stands at the row's end, so the
      row is the control and keeps its full width. */
-  .sf-checkable:has(> .sf-checkbox-box:last-child) {
+  .sf-checkable:has(> .sf-checkbox-container + .sf-checkbox-box:last-child) {
     inline-size: auto;
   }
 
@@ -65,12 +65,11 @@
     min-inline-size: 0;
   }
 
-  .sf-checkable-row > .sf-checkable:has(> .sf-checkbox-box:last-child) {
+  .sf-checkable-row > .sf-checkable:has(> .sf-checkbox-container + .sf-checkbox-box:last-child) {
     flex: 1 1 auto;
   }
 
-  .sf-checkable-row > sf-help-mark,
-  .sf-checkable-row > [slot="help"] {
+  .sf-checkable-row > .sf-checkable-help {
     display: flex;
     flex: none;
     align-items: center;
@@ -79,7 +78,7 @@
     margin-inline-start: var(--sf-space-1\/4);
   }
 
-  .sf-checkable-row:has(> .sf-checkable:not(.sf-checkable--text)) > :is(sf-help-mark, [slot="help"]) {
+  .sf-checkable-row:has(> .sf-checkable:not(.sf-checkable--text)) > .sf-checkable-help {
     margin-block-start: 0;
   }
 }
