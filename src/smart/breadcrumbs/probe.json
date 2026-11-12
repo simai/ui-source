@@ -9,13 +9,22 @@
       "  <div id=\"area\"><sf-breadcrumbs id=\"bc\" aria-label=\"Путь к товару\" max-items=\"4\" items='[{\"label\": \"Главная\", \"href\": \"#home\"}, {\"label\": \"Каталог\", \"href\": \"#catalog\"}, {\"label\": \"Мебель\", \"href\": \"#furniture\"}, {\"label\": \"Столы\", \"href\": \"#tables\"}, {\"label\": \"Письменные\", \"href\": \"#desks\"}, {\"label\": \"Стол Nord\"}]'></sf-breadcrumbs></div>",
       "  <sf-breadcrumbs id=\"bc-kids\"><a data-sf-breadcrumb-item href=\"#a\">Раздел</a><span data-sf-breadcrumb-item>Страница</span></sf-breadcrumbs>",
       "  <sf-breadcrumbs id=\"bc-stop\" max-items=\"3\" items=\"Один|Два|Три|Четыре\"></sf-breadcrumbs>",
+      "  <sf-breadcrumbs id=\"bc-parents\" current=\"none\" items='[{\"label\": \"simai.ru\", \"href\": \"/\"}, {\"label\": \"Данные\", \"href\": \"/data\"}]'></sf-breadcrumbs>",
+      "  <sf-breadcrumbs id=\"bc-false\" items='[{\"label\": \"Раздел\", \"href\": \"#r\", \"current\": false}]'></sf-breadcrumbs>",
+      "  <sf-breadcrumbs id=\"bc-text\" items='[{\"label\": \"Настройки\"}, {\"label\": \"Сайт\", \"href\": \"#site\"}, {\"label\": \"Почта\"}]'></sf-breadcrumbs>",
+      "  <sf-breadcrumbs id=\"bc-focus\" max-items=\"3\" items='[{\"label\": \"Один\", \"href\": \"#f1\"}, {\"label\": \"Два\", \"href\": \"#f2\"}, {\"label\": \"Три\", \"href\": \"#f3\"}, {\"label\": \"Четыре\"}]'></sf-breadcrumbs>",
+      "  <sf-header-page id=\"hp\" heading=\"Каталог решений\"><sf-breadcrumbs slot=\"path\"><sf-breadcrumbs-item href=\"/\">simai.ru</sf-breadcrumbs-item><sf-breadcrumbs-item href=\"/data\">Данные</sf-breadcrumbs-item></sf-breadcrumbs></sf-header-page>",
+      "  <div id=\"narrow\" style=\"inline-size: 16rem\"><sf-breadcrumbs id=\"bc-room\" items='[{\"label\": \"Главная\", \"href\": \"#n1\"}, {\"label\": \"Каталог\", \"href\": \"#n2\"}, {\"label\": \"Мебель\", \"href\": \"#n3\"}, {\"label\": \"Столы\", \"href\": \"#n4\"}, {\"label\": \"Письменные\", \"href\": \"#n5\"}, {\"label\": \"Стол Nord\"}]'></sf-breadcrumbs></div>",
+      "  <sf-breadcrumbs id=\"bc-sib\" siblings items='[{\"label\": \"Главная\", \"href\": \"#s1\"}, {\"label\": \"Ноутбуки\", \"href\": \"#s2\", \"siblings\": [{\"label\": \"Ноутбуки\", \"href\": \"#s2\", \"current\": true}, {\"label\": \"Планшеты\", \"href\": \"#s3\"}]}, {\"label\": \"Игровые\"}]'></sf-breadcrumbs>",
+      "  <sf-breadcrumbs id=\"bc-nosib\" items='[{\"label\": \"Главная\", \"href\": \"#s1\"}, {\"label\": \"Ноутбуки\", \"href\": \"#s2\", \"siblings\": [{\"label\": \"Планшеты\", \"href\": \"#s3\"}]}, {\"label\": \"Игровые\"}]'></sf-breadcrumbs>",
+      "  <div style=\"inline-size: 40rem\"><sf-breadcrumbs id=\"bc-long\" items='[{\"label\": \"Отдел продаж и обслуживания корпоративных клиентов\", \"href\": \"#l1\"}, {\"label\": \"Договор № 4521 с ООО «Северная торговая компания»\"}]'></sf-breadcrumbs></div>",
       "</main>"
     ]
   },
   "probes": [
     {
       "id": "p1-enter-opens-hidden",
-      "title": "Tab reaches the ellipsis, Enter opens the hidden crumbs: sf-breadcrumbs-press once, sf-breadcrumb-click once, noted with its dates",
+      "title": "Tab reaches the ellipsis, Enter opens the hidden crumbs as a menu: sf-breadcrumbs-press once, sf-breadcrumb-click once, noted with its dates (C93 item 1)",
       "covers": "keyboard.host Tab reach, Enter select, events.press, aliases sf-breadcrumb-click",
       "steps": [
         {
@@ -60,29 +69,39 @@
               }
             ]
           },
-          "check": "document.querySelectorAll('#bc a.sf-breadcrumbs-item').length === 5 && !document.querySelector('#bc .sf-breadcrumbs-item-container')?.textContent.includes('…') && !('originalEvent' in (window.__heard.find((one) => one.name === 'sf-breadcrumbs-press')?.detail ?? {originalEvent: 1}))"
+          "check": "document.querySelector('#bc button[aria-haspopup=\"menu\"]')?.getAttribute('aria-expanded') === 'true' && document.querySelectorAll('#bc sf-menu-context [data-sf-entry]').length === 3 && document.querySelectorAll('#bc a.sf-breadcrumbs-item').length === 2 && !('originalEvent' in (window.__heard.find((one) => one.name === 'sf-breadcrumbs-press')?.detail ?? {originalEvent: 1}))",
+          "wait": 300
+        },
+        {
+          "user": "keyboard:Escape",
+          "wait": 200,
+          "check": "document.activeElement?.matches('#bc button[aria-haspopup=\"menu\"]') === true && document.querySelector('#bc button[aria-haspopup=\"menu\"]').getAttribute('aria-expanded') === 'false'"
         }
       ]
     },
     {
       "id": "p2-refused-press",
-      "title": "a page that refuses the press keeps the ellipsis closed, through either name",
+      "title": "a page that refuses the press keeps the menu closed, through either name",
       "covers": "events.press cancelable",
       "steps": [
         {
           "script": "(document.addEventListener('sf-breadcrumbs-press', (event) => event.preventDefault(), {once: true}), document.querySelector('#bc-stop button[aria-label]').click(), true)",
           "wait": 200,
-          "check": "Boolean(document.querySelector('#bc-stop button[aria-label]'))"
+          "check": "document.querySelector('#bc-stop button[aria-label]')?.getAttribute('aria-expanded') === 'false'"
         },
         {
           "script": "(document.addEventListener('sf-breadcrumb-click', (event) => event.preventDefault(), {once: true}), document.querySelector('#bc-stop button[aria-label]').click(), true)",
           "wait": 200,
-          "check": "Boolean(document.querySelector('#bc-stop button[aria-label]'))"
+          "check": "document.querySelector('#bc-stop button[aria-label]')?.getAttribute('aria-expanded') === 'false'"
         },
         {
           "user": "click:#bc-stop button[aria-label]",
-          "wait": 200,
-          "check": "!document.querySelector('#bc-stop button[aria-label]') && document.querySelectorAll('#bc-stop .sf-breadcrumbs-item:not(.sf-breadcrumbs-item--separator)').length === 4"
+          "wait": 300,
+          "check": "document.querySelector('#bc-stop button[aria-label]')?.getAttribute('aria-expanded') === 'true' && document.querySelectorAll('#bc-stop sf-menu-context [data-sf-entry]').length === 2"
+        },
+        {
+          "user": "keyboard:Escape",
+          "wait": 200
         }
       ]
     },
@@ -132,6 +151,90 @@
           "script": "(document.getElementById('area').style.setProperty('--sf-breadcrumbs-current-color', 'rgb(1, 2, 3)'), document.getElementById('area').style.setProperty('--sf-breadcrumbs-gap', '17px'), true)",
           "wait": 400,
           "check": "getComputedStyle(document.querySelector('#bc [aria-current=\"page\"] .sf-breadcrumbs-item-container')).color === 'rgb(1, 2, 3)' && getComputedStyle(document.querySelector('#bc nav')).columnGap === '17px'"
+        }
+      ]
+    },
+    {
+      "id": "p7-trail-of-parents",
+      "title": "current=\"none\" is a trail of parents: every crumb a link, no page; a crumb's current: false is kept; in sf-header-page's path the default is none (R177 BC-01, C93 item 4)",
+      "covers": "settings.current, settings.items current",
+      "steps": [
+        {
+          "wait": 300,
+          "check": "document.querySelectorAll('#bc-parents a.sf-breadcrumbs-item').length === 2 && !document.querySelector('#bc-parents [aria-current]') && document.querySelector('#bc-false a.sf-breadcrumbs-item')?.getAttribute('href') === '#r' && !document.querySelector('#bc-false [aria-current]') && document.querySelectorAll('#hp sf-breadcrumbs a.sf-breadcrumbs-item').length === 2 && !document.querySelector('#hp sf-breadcrumbs [aria-current]')"
+        }
+      ]
+    },
+    {
+      "id": "p8-text-crumb-and-list",
+      "title": "a crumb with neither href nor value is text out of the tab order; the trail is a list of one entry per crumb; «…» says it is closed (R177 BC-05, BC-09, BC-03)",
+      "covers": "settings.items, accessibility",
+      "steps": [
+        {
+          "check": "(() => { const first = document.querySelector('#bc-text [data-sf-breadcrumb-index=\"0\"]'); return first.tagName === 'DIV' && first.tabIndex < 0 && !first.hasAttribute('aria-current') && document.querySelector('#bc-text [aria-current=\"page\"]')?.textContent.trim() === 'Почта' && document.querySelectorAll('#bc-text nav > ol > li').length === 3 && document.querySelector('#bc-stop button[aria-label]')?.getAttribute('aria-expanded') === 'false' && document.querySelector('#bc-stop button[aria-label]')?.getAttribute('aria-haspopup') === 'menu'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p9-focus-after-open",
+      "title": "Enter on «…» moves focus into its menu; Escape gives it back to «…», never to the page (R177 BC-02)",
+      "covers": "keyboard.host Enter select",
+      "steps": [
+        {
+          "script": "(document.querySelector('#bc-focus button[aria-label]').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Enter",
+          "wait": 200,
+          "check": "Boolean(document.activeElement?.closest('#bc-focus sf-menu-context'))"
+        },
+        {
+          "user": "keyboard:Escape",
+          "wait": 200,
+          "check": "document.activeElement?.matches('#bc-focus button[aria-haspopup=\"menu\"]') === true"
+        }
+      ]
+    },
+    {
+      "id": "p10-fold-by-room",
+      "title": "a trail with no cap folds by room: in 16rem it stays on one line, the page and its parent shown (R177 BC-06, C93 items 1-2)",
+      "covers": "settings.max-items",
+      "steps": [
+        {
+          "wait": 300,
+          "check": "(() => { const entries = [...document.querySelectorAll('#bc-room nav > ol > li')]; const tops = new Set(entries.map((one) => Math.round(one.getBoundingClientRect().top + one.getBoundingClientRect().height / 2))); return entries.length < 6 && tops.size === 1 && Boolean(document.querySelector('#bc-room button[aria-expanded]')) && document.querySelector('#bc-room [aria-current=\"page\"]')?.textContent.trim() === 'Стол Nord' && Boolean(document.querySelector('#bc-room a[href=\"#n5\"]')); })()"
+        }
+      ]
+    },
+    {
+      "id": "p11-siblings",
+      "title": "siblings offers a crumb's siblings as a menu from a button after it, the current one checked; off by default (C93 item 3)",
+      "covers": "settings.siblings, settings.items siblings",
+      "steps": [
+        {
+          "wait": 300,
+          "check": "Boolean(document.querySelector('#bc-sib button[data-sf-breadcrumb-siblings=\"1\"][aria-haspopup=\"menu\"]')) && !document.querySelector('#bc-nosib [data-sf-breadcrumb-siblings]') && document.querySelector('#bc-sib button[data-sf-breadcrumb-siblings]').getAttribute('aria-label') === 'Соседние разделы: Ноутбуки'"
+        },
+        {
+          "user": "click:#bc-sib button[data-sf-breadcrumb-siblings]",
+          "wait": 300,
+          "check": "document.querySelectorAll('#bc-sib sf-menu-context [data-sf-entry]').length === 2"
+        },
+        {
+          "user": "keyboard:Escape",
+          "wait": 200
+        }
+      ]
+    },
+    {
+      "id": "p12-look",
+      "title": "links are grey and the page is not; an ancestor's long name is cut with the whole name as its tooltip, the page's name wraps (C93 items 5, 6)",
+      "covers": "css-variables",
+      "steps": [
+        {
+          "wait": 300,
+          "check": "(() => { const link = document.querySelector('#bc-long a.sf-breadcrumbs-item'); const label = link.querySelector('.sf-breadcrumbs-item-container > span'); const sep = document.querySelector('#bc-long .sf-breadcrumbs-item--separator sf-icon, #bc-long .sf-breadcrumbs-item--separator .sf-icon'); return getComputedStyle(label).textOverflow === 'ellipsis' && label.scrollWidth > label.clientWidth && link.getAttribute('title') === 'Отдел продаж и обслуживания корпоративных клиентов' && getComputedStyle(link.querySelector('.sf-breadcrumbs-item-container')).color === getComputedStyle(sep).color && getComputedStyle(document.querySelector('#bc-long [aria-current=\"page\"] .sf-breadcrumbs-item-container > span')).whiteSpace !== 'nowrap'; })()"
         }
       ]
     }

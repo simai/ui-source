@@ -1,6 +1,8 @@
 import SfBaseElement, { toAttributeName } from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderBreadcrumbsTemplate } from './js/templates/default';
+import { collapseRange, menuEntries, nextFit, onPhoneLadder, startFit, trailWraps } from '../../component/breadcrumbs/js/_trail';
+import { markCurrent, normalizeItem, parseItems, readFlag } from './js/items';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -18,111 +20,6 @@ const BreadcrumbsElement = elementFromManifest(manifest, {
   source: 'ru',
   aliases,
 });
-
-function parseItemFlags(flagsPart = '') {
-  const flags = String(flagsPart || '')
-    .split(',')
-    .map((flag) => flag.trim())
-    .filter(Boolean);
-  const item = {};
-
-  flags.forEach((flag) => {
-    const [rawKey, ...rawValue] = flag.split('=');
-    const key = String(rawKey || '').trim().toLowerCase();
-    const value = rawValue.join('=').trim();
-
-    if (!key) return;
-
-    if (['current', 'active', 'disabled', 'ellipsis'].includes(key)) {
-      item[key] = value ? !['0', 'false', 'no'].includes(value.toLowerCase()) : true;
-      return;
-    }
-
-    item[key] = value;
-  });
-
-  return item;
-}
-
-function normalizeItem(item = {}, index = 0, total = 0, options = {}) {
-  if (typeof item === 'string') {
-    return normalizeItem({ label: item }, index, total, options);
-  }
-
-  const { defaultCurrent = true } = options;
-  const label = item.label || item.text || item.title || '';
-  const current = Boolean(
-    item.current || item.active || (defaultCurrent && index === total - 1),
-  );
-  const ellipsis = Boolean(item.ellipsis || label === '...' || label === '…');
-  const hiddenItemsSource =
-    item.hiddenItems || item.hiddenitems || item['hidden-items'] || item.items;
-  const hiddenItems = hiddenItemsSource
-    ? parseItems(hiddenItemsSource, { defaultCurrent: false })
-    : [];
-
-  return {
-    label: ellipsis ? '…' : label,
-    href: item.href || item.url || '',
-    icon: item.icon || '',
-    current,
-    active: Boolean(item.active || current),
-    disabled: Boolean(item.disabled),
-    ellipsis,
-    target: item.target || '',
-    rel: item.rel || '',
-    itemClass: item.itemClass || item['item-class'] || '',
-    containerClass: item.containerClass || item['container-class'] || '',
-    ariaLabel: item.ariaLabel || item['aria-label'] || '',
-    value: item.value || '',
-    hiddenItems,
-    index,
-  };
-}
-
-function parseItems(items = '', options = {}) {
-  if (Array.isArray(items)) {
-    return items.map((item, index) =>
-      normalizeItem(item, index, items.length, options),
-    );
-  }
-
-  const raw = String(items || '').trim();
-  if (!raw) {
-    return [];
-  }
-
-  try {
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) {
-      return parsed.map((item, index) =>
-        normalizeItem(item, index, parsed.length, options),
-      );
-    }
-  } catch {
-    // Plain string format is handled below.
-  }
-
-  const entries = raw
-    .split('|')
-    .map((entry) => entry.trim())
-    .filter(Boolean);
-
-  return entries.map((entry, index) => {
-    const [labelPart, ...flagParts] = entry.split('::');
-    const flags = parseItemFlags(flagParts.join(','));
-
-    return normalizeItem(
-      {
-        label: labelPart.trim(),
-        ...flags,
-      },
-      index,
-      entries.length,
-      options,
-    );
-  });
-}
 
 class SfBreadcrumbs extends BreadcrumbsElement {
   static itemTemplateSlot = '__items';
@@ -152,7 +49,7 @@ class SfBreadcrumbs extends BreadcrumbsElement {
       ariaLabel: { default: '' },
       expandLabel: { default: '' },
       expandOnEllipsis: { default: true, type: Boolean },
-      maxItems: { default: 4, type: Number },
+      maxItems: { default: 0, type: Number },
     };
   }
 
@@ -162,6 +59,11 @@ class SfBreadcrumbs extends BreadcrumbsElement {
     this._readyCaptureHandler = null;
     this._ellipsisExpanded = false;
     this._preserveEllipsisExpanded = false;
+    // How many crumbs room hides (BC-06): 0 until the trail is measured.
+    this._fitHidden = 0;
+    this._fitSettled = null;
+    this._roomObserver = null;
+    this._roomFrame = 0;
   }
 
   connectedCallback() {
@@ -191,6 +93,7 @@ class SfBreadcrumbs extends BreadcrumbsElement {
   disconnectedCallback() {
     this.disconnectItemObserver();
     this.cancelReadyCapture();
+    this.disconnectRoom();
     super.disconnectedCallback();
   }
 
@@ -204,6 +107,7 @@ class SfBreadcrumbs extends BreadcrumbsElement {
     if (!this.__sfManifestData) this.__sfManifestData = {};
     this.__sfManifestData.items = value;
     this._ellipsisExpanded = false;
+    this._fitHidden = 0;
     if (this.hasAttribute('items')) this.removeAttribute('items');
     else if (this._isMounted) this.requestComponentUpdate('items');
     else this.mountComponent();
@@ -218,6 +122,15 @@ class SfBreadcrumbs extends BreadcrumbsElement {
       !this._preserveEllipsisExpanded
     ) {
       this._ellipsisExpanded = false;
+    }
+
+    // A new trail, cap or page mode is measured again from the full trail.
+    if (
+      ['items', 'max-items', 'current'].includes(name) &&
+      oldValue !== newValue &&
+      !this._preserveEllipsisExpanded
+    ) {
+      this._fitHidden = 0;
     }
 
     if (
@@ -335,7 +248,10 @@ class SfBreadcrumbs extends BreadcrumbsElement {
         label,
         href: node.getAttribute('href') || node.getAttribute('url') || '',
         icon: node.getAttribute('icon') || '',
-        current: node.hasAttribute('current') || undefined,
+        // current, current="false" or nothing (BC-01).
+        current: node.hasAttribute('current')
+          ? readFlag(node.getAttribute('current') || 'true')
+          : undefined,
         active: node.hasAttribute('active') || undefined,
         disabled: node.hasAttribute('disabled'),
         ellipsis: node.hasAttribute('ellipsis') || label === '...',
@@ -349,22 +265,42 @@ class SfBreadcrumbs extends BreadcrumbsElement {
           node.getAttribute('hidden-items') || node.getAttribute('items') || '',
           { defaultCurrent: false },
         ),
+        siblings: node.getAttribute('siblings') || '',
       };
     });
   }
 
+  // Which crumb is the page: "last" (the default) or "none", a trail of
+  // parents. In sf-header-page's path the heading below is the page (owner
+  // decision C93 item 4), so there the default is "none".
+  get currentMode() {
+    const value = String(this.getAttribute('current') || '').trim().toLowerCase();
+    if (value === 'none' || value === 'last') return value;
+    if (this.getAttribute('slot') === 'path' && this.parentElement?.closest?.('sf-header-page')) {
+      return 'none';
+    }
+    return 'last';
+  }
+
   get sourceItems() {
     const items = this.items;
+    const mode = this.currentMode;
 
     if (items.length) {
-      return items.map((item, index) => normalizeItem(item, index, items.length));
+      return markCurrent(
+        items.map((item, index) => normalizeItem(item, index, items.length)),
+        mode,
+      );
     }
 
     const capturedItems = this.getCapturedItems();
 
     if (capturedItems.length) {
-      return capturedItems.map((item, index) =>
-        normalizeItem(item, index, capturedItems.length),
+      return markCurrent(
+        capturedItems.map((item, index) =>
+          normalizeItem(item, index, capturedItems.length),
+        ),
+        mode,
       );
     }
     return [];
@@ -375,53 +311,157 @@ class SfBreadcrumbs extends BreadcrumbsElement {
     return this.getDisplayItems(items);
   }
 
+  // The crumbs that fold (component/breadcrumbs/js/_trail.js, shared with
+  // the class runtime, BC-11): the max-items cap when the page sets one, and
+  // room -- what the last measure hid (BC-06).
+  collapseOptions(items = []) {
+    const last = items[items.length - 1];
+    const tail = last?.current ? 2 : 1;
+    return {
+      maxItems: this.getNumberAttr('maxItems', 0),
+      // The phone ladder starts at «… › parent › page» (C93 item 2).
+      fit: Math.max(this._fitHidden, startFit(items.length, { tail, phone: onPhoneLadder() })),
+      tail,
+    };
+  }
+
+  // Whether a crumb's siblings are offered (C93 item 3): off unless the host
+  // says siblings and the crumb carries them.
+  get siblingsShown() {
+    return this.getBooleanAttr('siblings', false);
+  }
+
   getDisplayItems(items = []) {
-    const maxItems = this.getNumberAttr('maxItems', 4);
     const expandLabel = this.getAttribute('expand-label') || this.sfWord('expand-label');
 
-    if (
-      this._ellipsisExpanded ||
-      maxItems < 3 ||
-      items.length <= maxItems
-    ) {
+    if (this._ellipsisExpanded) {
       return this.reindexItems(items);
     }
 
-    const visibleSlots = maxItems - 1;
-    const leadingCount = Math.floor(visibleSlots / 2);
-    const trailingCount = visibleSlots - leadingCount;
-    const startItems = items.slice(0, leadingCount);
-    const endItems = items.slice(items.length - trailingCount);
-    const hiddenItems = items.slice(leadingCount, items.length - trailingCount);
+    const range = collapseRange(items.length, this.collapseOptions(items));
 
-    if (!hiddenItems.length) {
+    if (!range) {
       return this.reindexItems(items);
     }
+
+    const hiddenItems = items.slice(range.start, range.end);
 
     return this.reindexItems([
-      ...startItems,
-      normalizeItem(
-        {
-          label: '…',
-          ellipsis: true,
-          hiddenItems,
-          ariaLabel: expandLabel,
-        },
-        leadingCount,
-        items.length,
-        { defaultCurrent: false },
-      ),
-      ...endItems,
+      ...items.slice(0, range.start),
+      {
+        ...normalizeItem(
+          {
+            label: '…',
+            ellipsis: true,
+            hiddenItems,
+            ariaLabel: expandLabel,
+          },
+          range.start,
+          items.length,
+        ),
+        current: false,
+        auto: true,
+      },
+      ...items.slice(range.end),
     ]);
   }
 
   reindexItems(items = []) {
-    return items.map((item, index) => ({
-      ...item,
-      index,
-      current: Boolean(item.current && index === items.length - 1),
-      active: Boolean(item.active || (item.current && index === items.length - 1)),
-    }));
+    return items.map((item, index) => ({ ...item, index }));
+  }
+
+  // Room (BC-06, owner decision C93 item 1): after each drawing, while the
+  // trail takes more than one line, one more crumb goes behind «…». A new
+  // width starts again from the full trail. The trail's own change of size
+  // (it got shorter) does not count as a new width.
+  afterUpdate(changedAttributes, mode) {
+    super.afterUpdate?.(changedAttributes, mode);
+    this.fitTrail();
+  }
+
+  trailEntries() {
+    const list = this.querySelector(':scope > nav > ol');
+    return list ? Array.from(list.children) : [];
+  }
+
+  fitTrail() {
+    // Only the element's own drawing is measured, never a printed first paint
+    // it has not replaced yet.
+    if (!this.isConnected || !this._isMounted || !this._hasRendered) return;
+    this.observeRoom();
+
+    if (!this._ellipsisExpanded && trailWraps(this.trailEntries())) {
+      const items = this.sourceItems;
+      const next = nextFit(items.length, this.collapseOptions(items));
+      if (next !== null) {
+        this._fitHidden = next;
+        this.requestComponentUpdate('fit');
+        return;
+      }
+    }
+
+    this.markCutLabels();
+    this._fitSettled = this.roomSize();
+  }
+
+  // A name cut with an ellipsis (C93 item 6) has its whole text as the
+  // crumb's tooltip; the text itself stays whole for a screen reader.
+  markCutLabels() {
+    this.querySelectorAll(':scope > nav [data-sf-breadcrumb-index]').forEach((crumb) => {
+      const label = crumb.querySelector(':scope > .sf-breadcrumbs-item-container > span');
+      const cut = Boolean(label && label.scrollWidth > label.clientWidth + 1);
+      if (cut) crumb.setAttribute('title', label.textContent.trim());
+      else if (crumb.dataset.sfBreadcrumbCut) crumb.removeAttribute('title');
+      if (cut) crumb.dataset.sfBreadcrumbCut = '';
+      else delete crumb.dataset.sfBreadcrumbCut;
+    });
+  }
+
+  roomSize() {
+    const nav = this.querySelector(':scope > nav');
+    const parent = this.parentElement;
+    return {
+      width: parent ? parent.getBoundingClientRect().width : 0,
+      height: nav ? nav.getBoundingClientRect().height : 0,
+    };
+  }
+
+  observeRoom() {
+    if (typeof ResizeObserver === 'undefined') return;
+    const nav = this.querySelector(':scope > nav');
+    if (!nav || (this._roomObserver && this._roomNav === nav)) return;
+    this.disconnectRoom();
+    this._roomNav = nav;
+
+    this._roomObserver = new ResizeObserver(() => {
+      if (this._roomFrame) return;
+      this._roomFrame = requestAnimationFrame(() => {
+        this._roomFrame = 0;
+        const before = this._fitSettled;
+        const now = this.roomSize();
+        if (
+          !before ||
+          (Math.abs(before.width - now.width) < 0.5 &&
+            Math.abs(before.height - now.height) < 0.5)
+        ) {
+          return;
+        }
+        this._fitSettled = null;
+        this._fitHidden = 0;
+        this.requestComponentUpdate('fit');
+      });
+    });
+    this._roomObserver.observe(nav);
+    if (this.parentElement) this._roomObserver.observe(this.parentElement);
+  }
+
+  disconnectRoom() {
+    this._roomObserver?.disconnect?.();
+    this._roomObserver = null;
+    this._roomNav = null;
+    if (this._roomFrame) cancelAnimationFrame(this._roomFrame);
+    this._roomFrame = 0;
+    this._fitSettled = null;
   }
 
   templateContext() {
@@ -442,6 +482,8 @@ class SfBreadcrumbs extends BreadcrumbsElement {
       ...props,
       ariaLabel: this.getAttribute('aria-label') || this.sfWord('aria-label'),
       expandLabel: this.getAttribute('expand-label') || this.sfWord('expand-label'),
+      siblingsLabel: this.sfWord('siblings-label'),
+      siblings: this.siblingsShown,
       component: this,
       items,
       rootClass: this.getRootClass(),
@@ -497,16 +539,41 @@ class SfBreadcrumbs extends BreadcrumbsElement {
     return this;
   }
 
+  // The «…» button leaves the trail when it opens: focus goes to the first
+  // crumb it revealed (R177 BC-02), which takes the button's place.
+  focusRevealed(index) {
+    this.whenRendered(() => {
+      const crumbs = Array.from(
+        this.querySelectorAll(':scope > nav [data-sf-breadcrumb-index]'),
+      ).filter((node) => Number(node.dataset.sfBreadcrumbIndex) >= index);
+      const target =
+        crumbs.find((node) => node.matches('a[href], button:not([disabled])')) ||
+        crumbs[0];
+      if (!target) return;
+      if (!target.matches('a[href], button:not([disabled])')) {
+        target.setAttribute('tabindex', '-1');
+      }
+      target.focus({ preventScroll: true });
+    }, { next: true });
+  }
+
   expandEllipsis(item) {
     if (!item?.ellipsis) {
       return false;
     }
 
-    if (!item.hiddenItems?.length) {
+    const hadFocus =
+      this.contains(document.activeElement) || document.activeElement === document.body;
+
+    // «…» this trail folded by itself: the full trail comes back.
+    if (item.auto || !item.hiddenItems?.length) {
       this._ellipsisExpanded = true;
+      if (hadFocus) this.focusRevealed(item.index);
       this.requestComponentUpdate('ellipsis');
       return true;
     }
+
+    if (hadFocus) this.focusRevealed(item.index);
 
     const items = this.normalizedItems;
     const nextItems = items.flatMap((currentItem) => {
@@ -526,7 +593,10 @@ class SfBreadcrumbs extends BreadcrumbsElement {
           ...nextItem,
           index,
           active: false,
-          current: Boolean(nextItem.current && index === nextItems.length - 1),
+          // Each crumb keeps what it says; the page is decided again.
+          current: nextItem.currentFlag,
+          currentFlag: undefined,
+          hiddenItems: undefined,
         })),
       });
     } finally {
@@ -556,13 +626,59 @@ class SfBreadcrumbs extends BreadcrumbsElement {
       this._pressOrigin = null;
     }
 
+    // «…» opens its hidden crumbs as a menu beside it (C93 item 1); focus
+    // goes into the menu and back to «…» when it closes.
     if (
       item.ellipsis &&
       this.getBooleanAttr('expandOnEllipsis', true) &&
       allowed
     ) {
-      this.expandEllipsis(item);
+      this.openMenu(item.hiddenItems || [], event.currentTarget, {
+        label: this.getAttribute('expand-label') || this.sfWord('expand-label'),
+        kind: 'hidden',
+      });
     }
+  };
+
+  // The siblings of a crumb, from the button after it (C93 item 3).
+  handleSiblingsClick = (event, item) => {
+    this.openMenu(item.siblings || [], event.currentTarget, {
+      label: `${this.sfWord('siblings-label')}: ${item.label}`,
+      kind: 'siblings',
+    });
+  };
+
+  get menu() {
+    return this.querySelector(':scope > .sf-breadcrumbs-menu');
+  }
+
+  openMenu(crumbs, anchor, { label = '', kind = 'hidden' } = {}) {
+    const menu = this.menu;
+    if (!menu || !(anchor instanceof Element) || !crumbs.length) return false;
+    this._menuCrumbs = crumbs;
+    this._menuKind = kind;
+    menu.setAttribute('aria-label', label);
+    menu.entries = menuEntries(crumbs);
+    // The Loader brings sf-menu-context with the first trail that needs it.
+    customElements
+      .whenDefined('sf-menu-context')
+      .then(() => menu.toggleFor(anchor, { align: 'start' }));
+    return true;
+  }
+
+  // A choice in the menu is a press on that crumb (§8): a link goes by itself,
+  // a crumb with a value is the page's to handle; refusing the press keeps the
+  // menu open.
+  handleMenuSelect = (event) => {
+    event.stopPropagation();
+    const crumb = this._menuCrumbs?.[Number(event.detail?.id)];
+    if (!crumb) return;
+    const allowed = this.sfEmit('press', {
+      item: { ...crumb, sibling: this._menuKind === 'siblings' },
+      index: Number.isFinite(crumb.index) ? crumb.index : Number(event.detail.id),
+      items: this.normalizedItems,
+    });
+    if (!allowed) event.preventDefault();
   };
 
   // The old name keeps its old detail (§16.20 split row): the element, its

@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.breadcrumbs",
-  "version": "1.1.7",
+  "version": "1.2.0",
   "title": "Breadcrumbs",
-  "summary": "Shows the current page's place in a hierarchy as a trail of native links built from items, the items attribute or sf-breadcrumbs-item children. A long trail collapses its middle into an ellipsis button (max-items, default 4) that expands in place.",
+  "summary": "Shows where the page is in a hierarchy as a list of native links built from items, the items attribute or sf-breadcrumbs-item children. The last crumb is the page unless the items say otherwise or current is none (a trail of parents). A trail that has no room for one line folds its middle into a «…» button whose menu lists the hidden crumbs; on the phone it reads «… › parent › page». Long ancestor names are cut with an ellipsis and a tooltip; a crumb can offer its siblings as a menu (siblings).",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -24,7 +24,8 @@
     "uses": [
       "component.breadcrumbs",
       "component.icons",
-      "smart.icon"
+      "smart.icon",
+      "smart.menu-context"
     ],
     "public_parts": []
   },
@@ -45,6 +46,20 @@
         "type": "string",
         "default": "",
         "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "current": {
+        "type": "string",
+        "default": "last",
+        "description": "Which crumb is the page. last: the crumb that says current, else the last crumb, unless it says current: false. none: a trail of parents above the page's heading, every crumb with an address a link (owner decision C93 item 4). In sf-header-page's path slot the default is none.",
+        "enum": [
+          "last",
+          "none"
+        ]
+      },
+      "siblings": {
+        "type": "boolean",
+        "default": false,
+        "description": "Offer a crumb's siblings (items[].siblings) as a menu from a button after it (owner decision C93 item 3). Off by default."
       },
       "separator-icon": {
         "type": "string",
@@ -84,11 +99,13 @@
       },
       "expand-on-ellipsis": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Whether a press on «…» opens its hidden crumbs as a menu beside it (C93 item 1). false: the page handles sf-breadcrumbs-press itself."
       },
       "max-items": {
         "type": "integer",
-        "default": 4,
+        "default": 0,
+        "description": "A cap on the crumbs shown (3 or more): the start, «…» and the end. 0, the default: no cap; the trail folds only when it has no room for one line.",
         "minimum": 0
       },
       "aria-label": {
@@ -117,7 +134,7 @@
       }
     },
     "getDisplayItems": {
-      "summary": "Returns the items as they are shown: when there are more than max-items (at least 3) and the ellipsis is not expanded, the middle is replaced by one ellipsis item holding the hidden ones; every item is reindexed and only the last may be current.",
+      "summary": "Returns the items as they are shown: unless the ellipsis is open, the crumbs that fold -- by the max-items cap and by room -- are replaced by one ellipsis item holding them; every item is reindexed and at most one is current.",
       "arguments": [
         {
           "name": "items",
@@ -268,7 +285,7 @@
       "Enter on links",
       "Enter or Space on the ellipsis button"
     ],
-    "focus": "Native links and the ellipsis button use keyboard-only focus-visible; the current page does not enter the tab order."
+    "focus": "Native links and the ellipsis button use keyboard-only focus-visible; the current page and text crumbs do not enter the tab order. Opening the ellipsis moves focus to the first crumb it revealed."
   },
   "presentation": {
     "themes": [
@@ -330,7 +347,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/breadcrumbs/index.js",
-        "sha256": "52389559c9db948ef7a1fabfc41bc81a3432324e612ffdd007ab4d46c2894f78"
+        "sha256": "490646d7f606a6a98d9eaae742e1d7a6274b089de0fee03e0cfb82e78b9824e2"
       }
     ],
     "generated_runtime": [
