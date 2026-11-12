@@ -39,3 +39,23 @@ Framework size/typography/space tokens and `:focus-visible`. No absolute design
 sizes or raw colors are part of the component contract.
 
 The label is the field label of sf-input: regular weight, on-surface-variant, one text step below the field's text (14 at size 1), a quarter step above the cells; it was 16/500 on-surface (1.2.0, docs pre-check 2026-11-10 FB-10, CI-04). The current cell is marked only while the field has the focus: three fields at rest all looked focused (CI-02).
+
+### States the owning runtime paints (1.3.0, owner R136-R139, decision C82)
+
+The input is transparent (text, caret, selection and autofill fill), not
+`opacity: 0`, and the runtime that owns the field (sf-input-code, or the class
+runtime) paints its state on the cells:
+
+- `.current` -- the cell typing replaces, only while the field has the focus,
+  two pixels of primary (error on a refused code);
+- `.caret`, `.caret-end` -- the drawn caret in that cell, or after the last
+  character of a whole code; it blinks unless motion is reduced;
+- `.selected` -- a selection of more than one cell (primary-container);
+- `.hover` -- the one cell under a mouse (primary-hover border; on `filled`
+  the fill's hover step, no border); the group no longer hovers as a whole;
+- `.sf-verification--pointer-focus` on `.sf-verification` -- a pointer focus:
+  the focus ring is drawn on the current cell only for a keyboard focus,
+  never around the row;
+- `.sf-verification-separator` -- an aria-hidden separator between groups of
+  cells (3 + 3, 4 + 4), a picture only, never in the value.
+
