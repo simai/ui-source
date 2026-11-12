@@ -180,8 +180,8 @@
   --sf-textarea-textarea--border-color: var(--sf-textarea-border-color, var(--sf-transparent-for-focus));
 }
 
-/* The filled field's bottom line (C52, owner 2026-11-10): with the fill at 8 %
-   (C41) the fill alone stands 1.10 to 1.23 from its place, so at rest the
+/* The filled field's bottom line (C52, owner 2026-11-10): with the fill at 12 %
+   (C113) the fill alone stands 1.15 to 1.39 from its place, so at rest the
    field also draws its bottom edge in --sf-outline, the bordered field's
    boundary. Only the bottom: the other edges stay the transparent border
    that a state colours. A state that colours the border (hover, press)
