@@ -35,7 +35,14 @@ still win.
 The status icon is the status's role `--sf-<status>` (neutral: the quiet
 `--sf-on-surface-variant`, read from the container), as on the alert: the container's graphic tone
 (`--sf-on-<status>-container-graphic`) it read before was 2.86-3.04:1 on a dark
-toast. The close's cross is the toast's text ink, `--sf-on-<status>-container`.
+toast.
+
+The close's cross is a service glyph (1.2.5, owner decision C107, AA-13): one
+step paler than the text, `--sf-on-surface-variant` on a toast of a level and
+the neutral icon's dim ink on a neutral toast, level with the status icon;
+under a pointer it catches the text ink. It painted the text ink
+(`--sf-on-<status>-container`) before. The level's graphic tone is not used:
+on a dark toast it reads 2.93:1.
 
 The neutral icon is the theme's dim ink on a fill, the alert's (1.2.3): `#515257`
 in light, `#d4d4d9` in dark. The toast is a popup place, and the popup's own

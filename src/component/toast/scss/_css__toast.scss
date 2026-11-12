@@ -173,6 +173,27 @@
     overflow-wrap: anywhere;
   }
 
+  /* The cross is a service glyph of the notice (owner decision C107 (1),
+     R198, AA-13): one step paler than the text, level with the status icon --
+     --sf-on-surface-variant of a toast of a level (a soft place keeps the
+     theme's dim ink), and on a neutral toast the theme's dim ink on a fill,
+     the neutral icon's (a popup place raises its own variant to the text's
+     ink in dark, C43). It painted the text ink before (14.71:1 light). Not
+     the level's graphic tone: on a dark toast that is 2.93:1, under 3. Under
+     a pointer it catches the text ink (C107 (4), as the quiet icon button
+     does, C15). */
+  .sf-toast > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-on-surface-variant);
+  }
+
+  .sf-toast:is(.sf-toast--neutral, .sf-toast--default) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: #{string.unquote(map.get(places.$sf-place-theme-roles, 'on-surface-container-variant'))};
+  }
+
+  .sf-toast > .sf-icon-button.sf-icon-button--close:not(:disabled):is(:hover, :active) > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-toast--content-color, var(--sf-on-surface));
+  }
+
   /* The quiet icon role, as on the alert (C35 acceptance F1): the theme's
      dim ink on a fill, the alert's #515257 / #d4d4d9. Not the place's
      --sf-on-surface-container-variant: a toast is a popup place, where C43
@@ -196,10 +217,6 @@
     --sf-icon--color: var(--sf-info);
   }
 
-  .sf-toast:is(.sf-toast--info, .sf-toast--primary) > .sf-icon-button.sf-icon-button--link > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-on-info-container);
-  }
-
   .sf-toast:is(.sf-toast--info, .sf-toast--primary) .sf-toast-supporting-text {
     --sf-toast-supporting-text--color: var(--sf-toast-color, var(--sf-on-info-container));
   }
@@ -211,10 +228,6 @@
   .sf-toast.sf-toast--error > .sf-icon,
   .sf-toast.sf-toast--error > sf-icon > .sf-icon {
     --sf-icon--color: var(--sf-error);
-  }
-
-  .sf-toast.sf-toast--error > .sf-icon-button.sf-icon-button--link > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-on-error-container);
   }
 
   .sf-toast.sf-toast--error .sf-toast-supporting-text {
@@ -230,10 +243,6 @@
     --sf-icon--color: var(--sf-warning);
   }
 
-  .sf-toast.sf-toast--warning > .sf-icon-button.sf-icon-button--link > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-on-warning-container);
-  }
-
   .sf-toast.sf-toast--warning .sf-toast-supporting-text {
     --sf-toast-supporting-text--color: var(--sf-toast-color, var(--sf-on-warning-container));
   }
@@ -245,10 +254,6 @@
   .sf-toast.sf-toast--success > .sf-icon,
   .sf-toast.sf-toast--success > sf-icon > .sf-icon {
     --sf-icon--color: var(--sf-success);
-  }
-
-  .sf-toast.sf-toast--success > .sf-icon-button.sf-icon-button--link > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-on-success-container);
   }
 
   .sf-toast.sf-toast--success .sf-toast-supporting-text {
@@ -264,7 +269,6 @@
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-surface-container));
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-surface));
-    --sf-close-icon--background-color: var(--sf-on-surface);
   }
 
   /* utility-hint: flex/1 (.flex-1) */
@@ -281,7 +285,6 @@
     @include places.sf-place-soft(info);
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-info-container));
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-info-container));
-    --sf-close-icon--background-color: var(--sf-on-info-container);
   }
 
   /* utility-hint: flex/1 (.flex-1) */
@@ -289,21 +292,18 @@
     @include places.sf-place-soft(error);
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-error-container));
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-error-container));
-    --sf-close-icon--background-color: var(--sf-on-error-container);
   }
 
   .sf-toast--warning {
     @include places.sf-place-soft(warning);
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-warning-container));
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-warning-container));
-    --sf-close-icon--background-color: var(--sf-on-warning-container);
   }
 
   .sf-toast--success {
     @include places.sf-place-soft(success);
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-success-container));
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-success-container));
-    --sf-close-icon--background-color: var(--sf-on-success-container);
   }
 
   @media (prefers-reduced-motion: reduce) {

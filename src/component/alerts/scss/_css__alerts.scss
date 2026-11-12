@@ -296,31 +296,25 @@
   --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-transparent));
 }
 
-/* One notice, one ink (C35 acceptance F1): the cross is the notice's text ink
-   and the status icon the status's own role (--sf-<status>; neutral the quiet
-   --sf-on-surface-variant), as on sf-toast, so the Smart alert, the class alert and the toast draw one
-   notice alike. The Smart alert's close stands inside an sf-button-icon host
-   (display: contents), so the cross is reached through any close host, not
-   only a class .sf-icon-button child. Neutral, and an outlined alert whose
-   text stands on the page: --sf-on-surface. */
-.sf-alert > :is(.sf-icon-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close)) .sf-close-icon {
-  --sf-close-icon--background-color: var(--sf-on-surface);
+/* The cross is a service glyph of the notice (owner decision C107 (1), R198,
+   AA-12): one step paler than the text, --sf-on-surface-variant of the place
+   it stands on -- the theme's dim ink on a status alert (a soft place keeps
+   it), the container's on a neutral one, the page's on an outlined one -- at
+   5.4:1 or more against the notice in light and 6.4:1 in dark, level with the
+   status icon. It painted the text ink before (14.4-15.7:1 light), two to
+   three times darker than the status icon. Under a pointer it catches the
+   text ink (C107 (4), as the quiet icon button does, C15). The Smart alert's
+   close stands inside an sf-button-icon host (display: contents), so the
+   cross is reached through any close host, not only a class .sf-icon-button
+   child; the appearance and .sf-close keep the rule above the icon button's
+   own cross colour. */
+.sf-alert:is(.sf-alert--default, .sf-alert--flat, .sf-alert--outlined) > :is(.sf-icon-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close)) .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-on-surface-variant);
 }
 
-.sf-alert.sf-alert--info:is(.sf-alert--default, .sf-alert--flat) > :is(.sf-icon-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close)) .sf-close-icon {
-  --sf-close-icon--background-color: var(--sf-on-info-container);
-}
-
-.sf-alert:is(.sf-alert--error, .sf-alert--danger):is(.sf-alert--default, .sf-alert--flat) > :is(.sf-icon-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close)) .sf-close-icon {
-  --sf-close-icon--background-color: var(--sf-on-error-container);
-}
-
-.sf-alert.sf-alert--warning:is(.sf-alert--default, .sf-alert--flat) > :is(.sf-icon-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close)) .sf-close-icon {
-  --sf-close-icon--background-color: var(--sf-on-warning-container);
-}
-
-.sf-alert.sf-alert--success:is(.sf-alert--default, .sf-alert--flat) > :is(.sf-icon-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close)) .sf-close-icon {
-  --sf-close-icon--background-color: var(--sf-on-success-container);
+.sf-alert:is(.sf-alert--default, .sf-alert--flat, .sf-alert--outlined) > .sf-icon-button:not(:disabled):is(:hover, :active) .sf-close > .sf-close-icon,
+.sf-alert:is(.sf-alert--default, .sf-alert--flat, .sf-alert--outlined) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button:not(:disabled):is(:hover, :active) .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
 }
 
 @media (prefers-reduced-motion: reduce) {

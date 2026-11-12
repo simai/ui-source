@@ -16,7 +16,7 @@
     "src/component/alerts/scss/_var__alerts.scss",
     "src/component/alerts/scss/index.scss"
   ],
-  "content_sha256": "cb910819e6d9060cbfda6fbeb50c0426705d2db0e1a9e9ee9ba0935ff4d92b7f",
+  "content_sha256": "e58e49814c81f3b0ecaee06360cad7806f91379335f71ae33bf7ad55159af18c",
   "dependencies": [
     {
       "id": "tokens.border",
