@@ -5,6 +5,7 @@ import BundledPosition from "../../core/js/position.js";
 import { renderContextMenuTemplate } from "./js/templates/default";
 import { holdOpenSurfaceMark } from "../../core/js/open-surface-mark";
 import { tagSelector } from "../../core/js/tag-aliases.js";
+import { noteDeprecated } from "../../core/js/deprecations.js";
 import { PanelScrollbar } from "../../component/panel-scrollbar.js";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
@@ -312,8 +313,11 @@ class SfContextMenu extends ContextMenuElement {
   // inline-end padding then, and keeps it beside an overlay scrollbar or none.
   // Read whenever the area is drawn or changes its size: a narrowed search, a
   // panel fitted to its room, a window made smaller.
+  // A panel with tabs scrolls its body, under the head and over the footer
+  // (the scroll-area inset rule, owner C106 addendum to C105, 2026-11-12).
   scrollArea() {
     return this.querySelector(".sf-context-menu-content--search > .sf-context-menu-list")
+      ?? this.querySelector(":scope > .sf-context-menu.sf-context-menu--panel > .sf-context-menu-frame > .sf-context-menu-content > .sf-context-menu-body")
       ?? this.querySelector(":scope > .sf-context-menu:not(.sf-context-menu--panel) > .sf-context-menu-frame > .sf-context-menu-content");
   }
 
@@ -321,8 +325,10 @@ class SfContextMenu extends ContextMenuElement {
   // (src/component/panel-scrollbar.js).
   watchScrollbar() {
     const area = this.scrollArea();
+    const name = area?.classList.contains("sf-context-menu-list") ? "sf-context-menu-list--scrollbar"
+      : area?.classList.contains("sf-context-menu-body") ? "sf-context-menu-body--scrollbar" : "sf-context-menu-content--scrollbar";
     this._scrollbar ??= new PanelScrollbar();
-    this._scrollbar.watch(area, area?.classList.contains("sf-context-menu-list") ? "sf-context-menu-list--scrollbar" : "sf-context-menu-content--scrollbar");
+    this._scrollbar.watch(area, name);
   }
 
   disconnectedCallback() {
@@ -1371,8 +1377,14 @@ class SfContextMenu extends ContextMenuElement {
     return this.getBooleanAttr("closable", false);
   }
 
+  // A panel with tabs is a former name until 2027-01-01 (owner decision
+  // C106): a list's view settings are sf-settings look="panel". It is still
+  // drawn; a page that asks for deprecation notes hears it once.
   get panel() {
-    return this.tabs.length > 0;
+    const panel = this.tabs.length > 0;
+    if (panel) noteDeprecated({component: "sf-menu-context", tag: this.localName, kind: "setting", attribute: "tabs", from: "tabs",
+      to: 'sf-settings look="panel"', since: "2026-11-12", remove_after: "2027-01-01"});
+    return panel;
   }
 
   // A tab chosen: the head marks it and says so; the host puts that tab's

@@ -1010,10 +1010,31 @@
   display: none;
 }
 
+/* The body is the panel's scroll area (the scroll-area inset rule, owner
+   C106 addendum to C105, 2026-11-12): one inset I = --sf-space-1/4 on every
+   side of the rows' plates, from the panel's edge; while its scrollbar takes
+   room the body gives up its inline-end padding and the track is I, the
+   thumb, I (14, --sf-scroll-bg-width). sf-menu-context marks it
+   sf-context-menu-body--scrollbar. It kept a stable gutter before: an empty
+   14 beside rows that did not scroll, and 18 from a plate to the edge when
+   they did. The content gives its inline padding to the body; the head and
+   the footer keep their places. */
+.sf-context-menu.sf-context-menu--panel .sf-context-menu-content {
+  padding-inline: 0;
+}
+
 .sf-context-menu--panel .sf-context-menu-body {
-  padding-block: var(--sf-space-1\/4);
-  scrollbar-gutter: stable;
+  padding: var(--sf-space-1\/4);
   overflow-x: hidden;
+  @include panel.scrollbar(var(--sf-space-1\/4), --sf-context-menu--track, var(--sf-context-menu--row-height), var(--sf-context-menu--thumb));
+}
+
+.sf-context-menu--panel .sf-context-menu-body.sf-context-menu-body--scrollbar {
+  padding-inline-end: 0;
+}
+
+.sf-context-menu--panel :is(.sf-context-menu-head, .sf-context-menu-top, .sf-context-menu-footer) {
+  margin-inline: var(--sf-context-menu-content--padding-inline-start) var(--sf-context-menu-content--padding-inline-end);
 }
 
 /* A row of a panel holds anything -- a handle, a label, a checkbox, a pin --
@@ -1050,6 +1071,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* A panel row is a plate (C05, R193 DP-3): rounded as a control, the hover
+   plate under the pointer, and a chosen row -- its checkbox or radio checked --
+   the theme's light fill (owner decision C106 (2)). The plate stands the
+   inset from the panel's edge (the body's padding). */
+.sf-context-menu-row {
+  border-radius: var(--sf-context-menu--row-radius);
 }
 
 /* ─── the scrollbar: only when the rows do not fit, in the inset ───────── */
@@ -1090,6 +1119,21 @@
      line in the primary colour (Highlight in forced colours). */
   .sf-context-menu-search {
     @include panel.search-focus;
+  }
+
+  /* A panel row (R193 DP-3, C05, owner decision C106 (2)): the hover plate
+     under the pointer; checked, the theme's light fill, and its own hover. */
+  .sf-context-menu-row:hover {
+    background-color: var(--sf-surface-state-select);
+  }
+
+  .sf-context-menu-row:has(> :is(sf-checkbox, sf-radio, input) :checked, > input:checked) {
+    background-color: var(--sf-primary-container);
+    color: var(--sf-on-primary-container);
+  }
+
+  .sf-context-menu-row:has(> :is(sf-checkbox, sf-radio, input) :checked, > input:checked):hover {
+    background-color: var(--sf-primary-container-hover);
   }
 
   .sf-context-menu-item:focus-visible,

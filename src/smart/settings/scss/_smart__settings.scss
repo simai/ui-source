@@ -334,6 +334,7 @@
 
 .sf-settings-row--dragging {
   background-color: var(--sf-surface-container);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
 }
 
 .sf-settings-row--drop-before {
@@ -436,9 +437,11 @@
     cursor: default;
   }
 
+  /* The ring turns inwards: the row stands flush against its neighbours. */
   .sf-settings-row-main:focus-visible,
   .sf-settings-row-pin:focus-visible {
-    box-shadow: var(--sf-ui-focus-inset);
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(-1 * var(--sf-focus--width));
   }
 
   .sf-settings-panel-search {
