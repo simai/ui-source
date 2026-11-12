@@ -386,3 +386,9 @@ test('C96 7: two to four tabs share the phone row (fit); overflow stays More', (
   assert.match(source, /container\?\.setAttribute\('data-sf-tabs-fit', ''\);/u);
   assert.match(sheet, /\.sf-tabs-top-container\[data-sf-tabs-fit\] > \.sf-tabs-top \{/u);
 });
+
+test('T13: the JSON form of items is in the manifest summary and the docs', () => {
+  assert.match(manifest.settings.items.summary, /JSON array/u);
+  assert.match(read('src/smart/tabs/docs/docs.md'), /items='\[\{"id":"io","label":"Ввод \| вывод"\}/u);
+  assert.equal(parseItems('[{"id":"io","label":"Ввод | вывод"}]').map((item) => item.label).join(), 'Ввод | вывод');
+});
