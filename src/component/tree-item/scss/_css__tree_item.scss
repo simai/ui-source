@@ -15,9 +15,15 @@
    painted with a transparent overlay -- a state wash, 24% of a secondary -- so
    every icon in every tree stood at a quarter of the strength of the name
    beside it and read as disabled (owner, 2026-10-08). The token is here for a
-   tree that wants something else. */
+   tree that wants something else.
+
+   Only the row's own glyphs: its type icon and its chevron (TR-15). Written
+   for every .sf-icon in the row, it reached into what a row holds -- the mark
+   of a nested sf-checkbox turned on-surface (black) on its primary box,
+   because this layer outranks the checkbox's own on-primary. */
 @layer sf.override {
-  .sf-tree-item .sf-icon {
+  .sf-tree-item-container > .sf-tree-node-icon,
+  .sf-tree-item-container > .sf-tree-toggle > .sf-tree-chevron {
     --sf-icon--color: var(--sf-tree-item-icon-color, var(--sf-tree-item-icon--color, currentColor));
   }
 }
