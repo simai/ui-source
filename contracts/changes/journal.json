@@ -10399,6 +10399,278 @@
       },
       "owner": "ui-source",
       "source": "src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
+    },
+    {
+      "id": "value-pagination-footer-parts-to-view",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-pagination is page navigation only (decision C97, 2026-11-12): its appearance setting is field, numbers, arrows, cursor or more. An sf-pagination written without appearance keeps drawing the footer of 1.4 until remove_after -- the range (now «41–60 из 240» in place of «Всего: 240»), the page-size part (now a quiet «По 20 ▾» button with a menu in place of the labelled select), the field «из 12», Show more and the band -- and each use is noted in SF.deprecations (kind value, appearance=(none)). The range and the page size belong to the list that shows them: sf-view composes them beside an sf-pagination of its own appearance. page-sizes, show-page-size and the event sf-pagination-size-change are the page-size part's and leave with it.",
+      "items": [
+        {
+          "component": "sf-pagination",
+          "attribute": "appearance",
+          "from": "(none)",
+          "to": "field",
+          "match": "<sf-pagination(?![^>]*\\bappearance=)[^>]*>"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "page-sizes",
+          "to": null,
+          "match": "<sf-pagination[^>]*\\bpage-sizes="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "show-page-size",
+          "to": null,
+          "match": "<sf-pagination[^>]*\\bshow-page-size="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-pagination-size-change",
+          "to": null,
+          "match": "sf-pagination-size-change"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write appearance on the sf-pagination (field for a dense table, numbers for a site or search, arrows when the count is not known, cursor for a cursor list, more for Show more). Put the range beside it as text («41–60 из 240», from the list's own page, size and total) and the page size as an sf-button appearance=\"ghost\" scheme=\"on-surface\" icon-end=\"arrow_drop_down\" «По 20» opening an sf-menu-context of kind: \"radio\" rows; handle the size there instead of sf-pagination-size-change. sf-view: see the footer recipe in ui-control control/evidence/2026-11-12-pagination-c97/README.md.",
+      "examples": {
+        "before": "<sf-pagination current=\"3\" total=\"240\" page-size=\"20\"></sf-pagination>",
+        "after": "<span class=\"range\">41–60 из 240</span> <sf-button appearance=\"ghost\" scheme=\"on-surface\" icon-end=\"arrow_drop_down\" text=\"По 20\"></sf-button> <sf-pagination appearance=\"field\" current=\"3\" total=\"240\" page-size=\"20\"></sf-pagination>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/pagination/index.js noteFooterParts, noteFooterEvent; src/smart/pagination/js/templates/default.js renderFooter"
+    },
+    {
+      "id": "value-pagination-show-more-to-more",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "Show more is its own appearance of sf-pagination, appearance=\"more\" (decision C97 point 1: never in one row with the arrows): «Показать ещё 20», then «Показано 40 из 240» and a thin bar. The footer of an sf-pagination without appearance still draws Show more when top is on and a next portion exists, now on a line of its own above the page row, until remove_after, noted in SF.deprecations (kind setting, top).",
+      "items": [
+        {
+          "component": "sf-pagination",
+          "from": "top",
+          "to": "appearance=\"more\"",
+          "match": "<sf-pagination(?![^>]*\\bappearance=)(?![^>]*\\btop=\"false\")[^>]*>"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "top-class",
+          "to": null,
+          "match": "<sf-pagination[^>]*\\btop-class="
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "A list that appends portions writes <sf-pagination appearance=\"more\"> (current is the number of portions shown, total and page-size as before; sf-pagination-load-more is unchanged). A list that pages writes top=\"false\" or an appearance other than more.",
+      "examples": {
+        "before": "<sf-pagination total=\"240\" page-size=\"20\" current=\"2\"></sf-pagination>",
+        "after": "<sf-pagination appearance=\"more\" total=\"240\" page-size=\"20\" current=\"2\"></sf-pagination>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/pagination/index.js noteFooterParts; src/smart/pagination/js/templates/default.js renderFooter, renderMore"
+    },
+    {
+      "id": "setting-pagination-band-to-view",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "The band of bulk controls («Отмечено: N · Действие ▾ · Применить · Для всех · ✕») belongs to sf-view (decision C97 point 5), which already draws it at the end of its card from the pagination's action settings. sf-pagination keeps drawing it (bottom, footer only) and sending its events until remove_after; each use of the band and each of its events is noted in SF.deprecations (kind setting actions, kind event <name>, to sf-view).",
+      "items": [
+        {
+          "component": "sf-pagination",
+          "from": "bottom",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bbottom="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "bottom-class",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bbottom-class="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "show-actions",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bshow-actions="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "actions",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bactions="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "action",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\baction="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "action-apply-text",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\baction-apply-text="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "show-action-for-all",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bshow-action-for-all="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "action-for-all",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\baction-for-all="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "action-for-all-label",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\baction-for-all-label="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "actions-label",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bactions-label="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "action-choose-label",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\baction-choose-label="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "actions-region-label",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bactions-region-label="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "clear-selection-label",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bclear-selection-label="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "selected-label",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bselected-label="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "selected-count",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bselected-count="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-pagination-selection-clear",
+          "to": "sf-view",
+          "match": "sf-pagination-selection-clear\\b"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-pagination-action-change",
+          "to": "sf-view",
+          "match": "sf-pagination-action-change\\b"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-pagination-action-for-all-change",
+          "to": "sf-view",
+          "match": "sf-pagination-action-for-all-change\\b"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-pagination-apply",
+          "to": "sf-view",
+          "match": "sf-pagination-apply\\b"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Move the bulk actions to the list: sf-view draws the band itself (its own actions setting replaces the pagination's when it ships; until then it reads them from the pagination it owns). A page with its own sf-pagination and a band composes the band beside the list (sf-dropdown, sf-button, sf-checkbox, sf-button-icon) and acts on its own selection.",
+      "examples": {
+        "before": "<sf-pagination actions=\"archive:В архив\" selected-count=\"3\"></sf-pagination>",
+        "after": "<sf-view …> (the band is sf-view's) <sf-pagination slot=\"pagination\" appearance=\"field\"></sf-pagination>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/pagination/index.js noteFooterParts, noteFooterEvent; src/smart/pagination/js/templates/default.js renderBand"
+    },
+    {
+      "id": "attribute-pagination-footer-labels",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "The footer of decision C97 says no «Всего:» and no «Страницы:»: the range «41–60 из 240» names what is shown and the row says what it is. An author's own total-label still draws the 1.4 line «Всего: 240» in place of the range, and an author's own pages-label still draws its label before the field, until remove_after, each noted in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-pagination",
+          "from": "total-label",
+          "to": null,
+          "match": "<sf-pagination[^>]*\\btotal-label="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "pages-label",
+          "to": null,
+          "match": "<sf-pagination[^>]*\\bpages-label="
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove total-label and pages-label from the sf-pagination. A different range wording is a word of the page language: SF.language.register('sf-pagination', '<lang>', {range: '{from}–{to} of {total}'}).",
+      "examples": {
+        "before": "<sf-pagination total-label=\"Записей:\"></sf-pagination>",
+        "after": "<sf-pagination></sf-pagination>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/pagination/index.js rangeText, noteFooterParts"
+    },
+    {
+      "id": "value-pager-steps-course-retired",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-pager is the neighbouring document (decision C97 point 7): cards, row and counter. appearance=\"steps\" (a wizard's Back, «Шаг 2 из 4», Next) is sf-wizard's job and appearance=\"course\" (lesson dots and the next lesson) has no product; both still draw until remove_after, each use noted in SF.deprecations (kind value, appearance). Image counters and carousel dots are sf-gallery's and sf-slider's.",
+      "items": [
+        {
+          "component": "sf-pager",
+          "attribute": "appearance",
+          "from": "steps",
+          "to": "sf-wizard",
+          "match": "<sf-pager[^>]*\\bappearance=[\"']steps[\"']"
+        },
+        {
+          "component": "sf-pager",
+          "attribute": "appearance",
+          "from": "course",
+          "to": null,
+          "match": "<sf-pager[^>]*\\bappearance=[\"']course[\"']"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Replace an sf-pager appearance=\"steps\" by sf-wizard (its steps, progress and rules of passage). A course of lessons is a page of its own (sf-steps or a list of links) until a product asks for one.",
+      "examples": {
+        "before": "<sf-pager appearance=\"steps\" current=\"1\"></sf-pager>",
+        "after": "<sf-wizard …></sf-wizard>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/pager/index.js noteRetired"
     }
   ]
 }

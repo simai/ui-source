@@ -17,8 +17,10 @@ const rule = (selector, from = sheet) => {
   return from.slice(at, from.indexOf('}', at));
 };
 
-test('version 1.2.4, a patch: nothing set or reported differently', () => {
-  assert.equal(component.version, '1.2.4');
+// 1.3.0 (C97 point 7) narrows the looks to cards, row and counter; steps and
+// course stay values until 2027-01-01 (tests/pager-c97.contract.test.mjs).
+test('version 1.3.0: the five values still parse, three are the component\'s looks', () => {
+  assert.equal(component.version, '1.3.0');
   assert.deepEqual(component.settings.appearance.values, ['cards', 'row', 'steps', 'course', 'counter']);
 });
 

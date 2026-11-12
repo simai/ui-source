@@ -24,8 +24,9 @@ const en = json('src/smart/pagination/lang/en.json');
 const ru = json('src/smart/pagination/lang/ru.json');
 const record = json('contracts/changes/journal.json').records.find((one) => one.id === 'option-pagination-word-keys-camel-to-kebab');
 const camelKey = (key) => key.replace(/-([a-z])/gu, (_, letter) => letter.toUpperCase());
-// Words added after the rename (1.4.0: title-page) had no camelCase key.
-const LATER_WORDS = new Set(['title-page']);
+// Words added after the rename (1.4.0: title-page; 1.5.0: the appearances'
+// words) had no camelCase key; the set is the element's own.
+const LATER_WORDS = new Set([...read('src/smart/pagination/index.js').match(/const LATER_WORDS = new Set\(\[([\s\S]*?)\]\);/u)[1].matchAll(/"([a-z-]+)"/gu)].map((match) => match[1]));
 const renamed = Object.keys(en.runtime).filter((key) => !LATER_WORDS.has(key));
 
 class FakeBase extends EventTarget {
@@ -57,7 +58,8 @@ const make = (code) => Object.assign(new Pagination(), {code});
 test('sf-pagination declares every word\'s camelCase key as its former key, until 2026-12-01', () => {
   const source = read('src/smart/pagination/index.js');
   assert.match(source, /formerWords: \{\n\s+since: "2026-10-27",\n\s+remove_after: "2026-12-01",\n\s+words: Object\.fromEntries\(Object\.keys\(en\.runtime\)\.filter\(\(key\) => !LATER_WORDS\.has\(key\)\)\.map\(\(key\) => \[key, camelKey\(key\)\]\)\),/u);
-  assert.match(source, /const LATER_WORDS = new Set\(\["title-page"\]\);/u);
+  assert.ok(LATER_WORDS.has('title-page') && LATER_WORDS.has('range') && LATER_WORDS.has('of-pages'), 'the words of 1.4.0 and 1.5.0 have no former key');
+  for (const key of LATER_WORDS) assert.ok(key in en.runtime, `${key} is a word of the element`);
   assert.ok(record, 'the change journal records the former keys');
   assert.equal(record.remove_after, '2026-12-01');
   assert.deepEqual(

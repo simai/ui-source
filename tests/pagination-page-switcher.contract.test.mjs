@@ -68,14 +68,19 @@ test('an estimate is not taken for the end', async () => {
   assert.deepEqual(shape(await pageItems(1, 0, {totalExact: false})), [1], 'an estimate of none is not an empty set');
 });
 
-test('the ends are buttons, hidden where they lead nowhere', async () => {
+test('the ends are buttons, disabled in place where they lead nowhere (C97 point 4)', async () => {
   const [source, markup] = await Promise.all([
     read('src/smart/pagination/index.js'),
     read('src/smart/pagination/js/templates/default.js'),
   ]);
 
-  assert.match(markup, /\$\{context\.hasPrev\s*\?\s*html`[\s\S]*?kind: "first",[\s\S]*?icon: "first_page",[\s\S]*?kind: "prev",/u);
-  assert.match(markup, /\$\{context\.hasNext\s*\?\s*html`[\s\S]*?kind: "next",[\s\S]*?\$\{context\.canJumpToLast[\s\S]*?kind: "last",[\s\S]*?icon: "last_page",/u);
+  // Hidden ends moved the field sideways while a person paged (PG-02): every
+  // end stays where it is and is disabled.
+  assert.match(markup, /kind: "first",\s*icon: "first_page",[\s\S]*?disabled: !context\.hasPrev,/u);
+  assert.match(markup, /kind: "prev",[\s\S]*?disabled: !context\.hasPrev,/u);
+  assert.match(markup, /kind: "next",[\s\S]*?disabled: !context\.hasNext,/u);
+  assert.match(markup, /context\.canJumpToLast\s*\?\s*renderDirection\(context, \{\s*kind: "last",\s*icon: "last_page",[\s\S]*?disabled: !context\.hasNext,/u);
+  assert.match(markup, /function renderField\(context, component\) \{[\s\S]*?first\(context, component\)[\s\S]*?previous\(context, component\)[\s\S]*?renderPageField[\s\S]*?next\(context, component\)[\s\S]*?last\(context, component\)/u);
   // The last page is offered when there is a number to jump to, or a count to
   // ask for first; an estimate the host cannot count offers none (gate 29),
   // and neither does a host with no count it can ask for (PG-11, 1.4.0).
@@ -83,11 +88,11 @@ test('the ends are buttons, hidden where they lead nowhere', async () => {
   // Each carries a tooltip and the same text as its accessible name.
   assert.match(
     markup,
-    /function renderDirection\(context, \{kind, icon, label, page, go\}\) \{[\s\S]*?title=\$\{label\}[\s\S]*?aria-label=\$\{label\}/u,
+    /function renderDirection\(context, \{kind, icon, label, page, go, disabled = false\}\) \{[\s\S]*?title=\$\{label\}[\s\S]*?aria-label=\$\{label\}/u,
   );
   // The gap that jumped into the middle of the hidden pages is gone with the
-  // scheme it belonged to.
-  assert.doesNotMatch(markup, /ellipsis/u);
+  // scheme it belonged to; the gap of numbers (C97) is no control.
+  assert.doesNotMatch(markup, /sf-page-number--ellipsis/u);
 });
 
 test('the field takes any page and is held to the pages there are', async () => {

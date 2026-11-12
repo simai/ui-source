@@ -45,11 +45,11 @@ test('PG-11: the last-page button is drawn only where the jump can be answered',
   assert.equal(canJumpToLast(host(false, true, false)), false, 'a cursor list: no count and none to ask for');
   assert.equal(canJumpToLast(host(true, false, false)), false, 'an estimate the host cannot count (gate 29)');
   assert.doesNotMatch(source, /!this\.countKnown,\s*$/mu);
-  assert.match(markup, /\$\{context\.canJumpToLast\s*\?\s*renderDirection\(context, \{\s*kind: "last",/u);
+  assert.match(markup, /\(context\.canJumpToLast\s*\?\s*renderDirection\(context, \{\s*kind: "last",/u);
 });
 
 test('PG-10: three settings, all off by default, and the word of the title', () => {
-  assert.equal(component.version, '1.4.0');
+  assert.equal(component.version, '1.5.0');
   assert.deepEqual(
     [component.settings.href.type, component.settings.href.default],
     ['string', ''],
@@ -68,8 +68,9 @@ test('PG-10: with href the arrows are links, prev and next say rel', () => {
   assert.equal(self.pageHref(0), '');
   assert.equal(bind({href: '', pageSize: 20}, 'pageHref')(3), '', 'no template: buttons, as before');
 
-  assert.match(markup, /<a\s[\s\S]*?href=\$\{href\}\s*rel=\$\{kind === "prev" \|\| kind === "next" \? kind : nothing\}/u);
-  assert.match(markup, /@click=\$\{\(event\) => context\.component\.followLink\(event, page\)\}/u);
+  // At an end the link keeps its place with no address (C97 point 4).
+  assert.match(markup, /<a\s[\s\S]*?href=\$\{href \|\| nothing\}[\s\S]*?aria-disabled=\$\{href \? nothing : "true"\}[\s\S]*?rel=\$\{href && \(kind === "prev" \|\| kind === "next"\) \? kind : nothing\}/u);
+  assert.match(markup, /@click=\$\{\(event\) => \(href \? context\.component\.followLink\(event, page\) : event\.preventDefault\(\)\)\}/u);
   // The link wears the ghost, on-surface icon button that sf-button-icon draws.
   assert.match(markup, /sf-icon-button sf-icon-button--size-\$\{size\} sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface/u);
   assert.match(sheet, /\.sf-pagination a\.sf-pagination-link \{\s*text-decoration: none;/u);
@@ -143,7 +144,8 @@ test('PG-05: a narrow screen keeps the page row a wrapping row, not a column', (
   assert.doesNotMatch(narrow, /\.sf-pagination-main \{[^}]*flex-direction: column/u, 'the row is not stacked');
   assert.doesNotMatch(narrow, /\.sf-pagination-count[^{]*\{[^}]*flex-direction: column/u, 'the page size keeps its label beside it');
   assert.doesNotMatch(narrow, /inline-size: 100%/u, 'no part takes a line of its own by width');
-  assert.match(narrow, /\.sf-pagination \.sf-pagination-count \{\s*margin-inline-start: auto;/u);
+  // The field ends its line at every width (C97 point 5 order: range, size, field).
+  assert.match(sheet, /\.sf-pagination \.sf-pagination-main > \.sf-pagination-container \{\s*order: 1;\s*margin-inline-start: auto;/u);
   assert.match(narrow, /\.sf-pagination \.sf-pagination-pages-label \{\s*display: none;/u);
   // The page row wraps at every width, so what does not fit starts a line.
   assert.match(sheet, /\.sf-pagination \.sf-pagination-main \{\s*flex-wrap: wrap;/u);
