@@ -437,6 +437,7 @@ const DatepickerElement = elementFromManifest(manifest, {
     actions: {
         'open-panel'({options} = {}) {
             if (this.disabled) return 'disabled';
+            if (this.valueLocked) return 'readonly';
             this._openPanel(options || {});
             return 'applied';
         },
@@ -447,17 +448,20 @@ const DatepickerElement = elementFromManifest(manifest, {
         },
         'toggle-panel'() {
             if (!this.open && this.disabled) return 'disabled';
+            if (!this.open && this.valueLocked) return 'readonly';
             this._togglePanel();
             return 'applied';
         },
         'choose-preset'({item} = {}) {
             if (this.disabled) return 'disabled';
+            if (this.valueLocked) return 'readonly';
             if (!item || item.disabled || !this.range) return 'unavailable-preset';
             this._choosePreset(item);
             return 'applied';
         },
         'choose-custom-range'() {
             if (this.disabled) return 'disabled';
+            if (this.valueLocked) return 'readonly';
             if (!this.range) return 'not-a-range';
             this._chooseCustomRange();
             return 'applied';
@@ -970,8 +974,10 @@ class SfDatepicker extends FormField(DatepickerElement) {
         return this.getBooleanAttr('input', true);
     }
 
+    // A read-only field is never open, even when a host writes `open`: its
+    // calendar would offer a choice the field does not take (C62).
     get open() {
-        return this.getBooleanAttr('open', false);
+        return this.getBooleanAttr('open', false) && !(this.input && this.valueLocked);
     }
 
     get portal() {
@@ -1192,6 +1198,17 @@ class SfDatepicker extends FormField(DatepickerElement) {
     // component said it was not.
     get readonly() {
         return this.range || this.getBooleanAttr('readonly', false);
+    }
+
+    // The host's `readonly`: the value is shown and submitted, never changed
+    // here (owner decision C62: a read-only field does not open the calendar).
+    // The field opens no panel, and an inline calendar takes no choice -- its
+    // days, quick ranges and time stay readable and can be walked through.
+    // `readonly` above also counts a range, which is only "not typed": a range
+    // still opens its calendar. It opened for the host's `readonly` too, so a
+    // value the page said could not be changed could be changed on the grid.
+    get valueLocked() {
+        return this.getBooleanAttr('readonly', false);
     }
 
     // A date can be typed. The field was hard-readonly, so a host that edits a
@@ -1522,7 +1539,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     }
 
     _openPanel({focusCalendar = false} = {}) {
-        if (this.disabled) return this;
+        if (this.disabled || this.valueLocked) return this;
         this._focusCalendarOnOpen = focusCalendar;
         if (!this.open) this.showValueMonth();
         else if (!this.state.activeDate) {
@@ -1841,7 +1858,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     }
 
     selectDate(day) {
-        if (this.disabled || !day?.date || day.disabled) {
+        if (this.disabled || this.valueLocked || !day?.date || day.disabled) {
             return this;
         }
 
@@ -1924,7 +1941,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     // A quick range: its dates, the grid on the month it ends in, and the change
     // said once, by the person's choice -- never by a render.
     _choosePreset(item) {
-        if (this.disabled || !item || item.disabled) return this;
+        if (this.disabled || this.valueLocked || !item || item.disabled) return this;
         const from = formatIsoDate(item.from);
         const to = formatIsoDate(item.to);
         this.setState({
@@ -1944,7 +1961,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
 
     // «Свой период»: the quick range lets go and the person picks on the grid.
     _chooseCustomRange() {
-        if (this.disabled) return this;
+        if (this.disabled || this.valueLocked) return this;
         if (this.preset) this.setState({preset: '', startValue: '', endValue: '', date: ''});
         this._focusDateAfterRender = true;
         this.requestComponentUpdate('custom-range');
@@ -2020,6 +2037,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     // The time set on the panel: the value in time mode; in datetime mode the
     // value once a day is chosen, kept for the day until then.
     setTime(minutes) {
+        if (this.disabled || this.valueLocked) return this;
         if (this.mode === 'time') {
             this.setState({date: formatIsoTime(minutes)});
             this.emitChange();
@@ -2042,7 +2060,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     // a time the first step takes the day's first allowed time (up) or its
     // last (down).
     stepTime(part, direction = 1) {
-        if (this.disabled) return this;
+        if (this.disabled || this.valueLocked) return this;
         const day = this.mode === 'datetime' ? this.selectedDate : null;
         const current = this.currentMinutes;
         const {lo, hi} = this.timeWindow(day);
@@ -2261,6 +2279,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
             label: this.label,
             ariaLabel: this.ariaLabel,
             readonly: this.readonly,
+            valueLocked: this.valueLocked,
             disabled: this.disabled,
             required: this.required,
             invalid: this.invalid,
@@ -2290,7 +2309,10 @@ class SfDatepicker extends FormField(DatepickerElement) {
 
     afterRender() {
         this._input = this.refs.input?.value?.querySelector('input') || null;
-        if (this._input) {
+        // A read-only field opens nothing, so it names no popup either.
+        if (this._input && this.valueLocked) {
+            for (const name of ['aria-haspopup', 'aria-expanded', 'aria-controls']) this._input.removeAttribute(name);
+        } else if (this._input) {
             this._input.setAttribute('aria-haspopup', 'dialog');
             this._input.setAttribute('aria-expanded', this.open ? 'true' : 'false');
             this._input.setAttribute('aria-controls', this._panelId);

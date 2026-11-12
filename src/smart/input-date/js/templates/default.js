@@ -142,7 +142,8 @@ function renderGrid(context) {
     const weeks = [];
     for (let at = 0; at < context.days.length; at += 7) weeks.push(context.days.slice(at, at + 7));
     return html`
-        <div class="sf-datepicker-grid grid grid-col-7" role="grid" aria-label=${context.calendarLabel}>
+        <div class="sf-datepicker-grid grid grid-col-7" role="grid" aria-label=${context.calendarLabel}
+            aria-readonly=${context.valueLocked ? 'true' : nothing}>
             <div class="sf-datepicker-week" role="row">
                 ${context.weekdayNames.map((name) => html`<span class="sr-only" role="columnheader">${name}</span>`)}
             </div>

@@ -110,3 +110,25 @@ test('the field takes the locale\'s format, its mask and its hint where no host 
   assert.equal(manifest.settings['mask-pattern'].default, '');
   assert.match(manifest.settings.format.summary, /formatToParts/u);
 });
+
+// Point 5: a read-only field does not open the calendar. `readonly` also
+// counts a range (not typed), which still opens; the host's attribute locks.
+test('a read-only field opens no calendar and an inline one takes no choice', () => {
+  const source = read('src/smart/input-date/index.js');
+  assert.match(source, /get valueLocked\(\) \{\s*return this\.getBooleanAttr\('readonly', false\);/u);
+  assert.match(source, /_openPanel\(\{focusCalendar = false\} = \{\}\) \{\s*if \(this\.disabled \|\| this\.valueLocked\) return this;/u);
+  assert.match(source, /'open-panel'\(\{options\} = \{\}\) \{\s*if \(this\.disabled\) return 'disabled';\s*if \(this\.valueLocked\) return 'readonly';/u);
+  assert.match(source, /if \(!this\.open && this\.valueLocked\) return 'readonly';/u);
+  assert.match(source, /return this\.getBooleanAttr\('open', false\) && !\(this\.input && this\.valueLocked\);/u);
+  assert.match(source, /if \(this\.disabled \|\| this\.valueLocked \|\| !day\?\.date \|\| day\.disabled\)/u);
+  assert.match(source, /if \(this\.disabled \|\| this\.valueLocked \|\| !item \|\| item\.disabled\) return this;/u);
+  assert.match(source, /stepTime\(part, direction = 1\) \{\s*if \(this\.disabled \|\| this\.valueLocked\) return this;/u);
+  assert.match(source, /setTime\(minutes\) \{\s*if \(this\.disabled \|\| this\.valueLocked\) return this;/u);
+  assert.match(source, /if \(this\._input && this\.valueLocked\) \{\s*for \(const name of \['aria-haspopup', 'aria-expanded', 'aria-controls'\]\) this\._input\.removeAttribute\(name\);/u);
+  // A range is not locked by being a range.
+  assert.match(source, /get readonly\(\) \{\s*return this\.range \|\| this\.getBooleanAttr\('readonly', false\);/u);
+  const template = read('src/smart/input-date/js/templates/default.js');
+  assert.ok(template.includes("aria-readonly=${context.valueLocked ? 'true' : nothing}"));
+  const manifest = JSON.parse(read('src/smart/input-date/component.json'));
+  assert.match(manifest.settings.readonly.summary, /opens no calendar/u);
+});

@@ -51,9 +51,13 @@ and nothing is ever read as a different date than the one typed. Emptying the fi
 deleting the text is how a person says there is no date. Enter commits what is
 typed; ArrowDown still opens the calendar.
 
-Add `readonly` for a field the person may not type in -- the date is then chosen
-on the grid alone. A `range` field is always read-only: one field holding two
-dates has no single format to read back. Its `start-value` and `end-value`
+Add `readonly` for a value the person may see but not change: the field cannot
+be typed in and does not open the calendar -- a click, ArrowDown, Enter and
+Space do nothing, `open-panel` is refused, and the field names no popup
+(owner decision C62). The value is still submitted. A read-only inline
+calendar (`input="false"`) can be walked through but takes no choice. A
+`range` field is never typed -- one field holding two dates has no single
+format to read back -- and is chosen on its calendar, which opens. Its `start-value` and `end-value`
 are read with the same parser, so a value holding two dates is not a date.
 
 The mask properties (`mask`, `mask-pattern`, `mask-lazy`,
@@ -229,9 +233,9 @@ question (C67).
 ## Interaction and accessibility
 
 The popup field exposes `aria-haspopup`, `aria-expanded` and `aria-controls`.
-ArrowDown opens the calendar from the field; in a read-only field Enter and
-Space open it too, while in a field that can be typed in they belong to the
-text and Enter commits it. Inside the day
+ArrowDown opens the calendar from the field; in a range field, which is not
+typed, Enter and Space open it too, while in a field that can be typed in they
+belong to the text and Enter commits it. A `readonly` field opens nothing. Inside the day
 grid, arrow keys move by day or week, Home and End move to a week edge, and
 PageUp and PageDown change the month. RTL reverses the physical horizontal
 arrows while chronological movement remains correct. Escape closes the popup

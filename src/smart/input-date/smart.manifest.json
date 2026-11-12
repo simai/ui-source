@@ -295,7 +295,7 @@
       "readonly": {
         "type": "boolean",
         "default": false,
-        "description": "Keeps the field read-only: the date is chosen on the grid only. A single date can be typed by default; a range is always chosen on the grid."
+        "description": "The value is shown and submitted but not changed: the field cannot be typed in and opens no calendar, and an inline calendar (input=false) takes no choice on its grid (owner decision C62). A single date can be typed by default; a range is always chosen on the grid, which does not make it read-only."
       },
       "value": {
         "type": [
@@ -742,11 +742,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-date/index.js",
-        "sha256": "b4bfd9d783724efb0023aeb7c3b2bc963742e1affed760403d42c6e2ab9a08c3"
+        "sha256": "07015d12f708bd43b64739b11f9567f68785da91ba46908e4a0fb3775dcdd262"
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",
-        "sha256": "f40e63f49e5b99b68385189c2d1e0e9982571a4b5d20e7f38264c57443e7c1a6"
+        "sha256": "815d4d590ae63c66a07bccb7dcf4a7678a17d0ab4c45773cc4c1f97e734a6e6e"
       },
       {
         "path": "src/smart/input-date/rule.js",
@@ -754,7 +754,7 @@
       },
       {
         "path": "src/smart/input-date/docs/smart-datepicker-guide.md",
-        "sha256": "c1c914c4abeffea1ac4ca8cd56ba926352f23418694a8c3b7444067ca52b26a2"
+        "sha256": "d393217e621d110b063b59c6d7ffc7c6f297b2650f9792fe9eaf8d44f1266603"
       }
     ],
     "generated_runtime": [
