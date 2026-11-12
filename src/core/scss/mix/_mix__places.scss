@@ -57,6 +57,8 @@
 
 $sf-place-theme-roles: (
   'on-surface': 'light-dark(var(--sf-neutral-10), var(--sf-neutral-90))',
+  'on-surface-hover': 'light-dark(var(--sf-neutral-15), var(--sf-neutral-85))',
+  'on-surface-active': 'light-dark(var(--sf-neutral-20), var(--sf-neutral-80))',
   'on-surface-icon': 'light-dark(var(--sf-neutral-25), var(--sf-neutral-80))',
   'on-surface-variant': 'light-dark(var(--sf-neutral-40), var(--sf-neutral-70))',
   'on-surface-container-variant': 'light-dark(var(--sf-neutral-35), var(--sf-neutral-85))',
@@ -278,6 +280,13 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   // The icon role (C107): the alpha scale has no step between the ink and its
   // 80, so a control's glyph on a strong colour is the place's ink.
   --sf-on-surface-icon: var(--sf-on-#{$c});
+  // The label's hovered and pressed ink (C107 open item 5): the theme's are
+  // its dark neutral 15 and 20, so an outline or ghost on-surface button on
+  // the colour went dark under the pointer, label and icon. The alpha scale
+  // has no step above the ink either: the state shows in the fill (container
+  // 16 / 20, state 4 / 12), the ink stays the place's.
+  --sf-on-surface-hover: var(--sf-on-#{$c});
+  --sf-on-surface-active: var(--sf-on-#{$c});
   --sf-on-surface-variant: #{sf-ink($c, 80)};
   --sf-on-surface-container-variant: #{sf-ink($c, 80)};
   --sf-surface-state-hover: #{sf-ink($c, 4)};
