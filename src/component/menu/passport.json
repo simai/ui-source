@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.menu",
   "kind": "component",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/menu/docs/docs.md",
