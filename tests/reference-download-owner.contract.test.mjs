@@ -74,8 +74,15 @@ test('Download File owns native/button semantics, canonical structure and tokens
   assert.match(rule, /name: 'icons'/);
   assert.deepEqual(manifest.inputs.properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
   // The spinner and the ring of a file being prepared, the buttons in and
-  // beside the row (decisions C25, C51); no notice any more.
-  assert.deepEqual(manifest.composition.uses, ['component.download-file', 'component.icons', 'component.progress-ring', 'component.spinner', 'smart.button', 'smart.icon']);
+  // beside the row (decisions C25, C51); no notice any more. A failed row's
+  // whole name and its icon-only «Повторить» take the tooltip (C88).
+  assert.deepEqual(manifest.composition.uses, ['component.download-file', 'component.icons', 'component.progress-ring', 'component.spinner', 'component.tooltip', 'smart.button', 'smart.button-icon', 'smart.icon']);
+  // A failed row is one grid of the sign, the text and «Повторить»; the name
+  // takes two lines at most; the reason stands inside the frame (C88).
+  assert.match(css, /\.sf-download-file\.sf-download-file--error :where\(\.sf-download-file__body\) \{\s*display: grid;/);
+  assert.match(css, /-webkit-line-clamp: 2;/);
+  assert.match(template, /<span class="sf-download-file__reason">/);
+  assert.doesNotMatch(template, /<p class="sf-download-file__reason">/);
   assert.ok(manifest.events['sf-file-download-request']);
   assert.ok(manifest.events['sf-file-download-download']);
   assert.ok(manifest.events['sf-download-file:click']);

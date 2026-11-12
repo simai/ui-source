@@ -362,11 +362,11 @@
         },
         {
           "id": "p10-error-in-the-row",
-          "title": "in a flex row of the page the failed row and its reason stand in the component's own column, the reason under the row (DF-13, decision C51)",
+          "title": "in a flex row of the page the failed row stays one column of its own, and its reason stands inside the frame, in the text's column under the name (DF-13, decisions C51, C88)",
           "covers": "settings.state error",
           "steps": [
             {
-              "check": "(() => { const stack = document.querySelector('#d-err .sf-download-file__stack'); const row = stack && stack.querySelector(':scope > .sf-download-file--error').getBoundingClientRect(); const reason = stack && stack.querySelector(':scope > .sf-download-file__reason').getBoundingClientRect(); return Boolean(stack) && reason.top >= row.bottom && Math.abs(reason.left - row.left) < 1; })()"
+              "check": "(() => { const stack = document.querySelector('#d-err .sf-download-file__stack'); const rowNode = stack && stack.querySelector(':scope > .sf-download-file--error'); const reason = rowNode && rowNode.querySelector('.sf-download-file__text > .sf-download-file__reason'); const name = rowNode && rowNode.querySelector('.sf-download-file__name'); if (!reason || !name) return false; const row = rowNode.getBoundingClientRect(); const r = reason.getBoundingClientRect(); const n = name.getBoundingClientRect(); return r.top >= n.bottom - 1 && r.bottom <= row.bottom && Math.abs(r.left - n.left) < 1; })()"
             }
           ]
         },

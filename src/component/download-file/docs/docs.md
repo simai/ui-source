@@ -75,6 +75,22 @@ yet):
   `--offer` (the success sign, no hover) are rows that cannot be pressed;
   `__end` holds a button inside the row (Повторить), reaching into the padding
   so the row keeps its height; `__line` puts a button beside the row;
-  `__reason` is the small line under it; `__live` the hidden live regions.
+  `__live` the hidden live regions.
+
+Decision C88 (2026-11-12, still component.download-file 1.3.0): a failed row
+(`--error`) is one grid of the sign, `__text` and `__end`.
+
+- The padding is the same on every side: `--sf-space-1/2` up to size 1,
+  `--sf-space-1` at sizes 2 and 3 (`--sf-file-download-padding` still sets
+  it); the sign and the text stand `--sf-space-1/2` apart.
+- The sign is centred on the name's first line. The name is medium weight,
+  two lines at most, then an ellipsis; its words stay whole in the markup, and
+  the Smart element shows the whole name in a tooltip (`__tip`).
+- `__meta` («Не удалось собрать») and `__reason` (why) are one text step
+  smaller than the name, under it in the text's column, inside the frame.
+- `__end` ends the first line. `--narrow` (set by the Smart element when the
+  column is narrower than 22.5rem, 360 px) puts it under the text, the
+  button's words on the text's edge; `--retry-icon` is the icon-only button
+  there, for a column where the words do not fit even under the text.
 - The size is asked (`HEAD`) only of an http(s) address on the page's own
   origin. A bound root is a link or a button only.

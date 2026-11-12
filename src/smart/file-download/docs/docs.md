@@ -45,11 +45,16 @@ A file the application makes on demand: cancel the request, set
   row shows the success sign, «Готово · CSV · 2,4 МБ» and «Скачать» beside it,
   so the download is a fresh press: the browser asks nothing and the download
   does not arrive unexpectedly.
-- **Error.** The row itself says so: the error sign and border, «Не удалось
-  собрать» in place of the type and the size, «Повторить» at its end, and
-  `error-text` small under the row. The row and the line stand in one column
-  of the component's own (`.sf-download-file__stack`), so a flex row around the
-  element does not put them side by side. «Повторить» sends
+- **Error.** The row itself says so (decision C88): the error sign and border
+  on the name's first line, the name in two lines at most (the whole name in
+  its tooltip and for a screen reader), «Не удалось собрать» and `error-text`
+  a step smaller under it, inside the frame, and «Повторить» at the end of the
+  first line. The padding is the same on every side. In a column narrower
+  than 360 px «Повторить» goes under the text, its words on the text's edge;
+  only when they do not fit there either is it the icon alone, its name in
+  `aria-label` and a tooltip. The row stands in a column of the component's
+  own (`.sf-download-file__stack`), so a flex row around the element does not
+  stretch it. «Повторить» sends
   `sf-file-download-retry {href, fileName}`; the file is fetched when it is
   made, as after the first press.
 
@@ -104,7 +109,8 @@ file.addEventListener('sf-file-download-cancel', () => { /* stop the work */ });
 - `state` — `ready` (default), `preparing`, `error`
 - `value` — while preparing, the share made, per cent
 - `cancelable` — while preparing, «Отменить» beside the row
-- `error-text` — why the file could not be made, small under the row
+- `error-text` — why the file could not be made: the last line of the failed
+  row, a step smaller than the name
 - `icon` — former way to name the type by a glyph in the download sign's
   place; still drawn until 2027-01-01, give `file-type` instead
 - `href`

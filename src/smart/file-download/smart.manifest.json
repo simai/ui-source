@@ -26,7 +26,9 @@
       "component.icons",
       "component.progress-ring",
       "component.spinner",
+      "component.tooltip",
       "smart.button",
+      "smart.button-icon",
       "smart.icon"
     ],
     "public_parts": []
@@ -104,7 +106,7 @@
       "state": {
         "type": "string",
         "default": "ready",
-        "description": "ready: the file can be fetched. preparing: the application is making it -- the spinner in the sign's place (the progress ring with value), «Готовим файл…» or «Готовим… 45 %», aria-busy, a press is ignored, «Отменить» beside it while cancelable; the start is said. When the host sets ready again with an href, the file a person pressed for is fetched by itself if it came within 10 s and the page is in sight, else the row says «Готово» and offers «Скачать» (decision C51); the end is said. error: it could not be made -- the row shows the error sign and border, «Не удалось собрать» and «Повторить» at its end, error-text small under it; the error is said at once.",
+        "description": "ready: the file can be fetched. preparing: the application is making it -- the spinner in the sign's place (the progress ring with value), «Готовим файл…» or «Готовим… 45 %», aria-busy, a press is ignored, «Отменить» beside it while cancelable; the start is said. When the host sets ready again with an href, the file a person pressed for is fetched by itself if it came within 10 s and the page is in sight, else the row says «Готово» and offers «Скачать» (decision C51); the end is said. error: it could not be made -- one grid of the error sign, the text and «Повторить» (decision C88): the sign on the name's first line, the name in two lines at most (the whole name in its tooltip and for a screen reader), «Не удалось собрать» and error-text a step smaller under it inside the frame, «Повторить» at the end of the first line -- under the text in a column narrower than 360 px, and the icon alone (its name in aria-label and a tooltip) only when its words do not fit there either; the error is said at once.",
         "enum": [
           "ready",
           "preparing",
@@ -114,7 +116,7 @@
       "error-text": {
         "type": "string",
         "default": "",
-        "description": "Why the file could not be made and what happens next, a small line under the row in the error state («Сервер не ответил. Файл соберётся заново.»)."
+        "description": "Why the file could not be made and what happens next, the last line of the failed row's text, inside its frame, a step smaller than the name (decision C88; «Сервер не ответил. Файл соберётся заново.»)."
       },
       "target": {
         "type": "string",
@@ -171,6 +173,7 @@
         "sf-download-file__get",
         "sf-download-file__line",
         "sf-download-file__reason",
+        "sf-download-file__tip",
         "sf-download-file__live"
       ]
     },
@@ -418,7 +421,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/file-download/index.js",
-        "sha256": "55531c5967dd3771de925c8a03304157060c208b37fd81bc13de0ce59a2d732c"
+        "sha256": "b4083f0ab8fe845aacece7f76ae294e0d755c355dfdf5699daaa9b7ac46543ec"
       }
     ],
     "generated_runtime": [

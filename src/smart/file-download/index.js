@@ -9,6 +9,7 @@ import { noteDeprecated } from '../../core/js/deprecations';
 import { pageLocale } from '../../core/js/page-language';
 import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
+import { instancePath, partId } from '../../core/js/instance-path.js';
 import { renderDownloadFileTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -42,6 +43,37 @@ const REDRAWN_BY = new Set(['href', 'disabled', 'state', 'target']);
 // «Скачать» (decision C51): a download that arrives unasked surprises, and a
 // phone may ask first.
 const FETCH_ITSELF_WITHIN = 10000;
+// A failed row in a column narrower than this (22.5rem, 360 px) puts
+// «Повторить» under its text, from the text's edge (owner decision C88).
+const NARROW_BELOW_REM = 22.5;
+
+// The box that holds the row: the first ancestor that draws one (the host is
+// display: contents).
+function layoutParent(node) {
+  for (let current = node.parentElement; current; current = current.parentElement) {
+    if (getComputedStyle(current).display !== 'contents') return current;
+  }
+  return null;
+}
+
+// An element's max-content width, read with its inline size freed for one
+// layout and given back.
+function maxContentWidth(element) {
+  const { style } = element;
+  const saved = [style.getPropertyValue('inline-size'), style.getPropertyPriority('inline-size'),
+    style.getPropertyValue('max-inline-size'), style.getPropertyPriority('max-inline-size')];
+  style.setProperty('inline-size', 'max-content', 'important');
+  style.setProperty('max-inline-size', 'none', 'important');
+  const width = element.getBoundingClientRect().width;
+  if (saved[0]) style.setProperty('inline-size', saved[0], saved[1]); else style.removeProperty('inline-size');
+  if (saved[2]) style.setProperty('max-inline-size', saved[2], saved[3]); else style.removeProperty('max-inline-size');
+  return width;
+}
+
+function contentWidth(element) {
+  const style = getComputedStyle(element);
+  return element.clientWidth - (parseFloat(style.paddingInlineStart) || 0) - (parseFloat(style.paddingInlineEnd) || 0);
+}
 
 class SfDownloadFile extends DownloadFileElement {
   constructor() {
@@ -58,6 +90,15 @@ class SfDownloadFile extends DownloadFileElement {
     this._refocus = false;
     this._resolvedSize = '';
     this._live = { polite: '', assertive: '' };
+    // A failed row's fit (decision C88): narrow puts «Повторить» under the
+    // text, retryIcon draws it as the icon alone; retryWidth is the width of
+    // the button with its words, measured while it had them.
+    this._narrow = false;
+    this._retryIcon = false;
+    this._retryWidth = 0;
+    this._retryReach = 0;
+    this._fitObserver = null;
+    this._fitFrame = 0;
     this._onPress = (event) => this.onPress(event);
   }
 
@@ -155,6 +196,14 @@ class SfDownloadFile extends DownloadFileElement {
       value,
       cancelable: this.hasAttribute('cancelable') && this.getAttribute('cancelable') !== 'false',
       errorText: this.getAttribute('error-text') || '',
+      narrow: this._narrow,
+      retryIcon: this._retryIcon,
+      tipIds: this.view === 'error'
+        ? {
+          name: partId(instancePath(this, { kind: 'sf-file-download' }), 'name'),
+          retry: this._retryIcon ? partId(instancePath(this, { kind: 'sf-file-download' }), 'retry') : '',
+        }
+        : {},
       words: {
         preparing: this.sfWord('preparing-text'),
         preparingValue: value === null ? '' : this.sfWord('preparing-value-text', { vars: { percent: this.percentText(value) } }),
@@ -200,6 +249,12 @@ class SfDownloadFile extends DownloadFileElement {
       this._refocus = true;
     }
     if (name === 'href' && oldValue !== newValue) this._resolvedSize = '';
+    // Another size or another state draws «Повторить» anew: its width with
+    // its words is measured again.
+    if ((name === 'size' || name === 'state' || name === 'lang') && oldValue !== newValue) {
+      this._retryIcon = false;
+      this._retryWidth = 0;
+    }
     super.attributeChangedCallback?.(name, oldValue, newValue);
     if (name !== 'state' || oldValue === newValue) return;
     const next = STATES.includes(newValue) ? newValue : 'ready';
@@ -354,6 +409,8 @@ class SfDownloadFile extends DownloadFileElement {
       bindDownloadFile(this._boundRoot, { onActivate: this.requestDownload, onSize: this.takeResolvedSize });
     }
 
+    this.watchFit();
+
     // After «Повторить», «Отменить» or «Скачать», or when the file was drawn
     // as another element while it held the focus (the button became the link,
     // the row failed): the file, or the button it now offers, takes the focus
@@ -384,7 +441,89 @@ class SfDownloadFile extends DownloadFileElement {
     }
   }
 
+  // A failed row's fit (decision C88), measured after it is drawn and again
+  // when its column or the row changes size: narrow below 22.5rem of the
+  // column, and the icon alone only while narrow and the button with its
+  // words is wider than the text column it would stand under (it reaches
+  // into the gap before the text by its own padding, so its words line up
+  // with the text).
+  fitError() {
+    const row = this.view === 'error' ? this.querySelector('.sf-download-file--error') : null;
+    if (!row) {
+      this._fitObserver?.disconnect();
+      return;
+    }
+    const column = layoutParent(this);
+    const rem = parseFloat(getComputedStyle(this.ownerDocument.documentElement).fontSize) || 16;
+    const width = column ? contentWidth(column) : 0;
+    const narrow = width > 0 && width < NARROW_BELOW_REM * rem;
+
+    // The button's own width with its words (max-content): under the text a
+    // button wider than its column is squeezed to it, so its drawn width
+    // cannot tell whether the words fit.
+    const button = row.querySelector('.sf-download-file__retry > button');
+    if (!this._retryIcon && button) {
+      const measured = maxContentWidth(button);
+      if (measured > 0) {
+        this._retryWidth = measured;
+        this._retryReach = parseFloat(getComputedStyle(button).paddingInlineStart) || 0;
+      }
+    }
+
+    let retryIcon = false;
+    if (narrow && this._narrow && this._retryWidth > 0) {
+      const text = row.querySelector('.sf-download-file__text');
+      // The text column the row would have at the column's whole width: the
+      // column less what the row draws beside the text (border, padding, sign
+      // and gap).
+      const beside = text ? row.getBoundingClientRect().width - text.getBoundingClientRect().width : 0;
+      const room = width - beside + this._retryReach;
+      retryIcon = this._retryWidth > room + 0.5;
+    }
+
+    if (narrow === this._narrow && retryIcon === this._retryIcon) return;
+    if ((retryIcon !== this._retryIcon) && this.holdsFocus()) this._refocus = true;
+    this._narrow = narrow;
+    this._retryIcon = narrow ? retryIcon : false;
+    this.requestComponentUpdate?.('fit');
+  }
+
+  watchFit() {
+    if (this.view !== 'error') {
+      this._fitObserver?.disconnect();
+      return;
+    }
+    if (typeof ResizeObserver === 'undefined') return;
+    if (!this._fitObserver) {
+      this._fitObserver = new ResizeObserver(() => {
+        if (this._fitFrame) return;
+        this._fitFrame = requestAnimationFrame(() => {
+          this._fitFrame = 0;
+          this.fitError();
+        });
+      });
+      globalThis.document?.fonts?.ready?.then?.(() => this.fitError());
+    }
+    this._fitObserver.disconnect();
+    const column = layoutParent(this);
+    const row = this.querySelector('.sf-download-file--error');
+    const retry = this.querySelector('.sf-download-file__retry');
+    if (column) this._fitObserver.observe(column);
+    if (row) this._fitObserver.observe(row);
+    // The button draws itself after the row: its first size starts the fit.
+    if (retry) customElements.whenDefined(retry.localName).then(() => {
+      const inner = retry.querySelector(':scope > button');
+      if (inner && this._fitObserver) this._fitObserver.observe(inner);
+      this.fitError();
+    });
+    this.fitError();
+  }
+
   onDisconnected() {
+    this._fitObserver?.disconnect();
+    this._fitObserver = null;
+    if (this._fitFrame) cancelAnimationFrame(this._fitFrame);
+    this._fitFrame = 0;
     this.removeEventListener('click', this._onPress);
     if (this._boundRoot) {
       unbindDownloadFile(this._boundRoot);

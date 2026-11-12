@@ -12,9 +12,15 @@ import { createInlineSpinner } from '../../../../component/spinner/js/_spinner-d
 //              «Отменить» beside the row while cancelable.
 //   offer      ready after a long wait, or while the page was hidden: the
 //              success sign, «Готово · type · size» and «Скачать» beside it.
-//   error      the row itself says so: the error sign and border,
-//              «Не удалось собрать», «Повторить» at its end, error-text
-//              small under it.
+//   error      the row itself says so (decision C88): one grid of the
+//              error sign, the text and «Повторить». The sign stands on the
+//              name's first line, the name takes two lines at most (the whole
+//              name in its tooltip and for a screen reader), «Не удалось
+//              собрать» and error-text a step smaller under it, inside the
+//              frame. «Повторить» ends the first line; in a column narrower
+//              than 360 px it goes under the text, and only when its words do
+//              not fit there either is it the icon alone, its name in
+//              aria-label and a tooltip.
 // A file link downloads in the same tab; target="_blank" is a file opened to
 // view, and says so with a sign after the name and words for a screen reader.
 // Two hidden live regions follow the file: the start, the end and a cancel
@@ -34,6 +40,15 @@ function rowClasses(context, view) {
     context.rootClass,
     view === 'ready' || view === 'preparing' ? (disabled ? 'disabled' : 'cursor-pointer transition') : '',
   ].filter(Boolean).join(' ');
+}
+
+// The Framework's plain tooltip (component.tooltip, class markup), hidden
+// until the tooltip controller shows it on hover or keyboard focus of the
+// trigger that names it. aria-hidden: what it says is already the trigger's
+// name.
+function tip(id, text) {
+  if (!id) return nothing;
+  return html`<span id=${id} class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-download-file__tip" aria-hidden="true" hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${text}</span></span></span>`;
 }
 
 function sizeMeta(fileType, fileSize, lead = nothing) {
@@ -64,25 +79,48 @@ function renderFile(context) {
     : nothing}</span>`;
 
   if (view === 'error') {
+    const { narrow, retryIcon, tipIds = {} } = context;
+    const retry = retryIcon
+      ? html`<sf-button-icon
+          class="sf-download-file__retry"
+          size=${size}
+          height="low"
+          appearance="ghost"
+          scheme="primary"
+          icon="refresh"
+          aria-label=${words.retryLabel}
+          data-tooltip=${tipIds.retry || nothing}
+        ></sf-button-icon>${tip(tipIds.retry, words.retry)}`
+      : html`<sf-button
+          class="sf-download-file__retry"
+          size=${size}
+          height="low"
+          appearance="ghost"
+          scheme="primary"
+          icon-start="refresh"
+          text=${words.retry}
+          aria-label=${words.retryLabel}
+        ></sf-button>`;
+    const classes = [
+      rowClasses(context, 'error'),
+      narrow ? 'sf-download-file--narrow' : '',
+      retryIcon ? 'sf-download-file--retry-icon' : '',
+    ].filter(Boolean).join(' ');
+    // The name is cut after two lines: its tooltip shows it whole, and the
+    // words stay whole in the markup, so a screen reader hears all of them.
     const row = html`
-      <div class=${rowClasses(context, 'error')} style=${context.rootStyle || nothing} role="group" aria-label=${fileName}>
+      <div class=${classes} style=${context.rootStyle || nothing} role="group" aria-label=${fileName}>
         ${body(
           html`<i class="sf-download-file__icon sf-icon" aria-hidden="true">error</i>`,
-          html`${name(`, ${words.failed}`)}<span class="sf-download-file__meta" aria-hidden="true"><span class="sf-download-file__status">${words.failed}</span></span>`,
-          html`<span class="sf-download-file__end"><sf-button
-            class="sf-download-file__retry"
-            size=${size}
-            height="low"
-            appearance="ghost"
-            scheme="primary"
-            icon-start="refresh"
-            text=${words.retry}
-            aria-label=${words.retryLabel}
-          ></sf-button></span>`,
+          html`<span class="sf-download-file__name sf-download-file-file-name" data-tooltip=${tipIds.name || nothing}>${fileName}<span class="sf-download-file__said">, ${words.failed}</span></span><span class="sf-download-file__meta" aria-hidden="true"><span class="sf-download-file__status">${words.failed}</span></span>${context.errorText
+            ? html`<span class="sf-download-file__reason">${context.errorText}</span>`
+            : nothing}`,
+          html`<span class="sf-download-file__end">${retry}</span>`,
         )}
+        ${tip(tipIds.name, fileName)}
       </div>
     `;
-    return stack(html`${row}${context.errorText ? html`<p class="sf-download-file__reason">${context.errorText}</p>` : nothing}`);
+    return stack(row);
   }
 
   if (view === 'offer') {

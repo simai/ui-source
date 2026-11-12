@@ -869,7 +869,9 @@
           "component.icons",
           "component.progress-ring",
           "component.spinner",
+          "component.tooltip",
           "smart.button",
+          "smart.button-icon",
           "smart.icon"
         ]
       },
@@ -882,7 +884,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/file-download/smart.manifest.json",
-      "manifest_sha256": "2fa7e38ac7a31e23ca70fa9a10427e9f5952c7f1653c59baf19627da93c1bd61",
+      "manifest_sha256": "f954d835a4d899e1103f76c60a04d2b5d24a21d157b6dbcf9dc7f10ade5a05c6",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
