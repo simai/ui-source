@@ -38,6 +38,9 @@
     // (a checkbox box, a badge ring) a colour the block does not have.
     // The steps also carry a stronger boundary in the light theme, so a
     // checkbox, a switch or a field on them keeps 3:1 (C43).
+    // bg-surface-4 is darker than the white light popup whose tone it reads,
+    // so in the light theme its dim ink is one step down (contrast R3,
+    // 2026-11-11, mix/_mix__places.scss).
     @each $place, $surface, $variant in (
         'page' 'surface-page' null, 'surface-0' 'surface-page' null,
         'area' 'surface-area' null, 'surface-1' 'surface-area' null, 'surface' 'surface-area' null,
@@ -50,8 +53,13 @@
     ) {
         $class: if(str-index($place, 'surface') == 1, $place, 'surface-#{$place}');
         .#{$infix}bg-#{$class} {
-            @include places.sf-place(var(--sf-#{$surface}), if($variant, var(--sf-#{$variant}), null),
-                if(index(('surface-2', 'surface-3', 'surface-4'), $place), places.$sf-place-step-outline, null));
+            @if $place == 'surface-4' {
+                @include places.sf-place(var(--sf-#{$surface}), places.$sf-place-step4-variant,
+                    places.$sf-place-step-outline, places.$sf-place-step4-container-variant, $popup: true);
+            } @else {
+                @include places.sf-place(var(--sf-#{$surface}), if($variant, var(--sf-#{$variant}), null),
+                    if(index(('surface-2', 'surface-3', 'surface-4'), $place), places.$sf-place-step-outline, null));
+            }
         }
     }
 

@@ -184,6 +184,10 @@ $sf-place-popup-nested-container-variant: 'light-dark(var(--sf-neutral-35), var(
     --sf-surface-popup: var(--sf-surface-popup-nested);
     --sf-on-surface-popup-variant: var(--sf-on-surface-popup-nested-variant);
     --sf-place--popup-container-variant: #{$sf-place-popup-nested-container-variant};
+    // The nested popup's boundary (contrast R3b, DEV 2026-11-11): read by a
+    // popup place's outline, so a popup among the children draws the
+    // nested edge (dark 4.07, not 2.97) and other children keep theirs.
+    --sf-place--popup-outline: #{$sf-place-popup-nested-outline};
     @include aliases.sf-role-aliases(('surface-popup', 'on-surface-popup-variant'));
   }
 }
@@ -196,11 +200,46 @@ $sf-place-popup-nested-container-variant: 'light-dark(var(--sf-neutral-35), var(
 // that is one of those steps passes it as $outline.
 $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--alfa-48))';
 
-@mixin sf-place($surface, $variant: null, $outline: null) {
+// The nested popup's boundary in the dark theme (contrast R3, 2026-11-11): the
+// theme's neutral-90 at 48 over the nested popup's step (neutral-30) is 2.98:1,
+// under WCAG 1.4.11, so a checkbox box, a switch track, a field or an outline
+// button there loses its edge. Opaque neutral-70 holds 4.07, the edge's own
+// contrast on the page (4.12). Light is white there and keeps the theme's.
+// Read from the place's own dim ink, as the container variant above.
+$sf-place-popup-nested-outline: 'light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-70))';
+
+// A popup place reads its boundary through --sf-place--popup-outline, which
+// the children of a popup set to the nested one (sf-place-popup-children);
+// a popup that is not nested keeps the theme's outline.
+$sf-place-popup-outline: 'var(--sf-place--popup-outline, light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48)))';
+
+@function sf-place-outline($variant) {
+  @if not $variant { @return null; }
+  @if string.index(meta.inspect($variant), 'popup-nested-variant') { @return $sf-place-popup-nested-outline; }
+  @if string.index(meta.inspect($variant), 'popup-variant') { @return $sf-place-popup-outline; }
+  @return null;
+}
+
+// The light popup step, bg-surface-4 (neutral-85), as a place (contrast R3,
+// 2026-11-11): the popup's dim ink is neutral-40 because a light popup is
+// white; on neutral-85 it gave secondary text 4.38:1, a quiet ghost or outline
+// key 3.98 and a tonal key (neutral-35) 4.10. One step down holds them:
+// neutral-35 text 5.28 and key 4.75, neutral-30 on the tonal fill 5.42 and
+// 4.87. The dark halves are the popup's (80 and 90).
+$sf-place-step4-variant: 'light-dark(var(--sf-neutral-35), var(--sf-neutral-80))';
+// In the dark half the container variant keeps the popup's indirection, so
+// inside a popup it reads the nested popup's (R3b, DEV 2026-11-11).
+$sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-place--popup-container-variant, var(--sf-neutral-90)))';
+
+// $popup: the place is a popup step. A popup is told by its dim ink (a
+// popup-variant) unless the place says so itself: bg-surface-4 passes its
+// own ink and $popup: true, so a popup inside it is nested (R3b).
+@mixin sf-place($surface, $variant: null, $outline: null, $container-variant: null, $popup: null) {
   --sf-surface-place: #{$surface};
   --sf-surface-place-solid: #{$surface};
   --sf-surface-place-ground: #{$surface};
-  $container-variant: sf-place-container-variant($variant);
+  @if not $container-variant { $container-variant: sf-place-container-variant($variant); }
+  @if not $outline { $outline: sf-place-outline($variant); }
   @each $role, $value in $sf-place-theme-roles {
     @if $role == 'on-surface-variant' and $variant {
       --sf-on-surface-variant: #{$variant};
@@ -214,7 +253,10 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   }
   @include aliases.sf-role-aliases($sf-place-aliased);
   @include sf-place-back-on-colour;
-  @if $container-variant and string.index(meta.inspect($variant), 'popup-variant') and not string.index(meta.inspect($variant), 'nested') {
+  @if $popup == null {
+    $popup: $container-variant and string.index(meta.inspect($variant), 'popup-variant') and not string.index(meta.inspect($variant), 'nested');
+  }
+  @if $popup {
     @include sf-place-popup-children;
   }
 }
