@@ -154,16 +154,16 @@
     },
     {
       "id": "p5-name-and-words",
-      "title": "the group is named by aria-label, else by the language file; the states have their words",
-      "covers": "accessibility.name, lang runtime",
+      "title": "the list is an ordered list named by aria-label, else by the language file; the current step says aria-current; the states have their words",
+      "covers": "accessibility.role list, accessibility.name, lang runtime",
       "steps": [
         {
-          "check": "document.querySelector('#st [role=\"group\"]').getAttribute('aria-label') === 'Этапы публикации' && document.querySelector('#st-err [role=\"group\"]').getAttribute('aria-label') === 'Шаги' && document.querySelector('#st-err [data-step-index=\"0\"]').getAttribute('aria-label') === 'Корзина, Завершено' && document.querySelector('#st-err [data-step-index=\"2\"]').getAttribute('aria-label') === 'Оплата, Ошибка'"
+          "check": "document.querySelector('#st ol[role=\"list\"]').getAttribute('aria-label') === 'Этапы публикации' && document.querySelector('#st-err ol[role=\"list\"]').getAttribute('aria-label') === 'Шаги' && document.querySelector('#st-err [data-step-index=\"0\"]').getAttribute('aria-label') === 'Корзина, Завершено' && document.querySelector('#st-err [data-step-index=\"2\"]').getAttribute('aria-label') === 'Оплата, Ошибка' && document.querySelectorAll('#st ol > li').length === 4 && document.querySelectorAll('#st ol > :not(li)').length === 0 && document.querySelector('#st ol > li:nth-child(2) [aria-current=\"step\"]') !== null && document.querySelector('#st [role=\"group\"]') === null"
         },
         {
           "script": "(document.getElementById('st-err').setAttribute('lang', 'en'), true)",
           "wait": 300,
-          "check": "document.querySelector('#st-err [role=\"group\"]').getAttribute('aria-label') === 'Steps' && document.querySelector('#st-err [data-step-index=\"0\"]').getAttribute('aria-label') === 'Корзина, Completed'"
+          "check": "document.querySelector('#st-err ol[role=\"list\"]').getAttribute('aria-label') === 'Steps' && document.querySelector('#st-err [data-step-index=\"0\"]').getAttribute('aria-label') === 'Корзина, Completed'"
         }
       ]
     },
@@ -188,6 +188,22 @@
           "script": "(document.getElementById('area').style.setProperty('--sf-steps-current-border-color', 'rgb(1, 2, 3)'), document.getElementById('area').style.setProperty('--sf-steps-gap', '17px'), true)",
           "wait": 500,
           "check": "getComputedStyle(document.querySelector('#st .sf-step.selected')).borderTopColor === 'rgb(1, 2, 3)' && getComputedStyle(document.querySelector('#st .sf-steps-container')).columnGap === '17px'"
+        }
+      ]
+    },
+    {
+      "id": "p8-whole-words",
+      "title": "in a narrow row a step goes to the next line whole: no label breaks inside a word and every step keeps its control height",
+      "covers": "R185 ST-1, ST-10",
+      "steps": [
+        {
+          "script": "(document.getElementById('area').style.inlineSize = '15rem', true)",
+          "wait": 300,
+          "check": "[...document.querySelectorAll('#st .sf-step')].every((step) => { const label = step.querySelector('.sf-step-container'); const line = parseFloat(getComputedStyle(label).lineHeight); return label.getBoundingClientRect().height <= line + 0.5 && label.scrollWidth <= label.clientWidth + 0.5; }) && new Set([...document.querySelectorAll('#st .sf-step')].map((step) => Math.round(step.getBoundingClientRect().height))).size === 1 && document.querySelector('#st .sf-steps-container').scrollWidth <= document.querySelector('#st .sf-steps-container').clientWidth + 0.5"
+        },
+        {
+          "script": "(document.getElementById('area').style.removeProperty('inline-size'), true)",
+          "wait": 100
         }
       ]
     }

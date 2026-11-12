@@ -34,7 +34,7 @@ test('Smart Steps uses native buttons and native keyboard behavior', async () =>
   assert.doesNotMatch(component, /handleRootKeyDown/);
 });
 
-test('Smart Steps exposes group and localized state names', async () => {
+test('Smart Steps exposes an ordered list and localized state names', async () => {
   const [component, template] = await Promise.all([
     read('smart/steps/index.js'),
     read('smart/steps/js/templates/default.js'),
@@ -43,8 +43,10 @@ test('Smart Steps exposes group and localized state names', async () => {
   assert.match(component, /ariaLabel: \{ attribute: 'aria-label', default: '' \}/);
   assert.match(component, /completedLabel: \{ default: '' \}/);
   assert.match(component, /errorLabel: \{ default: '' \}/);
-  assert.match(template, /role="group"/);
-  assert.match(template, /aria-label=\$\{context\.ariaLabel \|\| nothing\}/);
+  // R185 ST-13: an ordered list named by aria-label, one item per step.
+  assert.doesNotMatch(template, /role="group"/);
+  assert.match(template, /<ol\s+class="sf-steps-container[^"]*"\s+role="list"\s+aria-label=\$\{context\.ariaLabel \|\| nothing\}/);
+  assert.match(template, /<li class="flex items-center">\s*\$\{renderStep\(item, context\)\}/);
   assert.match(template, /\$\{item\.label\}, \$\{statusLabel\}/);
 });
 

@@ -119,7 +119,7 @@ test('the sheet: one rung, the container widths, 44px under a coarse pointer, th
 
 test('sf-steps 1.2.0: an item\'s own state, skipped and running', () => {
   const steps = json('src/smart/steps/component.json');
-  assert.equal(steps.version, '1.2.2');
+  assert.equal(steps.version, '1.3.0');
   assert.deepEqual(steps.settings.items.of.state.values, ['default', 'completed', 'skipped', 'running', 'error']);
   const stepsTemplate = read('src/smart/steps/js/templates/default.js');
   assert.match(stepsTemplate, /skipped: 'do_not_disturb_on', running: 'progress_activity'/u);

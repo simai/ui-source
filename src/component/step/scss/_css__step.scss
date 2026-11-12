@@ -46,16 +46,25 @@
 .sf-step .sf-icon {
   flex-shrink: 0;
   color: var(--sf-icon--color, var(--sf-on-surface-variant));
-  /* The icon is the size's text line, a step of the same ladder (C18). */
-  font-size: var(--sf-icon--font-size, var(--sf-step--icon-size, var(--sf-text-height-1)));
-  height: var(--sf-icon--height, var(--sf-step--icon-size, var(--sf-text-height-1)));
-  width: var(--sf-icon--width, var(--sf-step--icon-size, var(--sf-text-height-1)));
+  /* The icon is the size's text line, a step of the same ladder (C18): 24 at
+     size 1, 20 at size 1/2 on a desktop. It is given through the icon's own
+     variables (component.icons): the icon sheet's size rule is unlayered and
+     outranks any font-size, width or height a layered component rule writes,
+     so the size 1/2 icon drew at the icon default, 24 (R185 ST-10). */
+  --sf-icon--font-size: var(--sf-step--icon-size, var(--sf-text-height-1));
+  --sf-icon--height: var(--sf-step--icon-size, var(--sf-text-height-1));
+  --sf-icon--width: var(--sf-step--icon-size, var(--sf-text-height-1));
 }
 
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-step .sf-step-container {
-  min-inline-size: 0;
-  overflow-wrap: anywhere;
+  /* A label breaks between words only, never inside one (R185 ST-1): it broke at any
+     letter over a step that shrank to 24 px, so four short
+     steps under 547 px read «Кор/зина», «WordPre/ss». The label's narrowest
+     width is its longest word; the list moves a step that does not fit to
+     the next line whole (component/step _css__steps.scss). */
+  overflow-wrap: normal;
+  word-break: normal;
   --sf-step-container--background-color: transparent;
   background-color: var(--sf-step-container--background-color);
   color: var(--sf-step-container--color);

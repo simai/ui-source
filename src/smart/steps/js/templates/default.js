@@ -56,16 +56,24 @@ export function renderStepsTemplate(context) {
     context.rootClass,
   );
 
+  // The steps are an ordered list (R185 ST-13): a screen reader says how many
+  // there are and which one this is; the current step says aria-current=step.
+  // role="list" is written out because a list without its markers loses the
+  // role in WebKit. Each item holds its step and the separator after it, so
+  // the list has no child but its items and a step moves to the next line
+  // whole, with its separator.
   return html`
     <div
       class=${rootClasses}
       style=${context.rootStyle || nothing}
-      role="group"
-      aria-label=${context.ariaLabel || nothing}
     >
-      <div class="sf-steps-container flex items-center">
+      <ol
+        class="sf-steps-container flex items-center"
+        role="list"
+        aria-label=${context.ariaLabel || nothing}
+      >
         ${context.items.map(
-          (item, index) => html`
+          (item, index) => html`<li class="flex items-center">
             ${renderStep(item, context)}
             ${index < context.items.length - 1
               ? html`<i
@@ -79,9 +87,9 @@ export function renderStepsTemplate(context) {
                   aria-hidden="true"
                 >${context.separatorIcon}</i>`
               : ''}
-          `,
+          </li>`,
         )}
-      </div>
+      </ol>
     </div>
   `;
 }

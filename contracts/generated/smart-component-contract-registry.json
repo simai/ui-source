@@ -2897,13 +2897,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/steps/smart.manifest.json",
-      "manifest_sha256": "f12d76c659b05d9f966ea4487c332b005880b4d903718ea72642339c5737b43f",
+      "manifest_sha256": "e98aff81fec5da2b031a9d0ab502dbce3f51c23d78081bd25bc905b04af47b05",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A row of labelled step buttons, separated by an icon, for a multi-step process: marks the current, completed, skipped, running and error steps and moves to an enabled step when it is pressed.",
+      "summary": "An ordered list of labelled steps for a multi-step process, drawn as a row of step buttons separated by an icon: marks the current, completed, skipped, running and error steps and moves to an enabled step when it is pressed.",
       "tags": [
         "steps"
       ],

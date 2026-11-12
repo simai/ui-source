@@ -16,7 +16,9 @@ for (const [owner, file] of [['step', '_css__step.scss'], ['breadcrumbs', '_css_
     assert.match(css, /@media \(forced-colors: active\)/);
     assert.match(css, /outline: var\(--sf-focus-outline-width\) solid currentColor/);
     assert.match(css, /not\(\[aria-disabled="true"\]\)/);
-    assert.match(css, /overflow-wrap: anywhere/);
+    // A step label breaks between words only (sf-steps 1.3.0, R185 ST-1);
+    // a breadcrumb may still break anywhere.
+    assert.match(css, owner === 'step' ? /overflow-wrap: normal/ : /overflow-wrap: anywhere/);
   });
 }
 
