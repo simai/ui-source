@@ -33,10 +33,16 @@
       "type": "enum",
       "values": [
         "field",
-        "theme"
+        "theme",
+        "brand"
       ],
       "default": "field",
-      "summary": "What the control is. field: a field of the control ladder -- the swatch, the value and a chevron -- that opens the Framework's own colour window. theme: only a circle of the current colour, as a site header holds it (C84); it opens the same window at its normal size and rebuilds the page theme from the colour while it moves (SF.ThemePalette on <html>), committing it when a colour is chosen. Its value is always a code."
+      "summary": "What the control is. field: a field of the control ladder -- the swatch, the value and a chevron -- that opens the Framework's own colour window. theme: only a circle of the current colour, as a site header holds it (C84); it opens the same window at its normal size, with no text and no theme row. brand: the field, for a settings screen («Оформление», C84), with what a person should know about the colour as lines under it (core themeChecks). theme and brand are the brand colour: they rebuild the theme from the colour while it moves (SF.ThemePalette: the four dynamic palettes, never a status, and the brand fill --sf-brand, --sf-on-brand of a header and a cover) on target, committing it when a colour is chosen. Their value is always a code and takes no alpha."
+    },
+    "target": {
+      "type": "string",
+      "default": "",
+      "summary": "variant theme or brand: a CSS selector of the element the theme is put on, as inline variables (a settings screen's preview, so the admin keeps its own colours); empty, the document's root. A selector that names nothing puts the theme nowhere."
     },
     "swatches": {
       "type": "string",
@@ -92,27 +98,43 @@
     "value": {
       "type": "string",
       "default": "",
-      "summary": "The colour: a palette name (red, orange, amber, yellow, lime, green, teal, cyan, sky, blue, indigo, violet, purple, pink, brown, gray), stored the same in every language, or the code of an own colour, #rrggbb (or #rrggbbaa with alpha; #rgb and #rgba are read and stored long, lowercase). Empty means nothing is chosen and the inherited colour applies. variant theme stores a code."
+      "summary": "The colour: a palette name (red, orange, amber, yellow, lime, green, teal, cyan, sky, blue, indigo, violet, purple, pink, brown, gray), stored the same in every language, or the code of an own colour, #rrggbb (or #rrggbbaa with alpha; #rgb and #rgba are read and stored long, lowercase). Empty means nothing is chosen and the inherited colour applies. variants theme and brand store a code."
     },
     "effective-value": {
       "type": "string",
       "summary": "What is painted: the value when there is one, the inherited colour when there is not (§4.3); it was the getter `shown`, which the base value shown (§4.1) now names"
+    },
+    "theme": {
+      "type": "object",
+      "summary": "variants theme and brand: the theme the colour makes now (simai.framework.theme), or null before SF.ThemePalette has loaded; a field without a value makes the inherited or the Framework's own colour's theme"
+    },
+    "checks": {
+      "type": "list",
+      "summary": "variants theme and brand: what a person should know about the colour (core themeChecks): [{code, level, ...}] -- contrast, adjusted, close-to-status, grey; empty when there is nothing to say. The brand field draws them as lines under itself."
     }
   },
   "events": {
     "change": {
       "carries": {
         "value": "string",
-        "name": "string"
+        "name": "string",
+        "theme": "object",
+        "variables": "object",
+        "css": "string",
+        "checks": "list"
       },
-      "summary": "A colour was committed: once when a swatch is chosen, a drag across the shade area or a strip is released, the code field is left or Enter pressed, a key on a strip rests, or clear is pressed -- not on every step of a drag. Carries the value and the form name; an empty value means the inherited colour applies again."
+      "summary": "A colour was committed: once when a swatch is chosen, a drag across the shade area or a strip is released, the code field is left or Enter pressed, a key on a strip rests, or clear is pressed -- not on every step of a drag. Carries the value and the form name; an empty value means the inherited colour applies again. With variant theme or brand and a value, it also carries the theme, its variables (the four palettes and the brand fill), its CSS as a :root rule and its checks -- the names sf-theme-generator's events carried."
     },
     "input": {
       "carries": {
         "value": "string",
-        "name": "string"
+        "name": "string",
+        "theme": "object",
+        "variables": "object",
+        "css": "string",
+        "checks": "list"
       },
-      "summary": "The colour moved: on every step of a drag across the shade area or a strip, on each key in the code field that reads as a colour, and before each change. Carries the value and the form name."
+      "summary": "The colour moved: on every step of a drag across the shade area or a strip, on each key in the code field that reads as a colour, and before each change. Carries the value and the form name. With variant theme or brand, the theme, variables, css and checks as change carries them."
     },
     "field-reset": {
       "shared": "field-inherit@1",
@@ -311,7 +333,8 @@
     "version 1.5.5 (2026-11-09): a patch; nothing in the component changed. A shared sheet it draws with moved in the next block (src/smart/helpers/inherited-value.css, the C27 inherited-value reset), so the component takes a patch with it.",
     "version 1.5.4: the size rule C18 (2026-11-09): the presets' gap reads --sf-space-1/2 with no raw fallback (the fallback said 4px, the token is 8/12 and always defined; nothing moves). Also: the row wraps (flex-wrap: wrap): the chip, the value, the swatches and the inherited slot no longer stand past a narrow container -- inside sf-theme-generator the row was 314px wide in a 288px column at 320px and the reported 17px at a 390px screen; a row that fits is drawn as before.",
     "version 1.6.0 (2026-11-11): one field label look for every field (dispatcher decision a, docs pre-check 2026-11-10 FB-10, CO-04): `label` is drawn above the row as sf-input's label (14 regular on-surface-variant at size 1) and still names the colour input; a colour with a name and no visible label takes the host's aria-label (the field renderers and the site header's tools now pass aria-label). The product colours are controls of the row's size, as tall as the chip and the reset (C01, CO-03; they were one rung down). The theme variant is unchanged.",
-    "version 1.7.0 (2026-11-12, owner decisions C83 and C86, round 4 R167-R170, C84; defects CO-03, CO-06, CO-07): a minor. The field is a field of the control ladder -- a swatch (the text's square on the C77 inset), the value and a chevron in one frame of the size's control height -- that opens the Framework's own compact window, never the browser's colour dialog (R130). The window is 304 wide (eight 1/3-rung swatches, 8 apart, 12 inside), anchored under the field by core's positioning (flip, shift, never taller than its room) in the top layer, and a sheet at the bottom of the screen below 44rem. «Палитра / Своё» is the standard sf-segmented; «Палитра» holds the product's swatches, the sixteen static hues (C17) and, after a divider, the recent own colours; «Своё» holds the shade area, the eyedropper (only where window.EyeDropper exists; disabled with its reason elsewhere), the hue strip, the alpha strip and one joined row «format | code | %» (Hex, RGB, HSL, HSB; any CSS colour may be pasted). New settings palette (default true), custom (default true) and alpha (default false). The value is a palette name (one in every language, painted 50 light / 70 dark) or a code; #rrggbbaa only with alpha. Recent own colours: one list per site, a view preference (SF.Preferences key sf-color-recent), 16 kept, 8 shown, own colours only, translucent ones hidden in a field without alpha (R168). Every swatch has one painter: the paint is clipped inside its 1 px border (R169) and a translucent colour is drawn split -- the left half without alpha, the right half as it is over the checkerboard (C86). CO-03: one height in the row (the product colours moved into the window). CO-06: bordered, outlined and plain now differ (the paint no longer runs under the border; plain has none). CO-07: the inherited colour shows in the value's place, the marker at the frame's end. variant theme (C84): only a circle of the current colour that opens the same window at its normal size; its value is always a code (a palette hue is stored as its tone's code); the native colour input and the uncommitted-colour watch are gone (the window commits each choice). New methods openPicker() and closePicker(). Words: the hue names, the window's labels."
+    "version 1.7.0 (2026-11-12, owner decisions C83 and C86, round 4 R167-R170, C84; defects CO-03, CO-06, CO-07): a minor. The field is a field of the control ladder -- a swatch (the text's square on the C77 inset), the value and a chevron in one frame of the size's control height -- that opens the Framework's own compact window, never the browser's colour dialog (R130). The window is 304 wide (eight 1/3-rung swatches, 8 apart, 12 inside), anchored under the field by core's positioning (flip, shift, never taller than its room) in the top layer, and a sheet at the bottom of the screen below 44rem. «Палитра / Своё» is the standard sf-segmented; «Палитра» holds the product's swatches, the sixteen static hues (C17) and, after a divider, the recent own colours; «Своё» holds the shade area, the eyedropper (only where window.EyeDropper exists; disabled with its reason elsewhere), the hue strip, the alpha strip and one joined row «format | code | %» (Hex, RGB, HSL, HSB; any CSS colour may be pasted). New settings palette (default true), custom (default true) and alpha (default false). The value is a palette name (one in every language, painted 50 light / 70 dark) or a code; #rrggbbaa only with alpha. Recent own colours: one list per site, a view preference (SF.Preferences key sf-color-recent), 16 kept, 8 shown, own colours only, translucent ones hidden in a field without alpha (R168). Every swatch has one painter: the paint is clipped inside its 1 px border (R169) and a translucent colour is drawn split -- the left half without alpha, the right half as it is over the checkerboard (C86). CO-03: one height in the row (the product colours moved into the window). CO-06: bordered, outlined and plain now differ (the paint no longer runs under the border; plain has none). CO-07: the inherited colour shows in the value's place, the marker at the frame's end. variant theme (C84): only a circle of the current colour that opens the same window at its normal size; its value is always a code (a palette hue is stored as its tone's code); the native colour input and the uncommitted-colour watch are gone (the window commits each choice). New methods openPicker() and closePicker(). Words: the hue names, the window's labels.",
+    "version 1.7.0, also (2026-11-12, owner decision C84: the brand colour is a mode of this field, sf-theme-generator leaves with a dated alias): variant brand -- the field of a settings screen, with the colour's checks (core themeChecks: contrast, adjusted, close-to-status, grey) as lines in a polite status region under it, the words sf-theme-generator had. Variants theme and brand put the theme -- the four dynamic palettes, never a status (TG-01; info stays sky under every brand, C90) -- and the brand fill of a header and a cover (--sf-brand, --sf-on-brand, core brandVariables: a light colour as it is with black or white text, any other the primary role) on target (new setting: a selector, empty the document's root); change and input of these variants carry theme, variables, css and checks, as the generator's events did. Values theme and checks. Neither takes alpha."
   ],
   "x-rule": {
     "$comment": [

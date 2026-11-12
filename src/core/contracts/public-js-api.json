@@ -863,7 +863,7 @@
       "doc": "smart/forms/theme-generator",
       "kind": "object",
       "loaded_by": "component/theme-palette (SF.Loader.ensurePlugin('theme-palette') or data-sf-theme-palette), and smart/theme-generator",
-      "summary": "A whole theme from one colour: the four theme palettes (primary, secondary, tertiary, neutral) as the 64 --sf-<palette>-<tone> primitives and the 80 translucent steps core defines on them (--sf-<palette>-<tone>--alfa-<n>, listed in THEME_ALPHA), 144 variables in all. The status palettes are core's static hues (STATUS_HUES) and no theme writes them.",
+      "summary": "A whole theme from one colour: the four theme palettes (primary, secondary, tertiary, neutral) as the 64 --sf-<palette>-<tone> primitives and the 80 translucent steps core defines on them (--sf-<palette>-<tone>--alfa-<n>, listed in THEME_ALPHA), 144 variables in all. The status palettes are core's static hues (STATUS_HUES) and no theme writes them. brandVariables(theme) gives the fill of a site's header and cover (--sf-brand, --sf-on-brand, C84): a light colour as it is with black or white text, any other the primary role.",
       "members": [
         "themeFromColor",
         "themeFromHct",
@@ -872,6 +872,7 @@
         "themeVariables",
         "themeChecks",
         "contrastRatio",
+        "brandVariables",
         "applyTheme",
         "isThemeColor",
         "THEME_TONES",

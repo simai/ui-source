@@ -365,6 +365,27 @@ export function themeChecks(theme) {
   return checks;
 }
 
+/**
+ * The brand fill of a site's large areas -- its header and its cover (owner
+ * decision C84; Material's Fidelity idea): {'--sf-brand', '--sf-on-brand'}.
+ * A light colour (tone over THEME_CHECKS.light) fills them as it is, with
+ * black or white text, whichever reads better on it; its buttons and links
+ * keep the readable tone 40 of the primary palette. Any other colour fills
+ * them with the primary role and its text. A theme without a hex (made from a
+ * hue and a chroma) is the primary role too. The values are the colour itself
+ * or core's own roles, never a new tone.
+ */
+export function brandVariables(theme) {
+  const source = theme?.source ?? {};
+  const light = isThemeColor(source.hex) && Number.isFinite(source.tone) && source.tone > THEME_CHECKS.light;
+  if (!light) return {'--sf-brand': 'var(--sf-primary)', '--sf-on-brand': 'var(--sf-on-primary)'};
+  const hex = expand(source.hex);
+  const luminance = relativeLuminance(hex);
+  // The ratio against black is (L + 0.05) / 0.05, against white 1.05 / (L + 0.05).
+  const dark = (luminance + 0.05) / 0.05 >= 1.05 / (luminance + 0.05);
+  return {'--sf-brand': hex, '--sf-on-brand': dark ? 'var(--sf-black)' : 'var(--sf-white)'};
+}
+
 /** The theme as a stylesheet rule, for a page's or a site's own CSS. */
 export function themeToCss(theme, selector = ':root') {
   const lines = Object.entries(themeVariables(theme)).map(([name, value]) => `  ${name}: ${value};`);
@@ -390,5 +411,5 @@ export function applyTheme(theme, target = globalThis.document?.documentElement)
 
 if (typeof window !== 'undefined') {
   window.SF = window.SF || {};
-  window.SF.ThemePalette = Object.freeze({themeFromColor, themeFromHct, colorToHct, themeToCss, themeVariables, themeChecks, contrastRatio, applyTheme, isThemeColor, staticPalette, staticVariables, THEME_TONES, THEME_PALETTES, THEME_ALPHA, STATIC_HUES, STATIC_HUE_NAMES, STATUS_HUES, STATIC_ALPHA, THEME_CHECKS, DEFAULT_THEME_COLOR});
+  window.SF.ThemePalette = Object.freeze({themeFromColor, themeFromHct, colorToHct, themeToCss, themeVariables, themeChecks, contrastRatio, brandVariables, applyTheme, isThemeColor, staticPalette, staticVariables, THEME_TONES, THEME_PALETTES, THEME_ALPHA, STATIC_HUES, STATIC_HUE_NAMES, STATUS_HUES, STATIC_ALPHA, THEME_CHECKS, DEFAULT_THEME_COLOR});
 }

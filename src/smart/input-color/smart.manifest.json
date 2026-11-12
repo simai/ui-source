@@ -90,11 +90,17 @@
       "variant": {
         "type": "string",
         "default": "field",
-        "description": "What the control is. field: a field of the control ladder -- the swatch, the value and a chevron -- that opens the Framework's own colour window. theme: only a circle of the current colour, as a site header holds it (C84); it opens the same window at its normal size and rebuilds the page theme from the colour while it moves (SF.ThemePalette on <html>), committing it when a colour is chosen. Its value is always a code.",
+        "description": "What the control is. field: a field of the control ladder -- the swatch, the value and a chevron -- that opens the Framework's own colour window. theme: only a circle of the current colour, as a site header holds it (C84); it opens the same window at its normal size, with no text and no theme row. brand: the field, for a settings screen («Оформление», C84), with what a person should know about the colour as lines under it (core themeChecks). theme and brand are the brand colour: they rebuild the theme from the colour while it moves (SF.ThemePalette: the four dynamic palettes, never a status, and the brand fill --sf-brand, --sf-on-brand of a header and a cover) on target, committing it when a colour is chosen. Their value is always a code and takes no alpha.",
         "enum": [
           "field",
-          "theme"
+          "theme",
+          "brand"
         ]
+      },
+      "target": {
+        "type": "string",
+        "default": "",
+        "description": "variant theme or brand: a CSS selector of the element the theme is put on, as inline variables (a settings screen's preview, so the admin keeps its own colours); empty, the document's root. A selector that names nothing puts the theme nowhere."
       },
       "swatches": {
         "type": "string",
@@ -146,7 +152,7 @@
       "value": {
         "type": "string",
         "default": "",
-        "description": "The colour: a palette name (red, orange, amber, yellow, lime, green, teal, cyan, sky, blue, indigo, violet, purple, pink, brown, gray), stored the same in every language, or the code of an own colour, #rrggbb (or #rrggbbaa with alpha; #rgb and #rgba are read and stored long, lowercase). Empty means nothing is chosen and the inherited colour applies. variant theme stores a code."
+        "description": "The colour: a palette name (red, orange, amber, yellow, lime, green, teal, cyan, sky, blue, indigo, violet, purple, pink, brown, gray), stored the same in every language, or the code of an own colour, #rrggbb (or #rrggbbaa with alpha; #rgb and #rgba are read and stored long, lowercase). Empty means nothing is chosen and the inherited colour applies. variants theme and brand store a code."
       },
       "inherited-value": {
         "type": "string",
@@ -220,12 +226,16 @@
   },
   "events": {
     "change": {
-      "summary": "A colour was committed: once when a swatch is chosen, a drag across the shade area or a strip is released, the code field is left or Enter pressed, a key on a strip rests, or clear is pressed -- not on every step of a drag. Carries the value and the form name; an empty value means the inherited colour applies again.",
+      "summary": "A colour was committed: once when a swatch is chosen, a drag across the shade area or a strip is released, the code field is left or Enter pressed, a key on a strip rests, or clear is pressed -- not on every step of a drag. Carries the value and the form name; an empty value means the inherited colour applies again. With variant theme or brand and a value, it also carries the theme, its variables (the four palettes and the brand fill), its CSS as a :root rule and its checks -- the names sf-theme-generator's events carried.",
       "payload": {
         "type": "object",
         "required": [
           "value",
-          "name"
+          "name",
+          "theme",
+          "variables",
+          "css",
+          "checks"
         ],
         "properties": {
           "value": {
@@ -233,18 +243,34 @@
           },
           "name": {
             "type": "string"
+          },
+          "theme": {
+            "type": "object"
+          },
+          "variables": {
+            "type": "object"
+          },
+          "css": {
+            "type": "string"
+          },
+          "checks": {
+            "type": "array"
           }
         },
         "additionalProperties": true
       }
     },
     "input": {
-      "summary": "The colour moved: on every step of a drag across the shade area or a strip, on each key in the code field that reads as a colour, and before each change. Carries the value and the form name.",
+      "summary": "The colour moved: on every step of a drag across the shade area or a strip, on each key in the code field that reads as a colour, and before each change. Carries the value and the form name. With variant theme or brand, the theme, variables, css and checks as change carries them.",
       "payload": {
         "type": "object",
         "required": [
           "value",
-          "name"
+          "name",
+          "theme",
+          "variables",
+          "css",
+          "checks"
         ],
         "properties": {
           "value": {
@@ -252,6 +278,18 @@
           },
           "name": {
             "type": "string"
+          },
+          "theme": {
+            "type": "object"
+          },
+          "variables": {
+            "type": "object"
+          },
+          "css": {
+            "type": "string"
+          },
+          "checks": {
+            "type": "array"
           }
         },
         "additionalProperties": true
@@ -422,7 +460,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-color/index.js",
-        "sha256": "37bc34b255eb28c9495594336ec14af4a8481d863c667d60c77ac93dbfc0d012"
+        "sha256": "c24c34373844a711b5dcd61b70c879eee1f5299c8a09cd2883e7b100610359cb"
       },
       {
         "path": "src/smart/input-color/rule.js",
@@ -430,11 +468,11 @@
       },
       {
         "path": "src/smart/input-color/js/templates/default.js",
-        "sha256": "ad2026e16ea2270afb347dc29d4d764242e221c78c358d192e0e8bc1b2a740f9"
+        "sha256": "50aa366131d2aa5905e7ba8ddf768e134e97688566d72b7bd2134a6473a5ca56"
       },
       {
         "path": "src/smart/input-color/js/templates/default.css",
-        "sha256": "ddbd67569eb1b5c913b6076109d9cae4924221e2064b4513f359efa93640f63b"
+        "sha256": "dcc781b4be45e46af41d17f5341d1ce40c127c9c71ec57a6f1e62d05a5426451"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

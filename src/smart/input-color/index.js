@@ -90,12 +90,20 @@ class SfColor extends FormField(ColorElement) {
 
     static get observedAttributes() {
         return [...(super.observedAttributes ?? []), "value", "inherited-value", "swatches", "disabled", "aria-label",
-            "palette", "custom", "alpha"];
+            "palette", "custom", "alpha", "variant", "target"];
     }
 
     attributeChangedCallback(name, previous, next) {
         super.attributeChangedCallback?.(name, previous, next);
-        if (previous !== next && this.isConnected) this.requestComponentUpdate("attribute");
+        if (previous === next) return;
+        // Another place for the theme, or no theme any more: the page is given
+        // back what it had, and the theme goes where it is asked for now.
+        if ((name === "target" || name === "variant") && this._restoreTheme) {
+            this._restoreTheme();
+            this._restoreTheme = null;
+            this._appliedColor = undefined;
+        }
+        if (this.isConnected) this.requestComponentUpdate("attribute");
     }
 
     get value() {
@@ -118,7 +126,7 @@ class SfColor extends FormField(ColorElement) {
     // would have drawn it.
     _accept(value) {
         if (!value || isPaletteName(value)) return value;
-        return this.alpha && !this.isTheme ? value : value.slice(0, 7);
+        return this.takesAlpha ? value : value.slice(0, 7);
     }
 
     // What the colour falls back to while nothing is chosen. Shown rather than
@@ -177,23 +185,44 @@ class SfColor extends FormField(ColorElement) {
         this.sfSyncFormState();
         // A value written from code (a page restoring the colour it kept) takes
         // the theme silently; a drag waits for its debounce.
-        if (this.isTheme && this._themeTimer == null) this._applyTheme();
+        if (this.buildsTheme && this._themeTimer == null) this._applyTheme();
         if (this._open) this._placeWindow();
     }
 
-    // ---------------------------------------------------------- variant theme
+    // ------------------------------------------------- variants theme and brand
     //
-    // The page theme from the colour (owner decision by delegation, 2026-10-28:
+    // The theme from the colour (owner decision by delegation, 2026-10-28:
     // a variant of sf-input-color, not a separate component; C84, 2026-11-12:
-    // the brand colour is this mode of the field). Its trigger is only a circle
-    // of the current colour, as a site header holds it, and it opens the same
-    // window as the field at its normal size. The value is a code: the theme is
-    // computed from it. The theme is SF.ThemePalette, fetched through the
-    // Loader the first time a theme control draws: it is larger than this
-    // control and a field-variant colour has no use for it.
+    // the brand colour is a mode of this field, and sf-theme-generator leaves).
+    // Two variants build it:
+    // - theme: only a circle of the current colour, as a site header holds it;
+    //   it opens the same window as the field at its normal size, with no text
+    //   and no theme row;
+    // - brand: the field itself, for a settings screen («Оформление»), with
+    //   the checks of the colour as lines under it.
+    // Both store a code (the theme is computed from it), take no alpha, and
+    // put the theme -- the four dynamic palettes, never a status (TG-01, C90)
+    // -- and the brand fill of a header and a cover (--sf-brand,
+    // --sf-on-brand) on `target`, the document's root when it is empty. The
+    // theme is SF.ThemePalette, fetched through the Loader the first time such
+    // a control draws: it is larger than this control and a field-variant
+    // colour has no use for it.
 
     get isTheme() {
         return this.variant === "theme";
+    }
+
+    get isBrand() {
+        return this.variant === "brand";
+    }
+
+    get buildsTheme() {
+        return this.isTheme || this.isBrand;
+    }
+
+    // A theme colour is a code with no alpha: a translucent seed is not a theme.
+    get takesAlpha() {
+        return Boolean(this.alpha) && !this.buildsTheme;
     }
 
     get themeLabel() {
@@ -219,9 +248,74 @@ class SfColor extends FormField(ColorElement) {
         return null;
     }
 
-    // The colour on <html>: the previous application is taken off first, so the
-    // restore that is kept always returns the page to what it had before this
-    // control touched it. An empty value is that restore.
+    // Where the theme goes: the element `target` names, else the document's
+    // root. A selector that names nothing puts the theme nowhere.
+    _themeTarget() {
+        const doc = this.ownerDocument;
+        const selector = String(this.getAttribute("target") || "").trim();
+        if (!selector) return doc.documentElement;
+        try {
+            return doc.querySelector(selector);
+        } catch {
+            return null;
+        }
+    }
+
+    // The colour a theme is built from: the value, or -- while nothing is
+    // chosen -- the inherited colour or the Framework's own; a palette name
+    // written from code is its tone's code.
+    _themeSeed(color = this.value) {
+        return isPaletteName(color) ? this._paletteHex(color, {seed: true}) : color;
+    }
+
+    /** The theme the colour makes now (simai.framework.theme), or null before SF.ThemePalette is there. */
+    get theme() {
+        const palette = globalThis.SF?.ThemePalette;
+        const seed = this._themeSeed(this.themeColor);
+        if (!palette?.themeFromColor || !seed || !palette.isThemeColor(seed)) return null;
+        if (this._themeOf !== seed) {
+            this._themeOf = seed;
+            this._theme = palette.themeFromColor(seed);
+        }
+        return this._theme;
+    }
+
+    /** What a person should know about the colour (core themeChecks: contrast, adjusted, close-to-status, grey). */
+    get checks() {
+        const theme = this.theme;
+        return theme && globalThis.SF?.ThemePalette?.themeChecks ? globalThis.SF.ThemePalette.themeChecks(theme) : [];
+    }
+
+    // The checks in words, as the brand field draws them under itself.
+    checkLines() {
+        return this.checks.map((check) => ({...check, text: this._checkText(check)}));
+    }
+
+    _checkText(check) {
+        switch (check.code) {
+            case "contrast":
+                return this.sfWord("check-contrast", {vars: {
+                    scheme: this.sfWord(`scheme-${check.scheme}`),
+                    ratio: String(check.ratio).replace(".", this.sfWord("decimal")),
+                }});
+            case "adjusted":
+                return this.sfWord(check.lighter ? "check-adjusted-light" : "check-adjusted-dark", {vars: {from: check.from, to: check.to}});
+            case "close-to-status":
+                return this.sfWord(`check-status-${check.status}`);
+            default:
+                return this.sfWord(`check-${check.code}`);
+        }
+    }
+
+    // The theme's variables and the brand fill, {name: value}.
+    _themeVariables(theme) {
+        const palette = globalThis.SF?.ThemePalette;
+        return {...palette.themeVariables(theme), ...(palette.brandVariables?.(theme) ?? {})};
+    }
+
+    // The colour on the target: the previous application is taken off first,
+    // so the restore that is kept always returns the target to what it had
+    // before this control touched it. An empty value is that restore.
     _applyTheme() {
         const palette = this._palette();
         if (!palette) return;
@@ -229,16 +323,16 @@ class SfColor extends FormField(ColorElement) {
         if (color === this._appliedColor) return;
         this._restoreTheme?.();
         this._restoreTheme = null;
-        // A palette name written from code is its tone's code.
-        const seed = isPaletteName(color) ? this._paletteHex(color, {seed: true}) : color;
-        if (seed && palette.isThemeColor(seed)) {
-            this._restoreTheme = palette.applyTheme(palette.themeFromColor(seed));
+        const seed = this._themeSeed(color);
+        const target = this._themeTarget();
+        if (seed && palette.isThemeColor(seed) && target?.style) {
+            this._restoreTheme = setVariables(target, this._themeVariables(palette.themeFromColor(seed)));
         }
         this._appliedColor = color;
     }
 
     _scheduleTheme(delay) {
-        if (!this.isTheme) return;
+        if (!this.buildsTheme) return;
         clearTimeout(this._themeTimer);
         this._themeTimer = null;
         if (!delay) {
@@ -343,8 +437,24 @@ class SfColor extends FormField(ColorElement) {
         this._emit("change");
     }
 
+    // The theme variants say what the colour makes as well: the theme, its
+    // variables and its CSS (the brand fill with them, for a site's stored
+    // stylesheet) and the checks -- the detail sf-theme-generator's events
+    // carried, so a page that listened to the generator reads the same names.
     _emit(type) {
-        this.sfEmit(type, {value: this.value, name: this.name});
+        const detail = {value: this.value, name: this.name};
+        const theme = this.buildsTheme && this.value ? this.theme : null;
+        if (theme) {
+            const variables = this._themeVariables(theme);
+            const lines = Object.entries(variables).map(([name, value]) => `  ${name}: ${value};`);
+            Object.assign(detail, {
+                theme: JSON.parse(JSON.stringify(theme)),
+                variables,
+                css: `:root {\n${lines.join("\n")}\n}\n`,
+                checks: globalThis.SF.ThemePalette.themeChecks?.(theme) ?? [],
+            });
+        }
+        this.sfEmit(type, detail);
     }
 
     connectedCallback() {
@@ -392,6 +502,12 @@ class SfColor extends FormField(ColorElement) {
     // either theme: the seed of a page theme must not depend on the theme the
     // page happens to show.
     _paletteHex(name, {seed = false} = {}) {
+        // A seed is the static palette's own tone 50 when core's calculation is
+        // there: the same hex on every page, whatever its sheets declare (a page
+        // whose sheet lacks the hue token would read the probe's inherited text
+        // colour instead).
+        const fixed = seed ? globalThis.SF?.ThemePalette?.staticPalette?.()?.[name]?.tones?.[50] : "";
+        if (fixed) return fixed;
         const rgb = (!seed && this._resolveColour(`light-dark(var(--sf-${name}-50), var(--sf-${name}-70))`))
             || this._resolveColour(`var(--sf-${name}-50)`);
         return rgb ? toHex(rgb.rgb) : "";
@@ -411,12 +527,12 @@ class SfColor extends FormField(ColorElement) {
         const [h, s, v] = rgbToHsv(parsed.rgb);
         // A grey has no hue of its own: the strip keeps the hue it had.
         this._hsv = [s > 0 ? h : (this._hsv?.[0] ?? h), s, v];
-        this._alphaValue = this.alpha ? parsed.a : 1;
+        this._alphaValue = this.takesAlpha ? parsed.a : 1;
     }
 
     get ownColour() {
         const [h, s, v] = this._hsv || [0, 0, 0];
-        return toHex(hsvToRgb(h, s, v), this.alpha ? this._alphaValue ?? 1 : 1);
+        return toHex(hsvToRgb(h, s, v), this.takesAlpha ? this._alphaValue ?? 1 : 1);
     }
 
     get isOpen() {
@@ -540,7 +656,7 @@ class SfColor extends FormField(ColorElement) {
     // keeps it open, as a radio group does.
     pick(value, {close = true, own = false} = {}) {
         let next = normalise(value);
-        if (this.isTheme && isPaletteName(next)) next = this._paletteHex(next, {seed: true});
+        if (this.buildsTheme && isPaletteName(next)) next = this._paletteHex(next, {seed: true});
         if (own) rememberColour(next);
         this.setValue(next);
         if (close) this.closePicker({reason: "select"});
@@ -625,7 +741,7 @@ class SfColor extends FormField(ColorElement) {
         }
         const [h, s, v] = rgbToHsv(parsed.rgb);
         this._hsv = [s > 0 ? h : this._hsv[0], s, v];
-        if (this.alpha && statesAlpha(text)) this._alphaValue = parsed.a;
+        if (this.takesAlpha && statesAlpha(text)) this._alphaValue = parsed.a;
         this._moved();
         if (commit) this._commitOwn();
     }
@@ -772,7 +888,7 @@ class SfColor extends FormField(ColorElement) {
         if (!this.offersCustom) return [];
         const own = this.value && !isPaletteName(this.value)
             && !this.swatchList.some((swatch) => swatch.value === this.value) ? [this.value] : [];
-        const list = recentColours({alpha: this.alpha}).filter((hex) => hex !== this.value);
+        const list = recentColours({alpha: this.takesAlpha}).filter((hex) => hex !== this.value);
         return [...own, ...list].slice(0, RECENT_SHOW);
     }
 
@@ -811,7 +927,11 @@ class SfColor extends FormField(ColorElement) {
             offersPalette: this.offersPalette,
             offersCustom: this.offersCustom,
             palette: PALETTE,
-            alpha: Boolean(this.alpha),
+            alpha: this.takesAlpha,
+            brand: this.isBrand,
+            checks: this.isBrand ? this.checkLines() : [],
+            checksLabel: this.sfWord("checks"),
+            brandLabel: this.sfWord("brand"),
             recentRow: open ? this.recentRow : [],
             hsv: this._hsv || [0, 0, 0],
             alphaValue: this._alphaValue ?? 1,
@@ -842,6 +962,19 @@ function cssRgb(text) {
     const parts = match[1].split(/[\s,/]+/u).filter(Boolean).map((part) => parseFloat(part));
     if (parts.length < 3 || parts.slice(0, 3).some((part) => !Number.isFinite(part))) return null;
     return {rgb: parts.slice(0, 3), a: Number.isFinite(parts[3]) ? parts[3] : 1};
+}
+
+// Writes variables on an element's inline style and returns what takes them
+// off again, back to the values it had.
+function setVariables(target, variables) {
+    const before = Object.fromEntries(Object.keys(variables).map((name) => [name, target.style.getPropertyValue(name)]));
+    for (const [name, value] of Object.entries(variables)) target.style.setProperty(name, value);
+    return () => {
+        for (const [name, value] of Object.entries(before)) {
+            if (value) target.style.setProperty(name, value);
+            else target.style.removeProperty(name);
+        }
+    };
 }
 
 SfColor.define("sf-input-color");

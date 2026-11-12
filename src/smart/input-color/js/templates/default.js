@@ -8,7 +8,8 @@ import './default.css';
 // prototype ui-control prototypes/color-picker-study.html rounds 3 and 4). The
 // browser's colour dialog is not used: it was a different window in every
 // browser, with no palette and no alpha (R130). The theme variant is only a
-// circle of the current colour that opens the same window (C84).
+// circle of the current colour that opens the same window; the brand variant
+// is the field with the colour's checks under it (C84).
 
 // One painter for every swatch (R167, C86): an opaque colour is a plain fill;
 // a translucent one is split -- its left half the same colour without alpha,
@@ -35,7 +36,7 @@ export function renderColorTemplate(context) {
     if (context.variant === 'theme') return renderThemeTemplate(context);
     const {painted, isSet, disabled, size, appearance, open} = context;
     const component = context.component;
-    const name = context.label || context.ariaLabel || context.chooseLabel;
+    const name = context.label || context.ariaLabel || (context.brand ? context.brandLabel : context.chooseLabel);
     const shown = context.paintedName;
     // The value is read with the name: «Цвет метки: Синий».
     const spoken = shown ? `${name}: ${shown}` : name;
@@ -108,7 +109,32 @@ export function renderColorTemplate(context) {
                         ? html`<input type="hidden" name=${context.hiddenName} .value=${context.value}>`
                         : nothing}
             </div>
+            ${context.brand ? renderChecks(context) : nothing}
             ${open ? renderWindow(context, name) : nothing}
+        </div>
+    `;
+}
+
+// variant brand (C84): what a person should know about the colour, one line
+// each under the field (core themeChecks: contrast, a colour its buttons do
+// not get, a colour near a status, a grey), as the accepted settings screen
+// shows them. A polite status region that is always in the tree, so a check
+// that appears is announced; empty, it takes no room.
+function renderChecks(context) {
+    const {checks} = context;
+    return html`
+        <div class="sf-color-checks" role="status" aria-label=${context.checksLabel} data-count=${checks.length}>
+            ${checks.length
+                    ? html`
+                        <ul class="sf-color-check-list">
+                            ${checks.map((check) => html`
+                                <li class="sf-color-check" data-check=${check.code} data-level=${check.level}
+                                    data-status=${check.status || nothing}>
+                                    <sf-icon icon=${check.level === 'notice' ? 'info' : check.level} size="1/2" aria-hidden="true"></sf-icon>
+                                    <span class="sf-color-check-text">${check.text}</span>
+                                </li>`)}
+                        </ul>`
+                    : nothing}
         </div>
     `;
 }

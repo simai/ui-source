@@ -9,6 +9,10 @@ import {html, nothing} from 'lit';
 // folded away: most people choose a colour and are done. The <details> is not
 // bound to anything, so a redraw never folds it while somebody is typing.
 //
+// The colour field shows no palette hues (palette="false"): a hue is stored by
+// its name, and a theme is made from a code; the product's swatches and
+// «Своё» give codes.
+//
 // The colour field draws its own label (one field label look, docs pre-check
 // 2026-11-10 FB-10), so the generator no longer prints a copy of it above.
 export function renderThemeGeneratorTemplate(context) {
@@ -31,6 +35,7 @@ export function renderThemeGeneratorTemplate(context) {
                     inherited-value=${context.inheritedValue}
                     inherited-text=${text.inherited}
                     swatches=${context.swatches || nothing}
+                    palette="false"
                     @input=${(event) => component._colorInput(event)}
                     @change=${(event) => component._colorChange(event)}></sf-input-color>
         </div>

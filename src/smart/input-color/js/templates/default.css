@@ -220,6 +220,54 @@
     background-clip: padding-box;
   }
 
+  /* --------------------------------------------- variant brand (C84) */
+
+  /* The checks of a brand colour (TG-04, the accepted settings screen): one
+     line each under the field, an icon of the check's level and its words at
+     the label's size. A warning's icon is the warning status's graphic ink, an
+     error's the error's, a notice's the label's ink. */
+  .sf-color-check-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-space-1\/4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Empty, the region stays in the tree (so what appears in it is announced)
+     but out of the flow: no gap of the column is spent on it. */
+  .sf-color-checks[data-count='0'] {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .sf-color-check {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sf-space-1\/2);
+    color: var(--sf-on-surface);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-color-check > sf-icon {
+    flex: none;
+    color: var(--sf-on-surface-variant);
+  }
+
+  .sf-color-check[data-level='warning'] > sf-icon {
+    color: var(--sf-on-warning-container-graphic);
+  }
+
+  .sf-color-check[data-level='error'] > sf-icon {
+    color: var(--sf-on-error-container-graphic);
+  }
+
   /* ------------------------------------------------- variant theme (C84) */
 
   /* Only a circle of the current colour, as a site header holds it: the

@@ -3,7 +3,7 @@
   "id": "smart.theme-generator",
   "version": "1.2.0",
   "title": "Theme generator",
-  "summary": "A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the four theme palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
+  "summary": "Leaving until 2027-01-01 (C84): use sf-input-color variant=\"brand\". A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the four theme palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -471,11 +471,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/theme-generator/index.js",
-        "sha256": "8f29e909d651ef788f92965be75e028141820a3784dbb30a968fd3f154442fcf"
+        "sha256": "85b6799971c165f7061afa549d281d34796084cec01ae9bffba9b01670f2572b"
       },
       {
         "path": "src/smart/theme-generator/js/templates/default.js",
-        "sha256": "c93278ba375c85f92f81a0956cd50407990857f5cef066acf0d07b965b1cec9a"
+        "sha256": "80b1b94b6c4e682830177b9a5c3523e9011a243d42a752e64449a0f59cfcc4b0"
       },
       {
         "path": "src/smart/theme-generator/scss/_smart__theme_generator.scss",
@@ -487,11 +487,11 @@
       },
       {
         "path": "src/smart/theme-generator/docs.md",
-        "sha256": "34f094cde02bd2bd3370020b2660cc5457e79e54aa497da7233d44d07ebfd266"
+        "sha256": "5fae181a131136e0edc0f2a4a6df00965d9fbae3f3d5c9708c6022617504a0e1"
       },
       {
         "path": "src/core/js/theme-palette.js",
-        "sha256": "3dc7f0724b588b96872cb76c854712c5ee2084d0741b9b9ed2793c29e4d07e87"
+        "sha256": "ae677a64371f4a561acacee6f5802597937a753e67a15b360d65586b5b96a7e6"
       }
     ],
     "generated_runtime": []

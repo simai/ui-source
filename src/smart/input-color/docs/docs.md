@@ -68,7 +68,8 @@ right half as it is over a checkerboard (C86).
 | `alpha` | `false` | An own colour may be translucent. |
 | `swatches` | — | The product's colours: `#hex`, `#hex|Name` or `name|Name`, comma separated. |
 | `clearable` | `false` | A button that empties the colour when there is no inherited one. |
-| `variant` | `field` | `theme`: the page-theme circle (below). |
+| `variant` | `field` | `theme`: the header circle; `brand`: the brand colour field of a settings screen (below). |
+| `target` | — | `theme` and `brand`: a selector of the element the theme goes on; empty, `<html>`. |
 
 `openPicker()` and `closePicker()` open and close the window from code.
 
@@ -84,7 +85,40 @@ prevented, the colour empties with `input` and `change`, the inherited colour
 shows again and focus returns to the field. `element.resetToInherited()` does
 the same from code.
 
-## Theme colour (`variant="theme"`)
+## Brand colour (`variant="brand"` and `variant="theme"`)
+
+The brand colour is a mode of this field (C84; `sf-theme-generator` leaves on
+2027-01-01). Two variants build the theme from the colour:
+
+- `variant="brand"`: the field of a settings screen («Оформление»). Under it,
+  one line each, what a person should know about the colour (core
+  `themeChecks`): text on buttons under 4.5 : 1, a light or very dark colour
+  whose buttons get a readable tone instead, a colour near a status (error,
+  warning, success, info -- info stays sky under every brand, C90), a grey.
+  The lines are a polite status region; with nothing to say it takes no room.
+- `variant="theme"`: the circle of a site header (below).
+
+Both store a code, take no alpha and put the theme -- the four dynamic
+palettes only, never a status -- on `target` (a selector; empty, `<html>`),
+together with the brand fill of a header and a cover: `--sf-brand` and
+`--sf-on-brand` (core `brandVariables`). A light colour fills them as it is
+with black or white text; its buttons and links keep the readable tone 40. A
+header takes it as `background-color: var(--sf-brand, var(--sf-primary))` and
+`color: var(--sf-on-brand, var(--sf-on-primary))`. `input` and `change` carry
+`theme`, `variables`, `css` (a `:root` rule a site can store) and `checks`
+beside `value` and `name`; the values `theme` and `checks` read them at any
+time.
+
+```html
+<!-- Settings «Оформление»: the admin keeps its colours, the preview follows -->
+<sf-input-color variant="brand" label="Фирменный цвет" target="#site-preview"
+                swatches="#e8a33d|Логотип"></sf-input-color>
+<sf-segmented size="1" aria-label="Тема сайта" value="auto"
+              items='[{"value":"light","label":"Светлая"},{"value":"dark","label":"Тёмная"},{"value":"auto","label":"Как в системе"}]'></sf-segmented>
+<div id="site-preview">…</div>
+```
+
+## Header circle (`variant="theme"`)
 
 `variant="theme"` is the colour a site header holds (C84): only a circle of the
 current colour, named «Цвет темы» / "Theme colour" (`label` or `aria-label`
@@ -95,9 +129,10 @@ overrides it). A press opens the same window as the field, at its normal size.
 ```
 
 - While the colour moves, the page theme follows it after 120 ms of quiet:
-  `SF.ThemePalette.themeFromColor` applied to `<html>`. A chosen colour applies
+  `SF.ThemePalette.themeFromColor` applied to `target` (`<html>` by default). A chosen colour applies
   at once and `change` fires once.
-- The value is always a code: a palette hue is stored as its tone 50.
+- The value is always a code: a palette hue is stored as its tone 50 of the
+  static palette.
 - `clearable` adds a button («Вернуть исходный цвет темы» / "Use the original
   theme colour", or `clear-label`) that returns the page to the theme it had.
 - A value written from code applies the theme silently; the control stores

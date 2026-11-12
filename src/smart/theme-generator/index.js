@@ -17,6 +17,7 @@
 // -apply and sf-theme-apply following until 2026-12-01 (aliases.json).
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
+import {noteDeprecated} from '../../core/js/deprecations.js';
 import {
   applyTheme,
   colorToHct,
@@ -36,6 +37,9 @@ import aliases from './aliases.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
+
+// The journal record component-theme-generator-to-input-color-brand.
+const RETIRED = Object.freeze({since: '2026-11-12', remove_after: '2027-01-01'});
 
 // The tones the preview shows: light to dark, the brand tone (40) among them.
 const PREVIEW_TONES = [90, 70, 50, 40, 30, 10];
@@ -275,6 +279,12 @@ class SfThemeGenerator extends ThemeGeneratorElement {
 
   connectedCallback() {
     super.connectedCallback?.();
+    // Leaving (owner decision C84, 2026-11-12): the brand colour is a mode of
+    // sf-input-color, and the large tone tables go to the docs page
+    // «Конструктор темы». The element works as it did until the date, noted in
+    // SF.deprecations (in the console only when the page opts in).
+    noteDeprecated({component: 'sf-theme-generator', kind: 'component', from: 'sf-theme-generator',
+      to: 'sf-input-color variant="brand"', since: RETIRED.since, remove_after: RETIRED.remove_after});
     this._committedKey = this._key();
     this._sync();
   }

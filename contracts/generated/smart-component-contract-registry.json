@@ -1378,7 +1378,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-color/smart.manifest.json",
-      "manifest_sha256": "f8e59bfaa742cad1e21d2ba1d6e5fbc85695f63906388c2e3bd3f22b37652f7d",
+      "manifest_sha256": "f4029ba67ac2bf5ae9b18675b51aec43a7a2a2536ac38f7ede559039aab2a73e",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3074,13 +3074,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/theme-generator/smart.manifest.json",
-      "manifest_sha256": "a073de3a8085e8c44350ca6cec45590b6cbb6528ab9956f8efad71d564790d49",
+      "manifest_sha256": "f805f018bb43ac7580a700626f57c6e4ffd81273e5045d44cb6542cbfab1ee3d",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the four theme palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
+      "summary": "Leaving until 2027-01-01 (C84): use sf-input-color variant=\"brand\". A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the four theme palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
       "tags": [
         "theme",
         "color",

@@ -116,6 +116,20 @@
           "value": ""
         }
       }
+    },
+    {
+      "name": "brand",
+      "title": "Фирменный цвет",
+      "settings": {
+        "variant": "brand",
+        "label": "Фирменный цвет",
+        "swatches": "#e8a33d|Логотип"
+      },
+      "expect": {
+        "values": {
+          "value": ""
+        }
+      }
     }
   ],
   "pages": [

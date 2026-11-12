@@ -45,6 +45,19 @@
     "hue-purple": "Purple",
     "hue-pink": "Pink",
     "hue-brown": "Brown",
-    "hue-gray": "Grey"
+    "hue-gray": "Grey",
+    "check-adjusted-dark": "The colour is very dark: buttons get the lighter {to} instead of {from}, or they would not stand out from the text.",
+    "check-adjusted-light": "The colour is light: buttons get the darker {to} instead of {from}, or their text could not be read.",
+    "check-contrast": "Text on a button is hard to read in the {scheme} theme: {ratio} : 1, 4.5 is needed.",
+    "check-grey": "The colour is nearly grey: the accents are grey too, and buttons and links stand out little from the text.",
+    "check-status-error": "The colour is close to the error colour: an ordinary button and «Delete» will look almost the same.",
+    "check-status-info": "The colour is close to the information colour: an accent may read as a hint or a notice.",
+    "check-status-success": "The colour is close to the success colour: an accent may read as «Done» or «Paid».",
+    "check-status-warning": "The colour is close to the warning colour: an accent may read as «Attention».",
+    "checks": "Colour check",
+    "decimal": ".",
+    "scheme-dark": "dark",
+    "scheme-light": "light",
+    "brand": "Brand colour"
   }
 }

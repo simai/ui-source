@@ -39,7 +39,7 @@ An element with `data-sf-theme-palette` on the page loads it too. The
 ## API
 
 `themeFromColor`, `themeFromHct`, `colorToHct`, `themeToCss`,
-`themeVariables`, `themeChecks`, `contrastRatio`, `applyTheme`,
+`themeVariables`, `themeChecks`, `contrastRatio`, `brandVariables`, `applyTheme`,
 `isThemeColor`, `staticPalette`, `staticVariables`, and the constants
 `THEME_TONES`, `THEME_PALETTES`, `THEME_ALPHA`, `THEME_CHECKS`,
 `STATIC_HUES`, `STATIC_HUE_NAMES`, `STATUS_HUES`, `STATIC_ALPHA`,
@@ -53,6 +53,15 @@ instead of the colour, `from`), `close-to-status` (warning: a vivid colour
 within 16 degrees of a status hue, `status`) and `grey` (notice: a nearly grey
 colour). `THEME_CHECKS` holds their numbers, `contrastRatio(a, b)` is the WCAG
 2 ratio of two colours.
+
+`brandVariables(theme)` is the fill of a site's large areas, its header and
+its cover (owner decision C84): `{'--sf-brand', '--sf-on-brand'}`. A light
+colour (tone over `THEME_CHECKS.light`) fills them as it is, with black or
+white text, whichever reads; its buttons and links keep the readable tone 40.
+Any other colour fills them with `--sf-primary` and `--sf-on-primary`. A
+header takes it with `background-color: var(--sf-brand, var(--sf-primary))`
+and `color: var(--sf-on-brand, var(--sf-on-primary))`; `sf-input-color` in
+the brand and theme variants writes both beside the theme.
 
 ## The static palette
 

@@ -137,3 +137,34 @@ test('the sheet: one height in the row (CO-03), three swatch bounds (CO-06), pai
     assert.match(sheet, /inline-size: calc\(8 \* var\(--sf-color--swatch\) \+ 7 \* var\(--sf-color--swatch-gap\) \+ 2 \* var\(--sf-color--window-padding\)\)/u);
     assert.doesNotMatch(sheet.replace(/\/\*[\s\S]*?\*\//gu, ''), /\d+px/u, 'no raw px (C18)');
 });
+
+test('C84: the brand colour is a mode of the field (variant brand), the header keeps only the circle (variant theme)', () => {
+    const manifest = json(`${base}/component.json`);
+    assert.deepEqual(manifest.settings.variant.values, ['field', 'theme', 'brand']);
+    assert.equal(manifest.settings.target.default, '');
+    for (const event of ['change', 'input']) {
+        for (const key of ['value', 'name', 'theme', 'variables', 'css', 'checks']) assert.ok(manifest.events[event].carries[key], `${event} carries ${key}`);
+    }
+    assert.equal(manifest.values.checks.type, 'list');
+    const template = read(`${base}/js/templates/default.js`);
+    const element = read(`${base}/index.js`);
+    assert.match(template, /class="sf-color-checks" role="status"/u, 'the checks are a polite status region under the field');
+    assert.match(template, /context\.brand \? renderChecks\(context\)/u);
+    assert.match(element, /get takesAlpha\(\) \{\s*return Boolean\(this\.alpha\) && !this\.buildsTheme;/u, 'a theme colour takes no alpha');
+    assert.match(element, /brandVariables/u, 'the brand fill goes with the theme');
+    const ru = json(`${base}/lang/ru.json`).runtime;
+    assert.equal(ru.brand, 'Фирменный цвет');
+    for (const key of ['check-contrast', 'check-adjusted-light', 'check-adjusted-dark', 'check-grey', 'check-status-error', 'check-status-info', 'checks']) assert.ok(ru[key], key);
+});
+
+test('C84: sf-theme-generator leaves with a dated record, noted in SF.deprecations on connect', () => {
+    const journal = json('contracts/changes/journal.json');
+    const record = journal.records.find((one) => one.id === 'component-theme-generator-to-input-color-brand');
+    assert.ok(record);
+    assert.equal(record.kind, 'component');
+    assert.equal(record.stage, 'compat');
+    assert.equal(record.remove_after, '2027-01-01');
+    const generator = read('src/smart/theme-generator/index.js');
+    assert.match(generator, /noteDeprecated\(\{component: 'sf-theme-generator', kind: 'component'/u);
+    assert.match(read('src/smart/theme-generator/js/templates/default.js'), /palette="false"/u, 'its field gives codes only');
+});
