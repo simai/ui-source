@@ -1,0 +1,113 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown-export",
+  "schema_version": 1,
+  "id": "export-foreign-neighbours",
+  "summary": "Foreign Markdown blocks beside what would join them once a paragraph between was deleted (2026-11-11 acceptance, H2): a list with an inline image before a list, an indented code block after a list. Written as they came they would merge; each goes in the :::foreign carrier and reads back as itself.",
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "f1",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "- one ![img](/i.png)\n- two"
+              }
+            },
+            {
+              "id": "l1",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "l1a",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "three"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "l2",
+              "type": "content.list",
+              "props": {
+                "ordered": true
+              },
+              "slots": {
+                "items": [
+                  {
+                    "id": "l2a",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "l2b",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "f2",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "    indented code"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "markdown": ":::foreign {source=markdown}\n```markdown\n- one ![img](/i.png)\n- two\n```\n:::\n\n- three\n\n1. a\n2. b\n\n:::foreign {source=markdown}\n```markdown\n    indented code\n```\n:::\n",
+    "losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[0]",
+        "what": "foreign markdown block, written in a carrier"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[3]",
+        "what": "foreign markdown block, written in a carrier"
+      }
+    ]
+  }
+}

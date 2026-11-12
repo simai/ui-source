@@ -54,10 +54,70 @@ for a parameter, the type uses it; elsewhere Docara's names stand.
 | `content.outlet` | | | | where a layout draws the page's content |
 
 Inline content (`content`, `title`, `summary`, `caption`, table cells) is the
-inline model of `content.paragraph`: text runs with `strong`, `em`, `code`,
-links of text runs and the inline component atoms. Every link and every image
+inline model of `content.paragraph` (inline model 1.2.0): text runs with
+`strong`, `em`, `code`, `strike` (`<s>`), links of text runs and breaks, the
+soft line break `{"type": "break"}` (`<br>`) and the inline component atoms. Every link and every image
 source follows the Document's URL rule (relative, a fragment, http(s), mailto,
 tel); anything else is `unsafe_url`.
+
+No rendered HTML carries a `style` attribute: a `content.table` column aligned
+`center` or `end` puts the text-align utility class (`text-center`,
+`text-end`) on its cells, which the `table-frame` sheet honours from the first
+paint (`content.table` 1.0.1). `style` is a forbidden key anywhere in a
+Document (`executable_or_secret_field_forbidden`), as `class` is. A Document
+whose `profile` is unknown gets one `profile_unknown`; its nodes are then not
+checked against a profile.
+
+## A block of another source: content.foreign
+
+`content.foreign` 1.0.0 (2026-11-10) keeps a block a converter cannot map:
+data `{source: markdown|editorjs|html, raw, hash?}`, no props, in both
+profiles. `raw` is at most 200 000 characters: the exact source slice for
+Markdown and HTML, the block's JSON for Editor.js. `hash` is
+`sha256:<64 hex>` of `raw` as UTF-8: `validate` checks its form, `normalize`
+writes a missing one and reports a mismatch as the notice
+`foreign_hash_mismatch`; `render` reports it as a diagnostic and draws nothing
+for that block. On a public page the type draws nothing at all; under
+`unknown: 'placeholder'` (an editor's canvas) it draws the inert
+`sf-composition-unknown` note with the source name, and for Editor.js the tool
+name, as escaped text. `raw` is never parsed into markup and never becomes
+`content.html`.
+
+## Conversions
+
+Three lazily loaded core modules convert structured content; each call
+returns `{value, losses: [{code, path, what}]}` and reports every loss
+(`not_expressible`, `form_normalized`, `docara_alert_title_required`,
+`foreign_hash_mismatch`), under the guarantee table of the standard
+`simai.composition` 1.0.0:
+
+- `composition/html-value.mjs`: `fromHtml(html)` and `toHtml(document)`, the
+  html@1 value of `sf-input-rich` and the model; for every valid stored value
+  `v`, `toHtml(fromHtml(v).value).value === v`. Cleaning a value is
+  idempotent: inside a block's inline run, white space becomes one space; a
+  space at the start or end of the run, after or before a line break, or after
+  another space (in any format) is dropped; empty runs go; and these steps
+  repeat until a pass changes nothing, so a stored value cleaned again is the
+  same bytes.
+- `composition/markdown.mjs`: `fromMarkdown(text)` and `toMarkdown(document,
+  {ids})`, structured content and single text areas in Docara's authoring
+  form (CommonMark, GFM tables and strike, `:::alert {type=warning}` and the
+  other Docara directives, inline `:kbd[K]`, `:badge[…]{…}`, `:icon[…]{…}`).
+  Docara's alert words are mapped (`type` and `status`, `variant` and
+  `appearance`, `clear` and neutral, `danger` and `error`, the first heading
+  and `data.title`); a block the model cannot hold exactly is kept as
+  `content.foreign` with its source text, so a page read with no
+  `form_normalized` loss prints back to the same bytes. On the way out the
+  whole text is read back: a foreign Markdown block is written as it came only
+  while it reads back as itself beside its neighbours, otherwise in the
+  `:::foreign {source=markdown}` carrier (reported); any other difference is
+  reported, never silent. A carriage return inside a foreign raw is reported,
+  since Markdown line ends are LF.
+- `composition/editorjs.mjs`: `fromEditorJs(output)` and `toEditorJs(document)`;
+  the standard tools map to content types, any other block is kept as
+  `content.foreign`, and a node a standard tool cannot bring back unchanged goes
+  out as the tool `sf-<type>` carrying the node, so SIMAI -> Editor.js -> SIMAI
+  is equal including ids.
 
 ## Rules beyond a type's schema
 

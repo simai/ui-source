@@ -76,6 +76,8 @@ export const BUILTIN_CATALOGUE = Object.freeze({
   'content.media': 'media',
   'content.file': 'media',
   'content.html': 'media',
+  // Made by converters from another source, never offered (F2.2).
+  'content.foreign': null,
   'content.diagram': 'media',
   'content.details': 'text',
   'content.tabs': 'text',

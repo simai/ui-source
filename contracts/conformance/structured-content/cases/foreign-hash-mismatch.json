@@ -1,0 +1,45 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "foreign-hash-mismatch",
+  "summary": "A hash that does not match raw: foreign_hash_mismatch, the block kept and not drawn.",
+  "covers": [
+    "content.foreign"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "fx",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "a",
+                "hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": true,
+    "html": "<article data-sf-composition-id=\"root\"></article>",
+    "diagnostics": [
+      {
+        "code": "foreign_hash_mismatch",
+        "path": "$.root.slots.default[0].data.hash"
+      }
+    ],
+    "assets": []
+  }
+}

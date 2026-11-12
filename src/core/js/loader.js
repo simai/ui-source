@@ -4720,12 +4720,45 @@ SFLoaderPlugin.prototype.insertStyle = function (src, pluginURL) {
     this.pendingStyleLinks.push(style);
     if (this.pendingStyleLinks.length === 1) {
       Promise.resolve().then(() => {
-        const links = this.pendingStyleLinks.splice(0);
-        head.append(...links);
+        // One by one, so a sheet of this batch is also placed against the
+        // ones before it; the browser still recalculates once, after the task.
+        for (const link of this.pendingStyleLinks.splice(0)) {
+          if (!placeBeforeLaterPoint(head, link)) head.append(link);
+        }
       });
     }
   });
 };
+
+// A utility's sheets per point, in the order their rules must stand: the base
+// sheet first, then the breakpoints from narrow to wide, then the states.
+// Each pass of the Loader asks for its sheets in this order, but a later pass
+// appended its sheets after an earlier pass's: a base sheet that came second
+// stood after md, so grid-col-1 beat md:grid-col-2 and a wide page drew one
+// column (2026-11-10 review, P9). A sheet now goes before the first sheet of
+// the same utility already in <head> whose point comes after its own.
+const UTILITY_SHEET_POINTS = ['default', 'sm', 'md', 'lg', 'xl', 'xxl', 'hover', 'focus', 'focus-visible', 'active'];
+const UTILITY_SHEET = /\/utility\/([^/?#]+)\/([^/?#]+)\/css\/\2(?:\.min)?\.css(?:[?#]|$)/u;
+
+function utilitySheetPoint(href) {
+  const match = UTILITY_SHEET.exec(String(href || ''));
+  if (!match) return null;
+  const rank = UTILITY_SHEET_POINTS.indexOf(match[2]);
+  return rank < 0 ? null : {utility: match[1], rank};
+}
+
+function placeBeforeLaterPoint(head, link) {
+  const own = utilitySheetPoint(link.getAttribute?.('href') ?? link.href);
+  if (!own || typeof head.querySelectorAll !== 'function') return false;
+  for (const other of head.querySelectorAll('link[rel="stylesheet"]')) {
+    const point = utilitySheetPoint(other.getAttribute('href'));
+    if (point && point.utility === own.utility && point.rank > own.rank) {
+      head.insertBefore(link, other);
+      return true;
+    }
+  }
+  return false;
+}
 
 // One insertion per asset URL, shared by every Loader on the page
 // (simai/ui-source#12 follow-up). A dependency named by several plugins --

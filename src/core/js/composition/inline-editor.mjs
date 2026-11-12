@@ -1,6 +1,6 @@
 import { pageText } from '../page-language.js';
 import { defineTagAliases } from '../tag-aliases.js';
-import { INLINE_COMPONENTS, INLINE_MARKS, INLINE_OBJECT, fromSegments, inlineComponentView, inlineLength, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark } from './inline-model.mjs';
+import { INLINE_COMPONENTS, INLINE_MARKS, INLINE_OBJECT, breakSegment, fromSegments, inlineComponentView, inlineExtensions, inlineLength, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark } from './inline-model.mjs';
 
 // In-place editor for the Composition inline content model. The host starts
 // it on a rendered heading or paragraph element; the editor exposes only
@@ -43,10 +43,13 @@ function emitInline(element, key, id, content) {
 }
 
 const MESSAGES = {
-  ru: { toolbar: 'Форматирование', strong: 'Полужирный', em: 'Курсив', code: 'Код', link: 'Ссылка', url: 'Адрес ссылки', apply: 'Применить', unlink: 'Убрать ссылку', editing: '{label}: редактирование. Enter — сохранить, Escape — отменить.', invalid: 'Недопустимый адрес ссылки' },
-  en: { toolbar: 'Formatting', strong: 'Bold', em: 'Italic', code: 'Code', link: 'Link', url: 'Link address', apply: 'Apply', unlink: 'Remove link', editing: '{label}: editing. Enter saves, Escape cancels.', invalid: 'Invalid link address' },
+  ru: { toolbar: 'Форматирование', strong: 'Полужирный', em: 'Курсив', code: 'Код', strike: 'Зачёркнутый', link: 'Ссылка', url: 'Адрес ссылки', apply: 'Применить', unlink: 'Убрать ссылку', editing: '{label}: редактирование. Enter — сохранить, Escape — отменить.', invalid: 'Недопустимый адрес ссылки' },
+  en: { toolbar: 'Formatting', strong: 'Bold', em: 'Italic', code: 'Code', strike: 'Strikethrough', link: 'Link', url: 'Link address', apply: 'Apply', unlink: 'Remove link', editing: '{label}: editing. Enter saves, Escape cancels.', invalid: 'Invalid link address' },
 };
 const SHORTCUTS = { strong: 'b', em: 'i', code: 'e' };
+// The marks the toolbar offers when the host names none: strike (inline model
+// 1.2.0) is read, kept and drawn, and has a button only where a host asks.
+const TOOLBAR_MARKS = Object.freeze(['strong', 'em', 'code']);
 const SKIP = new Set(['SCRIPT', 'STYLE', 'TEMPLATE', 'HEAD', 'TITLE', 'META', 'LINK', 'IMG', 'SVG', 'OBJECT', 'IFRAME', 'NOSCRIPT']);
 const BLOCK = new Set(['P', 'DIV', 'LI', 'UL', 'OL', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'TR', 'TABLE', 'BLOCKQUOTE', 'SECTION', 'ARTICLE']);
 // While editing, an atom or an opaque node is one element that is not
@@ -55,6 +58,40 @@ const BLOCK = new Set(['P', 'DIV', 'LI', 'UL', 'OL', 'H1', 'H2', 'H3', 'H4', 'H5
 const NODE_ATTRIBUTE = 'data-sf-inline-node';
 const ATOM_TAGS = new Map(Object.entries(INLINE_COMPONENTS).map(([name, entry]) => [entry.tag.toUpperCase(), name]));
 const isAtomElement = (node) => node?.nodeType === 1 && node.hasAttribute(NODE_ATTRIBUTE);
+// A mark the editor has no element for is drawn as a span carrying its name,
+// never as an element of that name, so it survives the DOM read-back.
+const MARK_ATTRIBUTE = 'data-sf-inline-mark';
+// Editor-copied HTML carries the page's copy token on its wrapper; pasted
+// HTML without it loses every data-sf-inline-* attribute first, so another
+// page cannot inject entries or marks (2026-11-11 acceptance, L3). The token
+// lives on the global, since every bundle carries its own module copy.
+const COPY_ATTRIBUTE = 'data-sf-inline-copy';
+const COPY_KEY = Symbol.for('simai.composition.inline-copy');
+const copyToken = () => {
+  if (!globalThis[COPY_KEY]) globalThis[COPY_KEY] = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+  return globalThis[COPY_KEY];
+};
+// The extension keys of a text run, a break or a link (inline model,
+// 2026-11-11) ride on a wrapper span (or the <a>) as JSON, so the DOM
+// read-back keeps them. Foreign paste loses them with the other
+// data-sf-inline-* attributes.
+const EXTRA_ATTRIBUTE = 'data-sf-inline-extra';
+const readExtra = (node) => {
+  const json = node?.nodeType === 1 ? node.getAttribute(EXTRA_ATTRIBUTE) : null;
+  if (json === null) return null;
+  try {
+    const value = JSON.parse(json);
+    return value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length ? value : null;
+  } catch {
+    return null;
+  }
+};
+const MARK_TAGS = new Map([['strong', 'strong'], ['em', 'em'], ['code', 'code'], ['strike', 's']]);
+// A break the editor drew carries this attribute; any other <br> the browser
+// or a paste brings is read as a break too, except the placeholder a browser
+// keeps as the last child of an emptied or break-ended line.
+const BREAK_ATTRIBUTE = 'data-sf-inline-break';
+const isBreakElement = (node) => node?.nodeType === 1 && node.tagName === 'BR' && node.hasAttribute(BREAK_ATTRIBUTE);
 
 /** The entry an atom element holds: its JSON, or for a drawn atom without it, its tag and declared attributes. */
 function atomEntry(element) {
@@ -90,18 +127,20 @@ const words = (node) => Object.fromEntries(Object.keys(MESSAGES.en).map((key) =>
 /** Reads inline content from any DOM subtree; foreign markup and styles are dropped. */
 export function readInlineDom(root, { marks = INLINE_MARKS, links = true, collapse = false } = {}) {
   const segments = [];
-  const visit = (node, active, href) => {
+  const carry = (extra, linkExtra, href) => ({ ...(extra ? { extra } : {}), ...(href && linkExtra ? { linkExtra } : {}) });
+  const visit = (node, active, href, extra = null, linkExtra = null) => {
     if (node.nodeType === 3) {
       let text = node.nodeValue.replace(/\u00a0/gu, ' ').replace(/[\r\n\t\f\v]/gu, ' ');
       if (collapse) text = text.replace(/ {2,}/gu, ' ');
-      if (text) segments.push({ text, marks: [...active], href });
+      if (text) segments.push({ text, marks: [...active], href, ...carry(extra, linkExtra, href) });
       return;
     }
     if (node.nodeType !== 1 && node.nodeType !== 11) return;
     if (node.nodeType === 1 && node !== root) {
       const entry = atomEntry(node);
       if (entry) {
-        segments.push({ text: INLINE_OBJECT, marks: [], href, node: entry });
+        // An atom is never inside a link, even when pasted inside an <a>.
+        segments.push({ text: INLINE_OBJECT, marks: [], href: entry.type === 'component' ? null : href, node: entry, ...(entry.type === 'component' ? {} : carry(null, linkExtra, href)) });
         return;
       }
     }
@@ -112,28 +151,47 @@ export function readInlineDom(root, { marks = INLINE_MARKS, links = true, collap
     if (tag === 'STRONG' || tag === 'B') next.add('strong');
     if (tag === 'EM' || tag === 'I') next.add('em');
     if (tag === 'CODE' || tag === 'KBD' || tag === 'SAMP') next.add('code');
+    if (tag === 'S' || tag === 'STRIKE' || tag === 'DEL') next.add('strike');
+    // A mark this editor cannot draw rides on its wrapper (renderInlineDom).
+    const carried = node.nodeType === 1 ? node.getAttribute(MARK_ATTRIBUTE) : null;
+    // Any non-empty name, the inline model's own rule (sortMarks).
+    if (carried) next.add(carried);
     if (node.nodeType === 1 && node.style) {
       const weight = node.style.fontWeight;
       if (weight === 'bold' || weight === 'bolder' || Number(weight) >= 600) next.add('strong');
       if (node.style.fontStyle === 'italic') next.add('em');
     }
+    let nextExtra = extra;
+    let nextLinkExtra = linkExtra;
     if (tag === 'A' && !href && links) {
       const candidate = node.getAttribute('href');
-      if (safeHref(candidate)) nextHref = candidate;
+      if (safeHref(candidate)) {
+        nextHref = candidate;
+        nextLinkExtra = readExtra(node);
+      }
+    } else if (node.nodeType === 1 && tag !== 'A') {
+      const own = readExtra(node);
+      if (own) nextExtra = { ...(extra || {}), ...own };
     }
     if (tag === 'BR') {
-      // The placeholder <br> a browser leaves in an emptied editor is not content.
-      if (node.parentNode === root && !node.nextSibling) return;
-      segments.push({ text: ' ', marks: [...active], href });
+      // A line break is a break (inline model 1.2.0), no longer a space. The
+      // placeholder <br> a browser leaves as the last child of the edited
+      // element (an emptied editor, or the empty line after a final break)
+      // is not content; a break the editor drew says so itself.
+      if (!node.hasAttribute(BREAK_ATTRIBUTE) && isLastLeaf(node, root)) return;
+      segments.push({ ...breakSegment([...active], href, readExtra(node) || extra), ...carry(null, linkExtra, href) });
       return;
     }
-    for (const child of node.childNodes) visit(child, next, nextHref);
+    for (const child of node.childNodes) visit(child, next, nextHref, nextExtra, nextLinkExtra);
     // Nested blocks (pasted paragraphs) are separated by one space; the root is not.
     if (BLOCK.has(tag) && node !== root) segments.push({ text: ' ', marks: [], href: null });
   };
   visit(root, new Set(), null);
+  // The field's marks limit the known ones; a mark the model does not know is
+  // kept as it came, so an edit never drops it (validation still reports it).
   const allowed = new Set(marks);
-  let content = fromSegments(segments.map((segment) => ({ ...segment, marks: segment.marks.filter((mark) => allowed.has(mark)), href: links ? segment.href : null })));
+  const keep = (mark) => allowed.has(mark) || !INLINE_MARKS.includes(mark);
+  let content = fromSegments(segments.map((segment) => ({ ...segment, marks: segment.marks.filter(keep), href: links ? segment.href : null })));
   if (collapse) {
     const flat = toSegments(content);
     if (flat.length && !flat[0].node) flat[0] = { ...flat[0], text: flat[0].text.replace(/^ +/u, '') };
@@ -162,24 +220,55 @@ export function renderInlineDom(doc, content) {
     return element;
   };
   const run = (entry) => {
-    if (entry.type !== 'text') return object(entry);
-    let node = doc.createTextNode(entry.value);
+    if (entry.type !== 'text' && entry.type !== 'break') return object(entry);
+    let node;
+    if (entry.type === 'break') {
+      node = doc.createElement('br');
+      node.setAttribute(BREAK_ATTRIBUTE, '');
+    } else node = doc.createTextNode(entry.value);
     for (const mark of entry.marks || []) {
-      const wrapper = doc.createElement(mark);
+      const wrapper = doc.createElement(MARK_TAGS.get(mark) || 'span');
+      if (!MARK_TAGS.has(mark)) wrapper.setAttribute(MARK_ATTRIBUTE, mark);
+      wrapper.append(node);
+      node = wrapper;
+    }
+    const extra = inlineExtensions(entry);
+    if (extra) {
+      const wrapper = doc.createElement('span');
+      wrapper.setAttribute(EXTRA_ATTRIBUTE, JSON.stringify(extra));
       wrapper.append(node);
       node = wrapper;
     }
     return node;
   };
-  for (const entry of normalizeInline(content)) {
+  const normalized = normalizeInline(content);
+  for (const entry of normalized) {
     if (entry.type === 'link') {
       const anchor = doc.createElement('a');
       anchor.setAttribute('href', entry.href);
+      const linkExtra = inlineExtensions(entry);
+      if (linkExtra) anchor.setAttribute(EXTRA_ATTRIBUTE, JSON.stringify(linkExtra));
       for (const child of entry.children) anchor.append(run(child));
       fragment.append(anchor);
     } else fragment.append(run(entry));
   }
+  // A line that ends on a break needs one more <br> to show its empty last
+  // line; that one is the placeholder and is not read back.
+  const last = normalized.at(-1);
+  // It goes inside the marks of that break, so text typed on the new line
+  // keeps them, as it would after a break inside a line.
+  if (last?.type === 'break' || (last?.type === 'link' && last.children.at(-1)?.type === 'break')) {
+    let host = fragment;
+    while (host.lastChild?.nodeType === 1 && host.lastChild.tagName !== 'BR') host = host.lastChild;
+    host.append(doc.createElement('br'));
+  }
   return fragment;
+}
+
+// True when node is the last thing inside root: nothing follows it at any level.
+function isLastLeaf(node, root) {
+  for (let current = node; current && current !== root; current = current.parentNode) if (current.nextSibling) return false;
+  return true;
 }
 
 // The units of offset inside root, in document order: text nodes outside
@@ -189,7 +278,7 @@ function units(root) {
   const visit = (node) => {
     for (const child of node.childNodes) {
       if (child.nodeType === 3) list.push(child);
-      else if (isAtomElement(child)) list.push(child);
+      else if (isAtomElement(child) || isBreakElement(child)) list.push(child);
       else if (child.nodeType === 1) visit(child);
     }
   };
@@ -256,7 +345,10 @@ export function startInlineEdit(element, options = {}) {
   if (!INLINE_TOOLBAR_MODES.includes(toolbarMode)) throw new TypeError(`inline_toolbar_unknown: ${toolbarMode}`);
   const doc = element.ownerDocument;
   const text = { ...words(element), ...(options.messages || {}) };
+  // options.marks: the marks the field allows and offers; without it every
+  // known mark is kept and the toolbar offers TOOLBAR_MARKS.
   const marks = (options.marks || INLINE_MARKS).filter((mark) => INLINE_MARKS.includes(mark));
+  const offered = options.marks ? marks : TOOLBAR_MARKS.filter((mark) => marks.includes(mark));
   const links = options.links !== false;
   const original = { html: element.innerHTML, attributes: ['contenteditable', 'role', 'aria-multiline', 'aria-label', 'spellcheck', 'tabindex'].map((name) => [name, element.getAttribute(name)]) };
   const history = [];
@@ -310,14 +402,14 @@ export function startInlineEdit(element, options = {}) {
   toolbar.dataset.sfToolbar = toolbarMode;
   if (toolbarMode === 'selection') toolbar.hidden = true;
   const buttons = new Map();
-  for (const mark of marks) {
+  for (const mark of offered) {
     const button = doc.createElement('button');
     button.type = 'button';
     button.className = `sf-inline-editor-button sf-inline-editor-button--${mark}`;
     button.dataset.mark = mark;
     button.textContent = text[mark];
     button.setAttribute('aria-pressed', 'false');
-    button.setAttribute('aria-keyshortcuts', `Control+${SHORTCUTS[mark].toUpperCase()} Meta+${SHORTCUTS[mark].toUpperCase()}`);
+    if (SHORTCUTS[mark]) button.setAttribute('aria-keyshortcuts', `Control+${SHORTCUTS[mark].toUpperCase()} Meta+${SHORTCUTS[mark].toUpperCase()}`);
     buttons.set(mark, button);
     toolbar.append(button);
   }
@@ -402,7 +494,7 @@ export function startInlineEdit(element, options = {}) {
   function updateToolbar() {
     const [start, end] = selectionOffsets();
     const state = marksIn(read(), start, end === start ? Math.max(0, start - 1) : end);
-    for (const mark of marks) buttons.get(mark).setAttribute('aria-pressed', state.marks.includes(mark) ? 'true' : 'false');
+    for (const mark of offered) buttons.get(mark).setAttribute('aria-pressed', state.marks.includes(mark) ? 'true' : 'false');
     buttons.get('link')?.setAttribute('aria-pressed', state.href ? 'true' : 'false');
     // Selection mode: the bar is there while text is selected or a link is
     // being written, and nowhere while the caret only stands in the text.
@@ -414,6 +506,13 @@ export function startInlineEdit(element, options = {}) {
     const [start, end] = selectionOffsets();
     if (start === end) return;
     apply(toggleMark(read(), start, end, mark), start, end);
+  }
+
+  function insertBreak() {
+    const [start, end] = selectionOffsets();
+    const content = read();
+    const at = toSegments(sliceInline(content, Math.max(0, start - 1), start)).find((segment) => !segment.node);
+    apply(replaceRange(content, start, end, [breakSegment(at?.marks || [], at?.href || null)]), start + 1, start + 1);
   }
 
   function openLink() {
@@ -520,9 +619,14 @@ export function startInlineEdit(element, options = {}) {
     const data = event.clipboardData;
     const html = data?.getData('text/html');
     const plain = data?.getData('text/plain') || '';
-    const parsed = html
-      ? readInlineDom(new globalThis.DOMParser().parseFromString(html, 'text/html').body, { marks, links, collapse: true })
-      : [{ type: 'text', value: plain.replace(/\s+/gu, ' ').trim() }];
+    let parsed = [{ type: 'text', value: plain.replace(/\s+/gu, ' ').trim() }];
+    if (html) {
+      const body = new globalThis.DOMParser().parseFromString(html, 'text/html').body;
+      if (body.querySelector(`[${COPY_ATTRIBUTE}]`)?.getAttribute(COPY_ATTRIBUTE) !== copyToken()) {
+        for (const node of body.querySelectorAll('*')) for (const name of node.getAttributeNames()) if (name.startsWith('data-sf-inline-')) node.removeAttribute(name);
+      }
+      parsed = readInlineDom(body, { marks, links, collapse: true });
+    }
     const inserted = toSegments(parsed);
     const [start, end] = selectionOffsets();
     const length = inlineLength(fromSegments(inserted));
@@ -537,9 +641,12 @@ export function startInlineEdit(element, options = {}) {
     event.preventDefault();
     const slice = sliceInline(read(), start, end);
     const holder = doc.createElement('div');
-    holder.append(renderInlineDom(doc, slice));
+    const wrapper = doc.createElement('span');
+    wrapper.setAttribute(COPY_ATTRIBUTE, copyToken());
+    wrapper.append(renderInlineDom(doc, slice));
+    holder.append(wrapper);
     event.clipboardData.setData('text/html', holder.innerHTML);
-    event.clipboardData.setData('text/plain', toSegments(slice).map(({ text, node }) => (node ? (typeof node.props?.text === 'string' ? node.props.text : '') : text)).join(''));
+    event.clipboardData.setData('text/plain', toSegments(slice).map(({ text, node, break: isBreak }) => (node ? (typeof node.props?.text === 'string' ? node.props.text : '') : isBreak ? '\n' : text)).join(''));
     if (remove) apply(replaceRange(read(), start, end, []), start, start);
   };
   element.addEventListener('copy', (event) => copySelection(event, false), signal);
@@ -578,6 +685,11 @@ export function startInlineEdit(element, options = {}) {
     const modifier = event.ctrlKey || event.metaKey;
     if (['ArrowLeft', 'ArrowRight', 'Backspace', 'Delete'].includes(event.key) && stepOverAtom(event)) {
       event.preventDefault();
+    } else if (event.key === 'Enter' && event.shiftKey) {
+      // Shift+Enter: a soft line break in the same block, with the marks and
+      // link of the text before it (inline model 1.2.0).
+      event.preventDefault();
+      insertBreak();
     } else if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       commit();

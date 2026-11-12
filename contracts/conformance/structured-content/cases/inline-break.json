@@ -1,0 +1,66 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "inline-break",
+  "summary": "A break draws br; breaks in a row are kept, at the edges too: the model never removes one.",
+  "covers": [
+    "inline"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "p",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "break"
+                  },
+                  {
+                    "type": "text",
+                    "value": "a"
+                  },
+                  {
+                    "type": "break"
+                  },
+                  {
+                    "type": "text",
+                    "value": "b"
+                  },
+                  {
+                    "type": "break"
+                  },
+                  {
+                    "type": "break"
+                  },
+                  {
+                    "type": "text",
+                    "value": "c"
+                  },
+                  {
+                    "type": "break"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": true,
+    "html": "<article data-sf-composition-id=\"root\"><p data-sf-composition-id=\"p\"><br>a<br>b<br><br>c<br></p></article>",
+    "diagnostics": [],
+    "assets": []
+  }
+}

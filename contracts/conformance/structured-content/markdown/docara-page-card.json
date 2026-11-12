@@ -1,0 +1,557 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-page-card",
+  "input": "docara-page-card.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m2",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "---\ndescription: Как собрать карточку с заголовком и текстом для коротких пояснений, вариантов выбора и небольших групп ссылок.\n---",
+                "hash": "sha256:45dfbafdf979a4065630904a9877835eadc0491610581d923455bcc8f951f550"
+              }
+            },
+            {
+              "id": "m3",
+              "type": "content.heading",
+              "data": {
+                "level": 1,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Карточка"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m4",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Карточка объединяет заголовок и связанный с ним текст на отдельной поверхности.\nВыбирайте её для коротких пояснений, вариантов выбора и небольших групп ссылок;\nнесколько карточек ставьте в "
+                  },
+                  {
+                    "type": "link",
+                    "href": "../grid/",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "сетку"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": "."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m5",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Пример"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m6",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Карточка\"}\n```markdown\n:::card\n### Переносимый проект\n\nMarkdown и JSON можно хранить рядом с кодом и проверять через Git.\n:::\n```\n:::",
+                "hash": "sha256:b26a1f2830eb4031f8d8bb78bb9b361fd44362cbc0c64dea80e153feda2744ec"
+              }
+            },
+            {
+              "id": "m7",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Разметка"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m8",
+              "type": "content.code",
+              "props": {
+                "lang": "markdown"
+              },
+              "data": {
+                "code": ":::card\n### Понятный заголовок\n\nКороткое связанное содержимое.\n:::"
+              }
+            },
+            {
+              "id": "m13",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m10",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Начинайте карточку с заголовка: он называет её содержимое."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m12",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Внутри — обычный Markdown. Блоки Docara ("
+                        },
+                        {
+                          "type": "text",
+                          "value": ":::",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": ") внутрь карточки не\nвкладываются."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m14",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Варианты"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m15",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Вид"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m16",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "variant=plain",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " убирает рамку, фон и отступы: так карточка встраивается в\nдругую поверхность, например в полосу или сетку с общим фоном."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m17",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Вид карточки\"}\n```markdown\n:::card\n### С оформлением\n\nПоверхность, рамка и внутренние отступы.\n:::\n\n:::card {variant=plain}\n### Без оформления\n\nТолько содержимое, без своей поверхности.\n:::\n```\n:::",
+                "hash": "sha256:df662e9bfef26b66edf7fd5ca1700b0f0ac5c03c518651364d1d93a3756cb37b"
+              }
+            },
+            {
+              "id": "m18",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Доступность"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m25",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m20",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Карточка — смысловая область ("
+                        },
+                        {
+                          "type": "text",
+                          "value": "section",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": ") со своим заголовком: программы\nэкранного доступа переходят по ней как по разделу страницы."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m22",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Выбирайте уровень заголовка по месту на странице: "
+                        },
+                        {
+                          "type": "text",
+                          "value": "###",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " для карточки\nвнутри раздела "
+                        },
+                        {
+                          "type": "text",
+                          "value": "##",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": "."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m24",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Не делайте карточку только ради рамки вокруг длинного текста: длинная\nстатья читается лучше без неё."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m26",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Параметры"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m27",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:start -->",
+                "hash": "sha256:860321e4de557e281dac7b89346f13310ed796026c8b3317fe1770546b1fa433"
+              }
+            },
+            {
+              "id": "m28",
+              "type": "content.table",
+              "data": {
+                "rows": [
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "Параметр"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Значения"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "По умолчанию"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Что задаёт"
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "variant",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "default",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "plain",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "default",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Вид: "
+                      },
+                      {
+                        "type": "text",
+                        "value": "default",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — карточка с рамкой и фоном, "
+                      },
+                      {
+                        "type": "text",
+                        "value": "plain",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — без них."
+                      }
+                    ]
+                  ]
+                ]
+              }
+            },
+            {
+              "id": "m29",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:end -->",
+                "hash": "sha256:6bd16e03b82585965bc1a8efd729644fbcad103328d6c0dc83e7a1f805b6cfef"
+              }
+            },
+            {
+              "id": "m30",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "См. также"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m37",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m32",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../grid/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Сетка"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " — несколько карточек в ряд"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m34",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../surface/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Оформленная полоса"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " — фон для группы блоков"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m36",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../landing-blocks/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Блоки лендинга"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " — карточки преимуществ"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[0]",
+        "what": "kept as content.foreign: setext heading"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[4]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[11]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[15]",
+        "what": "kept as content.foreign: html block"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[17]",
+        "what": "kept as content.foreign: html block"
+      }
+    ],
+    "bytes_equal": true,
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

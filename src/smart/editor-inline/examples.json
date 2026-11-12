@@ -179,6 +179,28 @@
               "check": "document.querySelector('#h1').innerHTML === 'Заголовок' && !document.querySelector('#h1').hasAttribute('role')"
             }
           ]
+        },
+        {
+          "id": "p4-soft-break",
+          "title": "Shift+Enter puts a soft line break in the edited text: a <br> in the same block, no commit; Escape puts the element back",
+          "covers": "keyboard Shift+Enter (break), Escape",
+          "steps": [
+            {
+              "script": "(document.querySelector('#ed').edit(document.querySelector('#p1'), {nodeId: 'p1', label: 'Абзац'}), (() => { const range = document.createRange(); range.selectNodeContents(document.querySelector('#p1')); range.collapse(false); const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range); })(), true)"
+            },
+            {
+              "user": "keyboard:Shift+Enter"
+            },
+            {
+              "check": "document.querySelector('#p1').hasAttribute('data-sf-inline-editing') && document.querySelectorAll('#p1 br').length >= 1"
+            },
+            {
+              "user": "keyboard:Escape"
+            },
+            {
+              "check": "!document.querySelector('#p1').hasAttribute('data-sf-inline-editing') && document.querySelectorAll('#p1 br').length === 0"
+            }
+          ]
         }
       ]
     }

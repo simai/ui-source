@@ -14,17 +14,21 @@ import { fileURLToPath } from 'node:url';
 
 import { BUILTIN_TYPE_MANIFESTS } from '../src/core/js/composition/builtins.mjs';
 import { render, validate } from '../src/core/js/composition/index.mjs';
+import { fromMarkdown, toMarkdown } from '../src/core/js/composition/markdown.mjs';
+import { fromEditorJs, toEditorJs } from '../src/core/js/composition/editorjs.mjs';
+import { stable, withoutIds } from '../src/core/js/composition/foreign.mjs';
 import { canonicalHtml } from '../contracts/conformance/structured-content/normalize-html.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const kit = resolve(root, 'contracts/conformance/structured-content');
-const KIT_VERSION = '1.0.0';
+const KIT_VERSION = '2.2.0';
 
 // ---------------------------------------------------------------------------
 // Building blocks
 
 const text = (value, marks) => ({ type: 'text', value, ...(marks ? { marks } : {}) });
 const link = (href, ...children) => ({ type: 'link', href, children });
+const br = (marks) => ({ type: 'break', ...(marks ? { marks } : {}) });
 const atom = (name, props) => ({ type: 'component', name, ...(props ? { props } : {}) });
 const p = (id, ...content) => ({ id, type: 'content.paragraph', data: { content: content.length ? content.map((entry) => (typeof entry === 'string' ? text(entry) : entry)) : [text('Text.')] } });
 const item = (id, value, children) => ({ id, type: 'content.list-item', data: { content: [text(value)] }, ...(children ? { slots: { default: children } } : {}) });
@@ -192,6 +196,29 @@ block('inline-everywhere', 'Inline content reads the same in every place that ho
   { id: 'f', type: 'content.figure', data: { src: '/a.png', alt: '', caption: [text('fig', ['strong'])] } },
 ] } });
 
+// Inline model 1.2.0 (2026-11-10): the soft line break and the mark strike.
+inline('mark-strike', 'strike draws s.', text('gone', ['strike']));
+inline('marks-strike-nested', 'strike nests with the other marks in their canonical order.', text('all', ['strike', 'strong', 'code']));
+inline('break', 'A break draws br; breaks in a row are kept, at the edges too: the model never removes one.', br(), text('a'), br(), text('b'), br(), br(), text('c'), br());
+inline('break-marked', 'A break inside marks draws br inside them.', text('a', ['strong']), br(['strong', 'em']), text('b', ['strong']));
+inline('break-in-link', 'A link holds breaks.', link('/a', text('one'), br(), text('two')));
+inline('extension-keys', 'Extension keys on a text run, a link, its child, a break and an atom are valid and draw nothing.', { type: 'text', value: 'Bonjour', lang: 'fr' }, { type: 'link', href: '/doc', title: 'Docs', children: [{ type: 'text', value: 'docs', data_ref: 'r1' }] }, { type: 'break', kind: 'soft' }, { ...atom('kbd', { text: 'K' }), lang: 'en' });
+block('break-everywhere', 'A break reads the same in every inline field: heading, item, alert title, table cell.', 'inline', { id: 'g', type: 'content.grid', props: { columns: 1 }, slots: { default: [
+  { id: 'h', type: 'content.heading', data: { level: 2, content: [text('a'), br(), text('b')] } },
+  { id: 'l', type: 'content.list', slots: { items: [{ id: 'li', type: 'content.list-item', data: { content: [text('x'), br(), text('y')] } }] } },
+  { id: 'w', type: 'content.alert', data: { title: [text('t'), br(), text('u')] } },
+  { id: 't', type: 'content.table', data: { rows: [[[text('c'), br(), text('d')]]] } },
+] } });
+
+// content.foreign 1.0.0 (2026-11-10): a block of another source, kept as it
+// came. A public page draws nothing of it; raw is never parsed into markup.
+const foreign = (id, summary, source, raw, extra = {}) => block(`foreign-${id}`, summary, 'content.foreign', { id: 'fx', type: 'content.foreign', data: { source, raw, ...extra } });
+foreign('markdown', 'A Markdown block with CRLF, tabs, trailing spaces and text beyond ASCII: nothing drawn.', 'markdown', ':::example {label="Пример"}\r\n\tкод  \r\n:::\r\n');
+foreign('editorjs', 'An Editor.js block, its JSON as raw: nothing drawn.', 'editorjs', '{"id":"x1","type":"checklist","data":{"items":[{"text":"a","checked":true}]}}');
+foreign('html-script', 'raw holding a script: nothing of it reaches the page.', 'html', '<script>window.pwned = 1</script><img src=x onerror="window.pwned = 1">');
+foreign('hash', 'A matching hash: nothing drawn.', 'markdown', 'a', { hash: 'sha256:ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb' });
+foreign('hash-mismatch', 'A hash that does not match raw: foreign_hash_mismatch, the block kept and not drawn.', 'markdown', 'a', { hash: 'sha256:0000000000000000000000000000000000000000000000000000000000000000' });
+
 // ---------------------------------------------------------------------------
 // Escaping and ids
 
@@ -276,6 +303,18 @@ badInline('atom-token', 'A token prop takes only token characters.', atom('icon'
 badInline('atom-required', 'kbd needs its text.', atom('kbd', {}));
 badInline('atom-in-link', 'A link holds text runs only.', link('/a', atom('kbd', { text: 'K' })));
 badInline('mark-unknown', 'A mark not on the list.', text('x', ['underline']));
+badInline('break-shape', 'A break of another shape (marks not a list) is a newer producer\'s entry: refused.', text('x'), { type: 'break', marks: 'strong' });
+// Kit 2.2.0 (2026-11-11): extension keys on known inline entries (owner rule:
+// no silent data loss). Lowercase names outside the model's own and the
+// forbidden ones are extension data: valid, kept, never drawn.
+badInline('extension-style', 'style is no extension key: forbidden, as anywhere in a Document.', { type: 'text', value: 'x', style: 'color:red' });
+badInline('extension-event', 'An event handler name (on*) is no extension key.', { type: 'text', value: 'x', onclick: 'steal()' });
+badInline('extension-own-name', 'A name of the model (href on a text run) is no extension key.', { type: 'text', value: 'x', href: '/a' });
+badInline('extension-name', 'An extension key is lowercase letters, digits, _ . : (no capitals, no dash).', { type: 'text', value: 'x', 'data-ref': 'r' });
+bad('foreign-source', 'source is markdown, editorjs or html.', 'content.foreign', { id: 'fx', type: 'content.foreign', data: { source: 'notion', raw: 'x' } });
+bad('foreign-hash', 'A hash is sha256: and 64 lowercase hex digits.', 'content.foreign', { id: 'fx', type: 'content.foreign', data: { source: 'markdown', raw: 'x', hash: 'md5:x' } });
+bad('foreign-raw-length', 'raw holds at most 200000 characters.', 'content.foreign', { id: 'fx', type: 'content.foreign', data: { source: 'markdown', raw: 'x'.repeat(200001) } });
+bad('foreign-props', 'content.foreign has no props.', 'content.foreign', { id: 'fx', type: 'content.foreign', props: { look: 'x' }, data: { source: 'markdown', raw: 'x' } });
 badInline('link-javascript', 'A javascript: link.', link('javascript:alert(1)', text('x')));
 badInline('link-data', 'A data: link.', link('data:text/html,<script>x()</script>', text('x')));
 badInline('link-protocol-relative', 'A protocol-relative link.', link('//evil.example', text('x')));
@@ -350,6 +389,115 @@ outputs.set('normalization.json', stringify({
   summary: 'Pairs of HTML fragments and whether the comparison rule (README.md, "Comparing HTML") holds them equal, with the canonical form of each.',
   vectors: NORMALIZATION.map(([label, left, right, equal]) => ({ label, left, right, equal, canonical: [canonicalHtml(left), canonicalHtml(right)] })),
 }));
+// ---------------------------------------------------------------------------
+// Converters (2026-11-10, F2.4): Markdown in Docara's authoring form, and
+// Editor.js. markdown/*.md are inputs: pages of the Docara site and the
+// Markdown of their examples, copied as they are (docara b47ed8a6), and
+// written forms of the alert vocabulary. Each gets markdown/<name>.json: the
+// Document, the losses, and whether it prints back to the same bytes, which
+// it must when no loss says form_normalized.
+
+const markdownDir = join(kit, 'markdown');
+const markdownInputs = readdirSync(markdownDir).filter((name) => name.endsWith('.md')).sort();
+for (const name of markdownInputs) {
+  const source = readFileSync(join(markdownDir, name), 'utf8');
+  const read = await fromMarkdown(source, { id: 'page' });
+  const validation = validate(read.value);
+  if (!validation.valid) throw new Error(`conformance_markdown_invalid:${name}:${JSON.stringify(validation.diagnostics.slice(0, 3))}`);
+  const printed = await toMarkdown(read.value);
+  const normalized = read.losses.some(({ code }) => code === 'form_normalized');
+  if (!normalized && printed.value !== source) throw new Error(`conformance_markdown_not_byte_exact:${name}`);
+  const again = await fromMarkdown(printed.value, { id: 'page' });
+  if (stable(withoutIds(again.value)) !== stable(withoutIds(read.value))) throw new Error(`conformance_markdown_reads_back_otherwise:${name}`);
+  outputs.set(`markdown/${name.replace(/\.md$/u, '.json')}`, stringify({
+    schema: 'simai.composition.structured-content-conformance-markdown',
+    schema_version: 1,
+    id: name.replace(/\.md$/u, ''),
+    input: name,
+    expect: { document: read.value, losses: read.losses, bytes_equal: printed.value === source, ...(printed.value === source ? {} : { printed: printed.value }), print_losses: printed.losses },
+  }));
+}
+// Documents to Markdown: what Docara's form cannot hold is reported.
+const MARKDOWN_EXPORTS = [
+  ['export-alert-without-title', 'A content.alert without a title: written without one, docara_alert_title_required.', content([{ id: 'w', type: 'content.alert', props: { status: 'error', appearance: 'flat' }, slots: { default: [p('b', 'Body.')] } }])],
+  ['export-alert-vocabulary', 'Every status and appearance in Docara\'s words: neutral is clear, error is danger.', content(['neutral', 'info', 'success', 'warning', 'error'].map((status, index) => ({ id: `w${index}`, type: 'content.alert', props: { ...(status === 'neutral' ? {} : { status }), appearance: ['default', 'outlined', 'flat'][index % 3] }, data: { title: [text(status)] }, slots: { default: [p(`b${index}`, 'Body.')] } })))],
+  ['export-not-expressible', 'What Markdown has no place for: presentation, a figure size, a table header column, a caption, a media block, an unknown inline entry.', content([
+    { id: 'a', type: 'content.paragraph', data: { content: [text('x'), { type: 'footnote', ref: '1' }] }, presentation: { preset: 'lead' } },
+    { id: 'f', type: 'content.figure', data: { ...image, width: 640, height: 480 } },
+    { id: 't', type: 'content.table', props: { header: 'column' }, data: { caption: [text('cap')], rows } },
+    { id: 'm', type: 'content.media', data: image, slots: { default: [p('mp', 'Side.')] } },
+  ])],
+  ['export-foreign', 'A foreign Markdown block is written back as it came; an Editor.js one in a carrier; one whose hash does not match is not written.', content([
+    { id: 'm', type: 'content.foreign', data: { source: 'markdown', raw: ':::example\nx\n:::' } },
+    { id: 'e', type: 'content.foreign', data: { source: 'editorjs', raw: '{"id":"e","type":"checklist","data":{"items":[]}}' } },
+    { id: 'z', type: 'content.foreign', data: { source: 'markdown', raw: 'changed', hash: 'sha256:0000000000000000000000000000000000000000000000000000000000000000' } },
+  ])],
+];
+MARKDOWN_EXPORTS.push(
+  ['export-foreign-neighbours', 'Foreign Markdown blocks beside what would join them once a paragraph between was deleted (2026-11-11 acceptance, H2): a list with an inline image before a list, an indented code block after a list. Written as they came they would merge; each goes in the :::foreign carrier and reads back as itself.', content([
+    { id: 'f1', type: 'content.foreign', data: { source: 'markdown', raw: '- one ![img](/i.png)\n- two' } },
+    { id: 'l1', type: 'content.list', slots: { items: [{ id: 'l1a', type: 'content.list-item', data: { content: [text('three')] } }] } },
+    { id: 'l2', type: 'content.list', props: { ordered: true }, slots: { items: [{ id: 'l2a', type: 'content.list-item', data: { content: [text('a')] } }, { id: 'l2b', type: 'content.list-item', data: { content: [text('b')] } }] } },
+    { id: 'f2', type: 'content.foreign', data: { source: 'markdown', raw: '    indented code' } },
+  ])],
+  ['export-foreign-not-itself', 'A foreign Markdown raw that would read back as model blocks (two paragraphs, plain text) goes in the carrier; a carriage return inside raw is reported, since Markdown line ends are LF.', content([
+    { id: 'f1', type: 'content.foreign', data: { source: 'markdown', raw: 'a\n\nb' } },
+    { id: 'f2', type: 'content.foreign', data: { source: 'markdown', raw: 'plain' } },
+    { id: 'f3', type: 'content.foreign', data: { source: 'html', raw: '<p>a</p>\r\n<p>b</p>' } },
+  ])],
+);
+for (const [id, summary, document] of MARKDOWN_EXPORTS) {
+  if (id.startsWith('export-foreign-')) {
+    const printed = await toMarkdown(document);
+    const back = await fromMarkdown(printed.value);
+    const lostCr = (document.root.slots.default).some((node) => String(node.data?.raw).includes('\r'));
+    if (!lostCr && stable(withoutIds(back.value.root.slots.default)) !== stable(withoutIds(document.root.slots.default))) throw new Error(`conformance_markdown_foreign_reads_back_otherwise:${id}`);
+  }
+  const printed = await toMarkdown(document);
+  outputs.set(`markdown/${id}.json`, stringify({ schema: 'simai.composition.structured-content-conformance-markdown-export', schema_version: 1, id, summary, input: { document }, expect: { markdown: printed.value, losses: printed.losses } }));
+}
+
+// Editor.js: output of editor.save() in, a Document out, and back.
+const EDITORJS = [
+  ['standard-tools', 'Every standard tool the adapter maps, in the form it writes: they come back as the same value.', { blocks: [
+    { id: 'oUq2g_tl8y', type: 'header', data: { text: 'Key features', level: 2 } },
+    { id: 'zbGZFPM-iI', type: 'paragraph', data: { text: 'Meet the <b>new</b> <i>editor</i>, <a href="https://simai.io/a">a link</a> &amp; <code class="inline-code">code</code><br>next <s>old</s>&nbsp;end' } },
+    { id: 'XV87kJS_H1', type: 'list', data: { style: 'unordered', meta: {}, items: [{ content: 'one', meta: {}, items: [{ content: 'nested', meta: {}, items: [] }] }, { content: 'two', meta: {}, items: [] }] } },
+    { id: 'ol1', type: 'list', data: { style: 'ordered', meta: { start: 3, counterType: 'numeric' }, items: [{ content: 'third', meta: {}, items: [] }] } },
+    { id: 'q1', type: 'quote', data: { text: 'Quoted', caption: '', alignment: 'left' } },
+    { id: 'c1', type: 'code', data: { code: 'a < b\n' } },
+    { id: 'd1', type: 'delimiter', data: {} },
+    { id: 't1', type: 'table', data: { withHeadings: true, stretched: false, content: [['A', 'B'], ['1', '<b>2</b>']] } },
+    { id: 'i1', type: 'image', data: { file: { url: 'https://simai.io/a.png' }, caption: 'Caption', withBorder: false, stretched: false, withBackground: false } },
+    { id: 'w1', type: 'warning', data: { title: 'Note', message: 'Careful.' } },
+    { id: 'r1', type: 'raw', data: { html: '<p>raw</p>' } },
+  ] }],
+  ['foreign-tools', 'A tool the adapter does not map, a block with tunes, an image with a border: each kept as content.foreign and given back as the same value.', { blocks: [
+    { id: 'x1', type: 'checklist', data: { items: [{ text: 'a', checked: true }] } },
+    { id: 'x2', type: 'paragraph', data: { text: 'with a tune' }, tunes: { anchor: 'x' } },
+    { id: 'x3', type: 'image', data: { file: { url: '/a.png' }, caption: '', withBorder: true, stretched: false, withBackground: false } },
+    { id: 'x4', type: 'embed', data: { service: 'youtube', source: 'https://youtu.be/x', embed: 'https://www.youtube.com/embed/x', width: 580, height: 320, caption: '' } },
+  ] }],
+  ['normalized', 'Another spelling of the same content: strong for b, List 1.x items, a list without meta; reported as form_normalized and written in the adapter\'s form.', { blocks: [
+    { id: 'n1', type: 'paragraph', data: { text: '<strong>a</strong> <em>b</em>' } },
+    { id: 'n2', type: 'list', data: { style: 'unordered', items: ['one', 'two'] } },
+  ] }],
+  ['inline-not-expressible', 'An inline tag the model has no mark for keeps its text and is reported.', { blocks: [
+    { id: 'm1', type: 'paragraph', data: { text: 'marker <mark class="cdx-marker">hi</mark> and <u>under</u>' } },
+  ] }],
+];
+for (const [id, summary, output] of EDITORJS) {
+  const read = await fromEditorJs(output, { id: 'page' });
+  const validation = validate(read.value);
+  if (!validation.valid) throw new Error(`conformance_editorjs_invalid:${id}:${JSON.stringify(validation.diagnostics.slice(0, 3))}`);
+  const back = await toEditorJs(read.value);
+  const lossless = !read.losses.length;
+  if (lossless && stable(back.value.blocks) !== stable(output.blocks)) throw new Error(`conformance_editorjs_not_value_equal:${id}`);
+  const again = await fromEditorJs(back.value, { id: 'page' });
+  if (stable(again.value) !== stable(read.value)) throw new Error(`conformance_editorjs_reads_back_otherwise:${id}`);
+  outputs.set(`editorjs/${id}.json`, stringify({ schema: 'simai.composition.structured-content-conformance-editorjs', schema_version: 1, id, summary, input: output, expect: { document: read.value, losses: read.losses, back: back.value, back_losses: back.losses, value_equal: stable(back.value.blocks) === stable(output.blocks) } }));
+}
+
 const groups = {};
 for (const entry of cases) {
   const group = entry.id.startsWith('invalid-') ? 'invalid' : entry.id.split('-')[0];
@@ -364,15 +512,20 @@ outputs.set('manifest.json', stringify({
   types: Object.fromEntries([...contentTypes].map(({ type, version }) => [type, version]).sort(([left], [right]) => left.localeCompare(right))),
   comparison: 'README.md#comparing-html',
   normalization: 'normalization.json',
-  counts: { cases: cases.length, ...Object.fromEntries(Object.entries(groups).sort(([left], [right]) => left.localeCompare(right))) },
+  counts: { cases: cases.length, ...Object.fromEntries(Object.entries(groups).sort(([left], [right]) => left.localeCompare(right))), markdown: markdownInputs.length + MARKDOWN_EXPORTS.length, editorjs: EDITORJS.length },
   cases: cases.map(({ id }) => id),
+  converters: {
+    markdown: [...markdownInputs.map((name) => name.replace(/\.md$/u, '')), ...MARKDOWN_EXPORTS.map(([id]) => id)].sort(),
+    editorjs: EDITORJS.map(([id]) => id),
+  },
 }));
 
 // ---------------------------------------------------------------------------
 // Write or check
 
 const current = (relative) => { try { return readFileSync(join(kit, relative), 'utf8'); } catch { return null; } };
-const present = (() => { try { return readdirSync(join(kit, 'cases')).filter((name) => name.endsWith('.json')).map((name) => `cases/${name}`); } catch { return []; } })();
+const listed = (folder) => { try { return readdirSync(join(kit, folder)).filter((name) => name.endsWith('.json')).map((name) => `${folder}/${name}`); } catch { return []; } };
+const present = [...listed('cases'), ...listed('markdown'), ...listed('editorjs')];
 const stale = present.filter((relative) => !outputs.has(relative));
 if (process.argv.includes('--check')) {
   const drift = [...outputs].filter(([relative, output]) => current(relative) !== output).map(([relative]) => relative);
@@ -383,7 +536,7 @@ if (process.argv.includes('--check')) {
     process.stdout.write(`structured-content conformance kit is current: ${cases.length} cases, ${NORMALIZATION.length} comparison vectors\n`);
   }
 } else {
-  mkdirSync(join(kit, 'cases'), { recursive: true });
+  for (const folder of ['cases', 'markdown', 'editorjs']) mkdirSync(join(kit, folder), { recursive: true });
   for (const relative of stale) rmSync(join(kit, relative));
   for (const [relative, output] of outputs) writeFileSync(join(kit, relative), output);
   process.stdout.write(`structured-content conformance kit: ${cases.length} cases, ${NORMALIZATION.length} comparison vectors written to ${kit}\n`);

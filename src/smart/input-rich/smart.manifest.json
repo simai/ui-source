@@ -333,7 +333,7 @@
       },
       {
         "path": "src/core/js/composition/html-subset.mjs",
-        "sha256": "20d9de5be17653b2d2ade6c38f9c4f92447d14ab20694eb003659d271be42405"
+        "sha256": "39c5d4f3595e02a959d389a0663c4648b3c87cc96bc8113d2b0902397a07b3aa"
       },
       {
         "path": "src/smart/input-rich/scss/_smart__rich_text.scss",

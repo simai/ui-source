@@ -1,0 +1,573 @@
+{
+  "schema": "simai.composition.structured-content-conformance-editorjs",
+  "schema_version": 1,
+  "id": "standard-tools",
+  "summary": "Every standard tool the adapter maps, in the form it writes: they come back as the same value.",
+  "input": {
+    "blocks": [
+      {
+        "id": "oUq2g_tl8y",
+        "type": "header",
+        "data": {
+          "text": "Key features",
+          "level": 2
+        }
+      },
+      {
+        "id": "zbGZFPM-iI",
+        "type": "paragraph",
+        "data": {
+          "text": "Meet the <b>new</b> <i>editor</i>, <a href=\"https://simai.io/a\">a link</a> &amp; <code class=\"inline-code\">code</code><br>next <s>old</s>&nbsp;end"
+        }
+      },
+      {
+        "id": "XV87kJS_H1",
+        "type": "list",
+        "data": {
+          "style": "unordered",
+          "meta": {},
+          "items": [
+            {
+              "content": "one",
+              "meta": {},
+              "items": [
+                {
+                  "content": "nested",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            },
+            {
+              "content": "two",
+              "meta": {},
+              "items": []
+            }
+          ]
+        }
+      },
+      {
+        "id": "ol1",
+        "type": "list",
+        "data": {
+          "style": "ordered",
+          "meta": {
+            "start": 3,
+            "counterType": "numeric"
+          },
+          "items": [
+            {
+              "content": "third",
+              "meta": {},
+              "items": []
+            }
+          ]
+        }
+      },
+      {
+        "id": "q1",
+        "type": "quote",
+        "data": {
+          "text": "Quoted",
+          "caption": "",
+          "alignment": "left"
+        }
+      },
+      {
+        "id": "c1",
+        "type": "code",
+        "data": {
+          "code": "a < b\n"
+        }
+      },
+      {
+        "id": "d1",
+        "type": "delimiter",
+        "data": {}
+      },
+      {
+        "id": "t1",
+        "type": "table",
+        "data": {
+          "withHeadings": true,
+          "stretched": false,
+          "content": [
+            [
+              "A",
+              "B"
+            ],
+            [
+              "1",
+              "<b>2</b>"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "i1",
+        "type": "image",
+        "data": {
+          "file": {
+            "url": "https://simai.io/a.png"
+          },
+          "caption": "Caption",
+          "withBorder": false,
+          "stretched": false,
+          "withBackground": false
+        }
+      },
+      {
+        "id": "w1",
+        "type": "warning",
+        "data": {
+          "title": "Note",
+          "message": "Careful."
+        }
+      },
+      {
+        "id": "r1",
+        "type": "raw",
+        "data": {
+          "html": "<p>raw</p>"
+        }
+      }
+    ]
+  },
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "oUq2g_tl8y",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Key features"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "zbGZFPM-iI",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Meet the "
+                  },
+                  {
+                    "type": "text",
+                    "value": "new",
+                    "marks": [
+                      "strong"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " "
+                  },
+                  {
+                    "type": "text",
+                    "value": "editor",
+                    "marks": [
+                      "em"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ", "
+                  },
+                  {
+                    "type": "link",
+                    "href": "https://simai.io/a",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "a link"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " & "
+                  },
+                  {
+                    "type": "text",
+                    "value": "code",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "break"
+                  },
+                  {
+                    "type": "text",
+                    "value": "next "
+                  },
+                  {
+                    "type": "text",
+                    "value": "old",
+                    "marks": [
+                      "strike"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " end"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "XV87kJS_H1",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "XV87kJS_H1-2",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "one"
+                        }
+                      ]
+                    },
+                    "slots": {
+                      "default": [
+                        {
+                          "id": "XV87kJS_H1-3",
+                          "type": "content.list",
+                          "slots": {
+                            "items": [
+                              {
+                                "id": "XV87kJS_H1-4",
+                                "type": "content.list-item",
+                                "data": {
+                                  "content": [
+                                    {
+                                      "type": "text",
+                                      "value": "nested"
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "XV87kJS_H1-5",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "two"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "ol1",
+              "type": "content.list",
+              "props": {
+                "ordered": true,
+                "start": 3
+              },
+              "slots": {
+                "items": [
+                  {
+                    "id": "ol1-2",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "third"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "q1",
+              "type": "content.quote",
+              "slots": {
+                "default": [
+                  {
+                    "id": "q1-1",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Quoted"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "c1",
+              "type": "content.code",
+              "data": {
+                "code": "a < b\n"
+              }
+            },
+            {
+              "id": "d1",
+              "type": "content.divider"
+            },
+            {
+              "id": "t1",
+              "type": "content.table",
+              "data": {
+                "rows": [
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "A"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "B"
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "1"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "2",
+                        "marks": [
+                          "strong"
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            },
+            {
+              "id": "i1",
+              "type": "content.figure",
+              "data": {
+                "src": "https://simai.io/a.png",
+                "alt": "",
+                "caption": [
+                  {
+                    "type": "text",
+                    "value": "Caption"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "w1",
+              "type": "content.alert",
+              "props": {
+                "status": "warning"
+              },
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "Note"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "w1-1",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Careful."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "r1",
+              "type": "content.html",
+              "data": {
+                "markup": "<p>raw</p>"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [],
+    "back": {
+      "blocks": [
+        {
+          "id": "oUq2g_tl8y",
+          "type": "header",
+          "data": {
+            "text": "Key features",
+            "level": 2
+          }
+        },
+        {
+          "id": "zbGZFPM-iI",
+          "type": "paragraph",
+          "data": {
+            "text": "Meet the <b>new</b> <i>editor</i>, <a href=\"https://simai.io/a\">a link</a> &amp; <code class=\"inline-code\">code</code><br>next <s>old</s>&nbsp;end"
+          }
+        },
+        {
+          "id": "XV87kJS_H1",
+          "type": "list",
+          "data": {
+            "style": "unordered",
+            "meta": {},
+            "items": [
+              {
+                "content": "one",
+                "meta": {},
+                "items": [
+                  {
+                    "content": "nested",
+                    "meta": {},
+                    "items": []
+                  }
+                ]
+              },
+              {
+                "content": "two",
+                "meta": {},
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "ol1",
+          "type": "list",
+          "data": {
+            "style": "ordered",
+            "meta": {
+              "start": 3,
+              "counterType": "numeric"
+            },
+            "items": [
+              {
+                "content": "third",
+                "meta": {},
+                "items": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "q1",
+          "type": "quote",
+          "data": {
+            "text": "Quoted",
+            "caption": "",
+            "alignment": "left"
+          }
+        },
+        {
+          "id": "c1",
+          "type": "code",
+          "data": {
+            "code": "a < b\n"
+          }
+        },
+        {
+          "id": "d1",
+          "type": "delimiter",
+          "data": {}
+        },
+        {
+          "id": "t1",
+          "type": "table",
+          "data": {
+            "withHeadings": true,
+            "stretched": false,
+            "content": [
+              [
+                "A",
+                "B"
+              ],
+              [
+                "1",
+                "<b>2</b>"
+              ]
+            ]
+          }
+        },
+        {
+          "id": "i1",
+          "type": "image",
+          "data": {
+            "file": {
+              "url": "https://simai.io/a.png"
+            },
+            "caption": "Caption",
+            "withBorder": false,
+            "stretched": false,
+            "withBackground": false
+          }
+        },
+        {
+          "id": "w1",
+          "type": "warning",
+          "data": {
+            "title": "Note",
+            "message": "Careful."
+          }
+        },
+        {
+          "id": "r1",
+          "type": "raw",
+          "data": {
+            "html": "<p>raw</p>"
+          }
+        }
+      ]
+    },
+    "back_losses": [],
+    "value_equal": true
+  }
+}
