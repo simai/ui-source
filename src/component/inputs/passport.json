@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.inputs",
   "kind": "component",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/inputs/docs/docs.md",
