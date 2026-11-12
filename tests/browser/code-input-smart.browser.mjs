@@ -102,6 +102,7 @@ try {
       value: input.value, attribute: host.getAttribute('value'), property: host.value, complete: host.complete,
       cells: cells.map((cell) => cell.textContent), current: cells.findIndex((cell) => cell.classList.contains('current')),
       caret: input.selectionStart, caretEnd: input.selectionEnd, focused: document.activeElement === input,
+      selected: cells.map((cell) => (cell.classList.contains('selected') ? 1 : 0)).join(''),
       drawnCaret: cells.map((cell) => (cell.classList.contains('caret-end') ? 'E' : cell.classList.contains('caret') ? 'C' : '-')).join(''),
       group: root.getAttribute('role'), groupName: labelled ? document.getElementById(labelled)?.textContent.replace('*', '').trim() : root.getAttribute('aria-label'),
       labelFor: host.querySelector('label')?.htmlFor === input.id, inputName: input.getAttribute('aria-label'),
@@ -209,6 +210,53 @@ try {
   check('click: the caret lands in the cell under the pointer', clicked.focused && clicked.caret === 2 && clicked.current === 2 && clicked.position === 'цифра 3 из 6', {clicked});
   const pointerRing = await rings('basic');
   check('K1 pointer focus: no ring at all, the current cell keeps its primary border', !pointerRing.frame && pointerRing.cells === '000000', {pointerRing});
+
+  // K2: a drag selects the cells it crosses, the click after it keeps them,
+  // the selection is painted and copied; a double click selects the code.
+  const centre = (index) => page.evaluate((at) => {
+    const rect = document.querySelectorAll('#basic .sf-verification-cell')[at].getBoundingClientRect();
+    return {x: rect.left + rect.width / 2, y: rect.top + rect.height / 2};
+  }, index);
+  const [from, to] = [await centre(1), await centre(4)];
+  await page.mouse.move(from.x, from.y);
+  await page.mouse.down();
+  await page.mouse.move(to.x, to.y, {steps: 6});
+  await page.mouse.up();
+  await settle();
+  const dragged = await state('basic');
+  const paint = await page.evaluate(() => {
+    const cell = document.querySelectorAll('#basic .sf-verification-cell')[2];
+    const probe = document.createElement('span');
+    probe.style.color = 'var(--sf-primary-container)';
+    document.body.append(probe);
+    const want = getComputedStyle(probe).color;
+    probe.remove();
+    const input = document.querySelector('#basic input');
+    return {cell: getComputedStyle(cell).backgroundColor, want, opacity: getComputedStyle(input).opacity,
+      text: getComputedStyle(input).webkitTextFillColor};
+  });
+  check('K2 drag: cells 2-5 selected and painted, not collapsed by the click', dragged.caret === 1 && dragged.caretEnd === 5
+    && dragged.selected === '011110' && dragged.current === -1 && paint.cell === paint.want, {dragged, paint});
+  check('K2: the input is transparent, not opacity 0', paint.opacity === '1' && paint.text === 'rgba(0, 0, 0, 0)', {paint});
+  const copied = await page.evaluate(() => {
+    const data = new DataTransfer();
+    document.querySelector('#basic input').dispatchEvent(new ClipboardEvent('copy', {clipboardData: data, bubbles: true, cancelable: true}));
+    return data.getData('text/plain');
+  });
+  check('K2 copy: the selected cells are copied', copied === '2345', {copied});
+  await page.mouse.dblclick(from.x, from.y);
+  await settle();
+  const all = await state('basic');
+  check('K2 double click: the whole code is selected', all.caret === 0 && all.caretEnd === 6 && all.selected === '111111', {all});
+  const maskedCopy = await page.evaluate(() => {
+    const input = document.querySelector('#masked input');
+    input.focus();
+    input.setSelectionRange(0, 2);
+    const data = new DataTransfer();
+    const sent = input.dispatchEvent(new ClipboardEvent('copy', {clipboardData: data, bubbles: true, cancelable: true}));
+    return {sent, text: data.getData('text/plain')};
+  });
+  check('K2 copy: a masked code is never copied', !maskedCopy.sent && maskedCopy.text === '', {maskedCopy});
   await page.keyboard.press('Tab');
   await events();
 

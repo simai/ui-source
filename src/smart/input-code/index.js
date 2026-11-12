@@ -82,8 +82,10 @@ class SfCodeInput extends FormField(CodeInputElement) {
     this._focusValue = null;
     this._changeSent = false;
     this._form = null;
-    // The cell a mouse drag started on, or -1 (K2).
+    // The cell a mouse drag started on, or -1, and whether the click that
+    // ends a mouse press is already handled (K2).
     this._dragFrom = -1;
+    this._mousePressed = false;
     this.addEventListener('beforeinput', this.onBeforeInput);
     this.addEventListener('input', this.onInput, true);
     this.addEventListener('paste', this.onPaste);
@@ -96,6 +98,11 @@ class SfCodeInput extends FormField(CodeInputElement) {
     this.addEventListener('selectionchange', this.onCaret);
     this.addEventListener('keyup', this.onCaret);
     this.addEventListener('pointerdown', this.onPointerDown);
+    this.addEventListener('pointermove', this.onPointerMove);
+    this.addEventListener('pointerup', this.onPointerUp);
+    this.addEventListener('pointercancel', this.onPointerUp);
+    this.addEventListener('dblclick', this.onDoubleClick);
+    this.addEventListener('copy', this.onCopy);
   }
 
   get length() {
@@ -290,19 +297,27 @@ class SfCodeInput extends FormField(CodeInputElement) {
     setTimeout(this.onCaret, 0);
   };
 
-  // A click lands in the cell under the pointer: the input lies transparent
-  // over the cells and its own caret position knows nothing of them.
+  // The cell under a point: the input lies transparent over the cells and its
+  // own caret position knows nothing of them.
+  cellAt(x) {
+    const cells = this.cells();
+    const index = cells.findIndex((cell) => x < cell.getBoundingClientRect().right);
+    return index === -1 ? cells.length - 1 : Math.max(index, 0);
+  }
+
+  // A tap or a click lands in the cell under the pointer. A mouse press has
+  // placed the caret already (onPointerDown), and its click must not collapse
+  // what a drag or a double click selected (K2: the click reset a drag of
+  // cells 2-5 to a caret at 4); a selection of more than one cell is kept.
   onClick = (event) => {
     const input = this.ownInput(event.target);
     if (!input || input.disabled) return;
-    const cells = this.cells();
-    const x = event.clientX;
-    let index = cells.findIndex((cell) => {
-      const box = cell.getBoundingClientRect();
-      return x < box.right;
-    });
-    if (index === -1) index = cells.length - 1;
-    const at = Math.min(Math.max(index, 0), input.value.length);
+    if (this._mousePressed) {
+      this._mousePressed = false;
+      return;
+    }
+    if ((input.selectionEnd ?? 0) - (input.selectionStart ?? 0) > 1) return;
+    const at = Math.min(this.cellAt(event.clientX), input.value.length);
     input.setSelectionRange(at, at);
     this.onCaret();
   };
@@ -337,10 +352,69 @@ class SfCodeInput extends FormField(CodeInputElement) {
   // A press on the field: its focus is the pointer's, so the sheet draws no
   // ring on the active cell, only its primary border, until the focus leaves
   // (K1, as sf-input's .sf-input--pointer-focus).
+  // A mouse selects by cells (K2): a press puts the caret in the cell under
+  // it, a drag selects the cells it crosses, a double click the whole code.
+  // The browser's own selection would follow the transparent input's text,
+  // not the cells. A touch is left to the browser (its caret, long-press menu
+  // and paste), then the click puts the caret in the cell.
   onPointerDown = (event) => {
     const input = this.ownInput(event.target);
     if (!input) return;
     input.closest('.sf-verification')?.classList.add('sf-verification--pointer-focus');
+    this._mousePressed = false;
+    if (event.pointerType !== 'mouse' || event.button !== 0 || input.disabled) return;
+    event.preventDefault();
+    this._mousePressed = true;
+    if (input.ownerDocument?.activeElement !== input) input.focus({preventScroll: true});
+    const at = Math.min(this.cellAt(event.clientX), input.value.length);
+    this._dragFrom = -1;
+    input.setSelectionRange(at, at);
+    this.markCell();
+    this._dragFrom = at;
+    try { input.setPointerCapture(event.pointerId); } catch { /* a synthetic press */ }
+    this.syncCells();
+  };
+
+  // A double click selects the whole code, as a word in a field.
+  onDoubleClick = (event) => {
+    const input = this.ownInput(event.target);
+    if (!input || input.disabled) return;
+    this._dragFrom = -1;
+    input.setSelectionRange(0, input.value.length, 'forward');
+    this.syncCells();
+  };
+
+  onPointerMove = (event) => {
+    const input = this.ownInput(event.target);
+    if (!input || this._dragFrom < 0 || !(event.buttons & 1)) return;
+    const at = this.cellAt(event.clientX);
+    const from = Math.min(this._dragFrom, at);
+    const to = Math.min(Math.max(this._dragFrom, at) + 1, input.value.length);
+    if (to > from && (input.selectionStart !== from || input.selectionEnd !== to)) {
+      input.setSelectionRange(from, to, at < this._dragFrom ? 'backward' : 'forward');
+      this.syncCells();
+    }
+  };
+
+  onPointerUp = () => {
+    if (this._dragFrom < 0) return;
+    this._dragFrom = -1;
+    this.onCaret();
+  };
+
+  // Copy gives the code that is selected, never a masked one (K2).
+  onCopy = (event) => {
+    const input = this.ownInput(event.target);
+    if (!input) return;
+    if (this.mask) {
+      event.preventDefault();
+      return;
+    }
+    const start = input.selectionStart ?? 0;
+    const end = input.selectionEnd ?? start;
+    if (end <= start || !event.clipboardData) return;
+    event.preventDefault();
+    event.clipboardData.setData('text/plain', input.value.slice(start, end));
   };
 
   onCaret = () => {
@@ -377,7 +451,8 @@ class SfCodeInput extends FormField(CodeInputElement) {
   // the focus: a field at rest marked the next cell and looked focused (K6);
   // the sheet gates it on focus too. A bare caret is drawn in its cell
   // (`caret`; `caret-end` after the last character of a whole code, K3): the
-  // input itself is transparent. The position line says the caret's cell,
+  // input itself is transparent. A selection of more than one cell paints
+  // its cells `selected` (K2). The position line says the caret's cell,
   // spoken once each time it moves.
   syncCells() {
     const input = this.getInputElement();
@@ -395,6 +470,7 @@ class SfCodeInput extends FormField(CodeInputElement) {
       if (cell.textContent !== shown) cell.textContent = shown;
       cell.classList.toggle('active', index < value.length);
       cell.classList.toggle('current', focused && one && index === current);
+      cell.classList.toggle('selected', focused && !one && index >= start && index < end);
       cell.classList.toggle('caret', bare && index === current);
       cell.classList.toggle('caret-end', bare && index === current && start >= this.length);
     });

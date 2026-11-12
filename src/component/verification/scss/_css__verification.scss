@@ -39,6 +39,11 @@
   line-height: var(--sf-verification--line-height, var(--sf-text-height-1));
 }
 
+/* The input lies over the cells and draws nothing of its own: no text, no
+   caret, no selection, no autofill fill (clipped to its transparent text).
+   It is not opacity 0: an invisible input lost the touch caret and the
+   long-press paste menu on some phones, and the cells draw its caret and
+   selection instead (K2, K3). */
 .sf-verification-input {
   position: absolute;
   inset: 0;
@@ -46,10 +51,20 @@
   inline-size: 100%;
   block-size: 100%;
   box-sizing: border-box;
+  margin: 0;
   border: 0;
   padding: 0;
-  opacity: 0;
+  background: var(--sf-transparent);
+  background-clip: text;
+  color: var(--sf-transparent);
+  caret-color: var(--sf-transparent);
+  -webkit-text-fill-color: var(--sf-transparent);
   cursor: text;
+}
+
+.sf-verification-input::selection {
+  background: var(--sf-transparent);
+  color: var(--sf-transparent);
 }
 
 /* !important: a page's unlayered :focus-visible rule beats any layered one, and
@@ -161,6 +176,10 @@
   .sf-verification-cell,
   .sf-verification-form-wrap .sf-verification { border-color: CanvasText; }
   .sf-verification-cell.caret::after { background: CanvasText; }
+  .sf-verification:has(.sf-verification-input:focus) .sf-verification-cell.selected {
+    background: Highlight;
+    color: HighlightText;
+  }
   .sf-verification:not(.sf-verification--pointer-focus):has(.sf-verification-input:focus-visible) .sf-verification-cell.current,
   .sf-verification-form-wrap .sf-verification:has(input:focus-visible) {
     outline: var(--sf-px) solid Highlight;
@@ -186,5 +205,16 @@
   .sf-verification--filled:not(.error):has(.sf-verification-input:enabled:focus) .sf-verification-cell.current,
   .sf-verification-form--filled:not(.error):has(input:enabled:focus) .sf-verification-form-wrap .sf-verification:has(input:focus) {
     border-color: var(--sf-primary);
+  }
+}
+
+/* A selection of several cells (K2): drag, double click, Shift with the
+   arrows, select-all. After the filled field's focus rule, of the same
+   weight, so it shows on both appearances. */
+@layer sf.components {
+  .sf-verification:has(.sf-verification-input:enabled:focus) .sf-verification-cell.selected {
+    border-color: var(--sf-primary);
+    background: var(--sf-primary-container);
+    color: var(--sf-on-primary-container);
   }
 }

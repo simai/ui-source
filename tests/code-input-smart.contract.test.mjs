@@ -179,6 +179,17 @@ test('code input: input and change are the native input\'s, complete once per co
   assert.match(source, /cell\.classList\.toggle\('caret', bare && index === current\);/u);
   assert.match(classSheet, /\.sf-verification-cell\.caret::after \{[^}]*inline-size: calc\(var\(--sf-px\) \* 2\);[^}]*background: var\(--sf-on-surface\);/u);
   assert.match(classSheet, /@media \(prefers-reduced-motion: no-preference\) \{\n  \.sf-verification-cell\.caret::after \{\n    animation: sf-verification-caret calc\(var\(--sf-duration-slow\) \* 2\) steps\(1\) infinite;/u);
+  // K2: the cells paint a selection; a mouse selects by cells, a click does
+  // not collapse it, copy gives the selected code and never a masked one; the
+  // input is transparent, not opacity 0.
+  assert.match(source, /cell\.classList\.toggle\('selected', focused && !one && index >= start && index < end\);/u);
+  assert.match(source, /if \(\(input\.selectionEnd \?\? 0\) - \(input\.selectionStart \?\? 0\) > 1\) return;/u);
+  assert.match(source, /this\.addEventListener\('dblclick', this\.onDoubleClick\);/u);
+  assert.match(source, /event\.clipboardData\.setData\('text\/plain', input\.value\.slice\(start, end\)\);/u);
+  const inputRule = classSheet.slice(classSheet.indexOf('.sf-verification-input {'), classSheet.indexOf('}', classSheet.indexOf('.sf-verification-input {')));
+  assert.doesNotMatch(inputRule, /opacity/u);
+  assert.match(inputRule, /-webkit-text-fill-color: var\(--sf-transparent\);/u);
+  assert.match(classSheet, /\.sf-verification:has\(\.sf-verification-input:enabled:focus\) \.sf-verification-cell\.selected \{[^}]*background: var\(--sf-primary-container\);/u);
   // K6: the current cell only while the field has the focus.
   assert.match(source, /cell\.classList\.toggle\('current', focused && one && index === current\);/u);
 });
