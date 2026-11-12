@@ -1,5 +1,6 @@
 import {
   bindFileUpload,
+  formatAcceptWords,
   setFileUploadItems,
   unbindFileUpload,
 } from '../../component/file-upload/js/_file_upload';
@@ -73,24 +74,6 @@ const FileUploadElement = elementFromManifest(manifest, {
   },
 });
 
-function formatAcceptValue(value) {
-  const parts = String(value || '')
-    .split(',')
-    .map((part) => part.trim())
-    .filter(Boolean)
-    .map((part) => part.replace(/^\./, ''))
-    .map((part) => {
-      if (part.includes('/')) {
-        return part.split('/').pop() || part;
-      }
-
-      return part;
-    })
-    .map((part) => part.toUpperCase());
-
-  return parts.join(', ');
-}
-
 class SfFileUpload extends FileUploadElement {
   static get props() {
     return {
@@ -149,7 +132,7 @@ class SfFileUpload extends FileUploadElement {
   get formats() {
     return (
       this.getAttribute('formats') ||
-      formatAcceptValue(this.accept) ||
+      formatAcceptWords(this.accept, this) ||
       // The component cannot know what a field accepts: it names formats only
       // when the host gives them or an accept list says so.
       ''

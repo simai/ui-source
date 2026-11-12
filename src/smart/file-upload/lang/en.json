@@ -1,7 +1,14 @@
 {
   "title": "File Upload",
   "runtime": {
+    "formats-audio": "audio",
+    "formats-image": "images",
+    "formats-video": "video",
     "link-text": "Click to upload",
+    "not-added": "Not added: {n}",
+    "reject-duplicate": "“{name}” is already in the list",
+    "reject-one": "“{name}” was not added: this field takes one file",
+    "reject-type": "“{name}” is not accepted: allowed {formats}",
     "remove": "Remove",
     "retry": "Try again",
     "text": "or drag and drop",

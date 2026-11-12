@@ -69,7 +69,7 @@ function load() {
       return fill(form, {...vars, n: count});
     },
   });
-  vm.runInContext(`${words.replace('const FILE_UPLOAD_ITEM_TEXT', 'var FILE_UPLOAD_ITEM_TEXT')}\n${helpers}\nthis.api = {applySelectedFiles, normalizeFileItems, getItemEventKey};`, context);
+  vm.runInContext(`${words.replace('const FILE_UPLOAD_ITEM_TEXT', 'var FILE_UPLOAD_ITEM_TEXT')}\n${helpers}\nthis.api = {applySelectedFiles, normalizeFileItems, getItemEventKey, takeFiles, formatAcceptWords};`, context);
   return context.api;
 }
 
@@ -103,4 +103,48 @@ test('FU-1: a single area keeps one file; a new choice replaces it and says so w
   assert.equal(removed.length, 1);
   assert.equal(removed[0].detail.item.name, 'Устав.pdf');
   assert.equal(removed[0].detail.reason, 'replaced');
+});
+
+test('FU-6: extra files dropped on a single area are said, with reason count, not dropped silently', () => {
+  const api = load();
+  const root = area();
+  const added = api.takeFiles(root, [file('1.pdf'), file('2.pdf'), file('3.pdf')], 'drop');
+  assert.equal(added.length, 1);
+  assert.deepEqual(names(root), ['1.pdf']);
+  const reject = root.events.find((event) => event.type === 'sf-file-upload:reject');
+  assert.ok(reject, 'reject is sent');
+  assert.deepEqual(plain([...reject.detail.rejected].map((entry) => [entry.name, entry.reason])), [['2.pdf', 'count'], ['3.pdf', 'count']]);
+  assert.equal(reject.detail.rejected[0].message, '«2.pdf» не добавлен: сюда можно только один файл');
+  assert.equal(reject.detail.source, 'drop');
+  assert.equal(root.__sfFileUploadRejected.length, 2);
+});
+
+test('FU-7: a wrong type is refused on a pick as on a drop, and the message names what is allowed', () => {
+  const api = load();
+  const root = area({attributes: {accept: '.pdf,image/*'}});
+  api.takeFiles(root, [file('photo.heic', 100, '')], 'input');
+  assert.deepEqual(names(root), []);
+  const reject = root.events.find((event) => event.type === 'sf-file-upload:reject');
+  assert.equal(reject.detail.source, 'input');
+  assert.equal(reject.detail.rejected[0].reason, 'type');
+  assert.equal(reject.detail.rejected[0].message, '«photo.heic» не подходит: можно PDF, изображения');
+  api.takeFiles(root, [file('Скан.pdf')], 'input');
+  assert.deepEqual(names(root), ['Скан.pdf']);
+  assert.equal(root.__sfFileUploadRejected.length, 0, 'a choice without rejections clears the message');
+});
+
+test('FU-7: a multiple area says a file that is already listed', () => {
+  const api = load();
+  const root = area({attributes: {multiple: ''}});
+  api.takeFiles(root, [file('Акт.pdf')], 'input');
+  api.takeFiles(root, [file('Акт.pdf'), file('Счёт.pdf')], 'input');
+  assert.deepEqual(names(root), ['Акт.pdf', 'Счёт.pdf']);
+  const reject = root.events.filter((event) => event.type === 'sf-file-upload:reject').at(-1);
+  assert.equal(reject.detail.rejected[0].reason, 'duplicate');
+});
+
+test('FU-7: the formats line reads people words, not «*»', () => {
+  const api = load();
+  assert.equal(api.formatAcceptWords('.pdf, .docx, application/pdf, image/*', area()), 'PDF, DOCX, изображения');
+  assert.equal(api.formatAcceptWords('video/*', area({lang: 'en'})), 'video');
 });

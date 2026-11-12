@@ -27,7 +27,7 @@ const examplePath = (id) => SMART_EXAMPLES[id] ?? `components/file-upload/${id}`
 test('FileUpload keeps File objects for application transport and clears the picker for reselection', async () => {
   const source = await read('src/component/file-upload/js/_file_upload.js');
   assert.match(source, /file,\s*\}\)\);/);
-  assert.match(source, /applySelectedFiles\(root, files, 'input'\);\s*event\.target\.value = '';/);
+  assert.match(source, /takeFiles\(root, files, 'input'\);\s*event\.target\.value = '';/);
   assert.doesNotMatch(source, /new FormData|fetch\(|XMLHttpRequest/);
 });
 

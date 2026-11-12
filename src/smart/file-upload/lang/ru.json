@@ -1,7 +1,14 @@
 {
   "title": "Загрузка файлов",
   "runtime": {
+    "formats-audio": "аудио",
+    "formats-image": "изображения",
+    "formats-video": "видео",
     "link-text": "Выберите файл",
+    "not-added": "Не добавлено {n}:",
+    "reject-duplicate": "«{name}» уже добавлен",
+    "reject-one": "«{name}» не добавлен: сюда можно только один файл",
+    "reject-type": "«{name}» не подходит: можно {formats}",
     "remove": "Удалить",
     "retry": "Повторить",
     "text": "или перетащите его сюда",

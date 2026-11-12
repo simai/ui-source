@@ -1,7 +1,7 @@
 ﻿import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { fieldSize, retireFieldSizeClass } from '../../field-size';
-import { pageText } from '../../../core/js/page-language';
+import { pageText, pageWord } from '../../../core/js/page-language';
 import { formatFileSize } from '../../../core/js/format-file-size.js';
 // Every word this part says. A product adds a language with
 // SF.language.register('sf-file-upload', code, words); a ternary on «ru» allowed two
@@ -13,6 +13,16 @@ const FILE_UPLOAD_ITEM_TEXT = {
     retry: 'Try again',
     linkText: 'Click to upload',
     text: 'or drag and drop',
+    // The words of a file that was not added (FU-6, FU-7), keyed as the Smart
+    // lang/<locale>.json runtime keys them, so one SF.language.register
+    // reaches both.
+    'not-added': 'Not added: {n}',
+    'reject-type': '“{name}” is not accepted: allowed {formats}',
+    'reject-one': '“{name}” was not added: this field takes one file',
+    'reject-duplicate': '“{name}” is already in the list',
+    'formats-image': 'images',
+    'formats-video': 'video',
+    'formats-audio': 'audio',
   },
   ru: {
     remove: 'Удалить',
@@ -20,6 +30,13 @@ const FILE_UPLOAD_ITEM_TEXT = {
     retry: 'Повторить',
     linkText: 'Выберите файл',
     text: 'или перетащите его сюда',
+    'not-added': 'Не добавлено {n}:',
+    'reject-type': '«{name}» не подходит: можно {formats}',
+    'reject-one': '«{name}» не добавлен: сюда можно только один файл',
+    'reject-duplicate': '«{name}» уже добавлен',
+    'formats-image': 'изображения',
+    'formats-video': 'видео',
+    'formats-audio': 'аудио',
   },
 };
 
@@ -78,7 +95,8 @@ function getFilesContainer(root) {
     }
   }
 
-  const next = root.nextElementSibling;
+  let next = root.nextElementSibling;
+  if (next?.classList?.contains('sf-file-upload-message')) next = next.nextElementSibling;
   if (next?.classList?.contains('sf-file-upload-files')) {
     return next;
   }
@@ -568,6 +586,105 @@ function applySelectedFiles(root, files = [], source = 'input') {
   return added;
 }
 
+function fileUploadWord(root, key, options = {}) {
+  return pageWord(FILE_UPLOAD_ITEM_TEXT, key, root, {component: 'sf-file-upload', ...options});
+}
+
+// The formats an accept list names, as people read them: «PDF, DOCX»,
+// «изображения». `type/*` is the kind's word; it wrote «*» before.
+function formatAcceptWords(accept, root = null) {
+  const parts = String(accept || '')
+    .split(',')
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((part) => {
+      const wild = /^(image|video|audio)\/\*$/iu.exec(part);
+      if (wild) return fileUploadWord(root, `formats-${wild[1].toLowerCase()}`);
+      const bare = part.replace(/^\./u, '');
+      return (bare.includes('/') ? bare.split('/').pop() || bare : bare).toUpperCase();
+    });
+  return [...new Set(parts)].join(', ');
+}
+
+// Where a file that was not added is said: the line under the area (C81: the
+// message under the field, not a row in the list), a polite status a screen
+// reader announces. The Smart template draws it; an ordinary area gets one
+// after it on the first rejection.
+function getMessage(root, create = false) {
+  if (!root) return null;
+  const next = root.nextElementSibling;
+  if (next?.classList?.contains('sf-file-upload-message')) return next;
+  if (!create || isManagedRenderRoot(root) || typeof document === 'undefined' || typeof root.after !== 'function') return null;
+  const message = document.createElement('div');
+  message.className = 'sf-file-upload-message';
+  message.setAttribute('role', 'status');
+  message.hidden = true;
+  root.after(message);
+  return message;
+}
+
+function showFileUploadRejections(root, rejected = []) {
+  const message = getMessage(root, rejected.length > 0);
+  root.__sfFileUploadRejected = rejected;
+  if (!message) return;
+  message.replaceChildren();
+  message.hidden = !rejected.length;
+  if (!rejected.length) return;
+  if (rejected.length === 1) {
+    message.textContent = rejected[0].message;
+    return;
+  }
+  const head = document.createElement('span');
+  head.textContent = fileUploadWord(root, 'not-added', {count: rejected.length});
+  const list = document.createElement('ul');
+  rejected.forEach((entry) => {
+    const line = document.createElement('li');
+    line.textContent = entry.message;
+    list.append(line);
+  });
+  message.append(head, list);
+}
+
+// What a choice or a drop leaves out, and why: a type the accept list does
+// not name (on a pick too: the dialog's «All files» skipped the filter), a
+// second file on a single area, a file already listed. The drop took the
+// first file and said nothing of the rest (FU-6); a wrong type sent
+// rejected and showed nothing (FU-7). Each one is said under the area and in
+// reject {files, rejected: [{file, name, reason, message}], accept, source}.
+function takeFiles(root, files = [], source = 'input') {
+  const accept = getAccept(root);
+  const multiple = getMultiple(root);
+  const listed = new Set(multiple ? (root.__sfFileUploadItems || []).map((item, index) => getItemEventKey(item, index)) : []);
+  const accepted = [];
+  const rejected = [];
+  Array.from(files).forEach((file) => {
+    const name = String(file?.name || '');
+    const key = `${file?.name}-${file?.size}-${file?.lastModified}`;
+    let reason = '';
+    let vars = {name};
+    if (!multiple && accepted.length) reason = 'one';
+    else if (listed.has(key)) reason = 'duplicate';
+    else if (!acceptsFile(accept, file)) {
+      reason = 'type';
+      vars = {name, formats: formatAcceptWords(accept, root)};
+    }
+    if (reason) {
+      rejected.push({file, name, reason: reason === 'one' ? 'count' : reason, message: fileUploadWord(root, `reject-${reason}`, {vars})});
+      return;
+    }
+    listed.add(key);
+    accepted.push(file);
+  });
+  showFileUploadRejections(root, rejected);
+  if (rejected.length) {
+    root.dispatchEvent(new CustomEvent('sf-file-upload:reject', {
+      bubbles: true,
+      detail: {files: rejected.map((entry) => entry.file), rejected, accept, source},
+    }));
+  }
+  return accepted.length ? applySelectedFiles(root, accepted, source) : [];
+}
+
 function bindFileUpload(root) {
   retireFieldSizeClass(root, 'sf-file-upload');
   if (!root) return;
@@ -623,7 +740,7 @@ function bindFileUpload(root) {
     if (isDisabledRoot(root)) return;
     const files = Array.from(event.target?.files || []);
     if (!files.length) return;
-    applySelectedFiles(root, files, 'input');
+    takeFiles(root, files, 'input');
     event.target.value = '';
   };
 
@@ -651,16 +768,7 @@ function bindFileUpload(root) {
     event.preventDefault();
     if (isDisabledRoot(root) || !files.length) return;
 
-    const accepted = files.filter((file) => acceptsFile(getAccept(root), file));
-    const rejected = files.filter((file) => !accepted.includes(file));
-    if (rejected.length) {
-      root.dispatchEvent(new CustomEvent('sf-file-upload:reject', {
-        bubbles: true,
-        detail: {files: rejected, accept: getAccept(root), source: 'drop'},
-      }));
-    }
-    if (!accepted.length) return;
-    const added = applySelectedFiles(root, accepted, 'drop');
+    const added = takeFiles(root, files, 'drop');
     if (!added.length) return;
     // A pick sends change from the native input; a drop sent none, so a form
     // listening for change never heard of a dropped file.
@@ -798,6 +906,8 @@ function setFileUploadItems(target, items = []) {
 }
 
 function clearFileUpload(target) {
+  const root = target instanceof HTMLElement ? target.closest(FILE_UPLOAD_SELECTOR) || target : null;
+  if (root) showFileUploadRejections(root, []);
   return setFileUploadItems(target, []);
 }
 
@@ -852,9 +962,13 @@ class FileUpload extends ComponentObserver {
       bottom.append(support);
     }
     root.append(featured, bottom);
+    const message = document.createElement('div');
+    message.className = 'sf-file-upload-message';
+    message.setAttribute('role', 'status');
+    message.hidden = true;
     const files = document.createElement('div');
     files.className = 'sf-file-upload-files grid grid-col-1 gap-1 w-full';
-    wrapper.append(root, files);
+    wrapper.append(root, message, files);
     this.root = root;
     this.template = wrapper;
   }
@@ -920,4 +1034,6 @@ export {
   setFileUploadItems,
   clearFileUpload,
   retryFileUploadItem,
+  takeFiles,
+  formatAcceptWords,
 };
