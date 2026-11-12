@@ -67,9 +67,14 @@ function normalizeSize(value) {
 }
 
 
-function normalizeItemState(item) {
-  const state = String(item?.state || item?.status || 'process').toLowerCase();
-  return ['process', 'done', 'error'].includes(state) ? state : 'process';
+// An entry's state: ready (chosen, not sent), process (being sent), done,
+// error. A chosen file was process at 0 % at once and looked like an upload
+// that had stuck (FU-3); it is ready until the host or the uploader sends it.
+const ITEM_STATES = Object.freeze(['ready', 'process', 'done', 'error']);
+
+function normalizeItemState(item, fallback = 'process') {
+  const state = String(item?.state || item?.status || fallback).toLowerCase();
+  return ITEM_STATES.includes(state) ? state : 'process';
 }
 
 function getItemEventKey(item, index) {
@@ -244,7 +249,7 @@ function syncFileUploadInteraction(root) {
 
 function createUploadProgressItem(item, size = '1', owner = null) {
   const normalizedSize = normalizeSize(size);
-  const state = String(item.state || item.status || 'done').toLowerCase();
+  const state = normalizeItemState(item, 'done');
   const fileName = String(item.name || item.fileName || 'File');
   const fileSize = String(item.fileSize || item.sizeText || '');
   const progress = Math.max(0, Math.min(100, Number(item.progress ?? 100) || 0));
@@ -317,6 +322,7 @@ function createUploadProgressItem(item, size = '1', owner = null) {
     root.append(leftIcon, content);
     return root;
   } else {
+    // ready and process: the file can be taken out.
     const removeButton = document.createElement('button');
     removeButton.type = 'button';
     removeButton.className =
@@ -329,6 +335,14 @@ function createUploadProgressItem(item, size = '1', owner = null) {
     removeIcon.textContent = 'delete';
     removeButton.append(removeIcon);
     top.append(removeButton);
+  }
+
+  // A chosen file that is not being sent has no bar: there is no transfer
+  // to show (FU-3).
+  if (state === 'ready') {
+    content.append(top);
+    root.append(leftIcon, content);
+    return root;
   }
 
   const progressBar = document.createElement('div');
@@ -471,8 +485,7 @@ function normalizeFileItems(files = [], root = null) {
     id: `${file.name}-${file.size}-${file.lastModified}`,
     name: file.name,
     fileSize: formatFileSize(file.size, {node: root}),
-    progress: 0,
-    state: 'process',
+    state: 'ready',
     file,
   }));
 }
@@ -1084,4 +1097,6 @@ export {
   retryFileUploadItem,
   takeFiles,
   formatAcceptWords,
+  normalizeItemState,
+  ITEM_STATES,
 };

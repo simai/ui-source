@@ -231,11 +231,11 @@
   --sf-icon--color: var(--sf-primary);
 }
 
-.sf-upload-progress--process .sf-upload-progress-text, .sf-upload-progress--done .sf-upload-progress-text {
+.sf-upload-progress--ready .sf-upload-progress-text, .sf-upload-progress--process .sf-upload-progress-text, .sf-upload-progress--done .sf-upload-progress-text {
   --sf-upload-progress-text--color: var(--sf-on-surface-variant);
 }
 
-.sf-upload-progress--process .sf-icon-button > .sf-icon, .sf-upload-progress--error .sf-icon-button > .sf-icon {
+.sf-upload-progress--ready .sf-icon-button > .sf-icon, .sf-upload-progress--process .sf-icon-button > .sf-icon, .sf-upload-progress--error .sf-icon-button > .sf-icon {
   --sf-icon--color: var(--sf-on-surface-variant);
 }
 

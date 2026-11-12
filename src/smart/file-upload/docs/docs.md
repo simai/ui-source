@@ -100,7 +100,7 @@ and keeps the `File` object on each.
 | `name` (or `fileName`) | The file name shown. `File` is shown when neither is set. |
 | `fileSize` (or `sizeText`) | The size as text, already formatted ("348KB"). The component does not format a number here. |
 | `progress` | `0`–`100`: a fraction is kept, a value outside is clamped, and a value that is not a number reads 0. Reaching 100 does not make an item `done`. Without it, a `done` item reads 100 and any other 0. |
-| `state` (or `status`) | `process` (the bar), `done` (the check), `error` (the retry button). Missing or anything else reads `process`, for the row and for the events alike. |
+| `state` (or `status`) | `ready` (chosen, not sent: no bar), `process` (the bar), `done` (the check), `error` (the retry button). A choice or a drop lists its files `ready`; the host (or the `uploader`) moves them to `process`. Missing or anything else reads `process`, for the row and for the events alike. |
 | `errorMessage` (or `retryText`) | The label of the retry button on an `error` item. The component's own "Повторить"/"Try again" when not set. |
 | `icon` | The glyph on the row; `cloud_upload` when not set. |
 | `file` | The `File` itself, for the consumer's own transport. The component never reads it. |

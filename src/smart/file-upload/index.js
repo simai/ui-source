@@ -1,6 +1,7 @@
 import {
   bindFileUpload,
   formatAcceptWords,
+  normalizeItemState,
   setFileUploadItems,
   unbindFileUpload,
 } from '../../component/file-upload/js/_file_upload';
@@ -31,10 +32,7 @@ const INNER_EVENTS = {
   'sf-file-upload:complete': 'finished',
 };
 
-const itemState = (item) => {
-  const state = String(item?.state || item?.status || 'process').toLowerCase();
-  return ['process', 'done', 'error'].includes(state) ? state : 'process';
-};
+const itemState = (item) => normalizeItemState(item);
 
 // An entry's id, as the class component keys its events.
 const itemId = (item, index) => {

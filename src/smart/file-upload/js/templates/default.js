@@ -1,5 +1,6 @@
 import {html, nothing} from 'lit';
 import {fieldSize} from '../../../../component/field-size';
+import {ITEM_STATES} from '../../../../component/file-upload/js/_file_upload';
 
 function normalizeSize(value) {
     return fieldSize(value, 'sf-file-upload');
@@ -7,8 +8,7 @@ function normalizeSize(value) {
 
 function normalizeState(value) {
     const normalized = String(value || '').toLowerCase();
-    const supported = ['process', 'done', 'error'];
-    return supported.includes(normalized) ? normalized : 'process';
+    return ITEM_STATES.includes(normalized) ? normalized : 'process';
 }
 
 function normalizeProgress(value) {
@@ -54,7 +54,9 @@ function renderUploadItem(item, size, index, retryText) {
                             `}
                 </div>
 
-                ${state === 'error'
+                ${state === 'ready'
+                        ? nothing
+                        : state === 'error'
                         ? html`
                             <button
                                     type="button"

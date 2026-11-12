@@ -87,6 +87,7 @@
         "state": {
           "type": "enum",
           "values": [
+            "ready",
             "process",
             "done",
             "error"
@@ -105,7 +106,7 @@
           "optional": true
         }
       },
-      "summary": "The files and their uploads, written by the host: each entry's state (process, done, error) and progress 0-100 is its stream (§10.8)"
+      "summary": "The files and their uploads: a choice or a drop lists each file ready (chosen, not sent); the host, or the uploader, moves it to process with progress 0-100, then done or error. Each entry in process is a stream (§10.8)"
     }
   },
   "values": {},

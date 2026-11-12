@@ -69,7 +69,7 @@ function load() {
       return fill(form, {...vars, n: count});
     },
   });
-  vm.runInContext(`${words.replace('const FILE_UPLOAD_ITEM_TEXT', 'var FILE_UPLOAD_ITEM_TEXT')}\n${helpers}\nthis.api = {applySelectedFiles, normalizeFileItems, getItemEventKey, takeFiles, formatAcceptWords};`, context);
+  vm.runInContext(`${words.replace('const FILE_UPLOAD_ITEM_TEXT', 'var FILE_UPLOAD_ITEM_TEXT')}\n${helpers}\nthis.api = {applySelectedFiles, normalizeFileItems, getItemEventKey, takeFiles, formatAcceptWords, normalizeItemState};`, context);
   return context.api;
 }
 
@@ -172,4 +172,17 @@ test('FU-8: min-size and the English words', () => {
   const reject = root.events.find((event) => event.type === 'sf-file-upload:reject');
   assert.equal(reject.detail.rejected[0].reason, 'min-size');
   assert.equal(reject.detail.rejected[0].message, '“tiny.pdf” is 1 КБ; it must be at least 2 КБ');
+});
+
+test('FU-3: a chosen file is ready -- not a transfer at 0 % -- until the host or the uploader sends it', async () => {
+  const api = load();
+  const root = area();
+  api.takeFiles(root, [file('Устав.pdf', 90000)], 'input');
+  const [item] = root.__sfFileUploadItems;
+  assert.equal(item.state, 'ready');
+  assert.equal('progress' in item, false);
+  assert.equal(api.normalizeItemState(item), 'ready');
+  const template = await readFile(new URL('../src/smart/file-upload/js/templates/default.js', import.meta.url), 'utf8');
+  assert.match(template, /state === 'ready'\s*\?\s*nothing/u, 'the Smart row draws no bar for a ready file');
+  assert.match(source, /if \(state === 'ready'\) \{\s*content\.append\(top\);/u, 'the class row draws no bar for a ready file');
 });
