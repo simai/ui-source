@@ -29,19 +29,21 @@ test('control targets: checkbox, radio and switch reach 24px around a smaller ma
 });
 
 /* A phone field was 2px taller than the field beside it at every size. It now
-   follows the composition standard: the control height outright, the padding
-   giving up the border, the chevron on the whole line and the flag at three
-   quarters of it, 1.4 times as wide, like a dropdown's flag. */
+   follows the composition standard: the control height outright and the
+   padding giving up the border. Owner C87 (variant V4): the flag is 7:5 at
+   --sf-country-code--flag-height on the size's value inset, and the old
+   whole-line chevron is a small caret in a --sf-space-1 box. */
 test('control targets: the country code field follows the ladder', async () => {
   const css = await read('component/country-code/scss/_css_country_code.scss');
   const custom = await read('component/country-code/scss/_css_country_code_custom.scss');
-  for (const size of ['1\\/2', '1', '2']) {
-    assert.ok(css.includes(`--sf-country-code-flag-icon--height: calc(var(--sf-text-height-${size}) * 3 / 4);`), size);
-    assert.ok(css.includes(`--sf-country-code-flag-icon--width: calc(var(--sf-text-height-${size}) * 3 / 4 * 1.4);`), size);
+  assert.ok(css.includes('--sf-country-code-flag-icon--height: var(--sf-country-code--flag-height);'));
+  assert.ok(css.includes('--sf-country-code-flag-icon--width: calc(var(--sf-country-code--flag-height) * 1.4);'));
+  for (const [size, inset] of [['1\\/2', '1\\/2'], ['1', '1'], ['2', '2']]) {
     assert.ok(css.includes(`--sf-country-code-field--padding-top: calc(var(--sf-ui-${size}--space-y-tightness-default) - var(--sf-px));`), size);
     assert.ok(custom.includes(`.sf-country-code.sf-country-code--size-${size} .sf-country-code-field {\n  block-size: var(--sf-ui-${size}--control-height);`), `field ${size}`);
-    assert.ok(custom.includes(`.sf-country-code.sf-country-code--size-${size} .sf-country-code-left .sf-icon {\n  --sf-icon--font-size: var(--sf-text-height-${size});`), size);
+    assert.match(css, new RegExp(`--sf-country-code--inset: var\\(--sf-space-${inset.replace('\\', '\\\\')}\\);`), size);
   }
+  assert.match(css, /\.sf-country-code-caret \{\s*--sf-icon--font-size: var\(--sf-text-size-1\);[^}]*--sf-icon--width: var\(--sf-space-1\);/);
 });
 
 /* Colour and avatar options are as tall as text options of their size. */
