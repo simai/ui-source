@@ -48,7 +48,8 @@ function renderRibbonMonth(month, context) {
 // it. The sheet is the Framework's (sf-drawer placement="bottom"); this is
 // its content.
 export function renderDatepickerRibbon(context) {
-    const summary = context.summary;
+    // The period line under the ribbon (index.js ribbonSummary).
+    const summary = context.periodSummary;
     return html`
         <div class="sf-datepicker-sheet-weekdays" aria-hidden="true">
             ${context.weekdays.map((weekday) => html`<span class="sf-datepicker-weekday">${weekday}</span>`)}

@@ -8,6 +8,7 @@ import {renderDatepickerTemplate} from './js/templates/default';
 import {renderDatepickerRibbon} from './js/templates/ribbon.js';
 import {formatPlaceholder, localeDateFormat, localeWeekStart, weekendDays} from './js/locale-calendar.js';
 import BundledPosition from '../../core/js/position.js';
+import {matchesBreakpoint} from '../../core/js/breakpoints.js';
 import {pageLocale} from '../../core/js/page-language';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -1601,7 +1602,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     // button, the scrim, Escape, a swipe down) keeps the value it had.
     get usesRibbon() {
         if (!this.range || !this.input || this._ribbonUnavailable) return false;
-        return globalThis.matchMedia?.('(min-width: 60rem)')?.matches === false;
+        return matchesBreakpoint('lg', {below: true});
     }
 
     async _openRibbon() {
@@ -1882,7 +1883,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
             weekdayNames: getWeekdays(locale, weekStart, 'long'),
             labels: this.labels,
             complete: Boolean(start && end),
-            summary: this.ribbonSummary(start, end),
+            periodSummary: this.ribbonSummary(start, end),
         };
     }
 

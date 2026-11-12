@@ -138,7 +138,9 @@ test('a read-only field opens no calendar and an inline one takes no choice', ()
 // bottom sheet, a draft until «Готово».
 test('a period on a phone opens a ribbon of months in the bottom sheet', () => {
   const source = read('src/smart/input-date/index.js');
-  assert.match(source, /if \(!this\.range \|\| !this\.input \|\| this\._ribbonUnavailable\) return false;\s*return globalThis\.matchMedia\?\.\('\(min-width: 60rem\)'\)\?\.matches === false;/u);
+  // Below the breakpoint lg (60rem), read from core/js/breakpoints.js, not a raw length (C18).
+  assert.match(source, /import \{matchesBreakpoint\} from '\.\.\/\.\.\/core\/js\/breakpoints\.js';/u);
+  assert.match(source, /if \(!this\.range \|\| !this\.input \|\| this\._ribbonUnavailable\) return false;\s*return matchesBreakpoint\('lg', \{below: true\}\);/u);
   assert.match(source, /await globalThis\.SF\?\.Loader\?\.ensure\?\.\(\['sf-drawer'\]\)/u);
   assert.match(source, /sheet\.setAttribute\('placement', 'bottom'\);/u);
   assert.match(source, /body\.className = 'sf-datepicker sf-datepicker--sheet';/u);
