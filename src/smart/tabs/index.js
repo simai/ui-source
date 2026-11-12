@@ -39,6 +39,15 @@ function tabIndexOf(element) {
   return own !== undefined && Number.isInteger(index) ? index : null;
 }
 
+// The drawn box of a tab: the button inside an sf-button or sf-button-icon,
+// or the tab itself. The row measures it and the resize observer watches it,
+// the same element both times.
+function tabBox(host) {
+  return (host.matches('sf-button') || isTag(host, 'sf-button-icon'))
+    ? host.querySelector(':scope > .sf-button, :scope > .sf-icon-button, :scope > button')
+    : host;
+}
+
 // The width a text takes in the face of an element, for a text it does not
 // draw yet (the «Ещё (n)» count before its button draws it).
 let measureCanvas = null;
@@ -205,7 +214,7 @@ class SfTabs extends TabsElement {
     // drawn in one, and a layout asked for from there came a frame later,
     // after a paint.
     this._resizeObserver = typeof ResizeObserver === 'function'
-      ? new ResizeObserver(() => this.layoutOverflowNow())
+      ? new ResizeObserver((entries) => { if (!this.onlyOwnSizes(entries)) this.layoutOverflowNow(); })
       : null;
     this.addEventListener('sf-after-render', (event) => {
       // Built-in Smart buttons can finish rendering after their owning Tabs.
@@ -293,9 +302,7 @@ class SfTabs extends TabsElement {
     const boxes = new Set();
     for (const element of Array.from(this.tabList?.children || [])) {
       if (!Number.isInteger(tabIndexOf(element))) continue;
-      const box = (element.matches('sf-button') || isTag(element, 'sf-button-icon'))
-        ? element.querySelector(':scope > button')
-        : element;
+      const box = tabBox(element);
       if (box) boxes.add(box);
     }
     this._observedTabs ??= new Set();
@@ -303,8 +310,36 @@ class SfTabs extends TabsElement {
       if (!boxes.has(box)) { this._resizeObserver.unobserve(box); this._observedTabs.delete(box); }
     }
     for (const box of boxes) {
-      if (!this._observedTabs.has(box)) { this._resizeObserver.observe(box); this._observedTabs.add(box); }
+      if (!this._observedTabs.has(box)) { this._resizeObserver.observe(box, {box: 'border-box'}); this._observedTabs.add(box); }
     }
+  }
+
+  // The width each tab box is left at by the last layout: none for a tab put
+  // in «Ещё», its measured width for one kept in the row. A shortened tab has
+  // none to expect.
+  expectTabSizes(hosts, widths, kept) {
+    const expected = new WeakMap();
+    hosts.forEach((host, at) => {
+      const box = tabBox(host);
+      if (!box || host.classList.contains('sf-tabs-squeezed')) return;
+      expected.set(box, kept && !kept.includes(at) ? 0 : widths[at]);
+    });
+    this._expectedTabSizes = expected;
+  }
+
+  // The observer's report of the layout's own work -- tabs it hid or showed
+  // again, at the widths it left them -- is not a change to lay out again:
+  // laid out for it, every row was laid out twice for each resize and the
+  // 470-row page took twice as long to settle (C54 D3, cost.mjs: 27 s, base
+  // 12 s, at 1440).
+  onlyOwnSizes(entries) {
+    const expected = this._expectedTabSizes;
+    if (!expected) return false;
+    return entries.every((entry) => {
+      if (!expected.has(entry.target)) return false;
+      const size = entry.borderBoxSize?.[0]?.inlineSize ?? entry.contentRect.width;
+      return Math.abs(size - expected.get(entry.target)) <= 0.5;
+    });
   }
 
   disconnectedCallback() {
@@ -734,14 +769,10 @@ class SfTabs extends TabsElement {
     };
     if (this.overflow !== 'more' || this.getAttribute('type') === 'vertical') {
       showMore(false);
+      this._expectedTabSizes = null;
       return;
     }
-    const width = (host) => {
-      const box = (host.matches('sf-button') || isTag(host, 'sf-button-icon'))
-        ? host.querySelector(':scope > .sf-button, :scope > .sf-icon-button, :scope > button')
-        : host;
-      return box?.getBoundingClientRect().width ?? 0;
-    };
+    const width = (host) => tabBox(host)?.getBoundingClientRect().width ?? 0;
     const widths = hosts.map(width);
     const style = getComputedStyle(list);
     const gap = parseFloat(style.columnGap) || 0;
@@ -768,6 +799,7 @@ class SfTabs extends TabsElement {
     };
     showMore(false);
     let kept = fits(room());
+    if (!kept) this.expectTabSizes(hosts, widths, null);
     if (kept) {
       showMore(true);
       const items = this.computedItems;
@@ -840,6 +872,7 @@ class SfTabs extends TabsElement {
         // to the button inside it, and only class and style stay on the host.
         if (!kept.includes(at)) host.classList.add('sf-tabs-overflowed');
       });
+      this.expectTabSizes(hosts, widths, kept);
       this._overflowed = hosts.filter((_, at) => !kept.includes(at)).map((host) => tabIndexOf(host));
       if (more) {
         const label = `${this.text('more')} (${this._overflowed.length})`;

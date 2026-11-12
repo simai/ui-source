@@ -56,7 +56,14 @@ test('the row is laid out again when the trigger, a late tab or the text face ch
 // laid out in the observer's callback, before the paint, and each tab's box is
 // watched, so a late sheet or text face is laid out before its frame is painted.
 test('the row is laid out before the paint: in the resize observer, with every tab box watched', () => {
-  assert.match(source, /new ResizeObserver\(\(\) => this\.layoutOverflowNow\(\)\)/u);
+  assert.match(source, /new ResizeObserver\(\(entries\) => \{ if \(!this\.onlyOwnSizes\(entries\)\) this\.layoutOverflowNow\(\); \}\)/u);
+  // Its own echo -- the tabs it hid or showed, at the widths it left them --
+  // is not laid out again (each row was laid out twice per resize).
+  assert.match(source, /this\._resizeObserver\.observe\(box, \{box: 'border-box'\}\)/u);
+  assert.match(source, /expected\.set\(box, kept && !kept\.includes\(at\) \? 0 : widths\[at\]\);/u);
+  assert.match(source, /if \(!kept\) this\.expectTabSizes\(hosts, widths, null\);/u);
+  assert.match(source, /this\.expectTabSizes\(hosts, widths, kept\);\s*this\._overflowed = /u);
+  assert.match(source, /const width = \(host\) => tabBox\(host\)\?\.getBoundingClientRect\(\)\.width \?\? 0;/u);
   assert.match(source, /layoutOverflowNow\(\) \{\s*if \(this\._overflowFrame\) \{\s*cancelAnimationFrame\(this\._overflowFrame\);/u);
   assert.match(source, /observeTabBoxes\(\) \{/u);
   assert.match(source, /this\._resizeObserver\.disconnect\(\);\s*this\._observedTrigger = null;\s*this\._observedTabs = null;/u);
