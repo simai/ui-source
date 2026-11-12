@@ -439,7 +439,7 @@ function resolveConfig(root, input) {
     ),
     maxItems: Number.parseInt(root.dataset.maxItems || input?.dataset.maxItems || '0', 10) || 0,
     // The countries on top of the list (owner C87): data-preferred="RU,KZ",
-    // an empty one for none; without it the page language's own list.
+    // an empty one for the recent choices alone; without it no group at all.
     preferred: root.dataset.preferred === undefined ? undefined
       : String(root.dataset.preferred).split(/[\s,;]+/u).map(normalizeIso2).filter(Boolean),
   };
@@ -988,9 +988,6 @@ function applyCountrySelection(root, country, source = 'runtime') {
 const RECENT_KEY = 'sf-input-country:recent';
 const RECENT_MAX = 2;
 const FREQUENT_MAX = 6;
-// The product's own list for its audience when it names none (preferred):
-// a Russian page asks for its neighbours first.
-const PREFERRED_BY_LOCALE = {ru: ['RU', 'KZ', 'BY', 'UZ', 'KG', 'AM']};
 
 function readRecentCountries() {
   try {
@@ -1009,12 +1006,14 @@ function rememberCountry(iso2) {
   } catch { /* storage refused: a private window keeps no history */ }
 }
 
-// Up to two of the person's last choices, then the product's list, six rows
-// at most; only countries the list has, each once.
+// The group is optional (owner, q-8794872748): without `preferred` there is
+// none, not even the recent choices, and no locale names one by default.
+// With it: up to two of the person's last choices, then the product's list,
+// six rows at most; only countries the list has, each once.
 function frequentCountries(config, items) {
+  if (config.preferred === undefined) return [];
   const present = new Set(items.map((item) => normalizeIso2(item.dataset.iso2)).filter(Boolean));
-  const product = config.preferred ?? PREFERRED_BY_LOCALE[config.locale] ?? [];
-  return [...new Set([...readRecentCountries(), ...product])].filter((iso) => present.has(iso)).slice(0, FREQUENT_MAX);
+  return [...new Set([...readRecentCountries(), ...config.preferred])].filter((iso) => present.has(iso)).slice(0, FREQUENT_MAX);
 }
 
 // How well a row answers a query: its ISO code or its whole dial code first,

@@ -124,7 +124,7 @@ Can be set on `.sf-country-code` (or partly on input):
 - `data-show-mask-placeholder="true|false"`
 - `data-mask-placeholder-char="_"`
 - `data-max-items="50"`
-- `data-preferred="RU,KZ"` (frequent group after the two recent choices; empty adds none, absent uses the locale default)
+- `data-preferred="RU,KZ"` (optional: turns on the frequent group, the two recent choices then these countries; empty shows the recent choices alone; absent shows no group and no locale default applies)
 
 Country resolution:
 

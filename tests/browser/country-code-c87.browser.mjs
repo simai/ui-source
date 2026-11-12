@@ -22,7 +22,7 @@
 //             AM; extra digits never cut;
 //   list      opened by a click on the flag, by a click on the caret and by the
 //             keyboard (Enter, ArrowDown on the flag button): cursor in the
-//             search, «Часто выбирают» on top (no country twice), the chosen
+//             search, «Часто выбирают» on top when `preferred` is set (no country twice; none without it), the chosen
 //             row in view and filled, no box in any row; search «герм», «+49»,
 //             «de» find Germany; ArrowDown + Enter picks it and keeps the
 //             national digits; Escape closes; the list scrolls by wheel and
@@ -67,7 +67,7 @@ main{display:flex;flex-direction:column;gap:var(--sf-space-1);padding:var(--sf-s
   <sf-input-country id="open" open max-items="6" iso2="AZ" label="Открыт сразу"></sf-input-country>
   <div style="block-size:var(--sf-g0)"></div>
   <sf-input-country id="f-h" size="1/2" iso2="AZ" label="Телефон 1/2"></sf-input-country>
-  <sf-input-country id="f-1" size="1" iso2="AZ" label="Телефон 1"></sf-input-country>
+  <sf-input-country id="f-1" size="1" iso2="AZ" preferred="RU,KZ,BY,UZ,KG,AM" label="Телефон 1"></sf-input-country>
   <sf-input-country id="f-2" size="2" iso2="AZ" label="Телефон 2"></sf-input-country>
   <div data-sf-density="compact"><sf-input-country id="f-c" iso2="AZ" label="Компактно"></sf-input-country></div>
   <label class="sf-country-code sf-country-code--size-1" id="cls" data-iso2="RU">
@@ -279,6 +279,16 @@ try {
     await tab.locator('#f-2 .sf-country-code-left').scrollIntoViewIfNeeded();
     await tab.locator('#f-2 .sf-country-code-left').click();
     await tab.waitForTimeout(300);
+    // `preferred` is optional (owner, q-8794872748): #f-2 names none, so no
+    // «Часто выбирают» heading and no frequent rows, though #f-1 left a recent choice.
+    run.noPreferred = await tab.evaluate(() => {
+      const root = document.querySelector('#f-2 .sf-country-code');
+      return {
+        heads: [...root.querySelectorAll('.sf-country-code-group')].filter((g) => !g.hidden).map((g) => g.textContent.trim()),
+        frequent: [...root.querySelectorAll('.sf-country-code-item[data-group="frequent"]')].map((row) => row.dataset.iso2),
+      };
+    });
+    if (run.noPreferred.heads.length || run.noPreferred.frequent.length) fail(where, `no preferred: heads ${run.noPreferred.heads} frequent ${run.noPreferred.frequent}`);
     await tab.evaluate(() => document.querySelector('#f-2 .sf-country-code-items').scrollTo({top: 0, behavior: 'instant'}));
     await tab.waitForTimeout(100);
     const wrapBox = await tab.locator('#f-2 .sf-country-code-items').boundingBox();

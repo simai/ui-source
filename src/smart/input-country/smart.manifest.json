@@ -162,7 +162,7 @@
       "preferred": {
         "type": "string",
         "default": "",
-        "description": "Countries on top of the list under «Frequently chosen», as ISO codes: RU,KZ,BY. Up to two of the person's last choices come first, six rows at most. Without the attribute the page language's own list (a Russian page: RU, KZ, BY, UZ, KG, AM); an empty value names none."
+        "description": "Optional. Countries on top of the list under «Frequently chosen», as ISO codes: RU,KZ,BY. Up to two of the person's last choices come first, six rows at most. Without the attribute there is no group and no locale default; an empty value shows the recent choices alone."
       },
       "value": {
         "type": "string",
@@ -327,7 +327,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-country/index.js",
-        "sha256": "851a35c34c652065a2676d5c61a0e7475f5c24de3ee562b987bed6ba96f537fd"
+        "sha256": "33e23a7f577a83d55f66d3f7c829c3b5dd4e7bd6646e9b2db979d7c663db6e37"
       }
     ],
     "generated_runtime": [

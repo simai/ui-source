@@ -186,11 +186,57 @@ test('the field draws V4: rectangular flag on the C77 inset, a small caret, the 
 
 test('the list: search header, frequent group, chosen row filled, a sheet on a phone', () => {
   assert.match(source, /const RECENT_KEY = 'sf-input-country:recent';/u);
-  assert.match(source, /PREFERRED_BY_LOCALE = \{ru: \['RU', 'KZ', 'BY', 'UZ', 'KG', 'AM'\]\}/u);
+  assert.ok(!source.includes('PREFERRED_BY_LOCALE'), 'no locale names a frequent list by default');
   assert.match(source, /list\.setAttribute\('data-sf-sheet', ''\);/u);
   assert.match(css, /\.sf-country-code \.sf-country-code-item\[aria-selected="true"\] \{\s*--sf-country-code-item--background-color: var\(--sf-primary-container\);/u);
   assert.match(css, /\.sf-country-code \.sf-country-code-list\[data-sf-sheet\] \{/u);
   assert.match(css, /inline-size: var\(--sf-popup-panel-width\);/u);
+});
+
+// `preferred` is optional (owner, q-8794872748, 2026-11-12): without it the
+// list has no «Часто выбирают» group at all -- no heading, no recent choices on
+// top -- and no locale supplies a default list.
+function arrangeList({preferred, recent = [], locale = 'ru'}) {
+  const heads = [];
+  const itemsWrap = {
+    querySelector: (selector) => heads.find((head) => selector.includes(`data-group="${head.dataset.group}"`)) || null,
+    append: (node) => heads.push(node),
+  };
+  const node = () => ({dataset: {}, style: {}, hidden: false, setAttribute() {}, textContent: ''});
+  const rows = ['AZ', 'RU', 'KZ', 'DE', 'AM'].map((iso2) => ({...node(), dataset: {iso2}}));
+  const store = {'sf-input-country:recent': JSON.stringify(recent)};
+  const context = vm.createContext({
+    document: {createElement: node},
+    localStorage: {getItem: (key) => store[key] ?? null, setItem: (key, value) => { store[key] = value; }},
+    getNodes: () => ({itemsWrap, items: rows}),
+    pageText: (_text, word) => word,
+    COUNTRY_CODE_TEXT: {},
+    normalizeIso2: (value) => String(value || '').trim().toUpperCase(),
+    ensureCountryId: () => 'id',
+  });
+  vm.runInContext(source.slice(source.indexOf('const RECENT_KEY'), source.indexOf('// The rows in the order a person sees them.')), context);
+  const config = {multiCountry: true, showCode: true, locale, preferred};
+  context.arrangeCountryList({__sfCountryConfig: config, __sfCountryQuery: '', querySelector: () => null});
+  return {
+    heads: heads.filter((head) => !head.hidden).map((head) => head.textContent),
+    frequent: rows.filter((row) => row.dataset.group === 'frequent').sort((x, y) => Number(x.style.order) - Number(y.style.order)).map((row) => row.dataset.iso2),
+  };
+}
+
+test('no preferred: no frequent group header and no group rows, on a Russian page too', () => {
+  for (const locale of ['ru', 'en']) {
+    assert.deepEqual(arrangeList({locale}), {heads: [], frequent: []}, locale);
+    // A recent choice alone does not bring the group back.
+    assert.deepEqual(arrangeList({locale, recent: ['DE']}), {heads: [], frequent: []}, `${locale} recent`);
+  }
+});
+
+test('preferred set: the heading, recent choices first, then the named countries', () => {
+  assert.deepEqual(arrangeList({preferred: ['RU', 'KZ']}), {heads: ['frequent', 'allCountries'], frequent: ['RU', 'KZ']});
+  assert.deepEqual(arrangeList({preferred: ['RU', 'KZ'], recent: ['DE']}).frequent, ['DE', 'RU', 'KZ']);
+  // An empty value shows the recent choices alone, or nothing without them.
+  assert.deepEqual(arrangeList({preferred: [], recent: ['AM']}), {heads: ['frequent', 'allCountries'], frequent: ['AM']});
+  assert.deepEqual(arrangeList({preferred: []}), {heads: [], frequent: []});
 });
 
 // Leftovers of C87 (dispatcher queue msg-f78a24f9d8714b91a524): the form value

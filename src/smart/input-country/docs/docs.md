@@ -111,14 +111,16 @@ The list is as wide as the popup panel (`--sf-popup-panel-width`), or the field
 when that is wider. It starts with a search field ("Country or code") that finds
 by name, ISO code or dial code; Enter picks the first match and never submits the
 form; a search that finds nothing shows the line "Nothing found" ("Ничего не
-найдено") where the rows would be. Without a query the list shows "Frequently chosen" (the two most recent
-choices kept in `localStorage` under `sf-input-country:recent`, then the
-`preferred` countries) above "All countries". The chosen row is filled, not
-ticked. Picking a country keeps the national digits already typed.
+найдено") where the rows would be. When `preferred` is set and there is no
+query, the list shows "Frequently chosen" (the two most recent choices kept in
+`localStorage` under `sf-input-country:recent`, then the `preferred` countries)
+above "All countries". The chosen row is filled, not ticked. Picking a country
+keeps the national digits already typed.
 
-`preferred` is a comma-separated ISO list for the frequent group. Without the
-attribute the Russian locale offers RU, KZ, BY, UZ, KG and AM; an empty value
-adds none (recent choices still show). The group holds six rows at most.
+`preferred` is an optional comma-separated ISO list for the frequent group.
+Without the attribute there is no group: no "Frequently chosen" heading, no
+recent choices on top, one plain list; no locale supplies a default list. An
+empty value shows the recent choices alone. The group holds six rows at most.
 
 Below the `md` breakpoint the list opens as a bottom sheet over the page instead
 of a dropdown under the field.

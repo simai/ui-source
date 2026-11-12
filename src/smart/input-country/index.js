@@ -190,8 +190,8 @@ class SfCountryCode extends FormField(CountryCodeElement) {
     return String(this.getAttribute('mask-placeholder-char') || '_');
   }
 
-  // The countries on top of the list (owner C87): "RU,KZ,BY". Without the
-  // attribute the page language's own list; an empty one names none.
+  // The countries on top of the list (owner C87): "RU,KZ,BY". Optional:
+  // without the attribute no group at all; an empty one, recent choices alone.
   get preferred() {
     return this.hasAttribute('preferred') ? String(this.getAttribute('preferred') || '') : undefined;
   }
