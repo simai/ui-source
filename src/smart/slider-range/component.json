@@ -59,6 +59,16 @@
       "default": "none",
       "summary": "How the value is shown: not at all (each handle still reads it out), as text at the end of the name line, or in a bubble over the handle while it is dragged or keyboard-focused (C78). Formerly label, read until 2027-01-01."
     },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1",
+      "summary": "Size of the step, as every form field: the slider row is the control height (32 / 40 / 48, phone 28 / 36 / 44), the handle 20 / 24 / 28 (S5)."
+    },
     "prefix-text": {
       "type": "string",
       "default": ""

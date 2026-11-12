@@ -32,11 +32,13 @@ function renderHead(context) {
 export function renderRangeSliderTemplate(context) {
     const groupClasses = joinClasses(
         'sf-range-slider-group',
+        `sf-range-slider-group--size-${context.size}`,
         context.disabled ? 'disabled' : '',
     );
     const rootClasses = joinClasses(
         'sf-range-slider',
         'flex-1',
+        `sf-range-slider--size-${context.size}`,
         context.rootClass,
         context.disabled ? 'disabled' : '',
     );

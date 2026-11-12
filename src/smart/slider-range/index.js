@@ -10,6 +10,7 @@ import { renderRangeSliderTemplate } from './js/templates/default';
 import { setLoaderDragState } from '../helpers/loaderDragState';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { noteDeprecated } from '../../core/js/deprecations.js';
+import { fieldSize } from '../../component/field-size';
 import { instancePath, partId } from '../../core/js/instance-path.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -219,6 +220,11 @@ class SfRangeSlider extends RangeSliderElement {
     return this.getAttribute('label') || '';
   }
 
+  // The three form sizes (S5): the slider row is the control height of the step.
+  get size() {
+    return fieldSize(this.getAttribute('size') || '1', 'sf-slider-range');
+  }
+
   get valueDisplay() {
     const own = String(this.getAttribute('value-display') ?? '').trim().toLowerCase();
     if (VALUE_DISPLAYS.includes(own)) return own;
@@ -282,6 +288,7 @@ class SfRangeSlider extends RangeSliderElement {
       name,
       nameId: name ? `${partId(instancePath(this, {kind: 'sf-range-slider'}))}--name` : '',
       valueDisplay,
+      size: this.size,
       // The class draws a tooltip over each handle; the value as text sits at
       // the end of the name line, drawn here (C78).
       handleLabel: valueDisplay === 'tooltip' ? 'tooltip' : 'none',
@@ -333,6 +340,7 @@ class SfRangeSlider extends RangeSliderElement {
         'keyboard',
         'label',
         'value-display',
+        'size',
         'prefix-text',
         'suffix',
         'lower-label',
@@ -634,6 +642,7 @@ class SfRangeSlider extends RangeSliderElement {
       keyboard: this.keyboard,
       label: this.label,
       valueDisplay: this.valueDisplay,
+      size: this.size,
       prefixText: this.prefixText,
       suffix: this.suffix,
       lowerLabel: this.lowerLabel,

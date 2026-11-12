@@ -51,4 +51,51 @@
   flex: 1 1 auto;
   min-inline-size: 0;
 }
+
+// Sizes (S5, C18, C80): the slider row is the control height of its step, as
+// sf-button and every field of that step (32 / 40 / 48, phone 28 / 36 / 44;
+// density moves the ladder itself), so a slider stands on the line of the
+// fields beside it. The handle is the icon of the step (20 / 24 / 28), the
+// name one text step below the control. Size 1 is the default, also for a
+// hand-written .sf-range-slider without a size class.
+.sf-range-slider {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-block-size: var(--sf-range-slider--row, var(--sf-ui-1--control-height));
+}
+
+.sf-range-slider-group--size-1\/2,
+.sf-range-slider--size-1\/2 {
+  --sf-range-slider--row: var(--sf-ui-1\/2--control-height);
+  --sf-range-slider--label-size: var(--sf-text-size-1\/3);
+  --sf-range-slider--label-height: var(--sf-text-height-1\/3);
+  --sf-range-slider--space-x: var(--sf-ui-1\/2--space-x);
+  --sf-range-slider--text-size: var(--sf-text-size-1\/2);
+  --sf-range-slider--text-height: var(--sf-text-height-1\/2);
+  --sf-thumb-handle--height: var(--sf-icon-size-2);
+  --sf-thumb-handle--width: var(--sf-icon-size-2);
+}
+
+.sf-range-slider-group--size-1,
+.sf-range-slider--size-1 {
+  --sf-range-slider--row: var(--sf-ui-1--control-height);
+  --sf-range-slider--label-size: var(--sf-text-size-1\/2);
+  --sf-range-slider--label-height: var(--sf-text-height-1\/2);
+  --sf-range-slider--space-x: var(--sf-ui-1--space-x);
+  --sf-range-slider--text-size: var(--sf-text-size-1);
+  --sf-range-slider--text-height: var(--sf-text-height-1);
+}
+
+.sf-range-slider-group--size-2,
+.sf-range-slider--size-2 {
+  --sf-range-slider--row: var(--sf-ui-2--control-height);
+  --sf-range-slider--label-size: var(--sf-text-size-1);
+  --sf-range-slider--label-height: var(--sf-text-height-1);
+  --sf-range-slider--space-x: var(--sf-ui-2--space-x);
+  --sf-range-slider--text-size: var(--sf-text-size-2);
+  --sf-range-slider--text-height: var(--sf-text-height-2);
+  --sf-thumb-handle--height: var(--sf-icon-size-4);
+  --sf-thumb-handle--width: var(--sf-icon-size-4);
+}
 }

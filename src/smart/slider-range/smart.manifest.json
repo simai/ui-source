@@ -94,6 +94,16 @@
           "tooltip"
         ]
       },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "Size of the step, as every form field: the slider row is the control height (32 / 40 / 48, phone 28 / 36 / 44), the handle 20 / 24 / 28 (S5).",
+        "enum": [
+          "1/2",
+          "1",
+          "2"
+        ]
+      },
       "prefix-text": {
         "type": "string",
         "default": ""
