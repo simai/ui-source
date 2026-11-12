@@ -2,7 +2,7 @@
   "$comment": "The source of sf-pagination's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/pagination (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.pagination",
   "tag": "sf-pagination",
-  "version": "1.3.14",
+  "version": "1.4.0",
   "kind": "leaf",
   "family": "pagination",
   "settings": {
@@ -227,6 +227,21 @@
       ],
       "default": "1",
       "summary": "The step of the size ladder its fields, buttons, labels and page numbers take: 1, or the dense 1/2 of an admin."
+    },
+    "href": {
+      "type": "string",
+      "default": "",
+      "summary": "The address of a page as a template, {page} for its number and {page-size} for the page size («?page={page}»). Set, the arrows are links with rel prev/next and a page typed in the field is opened by its address; a listener that cancels sf-pagination-change takes the move in place and the link is not followed. Empty: the arrows are buttons."
+    },
+    "page-param": {
+      "type": "string",
+      "default": "",
+      "summary": "The name of the address's query parameter that holds the page («page»). Set, the page is read from the address when the element is placed and on Back and Forward (reported as sf-pagination-change), and a move writes it as a new history entry; page 1 is the address without it. Empty: the address is not touched."
+    },
+    "page-in-title": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Add the page to the document title («Новости — Страница 3»); page 1 and a removed element leave the title as it was. One pagination of a document says it."
     }
   },
   "values": {
@@ -392,6 +407,9 @@
     },
     {
       "name": "cl-spinner"
+    },
+    {
+      "name": "cl-icon"
     }
   ],
   "templates": {
@@ -632,7 +650,8 @@
     "version 1.3.11 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, goToPage({page}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, goToPage(<number>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged.",
     "version 1.3.12 (2026-11-09): a patch; nothing in the component changed. The sf-input it draws asks for the kbd sheet since sf-input 1.7.0 (C38, the shortcut setting; component.kbd 1.3.0), so its first-paint snapshots name that sheet and carry one more empty line where the field's shortcut would stand; the component takes a patch with them. Settings, values, events and keys unchanged.",
     "version 1.3.13 (2026-11-10): a patch; nothing in the component changed. The sf-dropdown it draws shows its arrow glyph as sf-icon since sf-dropdown 1.8.1, so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged.",
-    "version 1.3.14 (2026-11-11): a patch; nothing in the component changed. The sf-button it draws writes sf-button--ghost beside the dated sf-button--link since sf-button 1.13.0 (CB-01), so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged."
+    "version 1.3.14 (2026-11-11): a patch; nothing in the component changed. The sf-button it draws writes sf-button--ghost beside the dated sf-button--link since sf-button 1.13.0 (CB-01), so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged.",
+    "version 1.4.0 (2026-11-12, study R182, defects PG-05, PG-10, PG-11): a minor. Three settings, all off by default: href, an address template that makes the arrows links with rel prev/next (and opens a typed page by its address; sf-pagination-change is cancelable for such a press, a cancel takes the move in place); page-param, the query parameter that holds the page, read on placing and on Back/Forward and written on a move; page-in-title, the page in the document title (word runtime.title-page). The last-page button is drawn only where the jump can be answered, the count exact or can-count: a host that cannot count (a cursor list) no longer gets a button that asked into nothing (PG-11). On a narrow screen the page row stays a row that wraps: the count and the arrows share a line and the page size keeps its label beside it, two lines where it took four (PG-05). Events, values and keys otherwise unchanged; the first-paint snapshots follow at the group build."
   ],
   "x-registry": {
     "capabilities": [

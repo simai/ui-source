@@ -2,7 +2,7 @@
   "$comment": "The source of sf-pager's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.13 and vocabulary 1.1.5; the design target is tab 2 of ui-control's prototypes/docara-four.html, with the owner's decisions of 2026-10-30.",
   "id": "smart.pager",
   "tag": "sf-pager",
-  "version": "1.2.2",
+  "version": "1.2.4",
   "kind": "leaf",
   "family": "navigation",
   "settings": {
@@ -309,7 +309,8 @@
     "version 1.1.0 background-color-names: the public variable --sf-pager-card-background-color (C16 naming: a variable that sets a colour ends in -color, as the other 53 do). The former name --sf-pager-card-background is still read under the new one until 2027-01-01 (change journal token-component-background-color-names, src/core/contracts/token-aliases.v1.json); nothing draws differently.",
     "version 1.1.1 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, goTo({index}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged.",
     "version 1.2.1 (2026-11-09): cards stand on --sf-surface-card and the current dot takes the place's colour (C16, the background system, owner 2026-11-08).",
-    "version 1.2.2 (2026-11-10, C16 leftovers): a patch; nothing draws or works differently. Its docs gave a stale default: the cards' fill is --sf-surface-card (since 1.2.1), not --sf-surface-0."
+    "version 1.2.2 (2026-11-10, C16 leftovers): a patch; nothing draws or works differently. Its docs gave a stale default: the cards' fill is --sf-surface-card (since 1.2.1), not --sf-surface-0.",
+    "version 1.2.4 (2026-11-12, study R183, defects PR-02, PR-04, PR-05, decision C97): a patch; settings, values, events and keys unchanged. row shows each title whole up to two lines, where it cut it to one with an ellipsis (PR-04); cards and row stack on a phone (below the sm step, 32rem), the previous side first and the next one at the end of the line below (PR-05); the steps place line wraps under itself rather than cutting the step's name (PR-02; steps is interim, C97 moves it to sf-wizard). The first-paint snapshots follow at the group build."
   ],
   "x-registry": {
     "capabilities": [

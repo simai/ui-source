@@ -299,6 +299,27 @@ const sfPaginationMeta = {
       "default": "1",
       "description": "The step of the size ladder its fields, buttons, labels and page numbers take: 1, or the dense 1/2 of an admin."
     },
+    "href": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The address of a page as a template, {page} for its number and {page-size} for the page size («?page={page}»). Set, the arrows are links with rel prev/next and a page typed in the field is opened by its address; a listener that cancels sf-pagination-change takes the move in place and the link is not followed. Empty: the arrows are buttons."
+    },
+    "page-param": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The name of the address's query parameter that holds the page («page»). Set, the page is read from the address when the element is placed and on Back and Forward (reported as sf-pagination-change), and a move writes it as a new history entry; page 1 is the address without it. Empty: the address is not touched."
+    },
+    "page-in-title": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "Add the page to the document title («Новости — Страница 3»); page 1 and a removed element leave the title as it was. One pagination of a document says it."
+    },
     "current": {
       "kind": "custom",
       "valueType": "integer",

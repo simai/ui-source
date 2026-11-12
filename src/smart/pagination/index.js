@@ -21,6 +21,9 @@ import ru from "./lang/ru.json";
 // SF.language.register keeps them until 2026-12-01, each old key noted once
 // in SF.deprecations (change journal option-pagination-word-keys-camel-to-kebab).
 const camelKey = (key) => String(key).replace(/-([a-z])/gu, (_, letter) => letter.toUpperCase());
+// Words added after the rename never had a camelCase key, so they have no
+// former key either (title-page, 1.4.0).
+const LATER_WORDS = new Set(["title-page"]);
 const PaginationElement = elementFromManifest(manifest, {
   base: SfBaseElement,
   lang: { en, ru },
@@ -29,7 +32,7 @@ const PaginationElement = elementFromManifest(manifest, {
   formerWords: {
     since: "2026-10-27",
     remove_after: "2026-12-01",
-    words: Object.fromEntries(Object.keys(en.runtime).map((key) => [key, camelKey(key)])),
+    words: Object.fromEntries(Object.keys(en.runtime).filter((key) => !LATER_WORDS.has(key)).map((key) => [key, camelKey(key)])),
   },
 });
 
@@ -214,6 +217,9 @@ class SfPagination extends PaginationElement {
         attribute: "actions-label",
         default: "",
       },
+      href: { default: "" },
+      pageParam: { attribute: "page-param", default: "" },
+      pageInTitle: { attribute: "page-in-title", type: Boolean, default: false },
     };
   }
 
@@ -453,6 +459,54 @@ class SfPagination extends PaginationElement {
     return this.getAttribute("clear-selection-label") || this.sfWord("clear-selection-label");
   }
 
+  // The address of a page, as a template: «?page={page}» or
+  // «/news/page/{page}/», with {page-size} for the page size (PG-10). Set,
+  // the arrows are links with rel prev/next and a page typed in the field is
+  // opened by its address; empty, they are buttons, as before 1.4.0.
+  get href() {
+    return (this.getAttribute("href") || "").trim();
+  }
+
+  // The name of the address's query parameter that holds the page («page»):
+  // the page is read from it when the element is placed and on Back and
+  // Forward, and written to it (a new history entry) when a person moves.
+  // Page 1 is the address without it. Empty: the address is not touched.
+  get pageParam() {
+    return (this.getAttribute("page-param") || "").trim();
+  }
+
+  // Whether the page number joins the document title («Новости — Страница
+  // 3»), as search results and catalogues do; page 1 keeps the title as it
+  // was. One pagination of a document says it, not every list on the page.
+  get pageInTitle() {
+    return this.getBooleanAttr("page-in-title", false);
+  }
+
+  // The address of one page from the template, or "" without a template or a
+  // page to name (the last page of an estimate).
+  pageHref(page) {
+    const template = this.href;
+    const number = Number.parseInt(String(page ?? ""), 10);
+    if (!template || !Number.isFinite(number) || number < 1) return "";
+
+    return template
+      .replace(/\{page\}/gu, String(number))
+      .replace(/\{page-size\}/gu, String(this.pageSize));
+  }
+
+  // A press on an arrow link. A plain press moves here and reports it; a host
+  // that takes the move in place (it loads the rows itself) cancels
+  // sf-pagination-change, and the link is not followed. A press with a
+  // modifier (a new tab, a new window) is the browser's alone.
+  followLink(event, page) {
+    if (event?.defaultPrevented) return this;
+    if (event && (event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) return this;
+    const outcome = this.goToPage(page, { link: true });
+    if (outcome.taken) event?.preventDefault?.();
+
+    return this;
+  }
+
   // The page being read. It is held inside the page count only when there is a
   // count: without one the count is one page, and that clamp pinned every page
   // to the first — the switcher showed a single place on page three, and
@@ -533,8 +587,18 @@ class SfPagination extends PaginationElement {
       return this;
     }
     const furthest = this.exactCount ? this.pageCount : parsed;
+    const page = Math.min(Math.max(parsed, 1), Math.max(1, furthest));
+    // With an address template the typed page is opened by its address, as
+    // the arrows are, unless the host takes the move in place.
+    if (this.href) {
+      const outcome = this.goToPage(page, { link: true });
+      if (outcome.outcome === "applied" && !outcome.taken) {
+        globalThis.location?.assign?.(this.pageHref(page));
+      }
+      return outcome;
+    }
 
-    return this.goToPage(Math.min(Math.max(parsed, 1), Math.max(1, furthest)));
+    return this.goToPage(page);
   }
 
   // The field grows with the number being typed. It is done to the element
@@ -608,7 +672,12 @@ class SfPagination extends PaginationElement {
       // The last page is a jump to a number: offered when the number is
       // exact, or when the host can count it first. Without a count at all
       // the button asks for one, as it always has.
-      canJumpToLast: this.exactCount || this.canCount || !this.countKnown,
+      // Without a count the button asks for one, so it is drawn only where it
+      // can be answered: a host that cannot count (a cursor list) has no last
+      // page, and the button that asked into nothing is gone (PG-11).
+      canJumpToLast: this.exactCount || this.canCount,
+      exactCount: this.exactCount,
+      href: this.href,
       canCount: this.canCount,
       counting: this.counting,
       showCountLabel: this.showCountLabel,
@@ -653,7 +722,11 @@ class SfPagination extends PaginationElement {
   // asked for (a number, an arrow, the field) or a host finishing what a
   // person started (the last page once the count arrives) is reported as
   // sf-pagination-change.
-  goToPage(page) {
+  // A second argument is the element's own: {link} for a press on an arrow
+  // link or a page typed with an address template (sf-pagination-change is
+  // then cancelable, and a cancel means "taken in place, do not follow"),
+  // {address} for a page read from the address (not written back to it).
+  goToPage(page, { link = false, address = false } = {}) {
     if (this.exactCount && this.total === 0) {
       return { outcome: "refused", reason: "empty" };
     }
@@ -677,15 +750,99 @@ class SfPagination extends PaginationElement {
 
     this.setState({ current: next });
 
-    this.sfEmit("change", {
+    const followed = this.sfEmit("change", {
       previous,
       current: next,
       total: this.total,
       "page-count": this.knownPageCount,
       "page-size": this.pageSize,
-    });
+    }, link ? { cancelable: true } : {});
+    const taken = link && followed === false;
 
-    return { outcome: "applied" };
+    // The address follows a move made here; a link that is followed writes
+    // its own address, and a page read from the address is already in it.
+    if (!address && (!link || taken)) this.writeAddress(next);
+    this.applyTitle();
+
+    return taken ? { outcome: "applied", taken: true } : { outcome: "applied" };
+  }
+
+  // The page the address names (page-param), or null when it names none.
+  addressPage() {
+    if (!this.pageParam || !globalThis.location) return null;
+    const value = new URLSearchParams(globalThis.location.search).get(this.pageParam);
+    if (value === null) return 1;
+    const page = Number.parseInt(value, 10);
+
+    return Number.isFinite(page) && page >= 1 ? page : null;
+  }
+
+  // The page written to the address as a new history entry, so Back returns
+  // to the page before; page 1 is the address without the parameter.
+  writeAddress(page) {
+    if (!this.pageParam || !globalThis.history?.pushState || !globalThis.location) return;
+    const url = new URL(globalThis.location.href);
+    if (page > 1) url.searchParams.set(this.pageParam, String(page));
+    else url.searchParams.delete(this.pageParam);
+    if (url.href === globalThis.location.href) return;
+    globalThis.history.pushState(globalThis.history.state, "", url.href);
+  }
+
+  // The address moved (placed on it, Back, Forward): the page follows it and
+  // is reported like any move, so the host loads it.
+  followAddress() {
+    const page = this.addressPage();
+    if (page !== null && page !== this.current) this.goToPage(page, { address: true });
+  }
+
+  // The document title with the page in it (page-in-title). The title the
+  // page had is kept and comes back on page 1 and when the element leaves.
+  applyTitle() {
+    if (!globalThis.document) return;
+    if (!this.pageInTitle) {
+      this.restoreTitle();
+      return;
+    }
+    if (this._sfTitle === undefined || (document.title !== this._sfTitleShown)) {
+      this._sfTitle = document.title;
+    }
+    const shown = this.current > 1
+      ? `${this._sfTitle} — ${this.sfWord("title-page", { vars: { page: this.current } })}`
+      : this._sfTitle;
+    this._sfTitleShown = shown;
+    if (document.title !== shown) document.title = shown;
+  }
+
+  restoreTitle() {
+    if (this._sfTitle === undefined || !globalThis.document) return;
+    if (document.title === this._sfTitleShown) document.title = this._sfTitle;
+    this._sfTitle = undefined;
+    this._sfTitleShown = undefined;
+  }
+
+  onConnected() {
+    super.onConnected?.();
+    if (this.pageParam && globalThis.addEventListener) {
+      globalThis.addEventListener("popstate", () => this.followAddress(), { signal: this.sfScope });
+      // After the page's own listeners are on: a host that appends the
+      // element and then listens still hears the page the address names.
+      queueMicrotask(() => {
+        if (this.isConnected) this.followAddress();
+      });
+    }
+  }
+
+  onDisconnected() {
+    this.restoreTitle();
+    super.onDisconnected?.();
+  }
+
+  // The title follows the page whoever set it: a person, the host, the address.
+  afterRender(changed) {
+    const result = super.afterRender(changed);
+    if (typeof changed !== "function") this.applyTitle();
+
+    return result;
   }
 
   // The last page needs a number, and without a count nobody has one yet. So
@@ -763,11 +920,13 @@ class SfPagination extends PaginationElement {
 
     const pageCount = Math.max(1, Math.ceil(this.total / parsed));
     const current = this.exactCount ? Math.min(this.current, pageCount) : this.current;
+    const moved = current !== this.current;
 
     this.setState({
       pageSize: parsed,
       current,
     });
+    if (moved) this.writeAddress(current);
 
     this.sfEmit("size-change", {
       previous,

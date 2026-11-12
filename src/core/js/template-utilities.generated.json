@@ -329,6 +329,7 @@
     "display/default",
     "flex-direction/default",
     "justify-content/default",
+    "pointer-events/default",
     "position/default"
   ],
   "cl-popover": [

@@ -60,7 +60,30 @@ function renderPageField(context, component) {
   `;
 }
 
-function renderDirection(context, {kind, icon, label, page}) {
+// An arrow. With an address template (href) it is a link to its page, so a
+// server-printed list pages without the script and a reader or a crawler
+// knows the neighbours: prev and next say rel (PG-10). The link wears the
+// icon button's own classes (the ghost, on-surface look sf-button-icon draws
+// here), because a link inside a button would be two controls in one.
+// Without href it is the button it always was.
+function renderDirection(context, {kind, icon, label, page, go}) {
+  const href = context.href ? context.component.pageHref(page) : "";
+  if (href) {
+    const size = context.size === "1/2" ? "1/2" : "1";
+    return html`
+      <li class="sf-pagination-item">
+        <a
+          class=${`sf-pagination-direction sf-pagination-direction--${kind} sf-pagination-link sf-icon-button sf-icon-button--size-${size} sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface flex items-cross-center`}
+          href=${href}
+          rel=${kind === "prev" || kind === "next" ? kind : nothing}
+          title=${label}
+          aria-label=${label}
+          @click=${(event) => context.component.followLink(event, page)}
+        ><sf-icon root-class="pointer-event-none" icon=${icon} weight="400" aria-hidden="true"></sf-icon></a>
+      </li>
+    `;
+  }
+
   return html`
     <li class="sf-pagination-item">
       <sf-button-icon
@@ -71,7 +94,7 @@ function renderDirection(context, {kind, icon, label, page}) {
         icon=${icon}
         title=${label}
         aria-label=${label}
-        @click=${page}
+        @click=${go}
       ></sf-button-icon>
     </li>
   `;
@@ -197,13 +220,15 @@ export function renderPaginationTemplate(context) {
                                 kind: "first",
                                 icon: "first_page",
                                 label: context.firstLabel,
-                                page: () => component.firstPage(),
+                                page: 1,
+                                go: () => component.firstPage(),
                               })}
                               ${renderDirection(context, {
                                 kind: "prev",
                                 icon: "keyboard_arrow_left",
                                 label: context.previousLabel,
-                                page: () => component.goToPage(context.current - 1),
+                                page: context.current - 1,
+                                go: () => component.goToPage(context.current - 1),
                               })}
                             `
                           : ""}
@@ -220,14 +245,18 @@ export function renderPaginationTemplate(context) {
                                 kind: "next",
                                 icon: "keyboard_arrow_right",
                                 label: context.nextLabel,
-                                page: () => component.goToPage(context.current + 1),
+                                page: context.current + 1,
+                                go: () => component.goToPage(context.current + 1),
                               })}
                               ${context.canJumpToLast
                                 ? renderDirection(context, {
                                     kind: "last",
                                     icon: "last_page",
                                     label: context.lastLabel,
-                                    page: () => component.lastPage(),
+                                    // A link only to a page that is known:
+                                    // an estimate asks for the count first.
+                                    page: context.exactCount ? context.pageCount : null,
+                                    go: () => component.lastPage(),
                                   })
                                 : ""}
                             `

@@ -77,12 +77,13 @@ test('the ends are buttons, hidden where they lead nowhere', async () => {
   assert.match(markup, /\$\{context\.hasPrev\s*\?\s*html`[\s\S]*?kind: "first",[\s\S]*?icon: "first_page",[\s\S]*?kind: "prev",/u);
   assert.match(markup, /\$\{context\.hasNext\s*\?\s*html`[\s\S]*?kind: "next",[\s\S]*?\$\{context\.canJumpToLast[\s\S]*?kind: "last",[\s\S]*?icon: "last_page",/u);
   // The last page is offered when there is a number to jump to, or a count to
-  // ask for first; an estimate the host cannot count offers none (gate 29).
-  assert.match(source, /canJumpToLast: this\.exactCount \|\| this\.canCount \|\| !this\.countKnown,/u);
+  // ask for first; an estimate the host cannot count offers none (gate 29),
+  // and neither does a host with no count it can ask for (PG-11, 1.4.0).
+  assert.match(source, /canJumpToLast: this\.exactCount \|\| this\.canCount,/u);
   // Each carries a tooltip and the same text as its accessible name.
   assert.match(
     markup,
-    /function renderDirection\(context, \{kind, icon, label, page\}\) \{[\s\S]*?title=\$\{label\}[\s\S]*?aria-label=\$\{label\}/u,
+    /function renderDirection\(context, \{kind, icon, label, page, go\}\) \{[\s\S]*?title=\$\{label\}[\s\S]*?aria-label=\$\{label\}/u,
   );
   // The gap that jumped into the middle of the hidden pages is gone with the
   // scheme it belonged to.
@@ -111,7 +112,7 @@ test('the field takes any page and is held to the pages there are', async () => 
   // person typing 99 into a view of twelve pages means the end.
   assert.match(
     source,
-    /goToTypedPage\(value\) \{[\s\S]*?return this\.goToPage\(Math\.min\(Math\.max\(parsed, 1\), Math\.max\(1, furthest\)\)\);/u,
+    /goToTypedPage\(value\) \{[\s\S]*?const page = Math\.min\(Math\.max\(parsed, 1\), Math\.max\(1, furthest\)\);[\s\S]*?return this\.goToPage\(page\);/u,
   );
   assert.match(source, /firstPage\(\) \{\s*return this\.goToPage\(1\);/u);
 });

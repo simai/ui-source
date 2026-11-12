@@ -2156,7 +2156,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/pager/smart.manifest.json",
-      "manifest_sha256": "93c59335441c94969e503e88d844d98b3462f1eba7490e57d5a95e1c32ce9fff",
+      "manifest_sha256": "f11fba921999aade9d423f31f6e7f6a7e5ecdd7d034a4efd5897ff1934225c4c",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2192,6 +2192,7 @@
           "smart.button-icon",
           "smart.checkbox",
           "smart.dropdown",
+          "smart.icon",
           "smart.input",
           "smart.list-item",
           "smart.spinner"
@@ -2206,7 +2207,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/pagination/smart.manifest.json",
-      "manifest_sha256": "32ae4f76d3af75c76d1d21e5d7443cd0f1e3e42e6f8367974529499087351dea",
+      "manifest_sha256": "38780568b37346ca31a6cf28bfb622ed2c01d6aac47bd776f9e97da00c236219",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

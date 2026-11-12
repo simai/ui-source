@@ -22,10 +22,14 @@ step is valid, loading the next record and keeping a course's progress.
 
 - `cards` (the default) — two cards, «‹ Назад / title» and «Далее › /
   title», under a documentation page. A missing side keeps its place: on
-  the first page the «Далее» card stays in the second column.
-- `row` — one line with the two titles at the two ends, each cut with an
-  ellipsis: under a post, a news item, a product.
-- `steps` — a wizard: Back, «Шаг 2 из 5 · title» over a segmented track,
+  the first page the «Далее» card stays in the second column. On a phone
+  (below the sm step) the cards stack, the previous one first.
+- `row` — the two titles at the two ends, each whole up to two lines: under
+  a post, a news item, a product. On a phone the sides stack, the next one
+  at the end of the line below.
+- `steps` — a wizard: Back, «Шаг 2 из 5 · title» over a segmented track
+  (the line wraps rather than cutting the title; steps moves to sf-wizard,
+  decision C97),
   and the primary Next, which says «Готово» on the last step. Pressing it
   there finishes the walk (`complete`).
 - `course` — lesson dots (done, current, ahead) with «Урок 3 из 5», and a
@@ -132,5 +136,7 @@ stands on, the buttons the rung's control height.
 
 cards and row are links from string settings, so their build snapshot is
 the markup a server prints, and it works and has its box before any code.
-steps, course and counter have their box from the settings: every text whose
-length is data is one line with an ellipsis.
+course and counter have their box from the settings: every text whose length
+is data is one line with an ellipsis. The row's titles (up to two lines) and
+the steps' place line wrap, so their box comes with the data the snapshot
+prints.

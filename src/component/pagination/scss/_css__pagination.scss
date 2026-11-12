@@ -347,37 +347,34 @@
   --sf-pagination-marked-text--font-weight: var(--sf-font-weight-medium);
 }
 
+/* An arrow that is a link (href) is drawn by the icon button's classes; a
+   link's own underline and colour are not its look. */
+.sf-pagination a.sf-pagination-link {
+  text-decoration: none;
+}
+
+/* A narrow screen keeps the page row a row that wraps (PG-05). It used to turn
+   it into a column -- the count alone, the arrows centred on a line of their
+   own, «На странице:» above a full-width select -- four lines, 217 to 225
+   pixels tall in a frame 390 pixels wide. Now the count and the arrows share the first line, the page
+   size keeps its label beside its select and takes the end of the next line:
+   two lines of controls. Show more, when the host offers it, still gets a
+   line of its own across the width. */
 @media (max-width: map.get(bp.$breakpoint-array, md)) {
-  .sf-pagination .sf-pagination-main {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .sf-pagination .sf-pagination-left {
-    justify-content: space-between;
-    inline-size: 100%;
-  }
-
-  .sf-pagination .sf-pagination-container {
-    justify-content: space-between;
-    inline-size: 100%;
-  }
-
-  /* A narrow screen used to drop the gap and the edge pages to keep the row of
-     numbers short. It cannot any more: the row is five places at most by
-     design, and the gap is now the only way into the pages it hides — dropping
-     it would make them unreachable on a phone. The label goes, because it
-     repeats what the row already is. */
+  /* The label repeats what the row already is. A narrow screen used to drop
+     the edge pages as well; it cannot, they are the way to the ends. */
   .sf-pagination .sf-pagination-pages-label {
     display: none;
   }
 
-  .sf-pagination .sf-pagination-list {
-    justify-content: center;
-    inline-size: 100%;
+  .sf-pagination .sf-pagination-count {
+    margin-inline-start: auto;
   }
 
-  .sf-pagination .sf-pagination-count,
+  .sf-pagination .sf-pagination-more {
+    flex-basis: 100%;
+  }
+
   .sf-pagination .sf-pagination-bottom {
     align-items: stretch;
     flex-direction: column;

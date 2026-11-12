@@ -63,10 +63,36 @@ the visible `nav`. `top-class`, `main-class` and `bottom-class` extend only thei
 named regions. Use Framework utilities and semantic tokens; page controls use
 the UI radius, while `sf-page-number--circle` is an explicit shape override.
 
-Page controls stay on one line. On narrow viewports a long range keeps the
-current page, adjacent pages and directional actions; secondary labels, edge
-pages and ellipsis indicators yield space. Directional icons mirror in RTL;
-numeric order does not.
+The page row wraps rather than stacks. On a narrow screen (below the md step)
+the «Страницы:» label is hidden, the count and the arrows share the first line
+and the page size, with its label beside it, holds the end of the next one:
+two lines of controls where 1.3 drew four. Show more, when offered, takes a
+line of its own. Directional icons mirror in RTL; numeric order does not.
+
+The last-page button is drawn only where the jump can be answered: the count
+is exact, or the host can count (`can-count`). A host without a count and
+without a way to ask for one (a cursor list) gets first, previous, the field
+and next.
+
+## Links, address and title
+
+Three settings, all off by default (1.4.0):
+
+- `href="?page={page}"` — the arrows are links to their pages (`{page}` is
+  the number, `{page-size}` the page size), previous and next with
+  `rel="prev"` / `rel="next"`; a page typed in the field is opened by its
+  address. A press is still reported as `sf-pagination-change`, cancelable for
+  a link: a listener that loads the rows itself calls `preventDefault()` and
+  the link is not followed. A press with a modifier (new tab) is the
+  browser's alone.
+- `page-param="page"` — the page lives in the address's query: it is read
+  when the element is placed and on Back / Forward (and reported as
+  `sf-pagination-change`, so the host loads it), and a move writes it as a new
+  history entry. Page 1 is the address without the parameter. The page size
+  is not written; it belongs to the list's own settings.
+- `page-in-title` — the page joins the document title («Новости — Страница
+  3»); page 1 and a removed element give the title back. One pagination of a
+  document says it.
 
 ## Runtime API
 

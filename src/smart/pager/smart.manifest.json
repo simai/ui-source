@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.pager",
-  "version": "1.2.2",
+  "version": "1.2.4",
   "title": "Pager",
   "summary": "Navigation to the neighbouring page or step by meaning: the previous and the next documentation page as two cards or one row of links, a wizard's Back and Next with its step track, a course's lesson dots and next lesson, or a record counter. Not list paging: sf-pagination keeps 1, 2, 3 ….",
   "kind": "smart",
@@ -365,7 +365,7 @@
       },
       {
         "path": "src/smart/pager/scss/_smart__pager.scss",
-        "sha256": "85700b289731eca0b3b7024bac316a437cef59048b696d13fce1b9d41564dcf8"
+        "sha256": "4311eebe3c6a2eaf480ff4cdb6aa516c470f8afcba4752561c55fdb3720c67c1"
       },
       {
         "path": "src/smart/pager/rule.js",
@@ -373,7 +373,7 @@
       },
       {
         "path": "src/smart/pager/docs.md",
-        "sha256": "fe73ed6dce30ff797dc47d34c31f208d298be667b7ed47cfbead8032b835b300"
+        "sha256": "4d712fc41cc8f596ead6361de4c3d4320969a755a4b7c0f822fbb115e09d5510"
       }
     ],
     "generated_runtime": []
