@@ -77,10 +77,12 @@ Markdown and HTML, the block's JSON for Editor.js. `hash` is
 `sha256:<64 hex>` of `raw` as UTF-8: `validate` checks its form, `normalize`
 writes a missing one and reports a mismatch as the notice
 `foreign_hash_mismatch`; `render` reports it as a diagnostic and draws nothing
-for that block. On a public page the type draws nothing at all; under
-`unknown: 'placeholder'` (an editor's canvas) it draws the inert
-`sf-composition-unknown` note with the source name, and for Editor.js the tool
-name, as escaped text. `raw` is never parsed into markup and never becomes
+for that block. A preserved block is kept, never dropped (owner decision C75,
+2026-11-11): under `unknown: 'placeholder'` (an editor's canvas) it is shown
+as the inert `sf-composition-unknown` plate with the source name, and for
+Editor.js the tool name, as escaped text; on a public page it draws nothing
+and `render` returns the notice `preserved_not_shown` (`node:<id>`, `source`)
+for each such block, so a site build can warn. `raw` is never parsed into markup and never becomes
 `content.html`.
 
 ## Conversions
@@ -107,10 +109,12 @@ returns `{value, losses: [{code, path, what}]}` and reports every loss
   `appearance`, `clear` and neutral, `danger` and `error`, the first heading
   and `data.title`); a block the model cannot hold exactly is kept as
   `content.foreign` with its source text, so a page read with no
-  `form_normalized` loss prints back to the same bytes. On the way out the
+  `form_normalized` loss prints back to the same bytes. The Markdown spelling
+  of that block is `:::preserved {source=markdown|editorjs|html}` around one
+  fenced block (C75); there is no `:::foreign` alias. On the way out the
   whole text is read back: a foreign Markdown block is written as it came only
   while it reads back as itself beside its neighbours, otherwise in the
-  `:::foreign {source=markdown}` carrier (reported); any other difference is
+  `:::preserved {source=markdown}` carrier (reported); any other difference is
   reported, never silent. A carriage return inside a foreign raw is reported,
   since Markdown line ends are LF.
 - `composition/editorjs.mjs`: `fromEditorJs(output)` and `toEditorJs(document)`;

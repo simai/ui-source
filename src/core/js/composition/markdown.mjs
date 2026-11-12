@@ -715,17 +715,20 @@ const DIRECTIVES = {
     if (blocks.length !== 1 || blocks[0].type !== 'content.code' || blocks[0].props?.lang !== 'html' || Object.keys(blocks[0].props).length !== 1) fail('html body');
     return node(id, 'content.html', { data: { markup: blocks[0].data.code } });
   },
-  foreign(attributes, body, context, id) {
+  // :::preserved {source=…} (C75, owner 2026-11-11): what the model cannot
+  // hold, kept byte for byte. No :::foreign alias: that spelling was in no
+  // released pair and no page.
+  preserved(attributes, body, context, id) {
     const get = takeAttributes(attributes, ['source']);
     const source = oneOf(get('source'), ['markdown', 'editorjs', 'html']);
-    if (!source) fail('foreign source');
+    if (!source) fail('preserved source');
     const blocks = parseBlocks(body, context);
-    if (blocks.length !== 1 || blocks[0].type !== 'content.code') fail('foreign body');
+    if (blocks.length !== 1 || blocks[0].type !== 'content.code') fail('preserved body');
     const carried = foreignNode(id, source, blocks[0].data.code);
     // Read from a carrier, it is printed back in one. A Markdown block that
     // reads as itself without one is written bare unless a neighbour needs it.
     context.carried?.add(carried);
-    if (source === 'markdown' && readsAsItself(carried.data.raw)) context.lose('form_normalized', 'a foreign Markdown carrier the block may not need');
+    if (source === 'markdown' && readsAsItself(carried.data.raw)) context.lose('form_normalized', 'a :::preserved carrier the Markdown block may not need');
     return carried;
   },
 };
@@ -854,11 +857,11 @@ function printNode(child, path, context) {
       if (raw.includes('\r') && !context.reading) lose('a carriage return in a foreign block: Markdown line ends are LF', `${path}.data.raw`);
       // A foreign Markdown block is written as it came only while it reads
       // back as itself, alone and beside its neighbours; otherwise, and for
-      // every other source, it goes in the :::foreign carrier, a fenced block
+      // every other source, it goes in the :::preserved carrier, a fenced block
       // nothing next to it can join.
       if (data.source === 'markdown' && !context.carried?.has(child) && readsAsItself(raw)) return raw;
-      if (!context.reading) lose(`foreign ${data.source} block, written in a carrier`);
-      return directive('foreign', [['source', data.source]], fence(raw, { editorjs: 'json', html: 'html', markdown: 'markdown' }[data.source] || ''), context, child);
+      if (!context.reading) lose(`foreign ${data.source} block, written in a :::preserved carrier`);
+      return directive('preserved', [['source', data.source]], fence(raw, { editorjs: 'json', html: 'html', markdown: 'markdown' }[data.source] || ''), context, child);
     }
     default:
       lose(`type ${child.type}`);

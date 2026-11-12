@@ -208,6 +208,25 @@ opens every stored Document in a session and then:
 
 `tests/composition-roundtrip.contract.test.mjs` runs it on this repository.
 
+## Switching SIMAI Editor over (handoff E2)
+
+The full switch list is in the dispatcher's handoff E2 (ui-control
+`control/evidence/2026-11-11-composition-operations/README.md`, "ui-editor
+switch list", with the r2 and r3 corrections). The behaviour the editor will
+meet and must answer for the person (keep the caret where it is and say why):
+
+- **Join and list exit refuse `would-lose` on a block with extensions,
+  the variant included.** Backspace-join (`joinBack`) and Enter on an
+  empty last list item (`splitBlock`) no longer take away a block that holds
+  extensions. That includes the variant extension
+  `simai.composition:variant` that ui-editor writes. Today ui-editor drops
+  them. The same refusal covers bindings, props, data other than `content`
+  and `level`, children, and Enter on the only empty item of a list with
+  extensions or bindings.
+- `place`: the caret is inside an island (choose `islandAround`), or the slot
+  is full or does not take a paragraph.
+- `required`: the join would leave a slot under its `min`.
+
 ## What stays in an editor
 
 These parts are not in the core:

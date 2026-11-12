@@ -1082,6 +1082,10 @@ export async function render(document, context = {}) {
     // which node); normalize refused the Document otherwise.
     if (!manifest) return unknownPlaceholder(node);
     if (node.type === 'content.foreign' && mismatched.has(node.id)) return '';
+    // C75 (owner 2026-11-11): a preserved block is kept, never dropped. An
+    // editor (unknown: 'placeholder') shows its plate; a public page draws
+    // nothing and the build is told, one notice per block.
+    if (node.type === 'content.foreign' && context.options?.unknown !== 'placeholder') notices.push(diagnostic('preserved_not_shown', `node:${node.id}`, `A preserved ${node.data.source} block is kept in the Document and not drawn on the page`, { source: node.data.source }));
     // A site block draws its type's current tree with the instance's values
     // and texts (composed.mjs); the instance stays one node of the Document.
     if (isComposed(manifest)) {

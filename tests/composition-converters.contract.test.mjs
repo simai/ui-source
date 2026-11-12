@@ -4,7 +4,7 @@ import test from 'node:test';
 
 import { fromEditorJs, toEditorJs } from '../src/core/js/composition/editorjs.mjs';
 import { normalizedTree, stable, withoutIds } from '../src/core/js/composition/foreign.mjs';
-import { validate } from '../src/core/js/composition/index.mjs';
+import { render, validate } from '../src/core/js/composition/index.mjs';
 import { fromMarkdown, toMarkdown } from '../src/core/js/composition/markdown.mjs';
 
 // The Markdown module and the Editor.js adapter (2026-11-10 composition
@@ -124,7 +124,7 @@ test('a foreign block goes back only to its own format; elsewhere in a carrier, 
   assert.ok(editorjs.losses.some(({ code }) => code === 'not_expressible'));
   assert.equal(stable((await fromEditorJs(editorjs.value, { id: 'markdown' })).value), stable(markdown.value), 'the carrier brings it back');
   const carried = await toMarkdown((await fromEditorJs({ blocks: [{ id: 'c1', type: 'checklist', data: { items: [] } }] })).value);
-  assert.equal(carried.value, ':::foreign {source=editorjs}\n```json\n{"id":"c1","type":"checklist","data":{"items":[]}}\n```\n:::\n');
+  assert.equal(carried.value, ':::preserved {source=editorjs}\n```json\n{"id":"c1","type":"checklist","data":{"items":[]}}\n```\n:::\n');
   const back = await fromMarkdown(carried.value);
   assert.deepEqual(back.value.root.slots.default[0].data.raw, '{"id":"c1","type":"checklist","data":{"items":[]}}');
   const wrong = structuredClone(markdown.value);
@@ -164,10 +164,10 @@ test('neighbour deletions around foreign Markdown blocks: read back as edited, o
       const out = await toMarkdown(edited);
       const back = await fromMarkdown(out.value);
       const same = stable(withoutIds(normalizedTree(back.value.root.slots?.default || []))) === stable(withoutIds(normalizedTree(edited.root.slots.default)));
-      if (out.losses.some(({ what }) => what.endsWith('written in a carrier'))) carried += 1;
+      if (out.losses.some(({ what }) => what.endsWith('written in a :::preserved carrier'))) carried += 1;
       if (same) { equal += 1; continue; }
       reported += 1;
-      assert.ok(out.losses.some(({ what }) => !silentKinds.has(what) && !what.endsWith('written in a carrier')), `a change without a loss:\n${page}\n-- deleted ${index} --\n${out.value}`);
+      assert.ok(out.losses.some(({ what }) => !silentKinds.has(what) && !what.endsWith('written in a :::preserved carrier')), `a change without a loss:\n${page}\n-- deleted ${index} --\n${out.value}`);
     }
   }
   assert.ok(equal > 300 && carried > 5, `${equal} equal, ${reported} reported, ${carried} carried`);
@@ -185,13 +185,64 @@ test('a foreign Markdown raw that is not one block of itself goes in the carrier
   assert.ok(out.losses.some(({ path, what }) => path === '$.root.slots.default[2].data.raw' && /carriage return/u.test(what)));
   // A carrier read from a page: a block that needs it is printed back in it;
   // one that does not is written bare, and the read said form_normalized.
-  const needed = ':::foreign {source=markdown}\n```markdown\na\n\nb\n```\n:::\n';
+  const needed = ':::preserved {source=markdown}\n```markdown\na\n\nb\n```\n:::\n';
   const kept = await fromMarkdown(needed);
   assert.deepEqual(kept.losses, []);
   assert.equal((await toMarkdown(kept.value)).value, needed);
-  const carrier = ':::foreign {source=markdown}\n```markdown\n- one ![img](/i.png)\n- two\n```\n:::\n';
+  const carrier = ':::preserved {source=markdown}\n```markdown\n- one ![img](/i.png)\n- two\n```\n:::\n';
   const again = await fromMarkdown(carrier);
   assert.equal(again.value.root.slots.default[0].data.raw, '- one ![img](/i.png)\n- two');
   assert.ok(again.losses.some(({ code }) => code === 'form_normalized'));
   assert.equal((await toMarkdown(again.value)).value, '- one ![img](/i.png)\n- two\n');
+});
+
+test('C75: unknown content survives Markdown -> model -> Markdown byte-equal as :::preserved, and is shown, not hidden', async () => {
+  // Owner decision C75 (2026-11-11): what Composition cannot express is kept,
+  // never dropped; the wrapper is :::preserved {source=...}; an editor shows a
+  // plate, a site build a warning.
+  const pages = [
+    '# Title\n\nText.\n\n- one ![img](/i.png)\n- two\n\nMiddle.\n\n<details><summary>x</summary>y</details>\n\nLast.\n',
+    'Before.\n\n:::preserved {source=editorjs}\n```json\n{"id":"c1","type":"checklist","data":{"items":[]}}\n```\n:::\n\nAfter.\n',
+    ':::preserved {source=html}\n```html\n<p>a</p>\n<p>b</p>\n```\n:::\n',
+    ':::preserved {source=markdown}\n```markdown\na\n\nb\n```\n:::\n',
+  ];
+  for (const page of pages) {
+    const read = await fromMarkdown(page);
+    const preserved = read.value.root.slots.default.filter(({ type }) => type === 'content.foreign');
+    assert.ok(preserved.length > 0, page);
+    assert.equal(validate(read.value).valid, true, page);
+    const written = await toMarkdown(read.value);
+    assert.equal(written.value, page, 'byte-equal');
+    // Through the model again: the same Document, the same bytes.
+    assert.equal((await toMarkdown((await fromMarkdown(written.value)).value)).value, page);
+    // Shown: the editor draws one plate per preserved block; a public page
+    // draws nothing for it and tells the build, one notice per block.
+    const editor = await render(read.value, { options: { unknown: 'placeholder' } });
+    assert.equal(editor.html.match(/class="sf-composition-unknown" role="note" data-sf-composition-type="content.foreign"/gu)?.length, preserved.length, page);
+    assert.equal((editor.notices || []).filter(({ code }) => code === 'preserved_not_shown').length, 0);
+    const site = await render(read.value);
+    assert.equal(site.html.includes('sf-composition-unknown'), false);
+    assert.deepEqual((site.notices || []).filter(({ code }) => code === 'preserved_not_shown').map(({ path }) => path), preserved.map(({ id }) => `node:${id}`));
+    assert.deepEqual(site.diagnostics, []);
+  }
+  // No :::foreign alias (the spelling was in no released pair and no ui-doc
+  // page): it is not a directive, so the reader keeps it whole as preserved
+  // Markdown and writes it back byte-equal.
+  const old = ':::foreign {source=markdown}\n```markdown\nraw\n```\n:::\n';
+  const kept = await fromMarkdown(old);
+  assert.deepEqual(kept.value.root.slots.default.map(({ type, data }) => [type, data.source, data.raw]), [['content.foreign', 'markdown', old.slice(0, -1)]]);
+  assert.equal((await toMarkdown(kept.value)).value, old);
+});
+
+test('Editor.js data keys are an allow-list, not an order: the same keys in another order import alike, an extra key is carried', async () => {
+  const types = async (block) => (await fromEditorJs({ blocks: [block] })).value.root.slots.default.map((node) => [node.type, node.data]);
+  const known = await types({ id: 'h1', type: 'header', data: { text: 'A', level: 2 } });
+  assert.deepEqual(await types({ id: 'h1', type: 'header', data: { level: 2, text: 'A' } }), known, 'key order does not count');
+  assert.deepEqual(await types({ id: 'h1', data: { level: 2, text: 'A' }, type: 'header' }), known, 'block key order does not count');
+  assert.equal(known[0][0], 'content.heading');
+  // An optional key may be absent; a key the tool does not define is carried, not dropped.
+  assert.equal((await types({ id: 'q1', type: 'quote', data: { text: 'Q' } }))[0][0], 'content.quote');
+  const extra = await types({ id: 'h1', type: 'header', data: { level: 2, text: 'A', x: 1 } });
+  assert.equal(extra[0][0], 'content.foreign');
+  assert.match(extra[0][1].raw, /"x":1/u);
 });

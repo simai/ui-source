@@ -44,7 +44,7 @@
     }
   },
   "expect": {
-    "markdown": ":::foreign {source=markdown}\n```markdown\na\n\nb\n```\n:::\n\n:::foreign {source=markdown}\n```markdown\nplain\n```\n:::\n\n:::foreign {source=html}\n```html\n<p>a</p>\r\n<p>b</p>\n```\n:::\n",
+    "markdown": ":::preserved {source=markdown}\n```markdown\na\n\nb\n```\n:::\n\n:::preserved {source=markdown}\n```markdown\nplain\n```\n:::\n\n:::preserved {source=html}\n```html\n<p>a</p>\r\n<p>b</p>\n```\n:::\n",
     "losses": [
       {
         "code": "not_expressible",
@@ -54,12 +54,12 @@
       {
         "code": "not_expressible",
         "path": "$.root.slots.default[0]",
-        "what": "foreign markdown block, written in a carrier"
+        "what": "foreign markdown block, written in a :::preserved carrier"
       },
       {
         "code": "not_expressible",
         "path": "$.root.slots.default[1]",
-        "what": "foreign markdown block, written in a carrier"
+        "what": "foreign markdown block, written in a :::preserved carrier"
       },
       {
         "code": "not_expressible",
@@ -69,7 +69,7 @@
       {
         "code": "not_expressible",
         "path": "$.root.slots.default[2]",
-        "what": "foreign html block, written in a carrier"
+        "what": "foreign html block, written in a :::preserved carrier"
       }
     ]
   }

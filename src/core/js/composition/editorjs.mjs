@@ -28,7 +28,10 @@ class Unsupported extends Error {}
 const fail = (what) => { throw new Unsupported(what); };
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,119}$/u;
 const isObject = (value) => Boolean(value) && typeof value === 'object' && !Array.isArray(value);
-const sameKeys = (value, keys) => isObject(value) && Object.keys(value).every((key) => keys.includes(key));
+// An allow-list, not an equality: every key the block data carries is one of
+// the keys its Editor.js tool defines (any order; an optional key may be
+// absent). Nothing here merges two values.
+const onlyKeys = (value, keys) => isObject(value) && Object.keys(value).every((key) => keys.includes(key));
 
 // ---------------------------------------------------------------------------
 // Inline HTML
@@ -134,15 +137,15 @@ function readBlock(block, id, path, losses) {
   const inline = (html, at) => readInline(html, `${path}.data.${at}`, losses);
   switch (block.type) {
     case 'paragraph':
-      if (!sameKeys(data, ['text'])) fail('paragraph data');
+      if (!onlyKeys(data, ['text'])) fail('paragraph data');
       return { id, type: 'content.paragraph', data: { content: inline(data.text, 'text') } };
     case 'header':
-      if (!sameKeys(data, ['text', 'level']) || !Number.isInteger(data.level) || data.level < 1 || data.level > 6) fail('header data');
+      if (!onlyKeys(data, ['text', 'level']) || !Number.isInteger(data.level) || data.level < 1 || data.level > 6) fail('header data');
       return { id, type: 'content.heading', data: { level: data.level, content: inline(data.text, 'text') } };
     case 'list': {
-      if (!sameKeys(data, ['style', 'meta', 'items']) || !['ordered', 'unordered'].includes(data.style) || !Array.isArray(data.items)) fail('list data');
+      if (!onlyKeys(data, ['style', 'meta', 'items']) || !['ordered', 'unordered'].includes(data.style) || !Array.isArray(data.items)) fail('list data');
       const ordered = data.style === 'ordered';
-      if (ordered ? !sameKeys(data.meta ?? {}, ['start', 'counterType']) || (data.meta?.counterType ?? 'numeric') !== 'numeric' : !sameKeys(data.meta ?? {}, [])) fail('list meta');
+      if (ordered ? !onlyKeys(data.meta ?? {}, ['start', 'counterType']) || (data.meta?.counterType ?? 'numeric') !== 'numeric' : !onlyKeys(data.meta ?? {}, [])) fail('list meta');
       const start = ordered ? data.meta?.start ?? 1 : 1;
       if (!Number.isInteger(start) || start < 1) fail('list start');
       const list = (items, style, first) => ({
@@ -152,7 +155,7 @@ function readBlock(block, id, path, losses) {
         slots: { items: items.map((item, index) => {
           // List 1.x keeps items as strings; 2.x as {content, meta, items}.
           const entry = typeof item === 'string' ? { content: item, meta: {}, items: [] } : item;
-          if (!sameKeys(entry, ['content', 'meta', 'items']) || !sameKeys(entry.meta ?? {}, []) || !Array.isArray(entry.items ?? [])) fail('list item');
+          if (!onlyKeys(entry, ['content', 'meta', 'items']) || !onlyKeys(entry.meta ?? {}, []) || !Array.isArray(entry.items ?? [])) fail('list item');
           const node = { id: next(), type: 'content.list-item', data: { content: inline(entry.content, `items[${index}].content`) } };
           if (entry.items?.length) node.slots = { default: [list(entry.items, style, 1)] };
           return node;
@@ -163,16 +166,16 @@ function readBlock(block, id, path, losses) {
       return result;
     }
     case 'quote':
-      if (!sameKeys(data, ['text', 'caption', 'alignment']) || (data.caption ?? '') !== '' || (data.alignment ?? 'left') !== 'left') fail('quote data');
+      if (!onlyKeys(data, ['text', 'caption', 'alignment']) || (data.caption ?? '') !== '' || (data.alignment ?? 'left') !== 'left') fail('quote data');
       return { id, type: 'content.quote', slots: { default: [{ id: next(), type: 'content.paragraph', data: { content: inline(data.text, 'text') } }] } };
     case 'code':
-      if (!sameKeys(data, ['code']) || typeof data.code !== 'string') fail('code data');
+      if (!onlyKeys(data, ['code']) || typeof data.code !== 'string') fail('code data');
       return { id, type: 'content.code', data: { code: data.code } };
     case 'delimiter':
-      if (!sameKeys(data, [])) fail('delimiter data');
+      if (!onlyKeys(data, [])) fail('delimiter data');
       return { id, type: 'content.divider' };
     case 'table': {
-      if (!sameKeys(data, ['withHeadings', 'stretched', 'content']) || data.stretched === true || !Array.isArray(data.content) || !data.content.length) fail('table data');
+      if (!onlyKeys(data, ['withHeadings', 'stretched', 'content']) || data.stretched === true || !Array.isArray(data.content) || !data.content.length) fail('table data');
       return {
         id,
         type: 'content.table',
@@ -181,18 +184,18 @@ function readBlock(block, id, path, losses) {
       };
     }
     case 'image': {
-      if (!sameKeys(data, ['file', 'caption', 'withBorder', 'stretched', 'withBackground']) || !sameKeys(data.file, ['url']) || typeof data.file.url !== 'string' || !safeHref(data.file.url)) fail('image data');
+      if (!onlyKeys(data, ['file', 'caption', 'withBorder', 'stretched', 'withBackground']) || !onlyKeys(data.file, ['url']) || typeof data.file.url !== 'string' || !safeHref(data.file.url)) fail('image data');
       if (data.withBorder === true || data.stretched === true || data.withBackground === true) fail('image look');
       const caption = data.caption ? inline(data.caption, 'caption') : null;
       return { id, type: 'content.figure', data: { src: data.file.url, alt: '', ...(caption?.length ? { caption } : {}) } };
     }
     case 'warning': {
-      if (!sameKeys(data, ['title', 'message'])) fail('warning data');
+      if (!onlyKeys(data, ['title', 'message'])) fail('warning data');
       const title = inline(data.title, 'title');
       return { id, type: 'content.alert', props: { status: 'warning' }, ...(title.length ? { data: { title } } : {}), slots: { default: [{ id: next(), type: 'content.paragraph', data: { content: inline(data.message, 'message') } }] } };
     }
     case 'raw':
-      if (!sameKeys(data, ['html']) || typeof data.html !== 'string') fail('raw data');
+      if (!onlyKeys(data, ['html']) || typeof data.html !== 'string') fail('raw data');
       return { id, type: 'content.html', data: { markup: data.html } };
     default:
       if (/^sf-[a-z][a-z0-9-]*$/u.test(block.type) && data.type === `content.${block.type.slice(3)}`) return { id, ...data };
@@ -253,7 +256,7 @@ export async function fromEditorJs(output, { id = 'editorjs' } = {}) {
     seen.add(nodeId);
     const mark = losses.length;
     try {
-      if (!sameKeys(block, ['id', 'type', 'data'])) fail('block keys');
+      if (!onlyKeys(block, ['id', 'type', 'data'])) fail('block keys');
       const node = readBlock(block, nodeId, path, losses);
       if (losses.length > mark) return node;
       // The block must come back as it came, or it is kept as it is.
