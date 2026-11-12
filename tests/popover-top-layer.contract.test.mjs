@@ -28,8 +28,12 @@ test('the floating-surface engine: CSS anchor positioning in the top layer, SF.P
   assert.match(source, /getAttribute\(ENGINE_ATTRIBUTE\) === 'script'\) return 'script';/u);
   assert.match(source, /if \(options\.fitHeight \|\| options\.matchWidth \|\| options\.alignmentOffset\) return 'script';/u);
   assert.match(source, /!inTopLayer\(floating\)\) return 'script';/u);
-  // No CSS area keeps it inside the window: SF.Position shifts it.
+  // No CSS area keeps it inside the window, or the browser slid it back over
+  // its own trigger (390, start/end, S1 acceptance D2): SF.Position shifts it.
   assert.match(source, /releaseAnchorName\(\);\s*startScript\(\);/u);
+  assert.match(source, /const covers = Math\.min\(panel\.right, box\.right\) - Math\.max\(panel\.left, box\.left\) > 0\.5\s*&& Math\.min\(panel\.bottom, box\.bottom\) - Math\.max\(panel\.top, box\.top\) > 0\.5;/u);
+  assert.match(source, /if \(\(out \|\| covers\) && visible\) \{/u);
+  // Behaviour from source, both engines: tests/browser/float-anchor-nested.browser.mjs.
   assert.match(source, /script = Position\.anchor\(reference, floating, \{/u);
   // Flip tactics carry the gap (a margin) and the window padding (insets) to the other side.
   assert.match(source, /'flip-inline, flip-block, flip-block flip-inline'/u);

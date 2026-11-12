@@ -272,8 +272,17 @@ export function anchorFloating(reference, floating, options = {}) {
     const panel = floating.getBoundingClientRect();
     const out = panel.left < -0.5 || panel.top < -0.5 || panel.right > width + 0.5 || panel.bottom > height + 0.5;
     const visible = box.bottom > 0 && box.top < height && box.right > 0 && box.left < width;
-    if (out && visible) {
-      // No area of the four keeps it in the window: Floating UI shifts it.
+    // A panel wider than the room on either side of its anchor is slid back
+    // into the window by the browser -- over its own trigger, the side read
+    // as the wrong one (a 180 px start/end panel at a 120 px trigger in a 390
+    // window covered 45 px of it and said inline-end for start: C59 S1
+    // acceptance D2). CSS has no size middleware; the script keeps it beside
+    // the trigger, narrowed to the room there.
+    const covers = Math.min(panel.right, box.right) - Math.max(panel.left, box.left) > 0.5
+      && Math.min(panel.bottom, box.bottom) - Math.max(panel.top, box.top) > 0.5;
+    if ((out || covers) && visible) {
+      // No area of the four keeps it in the window clear of its trigger:
+      // Floating UI shifts and narrows it.
       cleanup?.();
       cleanup = null;
       restore(CSS_WRITTEN);

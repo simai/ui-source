@@ -104,9 +104,15 @@ function inTopLayer(element) {
 // the host's variables, theme, lang, dir and density by plain inheritance --
 // what a body portal has to carry by hand (carryLayerOrigin). A surface the
 // component already lifted (sf-menu-context, sf-help-mark, sf-profile-picker,
-// sf-input-lookup, dropdown lists) or that stands in a modal dialog's top
-// layer is left as it is; a browser without popovers keeps the fixed panel in
-// place, placed against its containing block.
+// sf-input-lookup, dropdown lists) is left as it is; a browser without
+// popovers keeps the fixed panel in place, placed against its containing block.
+//
+// A surface inside another top-layer surface -- a tooltip, a dropdown or a
+// nested popover in an open sf-popover, a modal dialog -- is lifted too, and
+// so stands above its parent. Left inside it, it was a fixed box in the
+// parent's stacking context, painted under the parent's later content: a
+// tooltip in an open popover hid under the next field's label (C59 S1
+// acceptance D1). Shown after its parent, it is drawn over it.
 //
 // The user-agent popover rule (inset 0, margin auto, a border, padding, Canvas
 // and CanvasText, overflow auto) is taken back by a rule of no specificity in
@@ -138,9 +144,7 @@ function adoptLiftedRule(floating) {
 
 function liftable(floating) {
   if (typeof floating.showPopover !== 'function' || !floating.isConnected) return false;
-  if (floating.hasAttribute('popover') || inTopLayer(floating)) return false;
-  for (let node = floating.parentElement; node; node = node.parentElement) if (inTopLayer(node)) return false;
-  return true;
+  return !floating.hasAttribute('popover') && !inTopLayer(floating);
 }
 
 /** Lifts a floating surface into the top layer; returns a function that puts it back, or null. */
@@ -199,6 +203,16 @@ export function anchorReference(element) {
       return boxesOf(element)[0] || element.parentElement || element;
     },
   };
+}
+
+// data-sf-density on the root or on a region restates the space tokens; one
+// attribute filter, so nothing else on the page wakes it.
+function watchDensity(doc, run) {
+  const view = doc?.defaultView;
+  if (typeof view?.MutationObserver !== 'function') return () => {};
+  const observer = new view.MutationObserver(() => run());
+  observer.observe(doc.documentElement, {attributes: true, subtree: true, attributeFilter: ['data-sf-density']});
+  return () => observer.disconnect();
 }
 
 /**
@@ -264,11 +278,21 @@ export function anchor(reference, floating, options = {}) {
   //   content does not change by scrolling; when it does, its size changes
   //   and that is a full fit), and max-height is not reset to read it.
   // - Inline styles and data-sf-side are written only when they change.
+  // A density change (data-sf-density on the root or a region) restates
+  // the space tokens without resizing the window, and the gap stayed the old
+  // one until the panel was opened again (C59 S1 acceptance M1). The key also
+  // carries the computed values of the tokens the lengths are written with: a
+  // read of a clean style, no probe and no restyle.
+  const tokens = [...new Set([settings.offset, settings.padding, settings.alignmentOffset]
+    .filter((value) => typeof value === 'string')
+    .flatMap((value) => [...value.matchAll(/var\(\s*(--(?:\\.|[^\s,)\\])+)/gu)].map((match) => match[1].replace(/\\(.)/gu, '$1'))))];
   let lengths = null;
   const lengthsNow = () => {
-    const key = `${window.innerWidth}x${window.innerHeight}`;
+    const context = reference.parentElement;
+    const values = tokens.length && context?.isConnected
+      ? tokens.map((name) => getComputedStyle(context).getPropertyValue(name).trim()).join('|') : '';
+    const key = `${window.innerWidth}x${window.innerHeight}|${values}`;
     if (!lengths || lengths.key !== key) {
-      const context = reference.parentElement;
       lengths = {
         key,
         gap: resolveLength(settings.offset, context),
@@ -411,6 +435,8 @@ export function anchor(reference, floating, options = {}) {
     autoUpdate(measured, floating, controller.update, {ancestorScroll: false, layoutShift: false}),
     // Scroll of any overflow ancestor and a moved reference: a light fit.
     autoUpdate(measured, floating, follow, {ancestorResize: false, elementResize: false}),
+    // A density switch that moves no box still restates the gap: a full fit.
+    ...(tokens.length ? [watchDensity(floating.ownerDocument, controller.update)] : []),
   ] : [];
   armed = true;
   controller.stop = () => {
