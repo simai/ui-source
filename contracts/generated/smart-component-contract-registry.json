@@ -2785,13 +2785,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/slider-range/smart.manifest.json",
-      "manifest_sha256": "65d87984de033f099b4ec6223e62b5176a5afe8ea44da3cdeb2921ff2115d117",
+      "manifest_sha256": "83ac9066eb80099d4d4824f487eaa8571717b621ea678a00e662fa653f15fcf8",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A slider for one number or a range of two on a track: drag, click or keys move a handle by step, the fill shows the chosen part, and the value can be shown as text or a tooltip on each handle.",
+      "summary": "A slider for one number or a range of two on a track, as a form field: a visible name above, drag, click or keys move a handle by step (PageUp/PageDown by ten), the value shown at the end of the name line, in a bubble while dragging, or in a from/to field beside the track; ticks and a scale on request; sizes 1/2, 1, 2; read-only and disabled.",
       "tags": [
         "slider-range"
       ],

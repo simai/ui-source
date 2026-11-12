@@ -680,7 +680,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/slider-range/index.js",
-        "sha256": "f0ef6cbe565786d1c499f71fdbd08479dbd9f6af5d6a1546184f8bab026e56b5"
+        "sha256": "f474093784dd09c975c745d936b8dbf81370e8b23dbe1b64ec9e9092b3035061"
       }
     ],
     "generated_runtime": [
