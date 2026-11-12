@@ -230,7 +230,11 @@ class SfListTimeline extends ListTimelineElement {
       ...item,
       iso: item.at ? item.at.toISOString() : '',
       tone: TONES[item.status] ?? 'neutral',
-      statusWord: item.state ? this.sfWord(`state-${item.state}`) : item.status === 'neutral' ? '' : this.sfWord(`status-${item.status}`),
+      // A step says its state, and its status when it has a tone (C61 round 4:
+      // the status is drawn by colour only, so the words carry it too).
+      statusWord: item.state
+        ? [this.sfWord(`state-${item.state}`), TONES[item.status] ? this.sfWord(`status-${item.status}`).toLowerCase() : ''].filter(Boolean).join(', ')
+        : item.status === 'neutral' ? '' : this.sfWord(`status-${item.status}`),
     });
     const runs = groupByDay(list, {group, now}).map((run, at) => ({
       id: `${this._uid}-day-${at}`,
