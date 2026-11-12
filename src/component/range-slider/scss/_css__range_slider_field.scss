@@ -1,0 +1,54 @@
+@layer sf.components {
+// The field around a Smart slider (C78): the visible name above, as every
+// field's label (sf-input-quantity's: the variant ink, regular, one text step
+// below the control, a quarter space under it), the value at the end of that
+// line when value-display="text", then the track line.
+.sf-range-slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-range-slider-group--gap, var(--sf-space-1\/4));
+  min-inline-size: 0;
+}
+
+.sf-range-slider-head {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--sf-space-1);
+  justify-content: space-between;
+  min-inline-size: 0;
+}
+
+.sf-range-slider-name {
+  color: var(--sf-range-slider-name--color, var(--sf-on-surface-variant));
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-range-slider--label-size, var(--sf-text-size-1\/2));
+  font-weight: var(--sf-font-weight-regular);
+  line-height: var(--sf-range-slider--label-height, var(--sf-text-height-1\/2));
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.sf-range-slider-output {
+  color: var(--sf-range-slider-value-color, var(--sf-on-surface));
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-range-slider--label-size, var(--sf-text-size-1\/2));
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--sf-font-weight-regular);
+  line-height: var(--sf-range-slider--label-height, var(--sf-text-height-1\/2));
+  margin-inline-start: auto;
+  white-space: nowrap;
+}
+
+.sf-range-slider-line {
+  align-items: center;
+  display: flex;
+  gap: var(--sf-space-1);
+  min-inline-size: 0;
+}
+
+.sf-range-slider-line > .sf-range-slider {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+}

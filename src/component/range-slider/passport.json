@@ -14,10 +14,11 @@
     "src/component/range-slider/rule.js",
     "src/component/range-slider/scss/_css__range_slider.scss",
     "src/component/range-slider/scss/_css__range_slider_custom.scss",
+    "src/component/range-slider/scss/_css__range_slider_field.scss",
     "src/component/range-slider/scss/_css__thumbs.scss",
     "src/component/range-slider/scss/index.scss"
   ],
-  "content_sha256": "2f75ed8d022d1cd9417707a4bf0ee8a2ff353452590aaab96218d1228fb6b174",
+  "content_sha256": "f6481e1b485db12adc83a97a489ecfb2dee5d57130ed0482fe957911c9347e19",
   "dependencies": [
     {
       "id": "core.runtime",

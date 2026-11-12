@@ -156,6 +156,23 @@ function formatDecimal(root, numeric, decimals) {
   }
 }
 
+// The number alone, in the slider's language and digits: the joined value of a
+// range and the from/to field write each number this way, the unit once.
+function formatNumberOnly(root, value) {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? formatDecimal(root, numeric, getValueDecimals(root)) : String(value ?? '');
+}
+
+// One value with its prefix and unit; a range as «от 5 000 – 20 000 ₽»: the
+// prefix before the first number, the unit after the last (C78 name line).
+function formatRangeText(root, values = []) {
+  const list = (Array.isArray(values) ? values : [values]).map(Number);
+  if (list.length < 2) return formatValue(root, list[0]);
+  const prefix = unitText(root.getAttribute('data-prefix'), 'prefix');
+  const suffix = unitText(root.getAttribute('data-suffix'), 'suffix');
+  return `${prefix}${formatNumberOnly(root, list[0])} – ${formatNumberOnly(root, list[1])}${suffix}`;
+}
+
 function createVisualNode(mode = 'none', position = 'top') {
   const visual = document.createElement('div');
   visual.classList.add(
@@ -255,6 +272,13 @@ function bindSliderAccessibility(root, owner = root) {
         next[name] = value;
       }
     });
+    // The visible name of the field (C78: label above the slider, as every
+    // field) names a handle nothing else names.
+    const visibleName = root.getAttribute('data-labelledby');
+    if (visibleName && !handle.hasAttribute('aria-label') && !handle.hasAttribute('aria-labelledby')) {
+      handle.setAttribute('aria-labelledby', visibleName);
+      next['aria-labelledby'] = visibleName;
+    }
     if (isDisabledRoot(root)) {
       handle.setAttribute('aria-disabled', 'true');
       next['aria-disabled'] = 'true';
@@ -266,6 +290,7 @@ function bindSliderAccessibility(root, owner = root) {
   const ownerFilter = owner === root
     ? [...accessibleAttributes, ...handleLabelAttributes]
     : [...accessibleAttributes, 'lower-label', 'upper-label'];
+  ownerFilter.push('data-labelledby');
   if (owner === root) {
     state.observer.observe(root, {
       attributes: true,
@@ -275,7 +300,7 @@ function bindSliderAccessibility(root, owner = root) {
     state.observer.observe(owner, { attributes: true, attributeFilter: ownerFilter });
     state.observer.observe(root, {
       attributes: true,
-      attributeFilter: [...handleLabelAttributes, 'disabled', 'class'],
+      attributeFilter: [...handleLabelAttributes, 'data-labelledby', 'disabled', 'class'],
     });
   }
   root[SLIDER_ACCESSIBILITY_STATE] = state;
@@ -651,6 +676,8 @@ rangeSliderObserver.observe(document.documentElement, {
 });
 
 export {
+  formatNumberOnly as formatRangeSliderNumber,
+  formatRangeText as formatRangeSliderText,
   bindRangeSlider,
   getRangeSliderValue,
   initExistingRangeSliders,

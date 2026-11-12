@@ -45,6 +45,11 @@
       "default": true
     },
     "label": {
+      "type": "string",
+      "default": "",
+      "summary": "The visible name above the slider, as every field's label (owner decision C78); it names the handles unless aria-label, aria-labelledby or lower-label/upper-label do. Until 2027-01-01 the words none, text and tooltip here still mean value-display."
+    },
+    "value-display": {
       "type": "enum",
       "values": [
         "none",
@@ -52,7 +57,7 @@
         "tooltip"
       ],
       "default": "none",
-      "summary": "How each handle shows its value: not at all, as text beside it, or as a tooltip."
+      "summary": "How the value is shown: not at all (each handle still reads it out), as text at the end of the name line, or in a bubble over the handle while it is dragged or keyboard-focused (C78). Formerly label, read until 2027-01-01."
     },
     "prefix-text": {
       "type": "string",
@@ -90,11 +95,13 @@
     },
     "tooltip-position": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Where the value bubble stands while a handle is dragged: top (default) or bottom."
     },
     "text-position": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "No effect since 1.4.0: value-display=\"text\" writes the value at the end of the name line. Kept so old markup stays valid."
     },
     "label-position": {
       "type": "string",
@@ -273,6 +280,18 @@
         "since-version": "1.4.0",
         "section": "§3.1, change journal attribute-slider-range-c78",
         "note": "the old attribute writes precision, the name sf-input-quantity gives the same setting (S1); the class component still reads data-decimals until the date"
+      },
+      {
+        "from": "label=\"none|text|tooltip\"",
+        "to": "value-display",
+        "kind": "attribute",
+        "mode": "manifest-only",
+        "shim": "none",
+        "since": "2026-11-12",
+        "remove_after": "2027-01-01",
+        "since-version": "1.4.0",
+        "section": "§4.2, change journal attribute-slider-range-c78",
+        "note": "label is the visible name now (C78); its three former words still set value-display, read by the element itself until the date (no shim: the attribute keeps its name, only those values move)"
       }
     ]
   },

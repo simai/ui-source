@@ -1,6 +1,7 @@
 import SfBaseElement, { toAttributeName } from '../../core/js/smart-base';
 import {
   bindRangeSlider,
+  formatRangeSliderText,
   getRangeSliderValue,
   setRangeSliderValue,
   unbindRangeSlider,
@@ -8,6 +9,8 @@ import {
 import { renderRangeSliderTemplate } from './js/templates/default';
 import { setLoaderDragState } from '../helpers/loaderDragState';
 import { elementFromManifest } from '../../core/js/element-manifest';
+import { noteDeprecated } from '../../core/js/deprecations.js';
+import { instancePath, partId } from '../../core/js/instance-path.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -45,6 +48,18 @@ function getValueHandleCount(value) {
   }
 
   return 1;
+}
+
+// label was how each handle showed its value (none | text | tooltip) until
+// 1.4.0; it is the visible name of the field now, as on every field (owner
+// decision C78), and that setting is value-display. Those three words in label
+// keep their old meaning until 2027-01-01 and are noted in SF.deprecations
+// (change journal attribute-slider-range-c78).
+const VALUE_DISPLAYS = ['none', 'text', 'tooltip'];
+
+function legacyValueDisplay(element) {
+  const label = String(element.getAttribute('label') ?? '').trim().toLowerCase();
+  return VALUE_DISPLAYS.includes(label) ? label : null;
 }
 
 function getSliderHandleCount(root) {
@@ -197,8 +212,23 @@ class SfRangeSlider extends RangeSliderElement {
     return this.getBooleanAttr('keyboard', true);
   }
 
+  // The visible name above the slider (C78). A former value-display word is
+  // not a name.
   get label() {
-    return this.getAttribute('label') || 'none';
+    if (legacyValueDisplay(this)) return '';
+    return this.getAttribute('label') || '';
+  }
+
+  get valueDisplay() {
+    const own = String(this.getAttribute('value-display') ?? '').trim().toLowerCase();
+    if (VALUE_DISPLAYS.includes(own)) return own;
+    const legacy = legacyValueDisplay(this);
+    if (legacy) {
+      noteDeprecated({component: 'sf-slider-range', kind: 'attribute', from: `label="${legacy}"`, to: `value-display="${legacy}"`,
+        since: '2026-11-12', remove_after: '2027-01-01'});
+      return legacy;
+    }
+    return 'none';
   }
 
   get suffix() {
@@ -240,6 +270,8 @@ class SfRangeSlider extends RangeSliderElement {
 
   templateContext() {
     const props = this.getPropsContext();
+    const valueDisplay = this.valueDisplay;
+    const name = this.label;
 
     return this.createTemplateContext({
       ...props,
@@ -247,7 +279,27 @@ class SfRangeSlider extends RangeSliderElement {
       rootClass: this.getRootClass(),
       multiple: this.multiple,
       start: this.initialValue,
+      name,
+      nameId: name ? `${partId(instancePath(this, {kind: 'sf-range-slider'}))}--name` : '',
+      valueDisplay,
+      // The class draws a tooltip over each handle; the value as text sits at
+      // the end of the name line, drawn here (C78).
+      handleLabel: valueDisplay === 'tooltip' ? 'tooltip' : 'none',
+      outputText: this.outputText(),
     });
+  }
+
+  // The value as the name line writes it: «45 %», «5 000 – 20 000 ₽».
+  outputText(values) {
+    const root = this.getSliderRoot();
+    const list = values ?? String(this.value || '').split(',').map(Number).filter(Number.isFinite);
+    if (!root || !list.length) return '';
+    return formatRangeSliderText(root, list);
+  }
+
+  syncOutput(values) {
+    const output = this.querySelector('.sf-range-slider-output');
+    if (output) output.textContent = this.outputText(values);
   }
 
   template() {
@@ -280,6 +332,7 @@ class SfRangeSlider extends RangeSliderElement {
         'connect',
         'keyboard',
         'label',
+        'value-display',
         'prefix-text',
         'suffix',
         'lower-label',
@@ -341,6 +394,8 @@ class SfRangeSlider extends RangeSliderElement {
       if (this.disabled && this._boundRoot.noUiSlider) {
         this._boundRoot.noUiSlider.disable();
       }
+      // The first render had no slider to format with.
+      this.syncOutput();
     }
     this.sfSyncForm();
   }
@@ -447,6 +502,7 @@ class SfRangeSlider extends RangeSliderElement {
       return;
     }
 
+    this.syncOutput(this.multiple ? values : values.slice(0, 1));
     const serialized = serializeValue(this.multiple ? values : values[0]);
 
     if ((this.getAttribute('value') || '') === serialized) {
@@ -577,6 +633,7 @@ class SfRangeSlider extends RangeSliderElement {
       connect: this.connect,
       keyboard: this.keyboard,
       label: this.label,
+      valueDisplay: this.valueDisplay,
       prefixText: this.prefixText,
       suffix: this.suffix,
       lowerLabel: this.lowerLabel,
