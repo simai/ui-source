@@ -1,7 +1,11 @@
 # Theme palette
 
-`SF.ThemePalette` makes a whole theme from one colour: the eight tonal
-palettes as the `--sf-<palette>-<tone>` primitives and their translucent steps.
+`SF.ThemePalette` makes a whole theme from one colour: the four theme
+palettes -- primary, secondary, tertiary and neutral -- as the 64
+`--sf-<palette>-<tone>` primitives and their 80 translucent steps. The four
+status palettes are not part of a theme: core declares them as the static hues
+below, and no theme writes them (a status override passed to `themeFromColor`
+or `themeFromHct` is refused with a `TypeError`).
 The theme generator uses it, and a page can load it alone -- a main-colour
 swatch that applies the theme from the picked colour needs the calculation,
 not the generator's panel.

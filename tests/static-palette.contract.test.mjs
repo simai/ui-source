@@ -36,19 +36,19 @@ test('the generated sheet is the generator\'s output, and nothing is typed by ha
   for (const [name, value] of Object.entries(variables)) assert.ok(read(STATIC_PALETTE_FILE).includes(`${name}: ${value};`), name);
 });
 
-test('a status is its hue: the theme makes the same palette, and the status primitive is var() of the hue', () => {
+test('a status is its hue: the status primitive is var() of the hue, and no theme holds it (TG-01)', () => {
   const theme = themeFromColor(DEFAULT_THEME_COLOR);
   const palettes = staticPalette();
   const primitives = read('src/core/scss/_sf_figma_colors_variables.scss');
   for (const [status, hue] of Object.entries(STATUS_HUES)) {
-    assert.deepEqual(theme.palettes[status].tones, palettes[hue].tones, `${status} = ${hue}`);
+    assert.equal(theme.palettes[status], undefined, `${status}: not a theme palette`);
+    assert.equal(THEME_ALPHA[status], undefined, `${status}: no theme steps`);
     for (const tone of THEME_TONES) {
       assert.match(primitives, new RegExp(`--sf-${status}-${tone}: var\\(--sf-${hue}-${tone}\\);`, 'u'));
-      for (const step of THEME_ALPHA[status][tone] ?? []) {
+      for (const step of STATIC_ALPHA[tone] ?? []) {
         assert.match(primitives, new RegExp(`--sf-${status}-${tone}--alfa-${step}: var\\(--sf-${hue}-${tone}--alfa-${step}\\);`, 'u'));
       }
     }
-    assert.deepEqual(THEME_ALPHA[status], Object.fromEntries(Object.entries(STATIC_ALPHA).map(([tone, steps]) => [tone, [...steps]])), `${status}: the hue has every step the status has`);
   }
   // No theme colour moves a hue.
   for (const color of ['#2e7d32', '#b3261e', '#6a1b9a']) assert.deepEqual(staticPalette(), palettes, color);

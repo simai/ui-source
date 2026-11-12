@@ -10422,6 +10422,40 @@
       "manual": "Nothing to rewrite in markup. A site theme written by themeToCss or sf-theme-generator before this pair carries the blue information tones as literal values: make the theme again (or drop its --sf-info-* lines) to take sky. A page that wants an information block in the brand colour uses the primary roles, not info.",
       "owner": "ui-source",
       "source": "src/core/scss/_sf_figma_colors_variables.scss, src/core/js/theme-palette.js"
+    },
+    {
+      "id": "behaviour-theme-writes-no-status-palette",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "A theme is the four dynamic palettes -- primary, secondary, tertiary, neutral -- and no status palette (docs study 2026-11-11 TG-01). Core declares --sf-error-*, --sf-warning-*, --sf-success-* and --sf-info-* as var() of the static hues red, amber, green and sky (C17, C90); themeFromColor and themeFromHct wrote them as literal colours too, so a page themed by sf-theme-generator, sf-input-color variant theme or applyTheme froze the statuses at the hues of the day (info stayed blue after core moved it to sky). Now theme.palettes holds four palettes, THEME_PALETTES and THEME_ALPHA name four, and themeVariables, themeToCss and applyTheme write 144 variables (64 tones, 80 translucent steps) where they wrote 288. A theme object stored with eight palettes applies only its four theme palettes. A status override in the options of themeFromColor or themeFromHct ({error: {...}}) throws a TypeError.",
+      "items": [
+        {
+          "component": "theme-palette",
+          "from": "theme.palettes.error|warning|success|info",
+          "to": "the static hue STATUS_HUES[status] (staticPalette())"
+        },
+        {
+          "component": "theme-palette",
+          "from": "themeFromColor(color, {error: {hue}})",
+          "to": "a TypeError; a status is core's static hue"
+        },
+        {
+          "component": "sf-theme-generator",
+          "from": "detail.variables: 288",
+          "to": "detail.variables: 144"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Code that read theme.palettes.error (or warning, success, info) reads SF.ThemePalette.staticPalette()[SF.ThemePalette.STATUS_HUES.error] instead. A site stylesheet written by themeToCss or the generator before this pair carries the status tones as literal values: drop its --sf-error-*, --sf-warning-*, --sf-success-* and --sf-info-* lines (or make the theme again) so core's static hues apply. A status colour of a site's own is not a theme: there is none, the statuses are fixed (C17).",
+      "examples": {
+        "before": "const red = SF.ThemePalette.themeFromColor('#e53935').palettes.error.tones[40];",
+        "after": "const red = SF.ThemePalette.staticPalette()[SF.ThemePalette.STATUS_HUES.error].tones[40];"
+      },
+      "owner": "ui-source",
+      "source": "src/core/js/theme-palette.js; src/smart/theme-generator; ui-control control/research/2026-11-11-theme-generator.md TG-01"
     }
   ]
 }

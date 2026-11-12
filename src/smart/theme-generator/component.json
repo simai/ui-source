@@ -2,7 +2,7 @@
   "$comment": "The source of sf-theme-generator's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/theme-generator (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.theme-generator",
   "tag": "sf-theme-generator",
-  "version": "1.1.14",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "theme",
   "settings": {
@@ -227,7 +227,7 @@
       }
     ]
   },
-  "x-summary": "A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the eight palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
+  "x-summary": "A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the four theme palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
   "x-source": {
     "package": "framework",
     "folder": "theme-generator",
@@ -265,7 +265,8 @@
     "version 1.1.11 static-palette (one above the released 1.1.10): core theme-palette.js also holds the static palette (owner decision C17, 2026-11-08): STATIC_HUES, staticPalette() and staticVariables(), and the four status rules are read from their hues (error red, warning amber, success green, info blue) by the same numbers. A theme this element makes is byte for byte the same; settings, values, events and keys unchanged. A theme carries 288 variables -- 128 tones and 160 translucent steps -- since tone 20 has its steps 4 to 24, 64 and 80 on the seven coloured palettes (C16 coloured places, dispatcher 2026-11-09).",
     "version 1.1.12 (2026-11-09): a patch; nothing in the component changed. The sf-input it draws asks for the kbd sheet since sf-input 1.7.0 (C38, the shortcut setting; component.kbd 1.3.0), so its first-paint snapshots name that sheet and carry one more empty line where the field's shortcut would stand; the component takes a patch with them. Settings, values, events and keys unchanged.",
     "version 1.1.13 (2026-11-11): one reset for one action (docs pre-check 2026-11-10 TG-02): the colour field's own inherited reset is not drawn beside «Сбросить»; the colour field draws its own label (sf-input-color 1.6.0), so the generator's copy of it is gone. Its events were already change and sf-theme-generator-committed, the former names dated aliases (TG-01 is the page's).",
-    "version 1.1.14 (2026-11-11): the information palette is the static hue sky (owner decision C17 as amended 2026-11-11: info is not blue, or it reads as the Framework's own primary); core STATUS_HUES info is sky, so the generator's «Информация» row and every theme it writes carry sky's tones (tone 40 is sky's, --sf-sky-40, where it was blue's). Settings, values, events and keys unchanged."
+    "version 1.1.14 (2026-11-11): the information palette is the static hue sky (owner decision C17 as amended 2026-11-11: info is not blue, or it reads as the Framework's own primary); core STATUS_HUES info is sky, so the generator's «Информация» row and every theme it writes carry sky's tones (tone 40 is sky's, --sf-sky-40, where it was blue's). Settings, values, events and keys unchanged.",
+    "version 1.2.0 (2026-11-12) TG-01: a theme is the four dynamic palettes -- primary, secondary, tertiary, neutral -- and no status palette. Core declares error, warning, success and info as var() of the static hues red, amber, green and sky (C17, C90), and a theme that wrote them as literal colours froze them at the day it was made: after core moved info to sky, a page themed by the generator kept the old blue. The theme value, toJSON(), toCSS() and the events' theme, variables and css now hold 144 variables (64 tones, 80 translucent steps), where they held 288; the preview has four rows, not eight (the status rows never moved, docs study R132 TG-06). A theme object stored before (eight palettes) applies only its four theme palettes. Settings, events and keys unchanged; journal behaviour-theme-writes-no-status-palette."
   ],
   "x-rule": {
     "$comment": [
@@ -403,7 +404,7 @@
             },
             "variables": {
               "type": "object",
-              "description": "The 288 custom properties -- 128 tones and 160 translucent steps -- {name: value}."
+              "description": "The 144 custom properties of the four theme palettes -- 64 tones and 80 translucent steps -- {name: value}."
             },
             "css": {
               "type": "string",
@@ -433,7 +434,7 @@
             },
             "variables": {
               "type": "object",
-              "description": "The 288 custom properties -- 128 tones and 160 translucent steps -- {name: value}."
+              "description": "The 144 custom properties of the four theme palettes -- 64 tones and 80 translucent steps -- {name: value}."
             },
             "css": {
               "type": "string",
@@ -463,7 +464,7 @@
             },
             "variables": {
               "type": "object",
-              "description": "The 288 custom properties -- 128 tones and 160 translucent steps -- {name: value}."
+              "description": "The 144 custom properties of the four theme palettes -- 64 tones and 80 translucent steps -- {name: value}."
             },
             "css": {
               "type": "string",
@@ -493,7 +494,7 @@
             },
             "variables": {
               "type": "object",
-              "description": "The 288 custom properties -- 128 tones and 160 translucent steps -- {name: value}."
+              "description": "The 144 custom properties of the four theme palettes -- 64 tones and 80 translucent steps -- {name: value}."
             },
             "css": {
               "type": "string",
@@ -505,7 +506,7 @@
     },
     "methods": {
       "toCSS": {
-        "summary": "The theme as one stylesheet rule of its 128 primitives and 160 translucent steps, under the given selector or the `selector` attribute.",
+        "summary": "The theme as one stylesheet rule of its 64 primitives and 80 translucent steps (the four theme palettes), under the given selector or the `selector` attribute.",
         "arguments": [
           {
             "name": "selector",
@@ -519,7 +520,7 @@
         }
       },
       "toJSON": {
-        "summary": "The theme object (simai.framework.theme.v1): source hue and chroma, and each palette's hue, chroma and tones.",
+        "summary": "The theme object (simai.framework.theme.v1): source hue and chroma, and the four theme palettes' (primary, secondary, tertiary, neutral) hue, chroma and tones.",
         "arguments": [],
         "returns": {
           "type": "object",

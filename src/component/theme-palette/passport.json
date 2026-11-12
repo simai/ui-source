@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.theme-palette",
   "kind": "component",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/theme-palette/docs/docs.md",
@@ -11,7 +11,7 @@
     "src/component/theme-palette/js/index.js",
     "src/component/theme-palette/rule.js"
   ],
-  "content_sha256": "d245e5e182930da0330cd4b7bec5bffd2a9535196428f8ae31baad74d81cb189",
+  "content_sha256": "cb6db0abb356e117deb016d8b5d7ff3642b19462cfb39569e2fa3294b044d157",
   "dependencies": [
     {
       "id": "core.runtime",

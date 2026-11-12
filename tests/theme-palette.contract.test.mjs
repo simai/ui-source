@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync, readdirSync, statSync} from 'node:fs';
 import {join, relative} from 'node:path';
 import test from 'node:test';
-import {themeFromColor, themeToCss, themeVariables, THEME_TONES, THEME_PALETTES, DEFAULT_THEME_COLOR} from '../src/core/js/theme-palette.js';
+import {themeFromColor, themeFromHct, themeToCss, themeVariables, staticPalette, STATIC_HUES, STATUS_HUES, THEME_TONES, THEME_PALETTES, DEFAULT_THEME_COLOR} from '../src/core/js/theme-palette.js';
 
 const root = new URL('..', import.meta.url).pathname;
 // A status primitive is var() of its static hue (C17): the shipped value of
@@ -15,13 +15,16 @@ const primitives = readFileSync(join(root, 'src/core/scss/_sf_figma_colors_varia
 // The rules are the generator's, and the Framework's colours were made with
 // them: the default colour has to give back every shipped primitive, or the
 // component would re-theme a page that asked for nothing.
-test('the default colour gives back all 128 shipped primitives and their 160 translucent steps exactly', () => {
+test('the default colour gives back the 64 shipped primitives of the dynamic palettes and their 80 translucent steps exactly', () => {
   const theme = themeFromColor(DEFAULT_THEME_COLOR);
   const variables = themeVariables(theme);
-  const declared = [...primitives.matchAll(/(--sf-[a-z]+-\d+--alfa-\d+):/gu)].map(([, name]) => name);
+  assert.deepEqual([...THEME_PALETTES], ['primary', 'secondary', 'tertiary', 'neutral']);
+  const dynamic = new RegExp(`^--sf-(?:${THEME_PALETTES.join('|')})-`, 'u');
+  const declared = [...primitives.matchAll(/(--sf-[a-z]+-\d+--alfa-\d+):/gu)].map(([, name]) => name).filter((name) => dynamic.test(name));
   // Every translucent step core declares on a palette tone is one the theme writes.
   assert.deepEqual([...new Set(declared)].filter((name) => !(name in variables)), []);
   assert.equal(Object.keys(variables).length, THEME_PALETTES.length * THEME_TONES.length + new Set(declared).size);
+  assert.equal(Object.keys(variables).length, 144);
   const off = [];
   for (const [name, value] of Object.entries(variables)) {
     const shipped = primitives.match(new RegExp(`${name}: (#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?);`))?.[1]?.toLowerCase();
@@ -30,12 +33,19 @@ test('the default colour gives back all 128 shipped primitives and their 160 tra
   assert.deepEqual(off, []);
 });
 
-test('another colour moves the brand palettes and leaves the status ones', () => {
+test('another colour moves the brand palettes; a theme holds and writes no status palette (TG-01)', () => {
   const green = themeFromColor('#2e7d32');
   const base = themeFromColor(DEFAULT_THEME_COLOR);
   assert.notEqual(green.palettes.primary.tones[40], base.palettes.primary.tones[40]);
   assert.equal(Math.round(green.palettes.tertiary.hue), Math.round((green.source.hue + 60) % 360));
-  for (const status of ['error', 'warning', 'success', 'info']) assert.deepEqual(green.palettes[status], base.palettes[status], status);
+  assert.deepEqual(Object.keys(green.palettes), ['primary', 'secondary', 'tertiary', 'neutral']);
+  const status = /^--sf-(?:error|warning|success|info)-/u;
+  assert.deepEqual(Object.keys(themeVariables(green)).filter((name) => status.test(name)), []);
+  assert.doesNotMatch(themeToCss(green), /--sf-(?:error|warning|success|info)-/u);
+  // A theme object stored before TG-01 still carries the eight palettes: the
+  // status ones are not written, so core's static hues apply over it.
+  const stored = {...green, palettes: {...green.palettes, info: {hue: 265, chroma: 59, tones: {40: '#005bbe'}}}};
+  assert.equal(themeVariables(stored)['--sf-info-40'], undefined);
   assert.deepEqual(themeFromColor('#2E7D32'), themeFromColor('2e7d32'));
 });
 
@@ -50,31 +60,40 @@ const INFO_PALETTE = Object.freeze({
   20: '#00344a', 15: '#00293b', 10: '#001e2c', 5: '#00131d',
 });
 
-test('info is the static hue sky under every brand colour (C17 as amended 2026-11-11), and stays far from error', () => {
-  const primaries = {red: '#b3261e', green: '#2e7d32', yellow: '#f9a825', violet: '#6a1b9a', blue: DEFAULT_THEME_COLOR};
-  for (const [name, color] of Object.entries(primaries)) {
-    const theme = themeFromColor(color);
-    const variables = themeVariables(theme);
-    for (const tone of THEME_TONES) assert.equal(variables[`--sf-info-${tone}`], INFO_PALETTE[tone], `${name}: --sf-info-${tone}`);
-    // Information and danger never tell the same story in the same colour.
-    const apart = Math.abs(theme.palettes.info.hue - theme.palettes.error.hue) % 360;
-    assert.ok(Math.min(apart, 360 - apart) >= 90, `${name}: info and error are ${Math.min(apart, 360 - apart)} deg apart`);
+test('info is the static hue sky under every brand colour (C17 as amended 2026-11-11, C90), and stays far from error', () => {
+  const shipped = readFileSync(join(root, 'src/core/scss/_sf_figma_colors_variables.scss'), 'utf8');
+  const sky = staticPalette()[STATUS_HUES.info];
+  for (const tone of THEME_TONES) {
+    assert.equal(sky.tones[tone], INFO_PALETTE[tone], `sky ${tone}`);
+    // Core's info primitive is var() of sky's, and the resolved value is sky's.
+    assert.match(shipped, new RegExp(`--sf-info-${tone}: var\\(--sf-sky-${tone}\\);`, 'u'));
+    assert.match(primitives, new RegExp(`--sf-info-${tone}: ${INFO_PALETTE[tone]};`, 'u'));
   }
+  // No brand colour moves it: no theme writes an info primitive at all.
+  const primaries = {red: '#b3261e', green: '#2e7d32', yellow: '#f9a825', violet: '#6a1b9a', blue: DEFAULT_THEME_COLOR, sky: '#00668a'};
+  for (const [name, color] of Object.entries(primaries)) {
+    const variables = themeVariables(themeFromColor(color));
+    assert.deepEqual(Object.keys(variables).filter((key) => key.startsWith('--sf-info-')), [], name);
+  }
+  // Information and danger never tell the same story in the same colour.
+  const apart = Math.abs(STATIC_HUES[STATUS_HUES.info].hue - STATIC_HUES[STATUS_HUES.error].hue) % 360;
+  assert.ok(Math.min(apart, 360 - apart) >= 90, `info and error are ${Math.min(apart, 360 - apart)} deg apart`);
 });
 
-test('a palette rule can be overridden, and a bad colour is refused', () => {
-  const theme = themeFromColor('#005bbe', {secondary: {chroma: 30}, error: {hue: 10}});
+test('a dynamic palette rule can be overridden, a status one is refused, and a bad colour is refused', () => {
+  const theme = themeFromColor('#005bbe', {secondary: {chroma: 30}});
   assert.equal(Math.round(theme.palettes.secondary.chroma), 30);
-  assert.equal(Math.round(theme.palettes.error.hue), 10);
+  assert.throws(() => themeFromColor('#005bbe', {error: {hue: 10}}), /error: a status palette is core's static hue red/u);
+  assert.throws(() => themeFromHct({hue: 265, chroma: 85}, {info: {hue: 235}}), TypeError);
   assert.throws(() => themeFromColor('blue'), TypeError);
   assert.throws(() => themeFromColor('#12345'), TypeError);
 });
 
-test('the CSS is one rule of the 128 primitives under the selector', () => {
+test('the CSS is one rule of the 64 primitives and 80 translucent steps under the selector', () => {
   const css = themeToCss(themeFromColor('#005bbe'), '.site-main');
   assert.match(css, /^\.site-main \{\n/u);
-  assert.equal((css.match(/--sf-[a-z]+-\d+: #[0-9a-f]{6};/gu) ?? []).length, 128);
-  assert.equal((css.match(/--sf-[a-z]+-\d+--alfa-\d+: #[0-9a-f]{8};/gu) ?? []).length, 160);
+  assert.equal((css.match(/--sf-[a-z]+-\d+: #[0-9a-f]{6};/gu) ?? []).length, 64);
+  assert.equal((css.match(/--sf-[a-z]+-\d+--alfa-\d+: #[0-9a-f]{8};/gu) ?? []).length, 80);
 });
 
 // The copied HCT files are the package's own bytes: a copy that drifted would

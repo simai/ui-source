@@ -1,17 +1,23 @@
 // A whole theme from one colour (owner, 2026-10-10: «a Smart component where
 // you choose the main colour and it makes all the other variables»).
 //
-// The Framework's colours are eight tonal palettes of sixteen tones each --
+// The Framework's colours are tonal palettes of sixteen tones each --
 // --sf-<palette>-<tone>, 98 down to 5 -- and every semantic token (--sf-primary,
-// --sf-surface, --sf-outline, ...) reads them through light-dark(). So a theme
-// is those 128 primitives, and nothing else needs to change.
+// --sf-surface, --sf-outline, ...) reads them through light-dark(). A theme is
+// the four dynamic palettes -- primary, secondary, tertiary and neutral, 64
+// primitives and their 80 translucent steps -- and nothing else needs to
+// change. The four status palettes are not the theme's: core declares them as
+// var() of the static hues (C17), and a theme that wrote them as literal
+// colours froze them at the hues of the day it was made (TG-01, 2026-11-11:
+// info stayed blue on a themed page after core moved it to sky).
 //
 // The palettes are made the way the SIMAI generator makes them (ui-doc,
 // fundamentals/color/color-generator), on Google's HCT colour space: the chosen
 // colour gives the primary palette its hue and chroma, and the others follow
 // fixed rules. Fed the Framework's own primary (#005bbe: hue 265, chroma 85 as
-// the generator's UI Kit values), these rules give back all 128 shipped
-// primitives exactly -- tests/theme-palette.contract.test.mjs holds that.
+// the generator's UI Kit values), these rules give back the 64 shipped
+// primitives of the dynamic palettes exactly -- tests/theme-palette.contract.test.mjs
+// holds that.
 //
 // The generator's own inputs are a hue and a chroma in whole numbers
 // (themeFromHct). A colour is read as them (themeFromColor): its hue to the
@@ -67,13 +73,9 @@ export const STATIC_HUES = Object.freeze({
 
 export const STATIC_HUE_NAMES = Object.freeze(Object.keys(STATIC_HUES));
 
-// The hue each status is.
+// The hue each status is. Core's --sf-<status>-<tone> are var() of these
+// hues' primitives; a theme does not write them (TG-01).
 export const STATUS_HUES = Object.freeze({error: 'red', warning: 'amber', success: 'green', info: 'sky'});
-
-function statusRule(status) {
-  const {hue, chroma} = STATIC_HUES[STATUS_HUES[status]];
-  return {hue, chroma};
-}
 
 // The translucent steps of every static hue: the status steps, tone 50 at the
 // state and fill families (4 to 32), tone 90 at 4, 8, 12 and 24, and tone 20
@@ -95,19 +97,14 @@ export const THEME_RULES = Object.freeze({
   // when that is lower (C16): a near-grey brand colour made teal or violet
   // greys out of a hue it barely has.
   neutral: {hue: (source) => source.hue, chroma: (source) => Math.min(5, source.chroma)},
-  // The four statuses are four hues of the static palette (C17): error is red,
-  // warning amber, success green and info sky (amended 2026-11-11), by the same numbers, so a
-  // status and its hue are one palette. A theme may still override a status
-  // here; the hue it was made from stays as it is.
-  error: statusRule('error'),
-  warning: statusRule('warning'),
-  success: statusRule('success'),
-  info: statusRule('info'),
+  // No status rule: the four statuses are four hues of the static palette
+  // (C17: error red, warning amber, success green, info sky), declared by core
+  // and moved by no theme (TG-01).
 });
 
 export const THEME_PALETTES = Object.freeze(Object.keys(THEME_RULES));
 
-// The translucent steps core defines on a tone: --sf-<palette>-<tone>--alfa-<n>,
+// The translucent steps core defines on a dynamic palette's tone: --sf-<palette>-<tone>--alfa-<n>,
 // the tone with n% opacity (the alpha scale: state 4/8/12, fill 12-32, ink
 // 48/64/80). Core writes them as literal colours, so a theme that set the tones
 // alone left every container fill and hover in the old hue (DEV, 2026-10-18:
@@ -119,11 +116,10 @@ export const THEME_ALPHA = Object.freeze({
   secondary: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
   tertiary: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
   neutral: {50: [4, 8, 12, 16, 20, 24, 32, 48, 80], 60: [48, 64], 80: [48], 90: [4, 8, 12, 16, 20, 24, 32, 48]},
-  error: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
-  warning: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
-  success: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
-  info: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
 });
+
+// A status named as a theme palette: refused, not ignored (TG-01).
+const STATUS_NAMES = Object.freeze(Object.keys(STATUS_HUES));
 
 const alphaHex = (percent) => Math.round((percent * 255) / 100).toString(16).padStart(2, '0');
 
@@ -168,6 +164,9 @@ export function colorToHct(color) {
 export function themeFromHct({hue, chroma} = {}, options = {}) {
   if (!Number.isFinite(hue) || !Number.isFinite(chroma)) throw new TypeError('A theme is made from a hue and a chroma');
   const source = {hue: ((hue % 360) + 360) % 360, chroma: Math.max(0, chroma)};
+  for (const status of STATUS_NAMES) {
+    if (options?.[status] !== undefined) throw new TypeError(`${status}: a status palette is core's static hue ${STATUS_HUES[status]}, not a theme's (TG-01)`);
+  }
   const palettes = {};
   for (const name of THEME_PALETTES) {
     const rule = {...THEME_RULES[name], ...(options[name] ?? {})};
@@ -191,13 +190,18 @@ export function themeFromColor(color = DEFAULT_THEME_COLOR, options = {}) {
   return {...theme, source: {...theme.source, hex: read.hex, tone: read.tone}};
 }
 
-/** The theme's CSS custom properties, {name: value}. */
+/**
+ * The theme's CSS custom properties, {name: value}: the dynamic palettes'
+ * tones and translucent steps. A theme object stored before TG-01 still holds
+ * the four status palettes; they are not written, so core's static hues apply.
+ */
 export function themeVariables(theme) {
   const variables = {};
-  for (const [name, palette] of Object.entries(theme?.palettes ?? {})) {
+  const palettes = THEME_PALETTES.map((name) => [name, theme?.palettes?.[name]]).filter(([, palette]) => palette);
+  for (const [name, palette] of palettes) {
     for (const [tone, value] of Object.entries(palette.tones ?? {})) variables[`--sf-${name}-${tone}`] = value;
   }
-  for (const [name, palette] of Object.entries(theme?.palettes ?? {})) {
+  for (const [name, palette] of palettes) {
     for (const [tone, steps] of Object.entries(THEME_ALPHA[name] ?? {})) {
       const base = palette.tones?.[tone];
       if (!base) continue;
@@ -209,8 +213,7 @@ export function themeVariables(theme) {
 
 /**
  * The static palette: for every hue its HCT numbers and its sixteen tones,
- * {name: {hue, chroma, tones}}. The same TonalPalette as the theme's, so a
- * status palette the theme makes is the static hue it names, byte for byte.
+ * {name: {hue, chroma, tones}}. The same TonalPalette as the theme's.
  */
 export function staticPalette() {
   const palettes = {};
