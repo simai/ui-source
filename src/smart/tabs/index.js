@@ -190,6 +190,10 @@ class SfTabs extends TabsElement {
       configurable: { type: Boolean, default: false },
       // A panel is drawn when its tab is first opened, and kept (R184 T8).
       lazy: { type: Boolean, default: false },
+      // The address keeps the selected tab (#<id>): Back and links work (R184 T10).
+      hash: { type: Boolean, default: false },
+      // The tab row stays in sight while the panel scrolls.
+      sticky: { type: Boolean, default: false },
       activeIndex: { type: Number, default: 0 },
       items: {
         default: [],
@@ -280,6 +284,11 @@ class SfTabs extends TabsElement {
 
   afterRender(callback) {
     if (typeof callback === 'function') return super.afterRender(callback);
+    // With hash, the first drawing opens the tab the address names.
+    if (!this._addressRead) {
+      this._addressRead = true;
+      this.readAddress({ person: false });
+    }
     this.syncTabSemantics();
     this.syncPanelFocus();
     // The box that has a size: sf-tabs is display:contents, so observing the
@@ -384,7 +393,23 @@ class SfTabs extends TabsElement {
     return Math.abs(size - expected.get(entry.target)) <= 0.5;
   }
 
+  connectedCallback() {
+    super.connectedCallback?.();
+    // The address is read again when it changes (Back, Forward, a link to
+    // #<id> on the page); the listener answers only with hash on.
+    if (!this._addressListener) {
+      this._addressListener = () => this.readAddress({ person: true });
+      globalThis.addEventListener?.('hashchange', this._addressListener);
+      globalThis.addEventListener?.('popstate', this._addressListener);
+    }
+  }
+
   disconnectedCallback() {
+    if (this._addressListener) {
+      globalThis.removeEventListener?.('hashchange', this._addressListener);
+      globalThis.removeEventListener?.('popstate', this._addressListener);
+      this._addressListener = null;
+    }
     this._resizeObserver?.disconnect();
     this._observed = null;
     this._observedTrigger = null;
@@ -778,6 +803,49 @@ class SfTabs extends TabsElement {
 
   get lazy() {
     return this.getBooleanAttr('lazy', false);
+  }
+
+  get hash() {
+    return this.getBooleanAttr('hash', false);
+  }
+
+  get sticky() {
+    return this.getBooleanAttr('sticky', false);
+  }
+
+  // ─── the address (hash) ────────────────────────────────────────────────────
+  // The tab the address names: #<id> of an item, or #<id> of an element
+  // inside one of the panels (a link to a section of a closed tab opens it).
+  addressedIndex() {
+    const raw = globalThis.location?.hash?.slice(1);
+    if (!raw) return null;
+    let id = raw;
+    try { id = decodeURIComponent(raw); } catch { /* the hash as written */ }
+    const items = this.computedItems;
+    const at = items.findIndex((item) => item.key === id);
+    if (at >= 0) return at;
+    const target = globalThis.document?.getElementById?.(id);
+    const panel = target?.closest?.('[data-sf-tab-panel]');
+    if (panel && panel.closest('sf-tabs') === this) return Number(panel.dataset.sfTabPanel);
+    return null;
+  }
+
+  // On the first drawing the address selects without a change (as the
+  // selected attribute does); Back, Forward and a #link are the person's.
+  readAddress({ person }) {
+    if (!this.hash || this.links) return;
+    const index = this.addressedIndex();
+    if (index === null || index === this.activeIndex) return;
+    this.selectTab(index, { person, fromAddress: true });
+  }
+
+  // A tab the person chose is a new entry of the history, so Back returns
+  // to the previous tab; the path and the query stay.
+  writeAddress(item) {
+    if (!this.hash || this.links || !globalThis.history?.pushState || !globalThis.location) return;
+    const next = `#${encodeURIComponent(item.key)}`;
+    if (globalThis.location.hash === next) return;
+    globalThis.history.pushState(globalThis.history.state, '', `${globalThis.location.pathname}${globalThis.location.search}${next}`);
   }
 
   // ─── the panels: drawn when opened (lazy), a tab stop when nothing in them is
@@ -1176,6 +1244,7 @@ class SfTabs extends TabsElement {
       overflow: this.overflow,
       configurable: this.configurable,
       links: this.links,
+      sticky: this.sticky,
       moreText: this.text('more'),
       customizeText: this.text('customize'),
       rootClass: this.getRootClass(),
@@ -1258,7 +1327,7 @@ class SfTabs extends TabsElement {
     return this.selectTab(index?.index ?? index, { person: false });
   }
 
-  selectTab(index, { person = false } = {}) {
+  selectTab(index, { person = false, fromAddress = false } = {}) {
     const items = this.computedItems;
     const requested = toNumber(index, Number.NaN);
     if (!Number.isInteger(requested) || requested < 0 || requested >= items.length) {
@@ -1278,6 +1347,7 @@ class SfTabs extends TabsElement {
     // drawing (R184 T12: in the handler the previous tab was still selected
     // and the new panel hidden, so a field in it could not take the focus).
     this.showSelection();
+    if (person && !fromAddress) this.writeAddress(item);
     if (person) {
       const detail = { selected: item.key, previous, current: requested, item, items };
       // A lazy panel opened for the first time is drawn first.

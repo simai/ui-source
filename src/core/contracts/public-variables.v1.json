@@ -1023,6 +1023,13 @@
             "appearance",
             "size"
           ]
+        },
+        {
+          "name": "--sf-tabs-sticky-top",
+          "role": "inset-block-start",
+          "summary": "How far from the top of the view a sticky tab row stops (sticky): the height of a fixed header above it.",
+          "default": "var(--sf-0)",
+          "since": "2026-11-12"
         }
       ]
     },

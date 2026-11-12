@@ -206,6 +206,7 @@ export function renderTabsTemplate(context) {
     context.type ? `sf-tabs--${context.type}` : '',
     vertical ? 'sf-tabs--vertical flex' : 'flex flex-col',
     context.links ? 'sf-tabs--links' : '',
+    context.sticky ? 'sf-tabs--sticky' : '',
     context.rootClass,
   );
 

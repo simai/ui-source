@@ -66,8 +66,8 @@ function method(name, args = '') {
 }
 
 test('T12: sf-tabs-change is sent after the tabs and panels show the new selection', () => {
-  const body = method('selectTab', 'index, { person = false } = {}');
-  const selectTab = new Function('toNumber', `return function (index, { person = false } = {}) {${body}}`)((value, fallback) => {
+  const body = method('selectTab', 'index, { person = false, fromAddress = false } = {}');
+  const selectTab = new Function('toNumber', `return function (index, { person = false, fromAddress = false } = {}) {${body}}`)((value, fallback) => {
     const number = Number(value); return Number.isFinite(number) ? number : fallback;
   });
   const steps = [];
@@ -79,9 +79,10 @@ test('T12: sf-tabs-change is sent after the tabs and panels show the new selecti
     showSelection() { steps.push(`show ${host.activeIndex}`); },
     sfEmit(verb, detail) { steps.push(`emit ${verb} ${detail.current}`); },
     whenPanelDrawn: (index, callback) => callback(),
+    writeAddress: (item) => steps.push(`address ${item.key}`),
   };
   assert.deepEqual(selectTab.call(host, 1, {person: true}), {outcome: 'applied'});
-  assert.deepEqual(steps, ['write active-index=1', 'show 1', 'emit change 1']);
+  assert.deepEqual(steps, ['write active-index=1', 'show 1', 'address b', 'emit change 1']);
 
   // showSelection writes aria-selected (syncTabSemantics), the tab's selected
   // class and each drawn panel's hidden and selected class.
@@ -198,7 +199,7 @@ test('T9: a disabled tab is focusable, says aria-disabled, and tells why in a to
   assert.match(sheet, /\.sf-tabs-top \.sf-icon-button\.disabled:is\(\.sf-icon-button--default, \.sf-icon-button--tonal\) \{\s*--sf-icon-button--background-color: var\(--sf-surface-disabled\);/u);
   // The arrows reach it; a press selects nothing (activate and selectTab refuse).
   assert.match(source, /const enabledItems = this\.displayItems\.filter\(\(item\) => !overflowed\.has\(item\.index\)\);/u);
-  assert.match(method('selectTab', 'index, { person = false } = {}'), /if \(item\.disabled\) return \{ outcome: 'refused', reason: 'disabled' \};/u);
+  assert.match(method('selectTab', 'index, { person = false, fromAddress = false } = {}'), /if \(item\.disabled\) return \{ outcome: 'refused', reason: 'disabled' \};/u);
   assert.match(method('activate', 'index, event = null, { person = true } = {}'), /if \(!item \|\| item\.disabled\) return;/u);
 });
 
@@ -235,4 +236,49 @@ test('T4: when every item has an address the row is a nav of links with aria-cur
   assert.match(source, /\/\/ A strip of links is walked with Tab and followed with Enter, as links are\.\s*if \(this\.links\) return;/u);
   const activate = method('activate', 'index, event = null, { person = true } = {}');
   assert.match(activate, /if \(item\.href && event\?\.target\?\.closest\?\.\('a\[href\]'\) && this\.links\) \{\s*if \(!\(event\.metaKey \|\| event\.ctrlKey \|\| event\.shiftKey \|\| event\.altKey\)\) this\.selectTab\(index, \{ person \}\);\s*return;/u);
+});
+
+test('T10: hash keeps the selected tab in the address; Back and links to #id work', () => {
+  assert.deepEqual(manifest.settings.hash, {...manifest.settings.hash, type: 'boolean', default: false});
+  const addressed = new Function(`return function () {${method('addressedIndex')}}`)();
+  const location = {hash: '#access', pathname: '/user/7', search: '?tab=1'};
+  const section = {closest: (selector) => (selector === '[data-sf-tab-panel]' ? panel : null)};
+  const panel = {dataset: {sfTabPanel: '2'}, closest: () => host};
+  const host = {computedItems: [{key: 'profile'}, {key: 'access'}, {key: 'notify'}]};
+  globalThis.location = location;
+  globalThis.document = {getElementById: (id) => (id === 'phone' ? section : null)};
+  try {
+    assert.equal(addressed.call(host), 1, '#<item id>');
+    location.hash = '#phone';
+    assert.equal(addressed.call(host), 2, '#<element in a panel>');
+    location.hash = '#nothing';
+    assert.equal(addressed.call(host), null);
+    // The person's choice is a history entry; path and query kept.
+    const write = new Function(`return function (item) {${method('writeAddress', 'item')}}`)();
+    const pushed = [];
+    globalThis.history = {state: null, pushState: (state, title, url) => pushed.push(url)};
+    write.call({hash: true, links: false}, {key: 'notify'});
+    write.call({hash: false, links: false}, {key: 'profile'});
+    assert.deepEqual(pushed, ['/user/7?tab=1#notify']);
+  } finally {
+    delete globalThis.location; delete globalThis.document; delete globalThis.history;
+  }
+  // First drawing: no change event; hashchange/popstate: the person's, not written back.
+  assert.match(source, /if \(!this\._addressRead\) \{\s*this\._addressRead = true;\s*this\.readAddress\(\{ person: false \}\);/u);
+  assert.match(source, /this\._addressListener = \(\) => this\.readAddress\(\{ person: true \}\);/u);
+  assert.match(source, /addEventListener\?\.\('popstate', this\._addressListener\)/u);
+  assert.match(source, /removeEventListener\?\.\('hashchange', this\._addressListener\)/u);
+  assert.match(method('readAddress', '{ person }'), /this\.selectTab\(index, \{ person, fromAddress: true \}\);/u);
+  assert.match(source, /if \(person && !fromAddress\) this\.writeAddress\(item\);/u);
+});
+
+test('sticky: the tab row stays in sight, below --sf-tabs-sticky-top', () => {
+  assert.deepEqual(manifest.settings.sticky, {...manifest.settings.sticky, type: 'boolean', default: false});
+  assert.match(template, /context\.sticky \? 'sf-tabs--sticky' : ''/u);
+  const sheet = read('src/component/tabs/scss/_css__tabs.scss');
+  assert.match(sheet, /\.sf-tabs\.sf-tabs--sticky > \.sf-tabs-top-container \{\s*position: sticky;\s*inset-block-start: var\(--sf-tabs-sticky-top, var\(--sf-0\)\);/u);
+  const variables = JSON.parse(read('src/core/contracts/public-variables.v1.json'));
+  const text = JSON.stringify(variables);
+  assert.match(text, /"name":"--sf-tabs-sticky-top"/u);
+  assert.ok(manifest['css-variables']['--sf-tabs-sticky-top']);
 });

@@ -117,6 +117,16 @@
         "default": false,
         "description": "A panel is drawn when its tab is first opened, then kept drawn (its state stays when the person switches away). Until then the panel stands empty and hidden, so the tab's aria-controls still names it. sf-tabs-change for a first opening is sent once the panel is drawn. A page's own <div role=\"tabpanel\"> panels are already in the page and are not affected."
       },
+      "hash": {
+        "type": "boolean",
+        "default": false,
+        "description": "The address keeps the selected tab: a tab the person chooses writes #<id> as a new history entry (path and query kept), so Back returns to the previous tab; on load, on Back and Forward and on a #link, #<id> of an item -- or of an element inside a panel -- opens that tab. Give each item an id. Off by default; one sf-tabs per page should use it. Not for a strip of links."
+      },
+      "sticky": {
+        "type": "boolean",
+        "default": false,
+        "description": "The tab row stays in sight while its panels scroll past (position sticky at --sf-tabs-sticky-top, 0 by default), on the page surface. For long record and settings views."
+      },
       "selected": {
         "type": "string",
         "default": "",
@@ -517,7 +527,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tabs/index.js",
-        "sha256": "674993dbdd1c6efc7f7736f6d451be71c4548dd5a82decdc243739a25b4cadb9"
+        "sha256": "bd23efaf12e875392a94c3576e7822d2d54a134c6b69245fb60cab2e8ef0de68"
       }
     ],
     "generated_runtime": [
