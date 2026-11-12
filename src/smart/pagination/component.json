@@ -2,14 +2,26 @@
   "$comment": "The source of sf-pagination's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/pagination (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.pagination",
   "tag": "sf-pagination",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "kind": "leaf",
   "family": "pagination",
   "settings": {
+    "appearance": {
+      "type": "enum",
+      "values": [
+        "field",
+        "numbers",
+        "arrows",
+        "cursor",
+        "more"
+      ],
+      "default": "field",
+      "summary": "The look of the navigation (decision C97): field, |‹ ‹ [3] из 12 › ›| for a dense table; numbers, ‹ 1 … 4 [5] 6 … 12 › with up to seven places (five below the sm step) for sites, catalogues and search, links with href; arrows, ‹ Назад · Страница 3 · Далее › where the count is not known; cursor, «В начало · Дальше ›» for a cursor list, never a last page; more, «Показать ещё 20» with «Показано 40 из 240» and a thin bar. A control at an end is disabled, never removed, so the row keeps its width. Not written: the compatible footer of 1.4 (range «41–60 из 240», the page-size button «По 20 ▾», the field, Show more on its own line, the band), until 2027-01-01 (change journal value-pagination-footer-parts-to-view); a list composes those parts itself."
+    },
     "top": {
       "type": "boolean",
       "default": true,
-      "summary": "Show the compatible show-more section."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal value-pagination-show-more-to-more): Show more of the compatible footer, drawn on a line of its own above the page row (never beside the arrows); write appearance=\"more\". Show the compatible show-more section."
     },
     "middle": {
       "type": "boolean",
@@ -19,12 +31,12 @@
     "bottom": {
       "type": "boolean",
       "default": true,
-      "summary": "Allow the compatible batch-action section."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): the band of bulk controls belongs to sf-view, which draws it itself. Allow the compatible batch-action section."
     },
     "top-class": {
       "type": "string",
       "default": "",
-      "summary": "Framework utility classes for the show-more section."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal value-pagination-show-more-to-more): classes of the Show more line of the compatible footer. Framework utility classes for the show-more section."
     },
     "main-class": {
       "type": "string",
@@ -34,12 +46,12 @@
     "bottom-class": {
       "type": "string",
       "default": "",
-      "summary": "Framework utility classes for the batch-action section."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): the band of bulk controls belongs to sf-view, which draws it itself. Framework utility classes for the batch-action section."
     },
     "pages-label": {
       "type": "string",
       "default-from": "runtime.pages-label",
-      "summary": "Visible label before page controls. Empty: the text of the page's language (\"Pages:\" in English)."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal attribute-pagination-footer-labels): written by an author, the compatible footer keeps its «Страницы:» label; the word is no longer drawn by default. Visible label before page controls. Empty: the text of the page's language (\"Pages:\" in English)."
     },
     "page-label": {
       "type": "string",
@@ -64,19 +76,19 @@
     "total-label": {
       "type": "string",
       "default-from": "runtime.total-label",
-      "summary": "Visible label for the total item count. Empty: the text of the page's language (\"Total:\" in English)."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal attribute-pagination-footer-labels): written by an author, the compatible footer keeps its 1.4 line «Всего: 240» in place of the range «41–60 из 240». Visible label for the total item count. Empty: the text of the page's language (\"Total:\" in English)."
     },
     "selected-label": {
       "type": "string",
       "default-from": "runtime.selected-label",
-      "summary": "Visible label for the selected item count. Empty: the text of the page's language (\"Selected:\" in English)."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): the band of bulk controls belongs to sf-view, which draws it itself. Visible label for the selected item count. Empty: the text of the page's language (\"Selected:\" in English)."
     },
     "selected-count": {
       "type": "number",
       "integer": true,
       "min": 0,
       "default": 0,
-      "summary": "Selected item count, clamped between zero and total."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): the band of bulk controls belongs to sf-view, which draws it itself. Selected item count, clamped between zero and total."
     },
     "show-more-text": {
       "type": "string",
@@ -101,12 +113,12 @@
       "type": "string",
       "default": "10,20,30,40",
       "x-markup": "comma-separated page sizes, positive whole numbers; the property also takes a list of numbers",
-      "summary": "Comma-separated positive page-size choices."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal value-pagination-footer-parts-to-view): the sizes of the compatible footer's page-size menu; a list composes «По 20 ▾» itself (sf-button and sf-menu-context). Comma-separated positive page-size choices."
     },
     "show-page-size": {
       "type": "boolean",
       "default": true,
-      "summary": "Show the page-size selector for a non-empty collection."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal value-pagination-footer-parts-to-view): the page-size part of the compatible footer. Show the page-size selector for a non-empty collection."
     },
     "page-size-label": {
       "type": "string",
@@ -116,58 +128,58 @@
     "show-actions": {
       "type": "boolean",
       "default": true,
-      "summary": "Show batch actions when actions are supplied."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): the band of bulk controls belongs to sf-view, which draws it itself. Show batch actions when actions are supplied."
     },
     "actions": {
       "type": "string",
       "default": "",
       "x-markup": "\"value:text::flags|value:text\"; the property also takes a list of {value, text, disabled?, selected?}",
-      "summary": "Pipe-separated compatible batch-action definitions."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): the band of bulk controls belongs to sf-view, which draws it itself. Pipe-separated compatible batch-action definitions."
     },
     "action": {
       "type": "string",
       "default": "",
-      "summary": "Selected batch-action value."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): the band of bulk controls belongs to sf-view, which draws it itself. Selected batch-action value."
     },
     "action-apply-text": {
       "type": "string",
       "default-from": "runtime.action-apply-text",
-      "summary": "Label of the batch-action apply button. Empty: the text of the page's language (\"Apply\" in English)."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): the band of bulk controls belongs to sf-view, which draws it itself. Label of the batch-action apply button. Empty: the text of the page's language (\"Apply\" in English)."
     },
     "show-action-for-all": {
       "type": "boolean",
       "default": false,
-      "summary": "Show the compatible all-items toggle."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): the band of bulk controls belongs to sf-view, which draws it itself. Show the compatible all-items toggle."
     },
     "action-for-all": {
       "type": "boolean",
       "default": false,
-      "summary": "Current all-items toggle value."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): the band of bulk controls belongs to sf-view, which draws it itself. Current all-items toggle value."
     },
     "action-for-all-label": {
       "type": "string",
       "default-from": "runtime.action-for-all-label",
-      "summary": "Label of the all-items toggle. Empty: the text of the page's language (\"For all\" in English)."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): the band of bulk controls belongs to sf-view, which draws it itself. Label of the all-items toggle. Empty: the text of the page's language (\"For all\" in English)."
     },
     "actions-label": {
       "type": "string",
       "default-from": "runtime.actions-label",
-      "summary": "Accessible name of the batch-action selector. Empty: the text of the page's language (\"Action for the selected records\" in English)."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): the band of bulk controls belongs to sf-view, which draws it itself. Accessible name of the batch-action selector. Empty: the text of the page's language (\"Action for the selected records\" in English)."
     },
     "action-choose-label": {
       "type": "string",
       "default-from": "runtime.action-choose-label",
-      "summary": "Placeholder of the batch-action selector, shown until an action is chosen. Empty: the text of the page's language (\"Choose an action\" in English)."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): the band of bulk controls belongs to sf-view, which draws it itself. Placeholder of the batch-action selector, shown until an action is chosen. Empty: the text of the page's language (\"Choose an action\" in English)."
     },
     "actions-region-label": {
       "type": "string",
       "default-from": "runtime.actions-region-label",
-      "summary": "Accessible name of the panel that appears while rows are marked. Empty: the text of the page's language (\"Actions for the selected\" in English)."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): the band of bulk controls belongs to sf-view, which draws it itself. Accessible name of the panel that appears while rows are marked. Empty: the text of the page's language (\"Actions for the selected\" in English)."
     },
     "clear-selection-label": {
       "type": "string",
       "default-from": "runtime.clear-selection-label",
-      "summary": "Accessible name and tooltip of the control that drops the selection. Empty: the text of the page's language (\"Clear the selection\" in English)."
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): the band of bulk controls belongs to sf-view, which draws it itself. Accessible name and tooltip of the control that drops the selection. Empty: the text of the page's language (\"Clear the selection\" in English)."
     },
     "count-known": {
       "type": "boolean",
@@ -277,7 +289,8 @@
           "type": "number",
           "nullable": true
         }
-      }
+      },
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal value-pagination-footer-parts-to-view): sent by the compatible footer's page-size menu; a list that composes «По 20 ▾» sends its own. "
     },
     "count": {
       "carries": {
@@ -316,19 +329,22 @@
         "selected-count": "number",
         "total": "number"
       },
-      "own-verb": true
+      "own-verb": true,
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): sent by the band of bulk controls, which belongs to sf-view. "
     },
     "action-change": {
       "carries": {
         "previous": "string",
         "action": "string"
-      }
+      },
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): sent by the band of bulk controls, which belongs to sf-view. "
     },
     "action-for-all-change": {
       "carries": {
         "previous": "boolean",
         "action-for-all": "boolean"
-      }
+      },
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): sent by the band of bulk controls, which belongs to sf-view. "
     },
     "apply": {
       "carries": {
@@ -347,7 +363,8 @@
           "type": "number",
           "nullable": true
         }
-      }
+      },
+      "summary": "Deprecated until 2027-01-01 (decision C97, change journal setting-pagination-band-to-view): sent by the band of bulk controls, which belongs to sf-view. "
     }
   },
   "actions": {
@@ -410,6 +427,12 @@
     },
     {
       "name": "cl-icon"
+    },
+    {
+      "name": "cl-menu-context"
+    },
+    {
+      "name": "cl-progress-bar"
     }
   ],
   "templates": {
@@ -580,7 +603,7 @@
       }
     ]
   },
-  "x-summary": "Source-driven navigation for a collection split into numbered pages.",
+  "x-summary": "Page navigation for a collection split into pages, in five appearances: field (a dense table), numbers (sites, search), arrows (an unknown count), cursor (a cursor list) and more (Show more).",
   "x-source": {
     "package": "framework",
     "folder": "pagination",
@@ -651,7 +674,8 @@
     "version 1.3.12 (2026-11-09): a patch; nothing in the component changed. The sf-input it draws asks for the kbd sheet since sf-input 1.7.0 (C38, the shortcut setting; component.kbd 1.3.0), so its first-paint snapshots name that sheet and carry one more empty line where the field's shortcut would stand; the component takes a patch with them. Settings, values, events and keys unchanged.",
     "version 1.3.13 (2026-11-10): a patch; nothing in the component changed. The sf-dropdown it draws shows its arrow glyph as sf-icon since sf-dropdown 1.8.1, so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged.",
     "version 1.3.14 (2026-11-11): a patch; nothing in the component changed. The sf-button it draws writes sf-button--ghost beside the dated sf-button--link since sf-button 1.13.0 (CB-01), so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged.",
-    "version 1.4.0 (2026-11-12, study R182, defects PG-05, PG-10, PG-11): a minor. Three settings, all off by default: href, an address template that makes the arrows links with rel prev/next (and opens a typed page by its address; sf-pagination-change is cancelable for such a press, a cancel takes the move in place); page-param, the query parameter that holds the page, read on placing and on Back/Forward and written on a move; page-in-title, the page in the document title (word runtime.title-page). The last-page button is drawn only where the jump can be answered, the count exact or can-count: a host that cannot count (a cursor list) no longer gets a button that asked into nothing (PG-11). On a narrow screen the page row stays a row that wraps: the count and the arrows share a line and the page size keeps its label beside it, two lines where it took four (PG-05). Events, values and keys otherwise unchanged; the first-paint snapshots follow at the group build."
+    "version 1.4.0 (2026-11-12, study R182, defects PG-05, PG-10, PG-11): a minor. Three settings, all off by default: href, an address template that makes the arrows links with rel prev/next (and opens a typed page by its address; sf-pagination-change is cancelable for such a press, a cancel takes the move in place); page-param, the query parameter that holds the page, read on placing and on Back/Forward and written on a move; page-in-title, the page in the document title (word runtime.title-page). The last-page button is drawn only where the jump can be answered, the count exact or can-count: a host that cannot count (a cursor list) no longer gets a button that asked into nothing (PG-11). On a narrow screen the page row stays a row that wraps: the count and the arrows share a line and the page size keeps its label beside it, two lines where it took four (PG-05). Events, values and keys otherwise unchanged; the first-paint snapshots follow at the group build.",
+    "version 1.5.0 (2026-11-12, decision C97; study R182, defects PG-01..PG-04, PG-06..PG-09): a minor. sf-pagination is page navigation only, in five appearances (setting appearance, default field): field |‹ ‹ [3] из 12 › ›| (the field as wide as the longest page number, «из 12» after it), numbers ‹ 1 … 4 [5] 6 … 12 › (up to seven places, five below the sm step, the first and the last page always, the gap not a control, links with href and aria-current=page on the current one; with no exact count the row ends in a gap while has-next says more follow), arrows ‹ Назад · Страница 3 · Далее ›, cursor «В начало · Дальше ›» (no number, never a last page; Larena msg-0852f1a2), more «Показать ещё 20» with «Показано 40 из 240» and an sf-progress-bar (its own look, never in one row with the arrows). In every appearance a control at an end is disabled, not removed, so the row keeps its width while a person pages (PG-02). An element written without appearance draws the compatible footer until 2027-01-01, in the look of C97: the range «41–60 из 240» (words range, range-many; «из ~450» for an estimate) in place of «Всего: 240», the page size as a quiet sf-button «По 20 ▾» with an sf-menu-context of radio rows in place of the labelled select, the field with «из 12», Show more on a line of its own above the row, the band below; the parts it keeps for compatibility are noted in SF.deprecations (change journal value-pagination-footer-parts-to-view, value-pagination-show-more-to-more, setting-pagination-band-to-view, attribute-pagination-footer-labels). Words added: of-pages, range, range-many, page-size-text, previous-text, next-text, cursor-next-text, show-more-count, shown; show-count-label reads «посчитать» / «count». Relations cl-menu-context and cl-progress-bar. Events unchanged in name and detail; size-change and the band's events are deprecated with their parts. The first-paint snapshots follow at the group build."
   ],
   "x-registry": {
     "capabilities": [
