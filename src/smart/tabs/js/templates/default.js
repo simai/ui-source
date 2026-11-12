@@ -85,6 +85,46 @@ function renderHint(item, context) {
       hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${item.hint}</span></span></span>`;
 }
 
+// The errors of a tab's panel, or of the tabs «Ещё» holds (owner decision C96
+// item 6): a badge on the line of the label (rule C95 point 6), sf-badge
+// line="text" in its class form (component.badges): drawn with the tab, so the
+// row measures its width at once, and no element to wait for. Tonal: the
+// error container, as the count stood before.
+export function errorBadgeClasses(errors) {
+  return joinClasses(
+    'sf-badge sf-badge--tonal sf-badge--error sf-badge--size-1/3 sf-badge--line-text',
+    [...String(errors)].length === 1 ? 'sf-badge--figure' : '',
+    'inline-flex flex-row flex-nowrap justify-center items-center',
+  );
+}
+
+function renderErrorBadge(errors, className) {
+  return html`<span class=${`${errorBadgeClasses(errors)} ${className}`} aria-hidden="true"><span
+      class="sf-badge-text-container flex items-center"><span class="sf-badge-text">${String(errors)}</span></span></span>`;
+}
+
+// An icon tab of a strip of links (R184 T4, C96 item 8): sf-button-icon has no
+// address, so the link is drawn in the icon button's class form, an <a> with
+// the same classes, size and line; named by the item's label, the current one
+// aria-current="page". A disabled link has no href and says aria-disabled.
+function renderIconLink(item, context) {
+  const size = context.size || '1';
+  return html`<a
+      class=${joinClasses(
+        'sf-icon-button', `sf-icon-button--size-${size}`, 'sf-icon-button--icon', 'sf-icon-button--default',
+        `sf-icon-button--${context.scheme || 'primary'}`, 'flex', 'items-cross-center', tabClasses(item))}
+      href=${item.disabled ? nothing : item.href}
+      aria-label=${item.label}
+      aria-current=${item.selected ? 'page' : nothing}
+      aria-disabled=${item.disabled ? 'true' : nothing}
+      data-sf-tab-index=${String(item.index)}
+      data-tab=${String(item.index)}
+      data-tab-label=${item.label}
+      data-tooltip=${item.hint ? hintId(item, context) : nothing}
+    ><sf-icon root-class="pointer-event-none" icon=${item.iconStart || item.icon || item.iconEnd || nothing}
+      weight="400" aria-hidden="true"></sf-icon></a>`;
+}
+
 function renderTab(item, context) {
   const tabContent = context.component?.hasSlotContent?.(item.tabSlotName)
     ? context.component.getSlotContent(item.tabSlotName)
@@ -125,7 +165,7 @@ function renderTab(item, context) {
   const counted = tabContent === nothing
     ? html`<span slot="text" class="sf-tabs-label"><span class="sf-tabs-name" data-text=${item.label}>${item.label}</span>${hasCount
       ? html`<span class="sf-tabs-count">${String(item.count)}</span>` : nothing}${item.errors
-      ? html`<span class="sf-tabs-count sf-tabs-count--error" aria-hidden="true">${String(item.errors)}</span><span class="sf-tabs-said">, ${context.errorWords?.(item.errors) ?? item.errors}</span>`
+      ? html`${renderErrorBadge(item.errors, 'sf-tabs-errors')}<span class="sf-tabs-said">, ${context.errorWords?.(item.errors) ?? item.errors}</span>`
       : nothing}</span>`
     : nothing;
 
@@ -153,6 +193,8 @@ function renderTab(item, context) {
               ${tabContent === nothing ? counted : html`<span slot="text">${tabContent}</span>`}
           </sf-button>
       `;
+  } else if (context.links) {
+      return renderIconLink(item, context);
   } else {
       // An icon tab draws the item's icon however it was given: icon, or the
       // icon-start / icon-end of the "label::icon-start=home" form, which the

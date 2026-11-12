@@ -11,6 +11,9 @@ import test from 'node:test';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const source = read('src/smart/tabs/index.js');
+// The row's arithmetic lives in the shared row engine since the tabs follow-ups
+// (2026-11-12): sf-tabs and sf-contents' bar lay out by the same rules.
+const engine = read('src/core/js/overflow-row.js');
 const manifest = JSON.parse(read('src/smart/tabs/component.json'));
 const journal = JSON.parse(read('contracts/changes/journal.json'));
 
@@ -40,11 +43,14 @@ test('the default change is in the change journal', () => {
 test('the row keeps the tabs in their order up to the first that does not fit, in its content box', () => {
   const layout = source.slice(source.indexOf('  layoutOverflow() {'), source.indexOf('  async openMore(anchor) {'));
   assert.ok(layout.length > 0);
+  assert.match(source, /import \{ fitInOrder, fitBesideMore, rowRoom, standardMenu, triggerExtra \} from '\.\.\/\.\.\/core\/js\/overflow-row\.js';/u);
   // C54 return: fractional, not the rounded clientWidth.
-  assert.match(layout, /const edges = \['borderInlineStartWidth', 'borderInlineEndWidth', 'paddingInlineStart', 'paddingInlineEnd'\];/u);
-  assert.match(layout, /const room = \(\) => list\.getBoundingClientRect\(\)\.width - edges\.reduce\(/u);
-  assert.match(layout, /if \(next > available \+ 0\.5\) break;/u);
-  assert.doesNotMatch(layout, /list\.clientWidth \+ 0\.5/u);
+  assert.match(layout, /const room = \(\) => rowRoom\(list\);/u);
+  assert.match(engine, /const edges = \['borderInlineStartWidth', 'borderInlineEndWidth', 'paddingInlineStart', 'paddingInlineEnd'\];/u);
+  assert.match(engine, /return list\.getBoundingClientRect\(\)\.width - edges\.reduce\(/u);
+  assert.match(engine, /const TOLERANCE = 0\.5;/u);
+  assert.match(engine, /if \(next > available \+ TOLERANCE\) break;/u);
+  assert.doesNotMatch(layout, /list\.clientWidth/u);
 });
 
 test('the row is laid out again when the trigger, a late tab or the text face changes a width', () => {
@@ -75,7 +81,7 @@ test('the row is laid out before the paint: in the resize observer, with every t
   assert.match(source, /this\._resizeObserver\.observe\(box, \{box: 'border-box'\}\)/u);
   assert.match(source, /expected\.set\(box, kept && !kept\.includes\(at\) \? 0 : widths\[at\]\);/u);
   assert.match(source, /if \(!kept\) this\.expectTabSizes\(hosts, widths, null\);/u);
-  assert.match(source, /this\.expectTabSizes\(hosts, widths, kept\);\s*this\._overflowed = /u);
+  assert.match(source, /this\.expectTabSizes\(hosts, widths, kept\);\s*if \(more\) \{/u);
   assert.match(source, /const width = \(host\) => tabBox\(host\)\?\.getBoundingClientRect\(\)\.width \?\? 0;/u);
   assert.match(source, /layoutOverflowNow\(\) \{\s*if \(this\._overflowFrame\) \{\s*cancelAnimationFrame\(this\._overflowFrame\);/u);
   assert.match(source, /observeTabBoxes\(\) \{/u);
@@ -85,8 +91,9 @@ test('the row is laid out before the paint: in the resize observer, with every t
 // C54 return (2026-11-11), measured by ui-control evidence 2026-11-11-tabs-overflow-r2.
 test('a pinned tab gives way to the current one, and only a lone current tab is shortened', () => {
   const layout = source.slice(source.indexOf('  layoutOverflow() {'), source.indexOf('  async openMore(anchor) {'));
-  assert.match(layout, /\?\? next\.slice\(\)\.reverse\(\)\.find\(\(at\) => at !== activeAt\);/u);
-  assert.match(layout, /if \(kept\.length === 1 && kept\[0\] === activeAt && span\(kept\) > room\(\) \+ 0\.5\) \{\s*hosts\[activeAt\]\.classList\.add\('sf-tabs-squeezed'\);/u);
+  assert.match(engine, /\?\? next\.slice\(\)\.reverse\(\)\.find\(\(at\) => at !== current\);/u);
+  assert.match(engine, /const squeezed = kept\.length === 1 && kept\[0\] === current && spanOf\(widths, gap, kept\) > room \+ TOLERANCE \? current : -1;/u);
+  assert.match(layout, /if \(laid\.squeezed >= 0\) hosts\[laid\.squeezed\]\.classList\.add\('sf-tabs-squeezed'\);/u);
   assert.match(layout, /host\.classList\.remove\('sf-tabs-overflowed', 'sf-tabs-squeezed'\);/u);
   const docs = read('src/smart/tabs/docs/docs.md');
   assert.match(docs, /закреплённая уступает место выбранной/u);
@@ -97,10 +104,12 @@ test('the row is laid out with the width «Ещё (n)» will have with its new c
   const layout = source.slice(source.indexOf('  layoutOverflow() {'), source.indexOf('  async openMore(anchor) {'));
   // widthOfText, not measure: the bare word asks the Loader for the
   // text-max-width utility (class measure) the tabs never write.
-  assert.match(layout, /const extra = widthOfText\(label\(count\)\) - drawn;/u);
+  assert.match(layout, /extra: triggerExtra\(textBox, label\)/u);
   assert.doesNotMatch(layout, /\bmeasure\b/u);
-  assert.match(layout, /if \(hosts\.length - chosen\.length === count\) kept = chosen;/u);
-  assert.match(layout, /kept \?\?= choose\(free - Math\.max\(\.\.\.besides\)\);/u);
-  assert.match(source, /function textWidth\(element\) \{/u);
+  assert.match(engine, /return \(count\) => measure\(label\(count\)\) - drawn;/u);
+  assert.match(engine, /if \(widths\.length - chosen\.length === count\) kept = chosen;/u);
+  assert.match(engine, /if \(!kept && besides\.length\) kept = chooseBeside\(\{widths, gap, available: room - Math\.max\(\.\.\.besides\), must, current\}\);/u);
+  assert.match(engine, /export function textWidth\(element\) \{/u);
+  assert.doesNotMatch(source, /function textWidth\(element\) \{/u);
   assert.match(JSON.stringify(manifest['x-decisions']), /C54 return D2/u);
 });

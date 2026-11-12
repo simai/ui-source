@@ -6,7 +6,8 @@ import { isTag } from '../../core/js/tag-aliases.js';
 import { followDensity, RELATIVE } from '../../core/js/density.js';
 import { breakpointMedia } from '../../core/js/breakpoints.js';
 import { noteDeprecated } from '../../core/js/deprecations';
-import { renderTabsTemplate } from './js/templates/default';
+import { fitInOrder, fitBesideMore, rowRoom, standardMenu, triggerExtra } from '../../core/js/overflow-row.js';
+import { renderTabsTemplate, errorBadgeClasses } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -64,19 +65,6 @@ function tabBox(host) {
   return (host.matches('sf-button') || isTag(host, 'sf-button-icon'))
     ? host.querySelector(':scope > .sf-button, :scope > .sf-icon-button, :scope > button')
     : host;
-}
-
-// The width a text takes in the face of an element, for a text it does not
-// draw yet (the «Ещё (n)» count before its button draws it).
-let measureCanvas = null;
-function textWidth(element) {
-  const style = getComputedStyle(element);
-  measureCanvas ??= globalThis.document?.createElement('canvas') ?? null;
-  const context = measureCanvas?.getContext?.('2d');
-  if (!context) return null;
-  context.font = style.font;
-  if ('letterSpacing' in context) context.letterSpacing = style.letterSpacing === 'normal' ? '0px' : style.letterSpacing;
-  return (text) => context.measureText(text).width;
 }
 
 function parseItems(items = '') {
@@ -285,9 +273,10 @@ class SfTabs extends TabsElement {
   get tabTargets() {
     const targets = [];
     for (const element of Array.from(this.tabList?.children || [])) {
+      // An icon link of a strip of links is drawn by the tabs themselves (T4).
       const target = (element.matches('sf-button') || isTag(element, 'sf-button-icon'))
         ? element.querySelector(':scope > button, :scope > a')
-        : element.matches('[role="tab"]') ? element : null;
+        : element.matches('[role="tab"], a.sf-icon-button') ? element : null;
       const index = tabIndexOf(element);
       if (Number.isInteger(index)) targets[index] = target;
     }
@@ -1062,31 +1051,16 @@ class SfTabs extends TabsElement {
     }
     const width = (host) => tabBox(host)?.getBoundingClientRect().width ?? 0;
     const widths = hosts.map(width);
-    const style = getComputedStyle(list);
-    const gap = parseFloat(style.columnGap) || 0;
-    // The tabs' room is the row's content box, in fractional pixels: the row
-    // clips and has no scrollbar, so its border box less borders and padding.
-    // clientWidth is rounded to a whole pixel, and a row 383.6 px wide read as
-    // 383 or 384 with the trigger's count: the same box came back from a
-    // narrower one with a tab fewer than at load (C54 return, 560 px, underline).
-    const edges = ['borderInlineStartWidth', 'borderInlineEndWidth', 'paddingInlineStart', 'paddingInlineEnd'];
-    const room = () => list.getBoundingClientRect().width - edges.reduce((sum, edge) => sum + (parseFloat(style[edge]) || 0), 0);
-    // The tabs in their order up to the first that does not fit: a tab is in
-    // the row whole or in «Ещё», and a later narrower tab does not jump the
-    // queue past a wider one (owner decision C54).
-    const fits = (available) => {
-      const kept = [];
-      let used = 0;
-      for (let at = 0; at < hosts.length; at += 1) {
-        const next = used + (kept.length ? gap : 0) + widths[at];
-        if (next > available + 0.5) break;
-        kept.push(at);
-        used = next;
-      }
-      return kept.length === hosts.length ? null : kept;
-    };
+    const gap = parseFloat(getComputedStyle(list).columnGap) || 0;
+    // The row's arithmetic is the shared row engine (core/js/overflow-row.js,
+    // taken out of these tabs for sf-contents' bar): the tabs in their order
+    // up to the first that does not fit, each whole in the row or in «Ещё»
+    // (owner decision C54); the room is the row's content box in fractional
+    // pixels (rowRoom: clientWidth is a whole pixel, C54 return).
+    const room = () => rowRoom(list);
     showMore(false);
-    let kept = fits(room());
+    this.syncMoreErrors(more, 0);
+    let kept = fitInOrder(widths, gap, room());
     // A shared row gives the first and the last tab back the padding of their
     // outer edges, which a row of their own widths leaves off (owner decision
     // C99, TS-5 and TS-7): the tabs share the row only when they fit with it.
@@ -1099,7 +1073,7 @@ class SfTabs extends TabsElement {
       const back = (style, outer, inner) => Math.max(0, (parseFloat(style[inner]) || 0) - (parseFloat(style[outer]) || 0));
       return back(start, 'paddingInlineStart', 'paddingInlineEnd') + back(end, 'paddingInlineEnd', 'paddingInlineStart');
     };
-    if (!kept && this.fitsEqually(hosts.length) && !fits(room() - edgesBack())) {
+    if (!kept && this.fitsEqually(hosts.length) && !fitInOrder(widths, gap, room() - edgesBack())) {
       // Every tab fits: they share the row, each at least its own width. The
       // shared widths are what the observer will report, not a change.
       container?.setAttribute('data-sf-tabs-fit', '');
@@ -1108,83 +1082,88 @@ class SfTabs extends TabsElement {
     if (kept) {
       showMore(true);
       const items = this.computedItems;
+      // The pinned tabs and the current one always stay in the row (docs
+      // trial 5; the C54 return D1: a pinned tab gives way to the current one,
+      // the last pinned first).
       const must = hosts.map((host, at) => at).filter((at) => {
         const index = tabIndexOf(hosts[at]);
         return index === this.activeIndex || items[index]?.pinned === true;
       });
-      const activeAt = hosts.findIndex((host) => tabIndexOf(host) === this.activeIndex);
-      const span = (indices) => indices.reduce((sum, at, n) => sum + widths[at] + (n ? gap : 0), 0);
-      const choose = (available) => {
-        let chosen = fits(available) ?? hosts.map((_, at) => at);
-        // The pinned tabs and the active one always stay in the row: the last
-        // kept tabs that are neither give way to them. (Only the active one did:
-        // at 375px a pinned first tab went into «Ещё» beside an active one,
-        // docs trial 5.)
-        const missing = must.filter((at) => !chosen.includes(at));
-        if (missing.length) {
-          const next = [...chosen, ...missing];
-          while (span(next) > available + 0.5) {
-            // The last kept tabs that are neither pinned nor current go first;
-            // then, when the pinned tabs and the current one still do not fit
-            // beside «Ещё», a pinned tab gives way to the current one, the last
-            // pinned first (contract call on the C54 return D1, 2026-11-11: a
-            // pinned first tab and a current sixth one stood clipped, the
-            // current one under the trigger, in 300-430 px boxes).
-            const dropAt = next.slice().reverse().find((at) => !must.includes(at))
-              ?? next.slice().reverse().find((at) => at !== activeAt);
-            if (dropAt === undefined) break;
-            next.splice(next.indexOf(dropAt), 1);
-          }
-          chosen = next.sort((a, b) => a - b);
-        }
-        return chosen;
-      };
+      const current = hosts.findIndex((host) => tabIndexOf(host) === this.activeIndex);
       // «Ещё (n)» draws its new count a task later, and the digits are not of
-      // one width: the row laid out beside «Ещё (7)» stood 2 px past its room
-      // beside «Ещё (4)» until the trigger's resize laid it out again (C54
-      // return D2, 390 px, underline, current last, 590 px box). The room is
-      // taken with the width the trigger will have with the count it gets,
-      // measured in its text face: the row with the most tabs that fits
-      // beside its own count. Taking the count the trigger drew instead left
-      // a row that came back from a narrower box with fewer tabs than it had
-      // at load (330 px, underline: «Архив» beside «Ещё (8)», where «Обзор,
-      // Архив» fit beside «Ещё (7)»).
-      const free = room();
+      // one width (C54 return D2): the room is taken with the width the
+      // trigger will have with the count it gets, measured in its text face.
       const label = (count) => `${this.text('more')} (${count})`;
       const textBox = more?.querySelector(':scope > button .sf-button-text-container');
-      const widthOfText = textBox ? textWidth(textBox) : null;
-      kept = null;
-      if (widthOfText) {
-        const drawn = widthOfText(textBox.textContent.trim());
-        const besides = [];
-        for (let count = 1; count < hosts.length && !kept; count += 1) {
-          const extra = widthOfText(label(count)) - drawn;
-          besides.push(extra);
-          const chosen = choose(free - extra);
-          if (hosts.length - chosen.length === count) kept = chosen;
-        }
-        // No count agrees with its row: the row that fits beside the widest.
-        kept ??= choose(free - Math.max(...besides));
+      const place = () => {
+        const laid = fitBesideMore({widths, gap, room: room(), must, current, extra: triggerExtra(textBox, label)});
+        this._overflowed = hosts.filter((_, at) => !laid.kept.includes(at)).map((host) => tabIndexOf(host));
+        return laid;
+      };
+      let laid = place();
+      // The errors of the tabs «Ещё» holds are summed on it (owner decision
+      // C96 item 6): a badge after its label widens the trigger, so the row
+      // is laid out once more with it drawn, in the same task -- the observer
+      // sees one layout, not an echo. Less room only moves more tabs into
+      // «Ещё», so the sum stays above 0 and a third pass is not needed.
+      if (this.syncMoreErrors(more, this.errorsOf(this._overflowed))) {
+        laid = place();
+        this.syncMoreErrors(more, this.errorsOf(this._overflowed));
       }
-      kept ??= choose(free);
+      kept = laid.kept;
       // The current tab alone is wider than the row: it alone may be
       // shortened, with an ellipsis; every other tab is whole or in «Ещё».
-      if (kept.length === 1 && kept[0] === activeAt && span(kept) > room() + 0.5) {
-        hosts[activeAt].classList.add('sf-tabs-squeezed');
-      }
+      if (laid.squeezed >= 0) hosts[laid.squeezed].classList.add('sf-tabs-squeezed');
       hosts.forEach((host, at) => {
         // A class, not a data attribute: sf-button moves its data attributes
         // to the button inside it, and only class and style stay on the host.
         if (!kept.includes(at)) host.classList.add('sf-tabs-overflowed');
       });
       this.expectTabSizes(hosts, widths, kept);
-      this._overflowed = hosts.filter((_, at) => !kept.includes(at)).map((host) => tabIndexOf(host));
       if (more) {
-        const label = `${this.text('more')} (${this._overflowed.length})`;
-        more.setAttribute('text', label);
-        more.setAttribute('aria-label', label);
+        const text = label(this._overflowed.length);
+        const errors = this.errorsOf(this._overflowed);
+        more.setAttribute('text', text);
+        // The badge is aria-hidden: the name says the errors, as a tab does
+        // («Ещё (3), 2 ошибки»).
+        more.setAttribute('aria-label', errors ? `${text}, ${this.errorWords(errors)}` : text);
       }
     }
+  }
+
+  // The errors of some tabs, by index: what «Ещё» sums.
+  errorsOf(indices = []) {
+    const items = this.computedItems;
+    return indices.reduce((sum, index) => sum + (items[index]?.errors || 0), 0);
+  }
+
+  // The errors badge after the «Ещё» label (C96 item 6): the class form of
+  // sf-badge line="text" (component.badges, C95 point 6), so it is drawn and
+  // measured at once. Written into the trigger's button, after its text box,
+  // outside the button's own drawn parts. Says whether its width changed.
+  syncMoreErrors(more, errors) {
+    const button = more?.querySelector(':scope > button');
+    if (!button) return false;
+    let badge = button.querySelector(':scope > .sf-tabs-more-errors');
+    const before = badge ? badge.getBoundingClientRect().width : 0;
+    if (!errors) {
+      badge?.remove();
+      return before > 0;
+    }
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.setAttribute('aria-hidden', 'true');
+      badge.append(document.createElement('span'));
+      badge.firstChild.className = 'sf-badge-text-container flex items-center';
+      badge.firstChild.append(document.createElement('span'));
+      badge.firstChild.firstChild.className = 'sf-badge-text';
+      const text = button.querySelector(':scope > .sf-button-text-container');
+      if (text) text.after(badge);
+      else button.append(badge);
+    }
+    badge.className = `${errorBadgeClasses(errors)} sf-tabs-more-errors`;
+    badge.querySelector('.sf-badge-text').textContent = String(errors);
+    return badge.getBoundingClientRect().width !== before;
   }
 
   async openMore(anchor) {
@@ -1202,18 +1181,11 @@ class SfTabs extends TabsElement {
     menu.toggleFor(anchor);
   }
 
-  async standardMenu(field, select) {
-    // The standard menu is a relation of the tabs fetched when first used
-    // (SF.Loader.ensure: asked for, waited for up to 3 s, never thrown).
-    await globalThis.SF?.Loader?.ensure?.(['sf-menu-context']);
-    if (this[field]?.isConnected) return this[field];
-    const menu = document.createElement('sf-menu-context');
-    menu.setAttribute('popup', '');
-    menu.addEventListener('sf-menu-context-select', (event) => select?.(event.detail?.id, event));
-    (this.closest('dialog[open]') || document.body).append(menu);
-    this[field] = menu;
-    return menu;
+  // The standard menu «Ещё» and the settings open (core/js/overflow-row.js).
+  standardMenu(field, select) {
+    return standardMenu(this, field, select);
   }
+
 
   // A tab chosen anywhere -- its own button, «Ещё» -- is activated the same
   // way; a tab that is a link goes to its address.

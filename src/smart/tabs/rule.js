@@ -13,6 +13,8 @@ SF.RuleLoader['cl-tabs'] = {
     { name: 'cl-menu-context', lazy: true },
     { name: 'cl-sortable', lazy: true },
     { name: 'cl-checkbox', lazy: true },
+    // A tab's errors and the sum on «Ещё» are sf-badge line="text" in its class form (component.badges; C95 point 6, C96 item 6).
+    { name: 'badges' },
     // A tab's hint is the Framework tooltip (component.tooltip), drawn only for an item with a hint.
     { name: 'tooltip', lazy: true },
   ],

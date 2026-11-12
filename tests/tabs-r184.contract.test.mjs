@@ -354,7 +354,8 @@ test('C96 6 (T7): a per-tab error count is said with the name; go-to-error opens
   assert.deepEqual(Object.keys(manifest.settings.items.of).includes('errors'), true);
   assert.equal(ru.runtime.errors.few, '{n} ошибки');
   assert.equal(en.runtime.errors.one, '{n} error');
-  assert.match(template, /class="sf-tabs-count sf-tabs-count--error" aria-hidden="true"/u);
+  // The count is sf-badge line="text" in its class form (C95 point 6).
+  assert.match(template, /\$\{renderErrorBadge\(item\.errors, 'sf-tabs-errors'\)\}/u);
   assert.match(template, /<span class="sf-tabs-said">, \$\{context\.errorWords/u);
   // Sized by the label (C95): the count inherits the label's size and line.
   assert.match(sheet, /\.sf-tabs-count \{[^}]*font-size: inherit;\s*line-height: inherit;/u);

@@ -70,7 +70,7 @@ test('TS-6: the tab spacing reads only ladder variables, which compact density m
 
 test('TS-7: a shared row keeps every padding and is shared only when the tabs fit with it', () => {
   assert.match(source, /const edgesBack = \(\) => \{/u);
-  assert.match(source, /if \(!kept && this\.fitsEqually\(hosts\.length\) && !fits\(room\(\) - edgesBack\(\)\)\) \{/u);
+  assert.match(source, /if \(!kept && this\.fitsEqually\(hosts\.length\) && !fitInOrder\(widths, gap, room\(\) - edgesBack\(\)\)\) \{/u);
 });
 
 test('TS-8: vertical rows are the menu column: pitch 44, inset 16, labels at the start', () => {

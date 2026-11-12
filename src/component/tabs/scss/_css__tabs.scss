@@ -556,7 +556,7 @@
     align-items: center;
     justify-content: center;
     min-inline-size: var(--sf-text-height-1\/3);
-    margin-inline-start: var(--sf-a6);
+    margin-inline-start: var(--sf-space-1\/4);
     padding-inline: var(--sf-space-1\/4);
     border-radius: var(--sf-radius-circle);
     background-color: var(--sf-surface-container);
@@ -582,12 +582,32 @@
     min-inline-size: var(--sf-text-height-2);
   }
 
-  // The errors of a tab's panel (owner decision C96 item 6): the count on the
-  // error container; the words beside it are what a screen reader says --
+  // The errors of a tab's panel, and of the tabs «Ещё» holds (owner decision
+  // C96 item 6): a badge on the label's line (sf-badge line="text", C95 point
+  // 6, in its class form), a quarter space after the label as a contents
+  // entry's (C95). The words beside it are what a screen reader says --
   // «Доступ, 2 ошибки» -- and the number itself is not said twice.
-  .sf-tabs-count.sf-tabs-count--error {
-    background-color: var(--sf-error-container);
-    color: var(--sf-on-error-container);
+  .sf-tabs-errors,
+  .sf-tabs-more-errors {
+    margin-inline-start: var(--sf-space-1\/4);
+  }
+
+  // «Ещё»'s badge stands in its button beside the text box, not in it (the
+  // box is the button's drawn part), so the line and the size it takes from
+  // the text are named: the text box's of the button's size.
+  .sf-tabs-more > .sf-button.sf-button--size-1\/2 > .sf-badge.sf-tabs-more-errors {
+    --sf-badge--line-height: var(--sf-text-height-1\/2);
+    font-size: var(--sf-text-size-1\/2);
+  }
+
+  .sf-tabs-more > .sf-button.sf-button--size-1 > .sf-badge.sf-tabs-more-errors {
+    --sf-badge--line-height: var(--sf-text-height-1);
+    font-size: var(--sf-text-size-1);
+  }
+
+  .sf-tabs-more > .sf-button.sf-button--size-2 > .sf-badge.sf-tabs-more-errors {
+    --sf-badge--line-height: var(--sf-text-height-2);
+    font-size: var(--sf-text-size-2);
   }
 
   .sf-tabs-said {

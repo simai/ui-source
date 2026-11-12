@@ -24,6 +24,7 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.badges",
       "component.tabs",
       "component.tooltip",
       "smart.button",

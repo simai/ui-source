@@ -412,9 +412,14 @@
     "transition-property/default"
   ],
   "cl-tabs": [
+    "align-items/default",
     "container/default",
     "display/default",
     "flex-direction/default",
+    "flex-wrap/default",
+    "justify-content/default",
+    "place-items/default",
+    "pointer-events/default",
     "position/default",
     "text-decoration/default",
     "visibility/default"
