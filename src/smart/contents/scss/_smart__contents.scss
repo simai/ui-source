@@ -17,12 +17,19 @@
   --sf-contents--color: var(--sf-contents-color, var(--sf-on-surface-variant));
   --sf-contents--current: var(--sf-contents-current-color, var(--sf-primary));
   --sf-contents--line: var(--sf-contents-line-color, var(--sf-outline-variant));
-  --sf-contents--indent: var(--sf-contents-indent, var(--sf-space-1\/2));
   /* The value inset of a list (C77, R191 HS-12): it follows the size's
      step with a floor of 12 (--sf-b2), as the fields do -- 1/2 is
      max(--sf-space-1/2, --sf-b2), 12 on the desktop, compact and the phone
      (where --sf-space-1/2 is 8); 1 is --sf-space-1 (16, compact and phone 12). */
   --sf-contents--value-inset: max(var(--sf-space-1\/2), var(--sf-b2));
+  /* A deeper level steps in by the list's own inset, H4 of the
+     horizontal-spacing standard (owner decision C109 point 2, NI-8): a
+     text-only list has no column to stand under, so the step is the inset
+     its text already keeps from the edge -- 12 at size 1/2 everywhere, 16 at
+     size 1 (12 compact and on a phone). It was --sf-space-1/2, 8 in compact
+     and on a phone, under the 12 inset. Resolved here, on the element whose
+     size class may move the inset. */
+  --sf-contents--indent: var(--sf-contents-indent, var(--sf-contents--value-inset));
   /* The text's distance from the line (C95 point 1, CT-02): public, so a host
      whose divider is the line sets one value on its column and lines its own
      parts under the contents up with it. */

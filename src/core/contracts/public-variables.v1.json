@@ -3308,8 +3308,8 @@
         {
           "name": "--sf-contents-indent",
           "role": "indent",
-          "summary": "The step of a deeper level.",
-          "default": "var(--sf-space-1\\/2)",
+          "summary": "The step of a deeper level; by default the list's own inset (H4): 12 at size 1/2, 16 at size 1 (12 compact and on a phone).",
+          "default": "max(var(--sf-space-1\\/2), var(--sf-b2))",
           "since": "2026-10-30"
         },
         {

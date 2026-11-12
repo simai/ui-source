@@ -260,7 +260,7 @@ comes after the row in Tab order and opens a menu of the sections it holds. The 
 | `--sf-contents-current-color` | the current section's bar, stroke or underline, and the progress (not its text) | `--sf-primary` |
 | `--sf-contents-line-color` | the column's line, the bar's edge, the progress track | `--sf-outline-variant` |
 | `--sf-contents-background-color` | the bar's fill, the sticky compact button's band and the compact view's open list | `--sf-surface-0` / `--sf-elevation-2--surface` |
-| `--sf-contents-indent` | the step of a deeper level | `--sf-space-1/2` |
+| `--sf-contents-indent` | the step of a deeper level | the list's inset (H4, C109): 12 at size 1/2; 16 at size 1, 12 compact and on a phone |
 | `--sf-contents-inset-inline` | the text's distance from the line (heading and links) | the size's value inset: 1/2 `max(--sf-space-1/2, --sf-b2)`, 1 `--sf-space-1` |
 | `--sf-contents-gap` | the space between the links | `0` (column), `--sf-space-1/2` (rail), `--sf-space-1/4` (bar) |
 | `--sf-contents-inset-block-start` | where the sticky column, rail, bar or compact button stops | `--sf-space-1` |
