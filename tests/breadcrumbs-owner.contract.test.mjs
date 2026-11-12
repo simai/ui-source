@@ -19,7 +19,9 @@ test('Breadcrumbs presentation uses role tokens and responsive logical geometry'
 
   assert.match(styles, /flex-wrap: wrap/);
   assert.match(styles, /--sf-text-size-1\\\/2/);
-  assert.match(styles, /--sf-primary/);
+  // Links are grey (owner decision C93 item 5, 2026-11-12); the primary colour is gone.
+  assert.match(styles, /--sf-breadcrumbs-link-color, var\(--sf-on-surface-variant\)/);
+  assert.doesNotMatch(styles, /--sf-primary/);
   assert.match(styles, /--sf-on-surface/);
   assert.match(styles, /--sf-font-weight-medium/);
   assert.match(styles, /sf-breadcrumbs-item--separator[\s\S]*scaleX\(-1\)/);
@@ -50,7 +52,8 @@ test('Smart Breadcrumbs projects the ordinary owner and native navigation semant
 
   // smart.icon is listed because the template renders sf-icon, which the rule
   // has to fetch: see loader-relation-completeness.contract.test.mjs.
-  assert.deepEqual(manifest.composition.uses, ['component.breadcrumbs', 'component.icons', 'smart.icon']);
+  // smart.menu-context: «…» and the siblings open as a menu (owner decision C93).
+  assert.deepEqual(manifest.composition.uses, ['component.breadcrumbs', 'component.icons', 'smart.icon', 'smart.menu-context']);
   // Empty: the runtime reads the attribute, then the page language's dictionary;
   // the English default the manifest used to show was never used (2026-10-13).
   // The page language's word (default-from): the registry names no fixed default.
