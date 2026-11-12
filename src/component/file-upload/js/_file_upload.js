@@ -535,16 +535,37 @@ function emitSelect(root, files, source = 'input') {
   );
 }
 
+// A choice adds to the list on a multiple area, so files can be added in
+// portions; a file already listed (same name, size and time) is not listed
+// twice. A single area keeps one file: a new choice replaces it, and the
+// replaced entry leaves with remove {reason: 'replaced'}. The choice assigned
+// the new files over the list, so a second pick wiped the first (study
+// 2026-11-11 FU-1). Returns the entries that entered the list.
 function applySelectedFiles(root, files = [], source = 'input') {
-  const nextFiles = normalizeFileItems(files, root);
+  const chosen = normalizeFileItems(files, root);
   const previousItems = Array.from(root.__sfFileUploadItems || []);
+  const multiple = getMultiple(root);
+  const listed = new Set(previousItems.map((item, index) => getItemEventKey(item, index)));
+  const added = multiple
+    ? chosen.filter((item, index) => !listed.has(item.id) && chosen.findIndex((other) => other.id === item.id) === index)
+    : chosen.slice(0, 1);
+  if (!added.length) return [];
+  const replaced = multiple ? [] : previousItems;
+  const nextFiles = multiple ? [...previousItems, ...added] : added;
   root.__sfFileUploadItems = nextFiles;
   renderFileUploadItems(root, nextFiles);
   syncFileUploadStateEvents(root, nextFiles, previousItems);
-  nextFiles.forEach((item, index) => {
-    emitFileUploadItemAdd(root, item, index, nextFiles, source);
+  replaced.forEach((item, index) => {
+    root.dispatchEvent(new CustomEvent('sf-file-upload:remove', {
+      bubbles: true,
+      detail: {item, index, items: nextFiles, reason: 'replaced'},
+    }));
   });
-  emitSelect(root, nextFiles, source);
+  added.forEach((item) => {
+    emitFileUploadItemAdd(root, item, nextFiles.indexOf(item), nextFiles, source);
+  });
+  emitSelect(root, added, source);
+  return added;
 }
 
 function bindFileUpload(root) {
@@ -639,13 +660,13 @@ function bindFileUpload(root) {
       }));
     }
     if (!accepted.length) return;
-    const normalized = getMultiple(root) ? accepted : accepted.slice(0, 1);
-    applySelectedFiles(root, normalized, 'drop');
+    const added = applySelectedFiles(root, accepted, 'drop');
+    if (!added.length) return;
     // A pick sends change from the native input; a drop sent none, so a form
     // listening for change never heard of a dropped file.
     root.dispatchEvent(new CustomEvent('change', {
       bubbles: true,
-      detail: {files: normalized, source: 'drop'},
+      detail: {files: added.map((item) => item.file), source: 'drop'},
     }));
   };
 
