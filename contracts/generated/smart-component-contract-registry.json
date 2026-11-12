@@ -148,7 +148,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/avatar/smart.manifest.json",
-      "manifest_sha256": "f50f99e2c31de72a7185f9f45bea1c387cfdce2693c40bc462b79316cb9a4671",
+      "manifest_sha256": "f8a553675f7a949affdba64f124e06a339860f90977ca11c6f21bba1dc79adf6",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -183,7 +183,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/avatar-group/smart.manifest.json",
-      "manifest_sha256": "cdad746da48d3a48ea766bc02c98932da4d64c47c167c6592bfd45363e38b22f",
+      "manifest_sha256": "38d8d8428e717eadde274cd096ac37fc0b8fd09f83b23bd8ab45254a0166e525",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
