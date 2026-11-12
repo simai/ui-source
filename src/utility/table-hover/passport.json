@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.table-hover",
   "kind": "utility",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/table-hover/default/index.js",
@@ -12,8 +12,12 @@
     "src/utility/table-hover/default/scss/_sf_css__table_stripe.scss",
     "src/utility/table-hover/default/scss/index.scss"
   ],
-  "content_sha256": "9bde614c9d109c179dc4f84582528cbee2dface0e8263fed6f6ca64fa85ddf46",
+  "content_sha256": "5ec03f7331302200466a7251a35f027eb5b1709f0f48f37dbeff1516a0dbb8bf",
   "dependencies": [
+    {
+      "id": "tokens.colour",
+      "range": "^1.12.0"
+    },
     {
       "id": "utility.table",
       "range": "^1.0.0"

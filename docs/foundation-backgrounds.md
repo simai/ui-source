@@ -140,6 +140,11 @@ row) it does nothing and needs no taking back.
   tree, the menu, the admin menu, sf-list and the choice card include the mix
   as their selected rows do (C43 D4): a tonal badge on them keeps its tone,
   where it took the hover's alpha under its own before.
+- **Table rows.** The cells of a striped, a hovered and an active row
+  (`table-stripe`, `table-stripe-col`, `table-hover`, `table-active`) include
+  the mix with the cell's accent (2026-11-12): a tonal badge in such a cell
+  keeps its tone and an anchored badge rings with the cell. A cell at rest
+  declares nothing, so it is exactly as before.
 
 ### What changed with C43 (2026-11-10)
 
