@@ -1344,15 +1344,29 @@
       ],
       "composition": {
         "public_parts": [
-          "swatch",
+          "field",
+          "trigger",
           "chip",
           "text",
-          "swatches",
-          "preset"
+          "window",
+          "views",
+          "palette",
+          "options",
+          "option",
+          "recent",
+          "own",
+          "area",
+          "strip",
+          "code-row",
+          "format",
+          "format-menu",
+          "dot"
         ],
         "uses": [
           "component.icons",
-          "smart.button-icon"
+          "smart.button-icon",
+          "smart.icon",
+          "smart.segmented"
         ]
       },
       "contract_schema": {
@@ -1364,13 +1378,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-color/smart.manifest.json",
-      "manifest_sha256": "0b4c9eae49152941c1fb78e090dfe4a3f5f171f8a15d69d7f34743f39d99eb5b",
+      "manifest_sha256": "3335482553937c1cd8f98f7b22b8d6ffd5bce37683cdf7b60de9eb728be3e49a",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A colour control: a swatch that opens the platform picker, the colours a product already has as presets, and a way back to an inherited colour. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
+      "summary": "A colour field: a swatch, the value and a chevron that open the Framework's own compact window -- the static palette first, the product's own colours, recent own colours and «Своё» (shade area, eyedropper, hue and alpha strips, a code in Hex, RGB, HSL or HSB) -- and a way back to an inherited colour. The value is a palette name or a code. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
       "tags": [
         "input",
         "color",

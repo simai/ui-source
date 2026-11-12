@@ -1,39 +1,43 @@
 @layer sf.components {
-  /* A colour sits on the control ladder like any other input, so a colour beside a
-     text field lines up with it rather than inventing its own height. */
+  /* sf-input-color 1.7.0 (owner decision C83): a field of the control ladder that
+     opens the Framework's own compact window. Every size, space, radius and
+     colour is a system value (C18); the only literal colours are the colour
+     space itself -- the hue strip and the shade area -- which no palette can
+     draw (colour policy rule input-color-colour-space). */
   :is(sf-input-color, sf-color) {
     display: block;
   }
 
-  /* The row wraps: the chip, the value, the product's swatches and the
-     inherited slot (whose marker never breaks) are wider together than a phone
-     column, and a row that cannot wrap stood past its container -- 17px inside
-     sf-theme-generator at a 390px screen. What does not fit goes to the next
-     line, the same gap apart; a row that fits draws as before. */
-  .sf-color {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--sf-color-gap, var(--sf-space-1));
-    min-block-size: var(--sf-ui-1--control-height);
-  }
-
-  .sf-color--size-1\/2 {
-    --sf-color--control-height: var(--sf-ui-1\/2--control-height);
-    min-block-size: var(--sf-ui-1\/2--control-height);
-  }
-  .sf-color--size-2 {
-    --sf-color--control-height: var(--sf-ui-2--control-height);
-    min-block-size: var(--sf-ui-2--control-height);
-  }
-
-  /* The field label of sf-input (FB-10): regular weight, on-surface-variant,
-     one text step below the field's text, a quarter step above the row. */
+  /* The field and its label: the label of sf-input (FB-10) -- regular weight,
+     on-surface-variant, one text step below the field's text, a quarter step
+     above the frame. The window is placed from here before it is anchored. */
   .sf-color-field {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: var(--sf-space-1\/4);
     min-inline-size: 0;
+    --sf-color--control-height: var(--sf-ui-1--control-height);
+    --sf-color--space-x: var(--sf-ui-1--space-x);
+    --sf-color--text-space-x: var(--sf-ui-1--text-space-x);
+    --sf-color--text-size: var(--sf-text-size-1);
+    --sf-color--text-height: var(--sf-text-height-1);
+  }
+
+  .sf-color-field--size-1\/2 {
+    --sf-color--control-height: var(--sf-ui-1\/2--control-height);
+    --sf-color--space-x: var(--sf-ui-1\/2--space-x);
+    --sf-color--text-space-x: var(--sf-ui-1\/2--text-space-x);
+    --sf-color--text-size: var(--sf-text-size-1\/2);
+    --sf-color--text-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-color-field--size-2 {
+    --sf-color--control-height: var(--sf-ui-2--control-height);
+    --sf-color--space-x: var(--sf-ui-2--space-x);
+    --sf-color--text-space-x: var(--sf-ui-2--text-space-x);
+    --sf-color--text-size: var(--sf-text-size-2);
+    --sf-color--text-height: var(--sf-text-height-2);
   }
 
   .sf-color-label {
@@ -54,42 +58,148 @@
     line-height: var(--sf-text-height-1);
   }
 
-  .sf-color-field:has(.sf-color-input:disabled) .sf-color-label {
+  .sf-color-field:has(.sf-color-trigger:disabled) .sf-color-label {
     color: var(--sf-on-disable);
   }
 
-  .sf-color-swatch {
-    position: relative;
-    display: inline-flex;
-    cursor: pointer;
+  .sf-color {
+    display: flex;
+    align-items: center;
+    gap: var(--sf-color-gap, var(--sf-space-1));
+    min-inline-size: 0;
   }
 
-  /* The native input opens the platform picker and is the thing a keyboard
-     reaches; the chip is what a person sees. The input is not hidden with
-     `display: none`, which would take it off the focus order -- it is laid over the
-     chip and made transparent, so focus and the focus ring stay where they are. */
-  .sf-color-input {
-    position: absolute;
-    inset: 0;
-    inline-size: 100%;
-    block-size: 100%;
-    opacity: 0;
+  /* One height in the row (CO-03): the frame is the control of the field's
+     size, and the swatch, the value, the inherited marker or reset and the
+     chevron all stand inside it. The product colours moved into the window,
+     where they are the window's swatches; before they stood beside the chip
+     one rung down (40 / 32 / 40 in one row). The value starts one inset from
+     the frame's edge (C77). */
+  .sf-color-frame {
+    box-sizing: border-box;
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: var(--sf-color--text-space-x);
+    min-inline-size: 0;
+    block-size: var(--sf-color--control-height);
+    padding-inline: var(--sf-color--space-x);
+    border: var(--sf-px) solid var(--sf-outline);
+    border-radius: var(--sf-radius--ui);
+    background-color: transparent;
+    color: var(--sf-on-surface);
     cursor: pointer;
+    transition-duration: var(--sf-duration-fast);
+    transition-property: background-color, border-color;
+    transition-timing-function: var(--sf-animation);
   }
 
-  /* The chip is the control's square at the element's own step: it was the
-     step-1 square at every size, so a colour at 1/2 stood 40px tall in a 32px
-     row (owner, admin density, 2026-10-13). */
+  .sf-color-frame:hover:not([data-disabled]) {
+    background-color: var(--sf-surface-state-hover);
+  }
+
+  .sf-color[data-open='true'] .sf-color-frame {
+    border-color: var(--sf-primary);
+  }
+
+  .sf-color-frame:has(.sf-color-trigger:focus-visible) {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+  }
+
+  .sf-color-frame[data-disabled] {
+    border-color: var(--sf-disable);
+    color: var(--sf-on-disable);
+    cursor: default;
+  }
+
+  /* The trigger is the swatch and the value: the button a keyboard reaches.
+     The frame takes every press, so the chevron and the room around the text
+     open the window too. */
+  .sf-color-trigger {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: var(--sf-color--text-space-x);
+    min-inline-size: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-color--text-size);
+    line-height: var(--sf-color--text-height);
+    text-align: start;
+    cursor: inherit;
+    outline: none;
+  }
+
+  .sf-color-text {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .sf-color-text code {
+    font-family: var(--sf-code--font-family);
+  }
+
+  .sf-color-empty {
+    color: var(--sf-color-inherited-color, var(--sf-on-surface-variant));
+  }
+
+  /* The slot every field uses, inside the frame: its marker's words end where
+     the field's text would, its reset stands one inset from the edge. */
+  .sf-color-frame > .sf-field-inherited-slot {
+    align-self: center;
+  }
+
+  .sf-color-chevron {
+    flex: none;
+    color: var(--sf-on-surface-variant);
+    font-size: var(--sf-color--text-height);
+    inline-size: var(--sf-color--text-height);
+    block-size: var(--sf-color--text-height);
+    line-height: var(--sf-color--text-height);
+  }
+
+  /* ------------------------------------------------------------ the swatch */
+
+  /* The swatch is the field text's square (a text-height square on the inset,
+     as a field's icon is). Its paint never runs under its 1 px border (R169:
+     the border is translucent, and a colour or the checkerboard under it read
+     as a dashed line in the dark theme). */
   .sf-color-chip {
-    inline-size: var(--sf-color--control-height, var(--sf-ui-1--control-height));
-    block-size: var(--sf-color--control-height, var(--sf-ui-1--control-height));
-    border-radius: var(--sf-color-chip-radius, var(--sf-radius-1));
+    box-sizing: border-box;
+    flex: none;
+    inline-size: var(--sf-color--text-height, var(--sf-text-height-1));
+    block-size: var(--sf-color--text-height, var(--sf-text-height-1));
     border: var(--sf-px) solid var(--sf-color-chip-border-color, var(--sf-outline-variant));
-    background-color: var(--sf-color-chip, transparent);
+    border-radius: var(--sf-color-chip-radius, var(--sf-radius-1\/2));
+    background-color: var(--sf-color-fill, transparent);
+    background-clip: padding-box;
   }
 
-  /* Nothing chosen and nothing inherited: a chip that is empty rather than black,
-     because black is a colour somebody may have meant. */
+  .sf-color-chip--round {
+    border-radius: var(--sf-radius-circle);
+  }
+
+  /* How the swatch is bounded (CO-06: the three looks drew the same, because
+     the chip's own colour was painted under its translucent border): bordered
+     is the hairline of outline-variant, outlined the field's stronger outline,
+     plain no border at all. */
+  .sf-color--outlined .sf-color-chip {
+    border-color: var(--sf-outline);
+  }
+
+  .sf-color--plain .sf-color-chip {
+    border-width: 0;
+  }
+
+  /* Nothing chosen and nothing inherited: a swatch that is empty rather than
+     black, because black is a colour somebody may have meant. */
   .sf-color-chip[data-empty] {
     background-image: linear-gradient(
       45deg,
@@ -97,79 +207,419 @@
     );
   }
 
-  .sf-color-input:focus-visible + .sf-color-chip,
-  .sf-color-swatch:focus-within .sf-color-chip {
-    /* The shared focus tokens, not invented ones: a contract holds every ring in
-       the Framework to the same width, style and colour, and a ring with its own
-       numbers is a ring that stops matching the rest the day the tokens move. */
-    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-    outline-offset: var(--sf-px);
+  /* A translucent colour, everywhere it is drawn (R167, C86): the left half
+     the colour as it is over the checkerboard, the right half the same colour
+     without alpha, so a faint colour still shows its hue. */
+  :is(.sf-color-chip, .sf-color-option, .sf-color-thumb)[data-alpha] {
+    background:
+      linear-gradient(90deg, transparent 50%, var(--sf-color-solid) 50%),
+      linear-gradient(var(--sf-color-fill), var(--sf-color-fill)),
+      conic-gradient(var(--sf-outline-variant) 25%, transparent 0 50%, var(--sf-outline-variant) 0 75%, transparent 0) 0 0 / var(--sf-a8) var(--sf-a8),
+      var(--sf-surface-card);
+    background-clip: padding-box;
   }
 
-  .sf-color-text code {
-    font-family: var(--sf-font-family-mono, ui-monospace, monospace);
-  }
+  /* ------------------------------------------------- variant theme (C84) */
 
-  .sf-color-inherited {
-    color: var(--sf-color-inherited-color, var(--sf-on-surface-variant));
-  }
-
-  .sf-color-swatches {
-    display: inline-flex;
-    gap: var(--sf-color-swatches-gap, var(--sf-space-1\/2));
-    margin-inline-start: var(--sf-space-1);
-  }
-
-  /* A product colour is a control of the row's size: the row drew the chip and
-     the reset at the control height and the colours one rung down, three
-     heights in one line (C01; docs pre-check 2026-11-10 CO-03). */
-  .sf-color-preset {
-    inline-size: var(--sf-color--control-height, var(--sf-ui-1--control-height));
-    block-size: var(--sf-color--control-height, var(--sf-ui-1--control-height));
-    padding: 0;
-    border-radius: var(--sf-color-chip-radius, var(--sf-radius-1));
-    border: var(--sf-px) solid var(--sf-color-chip-border-color, var(--sf-outline-variant));
-    background-color: var(--sf-color-chip);
-    cursor: pointer;
-  }
-
-  .sf-color-preset[aria-pressed="true"] {
-    outline: calc(var(--sf-px) * 2) solid var(--sf-primary);
-    outline-offset: var(--sf-px);
-  }
-
-  .sf-color--plain .sf-color-chip {
-    border-color: transparent;
-  }
-
-  .sf-color--outlined .sf-color-chip {
-    border-color: var(--sf-outline);
-  }
-
-  /* variant theme: an icon button that sits in a row of buttons, so the host
-     is inline rather than a block field. The native input lies under the
-     button for the picker to anchor at; the button takes every press. */
+  /* Only a circle of the current colour, as a site header holds it: the
+     button is the icon button's square of the size, the circle the size's
+     text square. */
   :is(sf-input-color, sf-color):has(> .sf-color--theme) {
     display: inline-block;
     vertical-align: middle;
   }
 
   .sf-color--theme {
-    display: inline-flex;
-  }
-
-  .sf-color-theme {
     position: relative;
     display: inline-flex;
+    --sf-color--control-height: var(--sf-ui-1--control-height);
+    --sf-color--text-height: var(--sf-text-height-1);
   }
 
-  .sf-color--theme .sf-color-input {
+  .sf-color--theme.sf-color--size-1\/2 {
+    --sf-color--control-height: var(--sf-ui-1\/2--control-height);
+    --sf-color--text-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-color--theme.sf-color--size-2 {
+    --sf-color--control-height: var(--sf-ui-2--control-height);
+    --sf-color--text-height: var(--sf-text-height-2);
+  }
+
+  .sf-color-dot {
+    display: inline-grid;
+    place-items: center;
+    inline-size: var(--sf-color--control-height);
+    block-size: var(--sf-color--control-height);
+    padding: 0;
+    border: 0;
+    border-radius: var(--sf-radius--ui);
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .sf-color-dot:hover:not(:disabled) {
+    background-color: var(--sf-surface-state-hover);
+  }
+
+  .sf-color-dot[aria-expanded='true'] {
+    background-color: var(--sf-surface-state-select);
+  }
+
+  .sf-color-dot:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+  }
+
+  .sf-color-dot:disabled {
+    cursor: default;
+  }
+
+  /* ------------------------------------------------------------ the window */
+
+  /* 304 on a desktop: eight swatches of the 1/3 rung, 8 apart, 12 inside
+     (R149). Absolute until core's positioning anchors it and lifts it into the
+     top layer, so it never pushes the page while it opens. */
+  .sf-color-window {
+    --sf-color--swatch: var(--sf-ui-1\/3--control-height);
+    --sf-color--swatch-gap: var(--sf-space-1\/3);
+    --sf-color--window-padding: var(--sf-space-1\/2);
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-start: 0;
+    z-index: var(--sf-z-index-9);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-space-1\/2);
+    inline-size: calc(8 * var(--sf-color--swatch) + 7 * var(--sf-color--swatch-gap) + 2 * var(--sf-color--window-padding));
+    max-inline-size: calc(100vw - 2 * var(--sf-space-1\/2));
+    padding: var(--sf-color--window-padding);
+    overflow: auto;
+    border-radius: var(--sf-radius--surface);
+    background-color: var(--sf-surface-popup);
+    color: var(--sf-on-surface);
+    box-shadow: var(--sf-shadow-overlay);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+    outline: none;
+  }
+
+  /* On a phone a sheet at the bottom of the screen (C32 addendum, as a form of
+     sf-menu-context and the link editor of sf-input-rich): the screen's width
+     up to 44rem, centred, the modal shadow over the shared scrim, clear of the
+     safe area; eight columns of swatches share the width. */
+  .sf-color-window[data-sf-sheet] {
+    position: fixed;
+    inset: auto 0 0;
+    inline-size: 100%;
+    max-inline-size: var(--sf-h1);
+    max-block-size: calc(100dvh - var(--sf-space-4));
+    margin: 0 auto;
+    padding: var(--sf-space-1) var(--sf-space-1) calc(var(--sf-space-1) + env(safe-area-inset-bottom, var(--sf-a0)));
+    border-end-end-radius: 0;
+    border-end-start-radius: 0;
+    background-color: var(--sf-surface-popup);
+    box-shadow: var(--sf-shadow-modal), 0 0 0 100vmax var(--sf-scrim-color, var(--sf-black--alfa-64));
+  }
+
+  .sf-color-window[data-sf-sheet] .sf-color-options {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+
+  .sf-color-window[data-sf-sheet] .sf-color-option {
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: 1;
+  }
+
+  .sf-color-window[data-sf-sheet] .sf-color-area {
+    block-size: var(--sf-e8);
+  }
+
+  .sf-color-views {
+    display: block;
+  }
+
+  .sf-color-palette,
+  .sf-color-own {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-space-1\/2);
+  }
+
+  /* The recent own colours: one more row of the grid after a thin divider, no
+     caption (R153). */
+  .sf-color-recent {
+    padding-block-start: var(--sf-space-1\/2);
+    border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+  }
+
+  /* A radio group of swatches. Selection and focus are drawn inside the swatch
+     (inset rings and a check), so nothing reaches the gap and no ring touches
+     a neighbour (R146). */
+  .sf-color-options {
+    display: grid;
+    grid-template-columns: repeat(8, var(--sf-color--swatch));
+    gap: var(--sf-color-swatches-gap, var(--sf-color--swatch-gap));
+  }
+
+  .sf-color-option {
+    box-sizing: border-box;
+    display: inline-grid;
+    place-items: center;
+    inline-size: var(--sf-color--swatch);
+    block-size: var(--sf-color--swatch);
+    padding: 0;
+    border: var(--sf-px) solid var(--sf-color-chip-border-color, var(--sf-outline-variant));
+    border-radius: var(--sf-color-chip-radius, var(--sf-radius--ui));
+    background-color: var(--sf-color-fill, transparent);
+    background-clip: padding-box;
+    color: var(--sf-color-ink, var(--sf-on-surface));
+    cursor: pointer;
+  }
+
+  .sf-color-option:hover:not(:disabled) {
+    border-color: var(--sf-outline);
+  }
+
+  .sf-color-option[aria-checked='true'] {
+    border-color: var(--sf-on-surface);
+    box-shadow:
+      inset 0 0 0 var(--sf-px) var(--sf-on-surface),
+      inset 0 0 0 calc(var(--sf-px) * 3) var(--sf-surface-popup);
+  }
+
+  .sf-color-option:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(-1 * var(--sf-focus--width));
+  }
+
+  .sf-color-check {
+    color: var(--sf-color-ink, var(--sf-on-surface));
+    font-size: var(--sf-text-size-1\/2);
     pointer-events: none;
+  }
+
+  /* «Своё»: the shade area (saturation across, brightness up) over the hue the
+     strip holds. */
+  .sf-color-area {
+    position: relative;
+    flex: none;
+    block-size: var(--sf-e5);
+    border-radius: var(--sf-radius--ui);
+    background:
+      linear-gradient(to top, var(--sf-black), transparent),
+      linear-gradient(to right, var(--sf-white), hsl(var(--sf-color-hue, 0) 100% 50%));
+    cursor: crosshair;
+    touch-action: none;
+  }
+
+  .sf-color-area:focus-visible,
+  .sf-color-strip:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+  }
+
+  .sf-color-thumb {
+    position: absolute;
+    box-sizing: border-box;
+    inline-size: var(--sf-b6);
+    block-size: var(--sf-b6);
+    margin-block-start: calc(var(--sf-b6) / -2);
+    margin-inline-start: calc(var(--sf-b6) / -2);
+    border: calc(var(--sf-px) * 2) solid var(--sf-white);
+    border-radius: var(--sf-radius-circle);
+    box-shadow: 0 0 0 var(--sf-px) var(--sf-black);
+    background-color: var(--sf-color-fill, transparent);
+    background-clip: padding-box;
+    pointer-events: none;
+  }
+
+  .sf-color-tools {
+    display: flex;
+    align-items: center;
+    gap: var(--sf-space-1\/3);
+  }
+
+  .sf-color-strips {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: var(--sf-space-1\/3);
+    min-inline-size: 0;
+  }
+
+  .sf-color-strip {
+    position: relative;
+    block-size: var(--sf-b2);
+    margin-inline: calc(var(--sf-b6) / 2);
+    border-radius: var(--sf-radius-circle);
+    cursor: pointer;
+    touch-action: none;
+  }
+
+  .sf-color-strip .sf-color-thumb {
+    inset-block-start: 50%;
+  }
+
+  .sf-color-strip--hue {
+    background: linear-gradient(to right,
+      hsl(0 100% 50%), hsl(60 100% 50%), hsl(120 100% 50%), hsl(180 100% 50%),
+      hsl(240 100% 50%), hsl(300 100% 50%), hsl(360 100% 50%));
+  }
+
+  .sf-color-strip--alpha {
+    background:
+      linear-gradient(to right, transparent, var(--sf-color-solid)),
+      conic-gradient(var(--sf-outline-variant) 25%, transparent 0 50%, var(--sf-outline-variant) 0 75%, transparent 0) 0 0 / var(--sf-a8) var(--sf-a8),
+      var(--sf-surface-card);
+  }
+
+  /* One joined group on the field standard, size 1/2 (R154): «format ▾ | code
+     | %». */
+  .sf-color-code-row {
+    box-sizing: border-box;
+    display: flex;
+    align-items: stretch;
+    block-size: var(--sf-ui-1\/2--control-height);
+    overflow: hidden;
+    border: var(--sf-px) solid var(--sf-outline);
+    border-radius: var(--sf-radius--ui);
+    background-color: transparent;
+  }
+
+  .sf-color-code-row:focus-within {
+    border-color: var(--sf-primary);
+  }
+
+  .sf-color-code-row > * + * {
+    border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
+  }
+
+  .sf-color-format {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: var(--sf-a2);
+    padding-block: 0;
+    padding-inline: var(--sf-space-1\/2) var(--sf-space-1\/4);
+    border: 0;
+    background: transparent;
+    color: var(--sf-on-surface);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .sf-color-format:hover {
+    background-color: var(--sf-surface-state-hover);
+  }
+
+  .sf-color-format:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(-1 * var(--sf-focus--width));
+  }
+
+  .sf-color-format-chevron {
+    color: var(--sf-on-surface-variant);
+    font-size: var(--sf-text-height-1\/2);
+  }
+
+  .sf-color-code,
+  .sf-color-alpha-input {
+    min-inline-size: 0;
+    padding-block: 0;
+    border: 0;
+    background: transparent;
+    color: var(--sf-on-surface);
+    font: inherit;
+    font-family: var(--sf-code--font-family);
+    outline: none;
+  }
+
+  .sf-color-code {
+    flex: 1 1 auto;
+    padding-inline: var(--sf-space-1\/2);
+  }
+
+  .sf-color-percent {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    inline-size: var(--sf-d8);
+    padding-inline: var(--sf-space-1\/3) var(--sf-space-1\/2);
+    color: var(--sf-on-surface-variant);
+  }
+
+  .sf-color-alpha-input {
+    inline-size: 100%;
+    padding-inline: 0 var(--sf-a2);
+    text-align: end;
+  }
+
+  /* The format list on the one dropdown standard: the chosen row highlighted,
+     no check (R170). Absolute until it is anchored under its button. */
+  .sf-color-format-menu {
+    position: absolute;
+    z-index: var(--sf-z-index-9);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-inline-size: var(--sf-e4);
+    padding: var(--sf-space-1\/4);
+    border-radius: var(--sf-radius--surface);
+    background-color: var(--sf-surface-popup-nested, var(--sf-surface-popup));
+    color: var(--sf-on-surface);
+    box-shadow: var(--sf-shadow-overlay);
+  }
+
+  .sf-color-format-menu > button {
+    display: flex;
+    align-items: center;
+    block-size: var(--sf-ui-1\/2--control-height);
+    padding-block: 0;
+    padding-inline: var(--sf-space-1\/2);
+    border: 0;
+    border-radius: var(--sf-radius--ui);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .sf-color-format-menu > button:hover,
+  .sf-color-format-menu > button:focus-visible {
+    background-color: var(--sf-surface-state-hover);
+    outline: none;
+  }
+
+  .sf-color-format-menu > button[aria-checked='true'] {
+    background-color: var(--sf-surface-state-select);
+    font-weight: var(--sf-font-weight-medium);
+  }
+
+  .sf-color-error {
+    color: var(--sf-error);
+  }
+
+  .sf-color-error:empty {
+    display: none;
   }
 
   @media (forced-colors: active) {
     .sf-color-chip,
-    .sf-color-preset {
+    .sf-color-option {
+      border-color: CanvasText;
+    }
+
+    .sf-color-option[aria-checked='true'] {
+      outline: calc(var(--sf-px) * 2) solid Highlight;
+      outline-offset: calc(var(--sf-px) * -4);
+    }
+
+    .sf-color-frame {
       border-color: CanvasText;
     }
   }

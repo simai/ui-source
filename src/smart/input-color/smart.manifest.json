@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.input-color",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "title": "Color",
-  "summary": "A colour control: a swatch that opens the platform picker, the colours a product already has as presets, and a way back to an inherited colour. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
+  "summary": "A colour field: a swatch, the value and a chevron that open the Framework's own compact window -- the static palette first, the product's own colours, recent own colours and «Своё» (shade area, eyedropper, hue and alpha strips, a code in Hex, RGB, HSL or HSB) -- and a way back to an inherited colour. The value is a palette name or a code. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
   "kind": "smart",
   "reuse_mode": "both",
   "lifecycle": "experimental",
@@ -25,14 +25,28 @@
   "composition": {
     "uses": [
       "component.icons",
-      "smart.button-icon"
+      "smart.button-icon",
+      "smart.icon",
+      "smart.segmented"
     ],
     "public_parts": [
-      "swatch",
+      "field",
+      "trigger",
       "chip",
       "text",
-      "swatches",
-      "preset"
+      "window",
+      "views",
+      "palette",
+      "options",
+      "option",
+      "recent",
+      "own",
+      "area",
+      "strip",
+      "code-row",
+      "format",
+      "format-menu",
+      "dot"
     ]
   },
   "inputs": {
@@ -66,7 +80,7 @@
       "appearance": {
         "type": "string",
         "default": "bordered",
-        "description": "How the swatch is bounded.",
+        "description": "How the swatch in the field is bounded: bordered (the hairline of outline-variant), outlined (the field's stronger outline) or plain (no border). The paint stays inside the border, so the three looks differ (CO-06).",
         "enum": [
           "bordered",
           "outlined",
@@ -76,7 +90,7 @@
       "variant": {
         "type": "string",
         "default": "field",
-        "description": "What the control is. field: the swatch, the hex and the presets, a colour that is a value of something. theme: one icon-only primary button (icon palette) that opens the platform picker and rebuilds the page theme from the colour while it moves (SF.ThemePalette on <html>), committing it on the picker's change.",
+        "description": "What the control is. field: a field of the control ladder -- the swatch, the value and a chevron -- that opens the Framework's own colour window. theme: only a circle of the current colour, as a site header holds it (C84); it opens the same window at its normal size and rebuilds the page theme from the colour while it moves (SF.ThemePalette on <html>), committing it when a colour is chosen. Its value is always a code.",
         "enum": [
           "field",
           "theme"
@@ -85,7 +99,22 @@
       "swatches": {
         "type": "string",
         "default": "",
-        "description": "The colours a product already has, comma separated, each #hex or #hex|Name; a name may hold spaces. A piece without a name may list several colours by spaces. A person picks the brand colour rather than matching a hex by eye."
+        "description": "The colours a product already has, comma separated, each #hex, #hex|Name or a palette name (blue|Name); a name may hold spaces. A piece without a name may list several colours by spaces. They are the first row of the window's palette view, so a person picks the brand colour rather than matching a hex by eye."
+      },
+      "palette": {
+        "type": "boolean",
+        "default": true,
+        "description": "Whether the window's palette view shows the sixteen hues of the static palette (C17). A hue is stored by its name (blue), the same in every language; the field shows the translated word and the theme picks the tone (50 light, 70 dark). palette=\"false\": only the product's swatches, or «Своё» alone."
+      },
+      "custom": {
+        "type": "boolean",
+        "default": true,
+        "description": "Whether the window offers «Своё», an own colour: the shade area, the eyedropper where the browser has one, the hue strip and the code row «format | code». custom=\"false\" keeps the palette only (task labels, chart series). Without a palette «Своё» is always offered."
+      },
+      "alpha": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether an own colour may be translucent: the alpha strip and the % field are drawn and the value may be #rrggbbaa. Without it a translucent code keeps its colour and drops the alpha, and translucent recent colours are not shown."
       },
       "clearable": {
         "type": "boolean",
@@ -117,7 +146,7 @@
       "value": {
         "type": "string",
         "default": "",
-        "description": "The colour, as #rgb, #rrggbb or #rrggbbaa. Empty means nothing is chosen and the inherited colour applies."
+        "description": "The colour: a palette name (red, orange, amber, yellow, lime, green, teal, cyan, sky, blue, indigo, violet, purple, pink, brown, gray), stored the same in every language, or the code of an own colour, #rrggbb (or #rrggbbaa with alpha; #rgb and #rgba are read and stored long, lowercase). Empty means nothing is chosen and the inherited colour applies. variant theme stores a code."
       },
       "inherited-value": {
         "type": "string",
@@ -167,11 +196,31 @@
         "type": "boolean",
         "description": "Whether the field was reset."
       }
+    },
+    "openPicker": {
+      "summary": "Opens the colour window on the view the value comes from. Returns whether it is open (false while disabled).",
+      "arguments": [],
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    "closePicker": {
+      "summary": "Closes the colour window and returns focus to the trigger unless {restoreFocus: false}. Returns true.",
+      "arguments": [
+        {
+          "name": "options",
+          "type": "object",
+          "required": false
+        }
+      ],
+      "returns": {
+        "type": "boolean"
+      }
     }
   },
   "events": {
     "change": {
-      "summary": "A colour was committed: once when the platform picker closes or a swatch or clear is pressed, not on every step of a drag. Carries the value and the form name; an empty value means the inherited colour applies again. The picker's own change does not leave the host.",
+      "summary": "A colour was committed: once when a swatch is chosen, a drag across the shade area or a strip is released, the code field is left or Enter pressed, a key on a strip rests, or clear is pressed -- not on every step of a drag. Carries the value and the form name; an empty value means the inherited colour applies again.",
       "payload": {
         "type": "object",
         "required": [
@@ -190,7 +239,7 @@
       }
     },
     "input": {
-      "summary": "The colour moved, on every step of a drag across the platform picker and before each change. Carries the value and the form name.",
+      "summary": "The colour moved: on every step of a drag across the shade area or a strip, on each key in the code field that reads as a colour, and before each change. Carries the value and the form name.",
       "payload": {
         "type": "object",
         "required": [
@@ -304,9 +353,10 @@
     "keyboard": [
       "Tab",
       "Enter",
-      "Space"
+      "Space",
+      "Escape"
     ],
-    "focus": "The platform colour input, each swatch and the clear button take focus in order and keep a visible focus ring. Swatches say whether they are the chosen colour by aria-pressed. After a reset back to the inherited value, focus returns to the control; while the value is inherited, the control carries it as aria-description and the visible marker is aria-hidden."
+    "focus": "The field's trigger takes focus and keeps a visible focus ring on the frame; it names the field and the colour («Цвет метки: Синий») and says aria-haspopup dialog and aria-expanded. The window is a labelled dialog: focus goes to the chosen swatch (or the shade area in «Своё»), each swatch group is a radio group with one tab stop and arrow keys, the shade area and the strips are sliders with aria-valuetext, Escape closes the window and focus returns to the trigger. After a reset back to the inherited value, focus returns to the trigger; while the value is inherited, the trigger carries it as aria-description and the visible marker is aria-hidden."
   },
   "presentation": {
     "themes": [
@@ -372,19 +422,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-color/index.js",
-        "sha256": "79005551c6c074c904f8b9c93cfcd31d9f9468402dbd71a4d7b266cbd18c22f5"
+        "sha256": "37bc34b255eb28c9495594336ec14af4a8481d863c667d60c77ac93dbfc0d012"
       },
       {
         "path": "src/smart/input-color/rule.js",
-        "sha256": "9f227d89726e47268b67f49ed2dec0c1bb2cd4225681aaa9908d430db1867a1e"
+        "sha256": "54896a30f351c7d6fcd1363ab1a26a14c1910983483778f4a6035d1beec78c1e"
       },
       {
         "path": "src/smart/input-color/js/templates/default.js",
-        "sha256": "39b51abb049ae42ca889b15c19148c5d4c61dd521698c87472d45f2a52e44a40"
+        "sha256": "2bb90d42adaadd05747de9119d1348d8ccb72c6a0129933fdee7d4dfec277300"
       },
       {
         "path": "src/smart/input-color/js/templates/default.css",
-        "sha256": "6a5d490524d106cba3a0925652e3844c757c22bd3dd65522c65ced4264979928"
+        "sha256": "064d65aba8be8733649b28aa40b8667a97f9eeaead12f80e15ad2807b7f0671f"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
@@ -398,10 +448,11 @@
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-input-color wherever a colour is set -- a theme, a site look, a label, a chart series -- and especially when the colour may be left unset to inherit one.",
+    "use_when": "Use sf-input-color wherever a colour is set -- a theme, a site look, a label, a chart series -- and especially when the colour may be left unset to inherit one. For labels and chart series keep the palette name (custom=\"false\"), so the colour follows the dark theme.",
     "do_not": [
       "Do not draw the inherited colour as the value: pass it as inherited-value so «not set» stays distinguishable",
       "Do not listen to input for saving; save on change, which fires once per committed colour",
+      "Do not turn a palette name into a hex before storing it: the name follows the theme, the hex does not",
       "Do not copy generated ui-smart code",
       "Do not move host data or access decisions into the component"
     ],
@@ -412,7 +463,7 @@
       "ownership",
       "provenance"
     ],
-    "minimal_example": "<sf-input-color label=\"Brand colour\" clearable inherited-value=\"#1f6feb\" swatches=\"#1f6feb|Brand blue, #e5534b|Alert\"></sf-input-color>",
+    "minimal_example": "<sf-input-color label=\"Brand colour\" clearable inherited-value=\"blue\" swatches=\"#1f6feb|Brand blue, red|Alert\"></sf-input-color>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"
