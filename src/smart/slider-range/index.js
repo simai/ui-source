@@ -345,8 +345,10 @@ class SfRangeSlider extends RangeSliderElement {
   }
 
   // A form control (1.3.1, §17.1): the value a form gets is the one the slider
-  // shows, the number or both joined by a comma; nothing while disabled or
-  // without a name's form. The value written first is the one a reset puts back.
+  // shows; nothing while disabled. A range submits two entries under one name
+  // (price=5000&price=20000, as Radix and a pair of native inputs do: S3), so a
+  // server reads both without splitting a string. The value written first is
+  // the one a reset puts back.
   connectedCallback() {
     if (this._defaultValue === undefined) this._defaultValue = this.getAttribute('value');
     super.connectedCallback?.();
@@ -355,7 +357,15 @@ class SfRangeSlider extends RangeSliderElement {
   sfFormValue() {
     if (this.disabled || this.sfFormDisabled) return null;
     const value = this.value;
-    return value === undefined || value === null ? null : String(value);
+    if (value === undefined || value === null) return null;
+    const parts = String(value).split(',').map((part) => part.trim()).filter((part) => part !== '');
+    const name = this.getAttribute('name') || '';
+    if (parts.length > 1 && name && typeof FormData === 'function') {
+      const data = new FormData();
+      parts.slice(0, 2).forEach((part) => data.append(name, part));
+      return data;
+    }
+    return String(value);
   }
 
   formResetCallback() {

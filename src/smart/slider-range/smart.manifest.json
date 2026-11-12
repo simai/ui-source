@@ -136,7 +136,7 @@
       "name": {
         "type": "string",
         "default": "",
-        "description": "The name the value is submitted under in a form: the handle's value, or both values joined by a comma (\"20,80\") with two handles."
+        "description": "The name the value is submitted under in a form: the handle's number, or with two handles two entries under the one name (price=5000&price=20000). Nothing while disabled."
       },
       "value": {
         "type": "string",
