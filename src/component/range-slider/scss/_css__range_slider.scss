@@ -19,17 +19,26 @@
 }
 
 .sf-range-slider .sf-range-slider-track {
-  background-color: var(--sf-range-slider-track--background-color, var(--sf-range-slider-track-color, var(--sf-surface-container)));
+  background-color: var(--sf-range-slider-track--background-color, var(--sf-range-slider-track-color, var(--sf-outline)));
   border-end-end-radius: var(--sf-range-slider-track--border-end-end-radius, var(--sf-radius--ui));
   border-end-start-radius: var(--sf-range-slider-track--border-end-start-radius, var(--sf-radius--ui));
   border-start-end-radius: var(--sf-range-slider-track--border-start-end-radius, var(--sf-radius--ui));
   border-start-start-radius: var(--sf-range-slider-track--border-start-start-radius, var(--sf-radius--ui));
+  // Track B (owner decision C78): the outline role, about 3:1 to the place in
+  // the light theme and 4:1 in the dark, so the scale and its end are seen;
+  // surface-container gave 1.21:1.
   // The inactive rail is a flat fill: a shadow under it read as a blur (owner, 2026-11-01).
   box-shadow: var(--sf-range-slider-track--box-shadow, none);
   height: var(--sf-range-slider-track--height, var(--sf-a4));
 }
 
-.sf-range-slider:is([disabled], .disabled) .sf-range-slider-progress-line {
+// Disabled: the rail is the disabled container, the chosen part the disabled
+// content role, as the handle on it.
+.sf-range-slider:is([disabled], .disabled) .sf-range-slider-track {
   background-color: var(--sf-surface-disabled);
+}
+
+.sf-range-slider:is([disabled], .disabled) .sf-range-slider-progress-line {
+  background-color: var(--sf-on-surface-disabled);
 }
 }

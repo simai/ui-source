@@ -91,6 +91,9 @@ test('the disabled content role paints a fill only where the fill is the content
     // The slider's handle is the content of its rail, laid over the surface
     // so the fill does not show through (2026-11-01).
     'src/component/range-slider/scss/_css__thumbs.scss: background: linear-gradient(var(--sf-on-surface-disabled), var(--sf-on-surface-disabled)) var(--sf-thumb-handle--ring-color, var(--sf-surface-place));',
+    // The chosen part of a disabled slider's rail is content too (C78 track B):
+    // it stands on the disabled rail in the handle's own role.
+    'src/component/range-slider/scss/_css__range_slider.scss: background-color: var(--sf-on-surface-disabled);',
     'src/component/switch/scss/_css_switch.scss: --sf-switch-inner--background-color: var(--sf-on-surface-disabled);',
     'src/smart/button-icon/js/templates/default.css: --sf-close-icon--background-color: var(--sf-on-disable);',
   ].sort());
