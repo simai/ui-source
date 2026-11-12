@@ -242,7 +242,7 @@
     {
       "id": "prefix-is-prefix-text",
       "covers": "aliases.json setting prefix -> prefix-text (§3.1, §16 item 26)",
-      "field": "<sf-slider-range aria-label=\"Цена\" value=\"50\" label=\"text\"></sf-slider-range>",
+      "field": "<sf-slider-range aria-label=\"Цена\" value=\"50\" value-display=\"text\"></sf-slider-range>",
       "setting": {
         "name": "prefix",
         "value": "от "

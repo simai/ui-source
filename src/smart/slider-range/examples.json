@@ -25,7 +25,7 @@
         "multiple": true,
         "prefix-text": "от ",
         "suffix": " %",
-        "label": "text",
+        "value-display": "text",
         "lower-label": "Нижняя граница",
         "upper-label": "Верхняя граница"
       },
@@ -42,7 +42,7 @@
           "multiple": true,
           "prefix": "от ",
           "suffix": " %",
-          "label": "text"
+          "value-display": "text"
         },
         "scenario": {}
       }
@@ -71,7 +71,7 @@
         "min": 0,
         "max": 1000,
         "value": "250",
-        "label": "tooltip",
+        "value-display": "tooltip",
         "suffix": " ₽"
       },
       "expect": {
@@ -342,7 +342,7 @@
           {
             "id": "prefix-is-prefix-text",
             "covers": "aliases.json setting prefix -> prefix-text (§3.1, §16 item 26)",
-            "field": "<sf-slider-range aria-label=\"Цена\" value=\"50\" label=\"text\"></sf-slider-range>",
+            "field": "<sf-slider-range aria-label=\"Цена\" value=\"50\" value-display=\"text\"></sf-slider-range>",
             "setting": {
               "name": "prefix",
               "value": "от "
