@@ -3,6 +3,7 @@
    component used before — clear and danger — are matched beside it so existing
    markup and project CSS keep working. See contracts/public-api-axes.json. */
 @use 'var__alerts' as *;
+@use '../../../core/scss/mix/mix__places' as places;
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/2) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 /* The notice's geometry, the toast's numbers (owner decision C35, remarks
    R066 and R079; DEV acceptance D3: C35 covers every notice), in tokens, so a
@@ -79,12 +80,15 @@
 /* The tonal action on a notice of any level is a solid light plate (owner
    decision C46, 2026-11-10, option D of the C35 acceptance): its translucent
    fill, --sf-primary-container and its states, is laid over the solid colour
-   of the place under the notice (--sf-surface-place-solid, the C43 rule), not
-   over the notice's tint. So the plate is the same on every level and the
+   of the place under the notice (the C43 rule), not over the notice's tint.
+   A status notice is itself a soft coloured place (below), whose
+   --sf-surface-place-solid is initial, so the plate reads the opaque place
+   beneath it, --sf-surface-place-ground: the same colour the solid role gave
+   on every solid place. So the plate is the same on every level and the
    level's tone does not show through it. The second action stays ghost
    on-surface (C35). A loading button keeps its own stripes. */
 .sf-alert .sf-alert-buttons .sf-button.sf-button--tonal.sf-button--primary:not(.sf-button-state-loading) {
-  background-image: linear-gradient(var(--sf-button--background-color), var(--sf-button--background-color)), linear-gradient(var(--sf-surface-place-solid), var(--sf-surface-place-solid));
+  background-image: linear-gradient(var(--sf-button--background-color), var(--sf-button--background-color)), linear-gradient(var(--sf-surface-place-ground), var(--sf-surface-place-ground));
 }
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-alert-content--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
@@ -215,6 +219,29 @@
 .sf-alert.sf-alert--success > .sf-icon,
 .sf-alert.sf-alert--success > sf-icon > .sf-icon {
   --sf-icon--color: var(--sf-success);
+}
+
+/* A status notice on its container (default and flat) is a soft coloured
+   place (R190 AA-3, C16, C19): it declares sf-place-soft(<status>), as
+   bg-<c>-container and the alert bar's soft levels do, so what stands on it
+   takes the status's own outline, states and fills -- a neutral outline
+   button's edge is the status outline (3.76-3.94 light), not the theme's grey
+   (2.76-2.90), and its hover the status state layer, not a grey one. An
+   outlined notice stands on the page and stays the page's place. */
+.sf-alert.sf-alert--info:is(.sf-alert--default, .sf-alert--flat) {
+  @include places.sf-place-soft(info);
+}
+
+.sf-alert:is(.sf-alert--error, .sf-alert--danger):is(.sf-alert--default, .sf-alert--flat) {
+  @include places.sf-place-soft(error);
+}
+
+.sf-alert.sf-alert--warning:is(.sf-alert--default, .sf-alert--flat) {
+  @include places.sf-place-soft(warning);
+}
+
+.sf-alert.sf-alert--success:is(.sf-alert--default, .sf-alert--flat) {
+  @include places.sf-place-soft(success);
 }
 
 .sf-alert:is(.sf-alert--neutral, .sf-alert--clear).sf-alert--outlined {
