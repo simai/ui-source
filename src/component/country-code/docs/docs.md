@@ -20,7 +20,17 @@ Registration: `registerComponent('CountryCode', CountryCode)`
   query, a frequent group above all countries (`.sf-country-code-group[data-group]`).
 - Typing or pasting a number selects the country from its dial code. An erased or
   unknown code marks the root `.sf-country-code--unknown`. The prefix is locked
-  only for a fixed country or `data-use-mask="true"`.
+  only for a fixed country or `data-use-mask="true"`: no edit reaches it. A digit
+  typed before it goes after it, select-all and a digit keep the code and replace
+  the number, select-all and Backspace or Delete clear the number and leave the
+  code; choosing another country changes it.
+- A search that finds no country shows one line of plain text, "Nothing found"
+  ("Ничего не найдено"), `.sf-country-code-empty`, and the search field is
+  described by it.
+- `countryFormValue(text, dialCode)` (module export) gives the number in its form
+  format, E.164: `+79031234567` for `+7 903 123-45-67`, empty for the code alone.
+  `sf-input-country` submits it; this ordinary markup submits its named tel
+  input's text as before.
 - Below the `md` breakpoint the list opens as a bottom sheet
   (`.sf-country-code-list[data-sf-sheet]`).
 

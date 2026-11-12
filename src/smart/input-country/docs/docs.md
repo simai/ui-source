@@ -24,6 +24,11 @@ skipped; disabled fields cannot open. Option focus is inset, focus-visible only,
 and uses a system highlight in forced colors. The visible label/hint identify
 the native input rather than the text of the entire enclosing country list.
 
+The host submits the number in E.164 under its `name` (`+79031234567` for the
+`+7 903 123-45-67` the field shows; standard §17.1 item 2, the form format): `+`,
+the dial code and the national digits, no spaces, dashes or brackets. The code
+alone submits an empty value. `value` stays the text the person sees.
+
 The native tel input supports required, name and form. Default value comes from
 the authored value attribute; imperative edits and cosmetic renders do not replace
 it. Native reset restores value/country/mask silently and closes the list; cancelled
@@ -97,12 +102,16 @@ leaves the field without a country: the flag turns into a dashed frame and the
 button is named "Country code not recognised. Choose a country". Pasting a number
 that starts with `+` or has ten or more digits replaces the whole value. With
 `multi-country` and no mask the code is not locked; a fixed country or a mask
-keeps it.
+keeps it: no edit reaches the code. A digit typed before it goes after it,
+select-all and a digit keep the code and replace the number, select-all and
+Backspace or Delete clear the number and leave the code; choosing another
+country changes it.
 
 The list is as wide as the popup panel (`--sf-popup-panel-width`), or the field
 when that is wider. It starts with a search field ("Country or code") that finds
 by name, ISO code or dial code; Enter picks the first match and never submits the
-form. Without a query the list shows "Frequently chosen" (the two most recent
+form; a search that finds nothing shows the line "Nothing found" ("Ничего не
+найдено") where the rows would be. Without a query the list shows "Frequently chosen" (the two most recent
 choices kept in `localStorage` under `sf-input-country:recent`, then the
 `preferred` countries) above "All countries". The chosen row is filled, not
 ticked. Picking a country keeps the national digits already typed.

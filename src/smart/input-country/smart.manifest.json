@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-country",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "title": "Country Code",
   "summary": "A telephone field with a country picker: a button opens a searchable listbox of countries, and the chosen country sets the dial code, flag and, optionally, the input mask of the native tel input.",
   "kind": "smart",
@@ -327,7 +327,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-country/index.js",
-        "sha256": "2e4880cafb92c686fa05052acaaead5e994d4686fa952ec0558d9dcf479bcbb1"
+        "sha256": "851a35c34c652065a2676d5c61a0e7475f5c24de3ee562b987bed6ba96f537fd"
       }
     ],
     "generated_runtime": [

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.country-code",
   "kind": "component",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/country-code/data/countries.json",
@@ -17,7 +17,7 @@
     "src/component/country-code/scss/_css_country_code_custom.scss",
     "src/component/country-code/scss/index.scss"
   ],
-  "content_sha256": "0653b5dbb51796149865ed47605c8c00777106e0393ff755cac28117ec296082",
+  "content_sha256": "c0cd0b4ce4d7be8c53c824b196f6be8f2f861f13ceea87ec31237843f4048ffe",
   "dependencies": [
     {
       "id": "core.runtime",

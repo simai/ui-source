@@ -2,6 +2,7 @@ import countriesData from '../../component/country-code/data/countries.json';
 import { pageLanguage } from '../../core/js/page-language';
 import {
   bindCountryCode,
+  countryFormValue,
   normalizeCountriesList,
   normalizeIso2,
   resolveDefaultFlagBase,
@@ -48,8 +49,8 @@ class SfCountryCode extends FormField(CountryCodeElement) {
     this._countries = null;
     this._boundRoot = null;
     this._renderAttributes = new Set();
-    // The tel text is the value the form gets: every keystroke and every
-    // country chosen tells the form (§17.1) -- FormField listens for them.
+    // The number in E.164 is the value the form gets: every keystroke and
+    // every country chosen tells the form (§17.1) -- FormField listens for them.
   }
 
   get size() {
@@ -83,11 +84,13 @@ class SfCountryCode extends FormField(CountryCodeElement) {
     return this.querySelector(':scope .sf-country-code-field input') || null;
   }
 
-  // What the form gets (§17.1): the tel text as the person sees it, nothing
-  // while disabled.
+  // What the form gets (§17.1 item 2, the form format): the number in E.164,
+  // `+79031234567` for the `+7 903 123-45-67` the person sees; nothing for the
+  // code alone, nothing while disabled.
   sfFormValue() {
     if (this.disabled) return null;
-    return this.value;
+    const dial = this.querySelector(':scope .sf-country-code')?.dataset?.dialCode || '';
+    return countryFormValue(this.value, dial);
   }
 
   // §17.2: a required phone has digits after the dial code; the dial code

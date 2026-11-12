@@ -5,6 +5,7 @@
     "country-label": "Код страны",
     "country-unknown": "Код страны не узнан. Выбрать страну",
     "frequent": "Часто выбирают",
+    "nothing-found": "Ничего не найдено",
     "phone-label": "Телефон",
     "phone-required": "Введите номер телефона.",
     "placeholder": "",

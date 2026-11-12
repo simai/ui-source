@@ -21,6 +21,7 @@ const COUNTRY_CODE_TEXT = {
     searchPlaceholder: 'Country or code',
     frequent: 'Frequently chosen',
     allCountries: 'All countries',
+    nothingFound: 'Nothing found',
   },
   ru: {
     phoneLabel: 'Телефон',
@@ -30,6 +31,7 @@ const COUNTRY_CODE_TEXT = {
     searchPlaceholder: 'Страна или код',
     frequent: 'Часто выбирают',
     allCountries: 'Все страны',
+    nothingFound: 'Ничего не найдено',
   },
 };
 
@@ -352,6 +354,21 @@ function extractLocalPart(fullValue, previousDialCode) {
   // Fallback: strip leading international prefix like +123 ... and keep user tail.
   // A bare «+» counts: the code the person erased (owner C87) leaves «+ 30…».
   return value.replace(/^\+\d*[\s\-()]*/, '').trim();
+}
+
+// The number in its form format (standard simai.smart-component §17.1 item 2;
+// the study's «в форму — E.164»): `+`, the dial code and the national digits,
+// no spaces, dashes or brackets, whatever the box shows -- `+7 903 123-45-67`
+// submits `+79031234567`. The code alone is no number and submits nothing. A
+// text without its `+` (hide-code) is the national part of the chosen
+// country's number.
+function countryFormValue(text, dialCode = '') {
+  const value = String(text ?? '').trim();
+  const all = value.replace(/\D/gu, '');
+  if (!all) return '';
+  const code = String(dialCode || '').replace(/\D/gu, '');
+  if (value.startsWith('+')) return code && all === code ? '' : `+${all}`;
+  return code ? `+${code}${all}` : all;
 }
 
 function closeAllCountryCodes(except = null) {
@@ -684,6 +701,9 @@ async function applyMaskForRoot(root, input, maskPattern, config = null) {
       input.value = instance.value || input.value;
     }
     syncCountryRequired(root, input);
+    // The mask arrives after the input event of a country change and may lay
+    // the number out again: the Smart host's form value follows the box.
+    root.closest?.(tagSelector('sf-input-country'))?.sfSyncFormState?.();
   } catch (error) {
     console.warn('SF.CountryCode mask init failed', error);
   }
@@ -1037,6 +1057,25 @@ function ensureCountryGroups(itemsWrap) {
   return heads;
 }
 
+// A search that finds no country says so (decision C09, as sf-menu's
+// search-empty): one line of plain text where the rows would be, in the
+// page's words; the search field is described by it while it shows.
+function syncCountryEmpty(root, itemsWrap, search, empty) {
+  let row = itemsWrap.querySelector(':scope > .sf-country-code-empty');
+  if (!row && !empty) return;
+  if (!row) {
+    row = document.createElement('span');
+    row.className = 'sf-country-code-empty';
+    row.setAttribute('role', 'presentation');
+    itemsWrap.append(row);
+  }
+  row.textContent = pageText(COUNTRY_CODE_TEXT, 'nothingFound', root, 'sf-input-country');
+  row.hidden = !empty;
+  if (!search) return;
+  if (empty) search.setAttribute('aria-describedby', ensureCountryId(row));
+  else if (search.getAttribute('aria-describedby') === row.id) search.removeAttribute('aria-describedby');
+}
+
 function arrangeCountryList(root) {
   const { itemsWrap, items } = getNodes(root);
   const config = root?.__sfCountryConfig;
@@ -1057,6 +1096,8 @@ function arrangeCountryList(root) {
     else delete item.dataset.group;
     item.style.order = query ? String(rank ?? 0) : String(at >= 0 ? at + 1 : FREQUENT_MAX + 2);
   }
+  syncCountryEmpty(root, itemsWrap, root.querySelector('.sf-country-code-search input'),
+    Boolean(query) && items.every((item) => item.hidden));
 }
 
 // The rows in the order a person sees them.
@@ -1322,6 +1363,13 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
     });
   };
 
+  // The locked code (fixed-country, use-mask) is not the person's to edit;
+  // picking another country changes it. An edit that reaches into it applies
+  // to the number after it only: a digit typed before it goes after it,
+  // select-all and a digit keep the code and replace the number, select-all
+  // and Backspace or Delete clear the number and leave the code. The mask
+  // used to read the code's digits as slots, so a digit typed at the start
+  // pushed the code's own digit into the number.
   const onKeydownInput = (event) => {
     const prefix = getLockedPrefix(root, config);
     if (!prefix) return;
@@ -1329,23 +1377,42 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
 
     const start = input.selectionStart ?? 0;
     const end = input.selectionEnd ?? start;
+    if (start !== end) return;
 
-    if (event.key === 'Backspace' && start <= prefix.length) {
+    if ((event.key === 'Backspace' && start <= prefix.length) || (event.key === 'Delete' && start < prefix.length)) {
       event.preventDefault();
       keepCaretAfterPrefix(input, prefix);
+    }
+  };
+
+  const onBeforeInput = (event) => {
+    const prefix = getLockedPrefix(root, config);
+    if (!prefix || event.isComposing) return;
+    const type = String(event.inputType || '');
+    const start = input.selectionStart ?? 0;
+    const end = input.selectionEnd ?? start;
+    const at = Math.min(prefix.length, input.value.length);
+    let text;
+    if (type.startsWith('delete')) {
+      const backward = /Backward/u.test(type);
+      const [from, to] = start !== end ? [start, end] : backward ? [start - 1, start] : [start, start + 1];
+      if (from >= prefix.length) return;
+      event.preventDefault();
+      if (to <= at) { keepCaretAfterPrefix(input, prefix); return; }
+      text = '';
+    } else if (type.startsWith('insert')) {
+      if (start >= prefix.length) return;
+      text = event.data ?? event.dataTransfer?.getData?.('text/plain') ?? null;
+      if (text === null) return;
+      // A whole number pasted over the code brings its own code: the number
+      // after it is what goes in.
+      if (/^\s*\+/u.test(text)) text = extractLocalPart(text, root.dataset.dialCode || '');
+      event.preventDefault();
+    } else {
       return;
     }
-
-    if (event.key === 'Delete' && start < prefix.length) {
-      event.preventDefault();
-      keepCaretAfterPrefix(input, prefix);
-      return;
-    }
-
-    if (start < prefix.length || end < prefix.length) {
-      event.preventDefault();
-      keepCaretAfterPrefix(input, prefix);
-    }
+    input.setRangeText(text, at, Math.max(end, at), 'end');
+    input.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: type, data: text || null }));
   };
 
   if (toggle) {
@@ -1392,6 +1459,7 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
   input.addEventListener('input', onInput);
   input.addEventListener('paste', onPaste);
   input.addEventListener('keydown', onKeydownInput);
+  input.addEventListener('beforeinput', onBeforeInput);
 
   items.forEach((item) => { item.addEventListener('click', onItemClick); item.addEventListener('keydown', onItemKeydown); });
   root.addEventListener('focusout', onFocusOut);
@@ -1406,6 +1474,7 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
   root.__sfCountryCodeInput = onInput;
   root.__sfCountryCodePaste = onPaste;
   root.__sfCountryCodeInputKeydown = onKeydownInput;
+  root.__sfCountryCodeBeforeInput = onBeforeInput;
   root.__sfCountryReleaseReset = bindFormReset(input, () => {
     const country = countryResetDefaults.get(input);
     if (country) applyCountrySelection(root, country, 'reset');
@@ -1462,6 +1531,9 @@ function unbindCountryCode(root) {
   if (input && root.__sfCountryCodeInputKeydown) {
     input.removeEventListener('keydown', root.__sfCountryCodeInputKeydown);
   }
+  if (input && root.__sfCountryCodeBeforeInput) {
+    input.removeEventListener('beforeinput', root.__sfCountryCodeBeforeInput);
+  }
   if (root.__sfCountryMask) {
     window.SF?.Mask?.destroy?.(root.__sfCountryMask);
   }
@@ -1479,6 +1551,7 @@ function unbindCountryCode(root) {
   delete root.__sfCountryCodeInput;
   delete root.__sfCountryCodePaste;
   delete root.__sfCountryCodeInputKeydown;
+  delete root.__sfCountryCodeBeforeInput;
   delete root.__sfCountryMask;
   delete root.__sfCountryMaskToken;
   delete root.__sfCountrySelected;
@@ -1748,6 +1821,7 @@ countryCodeObserver.observe(document.documentElement, {
 
 export {
   bindCountryCode,
+  countryFormValue,
   normalizeCountriesList,
   normalizeIso2,
   resolveDefaultFlagBase,

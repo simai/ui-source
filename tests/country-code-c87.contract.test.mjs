@@ -9,6 +9,7 @@ import vm from 'node:vm';
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 const source = await read('src/component/country-code/js/_country_code.js');
 const template = await read('src/smart/input-country/js/templates/default.js');
+const host = await read('src/smart/input-country/index.js');
 const css = await read('src/component/country-code/scss/_css_country_code.scss');
 const custom = await read('src/component/country-code/scss/_css_country_code_custom.scss');
 const langs = {en: await read('src/smart/input-country/lang/en.json'), ru: await read('src/smart/input-country/lang/ru.json')};
@@ -190,4 +191,50 @@ test('the list: search header, frequent group, chosen row filled, a sheet on a p
   assert.match(css, /\.sf-country-code \.sf-country-code-item\[aria-selected="true"\] \{\s*--sf-country-code-item--background-color: var\(--sf-primary-container\);/u);
   assert.match(css, /\.sf-country-code \.sf-country-code-list\[data-sf-sheet\] \{/u);
   assert.match(css, /inline-size: var\(--sf-popup-panel-width\);/u);
+});
+
+// Leftovers of C87 (dispatcher queue msg-f78a24f9d8714b91a524): the form value
+// in E.164, the locked code that no edit reaches, the «nothing found» line.
+test('the form gets the number in E.164, the box keeps the text as typed', () => {
+  const sandbox = vm.createContext({});
+  vm.runInContext(source.slice(source.indexOf('function countryFormValue'), source.indexOf('function closeAllCountryCodes')), sandbox);
+  const e164 = sandbox.countryFormValue;
+  assert.equal(e164('+7 903 123-45-67', '+7'), '+79031234567');
+  assert.equal(e164('+49 30 123456', '+49'), '+4930123456');
+  assert.equal(e164('+7 (903) 123-45-67', '+7'), '+79031234567');
+  assert.equal(e164('+994 50 123 45 67', '+994'), '+994501234567');
+  // The code alone, an empty box, a bare «+»: no number.
+  assert.equal(e164('+7 ', '+7'), '');
+  assert.equal(e164('+994', '+994'), '');
+  assert.equal(e164('', '+7'), '');
+  assert.equal(e164('+', ''), '');
+  // An unknown code keeps what was typed; hide-code texts are the national part.
+  assert.equal(e164('+999 12 345', ''), '+99912345');
+  assert.equal(e164('903 123-45-67', '+7'), '+79031234567');
+  // The Smart host submits it.
+  assert.match(host, /sfFormValue\(\) \{\s*if \(this\.disabled\) return null;[\s\S]*?return countryFormValue\(this\.value, dial\);/u);
+});
+
+test('the locked code is not the person\'s to edit: edits reaching it apply to the number', () => {
+  const bind = source.slice(source.indexOf('function bindCountryCode'), source.indexOf('function unbindCountryCode'));
+  assert.match(bind, /input\.addEventListener\('beforeinput', onBeforeInput\);/u);
+  const guard = bind.slice(bind.indexOf('const onBeforeInput'), bind.indexOf("toggle.addEventListener('click'"));
+  assert.match(guard, /const prefix = getLockedPrefix\(root, config\);/u);
+  assert.match(guard, /if \(to <= at\) \{ keepCaretAfterPrefix\(input, prefix\); return; \}/u);
+  assert.match(guard, /input\.setRangeText\(text, at, Math\.max\(end, at\), 'end'\);/u);
+  // A selection over the code is no longer swallowed by keydown: select-all
+  // and Backspace clears the number.
+  const keydown = bind.slice(bind.indexOf('const onKeydownInput'), bind.indexOf('const onBeforeInput'));
+  assert.match(keydown, /if \(start !== end\) return;/u);
+  assert.match(source, /input\.removeEventListener\('beforeinput', root\.__sfCountryCodeBeforeInput\);/u);
+});
+
+test('a search that finds nothing says so in the page language', () => {
+  assert.match(source, /nothingFound: 'Nothing found'/u);
+  assert.match(source, /nothingFound: 'Ничего не найдено'/u);
+  assert.equal(JSON.parse(langs.en).runtime['nothing-found'], 'Nothing found');
+  assert.equal(JSON.parse(langs.ru).runtime['nothing-found'], 'Ничего не найдено');
+  assert.match(source, /syncCountryEmpty\(root, itemsWrap, root\.querySelector\('\.sf-country-code-search input'\),\s*Boolean\(query\) && items\.every\(\(item\) => item\.hidden\)\);/u);
+  assert.match(css, /\.sf-country-code \.sf-country-code-empty \{[^}]*color: var\(--sf-on-surface-variant\);/u);
+  assert.match(css, /\.sf-country-code \.sf-country-code-empty\[hidden\] \{\s*display: none;/u);
 });

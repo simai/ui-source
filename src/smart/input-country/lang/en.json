@@ -5,6 +5,7 @@
     "country-label": "Country code",
     "country-unknown": "Country code not recognised. Choose a country",
     "frequent": "Frequently chosen",
+    "nothing-found": "Nothing found",
     "phone-label": "Phone number",
     "phone-required": "Enter a phone number.",
     "placeholder": "",

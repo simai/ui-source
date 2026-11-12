@@ -548,8 +548,22 @@
   line-height: var(--sf-text-height-1\/2);
 }
 
+/* Nothing found (decision C09, sf-menu's search-empty line): plain text in
+   one row where the rows would be, on the list's inset, in the search's type. */
+.sf-country-code .sf-country-code-empty {
+  display: flex;
+  align-items: center;
+  order: 999;
+  block-size: var(--sf-country-code-row--block-size, var(--sf-ui-1--control-height));
+  padding-inline: calc(var(--sf-country-code--inset) - var(--sf-country-code-list--padding-inline-start, 0px));
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1);
+  line-height: var(--sf-text-height-1);
+}
+
 .sf-country-code .sf-country-code-group[hidden],
-.sf-country-code .sf-country-code-item[hidden] {
+.sf-country-code .sf-country-code-item[hidden],
+.sf-country-code .sf-country-code-empty[hidden] {
   display: none;
 }
 
