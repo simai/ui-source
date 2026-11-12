@@ -104,6 +104,10 @@ export function renderFileUploadTemplate(context) {
                 data-render-managed="1"
                 data-accept=${context.accept || nothing}
                 data-multiple=${context.multiple ? 'true' : 'false'}
+                data-max-size=${context.maxSize > 0 ? String(context.maxSize) : nothing}
+                data-min-size=${context.minSize > 0 ? String(context.minSize) : nothing}
+                data-max-files=${context.maxFiles > 0 ? String(context.maxFiles) : nothing}
+                data-max-total-size=${context.maxTotalSize > 0 ? String(context.maxTotalSize) : nothing}
                 ?multiple=${context.multiple}
                 ?disabled=${context.disabled}
                 aria-label=${context.ariaLabel || nothing}

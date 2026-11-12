@@ -46,6 +46,26 @@
       "type": "boolean",
       "default": false
     },
+    "max-size": {
+      "type": "number",
+      "default": 0,
+      "summary": "The largest file in bytes; 0 for none. A larger file is not added and is said under the area (reason size)."
+    },
+    "min-size": {
+      "type": "number",
+      "default": 0,
+      "summary": "The smallest file in bytes; 0 for none (reason min-size). An empty file is never added (reason empty)."
+    },
+    "max-files": {
+      "type": "number",
+      "default": 0,
+      "summary": "How many files a multiple area lists at most; 0 for none (reason count). A single area keeps one and replaces it."
+    },
+    "max-total-size": {
+      "type": "number",
+      "default": 0,
+      "summary": "The listed files together in bytes; 0 for none (reason total)."
+    },
     "disabled": {
       "type": "boolean",
       "default": false

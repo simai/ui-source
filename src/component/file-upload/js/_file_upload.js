@@ -20,6 +20,11 @@ const FILE_UPLOAD_ITEM_TEXT = {
     'reject-type': '“{name}” is not accepted: allowed {formats}',
     'reject-one': '“{name}” was not added: this field takes one file',
     'reject-duplicate': '“{name}” is already in the list',
+    'reject-empty': '“{name}” is empty',
+    'reject-size': '“{name}” is {size}; the limit is {max}',
+    'reject-min-size': '“{name}” is {size}; it must be at least {min}',
+    'reject-count': {one: '“{name}” was not added: up to {n} file', other: '“{name}” was not added: up to {n} files'},
+    'reject-total': '“{name}” was not added: all files together up to {max}',
     'formats-image': 'images',
     'formats-video': 'video',
     'formats-audio': 'audio',
@@ -34,6 +39,11 @@ const FILE_UPLOAD_ITEM_TEXT = {
     'reject-type': '«{name}» не подходит: можно {formats}',
     'reject-one': '«{name}» не добавлен: сюда можно только один файл',
     'reject-duplicate': '«{name}» уже добавлен',
+    'reject-empty': '«{name}» пустой — в нём нет данных',
+    'reject-size': '«{name}» — {size}, а можно до {max}',
+    'reject-min-size': '«{name}» — {size}, а нужно от {min}',
+    'reject-count': {one: '«{name}» не добавлен: можно не больше {n} файла', few: '«{name}» не добавлен: можно не больше {n} файлов', many: '«{name}» не добавлен: можно не больше {n} файлов', other: '«{name}» не добавлен: можно не больше {n} файла'},
+    'reject-total': '«{name}» не добавлен: все файлы вместе — до {max}',
     'formats-image': 'изображения',
     'formats-video': 'видео',
     'formats-audio': 'аудио',
@@ -121,6 +131,19 @@ function getMultiple(root) {
 
 function getAccept(root) {
   return root.dataset.accept || root.getAttribute('accept') || '';
+}
+
+// A limit in bytes or files, from data-<name> or <name>: a positive number, or
+// none (FU-8). Each page wrote its own check (sf-chat-composer in ui-pro too).
+function getLimit(root, name) {
+  const key = name.replace(/-([a-z])/gu, (_, letter) => letter.toUpperCase());
+  const value = Number(root.dataset[key] ?? root.getAttribute(name) ?? '');
+  return Number.isFinite(value) && value > 0 ? value : 0;
+}
+
+function itemBytes(item) {
+  const bytes = Number(item?.file?.size ?? item?.size);
+  return Number.isFinite(bytes) && bytes > 0 ? bytes : 0;
 }
 
 // function getTriggerLink(root) {
@@ -654,25 +677,50 @@ function showFileUploadRejections(root, rejected = []) {
 function takeFiles(root, files = [], source = 'input') {
   const accept = getAccept(root);
   const multiple = getMultiple(root);
-  const listed = new Set(multiple ? (root.__sfFileUploadItems || []).map((item, index) => getItemEventKey(item, index)) : []);
+  const kept = multiple ? Array.from(root.__sfFileUploadItems || []) : [];
+  const listed = new Set(kept.map((item, index) => getItemEventKey(item, index)));
+  const maxSize = getLimit(root, 'max-size');
+  const minSize = getLimit(root, 'min-size');
+  const maxFiles = multiple ? getLimit(root, 'max-files') : 0;
+  const maxTotal = getLimit(root, 'max-total-size');
+  const size = (bytes) => formatFileSize(bytes, {node: root});
+  let count = kept.length;
+  let total = kept.reduce((sum, item) => sum + itemBytes(item), 0);
   const accepted = [];
   const rejected = [];
   Array.from(files).forEach((file) => {
     const name = String(file?.name || '');
     const key = `${file?.name}-${file?.size}-${file?.lastModified}`;
+    const bytes = Number(file?.size) || 0;
     let reason = '';
     let vars = {name};
+    let words = {};
     if (!multiple && accepted.length) reason = 'one';
     else if (listed.has(key)) reason = 'duplicate';
     else if (!acceptsFile(accept, file)) {
       reason = 'type';
       vars = {name, formats: formatAcceptWords(accept, root)};
+    } else if (bytes === 0) reason = 'empty';
+    else if (maxSize && bytes > maxSize) {
+      reason = 'size';
+      vars = {name, size: size(bytes), max: size(maxSize)};
+    } else if (minSize && bytes < minSize) {
+      reason = 'min-size';
+      vars = {name, size: size(bytes), min: size(minSize)};
+    } else if (maxFiles && count >= maxFiles) {
+      reason = 'count';
+      words = {count: maxFiles};
+    } else if (maxTotal && total + bytes > maxTotal) {
+      reason = 'total';
+      vars = {name, max: size(maxTotal)};
     }
     if (reason) {
-      rejected.push({file, name, reason: reason === 'one' ? 'count' : reason, message: fileUploadWord(root, `reject-${reason}`, {vars})});
+      rejected.push({file, name, reason: reason === 'one' ? 'count' : reason, message: fileUploadWord(root, `reject-${reason}`, {vars, ...words})});
       return;
     }
     listed.add(key);
+    count += 1;
+    total += bytes;
     accepted.push(file);
   });
   showFileUploadRejections(root, rejected);

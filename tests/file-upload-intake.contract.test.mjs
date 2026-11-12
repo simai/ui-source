@@ -148,3 +148,28 @@ test('FU-7: the formats line reads people words, not «*»', () => {
   assert.equal(api.formatAcceptWords('.pdf, .docx, application/pdf, image/*', area()), 'PDF, DOCX, изображения');
   assert.equal(api.formatAcceptWords('video/*', area({lang: 'en'})), 'video');
 });
+
+test('FU-8: size, count and total limits refuse a file with its reason, an empty file is never added', () => {
+  const api = load();
+  const root = area({attributes: {multiple: '', 'data-max-size': String(5 * 1024 * 1024), 'data-max-files': '3', 'data-max-total-size': String(6 * 1024 * 1024)}});
+  const big = file('Скан.pdf', 14 * 1024 * 1024);
+  api.takeFiles(root, [big, file('Пустой.pdf', 0), file('1.pdf', 2 * 1024 * 1024), file('2.pdf', 2 * 1024 * 1024), file('3.pdf', 3 * 1024 * 1024)], 'input');
+  assert.deepEqual(names(root), ['1.pdf', '2.pdf']);
+  const reject = root.events.find((event) => event.type === 'sf-file-upload:reject');
+  assert.deepEqual(plain([...reject.detail.rejected].map((entry) => [entry.name, entry.reason])), [['Скан.pdf', 'size'], ['Пустой.pdf', 'empty'], ['3.pdf', 'total']]);
+  assert.equal(reject.detail.rejected[0].message, '«Скан.pdf» — 14336 КБ, а можно до 5120 КБ');
+  api.takeFiles(root, Array.from({length: 4}, (_, index) => file(`Файл ${index + 1}.pdf`, 100)), 'input');
+  assert.deepEqual(names(root), ['1.pdf', '2.pdf', 'Файл 1.pdf']);
+  const counted = root.events.filter((event) => event.type === 'sf-file-upload:reject').at(-1).detail.rejected;
+  assert.deepEqual(plain([...counted].map((entry) => entry.reason)), ['count', 'count', 'count']);
+  assert.equal(counted[0].message, '«Файл 2.pdf» не добавлен: можно не больше 3 файла');
+});
+
+test('FU-8: min-size and the English words', () => {
+  const api = load();
+  const root = area({attributes: {'min-size': '2048'}, lang: 'en'});
+  api.takeFiles(root, [file('tiny.pdf', 1024)], 'drop');
+  const reject = root.events.find((event) => event.type === 'sf-file-upload:reject');
+  assert.equal(reject.detail.rejected[0].reason, 'min-size');
+  assert.equal(reject.detail.rejected[0].message, '“tiny.pdf” is 1 КБ; it must be at least 2 КБ');
+});

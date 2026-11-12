@@ -6,8 +6,18 @@
     "formats-video": "видео",
     "link-text": "Выберите файл",
     "not-added": "Не добавлено {n}:",
+    "reject-count": {
+      "one": "«{name}» не добавлен: можно не больше {n} файла",
+      "few": "«{name}» не добавлен: можно не больше {n} файлов",
+      "many": "«{name}» не добавлен: можно не больше {n} файлов",
+      "other": "«{name}» не добавлен: можно не больше {n} файла"
+    },
     "reject-duplicate": "«{name}» уже добавлен",
+    "reject-empty": "«{name}» пустой — в нём нет данных",
+    "reject-min-size": "«{name}» — {size}, а нужно от {min}",
     "reject-one": "«{name}» не добавлен: сюда можно только один файл",
+    "reject-size": "«{name}» — {size}, а можно до {max}",
+    "reject-total": "«{name}» не добавлен: все файлы вместе — до {max}",
     "reject-type": "«{name}» не подходит: можно {formats}",
     "remove": "Удалить",
     "retry": "Повторить",
