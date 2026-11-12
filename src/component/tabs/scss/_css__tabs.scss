@@ -130,11 +130,13 @@
   .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
     --sf-button--border-top-width: 0;
     --sf-button--border-inline-start-width: 0;
-    --sf-button--border-bottom-width: var(--sf-tabs-indicator-width, calc(var(--sf-tabs--border-width, var(--sf-px)) * 2));
+    // The line is not the tab's border: it is drawn under the letters
+    // (owner decision C99, the selected line below).
+    --sf-button--border-bottom-width: 0;
     --sf-button--border-inline-end-width: 0;
     --sf-icon-button--border-top-width: 0;
     --sf-icon-button--border-inline-start-width: 0;
-    --sf-icon-button--border-bottom-width: var(--sf-tabs-indicator-width, calc(var(--sf-tabs--border-width, var(--sf-px)) * 2));
+    --sf-icon-button--border-bottom-width: 0;
     --sf-icon-button--border-inline-end-width: 0;
   }
 
@@ -412,28 +414,120 @@
 }
 
 @layer sf.overrides {
-  // An underline tab is its label and its line: no inline padding on the tab,
-  // one gap between tabs by size, from the ladder -- c0, c2 and c6 at 1/2, 1
-  // and 2 (owner, 2026-10-14) -- and a line of two pixels at every size
-  // (owner decision C96 item 2, R184 T6: it was three at size 2), which
-  // switches at once, without a slide. The tab keeps the control's height,
-  // which is its hit area.
-  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button,
-  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+  // An underline tab is a control of its size with its line under the letters
+  // (owner decision C99, variant A; R184 TS-1..TS-5). The tabs stand edge to
+  // edge (gap --sf-space-0), so the whole row is a hit area; each tab has the
+  // inline padding of a button of the same size, --sf-ui-<size>--space-x
+  // (14 / 16 / 20 at 1440, 12 / 14 / 18 on a phone, one step down in compact
+  // density, C79), and the label has none of its own, so the line is as wide
+  // as the letters. --sf-tabs-padding-inline sets that padding for every
+  // size. The first tab has no padding at its start and the last none at its
+  // end, so the first letters stand on the content edge like the heading
+  // above; a row that shares its width (fit, C96 item 7) keeps both. The
+  // gap and the padding were the ladder's raw c0 / c2 / c6 between tabs of no
+  // padding: 17-19 % of the row pressed nothing (C18).
+  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top {
+    --sf-tabs-top--gap: var(--sf-tabs-gap, var(--sf-space-0));
+  }
+
+  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    --sf-tabs--padding-inline: var(--sf-tabs-padding-inline, var(--sf-ui-1--space-x));
+    --sf-button--padding-inline-start: var(--sf-tabs--padding-inline);
+    --sf-button--padding-inline-end: var(--sf-tabs--padding-inline);
+  }
+
+  .sf-tabs--underline.sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    --sf-tabs--padding-inline: var(--sf-tabs-padding-inline, var(--sf-ui-1\/2--space-x));
+  }
+
+  .sf-tabs--underline.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    --sf-tabs--padding-inline: var(--sf-tabs-padding-inline, var(--sf-ui-2--space-x));
+  }
+
+  // The label is as wide as its letters: sf-button stretches it (flex-1) in a
+  // button wider than its content, which a shared row is.
+  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button .sf-button-text-container {
+    padding-inline: calc(var(--sf-px) * 0);
+    flex: 0 1 auto;
+  }
+
+  .sf-tabs--underline > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > :first-child > .sf-button,
+  .sf-tabs--underline > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > .sf-button:first-child {
     --sf-button--padding-inline-start: calc(var(--sf-px) * 0);
+  }
+
+  .sf-tabs--underline > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > :last-child > .sf-button,
+  .sf-tabs--underline > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > .sf-button:last-child {
     --sf-button--padding-inline-end: calc(var(--sf-px) * 0);
   }
 
-  .sf-tabs--underline.sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top {
-    --sf-tabs-top--gap: var(--sf-tabs-gap, var(--sf-c0));
+  // The line of the selected tab: two pixels at every size (owner decision C96
+  // item 2, R184 T6: it was three at size 2), exactly under the letters (C99,
+  // TS-4) and on the tab's bottom edge, over the divider; it switches at once,
+  // without a slide. A border, so forced colours keep it.
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) > .sf-button-text-container::after,
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled)::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: calc(var(--sf-tabs--line-drop) * -1);
+    border-block-end: var(--sf-tabs-indicator-width, calc(var(--sf-tabs--border-width, var(--sf-px)) * 2)) solid var(--sf-tabs-indicator-color, var(--sf-primary));
+    pointer-events: none;
   }
 
-  .sf-tabs--underline.sf-tabs--size-1 > .sf-tabs-top-container > .sf-tabs-top {
-    --sf-tabs-top--gap: var(--sf-tabs-gap, var(--sf-c2));
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    --sf-tabs--line-drop: var(--sf-button--padding-bottom);
   }
 
-  .sf-tabs--underline.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top {
-    --sf-tabs-top--gap: var(--sf-tabs-gap, var(--sf-c6));
+  // The current tab shortened beside «Ещё» (C54 D1) clips its label: its line
+  // is drawn by the tab, under its content box, which is the label.
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button {
+    position: relative;
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button > .sf-button-text-container {
+    position: static;
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button.selected:not(:disabled):not(.disabled) > .sf-button-text-container::after {
+    inset-inline: var(--sf-button--padding-inline-start) var(--sf-button--padding-inline-end);
+    inset-block-end: 0;
+  }
+
+  // An icon tab keeps the icon button's square padding; its line is drawn by
+  // the tab, centred and as wide as the icon (the text line of its size).
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+    --sf-tabs--line-drop: calc(var(--sf-px) * 0);
+    position: relative;
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled)::after {
+    margin-inline: auto;
+    inline-size: var(--sf-tabs--icon-line, var(--sf-text-height-1));
+  }
+
+  .sf-tabs--underline.sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+    --sf-tabs--icon-line: var(--sf-text-height-1\/2);
+  }
+
+  .sf-tabs--underline.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+    --sf-tabs--icon-line: var(--sf-text-height-2);
+  }
+
+  // The spacing of a vertical row is the menu column's (owner decision C99,
+  // R184 TS-8; C96 item 5): rows --sf-space-1/4 apart (pitch 44 at size 1), letters
+  // --sf-space-1 from the column's edge (16), no padding on the label.
+  .sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top {
+    --sf-tabs-top--gap: var(--sf-tabs-gap, var(--sf-space-1\/4));
+  }
+
+  .sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    --sf-button--padding-inline-start: var(--sf-tabs-padding-inline, var(--sf-space-1));
+    --sf-button--padding-inline-end: var(--sf-tabs-padding-inline, var(--sf-space-1));
+  }
+
+  .sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button .sf-button-text-container {
+    padding-inline: calc(var(--sf-px) * 0);
   }
 
   // The tab's own font is its size's text role: the bare button computed the
@@ -463,7 +557,7 @@
     justify-content: center;
     min-inline-size: var(--sf-text-height-1\/3);
     margin-inline-start: var(--sf-a6);
-    padding-inline: var(--sf-a4);
+    padding-inline: var(--sf-space-1\/4);
     border-radius: var(--sf-radius-circle);
     background-color: var(--sf-surface-container);
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);

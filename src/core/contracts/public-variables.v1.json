@@ -985,7 +985,7 @@
         {
           "name": "--sf-tabs-indicator-width",
           "role": "indicator-width",
-          "summary": "The thickness of the line under a tab, in the underline appearance; the tab keeps its height.",
+          "summary": "The thickness of the line under the selected tab's letters, in the underline appearance; the tab keeps its height.",
           "default": "calc(var(--sf-px) * 2)",
           "since": "2026-10-18",
           "varies_with": [
@@ -1016,9 +1016,20 @@
         {
           "name": "--sf-tabs-gap",
           "role": "gap",
-          "summary": "Space between tabs; full tabs stay joined.",
-          "default": "var(--sf-space-1)",
+          "summary": "Space between tabs: none in the line look, whose tabs stand edge to edge (owner decision C99), --sf-space-1 between plates, --sf-space-1/4 between vertical rows.",
+          "default": "var(--sf-space-0)",
           "since": "2026-10-18",
+          "varies_with": [
+            "appearance",
+            "size"
+          ]
+        },
+        {
+          "name": "--sf-tabs-padding-inline",
+          "role": "padding-inline",
+          "summary": "The inline padding of a tab in the line and vertical looks; the label has none, so the line is as wide as the letters. Line: the button padding of the tabs' size, --sf-ui-<size>--space-x; the first tab has none at its start and the last none at its end unless the row is shared (fit). Vertical: --sf-space-1, as the menu column.",
+          "default": "var(--sf-ui-1--space-x)",
+          "since": "2026-11-12",
           "varies_with": [
             "appearance",
             "size"

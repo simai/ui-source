@@ -1087,7 +1087,19 @@ class SfTabs extends TabsElement {
     };
     showMore(false);
     let kept = fits(room());
-    if (!kept && this.fitsEqually(hosts.length)) {
+    // A shared row gives the first and the last tab back the padding of their
+    // outer edges, which a row of their own widths leaves off (owner decision
+    // C99, TS-5 and TS-7): the tabs share the row only when they fit with it.
+    const edgesBack = () => {
+      const first = tabBox(hosts[0]);
+      const last = tabBox(hosts[hosts.length - 1]);
+      if (!first || !last || first === last) return 0;
+      const start = getComputedStyle(first);
+      const end = getComputedStyle(last);
+      const back = (style, outer, inner) => Math.max(0, (parseFloat(style[inner]) || 0) - (parseFloat(style[outer]) || 0));
+      return back(start, 'paddingInlineStart', 'paddingInlineEnd') + back(end, 'paddingInlineEnd', 'paddingInlineStart');
+    };
+    if (!kept && this.fitsEqually(hosts.length) && !fits(room() - edgesBack())) {
       // Every tab fits: they share the row, each at least its own width. The
       // shared widths are what the observer will report, not a change.
       container?.setAttribute('data-sf-tabs-fit', '');

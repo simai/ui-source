@@ -129,12 +129,16 @@ function renderTab(item, context) {
       : nothing}</span>`
     : nothing;
 
+  // A vertical tab's label starts at the start (owner decisions C96 item 5,
+  // C99): sf-button centres its label unless told otherwise (text-center).
+  const vertical = (context.look ?? context.type) === 'vertical';
   if(context.variant !== 'icons') {
       return html`
           <sf-button
                   appearance="primary"
                   size=${context.size}
                   scheme=${context.scheme}
+                  text-position=${vertical ? 'start' : nothing}
                   href=${context.links ? item.href : nothing}
                   ?disabled=${Boolean(context.links && item.disabled)}
                   text=${item.label}
