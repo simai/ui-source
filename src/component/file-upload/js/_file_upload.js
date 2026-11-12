@@ -4,6 +4,7 @@ import { fieldSize, retireFieldSizeClass } from '../../field-size';
 import { pageText, pageWord } from '../../../core/js/page-language';
 import { formatFileSize } from '../../../core/js/format-file-size.js';
 import { fileIcon } from '../../../core/js/composition/file-size.mjs';
+import { acceptFormats, fileRejection, positiveLimit } from './intake.mjs';
 // Every word this part says. A product adds a language with
 // SF.language.register('sf-file-upload', code, words); a ternary on «ru» allowed two
 // and no more.
@@ -151,8 +152,7 @@ function getAccept(root) {
 // none (FU-8). Each page wrote its own check (sf-chat-composer in ui-pro too).
 function getLimit(root, name) {
   const key = name.replace(/-([a-z])/gu, (_, letter) => letter.toUpperCase());
-  const value = Number(root.dataset[key] ?? root.getAttribute(name) ?? '');
-  return Number.isFinite(value) && value > 0 ? value : 0;
+  return positiveLimit(root.dataset[key] ?? root.getAttribute(name));
 }
 
 function itemBytes(item) {
@@ -621,21 +621,6 @@ function retryFileUploadItem(root, index) {
   return true;
 }
 
-// Whether a file is one the accept list names: `.ext`, `type/*` or `type/sub`,
-// as the platform dialog reads it. The dialog filters what a person may pick; a
-// drop went past it and took any file at all.
-function acceptsFile(accept, file) {
-  const tokens = String(accept || '').split(',').map((token) => token.trim().toLowerCase()).filter(Boolean);
-  if (!tokens.length) return true;
-  const name = String(file?.name || '').toLowerCase();
-  const type = String(file?.type || '').toLowerCase();
-  return tokens.some((token) => {
-    if (token.startsWith('.')) return name.endsWith(token);
-    if (token.endsWith('/*')) return type.startsWith(token.slice(0, -1));
-    return type === token;
-  });
-}
-
 function emitSelect(root, files, source = 'input') {
   root.dispatchEvent(
     new CustomEvent('sf-file-upload:select', {
@@ -688,18 +673,10 @@ function fileUploadWord(root, key, options = {}) {
 
 // The formats an accept list names, as people read them: «PDF, DOCX»,
 // «изображения». `type/*` is the kind's word; it wrote «*» before.
+// The names are the core's (intake.mjs): image/jpeg reads «JPG», image/svg+xml
+// «SVG».
 function formatAcceptWords(accept, root = null) {
-  const parts = String(accept || '')
-    .split(',')
-    .map((part) => part.trim())
-    .filter(Boolean)
-    .map((part) => {
-      const wild = /^(image|video|audio)\/\*$/iu.exec(part);
-      if (wild) return fileUploadWord(root, `formats-${wild[1].toLowerCase()}`);
-      const bare = part.replace(/^\./u, '');
-      return (bare.includes('/') ? bare.split('/').pop() || bare : bare).toUpperCase();
-    });
-  return [...new Set(parts)].join(', ');
+  return acceptFormats(accept, (kind) => fileUploadWord(root, `formats-${kind}`));
 }
 
 // Where a file that was not added is said: the line under the area (C81: the
@@ -768,16 +745,17 @@ function takeFiles(root, files = [], source = 'input') {
     let reason = '';
     let vars = {name};
     let words = {};
+    const own = fileRejection(file, {accept, maxSize, minSize});
     if (!multiple && accepted.length) reason = 'one';
     else if (listed.has(key)) reason = 'duplicate';
-    else if (!acceptsFile(accept, file)) {
+    else if (own === 'type') {
       reason = 'type';
       vars = {name, formats: formatAcceptWords(accept, root)};
-    } else if (bytes === 0) reason = 'empty';
-    else if (maxSize && bytes > maxSize) {
+    } else if (own === 'empty') reason = 'empty';
+    else if (own === 'size') {
       reason = 'size';
       vars = {name, size: size(bytes), max: size(maxSize)};
-    } else if (minSize && bytes < minSize) {
+    } else if (own === 'min-size') {
       reason = 'min-size';
       vars = {name, size: size(bytes), min: size(minSize)};
     } else if (maxFiles && count >= maxFiles) {

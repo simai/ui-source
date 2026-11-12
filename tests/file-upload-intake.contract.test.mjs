@@ -8,6 +8,7 @@ import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 import vm from 'node:vm';
 import {fileIcon} from '../src/core/js/composition/file-size.mjs';
+import {acceptFormats, acceptsFile, fileRejection, positiveLimit} from '../src/component/file-upload/js/intake.mjs';
 
 const source = await readFile(new URL('../src/component/file-upload/js/_file_upload.js', import.meta.url), 'utf8');
 const words = source.slice(source.indexOf('const FILE_UPLOAD_ITEM_TEXT'), source.indexOf('const FILE_UPLOAD_SELECTOR'));
@@ -63,6 +64,10 @@ function load() {
     Element: class Element {},
     fieldSize: (value) => String(value || '1'),
     fileIcon,
+    acceptFormats,
+    acceptsFile,
+    fileRejection,
+    positiveLimit,
     formatFileSize: (size) => `${Math.round(Number(size) / 1024)} КБ`,
     pageText: (dictionary, key, node) => dictionary[node?.lang || 'ru']?.[key] ?? key,
     pageWord: (dictionary, key, node, {vars, count} = {}) => {
