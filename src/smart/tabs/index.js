@@ -30,6 +30,13 @@ const TabsElement = elementFromManifest(manifest, {
 const isPagePanel = (node) => node?.nodeType === 1 && node.getAttribute('role') === 'tabpanel'
   && !node.hasAttribute('slot') && !node.hasAttribute('data-sf-static');
 const OVERFLOWS = ['scroll', 'wrap', 'more'];
+// What takes the focus inside a panel: a panel holding one is not a tab stop
+// of its own (APG tabs; R184 T8).
+const FOCUSABLE = [
+  'a[href]', 'area[href]', 'button:not([disabled])', 'input:not([disabled]):not([type="hidden"])',
+  'select:not([disabled])', 'textarea:not([disabled])', 'iframe', 'audio[controls]', 'video[controls]',
+  'summary', '[contenteditable]:not([contenteditable="false"])', '[tabindex]:not([tabindex="-1"])',
+].join(', ');
 
 // Which item a tab in the list draws. An sf-button moves its data attributes
 // to the button inside it, so the index is read wherever it landed.
@@ -181,6 +188,8 @@ class SfTabs extends TabsElement {
       // A gear at the end of the tabs: the person orders and hides them; the
       // host keeps the choice (sf-tabs-settings-change, setSettings).
       configurable: { type: Boolean, default: false },
+      // A panel is drawn when its tab is first opened, and kept (R184 T8).
+      lazy: { type: Boolean, default: false },
       activeIndex: { type: Number, default: 0 },
       items: {
         default: [],
@@ -206,6 +215,10 @@ class SfTabs extends TabsElement {
     this.addEventListener('click', this.handleRootClick);
     this.addEventListener('keydown', this.handleRootKeyDown);
     this._settings = { order: [], hidden: [] };
+    // The entries whose panel was drawn once (lazy): kept drawn.
+    this._openedPanels = new Set();
+    // The page's panels that came with a tabindex of their own: left as they are.
+    this._authoredPanelFocus = new WeakSet();
     // A change of the row's box or of a tab's box is laid out in the
     // observer's own callback, which runs after the browser's layout and
     // before it paints: the row is never painted as it stood before the
@@ -228,6 +241,10 @@ class SfTabs extends TabsElement {
         // box is watched, so the observer lays the row out before the paint.
         this.observeTabBoxes();
         this.scheduleOverflow();
+      } else if (event.target !== this && event.target.closest?.('[data-sf-tab-panel]')?.closest('sf-tabs') === this) {
+        // A part in a panel drawn after the tabs: its field may be what takes
+        // the focus there.
+        this.schedulePanelFocus();
       }
     });
   }
@@ -263,6 +280,7 @@ class SfTabs extends TabsElement {
   afterRender(callback) {
     if (typeof callback === 'function') return super.afterRender(callback);
     this.syncTabSemantics();
+    this.syncPanelFocus();
     // The box that has a size: sf-tabs is display:contents, so observing the
     // element itself never fired and «Ещё» was laid out once, wrong after any
     // resize (docs trial 4, 2026-10-15).
@@ -441,6 +459,7 @@ class SfTabs extends TabsElement {
   capturePagePanels() {
     const found = Array.from(this.children).filter(isPagePanel);
     for (const panel of found) {
+      if (panel.hasAttribute('tabindex')) this._authoredPanelFocus.add(panel);
       panel.remove();
       this._pagePanels.push(panel);
     }
@@ -718,6 +737,51 @@ class SfTabs extends TabsElement {
 
   get configurable() {
     return this.getBooleanAttr('configurable', false);
+  }
+
+  get lazy() {
+    return this.getBooleanAttr('lazy', false);
+  }
+
+  // ─── the panels: drawn when opened (lazy), a tab stop when nothing in them is
+  // A panel is drawn unless lazy and never opened; the open one is drawn.
+  panelDrawn(item) {
+    return !this.lazy || item.selected || this._openedPanels.has(item.key);
+  }
+
+  // A panel is a tab stop of its own only when nothing in it takes the focus
+  // (APG tabs; R184 T8: every panel was, even one that starts with a field).
+  // A page's panel written with a tabindex keeps it.
+  syncPanelFocus() {
+    for (const panel of this.drawnPanels()) {
+      if (this._authoredPanelFocus.has(panel)) continue;
+      if (panel.querySelector(FOCUSABLE)) panel.removeAttribute('tabindex');
+      else panel.setAttribute('tabindex', '0');
+    }
+  }
+
+  schedulePanelFocus() {
+    if (this._panelFocusQueued) return;
+    this._panelFocusQueued = true;
+    queueMicrotask(() => {
+      this._panelFocusQueued = false;
+      this.syncPanelFocus();
+    });
+  }
+
+  // callback() once the panel of this item is drawn: now, or after the
+  // drawing that draws a lazy panel opened for the first time.
+  whenPanelDrawn(item, callback) {
+    if (this.panelDrawn({ ...item, selected: false })) {
+      callback();
+      return;
+    }
+    const drawn = (event) => {
+      if (event.target !== this) return;
+      this.removeEventListener('sf-after-render', drawn);
+      callback();
+    };
+    this.addEventListener('sf-after-render', drawn);
   }
 
   // ─── the person's arrangement ─────────────────────────────────────────────
@@ -1052,6 +1116,9 @@ class SfTabs extends TabsElement {
 
   templateContext() {
     const props = this.getPropsContext();
+    // The open panel is drawn now and kept drawn (lazy).
+    const open = this.computedItems[this.activeIndex];
+    if (open) this._openedPanels.add(open.key);
 
     return this.createTemplateContext({
       ...props,
@@ -1059,6 +1126,7 @@ class SfTabs extends TabsElement {
       tabsId: this.tabsId,
       pagePanel: (item, index) => this.pagePanelFor(item, index),
       panelSlot: (item) => this.panelSlotOf(item),
+      panelDrawn: (item) => this.panelDrawn(item),
       activeIndex: this.activeIndex,
       displayItems: this.displayItems,
       overflow: this.overflow,
@@ -1167,7 +1235,8 @@ class SfTabs extends TabsElement {
     this.showSelection();
     if (person) {
       const detail = { selected: item.key, previous, current: requested, item, items };
-      this.sfEmit('change', detail);
+      // A lazy panel opened for the first time is drawn first.
+      this.whenPanelDrawn(item, () => this.sfEmit('change', detail));
     }
     return { outcome: 'applied' };
   }

@@ -116,3 +116,57 @@ test('T15: a panel whose slot host was unwrapped carries the slot name', () => {
   assert.match(template, /slot=\$\{context\.panelSlot\?\.\(item\) \|\| nothing\}/u);
   assert.match(source, /if \(first\) this\.notePanelSlots\(\);/u);
 });
+
+test('T8: lazy panels are drawn when first opened and kept; a panel is a tab stop only without focusable content', () => {
+  assert.deepEqual(manifest.settings.lazy, {...manifest.settings.lazy, type: 'boolean', default: false});
+  const drawn = new Function(`return function (item) {${method('panelDrawn', 'item')}}`)();
+  const host = {lazy: true, _openedPanels: new Set(['b'])};
+  assert.equal(drawn.call(host, {key: 'a', selected: false}), false);
+  assert.equal(drawn.call(host, {key: 'a', selected: true}), true);
+  assert.equal(drawn.call(host, {key: 'b', selected: false}), true, 'opened once, kept');
+  assert.equal(drawn.call({lazy: false, _openedPanels: new Set()}, {key: 'a'}), true);
+  // The open entry is remembered at each drawing.
+  assert.match(method('templateContext'), /const open = this\.computedItems\[this\.activeIndex\];\s*if \(open\) this\._openedPanels\.add\(open\.key\);/u);
+  // A never-opened lazy panel is drawn empty; its id and aria-labelledby stay.
+  assert.match(template, /const drawn = context\.panelDrawn \? context\.panelDrawn\(item\) : true;/u);
+  assert.match(template, /const panelContent = drawn && context\.component\?\.hasSlotContent/u);
+  assert.match(template, /const dataContent = !drawn \? nothing :/u);
+
+  // The first opening of a lazy panel is told after the drawing that fills it.
+  const when = new Function(`return function (item, callback) {${method('whenPanelDrawn', 'item, callback')}}`)();
+  const listeners = [];
+  const lazyHost = {
+    panelDrawn: (item) => drawn.call(host, item),
+    addEventListener: (name, fn) => listeners.push([name, fn]),
+    removeEventListener: (name, fn) => listeners.splice(listeners.findIndex(([, one]) => one === fn), 1),
+  };
+  const told = [];
+  when.call(lazyHost, {key: 'b'}, () => told.push('b'));
+  assert.deepEqual(told, ['b'], 'a drawn panel: at once');
+  when.call(lazyHost, {key: 'a'}, () => told.push('a'));
+  assert.deepEqual(told, ['b']);
+  listeners[0][1]({target: {}});
+  assert.deepEqual(told, ['b'], 'a child drawing is not the panel drawing');
+  listeners[0][1]({target: lazyHost});
+  assert.deepEqual(told, ['b', 'a']);
+  assert.equal(listeners.length, 0);
+
+  // tabindex: 0 only when nothing in the panel takes the focus; a page panel
+  // written with its own tabindex keeps it.
+  assert.doesNotMatch(template, /tabindex="0"\s*\n\s*data-sf-tab-panel/u);
+  assert.doesNotMatch(template, /panel\.setAttribute\('tabindex', '0'\)/u);
+  const focus = new Function('FOCUSABLE', `return function () {${method('syncPanelFocus')}}`)('input, button');
+  const panel = (focusable) => ({attrs: new Map(), querySelector: () => (focusable ? {} : null),
+    setAttribute(name, value) { this.attrs.set(name, value); }, removeAttribute(name) { this.attrs.delete(name); }});
+  const withField = panel(true), withText = panel(false), authored = panel(false);
+  withField.attrs.set('tabindex', '0');
+  authored.attrs.set('tabindex', '-1');
+  focus.call({drawnPanels: () => [withField, withText, authored], _authoredPanelFocus: new WeakSet([authored])});
+  assert.equal(withField.attrs.has('tabindex'), false);
+  assert.equal(withText.attrs.get('tabindex'), '0');
+  assert.equal(authored.attrs.get('tabindex'), '-1');
+  assert.match(source, /this\.syncTabSemantics\(\);\s*this\.syncPanelFocus\(\);/u);
+  assert.match(source, /if \(panel\.hasAttribute\('tabindex'\)\) this\._authoredPanelFocus\.add\(panel\);/u);
+  // A part in a panel drawn after the tabs asks again.
+  assert.match(source, /closest\?\.\('\[data-sf-tab-panel\]'\)\?\.closest\('sf-tabs'\) === this\) \{[^]*?this\.schedulePanelFocus\(\);/u);
+});

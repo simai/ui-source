@@ -111,6 +111,11 @@
         "default": false,
         "description": "A gear at the end of the tabs («Настроить вкладки») opens the standard menu with the tabs as a sortable list, a visibility checkbox per tab (pinned tabs fixed) and «Сбросить» in its footer. The choice is the host's: sf-tabs-settings-change {order, hidden}, sf-tabs-settings-reset, setSettings({order, hidden})."
       },
+      "lazy": {
+        "type": "boolean",
+        "default": false,
+        "description": "A panel is drawn when its tab is first opened, then kept drawn (its state stays when the person switches away). Until then the panel stands empty and hidden, so the tab's aria-controls still names it. sf-tabs-change for a first opening is sent once the panel is drawn. A page's own <div role=\"tabpanel\"> panels are already in the page and are not affected."
+      },
       "selected": {
         "type": "string",
         "default": "",
@@ -511,7 +516,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tabs/index.js",
-        "sha256": "fd59cce0b2426a66767b99b90e94c0c9d097d5ebeeb29eb3c36f16e45a601e85"
+        "sha256": "c80a123754b693b2388153541f963b79c82c07e8438929523f8516e1981602de"
       }
     ],
     "generated_runtime": [

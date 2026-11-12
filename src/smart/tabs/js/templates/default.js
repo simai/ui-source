@@ -18,7 +18,8 @@ function renderComponent(component, owner) {
 function placePagePanel(panel, item, context) {
   panel.id ||= `${context.tabsId}--panel-${item.index}`;
   panel.setAttribute('aria-labelledby', `${context.tabsId}--tab-${item.index}`);
-  if (!panel.hasAttribute('tabindex')) panel.setAttribute('tabindex', '0');
+  // Its tabindex is the tabs' to decide after the drawing (syncPanelFocus):
+  // 0 only when nothing in it takes the focus.
   panel.setAttribute('data-sf-tab-panel', String(item.index));
   panel.classList.add('sf-tabs-main-tab');
   panel.classList.toggle('selected', Boolean(item.selected));
@@ -29,10 +30,13 @@ function placePagePanel(panel, item, context) {
 function renderPanel(item, context) {
   const pagePanel = context.pagePanel?.(item, item.index);
   if (pagePanel) return placePagePanel(pagePanel, item, context);
-  const panelContent = context.component?.hasSlotContent?.(item.slotName)
+  // lazy: a panel never opened is drawn empty (its id stays, for the tab's
+  // aria-controls) and filled when its tab is first opened.
+  const drawn = context.panelDrawn ? context.panelDrawn(item) : true;
+  const panelContent = drawn && context.component?.hasSlotContent?.(item.slotName)
     ? context.component.getSlotContent(item.slotName)
     : nothing;
-  const dataContent = item.panel?.component
+  const dataContent = !drawn ? nothing : item.panel?.component
     ? renderComponent(item.panel.component, context.component)
     : typeof item.panel?.text !== 'undefined'
         ? item.panel.text
@@ -48,7 +52,6 @@ function renderPanel(item, context) {
       role="tabpanel"
       id=${`${context.tabsId}--panel-${item.index}`}
       aria-labelledby=${`${context.tabsId}--tab-${item.index}`}
-      tabindex="0"
       data-sf-tab-panel=${String(item.index)}
       data-entry=${item.key}
       slot=${context.panelSlot?.(item) || nothing}
