@@ -23,6 +23,7 @@
 
 .sf-verification-cell,
 .sf-verification-form-wrap .sf-verification {
+  position: relative;
   display: grid;
   place-items: center;
   inline-size: var(--sf-verification--cell-size);
@@ -72,8 +73,52 @@
 
 /* The cell the next character goes to is marked only while the field has the
    focus: a field at rest drew a primary cell, so three fields on one page all
-   looked focused (docs pre-check 2026-11-10 CI-02). */
-.sf-verification:has(.sf-verification-input:focus) .sf-verification-cell.current { border-color: var(--sf-primary); }
+   looked focused (docs pre-check 2026-11-10 CI-02). The mark is two pixels
+   (the border and an inset line of the same colour), so it reads over the
+   hover of a neighbour (K3, owner R138). */
+.sf-verification:has(.sf-verification-input:focus) .sf-verification-cell.current {
+  border-color: var(--sf-primary);
+  box-shadow: inset 0 0 0 var(--sf-verification--border-width) var(--sf-primary);
+}
+
+/* A refused code marks its current cell in the error colour, as its border. */
+.sf-verification-form.error .sf-verification:has(.sf-verification-input:focus) .sf-verification-cell.current,
+.sf-verification.error:has(.sf-verification-input:focus) .sf-verification-cell.current {
+  border-color: var(--sf-verification-invalid-border-color, var(--sf-error));
+  box-shadow: inset 0 0 0 var(--sf-verification--border-width) var(--sf-verification-invalid-border-color, var(--sf-error));
+}
+
+/* The caret, drawn by the runtime that owns the field in the cell the next
+   character goes to: the input is transparent and draws none (K3). A whole
+   code puts it after the last character. It blinks unless motion is
+   reduced, where it stays. */
+.sf-verification-cell.caret::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline: 0;
+  margin: auto;
+  inline-size: calc(var(--sf-px) * 2);
+  block-size: var(--sf-verification--line-height, var(--sf-text-height-1));
+  background: var(--sf-on-surface);
+  pointer-events: none;
+}
+
+.sf-verification-cell.caret-end::after {
+  inset-inline-start: auto;
+  inset-inline-end: var(--sf-space-1\/4);
+  margin-inline: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sf-verification-cell.caret::after {
+    animation: sf-verification-caret calc(var(--sf-duration-slow) * 2) steps(1) infinite;
+  }
+}
+
+@keyframes sf-verification-caret {
+  50% { opacity: 0; }
+}
 
 .sf-verification--filled .sf-verification-cell,
 .sf-verification-form--filled .sf-verification-form-wrap .sf-verification {
@@ -115,6 +160,7 @@
 @media (forced-colors: active) {
   .sf-verification-cell,
   .sf-verification-form-wrap .sf-verification { border-color: CanvasText; }
+  .sf-verification-cell.caret::after { background: CanvasText; }
   .sf-verification:not(.sf-verification--pointer-focus):has(.sf-verification-input:focus-visible) .sf-verification-cell.current,
   .sf-verification-form-wrap .sf-verification:has(input:focus-visible) {
     outline: var(--sf-px) solid Highlight;

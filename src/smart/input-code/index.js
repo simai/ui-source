@@ -82,6 +82,8 @@ class SfCodeInput extends FormField(CodeInputElement) {
     this._focusValue = null;
     this._changeSent = false;
     this._form = null;
+    // The cell a mouse drag started on, or -1 (K2).
+    this._dragFrom = -1;
     this.addEventListener('beforeinput', this.onBeforeInput);
     this.addEventListener('input', this.onInput, true);
     this.addEventListener('paste', this.onPaste);
@@ -237,6 +239,7 @@ class SfCodeInput extends FormField(CodeInputElement) {
       this.setAttribute('value', value);
       this._writingValue = false;
     }
+    this.markCell();
     this.syncCells();
     if (value.length === this.length) {
       if (this._completed !== value) {
@@ -252,19 +255,37 @@ class SfCodeInput extends FormField(CodeInputElement) {
     }
   }
 
-  // The keys are the field's own: Backspace clears the cell before the caret
-  // and steps back, Delete clears the one after it, the arrows move between
-  // the cells. Home and End go to the first cell and past the last character
-  // on every platform: a Mac field leaves them to the page, and scrolls. The
-  // caret's cell is read once the key has done its work.
+  // The keys are the field's own: Backspace clears the marked cell, or the
+  // one before a bare caret, and steps back; Delete clears the marked cell;
+  // the arrows move a cell at a time (a native arrow only collapses the
+  // one-cell mark, and the mark would come back on the same cell), Shift
+  // with them grows the selection by a cell. Home and End go to the first
+  // cell and past the last character on every platform: a Mac field leaves
+  // them to the page, and scrolls. The caret's cell is read once the key has
+  // done its work.
   onKeydown = (event) => {
     const input = this.ownInput(event.target);
     if (!input) return;
-    if ((event.key === 'Home' || event.key === 'End') && !event.altKey && !event.ctrlKey && !event.metaKey) {
+    const plain = !event.altKey && !event.ctrlKey && !event.metaKey;
+    const start = input.selectionStart ?? 0;
+    const end = input.selectionEnd ?? start;
+    const length = input.value.length;
+    if ((event.key === 'Home' || event.key === 'End') && plain) {
       event.preventDefault();
-      const at = event.key === 'Home' ? 0 : input.value.length;
-      if (event.shiftKey) input.setSelectionRange(Math.min(at, input.selectionStart ?? 0), Math.max(at, input.selectionEnd ?? 0));
+      const at = event.key === 'Home' ? 0 : length;
+      if (event.shiftKey) input.setSelectionRange(Math.min(at, start), Math.max(at, end), at < start ? 'backward' : 'forward');
       else input.setSelectionRange(at, at);
+    } else if ((event.key === 'ArrowLeft' || event.key === 'ArrowRight') && plain) {
+      event.preventDefault();
+      const back = event.key === 'ArrowLeft';
+      if (event.shiftKey) {
+        if (back) input.setSelectionRange(Math.max(0, start - 1), end, 'backward');
+        else input.setSelectionRange(start, Math.min(length, end + 1), 'forward');
+      } else {
+        const at = back ? Math.max(0, start - 1) : Math.min(length, start + 1);
+        input.setSelectionRange(at, at);
+      }
+      this.onCaret();
     }
     setTimeout(this.onCaret, 0);
   };
@@ -323,8 +344,21 @@ class SfCodeInput extends FormField(CodeInputElement) {
   };
 
   onCaret = () => {
+    this.markCell();
     this.syncCells();
   };
+
+  // A bare caret inside the code becomes a one-cell selection (input-otp's
+  // rule): what is marked is what typing replaces and Backspace or Delete
+  // clears (K3). A caret after the last character stays bare: the next
+  // character goes there.
+  markCell() {
+    const input = this.getInputElement();
+    if (!input || input.ownerDocument?.activeElement !== input || this._dragFrom >= 0) return;
+    const start = input.selectionStart;
+    if (start === null || start !== input.selectionEnd || start >= input.value.length) return;
+    input.setSelectionRange(start, start + 1, 'forward');
+  }
 
   cells() {
     return Array.from(this.querySelectorAll(':scope .sf-verification-cell'));
@@ -341,20 +375,28 @@ class SfCodeInput extends FormField(CodeInputElement) {
   // The cells show the code (or a dot for each character when masked), the
   // filled ones `active`, the caret's `current` -- only while the field has
   // the focus: a field at rest marked the next cell and looked focused (K6);
-  // the sheet gates it on focus too. The position line says the caret's cell,
+  // the sheet gates it on focus too. A bare caret is drawn in its cell
+  // (`caret`; `caret-end` after the last character of a whole code, K3): the
+  // input itself is transparent. The position line says the caret's cell,
   // spoken once each time it moves.
   syncCells() {
     const input = this.getInputElement();
     if (!input) return;
     const value = input.value;
     const focused = input.ownerDocument?.activeElement === input;
+    const start = input.selectionStart ?? value.length;
+    const end = input.selectionEnd ?? start;
+    const one = end - start <= 1;
     const current = this.caretCell(input);
+    const bare = focused && start === end && !this.readonly;
     this.cells().forEach((cell, index) => {
       const character = value[index] || '';
       const shown = character && this.mask ? MASK_GLYPH : character;
       if (cell.textContent !== shown) cell.textContent = shown;
       cell.classList.toggle('active', index < value.length);
-      cell.classList.toggle('current', focused && index === current);
+      cell.classList.toggle('current', focused && one && index === current);
+      cell.classList.toggle('caret', bare && index === current);
+      cell.classList.toggle('caret-end', bare && index === current && start >= this.length);
     });
     // A live line: a screen reader says it each time the caret changes cell,
     // and reads it with the field when the field takes focus.

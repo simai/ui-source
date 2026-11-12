@@ -173,8 +173,14 @@ test('code input: input and change are the native input\'s, complete once per co
   assert.match(classRuntime, /control\.classList\.add\('sf-verification--pointer-focus'\)/u);
   assert.match(classSheet, /\.sf-verification:not\(\.sf-verification--pointer-focus\):has\(\.sf-verification-input:focus-visible\) \.sf-verification-cell\.current,/u);
   assert.doesNotMatch(classSheet, /^\.sf-verification:has\(\.sf-verification-input:focus-visible\)/mu, 'no ring on the row');
+  // K3: a bare caret inside the code becomes a one-cell selection; the caret
+  // is drawn in its cell, blinking unless motion is reduced.
+  assert.match(source, /input\.setSelectionRange\(start, start \+ 1, 'forward'\);/u);
+  assert.match(source, /cell\.classList\.toggle\('caret', bare && index === current\);/u);
+  assert.match(classSheet, /\.sf-verification-cell\.caret::after \{[^}]*inline-size: calc\(var\(--sf-px\) \* 2\);[^}]*background: var\(--sf-on-surface\);/u);
+  assert.match(classSheet, /@media \(prefers-reduced-motion: no-preference\) \{\n  \.sf-verification-cell\.caret::after \{\n    animation: sf-verification-caret calc\(var\(--sf-duration-slow\) \* 2\) steps\(1\) infinite;/u);
   // K6: the current cell only while the field has the focus.
-  assert.match(source, /cell\.classList\.toggle\('current', focused && index === current\);/u);
+  assert.match(source, /cell\.classList\.toggle\('current', focused && one && index === current\);/u);
 });
 
 test('code input: its own sheet draws only the required star, from tokens', () => {

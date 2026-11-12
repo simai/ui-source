@@ -101,7 +101,8 @@ try {
     return {
       value: input.value, attribute: host.getAttribute('value'), property: host.value, complete: host.complete,
       cells: cells.map((cell) => cell.textContent), current: cells.findIndex((cell) => cell.classList.contains('current')),
-      caret: input.selectionStart, focused: document.activeElement === input,
+      caret: input.selectionStart, caretEnd: input.selectionEnd, focused: document.activeElement === input,
+      drawnCaret: cells.map((cell) => (cell.classList.contains('caret-end') ? 'E' : cell.classList.contains('caret') ? 'C' : '-')).join(''),
       group: root.getAttribute('role'), groupName: labelled ? document.getElementById(labelled)?.textContent.replace('*', '').trim() : root.getAttribute('aria-label'),
       labelFor: host.querySelector('label')?.htmlFor === input.id, inputName: input.getAttribute('aria-label'),
       type: input.type, inputmode: input.inputMode, autocomplete: input.autocomplete, pattern: input.pattern, name: input.name,
@@ -138,6 +139,7 @@ try {
   const typedEvents = await events();
   check('typing: each character fills the next cell', typed.value === '12' && typed.cells.join(',') === '1,2,,,,' && typed.current === 2, {typed});
   check('typing: the caret\'s cell is spoken', typed.position === 'цифра 3 из 6', {typed});
+  check('K3: a bare caret is drawn in the cell the next character goes to', typed.drawnCaret === '--C---' && typed.caret === 2 && typed.caretEnd === 2, {typed});
   const keyboardRing = await rings('basic');
   check('K1 keyboard focus: the ring is on the current cell only, not on the row', !keyboardRing.frame && keyboardRing.cells === '001000', {keyboardRing});
   check('typing: an input event from the native input for each character', typedEvents.length === 2
@@ -161,6 +163,13 @@ try {
     moves.push(`${now.current}:${now.position}`);
   }
   evidence.moves = moves;
+  await page.keyboard.press('ArrowLeft');
+  await settle();
+  const marked = await state('basic');
+  check('K3: a caret inside the code marks its cell as a one-cell selection, no bare caret', marked.caret === 4 && marked.caretEnd === 5
+    && marked.current === 4 && marked.drawnCaret === '------', {marked});
+  await page.keyboard.press('End');
+  await settle();
   check('keyboard: the arrows, Home and End move the caret\'s cell, and each is spoken',
     moves.join() === '4:цифра 5 из 6,3:цифра 4 из 6,0:цифра 1 из 6,1:цифра 2 из 6,5:цифра 6 из 6', {moves});
   await page.keyboard.press('Home');
@@ -175,6 +184,7 @@ try {
   const whole = await state('basic');
   const completeEvents = await events();
   check('complete: the sixth character completes the code', whole.value === '923456' && whole.complete && whole.tooShort === false && whole.current === 5, {whole});
+  check('K3: after a whole code the caret is drawn after the last character', whole.drawnCaret === '-----E', {whole});
   check('complete: one sf-code-input:complete {value} after the input event', JSON.stringify(completeEvents.map((event) => [event.type, event.value]))
     === JSON.stringify([['input', '923456'], ['sf-code-input:complete', '923456']]), {completeEvents});
   await page.keyboard.type('7');
