@@ -237,6 +237,17 @@ with a blur (`--sf-blur-large`) and re-declares the roles a control on it
 reads from white on the alpha scale: states 4/8/12, fill 8/12/16, line 24,
 boundary 64, dim ink 80. An icon keeps its three roles.
 
+The accent on glass is the glass's own white ink (C70, owner 2026-11-11,
+`prototypes/glass-accent.html` variant B), as on a strong coloured place
+(C42.4). On the children of `.sf-surface-media`, `--sf-primary` is white
+(hover `--sf-neutral-95`, press `--sf-neutral-90`) and `--sf-on-primary` black,
+the glass's opaque base; the tonal accent is white 12/16/20 under white. The
+link (`--sf-link`, hover and press as the accent; visited white at 80) and the
+focus ring (`--sf-focus`) are white too: the theme's blue read 1.16-1.75 under
+a primary label on glass in the light theme. An opaque place on glass (a card,
+a popup, a popover's content) takes back the accent, the link and the ring the
+page had there.
+
 Coloured places (a header in the brand colour, a status banner) are held for
 the owner's answer: the proposal is that the `bg-<role>` and
 `bg-<role>-container` utilities become places rather than a second class

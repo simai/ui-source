@@ -990,10 +990,6 @@
     {
       "name": "--sf-neutral-90--alfa-32",
       "why": "Since C41 (owner 2026-11-10) the neutral fill is 8/12/16 and the strong step 24 in both themes; the former strong step (surface-container-strong) in the dark theme. Nothing in the Framework reads it now; kept for pages that wrote it until remove_after."
-    },
-    {
-      "name": "--sf-white--alfa-20",
-      "why": "Since C41 (owner 2026-11-10) the neutral fill is 8/12/16 and the strong step 24 in both themes; the former plate hover on glass over media (.sf-surface-media). Nothing in the Framework reads it now; kept for pages that wrote it until remove_after."
     }
   ],
   "palette_tokens": [

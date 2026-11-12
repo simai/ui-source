@@ -99,6 +99,27 @@ $sf-place-accent-roles: (
   'on-primary-container': 'light-dark(var(--sf-primary-10), var(--sf-primary-90))',
 );
 
+// The accent on glass (C70, owner 2026-11-11, prototypes/glass-accent.html
+// variant B): glass takes its own ink as the accent, as a strong place does
+// (C42.4), so a filled button, a checked box, a link and the focus ring on a
+// photo are white, not the theme's blue (a primary label read 1.16-1.75 on
+// glass in the light theme). Glass is dark in both themes, so the values are
+// one: white, hover and press one and two steps down (neutral 95, 90), the
+// label of a white button black (the glass's opaque base), the tonal fill the
+// white fill family 12/16/20 under white. Beyond the strong place's accent it
+// re-declares the link and the focus ring too: on glass the theme's link
+// (primary 40) and ring (primary 50) are blue on black. A visited link is the
+// glass's dim ink (white at 80), still told apart from an unvisited one.
+// The theme's values are the fallback of the take-back (sf-place-back-on-colour).
+$sf-place-glass-link-roles: (
+  'link': 'light-dark(var(--sf-primary-40), var(--sf-primary-80))',
+  'link-hover': 'light-dark(var(--sf-primary-35), var(--sf-primary-85))',
+  'link-active': 'light-dark(var(--sf-primary-30), var(--sf-primary-90))',
+  'link-visited': 'light-dark(var(--sf-tertiary-40), var(--sf-tertiary-80))',
+  'focus': 'light-dark(var(--sf-primary-50), var(--sf-primary-90))',
+);
+$sf-place-glass-accent-roles: map.merge($sf-place-accent-roles, $sf-place-glass-link-roles);
+
 // The seven colours that are places.
 $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warning', 'error');
 
@@ -145,6 +166,12 @@ $sf-place-coloured-selectors: list.join(list.join($sf-place-strong-selectors, sf
     --sf-place--plate: initial;
     --sf-place--on-plate: initial;
     --sf-place--fill-placeholder: initial;
+  }
+  // On glass (C70): the accent, the link and the ring the page had there.
+  :where(.sf-surface-media) & {
+    @each $role, $value in $sf-place-glass-accent-roles {
+      --sf-#{$role}: var(--sf-place--outer-#{$role}, #{string.unquote($value)});
+    }
   }
 }
 
@@ -341,4 +368,31 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   // the place's full ink, as before. Its dim ink (80) over the field's fill
   // (12) gave 3.86:1 light and 4.31:1 dark on bg-primary, under 4.5.
   --sf-place--fill-placeholder: light-dark(var(--sf-white), var(--sf-#{$c}-20));
+}
+
+// Glass keeps the accent it found (C70), for an opaque place on it to take
+// back; declared on the glass, which re-declares none of these roles itself.
+@mixin sf-place-glass-outer {
+  @each $role, $value in $sf-place-glass-accent-roles {
+    --sf-place--outer-#{$role}: var(--sf-#{$role});
+  }
+}
+
+// The accent on glass (C70; see $sf-place-glass-link-roles): on the glass's
+// children, as on a strong place, so the glass itself never reads a role it
+// re-declares.
+@mixin sf-place-glass-accent {
+  --sf-primary: var(--sf-white);
+  --sf-primary-hover: var(--sf-neutral-95);
+  --sf-primary-active: var(--sf-neutral-90);
+  --sf-on-primary: var(--sf-black);
+  --sf-primary-container: var(--sf-white--alfa-12);
+  --sf-primary-container-hover: var(--sf-white--alfa-16);
+  --sf-primary-container-active: var(--sf-white--alfa-20);
+  --sf-on-primary-container: var(--sf-white);
+  --sf-link: var(--sf-white);
+  --sf-link-hover: var(--sf-neutral-95);
+  --sf-link-active: var(--sf-neutral-90);
+  --sf-link-visited: var(--sf-white--alfa-80);
+  --sf-focus: var(--sf-white);
 }

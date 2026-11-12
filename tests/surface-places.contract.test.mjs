@@ -66,7 +66,7 @@ const COLOURS = ['primary', 'secondary', 'tertiary', 'info', 'success', 'warning
 const mapOf = (name) => mix.slice(mix.indexOf(`$${name}: (`), mix.indexOf(');', mix.indexOf(`$${name}: (`)));
 
 test("an opaque place takes back exactly the theme's values", () => {
-  const map = ['sf-place-theme-roles', 'sf-place-colour-roles', 'sf-place-accent-roles'].map(mapOf).join('\n');
+  const map = ['sf-place-theme-roles', 'sf-place-colour-roles', 'sf-place-accent-roles', 'sf-place-glass-link-roles'].map(mapOf).join('\n');
   const entries = [...map.matchAll(/'([a-z0-9-]+)': '([^']+)'/gu)];
   assert.ok(entries.length >= 12, `${entries.length} roles read`);
   const wrong = [];
