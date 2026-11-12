@@ -64,8 +64,11 @@ function getDecimalPlaces(value) {
   return Math.min(100, Math.max(0, fraction - Number(exponent)));
 }
 
+// Digits after the decimal mark: data-precision, as sf-input-quantity names it
+// (S1); data-decimals is its former name and is still read until 2027-01-01.
+// Unset, the step's digits (0.5 has one).
 function getValueDecimals(root) {
-  const decimalsAttr = root.getAttribute('data-decimals');
+  const decimalsAttr = root.getAttribute('data-precision') ?? root.getAttribute('data-decimals');
   if (decimalsAttr !== null && decimalsAttr !== '') {
     return Math.min(100, Math.max(0, Math.trunc(toNumber(decimalsAttr, 0))));
   }
@@ -114,10 +117,17 @@ function getHandleLabelPosition(root, mode = 'none') {
   return mode === 'text' ? 'bottom' : 'top';
 }
 
+// A unit is held to its number by a no-break space (S1): «20 000 ₽» never
+// breaks before «₽». An author's ordinary space at the joint becomes one.
+function unitText(text, side) {
+  const value = String(text || '');
+  return side === 'prefix' ? value.replace(/[ \t]+$/u, '\u00a0') : value.replace(/^[ \t]+/u, '\u00a0');
+}
+
 function formatValue(root, value) {
   const decimals = getValueDecimals(root);
-  const prefix = root.getAttribute('data-prefix') || '';
-  const suffix = root.getAttribute('data-suffix') || '';
+  const prefix = unitText(root.getAttribute('data-prefix'), 'prefix');
+  const suffix = unitText(root.getAttribute('data-suffix'), 'suffix');
   const numeric = Number(value);
 
   if (!Number.isFinite(numeric)) {
@@ -127,16 +137,19 @@ function formatValue(root, value) {
   return `${prefix}${formatDecimal(root, numeric, decimals)}${suffix}`;
 }
 
-// The number in the page's language, as sf-quantity writes it: a Russian page
-// reads «1,23 кг», not «1.23 кг» (docs pre-check 2026-11-10 CRS-01). The
-// `data-locale` of the slider wins over the page's `lang`. Grouping follows
-// the locale. Number.toFixed is the fallback where Intl refuses the digits.
+// The number in the page's language, as sf-input-quantity writes it: a Russian
+// page reads «1,23 кг», not «1.23 кг» (docs pre-check 2026-11-10 CRS-01). The
+// `data-locale` of the slider wins over the page's `lang`. Thousands are
+// grouped the locale's way unless data-grouping="false" (a year, a code).
+// Number.toFixed is the fallback where Intl refuses the digits.
 function formatDecimal(root, numeric, decimals) {
   const locale = root.getAttribute('data-locale') || pageLocale(root);
+  const grouping = String(root.getAttribute('data-grouping') ?? '').trim().toLowerCase() !== 'false';
   try {
     return new Intl.NumberFormat(locale, {
       minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals,
+      maximumFractionDigits: Math.min(20, decimals),
+      useGrouping: grouping,
     }).format(numeric);
   } catch {
     return numeric.toFixed(decimals);

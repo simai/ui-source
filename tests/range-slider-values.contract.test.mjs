@@ -25,7 +25,7 @@ test('range values preserve scientific step precision',()=>{
 });
 
 test('a value is written in the page language, or in data-locale',()=>{
-  assert.equal(runtime.formatValue(new Element({'data-step':'0.01','data-suffix':' кг','data-locale':'ru'}),1.234),'1,23 кг');
+  assert.equal(runtime.formatValue(new Element({'data-step':'0.01','data-suffix':' кг','data-locale':'ru'}),1.234),'1,23\u00a0кг');
   assert.equal(runtime.formatValue(new Element({'data-step':'1e-3','data-locale':'ru'}),0.002),'0,002');
   assert.equal(runtime.formatValue(new Element({'data-step':'0.01'}),1.234),'1.23');
 });
@@ -76,4 +76,13 @@ test('range options normalize malformed public values without invalid geometry',
   assert.deepEqual({...fallback.range},{min:0,max:100});
   assert.deepEqual(Array.from(fallback.start),[0]);
   assert.equal(fallback.connect,'lower');
+});
+
+test('S1: thousands grouped, a unit held by a no-break space, precision before decimals',()=>{
+  assert.equal(runtime.formatValue(new Element({'data-suffix':' ₽','data-locale':'ru'}),20000),'20\u00a0000\u00a0₽');
+  assert.equal(runtime.formatValue(new Element({'data-prefix':'от ','data-locale':'ru'}),5000),'от\u00a05\u00a0000');
+  assert.equal(runtime.formatValue(new Element({'data-grouping':'false','data-locale':'ru'}),2026),'2026');
+  assert.equal(runtime.formatValue(new Element({'data-step':'0.5','data-suffix':' кг','data-locale':'ru'}),2.5),'2,5\u00a0кг');
+  assert.equal(runtime.formatValue(new Element({'data-precision':'2','data-decimals':'0','data-locale':'ru'}),2.5),'2,50');
+  assert.equal(runtime.formatValue(new Element({'data-decimals':'1','data-locale':'ru'}),2),'2,0');
 });

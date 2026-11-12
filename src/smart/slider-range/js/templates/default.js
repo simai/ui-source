@@ -33,7 +33,9 @@ export function renderRangeSliderTemplate(context) {
                 data-suffix=${valueOrNothing(context.suffix)}
                 data-lower-label=${valueOrNothing(context.lowerLabel)}
                 data-upper-label=${valueOrNothing(context.upperLabel)}
-                data-decimals=${valueOrNothing(context.decimals)}
+                data-precision=${valueOrNothing(context.precision)}
+                data-grouping=${context.grouping === false ? 'false' : nothing}
+                data-locale=${valueOrNothing(context.locale)}
                 data-tooltip-position=${valueOrNothing(context.tooltipPosition)}
                 data-text-position=${valueOrNothing(context.textPosition)}
                 data-label-position=${valueOrNothing(context.labelPosition)}

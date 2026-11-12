@@ -213,9 +213,6 @@ class SfRangeSlider extends RangeSliderElement {
     return this.getAttribute('upper-label') || '';
   }
 
-  get decimals() {
-    return this.getAttribute('decimals') || '';
-  }
 
   get tooltipPosition() {
     return this.getAttribute('tooltip-position') || '';
@@ -286,7 +283,9 @@ class SfRangeSlider extends RangeSliderElement {
         'suffix',
         'lower-label',
         'upper-label',
-        'decimals',
+        'precision',
+        'grouping',
+        'locale',
         'tooltip-position',
         'text-position',
         'label-position',
@@ -570,7 +569,9 @@ class SfRangeSlider extends RangeSliderElement {
       suffix: this.suffix,
       lowerLabel: this.lowerLabel,
       upperLabel: this.upperLabel,
-      decimals: this.decimals,
+      precision: this.precision,
+      grouping: this.grouping,
+      locale: this.locale,
       tooltipPosition: this.tooltipPosition,
       textPosition: this.textPosition,
       labelPosition: this.labelPosition,

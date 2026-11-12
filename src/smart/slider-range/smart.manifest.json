@@ -101,9 +101,21 @@
         "type": "string",
         "default": ""
       },
-      "decimals": {
+      "precision": {
+        "type": "integer",
+        "description": "Digits after the decimal mark in the value shown and read out; empty takes them from `step` (0.5 has one), as sf-input-quantity. Formerly `decimals`, an alias until 2027-01-01.",
+        "minimum": 0,
+        "maximum": 20
+      },
+      "grouping": {
+        "type": "boolean",
+        "default": true,
+        "description": "Group thousands the page's language's way («20 000»); `grouping=\"false\"` writes the digits together, for a year or a code."
+      },
+      "locale": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The language the value is written in; unset, the page's (`lang`), so a Russian page reads «2,5 кг»."
       },
       "tooltip-position": {
         "type": "string",
@@ -138,6 +150,12 @@
         "type": "string",
         "default": "",
         "description": "Dated alias of prefix-text until 2026-12-01."
+      },
+      "decimals": {
+        "type": "integer",
+        "description": "Dated alias of precision until 2027-01-01.",
+        "minimum": 0,
+        "maximum": 20
       }
     },
     "additionalProperties": false

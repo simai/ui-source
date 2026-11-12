@@ -65,9 +65,23 @@
       "type": "string",
       "default": ""
     },
-    "decimals": {
+    "precision": {
+      "type": "number",
+      "integer": true,
+      "min": 0,
+      "max": 20,
+      "nullable": true,
+      "summary": "Digits after the decimal mark in the value shown and read out; empty takes them from `step` (0.5 has one), as sf-input-quantity. Formerly `decimals`, an alias until 2027-01-01."
+    },
+    "grouping": {
+      "type": "boolean",
+      "default": true,
+      "summary": "Group thousands the page's language's way («20 000»); `grouping=\"false\"` writes the digits together, for a year or a code."
+    },
+    "locale": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The language the value is written in; unset, the page's (`lang`), so a Russian page reads «2,5 кг»."
     },
     "tooltip-position": {
       "type": "string",
@@ -240,6 +254,16 @@
         "since-version": "1.3.0",
         "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
         "note": "the element is sf-slider-range; sf-range-slider is a subclass defined beside it until the date"
+      },
+      {
+        "from": "decimals",
+        "to": "precision",
+        "kind": "setting",
+        "since": "2026-11-12",
+        "remove_after": "2027-01-01",
+        "since-version": "1.4.0",
+        "section": "§3.1, change journal attribute-slider-range-c78",
+        "note": "the old attribute writes precision, the name sf-input-quantity gives the same setting (S1); the class component still reads data-decimals until the date"
       }
     ]
   },

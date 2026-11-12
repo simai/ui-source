@@ -91,7 +91,7 @@ for (const [folder, spec] of Object.entries(COMPONENTS)) {
     for (const row of table.aliases) {
       // The tag rename of 2026-11-03 (the old tag and the events named after
       // it) has its own dates.
-      if (row.since === '2026-11-03' || row.since === '2026-11-08' || row.since === '2026-11-11') {
+      if (row.since === '2026-11-03' || row.since === '2026-11-08' || row.since === '2026-11-11' || row.since === '2026-11-12') {
         assert.equal(row.remove_after, '2027-01-01', `${row.from}`);
         continue;
       }
@@ -149,7 +149,7 @@ test('sf-slider-range: prefix is prefix-text; step is a number or null; disabled
   assert.deepEqual(manifest.form, {value: 'value', name: 'name', default: 'value', submits: 'value', reset: 'default', disabled: 'disabled'});
   assert.match(source, /sfSyncForm\(/u);
   const {rows} = readAliasTable(json('src/smart/slider-range/aliases.json'), {tag: 'sf-slider-range'});
-  assert.deepEqual(rows.map((row) => [row.kind, row.from, row.to]), [['setting', 'prefix', 'prefix-text'], ['event', 'sf-range-slider-change', 'change'], ['event', 'onSliderChange', 'change']]);
+  assert.deepEqual(rows.map((row) => [row.kind, row.from, row.to]), [['setting', 'prefix', 'prefix-text'], ['event', 'sf-range-slider-change', 'change'], ['event', 'onSliderChange', 'change'], ['setting', 'decimals', 'precision']]);
 });
 
 test('sf-button-group: select and clear are the manifest\'s actions; change once; the host is the form control (§4.4, §8, §17.1)', () => {
