@@ -37,7 +37,10 @@ test('the inverse places re-declare the place roles and the accent on their chil
 });
 
 test('the grey plate takes the boundary of the light grey steps', () => {
-  assert.match(utility, /\.#\{\$infix\}bg-surface-container \{\s*--sf-on-surface-variant: var\(--sf-on-surface-container-variant\);\s*--sf-outline: #\{string\.unquote\(places\.\$sf-place-step-outline\)\};/u);
+  // Contrast lows (2026-11-11) reads the boundary through the place: on a neutral
+  // place it is the light grey steps' boundary, on a coloured one the place's own.
+  assert.match(utility, /\.#\{\$infix\}bg-surface-container \{\s*--sf-on-surface-variant: var\(--sf-on-surface-container-variant\);[^}]*--sf-outline: var\(--sf-place--container-outline, #\{places\.\$sf-place-container-outline\}\);/u);
+  assert.match(places, /\$sf-place-container-outline: \$sf-place-step-outline;/u);
   assert.match(places, /\$sf-place-step-outline: 'light-dark\(var\(--sf-neutral-50\), var\(--sf-neutral-90--alfa-48\)\)';/u);
 });
 
