@@ -19,6 +19,11 @@ the Smart `sf-button` projection.
   keeps its width and is transparent over the fill, so the height of the size
   does not move) and the icons filled (`FILL 1`): two cues, not colour alone,
   the same roles in both themes. Hover and press over it step the container;
+  a tonal toggle (1.10.2, TB-3), whose resting plate is already the container,
+  takes the container's pressed step when pressed (`--sf-primary-container-active`,
+  20 % light / 32 % dark) so the fill differs from its unpressed plate, and
+  hover and press over it lay the surface's state layer
+  (`--sf-surface-state-hover` / `-active`) on that fill;
   focus draws the ring; disabled wears the disabled look and keeps the filled
   icon. `sf-button--pressed` draws the same look without `aria-pressed`.
   With the Loader's icon subset, give the icon of a pressed toggle

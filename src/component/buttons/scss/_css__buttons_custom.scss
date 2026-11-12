@@ -317,6 +317,29 @@
     --sf-icon--color: var(--sf-button-pressed-color, var(--sf-on-primary-container));
   }
 
+  /* A tonal toggle (TB-3, rule C12). Its resting plate is already a container
+     at the first fill step (12 light / 24 dark), so the pressed container at
+     the same step left primary with the very plate it had unpressed, and
+     secondary and error with a change of hue alone -- colour alone, one cue
+     beside the filled glyph. Pressed, a tonal button takes the container's
+     pressed step instead: two fill steps over rest (20 / 32, the
+     container's -active), whatever its scheme. The fill family stops at 32,
+     so hover and press over it do not step the container further: they lay
+     the surface's state layer on it (4 and 12 of the state family, the
+     place's own ink on a coloured place). */
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled),
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active) {
+    --sf-button--background-color: var(--sf-button-pressed-background-color, var(--sf-primary-container-active));
+  }
+
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):hover {
+    background-image: linear-gradient(var(--sf-surface-state-hover), var(--sf-surface-state-hover));
+  }
+
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):active {
+    background-image: linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
+  }
+
   /* Forced colours paint every fill ButtonFace, so the fill cannot say it:
      the edge does, in Highlight, inside the control height. The filled icon
      still says it too. */
