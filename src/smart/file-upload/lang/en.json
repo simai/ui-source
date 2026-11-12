@@ -1,6 +1,10 @@
 {
   "title": "File Upload",
   "runtime": {
+    "done": "Uploaded",
+    "done-line": "{size} · uploaded",
+    "error": "Not uploaded",
+    "error-line": "Not uploaded: {message}",
     "formats-audio": "audio",
     "formats-image": "images",
     "formats-video": "video",

@@ -95,11 +95,13 @@
         },
         "error-message": {
           "type": "string",
-          "optional": true
+          "optional": true,
+          "summary": "Why an error entry did not go: its own line under the name (FU-5)"
         },
         "retry-text": {
           "type": "string",
-          "optional": true
+          "optional": true,
+          "summary": "The retry button's label; the runtime word retry when not set"
         },
         "file": {
           "type": "object",

@@ -69,7 +69,7 @@ function load() {
       return fill(form, {...vars, n: count});
     },
   });
-  vm.runInContext(`${words.replace('const FILE_UPLOAD_ITEM_TEXT', 'var FILE_UPLOAD_ITEM_TEXT')}\n${helpers}\nthis.api = {applySelectedFiles, normalizeFileItems, getItemEventKey, takeFiles, formatAcceptWords, normalizeItemState};`, context);
+  vm.runInContext(`${words.replace('const FILE_UPLOAD_ITEM_TEXT', 'var FILE_UPLOAD_ITEM_TEXT')}\n${helpers}\nthis.api = {applySelectedFiles, normalizeFileItems, getItemEventKey, takeFiles, formatAcceptWords, normalizeItemState, describeUploadItem};`, context);
   return context.api;
 }
 
@@ -183,6 +183,29 @@ test('FU-3: a chosen file is ready -- not a transfer at 0 % -- until the host or
   assert.equal('progress' in item, false);
   assert.equal(api.normalizeItemState(item), 'ready');
   const template = await readFile(new URL('../src/smart/file-upload/js/templates/default.js', import.meta.url), 'utf8');
-  assert.match(template, /state === 'ready'\s*\?\s*nothing/u, 'the Smart row draws no bar for a ready file');
-  assert.match(source, /if \(state === 'ready'\) \{\s*content\.append\(top\);/u, 'the class row draws no bar for a ready file');
+  // Both renderers draw the bar for process alone.
+  assert.match(template, /\$\{state === 'process'\s*\?\s*html`\s*<sf-progress-bar/u, 'the Smart row draws a bar for process alone');
+  assert.match(source, /if \(state === 'process'\) \{\s*const progressBar/u, 'the class row draws a bar for process alone');
+});
+
+test('FU-4: a sent file says so, keeps Remove and has no 100 % bar', async () => {
+  const api = load();
+  const row = api.describeUploadItem({id: 'd', name: 'Готово.pdf', fileSize: '1 МБ', state: 'done'}, area());
+  assert.equal(row.state, 'done');
+  assert.equal(row.line, '1 МБ · загружен');
+  const template = await readFile(new URL('../src/smart/file-upload/js/templates/default.js', import.meta.url), 'utf8');
+  const top = template.slice(template.indexOf('sf-upload-progress-top'), template.indexOf("state === 'error'"));
+  assert.match(top, /data-action="remove"/u, 'Remove is outside the state branch');
+  assert.doesNotMatch(top, /: html`\s*<button/u, 'Remove is not the alternative of the check');
+});
+
+test('FU-5: an error says its message on its own line; Retry is the retry word, not the reason', () => {
+  const api = load();
+  const row = api.describeUploadItem({id: 'e', name: 'Скан.pdf', fileSize: '14 МБ', state: 'error', errorMessage: 'Файл больше 5 МБ'}, area());
+  assert.equal(row.line, 'Не загрузился: Файл больше 5 МБ');
+  assert.equal(row.retryText, 'Повторить');
+  const bare = api.describeUploadItem({name: 'Скан.pdf', state: 'error'}, area({lang: 'en'}));
+  assert.equal(bare.line, 'Not uploaded');
+  assert.equal(bare.retryText, 'Try again');
+  assert.equal(api.describeUploadItem({name: 'x', state: 'error', retryText: 'Отправить ещё раз'}, area()).retryText, 'Отправить ещё раз');
 });

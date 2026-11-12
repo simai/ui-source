@@ -214,7 +214,6 @@ class SfFileUpload extends FileUploadElement {
       ...props,
       linkText: this.linkText,
       text: this.text,
-      retryText: this.sfWord('retry'),
       component: this,
       formats: this.formats,
       supportingText: this.supportingText,

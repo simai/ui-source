@@ -101,7 +101,8 @@ and keeps the `File` object on each.
 | `fileSize` (or `sizeText`) | The size as text, already formatted ("348KB"). The component does not format a number here. |
 | `progress` | `0`–`100`: a fraction is kept, a value outside is clamped, and a value that is not a number reads 0. Reaching 100 does not make an item `done`. Without it, a `done` item reads 100 and any other 0. |
 | `state` (or `status`) | `ready` (chosen, not sent: no bar), `process` (the bar), `done` (the check), `error` (the retry button). A choice or a drop lists its files `ready`; the host (or the `uploader`) moves them to `process`. Missing or anything else reads `process`, for the row and for the events alike. |
-| `errorMessage` (or `retryText`) | The label of the retry button on an `error` item. The component's own "Повторить"/"Try again" when not set. |
+| `errorMessage` (or `error`) | Why an `error` item did not go, on its own line in the error colour: «Не загрузился: <message>». It was the retry button's label before 1.2.0, so the reason was the control a person pressed to send the same file again. |
+| `retryText` | The retry button's label; the component's own «Повторить» / «Try again» when not set. |
 | `icon` | The glyph on the row; `cloud_upload` when not set. |
 | `file` | The `File` itself, for the consumer's own transport. The component never reads it. |
 
@@ -163,8 +164,9 @@ async function store(item) {
 }
 ```
 
-The retry button carries `errorMessage`, so the message and the action are the
-same control: the person reads why it failed and presses it to try again.
+The row says `errorMessage` on its own line and offers «Повторить» beside it:
+the person reads why it failed, and retries only when that helps. A sent
+(`done`) file keeps Remove, so a wrong file can be taken out after it went.
 
 ## Example
 

@@ -28,6 +28,10 @@ const FILE_UPLOAD_ITEM_TEXT = {
     'formats-image': 'images',
     'formats-video': 'video',
     'formats-audio': 'audio',
+    done: 'Uploaded',
+    'done-line': '{size} · uploaded',
+    error: 'Not uploaded',
+    'error-line': 'Not uploaded: {message}',
   },
   ru: {
     remove: 'Удалить',
@@ -47,6 +51,10 @@ const FILE_UPLOAD_ITEM_TEXT = {
     'formats-image': 'изображения',
     'formats-video': 'видео',
     'formats-audio': 'аудио',
+    done: 'Загружен',
+    'done-line': '{size} · загружен',
+    error: 'Не загрузился',
+    'error-line': 'Не загрузился: {message}',
   },
 };
 
@@ -247,14 +255,45 @@ function syncFileUploadInteraction(root) {
   });
 }
 
+// What a row says, from its item: the same for the class row and the Smart
+// template, so the two draw one row.
+//   ready    name, size; Remove                      (FU-3)
+//   process  name, size; Remove; the bar
+//   done     name, «size · загружен», the check; Remove   (FU-4: it had no
+//            way out and kept its 100 % bar)
+//   error    name, «Не загрузился: <message>»; Remove; «Повторить»   (FU-5:
+//            the message was the retry button's label, so the reason was the
+//            thing a person pressed to send the same file again)
+// `progress: null` is a transfer whose share is not known yet: the bar runs
+// without a number. A missing progress reads 100 on done and 0 otherwise.
+function describeUploadItem(item, owner = null, fallbackState = 'process') {
+  const state = normalizeItemState(item, fallbackState);
+  const name = String(item?.name || item?.fileName || 'File');
+  const size = String(item?.fileSize || item?.sizeText || '');
+  const raw = item?.progress;
+  const progress = raw === null
+    ? null
+    : Math.max(0, Math.min(100, Number(raw ?? (state === 'done' ? 100 : 0)) || 0));
+  const message = String(item?.errorMessage || item?.error || '');
+  let line = size;
+  if (state === 'done') line = size ? fileUploadWord(owner, 'done-line', {vars: {size}}) : fileUploadWord(owner, 'done');
+  else if (state === 'error') line = message ? fileUploadWord(owner, 'error-line', {vars: {message}}) : fileUploadWord(owner, 'error');
+  return {
+    state,
+    name,
+    size,
+    line,
+    message,
+    progress,
+    icon: String(item?.icon || 'cloud_upload'),
+    retryText: String(item?.retryText || fileUploadWord(owner, 'retry')),
+  };
+}
+
 function createUploadProgressItem(item, size = '1', owner = null) {
   const normalizedSize = normalizeSize(size);
-  const state = normalizeItemState(item, 'done');
-  const fileName = String(item.name || item.fileName || 'File');
-  const fileSize = String(item.fileSize || item.sizeText || '');
-  const progress = Math.max(0, Math.min(100, Number(item.progress ?? 100) || 0));
-  const iconName = String(item.icon || 'cloud_upload');
-  const errorMessage = String(item.errorMessage || item.retryText || pageText(FILE_UPLOAD_ITEM_TEXT, 'retry', owner, 'sf-file-upload'));
+  const row = describeUploadItem(item, owner, 'done');
+  const {state, progress} = row;
 
   const root = document.createElement('div');
   root.className = [
@@ -271,7 +310,7 @@ function createUploadProgressItem(item, size = '1', owner = null) {
   // The glyphs are pictures: their ligature names («cloud_upload», «check_circle»,
   // «delete») were read as text (docs pre-check 2026-11-10 FU-03).
   leftIcon.setAttribute('aria-hidden', 'true');
-  leftIcon.textContent = iconName;
+  leftIcon.textContent = row.icon;
 
   const content = document.createElement('div');
   content.className = 'sf-upload-progress-content flex flex-col flex-1';
@@ -284,89 +323,73 @@ function createUploadProgressItem(item, size = '1', owner = null) {
 
   const nameNode = document.createElement('div');
   nameNode.className = 'sf-upload-progress-name';
-  nameNode.textContent = fileName;
+  nameNode.textContent = row.name;
 
   const textNode = document.createElement('div');
   textNode.className = 'sf-upload-progress-text';
-  textNode.textContent = fileSize;
+  textNode.textContent = row.line;
 
   left.append(nameNode, textNode);
   top.append(left);
 
   if (state === 'done') {
     const doneIcon = document.createElement('i');
-    doneIcon.className = 'sf-icon sf-icon-solid';
+    doneIcon.className = 'sf-icon sf-icon-solid sf-upload-progress-mark';
     doneIcon.setAttribute('aria-hidden', 'true');
     doneIcon.textContent = 'check_circle';
     top.append(doneIcon);
-  } else if (state === 'error') {
-    const removeButton = document.createElement('button');
-    removeButton.type = 'button';
-    removeButton.className =
-      `sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-${normalizedSize} flex items-cross-center content-main-center self-cross-start`;
-    removeButton.dataset.action = 'remove';
+  }
 
-    const removeIcon = document.createElement('i');
-    removeIcon.className = 'sf-icon';
-    removeIcon.setAttribute('aria-hidden', 'true');
-    removeIcon.textContent = 'delete';
-    removeButton.append(removeIcon);
-    top.append(removeButton);
+  // Every state can be taken out of the list.
+  const removeButton = document.createElement('button');
+  removeButton.type = 'button';
+  removeButton.className =
+    `sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-${normalizedSize} flex items-cross-center content-main-center self-cross-start`;
+  removeButton.dataset.action = 'remove';
+  const removeIcon = document.createElement('i');
+  removeIcon.className = 'sf-icon';
+  removeIcon.setAttribute('aria-hidden', 'true');
+  removeIcon.textContent = 'delete';
+  removeButton.append(removeIcon);
+  top.append(removeButton);
+  content.append(top);
 
+  if (state === 'error') {
     const retry = document.createElement('button');
     retry.type = 'button';
     retry.className = 'sf-upload-progress-repeat self-cross-start';
     retry.dataset.action = 'retry';
-    retry.textContent = errorMessage;
-    content.append(top, retry);
-    root.append(leftIcon, content);
-    return root;
-  } else {
-    // ready and process: the file can be taken out.
-    const removeButton = document.createElement('button');
-    removeButton.type = 'button';
-    removeButton.className =
-      `sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-${normalizedSize} flex items-cross-center content-main-center self-cross-start`;
-    removeButton.dataset.action = 'remove';
-
-    const removeIcon = document.createElement('i');
-    removeIcon.className = 'sf-icon';
-    removeIcon.setAttribute('aria-hidden', 'true');
-    removeIcon.textContent = 'delete';
-    removeButton.append(removeIcon);
-    top.append(removeButton);
+    retry.textContent = row.retryText;
+    content.append(retry);
   }
 
-  // A chosen file that is not being sent has no bar: there is no transfer
-  // to show (FU-3).
-  if (state === 'ready') {
-    content.append(top);
-    root.append(leftIcon, content);
-    return root;
+  // A chosen file that is not being sent, and a sent one, have no bar: there
+  // is no transfer to show (FU-3, FU-4).
+  if (state === 'process') {
+    const progressBar = document.createElement('div');
+    progressBar.className =
+      `sf-progress-bar sf-progress-bar--size-${normalizedSize} flex flex-row items-cross-center`;
+    if (progress === null) progressBar.dataset.indeterminate = 'true';
+    else progressBar.dataset.value = String(progress);
+    progressBar.dataset.textPosition = 'inline-end';
+
+    const progressMain = document.createElement('div');
+    progressMain.className = 'sf-progress-bar-main';
+
+    const progressValue = document.createElement('div');
+    progressValue.className = 'sf-progress-bar-progress transition';
+    if (progress !== null) progressValue.style.width = `${progress}%`;
+
+    const progressText = document.createElement('div');
+    progressText.className = 'sf-progress-bar-text';
+    progressText.textContent = progress === null ? '' : `${progress}%`;
+
+    progressMain.append(progressValue);
+    progressBar.append(progressMain, progressText);
+    content.append(progressBar);
   }
 
-  const progressBar = document.createElement('div');
-  progressBar.className =
-    `sf-progress-bar sf-progress-bar--size-${normalizedSize} flex flex-row items-cross-center`;
-  progressBar.dataset.value = String(progress);
-  progressBar.dataset.textPosition = 'inline-end';
-
-  const progressMain = document.createElement('div');
-  progressMain.className = 'sf-progress-bar-main';
-
-  const progressValue = document.createElement('div');
-  progressValue.className = 'sf-progress-bar-progress transition';
-  progressValue.style.width = `${progress}%`;
-
-  const progressText = document.createElement('div');
-  progressText.className = 'sf-progress-bar-text';
-  progressText.textContent = `${progress}%`;
-
-  progressMain.append(progressValue);
-  progressBar.append(progressMain, progressText);
-  content.append(top, progressBar);
   root.append(leftIcon, content);
-
   return root;
 }
 
@@ -1098,5 +1121,6 @@ export {
   takeFiles,
   formatAcceptWords,
   normalizeItemState,
+  describeUploadItem,
   ITEM_STATES,
 };

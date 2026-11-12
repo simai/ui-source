@@ -1,6 +1,10 @@
 {
   "title": "Загрузка файлов",
   "runtime": {
+    "done": "Загружен",
+    "done-line": "{size} · загружен",
+    "error": "Не загрузился",
+    "error-line": "Не загрузился: {message}",
     "formats-audio": "аудио",
     "formats-image": "изображения",
     "formats-video": "видео",

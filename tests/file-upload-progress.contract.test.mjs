@@ -6,5 +6,7 @@ test('FileUpload supplies the same authoritative value to ProgressBar data, init
   assert.match(source,/progressBar\.dataset\.value = String\(progress\)/);
   assert.match(source,/progressBar\.dataset\.textPosition = 'inline-end'/);
   assert.match(source,/progressValue\.style\.width = `\$\{progress\}%`/);
-  assert.match(source,/progressText\.textContent = `\$\{progress\}%`/);
+  assert.match(source,/progressText\.textContent = progress === null \? '' : `\$\{progress\}%`/);
+  // progress null: the share is not known yet, the bar runs without a number (FU-11).
+  assert.match(source,/if \(progress === null\) progressBar\.dataset\.indeterminate = 'true';/);
 });
