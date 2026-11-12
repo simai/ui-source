@@ -468,6 +468,19 @@
     padding-inline-start: calc(var(--sf-px) * 0);
   }
 
+  /* With chips the first tag is the picture: it stands at the plain inset,
+     as an icon does. */
+  .sf-lookup:has(.sf-lookup-chip) .sf-lookup-frame {
+    padding-inline-start: var(--sf-lookup-padding-inline, calc(var(--sf-lookup--inset) - var(--sf-px)));
+    padding-inline-end: var(--sf-lookup-padding-inline, calc(var(--sf-lookup--inset) - var(--sf-px)));
+  }
+
+  /* The list's rows keep the field's text edge (section 3): a rounder field
+     moves its value in by half of what its corner adds, and so do the rows. */
+  .sf-lookup {
+    --sf-lookup--row-padding-inline: calc(var(--sf-space-1\/2) + max(calc(var(--sf-px) * 0), var(--sf-lookup--line-radius) - var(--sf-radius-1\/2)) / 2);
+  }
+
   .sf-lookup .sf-lookup-chip {
     /* The tag's own corner variables, not its public one: a page's
        --sf-tag-radius still wins. */

@@ -474,3 +474,13 @@
     --sf-tag--border-bottom-right-radius: var(--sf-dropdown--tag-radius);
   }
 }
+
+/* C77, section 3: an option's text keeps the field's value edge. A rounder
+   field moves its value in by half of what its corner adds over the control
+   radius; its options move by the same amount. Doubled class: the R029 rule
+   above sets the same variable in this layer. */
+@layer sf.states {
+  .sf-dropdown.sf-dropdown .sf-list .sf-list-item {
+    --sf-list-item--padding-inline-start: calc(var(--sf-space-1\/2) + max(calc(var(--sf-px) * 0), var(--sf-dropdown--line-radius, var(--sf-radius-1\/2)) - var(--sf-radius-1\/2)) / 2);
+  }
+}
