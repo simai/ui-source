@@ -81,6 +81,10 @@ $sf-place-theme-roles: (
 // former value cannot be read below it.
 $sf-place-colour-roles: (
   'outline-variant': 'light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24))',
+  // The ink of a hovered and a pressed control: a strong place re-declares it
+  // as its own on-colour (R190 AA-10), so an opaque place on it takes it back.
+  'on-surface-hover': 'light-dark(var(--sf-neutral-15), var(--sf-neutral-85))',
+  'on-surface-active': 'light-dark(var(--sf-neutral-20), var(--sf-neutral-80))',
 );
 
 // The accent (C42 item 4): a strong place re-declares it on its children
@@ -145,8 +149,8 @@ $sf-place-coloured-selectors: list.join(list.join($sf-place-strong-selectors, sf
     --sf-place--plate: initial;
     --sf-place--on-plate: initial;
     --sf-place--fill-placeholder: initial;
-    --sf-place--tonal-hover: initial;
-    --sf-place--tonal-active: initial;
+    --sf-place--control-hover: initial;
+    --sf-place--control-active: initial;
   }
 }
 
@@ -268,8 +272,8 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   @each $role in ('surface-container', 'surface-container-hover', 'surface-container-active') {
     --sf-#{$role}: #{string.unquote(map.get($sf-place-theme-roles, $role))};
   }
-  --sf-place--tonal-hover: initial;
-  --sf-place--tonal-active: initial;
+  --sf-place--control-hover: initial;
+  --sf-place--control-active: initial;
 }
 
 // A step of a strong place's ink: on-<c>, white in the light theme and tone 20
@@ -290,6 +294,12 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   --sf-surface-place-ground: var(--sf-#{$c});
   --sf-surface-underlay: initial;
   --sf-on-surface: var(--sf-on-#{$c});
+  // A hovered and a pressed control keep the place's ink (R190 AA-10): the
+  // theme's on-surface-hover and -active are neutral 15 / 20 (85 / 80 dark),
+  // a grey label on the colour, 2.1-2.2:1 light and 1.4:1 dark when pressed
+  // on the alert bar.
+  --sf-on-surface-hover: var(--sf-on-#{$c});
+  --sf-on-surface-active: var(--sf-on-#{$c});
   --sf-on-surface-variant: #{sf-ink($c, 80)};
   --sf-on-surface-container-variant: #{sf-ink($c, 80)};
   --sf-surface-state-hover: #{sf-ink($c, 4)};
@@ -357,16 +367,16 @@ $sf-place-step-outline: 'light-dark(var(--sf-neutral-50), var(--sf-neutral-90--a
   // the place's full ink, as before. Its dim ink (80) over the field's fill
   // (12) gave 3.86:1 light and 4.31:1 dark on bg-primary, under 4.5.
   --sf-place--fill-placeholder: light-dark(var(--sf-white), var(--sf-#{$c}-20));
-  // The tonal on-surface plate's hover and press on the place (R190 AA-10,
-  // 2026-11-12): the D2b rule above for the tonal accent, given to the
-  // neutral tonal plate too. Its rest is the place's own-ink fill at 12; in
-  // the light theme hover and press go a step down, 12 -> 8 -> 4 towards the
-  // place, so the white label gains contrast (the fill family's 16 and 20 put
-  // more white under white text: 4.56-5.08 hover, 4.19-4.72 press on the
-  // warning and info alert bar, under 4.5). In the dark the place's dark ink
-  // rises 16 / 20, the fill family's own steps. Read by the tonal on-surface
-  // button only (component/buttons), so the fill family's 12/16/20 for every
-  // other control on the place is unchanged.
-  --sf-place--tonal-hover: light-dark(var(--sf-white--alfa-8), var(--sf-#{$c}-20--alfa-16));
-  --sf-place--tonal-active: light-dark(var(--sf-white--alfa-4), var(--sf-#{$c}-20--alfa-20));
+  // The hover and press fill of a neutral button on the place -- tonal,
+  // outline and ghost on-surface (R190 AA-10, 2026-11-12): the D2b rule above
+  // for the tonal accent, given to the neutral buttons too. In the light
+  // theme a step down, 8 and 4 of white (the tonal plate's rest is 12), so the
+  // white label gains contrast: the fill family's 16 and 20 put more white
+  // under white text, 4.56-5.08 hover and 4.19-4.72 press on the warning and
+  // info alert bar, under 4.5. In the dark the place's dark ink rises 16 / 20,
+  // the fill family's own steps. Read by those sf-button rules only
+  // (component/buttons), so the fill family's 12/16/20 for every other control
+  // on the place is unchanged.
+  --sf-place--control-hover: light-dark(var(--sf-white--alfa-8), var(--sf-#{$c}-20--alfa-16));
+  --sf-place--control-active: light-dark(var(--sf-white--alfa-4), var(--sf-#{$c}-20--alfa-20));
 }

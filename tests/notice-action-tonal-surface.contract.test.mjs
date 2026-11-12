@@ -38,18 +38,25 @@ test('the C46 solid plate is gone; a status notice gives its action the neutral 
   assert.match(neutral, /map\.get\(\$sf-place-theme-roles, \$role\)/);
 });
 
-test('AA-10: the tonal plate on a strong place goes down 12 -> 8 -> 4 in the light theme; only the tonal on-surface button reads it', () => {
+test('AA-10: a neutral button\'s hover and press fill on a strong place go to 8 and 4 of white in the light theme; only sf-button reads it', () => {
   const mix = read('src/core/scss/mix/_mix__places.scss');
   const accent = mix.slice(mix.indexOf('@mixin sf-place-strong-accent'));
-  assert.ok(accent.includes('--sf-place--tonal-hover: light-dark(var(--sf-white--alfa-8), var(--sf-#{$c}-20--alfa-16));'));
-  assert.ok(accent.includes('--sf-place--tonal-active: light-dark(var(--sf-white--alfa-4), var(--sf-#{$c}-20--alfa-20));'));
+  assert.ok(accent.includes('--sf-place--control-hover: light-dark(var(--sf-white--alfa-8), var(--sf-#{$c}-20--alfa-16));'));
+  assert.ok(accent.includes('--sf-place--control-active: light-dark(var(--sf-white--alfa-4), var(--sf-#{$c}-20--alfa-20));'));
   // An opaque place on a strong place, and the popover's content, take it back.
   const back = mix.slice(mix.indexOf('@mixin sf-place-back-on-colour'), mix.indexOf('$sf-place-aliased'));
-  assert.ok(back.includes('--sf-place--tonal-hover: initial;') && back.includes('--sf-place--tonal-active: initial;'));
+  assert.ok(back.includes('--sf-place--control-hover: initial;') && back.includes('--sf-place--control-active: initial;'));
   const popover = read('src/smart/popover/js/templates/default.css');
-  assert.ok(popover.includes('--sf-place--tonal-hover: initial;') && popover.includes('--sf-place--tonal-active: initial;'));
+  assert.ok(popover.includes('--sf-place--control-hover: initial;') && popover.includes('--sf-place--control-active: initial;'));
+  // A hovered and pressed control on a strong place keeps the place's ink, and an opaque place takes it back.
+  const strong = mix.slice(mix.indexOf('@mixin sf-place-strong('), mix.indexOf('@mixin sf-place-strong-accent'));
+  assert.ok(strong.includes('--sf-on-surface-hover: var(--sf-on-#{$c});') && strong.includes('--sf-on-surface-active: var(--sf-on-#{$c});'));
+  const colourRoles = mix.slice(mix.indexOf('$sf-place-colour-roles: ('), mix.indexOf(');', mix.indexOf('$sf-place-colour-roles: (')));
+  assert.match(colourRoles, /'on-surface-hover': /u);
+  assert.match(colourRoles, /'on-surface-active': /u);
+  assert.ok(popover.includes('--sf-on-surface-active: light-dark(var(--sf-neutral-20), var(--sf-neutral-80));'));
   const buttons = read('src/component/buttons/scss/_css__buttons.scss');
-  assert.ok(buttons.includes('--sf-button--background-color: var(--sf-place--tonal-hover, var(--sf-surface-container-hover));'));
-  assert.ok(buttons.includes('--sf-button--background-color: var(--sf-place--tonal-active, var(--sf-surface-container-active));'));
-  assert.equal((buttons.match(/var\(--sf-place--tonal-/g) || []).length, 2, 'no other button reads the tonal step');
+  assert.ok(buttons.includes('--sf-button--background-color: var(--sf-place--control-hover, var(--sf-surface-container-hover));'));
+  assert.ok(buttons.includes('--sf-button--background-color: var(--sf-place--control-active, var(--sf-surface-container-active));'));
+  assert.equal((buttons.match(/var\(--sf-place--control-/g) || []).length, 2, 'two sf-button rules read the place step');
 });

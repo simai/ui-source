@@ -700,15 +700,12 @@
     --sf-button--background-color: var(--sf-primary-container-hover);
   }
 
+  /* On a strong coloured place the hover and press fills are the place's own
+     steps (R190 AA-10; mix sf-place-strong-accent, --sf-place--control-hover
+     and -active), which keep the white label at 4.5:1 and more; elsewhere the
+     roles. */
   .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):hover, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover {
-    --sf-button--background-color: var(--sf-surface-container-hover);
-  }
-
-  /* The tonal plate's hover on a strong coloured place (R190 AA-10): the
-     place's own step (mix sf-place-strong-accent, --sf-place--tonal-hover),
-     which keeps the white label at 4.5:1 and more; elsewhere the role. */
-  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):hover {
-    --sf-button--background-color: var(--sf-place--tonal-hover, var(--sf-surface-container-hover));
+    --sf-button--background-color: var(--sf-place--control-hover, var(--sf-surface-container-hover));
   }
 
   .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut) {
@@ -748,12 +745,7 @@
   }
 
   .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):active, .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled).active, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active {
-    --sf-button--background-color: var(--sf-surface-container-active);
-  }
-
-  /* Its press there, the same way (--sf-place--tonal-active). */
-  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):active, .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled).active {
-    --sf-button--background-color: var(--sf-place--tonal-active, var(--sf-surface-container-active));
+    --sf-button--background-color: var(--sf-place--control-active, var(--sf-surface-container-active));
   }
 
   .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut) {
