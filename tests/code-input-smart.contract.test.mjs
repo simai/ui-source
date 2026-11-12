@@ -182,7 +182,7 @@ test('code input: input and change are the native input\'s, complete once per co
   // K2: the cells paint a selection; a mouse selects by cells, a click does
   // not collapse it, copy gives the selected code and never a masked one; the
   // input is transparent, not opacity 0.
-  assert.match(source, /cell\.classList\.toggle\('selected', focused && !one && index >= start && index < end\);/u);
+  assert.match(source, /const selected = focused && !one && index >= start && index < end;\n\s+cell\.classList\.toggle\('selected', selected\);/u);
   assert.match(source, /if \(\(input\.selectionEnd \?\? 0\) - \(input\.selectionStart \?\? 0\) > 1\) return;/u);
   assert.match(source, /this\.addEventListener\('dblclick', this\.onDoubleClick\);/u);
   assert.match(source, /event\.clipboardData\.setData\('text\/plain', input\.value\.slice\(start, end\)\);/u);
@@ -190,6 +190,11 @@ test('code input: input and change are the native input\'s, complete once per co
   assert.doesNotMatch(inputRule, /opacity/u);
   assert.match(inputRule, /-webkit-text-fill-color: var\(--sf-transparent\);/u);
   assert.match(classSheet, /\.sf-verification:has\(\.sf-verification-input:enabled:focus\) \.sf-verification-cell\.selected \{[^}]*background: var\(--sf-primary-container\);/u);
+  // K4: hover marks one cell, never the group.
+  assert.doesNotMatch(classSheet, /\.sf-verification:hover \.sf-verification-cell/u);
+  assert.match(classSheet, /\.sf-verification-cell\.hover,\n\.sf-verification-form-wrap \.sf-verification:hover \{ border-color: var\(--sf-primary-hover\); \}/u);
+  assert.match(classSheet, /\.sf-verification--filled \.sf-verification-cell\.hover \{[^}]*background: var\(--sf-surface-container-hover\);/u);
+  assert.match(source, /cell\.classList\.toggle\('hover', index === this\._hover && !selected && !\(focused && one && index === current\)\);/u);
   // K6: the current cell only while the field has the focus.
   assert.match(source, /cell\.classList\.toggle\('current', focused && one && index === current\);/u);
 });

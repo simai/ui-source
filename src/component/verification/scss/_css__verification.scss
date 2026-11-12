@@ -142,8 +142,18 @@
   --sf-on-surface-variant: var(--sf-on-surface-container-variant);
 }
 
-.sf-verification:hover .sf-verification-cell,
+/* Hover marks the one cell under the pointer, set by the runtime that owns the
+   field (.hover); the whole group lit up before and hid the current cell's
+   mark (K4, owner R139). A filled cell takes the fill's hover step, without a
+   border, as a filled sf-input. The retired one-input-per-cell markup hovers
+   its cell, which is already one. */
+.sf-verification-cell.hover,
 .sf-verification-form-wrap .sf-verification:hover { border-color: var(--sf-primary-hover); }
+
+.sf-verification--filled .sf-verification-cell.hover {
+  border-color: var(--sf-transparent);
+  background: var(--sf-surface-container-hover);
+}
 
 .sf-verification-form.error .sf-verification-cell,
 .sf-verification.error .sf-verification-cell,
@@ -205,6 +215,13 @@
   .sf-verification--filled:not(.error):has(.sf-verification-input:enabled:focus) .sf-verification-cell.current,
   .sf-verification-form--filled:not(.error):has(input:enabled:focus) .sf-verification-form-wrap .sf-verification:has(input:focus) {
     border-color: var(--sf-primary);
+  }
+}
+
+/* A filled field with the focus is drawn bordered, and hovers as one. */
+@layer sf.components {
+  .sf-verification--filled:not(.error):has(.sf-verification-input:enabled:focus) .sf-verification-cell.hover {
+    border-color: var(--sf-primary-hover);
   }
 }
 

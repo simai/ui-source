@@ -260,6 +260,38 @@ try {
   await page.keyboard.press('Tab');
   await events();
 
+  // K4: hover marks the one cell under the pointer; a filled cell takes the
+  // fill's hover step, without a border.
+  const hoverOver = async (selector, index) => {
+    const point = await page.evaluate(({css, at}) => {
+      const rect = document.querySelector(css).querySelectorAll('.sf-verification-cell')[at].getBoundingClientRect();
+      return {x: rect.left + rect.width / 2, y: rect.top + rect.height / 2};
+    }, {css: selector, at: index});
+    await page.mouse.move(point.x, point.y);
+    await settle();
+    return page.evaluate((css) => {
+      const cells = [...document.querySelector(css).querySelectorAll('.sf-verification-cell')];
+      const probe = document.createElement('span');
+      document.body.append(probe);
+      const colour = (name) => { probe.style.color = `var(${name})`; return getComputedStyle(probe).color; };
+      const want = {hover: colour('--sf-primary-hover'), fill: colour('--sf-surface-container'), fillHover: colour('--sf-surface-container-hover')};
+      probe.remove();
+      return {want, hovered: cells.map((cell) => (cell.classList.contains('hover') ? 1 : 0)).join(''),
+        borders: cells.map((cell) => getComputedStyle(cell).borderTopColor), fills: cells.map((cell) => getComputedStyle(cell).backgroundColor)};
+    }, selector);
+  };
+  const bordered = await hoverOver('#controlled', 3);
+  check('K4 bordered: one cell hovered, one primary-hover border', bordered.hovered === '000100'
+    && bordered.borders.filter((colour) => colour === bordered.want.hover).length === 1 && bordered.borders[3] === bordered.want.hover, {bordered});
+  const filledHover = await hoverOver('[data-row="1"] sf-input-code[data-appearance="filled"]', 2);
+  check('K4 filled: one cell on the fill\'s hover step, the others on the fill, no border', filledHover.hovered === '001000'
+    && filledHover.fills[2] === filledHover.want.fillHover && filledHover.fills.filter((colour) => colour === filledHover.want.fill).length === 5
+    && filledHover.borders.every((colour) => colour === 'rgba(0, 0, 0, 0)'), {filledHover});
+  await page.mouse.move(0, 0);
+  await settle();
+  await page.keyboard.press('Tab');
+  await events();
+
   // Paste.
   const paste = (id, text) => page.evaluate(({key, value}) => {
     const input = document.querySelector(`#${key} input`);

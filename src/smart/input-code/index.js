@@ -86,6 +86,8 @@ class SfCodeInput extends FormField(CodeInputElement) {
     // ends a mouse press is already handled (K2).
     this._dragFrom = -1;
     this._mousePressed = false;
+    // The cell the mouse is over, or -1 (K4).
+    this._hover = -1;
     this.addEventListener('beforeinput', this.onBeforeInput);
     this.addEventListener('input', this.onInput, true);
     this.addEventListener('paste', this.onPaste);
@@ -101,6 +103,7 @@ class SfCodeInput extends FormField(CodeInputElement) {
     this.addEventListener('pointermove', this.onPointerMove);
     this.addEventListener('pointerup', this.onPointerUp);
     this.addEventListener('pointercancel', this.onPointerUp);
+    this.addEventListener('pointerleave', this.onPointerLeave);
     this.addEventListener('dblclick', this.onDoubleClick);
     this.addEventListener('copy', this.onCopy);
   }
@@ -384,16 +387,32 @@ class SfCodeInput extends FormField(CodeInputElement) {
     this.syncCells();
   };
 
+  // The pointer marks the one cell it is over (K4: the whole group lit up on
+  // hover, and hid the current cell's mark); a drag selects.
   onPointerMove = (event) => {
     const input = this.ownInput(event.target);
-    if (!input || this._dragFrom < 0 || !(event.buttons & 1)) return;
+    if (!input) return;
     const at = this.cellAt(event.clientX);
+    if (event.pointerType === 'mouse') {
+      const hover = input.disabled ? -1 : at;
+      if (hover !== this._hover) {
+        this._hover = hover;
+        this.syncCells();
+      }
+    }
+    if (this._dragFrom < 0 || !(event.buttons & 1)) return;
     const from = Math.min(this._dragFrom, at);
     const to = Math.min(Math.max(this._dragFrom, at) + 1, input.value.length);
     if (to > from && (input.selectionStart !== from || input.selectionEnd !== to)) {
       input.setSelectionRange(from, to, at < this._dragFrom ? 'backward' : 'forward');
       this.syncCells();
     }
+  };
+
+  onPointerLeave = () => {
+    if (this._hover === -1) return;
+    this._hover = -1;
+    this.syncCells();
   };
 
   onPointerUp = () => {
@@ -470,7 +489,11 @@ class SfCodeInput extends FormField(CodeInputElement) {
       if (cell.textContent !== shown) cell.textContent = shown;
       cell.classList.toggle('active', index < value.length);
       cell.classList.toggle('current', focused && one && index === current);
-      cell.classList.toggle('selected', focused && !one && index >= start && index < end);
+      const selected = focused && !one && index >= start && index < end;
+      cell.classList.toggle('selected', selected);
+      // Hover marks one cell, never over the current cell's mark or a
+      // selection (K4).
+      cell.classList.toggle('hover', index === this._hover && !selected && !(focused && one && index === current));
       cell.classList.toggle('caret', bare && index === current);
       cell.classList.toggle('caret-end', bare && index === current && start >= this.length);
     });
