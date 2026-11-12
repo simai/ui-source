@@ -8,7 +8,7 @@ import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 import {URL} from 'node:url';
 
-import {capRange, collapseRange, fitRange, maxFitHidden, menuEntries, nextFit, onPhoneLadder, startFit, trailWraps} from '../src/component/breadcrumbs/js/_trail.js';
+import {capRange, collapseRange, fitRange, foldGains, maxFitHidden, menuEntries, nextFit, onPhoneLadder, startFit, trailLines, trailWraps} from '../src/component/breadcrumbs/js/_trail.js';
 import {markCurrent, normalizeItem, parseItems, readFlag} from '../src/smart/breadcrumbs/js/items.js';
 
 const root = new URL('../', import.meta.url);
@@ -106,6 +106,35 @@ test('BC-06: a trail wraps when a crumb starts a new row or its words wrap', () 
   assert.equal(trailWraps([box(0, 28), box(0, 48)]), true);
   assert.equal(trailWraps([box(0, 28), {hidden: true, getBoundingClientRect: () => ({top: 90, height: 28, width: 40})}]), false);
   assert.equal(trailWraps([]), false);
+});
+
+test('C93 item 1: a fold that saves no line gives the crumbs back', () => {
+  const box = (top, height, width = 40) => ({hidden: false, getBoundingClientRect: () => ({top, height, width})});
+  // One line of 28 px targets with a 20 px page centred in it.
+  assert.equal(trailLines([box(0, 28), box(0, 28), box(4, 20)]), 1);
+  // The page's own name on a line of its own, wrapped to two text lines.
+  assert.equal(trailLines([box(0, 28), box(0, 28), box(36, 40)]), 2);
+  assert.equal(trailLines([box(0, 28), box(36, 28), box(72, 20)]), 3);
+  assert.equal(trailLines([]), 0);
+  // Whole trail: 2 lines; folded as far as it goes: still 2. Nothing gained.
+  assert.equal(foldGains(2, 2), false);
+  // Whole trail: 3 lines; folded: 2. The fold stays.
+  assert.equal(foldGains(3, 2), true);
+  // Nothing measured at the start: keep what the fold did.
+  assert.equal(foldGains(0, 2), true);
+});
+
+test('C93 item 1: both runtimes give the crumbs back when the fold saved no line', async () => {
+  const [classic, smart] = await Promise.all([
+    read('src/component/breadcrumbs/js/breadcrumbs.js'),
+    read('src/smart/breadcrumbs/index.js'),
+  ]);
+  for (const source of [classic, smart]) {
+    assert.match(source, /trailLines\(/);
+    assert.match(source, /foldGains\(/);
+  }
+  assert.match(smart, /_fitNoGain = true/);
+  assert.match(smart, /restartFit\(\)/);
 });
 
 test('BC-11: both runtimes fold with the one shared module', async () => {

@@ -1,5 +1,5 @@
 import { pageText } from '../../../core/js/page-language';
-import { collapseRange, menuEntries, nextFit, onPhoneLadder, startFit, trailWraps } from './_trail';
+import { collapseRange, foldGains, menuEntries, nextFit, onPhoneLadder, startFit, trailLines, trailWraps } from './_trail';
 
 // The ordinary runtime of the class markup a server prints (nav.sf-breadcrumbs):
 // it folds a long trail behind one «…» button and opens it again in place.
@@ -328,15 +328,26 @@ function collapseBreadcrumbs(root) {
 
   const tail = getTail(items);
   // The phone ladder starts at «… › parent › page» (C93 item 2).
-  let fit = startFit(items.length, { tail, phone: onPhoneLadder() });
+  const start = startFit(items.length, { tail, phone: onPhoneLadder() });
+  let fit = start;
 
   applyRange(root, items, collapseRange(items.length, { maxItems, fit, tail }));
 
   // Room (BC-06): one more crumb at a time while the trail wraps.
-  while (trailWraps(getLineEntries(root))) {
+  const startLines = trailLines(getLineEntries(root));
+  let wraps = trailWraps(getLineEntries(root));
+  while (wraps) {
     const next = nextFit(items.length, { maxItems, fit, tail });
     if (next === null) break;
     fit = next;
+    applyRange(root, items, collapseRange(items.length, { maxItems, fit, tail }));
+    wraps = trailWraps(getLineEntries(root));
+  }
+
+  // Folded as far as it goes and no line was saved: the page's own name is
+  // longer than the line. The crumbs come back.
+  if (wraps && fit > start && !foldGains(startLines, trailLines(getLineEntries(root)))) {
+    fit = start;
     applyRange(root, items, collapseRange(items.length, { maxItems, fit, tail }));
   }
 

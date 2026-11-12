@@ -105,6 +105,47 @@ export function trailWraps(entries = []) {
   );
 }
 
+// How many lines the shown crumbs take: a crumb that starts below the line
+// before it (by half the lowest crumb or more) opens a new line. The fold
+// compares it before and after folding (see foldGains).
+export function trailLines(entries = []) {
+  const boxes = [];
+
+  for (const entry of entries) {
+    if (!entry || entry.hidden) continue;
+    const box = entry.getBoundingClientRect?.();
+    if (!box || (box.width === 0 && box.height === 0)) continue;
+    boxes.push(box);
+  }
+
+  if (boxes.length === 0) return 0;
+
+  const lowest = Math.min(...boxes.map((box) => box.height));
+  let lines = 1;
+  let top = boxes[0].top;
+
+  for (const box of boxes) {
+    if (box.top - top >= lowest / 2) {
+      lines += 1;
+      top = box.top;
+    }
+  }
+
+  return lines;
+}
+
+// Whether a fold that cannot go further was worth it: it took fewer lines
+// than the trail took where the measure started. When the page's own name is
+// longer than the line (it wraps, owner decision C93 item 6), hiding its
+// ancestors leaves it on its own line all the same; then the fold gained
+// nothing and the crumbs come back (C93 item 1: fold only for room).
+export function foldGains(startLines, lines) {
+  const before = Math.floor(Number(startLines) || 0);
+  const after = Math.floor(Number(lines) || 0);
+
+  return before === 0 || after < before;
+}
+
 // Where a measure starts. On the phone ladder (below 60rem) the trail is one
 // line «… › parent › page» from the start (owner decision C93 item 2); on a
 // wider screen it starts whole and folds only when it has no room.

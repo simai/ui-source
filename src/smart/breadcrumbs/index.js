@@ -1,7 +1,7 @@
 import SfBaseElement, { toAttributeName } from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderBreadcrumbsTemplate } from './js/templates/default';
-import { collapseRange, menuEntries, nextFit, onPhoneLadder, startFit, trailWraps } from '../../component/breadcrumbs/js/_trail';
+import { collapseRange, foldGains, menuEntries, nextFit, onPhoneLadder, startFit, trailLines, trailWraps } from '../../component/breadcrumbs/js/_trail';
 import { markCurrent, normalizeItem, parseItems, readFlag } from './js/items';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -61,6 +61,8 @@ class SfBreadcrumbs extends BreadcrumbsElement {
     this._preserveEllipsisExpanded = false;
     // How many crumbs room hides (BC-06): 0 until the trail is measured.
     this._fitHidden = 0;
+    this._fitStartLines = 0;
+    this._fitNoGain = false;
     this._fitSettled = null;
     this._roomObserver = null;
     this._roomFrame = 0;
@@ -107,7 +109,7 @@ class SfBreadcrumbs extends BreadcrumbsElement {
     if (!this.__sfManifestData) this.__sfManifestData = {};
     this.__sfManifestData.items = value;
     this._ellipsisExpanded = false;
-    this._fitHidden = 0;
+    this.restartFit();
     if (this.hasAttribute('items')) this.removeAttribute('items');
     else if (this._isMounted) this.requestComponentUpdate('items');
     else this.mountComponent();
@@ -130,7 +132,7 @@ class SfBreadcrumbs extends BreadcrumbsElement {
       oldValue !== newValue &&
       !this._preserveEllipsisExpanded
     ) {
-      this._fitHidden = 0;
+      this.restartFit();
     }
 
     if (
@@ -390,7 +392,9 @@ class SfBreadcrumbs extends BreadcrumbsElement {
     if (!this.isConnected || !this._isMounted || !this._hasRendered) return;
     this.observeRoom();
 
-    if (!this._ellipsisExpanded && trailWraps(this.trailEntries())) {
+    if (!this._fitStartLines) this._fitStartLines = trailLines(this.trailEntries());
+
+    if (!this._ellipsisExpanded && !this._fitNoGain && trailWraps(this.trailEntries())) {
       const items = this.sourceItems;
       const next = nextFit(items.length, this.collapseOptions(items));
       if (next !== null) {
@@ -398,10 +402,26 @@ class SfBreadcrumbs extends BreadcrumbsElement {
         this.requestComponentUpdate('fit');
         return;
       }
+
+      // Folded as far as it goes and no line was saved: the page's own name
+      // is longer than the line. The crumbs come back until the room changes.
+      if (this._fitHidden > 0 && !foldGains(this._fitStartLines, trailLines(this.trailEntries()))) {
+        this._fitNoGain = true;
+        this._fitHidden = 0;
+        this.requestComponentUpdate('fit');
+        return;
+      }
     }
 
     this.markCutLabels();
     this._fitSettled = this.roomSize();
+  }
+
+  // A new list, setting or width measures the fold again from its start.
+  restartFit() {
+    this._fitHidden = 0;
+    this._fitStartLines = 0;
+    this._fitNoGain = false;
   }
 
   // A name cut with an ellipsis (C93 item 6) has its whole text as the
@@ -447,7 +467,7 @@ class SfBreadcrumbs extends BreadcrumbsElement {
           return;
         }
         this._fitSettled = null;
-        this._fitHidden = 0;
+        this.restartFit();
         this.requestComponentUpdate('fit');
       });
     });
