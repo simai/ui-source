@@ -411,6 +411,9 @@ function createSliderOptions(root) {
       toNumber(root.getAttribute('data-step'), 0) > 0
       ? toNumber(root.getAttribute('data-step'), 1)
       : undefined,
+    pageStep: toNumber(root.getAttribute('data-page-step'), 0) > 0
+      ? toNumber(root.getAttribute('data-page-step'), 0)
+      : undefined,
     margin: multiple && root.hasAttribute('data-margin') &&
       toNumber(root.getAttribute('data-margin'), 0) > 0
       ? Math.min(max - min, toNumber(root.getAttribute('data-margin'), 0))

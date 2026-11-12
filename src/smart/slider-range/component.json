@@ -27,6 +27,11 @@
       "nullable": true,
       "default": null
     },
+    "page-step": {
+      "type": "number",
+      "nullable": true,
+      "summary": "How far PageUp, PageDown and Shift with an arrow move a handle; ten steps when empty, as sf-input-quantity."
+    },
     "margin": {
       "type": "string",
       "default": ""
@@ -156,6 +161,8 @@
       "ArrowRight": "step:+1",
       "ArrowUp": "step:+1",
       "ArrowDown": "step:-1",
+      "PageUp": "step:+page",
+      "PageDown": "step:-page",
       "Home": "to:min",
       "End": "to:max"
     }
@@ -189,6 +196,8 @@
       "ArrowRight": "step:+1",
       "ArrowUp": "step:+1",
       "ArrowDown": "step:-1",
+      "PageUp": "step:+page",
+      "PageDown": "step:-page",
       "Home": "to:min",
       "End": "to:max"
     }

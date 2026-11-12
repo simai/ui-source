@@ -63,6 +63,10 @@
       "step": {
         "type": "number"
       },
+      "page-step": {
+        "type": "number",
+        "description": "How far PageUp, PageDown and Shift with an arrow move a handle; ten steps when empty, as sf-input-quantity."
+      },
       "margin": {
         "type": "string",
         "default": ""
@@ -549,6 +553,8 @@
       "ArrowRight",
       "ArrowUp",
       "ArrowDown",
+      "PageUp",
+      "PageDown",
       "Home",
       "End"
     ],

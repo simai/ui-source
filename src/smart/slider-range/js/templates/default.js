@@ -25,6 +25,7 @@ export function renderRangeSliderTemplate(context) {
                 data-start=${valueOrNothing(context.start)}
                 data-multiple=${String(!!context.multiple)}
                 data-step=${valueOrNothing(context.step)}
+                data-page-step=${valueOrNothing(context.pageStep)}
                 data-margin=${valueOrNothing(context.margin)}
                 data-connect=${valueOrNothing(context.connect)}
                 data-keyboard=${String(!!context.keyboard)}

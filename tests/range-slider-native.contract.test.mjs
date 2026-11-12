@@ -65,3 +65,16 @@ test('a fractional step leaves no floating-point tail in the value or ARIA (S2)'
   assert.equal(range.handles[1].attrs['aria-valuemin'], '0.3');
   assert.equal(range.handles[0].attrs['aria-valuemax'], '0.5');
 });
+
+test('PageUp, PageDown and Shift+arrow move by ten steps or page-step (S4)', () => {
+  const {instance, handles} = slider({range: {min: 0, max: 50000}, step: 500, start: [5000]});
+  handles[0].key('PageUp');
+  assert.equal(instance.get(true), 10000);
+  handles[0].key('ArrowLeft', {shiftKey: true});
+  assert.equal(instance.get(true), 5000);
+  handles[0].key('ArrowRight');
+  assert.equal(instance.get(true), 5500);
+  const paged = slider({range: {min: 0, max: 100}, step: 1, start: [50], pageStep: 25});
+  paged.handles[0].key('PageDown');
+  assert.equal(paged.instance.get(true), 25);
+});

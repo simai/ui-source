@@ -33,6 +33,10 @@ export function createNativeSlider(root, options) {
   const range = options.range;
   const margin = Number(options.margin || 0);
   const step = Number(options.step || 1);
+  // PageUp, PageDown and Shift with an arrow move by the large step: ten
+  // steps unless page-step says otherwise, as sf-input-quantity (S4; APG,
+  // Radix, Carbon).
+  const pageStep = Number(options.pageStep) > 0 ? Number(options.pageStep) : step * 10;
   const digits = Math.max(decimalPlaces(step), decimalPlaces(range.min));
   const listeners = new Map();
   let disabled = false;
@@ -133,7 +137,11 @@ export function createNativeSlider(root, options) {
   handles.forEach(({handle}, index) => handle.addEventListener('keydown', (event) => {
     if (disabled || options.keyboardSupport === false) return;
     const direction = options.direction === 'rtl' ? -1 : 1;
-    const delta = ({ArrowRight: step * direction, ArrowLeft: -step * direction, ArrowUp: step, ArrowDown: -step})[event.key];
+    const by = event.shiftKey ? pageStep : step;
+    const delta = ({
+      ArrowRight: by * direction, ArrowLeft: -by * direction, ArrowUp: by, ArrowDown: -by,
+      PageUp: pageStep, PageDown: -pageStep,
+    })[event.key];
     let next = delta === undefined ? null : values[index] + delta;
     if (event.key === 'Home') next = boundsFor(index).min;
     if (event.key === 'End') next = boundsFor(index).max;

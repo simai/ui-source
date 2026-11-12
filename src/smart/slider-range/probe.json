@@ -147,6 +147,28 @@
       }
     },
     {
+      "id": "page-keys-move-ten-steps",
+      "covers": "keyboard.host PageUp step:+page, PageDown step:-page; Shift+ArrowRight moves the same large step (S4)",
+      "field": "<sf-slider-range aria-label=\"Цена\" min=\"0\" max=\"50000\" step=\"500\" value=\"5000\"></sf-slider-range>",
+      "given": [
+        {
+          "user": "focus:[role=slider]"
+        }
+      ],
+      "user": [
+        "keyboard:PageUp",
+        "keyboard:PageUp",
+        "keyboard:PageDown",
+        "keyboard:Shift+ArrowRight"
+      ],
+      "expect": {
+        "value": "15000",
+        "evaluate": {
+          "el.querySelector('[role=slider]').getAttribute('aria-valuenow')": "15000"
+        }
+      }
+    },
+    {
       "id": "value-from-code-is-silent",
       "covers": "§8: a value set from outside is not reported back, under no name",
       "field": "<sf-slider-range aria-label=\"Громкость\" value=\"50\"></sf-slider-range>",
