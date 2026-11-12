@@ -1,6 +1,7 @@
 import SfBaseElement, { toAttributeName } from '../../core/js/smart-base';
 import {
   bindRangeSlider,
+  formatRangeSliderNumber,
   formatRangeSliderText,
   getRangeSliderValue,
   setRangeSliderValue,
@@ -61,6 +62,28 @@ const VALUE_DISPLAYS = ['none', 'text', 'tooltip'];
 function legacyValueDisplay(element) {
   const label = String(element.getAttribute('label') ?? '').trim().toLowerCase();
   return VALUE_DISPLAYS.includes(label) ? label : null;
+}
+
+// The marks of the scale, placed on the range: the ends (scale) or the
+// author's list "value:text,...", each at its share of the track.
+function scaleMarks(element) {
+  const min = Number(element.min ?? 0);
+  const max = Number(element.max ?? 100);
+  const span = max - min;
+  if (!(span > 0)) return [];
+  const raw = String(element.getAttribute('marks') ?? '').trim();
+  const list = raw
+    ? raw.split(',').map((item) => {
+      const at = item.indexOf(':');
+      const value = Number((at < 0 ? item : item.slice(0, at)).trim());
+      return {value, text: at < 0 ? null : item.slice(at + 1).trim()};
+    }).filter((mark) => Number.isFinite(mark.value) && mark.value >= min && mark.value <= max)
+    : element.hasAttribute('scale') && element.getAttribute('scale') !== 'false' ? [{value: min, text: null}, {value: max, text: null}] : [];
+  return list.map((mark) => ({
+    ...mark,
+    percent: ((mark.value - min) / span) * 100,
+    edge: mark.value === min ? 'start' : mark.value === max ? 'end' : '',
+  }));
 }
 
 function getSliderHandleCount(root) {
@@ -293,6 +316,18 @@ class SfRangeSlider extends RangeSliderElement {
       // the end of the name line, drawn here (C78).
       handleLabel: valueDisplay === 'tooltip' ? 'tooltip' : 'none',
       outputText: this.outputText(),
+      scaleMarks: scaleMarks(this),
+      ticks: this.hasAttribute('ticks') && this.getAttribute('ticks') !== 'false',
+    });
+  }
+
+  // A mark without text of its own writes its number the slider's way.
+  syncScale() {
+    const root = this.getSliderRoot();
+    if (!root) return;
+    this.querySelectorAll('.sf-range-slider-scale-mark').forEach((mark, index) => {
+      const own = scaleMarks(this)[index];
+      if (own && own.text === null) mark.textContent = formatRangeSliderNumber(root, own.value);
     });
   }
 
@@ -356,6 +391,9 @@ class SfRangeSlider extends RangeSliderElement {
         // toggled on the root by a script.
         'disabled',
         'readonly',
+        'ticks',
+        'scale',
+        'marks',
       ].includes(name),
     );
 
@@ -405,6 +443,7 @@ class SfRangeSlider extends RangeSliderElement {
       }
       // The first render had no slider to format with.
       this.syncOutput();
+      this.syncScale();
     }
     this.sfSyncForm();
   }

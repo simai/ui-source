@@ -47,8 +47,13 @@ test('C78: the value bubble shows only while its handle is dragged or keyboard-f
 });
 
 test('C80 R2: read-only is the light outline at field height with a neutral handle and fill', () => {
-  const frame = rule('.sf-range-slider-group.readonly .sf-range-slider-line');
+  const frame = rule('.sf-range-slider-group.readonly .sf-range-slider');
   assert.match(frame, /border: var\(--sf-px\) solid var\(--sf-outline-variant\);/u);
   assert.match(frame, /block-size: var\(--sf-range-slider--row, var\(--sf-ui-1--control-height\)\);/u);
   assert.match(rule('.sf-range-slider.readonly .sf-thumb-handle,\n.sf-range-slider[data-readonly="true"] .sf-thumb-handle'), /background-color: var\(--sf-on-surface-variant\);/u);
+});
+
+test('C80 T1: ticks are cut out in the colour of the place; the scale is logical', () => {
+  assert.match(rule('.sf-range-slider .sf-range-slider-tick'), /background-color: var\(--sf-range-slider-tick--background-color, var\(--sf-surface-place\)\);[\s\S]*margin-inline-start:/u);
+  assert.match(rule('.sf-range-slider-scale-mark--end'), /justify-content: flex-end;/u);
 });

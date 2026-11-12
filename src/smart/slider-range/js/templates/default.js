@@ -29,6 +29,24 @@ function renderHead(context) {
     `;
 }
 
+// The scale under the track (C78, C80): the ends with scale, or the author's
+// marks ("1:плохо,3:нормально,5:отлично"; a mark without text writes its
+// number). Numbers are written by the host after the slider is bound, in the
+// slider's own language and digits.
+function renderScale(context) {
+    const marks = context.scaleMarks || [];
+    if (!marks.length) return nothing;
+    return html`
+        <div class="sf-range-slider-scale" aria-hidden="true">
+            ${marks.map((mark) => html`<span
+                    class=${joinClasses('sf-range-slider-scale-mark', mark.edge ? `sf-range-slider-scale-mark--${mark.edge}` : '')}
+                    style=${`inset-inline-start: ${mark.percent}%`}
+                    data-value=${String(mark.value)}
+            >${mark.text ?? ''}</span>`)}
+        </div>
+    `;
+}
+
 export function renderRangeSliderTemplate(context) {
     const groupClasses = joinClasses(
         'sf-range-slider-group',
@@ -49,6 +67,7 @@ export function renderRangeSliderTemplate(context) {
         <div class=${groupClasses}>
             ${renderHead(context)}
             <div class="sf-range-slider-line">
+              <div class="sf-range-slider-track-column">
                 <div
                         class=${rootClasses}
                         style=${valueOrNothing(context.rootStyle)}
@@ -72,8 +91,11 @@ export function renderRangeSliderTemplate(context) {
                         data-locale=${valueOrNothing(context.locale)}
                         data-tooltip-position=${valueOrNothing(context.tooltipPosition)}
                         data-label-position=${valueOrNothing(context.labelPosition)}
+                        data-ticks=${context.ticks ? 'true' : nothing}
                         ?disabled=${context.disabled}
                 ></div>
+                ${renderScale(context)}
+              </div>
             </div>
         </div>
     `;

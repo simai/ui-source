@@ -41,14 +41,22 @@
 }
 
 .sf-range-slider-line {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
   gap: var(--sf-space-1);
   min-inline-size: 0;
 }
 
-.sf-range-slider-line > .sf-range-slider {
+// The track and the scale under it; the from/to field stands beside them.
+.sf-range-slider-track-column {
+  display: flex;
   flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--sf-space-1\/4);
+  min-inline-size: 0;
+}
+
+.sf-range-slider-track-column > .sf-range-slider {
   min-inline-size: 0;
 }
 
@@ -162,16 +170,18 @@
 // read-only sf-input -- the light outline of a region at field height, no
 // fill -- and a neutral handle and fill that say "cannot move". The value
 // keeps full ink; the handles stay focusable and are read out.
-.sf-range-slider-group.readonly .sf-range-slider-line {
+.sf-range-slider-group.readonly .sf-range-slider {
   block-size: var(--sf-range-slider--row, var(--sf-ui-1--control-height));
   border: var(--sf-px) solid var(--sf-outline-variant);
   border-radius: var(--sf-radius--ui);
   box-sizing: border-box;
+  min-block-size: 0;
   padding-inline: calc(var(--sf-range-slider--space-x, var(--sf-ui-1--space-x)) - var(--sf-px));
 }
 
-.sf-range-slider-group.readonly .sf-range-slider {
-  min-block-size: calc(var(--sf-range-slider--row, var(--sf-ui-1--control-height)) - 2 * var(--sf-px));
+// The scale under a framed track keeps to the track's ends.
+.sf-range-slider-group.readonly .sf-range-slider-scale {
+  padding-inline: calc(var(--sf-range-slider--space-x, var(--sf-ui-1--space-x)) - var(--sf-px));
 }
 
 .sf-range-slider.readonly .sf-thumb-handle,
@@ -188,5 +198,58 @@
 .sf-range-slider.readonly .sf-range-slider-handle,
 .sf-range-slider[data-readonly="true"] .sf-range-slider-handle {
   cursor: default;
+}
+
+// Ticks, look T1 (owner decision C80, #r2-ticks): a dot per step when there
+// are at most twenty, cut out of track B in the colour of the place the
+// slider stands on -- one colour on the rail and on the fill, at least 3:1 on
+// both in both themes, read as notches.
+.sf-range-slider .sf-range-slider-ticks {
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 1;
+}
+
+.sf-range-slider .sf-range-slider-tick {
+  background-color: var(--sf-range-slider-tick--background-color, var(--sf-surface-place));
+  block-size: var(--sf-range-slider-track--height, var(--sf-a4));
+  border-radius: var(--sf-radius-circle);
+  inline-size: var(--sf-range-slider-track--height, var(--sf-a4));
+  inset-block-start: 50%;
+  margin-inline-start: calc(var(--sf-range-slider-track--height, var(--sf-a4)) / -2);
+  position: absolute;
+  transform: translateY(-50%);
+}
+
+// The scale (C78, C80): the ends, or the author's marks, under the track in
+// the variant ink one text step below the control. Each label stands in a
+// zero-wide anchor at its value: centred on it, the first and last held
+// inside the track, logical, so right-to-left needs nothing more.
+.sf-range-slider-scale {
+  block-size: var(--sf-range-slider--label-height, var(--sf-text-height-1\/2));
+  color: var(--sf-on-surface-variant);
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-range-slider--label-size, var(--sf-text-size-1\/2));
+  font-variant-numeric: tabular-nums;
+  line-height: var(--sf-range-slider--label-height, var(--sf-text-height-1\/2));
+  position: relative;
+}
+
+.sf-range-slider-scale-mark {
+  display: flex;
+  inline-size: 0;
+  inset-block-start: 0;
+  justify-content: center;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.sf-range-slider-scale-mark--start {
+  justify-content: flex-start;
+}
+
+.sf-range-slider-scale-mark--end {
+  justify-content: flex-end;
 }
 }

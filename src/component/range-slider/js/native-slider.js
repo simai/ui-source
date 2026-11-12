@@ -22,6 +22,10 @@ export function roundToDigits(value, digits) {
   return Object.is(rounded, -0) ? 0 : rounded;
 }
 
+function span(range) {
+  return range.max - range.min;
+}
+
 function createNode(tag, className) {
   const node = document.createElement(tag);
   node.className = className;
@@ -54,6 +58,18 @@ export function createNativeSlider(root, options) {
   connects.append(connect);
   base.append(track, connects);
   root.append(base);
+  // Ticks T1 (C80): a dot per step, at most twenty, over the rail and the fill.
+  const tickCount = span(range) / step;
+  if (options.ticks && Number.isFinite(tickCount) && tickCount >= 1 && tickCount <= 20) {
+    const ticks = createNode('div', 'sf-range-slider-ticks');
+    ticks.setAttribute('aria-hidden', 'true');
+    for (let index = 0; index <= Math.floor(tickCount + 1e-9); index += 1) {
+      const tick = createNode('span', 'sf-range-slider-tick');
+      tick.style.insetInlineStart = `${Math.min(100, (index * step / span(range)) * 100)}%`;
+      ticks.append(tick);
+    }
+    base.append(ticks);
+  }
 
   const handles = values.map((value, index) => {
     const origin = createNode('div', classes.origin);

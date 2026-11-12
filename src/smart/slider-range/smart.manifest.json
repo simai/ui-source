@@ -67,6 +67,21 @@
         "type": "number",
         "description": "How far PageUp, PageDown and Shift with an arrow move a handle; ten steps when empty, as sf-input-quantity."
       },
+      "ticks": {
+        "type": "boolean",
+        "default": false,
+        "description": "A dot per step on the track, when there are at most twenty steps: look T1 (owner decision C80), cut out in the colour of the place the slider stands on."
+      },
+      "scale": {
+        "type": "boolean",
+        "default": false,
+        "description": "Writes the two ends (min and max) under the track, in the slider's language and digits (C78)."
+      },
+      "marks": {
+        "type": "string",
+        "default": "",
+        "description": "Labels under the track at chosen values, \"value:text\" joined by commas (\"1:плохо,3:нормально,5:отлично\"); a value without text writes its number. Replaces the two ends of scale."
+      },
       "margin": {
         "type": "string",
         "default": ""

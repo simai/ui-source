@@ -455,6 +455,7 @@ function createSliderOptions(root) {
       : undefined,
     range: { min, max },
     readonly: isReadonlyRoot(root),
+    ticks: toBoolean(root.getAttribute('data-ticks'), false),
     keyboardSupport:
       !root.hasAttribute('data-keyboard') ||
       toBoolean(root.getAttribute('data-keyboard'), true),

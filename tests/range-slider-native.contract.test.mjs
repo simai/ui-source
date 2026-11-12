@@ -90,3 +90,16 @@ test('read-only: focusable and read out, keys change nothing (C80)', () => {
   assert.equal(instance.get(true), 41);
   assert.equal(handles[0].attrs['aria-readonly'], undefined);
 });
+
+test('ticks T1: a dot per step up to twenty steps, none beyond (C80)', () => {
+  const count = (options) => {
+    const {root} = slider(options);
+    let ticks = 0;
+    const walk = (node) => { if (node.classList.contains('sf-range-slider-tick')) ticks += 1; node.children.forEach(walk); };
+    walk(root);
+    return ticks;
+  };
+  assert.equal(count({range: {min: 0, max: 10}, step: 1, start: [4], ticks: true}), 11);
+  assert.equal(count({range: {min: 0, max: 100}, step: 1, start: [4], ticks: true}), 0);
+  assert.equal(count({range: {min: 0, max: 10}, step: 1, start: [4]}), 0);
+});
