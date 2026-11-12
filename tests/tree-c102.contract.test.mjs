@@ -18,3 +18,23 @@ test('TR-15: the row colours only its own glyphs, never what the row holds', asy
   assert.doesNotMatch(item, /\.sf-tree-item \.sf-icon\s*[,{]/u);
   assert.match(override, /\.sf-tree-item-container > \.sf-tree-node-icon,\s*\.sf-tree-item-container > \.sf-tree-toggle > \.sf-tree-chevron \{\s*--sf-icon--color: var\(--sf-tree-item-icon-color, var\(--sf-tree-item-icon--color, currentColor\)\);/u);
 });
+
+test('NI-2: a level step is never narrower than the chevron slot', async () => {
+  const tree = await read('src/component/tree/scss/_css__tree.scss');
+  assert.match(tree, /--sf-tree--indent: var\(--sf-tree-indent, var\(--sf-tree-item--nested-padding-inline-start, max\(var\(--sf-space-3\), var\(--sf-icon-size-3\)\)\)\);/u);
+  // Both the flat rows and a nested group step by it.
+  assert.match(tree, /margin-inline-start: calc\(\(var\(--sf-tree-level, 1\) - 1\) \* var\(--sf-tree--indent\)\);/u);
+  assert.match(tree, /\.sf-tree > \.sf-tree-item \.sf-tree-group \{\s*padding-inline-start: var\(--sf-tree--indent\);/u);
+  assert.doesNotMatch(tree, /var\(--sf-tree-indent, var\(--sf-tree-item--nested-padding-inline-start, var\(--sf-space-3\)\)\)/u);
+});
+
+test('NI-3: the gap between a row\'s parts has one owner, the tree-item sheet', async () => {
+  const [tree, item] = await Promise.all([
+    read('src/component/tree/scss/_css__tree.scss'),
+    read('src/component/tree-item/scss/_css__tree_item.scss'),
+  ]);
+  const container = tree.match(/\n  \.sf-tree \.sf-tree-item-container \{([\s\S]*?)\n  \}/u)[1];
+  assert.doesNotMatch(container.replace(/\/\*[\s\S]*?\*\//gu, ''), /(^|\s)gap:/u);
+  assert.doesNotMatch(tree, /--sf-tree-item--container-gap/u);
+  assert.match(item, /\.sf-tree-item \.sf-tree-item-container \{\s*gap: var\(--sf-tree-item-gap, var\(--sf-tree-item-container--gap, var\(--sf-space-1\\\/3\)\)\);/u);
+});

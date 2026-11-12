@@ -13,7 +13,7 @@
     "src/component/tree-item/scss/_css__tree_item.scss",
     "src/component/tree-item/scss/index.scss"
   ],
-  "content_sha256": "82e2f28c0cb44341f22d9e091888164248ddc289e2e662e0e49fb7f7cdff1093",
+  "content_sha256": "fe8ec94e7b221c192f83820011b5f816280b45ea1fa44c5c5617f0394a88808b",
   "dependencies": [
     {
       "id": "component.icons",

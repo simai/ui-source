@@ -1,4 +1,6 @@
 @layer sf.components {
+  /* The one owner of the gap between a row's parts, inside a tree and alone
+     (NI-3): the tree sheet no longer sets it. */
   .sf-tree-item .sf-tree-item-container {
     gap: var(--sf-tree-item-gap, var(--sf-tree-item-container--gap, var(--sf-space-1\/3)));
   }
