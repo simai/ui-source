@@ -41,15 +41,16 @@ test('another colour moves the brand palettes and leaves the status ones', () =>
 
 // Information is a status, not the brand (owner, 2026-10-21, simai/ui-source#14):
 // derived from the source colour, info went red under a red primary and read as
-// danger. These are the owner-approved tones of #005bbe, and no brand colour
+// danger. Since C17 as amended 2026-11-11 it is the static hue sky (blue read
+// as the Framework's own primary): these are sky's tones, and no brand colour
 // moves them.
 const INFO_PALETTE = Object.freeze({
-  98: '#f9f9ff', 95: '#edf0ff', 90: '#d7e2ff', 85: '#c2d4ff', 80: '#acc7ff', 70: '#7eabff',
-  60: '#538ff5', 50: '#3375d9', 40: '#005bbe', 35: '#0050a8', 30: '#004492', 25: '#00397c',
-  20: '#002f67', 15: '#002453', 10: '#001a40', 5: '#00102c',
+  98: '#f5faff', 95: '#e3f3ff', 90: '#c4e7ff', 85: '#a2dcff', 80: '#7cd0ff', 70: '#00b7f7',
+  60: '#009bd1', 50: '#0080ad', 40: '#00668a', 35: '#005979', 30: '#004c69', 25: '#004059',
+  20: '#00344a', 15: '#00293b', 10: '#001e2c', 5: '#00131d',
 });
 
-test('info is the fixed palette of #005bbe under every brand colour, and stays far from error', () => {
+test('info is the static hue sky under every brand colour (C17 as amended 2026-11-11), and stays far from error', () => {
   const primaries = {red: '#b3261e', green: '#2e7d32', yellow: '#f9a825', violet: '#6a1b9a', blue: DEFAULT_THEME_COLOR};
   for (const [name, color] of Object.entries(primaries)) {
     const theme = themeFromColor(color);
