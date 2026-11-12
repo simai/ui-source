@@ -163,7 +163,7 @@
 
 .sf-choice .sf-choice-title-text {
   min-inline-size: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* The name stays beside its icon: in a narrow tile with a badge that does not
@@ -172,6 +172,20 @@
    field). Held to the room beside the icon, it wraps there instead. */
 .sf-choice .sf-choice-icon + .sf-choice-title-text {
   max-inline-size: calc(100% - var(--sf-text-height-1) - var(--sf-ui-1--text-space-x));
+}
+
+/* Tile and picture: a word of the name is never broken inside (DEV return of
+   C72, ui-control evidence 2026-11-12-input-choice-c72-r2: the room beside
+   the icon split «Бизнес» into «Бизне / с» in a 154.7 px tile). The name
+   wraps only between words (a space, after a hyphen) and is never narrower
+   than its longest word (the minimum is stronger than the room). So it
+   stays beside the icon while its longest word fits there; when that word
+   does not fit, the arrangement gives way, not the word: the name moves to
+   the line under the icon, whole. On that line of its own it may run under
+   the control, which stands on the name's first line only, as the badge
+   does. */
+.sf-choice:not([data-layout='list']) .sf-choice-title-text {
+  min-inline-size: min-content;
 }
 
 /* Tile and picture: a badge that does not fit beside the name drops under it
