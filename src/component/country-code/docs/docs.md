@@ -14,8 +14,15 @@ Registration: `registerComponent('CountryCode', CountryCode)`
 - Click on `.sf-country-code-item` selects country by `data-iso2`/`data-code`, updates:
   - selected country in root dataset (`data-iso2`, `data-dial-code`, `data-mask-pattern`)
   - left flag placeholder
-  - input value prefix (`+code `)
+  - input value prefix (`+code `), keeping the national digits already typed
   - mask (if enabled)
+- The list opens with a search field (`.sf-country-code-search`) and, without a
+  query, a frequent group above all countries (`.sf-country-code-group[data-group]`).
+- Typing or pasting a number selects the country from its dial code. An erased or
+  unknown code marks the root `.sf-country-code--unknown`. The prefix is locked
+  only for a fixed country or `data-use-mask="true"`.
+- Below the `md` breakpoint the list opens as a bottom sheet
+  (`.sf-country-code-list[data-sf-sheet]`).
 
 ## Global helper
 
@@ -107,6 +114,7 @@ Can be set on `.sf-country-code` (or partly on input):
 - `data-show-mask-placeholder="true|false"`
 - `data-mask-placeholder-char="_"`
 - `data-max-items="50"`
+- `data-preferred="RU,KZ"` (frequent group after the two recent choices; empty adds none, absent uses the locale default)
 
 Country resolution:
 
@@ -177,8 +185,10 @@ The country selector is a named button controlling a single-select listbox.
 Keyboard focus is distinct from selection: ArrowDown/ArrowUp, Home/End and
 typeahead move between enabled options without changing the phone. Enter/Space
 commit once, Escape closes without committing, and both return focus to the
-selector. Tab leaves the list without a focus trap. Opening from the keyboard
-focuses the selected option (or an available boundary when none is selected).
+selector. Tab leaves the list without a focus trap. Opening from the keyboard or
+a click puts the cursor in the search field and scrolls the selected option into
+view; ArrowDown moves from the search to the first visible option and ArrowUp on
+the first option returns to the search.
 The input name comes from its visible text label, not the full outer label
 including country options. Author-provided ARIA names are preserved.
 

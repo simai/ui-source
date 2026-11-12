@@ -17,11 +17,19 @@ const COUNTRY_CODE_TEXT = {
     phoneLabel: 'Phone number',
     phoneRequired: 'Enter a phone number.',
     countryLabel: 'Country code',
+    countryUnknown: 'Country code not recognised. Choose a country',
+    searchPlaceholder: 'Country or code',
+    frequent: 'Frequently chosen',
+    allCountries: 'All countries',
   },
   ru: {
     phoneLabel: 'Телефон',
     phoneRequired: 'Введите номер телефона.',
     countryLabel: 'Код страны',
+    countryUnknown: 'Код страны не узнан. Выбрать страну',
+    searchPlaceholder: 'Страна или код',
+    frequent: 'Часто выбирают',
+    allCountries: 'Все страны',
   },
 };
 
@@ -113,7 +121,12 @@ function syncCountryAccessibility(root) {
   root.querySelectorAll('.sf-country-code-required, .sf-country-code-left .sf-icon').forEach(node => node.setAttribute('aria-hidden', 'true'));
   if (toggle) {
     if (config.multiCountry && config.showCode && list) {
-      setCountryName(toggle, `${countryName}${selected ? `: ${getCountryLabel(selected, config.locale)}` : ''}`);
+      // A code the text does not name (owner C87: the person erased or
+      // retyped it) leaves the flag an empty frame; the button says so.
+      const unknown = root.classList.contains('sf-country-code--unknown');
+      setCountryName(toggle, unknown
+        ? pageText(COUNTRY_CODE_TEXT, 'countryUnknown', root, 'sf-input-country')
+        : `${countryName}${selected ? `: ${getCountryLabel(selected, config.locale)}` : ''}`);
       toggle.setAttribute('role', 'button');
       toggle.setAttribute('aria-haspopup', 'listbox');
       toggle.setAttribute('aria-controls', ensureCountryId(list));
@@ -337,7 +350,8 @@ function extractLocalPart(fullValue, previousDialCode) {
   }
 
   // Fallback: strip leading international prefix like +123 ... and keep user tail.
-  return value.replace(/^\+\d+[\s\-()]*/, '').trim();
+  // A bare «+» counts: the code the person erased (owner C87) leaves «+ 30…».
+  return value.replace(/^\+\d*[\s\-()]*/, '').trim();
 }
 
 function closeAllCountryCodes(except = null) {
@@ -357,7 +371,22 @@ function setOpenState(root, open) {
   // modal or a record panel behind it stands back.
   holdOpenSurfaceMark(root, open);
   syncCountryAccessibility(root);
+  // A closed list forgets its search; an open one is arranged before it is
+  // placed, so the rows it is measured by are the rows it shows.
+  if (!open && root.__sfCountryQuery) {
+    root.__sfCountryQuery = '';
+    const search = root.querySelector('.sf-country-code-search input');
+    if (search) search.value = '';
+  }
+  arrangeCountryList(root);
   root.__sfCountryViewport?.(open);
+  if (open) {
+    // Every way a list opens -- a press, the keyboard, open at connect,
+    // setState -- gives its rows their files. Only the press set them, so a
+    // list drawn open kept empty images (DEV P1, owner R135).
+    prefetchVisibleFlags(root);
+    revealChosenCountry(root);
+  }
 }
 
 function resolveConfig(root, input) {
@@ -392,6 +421,10 @@ function resolveConfig(root, input) {
       root.dataset.maskPlaceholderChar ?? input?.dataset.maskPlaceholderChar ?? '_',
     ),
     maxItems: Number.parseInt(root.dataset.maxItems || input?.dataset.maxItems || '0', 10) || 0,
+    // The countries on top of the list (owner C87): data-preferred="RU,KZ",
+    // an empty one for none; without it the page language's own list.
+    preferred: root.dataset.preferred === undefined ? undefined
+      : String(root.dataset.preferred).split(/[\s,;]+/u).map(normalizeIso2).filter(Boolean),
   };
 }
 
@@ -492,7 +525,20 @@ function prefetchVisibleFlags(root) {
   const { list } = getNodes(root);
   if (!list) return;
   const lazy = root.__sfCountryConfig?.lazyFlags !== false;
-  list.querySelectorAll('img[data-flag-src]').forEach((img) => observeFlagImage(img, lazy));
+  list.querySelectorAll('img[data-flag-src]').forEach((img) => {
+    // A file that does not come draws the emoji, as the field's own flag
+    // does; a row image of the template or of authored markup had no
+    // fallback and stayed a broken picture.
+    if (!img.__sfFlagFallback) {
+      img.__sfFlagFallback = true;
+      img.addEventListener('error', () => {
+        const fallback = img.dataset.flagFallback || '';
+        const holder = img.parentElement;
+        if (holder && fallback) holder.textContent = fallback;
+      }, { once: true });
+    }
+    observeFlagImage(img, lazy);
+  });
 }
 
 // Caps the scrolling rows at `visibleItems` real rows (default 8). The list is
@@ -517,8 +563,18 @@ function bindCountryViewport(root) {
   if (!list || !itemsWrap) return;
   let anchor = null;
   let saved = null;
+  let lower = null;
   root.__sfCountryViewport = open => {
-    if (open && !anchor && root.isConnected) {
+    if (open && !anchor && !lower && root.isConnected && countryListOnPhone()) {
+      // On a phone the list is a sheet at the bottom of the screen, the
+      // screen's width, its rows the sheet's height (owner C87, V4; the
+      // sheet of C32). It is lifted into the top layer and not anchored.
+      saved = ['display', 'flex-direction', 'overflow'].map(name => [name, list.style.getPropertyValue(name), list.style.getPropertyPriority(name)]);
+      Object.assign(list.style, {display: 'flex', flexDirection: 'column', overflow: 'hidden'});
+      list.setAttribute('data-sf-sheet', '');
+      for (const name of ['maxHeight', 'minHeight']) itemsWrap.style[name] = '';
+      lower = positioning().liftToTopLayer?.(list) || (() => {});
+    } else if (open && !anchor && !lower && root.isConnected) {
       saved = ['display', 'flex-direction', 'overflow'].map(name => [name, list.style.getPropertyValue(name), list.style.getPropertyPriority(name)]);
       Object.assign(list.style, {display: 'flex', flexDirection: 'column', overflow: 'hidden'});
       applyDropdownViewport(root);
@@ -530,16 +586,21 @@ function bindCountryViewport(root) {
       // followed the frame and the frame followed the list -- 9.8k px in a
       // documentation example, or squeezed to 16 px with no row in a frame
       // that counts only the list's box (DEV acceptance 2026-11-11, CC-01).
+      // At least the field's width; the list with its search is the panel
+      // step (C32: 20rem) where the field is narrower.
       anchor = positioning().anchor(root, list, {
-        side: 'block-end', align: 'start', matchWidth: true, fitHeight: false,
+        side: 'block-end', align: 'start', matchWidth: 'min', fitHeight: false,
         onPosition: () => {
           const box = root.getBoundingClientRect();
           if (box.bottom <= 0 || box.top >= window.innerHeight) setOpenState(root, false);
         },
       });
-    } else if (!open && anchor) {
-      anchor.stop();
+    } else if (!open && (anchor || lower)) {
+      if (anchor) anchor.stop();
       anchor = null;
+      lower?.();
+      lower = null;
+      list.removeAttribute('data-sf-sheet');
       for (const [name, value, priority] of saved) {
         if (value) list.style.setProperty(name, value, priority);
         else list.style.removeProperty(name);
@@ -549,6 +610,13 @@ function bindCountryViewport(root) {
       anchor.update();
     }
   };
+}
+
+// A phone, by the rule sf-menu-context uses for its sheet: the md breakpoint
+// variable is empty below md.
+function countryListOnPhone() {
+  if (typeof getComputedStyle !== 'function' || typeof document === 'undefined') return false;
+  return !getComputedStyle(document.documentElement).getPropertyValue('--sf-breakpoint-md').trim();
 }
 
 /* Whether a property can be assigned, not merely whether it is there. The two
@@ -657,6 +725,77 @@ function countryFromNumber(root, value) {
   return null;
 }
 
+// The number text names its country (owner C87, variant V4 of ui-control
+// prototypes/phone-country-study.html#r3-variant): the code is the first group
+// of the text and the flag follows it.
+//   «+49 30 123456»     Germany, by the first group;
+//   «+374 50…»          asks for +374, never for +3745;
+//   «+7 7…», «+7 6…»    Kazakhstan; +7 otherwise Russia (countryFromNumber);
+//   «8 9…»              Russia from any country: the trunk 8 becomes +7; a
+//                       lone «8» waits for the next digit;
+//   «903 …» (no «+»)    the current country's code goes in front;
+//   «+ 30 123456»       the code was erased: no country, the number is kept.
+// A code the person has finished gets a space after it, unless a longer code
+// starts with it (+1 and +1242 Bahamas). Digits are never cut.
+// Returns {text, country, wait}; country null is an unknown code.
+function readTypedNumber(root, value, current = null, {deleting = false} = {}) {
+  let text = String(value ?? '');
+  const options = root?.__sfCountryOptions?.length ? root.__sfCountryOptions : COUNTRY_ITEMS;
+  if (!text.trim()) return {text, country: current, wait: false};
+  const digitsOf = (part) => String(part || '').replace(/\D/gu, '');
+  let digits = digitsOf(text);
+  if (!text.trim().startsWith('+')) {
+    if (digits === '8') return {text, country: current, wait: true};
+    const trunk = /^89/u.test(digits) || (current?.dialCode === '+7' && digits.length === 11 && digits[0] === '8');
+    if (trunk) text = text.replace(/^(\s*)8/u, '$1+7');
+    else if (current?.dialCode) text = `${current.dialCode} ${text.trimStart()}`;
+    else text = `+${text.trimStart()}`;
+    digits = digitsOf(text);
+  }
+  if (/^\s*\+(\s|$)/u.test(text) && digits) return {text, country: null, wait: false};
+  const group = text.match(/^\s*\+(\d{1,4})[\s\-()]/u);
+  let country = null;
+  if (group) {
+    const code = `+${group[1]}`;
+    const matches = options.filter((item) => item.dialCode === code);
+    if (current && current.dialCode === code && (digits.length === group[1].length || code !== '+7')) country = current;
+    else if (code === '+7') country = countryFromNumber(root, text);
+    else country = matches.find((item) => item.iso2 === SHARED_DIAL_CODES[code]) || matches[0] || null;
+  } else {
+    country = countryFromNumber(root, text);
+    if (country && current && current.dialCode === country.dialCode && digits.length === digitsOf(country.dialCode).length) country = current;
+  }
+  if (!country || deleting) return {text, country, wait: false};
+  const code = digitsOf(country.dialCode);
+  if (digits.length === code.length) {
+    const longer = options.some((item) => item.dialCode !== country.dialCode && digitsOf(item.dialCode).startsWith(code));
+    if (!longer && !/\s$/u.test(text)) text = `${text.trimEnd()} `;
+  } else if (digits.length > code.length) {
+    // The space after the code: «+79031234567» reads «+7 9031234567».
+    let seen = 0;
+    for (let index = 0; index < text.length; index += 1) {
+      if (!/\d/u.test(text[index])) continue;
+      seen += 1;
+      if (seen === code.length) {
+        if (/\d/u.test(text[index + 1] || '')) text = `${text.slice(0, index + 1)} ${text.slice(index + 1)}`;
+        break;
+      }
+    }
+  }
+  return {text, country, wait: false};
+}
+
+// A code the text does not name: the flag is an empty frame, no row is the
+// chosen one, the number stays as typed (owner C87).
+function markCountryUnknown(root) {
+  if (root.classList.contains('sf-country-code--unknown')) return;
+  root.classList.add('sf-country-code--unknown');
+  root.dataset.iso2 = '';
+  root.dataset.dialCode = '';
+  root.__sfCountrySelected = null;
+  syncCountryAccessibility(root);
+}
+
 function syncDisabledState(root) {
   const { input, toggle } = getNodes(root);
   if (!input) return;
@@ -673,8 +812,13 @@ function syncDisabledState(root) {
   syncCountryAccessibility(root);
 }
 
+// The code is locked in the text only where the person cannot choose another
+// country (fixed-country) or a country mask writes the text (use-mask); in
+// every other field the code is the start of the text the person edits
+// (owner C87, readTypedNumber).
 function getLockedPrefix(root, config) {
   if (!config?.showCode) return '';
+  if (config.multiCountry && !config.useMask) return '';
   const dialCode = String(root?.dataset?.dialCode || '').trim();
   if (!dialCode) return '';
   return `${dialCode} `;
@@ -711,6 +855,8 @@ function applyCountrySelection(root, country, source = 'runtime') {
   root.dataset.iso2 = country.iso2;
   root.dataset.dialCode = country.dialCode;
   root.dataset.maskPattern = country.maskPattern || '';
+  root.classList.remove('sf-country-code--unknown');
+  root.__sfCountryLast = country;
   const maskConfiguration = countryMaskConfiguration.get(root);
   if (maskConfiguration) maskConfiguration.selected = root.dataset.maskPattern;
   root.__sfCountrySelected = country;
@@ -727,6 +873,8 @@ function applyCountrySelection(root, country, source = 'runtime') {
   }
 
   if (source === 'item' || source === 'state') {
+    // The national digits stay when another country is chosen, also from an
+    // erased or half-typed code («+ 30…», «+3 30…»).
     const localPart = extractLocalPart(input.value, previousDialCode);
     // The previous country's mask must not consume events for the new prefix.
     applyMaskForRoot(root, input, '', config);
@@ -747,6 +895,152 @@ function applyCountrySelection(root, country, source = 'runtime') {
   }
   syncCountryAccessibility(root);
   syncCountryRequired(root, input);
+}
+
+// ─── The list: search, «Часто выбирают», the chosen row (owner C87) ─────────
+// The rows stay where the template or the markup put them -- a Lit list must
+// not be reordered under it -- and the list is a flex column, so the order a
+// person sees is the rows' `order`: the frequent ones first under their
+// heading, then «Все страны»; while searching only the matches, best first.
+const RECENT_KEY = 'sf-input-country:recent';
+const RECENT_MAX = 2;
+const FREQUENT_MAX = 6;
+// The product's own list for its audience when it names none (preferred):
+// a Russian page asks for its neighbours first.
+const PREFERRED_BY_LOCALE = {ru: ['RU', 'KZ', 'BY', 'UZ', 'KG', 'AM']};
+
+function readRecentCountries() {
+  try {
+    const list = JSON.parse(globalThis.localStorage?.getItem(RECENT_KEY) || '[]');
+    return Array.isArray(list) ? list.map(normalizeIso2).filter(Boolean).slice(0, RECENT_MAX) : [];
+  } catch {
+    return [];
+  }
+}
+
+function rememberCountry(iso2) {
+  const iso = normalizeIso2(iso2);
+  if (!iso) return;
+  try {
+    globalThis.localStorage?.setItem(RECENT_KEY, JSON.stringify([iso, ...readRecentCountries().filter((code) => code !== iso)].slice(0, RECENT_MAX)));
+  } catch { /* storage refused: a private window keeps no history */ }
+}
+
+// Up to two of the person's last choices, then the product's list, six rows
+// at most; only countries the list has, each once.
+function frequentCountries(config, items) {
+  const present = new Set(items.map((item) => normalizeIso2(item.dataset.iso2)).filter(Boolean));
+  const product = config.preferred ?? PREFERRED_BY_LOCALE[config.locale] ?? [];
+  return [...new Set([...readRecentCountries(), ...product])].filter((iso) => present.has(iso)).slice(0, FREQUENT_MAX);
+}
+
+// How well a row answers a query: its ISO code or its whole dial code first,
+// then a dial code it starts, a name it starts (Russian or English), a word
+// of a name, any part of a name; null is no match.
+function countryMatchRank(item, query) {
+  const q = String(query || '').trim().toLocaleLowerCase();
+  if (!q) return 0;
+  const iso = normalizeIso2(item.dataset.iso2).toLowerCase();
+  const code = String(item.dataset.code || '').replace(/\D/gu, '');
+  const known = getCountryByIso2(iso) || {};
+  const shown = (item.querySelector(':scope > span')?.textContent || item.textContent).trim()
+    .replace(/\s*\(\+?[\d\s-]*\)\s*$/u, '').toLocaleLowerCase();
+  const names = [shown, known.nameRu, known.nameEn].filter(Boolean).map((name) => String(name).toLocaleLowerCase());
+  const digits = q.replace(/\D/gu, '');
+  if (iso && q === iso) return 1;
+  if (/^\+?[\d\s]+$/u.test(q) && digits) {
+    if (code === digits) return 1;
+    return code.startsWith(digits) ? 2 : null;
+  }
+  if (names.some((name) => name.startsWith(q))) return 3;
+  if (names.some((name) => name.split(/[\s-]+/u).some((word) => word.startsWith(q)))) return 4;
+  if (names.some((name) => name.includes(q))) return 5;
+  return null;
+}
+
+function ensureCountryGroups(itemsWrap) {
+  const heads = {};
+  for (const kind of ['frequent', 'all']) {
+    let head = itemsWrap.querySelector(`:scope > .sf-country-code-group[data-group="${kind}"]`);
+    if (!head) {
+      head = document.createElement('span');
+      head.className = 'sf-country-code-group';
+      head.dataset.group = kind;
+      head.setAttribute('role', 'presentation');
+      itemsWrap.append(head);
+    }
+    heads[kind] = head;
+  }
+  return heads;
+}
+
+function arrangeCountryList(root) {
+  const { itemsWrap, items } = getNodes(root);
+  const config = root?.__sfCountryConfig;
+  if (!itemsWrap || !config?.multiCountry || !config.showCode) return;
+  const query = root.__sfCountryQuery || '';
+  const frequent = query ? [] : frequentCountries(config, items);
+  const heads = ensureCountryGroups(itemsWrap);
+  heads.frequent.textContent = pageText(COUNTRY_CODE_TEXT, 'frequent', root, 'sf-input-country');
+  heads.all.textContent = pageText(COUNTRY_CODE_TEXT, 'allCountries', root, 'sf-input-country');
+  heads.frequent.hidden = heads.all.hidden = !frequent.length;
+  heads.frequent.style.order = '0';
+  heads.all.style.order = String(FREQUENT_MAX + 1);
+  for (const item of items) {
+    const at = frequent.indexOf(normalizeIso2(item.dataset.iso2));
+    const rank = query ? countryMatchRank(item, query) : 0;
+    item.hidden = rank === null;
+    if (at >= 0) item.dataset.group = 'frequent';
+    else delete item.dataset.group;
+    item.style.order = query ? String(rank ?? 0) : String(at >= 0 ? at + 1 : FREQUENT_MAX + 2);
+  }
+}
+
+// The rows in the order a person sees them.
+function visibleCountryItems(items) {
+  return items.filter((item) => !item.hidden)
+    .map((item, index) => [Number(item.style.order) || 0, index, item])
+    .sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(([, , item]) => item);
+}
+
+// The list opens on the chosen country, not at its top.
+function revealChosenCountry(root) {
+  const { itemsWrap, items } = getNodes(root);
+  const chosen = items.find((item) => item.getAttribute('aria-selected') === 'true' && !item.hidden);
+  if (!itemsWrap || !chosen) return;
+  const box = itemsWrap.getBoundingClientRect(), row = chosen.getBoundingClientRect();
+  if (row.top >= box.top && row.bottom <= box.bottom) return;
+  itemsWrap.scrollTo({ top: itemsWrap.scrollTop + row.top - box.top - (itemsWrap.clientHeight - row.height) / 2, behavior: 'instant' });
+}
+
+// The search header of the list (C06, as sf-dropdown's): a span, not a label
+// -- the root is the label of the phone input -- with the search glyph and
+// the field.
+function ensureCountrySearch(root, config) {
+  const { list, itemsWrap } = getNodes(root);
+  if (!list || !itemsWrap || !config.multiCountry || !config.showCode) return null;
+  let head = list.querySelector(':scope > .sf-country-code-search');
+  if (!head) {
+    head = document.createElement('span');
+    head.className = 'sf-country-code-search';
+    const icon = document.createElement('i');
+    icon.className = 'sf-icon';
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = 'search';
+    const field = document.createElement('input');
+    field.type = 'search';
+    field.autocomplete = 'off';
+    field.spellcheck = false;
+    field.setAttribute('enterkeyhint', 'search');
+    head.append(icon, field);
+    list.insertBefore(head, list.firstChild);
+  }
+  const field = head.querySelector('input');
+  const word = pageText(COUNTRY_CODE_TEXT, 'searchPlaceholder', root, 'sf-input-country');
+  field.placeholder = word;
+  field.setAttribute('aria-label', word);
+  field.setAttribute('aria-controls', ensureCountryId(itemsWrap));
+  return field;
 }
 
 function bindCountryCode(root, { resetCountry = false, countries, maskPattern } = {}) {
@@ -779,6 +1073,8 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
     ? items.map(item => readCountryItem(item, config.locale))
     : normalizeCountriesList(countries, config.locale, config.maxItems);
 
+  const search = ensureCountrySearch(root, config);
+
   if (!config.showCode && toggle) {
     toggle.classList.add('hidden');
   } else if (toggle) {
@@ -804,6 +1100,9 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
     leftFlag.textContent = '';
   }
 
+  // Opened by the person, the cursor goes to the search (owner C87); a list
+  // opened by markup or from code takes no focus.
+  const focusSearch = () => search?.focus({ preventScroll: true });
   const onToggleClick = (event) => {
     event.preventDefault();
     if (!config.multiCountry || input.disabled || root.classList.contains('disabled')) return;
@@ -812,6 +1111,7 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
     setOpenState(root, willOpen);
     if (willOpen) {
       prefetchVisibleFlags(root);
+      focusSearch();
     }
   };
 
@@ -820,12 +1120,13 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       onToggleClick(event);
-      if (root.classList.contains('open')) focusItem();
+      if (root.classList.contains('open') && !search) focusItem();
     }
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
       if (!root.classList.contains('open')) onToggleClick(event);
-      focusItem(event.key === 'ArrowUp' ? -1 : undefined);
+      if (search) focusSearch();
+      else focusItem(event.key === 'ArrowUp' ? -1 : undefined);
     }
     // Escape over an open list closes the list and is consumed; it closed the
     // list and then, travelling on, the drawer the field sat in.
@@ -850,13 +1151,14 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
     const selected = readCountryItem(item, config.locale);
     if (!selected) return;
     applyCountrySelection(root, selected, 'item');
+    rememberCountry(selected.iso2);
     setOpenState(root, false);
     // Preserve pointer workflow: after choosing a code, continue typing the phone.
     // Keyboard confirmation returns to the selector instead.
     (event.type === 'keydown' ? toggle : input)?.focus({ preventScroll: true });
   };
 
-  const enabledItems = () => items.filter(item => item.getAttribute('aria-disabled') !== 'true' && !item.classList.contains('disabled') && !item.hidden);
+  const enabledItems = () => visibleCountryItems(items).filter(item => item.getAttribute('aria-disabled') !== 'true' && !item.classList.contains('disabled'));
   const focusItem = (index) => {
     const choices = enabledItems();
     const selectedIndex = choices.findIndex(item => item.getAttribute('aria-selected') === 'true');
@@ -874,7 +1176,7 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
       else if (option.bottom > box.bottom) wrap.scrollTo({ top: wrap.scrollTop + (option.bottom - box.bottom), behavior: 'instant' });
     }
   };
-  let search = '', searchTime = 0;
+  let typed = '', typedTime = 0;
   const onItemKeydown = (event) => {
     if (event.altKey || event.ctrlKey || event.metaKey || input.disabled || root.classList.contains('disabled')) return;
     const choices = enabledItems(), current = choices.indexOf(event.currentTarget);
@@ -882,6 +1184,9 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
       event.preventDefault(); event.stopPropagation(); setOpenState(root, false); toggle?.focus({ preventScroll: true }); return;
     }
     if (event.key === 'Enter' || event.key === ' ') { onItemClick(event); return; }
+    if (event.key === 'ArrowUp' && current === 0 && search) {
+      event.preventDefault(); focusSearch(); return;
+    }
     if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
       event.preventDefault();
       const index = event.key === 'Home' ? 0 : event.key === 'End' ? choices.length - 1 : Math.max(0, current + (event.key === 'ArrowDown' ? 1 : -1));
@@ -889,9 +1194,9 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
     }
     if (event.key.length === 1) {
       const now = performance.now();
-      search = now - searchTime > 700 ? event.key : search + event.key;
-      searchTime = now;
-      const query = [...search].every(char => char === search[0]) ? search[0] : search;
+      typed = now - typedTime > 700 ? event.key : typed + event.key;
+      typedTime = now;
+      const query = [...typed].every(char => char === typed[0]) ? typed[0] : typed;
       const ordered = [...choices.slice(current + 1), ...choices.slice(0, current + 1)];
       const found = ordered.find(item => (item.querySelector('span')?.textContent || item.textContent).trim().toLocaleLowerCase().startsWith(query.toLocaleLowerCase()));
       if (found) { event.preventDefault(); focusItem(choices.indexOf(found)); }
@@ -901,13 +1206,50 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
     if (!root.contains(event.relatedTarget)) setOpenState(root, false);
   };
 
-  const onInput = () => {
-    enforceDialCodePrefix(root, input, config);
-    keepCaretAfterPrefix(input, getLockedPrefix(root, config));
+  const onInput = (event) => {
+    if (getLockedPrefix(root, config) || !config.showCode || !config.multiCountry) {
+      enforceDialCodePrefix(root, input, config);
+      keepCaretAfterPrefix(input, getLockedPrefix(root, config));
+      syncCountryRequired(root, input);
+      return;
+    }
+    // The text decides the country (owner C87, readTypedNumber).
+    const deleting = /^delete/u.test(event?.inputType || '');
+    const before = input.value;
+    const read = readTypedNumber(root, before, root.__sfCountryLast || root.__sfCountrySelected || null, {deleting});
+    if (read.text !== before) {
+      const caret = input.selectionStart ?? before.length;
+      const atEnd = caret >= before.length;
+      input.value = read.text;
+      const at = atEnd ? read.text.length : Math.max(0, caret + read.text.length - before.length);
+      if (document.activeElement === input) input.setSelectionRange(at, at);
+    }
+    if (!read.wait && before.trim()) {
+      if (read.country) {
+        if (read.country !== root.__sfCountrySelected) applyCountrySelection(root, read.country, 'text');
+        else root.classList.remove('sf-country-code--unknown');
+      } else {
+        markCountryUnknown(root);
+      }
+    }
     syncCountryRequired(root, input);
   };
 
-  const onPaste = () => {
+  const onPaste = (event) => {
+    if (!getLockedPrefix(root, config) && config.showCode && config.multiCountry) {
+      // A whole number pasted -- «+49 30 123456», «8 903 123-45-67» -- takes
+      // the field's place; digits alone go where the caret is. The input
+      // event that follows reads it.
+      const text = event.clipboardData?.getData('text') ?? '';
+      if (!text.trim()) return;
+      const whole = /^\s*\+/u.test(text) || text.replace(/\D/gu, '').length >= 10;
+      if (whole) {
+        event.preventDefault();
+        input.value = text.trim();
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      return;
+    }
     requestAnimationFrame(() => {
       enforceDialCodePrefix(root, input, config);
       keepCaretAfterPrefix(input, getLockedPrefix(root, config));
@@ -946,6 +1288,41 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
     toggle.setAttribute('role', 'button');
   }
 
+  const onSearchInput = () => {
+    root.__sfCountryQuery = search.value;
+    arrangeCountryList(root);
+    nodes.itemsWrap?.scrollTo({ top: 0, behavior: 'instant' });
+  };
+  const onSearchKeydown = (event) => {
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.key === 'ArrowDown') { event.preventDefault(); focusItem(0); return; }
+    if (event.key === 'Enter') {
+      // Enter takes the best match, and never submits the form.
+      event.preventDefault();
+      const first = enabledItems()[0];
+      if (root.__sfCountryQuery && first) onItemClick({type: 'keydown', currentTarget: first, preventDefault() {}});
+      return;
+    }
+    if (event.key === 'Escape') {
+      event.preventDefault(); event.stopPropagation(); setOpenState(root, false); toggle?.focus({ preventScroll: true });
+    }
+  };
+  // The root is the phone input's label: a press on the search glyph would
+  // move the cursor to the number.
+  const onSearchHeadClick = (event) => {
+    if (event.target !== search) { event.preventDefault(); focusSearch(); }
+  };
+  if (search) {
+    search.addEventListener('input', onSearchInput);
+    search.addEventListener('keydown', onSearchKeydown);
+    search.parentElement?.addEventListener('click', onSearchHeadClick);
+    root.__sfCountrySearchListeners = () => {
+      search.removeEventListener('input', onSearchInput);
+      search.removeEventListener('keydown', onSearchKeydown);
+      search.parentElement?.removeEventListener('click', onSearchHeadClick);
+    };
+  }
+
   input.addEventListener('input', onInput);
   input.addEventListener('paste', onPaste);
   input.addEventListener('keydown', onKeydownInput);
@@ -976,7 +1353,10 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
   root.__sfCountryRequiredObserver.observe(root, { attributes: true, attributeFilter: ['required', 'aria-label', 'aria-labelledby', 'aria-describedby', 'id'], childList: true, characterData: true, subtree: true });
   root.dataset[COUNTRY_CODE_BOUND_FLAG] = '1';
   syncDisabledState(root);
-  root.__sfCountryViewport?.(root.classList.contains('open'));
+  // Drawn open (the class open, the element's open): the same open path as a
+  // press, without the focus.
+  if (root.classList.contains('open')) setOpenState(root, true);
+  else root.__sfCountryViewport?.(false);
 }
 
 function unbindCountryCode(root) {
@@ -1019,7 +1399,11 @@ function unbindCountryCode(root) {
   if (root.__sfCountryMask) {
     window.SF?.Mask?.destroy?.(root.__sfCountryMask);
   }
+  root.__sfCountrySearchListeners?.();
 
+  delete root.__sfCountrySearchListeners;
+  delete root.__sfCountryQuery;
+  delete root.__sfCountryLast;
   delete root.__sfCountryCodeToggleClick;
   delete root.__sfCountryCodeToggleKeydown;
   delete root.__sfCountryCodeDocClick;
@@ -1118,6 +1502,7 @@ class CountryCode extends ComponentObserver {
       showMaskPlaceholder = false,
       maskPlaceholderChar = '_',
       maxItems = 0,
+      preferred,
     } = this.params || {};
 
     const className = this.attrs.class || this.attrs.className;
@@ -1147,6 +1532,7 @@ class CountryCode extends ComponentObserver {
     if (maskPattern) this.template.dataset.maskPattern = String(maskPattern);
     if (flagBase) this.template.dataset.flagBase = String(flagBase).replace(/\/$/, '');
     if (Number(maxItems) > 0) this.template.dataset.maxItems = String(Number(maxItems));
+    if (preferred !== undefined) this.template.dataset.preferred = Array.isArray(preferred) ? preferred.join(',') : String(preferred);
 
     const labelWrap = document.createElement('span');
     labelWrap.classList.add('sf-country-code-label');
@@ -1174,8 +1560,9 @@ class CountryCode extends ComponentObserver {
     flag.setAttribute('aria-hidden', 'true');
 
     const icon = document.createElement('i');
-    icon.classList.add('sf-icon');
-    icon.textContent = toBoolean(open) ? 'expand_less' : 'expand_more';
+    icon.classList.add('sf-icon', 'sf-country-code-caret');
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = 'arrow_drop_down';
     left.append(flag, icon);
 
     const input = document.createElement('input');

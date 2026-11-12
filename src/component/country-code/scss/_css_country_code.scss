@@ -185,8 +185,8 @@
 
 .sf-country-code.sf-country-code--size-1 .sf-country-code-field {
   --sf-country-code-field--padding-bottom: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px));
-  --sf-country-code-field--padding-inline-end: var(--sf-ui-1--space-x);
-  --sf-country-code-field--padding-inline-start: var(--sf-ui-1--space-x);
+  --sf-country-code-field--padding-inline-end: calc(var(--sf-country-code--inset) - var(--sf-px));
+  --sf-country-code-field--padding-inline-start: calc(var(--sf-country-code--inset) - var(--sf-px));
   --sf-country-code-field--padding-top: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px));
 }
 
@@ -199,8 +199,8 @@
    field beside it (it was 2px taller at every size). */
 .sf-country-code.sf-country-code--size-1 .sf-country-code-flag-icon {
   --sf-country-code-flag-icon--font-size: var(--sf-text-size-6);
-  --sf-country-code-flag-icon--height: calc(var(--sf-text-height-1) * 3 / 4);
-  --sf-country-code-flag-icon--width: calc(var(--sf-text-height-1) * 3 / 4 * 1.4);
+  --sf-country-code-flag-icon--height: var(--sf-country-code--flag-height);
+  --sf-country-code-flag-icon--width: calc(var(--sf-country-code--flag-height) * 1.4);
 }
 
 .sf-country-code.sf-country-code--size-1 .sf-icon {
@@ -210,8 +210,8 @@
 .sf-country-code.sf-country-code--size-1 input {
   --sf-country-code-input--font-size: var(--sf-text-size-1);
   --sf-country-code-input--line-height: var(--sf-text-height-1);
-  --sf-country-code-input--padding-inline-end: var(--sf-ui-1--text-space-x);
-  --sf-country-code-input--padding-inline-start: var(--sf-ui-1--text-space-x);
+  --sf-country-code-input--padding-inline-end: calc(var(--sf-px) * 0);
+  --sf-country-code-input--padding-inline-start: var(--sf-space-1\/4);
 }
 
 .sf-country-code.sf-country-code--size-1 input, .sf-country-code.sf-country-code--size-2 input, .sf-country-code.sf-country-code--size-1\/2 input {
@@ -267,15 +267,15 @@
 
 .sf-country-code.sf-country-code--size-2 .sf-country-code-field {
   --sf-country-code-field--padding-bottom: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px));
-  --sf-country-code-field--padding-inline-end: var(--sf-ui-2--space-x);
-  --sf-country-code-field--padding-inline-start: var(--sf-ui-2--space-x);
+  --sf-country-code-field--padding-inline-end: calc(var(--sf-country-code--inset) - var(--sf-px));
+  --sf-country-code-field--padding-inline-start: calc(var(--sf-country-code--inset) - var(--sf-px));
   --sf-country-code-field--padding-top: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px));
 }
 
 .sf-country-code.sf-country-code--size-2 .sf-country-code-flag-icon {
   --sf-country-code-flag-icon--font-size: var(--sf-text-size-8);
-  --sf-country-code-flag-icon--height: calc(var(--sf-text-height-2) * 3 / 4);
-  --sf-country-code-flag-icon--width: calc(var(--sf-text-height-2) * 3 / 4 * 1.4);
+  --sf-country-code-flag-icon--height: var(--sf-country-code--flag-height);
+  --sf-country-code-flag-icon--width: calc(var(--sf-country-code--flag-height) * 1.4);
 }
 
 .sf-country-code.sf-country-code--size-2 .sf-icon {
@@ -287,8 +287,8 @@
 .sf-country-code.sf-country-code--size-2 input {
   --sf-country-code-input--font-size: var(--sf-text-size-2);
   --sf-country-code-input--line-height: var(--sf-text-height-2);
-  --sf-country-code-input--padding-inline-end: var(--sf-ui-2--text-space-x);
-  --sf-country-code-input--padding-inline-start: var(--sf-ui-2--text-space-x);
+  --sf-country-code-input--padding-inline-end: calc(var(--sf-px) * 0);
+  --sf-country-code-input--padding-inline-start: var(--sf-space-1\/4);
 }
 
 .sf-country-code.sf-country-code--size-2 .sf-country-code-hint {
@@ -323,15 +323,15 @@
 
 .sf-country-code.sf-country-code--size-1\/2 .sf-country-code-field {
   --sf-country-code-field--padding-bottom: calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px));
-  --sf-country-code-field--padding-inline-end: var(--sf-ui-1\/2--space-x);
-  --sf-country-code-field--padding-inline-start: var(--sf-ui-1\/2--space-x);
+  --sf-country-code-field--padding-inline-end: calc(var(--sf-country-code--inset) - var(--sf-px));
+  --sf-country-code-field--padding-inline-start: calc(var(--sf-country-code--inset) - var(--sf-px));
   --sf-country-code-field--padding-top: calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px));
 }
 
 .sf-country-code.sf-country-code--size-1\/2 .sf-country-code-flag-icon {
   --sf-country-code-flag-icon--font-size: var(--sf-text-size-5);
-  --sf-country-code-flag-icon--height: calc(var(--sf-text-height-1\/2) * 3 / 4);
-  --sf-country-code-flag-icon--width: calc(var(--sf-text-height-1\/2) * 3 / 4 * 1.4);
+  --sf-country-code-flag-icon--height: var(--sf-country-code--flag-height);
+  --sf-country-code-flag-icon--width: calc(var(--sf-country-code--flag-height) * 1.4);
 }
 
 .sf-country-code.sf-country-code--size-1\/2 .sf-icon {
@@ -343,8 +343,8 @@
 .sf-country-code.sf-country-code--size-1\/2 input {
   --sf-country-code-input--font-size: var(--sf-text-size-1\/2);
   --sf-country-code-input--line-height: var(--sf-text-height-1\/2);
-  --sf-country-code-input--padding-inline-end: var(--sf-ui-1\/2--text-space-x);
-  --sf-country-code-input--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
+  --sf-country-code-input--padding-inline-end: calc(var(--sf-px) * 0);
+  --sf-country-code-input--padding-inline-start: var(--sf-space-1\/4);
 }
 
 .sf-country-code.sf-country-code--size-1\/2 .sf-country-code-hint {
@@ -422,5 +422,162 @@
   --sf-country-code-list--padding-inline-end: var(--sf-space-1\/3);
   --sf-country-code-list--padding-inline-start: var(--sf-space-1\/3);
   --sf-country-code-list--padding-top: var(--sf-space-1\/3);
+}
+
+/* Owner decision C87 (2026-11-12; ui-control prototypes/phone-country-study.html
+   #r3-variant, V4 with the caret): an ordinary field. The rectangular flag
+   stands on the value inset of C77 -- --sf-space-1/2, --sf-space-1,
+   --sf-space-2 from the outer edge at size 1/2, 1, 2, the border counted in
+   it; 12 on a phone and in compact density at every size -- then a small
+   caret, then the number, whose text starts with the code. The flag is 7:5,
+   12 high at size 1/2 (and wherever the inset is 12), --sf-space-1 high
+   otherwise; the rows of the list draw theirs at the same height. */
+.sf-country-code {
+  --sf-country-code--inset: var(--sf-space-1);
+  --sf-country-code--flag-height: var(--sf-space-1);
+}
+
+.sf-country-code.sf-country-code--size-2 {
+  --sf-country-code--inset: var(--sf-space-2);
+}
+
+.sf-country-code.sf-country-code--size-1\/2 {
+  --sf-country-code--inset: var(--sf-space-1\/2);
+  --sf-country-code--flag-height: var(--sf-country-code--inset);
+}
+
+@media not all and (min-width: 60rem) {
+  .sf-country-code:is(.sf-country-code--size-1\/2, .sf-country-code--size-1, .sf-country-code--size-2) {
+    --sf-country-code--inset: var(--sf-space-1);
+  }
+}
+
+[data-sf-density="compact"] .sf-country-code:is(.sf-country-code--size-1\/2, .sf-country-code--size-1, .sf-country-code--size-2) {
+  --sf-country-code--inset: var(--sf-space-1);
+}
+
+.sf-country-code .sf-country-code-left {
+  gap: 0;
+}
+
+/* The caret: arrow_drop_down in a box of --sf-space-1, at the first text step,
+   in the field's secondary ink; the number starts --sf-space-1/4 after it. */
+.sf-country-code .sf-country-code-left .sf-country-code-caret {
+  --sf-icon--font-size: var(--sf-text-size-1);
+  --sf-icon--height: var(--sf-text-height-1);
+  --sf-icon--width: var(--sf-space-1);
+  --sf-icon--color: var(--sf-on-surface-variant);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* One country only: no caret, the number --sf-space-1/2 after the flag. No
+   code at all (hide-code): the number on the inset. */
+.sf-country-code.sf-country-code--fixed-dial-code .sf-country-code-field input {
+  --sf-country-code-input--padding-inline-start: var(--sf-space-1\/2);
+}
+
+.sf-country-code .sf-country-code-field:has(> .sf-country-code-left.hidden) input {
+  --sf-country-code-input--padding-inline-start: calc(var(--sf-px) * 0);
+}
+
+/* A code the text does not name: the flag's place is an empty frame. */
+.sf-country-code.sf-country-code--unknown .sf-country-code-flag-icon {
+  box-sizing: border-box;
+  border: var(--sf-px) dashed var(--sf-outline);
+  border-radius: var(--sf-radius--ui);
+}
+
+.sf-country-code.sf-country-code--unknown .sf-country-code-flag-icon > * {
+  display: none;
+}
+
+/* The list is the one dropdown standard (C05, C06, C08, C32): at least the
+   field's width and the panel step where the field is narrower, the search as
+   its header, the chosen row filled without a box, the headings of the two
+   groups between the rows. */
+.sf-country-code.open .sf-country-code-list:not([data-sf-sheet]) {
+  inline-size: var(--sf-popup-panel-width);
+  max-inline-size: calc(100vw - 2 * var(--sf-space-1\/2));
+}
+
+.sf-country-code .sf-country-code-search {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: var(--sf-ui-1--text-space-x);
+  block-size: var(--sf-country-code-row--block-size, var(--sf-ui-1--control-height));
+  padding-inline: calc(var(--sf-country-code--inset) - var(--sf-country-code-list--padding-inline-start, 0px));
+  margin-block-end: var(--sf-space-1\/4);
+  border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+}
+
+.sf-country-code .sf-country-code-search .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1);
+  --sf-icon--height: var(--sf-text-height-1);
+  --sf-icon--width: var(--sf-country-code--flag-height);
+  justify-content: center;
+}
+
+.sf-country-code .sf-country-code-search input {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  block-size: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--sf-on-surface);
+  font: inherit;
+  font-size: var(--sf-country-code-item--font-size, var(--sf-text-size-1));
+  line-height: var(--sf-country-code-item--line-height, var(--sf-text-height-1));
+}
+
+.sf-country-code .sf-country-code-search input::placeholder {
+  color: var(--sf-on-surface-variant);
+  opacity: 1;
+}
+
+.sf-country-code .sf-country-code-group {
+  display: block;
+  padding-block: var(--sf-space-1\/4);
+  padding-inline: calc(var(--sf-country-code--inset) - var(--sf-country-code-list--padding-inline-start, 0px));
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-country-code .sf-country-code-group[hidden],
+.sf-country-code .sf-country-code-item[hidden] {
+  display: none;
+}
+
+.sf-country-code .sf-country-code-item[aria-selected="true"] {
+  --sf-country-code-item--background-color: var(--sf-primary-container);
+  --sf-country-code-item--color: var(--sf-on-primary-container);
+  @include places.sf-place-fill(var(--sf-country-code-item--background-color));
+}
+
+/* On a phone a sheet at the bottom of the screen, the screen's width up to
+   the md step, almost its height (the sheet of C32); the rows scroll, the
+   search stays. */
+.sf-country-code .sf-country-code-list[data-sf-sheet] {
+  --sf-country-code-list--box-shadow: var(--sf-shadow-modal);
+  position: fixed;
+  inset: auto 0 0;
+  inline-size: 100%;
+  max-inline-size: var(--sf-h1);
+  block-size: calc(100dvh - var(--sf-space-4));
+  margin-inline: auto;
+  border-start-start-radius: var(--sf-radius--surface);
+  border-start-end-radius: var(--sf-radius--surface);
+  padding-bottom: calc(var(--sf-space-1\/3) + env(safe-area-inset-bottom, var(--sf-a0)));
+}
+
+.sf-country-code.open .sf-country-code-list[data-sf-sheet] .sf-country-code-items {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  max-block-size: none;
 }
 }

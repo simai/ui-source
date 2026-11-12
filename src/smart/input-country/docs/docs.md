@@ -14,8 +14,10 @@ are destroyed. This is consumer ownership, not a guarantee about downloading
 mask creation before its promise resolves.
 
 The shared picker exposes a named button and single-select listbox. Enter/Space
-opens at the selected option, ArrowDown/ArrowUp open or navigate, Home/End move
-to the boundaries, and typing searches country names. Navigation alone does not
+and ArrowDown/ArrowUp open the list with the cursor in its search field and the
+selected option scrolled into view; ArrowDown from the search moves to the first
+visible option, ArrowUp on the first option returns to the search, Home/End move
+to the boundaries, and typing on an option searches country names. Navigation alone does not
 change the number. Enter/Space commit; Escape cancels. Commit and Escape return
 focus to the button. Tab leaves without trapping focus. Disabled options are
 skipped; disabled fields cannot open. Option focus is inset, focus-visible only,
@@ -75,3 +77,35 @@ This does not establish every custom token palette or authored layout override.
 Actual assistive
 technology testing is not replaced by browser role/keyboard checks.
 The manifest lifecycle remains experimental.
+
+## Field and list (C87)
+
+The flag stays in the field as a rectangular image with a small caret beside it;
+the dial code is part of the number text (`+7 903 123 45 67`). Flag, caret and
+the start of the text follow the value inset of the field size (`--sf-space-1/2`,
+`--sf-space-1`, `--sf-space-2`; `--sf-space-1` on a phone and in compact density).
+
+Typing reads the country from the number and never cuts a digit: the first digit
+group gives the code (`+3745` is not read as `+374`), `+7` decides Russia or
+Kazakhstan by the next digit, `8 9…` becomes `+7 9…`, digits without `+` take the
+current country's code, and a space follows a finished code. Erasing the code
+leaves the field without a country: the flag turns into a dashed frame and the
+button is named "Country code not recognised. Choose a country". Pasting a number
+that starts with `+` or has ten or more digits replaces the whole value. With
+`multi-country` and no mask the code is not locked; a fixed country or a mask
+keeps it.
+
+The list is as wide as the popup panel (`--sf-popup-panel-width`), or the field
+when that is wider. It starts with a search field ("Country or code") that finds
+by name, ISO code or dial code; Enter picks the first match and never submits the
+form. Without a query the list shows "Frequently chosen" (the two most recent
+choices kept in `localStorage` under `sf-input-country:recent`, then the
+`preferred` countries) above "All countries". The chosen row is filled, not
+ticked. Picking a country keeps the national digits already typed.
+
+`preferred` is a comma-separated ISO list for the frequent group. Without the
+attribute the Russian locale offers RU, KZ, BY, UZ, KG and AM; an empty value
+adds none (recent choices still show). The group holds six rows at most.
+
+Below the `md` breakpoint the list opens as a bottom sheet over the page instead
+of a dropdown under the field.

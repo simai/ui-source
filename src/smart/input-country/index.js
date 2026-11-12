@@ -187,6 +187,12 @@ class SfCountryCode extends FormField(CountryCodeElement) {
     return String(this.getAttribute('mask-placeholder-char') || '_');
   }
 
+  // The countries on top of the list (owner C87): "RU,KZ,BY". Without the
+  // attribute the page language's own list; an empty one names none.
+  get preferred() {
+    return this.hasAttribute('preferred') ? String(this.getAttribute('preferred') || '') : undefined;
+  }
+
   get maxItems() {
     return Math.trunc(this.getNumberAttr('max-items', 0));
   }
@@ -222,6 +228,7 @@ class SfCountryCode extends FormField(CountryCodeElement) {
       iso2: this.iso2,
       flagBase: this.flagBase,
       maxItems: this.maxItems,
+      preferred: this.preferred,
       // The host is the form control where the browser has ElementInternals,
       // so the inner tel input carries no name (§17.1 item 6); elsewhere it is
       // named and joins the form the host names, as before.

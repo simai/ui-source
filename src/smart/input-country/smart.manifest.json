@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-country",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "title": "Country Code",
   "summary": "A telephone field with a country picker: a button opens a searchable listbox of countries, and the chosen country sets the dial code, flag and, optionally, the input mask of the native tel input.",
   "kind": "smart",
@@ -158,6 +158,11 @@
       "max-items": {
         "type": "number",
         "default": 0
+      },
+      "preferred": {
+        "type": "string",
+        "default": "",
+        "description": "Countries on top of the list under «Frequently chosen», as ISO codes: RU,KZ,BY. Up to two of the person's last choices come first, six rows at most. Without the attribute the page language's own list (a Russian page: RU, KZ, BY, UZ, KG, AM); an empty value names none."
       },
       "value": {
         "type": "string",
