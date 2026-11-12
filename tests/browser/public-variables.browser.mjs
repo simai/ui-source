@@ -108,10 +108,17 @@ const DRAW = {
   'file-download': {css: ['icons', 'download-file'], js: 'file-download',
     html: '<sf-file-download file-name="Отчёт.pdf" file-size="2 МБ" href="#"></sf-file-download>'},
   'copy-button': {css: ['icon-buttons', 'icons', 'smart/smart/button-copy/css/button-copy.css'], js: 'button-copy',
-    html: '<sf-button-copy value="a" label="Копировать" duration="60000"></sf-button-copy><sf-button-copy value="b" label="Копировать" duration="60000"></sf-button-copy><sf-button-copy value="c" label="Копировать" duration="60000"></sf-button-copy>',
+    html: '<sf-button-copy value="a" label="Копировать" duration="60000"></sf-button-copy><sf-button-copy value="b" label="Копировать" duration="60000"></sf-button-copy>',
     // Through the action copy (setPhase went with C48, c2c0b936): the page's
-    // clipboard answers at once, and the second has nothing to copy.
-    open: '(async () => { const [, ok, failed] = document.querySelectorAll("sf-button-copy"); if (navigator.clipboard) navigator.clipboard.writeText = async () => {}; failed.removeAttribute("value"); await Promise.all([ok.copy(), failed.copy()]); })()'},
+    // clipboard answers at once, and a copy with nothing to copy is refused.
+    // One result at a time on a page (button-copy return L4, 04028cf0): a
+    // control that shows a result ends the one before it, so a success and a
+    // refusal cannot stand together. Each result is drawn on a page of its own
+    // (`opens`), and a variable passes when one of them takes it.
+    opens: [
+      '(async () => { const [, ok] = document.querySelectorAll("sf-button-copy"); if (navigator.clipboard) navigator.clipboard.writeText = async () => {}; await ok.copy(); })()',
+      '(async () => { const [, failed] = document.querySelectorAll("sf-button-copy"); failed.removeAttribute("value"); await failed.copy(); })()',
+    ]},
   'help-mark': {css: ['icon-buttons', 'icons', 'smart/smart/help-mark/css/help-mark.css'], js: 'help-mark',
     html: '<sf-help-mark id="hm" heading="Заголовок" text="Пояснение"></sf-help-mark>', open: 'document.getElementById("hm").open()'},
   datepicker: {css: ['datepicker', 'buttons', 'icon-buttons'], js: 'input-date',
@@ -349,6 +356,10 @@ try {
   for (const entry of contract.components) {
     const draw = DRAW[entry.component];
     if (!draw) { note({component: entry.component, said: 'no markup in the probe for this component'}); continue; }
+    // `opens`: states that cannot stand together on one page, each drawn on a
+    // page of its own; a variable passes when one of them takes it.
+    let merged = null;
+    for (const open of draw.opens ?? [draw.open]) {
     const page = await browser.newPage({viewport: {width: 1000, height: 700}});
     // core.js added as an inline module cannot work out its own address; every
     // probe that adds it this way sees that one error, and it changes nothing here.
@@ -364,7 +375,7 @@ try {
       await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
     }
     await page.waitForTimeout(700);
-    if (draw.open) { await page.evaluate(draw.open); await page.waitForTimeout(500); }
+    if (open) { await page.evaluate(open); await page.waitForTimeout(500); }
     const measured = await page.evaluate(({selector, variables, roles}) => {
       const roots = [...document.querySelectorAll(selector)];
       if (!roots.length) return {missing: selector};
@@ -390,12 +401,18 @@ try {
       }
       return {answers};
     }, {selector: entry.selector, variables: entry.variables, roles: ROLES});
+    await page.close();
+    if (!merged || measured.missing) merged = measured;
+    else if (merged.answers && measured.answers) {
+      merged.answers = merged.answers.map((answer, at) => ({...answer, ok: answer.ok || measured.answers[at].ok}));
+    }
+    }
+    const measured = merged;
     results[entry.component] = measured;
     if (measured.missing) note({component: entry.component, said: `nothing drawn for ${measured.missing}`});
     for (const answer of measured.answers ?? []) {
       if (!answer.unmeasured && !answer.ok) note({component: entry.component, variable: answer.name, role: answer.role, said: 'no part of the component took the value'});
     }
-    await page.close();
   }
 } finally {
   await browser.close();
