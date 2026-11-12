@@ -50,9 +50,45 @@
 — панель при любой ширине, `none` — никогда. Переход — правило `@media` в
 стилях компонента, поэтому первая отрисовка верна и без скрипта.
 
-Панель открывается у начального края поверх затемнения. Она — слой общего
-стека слоёв Framework, как `sf-drawer` и `sf-modal`: Escape и Tab получает
-только верхний слой, страница не прокручивается, пока панель открыта.
+Панель открывается поверх затемнения с той стороны, где стоит кнопка меню.
+Она — слой общего стека слоёв Framework, как `sf-drawer` и `sf-modal`: Escape
+и Tab получает только верхний слой, страница не прокручивается, пока панель
+открыта. Открытая панель и затемнение — над всей строкой шапки. Кнопка
+закрытия панели стоит на оси кнопки меню, и в широком окне с
+`collapse="always"` тоже.
+
+### Сторона кнопки меню
+
+`menu-placement` — сторона кнопки меню и панели: `inline-start` (по умолчанию)
+— кнопка первой в полосе, панель выезжает от начального края; `inline-end` —
+кнопка последней, после инструментов (поиск, корзина), панель выезжает от
+конечного края. Кнопка и панель всегда с одной стороны; на странице справа
+налево обе отражаются.
+
+```html
+<sf-header-site collapse="md" menu-placement="inline-end">
+  <a slot="brand" href="/">Технопром</a>
+  <sf-menu orientation="horizontal" collapse="none" items='[…]'></sf-menu>
+  <sf-button-icon slot="tools" icon="search" aria-label="Поиск"></sf-button-icon>
+  <sf-button-icon slot="tools" icon="shopping_cart" aria-label="Корзина"></sf-button-icon>
+</sf-header-site>
+```
+
+### Своя кнопка страницы
+
+Панель открывает и кнопка самой страницы, как у `sf-drawer`:
+`data-header-site="toggle"` (или `open`, `close`) и `aria-controls` с `id`
+шапки. Шапка ставит такой кнопке `aria-expanded` и, пока она видна на
+экране, не рисует свою кнопку меню; после закрытия фокус возвращается на неё.
+
+```html
+<sf-header-site id="site-header" collapse="md">
+  <a slot="brand" href="/">Технопром</a>
+  <sf-menu orientation="horizontal" collapse="none" items='[…]'></sf-menu>
+  <sf-button slot="tools" icon-start="menu" text="Каталог"
+    data-header-site="toggle" aria-controls="site-header"></sf-button>
+</sf-header-site>
+```
 
 ## Размер и место
 
