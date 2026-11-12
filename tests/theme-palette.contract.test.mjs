@@ -180,51 +180,67 @@ test('themeChecks says what a person should know about a colour (TG-04)', async 
 
 // TG-01 compatibility until 2027-01-01 (journal option-theme-status-override,
 // property-theme-status-palettes): a status override is ignored, not refused,
-// and the former theme.palettes.<status> reads the static hue; each says so
-// once per call site in the console and in SF.deprecations.
-test('a status override is ignored and a status palette still reads, with one warning per call site (TG-01 compat)', async (t) => {
+// and the former theme.palettes.<status> reads the static hue. Like every
+// compatibility note (contracts/lifecycle-policy.json) each use is in
+// SF.deprecations always, and in the console only when the page opts in.
+test('a status override is ignored and a status palette still reads; noted in SF.deprecations, printed only on opt-in (TG-01 compat)', async (t) => {
   const {STATUS_COMPAT, withStatusCompat} = await import('../src/core/js/theme-palette.js');
   const warnings = [];
   t.mock.method(console, 'warn', (message) => warnings.push(String(message)));
-  globalThis.SF?.deprecations?.clear?.();
+  const notes = () => globalThis.SF.deprecations.list().filter((note) => note.component === 'theme-palette');
   assert.equal(STATUS_COMPAT.remove_after, '2027-01-01');
-
-  // The override: ignored, the theme is the one without it; one warning for this line.
-  const plain = themeFromColor(DEFAULT_THEME_COLOR);
-  const overridden = [];
-  for (let run = 0; run < 3; run += 1) overridden.push(themeFromColor(DEFAULT_THEME_COLOR, {error: {hue: 10}, info: {hue: 200}}));
-  for (const theme of overridden) assert.deepEqual(themeVariables(theme), themeVariables(plain));
-  const optionWarnings = warnings.filter((message) => message.includes('override'));
-  assert.equal(optionWarnings.length, 1, optionWarnings.join('\n'));
-  assert.match(optionWarnings[0], /error, info are ignored/u);
-  assert.match(optionWarnings[0], /staticPalette\(\)\[SF\.ThemePalette\.STATUS_HUES\.<status>\]/u);
-  assert.match(optionWarnings[0], /until 2027-01-01/u);
-  assert.match(optionWarnings[0], /https:\/\/ui\.simai\.io\/ru\/smart-components\/forms\/theme-generator\//u);
-  assert.match(optionWarnings[0], /theme-palette\.contract\.test\.mjs:\d+:\d+/u, 'names the call site');
-  // Another call site warns again.
-  themeFromHct({hue: 265, chroma: 85}, {warning: {chroma: 10}});
-  assert.equal(warnings.filter((message) => message.includes('override')).length, 2);
-
-  // The read: the static hue core draws the status with, read-only and not
-  // enumerable (Object.keys, JSON and the CSS see four palettes).
-  warnings.length = 0;
-  const theme = themeFromColor('#2e7d32');
   const statics = staticPalette();
-  for (let run = 0; run < 3; run += 1) assert.deepEqual(theme.palettes.error.tones, statics.red.tones);
-  assert.deepEqual(theme.palettes.info.tones, statics.sky.tones);
-  assert.deepEqual(Object.keys(theme.palettes), ['primary', 'secondary', 'tertiary', 'neutral']);
-  assert.doesNotMatch(JSON.stringify(theme), /"error"/u);
-  theme.palettes.error.tones[40] = '#000000';
-  assert.deepEqual(theme.palettes.error.tones, statics.red.tones, 'a read gives a copy');
-  const readWarnings = warnings.filter((message) => message.includes('theme.palettes.'));
-  // error read on two lines (the loop and the copy check), info on one.
-  assert.deepEqual(readWarnings.map((message) => message.match(/theme\.palettes\.(\w+)/u)[1]), ['error', 'info', 'error', 'error']);
-  // A copy made for a host (the generator's theme value) keeps the reads.
-  const copied = withStatusCompat(JSON.parse(JSON.stringify(theme)));
-  assert.deepEqual(copied.palettes.success.tones, statics.green.tones);
+  const exercise = () => {
+    const plain = themeFromColor(DEFAULT_THEME_COLOR);
+    for (let run = 0; run < 3; run += 1) {
+      assert.deepEqual(themeVariables(themeFromColor(DEFAULT_THEME_COLOR, {error: {hue: 10}, info: {hue: 200}})), themeVariables(plain));
+    }
+    themeFromHct({hue: 265, chroma: 85}, {warning: {chroma: 10}});
+    const theme = themeFromColor('#2e7d32');
+    for (let run = 0; run < 2; run += 1) assert.deepEqual(theme.palettes.error.tones, statics.red.tones);
+    assert.deepEqual(theme.palettes.info.tones, statics.sky.tones);
+    assert.deepEqual(Object.keys(theme.palettes), ['primary', 'secondary', 'tertiary', 'neutral']);
+    assert.doesNotMatch(JSON.stringify(theme), /"error"/u);
+    theme.palettes.error.tones[40] = '#000000';
+    assert.deepEqual(theme.palettes.error.tones, statics.red.tones, 'a read gives a copy');
+    // A copy made for a host (the generator's theme value) keeps the reads.
+    assert.deepEqual(withStatusCompat(JSON.parse(JSON.stringify(theme))).palettes.success.tones, statics.green.tones);
+  };
 
-  // SF.deprecations has the records, with the dates.
-  const notes = globalThis.SF.deprecations.list().filter((note) => note.component === 'theme-palette');
-  assert.ok(notes.some((note) => note.kind === 'option' && note.remove_after === '2027-01-01'));
-  assert.ok(notes.some((note) => note.kind === 'property' && note.from === 'theme.palettes.error'));
+  // By default: every use is in the list with its dates, nothing is printed.
+  const before = globalThis.SF?.deprecations?.warn;
+  try {
+    globalThis.SF.deprecations.warn = false;
+    globalThis.SF.deprecations.clear();
+    exercise();
+    assert.deepEqual(warnings, []);
+    const listed = Object.fromEntries(notes().map((note) => [`${note.kind} ${note.from}`, note]));
+    assert.deepEqual(Object.keys(listed).sort(), [
+      'option themeFromHct options error, info', 'option themeFromHct options warning',
+      'property theme.palettes.error', 'property theme.palettes.info', 'property theme.palettes.success']);
+    assert.equal(listed['option themeFromHct options error, info'].count, 3);
+    assert.equal(listed['property theme.palettes.error'].count, 4);
+    for (const note of Object.values(listed)) {
+      assert.equal(note.remove_after, '2027-01-01');
+      assert.equal(note.since, '2026-11-12');
+      assert.match(note.to, /staticPalette\(\)\[SF\.ThemePalette\.STATUS_HUES\.<status>\]/u);
+      assert.match(note.to, /https:\/\/ui\.simai\.io\/ru\/smart-components\/forms\/theme-generator\//u);
+    }
+
+    // Opted in: the console says each once, with its date and its replacement.
+    globalThis.SF.deprecations.warn = true;
+    globalThis.SF.deprecations.clear();
+    exercise();
+    assert.equal(warnings.length, 5, warnings.join('\n'));
+    for (const message of warnings) {
+      assert.match(message, /^\[SIMAI Framework\] theme-palette: /u);
+      assert.match(message, /until 2027-01-01/u);
+      assert.match(message, /STATUS_HUES\.<status>/u);
+    }
+    assert.ok(warnings.some((message) => message.includes('themeFromHct options error, info')));
+    assert.ok(warnings.some((message) => message.includes('theme.palettes.error')));
+  } finally {
+    globalThis.SF.deprecations.warn = before;
+    globalThis.SF.deprecations.clear();
+  }
 });

@@ -3060,7 +3060,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/theme-generator/smart.manifest.json",
-      "manifest_sha256": "b43cdd2b82dcb08d035a3b18ae74061615557c5a7e52ec57fe1ab41f66198b77",
+      "manifest_sha256": "a073de3a8085e8c44350ca6cec45590b6cbb6528ab9956f8efad71d564790d49",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

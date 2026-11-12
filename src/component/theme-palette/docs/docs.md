@@ -8,8 +8,9 @@ below, and no theme writes them. Until 2027-01-01 the former shape still
 works with a warning: a status override passed to `themeFromColor` or
 `themeFromHct` (`{error: {...}}`) is ignored, and `theme.palettes.error`
 (`warning`, `success`, `info`) reads the static hue core draws that status
-with -- read-only, not enumerable. Each says so once per call site in the
-console and in `SF.deprecations.list()`; read
+with -- read-only, not enumerable. Each use is listed in
+`SF.deprecations.list()` and printed in the console only when the page opts in
+(`<html data-sf-deprecations="warn">` or `SF.deprecations.warn = true`); read
 `staticPalette()[STATUS_HUES.error]` instead. After that date the override
 throws a `TypeError` and the read is gone.
 

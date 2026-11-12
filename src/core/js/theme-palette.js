@@ -132,36 +132,20 @@ const STATUS_NAMES = Object.freeze(Object.keys(STATUS_HUES));
 
 // The status palettes left the theme on 2026-11-12 (TG-01). Until
 // STATUS_COMPAT.remove_after a status override in the options is ignored and
-// theme.palettes.<status> still reads -- as the static hue core draws it with
-// -- each saying so once per call site in the console and in SF.deprecations
+// theme.palettes.<status> still reads -- as the static hue core draws it with.
+// Each use is noted in SF.deprecations, like every compatibility note
+// (contracts/lifecycle-policy.json): always in the list, in the console only
+// when the page opts in (data-sf-deprecations="warn" or SF.deprecations.warn)
 // (journal option-theme-status-override, property-theme-status-palettes).
 // After that date the override throws and the read is undefined.
 export const STATUS_COMPAT = Object.freeze({since: '2026-11-12', remove_after: '2027-01-01',
   docs: 'https://ui.simai.io/ru/smart-components/forms/theme-generator/'});
-const warnedSites = new Set();
 
-// The first stack frame outside this file: where the caller asked. "This
-// file" is the file of this function's own frame, so it holds in a bundle
-// too (theme-palette.js alone, or inside a component's bundle).
-const frameFile = (line) => line.match(/\(?([^\s()]+?):\d+:\d+\)?$/u)?.[1] ?? '';
-const callSite = () => {
-  const frames = String(new Error().stack ?? '').split('\n').map((line) => line.trim()).filter((line) => /:\d+:\d+\)?$/u.test(line));
-  const own = frameFile(frames[0] ?? '');
-  return frames.find((line) => frameFile(line) !== own) ?? 'unknown';
-};
-
-function warnStatusUse(kind, names) {
+function noteStatusUse(kind, names) {
   const from = kind === 'option' ? `themeFromHct options ${names.join(', ')}` : `theme.palettes.${names.join(', ')}`;
-  noteDeprecated({component: 'theme-palette', kind, from, to: 'staticPalette()[STATUS_HUES.<status>]',
+  noteDeprecated({component: 'theme-palette', kind, from,
+    to: `SF.ThemePalette.staticPalette()[SF.ThemePalette.STATUS_HUES.<status>] (${STATUS_COMPAT.docs})`,
     since: STATUS_COMPAT.since, remove_after: STATUS_COMPAT.remove_after});
-  const site = callSite();
-  const key = `${kind}|${names.join(',')}|${site}`;
-  if (warnedSites.has(key)) return;
-  warnedSites.add(key);
-  const what = kind === 'option'
-    ? `the status palette override${names.length > 1 ? 's' : ''} ${names.join(', ')} ${names.length > 1 ? 'are' : 'is'} ignored`
-    : `theme.palettes.${names[0]} is no longer part of a theme; it reads the static hue ${STATUS_HUES[names[0]]}`;
-  globalThis.console?.warn?.(`[SIMAI Framework] theme-palette: ${what} -- a theme holds primary, secondary, tertiary and neutral only, and core draws error, warning, success and info from the static hues (TG-01). Read SF.ThemePalette.staticPalette()[SF.ThemePalette.STATUS_HUES.<status>]. Compatibility until ${STATUS_COMPAT.remove_after}, then removed. ${STATUS_COMPAT.docs} (at ${site.replace(/^at /u, '')})`);
 }
 
 const compatOpen = (now = new Date()) => now.toISOString().slice(0, 10) <= STATUS_COMPAT.remove_after;
@@ -169,8 +153,8 @@ const compatOpen = (now = new Date()) => now.toISOString().slice(0, 10) <= STATU
 /**
  * The read-only status palettes of the former theme shape, until
  * STATUS_COMPAT.remove_after: theme.palettes.error (and warning, success,
- * info) is the static hue core draws that status with, read with a one-time
- * warning per call site. Not enumerable, so Object.keys, JSON and the CSS
+ * info) is the static hue core draws that status with, each read noted in
+ * SF.deprecations (the console only when the page opts in). Not enumerable, so Object.keys, JSON and the CSS
  * see the four theme palettes only. Returns the theme.
  */
 export function withStatusCompat(theme) {
@@ -182,7 +166,7 @@ export function withStatusCompat(theme) {
       configurable: true,
       enumerable: false,
       get() {
-        warnStatusUse('property', [status]);
+        noteStatusUse('property', [status]);
         const {hue, chroma, tones} = staticPalette()[STATUS_HUES[status]];
         return {hue, chroma, tones: {...tones}};
       },
@@ -242,7 +226,7 @@ export function themeFromHct({hue, chroma} = {}, options = {}) {
   const overridden = STATUS_NAMES.filter((status) => options?.[status] !== undefined);
   if (overridden.length) {
     if (!compatOpen()) throw new TypeError(`${overridden.join(', ')}: a status palette is core's static hue, not a theme's (TG-01)`);
-    warnStatusUse('option', overridden);
+    noteStatusUse('option', overridden);
   }
   const palettes = {};
   for (const name of THEME_PALETTES) {

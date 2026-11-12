@@ -10480,7 +10480,7 @@
     {
       "id": "option-theme-status-override",
       "kind": "option",
-      "summary": "A status palette in the options of themeFromColor or themeFromHct ({error|warning|success|info: {hue, chroma}}) no longer makes a theme palette: the statuses are core's static hues (C17, C90) and a theme holds four palettes (behaviour-theme-writes-no-status-palette). Until remove_after the override is ignored, with one console warning per call site and a note in SF.deprecations (kind option); after it, themeFromHct throws a TypeError.",
+      "summary": "A status palette in the options of themeFromColor or themeFromHct ({error|warning|success|info: {hue, chroma}}) no longer makes a theme palette: the statuses are core's static hues (C17, C90) and a theme holds four palettes (behaviour-theme-writes-no-status-palette). Until remove_after the override is ignored, noted in SF.deprecations (printed in the console only when the page opts in, as every compatibility note) (kind option); after it, themeFromHct throws a TypeError.",
       "items": [
         {
           "component": "theme-palette",
@@ -10505,7 +10505,7 @@
     {
       "id": "property-theme-status-palettes",
       "kind": "property",
-      "summary": "theme.palettes.error, .warning, .success and .info of a theme (themeFromColor, themeFromHct, sf-theme-generator's theme value, toJSON() and detail.theme) are not part of the theme any more (behaviour-theme-writes-no-status-palette). Until remove_after each still reads, read-only and not enumerable, as the static hue core draws that status with (red, amber, green, sky), with one console warning per call site and a note in SF.deprecations (kind property); after it, it is undefined.",
+      "summary": "theme.palettes.error, .warning, .success and .info of a theme (themeFromColor, themeFromHct, sf-theme-generator's theme value, toJSON() and detail.theme) are not part of the theme any more (behaviour-theme-writes-no-status-palette). Until remove_after each still reads, read-only and not enumerable, as the static hue core draws that status with (red, amber, green, sky), noted in SF.deprecations (printed in the console only when the page opts in, as every compatibility note) (kind property); after it, it is undefined.",
       "items": [
         {
           "component": "theme-palette",
