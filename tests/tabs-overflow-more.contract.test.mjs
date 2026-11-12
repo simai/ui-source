@@ -48,7 +48,18 @@ test('the row is laid out again when the trigger, a late tab or the text face ch
   assert.match(source, /this\._resizeObserver\.observe\(trigger\);/u);
   assert.match(source, /document\.fonts\.addEventListener\('loadingdone', this\._fontsListener\);/u);
   assert.match(source, /removeEventListener\?\.\('loadingdone', this\._fontsListener\)/u);
-  assert.match(source, /this\.syncTabSemantics\(\);\s*\/\/ A tab drawn after the row was laid out has its width only now\.\s*this\.scheduleOverflow\(\);/u);
+  assert.match(source, /this\.syncTabSemantics\(\);\s*\/\/ A tab drawn after the row was laid out has its width only now;[^]*?this\.observeTabBoxes\(\);\s*this\.scheduleOverflow\(\);/u);
+});
+
+// C54 D3 (2026-11-12, ui-control evidence 2026-11-12-tabs-d3-d4): the first
+// frame showed every tab clipped. A resize, the first observation included, is
+// laid out in the observer's callback, before the paint, and each tab's box is
+// watched, so a late sheet or text face is laid out before its frame is painted.
+test('the row is laid out before the paint: in the resize observer, with every tab box watched', () => {
+  assert.match(source, /new ResizeObserver\(\(\) => this\.layoutOverflowNow\(\)\)/u);
+  assert.match(source, /layoutOverflowNow\(\) \{\s*if \(this\._overflowFrame\) \{\s*cancelAnimationFrame\(this\._overflowFrame\);/u);
+  assert.match(source, /observeTabBoxes\(\) \{/u);
+  assert.match(source, /this\._resizeObserver\.disconnect\(\);\s*this\._observedTrigger = null;\s*this\._observedTabs = null;/u);
 });
 
 // C54 return (2026-11-11), measured by ui-control evidence 2026-11-11-tabs-overflow-r2.
@@ -64,7 +75,10 @@ test('a pinned tab gives way to the current one, and only a lone current tab is 
 
 test('the row is laid out with the width «Ещё (n)» will have with its new count', () => {
   const layout = source.slice(source.indexOf('  layoutOverflow() {'), source.indexOf('  async openMore(anchor) {'));
-  assert.match(layout, /const extra = measure\(label\(count\)\) - drawn;/u);
+  // widthOfText, not measure: the bare word asks the Loader for the
+  // text-max-width utility (class measure) the tabs never write.
+  assert.match(layout, /const extra = widthOfText\(label\(count\)\) - drawn;/u);
+  assert.doesNotMatch(layout, /\bmeasure\b/u);
   assert.match(layout, /if \(hosts\.length - chosen\.length === count\) kept = chosen;/u);
   assert.match(layout, /kept \?\?= choose\(free - Math\.max\(\.\.\.besides\)\);/u);
   assert.match(source, /function textWidth\(element\) \{/u);

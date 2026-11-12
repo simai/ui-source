@@ -197,14 +197,23 @@ class SfTabs extends TabsElement {
     this.addEventListener('click', this.handleRootClick);
     this.addEventListener('keydown', this.handleRootKeyDown);
     this._settings = { order: [], hidden: [] };
+    // A resize is laid out in the observer's own callback, which runs after
+    // the browser's layout and before it paints: the row is never painted as
+    // it stood before the change. Laid out a frame later, the first frame of
+    // every row showed all its tabs clipped (C54 D3): the Smart base defines
+    // its elements in a frame callback, so the tabs and their buttons are
+    // drawn in one, and a layout asked for from there came a frame later,
+    // after a paint.
     this._resizeObserver = typeof ResizeObserver === 'function'
-      ? new ResizeObserver(() => this.scheduleOverflow())
+      ? new ResizeObserver(() => this.layoutOverflowNow())
       : null;
     this.addEventListener('sf-after-render', (event) => {
       // Built-in Smart buttons can finish rendering after their owning Tabs.
       if (event.target !== this && event.target.parentElement === this.tabList) {
         this.syncTabSemantics();
-        // A tab drawn after the row was laid out has its width only now.
+        // A tab drawn after the row was laid out has its width only now; its
+        // box is watched, so the observer lays the row out before the paint.
+        this.observeTabBoxes();
         this.scheduleOverflow();
       }
     });
@@ -246,7 +255,11 @@ class SfTabs extends TabsElement {
     // resize (docs trial 4, 2026-10-15).
     const container = this.tabList?.parentElement;
     if (this._resizeObserver && container && this._observed !== container) {
+      // disconnect() lets every box go: the trigger and the tabs are watched
+      // again below.
       this._resizeObserver.disconnect();
+      this._observedTrigger = null;
+      this._observedTabs = null;
       this._resizeObserver.observe(container);
       this._observed = container;
     }
@@ -261,6 +274,10 @@ class SfTabs extends TabsElement {
       this._resizeObserver.observe(trigger);
       this._observedTrigger = trigger;
     }
+    // A tab's own box: a sheet or a text face arriving later widens the tabs
+    // without resizing the row, and the observer lays the row out again before
+    // that frame is painted.
+    this.observeTabBoxes();
     // The text face arriving later widens every tab without resizing the box.
     if (!this._fontsListener && globalThis.document?.fonts?.addEventListener) {
       this._fontsListener = () => this.scheduleOverflow();
@@ -269,10 +286,32 @@ class SfTabs extends TabsElement {
     this.scheduleOverflow();
   }
 
+  // The drawn box of each tab (its button, or the tab itself), each watched
+  // once; a box gone from the row is let go.
+  observeTabBoxes() {
+    if (!this._resizeObserver) return;
+    const boxes = new Set();
+    for (const element of Array.from(this.tabList?.children || [])) {
+      if (!Number.isInteger(tabIndexOf(element))) continue;
+      const box = (element.matches('sf-button') || isTag(element, 'sf-button-icon'))
+        ? element.querySelector(':scope > button')
+        : element;
+      if (box) boxes.add(box);
+    }
+    this._observedTabs ??= new Set();
+    for (const box of this._observedTabs) {
+      if (!boxes.has(box)) { this._resizeObserver.unobserve(box); this._observedTabs.delete(box); }
+    }
+    for (const box of boxes) {
+      if (!this._observedTabs.has(box)) { this._resizeObserver.observe(box); this._observedTabs.add(box); }
+    }
+  }
+
   disconnectedCallback() {
     this._resizeObserver?.disconnect();
     this._observed = null;
     this._observedTrigger = null;
+    this._observedTabs = null;
     if (this._fontsListener) {
       document.fonts?.removeEventListener?.('loadingdone', this._fontsListener);
       this._fontsListener = null;
@@ -671,6 +710,16 @@ class SfTabs extends TabsElement {
     });
   }
 
+  // Now, in place of the frame asked for: from the resize observer, whose
+  // callback runs before the paint.
+  layoutOverflowNow() {
+    if (this._overflowFrame) {
+      cancelAnimationFrame(this._overflowFrame);
+      this._overflowFrame = 0;
+    }
+    this.layoutOverflow();
+  }
+
   layoutOverflow() {
     const list = this.tabList;
     const more = this.querySelector(':scope > .sf-tabs > .sf-tabs-top-container > .sf-tabs-more');
@@ -766,13 +815,13 @@ class SfTabs extends TabsElement {
       const free = room();
       const label = (count) => `${this.text('more')} (${count})`;
       const textBox = more?.querySelector(':scope > button .sf-button-text-container');
-      const measure = textBox ? textWidth(textBox) : null;
+      const widthOfText = textBox ? textWidth(textBox) : null;
       kept = null;
-      if (measure) {
-        const drawn = measure(textBox.textContent.trim());
+      if (widthOfText) {
+        const drawn = widthOfText(textBox.textContent.trim());
         const besides = [];
         for (let count = 1; count < hosts.length && !kept; count += 1) {
-          const extra = measure(label(count)) - drawn;
+          const extra = widthOfText(label(count)) - drawn;
           besides.push(extra);
           const chosen = choose(free - extra);
           if (hosts.length - chosen.length === count) kept = chosen;
