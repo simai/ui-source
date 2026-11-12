@@ -10401,29 +10401,6 @@
       "source": "src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
     },
     {
-      "id": "behaviour-c17-info-is-sky",
-      "recorded_on": "2026-11-11",
-      "stage": "compat",
-      "kind": "behaviour",
-      "summary": "The information status is the static hue sky, not blue (owner decision C17 as amended 2026-11-11: blue reads as the Framework's own primary, #005bbe). Every --sf-info-<tone> primitive (and its translucent steps) is var() of --sf-sky-<tone>, and theme-palette.js STATUS_HUES.info is sky, so the info roles (--sf-info, --sf-info-container, --sf-on-info, --sf-on-info-container, --sf-on-info-container-graphic, --sf-info-outline and their states) and every consumer of them -- sf-alert, sf-alert-bar, sf-badge, sf-toast and SF.notify, the notice and the info colour utilities -- draw in sky. No name changes; the values move (tone 40 #005bbe -> #00668a, 80 #acc7ff -> sky 80).",
-      "items": [
-        {
-          "from": "--sf-info-<tone>: var(--sf-blue-<tone>)",
-          "to": "--sf-info-<tone>: var(--sf-sky-<tone>)"
-        },
-        {
-          "from": "STATUS_HUES.info = 'blue'",
-          "to": "STATUS_HUES.info = 'sky'"
-        }
-      ],
-      "deprecated_on": "2026-11-11",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Nothing to rewrite in markup. A site theme written by themeToCss or sf-theme-generator before this pair carries the blue information tones as literal values: make the theme again (or drop its --sf-info-* lines) to take sky. A page that wants an information block in the brand colour uses the primary roles, not info.",
-      "owner": "ui-source",
-      "source": "src/core/scss/_sf_figma_colors_variables.scss, src/core/js/theme-palette.js"
-    },
-    {
       "id": "behaviour-filled-field-bottom-line",
       "recorded_on": "2026-11-11",
       "stage": "compat",
