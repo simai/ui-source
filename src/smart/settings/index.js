@@ -124,7 +124,7 @@ class SfSettings extends SettingsElement {
   }
 
   disconnectedCallback() {
-    this.closePanel({restoreFocus: false, reason: 'api'});
+    this.closePanel({restoreFocus: false, reason: 'api', ask: false});
     this._scrollbar.disconnect();
     document.removeEventListener('click', this._onDocumentClick);
     this.removeEventListener('click', this._onHostClick);
@@ -805,16 +805,20 @@ class SfSettings extends SettingsElement {
 
   // Opens the panel against the control that opened it: anchored in the top
   // layer, a sheet at the bottom on a phone (C106 (8)); the focus goes to the
-  // search, else the first list's stop, else the first control.
+  // search, else the first list's stop, else the first control. The request
+  // goes first, as sf-menu-context's does (open, cancelable; opened once it
+  // is drawn): a listener that prevents it keeps the panel closed. Returns
+  // whether the panel is open.
   async openPanel(anchor) {
-    if (this._open || !anchor) return;
+    if (this._open || !anchor) return false;
+    if (!this.sfEmit('open', {}, {cancelable: true})) return false;
     this._open = {anchor, sheet: false, position: null, returnTo: document.activeElement instanceof HTMLElement && document.activeElement !== document.body
       ? document.activeElement : anchor};
     this.requestComponentUpdate('open');
     await this.whenRendered?.();
     const panel = this.panel;
     const owned = this._open;
-    if (!panel || !owned) return;
+    if (!panel || !owned) return false;
     anchor.setAttribute('aria-expanded', 'true');
     // The density of the control that opened it (C22), where the panel draws.
     owned.density = panel.getAttribute('data-sf-density');
@@ -865,13 +869,21 @@ class SfSettings extends SettingsElement {
     const field = panel.querySelector('[data-sf-search]');
     const stop = panel.querySelector(`.sf-settings-list:not([hidden]) ${ROW}[tabindex="0"]`);
     (field ?? stop ?? focusablesIn(panel)[0])?.focus({preventScroll: true});
+    this.sfEmit('opened', {});
+    return true;
   }
 
   // Closes a popup panel: what it held unapplied is dropped, the search is
   // cleared, the focus goes back to the trigger (not after a press outside).
-  closePanel({restoreFocus = true} = {}) {
+  // As sf-menu-context's close: reason is escape, outside, close (the close
+  // button, the trigger again) or api (Apply, Tab out, a script); a listener
+  // that prevents close keeps the panel open, unsaved says a draft of
+  // apply="button" moved something; closed follows. `ask: false` closes
+  // without asking (the element is leaving the page).
+  closePanel({restoreFocus = true, reason = 'api', ask = true} = {}) {
     const owned = this._open;
     if (!owned) return false;
+    if (ask && !this.sfEmit('close', {reason, unsaved: this.draftMoved()}, {cancelable: true})) return false;
     this._open = null;
     owned.position?.stop();
     window.removeEventListener('resize', owned.onResize);
@@ -889,7 +901,15 @@ class SfSettings extends SettingsElement {
     this._query = '';
     this.requestComponentUpdate('open');
     if (restoreFocus) (owned.returnTo?.isConnected ? owned.returnTo : owned.anchor)?.focus?.({preventScroll: true});
+    this.sfEmit('closed', {reason});
     return true;
+  }
+
+  // Whether the draft of apply="button" holds a value the items do not.
+  draftMoved() {
+    if (!this._draft) return false;
+    const now = valueMap(this.items);
+    return Object.entries(valueMap(this._draft)).some(([id, value]) => !same(now[id], value));
   }
 
   // show(id) in the panel: a popup opens, the tab that holds the setting is
@@ -898,7 +918,7 @@ class SfSettings extends SettingsElement {
     if (this.popup && !this._open) {
       const anchor = this.anchor();
       if (!anchor) return {outcome: 'unavailable', reason: 'no-trigger'};
-      await this.openPanel(anchor);
+      if (!(await this.openPanel(anchor))) return {outcome: 'cancelled'};
     }
     const groups = panelGroups(this.shownItems());
     const at = groups.findIndex((group) => findItem(group.items, id));

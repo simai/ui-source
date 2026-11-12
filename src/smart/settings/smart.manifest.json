@@ -268,6 +268,70 @@
         "properties": {},
         "additionalProperties": true
       }
+    },
+    "sf-settings-open": {
+      "summary": "A popup panel of look=\"panel\" asks to open (its trigger, show): the request, sent before it is drawn. Cancelled, it stays closed. The other looks open their inner sf-menu-context, which sends its own open",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-settings-opened": {
+      "summary": "The popup panel of look=\"panel\" is open and drawn",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-settings-close": {
+      "summary": "The popup panel of look=\"panel\" asks to close: escape, outside (a press outside), close (the close button, the trigger again) or api (Apply, Tab out, a script); unsaved says a draft of apply=\"button\" moved something. Cancelled, it stays open",
+      "payload": {
+        "type": "object",
+        "required": [
+          "reason",
+          "unsaved"
+        ],
+        "properties": {
+          "reason": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          },
+          "unsaved": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-settings-closed": {
+      "summary": "The popup panel of look=\"panel\" is closed",
+      "payload": {
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "properties": {
+          "reason": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
     }
   },
   "state": {
@@ -383,7 +447,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/settings/index.js",
-        "sha256": "6105f0664ec6f726643b852e572dafa582ca4c201cfe650087eece451296579f"
+        "sha256": "f4261eda902175c6ddd0c18b82414d6d58801834aa0f1c2ee974c6574e2ed067"
       },
       {
         "path": "src/smart/settings/js/templates/default.js",
@@ -395,7 +459,7 @@
       },
       {
         "path": "src/smart/settings/docs.md",
-        "sha256": "f8db0d1bdf0fe93c4ae6ef23da568bdb0ecdfb2af6aed1177fcca2895f8f2ca2"
+        "sha256": "a99624256ca6ec64c2c9b899257b5146f920f082cda2e07466afca72e9996609"
       }
     ],
     "generated_runtime": []

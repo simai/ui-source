@@ -186,6 +186,29 @@
       "cancelable": true,
       "own-verb": true,
       "summary": "The declared values are asked back (the reset action): the request. Cancelled, the current values stay"
+    },
+    "open": {
+      "carries": {},
+      "cancelable": true,
+      "summary": "A popup panel of look=\"panel\" asks to open (its trigger, show): the request, sent before it is drawn. Cancelled, it stays closed. The other looks open their inner sf-menu-context, which sends its own open"
+    },
+    "opened": {
+      "carries": {},
+      "summary": "The popup panel of look=\"panel\" is open and drawn"
+    },
+    "close": {
+      "carries": {
+        "reason": {"type": "enum", "values": ["close", "escape", "outside", "cancelled", "api"]},
+        "unsaved": "boolean"
+      },
+      "cancelable": true,
+      "summary": "The popup panel of look=\"panel\" asks to close: escape, outside (a press outside), close (the close button, the trigger again) or api (Apply, Tab out, a script); unsaved says a draft of apply=\"button\" moved something. Cancelled, it stays open"
+    },
+    "closed": {
+      "carries": {
+        "reason": {"type": "enum", "values": ["close", "escape", "outside", "cancelled", "api"]}
+      },
+      "summary": "The popup panel of look=\"panel\" is closed"
     }
   },
   "actions": {
@@ -370,7 +393,8 @@
     "version 1.0.5 (2026-11-09): a patch, nothing drawn or done differently. show reads sf-menu-context's openFor answer as an outcome (sf-menu-context 1.12.2) and still as the boolean an earlier menu gave. Settings, values, events and keys unchanged.",
     "version 1.0.6 (2026-11-10, folded into 1.1.0 in the same pair, never released alone): a patch; nothing in the component changed. Its panels are sf-menu-context, which since 1.14.1 draws the context-menu frame without the late utility classes, so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged.",
     "version 1.1.0 (2026-11-10, owner decision C32, addendum 2026-11-09): the panel's default width is the menu's ceiling of the popup widths, core's --sf-popup-menu-max-width: 18rem (288 px), 16rem (256 px) in compact density. It was 280 px at every density (f7 + a8). --sf-context-menu-inline-size still sets it. Settings, values, events and keys unchanged.",
-    "version 1.2.0 (2026-11-12, owner decision C106, R193; defects DP-1..DP-9 of the dropdown-panels study): a fourth look, panel -- a list's view settings in a panel of this element's own rather than a mode of the action menu: the groups as sections in one scroll by default, as tabs when the panel has a search and a group holds a fields list (more than three groups belong in sf-drawer, the docs say); a new item type fields -- the one row data API for a list of many to check, order and pin, so a product stops drawing its own rows (sf-table-column-option, sf-table-settings-row); a checked field is the theme's light fill (--sf-primary-container) with a check at the inline end, the handle at the row's start, a choice of one the fill alone, a switch row its switch; the hover plate and the inset of C05, the H4 text inset of C77/C105, the popup panel's step of the widths of C32 (--sf-popup-panel-width); one Tab stop per list with the arrows inside, Alt+arrows with a live announcement, a drag by the handle; apply instant (one «Сбросить») or button (a filter: «Сбросить» and «Применить (N)»); search; a sheet at the bottom on a phone. The scroll area follows the inset rule (I on every side; a scrollbar that takes room is I + thumb + I = 14, and the body drops its inline-end padding; no scrollbar-gutter). It has a sheet of its own now (scss/_smart__settings.scss) and the panel's words in lang. The drill, rows and tiles looks are unchanged; view, the name C106 used for the look, is reserved by standard §3.1 (and refused by the runtime), so the panel is a value of look, the setting C106 calls «вид»."
+    "version 1.2.0 (2026-11-12, owner decision C106, R193; defects DP-1..DP-9 of the dropdown-panels study): a fourth look, panel -- a list's view settings in a panel of this element's own rather than a mode of the action menu: the groups as sections in one scroll by default, as tabs when the panel has a search and a group holds a fields list (more than three groups belong in sf-drawer, the docs say); a new item type fields -- the one row data API for a list of many to check, order and pin, so a product stops drawing its own rows (sf-table-column-option, sf-table-settings-row); a checked field is the theme's light fill (--sf-primary-container) with a check at the inline end, the handle at the row's start, a choice of one the fill alone, a switch row its switch; the hover plate and the inset of C05, the H4 text inset of C77/C105, the popup panel's step of the widths of C32 (--sf-popup-panel-width); one Tab stop per list with the arrows inside, Alt+arrows with a live announcement, a drag by the handle; apply instant (one «Сбросить») or button (a filter: «Сбросить» and «Применить (N)»); search; a sheet at the bottom on a phone. The scroll area follows the inset rule (I on every side; a scrollbar that takes room is I + thumb + I = 14, and the body drops its inline-end padding; no scrollbar-gutter). It has a sheet of its own now (scss/_smart__settings.scss) and the panel's words in lang. The drill, rows and tiles looks are unchanged; view, the name C106 used for the look, is reserved by standard §3.1 (and refused by the runtime), so the panel is a value of look, the setting C106 calls «вид».",
+    "version 1.2.0 also carries (2026-11-12, C106 follow-up 6): the popup panel of look=\"panel\" sends sf-menu-context's open/close events under its own tag, with the same names and details: sf-settings-open (cancelable, no detail) before it is drawn, sf-settings-opened when drawn, sf-settings-close (cancelable, {reason: close|escape|outside|api, unsaved}) and sf-settings-closed ({reason}). unsaved is true when a draft of apply=\"button\" holds a value the items do not. A prevented open keeps it closed (show() answers cancelled); a prevented close keeps it open; leaving the page closes without asking. The other looks keep the inner sf-menu-context's events."
   ],
   "x-registry": {
     "capabilities": [

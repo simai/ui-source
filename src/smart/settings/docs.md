@@ -173,6 +173,14 @@ JSON-островом `<script type="application/json" data-sf-settings>{"items"
 | `sf-settings-change` | Человек просит изменить настройку; отменяемое, до записи. `{id, value, previous, item}` |
 | `sf-settings-changed` | Значение записано в настройку, строка его показывает. `{id, value, previous, item}` |
 | `sf-settings-reset` | Просят вернуть объявленные значения; отменяемое |
+| `sf-settings-open` | Всплывающая панель `look="panel"` просит открыться; отменяемое, без данных |
+| `sf-settings-opened` | Панель открыта и нарисована |
+| `sf-settings-close` | Панель просит закрыться; отменяемое. `{reason, unsaved}`: `reason` — `escape`, `outside`, `close` (крестик или кнопка ещё раз), `api` («Применить», Tab наружу, скрипт); `unsaved` — в режиме `apply="button"` есть неприменённые изменения |
+| `sf-settings-closed` | Панель закрыта. `{reason}` |
+
+У видов `drill`, `rows` и `tiles` открытие и закрытие — события вложенного
+`sf-menu-context` (`sf-menu-context-open`, `-opened`, `-close`, `-closed`) с
+теми же данными.
 
 Страница применяет настройку по `sf-settings-changed`. Если значение нужно
 сначала сохранить на сервере, отмените `sf-settings-change` и ответьте

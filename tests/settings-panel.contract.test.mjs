@@ -120,3 +120,24 @@ test('geometry from the systems: the C32 panel step, inset 1/4, H4 row inset, th
   assert.match(source, /this\._scrollbar\.watch\(body, 'sf-settings-panel-body--scrollbar'\)/u);
   assert.doesNotMatch(css.replace(/\/\*[\s\S]*?\*\//gu, ''), /\d+px|\d+rem/u, 'no lengths of its own');
 });
+
+test('the popup panel sends sf-menu-context\'s open/close events: open asks, opened, close asks with reason and unsaved, closed (C106 follow-up 6)', () => {
+  assert.match(source, /if \(!this\.sfEmit\('open', \{\}, \{cancelable: true\}\)\) return false;/u);
+  assert.match(source, /this\.sfEmit\('opened', \{\}\);/u);
+  assert.match(source, /if \(ask && !this\.sfEmit\('close', \{reason, unsaved: this\.draftMoved\(\)\}, \{cancelable: true\}\)\) return false;/u);
+  assert.match(source, /this\.sfEmit\('closed', \{reason\}\);/u);
+  // Leaving the page does not ask; show() answers cancelled when open is prevented.
+  assert.match(source, /this\.closePanel\(\{restoreFocus: false, reason: 'api', ask: false\}\);\n    this\._scrollbar\.disconnect\(\);/u);
+  assert.match(source, /if \(!\(await this\.openPanel\(anchor\)\)\) return \{outcome: 'cancelled'\};/u);
+  // The same names and details as sf-menu-context's.
+  const own = JSON.parse(read('src/smart/settings/component.json')).events;
+  const menu = JSON.parse(read('src/smart/menu-context/component.json')).events;
+  for (const name of ['open', 'opened', 'close', 'closed']) assert.deepEqual(own[name].carries, menu[name].carries, name);
+});
+
+test('the menu\'s panel head chooses a tab on sf-tabs-change and only stops the former sf-tab-change (C106 follow-up 3)', () => {
+  const head = read('src/smart/menu-context/js/templates/default.js');
+  assert.match(head, /@sf-tabs-change=\$\{\(event\) => \{\n\s+event\.stopPropagation\(\);\n\s+context\.component\.chooseTab\(/u);
+  assert.match(head, /@sf-tab-change=\$\{\(event\) => event\.stopPropagation\(\)\}/u);
+  assert.equal((head.match(/chooseTab\(/gu) || []).length, 1);
+});

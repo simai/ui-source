@@ -495,17 +495,21 @@ function renderFooter(context) {
 }
 
 // A panel's head: the tabs, and the way out at its end. It never scrolls --
-// the body under it does (owner, 2026-10-15).
+// the body under it does (owner, 2026-10-15). The tab is chosen on sf-tabs'
+// current event, sf-tabs-change; its former name sf-tab-change, which sf-tabs
+// still sends after it until 2026-12-01, is only kept inside the menu (both
+// stop here, the menu is not a tab strip). Remove that stopper with the alias.
 function renderPanelHead(context) {
     const active = context.activeTab;
     return html`<div class="sf-context-menu-head">
         <sf-tabs class="sf-context-menu-tabs" type="underline" size=${context.size === "1" ? "1" : "1/2"}
                 items=${context.tabs.map((tab) => tab.label).join("|")}
                 active-index=${String(active?.index ?? 0)}
-                @sf-tab-change=${(event) => {
+                @sf-tabs-change=${(event) => {
                     event.stopPropagation();
                     context.component.chooseTab(Number(event.detail?.current ?? 0));
-                }}></sf-tabs>
+                }}
+                @sf-tab-change=${(event) => event.stopPropagation()}></sf-tabs>
         ${context.closable ? html`<sf-button-icon class="sf-context-menu-close" appearance="ghost" scheme="on-surface"
                 size=${context.size === "1" ? "1" : "1/2"} icon="close"
                 aria-label=${context.closeLabel} title=${context.closeLabel}

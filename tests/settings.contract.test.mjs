@@ -23,7 +23,7 @@ const ITEMS = [
   {id: 'night', type: 'switch', text: 'Ночь', value: false},
 ];
 
-test('the manifest: a leaf of family settings with items, look, apply, search, size, for, remember, label; change, changed, reset; four actions', () => {
+test('the manifest: a leaf of family settings with items, look, apply, search, size, for, remember, label; change, changed, reset, open, opened, close, closed; four actions', () => {
   assert.equal(manifest.tag, 'sf-settings');
   assert.equal(manifest.family, 'settings');
   assert.equal(manifest.version, '1.2.0');
@@ -37,7 +37,12 @@ test('the manifest: a leaf of family settings with items, look, apply, search, s
   assert.equal(manifest.settings.search.default, false);
   assert.ok(manifest.settings.items.schema.items.properties.type.enum.includes('fields'));
   assert.deepEqual(manifest.settings.size.values, ['1/2', '1']);
-  assert.deepEqual(Object.keys(manifest.events), ['change', 'changed', 'reset']);
+  // C106 follow-up: the popup panel of look=panel sends sf-menu-context's open/close events.
+  assert.deepEqual(Object.keys(manifest.events), ['change', 'changed', 'reset', 'open', 'opened', 'close', 'closed']);
+  assert.equal(manifest.events.open.cancelable, true);
+  assert.equal(manifest.events.close.cancelable, true);
+  assert.deepEqual(Object.keys(manifest.events.close.carries), ['reason', 'unsaved']);
+  assert.deepEqual(manifest.events.close.carries.reason.values, ['close', 'escape', 'outside', 'cancelled', 'api']);
   assert.equal(manifest.events.change.cancelable, true);
   assert.equal(manifest.events.reset.cancelable, true);
   assert.equal(manifest.events.changed.cancelable, undefined);
