@@ -49,6 +49,42 @@ The mask properties (`mask`, `mask-pattern`, `mask-lazy`,
 `mask-placeholder-char`, `mask-options`) reach the field only where it can be
 typed in, which is what they were always for.
 
+## A period: one field, or two as a recipe
+
+A period is one field: `range` holds the start and the end, and the field
+shows them as «с – по», the two dates with an en dash between spaces
+(`01.09.2026 – 07.09.2026`; owner decision C62). The value is
+`[start-value, end-value]` and the form gets the ISO 8601 interval
+`start/end`.
+
+Two fields -- check-in and check-out, departure and return -- are a recipe,
+not a component: two single-date pickers, the second bound to the first. Each
+is labelled on its own, each submits its own name, and the second cannot end
+before the first starts. With `min-date` set, an empty check-out opens on the
+check-in's month (the calendar opens on today's month held to `min-date`).
+
+```html
+<div class="flex gap-1/2">
+  <sf-input-date id="check-in" name="check_in" label="Заезд"></sf-input-date>
+  <sf-input-date id="check-out" name="check_out" label="Выезд"></sf-input-date>
+</div>
+<script>
+  const checkIn = document.getElementById('check-in');
+  const checkOut = document.getElementById('check-out');
+  checkIn.addEventListener('change', (event) => {
+    const start = event.detail.value; // YYYY-MM-DD, '' when cleared
+    if (start) checkOut.setAttribute('min-date', start);
+    else checkOut.removeAttribute('min-date');
+    // A check-out before the new check-in is cleared, not moved.
+    if (start && checkOut.value && checkOut.value < start) checkOut.value = '';
+  });
+</script>
+```
+
+Use the one field when the period is one thing to the person (a report's
+dates, a filter); use two when each end is a decision of its own and is read
+on its own (a booking).
+
 ## A date and a time, or a time
 
 `mode` says what is chosen:

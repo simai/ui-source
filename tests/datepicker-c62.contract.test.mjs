@@ -50,3 +50,19 @@ test('the grid reads the days off from the setting, not a fixed pair', () => {
   assert.equal(manifest.settings.weekend.default, '');
   assert.match(manifest.settings.weekend.summary, /none/u);
 });
+
+// Point 3: a period is one field «с – по»; two fields are a recipe.
+test('a period is one field with an en dash between spaces', () => {
+  const source = read('src/smart/input-date/index.js');
+  assert.match(source, /const RANGE_SEPARATOR = ' \\u2013 ';/u);
+  assert.match(source, /return `\$\{this\.formattedStartValue\}\$\{RANGE_SEPARATOR\}\$\{this\.formattedEndValue\}`;/u);
+  assert.match(source, /mask \+= `\$\{RANGE_SEPARATOR\}\$\{mask\}`;/u);
+  assert.doesNotMatch(source, /\$\{this\.formattedStartValue\} - \$\{this\.formattedEndValue\}/u, 'no hyphen between the dates');
+  const snapshot = read('src/smart/input-date/static/default/range.html');
+  assert.ok(snapshot.includes('value="01.09.2026 – 07.09.2026"'));
+  assert.ok(!snapshot.includes('2026 - '));
+  const guide = read('src/smart/input-date/docs/smart-datepicker-guide.md');
+  assert.ok(guide.includes('## A period: one field, or two as a recipe'));
+  assert.ok(guide.includes('id="check-in"') && guide.includes('id="check-out"'));
+  assert.ok(guide.includes("checkOut.setAttribute('min-date', start)"));
+});

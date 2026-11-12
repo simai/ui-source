@@ -14,6 +14,9 @@ import ru from './lang/ru.json';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 
 const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
+// Between the two dates of a range in its one field: an en dash with a space
+// on each side, «01.09.2026 – 07.09.2026» (owner decision C62).
+const RANGE_SEPARATOR = ' \u2013 ';
 const YEARS_PAGE_SIZE = 18;
 
 function padDatePart(value) {
@@ -1207,8 +1210,10 @@ class SfDatepicker extends FormField(DatepickerElement) {
             return this.formattedValue;
         }
 
+        // One field, «с – по»: the two dates with an en dash between spaces
+        // (owner decision C62). It was a hyphen, the sign of a compound word.
         if (this.formattedStartValue && this.formattedEndValue) {
-            return `${this.formattedStartValue} - ${this.formattedEndValue}`;
+            return `${this.formattedStartValue}${RANGE_SEPARATOR}${this.formattedEndValue}`;
         }
 
         return this.formattedStartValue || this.formattedEndValue || '';
@@ -1388,7 +1393,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     formatToMask = (format) => {
         let mask = String(format).replace(/[A-Za-z]/g, '0');
         if (this.range) {
-            mask += ` - ${mask}`;
+            mask += `${RANGE_SEPARATOR}${mask}`;
         }
         return mask;
     };

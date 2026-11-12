@@ -742,7 +742,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-date/index.js",
-        "sha256": "adcf996d7a3ec5922aea6b053f0b73d3a7540498d4af237ccd236fa6f3beb3be"
+        "sha256": "81214c3c4b3b693b6bc764b2b713c130b2350a857f45052d4a2015563e09d439"
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",
@@ -754,7 +754,7 @@
       },
       {
         "path": "src/smart/input-date/docs/smart-datepicker-guide.md",
-        "sha256": "2fbf7c287a3921ee3355ce50bb2c178fcd8bf5459de965546496c4f69c25490e"
+        "sha256": "5d405faf71178db9c948473dccdef62c768a216a73bfe7d4a99ad7de5467a9bb"
       }
     ],
     "generated_runtime": [
