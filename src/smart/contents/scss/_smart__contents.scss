@@ -18,10 +18,15 @@
   --sf-contents--current: var(--sf-contents-current-color, var(--sf-primary));
   --sf-contents--line: var(--sf-contents-line-color, var(--sf-outline-variant));
   --sf-contents--indent: var(--sf-contents-indent, var(--sf-space-1\/2));
+  /* The value inset of a list (C77, R191 HS-12): it follows the size's
+     step with a floor of 12 (--sf-b2), as the fields do -- 1/2 is
+     max(--sf-space-1/2, --sf-b2), 12 on the desktop, compact and the phone
+     (where --sf-space-1/2 is 8); 1 is --sf-space-1 (16, compact and phone 12). */
+  --sf-contents--value-inset: max(var(--sf-space-1\/2), var(--sf-b2));
   /* The text's distance from the line (C95 point 1, CT-02): public, so a host
      whose divider is the line sets one value on its column and lines its own
      parts under the contents up with it. */
-  --sf-contents--inset: var(--sf-contents-inset-inline, var(--sf-space-1\/2));
+  --sf-contents--inset: var(--sf-contents-inset-inline, var(--sf-contents--value-inset));
   --sf-contents--top: var(--sf-contents-inset-block-start, var(--sf-space-1));
   display: block;
   box-sizing: border-box;
@@ -48,6 +53,7 @@ sf-contents[data-empty] > .sf-contents {
   --sf-contents--text-height: var(--sf-text-height-1);
   --sf-contents--control-height: var(--sf-ui-1--control-height);
   --sf-contents--space-x: var(--sf-ui-1--space-x);
+  --sf-contents--value-inset: var(--sf-space-1);
 }
 
 .sf-contents-list {
@@ -297,12 +303,12 @@ sf-contents[data-empty] > .sf-contents {
   }
 
   /* A row of the open list is a menu's row: the control height of the size,
-     its inset, the panel's inset given back. */
+     the value inset of the size (C77), the panel's inset given back. */
   .sf-contents-link {
     display: flex;
     align-items: center;
     min-block-size: var(--sf-contents--control-height);
-    padding-inline: calc(var(--sf-contents--space-x) - var(--sf-space-1\/4));
+    padding-inline: calc(var(--sf-contents--value-inset) - var(--sf-space-1\/4));
     color: var(--sf-on-surface);
   }
 

@@ -18,10 +18,11 @@ const generated = JSON.parse(read('src/smart/contents/smart.manifest.json'));
 const journal = JSON.parse(read('contracts/changes/journal.json'));
 const method = (name, next) => source.slice(source.indexOf(`  ${name}`), source.indexOf(`  ${next}`));
 
-// 1.6.0 (C95, tests/contents-c95.contract.test.mjs) keeps every 1.5.0 fix below.
-test('contents is 1.6.0 in its manifest and its generated manifest', () => {
-  assert.equal(manifest.version, '1.6.0');
-  assert.equal(generated.version, '1.6.0');
+// 1.6.0 (C95, tests/contents-c95.contract.test.mjs) and 1.6.1 (C77 HS-12,
+// tests/contents-hs12.contract.test.mjs) keep every 1.5.0 fix below.
+test('contents is 1.6.1 in its manifest and its generated manifest', () => {
+  assert.equal(manifest.version, '1.6.1');
+  assert.equal(generated.version, '1.6.1');
 });
 
 test('CT-03: fewer than two sections draw nothing, by the host state and in the printed markup', () => {

@@ -44,8 +44,12 @@ component's sheet, so the first paint is right before the script arrives.
   padding between them).
 - `none` — no line and no mark; the current section is its ink and weight.
 
-`--sf-contents-inset-inline` (default `--sf-space-1/2`) is the text's distance
-from the line, for the heading and the links. A host sets it once on its
+`--sf-contents-inset-inline` is the text's distance from the line, for the
+heading and the links. Its default is the size's value inset, the one rule of
+fields and lists (C77): size `1/2` is `max(--sf-space-1/2, --sf-b2)`, 12 on the
+desktop, in a compact region and on a phone; size `1` is `--sf-space-1`, 16
+(12 compact and on a phone). The rows of the open compact list stand at the
+same inset. A host sets it once on its
 column, and its own parts under the contents read the same variable:
 
 ```html
@@ -257,7 +261,7 @@ comes after the row in Tab order and opens a menu of the sections it holds. The 
 | `--sf-contents-line-color` | the column's line, the bar's edge, the progress track | `--sf-outline-variant` |
 | `--sf-contents-background-color` | the bar's fill, the sticky compact button's band and the compact view's open list | `--sf-surface-0` / `--sf-elevation-2--surface` |
 | `--sf-contents-indent` | the step of a deeper level | `--sf-space-1/2` |
-| `--sf-contents-inset-inline` | the text's distance from the line (heading and links) | `--sf-space-1/2` |
+| `--sf-contents-inset-inline` | the text's distance from the line (heading and links) | the size's value inset: 1/2 `max(--sf-space-1/2, --sf-b2)`, 1 `--sf-space-1` |
 | `--sf-contents-gap` | the space between the links | `0` (column), `--sf-space-1/2` (rail), `--sf-space-1/4` (bar) |
 | `--sf-contents-inset-block-start` | where the sticky column, rail, bar or compact button stops | `--sf-space-1` |
 | `--sf-contents-z-index` | the bar and the open list above the page | `--sf-z-index-5` |

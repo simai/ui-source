@@ -23,9 +23,9 @@ const badge = JSON.parse(read('src/smart/badge/component.json'));
 const badgeSource = read('src/smart/badge/index.js');
 const method = (name, next) => source.slice(source.indexOf(`  ${name}`), source.indexOf(`  ${next}`));
 
-test('C95 versions: contents 1.6.0, sf-badge 1.5.0, component.badges 1.6.0', () => {
-  assert.equal(manifest.version, '1.6.0');
-  assert.equal(generated.version, '1.6.0');
+test('C95 versions: contents 1.6.x (1.6.1: HS-12), sf-badge 1.5.0, component.badges 1.6.0', () => {
+  assert.match(manifest.version, /^1\.6\.\d+$/u);
+  assert.equal(generated.version, manifest.version);
   assert.equal(badge.version, '1.5.0');
   assert.equal(JSON.parse(read('src/component/badges/passport.json')).version, '1.6.0');
 });
@@ -46,7 +46,8 @@ test('C95.1 CT-01: line="own|edge|none"; edge draws no line and keeps the mark o
 test('C95.1 CT-02: --sf-contents-inset-inline is public and is the text\'s inset in the column', () => {
   assert.ok(manifest['css-variables']['--sf-contents-inset-inline']);
   assert.match(JSON.stringify(variables), /"name":"--sf-contents-inset-inline"/u);
-  assert.match(sheet, /--sf-contents--inset: var\(--sf-contents-inset-inline, var\(--sf-space-1\\\/2\)\);/u);
+  // Its default is the size's value inset since 1.6.1 (C77 HS-12).
+  assert.match(sheet, /--sf-contents--inset: var\(--sf-contents-inset-inline, var\(--sf-contents--value-inset\)\);/u);
   assert.equal((sheet.match(/padding-inline: var\(--sf-contents--inset\) var\(--sf-space-1\\\/2\);/gu) ?? []).length, 2, 'heading and links');
 });
 

@@ -10474,6 +10474,31 @@
       },
       "owner": "ui-source",
       "source": "src/smart/contents/scss/_smart__contents.scss"
+    },
+    {
+      "id": "behaviour-contents-c77-value-inset",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-contents 1.6.1 puts the column's text and the open compact list's rows at the size's value inset, the one rule of fields and lists (owner decision C77, R191 HS-12): size 1/2 max(--sf-space-1/2, --sf-b2), 12 on the desktop, in a compact region and on a phone, where the text stood at 8 on a phone and in a compact region; size 1 --sf-space-1, 16 on the desktop (12 compact and on a phone), where the column took 12. --sf-contents-inset-inline defaults to that inset; a value a host sets is unchanged.",
+      "items": [
+        {
+          "component": "sf-contents",
+          "attribute": "--sf-contents-inset-inline",
+          "from": "var(--sf-space-1/2) at every size (8 on a phone and in a compact region); the open list's rows at --sf-ui-<size>--space-x",
+          "to": "size 1/2 max(var(--sf-space-1/2), var(--sf-b2)) (12 everywhere), size 1 var(--sf-space-1) (16; 12 compact and phone); the open list's rows at the same inset"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite. A page that wants the former 8 on a phone sets --sf-contents-inset-inline on its own column.",
+      "examples": {
+        "before": "<sf-contents target=\"article\"></sf-contents> (390: text 8 from the line)",
+        "after": "<sf-contents target=\"article\"></sf-contents> (390: text 12 from the line)"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/contents/scss/_smart__contents.scss"
     }
   ]
 }
