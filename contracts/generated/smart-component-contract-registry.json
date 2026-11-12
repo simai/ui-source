@@ -2964,6 +2964,7 @@
         "public_parts": [],
         "uses": [
           "component.tabs",
+          "component.tooltip",
           "smart.button",
           "smart.button-icon",
           "smart.checkbox",
@@ -2980,7 +2981,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tabs/smart.manifest.json",
-      "manifest_sha256": "c0538cd9767bf226d8528fb9c2a4ae216e6e0c7839a726924bf34b0cc94b660f",
+      "manifest_sha256": "193da48bae8f8bb732417b5ad270fc44d5503910b0f57087bb03c50fdccd1257",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

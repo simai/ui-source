@@ -13,5 +13,7 @@ SF.RuleLoader['cl-tabs'] = {
     { name: 'cl-menu-context', lazy: true },
     { name: 'cl-sortable', lazy: true },
     { name: 'cl-checkbox', lazy: true },
+    // A tab's hint is the Framework tooltip (component.tooltip), drawn only for an item with a hint.
+    { name: 'tooltip', lazy: true },
   ],
 };

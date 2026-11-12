@@ -62,6 +62,26 @@ function renderPanel(item, context) {
   `;
 }
 
+// A disabled tab stays focusable and says aria-disabled (R184 T9: a native
+// disabled button could not be reached, so nobody learnt why it was off). It
+// is not the native disabled: the tabs' sheet gives the class the disabled
+// look, and a press on it selects nothing.
+function tabClasses(item) {
+  return joinClasses(item.selected ? 'selected' : '', item.disabled ? 'disabled' : '');
+}
+
+// The tooltip of a tab with a hint -- for a disabled tab, why it is off: the
+// Framework's plain tooltip (component.tooltip), named by the tab's
+// data-tooltip, which the tooltip makes the tab's description.
+function hintId(item, context) {
+  return `${context.tabsId}--hint-${item.index}`;
+}
+
+function renderHint(item, context) {
+  return html`<span id=${hintId(item, context)} class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-tabs-hint"
+      hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${item.hint}</span></span></span>`;
+}
+
 function renderTab(item, context) {
   const tabContent = context.component?.hasSlotContent?.(item.tabSlotName)
     ? context.component.getSlotContent(item.tabSlotName)
@@ -108,10 +128,10 @@ function renderTab(item, context) {
                   icon=${item.icon || nothing}
                   icon-start=${item.iconLeft || nothing}
                   icon-end=${item.iconRight || nothing}
-                  root-class=${joinClasses(item.selected ? 'selected' : '')}
+                  root-class=${tabClasses(item)}
                   data-sf-tab-index=${String(item.index)}
                   data-tab=${String(item.index)}
-                  ?disabled=${item.disabled}
+                  data-tooltip=${item.hint ? hintId(item, context) : nothing}
           >
               ${tabContent === nothing ? counted : html`<span slot="text">${tabContent}</span>`}
           </sf-button>
@@ -128,10 +148,10 @@ function renderTab(item, context) {
                   scheme=${context.scheme}
                   icon=${item.iconStart || item.icon || item.iconEnd || nothing}
                   data-tab-label=${item.label}
-                  root-class=${joinClasses(item.selected ? 'selected' : '')}
+                  root-class=${tabClasses(item)}
                   data-sf-tab-index=${String(item.index)}
                   data-tab=${String(item.index)}
-                  ?disabled=${item.disabled}
+                  data-tooltip=${item.hint ? hintId(item, context) : nothing}
           >
           </sf-button-icon>
       `;
@@ -177,6 +197,7 @@ export function renderTabsTemplate(context) {
           ? html`<sf-button class="sf-tabs-more" appearance="ghost" scheme="on-surface" size=${context.size}
                             icon-end="expand_more" text=${context.moreText} aria-haspopup="menu"></sf-button>`
           : nothing}
+        ${(context.displayItems ?? context.items).filter((item) => item.hint).map((item) => renderHint(item, context))}
         ${context.configurable
           ? html`<sf-button-icon class="sf-tabs-settings" appearance="ghost" scheme="on-surface" size=${context.size}
                                  icon="tune" aria-label=${context.customizeText} title=${context.customizeText}

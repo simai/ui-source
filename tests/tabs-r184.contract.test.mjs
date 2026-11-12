@@ -170,3 +170,33 @@ test('T8: lazy panels are drawn when first opened and kept; a panel is a tab sto
   // A part in a panel drawn after the tabs asks again.
   assert.match(source, /closest\?\.\('\[data-sf-tab-panel\]'\)\?\.closest\('sf-tabs'\) === this\) \{[^]*?this\.schedulePanelFocus\(\);/u);
 });
+
+test('T9: a disabled tab is focusable, says aria-disabled, and tells why in a tooltip (hint)', () => {
+  // Not the native disabled: the class, and aria-disabled from syncTabSemantics.
+  for (const tag of ['sf-button', 'sf-button-icon']) {
+    const branch = template.split(`<${tag}\n`)[1].split(`</${tag}>`)[0];
+    assert.doesNotMatch(branch, /\?disabled=/u, `${tag}: no native disabled`);
+    assert.match(branch, /root-class=\$\{tabClasses\(item\)\}/u);
+    assert.match(branch, /data-tooltip=\$\{item\.hint \? hintId\(item, context\) : nothing\}/u);
+  }
+  const classes = new Function('joinClasses', `${template.slice(template.indexOf('function tabClasses'), template.indexOf('// The tooltip of a tab'))}\nreturn tabClasses;`)(
+    (...tokens) => tokens.flat().filter(Boolean).join(' '),
+  );
+  assert.equal(classes({selected: true, disabled: false}), 'selected');
+  assert.equal(classes({selected: false, disabled: true}), 'disabled');
+  assert.match(source, /tab\.setAttribute\('aria-disabled', item\.disabled \? 'true' : 'false'\);/u);
+  // The hint: the Framework's plain tooltip, outside the tablist.
+  assert.match(template, /class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1\/3 sf-tabs-hint"\s*hidden>/u);
+  assert.match(template, /\.filter\(\(item\) => item\.hint\)\.map\(\(item\) => renderHint\(item, context\)\)/u);
+  assert.match(source, /hint: item\.hint \? String\(item\.hint\) : '',/u);
+  assert.deepEqual(manifest.settings.items.of.hint, {type: 'string', optional: true});
+  assert.ok(manifest.relations.some((relation) => relation.name === 'tooltip' && relation.lazy === true));
+  // The tabs' sheet gives .disabled the buttons' disabled values.
+  const sheet = read('src/component/tabs/scss/_css__tabs.scss');
+  assert.match(sheet, /\.sf-tabs-top \.sf-button\.disabled:is\(\.sf-button--default, \.sf-button--tonal\) \{\s*--sf-button--background-color: var\(--sf-disable\);/u);
+  assert.match(sheet, /\.sf-tabs-top \.sf-icon-button\.disabled:is\(\.sf-icon-button--default, \.sf-icon-button--tonal\) \{\s*--sf-icon-button--background-color: var\(--sf-surface-disabled\);/u);
+  // The arrows reach it; a press selects nothing (activate and selectTab refuse).
+  assert.match(source, /const enabledItems = this\.displayItems\.filter\(\(item\) => !overflowed\.has\(item\.index\)\);/u);
+  assert.match(method('selectTab', 'index, { person = false } = {}'), /if \(item\.disabled\) return \{ outcome: 'refused', reason: 'disabled' \};/u);
+  assert.match(method('activate', 'index, event = null, { person = true } = {}'), /if \(!item \|\| item\.disabled\) return;/u);
+});

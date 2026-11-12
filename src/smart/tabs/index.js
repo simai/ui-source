@@ -683,6 +683,9 @@ class SfTabs extends TabsElement {
         count: item.count ?? null,
         href: item.href || '',
         disabled: Boolean(item.disabled),
+        // A short text in a tooltip on the tab; for a disabled one, why it is
+        // off (R184 T9).
+        hint: item.hint ? String(item.hint) : '',
         icon: item.icon || '',
         iconStart: item.iconStart ?? (item.iconLeft || item.icon || ''),
         iconEnd: item.iconEnd ?? (item.iconRight || ''),
@@ -1308,7 +1311,11 @@ class SfTabs extends TabsElement {
   focusTab(index) {
     const target = this.tabTargets[index];
     if (!target) return;
-    if (this.manualActivation) for (const tab of this.tabTargets) if (tab) tab.tabIndex = tab === target ? 0 : -1;
+    // A disabled tab with the focus holds the tab stop too, so Tab leaves the
+    // row from it rather than landing on the selected tab after it.
+    if (this.manualActivation || this.computedItems[index]?.disabled) {
+      for (const tab of this.tabTargets) if (tab) tab.tabIndex = tab === target ? 0 : -1;
+    }
     target.focus();
   }
 
@@ -1332,7 +1339,7 @@ class SfTabs extends TabsElement {
       const forward = event.key === (rtl ? 'ArrowLeft' : 'ArrowRight') || event.key === 'Home';
       if (!back && !forward) return;
       const overflowed = new Set(this._overflowed ?? []);
-      const shown = this.displayItems.filter((item) => !item.disabled && !overflowed.has(item.index));
+      const shown = this.displayItems.filter((item) => !overflowed.has(item.index));
       const target = back ? shown[shown.length - 1] : shown[0];
       if (!target) return;
       event.preventDefault();
@@ -1359,9 +1366,10 @@ class SfTabs extends TabsElement {
     let direction = event.key === arrows[0] ? -1 : 1;
     if (!vertical && getComputedStyle(this.tabList).direction === 'rtl') direction *= -1;
     // The arrows walk the tabs in the order they stand, past the ones in
-    // «Ещё» and the hidden ones.
+    // «Ещё» and the hidden ones. A disabled tab is reached and selects
+    // nothing (R184 T9), so the person hears it and its hint.
     const overflowed = new Set(this._overflowed ?? []);
-    const enabledItems = this.displayItems.filter((item) => !item.disabled && !overflowed.has(item.index));
+    const enabledItems = this.displayItems.filter((item) => !overflowed.has(item.index));
     if (!enabledItems.length) {
       return;
     }

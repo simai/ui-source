@@ -25,6 +25,7 @@
   "composition": {
     "uses": [
       "component.tabs",
+      "component.tooltip",
       "smart.button",
       "smart.button-icon",
       "smart.checkbox",
@@ -128,7 +129,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "An item (set with setItems) may carry key (a stable id for the settings; the index otherwise), icon, count (a small counter after the label), href (the tab is a link: activating it goes to the address; aria-current=page on the active one) and pinned (never hidden, fixed in the settings)."
+        "description": "An item (set with setItems) may carry key (a stable id for the settings; the index otherwise), icon, count (a small counter after the label), href (the tab is a link: activating it goes to the address; aria-current=page on the active one) and pinned (never hidden, fixed in the settings); disabled (the tab stays focusable, says aria-disabled and selects nothing) and hint (a short text in the Framework tooltip on the tab, read as its description: for a disabled tab, why it is off)."
       },
       "settings": {
         "type": "object"
@@ -454,7 +455,7 @@
       "Enter",
       "Space"
     ],
-    "focus": "Built-in text/icon tabs use one enabled native tab stop and linked panels. Navigation arrows follow orientation and RTL, skip disabled tabs, wrap, focus and activate. Perpendicular arrows and nested widget keys remain local. A custom tab component descriptor is presentation-only: its named wrapper remains the single tab stop and the rendered Smart visual is inert."
+    "focus": "Built-in text/icon tabs use one enabled native tab stop and linked panels. Navigation arrows follow orientation and RTL, reach disabled tabs (aria-disabled, focusable, selecting nothing), wrap, focus and activate. A panel is a tab stop only when nothing in it takes the focus. Perpendicular arrows and nested widget keys remain local. A custom tab component descriptor is presentation-only: its named wrapper remains the single tab stop and the rendered Smart visual is inert."
   },
   "presentation": {
     "themes": [
@@ -516,7 +517,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tabs/index.js",
-        "sha256": "c80a123754b693b2388153541f963b79c82c07e8438929523f8516e1981602de"
+        "sha256": "0bba96f7fe4a01e77cb4d8dbf848b811e59ebf531e66d21a87a5fc0fc88b92c1"
       }
     ],
     "generated_runtime": [
