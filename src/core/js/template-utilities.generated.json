@@ -279,7 +279,6 @@
     "flex-direction/default",
     "flex-wrap/default",
     "flex/default",
-    "gap/default",
     "justify-content/default",
     "place-items/default"
   ],

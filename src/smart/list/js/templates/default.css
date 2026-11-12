@@ -48,7 +48,6 @@
   .sf-list--size-1\/2 {
     --sf-list--row-height: var(--sf-ui-1\/2--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--text-space-x));
-    --sf-list--text-step: var(--sf-ui-1\/2--text-space-x);
     --sf-list--font-size: var(--sf-text-size-1\/2);
     --sf-list--line-height: var(--sf-text-height-1\/2);
     --sf-list--lead-line: var(--sf-text-height-1\/2);
@@ -58,7 +57,6 @@
   .sf-list--size-1 {
     --sf-list--row-height: var(--sf-ui-1--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x));
-    --sf-list--text-step: var(--sf-ui-1--text-space-x);
     --sf-list--font-size: var(--sf-text-size-1);
     --sf-list--line-height: var(--sf-text-height-1);
     --sf-list--lead-line: var(--sf-text-height-1);
@@ -68,7 +66,6 @@
   .sf-list--size-2 {
     --sf-list--row-height: var(--sf-ui-2--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--text-space-x));
-    --sf-list--text-step: var(--sf-ui-2--text-space-x);
     --sf-list--font-size: var(--sf-text-size-2);
     --sf-list--line-height: var(--sf-text-height-2);
     --sf-list--lead-line: var(--sf-text-height-2);
@@ -124,8 +121,9 @@
 
   /* The count and the badge stand at the row's end, centred on the row: one
      line of the row, two lines of a two-line row. The title gives way to
-     them. The least gap before them is the row's own between its icon and
-     its text (sf-list-item's gap-2), also in a row with no icon. */
+     them. The least gap before them is the row's own between its picture and
+     its text (C105 H2, --sf-space-1/2, sf-list-item's wrap), also in a row
+     with no picture. */
   .sf-list__meta {
     display: inline-flex;
     flex: none;
@@ -136,7 +134,7 @@
 
   .sf-list__meta:empty { display: none; }
 
-  .sf-list-item--text .sf-list__meta { padding-inline-start: var(--sf-space-2); }
+  .sf-list-item--text .sf-list__meta { padding-inline-start: var(--sf-space-1\/2); }
 
   /* A narrow list (owner decision C47, 2026-11-10, option A; the list sets
      data-sf-list-narrow on its frame below 20rem of its own width): a row
@@ -180,8 +178,9 @@
     grid-column: -2;
     grid-row: 2;
     justify-self: start;
-    /* The text's start: the row's text step, the title's own inset. */
-    margin-inline-start: var(--sf-list--text-step);
+    /* The text's start: the title has no inset of its own (C77, C105 H2),
+       so the meta stands on the title's first letter. */
+    margin-inline-start: 0;
     padding-inline-start: 0;
   }
 
@@ -397,8 +396,8 @@
 
   /* The text block's end stands at the row's inset too (R191 HS-2): its
      --sf-ui-<S>--text-space-x at the end is gone in every row. The step after
-     a picture stays (the picture-to-text gap, R191 HS-1, waits for the
-     owner). */
+     a picture is the row's H2 (C105, sf-list-item's wrap): 12, compact and
+     phone 8. */
   .sf-list__frame .sf-list__row > sf-list-item > .sf-list-item .sf-list-item-container {
     padding-inline-end: 0;
   }

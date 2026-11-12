@@ -172,7 +172,7 @@ test('sf-list 1.5.0: a narrow list puts a row\'s badge and count under its text,
   const css = read('src/smart/list/js/templates/default.css');
   // The row grows by whole bands: the step --sf-space-1/4 and the badge's height.
   assert.match(css, /\[data-sf-list-narrow\] \.sf-list__row \.sf-list-item-wrap:has\(> \.sf-list__meta:not\(:empty\)\) \{\s*display: grid;\s*grid-template-columns: auto minmax\(0, 1fr\);\s*row-gap: var\(--sf-space-1\\\/4\);/u);
-  assert.match(css, /\[data-sf-list-narrow\] \.sf-list__row \.sf-list-item-wrap > \.sf-list__meta:not\(:empty\) \{\s*grid-column: -2;\s*grid-row: 2;\s*justify-self: start;\s*(?:\/\*[^*]*\*\/\s*)?margin-inline-start: var\(--sf-list--text-step\);\s*padding-inline-start: 0;/u);
+  assert.match(css, /\[data-sf-list-narrow\] \.sf-list__row \.sf-list-item-wrap > \.sf-list__meta:not\(:empty\) \{\s*grid-column: -2;\s*grid-row: 2;\s*justify-self: start;\s*(?:\/\*[^*]*\*\/\s*)?margin-inline-start: 0;\s*padding-inline-start: 0;/u);
   // No raw length in the rule: every value is a token.
   const narrow = css.slice(css.indexOf('[data-sf-list-narrow]'), css.indexOf('.sf-list__body,'));
   assert.ok(narrow.length > 0);

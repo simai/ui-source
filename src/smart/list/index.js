@@ -398,14 +398,21 @@ class SfList extends ListElement {
         return list;
     }
 
-    // The leading place of the rows: none when no item has an avatar. When one
-    // has, every row keeps it, so the titles start at one line; a row without
-    // an avatar shows its icon there, or nothing. Its width is the avatar of a
+    // The leading place of the rows: none when no item has an avatar and the
+    // rows are all with an icon or all without. When one has an avatar, every
+    // row keeps the place, so the titles start at one line; a row without an
+    // avatar shows its icon there, or nothing. Its width is the avatar of a
     // two-line row when any row of the list has a second line, else the row's
-    // line: a one-line row keeps its control height.
+    // line: a one-line row keeps its control height. A row without an icon
+    // among rows with one keeps the icon's place too (owner C105), at the
+    // row's line.
     leading() {
-        if (!this._items.some((item) => avatarOf(item))) return null;
-        return {wide: this._items.some((item) => Boolean(item.supporting))};
+        if (this._items.some((item) => avatarOf(item))) {
+            return {wide: this._items.some((item) => Boolean(item.supporting))};
+        }
+        const icon = (item) => typeof item?.icon === "string" && item.icon.trim() !== "";
+        if (this._items.some(icon) && !this._items.every(icon)) return {wide: false};
+        return null;
     }
 
     templateContext() {
