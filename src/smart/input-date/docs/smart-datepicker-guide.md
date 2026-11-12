@@ -104,12 +104,16 @@ on its own (a booking).
 
 Below 60rem (the `lg` breakpoint) a `range` field with a typed input opens no
 popup. It opens a ribbon of months in the Framework's bottom sheet
-(`sf-drawer placement="bottom"`; owner decision C62). The sheet's heading is
-the field's label. The weekday row is pinned at the top, and the months stand
-one under another with their names held over them while they are in view.
-The period chosen and «Готово» are pinned at the bottom. The ribbon opens on
-the start's month, or today's, and grows by six months as it is scrolled to
-either end, within `min-date` and `max-date`.
+(`sf-drawer placement="bottom"`; owner decision C62). The sheet stops a step
+under the field, so the field and its label stay readable through the scrim
+(at least half the screen when the field stands low). Its head is the field's
+label, «К сегодня», which brings today's month to the top, and a close
+button. The weekday row is pinned under it, the days off red in it as in the
+grid, and the months stand one under another with their names held over them
+while they are in view. The period chosen and «Готово» are pinned at the
+bottom. The ribbon opens on the start's month, or today's, with the focus on
+that day, and grows by six months as it is scrolled to either end, within
+`min-date` and `max-date`.
 
 The period is a draft until «Готово»: the first day is the start, the second
 the end, and a day before the start starts again. «Готово» makes the value

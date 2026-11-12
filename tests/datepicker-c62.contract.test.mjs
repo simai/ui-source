@@ -173,3 +173,36 @@ test('a period on a phone opens a ribbon of months in the bottom sheet', () => {
   const guide = read('src/smart/input-date/docs/smart-datepicker-guide.md');
   assert.ok(guide.includes('## A period on a phone: a ribbon of months'));
 });
+
+// The ribbon as agreed in #lenta (intent acceptance 2026-11-12, D1-D5).
+test('the phone ribbon matches #lenta: one surface, focus, height, «К сегодня», red weekend headers', () => {
+  const source = read('src/smart/input-date/index.js');
+  const template = read('src/smart/input-date/js/templates/ribbon.js');
+  const popup = read('src/smart/input-date/js/templates/default.js');
+  const scss = read('src/component/datepicker/scss/_css_datepicker.scss');
+  // D1: the box takes the panel's place colour, not the nested popup role read inside it.
+  assert.match(scss, /--sf-surface-place: inherit;\s*--sf-surface-place-solid: inherit;\s*--sf-surface-place-ground: inherit;\s*--sf-datepicker--background-color: var\(--sf-surface-place, var\(--sf-surface-popup\)\);/u);
+  assert.doesNotMatch(scss, /--sf-drawer-background/u);
+  // D2: no frame-count limit; the ribbon waits for its size, and the panel's focus goes on to the day.
+  assert.doesNotMatch(source, /tries < 30/u);
+  assert.match(source, /waitForRibbonSize\(scroller\)/u);
+  assert.match(source, /document\.addEventListener\('focusin', this\._ribbonPanelFocus, true\);/u);
+  assert.match(source, /this\.stopRibbonPanelFocus\(\);/u);
+  // D3: the sheet rests at its content's height under the field.
+  assert.doesNotMatch(source, /setAttribute\('snap', 'full'\)/u);
+  assert.match(source, /sheet\.setAttribute\('panel-style', this\.ribbonSheetStyle\(\)\);/u);
+  assert.match(source, /max-block-size: max\(50%, calc\(100% - \$\{top\}px - var\(--sf-space-1\)\)\);/u);
+  // D4: the ribbon's own head with «К сегодня» and the close button.
+  assert.match(source, /sheet\.setAttribute\('show-close', 'false'\);/u);
+  assert.ok(template.includes('class="sf-datepicker-sheet-today"'));
+  assert.ok(template.includes('@click=${() => context.component.ribbonToToday()}'));
+  assert.ok(template.includes('@click=${() => context.component.closeRibbon()}'));
+  for (const lang of ['ru', 'en']) {
+    const words = JSON.parse(read(`src/smart/input-date/lang/${lang}.json`)).runtime;
+    for (const word of ['go-to-today', 'close']) assert.ok(words[word], `${lang}: ${word}`);
+  }
+  // D5: the weekday headers of the days off take the day-off ink, popup and ribbon.
+  assert.ok(template.includes("context.weekdaysOff[at] && 'sf-datepicker-weekday-off'"));
+  assert.ok(popup.includes("context.weekdaysOff?.[at] ? 'sf-datepicker-weekday sf-datepicker-weekday-off'"));
+  assert.match(scss, /\.sf-datepicker-weekday\.sf-datepicker-weekday-off \{\s*--sf-datepicker-weekday--color: var\(--sf-datepicker--day-off-color\);/u);
+});

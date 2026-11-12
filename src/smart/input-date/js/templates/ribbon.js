@@ -46,13 +46,24 @@ function renderRibbonMonth(month, context) {
 // row is pinned above the ribbon, the months stand one under another and
 // scroll with a finger, and the period chosen and «Готово» are pinned under
 // it. The sheet is the Framework's (sf-drawer placement="bottom"); this is
-// its content.
+// its content. Its head is the ribbon's own, as in #lenta: the title,
+// «К сегодня» (today's month to the top) and the close button, which keeps
+// the value the field had, as any close but «Готово» does.
 export function renderDatepickerRibbon(context) {
     // The period line under the ribbon (index.js ribbonSummary).
     const summary = context.periodSummary;
     return html`
+        <div class="sf-datepicker-sheet-head">
+            <span class="sf-datepicker-sheet-title">${context.title}</span>
+            <sf-button class="sf-datepicker-sheet-today" size="1/2" appearance="ghost" scheme="primary"
+                text=${context.labels.goToToday}
+                @click=${() => context.component.ribbonToToday()}></sf-button>
+            <sf-button-icon class="sf-datepicker-sheet-close" size="1" appearance="ghost" scheme="on-surface"
+                icon="close" aria-label=${context.labels.close}
+                @click=${() => context.component.closeRibbon()}></sf-button-icon>
+        </div>
         <div class="sf-datepicker-sheet-weekdays" aria-hidden="true">
-            ${context.weekdays.map((weekday) => html`<span class="sf-datepicker-weekday">${weekday}</span>`)}
+            ${context.weekdays.map((weekday, at) => html`<span class=${joinClasses('sf-datepicker-weekday', context.weekdaysOff[at] && 'sf-datepicker-weekday-off')}>${weekday}</span>`)}
         </div>
         <div class="sf-datepicker-ribbon" @scroll=${() => context.component.handleRibbonScroll()}>
             ${repeat(context.months, (month) => month.key, (month) => renderRibbonMonth(month, context))}

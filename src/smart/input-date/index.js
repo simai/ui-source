@@ -427,7 +427,7 @@ const wordKey = (key) => String(key).replace(/_/gu, '-').replace(/[A-Z]/gu, (let
 function getLabels(node) {
     const keys = ['previousMonth', 'nextMonth', 'previousYears', 'nextYears', 'chooseMonth', 'chooseYear', 'presets', 'customRange',
         'time', 'hours', 'minutes', 'earlierHour', 'laterHour', 'earlierMinute', 'laterMinute', 'timeNotSet',
-        'period', 'done', 'chooseStart', 'chooseEnd'];
+        'period', 'done', 'chooseStart', 'chooseEnd', 'goToToday', 'close'];
     return Object.fromEntries(keys.map((key) => [key, node.sfWord(wordKey(key))]));
 }
 
@@ -1274,6 +1274,14 @@ class SfDatepicker extends FormField(DatepickerElement) {
         return getWeekdays(this.locale, this.weekStart);
     }
 
+    // Which weekday columns are days off, in the order of the weekday row
+    // (owner decision C62 «выходные красным», prototypes/datepicker.html: the
+    // headers сб and вс take the days' red too). The same days as the grid's.
+    get weekdaysOff() {
+        const daysOff = this.weekendDays;
+        return Array.from({length: 7}, (_, index) => daysOff.has((this.weekStart + index) % 7));
+    }
+
     get calendarLabel() {
         try {
             return dateFormat(this.locale, {
@@ -1639,9 +1647,15 @@ class SfDatepicker extends FormField(DatepickerElement) {
         };
         this._ribbon.count = this.ribbonMonthsUntil(new Date(anchor.getFullYear(), anchor.getMonth() + RIBBON_AFTER, 1));
         const sheet = this.ribbonSheet();
-        sheet.setAttribute('heading', this.label || this.ariaLabel || this.sfWord('period'));
+        // The sheet's head is the ribbon's own (the title, «К сегодня», the
+        // close button, as in #lenta): the drawer's head has no place for a
+        // second action. The drawer keeps the name of its dialog.
+        this._ribbon.title = this.label || this.ariaLabel || this.sfWord('period');
+        sheet.setAttribute('label', this._ribbon.title);
+        sheet.setAttribute('panel-style', this.ribbonSheetStyle());
         this._sheetOpen = true;
         this.renderRibbon();
+        this.watchRibbonPanelFocus();
         sheet.open();
         this.requestComponentUpdate('sheet');
     }
@@ -1653,7 +1667,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
         const sheet = document.createElement('sf-drawer');
         sheet.id = partId(instancePath(this, {kind: 'sf-input-date'}), 'sheet');
         sheet.setAttribute('placement', 'bottom');
-        sheet.setAttribute('snap', 'full');
+        sheet.setAttribute('show-close', 'false');
         const body = document.createElement('div');
         body.className = 'sf-datepicker sf-datepicker--sheet';
         sheet.append(body);
@@ -1665,7 +1679,71 @@ class SfDatepicker extends FormField(DatepickerElement) {
         return sheet;
     }
 
+    // How tall the sheet is (#lenta): it stops a step 1 under the field it
+    // fills, so the field and its label stay readable through the scrim; it
+    // took the whole screen (snap full, intent acceptance 2026-11-12 D3). A
+    // field low on the screen still gets half of it. The sheet rests at its
+    // content's height (snap auto), held to this.
+    ribbonSheetStyle() {
+        const box = (this.querySelector('.sf-datepicker-wrap') || this).getBoundingClientRect();
+        const top = Math.max(0, Math.round(box.bottom));
+        return `max-block-size: max(50%, calc(100% - ${top}px - var(--sf-space-1)));`;
+    }
+
+    // «К сегодня» in the sheet's head: the ribbon brings today's month to its
+    // top (smoothly, unless the person asked for less motion) and today
+    // becomes the ribbon's tab stop; the draft period stays as it is. Today
+    // outside min-date and max-date goes to the nearest allowed day.
+    ribbonToToday() {
+        const ribbon = this._ribbon;
+        if (!ribbon) return;
+        let today = new Date();
+        today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const minDate = this.setMinDate();
+        const maxDate = this.setMaxDate();
+        if (minDate && compareDates(today, minDate) < 0) today = minDate;
+        if (maxDate && compareDates(today, maxDate) > 0) today = maxDate;
+        const month = new Date(today.getFullYear(), today.getMonth(), 1);
+        const last = new Date(ribbon.from.getFullYear(), ribbon.from.getMonth() + ribbon.count - 1, 1);
+        // Outside the window: the window starts over around today, as it
+        // does around the start when the sheet opens.
+        const outside = month < ribbon.from || month > last;
+        if (outside) {
+            ribbon.from = this.clampRibbonMonth(new Date(month.getFullYear(), month.getMonth() - RIBBON_BEFORE, 1));
+            ribbon.count = this.ribbonMonthsUntil(new Date(month.getFullYear(), month.getMonth() + RIBBON_AFTER, 1));
+        }
+        ribbon.focus = formatIsoDate(today);
+        this.renderRibbon();
+        const scroller = this.ribbonScroller;
+        const target = scroller?.querySelector(`[data-month="${today.getFullYear()}-${padDatePart(today.getMonth() + 1)}"]`);
+        if (!scroller || !target) return;
+        const smooth = !outside && !globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+        if (!smooth) {
+            scroller.scrollTo({top: target.offsetTop, behavior: 'instant'});
+            return;
+        }
+        // The window does not grow while the ribbon glides there: a month put
+        // above would move the place it is gliding to.
+        ribbon.shown = false;
+        const settle = () => {
+            if (this._ribbon !== ribbon || ribbon.shown) return;
+            ribbon.shown = true;
+            this.handleRibbonScroll();
+        };
+        scroller.addEventListener('scrollend', settle, {once: true});
+        setTimeout(settle, 1000);
+        scroller.scrollTo({top: target.offsetTop, behavior: 'smooth'});
+    }
+
+    // The close button of the sheet's head: as the drawer's own, it keeps the
+    // value the field had.
+    closeRibbon() {
+        this._sheet?.close?.({reason: 'close'});
+    }
+
     ribbonClosed() {
+        this.stopRibbonSizeWatch();
+        this.stopRibbonPanelFocus();
         this._sheetOpen = false;
         this._ribbon = null;
         this.requestComponentUpdate('sheet');
@@ -1694,12 +1772,18 @@ class SfDatepicker extends FormField(DatepickerElement) {
 
     // The month the ribbon opens on stands at its top, at once (no animation),
     // and its focused day takes the focus. The sheet has its size only once it
-    // is open and laid out.
-    showRibbonAnchor(tries = 0) {
+    // is open and laid out -- and on the first open, only once the drawer's
+    // own sheet has come: the drawer holds its panel out of view until then,
+    // and gives the panel the focus when it shows. Thirty frames of waiting
+    // ran out before that on every first open (intent acceptance 2026-11-12,
+    // D2: 36 of 36 phone views), so the day was never focused and the panel
+    // kept the focus. The ribbon waits for its own size instead, however long
+    // the sheet takes, and takes the focus after the drawer has given it.
+    showRibbonAnchor() {
         const scroller = this.ribbonScroller;
         if (!this._ribbon || !scroller) return;
-        if (!scroller.clientHeight && tries < 30) {
-            requestAnimationFrame(() => this.showRibbonAnchor(tries + 1));
+        if (!scroller.clientHeight) {
+            this.waitForRibbonSize(scroller);
             return;
         }
         const month = scroller.querySelector(`[data-month="${this._ribbon.anchor}"]`);
@@ -1708,6 +1792,50 @@ class SfDatepicker extends FormField(DatepickerElement) {
         // The window grows only from here: before, the ribbon stood at its top
         // and would have asked for months it does not show.
         this._ribbon.shown = true;
+    }
+
+    // The drawer gives the focus to its panel when it opens, and on the first
+    // open again when it shows the panel it held out of view until its sheet
+    // came -- after the ribbon had tried to focus its day on a panel that could
+    // not take a focus yet (intent acceptance 2026-11-12, D2). The panel
+    // taking the focus while the ribbon is open hands it on to the ribbon's
+    // day, so the sheet always opens on the start, focused.
+    watchRibbonPanelFocus() {
+        if (this._ribbonPanelFocus) return;
+        this._ribbonPanelFocus = (event) => {
+            const panel = this._sheetBody?.closest('[data-sf-drawer-panel]');
+            if (!this._sheetOpen || !this._ribbon || !panel || event.target !== panel) return;
+            if (!this.ribbonScroller?.clientHeight) return;
+            this.focusRibbonDay();
+        };
+        document.addEventListener('focusin', this._ribbonPanelFocus, true);
+    }
+
+    stopRibbonPanelFocus() {
+        if (!this._ribbonPanelFocus) return;
+        document.removeEventListener('focusin', this._ribbonPanelFocus, true);
+        this._ribbonPanelFocus = null;
+    }
+
+    waitForRibbonSize(scroller) {
+        if (this._ribbonSizeWatch || typeof ResizeObserver !== 'function') return;
+        const ribbon = this._ribbon;
+        const watch = new ResizeObserver(() => {
+            if (this._ribbon !== ribbon || !this._sheetOpen) {
+                this.stopRibbonSizeWatch();
+                return;
+            }
+            if (!scroller.clientHeight) return;
+            this.stopRibbonSizeWatch();
+            this.showRibbonAnchor();
+        });
+        this._ribbonSizeWatch = watch;
+        watch.observe(scroller);
+    }
+
+    stopRibbonSizeWatch() {
+        this._ribbonSizeWatch?.disconnect();
+        this._ribbonSizeWatch = null;
     }
 
     focusRibbonDay() {
@@ -1880,8 +2008,10 @@ class SfDatepicker extends FormField(DatepickerElement) {
             component: this,
             months,
             weekdays: this.weekdays,
+            weekdaysOff: this.weekdaysOff,
             weekdayNames: getWeekdays(locale, weekStart, 'long'),
             labels: this.labels,
+            title: ribbon.title,
             complete: Boolean(start && end),
             periodSummary: this.ribbonSummary(start, end),
         };
@@ -2585,6 +2715,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
             calendarLabel: this.calendarLabel,
             labels: this.labels,
             weekdays: this.weekdays,
+            weekdaysOff: this.weekdaysOff,
             // The column headers a screen reader reads: the full names.
             weekdayNames: getWeekdays(this.locale, this.weekStart, 'long'),
             panelId: this._panelId,
@@ -2692,6 +2823,8 @@ class SfDatepicker extends FormField(DatepickerElement) {
 
     onDisconnected() {
         this.removeOverlayListeners();
+        this.stopRibbonSizeWatch();
+        this.stopRibbonPanelFocus();
         super.onDisconnected();
     }
 

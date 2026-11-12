@@ -260,7 +260,7 @@ function renderDatepickerPanel(context) {
                 <div class="sf-datepicker-main relative">
                     ${renderContext(context)}
                     <div class="sf-datepicker-weekdays grid grid-col-7" aria-hidden="true">
-                        ${context.weekdays.map((weekday) => html`<span class="sf-datepicker-weekday">${weekday}</span>`)}
+                        ${context.weekdays.map((weekday, at) => html`<span class=${context.weekdaysOff?.[at] ? 'sf-datepicker-weekday sf-datepicker-weekday-off' : 'sf-datepicker-weekday'}>${weekday}</span>`)}
                     </div>
                     ${renderGrid(context)}
                 </div>
