@@ -1,5 +1,16 @@
 import { pageText } from '../../../core/js/page-language';
+import { collapseRange, menuEntries, nextFit, onPhoneLadder, startFit, trailWraps } from './_trail';
 
+// The ordinary runtime of the class markup a server prints (nav.sf-breadcrumbs):
+// it folds a long trail behind one «…» button and opens it again in place.
+// Which crumbs fold is _trail.js, shared with sf-breadcrumbs (R177 BC-11): a
+// cap (data-max-items, when the page sets one) and room (BC-06, owner decision
+// C93 item 1) -- while the trail takes more than one line, one more crumb goes.
+//
+// Two forms of the markup are read:
+//   - the list form (R177 BC-09): nav.sf-breadcrumbs > ol > li, each li one
+//     crumb with the separator before it (none in the first);
+//   - the flat form: nav.sf-breadcrumbs > crumb, separator, crumb ...
 const ROOT_SELECTOR = '.sf-breadcrumbs';
 const BREADCRUMBS_TEXT = {
   en: { expandLabel: 'Show hidden breadcrumbs' },
@@ -8,6 +19,7 @@ const BREADCRUMBS_TEXT = {
 const ITEM_SELECTOR = '.sf-breadcrumbs-item';
 const GENERATED_SELECTOR = '[data-sf-breadcrumbs-generated="ellipsis"]';
 const BOUND_KEY = '__sfBreadcrumbsBound';
+const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]';
 
 function getMaxItems(root) {
   const value =
@@ -16,7 +28,9 @@ function getMaxItems(root) {
     root.dataset.maxItems;
   const maxItems = Number(value);
 
-  return Number.isFinite(maxItems) ? Math.max(0, Math.floor(maxItems)) : 4;
+  // No cap unless the page sets one: a trail folds when it has no room
+  // (owner decision C93 item 1), not by a count.
+  return Number.isFinite(maxItems) ? Math.max(0, Math.floor(maxItems)) : 0;
 }
 
 function getExpandLabel(root) {
@@ -56,6 +70,15 @@ function isGenerated(item) {
   return item?.matches?.(GENERATED_SELECTOR);
 }
 
+// The list of the list form, or null for the flat form.
+function getList(root) {
+  return (
+    Array.from(root.children).find(
+      (child) => child.tagName === 'OL' || child.tagName === 'UL',
+    ) || null
+  );
+}
+
 function getBreadcrumbNodes(root) {
   return Array.from(root.children).filter(
     (child) =>
@@ -65,8 +88,23 @@ function getBreadcrumbNodes(root) {
   );
 }
 
+// The crumbs, in order: the list's entries, or the flat form's items.
 function getContentItems(root) {
+  const list = getList(root);
+
+  if (list) {
+    return Array.from(list.children).filter(
+      (child) => child.tagName === 'LI' && !isGenerated(child),
+    );
+  }
+
   return getBreadcrumbNodes(root).filter((item) => !isSeparator(item));
+}
+
+// What takes room in a line: the list's entries, or every flat child.
+function getLineEntries(root) {
+  const list = getList(root);
+  return Array.from((list || root).children);
 }
 
 function getPreviousSeparator(item) {
@@ -86,6 +124,13 @@ function clearGenerated(root) {
 function setCollapsedState(root, collapsedItems = []) {
   const collapsedSet = new Set(collapsedItems);
 
+  if (getList(root)) {
+    getContentItems(root).forEach((entry) => {
+      entry.hidden = collapsedSet.has(entry);
+    });
+    return;
+  }
+
   getBreadcrumbNodes(root).forEach((node) => {
     const shouldHide =
       collapsedSet.has(node) ||
@@ -95,15 +140,15 @@ function setCollapsedState(root, collapsedItems = []) {
   });
 }
 
-function createSeparator() {
-  const separator = document.createElement('div');
+function createSeparator(tag = 'div') {
+  const separator = document.createElement(tag);
   separator.className =
     'sf-breadcrumbs-item sf-breadcrumbs-item--default sf-breadcrumbs-item--separator';
   separator.dataset.sfBreadcrumbsGenerated = 'ellipsis';
   separator.dataset.sfBreadcrumbSeparator = 'true';
   separator.setAttribute('aria-hidden', 'true');
   separator.innerHTML =
-    '<span class="sf-breadcrumbs-item-container flex items-cross-center"><i class="sf-icon" aria-hidden="true">chevron_right</i></span>';
+    '<span class="sf-breadcrumbs-item-container"><i class="sf-icon" aria-hidden="true">chevron_right</i></span>';
 
   return separator;
 }
@@ -117,8 +162,11 @@ function createEllipsis(root, hiddenItems) {
   ellipsis.dataset.sfBreadcrumbIndex = 'ellipsis';
   ellipsis.setAttribute('aria-label', getExpandLabel(root));
   ellipsis.setAttribute('aria-expanded', 'false');
+  // With sf-menu-context on the page «…» opens its crumbs as a menu (owner
+  // decision C93 item 1); a page without it opens the trail in place.
+  if (menuReady()) ellipsis.setAttribute('aria-haspopup', 'menu');
   ellipsis.innerHTML =
-    '<span class="sf-breadcrumbs-item-container flex items-cross-center"><span aria-hidden="true">…</span></span>';
+    '<span class="sf-breadcrumbs-item-container"><span aria-hidden="true">…</span></span>';
 
   ellipsis.addEventListener('click', (event) => {
     const clickEvent = new CustomEvent('sf-breadcrumb-click', {
@@ -144,16 +192,127 @@ function createEllipsis(root, hiddenItems) {
       return;
     }
 
-    expandBreadcrumbs(root);
+    if (menuReady()) {
+      openHiddenMenu(root, ellipsis, hiddenItems);
+      return;
+    }
+
+    expandBreadcrumbs(root, hiddenItems[0]);
   });
 
   return ellipsis;
 }
 
-function expandBreadcrumbs(root) {
+function menuReady() {
+  return Boolean(globalThis.customElements?.get?.('sf-menu-context'));
+}
+
+// A hidden crumb as a menu entry: its words and its address.
+function crumbOf(entry) {
+  const link = entry.matches?.('a[href]') ? entry : entry.querySelector?.('a[href]');
+  const label = entry.querySelector?.('.sf-breadcrumbs-item-container') || entry;
+  return { label: getItemLabel(label), href: link?.getAttribute('href') || '' };
+}
+
+// One menu per trail, after it; the menu owns aria-expanded on «…» and gives
+// focus back to it when it closes.
+function openHiddenMenu(root, anchor, hiddenItems) {
+  let menu = root.__sfBreadcrumbsMenu;
+  if (!menu?.isConnected) {
+    menu = document.createElement('sf-menu-context');
+    menu.setAttribute('popup', '');
+    menu.dataset.sfBreadcrumbsGenerated = 'menu';
+    root.after(menu);
+    root.__sfBreadcrumbsMenu = menu;
+  }
+  menu.setAttribute('aria-label', getExpandLabel(root));
+  menu.entries = menuEntries(hiddenItems.map(crumbOf));
+  menu.toggleFor?.(anchor, { align: 'start' });
+}
+
+// A name cut with an ellipsis (C93 item 6) has its whole text as the
+// crumb's tooltip.
+function markCutLabels(root) {
+  root.querySelectorAll(`${ITEM_SELECTOR}:not(.sf-breadcrumbs-item--separator)`).forEach((crumb) => {
+    const label = crumb.querySelector(':scope > .sf-breadcrumbs-item-container > span') ||
+      crumb.querySelector(':scope > .sf-breadcrumbs-item-container');
+    const cut = Boolean(label && label.scrollWidth > label.clientWidth + 1);
+    if (cut) {
+      crumb.setAttribute('title', label.textContent.trim());
+      crumb.dataset.sfBreadcrumbCut = '';
+    } else if ('sfBreadcrumbCut' in crumb.dataset) {
+      crumb.removeAttribute('title');
+      delete crumb.dataset.sfBreadcrumbCut;
+    }
+  });
+}
+
+// The «…» button left the page: focus goes to the first crumb it revealed
+// (R177 BC-02), not to the body. A crumb that is text takes focus as a
+// target only (tabindex -1), so the keyboard path goes on from there.
+function focusRevealed(root, first) {
+  if (!first?.isConnected) return;
+
+  const target = first.matches?.(FOCUSABLE)
+    ? first
+    : first.querySelector?.(FOCUSABLE) || first.querySelector?.(ITEM_SELECTOR) || first;
+
+  if (!target.matches(FOCUSABLE)) target.setAttribute('tabindex', '-1');
+  target.focus?.({ preventScroll: true });
+}
+
+function expandBreadcrumbs(root, firstHidden = null) {
+  const hadFocus = root.contains(document.activeElement);
   root.dataset.sfBreadcrumbsExpanded = 'true';
   clearGenerated(root);
   setCollapsedState(root, []);
+  if (hadFocus || document.activeElement === document.body) {
+    focusRevealed(root, firstHidden);
+  }
+}
+
+function applyRange(root, items, range) {
+  clearGenerated(root);
+  setCollapsedState(root, []);
+
+  if (!range) return;
+
+  const hiddenItems = items.slice(range.start, range.end);
+
+  if (!hiddenItems.length) return;
+
+  setCollapsedState(root, hiddenItems);
+
+  const list = getList(root);
+  const firstHidden = hiddenItems[0];
+  const ellipsis = createEllipsis(root, hiddenItems);
+
+  if (list) {
+    // One entry for «…», with the separator before it unless it opens the trail.
+    const entry = document.createElement('li');
+    entry.dataset.sfBreadcrumbsGenerated = 'ellipsis';
+    if (range.start > 0) entry.append(createSeparator('span'));
+    entry.append(ellipsis);
+    list.insertBefore(entry, firstHidden);
+    return;
+  }
+
+  const lastHidden = hiddenItems[hiddenItems.length - 1];
+  const insertionTarget = lastHidden.nextElementSibling;
+
+  // «…» opens the trail when the first crumb is hidden too: the separator of
+  // the next visible crumb follows it, and none goes before it.
+  if (range.start > 0) root.insertBefore(createSeparator(), firstHidden);
+  root.insertBefore(ellipsis, insertionTarget);
+}
+
+// Whether the last crumb is the page (it stays with its parent).
+function getTail(items) {
+  const last = items[items.length - 1];
+  const current =
+    last?.getAttribute?.('aria-current') === 'page' ||
+    Boolean(last?.querySelector?.('[aria-current="page"]'));
+  return current ? 2 : 1;
 }
 
 function collapseBreadcrumbs(root) {
@@ -167,29 +326,63 @@ function collapseBreadcrumbs(root) {
     return;
   }
 
-  if (maxItems < 3 || items.length <= maxItems) {
-    return;
+  const tail = getTail(items);
+  // The phone ladder starts at «… › parent › page» (C93 item 2).
+  let fit = startFit(items.length, { tail, phone: onPhoneLadder() });
+
+  applyRange(root, items, collapseRange(items.length, { maxItems, fit, tail }));
+
+  // Room (BC-06): one more crumb at a time while the trail wraps.
+  while (trailWraps(getLineEntries(root))) {
+    const next = nextFit(items.length, { maxItems, fit, tail });
+    if (next === null) break;
+    fit = next;
+    applyRange(root, items, collapseRange(items.length, { maxItems, fit, tail }));
   }
 
-  const visibleSlots = maxItems - 1;
-  const leadingCount = Math.floor(visibleSlots / 2);
-  const trailingCount = visibleSlots - leadingCount;
-  const hiddenItems = items.slice(leadingCount, items.length - trailingCount);
+  markCutLabels(root);
+  root.__sfBreadcrumbsSettled = settledSize(root);
+}
 
-  if (!hiddenItems.length) {
-    return;
-  }
+function settledSize(root) {
+  const parent = root.parentElement;
+  return {
+    width: parent ? parent.getBoundingClientRect().width : 0,
+    height: root.getBoundingClientRect().height,
+  };
+}
 
-  setCollapsedState(root, hiddenItems);
+// A new width (or a font that came late and changed the words) folds the
+// trail again; the trail's own change of size does not.
+function observeRoom(root) {
+  if (typeof ResizeObserver === 'undefined' || root.__sfBreadcrumbsRoom) return;
 
-  const firstHidden = hiddenItems[0];
-  const lastHidden = hiddenItems[hiddenItems.length - 1];
-  const insertionTarget = lastHidden.nextElementSibling;
-  const separator = createSeparator();
-  const ellipsis = createEllipsis(root, hiddenItems);
+  let frame = 0;
+  const observer = new ResizeObserver(() => {
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      if (!root.isConnected) {
+        observer.disconnect();
+        root.__sfBreadcrumbsRoom = null;
+        return;
+      }
+      const before = root.__sfBreadcrumbsSettled;
+      const now = settledSize(root);
+      if (
+        before &&
+        Math.abs(before.width - now.width) < 0.5 &&
+        Math.abs(before.height - now.height) < 0.5
+      ) {
+        return;
+      }
+      collapseBreadcrumbs(root);
+    });
+  });
 
-  root.insertBefore(separator, firstHidden);
-  root.insertBefore(ellipsis, insertionTarget);
+  observer.observe(root);
+  if (root.parentElement) observer.observe(root.parentElement);
+  root.__sfBreadcrumbsRoom = observer;
 }
 
 function bindBreadcrumbs(root) {
@@ -205,6 +398,7 @@ function bindBreadcrumbs(root) {
 
   root[BOUND_KEY] = true;
   collapseBreadcrumbs(root);
+  observeRoom(root);
 }
 
 function initBreadcrumbs(target = document) {
@@ -227,7 +421,7 @@ if (typeof MutationObserver !== 'undefined') {
       if (mutation.type === 'attributes') {
         const root = mutation.target;
 
-        if (root instanceof HTMLElement && root.matches(ROOT_SELECTOR)) {
+        if (root instanceof HTMLElement && root.matches(ROOT_SELECTOR) && root[BOUND_KEY]) {
           delete root.dataset.sfBreadcrumbsExpanded;
           collapseBreadcrumbs(root);
         }
