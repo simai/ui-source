@@ -525,9 +525,12 @@
     --sf-input-input--padding-inline-end: calc(var(--sf-px) * 0);
   }
 
-  .sf-input.sf-input--size-1 .sf-input-field > :is(.sf-input-left, .sf-icon) ~ input { --sf-input-input--padding-inline-start: var(--sf-ui-1--text-space-x); }
-  .sf-input.sf-input--size-2 .sf-input-field > :is(.sf-input-left, .sf-icon) ~ input { --sf-input-input--padding-inline-start: var(--sf-ui-2--text-space-x); }
-  .sf-input.sf-input--size-1\/2 .sf-input-field > :is(.sf-input-left, .sf-icon) ~ input { --sf-input-input--padding-inline-start: var(--sf-ui-1\/2--text-space-x); }
+  /* A field is a row (owner C105, role H2): its leading picture stands
+     --sf-space-1/2 before the value -- 12, 8 in a compact region and on a
+     phone -- at every size, the step its options keep from their pictures,
+     so the value and an option's text start on one axis. It was the button's
+     picture-to-label step (--sf-ui-<S>--text-space-x, H1): 7, 8, 10. */
+  .sf-input:is(.sf-input--size-1, .sf-input--size-2, .sf-input--size-1\/2) .sf-input-field > :is(.sf-input-left, .sf-icon) ~ input { --sf-input-input--padding-inline-start: var(--sf-space-1\/2); }
   .sf-input.sf-input--size-1 .sf-input-field > input:has(~ :is(.sf-input-right, .sf-input-hint, .sf-icon)) { --sf-input-input--padding-inline-end: var(--sf-ui-1--text-space-x); }
   .sf-input.sf-input--size-2 .sf-input-field > input:has(~ :is(.sf-input-right, .sf-input-hint, .sf-icon)) { --sf-input-input--padding-inline-end: var(--sf-ui-2--text-space-x); }
   .sf-input.sf-input--size-1\/2 .sf-input-field > input:has(~ :is(.sf-input-right, .sf-input-hint, .sf-icon)) { --sf-input-input--padding-inline-end: var(--sf-ui-1\/2--text-space-x); }

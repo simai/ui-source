@@ -285,20 +285,18 @@
   max-block-size: var(--sf-dropdown-tag-line--box);
 }
 
-/* The label follows the picture at the size's text step, the step an option
-   label keeps from its picture, so the value and the option label start on
-   one axis. The step is the picture's margin alone: the field's own gap would
-   add 4px that the option does not have. */
+/* The label follows the picture at the row step (owner C105, role H2:
+   --sf-space-1/2 -- 12, 8 in a compact region and on a phone -- at every
+   size), the step an option label keeps from its picture, so the value and
+   the option label start on one axis. The step is the picture's margin alone:
+   the field's own gap would add 4px that the option does not have. It was the
+   size's text step (--sf-ui-<S>--text-space-x, H1): 7, 8, 10. */
 .sf-dropdown .sf-dropdown-field:has(> .sf-dropdown-field-visual, > sf-icon > .sf-dropdown-field-visual) {
   column-gap: 0;
 }
 
-.sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field > .sf-dropdown-field-visual,
-.sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field > sf-icon > .sf-dropdown-field-visual { margin-inline-end: var(--sf-ui-1\/2--text-space-x); }
-.sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field > .sf-dropdown-field-visual,
-.sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field > sf-icon > .sf-dropdown-field-visual { margin-inline-end: var(--sf-ui-1--text-space-x); }
-.sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field > .sf-dropdown-field-visual,
-.sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field > sf-icon > .sf-dropdown-field-visual { margin-inline-end: var(--sf-ui-2--text-space-x); }
+.sf-dropdown:is(.sf-dropdown--size-1\/2, .sf-dropdown--size-1, .sf-dropdown--size-2) .sf-dropdown-field > .sf-dropdown-field-visual,
+.sf-dropdown:is(.sf-dropdown--size-1\/2, .sf-dropdown--size-1, .sf-dropdown--size-2) .sf-dropdown-field > sf-icon > .sf-dropdown-field-visual { margin-inline-end: var(--sf-space-1\/2); }
 
 /* A flag keeps its proportions at the optical size of an icon on the same
    line: three quarters of it, as an icon's glyph fills about three quarters of

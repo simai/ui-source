@@ -10491,6 +10491,37 @@
       },
       "owner": "ui-source",
       "source": "src/smart/list-item/js/templates/default.js; src/component/dropdown/scss/_css__list-item.scss; src/smart/list/js/templates/default.css; src/smart/list/index.js; src/component/menu/scss/_css__menu_element.scss; ui-control control/docs-review/decisions.md C105, C109"
+    },
+    {
+      "id": "behaviour-c105-field-picture-gap",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "A field is a row (owner decision C105, role H2): its leading picture stands --sf-space-1/2 before the value -- 12, 8 in a compact region and on a phone -- at every size, the step its options keep from their pictures, so the value and an option's text start on one axis. sf-input (and sf-input-date, which draws one) after icon-start, and sf-dropdown after its chosen option's picture. It was the button's picture-to-label step --sf-ui-<S>--text-space-x (H1): 7, 8, 10; 6, 6, 8 on a phone.",
+      "items": [
+        {
+          "component": "sf-input",
+          "attribute": "leading picture to value",
+          "from": "var(--sf-ui-<S>--text-space-x)",
+          "to": "var(--sf-space-1/2)"
+        },
+        {
+          "component": "sf-dropdown",
+          "attribute": "chosen picture to value (.sf-dropdown-field-visual margin-inline-end)",
+          "from": "var(--sf-ui-<S>--text-space-x)",
+          "to": "var(--sf-space-1/2)"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite in markup. A page that needs the former step sets --sf-input-input--padding-inline-start on the field's input, or margin-inline-end on .sf-dropdown-field-visual.",
+      "examples": {
+        "before": "<sf-input icon-start=\"search\"></sf-input> (icon to value 8 px, size 1)",
+        "after": "<sf-input icon-start=\"search\"></sf-input> (icon to value 12 px, 8 on a phone)"
+      },
+      "owner": "ui-source",
+      "source": "src/component/inputs/scss/_css__inputs.scss; src/component/dropdown/scss/_css__custom.scss; ui-control control/docs-review/decisions.md C105"
     }
   ]
 }

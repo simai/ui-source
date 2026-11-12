@@ -57,6 +57,15 @@ test('C105 H2: the dropdown options and the alert keep --sf-space-1/2', async ()
   assert.ok(alert.includes('gap: var(--sf-alert-gap, var(--sf-alert--gap, var(--sf-space-1\\/2)));'));
 });
 
+test('C105 H2: a field is a row -- its leading picture stands --sf-space-1/2 before the value (sf-input, sf-input-date, sf-dropdown)', async () => {
+  const inputs = await read('src/component/inputs/scss/_css__inputs.scss');
+  assert.ok(inputs.includes('.sf-input:is(.sf-input--size-1, .sf-input--size-2, .sf-input--size-1\\/2) .sf-input-field > :is(.sf-input-left, .sf-icon) ~ input { --sf-input-input--padding-inline-start: var(--sf-space-1\\/2); }'),
+    'sf-input (and sf-input-date, which draws one) set the value after a leading picture at H2');
+  assert.doesNotMatch(inputs, /:is\(\.sf-input-left, \.sf-icon\) ~ input \{ --sf-input-input--padding-inline-start: var\(--sf-ui-/u, 'no size keeps the button step after a leading picture');
+  const custom = await read('src/component/dropdown/scss/_css__custom.scss');
+  assert.match(custom, /sf-dropdown-field-visual \{ margin-inline-end: var\(--sf-space-1\\\/2\); \}/u, 'sf-dropdown sets its chosen picture at H2');
+});
+
 test('C105 H2 (HS-6, NI-9): the menu row gap is --sf-space-1/2 and is set only through the wrap\'s variable the indent reads', async () => {
   const sheet = await read('src/component/menu/scss/_css__menu_element.scss');
   assert.ok(sheet.includes('gap: var(--sf-menu-element-wrap--gap, var(--sf-space-1\\/2));'));
