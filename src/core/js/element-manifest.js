@@ -54,6 +54,7 @@
 // Members the runtime adds start with `sf`, which no manifest name may
 // (§3.1), so a generated setting or action never collides with them.
 
+import { watchIgnoredGlyphs } from './ignored-glyphs.js';
 import { dispatchAliased } from './aliases.js';
 import { pageWord } from './page-language.js';
 import { noteDeprecated } from './deprecations.js';
@@ -587,6 +588,18 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
       super.connectedCallback();
       // A leaf outside an assembly starts with the page (§7.2.1 `now`).
       this.toggleAttribute('data-sf-started', true);
+      // An element on the Smart base hands its glyphs over after each drawing;
+      // one on a plain base is watched while it sits in an ignored region.
+      if (typeof this.adoptIgnoredGlyphs !== 'function') {
+        this.__sfGlyphWatch?.disconnect();
+        this.__sfGlyphWatch = watchIgnoredGlyphs(this);
+      }
+    }
+
+    disconnectedCallback() {
+      super.disconnectedCallback?.();
+      this.__sfGlyphWatch?.disconnect();
+      this.__sfGlyphWatch = null;
     }
 
     /**

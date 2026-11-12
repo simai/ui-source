@@ -136,6 +136,7 @@
     "src/core/js/icon-choices.js",
     "src/core/js/icon-subset-memory.js",
     "src/core/js/iconSubsetRuntime.js",
+    "src/core/js/ignored-glyphs.js",
     "src/core/js/index.js",
     "src/core/js/instance-path.js",
     "src/core/js/internal.js",
@@ -211,7 +212,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "937c99abef8694df0266440758362e1d03ad4e99649e2ac3efc9634ce4bd54b7",
+  "content_sha256": "dbe445a82535a48b00004392c9f175869a7d338882830889e74f0b07df462931",
   "dependencies": [
     {
       "id": "core.styles",

@@ -153,6 +153,25 @@ if (typeof window !== 'undefined') {
     };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startEarly, {once: true});
     else startEarly();
+    // A Smart bundle the page included itself before core.js found no
+    // SF.runtimeModule and waits for sf-runtime-ready (ui-builder
+    // libs/sharedRuntime.js); the runtime runs when something asks for it.
+    // The Loader asks when it queues a part, and its scan passes a
+    // data-sf-observer="ignore" region by, so a page whose parts all stand in
+    // such regions -- a documentation example, a loader wrap -- had its own
+    // bundles wait for good and its elements never defined (2026-11-11,
+    // acceptance of fix/bare-glyphs-tail N4). The page asked for those
+    // elements by including their code, so once the Loader is ready (the
+    // moment it would have asked, so the first paint is the same) a bundle
+    // still waiting has the runtime started for it. A Smart part with no
+    // bundle on the page is still not loaded from an ignored region.
+    const handBundleWaiting = () => [...document.scripts]
+      .some((script) => /\/smart\/[^/]+\/js\/[^/]+?(?:\.min)?\.js(?:[?#]|$)/u.test(script.src));
+    window.addEventListener('sf-loader-ready', () => {
+      if (SF.__internal.runtimeModules || SF.__internal.runtimeLoading) return;
+      if (!handBundleWaiting() || !smartPartWaiting()) return;
+      SF.loadRuntime().catch((error) => console.warn('[SIMAI Framework] the shared runtime did not load', error));
+    }, {once: true});
   }
 }
 
