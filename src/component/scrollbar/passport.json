@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.scrollbar",
   "kind": "component",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/scrollbar/docs/docs.md",
@@ -15,7 +15,7 @@
     "src/component/scrollbar/scss/_var__scrollbar.scss",
     "src/component/scrollbar/scss/index.scss"
   ],
-  "content_sha256": "cb105a492da6781d9db233db8f5f000ef5a4d9ed92865f4dc34697c7c89147d9",
+  "content_sha256": "605a6e2dff84cb613568674d2c8982d0d6a82b05080ffb43b18f0e1e7a3027c4",
   "dependencies": [
     {
       "id": "core.runtime",

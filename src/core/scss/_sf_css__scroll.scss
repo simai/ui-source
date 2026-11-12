@@ -11,6 +11,18 @@
     scrollbar-gutter: auto;
   }
 
+  // Smooth scrolling is the page's alone, and only for a reader who allows
+  // motion: an anchor link or a script asking for the page's own behaviour
+  // glides. It used to sit on every element (* below), so every list and panel
+  // a component scrolls from script (a chosen option shown, a row revealed, a
+  // thumb dragged) animated for about 0.3 s, and reduced motion was ignored.
+  // A component that wants a glide inside asks for it (behavior: 'smooth').
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
   * {
     // --sf-scroll-bg-track: var(--sf-surface-overlay); - Р·Р°РјРµРЅРёР» РЅР° container С‚.Рє. РїСЂРё СЂР°Р·РЅС‹С… bg-primary,secondary Рё С‚Рґ СЃРєСЂРѕР»Р»Р±Р°СЂ РІРѕРѕР±С‰Рµ РЅРµ РІРёРґРµРЅ
     --sf-scroll-bg-track: var(--sf-transparent);
@@ -27,7 +39,6 @@
     --sf-scroll-thumb-width: var(--sf-scroll-thumb-size);
     --sf-scroll-thumb-inset: var(--sf-a4);
     --sf-scroll-radius: var(--sf-d6);
-    scroll-behavior: smooth;
   }
 
   ::-webkit-scrollbar {
