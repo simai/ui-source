@@ -96,7 +96,6 @@
     --sf-link-visited: var(--sf-place--outer-link-visited, light-dark(var(--sf-tertiary-40), var(--sf-tertiary-80)));
     --sf-focus: var(--sf-place--outer-focus, light-dark(var(--sf-primary-50), var(--sf-primary-90)));
     --sf-focus--color: var(--sf-place--outer-focus--color, var(--sf-focus));
-    --sf-ui-focus-inset: var(--sf-place--outer-ui-focus-inset, inset 0 0 0 var(--sf-focus-outline-width) var(--sf-focus));
   }
 
   /* A popup opened from this one is a nested popup (mix sf-place-popup-children):

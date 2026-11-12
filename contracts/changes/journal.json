@@ -10409,7 +10409,7 @@
       "items": [
         {
           "component": ".sf-surface-media",
-          "attribute": "--sf-primary, --sf-on-primary, --sf-primary-container*, --sf-on-primary-container, --sf-link*, --sf-focus, --sf-focus--color, --sf-ui-focus-inset (on its children)",
+          "attribute": "--sf-primary, --sf-on-primary, --sf-primary-container*, --sf-on-primary-container, --sf-link*, --sf-focus, --sf-focus--color (on its children)",
           "from": "the theme's blue accent, link and focus ring",
           "to": "the glass's white ink"
         }

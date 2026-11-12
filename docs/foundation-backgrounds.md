@@ -245,8 +245,8 @@ the glass's opaque base; the tonal accent is white 12 under white, its hover
 and press going down to 8 and 4 (as on a strong place in the light theme, D2b:
 more white under a darkening label lost it). The
 link (`--sf-link`, hover and press as the accent; visited white at 80) and the
-focus ring (`--sf-focus`, with `--sf-focus--color` and `--sf-ui-focus-inset`,
-which resolve at the root) are white too: the theme's blue read 1.16-1.75 under
+focus ring (`--sf-focus`, with `--sf-focus--color`, which resolves at the
+root) are white too: the theme's blue read 1.16-1.75 under
 a primary label on glass in the light theme. An opaque place on glass (a card,
 a popup, a popover's content) takes back the accent, the link and the ring the
 page had there.
