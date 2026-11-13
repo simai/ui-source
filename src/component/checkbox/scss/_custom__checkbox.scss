@@ -14,6 +14,23 @@
     flex-shrink: 0;
   }
 
+  /* The tick is drawn from the start of the line (C121): a clip opens from
+     the inline start on the box's clock, so the mark and the fill arrive
+     together. The indeterminate dash the same way. Unchecking needs no clip:
+     the glyph is gone at once and the fill fades. Mirrored in RTL. */
+  .sf-checkbox > .sf-checkbox-box .sf-icon {
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path var(--sf-checkbox--duration) var(--sf-checkbox--easing);
+  }
+
+  .sf-checkbox:dir(rtl) > .sf-checkbox-box .sf-icon {
+    clip-path: inset(0 0 0 100%);
+  }
+
+  .sf-checkbox:has(input:checked, input:indeterminate) > .sf-checkbox-box .sf-icon {
+    clip-path: inset(0);
+  }
+
   /* The native control is the hit area. It covers the mark and reaches at
      least 24px on each axis (WCAG 2.2, 2.5.8) where the mark is smaller: a size
      1/2 mark is 16px on mobile, a size 1 mark 20. The inset only goes negative,

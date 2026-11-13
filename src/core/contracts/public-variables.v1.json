@@ -531,12 +531,9 @@
         {
           "name": "--sf-checkbox-gap",
           "role": "gap",
-          "summary": "Space between the box and the label.",
-          "default": "var(--sf-ui-1--text-space-x)",
-          "since": "2026-10-18",
-          "varies_with": [
-            "size"
-          ]
+          "summary": "Space between the box and the label: the row gap of C105 H2, --sf-space-1/2 at every size (12; compact and phone 8).",
+          "default": "var(--sf-space-1/2)",
+          "since": "2026-10-18"
         },
         {
           "name": "--sf-checkbox-checked-background-color",
@@ -601,12 +598,9 @@
         {
           "name": "--sf-radio-button-gap",
           "role": "gap",
-          "summary": "Space between the ring and the label.",
-          "default": "var(--sf-ui-1--text-space-x)",
-          "since": "2026-10-18",
-          "varies_with": [
-            "size"
-          ]
+          "summary": "Space between the ring and the label: the row gap of C105 H2, --sf-space-1/2 at every size (12; compact and phone 8).",
+          "default": "var(--sf-space-1/2)",
+          "since": "2026-10-18"
         },
         {
           "name": "--sf-radio-button-checked-color",
@@ -668,12 +662,9 @@
         {
           "name": "--sf-switch-gap",
           "role": "gap",
-          "summary": "Space between the track and the label.",
-          "default": "var(--sf-ui-1--text-space-x)",
-          "since": "2026-10-18",
-          "varies_with": [
-            "size"
-          ]
+          "summary": "Space between the track and the label: the row gap of C105 H2, --sf-space-1/2 at every size (12; compact and phone 8).",
+          "default": "var(--sf-space-1/2)",
+          "since": "2026-10-18"
         }
       ]
     },
