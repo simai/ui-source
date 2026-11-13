@@ -191,6 +191,11 @@ popup or a place opened from the row does not inherit it.
   tree, the menu, the admin menu, sf-list and the choice card include the mix
   as their selected rows do (C43 D4): a tonal badge on them keeps its tone,
   where it took the hover's alpha under its own before.
+- **Panel rows, lookup options, contents entries** (2026-11-13). A context
+  menu's panel row under the pointer, checked, and checked under the pointer;
+  sf-input-lookup's option under the pointer and the chosen one; the compact
+  sf-contents list's entry under the pointer: each includes the mix with its
+  own fill, as the rows above do.
 - **Table rows.** The cells of a striped, a hovered and an active row
   (`table-stripe`, `table-stripe-col`, `table-hover`, `table-active`) include
   the mix with the cell's accent (2026-11-12): a tonal badge in such a cell

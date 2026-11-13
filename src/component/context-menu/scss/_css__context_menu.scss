@@ -1147,18 +1147,24 @@
   }
 
   /* A panel row (R193 DP-3, C05, owner decision C106 (2)): the hover plate
-     under the pointer; checked, the theme's light fill, and its own hover. */
+     under the pointer; checked, the theme's light fill, and its own hover.
+     Each is a translucent fill, as an item's (C43 D3, D4): a tonal badge on
+     the row keeps its own tone and an anchored badge's ring is the row's
+     colour. */
   .sf-context-menu-row:hover {
     background-color: var(--sf-surface-state-select);
+    @include places.sf-place-fill(var(--sf-surface-state-select));
   }
 
   .sf-context-menu-row:has(> :is(sf-checkbox, sf-radio, input) :checked, > input:checked) {
     background-color: var(--sf-primary-container);
     color: var(--sf-on-primary-container);
+    @include places.sf-place-fill(var(--sf-primary-container));
   }
 
   .sf-context-menu-row:has(> :is(sf-checkbox, sf-radio, input) :checked, > input:checked):hover {
     background-color: var(--sf-primary-container-hover);
+    @include places.sf-place-fill(var(--sf-primary-container-hover));
   }
 
   .sf-context-menu-item:focus-visible,

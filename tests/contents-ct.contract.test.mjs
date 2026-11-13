@@ -20,10 +20,12 @@ const method = (name, next) => source.slice(source.indexOf(`  ${name}`), source.
 
 // 1.6.0 (C95, tests/contents-c95.contract.test.mjs) and 1.6.1 (C77 HS-12,
 // tests/contents-hs12.contract.test.mjs) and 1.6.2 (C109 NI-8,
-// tests/contents-c109.contract.test.mjs) keep every 1.5.0 fix below.
-test('contents is 1.6.2 in its manifest and its generated manifest', () => {
-  assert.equal(manifest.version, '1.6.2');
-  assert.equal(generated.version, '1.6.2');
+// tests/contents-c109.contract.test.mjs) and 1.6.3 (C43 D4, the open list's
+// hovered entry is a fill, tests/badges-owner.contract.test.mjs) keep every
+// 1.5.0 fix below.
+test('contents is 1.6.3 in its manifest and its generated manifest', () => {
+  assert.equal(manifest.version, '1.6.3');
+  assert.equal(generated.version, '1.6.3');
 });
 
 test('CT-03: fewer than two sections draw nothing, by the host state and in the printed markup', () => {

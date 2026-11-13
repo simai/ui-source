@@ -335,12 +335,16 @@
 
 .sf-lookup .sf-lookup-option:hover {
   background-color: var(--sf-surface-state-hover);
+  /* A translucent fill, as a menu's row (C43 D3, D4): the badge on the
+     option's line keeps its own tone, hovered or chosen. */
+  @include places.sf-place-fill(var(--sf-surface-state-hover));
 }
 
 .sf-lookup .sf-lookup-option.sf-lookup-option--chosen {
   background-color: var(--sf-primary-container);
   color: var(--sf-on-primary-container);
   --sf-on-surface-variant: var(--sf-on-primary-container);
+  @include places.sf-place-fill(var(--sf-primary-container));
 }
 
 /* The active row is where Enter chooses: the focus ring, drawn inside it. */
