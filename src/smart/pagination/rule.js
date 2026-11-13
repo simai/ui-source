@@ -13,5 +13,8 @@ SF.RuleLoader['cl-pagination'] = {
     { name: 'cl-input' },
     { name: 'cl-list-item' },
     { name: 'cl-spinner' },
+    { name: 'cl-icon' },
+    { name: 'cl-menu-context' },
+    { name: 'cl-progress-bar' },
   ],
 };

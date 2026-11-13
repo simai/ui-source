@@ -2,6 +2,8 @@ import SfBaseElement, {
   toAttributeName,
 } from "../../core/js/smart-base";
 import { elementFromManifest } from "../../core/js/element-manifest";
+import { noteDeprecated } from "../../core/js/deprecations";
+import { breakpointMedia } from "../../core/js/breakpoints.js";
 import { renderPaginationTemplate } from "./js/templates/default";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
@@ -21,6 +23,50 @@ import ru from "./lang/ru.json";
 // SF.language.register keeps them until 2026-12-01, each old key noted once
 // in SF.deprecations (change journal option-pagination-word-keys-camel-to-kebab).
 const camelKey = (key) => String(key).replace(/-([a-z])/gu, (_, letter) => letter.toUpperCase());
+// Words added after the rename never had a camelCase key, so they have no
+// former key either (title-page, 1.4.0; the appearances' words, 1.5.0).
+const LATER_WORDS = new Set([
+  "title-page", "of-pages", "range", "range-many", "page-size-text", "previous-text", "next-text",
+  "cursor-next-text", "show-more-count", "shown",
+]);
+
+// The appearances of decision C97 (2026-11-12). An element written without
+// appearance draws the compatible footer (range, page size, field, Show more,
+// band) until FOOTER_UNTIL: those parts belong to the list that owns them.
+const APPEARANCES = ["field", "numbers", "arrows", "cursor", "more"];
+const FOOTER_SINCE = "2026-11-12";
+const FOOTER_UNTIL = "2027-01-01";
+// Places of numbers: seven, five below the sm step of the ladder
+// (core/js/breakpoints.js, the sheets' media-breakpoint-down).
+
+// The page window of numbers (USWDS, GOV.UK; prototype pagination-study.html):
+// at most `slots` places, the first and the last page always, a gap where
+// pages are left out. Exactly `slots` places once there are more pages than
+// that, so the row keeps its width while a person pages.
+export function pageWindow(current, count, slots) {
+  if (count <= slots) return Array.from({length: Math.max(0, count)}, (_, index) => index + 1);
+  const side = slots - 2;
+  const inner = side - 2;
+  let start = Math.max(2, current - Math.floor((inner - 1) / 2));
+  let end = start + inner - 1;
+  if (end > count - 1) {
+    end = count - 1;
+    start = end - inner + 1;
+  }
+  if (start <= 3) {
+    start = 2;
+    end = side;
+  } else if (end >= count - 2) {
+    end = count - 1;
+    start = count - side + 1;
+  }
+  const places = [1];
+  if (start > 2) places.push("gap");
+  for (let page = start; page <= end; page += 1) places.push(page);
+  if (end < count - 1) places.push("gap");
+  places.push(count);
+  return places;
+}
 const PaginationElement = elementFromManifest(manifest, {
   base: SfBaseElement,
   lang: { en, ru },
@@ -29,7 +75,7 @@ const PaginationElement = elementFromManifest(manifest, {
   formerWords: {
     since: "2026-10-27",
     remove_after: "2026-12-01",
-    words: Object.fromEntries(Object.keys(en.runtime).map((key) => [key, camelKey(key)])),
+    words: Object.fromEntries(Object.keys(en.runtime).filter((key) => !LATER_WORDS.has(key)).map((key) => [key, camelKey(key)])),
   },
 });
 
@@ -214,6 +260,10 @@ class SfPagination extends PaginationElement {
         attribute: "actions-label",
         default: "",
       },
+      appearance: { default: "field", values: APPEARANCES },
+      href: { default: "" },
+      pageParam: { attribute: "page-param", default: "" },
+      pageInTitle: { attribute: "page-in-title", type: Boolean, default: false },
     };
   }
 
@@ -251,6 +301,18 @@ class SfPagination extends PaginationElement {
 
   get pagesLabel() {
     return this.getAttribute("pages-label") || this.sfWord("pages-label");
+  }
+
+  // The appearance (C97): field, numbers, arrows, cursor or more.
+  get appearance() {
+    const value = this.getAttribute("appearance");
+    return APPEARANCES.includes(value) ? value : "field";
+  }
+
+  // No appearance written: the compatible footer of 1.4 and before, in the
+  // look of C97 (range, «По 20 ▾», field «из 12»), until 2027-01-01.
+  get footer() {
+    return !this.hasAttribute("appearance");
   }
 
   get pageLabel() {
@@ -453,6 +515,54 @@ class SfPagination extends PaginationElement {
     return this.getAttribute("clear-selection-label") || this.sfWord("clear-selection-label");
   }
 
+  // The address of a page, as a template: «?page={page}» or
+  // «/news/page/{page}/», with {page-size} for the page size (PG-10). Set,
+  // the arrows are links with rel prev/next and a page typed in the field is
+  // opened by its address; empty, they are buttons, as before 1.4.0.
+  get href() {
+    return (this.getAttribute("href") || "").trim();
+  }
+
+  // The name of the address's query parameter that holds the page («page»):
+  // the page is read from it when the element is placed and on Back and
+  // Forward, and written to it (a new history entry) when a person moves.
+  // Page 1 is the address without it. Empty: the address is not touched.
+  get pageParam() {
+    return (this.getAttribute("page-param") || "").trim();
+  }
+
+  // Whether the page number joins the document title («Новости — Страница
+  // 3»), as search results and catalogues do; page 1 keeps the title as it
+  // was. One pagination of a document says it, not every list on the page.
+  get pageInTitle() {
+    return this.getBooleanAttr("page-in-title", false);
+  }
+
+  // The address of one page from the template, or "" without a template or a
+  // page to name (the last page of an estimate).
+  pageHref(page) {
+    const template = this.href;
+    const number = Number.parseInt(String(page ?? ""), 10);
+    if (!template || !Number.isFinite(number) || number < 1) return "";
+
+    return template
+      .replace(/\{page\}/gu, String(number))
+      .replace(/\{page-size\}/gu, String(this.pageSize));
+  }
+
+  // A press on an arrow link. A plain press moves here and reports it; a host
+  // that takes the move in place (it loads the rows itself) cancels
+  // sf-pagination-change, and the link is not followed. A press with a
+  // modifier (a new tab, a new window) is the browser's alone.
+  followLink(event, page) {
+    if (event?.defaultPrevented) return this;
+    if (event && (event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) return this;
+    const outcome = this.goToPage(page, { link: true });
+    if (outcome.taken) event?.preventDefault?.();
+
+    return this;
+  }
+
   // The page being read. It is held inside the page count only when there is a
   // count: without one the count is one page, and that clamp pinned every page
   // to the first — the switcher showed a single place on page three, and
@@ -520,6 +630,58 @@ class SfPagination extends PaginationElement {
     }));
   }
 
+  // Whether the screen is narrow (below the sm step): numbers then shows five
+  // places in place of seven.
+  get narrow() {
+    return Boolean(this._sfNarrow?.matches);
+  }
+
+  // The places of numbers: page numbers and gaps, at most seven (five on a
+  // narrow screen). Without an exact count the row reaches the page has_next
+  // promises and ends in a gap while more follow: there is no last page to
+  // name (USWDS «unbounded»).
+  get pageSlots() {
+    if (this.exactCount && this.total === 0) return [];
+    const slots = this.narrow ? 5 : 7;
+    const current = this.current;
+    const unbounded = !this.exactCount && this.hasNextPage;
+    const count = this.exactCount
+      ? this.pageCount
+      : Math.max(this.countKnown ? this.pageCount : 0, current + (this.hasNextPage ? 1 : 0));
+    const places = pageWindow(current, count, unbounded ? slots - 1 : slots);
+    if (unbounded) places.push("gap");
+
+    return places.map((place) => (place === "gap"
+      ? {type: "gap"}
+      : {type: "page", value: place, selected: place === current}));
+  }
+
+  // The first and the last row of the range part: «41–60».
+  get range() {
+    const from = (this.current - 1) * this.pageSize + 1;
+    const to = this.exactCount ? Math.min(this.total, this.current * this.pageSize) : this.current * this.pageSize;
+    return {from, to};
+  }
+
+  // The range part's line (C97 point 2): «41–60 из 240», «41–60 из ~450»,
+  // «41–60 из многих». A total-label the author wrote keeps the line of 1.4
+  // («Всего: 240») until 2027-01-01.
+  get rangeText() {
+    if (this.hasAttribute("total-label")) {
+      return this.countKnown || this.counting || this.canCount ? `${this.totalLabel} ${this.countKnown ? this.shownTotal : ""}`.trim() : "";
+    }
+    if (this.exactCount && this.total === 0) return "";
+    const {from, to} = this.range;
+    return this.countKnown
+      ? this.sfWord("range", {vars: {from, to, total: this.shownTotal}})
+      : this.sfWord("range-many", {vars: {from, to}});
+  }
+
+  // How many rows more shows: every portion up to the current one.
+  get shown() {
+    return this.exactCount ? Math.min(this.total, this.current * this.pageSize) : this.current * this.pageSize;
+  }
+
   firstPage() {
     return this.goToPage(1);
   }
@@ -533,8 +695,18 @@ class SfPagination extends PaginationElement {
       return this;
     }
     const furthest = this.exactCount ? this.pageCount : parsed;
+    const page = Math.min(Math.max(parsed, 1), Math.max(1, furthest));
+    // With an address template the typed page is opened by its address, as
+    // the arrows are, unless the host takes the move in place.
+    if (this.href) {
+      const outcome = this.goToPage(page, { link: true });
+      if (outcome.outcome === "applied" && !outcome.taken) {
+        globalThis.location?.assign?.(this.pageHref(page));
+      }
+      return outcome;
+    }
 
-    return this.goToPage(Math.min(Math.max(parsed, 1), Math.max(1, furthest)));
+    return this.goToPage(page);
   }
 
   // The field grows with the number being typed. It is done to the element
@@ -585,6 +757,34 @@ class SfPagination extends PaginationElement {
       pageFieldLabel: this.text("pageFieldLabel", "page-field-label"),
 
       rootClass: this.getRootClass(),
+      appearance: this.appearance,
+      footer: this.footer,
+      topClass: this.topClass,
+      mainClass: this.mainClass,
+      bottomClass: this.bottomClass,
+      // A label only an author's own pages-label still draws (until
+      // 2027-01-01): the row says what it is without it.
+      pagesLabelShown: this.hasAttribute("pages-label"),
+      fieldDigits: Math.max(String(this.current).length, this.exactCount ? String(this.pageCount).length : 1, 1),
+      ofPages: this.countKnown
+        ? this.sfWord("of-pages", {vars: {count: this.totalExact ? this.pageCount : `~${this.pageCount}`}})
+        : "",
+      pageSlots: this.appearance === "numbers" ? this.pageSlots : [],
+      slotDigits: String(this.exactCount ? this.pageCount : this.current + 1).length,
+      previousText: this.sfWord("previous-text"),
+      nextText: this.sfWord("next-text"),
+      cursorNextText: this.sfWord("cursor-next-text"),
+      placeText: this.sfWord("title-page", {vars: {page: this.current}}),
+      showMoreCountText: this.getAttribute("show-more-text")
+        || (this.exactCount
+          ? this.sfWord("show-more-count", {vars: {count: Math.min(this.pageSize, Math.max(0, this.total - this.shown))}})
+          : this.showMoreText),
+      shownText: this.countKnown
+        ? this.sfWord("shown", {vars: {shown: this.shown, total: this.shownTotal}})
+        : "",
+      shownPercent: this.exactCount && this.total > 0 ? Math.round((this.shown / this.total) * 100) : null,
+      rangeText: this.rangeText,
+      pageSizeText: this.sfWord("page-size-text", {vars: {size: this.pageSize}}),
       ariaLabel: this.ariaLabel,
       pagesLabel: this.pagesLabel,
       pageLabel: this.pageLabel,
@@ -606,9 +806,12 @@ class SfPagination extends PaginationElement {
       totalExact: this.totalExact,
       shownTotal: this.shownTotal,
       // The last page is a jump to a number: offered when the number is
-      // exact, or when the host can count it first. Without a count at all
-      // the button asks for one, as it always has.
-      canJumpToLast: this.exactCount || this.canCount || !this.countKnown,
+      // exact, or when the host can count it first (the button asks for the
+      // count). A host that cannot count (a cursor list) has no last page
+      // (PG-11).
+      canJumpToLast: this.exactCount || this.canCount,
+      exactCount: this.exactCount,
+      href: this.href,
       canCount: this.canCount,
       counting: this.counting,
       showCountLabel: this.showCountLabel,
@@ -653,7 +856,11 @@ class SfPagination extends PaginationElement {
   // asked for (a number, an arrow, the field) or a host finishing what a
   // person started (the last page once the count arrives) is reported as
   // sf-pagination-change.
-  goToPage(page) {
+  // A second argument is the element's own: {link} for a press on an arrow
+  // link or a page typed with an address template (sf-pagination-change is
+  // then cancelable, and a cancel means "taken in place, do not follow"),
+  // {address} for a page read from the address (not written back to it).
+  goToPage(page, { link = false, address = false } = {}) {
     if (this.exactCount && this.total === 0) {
       return { outcome: "refused", reason: "empty" };
     }
@@ -677,15 +884,174 @@ class SfPagination extends PaginationElement {
 
     this.setState({ current: next });
 
-    this.sfEmit("change", {
+    const followed = this.sfEmit("change", {
       previous,
       current: next,
       total: this.total,
       "page-count": this.knownPageCount,
       "page-size": this.pageSize,
-    });
+    }, link ? { cancelable: true } : {});
+    const taken = link && followed === false;
 
-    return { outcome: "applied" };
+    // The address follows a move made here; a link that is followed writes
+    // its own address, and a page read from the address is already in it.
+    if (!address && (!link || taken)) this.writeAddress(next);
+    this.applyTitle();
+
+    return taken ? { outcome: "applied", taken: true } : { outcome: "applied" };
+  }
+
+  // The page the address names (page-param), or null when it names none.
+  addressPage() {
+    if (!this.pageParam || !globalThis.location) return null;
+    const value = new URLSearchParams(globalThis.location.search).get(this.pageParam);
+    if (value === null) return 1;
+    const page = Number.parseInt(value, 10);
+
+    return Number.isFinite(page) && page >= 1 ? page : null;
+  }
+
+  // The page written to the address as a new history entry, so Back returns
+  // to the page before; page 1 is the address without the parameter.
+  writeAddress(page) {
+    if (!this.pageParam || !globalThis.history?.pushState || !globalThis.location) return;
+    const url = new URL(globalThis.location.href);
+    if (page > 1) url.searchParams.set(this.pageParam, String(page));
+    else url.searchParams.delete(this.pageParam);
+    if (url.href === globalThis.location.href) return;
+    globalThis.history.pushState(globalThis.history.state, "", url.href);
+  }
+
+  // The address moved (placed on it, Back, Forward): the page follows it and
+  // is reported like any move, so the host loads it.
+  followAddress() {
+    const page = this.addressPage();
+    if (page !== null && page !== this.current) this.goToPage(page, { address: true });
+  }
+
+  // The document title with the page in it (page-in-title). The title the
+  // page had is kept and comes back on page 1 and when the element leaves.
+  applyTitle() {
+    if (!globalThis.document) return;
+    if (!this.pageInTitle) {
+      this.restoreTitle();
+      return;
+    }
+    if (this._sfTitle === undefined || (document.title !== this._sfTitleShown)) {
+      this._sfTitle = document.title;
+    }
+    const shown = this.current > 1
+      ? `${this._sfTitle} — ${this.sfWord("title-page", { vars: { page: this.current } })}`
+      : this._sfTitle;
+    this._sfTitleShown = shown;
+    if (document.title !== shown) document.title = shown;
+  }
+
+  restoreTitle() {
+    if (this._sfTitle === undefined || !globalThis.document) return;
+    if (document.title === this._sfTitleShown) document.title = this._sfTitle;
+    this._sfTitle = undefined;
+    this._sfTitleShown = undefined;
+  }
+
+  onConnected() {
+    super.onConnected?.();
+    this._sfNarrow = breakpointMedia("sm", { below: true });
+    if (this._sfNarrow) {
+      this._sfNarrow.addEventListener?.("change", () => {
+        if (this.appearance === "numbers" && !this.footer) this.refresh("narrow");
+      }, { signal: this.sfScope });
+    }
+    if (this.pageParam && globalThis.addEventListener) {
+      globalThis.addEventListener("popstate", () => this.followAddress(), { signal: this.sfScope });
+      // After the page's own listeners are on: a host that appends the
+      // element and then listens still hears the page the address names.
+      queueMicrotask(() => {
+        if (this.isConnected) this.followAddress();
+      });
+    }
+  }
+
+  onDisconnected() {
+    this.restoreTitle();
+    super.onDisconnected?.();
+  }
+
+  // The title follows the page whoever set it: a person, the host, the address.
+  afterRender(changed) {
+    const result = super.afterRender(changed);
+    if (typeof changed !== "function") {
+      this.applyTitle();
+      this.noteFooterParts();
+    }
+
+    return result;
+  }
+
+  // What this element still draws for compatibility (C97, until 2027-01-01),
+  // each noted once in SF.deprecations: the footer parts a list now composes
+  // itself, Show more beside the pages, the band of bulk controls and the
+  // words of the 1.4 footer an author wrote.
+  noteFooterParts() {
+    const note = (kind, from, to, attribute = "") => noteDeprecated({
+      component: "sf-pagination",
+      tag: "sf-pagination",
+      kind,
+      attribute,
+      from,
+      to,
+      since: FOOTER_SINCE,
+      remove_after: FOOTER_UNTIL,
+    });
+    if (this.footer) note("value", "(none)", "field", "appearance");
+    if (this.footer && this.top && this.hasNext) note("setting", "top", 'appearance="more"');
+    if (this.footer && this.bottom && this.showActions && this.actions.length && this.selectedCount > 0) {
+      note("setting", "actions", "sf-view");
+    }
+    for (const attribute of ["total-label", "pages-label"]) {
+      if (this.hasAttribute(attribute)) note("attribute", attribute, null);
+    }
+  }
+
+  // One of the events of the parts that leave for the list (C97 points 3
+  // and 5), noted once as it is sent.
+  noteFooterEvent(name) {
+    noteDeprecated({
+      component: "sf-pagination",
+      tag: "sf-pagination",
+      kind: "event",
+      from: `sf-pagination-${name}`,
+      to: "sf-view",
+      since: FOOTER_SINCE,
+      remove_after: FOOTER_UNTIL,
+    });
+  }
+
+  // The page-size menu (C97 point 3): radio rows of the sizes offered, opened
+  // from the quiet button. The button's host is display: contents, so the
+  // menu is placed against the button it draws.
+  togglePageSizeMenu(button) {
+    const menu = this.querySelector(".sf-pagination-size-menu");
+    if (!menu) return this;
+    menu.entries = this.pageSizes.map((size) => ({
+      id: String(size),
+      text: this.sfWord("page-size-text", {vars: {size}}),
+      kind: "radio",
+      checked: size === this.pageSize,
+    }));
+    const anchor = button?.querySelector?.("button") ?? button;
+    if (typeof menu.toggleFor === "function") menu.toggleFor(anchor, {align: "end", width: "content"});
+    else menu.openFor?.(anchor, {align: "end"});
+
+    return this;
+  }
+
+  choosePageSize(event) {
+    const size = Number.parseInt(String(event?.detail?.id ?? event?.detail?.entry?.id ?? ""), 10);
+    if (Number.isFinite(size)) this.setPageSize(size);
+    event?.currentTarget?.close?.();
+
+    return this;
   }
 
   // The last page needs a number, and without a count nobody has one yet. So
@@ -721,6 +1087,7 @@ class SfPagination extends PaginationElement {
   // the rows do — so this is an announcement, not a mutation, and the view
   // passes it to the table.
   clearSelection() {
+    this.noteFooterEvent("selection-clear");
     this.sfEmit("selection-clear", {
       "selected-count": this.selectedCount,
       total: this.total,
@@ -763,12 +1130,15 @@ class SfPagination extends PaginationElement {
 
     const pageCount = Math.max(1, Math.ceil(this.total / parsed));
     const current = this.exactCount ? Math.min(this.current, pageCount) : this.current;
+    const moved = current !== this.current;
 
     this.setState({
       pageSize: parsed,
       current,
     });
+    if (moved) this.writeAddress(current);
 
+    this.noteFooterEvent("size-change");
     this.sfEmit("size-change", {
       previous,
       "page-size": parsed,
@@ -791,6 +1161,7 @@ class SfPagination extends PaginationElement {
     }
 
     this.setState({ action: value });
+    this.noteFooterEvent("action-change");
     this.sfEmit("action-change", {
       previous,
       action: value,
@@ -807,6 +1178,7 @@ class SfPagination extends PaginationElement {
     }
 
     this.setState({ actionForAll: next });
+    this.noteFooterEvent("action-for-all-change");
     this.sfEmit("action-for-all-change", {
       previous,
       "action-for-all": next,
@@ -829,6 +1201,7 @@ class SfPagination extends PaginationElement {
 
     // vocabulary §5 apply: the scope is the marked rows, or everything under
     // the filter when «for all» is on.
+    this.noteFooterEvent("apply");
     this.sfEmit("apply", {
       action: this.action,
       scope: this.actionForAll ? "filter" : "selection",

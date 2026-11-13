@@ -133,6 +133,10 @@
           "  <sf-pagination id=\"pg-more\" aria-label=\"Ещё записи\" current=\"1\" total=\"40\" page-size=\"10\" bottom=\"false\"></sf-pagination>",
           "  <sf-pagination id=\"pg-unknown\" current=\"3\" count-known=\"false\" can-count has-next top=\"false\" bottom=\"false\"></sf-pagination>",
           "  <sf-pagination id=\"pg-estimate\" current=\"2\" total=\"450\" total-exact=\"false\" can-count page-size=\"10\" top=\"false\" bottom=\"false\"></sf-pagination>",
+          "  <sf-pagination id=\"pg-numbers\" appearance=\"numbers\" aria-label=\"Страницы каталога\" current=\"5\" total=\"120\" page-size=\"10\"></sf-pagination>",
+          "  <sf-pagination id=\"pg-field\" appearance=\"field\" current=\"1\" total=\"120\" page-size=\"10\"></sf-pagination>",
+          "  <sf-pagination id=\"pg-cursor\" appearance=\"cursor\" current=\"1\" count-known=\"false\" has-next></sf-pagination>",
+          "  <sf-pagination id=\"pg-feed\" appearance=\"more\" current=\"2\" total=\"240\" page-size=\"20\"></sf-pagination>",
           "</main>"
         ]
       },
@@ -255,7 +259,7 @@
           "covers": "events.load-more, aliases sf-show-more",
           "steps": [
             {
-              "user": "click:#pg-more .sf-pagination-more button",
+              "user": "click:#pg-more .sf-pagination-more-button button",
               "expect": {
                 "events": [
                   {
@@ -439,6 +443,72 @@
               "script": "(() => { const el = document.getElementById('pg-estimate'); el.setState({totalExact: false}); return el.getAttribute('total-exact') === 'false' && el.totalExact === false; })()",
               "wait": 200,
               "check": "/~452/u.test(document.querySelector('#pg-estimate .sf-pagination-total')?.textContent ?? '')"
+            }
+          ]
+        },
+        {
+          "id": "c1-numbers-seven",
+          "title": "numbers (C97): seven places «1 … 4 5 6 … 12», the current one aria-current=page, the gap no control",
+          "covers": "settings.appearance numbers",
+          "steps": [
+            {
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('pg-numbers'); const places = [...el.querySelectorAll('.sf-pagination-slot')].map((li) => li.textContent.trim()); const current = el.querySelector('[aria-current=\"page\"]'); return places.join(' ') === '1 … 4 5 6 … 12' && current?.textContent.trim() === '5' && !el.querySelector('.sf-pagination-gap')?.closest('button, a'); })()"
+            }
+          ]
+        },
+        {
+          "id": "c2-field-ends-disabled",
+          "title": "field (C97 points 1, 4): «из 12» after the field; on page 1 first and previous are disabled in place, and the row keeps its width on page 3",
+          "covers": "settings.appearance field, PG-02, PG-03",
+          "steps": [
+            {
+              "wait": 200,
+              "script": "(() => { const el = document.getElementById('pg-field'); window.__fieldWidth = el.querySelector('.sf-pagination-list').getBoundingClientRect().width; return true; })()",
+              "check": "(() => { const el = document.getElementById('pg-field'); const off = (kind) => el.querySelector(`.sf-pagination-direction--${kind} button`)?.disabled === true; return /из 12/u.test(el.querySelector('.sf-pagination-of')?.textContent ?? '') && off('first') && off('prev') && !off('next') && !off('last'); })()"
+            },
+            {
+              "script": "(document.getElementById('pg-field').setState({current: 3}), true)",
+              "wait": 200,
+              "check": "Math.abs(document.querySelector('#pg-field .sf-pagination-list').getBoundingClientRect().width - window.__fieldWidth) < 0.5"
+            }
+          ]
+        },
+        {
+          "id": "c3-cursor-no-last",
+          "title": "cursor (C97): «В начало · Дальше», no number and never a last page; «Дальше» is off once has-next is",
+          "covers": "settings.appearance cursor, PG-09, PG-11",
+          "steps": [
+            {
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('pg-cursor'); return !el.querySelector('.sf-pagination-direction--last') && !el.querySelector('.sf-pagination-page-field') && /Дальше/u.test(el.querySelector('.sf-pagination-direction--next')?.textContent ?? ''); })()"
+            },
+            {
+              "script": "(document.getElementById('pg-cursor').removeAttribute('has-next'), true)",
+              "wait": 200,
+              "check": "document.querySelector('#pg-cursor .sf-pagination-direction--next button')?.disabled === true"
+            }
+          ]
+        },
+        {
+          "id": "c4-more-own-look",
+          "title": "more (C97): «Показать ещё 20» and «Показано 40 из 240» with a bar, no arrows",
+          "covers": "settings.appearance more, PG-07",
+          "steps": [
+            {
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('pg-feed'); return /Показать ещё 20/u.test(el.querySelector('.sf-pagination-more-button')?.textContent ?? el.querySelector('.sf-pagination-more-button')?.getAttribute('text') ?? '') && /Показано 40 из 240/u.test(el.querySelector('.sf-pagination-shown')?.textContent ?? '') && Boolean(el.querySelector('sf-progress-bar')) && !el.querySelector('.sf-pagination-direction'); })()"
+            }
+          ]
+        },
+        {
+          "id": "c5-footer-range-size",
+          "title": "the compatible footer (C97 points 2, 3, 5): «11–20 из 80», a quiet «По 10 ▾» button with a menu, the field last; noted in SF.deprecations",
+          "covers": "value-pagination-footer-parts-to-view",
+          "steps": [
+            {
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('pg'); const range = el.querySelector('.sf-pagination-range')?.textContent.trim(); const size = el.querySelector('.sf-pagination-size'); const field = el.querySelector('.sf-pagination-container').getBoundingClientRect(); const left = el.querySelector('.sf-pagination-size').querySelector('button').getBoundingClientRect(); return range === '11–20 из 80' && size?.getAttribute('text') === 'По 10' && !el.querySelector('sf-dropdown') && field.left >= left.right && (SF.deprecations?.list?.() ?? []).some((note) => note.component === 'sf-pagination' && note.from === '(none)' && note.remove_after === '2027-01-01'); })()"
             }
           ]
         }

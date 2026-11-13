@@ -1,10 +1,15 @@
+@use "sass:map";
+@use "../../../core/scss/vars/sf_var__breakpoint" as bp;
+
 @layer sf.components {
 /* sf-pager (standard simai.smart-component 1.3.13 §6). One ladder
    (docs/foundation-composition-geometry.md): at a rung S the title is the
    text line L = --sf-text-height-S, a note the line a step down, a picture
    the line it stands on, the controls --sf-ui-S--control-height. A text whose
    length is data takes one line with an ellipsis, so every box is known from
-   the settings before any data or code (§5.4). The public variables are read
+   the settings before any data or code (§5.4); the row's titles take up to
+   two lines and the steps' place line wraps (decision C97, PR-02, PR-04),
+   the first paint printing them with their data. The public variables are read
    with the role token as their fallback and never set here. */
 .sf-pager {
   --sf-pager--line: var(--sf-text-height-1);
@@ -149,21 +154,37 @@
   font-weight: var(--sf-font-weight-medium);
 }
 
-/* ── row: one line, the two titles at the two ends. ── */
+/* ── row: the two titles at the two ends, each whole up to two lines (PR-04,
+   decision C97: the full title). It cut each title to one line with an
+   ellipsis, one of two already in a card 440 pixels wide. The arrow stands on the
+   title's first line. ── */
 .sf-pager--row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--sf-pager--gap);
   min-block-size: var(--sf-pager--line);
 }
 
 .sf-pager--row .sf-pager-side {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--sf-pager--text-space);
   max-inline-size: calc(50% - var(--sf-pager--gap) / 2);
   min-inline-size: 0;
   padding: 0;
+}
+
+.sf-pager--row .sf-pager-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.sf-pager--row .sf-pager-side--next {
+  text-align: end;
 }
 
 .sf-pager--row .sf-pager-side:hover .sf-pager-title {
@@ -194,11 +215,14 @@
   min-inline-size: 0;
 }
 
+/* The place line wraps under itself rather than cutting the step's name
+   (PR-02: «Шаг 2 из 4 · Сопостав…» in a card 440 pixels wide at 1440). steps is
+   interim: decision C97 moves it to sf-wizard. */
 .sf-pager--steps .sf-pager-place {
   max-inline-size: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  text-align: center;
+  white-space: normal;
 }
 
 .sf-pager-track {
@@ -303,7 +327,8 @@
   flex: none;
 }
 
-/* ── counter: ‹ 3 of 12 › ── */
+/* ── counter: «‹ 3 из 240 ›» in a record card (C97), the way back to the list
+   before it when list-href is given. ── */
 .sf-pager--counter {
   display: inline-flex;
   align-items: center;
@@ -317,6 +342,11 @@
   contain: layout;
 }
 
+.sf-pager--counter .sf-pager-list {
+  margin-inline-end: var(--sf-pager--gap);
+  text-decoration: none;
+}
+
 .sf-pager--counter .sf-pager-place {
   min-inline-size: 7ch;
   color: var(--sf-on-surface);
@@ -325,6 +355,32 @@
   font-variant-numeric: tabular-nums;
   text-align: center;
   white-space: nowrap;
+}
+
+/* A phone stacks cards and row (PR-05, decision C97): side by side at 390 pixels
+   each side had about 170 pixels and the titles were cut. The previous side comes
+   first, the next one holds the end of the line below it. */
+@media not all and (min-width: map.get(bp.$breakpoint-array, sm)) {
+  .sf-pager--cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sf-pager--cards .sf-pager-side--next {
+    grid-column: 1;
+  }
+
+  .sf-pager--row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sf-pager--row .sf-pager-side {
+    max-inline-size: 100%;
+  }
+
+  .sf-pager--row .sf-pager-side--next {
+    align-self: flex-end;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
