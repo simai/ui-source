@@ -104,3 +104,19 @@ test('a density switch restates the gap while open (C59 S1 acceptance M1)', asyn
   assert.match(source, /\.\.\.\(tokens\.length \? \[watchDensity\(floating\.ownerDocument, controller\.update\)\] : \[\]\)/);
   // Behaviour: tests/browser/float-anchor-nested.browser.mjs (nested overlays, 390 start/end, density).
 });
+
+test('measuring the natural height puts back what was scrolled inside the panel (R171)', async () => {
+  const position = await readFile(new URL('../src/core/js/position.js', import.meta.url), 'utf8');
+  // The cap comes off to measure; a list scrolling inside the panel would be
+  // thrown back to its start on every reposition. Only a fit that measures
+  // (full, or the first) takes the cap off; a light fit keeps it.
+  assert.match(position, /let scrolled = settings\.fitHeight && \(full \|\| !measures\) \? scrollOffsets\(floating\) : null;/);
+  assert.match(position, /return await place\(full, putBack\);\s*\} finally \{\s*putBack\(\);/);
+  // Put back before onPosition: sf-menu scrolls its panel there (syncScroll).
+  assert.match(position, /putBack\(\);\s*settings\.onPosition\?\.\(/);
+  assert.match(position, /function scrollOffsets\(floating\) \{[\s\S]*?floating\.querySelectorAll\('\*'\)/);
+  // At once, never through the sheet's smooth scrolling (R171 follow-up):
+  // an assigned scrollTop glided from 0 and a reposition kept a value short.
+  assert.match(position, /if \(element\.scrollTop !== top \|\| element\.scrollLeft !== left\) element\.scrollTo\(\{top, left, behavior: 'instant'\}\);/);
+  assert.doesNotMatch(position, /element\.scrollTop = top;/);
+});

@@ -1,6 +1,6 @@
 import { createDropdownInteraction, syncDropdownCheckbox } from '../interaction';
 import { bindFormReset } from '../../form-reset-helper';
-import { openDropdownPortal, positionDropdownPortal, closeDropdownPortal, alignDropdownInPlace } from '../portal';
+import { openDropdownPortal, positionDropdownPortal, closeDropdownPortal, alignDropdownInPlace, scrolledInside } from '../portal';
 import { retireFieldSizeClass } from '../../field-size';
 import { holdOpenSurfaceMark } from '../../../core/js/open-surface-mark';
 
@@ -136,7 +136,9 @@ function ensurePortalList(root) {
     list.addEventListener('keydown',onRootKeydown);
   }
   if (!root.__sfDropdownPortalOnViewportChange) {
-    root.__sfDropdownPortalOnViewportChange=()=>{
+    root.__sfDropdownPortalOnViewportChange=(event)=>{
+      // The list's own scroll moves nothing (owner R171).
+      if(scrolledInside(getList(root),event))return;
       if(root.classList.contains('sf-dropdown--open'))positionPortalList(root);
     };
   }

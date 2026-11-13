@@ -301,7 +301,13 @@
 @layer sf.components {
   .sf-list-container--grid {
     display: grid;
-    grid-template-columns: repeat(var(--sf-list-container--columns, 6), minmax(0, 1fr));
+    /* Every column is one cell wide, and a cell is as tall as a field of the
+       dropdown's size (owner, 2026-10-14). Stretched to the list, four columns
+       under a 32rem field made cells of 125 px, two rows in a grid sized for
+       six. Under a field wider than its columns the grid stands at the start;
+       the list itself stays as wide as the field (C32). */
+    grid-template-columns: repeat(var(--sf-list-container--columns, 6), var(--sf-list--cell, var(--sf-ui-1--control-height)));
+    justify-content: start;
     gap: var(--sf-px);
     /* A grid asks for the width its columns need: the list otherwise takes the
        width of the control it hangs from, and a chooser narrow enough to hold a
@@ -367,9 +373,5 @@
   .sf-list--free-width:has(.sf-list-container--grid) > .sf-input {
     inline-size: 0;
     min-inline-size: 100%;
-  }
-
-  .sf-list--free-width .sf-list-container--grid {
-    grid-template-columns: repeat(var(--sf-list-container--columns, 6), var(--sf-list--cell, var(--sf-ui-1--control-height)));
   }
 }

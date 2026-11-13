@@ -61,7 +61,10 @@ beside every option that has no picture of its own, because a class and
 The actual toggle button is the primary Tab stop. It controls a named listbox;
 the optional searchbox is separate from its options. ArrowDown opens search
 (or the first available option); ArrowUp opens the last available option.
-Arrow keys and Home/End move option focus without changing selection. Enter or
+Arrow keys, Home/End, PageDown/PageUp (by what the list shows) and typed
+letters (type-ahead: a prefix typed within half a second, the same letter again
+for the next match) move option focus without changing selection; the focused
+option is brought into view at once, as far as it needs. Enter or
 Space selects; Escape closes without changing selection and restores the
 button. Tab closes and continues native page traversal. Home/End in search
 remain native editing keys. Independent tag-removal buttons remain reachable.
@@ -110,7 +113,9 @@ remain explicit overrides. Dropdown field defaults use var() fallbacks so an
 inherited --sf-dropdown--radius is not shadowed by a child default declaration.
 
 Positioning uses the shared `SF.Position` contract (Floating UI) and is on by
-default; `portal="false"` keeps the in-flow list. With Popover API support,
+default; `portal="false"` keeps the in-flow list, which opens below the field
+with the positioned list's height: the larger room the screen gives above or
+below the field, and its rows scroll beyond it. With Popover API support,
 portal panels use the native manual top layer. DOM
 ancestry, inherited theme/tokens and Lit-owned nodes remain intact. Without that
 API, the same panel is projected into a temporary context containing its

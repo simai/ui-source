@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.dropdown",
-  "version": "1.9.1",
+  "version": "1.9.2",
   "title": "Dropdown",
   "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
   "kind": "smart",
@@ -412,11 +412,13 @@
       "ArrowUp",
       "Home",
       "End",
+      "PageDown",
+      "PageUp",
       "Enter",
       "Space",
       "Escape"
     ],
-    "focus": "The toggle is the primary Tab stop. Arrow keys open and move through available options; Home and End move within the list; Enter or Space selects; Escape closes and restores the toggle; Tab closes and continues native traversal. The searchbox keeps native text-editing Home and End behavior. After a reset back to the inherited value, focus returns to the control; while the value is inherited, the control carries it as aria-description and the visible marker is aria-hidden."
+    "focus": "The toggle is the primary Tab stop. Arrow keys open and move through available options; Home and End move within the list, PageDown and PageUp by what it shows, and typed letters to the option they begin; the focused option is brought into view; Enter or Space selects; Escape closes and restores the toggle; Tab closes and continues native traversal. The searchbox keeps native text-editing Home and End behavior. After a reset back to the inherited value, focus returns to the control; while the value is inherited, the control carries it as aria-description and the visible marker is aria-hidden."
   },
   "presentation": {
     "themes": [
@@ -487,7 +489,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "56c19a5d738b6aa656184a62c0fe7775cf0bc9b517fe7f60f70cb0468a617e92"
+        "sha256": "db9ae3cb055ef083012156f5e6a854ef58fb20dc69e821d220ab333fd514af8d"
       },
       {
         "path": "src/smart/dropdown/rule.js",
