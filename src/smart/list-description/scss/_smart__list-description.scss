@@ -3,7 +3,8 @@
    of the ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2
    or 2 with size: the label and the value are the rung's line L and type,
    the hint and a stacked label the rung below's, the status icon L,
-   icon-to-text the rung's text-space-x, the column gap the rung's space-x. A
+   icon-to-text the row gap H2 of C105 (--sf-space-1/2: 12, compact and
+   phone 8, as a list row), the column gap the rung's space-x. A
    row's block inset is (H - L) / 2, so a one-line row is the rung's control
    height H, as a list row is; a divider gives up its hairline from the inset
    (padding gives up the border). The copy button is an sf-button-copy of the
@@ -230,6 +231,11 @@ sf-list-description {
   --sf-icon--height: var(--sf-list-description--line);
   --sf-icon--color: currentColor;
   flex: none;
+  /* Icon to text is a row's H2 (C105): --sf-space-1/2, whatever the rung,
+     as an sf-list row; the line's own gap is the rung's text-space-x
+     (between the value, the copy button and the action), so the icon makes
+     up the difference. */
+  margin-inline-end: calc(var(--sf-space-1\/2) - var(--sf-list-description--text-space-x));
 }
 
 .sf-list-description-icon--success {
