@@ -84,8 +84,8 @@ or a `blob:` address.
   (`value-missing`).
 - `disabled`, `readonly` -- a disabled field is not focusable and not sent;
   a read-only one shows and sends its value without remove buttons.
-- `size="1/2|1|2"` -- the field ladder; the frame is sf-input's of the same
-  size. `appearance="bordered|filled"` -- sf-input's two boxes (filled with its
+- `size="1/3|1/2|1|2|3"` -- the field ladder; the frame is sf-input's of the
+  same size (28 / 32 / 40 / 48 / 56 on a desktop, 1.9.0). `appearance="bordered|filled"` -- sf-input's two boxes (filled with its
   bottom line in `--sf-outline`, C52).
 - `options`, `exclude`, `provider` -- properties (lists and a function);
   `options` and `exclude` may also come in the `data-sf-settings` island.

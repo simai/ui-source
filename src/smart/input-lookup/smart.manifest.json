@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-lookup",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "title": "Lookup",
   "summary": "A form field that picks people or objects from a search the host answers: type, see rows with a picture, a name and a caption, choose one or several. Chosen items are removable chips; the list says when it waits for more letters, searches, finds nothing, is unavailable or failed, with a retry.",
   "kind": "smart",
@@ -67,11 +67,13 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "The field ladder, as sf-input's: the frame, the padding and the text of the same size; the chips stand on the field's text line, the rows' pictures a rung below.",
+        "description": "The field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the frame, the padding and the text of the same size; the chips stand on the field's text line, the rows' pictures a rung below.",
         "enum": [
+          "1/3",
           "1/2",
           "1",
-          "2"
+          "2",
+          "3"
         ]
       },
       "appearance": {
@@ -409,11 +411,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-lookup/index.js",
-        "sha256": "db4cd6e7eef9654e6ff308ea389b9f44653efbc711b359f47805b645b5d716e1"
+        "sha256": "ec8fb08aa8f283633b49e1752fdcbc89cfbdad76ecb36e69dfa2ed73c4e77a37"
       },
       {
         "path": "src/smart/input-lookup/js/templates/default.js",
-        "sha256": "445b91c639375abc0a4ea63c96a385d39c663b390859fc401e39be619773a687"
+        "sha256": "9a82aef6b27dfe34a1afa9c5f046b5f2bb36df683f9213e53cf98c310f8eb1d3"
       },
       {
         "path": "src/smart/input-lookup/js/lookup-model.mjs",
@@ -421,7 +423,7 @@
       },
       {
         "path": "src/smart/input-lookup/scss/_smart__lookup.scss",
-        "sha256": "872155681490943118051de1a37fd5d40d411c8f71095c04a16ebc0dad1d7392"
+        "sha256": "f9d0b3417628af6fadf8bb31aeb63df7a28e73c1ab7d6f3274746b5dafb597c3"
       },
       {
         "path": "src/smart/input-lookup/rule.js",
