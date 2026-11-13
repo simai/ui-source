@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.tabs",
   "kind": "component",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/tabs/docs/docs.md",
