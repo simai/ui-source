@@ -5,7 +5,7 @@
 // sf-code-input (owner, 2026-10-25), measured on the built bytes, with the
 // class verification's runtime loaded beside it as the loader loads it:
 // - the class markup: a group named by its label, one native input
-//   (one-time-code, inputmode, pattern, name) over six aria-hidden cells; the
+//   (one-time-code, inputmode, no pattern, no name) over six aria-hidden cells; the
 //   class runtime binds nothing to it;
 // - typing fills the next cell and moves on, a character the mode does not
 //   keep is not written, a character typed into a filled cell takes its
@@ -59,6 +59,9 @@ try {
     <sf-input-code id="disabled" label="Код" disabled value="12"></sf-input-code>
     <sf-input-code id="readonly" label="Код" readonly value="12"></sf-input-code>
     <div lang="en"><sf-input-code id="en" length="4" aria-label="Sign-in code"></sf-input-code></div>
+    <sf-input-code id="steam" label="Код Steam Guard" length="5" charset="23456789BCDFGHJKMNPQRTVWXY" uppercase></sf-input-code>
+    <sf-input-code id="grouped" label="Код из приложения" groups="3"></sf-input-code>
+    <sf-input-code id="grouped8" label="Код из письма" length="8" groups="4" mode="alphanumeric" uppercase></sf-input-code>
     <span id="error-ink" style="color:var(--sf-error)">x</span>
     ${sized}
   </body></html>`);
@@ -82,6 +85,13 @@ try {
     }
   });
   const events = () => page.evaluate(() => window.__events.splice(0));
+  // K1: the focus ring is the current cell's, and only for a keyboard focus.
+  const rings = (id) => page.evaluate((key) => {
+    const host = document.getElementById(key);
+    const outlined = (node) => getComputedStyle(node).outlineStyle !== 'none' && parseFloat(getComputedStyle(node).outlineWidth) > 0;
+    return {frame: outlined(host.querySelector('.sf-verification')),
+      cells: [...host.querySelectorAll('.sf-verification-cell')].map((cell) => (outlined(cell) ? 1 : 0)).join('')};
+  }, id);
   const settle = () => page.waitForTimeout(60);
 
   const state = (id) => page.evaluate((key) => {
@@ -94,7 +104,9 @@ try {
     return {
       value: input.value, attribute: host.getAttribute('value'), property: host.value, complete: host.complete,
       cells: cells.map((cell) => cell.textContent), current: cells.findIndex((cell) => cell.classList.contains('current')),
-      caret: input.selectionStart, focused: document.activeElement === input,
+      caret: input.selectionStart, caretEnd: input.selectionEnd, focused: document.activeElement === input,
+      selected: cells.map((cell) => (cell.classList.contains('selected') ? 1 : 0)).join(''),
+      drawnCaret: cells.map((cell) => (cell.classList.contains('caret-end') ? 'E' : cell.classList.contains('caret') ? 'C' : '-')).join(''),
       group: root.getAttribute('role'), groupName: labelled ? document.getElementById(labelled)?.textContent.replace('*', '').trim() : root.getAttribute('aria-label'),
       labelFor: host.querySelector('label')?.htmlFor === input.id, inputName: input.getAttribute('aria-label'),
       type: input.type, inputmode: input.inputMode, autocomplete: input.autocomplete, pattern: input.pattern, name: input.name,
@@ -103,6 +115,7 @@ try {
       invalid: input.getAttribute('aria-invalid'), errormessage: input.getAttribute('aria-errormessage') ? document.getElementById(input.getAttribute('aria-errormessage'))?.textContent.trim() : null,
       error: root.classList.contains('error'), owner: root.dataset.sfVerificationOwner,
       required: input.required, valueMissing: input.validity.valueMissing, patternMismatch: input.validity.patternMismatch,
+      tooShort: host.validity?.tooShort ?? null, hostValid: host.validity?.valid ?? null, title: input.validationMessage,
     };
   }, id);
 
@@ -113,12 +126,14 @@ try {
   check('markup: one native input for a one-time code', basic.type === 'text' && basic.inputmode === 'numeric' && basic.autocomplete === 'one-time-code'
     // The host submits the code through ElementInternals (standard 1.3.8
     // §17.1), so the native input carries no name.
-    && basic.pattern === '[0-9]{6}' && basic.name === '' && basic.dir === 'ltr', {basic});
+    && basic.pattern === '' && basic.name === '' && basic.dir === 'ltr', {basic});
   check('markup: six empty cells hidden from assistive technology', basic.cells.length === 6 && basic.cells.every((cell) => cell === '') && basic.cellsHidden === 'true', {basic});
   check('markup: described by the caret\'s cell, then the hint', basic.described.join('|') === 'цифра 1 из 6|Шесть цифр из сообщения' && basic.live === 'polite', {basic});
   check('markup: the class runtime left the field to the element', basic.owner === 'smart'
     && await page.evaluate(() => document.querySelectorAll('#basic .sf-verification-cells').length === 1), {basic});
   check('markup: required and empty is missing', basic.required && basic.valueMissing, {basic});
+  // K6: a field at rest marks no cell.
+  check('at rest: no cell is marked current', basic.current === -1 && (await state('controlled')).current === -1, {basic});
 
   // Typing.
   await page.focus('#basic input');
@@ -128,9 +143,13 @@ try {
   const typedEvents = await events();
   check('typing: each character fills the next cell', typed.value === '12' && typed.cells.join(',') === '1,2,,,,' && typed.current === 2, {typed});
   check('typing: the caret\'s cell is spoken', typed.position === 'цифра 3 из 6', {typed});
+  check('K3: a bare caret is drawn in the cell the next character goes to', typed.drawnCaret === '--C---' && typed.caret === 2 && typed.caretEnd === 2, {typed});
+  const keyboardRing = await rings('basic');
+  check('K1 keyboard focus: the ring is on the current cell only, not on the row', !keyboardRing.frame && keyboardRing.cells === '001000', {keyboardRing});
   check('typing: an input event from the native input for each character', typedEvents.length === 2
     && typedEvents.every((event) => event.type === 'input' && event.host === 'basic' && event.target === 'input'), {typedEvents});
-  check('typing: a partial code does not match the pattern', typed.patternMismatch, {typed});
+  // K5: no pattern, so no browser tooltip; the host says the code is too short.
+  check('typing: a partial code is too short on the host, the inner input has no message', typed.tooShort === true && !typed.patternMismatch && typed.title === '', {typed});
   await page.keyboard.type('a- ');
   await settle();
   check('typing: what the mode does not keep is not written', (await state('basic')).value === '12' && (await events()).length === 0);
@@ -148,6 +167,13 @@ try {
     moves.push(`${now.current}:${now.position}`);
   }
   evidence.moves = moves;
+  await page.keyboard.press('ArrowLeft');
+  await settle();
+  const marked = await state('basic');
+  check('K3: a caret inside the code marks its cell as a one-cell selection, no bare caret', marked.caret === 4 && marked.caretEnd === 5
+    && marked.current === 4 && marked.drawnCaret === '------', {marked});
+  await page.keyboard.press('End');
+  await settle();
   check('keyboard: the arrows, Home and End move the caret\'s cell, and each is spoken',
     moves.join() === '4:цифра 5 из 6,3:цифра 4 из 6,0:цифра 1 из 6,1:цифра 2 из 6,5:цифра 6 из 6', {moves});
   await page.keyboard.press('Home');
@@ -161,7 +187,8 @@ try {
   await page.waitForTimeout(100);
   const whole = await state('basic');
   const completeEvents = await events();
-  check('complete: the sixth character completes the code', whole.value === '923456' && whole.complete && !whole.patternMismatch && whole.current === 5, {whole});
+  check('complete: the sixth character completes the code', whole.value === '923456' && whole.complete && whole.tooShort === false && whole.current === 5, {whole});
+  check('K3: after a whole code the caret is drawn after the last character', whole.drawnCaret === '-----E', {whole});
   check('complete: one sf-code-input:complete {value} after the input event', JSON.stringify(completeEvents.map((event) => [event.type, event.value]))
     === JSON.stringify([['input', '923456'], ['sf-code-input:complete', '923456']]), {completeEvents});
   await page.keyboard.type('7');
@@ -184,6 +211,87 @@ try {
   await settle();
   const clicked = await state('basic');
   check('click: the caret lands in the cell under the pointer', clicked.focused && clicked.caret === 2 && clicked.current === 2 && clicked.position === 'цифра 3 из 6', {clicked});
+  const pointerRing = await rings('basic');
+  check('K1 pointer focus: no ring at all, the current cell keeps its primary border', !pointerRing.frame && pointerRing.cells === '000000', {pointerRing});
+
+  // K2: a drag selects the cells it crosses, the click after it keeps them,
+  // the selection is painted and copied; a double click selects the code.
+  const centre = (index) => page.evaluate((at) => {
+    const rect = document.querySelectorAll('#basic .sf-verification-cell')[at].getBoundingClientRect();
+    return {x: rect.left + rect.width / 2, y: rect.top + rect.height / 2};
+  }, index);
+  const [from, to] = [await centre(1), await centre(4)];
+  await page.mouse.move(from.x, from.y);
+  await page.mouse.down();
+  await page.mouse.move(to.x, to.y, {steps: 6});
+  await page.mouse.up();
+  await settle();
+  const dragged = await state('basic');
+  const paint = await page.evaluate(() => {
+    const cell = document.querySelectorAll('#basic .sf-verification-cell')[2];
+    const probe = document.createElement('span');
+    probe.style.color = 'var(--sf-primary-container)';
+    document.body.append(probe);
+    const want = getComputedStyle(probe).color;
+    probe.remove();
+    const input = document.querySelector('#basic input');
+    return {cell: getComputedStyle(cell).backgroundColor, want, opacity: getComputedStyle(input).opacity,
+      text: getComputedStyle(input).webkitTextFillColor};
+  });
+  check('K2 drag: cells 2-5 selected and painted, not collapsed by the click', dragged.caret === 1 && dragged.caretEnd === 5
+    && dragged.selected === '011110' && dragged.current === -1 && paint.cell === paint.want, {dragged, paint});
+  check('K2: the input is transparent, not opacity 0', paint.opacity === '1' && paint.text === 'rgba(0, 0, 0, 0)', {paint});
+  const copied = await page.evaluate(() => {
+    const data = new DataTransfer();
+    document.querySelector('#basic input').dispatchEvent(new ClipboardEvent('copy', {clipboardData: data, bubbles: true, cancelable: true}));
+    return data.getData('text/plain');
+  });
+  check('K2 copy: the selected cells are copied', copied === '2345', {copied});
+  await page.mouse.dblclick(from.x, from.y);
+  await settle();
+  const all = await state('basic');
+  check('K2 double click: the whole code is selected', all.caret === 0 && all.caretEnd === 6 && all.selected === '111111', {all});
+  const maskedCopy = await page.evaluate(() => {
+    const input = document.querySelector('#masked input');
+    input.focus();
+    input.setSelectionRange(0, 2);
+    const data = new DataTransfer();
+    const sent = input.dispatchEvent(new ClipboardEvent('copy', {clipboardData: data, bubbles: true, cancelable: true}));
+    return {sent, text: data.getData('text/plain')};
+  });
+  check('K2 copy: a masked code is never copied', !maskedCopy.sent && maskedCopy.text === '', {maskedCopy});
+  await page.keyboard.press('Tab');
+  await events();
+
+  // K4: hover marks the one cell under the pointer; a filled cell takes the
+  // fill's hover step, without a border.
+  const hoverOver = async (selector, index) => {
+    const point = await page.evaluate(({css, at}) => {
+      const rect = document.querySelector(css).querySelectorAll('.sf-verification-cell')[at].getBoundingClientRect();
+      return {x: rect.left + rect.width / 2, y: rect.top + rect.height / 2};
+    }, {css: selector, at: index});
+    await page.mouse.move(point.x, point.y);
+    await settle();
+    return page.evaluate((css) => {
+      const cells = [...document.querySelector(css).querySelectorAll('.sf-verification-cell')];
+      const probe = document.createElement('span');
+      document.body.append(probe);
+      const colour = (name) => { probe.style.color = `var(${name})`; return getComputedStyle(probe).color; };
+      const want = {hover: colour('--sf-primary-hover'), fill: colour('--sf-surface-container'), fillHover: colour('--sf-surface-container-hover')};
+      probe.remove();
+      return {want, hovered: cells.map((cell) => (cell.classList.contains('hover') ? 1 : 0)).join(''),
+        borders: cells.map((cell) => getComputedStyle(cell).borderTopColor), fills: cells.map((cell) => getComputedStyle(cell).backgroundColor)};
+    }, selector);
+  };
+  const bordered = await hoverOver('#controlled', 3);
+  check('K4 bordered: one cell hovered, one primary-hover border', bordered.hovered === '000100'
+    && bordered.borders.filter((colour) => colour === bordered.want.hover).length === 1 && bordered.borders[3] === bordered.want.hover, {bordered});
+  const filledHover = await hoverOver('[data-row="1"] sf-input-code[data-appearance="filled"]', 2);
+  check('K4 filled: one cell on the fill\'s hover step, the others on the fill, no border', filledHover.hovered === '001000'
+    && filledHover.fills[2] === filledHover.want.fillHover && filledHover.fills.filter((colour) => colour === filledHover.want.fill).length === 5
+    && filledHover.borders.every((colour) => colour === 'rgba(0, 0, 0, 0)'), {filledHover});
+  await page.mouse.move(0, 0);
+  await settle();
   await page.keyboard.press('Tab');
   await events();
 
@@ -217,12 +325,47 @@ try {
   await page.waitForTimeout(100);
   const alpha = await state('alpha');
   check('alphanumeric: Latin letters and digits, four cells, a text keyboard', alpha.value === 'ab12' && alpha.cells.length === 4
-    && alpha.inputmode === 'text' && alpha.pattern === '[A-Za-z0-9]{4}', {alpha});
+    && alpha.inputmode === 'text' && alpha.pattern === '', {alpha});
   await page.keyboard.press('Home');
   await settle();
   check('alphanumeric: the cell is spoken as a character', (await state('alpha')).position === 'символ 1 из 4');
   await page.keyboard.press('Tab');
   await events();
+
+  // C82: an own alphabet in capitals, groups with a separator.
+  await paste('steam', 'b0c2-o1df7');
+  await page.waitForTimeout(100);
+  const steam = await state('steam');
+  const steamKeys = await page.evaluate(() => document.querySelector('#steam input').getAttribute('autocapitalize'));
+  check('C82 charset + uppercase: only the alphabet, in capitals, a text keyboard offering capitals', steam.value === 'BC2DF'
+    && steam.cells.join('') === 'BC2DF' && steam.inputmode === 'text' && steamKeys === 'characters', {steam, steamKeys});
+  await page.keyboard.press('Home');
+  await settle();
+  check('C82 charset: a cell is spoken as a character', (await state('steam')).position === 'символ 1 из 5');
+  await page.keyboard.press('Tab');
+  await events();
+  await paste('grouped', '123 456');
+  await page.waitForTimeout(100);
+  const grouped = await page.evaluate(() => {
+    const host = document.getElementById('grouped');
+    const row = host.querySelector('.sf-verification-cells');
+    const parts = [...row.children].map((node) => (node.classList.contains('sf-verification-separator') ? '|' : node.textContent || '_')).join('');
+    const input = host.querySelector('input');
+    input.setSelectionRange(0, 6);
+    const data = new DataTransfer();
+    input.dispatchEvent(new ClipboardEvent('copy', {clipboardData: data, bubbles: true, cancelable: true}));
+    const separator = host.querySelector('.sf-verification-separator').getBoundingClientRect();
+    const cell = host.querySelector('.sf-verification-cell').getBoundingClientRect();
+    return {parts, hidden: row.getAttribute('aria-hidden'), value: input.value, copied: data.getData('text/plain'),
+      middle: Math.abs((separator.top + separator.bottom) / 2 - (cell.top + cell.bottom) / 2)};
+  });
+  check('C82 groups: 3 + 3 with one separator, hidden, outside the value and the copy', grouped.parts === '123|456' && grouped.hidden === 'true'
+    && grouped.value === '123456' && grouped.copied === '123456' && grouped.middle < 1, {grouped});
+  await page.keyboard.press('Tab');
+  await events();
+  const grouped8 = await page.evaluate(() => [...document.querySelectorAll('#grouped8 .sf-verification-cells > *')]
+    .map((node) => (node.classList.contains('sf-verification-separator') ? '|' : 'c')).join(''));
+  check('C82 groups: 4 + 4 for eight cells', grouped8 === 'cccc|cccc', {grouped8});
 
   // English, mask, invalid.
   const en = await state('en');
@@ -306,6 +449,11 @@ try {
         bordered.background !== filled.background && bordered.border !== 'rgba(0, 0, 0, 0)' && filled.border === 'rgba(0, 0, 0, 0)', {bordered, filled});
     }
     check(`${width}px: the page does not scroll sideways`, !measured.scroll);
+    const eight = await page.evaluate(() => {
+      const cells = [...document.querySelectorAll('#grouped8 .sf-verification-cell')].map((cell) => cell.getBoundingClientRect());
+      return {right: Math.max(...cells.map((cell) => cell.right)), viewport: document.documentElement.clientWidth};
+    });
+    check(`${width}px: eight cells in 4 + 4 stay inside the page`, eight.right <= eight.viewport, {eight});
   }
   const classEvents = await page.evaluate(() => window.__classEvents);
   check('the class runtime sent no event of its own', classEvents === 0, {classEvents});

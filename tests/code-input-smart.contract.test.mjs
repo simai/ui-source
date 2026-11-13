@@ -10,10 +10,15 @@ import {
   MASK_GLYPH,
   applyEdit,
   applyPaste,
+  CODE_GROUPS_MAX,
+  codeCharset,
+  codeGroups,
   codeInputMode,
+  codeKind,
   codeLength,
   codeMode,
-  codePattern,
+  keepCharacters,
+  separatorAfter,
   currentCell,
   normaliseCode,
   positionWords,
@@ -44,14 +49,49 @@ test('code input: a mode keeps its characters, a code its length', () => {
   }
   assert.equal(codeMode('ALPHANUMERIC'), 'alphanumeric');
   assert.equal(codeMode('text'), 'numeric', 'the class text mode is not a one-time code');
-  assert.equal(codePattern('numeric', 6), '[0-9]{6}');
-  assert.equal(codePattern('alphanumeric', 4), '[A-Za-z0-9]{4}');
   assert.equal(codeInputMode('numeric'), 'numeric');
   assert.equal(codeInputMode('alphanumeric'), 'text');
   assert.equal(currentCell(0, 6), 0);
   assert.equal(currentCell(6, 6), 5, 'a whole code keeps the caret in the last cell');
   assert.equal(currentCell(Number.NaN, 6), 0);
   assert.equal(MASK_GLYPH, '•');
+});
+
+// Owner C82 (2026-11-12): an own alphabet, letters in capitals, a separator
+// between groups of cells.
+test('code input: charset, uppercase and groups (C82)', () => {
+  const steam = {charset: '23456789BCDFGHJKMNPQRTVWXY', uppercase: true};
+  assert.equal(codeCharset(' 2 3 B B c '), '23Bc', 'each character once, no spaces');
+  assert.deepEqual(codeKind('alphanumeric'), {mode: 'alphanumeric', charset: '', uppercase: false});
+  assert.deepEqual(codeKind({mode: 'x', charset: '12', uppercase: 1}), {mode: 'numeric', charset: '12', uppercase: true});
+  assert.equal(keepCharacters('b0c2o1df7', steam), 'BC2DF7');
+  assert.equal(keepCharacters('b0c2', {charset: steam.charset}), '2', 'without uppercase a lower-case letter is not in the alphabet');
+  assert.equal(normaliseCode('b0c2o1df7', steam, 5), 'BC2DF');
+  assert.equal(normaliseCode('ab-12 cd', {mode: 'alphanumeric', uppercase: true}, 6), 'AB12CD');
+  assert.equal(normaliseCode('ab-12 cd', 'alphanumeric', 6), 'ab12cd', 'case kept without uppercase');
+  assert.equal(codeInputMode({charset: '0123'}), 'numeric');
+  assert.equal(codeInputMode(steam), 'text');
+  assert.deepEqual(applyPaste({previous: '', text: 'ab-12-cd', mode: {mode: 'alphanumeric', uppercase: true}, length: 6}), {value: 'AB12CD', caret: 6});
+  assert.deepEqual(applyEdit({previous: 'BC', raw: 'BCd', caret: 3, data: 'd', inputType: 'insertText', mode: steam, length: 5}), {value: 'BCD', caret: 3});
+  assert.deepEqual(applyEdit({previous: 'BC', raw: 'BCa', caret: 3, data: 'a', inputType: 'insertText', mode: steam, length: 5}), {value: 'BC', caret: 2}, 'not in the alphabet');
+  assert.equal(CODE_GROUPS_MAX, 6);
+  for (const [groups, length, want] of [[3, 6, 3], [4, 8, 4], [0, 6, 0], [1, 6, 0], [6, 6, 0], [7, 12, 0], ['x', 6, 0], [3, 3, 0]]) {
+    assert.equal(codeGroups(groups, length), want, `${groups} of ${length}`);
+  }
+  assert.deepEqual([...Array(8).keys()].filter((index) => separatorAfter(index, 4, 8)), [3]);
+  assert.deepEqual([...Array(6).keys()].filter((index) => separatorAfter(index, 3, 6)), [2]);
+  assert.deepEqual([...Array(6).keys()].filter((index) => separatorAfter(index, 0, 6)), []);
+  // The separators are drawn with the cells, aria-hidden, never in the value.
+  assert.match(template, /html`<span class="sf-verification-separator"><\/span>`/u);
+  assert.match(template, /if \(separators\.includes\(index\)\) parts\.push/u);
+  assert.match(template, /autocapitalize=\$\{capitals \? 'characters' : 'off'\}/u);
+  assert.match(source, /settings\.uppercase = this\.uppercase;\n    return codeKind\(settings\);/u);
+  assert.match(classSheet, /\.sf-verification-separator \{[^}]*inline-size: var\(--sf-space-1\\\/2\);[^}]*border-block-start: var\(--sf-px\) solid var\(--sf-on-surface-variant\);/u);
+  const settings = JSON.parse(read('src/smart/input-code/component.json')).settings;
+  assert.equal(settings.charset.type, 'string');
+  assert.equal(settings.uppercase.type, 'boolean');
+  assert.equal(settings.groups.type, 'number');
+  assert.equal(settings.groups.default, 0);
 });
 
 test('code input: typing fills a cell, over a filled one, never past the end', () => {
@@ -96,7 +136,8 @@ test('code input: each cell is spoken by its place, in Russian and English', () 
   // the same as code.mjs keeps for these unit checks.
   assert.match(source, /text\(key\) \{\n    return this\.sfWord\(key\);/u);
   for (const lang of ['ru', 'en']) assert.deepEqual(JSON.parse(read(`src/smart/input-code/lang/${lang}.json`)).runtime, CODE_INPUT_TEXT[lang], lang);
-  assert.match(source, /this\.text\(this\.mode === 'numeric' \? 'digit' : 'character'\)/u);
+  // A digit for a numeric code or an alphabet of digits only (C82).
+  assert.match(source, /this\.text\(this\.numeric \? 'digit' : 'character'\)/u);
 });
 
 test('code input: the class markup, one native input, the class runtime kept off it', () => {
@@ -109,12 +150,17 @@ test('code input: the class markup, one native input, the class runtime kept off
   assert.equal((template.match(/<input\b/gu) || []).length, 1, 'one native input');
   assert.match(template, /autocomplete="one-time-code"/u);
   assert.match(template, /inputmode=\$\{inputMode\}/u);
-  assert.match(template, /pattern=\$\{pattern\}/u);
+  // No pattern on the inner input: its mismatch was the browser's English
+  // tooltip over the cells (K5); a code that is not whole is too-short on the
+  // host, in the page's words.
+  assert.doesNotMatch(template, /pattern=/u);
+  assert.match(source, /syncFieldValidity\(this, input, short \? \{tooShort: this\.text\('too-short'\)\} : \{\}\);/u);
+  assert.deepEqual(JSON.parse(read('src/smart/input-code/component.json')).form.validity, ['value-missing', 'too-short', 'custom-error']);
   assert.match(template, /dir="ltr"/u);
   assert.match(template, /type=\$\{mask \? 'password' : 'text'\}/u);
   assert.match(template, /<span class="sf-verification-cells" aria-hidden="true">/u);
   // The cells are drawn empty; the element writes the code into them.
-  assert.match(template, /html`<span class="sf-verification-cell"><\/span>`/u);
+  assert.match(template, /: html`<span class="sf-verification-cell"><\/span>`/u);
   // Every size is one the class sheet draws, and the field sizes are sf-input's.
   for (const size of manifest.inputs.properties.size.enum) {
     assert.ok(classSheet.includes(`.sf-verification--size-${size.replace('/', '\\/')}`), size);
@@ -164,6 +210,37 @@ test('code input: input and change are the native input\'s, complete once per co
     assert.match(source, new RegExp(`\\n  ${method}\\(\\) \\{`, 'u'), method);
   }
   assert.match(source, /focusDelegate\(\) \{\n    return this\.getInputElement\(\);/u);
+  // K1: a pointer focus rings no cell (the sheet rings the current cell for a
+  // keyboard focus only), as sf-input's .sf-input--pointer-focus.
+  assert.match(source, /classList\.add\('sf-verification--pointer-focus'\)/u);
+  assert.match(source, /classList\.remove\('sf-verification--pointer-focus'\)/u);
+  assert.match(classRuntime, /control\.classList\.add\('sf-verification--pointer-focus'\)/u);
+  assert.match(classSheet, /\.sf-verification:not\(\.sf-verification--pointer-focus\):has\(\.sf-verification-input:focus-visible\) \.sf-verification-cell\.current,/u);
+  assert.doesNotMatch(classSheet, /^\.sf-verification:has\(\.sf-verification-input:focus-visible\)/mu, 'no ring on the row');
+  // K3: a bare caret inside the code becomes a one-cell selection; the caret
+  // is drawn in its cell, blinking unless motion is reduced.
+  assert.match(source, /input\.setSelectionRange\(start, start \+ 1, 'forward'\);/u);
+  assert.match(source, /cell\.classList\.toggle\('caret', bare && index === current\);/u);
+  assert.match(classSheet, /\.sf-verification-cell\.caret::after \{[^}]*inline-size: calc\(var\(--sf-px\) \* 2\);[^}]*background: var\(--sf-on-surface\);/u);
+  assert.match(classSheet, /@media \(prefers-reduced-motion: no-preference\) \{\n  \.sf-verification-cell\.caret::after \{\n    animation: sf-verification-caret calc\(var\(--sf-duration-slow\) \* 2\) steps\(1\) infinite;/u);
+  // K2: the cells paint a selection; a mouse selects by cells, a click does
+  // not collapse it, copy gives the selected code and never a masked one; the
+  // input is transparent, not opacity 0.
+  assert.match(source, /const selected = focused && !one && index >= start && index < end;\n\s+cell\.classList\.toggle\('selected', selected\);/u);
+  assert.match(source, /if \(\(input\.selectionEnd \?\? 0\) - \(input\.selectionStart \?\? 0\) > 1\) return;/u);
+  assert.match(source, /this\.addEventListener\('dblclick', this\.onDoubleClick\);/u);
+  assert.match(source, /event\.clipboardData\.setData\('text\/plain', input\.value\.slice\(start, end\)\);/u);
+  const inputRule = classSheet.slice(classSheet.indexOf('.sf-verification-input {'), classSheet.indexOf('}', classSheet.indexOf('.sf-verification-input {')));
+  assert.doesNotMatch(inputRule, /opacity/u);
+  assert.match(inputRule, /-webkit-text-fill-color: var\(--sf-transparent\);/u);
+  assert.match(classSheet, /\.sf-verification:has\(\.sf-verification-input:enabled:focus\) \.sf-verification-cell\.selected \{[^}]*background: var\(--sf-primary-container\);/u);
+  // K4: hover marks one cell, never the group.
+  assert.doesNotMatch(classSheet, /\.sf-verification:hover \.sf-verification-cell/u);
+  assert.match(classSheet, /\.sf-verification-cell\.hover,\n\.sf-verification-form-wrap \.sf-verification:hover \{ border-color: var\(--sf-primary-hover\); \}/u);
+  assert.match(classSheet, /\.sf-verification--filled \.sf-verification-cell\.hover \{[^}]*background: var\(--sf-surface-container-hover\);/u);
+  assert.match(source, /cell\.classList\.toggle\('hover', index === this\._hover && !selected && !\(focused && one && index === current\)\);/u);
+  // K6: the current cell only while the field has the focus.
+  assert.match(source, /cell\.classList\.toggle\('current', focused && one && index === current\);/u);
 });
 
 test('code input: its own sheet draws only the required star, from tokens', () => {

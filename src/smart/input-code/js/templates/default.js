@@ -36,7 +36,9 @@ export function renderCodeInputTemplate(context) {
     length,
     mask,
     inputMode,
-    pattern,
+    capitals,
+    groups,
+    separators = [],
     ariaLabel,
     groupLabel,
     messageContent,
@@ -45,7 +47,13 @@ export function renderCodeInputTemplate(context) {
   const labelId = `${id}--label`;
   const positionId = `${id}--position`;
   const describedBy = [positionId, messageContent ? field.messageId : ''].filter(Boolean).join(' ');
-  const cells = Array.from({length}, (_, index) => index);
+  // The cells, with a separator after each group (C82: 3 + 3, 4 + 4): a
+  // picture only, aria-hidden with the cells, never in the value or a copy.
+  const parts = [];
+  for (let index = 0; index < length; index += 1) {
+    parts.push({key: `cell-${index}`, separator: false});
+    if (separators.includes(index)) parts.push({key: `separator-${index}`, separator: true});
+  }
 
   return html`
     <div
@@ -63,6 +71,7 @@ export function renderCodeInputTemplate(context) {
       aria-label=${hasLabel ? nothing : groupLabel}
       data-length=${String(length)}
       data-mode=${mode}
+      data-groups=${groups ? String(groups) : nothing}
       data-sf-verification-owner="smart"
     >
       ${hasLabel
@@ -77,11 +86,10 @@ export function renderCodeInputTemplate(context) {
           type=${mask ? 'password' : 'text'}
           inputmode=${inputMode}
           autocomplete="one-time-code"
-          autocapitalize="off"
+          autocapitalize=${capitals ? 'characters' : 'off'}
           autocorrect="off"
           spellcheck="false"
           dir="ltr"
-          pattern=${pattern}
           name=${controlName || nothing}
           .defaultValue=${defaultCode}
           .value=${live(value)}
@@ -93,7 +101,9 @@ export function renderCodeInputTemplate(context) {
           aria-describedby=${describedBy}
           aria-errormessage=${messageIsError ? field.messageId : nothing}
         />
-        <span class="sf-verification-cells" aria-hidden="true">${repeat(cells, (index) => index, () => html`<span class="sf-verification-cell"></span>`)}</span>
+        <span class="sf-verification-cells" aria-hidden="true">${repeat(parts, (part) => part.key, (part) => (part.separator
+          ? html`<span class="sf-verification-separator"></span>`
+          : html`<span class="sf-verification-cell"></span>`))}</span>
       </div>
       ${messageContent
         ? html`<span class="sf-verification-form-hint" id=${field.messageId}
