@@ -10,8 +10,12 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
    and 62px at 390). tests/browser/drawer-gutter.browser.mjs measures it. */
 test('drawer gutter: one gutter for head and body, declared', async () => {
   const styles = await read('src/smart/drawer/scss/_smart__drawer.scss');
-  assert.match(styles, /padding: var\(--sf-space-1\) var\(--sf-drawer-gutter, var\(--sf-space-1\)\) var\(--sf-space-1\\\/2\);/);
-  assert.match(styles, /padding: var\(--sf-space-1\\\/2\) var\(--sf-drawer-gutter, var\(--sf-space-1\)\) var\(--sf-space-3\);/);
+  // C105 H6 (spacing audit D2): the window inset --sf-space-2 from the outer
+  // edge, the panel's edge counted inside it, no stable scrollbar gutter.
+  assert.match(styles, /--sf-drawer--inset: var\(--sf-drawer-gutter, var\(--sf-space-2\)\);/);
+  assert.match(styles, /--sf-drawer--inset-start: calc\(var\(--sf-drawer--inset\) - var\(--sf-drawer--edge-start\)\);/);
+  assert.equal((styles.match(/padding-inline: var\(--sf-drawer--inset-start\) var\(--sf-drawer--inset-end\);/g) || []).length, 2);
+  assert.doesNotMatch(styles, /scrollbar-gutter: stable/);
   const source = await read('src/smart/drawer/index.js');
   assert.match(source, /gutter: \{default: ''\}/);
   // The property is the manifest's (standard 1.3.8 §4).

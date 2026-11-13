@@ -10,7 +10,8 @@
 //
 //   width                 --sf-popup-question-width (28rem / compact 26rem),
 //                         the screen's width on a phone (bottom sheet)
-//   frame                 --sf-space-3 on every side; the × on its corner
+//   frame                 --sf-space-2 on every side from the outer edge, the
+//                         window's edge inside it (C105 H6); the × on its corner
 //   title                 the h4 step of the heading ladder, bold (C39, the
 //                         question window's title; C21: 20 on a desktop, 16
 //                         on a phone), on the h4 step's own line
@@ -185,7 +186,8 @@ function check(m, ctx) {
   }
   table.width = m.surface.width;
   // frame and the × on its corner
-  const pad = t.space3;
+  // C105 H6: the window inset --sf-space-2 from the outer edge, edge included.
+  const pad = t.space2;
   const inner = m.surface.left + pad;
   want('frame top', m.title.top - m.surface.top - Math.max(0, (m.header.height - m.title.height) / 2), pad);
   want('× on the corner: end', m.surface.right - m.close.right, pad);
@@ -226,7 +228,7 @@ function check(m, ctx) {
   // -> answers
   table.controlToAnswers = m.buttons[0].top - m.control.bottom;
   want('field/checkbox -> answers = --sf-space-3', table.controlToAnswers, t.space3);
-  want('answers -> frame bottom = --sf-space-3', m.surface.bottom - m.buttons[0].bottom - (phone ? 0 : 0), pad);
+  want('answers -> frame bottom = --sf-space-2', m.surface.bottom - m.buttons[0].bottom - (phone ? 0 : 0), pad);
   table.answersToBottom = m.surface.bottom - m.buttons[0].bottom;
   m.buttons.forEach((button, index) => want(`answer ${index} height = step 1`, button.height, t.control, 0.5));
   table.answerHeight = m.buttons[0].height;

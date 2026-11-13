@@ -308,7 +308,7 @@ Framework получает `invalid` и сообщение (текст брау�
 | Переменная | По умолчанию |
 |---|---|
 | `--sf-wizard-gap` | `--sf-space-3` (`--sf-space-2` на ступени 1/2) |
-| `--sf-wizard-padding` | `--sf-space-3` (`--sf-space-2` на ступени 1/2) |
+| `--sf-wizard-padding` | `--sf-space-2` минус 1 px рамки, на обеих ступенях: текст стоит в 20 px от внешнего края, 16 в плотном режиме и на телефоне (C105) |
 | `--sf-wizard-background-color` | `--sf-surface-area` |
 | `--sf-wizard-border-color` | `--sf-outline-variant` |
 | `--sf-wizard-radius` | `--sf-radius--surface` |

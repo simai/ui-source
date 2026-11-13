@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.10.4",
+  "version": "1.10.5",
   "title": "Drawer",
   "summary": "Workspace side panel that keeps the page usable: docked column or modeless panel. Modal side panels belong to sf-modal; the modal Drawer mode is deprecated.",
   "kind": "smart",
@@ -164,7 +164,7 @@
       "gutter": {
         "type": "string",
         "default": "",
-        "description": "The inline gutter the head and the body share, as a length (for example var(--sf-space-3)), so the title and the content start on one axis. Empty: the drawer's own, space-1. A theme may set --sf-drawer-gutter instead."
+        "description": "The inline gutter the head and the body share, as a length (for example var(--sf-space-3)), so the title and the content start on one axis. Empty: the window inset of C105, --sf-space-2 (20, compact and phone 16) from the panel's outer edge, its edge counted inside it. A theme may set --sf-drawer-gutter instead."
       },
       "z-index": {
         "type": "string",
@@ -893,7 +893,7 @@
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",
-        "sha256": "801ceeb47b9a5f6b721db5c22a1c9e97704ce6eb30ec6a6a6785afb3dcb18b8a"
+        "sha256": "5cab2f405239ba8e40c20a294395bd10179b36890e704cc7a35932f3a5e81db7"
       },
       {
         "path": "src/smart/drawer/rule.js",
@@ -901,7 +901,7 @@
       },
       {
         "path": "src/smart/drawer/docs.md",
-        "sha256": "dbb4769912d768b5ff1424847b75ac8350b57d88af193c63f71da2274faa1fad"
+        "sha256": "79bc6138fb97f0f92178256c28955f10a4477ef4692612cda4763820bae8cc08"
       }
     ],
     "generated_runtime": [

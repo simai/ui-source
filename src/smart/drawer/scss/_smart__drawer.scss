@@ -50,6 +50,19 @@
      shows past it. Registered as a length so a unitless 0 still multiplies. */
   .sf-drawer-panel {
     --sf-drawer-stack-inset: calc(var(--sf-drawer-stack-depth, 0) * var(--sf-drawer-stack-offset));
+    /* The window inset, role H6 of the horizontal-spacing standard (owner
+       decision C105): --sf-space-2, 20 on a desktop and 16 in compact density
+       and on a phone, from the panel's outer edge -- its 1 px edge on the
+       page's side counted inside it (the placements below say which side has
+       one). It stood 31 · 27 · 27 (spacing audit D2): the gutter
+       --sf-space-1, the edge, and the 14 px of a stable scrollbar gutter on
+       both sides, which the panel no longer keeps (below). */
+    --sf-drawer--inset: var(--sf-drawer-gutter, var(--sf-space-2));
+    /* A length, not the unitless --sf-0: it is subtracted in calc(). */
+    --sf-drawer--edge-start: calc(var(--sf-px) * 0);
+    --sf-drawer--edge-end: calc(var(--sf-px) * 0);
+    --sf-drawer--inset-start: calc(var(--sf-drawer--inset) - var(--sf-drawer--edge-start));
+    --sf-drawer--inset-end: calc(var(--sf-drawer--inset) - var(--sf-drawer--edge-end));
     position: fixed;
     inset-block: var(--sf-drawer-block-start, 0) 0;
     display: flex;
@@ -67,10 +80,11 @@
        one panel had two different margins. Here the bar sits at the panel's own
        edge, outside the padding head, body and foot all share. */
     overflow: hidden auto;
-    /* The scrollbar takes its room from both sides, so the panel has the same
-       margin on each. Taken from one side only it left a strip on the right that
-       nothing explained. */
-    scrollbar-gutter: stable both-edges;
+    /* No stable gutter (the scroll-area rule of C106): a scrollbar takes its
+       room only while the panel scrolls, at the end side, beside the content's
+       inset. A stable gutter on both edges kept an empty 14 px on each side of
+       every panel and stood the content 15 px past the window inset. */
+    scrollbar-gutter: auto;
     pointer-events: auto;
     border-radius: var(--sf-drawer-radius, var(--sf-radius--surface));
     color: var(--sf-drawer-color, var(--sf-on-surface));
@@ -87,8 +101,8 @@
      that scrolls, the handle stood inside the scrollbar's room the panel keeps
      on both sides (15px in from the edge of a 320px panel with classic
      scrollbars), moved with the scrolled rows, and the panel clipped its outer
-     half (simai/ui-source#59). The body takes the scroll and the same room on
-     both sides, the head that room too, so the content stands where it stood; the panel clips nothing,
+     half (simai/ui-source#59). The body takes the scroll, with no stable
+     gutter, as the panel has none (C105, C106); the panel clips nothing,
      and the handle -- positioned against the panel -- stands on its edge. */
   .sf-drawer-panel:has(> .sf-drawer-body > sf-resizer) {
     overflow: visible;
@@ -97,14 +111,7 @@
 
   .sf-drawer-panel:has(> .sf-drawer-body > sf-resizer) > .sf-drawer-body {
     overflow: hidden auto;
-    scrollbar-gutter: stable both-edges;
-  }
-
-  /* The head keeps the same room, so its title and close stand over the
-     content as they did (overflow: hidden takes a gutter and scrolls nothing). */
-  .sf-drawer-panel:has(> .sf-drawer-body > sf-resizer) > .sf-drawer-head {
-    overflow: hidden;
-    scrollbar-gutter: stable both-edges;
+    scrollbar-gutter: auto;
   }
 
   /* A floating panel is the modal place (C20): the popup surface, the modal
@@ -131,6 +138,7 @@
 
   /* Physical values remain compatibility aliases. */
   .sf-drawer[data-sf-drawer-placement='left'] .sf-drawer-panel {
+    --sf-drawer--edge-end: var(--sf-px);
     left: var(--sf-drawer-stack-inset);
     border-right: var(--sf-px) solid var(--sf-outline-variant);
     border-top-left-radius: var(--sf-0);
@@ -139,6 +147,7 @@
   }
 
   .sf-drawer[data-sf-drawer-placement='right'] .sf-drawer-panel {
+    --sf-drawer--edge-start: var(--sf-px);
     right: var(--sf-drawer-stack-inset);
     border-left: var(--sf-px) solid var(--sf-outline-variant);
     border-top-right-radius: var(--sf-0);
@@ -146,7 +155,20 @@
     transform: translateX(100%);
   }
 
+  /* The physical placements keep their edge on a physical side: in a
+     right-to-left page that side is the other end of the line. */
+  .sf-drawer[data-sf-drawer-placement='left']:dir(rtl) .sf-drawer-panel {
+    --sf-drawer--edge-start: var(--sf-px);
+    --sf-drawer--edge-end: calc(var(--sf-px) * 0);
+  }
+
+  .sf-drawer[data-sf-drawer-placement='right']:dir(rtl) .sf-drawer-panel {
+    --sf-drawer--edge-start: calc(var(--sf-px) * 0);
+    --sf-drawer--edge-end: var(--sf-px);
+  }
+
   .sf-drawer[data-sf-drawer-placement='inline-start'] .sf-drawer-panel {
+    --sf-drawer--edge-end: var(--sf-px);
     inset-inline-start: var(--sf-drawer-stack-inset);
     border-inline-end: var(--sf-px) solid var(--sf-outline-variant);
     border-start-start-radius: var(--sf-0);
@@ -161,6 +183,7 @@
   }
 
   .sf-drawer[data-sf-drawer-placement='inline-end'] .sf-drawer-panel {
+    --sf-drawer--edge-start: var(--sf-px);
     inset-inline-end: var(--sf-drawer-stack-inset);
     border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
     border-start-end-radius: var(--sf-0);
@@ -212,7 +235,8 @@
     justify-content: space-between;
     gap: var(--sf-space-1);
     min-height: var(--sf-ui-2--control-height);
-    padding: var(--sf-space-1) var(--sf-drawer-gutter, var(--sf-space-1)) var(--sf-space-1\/2);
+    padding-block: var(--sf-space-1) var(--sf-space-1\/2);
+    padding-inline: var(--sf-drawer--inset-start) var(--sf-drawer--inset-end);
   }
 
   .sf-drawer-title {
@@ -239,7 +263,8 @@
     min-block-size: 0;
     display: flex;
     flex-direction: column;
-    padding: var(--sf-space-1\/2) var(--sf-drawer-gutter, var(--sf-space-1)) var(--sf-space-3);
+    padding-block: var(--sf-space-1\/2) var(--sf-space-3);
+    padding-inline: var(--sf-drawer--inset-start) var(--sf-drawer--inset-end);
   }
 
   /* One child fills it; several keep the order they were written in. */
@@ -255,13 +280,11 @@
   /* With no head above it the body's own small top padding is the whole top of
      the panel, and the panel then has a narrower margin above its content than
      beside it. It takes the gutter there instead, so one panel has one frame. */
-  /* The panel keeps the scrollbar's room on both of its inline edges, so what a
-     person sees beside the content is the gutter plus that room. The block edges
-     have no scrollbar, so they take the same two together -- otherwise the frame
-     is narrower above the content than beside it, which is what the owner
-     measured. The width is the Framework's own scrollbar token, not a guess. */
+  /* The block edges take the same window inset as the inline ones, so one
+     panel has one frame (the owner measured a narrower frame above the
+     content than beside it). */
   .sf-drawer-panel:not(:has(.sf-drawer-head)) .sf-drawer-body {
-    padding-block: calc(var(--sf-drawer-gutter, var(--sf-space-1)) + var(--sf-scroll-bg-width));
+    padding-block: var(--sf-drawer--inset);
   }
 
   /* The outer edge of the panel: a column of controls standing beside it, not in
