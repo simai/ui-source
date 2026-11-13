@@ -4,15 +4,17 @@
 //
 // sf-image-field (simai/ui-source#27), measured on the built bytes:
 // - the group is named by its label and described by its help or error, the
-//   thumbnail's alt is the file name, «Заменить…», «Убрать» and «Выбрать…» are
-//   real buttons named for the image;
+//   thumbnail's alt is the description (empty without one: 1.4.0, never the
+//   file name), «Заменить…» and «Выбрать…» are real buttons and remove is an
+//   icon button (sf-button-icon, IF-9), each named for the image;
 // - Tab goes replace -> remove -> out (the drop target takes no focus); Enter
-//   on «Убрать» empties the field, sends input and change once each, says so
+//   on remove empties the field, sends input and change once each, says so
 //   politely and puts focus on «Выбрать…»;
 // - «Заменить…» opens the platform dialog, a file chosen there replaces the
 //   image (source input) and its size and dimensions show;
 // - a file dragged over draws the drop state, dropped it replaces the image
-//   (source drop) and goes into the form input; a PDF is refused and said;
+//   (source drop) and the form gets the File from the host (§17.1, the
+//   native input carries no name); a PDF is refused, with its name said;
 // - disabled and read-only take no file; required holds the form while empty;
 // - at 1000 and 390 wide: the thumbnail is the control height one rung up for
 //   each of the three sizes, the inset the field's own, the buttons one rung
@@ -25,7 +27,7 @@ const {chromium} = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'component/component/buttons/css/buttons.css', 'smart/smart/input-image/css/input-image.css'];
-const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js', 'smart/smart/input-image/js/input-image.js'];
+const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js', 'smart/smart/button-icon/js/button-icon.js', 'smart/smart/input-image/js/input-image.js'];
 const failures = [];
 const note = (detail) => failures.push(detail);
 
@@ -70,7 +72,7 @@ try {
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-  await page.waitForFunction(() => customElements.get('sf-input-image') && customElements.get('sf-button'), null, {timeout: 8000});
+  await page.waitForFunction(() => customElements.get('sf-input-image') && customElements.get('sf-button') && customElements.get('sf-button-icon'), null, {timeout: 8000});
   await page.waitForTimeout(800);
   await page.evaluate(() => {
     window.__events = [];
@@ -90,7 +92,8 @@ try {
     const well = host.querySelector('.sf-image-field-well');
     const named = (selector) => {
       const button = host.querySelector(`${selector} button`);
-      return button ? {name: button.getAttribute('aria-label'), text: button.textContent.trim(), disabled: button.disabled} : null;
+      return button ? {name: button.getAttribute('aria-label'), text: button.textContent.trim(), disabled: button.disabled,
+        tag: button.closest('sf-button, sf-button-icon')?.localName ?? null} : null;
     };
     const labelledby = well?.getAttribute('aria-labelledby');
     const describedby = well?.getAttribute('aria-describedby');
@@ -108,15 +111,19 @@ try {
       live: host.querySelector('.sf-image-field-live')?.textContent.trim(),
       dragover: host.querySelector('.sf-image-field')?.classList.contains('dragover'),
       inputRequired: input?.required, inputFiles: input?.files?.length ?? 0, inputTab: input?.tabIndex, inputDisplay: input ? getComputedStyle(input).display : null,
-      focused: document.activeElement?.closest?.('sf-button')?.className ?? document.activeElement?.id ?? null,
+      focused: document.activeElement?.closest?.('sf-button, sf-button-icon')?.className ?? document.activeElement?.id ?? null,
+      formFile: (() => {
+        const sent = host.form ? new FormData(host.form).get(host.getAttribute('name')) : null;
+        return sent instanceof File ? sent.name : sent;
+      })(),
     };
   }, id);
 
   // Names, roles and descriptions.
   const filled = await state('filled');
-  if (filled.role !== 'group' || filled.groupName !== 'Логотип' || filled.description !== 'PNG или SVG' || filled.alt !== 'logo.svg'
+  if (filled.role !== 'group' || filled.groupName !== 'Логотип' || filled.description !== 'PNG или SVG' || filled.alt !== ''
     || filled.replace?.name !== 'Заменить изображение «logo.svg»' || filled.replace?.text !== 'Заменить…'
-    || filled.remove?.name !== 'Убрать изображение «logo.svg»' || filled.remove?.text !== 'Убрать'
+    || filled.remove?.name !== 'Убрать изображение «logo.svg»' || filled.remove?.tag !== 'sf-button-icon'
     || filled.wellTabIndex !== null || filled.meta !== '900×300 · 2 КБ' || filled.inputTab !== -1 || filled.inputDisplay === 'none') note({case: 'filled field names and meta', got: filled});
   const empty = await state('empty');
   if (empty.value !== null || empty.choose?.name !== 'Выбрать изображение' || empty.choose?.text !== 'Выбрать…' || empty.name !== 'Изображение не выбрано'
@@ -126,7 +133,7 @@ try {
   const err = await state('err');
   if (err.invalid !== 'true' || err.description !== 'Нужно изображение шире 600 px') note({case: 'error state', got: err});
   const ro = await state('ro');
-  if (ro.replace || ro.remove || ro.choose || ro.alt !== 'ro.svg') note({case: 'read-only has no buttons', got: ro});
+  if (ro.replace || ro.remove || ro.choose || ro.alt !== '' || ro.name !== 'ro.svg') note({case: 'read-only has no buttons', got: ro});
   const dis = await state('dis');
   if (!dis.replace?.disabled || !dis.remove?.disabled) note({case: 'disabled buttons', got: dis});
 
@@ -138,12 +145,12 @@ try {
     order.push(await page.evaluate(() => {
       const element = document.activeElement;
       const host = element?.closest?.('sf-input-image');
-      return host ? `${host.id}:${element.closest('sf-button')?.className.split(' ')[0] ?? element.className}` : element?.id;
+      return host ? `${host.id}:${element.closest('sf-button, sf-button-icon')?.className.split(' ')[0] ?? element.className}` : element?.id;
     }));
   }
   if (order.join(',') !== 'filled:sf-image-field-replace,filled:sf-image-field-remove,empty:sf-image-field-choose,err:sf-image-field-replace') note({case: 'tab order', got: order});
 
-  // Enter on «Убрать»: empty, input + change once, said, focus on «Выбрать…».
+  // Enter on remove: empty, input + change once, said, focus on «Выбрать…».
   await page.focus('#filled .sf-image-field-remove button');
   await page.keyboard.press('Enter');
   await page.waitForTimeout(300);
@@ -170,12 +177,12 @@ try {
   await page.waitForTimeout(500);
   const picked = await state('filled');
   const pickEvents = (await events()).filter((event) => event.id === 'filled');
-  if (accept !== 'image/*' || picked.value?.label !== 'photo.png' || picked.src !== 'blob:' || picked.meta !== `2×1 · ${PNG.length} Б` || picked.alt !== 'photo.png'
+  if (accept !== 'image/*' || picked.value?.label !== 'photo.png' || picked.src !== 'blob:' || picked.meta !== `2×1 · ${PNG.length} Б` || picked.alt !== ''
     || picked.live !== 'Выбрано изображение «photo.png»') note({case: 'choose through the dialog', got: {accept, picked}});
   const pickTypes = pickEvents.map((event) => `${event.type}:${event.source}:${event.file}:${event.target}`);
   if (pickTypes.join(',') !== 'input:input:photo.png:true,change:input:photo.png:true,sf-image-field:select:input:photo.png:true') note({case: 'one input and one change from the host, with the File', got: pickEvents});
 
-  // Drag a file over: the drop state; drop it: replaced, in the form input.
+  // Drag a file over: the drop state; drop it: replaced, the form gets the File.
   const drag = async (id, type, name, mime) => page.evaluate(({key, kind, file, mimeType}) => {
     const well = document.querySelector(`#${key} .sf-image-field-well`);
     const transfer = new DataTransfer();
@@ -192,12 +199,12 @@ try {
   await page.waitForTimeout(300);
   const dropped = await state('filled');
   const dropEvents = (await events()).filter((event) => event.id === 'filled').map((event) => `${event.type}:${event.source}`);
-  if (dropped.dragover || dropped.value?.label !== 'dropped.png' || dropped.inputFiles !== 1 || dropEvents.join(',') !== 'input:drop,change:drop,sf-image-field:select:drop') note({case: 'drop replaces', got: {dropped, dropEvents}});
+  if (dropped.dragover || dropped.value?.label !== 'dropped.png' || dropped.formFile !== 'dropped.png' || dropEvents.join(',') !== 'input:drop,change:drop,sf-image-field:select:drop') note({case: 'drop replaces', got: {dropped, dropEvents}});
   await drag('filled', 'drop', 'brief.pdf', 'application/pdf');
   await page.waitForTimeout(300);
   const refused = await state('filled');
   const refuseEvents = (await events()).map((event) => event.type);
-  if (refused.value?.label !== 'dropped.png' || refuseEvents.join(',') !== 'sf-image-field:reject' || !refused.live.startsWith('Этот файл не подходит')) note({case: 'a PDF is refused and said', got: {refused, refuseEvents}});
+  if (refused.value?.label !== 'dropped.png' || refuseEvents.join(',') !== 'sf-image-field:reject' || refused.live !== '«brief.pdf» не подходит: можно изображения') note({case: 'a PDF is refused and said', got: {refused, refuseEvents}});
   for (const id of ['dis', 'ro']) {
     await drag(id, 'drop', 'x.png', 'image/png');
     await page.waitForTimeout(150);

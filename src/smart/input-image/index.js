@@ -43,6 +43,7 @@ import {
   aspectRatio,
   fileRejection,
   formatFileSize,
+  listOf,
   mayBeTransparent,
   normaliseCrop,
   normaliseFocus,
@@ -68,12 +69,6 @@ const DEFAULT_ACCEPT = 'image/*';
 const SOURCES = ['device', 'library', 'url'];
 const EDITS = ['crop', 'focus'];
 const MENU = `:scope .sf-image-field-parts > ${tagSelector('sf-menu-context')}`;
-
-// Reads a comma list against the names it may hold, in their order there.
-const listOf = (text, known) => {
-  const asked = String(text || '').split(',').map((part) => part.trim()).filter(Boolean);
-  return known.filter((name) => asked.includes(name));
-};
 
 // Whether the pointer is a finger: no hover, no drag words (IF-1).
 const coarseQuery = () => {

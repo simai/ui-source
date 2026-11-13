@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-image",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "title": "Image field",
   "summary": "A form field for one image: a row (thumbnail, name and size, the buttons) or a preview (the picture in its frame, the row under it); a file chosen, dropped or pasted, or a picture from the page's library or an address; the upload core's checks with the reason under the field; the description and «Декоративная», the frame and the focal point inside the field; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File, or sends it through the page's uploader.",
   "kind": "smart",
@@ -136,7 +136,7 @@
       "sources": {
         "type": "string",
         "default": "device",
-        "description": "Where a picture may come from, comma separated: device (the file dialog), library (the page's library: the field sends library and the page calls setValue()), url (an address typed in the field). One source: «Выбрать…» / «Заменить…» goes there; more: «Заменить ▾» opens a menu of them (C94 point 5)."
+        "description": "Where a picture may come from, a list separated by commas or spaces: device (the file dialog), library (the page's library: the field sends library and the page calls setValue()), url (an address typed in the field). One source: «Выбрать…» / «Заменить…» goes there; more: «Заменить ▾» opens a menu of them (C94 point 5)."
       },
       "library-label": {
         "type": "string",
@@ -146,7 +146,7 @@
       "edit": {
         "type": "string",
         "default": "",
-        "description": "What the person may edit on the picture, comma separated: crop (the frame in `aspect`, with zoom and position), focus (the focal point). «Изменить» opens the editor in the field; «Готово» writes crop {aspect, zoom, x, y} and focus {x, y} into the value. The original is never cut (C94 point 3)."
+        "description": "What the person may edit on the picture, a list separated by commas or spaces: crop (the frame in `aspect`, with zoom and position), focus (the focal point). «Изменить» opens the editor in the field; «Готово» writes crop {aspect, zoom, x, y} and focus {x, y} into the value. The original is never cut (C94 point 3)."
       },
       "alt": {
         "type": "string",
@@ -754,11 +754,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-image/index.js",
-        "sha256": "b1c09de83360fe1d4dde23e07da7d0741b5da6e7eaaeb9ec51e71449795d3ee2"
+        "sha256": "0230479aa99df5431ec4bd3376105af79f3b217b6b6552ba91578027e6acac7f"
       },
       {
         "path": "src/smart/input-image/value.mjs",
-        "sha256": "19c833f975b2479df43e971b3bb143c784bbc8b4a09988acf9ab5a4928824da3"
+        "sha256": "52eb087649dbe757f23bafb42d6bddafea0e258c5145c0287f0da7daa893678e"
       },
       {
         "path": "src/core/js/composition/file-size.mjs",

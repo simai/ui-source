@@ -438,3 +438,19 @@ test('the reference and the events say the same: library is declared, rejected c
   assert.deepEqual(Object.keys(manifest.events.rejected.carries), ['files', 'rejected', 'accept', 'source']);
   assert.deepEqual(manifest.events.change.carries.source.values, ['input', 'drop', 'paste', 'url', 'alt', 'edit', 'remove', 'upload', 'cancel']);
 });
+
+test('sources and edit read commas, spaces or both (1.4.1): the evidence wrote spaces, the docs write commas', () => {
+  const sources = ['device', 'library', 'url'];
+  for (const text of ['device,library,url', 'device library url', 'url, device ,library', ' device\tlibrary\nurl ', 'device,,library  url']) {
+    assert.deepEqual(value.listOf(text, sources), sources, text);
+  }
+  assert.deepEqual(value.listOf('library device', sources), ['device', 'library'], 'in the known order');
+  assert.deepEqual(value.listOf('device-library urls', sources), [], 'a name is whole, not a part');
+  assert.deepEqual(value.listOf(null, sources), []);
+  assert.deepEqual(plain(host({sources: 'device library url'}).sourceList), sources);
+  assert.equal(host({sources: 'device library url'}).templateContext().menuEntries.length, 3, 'a space list makes the menu');
+  assert.deepEqual(plain(host({edit: 'crop focus'}).editList), ['crop', 'focus']);
+  assert.deepEqual(plain(host({edit: 'focus, crop'}).editList), ['crop', 'focus']);
+  assert.deepEqual(plain(host({edit: 'crop'}).editList), ['crop']);
+  assert.match(source, /import \{[^}]*\blistOf,[^}]*\} from '\.\/value\.mjs';/u, 'the element reads the one list rule');
+});
