@@ -15,14 +15,14 @@ test('button Studio contract preserves closed choices and open icon examples', a
   ]);
   const properties = manifest.inputs.properties;
 
-  // The list stays closed, and it carries the surface appearance built on the
-  // neutral alpha ramp; link reads as ghost since sf-button 1.9.0 (decision
-  // C15, a dated value alias listed in compatibility.aliases). Studio offers
-  // exactly the types the button CSS styles.
-  assert.deepEqual(properties.type.enum, ['default', 'tonal', 'outline', 'ghost', 'surface']);
+  // The list stays closed; link reads as ghost since sf-button 1.9.0 (decision
+  // C15, a dated value alias listed in compatibility.aliases). surface and the
+  // scheme secondary are former names since sf-button 1.14.0 (decision C116),
+  // drawn as tonal on-surface and on-surface, so Studio no longer offers them.
+  assert.deepEqual(properties.type.enum, ['default', 'tonal', 'outline', 'ghost']);
   assert.ok(manifest.compatibility.aliases.includes('appearance=link'));
   // on-surface-variant: the on-surface family one step quieter (sf-button 1.2.0).
-  assert.deepEqual(properties.scheme.enum, ['primary', 'secondary', 'on-surface', 'on-surface-variant']);
+  assert.deepEqual(properties.scheme.enum, ['primary', 'on-surface', 'on-surface-variant']);
   assert.deepEqual(properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
   assert.deepEqual(properties['icon-position'].enum, ['start', 'end']);
   assert.equal(properties['root-class'].type, 'string');

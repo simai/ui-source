@@ -12,7 +12,7 @@
 
 ```html
 <sf-settings look="drill" label="Настройки чтения">
-  <sf-button-icon icon="tune" appearance="link" scheme="on-surface" size="1/2" aria-label="Настройки чтения"></sf-button-icon>
+  <sf-button-icon icon="tune" appearance="ghost" scheme="on-surface" size="1/2" aria-label="Настройки чтения"></sf-button-icon>
   <script type="application/json" data-sf-settings>
     {"items": [
       {"id": "theme", "type": "choice", "text": "Тема", "icon": "contrast", "value": "system", "options": [

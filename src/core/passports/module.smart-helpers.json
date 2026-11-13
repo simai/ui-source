@@ -11,6 +11,7 @@
   ],
   "files": [
     "src/smart/helpers/anchored-badge.js",
+    "src/smart/helpers/button-set.js",
     "src/smart/helpers/checkable-row.css",
     "src/smart/helpers/checkable-row.js",
     "src/smart/helpers/checkableReset.js",
@@ -27,7 +28,7 @@
     "src/smart/helpers/refs.js",
     "src/smart/helpers/text.js"
   ],
-  "content_sha256": "bb0813e79d5f7058a22e271e60b5eb18ba063d9f4a8814077738ad356abb887a",
+  "content_sha256": "a7f1a86e2ac5e06f35eb2164fd12d4a42c51ca60d616b5a3b66a713434189c70",
   "dependencies": [
     {
       "id": "component.badges",

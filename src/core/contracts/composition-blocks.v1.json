@@ -623,8 +623,7 @@
               "default",
               "tonal",
               "outline",
-              "ghost",
-              "surface"
+              "ghost"
             ],
             "type": "string"
           },
@@ -721,7 +720,6 @@
             "default": "primary",
             "enum": [
               "primary",
-              "secondary",
               "on-surface",
               "on-surface-variant"
             ],
@@ -766,6 +764,10 @@
             ],
             "type": "string"
           },
+          "split": {
+            "default": false,
+            "type": "boolean"
+          },
           "status": {
             "default": "",
             "enum": [
@@ -809,7 +811,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button",
-      "version": "1.13.0"
+      "version": "1.15.0"
     },
     "sf-button-icon": {
       "inputs": {
@@ -968,7 +970,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button-icon",
-      "version": "1.8.4"
+      "version": "1.10.0"
     },
     "sf-checkbox": {
       "inputs": {

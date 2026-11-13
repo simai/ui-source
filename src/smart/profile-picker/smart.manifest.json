@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.profile-picker",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "title": "Profile picker",
   "summary": "One way to choose, make, rename, remove and reset a profile: a field-like button naming the profile in use, and a panel where every act happens inline. The profiles and the rights are the host's; the component says what was asked.",
   "kind": "smart",
@@ -467,7 +467,7 @@
       },
       {
         "path": "src/smart/profile-picker/js/templates/default.js",
-        "sha256": "5729bae083d72c4a81bf3274706cdfef649961e1f481fb021649d0ee14948b5a"
+        "sha256": "d1ebfb3ce53abd78db89098e6a00848f7909aab21dcff1a5a1cd3abeb1282f56"
       },
       {
         "path": "src/smart/profile-picker/scss/_smart__profile_picker.scss",

@@ -28,36 +28,46 @@ Loading model:
   owner decision C36; before, it wore the grey disabled look). A button that
   is `disabled` and `loading` at once wears the disabled look
 
+Which button to take (decision C116, the set): one main button per place
+(`default primary`); a second weighted action is `outline on-surface`; a quiet
+one -- «Отмена», «Позже», «Показать ещё», «Сбросить» -- is `ghost on-surface`;
+«Отмена» is always quiet, in a form, a dialog and a confirmation alike. The
+soft `tonal on-surface` button stands on a coloured or busy place (a notice,
+steppers). `outline primary` is only the second call to action of a site's
+hero, beside the main button; in an application take `outline on-surface`.
+
 Main attributes:
 
 - `template`
 - `size`
-- `appearance="default|tonal|outline|ghost|surface"` — `ghost` is the quiet
+- `appearance="default|tonal|outline|ghost"` — `ghost` is the quiet
   button with no fill and no edge until a pointer meets it (1.9.0, decision
   C15; `link` is its former name, a dated alias). `href` makes any appearance
-  a link. surface reads the neutral alpha ramp rather than a colour of its
-  own: a faint fill and a border one step stronger, right in a light and in a
-  dark theme without being redeclared.
-- `scheme="primary|secondary|on-surface|on-surface-variant"` — which colour
-  family the control takes. `on-surface-variant` is the on-surface family one
-  step quieter: the fill and the edge of `on-surface`, the label and the icons
-  in `--sf-on-surface-variant` (a filled `default` button keeps on-surface's
-  inverse ink). Hover, press and disabled are on-surface's. `secondary` in
-  the `outline`, `surface` and `ghost` appearances is drawn the same way: the
-  on-surface button with the label and the icons in `--sf-secondary`, at rest,
-  hovered and pressed; `default` and `tonal` secondary keep their own fill.
-  `on-surface-variant` is not a look of `surface` (1.11.0, as C15 did on the
-  icon buttons: the quiet ink on the surface fill fell under 4.5:1 in the dark
-  theme); written there it draws as `on-surface` until 2027-01-01 and warns
-  once in the console. For a quiet search trigger take `tonal` or `outline`.
+  a link. `surface` is a former name until 2027-01-01 (1.14.0, decision C116):
+  it draws as the soft grey button, `tonal` with `scheme="on-surface"` (C113),
+  and warns once in the console.
+- `scheme="primary|on-surface|on-surface-variant"` — which colour family the
+  control takes. `on-surface-variant` is the on-surface family one step
+  quieter: the fill and the edge of `on-surface`, the label and the icons in
+  `--sf-on-surface-variant` (a filled `default` button keeps on-surface's
+  inverse ink). Hover, press and disabled are on-surface's. `secondary` is a
+  former name until 2027-01-01 (1.14.0, decision C116): the set has no job
+  for a second colour, so it draws as `on-surface` and warns once in the
+  console. The secondary colour stays in core for badges, tabs and segments.
 - `status="danger"` — what the control is about. The destructive one, for a
   control that deletes, discards or cannot be undone (1.9.0, decision C13:
   controls say `danger`, fields and messages say `error`; `error` is read as
   `danger`). It paints with the error
   family's twin of every primary role, so it behaves exactly like a primary
-  control and only its colour says what it does -- on every appearance,
-  `surface` included (1.11.0: before, surface danger drew the plain ink). A status wins over the scheme,
-  because the two cannot both colour the control.
+  control and only its colour says what it does. A status wins over the
+  scheme, because the two cannot both colour the control. `danger` is the only
+  status of a button (decision C116): there are no success, warning or info
+  buttons -- a result's colour belongs to a notice or a badge; another word
+  draws no status and warns once in the console. A danger button has three
+  looks: `default` (filled) for the last confirmation, `outline` for the
+  button that opens a confirmation, and a fill-less icon button in a row;
+  `tonal` and `surface` with `status="danger"` are former looks until
+  2027-01-01 and draw as `outline`.
 - `text`
 - `icon`
 - `icon-start`
@@ -222,7 +232,12 @@ A search trigger that reads like a field:
 - `sf-button-press` — a person pressed the native button: a click, Enter or
   Space. It is sent once per press, with an empty `detail`, and never while the
   button is disabled or loading. The native `click` still bubbles as before; in
-  an assembly a rule hears the press as `<role>.press`.
+  an assembly a rule hears the press as `<role>.press`. A menu button (`menu`
+  without `split`) does not send it: its press opens the menu. A split button
+  sends it from the label part only.
+- `sf-button-select` — a row of the menu (`menu`) was chosen; `detail` is
+  `{id, entry}`. The menu has closed and focus is back on the control that
+  opened it. The menu's own `sf-menu-context-select` stays inside.
 
 The empty radius is the normal UI radius. `default` is retained as a legacy
 surface-radius override but should not be used for ordinary controls; prefer
@@ -391,3 +406,44 @@ order is the visible theme's opposite first, then the other, then «как в
 A cycle is not a toggle: `pressed` and `text-pressed` are ignored beside it,
 and the console says so once.
 
+## Menu and split
+
+`menu` gives the button a menu (1.15.0, owner decision C119): its entries are
+`sf-menu-context`'s -- `{id, text, icon?, caption?, shortcut?, disabled?,
+status?}`, separators and headings -- as JSON on the attribute or a list on the
+property. A chosen row sends `sf-button-select` with `{id, entry}`.
+
+- `menu` alone is a menu button: the whole button opens the menu under it. It
+  says `aria-haspopup="menu"` and `aria-expanded`, and draws `expand_more` at
+  its end unless `icon-end` is written. Its press opens the menu and sends no
+  `sf-button-press`.
+- `menu` with `split` is a split button: the label part is the button as
+  before and sends `sf-button-press`; a square arrow part of the same height,
+  named «Другие варианты: <label>», opens the menu end-aligned under it. The two
+  parts are joined as a button group: inner corners square and a 1 px seam --
+  the page between two filled parts, one shared border between two outlined
+  ones. Both parts take the size, `height`, radius and density of the button.
+
+```html
+<sf-button text="Добавить элемент" icon-start="add" split
+  menu='[{"id":"section","text":"Раздел","icon":"folder"},{"id":"import","text":"Импорт из файла","icon":"upload_file"}]'></sf-button>
+
+<sf-button text="Добавить секцию" appearance="outline" scheme="on-surface" size="1/2" split
+  menu='[{"id":"empty","text":"Пустую"},{"id":"paste","text":"Вставить скопированную"}]'></sf-button>
+```
+
+Keyboard: the label part and the arrow are two Tab stops. On the arrow (or on
+a menu button) Enter, Space and ArrowDown open the menu on its first row,
+ArrowUp on its last; Escape closes it and returns focus to the arrow.
+
+A split button is the main look (`appearance="default"`, `scheme="primary"`)
+or the regular one (`appearance="outline"`) only. Another look, or a `danger`
+button, draws as a menu button and the console says so once. The main action
+is not repeated in the menu (the console says so when a row's text is the
+label). `split` without menu entries is a plain button; `menu` on a link
+(`href`) or beside a `cycle` is left out, each said once in the console.
+
+The class form is the same markup: `<span class="sf-button-split">` holding an
+`.sf-button` and an `.sf-icon-button` of the same size and height
+(`sf-button-split--full-width` with a full-width button). When to take a split
+button, a menu button or two buttons is the recipe's choice rule.

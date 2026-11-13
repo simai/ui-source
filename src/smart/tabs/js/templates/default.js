@@ -129,6 +129,13 @@ function renderIconLink(item, context) {
 // one minor (1.2.x) so a page that read it keeps working, dropped in 1.3.0.
 // Unprefixed, a page selector [data-tab] caught these buttons. Nothing in
 // the component reads it.
+
+// The tab buttons are asked on their own axes (BT-1, C15): appearance="default"
+// scheme="primary". sf-tabs draws one look per type whatever its retired scheme
+// (owner decision C96 item 1), so the look is not taken from scheme. Before,
+// the template wrote appearance="primary" scheme=<the tabs scheme>, two values
+// outside sf-button's lists, and every tab fell back to default primary --
+// the same classes it draws now.
 function renderTab(item, context) {
   const tabContent = context.component?.hasSlotContent?.(item.tabSlotName)
     ? context.component.getSlotContent(item.tabSlotName)
@@ -179,9 +186,9 @@ function renderTab(item, context) {
   if(context.variant !== 'icons') {
       return html`
           <sf-button
-                  appearance="primary"
+                  appearance="default"
                   size=${context.size}
-                  scheme=${context.scheme}
+                  scheme="primary"
                   text-position=${vertical ? 'start' : nothing}
                   href=${context.links ? item.href : nothing}
                   ?disabled=${Boolean(context.links && item.disabled)}
@@ -206,9 +213,9 @@ function renderTab(item, context) {
       // button-icon default `add` on every tab).
       return html`
           <sf-button-icon
-                  appearance="primary"
+                  appearance="default"
                   size=${context.size}
-                  scheme=${context.scheme}
+                  scheme="primary"
                   icon=${item.iconStart || item.icon || item.iconEnd || nothing}
                   data-tab-label=${item.label}
                   root-class=${tabClasses(item)}

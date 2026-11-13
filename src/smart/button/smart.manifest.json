@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button",
-  "version": "1.13.1",
+  "version": "1.15.0",
   "title": "Buttons",
   "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, height and radius. loading sets aria-busy and disables it against repeated activation.",
   "kind": "smart",
@@ -25,7 +25,9 @@
       "component.buttons",
       "component.kbd",
       "component.spinner",
-      "smart.icon"
+      "smart.button-icon",
+      "smart.icon",
+      "smart.menu-context"
     ],
     "public_parts": [],
     "declarative": {
@@ -67,6 +69,7 @@
         "pressed",
         "text-pressed",
         "theme-cycle",
+        "split",
         "aria-label"
       ],
       "presentation": {
@@ -130,22 +133,20 @@
       "appearance": {
         "type": "string",
         "default": "default",
-        "description": "How the button looks: default (filled), tonal, outline, ghost (no fill or edge until hovered; rule C15) or surface (a faint fill on the neutral alpha ramp and a border). link is ghost's former name; a link is made by href, not by the look.",
+        "description": "How the button looks: default (filled), tonal, outline or ghost (no fill or edge until hovered; rule C15). link is ghost's former name; a link is made by href, not by the look. surface is a former name until 2027-01-01 (rule C116): it draws as the soft grey button, tonal with the on-surface scheme (C113), and warns once per page. A danger button is default, outline or ghost: tonal and surface with status danger draw as outline until 2027-01-01.",
         "enum": [
           "default",
           "tonal",
           "outline",
-          "ghost",
-          "surface"
+          "ghost"
         ]
       },
       "scheme": {
         "type": "string",
         "default": "primary",
-        "description": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the label and the icons in --sf-on-surface-variant (a search trigger that reads like a field). With appearance surface on-surface-variant is retired (1.11.0, as on the icon buttons, C15): it draws as on-surface until 2027-01-01 and warns once. What the control is about is the status axis; a status set there wins over this.",
+        "description": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the label and the icons in --sf-on-surface-variant (a search trigger that reads like a field). secondary is a former name until 2027-01-01 (rule C116): it draws as on-surface and warns once per page; the secondary colour stays in core for badges, tabs and segments. What the control is about is the status axis; a status set there wins over this.",
         "enum": [
           "primary",
-          "secondary",
           "on-surface",
           "on-surface-variant"
         ]
@@ -153,7 +154,7 @@
       "status": {
         "type": "string",
         "default": "",
-        "description": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control.",
+        "description": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control. danger is the only status of a button (rule C116): there are no success, warning or info buttons; another word draws no status and warns once per page.",
         "enum": [
           "",
           "danger"
@@ -341,6 +342,11 @@
         "default": "",
         "description": "A ready theme switch over SF.Loader's theme (the contract of sf-segmented's theme-switch: themePreference, setTheme, sf-theme-change). Present and empty: three values, «as the system», light and dark, in the owner's order -- first the theme opposite to the visible one, then the other, then «as the system» (rule D11d); \"light dark\": two values, every press flips the visible theme. The icons are contrast, light_mode and dark_mode; the words are the page language's («Тема: светлая. Нажмите — тёмная»). cycle is ignored beside it."
       },
+      "split": {
+        "type": "boolean",
+        "default": false,
+        "description": "With menu: a split button (owner decision C119) -- the label part acts (press) and a square arrow part of the same height, named «Другие варианты: <label>», opens the menu end-aligned under it. Two tab stops; on the arrow Enter, Space and ArrowDown open the menu on its first row, ArrowUp on its last, Escape closes it and returns focus to the arrow. The parts are joined as a button group: inner corners square, a 1 px seam. The main look (default primary) and the regular one (outline) only; another look or a danger button draws as a menu button with one console warning. The main action is not repeated in the menu. Without menu entries split is a plain button."
+      },
       "aria-label": {
         "type": "string",
         "default": "",
@@ -354,8 +360,7 @@
           "default",
           "tonal",
           "outline",
-          "ghost",
-          "surface"
+          "ghost"
         ]
       },
       "icon-left": {
@@ -419,6 +424,11 @@
             }
           ]
         ]
+      },
+      "menu": {
+        "type": "array",
+        "default": [],
+        "description": "The entries of the menu this button opens (owner decision C119), shaped as sf-menu-context's entries: {id, text, icon?, caption?, shortcut?, disabled?, status?} and its separators and headings. With menu alone the button is a menu button: a press opens the menu instead of sending press, the button says aria-haspopup=\"menu\" and aria-expanded, and draws expand_more at its end unless icon-end is written. A chosen row sends select {id, entry}. Left out on a link (href) and beside a cycle, with one console warning."
       }
     },
     "additionalProperties": false
@@ -587,6 +597,32 @@
         },
         "additionalProperties": true
       }
+    },
+    "sf-button-select": {
+      "summary": "A row of the menu (menu, split) was chosen; the menu has closed and focus is back on the control that opened it. Dispatched on the host, bubbles and is composed. The menu's own sf-menu-context-select stays inside.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "entry"
+        ],
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "entry": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "The chosen entry as given in menu."
+          }
+        },
+        "additionalProperties": true
+      }
     }
   },
   "state": {
@@ -624,7 +660,10 @@
     "keyboard": [
       "Tab",
       "Enter",
-      "Space"
+      "Space",
+      "ArrowDown",
+      "ArrowUp",
+      "Escape"
     ],
     "focus": "Keep visible focus on the active control."
   },
@@ -697,7 +736,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button/index.js",
-        "sha256": "ce9d4ed35c95b0959c85689dfc5b1b7a5c936ba40a4bfbdb7a0279facf3fd1b7"
+        "sha256": "08f1e0e5dd57188eb2dcd878cfc31da1723b47927f5bf9a4ca8c10291310391c"
       }
     ],
     "generated_runtime": [

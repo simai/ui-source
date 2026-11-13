@@ -951,9 +951,14 @@
     --sf-icon--color: var(--sf-on-error-container);
   }
 
+  /* Only the danger outline has a coloured border (owner decision C118, R205):
+     the error role at the ink family's 64 step -- 3.4:1 light, 5.1:1 dark on
+     the page, above 3:1 for a control's edge -- the same red as its hover
+     plate, so a hovered danger is one colour. Primary and on-surface outlines
+     keep the shared grey --sf-outline; a disabled danger keeps it too. */
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error) {
     --sf-button--background-color: var(--sf-button-background-color, transparent);
-    --sf-button--border-color: var(--sf-button-border-color, var(--sf-outline));
+    --sf-button--border-color: var(--sf-button-border-color, color-mix(in srgb, var(--sf-error) 64%, transparent));
   }
 
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),

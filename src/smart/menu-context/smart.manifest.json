@@ -200,7 +200,7 @@
           "kind": "'check' | 'radio' for a checkable row",
           "checked": "boolean",
           "danger": "boolean, a destructive action",
-          "status": "'danger' (or its alias 'error'), the same as danger: true -- the controls' status word (C13)",
+          "status": "'danger' (or its alias 'error'), the same as danger: true -- the controls' status word (C13), the only one (C116)",
           "disabled": "boolean",
           "current": "boolean, the place the person is",
           "href": "string, a link row",

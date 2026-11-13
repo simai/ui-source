@@ -50,22 +50,20 @@ const sfButtonMeta = {
         "default",
         "tonal",
         "outline",
-        "ghost",
-        "surface"
+        "ghost"
       ],
       "default": "default",
-      "description": "How the button looks: default (filled), tonal, outline, ghost (no fill or edge until hovered; rule C15) or surface (a faint fill on the neutral alpha ramp and a border). link is ghost's former name; a link is made by href, not by the look."
+      "description": "How the button looks: default (filled), tonal, outline or ghost (no fill or edge until hovered; rule C15). link is ghost's former name; a link is made by href, not by the look. surface is a former name until 2027-01-01 (rule C116): it draws as the soft grey button, tonal with the on-surface scheme (C113), and warns once per page. A danger button is default, outline or ghost: tonal and surface with status danger draw as outline until 2027-01-01."
     },
     "scheme": {
       "kind": "enum",
       "values": [
         "primary",
-        "secondary",
         "on-surface",
         "on-surface-variant"
       ],
       "default": "primary",
-      "description": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the label and the icons in --sf-on-surface-variant (a search trigger that reads like a field). With appearance surface on-surface-variant is retired (1.11.0, as on the icon buttons, C15): it draws as on-surface until 2027-01-01 and warns once. What the control is about is the status axis; a status set there wins over this."
+      "description": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the label and the icons in --sf-on-surface-variant (a search trigger that reads like a field). secondary is a former name until 2027-01-01 (rule C116): it draws as on-surface and warns once per page; the secondary colour stays in core for badges, tabs and segments. What the control is about is the status axis; a status set there wins over this."
     },
     "status": {
       "kind": "enum",
@@ -74,7 +72,7 @@ const sfButtonMeta = {
         "danger"
       ],
       "default": "",
-      "description": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control."
+      "description": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control. danger is the only status of a button (rule C116): there are no success, warning or info buttons; another word draws no status and warns once per page."
     },
     "text-position": {
       "kind": "custom",
@@ -285,6 +283,15 @@ const sfButtonMeta = {
       "default": "",
       "description": "A ready theme switch over SF.Loader's theme (the contract of sf-segmented's theme-switch: themePreference, setTheme, sf-theme-change). Present and empty: three values, «as the system», light and dark, in the owner's order -- first the theme opposite to the visible one, then the other, then «as the system» (rule D11d); \"light dark\": two values, every press flips the visible theme. The icons are contrast, light_mode and dark_mode; the words are the page language's («Тема: светлая. Нажмите — тёмная»). cycle is ignored beside it."
     },
+    "split": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "With menu: a split button (owner decision C119) -- the label part acts (press) and a square arrow part of the same height, named «Другие варианты: <label>», opens the menu end-aligned under it. Two tab stops; on the arrow Enter, Space and ArrowDown open the menu on its first row, ArrowUp on its last, Escape closes it and returns focus to the arrow. The parts are joined as a button group: inner corners square, a 1 px seam. The main look (default primary) and the regular one (outline) only; another look or a danger button draws as a menu button with one console warning. The main action is not repeated in the menu. Without menu entries split is a plain button."
+    },
     "aria-label": {
       "kind": "custom",
       "valueType": "string",
@@ -297,8 +304,7 @@ const sfButtonMeta = {
         "default",
         "tonal",
         "outline",
-        "ghost",
-        "surface"
+        "ghost"
       ],
       "default": "default",
       "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json."

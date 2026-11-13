@@ -15,12 +15,16 @@ test('the confirm surface applies nothing and keeps the question open when the h
   const surface = read('src/smart/helpers/confirm-surface.js');
   assert.match(surface, /const delivered = this\.sfEmit\("answer", \{id: this\.questionKey, accepted\}\);/u);
   assert.match(surface, /if \(!delivered\) \{\s*this\._pressed = null;\s*this\._declinedHere = false;\s*this\.setAttribute\("state", "open"\);/u);
-  // A plain question: two outlined answers of one weight. A dangerous one
-  // (decision C25): a filled danger acceptance and a quiet declining answer.
+  // A plain question's accepting answer is outlined; a dangerous one
+  // (decision C25) a filled danger acceptance. The declining answer is always
+  // quiet, ghost on-surface, in a card and in the window alike (C116, #q-cancel).
   assert.match(surface, /appearance=\$\{danger \? "default" : "outline"\}/u);
-  // In the question window (C39) the declining answer is tonal beside it.
-  assert.match(surface, /const quiet = window \? "tonal" : "ghost";/u);
-  assert.match(surface, /appearance=\$\{danger \? quiet : "outline"\}/u);
+  assert.match(surface, /declineAppearance = "ghost"/u);
+  assert.match(surface, /appearance=\$\{declineAppearance\}\s+scheme="on-surface"\s+size=\$\{size\}\s+text=\$\{context\.declineText\}/u);
+  // sf-confirm-change's «Отклонить» is a decision of the same weight, not a
+  // cancel: it keeps the outline.
+  assert.match(read('src/smart/confirm-change/js/templates/default.js'), /renderConfirmFooter\(context, "sf-change-confirm", \{declineAppearance: "outline"\}\)/u);
+  assert.doesNotMatch(surface, /"tonal"/u);
   assert.match(surface, /status=\$\{danger \? "danger" : nothing\}/u);
   // The answers stand on the element's size (default 1), never a fixed 1/2
   // (C22): a template's size is relative, so density moves them.
@@ -49,7 +53,7 @@ test('the confirm surface applies nothing and keeps the question open when the h
 test('sf-confirm-change keeps its tag, API and former tag after the move from package pro', () => {
   const contract = json('src/smart/confirm-change/component.json');
   assert.equal(contract.tag, 'sf-confirm-change');
-  assert.equal(contract.version, '1.7.2');
+  assert.equal(contract.version, '1.7.3');
   // 1.7.0 (C40): the values are sf-change's list, which it fetches.
   assert.ok(contract.relations.some(({name}) => name === 'cl-change'));
   assert.match(read('src/smart/confirm-change/js/templates/default.js'), /<sf-change class="sf-change-confirm__list" layout="list" \.changes=/u);
@@ -78,7 +82,7 @@ test('sf-confirm: a group named by its question, Escape declines, a dangerous ac
   assert.deepEqual(contract.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.equal(contract.settings.size.default, '1');
   assert.match(contract.settings.destructive.summary, /2027-01-01/u);
-  assert.equal(contract.version, '1.3.2');
+  assert.equal(contract.version, '1.3.3');
   assert.ok(contract.slots.description['x-summary']);
   for (const [name, variable] of Object.entries(contract['css-variables'])) assert.ok(variable['x-summary'], name);
   const source = read('src/smart/confirm/index.js');

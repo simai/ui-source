@@ -136,7 +136,7 @@
         "status": {
           "type": "string",
           "optional": true,
-          "summary": "\"danger\" draws the row as a destructive action, as danger: true does: the status word of every control (decision C13); \"error\" is read as danger."
+          "summary": "\"danger\" draws the row as a destructive action, as danger: true does: the status word of every control (decision C13); \"error\" is read as danger. danger is the only status of an item (decision C116): there are no success, warning or info items; another word draws a plain row and warns once per page."
         },
         "current": {
           "type": "boolean",
@@ -884,7 +884,9 @@
     "version 1.16.0 also carries (2026-11-12, C106 follow-up 3): the panel head chooses its tab on sf-tabs' current event, sf-tabs-change (it listened to the former name sf-tab-change). sf-tabs still sends sf-tab-change after it until 2026-12-01, so the head stops that one too and acts on it no more; the stopper goes with the alias. Settings, values, events and keys unchanged.",
     "version 1.16.0, also (written on the branch as 1.14.4; 2026-11-13, a patch, defect BS-1 of ui-control research 2026-11-13-button-schemes, rule C13): an item whose status is not danger (or its former name error) -- success, warning, info or any other word -- drew a plain row without a sound. It still draws so, and the console says it once per page for each word (helpers/control-status.js, shared with sf-button and sf-button-icon). Nothing drawn differently; settings, values, events and keys unchanged.",
     "version 1.16.0, also (written on the branch as 1.15.0; 2026-11-12, owner decision C79, changing C22; change journal behaviour-explicit-size-follows-density): a minor. The panel takes the density of the control that opens it whether or not that control has a size: a sized anchor in a compact region opens a compact panel (it opened a normal one, since an explicit size took the normal ladder back), and an anchor inside a data-sf-density=\"normal\" island opens a normal one. Settings, values, events and keys unchanged.",
-    "version 1.16.2 (2026-11-13, RD-1 follow-up; group build 2 fields-2 acceptance): a patch, nothing drawn differently. The menu no longer passes a row's press on to its mark itself (handleRowClick of 1.15.0, DP-2): since RD-1 the core does it for every Smart form control (element-manifest.js, activateFromLabel) -- a label around sf-radio, sf-checkbox or sf-switch clicks the host, the host clicks its control once and its ancestors hear the control's click, so the menu's handler was never reached. A press on a panel row's text still chooses or toggles its mark once, and the radio of a one-of tab is chosen (DP-2). Settings, values, events and keys unchanged."
+    "version 1.16.2 (2026-11-13, RD-1 follow-up; group build 2 fields-2 acceptance): a patch, nothing drawn differently. The menu no longer passes a row's press on to its mark itself (handleRowClick of 1.15.0, DP-2): since RD-1 the core does it for every Smart form control (element-manifest.js, activateFromLabel) -- a label around sf-radio, sf-checkbox or sf-switch clicks the host, the host clicks its control once and its ancestors hear the control's click, so the menu's handler was never reached. A press on a panel row's text still chooses or toggles its mark once, and the radio of a one-of tab is chosen (DP-2). Settings, values, events and keys unchanged.",
+    "version 1.16.2, also (written on the branch as 1.14.4; 2026-11-13, defect BT-1): a patch, nothing drawn or done differently by this element. Its panel first-paint snapshot holds an sf-tabs whose tab buttons now ask for appearance=\"default\" scheme=\"primary\" (sf-tabs 1.1.18) where they asked for appearance=\"primary\" scheme=\"default\", two values outside sf-button's lists; the classes drawn are the same. Settings, values, events and keys unchanged.",
+    "version 1.16.2, also (written on the branch as 1.16.1; 2026-11-13, owner decision C116 #q-status-buttons): a patch, nothing drawn or done differently. The item's status says it is danger alone (owner decision C116 #q-status-buttons): no success, warning or info items; another word draws a plain row and warns once per page (BS-1). Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "item_contract": {
@@ -901,7 +903,7 @@
             "kind": "'check' | 'radio' for a checkable row",
             "checked": "boolean",
             "danger": "boolean, a destructive action",
-            "status": "'danger' (or its alias 'error'), the same as danger: true -- the controls' status word (C13)",
+            "status": "'danger' (or its alias 'error'), the same as danger: true -- the controls' status word (C13), the only one (C116)",
             "disabled": "boolean",
             "current": "boolean, the place the person is",
             "href": "string, a link row",
