@@ -11712,6 +11712,52 @@
       },
       "owner": "ui-source",
       "source": "src/core/scss/mix/_mix__places.scss (sf-place-glass-accent); src/core/scss/_sf_css__surface_places.scss; ui-control control/docs-review/decisions.md C70"
+    },
+    {
+      "id": "attribute-badge-compact-to-icon-only",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-badge 1.6.0: the word compact means density only (owner decision C134). The badge that shows its icon alone -- the text a visually hidden copy that stays the name, the box a square -- is the boolean icon-only; compact is its dated alias, mapped by the shim (attribute and property), drawn the same and noted in SF.deprecations until remove_after. icon-only is the name sf-segmented's items already use for the same thing.",
+      "items": [
+        {
+          "component": "sf-badge",
+          "from": "compact",
+          "to": "icon-only"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-attribute",
+      "examples": {
+        "before": "<sf-badge activity=\"failed\" compact></sf-badge>",
+        "after": "<sf-badge activity=\"failed\" icon-only></sf-badge>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/badge/component.json aliases; ui-control control/docs-review/decisions.md C134; control/research/2026-11-13-navigation-density.md D5, Q1; control/research/2026-11-14-badges.md"
+    },
+    {
+      "id": "class-badges-compact-to-icon-only",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.badges 1.8.0: the class of a badge that shows its icon alone is sf-badge--icon-only (owner decision C134: the word compact means density only); sf-badge--compact is its former name and is drawn by the same rule until remove_after. sf-badge with icon-only writes both classes until then, so a page selector that reached sf-badge--compact still does.",
+      "items": [
+        {
+          "component": "sf-badge",
+          "from": "sf-badge--compact",
+          "to": "sf-badge--icon-only"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<span class=\"sf-badge sf-badge--tonal sf-badge--error sf-badge--compact\">",
+        "after": "<span class=\"sf-badge sf-badge--tonal sf-badge--error sf-badge--icon-only\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/badges/scss/_css__badges.scss; src/smart/badge/js/templates/default.js; ui-control control/docs-review/decisions.md C134; control/research/2026-11-14-badges.md"
     }
   ]
 }

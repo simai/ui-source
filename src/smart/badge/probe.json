@@ -17,10 +17,11 @@
       "  <sf-badge id=\"bd-over\" activity=\"failed\" status=\"success\" scheme=\"primary\"></sf-badge>",
       "  <sf-badge id=\"bd-own\" activity=\"running\" text=\"Build\" icon=\"sync\"></sf-badge>",
       "  <sf-badge id=\"bd-empty-mark\" activity=\"done\" icon-start=\"\"></sf-badge>",
-      "  <sf-badge id=\"bd-compact\" activity=\"stopped\" compact></sf-badge>",
+      "  <sf-badge id=\"bd-icon-only\" activity=\"stopped\" icon-only></sf-badge>",
+      "  <sf-badge id=\"bd-compact-alias\" activity=\"stopped\" compact></sf-badge>",
       "  <sf-badge id=\"bd-paused\" activity=\"paused\"></sf-badge>",
       "  <sf-badge id=\"bd-queued\" activity=\"queued\"></sf-badge>",
-      "  <sf-badge id=\"bd-compact-bare\" text=\"Bare\" compact></sf-badge>",
+      "  <sf-badge id=\"bd-icon-only-bare\" text=\"Bare\" icon-only></sf-badge>",
       "  <sf-badge id=\"bd-tight\" text=\"Черновик\" appearance=\"tonal\" tight></sf-badge>",
       "  <sf-badge id=\"bd-figure\" text=\"3\" scheme=\"primary\"></sf-badge>",
       "  <sf-badge id=\"bd-figures\" text=\"12\" scheme=\"primary\"></sf-badge>",
@@ -177,26 +178,36 @@
       ]
     },
     {
-      "id": "p11-compact",
-      "title": "compact hides the text from sight only; with no icon the text stays",
-      "covers": "settings.compact",
+      "id": "p11-icon-only",
+      "title": "icon-only hides the text from sight only and writes sf-badge--icon-only with its former sf-badge--compact; with no icon the text stays",
+      "covers": "settings.icon-only",
       "steps": [
         {
-          "check": "(() => { const host = document.querySelector('#bd-compact'); const b = host.querySelector('.sf-badge'); const text = b.querySelector('.sf-badge-text-container'); return b.classList.contains('sf-badge--compact') && text.classList.contains('sr-only') && !text.hasAttribute('aria-hidden') && text.textContent.trim() === host.sfWord('activity-stopped') && b.querySelector('.sf-icon').textContent.trim() === 'stop_circle'; })()",
+          "check": "(() => { const host = document.querySelector('#bd-icon-only'); const b = host.querySelector('.sf-badge'); const text = b.querySelector('.sf-badge-text-container'); return b.classList.contains('sf-badge--icon-only') && b.classList.contains('sf-badge--compact') && text.classList.contains('sr-only') && !text.hasAttribute('aria-hidden') && text.textContent.trim() === host.sfWord('activity-stopped') && b.querySelector('.sf-icon').textContent.trim() === 'stop_circle'; })()",
           "expect": {
             "values": {
-              "#bd-compact.compact": true
+              "#bd-icon-only.iconOnly": true
             }
           }
         },
         {
-          "check": "(() => { const b = document.querySelector('#bd-compact-bare .sf-badge'); return !b.classList.contains('sf-badge--compact') && !b.querySelector('.sf-badge-text-container').classList.contains('sr-only'); })()"
+          "check": "(() => { const b = document.querySelector('#bd-icon-only-bare .sf-badge'); return !b.classList.contains('sf-badge--icon-only') && !b.classList.contains('sf-badge--compact') && !b.querySelector('.sf-badge-text-container').classList.contains('sr-only'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p11-compact-alias",
+      "title": "the dated boolean compact draws as icon-only, the same classes and box, and is noted in SF.deprecations until 2027-01-01 (owner decision C134)",
+      "covers": "settings.icon-only, aliases compact",
+      "steps": [
+        {
+          "check": "(() => { const a = document.querySelector('#bd-compact-alias'); const n = document.querySelector('#bd-icon-only'); const ab = a.querySelector('.sf-badge'); const nb = n.querySelector('.sf-badge'); const ra = ab.getBoundingClientRect(); const rn = nb.getBoundingClientRect(); const notes = SF.deprecations.list().filter((note) => note.component === 'sf-badge' && note.from === 'compact'); return a.hasAttribute('icon-only') && a.iconOnly === true && a.compact === true && ab.className === nb.className && Math.abs(ra.width - rn.width) < 0.02 && Math.abs(ra.height - rn.height) < 0.02 && notes.length >= 1 && notes.every((note) => note.to === 'icon-only' && note.remove_after === '2027-01-01'); })()"
         }
       ]
     },
     {
       "id": "p12-tight",
-      "title": "tight keeps the size's own side room; one figure stays round, two do not take the mark",
+      "title": "tight takes the narrow side room --sf-space-1/3; one figure stays round, two do not take the mark",
       "covers": "settings.tight",
       "steps": [
         {

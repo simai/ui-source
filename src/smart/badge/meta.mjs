@@ -91,14 +91,14 @@ const sfBadgeMeta = {
       "default": "",
       "description": "Where a run stands: running draws a spinner in the icon's place, waiting (needs a person's input), done, stopped, failed, paused (stopped and will go on) and queued (in a queue) an icon of their own, each with its word and colour role. Wins over status and scheme for the icon, the text and the colour; text and icon override it."
     },
-    "compact": {
+    "icon-only": {
       "kind": "boolean",
       "values": [
         "true",
         "false"
       ],
       "default": "false",
-      "description": "Shows the icon alone, for a tight list row; the text stays as the accessible name. Needs an icon to show: without one the text stays visible. The appearance is untouched."
+      "description": "Shows the icon alone, for a tight list row; the text stays as the accessible name and the box closes to a square. Needs an icon to show: without one the text stays visible. The appearance is untouched. The former boolean compact still draws it until 2027-01-01 (owner decision C134: compact means density only; each use noted in SF.deprecations, journal attribute-badge-compact-to-icon-only)."
     },
     "tight": {
       "kind": "boolean",
@@ -107,7 +107,7 @@ const sfBadgeMeta = {
         "false"
       ],
       "default": "false",
-      "description": "Keeps the size's own narrow side room, for dense places: a table, a counter, a chip in a row. By default the text sits --sf-space-1/2 from the badge's edges at every size."
+      "description": "Keeps a narrow side room, for dense places: a table, a counter, a chip in a row -- --sf-space-1/3, one space step under the default --sf-space-1/2 (8 · 4 compact · 8 phone; BG-9: the room is a space step, no longer the button's text inset)."
     },
     "text": {
       "kind": "custom",
@@ -163,6 +163,15 @@ const sfBadgeMeta = {
       "valueType": "string",
       "default": "",
       "description": "Dated alias of icon-end until 2026-12-01."
+    },
+    "compact": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "Dated alias of icon-only until 2027-01-01 (owner decision C134: compact means density only), still honoured and noted in SF.deprecations."
     }
   }
 };

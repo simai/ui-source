@@ -91,7 +91,7 @@ export function renderContentsTemplate(context) {
           data-status=${status || nothing}
           @click=${(event) => component.choose(event, section.id)}><span class="sf-contents-mark" aria-hidden="true"></span><span class="sf-contents-text">${section.text}</span>${marked ? html`<sf-badge class="sf-contents-count" line="text"
             status=${status || nothing} appearance=${status ? 'main' : 'tonal'} text=${count ? String(count) : nothing}
-            icon=${!count && status ? STATUS_ICONS[status] : nothing} compact=${!count && status ? '' : nothing}
+            icon=${!count && status ? STATUS_ICONS[status] : nothing} icon-only=${!count && status ? '' : nothing}
             aria-hidden="true"></sf-badge>` : nothing}</a>
       </li>`;
       })}

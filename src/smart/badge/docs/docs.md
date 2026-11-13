@@ -28,7 +28,7 @@ Main attributes:
 - `scheme`
 - `status`
 - `activity`
-- `compact`
+- `icon-only`
 - `line`
 - `text`
 - `icon`
@@ -110,8 +110,9 @@ policy because only the application knows whether an update must be announced.
 
 Every badge of one size has one height and one side room, whatever its
 appearance: the outline's border is drawn inside the size. By default the text
-sits `--sf-space-1/2` from the edges at every size; `tight` keeps the size's
-own narrow inset for dense places -- a table, a counter, a chip in a row:
+sits `--sf-space-1/2` from the edges at every size; `tight` takes the space
+step under it, `--sf-space-1/3` (8 px, 4 in a compact region, 8 on the phone),
+for dense places -- a table, a counter, a chip in a row:
 
 ```html
 <sf-badge appearance="tonal" text="Черновик"></sf-badge>
@@ -119,8 +120,8 @@ own narrow inset for dense places -- a table, a counter, a chip in a row:
 ```
 
 A badge whose text is one character and that draws no icon -- a single-figure
-count -- carries `sf-badge--figure` and stays round in either room. `compact`
-is unchanged.
+count -- carries `sf-badge--figure`, takes `--sf-space-1/4` at the sides and
+stays round in either room. `icon-only` is unchanged.
 
 ## On the line of a text
 
@@ -171,14 +172,18 @@ input», not a queue.
 - Under `prefers-reduced-motion: reduce` the spinner stands still (its still
   frame, from the spinner sheet).
 
-`compact` shows the icon alone, for a tight list row. The text stays as the
+`icon-only` shows the icon alone, for a tight list row. The text stays as the
 accessible name, the box closes to a square, and `appearance` keeps its own
 meaning. It needs something to show: with no icon, spinner or icon slot the text
 stays visible.
 
 ```html
-<sf-badge activity="failed" compact></sf-badge>
+<sf-badge activity="failed" icon-only></sf-badge>
 ```
+
+The former boolean `compact` draws the same until 2027-01-01 and is noted in
+`SF.deprecations`: the word compact means density only (`data-sf-density`,
+owner decision C134).
 
 ## Slot overrides
 

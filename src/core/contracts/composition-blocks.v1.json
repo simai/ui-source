@@ -532,10 +532,6 @@
             "default": "",
             "type": "string"
           },
-          "compact": {
-            "default": false,
-            "type": "boolean"
-          },
           "icon": {
             "default": "",
             "type": "string"
@@ -543,6 +539,10 @@
           "icon-end": {
             "default": "",
             "type": "string"
+          },
+          "icon-only": {
+            "default": false,
+            "type": "boolean"
           },
           "icon-position": {
             "default": "start",
@@ -611,7 +611,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.badge",
-      "version": "1.5.0"
+      "version": "1.6.0"
     },
     "sf-button": {
       "inputs": {
@@ -809,7 +809,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button",
-      "version": "1.13.0"
+      "version": "1.13.1"
     },
     "sf-button-icon": {
       "inputs": {
@@ -850,6 +850,10 @@
             "default": false,
             "type": "boolean"
           },
+          "download": {
+            "default": "",
+            "type": "string"
+          },
           "filled": {
             "default": false,
             "type": "boolean"
@@ -862,6 +866,10 @@
               "high",
               "highest"
             ],
+            "type": "string"
+          },
+          "href": {
+            "default": "",
             "type": "string"
           },
           "icon": {
@@ -905,6 +913,10 @@
               "square",
               "rounded"
             ],
+            "type": "string"
+          },
+          "rel": {
+            "default": "",
             "type": "string"
           },
           "scheme": {
@@ -955,6 +967,10 @@
             ],
             "type": "string"
           },
+          "target": {
+            "default": "",
+            "type": "string"
+          },
           "theme-cycle": {
             "default": "",
             "type": "string"
@@ -968,7 +984,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button-icon",
-      "version": "1.8.4"
+      "version": "1.9.0"
     },
     "sf-checkbox": {
       "inputs": {
@@ -1036,7 +1052,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.checkbox",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     "sf-divider": {
       "component": "component.content-divider",
@@ -1167,7 +1183,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.dropdown",
-      "version": "1.9.0"
+      "version": "1.9.1"
     },
     "sf-icon": {
       "inputs": {
@@ -1445,7 +1461,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.input",
-      "version": "1.7.2"
+      "version": "1.8.0"
     },
     "sf-input-textarea": {
       "inputs": {
@@ -1598,7 +1614,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.input-textarea",
-      "version": "1.7.5"
+      "version": "1.8.0"
     },
     "sf-switch": {
       "inputs": {
@@ -1666,7 +1682,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.switch",
-      "version": "1.5.0"
+      "version": "1.5.1"
     }
   },
   "parameter_sets": {

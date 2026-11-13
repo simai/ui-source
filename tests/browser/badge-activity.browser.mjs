@@ -6,7 +6,7 @@
 //     its word in the page's language (lang/en.json, lang/ru.json) and its role;
 //   - AA: the ink against the fill the badge really shows, in every appearance;
 //     the ratios are printed;
-//   - compact: the icon or spinner alone is seen, the box is square, the word is
+//   - icon-only (former compact, C134): the icon or spinner alone is seen, the box is square, the word is
 //     the accessible name (the accessibility tree says it), and an aria-label
 //     takes its place;
 //   - activity wins over status and scheme for icon, text and colour, and both
@@ -41,7 +41,7 @@ const SIZES = ['1/3', '1/2', '1'];
 const badges = [];
 for (const state of Object.keys(STATES)) {
   badges.push(`<sf-badge id="plain-${state}" activity="${state}"></sf-badge>`);
-  badges.push(`<sf-badge id="compact-${state}" activity="${state}" compact></sf-badge>`);
+  badges.push(`<sf-badge id="compact-${state}" activity="${state}" icon-only></sf-badge>`);
   for (const appearance of APPEARANCES) badges.push(`<sf-badge id="ink-${state}-${appearance}" activity="${state}" appearance="${appearance}"></sf-badge>`);
   for (const size of SIZES) badges.push(`<sf-badge id="size-${state}-${size.replace('/', '-')}" activity="${state}" size="${size}" text="Word"></sf-badge>`);
 }
@@ -60,8 +60,8 @@ ${badges.join('\n')}
 <sf-badge id="end" activity="running" icon-position="end"></sf-badge>
 <sf-badge id="unknown" activity="nonsense" text="Word"></sf-badge>
 <sf-badge id="none" text="Word"></sf-badge>
-<sf-badge id="labelled" activity="failed" compact aria-label="Build 12 failed"></sf-badge>
-<sf-badge id="bare" text="Word" compact></sf-badge>
+<sf-badge id="labelled" activity="failed" icon-only aria-label="Build 12 failed"></sf-badge>
+<sf-badge id="bare" text="Word" icon-only></sf-badge>
 <sf-badge id="live" text="Word"></sf-badge>
 </main></body></html>`;
 
@@ -245,7 +245,7 @@ try {
           endLast: part('end').lastElementChild?.classList.contains('sf-badge-spinner'),
           unknown: {icon: part('unknown').querySelector('.sf-icon, .sf-badge-spinner') === null, value: document.querySelector('#unknown').activity},
           none: part('none').querySelector('.sf-icon, .sf-badge-spinner') === null,
-          bare: {compact: part('bare').classList.contains('sf-badge--compact'), width: part('bare').querySelector('.sf-badge-text').getBoundingClientRect().width},
+          bare: {compact: part('bare').classList.contains('sf-badge--icon-only'), width: part('bare').querySelector('.sf-badge-text').getBoundingClientRect().width},
           live: document.querySelectorAll('[aria-live], [role=status], [role=alert], [aria-busy]').length,
           sameBox: ['running', 'waiting', 'done', 'stopped', 'failed'].flatMap((state) => ['1-3', '1-2', '1'].map((size) => {
             const box = part(`size-${state}-${size}`).getBoundingClientRect();
@@ -280,16 +280,16 @@ try {
         const read = async () => {
           await new Promise((settle) => setTimeout(settle, 60));
           const badge = host.querySelector('.sf-badge');
-          return {icon: badge.querySelector('.sf-icon')?.textContent.trim() ?? null, spinner: Boolean(badge.querySelector('.sf-badge-spinner')), error: badge.classList.contains('sf-badge--error'), compact: badge.classList.contains('sf-badge--compact')};
+          return {icon: badge.querySelector('.sf-icon')?.textContent.trim() ?? null, spinner: Boolean(badge.querySelector('.sf-badge-spinner')), error: badge.classList.contains('sf-badge--error'), compact: badge.classList.contains('sf-badge--icon-only')};
         };
         const steps = [];
         host.activity = 'failed';
         steps.push(await read());
         host.setAttribute('activity', 'running');
-        host.setAttribute('compact', '');
+        host.setAttribute('icon-only', '');
         steps.push(await read());
         host.removeAttribute('activity');
-        host.removeAttribute('compact');
+        host.removeAttribute('icon-only');
         steps.push(await read());
         return steps;
       });

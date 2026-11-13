@@ -43,12 +43,15 @@
   --sf-badge--line-height: var(--sf-text-height-1\/3);
   --sf-badge--padding-block: var(--sf-badge-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
   /* Side room (R020, owner decision 2026-11-07): a badge's text sits
-     --sf-space-1/2 from its edges at every size; sf-badge--tight takes the
-     size's own text inset (--sf-ui-*--text-space-x), the room a badge had
-     before, for dense places -- a table, a counter, a chip in a row. Each size
-     and line names its tight room; the tight modifier swaps it in. */
+     --sf-space-1/2 from its edges at every size; sf-badge--tight, for dense
+     places -- a table, a counter, a chip in a row -- takes the space step
+     under it, --sf-space-1/3 (8, 4 compact, 8 on the phone). It took the
+     button's text inset (6 / 7 / 8, 5 / 6 on the phone) until
+     component.badges 1.8.0: 5 and 7 are not space steps (badges study BG-9,
+     C19, C105). One room at every size and line; the line of the text has its
+     own (below). The tight modifier swaps it in. */
   --sf-badge--side-room: var(--sf-space-1\/2);
-  --sf-badge--side-tight: var(--sf-ui-1\/3--text-space-x);
+  --sf-badge--side-tight: var(--sf-space-1\/3);
   --sf-badge--padding-inline-end: var(--sf-badge-padding-inline, var(--sf-badge--side-room));
   --sf-badge--padding-inline-start: var(--sf-badge-padding-inline, var(--sf-badge--side-room));
   /* The size is the text line and the block padding, whatever the look: the
@@ -278,7 +281,6 @@
   --sf-badge--font-size: var(--sf-text-size-1);
   --sf-badge--line-height: var(--sf-text-height-1);
   --sf-badge--padding-block: var(--sf-badge-padding-block, var(--sf-ui-1--space-y-tightness-low));
-  --sf-badge--side-tight: var(--sf-ui-1--text-space-x);
 }
 
 .sf-badge.sf-badge--size-1 .sf-icon {
@@ -297,7 +299,6 @@
   --sf-badge--font-size: var(--sf-text-size-1\/3);
   --sf-badge--line-height: var(--sf-text-height-1\/3);
   --sf-badge--padding-block: var(--sf-badge-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
-  --sf-badge--side-tight: var(--sf-ui-1\/3--text-space-x);
 }
 
 .sf-badge.sf-badge--size-1\/3 .sf-icon {
@@ -314,7 +315,6 @@
   --sf-badge--font-size: var(--sf-text-size-1\/2);
   --sf-badge--line-height: var(--sf-text-height-1\/2);
   --sf-badge--padding-block: var(--sf-badge-padding-block, var(--sf-ui-1\/2--space-y-tightness-low));
-  --sf-badge--side-tight: var(--sf-ui-1\/2--text-space-x);
 }
 
 .sf-badge.sf-badge--size-1\/2 .sf-icon {
@@ -341,21 +341,18 @@
   --sf-badge--font-size: var(--sf-text-size-1\/3);
   --sf-badge--line-height: var(--sf-text-height-1\/2);
   --sf-badge--padding-block: var(--sf-badge-padding-block, calc(var(--sf-px) * 0));
-  --sf-badge--side-tight: var(--sf-ui-1\/2--text-space-x);
 }
 
 .sf-badge.sf-badge--line-1 {
   --sf-badge--font-size: var(--sf-text-size-1\/2);
   --sf-badge--line-height: var(--sf-text-height-1);
   --sf-badge--padding-block: var(--sf-badge-padding-block, calc(var(--sf-px) * 0));
-  --sf-badge--side-tight: var(--sf-ui-1--text-space-x);
 }
 
 .sf-badge.sf-badge--line-2 {
   --sf-badge--font-size: var(--sf-text-size-1);
   --sf-badge--line-height: var(--sf-text-height-2);
   --sf-badge--padding-block: var(--sf-badge-padding-block, calc(var(--sf-px) * 0));
-  --sf-badge--side-tight: var(--sf-ui-2--text-space-x);
 }
 
 /* The line of the text beside it (owner decision C95 point 6, 2026-11-12;
@@ -395,22 +392,27 @@
   --sf-badge--side-room: var(--sf-badge--side-tight);
 }
 
-/* Compact: the icon alone, the text a visually hidden copy that stays the name.
-   The box closes to a square: its inline padding takes the block padding, and
-   the size's minimum holds the rest. Written after the size and line rules. */
-.sf-badge.sf-badge--compact {
+/* Icon only: the icon alone, the text a visually hidden copy that stays the
+   name. The box closes to a square: its inline padding takes the block
+   padding, and the size's minimum holds the rest. Written after the size and
+   line rules. sf-badge--compact is the class's former name and draws the same
+   until 2027-01-01 (owner decision C134: the word compact means density only;
+   journal class-badges-compact-to-icon-only); the same specificity as before. */
+.sf-badge:is(.sf-badge--icon-only, .sf-badge--compact) {
   --sf-badge--padding-inline-start: var(--sf-badge-padding-inline, var(--sf-badge--padding-block));
   --sf-badge--padding-inline-end: var(--sf-badge-padding-inline, var(--sf-badge--padding-block));
 }
 
-/* A figure: one character, a single-figure count. It keeps the size's own
-   (tight) side room whatever the default, so the size's minimum makes it as
-   wide as it is high: round. sf-badge sets it. A counter written as class
-   markup (.sf-badge[data-count], which the badges runtime fills -- a menu
-   row's, an admin menu's) is dense by nature and takes the same room; an
-   anchored one keeps its own geometry. */
+/* A figure: one character, a single-figure count. It takes the quarter step
+   --sf-space-1/4 whatever the default, so the size's minimum makes it as wide
+   as it is high: round (a glyph and two quarter steps stay under the smallest
+   size, 20 on the phone; the tight room 8 + 8 would not). sf-badge sets it. A
+   counter written as class markup (.sf-badge[data-count], which the badges
+   runtime fills -- a menu row's, an admin menu's) is dense by nature and takes
+   the same room, as a count on the line of the text does; an anchored one
+   keeps its own geometry. */
 .sf-badge:is(.sf-badge--figure, [data-count]) {
-  --sf-badge--side-room: var(--sf-badge--side-tight);
+  --sf-badge--side-room: var(--sf-space-1\/4);
 }
 }
 

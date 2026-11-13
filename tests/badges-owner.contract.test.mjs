@@ -17,8 +17,9 @@ test('Badge presentation uses semantic roles and high-level geometry tokens', as
   assert.match(css, /--sf-radius-circle/);
   assert.match(css, /--sf-px/);
   assert.ok(css.includes('--sf-ui-1\\/3--space-y-tightness-low'));
-  assert.ok(css.includes('--sf-ui-1\\/2--text-space-x'));
-  assert.match(css, /--sf-ui-1--text-space-x/);
+  // The side rooms are space steps (BG-9): the default, tight and a figure's.
+  assert.ok(css.includes('--sf-badge--side-tight: var(--sf-space-1\\/3)'));
+  assert.doesNotMatch(css, /text-space-x\)/);
   assert.match(css, /--sf-badge--border-style: solid/);
   assert.match(css, /text-overflow: ellipsis/);
   assert.doesNotMatch(css, /#[0-9a-f]{3,8}\b|rgba?\(/i);
@@ -72,14 +73,15 @@ test('Smart Badge declares the run state: its settings, marks, roles and words',
     queued: {role: 'neutral', icon: 'schedule', word: 'Queued'},
   };
 
-  // 1.5.0 adds line="text" (C95 point 6); the run state is unchanged.
-  assert.equal(component.version, '1.5.0');
-  assert.equal(manifest.version, '1.5.0');
+  // 1.6.0 renames compact to icon-only (C134); the run state is unchanged.
+  assert.equal(component.version, '1.6.0');
+  assert.equal(manifest.version, '1.6.0');
   assert.deepEqual(component.settings.activity.values, ['', ...Object.keys(states)]);
   assert.equal(component.settings.activity.default, '');
-  assert.equal(component.settings.compact.type, 'boolean');
-  assert.equal(component.settings.compact.default, false);
-  assert.deepEqual(component.settings.appearance.values, ['main', 'tonal', 'outline'], 'compact is no appearance');
+  assert.equal(component.settings['icon-only'].type, 'boolean');
+  assert.equal(component.settings['icon-only'].default, false);
+  assert.ok(!('compact' in component.settings), 'compact is a dated alias, not a setting (C134)');
+  assert.deepEqual(component.settings.appearance.values, ['main', 'tonal', 'outline'], 'icon-only is no appearance');
 
   for (const [state, {role, icon, word}] of Object.entries(states)) {
     const key = `activity-${state}`;
@@ -93,7 +95,7 @@ test('Smart Badge declares the run state: its settings, marks, roles and words',
     else assert.match(row, /spinner: true/, `${state} draws the spinner`);
     assert.ok(examples.examples.some(({settings}) => settings.activity === state), `${state} has an example`);
   }
-  assert.ok(examples.examples.some(({settings}) => settings.compact === true), 'compact has an example');
+  assert.ok(examples.examples.some(({settings}) => settings['icon-only'] === true), 'icon-only has an example');
 
   // The template reads the resolved values, never the raw setting.
   assert.match(source, /paintedScheme: this\.paintedScheme,/);
@@ -106,7 +108,7 @@ test('Smart Badge declares the run state: its settings, marks, roles and words',
   // announcement: the host owns any live region.
   assert.match(template, /createInlineSpinner\(\{className: 'sf-badge-spinner'\}\)/);
   assert.match(css, /\.sf-badge \.sf-badge-spinner \{/);
-  assert.match(css, /\.sf-badge\.sf-badge--compact \{/);
+  assert.match(css, /\.sf-badge:is\(\.sf-badge--icon-only, \.sf-badge--compact\) \{/);
   assert.doesNotMatch(template, /aria-live|role=|aria-busy/);
   assert.deepEqual(component.relations.find(({name}) => name === 'spinner')?.lazy, true);
 });
@@ -162,8 +164,9 @@ test('Badge draws its border inside its size and offers tight side room', async 
   // 1.5.0: a tonal badge on a translucent fill lays its tone over the place (C43).
   // 1.6.0: sf-badge--line-text, the line of the text beside it (C95 point 6).
   // 1.7.0: the anchored dot and count take core's small steps (C132);
-  // 1.7.1: the small steps' internal names are --sf-micro--*.
-  assert.equal(passport.version, '1.7.1');
+  // 1.7.1: the small steps' internal names are --sf-micro--*;
+  // 1.8.0: sf-badge--icon-only (former sf-badge--compact, C134), tight on --sf-space-1/3 (BG-9).
+  assert.equal(passport.version, '1.8.0');
   for (const side of ['block-start', 'block-end', 'inline-start', 'inline-end']) {
     assert.match(css, new RegExp(`padding-${side}: max\\(var\\(--sf-a0\\), calc\\(`), `padding-${side} gives up the border`);
   }

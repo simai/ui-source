@@ -45,13 +45,17 @@ On a `line-*` size, which has no block padding, the text line gives up the
 border instead.
 
 Side room: by default the text sits `--sf-space-1/2` from the badge's edges at
-every size (owner decision 2026-11-07). `sf-badge--tight` keeps the size's own text inset
-(`--sf-ui-*--text-space-x`, the room badges had before 2026-11-07) for dense
-places -- a table, a counter, a chip in a row. `sf-badge--figure` marks a badge
-of one character, a single-figure count: it keeps the tight room, so it stays
-round (as wide as it is high) whatever the default. `sf-badge` sets it on its
-own; class markup adds it. `sf-badge--compact` (the icon alone) is unchanged,
-and so are anchored counts, which have a geometry of their own. Probe:
+every size (owner decision 2026-11-07). `sf-badge--tight` takes the space step
+under it, `--sf-space-1/3` (8 px, 4 in a compact region, 8 on the phone), for
+dense places -- a table, a counter, a chip in a row; until 1.8.0 it took the
+button's text inset (6 / 7 / 8, 5 / 6 on the phone), which is off the space
+ladder. `sf-badge--figure` marks a badge of one character, a single-figure
+count: it takes `--sf-space-1/4` at the sides, so it stays round (as wide as it
+is high) whatever the default; a class counter (`[data-count]`) takes the same.
+`sf-badge` sets it on its own; class markup adds it. `sf-badge--icon-only` (the
+icon alone; `sf-badge--compact`, its former name, draws the same until
+2027-01-01, owner decision C134) is unchanged, and so are anchored counts, which
+have a geometry of their own. Probe:
 `tests/browser/badge-geometry.browser.mjs`.
 
 On the line of a text: `sf-badge--line-text` (`sf-badge line="text"`, owner
