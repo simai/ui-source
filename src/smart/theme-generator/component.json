@@ -2,7 +2,7 @@
   "$comment": "The source of sf-theme-generator's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/theme-generator (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.theme-generator",
   "tag": "sf-theme-generator",
-  "version": "1.1.13",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "theme",
   "settings": {
@@ -63,6 +63,10 @@
     "theme": {
       "type": "object",
       "summary": "The theme shown now (simai.framework.theme.v1), a copy"
+    },
+    "checks": {
+      "type": "list",
+      "summary": "What a person should know about the theme now (core themeChecks): [{code, level, ...}] -- contrast, adjusted, close-to-status, grey; empty when there is nothing to say"
     }
   },
   "events": {
@@ -73,7 +77,8 @@
         "chroma": "number",
         "theme": "object",
         "variables": "object",
-        "css": "string"
+        "css": "string",
+        "checks": "list"
       },
       "summary": "The choice changed -- a drag in the picker, a swatch, a number typed (vocabulary 1.1.5 §5.1: sf-theme-change → change on the theme generator); the browser's name, with the theme in the detail"
     },
@@ -84,7 +89,8 @@
         "chroma": "number",
         "theme": "object",
         "variables": "object",
-        "css": "string"
+        "css": "string",
+        "checks": "list"
       },
       "own-verb": true,
       "summary": "The choice was committed -- the picker's change, a swatch, Enter or leaving a field, Reset: the theme the host keeps"
@@ -227,7 +233,7 @@
       }
     ]
   },
-  "x-summary": "A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the eight palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
+  "x-summary": "A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the four theme palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
   "x-source": {
     "package": "framework",
     "folder": "theme-generator",
@@ -264,7 +270,8 @@
     "version 1.1.10: the first-paint snapshot is retaken: a nested sized component now carries data-sf-size-relative at first paint (density C22, core.runtime 1.45.0); nothing it draws changes.",
     "version 1.1.11 static-palette (one above the released 1.1.10): core theme-palette.js also holds the static palette (owner decision C17, 2026-11-08): STATIC_HUES, staticPalette() and staticVariables(), and the four status rules are read from their hues (error red, warning amber, success green, info blue) by the same numbers. A theme this element makes is byte for byte the same; settings, values, events and keys unchanged. A theme carries 288 variables -- 128 tones and 160 translucent steps -- since tone 20 has its steps 4 to 24, 64 and 80 on the seven coloured palettes (C16 coloured places, dispatcher 2026-11-09).",
     "version 1.1.12 (2026-11-09): a patch; nothing in the component changed. The sf-input it draws asks for the kbd sheet since sf-input 1.7.0 (C38, the shortcut setting; component.kbd 1.3.0), so its first-paint snapshots name that sheet and carry one more empty line where the field's shortcut would stand; the component takes a patch with them. Settings, values, events and keys unchanged.",
-    "version 1.1.13 (2026-11-11): one reset for one action (docs pre-check 2026-11-10 TG-02): the colour field's own inherited reset is not drawn beside «Сбросить»; the colour field draws its own label (sf-input-color 1.6.0), so the generator's copy of it is gone. Its events were already change and sf-theme-generator-committed, the former names dated aliases (TG-01 is the page's)."
+    "version 1.1.13 (2026-11-11): one reset for one action (docs pre-check 2026-11-10 TG-02): the colour field's own inherited reset is not drawn beside «Сбросить»; the colour field draws its own label (sf-input-color 1.6.0), so the generator's copy of it is gone. Its events were already change and sf-theme-generator-committed, the former names dated aliases (TG-01 is the page's).",
+    "version 1.2.0 (2026-11-12) TG-01: a theme is the four dynamic palettes -- primary, secondary, tertiary, neutral -- and no status palette. Core declares error, warning, success and info as var() of the static hues red, amber, green and blue (C17, C90, C100), and a theme that wrote them as literal colours froze them at the day it was made: a page themed by the generator kept the status tones of that day whatever core declared after. (1.1.14, info as sky, was never released and is withdrawn by owner decision C100: info stays blue.) The theme value, toJSON(), toCSS() and the events' theme, variables and css now hold 144 variables (64 tones, 80 translucent steps), where they held 288; the preview has four rows, not eight (the status rows never moved, docs study R132 TG-06). A theme object stored before (eight palettes) applies only its four theme palettes. Until 2027-01-01 theme.palettes.<status> of the theme value, toJSON() and detail.theme still reads, as the static hue, noted in SF.deprecations, printed only on the page's opt-in (journal property-theme-status-palettes). Settings, events and keys unchanged; journal behaviour-theme-writes-no-status-palette. TG-03 (same version): a grey colour makes a grey theme -- black and white are no longer read as vivid (they made a pink and a teal theme), and a colour under chroma 5 gives secondary and tertiary its own chroma (journal behaviour-grey-colour-makes-grey-theme). TG-04 (same version): the generator says what a person should know about the colour -- text on a button under 4.5 in either theme (contrast), a light or a very dark colour whose buttons get tone 40 instead (adjusted: a light yellow gives dark olive buttons), a vivid colour within 16 degrees of the error, warning or success hue (close-to-status: a red primary beside the error red; info is not checked, being blue like the Framework's own colour, C90, C100), a nearly grey colour (grey). The checks are core's themeChecks(theme); the element draws them in words between the choice and the preview, in a polite status region, carries them as checks in the detail of change and sf-theme-generator-committed, and as the value checks."
   ],
   "x-rule": {
     "$comment": [
@@ -402,11 +409,15 @@
             },
             "variables": {
               "type": "object",
-              "description": "The 288 custom properties -- 128 tones and 160 translucent steps -- {name: value}."
+              "description": "The 144 custom properties of the four theme palettes -- 64 tones and 80 translucent steps -- {name: value}."
             },
             "css": {
               "type": "string",
               "description": "The theme as a rule under `selector`."
+            },
+            "checks": {
+              "type": "array",
+              "description": "The theme's checks (core themeChecks): {code: contrast|adjusted|close-to-status|grey, level: error|warning|notice, and the check's numbers}."
             }
           }
         }
@@ -432,11 +443,15 @@
             },
             "variables": {
               "type": "object",
-              "description": "The 288 custom properties -- 128 tones and 160 translucent steps -- {name: value}."
+              "description": "The 144 custom properties of the four theme palettes -- 64 tones and 80 translucent steps -- {name: value}."
             },
             "css": {
               "type": "string",
               "description": "The theme as a rule under `selector`."
+            },
+            "checks": {
+              "type": "array",
+              "description": "The theme's checks (core themeChecks): {code: contrast|adjusted|close-to-status|grey, level: error|warning|notice, and the check's numbers}."
             }
           }
         }
@@ -462,11 +477,15 @@
             },
             "variables": {
               "type": "object",
-              "description": "The 288 custom properties -- 128 tones and 160 translucent steps -- {name: value}."
+              "description": "The 144 custom properties of the four theme palettes -- 64 tones and 80 translucent steps -- {name: value}."
             },
             "css": {
               "type": "string",
               "description": "The theme as a rule under `selector`."
+            },
+            "checks": {
+              "type": "array",
+              "description": "The theme's checks (core themeChecks): {code: contrast|adjusted|close-to-status|grey, level: error|warning|notice, and the check's numbers}."
             }
           }
         }
@@ -492,11 +511,15 @@
             },
             "variables": {
               "type": "object",
-              "description": "The 288 custom properties -- 128 tones and 160 translucent steps -- {name: value}."
+              "description": "The 144 custom properties of the four theme palettes -- 64 tones and 80 translucent steps -- {name: value}."
             },
             "css": {
               "type": "string",
               "description": "The theme as a rule under `selector`."
+            },
+            "checks": {
+              "type": "array",
+              "description": "The theme's checks (core themeChecks): {code: contrast|adjusted|close-to-status|grey, level: error|warning|notice, and the check's numbers}."
             }
           }
         }
@@ -504,7 +527,7 @@
     },
     "methods": {
       "toCSS": {
-        "summary": "The theme as one stylesheet rule of its 128 primitives and 160 translucent steps, under the given selector or the `selector` attribute.",
+        "summary": "The theme as one stylesheet rule of its 64 primitives and 80 translucent steps (the four theme palettes), under the given selector or the `selector` attribute.",
         "arguments": [
           {
             "name": "selector",
@@ -518,7 +541,7 @@
         }
       },
       "toJSON": {
-        "summary": "The theme object (simai.framework.theme.v1): source hue and chroma, and each palette's hue, chroma and tones.",
+        "summary": "The theme object (simai.framework.theme.v1): source hue and chroma, and the four theme palettes' (primary, secondary, tertiary, neutral) hue, chroma and tones.",
         "arguments": [],
         "returns": {
           "type": "object",

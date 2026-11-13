@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.theme-generator",
-  "version": "1.1.13",
+  "version": "1.2.0",
   "title": "Theme generator",
-  "summary": "A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the eight palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
+  "summary": "A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the four theme palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -117,7 +117,7 @@
       }
     },
     "toCSS": {
-      "summary": "The theme as one stylesheet rule of its 128 primitives and 160 translucent steps, under the given selector or the `selector` attribute.",
+      "summary": "The theme as one stylesheet rule of its 64 primitives and 80 translucent steps (the four theme palettes), under the given selector or the `selector` attribute.",
       "arguments": [
         {
           "name": "selector",
@@ -131,7 +131,7 @@
       }
     },
     "toJSON": {
-      "summary": "The theme object (simai.framework.theme.v1): source hue and chroma, and each palette's hue, chroma and tones.",
+      "summary": "The theme object (simai.framework.theme.v1): source hue and chroma, and the four theme palettes' (primary, secondary, tertiary, neutral) hue, chroma and tones.",
       "arguments": [],
       "returns": {
         "type": "object",
@@ -150,7 +150,8 @@
           "chroma",
           "theme",
           "variables",
-          "css"
+          "css",
+          "checks"
         ],
         "properties": {
           "value": {
@@ -170,6 +171,9 @@
           },
           "css": {
             "type": "string"
+          },
+          "checks": {
+            "type": "array"
           }
         },
         "additionalProperties": true
@@ -186,7 +190,8 @@
           "chroma",
           "theme",
           "variables",
-          "css"
+          "css",
+          "checks"
         ],
         "properties": {
           "value": {
@@ -206,6 +211,9 @@
           },
           "css": {
             "type": "string"
+          },
+          "checks": {
+            "type": "array"
           }
         },
         "additionalProperties": true
@@ -233,11 +241,15 @@
           },
           "variables": {
             "type": "object",
-            "description": "The 288 custom properties -- 128 tones and 160 translucent steps -- {name: value}."
+            "description": "The 144 custom properties of the four theme palettes -- 64 tones and 80 translucent steps -- {name: value}."
           },
           "css": {
             "type": "string",
             "description": "The theme as a rule under `selector`."
+          },
+          "checks": {
+            "type": "array",
+            "description": "The theme's checks (core themeChecks): {code: contrast|adjusted|close-to-status|grey, level: error|warning|notice, and the check's numbers}."
           }
         }
       },
@@ -264,11 +276,15 @@
           },
           "variables": {
             "type": "object",
-            "description": "The 288 custom properties -- 128 tones and 160 translucent steps -- {name: value}."
+            "description": "The 144 custom properties of the four theme palettes -- 64 tones and 80 translucent steps -- {name: value}."
           },
           "css": {
             "type": "string",
             "description": "The theme as a rule under `selector`."
+          },
+          "checks": {
+            "type": "array",
+            "description": "The theme's checks (core themeChecks): {code: contrast|adjusted|close-to-status|grey, level: error|warning|notice, and the check's numbers}."
           }
         }
       },
@@ -295,11 +311,15 @@
           },
           "variables": {
             "type": "object",
-            "description": "The 288 custom properties -- 128 tones and 160 translucent steps -- {name: value}."
+            "description": "The 144 custom properties of the four theme palettes -- 64 tones and 80 translucent steps -- {name: value}."
           },
           "css": {
             "type": "string",
             "description": "The theme as a rule under `selector`."
+          },
+          "checks": {
+            "type": "array",
+            "description": "The theme's checks (core themeChecks): {code: contrast|adjusted|close-to-status|grey, level: error|warning|notice, and the check's numbers}."
           }
         }
       },
@@ -326,11 +346,15 @@
           },
           "variables": {
             "type": "object",
-            "description": "The 288 custom properties -- 128 tones and 160 translucent steps -- {name: value}."
+            "description": "The 144 custom properties of the four theme palettes -- 64 tones and 80 translucent steps -- {name: value}."
           },
           "css": {
             "type": "string",
             "description": "The theme as a rule under `selector`."
+          },
+          "checks": {
+            "type": "array",
+            "description": "The theme's checks (core themeChecks): {code: contrast|adjusted|close-to-status|grey, level: error|warning|notice, and the check's numbers}."
           }
         }
       },
@@ -447,15 +471,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/theme-generator/index.js",
-        "sha256": "d4a1630534af9295cf9e10c9344cd617526fcf61f0e462004f6a3dbd4daae9df"
+        "sha256": "8f29e909d651ef788f92965be75e028141820a3784dbb30a968fd3f154442fcf"
       },
       {
         "path": "src/smart/theme-generator/js/templates/default.js",
-        "sha256": "b53ae97edfc135c0027aa10a587089ab2d8ef97cd9b869a3585d00c13e81a101"
+        "sha256": "c93278ba375c85f92f81a0956cd50407990857f5cef066acf0d07b965b1cec9a"
       },
       {
         "path": "src/smart/theme-generator/scss/_smart__theme_generator.scss",
-        "sha256": "9cada5060f71a2c55970f3ce397ea551f3e596beb382e826072334c921ffbc73"
+        "sha256": "83ccb807e421f01ad4179b459be7fc03aa589733e86deccfa6987d3f4bffc389"
       },
       {
         "path": "src/smart/theme-generator/rule.js",
@@ -463,11 +487,11 @@
       },
       {
         "path": "src/smart/theme-generator/docs.md",
-        "sha256": "11d2b9dabd2f615ad5d9ad464f628ab4e25a24466717dd35cc9cc8fdf90bd57d"
+        "sha256": "b5da258b677ec71c0171ace5f93aa3dd378b86ed3ab18676f470066a7eae92a8"
       },
       {
         "path": "src/core/js/theme-palette.js",
-        "sha256": "b763997dfcc874498ffb8cb7bd60a89663a9230a7c0211347de4f768cc27bed0"
+        "sha256": "0a0d3878e774d9cbfcc95f0b569e8e8230a022747bc5ed36ce92324e5f4e6b43"
       }
     ],
     "generated_runtime": []

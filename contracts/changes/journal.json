@@ -10401,6 +10401,110 @@
       "source": "src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
     },
     {
+      "id": "behaviour-theme-writes-no-status-palette",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "A theme is the four dynamic palettes -- primary, secondary, tertiary, neutral -- and no status palette (docs study 2026-11-11 TG-01). Core declares --sf-error-*, --sf-warning-*, --sf-success-* and --sf-info-* as var() of the static hues red, amber, green and blue (C17, C90, C100); themeFromColor and themeFromHct wrote them as literal colours too, so a page themed by sf-theme-generator, sf-input-color variant theme or applyTheme froze the statuses at the hues of the day (a theme made before a status hue moved would keep the old one). Now theme.palettes holds four palettes, THEME_PALETTES and THEME_ALPHA name four, and themeVariables, themeToCss and applyTheme write 144 variables (64 tones, 80 translucent steps) where they wrote 288. A theme object stored with eight palettes applies only its four theme palettes. The former API keeps working until 2027-01-01 with a warning: a status override in the options is ignored (option-theme-status-override) and theme.palettes.<status> reads the static hue (property-theme-status-palettes).",
+      "items": [
+        {
+          "component": "theme-palette",
+          "from": "theme.palettes.error|warning|success|info",
+          "to": "the static hue STATUS_HUES[status] (staticPalette()); theme.palettes.<status> reads it with a warning until 2027-01-01"
+        },
+        {
+          "component": "sf-theme-generator",
+          "from": "detail.variables: 288",
+          "to": "detail.variables: 144"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Code that read theme.palettes.error (or warning, success, info) reads SF.ThemePalette.staticPalette()[SF.ThemePalette.STATUS_HUES.error] instead. A site stylesheet written by themeToCss or the generator before this pair carries the status tones as literal values: drop its --sf-error-*, --sf-warning-*, --sf-success-* and --sf-info-* lines (or make the theme again) so core's static hues apply. A status colour of a site's own is not a theme: there is none, the statuses are fixed (C17).",
+      "examples": {
+        "before": "const red = SF.ThemePalette.themeFromColor('#e53935').palettes.error.tones[40];",
+        "after": "const red = SF.ThemePalette.staticPalette()[SF.ThemePalette.STATUS_HUES.error].tones[40];"
+      },
+      "owner": "ui-source",
+      "source": "src/core/js/theme-palette.js; src/smart/theme-generator; ui-control control/research/2026-11-11-theme-generator.md TG-01"
+    },
+    {
+      "id": "behaviour-grey-colour-makes-grey-theme",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "A grey colour makes a grey theme (C16, docs study 2026-11-11 TG-03). colorToHct took a colour as vivid as its hue holds at its tone for the vivid palette (chroma 85); at black and white the gamut holds no chroma, so #000000 made a pink theme (hue 0, chroma 85) and #ffffff a teal one. A colour under HCT chroma 5 (the neutral palette's chroma) now keeps its own chroma, and its secondary and tertiary palettes take that chroma instead of 20 and 40 -- a near-black like #111111 (hue 209) no longer gets bluish secondary containers. Every colour at chroma 5 or more, the Framework's own #005bbe among them, makes the same theme as before.",
+      "items": [
+        {
+          "component": "theme-palette",
+          "from": "colorToHct('#000000').chroma = 85",
+          "to": "0"
+        },
+        {
+          "component": "theme-palette",
+          "from": "themeFromColor('#111111').palettes.secondary.chroma = 20",
+          "to": "1 (the colour's own)"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite. A site whose stored brand colour is black, white or a near-grey and whose theme was written as CSS before this pair makes the theme again to drop the tinted palettes.",
+      "owner": "ui-source",
+      "source": "src/core/js/theme-palette.js (colorToHct, THEME_RULES); ui-control control/docs-review/decisions.md C16"
+    },
+    {
+      "id": "option-theme-status-override",
+      "kind": "option",
+      "summary": "A status palette in the options of themeFromColor or themeFromHct ({error|warning|success|info: {hue, chroma}}) no longer makes a theme palette: the statuses are core's static hues (C17, C90) and a theme holds four palettes (behaviour-theme-writes-no-status-palette). Until remove_after the override is ignored, noted in SF.deprecations (printed in the console only when the page opts in, as every compatibility note) (kind option); after it, themeFromHct throws a TypeError.",
+      "items": [
+        {
+          "component": "theme-palette",
+          "from": "themeFromColor(color, {error: {...}})",
+          "to": "themeFromColor(color)",
+          "match": "(?:themeFromColor|themeFromHct)\\([^)]*\\{[^)]*\\b(?:error|warning|success|info)\\s*:"
+        }
+      ],
+      "manual": "Remove the status keys from the options. A status colour of a site's own does not exist: the four statuses are fixed (C17).",
+      "examples": {
+        "before": "SF.ThemePalette.themeFromColor('#2e7d32', {secondary: {chroma: 30}, error: {hue: 10}})",
+        "after": "SF.ThemePalette.themeFromColor('#2e7d32', {secondary: {chroma: 30}})"
+      },
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "owner": "ui-source",
+      "source": "src/core/js/theme-palette.js (STATUS_COMPAT, warnStatusUse, withStatusCompat); ui-control control/research/2026-11-11-theme-generator.md TG-01"
+    },
+    {
+      "id": "property-theme-status-palettes",
+      "kind": "property",
+      "summary": "theme.palettes.error, .warning, .success and .info of a theme (themeFromColor, themeFromHct, sf-theme-generator's theme value, toJSON() and detail.theme) are not part of the theme any more (behaviour-theme-writes-no-status-palette). Until remove_after each still reads, read-only and not enumerable, as the static hue core draws that status with (red, amber, green, blue), noted in SF.deprecations (printed in the console only when the page opts in, as every compatibility note) (kind property); after it, it is undefined.",
+      "items": [
+        {
+          "component": "theme-palette",
+          "from": "theme.palettes.error",
+          "to": "SF.ThemePalette.staticPalette()[SF.ThemePalette.STATUS_HUES.error]",
+          "match": "palettes\\.(?:error|warning|success|info)\\b"
+        }
+      ],
+      "manual": "Read the status palette from the static palette: staticPalette()[STATUS_HUES.<status>] (the same tones core's --sf-<status>-<tone> resolve to).",
+      "examples": {
+        "before": "const red = theme.palettes.error.tones[40];",
+        "after": "const red = SF.ThemePalette.staticPalette()[SF.ThemePalette.STATUS_HUES.error].tones[40];"
+      },
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "owner": "ui-source",
+      "source": "src/core/js/theme-palette.js (STATUS_COMPAT, warnStatusUse, withStatusCompat); ui-control control/research/2026-11-11-theme-generator.md TG-01"
+    },
+    {
       "id": "utility-c65-gradient-names",
       "recorded_on": "2026-11-12",
       "stage": "compat",

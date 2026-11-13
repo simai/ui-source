@@ -3,8 +3,8 @@
 // sf-theme-generator (2026-10-18), measured on the built bytes. Unset, it draws
 // the Framework's own theme (primary 40 is #005bbe) and touches nothing on the
 // page. A colour chosen through its sf-color changes the preview and is
-// committed as sf-theme-generator-apply with the 288 variables (128 tones, 160
-// translucent steps) and a CSS rule, the first names still emitted beside. With
+// committed as sf-theme-generator-apply with the 144 variables (64 tones, 80
+// translucent steps) of the four theme palettes, no status one (TG-01) and a CSS rule, the first names still emitted beside. With
 // `apply` and a target, the target's --sf-primary-40 is the new tone and the
 // semantic --sf-primary follows; removing the element takes every inline
 // variable off again. A hue typed in the fine-tuning field and committed with
@@ -85,8 +85,8 @@ try {
     title: await page.evaluate(() => document.querySelector('#plain [data-palette="primary"] [data-tone="40"]')?.getAttribute('title')),
     region: await page.evaluate(() => document.querySelector('#plain .sf-theme-generator-preview')?.getAttribute('aria-label')),
     inlineOnRoot: await inline('html'), events: await taken()};
-  if (unset.primary40 !== '#005bbe' || unset.rows !== 8 || !unset.title?.includes('40') || !unset.title?.includes('#005bbe') || !unset.region || unset.inlineOnRoot !== 0 || unset.events.length) {
-    note({case: 'unset: primary 40 is #005bbe, eight named rows, nothing applied, no events', got: unset});
+  if (unset.primary40 !== '#005bbe' || unset.rows !== 4 || !unset.title?.includes('40') || !unset.title?.includes('#005bbe') || !unset.region || unset.inlineOnRoot !== 0 || unset.events.length) {
+    note({case: 'unset: primary 40 is #005bbe, four named rows (the theme palettes, no status, TG-01), nothing applied, no events', got: unset});
   }
 
   // 2. A colour chosen through the sf-color: preview moves, one commit.
@@ -97,10 +97,10 @@ try {
   const apply = chosen.events.filter((event) => event.type === 'sf-theme-generator-apply');
   const legacyApply = chosen.events.filter((event) => event.type === 'sf-theme-apply');
   if (chosen.primary40 !== greenTone || chosen.primary40 === '#005bbe') note({case: 'a chosen colour changes the preview', got: chosen.primary40, expected: greenTone});
-  if (apply.length !== 1 || apply[0].value !== GREEN || apply[0].variables !== 288 || apply[0].css !== ':root {' || apply[0].primary40 !== greenTone
+  if (apply.length !== 1 || apply[0].value !== GREEN || apply[0].variables !== 144 || apply[0].css !== ':root {' || apply[0].primary40 !== greenTone
     || apply[0].schema !== 'simai.framework.theme' || !chosen.events.some((event) => event.type === 'sf-theme-generator-change')
     || legacyApply.length !== 1 || !chosen.events.some((event) => event.type === 'sf-theme-change')) {
-    note({case: 'the choice fires sf-theme-generator-change and one sf-theme-generator-apply with 288 variables and css, and the first names beside', got: chosen.events});
+    note({case: 'the choice fires sf-theme-generator-change and one sf-theme-generator-apply with 144 variables and css, and the first names beside', got: chosen.events});
   }
   if (chosen.inlineOnRoot !== 0) note({case: 'without apply the page is not changed', got: chosen.inlineOnRoot});
   if (chosen.css !== '.x {') note({case: 'toCSS takes a selector', got: chosen.css});
@@ -128,7 +128,7 @@ try {
     ink: getComputedStyle(document.getElementById('ink')).color,
     scopeInline: [...document.getElementById('scope').style].filter((name) => name.startsWith('--sf-')).length}));
   await taken();
-  if (applied.tone !== greenTone || applied.ink !== rgb(greenTone) || applied.scopeInline !== 288 || applied.rootInline !== 0) {
+  if (applied.tone !== greenTone || applied.ink !== rgb(greenTone) || applied.scopeInline !== 144 || applied.rootInline !== 0) {
     note({case: 'apply: the target takes --sf-primary-40 and --sf-primary follows', got: applied, expected: {tone: greenTone, ink: rgb(greenTone)}, before});
   }
   if (removed.scopeInline !== 0 || removed.tone !== before.tone.toLowerCase() || removed.ink !== before.ink) {
@@ -157,7 +157,40 @@ try {
   if (reset.primary40 !== '#005bbe' || resetApply.length !== 1 || resetApply[0].value !== '' || resetApply[0].primary40 !== '#005bbe' || reset.hue !== '265') {
     note({case: 'Reset gives back #005bbe', got: reset});
   }
-  console.log(JSON.stringify({unset, chosen, applied, removed, tuned, reset}, null, 1));
+  // 6. The checks (TG-04): a light yellow says its buttons get tone 40, a red
+  // says it is close to error; Framework's own colour says nothing, and the
+  // empty region takes no room.
+  const checksOf = () => page.evaluate(() => {
+    const region = document.querySelector('#plain .sf-theme-generator-checks');
+    return {role: region?.getAttribute('role'), count: region?.dataset.count, height: Math.round(region?.getBoundingClientRect().height ?? -1),
+      items: [...document.querySelectorAll('#plain .sf-theme-generator-check')].map((item) => ({code: item.dataset.check, level: item.dataset.level,
+        status: item.dataset.status ?? null, text: item.textContent.trim()})),
+      value: document.querySelector('#plain').checks.map((check) => check.code)};
+  });
+  const quiet = await checksOf();
+  if (quiet.role !== 'status' || quiet.count !== '0' || quiet.height > 1 || quiet.items.length || quiet.value.length) note({case: 'no checks for #005bbe, an empty status region of no height', got: quiet});
+  await page.evaluate(() => document.querySelector('#plain sf-input-color').setValue('#ffd600'));
+  await settle();
+  const yellow = {checks: await checksOf(), events: await taken()};
+  const yellowChange = yellow.events.find((event) => event.type === 'sf-theme-generator-change');
+  if (!yellow.checks.items.some((item) => item.code === 'adjusted' && item.level === 'warning' && item.text.includes('#705d00') && item.text.includes('#ffd600'))
+    || !yellow.checks.value.includes('adjusted')) note({case: '#ffd600: adjusted to #705d00, in words', got: yellow.checks});
+  if (!yellowChange) note({case: '#ffd600: a change event', got: yellow.events});
+  await page.evaluate(() => document.querySelector('#plain sf-input-color').setValue('#bb171d'));
+  await settle();
+  const red = await checksOf();
+  await taken();
+  if (!red.items.some((item) => item.code === 'close-to-status' && item.status === 'error' && item.text.includes('ошибки'))) note({case: '#bb171d: close to error', got: red});
+  const detailChecks = await page.evaluate(() => new Promise((done) => {
+    const host = document.querySelector('#plain');
+    const heard = (event) => { if (event.target !== host || !event.detail?.theme) return; host.removeEventListener('change', heard); done(event.detail.checks); };
+    host.addEventListener('change', heard);
+    host.querySelector('sf-input-color').setValue('#ffd600');
+  }));
+  await settle();
+  await taken();
+  if (!Array.isArray(detailChecks) || !detailChecks.some((check) => check.code === 'adjusted' && check.to === '#705d00')) note({case: 'the change detail carries checks', got: detailChecks});
+  console.log(JSON.stringify({unset, chosen, applied, removed, tuned, reset, quiet, yellow: yellow.checks, red}, null, 1));
 } finally {
   await browser.close();
 }
