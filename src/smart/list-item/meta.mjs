@@ -126,7 +126,8 @@ const sfListItemMeta = {
         "true",
         "false"
       ],
-      "default": "false"
+      "default": "false",
+      "description": "Ticks the row's checkbox (a checkbox row, or an option row of a multiple list); selected ticks it as well."
     },
     "selected": {
       "kind": "boolean",
@@ -134,12 +135,14 @@ const sfListItemMeta = {
         "true",
         "false"
       ],
-      "default": "false"
+      "default": "false",
+      "description": "The row is the chosen one: it takes the selected look, an option row says aria-selected, a row of a roving list aria-current, and its checkbox is ticked."
     },
     "aria-label": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "Accessible name of an option row or of a row in a roving list, in place of its text; an option row also shows it as its tooltip. Empty: the text names it."
     },
     "type": {
       "kind": "enum",

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.gallery",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "title": "Gallery",
   "summary": "An ordered media collection shown in an inline Slider, with an optional Modal lightbox holding a second Slider. The gallery owns the one-based current slide and keeps both views on it.",
   "kind": "smart",
@@ -263,11 +263,13 @@
       },
       "open": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "The lightbox is open: setting it opens the sf-modal at the current slide, removing it closes the window."
       },
       "current": {
         "type": "integer",
         "default": 1,
+        "description": "The one-based slide the inline slider and the lightbox show; the gallery writes it back as the visitor moves, kept within 1 and the number of slides.",
         "minimum": 1
       },
       "title": {

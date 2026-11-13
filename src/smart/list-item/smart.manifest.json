@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-item",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "title": "List item",
   "summary": "A row: an option sf-dropdown captures, or the general list row -- a supporting line, a row a person acts on, an item of an sf-sortable list, a pinned row.",
   "kind": "smart",
@@ -134,15 +134,18 @@
       },
       "checked": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "Ticks the row's checkbox (a checkbox row, or an option row of a multiple list); selected ticks it as well."
       },
       "selected": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "The row is the chosen one: it takes the selected look, an option row says aria-selected, a row of a roving list aria-current, and its checkbox is ticked."
       },
       "aria-label": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Accessible name of an option row or of a row in a roving list, in place of its text; an option row also shows it as its tooltip. Empty: the text names it."
       },
       "type": {
         "type": "string",

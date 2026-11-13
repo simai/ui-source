@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.avatar-group",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "title": "Avatars",
   "summary": "Ready combinations of avatars: a person with a source, a stacked group with a remainder, an avatar with two lines of label, and a profile avatar with a verified badge. Drawn from sf-avatar's parts; for a single avatar with a name or a card use sf-avatar.",
   "kind": "smart",
@@ -121,7 +121,8 @@
       },
       "active": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "Draws the online badge on the default template's avatar; check (verified) wins when both are set."
       },
       "data": {
         "type": "string",
