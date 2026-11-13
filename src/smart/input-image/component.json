@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-image's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/image-field (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/image-field/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.input-image",
   "tag": "sf-input-image",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -86,7 +86,7 @@
     "sources": {
       "type": "string",
       "default": "device",
-      "summary": "Where a picture may come from, comma separated: device (the file dialog), library (the page's library: the field sends library and the page calls setValue()), url (an address typed in the field). One source: «Выбрать…» / «Заменить…» goes there; more: «Заменить ▾» opens a menu of them (C94 point 5)."
+      "summary": "Where a picture may come from, a list separated by commas or spaces: device (the file dialog), library (the page's library: the field sends library and the page calls setValue()), url (an address typed in the field). One source: «Выбрать…» / «Заменить…» goes there; more: «Заменить ▾» opens a menu of them (C94 point 5)."
     },
     "library-label": {
       "type": "string",
@@ -96,7 +96,7 @@
     "edit": {
       "type": "string",
       "default": "",
-      "summary": "What the person may edit on the picture, comma separated: crop (the frame in `aspect`, with zoom and position), focus (the focal point). «Изменить» opens the editor in the field; «Готово» writes crop {aspect, zoom, x, y} and focus {x, y} into the value. The original is never cut (C94 point 3)."
+      "summary": "What the person may edit on the picture, a list separated by commas or spaces: crop (the frame in `aspect`, with zoom and position), focus (the focal point). «Изменить» opens the editor in a window over the page (sf-modal; the whole screen under md, C125); «Готово» writes crop {aspect, zoom, x, y} and focus {x, y} into the value, «Отмена», Escape, the scrim and the × leave it, and focus returns to «Изменить». The original is never cut (C94 point 3)."
     },
     "alt": {
       "type": "enum",
@@ -371,6 +371,10 @@
     {
       "name": "cl-menu-context",
       "lazy": true
+    },
+    {
+      "name": "cl-modal",
+      "lazy": true
     }
   ],
   "templates": {
@@ -537,7 +541,7 @@
       }
     ]
   },
-  "x-summary": "A form field for one image: a row (thumbnail, name and size, the buttons) or a preview (the picture in its frame, the row under it); a file chosen, dropped or pasted, or a picture from the page's library or an address; the upload core's checks with the reason under the field; the description and «Декоративная», the frame and the focal point inside the field; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File, or sends it through the page's uploader.",
+  "x-summary": "A form field for one image: a row (thumbnail, name and size, the buttons) or a preview (the picture in its frame, the row under it); a file chosen, dropped or pasted, or a picture from the page's library or an address; the upload core's checks with the reason under the field; the description and «Декоративная» inside the field, the frame and the focal point in a window over the page; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File, or sends it through the page's uploader.",
   "x-source": {
     "package": "framework",
     "folder": "image-field",
@@ -585,7 +589,9 @@
     "version 1.3.1 (2026-11-09): the field is transparent at rest, so it stands on any place (C16, the background system, owner 2026-11-08); a file held over it keeps the dashed edge, in the primary outline.",
     "version 1.3.2 (2026-11-10, C16 leftovers): a patch; nothing draws or works differently. Its docs gave a stale default: --sf-image-field-background-color is transparent (since 1.3.1), not --sf-surface-0.",
     "version 1.3.3 (2026-11-11): a patch, nothing drawn differently. The sheet reads the C16 roles by their current names where it read the former ones, which are var() of them wherever they are declared (src/core/contracts/token-aliases.v1.json, sf-role-aliases): --sf-disable → --sf-surface-disabled; --sf-on-disable → --sf-on-surface-disabled ×2; --sf-on-surface-container--variant → --sf-on-surface-container-variant; --sf-outline-disable → --sf-outline-disabled; --sf-outline-primary → --sf-primary-outline; --sf-primary-transparent-select → --sf-primary-state-select. Settings, values, events and keys unchanged.",
-    "version 1.4.0 (2026-11-12, study R176 IF-1..IF-16, owner C94): two layouts, row and preview (the setting is layout: view is reserved by the element core), shape, aspect, fit; the checks of the upload core (component/file-upload/js/intake.mjs, shared with sf-file-upload) with max-size, and min-width / min-height read from the picture; a refused file and extra dropped files said under the field and in rejected {rejected}; paste; no drag words on a coarse pointer; a required field has no remove button and says it is empty when focus leaves it or the form is checked; remove is an icon button and the size line wraps; read-only and disabled drawn as sf-input; the checkerboard under a picture that may be transparent (C86); alt is the description, never the file name; sources device / library / url with «Заменить ▾»; the description and «Декоративная» inside the field (alt); the frame and the focal point edited in the field (edit), written into the value; uploader: the transfer on the picture, cancel, retry, the form waits for it. The sheet reads the current role names, not the C16 aliases retired on 2027-01-01 (--sf-on-surface-container-variant, --sf-primary-state-select, --sf-primary-outline); the values are the same."
+    "version 1.4.0 (2026-11-12, study R176 IF-1..IF-16, owner C94): two layouts, row and preview (the setting is layout: view is reserved by the element core), shape, aspect, fit; the checks of the upload core (component/file-upload/js/intake.mjs, shared with sf-file-upload) with max-size, and min-width / min-height read from the picture; a refused file and extra dropped files said under the field and in rejected {rejected}; paste; no drag words on a coarse pointer; a required field has no remove button and says it is empty when focus leaves it or the form is checked; remove is an icon button and the size line wraps; read-only and disabled drawn as sf-input; the checkerboard under a picture that may be transparent (C86); alt is the description, never the file name; sources device / library / url with «Заменить ▾»; the description and «Декоративная» inside the field (alt); the frame and the focal point edited in the field (edit), written into the value; uploader: the transfer on the picture, cancel, retry, the form waits for it. The sheet reads the current role names, not the C16 aliases retired on 2027-01-01 (--sf-on-surface-container-variant, --sf-primary-state-select, --sf-primary-outline); the values are the same.",
+    "version 1.4.1 (2026-11-13, group build 2 intent acceptance, fields-1): a patch. sources and edit read a list separated by commas, spaces or both: `device library url` and `crop, focus` read as `device,library,url` and `crop,focus` (a space list did nothing in 1.4.0; sf-input-country's preferred already took both). Settings, values, events and keys unchanged.",
+    "version 1.5.0 (2026-11-13, owner C125, refines C94 point 3): a minor. «Изменить» opens the frame and focal-point editor in a window over the page, sf-modal (heading «Изменить изображение», the window's width the h0 step, 40rem), not under the picture in the field: the form no longer jumps and the picture is no longer narrow. The parts are the editor's own: the frame / focal point buttons, the stage, the hint, zoom out / zoom in; «Отмена» (quiet, C116) and «Готово» stand in the window's footer. Under md the window takes the whole screen (fullscreen; the forms in popups are sheets there, C32). «Готово» and Enter on the stage write crop and focus into the value as before; «Отмена», Escape, the scrim and the × leave it. The window remembers «Изменить» and gives focus back to it however it closes. «Изменить» says aria-haspopup=dialog, not aria-expanded. The window's own sf-modal-* events stop at it, so a page listening to its own window does not hear this one. New word edit-title. Settings, values and events unchanged."
   ],
   "x-rule": {
     "$comment": [
@@ -595,8 +601,8 @@
       "button-icon) and the glyph of an empty or broken thumbnail (the icon font);",
       "on demand, when the page turns them on, the upload ring (sf-progress-ring),",
       "the description and the address fields (sf-input), «Декоративная» (sf-",
-      "switch) and the menu of sources (sf-menu-context). The file dialog is the",
-      "platform's and brings nothing."
+      "switch), the menu of sources (sf-menu-context) and the editor's window",
+      "(sf-modal, C125). The file dialog is the platform's and brings nothing."
     ]
   },
   "x-registry": {
@@ -742,7 +748,7 @@
       ]
     },
     "accessibility": {
-      "focus": "A group named by the field label and described by the help or error text. «Выбрать…», «Заменить…» (or «Заменить ▾» with a menu of sources), «Изменить» and the remove icon are real buttons named for what they act on («Заменить изображение «logo.png»»); the thumbnail's alt is the description the person wrote (empty for a decorative picture or none). The drop target takes no focus, so it is never a stop or a trap; a paste lands while any of its buttons has focus. After a removal focus goes to «Выбрать…». A choice, a removal, a refused file and a transfer's end are announced in a polite status. The editor's stage takes focus: the arrows move the frame or the point, + and − zoom, Enter finishes, Escape cancels."
+      "focus": "A group named by the field label and described by the help or error text. «Выбрать…», «Заменить…» (or «Заменить ▾» with a menu of sources), «Изменить» and the remove icon are real buttons named for what they act on («Заменить изображение «logo.png»»); the thumbnail's alt is the description the person wrote (empty for a decorative picture or none). The drop target takes no focus, so it is never a stop or a trap; a paste lands while any of its buttons has focus. After a removal focus goes to «Выбрать…». A choice, a removal, a refused file and a transfer's end are announced in a polite status. «Изменить» opens the editor's window (sf-modal, C125) and its stage takes focus: the arrows move the frame or the point, + and − zoom, Enter finishes; Escape, «Отмена», the scrim and the × cancel. When the window closes focus returns to «Изменить»."
     },
     "event-fields": {
       "change": {
