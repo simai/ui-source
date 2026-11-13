@@ -580,6 +580,34 @@
     padding-inline: calc(var(--sf-px) * 0);
   }
 
+  // A tab's icon stands a control's icon gap from its label (owner decision
+  // C105 H1, R229 T1 / T3): --sf-ui-<size>--text-space-x, 7 / 8 / 10 at 1440,
+  // one step down in compact density, 6 / 6 / 8 on a phone, the same as the
+  // plate, whose label keeps the button's own padding. The line and the
+  // vertical look take that padding away (C99: the line under the letters),
+  // and the padding was also the icon gap, so the icon stood on the letters.
+  // The gap stands between the tab's flex items (icon, label, end icon); the
+  // count and the errors are inside the label and keep their quarter step.
+  .sf-tabs:is(.sf-tabs--underline, .sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    column-gap: var(--sf-tabs--icon-gap, var(--sf-ui-1--text-space-x));
+  }
+
+  .sf-tabs.sf-tabs--size-1-2:is(.sf-tabs--underline, .sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    --sf-tabs--icon-gap: var(--sf-ui-1\/2--text-space-x);
+  }
+
+  .sf-tabs.sf-tabs--size-2:is(.sf-tabs--underline, .sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    --sf-tabs--icon-gap: var(--sf-ui-2--text-space-x);
+  }
+
+  // Plates stand a neighbour's step apart (owner decision C105 H5, R229 T6):
+  // --sf-space-1/4, 4 at every width and density, as tags and segments. The
+  // row's default --sf-space-1 (16, 12 compact and on a phone) is H6, the
+  // step between groups.
+  .sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top {
+    --sf-tabs-top--gap: var(--sf-tabs-gap, var(--sf-space-1\/4));
+  }
+
   // The tab's own font is its size's text role: the bare button computed the
   // browser's default under a label of the right size.
   .sf-tabs.sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button {
@@ -663,6 +691,27 @@
   .sf-tabs-more > .sf-button.sf-button--size-2 > .sf-badge.sf-tabs-more-errors {
     --sf-badge--line-height: var(--sf-text-height-2);
     font-size: var(--sf-text-size-2);
+  }
+
+  // With the badge, «Ещё» reads as a tab with errors (owner decision C105
+  // H1, R229 T8): the badge a quarter step after the label, the chevron the
+  // button's icon gap (--sf-ui-<size>--text-space-x) after the badge. The
+  // label's own end padding moves past the badge: it stood between the label
+  // and the badge (12), and the chevron touched the badge (0).
+  .sf-tabs-more > .sf-button:has(> .sf-tabs-more-errors) > .sf-button-text-container {
+    --sf-button-text-container--padding-inline-end: calc(var(--sf-px) * 0);
+  }
+
+  .sf-tabs-more > .sf-button.sf-button--size-1\/2 > .sf-badge.sf-tabs-more-errors {
+    margin-inline-end: var(--sf-ui-1\/2--text-space-x);
+  }
+
+  .sf-tabs-more > .sf-button.sf-button--size-1 > .sf-badge.sf-tabs-more-errors {
+    margin-inline-end: var(--sf-ui-1--text-space-x);
+  }
+
+  .sf-tabs-more > .sf-button.sf-button--size-2 > .sf-badge.sf-tabs-more-errors {
+    margin-inline-end: var(--sf-ui-2--text-space-x);
   }
 
   .sf-tabs-said {
