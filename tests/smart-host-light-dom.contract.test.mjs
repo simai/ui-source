@@ -73,7 +73,7 @@ test('focus() on a host reaches the control inside it', async () => {
   assert.match(base, /focusDelegate\(\) \{\s*return null;\s*\}/u, 'the base names no control; a component does');
   assert.match(
     base,
-    /focus\(options\) \{\s*const target = this\.focusDelegate\?\.\(\);\s*\n\s*if \(target && typeof target\.focus === "function"\) \{\s*target\.focus\(options\);\s*return;\s*\}/u,
+    /focus\(options\) \{\s*const target = this\.focusDelegate\?\.\(\);\s*\n\s*if \(target && typeof target\.focus === "function"\) \{\s*const activeWhenAsked = this\.ownerDocument\?\.activeElement \|\| null;\s*target\.focus\(options\);/u,
     'focus() on the host goes to the named control',
   );
   assert.match(base, /blur\(\) \{\s*const target = this\.focusDelegate\?\.\(\);/u, 'blur() follows focus()');
@@ -134,4 +134,43 @@ test('icon button documentation states the same host-attribute and focus rule', 
   assert.match(docs, /data-sf-admin-search-toggle/);
   assert.match(docs, /toggle\.closest\('sf-button-icon'\)/);
   assert.match(docs, /`focus\(\)` on the host goes to the native button inside/);
+});
+
+// A host still drawing: its control is in place but not shown until its
+// sheets apply, so focus() on it landed nowhere (sf-file-download's
+// «Повторить», probe 2026-11-11). The focus comes once the host is drawn, and
+// never if something else took it meanwhile.
+test('focus() on a host still drawing reaches its control once it is drawn', async () => {
+  const base = await read('src/core/js/smart-base.js');
+  const start = base.indexOf('  focus(options) {');
+  const body = base.slice(base.indexOf('{', start) + 1, base.indexOf('\n  }\n', start));
+  // super.focus is HTMLElement's, not part of what is tested here.
+  const focus = new Function('options', body.replace('super.focus(options);', 'this.ownFocus?.(options);'));
+  const run = ({takeOther = false} = {}) => {
+    const doc = {body: {}, activeElement: null};
+    doc.activeElement = doc.body;
+    let shown = false;
+    const control = {focus() { if (shown) doc.activeElement = control; }};
+    let drawn = null;
+    const host = {ownerDocument: doc, isRendered: false, focusDelegate: () => control, whenRendered: (callback) => { drawn = callback; }};
+    focus.call(host, {preventScroll: true});
+    assert.equal(doc.activeElement, doc.body, 'not shown yet: no focus');
+    assert.equal(typeof drawn, 'function', 'waits for the drawing');
+    if (takeOther) doc.activeElement = {other: true};
+    shown = true;
+    host.isRendered = true;
+    drawn();
+    return {doc, control};
+  };
+  const plain = run();
+  assert.equal(plain.doc.activeElement, plain.control, 'focused once drawn');
+  const moved = run({takeOther: true});
+  assert.notEqual(moved.doc.activeElement, moved.control, 'a focus taken meanwhile is kept');
+  // A drawn host focuses at once and queues nothing.
+  const doc = {activeElement: null};
+  const control = {focus() { doc.activeElement = control; }};
+  let queued = false;
+  focus.call({ownerDocument: doc, isRendered: true, focusDelegate: () => control, whenRendered: () => { queued = true; }});
+  assert.equal(doc.activeElement, control);
+  assert.equal(queued, false);
 });

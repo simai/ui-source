@@ -22,6 +22,37 @@ export function pageHasFirstPaint(doc = globalThis.document) {
   return Boolean(doc?.querySelector?.(FIRST_PAINT_SELECTOR));
 }
 
+// A page that ships its modules preloaded (SF_PRELOADED, Docara's example
+// frames) defines its Smart elements before core.js runs: they draw at once,
+// and a boot preloader would only cover what is already drawn (input-choice
+// first-paint audit 2026-11-11, item 1).
+export function pageHasPreloadedModules(win = globalThis) {
+  const modules = win?.SF_PRELOADED?.modules;
+  return Boolean(modules && Object.keys(modules).length);
+}
+
+// Is a Smart element on the page drawn already? The style gate marks a drawn
+// host data-sf-style-ready; a host drawn without the gate says so itself
+// (isRendered).
+export function pageHasRenderedSmart(doc = globalThis.document) {
+  if (!doc?.querySelector) return false;
+  if (doc.querySelector('[data-sf-style-ready]')) return true;
+  const root = doc.body || doc.documentElement;
+  if (!root || typeof doc.createTreeWalker !== 'function') return false;
+  const walker = doc.createTreeWalker(root, 1);
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    if (node.localName?.startsWith('sf-') && node.isRendered === true) return true;
+  }
+  return false;
+}
+
+// Content the boot preloader must never cover: the server's first paint, or
+// Smart elements already drawn.
+export function pageShowsContent(doc = globalThis.document) {
+  return pageHasFirstPaint(doc) || pageHasRenderedSmart(doc);
+}
+
 export function getPreloaderColor(root = document.documentElement) {
   const fallback = root?.classList?.contains('theme-dark')
     ? '#e3e2e7'
