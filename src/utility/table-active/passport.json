@@ -12,8 +12,12 @@
     "src/utility/table-active/default/scss/_sf_css__table_active.scss",
     "src/utility/table-active/default/scss/index.scss"
   ],
-  "content_sha256": "c4d321d89f85d5d02cdc45b90c481764bb4e678e84cedab4e3a20ef119e3f4e1",
+  "content_sha256": "fd945ac9189b4607039f828e70f01ee9394bbac7e48250a5d45ae7a81c2830ae",
   "dependencies": [
+    {
+      "id": "tokens.colour",
+      "range": "^1.12.0"
+    },
     {
       "id": "utility.table",
       "range": "^1.0.0"

@@ -1,4 +1,5 @@
 @use '../../../table/default/scss/sf_var__table' as *;
+@use '../../../../core/scss/mix/mix__places' as places;
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
@@ -20,6 +21,13 @@ $prefix: --sf-table-;
     :is(.table-stripe, .table-stripe-col) > :not(caption) > tr > .table-active:nth-child(n) {
         #{$prefix}accent-bg: var(#{$prefix}active-bg);
         color: var(#{$prefix}active-color);
+        // A translucent fill over the place, as a list row's (C43 D3, D4, the
+        // table rows): a tonal badge in the cell keeps its tone and an
+        // anchored badge rings with the cell. On a soft place and on glass the
+        // underlay is initial and the mix does nothing.
+        // The fill is the cell's accent, whichever rule set it (a hovered
+        // active row, a striped one).
+        @include places.sf-place-fill(var(#{$prefix}accent-bg));
     }
 // }
 }

@@ -260,3 +260,20 @@ test('an anchored badge rings with the row it stands on, and hover rows keep a t
   assert.match(choice, /:not\(\.sf-choice-card--disabled, \.sf-choice-card--checked\):hover \{[^}]*@include places\.sf-place-fill\(var\(--sf-surface-state-hover\)\);/u);
   assert.match(smartList, /\.sf-list__row:not\(\.sf-list__row--current\):not\(\.sf-list__row--editing\):hover \{[^}]*--sf-surface-underlay: var\(--sf-surface-place-solid\); --sf-surface-place-fill: var\(--sf-list--hover\);/u);
 });
+
+// C43 D3 and D4, the table rows (2026-11-12): a striped, hovered or active
+// cell is a translucent fill too, read from the cell's accent; a cell at rest
+// declares nothing.
+test('striped, hovered and active table cells are fills of their accent (C43 D3, D4)', async () => {
+  const [table, active, hover, stripe] = await Promise.all([
+    read('src/utility/table/default/scss/_sf_css__table.scss'),
+    read('src/utility/table-active/default/scss/_sf_css__table_active.scss'),
+    read('src/utility/table-hover/default/scss/_sf_css__table_stripe.scss'),
+    read('src/utility/table-stripe/default/scss/_sf_css__table_stripe.scss'),
+  ]);
+  const fill = /@include places\.sf-place-fill\(var\(#\{\$prefix\}accent-bg\)\);/gu;
+  assert.equal(active.match(fill)?.length, 1, 'table-active');
+  assert.equal(hover.match(fill)?.length, 2, 'table-hover and hovered stripe');
+  assert.equal(stripe.match(fill)?.length, 2, 'table-stripe and table-stripe-col');
+  assert.doesNotMatch(table, /sf-place-fill/u, 'a cell at rest');
+});
