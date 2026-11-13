@@ -67,6 +67,20 @@
       }
     },
     {
+      "name": "action-under",
+      "title": "Действие всегда под текстом",
+      "settings": {
+        "heading": "Запись удалена",
+        "action-text": "Вернуть",
+        "action": "undo",
+        "status": "info",
+        "actions-layout": "under"
+      },
+      "expect": {
+        "name": "Запись удалена"
+      }
+    },
+    {
       "name": "notice",
       "title": "Уведомление: значок, текст и действие",
       "settings": {

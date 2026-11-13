@@ -30,6 +30,8 @@ and `root-style` settings to its root; the outer Smart host stays boxless.
 - `supporting-text`
 - `action-text`, `action` — the first action's words and the value its event carries
 - `secondary-action-text`, `secondary-action`
+- `actions-layout="auto|under"` — where the actions stand: `auto` (the
+  default) by the alert's width, `under` under the text at every width
 - `closable`
 - `close-label` — the close button's accessible name; the language file's
   «Закрыть сообщение» / «Close alert» when unset
@@ -81,6 +83,21 @@ above the capitals of the first line (C114 (5)).
 | One action, title and text | 320 | 480 | 640 | 800 |
 |---|---|---|---|---|
 | height at 1440 (border included) | 204 | 156 | 102 (row) | 78 (row) |
+
+`actions-layout="under"` (owner 2026-11-13, #q-layout-override) keeps the
+actions under the text at every width, with the same gap and the even bottom;
+the sheet cannot count the text's lines, so a long text is the author's call.
+In the row a three-line text with two actions is taller than under it (174
+against 146 at 800). `auto`, the default, is the layout above; any other word
+is `auto`. The class form is the modifier `sf-alert--actions-under`.
+
+```html
+<sf-alert status="warning" actions-layout="under"
+  heading="Оплата не прошла"
+  supporting-text="Банк отклонил платёж. Проверьте данные карты или выберите другой способ, затем повторите оплату. Заказ хранится 24 часа."
+  action-text="Повторить" action="retry"
+  secondary-action-text="Сменить способ" secondary-action="method"></sf-alert>
+```
 
 ### Callout
 

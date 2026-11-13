@@ -49,6 +49,11 @@ the capitals of the first line (C114 (5), NS-10). A toast with an action is a
 size query container (`container: sf-toast`). A title-only toast with one
 action is 58 at 1440 (46 on a phone); it was 98 (78).
 
+The modifier `.sf-toast--actions-under` (1.3.0, owner 2026-11-13,
+#q-layout-override; on `sf-toast` the setting `actions-layout="under"`; for
+the class toast `SF.Toast.create({actionsLayout: 'under'})`) keeps the action under the
+text at every width, with the same gap and the even bottom, for a long text.
+
 ## Ink (1.2.1, C35 acceptance F1)
 
 The status icon is the status's role `--sf-<status>` (neutral: the quiet

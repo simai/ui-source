@@ -87,7 +87,12 @@
    their plate overhanging the line by the low button's block padding, as the
    close does (C35): with a one-line text the label stands on the title line,
    with the icon and the close. The row has no even-bottom inset: the last line
-   is the text's. */
+   is the text's.
+   The author's switch (owner 2026-11-13, #q-layout-override): the modifier
+   .sf-alert--actions-under (sf-alert actions-layout="under") keeps the
+   actions under the text at every width, with the same gap and the even
+   bottom -- a long text in the row is taller than under it (174 against 146
+   at 800), and the sheet cannot count the text's lines. */
 .sf-alert:has(.sf-alert-buttons) {
   container: sf-alert / inline-size;
 }
@@ -113,13 +118,13 @@
 }
 
 @container sf-alert (min-width: calc(36rem - 2 * 1rem - 2px)) {
-  .sf-alert:not(:has(.sf-alert-buttons > :nth-child(2))) {
+  .sf-alert:not(.sf-alert--actions-under):not(:has(.sf-alert-buttons > :nth-child(2))) {
     @include sf-alert-actions-in-row;
   }
 }
 
 @container sf-alert (min-width: calc(48rem - 2 * 1rem - 2px)) {
-  .sf-alert {
+  .sf-alert:not(.sf-alert--actions-under) {
     @include sf-alert-actions-in-row;
   }
 }

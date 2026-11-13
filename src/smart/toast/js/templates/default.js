@@ -21,6 +21,9 @@ export function renderToastTemplate(context) {
     `sf-toast--${['neutral', 'info', 'success', 'warning', 'error'].includes(context.status ?? context.type)
       ? (context.status ?? context.type)
       : 'neutral'}`,
+    // The author's switch (owner 2026-11-13, #q-layout-override): the action
+    // under the text at every width; auto (and any other word) is layout L3a.
+    context.actionsLayout === 'under' ? 'sf-toast--actions-under' : '',
     'flex',
     'items-cross-start',
     context.rootClass,

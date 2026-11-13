@@ -190,12 +190,16 @@ function createToastElement(options = {}) {
     closeLabel = pageText(TOAST_TEXT, 'close', document.documentElement),
     duration = 0,
     role = '',
+    actionsLayout = 'auto',
   } = options;
 
   const root = document.createElement('div');
   root.className = joinClasses(
     'sf-toast',
     `sf-toast--${normalizeType(status ?? type)}`,
+    // The author's switch (owner 2026-11-13): the action under the text at
+    // every width; auto is layout L3a (C115).
+    actionsLayout === 'under' ? 'sf-toast--actions-under' : '',
     'flex',
     'items-cross-start',
   );

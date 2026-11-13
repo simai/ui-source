@@ -90,6 +90,22 @@
       "expect": {
         "name": "Есть обновление"
       }
+    },
+    {
+      "name": "actions-under",
+      "title": "Действия всегда под текстом",
+      "settings": {
+        "heading": "Есть обновление",
+        "action-text": "Обновить",
+        "action": "update",
+        "secondary-action-text": "Позже",
+        "secondary-action": "later",
+        "status": "info",
+        "actions-layout": "under"
+      },
+      "expect": {
+        "name": "Есть обновление"
+      }
     }
   ],
   "pages": [

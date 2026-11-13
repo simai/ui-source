@@ -50,6 +50,14 @@ With one action the toast puts it in the row with the text from 20rem of its
 own width, centred on the text block (owner decision C115, layout L3a); a
 narrower toast keeps it under the text from its start, with the space under
 it equal to the space above the capitals of the first line (C114 (5)).
+`actions-layout="under"` (owner 2026-11-13, #q-layout-override) keeps the
+action under the text at every width, with the same gap and the even bottom,
+for a long text; `auto`, the default, is L3a, and any other word is `auto`.
+The class form is the modifier `sf-toast--actions-under`.
+
+| Setting | Values | Default |
+|---|---|---|
+| `actions-layout` | `auto`, `under` | `auto` |
 
 The status icon is an `sf-icon` (1.2.1), as on `sf-alert`: the toast asks the
 Loader for its glyph when it draws, so the glyph comes wherever the toast

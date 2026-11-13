@@ -62,6 +62,15 @@ const sfToastMeta = {
       "default": "action",
       "description": "Stable action value emitted in sf-toast-action."
     },
+    "actions-layout": {
+      "kind": "enum",
+      "values": [
+        "auto",
+        "under"
+      ],
+      "default": "auto",
+      "description": "Where the action stands: auto puts it in the row with the text while the toast is wide enough and under the text when narrower (layout L3a); under keeps it under the text at every width, for a long text. Any other word is auto."
+    },
     "closable": {
       "kind": "boolean",
       "values": [

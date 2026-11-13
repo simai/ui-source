@@ -40,6 +40,9 @@ export function renderAlertTemplate(context) {
     'sf-alert',
     `sf-alert--${context.status ?? context.type}`,
     `sf-alert--${context.appearance ?? context.variant}`,
+    // The author's switch (owner 2026-11-13, #q-layout-override): the actions
+    // under the text at every width; auto (and any other word) is layout L3a.
+    context.actionsLayout === 'under' ? 'sf-alert--actions-under' : '',
     'flex',
     'items-start',
     context.rootClass,

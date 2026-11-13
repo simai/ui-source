@@ -13,22 +13,24 @@ const toast = read('src/component/toast/scss/_css__toast.scss');
 const toastJs = read('src/component/toast/js/_toast.js');
 const notify = read('src/core/js/notify.js');
 const smartToast = read('src/smart/toast/index.js');
+const alertTemplate = read('src/smart/alert/js/templates/default.js');
+const toastTemplate = read('src/smart/toast/js/templates/default.js');
+const alertSettings = JSON.parse(read('src/smart/alert/component.json')).settings;
+const toastSettings = JSON.parse(read('src/smart/toast/component.json')).settings;
 
 test('sf-alert: one action in the row from 36rem, two from 48rem of the notice\'s whole width', () => {
   assert.match(alerts, /\.sf-alert:has\(\.sf-alert-buttons\) \{\s*container: sf-alert \/ inline-size;/u);
-  assert.match(alerts, /@container sf-alert \(min-width: calc\(36rem - 2 \* 1rem - 2px\)\) \{\s*\.sf-alert:not\(:has\(\.sf-alert-buttons > :nth-child\(2\)\)\) \{/u);
-  assert.match(alerts, /@container sf-alert \(min-width: calc\(48rem - 2 \* 1rem - 2px\)\) \{\s*\.sf-alert \{/u);
+  assert.match(alerts, /@container sf-alert \(min-width: calc\(36rem - 2 \* 1rem - 2px\)\) \{\s*\.sf-alert:not\(\.sf-alert--actions-under\):not\(:has\(\.sf-alert-buttons > :nth-child\(2\)\)\) \{/u);
+  assert.match(alerts, /@container sf-alert \(min-width: calc\(48rem - 2 \* 1rem - 2px\)\) \{\s*\.sf-alert:not\(\.sf-alert--actions-under\) \{/u);
   // In the row: centred on the text block, the plate overhanging the line by
   // the low button's block padding, as the close does (C35).
   assert.match(alerts, /flex-direction: row;\s*align-items: center;\s*column-gap: var\(--sf-space-1\);\s*padding-block-end: 0;/u);
   assert.match(alerts, /margin-block: calc\(-1 \* var\(--sf-ui-1--space-y-tightness-low\)\);/u);
-  // No author switch yet (owner undecided on #q-layout-override).
-  assert.doesNotMatch(alerts, /actions-layout/u);
 });
 
 test('sf-toast: one action in the row from 20rem of the toast\'s whole width', () => {
   assert.match(toast, /\.sf-toast:has\(> \.sf-toast-container > \.sf-toast-bottom\) \{\s*container: sf-toast \/ inline-size;/u);
-  assert.match(toast, /@container sf-toast \(min-width: calc\(20rem - 2 \* 1rem - 2px\)\) \{\s*\.sf-toast:not\(:has\(\.sf-toast-bottom > :nth-child\(2\)\)\)/u);
+  assert.match(toast, /@container sf-toast \(min-width: calc\(20rem - 2 \* 1rem - 2px\)\) \{\s*\.sf-toast:not\(\.sf-toast--actions-under\):not\(:has\(\.sf-toast-bottom > :nth-child\(2\)\)\)/u);
 });
 
 test('under the text, the inset under the last button is the inset above the capitals', () => {
@@ -42,4 +44,27 @@ test('an error or a warning toast stays until a person closes it; success may le
   assert.match(toastJs, /const STAYING_TOAST_TYPES = new Set\(\['warning', 'error'\]\);/u);
   assert.match(toastJs, /function readDuration\(root\) \{\s*if \(staysUntilClosed\(root\)\) return 0;/u);
   assert.match(smartToast, /if \(this\.status === 'error' \|\| this\.status === 'warning'\) return 0;/u);
+});
+
+test('actions-layout (owner 2026-11-13, #q-layout-override): auto by width, under at every width', () => {
+  // A public setting of both notices, two words, auto the default, no alias.
+  for (const [tag, settings] of [['sf-alert', alertSettings], ['sf-toast', toastSettings]]) {
+    const setting = settings['actions-layout'];
+    assert.equal(setting?.type, 'enum', `${tag}: actions-layout is an enum setting`);
+    assert.deepEqual(setting.values, ['auto', 'under'], tag);
+    assert.equal(setting.default, 'auto', tag);
+  }
+  // The class form is a modifier on the notice root; the Smart templates add it
+  // for under only, so auto and any other word keep layout L3a.
+  assert.match(alertTemplate, /context\.actionsLayout === 'under' \? 'sf-alert--actions-under' : ''/u);
+  assert.match(toastTemplate, /context\.actionsLayout === 'under' \? 'sf-toast--actions-under' : ''/u);
+  assert.match(toastJs, /actionsLayout === 'under' \? 'sf-toast--actions-under' : ''/u);
+  // The modifier only takes the notice out of the row queries: under the text
+  // it keeps the gap and the even bottom of every other notice, so the sheets
+  // hold no rule of their own for it (comments aside).
+  const rules = (sheet) => sheet.replace(/\/\*[\s\S]*?\*\//gu, '');
+  assert.equal((alerts.match(/:not\(\.sf-alert--actions-under\)/gu) ?? []).length, 2);
+  assert.equal((toast.match(/:not\(\.sf-toast--actions-under\)/gu) ?? []).length, 3);
+  assert.doesNotMatch(rules(alerts), /\.sf-alert--actions-under[^)]/u);
+  assert.doesNotMatch(rules(toast), /\.sf-toast--actions-under[^)]/u);
 });

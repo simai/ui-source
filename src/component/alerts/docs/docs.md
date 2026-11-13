@@ -55,8 +55,20 @@ The step is the notice's whole width, its padding and border included. In the
 row the actions are centred on the text block and their plate overhangs the
 line by the low button's block padding, as the close does: with a one-line
 text the button's label stands on the title line, with the icon and the close.
-Under the text they follow at `--sf-space-1/2` (12, phone 8). No attribute pins
-the position yet.
+Under the text they follow at `--sf-space-1/2` (12, phone 8).
+
+The modifier `.sf-alert--actions-under` (1.2.0, owner 2026-11-13,
+#q-layout-override; on `sf-alert` the setting `actions-layout="under"`) keeps
+the actions under the text at every width, with the same gap and the even
+bottom below. The sheet cannot count the text's lines: in the row a three-line
+text with two actions is taller than under it (174 against 146 at 800), so a
+long text is the author's call.
+
+```html
+<div class="sf-alert sf-alert--warning sf-alert--default sf-alert--actions-under flex items-start">
+  …
+</div>
+```
 
 With the actions under the text, the space under the last button equals what
 the eye sees above the first line, the top of its capitals (C114 (5), NS-9):
