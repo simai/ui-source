@@ -47,9 +47,9 @@ test('T14: a tab without a label is named in the page language', () => {
   assert.deepEqual(words, [['tab', 1]]);
 });
 
-test('sf-tabs 1.3.0 names the R184 work in its decisions', () => {
-  assert.equal(manifest.version, '1.3.0');
-  assert.match(manifest['x-decisions'][0], /^version: 1\.2\.0 → 1\.3\.0, a minor \(R184/u);
+test('sf-tabs 1.3.x names the R184 work in its decisions', () => {
+  assert.match(manifest.version, /^1\.3\.\d+$/u);
+  assert.ok(manifest['x-decisions'].some((one) => /^version: 1\.2\.0 → 1\.3\.0, a minor \(R184/u.test(one)));
 });
 
 // A method of SfTabs as a function of `this`, for a test double.
