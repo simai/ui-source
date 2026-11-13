@@ -496,16 +496,18 @@
   overflow-wrap: anywhere;
 }
 
-/* A question window's title (C39): C21's h4 step in bold, 20 on 28, where
-   every other window's title is the heading-3 step above (C44). Headings do
-   not follow density (dispatcher, pair next 2): the step is the heading
-   ladder's and the line the title ladder's, both the same in a compact
-   region, so a compact question keeps its title. Scoped to the question
-   size: a page-wide rule here outranked C44's and drew every window's title
-   at 20 (compact 16). */
+/* A question window's title (C39): C21's h4 step in bold, on the h4 step's
+   own line (20 on 24 on a desktop, 16 on 18 on a phone), where every other
+   window's title is the heading-3 step above (C44). Headings do not follow
+   density (dispatcher, pair next 2): both are the heading ladder's, the same
+   in a compact region, so a compact question keeps its title. The line was
+   --sf-title--height-6, a step of the title ladder that is 40 on a desktop
+   (dispatcher 2026-11-11: a defect). Scoped to the question size: a
+   page-wide rule here outranked C44's and drew every window's title at 20
+   (compact 16). */
 .sf-modal--size-question .sf-modal-title {
   font-size: var(--sf-heading-4--size);
-  line-height: var(--sf-title--height-6);
+  line-height: var(--sf-heading-4--height);
   font-weight: var(--sf-font-weight-bold);
 }
 

@@ -26,7 +26,7 @@ test('a plain window title is the heading-3 step; only the question size sets an
   const others = sizing.filter(({selector}) => selector !== '.sf-modal-title');
   assert.deepEqual(others.map(({selector}) => selector), ['.sf-modal--size-question .sf-modal-title']);
   assert.match(others[0].body, /font-size: var\(--sf-heading-4--size\);/u);
-  assert.match(others[0].body, /line-height: var\(--sf-title--height-6\);/u);
+  assert.match(others[0].body, /line-height: var\(--sf-heading-4--height\);/u);
   // The plain rule comes first, so the scoped one wins only by its selector.
   assert.ok(sheet.indexOf(plain[0].selector + ' {') < sheet.indexOf(others[0].selector));
 });
@@ -38,7 +38,9 @@ test('the question title reads values density does not move', () => {
   // Heading 4 is written in the compact block with its normal value (C44).
   assert.match(block, /--sf-heading-4--size: var\(--sf-c0\);/u);
   assert.match(block, /--sf-heading-3--size: var\(--sf-c2\);/u);
-  // The title line ladder is not a density variable at all.
-  assert.doesNotMatch(density, /--sf-title--height-6:/u);
+  // The h4 step's line (the title ladder's second step) is not a density
+  // variable at all.
+  assert.doesNotMatch(density, /--sf-heading-4--height:/u);
+  assert.doesNotMatch(density, /--sf-title--height-2:/u);
   assert.doesNotMatch(density, /--sf-heading-4--size: var\(--sf-(?!c0\))/u);
 });
