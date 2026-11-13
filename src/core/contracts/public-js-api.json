@@ -1,7 +1,7 @@
 {
   "schema": "simai.framework.public-js-api",
   "schema_version": 1,
-  "summary": "What a page may call on window.SF. A public name keeps its meaning and is renamed or removed only through the change journal, as an attribute is; an internal one is the runtime's and may change in any release. tests/browser/public-js-api.browser.mjs holds the list against the runtime: every name the runtime puts on window.SF is here, and every public name and member the probe loads is there. A component's script API (SF.Input, SF.Carousel, ...) arrives with its component and is listed with it; tests/browser/public-js-api-components.browser.mjs loads every Smart tag on one page and holds those names' members the same way. loaded_by says when a name exists: core -- as soon as core.js has run, before the next script on the page; core-loader -- when the Loader has started, at the window event sf-loader-init (core.js loads it); smart-base -- when the Smart base has loaded (SF.loadSmartBase(), or the first Smart element on the page); component/<name>, smart/<name> -- with that component. The probe takes the names at each of those moments (documentation trial 6, 2026-10-18: the Loader's names were listed under core). layer and audience say where the documentation lists a name (owner decision D17, 2026-11-11): layer is core, loader, smart-base or component -- the documentation's Functions section lists the Framework's own names grouped by the first three, and a component's script API (layer component) is documented on its component's page; audience is public (listed for authors) or internal (not listed). Both are derived from loaded_by and status by scripts/generate-public-js-api-layers.mjs, whose exception table says why a name differs. author is the one line the documentation shows for a name (one sentence, present tense, no history), and doc, when there is one, the slug of the page that describes it (language-neutral, an anchor after #); both are written by hand. summary is the release's record of what the name does. public-js-api.schema.json is the shape.",
+  "summary": "What a page may call on window.SF. A public name keeps its meaning and is renamed or removed only through the change journal, as an attribute is; an internal one is the runtime's and may change in any release. tests/browser/public-js-api.browser.mjs holds the list against the runtime: every name the runtime puts on window.SF is here, and every public name and member the probe loads is there. A component's script API (SF.Input, SF.Carousel, ...) arrives with its component and is listed with it; tests/browser/public-js-api-components.browser.mjs loads every Smart tag on one page, and the plain components with a script API on a second, and holds those names' members the same way. loaded_by says when a name exists: core -- as soon as core.js has run, before the next script on the page; core-loader -- when the Loader has started, at the window event sf-loader-init (core.js loads it); smart-base -- when the Smart base has loaded (SF.loadSmartBase(), or the first Smart element on the page); component/<name>, smart/<name> -- with that component. The probe takes the names at each of those moments (documentation trial 6, 2026-10-18: the Loader's names were listed under core). layer and audience say where the documentation lists a name (owner decision D17, 2026-11-11): layer is core, loader, smart-base or component -- the documentation's Functions section lists the Framework's own names grouped by the first three, and a component's script API (layer component) is documented on its component's page; audience is public (listed for authors) or internal (not listed). Both are derived from loaded_by and status by scripts/generate-public-js-api-layers.mjs, whose exception table says why a name differs. author is the one line the documentation shows for a name (one sentence, present tense, no history), and doc, when there is one, the slug of the page that describes it (language-neutral, an anchor after #); both are written by hand. summary is the release's record of what the name does. public-js-api.schema.json is the shape.",
   "globals": [
     {
       "name": "SF.Loader",
@@ -13,7 +13,6 @@
       "internal_members": [
         "loadPage",
         "turboEnabled",
-        "ComponentRegistry",
         "shortCodes",
         "componentTemplates",
         "prepareInit",
@@ -121,11 +120,13 @@
         "pendingStyleLinks",
         "attributeRuleIndex",
         "styleGates",
-        "tokenRuleMatches"
+        "tokenRuleMatches",
+        "themeMediaQuery",
+        "themeMediaListener"
       ],
       "kind": "object",
       "loaded_by": "core-loader",
-      "summary": "The runtime loader: loads what a page uses, components and utilities, on demand, and the theme. ensure(tags, {timeout}) asks for elements and settles with {ready, missing}, never rejecting; watch(root) marks a box an element renders into as a portal the Loader reads as the page (unwatch unmarks it). Once a theme is set (setTheme, changeTheme), SF.Loader.theme and SF.Loader.themePreference read it.",
+      "summary": "The runtime loader: loads what a page uses, components and utilities, on demand, and the theme. ensure(tags, {timeout}) asks for elements and settles with {ready, missing}, never rejecting; watch(root) marks a box an element renders into as a portal the Loader reads as the page (unwatch unmarks it). Once a theme is set (setTheme, changeTheme), SF.Loader.theme and SF.Loader.themePreference read it. checkTheme() applies the saved or the system theme again (a page that swaps its document calls it). ComponentRegistry holds the classes of the scripted components by name (ComponentRegistry.Modal).",
       "members": [
         "ready",
         "ensure",
@@ -140,7 +141,10 @@
         "preloadIcons",
         "clearCache",
         "smartPath",
-        "minified"
+        "minified",
+        "themePreference",
+        "checkTheme",
+        "ComponentRegistry"
       ]
     },
     {
@@ -704,11 +708,12 @@
       "doc": "guide/connection/change-lifecycle",
       "kind": "object",
       "loaded_by": "core",
-      "summary": "Old names still accepted and what replaced them, as the change journal declares them.",
+      "summary": "Old names still accepted and what replaced them, as the change journal declares them. warn is false; a page sets it to true (or <html data-sf-deprecations=\"warn\">) to have each old name it uses printed once in the console.",
       "members": [
         "list",
         "clear",
-        "note"
+        "note",
+        "warn"
       ]
     },
     {
@@ -1044,7 +1049,10 @@
       "doc": "components/internal/admin-menu#javascript",
       "kind": "object",
       "loaded_by": "component/admin-menu",
-      "summary": "The AdminMenu component's script API, loaded with the component (component/admin-menu); its methods are the component's documentation."
+      "summary": "The AdminMenu component's script API, loaded with the component (component/admin-menu); its methods are the component's documentation.",
+      "members": [
+        "init"
+      ]
     },
     {
       "name": "SF.AnchoredBadge",
@@ -1131,7 +1139,12 @@
       "doc": "components/actions/clipboard#javascript",
       "kind": "object",
       "loaded_by": "component/clipboard",
-      "summary": "The Clipboard component's script API, loaded with the component (component/clipboard); its methods are the component's documentation."
+      "summary": "The Clipboard component's script API, loaded with the component (component/clipboard); its methods are the component's documentation.",
+      "members": [
+        "bind",
+        "copy",
+        "unbind"
+      ]
     },
     {
       "name": "SF.CompositionOverlay",
@@ -1230,7 +1243,12 @@
       "doc": "components/content/flag#javascript",
       "kind": "object",
       "loaded_by": "component/flag",
-      "summary": "The Flag component's script API, loaded with the component (component/flag); its methods are the component's documentation."
+      "summary": "The Flag component's script API, loaded with the component (component/flag); its methods are the component's documentation.",
+      "members": [
+        "mount",
+        "mountAll",
+        "render"
+      ]
     },
     {
       "name": "SF.Gallery",
@@ -1251,7 +1269,11 @@
       "doc": "components/content/highlight#javascript",
       "kind": "object",
       "loaded_by": "component/highlight",
-      "summary": "The Highlight component's script API, loaded with the component (component/highlight); its methods are the component's documentation."
+      "summary": "The Highlight component's script API, loaded with the component (component/highlight); its methods are the component's documentation.",
+      "members": [
+        "highlight",
+        "refresh"
+      ]
     },
     {
       "name": "SF.InlineEditor",
@@ -1537,7 +1559,11 @@
       "doc": "components/navigation/tab#javascript",
       "kind": "object",
       "loaded_by": "component/tab",
-      "summary": "The Tab component's script API, loaded with the component (component/tab); its methods are the component's documentation."
+      "summary": "The Tab component's script API, loaded with the component (component/tab); its methods are the component's documentation.",
+      "members": [
+        "init",
+        "activate"
+      ]
     },
     {
       "name": "SF.Tabs",
@@ -1661,6 +1687,11 @@
       "layer": "component",
       "audience": "internal",
       "author": "Is the flag's script API under its lower-case name; a page calls SF.Flag.",
+      "internal_members": [
+        "mount",
+        "mountAll",
+        "render"
+      ],
       "kind": "function",
       "loaded_by": "component/flag",
       "summary": "A helper of the legacy system scripts (component/flag); the runtime's."

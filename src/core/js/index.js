@@ -70,6 +70,11 @@ publishFormat();
 if (typeof window !== 'undefined') {
   window.SF = window.SF || {};
   const SF = window.SF;
+  // SF.deprecations.warn, the console switch for old names (a page sets it
+  // to true): there and false from the start, unless the page set it first.
+  // Core alone writes it, so the bundles' own copies of deprecations.js stay
+  // as they are.
+  if (SF.deprecations && !('warn' in SF.deprecations)) SF.deprecations.warn = false;
   // SF.ready, before the Loader chunk is even asked for (simai/ui-source#16).
   installReady(window);
   // The ports declared on elements (data-sf-port islands): their first calls

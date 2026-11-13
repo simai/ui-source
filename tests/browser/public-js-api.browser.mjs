@@ -7,6 +7,9 @@
 // internal, and every public name and member it lists is there. A name added
 // to window.SF without a line here fails, so the reference the documentation
 // prints cannot fall behind (week audit, 2026-10-18).
+//
+// The page keeps the Loader's theme on (no theme: false), so the members a
+// theme sets -- SF.Loader.themePreference -- are there to hold.
 import {readFileSync, existsSync} from 'node:fs';
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
@@ -32,7 +35,7 @@ try {
   });
   await page.goto('http://probe.test/');
   await page.setContent(`<!doctype html><html lang="ru"><head><meta charset="utf-8">
-    <script>window.sfPath = '/distr/'; window.SF_BOOT_CONFIG = {cacheVersion: 'js-api', pluginListVersion: 'js-api', preloader: {enabled: false}, icons: {enabled: false}, theme: false};
+    <script>window.sfPath = '/distr/'; window.SF_BOOT_CONFIG = {cacheVersion: 'js-api', pluginListVersion: 'js-api', preloader: {enabled: false}, icons: {enabled: false}};
       window.__sfAt = {}; window.addEventListener('sf-loader-init', () => { window.__sfAt.loader = Object.keys(window.SF || {}); });</script>
     </head><body><sf-badge text="x"></sf-badge><sf-theme-generator></sf-theme-generator><script src="/distr/core/js/core.js"></script>
     <script>window.__sfAt.core = Object.keys(window.SF || {});</script></body></html>`);

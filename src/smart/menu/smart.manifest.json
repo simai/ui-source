@@ -260,7 +260,7 @@
             },
             "open": {
               "type": "boolean",
-              "description": "A column's branch is open at first; a row's panels open only when asked."
+              "description": "A column's branch is open at first; in a row the first flagged branch of each level opens its panel at first."
             },
             "children": {
               "type": "array",
@@ -331,7 +331,7 @@
       },
       "open": {
         "type": "boolean",
-        "description": "A column's branch is open at first; a row's panels open only when asked."
+        "description": "A column's branch is open at first; in a row the first flagged branch of each level opens its panel at first."
       },
       "children": {
         "type": "array",
@@ -744,7 +744,7 @@
       },
       {
         "path": "src/smart/menu/items.mjs",
-        "sha256": "291327b87089fe8c2bc35090ccdc2877fe0f941cb2554154919762552a583343"
+        "sha256": "be4cb4c4cdb50eeee0b314dac0235a4729306570ff3e6e816cd51b480a180ee7"
       },
       {
         "path": "src/smart/menu/js/templates/default.js",

@@ -213,13 +213,25 @@ export function currentItemId(items, {current = '', pathname = '', hash = '', ba
   return flagged;
 }
 
-// Which branches are open: what the person or the host set, else -- in a
-// column -- what the item says, and the branches above the current page, so
-// it can be seen. A row's panels open only when asked: none is open when the
-// page starts. A group that cannot be collapsed is always open; a row draws
-// no group (its items stand in the row), so none is open there.
+// Which branches are open: what the person or the host set, else what the
+// item says -- in a column also the branches above the current page, so it
+// can be seen. A row's panels are one chain, so there an item's open flag
+// opens the first flagged branch of the row and, inside its panel, the first
+// flagged branch of each level (owner remark 2026-11-11: «Каталог» with
+// open: true drew no panel); the current page alone opens nothing in a row.
+// A group that cannot be collapsed is always open; a row draws no group (its
+// items stand in the row), so none is open there.
 export function openBranches(items, overrides = new Map(), currentId = null, inColumn = true) {
   const reveal = new Set(inColumn && currentId ? pathTo(items, currentId) || [] : []);
+  const rowChain = new Set();
+  if (!inColumn) {
+    for (let level = withoutGroups(items); level.length;) {
+      const flagged = level.find((item) => item.open && item.children.length && !item.disabled);
+      if (!flagged) break;
+      rowChain.add(flagged.id);
+      level = flagged.children;
+    }
+  }
   const open = new Set();
   walkItems(items, (item) => {
     if (!item.children.length) return;
@@ -227,7 +239,7 @@ export function openBranches(items, overrides = new Map(), currentId = null, inC
       if (inColumn) open.add(item.id);
       return;
     }
-    const fallback = inColumn && (item.open || reveal.has(item.id));
+    const fallback = inColumn ? Boolean(item.open || reveal.has(item.id)) : rowChain.has(item.id);
     const state = overrides.has(item.id) ? overrides.get(item.id) : fallback;
     if (state) open.add(item.id);
   });

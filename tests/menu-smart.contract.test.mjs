@@ -76,12 +76,25 @@ test('smart menu: the current page from current, the location, or the item flag'
   assert.equal((template.match(/aria-current=\$\{current \? 'page' : nothing\}/gu) || []).length, 4);
 });
 
-test('smart menu: a column opens the way to the current page; a row opens only when asked', () => {
+test('smart menu: a column opens the way to the current page; a row opens what the items flag, one chain', () => {
   const items = normaliseItems([...TREE, {id: 'help', label: 'Помощь', open: true, children: [{id: 'faq', label: 'Вопросы'}]}]);
   assert.deepEqual([...openBranches(items, new Map(), 'catalog-2-1', true)], ['catalog', 'catalog-2', 'help']);
   assert.deepEqual([...openBranches(items, new Map([['catalog', false]]), 'catalog-2-1', true)], ['catalog-2', 'help']);
-  assert.deepEqual([...openBranches(items, new Map(), 'catalog-2-1', false)], []);
-  assert.deepEqual([...openBranches(items, new Map([['catalog', true]]), null, false)], ['catalog']);
+  // A row: the current page alone opens nothing; the open flag opens its
+  // panel (owner remark 2026-11-11, «Каталог» with open: true).
+  assert.deepEqual([...openBranches(items, new Map(), 'catalog-2-1', false)], ['help']);
+  assert.deepEqual([...openBranches(items, new Map([['help', false]]), 'catalog-2-1', false)], []);
+  assert.deepEqual([...openBranches(items, new Map([['catalog', true], ['help', false]]), null, false)], ['catalog']);
+  // One chain: the first flagged branch of the row, then the first flagged
+  // branch inside each panel; a disabled branch opens nothing.
+  const flagged = normaliseItems([
+    {id: 'a', label: 'A', open: true, children: [{id: 'a1', label: 'A1', children: [{id: 'a1x', label: 'x'}]}, {id: 'a2', label: 'A2', open: true, children: [{id: 'a2x', label: 'x'}]}]},
+    {id: 'b', label: 'B', open: true, children: [{id: 'b1', label: 'B1'}]},
+  ]);
+  assert.deepEqual([...openBranches(flagged, new Map(), null, false)], ['a', 'a2']);
+  assert.deepEqual([...openBranches(flagged, new Map(), null, true)], ['a', 'a2', 'b']);
+  const off = normaliseItems([{id: 'a', label: 'A', open: true, disabled: true, children: [{id: 'a1', label: 'A1'}]}, {id: 'b', label: 'B', open: true, children: [{id: 'b1', label: 'B1'}]}]);
+  assert.deepEqual([...openBranches(off, new Map(), null, false)], ['b']);
   // A row's open panels are one chain: opening a branch closes every panel
   // not above it.
   assert.match(source, /if \(this\.flyouts\) \{\n      const above = new Set\(pathTo\(this\.treeItems, item\.id\) \|\| \[\]\);\n      for \(const other of before\) if \(!above\.has\(other\)\) after\.delete\(other\);/u);
