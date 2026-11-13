@@ -548,15 +548,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-run/index.js",
-        "sha256": "7ca5862fc00408a01045223ecef199bbdb49fdbd1ef22da4dbd1344935f6d121"
+        "sha256": "092e8ab565814a822212ae77d129d55ed8d22c61c21b0138817b4494c6c4c538"
       },
       {
         "path": "src/smart/progress-run/js/templates/default.js",
-        "sha256": "53485504bddd498c4f7f625afb25e896b0379c91745e6e442c0552355b07f956"
+        "sha256": "e6243ef5ce1d4750413d250869cbf2e3eaa6bbb3c372e5a22b1cd2fcc8aea94b"
       },
       {
         "path": "src/smart/progress-run/scss/_smart__progress-run.scss",
-        "sha256": "11f60848f8fb3c178d132582ea9538616fdfecc559a8555d008aed16de969aa3"
+        "sha256": "9c667af80b66550fec98f29228bbb71fb2cd7a74f43c5c48a58430da01396ebf"
       },
       {
         "path": "src/smart/progress-run/rule.js",
@@ -564,7 +564,7 @@
       },
       {
         "path": "src/smart/progress-run/docs.md",
-        "sha256": "2d5a9c2e41a07b12666208d688f7f9ac0e84d0d0b425c9f1dfbe0146d1a2c3ea"
+        "sha256": "f6177ec24507f63fea9278f9ef50f40f1b7df691089718f17093430e2b2ca1e9"
       }
     ],
     "generated_runtime": []
