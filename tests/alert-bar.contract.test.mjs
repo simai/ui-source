@@ -16,7 +16,7 @@ const sheet = read('src/smart/alert-bar/scss/_smart__alert-bar.scss');
 test('the manifest: a leaf of block alert with items, four events and the close action', () => {
   assert.equal(manifest.tag, 'sf-alert-bar');
   assert.equal(manifest.family, 'alert');
-  assert.equal(manifest.version, '1.6.0');
+  assert.equal(manifest.version, '1.6.1');
   assert.deepEqual(Object.keys(manifest.settings), ['items', 'size', 'label']);
   assert.deepEqual(manifest.settings.items.schema.items.properties.level.enum, ['error', 'warning', 'info']);
   assert.deepEqual(manifest.settings.items.schema.items.required, ['id', 'level', 'text']);
@@ -151,4 +151,26 @@ test('NS-12: the open list holds the others, each row the bar row\'s composition
   assert.match(sheet, /\.sf-alert-bar-item:has\(> \.sf-alert-bar-item-actions\) \{/u);
   // Focus after a row leaves goes to the row that takes its place.
   assert.match(source, /left\[Math\.min\(place, left\.length - 1\)\]/u);
+});
+
+test('1.6.1: narrow, the open toggle keeps the place of «Ещё N»; a row\'s time is no Tab stop', () => {
+  // The open toggle names itself «Свернуть список» and carries the collapse
+  // glyph; the glyph is drawn only on a narrow bar, where the label is hidden
+  // for the name alone and the button is the low control's square.
+  assert.match(template, /icon-start=\$\{listOpen \? context\.collapseIcon : nothing\}/);
+  assert.match(source, /export const COLLAPSE_ICON = 'unfold_less';/);
+  assert.match(source, /collapseIcon: COLLAPSE_ICON/);
+  // Asked for with the first drawing of a bar with several items, so the
+  // glyph rides the page's icon request.
+  assert.match(source, /if \(context\.count > 1\) preloadControlIcons\(this, \[\{icon: COLLAPSE_ICON, filled: false\}\]\);/);
+  assert.match(template, /aria-label=\$\{listOpen \? words\.collapseList : nothing\}/);
+  assert.match(sheet, /@container sf-alert-bar \(width > 38rem\) \{\s*\.sf-alert-bar-row \.sf-alert-bar-all > button > sf-icon > \.sf-icon \{\s*position: absolute;\s*visibility: hidden;/);
+  const narrow = sheet.slice(sheet.indexOf('@container sf-alert-bar (max-width: 38rem)'));
+  assert.match(narrow, /\.sf-alert-bar-all > button\[aria-expanded="true"\] \{[^}]*inline-size: var\(--sf-alert-bar--control\);[^}]*padding-inline: 0;/);
+  assert.match(narrow, /\.sf-alert-bar-all > button\[aria-expanded="true"\] > \.sf-button-text-container \{[^}]*clip-path: inset\(50%\);/);
+  // A row's time: sf-time with tooltip none (no tooltip, no tabindex); the
+  // bar's own time keeps its tooltip.
+  assert.match(template, /meta\(item, 'sf-alert-bar-item-meta', 'none'\)/);
+  assert.match(template, /tooltip=\$\{tooltip === 'auto' \? nothing : tooltip\}/);
+  assert.match(template, /\$\{meta\(item\)\}/);
 });

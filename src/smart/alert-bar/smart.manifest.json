@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.alert-bar",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "title": "Alert bar",
   "summary": "A full-width bar above a page or admin header for the conditions that need action now: error, warning, info. One bar for all of them, coloured by the most serious; it shows the most serious, and «N more» lists the others under the bar. Warning closes for a day, info for good, error only minimizes to a strip. It stores nothing: the host keeps what was closed.",
   "kind": "smart",
@@ -245,7 +245,7 @@
     "role": "region",
     "accessible_name": "internal",
     "keyboard": [
-      "Tab reaches the action link, acknowledge, each item's time (its tooltip), «N more», close or minimize, then the rows of the open list in order",
+      "Tab reaches the action link, acknowledge, the shown item's time (its tooltip), «N more», close or minimize, then the rows of the open list in order: each row's action, acknowledge and close; a row's time is text, no Tab stop",
       "Enter or Space presses a control; Enter follows the action link",
       "Escape anywhere in the bar or its open list closes the list and returns focus to «N more»"
     ],
@@ -311,15 +311,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/alert-bar/index.js",
-        "sha256": "22f6b9227c971ddbd6088a7ef28613e632e9f9a42458fac2cf1ab8765300f3ee"
+        "sha256": "6a00815d00ff450e0322e91e191a05c2964e8cce43dcb9447c9a30d006ada499"
       },
       {
         "path": "src/smart/alert-bar/js/templates/default.js",
-        "sha256": "a277e0e9dc5c26d0ee727d51de4c4ebebcfcc58bc8b31c3037a38d54f98262c8"
+        "sha256": "d6c70447a75a645b06c1d13ce79f69d4515df01a9e0877d4ea2592afa6fbf3e5"
       },
       {
         "path": "src/smart/alert-bar/scss/_smart__alert-bar.scss",
-        "sha256": "83dcb79a55365e8e08ff0655b12361c56d657a60ca10929186bf96acb0b51b4e"
+        "sha256": "b36be7f91e7fdba5086d80b99f01701662b5f2944569cc004070e1a4204b3144"
       },
       {
         "path": "src/smart/alert-bar/rule.js",
@@ -327,7 +327,7 @@
       },
       {
         "path": "src/smart/alert-bar/docs.md",
-        "sha256": "07a7d4deb579771a4361419981315d6f293df445747fd509f7f139029dc01541"
+        "sha256": "21077167ead80069dbc2b2c39242aec9fdb804211934fd3579d87c99c70252fb"
       }
     ],
     "generated_runtime": []

@@ -25,6 +25,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {toDate} from '../../core/js/format';
 import {renderAlertBarTemplate} from './js/templates/default';
+import {preloadControlIcons} from '../helpers/cycle';
 import manifest from './component.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
@@ -43,6 +44,8 @@ const RANK = {error: 0, warning: 1, info: 2};
 export const HIDE = {warning: 'day', info: 'always'};
 // sf-alert's status icons, by the theme's status words.
 export const ICONS = {error: 'error', warning: 'warning', info: 'info'};
+// The open toggle's glyph on a narrow bar (1.6.1): the list collapses.
+export const COLLAPSE_ICON = 'unfold_less';
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
 
@@ -338,6 +341,7 @@ class SfAlertBar extends AlertBarElement {
       listId: this._listId,
       announce: this._announce,
       icons: ICONS,
+      collapseIcon: COLLAPSE_ICON,
       words: {
         more: word('more', {count: others.length}),
         collapseList: word('collapse-list'),
@@ -358,7 +362,13 @@ class SfAlertBar extends AlertBarElement {
     // The live regions keep their text until the host's next list, so a
     // drawing in between (a page, a minimize) does not speak it again.
     this.syncList();
-    return renderAlertBarTemplate(this.templateContext());
+    const context = this.templateContext();
+    // The open toggle's collapse glyph (narrow bar, 1.6.1) is drawn only
+    // after a press: asked for with the bar's first drawing, so the page's
+    // icon request carries it and the glyph does not wait for a subset of
+    // its own (R074, as sf-toast asks for its status glyph).
+    if (context.count > 1) preloadControlIcons(this, [{icon: COLLAPSE_ICON, filled: false}]);
+    return renderAlertBarTemplate(context);
   }
 }
 

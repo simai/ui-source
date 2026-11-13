@@ -16,6 +16,10 @@ import {html, nothing} from 'lit';
 // - With several items, «Ещё N» (the others, not the shown one) opens the
 //   list of the others under the bar, in the page flow (C114 (3) as shown
 //   expanded, layout Р1, NS-12); open, the button reads «Свернуть список».
+//   On a narrow bar (38rem) the open button keeps the place of «Ещё N» at
+//   the end of the action line: it shows the collapse glyph only, its name
+//   still «Свернуть список» (aria-label, title), so the longer label never
+//   wraps to a line of its own. Wide, the glyph is not drawn (scss/).
 //   Each row is the bar row's composition on the list's surface: the level
 //   icon in the level's colour (its word for a screen reader), the text with
 //   the source and time on the line below, the action and acknowledge, and
@@ -37,10 +41,14 @@ const icon = (name, extra = '') => html`<i class=${['sf-icon', 'sf-alert-bar-ico
 // The time is sf-time (C40): relative within a day (threshold P1D, as 1.x
 // read it), else sf-time's auto («вчера, 19:40», «5 ноября»), the full
 // moment in its tooltip.
-function meta(item, extra = '') {
+//
+// In a row of the open list the time has no tooltip and is no Tab stop
+// (tooltip="none"): the row's stops are its buttons, and the time stays text
+// a screen reader reads in the row. The bar's own time keeps its tooltip.
+function meta(item, extra = '', tooltip = 'auto') {
   if (!item.source && !item.time) return nothing;
   return html`<span class=${['sf-alert-bar-meta', extra].filter(Boolean).join(' ')}>${item.source}${item.source && item.time ? ' · ' : ''}${item.time
-    ? html`<sf-time class="sf-alert-bar-time" datetime=${item.time} threshold="P1D"></sf-time>` : nothing}</span>`;
+    ? html`<sf-time class="sf-alert-bar-time" datetime=${item.time} threshold="P1D" tooltip=${tooltip === 'auto' ? nothing : tooltip}></sf-time>` : nothing}</span>`;
 }
 
 function actionLink(context, item, appearance) {
@@ -91,7 +99,9 @@ function row(context) {
       ${actionLink(context, item, 'tonal')}
       ${acknowledgeButton(context, item, 'ghost')}
       ${many ? html`<sf-button class="sf-alert-bar-all" size=${size} height="low" appearance="ghost" scheme="on-surface"
-        text=${listOpen ? words.collapseList : words.more} expanded=${listOpen ? 'true' : 'false'} aria-controls=${listId}
+        text=${listOpen ? words.collapseList : words.more} icon-start=${listOpen ? context.collapseIcon : nothing}
+        aria-label=${listOpen ? words.collapseList : nothing} title=${listOpen ? words.collapseList : nothing}
+        expanded=${listOpen ? 'true' : 'false'} aria-controls=${listId}
         @click=${() => component.toggleList()}></sf-button>` : nothing}
     </div>` : nothing}
     ${end}
@@ -108,7 +118,7 @@ function listOfOthers(context) {
       ${icon(icons[item.level], 'sf-alert-bar-item-icon')}
       <div class="sf-alert-bar-item-text">
         <span class="sf-alert-bar-item-message"><span class="sr-only">${item.levelWord}: </span>${item.text}</span>
-        ${meta(item, 'sf-alert-bar-item-meta')}
+        ${meta(item, 'sf-alert-bar-item-meta', 'none')}
       </div>
       ${item.action || item.acknowledge ? html`<div class="sf-alert-bar-item-actions">
         ${actionLink(context, item, 'tonal')}

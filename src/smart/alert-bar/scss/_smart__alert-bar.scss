@@ -224,6 +224,18 @@
   white-space: nowrap;
 }
 
+/* The open toggle carries the collapse glyph for the narrow bar only
+   (below); wide, it reads «Свернуть список» as text alone. The sf-icon host
+   is display: contents (set on the element) and the glyph's display is the
+   icon sheet's, outside the layers, so the glyph is taken out of the flow
+   and out of sight instead (it is aria-hidden). */
+@container sf-alert-bar (width > 38rem) {
+  .sf-alert-bar-row .sf-alert-bar-all > button > sf-icon > .sf-icon {
+    position: absolute;
+    visibility: hidden;
+  }
+}
+
 /* sf-button and sf-button-icon lay out as display: contents: the native
    control inside is the box, so placement rules name it. The end button
    stands 8 after the actions (C105 H5), not the 16 between groups. */
@@ -475,6 +487,26 @@
 
   .sf-alert-bar-all > :is(button, a) {
     margin-inline-start: auto;
+  }
+
+  /* Open, the toggle keeps the place of «Ещё N» at the end of the action
+     line: «Свернуть список» is longer and would wrap to a line of its own
+     (the bar 36 px taller), so here the button is the collapse glyph on the
+     low control's square, an icon button's footprint. Its name stays
+     «Свернуть список» (aria-label); the label is kept for the name only. */
+  .sf-alert-bar-row .sf-alert-bar-all > button[aria-expanded="true"] {
+    justify-content: center;
+    inline-size: var(--sf-alert-bar--control);
+    padding-inline: 0;
+  }
+
+  .sf-alert-bar-row .sf-alert-bar-all > button[aria-expanded="true"] > .sf-button-text-container {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   /* A row of the open list does what the bar row does: the icon, the text

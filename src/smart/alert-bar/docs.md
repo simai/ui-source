@@ -70,13 +70,19 @@ not the item the bar shows. It has no arrows to page through them.
 «Ещё N» opens the list of the others under the bar, in the page flow: an area
 of the page on the `surface-area` place with a line under it, not a popup; the
 page moves down. Past 352 px (g1) the list scrolls inside itself and does not
-hand the scroll to the page. Open, the button reads «Свернуть список».
+hand the scroll to the page. Open, the button reads «Свернуть список». Up to
+38rem of the bar's width the open button keeps the place of «Ещё N» at the end
+of the action line: it shows the collapse glyph alone, on the low control's
+square, and its name is still «Свернуть список» (screen reader and tooltip), so
+the longer label never wraps to a line of its own and the bar does not grow
+when the list opens (1.6.1).
 
 Each row is built as the bar row, on the same rung, steps and low buttons:
 
 - the level icon at the line's size, in the level's colour (error, warning,
   info); a screen reader hears the level word before the text («Ошибка: …»);
-- the text, with the source and time on the line below;
+- the text, with the source and time on the line below; the time is plain
+  text in a row, read with the row, with no tooltip and no Tab stop (1.6.1);
 - the action (tonal surface) and «Прочитано» (ghost), 8 apart;
 - the close (×, «Скрыть на сутки» or «Скрыть») 8 after them, for a warning or
   an info item. An error row keeps that place empty, so the columns line up
