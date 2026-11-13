@@ -18,7 +18,7 @@
     "src/component/modal/scss/_css__modal_custom.scss",
     "src/component/modal/scss/index.scss"
   ],
-  "content_sha256": "503bb374592c9f649cee2c151f00bbbe784af4c0d0ef77f77b7839ceaa8c118f",
+  "content_sha256": "4af48a0e4bca017a917baa586feb7639a9a2752911dde14bc005fcdbf56560f2",
   "dependencies": [
     {
       "id": "component.close",
@@ -42,6 +42,10 @@
     },
     {
       "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.breakpoint",
       "range": "^1.0.0"
     },
     {
