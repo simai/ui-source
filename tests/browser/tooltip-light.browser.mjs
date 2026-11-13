@@ -169,7 +169,10 @@ try {
       const centre = await page.evaluate(() => { const r = document.getElementById('trig').getBoundingClientRect(); return [r.x + r.width / 2, r.y + r.height / 2]; });
       const steps = {};
       await page.mouse.move(1, 1); await tick(page);
+      // C59: a pointer resting on the trigger opens the tooltip after 0.5 s.
       await page.mouse.move(...centre); await tick(page);
+      steps.hoverWaits = !(await shown());
+      await page.waitForTimeout(650);
       steps.hover = await shown();
       await page.mouse.down(); await tick(page);
       steps.pressHides = !(await shown());
@@ -179,7 +182,7 @@ try {
       steps.clickFocused = await page.evaluate(() => document.activeElement?.id === 'trig');
       await page.mouse.move(1, 1); await tick(page);
       steps.leaveHidden = !(await shown());
-      await page.mouse.move(...centre); await tick(page);
+      await page.mouse.move(...centre); await page.waitForTimeout(650);
       steps.hoverAgain = await shown();
       await page.mouse.move(1, 1); await tick(page);
       steps.leaveWithMouseFocus = !(await shown());

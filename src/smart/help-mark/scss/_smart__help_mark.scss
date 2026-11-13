@@ -37,6 +37,18 @@ sf-help-mark {
   align-self: center;
 }
 
+/* The mark's own button keeps its whole target (HM-01, C58: at least 24, the
+   smallest icon button: 28 at size 1/3 on a desktop, 24 on a phone and in a
+   compact region). It stands out of its zero-height box into the lines above
+   and below; in running text those lines' words were painted after it and
+   took the press -- 18.5 of 24 px reached the mark. Lifted over its own
+   paragraph's text (a stacking order, not a size), the press anywhere on the
+   button is the mark's. The glyph and the layout do not change. */
+.sf-help-mark-button > button {
+  position: relative;
+  z-index: 1;
+}
+
 .sf-help-mark-panel {
   position: fixed;
   inset: auto;
@@ -46,7 +58,10 @@ sf-help-mark {
   gap: var(--sf-help-mark-gap, var(--sf-a4));
   max-inline-size: min(var(--sf-help-mark-max-width, var(--sf-g0)), 100vw);
   padding: var(--sf-help-mark-padding-block, var(--sf-space-1\/3)) var(--sf-help-mark-padding-inline, var(--sf-space-1\/2));
-  border: var(--sf-px) solid var(--sf-help-mark-border-color, var(--sf-outline-variant));
+  /* A window has a shadow, no frame (C59, owner 2026-11-11): the border is
+     transparent unless a page names a colour (--sf-help-mark-border-color), so
+     the window keeps its size and one look with sf-popover. */
+  border: var(--sf-px) solid var(--sf-help-mark-border-color, transparent);
   border-radius: var(--sf-help-mark-radius, var(--sf-radius--surface));
   background-color: var(--sf-help-mark-background-color, var(--sf-surface-popup));
   @include places.sf-place(var(--sf-help-mark-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));

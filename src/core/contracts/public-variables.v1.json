@@ -2299,8 +2299,8 @@
         {
           "name": "--sf-help-mark-border-color",
           "role": "border-color",
-          "summary": "The explanation's border.",
-          "default": "var(--sf-outline-variant)",
+          "summary": "The explanation's border; none is drawn until a page names a colour (a window has a shadow and no frame, C59).",
+          "default": "transparent",
           "state": "open",
           "since": "2026-10-27"
         },

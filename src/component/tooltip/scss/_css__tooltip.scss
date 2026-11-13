@@ -200,8 +200,17 @@
      surface-1 with no border or shadow vanished into a light page. */
   --sf-tooltip-content--background-color: var(--sf-tooltip-background-color, var(--sf-surface-popup));
   @include places.sf-place(var(--sf-tooltip-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
-  box-shadow: var(--sf-shadow-overlay);
-  border: var(--sf-tooltip-border-width, var(--sf-px)) solid var(--sf-tooltip-border-color, var(--sf-outline-variant));
+}
+
+/* Its elevation is the window's, shadow only (C59: every window only with a
+   shadow, no frame; a page may still set --sf-tooltip-border-width). The
+   shadow is drawn over the whole painted shape -- the content and the tail --
+   as --sf-shadow-overlay-filter (the two layers of --sf-shadow-overlay as
+   drop-shadows), so an arrow carries the same shadow as the window; a
+   box-shadow stopped at the content's box and left the tail flat (C59 arrow
+   rule, research 2026-11-11 §3a). */
+.sf-tooltip.sf-tooltip--light {
+  filter: var(--sf-shadow-overlay-filter);
 }
 
 .sf-tooltip--light .sf-tooltip-text {

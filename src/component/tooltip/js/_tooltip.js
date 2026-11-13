@@ -43,6 +43,25 @@ function arrowPlacement(arrow, rtl) {
 
 const tooltipInstances = new WeakMap();
 
+// The tooltip kind of C59 (owner decision 2026-11-11, research
+// control/research/2026-11-11-popover.md): a pointer resting on a trigger
+// opens its tooltip after 0.5 s, so a pointer crossing a toolbar does not pop
+// one on every button; once a tooltip shows, its neighbours open at once --
+// while one is open and for 300 ms after the last one closed. Keyboard focus
+// opens it at once. On a touch screen, where nothing hovers, a long press
+// (held 0.5 s) shows it; it stays while the finger is down and 1.5 s after.
+// Times, not lengths: the Framework has no delay tokens (sf-menu's hover
+// delays are written the same way, C30).
+const OPEN_DELAY = 500;
+const GROUP_WINDOW = 300;
+const TOUCH_SHOWN = 1500;
+// The group is page-wide: every bundle that carries this controller counts on
+// one shared record, not on a module-scope one of its own.
+const GROUP = Symbol.for('sf.tooltip.group');
+const group = () => globalThis[GROUP] || (globalThis[GROUP] = {open: 0, closedAt: -Infinity});
+const now = () => globalThis.performance?.now?.() ?? Date.now();
+const warm = () => group().open > 0 || now() - group().closedAt < GROUP_WINDOW;
+
 // Whether the focus shows (the platform's :focus-visible); where the selector
 // is unknown, the focus counts as shown, as before.
 function focusVisible(element) {
@@ -79,6 +98,15 @@ class SfTooltipController {
     this.onFocusIn = this.handleFocusIn.bind(this);
     this.onFocusOut = this.handleFocusOut.bind(this);
     this.onPress = this.handlePress.bind(this);
+    this.onPointerDown = this.handlePointerDown.bind(this);
+    this.onTouchEnd = this.handleTouchEnd.bind(this);
+    this.onClickCapture = this.handleClickCapture.bind(this);
+    this.onContextMenu = this.handleContextMenu.bind(this);
+    this.openTimer = 0;
+    this.touchTimer = 0;
+    this.touchHold = false;
+    this.touchShown = false;
+    this.swallowClick = false;
     this.onDocumentKeydown = this.handleDocumentKeydown.bind(this);
   }
 
@@ -136,8 +164,12 @@ class SfTooltipController {
     pointerRoot.addEventListener('pointerleave', this.onPointerLeave);
     this.trigger.addEventListener('focusin', this.onFocusIn);
     this.trigger.addEventListener('focusout', this.onFocusOut);
-    this.trigger.addEventListener('pointerdown', this.onPress);
+    this.trigger.addEventListener('pointerdown', this.onPointerDown);
+    this.trigger.addEventListener('pointerup', this.onTouchEnd);
+    this.trigger.addEventListener('pointercancel', this.onTouchEnd);
+    this.trigger.addEventListener('click', this.onClickCapture, true);
     this.trigger.addEventListener('click', this.onPress);
+    this.trigger.addEventListener('contextmenu', this.onContextMenu);
     tooltipInstances.set(this.trigger, this);
   }
 
@@ -150,8 +182,13 @@ class SfTooltipController {
     pointerRoot.removeEventListener('pointerleave', this.onPointerLeave);
     this.trigger.removeEventListener('focusin', this.onFocusIn);
     this.trigger.removeEventListener('focusout', this.onFocusOut);
-    this.trigger.removeEventListener('pointerdown', this.onPress);
+    this.trigger.removeEventListener('pointerdown', this.onPointerDown);
+    this.trigger.removeEventListener('pointerup', this.onTouchEnd);
+    this.trigger.removeEventListener('pointercancel', this.onTouchEnd);
+    this.trigger.removeEventListener('click', this.onClickCapture, true);
     this.trigger.removeEventListener('click', this.onPress);
+    this.trigger.removeEventListener('contextmenu', this.onContextMenu);
+    this.clearTimers();
     this.trigger.ownerDocument.removeEventListener(
       'keydown',
       this.onDocumentKeydown,
@@ -167,21 +204,44 @@ class SfTooltipController {
     } else {
       this.surface.setAttribute('role', this.originalRole);
     }
+    if (!this.surface.hidden) this.leaveGroup();
     this.surface.hidden = this.originalHidden;
     this.surface.classList.remove('active');
     tooltipInstances.delete(this.trigger);
   }
 
+  clearTimers() {
+    clearTimeout(this.openTimer);
+    clearTimeout(this.touchTimer);
+    this.openTimer = 0;
+    this.touchTimer = 0;
+  }
+
+  // A pointer resting on the trigger: the tooltip after OPEN_DELAY, or at once
+  // while the group is warm (a neighbour shows, or closed a moment ago).
   handlePointerEnter(event) {
     if (event.pointerType === 'touch') return;
     this.pointerInside = true;
-    if (!this.dismissed) this.open();
+    if (this.dismissed || !this.surface?.hidden) return;
+    if (warm()) {
+      this.open();
+      return;
+    }
+    clearTimeout(this.openTimer);
+    this.openTimer = setTimeout(() => {
+      this.openTimer = 0;
+      if (this.pointerInside && !this.dismissed) this.open();
+    }, OPEN_DELAY);
   }
 
   // The pointer leaves: the tooltip goes unless keyboard focus holds it. A
   // focus a press left (not :focus-visible) does not, and the next hover
   // shows the tooltip again.
-  handlePointerLeave() {
+  handlePointerLeave(event) {
+    // A finger lifted leaves too; the long press keeps its own time.
+    if (event?.pointerType === 'touch') return;
+    clearTimeout(this.openTimer);
+    this.openTimer = 0;
     this.pointerInside = false;
     const active = this.trigger.ownerDocument.activeElement;
     if (!this.focusInside || !focusVisible(active)) {
@@ -195,6 +255,7 @@ class SfTooltipController {
   // click stayed over what the click opened (owner, 2026-11-09).
   handleFocusIn(event) {
     this.focusInside = true;
+    if (this.touchHold || this.touchShown) return;
     if (!this.dismissed && focusVisible(event?.target ?? this.trigger)) this.open();
   }
 
@@ -203,8 +264,65 @@ class SfTooltipController {
   // goes. A pointer press comes before the focus it gives, so that focus
   // does not show it either.
   handlePress() {
+    clearTimeout(this.openTimer);
+    this.openTimer = 0;
     this.dismissed = true;
     this.close();
+  }
+
+  // A finger: a tap is a press (it hides the tooltip, as a mouse press does);
+  // held for OPEN_DELAY it is a long press, which shows the tooltip instead.
+  handlePointerDown(event) {
+    if (event.pointerType !== 'touch') {
+      this.handlePress();
+      return;
+    }
+    this.clearTimers();
+    this.swallowClick = false;
+    this.touchHold = true;
+    if (this.touchShown) {
+      this.touchShown = false;
+      this.close();
+    }
+    this.touchTimer = setTimeout(() => {
+      this.touchTimer = 0;
+      if (!this.touchHold) return;
+      this.touchShown = true;
+      this.dismissed = false;
+      this.open();
+    }, OPEN_DELAY);
+  }
+
+  // The finger lifts (or the browser takes the touch for a scroll): a tooltip
+  // the long press showed stays TOUCH_SHOWN more, and the click the release
+  // may still send is not a press of the trigger.
+  handleTouchEnd(event) {
+    if (event.pointerType !== 'touch' || !this.touchHold) return;
+    this.touchHold = false;
+    clearTimeout(this.touchTimer);
+    this.touchTimer = 0;
+    if (!this.touchShown) return;
+    if (event.type === 'pointerup') {
+      this.swallowClick = true;
+      setTimeout(() => { this.swallowClick = false; }, GROUP_WINDOW);
+    }
+    this.touchTimer = setTimeout(() => {
+      this.touchTimer = 0;
+      this.touchShown = false;
+      this.close();
+    }, TOUCH_SHOWN);
+  }
+
+  handleClickCapture(event) {
+    if (!this.swallowClick) return;
+    this.swallowClick = false;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  }
+
+  // The browser's own long-press menu would cover the tooltip.
+  handleContextMenu(event) {
+    if (this.touchHold || this.touchShown) event.preventDefault();
   }
 
   handleFocusOut() {
@@ -225,6 +343,12 @@ class SfTooltipController {
     this.close();
   }
 
+  leaveGroup() {
+    const shared = group();
+    shared.open = Math.max(0, shared.open - 1);
+    shared.closedAt = now();
+  }
+
   open() {
     // The surface was replaced or taken out after the link was made (a page
     // that redrew the tooltip with new text): link the trigger again, so the
@@ -236,6 +360,9 @@ class SfTooltipController {
       return;
     }
     if (!this.surface || !this.surface.hidden) return;
+    clearTimeout(this.openTimer);
+    this.openTimer = 0;
+    group().open += 1;
     this.surface.hidden = false;
     this.surface.classList.add('active');
     this.startPosition();
@@ -315,6 +442,9 @@ class SfTooltipController {
 
   close() {
     if (!this.surface) return;
+    clearTimeout(this.openTimer);
+    this.openTimer = 0;
+    if (!this.surface.hidden) this.leaveGroup();
     this.stopPosition();
     this.surface.hidden = true;
     this.surface.classList.remove('active');
