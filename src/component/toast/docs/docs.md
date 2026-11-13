@@ -54,6 +54,18 @@ The modifier `.sf-toast--actions-under` (1.3.0, owner 2026-11-13,
 the class toast `SF.Toast.create({actionsLayout: 'under'})`) keeps the action under the
 text at every width, with the same gap and the even bottom, for a long text.
 
+The action's label under the pointer in the dark theme (1.3.0, C113
+follow-up): a toast is a popup place, lighter than the page in the dark theme,
+and the neutral tonal and ghost plates step up the fill family over it
+(12 / 16 / 20 %, C113). The label the buttons keep under the pointer in the
+dark theme, `--sf-on-surface`, read 4.38:1 hovered and 4.01:1 pressed on a
+neutral toast (4.43-4.72 pressed on the levels). On a toast the label and its
+icon take the ink family's full step under the pointer, `--sf-alpha-base`
+(white in the dark theme), so the plates keep C113's steps and the label holds
+4.5:1 in every state and level (tonal 5.64-6.71 hovered, 5.16-6.08 pressed;
+ghost 5.65-8.06 and 5.17-7.77); the light theme keeps the buttons' stepped
+inks (`--sf-on-surface-hover` / `-active`).
+
 ## Ink (1.2.1, C35 acceptance F1)
 
 The status icon is the status's role `--sf-<status>` (neutral: the quiet

@@ -360,6 +360,38 @@
   }
 }
 
+/* The action's label under the pointer in the dark theme (C113 follow-up,
+   DEV overlays acceptance 2026-11-13). The toast is a popup place, lighter
+   than the page in the dark theme, and the neutral tonal and ghost plates
+   step up the fill family over it (12 / 16 / 20, C113 (2)), so the dark
+   theme's label, --sf-on-surface (neutral 90, kept under the pointer by the
+   buttons' own rule), fell to 4.38:1 hovered and 4.01:1 pressed on a neutral
+   toast and to 4.43-4.72 pressed on the levels. Under the pointer the label
+   and its icon take the ink family's full step, the alpha scale's base
+   (--sf-alpha-base: white in the dark theme; the 48 / 64 / 80 inks and the
+   cross's 64, C112, are its steps), so the plates keep C113's steps and the
+   label holds 4.5:1 in every state and level: tonal 5.64-6.71 hovered and
+   5.16-6.08 pressed, ghost 5.65-8.06 and 5.17-7.77. The light theme keeps the
+   buttons' stepped inks (--sf-on-surface-hover / -active). In sf.states, as
+   the buttons' rule. */
+@layer sf.states {
+  .sf-toast .sf-toast-bottom .sf-button:is(.sf-button--tonal, .sf-button--ghost, .sf-button--link).sf-button--on-surface:not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--color: light-dark(var(--sf-on-surface-hover), var(--sf-alpha-base));
+  }
+
+  .sf-toast .sf-toast-bottom .sf-button:is(.sf-button--tonal, .sf-button--ghost, .sf-button--link).sf-button--on-surface:not(:disabled):not(.disabled):hover .sf-icon {
+    --sf-icon--color: light-dark(var(--sf-on-surface-hover), var(--sf-alpha-base));
+  }
+
+  .sf-toast .sf-toast-bottom .sf-button:is(.sf-button--tonal, .sf-button--ghost, .sf-button--link).sf-button--on-surface:not(:disabled):not(.disabled):is(:active, .active) :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--color: light-dark(var(--sf-on-surface-active), var(--sf-alpha-base));
+  }
+
+  .sf-toast .sf-toast-bottom .sf-button:is(.sf-button--tonal, .sf-button--ghost, .sf-button--link).sf-button--on-surface:not(:disabled):not(.disabled):is(:active, .active) .sf-icon {
+    --sf-icon--color: light-dark(var(--sf-on-surface-active), var(--sf-alpha-base));
+  }
+}
+
 /* The page's notification area (core/js/notify.js, SF.notify): one place at an
    edge of the window, in the top layer, where messages stack with a gap. The
    area itself takes no clicks; its toasts do. A popover is otherwise a small
