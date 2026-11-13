@@ -5,6 +5,7 @@ import { resolveControlSpacing } from '../../core/js/control-spacing';
 import { ANCHORED_BADGE_ATTRIBUTES, elementBadge, nameWithBadge } from '../helpers/anchored-badge';
 import { cycleState, hasCycle, parseCycle, preloadSwitchIcons, pressCycle, themeCycleFollow, warnCycleToggle } from '../helpers/cycle';
 import { noteDeprecated } from '../../core/js/deprecations';
+import { warnUnknownControlStatus } from '../helpers/control-status';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -167,6 +168,8 @@ class SfIconButton extends IconButtonElement {
     const props = this.getPropsContext();
     const cycle = this.cycleState();
     if (cycle) warnCycleToggle(this, ['pressed', 'label-pressed']);
+    // success, warning, info: no such icon buttons (C13, BS-1); said once per page.
+    warnUnknownControlStatus('sf-button-icon', this.getAttribute('status'));
     const announce = Boolean(cycle && this.__sfCycleAnnounce);
     this.__sfCycleAnnounce = false;
     // The icons a press can show, asked for before the press (R074).

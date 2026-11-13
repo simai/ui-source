@@ -1,10 +1,14 @@
 import {html, nothing} from "lit";
 import {getInitials} from "../../../helpers/text";
 import {shortcutView} from "../../../../component/kbd/js/shortcut";
+import {warnUnknownControlStatus} from "../../../helpers/control-status";
 
 // A destructive row: danger: true, or status "danger" as every control writes
-// it (C13), with "error" read as its alias.
+// it (C13), with "error" read as its alias. Any other status (success,
+// warning, info) draws a plain row and is said once per page (BS-1).
+const ITEM_STATUSES = Object.freeze(["", "danger", "error"]);
 function isDestructive(entry) {
+    warnUnknownControlStatus("sf-menu-context", entry.status, {allowed: ITEM_STATUSES, label: "item status"});
     return Boolean(entry.danger) || entry.status === "danger" || entry.status === "error";
 }
 

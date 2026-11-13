@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button",
-  "version": "1.13.0",
+  "version": "1.13.1",
   "title": "Buttons",
   "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, height and radius. loading sets aria-busy and disables it against repeated activation.",
   "kind": "smart",
@@ -697,7 +697,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button/index.js",
-        "sha256": "80695ad037d407d51e9a6f8f34829b1b6023b910b31b59ded8a925d91e32b663"
+        "sha256": "ce9d4ed35c95b0959c85689dfc5b1b7a5c936ba40a4bfbdb7a0279facf3fd1b7"
       }
     ],
     "generated_runtime": [
