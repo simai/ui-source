@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.checkbox",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "title": "Checkbox",
   "summary": "A native checkbox with a label, Framework presentation and checked, indeterminate and disabled states kept in step between the host attributes and the inner input.",
   "kind": "smart",
@@ -67,7 +67,7 @@
       "help": {
         "type": "string",
         "default": "",
-        "description": "The explanation behind a «?» button (sf-help-mark) after the label text; a press on the button opens it and never changes the control. The help slot takes an sf-help-mark of the page's own."
+        "description": "The explanation behind a «?» button (sf-help-mark) after the label text: --sf-space-1/4 after the label's last word, on its last line when the label wraps (position end too); a press on the button opens it and never changes the control. The help slot takes an sf-help-mark of the page's own."
       },
       "position": {
         "type": "string",

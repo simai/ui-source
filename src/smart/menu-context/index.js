@@ -233,7 +233,6 @@ class SfContextMenu extends ContextMenuElement {
     this.addEventListener("keydown", this.handleRowKeyDown);
     this.addEventListener("keydown", this.handleMenuKeyDown);
     this.addEventListener("keydown", this.handleOwnedKeyDown);
-    this.addEventListener("click", this.handleRowClick);
     this.addEventListener("click", this.handleEntryClick);
     this.addEventListener("pointerover", this.handleEntryHover);
     this._owned = null;
@@ -825,20 +824,6 @@ class SfContextMenu extends ContextMenuElement {
       return this.chooseOptionAt(row.dataset.sfEntry, entry, (at + 1) % options.length);
     }
     return false;
-  }
-
-  // A row is a label around its text and its mark. When the mark is a
-  // form-associated host (sf-radio), the label's activation clicks the host
-  // itself -- the first labelable element in the row -- and the radio inside
-  // it stayed as it was: a press on «Карточки» chose nothing (R193, DP-2,
-  // measured on the docs example). The host's own press is passed on to its
-  // control. A press on the control itself reaches it as before.
-  handleRowClick(event) {
-    const host = event.target;
-    if (!host?.constructor?.formAssociated || !host.closest?.(".sf-context-menu-row") || !this.contains(host)) return;
-    const control = host.querySelector('input:not([type="hidden"]), select, textarea, button');
-    if (!control || control.matches(":disabled") || control.closest(".sf-context-menu-row") !== host.closest(".sf-context-menu-row")) return;
-    control.click();
   }
 
   handleEntryClick(event) {
