@@ -1,6 +1,8 @@
 // SIMAI Framework
 // https://simai.io
 
+@use "sass:map";
+
 // SIZE
 
 // One physical CSS pixel for technical hairlines and closed media-query ranges.
@@ -128,3 +130,55 @@ $size-array: (
                 9: 152rem,      // 2432px
 	),
 ) !default;
+
+// Small steps (owner decision C132, 2026-11-13; research ui-control
+// control/research/2026-11-13-small-ladder.md, variant В). Below the 24 of the
+// main ladder a part takes one of five small steps, 4 · 6 · 8 · 12 · 16, each
+// a step of the size scale above. Nothing is drawn below 4, and 4 is only for
+// ticks and separators: a coloured mark is never under 6. The steps are the
+// same on a desktop, on a phone and in a compact region.
+//
+// Names (C132 #q-names, owner 2026-11-13): 16 is the main ladder's step 1/4
+// (avatar 1/4 is 16); 4, 6, 8 and 12 have no public name -- a component
+// derives them from its host's step. The steps are keyed here by their size at
+// 16px rem and are not CSS variables; the tables below are emitted as internal
+// custom properties only (--sf-mark--*, an internal block: they may change in
+// any release and are not in core/contracts/public-variables.v1.json).
+$small-steps: (
+	4: a4,
+	6: a6,
+	8: a8,
+	12: b2,
+	16: b6,
+) !default;
+
+// What each part takes by the step of its host (the component it sits on or
+// in), one table for every component. The author sets only the host's size.
+//   point -- the status point on an avatar and the «something new» dot on an
+//            avatar, an icon button or an anchor (C132 #q-point: one table);
+//   count -- a count on a host of 1, 2 or 3 (C132 #q-count: 16 everywhere;
+//            hosts 1/4 to 1/2 show the point only);
+//   cross -- the close cross of a tag where its own rule (C76) would draw a
+//            size that is not a step: 14 at size 2 becomes 12 (C132 #q-icons);
+//   dot   -- a dot in text, a tag or a list row.
+$small-step-roles: (
+	point: ('1/4': 6, '1/3': 6, '1/2': 8, '1': 12, '2': 12, '3': 16),
+	count: ('1': 16, '2': 16, '3': 16),
+	cross: ('2': 12),
+	dot:   ('1/3': 6, '1/2': 6, '1': 8, '2': 8, '3': 12),
+) !default;
+
+// Ticks (slider ticks, separators): the floor.
+$small-step-tick: 4 !default;
+
+// The surface ring around a point is drawn outside its coloured disc, so the
+// coloured diameter is the step (C132 #q-micro). It is a line, not a step
+// (C18 lists 1-2 px lines): 1 px on the smallest hosts, 2 px from 1/2 on.
+$small-step-ring: ('1/4': a1, '1/3': a1, '1/2': a2, '1': a2, '2': a2, '3': a2) !default;
+
+// A small step by its size in px at 16px rem: small-step(6) is var(--sf-a6).
+// For a part whose size is the step itself, not a role of a host (sf-dot's
+// own sizes, avatar 1/4).
+@function small-step($px) {
+	@return var(--sf-#{map.get($small-steps, $px)});
+}

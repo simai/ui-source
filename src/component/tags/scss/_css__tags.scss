@@ -89,6 +89,15 @@
     background-color: var(--sf-dot-item--background-color);
   }
 
+  /* The dot of a status tag is the dot of the tag's step in core's small-step
+     table (owner decision C132, 2026-11-13): 6 at 1/3 and 1/2, 8 at 1 and 2,
+     12 at 3. It was sf-dot's 1/3 and 1/2, 4 and 6. */
+  .sf-tag.sf-tag--size-1\/3 .sf-dot .sf-dot-item { --sf-dot-item--size: var(--sf-mark--dot-1\/3); }
+  .sf-tag.sf-tag--size-1\/2 .sf-dot .sf-dot-item { --sf-dot-item--size: var(--sf-mark--dot-1\/2); }
+  .sf-tag.sf-tag--size-1 .sf-dot .sf-dot-item { --sf-dot-item--size: var(--sf-mark--dot-1); }
+  .sf-tag.sf-tag--size-2 .sf-dot .sf-dot-item { --sf-dot-item--size: var(--sf-mark--dot-2); }
+  .sf-tag.sf-tag--size-3 .sf-dot .sf-dot-item { --sf-dot-item--size: var(--sf-mark--dot-3); }
+
   .sf-tag .sf-icon {
     color: var(--sf-icon--color, var(--sf-on-surface-variant));
     font-size: var(--sf-icon--font-size);
@@ -596,7 +605,9 @@
     --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-default));
     --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-ui-2--space-x));
     --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-ui-2--space-x));
-    --sf-tag--close-size: var(--sf-text-size-1\/2);
+    /* 14 is not a small step (owner decision C132 #q-icons): the cross at
+       size 2 is 12, on every screen. */
+    --sf-tag--close-size: var(--sf-mark--cross-2);
   }
 
   .sf-tag.sf-tag--size-2 .sf-tag-color-icon {

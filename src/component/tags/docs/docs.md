@@ -25,6 +25,9 @@ A picture before the label is the label's line high. On another control's text
 line (`sf-tag--inline`, `line` on `sf-tag`) an avatar is that line, as the remove
 button is, so a chip in a field and the field's list rows show one avatar step.
 
+The small parts take the small steps of the tag's size (owner decision C132):
+the remove cross at size 2 is 12 px (never 14); the status dot is 6 px at 1/3 and 1/2, 8 px at 1 and 2 and 12 px at 3.
+
 ## Semantic ownership
 
 - static labels and statuses use a neutral container without an action role or

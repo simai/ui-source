@@ -43,7 +43,9 @@ test('sf-tag draws its remove cross from the cross ladder, plain (C14)', async (
   for (const [size, step] of [['1\\/3', '1\\/4'], ['1\\/2', '1\\/4'], ['1', '1\\/3'], ['2', '1\\/2'], ['3', '1']]) {
     const start = tags.indexOf(`.sf-tag.sf-tag--size-${size} {\n    --sf-tag--font-size:`);
     assert.ok(start >= 0, size);
-    assert.ok(tags.slice(start, tags.indexOf('}', start)).includes(`--sf-tag--close-size: var(--sf-text-size-${step});`), size);
+    // Size 2 takes the small step 12 (C132 #q-icons: no 14 in small parts).
+    const want = size === '2' ? 'var(--sf-mark--cross-2)' : `var(--sf-text-size-${step})`;
+    assert.ok(tags.slice(start, tags.indexOf('}', start)).includes(`--sf-tag--close-size: ${want};`), size);
   }
   assert.doesNotMatch(tags, /\* 0\.7\)/u, 'no cross scaled from the label');
   const css = await read('smart/tag/js/templates/default.css');

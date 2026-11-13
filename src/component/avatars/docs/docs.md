@@ -9,11 +9,16 @@ a real destination or action.
 
 - content: image (`.sf-avatar-image`), initials (`.sf-avatar--text`) or
   placeholder (`.sf-avatar--placeholder`);
-- size: `1/4`, `1/3`, `1/2`, `1`, `2` or `3`;
+- size: `1/4`, `1/3`, `1/2`, `1`, `2` or `3`; 1/4 is 16 px on every screen
+  (owner decision C132);
 - shape: circular by default or `.sf-avatar--square` with the UI radius;
 - composition: `.sf-avatar-label-group`, `.sf-avatar-group` and
   `.sf-avatar-card`;
 - state: online/offline indicator and company/verification badge. The
+  indicator's coloured disc is the small step of the avatar's size, 6 / 6 / 8 /
+  12 / 12 / 16 px at 1/4 to 3, the same as the anchored badge's dot, and its
+  ring of the place colour is drawn outside the disc (1 px at 1/4 and 1/3,
+  2 px from 1/2 on; owner decision C132). The
   offline dot is the dim ink of the place the avatar stands on
   (`--sf-on-surface-variant`), at least 3:1 against the place and the avatar
   (since 2026-11-11; the disabled ink it had before was under 3:1). The dot

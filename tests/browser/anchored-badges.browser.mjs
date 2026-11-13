@@ -36,13 +36,14 @@ const SIZES = ['1/3', '1/2', '1', '2', '3'];
 const SHAPES = ['round', 'square', 'rounded'];
 const KINDS = ['avatar', 'icon', 'icon-button'];
 // The documented size table, in px at 1rem = 16px: the count's height on 1, 2
-// and 3, the dot's size on every step, the ring.
+// and 3, the dot's size on every step, the ring. Core's small steps (owner
+// decision C132): the count is 16 on every step, the dot is the step's point.
 const TABLE = {
   '1/3': {count: null, dot: 6, ring: 1},
   '1/2': {count: null, dot: 8, ring: 2},
-  1: {count: 16, dot: 10, ring: 2},
-  2: {count: 20, dot: 12, ring: 2},
-  3: {count: 24, dot: 14, ring: 2},
+  1: {count: 16, dot: 12, ring: 2},
+  2: {count: 16, dot: 12, ring: 2},
+  3: {count: 16, dot: 16, ring: 2},
 };
 const ICON_SIZE = {'1/3': '1', '1/2': '2', 1: '3', 2: '5', 3: '6'};
 

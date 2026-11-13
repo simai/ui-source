@@ -1,7 +1,9 @@
+@use '../../../core/scss/vars/sf_var__size' as size;
+
 @layer sf.components {
   .sf-dot {
     --sf-dot-item--background-color: var(--sf-primary);
-    --sf-dot-item--size: var(--sf-a8);
+    --sf-dot-item--size: #{size.small-step(8)};
     display: inline-flex;
     flex: none;
     align-items: center;
@@ -26,20 +28,23 @@
     inline-size: var(--sf-dot-item--width, var(--sf-dot-item--size));
   }
 
+  /* The sizes are small steps (owner decision C132, 2026-11-13): 6 / 6 / 8 /
+     12 at 1/3, 1/2, 1 and 2 (were 4 / 6 / 8 / 10). A coloured dot is never
+     under 6; 4 is left to ticks and separators. */
   .sf-dot.sf-dot--size-1 .sf-dot-item {
-    --sf-dot-item--size: var(--sf-a8);
+    --sf-dot-item--size: #{size.small-step(8)};
   }
 
   .sf-dot.sf-dot--size-2 .sf-dot-item {
-    --sf-dot-item--size: var(--sf-b0);
+    --sf-dot-item--size: #{size.small-step(12)};
   }
 
   .sf-dot.sf-dot--size-1\/3 .sf-dot-item {
-    --sf-dot-item--size: var(--sf-a4);
+    --sf-dot-item--size: #{size.small-step(6)};
   }
 
   .sf-dot.sf-dot--size-1\/2 .sf-dot-item {
-    --sf-dot-item--size: var(--sf-a6);
+    --sf-dot-item--size: #{size.small-step(6)};
   }
 
   .sf-dot.sf-dot--primary {
