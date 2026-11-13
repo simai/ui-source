@@ -174,8 +174,8 @@
         "minimizable": true
       },
       "first-paint": {
-        "max-bytes": 13312,
-        "why": "a running import: the title and badge, the overall bar with its figures and time, the counts line, the steps with their own figures and the actions all print before any code, so the card keeps its height while the job is followed"
+        "max-bytes": 14336,
+        "why": "a running import: the title and badge, the overall bar with its figures and time, the counts line, the steps with their own figures and the actions all print before any code, so the card keeps its height while the job is followed; the derived skeleton of its late data (a bar around every text) is the larger file of the two."
       }
     },
     {
@@ -292,8 +292,8 @@
         "finished-at": "2026-10-27T12:00:00+03:00"
       },
       "first-paint": {
-        "max-bytes": 11264,
-        "why": "a summary with errors: the result, the counts line, the first five errors, the steps and Retry failed print as the page reads them, so the report stands complete without script"
+        "max-bytes": 12288,
+        "why": "a summary with errors: the result, the counts line, the first five errors, the steps and Retry failed print as the page reads them, so the report stands complete without script; the derived skeleton of its late data (a bar around every text) is the larger file of the two."
       }
     },
     {
