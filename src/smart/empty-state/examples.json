@@ -104,6 +104,20 @@
       }
     },
     {
+      "name": "processing-share",
+      "title": "Готовится, доля известна",
+      "settings": {
+        "kind": "processing",
+        "value": 40,
+        "heading": "Расшифровка готовится",
+        "text": "Пришлём письмо, когда она будет готова — страницу можно закрыть."
+      },
+      "expect": {
+        "name": "Расшифровка готовится",
+        "role": "status"
+      }
+    },
+    {
       "name": "first-use",
       "title": "Первый раз",
       "settings": {
@@ -157,6 +171,7 @@
           "  <sf-empty-state id=\"e5\" kind=\"processing\" heading=\"Расшифровка готовится\"></sf-empty-state>",
           "  <sf-empty-state id=\"e6\" kind=\"first-use\" icon=\"widgets\"></sf-empty-state>",
           "  <sf-empty-state id=\"e7\" kind=\"offline\"></sf-empty-state>",
+          "  <sf-empty-state id=\"e8\" kind=\"processing\" size=\"2\" value=\"40\" heading=\"Расшифровка готовится\"></sf-empty-state>",
           "</main>"
         ]
       },
@@ -300,6 +315,27 @@
                   }
                 ]
               }
+            }
+          ]
+        },
+        {
+          "id": "p9-processing-share",
+          "title": "processing with value: an sf-progress-ring of the circle's size step (3 at size 2) is the circle, its box the circle's, the percentage in it, a progressbar named «Готово» with the share; a new value moves the ring only",
+          "covers": "settings.value, accessibility (processing ring)",
+          "steps": [
+            {
+              "wait": 400,
+              "check": "(() => { const r = document.querySelector('#e8 .sf-empty-state'); const c = r.querySelector('.sf-featured-icon.sf-featured-icon--neutral.sf-featured-icon--soft.sf-empty-state-icon--ring'); const ring = c && c.querySelector('sf-progress-ring'); const box = ring && ring.querySelector('.sf-progress-ring'); const bar = box && box.querySelector('.sf-progress-ring-indicator'); if (!bar) return false; const a = c.getBoundingClientRect(); const b = box.getBoundingClientRect(); return r.getAttribute('role') === 'status' && !c.hasAttribute('aria-hidden') && ring.getAttribute('size') === '3' && !c.querySelector('sf-spinner') && Math.abs(a.width - b.width) < 0.5 && Math.abs(a.height - b.height) < 0.5 && bar.getAttribute('role') === 'progressbar' && bar.getAttribute('aria-label') === 'Готово' && bar.getAttribute('aria-valuenow') === '40' && box.querySelector('.sf-progress-ring-content').textContent.trim() === '40%'; })()"
+            },
+            {
+              "script": "(document.getElementById('e8').value = 72.4, true)",
+              "wait": 400,
+              "check": "document.querySelector('#e8 .sf-progress-ring-indicator').getAttribute('aria-valuenow') === '72' && document.querySelector('#e8 .sf-empty-state-title').textContent.trim() === 'Расшифровка готовится'"
+            },
+            {
+              "script": "(document.getElementById('e8').value = null, true)",
+              "wait": 400,
+              "check": "!!document.querySelector('#e8 sf-spinner') && !document.querySelector('#e8 sf-progress-ring')"
             }
           ]
         }

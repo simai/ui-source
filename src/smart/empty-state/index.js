@@ -30,7 +30,8 @@ const EmptyStateElement = elementFromManifest(manifest, {
 // primary role; nothing found is search_off (filter_alt_off by filters, passed
 // as the icon); a problem is its own glyph in its tone -- error in the error
 // role, lock and cloud_off in the warning role. processing draws a spinner in
-// the same circle instead of a glyph.
+// the same circle instead of a glyph, or with a known share (value) an
+// sf-progress-ring of the circle's size with the percentage.
 const ICONS = {
   'no-data': 'inbox',
   'first-use': 'inbox',
@@ -134,6 +135,15 @@ class SfEmptyState extends EmptyStateElement {
     return [];
   }
 
+  // The share done of a processing job, a whole per cent 0..100, or null
+  // while it is unknown (no value): then the spinner turns instead.
+  share() {
+    const raw = this.value;
+    if (raw === null || raw === undefined || raw === '') return null;
+    const number = Number(raw);
+    return Number.isFinite(number) ? Math.round(Math.max(0, Math.min(100, number))) : null;
+  }
+
   act(id, more = {}) {
     this.sfEmit('action', {id: String(id), ...more});
   }
@@ -148,6 +158,9 @@ class SfEmptyState extends EmptyStateElement {
       headingLevel: this.headingLevel,
       shownIcon: kind === 'processing' ? '' : (this.icon || ICONS[kind] || ICONS['no-data']),
       processing: kind === 'processing',
+      // processing with a known share (value 0..100): the ring in the circle.
+      share: kind === 'processing' ? this.share() : null,
+      shareLabel: this.words('processing-share'),
       tone: TONES[kind] ?? 'neutral',
       shownTitle: this.heading || this.words(`${kind}-title`),
       shownText: this.text || this.words(`${kind}-text`),

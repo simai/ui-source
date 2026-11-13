@@ -2,7 +2,7 @@
   "$comment": "The source of sf-empty-state's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/empty-state (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.empty-state",
   "tag": "sf-empty-state",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "kind": "leaf",
   "family": "state",
   "settings": {
@@ -18,7 +18,7 @@
         "processing"
       ],
       "default": "no-data",
-      "summary": "The reason, which picks the default icon, tone, title and text: first-use offers a primary «Создать» (id create), error and offline «Повторить» (id retry), offline also retries by itself when the network returns, and processing draws a spinner in the icon's circle for work that finishes without the person."
+      "summary": "The reason, which picks the default icon, tone, title and text: first-use offers a primary «Создать» (id create), error and offline «Повторить» (id retry), offline also retries by itself when the network returns, and processing draws a spinner in the icon's circle for work that finishes without the person, or with value a ring with the percentage."
     },
     "size": {
       "type": "enum",
@@ -39,6 +39,14 @@
     "heading": {
       "type": "string",
       "default": ""
+    },
+    "value": {
+      "type": "number",
+      "nullable": true,
+      "default": null,
+      "min": 0,
+      "max": 100,
+      "summary": "processing only: the share done in per cent, 0 to 100 (clamped, whole). Set, the circle is an sf-progress-ring with the percentage; unset, the spinner turns. The inline form keeps the spinner. Provisional name (C120 (2) names no attribute)."
     },
     "text": {
       "type": "string",
@@ -116,6 +124,10 @@
     {
       "name": "cl-spinner",
       "lazy": true
+    },
+    {
+      "name": "cl-progress-ring",
+      "lazy": true
     }
   ],
   "templates": {
@@ -147,7 +159,7 @@
     "keys": {
       "Tab": "reach"
     },
-    "$comment": "live auto: nothing-found, error, offline and processing are a polite status, the others say nothing; live alert: role alert (an error the person caused); live off: no role, the host announces. The name is the heading, the kind's words of the language file when unset; it is a real heading at heading-level in the block form, none in the inline form. The spinner of processing has an empty label and is hidden, the status says the heading and the text. Enter and Space belong to the action buttons (role button), not to the empty state."
+    "$comment": "live auto: nothing-found, error, offline and processing are a polite status, the others say nothing; live alert: role alert (an error the person caused); live off: no role, the host announces. The name is the heading, the kind's words of the language file when unset; it is a real heading at heading-level in the block form, none in the inline form. The spinner of processing has an empty label and is hidden, the status says the heading and the text. With value the ring of processing is a progressbar named by the word processing-share («Готово») with aria-valuenow the share: the status says it with the heading when it appears; a later value moves aria-valuenow only, so the region does not speak again, and the visible percentage is aria-hidden (the ring's own rule). Enter and Space belong to the action buttons (role button), not to the empty state."
   },
   "css-variables": {
     "--sf-empty-state-max-inline-size": {
@@ -231,7 +243,8 @@
     "version 1.1.9: the sf-button and sf-button-icon it draws are asked for their current names (appearance ghost for link, status danger for error; actions block, decisions C13 and C15), so the template uses no dated alias; nothing it draws changes.",
     "version 1.1.10 (2026-11-09): the default (size 1) title reads the heading-4 role, which holds rung 2 since the C21 heading ladder (tokens.typography: heading-5 moved to rung 1); the title stays at rung 2, one above the size-1-2 title and one below size 2, as before the ladder. Settings, values and events unchanged.",
     "version 1.1.11 (2026-11-11, owner decision C44): the size 2 title reads the heading-3 step, whose size is that rung, so it keeps its size in a compact region; nothing else changes. Settings, values, events and keys unchanged.",
-    "version 1.3.0 (2026-11-13, owner decision C120, R208): three reasons. processing -- work that finishes without the person (a transcription, a report): an sf-spinner in the same soft neutral circle at the glyph's size and ink, a polite status, the title «Готовится» and a promise, no action. first-use -- the section's icon in the primary role and a primary «Создать» (id create) unless the host gives actions or the actions slot. offline -- cloud_off in the warning role, «Повторить» (id retry), and action {id: retry, auto: true} sent when the window's online event fires (the host loads; the element makes no request). The icon rule: icon is the section's icon for no-data and first-use (inbox without one); nothing-found search_off (filter_alt_off by filters, passed as icon); error in the error role; lock and cloud_off in the warning role. The glyph of the grey circle is on-surface-variant, set at .sf-featured-icon--neutral (component.featured-icon 1.1.3). The expressive setting of 1.2.0 on the integration is kept apart and merges beside this."
+    "version 1.3.0 (2026-11-13, owner decision C120, R208): three reasons. processing -- work that finishes without the person (a transcription, a report): an sf-spinner in the same soft neutral circle at the glyph's size and ink, a polite status, the title «Готовится» and a promise, no action. first-use -- the section's icon in the primary role and a primary «Создать» (id create) unless the host gives actions or the actions slot. offline -- cloud_off in the warning role, «Повторить» (id retry), and action {id: retry, auto: true} sent when the window's online event fires (the host loads; the element makes no request). The icon rule: icon is the section's icon for no-data and first-use (inbox without one); nothing-found search_off (filter_alt_off by filters, passed as icon); error in the error role; lock and cloud_off in the warning role. The glyph of the grey circle is on-surface-variant, set at .sf-featured-icon--neutral (component.featured-icon 1.1.3). The expressive setting of 1.2.0 on the integration is kept apart and merges beside this.",
+    "version 1.4.0 (2026-11-13, owner decision C120 (2), #q-percent, gallery #all agreed): processing with a known share. The setting value (number 0..100, nullable; provisional name, the decision names none) turns the spinner into an sf-progress-ring in the same circle: the ring's size step is the featured icon's (1, 2, 3 at 1/2, 1, 2; smart.progress-ring 1.1.0 adds 3, the 56 px circle of a page), its box is the circle's box (the circle drops its padding), the track is the circle's fill and the arc and the percentage the glyph's ink (on-surface-variant on the grey circle), given through the ring's internal roles, no public variable set. The ring is a progressbar named «Готово» (lang processing-share); the visible percentage stays aria-hidden. Value is clamped to 0..100 and rounded to a whole per cent. The inline form keeps the spinner (no circle there). Relation cl-progress-ring (lazy)."
   ],
   "x-registry": {
     "capabilities": [
@@ -351,7 +364,7 @@
         "Enter",
         "Space"
       ],
-      "focus": "The block title is a heading at heading-level; the inline form has no heading. With live=auto nothing-found, error, offline and processing are announced politely (role=status), the others are not; live=alert makes it an alert, live=off silent. The icon and the processing spinner are decorative; the actions are ordinary buttons in the tab order. Inside a listbox or menu, place it outside the list element so it is never an item."
+      "focus": "The block title is a heading at heading-level; the inline form has no heading. With live=auto nothing-found, error, offline and processing are announced politely (role=status), the others are not; live=alert makes it an alert, live=off silent. The icon and the processing spinner are decorative; the processing ring (value set) is a progressbar named «Готово» with the share as its value; the actions are ordinary buttons in the tab order. Inside a listbox or menu, place it outside the list element so it is never an item."
     }
   }
 }

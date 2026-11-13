@@ -21,9 +21,11 @@ page's, which passes `status`.
 - `status="neutral|info|success|warning|error"` — the colour of the filled
   part, the same words and role tokens as sf-progress-bar; never inferred
   from the value.
-- `size="1/2|1|2"` — the control ladder: the ring is the box of an
+- `size="1/2|1|2|3"` — the control ladder: the ring is the box of an
   sf-icon-button or sf-avatar of the same size (36 px at 1 on a narrow
-  screen, 40 px on a wide one).
+  screen, 40 px on a wide one); 3 is the box of a featured icon of size 3,
+  the circle of a page's empty state (56 px on a wide screen), where
+  sf-empty-state `kind="processing"` with a `value` draws it.
 - `indeterminate` — the value is unknown: the spinner's arc goes round the
   ring and no value is said.
 - `meter` — the ring shows an amount within a known range (a quota used), not

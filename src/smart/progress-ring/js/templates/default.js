@@ -1,6 +1,6 @@
 import { html, nothing } from 'lit';
 
-const SIZES = ['1/2', '1', '2'];
+const SIZES = ['1/2', '1', '2', '3'];
 const STATUSES = ['neutral', 'info', 'success', 'warning', 'error'];
 
 // A number from 0 to 100; anything else reads 0.

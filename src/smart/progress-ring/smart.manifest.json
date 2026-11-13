@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-ring",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "title": "Progress Ring",
   "summary": "A value from 0 to 100, or an unknown one, drawn as a ring on the control ladder, with the percentage or a picture in the middle.",
   "kind": "smart",
@@ -49,11 +49,12 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "The control ladder: at each step the ring is the box of an sf-icon-button or an sf-avatar of the same size.",
+        "description": "The control ladder: at each step the ring is the box of an sf-icon-button or an sf-avatar of the same size; 3 is the box of a featured icon of size 3, the circle of a page's empty state.",
         "enum": [
           "1/2",
           "1",
-          "2"
+          "2",
+          "3"
         ]
       },
       "value": {
@@ -249,7 +250,7 @@
       },
       {
         "path": "src/smart/progress-ring/js/templates/default.js",
-        "sha256": "36110392a5b0b4cebb011ac46bc6641ae6dd6e01f09c476bf3e20b368775fa41"
+        "sha256": "cffbedc881b867d887c9e066eeea9e3db04c882731fad4e446b25e88bdaa9f87"
       },
       {
         "path": "src/smart/progress-ring/rule.js",
@@ -257,7 +258,7 @@
       },
       {
         "path": "src/smart/progress-ring/docs.md",
-        "sha256": "058bb0cfcdffc91502d37695fa3b8d664019117ffd48cb242ebbd24713538f3e"
+        "sha256": "8f65482d8896ce534a02d57ce243a3a6896ab9180b501f0c89389bc5fb875d59"
       }
     ],
     "generated_runtime": []

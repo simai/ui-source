@@ -12,6 +12,7 @@
       "  <sf-progress-ring id=\"r3\" label=\"Подготовка\" indeterminate></sf-progress-ring>",
       "  <sf-progress-ring id=\"r4\" aria-label=\"Копирование\" value=\"40\" size=\"2\"></sf-progress-ring>",
       "  <sf-progress-ring id=\"r-var\" label=\"Своя заливка\" value=\"50\"></sf-progress-ring>",
+      "  <sf-progress-ring id=\"r6\" label=\"Расшифровка\" value=\"100\" size=\"3\" show-text></sf-progress-ring>",
       "</main>"
     ]
   },
@@ -133,6 +134,16 @@
       "steps": [
         {
           "check": "(() => { const root = document.querySelector('#r-var .sf-progress-ring'); const s = getComputedStyle(root); return s.getPropertyValue('--sf-progress-ring--fill').trim() === 'rgb(1, 2, 3)' && s.getPropertyValue('--sf-progress-ring--line-width').trim() === '0px' && s.getPropertyValue('--sf-progress-ring--gap').trim() === '0px'; })()"
+        }
+      ]
+    },
+    {
+      "id": "r6-size-3",
+      "title": "size 3 is the control height of 3 (the featured icon of size 3), and «100%» fits inside the line",
+      "covers": "settings.size (3)",
+      "steps": [
+        {
+          "check": "(() => { const root = document.querySelector('#r6 .sf-progress-ring'); const c = document.querySelector('#r6 .sf-progress-ring-content'); const probe = document.createElement('div'); probe.style.width = 'var(--sf-ui-3--control-height)'; document.body.append(probe); const want = probe.getBoundingClientRect().width; probe.remove(); return root.classList.contains('sf-progress-ring--size-3') && root.getBoundingClientRect().width === want && root.getBoundingClientRect().height === want && c.textContent.trim() === '100%' && c.scrollWidth <= c.clientWidth; })()"
         }
       ]
     }

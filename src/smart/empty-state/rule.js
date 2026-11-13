@@ -10,5 +10,6 @@ SF.RuleLoader['cl-empty-state'] = {
     { name: 'cl-button' },
     { name: 'cl-icon' },
     { name: 'cl-spinner', lazy: true },
+    { name: 'cl-progress-ring', lazy: true },
   ],
 };

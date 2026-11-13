@@ -18,9 +18,11 @@ name in step; a page that prints the class markup itself keeps them in step.
 </div>
 ```
 
-- `.sf-progress-ring` is the box. `sf-progress-ring--size-1/2|1|2` puts it on
-  the control ladder: the box is `--sf-ui-<size>--control-height`, the box of
-  an icon button or an avatar of the same size.
+- `.sf-progress-ring` is the box. `sf-progress-ring--size-1/2|1|2|3` puts it
+  on the control ladder: the box is `--sf-ui-<size>--control-height`, the box of
+  an icon button or an avatar of the same size. Size 3 is the box of a featured
+  icon of size 3 (the circle of a page's empty state, 56 px on a wide screen),
+  with the percentage at the text step 1/2.
 - `.sf-progress-ring-indicator` is the ring: the track and the filled part,
   one line 2 px wide inside the box. It carries `role="progressbar"` (a task)
   or `role="meter"` (an amount in a known range, such as a quota) and the

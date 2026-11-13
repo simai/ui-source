@@ -135,6 +135,15 @@
     --sf-progress-ring--font-size: var(--sf-text-size-1\/3);
   }
 
+  /* Size 3 (owner decision C120, 2026-11-13): the box of a featured icon of
+     size 3, the circle of a page's empty state (56 px on a wide screen), so
+     the ring of a job with a known share stands in that circle. The line and
+     the gap stay 2 px; the percentage takes the next text step. */
+  .sf-progress-ring.sf-progress-ring--size-3 {
+    --sf-progress-ring--step-size: var(--sf-ui-3--control-height);
+    --sf-progress-ring--font-size: var(--sf-text-size-1\/2);
+  }
+
   /* Indeterminate: the spinner's arc -- a fixed 30% of the ring going round
      at one turn a second -- on the ring's own track. */
   .sf-progress-ring.sf-progress-ring--indeterminate .sf-progress-ring-indicator {
