@@ -20,10 +20,11 @@ name in step; a page that prints the class markup itself keeps them in step.
 
 - `.sf-progress-ring` is the box. `sf-progress-ring--size-1/4|1/3|1/2|1|2|3`
   puts it on the avatar's ladder (1.3.0, owner decision C131): the box is the
-  sf-avatar box of the same size, 20 / 24 / 32 / 40 / 48 / 56 px on a wide
-  screen, 20 / 20 / 28 / 36 / 44 / 52 on a phone, one step down in a compact
-  region. Size 3 is also the circle of a page's empty state. The percentage is
-  12 / 14 / 16 px at 1 / 2 / 3 and is not shown below 1.
+  sf-avatar box of the same size, 16 / 24 / 32 / 40 / 48 / 56 px on a wide
+  screen, 16 / 20 / 28 / 36 / 44 / 52 on a phone, 16 / 20 / 24 / 32 / 40 / 48
+  in a compact region (1.4.0: 1/4 is 16 on every screen, as sf-avatar 1/4,
+  owner decision C132). Size 3 is also the circle of a page's empty state. The
+  percentage is 12 / 14 / 16 px at 1 / 2 / 3 and is not shown below 1.
 - `.sf-progress-ring-indicator` is the ring: the track and the filled part,
   one line 2 px wide inside the box. It carries `role="progressbar"` (a task)
   or `role="meter"` (an amount in a known range, such as a quota) and the
@@ -32,7 +33,13 @@ name in step; a page that prints the class markup itself keeps them in step.
   gap on every side. It holds the percentage (aria-hidden: the ring already
   says the value) or a picture. An `.sf-avatar` in it is fitted to it, so the
   gap between the picture and the line is 2 px at every size; an avatar a step
-  smaller than the ring is that box already at sizes 1 and 2.
+  smaller than the ring is that box already at sizes 1 and 2. A ring wraps the
+  avatar one step down from size 1/3 up on a wide screen (an avatar of 1/4,
+  16 px, in a ring of 1/3, 24 px) and from 1/2 up on a phone and in a compact
+  region (a ring of 1/3 is 20 px there, its middle 12, below the smallest
+  avatar). At 1/4 there is no avatar step below 16: the middle (8 px) holds
+  neither an avatar nor the percentage, so a ring of 1/4 stands beside the
+  avatar, not around it.
 
 ## Status
 
