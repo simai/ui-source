@@ -2306,7 +2306,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/profile-picker/smart.manifest.json",
-      "manifest_sha256": "c299b623140fa8d0e01aeae54ff57f01c890fd4eb2cde1dd823d4943be1fefa1",
+      "manifest_sha256": "54f72df037e3f033836bc0d7b60eaca26e9c1592dfa97ad72265d6279fce3871",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
