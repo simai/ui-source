@@ -21,6 +21,8 @@ test('sf-progress-run: its own polite live region says the count, throttled, nev
   const source = code('src/smart/progress-run/index.js');
   assert.match(source, /export const ANNOUNCE_MS = 10000;/u);
   assert.match(source, /next !== this\._spoken && now - this\._spokenAt >= ANNOUNCE_MS/u);
+  // The wait counts from the render that drew the text, not from the context.
+  assert.match(source, /if \(this\._spokenDrawn\) \{\n\s*this\._spokenDrawn = false;\n\s*this\._spokenAt = Date\.now\(\);/u);
   assert.match(source, /if \(state !== 'running' \|\| view === 'row'\) \{/u);
   const template = code('src/smart/progress-run/js/templates/default.js');
   assert.match(template, /class="sf-progress-run-live sr-only" aria-live="polite" aria-atomic="true">\$\{context\.spoken\}/u);

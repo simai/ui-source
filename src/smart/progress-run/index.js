@@ -348,9 +348,13 @@ class SfProgressRun extends ProgressRunElement {
     this._seenEnd = 0;
     this._lastState = '';
     this._resumed = false;
-    // What the polite live region says now, and when it last changed.
+    // What the polite live region says now, and when that reached the page
+    // (stamped after the render that drew it: a render overtaken by the next
+    // one never drew its text, and a stamp taken before it let two changes
+    // land 9 s apart).
     this._spoken = '';
     this._spokenAt = 0;
+    this._spokenDrawn = false;
   }
 
   onConnected() {
@@ -590,6 +594,7 @@ class SfProgressRun extends ProgressRunElement {
     if (state !== 'running' || view === 'row') {
       this._spoken = '';
       this._spokenAt = 0;
+      this._spokenDrawn = false;
       return '';
     }
     const locale = this.locale;
@@ -606,9 +611,9 @@ class SfProgressRun extends ProgressRunElement {
       next = this.sfWord('announce-count', {vars: {value: formatNumber(value, locale), unit: forms ? ` ${pluralForm(forms, value, locale)}` : ''}});
     }
     if (!this._spokenAt) this._spokenAt = now;
-    else if (next !== this._spoken && now - this._spokenAt >= ANNOUNCE_MS) {
+    else if (!this._spokenDrawn && next !== this._spoken && now - this._spokenAt >= ANNOUNCE_MS) {
       this._spoken = next;
-      this._spokenAt = now;
+      this._spokenDrawn = true;
     }
     return this._spoken;
   }
@@ -815,6 +820,12 @@ class SfProgressRun extends ProgressRunElement {
 
   afterRender() {
     super.afterRender?.();
+    // The count the live region now holds reached the page: the next one waits
+    // ANNOUNCE_MS from here.
+    if (this._spokenDrawn) {
+      this._spokenDrawn = false;
+      this._spokenAt = Date.now();
+    }
     this.restoreFocus();
     this.syncTimer();
     const pane = this.querySelector('.sf-progress-run-output');
