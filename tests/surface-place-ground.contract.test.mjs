@@ -35,18 +35,21 @@ test('places outside the mixins declare the ground with their solid colour; glas
   assert.match(glass, /\.sf-surface-media \{[^}]*--sf-surface-place-ground: var\(--sf-black\);/u);
 });
 
-test('the status dot draws as before, over the ground', async () => {
+test('the status dot draws over the ground, its ring outside the disc (C132)', async () => {
   const dot = await read('src/component/avatars/scss/_css__avatar_online_indicator.scss');
   const base = dot.slice(dot.indexOf('.sf-online-indicator {'), dot.indexOf('}', dot.indexOf('.sf-online-indicator {')));
-  assert.match(base, /border-color: var\(--sf-surface-place, transparent\);/u);
+  // The ring is the place colour over the ground, drawn outside the coloured
+  // disc (C132: the coloured diameter is the step); no border eats the disc.
+  assert.match(base, /box-shadow: 0 0 0 var\(--sf-online-indicator--ring-width\) var\(--sf-surface-place, transparent\), 0 0 0 var\(--sf-online-indicator--ring-width\) var\(--sf-surface-place-ground, transparent\);/u);
+  assert.doesNotMatch(base, /border-[a-z-]*width/u);
   assert.match(base, /background-color: var\(--sf-surface-place-ground, transparent\);/u);
   assert.match(base, /background-image: linear-gradient\(var\(--sf-online-indicator--background-color\) 0 0\);/u);
   assert.doesNotMatch(base, /background-clip/u);
   // On a row with a fill the ring takes the row's fill over the place colour,
   // read only where the underlay is set (C43 D3 follow-up, 2026-11-11).
   assert.match(base, /--sf-online-indicator--ring-fill: color-mix\(in srgb, var\(--sf-surface-place-fill\) 100%, var\(--sf-surface-underlay\) 0%\);/u);
-  assert.match(base, /outline: var\(--sf-px\) solid var\(--sf-online-indicator--ring-fill, transparent\);/u);
-  assert.match(base, /outline-offset: calc\(-1 \* var\(--sf-px\)\);/u);
+  assert.match(base, /outline: var\(--sf-online-indicator--ring-width\) solid var\(--sf-online-indicator--ring-fill, transparent\);/u);
+  assert.match(base, /outline-offset: 0;/u);
   const offline = dot.slice(dot.indexOf('.sf-online-indicator--offline {'), dot.indexOf('}', dot.indexOf('.sf-online-indicator--offline {')));
   // Offline is the place's dim ink (defect fix 2026-11-11: the disabled ink
   // was under 3:1); the overlay stays a public layer, none by default.

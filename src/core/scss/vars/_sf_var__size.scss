@@ -1,6 +1,8 @@
 // SIMAI Framework
 // https://simai.io
 
+@use "sass:map";
+
 // SIZE
 
 // One physical CSS pixel for technical hairlines and closed media-query ranges.
@@ -128,3 +130,90 @@ $size-array: (
                 9: 152rem,      // 2432px
 	),
 ) !default;
+
+// Small steps (owner decision C132, 2026-11-13; research ui-control
+// control/research/2026-11-13-small-ladder.md, variant В). Below the 24 of the
+// main ladder a part takes one of five small steps, 4 · 6 · 8 · 12 · 16, each
+// a step of the size scale above. Nothing is drawn below 4, and 4 is only for
+// ticks and separators: a coloured mark is never under 6. The steps are the
+// same on a desktop, on a phone and in a compact region.
+//
+// Names (C132 #q-names, owner 2026-11-13): 16 is the main ladder's step 1/4
+// (avatar 1/4 is 16); 4, 6, 8 and 12 have no public name -- a component
+// derives them from its host's step. The steps are keyed here by their size at
+// 16px rem and are not CSS variables; the tables below are emitted as internal
+// custom properties only (--sf-micro--*, an internal block: they may change in
+// any release and are not in core/contracts/public-variables.v1.json).
+$small-steps: (
+	4: a4,
+	6: a6,
+	8: a8,
+	12: b2,
+	16: b6,
+) !default;
+
+// What each part takes by the step of its host (the component it sits on or
+// in), one table for every component. The author sets only the host's size.
+//   point -- the status point on an avatar and the «something new» dot on an
+//            avatar, an icon button or an anchor (C132 #q-point: one table);
+//   count -- a count on a host of 1, 2 or 3 (C132 #q-count: 16 everywhere;
+//            hosts 1/4 to 1/2 show the point only);
+//   cross -- the remove cross of a tag (and of a chip, which is a tag): half
+//            the tag's text line, rounded down to a small step. C76's
+//            calc(text-height / 2) gives 8 / 10 / 12 / 14 / 16 at 1/3 ... 3 on a
+//            desktop (14 for 3 in compact and on a phone); rounded down that is
+//            8 / 8 / 12 / 12 / 16, and 12 for 3 on the dense ladders (C132
+//            #q-icons; C132 is newer than C76's 10 at 1/2);
+//   badge -- the company and «verified» badge on an avatar: 8 on 1/4 and 1/3,
+//            12 on 1/2 and 1, 16 on 2 and 3 (it was a text size, 14 and 20 on
+//            a desktop);
+//   dot   -- a dot in text, a tag or a list row (a timeline step without an
+//            icon too).
+$small-step-roles: (
+	point: ('1/4': 6, '1/3': 6, '1/2': 8, '1': 12, '2': 12, '3': 16),
+	count: ('1': 16, '2': 16, '3': 16),
+	cross: ('1/3': 8, '1/2': 8, '1': 12, '2': 12, '3': 12),
+	badge: ('1/4': 8, '1/3': 8, '1/2': 12, '1': 12, '2': 16, '3': 16),
+	dot:   ('1/3': 6, '1/2': 6, '1': 8, '2': 8, '3': 12),
+) !default;
+
+// Where a host is one ladder step larger on a desktop at normal density than
+// on a phone or in a compact region, the role follows it. Only the cross of a
+// tag 3: its text line is 32 there (half: 16), 28 elsewhere (half 14 -> 12).
+// Emitted for (min-width: 60rem) outside data-sf-density="compact".
+$small-step-roles-desktop: (
+	cross: ('3': 16),
+) !default;
+
+// Ticks (slider ticks, separators): the floor.
+$small-step-tick: 4 !default;
+
+// The surface ring around a point is drawn outside its coloured disc, so the
+// coloured diameter is the step (C132 #q-micro). It is a line, not a step
+// (C18 lists 1-2 px lines): 1 px on the smallest hosts, 2 px from 1/2 on.
+$small-step-ring: ('1/4': a1, '1/3': a1, '1/2': a2, '1': a2, '2': a2, '3': a2) !default;
+
+// Outside the small steps (C132 #q-icons, C18): these parts below 24 belong
+// to the icon row and to the internals of controls, not to marks, and keep
+// their own sizes until the icon-row study:
+//   - the icon row (sf-icon): 14 at 1/2 and 20 at 2 (and 18 / 22 where a
+//     control sets its glyph from it);
+//   - the spinner: 20, 28, 36;
+//   - the checkbox: box 20 / 28, its check glyph 14 / 18 / 22;
+//   - the radio button: dot 10 / 14;
+//   - the slider: thumb inner 10 / 14;
+//   - the switch knob;
+//   - the cross of a close button (sf-close in sf-button-close, an icon
+//     button's close, alert, toast and the like): 14 / 16 / 18 / 20, the
+//     glyph of its icon-button step. A tag's remove cross is not one of these:
+//     it is a mark and takes the cross table above;
+//   - the «?» glyph of sf-help-mark (20 at 1/2): an icon.
+// Boxes of the main ladder (20 on a phone or in a compact region) are steps
+// of the main ladder, not small steps.
+
+// A small step by its size in px at 16px rem: small-step(6) is var(--sf-a6).
+// For a part whose size is the step itself, not a role of a host (sf-dot's
+// own sizes, avatar 1/4).
+@function small-step($px) {
+	@return var(--sf-#{map.get($small-steps, $px)});
+}

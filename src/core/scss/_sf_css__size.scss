@@ -1,5 +1,14 @@
+@use "sass:map";
+@use "sass:string";
 @use "vars/sf_var__size" as size;
 @use '../../utility/z-index/default/scss/sf_var__z_index' as zIndexVars;
+
+// "1/4" -> "1\/4" (a CSS name): the ladder names its steps with an escaped slash.
+@function str-replace-slash($name) {
+	$i: string.index($name, "/");
+	@if $i == null { @return $name; }
+	@return string.slice($name, 1, $i - 1) + "\\/" + string.slice($name, $i + 1);
+}
 
 :root {
 	// Zero Size
@@ -70,5 +79,44 @@
 		// the consequences, a field or a checkbox and two answers, 28rem;
 		// compact 26rem by the same rule.
 		--sf-popup-question-width: var(--sf-g4);
+	}
+}
+
+// The small steps by host step (owner decision C132; tables in
+// vars/_sf_var__size.scss). Internal names only (C132 #q-names: the steps
+// below 16 have no public name): --sf-micro--<role>-<host step>, plus
+// --sf-micro--tick. Not density's: the
+// steps below 24 are the same on every ladder.
+@layer sf.base {
+	:root {
+		@each $role, $table in size.$small-step-roles {
+			@each $host, $step in $table {
+				--sf-micro--#{$role}-#{str-replace-slash($host)}: #{size.small-step($step)};
+			}
+		}
+		@each $host, $width in size.$small-step-ring {
+			--sf-micro--ring-#{str-replace-slash($host)}: var(--sf-#{$width});
+		}
+		--sf-micro--tick: #{size.small-step(size.$small-step-tick)};
+	}
+	// The desktop at normal density: a host one step larger takes its role
+	// one small step larger (vars: $small-step-roles-desktop). A normal
+	// region inside a compact one takes it back.
+	@media (min-width: 60rem) {
+		:root:not([data-sf-density="compact"]),
+		[data-sf-density="normal"] {
+			@each $role, $table in size.$small-step-roles-desktop {
+				@each $host, $step in $table {
+					--sf-micro--#{$role}-#{str-replace-slash($host)}: #{size.small-step($step)};
+				}
+			}
+		}
+		[data-sf-density="compact"]:not(:root) {
+			@each $role, $table in size.$small-step-roles-desktop {
+				@each $host, $step in $table {
+					--sf-micro--#{$role}-#{str-replace-slash($host)}: #{size.small-step(map.get(map.get(size.$small-step-roles, $role), $host))};
+				}
+			}
+		}
 	}
 }

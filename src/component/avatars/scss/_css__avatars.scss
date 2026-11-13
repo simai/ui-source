@@ -1,4 +1,5 @@
 @use 'sass:list';
+@use '../../../core/scss/vars/sf_var__size' as size;
 @use '../../../core/scss/vars/sf_var__hue' as *;
 
 $sf-avatar-hue-classes: ();
@@ -169,19 +170,23 @@ $sf-avatar-hue-classes: ();
     --sf-avatar--width: calc(var(--sf-text-height-1\/3) + 2 * var(--sf-ui-1\/3--space-y-tightness-low));
   }
 
+  /* 1/4 is 16 on every screen (owner decision C132 #q-avatar): the small
+     step 16, the bottom of the main ladder. It was the text line of 1/2, 20
+     on a desktop and 16 on a phone. */
   .sf-avatar--size-1\/4 {
     --sf-avatar--font-size: var(--sf-text-size-1\/4);
-    --sf-avatar--height: var(--sf-icon-size-2);
+    --sf-avatar--height: #{size.small-step(16)};
     --sf-avatar--line-height: var(--sf-text-height-1\/4);
-    --sf-avatar--width: var(--sf-icon-size-2);
+    --sf-avatar--width: #{size.small-step(16)};
   }
 
   /* Compact moves every avatar one step down its own ladder (dispatcher call
      2026-11-12; density, C22): 20 / 24 / 32 / 40 / 48 / 56 become 16 / 20 /
-     24 / 32 / 40 / 48, no step skipped. 1/4 already did it through
-     --sf-icon-size-2; on a desktop 1/3 reads --sf-icon-size-3 (24, compact
-     20) and 1/2 the text line of 1/2 and --sf-space-1/2 (20 + 12, compact
-     16 + 8). Before, compact kept 1/4 at 20 and 1/3 at 24, and 1/2 read
+     24 / 32 / 40 / 48, no step skipped. 1/4 is 16 at every density since
+     C132 (above; group build 3: C132 wins over this ladder where they
+     disagree), so compact 1/4 and 1/3 are 16 and 20; on a desktop 1/3 reads
+     --sf-icon-size-3 (24, compact 20) and 1/2 the text line of 1/2 and
+     --sf-space-1/2 (20 + 12, compact 16 + 8). Before, compact kept 1/4 at 20 and 1/3 at 24, and 1/2 read
      its control height (28): the compact ladder stood 20 / 24 / 28. The steps are the
      region's tokens, so an explicit size and data-sf-density="normal" take
      the normal values back with them; the phone ladder (below 60rem) keeps

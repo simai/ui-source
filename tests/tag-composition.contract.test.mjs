@@ -10,18 +10,14 @@ const read = (path) => readFile(new URL(`../src/${path}`, import.meta.url), 'utf
    at sizes 2 and 3, a count at size 1/3 in size 1/2 text (the tag 28px tall),
    and a remove mark with no glyph when the close markup carried no size class.
    tests/browser/action-composition.cli.js measures the result. */
-// The mark is half the step's picture (C76: 8 / 10 / 12 / 14 at 1/3, 1/2, 1,
-// 2 on a desktop); size 3, which C76 does not name, keeps the ladder cross.
-const MARK = {'1\\/3': 'calc(var(--sf-text-height-1\\/3) / 2)', '1\\/2': 'calc(var(--sf-text-height-1\\/2) / 2)', '1': 'calc(var(--sf-text-height-1) / 2)', '2': 'calc(var(--sf-text-height-2) / 2)', '3': 'var(--sf-text-size-1)'};
 test('tag composition: label, count, picture and mark take the ladder', async () => {
   const css = await read('component/tags/scss/_css__tags.scss');
   for (const size of ['1\\/3', '1\\/2', '1', '2', '3']) {
     assert.ok(css.includes(`.sf-tag.sf-tag--size-${size} .sf-tag-container {\n  --sf-tag-container--padding-inline-start: var(--sf-ui-${size}--text-space-x);\n  --sf-tag-container--padding-inline-end: var(--sf-ui-${size}--text-space-x);`), `label ${size}`);
     assert.ok(css.includes(`.sf-tag.sf-tag--size-${size} .sf-tag-count {\n  --sf-tag-count--font-size: var(--sf-text-size-${size});\n  --sf-tag-count--line-height: var(--sf-text-height-${size});`), `count ${size}`);
     assert.ok(css.includes(`.sf-tag.sf-tag--size-${size} > .sf-icon,\n.sf-tag.sf-tag--size-${size} > sf-icon > .sf-icon {\n  --sf-icon--font-size: var(--sf-text-height-${size});`), `icon ${size}`);
-    // The mark is half the step's picture (C76; it was the ladder cross one
-    // step under the label, C14, R036).
-    assert.ok(css.includes(`--sf-tag--close-size: ${MARK[size]};`), `mark ${size}`);
+    // The mark is core's cross of the tag's step (C132 small steps).
+    assert.ok(css.includes(`--sf-tag--close-size: var(--sf-micro--cross-${size});`), `mark ${size}`);
   }
   assert.match(css, /\.sf-tag > \.sf-icon-button\.sf-icon-button--close > \.sf-close > \.sf-close-icon \{\s*--sf-close-icon--mask-image: url\(/);
   assert.match(css, /\.sf-tag > \.sf-icon-button\.sf-icon-button--close::after \{\s*content: "";\s*position: absolute;\s*inset: min\(calc\(var\(--sf-px\) \* 0\), calc\(\(100% - var\(--sf-c2\)\) \/ 2\)\)/);

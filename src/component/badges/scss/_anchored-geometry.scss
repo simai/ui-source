@@ -109,62 +109,60 @@ $diagonal: 0.29289; // 1 - 1/sqrt(2)
   --sf-badge--anchored-font-size: var(--sf-a0);
 }
 
-// The size table. Anchors of 1/3 and 1/2 -- rows, lists, lines -- carry a dot
-// only; 1, 2 and 3 carry a small, medium and large count. The dot grows with
-// the anchor too. The ring is a2 (a1 on the smallest anchor).
+// The size table (owner decision C132, 2026-11-13): the small steps of the
+// anchor's step, from the one table in core (--sf-micro--*, generated from
+// core/scss/vars/_sf_var__size.scss). Anchors of 1/4, 1/3 and 1/2 -- rows,
+// lists, lines -- carry the dot only; 1, 2 and 3 carry a count of 16 (C132
+// #q-count: the count no longer grows with the anchor). The dot is the
+// point of the anchor's step, the same as the avatar's status point (C132
+// #q-point). The ring is drawn outside, so the coloured diameter is the step.
 //
-//   anchor | count (height, figures, inline padding) | dot | ring
-//   1/3    | dot only                                 | a6  | a1
-//   1/2    | dot only                                 | a8  | a2
-//   1      | b6, --sf-text-size-1/4, a4               | b0  | a2
-//   2      | c0, --sf-text-size-1/3, a5               | b2  | a2
-//   3      | c2, --sf-text-size-1/2, a6               | b4  | a2
+//   anchor   | count (height, figures, inline padding) | dot (point) | ring
+//   1/4, 1/3 | dot only                                 | 6           | a1
+//   1/2      | dot only                                 | 8           | a2
+//   1        | 16, --sf-text-size-1/4, a4               | 12          | a2
+//   2        | 16, --sf-text-size-1/4, a4               | 12          | a2
+//   3        | 16, --sf-text-size-1/4, a4               | 16          | a2
+//
+// Before: dot 6 / 8 / 10 / 12 / 14 and count 16 / 20 / 24.
 @mixin step-1-3 {
-  --sf-badge--anchored-count: var(--sf-a6);
-  --sf-badge--anchored-dot: var(--sf-a6);
+  --sf-badge--anchored-count: var(--sf-micro--point-1\/3);
+  --sf-badge--anchored-dot: var(--sf-micro--point-1\/3);
   --sf-badge--anchored-font-size: var(--sf-a0);
   --sf-badge--anchored-padding: var(--sf-a0);
-  --sf-badge--ring-width: var(--sf-a1);
+  --sf-badge--ring-width: var(--sf-micro--ring-1\/3);
   @include dot;
 }
 
 @mixin step-1-2 {
-  --sf-badge--anchored-count: var(--sf-a8);
-  --sf-badge--anchored-dot: var(--sf-a8);
+  --sf-badge--anchored-count: var(--sf-micro--point-1\/2);
+  --sf-badge--anchored-dot: var(--sf-micro--point-1\/2);
   --sf-badge--anchored-font-size: var(--sf-a0);
   --sf-badge--anchored-padding: var(--sf-a0);
-  --sf-badge--ring-width: var(--sf-a2);
+  --sf-badge--ring-width: var(--sf-micro--ring-1\/2);
   @include dot;
 }
 
-@mixin step-1 {
-  --sf-badge--anchored-count: var(--sf-b6);
-  --sf-badge--anchored-dot: var(--sf-b0);
+@mixin count($step) {
+  --sf-badge--anchored-count: var(--sf-micro--count-#{$step});
+  --sf-badge--anchored-dot: var(--sf-micro--point-#{$step});
   --sf-badge--anchored-font-size: var(--sf-text-size-1\/4);
   --sf-badge--anchored-padding: var(--sf-a4);
-  --sf-badge--ring-width: var(--sf-a2);
+  --sf-badge--ring-width: var(--sf-micro--ring-#{$step});
   --sf-badge--anchored-size: var(--sf-badge--anchored-count);
   --sf-badge--anchored-max: none;
+}
+
+@mixin step-1 {
+  @include count(1);
 }
 
 @mixin step-2 {
-  --sf-badge--anchored-count: var(--sf-c0);
-  --sf-badge--anchored-dot: var(--sf-b2);
-  --sf-badge--anchored-font-size: var(--sf-text-size-1\/3);
-  --sf-badge--anchored-padding: var(--sf-a5);
-  --sf-badge--ring-width: var(--sf-a2);
-  --sf-badge--anchored-size: var(--sf-badge--anchored-count);
-  --sf-badge--anchored-max: none;
+  @include count(2);
 }
 
 @mixin step-3 {
-  --sf-badge--anchored-count: var(--sf-c2);
-  --sf-badge--anchored-dot: var(--sf-b4);
-  --sf-badge--anchored-font-size: var(--sf-text-size-1\/2);
-  --sf-badge--anchored-padding: var(--sf-a6);
-  --sf-badge--ring-width: var(--sf-a2);
-  --sf-badge--anchored-size: var(--sf-badge--anchored-count);
-  --sf-badge--anchored-max: none;
+  @include count(3);
 }
 
 // The hidden words that carry the phrase when no aria-label owns it.

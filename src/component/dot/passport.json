@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.dot",
   "kind": "component",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/dot/index.scss",
@@ -11,7 +11,7 @@
     "src/component/dot/scss/_css_dot.scss",
     "src/component/dot/scss/index.scss"
   ],
-  "content_sha256": "6f82883871a46892f738b7e07da6a987f7e96e3741d056d69e9371630af856cf",
+  "content_sha256": "debfdcf56bdf0eccaefec30ea04084d8abcc6c1a5c05e3ec84b97154aa94396d",
   "dependencies": [
     {
       "id": "tokens.colour",
@@ -20,6 +20,10 @@
     {
       "id": "tokens.radius",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.4.0"
     },
     {
       "id": "tokens.space",

@@ -36,8 +36,8 @@ sf-list-timeline {
   --sf-list-timeline--rail: var(--sf-ui-1\/2--control-height);
   --sf-list-timeline--control: var(--sf-ui-1--control-height);
   --sf-list-timeline--button: var(--sf-ui-1\/2--control-height);
-  /* The status dot: the dot component's size of the rung (.sf-dot size 1). */
-  --sf-list-timeline--dot: var(--sf-a8);
+  /* The status dot: core's dot table by the rung (C132): 8 at 1. */
+  --sf-list-timeline--dot: var(--sf-micro--dot-1);
   --sf-list-timeline--column-gap: var(--sf-space-1\/2);
   --sf-list-timeline--row-gap: var(--sf-list-timeline-gap, var(--sf-space-3));
   --sf-list-timeline--padding-inline: var(--sf-list-timeline-padding-inline, calc(var(--sf-px) * 0));
@@ -63,7 +63,7 @@ sf-list-timeline {
   --sf-list-timeline--rail: var(--sf-ui-1\/3--control-height);
   --sf-list-timeline--control: var(--sf-ui-1\/2--control-height);
   --sf-list-timeline--button: var(--sf-ui-1\/3--control-height);
-  --sf-list-timeline--dot: var(--sf-a6);
+  --sf-list-timeline--dot: var(--sf-micro--dot-1\/2);
 }
 
 .sf-list-timeline.sf-list-timeline--size-2 {
@@ -74,7 +74,7 @@ sf-list-timeline {
   --sf-list-timeline--rail: var(--sf-ui-1--control-height);
   --sf-list-timeline--control: var(--sf-ui-2--control-height);
   --sf-list-timeline--button: var(--sf-ui-1--control-height);
-  --sf-list-timeline--dot: var(--sf-b0);
+  --sf-list-timeline--dot: var(--sf-micro--dot-2);
 }
 
 /* A day: block list's heading (.sf-group-heading) carries the type and the
@@ -204,8 +204,8 @@ sf-list-timeline {
   --sf-icon--height: var(--sf-featured-icon--icon-size);
 }
 
-/* An event with no icon: a dot in the status colour, the size the dot
-   component (.sf-dot) gives the rung: a8 for 1, a6 for 1/2, b0 for 2. */
+/* An event with no icon: a dot in the status colour, core's dot table by the
+   rung (owner decision C132): 8 for 1, 6 for 1/2, 8 for 2 (it was 10). */
 .sf-list-timeline-marker--dot {
   inline-size: var(--sf-list-timeline--line);
   block-size: var(--sf-list-timeline--line);

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.tags",
   "kind": "component",
-  "version": "1.3.3",
+  "version": "1.5.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/tags/docs/docs.md",
@@ -15,7 +15,7 @@
     "src/component/tags/scss/_var__tags.scss",
     "src/component/tags/scss/index.scss"
   ],
-  "content_sha256": "dd7d760c57bc5cc91ce0269a13ebc213af8cb637f8c5151cf1a5a2bb647915bd",
+  "content_sha256": "ed0958965bdb0e0f53e514ce10cadd3f2dd378ea1477128e863f77c3abd713d9",
   "dependencies": [
     {
       "id": "tokens.border",
@@ -43,7 +43,7 @@
     },
     {
       "id": "tokens.size",
-      "range": "^1.0.0"
+      "range": "^1.5.0"
     },
     {
       "id": "tokens.space",
