@@ -100,6 +100,39 @@
   inline-size: var(--sf-language--box);
 }
 
+/* sf-input before it draws (first-paint study R222, pilot of «box from
+   attributes»: a bare <sf-input> had no box until its code arrived, and the
+   field then pushed the page down by up to 88 px). Its box is known from its
+   attributes alone, from the same ladder its sheet draws with: the field is
+   one control of its size step high and as wide as its container; a label
+   above it and a message below it (a hint, or an error message when it is
+   invalid) are each one line of the text a step below the size, after the
+   field's gap. Until the element is defined it holds that box itself.
+   Static markup printed inside (data-sf-static) is its own box, so nothing
+   is reserved then; a hidden field (appearance="hidden") has no box. A hint
+   that wraps is the one thing the attributes cannot tell. */
+:where(sf-input:not(:defined)) {
+  --sf-input--box-control: var(--sf-ui-1--control-height);
+  --sf-input--box-line: var(--sf-text-height-1\/2);
+  --sf-input--box-gap: var(--sf-input--gap, var(--sf-space-1\/4));
+  --sf-input--box-label: 0;
+  --sf-input--box-message: 0;
+}
+
+:where(sf-input[size="1/3"]:not(:defined)) { --sf-input--box-control: var(--sf-ui-1\/3--control-height); --sf-input--box-line: var(--sf-text-height-1\/4); }
+:where(sf-input[size="1/2"]:not(:defined)) { --sf-input--box-control: var(--sf-ui-1\/2--control-height); --sf-input--box-line: var(--sf-text-height-1\/3); }
+:where(sf-input[size="2"]:not(:defined)) { --sf-input--box-control: var(--sf-ui-2--control-height); --sf-input--box-line: var(--sf-text-height-1); }
+:where(sf-input[size="3"]:not(:defined)) { --sf-input--box-control: var(--sf-ui-3--control-height); --sf-input--box-line: var(--sf-text-height-2); }
+:where(sf-input[label]:not([label=""]):not(:defined)) { --sf-input--box-label: 1; }
+:where(sf-input:is([hint]:not([hint=""]), [invalid][error-message]:not([error-message=""])):not(:defined)) { --sf-input--box-message: 1; }
+
+:where(sf-input:not(:defined):not([appearance="hidden"])):not(:has(> [data-sf-static])) {
+  display: block;
+  block-size: calc(var(--sf-input--box-control)
+    + (var(--sf-input--box-label) + var(--sf-input--box-message))
+    * (var(--sf-input--box-line) + var(--sf-input--box-gap)));
+}
+
 /* Its menu waits for its own code in the parts the element drew: an empty
    undefined sf-menu-context would stand in the row as one more item, a gap
    wider than the trigger, until it upgrades into its popup. */
