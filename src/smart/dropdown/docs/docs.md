@@ -141,6 +141,14 @@ normal DOM position. Base Dropdown watches both portal and data-portal and binds
 projected-list pointer handlers only while they are needed. Each selection still
 emits one change event, including after repeated mode switches.
 
+## The chevron
+
+The chevron is the field's indicator (owner decision C123, 1.10.0): a glyph
+without a plate, the size of the field's leading picture (24 / 20 / 28 at 1,
+1/2, 2), quiet at rest and the text's ink while the field is under the pointer.
+The whole field opens the list. The chevron stays the button that holds the
+focus and `aria-expanded`, the field's one Tab stop; the field draws its ring.
+
 ## Inherited value
 
 `inherited-value` is the option value (values joined by commas when several may

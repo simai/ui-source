@@ -1,3 +1,5 @@
+@use "field-action";
+
 @layer sf.components {
   /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) */
   .sf-input {
@@ -535,7 +537,7 @@
     --sf-input-field--padding-inline-start: var(--sf-input-padding-inline, calc(var(--sf-input--inset) - var(--sf-px)));
   }
 
-  .sf-input:is(.sf-input--size-1, .sf-input--size-2, .sf-input--size-1\/2) .sf-input-field:where(:has(> input ~ :is(.sf-input-right, .sf-input-hint, .sf-icon))) {
+  .sf-input:is(.sf-input--size-1, .sf-input--size-2, .sf-input--size-1\/2) .sf-input-field:where(:has(> input ~ :is(.sf-input-right, .sf-input-hint, .sf-icon, .sf-field-action, :is(sf-button-copy, sf-copy-button)))) {
     --sf-input-field--padding-inline-end: var(--sf-input-padding-inline, calc(var(--sf-input--inset) - var(--sf-px)));
   }
 
@@ -553,4 +555,52 @@
   .sf-input.sf-input--size-1 .sf-input-field > input:has(~ :is(.sf-input-right, .sf-input-hint, .sf-icon)) { --sf-input-input--padding-inline-end: var(--sf-ui-1--text-space-x); }
   .sf-input.sf-input--size-2 .sf-input-field > input:has(~ :is(.sf-input-right, .sf-input-hint, .sf-icon)) { --sf-input-input--padding-inline-end: var(--sf-ui-2--text-space-x); }
   .sf-input.sf-input--size-1\/2 .sf-input-field > input:has(~ :is(.sf-input-right, .sf-input-hint, .sf-icon)) { --sf-input-input--padding-inline-end: var(--sf-ui-1\/2--text-space-x); }
+}
+
+/* C123 (owner 2026-11-13; prototypes/field-icon-actions.html, variant A): the
+   actions inside a field -- clear, the password reveal, a copy button standing
+   in the field -- are glyphs without a plate (field-action.scss). The field
+   says its step: the glyph is its leading icon's size (the text line of the
+   step, 24 / 20 / 28 at 1, 1/2, 2), the hit area its height, the glyph's end
+   its plain inset (C77). The value keeps half an inset to the first glyph:
+   the quarter the hit area stands out past the glyph, and a quarter of its
+   own. The browser's own search clear gives way to the Framework's. */
+@include field-action.rules('.sf-input-field');
+
+@layer sf.components {
+  .sf-input {
+    --sf-field-action--inset: var(--sf-input--inset);
+    --sf-field-action--glyph: var(--sf-text-height-1);
+    --sf-field-action--height: var(--sf-ui-1--control-height);
+  }
+
+  .sf-input.sf-input--size-1\/3 {
+    --sf-field-action--glyph: var(--sf-text-height-1\/3);
+    --sf-field-action--height: var(--sf-ui-1\/3--control-height);
+  }
+
+  .sf-input.sf-input--size-1\/2 {
+    --sf-field-action--glyph: var(--sf-text-height-1\/2);
+    --sf-field-action--height: var(--sf-ui-1\/2--control-height);
+  }
+
+  .sf-input.sf-input--size-2 {
+    --sf-field-action--glyph: var(--sf-text-height-2);
+    --sf-field-action--height: var(--sf-ui-2--control-height);
+  }
+
+  .sf-input.sf-input--size-3 {
+    --sf-field-action--glyph: var(--sf-text-height-3);
+    --sf-field-action--height: var(--sf-ui-3--control-height);
+  }
+
+  .sf-input:is(.sf-input--size-1\/3, .sf-input--size-1\/2, .sf-input--size-1, .sf-input--size-2, .sf-input--size-3) .sf-input-field > input:has(+ :is(.sf-field-action, :is(sf-button-copy, sf-copy-button))) {
+    --sf-input-input--padding-inline-end: calc(var(--sf-field-action--inset) / 4);
+  }
+
+  .sf-input .sf-input-field input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+  }
 }

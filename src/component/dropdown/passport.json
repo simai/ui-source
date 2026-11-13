@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.dropdown",
   "kind": "component",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/dropdown/docs/docs.md",
@@ -19,7 +19,7 @@
     "src/component/dropdown/scss/_css__list.scss",
     "src/component/dropdown/scss/index.scss"
   ],
-  "content_sha256": "3f46220ae007bf7b9945f3a3fa1469341fb6ce1282e6b2b97ca7a08ccd744a00",
+  "content_sha256": "7e2dab4343f9ad794b5e376fbcb1769107f44cbde49ebbc456457cdac775dca0",
   "dependencies": [
     {
       "id": "component.context-menu",
@@ -28,6 +28,10 @@
     {
       "id": "component.icon-buttons",
       "range": "^1.0.0"
+    },
+    {
+      "id": "component.inputs",
+      "range": "^1.6.0"
     },
     {
       "id": "core.runtime",
