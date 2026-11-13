@@ -325,6 +325,9 @@ sf-contents[data-empty] > .sf-contents {
 
   .sf-contents-link:hover {
     background-color: var(--sf-surface-container-hover);
+    /* A translucent fill, as a menu's row (C43 D4): the count's tonal badge
+       keeps its own tone under the pointer. */
+    @include places.sf-place-fill(var(--sf-surface-container-hover));
   }
 
   /* The current section (C95 point 2): the surface's ink at medium weight
