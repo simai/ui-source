@@ -2059,7 +2059,7 @@ function renderImageEdit(field, value, host) {
                 .value=${stored}
                 aria-label=${field.label || field.key || ''}
                 ?required=${Boolean(field.required)}
-                ?disabled=${field.readonly === true}
+                ?readonly=${field.readonly === true}
                 @change=${(event) => {
                     const next = event.detail?.value ?? null;
                     host.setFieldValue(field, asList ? (next ? [next] : []) : next);

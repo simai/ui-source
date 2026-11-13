@@ -10,12 +10,13 @@
     "src/component/file-upload/index.js",
     "src/component/file-upload/js/_file_upload.js",
     "src/component/file-upload/js/index.js",
+    "src/component/file-upload/js/intake.mjs",
     "src/component/file-upload/rule.js",
     "src/component/file-upload/scss/_css__file_upload.scss",
     "src/component/file-upload/scss/_css__upload_progress.scss",
     "src/component/file-upload/scss/index.scss"
   ],
-  "content_sha256": "8678151b8ac9eccf4c70eca8ce439ebefab6e6a2a50d6c69948be59da689d059",
+  "content_sha256": "000a9a68e0a2f6da001681d24375b036da48f99bdefd9fbd7abf9f04e3824427",
   "dependencies": [
     {
       "id": "core.runtime",

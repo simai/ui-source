@@ -190,6 +190,9 @@ test('sf-input-image: vocabulary names with dated colon aliases, error is invali
     ['sf-image-field', 'sf-input-image'],
     ['sf-image-field-attach', 'sf-input-image-attach'],
     ['sf-image-field-detach', 'sf-input-image-detach'],
+    // library is new in 1.4.0 (C94 point 5); a page still on the old tag
+    // hears it under the old name too, until the tag alias goes.
+    ['sf-image-field-library', 'sf-input-image-library'],
     ['sf-image-field-rejected', 'sf-input-image-rejected'],
   ]);
 });

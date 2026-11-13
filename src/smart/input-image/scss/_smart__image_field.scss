@@ -1,7 +1,8 @@
 @layer sf.components {
-/* sf-input-image: one image in a form, on one row -- the thumbnail, the file
-   name and size, then «Заменить…» and «Убрать» -- with the label above and the
-   help or error text below, as every Framework field has them.
+/* sf-input-image: one image in a form -- as a row (the thumbnail, the file
+   name and size, then «Заменить…» and the remove icon) or as a preview (the
+   picture in its frame, the same row under it; C94) -- with the label above
+   and the help or error text below, as every Framework field has them.
 
    A page restyles it through its public variables
    (src/core/contracts/public-variables.v1.json): the well's fill, border
@@ -33,6 +34,14 @@
   --sf-image-field--border-color: var(--sf-image-field-border-color, var(--sf-outline));
   --sf-image-field--background-color: var(--sf-image-field-background-color, var(--sf-transparent));
   --sf-image-field--border-style: solid;
+  /* The preview's frame: the field's width (a page sizes the field to size
+     the picture); a circle (a person) is two of the largest control heights
+     across. */
+  --sf-image-field--frame: 100%;
+}
+
+.sf-image-field[data-shape="circle"] {
+  --sf-image-field--frame: calc(var(--sf-ui-3--control-height) * 2);
 }
 
 .sf-image-field--size-1\/2 {
@@ -108,6 +117,7 @@
 
 .sf-image-field-thumb {
   grid-area: thumb;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -129,12 +139,46 @@
   block-size: var(--sf-image-field--icon);
 }
 
-/* Fitted, never stretched or cropped. */
+/* A person's picture is a circle, a thing's a square (C94; Fluent,
+   Atlassian, Ant). */
+.sf-image-field[data-shape="circle"] .sf-image-field-thumb {
+  border-radius: 50%;
+}
+
+/* The picture fills its box and the focal point stays in it (fit cover, the
+   default: a 16:9 cover in a square no longer shrinks to a strip, IF-7); a
+   logo is fitted whole (fit contain). Never stretched. */
 .sf-image-field-image {
   display: block;
   inline-size: 100%;
   block-size: 100%;
+  object-fit: cover;
+}
+
+.sf-image-field[data-fit="contain"] .sf-image-field-image {
   object-fit: contain;
+}
+
+/* A picture that may hold transparent pixels (PNG, SVG, WebP, GIF) stands on
+   the checkerboard, as a translucent colour does (C86), so a white logo is
+   seen and empty space reads as empty. */
+:is(.sf-image-field-thumb, .sf-image-field-frame).sf-image-field-thumb--transparent,
+.sf-image-field-frame--transparent {
+  background-color: var(--sf-surface-card);
+  background-image: conic-gradient(var(--sf-outline-variant) 25%, var(--sf-transparent) 0 50%, var(--sf-outline-variant) 0 75%, var(--sf-transparent) 0);
+  background-size: var(--sf-a8) var(--sf-a8);
+}
+
+/* A transfer on the picture: the ring with its share over a veil. */
+.sf-image-field-ring {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: inherit;
+  background-color: var(--sf-surface-media);
+  color: var(--sf-on-surface-media);
 }
 
 .sf-image-field-body {
@@ -154,10 +198,10 @@
   line-height: var(--sf-image-field--name-height);
 }
 
+/* The size line wraps rather than cut: «1600×900 · 40 МБ» is read whole
+   (IF-9). */
 .sf-image-field-meta {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
   color: var(--sf-on-surface-variant);
   font-size: var(--sf-image-field--small-size);
   line-height: var(--sf-image-field--small-height);
@@ -170,8 +214,206 @@
 .sf-image-field-actions {
   grid-area: actions;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--sf-space-1\/4);
+}
+
+/* -------------------------------------------------------- the preview */
+
+/* The picture is the field (C94 point 1): its frame of the page's width and
+   aspect (or the picture's own), the buttons under it, never over it (point
+   2). */
+.sf-image-field-frame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sf-space-1\/2);
+  box-sizing: border-box;
+  inline-size: var(--sf-image-field--frame);
+  max-inline-size: 100%;
+  aspect-ratio: var(--sf-image-field--aspect, 16 / 9);
+  overflow: hidden;
+  border: var(--sf-image-field-border-width, var(--sf-px)) solid var(--sf-outline-variant);
+  border-radius: var(--sf-radius--surface);
+  background-color: var(--sf-surface-container);
+  /* The words and the glyph stand on the container fill, so the dimmed role
+     is the container's own, as in the thumbnail. */
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  --sf-icon--color: var(--sf-on-surface-variant);
+  color: var(--sf-on-surface-variant);
+  font-family: var(--sf-text--family);
+  text-align: center;
+  transition-duration: var(--sf-duration-fast);
+  transition-property: background-color, border-color;
+  transition-timing-function: var(--sf-animation);
+}
+
+.sf-image-field[data-shape="circle"] .sf-image-field-frame {
+  border-radius: 50%;
+}
+
+.sf-image-field-frame > .sf-image-field-image {
+  position: absolute;
+  inset: 0;
+}
+
+.sf-image-field--empty .sf-image-field-frame {
+  padding: var(--sf-space-1);
+  border-style: var(--sf-image-field--border-style);
+  border-color: var(--sf-image-field--border-color);
+  background-color: var(--sf-image-field--background-color);
+}
+
+.sf-image-field-frame > .sf-icon {
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-image-field--icon);
+  inline-size: var(--sf-image-field--icon);
+  block-size: var(--sf-image-field--icon);
+}
+
+.sf-image-field-frame-text {
+  font-size: var(--sf-image-field--small-size);
+  line-height: var(--sf-image-field--small-height);
+}
+
+.sf-image-field-frame > .sf-image-field-actions {
+  justify-content: center;
+}
+
+/* The row under the picture keeps to the picture: as wide as the frame, with
+   a floor of five large control heights for a name and the buttons, never
+   wider than the column. On one line the buttons end at the picture's edge;
+   short of room they wrap under the name, from the picture's start edge
+   (owner's layout rule on C94, as C88). */
+.sf-image-field-under {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sf-space-1\/4) var(--sf-space-1\/2);
+  min-inline-size: 0;
+  inline-size: max(var(--sf-image-field--frame), calc(var(--sf-ui-3--control-height) * 5));
+  max-inline-size: 100%;
+}
+
+.sf-image-field-under > .sf-image-field-body {
+  flex: 1 1 calc(var(--sf-ui-3--control-height) * 3);
+}
+
+/* -------------------------------------------- address, editor, alt */
+
+.sf-image-field-url {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--sf-space-1\/4);
+  max-inline-size: 100%;
+}
+
+.sf-image-field-url-input {
+  flex: 1 1 calc(var(--sf-ui-3--control-height) * 4);
+  min-inline-size: 0;
+}
+
+/* The editor (C94 point 3): the picture on a dark stage, the frame or the
+   focal point on it, the buttons under it. Nothing is cut. */
+.sf-image-field-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-1\/2);
+  min-inline-size: 0;
+  inline-size: max(var(--sf-image-field--frame), calc(var(--sf-ui-3--control-height) * 5));
+  max-inline-size: 100%;
+}
+
+.sf-image-field--row .sf-image-field-editor {
+  inline-size: 100%;
+}
+
+.sf-image-field-editor-modes,
+.sf-image-field-editor-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sf-space-1\/4);
+}
+
+.sf-image-field-stage {
+  position: relative;
+  inline-size: 100%;
+  aspect-ratio: var(--sf-image-field--aspect, 16 / 9);
+  overflow: hidden;
+  border-radius: var(--sf-radius--ui);
+  background-color: var(--sf-surface-inverse);
+  touch-action: none;
+  cursor: grab;
+  outline: none;
+}
+
+.sf-image-field-stage:focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+}
+
+.sf-image-field-stage > img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Thirds over the frame, in the media ink. */
+.sf-image-field-stage-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--sf-on-surface-media), var(--sf-on-surface-media)),
+    linear-gradient(var(--sf-on-surface-media), var(--sf-on-surface-media)),
+    linear-gradient(var(--sf-on-surface-media), var(--sf-on-surface-media)),
+    linear-gradient(var(--sf-on-surface-media), var(--sf-on-surface-media));
+  background-position: 33.33% 0, 66.66% 0, 0 33.33%, 0 66.66%;
+  background-repeat: no-repeat;
+  background-size: var(--sf-px) 100%, var(--sf-px) 100%, 100% var(--sf-px), 100% var(--sf-px);
+}
+
+/* A circle's frame: what falls outside it is veiled. */
+.sf-image-field-stage-mask {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: 0 0 0 100vmax var(--sf-surface-media);
+}
+
+.sf-image-field-focus-dot {
+  position: absolute;
+  inline-size: var(--sf-space-1);
+  block-size: var(--sf-space-1);
+  translate: -50% -50%;
+  border: var(--sf-px) solid var(--sf-on-surface-media);
+  border-radius: 50%;
+  background-color: var(--sf-primary);
+  pointer-events: none;
+}
+
+.sf-image-field-editor-hint {
+  color: var(--sf-on-surface-variant);
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-image-field--small-size);
+  line-height: var(--sf-image-field--small-height);
+}
+
+/* The description and «Декоративная» (C94 point 4), inside the field. */
+.sf-image-field-alt {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-1\/2);
+  max-inline-size: 100%;
 }
 
 /* A file held over the field: the fill and edge of a selection, and the name
@@ -184,13 +426,35 @@
   --sf-image-field--border-style: dashed;
 }
 
+.sf-image-field.dragover .sf-image-field-frame {
+  border-style: dashed;
+  border-color: var(--sf-image-field--border-color);
+  background-color: var(--sf-image-field--background-color);
+}
+
 .sf-image-field.error {
   --sf-image-field--border-color: var(--sf-error);
 }
 
+.sf-image-field.error .sf-image-field-frame {
+  border-color: var(--sf-error);
+}
+
+/* Read-only and disabled are drawn as sf-input draws them (IF-10): read-only
+   has no plate and the line of a region for its edge; disabled has no fill,
+   the disabled line and the disabled ink. */
+.sf-image-field.readonly {
+  --sf-image-field--border-color: var(--sf-outline-variant);
+  --sf-image-field--border-style: solid;
+}
+
 .sf-image-field.disabled {
-  --sf-image-field--background-color: var(--sf-surface-disabled);
+  --sf-image-field--background-color: var(--sf-transparent);
   --sf-image-field--border-color: var(--sf-outline-disabled);
+}
+
+.sf-image-field.disabled .sf-image-field-frame {
+  border-color: var(--sf-outline-disabled);
 }
 
 .sf-image-field.disabled .sf-image-field-name,
@@ -214,6 +478,11 @@
   color: var(--sf-error);
 }
 
+/* What the field did with extra files is information, not an error. */
+.sf-image-field-message[data-field-message="info"] {
+  color: var(--sf-on-surface-variant);
+}
+
 /* The platform's file input opens the dialog and carries the file to a form.
    It is out of sight and out of the tab order -- the buttons are the controls
    -- but not display: none, so a required, empty field can still be pointed
@@ -234,9 +503,10 @@
 }
 
 /* A column narrower than the row: the buttons go under the name, at its start.
-   24rem is where a thumbnail, a name of eight characters and the two buttons
-   of a size 1 field stop fitting on one line. */
-@container sf-image-field (inline-size < 24rem) {
+   32rem is where a thumbnail, a name of sixteen characters with its size line
+   and the three buttons of a filled field (replace, edit, remove) stop fitting
+   on one line; under it the name would be cut and the size line broken. */
+@container sf-image-field (inline-size < 32rem) {
   .sf-image-field-well {
     grid-template-columns: auto minmax(0, 1fr);
     grid-template-areas: "thumb body" "thumb actions";
