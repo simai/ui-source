@@ -54,8 +54,14 @@ keyboard focus, 12 % pressed -- in the light and dark themes alike.
 
 Tabs controls use `--sf-radius--ui`; pills remain explicitly rounded. Borders
 use `--sf-tabs--border-width` with `--sf-px` fallback, including the double-width
-underline and its alignment offset. Vertical spacing uses `--sf-tabs--gap` with
-`--sf-space-2` fallback. Typography comes from the base button profile and the
+underline and its alignment offset. Underline tabs (owner decision C99) stand
+edge to edge (`--sf-tabs-gap`, default `--sf-space-0`); each tab has the button
+padding of its size (`--sf-ui-<size>--space-x`, or `--sf-tabs-padding-inline`),
+the label none, the first tab none at its start and the last none at its end
+(kept in a shared `fit` row), and the selected line is drawn under the label's
+letters, not as the tab's border. Vertical rows stand `--sf-space-1/4` apart
+with `--sf-space-1` padding. The panel spacing beside a vertical row uses
+`--sf-tabs--gap` with `--sf-space-2` fallback. Typography comes from the base button profile and the
 surrounding text for panels; Tabs does not introduce another text-size scale.
 
 Keyboard focus is an inset ring whose foreground role follows the tab's painted

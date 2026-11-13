@@ -2943,8 +2943,15 @@ SFLoaderPlugin.prototype.search = function () {
       }
     });
 
+    // One record at a time: a page that draws hundreds of components in one
+    // task hands over hundreds of thousands of records, and spread into
+    // push() as arguments they ran past the call stack (RangeError: Maximum
+    // call stack size exceeded, once a load on the 470-row sf-tabs page, C54
+    // D4) and that whole batch of changes was lost.
+    const keep = (into) => { for (const change of relevantChanges) into.push(change); };
+
     if (_this.searchEnd) {
-      mutationBuffer.push(...relevantChanges);
+      keep(mutationBuffer);
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         const bufferedChanges = [...mutationBuffer];
@@ -2952,7 +2959,7 @@ SFLoaderPlugin.prototype.search = function () {
         queueChanges(bufferedChanges);
       }, DEBOUNCE_MS);
     } else {
-      _this.observeElements.push(...relevantChanges);
+      keep(_this.observeElements);
     }
   };
 

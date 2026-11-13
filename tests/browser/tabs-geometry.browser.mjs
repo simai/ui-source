@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
 // sf-tabs (owner, 2026-10-14), measured on the built bytes:
-// - underline tabs have no inline padding; label to label is the gap of the
-//   size, 20/24/32px at 1/2, 1, 2; heights 32/40/48; the line 2/2/3px; the
-//   tab's own font is its size's text role;
+// - underline tabs (owner decision C99, variant A): edge to edge, no gap;
+//   each tab has the button padding of its size, 14/16/20px at 1/2, 1, 2
+//   (desktop), the label none, the first tab none at its start (its letters on
+//   the content edge); label to label 28/32/40; heights 32/40/48; the line
+//   2px at every size (C96 item 2), as wide as the letters and on the tab's
+//   bottom edge; the tab's own font is its size's text role;
 // - overflow="more" moves what does not fit into «Ещё (n)», the active tab
 //   always staying, and choosing in that menu activates the tab;
 // - a count is drawn after the label; a link tab is aria-current when active;
@@ -65,16 +68,27 @@ try {
 
   const geometry = await page.evaluate(() => [...document.querySelectorAll('sf-tabs.g')].map((tabs) => {
     const buttons = [...tabs.querySelectorAll('[role="tab"]')];
-    const label = (at) => buttons[at].querySelector('.sf-button-text-container').getBoundingClientRect();
-    const style = getComputedStyle(buttons[0]);
-    return {size: tabs.dataset.s, height: Math.round(buttons[0].getBoundingClientRect().height),
-      padding: style.paddingLeft, gap: Math.round(label(1).left - label(0).right), line: style.borderBottomWidth, font: style.fontSize};
+    const text = (at) => buttons[at].querySelector('.sf-button-text-container');
+    const label = (at) => text(at).getBoundingClientRect();
+    const box = (at) => buttons[at].getBoundingClientRect();
+    const first = getComputedStyle(buttons[0]);
+    const middle = getComputedStyle(buttons[1]);
+    const selected = buttons.findIndex((button) => button.classList.contains('selected'));
+    const line = getComputedStyle(text(selected), '::after');
+    const row = tabs.querySelector('.sf-tabs-top').getBoundingClientRect();
+    return {size: tabs.dataset.s, height: Math.round(box(0).height),
+      start: first.paddingInlineStart, padding: middle.paddingInlineStart, label: getComputedStyle(text(1)).paddingInlineStart,
+      gap: Math.round(label(1).left - label(0).right), dead: Math.round(box(1).left - box(0).right), edge: Math.round(label(0).left - row.left),
+      line: line.borderBottomWidth, lineWidth: Math.round(parseFloat(line.width)), letters: Math.round(label(selected).width),
+      lineBottom: Math.round(box(selected).bottom - (label(selected).bottom + parseFloat(line.bottom) * -1)), font: middle.fontSize};
   }));
-  const want = {'1/2': [32, 20, '2px'], 1: [40, 24, '2px'], 2: [48, 32, '3px']};
+  const want = {'1/2': [32, 28, '14px'], 1: [40, 32, '16px'], 2: [48, 40, '20px']};
   for (const entry of geometry) {
-    const [height, gap, line] = want[entry.size];
-    if (entry.height !== height || entry.gap !== gap || entry.line !== line || entry.padding !== '0px' || entry.font === '13.3333px') {
-      note({case: 'underline geometry', got: entry, expected: {height, gap, line, padding: '0px'}});
+    const [height, gap, padding] = want[entry.size];
+    if (entry.height !== height || entry.gap !== gap || entry.padding !== padding || entry.start !== '0px' || entry.label !== '0px'
+      || entry.dead !== 0 || entry.edge !== 0 || entry.line !== '2px' || entry.lineWidth !== entry.letters || entry.lineBottom !== 0
+      || entry.font === '13.3333px') {
+      note({case: 'underline geometry (C99 A)', got: entry, expected: {height, gap, padding, start: '0px', label: '0px', dead: 0, edge: 0, line: '2px', lineWidth: 'letters', lineBottom: 0}});
     }
   }
 

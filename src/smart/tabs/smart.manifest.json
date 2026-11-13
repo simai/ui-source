@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tabs",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "title": "Tabs",
   "summary": "A tab list that shows one local panel at a time, with text or icon tabs given as attributes, slots or data, roving keyboard focus and linked tab panels.",
   "kind": "smart",
@@ -24,7 +24,9 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.badges",
       "component.tabs",
+      "component.tooltip",
       "smart.button",
       "smart.button-icon",
       "smart.checkbox",
@@ -54,6 +56,7 @@
       "type": {
         "type": "string",
         "default": "",
+        "description": "The look (owner decision C96 item 1): no type or underline is the line (the default: a primary 2 px line under the selected label, on-surface ink), pills the plate (the selected tab on primary-container), vertical the menu's column (the current tab on the menu's current fill, labels at the start; on a phone the line with «Ещё»). full is retired: it draws the line with fit always (noted in SF.deprecations until 2027-01-01, journal value-tabs-full-to-underline).",
         "enum": [
           "underline",
           "pills",
@@ -77,7 +80,7 @@
       "scheme": {
         "type": "string",
         "default": "default",
-        "description": "Built-in button appearance: default, outline or link. Historical name retained; this is not a semantic color selector. Custom templates may interpret it separately."
+        "description": "Retired (owner decision C96 item 1): the tabs draw one look per type whatever the scheme, so default, outline or link draw the same; outline and link are noted in SF.deprecations until 2027-01-01 (journal value-tabs-scheme-retired). The value is not a semantic color selector; custom templates may still read it."
       },
       "top-position": {
         "type": "string",
@@ -98,18 +101,43 @@
       },
       "overflow": {
         "type": "string",
-        "default": "scroll",
-        "description": "What the tabs do when they do not fit: scroll (the row scrolls), wrap (rows wrap), or more (the tabs that do not fit go into a trailing «Ещё (n)» menu; the active one always stays).",
+        "default": "more",
+        "description": "What the tabs do when they do not fit: more (the default: the tabs that do not fit go whole into a trailing «Ещё (n)» menu; the active one always stays in the row), scroll (the row scrolls), or wrap (rows wrap).",
         "enum": [
           "scroll",
           "wrap",
           "more"
         ]
       },
+      "fit": {
+        "type": "string",
+        "default": "auto",
+        "description": "Whether the tabs share the row equally when they all fit, each at least its own width (owner decision C96 item 7): auto on a phone (below the md breakpoint) with two to four tabs, always, or never. What does not fit still goes into «Ещё (n)». Not for vertical tabs.",
+        "enum": [
+          "auto",
+          "always",
+          "never"
+        ]
+      },
       "configurable": {
         "type": "boolean",
         "default": false,
         "description": "A gear at the end of the tabs («Настроить вкладки») opens the standard menu with the tabs as a sortable list, a visibility checkbox per tab (pinned tabs fixed) and «Сбросить» in its footer. The choice is the host's: sf-tabs-settings-change {order, hidden}, sf-tabs-settings-reset, setSettings({order, hidden})."
+      },
+      "lazy": {
+        "type": "boolean",
+        "default": false,
+        "description": "A panel is drawn when its tab is first opened, then kept drawn (its state stays when the person switches away). Until then the panel stands empty and hidden, so the tab's aria-controls still names it. sf-tabs-change for a first opening is sent once the panel is drawn. A page's own <div role=\"tabpanel\"> panels are already in the page and are not affected."
+      },
+      "hash": {
+        "type": "boolean",
+        "default": false,
+        "description": "The address keeps the selected tab: a tab the person chooses writes #<id> as a new history entry (path and query kept), so Back returns to the previous tab; on load, on Back and Forward and on a #link, #<id> of an item -- or of an element inside a panel -- opens that tab. Give each item an id. Off by default; one sf-tabs per page should use it. Not for a strip of links."
+      },
+      "sticky": {
+        "type": "boolean",
+        "default": false,
+        "description": "The tab row stays in sight while its panels scroll past (position sticky at --sf-tabs-sticky-top, 0 by default), on the page surface. For long record and settings views."
       },
       "selected": {
         "type": "string",
@@ -123,7 +151,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "An item (set with setItems) may carry key (a stable id for the settings; the index otherwise), icon, count (a small counter after the label), href (the tab is a link: activating it goes to the address; aria-current=page on the active one) and pinned (never hidden, fixed in the settings)."
+        "description": "An item (set with setItems) may carry key (a stable id for the settings; the index otherwise), icon, count (a small counter after the label), href (an address; when every item has one the row is a strip of links -- a <nav> of <a> with the same look, the current one aria-current=\"page\", no tablist, no arrows, Tab and Enter as links; one item with href among tabs is a tab that goes to its address) and pinned (never hidden, fixed in the settings); disabled (the tab stays focusable, says aria-disabled and selects nothing) and hint (a short text in the Framework tooltip on the tab, read as its description: for a disabled tab, why it is off); errors (the number of errors in the tab's panel: a count on the error container after the label, said with the name -- «Доступ, 2 ошибки»; setErrors({id: n}) gives them by id). The attribute takes the short form \"label::flags|label\" or a JSON array of the same items (R184 T13); a label holding | or :: is written in JSON."
       },
       "settings": {
         "type": "object"
@@ -215,6 +243,14 @@
         "description": "The element, for chaining."
       }
     },
+    "goToError": {
+      "summary": "Opens the first tab, in the order the tabs stand, whose item has errors and focuses the first wrong field in its panel ([aria-invalid=true], [invalid] or :invalid), as a form's Save does after a failed check; refused with no-errors when none has. Not reported as a change.",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
     "getData": {
       "summary": "Returns the data set with setData: {tabs, panels, ...}; {tabs: [], panels: []} when none was set.",
       "arguments": [],
@@ -279,6 +315,20 @@
       "arguments": [
         {
           "name": "settings",
+          "type": "object",
+          "required": true
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "setErrors": {
+      "summary": "Gives the errors of each panel by entry id ({profile: 0, access: 2}); the tabs show the count and say it with the tab's name. An id not given keeps the item's own errors.",
+      "arguments": [
+        {
+          "name": "errors",
           "type": "object",
           "required": true
         }
@@ -449,7 +499,7 @@
       "Enter",
       "Space"
     ],
-    "focus": "Built-in text/icon tabs use one enabled native tab stop and linked panels. Navigation arrows follow orientation and RTL, skip disabled tabs, wrap, focus and activate. Perpendicular arrows and nested widget keys remain local. A custom tab component descriptor is presentation-only: its named wrapper remains the single tab stop and the rendered Smart visual is inert."
+    "focus": "Built-in text/icon tabs use one enabled native tab stop and linked panels. Navigation arrows follow orientation and RTL, reach disabled tabs (aria-disabled, focusable, selecting nothing), wrap, focus and activate. A panel is a tab stop only when nothing in it takes the focus. Perpendicular arrows and nested widget keys remain local. A custom tab component descriptor is presentation-only: its named wrapper remains the single tab stop and the rendered Smart visual is inert."
   },
   "presentation": {
     "themes": [
@@ -511,7 +561,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tabs/index.js",
-        "sha256": "64a33d0d4a2631ce9bcbbf679ccbdeda09a01d73540cb0b4ec6274ba4c90c7f4"
+        "sha256": "46245d6879edbe9e62b4984fa117f7d5bc354f6aaaa5fab7fcdc82f116d3040a"
       }
     ],
     "generated_runtime": [

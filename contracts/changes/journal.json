@@ -10376,6 +10376,112 @@
       "source": "src/component/clipboard/js/index.js copySources, noteLegacy; ui-control control/docs-review/decisions.md C48"
     },
     {
+      "id": "behaviour-tabs-overflow-more",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-tabs 1.2.0 lays out tabs that do not fit with overflow=\"more\" by default: they go whole into a trailing «Ещё (n)» menu and the active tab stays in the row (owner decision C54). The row scrolled before; a page that wants the scrolling row writes overflow=\"scroll\".",
+      "items": [
+        {
+          "component": "sf-tabs",
+          "attribute": "overflow",
+          "from": "scroll (the default)",
+          "to": "more (the default); scroll written out"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a page relied on the scrolling row (a long row it scrolls itself, a test that scrolls the strip), write overflow=\"scroll\" on the sf-tabs. Nothing is needed for the new behaviour.",
+      "examples": {
+        "before": "<sf-tabs items=\"Обзор|Задачи|…\"></sf-tabs> (the row scrolls)",
+        "after": "<sf-tabs overflow=\"scroll\" items=\"Обзор|Задачи|…\"></sf-tabs>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/tabs/index.js"
+    },
+    {
+      "id": "behaviour-tabs-line-default",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-tabs 1.3.0 draws two looks (owner decision C96 item 1): the line, which is now what no type draws (it drew filled primary buttons, the selected one primary-active), and the plate (pills); vertical is the menu's column (item 5). Only the selected label is medium, the others regular, with the width reserved (item 3); the line is 2 px at every size (item 2); hover darkens the ink only (item 4).",
+      "items": [
+        {
+          "component": "sf-tabs",
+          "attribute": "type",
+          "from": "(none): filled primary buttons",
+          "to": "(none): the line, as type=\"underline\""
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to write for the new look. A page that wanted the filled row has no equivalent: use type=\"pills\" for a plate, or sf-segmented for a value switch.",
+      "examples": {
+        "before": "<sf-tabs items=\"Обзор|История\"></sf-tabs> (filled buttons)",
+        "after": "<sf-tabs items=\"Обзор|История\"></sf-tabs> (the line)"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/tabs/index.js"
+    },
+    {
+      "id": "value-tabs-full-to-underline",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-tabs type=\"full\" is retired (owner decision C96 item 1): it draws the line with fit always (the tabs share the row equally), and each use is noted in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-tabs",
+          "attribute": "type",
+          "from": "full",
+          "to": "underline"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write type=\"underline\" fit=\"always\" (or drop type) where full was written.",
+      "examples": {
+        "before": "<sf-tabs type=\"full\" items=\"…\"></sf-tabs>",
+        "after": "<sf-tabs fit=\"always\" items=\"…\"></sf-tabs>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/tabs/index.js"
+    },
+    {
+      "id": "value-tabs-scheme-retired",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-tabs scheme=\"outline\" and scheme=\"link\" no longer change the look (owner decision C96 item 1: one selected rule per look); each use is noted in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-tabs",
+          "attribute": "scheme",
+          "from": "outline",
+          "to": "(none)"
+        },
+        {
+          "component": "sf-tabs",
+          "attribute": "scheme",
+          "from": "link",
+          "to": "(none)"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove scheme from sf-tabs; choose the look with type (none or underline: the line; pills: the plate).",
+      "examples": {
+        "before": "<sf-tabs scheme=\"link\" items=\"…\"></sf-tabs>",
+        "after": "<sf-tabs items=\"…\"></sf-tabs>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/tabs/index.js"
+    },
+    {
       "id": "event-file-download-download-to-request",
       "recorded_on": "2026-11-11",
       "stage": "compat",

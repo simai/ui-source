@@ -25,7 +25,12 @@ test('Tabs labels can shrink and wrap without clipping text or shrinking glyphs'
   assert.match(css, /scroll-behavior: auto/);
   assert.match(css, /flex: 1 0 0;\n\s+min-inline-size: max-content/);
   assert.match(css, /\.sf-icon \{\n\s+flex-shrink: 0/);
-  assert.doesNotMatch(css, /text-overflow: ellipsis|overflow: hidden/);
+  // Only the current tab left alone in a row narrower than it is shortened
+  // (C54 return D1, contract call 2026-11-11): nothing else clips its words.
+  const squeezed = /\.sf-tabs-top > \.sf-tabs-squeezed \.sf-button-text-container \{[^}]*\}/;
+  assert.match(css, squeezed);
+  assert.match(css.match(squeezed)[0], /text-overflow: ellipsis/);
+  assert.doesNotMatch(css.replace(squeezed, ''), /text-overflow: ellipsis|overflow: hidden/);
 });
 
 test('full Tabs join mixed ordinary and Smart actions without a double seam', () => {

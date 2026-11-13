@@ -6,8 +6,8 @@
 <div class="sf-context-menu-content">
 <div class="sf-context-menu-head">
 <sf-tabs class="sf-context-menu-tabs" type="underline" size="1" items="Вид|Колонки" active-index="0" data-sf-size-relative style="display: contents;">
-<div role="group" class="sf-tabs sf-tabs--size-1 sf-tabs--underline flex flex-col" data-active-index="0" data-sf-static>
-<div class="sf-tabs-top-container">
+<div role="group" class="sf-tabs sf-tabs--size-1 sf-tabs--overflow-more sf-tabs--underline flex flex-col" data-active-index="0" data-sf-static>
+<div class="sf-tabs-top-container sf-tabs-top-container--tools">
 <div role="tablist" class="sf-tabs-top flex content-main-start" aria-orientation="horizontal">
 
 <sf-button appearance="primary" size="1" scheme="default" text="Вид" root-class="selected" style="display: contents;" data-sf-size-relative>
@@ -37,7 +37,16 @@
 </sf-button>
 
 </div>
+<sf-button class="sf-tabs-more" appearance="ghost" scheme="on-surface" icon-end="expand_more" aria-haspopup="menu" size="1" text="Ещё" style="display: contents;" data-sf-size-relative>
+<button type="button" class="sf-button sf-button--size-1 sf-button--ghost sf-button--link sf-button--on-surface flex items-cross-center" aria-haspopup="menu" data-sf-static>
 
+
+<span class="sf-button-text-container text-center pointer-event-none">
+Ещё
+</span>
+<sf-icon root-class="pointer-event-none" weight="400" aria-hidden="true" icon="expand_more" style="display: contents;"><i class="sf-icon sf-icon--weight-regular pointer-event-none" style="--sf-icon--grade:0;--sf-icon--optical-size:24" aria-hidden="true" data-sf-static>expand_more</i></sf-icon>
+</button>
+</sf-button>
 
 </div>
 <div class="sf-tabs-main-container">

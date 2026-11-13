@@ -2998,7 +2998,9 @@
       "composition": {
         "public_parts": [],
         "uses": [
+          "component.badges",
           "component.tabs",
+          "component.tooltip",
           "smart.button",
           "smart.button-icon",
           "smart.checkbox",
@@ -3015,7 +3017,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tabs/smart.manifest.json",
-      "manifest_sha256": "02344137b401986a87c971d9e08ace2d37cd34e0afd0380f96967f54b8a6ea12",
+      "manifest_sha256": "229eab457054a7b556d5f1f15d44262391b8efb666757b432d16efceaf7762ba",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
