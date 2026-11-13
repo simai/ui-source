@@ -1,8 +1,11 @@
 # Alerts
 
-Alert is a persistent inline notice inside the page flow. Choose its semantic
-type from the message meaning: `clear`, `info`, `warning`, `danger` or
-`success`. Use Toast for transient overlay feedback.
+Alert is a persistent inline notice inside the page flow: the state of this
+page or section (owner decision C114 (1)). Choose its status from the message
+meaning: `neutral`, `info`, `success`, `warning` or `error` (`clear` and
+`danger` are still read). The state of the whole product is `sf-alert-bar`, a
+short reply to an action is a toast (`SF.notify`), a decision is
+`sf-confirm`.
 
 ## Anatomy
 
@@ -37,6 +40,79 @@ sf-icon-button--close sf-icon-button--size-1 sf-icon-button--height-low` with
 over the inline padding. The public `--sf-alert-padding-block`,
 `--sf-alert-padding-inline` and `--sf-alert-gap` still win.
 
+Since 1.3.1 (owner decision C105 H4/H6, as the fields' C77 inset) the 1 px
+border is inside the inline inset: the padding is `--sf-space-1` less
+`--sf-alert-border-width`, so the icon and the letters stand 16 from the outer
+edge (compact and phone 12), on every look; before they stood 17 (13).
+
+## Where the actions stand (1.2.0, owner decision C115)
+
+The actions stand in the row with the text while the notice is wide enough,
+else under the text from its start (layout L3a):
+
+| Actions | In the row from the notice's own width |
+|---|---|
+| one | 36rem (576 px) |
+| two | 48rem (768 px) |
+
+The notice with actions is a size query container (`container: sf-alert`).
+The step is the notice's whole width, its padding and border included. In the
+row the actions are centred on the text block and their plate overhangs the
+line by the low button's block padding, as the close does: with a one-line
+text the button's label stands on the title line, with the icon and the close.
+Under the text they follow at `--sf-space-1/2` (12, phone 8).
+
+The modifier `.sf-alert--actions-under` (1.2.0, owner 2026-11-13,
+#q-layout-override; on `sf-alert` the setting `actions-layout="under"`) keeps
+the actions under the text at every width, with the same gap and the even
+bottom below. The sheet cannot count the text's lines: in the row a three-line
+text with two actions is taller than under it (174 against 146 at 800), so a
+long text is the author's call.
+
+```html
+<div class="sf-alert sf-alert--warning sf-alert--default sf-alert--actions-under flex items-start">
+  …
+</div>
+```
+
+With the actions under the text, the space under the last button equals what
+the eye sees above the first line, the top of its capitals (C114 (5), NS-9):
+`.sf-alert-wrap` ends with `--sf-alert--lead + (--sf-text-height-1 - 1cap) / 2`
+under the buttons. Measured at 1440: 21.7 above the capitals, 22.8 under the
+button; on a phone 17.2 and 17.6.
+
+## Help link (1.2.1, owner decision C126)
+
+A link inside `.sf-alert-content` leads to help only («Узнать больше»); every
+action is a button in `.sf-alert-buttons`. Any `a[href]` in the text takes the
+text's own ink (`--sf-alert-color`, else the status's on-container role or
+on-surface), not `--sf-link`; it is underlined at `--sf-link--underline-weight`
+with `--sf-a3` offset, the line doubles on hover and press, and the keyboard
+ring is the same ink. The rule is shared by the notice family (core
+`mix/_mix__notice-link.scss`: sf-alert, sf-toast, sf-alert-bar).
+
+```html
+<div class="sf-alert-supporting-text">Открыть страницу сможет любой, у кого
+  есть ссылка. <a href="/help/sharing">Узнать больше</a></div>
+```
+
+## Callout: a recipe, not a component
+
+Guidance before an action («changing the address affects every letter») is an
+ordinary info alert (owner decision C114 (7)): `sf-alert--info
+sf-alert--outlined`, the border only, without the close and without actions.
+
+```html
+<div class="sf-alert sf-alert--info sf-alert--outlined flex items-start">
+  <i class="sf-icon" aria-hidden="true">info</i>
+  <div class="sf-alert-wrap flex flex-col flex-1">
+    <div class="sf-alert-content flex flex-col flex-1">
+      <div class="sf-alert-supporting-text">Новый адрес получат все письма сайта.</div>
+    </div>
+  </div>
+</div>
+```
+
 ## Ink (1.1.1, C35 acceptance F1)
 
 One notice draws one ink, as sf-toast does: the status icon is the status's
@@ -66,6 +142,17 @@ on its plate.
 Combine one semantic type with `default`, `outlined` or `flat`. Default and flat
 semantic surfaces use their matching `on-*-container` text role. Outlined keeps
 the page text role and a semantic border/icon.
+
+The three looks (owner decision C110 as amended 2026-11-12; 1.3.0):
+
+| Look | Class | Border | Fill | Shadow |
+|---|---|---|---|---|
+| (а) border only | `sf-alert--outlined` | status outline | none (the page) | none |
+| (б) border and fill | `sf-alert--default` | status outline | status container | none |
+| (в) fill and shadow | `sf-alert--flat` | none | status container | `--sf-shadow-raised` |
+
+Only the flat look casts a shadow: the raised place's shadow, the card's (a soft key and ambient shade in the light theme, the key shade
+alone in the dark). Before 1.3.0 the flat look had no shadow.
 
 ## Behavior
 

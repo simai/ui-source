@@ -25,9 +25,10 @@
     "src/core/scss/_sf_layer_order.scss",
     "src/core/scss/index.scss",
     "src/core/scss/mix/_mix__common.scss",
+    "src/core/scss/mix/_mix__notice-link.scss",
     "src/core/scss/vars/_sf_var__display.scss"
   ],
-  "content_sha256": "efc842e794c86d62f6e6414bcc1ce0de0e53b6f4842a128243f13b1202fb9919",
+  "content_sha256": "9974a0d70e7378b0e54f937ea305792db9fe1626cac0a0a152b0b90373c2237f",
   "dependencies": [
     {
       "id": "font.inter",

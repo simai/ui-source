@@ -137,6 +137,15 @@
       "reason": "C18 lists the 1-2px line as an exception: a border, a focus offset, a visually hidden 1px box, an anti-aliasing half pixel. A hairline marks an edge and keeps its pixel width at any root size (owner, 2026-10-10)."
     },
     {
+      "id": "notice-frame-in-container-step",
+      "category": "condition-review",
+      "filePattern": "^component/(?:alerts/scss/_css__alerts|toast/scss/_css__toast)\\.scss$",
+      "contextPattern": "^\\s*@container sf-(?:alert|toast) \\(min-width: calc\\(",
+      "textPattern": "^(?:1rem|2px)$",
+      "status": "accepted-size-step",
+      "reason": "Owner decision C115 (layout L3a): the notice's actions go into the row from 36 / 48 rem (a toast 20 rem) of the notice's whole width. A container query reads the content box and cannot read a variable, so the step takes off the notice's frame as written lengths: its two inline paddings (1rem each, --sf-space-1) and its two borders (1px each, --sf-px)."
+    },
+    {
       "id": "breakpoint-and-container-steps",
       "category": "condition-review",
       "filePattern": "\\.(?:s?css)$",

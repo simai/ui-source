@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.alert-bar",
-  "version": "1.4.2",
+  "version": "1.6.1",
   "title": "Alert bar",
-  "summary": "A full-width bar above a page or admin header for the conditions that need action now: error, warning, info. One bar for all of them, coloured by the most serious; several are paged «‹ 1 of N ›» and listed under the bar with «All N». Warning closes for a day, info for good, error only minimizes to a strip. It stores nothing: the host keeps what was closed.",
+  "summary": "A full-width bar above a page or admin header for the conditions that need action now: error, warning, info. One bar for all of them, coloured by the most serious; it shows the most serious, and «N more» lists the others under the bar. Warning closes for a day, info for good, error only minimizes to a strip. It stores nothing: the host keeps what was closed.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -30,7 +30,6 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "smart.badge",
       "smart.button",
       "smart.button-icon",
       "smart.icon",
@@ -136,7 +135,7 @@
       }
     },
     "sf-alert-bar-acknowledge": {
-      "summary": "A person pressed an item's acknowledge button («Отметить, что видели»): the host records that the condition was seen, for every person it concerns, until it happens again. Not cancelled, the item leaves the bar until the host sets the list again",
+      "summary": "A person pressed an item's acknowledge button («Прочитано»): the host records that the condition was seen, for every person it concerns, until it happens again. Not cancelled, the item leaves the bar until the host sets the list again",
       "payload": {
         "type": "object",
         "required": [
@@ -246,11 +245,11 @@
     "role": "region",
     "accessible_name": "internal",
     "keyboard": [
-      "Tab reaches the action link, acknowledge, each item's time (its tooltip), the paging arrows, «All N» and close in order",
+      "Tab reaches the action link, acknowledge, the shown item's time (its tooltip), «N more», close or minimize, then the rows of the open list in order: each row's action, acknowledge and close; a row's time is text, no Tab stop",
       "Enter or Space presses a control; Enter follows the action link",
-      "Escape closes the open list and returns focus to «All N»"
+      "Escape anywhere in the bar or its open list closes the list and returns focus to «N more»"
     ],
-    "focus": "The bar never takes focus. A control that leaves (its item closed or acknowledged) hands focus to the next control of the bar, so focus never falls to the page."
+    "focus": "The bar never takes focus. A control that leaves (its item closed or acknowledged) hands focus on, so focus never falls to the page: from a row of the open list to the row that takes its place (the next, from the last row the one before), with no row left to the bar; from the bar to its first control."
   },
   "presentation": {
     "themes": [
@@ -312,23 +311,23 @@
     "source_artifacts": [
       {
         "path": "src/smart/alert-bar/index.js",
-        "sha256": "1c75122810f03bbd6222b98d95cd02ef4dc959f10c7f84cdb3d0c076c1dfd52f"
+        "sha256": "6a00815d00ff450e0322e91e191a05c2964e8cce43dcb9447c9a30d006ada499"
       },
       {
         "path": "src/smart/alert-bar/js/templates/default.js",
-        "sha256": "97e3beef5ffe2a02b25f0bed348d29e364e7097ca2e7e6d5b9338678127c7e0c"
+        "sha256": "d6c70447a75a645b06c1d13ce79f69d4515df01a9e0877d4ea2592afa6fbf3e5"
       },
       {
         "path": "src/smart/alert-bar/scss/_smart__alert-bar.scss",
-        "sha256": "97e19eb8445a8d8c214cedec6b46137f42d103a0d122d554545fe24682f081b6"
+        "sha256": "252a0431caff4ec5d8bb9370f6073178a4875c084afa24d02c4e49a10514c476"
       },
       {
         "path": "src/smart/alert-bar/rule.js",
-        "sha256": "b5ee49c69b303a5eda38610daa2b73da6481c73bc91e6fba700c28d19e8d1ddd"
+        "sha256": "041250120255b9ff9834f7619fafda3511e07fb925803c001dfaf9885ccc6ccb"
       },
       {
         "path": "src/smart/alert-bar/docs.md",
-        "sha256": "9028a50d98ae293bde6e61967357aa02e3dfaa69f4ce96124adf3d5114f7b0af"
+        "sha256": "21077167ead80069dbc2b2c39242aec9fdb804211934fd3579d87c99c70252fb"
       }
     ],
     "generated_runtime": []

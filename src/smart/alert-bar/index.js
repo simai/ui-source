@@ -8,8 +8,8 @@
 //   </script></sf-alert-bar>
 //
 // The items are sorted error, warning, info, the newest first; the bar takes
-// the colour of the first and shows it. Several are paged «‹ 1 из N ›» and
-// listed under the bar with «Все N». A warning closes for a day, an info item
+// the colour of the first and shows it, without paging arrows (owner decision
+// C114 (3)); «Ещё N» lists the others under the bar (NS-12). A warning closes for a day, an info item
 // for good; an error item is never closed, its button minimizes the bar to a
 // strip that keeps the count.
 //
@@ -25,6 +25,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {toDate} from '../../core/js/format';
 import {renderAlertBarTemplate} from './js/templates/default';
+import {preloadControlIcons} from '../helpers/cycle';
 import manifest from './component.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
@@ -43,6 +44,8 @@ const RANK = {error: 0, warning: 1, info: 2};
 export const HIDE = {warning: 'day', info: 'always'};
 // sf-alert's status icons, by the theme's status words.
 export const ICONS = {error: 'error', warning: 'warning', info: 'info'};
+// The open toggle's glyph on a narrow bar (1.6.1): the list collapses.
+export const COLLAPSE_ICON = 'unfold_less';
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
 
@@ -211,13 +214,6 @@ class SfAlertBar extends AlertBarElement {
 
   // ---------------------------------------------------------------- presses
 
-  page(step) {
-    const count = this.list.length;
-    if (count < 2) return;
-    this._index = wrapIndex(this._index + step, count);
-    this.requestComponentUpdate('page');
-  }
-
   toggleList(force) {
     const open = force === undefined ? !this._listOpen : Boolean(force);
     if (open === this._listOpen) return;
@@ -266,21 +262,28 @@ class SfAlertBar extends AlertBarElement {
     return applied();
   }
 
-  // An item leaves: the control that had focus hands it to the next control
-  // of the bar (§19.2: focus never falls to the page).
+  // An item leaves: the control that had focus hands it on (§19.2: focus
+  // never falls to the page). From a row of the open list it goes to the
+  // row that takes its place -- the next one, or from the last row the one
+  // before it (NS-12); with no row left, to the bar. From the bar, to the
+  // bar's first control.
   leave(id) {
     const active = this.ownerDocument.activeElement;
     const focused = Boolean(active && this.contains(active));
-    const where = active?.closest?.('.sf-alert-bar-item') ? 'list' : 'bar';
+    const row = active?.closest?.('.sf-alert-bar-item');
+    const rows = row ? [...this.querySelectorAll('.sf-alert-bar-item')] : [];
+    const place = row ? rows.indexOf(row) : -1;
     this._gone.add(id);
     const count = this.list.length;
     this._index = wrapIndex(this._index, count);
     if (count < 2) this._listOpen = false;
     this.requestComponentUpdate('leave');
     if (!focused) return;
+    const first = (scope) => scope?.querySelector('a[href], button:not([disabled])');
     this.whenDrawn(() => {
-      const scope = where === 'list' && this._listOpen ? '.sf-alert-bar-list' : '.sf-alert-bar-row';
-      const target = this.querySelector(`${scope} a[href], ${scope} button:not([disabled])`)
+      const left = this._listOpen ? [...this.querySelectorAll('.sf-alert-bar-item')] : [];
+      const target = (place >= 0 && left.length ? first(left[Math.min(place, left.length - 1)]) : null)
+        ?? first(this.querySelector('.sf-alert-bar-row'))
         ?? this.querySelector('.sf-alert-bar a[href], .sf-alert-bar button:not([disabled])');
       target?.focus({preventScroll: true});
     });
@@ -314,6 +317,8 @@ class SfAlertBar extends AlertBarElement {
     const index = wrapIndex(this._index, count);
     const current = list[index] ?? null;
     this._shownId = current?.id;
+    // The open list holds the others: every item but the one the bar shows.
+    const others = list.filter((item) => item !== current);
     const level = list[0]?.level ?? '';
     // The raw value stays under its own name; the template reads this one.
     const isMinimized = Boolean(this.minimized) && level === 'error';
@@ -327,6 +332,7 @@ class SfAlertBar extends AlertBarElement {
       size: this.size === '1' ? '1' : '1/2',
       label: this.label,
       list: list.map((item) => ({...item, levelWord: word(`level-${item.level}`)})),
+      others: others.map((item) => ({...item, levelWord: word(`level-${item.level}`)})),
       count,
       index,
       level,
@@ -335,11 +341,9 @@ class SfAlertBar extends AlertBarElement {
       listId: this._listId,
       announce: this._announce,
       icons: ICONS,
+      collapseIcon: COLLAPSE_ICON,
       words: {
-        position: word('position', {n: index + 1, count}),
-        prev: word('prev'),
-        next: word('next'),
-        all: word('all', {count}),
+        more: word('more', {count: others.length}),
         collapseList: word('collapse-list'),
         list: word('list'),
         hideDay: word('hide-day'),
@@ -358,7 +362,13 @@ class SfAlertBar extends AlertBarElement {
     // The live regions keep their text until the host's next list, so a
     // drawing in between (a page, a minimize) does not speak it again.
     this.syncList();
-    return renderAlertBarTemplate(this.templateContext());
+    const context = this.templateContext();
+    // The open toggle's collapse glyph (narrow bar, 1.6.1) is drawn only
+    // after a press: asked for with the bar's first drawing, so the page's
+    // icon request carries it and the glyph does not wait for a subset of
+    // its own (R074, as sf-toast asks for its status glyph).
+    if (context.count > 1) preloadControlIcons(this, [{icon: COLLAPSE_ICON, filled: false}]);
+    return renderAlertBarTemplate(context);
   }
 }
 

@@ -30,9 +30,12 @@ const NOTIFY_TEXT = {
 
 const STATUSES = new Set(['neutral', 'info', 'success', 'warning', 'error']);
 const ICONS = {success: 'check_circle', info: 'info', warning: 'warning', error: 'error', neutral: ''};
-// Long enough to read a sentence; an error stays a little longer. 0 keeps a
-// message until it is closed.
-const DURATIONS = {neutral: 5000, info: 5000, success: 5000, warning: 8000, error: 10000};
+// Long enough to read a sentence. 0 keeps a message until it is closed: an
+// error or a warning always stays until a person closes it (owner decision
+// C114 (6), NS-2, WCAG 2.2.1), whatever duration it is given; it was 10 s and
+// 8 s. The class toast holds the same rule (component/toast, readDuration).
+const DURATIONS = {neutral: 5000, info: 5000, success: 5000, warning: 0, error: 0};
+const STAYS = new Set(['warning', 'error']);
 const PLACEMENTS = new Set(['top-start', 'top-end', 'bottom-start', 'bottom-end']);
 const LAYOUTS = new Set(['stack', 'list']);
 // The front message and the two before it show when the stack is closed (C50);
@@ -338,9 +341,10 @@ function release(entry) {
   layout();
 }
 
-// The actions a message offers (C50): one light navigation action is a link at
-// the end of its text; undo, retry, extend and two actions are buttons under
-// the text (C35, C46). One message never mixes the two.
+// The actions a message offers (C50, C126 (1)): every action is a button; one
+// light navigation action is the action button drawn as a link, and undo,
+// retry, extend and two actions are buttons (C35, C46). With the link the
+// other actions do not apply.
 function actionsOf(options) {
   const list = Array.isArray(options.actions) ? options.actions : (options.action ? [options.action] : []);
   return list
@@ -521,7 +525,8 @@ function normalise(options) {
   const status = STATUSES.has(options.status) ? options.status : 'neutral';
   const title = String(options.title ?? '').trim();
   const text = String(options.text ?? '').trim();
-  const duration = Number.isFinite(Number(options.duration)) ? Math.max(0, Number(options.duration)) : DURATIONS[status];
+  const given = Number.isFinite(Number(options.duration)) ? Math.max(0, Number(options.duration)) : DURATIONS[status];
+  const duration = STAYS.has(status) ? 0 : given;
   return {status, title, text, duration};
 }
 

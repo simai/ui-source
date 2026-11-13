@@ -23,7 +23,8 @@ test('sf-alert-bar: the action is tonal, acknowledge and hide are ghost, in the 
   assert.equal((template.match(/actionLink\(context, item, 'tonal'\)/g) || []).length, 2);
   assert.ok(!/actionLink\(context, item, 'outline'\)/.test(template));
   assert.ok(!/acknowledgeButton\(context, item, 'outline'\)/.test(template));
-  assert.ok(/sf-alert-bar-item-close" size=\$\{size\} appearance="ghost"/.test(template));
+  // The list's close is the cross icon button (NS-12), ghost like the bar's.
+  assert.ok(/sf-alert-bar-item-close" icon="close" size=\$\{size\} height="low" appearance="ghost"/.test(template));
 });
 
 test('the C46 solid plate is gone; a status notice gives its action the neutral container back', () => {
