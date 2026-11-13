@@ -47,7 +47,7 @@ test('the grey plate takes the boundary of the light grey steps', () => {
 const FIELDS = [
   ['src/component/inputs/scss/_css__inputs.scss', '--sf-input-field--line-color', '--sf-input-field--border-color', '--sf-input-border-color', 2],
   ['src/component/textarea/scss/_css__textarea.scss', '--sf-textarea-textarea--line-color', '--sf-textarea-textarea--border-color', '--sf-textarea-border-color', 2],
-  ['src/smart/input-lookup/scss/_smart__lookup.scss', '--sf-lookup--line-color', '--sf-lookup--border-color', '--sf-lookup-border-color', 3],
+  ['src/smart/input-lookup/scss/_smart__lookup.scss', '--sf-lookup--line-color', '--sf-lookup--border-color', '--sf-lookup-border-color', 1],
   ['src/smart/input-rich/scss/_smart__rich_text.scss', '--sf-rich-text--line-color', '--sf-rich-text--border-color', '--sf-rich-text-border-color', 1],
   // Every filled dropdown state that colours the border colours it --sf-outline.
   ['src/component/dropdown/scss/_css__dropdown.scss', '--sf-dropdown-field--line-color', '--sf-dropdown-field--border-color', '--sf-dropdown-border-color', 0],

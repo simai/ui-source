@@ -10406,6 +10406,443 @@
       "source": "src/smart/tabs/index.js"
     },
     {
+      "id": "event-file-download-download-to-request",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "event",
+      "summary": "sf-file-download's request to fetch a file is sf-file-download-request: sf-file-download-download said the word twice (owner decision C51, docs pre-check 2026-11-10 DF-11). The element sends the new name first and the old one after it with the same detail {href, fileName, download}; a listener on either name may cancel it, and one cancel stops the download. The older names sf-download-file-download and sf-download-file:click follow as before; the old tag's family names of the new events (sf-download-file-request, sf-download-file-cancel) follow too.",
+      "items": [
+        {
+          "component": "sf-file-download",
+          "from": "sf-file-download-download",
+          "to": "sf-file-download-request"
+        },
+        {
+          "component": "sf-file-download",
+          "from": "sf-download-file-request",
+          "to": "sf-file-download-request"
+        },
+        {
+          "component": "sf-file-download",
+          "from": "sf-download-file-cancel",
+          "to": "sf-file-download-cancel"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-event",
+      "examples": {
+        "before": "files.addEventListener('sf-file-download-download', (event) => { event.preventDefault(); prepare(event.target); });",
+        "after": "files.addEventListener('sf-file-download-request', (event) => { event.preventDefault(); prepare(event.target); });"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/file-download/aliases.json, src/smart/file-download/component.json events.request"
+    },
+    {
+      "id": "behaviour-timeline-stage-dots",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-list-timeline: a step (state) without an icon tells its state by the dot's shape, as an icon step does (owner decision C61, variant A): done a solid dot in --sf-primary, current the same dot ringed through a gap, upcoming an empty dot with a --sf-on-surface-variant ring. Before, every such dot was the neutral grey and only the line told the state. A status tone (success, warning, error) still wins.",
+      "items": [
+        {
+          "component": "sf-list-timeline",
+          "attribute": "items[].state",
+          "from": "a neutral dot for every state",
+          "to": "done solid, current ringed, upcoming empty"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite in markup or data. A page that coloured its own step dots over .sf-list-timeline-dot can drop that rule.",
+      "examples": {
+        "before": "<sf-list-timeline steps></sf-list-timeline> (items with state, no icon: grey dots)",
+        "after": "<sf-list-timeline steps></sf-list-timeline> (the same items: solid, ringed, empty dots)"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
+    },
+    {
+      "id": "behaviour-c77-field-value-inset",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "Fields, textarea, dropdown, lookup and sf-list rows start their text at one value inset with the border counted inside (owner decision C77): size 1/2 --sf-space-1/2 (12), never below 12 (--sf-b2, on the phone and in a compact region, where C79 brings it down to 28), size 1 --sf-space-1 (16, 12 compact and phone), size 2 --sf-space-2 (20, 16 compact and phone). The extra --sf-ui-<S>--text-space-x before the text is gone. With a rounded field the text moves in by (radius - 4)/2, the radius capped at half the single-line height, so a pill field puts its text where a rounded sf-button does; icons stay at the plain inset. Textarea takes the single-line radius; a tag inside a lookup takes the field radius less 4. sf-list rows sit --sf-space-1/4 in from the frame, as menu rows do, and a row's text block takes no text-space-x at its end. A dropdown's options keep the field's value edge at every size: their padding is the field's inset less the panel's plate (12 / 16 / 20 from the panel's edge at 1/2, 1, 2).",
+      "items": [
+        {
+          "component": "sf-input, sf-input-*",
+          "attribute": "--sf-input-padding-inline",
+          "from": "var(--sf-ui-1--space-x) plus text-space-x on the input",
+          "to": "calc(var(--sf-space-1) - var(--sf-px)) plus the rounding correction"
+        },
+        {
+          "component": "sf-input-textarea",
+          "attribute": "--sf-textarea-padding-inline",
+          "from": "calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x))",
+          "to": "calc(var(--sf-space-1) - var(--sf-px)) plus the rounding correction"
+        },
+        {
+          "component": "sf-input-lookup",
+          "attribute": "--sf-lookup-padding-inline",
+          "from": "var(--sf-ui-1--space-x)",
+          "to": "calc(var(--sf-space-1) - var(--sf-px)) plus the rounding correction"
+        },
+        {
+          "component": "sf-list",
+          "attribute": "row text inset",
+          "from": "frame padding plus row padding plus text-space-x",
+          "to": "the size's value inset, row highlight --sf-space-1/4 from the frame"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite in markup. A page that set --sf-input-padding-inline, --sf-textarea-padding-inline or --sf-lookup-padding-inline keeps its value; a page that nudged text inside fields or list rows to line up with menus can drop that rule. The sf-pagination page box is a number box and keeps its earlier inset and width.",
+      "examples": {
+        "before": "<sf-input label=\"Name\"></sf-input> (text at 25 px from the field edge, size 1)",
+        "after": "<sf-input label=\"Name\"></sf-input> (text at 16 px, the menu and button inset)"
+      },
+      "owner": "ui-source",
+      "source": "src/component/inputs/scss/_css__inputs.scss; src/component/textarea/scss/_css__textarea.scss; src/component/dropdown/scss/_css__custom.scss; src/smart/input-lookup/scss/_smart__lookup.scss; src/smart/list/js/templates/default.css; ui-control control/docs-review/decisions.md C77"
+    },
+    {
+      "id": "behaviour-timeline-icon-steps",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-list-timeline 1.2.0: a step (state) with an icon follows the same logic as a step's dot (owner decision C61): done the solid primary circle, current the same solid circle ringed through a gap (it was the soft primary circle with a ring), upcoming an empty circle with a --sf-on-surface-variant ring (it was --sf-outline-variant). A status tone (error, warning, success) now wins over a step with an icon, as it does on a dot. In high contrast the step dots and icons keep their shape in the system colours.",
+      "items": [
+        {
+          "component": "sf-list-timeline",
+          "attribute": "items[].state",
+          "from": "an icon step: current soft, upcoming ringed in --sf-outline-variant, the status ignored",
+          "to": "an icon step: current solid and ringed through a gap, upcoming ringed in --sf-on-surface-variant, the status tone wins"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite in markup or data. A step that carried a status only for the log now shows the status tone on its icon; drop the status from such a step if the step state should show.",
+      "examples": {
+        "before": "{\"title\": \"Собран\", \"icon\": \"inventory_2\", \"state\": \"done\", \"status\": \"warning\"} (a primary circle)",
+        "after": "the same item (a warning circle; without status a primary circle)"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/list-timeline/js/templates/default.js, src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
+    },
+    {
+      "id": "behaviour-highlight-follows-the-place",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "Highlighted code follows the place it stands on (DEV 2026-11-11, variant C of the code comment contrast study). The highlight roles were resolved on the theme root, so on a popup, the grey plate, a strong colour or the inverse the code kept the page's inks: comments 3.21:1 on a dark popup, 2.86 on the dark grey plate, 1.27 / 1.10 on bg-primary, text 3.38 / 1.61 on bg-primary. The code now reads them through three core place hooks the page does not declare (--sf-place--ink-variant, --sf-place--ink, --sf-place--fill-surface): on a card, a popup and the grey plate the comment, the punctuation and the line numbers take the place's dim ink on a fill; on a strong colour and on glass the text and every hue take the place's ink, one colour; on the grey plate and on a dark popup the block lays no fill of its own. On the page nothing changes.",
+      "items": [
+        {
+          "component": "highlight",
+          "attribute": "--sf-highlight-comment, --sf-highlight-punctuation, --sf-highlight-line-number",
+          "from": "the page's dim ink on every place",
+          "to": "the place's dim ink on a fill (--sf-place--ink-variant); the page's on the page"
+        },
+        {
+          "component": "highlight",
+          "attribute": "--sf-highlight-text and the hue roles",
+          "from": "the page's ink and the theme's hues on every place",
+          "to": "the place's ink on a strong colour and on glass (--sf-place--ink), one colour; elsewhere as before"
+        },
+        {
+          "component": "highlight",
+          "attribute": ".sf-code-surface background",
+          "from": "the container fill on every place",
+          "to": "none on the grey plate and on a popup in the dark theme (--sf-place--fill-surface)"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite. The roles --sf-highlight-* are still the page's and a project's override of one still applies on the page; on a place the place's ink wins. A page that wants the former look on a place can set --sf-place--ink-variant, --sf-place--ink and --sf-place--fill-surface to initial on the code block.",
+      "examples": {
+        "before": "<div class=\"bg-primary\"><pre class=\"sf-code-surface\"><code class=\"hljs\">... (comments 1.27:1, keywords 1.26:1)",
+        "after": "<div class=\"bg-primary\"><pre class=\"sf-code-surface\"><code class=\"hljs\">... (the same markup: every role on-primary, 5:1 and above)"
+      },
+      "owner": "ui-source",
+      "source": "src/component/highlight/scss/_theme.scss; src/core/scss/mix/_mix__places.scss; ui-control prototypes/code-comment-contrast.html"
+    },
+    {
+      "id": "behaviour-filled-field-bottom-line",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "A filled field draws its bottom edge in --sf-outline at rest (owner decision C52, with C41's 8 % fill): sf-input, sf-input-textarea, sf-dropdown, sf-input-lookup and sf-input-rich with appearance=\"filled\". The fill alone stood 1.10 to 1.23 from its place. Hover and press colour the line with the border, focus and an open list turn the whole border --sf-outline as before; error and disabled fields have no line. A project's --sf-input-border-color (and the other fields' border variables) colours the line too. The filled look is for a search or filter field over a table or a list; a form keeps the bordered default.",
+      "items": [
+        {
+          "component": "sf-input",
+          "attribute": "appearance",
+          "from": "filled without a boundary at rest",
+          "to": "filled with a bottom line"
+        },
+        {
+          "component": "sf-input-textarea",
+          "attribute": "appearance",
+          "from": "filled without a boundary at rest",
+          "to": "filled with a bottom line"
+        },
+        {
+          "component": "sf-dropdown",
+          "attribute": "appearance",
+          "from": "filled without a boundary at rest",
+          "to": "filled with a bottom line"
+        },
+        {
+          "component": "sf-input-lookup",
+          "attribute": "appearance",
+          "from": "filled without a boundary at rest",
+          "to": "filled with a bottom line"
+        },
+        {
+          "component": "sf-input-rich",
+          "attribute": "appearance",
+          "from": "filled without a boundary at rest",
+          "to": "filled with a bottom line"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite for a search or filter field. A filled field in a form (C52: forms are bordered) becomes appearance=\"bordered\".",
+      "examples": {
+        "before": "<sf-input appearance=\"filled\" label=\"Имя\"></sf-input>",
+        "after": "<sf-input label=\"Имя\"></sf-input>"
+      },
+      "owner": "ui-source",
+      "source": "src/component/inputs/scss/_css__inputs.scss, src/component/textarea/scss/_css__textarea.scss, src/component/dropdown/scss/_css__dropdown.scss, src/smart/input-lookup/scss/_smart__lookup.scss, src/smart/input-rich/scss/_smart__rich_text.scss; ui-control control/docs-review/decisions.md C52"
+    },
+    {
+      "id": "behaviour-inverse-place-roles",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "bg-surface-inverse and bg-surface-inverse-fixed are places (C16): what stands on them takes the other theme's roles -- ink, dim ink, state layers, fill, lines and, on the children, the accent (the fixed one, the dark theme's in both themes). They painted only the background, and a field's label on bg-surface-inverse measured 1.31:1 light and 1.00:1 dark. A card or a popup on them takes the theme's roles back. Also: the grey plate bg-surface-container takes the boundary of the light grey steps (opaque neutral-50 in the light theme), so a bordered field's edge on it holds 3:1.",
+      "items": [
+        {
+          "component": "background-color",
+          "attribute": "class",
+          "from": "bg-surface-inverse paints only",
+          "to": "bg-surface-inverse is a place"
+        },
+        {
+          "component": "background-color",
+          "attribute": "class",
+          "from": "bg-surface-inverse-fixed paints only",
+          "to": "bg-surface-inverse-fixed is a place"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove the colour overrides a page wrote for text or controls on bg-surface-inverse (color-on-surface-inverse on each label, a light --sf-outline); the place gives them.",
+      "examples": {
+        "before": "<div class=\"bg-surface-inverse\"><span class=\"color-on-surface-inverse\">Подпись</span></div>",
+        "after": "<div class=\"bg-surface-inverse\"><span>Подпись</span></div>"
+      },
+      "owner": "ui-source",
+      "source": "src/core/scss/mix/_mix__places.scss sf-place-inverse; src/utility/background-color/default/scss/_sf_css__background_color.scss"
+    },
+    {
+      "id": "behaviour-choice-help-text",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-checkbox 1.2.0, sf-radio 1.2.0 and sf-switch 1.4.0: help holds the explanation text, shown by a «?» button (sf-help-mark) after the label; a press on it opens the explanation and never changes the control (audit 2026-11-11, W1). It was an icon name drawn as a decorative icon inside the label, so an icon name passed today shows as the explanation's text.",
+      "items": [
+        {
+          "component": "sf-checkbox",
+          "attribute": "help",
+          "from": "help as an icon name (a decorative icon beside the label)",
+          "to": "help as the explanation text (a «?» button, sf-help-mark)"
+        },
+        {
+          "component": "sf-radio",
+          "attribute": "help",
+          "from": "help as an icon name (a decorative icon beside the label)",
+          "to": "help as the explanation text (a «?» button, sf-help-mark)"
+        },
+        {
+          "component": "sf-switch",
+          "attribute": "help",
+          "from": "help as an icon name (a decorative icon beside the label)",
+          "to": "help as the explanation text (a «?» button, sf-help-mark)"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write the explanation in help (one or two short sentences) in place of an icon name. A page that wanted only a picture beside the label puts it in the label slot; an explanation with a link or a heading goes in the help slot as an sf-help-mark of its own.",
+      "examples": {
+        "before": "<sf-switch label=\"Синхронизация\" help=\"info\"></sf-switch>",
+        "after": "<sf-switch label=\"Синхронизация\" help=\"Через мобильную сеть синхронизация не идёт.\"></sf-switch>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/{checkbox,radio,switch}/js/templates/default.js, src/component/checkable-text-helper.js keepHelpOutOfLabel"
+    },
+    {
+      "id": "behaviour-choice-row-step",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-checkbox 1.2.0, sf-radio 1.2.0 and sf-switch 1.4.0 (owner decisions C59, C63; audit 2026-11-11 W1, W5, W6, W9): the hit area is the control and its text, not the empty rest of the row; the help mark is the label's sibling; a control with text is a row of its step, (control height - line) / 2 above and below (40 at size 1, 60 with a description, 32 compact, max(step, 44) under a coarse pointer); the label is regular in all three. A column of choice controls now keeps one pitch without a gap; a page that spaced them with a gap of its own grows by the row padding.",
+      "items": [
+        {
+          "component": "sf-checkbox",
+          "attribute": "label",
+          "from": "a press anywhere in the row toggled the control (the <label> filled the row and held the help); the row was one line tall (24 at size 1); the label was medium",
+          "to": "the control and its text are the target (the <label> hugs its content, the help mark stands beside it); a row with text is its step tall: 40, 60 with a description line, 32 compact, the touch target under a coarse pointer; the label is regular"
+        },
+        {
+          "component": "sf-radio",
+          "attribute": "label",
+          "from": "a press anywhere in the row toggled the control (the <label> filled the row and held the help); the row was one line tall (24 at size 1); the label was medium",
+          "to": "the control and its text are the target (the <label> hugs its content, the help mark stands beside it); a row with text is its step tall: 40, 60 with a description line, 32 compact, the touch target under a coarse pointer; the label is regular"
+        },
+        {
+          "component": "sf-switch",
+          "attribute": "label",
+          "from": "a press anywhere in the row toggled the control (the <label> filled the row and held the help); the row was one line tall (24 at size 1)",
+          "to": "the control and its text are the target (the <label> hugs its content, the help mark stands beside it); a row with text is its step tall: 40, 60 with a description line, 32 compact, the touch target under a coarse pointer"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Drop a gap or margin a page put between choice controls in a column: the rows carry their own padding. A page that made a whole row the target wraps the control in its own row element (a list row, a menu row) as sf-list-item does. A labelled control inline beside 40 px controls (a toolbar) now has their height; beside plain text it is its step tall, not its line. A control with no label and no description stays the box.",
+      "examples": {
+        "before": "<div class=\"flex flex-col gap-2\"><sf-checkbox label=\"Новости\"></sf-checkbox><sf-checkbox label=\"Акции\"></sf-checkbox></div>",
+        "after": "<div class=\"flex flex-col\"><sf-checkbox label=\"Новости\"></sf-checkbox><sf-checkbox label=\"Акции\"></sf-checkbox></div>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/helpers/checkable-row.js, src/smart/helpers/checkable-row.css, src/smart/{checkbox,radio,switch}/js/templates/default.js, src/component/{checkbox,radio,switch}/scss; ui-control control/docs-review/decisions.md C59, C63"
+    },
+    {
+      "id": "behaviour-dropdown-form-field",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-dropdown 1.9.0 is a form field through ElementInternals, as sf-input is (owner decision C55): the host submits the value under its name, and `required` now stops a submit while nothing is chosen (value-missing; the browser focuses the trigger and the field shows «Выберите вариант»). It drew a required mark only before. The hidden input .sf-dropdown-hidden-input is still drawn and holds the value, but carries no name while the host submits, so form.elements[name] and [name=…] find the sf-dropdown host, not the hidden input.",
+      "items": [
+        {
+          "component": "sf-dropdown",
+          "attribute": "required",
+          "from": "required as a mark only",
+          "to": "required as a constraint (value-missing)"
+        },
+        {
+          "component": "sf-dropdown",
+          "from": "input.sf-dropdown-hidden-input[name] as the form control",
+          "to": "the sf-dropdown host (value, validity, form)"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a required sf-dropdown may stay empty on submit, remove required (or choose a default); where a page read the hidden input by its name, read the host instead: form.elements[name].value, or the host's value property. FormData is unchanged: the same name carries the same value.",
+      "examples": {
+        "before": "form.querySelector('input[name=\"city\"]').value",
+        "after": "form.elements.city.value"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/dropdown/index.js"
+    },
+    {
+      "id": "behaviour-text-fields-shown-required",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-input 1.8.0, sf-textarea 1.8.0 and sf-lookup 1.6.0 show their required error after a failed form check, as sf-dropdown 1.9.0 does (C55 acceptance F1): a required field left empty gets the error border, the value-missing word under it («Заполните поле»; sf-lookup «Выберите значение.»), aria-invalid and aria-errormessage, from the host's invalid event (a submit attempt, checkValidity(), reportValidity()) until the person's input fills it or the form is reset. Before, only the browser's bubble said it. Submitting, validity, the bubble and the focus on the first invalid field are unchanged.",
+      "items": [
+        {
+          "component": "sf-input",
+          "from": "required error in the browser bubble only",
+          "to": "error look and value-missing message after a failed check"
+        },
+        {
+          "component": "sf-textarea",
+          "from": "required error in the browser bubble only",
+          "to": "error look and value-missing message after a failed check"
+        },
+        {
+          "component": "sf-lookup",
+          "from": "required error in the browser bubble only",
+          "to": "error look and value-missing message after a failed check"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to change. A page that drew its own required message on the host's invalid event (invalid + error-message) keeps it: the page's error-message wins over the field's word.",
+      "owner": "ui-source",
+      "source": "src/smart/helpers/form-field.js ShownRequired"
+    },
+    {
+      "id": "value-avatar-offline-dot-dim-ink",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-avatar: the offline dot is the place's dim ink, --sf-on-surface-variant, not the disabled ink laid over the place colour (defect fix: the disabled ink was under 3:1 for a status mark, light 3.10 against the page and 2.56 against the avatar, the dark grey plate 2.48 / 1.67; the dim ink is at least 6.44 / 4.43 on the page, a card and the grey plate in both themes). The two public variables stay: --sf-avatar-offline-background-color defaults to var(--sf-on-surface-variant) (was var(--sf-surface-place)) and --sf-avatar-offline-overlay to none (was the disabled ink).",
+      "items": [
+        {
+          "component": "sf-avatar",
+          "attribute": "--sf-avatar-offline-background-color",
+          "from": "var(--sf-surface-place)",
+          "to": "var(--sf-on-surface-variant)"
+        },
+        {
+          "component": "sf-avatar",
+          "attribute": "--sf-avatar-offline-overlay",
+          "from": "linear-gradient(var(--sf-on-surface-disabled) 0 0)",
+          "to": "none"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite in markup. A page that set only --sf-avatar-offline-background-color under the disabled ink now gets that colour alone; to keep the former dot set --sf-avatar-offline-background-color: var(--sf-surface-place) and --sf-avatar-offline-overlay: linear-gradient(var(--sf-on-surface-disabled) 0 0). A page that set the overlay to none sees no change.",
+      "examples": {
+        "before": "<sf-avatar text=\"АЗ\" status=\"offline\"></sf-avatar> (a light grey dot, rgb(145,146,150) on a white page)",
+        "after": "<sf-avatar text=\"АЗ\" status=\"offline\"></sf-avatar> (the same markup: a dot in the dim ink, neutral-40 light / neutral-70 dark)"
+      },
+      "owner": "ui-source",
+      "source": "src/component/avatars/scss/_css__avatar_online_indicator.scss; ui-control prototypes/avatar-offline.html"
+    },
+    {
+      "id": "behaviour-c53-quantity-width-by-digits",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-input-quantity 1.4.0 and component.quantity 1.2.0 (owner decision C53, remarks R111-R115): the field is as wide as the longest number it holds, not as its container; the steppers hug the number (--sf-quantity-gap defaults to 0, was --sf-space-2) and the number place carries --sf-space-1/4 on each side; the inherited marker and reset stand after the box. New settings steppers (sides | none), unit and digits. A page that relied on the field filling its cell, or on the 20 px gap, sees a narrower box.",
+      "items": [
+        {
+          "component": "sf-input-quantity",
+          "from": "the box as wide as its container",
+          "to": "digits"
+        },
+        {
+          "component": "sf-input-quantity",
+          "from": "--sf-quantity-gap: var(--sf-space-2)",
+          "to": "--sf-quantity-gap: 0"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite for most pages. Where a field must keep a wider box (a column of fields, a long expected number), set digits=\"N\" on the field (the same N on every field of a column); where the old gap was wanted, set --sf-quantity-gap. A year, a weight or a price reads better as steppers=\"none\" with unit=\"…\".",
+      "examples": {
+        "before": "<sf-input-quantity label=\"Год выпуска\" value=\"2026\" min=\"1900\" max=\"2100\">",
+        "after": "<sf-input-quantity label=\"Год выпуска\" value=\"2026\" min=\"1900\" max=\"2100\" grouping=\"false\" steppers=\"none\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/quantity/scss/_css__quantity.scss, src/smart/input-quantity/index.js"
+    },
+    {
       "id": "behaviour-tabs-line-default",
       "recorded_on": "2026-11-12",
       "stage": "compat",
@@ -10487,64 +10924,6 @@
       "source": "src/smart/tabs/index.js"
     },
     {
-      "id": "event-file-download-download-to-request",
-      "recorded_on": "2026-11-11",
-      "stage": "compat",
-      "kind": "event",
-      "summary": "sf-file-download's request to fetch a file is sf-file-download-request: sf-file-download-download said the word twice (owner decision C51, docs pre-check 2026-11-10 DF-11). The element sends the new name first and the old one after it with the same detail {href, fileName, download}; a listener on either name may cancel it, and one cancel stops the download. The older names sf-download-file-download and sf-download-file:click follow as before; the old tag's family names of the new events (sf-download-file-request, sf-download-file-cancel) follow too.",
-      "items": [
-        {
-          "component": "sf-file-download",
-          "from": "sf-file-download-download",
-          "to": "sf-file-download-request"
-        },
-        {
-          "component": "sf-file-download",
-          "from": "sf-download-file-request",
-          "to": "sf-file-download-request"
-        },
-        {
-          "component": "sf-file-download",
-          "from": "sf-download-file-cancel",
-          "to": "sf-file-download-cancel"
-        }
-      ],
-      "deprecated_on": "2026-11-11",
-      "remove_after": "2027-01-01",
-      "rewrite": "rename-event",
-      "examples": {
-        "before": "files.addEventListener('sf-file-download-download', (event) => { event.preventDefault(); prepare(event.target); });",
-        "after": "files.addEventListener('sf-file-download-request', (event) => { event.preventDefault(); prepare(event.target); });"
-      },
-      "owner": "ui-source",
-      "source": "src/smart/file-download/aliases.json, src/smart/file-download/component.json events.request"
-    },
-    {
-      "id": "behaviour-timeline-stage-dots",
-      "recorded_on": "2026-11-11",
-      "stage": "compat",
-      "kind": "behaviour",
-      "summary": "sf-list-timeline: a step (state) without an icon tells its state by the dot's shape, as an icon step does (owner decision C61, variant A): done a solid dot in --sf-primary, current the same dot ringed through a gap, upcoming an empty dot with a --sf-on-surface-variant ring. Before, every such dot was the neutral grey and only the line told the state. A status tone (success, warning, error) still wins.",
-      "items": [
-        {
-          "component": "sf-list-timeline",
-          "attribute": "items[].state",
-          "from": "a neutral dot for every state",
-          "to": "done solid, current ringed, upcoming empty"
-        }
-      ],
-      "deprecated_on": "2026-11-11",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Nothing to rewrite in markup or data. A page that coloured its own step dots over .sf-list-timeline-dot can drop that rule.",
-      "examples": {
-        "before": "<sf-list-timeline steps></sf-list-timeline> (items with state, no icon: grey dots)",
-        "after": "<sf-list-timeline steps></sf-list-timeline> (the same items: solid, ringed, empty dots)"
-      },
-      "owner": "ui-source",
-      "source": "src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
-    },
-    {
       "id": "behaviour-explicit-size-follows-density",
       "recorded_on": "2026-11-12",
       "stage": "compat",
@@ -10567,49 +10946,6 @@
       },
       "owner": "ui-source",
       "source": "scripts/generate-density.mjs; src/core/js/density.js; src/core/js/layer-stack.js; src/smart/menu-context/index.js; ui-control control/docs-review/decisions.md C79"
-    },
-    {
-      "id": "behaviour-c77-field-value-inset",
-      "recorded_on": "2026-11-11",
-      "stage": "compat",
-      "kind": "behaviour",
-      "summary": "Fields, textarea, dropdown, lookup and sf-list rows start their text at one value inset with the border counted inside (owner decision C77): size 1/2 --sf-space-1/2 (12), never below 12 (--sf-b2, on the phone and in a compact region, where C79 brings it down to 28), size 1 --sf-space-1 (16, 12 compact and phone), size 2 --sf-space-2 (20, 16 compact and phone). The extra --sf-ui-<S>--text-space-x before the text is gone. With a rounded field the text moves in by (radius - 4)/2, the radius capped at half the single-line height, so a pill field puts its text where a rounded sf-button does; icons stay at the plain inset. Textarea takes the single-line radius; a tag inside a lookup takes the field radius less 4. sf-list rows sit --sf-space-1/4 in from the frame, as menu rows do, and a row's text block takes no text-space-x at its end. A dropdown's options keep the field's value edge at every size: their padding is the field's inset less the panel's plate (12 / 16 / 20 from the panel's edge at 1/2, 1, 2).",
-      "items": [
-        {
-          "component": "sf-input, sf-input-*",
-          "attribute": "--sf-input-padding-inline",
-          "from": "var(--sf-ui-1--space-x) plus text-space-x on the input",
-          "to": "calc(var(--sf-space-1) - var(--sf-px)) plus the rounding correction"
-        },
-        {
-          "component": "sf-input-textarea",
-          "attribute": "--sf-textarea-padding-inline",
-          "from": "calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x))",
-          "to": "calc(var(--sf-space-1) - var(--sf-px)) plus the rounding correction"
-        },
-        {
-          "component": "sf-input-lookup",
-          "attribute": "--sf-lookup-padding-inline",
-          "from": "var(--sf-ui-1--space-x)",
-          "to": "calc(var(--sf-space-1) - var(--sf-px)) plus the rounding correction"
-        },
-        {
-          "component": "sf-list",
-          "attribute": "row text inset",
-          "from": "frame padding plus row padding plus text-space-x",
-          "to": "the size's value inset, row highlight --sf-space-1/4 from the frame"
-        }
-      ],
-      "deprecated_on": "2026-11-11",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Nothing to rewrite in markup. A page that set --sf-input-padding-inline, --sf-textarea-padding-inline or --sf-lookup-padding-inline keeps its value; a page that nudged text inside fields or list rows to line up with menus can drop that rule. The sf-pagination page box is a number box and keeps its earlier inset and width.",
-      "examples": {
-        "before": "<sf-input label=\"Name\"></sf-input> (text at 25 px from the field edge, size 1)",
-        "after": "<sf-input label=\"Name\"></sf-input> (text at 16 px, the menu and button inset)"
-      },
-      "owner": "ui-source",
-      "source": "src/component/inputs/scss/_css__inputs.scss; src/component/textarea/scss/_css__textarea.scss; src/component/dropdown/scss/_css__custom.scss; src/smart/input-lookup/scss/_smart__lookup.scss; src/smart/list/js/templates/default.css; ui-control control/docs-review/decisions.md C77"
     },
     {
       "id": "behaviour-c105-row-picture-gap",
@@ -10790,31 +11126,6 @@
       },
       "owner": "ui-source",
       "source": "src/smart/contents/scss/_smart__contents.scss"
-    },
-    {
-      "id": "behaviour-timeline-icon-steps",
-      "recorded_on": "2026-11-11",
-      "stage": "compat",
-      "kind": "behaviour",
-      "summary": "sf-list-timeline 1.2.0: a step (state) with an icon follows the same logic as a step's dot (owner decision C61): done the solid primary circle, current the same solid circle ringed through a gap (it was the soft primary circle with a ring), upcoming an empty circle with a --sf-on-surface-variant ring (it was --sf-outline-variant). A status tone (error, warning, success) now wins over a step with an icon, as it does on a dot. In high contrast the step dots and icons keep their shape in the system colours.",
-      "items": [
-        {
-          "component": "sf-list-timeline",
-          "attribute": "items[].state",
-          "from": "an icon step: current soft, upcoming ringed in --sf-outline-variant, the status ignored",
-          "to": "an icon step: current solid and ringed through a gap, upcoming ringed in --sf-on-surface-variant, the status tone wins"
-        }
-      ],
-      "deprecated_on": "2026-11-11",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Nothing to rewrite in markup or data. A step that carried a status only for the log now shows the status tone on its icon; drop the status from such a step if the step state should show.",
-      "examples": {
-        "before": "{\"title\": \"Собран\", \"icon\": \"inventory_2\", \"state\": \"done\", \"status\": \"warning\"} (a primary circle)",
-        "after": "the same item (a warning circle; without status a primary circle)"
-      },
-      "owner": "ui-source",
-      "source": "src/smart/list-timeline/js/templates/default.js, src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
     },
     {
       "id": "attribute-slider-range-c78",
@@ -11401,317 +11712,6 @@
       },
       "owner": "ui-source",
       "source": "src/core/scss/mix/_mix__places.scss (sf-place-glass-accent); src/core/scss/_sf_css__surface_places.scss; ui-control control/docs-review/decisions.md C70"
-    },
-    {
-      "id": "behaviour-highlight-follows-the-place",
-      "recorded_on": "2026-11-11",
-      "stage": "compat",
-      "kind": "behaviour",
-      "summary": "Highlighted code follows the place it stands on (DEV 2026-11-11, variant C of the code comment contrast study). The highlight roles were resolved on the theme root, so on a popup, the grey plate, a strong colour or the inverse the code kept the page's inks: comments 3.21:1 on a dark popup, 2.86 on the dark grey plate, 1.27 / 1.10 on bg-primary, text 3.38 / 1.61 on bg-primary. The code now reads them through three core place hooks the page does not declare (--sf-place--ink-variant, --sf-place--ink, --sf-place--fill-surface): on a card, a popup and the grey plate the comment, the punctuation and the line numbers take the place's dim ink on a fill; on a strong colour and on glass the text and every hue take the place's ink, one colour; on the grey plate and on a dark popup the block lays no fill of its own. On the page nothing changes.",
-      "items": [
-        {
-          "component": "highlight",
-          "attribute": "--sf-highlight-comment, --sf-highlight-punctuation, --sf-highlight-line-number",
-          "from": "the page's dim ink on every place",
-          "to": "the place's dim ink on a fill (--sf-place--ink-variant); the page's on the page"
-        },
-        {
-          "component": "highlight",
-          "attribute": "--sf-highlight-text and the hue roles",
-          "from": "the page's ink and the theme's hues on every place",
-          "to": "the place's ink on a strong colour and on glass (--sf-place--ink), one colour; elsewhere as before"
-        },
-        {
-          "component": "highlight",
-          "attribute": ".sf-code-surface background",
-          "from": "the container fill on every place",
-          "to": "none on the grey plate and on a popup in the dark theme (--sf-place--fill-surface)"
-        }
-      ],
-      "deprecated_on": "2026-11-11",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Nothing to rewrite. The roles --sf-highlight-* are still the page's and a project's override of one still applies on the page; on a place the place's ink wins. A page that wants the former look on a place can set --sf-place--ink-variant, --sf-place--ink and --sf-place--fill-surface to initial on the code block.",
-      "examples": {
-        "before": "<div class=\"bg-primary\"><pre class=\"sf-code-surface\"><code class=\"hljs\">... (comments 1.27:1, keywords 1.26:1)",
-        "after": "<div class=\"bg-primary\"><pre class=\"sf-code-surface\"><code class=\"hljs\">... (the same markup: every role on-primary, 5:1 and above)"
-      },
-      "owner": "ui-source",
-      "source": "src/component/highlight/scss/_theme.scss; src/core/scss/mix/_mix__places.scss; ui-control prototypes/code-comment-contrast.html"
-    },
-    {
-      "id": "behaviour-filled-field-bottom-line",
-      "recorded_on": "2026-11-11",
-      "stage": "compat",
-      "kind": "behaviour",
-      "summary": "A filled field draws its bottom edge in --sf-outline at rest (owner decision C52, with C41's 8 % fill): sf-input, sf-input-textarea, sf-dropdown, sf-input-lookup and sf-input-rich with appearance=\"filled\". The fill alone stood 1.10 to 1.23 from its place. Hover and press colour the line with the border, focus and an open list turn the whole border --sf-outline as before; error and disabled fields have no line. A project's --sf-input-border-color (and the other fields' border variables) colours the line too. The filled look is for a search or filter field over a table or a list; a form keeps the bordered default.",
-      "items": [
-        {
-          "component": "sf-input",
-          "attribute": "appearance",
-          "from": "filled without a boundary at rest",
-          "to": "filled with a bottom line"
-        },
-        {
-          "component": "sf-input-textarea",
-          "attribute": "appearance",
-          "from": "filled without a boundary at rest",
-          "to": "filled with a bottom line"
-        },
-        {
-          "component": "sf-dropdown",
-          "attribute": "appearance",
-          "from": "filled without a boundary at rest",
-          "to": "filled with a bottom line"
-        },
-        {
-          "component": "sf-input-lookup",
-          "attribute": "appearance",
-          "from": "filled without a boundary at rest",
-          "to": "filled with a bottom line"
-        },
-        {
-          "component": "sf-input-rich",
-          "attribute": "appearance",
-          "from": "filled without a boundary at rest",
-          "to": "filled with a bottom line"
-        }
-      ],
-      "deprecated_on": "2026-11-11",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Nothing to rewrite for a search or filter field. A filled field in a form (C52: forms are bordered) becomes appearance=\"bordered\".",
-      "examples": {
-        "before": "<sf-input appearance=\"filled\" label=\"Имя\"></sf-input>",
-        "after": "<sf-input label=\"Имя\"></sf-input>"
-      },
-      "owner": "ui-source",
-      "source": "src/component/inputs/scss/_css__inputs.scss, src/component/textarea/scss/_css__textarea.scss, src/component/dropdown/scss/_css__dropdown.scss, src/smart/input-lookup/scss/_smart__lookup.scss, src/smart/input-rich/scss/_smart__rich_text.scss; ui-control control/docs-review/decisions.md C52"
-    },
-    {
-      "id": "behaviour-inverse-place-roles",
-      "recorded_on": "2026-11-11",
-      "stage": "compat",
-      "kind": "behaviour",
-      "summary": "bg-surface-inverse and bg-surface-inverse-fixed are places (C16): what stands on them takes the other theme's roles -- ink, dim ink, state layers, fill, lines and, on the children, the accent (the fixed one, the dark theme's in both themes). They painted only the background, and a field's label on bg-surface-inverse measured 1.31:1 light and 1.00:1 dark. A card or a popup on them takes the theme's roles back. Also: the grey plate bg-surface-container takes the boundary of the light grey steps (opaque neutral-50 in the light theme), so a bordered field's edge on it holds 3:1.",
-      "items": [
-        {
-          "component": "background-color",
-          "attribute": "class",
-          "from": "bg-surface-inverse paints only",
-          "to": "bg-surface-inverse is a place"
-        },
-        {
-          "component": "background-color",
-          "attribute": "class",
-          "from": "bg-surface-inverse-fixed paints only",
-          "to": "bg-surface-inverse-fixed is a place"
-        }
-      ],
-      "deprecated_on": "2026-11-11",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Remove the colour overrides a page wrote for text or controls on bg-surface-inverse (color-on-surface-inverse on each label, a light --sf-outline); the place gives them.",
-      "examples": {
-        "before": "<div class=\"bg-surface-inverse\"><span class=\"color-on-surface-inverse\">Подпись</span></div>",
-        "after": "<div class=\"bg-surface-inverse\"><span>Подпись</span></div>"
-      },
-      "owner": "ui-source",
-      "source": "src/core/scss/mix/_mix__places.scss sf-place-inverse; src/utility/background-color/default/scss/_sf_css__background_color.scss"
-    },
-    {
-      "id": "behaviour-choice-help-text",
-      "recorded_on": "2026-11-11",
-      "stage": "compat",
-      "kind": "behaviour",
-      "summary": "sf-checkbox 1.2.0, sf-radio 1.2.0 and sf-switch 1.4.0: help holds the explanation text, shown by a «?» button (sf-help-mark) after the label; a press on it opens the explanation and never changes the control (audit 2026-11-11, W1). It was an icon name drawn as a decorative icon inside the label, so an icon name passed today shows as the explanation's text.",
-      "items": [
-        {
-          "component": "sf-checkbox",
-          "attribute": "help",
-          "from": "help as an icon name (a decorative icon beside the label)",
-          "to": "help as the explanation text (a «?» button, sf-help-mark)"
-        },
-        {
-          "component": "sf-radio",
-          "attribute": "help",
-          "from": "help as an icon name (a decorative icon beside the label)",
-          "to": "help as the explanation text (a «?» button, sf-help-mark)"
-        },
-        {
-          "component": "sf-switch",
-          "attribute": "help",
-          "from": "help as an icon name (a decorative icon beside the label)",
-          "to": "help as the explanation text (a «?» button, sf-help-mark)"
-        }
-      ],
-      "deprecated_on": "2026-11-11",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Write the explanation in help (one or two short sentences) in place of an icon name. A page that wanted only a picture beside the label puts it in the label slot; an explanation with a link or a heading goes in the help slot as an sf-help-mark of its own.",
-      "examples": {
-        "before": "<sf-switch label=\"Синхронизация\" help=\"info\"></sf-switch>",
-        "after": "<sf-switch label=\"Синхронизация\" help=\"Через мобильную сеть синхронизация не идёт.\"></sf-switch>"
-      },
-      "owner": "ui-source",
-      "source": "src/smart/{checkbox,radio,switch}/js/templates/default.js, src/component/checkable-text-helper.js keepHelpOutOfLabel"
-    },
-    {
-      "id": "behaviour-choice-row-step",
-      "recorded_on": "2026-11-11",
-      "stage": "compat",
-      "kind": "behaviour",
-      "summary": "sf-checkbox 1.2.0, sf-radio 1.2.0 and sf-switch 1.4.0 (owner decisions C59, C63; audit 2026-11-11 W1, W5, W6, W9): the hit area is the control and its text, not the empty rest of the row; the help mark is the label's sibling; a control with text is a row of its step, (control height - line) / 2 above and below (40 at size 1, 60 with a description, 32 compact, max(step, 44) under a coarse pointer); the label is regular in all three. A column of choice controls now keeps one pitch without a gap; a page that spaced them with a gap of its own grows by the row padding.",
-      "items": [
-        {
-          "component": "sf-checkbox",
-          "attribute": "label",
-          "from": "a press anywhere in the row toggled the control (the <label> filled the row and held the help); the row was one line tall (24 at size 1); the label was medium",
-          "to": "the control and its text are the target (the <label> hugs its content, the help mark stands beside it); a row with text is its step tall: 40, 60 with a description line, 32 compact, the touch target under a coarse pointer; the label is regular"
-        },
-        {
-          "component": "sf-radio",
-          "attribute": "label",
-          "from": "a press anywhere in the row toggled the control (the <label> filled the row and held the help); the row was one line tall (24 at size 1); the label was medium",
-          "to": "the control and its text are the target (the <label> hugs its content, the help mark stands beside it); a row with text is its step tall: 40, 60 with a description line, 32 compact, the touch target under a coarse pointer; the label is regular"
-        },
-        {
-          "component": "sf-switch",
-          "attribute": "label",
-          "from": "a press anywhere in the row toggled the control (the <label> filled the row and held the help); the row was one line tall (24 at size 1)",
-          "to": "the control and its text are the target (the <label> hugs its content, the help mark stands beside it); a row with text is its step tall: 40, 60 with a description line, 32 compact, the touch target under a coarse pointer"
-        }
-      ],
-      "deprecated_on": "2026-11-11",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Drop a gap or margin a page put between choice controls in a column: the rows carry their own padding. A page that made a whole row the target wraps the control in its own row element (a list row, a menu row) as sf-list-item does. A labelled control inline beside 40 px controls (a toolbar) now has their height; beside plain text it is its step tall, not its line. A control with no label and no description stays the box.",
-      "examples": {
-        "before": "<div class=\"flex flex-col gap-2\"><sf-checkbox label=\"Новости\"></sf-checkbox><sf-checkbox label=\"Акции\"></sf-checkbox></div>",
-        "after": "<div class=\"flex flex-col\"><sf-checkbox label=\"Новости\"></sf-checkbox><sf-checkbox label=\"Акции\"></sf-checkbox></div>"
-      },
-      "owner": "ui-source",
-      "source": "src/smart/helpers/checkable-row.js, src/smart/helpers/checkable-row.css, src/smart/{checkbox,radio,switch}/js/templates/default.js, src/component/{checkbox,radio,switch}/scss; ui-control control/docs-review/decisions.md C59, C63"
-    },
-    {
-      "id": "behaviour-dropdown-form-field",
-      "recorded_on": "2026-11-11",
-      "stage": "compat",
-      "kind": "behaviour",
-      "summary": "sf-dropdown 1.9.0 is a form field through ElementInternals, as sf-input is (owner decision C55): the host submits the value under its name, and `required` now stops a submit while nothing is chosen (value-missing; the browser focuses the trigger and the field shows «Выберите вариант»). It drew a required mark only before. The hidden input .sf-dropdown-hidden-input is still drawn and holds the value, but carries no name while the host submits, so form.elements[name] and [name=…] find the sf-dropdown host, not the hidden input.",
-      "items": [
-        {
-          "component": "sf-dropdown",
-          "attribute": "required",
-          "from": "required as a mark only",
-          "to": "required as a constraint (value-missing)"
-        },
-        {
-          "component": "sf-dropdown",
-          "from": "input.sf-dropdown-hidden-input[name] as the form control",
-          "to": "the sf-dropdown host (value, validity, form)"
-        }
-      ],
-      "deprecated_on": "2026-11-11",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Where a required sf-dropdown may stay empty on submit, remove required (or choose a default); where a page read the hidden input by its name, read the host instead: form.elements[name].value, or the host's value property. FormData is unchanged: the same name carries the same value.",
-      "examples": {
-        "before": "form.querySelector('input[name=\"city\"]').value",
-        "after": "form.elements.city.value"
-      },
-      "owner": "ui-source",
-      "source": "src/smart/dropdown/index.js"
-    },
-    {
-      "id": "behaviour-text-fields-shown-required",
-      "recorded_on": "2026-11-11",
-      "stage": "compat",
-      "kind": "behaviour",
-      "summary": "sf-input 1.8.0, sf-textarea 1.8.0 and sf-lookup 1.6.0 show their required error after a failed form check, as sf-dropdown 1.9.0 does (C55 acceptance F1): a required field left empty gets the error border, the value-missing word under it («Заполните поле»; sf-lookup «Выберите значение.»), aria-invalid and aria-errormessage, from the host's invalid event (a submit attempt, checkValidity(), reportValidity()) until the person's input fills it or the form is reset. Before, only the browser's bubble said it. Submitting, validity, the bubble and the focus on the first invalid field are unchanged.",
-      "items": [
-        {
-          "component": "sf-input",
-          "from": "required error in the browser bubble only",
-          "to": "error look and value-missing message after a failed check"
-        },
-        {
-          "component": "sf-textarea",
-          "from": "required error in the browser bubble only",
-          "to": "error look and value-missing message after a failed check"
-        },
-        {
-          "component": "sf-lookup",
-          "from": "required error in the browser bubble only",
-          "to": "error look and value-missing message after a failed check"
-        }
-      ],
-      "deprecated_on": "2026-11-11",
-      "remove_after": "2027-01-01",
-      "rewrite": "none",
-      "manual": "Nothing to change. A page that drew its own required message on the host's invalid event (invalid + error-message) keeps it: the page's error-message wins over the field's word.",
-      "owner": "ui-source",
-      "source": "src/smart/helpers/form-field.js ShownRequired"
-    },
-    {
-      "id": "value-avatar-offline-dot-dim-ink",
-      "recorded_on": "2026-11-11",
-      "stage": "compat",
-      "kind": "value",
-      "summary": "sf-avatar: the offline dot is the place's dim ink, --sf-on-surface-variant, not the disabled ink laid over the place colour (defect fix: the disabled ink was under 3:1 for a status mark, light 3.10 against the page and 2.56 against the avatar, the dark grey plate 2.48 / 1.67; the dim ink is at least 6.44 / 4.43 on the page, a card and the grey plate in both themes). The two public variables stay: --sf-avatar-offline-background-color defaults to var(--sf-on-surface-variant) (was var(--sf-surface-place)) and --sf-avatar-offline-overlay to none (was the disabled ink).",
-      "items": [
-        {
-          "component": "sf-avatar",
-          "attribute": "--sf-avatar-offline-background-color",
-          "from": "var(--sf-surface-place)",
-          "to": "var(--sf-on-surface-variant)"
-        },
-        {
-          "component": "sf-avatar",
-          "attribute": "--sf-avatar-offline-overlay",
-          "from": "linear-gradient(var(--sf-on-surface-disabled) 0 0)",
-          "to": "none"
-        }
-      ],
-      "deprecated_on": "2026-11-11",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Nothing to rewrite in markup. A page that set only --sf-avatar-offline-background-color under the disabled ink now gets that colour alone; to keep the former dot set --sf-avatar-offline-background-color: var(--sf-surface-place) and --sf-avatar-offline-overlay: linear-gradient(var(--sf-on-surface-disabled) 0 0). A page that set the overlay to none sees no change.",
-      "examples": {
-        "before": "<sf-avatar text=\"АЗ\" status=\"offline\"></sf-avatar> (a light grey dot, rgb(145,146,150) on a white page)",
-        "after": "<sf-avatar text=\"АЗ\" status=\"offline\"></sf-avatar> (the same markup: a dot in the dim ink, neutral-40 light / neutral-70 dark)"
-      },
-      "owner": "ui-source",
-      "source": "src/component/avatars/scss/_css__avatar_online_indicator.scss; ui-control prototypes/avatar-offline.html"
-    },
-    {
-      "id": "behaviour-c53-quantity-width-by-digits",
-      "recorded_on": "2026-11-11",
-      "stage": "compat",
-      "kind": "behaviour",
-      "summary": "sf-input-quantity 1.4.0 and component.quantity 1.2.0 (owner decision C53, remarks R111-R115): the field is as wide as the longest number it holds, not as its container; the steppers hug the number (--sf-quantity-gap defaults to 0, was --sf-space-2) and the number place carries --sf-space-1/4 on each side; the inherited marker and reset stand after the box. New settings steppers (sides | none), unit and digits. A page that relied on the field filling its cell, or on the 20 px gap, sees a narrower box.",
-      "items": [
-        {
-          "component": "sf-input-quantity",
-          "from": "the box as wide as its container",
-          "to": "digits"
-        },
-        {
-          "component": "sf-input-quantity",
-          "from": "--sf-quantity-gap: var(--sf-space-2)",
-          "to": "--sf-quantity-gap: 0"
-        }
-      ],
-      "deprecated_on": "2026-11-11",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Nothing to rewrite for most pages. Where a field must keep a wider box (a column of fields, a long expected number), set digits=\"N\" on the field (the same N on every field of a column); where the old gap was wanted, set --sf-quantity-gap. A year, a weight or a price reads better as steppers=\"none\" with unit=\"…\".",
-      "examples": {
-        "before": "<sf-input-quantity label=\"Год выпуска\" value=\"2026\" min=\"1900\" max=\"2100\">",
-        "after": "<sf-input-quantity label=\"Год выпуска\" value=\"2026\" min=\"1900\" max=\"2100\" grouping=\"false\" steppers=\"none\">"
-      },
-      "owner": "ui-source",
-      "source": "src/component/quantity/scss/_css__quantity.scss, src/smart/input-quantity/index.js"
     }
   ]
 }
