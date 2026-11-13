@@ -1,7 +1,9 @@
 {
   "title": "Text fields",
   "runtime": {
-    "value-missing": "Fill in this field"
+    "value-missing": "Fill in this field",
+    "clear": "Clear",
+    "reveal": "Show password"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",

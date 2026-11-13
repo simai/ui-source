@@ -8,6 +8,7 @@ import { inputSize } from '../../component/field-size';
 import { InheritedValueField } from '../helpers/inherited-value';
 import { FormField, ShownRequired, innerControlName } from '../helpers/form-field';
 import { renderInputTemplate } from './js/templates/default';
+import { preloadControlIcons } from '../helpers/cycle';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -45,6 +46,41 @@ class SfInput extends ShownRequired(FormField(InputElement)) {
   constructor() {
     super();
     this._boundRoot = null;
+    // The password reveal (C123 (5)): the field's own state, not a setting.
+    this._revealed = false;
+    // The clear shows while the field holds a value: typing, a paste or the
+    // page's own input event say so (C123 (6)).
+    this.addEventListener('input', () => this.syncClearAction());
+  }
+
+  // The clear (C123 (6)): empties the field the way a reset does -- input,
+  // then change, from the native input -- and gives the focus back to it, as
+  // the button that had it is gone.
+  clearFromButton(event) {
+    event?.preventDefault?.();
+    event?.stopPropagation?.();
+    if (this.disabled || this.readonly) return;
+    this.clearOwnValue();
+    this.syncClearAction();
+    this.getInputElement()?.focus?.();
+  }
+
+  // The password reveal (C123 (5)): a toggle button, aria-pressed, the eye
+  // crossed out while the password shows. The native input's type follows;
+  // the focus stays on the button.
+  toggleReveal(event) {
+    event?.preventDefault?.();
+    event?.stopPropagation?.();
+    if (this.disabled) return;
+    this._revealed = !this._revealed;
+    this.requestComponentUpdate('revealed');
+  }
+
+  syncClearAction() {
+    const clear = this.querySelector(':scope .sf-input-clear');
+    if (!clear) return;
+    const empty = !(this.getInputElement()?.value || '');
+    if (clear.hidden !== empty) clear.hidden = empty;
   }
 
   // sf-input keeps the ladder's outer steps (1/3 and 3) that the other
@@ -74,6 +110,7 @@ class SfInput extends ShownRequired(FormField(InputElement)) {
     const mask = this.querySelector('.sf-input')?.__sfInputMask;
     if (mask) mask.value = normalizedValue;
     else if (input && input.value !== normalizedValue) input.value = normalizedValue;
+    this.syncClearAction?.();
     this.sfSyncFormState?.();
   }
 
@@ -137,6 +174,19 @@ class SfInput extends ShownRequired(FormField(InputElement)) {
     input?.dispatchEvent(new Event('change', {bubbles: true}));
   }
 
+  // A form reset puts the default text back without an input event, a task
+  // later for a masked field: the clear follows it, and a revealed password
+  // is hidden again.
+  formResetCallback() {
+    super.formResetCallback?.();
+    if (this._revealed) {
+      this._revealed = false;
+      this.requestComponentUpdate('revealed');
+    }
+    Promise.resolve().then(() => this.syncClearAction());
+    setTimeout(() => this.syncClearAction(), 0);
+  }
+
   // The browser's restore of a form (back, reload) gives the text back.
   formStateRestoreCallback(state) {
     if (typeof state === 'string') this.value = state;
@@ -173,6 +223,7 @@ class SfInput extends ShownRequired(FormField(InputElement)) {
       inheritedValue: this.inheritedValue,
       inheritedText: this.inheritedText,
       resetLabel: this.resetLabel,
+      revealed: this._revealed && props.inputType === 'password',
       component: this,
     });
   }
@@ -204,7 +255,11 @@ class SfInput extends ShownRequired(FormField(InputElement)) {
       this.getInputElement()?.classList.toggle('error', invalid);
       bindInput(this._boundRoot);
     }
+    // The reveal's other glyph is asked for with the first drawing, so the
+    // crossed eye is there on the first press (as sf-button-copy's check).
+    if (this.querySelector(':scope .sf-input-reveal')) preloadControlIcons(this, ['visibility', 'visibility_off']);
     this.syncInheritedState();
+    this.syncClearAction();
     this.sfSyncFormState();
   }
 

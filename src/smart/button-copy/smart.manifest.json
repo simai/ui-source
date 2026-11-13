@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button-copy",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "title": "Copy button",
   "summary": "Copies a value or a target's text, confirms with a check and a polite announcement, and selects the text for Ctrl+C when the browser refuses the clipboard.",
   "kind": "smart",
@@ -354,15 +354,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/button-copy/index.js",
-        "sha256": "b6f999f2f88c203fbb75d00d1f743c19caf9b6325aa667fa7d891df263e20b7a"
+        "sha256": "b1351943101ccb7f80a888c0617b2322bdb7b5beea4ccb0ec89155f2b502454a"
       },
       {
         "path": "src/smart/button-copy/js/templates/default.js",
-        "sha256": "2942661889a05a3e207605da2b8f21bd44289b537411c1bc09083305ab2ee2b9"
+        "sha256": "28aa25ea777762f55cd7b38e2c44257de2c77b9005b4473500b8991d8abaf204"
       },
       {
         "path": "src/smart/button-copy/scss/_smart__copy_button.scss",
-        "sha256": "05988952dedf565378bad0fdd8d65a68d4f4a18e5a05fcfbbb7b24199995e85e"
+        "sha256": "323b766bedeecaa8bfc4d9fd94f6135d68219e3045991b2c695d2803047f86e0"
       },
       {
         "path": "src/smart/button-copy/rule.js",
@@ -370,7 +370,7 @@
       },
       {
         "path": "src/smart/button-copy/docs.md",
-        "sha256": "6ea9ceb767cfed845c591399e3793eee6ca94b0bf5feadbdaaed32c96f7b61fe"
+        "sha256": "271dde5fc9ff5b3de34c4b7187f7f0fb68a735aa570b9a8df997416ed0c1406f"
       }
     ],
     "generated_runtime": []

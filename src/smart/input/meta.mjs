@@ -207,6 +207,15 @@ const sfInputMeta = {
       "default": "false",
       "description": "The value can be read, selected and copied but not changed; it is sent with the form. The field draws the region line instead of the control border."
     },
+    "clearable": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "A clear button (×) at the field's end while the field holds a value: a glyph inside the field (C123), named «Очистить»; a press empties the field, says so with input and change and gives the focus back to it. A search field (input-type search) has it without the setting, in place of the browser's own."
+    },
     "invalid": {
       "kind": "boolean",
       "values": [

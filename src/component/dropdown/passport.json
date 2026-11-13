@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.dropdown",
   "kind": "component",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/dropdown/docs/docs.md",

@@ -98,7 +98,7 @@ function getHiddenInput(root) {
 }
 
 function getToggleIcon(root) {
-  return root.querySelector(".sf-dropdown-field .sf-icon-button .sf-icon");
+  return root.querySelector(".sf-dropdown-field :is(.sf-icon-button, .sf-field-action) .sf-icon");
 }
 
 function getListWrap(root) {
@@ -508,7 +508,7 @@ function syncDisabledState(root) {
   const field = getField(root);
   const triggerInput = getTriggerInput(root);
   const searchInput = getSearchInput(root);
-  const toggleButton = root.querySelector(".sf-dropdown-field .sf-icon-button");
+  const toggleButton = root.querySelector(".sf-dropdown-field > :is(.sf-icon-button, .sf-field-action)");
 
   root.removeAttribute("aria-disabled");
   // A native button trigger says it is disabled through its own attribute.

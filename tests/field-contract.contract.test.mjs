@@ -65,7 +65,10 @@ test('Smart input forwards the declared native input security and validation con
   const source = await text('src/smart/input/js/templates/default.js');
 
   assert.doesNotMatch(source, /type="text"/);
-  assert.equal((source.match(/type=\$\{inputType\}/g) || []).length, 2);
+  // The password reveal (C123) shows a password as text; every other type is
+  // forwarded as declared.
+  assert.match(source, /const nativeType = isPassword && revealed \? 'text' : inputType;/);
+  assert.equal((source.match(/type=\$\{nativeType\}/g) || []).length, 2);
   for (const attribute of ['autocomplete', 'inputmode', 'minlength', 'maxlength', 'pattern']) {
     assert.equal(
       (source.match(new RegExp(`\\n\\s+${attribute}=\\$\\{`, 'g')) || []).length,

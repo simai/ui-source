@@ -91,6 +91,11 @@ or a `blob:` address.
   `options` and `exclude` may also come in the `data-sf-settings` island.
   They are not attributes: an `options="[...]"` attribute is not read.
 
+The clear of a single field holding a value is a glyph without a plate (owner
+decision C123, 1.8.0): the field layer's `.sf-field-action`, the size of the
+field's leading picture (24 / 20 / 28 at 1, 1/2, 2), quiet at rest and the
+text's ink under the pointer, its hit area the field's height.
+
 ## Methods
 
 - `search(query)` -- searches a query at once, as typing does.

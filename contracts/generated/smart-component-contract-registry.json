@@ -421,7 +421,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-copy/smart.manifest.json",
-      "manifest_sha256": "da3a3e0a555d2d31fb559e092de6d1a283dc9ecd2d5354f3fe7e441757377d38",
+      "manifest_sha256": "4e91a922f7de1bfff9db8713ac81aead8e090d5eed24941dc8d6dc2069cbe490",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -735,7 +735,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/dropdown/smart.manifest.json",
-      "manifest_sha256": "3d1a7901cb5e378c29586700fcc1f96870795a0223c2d8a8024cbabc08402b0f",
+      "manifest_sha256": "8c32d43de353f2b141aeaf0071bce29ac4acec403604cb88f81d6aea45bcce48",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1240,7 +1240,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input/smart.manifest.json",
-      "manifest_sha256": "11b7abdc1b2c576a8c191fdc8c3dac99ef00783316c8a7d6255237a34b06aa04",
+      "manifest_sha256": "3a59b76268471e22ead25fe562f17e1fc79830cac93faf3f585146b94f1936a4",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1550,7 +1550,7 @@
           "component.avatars",
           "component.icons",
           "smart.button",
-          "smart.button-close",
+          "smart.icon",
           "smart.spinner",
           "smart.tag"
         ]
@@ -1564,7 +1564,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-lookup/smart.manifest.json",
-      "manifest_sha256": "bda7c40887ac8775cc941909c413df7b55fbf51f7ad92c0ad5da8c9f816d689f",
+      "manifest_sha256": "3267d61fce11793d931b257e9cc10a098429393d97fcfce0c5424aafe99fb2aa",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

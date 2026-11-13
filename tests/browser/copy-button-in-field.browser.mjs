@@ -5,11 +5,13 @@
 // sf-button-copy inside a field (sf-input class markup), on the built bytes,
 // loaded by the real Loader from its rule, at sizes 1/2, 1 and 2 in a normal
 // and a compact region (R214 FA-2, FA-9; decision C79):
-// - the button is the field's height and stays inside it: a compact region
-//   takes the explicit size one step down with the field (28 / 32 / 40);
-// - its keyboard focus ring stays inside the field's inner box, top, bottom
-//   and end (sf-button-copy 1.4.2: it stood 3 px out of the field top and
-//   bottom, 2 px round the box with the 1 px offset);
+// - the field keeps its height on the ladder: a compact region takes the
+//   explicit size one step down with the field (28 / 32 / 40);
+// - inside the field the copy is the field layer's action (C123,
+//   sf-button-copy 1.5.0): no plate, its glyph the field's leading-icon size
+//   (--sf-text-height-<size> in that region), its hit area the field's inner
+//   height, the keyboard ring round the glyph and inside the field's inner
+//   box, top, bottom and end, the button itself drawing none;
 // - outside a field the ring is the button's own, round the box.
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
@@ -87,25 +89,44 @@ try {
     page.on('pageerror', (error) => said.push(error.message));
     page.on('console', (message) => { if (message.type() === 'error') said.push(message.text()); });
     await page.goto(`${base}/probe`, {waitUntil: 'load'});
-    await page.waitForFunction(() => document.querySelectorAll('sf-button-copy button').length === 7, null, {timeout: 20000});
+    await page.waitForFunction(() => document.querySelectorAll('sf-button-copy button').length === 7
+      && document.querySelectorAll('sf-button-copy .sf-field-action .sf-icon.sf-icon-loaded').length === 6, null, {timeout: 20000});
     await page.waitForTimeout(200);
     const rows = {};
     for (const id of Object.keys(EXPECTED)) {
       await page.focus(`#${id}`);
       await page.keyboard.press('Tab');
       const selector = `#${id} ~ sf-button-copy button`;
-      const r = await ring(page, selector);
+      const r = await ring(page, `${selector} .sf-icon`);
+      const action = await page.evaluate((one) => {
+        const button = document.querySelector(one);
+        const glyph = button.querySelector('.sf-icon');
+        const size = button.closest('.sf-input').className.match(/sf-input--size-(\S+)/)[1];
+        const probe = document.createElement('span');
+        probe.style.blockSize = `var(--sf-text-height-${size.replace('/', '\\/')})`;
+        probe.style.display = 'block';
+        button.closest('.sf-input').appendChild(probe);
+        const lead = probe.getBoundingClientRect().height;
+        probe.remove();
+        const cs = getComputedStyle(button);
+        return {fieldAction: button.classList.contains('sf-field-action'), focused: document.activeElement === button,
+          glyph: glyph.getBoundingClientRect().height, lead, hit: button.getBoundingClientRect().height,
+          background: cs.backgroundColor, buttonOutline: cs.outlineStyle};
+      }, selector);
       const f = await page.evaluate((one) => {
         const fieldBox = document.getElementById(one).closest('.sf-input-field');
         const rect = fieldBox.getBoundingClientRect();
         const cs = getComputedStyle(fieldBox);
         return {height: rect.height, top: rect.top + parseFloat(cs.borderTopWidth), bottom: rect.bottom - parseFloat(cs.borderBottomWidth), end: rect.right - parseFloat(cs.borderRightWidth), outer: {top: rect.top, bottom: rect.bottom}};
       }, id);
-      rows[id] = {field: f.height, button: r.box.height, ring: `${r.width}px offset ${r.offset}px`,
+      rows[id] = {field: f.height, hit: action.hit, glyph: action.glyph, lead: action.lead, ring: `${r.width}px offset ${r.offset}px`,
         ringPastTop: +(f.top - r.top).toFixed(2), ringPastBottom: +(r.bottom - f.bottom).toFixed(2), ringPastEnd: +(r.end - f.end).toFixed(2)};
-      check(`run ${run} ${id}: keyboard focus is on the button`, r.focused, rows[id]);
+      check(`run ${run} ${id}: the copy is the field's action`, action.fieldAction, rows[id]);
+      check(`run ${run} ${id}: keyboard focus is on the button`, action.focused, rows[id]);
       check(`run ${run} ${id}: the field is ${EXPECTED[id]}`, f.height === EXPECTED[id], rows[id]);
-      check(`run ${run} ${id}: the button is the field's height and inside it`, r.box.height === f.height && r.box.top >= f.outer.top && r.box.bottom <= f.outer.bottom, rows[id]);
+      check(`run ${run} ${id}: the glyph is the leading icon's size`, Math.abs(action.glyph - action.lead) < 0.5, rows[id]);
+      check(`run ${run} ${id}: the hit area is the field's inner height`, Math.abs(action.hit - (f.height - 2)) < 0.5 || (action.hit === 24 && f.height < 26), rows[id]);
+      check(`run ${run} ${id}: no plate, no ring on the button`, action.background === 'rgba(0, 0, 0, 0)' && action.buttonOutline === 'none', {...rows[id], ...action});
       check(`run ${run} ${id}: a ring is drawn`, r.style !== 'none' && r.width > 0, rows[id]);
       check(`run ${run} ${id}: the ring stays inside the field's inner box`, rows[id].ringPastTop <= 0 && rows[id].ringPastBottom <= 0 && rows[id].ringPastEnd <= 0, rows[id]);
     }
