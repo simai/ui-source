@@ -52,6 +52,14 @@ Framework still recognizes existing server markup with a supplied icon button
 or `div[role="button"]`. New generated branches use a native button. Context
 Menu, Admin Menu and Smart Admin Menu have separate behavior contracts.
 
+## The border inside the inset (1.8.1, owner decision C105 H4)
+
+A bordered row (the default look) gives its 1 px border up from its inline
+padding, as it already does from its block padding and as the fields' C77
+inset does: the icon or the first letters stand 16 from the row's outer edge
+(compact and phone 12), not 17 (13). Rows without a border (navigation, the
+documentation tree) are unchanged.
+
 ## Header navigation
 
 Add `sf-menu--navigation` to the root `sf-menu` for a site's sections as a

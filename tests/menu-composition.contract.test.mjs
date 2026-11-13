@@ -107,3 +107,23 @@ test('menu composition: the documentation tree steps every level evenly and puts
   const rowBody = row.slice(0, row.indexOf('}'));
   assert.ok(rowBody.includes('--sf-menu-element--padding-right: calc((var(--sf-ui-1--control-height) - var(--sf-menu-element--line-height, var(--sf-text-height-1))) / 2);'));
 });
+
+/* The same across (owner decision C105 H4, the border inside the inset, as
+   the fields' C77 inset; spacing audit 2026-11-13 rows M2 and C2): a bordered
+   menu row, the context menu's panel and sf-settings' panel give the 1 px
+   border up from their inline inset, so the first icon or letters stand 16
+   from the outer edge (compact and phone 12), not 17 (13). The scrollbar's
+   gap on either side of its thumb keeps the whole inset (C07, C106). */
+test('menu composition: the border is inside the inline inset (C105 H4)', async () => {
+  const row = await read('component/menu/scss/_css__menu_element.scss');
+  assert.match(row, /padding-inline-start: calc\(var\(--sf-menu-element--padding-inline-start, var\(--sf-space-1\)\) - var\(--sf-menu-element--border-width\)\);/);
+  assert.match(row, /padding-inline-end: calc\(var\(\s*--sf-menu-element--padding-right,\s*var\(--sf-menu-element--padding-inline-end, var\(--sf-space-1\)\)\s*\) - var\(--sf-menu-element--border-width\)\);/);
+  const menu = await read('component/context-menu/scss/_css__context_menu.scss');
+  assert.match(menu, /--sf-context-menu-content--edge-inline-start: calc\(var\(--sf-context-menu-content--padding-inline-start\) - var\(--sf-context-menu-border-width, var\(--sf-px\)\)\);/);
+  assert.match(menu, /padding-inline-start: var\(--sf-context-menu-content--edge-inline-start\);/);
+  assert.match(menu, /panel\.scrollbar\(var\(--sf-context-menu-content--padding-inline-end\)/);
+  const settings = await read('smart/settings/scss/_smart__settings.scss');
+  assert.match(settings, /--sf-settings-panel--inset-inline: calc\(var\(--sf-settings-panel--inset\) - var\(--sf-px\)\);/);
+  assert.match(settings, /padding: var\(--sf-settings-panel--inset\) var\(--sf-settings-panel--inset-inline\);/);
+  assert.match(settings, /panel\.scrollbar\(var\(--sf-settings-panel--inset\),/);
+});

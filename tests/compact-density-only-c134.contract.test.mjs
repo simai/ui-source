@@ -42,7 +42,7 @@ test('C134 sf-language: labels name|code replaces the boolean compact, read in c
 
 test('C134 sf-menu: appearance rail, compact a dated value alias; the rail writes both classes and the class sheet draws either', () => {
   const manifest = json('src/smart/menu/component.json');
-  assert.equal(manifest.version, '1.7.0');
+  assert.equal(manifest.version, '1.7.1');
   assert.deepEqual(manifest.settings.appearance.values, ['default', 'documentation-tree', 'rail', 'navigation']);
   assert.deepEqual([...MENU_APPEARANCES], manifest.settings.appearance.values);
   const row = json('src/smart/menu/aliases.json').aliases.find((alias) => alias.kind === 'value' && alias.from === 'compact');
@@ -55,7 +55,7 @@ test('C134 sf-menu: appearance rail, compact a dated value alias; the rail write
   assert.doesNotMatch(sheet, /\.sf-menu\.sf-menu--compact/u);
   assert.equal(sheet.match(/\.sf-menu:is\(\.sf-menu--rail, \.sf-menu--compact\)/gu).length, 12);
   assert.match(read('src/component/menu/scss/_css__menu_element.scss'), /:where\(\.sf-menu:not\(\.sf-menu--rail, \.sf-menu--compact\)\)/u);
-  assert.equal(json('src/component/menu/passport.json').version, '1.8.0');
+  assert.equal(json('src/component/menu/passport.json').version, '1.8.1');
   assert.equal(record('value-menu-appearance-compact-to-rail').rewrite, 'rename-value');
   assert.deepEqual(record('class-menu-compact-to-rail').items, [{component: 'sf-menu', from: 'sf-menu--compact', to: 'sf-menu--rail'}]);
 });

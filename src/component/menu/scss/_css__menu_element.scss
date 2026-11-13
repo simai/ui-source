@@ -32,11 +32,16 @@
       --sf-menu-element--padding-bottom,
       var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))
     );
-    padding-inline-end: var(
+    /* The same across (owner decision C105 H4, as the fields' C77 inset;
+       spacing audit M2): the border is inside the inline inset, so a bordered
+       row's icon or text stands 16 from its outer edge (compact and phone
+       12), not 17 (13). A row without a border (navigation, the
+       documentation tree) is unchanged. */
+    padding-inline-end: calc(var(
       --sf-menu-element--padding-right,
       var(--sf-menu-element--padding-inline-end, var(--sf-space-1))
-    );
-    padding-inline-start: var(--sf-menu-element--padding-inline-start, var(--sf-space-1));
+    ) - var(--sf-menu-element--border-width));
+    padding-inline-start: calc(var(--sf-menu-element--padding-inline-start, var(--sf-space-1)) - var(--sf-menu-element--border-width));
     border-color: var(--sf-menu-element--border-color);
     border-style: var(--sf-menu-element--border-style, solid);
     border-block-start-width: var(
