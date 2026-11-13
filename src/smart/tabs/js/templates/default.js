@@ -58,6 +58,10 @@ function renderPanel(item, context) {
   `;
 }
 
+// data-tab (R193 DP-11) is a former name of data-sf-tab-index: written for
+// one minor (1.2.x) so a page that read it keeps working, dropped in 1.3.0.
+// Unprefixed, a page selector [data-tab] caught these buttons. Nothing in
+// the component reads it.
 function renderTab(item, context) {
   const tabContent = context.component?.hasSlotContent?.(item.tabSlotName)
     ? context.component.getSlotContent(item.tabSlotName)

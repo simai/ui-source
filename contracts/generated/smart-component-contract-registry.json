@@ -732,7 +732,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/dropdown/smart.manifest.json",
-      "manifest_sha256": "15fb9c8de470ddf38b85a94387a39797144e91e27e9f09653dbe6936a813eee2",
+      "manifest_sha256": "6f29efd34eb40dabff27ee388f37020fc84c7abdf68c8bcc41a41ea7df9b4ea3",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1345,15 +1345,29 @@
       ],
       "composition": {
         "public_parts": [
-          "swatch",
+          "field",
+          "trigger",
           "chip",
           "text",
-          "swatches",
-          "preset"
+          "window",
+          "views",
+          "palette",
+          "options",
+          "option",
+          "recent",
+          "own",
+          "area",
+          "strip",
+          "code-row",
+          "format",
+          "format-menu",
+          "dot"
         ],
         "uses": [
           "component.icons",
-          "smart.button-icon"
+          "smart.button-icon",
+          "smart.icon",
+          "smart.segmented"
         ]
       },
       "contract_schema": {
@@ -1365,13 +1379,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-color/smart.manifest.json",
-      "manifest_sha256": "b0956be6d17e60c81be86d229528b918d2d32a9e1679f19d08da786b0add2337",
+      "manifest_sha256": "7cefd1dfaa456f2bce29eb239cad37a9e570a5a35fc08f125604ae986f3d5812",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A colour control: a swatch that opens the platform picker, the colours a product already has as presets, and a way back to an inherited colour. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
+      "summary": "A colour field: a swatch, the value and a chevron that open the Framework's own compact window -- the static palette first, the product's own colours, recent own colours and «Своё» (shade area, eyedropper, hue and alpha strips, a code in Hex, RGB, HSL or HSB) -- and a way back to an inherited colour. The value is a palette name or a code. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
       "tags": [
         "input",
         "color",
@@ -1538,7 +1552,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-lookup/smart.manifest.json",
-      "manifest_sha256": "e301f8ca2d2eb5a35f78ba82b104ed290206279302c12f773c70449c11e2ac14",
+      "manifest_sha256": "ed5c82b26c84b5db2911f5fccf30a1047406ebc640ce84f1291223601e57583c",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2040,7 +2054,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/menu/smart.manifest.json",
-      "manifest_sha256": "3456e229105f4347dfd368e874e5e00e0514d15376f92e4929f6ac578da05eee",
+      "manifest_sha256": "fe57648adbd3b816b75112907f4bf759f2fd7f25628d49fa8dad62d2ce4b107a",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2082,7 +2096,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/menu-context/smart.manifest.json",
-      "manifest_sha256": "1eb7450aae9ca5d97c60639d5d09f7eb400183253717e3f107ea4c12a6c9281e",
+      "manifest_sha256": "f203827c4f6fe244835da94b29815619e77bf3a092e6fec7968b340bb9f2d4dd",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2277,7 +2291,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/profile-picker/smart.manifest.json",
-      "manifest_sha256": "d847bc605163b3e6a518a8f5c4599a7cbd091ae233bdac5eaee8b32e8bcc587e",
+      "manifest_sha256": "c299b623140fa8d0e01aeae54ff57f01c890fd4eb2cde1dd823d4943be1fefa1",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2664,7 +2678,12 @@
       "composition": {
         "public_parts": [],
         "uses": [
-          "smart.menu-context"
+          "smart.button",
+          "smart.button-icon",
+          "smart.input-color",
+          "smart.menu-context",
+          "smart.switch",
+          "smart.tabs"
         ]
       },
       "contract_schema": {
@@ -2676,20 +2695,21 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/settings/smart.manifest.json",
-      "manifest_sha256": "af7b258fe05251c6a5d23a247de320aa250c915a9526e7323a6699f81f138419",
+      "manifest_sha256": "bbb931a2fd9b2b16594edb6e46c9a1d1b13fca5987c8c18f7de68ea02f6b8fda",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of three looks -- drill (the value under the name, the options in the same panel), rows (the control at the row's end) or tiles (the switches used most as tiles on top). With a trigger it opens over the page; without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person.",
+      "summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of three looks -- drill (the value under the name, the options in the same panel), rows (the control at the row's end) or tiles (the switches used most as tiles on top). With a trigger it opens over the page; without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person. The panel look (C106) draws a panel of its own for a list's view settings: sections or tabs, fields lists with a check, a handle, a pin and a search, applied at once or by «Применить».",
       "tags": [
         "settings",
         "preferences",
         "options",
         "quick-settings",
         "menu",
-        "switch"
+        "switch",
+        "panel"
       ],
       "title": "Settings"
     },
@@ -2983,7 +3003,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tabs/smart.manifest.json",
-      "manifest_sha256": "3d761425c594f5663f6871d812cc238b70e9932e6d3b06f8d35553114cd8d6a3",
+      "manifest_sha256": "02344137b401986a87c971d9e08ace2d37cd34e0afd0380f96967f54b8a6ea12",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3063,13 +3083,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/theme-generator/smart.manifest.json",
-      "manifest_sha256": "1dc49e52fe40fd9ff4d720ac1712b2fa496d09734fc5a5b4ceedc9340aab6161",
+      "manifest_sha256": "e13533ef16a1fb81a6e138ed4b47ed19269a9d7d082183e13f608957fb595547",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the four theme palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
+      "summary": "Leaving until 2027-01-01 (C84): use sf-input-color variant=\"brand\". A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the four theme palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
       "tags": [
         "theme",
         "color",

@@ -167,6 +167,17 @@
       "mode": "same-detail",
       "section": "§8",
       "note": "the event name carries the tag"
+    },
+    {
+      "from": "tabs",
+      "to": null,
+      "kind": "setting",
+      "component": "sf-menu-context",
+      "since": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "mode": "retired",
+      "section": "owner decision C106 (1)",
+      "note": "a list's view settings are sf-settings look=\"panel\"; the action menu's tabs are read and drawn until the date"
     }
   ]
 }

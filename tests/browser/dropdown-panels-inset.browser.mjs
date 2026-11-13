@@ -17,11 +17,12 @@
 //    header's end, when they have none); only the rows scroll.
 //  - C07: a scrollbar only when the rows do not fit; in the inline-end inset
 //    while it takes room: the area's inline-end padding 0, the track the
-//    inset, a thumb of --sf-space-1/4 and the inset. Headless Chrome draws no
+//    inset, a thumb of --sf-scroll-thumb-width and the inset (C106: 14). Headless Chrome draws no
 //    scrollbar, so with SF_PROBE_HEADED=1 the probe runs the installed Chrome
 //    headed with classic scrollbars (--disable-features=OverlayScrollbar),
 //    reads the track's width and finds the thumb's columns on a screenshot:
-//    highlight-to-thumb = thumb = thumb-to-edge = the inset.
+//    highlight-to-thumb = thumb-to-edge = the inset, thumb = the page's.
+// SF_PROBE_WIDTH=<px> sets the window's width (700 by default);
 // SF_PROBE_EVIDENCE=1 prints the measurements; SF_PROBE_SHOTS=<dir> saves a
 // picture of every panel measured.
 import {createServer} from 'node:http';
@@ -152,7 +153,7 @@ async function measure(p, kind, size) {
     const inner = {left: pr.left + parseFloat(ps.borderLeftWidth), right: pr.right - parseFloat(ps.borderRightWidth), top: pr.top + parseFloat(ps.borderTopWidth)};
     const read = (value) => { const n = document.createElement('span'); n.style.cssText = `position:absolute;visibility:hidden;inline-size:${value}`; panel.append(n); const w = n.getBoundingClientRect().width; n.remove(); return w; };
     const tokens = {
-      inset: read('var(--sf-space-1\\/4)'), pad: read('var(--sf-space-1\\/2)'), radius: read('var(--sf-radius--ui)'),
+      inset: read('var(--sf-space-1\\/4)'), thumb: read('var(--sf-scroll-thumb-width)'), pad: read('var(--sf-space-1\\/2)'), radius: read('var(--sf-radius--ui)'),
       rowHeight: read(step === '1' ? 'var(--sf-ui-1--control-height)' : 'var(--sf-ui-1\\/2--control-height)'),
     };
     const first = fn(spec.first), icon = fn(spec.icon), text = fn(spec.text);
@@ -261,7 +262,7 @@ try {
         for (const height of [800, 300]) {
           // Core writes the theme class from the page's colour scheme, so the scheme
           // is emulated as well as the class written.
-          const context = await browser.newContext({viewport: {width: 700, height}, deviceScaleFactor: 1, colorScheme: theme});
+          const context = await browser.newContext({viewport: {width: Number(process.env.SF_PROBE_WIDTH || 700), height}, deviceScaleFactor: 1, colorScheme: theme});
           const p = await context.newPage();
           const errors = [];
           p.on('pageerror', (error) => { if (!/publicPath/u.test(error.message)) errors.push(error.message); });
@@ -287,11 +288,11 @@ try {
             if (!s.overflows && (s.marked || s.bar > 0)) note({case: `${where}: rows that fit show no scrollbar and keep the inset on both sides`, got: s});
             if (s.bar > 0) {
               if (!s.marked || !near(s.paddingEnd, 0)) note({case: `${where}: a scrollbar that takes room marks its area, which gives up its end padding`, got: s});
-              if (!near(s.bar, 3 * got.tokens.inset)) note({case: `${where}: the track is the inset, the thumb and the inset`, got: s});
+              if (!near(s.bar, 2 * got.tokens.inset + got.tokens.thumb)) note({case: `${where}: the track is the inset, the thumb and the inset`, got: s});
               if (!near(s.rowToBar, 0)) note({case: `${where}: the track starts where the rows' highlight ends`, got: s});
               const columns = await thumbColumns(p, got);
               const m = columns.measured;
-              if (!m || !near(m.gapBefore, got.tokens.inset) || Math.abs(m.thumb - got.tokens.inset) > 1 || !near(m.gapAfter, got.tokens.inset)) note({case: `${where}: highlight-to-thumb, thumb and thumb-to-edge are each the inset`, got: {columns, s}});
+              if (!m || !near(m.gapBefore, got.tokens.inset) || Math.abs(m.thumb - got.tokens.thumb) > 1 || !near(m.gapAfter, got.tokens.inset)) note({case: `${where}: highlight-to-thumb and thumb-to-edge are the inset, the thumb the page's`, got: {columns, s}});
               evidence.scrollbar.push({where, inset: got.tokens.inset, bar: s.bar, marked: s.marked, paddingEnd: s.paddingEnd, ...columns});
             } else if (height === 300) {
               if (headed && s.overflows) note({case: `${where}: headed with classic scrollbars, rows that do not fit draw a scrollbar`, got: s});
@@ -323,4 +324,4 @@ if (failures.length) {
   console.error(JSON.stringify({kinds, first: failures.slice(0, 12)}, null, 2));
   throw new Error(`${failures.length} dropping panel inset check(s) failed`);
 }
-process.stdout.write(`Dropping panels (sf-dropdown, sf-input-lookup, sf-profile-picker) on R029: PASS — rows --sf-space-1/4 inside the panel, a control's height, picture and text --sf-space-1/2 inside the highlight; the dropdown's search header across the panel, its icon and text over the rows'; at 1/2 and 1, light and dark; no scrollbar beside rows that fit${headed ? ', and a scrollbar in the inset (gap, thumb, gap each --sf-space-1/4), headed Chrome with classic scrollbars' : ''}\n`);
+process.stdout.write(`Dropping panels (sf-dropdown, sf-input-lookup, sf-profile-picker) on R029: PASS — rows --sf-space-1/4 inside the panel, a control's height, picture and text --sf-space-1/2 inside the highlight; the dropdown's search header across the panel, its icon and text over the rows'; at 1/2 and 1, light and dark; no scrollbar beside rows that fit${headed ? ', and a scrollbar in the inset (gap --sf-space-1/4, thumb --sf-scroll-thumb-width, gap --sf-space-1/4: 14), headed Chrome with classic scrollbars' : ''}\n`);

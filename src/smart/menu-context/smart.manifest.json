@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu-context",
-  "version": "1.15.0",
+  "version": "1.16.0",
   "title": "Context Menu",
   "summary": "The Framework's action menu and its settings panel: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, and the value rows a setting needs (switch, range, choice, a group of rows or tiles) with one change event and the set-value, set-all, reset and show actions, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
   "kind": "smart",
@@ -144,7 +144,7 @@
           "array"
         ],
         "default": "",
-        "description": "A panel with tabs: labels separated by |, or [{id, label}] as a property. The head (tabs and the close button) and the footer never scroll, the body does, and the panel keeps a fixed width (a ladder step, or width) whatever a tab holds."
+        "description": "Deprecated (owner decision C106, 2026-11-12; a former name until 2027-01-01): a list's view settings are sf-settings look=\"panel\". A panel with tabs: labels separated by |, or [{id, label}] as a property. The head (tabs and the close button) and the footer never scroll, the body does, and the panel keeps a fixed width (a ladder step, or width) whatever a tab holds."
       },
       "active-tab": {
         "type": "string",
@@ -951,19 +951,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu-context/index.js",
-        "sha256": "943bec39ace7f03119ad6966489616ed42ca17be07dd91f9b8232b408a556a27"
+        "sha256": "e694f7d6450f35281d9f29caacc3ec951335c7b68597c827e9d41173eeca6160"
       },
       {
         "path": "src/smart/menu-context/js/templates/default.js",
-        "sha256": "9a855dd77b9198d78e521e5e9b2962c983d896278332532c633c734cd0283b5f"
+        "sha256": "8d93f60b68506dbcbbdb47cfb73d3564de5da724b79c941c35981160c7092e91"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",
-        "sha256": "90517f9824d7d34dde0ba7dcde39010233d8ce6fd8bd60d33930955d1f5c91e1"
+        "sha256": "73a682b2f94b34bce82cd3c9b83bf263aae0079d1967e1f5542f851714c93268"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu_custom.scss",
-        "sha256": "2a1fb31060c09bd4f52b41c7fe0211b3ed114d5a9bb039538d961c3f1eba136b"
+        "sha256": "ab86d4eccbd894c2bda24baaf98687d340ffdeaad236b673d69950b25665e9ff"
       }
     ],
     "generated_runtime": [

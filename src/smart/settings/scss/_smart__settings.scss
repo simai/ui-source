@@ -1,0 +1,456 @@
+@use '../../../component/context-menu/scss/panel';
+@use '../../../core/scss/mix/mix__places' as places;
+
+@layer sf.components {
+/* sf-settings, the panel look (owner decision C106, 2026-11-12): a list's
+   view settings in a panel of their own -- not the action menu. The drill,
+   rows and tiles looks are sf-menu-context's and draw nothing here.
+
+   Geometry (C05-C07, C32, C77/C105 H4, the scroll-area inset rule):
+   - the panel is the popup panel's step of the widths (C32): core's
+     --sf-popup-panel-width, 20rem, 18rem in compact density;
+   - one inset I = --sf-space-1/4 on every side of the rows' plates, from the
+     body's edge;
+   - a row is as tall as a control of the panel's size, its plate rounded as
+     a control, its text the field and list inset H4 from the plate's edge
+     (C77: 16 at size 1, 12 at 1/2 and in compact density);
+   - the body alone scrolls. While its scrollbar takes room it gives up its
+     inline-end padding and the track is I, the thumb, I (14 =
+     --sf-scroll-bg-width); without one, or with an overlay one, I stays.
+     No scrollbar-gutter: a stable gutter kept an empty 14 when nothing
+     scrolled. */
+.sf-settings-panel {
+  --sf-settings-panel--inset: var(--sf-space-1\/4);
+  --sf-settings-panel--row-height: var(--sf-ui-1\/2--control-height);
+  --sf-settings-panel--text: var(--sf-text-size-1\/2);
+  --sf-settings-panel--line: var(--sf-text-height-1\/2);
+  --sf-settings-panel--pad: var(--sf-space-1\/2);
+  --sf-settings-panel--gap: var(--sf-space-1\/2);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  inline-size: var(--sf-popup-panel-width);
+  max-inline-size: 100%;
+  min-block-size: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-radius: var(--sf-radius--surface);
+  background-color: var(--sf-surface-popup);
+  color: var(--sf-on-surface);
+  font-size: var(--sf-settings-panel--text);
+  line-height: var(--sf-settings-panel--line);
+  --sf-icon--font-size: var(--sf-settings-panel--line);
+  --sf-icon--width: var(--sf-settings-panel--line);
+  --sf-icon--height: var(--sf-settings-panel--line);
+  @include places.sf-place(var(--sf-surface-popup), var(--sf-on-surface-popup-variant));
+}
+
+.sf-settings-panel--size-1 {
+  --sf-settings-panel--row-height: var(--sf-ui-1--control-height);
+  --sf-settings-panel--text: var(--sf-text-size-1);
+  --sf-settings-panel--line: var(--sf-text-height-1);
+  --sf-settings-panel--pad: var(--sf-ui-1--space-x);
+}
+
+/* Compact (C22): the rows and the text a step down, the H4 inset 12. */
+[data-sf-density='compact'] .sf-settings-panel--size-1,
+.sf-settings-panel--size-1[data-sf-density='compact'] {
+  --sf-settings-panel--row-height: var(--sf-ui-1\/2--control-height);
+  --sf-settings-panel--text: var(--sf-text-size-1\/2);
+  --sf-settings-panel--line: var(--sf-text-height-1\/2);
+  --sf-settings-panel--pad: var(--sf-space-1\/2);
+}
+
+/* Over the page: the popup's elevation, fitted to its room. */
+.sf-settings-panel--popup {
+  max-block-size: calc(100dvh - var(--sf-space-4));
+  box-shadow: var(--sf-shadow-overlay);
+}
+
+.sf-settings-panel[hidden],
+.sf-settings-panel [hidden] {
+  display: none;
+}
+
+/* The head: the title, or the groups as tabs, and the close button. It never
+   scrolls; one hairline under it across the whole panel. */
+.sf-settings-panel-head {
+  --sf-tabs-top-container--border-width: 0;
+  display: flex;
+  flex: none;
+  align-items: flex-end;
+  gap: var(--sf-settings-panel--inset);
+  padding-block: var(--sf-settings-panel--inset) 0;
+  padding-inline: calc(var(--sf-settings-panel--inset) + var(--sf-settings-panel--pad)) var(--sf-settings-panel--inset);
+  border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+}
+
+.sf-settings-panel-title {
+  flex: 1 1 auto;
+  align-self: center;
+  min-inline-size: 0;
+  padding-block: var(--sf-space-1\/3);
+  overflow: hidden;
+  font-weight: var(--sf-font-weight-medium);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* sf-tabs and sf-button-icon draw no box of their own (display: contents):
+   the tabs' frame takes the head's room, so the close button ends the head. */
+.sf-settings-panel-tabs,
+.sf-settings-panel-tabs > .sf-tabs {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+/* The tabs only choose what the body shows: their own panel area stays
+   empty, and their line sits on the head's. */
+.sf-settings-panel-head .sf-tabs-main-container {
+  display: none;
+}
+
+.sf-settings-panel-head .sf-tabs-top-container {
+  border-block-end: 0;
+}
+
+.sf-settings-panel-close,
+.sf-settings-panel-close > * {
+  flex: none;
+  align-self: center;
+}
+
+/* The search (C06): a header over the rows, its icon and text over the rows'
+   text, a hairline under it that turns primary while it has the focus. */
+.sf-settings-panel-search {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--sf-settings-panel--gap);
+  min-block-size: calc(var(--sf-settings-panel--row-height) + 2 * var(--sf-settings-panel--inset));
+  padding-inline: calc(var(--sf-settings-panel--inset) + var(--sf-settings-panel--pad));
+  border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+}
+
+.sf-settings-panel-search-icon {
+  @include panel.search-icon(var(--sf-settings-panel--line));
+}
+
+.sf-settings-panel-search-input {
+  @include panel.search-input;
+}
+
+.sf-settings-panel-search-input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+/* The body: the only part that scrolls. */
+.sf-settings-panel-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-block-size: 0;
+  padding: var(--sf-settings-panel--inset);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  @include panel.scrollbar(var(--sf-settings-panel--inset), --sf-settings-panel--track, var(--sf-settings-panel--row-height), var(--sf-scroll-thumb-width));
+}
+
+.sf-settings-panel-body.sf-settings-panel-body--scrollbar {
+  padding-inline-end: 0;
+}
+
+/* A section: its heading over its rows, a hairline between sections. */
+.sf-settings-panel-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.sf-settings-panel-section + .sf-settings-panel-section {
+  margin-block-start: var(--sf-settings-panel--inset);
+  padding-block-start: var(--sf-settings-panel--inset);
+  border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+}
+
+.sf-settings-panel-heading,
+.sf-settings-panel-label {
+  padding-block: var(--sf-space-1\/3) var(--sf-settings-panel--inset);
+  padding-inline: var(--sf-settings-panel--pad);
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-settings-panel-separator {
+  margin-block: var(--sf-settings-panel--inset);
+  border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+}
+
+.sf-settings-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* A row: the plate, and over it the control a person works and, in a list
+   that pins, the pin. One grid cell holds both, so the pin stands inside the
+   row and is not part of the control's name. */
+.sf-settings-row {
+  position: relative;
+  display: grid;
+  grid-template-areas: 'row';
+  align-items: center;
+  min-block-size: var(--sf-settings-panel--row-height);
+  border-radius: var(--sf-radius--ui);
+}
+
+.sf-settings-row > * {
+  grid-area: row;
+}
+
+.sf-settings-row-main {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-settings-panel--gap);
+  min-inline-size: 0;
+  min-block-size: var(--sf-settings-panel--row-height);
+  padding-inline: var(--sf-settings-panel--pad);
+  border-radius: inherit;
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.sf-settings-row-text {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.sf-settings-row-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-settings-row-caption {
+  overflow: hidden;
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The handle (C106 (6)): at the row's start, always shown. It stands a step
+   into the inset, so a list that orders starts its text where a list that
+   does not starts its handle. */
+.sf-settings-row-handle {
+  display: inline-flex;
+  flex: none;
+  margin-inline-start: calc(-1 * var(--sf-settings-panel--inset));
+  color: var(--sf-on-surface-variant);
+  cursor: grab;
+  touch-action: none;
+}
+
+/* The check (C106 (2)): one column at the inline end, shown on a checked
+   field. A choice of one has none (C106 (3)): the fill alone. */
+.sf-settings-row-check {
+  display: inline-flex;
+  flex: none;
+  justify-content: center;
+  inline-size: var(--sf-settings-panel--line);
+  visibility: hidden;
+}
+
+.sf-settings-row[data-checked] > .sf-settings-row-main > .sf-settings-row-check {
+  visibility: visible;
+}
+
+.sf-settings-row-switch {
+  flex: none;
+  pointer-events: none;
+}
+
+/* The pin's place in the control, and the pin over it: shown on the row a
+   pointer is over, on a pinned row and while it has the focus. */
+.sf-settings-row-pin-place {
+  flex: none;
+  inline-size: var(--sf-settings-panel--line);
+}
+
+.sf-settings-row-pin {
+  display: inline-flex;
+  justify-self: end;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--sf-settings-panel--line);
+  block-size: var(--sf-settings-panel--line);
+  margin: 0;
+  margin-inline-end: calc(var(--sf-settings-panel--pad) + var(--sf-settings-panel--line) + var(--sf-settings-panel--gap));
+  padding: 0;
+  border: 0;
+  border-radius: var(--sf-radius--ui);
+  outline: none;
+  background-color: transparent;
+  color: var(--sf-on-surface-variant);
+  cursor: pointer;
+  opacity: 0;
+  appearance: none;
+}
+
+.sf-settings-row:hover > .sf-settings-row-pin,
+.sf-settings-row-pin[aria-pressed='true'],
+.sf-settings-row-pin:focus-visible {
+  opacity: 1;
+}
+
+.sf-settings-row-pin[aria-pressed='true'] {
+  color: var(--sf-primary);
+}
+
+/* A range: the name, the slider, the number. */
+.sf-settings-row--range {
+  display: flex;
+  gap: var(--sf-settings-panel--gap);
+  padding-inline: var(--sf-settings-panel--pad);
+}
+
+.sf-settings-row-range {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  accent-color: var(--sf-primary);
+}
+
+.sf-settings-row-value {
+  flex: none;
+  color: var(--sf-on-surface-variant);
+  font-variant-numeric: tabular-nums;
+}
+
+.sf-settings-row--dragging {
+  background-color: var(--sf-surface-container);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+}
+
+.sf-settings-row--drop-before {
+  box-shadow: inset 0 calc(2 * var(--sf-px)) 0 var(--sf-primary);
+}
+
+.sf-settings-row--drop-after {
+  box-shadow: inset 0 calc(-2 * var(--sf-px)) 0 var(--sf-primary);
+}
+
+.sf-settings-panel-empty {
+  margin: 0;
+  padding-block: var(--sf-space-1\/3);
+  padding-inline: var(--sf-settings-panel--pad);
+  color: var(--sf-on-surface-variant);
+}
+
+/* The footer: «Сбросить», and «Применить (N)» for a filter (C106 (4)). It
+   stays under the body; its buttons share the width. */
+.sf-settings-panel-footer {
+  display: flex;
+  flex: none;
+  gap: var(--sf-settings-panel--gap);
+  padding: var(--sf-space-1\/2);
+  border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+}
+
+/* sf-button draws no box of its own: its button shares the width. */
+.sf-settings-panel-footer > *,
+.sf-settings-panel-footer > sf-button > .sf-button {
+  flex: 1 1 0;
+  min-inline-size: 0;
+}
+
+.sf-settings-panel-live {
+  position: absolute;
+  inline-size: var(--sf-px);
+  block-size: var(--sf-px);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* A phone (C106 (8), C32): a sheet at the bottom of the screen, the screen's
+   width up to 44rem, over the scrim, clear of the home indicator. */
+.sf-settings-panel[data-sf-sheet] {
+  position: fixed;
+  inset: auto 0 0;
+  inline-size: 100%;
+  max-inline-size: var(--sf-h1);
+  max-block-size: calc(100dvh - var(--sf-space-4));
+  margin-inline: auto;
+  margin-block-end: 0;
+  padding-block-end: env(safe-area-inset-bottom, var(--sf-a0));
+  border-block-end-width: 0;
+  border-inline-width: 0;
+  border-end-end-radius: 0;
+  border-end-start-radius: 0;
+  box-shadow: var(--sf-shadow-modal);
+}
+
+.sf-settings-panel[data-sf-sheet]::before {
+  content: '';
+  flex: none;
+  inline-size: var(--sf-space-2);
+  block-size: var(--sf-space-1\/4);
+  margin-block: var(--sf-space-1\/3) 0;
+  margin-inline: auto;
+  border-radius: var(--sf-space-1\/4);
+  background-color: var(--sf-outline-variant);
+}
+
+.sf-settings-panel[data-sf-sheet]::backdrop {
+  background-color: var(--sf-scrim-color);
+}
+}
+
+@layer sf.states {
+  /* C05 and DP-3: a row the pointer is over is the hover plate; a chosen one
+     (a checked field, the chosen option) the theme's light fill, and its
+     hover the fill's own. */
+  .sf-settings-row:not([data-disabled]):hover {
+    background-color: var(--sf-surface-state-select);
+  }
+
+  .sf-settings-row:is(.sf-settings-row--field, .sf-settings-row--option)[data-checked] {
+    background-color: var(--sf-primary-container);
+    color: var(--sf-on-primary-container);
+  }
+
+  .sf-settings-row:is(.sf-settings-row--field, .sf-settings-row--option)[data-checked]:not([data-disabled]):hover {
+    background-color: var(--sf-primary-container-hover);
+  }
+
+  .sf-settings-row[data-disabled] {
+    color: var(--sf-on-surface-disabled);
+  }
+
+  .sf-settings-row[data-disabled] > .sf-settings-row-main {
+    cursor: default;
+  }
+
+  /* The ring turns inwards: the row stands flush against its neighbours. */
+  .sf-settings-row-main:focus-visible,
+  .sf-settings-row-pin:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(-1 * var(--sf-focus--width));
+  }
+
+  .sf-settings-panel-search {
+    @include panel.search-focus;
+  }
+
+  @media (forced-colors: active) {
+    .sf-settings-row:is(.sf-settings-row--field, .sf-settings-row--option)[data-checked] {
+      outline: var(--sf-px) solid Highlight;
+    }
+  }
+}

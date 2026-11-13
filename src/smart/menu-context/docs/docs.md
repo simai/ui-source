@@ -292,8 +292,19 @@ menu.addEventListener('sf-context-menu-search', async (event) => {
 хост кладёт в `content` строки этой вкладки. Крестик закрывает меню, открытое
 через `openFor`; меню, которое поставил хост, сообщает `sf-context-menu-close`,
 и закрывает его хост. Строка панели — `.sf-context-menu-row`: в ней может быть
-что угодно — ручка, подпись, флажок, кнопка; подпись занимает остаток и
-обрезается многоточием.
+что угодно — ручка, подпись, флажок, кнопка. Части стоят по роли, а не по
+счёту: то, что до подписи (ручка), — в начале строки; подпись
+(`.sf-context-menu-row-text`) занимает остаток и обрезается многоточием; то,
+что после неё (флажок, закрепление), — в конце строки. Строка без ручки
+начинается с подписи, а флажок всё равно стоит в конце, на одной линии во всех
+строках, при подписи любой длины.
+
+Строки одного контейнера с флажком или переключателем — один список: в нём
+одна остановка `Tab`, по строкам ходят стрелки вверх и вниз, `Home` и `End`
+ведут к краям, `Space` ставит или снимает флажок. `Tab` уходит из списка к
+следующему контролу панели. Один из нескольких вариантов (вид списка, плотность)
+выбирают не флажками, а группой `sf-radio` с одним `name`: отмечен всегда
+один, и группа — тоже одна остановка со стрелками.
 
 ```html
 <sf-menu-context size="1" tabs="Поля|Вид" closable role="dialog" aria-label="Настройки списка">
@@ -303,9 +314,29 @@ menu.addEventListener('sf-context-menu-search', async (event) => {
       <span class="sf-context-menu-row-text">Название</span>
       <sf-checkbox checked></sf-checkbox>
     </label>
+    <label class="sf-context-menu-row">
+      <i class="sf-icon">drag_indicator</i>
+      <span class="sf-context-menu-row-text">Статус</span>
+      <sf-checkbox></sf-checkbox>
+    </label>
   </div>
   <sf-button slot="footer" text="Сбросить"></sf-button>
 </sf-menu-context>
+```
+
+Вкладка с одним выбором — группа радиокнопок:
+
+```html
+<div slot="content">
+  <label class="sf-context-menu-row">
+    <span class="sf-context-menu-row-text">Таблица</span>
+    <sf-radio name="view" value="table" checked></sf-radio>
+  </label>
+  <label class="sf-context-menu-row">
+    <span class="sf-context-menu-row-text">Карточки</span>
+    <sf-radio name="view" value="cards"></sf-radio>
+  </label>
+</div>
 ```
 
 ## Меню, которым управляет хост

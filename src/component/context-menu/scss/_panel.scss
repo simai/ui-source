@@ -22,12 +22,17 @@
 //   component marks it, see src/component/panel-scrollbar.js) and the track is
 //   the inset, a thumb of $thumb and the inset again; an overlay scrollbar
 //   takes no room and the inset stays. Firefox draws its thin scrollbar.
+//   C106 (owner 2026-11-12, the scroll-area inset rule): the inset is
+//   --sf-space-1/4 on every side of the rows' plates and the thumb is the
+//   page scrollbar's (--sf-scroll-thumb-width), so the track is the inset,
+//   the thumb, the inset = 14, the page's --sf-scroll-bg-width. No
+//   scrollbar-gutter: a stable gutter keeps an empty track when the rows fit.
 
 // The values, every one a Framework variable; the mixins read them.
 $inset: var(--sf-space-1\/4);
 $row-padding: var(--sf-space-1\/2);
 $row-radius: var(--sf-radius--ui);
-$thumb: var(--sf-space-1\/4);
+$thumb: var(--sf-scroll-thumb-width);
 
 // C07, on the area that scrolls the rows. $inset is the area's inline-end
 // padding (the gap on either side of the thumb), $track the name of the

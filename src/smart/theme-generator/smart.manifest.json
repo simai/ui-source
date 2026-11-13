@@ -487,11 +487,11 @@
       },
       {
         "path": "src/smart/theme-generator/docs.md",
-        "sha256": "b5da258b677ec71c0171ace5f93aa3dd378b86ed3ab18676f470066a7eae92a8"
+        "sha256": "4f993e666a0375fecda24de6011ead327eed5002fcf66f2b771a8195ac7a0526"
       },
       {
         "path": "src/core/js/theme-palette.js",
-        "sha256": "0a0d3878e774d9cbfcc95f0b569e8e8230a022747bc5ed36ce92324e5f4e6b43"
+        "sha256": "57d86f71e4e9a114c428e59ab3687440b2113470542f2ef645e5ebe3b9422c75"
       }
     ],
     "generated_runtime": []

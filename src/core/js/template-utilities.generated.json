@@ -385,7 +385,8 @@
   ],
   "cl-settings": [
     "display/default",
-    "position/default"
+    "position/default",
+    "text-decoration/default"
   ],
   "cl-skeleton": [
     "animation/default",

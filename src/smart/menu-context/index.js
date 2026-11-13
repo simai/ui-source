@@ -5,6 +5,7 @@ import BundledPosition from "../../core/js/position.js";
 import { renderContextMenuTemplate } from "./js/templates/default";
 import { holdOpenSurfaceMark } from "../../core/js/open-surface-mark";
 import { tagSelector } from "../../core/js/tag-aliases.js";
+import { noteDeprecated } from "../../core/js/deprecations.js";
 import { PanelScrollbar } from "../../component/panel-scrollbar.js";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
@@ -45,6 +46,12 @@ const onPhone = () => !getComputedStyle(document.documentElement).getPropertyVal
 // What a form, a panel or a slot's own markup holds instead of rows: the
 // first of these takes the focus when the menu has no row and no search.
 const TABBABLE = 'input:not([type="hidden"]), select, textarea, button, a[href], [tabindex]:not([tabindex="-1"]), [contenteditable=""], [contenteditable="true"]';
+// A panel's list (R193, DP-4): the rows of one container that each hold a
+// checkable mark -- a checkbox or a switch -- are one Tab stop, and the
+// arrows walk them, as a menu's rows (APG). One of several is a radio group,
+// whose native radios of one name already are one stop with arrows; they are
+// not walked here.
+const ROW_MARK = 'input[type="checkbox"], [role="checkbox"], [role="switch"]';
 const editable = (element) => Boolean(element?.matches?.('input, select, textarea, [contenteditable=""], [contenteditable="true"]'));
 
 // ─── drilling (1.5.0) ────────────────────────────────────────────────────────
@@ -221,8 +228,12 @@ class SfContextMenu extends ContextMenuElement {
     this._itemAttributes = new Map();
     this._currentItem = null;
     this._itemObserver = new MutationObserver(() => this.syncMenuItems());
+    this._rowMarks = new Map();
+    this._rowCurrent = new WeakMap();
+    this.addEventListener("keydown", this.handleRowKeyDown);
     this.addEventListener("keydown", this.handleMenuKeyDown);
     this.addEventListener("keydown", this.handleOwnedKeyDown);
+    this.addEventListener("click", this.handleRowClick);
     this.addEventListener("click", this.handleEntryClick);
     this.addEventListener("pointerover", this.handleEntryHover);
     this._owned = null;
@@ -263,6 +274,11 @@ class SfContextMenu extends ContextMenuElement {
       }
     };
     this.addEventListener("focusin", (event) => {
+      const list = this.rowListOf(event.target);
+      if (list) {
+        this._rowCurrent.set(list.parent, event.target);
+        this.syncRowLists();
+      }
       if (this.menuItems().includes(event.target)) {
         this._currentItem = event.target;
         this.syncMenuItems();
@@ -297,8 +313,11 @@ class SfContextMenu extends ContextMenuElement {
   // inline-end padding then, and keeps it beside an overlay scrollbar or none.
   // Read whenever the area is drawn or changes its size: a narrowed search, a
   // panel fitted to its room, a window made smaller.
+  // A panel with tabs scrolls its body, under the head and over the footer
+  // (the scroll-area inset rule, owner C106 addendum to C105, 2026-11-12).
   scrollArea() {
     return this.querySelector(".sf-context-menu-content--search > .sf-context-menu-list")
+      ?? this.querySelector(":scope > .sf-context-menu.sf-context-menu--panel > .sf-context-menu-frame > .sf-context-menu-content > .sf-context-menu-body")
       ?? this.querySelector(":scope > .sf-context-menu:not(.sf-context-menu--panel) > .sf-context-menu-frame > .sf-context-menu-content");
   }
 
@@ -306,8 +325,10 @@ class SfContextMenu extends ContextMenuElement {
   // (src/component/panel-scrollbar.js).
   watchScrollbar() {
     const area = this.scrollArea();
+    const name = area?.classList.contains("sf-context-menu-list") ? "sf-context-menu-list--scrollbar"
+      : area?.classList.contains("sf-context-menu-body") ? "sf-context-menu-body--scrollbar" : "sf-context-menu-content--scrollbar";
     this._scrollbar ??= new PanelScrollbar();
-    this._scrollbar.watch(area, area?.classList.contains("sf-context-menu-list") ? "sf-context-menu-list--scrollbar" : "sf-context-menu-content--scrollbar");
+    this._scrollbar.watch(area, name);
   }
 
   disconnectedCallback() {
@@ -316,6 +337,7 @@ class SfContextMenu extends ContextMenuElement {
     this._itemObserver.disconnect();
     this._scrollbar?.disconnect();
     for (const item of this._itemAttributes.keys()) this.releaseItem(item);
+    for (const mark of [...this._rowMarks.keys()]) this.releaseRowMark(mark);
     this._currentItem = null;
     super.disconnectedCallback();
   }
@@ -377,6 +399,84 @@ class SfContextMenu extends ContextMenuElement {
       if (!item.matches(STOPS)) this.ownItemAttribute(item, "role", "menuitem");
       this.ownItemAttribute(item, "tabindex", item === this._currentItem ? "0" : "-1");
     }
+    this.syncRowLists();
+  }
+
+  // ─── a panel's lists (R193, DP-4) ───────────────────────────────────────
+  // The lists of rows in the menu's content: rows of one container, each
+  // with a checkable mark, two or more of them. A row's mark is its first
+  // checkbox or switch; a handle or a pin beside it keeps its own stop.
+  rowLists() {
+    const content = this.querySelector(".sf-context-menu-content");
+    if (!content) return [];
+    const lists = new Map();
+    for (const row of content.querySelectorAll(".sf-context-menu-row")) {
+      const mark = row.querySelector(ROW_MARK);
+      if (!mark || mark.closest(".sf-context-menu-row") !== row) continue;
+      const parent = row.parentElement;
+      if (!lists.has(parent)) lists.set(parent, []);
+      lists.get(parent).push(mark);
+    }
+    return Array.from(lists, ([parent, marks]) => ({parent, marks})).filter((list) => list.marks.length > 1);
+  }
+
+  rowListOf(element) {
+    if (!element?.matches?.(ROW_MARK) || !element.closest?.(".sf-context-menu-row")) return null;
+    return this.rowLists().find((list) => list.marks.includes(element)) ?? null;
+  }
+
+  availableRowMarks(list) {
+    return list.marks.filter((mark) => !mark.matches(":disabled") && mark.getAttribute("aria-disabled") !== "true"
+      && !mark.closest("[hidden], [inert]") && mark.getClientRects().length > 0);
+  }
+
+  // One stop per list: the mark last focused in it, else its first one. A
+  // mark that left the lists gets back the tabindex it had.
+  syncRowLists() {
+    const kept = new Set();
+    for (const list of this.rowLists()) {
+      const available = this.availableRowMarks(list);
+      let current = this._rowCurrent.get(list.parent);
+      if (!available.includes(current)) current = available[0] ?? null;
+      this._rowCurrent.set(list.parent, current);
+      for (const mark of list.marks) {
+        kept.add(mark);
+        if (!this._rowMarks.has(mark)) this._rowMarks.set(mark, mark.getAttribute("tabindex"));
+        const tabindex = mark === current ? "0" : "-1";
+        if (mark.getAttribute("tabindex") !== tabindex) mark.setAttribute("tabindex", tabindex);
+      }
+    }
+    for (const mark of [...this._rowMarks.keys()]) if (!kept.has(mark)) this.releaseRowMark(mark);
+  }
+
+  releaseRowMark(mark) {
+    const original = this._rowMarks.get(mark);
+    this._rowMarks.delete(mark);
+    if (original === null || original === undefined) mark.removeAttribute("tabindex");
+    else mark.setAttribute("tabindex", original);
+  }
+
+  // Up and down walk a list, Home and End go to its ends; Space is the mark's
+  // own and checks it, Tab leaves the list.
+  handleRowKeyDown(event) {
+    if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
+    const list = this.rowListOf(event.target);
+    if (!list) return;
+    const marks = this.availableRowMarks(list), index = marks.indexOf(event.target);
+    if (index < 0) return;
+    let next;
+    switch (event.key) {
+      case "ArrowDown": next = (index + 1) % marks.length; break;
+      case "ArrowUp": next = (index + marks.length - 1) % marks.length; break;
+      case "Home": next = 0; break;
+      default: next = marks.length - 1;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    this._rowCurrent.set(list.parent, marks[next]);
+    this.syncRowLists();
+    marks[next].focus();
   }
 
   focus(options) {
@@ -682,6 +782,7 @@ class SfContextMenu extends ContextMenuElement {
   tabbables() {
     const surface = this.surface() ?? this;
     return Array.from(surface.querySelectorAll(TABBABLE)).filter((element) => !element.matches(":disabled")
+      && element.getAttribute("tabindex") !== "-1"
       && !element.closest('[hidden], [inert]') && element.getClientRects().length > 0
       && getComputedStyle(element).visibility !== "hidden");
   }
@@ -724,6 +825,20 @@ class SfContextMenu extends ContextMenuElement {
       return this.chooseOptionAt(row.dataset.sfEntry, entry, (at + 1) % options.length);
     }
     return false;
+  }
+
+  // A row is a label around its text and its mark. When the mark is a
+  // form-associated host (sf-radio), the label's activation clicks the host
+  // itself -- the first labelable element in the row -- and the radio inside
+  // it stayed as it was: a press on «Карточки» chose nothing (R193, DP-2,
+  // measured on the docs example). The host's own press is passed on to its
+  // control. A press on the control itself reaches it as before.
+  handleRowClick(event) {
+    const host = event.target;
+    if (!host?.constructor?.formAssociated || !host.closest?.(".sf-context-menu-row") || !this.contains(host)) return;
+    const control = host.querySelector('input:not([type="hidden"]), select, textarea, button');
+    if (!control || control.matches(":disabled") || control.closest(".sf-context-menu-row") !== host.closest(".sf-context-menu-row")) return;
+    control.click();
   }
 
   handleEntryClick(event) {
@@ -1262,8 +1377,14 @@ class SfContextMenu extends ContextMenuElement {
     return this.getBooleanAttr("closable", false);
   }
 
+  // A panel with tabs is a former name until 2027-01-01 (owner decision
+  // C106): a list's view settings are sf-settings look="panel". It is still
+  // drawn; a page that asks for deprecation notes hears it once.
   get panel() {
-    return this.tabs.length > 0;
+    const panel = this.tabs.length > 0;
+    if (panel) noteDeprecated({component: "sf-menu-context", tag: this.localName, kind: "setting", attribute: "tabs", from: "tabs",
+      to: 'sf-settings look="panel"', since: "2026-11-12", remove_after: "2027-01-01"});
+    return panel;
   }
 
   // A tab chosen: the head marks it and says so; the host puts that tab's

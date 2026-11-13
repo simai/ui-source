@@ -3,7 +3,7 @@
   "id": "smart.settings",
   "version": "1.2.0",
   "title": "Settings",
-  "summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of three looks -- drill (the value under the name, the options in the same panel), rows (the control at the row's end) or tiles (the switches used most as tiles on top). With a trigger it opens over the page; without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person.",
+  "summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of three looks -- drill (the value under the name, the options in the same panel), rows (the control at the row's end) or tiles (the switches used most as tiles on top). With a trigger it opens over the page; without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person. The panel look (C106) draws a panel of its own for a list's view settings: sections or tabs, fields lists with a check, a handle, a pin and a search, applied at once or by «Применить».",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -13,7 +13,8 @@
     "options",
     "quick-settings",
     "menu",
-    "switch"
+    "switch",
+    "panel"
   ],
   "capabilities": [
     "render",
@@ -29,8 +30,12 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "smart.button",
+      "smart.button-icon",
       "smart.input-color",
-      "smart.menu-context"
+      "smart.menu-context",
+      "smart.switch",
+      "smart.tabs"
     ],
     "public_parts": []
   },
@@ -55,12 +60,27 @@
       "look": {
         "type": "string",
         "default": "drill",
-        "description": "The arrangement. drill: the current value under the name and a chevron, the options open in the same panel with a way back. rows: the name at the start, the control at the end -- quiet pills, a switch, a slider. tiles: the switches used most as tiles on top (those marked tile, else the top level's), the rest as rows",
+        "description": "The arrangement. drill: the current value under the name and a chevron, the options open in the same panel with a way back. rows: the name at the start, the control at the end -- quiet pills, a switch, a slider. tiles: the switches used most as tiles on top (those marked tile, else the top level's), the rest as rows. panel (owner decision C106): a list's view settings in a panel of its own -- the groups as sections in one scroll, or as tabs when the panel has a search and a group holds a fields list; a checked field is the theme's light fill with a check at the inline end, a choice of one the fill alone; a dialog over the page, a bottom sheet on a phone",
         "enum": [
           "drill",
           "rows",
-          "tiles"
+          "tiles",
+          "panel"
         ]
+      },
+      "apply": {
+        "type": "string",
+        "default": "instant",
+        "description": "How the panel look applies a change (C106 (4)). instant: at once, as every look -- change, then changed; the footer holds one «Сбросить» (the declared values back). button: a filter's -- the changes wait in the panel until «Применить (N)» (N: the checked fields and the switches on), then go out as change and changed and the popup closes; «Сбросить» puts the declared values into the panel, and closing drops what was not applied. The other looks apply at once",
+        "enum": [
+          "instant",
+          "button"
+        ]
+      },
+      "search": {
+        "type": "boolean",
+        "default": false,
+        "description": "A search over the panel look's rows (C106 (7), C30 R071: a setting, never by the number of rows; the docs advise it from ten rows): a header over the body; the rows are filtered as the field is typed in -- no case, ё as е, on a row's text, caption and keywords. With it, a group that holds a fields list makes the groups tabs. Down from the field enters the rows"
       },
       "size": {
         "type": "string",
@@ -88,7 +108,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {id, type: color, text, value: <palette hue name or #rrggbb>, options?: [hue names], custom?: false} (C85: the current colour as the row's circle, a level of hue circles and «Свой цвет…», which opens sf-input-color's window on «Своё»; ten hues by default), {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option, tile: true on a switch the tiles look puts on top. A property, or the JSON island a server prints"
+        "description": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {id, type: color, text, value: <palette hue name or #rrggbb>, options?: [hue names], custom?: false} (C85: the current colour as the row's circle, a level of hue circles and «Свой цвет…», which opens sf-input-color's window on «Своё»; ten hues by default), {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option, tile: true on a switch the tiles look puts on top. A property, or the JSON island a server prints; in the panel look also {id, type: fields, text, options: [{id, text, checked, pinned, disabled}], sortable, pinnable}: a list of many to check (a table's columns), ordered by a handle and Alt+arrows when sortable, pinned on top when pinnable; its value is [{id, checked, pinned}] in order, the pinned first"
       }
     },
     "additionalProperties": false
@@ -249,6 +269,70 @@
         "properties": {},
         "additionalProperties": true
       }
+    },
+    "sf-settings-open": {
+      "summary": "A popup panel of look=\"panel\" asks to open (its trigger, show): the request, sent before it is drawn. Cancelled, it stays closed. The other looks open their inner sf-menu-context, which sends its own open",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-settings-opened": {
+      "summary": "The popup panel of look=\"panel\" is open and drawn",
+      "payload": {
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "sf-settings-close": {
+      "summary": "The popup panel of look=\"panel\" asks to close: escape, outside (a press outside), close (the close button, the trigger again) or api (Apply, Tab out, a script); unsaved says a draft of apply=\"button\" moved something. Cancelled, it stays open",
+      "payload": {
+        "type": "object",
+        "required": [
+          "reason",
+          "unsaved"
+        ],
+        "properties": {
+          "reason": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          },
+          "unsaved": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-settings-closed": {
+      "summary": "The popup panel of look=\"panel\" is closed",
+      "payload": {
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "properties": {
+          "reason": {
+            "enum": [
+              "close",
+              "escape",
+              "outside",
+              "cancelled",
+              "api"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
     }
   },
   "state": {
@@ -256,7 +340,12 @@
       "look": [
         "drill",
         "rows",
-        "tiles"
+        "tiles",
+        "panel"
+      ],
+      "apply": [
+        "instant",
+        "button"
       ]
     },
     "visual_states": [
@@ -359,19 +448,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/settings/index.js",
-        "sha256": "95e7ce8381794cb1d90e4b60496fbe7553d97a1a40f071d160275cec8d85206a"
+        "sha256": "034b4a1af5efb7e964760180b03f5fe9f67e98b361e08b95119e8ab0a227d53b"
       },
       {
         "path": "src/smart/settings/js/templates/default.js",
-        "sha256": "c11a51b26e404f89cb074f57fa2527eed0d4323f7abbcd2d6ffd1002285107c4"
+        "sha256": "ac4fd0b6d3de24c8fbe44b566fc8db2586f05de1a50009ed1c7190bcdbc717d6"
       },
       {
         "path": "src/smart/settings/rule.js",
-        "sha256": "2e54d184b5f225db96345236f3f871c55961a7700461d5f137343f633f805cf4"
+        "sha256": "f8bb6e7a8c0a38a49d272a0272267038ff8fe3529b2d031901036eb4dd3702ec"
       },
       {
         "path": "src/smart/settings/docs.md",
-        "sha256": "c81bbef6bb931fb3f324416562107171c05b35144855102adb2fd14827acbd62"
+        "sha256": "ca6d25d94b421b5ec1e9f6c934c16c22e259d6598f70edd328df3b0b6d36ac0a"
       }
     ],
     "generated_runtime": []

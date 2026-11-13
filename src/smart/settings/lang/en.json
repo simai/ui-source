@@ -20,6 +20,15 @@
     "hue-brown": "Brown",
     "hue-gray": "Grey",
     "own-color": "Own colour…",
-    "own-color-value": "Own: {value}"
+    "own-color-value": "Own: {value}",
+    "close": "Close",
+    "reset": "Reset",
+    "apply": "Apply",
+    "search": "Find",
+    "empty": "Nothing found",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "move-hint": "Alt with the up and down arrows changes the order",
+    "position": "{text}: {index} of {count}"
   }
 }

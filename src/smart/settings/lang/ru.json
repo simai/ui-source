@@ -20,6 +20,15 @@
     "hue-brown": "Коричневый",
     "hue-gray": "Серый",
     "own-color": "Свой цвет…",
-    "own-color-value": "Свой: {value}"
+    "own-color-value": "Свой: {value}",
+    "close": "Закрыть",
+    "reset": "Сбросить",
+    "apply": "Применить",
+    "search": "Найти",
+    "empty": "Ничего не найдено",
+    "pin": "Закрепить",
+    "unpin": "Открепить",
+    "move-hint": "Alt и стрелки вверх и вниз меняют порядок",
+    "position": "{text}: {index} из {count}"
   }
 }

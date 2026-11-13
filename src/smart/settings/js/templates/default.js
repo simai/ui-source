@@ -1,8 +1,10 @@
 import {html, nothing} from 'lit';
+import {renderPanel} from './panel.js';
 
 // sf-settings' markup: sf-menu-context with the items as its entries, and,
-// in a popup, the page's trigger beside it. The element draws nothing of its
-// own, so it has no sheet.
+// in a popup, the page's trigger beside it. In the drill, rows and tiles looks
+// the element draws nothing of its own; the panel look draws its panel
+// (templates/panel.js) with the element's sheet.
 //
 // - inline (no trigger): the menu stands open in the page's flow;
 // - popup (a trigger in the trigger slot, or one named by for): the trigger as
@@ -65,7 +67,10 @@ function renderColor(context) {
   </span>`;
 }
 
+// The panel look (owner decision C106) is this element's own markup
+// (templates/panel.js), not a menu: its role is a dialog over the page and a
+// group in the page's flow, and the action menu keeps the actions.
 export function renderSettingsTemplate(context) {
   const trigger = context.popup && context.hasSlot('trigger') ? context.slot('trigger') : nothing;
-  return frame(html`${trigger}${renderMenu(context)}${context.hasColor ? renderColor(context) : nothing}`);
+  return frame(html`${trigger}${context.look === 'panel' ? renderPanel(context) : renderMenu(context)}${context.hasColor ? renderColor(context) : nothing}`);
 }

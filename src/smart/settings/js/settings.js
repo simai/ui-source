@@ -10,13 +10,19 @@
 //   {id, type: 'color', text, value: 'blue', options?, custom?}       a colour
 //   {type: 'heading', text}, {type: 'separator'}
 //   {type: 'group', text, items: [...]}                              a titled block
+//   {id, type: 'fields', text, options: [{id, text, checked, pinned}],
+//    sortable, pinnable}                                             a list of many
 //
-// The value lives in the item and nowhere else.
+// The value lives in the item and nowhere else. A fields list (the panel look,
+// owner decision C106) keeps its value in its options: their order, which are
+// checked and which are pinned; its value reads them as [{id, checked, pinned}]
+// in order, the pinned ones first.
 
-export const LOOKS = ['drill', 'rows', 'tiles'];
+export const LOOKS = ['drill', 'rows', 'tiles', 'panel'];
 export const SIZES = ['1/2', '1'];
-export const TYPES = ['switch', 'choice', 'range', 'color', 'heading', 'separator', 'group'];
-const VALUE_TYPES = new Set(['switch', 'choice', 'range', 'color']);
+export const APPLY = ['instant', 'button'];
+export const TYPES = ['switch', 'choice', 'range', 'color', 'heading', 'separator', 'group', 'fields'];
+const VALUE_TYPES = new Set(['switch', 'choice', 'range', 'color', 'fields']);
 
 // ─── the colour row (owner decision C85) ─────────────────────────────────
 //
@@ -70,7 +76,48 @@ const allowsOwn = (item) => item?.custom !== false;
 const isItem = (item) => Boolean(item) && typeof item === 'object' && TYPES.includes(item.type);
 const optionsOf = (item) => (Array.isArray(item?.options) ? item.options.filter((option) => option && typeof option === 'object' && option.id !== undefined && option.id !== null) : []);
 
-/** Whether an item holds a value (a switch, a choice or a range with an id). */
+/**
+ * A fields list's options in the order they stand, the pinned ones first (a
+ * pinned field stays on top, C106 (6)); the order among the pinned and among
+ * the rest is the order given.
+ */
+export function fieldOptions(item) {
+  const options = optionsOf(item);
+  return [...options.filter((option) => option.pinned), ...options.filter((option) => !option.pinned)];
+}
+
+// What a fields list is given as its value: the ids to check, in the order
+// they stand ([id, ...]), or the options themselves ([{id, checked, pinned}])
+// in a new order -- the ones left out keep their state and follow. An id the
+// list does not hold makes the value invalid.
+function fieldsPatch(item, value) {
+  if (!Array.isArray(value)) return null;
+  const options = optionsOf(item);
+  const byId = new Map(options.map((option) => [option.id, option]));
+  if (value.every((one) => typeof one === 'string')) {
+    if (!value.every((id) => byId.has(id))) return null;
+    const on = new Set(value);
+    return {options: fieldOptions({options: options.map((option) => ({...option, checked: on.has(option.id)}))})};
+  }
+  if (!value.every((one) => one && typeof one === 'object' && byId.has(one.id))) return null;
+  const listed = new Set(value.map((one) => one.id));
+  const ordered = value.map((one) => {
+    const option = {...byId.get(one.id)};
+    if (typeof one.checked === 'boolean') option.checked = one.checked;
+    if (typeof one.pinned === 'boolean') option.pinned = one.pinned;
+    return option;
+  });
+  return {options: fieldOptions({options: [...ordered, ...options.filter((option) => !listed.has(option.id))]})};
+}
+
+/** Whether two values are the same: by identity, or for a fields list by what it holds. */
+export function sameValue(a, b) {
+  if (a === b || (Number.isNaN(a) && Number.isNaN(b))) return true;
+  if (Array.isArray(a) && Array.isArray(b)) return JSON.stringify(a) === JSON.stringify(b);
+  return false;
+}
+
+/** Whether an item holds a value (a switch, a choice, a range or a fields list with an id). */
 export const holdsValue = (item) => isItem(item) && VALUE_TYPES.has(item.type) && typeof item.id === 'string' && item.id !== '';
 
 /**
@@ -79,6 +126,7 @@ export const holdsValue = (item) => isItem(item) && VALUE_TYPES.has(item.type) &
  * null).
  */
 export function itemValue(item) {
+  if (item?.type === 'fields') return fieldOptions(item).map((option) => ({id: option.id, checked: Boolean(option.checked), pinned: Boolean(option.pinned)}));
   if (item?.type === 'switch') return Boolean(item.value);
   if (item?.type === 'range') {
     const number = Number(item.value ?? item.min ?? 0);
@@ -106,6 +154,7 @@ function colorPatch(item, value) {
  * hold that value (a choice without such an option, a range given no number).
  */
 export function valuePatch(item, value) {
+  if (item?.type === 'fields') return fieldsPatch(item, value);
   if (item?.type === 'switch') return typeof value === 'boolean' ? {value} : null;
   if (item?.type === 'range') {
     if (value === null || value === '' || typeof value === 'boolean') return null;
@@ -229,7 +278,8 @@ function entriesOf(items, look, skip, word) {
       if (!rows.length) continue;
       if (item.text) out.push({type: 'heading', text: item.text});
       out.push({type: 'group', ...own(item, ['text']), items: rows});
-    } else if (holdsValue(item) && !skip.has(item.id)) {
+    } else if (holdsValue(item) && item.type !== 'fields' && !skip.has(item.id)) {
+      // A fields list is the panel look's alone: a menu has no row for it.
       out.push(settingEntry(item, look, word));
     }
   }
@@ -271,4 +321,109 @@ export function entriesFor(items, look = 'drill', {tilesLabel = '', word = plain
   const rest = entriesOf(items, 'rows', new Set(tiles.map((item) => item.id)), word);
   const top = {type: 'group', view: 'tiles', text: tilesLabel, items: tiles.map((item) => settingEntry(item, 'rows'))};
   return rest.length ? [top, {type: 'separator'}, ...rest] : [top];
+}
+
+// ─── the panel look (owner decision C106) ─────────────────────────────────
+
+/**
+ * The panel's groups: each top-level group, and the settings between groups
+ * gathered into an untitled one, in the order they stand. A heading or a
+ * separator stays in the group it stands in.
+ */
+export function panelGroups(items) {
+  const groups = [];
+  let loose = null;
+  for (const item of Array.isArray(items) ? items : []) {
+    if (!isItem(item)) continue;
+    if (item.type === 'group') {
+      loose = null;
+      const inner = (Array.isArray(item.items) ? item.items : []).filter(isItem);
+      if (inner.length) groups.push({text: item.text ?? '', items: inner});
+      continue;
+    }
+    if (!loose) {
+      loose = {text: '', items: []};
+      groups.push(loose);
+    }
+    loose.items.push(item);
+  }
+  return groups.filter((group) => group.items.some((item) => holdsValue(item)));
+}
+
+/**
+ * How the panel shows its groups (C106 (5)): sections in one scroll by
+ * default; tabs when the panel has a search and a group holds its own long
+ * list (a fields list) -- the list and its search take a tab of their own.
+ * A single group is never a tab.
+ */
+export function panelLayout(items, {search = false} = {}) {
+  const groups = panelGroups(items);
+  if (!search || groups.length < 2) return 'sections';
+  return groups.some((group) => group.items.some((item) => item.type === 'fields')) ? 'tabs' : 'sections';
+}
+
+// A search's words: no case, ё as е.
+export const folded = (value) => String(value ?? '').toLocaleLowerCase().replace(/ё/gu, 'е').trim();
+
+/** Whether a row's words hold the query (no case, ё as е). An empty query holds every row. */
+export function matches(query, ...words) {
+  const asked = folded(query);
+  if (!asked) return true;
+  return words.flat().some((word) => folded(word).includes(asked));
+}
+
+/**
+ * What «Применить (N)» counts in a panel applied by a button (a filter, C106
+ * (4)): the conditions it will hold -- the checked fields of every list and
+ * the switches that are on.
+ */
+export function applyCount(items) {
+  let count = 0;
+  for (const item of Array.isArray(items) ? items : []) {
+    if (item?.type === 'group') count += applyCount(item.items);
+    else if (holdsValue(item) && item.type === 'fields') count += optionsOf(item).filter((option) => option.checked).length;
+    else if (holdsValue(item) && item.type === 'switch' && itemValue(item)) count += 1;
+  }
+  return count;
+}
+
+/**
+ * A fields list with one option moved by `step` places within its own block
+ * (the pinned or the rest: a pinned field stays above every other), or null
+ * when it cannot move that way. Its value, ready for valuePatch.
+ */
+export function movedField(item, optionId, step) {
+  const options = fieldOptions(item);
+  const at = options.findIndex((option) => option.id === optionId);
+  const to = at + step;
+  if (at < 0 || to < 0 || to >= options.length || Boolean(options[to].pinned) !== Boolean(options[at].pinned)) return null;
+  const list = [...options];
+  const [moved] = list.splice(at, 1);
+  list.splice(to, 0, moved);
+  return list.map((option) => ({id: option.id, checked: Boolean(option.checked), pinned: Boolean(option.pinned)}));
+}
+
+/** A fields list's value with one option put before another of the same block (a drag), or null. */
+export function placedField(item, optionId, beforeId) {
+  const options = fieldOptions(item);
+  const moving = options.find((option) => option.id === optionId);
+  if (!moving || optionId === beforeId) return null;
+  const rest = options.filter((option) => option.id !== optionId);
+  let at = beforeId === null ? rest.length : rest.findIndex((option) => option.id === beforeId);
+  if (at < 0) return null;
+  // A pinned field stays among the pinned, the rest below them.
+  const pinned = rest.filter((option) => option.pinned).length;
+  at = moving.pinned ? Math.min(at, pinned) : Math.max(at, pinned);
+  rest.splice(at, 0, moving);
+  const value = rest.map((option) => ({id: option.id, checked: Boolean(option.checked), pinned: Boolean(option.pinned)}));
+  return sameValue(value, itemValue(item)) ? null : value;
+}
+
+/** A fields list's value with one option checked or pinned the other way, or null. */
+export function toggledField(item, optionId, key = 'checked') {
+  const options = fieldOptions(item);
+  const option = options.find((one) => one.id === optionId);
+  if (!option || (key === 'checked' && option.disabled)) return null;
+  return options.map((one) => ({id: one.id, checked: Boolean(one.checked), pinned: Boolean(one.pinned),
+    ...(one.id === optionId ? {[key]: !one[key]} : {})}));
 }

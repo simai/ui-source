@@ -138,7 +138,9 @@ row is its fill alone, without a check (owner decision C08). The state
 line and the actions under them start on the same line. The scrollbar shows
 only when the rows do not fit; while it takes room the panel is marked
 `sf-lookup-panel--scrollbar` and gives up its inline-end padding, so the thumb
-stands in the inset with `--sf-space-1/4` on either side.
+stands in the inset with `--sf-space-1/4` on either side: the track is the
+inset, the page scrollbar's thumb (`--sf-scroll-thumb-width`) and the inset,
+14 (owner decision C106).
 
 ## Public CSS variables
 
