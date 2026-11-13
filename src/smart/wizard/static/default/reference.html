@@ -6,35 +6,10 @@
 <span class="sf-wizard-position">Шаг 1 из 3</span>
 
 </div>
-<sf-steps class="sf-wizard-steps" size="1" current="0" aria-label="Шаги" items="[{&quot;label&quot;:&quot;Название&quot;,&quot;state&quot;:&quot;default&quot;},{&quot;label&quot;:&quot;Шаблон&quot;,&quot;state&quot;:&quot;default&quot;,&quot;disabled&quot;:true},{&quot;label&quot;:&quot;Готово&quot;,&quot;state&quot;:&quot;default&quot;,&quot;disabled&quot;:true}]" style="display: contents;" data-sf-size-relative>
-<div role="group" class="sf-steps sf-steps--size-1 flex flex-col" aria-label="Шаги" data-sf-static>
-<div class="sf-steps-container flex items-center">
+<sf-steps class="sf-wizard-steps" layout="row" navigation="free" size="1" current="0" aria-label="Шаги" items="[{&quot;label&quot;:&quot;Название&quot;},{&quot;label&quot;:&quot;Шаблон&quot;,&quot;state&quot;:&quot;ahead&quot;,&quot;disabled&quot;:true},{&quot;label&quot;:&quot;Готово&quot;,&quot;state&quot;:&quot;ahead&quot;,&quot;disabled&quot;:true}]" style="display: contents;" data-sf-size-relative>
+<div class="sf-steps sf-steps--size-1 sf-steps--marker-number sf-steps--layout-row" data-sf-static>
+<ol class="sf-steps-container" role="list" aria-label="Шаги"><li class="sf-step sf-step--size-1 sf-step--state-current" data-step-index="0" aria-current="step"><span class="sf-step-body"><span class="sf-step-marker" aria-hidden="true">1</span><span class="sf-step-content"><span class="sf-step-container">Название</span><span class="sr-only">, Текущий</span></span></span></li><li class="sf-step sf-step--size-1 sf-step--state-ahead sf-step--disabled" data-step-index="1"><span class="sf-step-body"><span class="sf-step-marker" aria-hidden="true">2</span><span class="sf-step-content"><span class="sf-step-container">Шаблон</span><span class="sr-only">, Впереди</span></span></span></li><li class="sf-step sf-step--size-1 sf-step--state-ahead sf-step--disabled" data-step-index="2"><span class="sf-step-body"><span class="sf-step-marker" aria-hidden="true">3</span><span class="sf-step-content"><span class="sf-step-container">Готово</span><span class="sr-only">, Впереди</span></span></span></li></ol>
 
-
-<button type="button" class="sf-step sf-step--size-1 sf-step--stage-default flex items-center content-main-center selected cursor-pointer" data-step-index="0" aria-current="step">
-
-<div class="sf-step-container flex items-center content-main-center">Название</div>
-</button>
-
-<i aria-hidden="true" class="sf-icon sf-steps-separator sf-steps-separator--directional">chevron_right</i>
-
-
-<button type="button" class="sf-step sf-step--size-1 sf-step--stage-default flex items-center content-main-center disabled" data-step-index="1" disabled>
-
-<div class="sf-step-container flex items-center content-main-center">Шаблон</div>
-</button>
-
-<i aria-hidden="true" class="sf-icon sf-steps-separator sf-steps-separator--directional">chevron_right</i>
-
-
-<button type="button" class="sf-step sf-step--size-1 sf-step--stage-default flex items-center content-main-center disabled" data-step-index="2" disabled>
-
-<div class="sf-step-container flex items-center content-main-center">Готово</div>
-</button>
-
-
-
-</div>
 </div>
 </sf-steps>
 <div class="sf-wizard-compact">

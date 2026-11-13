@@ -1,6 +1,9 @@
 import SfBaseElement, { toAttributeName, toNumber } from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderStepsTemplate } from './js/templates/default';
+import {
+  COUNT_BELOW_REM, LAYOUTS, MARKERS, NAVIGATION, noteOld, parseItems, reachable, resolveStates,
+} from './js/items';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -11,52 +14,19 @@ import ru from './lang/ru.json';
 // core/js/element-manifest.js, its words are lang/<locale>.json (a product adds
 // another language through SF.language.register("sf-steps", code, words)), and
 // the old event name sf-step-change is a dated alias of sf-steps-change.
+//
+// What it is (owner decision C101, 2026-11-12): where a person is in an
+// ordered process of their own -- how many steps are behind and how many are
+// ahead. A job the server runs is sf-progress-run; tasks done in any order are
+// a task list, not steps. Passive by default: an ordered list, the current
+// item aria-current=step, a state word in each item. navigation="visited" or
+// "free" makes the steps a person may go to buttons, as in sf-wizard.
 const StepsElement = elementFromManifest(manifest, {
   base: SfBaseElement,
   lang: { en, ru },
   source: 'ru',
   aliases,
 });
-
-// The states an item may carry itself (1.2.0); they win over the one its
-// place gives it.
-const STATES = ['completed', 'skipped', 'running', 'error'];
-
-function parseItems(items = '') {
-  // The list as JSON in the attribute reads like the property.
-  if (typeof items === 'string' && items.trim().startsWith('[')) {
-    try {
-      return parseItems(JSON.parse(items));
-    } catch {
-      // Not JSON: the "label::disabled|label" form below.
-    }
-  }
-  if (Array.isArray(items)) {
-    return items
-      .map((item) => (typeof item === 'string' ? { label: item } : item))
-      .filter(Boolean);
-  }
-
-  return String(items || '')
-    .split('|')
-    .map((item) => item.trim())
-    .filter(Boolean)
-    .map((entry) => {
-      const [labelPart, flagsPart = ''] = entry.split('::');
-      const label = labelPart.trim();
-      const flags = flagsPart
-        .split(',')
-        .map((flag) => flag.trim().toLowerCase())
-        .filter(Boolean);
-
-      const state = STATES.find((word) => flags.includes(word));
-      return {
-        label,
-        disabled: flags.includes('disabled'),
-        ...(state ? { state } : {}),
-      };
-    });
-}
 
 class SfSteps extends StepsElement {
   // The manifest's settings, and what the steps read more closely: items from
@@ -74,17 +44,22 @@ class SfSteps extends StepsElement {
         },
       },
       current: { type: Number, default: 0 },
+      marker: { default: 'number' },
+      layout: { default: 'auto' },
+      navigation: { default: '' },
       errorStep: { default: '' },
-      separatorIcon: { default: 'chevron_right' },
+      separatorIcon: { default: '' },
       ariaLabel: { attribute: 'aria-label', default: '' },
       completedLabel: { default: '' },
+      currentLabel: { default: '' },
+      aheadLabel: { default: '' },
       errorLabel: { default: '' },
       skippedLabel: { default: '' },
       runningLabel: { default: '' },
+      countLabel: { default: '' },
       rootClass: { default: '' },
     };
   }
-
 
   constructor() {
     super();
@@ -92,7 +67,35 @@ class SfSteps extends StepsElement {
   }
 
   get size() {
-    return this.getAttribute('size') || '1';
+    return this.getAttribute('size') === '1/2' ? '1/2' : '1';
+  }
+
+  get marker() {
+    const value = this.getAttribute('marker');
+    return MARKERS.includes(value) ? value : 'number';
+  }
+
+  set marker(value) {
+    this.setAttribute('marker', String(value));
+  }
+
+  get layout() {
+    const value = this.getAttribute('layout');
+    return LAYOUTS.includes(value) ? value : 'auto';
+  }
+
+  set layout(value) {
+    this.setAttribute('layout', String(value));
+  }
+
+  get navigation() {
+    const value = this.getAttribute('navigation');
+    return NAVIGATION.includes(value) ? value : '';
+  }
+
+  set navigation(value) {
+    if (value === null || value === undefined || value === '') this.removeAttribute('navigation');
+    else this.setAttribute('navigation', String(value));
   }
 
   get items() {
@@ -108,15 +111,24 @@ class SfSteps extends StepsElement {
     else this.requestComponentUpdate('items');
   }
 
+  // current runs from 0 to the number of steps: equal to it, every step is
+  // behind (all done, C101 ST-4).
   get current() {
-    const maxIndex = Math.max(this.items.length - 1, 0);
-    return Math.min(Math.max(this.getNumberAttr('current', 0), 0), maxIndex);
+    const count = this.items.length;
+    return Math.min(Math.max(this.getNumberAttr('current', 0), 0), count);
   }
 
   set current(value) {
     this.setAttribute('current', String(toNumber(value, 0)));
   }
 
+  get done() {
+    const count = this.items.length;
+    return count > 0 && this.current >= count;
+  }
+
+  // The old way to mark one step failed (1.3 and before): an item's own
+  // state error is today's.
   get errorStep() {
     const value = this.getAttribute('error-step');
     if (value === null || value === '') {
@@ -124,54 +136,80 @@ class SfSteps extends StepsElement {
     }
 
     const parsed = toNumber(value, -1);
-    return parsed >= 0 ? parsed : null;
+    if (parsed < 0) return null;
+    noteOld('attribute', 'error-step', 'error-step', 'items[i].state = "error"');
+    return parsed;
   }
 
   get separatorIcon() {
-    return this.getAttribute('separator-icon') || 'chevron_right';
+    return this.getAttribute('separator-icon') || '';
   }
 
   get computedItems() {
-    const errorStep = this.errorStep;
+    return resolveStates(this.items, this.current, this.errorStep).map((item) => ({
+      ...item,
+      reachable: reachable(item, this.navigation),
+    }));
+  }
 
-    return this.items.map((item, index) => {
-      const isError = errorStep === index;
-      let stage = 'default';
+  word(key, attribute) {
+    return this.getAttribute(attribute) || this.sfWord(key);
+  }
 
-      // An item's own state wins; without one the place decides (before
-      // current: completed) and error-step marks its step.
-      if (STATES.includes(item?.state)) {
-        stage = item.state;
-      } else if (item?.state === 'default') {
-        stage = isError ? 'error' : 'default';
-      } else if (isError) {
-        stage = 'error';
-      } else if (index < this.current) {
-        stage = 'completed';
-      }
+  get stateWords() {
+    return {
+      done: this.word('completed-label', 'completed-label'),
+      current: this.word('current-label', 'current-label'),
+      ahead: this.word('ahead-label', 'ahead-label'),
+      error: this.word('error-label', 'error-label'),
+      skipped: this.word('skipped-label', 'skipped-label'),
+      running: this.word('running-label', 'running-label'),
+    };
+  }
 
-      return {
-        ...item,
-        index,
-        stage,
-        selected: index === this.current,
-      };
-    });
+  // The layout drawn: an explicit one, or for auto what the list's own width
+  // allows (checkFit, after each drawing): a row while it fits, else a column,
+  // and under 20rem the count line.
+  get drawnLayout() {
+    if (this.layout !== 'auto') return this.layout;
+    return this._fit || 'row';
   }
 
   templateContext() {
     const props = this.getPropsContext();
+    const items = this.computedItems;
+    const count = items.length;
+    const at = count ? Math.min(this.current, count - 1) : 0;
+    const done = this.done;
+
+    if (this.hasAttribute('separator-icon')) {
+      noteOld('attribute', 'separator-icon', 'separator-icon', null);
+    }
 
     return this.createTemplateContext({
       ...props,
+      size: this.size,
+      marker: this.marker,
+      layout: this.layout,
+      drawn: this.drawnLayout,
+      navigation: this.navigation,
       ariaLabel: this.getAttribute('aria-label') || this.sfWord('aria-label'),
-      completedLabel: this.getAttribute('completed-label') || this.sfWord('completed-label'),
-      errorLabel: this.getAttribute('error-label') || this.sfWord('error-label'),
-      skippedLabel: this.getAttribute('skipped-label') || this.sfWord('skipped-label'),
-      runningLabel: this.getAttribute('running-label') || this.sfWord('running-label'),
+      words: this.stateWords,
       component: this,
       rootClass: this.getRootClass(),
-      items: this.computedItems,
+      items,
+      count,
+      done,
+      position: count
+        ? {
+            label: items[at]?.label ?? '',
+            state: items[at]?.state ?? '',
+            text: this.getAttribute('count-label')
+              ? this.getAttribute('count-label').replace('{n}', String(at + 1)).replace('{count}', String(count))
+              : this.sfWord('count-label', { vars: { n: at + 1, count } }),
+            value: done ? 100 : Math.round(((at + 1) / count) * 100),
+          }
+        : null,
     });
   }
 
@@ -183,18 +221,23 @@ class SfSteps extends StepsElement {
     return {
       size: this.size,
       current: this.current,
-      errorStep: this.errorStep,
-      separatorIcon: this.separatorIcon,
+      marker: this.marker,
+      layout: this.layout,
+      navigation: this.navigation,
       ariaLabel: this.getAttribute('aria-label') || this.sfWord('aria-label'),
-      completedLabel: this.getAttribute('completed-label') || this.sfWord('completed-label'),
-      errorLabel: this.getAttribute('error-label') || this.sfWord('error-label'),
-      skippedLabel: this.getAttribute('skipped-label') || this.sfWord('skipped-label'),
-      runningLabel: this.getAttribute('running-label') || this.sfWord('running-label'),
+      completedLabel: this.word('completed-label', 'completed-label'),
+      currentLabel: this.word('current-label', 'current-label'),
+      aheadLabel: this.word('ahead-label', 'ahead-label'),
+      errorLabel: this.word('error-label', 'error-label'),
+      skippedLabel: this.word('skipped-label', 'skipped-label'),
+      runningLabel: this.word('running-label', 'running-label'),
       items: this.items,
       rootClass: this.getRootClass(),
     };
   }
 
+  // Writes each key as its attribute; a list (items) is written as JSON, the
+  // one list format (C101).
   setState(nextState = {}) {
     Object.entries(nextState || {}).forEach(([key, value]) => {
       const attr = toAttributeName(key);
@@ -208,24 +251,7 @@ class SfSteps extends StepsElement {
       }
 
       if (Array.isArray(value)) {
-        const serialized = value
-          .map((item) => {
-            if (typeof item === 'string') {
-              return item;
-            }
-
-            const flags = [];
-            if (item?.disabled) {
-              flags.push('disabled');
-            }
-            if (STATES.includes(item?.state)) {
-              flags.push(item.state);
-            }
-
-            return flags.length ? `${item.label}::${flags.join(',')}` : item.label;
-          })
-          .join('|');
-        this.setAttribute(attr, serialized);
+        this.setAttribute(attr, JSON.stringify(value.map((item) => (typeof item === 'string' ? { label: item } : item))));
         return;
       }
 
@@ -242,7 +268,8 @@ class SfSteps extends StepsElement {
 
   // The action go-to-step (§4.4): moves current and answers an outcome. It
   // reports nothing: `change` is what a person did (§8), which is the press
-  // below.
+  // below. It moves whatever navigation says: navigation is what a person
+  // may press, the host moves the steps itself.
   goToStep(index) {
     return this.moveToStep(index, { person: false });
   }
@@ -292,16 +319,71 @@ class SfSteps extends StepsElement {
     return this;
   }
 
+  // Only a step drawn as a button is pressed (navigation): a passive list has
+  // none.
   handleRootClick = (event) => {
-    const step = event.target?.closest?.('[data-step-index]');
-    if (!(step instanceof HTMLElement)) {
+    const control = event.target?.closest?.('.sf-step-control');
+    if (!(control instanceof HTMLElement) || !this.contains(control) || control.disabled) {
       return;
     }
-
-    const nextIndex = toNumber(step.dataset.stepIndex, this.current);
+    const step = control.closest('[data-step-index]');
+    const nextIndex = toNumber(step?.dataset.stepIndex, this.current);
+    const item = this.computedItems[nextIndex];
+    if (!item || !item.reachable) return;
     this.moveToStep(nextIndex, { person: true });
   };
 
+  // ---------------------------------------------------------------- layout
+
+  afterRender() {
+    this.observeFit();
+    this.checkFit();
+  }
+
+  onDisconnected() {
+    this._fitObserver?.disconnect();
+    super.onDisconnected();
+  }
+
+  observeFit() {
+    if (typeof ResizeObserver === 'undefined') return;
+    if (!this._fitObserver) {
+      this._fitObserver = new ResizeObserver(() => this.checkFit());
+      globalThis.document?.fonts?.ready?.then?.(() => this.checkFit());
+    }
+    this._fitObserver.disconnect();
+    const root = this.querySelector(':scope > .sf-steps');
+    if (root) this._fitObserver.observe(root);
+  }
+
+  // What the steps need on one row and what the list is given: the row is
+  // laid out at its one-line width for a moment (data-sf-measure, in the same
+  // task, never painted), whatever the list draws now.
+  measureFit() {
+    const root = this.querySelector(':scope > .sf-steps');
+    const list = root?.querySelector(':scope > .sf-steps-container');
+    if (!root || !list) return null;
+    const room = root.getBoundingClientRect().width;
+    root.setAttribute('data-sf-measure', '');
+    const need = list.getBoundingClientRect().width;
+    root.removeAttribute('data-sf-measure');
+    const rem = parseFloat(globalThis.getComputedStyle?.(globalThis.document.documentElement).fontSize) || 16;
+    return { need, room, rem };
+  }
+
+  checkFit() {
+    if (!this.isConnected || this.layout !== 'auto') return;
+    const fit = this.measureFit();
+    // Not laid out (a closed panel, display none): nothing to decide.
+    if (!fit || !fit.room) return;
+    let next = 'row';
+    if (fit.room < COUNT_BELOW_REM * fit.rem) next = 'count';
+    // A pixel of slack: a row that fits exactly is a row.
+    else if (fit.need > fit.room + 1) next = 'column';
+    if (next === (this._fit || 'row')) return;
+    this._fit = next;
+    this.requestComponentUpdate?.('fit');
+  }
 }
 
 SfSteps.define('sf-steps');

@@ -1,54 +1,201 @@
 @layer sf.components {
-/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+/* The list of sf-steps and its three layouts (owner decision C101): a row
+   (marker and label beside it, a line to the next step), a column (a rail of
+   markers with the line down, the label and its second line) and the count
+   line («Шаг 3 из 4 · label» over sf-progress-bar 1/3). The line is 2 px of
+   the progress colour behind the current step and 1 px outline-variant
+   after it; no pills, no «›».
+
+   layout="auto" draws the row while it fits its own width, the column
+   otherwise, and the count line under twenty rem (sf-steps measures, the classes
+   below draw). While it measures, data-sf-measure lays the list out as a row
+   at its one-line width for a moment, in the same task, never painted. */
 .sf-steps {
+  display: block;
   min-inline-size: 0;
   max-inline-size: 100%;
   background-color: var(--sf-steps--background-color, transparent);
 }
 
-/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) gap/var(--sf-steps-container--gap) */
 .sf-steps .sf-steps-container {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   min-inline-size: 0;
-  max-inline-size: 100%;
-  --sf-steps-container--background-color: transparent;
-  background-color: var(--sf-steps-container--background-color);
-  gap: var(--sf-steps-gap, var(--sf-steps-container--gap));
 }
 
-.sf-steps .sf-steps-container > .sf-icon {
-  flex-shrink: 0;
-  /* A glyph is non-text graphics, and WCAG 1.4.11 asks 3:1 of it.
-     --sf-on-surface-muted is 3.18:1 light and 2.92:1 dark, so it sat on the
-     line in one theme and under it in the other. --sf-on-surface-variant is
-     the Framework's own paler-than-text role, 6.47 and 5.95. */
-  --sf-icon--color: var(--sf-steps-separator-color, var(--sf-on-surface-variant));
-  color: var(--sf-icon--color);
-  font-size: var(--sf-icon--font-size, var(--sf-text-size-3));
-  height: var(--sf-icon--height, var(--sf-text-size-3));
-  width: var(--sf-icon--width, var(--sf-text-size-3));
+/* ---------------------------------------------------------------- row */
+.sf-steps:is(.sf-steps--layout-row, [data-sf-measure]) .sf-steps-container {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--sf-steps-gap, var(--sf-space-1\/2));
 }
 
-.sf-steps:dir(rtl) .sf-steps-separator--directional {
-  transform: rotate(180deg);
+.sf-steps[data-sf-measure] .sf-steps-container {
+  inline-size: max-content;
 }
 
-.sf-steps.sf-steps--size-1 .sf-steps-container > .sf-icon {
-  --sf-icon--font-size: var(--sf-text-size-3);
-  --sf-icon--height: var(--sf-text-size-3);
-  --sf-icon--width: var(--sf-text-size-3);
+.sf-steps:is(.sf-steps--layout-row, [data-sf-measure]) .sf-step {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1\/3);
+  flex: 0 0 auto;
+  /* The current marker's ring stands outside the marker: the row keeps room
+     for it, so a scrolling host does not cut it. */
+  padding-block: calc(var(--sf-step--ring) * 2);
 }
 
-.sf-steps.sf-steps--size-1 .sf-steps-container {
-  --sf-steps-container--gap: var(--sf-space-1\/4);
+.sf-steps:is(.sf-steps--layout-row, [data-sf-measure]) .sf-step:not(:last-child) {
+  flex: 1 0 auto;
 }
 
-.sf-steps.sf-steps--size-1\/2 .sf-steps-container > .sf-icon {
-  --sf-icon--font-size: var(--sf-text-size-2);
-  --sf-icon--height: var(--sf-text-size-2);
-  --sf-icon--width: var(--sf-text-size-2);
+.sf-steps:is(.sf-steps--layout-row, [data-sf-measure]) .sf-step .sf-step-container {
+  white-space: nowrap;
 }
 
-.sf-steps.sf-steps--size-1\/2 .sf-steps-container {
-  --sf-steps-container--gap: var(--sf-space-1\/3);
+/* The second line belongs to the column. */
+.sf-steps:is(.sf-steps--layout-row, [data-sf-measure]) .sf-step .sf-step-text {
+  display: none;
+}
+
+.sf-steps:is(.sf-steps--layout-row, [data-sf-measure]) .sf-step:not(:last-child)::after {
+  content: "";
+  flex: 1 1 var(--sf-space-1);
+  min-inline-size: var(--sf-space-1);
+  block-size: var(--sf-px);
+  background-color: var(--sf-steps-separator-color, var(--sf-outline-variant));
+}
+
+.sf-steps:is(.sf-steps--layout-row, [data-sf-measure]) .sf-step.sf-step--passed:not(:last-child)::after {
+  block-size: calc(var(--sf-px) * 2);
+  background-color: var(--sf-step--progress);
+}
+
+.sf-steps:is(.sf-steps--layout-row, [data-sf-measure]) .sf-step-control {
+  min-block-size: var(--sf-ui-1\/2--control-height);
+  padding-inline: var(--sf-space-1\/4);
+  margin-inline: calc(-1 * var(--sf-space-1\/4));
+}
+
+/* An explicit row that is wider than its place scrolls inside itself; an
+   automatic one becomes a column before that. */
+.sf-steps.sf-steps--layout-row:not(.sf-steps--auto) .sf-steps-container {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+/* ------------------------------------------------------------- column */
+.sf-steps.sf-steps--layout-column:not([data-sf-measure]) .sf-steps-container {
+  display: flex;
+  flex-direction: column;
+  /* Room for the first and the last ring. */
+  padding-block: calc(var(--sf-step--ring, calc(var(--sf-px) * 2)) * 2);
+}
+
+.sf-steps.sf-steps--layout-column:not([data-sf-measure]) .sf-step {
+  display: block;
+  padding-block-end: var(--sf-space-1);
+}
+
+.sf-steps.sf-steps--layout-column:not([data-sf-measure]) .sf-step:last-child {
+  padding-block-end: 0;
+}
+
+.sf-steps.sf-steps--layout-column:not([data-sf-measure]) .sf-step .sf-step-body {
+  display: grid;
+  grid-template-columns: var(--sf-step--marker) minmax(0, 1fr);
+  column-gap: var(--sf-space-1\/2);
+  align-items: start;
+  inline-size: 100%;
+}
+
+/* The marker stands on the label's first line. */
+.sf-steps.sf-steps--layout-column:not([data-sf-measure]) .sf-step .sf-step-marker {
+  block-size: var(--sf-step--line-height);
+}
+
+.sf-steps.sf-steps--layout-column:not([data-sf-measure]).sf-steps--marker-number .sf-step .sf-step-marker {
+  block-size: var(--sf-step--marker);
+  margin-block: calc((var(--sf-step--line-height) - var(--sf-step--marker)) / 2);
+}
+
+/* The line down the rail, from under this marker to the next one. */
+.sf-steps.sf-steps--layout-column:not([data-sf-measure]) .sf-step:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  inset-block-start: calc((var(--sf-step--line-height) + var(--sf-step--marker-reach)) / 2 + var(--sf-space-1\/4));
+  inset-block-end: calc(var(--sf-space-1\/4) - (var(--sf-step--line-height) - var(--sf-step--marker-reach)) / 2);
+  inset-inline-start: calc((var(--sf-step--marker) - var(--sf-px)) / 2);
+  inline-size: var(--sf-px);
+  background-color: var(--sf-steps-separator-color, var(--sf-outline-variant));
+}
+
+.sf-steps.sf-steps--layout-column:not([data-sf-measure]) .sf-step.sf-step--passed:not(:last-child)::before {
+  inline-size: calc(var(--sf-px) * 2);
+  inset-inline-start: calc((var(--sf-step--marker) - var(--sf-px) * 2) / 2);
+  background-color: var(--sf-step--progress);
+}
+
+/* How far a marker reaches on the rail: a number is its box; a dot is the
+   dot and its ring. */
+.sf-steps--marker-number .sf-step {
+  --sf-step--marker-reach: var(--sf-step--marker);
+}
+
+.sf-steps--marker-dot .sf-step {
+  --sf-step--marker-reach: calc(var(--sf-step--dot) + var(--sf-step--ring) * 4);
+}
+
+.sf-steps--marker-dot .sf-step.sf-step--state-running {
+  --sf-step--marker-reach: var(--sf-step--marker);
+}
+
+.sf-steps.sf-steps--layout-column:not([data-sf-measure]) .sf-step-control {
+  border-radius: var(--sf-radius--ui);
+}
+
+/* -------------------------------------------------------------- count */
+.sf-steps.sf-steps--layout-count:not([data-sf-measure]) .sf-steps-container {
+  display: none;
+}
+
+.sf-steps .sf-steps-count {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-1\/4);
+  min-inline-size: 0;
+}
+
+.sf-steps[data-sf-measure] .sf-steps-count {
+  display: none;
+}
+
+.sf-steps .sf-steps-count-line {
+  margin: 0;
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-1);
+  line-height: var(--sf-text-height-1);
+  color: var(--sf-on-surface);
+  overflow-wrap: normal;
+}
+
+.sf-steps.sf-steps--size-1\/2 .sf-steps-count-line {
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-steps .sf-steps-count-position {
+  color: var(--sf-on-surface-variant);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.sf-steps .sf-steps-count-label {
+  font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-steps .sf-steps-count-label.sf-step--state-error {
+  color: var(--sf-error);
 }
 }

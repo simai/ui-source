@@ -407,11 +407,7 @@
     "flex/default"
   ],
   "cl-steps": [
-    "cursor/default",
-    "display/default",
-    "flex-direction/default",
-    "justify-content/default",
-    "place-items/default"
+    "sr-only/default"
   ],
   "cl-switch": [
     "align-items/default",

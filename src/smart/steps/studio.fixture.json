@@ -6,19 +6,21 @@
   "summary": "Deterministic reference fixture for sf-steps.",
   "locale": "ru",
   "props": {
-    "aria-label": "Этапы публикации",
-    "completed-label": "Завершено",
-    "current": 1,
-    "error-label": "Ошибка",
+    "aria-label": "Оформление заказа",
+    "current": 2,
+    "navigation": "visited",
     "items": [
       {
-        "label": "Черновик"
+        "label": "Корзина"
       },
       {
-        "label": "Проверка"
+        "label": "Доставка"
       },
       {
-        "label": "Готово"
+        "label": "Оплата"
+      },
+      {
+        "label": "Подтверждение"
       }
     ]
   },
