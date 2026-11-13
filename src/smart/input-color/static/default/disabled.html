@@ -2,20 +2,19 @@
 <sf-input-color label="Цвет" value="#1a7f37" disabled style="display: contents;">
 <div class="sf-color-field sf-color-field--size-1" data-sf-static>
 <span class="sf-color-label" aria-hidden="true">Цвет</span>
-
-<div class="sf-color sf-color--bordered sf-color--size-1" data-set="true">
-<label class="sf-color-swatch" title="Выбрать цвет">
-<span class="sf-color-chip" aria-hidden="true" style="--sf-color-chip: #1a7f37"></span>
-<input type="color" class="sf-color-input" disabled aria-label="Цвет">
-</label>
-
-<span class="sf-color-text">
-<code>#1a7f37</code>
-</span>
+<div class="sf-color sf-color--bordered sf-color--size-1" data-set="true" data-open="false">
+<div class="sf-color-frame" data-disabled>
+<button type="button" class="sf-color-trigger" aria-haspopup="dialog" title="Выбрать цвет" aria-expanded="false" aria-label="Цвет: #1a7f37" disabled>
+<span aria-hidden="true" class="sf-color-chip" style="--sf-color-fill: #1a7f37; --sf-color-solid: #1a7f37"></span>
+<span class="sf-color-text"><code>#1a7f37</code></span>
+</button>
 
 
+<sf-icon root-class="sf-color-chevron" aria-hidden="true" icon="keyboard_arrow_down" style="display: contents;"><i class="sf-icon sf-icon--weight-regular sf-color-chevron" style="--sf-icon--grade:0;--sf-icon--optical-size:24" aria-hidden="true" data-sf-static>keyboard_arrow_down</i></sf-icon>
+</div>
 
 </div>
+
 
 </div>
 </sf-input-color>
