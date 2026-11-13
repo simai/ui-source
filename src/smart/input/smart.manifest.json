@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "title": "Text fields",
   "summary": "A native single-line form control with Framework presentation, validation messaging and optional mask integration.",
   "kind": "smart",
@@ -105,7 +105,7 @@
       "input-type": {
         "type": "string",
         "default": "text",
-        "description": "The kind of text the field takes, the native input type: text, email, password (with a reveal button), search, tel, url or number (with min, max and step).",
+        "description": "The kind of text the field takes, the native input type: text, email, password, search, tel, url or number (with min, max and step).",
         "enum": [
           "text",
           "email",

@@ -87,7 +87,7 @@ const sfInputMeta = {
         "number"
       ],
       "default": "text",
-      "description": "The kind of text the field takes, the native input type: text, email, password (with a reveal button), search, tel, url or number (with min, max and step)."
+      "description": "The kind of text the field takes, the native input type: text, email, password, search, tel, url or number (with min, max and step)."
     },
     "autocomplete": {
       "kind": "custom",

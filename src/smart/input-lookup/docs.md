@@ -72,7 +72,8 @@ or a `blob:` address.
 - `name` -- the form name.
 - `value` -- the starting value as JSON (`'{"value":7,"label":"Anna"}'`) or a
   bare value read against the options; a form reset puts it back. The
-  property holds the value itself.
+  property holds the value itself, and takes a bare value too: whether the
+  options come before or after it, it shows its option's label (1.7.1).
 - `multiple` -- several values as chips; the list stays open after a choice.
   Without it a choice is the value and closes the list.
 - `max-items` -- multiple only: the most items; a choice past it is refused
@@ -88,6 +89,7 @@ or a `blob:` address.
   bottom line in `--sf-outline`, C52).
 - `options`, `exclude`, `provider` -- properties (lists and a function);
   `options` and `exclude` may also come in the `data-sf-settings` island.
+  They are not attributes: an `options="[...]"` attribute is not read.
 
 ## Methods
 
