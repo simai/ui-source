@@ -18,8 +18,9 @@ import {html, nothing} from 'lit';
 //   item's action after it; a hint under it.
 // - With no items: nothing at all.
 
-// The rung below the list's: the hint, a stacked label, the copy button,
-// the actions, the help mark.
+// The rung below the list's: the hint, a stacked label, the actions, the
+// help mark. The copy button stands on the value's own rung (C103: one line,
+// one step -- text 1, copy button size 1).
 const BELOW = {'1/2': '1/3', 1: '1/2', 2: '1'};
 // A badge value: sf-badge of this size, on the list's line (line="<size>").
 const BADGE = {'1/2': '1/3', 1: '1/3', 2: '1/2'};
@@ -67,7 +68,7 @@ function row(context, item) {
       <span class="sf-list-description-line">
         ${item.status ? html`<i class=${`sf-icon sf-list-description-icon sf-list-description-icon--${item.status}`} aria-hidden="true">${icons[item.status]}</i><span class="sr-only">${item.statusWord}: </span>` : nothing}
         ${shown(context, item)}
-        ${item.copy ? html`<sf-button-copy class="sf-list-description-copy" size=${BELOW[size]} appearance="ghost"
+        ${item.copy ? html`<sf-button-copy class="sf-list-description-copy" size=${size} appearance="ghost"
           value=${item.value} label=${item.copyLabel}></sf-button-copy>` : nothing}
         ${action(context, item)}
       </span>

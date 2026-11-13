@@ -1,10 +1,13 @@
 import {html, nothing} from 'lit';
 
+// The download and remove buttons stand on the step of the name beside them,
+// size 1 (C103: one line, one step -- text 1, button size 1, 40 with a 24
+// icon; docs precheck FP-06: they were 1/2, 32 beside the 16 px name).
 function renderAction({icon, label, disabled, action, onClick}) {
   return html`
     <button
       type="button"
-      class="sf-icon-button sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1/2"
+      class="sf-icon-button sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1"
       data-action=${action}
       ?disabled=${disabled}
       aria-label=${label}
