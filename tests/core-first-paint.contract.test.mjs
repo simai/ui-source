@@ -429,3 +429,71 @@ test('the boot preloader never covers a page with static markup, skeletons, prel
   assert.match(index, /if \(cfg\.enabled === false \|\| document\.querySelector\('\.sf-loader'\)\) return;/, 'SF_BOOT_CONFIG.preloader.enabled = false still turns it off');
   assert.match(index, /'DOMContentLoaded',\s*\(\) => \{\s*if \(!pageShowsContent\(document\)\) return;\s*cancelBuild\(\);/, 'an early preloader gives way to a parsed first paint');
 });
+
+test('an up preloader leaves at once when a component draws under it (R216)', async () => {
+  const {watchForContent, DRAWN_CONTENT_SELECTOR} = await import('../src/core/js/preloader.js');
+  assert.equal(DRAWN_CONTENT_SELECTOR, '[data-sf-static], [data-sf-skeleton], [data-sf-style-ready]');
+  const fake = () => {
+    const listeners = new Map();
+    let observer = null;
+    const win = {
+      addEventListener: (type, fn, capture) => { assert.equal(capture, true, 'captured: the event need not bubble'); listeners.set(type, fn); },
+      removeEventListener: (type) => listeners.delete(type),
+      MutationObserver: class {
+        constructor(callback) { this.callback = callback; observer = this; }
+        observe(root, options) { this.root = root; this.options = options; }
+        disconnect() { this.disconnected = true; }
+      },
+    };
+    const doc = {documentElement: {}};
+    return {win, doc, listeners, get observer() { return observer; }};
+  };
+  const element = (name, {matches = false, inside = false, attrs = []} = {}) => ({
+    nodeType: 1, localName: name,
+    matches: () => matches, querySelector: () => (inside ? {} : null),
+    hasAttribute: (attr) => attrs.includes(attr),
+  });
+
+  // The style gate marks a host drawn.
+  let f = fake(); let calls = 0;
+  watchForContent(() => { calls += 1; }, f);
+  assert.deepEqual(f.observer.options.attributeFilter, ['data-sf-style-ready', 'data-sf-static', 'data-sf-skeleton']);
+  assert.equal(f.observer.options.subtree, true);
+  f.observer.callback([{type: 'attributes', attributeName: 'data-sf-style-ready', target: element('sf-input-choice', {attrs: []})}]);
+  assert.equal(calls, 0, 'a mark taken away is not a drawing');
+  f.observer.callback([{type: 'attributes', attributeName: 'data-sf-style-ready', target: element('sf-input-choice', {attrs: ['data-sf-style-ready']})}]);
+  f.observer.callback([{type: 'attributes', attributeName: 'data-sf-style-ready', target: element('sf-button', {attrs: ['data-sf-style-ready']})}]);
+  assert.equal(calls, 1, 'once');
+  assert.equal(f.observer.disconnected, true);
+  assert.equal(f.listeners.size, 0);
+
+  // A host drawn without the gate: sf-after-render from an sf- element.
+  f = fake(); calls = 0;
+  watchForContent(() => { calls += 1; }, f);
+  f.listeners.get('sf-after-render')({target: {localName: 'div'}});
+  assert.equal(calls, 0);
+  f.listeners.get('sf-after-render')({target: {localName: 'sf-popover'}});
+  assert.equal(calls, 1);
+
+  // A first paint added later, itself or inside an added node; plain nodes are not.
+  f = fake(); calls = 0;
+  watchForContent(() => { calls += 1; }, f);
+  f.observer.callback([{type: 'childList', addedNodes: [{nodeType: 3}, element('p')]}]);
+  assert.equal(calls, 0);
+  f.observer.callback([{type: 'childList', addedNodes: [element('section', {inside: true})]}]);
+  assert.equal(calls, 1);
+
+  // Stopped (sf-loader-ready came first): nothing more.
+  f = fake(); calls = 0;
+  const stop = watchForContent(() => { calls += 1; }, f);
+  stop();
+  f.observer.callback([{type: 'childList', addedNodes: [element('div', {matches: true})]}]);
+  assert.equal(calls, 0);
+
+  const index = read('src/core/js/index.js');
+  const build = slice(index, 'const buildPreloader = () => {', 'const cancelBuild = () => {');
+  assert.match(build, /stopWatch = watchForContent\(\(\) => \{\s*preloaderRun = false;\s*stopAnimation\(\);\s*hide\(\);/, 'the preloader, once up, watches and leaves');
+  const hide = slice(index, 'const hide = () => {', 'const stopAnimation = () => {');
+  assert.match(hide, /stopWatch\?\.\(\);/, 'hidden by the Loader: the watch stops');
+  assert.match(hide, /wrap\.style\.display = 'none';/, 'gone in the same frame, no transition, no sheet needed');
+});

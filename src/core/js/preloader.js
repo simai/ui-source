@@ -53,6 +53,61 @@ export function pageShowsContent(doc = globalThis.document) {
   return pageHasFirstPaint(doc) || pageHasRenderedSmart(doc);
 }
 
+// The boot preloader never covers a component already drawn, on any site
+// (R216, 2026-11-13). Checked once is not enough: a preloader that is up
+// when an element draws under it -- a cold load where the Smart elements
+// come in after the delay, as in Docara's example frames -- covered the drawn
+// example until sf-loader-ready, 0.5-0.9 s. While the preloader is up this
+// watches for content and calls onContent once, at the first of:
+//   - a host marked drawn by the style gate (data-sf-style-ready);
+//   - a host drawn without the gate (sf-after-render, captured on the window:
+//     the event is the element's own and need not bubble);
+//   - a first paint added later (data-sf-static / data-sf-skeleton).
+// Returns the stop function.
+export const DRAWN_CONTENT_SELECTOR = `${FIRST_PAINT_SELECTOR}, [data-sf-style-ready]`;
+
+export function watchForContent(onContent, {doc = globalThis.document, win = globalThis} = {}) {
+  let stopped = false;
+  let observer = null;
+  const onRender = (event) => {
+    if (event?.target?.localName?.startsWith?.('sf-')) found();
+  };
+  const stop = () => {
+    if (stopped) return;
+    stopped = true;
+    observer?.disconnect();
+    win?.removeEventListener?.('sf-after-render', onRender, true);
+  };
+  const found = () => {
+    if (stopped) return;
+    stop();
+    onContent();
+  };
+  const holds = (node) =>
+    node?.nodeType === 1 &&
+    Boolean(node.matches?.(DRAWN_CONTENT_SELECTOR) || node.querySelector?.(DRAWN_CONTENT_SELECTOR));
+  win?.addEventListener?.('sf-after-render', onRender, true);
+  const Observer = win?.MutationObserver;
+  const root = doc?.documentElement;
+  if (typeof Observer === 'function' && root) {
+    observer = new Observer((records) => {
+      for (const record of records) {
+        if (record.type === 'attributes' ? record.target?.hasAttribute?.(record.attributeName) : Array.from(record.addedNodes || []).some(holds)) {
+          found();
+          return;
+        }
+      }
+    });
+    observer.observe(root, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: ['data-sf-style-ready', 'data-sf-static', 'data-sf-skeleton'],
+    });
+  }
+  return stop;
+}
+
 export function getPreloaderColor(root = document.documentElement) {
   const fallback = root?.classList?.contains('theme-dark')
     ? '#e3e2e7'
