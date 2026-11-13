@@ -58,6 +58,7 @@ import {
   pageShowsContent,
   startPreloaderMotion,
   stopPreloaderMotion,
+  watchForContent,
 } from './preloader';
 
 // SF.format, before anything below can be asked to format.
@@ -365,10 +366,16 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     let preloaderWrap = null;
     let preloaderRun = false;
     let delayTimer = null;
+    let stopWatch = null;
 
+    // Gone in the same frame: display:none on the element itself, so no
+    // transition or late sheet keeps it over the page (R216).
     const hide = () => {
+      stopWatch?.();
+      stopWatch = null;
       if (wrap) {
         wrap.classList.add('hidden');
+        wrap.style.display = 'none';
       }
     };
     const stopAnimation = () => {
@@ -411,6 +418,17 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       };
 
       startPreloaderMotion(preloaderWrap, () => preloaderRun, cfg);
+
+      // Up, it leaves at once when a component draws under it: never a
+      // preloader over drawn content (R216, any site).
+      stopWatch = watchForContent(() => {
+        preloaderRun = false;
+        stopAnimation();
+        hide();
+        if (window.SF_BOOT_CONFIG?.preloader) {
+          window.SF_BOOT_CONFIG.preloader.preloaderActive = false;
+        }
+      });
     };
 
     const cancelBuild = () => {
