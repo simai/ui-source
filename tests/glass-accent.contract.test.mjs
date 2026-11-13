@@ -27,8 +27,9 @@ const ACCENT = {
   'primary-active': 'var(--sf-neutral-90)',
   'on-primary': 'var(--sf-black)',
   'primary-container': 'var(--sf-white--alfa-12)',
-  'primary-container-hover': 'var(--sf-white--alfa-8)',
-  'primary-container-active': 'var(--sf-white--alfa-4)',
+  // Hover and press up the fill family, 16 and 20 (C113; dispatcher 2026-11-13).
+  'primary-container-hover': 'var(--sf-white--alfa-16)',
+  'primary-container-active': 'var(--sf-white--alfa-20)',
   'on-primary-container': 'var(--sf-white)',
   link: 'var(--sf-white)',
   'link-hover': 'var(--sf-neutral-95)',

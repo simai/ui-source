@@ -41,13 +41,14 @@ a real destination or action.
   tokens `--sf-tone-<name>-container` and `--sf-on-tone-<name>-container`
   draw the same until 2027-01-01.
 - cover, the decorative level (owner decision C91, level 2):
-  `.sf-avatar--text.sf-avatar--size-3.sf-hue-<name>` under
+  `.sf-avatar--text.sf-hue-<name>` of 64 px or more under
   `.sf-avatar--expressive`, or under `data-sf-style="expressive"` on the root or
   a container, stands on a cover of its hue -- the `--sf-hue-container` plate
   with a second container step laid over it towards the far corner, mixed in
   OKLab, roles only -- in the same ink. C65 gives covers to placeholders from
-  64 px; size 3 (56 px, 52 on a phone) is the largest step of the ladder, so it
-  is the only one. Strict, the default, keeps the plate flat; the nearest
+  64 px (the d6 step); size 3 (56 px, 52 on a phone) is the largest step of the
+  ladder, so the ladder's avatars stay flat and only an avatar sized to 64 px
+  or more takes it. Strict, the default, keeps the plate flat; the nearest
   `data-sf-style` wins.
 
 Use `.sf-avatar-card--square` and `.sf-avatar-card--portrait` for new card

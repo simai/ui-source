@@ -24,6 +24,12 @@ test('places declare the three hooks; the page declares none', async () => {
   const strong = places.slice(places.indexOf('@mixin sf-place-strong('), places.indexOf('@mixin sf-place-strong-accent'));
   assert.match(strong, /--sf-place--ink-variant: var\(--sf-on-#\{\$c\}\);/u);
   assert.match(strong, /--sf-place--ink: var\(--sf-on-#\{\$c\}\);/u);
+  // The inverse place reads its own inks (the branch's deviation 2, lost at
+  // the group build 2 merge: every role read 1.13-1.94:1 on bg-surface-inverse).
+  const inverse = places.slice(places.indexOf('@mixin sf-place-inverse('), places.indexOf('@mixin sf-place-inverse-accent'));
+  assert.match(inverse, /--sf-place--ink-variant: var\(--sf-on-surface-container-variant\);/u);
+  assert.match(inverse, /--sf-place--ink: var\(--sf-on-surface\);/u);
+  assert.match(inverse, /--sf-place--fill-surface: initial;/u);
   const glass = block(await read('src/core/scss/_sf_css__surface_places.scss'), '.sf-surface-media {');
   assert.match(glass, /--sf-place--ink: var\(--sf-on-surface-media\);/u);
   const plate = block(await read('src/utility/background-color/default/scss/_sf_css__background_color.scss'), '.#{$infix}bg-surface-container {');

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-avatar's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/avatar (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.avatar",
   "tag": "sf-avatar",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "kind": "leaf",
   "family": "avatar",
   "settings": {
@@ -81,7 +81,7 @@
     "expressive": {
       "type": "boolean",
       "default": false,
-      "summary": "The decorative level (owner decision C91, level 2): initials at size 3 with a hue stand on a cover of that hue -- the plate stepping into a second container step towards the far corner -- under the same ink. Smaller sizes, a photo, the placeholder and the neutral look stay flat. Off by default; data-sf-style=\"expressive\" on the root or a container turns it on for every avatar under it, data-sf-style=\"strict\" turns it off again."
+      "summary": "The decorative level (owner decision C91, level 2): initials with a hue on an avatar of 64 px or more (C65: covers only on placeholders from 64) stand on a cover of that hue -- the plate stepping into a second container step towards the far corner -- under the same ink. The size ladder ends at size 3 (56 px), so its avatars stay flat; an avatar sized to 64 px or more takes the cover. A photo, the placeholder and the neutral look stay flat. Off by default; data-sf-style=\"expressive\" on the root or a container turns it on for every avatar under it, data-sf-style=\"strict\" turns it off again."
     },
     "tone": {
       "type": "enum",
@@ -292,7 +292,8 @@
     "version 1.3.1 (2026-11-10): the offline dot is the disabled ink laid over the place colour (C43, avatars 1.3.5), and its two layers are public variables of the avatar sheet, --sf-avatar-offline-background-color and --sf-avatar-offline-overlay (avatars 1.3.6); css-variables lists both. Settings, values, events and keys unchanged.",
     "version 1.3.2 (2026-11-10): a patch, nothing drawn or done differently. The hue setting's words name the eight hues of auto as the code picks them: purple, not violet (the former violet is purple, value-c17-avatar-rose-to-pink; tone.mjs has drawn purple since 1.3.0). Settings, values, events and keys unchanged.",
     "version 1.3.3 (2026-11-12, avatar offline dot): a patch. The offline dot is the place's dim ink, --sf-on-surface-variant, not the disabled ink over the place colour, which was under 3:1 for a status mark (light 3.10 against the page, 2.56 against the avatar; dark plate 2.48 / 1.67); now at least 6.44 / 4.43 on the page, a card and the grey plate in both themes (avatars 1.3.7, journal value-avatar-offline-dot-dim-ink). The two public variables stay: --sf-avatar-offline-background-color defaults to the dim ink, --sf-avatar-offline-overlay to none.",
-    "version 1.4.0 (2026-11-12, owner decisions C91 level 2 and C65): the expressive setting draws sf-avatar--expressive; component.avatars 1.4.0 turns initials of size 3 with a hue into a cover of the hue: the C17 plate (--sf-hue-container) with a second container step laid over it towards the far corner, in OKLab, roles only, the ink unchanged. C65 said covers from 64 px; the avatar ladder ends at size 3 (56 px, 52 on a phone), so that is the one size that takes it. Off by default; the theme's data-sf-style=\"expressive\" turns it on without the setting. Nothing else changes."
+    "version 1.4.0 (2026-11-12, owner decisions C91 level 2 and C65): the expressive setting draws sf-avatar--expressive; component.avatars 1.4.0 turns initials of size 3 with a hue into a cover of the hue: the C17 plate (--sf-hue-container) with a second container step laid over it towards the far corner, in OKLab, roles only, the ink unchanged. C65 said covers from 64 px; the avatar ladder ends at size 3 (56 px, 52 on a phone), so that is the one size that takes it. Off by default; the theme's data-sf-style=\"expressive\" turns it on without the setting. Nothing else changes.",
+    "version 1.4.1 (2026-11-13, C65/C91 acceptance; one number above the unreleased 1.4.0 it joins): a patch. The cover follows the decided C65 rule, placeholders from 64 px (component.avatars 1.4.1): 1.4.0 gave it to size 3 (56 px, 52 on a phone), which is under 64, so the ladder's avatars are flat again under the expressive setting, and an avatar sized to 64 px or more takes the cover. Settings, values, events and keys unchanged."
   ],
   "x-rule": {
     "$comment-after": [
