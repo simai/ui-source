@@ -2527,7 +2527,16 @@ class SfBaseElement extends HTMLElement {
         this._liveSlotNodes.set(slotName, []);
       }
 
+      // A plain wrapper that only names the slot (<div slot="content">) gives
+      // the slot its children. A custom element is the content itself: it is
+      // never unwrapped. Counting its attributes alone made the answer depend
+      // on the upgrade order -- <sf-breadcrumbs slot="path"> carries only
+      // `slot` until its own class connects and writes style/data-sf-started,
+      // so a sf-header-page that upgraded first kept the bare items and
+      // dropped the trail (3 of 72 loads, 2026-11-12; every load when the
+      // header's script arrives first).
       const shouldUnwrapSlotHost =
+        !child.localName.includes("-") &&
         child.getAttributeNames().length === 1 && child.hasAttribute("slot");
       const slotNodes = shouldUnwrapSlotHost
         ? Array.from(child.childNodes)
