@@ -47,4 +47,6 @@ The help mark stands beside the <label>, not inside it (.sf-checkable-row, 1.3.0
 
 A Smart element with text is a row of its step (C63 W5): (control height − line) / 2 above and below, 40 at size 1, 60 with a description, 32 in compact, the touch target under a coarse pointer. The label is regular in all three choice controls (W6). The three share one base (W9): src/smart/helpers/checkable-row.js and checkable-row.css, and the name binding src/component/checkable-text-helper.js.
 
+The label stands `--sf-space-1/2` from the track at every size, on either side of it (C105 H2, 1.3.1): 12 at 1440, 8 compact and on the phone, the row gap of a list row and of a checkbox or radio (C63). `--sf-switch-gap` sets it.
+
 Motion (C66, 1.3.0): a press paints no on look; after the release the colours and the thumb travel run on one clock, 200 ms on `--sf-ease-move` (`calc(var(--sf-duration-fast) * 2)` until the scale has a 200 ms step); `--sf-switch--duration` and `--sf-switch--easing` set it; reduced motion is 0.

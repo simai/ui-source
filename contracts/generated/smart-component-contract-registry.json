@@ -2979,7 +2979,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/switch/smart.manifest.json",
-      "manifest_sha256": "0d7d6d86d00d0a571f70604049354730b8483c2a2abb1d3e796c4ed0a2b146ef",
+      "manifest_sha256": "e9cda5620df94b1b8ebee7882ae0ff3ac72c2f17fdf1b1461ee703ead855d3ba",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
