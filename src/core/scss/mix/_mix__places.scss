@@ -88,11 +88,11 @@ $sf-place-theme-roles: (
   'surface-state-hover': 'light-dark(var(--sf-neutral-50--alfa-4), var(--sf-neutral-90--alfa-4))',
   'surface-state-select': 'light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8))',
   'surface-state-active': 'light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12))',
-  'surface-container': 'light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8))',
-  'surface-container-hover': 'light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12))',
-  'surface-container-active': 'light-dark(var(--sf-neutral-50--alfa-16), var(--sf-neutral-90--alfa-16))',
+  'surface-container': 'light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12))',
+  'surface-container-hover': 'light-dark(var(--sf-neutral-50--alfa-16), var(--sf-neutral-90--alfa-16))',
+  'surface-container-active': 'light-dark(var(--sf-neutral-50--alfa-20), var(--sf-neutral-90--alfa-20))',
   'outline': 'light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48))',
-  'surface-disabled': 'light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12))',
+  'surface-disabled': 'light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8))',
   'on-surface-disabled': 'light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48))',
   'on-surface-muted': 'var(--sf-on-surface-disabled)',
   'surface-underlay': 'initial',
@@ -546,7 +546,7 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
   --sf-outline: #{sf-ink($c, 64)};
   --sf-outline-variant: #{sf-ink($c, 24)};
   --sf-place--container-outline: var(--sf-outline);
-  --sf-surface-disabled: #{sf-ink($c, 12)};
+  --sf-surface-disabled: #{sf-ink($c, 8)};
   --sf-on-surface-disabled: #{sf-ink($c, 64)};
   --sf-on-surface-muted: var(--sf-on-surface-disabled);
   @include aliases.sf-role-aliases($sf-place-aliased);

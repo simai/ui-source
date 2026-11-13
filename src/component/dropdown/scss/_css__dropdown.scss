@@ -179,7 +179,7 @@
   --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   --sf-dropdown-field--border-color: var(--sf-dropdown-border-color, var(--sf-transparent-for-focus));
   /* The filled field's bottom line (C52, owner 2026-11-10; as sf-input): the
-     fill at 8 % (C41) is 1.10 to 1.23 from its place. Focus and an open list
+     fill at 12 % (C113) is 1.15 to 1.39 from its place. Focus and an open list
      colour the border --sf-outline, the line's own colour; hover keeps it. */
   --sf-dropdown-field--line-color: var(--sf-dropdown-border-color, var(--sf-outline));
 }

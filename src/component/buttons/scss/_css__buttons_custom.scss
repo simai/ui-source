@@ -211,14 +211,28 @@
 
   /* Secondary outline, surface and link keep the secondary ink when hovered
      or pressed: the fill steps as on-surface's do, the label does not turn
-     grey. Same weight as the on-surface state rules, later in the layer. */
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):is(:hover, :active, .active) :is(.sf-button-text-container, .sf-button-shortcut),
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):is(:hover, :active, .active):not(:has(> *)) {
-    --sf-button-text-container--color: var(--sf-secondary);
+     grey. Same weight as the on-surface state rules, later in the layer.
+     The ink steps along the secondary's own ladder with the plate
+     (--sf-secondary-hover / -active: dark 85 / 90, light 35 / 30), as an
+     outline primary's does: on the neutral fill's 16 and 20, which the dark
+     theme lightens, the resting secondary (80) fell to 4.30 hovered and 3.88
+     pressed on a popup (C113 follow-up). */
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):hover:not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-secondary-hover);
   }
 
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-icon {
-    --sf-icon--color: var(--sf-secondary);
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):hover .sf-icon {
+    --sf-icon--color: var(--sf-secondary-hover);
+  }
+
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):is(:active, .active) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):is(:active, .active):not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-secondary-active);
+  }
+
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):is(:active, .active) .sf-icon {
+    --sf-icon--color: var(--sf-secondary-active);
   }
 }
 
@@ -315,6 +329,51 @@
   .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) .sf-icon,
   .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) .sf-icon {
     --sf-icon--color: var(--sf-button-pressed-color, var(--sf-on-primary-container));
+  }
+
+  /* A tonal toggle (TB-3, rule C12). Its resting plate is already a container
+     at the first fill step (12 light / 24 dark), so the pressed container at
+     the same step left primary with the very plate it had unpressed, and
+     secondary and error with a change of hue alone -- colour alone, one cue
+     beside the filled glyph. Pressed, a tonal button takes the container's
+     pressed step instead: two fill steps over rest (20 / 32, the
+     container's -active), whatever its scheme. The fill family stops at 32,
+     so hover and press over it do not step the container further: they lay
+     the surface's state layer on it (4 and 12 of the state family, the
+     place's own ink on a coloured place). */
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled),
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active) {
+    --sf-button--background-color: var(--sf-button-pressed-background-color, var(--sf-primary-container-active));
+  }
+
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):hover {
+    background-image: linear-gradient(var(--sf-surface-state-hover), var(--sf-surface-state-hover));
+  }
+
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):active {
+    background-image: linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
+  }
+
+  /* The neutral toggle (C12, after C113). An on-surface tonal rests on the
+     neutral fill at 12, which in the dark theme is a light tone over the
+     place; the pressed container (primary 50 at 32) is a dark tone and came
+     out barely apart from it: 1.08 / 1.01 / 1.06 on a dark page, card and
+     popup. The fill family ends at 32, so the pressed toggle carries the
+     selected state's layer over the fill (--sf-surface-state-select, 8):
+     1.33 / 1.23 / 1.13 from the unpressed plate (light 1.24). Over it, hover
+     takes the press layer (12) and press adds the hover layer to that (12 and
+     4), one state step each, so the label keeps 4.5:1 on a popup. Coloured
+     tonal toggles rest on their own container and keep TB-3's look. */
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal.sf-button--on-surface:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) {
+    background-image: linear-gradient(var(--sf-surface-state-select), var(--sf-surface-state-select));
+  }
+
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal.sf-button--on-surface:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):hover {
+    background-image: linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
+  }
+
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal.sf-button--on-surface:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):active {
+    background-image: linear-gradient(var(--sf-surface-state-hover), var(--sf-surface-state-hover)), linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
   }
 
   /* Forced colours paint every fill ButtonFace, so the fill cannot say it:

@@ -216,6 +216,49 @@
     --sf-icon-button--background-color: var(--sf-primary-container-active);
   }
 
+  /* A tonal toggle (TB-3, rule C12), as sf-button's: a tonal (or surface)
+     icon button already rests on a container at the first fill step (12
+     light / 24 dark), so the pressed container at that step left primary with
+     its unpressed plate and the other schemes with a change of hue alone.
+     Pressed, it takes the container's pressed step (20 / 32, the
+     container's -active), whatever its scheme. The fill family stops at 32, so
+     hover and press over it lay the surface's state layer on that fill (4 and
+     12 of the state family, the place's own ink on a coloured place). */
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled),
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active) {
+    --sf-icon-button--background-color: var(--sf-icon-button-pressed-background-color, var(--sf-primary-container-active));
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):hover {
+    background-image: linear-gradient(var(--sf-surface-state-hover), var(--sf-surface-state-hover));
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):active {
+    background-image: linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
+  }
+
+  /* The neutral toggle (C12, after C113). A tonal or surface icon button in on-surface or secondary rests on the
+     neutral fill at 12, which in the dark theme is a light tone over the
+     place; the pressed container (primary 50 at 32) is a dark tone and came
+     out barely apart from it: 1.08 / 1.01 / 1.06 on a dark page, card and
+     popup. The fill family ends at 32, so the pressed toggle carries the
+     selected state's layer over the fill (--sf-surface-state-select, 8):
+     1.33 / 1.23 / 1.13 from the unpressed plate (light 1.24). Over it, hover
+     takes the press layer (12) and press adds the hover layer to that (12 and
+     4), one state step each, so the label keeps 4.5:1 on a popup. Primary and the
+     other coloured schemes rest on their own container and keep TB-3's look. */
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) {
+    background-image: linear-gradient(var(--sf-surface-state-select), var(--sf-surface-state-select));
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):hover {
+    background-image: linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):active {
+    background-image: linear-gradient(var(--sf-surface-state-hover), var(--sf-surface-state-hover)), linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
+  }
+
   @media (forced-colors: active) {
     .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) {
       --sf-icon-button--border-top-width: var(--sf-px);

@@ -4,23 +4,25 @@ import {existsSync, readdirSync, readFileSync} from 'node:fs';
 import {dirname, extname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-// The weight of the neutral fill (C41, owner 2026-11-10; research
-// control/research/2026-11-10-container-weight.md). --sf-surface-container is
-// 8 in both themes, its hover 12, its press 16 and the strong step 24 -- on
-// neutral-50 in the light theme and neutral-90 in the dark, and on white for
-// glass over media. Every place that re-declares the roles writes them out
-// (an ancestor's value cannot be read in CSS), so a copy at the former
-// 16/20/24 left every card, popup and window at the old weight while the page
-// had the new one. Nothing may declare the fill roles at the former steps:
-// not the sources, and not the built sheets a page gets.
+// The weight of the neutral fill (C113, owner 2026-11-13; research
+// control/research/2026-11-12-tonal-buttons.md; before it C41, 2026-11-10,
+// 8/12/16). --sf-surface-container is 12 in both themes, its hover 16, its
+// press 20 and the strong step 24 -- on neutral-50 in the light theme and
+// neutral-90 in the dark, and on white for glass over media -- and the
+// disabled plate 8, under the lightest working plate. Every place that
+// re-declares the roles writes them out (an ancestor's value cannot be read in
+// CSS), so a copy at a former step left every card, popup and window at the
+// old weight while the page had the new one. Nothing may declare the fill
+// roles at another step: not the sources, and not the built sheets a page gets.
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
 
 const FILL_ROLES = ['--sf-surface-container', '--sf-surface-container-hover', '--sf-surface-container-active'];
-const STEPS = {'--sf-surface-container': 8, '--sf-surface-container-hover': 12, '--sf-surface-container-active': 16};
-// A neutral or white step at the former weight, as a fill role's value.
-const FORMER = /--sf-(?:neutral-(?:50|90)|white)--alfa-(?:16|20|24|32)\b/u;
+const STEPS = {'--sf-surface-container': 12, '--sf-surface-container-hover': 16, '--sf-surface-container-active': 20};
+const DISABLED = 8;
+// A neutral or white step, as a fill role's value: it must be the role's step.
+const TONE = /--sf-(?:neutral-(?:50|90)|white)--alfa-(\d+)\b/gu;
 
 const files = (directory, extensions) => readdirSync(directory, {withFileTypes: true}).flatMap((entry) => {
   const path = resolve(directory, entry.name);
@@ -34,7 +36,7 @@ const declarations = (css) => [...css.replace(/\/\*[\s\S]*?\*\//gu, '').matchAll
 
 const neutral = (step) => `light-dark(var(--sf-neutral-50--alfa-${step}), var(--sf-neutral-90--alfa-${step}))`;
 
-test('the theme, the opaque places and glass declare the fill at 8, 12 and 16', () => {
+test('the theme, the opaque places and glass declare the fill at 12, 16 and 20, and the disabled plate at 8', () => {
   const theme = read('src/core/scss/_sf_css__theme.scss');
   const mix = read('src/core/scss/mix/_mix__places.scss');
   const glass = read('src/core/scss/_sf_css__surface_places.scss');
@@ -44,23 +46,27 @@ test('the theme, the opaque places and glass declare the fill at 8, 12 and 16', 
     assert.ok(glass.includes(`${role}: var(--sf-white--alfa-${step});`), `glass ${role} at ${step}`);
   }
   assert.ok(theme.includes(`--sf-surface-container-strong: ${neutral(24)};`), 'the strong step is 24');
+  assert.ok(theme.includes(`--sf-surface-disabled: ${neutral(DISABLED)};`), 'theme disabled plate at 8');
+  assert.ok(mix.includes(`'surface-disabled': '${neutral(DISABLED)}'`), 'sf-place disabled plate at 8');
+  assert.ok(glass.includes(`--sf-surface-disabled: var(--sf-white--alfa-${DISABLED});`), 'glass disabled plate at 8');
+  assert.match(mix, /--sf-surface-disabled: #\{sf-ink\(\$c, 8\)\};/u, 'a strong place disabled plate at 8');
 });
 
-test('no source declares a neutral fill role at the former 16/20/24', () => {
+test('no source declares a neutral fill role at another step', () => {
   const wrong = [];
+  const want = {...STEPS, '--sf-surface-disabled': DISABLED};
   for (const path of files(resolve(root, 'src'), ['.scss', '.css', '.js', '.mjs'])) {
     const text = readFileSync(path, 'utf8');
-    for (const [, name, value] of text.matchAll(/(--sf-surface-container(?:-hover|-active)?)\s*:\s*([^;'"`]+)/gu)) {
-      if (FORMER.test(value) && !value.includes(`alfa-${STEPS[name]})`) && !value.includes(`alfa-${STEPS[name]}\``)) {
-        wrong.push(`${path.slice(root.length + 1)}: ${name}: ${value.trim()}`);
-      }
+    for (const [, name, value] of text.matchAll(/(--sf-surface-(?:container(?:-hover|-active)?|disabled))\s*:\s*([^;'"`]+)/gu)) {
+      const steps = [...value.matchAll(TONE)].map(([, step]) => Number(step));
+      if (steps.some((step) => step !== want[name])) wrong.push(`${path.slice(root.length + 1)}: ${name}: ${value.trim()}`);
     }
   }
-  assert.deepEqual(wrong, [], 'a copy of the former neutral fill');
+  assert.deepEqual(wrong, [], 'a copy of a former neutral fill');
 });
 
 // The built sheets, read from the candidate (UI_CORE_ROOT / UI_SMART_ROOT). A
-// distribution built before C41 is skipped, not passed.
+// distribution built before C113 is skipped, not passed.
 const distribution = process.env.UI_CORE_ROOT ?? resolve(root, '../ui');
 const smartDistribution = process.env.UI_SMART_ROOT ?? resolve(root, '../ui-smart');
 const built = [resolve(distribution, 'distr'), resolve(smartDistribution, 'smart')]
@@ -68,15 +74,15 @@ const built = [resolve(distribution, 'distr'), resolve(smartDistribution, 'smart
   .flatMap((directory) => files(directory, ['.css']))
   .filter((path) => !path.endsWith('.min.css'));
 const core = built.find((path) => path.endsWith('/core/css/core.css'));
-const weighed = core && readFileSync(core, 'utf8').includes(`--sf-surface-container:${neutral(8)}`.replace(/, /gu, ','))
-  || core && readFileSync(core, 'utf8').includes(`--sf-surface-container: ${neutral(8)}`);
+const weighed = core && readFileSync(core, 'utf8').includes(`--sf-surface-container:${neutral(12)}`.replace(/, /gu, ','))
+  || core && readFileSync(core, 'utf8').includes(`--sf-surface-container: ${neutral(12)}`);
 
-test('in the built sheets no neutral fill copy is left at the former steps', {skip: !weighed && 'the built sheets predate C41'}, () => {
+test('in the built sheets no neutral fill copy is left at the former steps', {skip: !weighed && 'the built sheets predate C113'}, () => {
   const wrong = [];
   let fills = 0;
   for (const path of built) {
     for (const {selector, name, value} of declarations(readFileSync(path, 'utf8'))) {
-      if (!FILL_ROLES.includes(name)) continue;
+      if (!FILL_ROLES.includes(name) && name !== '--sf-surface-disabled') continue;
       // A strong coloured place fills with its own ink at 12/16/20 (white in
       // the light theme, tone 20 in the dark): a named exception, not neutral.
       if (/--sf-[a-z]+-20--alfa-/u.test(value)) continue;
@@ -84,7 +90,7 @@ test('in the built sheets no neutral fill copy is left at the former steps', {sk
       if (!tones.length) continue;
       fills += 1;
       for (const [, , step] of tones) {
-        if (Number(step) !== STEPS[name]) wrong.push(`${path}: ${selector} ${name}: ${value}`);
+        if (Number(step) !== (STEPS[name] ?? DISABLED)) wrong.push(`${path}: ${selector} ${name}: ${value}`);
       }
     }
   }

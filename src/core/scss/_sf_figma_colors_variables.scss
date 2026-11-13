@@ -11,9 +11,8 @@
     --sf-transparent-for-focus: var(--sf-transparent);
     --sf-white: #ffffff;
     /* Glass over media draws its ink from white on the alpha scale (C16,
-       .sf-surface-media): states 4/8/12, fill 8/12/16 (C41), line 24,
-       boundary 64, dim ink 80. White at 20 is read by nothing since C41 and
-       kept for pages that wrote it (token-aliases.v1.json primitives_kept). */
+       .sf-surface-media): states 4/8/12, fill 12/16/20 (C113), disabled
+       plate 8, line 24, boundary 64, dim ink 80. */
     --sf-white--alfa-4: #ffffff0a;
     --sf-white--alfa-8: #ffffff14;
     --sf-white--alfa-12: #ffffff1f;
@@ -46,8 +45,8 @@
     --sf-neutral-90--alfa-12: #e3e2e71f;
     /* The plate steps in the dark theme. The plate used to be mixed from
        neutral-50 there, a middle grey, while everything else translucent was
-       mixed from this near-white (owner, 2026-10-08). Since C41 the plate is
-       8/12/16 and the strong step 24; 20 and 32 are kept, read by nothing. */
+       mixed from this near-white (owner, 2026-10-08). Since C113 the plate is
+       12/16/20 and the strong step 24; 32 is kept, read by nothing. */
     --sf-neutral-90--alfa-16: #e3e2e729;
     --sf-neutral-90--alfa-20: #e3e2e733;
     --sf-neutral-90--alfa-24: #e3e2e73d;
@@ -74,10 +73,10 @@
     --sf-neutral-50--alfa-16: #76777c29;
     --sf-neutral-50--alfa-20: #76777c33;
     --sf-neutral-50--alfa-24: #76777c3d;
-    /* The former strong step (32) and the former plate hover (20): since C41
-       (owner 2026-11-10) the neutral fill is 8/12/16 and the strong step 24,
-       so nothing in the Framework reads 20 or 32 on neutral-50 or neutral-90.
-       Kept for pages that wrote them (token-aliases.v1.json primitives_kept). */
+    /* The former strong step (32): since C41 (owner 2026-11-10) the strong
+       step is 24, and since C113 (owner 2026-11-13) the neutral fill 12/16/20,
+       so nothing in the Framework reads 32 on neutral-50 or neutral-90. Kept
+       for pages that wrote it (token-aliases.v1.json primitives_kept). */
     --sf-neutral-50--alfa-32: #76777c52;
     /* The ink family of the scale (48, 64, 80): marks drawn with the neutral
        rather than washes laid under something. neutral-50 over white measures

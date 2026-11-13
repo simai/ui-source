@@ -49,3 +49,12 @@ Since component.download-file 1.3.0 (docs pre-check 2026-11-10):
 - A `data:` or `blob:` address is never asked for its size.
 - Nor is an address that leads back to the page itself (`#`, `#part`, the
   page's own URL).
+
+Since component.download-file 1.3.1 (C113 follow-up, 2026-11-13): on the
+hover and press plates the inks step with the plate. The name and the icon
+take `--sf-primary-hover` / `--sf-primary-active` (the accent's own ladder, as
+an outline primary button's label), and the type and size take
+`--sf-on-surface-container-variant`, the dim ink made for a fill. In the dark
+theme the resting inks fell under 4.5:1 on those plates (3.78 pressed on a
+card, 3.90 on a popup). `--sf-download-file-icon-color` still wins for the
+icon.

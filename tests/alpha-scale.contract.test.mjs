@@ -124,16 +124,17 @@ test('every translucent surface is mixed from the theme neutral, and the veil fr
   // up with a tone that was too dark for the job -- so the same interface was
   // lightened by two different greys, and the steps could not match across
   // themes (owner, 2026-10-08).
-  // The neutral fill family is 8/12/16 and 24 strong (C41, owner
-  // 2026-11-10): one step darker than the place, in both themes.
+  // The neutral fill takes the fill family's first steps, 12/16/20 and 24
+  // strong, in both themes (C113, owner 2026-11-13; was 8/12/16 since C41):
+  // the weight of the coloured containers, and no "+12 dark" for grey 90.
   const surfaces = {
     'surface-state-hover': 4,
     'surface-state-select': 8,
     'surface-state-active': 12,
     'surface-container-strong': 24,
-    'surface-container': 8,
-    'surface-container-hover': 12,
-    'surface-container-active': 16,
+    'surface-container': 12,
+    'surface-container-hover': 16,
+    'surface-container-active': 20,
   };
   const wrong = [];
   for (const [role, step] of Object.entries(surfaces)) {
@@ -142,12 +143,12 @@ test('every translucent surface is mixed from the theme neutral, and the veil fr
   }
   assert.deepEqual(wrong, [], 'a translucent surface takes one step of one tone per theme');
 
-  // The plate is the select state's step, 8, and its hover the pressed
-  // state's, 12. C41 accepts the overlap: a state is drawn over a plate, not
-  // instead of it, and a chosen row is primary-container, not grey (C23).
+  // The plate is the pressed state's step, 12. C113 accepts the overlap, as
+  // C41 did with 8: a state is drawn over a plate, not instead of it, and a
+  // chosen row is primary-container, not grey (C23).
   // What stays apart: the plate is above the hover state, the pressed plate is
   // above every state, and the strong step is above every plate.
-  assert.equal(surfaces['surface-container'], surfaces['surface-state-select']);
+  assert.equal(surfaces['surface-container'], surfaces['surface-state-active']);
   assert.ok(surfaces['surface-container'] > surfaces['surface-state-hover']);
   assert.ok(surfaces['surface-container-active'] > surfaces['surface-state-active']);
   // And the veil is above every plate: a plate sits on the page, a veil covers
@@ -186,8 +187,8 @@ test('an ink step (48 and above) is a fill only for glass and the scrim', () => 
 });
 
 // A fill on a coloured place (C16, owner 2026-11-08): on a strong colour the
-// control fill is the place's ink at 12, 16 and 20 -- a named exception to the
-// neutral plate's 8/12/16 (C41; a coloured fill keeps its steps), because white at 16 already gave 4.40 on a
+// control fill is the place's ink at 12, 16 and 20 -- the neutral plate's steps
+// since C113 (it was a named exception to C41's 8/12/16), because white at 16 already gave 4.40 on a
 // near-grey header (surfaces research 4.1). 12 there equals the pressed state;
 // the two are never next to each other. The states stay 4/8/12, the line 24,
 // the boundary 64 and the dim ink 80.

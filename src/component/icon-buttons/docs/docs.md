@@ -72,7 +72,17 @@ toolbar, wrap lines in a code block -- keeps one name and says its state with
 fill, the icon in `--sf-on-primary-container` and filled (`FILL 1`) -- two
 cues, not colour alone -- and no visible edge (the border keeps its width and
 is transparent over the fill, so the height does not move). Hover and press
-step the container; focus draws the ring; disabled wears the disabled look.
+step the container. A tonal (or surface) toggle (1.6.1, TB-3), whose resting
+plate is already a container, takes the container's pressed step when pressed
+(`--sf-primary-container-active`, 20 % light / 32 % dark), so the fill differs
+from its unpressed plate; hover and press over it lay the surface's state
+layer (`--sf-surface-state-hover` / `-active`) on that fill. A neutral
+toggle (tonal or surface, on-surface or secondary) rests on the neutral fill,
+which the dark theme draws as a light tone, so the pressed container alone
+barely differs from it: pressed, it also carries the selected state's layer
+(`--sf-surface-state-select`, 8); hover over it takes the press layer (12)
+and press adds the hover layer (12 and 4). Focus draws the
+ring; disabled wears the disabled look.
 `sf-icon-button--pressed` draws the same look without `aria-pressed`, for an
 action whose name changes with the state («Добавить в избранное» → «Убрать из
 избранного»): its name says the state, so it carries no `aria-pressed`

@@ -325,7 +325,8 @@
     "version 1.5.1, also (2026-11-11, contrast lows return): inside bg-surface-4 the content takes back the accent the step found (--sf-place--found-*), as every place there does, so a popover on the darkest light step keeps the page's primary and link tones. Settings, values, events and keys unchanged.",
     "version 1.5.1, also (2026-11-11, C41 inverse places): the content takes the theme's accent and boundary line back on the inverse places too (bg-surface-inverse, bg-surface-inverse-fixed), as the mixin sf-place-back-on-colour writes it.",
     "version 1.5.2 (2026-11-13, group build 2; written on the branch as 1.5.1, which the released pair already carries): a patch (owner decision C107, the icon colour; tokens.colour 1.13.0). The bubble is an opaque place and takes the theme's roles back: it now takes the fourth icon role too, --sf-on-surface-icon (neutral-25 light, neutral-80 dark), so a button's icon inside a popover opened on a coloured block is the half step under its label, not the coloured place's ink. Settings, values, events and keys unchanged.",
-    "version 1.5.2, also (2026-11-12, C43 later; written on the branch as 1.5.0): the bubble takes back --sf-surface-place-fill (initial) beside --sf-surface-underlay, as every place now does, so an anchored badge in a popover opened from a selected row does not ring with that row."
+    "version 1.5.2, also (2026-11-12, C43 later; written on the branch as 1.5.0): the bubble takes back --sf-surface-place-fill (initial) beside --sf-surface-underlay, as every place now does, so an anchored badge in a popover opened from a selected row does not ring with that row.",
+    "version 1.5.2, also (2026-11-13, C113, owner): the popup place in the template writes the neutral fill at 12/16/20 (was 8/12/16) and the disabled plate at 8 (was 12), as the core theme does; settings, values, events and keys unchanged."
   ],
   "x-rule": {
     "$comment": [

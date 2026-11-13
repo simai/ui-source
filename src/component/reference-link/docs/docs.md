@@ -12,3 +12,12 @@ indicator. An unavailable reference has no `href` and is marked with
 
 Opening a new browsing context must be intentional, use `rel="noopener"` and
 be disclosed in the visible or accessible name. Icons are decorative.
+
+Since component.reference-link 1.0.2 (C113 follow-up, 2026-11-13): on the
+card's hover and press plates the inks step with the plate. The link takes
+`--sf-link-hover` / `--sf-link-active`, the icon `--sf-primary-hover` /
+`--sf-primary-active`, and the meta `--sf-on-surface-container-variant`, the
+dim ink made for a fill. In the dark theme the resting inks fell under 4.5:1
+on those plates (3.78 pressed on a card, 3.90 on a popup).
+`--sf-reference-link-link-color` still wins for the link. A plain reference
+has no plate and keeps its inks.
