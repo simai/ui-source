@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.slider",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "title": "Slider",
   "summary": "A row of slides moved by arrows, dots, swipe or keys, built on the shared Swiper adapter; with linked thumbnails a second slider picks the slide.",
   "kind": "smart",
@@ -47,7 +47,8 @@
       },
       "button-type": {
         "type": "string",
-        "default": "primary"
+        "default": "secondary",
+        "description": "The arrows' look: secondary (the default, the soft grey icon buttons, tonal on-surface: paging is no main action, decision C116), primary (filled primary), dark (filled on-surface), light (ghost on-surface)."
       },
       "button-size": {
         "type": "string",
@@ -119,6 +120,10 @@
         "default": 450
       },
       "slide-class": {
+        "type": "string",
+        "default": ""
+      },
+      "aria-label": {
         "type": "string",
         "default": ""
       }
@@ -255,7 +260,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": "none",
+    "role": "region",
     "accessible_name": "recommended",
     "keyboard": [
       "Tab"
@@ -328,7 +333,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/slider/index.js",
-        "sha256": "236fc7789ef9d9e716b09f5db7c548663a04cdadbd3b6dacfc22b80766862d3c"
+        "sha256": "746e1ea2c0a548c3fd34938a6c17b22943ec96c7912cebe5b43e1cee461d9b0a"
       }
     ],
     "generated_runtime": [

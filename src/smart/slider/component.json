@@ -2,13 +2,14 @@
   "$comment": "The source of sf-slider's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/slider (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.slider",
   "tag": "sf-slider",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "slider",
   "settings": {
     "button-type": {
       "type": "string",
-      "default": "primary"
+      "default": "secondary",
+      "summary": "The arrows' look: secondary (the default, the soft grey icon buttons, tonal on-surface: paging is no main action, decision C116), primary (filled primary), dark (filled on-surface), light (ghost on-surface)."
     },
     "button-size": {
       "type": "string",
@@ -138,12 +139,17 @@
   "docs": "docs/docs.md",
   "lang": "lang/",
   "accessibility": {
-    "role": "none",
-    "name": "none",
+    "role": "region",
+    "name": {
+      "from": [
+        "aria-label",
+        "runtime.label"
+      ]
+    },
     "keys": {
       "Tab": "reach"
     },
-    "$comment": "The root has no role of its own. Swiper's a11y module (component/slider/js/_slider.js) marks each slide a group with the slide roledescription and its position, and names the arrows from the language file (Предыдущий слайд, Следующий слайд); Tab reaches the arrows, the dots and the thumbnails, which are buttons."
+    "$comment": "The block is a region named by the page's aria-label, else the word Слайды / Slides, described as a carousel (aria-roledescription from the language file: карусель / carousel); each slide is a group described as a slide (слайд / slide) and named by its position (1 из 5 / 1 of 5); the strip is aria-live polite, off while autoplay turns it. The arrows are named from the language file (Предыдущий слайд, Следующий слайд). With data-swiper-keyboard on, ArrowLeft and ArrowRight page from anywhere in the block, mirrored in a right-to-left block. Tab reaches the arrows and the dots, which are buttons."
   },
   "css-variables": {
     "--sf-slider-gap": {
@@ -255,8 +261,8 @@
   "x-decisions": [
     "version: 1.0.0 → 1.1.0: sf-slide-change and getSlider are dated rows, the actions answer outcomes; a minor while they hold (§4.10).",
     "events: the slide change is change {active-index, real-index, previous-index} (§8), DOM name change; sf-slide-change follows it with the same detail until 2026-12-01. The detail carries data only: component, tagName and template leave it.",
-    "a11y-role: none on the root; the slides and arrows take their roles and names from Swiper's a11y module and the language file.",
-    "a11y-name: none for the root; each slide is named by its position (n / total), each arrow by its word.",
+    "a11y-role: region on the root (sf-slider 1.3.0, SL-5), aria-roledescription carousel in the page's language; the slides are groups described as slides.",
+    "a11y-name: the root by the page's aria-label, else runtime.label (Слайды); each slide by its position from runtime.position ({n} из {count}), each arrow by its word.",
     "number-type: button-size and dots-size are steps of the size ladder (1/2, 1, 2), not numbers; they stay strings. space-between and speed are numbers (pixels, milliseconds).",
     "actions: refresh is the element's own relayout (it overrides the base's refresh, which §16.7 frees); slide-next and slide-prev answer refused (not-ready) before Swiper has started.",
     "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
@@ -269,7 +275,8 @@
     "version 1.1.9: the first-paint snapshot is retaken: a nested sized component now carries data-sf-size-relative at first paint (density C22, core.runtime 1.45.0); nothing it draws changes.",
     "version 1.1.10 (2026-11-10, pair ui-a0370c0c99fb acceptance, F3): a patch. The arrows of buttons=\"light\" are asked for appearance ghost, not link, its former name, which counted as the page's own use of sf-button-icon appearance link in SF.deprecations. Drawn the same.",
     "version 1.1.11 (2026-11-11): an arrow with nowhere to go is a disabled button, out of the tab order, and an arrow that holds the focus hands it to the other one (component.slider 1.1.2, docs pre-check 2026-11-10 SL-04). The dots were already 24 px targets (their ::before) and are unchanged.",
-    "version 1.2.0 (2026-11-10, docs precheck Q4): a minor. dots-type names the dots' plate by its colour role: primary-container (the default), primary, surface-container, surface-inverse. primary-dark, primary-light, light, clear and dark are dated value aliases until 2027-01-01 (journal value-slider-dots-type-to-roles) and draw as before. One word changes what it draws: primary, which drew as primary-dark, is now the primary plate (primary-light's look), the role it names; no page in ui-doc, larena-ui, ui-pro or ui-admin writes it."
+    "version 1.2.0 (2026-11-10, docs precheck Q4): a minor. dots-type names the dots' plate by its colour role: primary-container (the default), primary, surface-container, surface-inverse. primary-dark, primary-light, light, clear and dark are dated value aliases until 2027-01-01 (journal value-slider-dots-type-to-roles) and draw as before. One word changes what it draws: primary, which drew as primary-dark, is now the primary plate (primary-light's look), the role it names; no page in ui-doc, larena-ui, ui-pro or ui-admin writes it.",
+    "version 1.3.0 (2026-11-14, ui-control research 2026-11-14-content-slider): a minor. The arrows default to button-type secondary, the soft grey icon buttons (decision C116: paging is no main action; SL-11); primary stays a value. The block is a named region described as a carousel and its slides as slides, «1 из 5» (SL-5; words label, carousel, slide, position in lang/). A finger, a pen or the mouse drags the slides and pages past 15 % of a slide or with a flick; a vertical move scrolls the page; reduced motion settles without travel (SL-2, component.swiper 1.1.0). With data-swiper-keyboard on, ArrowLeft and ArrowRight page wherever the focus is in the block, mirrored right to left (SL-3). change carries previousIndex (SL-7). Several slides in view stand --sf-space-1/2 apart (SL-8); thumbnails take the small-part radius --sf-radius--ui (SL-12) and stand that far apart too (component.slider 1.2.0). Settings, values, events and keys unchanged otherwise."
   ],
   "x-registry": {
     "ownership": {

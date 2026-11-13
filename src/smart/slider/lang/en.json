@@ -2,6 +2,10 @@
   "title": "Slider",
   "runtime": {
     "next": "Next slide",
-    "previous": "Previous slide"
+    "previous": "Previous slide",
+    "label": "Slides",
+    "carousel": "carousel",
+    "slide": "slide",
+    "position": "{n} of {count}"
   }
 }

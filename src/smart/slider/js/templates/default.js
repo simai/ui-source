@@ -9,18 +9,22 @@ function normalizeOption(value = '') {
   return String(value || '').trim().toLowerCase();
 }
 
-function getButtonOptions(type = 'primary') {
+// Paging is no main action (decision C116, SL-11): the arrows are icon
+// buttons, and by default the soft grey ones; primary stays a choice.
+function getButtonOptions(type = 'secondary') {
   const normalizedType = normalizeOption(type);
   const options = {
     primary: { type: 'default', scheme: 'primary' },
-    secondary: { type: 'tonal', scheme: 'secondary' },
+    // The soft grey arrows (decision C116, BS-2): secondary is no colour of a
+    // button any more; the button-type keeps its name.
+    secondary: { type: 'tonal', scheme: 'on-surface' },
     dark: { type: 'default', scheme: 'on-surface' },
     // ghost, not its former name link: a link here was counted as the page's
     // own use in SF.deprecations (pair ui-a0370c0c99fb acceptance, F3).
     light: { type: 'ghost', scheme: 'on-surface' },
   };
 
-  return options[normalizedType] || options.primary;
+  return options[normalizedType] || options.secondary;
 }
 
 // The dots' plate by its colour role (sf-slider 1.2.0, docs precheck Q4). The
@@ -177,6 +181,10 @@ export function renderSliderTemplate(context) {
     <div
       class=${rootClasses}
       style=${context.rootStyle || nothing}
+      aria-roledescription=${context.regionRoleDescription || nothing}
+      data-label=${context.regionLabel || nothing}
+      data-slide-label=${context.slideLabel || nothing}
+      data-slide-roledescription=${context.slideRoleDescription || nothing}
       data-loop=${String(!!context.loop)}
       data-space-between=${authoredSpaceBetween ? String(context.spaceBetween) : nothing}
       data-speed=${authoredSpeed ? String(context.speed) : nothing}

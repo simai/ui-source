@@ -74,3 +74,35 @@ projection. Overlay mode still requires the author to keep important text and
 interactive content away from controls.
 
 An arrow with nowhere to go is a disabled button: the script sets disabled with Swiper's swiper-button-disabled, so it leaves the tab order, and the arrow holding the focus hands it to the other one (1.1.2, docs pre-check 2026-11-10 SL-04). A button arrow draws the system's disabled look; another element keeps the 0.4 opacity.
+
+## Region, swipe and keys (1.2.0)
+
+The block is a region the reader can find and leave: `role="region"`,
+`aria-roledescription` «карусель» / «carousel» and a name — the page's
+`aria-label` or `aria-labelledby`, else `data-label`, else «Слайды» / «Slides».
+Each slide is a group described as «слайд» / «slide» and named by its position,
+«2 из 5» / «2 of 5»; `data-slide-label` (`{n}`, `{count}`) and
+`data-slide-roledescription` give other words, and a product adds a language
+with `SF.language.register('sf-slider', code, words)` (keys `label`,
+`carousel`, `slide`, `position`). The strip is `aria-live="polite"`, and `off`
+while autoplay turns it. An authored role, description or name stays, and
+unbinding puts back what was there.
+
+A finger, a pen or the mouse drags the slides (the engine, component.swiper
+1.1.0): let go past 15 % of a slide, or with a flick, and the next or previous
+slide shows; less, and the strip settles back. A vertical move scrolls the page
+(`touch-action: pan-y`), a drag never ends in a click on a link under it, and
+fields inside a slide keep their own pointer and keys. The thumbnail strip is
+pressed, not dragged. `data-swiper-allow-touch-move="false"` turns dragging
+off; `data-swiper-simulate-touch="false"` leaves the mouse out.
+
+With `data-swiper-keyboard="true"`, ArrowLeft and ArrowRight page wherever the
+focus is in the block — on an arrow, a dot or a slide — mirrored in a
+right-to-left block. Before 1.2.0 the keys listened on the strip only, and the
+focus is never there.
+
+Several slides in view stand `--sf-slider--space-between` apart, by default
+`--sf-space-1/2`; the engine read no gap before, so they touched. The
+thumbnails take the small-part radius `--sf-radius--ui` (C18) instead of a
+square corner and stand `--sf-slider-thumbnails--space-between` apart.
+

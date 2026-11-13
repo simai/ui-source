@@ -7,7 +7,9 @@ test('Slider supplies author names before vendor initialization without overridi
   assert.match(apply,/options\.a11y === false/);
   assert.match(apply,/authored\?\.trim\(\)/);
   assert.match(apply,/\.\.\.defaults,[\s\S]*isPlainObject\(options\.a11y\)/);
-  assert.match(source,/applyNavigationLabelDefaults\(sliderOptions, navigationLabels\);\s+const slider = new window\.Swiper/);
+  // The names are applied before the engine starts (the slide words of SL-5 may sit between).
+  const applied=source.indexOf('applyNavigationLabelDefaults(sliderOptions, navigationLabels);');
+  assert.ok(applied>0 && applied<source.indexOf('const slider = new window.Swiper(mainEl, sliderOptions);'));
   assert.doesNotMatch(apply,/setAttribute|aria-labelledby/);
 });
 test('Slider releases only its own labels on the exact original navigation nodes',()=>{

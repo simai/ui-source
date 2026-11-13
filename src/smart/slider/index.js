@@ -67,6 +67,13 @@ class SfSlider extends SliderElement {
       slides: this.slides,
       previousLabel: this.sfWord('previous'),
       nextLabel: this.sfWord('next'),
+      // The region and its slides (SL-5): the page's aria-label names the
+      // region, else the word «Слайды»; «{n} из {count}» stays a pattern the
+      // engine fills per slide.
+      regionLabel: this.getAttribute('aria-label') || this.sfWord('label'),
+      regionRoleDescription: this.sfWord('carousel'),
+      slideRoleDescription: this.sfWord('slide'),
+      slideLabel: this.sfWord('position'),
     });
   }
 

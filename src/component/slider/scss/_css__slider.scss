@@ -4,7 +4,9 @@
 @layer sf.components {
 .sf-slider {
   --sf-slider--duration: var(--sf-duration-normal);
-  --sf-slider--space-between: var(--sf-space-1);
+  /* Several slides in view stand a half step apart (SL-8, the study's 1/2);
+     the engine read no gap before, so they touched. */
+  --sf-slider--space-between: var(--sf-space-1\/2);
   --sf-slider-thumbnails--space-between: var(--sf-space-1\/2);
 
   display: flex;
@@ -66,7 +68,9 @@
 
 .sf-slider .sf-slider-thumbnail {
   block-size: var(--sf-slider-thumbnail--block-size, var(--sf-slider-thumbnail-size, var(--sf-d2)));
-  border-radius: var(--sf-slider-thumbnail--border-radius, var(--sf-slider-thumbnail-radius, var(--sf-radius-square)));
+  /* A thumbnail is a small part beside slides drawn with the surface radius:
+     it takes the small-part radius of the system (C18, SL-12), not a square. */
+  border-radius: var(--sf-slider-thumbnail--border-radius, var(--sf-slider-thumbnail-radius, var(--sf-radius--ui)));
   display: block;
   inline-size: var(--sf-slider-thumbnail--inline-size, var(--sf-slider-thumbnail-size, var(--sf-d2)));
   min-height: 0;

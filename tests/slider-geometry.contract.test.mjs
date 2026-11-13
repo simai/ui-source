@@ -21,7 +21,8 @@ test('Smart Slider fallback surfaces use the semantic surface radius',()=>{
 });
 test('Slider defaults bridge semantic spacing and duration tokens into Swiper',()=>{
   assert.match(slider,/--sf-slider--duration: var\(--sf-duration-normal\)/);
-  assert.match(slider,/--sf-slider--space-between: var\(--sf-space-1\)/);
+  // Several slides in view stand a half step apart (SL-8).
+  assert.match(slider,/--sf-slider--space-between: var\(--sf-space-1\\\/2\)/);
   assert.match(slider,/--sf-slider-thumbnails--space-between: var\(--sf-space-1\\\/2\)/);
   assert.doesNotMatch(template,/data-space-between=\$\{String\(context\.spaceBetween\)\}/);
   assert.doesNotMatch(template,/data-speed=\$\{String\(context\.speed\)\}/);

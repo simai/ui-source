@@ -1,4 +1,23 @@
 import { tagSelector } from '../../../core/js/tag-aliases.js';
+import { pageText } from '../../../core/js/page-language';
+
+// The words a slider says about itself (SL-5), for the class block; sf-slider
+// hands its own from lang/ through the root's attributes, which win. A product
+// adds a language with SF.language.register('sf-slider', code, words).
+const SLIDER_TEXT = {
+  en: {
+    label: 'Slides',
+    carousel: 'carousel',
+    slide: 'slide',
+    position: '{n} of {count}',
+  },
+  ru: {
+    label: 'Слайды',
+    carousel: 'карусель',
+    slide: 'слайд',
+    position: '{n} из {count}',
+  },
+};
 
 const SLIDER_SELECTOR = '.sf-slider';
 const SLIDER_BOUND_FLAG = 'sfSliderBound';
@@ -172,7 +191,10 @@ function collectSwiperDataOptions(...elements) {
       }
     }
 
+    // Only the data-swiper-* attributes are options; the block's own words
+    // (data-slide-label «{n} из {count}») are not JSON and stay unread here.
     Object.entries(element.dataset).forEach(([key, value]) => {
+      if (!key.startsWith('swiper') || key === 'swiperOptions') return;
       setSwiperDataOption(options, key, parseDataValue(value));
     });
 
@@ -430,6 +452,61 @@ function createAutoplayGuard(root, slider) {
   };
 }
 
+// The block is a region the reader can find and leave, named and described as
+// a carousel, its slides «слайд, 2 из 5» (SL-5, as the APG carousel and
+// sf-carousel). A name or role the page wrote stays; unbinding puts back what
+// was there before.
+function sliderWord(root, key) {
+  return pageText(SLIDER_TEXT, key, root, 'sf-slider');
+}
+
+function applyRegionSemantics(root) {
+  const authored = {
+    role: root.getAttribute('role'),
+    roleDescription: root.getAttribute('aria-roledescription'),
+    label: root.getAttribute('aria-label'),
+  };
+  if (!authored.role) root.setAttribute('role', 'region');
+  if (!authored.roleDescription) root.setAttribute('aria-roledescription', sliderWord(root, 'carousel'));
+  if (!authored.label && !root.hasAttribute('aria-labelledby')) {
+    root.setAttribute('aria-label', root.dataset.label || sliderWord(root, 'label'));
+  }
+  return authored;
+}
+
+function restoreRegionSemantics(root, authored) {
+  if (!authored) return;
+  [['role', authored.role], ['aria-roledescription', authored.roleDescription], ['aria-label', authored.label]]
+    .forEach(([name, value]) => {
+      if (value === null) root.removeAttribute(name);
+      else root.setAttribute(name, value);
+    });
+}
+
+function slideMessages(root) {
+  const position = root.dataset.slideLabel || sliderWord(root, 'position');
+  return {
+    itemRoleDescriptionMessage: root.dataset.slideRoledescription || sliderWord(root, 'slide'),
+    slideLabelMessage: position.replaceAll('{n}', '{{index}}').replaceAll('{count}', '{{slidesLength}}'),
+  };
+}
+
+// While autoplay turns the slides, the change is not announced; stopped, the
+// new slide is announced politely (APG carousel).
+function createLiveRegionGuard(slider, mainEl) {
+  if (!(mainEl instanceof HTMLElement) || typeof slider?.on !== 'function') return () => {};
+  const authored = mainEl.getAttribute('aria-live');
+  const sync = () => mainEl.setAttribute('aria-live', slider.autoplay?.running ? 'off' : 'polite');
+  const events = ['init', 'autoplayStart', 'autoplayStop'];
+  events.forEach((name) => slider.on(name, sync));
+  sync();
+  return () => {
+    events.forEach((name) => slider.off?.(name, sync));
+    if (authored === null) mainEl.removeAttribute('aria-live');
+    else mainEl.setAttribute('aria-live', authored);
+  };
+}
+
 function getSlidesCount(element) {
   return element?.querySelectorAll?.('.swiper-wrapper > .swiper-slide')?.length || 0;
 }
@@ -510,6 +587,8 @@ function bindSlider(root) {
       ),
       slidesPerView: Math.min(thumbsCount, 6),
       slideToClickedSlide: false,
+      // A thumbnail is pressed, not dragged: the strip is as wide as they are.
+      allowTouchMove: false,
     });
   }
 
@@ -530,14 +609,28 @@ function bindSlider(root) {
   if (thumbs) {
     sliderOptions.thumbs = { swiper: thumbs };
   }
+  // The keys listen on the whole block: the arrows and the dots, where the
+  // focus is, sit outside the strip (SL-3).
+  if (sliderOptions.keyboard === true || sliderOptions.keyboard?.enabled) {
+    sliderOptions.keyboard = {
+      ...(isPlainObject(sliderOptions.keyboard) ? sliderOptions.keyboard : {}),
+      enabled: true,
+      el: root,
+    };
+  }
   const navigationLabels = getNavigationLabels(prevEl, nextEl);
   applyNavigationLabelDefaults(sliderOptions, navigationLabels);
+  if (sliderOptions.a11y !== false) {
+    sliderOptions.a11y = { ...slideMessages(root), ...sliderOptions.a11y };
+  }
+  root._sfSliderRegion = applyRegionSemantics(root);
   const slider = new window.Swiper(mainEl, sliderOptions);
   root._sfSliderCleanup = [
     createSlideInteractivityGuard(slider),
     createAutoplayGuard(root, slider),
     createArrowStateGuard(slider, prevEl, nextEl),
     linkThumbnails(slider, thumbs),
+    createLiveRegionGuard(slider, mainEl),
   ];
 
   root._sfSliderNavigationLabels = navigationLabels.map(label => ({
@@ -581,6 +674,8 @@ function unbindSlider(root) {
     if (authored === null) element.removeAttribute('aria-label');
     else element.setAttribute('aria-label', authored);
   });
+  restoreRegionSemantics(root, root._sfSliderRegion);
+  delete root._sfSliderRegion;
   delete root._sfSliderNavigationLabels;
   delete root._sfSliderCleanup;
   delete root._sfSlider;

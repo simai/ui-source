@@ -35,6 +35,19 @@ The former words keep working with a console note until 2027-01-01
 bounded by the gap; forced-colors uses system colors. No Smart-only dot paint
 or separate visual token scale is needed.
 
+The arrows default to `button-type="secondary"`, the soft grey icon buttons
+(tonal on-surface): paging is no main action (decision C116). `primary` (filled
+primary), `dark` and `light` stay values.
+
+The slider is a region described as «карусель» and named by the host's
+`aria-label`, else «Слайды»; each slide is «слайд, 2 из 5». The words are
+`label`, `carousel`, `slide` and `position` in the language files. A finger, a
+pen or the mouse drags the slides: let go past 15 % of a slide, or with a
+flick, to page; a vertical move scrolls the page. With
+`data-swiper-keyboard="true"` ArrowLeft and ArrowRight page wherever the focus
+is in the slider, mirrored right to left. Several slides in view stand
+`--sf-space-1/2` apart; thumbnails have the small-part radius.
+
 Omit `space-between` and `speed` to inherit the shared adaptive spacing and
 motion tokens. Explicit numeric attributes remain supported for compatibility.
 Reduced-motion users receive no slide transition and no autoplay. In normal
