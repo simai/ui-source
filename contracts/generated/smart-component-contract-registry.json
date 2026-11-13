@@ -3173,7 +3173,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/time/smart.manifest.json",
-      "manifest_sha256": "5e2f751e6ca034e1635b8814889b945610632ccac47cddd98ccacef518eb191b",
+      "manifest_sha256": "df2b1cefb4de22c9edb3f189380d22f84f4402fed192d17a9f4737ec400f8f08",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

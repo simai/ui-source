@@ -4,6 +4,7 @@
   "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
   "page": {
     "lang": "ru",
+    "timeZone": "Europe/Moscow",
     "body": [
       "<main style=\"inline-size: 40rem\">",
       "  <p>Формат auto: <sf-time id=\"rel\" datetime=\"2026-11-09T14:32:00+03:00\" now=\"2026-11-09T15:00:00+03:00\"></sf-time>, <sf-time id=\"today\" datetime=\"2026-11-09T09:12:00+03:00\" now=\"2026-11-09T15:00:00+03:00\"></sf-time>, <sf-time id=\"yday\" datetime=\"2026-11-08T19:40:00+03:00\" now=\"2026-11-09T15:00:00+03:00\"></sf-time>, <sf-time id=\"year\" datetime=\"2026-11-05T10:00:00+03:00\" now=\"2026-11-09T15:00:00+03:00\"></sf-time>, <sf-time id=\"old\" datetime=\"2025-12-30T10:00:00+03:00\" now=\"2026-11-09T15:00:00+03:00\"></sf-time>.</p>",
