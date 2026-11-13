@@ -10505,6 +10505,31 @@
       "source": "src/core/js/theme-palette.js (STATUS_COMPAT, warnStatusUse, withStatusCompat); ui-control control/research/2026-11-11-theme-generator.md TG-01"
     },
     {
+      "id": "component-theme-generator-to-input-color-brand",
+      "kind": "component",
+      "summary": "sf-theme-generator leaves (owner decision C84, 2026-11-12): the brand colour is a mode of sf-input-color -- variant=\"brand\" for a settings screen (the field with the colour's checks under it), variant=\"theme\" for a site header (only a circle of the current colour) -- and the large tone tables and fine tuning move to the docs page «Конструктор темы». Until remove_after the element works as it did, noted in SF.deprecations on connect (printed in the console only when the page opts in, as every compatibility note).",
+      "items": [
+        {
+          "component": "sf-theme-generator",
+          "from": "sf-theme-generator",
+          "to": "sf-input-color variant=\"brand\"",
+          "match": "<sf-theme-generator\\b"
+        }
+      ],
+      "manual": "Replace the element with <sf-input-color variant=\"brand\">: value is the same #rrggbb; apply plus target becomes target (the brand field always puts the theme on target, empty = the document's root); swatches stay; hue and chroma have no field counterpart (fine tuning lives on the docs page «Конструктор темы», whose CSS export a site keeps); change and input carry theme, variables, css and checks as the generator's change did; listen to change instead of sf-theme-generator-committed.",
+      "examples": {
+        "before": "<sf-theme-generator value=\"#2e7d32\" swatches=\"#2e7d32|Лого\" apply target=\"#site\"></sf-theme-generator>",
+        "after": "<sf-input-color variant=\"brand\" label=\"Фирменный цвет\" value=\"#2e7d32\" swatches=\"#2e7d32|Лого\" target=\"#site\"></sf-input-color>"
+      },
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "owner": "ui-source",
+      "source": "ui-control control/docs-review/decisions.md C84; src/smart/theme-generator/index.js (RETIRED); src/smart/input-color (variant brand)"
+    },
+    {
       "id": "utility-c65-gradient-names",
       "recorded_on": "2026-11-12",
       "stage": "compat",

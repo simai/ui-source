@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync, readdirSync, statSync} from 'node:fs';
 import {join, relative} from 'node:path';
 import test from 'node:test';
-import {themeFromColor, themeFromHct, themeToCss, themeVariables, staticPalette, STATIC_HUES, STATUS_HUES, THEME_TONES, THEME_PALETTES, DEFAULT_THEME_COLOR} from '../src/core/js/theme-palette.js';
+import {brandVariables, themeFromColor, themeFromHct, themeToCss, themeVariables, staticPalette, STATIC_HUES, STATUS_HUES, THEME_TONES, THEME_PALETTES, DEFAULT_THEME_COLOR} from '../src/core/js/theme-palette.js';
 
 const root = new URL('..', import.meta.url).pathname;
 // A status primitive is var() of its static hue (C17): the shipped value of
@@ -247,4 +247,15 @@ test('a status override is ignored and a status palette still reads; noted in SF
     globalThis.SF.deprecations.warn = before;
     globalThis.SF.deprecations.clear();
   }
+});
+
+test('brandVariables: a light colour fills the header and the cover as it is, with dark text; any other is the primary role (C84)', () => {
+  const yellow = brandVariables(themeFromColor('#ffd600'));
+  assert.equal(yellow['--sf-brand'], '#ffd600');
+  assert.equal(yellow['--sf-on-brand'], 'var(--sf-black)');
+  for (const color of [DEFAULT_THEME_COLOR, '#2e7d32', '#111111']) {
+    assert.deepEqual(brandVariables(themeFromColor(color)), {'--sf-brand': 'var(--sf-primary)', '--sf-on-brand': 'var(--sf-on-primary)'}, color);
+  }
+  assert.deepEqual(brandVariables(themeFromHct({hue: 90, chroma: 60})), {'--sf-brand': 'var(--sf-primary)', '--sf-on-brand': 'var(--sf-on-primary)'});
+  assert.equal(Object.keys(themeVariables(themeFromColor('#ffd600'))).length, 144, 'the theme itself stays 144 variables');
 });

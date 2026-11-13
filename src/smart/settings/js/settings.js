@@ -7,6 +7,7 @@
 //   {id, type: 'switch', text, value: true}                         a boolean
 //   {id, type: 'choice', text, value: 'dark', options: [{id, text}]} one of a few
 //   {id, type: 'range', text, value: 100, min, max, step, unit}      a number
+//   {id, type: 'color', text, value: 'blue', options?, custom?}       a colour
 //   {type: 'heading', text}, {type: 'separator'}
 //   {type: 'group', text, items: [...]}                              a titled block
 //
@@ -14,8 +15,57 @@
 
 export const LOOKS = ['drill', 'rows', 'tiles'];
 export const SIZES = ['1/2', '1'];
-export const TYPES = ['switch', 'choice', 'range', 'heading', 'separator', 'group'];
-const VALUE_TYPES = new Set(['switch', 'choice', 'range']);
+export const TYPES = ['switch', 'choice', 'range', 'color', 'heading', 'separator', 'group'];
+const VALUE_TYPES = new Set(['switch', 'choice', 'range', 'color']);
+
+// ─── the colour row (owner decision C85) ─────────────────────────────────
+//
+// A colour setting -- a site's or a reader's colour in a settings menu, beside
+// the theme -- is a row with the current colour as a circle in its lead; it
+// opens a level of palette hues, each a circle and its word, and, unless
+// custom is false, «Свой цвет…», which opens sf-input-color's window on «Своё».
+// The value is what sf-input-color stores (C83): a palette hue by its name
+// (blue), the same in every language, painted 50 light / 70 dark, or an own
+// colour as its code (#rrggbb).
+
+// The sixteen hues of the static palette (C17), the names a colour value may
+// take (sf-input-color's PALETTE).
+export const HUES = Object.freeze([
+  'red', 'orange', 'amber', 'yellow', 'lime', 'green', 'teal', 'cyan',
+  'sky', 'blue', 'indigo', 'violet', 'purple', 'pink', 'brown', 'gray',
+]);
+// The level a colour row opens when its item names no options: the ten hues
+// of the accepted menu (prototype theme-generator-study #practice-menu).
+export const COLOR_OPTIONS = Object.freeze(['red', 'orange', 'amber', 'green', 'teal', 'sky', 'blue', 'violet', 'pink', 'gray']);
+// The id of the «Свой цвет…» option in the menu's entries.
+export const OWN_COLOR = '#own';
+
+const SHORT_HEX = /^#?([0-9a-f])([0-9a-f])([0-9a-f])$/iu;
+const LONG_HEX = /^#?([0-9a-f]{6})$/iu;
+
+/** An own colour's code, lowercase #rrggbb; '' for anything else. */
+export function colorCode(value) {
+  const text = String(value ?? '').trim();
+  const short = SHORT_HEX.exec(text);
+  if (short) return `#${short[1]}${short[1]}${short[2]}${short[2]}${short[3]}${short[3]}`.toLowerCase();
+  const long = LONG_HEX.exec(text);
+  return long ? `#${long[1].toLowerCase()}` : '';
+}
+
+/** The CSS colour a colour value paints: a hue's tone for the theme (50 light, 70 dark), or the code. */
+export const colorFill = (value) => (HUES.includes(value) ? `light-dark(var(--sf-${value}-50), var(--sf-${value}-70))` : colorCode(value));
+
+// The hues a colour row offers: its options (names, or {id, text}) that are
+// palette hues, else the default ten.
+function colorOptions(item) {
+  const given = Array.isArray(item?.options) ? item.options : null;
+  const list = (given ?? COLOR_OPTIONS)
+    .map((option) => (typeof option === 'string' ? {id: option} : option))
+    .filter((option) => option && HUES.includes(option.id));
+  return list;
+}
+
+const allowsOwn = (item) => item?.custom !== false;
 
 const isItem = (item) => Boolean(item) && typeof item === 'object' && TYPES.includes(item.type);
 const optionsOf = (item) => (Array.isArray(item?.options) ? item.options.filter((option) => option && typeof option === 'object' && option.id !== undefined && option.id !== null) : []);
@@ -39,7 +89,16 @@ export function itemValue(item) {
     if (item.value !== undefined && item.value !== null && options.some((option) => option.id === item.value)) return item.value;
     return options.find((option) => option.checked)?.id ?? null;
   }
+  if (item?.type === 'color') return colorPatch(item, item.value)?.value ?? null;
   return null;
+}
+
+// A colour row takes a hue it offers, or a code while it allows an own colour.
+function colorPatch(item, value) {
+  if (typeof value !== 'string') return null;
+  if (colorOptions(item).some((option) => option.id === value)) return {value};
+  const code = allowsOwn(item) ? colorCode(value) : '';
+  return code ? {value: code} : null;
 }
 
 /**
@@ -54,6 +113,7 @@ export function valuePatch(item, value) {
     return Number.isFinite(number) ? {value: number} : null;
   }
   if (item?.type === 'choice') return optionsOf(item).some((option) => option.id === value) ? {value} : null;
+  if (item?.type === 'color') return colorPatch(item, value);
   return null;
 }
 
@@ -109,11 +169,40 @@ export function rewriteValues(items, resolve) {
 
 const own = (item, keys) => Object.fromEntries(keys.filter((key) => item[key] !== undefined && item[key] !== null).map((key) => [key, item[key]]));
 
+// A colour row as the menu's choice: the current colour as the row's circle,
+// the hues as options with their circles and words, and «Свой цвет…» last
+// (OWN_COLOR) -- checked, with its circle and code, while the value is one.
+function colorEntry(item, base, look, word) {
+  const value = itemValue(item);
+  const options = colorOptions(item).map((option) => ({
+    id: option.id,
+    text: option.text ?? word(`hue-${option.id}`),
+    swatch: colorFill(option.id),
+    checked: option.id === value,
+  }));
+  const code = colorCode(value);
+  if (allowsOwn(item)) {
+    options.push(code
+      ? {id: OWN_COLOR, text: word('own-color-value', {value: code}), swatch: code, checked: true}
+      : {id: OWN_COLOR, text: word('own-color'), icon: 'colorize', checked: false});
+  }
+  return {...base, type: 'choice', ...(look === 'drill' ? {view: 'drill'} : {}), ...(value ? {swatch: colorFill(value)} : {}), options};
+}
+
+// The words a colour row needs when the element gives none (the contract
+// test, a server printing entries): the hue's name and the own colour's.
+const plainWord = (key, vars = {}) => {
+  if (key === 'own-color') return 'Own colour…';
+  if (key === 'own-color-value') return `Own: ${vars.value ?? ''}`;
+  return key.replace(/^hue-/u, '');
+};
+
 // One setting as a menu entry. A choice's value becomes its options' checked
 // marks, the way the menu reads it; drill opens its options in the panel.
-function settingEntry(item, look) {
+function settingEntry(item, look, word = plainWord) {
   const base = {...own(item, ['id', 'text', 'caption', 'icon', 'keywords']), type: item.type};
   if (item.disabled) base.disabled = true;
+  if (item.type === 'color') return colorEntry(item, base, look, word);
   if (item.type === 'switch') return {...base, value: itemValue(item)};
   if (item.type === 'range') return {...base, ...own(item, ['min', 'max', 'step', 'unit']), value: itemValue(item)};
   const value = itemValue(item);
@@ -127,7 +216,7 @@ function settingEntry(item, look) {
 
 // The entries of a list of items: a group is its title (a heading) and its
 // rows; an item of no known type is left out.
-function entriesOf(items, look, skip) {
+function entriesOf(items, look, skip, word) {
   const out = [];
   for (const item of Array.isArray(items) ? items : []) {
     if (!isItem(item)) continue;
@@ -136,12 +225,12 @@ function entriesOf(items, look, skip) {
     } else if (item.type === 'separator') {
       out.push({type: 'separator'});
     } else if (item.type === 'group') {
-      const rows = entriesOf(item.items, look, skip);
+      const rows = entriesOf(item.items, look, skip, word);
       if (!rows.length) continue;
       if (item.text) out.push({type: 'heading', text: item.text});
       out.push({type: 'group', ...own(item, ['text']), items: rows});
     } else if (holdsValue(item) && !skip.has(item.id)) {
-      out.push(settingEntry(item, look));
+      out.push(settingEntry(item, look, word));
     }
   }
   // A separator does not open or close the list, and two do not stand together.
@@ -175,11 +264,11 @@ export function tileItems(items) {
  *   tiles  the tile switches as tiles on top (a group with view: tiles named
  *          tilesLabel), the rest as rows below a separator.
  */
-export function entriesFor(items, look = 'drill', {tilesLabel = ''} = {}) {
-  if (look !== 'tiles') return entriesOf(items, look, new Set());
+export function entriesFor(items, look = 'drill', {tilesLabel = '', word = plainWord} = {}) {
+  if (look !== 'tiles') return entriesOf(items, look, new Set(), word);
   const tiles = tileItems(items);
-  if (!tiles.length) return entriesOf(items, 'rows', new Set());
-  const rest = entriesOf(items, 'rows', new Set(tiles.map((item) => item.id)));
+  if (!tiles.length) return entriesOf(items, 'rows', new Set(), word);
+  const rest = entriesOf(items, 'rows', new Set(tiles.map((item) => item.id)), word);
   const top = {type: 'group', view: 'tiles', text: tilesLabel, items: tiles.map((item) => settingEntry(item, 'rows'))};
   return rest.length ? [top, {type: 'separator'}, ...rest] : [top];
 }

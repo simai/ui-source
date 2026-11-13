@@ -1,137 +1,167 @@
 import {html, nothing} from 'lit';
 import {renderInheritedSlot} from '../../../helpers/inherited-value';
+import {alphaOf, isPaletteName, paletteFill, solidOf} from '../color-math.js';
 import './default.css';
 
-// The control is a swatch that opens the browser's own colour picker, with the
-// product's own colours beside it and a way back to the inherited one. The native
-// input is what opens the picker: every platform has one, it is reachable from the
-// keyboard, and reimplementing a colour wheel would be a worse version of a thing
-// the system already does well.
+// sf-input-color draws a field of the control ladder -- a swatch, the value and a
+// chevron -- that opens the Framework's own compact window (owner decision C83,
+// prototype ui-control prototypes/color-picker-study.html rounds 3 and 4). The
+// browser's colour dialog is not used: it was a different window in every
+// browser, with no palette and no alpha (R130). The theme variant is only a
+// circle of the current colour that opens the same window; the brand variant
+// is the field with the colour's checks under it (C84).
+
+// One painter for every swatch (R167, C86): an opaque colour is a plain fill;
+// a translucent one is split -- its left half the same colour without alpha,
+// its right half the colour as it is over the checkerboard (the prototype's
+// round 4 sides, C86 as corrected on 2026-11-12) -- so a 20 % colour still
+// shows its hue. The paint stays inside the 1 px border (R169).
+export function paintStyle(value) {
+    if (!value) return '';
+    if (isPaletteName(value)) return `--sf-color-fill: ${paletteFill(value)}; --sf-color-solid: ${paletteFill(value)}`;
+    return `--sf-color-fill: ${value}; --sf-color-solid: ${solidOf(value) || value}`;
+}
+
+const translucent = (value) => Boolean(value) && !isPaletteName(value) && alphaOf(value) < 1;
+
+function renderChip(value, className = 'sf-color-chip') {
+    return html`<span class=${className}
+                      style=${paintStyle(value) || nothing}
+                      ?data-alpha=${translucent(value)}
+                      ?data-empty=${!value}
+                      aria-hidden="true"></span>`;
+}
+
 export function renderColorTemplate(context) {
     if (context.variant === 'theme') return renderThemeTemplate(context);
-    const {painted, isSet, disabled, size, appearance} = context;
+    const {painted, isSet, disabled, size, appearance, open} = context;
+    const component = context.component;
+    const name = context.label || context.ariaLabel || (context.brand ? context.brandLabel : context.chooseLabel);
+    const shown = context.paintedName;
+    // The value is read with the name: «Цвет метки: Синий».
+    const spoken = shown ? `${name}: ${shown}` : name;
 
-    // One field label look for every field (docs pre-check 2026-11-10 FB-10,
-    // CO-04): `label` is drawn above the row as sf-input draws its label. The
-    // colour input keeps the same words as its name, so the visible copy is
-    // hidden from the accessibility tree and nothing is read twice. Without
-    // `label` the host's aria-label names the input and nothing is drawn.
-    const row = html`
-        <div class="sf-color sf-color--${appearance} sf-color--size-${size}"
-             data-set=${isSet ? 'true' : 'false'}>
-            <label class="sf-color-swatch" title=${context.chooseLabel}>
-                <span class="sf-color-chip"
-                      style=${painted ? `--sf-color-chip: ${painted}` : nothing}
-                      data-empty=${painted ? nothing : 'true'}
-                      aria-hidden="true"></span>
-                <input
-                        type="color"
-                        class="sf-color-input"
-                        .value=${painted || '#000000'}
-                        ?disabled=${disabled}
-                        aria-label=${context.label || context.ariaLabel || context.chooseLabel}
-                        @input=${(event) => context.component._pickerInput(event)}
-                        @change=${(event) => context.component._pickerChange(event)}
-                >
-            </label>
-            ${context.hiddenName
-                    // Without ElementInternals the form gets the value from a
-                    // hidden input, empty while the inherited colour applies. The
-                    // colour input cannot hold «nothing»: named, it submitted
-                    // #000000 for every colour nobody had chosen.
-                    ? html`<input type="hidden" name=${context.hiddenName} .value=${context.value}>`
-                    : nothing}
+    // What the field says. A chosen palette colour is its word, an own colour
+    // its code; while the inherited colour applies the field shows it in the
+    // same place, with the shared «наследуется» marker at the end (CO-07: the
+    // marker stood 16 px after where the code starts).
+    const text = painted
+        ? (isPaletteName(painted) ? html`<span class="sf-color-name">${shown}</span>` : html`<code>${painted}</code>`)
+        : html`<span class="sf-color-empty">${context.hasInheritedValue ? '' : context.inheritedText}</span>`;
 
-            <span class="sf-color-text">
-                ${isSet
-                        ? html`<code>${context.value}</code>`
-                        // With an inherited colour the shared slot says «inherited»
-                        // (simai/ui-source#28); without one the words stay here.
-                        : context.hasInheritedValue
-                                ? nothing
-                                : html`<span class="sf-color-inherited">${context.inheritedText}</span>`}
-            </span>
-
-            ${context.swatchList.length
-                    ? html`
-                        <span class="sf-color-swatches" role="group" aria-label=${context.chooseLabel}>
-                            ${context.swatchList.map((swatch) => html`
-                                <button
-                                        type="button"
-                                        class="sf-color-preset"
-                                        style=${`--sf-color-chip: ${swatch.value}`}
-                                        title=${swatch.name}
-                                        aria-label=${swatch.name}
-                                        aria-pressed=${context.value === swatch.value ? 'true' : 'false'}
-                                        ?disabled=${disabled}
-                                        @click=${() => context.component.setValue(swatch.value)}
-                                ></button>
-                            `)}
-                        </span>`
-                    : nothing}
-
-            ${context.hasInheritedValue
-                    // The marker while the inherited colour applies, the reset
-                    // once a colour is chosen: the same slot every field uses.
-                    ? renderInheritedSlot(context.component, {size, disabled, className: 'sf-color-inherited-slot'})
-                    : nothing}
-
-            ${context.clearable && isSet && !context.hasInheritedValue
-                    ? html`
-                        <sf-button-icon
-                                appearance="ghost"
-                                size=${size}
-                                icon="restart_alt"
-                                data-action="clear"
-                                aria-label=${context.clearLabel}
-                                ?disabled=${disabled}
-                                @click=${() => context.component.clear()}
-                        ></sf-button-icon>`
-                    : nothing}
-        </div>
-    `;
-
-    if (!context.label) return row;
     return html`
         <div class="sf-color-field sf-color-field--size-${size}">
-            <span class="sf-color-label" aria-hidden="true">${context.label}</span>
-            ${row}
+            ${context.label
+                    // One field label look for every field (FB-10, CO-04):
+                    // the trigger carries the same words as its name, so the
+                    // visible copy is hidden from the accessibility tree.
+                    ? html`<span class="sf-color-label" aria-hidden="true">${context.label}</span>`
+                    : nothing}
+            <div class="sf-color sf-color--${appearance} sf-color--size-${size}"
+                 data-set=${isSet ? 'true' : 'false'}
+                 data-open=${open ? 'true' : 'false'}>
+                <div class="sf-color-frame"
+                     ?data-disabled=${disabled}
+                     @click=${(event) => {
+                         if (disabled || event.target.closest?.('[data-inherited-reset], [data-action="clear"]')) return;
+                         component.togglePicker();
+                     }}>
+                    <button type="button"
+                            class="sf-color-trigger"
+                            title=${context.chooseLabel}
+                            aria-haspopup="dialog"
+                            aria-expanded=${open ? 'true' : 'false'}
+                            aria-label=${spoken}
+                            ?disabled=${disabled}>
+                        ${renderChip(painted)}
+                        <span class="sf-color-text">${text}</span>
+                    </button>
+                    ${context.hasInheritedValue
+                            // The marker while the inherited colour applies,
+                            // the reset once a colour is chosen: the slot every
+                            // field uses.
+                            ? renderInheritedSlot(context.component, {size, disabled, className: 'sf-color-inherited-slot'})
+                            : nothing}
+                    ${context.clearable && isSet && !context.hasInheritedValue
+                            ? html`
+                                <sf-button-icon
+                                        appearance="ghost"
+                                        scheme="on-surface"
+                                        size=${size === '2' ? '1' : '1/2'}
+                                        icon="restart_alt"
+                                        data-action="clear"
+                                        aria-label=${context.clearLabel}
+                                        title=${context.clearLabel}
+                                        ?disabled=${disabled}
+                                        @click=${(event) => {
+                                            event.stopPropagation();
+                                            component.clear();
+                                        }}
+                                ></sf-button-icon>`
+                            : nothing}
+                    <sf-icon icon=${open ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
+                             root-class="sf-color-chevron"
+                             aria-hidden="true"></sf-icon>
+                </div>
+                ${context.hiddenName
+                        // Without ElementInternals the form gets the value from
+                        // a hidden input, empty while the inherited colour applies.
+                        ? html`<input type="hidden" name=${context.hiddenName} .value=${context.value}>`
+                        : nothing}
+            </div>
+            ${context.brand ? renderChecks(context) : nothing}
+            ${open ? renderWindow(context, name) : nothing}
         </div>
     `;
 }
 
-// variant theme: one icon-only primary button that opens the same native
-// picker. The input stays in the tree under the button -- transparent, out of
-// the focus order and out of the accessibility tree -- so the picker opens
-// where the button is; the button is what a keyboard reaches and what a screen
-// reader names («Цвет темы», «Theme colour»).
+// variant brand (C84): what a person should know about the colour, one line
+// each under the field (core themeChecks: contrast, a colour its buttons do
+// not get, a colour near a status, a grey), as the accepted settings screen
+// shows them. A polite status region that is always in the tree, so a check
+// that appears is announced; empty, it takes no room.
+function renderChecks(context) {
+    const {checks} = context;
+    return html`
+        <div class="sf-color-checks" role="status" aria-label=${context.checksLabel} data-count=${checks.length}>
+            ${checks.length
+                    ? html`
+                        <ul class="sf-color-check-list">
+                            ${checks.map((check) => html`
+                                <li class="sf-color-check" data-check=${check.code} data-level=${check.level}
+                                    data-status=${check.status || nothing}>
+                                    <sf-icon icon=${check.level === 'notice' ? 'info' : check.level} size="1/2" aria-hidden="true"></sf-icon>
+                                    <span class="sf-color-check-text">${check.text}</span>
+                                </li>`)}
+                        </ul>`
+                    : nothing}
+        </div>
+    `;
+}
+
+// variant theme (C84): only a circle of the current colour, as a site header
+// holds it; a press opens the same window as the field, at its normal size,
+// with no text and no theme row. The button is what a keyboard reaches and
+// what a screen reader names («Цвет темы», «Theme colour»).
 function renderThemeTemplate(context) {
-    const {isSet, disabled, size} = context;
+    const {isSet, disabled, size, open} = context;
+    const component = context.component;
 
     return html`
         <div class="sf-color sf-color--theme sf-color--size-${size}"
-             data-set=${isSet ? 'true' : 'false'}>
-            <span class="sf-color-theme">
-                <input
-                        type="color"
-                        class="sf-color-input"
-                        tabindex="-1"
-                        aria-hidden="true"
-                        .value=${context.pickerValue || '#000000'}
-                        ?disabled=${disabled}
-                        @input=${(event) => context.component._pickerInput(event)}
-                        @change=${(event) => context.component._pickerChange(event)}
-                >
-                <sf-button-icon
-                        size=${size}
-                        icon="palette"
-                        data-action="theme"
-                        aria-label=${context.themeLabel}
-                        title=${context.themeLabel}
-                        ?disabled=${disabled}
-                        @click=${() => context.component._openPicker()}
-                ></sf-button-icon>
-            </span>
+             data-set=${isSet ? 'true' : 'false'}
+             data-open=${open ? 'true' : 'false'}>
+            <button type="button"
+                    class="sf-color-dot sf-color-trigger"
+                    data-action="theme"
+                    aria-haspopup="dialog"
+                    aria-expanded=${open ? 'true' : 'false'}
+                    aria-label=${context.themeLabel}
+                    title=${context.themeLabel}
+                    ?disabled=${disabled}
+                    @click=${() => component.togglePicker()}>
+                ${renderChip(context.themeColor, 'sf-color-chip sf-color-chip--round')}
+            </button>
             ${context.hiddenName
                     ? html`<input type="hidden" name=${context.hiddenName} .value=${context.value}>`
                     : nothing}
@@ -139,15 +169,246 @@ function renderThemeTemplate(context) {
                     ? html`
                         <sf-button-icon
                                 appearance="ghost"
+                                scheme="on-surface"
                                 size=${size}
                                 icon="restart_alt"
                                 data-action="clear"
                                 aria-label=${context.themeResetLabel}
                                 title=${context.themeResetLabel}
                                 ?disabled=${disabled}
-                                @click=${() => context.component.clear()}
+                                @click=${() => component.clear()}
                         ></sf-button-icon>`
                     : nothing}
+            ${open ? renderWindow(context, context.themeLabel) : nothing}
+        </div>
+    `;
+}
+
+// The window's own fields (the code, the %) send the browser's input and
+// change, with no detail; they stop at the window, so the host's input and
+// change are only its own, with {value, name}.
+const stopNative = (event) => event.stopPropagation();
+
+// The window: 304 wide on a desktop (eight 28 px swatches, 8 apart, 12 inside),
+// anchored under the field and never taller than the room it has; a sheet at
+// the bottom of the screen on a phone. «Палитра» and «Своё» replace each other
+// in place under the standard segmented control (R147, R149, R151).
+function renderWindow(context, name) {
+    const {component, word} = context;
+    const both = context.offersPalette && context.offersCustom;
+    return html`
+        <div class="sf-color-window"
+             role="dialog"
+             aria-label=${name}
+             tabindex="-1"
+             @input=${stopNative}
+             @change=${stopNative}>
+            ${both
+                    ? html`
+                        <div class="sf-color-views">
+                            <sf-segmented size="1/2"
+                                          full-width
+                                          aria-label=${word('how')}
+                                          items=${JSON.stringify([
+                                              {value: 'palette', label: word('palette')},
+                                              {value: 'own', label: word('own')},
+                                          ])}
+                                          value=${context.view}
+                                          @change=${(event) => {
+                                              event.stopPropagation();
+                                              const view = event.detail?.value;
+                                              if (view) component.showView(view);
+                                          }}></sf-segmented>
+                        </div>`
+                    : nothing}
+            ${context.view === 'own' ? renderOwn(context) : renderPalette(context)}
+        </div>
+    `;
+}
+
+function renderOptions(context, list, {label, own = false, className = ''}) {
+    const {component, value} = context;
+    const chosen = list.findIndex((item) => item.value === value);
+    return html`
+        <div class="sf-color-options ${className}"
+             role="radiogroup"
+             aria-label=${label}
+             @keydown=${(event) => component.optionKey(event)}>
+            ${list.map((item, index) => {
+                const checked = item.value === value;
+                return html`
+                    <button type="button"
+                            class="sf-color-option"
+                            role="radio"
+                            aria-checked=${checked ? 'true' : 'false'}
+                            tabindex=${index === (chosen < 0 ? 0 : chosen) ? '0' : '-1'}
+                            data-value=${item.value}
+                            data-own=${own ? 'true' : 'false'}
+                            aria-label=${item.name}
+                            title=${item.name}
+                            ?data-alpha=${translucent(item.value)}
+                            style=${`${paintStyle(item.value)}${checked ? `; --sf-color-ink: ${component.inkFor(item.value)}` : ''}`}
+                            ?disabled=${context.disabled}
+                            @click=${() => component.pick(item.value, {own})}>
+                        ${checked ? html`<sf-icon icon="check" root-class="sf-color-check" aria-hidden="true"></sf-icon>` : nothing}
+                    </button>`;
+            })}
+        </div>
+    `;
+}
+
+// «Палитра»: the product's own colours first, then the sixteen palette hues,
+// then -- after a thin divider, with no caption -- the recent own colours, the
+// current own colour first and chosen (R153, R168).
+function renderPalette(context) {
+    const {component, word} = context;
+    const hues = context.palette.map((hue) => ({value: hue, name: component.colourName(hue)}));
+    const recent = context.recentRow.map((hex) => ({
+        value: hex,
+        name: alphaOf(hex) < 1 ? word('recent-alpha', {value: hex, alpha: Math.round(alphaOf(hex) * 100)}) : word('recent-one', {value: hex}),
+    }));
+    return html`
+        <div class="sf-color-palette">
+            ${context.swatchList.length
+                    ? renderOptions(context, context.swatchList, {label: word('product'), className: 'sf-color-options--product'})
+                    : nothing}
+            ${component.showsHues
+                    ? renderOptions(context, hues, {label: word('palette')})
+                    : nothing}
+            ${recent.length
+                    ? html`<div class="sf-color-recent">${renderOptions(context, recent, {label: word('recent'), own: true})}</div>`
+                    : nothing}
+        </div>
+    `;
+}
+
+// «Своё», laid out as Figma's (R154): the shade area; the eyedropper left of
+// the stacked hue and alpha strips; one joined row «format ▾ | code | %».
+// Without `alpha` the alpha strip and the % field are not drawn.
+function renderOwn(context) {
+    const {component, word} = context;
+    const [h, s, v] = context.hsv;
+    const alpha = context.alphaValue;
+    const percent = Math.round(alpha * 100);
+    const solid = solidOf(context.ownColour);
+    const formatWord = context.formatWords[context.format];
+    return html`
+        <div class="sf-color-own">
+            <div class="sf-color-area"
+                 role="slider"
+                 tabindex="0"
+                 aria-label=${word('shade')}
+                 aria-valuemin="0"
+                 aria-valuemax="100"
+                 aria-valuenow=${Math.round(s * 100)}
+                 aria-valuetext=${word('shade-value', {saturation: Math.round(s * 100), brightness: Math.round(v * 100)})}
+                 style=${`--sf-color-hue: ${Math.round(h * 10) / 10}`}
+                 @pointerdown=${(event) => component.dragOn(event, 'area')}
+                 @keydown=${(event) => component.keyOn(event, 'area')}>
+                <span class="sf-color-thumb"
+                      style=${`inset-inline-start: ${s * 100}%; inset-block-start: ${(1 - v) * 100}%; --sf-color-fill: ${solid}; --sf-color-solid: ${solid}`}></span>
+            </div>
+            <div class="sf-color-tools">
+                <sf-button-icon size="1/2"
+                                appearance="ghost"
+                                scheme="on-surface"
+                                icon="colorize"
+                                data-action="eyedropper"
+                                aria-label=${word('eyedropper')}
+                                title=${context.hasEyeDropper ? word('eyedropper') : word('eyedropper-missing')}
+                                ?disabled=${!context.hasEyeDropper || context.disabled}
+                                @click=${() => component.eyedrop()}></sf-button-icon>
+                <div class="sf-color-strips">
+                    <div class="sf-color-strip sf-color-strip--hue"
+                         role="slider"
+                         tabindex="0"
+                         aria-label=${word('hue')}
+                         aria-valuemin="0"
+                         aria-valuemax="360"
+                         aria-valuenow=${Math.round(h)}
+                         aria-valuetext=${word('hue-value', {hue: Math.round(h)})}
+                         @pointerdown=${(event) => component.dragOn(event, 'hue')}
+                         @keydown=${(event) => component.keyOn(event, 'hue')}>
+                        <span class="sf-color-thumb"
+                              style=${`inset-inline-start: ${h / 360 * 100}%; --sf-color-fill: hsl(${Math.round(h)} 100% 50%); --sf-color-solid: hsl(${Math.round(h)} 100% 50%)`}></span>
+                    </div>
+                    ${context.alpha
+                            ? html`
+                                <div class="sf-color-strip sf-color-strip--alpha"
+                                     role="slider"
+                                     tabindex="0"
+                                     aria-label=${word('alpha')}
+                                     aria-valuemin="0"
+                                     aria-valuemax="100"
+                                     aria-valuenow=${percent}
+                                     aria-valuetext=${word('alpha-value', {alpha: percent})}
+                                     style=${`--sf-color-solid: ${solid}`}
+                                     @pointerdown=${(event) => component.dragOn(event, 'alpha')}
+                                     @keydown=${(event) => component.keyOn(event, 'alpha')}>
+                                    <span class="sf-color-thumb"
+                                          ?data-alpha=${alpha < 1}
+                                          style=${`inset-inline-start: ${percent}%; ${paintStyle(context.ownColour)}`}></span>
+                                </div>`
+                            : nothing}
+                </div>
+            </div>
+            <div class="sf-color-code-row" role="group" aria-label=${word('code')}>
+                <button type="button"
+                        class="sf-color-format"
+                        aria-haspopup="menu"
+                        aria-expanded=${context.formatOpen ? 'true' : 'false'}
+                        aria-label=${word('format-current', {format: formatWord})}
+                        @click=${() => component.toggleFormatMenu()}>
+                    <span>${formatWord}</span>
+                    <sf-icon icon="keyboard_arrow_down" root-class="sf-color-format-chevron" aria-hidden="true"></sf-icon>
+                </button>
+                <input type="text"
+                       class="sf-color-code"
+                       spellcheck="false"
+                       autocomplete="off"
+                       aria-label=${word('code-in', {format: formatWord})}
+                       aria-invalid=${context.codeError ? 'true' : 'false'}
+                       .value=${context.codeText}
+                       @input=${(event) => component.codeOn(event, false)}
+                       @change=${(event) => component.codeOn(event, true)}
+                       @keydown=${(event) => {
+                           if (event.key !== 'Enter') return;
+                           event.preventDefault();
+                           component.codeOn(event, true);
+                       }}>
+                ${context.alpha
+                        ? html`
+                            <span class="sf-color-percent">
+                                <input type="text"
+                                       class="sf-color-alpha-input"
+                                       inputmode="numeric"
+                                       maxlength="3"
+                                       aria-label=${word('opacity')}
+                                       .value=${String(percent)}
+                                       @input=${(event) => component.alphaOn(event, false)}
+                                       @change=${(event) => component.alphaOn(event, true)}
+                                       @keydown=${(event) => component.alphaKeyOn(event)}>
+                                <span aria-hidden="true">%</span>
+                            </span>`
+                        : nothing}
+            </div>
+            ${context.formatOpen
+                    ? html`
+                        <div class="sf-color-format-menu"
+                             role="menu"
+                             aria-label=${word('format')}
+                             @keydown=${(event) => component.formatMenuKey(event)}>
+                            ${context.formats.map((format) => html`
+                                <button type="button"
+                                        role="menuitemradio"
+                                        data-format=${format}
+                                        aria-checked=${format === context.format ? 'true' : 'false'}
+                                        tabindex="-1"
+                                        @click=${() => component.setFormat(format)}>${context.formatWords[format]}</button>
+                            `)}
+                        </div>`
+                    : nothing}
+            <div class="sf-color-error" aria-live="polite">${context.codeError}</div>
         </div>
     `;
 }

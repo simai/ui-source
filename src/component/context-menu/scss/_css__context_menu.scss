@@ -214,6 +214,22 @@
   object-fit: cover;
 }
 
+/* A colour in the lead (sf-settings' colour rows, C85): a circle of the
+   text's square less a quarter step, as an icon's glyph sits in its line, on
+   the hairline every colour swatch has (sf-input-color, R169). */
+.sf-context-menu-item-swatch {
+  box-sizing: border-box;
+  display: block;
+  flex: none;
+  inline-size: calc(var(--sf-context-menu--line) - var(--sf-space-1\/4));
+  block-size: calc(var(--sf-context-menu--line) - var(--sf-space-1\/4));
+  margin: calc(var(--sf-space-1\/4) / 2);
+  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-radius: var(--sf-radius-circle);
+  background-color: var(--sf-context-menu-swatch, transparent);
+  background-clip: padding-box;
+}
+
 .sf-context-menu-item-icon,
 .sf-context-menu-item-chevron {
   --sf-icon--color: var(--sf-on-surface-variant);

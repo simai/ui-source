@@ -124,7 +124,8 @@ test('sf-input-color: shown is the base value; the painted colour is effective-v
   assert.match(source, /class SfColor extends FormField\(ColorElement\)/u);
   assert.match(source, /base: InheritedValueField\(SfBaseElement\)/u);
   const manifest = json('src/smart/input-color/component.json');
-  assert.deepEqual(Object.keys(manifest.values), ['value', 'effective-value']);
+  // theme and checks: the brand colour variants' theme and its checks (C84).
+  assert.deepEqual(Object.keys(manifest.values), ['value', 'effective-value', 'theme', 'checks']);
   assert.deepEqual(manifest['host-states'], {'data-inherited': 'boolean'});
   const rows = json('src/smart/input-color/aliases.json').aliases;
   assert.deepEqual(rows.map((row) => [row.from, row.to]), [['sf-field:reset', 'sf-field-reset'], ['shown', 'effective-value'], ['sf-color', 'sf-input-color']]);

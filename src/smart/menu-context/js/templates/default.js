@@ -63,6 +63,16 @@ function icon(name, className) {
     return html`<i class="sf-icon ${className}" aria-hidden="true">${name}</i>`;
 }
 
+// A colour the row stands for -- a colour row of sf-settings (C85), a label's
+// colour -- drawn as a circle in the place of an icon. `swatch` is a CSS
+// colour (a code, var() of a token, light-dark() of two); anything that could
+// close the declaration is not drawn.
+const SWATCH = /^[#\w\s(),.%/-]+$/u;
+const hasSwatch = (entry) => typeof entry?.swatch === "string" && SWATCH.test(entry.swatch);
+function swatch(value) {
+    return html`<span class="sf-context-menu-item-swatch" style=${`--sf-context-menu-swatch: ${value}`} aria-hidden="true"></span>`;
+}
+
 // What leads a row: an icon, or a picture of the thing itself -- a site's logo,
 // a person -- with its initials when there is no picture. A row ticked on and
 // off (kind: "check") leads with its check, in the column and at the width of
@@ -72,6 +82,7 @@ function renderLead(entry) {
     if (entry.kind === "check" && entry.type !== "switch" && entry.checked) return icon("check", "sf-context-menu-item-check");
     if (entry.avatar) return html`<img class="sf-context-menu-item-avatar" src=${entry.avatar} alt="">`;
     if (entry.initials) return html`<span class="sf-context-menu-item-avatar" aria-hidden="true">${entry.initials}</span>`;
+    if (hasSwatch(entry)) return swatch(entry.swatch);
     return entry.icon ? icon(entry.icon, "sf-context-menu-item-icon") : nothing;
 }
 
@@ -125,7 +136,7 @@ function renderChoiceOptions(entry, path, iconsOnly) {
             aria-label=${option.text ?? nothing}
             title=${iconsOnly ? option.text ?? nothing : nothing}
             ?disabled=${Boolean(option.disabled)}
-    >${option.icon ? icon(option.icon, "") : option.text ?? ""}</button>`);
+    >${hasSwatch(option) ? swatch(option.swatch) : option.icon ? icon(option.icon, "") : option.text ?? ""}</button>`);
 }
 
 // A choice of a few options -- the theme in a profile menu, a setting in a
@@ -163,7 +174,7 @@ function renderChoiceDrill(entry, path, lead) {
 function renderLevelOptions(choice, context) {
     const {entry, path} = choice;
     const options = entry.options ?? [];
-    const lead = options.some((option) => option.icon);
+    const lead = options.some((option) => option.icon || hasSwatch(option));
     const query = String(context.query ?? "").trim().toLowerCase();
     const shown = options.map((option, at) => [option, at])
         .filter(([option]) => !query || String(option.text ?? "").toLowerCase().includes(query));
@@ -176,14 +187,14 @@ function renderLevelOptions(choice, context) {
             aria-checked=${String(Boolean(option.checked))}
             ?disabled=${Boolean(option.disabled)}
     >
-        ${lead ? html`<span class="sf-context-menu-item-lead">${option.icon ? icon(option.icon, "sf-context-menu-item-icon") : nothing}</span>` : nothing}
+        ${lead ? html`<span class="sf-context-menu-item-lead">${hasSwatch(option) ? swatch(option.swatch) : option.icon ? icon(option.icon, "sf-context-menu-item-icon") : nothing}</span>` : nothing}
         ${renderItemText(option)}
     </button>`);
 }
 
 function renderChoice(entry, path, lead, context) {
     const options = entry.options ?? [];
-    const iconsOnly = options.length > 0 && options.every((option) => option.icon);
+    const iconsOnly = options.length > 0 && options.every((option) => option.icon || hasSwatch(option));
     if (context?.drill && entry.view === "drill" && options.length > 0) {
         return renderChoiceDrill(entry, path, lead);
     }
@@ -370,7 +381,7 @@ const ROWS = (entry) => entry && !BLOCKS.has(entry.type);
 // A row that keeps the level's leading column: one with an icon or a picture,
 // and one that can be ticked, whose check stands there.
 function leads(entry) {
-    return Boolean(entry.icon || entry.avatar || entry.initials || (entry.kind === "check" && entry.type !== "switch"));
+    return Boolean(entry.icon || entry.avatar || entry.initials || hasSwatch(entry) || (entry.kind === "check" && entry.type !== "switch"));
 }
 
 // What a search narrows to: the rows whose label or caption holds the query. A

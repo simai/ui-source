@@ -196,7 +196,8 @@
     "sr-only/default"
   ],
   "cl-input-color": [
-    "display/default"
+    "display/default",
+    "position/default"
   ],
   "cl-input-country": [
     "display/default",
@@ -381,6 +382,10 @@
     "display/default",
     "pointer-events/default",
     "text-align/default"
+  ],
+  "cl-settings": [
+    "display/default",
+    "position/default"
   ],
   "cl-skeleton": [
     "animation/default",

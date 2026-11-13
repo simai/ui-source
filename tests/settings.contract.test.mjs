@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import {readFileSync, existsSync} from 'node:fs';
 import test from 'node:test';
-import {entriesFor, findItem, itemValue, rewriteValues, tileItems, valueMap, valuePatch} from '../src/smart/settings/js/settings.js';
+import {COLOR_OPTIONS, HUES, OWN_COLOR, colorCode, colorFill, entriesFor, findItem, itemValue, rewriteValues, tileItems, valueMap, valuePatch} from '../src/smart/settings/js/settings.js';
+import {PALETTE} from '../src/smart/input-color/js/color-math.js';
 
 // sf-settings (owner decision 2026-11-06), compact settings over
 // sf-menu-context: what its source promises, held without a browser. The
@@ -26,7 +27,7 @@ const ITEMS = [
 test('the manifest: a leaf of family settings with items, look, size, for, remember, label; change, changed, reset; four actions', () => {
   assert.equal(manifest.tag, 'sf-settings');
   assert.equal(manifest.family, 'settings');
-  assert.equal(manifest.version, '1.1.0');
+  assert.equal(manifest.version, '1.2.0');
   assert.deepEqual(Object.keys(manifest.settings), ['items', 'look', 'size', 'for', 'remember', 'label']);
   assert.deepEqual(manifest.settings.look.values, ['drill', 'rows', 'tiles']);
   assert.deepEqual(manifest.settings.size.values, ['1/2', '1']);
@@ -35,7 +36,7 @@ test('the manifest: a leaf of family settings with items, look, size, for, remem
   assert.equal(manifest.events.reset.cancelable, true);
   assert.equal(manifest.events.changed.cancelable, undefined);
   assert.deepEqual(Object.keys(manifest.actions), ['set-value', 'set-all', 'show', 'reset']);
-  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-menu-context']);
+  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-menu-context', 'cl-input-color'], 'the colour window of the colour rows (C85)');
   assert.equal(manifest['css-variables'], undefined, 'no sheet of its own');
   assert.equal(existsSync(new URL('../src/smart/settings/scss', import.meta.url)), false);
 });
@@ -117,4 +118,47 @@ test('a change asks first, then writes and remembers through SF.Preferences; wor
   assert.deepEqual(Object.keys(en.runtime).sort(), Object.keys(ru.runtime).sort());
   assert.equal(ru.runtime.label, 'Настройки');
   assert.equal(en.runtime.label, 'Settings');
+});
+
+test('a colour row (C85): a hue by its name or an own code; the row leads with its circle, the level holds the hue circles and «Свой цвет…»', () => {
+  assert.deepEqual([...HUES], [...PALETTE], 'the names sf-input-color stores');
+  assert.equal(COLOR_OPTIONS.length, 10);
+  const item = {id: 'accent', type: 'color', text: 'Цвет оформления', icon: 'palette', value: 'blue'};
+  assert.equal(itemValue(item), 'blue');
+  assert.deepEqual(valuePatch(item, 'teal'), {value: 'teal'});
+  assert.equal(valuePatch(item, 'lime'), null, 'a hue the row does not offer');
+  assert.deepEqual(valuePatch(item, '#ABC'), {value: '#aabbcc'});
+  assert.equal(valuePatch({...item, custom: false}, '#aabbcc'), null, 'no own colour with custom false');
+  assert.equal(valuePatch(item, '#aabbcc80'), null, 'no alpha');
+  assert.equal(colorCode('#1F6FEB'), '#1f6feb');
+  assert.equal(colorFill('blue'), 'light-dark(var(--sf-blue-50), var(--sf-blue-70))');
+  const words = (key, vars = {}) => ({'hue-blue': 'Синий', 'own-color': 'Свой цвет…', 'own-color-value': `Свой: ${vars.value}`}[key] ?? key);
+  const [row] = entriesFor([item], 'drill', {word: words});
+  assert.equal(row.type, 'choice');
+  assert.equal(row.view, 'drill');
+  assert.equal(row.swatch, colorFill('blue'), 'the current colour is the row\'s circle');
+  assert.equal(row.options.length, 11);
+  const blue = row.options.find((option) => option.id === 'blue');
+  assert.deepEqual(blue, {id: 'blue', text: 'Синий', swatch: colorFill('blue'), checked: true});
+  assert.deepEqual(row.options.at(-1), {id: OWN_COLOR, text: 'Свой цвет…', icon: 'colorize', checked: false});
+  const [own] = entriesFor([{...item, value: '#1f6feb'}], 'drill', {word: words});
+  assert.deepEqual(own.options.at(-1), {id: OWN_COLOR, text: 'Свой: #1f6feb', swatch: '#1f6feb', checked: true});
+  assert.equal(own.swatch, '#1f6feb');
+  const [closed] = entriesFor([{...item, custom: false, options: ['red', {id: 'sky', text: 'Небо'}, 'nope']}], 'drill', {word: words});
+  assert.deepEqual(closed.options.map((option) => option.id), ['red', 'sky']);
+  assert.equal(closed.options[1].text, 'Небо');
+  const ru = json('src/smart/settings/lang/ru.json').runtime;
+  for (const hue of HUES) assert.ok(ru[`hue-${hue}`], hue);
+  assert.equal(ru['own-color'], 'Свой цвет…');
+});
+
+test('a colour row opens sf-input-color\'s window on «Своё» against the trigger; its holder is inert while closed', () => {
+  const element = read('src/smart/settings/index.js');
+  const template = read('src/smart/settings/js/templates/default.js');
+  assert.match(element, /item\.type === 'color' && value === OWN_COLOR\) \{\s*event\.preventDefault\(\);/u);
+  assert.match(element, /picker\.openPicker\(\{anchor, view: 'own'\}\)/u);
+  assert.match(template, /<span class="sf-settings-color" inert/u);
+  assert.match(template, /<sf-input-color palette="false"/u);
+  const menu = read('src/smart/menu-context/js/templates/default.js');
+  assert.match(menu, /if \(hasSwatch\(entry\)\) return swatch\(entry\.swatch\);/u, 'the menu draws a swatch where an icon stands');
 });

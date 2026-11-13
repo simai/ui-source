@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu-context",
-  "version": "1.14.4",
+  "version": "1.15.0",
   "title": "Context Menu",
   "summary": "The Framework's action menu and its settings panel: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, and the value rows a setting needs (switch, range, choice, a group of rows or tiles) with one change event and the set-value, set-all, reset and show actions, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
   "kind": "smart",
@@ -210,7 +210,8 @@
           "search": "{placeholder, empty}, a field above the submenu that narrows its rows by label, caption and keywords",
           "keywords": "string, extra words a search matches",
           "avatar": "string, a picture URL drawn in the lead (a site's logo, a person)",
-          "initials": "string, drawn in the lead when there is no picture"
+          "initials": "string, drawn in the lead when there is no picture",
+          "swatch": "string, a CSS colour drawn as a circle in the lead instead of an icon (a code, var() of a token, light-dark() of two): a colour row of sf-settings, a label's colour"
         }
       },
       "separator": {
@@ -241,7 +242,8 @@
           "icon": "string, a Material Symbols name in the lead",
           "caption": "string, a second line under the name",
           "view": "'quiet' (the default: the options at the row's end, sized to their content, no frame and no dividers, the chosen one on a soft fill), 'band' (the framed full-width band, for a row that must show every option across the panel) or 'drill' (the chosen option under the label and a chevron; the options open as a level of the panel, a check mark on the chosen one, and choosing goes back -- for a list too long or too wordy to stand at the row's end). A drilling view needs a drilling panel: in a flyout menu the row stays the quiet one",
-          "options": "[{id, text, icon, checked, disabled}], side by side; a choice is marked at once and the menu stays open unless keepOpen is false"
+          "options": "[{id, text, icon, swatch, checked, disabled}], side by side; a choice is marked at once and the menu stays open unless keepOpen is false. An option's swatch is a CSS colour drawn as a circle where its icon would stand (in the drilled level's lead, or alone in a quiet row's option)",
+          "swatch": "string, a CSS colour drawn as a circle in the row's lead: the colour chosen now"
         }
       },
       "switch": {
@@ -953,7 +955,7 @@
       },
       {
         "path": "src/smart/menu-context/js/templates/default.js",
-        "sha256": "e18525d4aba0c2f9b6cea177c73737a0f555a43783406a9330b6e3340972c2bc"
+        "sha256": "9a855dd77b9198d78e521e5e9b2962c983d896278332532c633c734cd0283b5f"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",

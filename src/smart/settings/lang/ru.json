@@ -2,6 +2,24 @@
   "title": "Настройки",
   "runtime": {
     "label": "Настройки",
-    "tiles": "Быстрые настройки"
+    "tiles": "Быстрые настройки",
+    "hue-red": "Красный",
+    "hue-orange": "Оранжевый",
+    "hue-amber": "Янтарный",
+    "hue-yellow": "Жёлтый",
+    "hue-lime": "Лайм",
+    "hue-green": "Зелёный",
+    "hue-teal": "Бирюзовый",
+    "hue-cyan": "Голубой",
+    "hue-sky": "Небесный",
+    "hue-blue": "Синий",
+    "hue-indigo": "Индиго",
+    "hue-violet": "Фиолетовый",
+    "hue-purple": "Пурпурный",
+    "hue-pink": "Розовый",
+    "hue-brown": "Коричневый",
+    "hue-gray": "Серый",
+    "own-color": "Свой цвет…",
+    "own-color-value": "Свой: {value}"
   }
 }

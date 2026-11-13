@@ -1,7 +1,7 @@
 // Generated from component.json by scripts/generate-component-files.mjs; do not edit.
-// The colour control loads on demand like any other Smart element. Its relation is
-// the icon button it uses to return to an inherited colour; the native picker it
-// opens is the platform's and brings nothing.
+// The colour control loads on demand like any other Smart element. Its relations are
+// the icons, the icon button of the reset and the eyedropper, and the segmented
+// switch of its own window (lazy: drawn only once the window opens).
 SF.RuleLoader['cl-input-color'] = {
   tags: ['sf-input-color', 'sf-color'],
   type: 'smart',
@@ -10,6 +10,9 @@ SF.RuleLoader['cl-input-color'] = {
   css: true,
   relation: [
     { name: 'icons' },
+    { name: 'cl-icon' },
     { name: 'cl-button-icon' },
+    // cl-segmented: the window's «Палитра / Своё» switch, drawn only once the window opens, fetched after the page is ready.
+    { name: 'cl-segmented', lazy: true },
   ],
 };
