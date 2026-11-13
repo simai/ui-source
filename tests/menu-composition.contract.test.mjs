@@ -59,7 +59,7 @@ test('menu composition: the documentation tree writes its zeros as lengths', asy
   const css = await read('component/menu/scss/_css__menu.scss');
   const tree = css.slice(css.indexOf('.sf-menu.sf-menu--documentation-tree .sf-menu-element {'));
   const body = tree.slice(0, tree.indexOf('}'));
-  for (const name of ['border-width', 'padding-top', 'padding-bottom', 'padding-right']) {
+  for (const name of ['border-width', 'padding-top', 'padding-bottom']) {
     assert.ok(body.includes(`--sf-menu-element--${name}: calc(var(--sf-px) * 0);`), name);
   }
 });
@@ -82,4 +82,28 @@ test('menu composition: the documentation tree puts every row on the size 1 step
   assert.ok(wrapBody.includes('padding-inline: var(--sf-menu--wrap-padding-inline);'));
   assert.doesNotMatch(wrapBody, /space-1\\\/3/u, 'no fixed space step for the height');
   assert.match(css, /\.sf-menu\.sf-menu--documentation-tree \.sf-menu-element--level-1 \{[^}]*--sf-menu-element--padding-inline-start: calc\(var\(--sf-px\) \* 0\);/u);
+});
+
+/* Measured before (nav-4 36897bb6): the tree's levels stood the words at 16,
+   32, 36 (compact and phone 12, 24, 28) -- 0 / space-1 / space-2 / space-3,
+   so the third level stepped 4 -- and a branch's trailing glyph sat on the
+   row's end edge, 8 (compact 6) right of every split chevron's glyph (R219's
+   square, glyph centred). One step per level (C30, C109 (2)): each level adds
+   its parent's step, space-1 for words. The row's end padding is half of what
+   the chevron's square grows past the line, so both glyphs centre on one
+   square of the step at the row's end. */
+test('menu composition: the documentation tree steps every level evenly and puts every chevron on one line', async () => {
+  const css = await read('component/menu/scss/_css__menu.scss');
+  const level = (n) => {
+    const at = css.slice(css.indexOf(`.sf-menu.sf-menu--documentation-tree .sf-menu-element--level-${n} {`));
+    return at.slice(0, at.indexOf('}'));
+  };
+  const step = (n) => `var(--sf-menu--step-${n}, var(--sf-space-1))`;
+  assert.ok(level(2).includes(`--sf-menu-element--padding-inline-start: ${step(1)};`));
+  assert.ok(level(3).includes(`--sf-menu-element--padding-inline-start: calc(${step(1)} + ${step(2)});`));
+  assert.ok(level(4).includes(`--sf-menu-element--padding-inline-start: calc(${step(1)} + ${step(2)} + ${step(3)});`));
+  for (const n of [2, 3, 4]) assert.doesNotMatch(level(n), /--sf-space-[23]/u, `level ${n}: no uneven space step`);
+  const row = css.slice(css.indexOf('.sf-menu.sf-menu--documentation-tree .sf-menu-element {'));
+  const rowBody = row.slice(0, row.indexOf('}'));
+  assert.ok(rowBody.includes('--sf-menu-element--padding-right: calc((var(--sf-ui-1--control-height) - var(--sf-menu-element--line-height, var(--sf-text-height-1))) / 2);'));
 });

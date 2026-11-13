@@ -40,7 +40,11 @@ gives a closed branch that holds it a medium label (C30 amended, R065 a).
 Every row of the tree stands on the size 1 step -- 40, 32 compact, 36 on a
 phone -- whether it is a link, a split row or words: the tree draws the step
 inside the words' box (the wrap's padding, `--sf-menu--wrap-padding-block`),
-so the link is the whole row. A disabled disclosure uses a
+so the link is the whole row. Each level steps one `--sf-space-1` (16;
+12 compact and on a phone, C109): the words stand at 16, 32, 48, 64. Every
+chevron -- a split row's button and a branch's trailing glyph -- is centred on
+a square of the row's step at the row's end, so they stand on one line. A
+disabled disclosure uses a
 disabled button and cannot be toggled. Prefer removing unavailable navigation
 destinations over presenting a disabled link.
 

@@ -544,7 +544,13 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   --sf-menu-element--border-width: calc(var(--sf-px) * 0);
   --sf-menu-element--padding-top: calc(var(--sf-px) * 0);
   --sf-menu-element--padding-bottom: calc(var(--sf-px) * 0);
-  --sf-menu-element--padding-right: calc(var(--sf-px) * 0);
+  /* The row's end padding is half of what the chevron's square grows past
+     its glyph -- (step - line) / 2: 8, compact 6, phone 8 -- so a branch's
+     trailing glyph stands at the centre of a square of the row's step at the
+     row's end, where a split row's chevron (R219) centres its glyph. At 0 a
+     branch's glyph sat on the row's end edge, 8 (compact 6) right of every
+     split chevron's. */
+  --sf-menu-element--padding-right: calc((var(--sf-ui-1--control-height) - var(--sf-menu-element--line-height, var(--sf-text-height-1))) / 2);
   /* The tree's row draws its step inside the words' box -- the link is the
      whole row -- so the wrap's padding, not the row's, puts every row on the
      ladder (C01, C18): the size 1 control height, 40, compact 32, phone 36.
@@ -563,21 +569,27 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   overflow-wrap: anywhere;
 }
 
+/* One even step per level (C30, C109 (2)): the wrap's inset is the first
+   step, each level below adds its parent's step -- the menu's H4, space-1
+   (16, compact and phone 12), or a row with an icon its icon and gap -- read
+   from the item as the class menu's own levels do. The words stand at 16, 32,
+   48, 64 (compact and phone 12, 24, 36, 48). It was 0 / space-1 / space-2 /
+   space-3: the third level stepped 4 (16, 32, 36). */
 .sf-menu.sf-menu--documentation-tree .sf-menu-element--level-1 {
   /* A length (above): sf-menu's split link adds it to the wrap's inset. */
   --sf-menu-element--padding-inline-start: calc(var(--sf-px) * 0);
 }
 
 .sf-menu.sf-menu--documentation-tree .sf-menu-element--level-2 {
-  --sf-menu-element--padding-inline-start: var(--sf-space-1);
+  --sf-menu-element--padding-inline-start: var(--sf-menu--step-1, var(--sf-space-1));
 }
 
 .sf-menu.sf-menu--documentation-tree .sf-menu-element--level-3 {
-  --sf-menu-element--padding-inline-start: var(--sf-space-2);
+  --sf-menu-element--padding-inline-start: calc(var(--sf-menu--step-1, var(--sf-space-1)) + var(--sf-menu--step-2, var(--sf-space-1)));
 }
 
 .sf-menu.sf-menu--documentation-tree .sf-menu-element--level-4 {
-  --sf-menu-element--padding-inline-start: var(--sf-space-3);
+  --sf-menu-element--padding-inline-start: calc(var(--sf-menu--step-1, var(--sf-space-1)) + var(--sf-menu--step-2, var(--sf-space-1)) + var(--sf-menu--step-3, var(--sf-space-1)));
 }
 
 /* The documentation tree marks its current page as navigation does (C23): the
