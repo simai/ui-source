@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.accordion",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "title": "Accordion",
   "summary": "Sections that open and close, built from data -- a record's groups, a settings panel, an FAQ -- or from <details> in the markup, drawn as the class accordion: the same sizes on the control ladder, appearances, marker and single section. single keeps one open; the headers are buttons with the WAI-ARIA accordion keyboard.",
   "kind": "smart",
@@ -481,7 +481,7 @@
       },
       {
         "path": "src/smart/accordion/sections.mjs",
-        "sha256": "e89c2ea6d8000019a4eaf4ab8352a1e0688be5cf0c906537c0d1eb16909cc1e1"
+        "sha256": "1330fb2bbc6d18367fc9ddda76133805241d2de742cca0d0eca86f4ac1cce590"
       },
       {
         "path": "src/smart/accordion/js/templates/default.js",

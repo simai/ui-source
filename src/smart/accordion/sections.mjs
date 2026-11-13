@@ -93,10 +93,14 @@ export function markerGlyph(marker, open) {
 // rung below the header (sf-badge has 1/3, 1/2 and 1).
 export const BADGE_SIZE = Object.freeze({'': '1/3', '1/3': '1/3', '1/2': '1/3', 1: '1/3', 2: '1/2', 3: '1'});
 
-// Where the badge would stand taller than the header's text line it takes
-// the line of the text beside it (sf-badge line="text": the title's size and
-// line, one figure a circle), so the header keeps its control height (C01,
-// C18; C95 point 6: a mark beside an item's text is as high as its line): at
-// size 1/2 a 1/3 badge (24, phone 20) grew the 32 header to 36 (phone 28 to
-// 32).
-export const BADGE_LINE = Object.freeze({'1/3': 'text', '1/2': 'text'});
+// The badge takes the line of the text beside it at every size (sf-badge
+// line="text": the title's size and line, one figure a circle), so the header
+// keeps its control height (C01, C18; C95 point 6: a mark beside an item's
+// text is as high as its line). A badge size stood taller than the title's
+// line wherever the line steps down: at size 1/2 a 1/3 badge (24, phone 20)
+// grew the 32 header to 36 (phone 28 to 32); in a compact region the default
+// and size 1 headers (14/20 text) took a 24 badge, 48 to 52 and 32 to 36; on a
+// phone size 3 (18/24 text) took a 28 badge, 52 to 56 (intent acceptance
+// 2026-11-13, content-5). The badge size stays the fallback where line is
+// not read.
+export const BADGE_LINE = Object.freeze({'': 'text', '1/3': 'text', '1/2': 'text', 1: 'text', 2: 'text', 3: 'text'});
