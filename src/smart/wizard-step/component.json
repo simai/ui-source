@@ -2,7 +2,7 @@
   "$comment": "The source of sf-wizard-step's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes the generated files from it). One step of sf-wizard (owner decision 2026-11-06, ui-control control/decisions/2026-11-06-sf-wizard.md): what the step is and where it stands, and its body as its children.",
   "id": "smart.wizard-step",
   "tag": "sf-wizard-step",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "kind": "leaf",
   "family": "wizard",
   "settings": {
@@ -108,7 +108,8 @@
     "css-variables: none of its own -- it draws nothing and has no sheet; the title, the indicator, the result and the footer around its children are sf-wizard's, and sf-wizard's public variables reach them (standard 1.3.15 §6; simai/ui-source#46 item 5).",
     "version 1.0.1 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint snapshots follow the actions block (docs review R031, R032; decisions C13-C15): the sf-button and sf-button-icon it draws ask for the screen-reader-only utility sheet (sf-button 1.9.0, sf-button-icon 1.7.0), an sf-button-close it draws asks for its own sheet (C14), and sf-input's classes follow its outer sizes (sf-input 1.6.0). Settings, values, events and keys unchanged.",
     "version 1.0.2 (2026-11-09): a patch, nothing drawn differently. The manifest says why it declares no css-variables (simai/ui-source#46 item 5), as sf-language and sf-settings do.",
-    "version 1.0.3 (2026-11-09): a patch; nothing in the component changed. The sf-input it draws asks for the kbd sheet since sf-input 1.7.0 (C38, the shortcut setting; component.kbd 1.3.0), so its first-paint snapshots name that sheet and carry one more empty line where the field's shortcut would stand; the component takes a patch with them. Settings, values, events and keys unchanged."
+    "version 1.0.3 (2026-11-09): a patch; nothing in the component changed. The sf-input it draws asks for the kbd sheet since sf-input 1.7.0 (C38, the shortcut setting; component.kbd 1.3.0), so its first-paint snapshots name that sheet and carry one more empty line where the field's shortcut would stand; the component takes a patch with them. Settings, values, events and keys unchanged.",
+    "version 1.0.4 (2026-11-14, group build 3): a patch; nothing in the component changed. The sf-input it draws takes the field layer's actions since sf-input 1.9.0 (owner decision C123, .sf-field-action), so its first-paint snapshot carries four more empty lines where those actions would stand; the snapshot was retaken from the group build and the component takes a patch with it. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

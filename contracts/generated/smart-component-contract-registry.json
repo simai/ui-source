@@ -3433,7 +3433,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/wizard-step/smart.manifest.json",
-      "manifest_sha256": "7b19a2e4c5b778e1b38f0da2a8c110bbc474493c4ab62907d985118c232e834a",
+      "manifest_sha256": "46edd4f0cf9e3daa6d86e355e1bf8072d9ca3b806b3186df3ad580ca0ad3cba9",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
