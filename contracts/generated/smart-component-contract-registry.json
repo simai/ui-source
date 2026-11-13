@@ -1446,6 +1446,7 @@
           "component.datepicker",
           "smart.button",
           "smart.button-icon",
+          "smart.drawer",
           "smart.icon",
           "smart.input"
         ]
@@ -1459,7 +1460,7 @@
       "kind": "composite",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-date/smart.manifest.json",
-      "manifest_sha256": "1afa38eeff30afd32110525882515424b32a2bcd8c0249e462b828f5bcfe4074",
+      "manifest_sha256": "2f9a676515040b356b23ecf6dbcb6c3dafc2303886070fda6c270dd75ab2984a",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

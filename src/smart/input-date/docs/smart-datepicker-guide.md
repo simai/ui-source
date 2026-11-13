@@ -29,7 +29,18 @@ the usual `change`, whose detail `value` is `''`.
 
 The field of a single-date picker accepts typing. What is typed is read through
 `format`, and an ISO date is accepted as well, so both `14.10.2026` and
-`2026-10-14` land on the same value. The whole text has to be one date in that
+`2026-10-14` land on the same value.
+
+Without `format` the field writes and reads the date as the page's language
+and country do (owner decision C62): the order of day, month and year and the
+signs between them come from the browser's
+`Intl.DateTimeFormat(locale).formatToParts` -- `DD.MM.YYYY` for `ru` and `de`,
+`MM/DD/YYYY` for `en-US` (September 3 is `09/03/2026`), `DD/MM/YYYY` for
+`en-GB` and `fr`, `YYYY-MM-DD` for `sv-SE`. The locale is `locale`, else the
+nearest `lang`. An empty field shows that format in the letters of the
+language's names for the parts -- `ДД.ММ.ГГГГ`, `MM/DD/YYYY`, `TT.MM.JJJJ` --
+unless `placeholder` says otherwise, and `mask` (digits only, the signs typed
+for the person) follows it too. An explicit `format` wins over the locale. The whole text has to be one date in that
 format: `YYYY` is four digits, `YY` two, the day and the month one or two, and
 between them any of `.` `/` `-` `,` or a space. The year is 1000 to 9999. Text
 that is not such a date -- two dates glued together by a paste
@@ -40,14 +51,80 @@ and nothing is ever read as a different date than the one typed. Emptying the fi
 deleting the text is how a person says there is no date. Enter commits what is
 typed; ArrowDown still opens the calendar.
 
-Add `readonly` for a field the person may not type in -- the date is then chosen
-on the grid alone. A `range` field is always read-only: one field holding two
-dates has no single format to read back. Its `start-value` and `end-value`
+Add `readonly` for a value the person may see but not change: the field cannot
+be typed in and does not open the calendar -- a click, ArrowDown, Enter and
+Space do nothing, `open-panel` is refused, and the field names no popup
+(owner decision C62). The value is still submitted. A read-only inline
+calendar (`input="false"`) can be walked through but takes no choice. A
+`range` field is never typed -- one field holding two dates has no single
+format to read back -- and is chosen on its calendar, which opens. Its `start-value` and `end-value`
 are read with the same parser, so a value holding two dates is not a date.
 
 The mask properties (`mask`, `mask-pattern`, `mask-lazy`,
 `mask-placeholder-char`, `mask-options`) reach the field only where it can be
 typed in, which is what they were always for.
+
+## A period: one field, or two as a recipe
+
+A period is one field: `range` holds the start and the end, and the field
+shows them as «с – по», the two dates with an en dash between spaces
+(`01.09.2026 – 07.09.2026`; owner decision C62). The value is
+`[start-value, end-value]` and the form gets the ISO 8601 interval
+`start/end`.
+
+Two fields -- check-in and check-out, departure and return -- are a recipe,
+not a component: two single-date pickers, the second bound to the first. Each
+is labelled on its own, each submits its own name, and the second cannot end
+before the first starts. With `min-date` set, an empty check-out opens on the
+check-in's month (the calendar opens on today's month held to `min-date`).
+
+```html
+<div class="flex gap-1/2">
+  <sf-input-date id="check-in" name="check_in" label="Заезд"></sf-input-date>
+  <sf-input-date id="check-out" name="check_out" label="Выезд"></sf-input-date>
+</div>
+<script>
+  const checkIn = document.getElementById('check-in');
+  const checkOut = document.getElementById('check-out');
+  checkIn.addEventListener('change', (event) => {
+    const start = event.detail.value; // YYYY-MM-DD, '' when cleared
+    if (start) checkOut.setAttribute('min-date', start);
+    else checkOut.removeAttribute('min-date');
+    // A check-out before the new check-in is cleared, not moved.
+    if (start && checkOut.value && checkOut.value < start) checkOut.value = '';
+  });
+</script>
+```
+
+Use the one field when the period is one thing to the person (a report's
+dates, a filter); use two when each end is a decision of its own and is read
+on its own (a booking).
+
+## A period on a phone: a ribbon of months
+
+Below 60rem (the `lg` breakpoint) a `range` field with a typed input opens no
+popup. It opens a ribbon of months in the Framework's bottom sheet
+(`sf-drawer placement="bottom"`; owner decision C62). The sheet stops a step
+under the field, so the field and its label stay readable through the scrim
+(at least half the screen when the field stands low). Its head is the field's
+label, «К сегодня», which brings today's month to the top, and a close
+button. The weekday row is pinned under it, the days off red in it as in the
+grid, and the months stand one under another with their names held over them
+while they are in view. The period chosen and «Готово» are pinned at the
+bottom. The ribbon opens on the start's month, or today's, with the focus on
+that day, and grows by six months as it is scrolled to either end, within
+`min-date` and `max-date`.
+
+The period is a draft until «Готово»: the first day is the start, the second
+the end, and a day before the start starts again. «Готово» makes the value
+and fires one `change`. Closing the sheet any other way (its close button,
+the scrim, Escape, a swipe down) keeps the value the field had. The keys are
+the grid's: the arrows move a day or a week across the months' borders,
+PageUp and PageDown a month, with Shift a year.
+
+The sheet is a lazy relation (`cl-drawer`): it is loaded when a phone first
+opens a period. A page without `sf-drawer` gets the popup, as on a wide
+screen. A single date keeps the popup on every screen.
 
 ## A date and a time, or a time
 
@@ -164,12 +241,27 @@ and emits nothing. Where the panel has no room for the list beside the grid,
 the list wraps above it as a row. The list is one tab stop; arrows move along
 it.
 
+## Days off
+
+Days off are drawn in the calendar's day-off ink (`--sf-datepicker-day-off`,
+the palette red, not the error role) and their name says «выходной». Which days
+they are follows the locale: Saturday and Sunday for `ru`, `de` and `en-US`,
+Friday and Saturday for `ar-EG` (`Intl.Locale#getWeekInfo`; Saturday and Sunday
+where the browser does not say). A product sets them with `weekend`:
+
+- `weekend="none"` -- no day off, for a product whose weekends are working days;
+- `weekend="5,6"` -- the days listed, `0` or `7` Sunday, `1` Monday to `6`
+  Saturday (Intl writes Saturday and Sunday as `6,7`).
+
+Holidays and transferred days off are not drawn yet: they are an open owner
+question (C67).
+
 ## Interaction and accessibility
 
 The popup field exposes `aria-haspopup`, `aria-expanded` and `aria-controls`.
-ArrowDown opens the calendar from the field; in a read-only field Enter and
-Space open it too, while in a field that can be typed in they belong to the
-text and Enter commits it. Inside the day
+ArrowDown opens the calendar from the field; in a range field, which is not
+typed, Enter and Space open it too, while in a field that can be typed in they
+belong to the text and Enter commits it. A `readonly` field opens nothing. Inside the day
 grid, arrow keys move by day or week, Home and End move to a week edge, and
 PageUp and PageDown change the month. RTL reverses the physical horizontal
 arrows while chronological movement remains correct. Escape closes the popup

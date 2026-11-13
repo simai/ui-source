@@ -3,8 +3,12 @@ import {elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {fieldSize} from '../../component/field-size';
 import {FormField} from '../helpers/form-field';
+import {render} from 'lit';
 import {renderDatepickerTemplate} from './js/templates/default';
+import {renderDatepickerRibbon} from './js/templates/ribbon.js';
+import {formatPlaceholder, localeDateFormat, localeWeekStart, weekendDays} from './js/locale-calendar.js';
 import BundledPosition from '../../core/js/position.js';
+import {matchesBreakpoint} from '../../core/js/breakpoints.js';
 import {pageLocale} from '../../core/js/page-language';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -13,6 +17,14 @@ import ru from './lang/ru.json';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 
 const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
+// Between the two dates of a range in its one field: an en dash with a space
+// on each side, «01.09.2026 – 07.09.2026» (owner decision C62).
+const RANGE_SEPARATOR = ' \u2013 ';
+// The ribbon of months on a phone: how many months it shows before and after
+// the one it opens on, and how many it adds as it nears an end.
+const RIBBON_BEFORE = 3;
+const RIBBON_AFTER = 12;
+const RIBBON_STEP = 6;
 const YEARS_PAGE_SIZE = 18;
 
 function padDatePart(value) {
@@ -339,24 +351,6 @@ function dateFormat(locale, options) {
     return format;
 }
 
-// The first day of the locale's week, read once per locale: the grid asks it
-// several times a render.
-const weekStarts = new Map();
-
-function localeWeekStart(code) {
-    if (weekStarts.has(code)) return weekStarts.get(code);
-    let first = 1;
-    try {
-        const locale = new Intl.Locale(code);
-        const info = typeof locale.getWeekInfo === 'function' ? locale.getWeekInfo() : locale.weekInfo;
-        if (info?.firstDay) first = info.firstDay % 7;
-    } catch {
-        // An unknown locale keeps the Monday the grid always had.
-    }
-    weekStarts.set(code, first);
-    return first;
-}
-
 function getMonthLabel(month, locale) {
     try {
         return capitalizeFirstLetter(
@@ -432,7 +426,8 @@ const wordKey = (key) => String(key).replace(/_/gu, '-').replace(/[A-Z]/gu, (let
 
 function getLabels(node) {
     const keys = ['previousMonth', 'nextMonth', 'previousYears', 'nextYears', 'chooseMonth', 'chooseYear', 'presets', 'customRange',
-        'time', 'hours', 'minutes', 'earlierHour', 'laterHour', 'earlierMinute', 'laterMinute', 'timeNotSet'];
+        'time', 'hours', 'minutes', 'earlierHour', 'laterHour', 'earlierMinute', 'laterMinute', 'timeNotSet',
+        'period', 'done', 'chooseStart', 'chooseEnd', 'goToToday', 'close'];
     return Object.fromEntries(keys.map((key) => [key, node.sfWord(wordKey(key))]));
 }
 
@@ -451,27 +446,32 @@ const DatepickerElement = elementFromManifest(manifest, {
     actions: {
         'open-panel'({options} = {}) {
             if (this.disabled) return 'disabled';
+            if (this.valueLocked) return 'readonly';
             this._openPanel(options || {});
             return 'applied';
         },
         'close-panel'({options} = {}) {
-            if (!this.open) return 'unchanged';
+            if (!this.open && !this._sheetOpen) return 'unchanged';
             this._closePanel(options || {});
             return 'applied';
         },
         'toggle-panel'() {
-            if (!this.open && this.disabled) return 'disabled';
+            const open = this.open || this._sheetOpen;
+            if (!open && this.disabled) return 'disabled';
+            if (!open && this.valueLocked) return 'readonly';
             this._togglePanel();
             return 'applied';
         },
         'choose-preset'({item} = {}) {
             if (this.disabled) return 'disabled';
+            if (this.valueLocked) return 'readonly';
             if (!item || item.disabled || !this.range) return 'unavailable-preset';
             this._choosePreset(item);
             return 'applied';
         },
         'choose-custom-range'() {
             if (this.disabled) return 'disabled';
+            if (this.valueLocked) return 'readonly';
             if (!this.range) return 'not-a-range';
             this._chooseCustomRange();
             return 'applied';
@@ -527,8 +527,12 @@ class SfDatepicker extends FormField(DatepickerElement) {
             context: {default: ''},
             // No default: the page's language says it (see get weekStart).
             weekStart: {type: Number, default: null},
+            // The days off, drawn red: the locale's when empty, "none", or a
+            // list of days 0-7 (see get weekendDays).
+            weekend: {default: ''},
             locale: {default: ''},
-            format: {default: 'DD.MM.YYYY'},
+            // No default: the locale's order and signs (see get format).
+            format: {default: ''},
             rootClass: {default: ''},
             closeOnSelect: {type: Boolean, default: true},
             input: {type: Boolean, default: true},
@@ -980,8 +984,10 @@ class SfDatepicker extends FormField(DatepickerElement) {
         return this.getBooleanAttr('input', true);
     }
 
+    // A read-only field is never open, even when a host writes `open`: its
+    // calendar would offer a choice the field does not take (C62).
     get open() {
-        return this.getBooleanAttr('open', false);
+        return this.getBooleanAttr('open', false) && !(this.input && this.valueLocked);
     }
 
     get portal() {
@@ -1006,8 +1012,14 @@ class SfDatepicker extends FormField(DatepickerElement) {
         return this.getAttribute('input-name') || this.getAttribute('name') || '';
     }
 
+    // The hint in an empty field: the host's, or -- where a date is typed --
+    // the format in the letters of the locale (ДД.ММ.ГГГГ, MM/DD/YYYY,
+    // TT.MM.JJJJ), so the person sees the order the field reads (owner
+    // decision C62). A range or a read-only field is not typed: no hint.
     get placeholder() {
-        return this.getAttribute('placeholder') || '';
+        const written = this.getAttribute('placeholder') || '';
+        if (written || !this.typed) return written;
+        return formatPlaceholder(this.format, this.locale);
     }
 
     // What the form gets (§17.1): the ISO date, never the display text; a
@@ -1153,15 +1165,33 @@ class SfDatepicker extends FormField(DatepickerElement) {
         return normalizeLocale(this.getAttribute('locale'), this);
     }
 
+    get weekend() {
+        return this.getAttribute('weekend') || '';
+    }
+
+    // The days drawn as days off (owner decision C62): the locale's
+    // (Intl.Locale#getWeekInfo, Saturday and Sunday where it does not say),
+    // none for weekend="none" -- a product whose weekends are working days --
+    // or the days the attribute lists, 0 or 7 Sunday to 6 Saturday. They
+    // were Saturday and Sunday for every locale and every product.
+    get weekendDays() {
+        return weekendDays(this.weekend, this.locale);
+    }
+
     // The display format of the mode. A written format the mode cannot use is
     // completed: datetime adds « HH:mm» to a date format, time takes HH:mm.
+    // Without one the date's format is the locale's (owner decision C62): the
+    // order of the parts and the signs between them from Intl formatToParts --
+    // DD.MM.YYYY in ru and de, MM/DD/YYYY in en-US, YYYY-MM-DD in sv-SE. It was
+    // DD.MM.YYYY for every language, so an en-US page showed 03.09.2026 for
+    // September 3 and read 09/03/2026 as March 9.
     get format() {
         const written = this.getAttribute('format') || '';
         const mode = this.mode;
-        if (mode === 'date') return written || 'DD.MM.YYYY';
+        if (mode === 'date') return written || localeDateFormat(this.locale);
         if (mode === 'time') return written && formatPattern(written, 'time') ? written : 'HH:mm';
         if (written && formatPattern(written, 'datetime')) return written;
-        return `${written && formatPattern(written, 'date') ? written : 'DD.MM.YYYY'} HH:mm`;
+        return `${written && formatPattern(written, 'date') ? written : localeDateFormat(this.locale)} HH:mm`;
     }
 
     // The name for a field whose label is drawn outside it -- a record panel
@@ -1178,6 +1208,17 @@ class SfDatepicker extends FormField(DatepickerElement) {
     // component said it was not.
     get readonly() {
         return this.range || this.getBooleanAttr('readonly', false);
+    }
+
+    // The host's `readonly`: the value is shown and submitted, never changed
+    // here (owner decision C62: a read-only field does not open the calendar).
+    // The field opens no panel, and an inline calendar takes no choice -- its
+    // days, quick ranges and time stay readable and can be walked through.
+    // `readonly` above also counts a range, which is only "not typed": a range
+    // still opens its calendar. It opened for the host's `readonly` too, so a
+    // value the page said could not be changed could be changed on the grid.
+    get valueLocked() {
+        return this.getBooleanAttr('readonly', false);
     }
 
     // A date can be typed. The field was hard-readonly, so a host that edits a
@@ -1208,8 +1249,10 @@ class SfDatepicker extends FormField(DatepickerElement) {
             return this.formattedValue;
         }
 
+        // One field, «с – по»: the two dates with an en dash between spaces
+        // (owner decision C62). It was a hyphen, the sign of a compound word.
         if (this.formattedStartValue && this.formattedEndValue) {
-            return `${this.formattedStartValue} - ${this.formattedEndValue}`;
+            return `${this.formattedStartValue}${RANGE_SEPARATOR}${this.formattedEndValue}`;
         }
 
         return this.formattedStartValue || this.formattedEndValue || '';
@@ -1229,6 +1272,14 @@ class SfDatepicker extends FormField(DatepickerElement) {
 
     get weekdays() {
         return getWeekdays(this.locale, this.weekStart);
+    }
+
+    // Which weekday columns are days off, in the order of the weekday row
+    // (owner decision C62 «выходные красным», prototypes/datepicker.html: the
+    // headers сб and вс take the days' red too). The same days as the grid's.
+    get weekdaysOff() {
+        const daysOff = this.weekendDays;
+        return Array.from({length: 7}, (_, index) => daysOff.has((this.weekStart + index) % 7));
     }
 
     get calendarLabel() {
@@ -1280,6 +1331,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
         const maxDate = this.setMaxDate();
         const activeDate = this.activeDate;
         const today = new Date();
+        const daysOff = this.weekendDays;
         return Array.from({length: 42}).map((_, index) => {
             const date = new Date(
                 gridStartDate.getFullYear(),
@@ -1295,19 +1347,21 @@ class SfDatepicker extends FormField(DatepickerElement) {
                 (minDate && time < minDate.getTime()) ||
                 (maxDate && time > maxDate.getTime()),
             );
+            const weekend = daysOff.has(date.getDay());
             return {
                 date,
                 value: formatIsoDate(date),
                 formattedValue: formatDateValue(date, this.format),
-                // A day off says so in its name (DP-02): the ink is no longer
-                // the only cue, and the error red is gone from it.
-                label: [0, 6].includes(date.getDay())
+                // A day off says so in its name (DP-02): the ink is not the
+                // only cue. The ink is the calendar's day-off role
+                // (--sf-datepicker-day-off, C67 H2), not the error red.
+                label: weekend
                     ? `${getDateLabel(date, this.locale)}, ${this.sfWord('day-off')}`
                     : getDateLabel(date, this.locale),
                 day: date.getDate(),
                 today: sameDay(date, today),
                 currentMonth: date.getMonth() === this.month,
-                weekend: [0, 6].includes(date.getDay()),
+                weekend,
                 disabled: disabled,
                 selected: this.range
                     ? sameDay(date, startDate) || sameDay(date, endDate)
@@ -1386,7 +1440,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     formatToMask = (format) => {
         let mask = String(format).replace(/[A-Za-z]/g, '0');
         if (this.range) {
-            mask += ` - ${mask}`;
+            mask += `${RANGE_SEPARATOR}${mask}`;
         }
         return mask;
     };
@@ -1503,7 +1557,11 @@ class SfDatepicker extends FormField(DatepickerElement) {
     }
 
     _openPanel({focusCalendar = false} = {}) {
-        if (this.disabled) return this;
+        if (this.disabled || this.valueLocked) return this;
+        if (this._sheetOpen || this.usesRibbon) {
+            this._openRibbon();
+            return this;
+        }
         this._focusCalendarOnOpen = focusCalendar;
         if (!this.open) this.showValueMonth();
         else if (!this.state.activeDate) {
@@ -1520,6 +1578,11 @@ class SfDatepicker extends FormField(DatepickerElement) {
     }
 
     _closePanel({restoreFocus = false} = {}) {
+        if (this._sheetOpen) {
+            // The sheet gives the focus back to the field itself.
+            this._sheet?.close?.({reason: 'api'});
+            return this;
+        }
         if (!this.open) {
             return this;
         }
@@ -1533,7 +1596,449 @@ class SfDatepicker extends FormField(DatepickerElement) {
     }
 
     _togglePanel() {
-        return this.open ? this._closePanel() : this._openPanel();
+        return this.open || this._sheetOpen ? this._closePanel() : this._openPanel();
+    }
+
+    // The period on a phone (owner decision C62, agreed 2026-11-11; ui-control
+    // prototypes/datepicker.html#lenta): below the phone step (60rem, the
+    // breakpoint lg) a range opens a ribbon of months in the Framework's bottom
+    // sheet instead of one month with arrows -- the weekday row pinned, the
+    // months one under another, the period and «Готово» at the bottom. A
+    // period across months is two taps and one scroll, where the arrows needed
+    // a tap per month and never showed the start beside the end. The choice is
+    // a draft until «Готово»; closing the sheet any other way (the close
+    // button, the scrim, Escape, a swipe down) keeps the value it had.
+    get usesRibbon() {
+        if (!this.range || !this.input || this._ribbonUnavailable) return false;
+        return matchesBreakpoint('lg', {below: true});
+    }
+
+    async _openRibbon() {
+        if (this._sheetOpen || this._sheetOpening) return;
+        this._sheetOpening = true;
+        try {
+            // The sheet is a lazy relation: asked for when a phone opens a period.
+            if (!globalThis.customElements?.get('sf-drawer')) await globalThis.SF?.Loader?.ensure?.(['sf-drawer']);
+        } catch {
+            // The popup below.
+        }
+        this._sheetOpening = false;
+        if (!this.isConnected || this.disabled || this.valueLocked) return;
+        if (!globalThis.customElements?.get('sf-drawer')) {
+            // No bottom sheet on this page: the popup, as on a wide screen.
+            this._ribbonUnavailable = true;
+            this._openPanel();
+            return;
+        }
+        const {startDate, endDate} = this.normalizedRange;
+        const minDate = this.setMinDate();
+        const maxDate = this.setMaxDate();
+        let anchor = startDate || new Date();
+        if (minDate && compareDates(anchor, minDate) < 0) anchor = minDate;
+        if (maxDate && compareDates(anchor, maxDate) > 0) anchor = maxDate;
+        const first = new Date(anchor.getFullYear(), anchor.getMonth() - RIBBON_BEFORE, 1);
+        this._ribbon = {
+            start: startDate ? formatIsoDate(startDate) : '',
+            end: startDate && endDate ? formatIsoDate(endDate) : '',
+            focus: formatIsoDate(anchor),
+            anchor: `${anchor.getFullYear()}-${padDatePart(anchor.getMonth() + 1)}`,
+            from: this.clampRibbonMonth(first),
+            count: 0,
+        };
+        this._ribbon.count = this.ribbonMonthsUntil(new Date(anchor.getFullYear(), anchor.getMonth() + RIBBON_AFTER, 1));
+        const sheet = this.ribbonSheet();
+        // The sheet's head is the ribbon's own (the title, «К сегодня», the
+        // close button, as in #lenta): the drawer's head has no place for a
+        // second action. The drawer keeps the name of its dialog.
+        this._ribbon.title = this.label || this.ariaLabel || this.sfWord('period');
+        sheet.setAttribute('label', this._ribbon.title);
+        sheet.setAttribute('panel-style', this.ribbonSheetStyle());
+        this._sheetOpen = true;
+        this.renderRibbon();
+        this.watchRibbonPanelFocus();
+        sheet.open();
+        this.requestComponentUpdate('sheet');
+    }
+
+    // The bottom sheet, made once and kept in the host, so it carries the
+    // field's language, direction, theme and variables to its portal.
+    ribbonSheet() {
+        if (this._sheet?.isConnected && this._sheet.parentNode === this) return this._sheet;
+        const sheet = document.createElement('sf-drawer');
+        sheet.id = partId(instancePath(this, {kind: 'sf-input-date'}), 'sheet');
+        sheet.setAttribute('placement', 'bottom');
+        sheet.setAttribute('show-close', 'false');
+        const body = document.createElement('div');
+        body.className = 'sf-datepicker sf-datepicker--sheet';
+        sheet.append(body);
+        sheet.addEventListener('sf-drawer-opened', () => this.showRibbonAnchor());
+        sheet.addEventListener('sf-drawer-closed', () => this.ribbonClosed());
+        this.append(sheet);
+        this._sheet = sheet;
+        this._sheetBody = body;
+        return sheet;
+    }
+
+    // How tall the sheet is (#lenta): it stops a step 1 under the field it
+    // fills, so the field and its label stay readable through the scrim; it
+    // took the whole screen (snap full, intent acceptance 2026-11-12 D3). A
+    // field low on the screen still gets half of it. The sheet rests at its
+    // content's height (snap auto), held to this.
+    ribbonSheetStyle() {
+        const box = (this.querySelector('.sf-datepicker-wrap') || this).getBoundingClientRect();
+        const top = Math.max(0, Math.round(box.bottom));
+        return `max-block-size: max(50%, calc(100% - ${top}px - var(--sf-space-1)));`;
+    }
+
+    // «К сегодня» in the sheet's head: the ribbon brings today's month to its
+    // top (smoothly, unless the person asked for less motion) and today
+    // becomes the ribbon's tab stop; the draft period stays as it is. Today
+    // outside min-date and max-date goes to the nearest allowed day.
+    ribbonToToday() {
+        const ribbon = this._ribbon;
+        if (!ribbon) return;
+        let today = new Date();
+        today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const minDate = this.setMinDate();
+        const maxDate = this.setMaxDate();
+        if (minDate && compareDates(today, minDate) < 0) today = minDate;
+        if (maxDate && compareDates(today, maxDate) > 0) today = maxDate;
+        const month = new Date(today.getFullYear(), today.getMonth(), 1);
+        const last = new Date(ribbon.from.getFullYear(), ribbon.from.getMonth() + ribbon.count - 1, 1);
+        // Outside the window: the window starts over around today, as it
+        // does around the start when the sheet opens.
+        const outside = month < ribbon.from || month > last;
+        if (outside) {
+            ribbon.from = this.clampRibbonMonth(new Date(month.getFullYear(), month.getMonth() - RIBBON_BEFORE, 1));
+            ribbon.count = this.ribbonMonthsUntil(new Date(month.getFullYear(), month.getMonth() + RIBBON_AFTER, 1));
+        }
+        ribbon.focus = formatIsoDate(today);
+        this.renderRibbon();
+        const scroller = this.ribbonScroller;
+        const target = scroller?.querySelector(`[data-month="${today.getFullYear()}-${padDatePart(today.getMonth() + 1)}"]`);
+        if (!scroller || !target) return;
+        const smooth = !outside && !globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+        if (!smooth) {
+            scroller.scrollTo({top: target.offsetTop, behavior: 'instant'});
+            return;
+        }
+        // The window does not grow while the ribbon glides there: a month put
+        // above would move the place it is gliding to.
+        ribbon.shown = false;
+        const settle = () => {
+            if (this._ribbon !== ribbon || ribbon.shown) return;
+            ribbon.shown = true;
+            this.handleRibbonScroll();
+        };
+        scroller.addEventListener('scrollend', settle, {once: true});
+        setTimeout(settle, 1000);
+        scroller.scrollTo({top: target.offsetTop, behavior: 'smooth'});
+    }
+
+    // The close button of the sheet's head: as the drawer's own, it keeps the
+    // value the field had.
+    closeRibbon() {
+        this._sheet?.close?.({reason: 'close'});
+    }
+
+    ribbonClosed() {
+        this.stopRibbonSizeWatch();
+        this.stopRibbonPanelFocus();
+        this._sheetOpen = false;
+        this._ribbon = null;
+        this.requestComponentUpdate('sheet');
+    }
+
+    // The first month the ribbon may show: min-date's, or any.
+    clampRibbonMonth(date) {
+        const min = this.setMinDate();
+        const floor = min ? new Date(min.getFullYear(), min.getMonth(), 1) : null;
+        return floor && date < floor ? floor : date;
+    }
+
+    // How many months from the ribbon's first one up to `last` (held to
+    // max-date's month).
+    ribbonMonthsUntil(last) {
+        const max = this.setMaxDate();
+        const ceiling = max ? new Date(max.getFullYear(), max.getMonth(), 1) : null;
+        const end = ceiling && last > ceiling ? ceiling : last;
+        const {from} = this._ribbon;
+        return Math.max(1, (end.getFullYear() - from.getFullYear()) * 12 + end.getMonth() - from.getMonth() + 1);
+    }
+
+    get ribbonScroller() {
+        return this._sheetBody?.querySelector('.sf-datepicker-ribbon') || null;
+    }
+
+    // The month the ribbon opens on stands at its top, at once (no animation),
+    // and its focused day takes the focus. The sheet has its size only once it
+    // is open and laid out -- and on the first open, only once the drawer's
+    // own sheet has come: the drawer holds its panel out of view until then,
+    // and gives the panel the focus when it shows. Thirty frames of waiting
+    // ran out before that on every first open (intent acceptance 2026-11-12,
+    // D2: 36 of 36 phone views), so the day was never focused and the panel
+    // kept the focus. The ribbon waits for its own size instead, however long
+    // the sheet takes, and takes the focus after the drawer has given it.
+    showRibbonAnchor() {
+        const scroller = this.ribbonScroller;
+        if (!this._ribbon || !scroller) return;
+        if (!scroller.clientHeight) {
+            this.waitForRibbonSize(scroller);
+            return;
+        }
+        const month = scroller.querySelector(`[data-month="${this._ribbon.anchor}"]`);
+        if (month) scroller.scrollTo({top: month.offsetTop, behavior: 'instant'});
+        this.focusRibbonDay();
+        // The window grows only from here: before, the ribbon stood at its top
+        // and would have asked for months it does not show.
+        this._ribbon.shown = true;
+    }
+
+    // The drawer gives the focus to its panel when it opens, and on the first
+    // open again when it shows the panel it held out of view until its sheet
+    // came -- after the ribbon had tried to focus its day on a panel that could
+    // not take a focus yet (intent acceptance 2026-11-12, D2). The panel
+    // taking the focus while the ribbon is open hands it on to the ribbon's
+    // day, so the sheet always opens on the start, focused.
+    watchRibbonPanelFocus() {
+        if (this._ribbonPanelFocus) return;
+        this._ribbonPanelFocus = (event) => {
+            const panel = this._sheetBody?.closest('[data-sf-drawer-panel]');
+            if (!this._sheetOpen || !this._ribbon || !panel || event.target !== panel) return;
+            if (!this.ribbonScroller?.clientHeight) return;
+            this.focusRibbonDay();
+        };
+        document.addEventListener('focusin', this._ribbonPanelFocus, true);
+    }
+
+    stopRibbonPanelFocus() {
+        if (!this._ribbonPanelFocus) return;
+        document.removeEventListener('focusin', this._ribbonPanelFocus, true);
+        this._ribbonPanelFocus = null;
+    }
+
+    waitForRibbonSize(scroller) {
+        if (this._ribbonSizeWatch || typeof ResizeObserver !== 'function') return;
+        const ribbon = this._ribbon;
+        const watch = new ResizeObserver(() => {
+            if (this._ribbon !== ribbon || !this._sheetOpen) {
+                this.stopRibbonSizeWatch();
+                return;
+            }
+            if (!scroller.clientHeight) return;
+            this.stopRibbonSizeWatch();
+            this.showRibbonAnchor();
+        });
+        this._ribbonSizeWatch = watch;
+        watch.observe(scroller);
+    }
+
+    stopRibbonSizeWatch() {
+        this._ribbonSizeWatch?.disconnect();
+        this._ribbonSizeWatch = null;
+    }
+
+    focusRibbonDay() {
+        const scroller = this.ribbonScroller;
+        const day = scroller?.querySelector(`.sf-datepicker-day[data-date="${this._ribbon?.focus}"]`);
+        if (!day) return;
+        day.focus({preventScroll: true});
+        // Only the ribbon scrolls, never the page, and the month's title held
+        // over the top does not cover the focused row.
+        const title = scroller.querySelector('.sf-datepicker-ribbon-title')?.offsetHeight || 0;
+        const box = scroller.getBoundingClientRect();
+        const cell = day.getBoundingClientRect();
+        if (cell.top - box.top < title) scroller.scrollBy({top: cell.top - box.top - title, behavior: 'instant'});
+        else if (cell.bottom > box.bottom) scroller.scrollBy({top: cell.bottom - box.bottom, behavior: 'instant'});
+    }
+
+    // More months as the ribbon nears an end: a window of them, not every
+    // month there is. Months put before keep the ones in view where they were.
+    handleRibbonScroll() {
+        const scroller = this.ribbonScroller;
+        const ribbon = this._ribbon;
+        if (!scroller || !ribbon || !ribbon.shown || this._ribbonGrowing) return;
+        const room = scroller.clientHeight;
+        if (scroller.scrollTop < room) {
+            const from = this.clampRibbonMonth(new Date(ribbon.from.getFullYear(), ribbon.from.getMonth() - RIBBON_STEP, 1));
+            const added = (ribbon.from.getFullYear() - from.getFullYear()) * 12 + ribbon.from.getMonth() - from.getMonth();
+            if (added > 0) {
+                const height = scroller.scrollHeight;
+                ribbon.from = from;
+                ribbon.count += added;
+                this._ribbonGrowing = true;
+                this.renderRibbon();
+                scroller.scrollTo({top: scroller.scrollTop + scroller.scrollHeight - height, behavior: 'instant'});
+                this._ribbonGrowing = false;
+            }
+        }
+        if (scroller.scrollHeight - scroller.scrollTop - room < room) {
+            const last = new Date(ribbon.from.getFullYear(), ribbon.from.getMonth() + ribbon.count - 1 + RIBBON_STEP, 1);
+            const count = this.ribbonMonthsUntil(last);
+            if (count > ribbon.count) {
+                ribbon.count = count;
+                this.renderRibbon();
+            }
+        }
+    }
+
+    // A tap: the first is the start, the second the end; a day before the
+    // start, or a tap after both, starts again.
+    pickRibbonDay(value) {
+        const ribbon = this._ribbon;
+        if (!ribbon || this.disabled || this.valueLocked) return;
+        if (!ribbon.start || ribbon.end || value < ribbon.start) {
+            ribbon.start = value;
+            ribbon.end = '';
+        } else {
+            ribbon.end = value;
+        }
+        ribbon.focus = value;
+        this.renderRibbon();
+    }
+
+    // «Готово»: the period chosen is the value, said once, and the sheet closes.
+    commitRibbon() {
+        const ribbon = this._ribbon;
+        if (!ribbon?.start || !ribbon.end) return;
+        const end = parseDate(ribbon.end);
+        this.setState({
+            startValue: ribbon.start,
+            endValue: ribbon.end,
+            date: ribbon.start,
+            preset: '',
+            year: end.getFullYear(),
+            month: end.getMonth(),
+            context: '',
+        });
+        this.set({activeDate: ribbon.end});
+        this.emitChange();
+        this._sheet?.close?.({reason: 'close'});
+    }
+
+    // The ribbon's keys are the grid's (APG date picker): the arrows a day and
+    // a week across the months' borders, Home and End the week's ends,
+    // PageUp and PageDown a month, with Shift a year, all held to min-date and
+    // max-date; Enter and Space are the day's own button. The ribbon scrolls
+    // to the day.
+    handleRibbonKeydown(event, value) {
+        const ribbon = this._ribbon;
+        const date = parseDate(value);
+        if (!ribbon || !date) return;
+        const horizontal = this.isRtl ? -1 : 1;
+        const steps = {ArrowLeft: -horizontal, ArrowRight: horizontal, ArrowUp: -7, ArrowDown: 7};
+        let next = null;
+        if (event.key in steps) next = addDays(date, steps[event.key]);
+        else if (event.key === 'Home' || event.key === 'End') {
+            const offset = (date.getDay() - this.weekStart + 7) % 7;
+            next = addDays(date, event.key === 'Home' ? -offset : 6 - offset);
+        } else if (event.key === 'PageUp' || event.key === 'PageDown') {
+            next = shiftDateByMonth(date, (event.key === 'PageUp' ? -1 : 1) * (event.shiftKey ? 12 : 1));
+        } else {
+            return;
+        }
+        event.preventDefault();
+        const minDate = this.setMinDate();
+        const maxDate = this.setMaxDate();
+        if (minDate && compareDates(next, minDate) < 0) next = minDate;
+        if (maxDate && compareDates(next, maxDate) > 0) next = maxDate;
+        const month = new Date(next.getFullYear(), next.getMonth(), 1);
+        if (month < ribbon.from) {
+            const added = (ribbon.from.getFullYear() - month.getFullYear()) * 12 + ribbon.from.getMonth() - month.getMonth();
+            ribbon.from = month;
+            ribbon.count += added;
+        }
+        const last = new Date(ribbon.from.getFullYear(), ribbon.from.getMonth() + ribbon.count - 1, 1);
+        if (month > last) ribbon.count = this.ribbonMonthsUntil(month);
+        ribbon.focus = formatIsoDate(next);
+        this.renderRibbon();
+        this.focusRibbonDay();
+    }
+
+    // What the ribbon draws: the months of its window, each a list of weeks
+    // (null for the days of the weeks outside the month), the draft period,
+    // and the line under it.
+    ribbonContext() {
+        const ribbon = this._ribbon;
+        const locale = this.locale;
+        const weekStart = this.weekStart;
+        const daysOff = this.weekendDays;
+        const minDate = this.setMinDate();
+        const maxDate = this.setMaxDate();
+        const start = parseDate(ribbon.start);
+        const end = parseDate(ribbon.end);
+        const today = new Date();
+        const months = Array.from({length: ribbon.count}, (_, index) => {
+            const first = new Date(ribbon.from.getFullYear(), ribbon.from.getMonth() + index, 1);
+            const lead = (first.getDay() - weekStart + 7) % 7;
+            const length = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
+            const cells = Array.from({length: Math.ceil((lead + length) / 7) * 7}, (_, at) => {
+                const day = at - lead + 1;
+                if (day < 1 || day > length) return null;
+                const date = new Date(first.getFullYear(), first.getMonth(), day);
+                const value = formatIsoDate(date);
+                const weekend = daysOff.has(date.getDay());
+                const disabled = Boolean((minDate && compareDates(date, minDate) < 0) || (maxDate && compareDates(date, maxDate) > 0));
+                const both = Boolean(start && end);
+                return {
+                    value,
+                    day,
+                    weekend,
+                    disabled,
+                    today: sameDay(date, today),
+                    label: weekend ? `${getDateLabel(date, locale)}, ${this.sfWord('day-off')}` : getDateLabel(date, locale),
+                    selected: sameDay(date, start) || sameDay(date, end),
+                    rangeStart: both && sameDay(date, start),
+                    rangeEnd: both && sameDay(date, end),
+                    rangeSelected: both && isBetweenDates(date, start, end),
+                    tabIndex: value === ribbon.focus ? 0 : -1,
+                };
+            });
+            const weeks = [];
+            for (let at = 0; at < cells.length; at += 7) weeks.push(cells.slice(at, at + 7));
+            let label;
+            try {
+                label = capitalizeFirstLetter(dateFormat(locale, {month: 'long', year: 'numeric'}).format(first));
+            } catch {
+                label = `${first.getMonth() + 1}.${first.getFullYear()}`;
+            }
+            return {key: `${first.getFullYear()}-${padDatePart(first.getMonth() + 1)}`, label, weeks};
+        });
+        return {
+            component: this,
+            months,
+            weekdays: this.weekdays,
+            weekdaysOff: this.weekdaysOff,
+            weekdayNames: getWeekdays(locale, weekStart, 'long'),
+            labels: this.labels,
+            title: ribbon.title,
+            complete: Boolean(start && end),
+            periodSummary: this.ribbonSummary(start, end),
+        };
+    }
+
+    // The line over «Готово»: what to do next, or the period and its length,
+    // in the page's language (Intl formatRange and a unit of days).
+    ribbonSummary(start, end) {
+        const locale = this.locale;
+        const long = {day: 'numeric', month: 'long', year: 'numeric'};
+        if (!start) return {strong: '', note: this.sfWord('choose-start')};
+        if (!end) {
+            let text;
+            try { text = dateFormat(locale, long).format(start); } catch { text = formatIsoDate(start); }
+            return {strong: `${text} \u2013`, note: this.sfWord('choose-end')};
+        }
+        let text;
+        let length;
+        const days = Math.round((end - start) / 86400000) + 1;
+        try { text = dateFormat(locale, long).formatRange(start, end); } catch { text = `${formatIsoDate(start)}${RANGE_SEPARATOR}${formatIsoDate(end)}`; }
+        try { length = new Intl.NumberFormat(locale, {style: 'unit', unit: 'day', unitDisplay: 'long'}).format(days); } catch { length = String(days); }
+        return {strong: text, note: length};
+    }
+
+    renderRibbon() {
+        if (!this._sheetBody || !this._ribbon) return;
+        render(renderDatepickerRibbon(this.ribbonContext()), this._sheetBody);
     }
 
     // What is typed is read through the declared format, so «14.10.2026» and
@@ -1822,7 +2327,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     }
 
     selectDate(day) {
-        if (this.disabled || !day?.date || day.disabled) {
+        if (this.disabled || this.valueLocked || !day?.date || day.disabled) {
             return this;
         }
 
@@ -1905,7 +2410,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     // A quick range: its dates, the grid on the month it ends in, and the change
     // said once, by the person's choice -- never by a render.
     _choosePreset(item) {
-        if (this.disabled || !item || item.disabled) return this;
+        if (this.disabled || this.valueLocked || !item || item.disabled) return this;
         const from = formatIsoDate(item.from);
         const to = formatIsoDate(item.to);
         this.setState({
@@ -1925,7 +2430,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
 
     // «Свой период»: the quick range lets go and the person picks on the grid.
     _chooseCustomRange() {
-        if (this.disabled) return this;
+        if (this.disabled || this.valueLocked) return this;
         if (this.preset) this.setState({preset: '', startValue: '', endValue: '', date: ''});
         this._focusDateAfterRender = true;
         this.requestComponentUpdate('custom-range');
@@ -2001,6 +2506,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     // The time set on the panel: the value in time mode; in datetime mode the
     // value once a day is chosen, kept for the day until then.
     setTime(minutes) {
+        if (this.disabled || this.valueLocked) return this;
         if (this.mode === 'time') {
             this.setState({date: formatIsoTime(minutes)});
             this.emitChange();
@@ -2023,7 +2529,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     // a time the first step takes the day's first allowed time (up) or its
     // last (down).
     stepTime(part, direction = 1) {
-        if (this.disabled) return this;
+        if (this.disabled || this.valueLocked) return this;
         const day = this.mode === 'datetime' ? this.selectedDate : null;
         const current = this.currentMinutes;
         const {lo, hi} = this.timeWindow(day);
@@ -2209,6 +2715,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
             calendarLabel: this.calendarLabel,
             labels: this.labels,
             weekdays: this.weekdays,
+            weekdaysOff: this.weekdaysOff,
             // The column headers a screen reader reads: the full names.
             weekdayNames: getWeekdays(this.locale, this.weekStart, 'long'),
             panelId: this._panelId,
@@ -2242,6 +2749,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
             label: this.label,
             ariaLabel: this.ariaLabel,
             readonly: this.readonly,
+            valueLocked: this.valueLocked,
             disabled: this.disabled,
             required: this.required,
             invalid: this.invalid,
@@ -2271,10 +2779,13 @@ class SfDatepicker extends FormField(DatepickerElement) {
 
     afterRender() {
         this._input = this.refs.input?.value?.querySelector('input') || null;
-        if (this._input) {
+        // A read-only field opens nothing, so it names no popup either.
+        if (this._input && this.valueLocked) {
+            for (const name of ['aria-haspopup', 'aria-expanded', 'aria-controls']) this._input.removeAttribute(name);
+        } else if (this._input) {
             this._input.setAttribute('aria-haspopup', 'dialog');
-            this._input.setAttribute('aria-expanded', this.open ? 'true' : 'false');
-            this._input.setAttribute('aria-controls', this._panelId);
+            this._input.setAttribute('aria-expanded', this.open || this._sheetOpen ? 'true' : 'false');
+            this._input.setAttribute('aria-controls', this._sheetOpen && this._sheet ? this._sheet.id : this._panelId);
         }
         const monthToggle = this.querySelector('.sf-datepicker-month-toggle button');
         const yearToggle = this.querySelector('.sf-datepicker-year-toggle button');
@@ -2312,6 +2823,8 @@ class SfDatepicker extends FormField(DatepickerElement) {
 
     onDisconnected() {
         this.removeOverlayListeners();
+        this.stopRibbonSizeWatch();
+        this.stopRibbonPanelFocus();
         super.onDisconnected();
     }
 
@@ -2337,6 +2850,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
             maxTime: this.maxTime,
             minuteStep: this.minuteStep,
             locale: this.locale,
+            weekend: this.weekend,
             input: this.input,
             open: this.open,
             portal: this.portal,

@@ -44,6 +44,14 @@
       "reason": "The panel offset is derived from its current rendered height."
     },
     {
+      "id": "input-date-ribbon-sheet-under-field",
+      "category": "runtime-review",
+      "filePattern": "^smart/input-date/index\\.js$",
+      "contextPattern": "max-block-size: max\\(50%, calc\\(100% - \\$\\{top\\}px - var\\(--sf-space-1\\)\\)\\)",
+      "status": "accepted-runtime-geometry",
+      "reason": "The phone ribbon's bottom sheet stops a step 1 under the field it fills (owner decision C62, prototypes/datepicker.html#lenta): the field's bottom edge is measured with getBoundingClientRect when the sheet opens, in CSS pixels, and is kept exact; the step itself is the space token."
+    },
+    {
       "id": "legacy-accessibility-font-setting",
       "category": "runtime-review",
       "filePattern": "^component/sf-system/js/04-blocks/_special\\.js$",

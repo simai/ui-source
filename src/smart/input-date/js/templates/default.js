@@ -142,7 +142,8 @@ function renderGrid(context) {
     const weeks = [];
     for (let at = 0; at < context.days.length; at += 7) weeks.push(context.days.slice(at, at + 7));
     return html`
-        <div class="sf-datepicker-grid grid grid-col-7" role="grid" aria-label=${context.calendarLabel}>
+        <div class="sf-datepicker-grid grid grid-col-7" role="grid" aria-label=${context.calendarLabel}
+            aria-readonly=${context.valueLocked ? 'true' : nothing}>
             <div class="sf-datepicker-week" role="row">
                 ${context.weekdayNames.map((name) => html`<span class="sr-only" role="columnheader">${name}</span>`)}
             </div>
@@ -259,7 +260,7 @@ function renderDatepickerPanel(context) {
                 <div class="sf-datepicker-main relative">
                     ${renderContext(context)}
                     <div class="sf-datepicker-weekdays grid grid-col-7" aria-hidden="true">
-                        ${context.weekdays.map((weekday) => html`<span class="sf-datepicker-weekday">${weekday}</span>`)}
+                        ${context.weekdays.map((weekday, at) => html`<span class=${context.weekdaysOff?.[at] ? 'sf-datepicker-weekday sf-datepicker-weekday-off' : 'sf-datepicker-weekday'}>${weekday}</span>`)}
                     </div>
                     ${renderGrid(context)}
                 </div>

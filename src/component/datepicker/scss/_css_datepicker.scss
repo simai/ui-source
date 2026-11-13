@@ -190,6 +190,145 @@
     line-height: var(--sf-text-height-1);
   }
 
+  /* The period on a phone (owner decision C62; ui-control prototypes/
+     datepicker.html#lenta): a ribbon of months in the Framework's bottom sheet
+     (sf-drawer placement="bottom"). This box is the sheet's content: no
+     plate, edge or shadow of its own -- the sheet is the surface, and the box
+     takes the sheet's colour so the pinned rows over the ribbon are opaque.
+     That colour is the place the drawer's panel declares (--sf-surface-place,
+     resolved on the panel), not --sf-surface-popup read here: inside a popup
+     place the children's popup role is the nested popup's (one step lighter
+     in the dark theme), and the box drew a second, lighter surface inside the
+     sheet (intent acceptance 2026-11-12, D1). The box's own place (sf-place
+     above) would declare --sf-surface-place from this colour again, a cycle,
+     so here it inherits the panel's. Three rows: the
+     weekdays pinned at the top, the ribbon that scrolls, the period and
+     «Готово» pinned at the bottom. The days are the grid's own cells at the
+     control height of size 2, a finger's target. The sheet has no head of
+     the drawer's (the box draws its own), so the drawer's body keeps a step 1
+     and the scrollbar's room above and below its content; the box gives the
+     top back, so its head stands right under the sheet's handle, and keeps a
+     step 1 under «Готово» (#lenta). */
+  .sf-datepicker.sf-datepicker--sheet {
+    --sf-surface-place: inherit;
+    --sf-surface-place-solid: inherit;
+    --sf-surface-place-ground: inherit;
+    --sf-datepicker--background-color: var(--sf-surface-place, var(--sf-surface-popup));
+    --sf-datepicker--box-shadow: none;
+    --sf-datepicker--border-top-left-radius: var(--sf-0);
+    --sf-datepicker--border-top-right-radius: var(--sf-0);
+    --sf-datepicker--border-bottom-left-radius: var(--sf-0);
+    --sf-datepicker--border-bottom-right-radius: var(--sf-0);
+    --sf-datepicker--padding-top: var(--sf-0);
+    --sf-datepicker--padding-bottom: var(--sf-0);
+    --sf-datepicker--padding-left: var(--sf-0);
+    --sf-datepicker--padding-right: var(--sf-0);
+    --sf-datepicker-day--height: var(--sf-ui-2--control-height);
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-block-size: 0;
+    inline-size: auto;
+    margin-block-start: calc((var(--sf-space-1) + var(--sf-scroll-bg-width)) * -1);
+    margin-block-end: calc(var(--sf-scroll-bg-width) * -1);
+  }
+  /* The sheet's head (#lenta): the title, «К сегодня» and the close button
+     on one row a control of size 1 tall, a step 1/3 over the weekdays. The
+     drawer draws no head of its own here (show-close false, no heading). */
+  .sf-datepicker .sf-datepicker-sheet-head {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--sf-space-1\/3);
+    block-size: var(--sf-ui-1--control-height);
+    margin-block-end: var(--sf-space-1\/3);
+  }
+  .sf-datepicker .sf-datepicker-sheet-title {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    overflow: hidden;
+    color: var(--sf-on-surface);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1);
+    font-weight: var(--sf-font-weight-medium);
+    line-height: var(--sf-text-height-1);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sf-datepicker .sf-datepicker-sheet-today,
+  .sf-datepicker .sf-datepicker-sheet-close {
+    flex: none;
+  }
+  .sf-datepicker .sf-datepicker-sheet-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    flex: none;
+    border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+  }
+  .sf-datepicker .sf-datepicker-ribbon {
+    position: relative;
+    flex: 1 1 auto;
+    min-block-size: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    /* The component places the ribbon itself (the month it opens on, months
+       added above the one in view): the browser's own anchoring would move it
+       a second time, and a smooth scroll set on the page would animate what
+       must be instant. */
+    overflow-anchor: none;
+    scroll-behavior: auto;
+    touch-action: pan-y;
+    padding-block-end: var(--sf-space-1\/2);
+  }
+  .sf-datepicker .sf-datepicker-ribbon-month + .sf-datepicker-ribbon-month {
+    margin-block-start: var(--sf-space-1\/2);
+  }
+  /* The month's title rides at the top while its month is in view, then the
+     next one pushes it out. Over the days' focus ring (z-index 1). */
+  .sf-datepicker .sf-datepicker-ribbon-title {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--sf-z-index-2);
+    display: flex;
+    align-items: center;
+    block-size: var(--sf-ui-1--control-height);
+    background-color: var(--sf-datepicker--background-color, var(--sf-surface-popup));
+    color: var(--sf-on-surface);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1);
+    font-weight: var(--sf-font-weight-medium);
+    line-height: var(--sf-text-height-1);
+  }
+  .sf-datepicker .sf-datepicker-sheet-foot {
+    display: flex;
+    flex-direction: column;
+    flex: none;
+    gap: var(--sf-space-1\/2);
+    padding-block-start: var(--sf-space-1\/2);
+    border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+  }
+  .sf-datepicker .sf-datepicker-sheet-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: var(--sf-space-1\/3);
+    min-block-size: var(--sf-text-height-1);
+    color: var(--sf-on-surface);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+    font-variant-numeric: tabular-nums;
+  }
+  .sf-datepicker .sf-datepicker-sheet-summary b {
+    font-weight: var(--sf-font-weight-medium);
+  }
+  .sf-datepicker .sf-datepicker-sheet-summary span {
+    color: var(--sf-on-surface-variant);
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+  }
+
  .sf-datepicker .sf-datepicker-context {
    /* The months or years spread over the whole box, each in the middle of its
       row: packed at the top they left a band of 100 px empty under them
@@ -209,17 +348,27 @@
 }
 
 @layer sf.overrides {
-  /* A day off says «выходной» in its name (DP-02 a11y). One ink for the days
-     off of this month and of the next or previous one: the colour is named
-     once, here. It stays the error red in pair next 2: the move to the
-     variant ink (DP-02 colour, acfb591e) is on hold with DEV. */
+  /* A day off says «выходной» in its name (DP-02 a11y). Its ink is the
+     calendar's own day-off role, from the palette's red (owner C67 H2,
+     2026-11-11): the same tone people see in a production calendar, but not
+     the error role -- error means something went wrong (C13). A theme or a
+     product sets --sf-datepicker-day-off; the default is red 40 in the light
+     theme and red 80 in the dark one, the tones the error role had, so the
+     look does not change. One ink for the days off of this month and of the
+     next or previous one: the colour is named once, here. */
   .sf-datepicker {
-    --sf-datepicker--day-off-color: var(--sf-error);
+    --sf-datepicker--day-off-color: var(--sf-datepicker-day-off, light-dark(var(--sf-red-40), var(--sf-red-80)));
   }
   .sf-datepicker .sf-datepicker-day.sf-datepicker-day-off:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected) .sf-datepicker-day-date {
     --sf-datepicker-day-date--color: var(--sf-datepicker--day-off-color);
   }
   .sf-datepicker .sf-datepicker-day.sf-datepicker-day-off:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected) .sf-datepicker-day-info {
     --sf-datepicker-day-info--color: var(--sf-datepicker--day-off-color);
+  }
+  /* The weekday headers of the days off take the same ink (owner decision
+     C62 «выходные красным», prototypes/datepicker.html: сб and вс are red
+     over their columns, in the popup and in the phone ribbon alike). */
+  .sf-datepicker .sf-datepicker-weekday.sf-datepicker-weekday-off {
+    --sf-datepicker-weekday--color: var(--sf-datepicker--day-off-color);
   }
 }
