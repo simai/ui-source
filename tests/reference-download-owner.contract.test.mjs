@@ -45,23 +45,51 @@ test('Download File owns native/button semantics, canonical structure and tokens
   assert.match(css, /border-radius: var\(--sf-file-download-radius, var\(--sf-download-file-radius, var\(--sf-radius--ui\)\)\)/);
   // A data: or blob: address is never asked for its size (DF-15).
   assert.match(runtime, /if \(!href \|\| LOCAL_ADDRESS\.test\(href\) \|\| isSameDocument\(href\)\) return '';/);
+  // C51: only an http(s) address on the page's own origin is asked.
+  assert.match(runtime, /if \(!isSameOriginHttp\(href\)\) return '';/);
   // L2: an address that leads back to the page itself (#, #part) is no file either.
   assert.match(runtime, /function isSameDocument\(href\)/);
   // L3: while preparing, the status shrinks beside the name and wraps on whole lines.
   assert.match(css, /\.sf-download-file\.sf-download-file--preparing :where\(\.sf-download-file__meta\) \{[^}]*white-space: normal;/);
+  // C51 return D1/D2: every row's facts go under the name when the row has no room (its own width decides).
+  assert.match(css, /\.sf-download-file :where\(\.sf-download-file__text\) \{[^}]*flex-wrap: wrap;/);
   assert.match(css, /\.sf-download-file:focus-visible/);
-  // One line, cut with an ellipsis, never broken inside a word (rule C01:
-  // the card keeps the button's height of its size).
-  assert.match(css, /text-overflow: ellipsis/);
-  assert.doesNotMatch(css, /overflow-wrap: anywhere|word-break: break-all/);
+  // C51: the row is as wide as its text (full-width fills), the name is
+  // never cut -- it wraps -- and the type and size go under it on a phone.
+  assert.match(css, /inline-size: fit-content;/);
+  assert.match(css, /\.sf-download-file\.sf-download-file--full-width \{\s*inline-size: 100%;/);
+  // A failed row's name is the one exception (owner decision C88): two lines,
+  // then an ellipsis, the whole name in its tooltip -- also for a single word
+  // wider than its line, since it never breaks by letters (F2 2026-11-12).
+  const failedName = /\.sf-download-file\.sf-download-file--error :where\(\.sf-download-file__name\) \{[^}]*\}/u;
+  assert.match(css, failedName);
+  assert.doesNotMatch(css.replace(failedName, ''), /text-overflow: ellipsis|word-break: break-all/);
+  // A name narrows to its longest word, never to letters (C51 return D1).
+  assert.match(css, /overflow-wrap: break-word;/);
+  assert.doesNotMatch(css, /overflow-wrap: anywhere;/);
+  assert.match(css, /@media \(max-width: map\.get\(bp\.\$breakpoint-array, sm\)\)/);
+  // What a screen reader hears: the hidden words, the seen facts aria-hidden.
+  assert.match(runtime, /function spokenFileSize\(text, node = null\)/);
+  assert.match(runtime, /metaNode\.setAttribute\('aria-hidden', 'true'\)/);
   assert.match(css, /--sf-download-file--padding-block: var\(--sf-ui-1--space-y-tightness-default\)/);
   assert.match(css, /--sf-download-file--icon-size: var\(--sf-text-height-1\)/);
-  assert.match(template, /href && !disabled \? 'a' : 'button'/);
+  // A link while there is an href and the file is not disabled, else a button.
+  assert.match(template, /const row = href && !disabled\s+\? html`\s+<a\b/);
   assert.match(template, /aria-hidden="true"/);
   assert.match(rule, /name: 'icons'/);
   assert.deepEqual(manifest.inputs.properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
-  // The error notice and the spinner of a file being prepared (decision C25).
-  assert.deepEqual(manifest.composition.uses, ['component.download-file', 'component.icons', 'component.spinner', 'smart.alert', 'smart.icon']);
+  // The spinner and the ring of a file being prepared, the buttons in and
+  // beside the row (decisions C25, C51); no notice any more. A failed row's
+  // whole name and its icon-only «Повторить» take the tooltip (C88).
+  assert.deepEqual(manifest.composition.uses, ['component.download-file', 'component.icons', 'component.progress-ring', 'component.spinner', 'component.tooltip', 'smart.button', 'smart.button-icon', 'smart.icon']);
+  // A failed row is one grid of the sign, the text and «Повторить»; the name
+  // takes two lines at most; the reason stands inside the frame (C88).
+  assert.match(css, /\.sf-download-file\.sf-download-file--error :where\(\.sf-download-file__body\) \{\s*display: grid;/);
+  assert.match(css, /-webkit-line-clamp: 2;/);
+  assert.match(template, /<span class="sf-download-file__reason">/);
+  assert.doesNotMatch(template, /<p class="sf-download-file__reason">/);
+  assert.ok(manifest.events['sf-file-download-request']);
+  assert.ok(manifest.events['sf-file-download-download']);
   assert.ok(manifest.events['sf-download-file:click']);
   assert.doesNotMatch(css, /(?:^|[\s:,])1px(?:[\s;,)])/m);
 });
@@ -100,6 +128,16 @@ test('Download File keeps the focus when the button is redrawn as the link', asy
   assert.match(source, /const REDRAWN_BY = new Set\(\['href', 'disabled', 'state', 'target'\]\);/u);
   // Read before the change draws anything, and only when the focus was on the file.
   const hook = source.slice(source.indexOf('attributeChangedCallback(name, oldValue, newValue) {'));
-  assert.ok(hook.indexOf('this.ownerDocument.activeElement === this._boundRoot') < hook.indexOf('super.attributeChangedCallback'));
-  assert.match(source, /if \(this\._boundRoot && \(!active \|\| active === document\.body\)\) \{\n\s+this\._boundRoot\.focus\(\{ preventScroll: true \}\);/u);
+  assert.ok(hook.indexOf('this.holdsFocus()') < hook.indexOf('super.attributeChangedCallback'));
+  assert.match(source, /return Boolean\(active && active !== this\.ownerDocument\.body && this\.contains\(active\)\);/u);
+  // Only when the focus was lost with what held it: the row, or the button it now offers.
+  assert.match(source, /if \(!active \|\| active === document\.body\) \{\n\s+const target = this\.focusTarget\(\);/u);
+});
+
+test('Download File fetches a late file only by a fresh press (decision C51)', async () => {
+  const source = await read('src/smart/file-download/index.js');
+  assert.match(source, /const FETCH_ITSELF_WITHIN = 10000;/u);
+  assert.match(source, /const inTime = Date\.now\(\) - this\._pressedAt <= FETCH_ITSELF_WITHIN;/u);
+  assert.match(source, /const inSight = this\.ownerDocument\.visibilityState !== 'hidden';/u);
+  assert.match(source, /this\.sfEmit\('request', detail, \{ cancelable: true \}\)/u);
 });

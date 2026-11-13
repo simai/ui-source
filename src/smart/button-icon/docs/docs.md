@@ -61,6 +61,21 @@ Main attributes:
   control and only its colour says what it does. A status wins over the scheme,
   because the two cannot both colour the control.
 - `icon`
+- `href`, `target`, `rel`, `download` (1.9.0, decision C51) — with an `href`
+  the icon button is a native link (`<a class="sf-icon-button">`) with its
+  look: the quiet «Скачать <name>» at the end of a table row is a real link to
+  the file, so the browser's link keys, context menu and download work. The
+  address takes `sf-button`'s rule (a relative address, a fragment, http(s),
+  mailto, tel; any other scheme draws a button); `target="_blank"` with no
+  `rel` says `noopener noreferrer`; `download` is the `<a download>` name.
+  Disabled or loading, the link has no `href`, says `aria-disabled` and is not
+  followed. `native-type`, `pressed` and a cycle do not apply to a link. The
+  name is the `aria-label`, as on the button.
+
+  ```html
+  <sf-button-icon size="1/2" appearance="ghost" scheme="on-surface-variant" icon="download"
+    href="/files/invoice-1043.pdf" download="Счёт 1043.pdf" aria-label="Скачать Счёт 1043.pdf"></sf-button-icon>
+  ```
 - `spacing="compact|normal|comfortable|spacious"`
 - `radius="default|square|rounded"`
 - `root-class`

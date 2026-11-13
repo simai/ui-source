@@ -94,6 +94,30 @@ export function renderIconButtonTemplate(context) {
                 : html`
                             <sf-icon filled="${filled || context.pressed === true || Boolean(context.cycleView?.pressedLook)}" root-class="pointer-event-none" icon="${context.cycleView?.icon || icon}" weight="400" aria-hidden="true"></sf-icon>`;
 
+    // href (1.9.0, decision C51): a link with the icon button's look, as
+    // sf-button's -- the quiet «Скачать <name>» of a table row. Disabled or
+    // loading, the link has no href, so it is not reached or followed, and
+    // says aria-disabled; pressed and native-type do not apply to a link.
+    if (context.href) {
+        const inactive = Boolean(disabled || loading);
+        return html`
+        <a
+                href=${inactive ? nothing : context.href}
+                target=${context.linkTarget || nothing}
+                rel=${context.linkRel || nothing}
+                download=${context.linkDownload === null || inactive ? nothing : context.linkDownload}
+                class=${(inactive && !rootClasses.includes('disabled') ? [...rootClasses, 'disabled'] : rootClasses).join(' ')}
+                style=${context.rootStyle || nothing}
+                role=${inactive ? 'link' : nothing}
+                aria-disabled=${inactive ? 'true' : nothing}
+                aria-label=${name ? nameWithBadge(name, badge?.phrase) : nothing}
+                aria-busy=${loading ? 'true' : nothing}
+        >
+            ${iconContent}${renderAnchoredBadge(badge)}${name ? nothing : renderAnchoredBadgeText(badge, false)}
+        </a>
+    `;
+    }
+
     return html`
         <button
                 type=${nativeType}

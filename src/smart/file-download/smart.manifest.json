@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.file-download",
-  "version": "1.4.1",
+  "version": "1.5.1",
   "title": "Download File",
   "summary": "Native file download or application-owned file preparation action.",
   "kind": "smart",
@@ -24,8 +24,11 @@
     "uses": [
       "component.download-file",
       "component.icons",
+      "component.progress-ring",
       "component.spinner",
-      "smart.alert",
+      "component.tooltip",
+      "smart.button",
+      "smart.button-icon",
       "smart.icon"
     ],
     "public_parts": []
@@ -60,6 +63,11 @@
           "3"
         ]
       },
+      "full-width": {
+        "type": "boolean",
+        "default": false,
+        "description": "The row fills its container, the look it had before 1.5.0; without it the row is as wide as its text, up to the container (decision C51), as sf-button's full-width."
+      },
       "file-name": {
         "type": "string",
         "default": "",
@@ -68,7 +76,7 @@
       "file-size": {
         "type": "string",
         "default": "",
-        "description": "The size as text, in the page's units («2,4 МБ»). Empty with href: asked with one HEAD request and written in the page's language."
+        "description": "The size as text, in the page's units («2,4 МБ»). A screen reader hears it with the unit in words («2,4 мегабайта»). Empty with an href to this page's own server: asked with one HEAD request and written in the page's language; any other address (another origin, data:, blob:) is not asked -- give the size."
       },
       "file-type": {
         "type": "string",
@@ -98,7 +106,7 @@
       "state": {
         "type": "string",
         "default": "ready",
-        "description": "ready: the file can be fetched. preparing: the application is making it -- a spinner in the sign's place, «Готовим файл…», aria-busy, a press is ignored; when the host sets ready again with an href, the file a person pressed for is fetched once. error: it could not be made -- an error notice «Не удалось подготовить файл» with «Повторить» under the file (decision C25).",
+        "description": "ready: the file can be fetched. preparing: the application is making it -- the spinner in the sign's place (the progress ring with value), «Готовим файл…» or «Готовим… 45 %», aria-busy, a press is ignored, «Отменить» beside it while cancelable; the start is said. When the host sets ready again with an href, the file a person pressed for is fetched by itself if it came within 10 s and the page is in sight, else the row says «Готово» and offers «Скачать» (decision C51); the end is said. error: it could not be made -- one grid of the error sign, the text and «Повторить» (decision C88): the sign on the name's first line, the name in two lines at most (the whole name in its tooltip and for a screen reader), «Не удалось собрать» and error-text a step smaller under it inside the frame, «Повторить» at the end of the first line -- under the text in a column narrower than 360 px or where the name beside it would keep fewer than 16 characters at its size, and the icon alone (its name in aria-label and a tooltip) only when its words do not fit there either; the error is said at once.",
         "enum": [
           "ready",
           "preparing",
@@ -108,12 +116,23 @@
       "error-text": {
         "type": "string",
         "default": "",
-        "description": "More words in the error notice (what went wrong, what to do); the heading is «Не удалось подготовить файл»."
+        "description": "Why the file could not be made and what happens next, the last line of the failed row's text, inside its frame, a step smaller than the name (decision C88; «Сервер не ответил. Файл соберётся заново.»)."
       },
       "target": {
         "type": "string",
         "default": "",
         "description": "Where the link opens. Empty (default): the file downloads in the same tab. _blank: the file is opened to view in a new tab; the link shows the open-in-new sign and says «(откроется в новой вкладке)» to a screen reader (decision C25)."
+      },
+      "value": {
+        "type": "number",
+        "description": "While preparing: the share made, per cent (0 to 100, clamped), drawn as the progress ring in the sign's place and «Готовим… 45 %» (decision C51). Absent: the spinner and «Готовим файл…».",
+        "minimum": 0,
+        "maximum": 100
+      },
+      "cancelable": {
+        "type": "boolean",
+        "default": false,
+        "description": "While preparing, «Отменить» stands beside the row; its press sends the cancelable cancel, and unless a listener prevents it the row is ready again (decision C51), as sf-progress-run's cancelable."
       },
       "aria-label": {
         "type": "string",
@@ -126,10 +145,10 @@
   "contracts": {
     "owner_semantics": {
       "resource": "href renders a native anchor",
-      "application_action": "no href renders a button; a press sends the cancelable request sf-file-download-download",
+      "application_action": "no href renders a button; a press sends the cancelable request sf-file-download-request",
       "disabled": "disabled button with no live destination",
-      "preparing": "state preparing: spinner in the sign's place, aria-busy, presses ignored; ready again with an href fetches the file once for the person who pressed",
-      "error": "state error: an sf-alert with «Повторить» under the file; its press sends retry"
+      "preparing": "state preparing: spinner (or the progress ring with value) in the sign's place, aria-busy, presses ignored, «Отменить» with cancelable; ready again with an href fetches the file by itself within 10 s on a page in sight, else offers «Скачать»",
+      "error": "state error: the row shows the error with «Повторить» at its end; its press sends retry"
     },
     "canonical_elements": {
       "type": "string",
@@ -144,8 +163,18 @@
         "sf-download-file__spinner",
         "sf-download-file__status",
         "sf-download-file__tab",
-        "sf-download-file__error",
-        "sf-download-file__stack"
+        "sf-download-file__stack",
+        "sf-download-file__text",
+        "sf-download-file__said",
+        "sf-download-file__ring",
+        "sf-download-file__end",
+        "sf-download-file__retry",
+        "sf-download-file__cancel",
+        "sf-download-file__get",
+        "sf-download-file__line",
+        "sf-download-file__reason",
+        "sf-download-file__tip",
+        "sf-download-file__live"
       ]
     },
     "interaction_states": {
@@ -162,8 +191,8 @@
   },
   "methods": {},
   "events": {
-    "sf-file-download-download": {
-      "summary": "A person pressed the file: the request to fetch it, cancelable. A page that cancels it takes the download over; to prepare the file it sets state=\"preparing\", then ready with the href, or error.",
+    "sf-file-download-request": {
+      "summary": "A person pressed the file: the request to fetch it (sf-file-download-request), cancelable. A page that cancels it takes the download over; to prepare the file it sets state=\"preparing\" (value as it goes), then ready with the href, or error. Its former name sf-file-download-download doubled the word (decision C51) and is a dated alias until 2027-01-01.",
       "payload": {
         "type": "object",
         "required": [
@@ -187,7 +216,27 @@
       "canonical": true
     },
     "sf-file-download-retry": {
-      "summary": "A person pressed «Повторить» under a file that could not be prepared (vocabulary §5 retry): the host prepares it again and sets the state.",
+      "summary": "A person pressed «Повторить» in a row that could not be made (vocabulary §5 retry): the host prepares it again and sets the state; the file is fetched when it is ready, as after the first press.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "href",
+          "fileName"
+        ],
+        "properties": {
+          "href": {
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      },
+      "canonical": true
+    },
+    "sf-file-download-cancel": {
+      "summary": "A person pressed «Отменить» beside a file being made (vocabulary §5 cancel, cancelable): the host stops the work. Unless a listener prevents it the row is ready again at once; a host that prevents it sets ready itself. Either way the cancel is said.",
       "payload": {
         "type": "object",
         "required": [
@@ -223,14 +272,14 @@
           }
         }
       },
-      "alias_of": "sf-file-download-download"
+      "alias_of": "sf-file-download-request"
     },
     "sf-download-file-download": {
       "summary": "Dated alias of sf-file-download-download until 2027-01-01 (same-detail).",
       "payload": {
         "type": "object"
       },
-      "alias_of": "sf-file-download-download"
+      "alias_of": "sf-file-download-request"
     },
     "sf-download-file-retry": {
       "summary": "Dated alias of sf-file-download-retry until 2027-01-01 (same-detail).",
@@ -238,6 +287,27 @@
         "type": "object"
       },
       "alias_of": "sf-file-download-retry"
+    },
+    "sf-file-download-download": {
+      "summary": "Dated alias of sf-file-download-request until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-file-download-request"
+    },
+    "sf-download-file-request": {
+      "summary": "Dated alias of sf-file-download-request until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-file-download-request"
+    },
+    "sf-download-file-cancel": {
+      "summary": "Dated alias of sf-file-download-cancel until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-file-download-cancel"
     }
   },
   "state": {
@@ -351,7 +421,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/file-download/index.js",
-        "sha256": "995571b8f73ee18993df86124baafcb51c17d048475b5442d8530f5a8a1e8a10"
+        "sha256": "0d10f73f27a2912741b1ab4566bd9c0a0e33a140b4d38e94854c9cfb9fd3d5d6"
       }
     ],
     "generated_runtime": [
@@ -371,7 +441,9 @@
       "Do not use the decorative icon as the accessible name",
       "Do not copy generated ui-smart code",
       "Do not move host data or access decisions into the component",
-      "Do not put the file type in file-size or in icon: give it in file-type"
+      "Do not put the file type in file-size or in icon: give it in file-type",
+      "Do not leave file-size empty for a file on another server, a data: or a blob: address: give the size",
+      "Do not fire several downloads at once for several files: offer one archive"
     ],
     "required_reads": [
       "inputs",
