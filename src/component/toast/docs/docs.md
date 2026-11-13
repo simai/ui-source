@@ -169,7 +169,7 @@ status colour does: an icon button inside the toast keeps its own glyph size
 
 - The link keeps to the last word of the text it ends: a no-break space stands
   before it, so a full line no longer sends it alone onto a line of its own.
-- SF.notify (core.runtime 1.55.1): messages raised together while the toast
+- SF.notify (core.runtime 1.55.0): messages raised together while the toast
   sheet is still loading wait for it together, hidden, and then each slides
   in from the edge. Before, two messages of one task did not wait: they were
   drawn unstyled and opaque and jumped into place. The area is known placed
