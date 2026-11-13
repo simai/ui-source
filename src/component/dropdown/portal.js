@@ -146,7 +146,14 @@ export function positionDropdownPortal(root, list) {
       },
     });
   }
-  state.anchor.update();
+  // A panel the viewport made shorter keeps its rows' scroll but may now end
+  // above the option the keyboard is on: that option is brought back into view.
+  state.anchor.update().then(() => {
+    const active = document.activeElement;
+    if (!list.hidden && active?.classList?.contains('sf-list-item') && list.contains(active)) {
+      active.scrollIntoView({block: 'nearest', inline: 'nearest', behavior: 'instant'});
+    }
+  });
   state.scrollbar?.mark();
   return true;
 }

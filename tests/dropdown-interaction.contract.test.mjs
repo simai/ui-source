@@ -45,3 +45,30 @@ test('Native search box keeps its own change inside, as sf-dropdown does (simai/
   // Only the search box: the selection change the component dispatches still bubbles.
   assert.match(base,/new CustomEvent\("change", \{[\s\S]*?bubbles: true/);
 });
+test('the keyboard brings the focused option into view and keeps it there',async()=>{
+  const s=await read('src/component/dropdown/interaction.js');
+  // Nearest and instant: a smooth reveal is still on its way when the next key moves on.
+  assert.ok(s.includes("node.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'})"));
+  assert.ok(s.includes("['PageDown','PageUp'].includes(event.key)"));
+  assert.match(s,/const typeahead = \(key,option\) =>/);
+  // Space still selects unless a type-ahead prefix is being typed.
+  assert.ok(s.includes("event.key!==' '||(typed&&Date.now()-typedAt<=500)"));
+  // The list's own scroll does not re-fit the panel in either owner: both read
+  // it through scrolledInside (portal.js, the composed path), shared with R171.
+  const base=await read('src/component/dropdown/js/_dropdown.js'),smart=await read('src/smart/dropdown/index.js');
+  assert.ok(base.includes("if(scrolledInside(getList(root),event))return;"));
+  assert.ok(smart.includes("if (scrolledInside(this._list, event)) return;"));
+  // SF.Position keeps the scroll its uncapped measurement would clamp: the
+  // offsets are taken when a fit takes the cap off and put back before
+  // onPosition, at once (the R171 helper; tests/position.contract.test.mjs).
+  const position=await read('src/core/js/position.js');
+  assert.match(position,/let scrolled = settings\.fitHeight && \(full \|\| !measures\) \? scrollOffsets\(floating\) : null;/);
+  assert.match(position,/putBack\(\);\s*settings\.onPosition\?\.\(/);
+  assert.ok(position.includes("element.scrollTo({top, left, behavior: 'instant'})"));
+  // After a fit the option the keyboard is on is in view again.
+  const portal=await read('src/component/dropdown/portal.js');
+  assert.match(portal,/state\.anchor\.update\(\)\.then\(\(\) => \{[\s\S]*?active\.scrollIntoView\(\{block: 'nearest', inline: 'nearest', behavior: 'instant'\}\)/);
+  const manifest=JSON.parse(await read('src/smart/dropdown/component.json'));
+  assert.equal(manifest.keyboard.host.PageDown,'step:+page');
+  assert.equal(manifest.accessibility.keys.PageUp,'step:-page');
+});

@@ -61,7 +61,10 @@ beside every option that has no picture of its own, because a class and
 The actual toggle button is the primary Tab stop. It controls a named listbox;
 the optional searchbox is separate from its options. ArrowDown opens search
 (or the first available option); ArrowUp opens the last available option.
-Arrow keys and Home/End move option focus without changing selection. Enter or
+Arrow keys, Home/End, PageDown/PageUp (by what the list shows) and typed
+letters (type-ahead: a prefix typed within half a second, the same letter again
+for the next match) move option focus without changing selection; the focused
+option is brought into view at once, as far as it needs. Enter or
 Space selects; Escape closes without changing selection and restores the
 button. Tab closes and continues native page traversal. Home/End in search
 remain native editing keys. Independent tag-removal buttons remain reachable.

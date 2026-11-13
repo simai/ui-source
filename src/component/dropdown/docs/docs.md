@@ -12,8 +12,9 @@ option's stable `data-value`. A named hidden input owns the submitted value.
 
 The actual toggle button is the primary Tab stop. The shared interaction
 adapter publishes a listbox popup, keeps decorative option content out of the
-Tab order, supports ArrowUp/ArrowDown, Home/End, Enter/Space, Escape and native
-Tab continuation, and derives an accessible name from the visible label when
+Tab order, supports ArrowUp/ArrowDown, Home/End, PageUp/PageDown, type-ahead,
+Enter/Space, Escape and native Tab continuation, brings the focused option into
+view at once and only as far as it needs, and derives an accessible name from the visible label when
 the author did not provide one explicitly.
 
 Use the short `multiple` behavior attribute for several values. The list is
