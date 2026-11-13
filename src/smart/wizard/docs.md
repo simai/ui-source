@@ -101,7 +101,7 @@ wizard.addEventListener('sf-wizard-submit', async (event) => {
 ```html
 <ul class="sf-wizard-plan">
   <li><span><b>Адрес панели</b> — panel.example.ru</span>
-    <sf-button appearance="link" size="1/2" text="Изменить" href="/setup/address" data-wizard-step="address"></sf-button></li>
+    <sf-button appearance="ghost" size="1/2" text="Изменить" href="/setup/address" data-wizard-step="address"></sf-button></li>
 </ul>
 ```
 

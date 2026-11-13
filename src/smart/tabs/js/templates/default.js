@@ -58,6 +58,18 @@ function renderPanel(item, context) {
   `;
 }
 
+// The historical `scheme` of sf-tabs names the tab button's look (default,
+// outline or link), always in the primary colour pair (component.json). The
+// button's own axes are appearance and scheme: the look goes to appearance,
+// with link under its current name ghost (C15), and the colour is primary.
+// Before 1.1.18 the template wrote appearance="primary" scheme=<look>, two
+// values outside sf-button's lists, and every tab fell back to default.
+const TAB_LOOKS = {default: 'default', outline: 'outline', ghost: 'ghost', link: 'ghost'};
+
+function tabAppearance(scheme) {
+  return TAB_LOOKS[scheme] || 'default';
+}
+
 function renderTab(item, context) {
   const tabContent = context.component?.hasSlotContent?.(item.tabSlotName)
     ? context.component.getSlotContent(item.tabSlotName)
@@ -97,9 +109,9 @@ function renderTab(item, context) {
   if(context.variant !== 'icons') {
       return html`
           <sf-button
-                  appearance="primary"
+                  appearance=${tabAppearance(context.scheme)}
                   size=${context.size}
-                  scheme=${context.scheme}
+                  scheme="primary"
                   text=${item.label}
                   icon=${item.icon || nothing}
                   icon-start=${item.iconLeft || nothing}
@@ -115,9 +127,9 @@ function renderTab(item, context) {
   } else {
       return html`
           <sf-button-icon
-                  appearance="primary"
+                  appearance=${tabAppearance(context.scheme)}
                   size=${context.size}
-                  scheme=${context.scheme}
+                  scheme="primary"
                   icon=${item.icon || nothing}
                   data-tab-label=${item.label}
                   root-class=${joinClasses(item.selected ? 'selected' : '')}
