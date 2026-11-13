@@ -44,7 +44,10 @@ test('position end grows the text column; the help stands above the hit area; no
     assert.match(await read(path), /-top \.sf-help-mark \{\s*position: relative;\s*z-index: var\(--sf-z-index-1\);/);
   }
   const pressed = await read('src/component/checkbox/scss/_css__checkbox.scss');
-  assert.equal((pressed.match(/:active\):not\(:has\(sf-help-mark:active, \[slot="help"\]:active\)\)/g) || []).length, 4);
+  // Pressing paints no fill since C121 (CR-1): the two pressed rules left are
+  // the label's ink, and they still leave a press on the help alone.
+  assert.equal((pressed.match(/:active\):not\(:has\(sf-help-mark:active, \[slot="help"\]:active\)\)/g) || []).length, 2);
+  assert.doesNotMatch(pressed, /:active\)[^{]*\.sf-checkbox-box \{/);
 });
 
 test('radio: an icon beside the label is the line of its size; tag check: the tag line', async () => {

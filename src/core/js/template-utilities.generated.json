@@ -78,8 +78,7 @@
   ],
   "cl-checkbox": [
     "cursor/default",
-    "display/default",
-    "transition-property/default"
+    "display/default"
   ],
   "cl-confirm": [
     "display/default"

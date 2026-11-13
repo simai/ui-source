@@ -44,7 +44,7 @@
 // the value stands at a bound (data-at-min, data-at-max, §5.3,
 // simai/ui-source#46 item 4).
 import SfBaseElement from '../../core/js/smart-base';
-import {elementFromManifest} from '../../core/js/element-manifest';
+import {camelName, elementFromManifest} from '../../core/js/element-manifest';
 import {pageLocale} from '../../core/js/page-language';
 import {createFieldContract} from '../../component/field-contract';
 import {fieldSize} from '../../component/field-size';
@@ -74,6 +74,18 @@ const REPEAT_DELAY = 400;
 const REPEAT_INTERVAL = 60;
 // PageUp and PageDown move this many steps unless the field names its own.
 const PAGE_STEPS = 10;
+
+// The remove mode for a cart line (owner decision C122). PROVISIONAL NAMES:
+// the setting, its label and the event are the research's proposal and wait
+// for the owner's word. The code reads them from here only, so a rename is
+// this map plus the keys of component.json and lang/*.json (`events.<event>`),
+// then generate-component-files. The DOM name of the event follows §8:
+// `sf-input-quantity-<event>`.
+const REMOVE_MODE = Object.freeze({
+  setting: 'removable',
+  label: 'remove-label',
+  event: 'remove',
+});
 
 // The actions (§4.4): each answers an outcome, and none is a person's change,
 // so none sends an event, as a native field's stepUp() does not.
@@ -151,6 +163,9 @@ class SfQuantity extends FormField(QuantityElement) {
     this._reported = undefined;
     this._committed = undefined;
     this._hold = null;
+    // A press that began on the trash (C122): only such a press removes, never
+    // the click that ends a held «−» run reaching the bound.
+    this._removePress = false;
     // The range or step error a commit showed (QR-1), and what the status
     // says: shown until the value is valid again or the form is reset.
     this._rangeShown = false;
@@ -438,6 +453,40 @@ class SfQuantity extends FormField(QuantityElement) {
     return value !== null && this.max !== null && value >= this.max;
   }
 
+  // ---- The remove mode (C122) ------------------------------------------------
+
+  // Off by default: a shop may not want removal made easier (a product page).
+  // Read through the map, not by its own name, so the generated accessors of
+  // the two settings stay the manifest's.
+  get removeModeOn() {
+    return Boolean(this[camelName(REMOVE_MODE.setting)]);
+  }
+
+  get removeModeLabel() {
+    return this[camelName(REMOVE_MODE.label)] || '';
+  }
+
+  // The «−» is the trash while the mode is on, the field can change and the
+  // value stands on its lower bound; a field with no lower bound never shows it.
+  removeShown(value = this.value) {
+    return this.removeModeOn && this.interactive && this.steppers !== 'none' && this.atMin(value);
+  }
+
+  // «0» typed and committed with Enter asks for removal too (Baymard: people
+  // type 0 to remove), while 0 is below the bound; with the mode off it is the
+  // ordinary out-of-range commit (QR-1).
+  typedRemove() {
+    if (!this.removeModeOn || !this.interactive || this._draft === null) return false;
+    if (this.min === null || !(this.min > 0)) return false;
+    return parseNumber(this._draft, this.numberOptions) === 0;
+  }
+
+  // The field never removes itself: it asks, and the page removes the line and
+  // offers «Вернуть» (C25). Cancelable; answers whether nobody refused.
+  requestRemove(source, value = this.value) {
+    return this.sfEmit(REMOVE_MODE.event, {value, name: this.name, source}, {cancelable: true});
+  }
+
   // ---- The inherited-value seam -------------------------------------------
 
   inheritedOwnValue() {
@@ -612,20 +661,34 @@ class SfQuantity extends FormField(QuantityElement) {
       return;
     }
     if (event.key === 'Enter') {
+      if (this.typedRemove()) {
+        // Not refused: the typing is taken back -- the page removes the line.
+        // Refused: the «0» goes the ordinary way, kept with its error (QR-1).
+        // Either way no implicit submit of the form.
+        event.preventDefault();
+        if (this.requestRemove('typing', 0)) this.revertDraft();
+        else this.commitDraft('commit');
+        return;
+      }
       this.commitDraft('commit');
       return;
     }
     if (event.key === 'Escape' && this._draft !== null) {
       event.preventDefault();
       event.stopPropagation();
-      this._draft = null;
-      this._value = this._committedValue();
-      this._reported = this._value;
-      this.syncInputText(true);
-      this.syncControlState();
-      // Back to a committed number past a bound: its error shows again.
-      this.showRangeError();
+      this.revertDraft();
     }
+  }
+
+  // The typing taken back to the committed value.
+  revertDraft() {
+    this._draft = null;
+    this._value = this._committedValue();
+    this._reported = this._value;
+    this.syncInputText(true);
+    this.syncControlState();
+    // Back to a committed number past a bound: its error shows again.
+    this.showRangeError();
   }
 
   // ---- The steppers ---------------------------------------------------------
@@ -635,8 +698,15 @@ class SfQuantity extends FormField(QuantityElement) {
   // behind it (Enter or Space on the button, a screen reader's activation,
   // button.click()) steps once.
   onStepPointerDown(event, direction) {
+    this._removePress = false;
     if (event.button !== 0 || !this.interactive) return;
     if (event.currentTarget.disabled) return;
+    // The trash takes a press of its own (C122): no step, no hold; the click
+    // that follows asks for removal.
+    if (direction < 0 && this.removeShown()) {
+      this._removePress = true;
+      return;
+    }
     this.stopHold();
     this.commitDraft('commit');
     this._hold = {direction, moved: false, timer: 0, interval: 0};
@@ -666,6 +736,15 @@ class SfQuantity extends FormField(QuantityElement) {
 
   onStepClick(event, direction) {
     event.preventDefault();
+    if (direction < 0 && this.removeShown()) {
+      // A pointer press that began on the trash, or a click with no pointer
+      // behind it (Enter, Space). The click that ends a held «−» run which
+      // reached the bound began on the minus and removes nothing.
+      const asked = this._removePress || event.detail === 0;
+      this._removePress = false;
+      if (asked) this.requestRemove('button');
+      return;
+    }
     if (event.detail > 0) return;
     this.commitDraft('commit');
     this.stepBy(direction, 'button');
@@ -721,7 +800,7 @@ class SfQuantity extends FormField(QuantityElement) {
       }
     }
     const [minus, plus] = this.querySelectorAll(':scope .sf-quantity-count');
-    if (minus) minus.disabled = !this.interactive || this.atMin(value);
+    if (minus) minus.disabled = !this.interactive || (this.atMin(value) && !this.removeShown(value));
     if (plus) plus.disabled = !this.interactive || this.atMax(value);
     // At a bound, said on the host (§5.3, simai/ui-source#46 item 4).
     this.sfHostState('data-at-min', this.atMin(value));
@@ -827,6 +906,8 @@ class SfQuantity extends FormField(QuantityElement) {
       interactive: this.interactive,
       atMin: this.atMin(value),
       atMax: this.atMax(value),
+      removeShown: this.removeShown(value),
+      removeLabel: this.removeModeLabel,
       shownPlaceholder: this.hasInheritedValue ? this.inheritedDisplayValue() : this.placeholder,
       message: field.invalid && errorContent ? errorContent : hintContent,
       messageKind: field.invalid && errorContent ? 'error' : 'hint',

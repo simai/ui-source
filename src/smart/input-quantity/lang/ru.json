@@ -5,7 +5,8 @@
     "increment": "Увеличить значение",
     "range-underflow": "Значение должно быть не меньше {min}",
     "range-overflow": "Значение должно быть не больше {max}",
-    "step-mismatch": "Значение должно быть кратно {step}"
+    "step-mismatch": "Значение должно быть кратно {step}",
+    "remove": "Удалить"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",
@@ -13,6 +14,11 @@
       "inherited": "наследуется",
       "reset": "Сбросить к наследуемому",
       "described": "Наследуется: {value}"
+    }
+  },
+  "events": {
+    "remove": {
+      "label": "Удалить"
     }
   }
 }

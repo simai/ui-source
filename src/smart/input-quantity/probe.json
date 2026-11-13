@@ -547,6 +547,222 @@
           }
         ]
       }
+    },
+    {
+      "id": "remove-mode-off-by-default",
+      "covers": "settings.removable default false (C122, provisional name): at the bound «−» stays the disabled minus",
+      "field": "<sf-input-quantity name=\"line\" value=\"1\" min=\"1\" max=\"99\"></sf-input-quantity>",
+      "setting": {
+        "name": "value",
+        "value": "1"
+      },
+      "expect": {
+        "disabled": {
+          "button[aria-label='Уменьшить значение']": true
+        },
+        "evaluate": {
+          "el.querySelector('.sf-quantity-count').tabIndex": -1,
+          "el.querySelector('.sf-quantity-count i').textContent": "remove"
+        }
+      }
+    },
+    {
+      "id": "remove-mode-trash-at-min",
+      "covers": "settings.removable, remove-label (C122, provisional names): on the bound «−» is the trash, enabled, in the Tab order, named, not aria-controls",
+      "field": "<sf-input-quantity name=\"line\" value=\"1\" min=\"1\" max=\"99\" removable></sf-input-quantity>",
+      "setting": {
+        "name": "remove-label",
+        "value": "Удалить из корзины"
+      },
+      "expect": {
+        "disabled": {
+          "button[aria-label='Удалить из корзины']": false
+        },
+        "evaluate": {
+          "el.querySelector('.sf-quantity-count').tabIndex": 0,
+          "el.querySelector('.sf-quantity-count i').textContent": "delete",
+          "el.querySelector('.sf-quantity-count').hasAttribute('aria-controls')": false
+        },
+        "host": {
+          "attributes": {
+            "data-at-min": "true"
+          }
+        }
+      }
+    },
+    {
+      "id": "remove-mode-minus-above-min",
+      "covers": "the trash shows only on the bound: above it «−» is the minus",
+      "field": "<sf-input-quantity name=\"line\" value=\"2\" min=\"1\" max=\"99\" removable></sf-input-quantity>",
+      "setting": {
+        "name": "value",
+        "value": "2"
+      },
+      "expect": {
+        "evaluate": {
+          "el.querySelector('.sf-quantity-count').tabIndex": -1,
+          "el.querySelector('.sf-quantity-count i').textContent": "remove",
+          "el.querySelector('.sf-quantity-count').getAttribute('aria-label')": "Уменьшить значение"
+        }
+      }
+    },
+    {
+      "id": "remove-mode-trash-press",
+      "covers": "events.remove (C122, provisional name): a press on the trash asks, the field keeps its value",
+      "field": "<sf-input-quantity name=\"line\" value=\"1\" min=\"1\" max=\"99\" removable></sf-input-quantity>",
+      "listen": [
+        "sf-input-quantity-remove",
+        "input",
+        "change"
+      ],
+      "user": "click:button[aria-label='Удалить']",
+      "expect": {
+        "events": [
+          {
+            "type": "sf-input-quantity-remove",
+            "value": 1,
+            "name": "line",
+            "source": "button"
+          }
+        ],
+        "value": 1
+      }
+    },
+    {
+      "id": "remove-mode-trash-keyboard",
+      "covers": "the trash is reached by Tab and Enter on it asks",
+      "field": "<sf-input-quantity name=\"line\" value=\"1\" min=\"1\" max=\"99\" removable></sf-input-quantity>",
+      "listen": [
+        "sf-input-quantity-remove",
+        "input",
+        "change"
+      ],
+      "given": [
+        {
+          "user": "focus:button[aria-label='Удалить']"
+        }
+      ],
+      "user": "keyboard:Enter",
+      "expect": {
+        "events": [
+          {
+            "type": "sf-input-quantity-remove",
+            "value": 1,
+            "source": "button"
+          }
+        ],
+        "focus": "button[aria-label='Удалить']"
+      }
+    },
+    {
+      "id": "remove-mode-typed-zero-enter",
+      "covers": "«0» + Enter asks (source typing); not refused, the typing is taken back",
+      "field": "<sf-input-quantity name=\"line\" value=\"3\" min=\"1\" max=\"99\" removable></sf-input-quantity>",
+      "listen": [
+        "sf-input-quantity-remove",
+        "input",
+        "change"
+      ],
+      "user": [
+        "type:0",
+        "keyboard:Enter"
+      ],
+      "expect": {
+        "events": [
+          {
+            "type": "input",
+            "value": 0,
+            "source": "typing"
+          },
+          {
+            "type": "sf-input-quantity-remove",
+            "value": 0,
+            "source": "typing"
+          }
+        ],
+        "value": 3,
+        "box": {
+          "text": "3"
+        }
+      }
+    },
+    {
+      "id": "remove-mode-typed-zero-refused",
+      "covers": "refused (preventDefault), the «0» is committed as any number past the bound: kept, with its error (QR-1)",
+      "field": "<sf-input-quantity name=\"line\" value=\"3\" min=\"1\" max=\"99\" removable></sf-input-quantity>",
+      "listen": [
+        "sf-input-quantity-remove",
+        "input",
+        "change"
+      ],
+      "given": [
+        {
+          "script": "el.addEventListener('sf-input-quantity-remove', (event) => event.preventDefault());"
+        }
+      ],
+      "user": [
+        "type:0",
+        "keyboard:Enter"
+      ],
+      "expect": {
+        "events": [
+          {
+            "type": "input",
+            "value": 0,
+            "source": "typing"
+          },
+          {
+            "type": "sf-input-quantity-remove",
+            "value": 0,
+            "source": "typing"
+          },
+          {
+            "type": "change",
+            "value": 0,
+            "source": "commit"
+          }
+        ],
+        "value": 0,
+        "box": {
+          "attributes": {
+            "aria-invalid": "true"
+          }
+        }
+      }
+    },
+    {
+      "id": "remove-mode-off-typed-zero",
+      "covers": "with the mode off «0» + Enter is the out-of-range commit (QR-1), no remove",
+      "field": "<sf-input-quantity name=\"line\" value=\"3\" min=\"1\" max=\"99\"></sf-input-quantity>",
+      "listen": [
+        "sf-input-quantity-remove",
+        "input",
+        "change"
+      ],
+      "user": [
+        "type:0",
+        "keyboard:Enter"
+      ],
+      "expect": {
+        "events": [
+          {
+            "type": "input",
+            "value": 0,
+            "source": "typing"
+          },
+          {
+            "type": "change",
+            "value": 0,
+            "source": "commit"
+          }
+        ],
+        "value": 0,
+        "box": {
+          "attributes": {
+            "aria-invalid": "true"
+          }
+        }
+      }
     }
   ]
 }

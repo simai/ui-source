@@ -140,6 +140,20 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css"
     ],
+    "removable": [
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/quantity/css/quantity.min.css",
+      "core/css/core.css",
+      "smart/input-quantity/css/input-quantity.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/filter-blur/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/flex-wrap/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
+    ],
     "size-2": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",

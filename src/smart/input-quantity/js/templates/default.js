@@ -23,22 +23,26 @@ const STEPPER = 'sf-quantity-count sf-icon-button sf-icon-button--icon sf-icon-b
 function renderStepper(context, direction) {
   const {component, field} = context;
   const down = direction < 0;
-  const reached = down ? context.atMin : context.atMax;
+  // The remove mode (C122): on the lower bound «−» is the trash, the same
+  // button in the same grey (removal can be undone, so no danger colour).
+  const trash = down && context.removeShown;
+  const reached = trash ? false : down ? context.atMin : context.atMax;
   // Out of the tab order, as the APG spinbutton has its buttons: the arrow
   // keys already do what they do, and two more stops per field would make a
   // form of numbers three times as long to cross. Still real buttons, named,
-  // reachable by a pointer and a screen reader.
+  // reachable by a pointer and a screen reader. The trash is in the Tab
+  // order: removal is not a step, no key does it.
   return html`
     <button type="button"
             class="${STEPPER} ${LAYOUT.count}"
-            tabindex="-1"
-            aria-label=${down ? context.decrementLabel : context.incrementLabel}
-            aria-controls=${field.controlId}
+            tabindex=${trash ? '0' : '-1'}
+            aria-label=${trash ? context.removeLabel : down ? context.decrementLabel : context.incrementLabel}
+            aria-controls=${trash ? nothing : field.controlId}
             ?disabled=${!context.interactive || reached}
             @pointerdown=${(event) => component.onStepPointerDown(event, direction)}
             @mousedown=${(event) => component.onStepMouseDown(event)}
             @click=${(event) => component.onStepClick(event, direction)}
-    ><i class="sf-icon" aria-hidden="true">${down ? 'remove' : 'add'}</i></button>
+    ><i class="sf-icon" aria-hidden="true">${trash ? 'delete' : down ? 'remove' : 'add'}</i></button>
   `;
 }
 

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-quantity",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "title": "Quantity",
   "summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
   "kind": "smart",
@@ -74,7 +74,7 @@
       },
       "min": {
         "type": "number",
-        "description": "The lower bound: «−» is disabled on it, Home goes to it, a typed value below it is raised to it on commit. Empty for none; with none, or one below zero, a minus sign may be typed."
+        "description": "The lower bound: «−» is disabled on it, Home goes to it, a typed value below it is kept on commit and shown as the field's error (1.4.1). Empty for none; with none, or one below zero, a minus sign may be typed."
       },
       "max": {
         "type": "number",
@@ -167,6 +167,15 @@
       "increment-label": {
         "type": "string",
         "description": "The accessible name of «+». Unset, it follows the page's language («Увеличить значение», «Increase value»)."
+      },
+      "removable": {
+        "type": "boolean",
+        "default": false,
+        "description": "The remove mode for a cart line (owner decision C122; the name is provisional, waiting for the owner): on the lower bound «−» becomes a trash in the same button and the same grey, in the Tab order; pressing it, or typing «0» and Enter while 0 is below `min`, sends the cancelable `remove` event. A held «−» stops on the bound: removal takes a new press. The field never removes itself: the page removes the line and offers «Вернуть» (C25). Needs a lower bound; off by default."
+      },
+      "remove-label": {
+        "type": "string",
+        "description": "The accessible name of the trash in the remove mode (provisional name, C122). Unset, it follows the page's language («Удалить», «Remove»); a cart writes «Удалить из корзины»."
       },
       "aria-label": {
         "type": "string",
@@ -456,6 +465,35 @@
       },
       "canonical": true
     },
+    "sf-input-quantity-remove": {
+      "summary": "Provisional name (C122). A request to remove the line the field counts, in the remove mode: the trash was pressed, or «0» was typed and committed with Enter. The field changes nothing itself; the page removes the line. Not cancelled after a typed «0», the typing is taken back; cancelled, the «0» is committed as any number past the bound (kept, with its error).",
+      "payload": {
+        "type": "object",
+        "required": [
+          "value",
+          "name",
+          "source"
+        ],
+        "properties": {
+          "value": {
+            "type": "number",
+            "description": "The number the field stood on: the bound for the trash, 0 for a typed «0»."
+          },
+          "name": {
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "button",
+              "typing"
+            ],
+            "description": "The trash (a press, Enter or Space on it) or a typed «0» committed with Enter."
+          }
+        },
+        "additionalProperties": true
+      },
+      "canonical": true
+    },
     "sf-field:reset": {
       "summary": "The person pressed the reset back to the inherited value. Fired before the field is emptied and cancellable: preventDefault keeps the value. Not prevented, the field empties, says so with input and change (source reset), shows the inherited value again and takes focus back.",
       "payload": {
@@ -476,6 +514,13 @@
         }
       },
       "alias_of": "sf-field-reset"
+    },
+    "sf-quantity-remove": {
+      "summary": "Dated alias of sf-input-quantity-remove until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-input-quantity-remove"
     }
   },
   "state": {
@@ -609,7 +654,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-quantity/index.js",
-        "sha256": "aa6c670ece7e0d665b6d0fefcaab5d4dbbaab76ac96edc3b8e09485ff37b0e8c"
+        "sha256": "863b46aacc69620eb6ef7380285aba86c4251b9fc7bf79a84955600bedc4fa0a"
       },
       {
         "path": "src/smart/input-quantity/value.mjs",
@@ -617,7 +662,7 @@
       },
       {
         "path": "src/smart/input-quantity/js/templates/default.js",
-        "sha256": "2a34d1b76e78d158dc33ca02c6ae288aa5b66883d3eddc62e2c7e5f5135ce761"
+        "sha256": "db49e1142a1b6bb8c9069ad1816e2a69cab2e104df411636ee4f826e7b8f6e77"
       },
       {
         "path": "src/smart/input-quantity/rule.js",
@@ -625,7 +670,7 @@
       },
       {
         "path": "src/smart/input-quantity/docs.md",
-        "sha256": "d2310ecbb640f30e7649f5e92637e8dbd1547fe0f7196227b2a59a5402c87358"
+        "sha256": "8c0d19749481485ae09be81753464b0d7ccba7fcda43b0b7fa11c5d6e4a083d9"
       }
     ],
     "generated_runtime": []

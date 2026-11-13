@@ -170,13 +170,14 @@
 /* The selected mark is half its ring at every size (geometry standard: a
    sub-element scales with its size). It was 12px at all three, so size 2
    drew a small dot and size 1/2 on a phone a dot three quarters of its ring;
-   size 1 on a desktop stays 12 of 24. */
-.sf-radio-button.sf-radio-button--size-1\/2:has(input:checked) .sf-radio-button-mark {
+   size 1 on a desktop stays 12 of 24. The dot keeps that size unchecked too
+   and is scaled to nothing (C121), so it grows from the centre. */
+.sf-radio-button.sf-radio-button--size-1\/2 .sf-radio-button-mark {
   --sf-radio-button-mark--height: calc(var(--sf-radio-button-box--height) / 2);
   --sf-radio-button-mark--width: calc(var(--sf-radio-button-box--width) / 2);
 }
 
-.sf-radio-button.sf-radio-button--size-1:has(input:checked) .sf-radio-button-mark {
+.sf-radio-button.sf-radio-button--size-1 .sf-radio-button-mark {
   --sf-radio-button-mark--height: calc(var(--sf-radio-button-box--height) / 2);
   --sf-radio-button-mark--width: calc(var(--sf-radio-button-box--width) / 2);
 }
@@ -225,7 +226,7 @@
   --sf-radio-button-top--gap: var(--sf-space-1\/4);
 }
 
-.sf-radio-button.sf-radio-button--size-2:has(input:checked) .sf-radio-button-mark {
+.sf-radio-button.sf-radio-button--size-2 .sf-radio-button-mark {
   --sf-radio-button-mark--height: calc(var(--sf-radio-button-box--height) / 2);
   --sf-radio-button-mark--width: calc(var(--sf-radio-button-box--width) / 2);
 }
@@ -247,7 +248,7 @@
   --sf-radio-button-box--border-color: var(--sf-radio-button-checked-color, var(--sf-primary));
 }
 
-.sf-radio-button:has(input:checked) .sf-radio-button-mark {
+.sf-radio-button .sf-radio-button-mark {
   --sf-radio-button-mark--border-radius: var(--sf-radius-circle);
 }
 
