@@ -3274,8 +3274,11 @@
       "composition": {
         "public_parts": [],
         "uses": [
+          "component.checkbox",
           "component.icon-buttons",
           "component.icons",
+          "component.spinner",
+          "component.tooltip",
           "component.tree",
           "component.tree-item",
           "smart.tree-item"
@@ -3290,7 +3293,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tree/smart.manifest.json",
-      "manifest_sha256": "f921dbefc3337e62f5db6782e6bcce8b3f0e123a0d86c6368d5b49c4963479fe",
+      "manifest_sha256": "8003b1afe84e1bb71956cc6f3aa67a6358cfedde310391aa20b26caac4c2f333",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3328,7 +3331,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tree-item/smart.manifest.json",
-      "manifest_sha256": "9939690917a40471f0e6aa18442bbc8e974aa8aa7b4fb4b9687127f580472b0c",
+      "manifest_sha256": "e4abbef11c3ee9ef8935503b107638812892ee34ef1a42222c625e7269109c76",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

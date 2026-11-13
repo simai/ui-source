@@ -2,7 +2,7 @@
   "$comment": "The source of sf-tree's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/tree (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.tree",
   "tag": "sf-tree",
-  "version": "2.1.2",
+  "version": "2.3.1",
   "kind": "leaf",
   "family": "tree",
   "settings": {
@@ -11,10 +11,50 @@
       "values": [
         "none",
         "one",
-        "many"
+        "many",
+        "check"
       ],
       "default": "none",
-      "summary": "What a press does: none opens the entry (or follows its link), one selects one entry, many toggles each"
+      "summary": "What a press does: none opens the entry (or follows its link), one selects one entry, many toggles each, check puts a check box in every row -- a branch checks everything under it and shows mixed when only some of it is checked (aria-checked true, false, mixed)"
+    },
+    "icons": {
+      "type": "enum",
+      "values": [
+        "all",
+        "branches",
+        "none"
+      ],
+      "default": "all",
+      "summary": "The type icons: all on every row, branches on folders only, none on no row (the chevron stays)"
+    },
+    "file-types": {
+      "type": "enum",
+      "values": [
+        "name",
+        "none"
+      ],
+      "default": "name",
+      "summary": "name: a leaf without a kind takes its type from its name's extension («Смета.xlsx» a table); none: such a leaf is a file"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1",
+      "summary": "The rows' step on the size ladder: the chevron's column and the type icon are the icon of the step, the row its control height, the name its text; the level step follows (column + row gap)"
+    },
+    "static": {
+      "type": "boolean",
+      "default": false,
+      "summary": "A structure shown in text, for documentation: a nested list (not role tree), every level shown, no chevrons, no Tab stop, no hover, rows the height of a text line, names in the code face, notes after them. The class markup is .sf-tree--static"
+    },
+    "reorder": {
+      "type": "boolean",
+      "default": false,
+      "summary": "An entry can be dragged to another place in the tree: before or after a row, or into a folder or a page; the tree asks with move {ids, parent, before} and moves nothing itself"
     },
     "items": {
       "type": "list",
@@ -29,21 +69,63 @@
           "type": "enum",
           "values": [
             "folder",
-            "file"
-          ]
+            "file",
+            "page",
+            "document",
+            "image",
+            "code",
+            "data",
+            "table",
+            "archive",
+            "video",
+            "audio",
+            "link"
+          ],
+          "summary": "What the entry is (core file-types): its icon. Empty: children make a folder, none a leaf whose name's extension may say its type (file-types); kind folder is an empty folder; a branch keeps its own kind (page)"
         },
         "value": "string",
         "open": "boolean",
         "selected": "boolean",
         "active": "boolean",
         "disabled": "boolean",
-        "icon": "boolean",
+        "has-children": "boolean",
+        "icon": {
+          "anyOf": [
+            {
+              "type": "icon"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "summary": "An icon name, or false for none; empty or true: chosen by kind, extension and place"
+        },
         "open-icon": "icon",
         "closed-icon": "icon",
         "chevron-open-icon": "icon",
         "chevron-closed-icon": "icon",
         "open-label": "string",
         "close-label": "string",
+        "note": {
+          "type": "string",
+          "summary": "A second text after the name, in the variant ink: a comment, a count, a size"
+        },
+        "mark": {
+          "type": "boolean",
+          "summary": "A highlighted line: the name in bold"
+        },
+        "more": {
+          "type": "boolean",
+          "summary": "The «…» line: the rest is not shown"
+        },
+        "hidden": {
+          "type": "boolean",
+          "summary": "A hidden page of a page tree: the name greyed and the word «скрыта» after it; it can still be chosen"
+        },
+        "error": {
+          "type": "boolean",
+          "summary": "A has-children branch whose children failed to load: open, it shows the error row with «Повторить» (the retry event) instead of «Загрузка…»"
+        },
         "revision": "string",
         "children": "list"
       },
@@ -108,17 +190,27 @@
       },
       "summary": "A branch opened or closed (vocabulary §5 toggle)"
     },
+    "retry": {
+      "carries": {
+        "id": "id",
+        "value": "string"
+      },
+      "summary": "«Повторить» on the error row of a lazy branch (vocabulary §5 retry): the branch shows «Загрузка…» again; the host loads its children once more and gives a new items"
+    },
     "move": {
       "carries": {
         "ids": "list",
-        "parent": "id",
+        "parent": {
+          "type": "id",
+          "nullable": true
+        },
         "before": {
           "type": "id",
           "nullable": true
         },
         "source": "string"
       },
-      "summary": "Records dragged from a list were dropped on an entry: the request to move them into it (vocabulary §5 move); the tree moves nothing itself"
+      "summary": "Records dragged from a list were dropped on an entry, or an entry of the tree was dragged to another place (reorder): the request to move them -- into parent (null: the top level), before the entry before (null: at the end) (vocabulary §5 move); the tree moves nothing itself"
     },
     "attach": {
       "carries": {
@@ -164,6 +256,20 @@
         "refused"
       ],
       "summary": "Moves the focus to an entry, drawing it first when the window holds it out"
+    },
+    "expand-all": {
+      "with": {},
+      "x-outcomes": [
+        "applied"
+      ],
+      "summary": "Opens every branch that is not disabled; toggle for each that opened"
+    },
+    "collapse-all": {
+      "with": {},
+      "x-outcomes": [
+        "applied"
+      ],
+      "summary": "Closes every open branch"
     }
   },
   "slots": {
@@ -181,7 +287,8 @@
       "ArrowRight": "open",
       "ArrowLeft": "close",
       "Enter": "open",
-      "Space": "select"
+      "Space": "select",
+      "*": "open"
     }
   },
   "relations": [
@@ -199,6 +306,16 @@
     },
     {
       "name": "cl-tree-item"
+    },
+    {
+      "name": "tooltip"
+    },
+    {
+      "name": "checkbox"
+    },
+    {
+      "name": "spinner",
+      "lazy": true
     }
   ],
   "templates": {
@@ -219,7 +336,7 @@
   "docs": "docs/docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "The tree is role tree, named by its aria-label; its entries are treeitems drawn flat with aria-level, aria-setsize and aria-posinset, one Tab stop that the arrows move (roving tabindex). ArrowRight opens a branch or goes to its first child, ArrowLeft closes it or goes to the parent, Enter opens a branch or the entry, Space selects; typing a letter moves to the next entry starting with it.",
+    "$comment": "The tree is role tree, named by its aria-label; its entries are treeitems drawn flat with aria-level, aria-setsize and aria-posinset, one Tab stop that the arrows move (roving tabindex). ArrowRight opens a branch or goes to its first child, ArrowLeft closes it or goes to the parent, Enter opens a branch or the entry, Space selects; typing a letter moves to the next entry starting with it. With selection check each row says aria-checked (true, false, mixed) instead of aria-selected, and the tree is aria-multiselectable. * opens every sibling branch of the row. A static tree is a list (ul/li), not a tree: no role tree, no Tab stop.",
     "role": "tree",
     "name": {
       "from": [
@@ -236,7 +353,11 @@
       "ArrowRight": "open",
       "ArrowLeft": "close",
       "Enter": "open",
-      "Space": "select"
+      "Space": "select",
+      "*": {
+        "effect": "open",
+        "x-when": "every sibling branch of the row (APG treeview)"
+      }
     }
   },
   "css-variables": {
@@ -391,7 +512,10 @@
     "version 2.0.3: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
     "version 2.0.5: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
     "version 2.1.1: the selection is read as a set (simai/ui-source#43): with selection many, every drawn row and the tab stop asked a list of every selected id, and a tree of 10 000 entries with 9 800 checked took 73 ms for each check (tests/browser/tree-scale.browser.mjs, x1). Now 32 ms, two frames, like any other change. Public API, events and look unchanged. Also: a patch, nothing drawn or done differently. The generated reference gives each action's method its one object argument, expand({id}), collapse({id}), focusEntry({id}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged.",
-    "version 2.1.2 (2026-11-10, docs pre-check, through component.tree 1.2.0): a patch. A row is a size 1 control on the height ladder (C01, C18): 40 on a desktop and 36 on a phone, where it was 40 at every width; the virtual list measures the drawn row, as before. Settings, values, events and keys unchanged."
+    "version 2.1.2 (2026-11-10, docs pre-check, through component.tree 1.2.0): a patch. A row is a size 1 control on the height ladder (C01, C18): 40 on a desktop and 36 on a phone, where it was 40 at every width; the virtual list measures the drawn row, as before. Settings, values, events and keys unchanged.",
+    "version 2.2.0, has-children (owner remark R186, research control/research/2026-11-12-tree.md TR-5): an entry with has-children: true is a branch before its children are loaded -- the chevron shows, aria-expanded is said, expand applies and toggle {id, open, value} is sent, so a host that loads children on toggle (the docs' recipe) gets its cue. A new items with the children keeps the branch open (entry-state open by id). No new event: toggle is the cue. A file is never a branch. The loading and error rows of the research are the owner's (q-lazy), not here.",
+    "version 2.2.0, long names (TR-14, C18/C22 ladder): a name is one line cut with an ellipsis (js/templates/default.css, the element's rows only); a drawn row whose name the line cuts (measured after each drawing and when the tree's width changes) carries the whole name as aria-label and as a Framework tooltip (component.tooltip: a hidden .sf-tooltip surface in the row, data-tooltip on the treeitem, no tail per C59). Hence the relation tooltip. No setting: a row on the ladder is one line.",
+    "version 2.3.0 (owner decision C102, 2026-11-12; research ui-control control/research/2026-11-12-tree.md section 7 items 1-4 and 6-13): a minor. Icons: a branch shows folder / folder_open, a leaf its type, draft when nothing says it; an entry without children is a leaf unless kind is folder (it was a folder, so a docs example drew only folders, TR-1). Who chooses: icon (now a name, false still none) → kind (twelve words of core file-types: folder, file, page, document, image, code, data, table, archive, video, audio, link) → the name's extension (file-types name, the default) → folder or file; a branch keeps its own kind (page). An entry's open-icon / closed-icon still name its glyph (ui-pro passes a section icon that way). icons all | branches | none; with none the chevron stands alone. The map is the new module.file-types (src/core/js/file-types), which sf-file-upload, sf-file-download and sf-view's file cells are to read too. static (class markup .sf-tree--static): a nested list for documentation, every level shown, no chevrons, no Tab stop, text-height rows, the code face, note / mark / more. Entry fields note (a second text after the name: a comment, a count, a size), mark, more, hidden (a hidden page: greyed, the word «скрыта»), error. A has-children branch open with nothing loaded shows «Загрузка…» with the Framework's spinner, or with error the error row and «Повторить», which sends retry {id, value} and shows «Загрузка…» again until a new items. selection check: a check box (component.checkbox class markup) in every row, aria-checked true / false / mixed, a branch checks everything under it, selected-ids the checked ids. * opens the row's sibling branches (APG); actions expand-all and collapse-all. reorder: an entry dragged before or after a row or into a folder or page asks move {ids, parent, before} (parent null the top level, before null the end), so move's parent may now be null. A page tree is kind page on branches and leaves, icon home, kind link, hidden. Long names stay one line with a tooltip (2.2.0, TR-14). Not here, the owner's open items: the icons' ink (C102 3, with C107) and the level-indent rule; the phone step only stops covering the chevron (component.tree 1.3.0, NI-2)."
   ],
   "x-measured": {
     "$comment": "stand 20's method (control/smart-architecture/stands/20-performance/bench.mjs, lists): Playwright Chromium, headless, macOS, the time from setting items to a stable DOM confirmed by a frame; medians; the dev build of this branch against the build of b237d0e (ui-8a77add77500). The first change is the stand's: the whole items with one label changed.",
@@ -453,7 +577,9 @@
       "tree and tree-item sheets, the icon font's icons and the icon button's sheet",
       "for the chevron. sf-tree-item children are read as data, not drawn; the",
       "item's bundle still comes with the tree, so the markup's sf-tree-item is a",
-      "defined element (a page may wait for it) before the tree reads it."
+      "defined element (a page may wait for it) before the tree reads it.",
+      "The tooltip component shows a cut name whole (TR-14).",
+      "A check box (selection check) is the checkbox's class markup; a lazy branch's «Загрузка…» row draws the spinner, loaded when it is needed."
     ]
   },
   "x-registry": {

@@ -1,0 +1,18 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "module.file-types",
+  "kind": "module",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "summary": "The kinds of an entry (folder, file, page, document, image, code, data, table, archive, video, audio, link), the extensions that say them and their icons: one map shared by the parts that show a file or page by its type (owner decision C102).",
+  "includes": [
+    "src/core/js/file-types/"
+  ],
+  "files": [
+    "src/core/js/file-types/file-types.json",
+    "src/core/js/file-types/index.js"
+  ],
+  "content_sha256": "2acc8bfe7c5d31cde29b9ceac019828c5000bdc9e86ac3e64cc21cbd113864f6",
+  "dependencies": []
+}

@@ -1,4 +1,9 @@
 {
   "title": "Tree",
-  "runtime": {}
+  "runtime": {
+    "loading": "Loading…",
+    "load-error": "Could not load",
+    "retry": "Retry",
+    "hidden": "hidden"
+  }
 }

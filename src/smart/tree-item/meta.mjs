@@ -46,10 +46,20 @@ const sfTreeItemMeta = {
       "kind": "enum",
       "values": [
         "folder",
-        "file"
+        "file",
+        "page",
+        "document",
+        "image",
+        "code",
+        "data",
+        "table",
+        "archive",
+        "video",
+        "audio",
+        "link"
       ],
-      "default": "folder",
-      "description": "What the tree item is: a folder or a file."
+      "default": "",
+      "description": "What the node is (core file-types, owner decision C102): its icon. Empty: children make a folder, none a leaf whose name's extension says its type; kind folder is an empty folder."
     },
     "value": {
       "kind": "custom",
@@ -65,6 +75,15 @@ const sfTreeItemMeta = {
       ],
       "default": "false"
     },
+    "has-children": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "A branch whose children are not loaded yet: the chevron shows, the branch opens and its toggle event is the cue to load them"
+    },
     "open-icon": {
       "kind": "custom",
       "valueType": "string",
@@ -76,13 +95,10 @@ const sfTreeItemMeta = {
       "default": "folder"
     },
     "icon": {
-      "kind": "boolean",
-      "values": [
-        "true",
-        "false"
-      ],
-      "default": "true",
-      "description": "false hides the folder or file icon"
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "An icon name for the node, or false for none; empty: chosen by kind, the name's extension and its place (C102)"
     },
     "chevron-open-icon": {
       "kind": "custom",
@@ -158,9 +174,19 @@ const sfTreeItemMeta = {
       "kind": "enum",
       "values": [
         "folder",
-        "file"
+        "file",
+        "page",
+        "document",
+        "image",
+        "code",
+        "data",
+        "table",
+        "archive",
+        "video",
+        "audio",
+        "link"
       ],
-      "default": "folder",
+      "default": "",
       "description": "Legacy name for kind, still honoured. See contracts/public-api-axes.json."
     }
   }
