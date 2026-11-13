@@ -29,6 +29,14 @@
 //   height, at normal and compact density;
 // density: sf-input with no size follows data-sf-density=compact (32), one
 //   with an explicit size keeps it (C22: an explicit size wins).
+// R179 (sf-menu 1.6.2), a touch phone at 390 and 360: a row that stays a row
+//   (sf-header-site collapse none; a bare row with overflow more) opens
+//   catalog > pumps > centrifugal with every chevron tapped; every open level
+//   stays inside the viewport, no row over another, the deeper levels in
+//   place in the first panel with the path's line on its border (D1); at
+//   1440 the side panels still stand beside it. In sf-header-site's drawer a
+//   split control's link is the row's height and its chevron at least 44
+//   wide, inside the row, the glyph where it stood (D2).
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import {extname, join, resolve} from 'node:path';
@@ -65,6 +73,32 @@ const ROW = [
   {id: 'small', label: 'Услуги', href: '#small', children: [{id: 'svc', label: 'Сервис', href: '#svc', children: [leaf('svc-target', 'Ремонт')]}, leaf('rent', 'Аренда')]},
 ];
 const json = (value) => JSON.stringify(value).replace(/'/gu, '&#39;');
+// R179: the docs' four-level site tree, the current page at level 4.
+const SITE = [
+  {id: 'catalog', label: 'Каталог', href: '#catalog', children: [
+    {id: 'pumps', label: 'Насосное оборудование', href: '#pumps', children: [
+      {id: 'centrifugal', label: 'Центробежные насосы', href: '#centrifugal', children: [leaf('console', 'Консольные'), leaf('multistage', 'Многоступенчатые')]},
+      {id: 'drainage', label: 'Дренажные и фекальные', href: '#drainage', children: [leaf('drain', 'Дренажные')]},
+      leaf('stations', 'Насосные станции')]},
+    {id: 'valves', label: 'Трубопроводная арматура', href: '#valves', children: [leaf('gate', 'Задвижки')]},
+    leaf('heat', 'Теплообменники')]},
+  {id: 'services', label: 'Услуги', href: '#services', children: [leaf('selection', 'Подбор оборудования'), leaf('mount', 'Монтаж')]},
+  leaf('projects', 'Проекты'),
+  {id: 'about', label: 'О компании', href: '#about', children: [leaf('history', 'История'), leaf('jobs', 'Вакансии')]},
+  leaf('partners', 'Партнёрам'), leaf('news', 'Новости'), leaf('contacts', 'Контакты'),
+];
+const siteRow = (attrs) => `<sf-menu id="site" label="Разделы сайта" orientation="horizontal" appearance="navigation" current="console" ${attrs} items='${json(SITE)}'></sf-menu>`;
+const PHONE = {
+  'header-none': `<sf-header-site collapse="none"><a slot="brand" href="#home">Т</a>${siteRow('overflow="more" collapse="none" open-on="click"')}</sf-header-site>`,
+  'bare-more': siteRow('overflow="more" open-on="click"'),
+  'header-default': `<sf-header-site><a slot="brand" href="#home">Технопром</a>${siteRow('overflow="more" collapse="none" open-on="click"')}</sf-header-site>`,
+};
+const phonePage = (scene) => `<!doctype html><html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.sfPath='/distr/';window.sfSmartPath='/distr/';</script>
+<link rel="stylesheet" href="/distr/core/css/core.css">
+<script src="/distr/core/js/core.js"></script>
+<style>body{margin:0}</style></head><body>${PHONE[scene] || ''}<main><p>Текст страницы.</p></main></body></html>`;
 
 const page = (search) => {
   const current = search.get('current') || 'centrifugal';
@@ -96,6 +130,10 @@ const types = {'.js': 'text/javascript', '.css': 'text/css', '.json': 'applicati
 const server = createServer((request, response) => {
   const url = new URL(request.url, 'http://probe');
   const path = decodeURIComponent(url.pathname);
+  if (path === '/phone/') {
+    response.writeHead(200, {'content-type': 'text/html; charset=utf-8'});
+    return response.end(phonePage(url.searchParams.get('scene')));
+  }
   if (path === '/menu/') {
     response.writeHead(200, {'content-type': 'text/html; charset=utf-8'});
     return response.end(page(url.searchParams));
@@ -507,6 +545,99 @@ try {
         check(inputs.one === 40, `${k}: sf-input size="1" keeps its explicit size, 40 (C22: an explicit size wins) (${inputs.one})`);
         check(!consoleErrors.length, `${k}: console clean ${consoleErrors.join(' | ')}`);
         await tab.close();
+      }
+    }
+  }
+  // ---- R179: a row on a touch phone (D1) and the drawer's split control (D2)
+  for (let run = 1; run <= RUNS; run += 1) {
+    for (const theme of ['light', 'dark']) {
+      for (const [scene, width] of [['header-none', 390], ['header-none', 360], ['bare-more', 390], ['bare-more', 360], ['header-none', 1440], ['bare-more', 1440], ['header-default', 390], ['header-default', 360]]) {
+        const k = `${theme} #${run} R179 ${scene} ${width}`;
+        const touch = width < 768;
+        const context = await browser.newContext({viewport: {width, height: 800}, colorScheme: theme, isMobile: touch, hasTouch: touch, deviceScaleFactor: touch ? 2 : 1});
+        const tab = await context.newPage();
+        const consoleErrors = [];
+        tab.on('console', (message) => {
+          if (message.type() === 'error' || message.type() === 'warning') consoleErrors.push(`${message.type()}: ${message.text()}`);
+        });
+        tab.on('pageerror', (error) => consoleErrors.push(`pageerror: ${error.message}`));
+        await tab.addInitScript(() => document.addEventListener('sf-menu-navigate', (event) => event.preventDefault()));
+        await tab.goto(`${origin}/phone/?scene=${scene}`);
+        await tab.waitForFunction(() => document.querySelector('#site nav ul.sf-menu'), null, {timeout: 15000}).catch(() => failures.push(`${k}: the menu never drew`));
+        await tab.evaluate(() => document.fonts.ready);
+        await tab.waitForTimeout(600);
+        const press = (locator) => (touch ? locator.tap({timeout: 2500}) : locator.click({timeout: 2500}));
+        if (scene === 'header-default') {
+          await press(tab.locator('sf-header-site button[aria-haspopup=dialog]').first());
+          await tab.waitForTimeout(700);
+          const split = await tab.evaluate(() => {
+            const size = (node) => { const box = node.getBoundingClientRect(); return {w: box.width, h: box.height, l: box.left, r: box.right}; };
+            const row = document.querySelector('#site [data-sf-menu-item="catalog"] > .sf-menu-element');
+            const plain = document.querySelector('#site [data-sf-menu-item="projects"] > .sf-menu-element');
+            const style = getComputedStyle(row);
+            const glyph = row.querySelector(':scope > button .sf-icon').getBoundingClientRect();
+            return {row: size(row), link: size(row.querySelector(':scope > a')), chevron: size(row.querySelector(':scope > button')), plain: size(plain),
+              words: row.querySelector(':scope > a .sf-menu-element-text').getBoundingClientRect().right,
+              inner: row.getBoundingClientRect().right - (parseFloat(style.borderRightWidth) || 0),
+              glyphEnd: row.getBoundingClientRect().right - glyph.right, rowEnd: (parseFloat(style.paddingRight) || 0) + (parseFloat(style.borderRightWidth) || 0)};
+          });
+          seen[`r179-split-${theme}-${run}-${width}`] = split;
+          check(near(split.row.h, 44) && near(split.plain.h, 44), `${k} D2: the drawer's rows are 44 (${split.row.h}, plain ${split.plain.h})`);
+          check(split.link.h >= split.row.h - 2.5 && split.link.l - split.row.l <= 1.5, `${k} D2: the split control's link is the row's height and starts at the row's edge (${JSON.stringify(split.link)} in ${JSON.stringify(split.row)})`);
+          check(split.chevron.w >= 43.5 && split.chevron.h >= split.row.h - 2.5, `${k} D2: the chevron is at least 44 wide and the row's height (${split.chevron.w} x ${split.chevron.h})`);
+          check(near(split.glyphEnd, split.rowEnd, 1), `${k} D2: the chevron's glyph keeps its place at the row's end padding (${split.glyphEnd} / ${split.rowEnd})`);
+          check(split.chevron.l >= split.words - 0.5 && near(split.chevron.r, split.inner), `${k} D2: the chevron covers none of the link's words and ends at the row's inner edge (${split.chevron.l} / ${split.words}, ${split.chevron.r} / ${split.inner})`);
+        } else {
+          const unreachable = [];
+          for (const id of ['catalog', 'pumps', 'centrifugal']) {
+            const chevron = tab.locator(`#site [data-sf-menu-item="${id}"] > .sf-menu-element > button[aria-expanded], #site [data-sf-menu-item="${id}"] > button[aria-expanded]`).first();
+            try {
+              await press(chevron);
+            } catch {
+              unreachable.push(id);
+              await chevron.evaluate((node) => node.click()).catch(() => {});
+            }
+            await tab.waitForTimeout(450);
+          }
+          const chain = await tab.evaluate(() => {
+            const vw = document.documentElement.clientWidth;
+            const shown = (node) => !node.closest('[hidden]') && node.getBoundingClientRect().width > 0;
+            const rows = [...document.querySelectorAll('#site .sf-menu .sf-menu .sf-menu-element')].filter(shown).map((node) => {
+              const box = node.getBoundingClientRect();
+              return {id: node.closest('[data-sf-menu-item]').dataset.sfMenuItem, l: box.left, r: box.right, t: box.top, b: box.bottom};
+            });
+            const overlaps = [];
+            for (let i = 0; i < rows.length; i += 1) for (let j = i + 1; j < rows.length; j += 1) {
+              const [a, c] = [rows[i], rows[j]];
+              if (a.l < c.r - 1 && c.l < a.r - 1 && a.t < c.b - 1 && c.t < a.b - 1) overlaps.push(`${a.id}/${c.id}`);
+            }
+            const panels = [...document.querySelectorAll('#site ul.sf-menu ul.sf-menu')].filter(shown).map((list) => ({id: list.closest('[data-sf-menu-item]').dataset.sfMenuItem,
+              inPlace: list.hasAttribute('data-sf-menu-in-place'), position: getComputedStyle(list).position, side: list.dataset.sfSide || null}));
+            const path = document.querySelector('#site [data-sf-menu-item="centrifugal"] > .sf-menu-element');
+            const line = getComputedStyle(path, '::before');
+            const panel = path.closest('ul.sf-menu:not([data-sf-menu-in-place])');
+            const lineLeft = path.getBoundingClientRect().left + parseFloat(line.left);
+            return {vw, docX: document.documentElement.scrollWidth - vw, open: document.querySelector('#site').openIds,
+              off: rows.filter((row) => row.l < -0.5 || row.r > vw + 0.5).map((row) => `${row.id} ${row.l}..${row.r}`),
+              overlaps, panels, line: {content: line.content, width: line.width, offset: lineLeft - panel.getBoundingClientRect().left}};
+          });
+          seen[`r179-chain-${scene}-${theme}-${run}-${width}`] = {...chain, unreachable};
+          check(chain.open.join() === 'catalog,pumps,centrifugal', `${k} D1: the chain opens by its chevrons (${chain.open.join()})`);
+          check(!unreachable.length, `${k} D1: every chevron of the chain can be pressed (${unreachable.join() || 'all'})`);
+          check(!chain.off.length && chain.docX <= 0, `${k} D1: every open level stays inside the viewport (${chain.off.join('; ') || 'all inside'}, page overflow ${chain.docX})`);
+          check(!chain.overlaps.length, `${k} D1: no row is drawn over another (${chain.overlaps.join() || 'none'})`);
+          check(chain.line.content !== 'none' && chain.line.width === '2px' && near(chain.line.offset, 0), `${k} D1: the path's line at level 3 lies on its panel's border (${JSON.stringify(chain.line)})`);
+          if (touch) {
+            check(chain.panels.filter((one) => one.id !== 'catalog').every((one) => one.inPlace && one.position === 'static'), `${k} D1: the levels under the first panel open in place in it (${JSON.stringify(chain.panels)})`);
+            const current = tab.locator('#site [data-sf-menu-link="console"]').first();
+            check(await current.tap({timeout: 2500, trial: true}).then(() => true, () => false), `${k} D1: the current page at level 4 can be tapped`);
+          } else {
+            check(chain.panels.every((one) => !one.inPlace) && chain.panels.filter((one) => one.id !== 'catalog').every((one) => one.position === 'fixed' && one.side === 'inline-end'),
+              `${k} D1: at 1440 the side panels still stand beside the panel (${JSON.stringify(chain.panels)})`);
+          }
+        }
+        check(!consoleErrors.length, `${k}: console clean ${consoleErrors.join(' | ')}`);
+        await context.close();
       }
     }
   }

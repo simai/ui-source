@@ -193,6 +193,9 @@ class SfSmartMenu extends MenuElement {
       if (narrow === this._narrow) return;
       this._narrow = narrow;
       if (this.collapse === 'narrow') this.requestComponentUpdate('narrow');
+      // A row's deeper levels open in place below md and to the side above
+      // it: the open chain is placed again for the width it now has.
+      else if (this.flyouts) this.syncAnchors();
     };
     this._narrowMedia?.addEventListener?.('change', this._onNarrow);
     // The words of a row change their width when the font arrives: «Ещё» is
@@ -945,13 +948,26 @@ class SfSmartMenu extends MenuElement {
   // A row's panels are placed by the Framework's geometry, as the class menu
   // places them: the first level below its item, deeper ones to the inline
   // end; both flip and shift inside the viewport instead of overflowing it.
+  // Below md (a phone, R179) a row has no room for side panels: the levels
+  // under the first panel open in place inside it, as a column's do (C30:
+  // the phone's tree, no drill-in), so nothing stands outside the viewport
+  // or over its own chain.
   syncAnchors() {
     const wanted = new Set();
+    const inPlace = this._narrow;
     if (this.flyouts) {
       for (const id of this.openIds) {
         const row = this.querySelector(`[data-sf-menu-item="${CSS.escape(id)}"]`);
         const submenu = row?.querySelector(':scope > ul.sf-menu, :scope > .sf-menu-region');
         if (!submenu || submenu.hidden) continue;
+        const side = row.dataset.sfMenuLevel !== '1' && !submenu.matches('.sf-menu-region');
+        if (side && inPlace) {
+          if (this._anchors.has(submenu)) this.releaseAnchor(submenu);
+          submenu.setAttribute('data-sf-menu-in-place', '');
+          delete submenu.dataset.sfSide;
+          continue;
+        }
+        submenu.removeAttribute('data-sf-menu-in-place');
         wanted.add(submenu);
         const current = this._anchors.get(submenu);
         if (current) {
@@ -1019,6 +1035,9 @@ class SfSmartMenu extends MenuElement {
       }
     }
     for (const submenu of [...this._anchors.keys()]) if (!wanted.has(submenu)) this.releaseAnchor(submenu);
+    if (!inPlace || !this.flyouts) {
+      for (const submenu of this.querySelectorAll('ul.sf-menu[data-sf-menu-in-place]')) submenu.removeAttribute('data-sf-menu-in-place');
+    }
   }
 
   releaseAnchor(submenu) {
