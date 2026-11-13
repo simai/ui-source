@@ -7,14 +7,18 @@
     "body": [
       "<main>",
       "  <sf-progress-run id=\"run\" label=\"Создание сайта demo.test\" cancelable retryable hideable output-open><script type=\"application/json\" data-sf-settings>{\"steps\": [{\"id\": \"dns\", \"title\": \"Адрес demo.test\", \"state\": \"done\", \"duration\": 1200}, {\"id\": \"files\", \"title\": \"Файлы сайта\", \"state\": \"done\", \"duration\": 5300, \"text\": \"120 файлов\"}, {\"id\": \"db\", \"title\": \"База данных\", \"state\": \"running\", \"text\": \"Создаём таблицы\"}, {\"id\": \"ssl\", \"title\": \"Сертификат\", \"state\": \"waiting\"}], \"output\": \"$ create-site demo.test\\nDNS: ok\\nCopying 120 files... ok\\nCreating tables...\\n\"}</script></sf-progress-run>",
-      "  <sf-progress-run id=\"failed\" label=\"Импорт\" retryable hideable run-state=\"failed\" result-text=\"Файл повреждён\"><script type=\"application/json\" data-sf-settings>{\"steps\": [{\"id\": \"dns\", \"title\": \"Адрес demo.test\", \"state\": \"done\", \"duration\": 1200}, {\"id\": \"files\", \"title\": \"Файлы сайта\", \"state\": \"failed\", \"duration\": 64000, \"text\": \"Не хватает места на диске\"}, {\"id\": \"db\", \"title\": \"База данных\", \"state\": \"skipped\"}]}</script></sf-progress-run>",
+      "  <sf-progress-run id=\"failed\" label=\"Импорт\" retryable hideable run-state=\"failed\" result-text=\"Файл повреждён\"><script type=\"application/json\" data-sf-settings>{\"steps\": [{\"id\": \"dns\", \"title\": \"Адрес demo.test\", \"state\": \"done\", \"duration\": 1200}, {\"id\": \"files\", \"title\": \"Файлы сайта\", \"state\": \"failed\", \"duration\": 64000, \"text\": \"Не хватает места на диске\"}, {\"id\": \"db\", \"title\": \"База данных\", \"state\": \"skipped\"}], \"output\": \"$ create-site demo.test\\nCopying files... error: ENOSPC\\n\"}</script></sf-progress-run>",
       "  <sf-progress-run id=\"imp\" label=\"Импорт товаров\" caption=\"Каталог «Электроника»\" value=\"4812\" total=\"12000\" unit=\"товар|товара|товаров\" remaining=\"360000\" pausable cancelable minimizable><script type=\"application/json\" data-sf-settings>{\"counters\": [{\"id\": \"added\", \"label\": \"Добавлено\", \"value\": 3700}, {\"id\": \"updated\", \"label\": \"Обновлено\", \"value\": 1100}, {\"id\": \"skipped\", \"label\": \"Пропущено\", \"value\": 0}, {\"id\": \"errors\", \"label\": \"{n} ошибка|{n} ошибки|{n} ошибок\", \"value\": 12, \"status\": \"error\"}], \"steps\": [{\"id\": \"read\", \"title\": \"Чтение файла\", \"state\": \"done\", \"duration\": 4000}, {\"id\": \"rows\", \"title\": \"Товары\", \"state\": \"running\", \"value\": 4812, \"total\": 12000, \"unit\": \"товар|товара|товаров\"}]}</script></sf-progress-run>",
       "  <sf-progress-run id=\"sum\" label=\"Импорт\" heading-level=\"2\" value=\"12000\" total=\"12000\" errors-total=\"40\" retryable hideable><script type=\"application/json\" data-sf-settings>{\"counters\": [{\"id\": \"added\", \"label\": \"Добавлено\", \"value\": 9214}, {\"id\": \"errors\", \"label\": \"{n} ошибка|{n} ошибки|{n} ошибок\", \"value\": 40, \"status\": \"error\"}], \"errors\": [{\"where\": \"218\", \"key\": \"TV-55-QL\", \"text\": \"Цена — не число\"}, {\"where\": \"1 042\", \"key\": \"SM-A55\", \"text\": \"Раздел не найден\"}, {\"where\": \"3 377\", \"key\": \"—\", \"text\": \"Пустой артикул\"}, {\"where\": \"5 610\", \"key\": \"HD-2TB\", \"text\": \"Картинка 404\"}, {\"where\": \"8 905\", \"key\": \"KB-MX\", \"text\": \"Артикул повторяется\"}, {\"where\": \"9 120\", \"key\": \"PH-X1\", \"text\": \"Шестая\"}], \"steps\": [{\"id\": \"read\", \"title\": \"Чтение\", \"state\": \"done\", \"duration\": 4000}, {\"id\": \"rows\", \"title\": \"Товары\", \"state\": \"done\", \"duration\": 9000}]}</script></sf-progress-run>",
       "  <sf-progress-run id=\"cnl\" label=\"Экспорт\" run-state=\"cancelled\" value=\"1200\" total=\"4000\" retryable></sf-progress-run>",
       "  <sf-progress-run id=\"ind\" label=\"Резервная копия\" run-state=\"running\" cancelable></sf-progress-run>",
       "  <sf-progress-run id=\"lg\" label=\"Резервная копия docs\" retryable><script type=\"application/json\" data-sf-settings>{\"steps\": [{\"id\": \"db\", \"title\": \"База данных\", \"state\": \"done\", \"duration\": 42000, \"log\": \"db ok\\n\"}, {\"id\": \"up\", \"title\": \"Выгрузка\", \"state\": \"failed\", \"duration\": 160000, \"log\": \"QuotaExceeded\\n\"}]}</script></sf-progress-run>",
-      "  <sf-progress-run id=\"cmp\" look=\"compact\" label=\"Копия shop\" value=\"62\" total=\"100\" remaining=\"180000\" pausable cancelable></sf-progress-run>",
+      "  <sf-progress-run id=\"cmp\" look=\"row\" label=\"Копия shop\" value=\"62\" total=\"100\" remaining=\"180000\" pausable cancelable></sf-progress-run>",
       "  <sf-progress-run id=\"ntc\" look=\"notice\" label=\"Копия blog\" value=\"62\" total=\"100\" remaining=\"180000\"></sf-progress-run>",
+      "  <sf-progress-run id=\"cmp-alias\" look=\"compact\" label=\"Копия shop\" value=\"62\" total=\"100\" remaining=\"180000\" pausable cancelable></sf-progress-run>",
+      "  <sf-progress-run id=\"steps-ind\" label=\"Создание сайта\"><script type=\"application/json\" data-sf-settings>{\"steps\": [{\"id\": \"dns\", \"title\": \"Адрес\", \"state\": \"done\", \"duration\": 1200}, {\"id\": \"files\", \"title\": \"Файлы\", \"state\": \"running\"}]}</script></sf-progress-run>",
+      "  <sf-progress-run id=\"auto-partial\" look=\"row\" label=\"Импорт товаров\" value=\"12000\" total=\"12000\" errors-total=\"18\" retryable></sf-progress-run>",
+      "  <sf-progress-run id=\"auto-done\" look=\"row\" label=\"Импорт склада\" value=\"800\" total=\"800\"></sf-progress-run>",
       "</main>"
     ]
   },
@@ -344,12 +348,12 @@
       ]
     },
     {
-      "id": "p14-compact-and-notice",
-      "title": "view compact is one line: the bar with «62 % · 3 мин» and icon actions; view notice: the ring in the icon field, the name, the figures and Expand, which asks expand",
-      "covers": "settings.view, events.expand",
+      "id": "p14-row-and-notice",
+      "title": "look row is one line: the bar with «62 % · 3 мин» and icon actions; look notice: the ring in the icon field, the name, the figures and Expand, which asks expand",
+      "covers": "settings.look, events.expand",
       "steps": [
         {
-          "check": "(() => { const n = (s) => s.replace(/\\s+/gu, ' ').trim(); const c = document.querySelector('#cmp'); const t = document.querySelector('#ntc'); return c.querySelector('.sf-progress-run--view-compact[role=\"group\"]') && c.querySelector('sf-progress-bar') && n(c.querySelector('.sf-progress-run-figures-short').textContent) === '62 % · 3 мин' && c.querySelector('.sf-progress-run-pause') && c.querySelector('.sf-progress-run-cancel') && t.querySelector('.sf-progress-run-mark sf-progress-ring') && n(t.querySelector('.sf-progress-run-notice-figures').textContent) === '62 % · осталось ≈ 3 мин' && t.querySelector('.sf-progress-run-expand'); })()"
+          "check": "(() => { const n = (s) => s.replace(/\\s+/gu, ' ').trim(); const c = document.querySelector('#cmp'); const t = document.querySelector('#ntc'); return c.querySelector('.sf-progress-run--view-row.sf-progress-run--view-compact[role=\"group\"]') && c.querySelector('sf-progress-bar') && n(c.querySelector('.sf-progress-run-figures-short').textContent) === '62 % · 3 мин' && c.querySelector('.sf-progress-run-pause') && c.querySelector('.sf-progress-run-cancel') && t.querySelector('.sf-progress-run-mark sf-progress-ring') && n(t.querySelector('.sf-progress-run-notice-figures').textContent) === '62 % · осталось ≈ 3 мин' && t.querySelector('.sf-progress-run-expand'); })()"
         },
         {
           "user": "click:#ntc .sf-progress-run-expand button",
@@ -362,6 +366,61 @@
               }
             ]
           }
+        }
+      ]
+    },
+    {
+      "id": "p15-row-alias",
+      "title": "look compact is a dated alias of row: read as row, drawn the same with both classes, noted once in SF.deprecations until 2027-01-01 (owner decision C134)",
+      "covers": "settings.look row, aliases compact",
+      "steps": [
+        {
+          "check": "(() => { const a = document.querySelector('#cmp'); const b = document.querySelector('#cmp-alias'); const root = (el) => el.querySelector(':scope > .sf-progress-run'); const notes = SF.deprecations.list().filter((note) => note.component === 'sf-progress-run' && note.from === 'compact'); return b.getAttribute('look') === 'row' && root(a).classList.contains('sf-progress-run--view-row') && root(a).classList.contains('sf-progress-run--view-compact') && root(b).className === root(a).className && notes.length === 1 && notes[0].to === 'row' && notes[0].remove_after === '2027-01-01'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p16-steps-unknown-size",
+      "title": "a run of steps with no total draws the overall bar, indeterminate, while it runs",
+      "covers": "settings.total unset, settings.steps, sf-progress-bar indeterminate",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#steps-ind'); const bar = el.querySelector('sf-progress-bar.sf-progress-run-bar'); return el.getAttribute('data-state') === 'running' && Boolean(bar) && bar.hasAttribute('indeterminate') && Boolean(el.querySelector('.sf-progress-run-steps')); })()"
+        }
+      ]
+    },
+    {
+      "id": "p17-state-from-numbers",
+      "title": "a run with no steps and no run-state is done once value reached total, partial («С ошибками») with errors-total above 0, in the row too",
+      "covers": "settings.run-state auto, settings.errors-total",
+      "steps": [
+        {
+          "check": "(() => { const p = document.querySelector('#auto-partial'); const d = document.querySelector('#auto-done'); const badge = (el) => el.querySelector('sf-badge.sf-progress-run-badge'); return p.getAttribute('data-state') === 'partial' && badge(p).getAttribute('status') === 'warning' && badge(p).getAttribute('text') === 'С ошибками' && Boolean(p.querySelector('.sf-progress-run-retry')) && d.getAttribute('data-state') === 'done' && badge(d).getAttribute('activity') === 'done'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p18-no-output-no-toggle",
+      "title": "a run with no output draws no «Вывод» toggle; the first chunk brings it",
+      "covers": "settings.output, actions.chunk",
+      "steps": [
+        {
+          "check": "(() => !document.querySelector('#imp .sf-progress-run-toggle') && !document.querySelector('#steps-ind .sf-progress-run-toggle') && Boolean(document.querySelector('#run .sf-progress-run-toggle')))()"
+        },
+        {
+          "script": "(() => { document.querySelector('#steps-ind').chunk({text: 'Copying...\\n'}); return true; })()",
+          "wait": 150,
+          "check": "(() => { const t = document.querySelector('#steps-ind .sf-progress-run-toggle'); return Boolean(t) && t.getAttribute('text') === 'Вывод'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p19-polite-progress",
+      "title": "the run's own polite live region (atomic, outside the status region) holds the count in words or nothing; the notice has one, the row none",
+      "covers": "accessibility live region",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#imp'); const live = el.querySelectorAll('.sf-progress-run-live[aria-live=\"polite\"]'); return live.length === 1 && live[0].getAttribute('aria-atomic') === 'true' && /^(|4\\s812 из 12\\s000 товаров, 40\\s%)$/u.test(live[0].textContent.trim()) && !live[0].closest('[role=\"status\"]') && !document.querySelector('#cmp .sf-progress-run-live') && document.querySelectorAll('#ntc .sf-progress-run-live').length === 1; })()"
         }
       ]
     }

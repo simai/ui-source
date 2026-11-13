@@ -10691,6 +10691,30 @@
       },
       "owner": "ui-source",
       "source": "src/smart/progress-bar/component.json aliases, src/component/progress-bar/js/_progressbar.js normalizeTextPosition"
+    },
+    {
+      "id": "value-progress-run-look-compact-to-row",
+      "recorded_on": "2026-11-13",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-progress-run 1.4.0: the word compact means density only (owner decision C134). The table row's look is look=\"row\"; look=\"compact\" is its dated value alias, rewritten by the shim, drawn the same and noted once in SF.deprecations. The element writes the class sf-progress-run--view-row and, until remove_after, its former sf-progress-run--view-compact beside it.",
+      "items": [
+        {
+          "component": "sf-progress-run",
+          "attribute": "look",
+          "from": "compact",
+          "to": "row"
+        }
+      ],
+      "deprecated_on": "2026-11-13",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-value",
+      "examples": {
+        "before": "<sf-progress-run look=\"compact\" label=\"Копия shop.test\" value=\"62\" total=\"100\"></sf-progress-run>",
+        "after": "<sf-progress-run look=\"row\" label=\"Копия shop.test\" value=\"62\" total=\"100\"></sf-progress-run>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/progress-run/component.json aliases; ui-control control/docs-review/decisions.md C134; prototypes/recipe-long-job.html #q-row-name"
     }
   ]
 }

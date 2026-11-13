@@ -2,7 +2,7 @@
   "$comment": "The source of sf-progress-run's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the run progress the Larena admin screens asked for first (Federation bus msg-993e1e39151942c19b23 item 6), planned in the reply msg-05e76ea0bc0746a690b8 as sf-progress-run of block progress.",
   "id": "smart.progress-run",
   "tag": "sf-progress-run",
-  "version": "1.3.4",
+  "version": "1.4.0",
   "kind": "leaf",
   "family": "progress",
   "settings": {
@@ -10,11 +10,11 @@
       "type": "enum",
       "values": [
         "full",
-        "compact",
+        "row",
         "notice"
       ],
       "default": "full",
-      "summary": "The look (owner decision C34): full -- the card: title with the state badge, the overall bar with «N из M · %» and the time left, the counts, the first errors, the steps with a log each, the actions; it is also the summary once the job ended. compact -- one line for a table row: a thin bar with «62 % · 3 мин» while it runs, the state badge once it stopped, icon actions. notice -- one row for a corner panel: the ring in the icon field, the name, a line of figures and Expand. The data are the same in every look; the host changes look (minimize, expand). Named look, not view: view is a name the element runtime keeps for itself"
+      "summary": "The look (owner decision C34): full -- the card: title with the state badge, the overall bar with «N из M · %» and the time left, the counts, the first errors, the steps with a log each, the actions; it is also the summary once the job ended. row -- one line for a table row: a thin bar with «62 % · 3 мин» while it runs, the state badge once it stopped, icon actions. notice -- one row for a corner panel: the ring in the icon field, the name, a line of figures and Expand. The data are the same in every look; the host changes look (minimize, expand). Named look, not view: view is a name the element runtime keeps for itself. The old value compact is a dated alias of row until 2027-01-01 (owner decision C134: compact means density only; noted in SF.deprecations, journal value-progress-run-look-compact-to-row)"
     },
     "label": {
       "type": "string",
@@ -49,7 +49,7 @@
       "type": "number",
       "optional": true,
       "min": 0,
-      "summary": "How much there is (12000). Unset or 0: the size is not known yet and the bar runs; once set the same bar fills, once (C34)"
+      "summary": "How much there is (12000). Unset or 0: the size is not known yet and the bar runs (indeterminate) while the job runs or is paused, with steps or without; once set the same bar fills, once (C34)"
     },
     "unit": {
       "type": "string",
@@ -140,7 +140,7 @@
         "cancelled"
       ],
       "default": "auto",
-      "summary": "The job's state (the name state is the element base's own). auto works it out from the steps: failed when one failed, running while one runs, done when every step is done or skipped (partial when errors-total or an error counter is above 0), else waiting (drawn as queued). paused: the host stopped the job and will go on -- a warning badge and bar. partial: it finished with errors -- a warning badge and bar, never success. cancelled: the host stopped it for good -- neutral"
+      "summary": "The job's state (the name state is the element base's own). auto works it out from the steps: failed when one failed, running while one runs, done when every step is done or skipped, else waiting (drawn as queued); a job with no steps and a total is running while value is below total and done once it reached it. Done with errors-total or an error counter above 0 is partial («С ошибками»), in every look. paused: the host stopped the job and will go on -- a warning badge and bar. partial: it finished with errors -- a warning badge and bar, never success. cancelled: the host stopped it for good -- neutral"
     },
     "result-text": {
       "type": "string",
@@ -210,12 +210,12 @@
       "type": "number",
       "optional": true,
       "min": 0,
-      "summary": "How many errors the job had in all (40). Above the errors shown, «Ещё 35 ошибок» sends report; above 0 an auto run that finished is partial"
+      "summary": "How many errors the job had in all (40). Above the errors shown, «Ещё 35 ошибок» sends report; above 0 an auto run that finished is partial (one of steps all done, or one of no steps whose value reached total)"
     },
     "output": {
       "type": "string",
       "default": "",
-      "summary": "The output so far, as plain text (a server prints it); the action chunk appends to it. Drawn monospace, never as markup"
+      "summary": "The output so far, as plain text (a server prints it); the action chunk appends to it. Drawn monospace, never as markup. With no output the toggle («Вывод») is not drawn; the first chunk brings it"
     },
     "output-label": {
       "type": "string",
@@ -425,7 +425,7 @@
   "docs": "docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "A region named by its label (a group in the compact look, a row of the notice panel). The title is a heading of heading-level. The steps are an ordered list; each says its state in words after its title (visually hidden; the icon is a picture), the running one carries aria-current step; a step with a log is a button with aria-expanded and aria-controls. One status live region, visually hidden, speaks the result and the state changes only (paused, going on, finished, cancelled), never each percent; the figures are not live. The overall bar is sf-progress-bar named by the label, indeterminate while the size is unknown, its value text saying paused. The error count is a link to the error list. The output toggle is a button with aria-expanded and aria-controls; the output is a log region (role log, not live) that is focusable to scroll by keyboard. Nothing takes focus by itself.",
+    "$comment": "A region named by its label (a group in the row look, a row of the notice panel). The title is a heading of heading-level. The steps are an ordered list; each says its state in words after its title (visually hidden; the icon is a picture), the running one carries aria-current step; a step with a log is a button with aria-expanded and aria-controls. One status live region, visually hidden, speaks the result and the state changes (paused, going on, finished, cancelled). A second region, polite (aria-live polite, atomic) and visually hidden, says the count while the job runs in the full and notice looks, as words («4 812 из 12 000 товаров, 40 %»; with no size «1 240 строк»): never at the first paint, at most once every 10 s and only when it changed, emptied on a pause or the end; a table row (look row) has none, so a table of runs does not talk over itself. The figures line itself is not live. The overall bar is sf-progress-bar named by the label, indeterminate while the size is unknown, its value text saying paused. The error count is a link to the error list. The output toggle is a button with aria-expanded and aria-controls; the output is a log region (role log, not live) that is focusable to scroll by keyboard. Nothing takes focus by itself.",
     "role": "region",
     "name": {
       "from": [
@@ -475,7 +475,23 @@
       "state": "default"
     }
   },
-  "x-summary": "A long job as a person sees it, in one of three looks (C34): full -- title and state badge, the overall bar with «N из M · %» and the time left, the counts as one line, the first errors, the steps with states, times and a log each, Pause/Continue, Cancel, Minimize, and once ended the summary with Retry and Hide; compact -- a table row's bar or badge; notice -- a corner panel's row. The host drives it; it polls nothing.",
+  "aliases": {
+    "$comment": "Dated aliases of sf-progress-run for the shim (core/js/aliases.js, standard §16 item 20).",
+    "since": "2026-11-13",
+    "remove-after": "2027-01-01",
+    "rows": [
+      {
+        "from": "compact",
+        "to": "row",
+        "kind": "value",
+        "setting": "look",
+        "since-version": "1.4.0",
+        "section": "§16 item 20",
+        "note": "owner decision C134 (control/research/2026-11-13-navigation-density.md D5, Q1): the word compact means density only; the table row's look is look row and writes the class sf-progress-run--view-row beside its former sf-progress-run--view-compact until the date"
+      }
+    ]
+  },
+  "x-summary": "A long job as a person sees it, in one of three looks (C34): full -- title and state badge, the overall bar with «N из M · %» and the time left, the counts as one line, the first errors, the steps with states, times and a log each, Pause/Continue, Cancel, Minimize, and once ended the summary with Retry and Hide; row -- a table row's bar or badge; notice -- a corner panel's row. The host drives it; it polls nothing.",
   "x-source": {
     "package": "framework",
     "folder": "progress-run",
@@ -506,7 +522,8 @@
     "version 1.3.1 (2026-11-10, C34 acceptance D1, D4): a patch, no setting, event or action added. Focus stays on the run's buttons when the run swaps them (WCAG 2.4.3): a press the host answers by a new run-state or look replaced the pressed button, and focus fell to the page, so a second Space on Pause did nothing and Enter after Minimize could not expand. The button that took its place now has focus (Pause and Continue, Minimize and Expand; Cancel to Retry or Hide), else the next one the run still shows; a focus outside the run is never taken. A run of unknown size with no count shows no count (the absent value read 0 and drew a bare «0»). The running examples start when the page loads (no fixed past started-at). In compact density the result line is regular weight, so only the title is bold (owner's C34 amendment, R082).",
     "version 1.3.2 (2026-11-10, pair-next candidate sweep): a patch, nothing drawn or done differently. The template context carried the state's badge and bar under the key look, the name of the look setting, so the context said {activity, bar} where the setting says full (manifest-defaults and template-context probes). It is stateLook now; the look setting keeps its manifest default full and its getter.",
     "version 1.3.3 (2026-11-10, C16 leftovers; written as a note on 1.3.2, which is released): a patch; nothing draws differently. Its sheet reads the C16 role name --sf-surface-area where it read the former --sf-surface-1 (an alias of it until 2027-01-01, token-c16-theme-role-names), so a page that sets the new name reaches it; the value is the same in both themes and on every place. Settings, values, events and keys unchanged. (the output's fill, twice)",
-    "version 1.3.4 (2026-11-13, owner decision C131 (1), sf-progress-bar 1.4.0): a waiting or running job's bar has no status and draws the theme's primary, as it did; neutral is grey since sf-progress-bar 1.4.0, so only a cancelled job's bar (neutral) turns grey. Settings, values, events and keys unchanged."
+    "version 1.3.4 (2026-11-13, owner decision C131 (1), sf-progress-bar 1.4.0): a waiting or running job's bar has no status and draws the theme's primary, as it did; neutral is grey since sf-progress-bar 1.4.0, so only a cancelled job's bar (neutral) turns grey. Settings, values, events and keys unchanged.",
+    "version 1.4.0 (2026-11-13, recipe prototypes ui-control prototypes/recipe-long-job.html, recipe-quota-usage.html, recipe-onboarding-checklist.html at 1cb805c5; owner decision C134): a minor. (1) A job of unknown size (no total) with steps draws the overall bar, indeterminate, while it runs or is paused, as total's summary promised; before, only a job without steps had it. (2) A second live region, polite and visually hidden, says the count in words («4 812 из 12 000 товаров, 40 %», words announce-progress and announce-count) while the job runs in the full and notice looks: not at the first paint, at most once every 10 s and only when it changed; the status region keeps the result and the state changes. (3) With no output the «Вывод» toggle is not drawn (it opened an empty pane); the first chunk brings it. The word empty-output and its rule are gone. (4) A job with no steps works its state out from its numbers: done once value reached total, partial («С ошибками») when errors-total or an error counter is above 0; before, it stayed running at 100 %. A page that set run-state is unchanged. (5) Owner decision C134 (compact means density only): the table row's look is look row; look compact is a dated value alias of row (aliases.json, the shim rewrites it and notes it once in SF.deprecations until 2027-01-01; journal value-progress-run-look-compact-to-row). The row writes sf-progress-run--view-row and, until the same date, its former class sf-progress-run--view-compact; the sheet draws either. Drawn the same. Examples compact-* are row-*."
   ],
   "x-registry": {
     "capabilities": [

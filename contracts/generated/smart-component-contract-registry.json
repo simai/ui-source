@@ -2397,13 +2397,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-run/smart.manifest.json",
-      "manifest_sha256": "5410bae672cc5381c47cd7a2696d9145d311383d2ccd500fac18ac889b899f42",
+      "manifest_sha256": "a0a187a6b6fac4a0e23218ee4b5a13f73c5762cf88c590de7623ab7cb9aff232",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A long job as a person sees it, in one of three looks (C34): full -- title and state badge, the overall bar with «N из M · %» and the time left, the counts as one line, the first errors, the steps with states, times and a log each, Pause/Continue, Cancel, Minimize, and once ended the summary with Retry and Hide; compact -- a table row's bar or badge; notice -- a corner panel's row. The host drives it; it polls nothing.",
+      "summary": "A long job as a person sees it, in one of three looks (C34): full -- title and state badge, the overall bar with «N из M · %» and the time left, the counts as one line, the first errors, the steps with states, times and a log each, Pause/Continue, Cancel, Minimize, and once ended the summary with Retry and Hide; row -- a table row's bar or badge; notice -- a corner panel's row. The host drives it; it polls nothing.",
       "tags": [
         "progress",
         "run",
@@ -3106,7 +3106,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tile-metric/smart.manifest.json",
-      "manifest_sha256": "bda1336a4fb2839f9eeed295e4d76683cbb5813efee1b374b89a0fca854ce55e",
+      "manifest_sha256": "671f39e1bb6bc5d630bdbd2248ec5f99210870e316d3285adeea3e7acbc01e48",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

@@ -368,8 +368,7 @@ sf-progress-run {
 }
 
 .sf-progress-run-step-supporting,
-.sf-progress-run-time,
-.sf-progress-run-output-empty {
+.sf-progress-run-time {
   color: var(--sf-on-surface-variant);
   font-size: var(--sf-progress-run--below-font-size);
   line-height: var(--sf-progress-run--below-line);
@@ -505,10 +504,13 @@ sf-progress-run {
   margin-inline-end: auto;
 }
 
-/* compact: one line for a table row -- the bar and its short figures, or the
+/* row: one line for a table row -- the bar and its short figures, or the
    badge -- and the icon actions at the end. notice: one row for a corner
-   panel -- the mark in the icon field, the name and its figures, Expand. */
-.sf-progress-run.sf-progress-run--view-compact,
+   panel -- the mark in the icon field, the name and its figures, Expand.
+   sf-progress-run--view-compact is the row's former class, written beside
+   its own until 2027-01-01 (C134); the rules read either, one class of
+   specificity as before. */
+.sf-progress-run:is(.sf-progress-run--view-row, .sf-progress-run--view-compact),
 .sf-progress-run.sf-progress-run--view-notice {
   display: block;
 }
@@ -543,7 +545,7 @@ sf-progress-run {
   white-space: nowrap;
 }
 
-.sf-progress-run--view-compact .sf-progress-run-line > .sf-progress-run-badge {
+:is(.sf-progress-run--view-row, .sf-progress-run--view-compact) .sf-progress-run-line > .sf-progress-run-badge {
   flex: 1 1 auto;
   min-inline-size: 0;
 }

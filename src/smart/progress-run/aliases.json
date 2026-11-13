@@ -1,0 +1,19 @@
+{
+  "$comment": "Dated aliases of sf-progress-run for the shim (core/js/aliases.js, standard §16 item 20).",
+  "component": "sf-progress-run",
+  "since": "2026-11-13",
+  "remove_after": "2027-01-01",
+  "aliases": [
+    {
+      "from": "compact",
+      "to": "row",
+      "kind": "value",
+      "setting": "look",
+      "component": "sf-progress-run",
+      "since": "2026-11-13",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "owner decision C134 (control/research/2026-11-13-navigation-density.md D5, Q1): the word compact means density only; the table row's look is look row and writes the class sf-progress-run--view-row beside its former sf-progress-run--view-compact until the date"
+    }
+  ]
+}
