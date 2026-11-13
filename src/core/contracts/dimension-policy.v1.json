@@ -215,6 +215,15 @@
       "reason": "Sized from the text around them by decision: inline code's room (C10, R024: .2em by .4em), an underline's offset. No ladder step is a fixed share of every text size."
     },
     {
+      "id": "text-bar-capital-height",
+      "category": "style-review",
+      "filePattern": "^(?:core/scss/_sf_css__placeholder\\.scss|component/skeleton/scss/_skeleton\\.scss)$",
+      "contextPattern": "(?:@supports \\(block-size: round\\(nearest, 1em, 1em\\)\\)|--sf-first-paint-bar--(?:height|top):)",
+      "textPattern": "^\\d*\\.?\\d+em$",
+      "status": "accepted-owner-decision",
+      "reason": "Owner decision C136 (1): a text skeleton bar is as tall as the capitals of the text it stands for, Inter's capital height 0.727 em rounded to an even pixel with the size ladder's 2 px step, centred in the line (the glyph box's middle, 0.6055 em from its top). These are font metrics relative to the text, not sizes; the @supports test only asks whether round() parses."
+    },
+    {
       "id": "documentation-prose",
       "category": [
         "script-data-template-review",

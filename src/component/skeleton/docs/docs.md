@@ -12,11 +12,21 @@ an empty state or an error replaces the skeleton.
 - `.sf-skeleton` groups related shapes and owns their spacing and animation.
 - `.sf-skeleton-text` is one reserved shape.
 - `sf-skeleton-text--size-*` follows the Framework typography scale. A text
-  bar is as tall as the text size and takes the room of one line of that size:
-  at size 1, a 16px bar in the middle of a 24px line. Lines follow each other
-  with no gap, as lines of text do, so a loading block is as tall as the text
-  it stands for. A host can set `--sf-skeleton-text--height` (the bar) and
+  bar is as tall as the capitals of that text, rounded to an even pixel, and
+  stands in the middle of one line of that size (1.3.0, owner decision C136):
+  8 / 10 / 12 / 14 / 18 / 26 px on text of 12/16, 14/20, 16/24, 20/28, 24/36
+  and 36/40 -- at size 1 on a wide screen, a 12px bar in the middle of a 24px
+  line (it was the text size, 16px). The value is computed from the step's
+  text size (0.727 of it, Inter's capital height), one per step, the same
+  rule as the first-paint bars of Smart components; it is not read from the
+  face in the browser. Lines follow each other with no gap, as lines of text
+  do, so a loading block is as tall as the text it stands for. A host can set
+  `--sf-skeleton-text--height` (the text size the bar is derived from) and
   `--sf-skeleton-text--line` (its line) separately.
+- Ends: one radius on every text bar, `--sf-radius--ui` (4px; a body bar of
+  8px is a full pill), with no variable of the skeleton's own beyond
+  `--sf-skeleton-radius`; card and picture shapes take `--sf-radius--surface`
+  (C136 (2)).
 - `sf-skeleton-icon` makes inline and block size equal for avatar and icon
   placeholders.
 - `sf-skeleton-circle`, `sf-skeleton-square` and `sf-skeleton-rounded` select

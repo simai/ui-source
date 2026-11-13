@@ -13,12 +13,20 @@
 }
 
 /* A bar stands for a line of text, so it takes a line's room: the text's
-   line height, with the bar -- as tall as the letters, the text size -- in
-   the middle of it: at size 1, a bar two thirds of its line. A bar as
-   tall as the letters and nothing around it made a loading row thinner than
-   the row it stood for, and the page jumped when the data came (owner,
-   2026-10-14). Lines follow one another with no gap, as lines of text do. */
+   line height, with the bar in the middle of it. A bar and nothing around
+   it made a loading row thinner than the row it stood for, and the page
+   jumped when the data came (owner, 2026-10-14). Lines follow one another
+   with no gap, as lines of text do.
+
+   The bar is as tall as the capitals of its text, rounded to an even pixel
+   (owner decision C136 (1)): 0.727 of the text size, Inter's capital height,
+   so 8 / 10 / 12 / 14 / 18 / 26 px on text of 12 / 14 / 16 / 20 / 24 / 36
+   px -- one value per step, computed from the step's size, the same rule as
+   core's first-paint bar. It was the text size (16 on 16/24), a third
+   thicker than the letters. --sf-skeleton-text--height stays the text size:
+   an icon and a shape with no size of their own are measured by it. */
 .sf-skeleton-text {
+  --sf-skeleton-text--bar: calc(var(--sf-skeleton-text--height) * 0.727);
   position: relative;
   overflow: hidden;
   background: var(--sf-skeleton-background-color, var(--sf-skeleton-base));
@@ -30,7 +38,14 @@
 /* Only a line of text has a line's room; a circle, a block or a bar given its
    own height is as tall as it says. */
 .sf-skeleton-text:not(.sf-skeleton-circle, .sf-skeleton-square, .sf-skeleton-rounded, .sf-skeleton-icon, [style*="block-size"]) {
-  margin-block: calc((var(--sf-skeleton-text--line, var(--sf-skeleton-text--height)) - var(--sf-skeleton-text--height)) / 2);
+  block-size: var(--sf-skeleton-text--bar);
+  margin-block: calc((var(--sf-skeleton-text--line, var(--sf-skeleton-text--height)) - var(--sf-skeleton-text--bar)) / 2);
+}
+
+@supports (block-size: round(nearest, 1em, 1em)) {
+  .sf-skeleton-text {
+    --sf-skeleton-text--bar: round(nearest, calc(var(--sf-skeleton-text--height) * 0.727), var(--sf-a2));
+  }
 }
 
 /* One pulse per skeleton, not one per bar: the container's opacity, which

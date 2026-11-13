@@ -86,7 +86,7 @@
     {
       "id": "mask-ink",
       "category": "style-review",
-      "filePattern": "^(?:component/admin-menu/scss/_css__admin_menu\\.scss|component/progress-ring/scss/_css__progress_ring\\.scss|smart/list-feed/js/templates/default\\.css)$",
+      "filePattern": "^(?:component/admin-menu/scss/_css__admin_menu\\.scss|component/progress-ring/scss/_css__progress_ring\\.scss|core/scss/_sf_css__placeholder\\.scss|smart/list-feed/js/templates/default\\.css)$",
       "contextPattern": "(?:mask|^black )",
       "status": "accepted-mask-alpha",
       "reason": "A mask gradient reads only the alpha of its colour stops; the colour is never painted."

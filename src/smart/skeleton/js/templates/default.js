@@ -115,7 +115,12 @@ export function renderSkeletonTemplate(context) {
           itemClasses.push(`sf-skeleton-${type}`);
         }
 
-        const resolvedWidth = widths[index % widths.length] || '';
+        // Several lines of text with one width: even lines and a short last
+        // one, 60 % (owner decision C136 (3), (4)): the end of a paragraph
+        // reads at once. A list of widths is the page's and is kept.
+        const shortLast = variant === 'text' && type !== 'icon' && !box
+          && widths.length === 1 && itemsCount > 1 && index === itemsCount - 1;
+        const resolvedWidth = shortLast ? '60%' : (widths[index % widths.length] || '');
         const resolvedHeight = heights[index % heights.length] || '';
         const itemStyle =
           type !== 'icon' && !box
