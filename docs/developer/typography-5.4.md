@@ -192,3 +192,16 @@ Core-only and Core plus Utility must yield the same computed H1-H6 and Display
 matrix at mobile and desktop breakpoints. Overriding a semantic role must alter
 the matching first-party selector; overriding a historical token must continue
 to alter a legacy consumer.
+
+`document.fonts.ready` says the files are in, not that the page draws with
+them. Under `font-display: optional` a face whose file was not in when its text
+was first laid out stays unused for that document while its status reads
+`loaded`. Before core.runtime 1.54.2 the Cyrillic Inter face of a Russian page
+started only when the first Cyrillic label was drawn (a Smart component's,
+after the first frame), so cold loads of the button and segmented demos drew
+their labels in the fallback on most cold loads, and the 500 labels looked
+regular. core.js now starts the Latin face, and the Cyrillic one where
+`<html lang>` is written in Cyrillic, from its first module
+(`core/js/text-fonts.js`; opt out with `SF_BOOT_CONFIG.fonts.early = false`).
+A probe that compares loads reads the font in use (Chrome DevTools Protocol
+`CSS.getPlatformFontsForNode`) rather than `document.fonts`.
