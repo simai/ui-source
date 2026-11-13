@@ -92,11 +92,11 @@
   /* The dot of a status tag is the dot of the tag's step in core's small-step
      table (owner decision C132, 2026-11-13): 6 at 1/3 and 1/2, 8 at 1 and 2,
      12 at 3. It was sf-dot's 1/3 and 1/2, 4 and 6. */
-  .sf-tag.sf-tag--size-1\/3 .sf-dot .sf-dot-item { --sf-dot-item--size: var(--sf-mark--dot-1\/3); }
-  .sf-tag.sf-tag--size-1\/2 .sf-dot .sf-dot-item { --sf-dot-item--size: var(--sf-mark--dot-1\/2); }
-  .sf-tag.sf-tag--size-1 .sf-dot .sf-dot-item { --sf-dot-item--size: var(--sf-mark--dot-1); }
-  .sf-tag.sf-tag--size-2 .sf-dot .sf-dot-item { --sf-dot-item--size: var(--sf-mark--dot-2); }
-  .sf-tag.sf-tag--size-3 .sf-dot .sf-dot-item { --sf-dot-item--size: var(--sf-mark--dot-3); }
+  .sf-tag.sf-tag--size-1\/3 .sf-dot .sf-dot-item { --sf-dot-item--size: var(--sf-micro--dot-1\/3); }
+  .sf-tag.sf-tag--size-1\/2 .sf-dot .sf-dot-item { --sf-dot-item--size: var(--sf-micro--dot-1\/2); }
+  .sf-tag.sf-tag--size-1 .sf-dot .sf-dot-item { --sf-dot-item--size: var(--sf-micro--dot-1); }
+  .sf-tag.sf-tag--size-2 .sf-dot .sf-dot-item { --sf-dot-item--size: var(--sf-micro--dot-2); }
+  .sf-tag.sf-tag--size-3 .sf-dot .sf-dot-item { --sf-dot-item--size: var(--sf-micro--dot-3); }
 
   .sf-tag .sf-icon {
     color: var(--sf-icon--color, var(--sf-on-surface-variant));
@@ -572,14 +572,17 @@
   /* Every size publishes its text on the root, so density, inline and an
      embedding component can read it. Sizes 1/3, 2 and 3 borrow the type, state
      and colour rules of 1/2 and 1 (aliased above) and set their own text and
-     spacing here. */
+     spacing here. The remove cross is core's cross table (owner decision C132,
+     newer than C76 below 24): half the tag's text line rounded down to a small
+     step -- 8 at 1/3 and 1/2, 12 at 1 and 2, 16 at 3 on a desktop and 12 at 3
+     in compact and on a phone. */
   .sf-tag.sf-tag--size-1\/3 {
     --sf-tag--font-size: var(--sf-text-size-1\/3);
     --sf-tag--line-height: var(--sf-text-height-1\/3);
     --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
     --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-ui-1\/3--space-x));
     --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-ui-1\/3--space-x));
-    --sf-tag--close-size: var(--sf-text-size-1\/4);
+    --sf-tag--close-size: var(--sf-micro--cross-1\/3);
   }
 
   .sf-tag.sf-tag--size-1\/3 .sf-tag-color-icon {
@@ -590,13 +593,13 @@
   .sf-tag.sf-tag--size-1\/2 {
     --sf-tag--font-size: var(--sf-text-size-1\/2);
     --sf-tag--line-height: var(--sf-text-height-1\/2);
-    --sf-tag--close-size: var(--sf-text-size-1\/4);
+    --sf-tag--close-size: var(--sf-micro--cross-1\/2);
   }
 
   .sf-tag.sf-tag--size-1 {
     --sf-tag--font-size: var(--sf-text-size-1);
     --sf-tag--line-height: var(--sf-text-height-1);
-    --sf-tag--close-size: var(--sf-text-size-1\/3);
+    --sf-tag--close-size: var(--sf-micro--cross-1);
   }
 
   .sf-tag.sf-tag--size-2 {
@@ -605,9 +608,7 @@
     --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-default));
     --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-ui-2--space-x));
     --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-ui-2--space-x));
-    /* 14 is not a small step (owner decision C132 #q-icons): the cross at
-       size 2 is 12, on every screen. */
-    --sf-tag--close-size: var(--sf-mark--cross-2);
+    --sf-tag--close-size: var(--sf-micro--cross-2);
   }
 
   .sf-tag.sf-tag--size-2 .sf-tag-color-icon {
@@ -621,7 +622,7 @@
     --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-default));
     --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-ui-3--space-x));
     --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-ui-3--space-x));
-    --sf-tag--close-size: var(--sf-text-size-1);
+    --sf-tag--close-size: var(--sf-micro--cross-3);
   }
 
   .sf-tag.sf-tag--size-3 .sf-tag-color-icon {
@@ -690,8 +691,8 @@
   /* The remove mark is the tag size's step of the cross ladder. The button
      keeps the whole line, so the target does not shrink with the mark. */
   .sf-tag.sf-tag--inline.sf-tag--inline .sf-close-icon {
-    --sf-close-icon--height: var(--sf-tag--close-size, var(--sf-text-size-1\/4));
-    --sf-close-icon--width: var(--sf-tag--close-size, var(--sf-text-size-1\/4));
+    --sf-close-icon--height: var(--sf-tag--close-size, var(--sf-micro--cross-1\/2));
+    --sf-close-icon--width: var(--sf-tag--close-size, var(--sf-micro--cross-1\/2));
   }
 }
 
@@ -906,7 +907,7 @@
 /* The remove mark is drawn by the tag, whatever the close markup carries: a
    close written without a size class had no glyph at all, so a removable tag
    in plain markup showed no mark. The mark is a step of the cross ladder
-   (--sf-tag--close-size: 1/4 at tag sizes 1/3 and 1/2, then 1/3, 1/2 and 1),
+   (--sf-tag--close-size: core's cross table, 8 / 8 / 12 / 12 / 16, C132),
    with the line of every cross, 2 px (C14; it was 0.7 of the label's font size,
    and its line fell to 1.05-1.75 px), and it sits
    after the label at the label's own end step. The button keeps no padding of

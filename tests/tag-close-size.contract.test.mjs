@@ -40,12 +40,12 @@ test('sf-tag draws its remove button in the Smart markup', async () => {
 
 test('sf-tag draws its remove cross from the cross ladder, plain (C14)', async () => {
   const tags = await read('component/tags/scss/_css__tags.scss');
-  for (const [size, step] of [['1\\/3', '1\\/4'], ['1\\/2', '1\\/4'], ['1', '1\\/3'], ['2', '1\\/2'], ['3', '1']]) {
+  // Core's cross table (C132, newer than C76 below 24): 8 / 8 / 12 / 12 at
+  // 1/3 ... 2, 16 at 3 on a desktop and 12 in compact and on a phone.
+  for (const size of ['1\\/3', '1\\/2', '1', '2', '3']) {
     const start = tags.indexOf(`.sf-tag.sf-tag--size-${size} {\n    --sf-tag--font-size:`);
     assert.ok(start >= 0, size);
-    // Size 2 takes the small step 12 (C132 #q-icons: no 14 in small parts).
-    const want = size === '2' ? 'var(--sf-mark--cross-2)' : `var(--sf-text-size-${step})`;
-    assert.ok(tags.slice(start, tags.indexOf('}', start)).includes(`--sf-tag--close-size: ${want};`), size);
+    assert.ok(tags.slice(start, tags.indexOf('}', start)).includes(`--sf-tag--close-size: var(--sf-micro--cross-${size});`), size);
   }
   assert.doesNotMatch(tags, /\* 0\.7\)/u, 'no cross scaled from the label');
   const css = await read('smart/tag/js/templates/default.css');

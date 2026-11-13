@@ -18,7 +18,9 @@ a real destination or action.
   indicator's coloured disc is the small step of the avatar's size, 6 / 6 / 8 /
   12 / 12 / 16 px at 1/4 to 3, the same as the anchored badge's dot, and its
   ring of the place colour is drawn outside the disc (1 px at 1/4 and 1/3,
-  2 px from 1/2 on; owner decision C132). The
+  2 px from 1/2 on; owner decision C132). The company and verification badge
+  is a small step of the avatar's size too: 8 px at 1/4 and 1/3, 12 px at 1/2
+  and 1, 16 px at 2 and 3, on every screen. The
   offline dot is the dim ink of the place the avatar stands on
   (`--sf-on-surface-variant`), at least 3:1 against the place and the avatar
   (since 2026-11-11; the disabled ink it had before was under 3:1). The dot

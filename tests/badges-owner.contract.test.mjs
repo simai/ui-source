@@ -161,8 +161,9 @@ test('Badge draws its border inside its size and offers tight side room', async 
 
   // 1.5.0: a tonal badge on a translucent fill lays its tone over the place (C43).
   // 1.6.0: sf-badge--line-text, the line of the text beside it (C95 point 6).
-  // 1.7.0: the anchored dot and count take core's small steps (C132).
-  assert.equal(passport.version, '1.7.0');
+  // 1.7.0: the anchored dot and count take core's small steps (C132);
+  // 1.7.1: the small steps' internal names are --sf-micro--*.
+  assert.equal(passport.version, '1.7.1');
   for (const side of ['block-start', 'block-end', 'inline-start', 'inline-end']) {
     assert.match(css, new RegExp(`padding-${side}: max\\(var\\(--sf-a0\\), calc\\(`), `padding-${side} gives up the border`);
   }

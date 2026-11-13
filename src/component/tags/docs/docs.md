@@ -26,7 +26,9 @@ line (`sf-tag--inline`, `line` on `sf-tag`) an avatar is that line, as the remov
 button is, so a chip in a field and the field's list rows show one avatar step.
 
 The small parts take the small steps of the tag's size (owner decision C132):
-the remove cross at size 2 is 12 px (never 14); the status dot is 6 px at 1/3 and 1/2, 8 px at 1 and 2 and 12 px at 3.
+the remove cross is half the tag's text line rounded down to a small step, 8 px at 1/3 and 1/2, 12 px at 1 and 2,
+16 px at 3 on a desktop and 12 px at 3 in compact and on a phone (a chip in a field is a tag and takes the same);
+the status dot is 6 px at 1/3 and 1/2, 8 px at 1 and 2 and 12 px at 3.
 
 ## Semantic ownership
 

@@ -1,30 +1,33 @@
 @layer sf.components {
+  /* The company and «verified» badge is a small mark of the avatar's step,
+     from core's badge table (owner decision C132): 8 on 1/4 and 1/3, 12 on
+     1/2 and 1, 16 on 2 and 3. It was a text size: 14 and 20 on a desktop. */
   .sf-avatar-badge {
     background-color: var(--sf-avatar-badge--background-color, transparent);
     width: var(--sf-avatar-badge--width);
   }
 
   .sf-avatar-badge--size-1 {
-    --sf-avatar-badge--width: var(--sf-text-size-1\/2);
+    --sf-avatar-badge--width: var(--sf-micro--badge-1);
   }
 
   .sf-avatar-badge--size-2 {
-    --sf-avatar-badge--width: var(--sf-text-size-1);
+    --sf-avatar-badge--width: var(--sf-micro--badge-2);
   }
 
   .sf-avatar-badge--size-3 {
-    --sf-avatar-badge--width: var(--sf-text-size-2);
+    --sf-avatar-badge--width: var(--sf-micro--badge-3);
   }
 
   .sf-avatar-badge--size-1\/4 {
-    --sf-avatar-badge--width: var(--sf-text-size-1\/5);
+    --sf-avatar-badge--width: var(--sf-micro--badge-1\/4);
   }
 
   .sf-avatar-badge--size-1\/3 {
-    --sf-avatar-badge--width: var(--sf-text-size-1\/4);
+    --sf-avatar-badge--width: var(--sf-micro--badge-1\/3);
   }
 
   .sf-avatar-badge--size-1\/2 {
-    --sf-avatar-badge--width: var(--sf-text-size-1\/3);
+    --sf-avatar-badge--width: var(--sf-micro--badge-1\/2);
   }
 }
