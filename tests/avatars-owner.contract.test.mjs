@@ -117,3 +117,11 @@ test('Avatar documentation uses real Framework-only examples', {
   assert.match(cards, /radius-(?:default|surface)/); // ui-doc moves to radius-surface with the 2026-11-01 sweep
   assert.doesNotMatch(examples, /<style\b|style=/);
 });
+
+// R212 (AP-2): a card without a photo drew its media box 0 px tall, because the
+// square and portrait ratios were on the img alone. The media box keeps them.
+test('Avatar card media box keeps its ratio without a photo', async () => {
+  const sheet = await read('src/component/avatars/scss/_css__avatar_custom.scss');
+  assert.match(sheet, /\.sf-avatar-card\.sf-avatar-card--square \.sf-avatar-card-image,[^{]*\{\s*aspect-ratio: 1 \/ 1;/u);
+  assert.match(sheet, /\.sf-avatar-card\.sf-avatar-card--portrait \.sf-avatar-card-image,[^{]*\{\s*aspect-ratio: 9 \/ 16;/u);
+});
