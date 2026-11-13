@@ -573,11 +573,16 @@
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     color: inherit;
     // Sized by the label (rule C95, C96): the mark is as tall as the label's
-    // line and its number is at the label's size.
+    // line and its number is at the label's size. It stands on the top of the
+    // line box, one line high, as the errors badge does (sf-badge line="text"):
+    // vertical-align middle set its middle on the baseline's x-height and the
+    // line box grew under it, the row 41.6 px where the ladder says 40 (37.2
+    // on the phone, 33.2 dense; navigation intent acceptance 2026-11-13).
+    block-size: 1lh;
     font-size: inherit;
     line-height: inherit;
     font-weight: var(--sf-font-weight-medium);
-    vertical-align: middle;
+    vertical-align: top;
   }
 
   .sf-tabs--size-1-2 .sf-tabs-count {

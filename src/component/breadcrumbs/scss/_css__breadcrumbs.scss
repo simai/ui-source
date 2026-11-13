@@ -59,6 +59,42 @@
     gap: inherit;
   }
 
+  /* On the phone ladder (below lg, 60rem) the trail is one line, «… › parent
+     › current» (owner decision C93 item 2). The fold (the runtime, _trail.js)
+     leaves that tail; what the tail still lacks is cut with an ellipsis, never
+     wrapped. The row is a grid of one column per entry, each as wide as its
+     content at most and nothing at least: the room is shared out equally, so
+     the shorter of the parent and the page keeps its whole name and the longer
+     one is cut (C93 item 6: the runtime gives a cut crumb its whole name as
+     the tooltip). «…», a separator or a siblings button is narrower than its
+     share and keeps its size. On a wider screen the page's name still wraps
+     (C93 item 6). */
+  @media not all and (min-width: 60rem) {
+    .sf-breadcrumbs > :is(ol, ul),
+    .sf-breadcrumbs:not(:has(> ol)):not(:has(> ul)) {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, max-content);
+      justify-content: start;
+    }
+
+    .sf-breadcrumbs > :is(ol, ul) {
+      flex: 0 1 auto;
+    }
+
+    .sf-breadcrumbs .sf-breadcrumbs-item[aria-current],
+    .sf-breadcrumbs .sf-breadcrumbs-item[aria-current] > .sf-breadcrumbs-item-container {
+      min-inline-size: 0;
+    }
+
+    .sf-breadcrumbs .sf-breadcrumbs-item[aria-current] > .sf-breadcrumbs-item-container > span {
+      min-inline-size: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
   .sf-breadcrumbs > :is(ol, ul) > li[hidden],
   .sf-breadcrumbs-item[hidden] {
     display: none;
