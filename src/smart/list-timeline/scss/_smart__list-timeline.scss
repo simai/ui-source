@@ -168,16 +168,26 @@ sf-list-timeline {
   --sf-featured-icon--foreground-color: var(--sf-link);
 }
 
-/* Steps (list-timeline.html scene B): the current one ringed, an upcoming
-   one empty with a quiet ring. */
+/* Steps with an icon (owner decision C61, variant A; the same logic as the
+   dot below). The shape shows the progress, the colour the status (C61
+   round 4): the template gives the circle the primary tone, or the status
+   tone (error, warning, success) when the step has one. Done the solid
+   circle; current the same circle ringed through a gap -- outside the
+   circle, as on a dot (a 2 px gap in the list's ground, a 2 px ring in the
+   tone); upcoming an empty circle, the glyph and a 2 px ring in the tone
+   (--sf-on-surface-variant when the step has no status). */
 .sf-list-timeline-marker--current .sf-featured-icon {
-  box-shadow: inset 0 0 0 calc(var(--sf-px) * 2) var(--sf-primary);
+  box-shadow: 0 0 0 calc(var(--sf-px) * 2) var(--sf-list-timeline--ground), 0 0 0 calc(var(--sf-px) * 4) var(--sf-featured-icon--tone);
 }
 
 .sf-list-timeline-marker--upcoming .sf-featured-icon {
   --sf-featured-icon--background-color: var(--sf-list-timeline--ground);
+  --sf-featured-icon--foreground-color: var(--sf-featured-icon--tone);
+  box-shadow: inset 0 0 0 calc(var(--sf-px) * 2) var(--sf-featured-icon--foreground-color);
+}
+
+.sf-list-timeline-marker--upcoming .sf-featured-icon--neutral {
   --sf-featured-icon--foreground-color: var(--sf-on-surface-variant);
-  box-shadow: inset 0 0 0 calc(var(--sf-px) * 2) var(--sf-outline-variant);
 }
 
 .sf-list-timeline-item[data-state="current"] .sf-list-timeline-title {
@@ -215,21 +225,23 @@ sf-list-timeline {
 
 /* A step without an icon (owner decision C61, variant A of
    prototypes/timeline-stage-dot-state.html): the state is told by the shape,
-   one logic with the icon steps -- done a solid dot in the primary colour,
-   current the same dot ringed through a gap, upcoming an empty dot with a
-   quiet ring (--sf-on-surface-variant: --sf-outline-variant, the line's 24 %,
-   is lost on a dot this small). A status tone still wins. */
+   one logic with the icon steps -- done a solid dot, current the same dot
+   ringed outside through a gap, upcoming an empty dot with a ring. The
+   colour is the status (C61 round 4): the primary colour (an upcoming one:
+   --sf-on-surface-variant; --sf-outline-variant, the line's 24 %, is lost on
+   a dot this small), or the status colour (success, warning, error), which
+   keeps the shape: an upcoming step with an error is an empty error ring. */
 .sf-list-timeline-item:is([data-state="done"], [data-state="current"]) .sf-list-timeline-marker--dot:is(.sf-list-timeline-marker--neutral, .sf-list-timeline-marker--info) {
   color: var(--sf-primary);
 }
 
-.sf-list-timeline-item[data-state="current"] .sf-list-timeline-marker--dot:is(.sf-list-timeline-marker--neutral, .sf-list-timeline-marker--info) .sf-list-timeline-dot {
-  box-shadow: 0 0 0 calc(var(--sf-px) * 2) var(--sf-list-timeline--ground), 0 0 0 calc(var(--sf-px) * 4) var(--sf-primary);
+.sf-list-timeline-item[data-state="current"] .sf-list-timeline-marker--dot .sf-list-timeline-dot {
+  box-shadow: 0 0 0 calc(var(--sf-px) * 2) var(--sf-list-timeline--ground), 0 0 0 calc(var(--sf-px) * 4) currentColor;
 }
 
-.sf-list-timeline-item[data-state="upcoming"] .sf-list-timeline-marker--dot:is(.sf-list-timeline-marker--neutral, .sf-list-timeline-marker--info) .sf-list-timeline-dot {
+.sf-list-timeline-item[data-state="upcoming"] .sf-list-timeline-marker--dot .sf-list-timeline-dot {
   background: var(--sf-list-timeline--ground);
-  box-shadow: inset 0 0 0 calc(var(--sf-px) * 2) var(--sf-on-surface-variant);
+  box-shadow: inset 0 0 0 calc(var(--sf-px) * 2) currentColor;
 }
 
 .sf-list-timeline-body {
@@ -363,6 +375,53 @@ sf-list-timeline {
 @media (forced-colors: active) {
   .sf-list-timeline-item:not(:last-child)::before {
     background: CanvasText;
+  }
+
+  /* High contrast drops shadows and forces fills: a step keeps its shape in
+     the system colours, whatever its status (the status is said in words) --
+     done filled, current filled and ringed outside through a gap (an
+     outline), upcoming empty with a ring. A dot is filled text colour, as a
+     plain event's is. forced-color-adjust: none keeps the normal-mode
+     shadows, so every marker drops them here: the rings are outlines in
+     system colours, the gap is the Canvas behind. */
+  .sf-list-timeline-dot {
+    forced-color-adjust: none;
+    background: CanvasText;
+    box-shadow: none;
+  }
+
+  .sf-list-timeline-item[data-state="current"] .sf-list-timeline-marker--dot .sf-list-timeline-dot {
+    box-shadow: none;
+    outline: calc(var(--sf-px) * 2) solid CanvasText;
+    outline-offset: calc(var(--sf-px) * 2);
+  }
+
+  .sf-list-timeline-item[data-state="upcoming"] .sf-list-timeline-marker--dot .sf-list-timeline-dot {
+    background: Canvas;
+    box-shadow: none;
+    outline: calc(var(--sf-px) * 2) solid CanvasText;
+    outline-offset: calc(var(--sf-px) * -2);
+  }
+
+  .sf-list-timeline-marker:is(.sf-list-timeline-marker--done, .sf-list-timeline-marker--current) .sf-featured-icon {
+    forced-color-adjust: none;
+    --sf-featured-icon--background-color: CanvasText;
+    --sf-featured-icon--foreground-color: Canvas;
+    box-shadow: none;
+  }
+
+  .sf-list-timeline-marker--current .sf-featured-icon {
+    box-shadow: none;
+    outline: calc(var(--sf-px) * 2) solid CanvasText;
+    outline-offset: calc(var(--sf-px) * 2);
+  }
+
+  .sf-list-timeline-marker--upcoming .sf-featured-icon {
+    --sf-featured-icon--background-color: Canvas;
+    --sf-featured-icon--foreground-color: CanvasText;
+    box-shadow: none;
+    outline-width: calc(var(--sf-px) * 2);
+    outline-offset: calc(var(--sf-px) * -2);
   }
 }
 }

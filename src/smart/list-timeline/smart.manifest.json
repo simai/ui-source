@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-timeline",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "title": "Timeline",
   "summary": "An activity timeline (C40): events on a vertical line, each a .sf-featured-icon marker toned by status (or a dot), the actor as sf-avatar and a bold name, the title, a field change through sf-change, one quiet line «sf-time · text», a comment in an outline; grouped by day under block list's heading, runs folded into «Ещё N», steps done/current/upcoming, a «Показать ещё» button and a quiet line when there are none. Density from the page, sizes 1/2, 1 and 2.",
   "kind": "smart",
@@ -318,11 +318,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-timeline/index.js",
-        "sha256": "7dfd17444171960b4acbe6624de44944c270cbceba3f3637e5748ff3da5f5a7a"
+        "sha256": "45e272805da21a670d3d1e7a5583b265cd9c73b013fa17d380b3c211cfcbca99"
       },
       {
         "path": "src/smart/list-timeline/js/templates/default.js",
-        "sha256": "f948cf4fe331c07a506fc093f0acb85a6ac4602a01457734679ba01489f8b880"
+        "sha256": "453b92287c8e0ad6d7ebd083179323f347792125a21746951dbbc1e01698b0e0"
       },
       {
         "path": "src/smart/list-timeline/js/fold-runs.mjs",
@@ -330,7 +330,7 @@
       },
       {
         "path": "src/smart/list-timeline/scss/_smart__list-timeline.scss",
-        "sha256": "550069b9ace46a93c6183979e956e72de3850e57a824cb2ee86687df771f27a1"
+        "sha256": "65288740b0bb185ab755d0616b81840b1dddf61cf68ba90a3b018233e0be0c5f"
       },
       {
         "path": "src/smart/list-timeline/rule.js",
@@ -338,7 +338,7 @@
       },
       {
         "path": "src/smart/list-timeline/docs.md",
-        "sha256": "8deac2591d1770460ba3c6a606257844cb9ca26cede19d1e490597cc3b60963e"
+        "sha256": "93d520f80033a57ad12d95943ae79ed0005c55a8783a8004f9e64a3f3df5aa45"
       }
     ],
     "generated_runtime": []

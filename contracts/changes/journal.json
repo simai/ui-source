@@ -10401,6 +10401,31 @@
       "source": "src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
     },
     {
+      "id": "behaviour-timeline-icon-steps",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-list-timeline 1.2.0: a step (state) with an icon follows the same logic as a step's dot (owner decision C61): done the solid primary circle, current the same solid circle ringed through a gap (it was the soft primary circle with a ring), upcoming an empty circle with a --sf-on-surface-variant ring (it was --sf-outline-variant). A status tone (error, warning, success) now wins over a step with an icon, as it does on a dot. In high contrast the step dots and icons keep their shape in the system colours.",
+      "items": [
+        {
+          "component": "sf-list-timeline",
+          "attribute": "items[].state",
+          "from": "an icon step: current soft, upcoming ringed in --sf-outline-variant, the status ignored",
+          "to": "an icon step: current solid and ringed through a gap, upcoming ringed in --sf-on-surface-variant, the status tone wins"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite in markup or data. A step that carried a status only for the log now shows the status tone on its icon; drop the status from such a step if the step state should show.",
+      "examples": {
+        "before": "{\"title\": \"Собран\", \"icon\": \"inventory_2\", \"state\": \"done\", \"status\": \"warning\"} (a primary circle)",
+        "after": "the same item (a warning circle; without status a primary circle)"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/list-timeline/js/templates/default.js, src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
+    },
+    {
       "id": "attribute-slider-range-c78",
       "recorded_on": "2026-11-12",
       "stage": "compat",
