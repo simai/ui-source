@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.switch",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "title": "Switch",
   "summary": "An on/off control for a setting that applies at once: a native checkbox with role=\"switch\", a track and a moving thumb, with a label, description and help text.",
   "kind": "smart",
@@ -79,7 +79,7 @@
       "help": {
         "type": "string",
         "default": "",
-        "description": "The explanation behind a «?» button (sf-help-mark) after the label text; a press on the button opens it and never changes the control. The help slot takes an sf-help-mark of the page's own."
+        "description": "The explanation behind a «?» button (sf-help-mark) after the label text: --sf-space-1/4 after the label's last word, on its last line when the label wraps; a press on the button opens it and never changes the control. The help slot takes an sf-help-mark of the page's own."
       },
       "disabled": {
         "type": "boolean",

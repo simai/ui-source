@@ -8,20 +8,28 @@
      (sf-list-item, sf-input-choice, the C49 rows) carries no .sf-checkable: its
      row is the target as a whole and keeps its own geometry. */
 
-  /* The line and the row step of each size. */
+  /* The line and the row step of each size, and the help mark's own size:
+     sf-help-mark is drawn one step down, 1/3 beside sizes 1/2 and 1, 1/2
+     beside size 2 (CHECKABLE_HELP_SIZE), a square of that control height. */
   .sf-checkable--size-1\/2 {
     --sf-checkable--line: var(--sf-text-height-1\/2);
+    --sf-checkable--text-size: var(--sf-text-size-1\/2);
     --sf-checkable--step: var(--sf-ui-1\/2--control-height);
+    --sf-checkable--help-size: var(--sf-ui-1\/3--control-height);
   }
 
   .sf-checkable--size-1 {
     --sf-checkable--line: var(--sf-text-height-1);
+    --sf-checkable--text-size: var(--sf-text-size-1);
     --sf-checkable--step: var(--sf-ui-1--control-height);
+    --sf-checkable--help-size: var(--sf-ui-1\/3--control-height);
   }
 
   .sf-checkable--size-2 {
     --sf-checkable--line: var(--sf-text-height-2);
+    --sf-checkable--text-size: var(--sf-text-size-2);
     --sf-checkable--step: var(--sf-ui-2--control-height);
+    --sf-checkable--help-size: var(--sf-ui-1\/2--control-height);
   }
 
   /* W5: a control with text is a row of its step: (control height - line) / 2
@@ -157,6 +165,51 @@
 
   .sf-checkable-row > .sf-checkable--text > .sf-checkbox-container + .sf-checkbox-box:last-child {
     margin-inline-start: var(--sf-checkbox--gap);
+  }
+
+  /* A wrapped name (dispatcher decision 2026-11-13, a standard ambiguity of
+     C59): the «?» follows the name's LAST word, inline at the end of its last
+     line, --sf-space-1/4 after it, also with position="end" -- not the end of
+     the first line (it stood 7-16 px after the first line, 21-49 after the
+     last word). The «?» is still the label's sibling (C59). The name holds a
+     place for it in its own text: after the last word, glued to it by a word
+     joiner, so the mark never stands on a line alone, --sf-space-1/4 then the
+     mark's size; the name's block takes the name's own size and line, so a
+     row is as tall as before. Only where the last word and the mark are
+     wider together than the column does the mark take the next line. The
+     place is the anchor of the «?» (CSS anchor positioning),
+     which stands on it, centred on that line. Without anchor positioning the
+     row keeps the grid placement above: right after the name's first line. */
+  @supports (anchor-name: --sf-a) and (anchor-scope: all) {
+    .sf-checkable-row:has(> .sf-checkable--text :is(.sf-checkbox-top, .sf-radio-button-top, .sf-switch-top)) {
+      position: relative;
+      anchor-scope: --sf-checkable-help;
+    }
+
+    .sf-checkable-row:has(> .sf-checkable-help) > .sf-checkable--text > * > :is(.sf-checkbox-top, .sf-radio-button-top, .sf-switch-top) {
+      display: block;
+      font-size: var(--sf-checkable--text-size);
+      line-height: var(--sf-checkable--line);
+    }
+
+    .sf-checkable-row:has(> .sf-checkable-help) > .sf-checkable--text > * > .sf-switch-top > .sf-switch-container {
+      display: inline;
+    }
+
+    .sf-checkable-row:has(> .sf-checkable-help) > .sf-checkable--text > * > :is(.sf-checkbox-top, .sf-radio-button-top, .sf-switch-top)::after {
+      content: "\2060";
+      margin-inline-start: var(--sf-space-1\/4);
+      padding-inline-start: var(--sf-checkable--help-size);
+      anchor-name: --sf-checkable-help;
+    }
+
+    .sf-checkable-row:has(> .sf-checkable--text :is(.sf-checkbox-top, .sf-radio-button-top, .sf-switch-top)) > .sf-checkable-help {
+      position: absolute;
+      position-anchor: --sf-checkable-help;
+      inset-inline-start: anchor(start);
+      inset-block-start: calc(anchor(center) - var(--sf-checkable--line) / 2);
+      margin: 0;
+    }
   }
 }
 
