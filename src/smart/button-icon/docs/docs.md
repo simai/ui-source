@@ -55,11 +55,15 @@ Main attributes:
   on a dark fill there is no quieter step.
 - `status="danger"` — what the control is about. The destructive one, for a
   control that deletes, discards or cannot be undone (decision C13: controls
-  say `danger`, fields and messages `error`; `error` is read as `danger`). In
-  every appearance it paints with the error
-  family's twin of every primary role, so it behaves exactly like a primary
-  control and only its colour says what it does. A status wins over the scheme,
-  because the two cannot both colour the control.
+  say `danger`, fields and messages `error`; `error` is read as `danger`). It
+  paints with the error family's twin of every primary role, so it behaves
+  exactly like a primary control and only its colour says what it does. A
+  status wins over the scheme, because the two cannot both colour the control.
+  `danger` is the only status of an icon button (decision C116): there are no
+  success, warning or info icon buttons; another word draws no status and
+  warns once in the console. A danger icon button is `default`, `outline` or,
+  in a row, `ghost`; `tonal` (and the retired `surface`) with
+  `status="danger"` draws as `outline` until 2027-01-01, with one warning.
 - `icon`
 - `spacing="compact|normal|comfortable|spacious"`
 - `radius="default|square|rounded"`

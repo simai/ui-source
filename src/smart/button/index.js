@@ -5,6 +5,7 @@ import { html } from "lit";
 import { resolveControlSpacing } from '../../core/js/control-spacing';
 import { noteDeprecated } from "../../core/js/deprecations.js";
 import { warnUnknownControlStatus } from "../helpers/control-status";
+import { buttonSetLook, sayButtonSetFormers } from "../helpers/button-set";
 import {
   ariaKeyShortcuts,
   isCommandShortcut,
@@ -94,24 +95,21 @@ function noteSpacing(host) {
   globalThis.console?.warn?.("[SIMAI Framework] sf-button: spacing is deprecated until 2027-01-01 and draws the side padding only; write height=\"low|default|high|highest\" for the control height. See contracts/changes/journal.json (attribute-button-spacing-to-height).");
 }
 
-// surface with the quiet scheme on-surface-variant is retired (1.11.0,
-// following C15 on the icon buttons; buttons review 2026-11-09): on the
-// surface fill the quiet ink read 4.88:1 in the dark theme and a key on it
-// 4.38:1. The pair draws as surface with on-surface until 2027-01-01 (change
-// journal value-button-surface-quiet-scheme), noted in SF.deprecations and
-// said once per page in the console with its replacement. A combination of two
-// settings, so the component reads it itself rather than through a value alias.
-function retiredSurfaceQuiet(host) {
-  const appearance = host.getAttribute("appearance") ?? host.getAttribute("type");
-  return appearance === "surface" && host.getAttribute("scheme") === "on-surface-variant";
-}
-
-function noteSurfaceQuiet() {
-  noteDeprecated({component: "sf-button", kind: "value", attribute: "scheme", from: "on-surface-variant", to: "on-surface", since: "2026-11-09", remove_after: "2027-01-01"});
-  const root = globalThis.SF = globalThis.SF || {};
-  if (root.__sfButtonSurfaceQuietWarned) return;
-  Object.defineProperty(root, "__sfButtonSurfaceQuietWarned", {value: true, configurable: true});
-  globalThis.console?.warn?.("[SIMAI Framework] sf-button: appearance=\"surface\" with scheme=\"on-surface-variant\" is retired until 2027-01-01 and draws as scheme=\"on-surface\"; write scheme=\"on-surface\", or appearance=\"tonal\" or \"outline\" to keep the quiet scheme. See contracts/changes/journal.json (value-button-surface-quiet-scheme).");
+// The button set (1.14.0, owner decision C116; helpers/button-set.js):
+// scheme="secondary" draws as on-surface, appearance="surface" as the soft grey
+// button (tonal + on-surface, C113), and a danger button that asks for tonal or
+// surface draws as outline. Each is a former name until 2027-01-01, noted in
+// SF.deprecations and said once per page (change journal
+// value-button-set-c116). surface with on-surface-variant, retired in 1.11.0
+// (value-button-surface-quiet-scheme), is part of the retired surface now and
+// draws the same soft grey button. Words of two settings, so the component
+// reads them itself rather than through value aliases.
+function setLook(host) {
+  return buttonSetLook({
+    appearance: host.getAttribute("appearance") ?? host.getAttribute("type"),
+    scheme: host.getAttribute("scheme"),
+    status: host.getAttribute("status"),
+  });
 }
 
 // href (1.4.0) takes the addresses a link may follow: a relative one, a
@@ -184,6 +182,16 @@ class SfButton extends ButtonElement {
     });
   }
 
+  // aria-label is the host's (§3.1), not a setting, so the manifest makes no
+  // observed attribute of it, and the forwarder leaves it out (it is in
+  // COMPONENT_ATTRIBUTES): a name changed after the first drawing never reached
+  // the inner button. sf-input-image's «Заменить изображение «photo.png»» kept
+  // the first file's name after a new drop (1.14.0); sf-button-icon watched it
+  // since 2026-11-06. A change now draws the button again with the new name.
+  static get observedAttributes() {
+    return [...new Set([...super.observedAttributes, "aria-label"])];
+  }
+
   constructor() {
     super();
     this._attributeObserver = null;
@@ -191,13 +199,21 @@ class SfButton extends ButtonElement {
     this._shortcutListener = null;
   }
 
-  // scheme: surface with on-surface-variant reads as on-surface (1.11.0).
+  // appearance and scheme: the set's former words read as their successors
+  // (C116): surface as tonal, a danger tonal or surface as outline.
+  get appearance() {
+    const look = setLook(this);
+    return look.formers.some((former) => former.attribute === "appearance") ? look.appearance : super.appearance;
+  }
+
+  set appearance(value) {
+    super.appearance = value;
+  }
+
+  // secondary, and the scheme the retired surface brings, read as on-surface.
   get scheme() {
-    if (retiredSurfaceQuiet(this)) {
-      noteSurfaceQuiet();
-      return "on-surface";
-    }
-    return super.scheme;
+    const look = setLook(this);
+    return look.formers.some((former) => former.attribute === "scheme" || former.from === "surface" && former.to === "tonal") ? look.scheme : super.scheme;
   }
 
   set scheme(value) {
@@ -301,6 +317,8 @@ class SfButton extends ButtonElement {
     noteSpacing(this);
     // success, warning, info: no such buttons (C13, BS-1); said once per page.
     warnUnknownControlStatus("sf-button", this.getAttribute("status"));
+    // secondary, surface, a danger tonal or surface (C116); said once per page.
+    sayButtonSetFormers("sf-button", setLook(this).formers);
     const announce = Boolean(cycle && this.__sfCycleAnnounce);
     this.__sfCycleAnnounce = false;
     // A cycle with an icon shows the item's icon in place of the start icon;

@@ -28,7 +28,7 @@ function renderRow(context, profile) {
       <div>${fill(text('removeQuestion'), {name: profile.label ?? id})}${profile.shared ? html` ${text('removeShared')}` : nothing}</div>
       <div class="sf-profile-picker-buttons">
         <sf-button size=${context.size} status="danger" text=${text('remove')} @click=${() => component.submitDelete(id)}></sf-button>
-        <sf-button size=${context.size} appearance="outline" scheme="on-surface" text=${text('cancel')} @click=${() => component.setMode(null)}></sf-button>
+        <sf-button size=${context.size} appearance="ghost" scheme="on-surface" text=${text('cancel')} @click=${() => component.setMode(null)}></sf-button>
       </div>
     </div>`;
   }
@@ -79,7 +79,7 @@ function renderCreate(context) {
     <div class="sf-profile-picker-buttons">
       <sf-button size=${context.size} text=${text('create')}
                  @click=${(event) => component.submitCreate(event.target.closest('.sf-profile-picker-form').querySelector('input').value, shared)}></sf-button>
-      <sf-button size=${context.size} appearance="outline" scheme="on-surface" text=${text('cancel')} @click=${() => component.setMode(null)}></sf-button>
+      <sf-button size=${context.size} appearance="ghost" scheme="on-surface" text=${text('cancel')} @click=${() => component.setMode(null)}></sf-button>
     </div>
   </div>`;
 }

@@ -28,36 +28,46 @@ Loading model:
   owner decision C36; before, it wore the grey disabled look). A button that
   is `disabled` and `loading` at once wears the disabled look
 
+Which button to take (decision C116, the set): one main button per place
+(`default primary`); a second weighted action is `outline on-surface`; a quiet
+one -- «Отмена», «Позже», «Показать ещё», «Сбросить» -- is `ghost on-surface`;
+«Отмена» is always quiet, in a form, a dialog and a confirmation alike. The
+soft `tonal on-surface` button stands on a coloured or busy place (a notice,
+steppers). `outline primary` is only the second call to action of a site's
+hero, beside the main button; in an application take `outline on-surface`.
+
 Main attributes:
 
 - `template`
 - `size`
-- `appearance="default|tonal|outline|ghost|surface"` — `ghost` is the quiet
+- `appearance="default|tonal|outline|ghost"` — `ghost` is the quiet
   button with no fill and no edge until a pointer meets it (1.9.0, decision
   C15; `link` is its former name, a dated alias). `href` makes any appearance
-  a link. surface reads the neutral alpha ramp rather than a colour of its
-  own: a faint fill and a border one step stronger, right in a light and in a
-  dark theme without being redeclared.
-- `scheme="primary|secondary|on-surface|on-surface-variant"` — which colour
-  family the control takes. `on-surface-variant` is the on-surface family one
-  step quieter: the fill and the edge of `on-surface`, the label and the icons
-  in `--sf-on-surface-variant` (a filled `default` button keeps on-surface's
-  inverse ink). Hover, press and disabled are on-surface's. `secondary` in
-  the `outline`, `surface` and `ghost` appearances is drawn the same way: the
-  on-surface button with the label and the icons in `--sf-secondary`, at rest,
-  hovered and pressed; `default` and `tonal` secondary keep their own fill.
-  `on-surface-variant` is not a look of `surface` (1.11.0, as C15 did on the
-  icon buttons: the quiet ink on the surface fill fell under 4.5:1 in the dark
-  theme); written there it draws as `on-surface` until 2027-01-01 and warns
-  once in the console. For a quiet search trigger take `tonal` or `outline`.
+  a link. `surface` is a former name until 2027-01-01 (1.14.0, decision C116):
+  it draws as the soft grey button, `tonal` with `scheme="on-surface"` (C113),
+  and warns once in the console.
+- `scheme="primary|on-surface|on-surface-variant"` — which colour family the
+  control takes. `on-surface-variant` is the on-surface family one step
+  quieter: the fill and the edge of `on-surface`, the label and the icons in
+  `--sf-on-surface-variant` (a filled `default` button keeps on-surface's
+  inverse ink). Hover, press and disabled are on-surface's. `secondary` is a
+  former name until 2027-01-01 (1.14.0, decision C116): the set has no job
+  for a second colour, so it draws as `on-surface` and warns once in the
+  console. The secondary colour stays in core for badges, tabs and segments.
 - `status="danger"` — what the control is about. The destructive one, for a
   control that deletes, discards or cannot be undone (1.9.0, decision C13:
   controls say `danger`, fields and messages say `error`; `error` is read as
   `danger`). It paints with the error
   family's twin of every primary role, so it behaves exactly like a primary
-  control and only its colour says what it does -- on every appearance,
-  `surface` included (1.11.0: before, surface danger drew the plain ink). A status wins over the scheme,
-  because the two cannot both colour the control.
+  control and only its colour says what it does. A status wins over the
+  scheme, because the two cannot both colour the control. `danger` is the only
+  status of a button (decision C116): there are no success, warning or info
+  buttons -- a result's colour belongs to a notice or a badge; another word
+  draws no status and warns once in the console. A danger button has three
+  looks: `default` (filled) for the last confirmation, `outline` for the
+  button that opens a confirmation, and a fill-less icon button in a row;
+  `tonal` and `surface` with `status="danger"` are former looks until
+  2027-01-01 and draw as `outline`.
 - `text`
 - `icon`
 - `icon-start`

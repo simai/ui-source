@@ -2,7 +2,7 @@
   "$comment": "The source of sf-button's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/button (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.button",
   "tag": "sf-button",
-  "version": "1.13.1",
+  "version": "1.14.0",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -35,22 +35,20 @@
         "default",
         "tonal",
         "outline",
-        "ghost",
-        "surface"
+        "ghost"
       ],
       "default": "default",
-      "summary": "How the button looks: default (filled), tonal, outline, ghost (no fill or edge until hovered; rule C15) or surface (a faint fill on the neutral alpha ramp and a border). link is ghost's former name; a link is made by href, not by the look."
+      "summary": "How the button looks: default (filled), tonal, outline or ghost (no fill or edge until hovered; rule C15). link is ghost's former name; a link is made by href, not by the look. surface is a former name until 2027-01-01 (rule C116): it draws as the soft grey button, tonal with the on-surface scheme (C113), and warns once per page. A danger button is default, outline or ghost: tonal and surface with status danger draw as outline until 2027-01-01."
     },
     "scheme": {
       "type": "enum",
       "values": [
         "primary",
-        "secondary",
         "on-surface",
         "on-surface-variant"
       ],
       "default": "primary",
-      "summary": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the label and the icons in --sf-on-surface-variant (a search trigger that reads like a field). With appearance surface on-surface-variant is retired (1.11.0, as on the icon buttons, C15): it draws as on-surface until 2027-01-01 and warns once. What the control is about is the status axis; a status set there wins over this."
+      "summary": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the label and the icons in --sf-on-surface-variant (a search trigger that reads like a field). secondary is a former name until 2027-01-01 (rule C116): it draws as on-surface and warns once per page; the secondary colour stays in core for badges, tabs and segments. What the control is about is the status axis; a status set there wins over this."
     },
     "status": {
       "type": "enum",
@@ -59,7 +57,7 @@
         "danger"
       ],
       "default": "",
-      "summary": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control."
+      "summary": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control. danger is the only status of a button (rule C116): there are no success, warning or info buttons; another word draws no status and warns once per page."
     },
     "text-position": {
       "type": "string",
@@ -568,7 +566,8 @@
     "version 1.12.1 (2026-11-10, pair next integration): one number above every claim of this release, 1.11.2 (R074) and 1.12.0 (C36), which were built with different contents; nothing beyond the notes above changes. Settings, values, events and keys as the notes above say.",
     "version 1.13.0 (2026-11-11, CB-01, decision C15): the button without a fill writes the class sf-button--ghost, the name of its appearance; sf-button--link, the class it wrote before, is written beside it until 2027-01-01 (journal class-button-link-to-ghost), so a page selector that reached it still does. Both classes are drawn by the same rules: computed styles identical in light and dark. Settings, values, events and keys unchanged.",
     "version 1.13.0, also (2026-11-11, docs review R076, written as 1.12.2 on fix/theme-cycle-host): theme-cycle under a host that draws the theme itself (the Loader started with theme: false, as a Docara page and its examples are): the name and the icon say the theme the document draws (its theme-dark / theme-light class, else the system scheme) instead of the Loader's untouched light; a press that cannot move the theme says why once in the console (the host owns the theme, or SF.Loader is absent) and still stays put without change. Its shared helper src/smart/helpers/cycle.js changed (module.smart-helpers 1.5.0, unreleased). Nothing drawn differently where the Loader owns the theme; settings, values, events and keys unchanged.",
-    "version 1.13.1 (2026-11-13, a patch, defect BS-1 of ui-control research 2026-11-13-button-schemes, rule C13): a status other than danger -- success, warning, info or any other word -- was dropped without a sound and the scheme colour drawn. It still draws so, and the console says it once per page for each word (helpers/control-status.js, shared with sf-button-icon and sf-menu-context items; error and critical stay the former names of danger). Nothing drawn differently; settings, values, events and keys unchanged."
+    "version 1.13.1 (2026-11-13, a patch, defect BS-1 of ui-control research 2026-11-13-button-schemes, rule C13): a status other than danger -- success, warning, info or any other word -- was dropped without a sound and the scheme colour drawn. It still draws so, and the console says it once per page for each word (helpers/control-status.js, shared with sf-button-icon and sf-menu-context items; error and critical stay the former names of danger). Nothing drawn differently; settings, values, events and keys unchanged.",
+    "version 1.14.0 (2026-11-13): a minor (§4.10; owner decision C116, the button set; ui-control research 2026-11-13-buttons-system). Three words become former names until 2027-01-01, each noted in SF.deprecations and said once per page in the console (helpers/button-set.js, change journal value-button-set-c116): scheme secondary draws as on-surface (the secondary colour stays in core for badges, tabs and segments); appearance surface draws as tonal with the on-surface scheme, the soft grey button (C113) -- surface with on-surface-variant, retired in 1.11.0, is part of it now; a danger button that asks for tonal or surface draws as outline (a danger button is filled, outline or a fill-less icon). The lists of appearance and scheme no longer name surface and secondary. danger stays the only status (BS-1 warns on any other word; error and critical are its former names). Examples: the outline one is Экспорт in on-surface, the new-tab one on-surface, the surface one is the soft tonal on-surface button. Also in 1.14.0 (2026-11-13, coordinator report from sf-input-image): a changed aria-label reaches the inner button or link. aria-label is the host's (§3.1), not a setting, so it was not observed and the host-attribute forwarder leaves it out: after a new image was dropped «Заменить изображение «photo.png»» kept the first name (confirmed on ui 4c012852f by tests/browser/button-name-update.browser.mjs). sf-button now observes it, as sf-button-icon does, and draws again with the new name. Settings other than these values, events and keys unchanged."
   ],
   "x-rule": {
     "$comment-after": [

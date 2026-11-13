@@ -9198,7 +9198,7 @@
         "after": "<sf-button appearance=\"surface\" scheme=\"on-surface\" text=\"Поиск\">"
       },
       "manual": "With appearance=\"surface\" write scheme=\"on-surface\"; to keep the quiet scheme take appearance=\"tonal\" or \"outline\" with scheme=\"on-surface-variant\". The component notes the use in SF.deprecations and warns once per page in the console.",
-      "source": "src/smart/button/index.js retiredSurfaceQuiet; ui-control control/research/2026-11-09-buttons-review.md"
+      "source": "src/smart/button/index.js setLook (since sf-button 1.14.0 the pair is part of the retired surface, value-button-set-c116); ui-control control/research/2026-11-09-buttons-review.md"
     },
     {
       "id": "sf-menu-item-field-aliases",
@@ -10606,6 +10606,65 @@
       },
       "owner": "ui-source",
       "source": "src/component/quantity/scss/_css__quantity.scss, src/smart/input-quantity/index.js"
+    },
+    {
+      "id": "value-button-set-c116",
+      "recorded_on": "2026-11-13",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "The button set (owner decision C116; ui-control research 2026-11-13-buttons-system): sf-button 1.14.0 retires scheme secondary (drawn as on-surface; the secondary colour stays in core for badges, tabs and segments) and appearance surface (drawn as tonal with the on-surface scheme, the soft grey button, C113); a danger button or icon button (sf-button 1.14.0, sf-button-icon 1.10.0) that asks for tonal or surface is drawn as outline -- a danger control is filled, outline or a fill-less icon. A control's status is danger alone; success, warning and info are no values (BS-1 warns).",
+      "items": [
+        {
+          "component": "sf-button",
+          "attribute": "scheme",
+          "from": "secondary",
+          "to": "on-surface"
+        },
+        {
+          "component": "sf-button",
+          "attribute": "appearance",
+          "from": "surface",
+          "to": "tonal",
+          "when": "scheme becomes on-surface"
+        },
+        {
+          "component": "sf-button",
+          "attribute": "appearance",
+          "from": "tonal",
+          "to": "outline",
+          "when": "status=\"danger\""
+        },
+        {
+          "component": "sf-button",
+          "attribute": "appearance",
+          "from": "surface",
+          "to": "outline",
+          "when": "status=\"danger\""
+        },
+        {
+          "component": "sf-button-icon",
+          "attribute": "appearance",
+          "from": "tonal",
+          "to": "outline",
+          "when": "status=\"danger\""
+        },
+        {
+          "component": "sf-button-icon",
+          "attribute": "appearance",
+          "from": "surface",
+          "to": "outline",
+          "when": "status=\"danger\""
+        }
+      ],
+      "deprecated_on": "2026-11-13",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<sf-button appearance=\"surface\" scheme=\"secondary\" text=\"Фильтры\">",
+        "after": "<sf-button appearance=\"tonal\" scheme=\"on-surface\" text=\"Фильтры\">"
+      },
+      "manual": "Write scheme=\"on-surface\" for secondary. For appearance=\"surface\" write appearance=\"tonal\" scheme=\"on-surface\". A danger control that asked for tonal or surface: write appearance=\"outline\" status=\"danger\" when it opens a confirmation, the filled default when it is the last confirmation, ghost for an icon in a row. «Отмена» is ghost on-surface everywhere. Each former word is noted in SF.deprecations and said once per page in the console.",
+      "source": "src/smart/helpers/button-set.js; src/smart/button/index.js; src/smart/button-icon/index.js; ui-control control/research/2026-11-13-buttons-system.md"
     }
   ]
 }

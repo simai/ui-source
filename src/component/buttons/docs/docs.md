@@ -104,7 +104,10 @@ scheme:
   tints with the primary container role; `tonal secondary` is kept, but the
   secondary palette is close to neutral, so it reads almost like
   `tonal on-surface`;
-- `outline` — a secondary action such as Cancel or Back;
+- `outline` — a second weighted action such as Export, Filters or Back, in
+  `on-surface` (decision C116); «Отмена» / Cancel is never outlined, it is the
+  quiet `ghost on-surface`; `outline primary` is only the second call to
+  action of a site's hero;
 - `surface` — an action that needs its own plate on a coloured background or
   an image: a faint fill from the neutral alpha ramp and a hairline boundary,
   the same in both themes;

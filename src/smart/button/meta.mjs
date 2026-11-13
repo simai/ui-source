@@ -50,22 +50,20 @@ const sfButtonMeta = {
         "default",
         "tonal",
         "outline",
-        "ghost",
-        "surface"
+        "ghost"
       ],
       "default": "default",
-      "description": "How the button looks: default (filled), tonal, outline, ghost (no fill or edge until hovered; rule C15) or surface (a faint fill on the neutral alpha ramp and a border). link is ghost's former name; a link is made by href, not by the look."
+      "description": "How the button looks: default (filled), tonal, outline or ghost (no fill or edge until hovered; rule C15). link is ghost's former name; a link is made by href, not by the look. surface is a former name until 2027-01-01 (rule C116): it draws as the soft grey button, tonal with the on-surface scheme (C113), and warns once per page. A danger button is default, outline or ghost: tonal and surface with status danger draw as outline until 2027-01-01."
     },
     "scheme": {
       "kind": "enum",
       "values": [
         "primary",
-        "secondary",
         "on-surface",
         "on-surface-variant"
       ],
       "default": "primary",
-      "description": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the label and the icons in --sf-on-surface-variant (a search trigger that reads like a field). With appearance surface on-surface-variant is retired (1.11.0, as on the icon buttons, C15): it draws as on-surface until 2027-01-01 and warns once. What the control is about is the status axis; a status set there wins over this."
+      "description": "Which colour family the control takes. on-surface-variant is the on-surface family one step quieter: the fill and the edge of on-surface, the label and the icons in --sf-on-surface-variant (a search trigger that reads like a field). secondary is a former name until 2027-01-01 (rule C116): it draws as on-surface and warns once per page; the secondary colour stays in core for badges, tabs and segments. What the control is about is the status axis; a status set there wins over this."
     },
     "status": {
       "kind": "enum",
@@ -74,7 +72,7 @@ const sfButtonMeta = {
         "danger"
       ],
       "default": "",
-      "description": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control."
+      "description": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control. danger is the only status of a button (rule C116): there are no success, warning or info buttons; another word draws no status and warns once per page."
     },
     "text-position": {
       "kind": "custom",
@@ -297,8 +295,7 @@ const sfButtonMeta = {
         "default",
         "tonal",
         "outline",
-        "ghost",
-        "surface"
+        "ghost"
       ],
       "default": "default",
       "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json."

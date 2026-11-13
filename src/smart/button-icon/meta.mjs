@@ -62,7 +62,7 @@ const sfButtonIconMeta = {
         "ghost"
       ],
       "default": "default",
-      "description": "How the icon button looks, one ladder from the strongest (rule C15): default (filled), tonal, outline, ghost (no fill or edge until a pointer or the keyboard reaches it). link is ghost's former name; surface was retired and is drawn as tonal with the on-surface scheme."
+      "description": "How the icon button looks, one ladder from the strongest (rule C15): default (filled), tonal, outline, ghost (no fill or edge until a pointer or the keyboard reaches it). link is ghost's former name; surface was retired and is drawn as tonal with the on-surface scheme. A danger icon button is default, outline or ghost (rule C116): tonal and surface with status danger draw as outline until 2027-01-01, with one console warning."
     },
     "scheme": {
       "kind": "enum",
@@ -81,7 +81,7 @@ const sfButtonIconMeta = {
         "danger"
       ],
       "default": "",
-      "description": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control."
+      "description": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control. danger is the only status of an icon button (rule C116): there are no success, warning or info icon buttons; another word draws no status and warns once per page."
     },
     "segment": {
       "kind": "enum",

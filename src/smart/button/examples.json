@@ -50,9 +50,9 @@
       "name": "outline",
       "title": "Контурная",
       "settings": {
-        "text": "Отмена",
+        "text": "Экспорт",
         "appearance": "outline",
-        "scheme": "secondary"
+        "scheme": "on-surface"
       },
       "expect": {
         "appearance": "outline"
@@ -75,7 +75,7 @@
       "settings": {
         "text": "Инструкция",
         "appearance": "outline",
-        "scheme": "secondary",
+        "scheme": "on-surface",
         "icon-end": "open_in_new",
         "href": "#instructions",
         "target": "_blank"
@@ -87,14 +87,15 @@
     },
     {
       "name": "surface",
-      "title": "На поверхности",
+      "title": "Мягкая серая (прежняя «На поверхности»)",
       "settings": {
         "text": "Фильтры",
-        "appearance": "surface",
+        "appearance": "tonal",
         "scheme": "on-surface"
       },
       "expect": {
-        "appearance": "surface"
+        "appearance": "tonal",
+        "scheme": "on-surface"
       }
     },
     {
@@ -281,6 +282,9 @@
           "  <sf-button id=\"b-btn-target\" text=\"Кнопка\" target=\"_blank\" rel=\"nofollow\"></sf-button>",
           "  <sf-button id=\"b-err\" text=\"Удалить\" status=\"error\"></sf-button>",
           "  <sf-button id=\"b-link\" text=\"Подробнее\" appearance=\"link\"></sf-button>",
+          "  <sf-button id=\"b-sec\" text=\"Экспорт\" appearance=\"outline\" scheme=\"secondary\"></sf-button>",
+          "  <sf-button id=\"b-surf\" text=\"Фильтры\" appearance=\"surface\" scheme=\"primary\"></sf-button>",
+          "  <sf-button id=\"b-dtonal\" text=\"Удалить\" appearance=\"tonal\" status=\"danger\"></sf-button>",
           "  <sf-button id=\"b-cyc\" aria-label=\"Скорость\" value=\"1\" cycle='[{\"value\":\"1\",\"label\":\"1×\"},{\"value\":\"1.5\",\"label\":\"1,5×\"},{\"value\":\"2\",\"label\":\"2×\"}]' pressed></sf-button>",
           "  <sf-button id=\"b-h-low\" height=\"low\" text=\"Ниже\"></sf-button>",
           "  <sf-button id=\"b-h-default\" height=\"default\" text=\"Обычная\"></sf-button>",
@@ -486,6 +490,27 @@
             },
             {
               "check": "['error', 'link'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-button' && note.from === from && note.remove_after === '2027-01-01'))"
+            }
+          ]
+        },
+        {
+          "id": "p12b-button-set",
+          "title": "the set's former words (C116): secondary draws as on-surface, surface as tonal on-surface, a danger tonal as outline; each noted until 2027-01-01",
+          "covers": "settings.scheme on-surface, settings.appearance tonal, settings.status danger",
+          "steps": [
+            {
+              "check": "(() => { const c = (id) => document.querySelector(id + ' button').classList; const sec = c('#b-sec'), surf = c('#b-surf'), dt = c('#b-dtonal'); return sec.contains('sf-button--outline') && sec.contains('sf-button--on-surface') && !sec.contains('sf-button--secondary') && surf.contains('sf-button--tonal') && surf.contains('sf-button--on-surface') && !surf.contains('sf-button--surface') && !surf.contains('sf-button--primary') && dt.contains('sf-button--outline') && dt.contains('sf-button--danger') && !dt.contains('sf-button--tonal'); })()",
+              "expect": {
+                "values": {
+                  "#b-sec.scheme": "on-surface",
+                  "#b-surf.appearance": "tonal",
+                  "#b-surf.scheme": "on-surface",
+                  "#b-dtonal.appearance": "outline"
+                }
+              }
+            },
+            {
+              "check": "['secondary', 'surface', 'tonal (status danger)'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-button' && note.from === from && note.remove_after === '2027-01-01'))"
             }
           ]
         },

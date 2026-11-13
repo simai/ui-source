@@ -2,7 +2,7 @@
   "$comment": "The source of sf-button-icon's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/icon-button (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.button-icon",
   "tag": "sf-button-icon",
-  "version": "1.8.5",
+  "version": "1.10.0",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -47,7 +47,7 @@
         "ghost"
       ],
       "default": "default",
-      "summary": "How the icon button looks, one ladder from the strongest (rule C15): default (filled), tonal, outline, ghost (no fill or edge until a pointer or the keyboard reaches it). link is ghost's former name; surface was retired and is drawn as tonal with the on-surface scheme."
+      "summary": "How the icon button looks, one ladder from the strongest (rule C15): default (filled), tonal, outline, ghost (no fill or edge until a pointer or the keyboard reaches it). link is ghost's former name; surface was retired and is drawn as tonal with the on-surface scheme. A danger icon button is default, outline or ghost (rule C116): tonal and surface with status danger draw as outline until 2027-01-01, with one console warning."
     },
     "scheme": {
       "type": "enum",
@@ -66,7 +66,7 @@
         "danger"
       ],
       "default": "",
-      "summary": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control."
+      "summary": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control. danger is the only status of an icon button (rule C116): there are no success, warning or info icon buttons; another word draws no status and warns once per page."
     },
     "segment": {
       "type": "enum",
@@ -487,7 +487,8 @@
     "version 1.8.2 (2026-11-10, pair next integration): one number above every claim of this release, 1.7.2 (R074), 1.8.0 (C35) and 1.8.1 (the C36 follow-up), which were built with different contents; nothing beyond the notes above changes. Settings, values, events and keys as the notes above say.",
     "version 1.8.3 (2026-11-11): a patch (docs review R076). theme-cycle under a host that draws the theme itself (the Loader started with theme: false, as a Docara page and its examples are): the name and the icon say the theme the document draws (its theme-dark / theme-light class, else the system scheme) instead of the Loader's untouched light; a press that cannot move the theme says why once in the console (the host owns the theme, or SF.Loader is absent) and still stays put without change. Its shared helper src/smart/helpers/cycle.js changed (module.smart-helpers 1.5.0, unreleased). Nothing drawn differently where the Loader owns the theme; settings, values, events and keys unchanged.",
     "version 1.8.4 (2026-11-11): a patch, nothing drawn differently. The sheet reads the C16 roles by their current names where it read the former ones, which are var() of them wherever they are declared (src/core/contracts/token-aliases.v1.json, sf-role-aliases): --sf-on-disable → --sf-on-surface-disabled. Settings, values, events and keys unchanged.",
-    "version 1.8.5 (2026-11-13, a patch, defect BS-1 of ui-control research 2026-11-13-button-schemes, rule C13): a status other than danger -- success, warning, info or any other word -- was dropped without a sound and the scheme colour drawn. It still draws so, and the console says it once per page for each word (helpers/control-status.js, shared with sf-button and sf-menu-context items; error stays the former name of danger). Nothing drawn differently; settings, values, events and keys unchanged."
+    "version 1.8.5 (2026-11-13, a patch, defect BS-1 of ui-control research 2026-11-13-button-schemes, rule C13): a status other than danger -- success, warning, info or any other word -- was dropped without a sound and the scheme colour drawn. It still draws so, and the console says it once per page for each word (helpers/control-status.js, shared with sf-button and sf-menu-context items; error stays the former name of danger). Nothing drawn differently; settings, values, events and keys unchanged.",
+    "version 1.10.0 (2026-11-13; numbered above the integration's 1.9.0): a minor (owner decision C116, the button set, #q-danger-looks; ui-control research 2026-11-13-buttons-system). A danger icon button has three looks -- default (filled), outline and ghost (the icon in a row); tonal, and the retired surface, with status danger are former looks until 2027-01-01 and draw as outline, noted in SF.deprecations and said once per page in the console (helpers/button-set.js, change journal value-button-set-c116). Before, a danger tonal drew the error container fill. danger stays the only status (BS-1 warns on any other word). Settings, values, events and keys unchanged."
   ],
   "x-rule": {
     "$comment-after": [
