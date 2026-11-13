@@ -7,6 +7,62 @@
   justify-content: center;
 }
 
+/* The split button (owner decision C119; ui-control research
+   2026-11-13-buttons-system R206): a label part, an ordinary .sf-button, and a
+   square arrow part, an .sf-icon-button of the same size and height (the icon
+   button is square on every rung, so both parts stand on the ladder height),
+   joined as a button group joins: inner corners square, a 1 px seam. Between
+   two filled parts the seam is the page (a gap of --sf-px); two outlined parts
+   share one border (the arrow steps back over it). Two tab stops; the focused
+   part stands above its neighbour so the ring is never under it. sf-button
+   draws it with menu and split; the class form is the same markup. */
+.sf-button-split {
+  display: inline-flex;
+  align-items: stretch;
+  gap: var(--sf-px);
+  max-inline-size: 100%;
+  vertical-align: middle;
+  isolation: isolate;
+}
+
+.sf-button-split:has(> .sf-button--outline) {
+  gap: 0;
+}
+
+.sf-button-split > .sf-button {
+  min-inline-size: 0;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.sf-button-split > .sf-icon-button,
+.sf-button-split > :is(sf-button-icon, sf-icon-button) > .sf-icon-button {
+  flex: 0 0 auto;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+.sf-button-split:has(> .sf-button--outline) > .sf-icon-button,
+.sf-button-split:has(> .sf-button--outline) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button {
+  margin-inline-start: calc(var(--sf-px) * -1);
+}
+
+.sf-button-split > :focus-visible,
+.sf-button-split > :is(sf-button-icon, sf-icon-button) > :focus-visible {
+  position: relative;
+  z-index: 1;
+}
+
+/* full-width (C36) on a split button: the label part takes the room. */
+.sf-button-split.sf-button-split--full-width {
+  display: flex;
+  inline-size: 100%;
+}
+
+.sf-button-split.sf-button-split--full-width > .sf-button {
+  flex: 1 1 auto;
+}
+
 .sf-button,
 .sf-icon-button {
   transition-duration: var(--sf-duration-fast);

@@ -170,6 +170,86 @@
       }
     },
     {
+      "name": "split",
+      "title": "Разделённая главная",
+      "settings": {
+        "text": "Добавить элемент",
+        "icon-start": "add",
+        "split": true,
+        "menu": [
+          {
+            "id": "section",
+            "text": "Раздел",
+            "icon": "folder"
+          },
+          {
+            "id": "import",
+            "text": "Импорт из файла",
+            "icon": "upload_file"
+          }
+        ]
+      },
+      "expect": {
+        "split": true
+      }
+    },
+    {
+      "name": "split-outline",
+      "title": "Разделённая обычная",
+      "settings": {
+        "text": "Добавить секцию",
+        "appearance": "outline",
+        "scheme": "on-surface",
+        "size": "1/2",
+        "split": true,
+        "menu": [
+          {
+            "id": "empty",
+            "text": "Пустую",
+            "icon": "check_box_outline_blank"
+          },
+          {
+            "id": "paste",
+            "text": "Вставить скопированную",
+            "icon": "content_paste"
+          }
+        ]
+      },
+      "expect": {
+        "split": true
+      }
+    },
+    {
+      "name": "menu-button",
+      "title": "Кнопка-меню",
+      "settings": {
+        "text": "Добавить",
+        "appearance": "outline",
+        "scheme": "on-surface",
+        "menu": [
+          {
+            "id": "section",
+            "text": "Раздел"
+          },
+          {
+            "id": "divider",
+            "text": "Разделитель"
+          },
+          {
+            "id": "heading",
+            "text": "Заголовок"
+          },
+          {
+            "id": "link",
+            "text": "Ссылка"
+          }
+        ]
+      },
+      "expect": {
+        "split": false
+      }
+    },
+    {
       "name": "shortcut",
       "title": "Сочетание клавиш",
       "settings": {

@@ -59,7 +59,11 @@ the Smart `sf-button` projection.
   (decision C13: danger is what the control does, error is a message's
   status); `sf-button--error` is its former name on a button, the same rules,
   until 2027-01-01 (journal class-c13-control-error-to-danger). sf-button
-  writes both, and calls `--link` the ghost appearance (C15);
+  writes both, and calls `--link` the ghost appearance (C15). Only the danger
+  outline has a coloured border (1.12.0, owner decision C118): the error role
+  at the ink family's 64 step, 3.4:1 light and 5.1:1 dark on the page, the
+  same red as its hover plate; the primary and on-surface outlines keep the
+  shared grey `--sf-outline`, and a disabled danger outline greys as they do;
 - size: `size-1\/3`, `size-1\/2`, `size-1`, `size-2`, `size-3`;
 - density (deprecated, decision C27, until 2027-01-01; journal
   class-c27-button-spacing-to-height): the default, `spacing-compact`,
@@ -89,6 +93,16 @@ the Smart `sf-button` projection.
 radius class; it stays for the Smart `radius="default"` value. The utility
 class of that name and the `--sf-radius-default` token were removed on
 2026-11-02 (journal `token-radius-default`).
+
+A split button (1.12.0, owner decision C119): `<span class="sf-button-split">`
+holding an `.sf-button` (the label part, the action) and an `.sf-icon-button`
+of the same size and height with `expand_more` (the arrow part, square, which
+opens a menu: `aria-haspopup="menu"`, `aria-expanded`). They join as a button
+group: inner corners square and a 1 px seam -- the page between two filled
+parts, one shared border between two outlined ones; the focused part stands
+above its neighbour. `sf-button-split--full-width` with a full-width label
+part fills the row. The main (default primary) and the regular (outline) look
+only. The Smart form is `sf-button` with `menu` and `split`.
 
 Joined positions `segment-start`, `segment-middle` and `segment-end` square
 the corners two neighbours share and draw one line at each join: the end edge

@@ -321,6 +321,7 @@
             "pressed",
             "text-pressed",
             "theme-cycle",
+            "split",
             "aria-label"
           ],
           "renderer": {
@@ -336,7 +337,9 @@
           "component.buttons",
           "component.kbd",
           "component.spinner",
-          "smart.icon"
+          "smart.button-icon",
+          "smart.icon",
+          "smart.menu-context"
         ]
       },
       "contract_schema": {
@@ -348,7 +351,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button/smart.manifest.json",
-      "manifest_sha256": "6c6146580810dd1135a52e015b683669647e7268f4533bea7c9f2bd835d90ec5",
+      "manifest_sha256": "3d19acb54ea81755522d3727b1654e38f93917fd19273468d87a989e6ee03d05",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

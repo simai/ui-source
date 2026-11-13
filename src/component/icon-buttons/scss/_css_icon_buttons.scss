@@ -630,7 +630,9 @@
   .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon,
   .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close {
     --sf-icon-button--background-color: var(--sf-icon-button-background-color, transparent);
-    --sf-icon-button--border-color: var(--sf-icon-button-border-color, var(--sf-outline));
+    /* The danger outline's border is red at the ink family's 64 step (C118),
+       as on sf-button; the other outlines keep the shared grey. */
+    --sf-icon-button--border-color: var(--sf-icon-button-border-color, color-mix(in srgb, var(--sf-error) 64%, transparent));
   }
 
   .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon {

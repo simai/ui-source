@@ -230,7 +230,12 @@ A search trigger that reads like a field:
 - `sf-button-press` — a person pressed the native button: a click, Enter or
   Space. It is sent once per press, with an empty `detail`, and never while the
   button is disabled or loading. The native `click` still bubbles as before; in
-  an assembly a rule hears the press as `<role>.press`.
+  an assembly a rule hears the press as `<role>.press`. A menu button (`menu`
+  without `split`) does not send it: its press opens the menu. A split button
+  sends it from the label part only.
+- `sf-button-select` — a row of the menu (`menu`) was chosen; `detail` is
+  `{id, entry}`. The menu has closed and focus is back on the control that
+  opened it. The menu's own `sf-menu-context-select` stays inside.
 
 The empty radius is the normal UI radius. `default` is retained as a legacy
 surface-radius override but should not be used for ordinary controls; prefer
@@ -399,3 +404,44 @@ order is the visible theme's opposite first, then the other, then «как в
 A cycle is not a toggle: `pressed` and `text-pressed` are ignored beside it,
 and the console says so once.
 
+## Menu and split
+
+`menu` gives the button a menu (1.15.0, owner decision C119): its entries are
+`sf-menu-context`'s -- `{id, text, icon?, caption?, shortcut?, disabled?,
+status?}`, separators and headings -- as JSON on the attribute or a list on the
+property. A chosen row sends `sf-button-select` with `{id, entry}`.
+
+- `menu` alone is a menu button: the whole button opens the menu under it. It
+  says `aria-haspopup="menu"` and `aria-expanded`, and draws `expand_more` at
+  its end unless `icon-end` is written. Its press opens the menu and sends no
+  `sf-button-press`.
+- `menu` with `split` is a split button: the label part is the button as
+  before and sends `sf-button-press`; a square arrow part of the same height,
+  named «Другие варианты: <label>», opens the menu end-aligned under it. The two
+  parts are joined as a button group: inner corners square and a 1 px seam --
+  the page between two filled parts, one shared border between two outlined
+  ones. Both parts take the size, `height`, radius and density of the button.
+
+```html
+<sf-button text="Добавить элемент" icon-start="add" split
+  menu='[{"id":"section","text":"Раздел","icon":"folder"},{"id":"import","text":"Импорт из файла","icon":"upload_file"}]'></sf-button>
+
+<sf-button text="Добавить секцию" appearance="outline" scheme="on-surface" size="1/2" split
+  menu='[{"id":"empty","text":"Пустую"},{"id":"paste","text":"Вставить скопированную"}]'></sf-button>
+```
+
+Keyboard: the label part and the arrow are two Tab stops. On the arrow (or on
+a menu button) Enter, Space and ArrowDown open the menu on its first row,
+ArrowUp on its last; Escape closes it and returns focus to the arrow.
+
+A split button is the main look (`appearance="default"`, `scheme="primary"`)
+or the regular one (`appearance="outline"`) only. Another look, or a `danger`
+button, draws as a menu button and the console says so once. The main action
+is not repeated in the menu (the console says so when a row's text is the
+label). `split` without menu entries is a plain button; `menu` on a link
+(`href`) or beside a `cycle` is left out, each said once in the console.
+
+The class form is the same markup: `<span class="sf-button-split">` holding an
+`.sf-button` and an `.sf-icon-button` of the same size and height
+(`sf-button-split--full-width` with a full-width button). When to take a split
+button, a menu button or two buttons is the recipe's choice rule.

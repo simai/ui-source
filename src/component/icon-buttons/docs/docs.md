@@ -15,7 +15,10 @@ decorative and uses `aria-hidden="true"`.
   `on-surface`); `secondary` is kept for older markup;
 - status: `sf-icon-button--danger` for a destructive control, in every
   emphasis (decision C13); `sf-icon-button--error` is its former name, the
-  same rules, until 2027-01-01 (journal class-c13-control-error-to-danger);
+  same rules, until 2027-01-01 (journal class-c13-control-error-to-danger).
+  The danger outline's border is red, the error role at the ink family's 64
+  step (1.8.0, owner decision C118, as on the buttons); the other outlines
+  keep the shared grey `--sf-outline`;
 - size: `1/3`, `1/2`, `1`, `2`, or `3`;
 - density: default, `spacing-compact`, `spacing-comfortable`, or
   `spacing-spacious`; `tightness-low`, `tightness-high` and `tightness-highest`

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-button's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/button (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.button",
   "tag": "sf-button",
-  "version": "1.14.0",
+  "version": "1.15.0",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -273,6 +273,47 @@
       "type": "string",
       "optional": true,
       "summary": "A ready theme switch over SF.Loader's theme (the contract of sf-segmented's theme-switch: themePreference, setTheme, sf-theme-change). Present and empty: three values, «as the system», light and dark, in the owner's order -- first the theme opposite to the visible one, then the other, then «as the system» (rule D11d); \"light dark\": two values, every press flips the visible theme. The icons are contrast, light_mode and dark_mode; the words are the page language's («Тема: светлая. Нажмите — тёмная»). cycle is ignored beside it."
+    },
+    "menu": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "id": "string",
+        "text": "string",
+        "icon": {
+          "type": "icon",
+          "optional": true
+        },
+        "caption": {
+          "type": "string",
+          "optional": true
+        },
+        "shortcut": {
+          "type": "string",
+          "optional": true
+        },
+        "disabled": {
+          "type": "boolean",
+          "optional": true
+        },
+        "status": {
+          "type": "string",
+          "optional": true,
+          "summary": "\"danger\" draws the row as a destructive action (decision C13)."
+        },
+        "kind": {
+          "type": "string",
+          "optional": true,
+          "summary": "\"separator\" or \"heading\" between rows, as in sf-menu-context."
+        }
+      },
+      "x-shape": "the entries of sf-menu-context (its entries setting): the attribute takes JSON, the property a list",
+      "summary": "The entries of the menu this button opens (owner decision C119), shaped as sf-menu-context's entries: {id, text, icon?, caption?, shortcut?, disabled?, status?} and its separators and headings. With menu alone the button is a menu button: a press opens the menu instead of sending press, the button says aria-haspopup=\"menu\" and aria-expanded, and draws expand_more at its end unless icon-end is written. A chosen row sends select {id, entry}. Left out on a link (href) and beside a cycle, with one console warning."
+    },
+    "split": {
+      "type": "boolean",
+      "default": false,
+      "summary": "With menu: a split button (owner decision C119) -- the label part acts (press) and a square arrow part of the same height, named «Другие варианты: <label>», opens the menu end-aligned under it. Two tab stops; on the arrow Enter, Space and ArrowDown open the menu on its first row, ArrowUp on its last, Escape closes it and returns focus to the arrow. The parts are joined as a button group: inner corners square, a 1 px seam. The main look (default primary) and the regular one (outline) only; another look or a danger button draws as a menu button with one console warning. The main action is not repeated in the menu. Without menu entries split is a plain button."
     }
   },
   "values": {},
@@ -292,6 +333,20 @@
         }
       },
       "summary": "A cycle (cycle or theme-cycle) moved to its next value after a person's press; dispatched on the host, bubbles and is composed, after press on sf-button. A theme cycle sends it after SF.Loader.setTheme has drawn the theme. Not sent by a button that is not a cycle."
+    },
+    "select": {
+      "summary": "A row of the menu (menu, split) was chosen; the menu has closed and focus is back on the control that opened it. Dispatched on the host, bubbles and is composed. The menu's own sf-menu-context-select stays inside.",
+      "carries": {
+        "id": {
+          "type": "string",
+          "nullable": true
+        },
+        "entry": {
+          "type": "object",
+          "nullable": true,
+          "summary": "The chosen entry as given in menu."
+        }
+      }
     }
   },
   "actions": {},
@@ -299,7 +354,10 @@
     "host": {
       "Tab": "reach",
       "Enter": "activate",
-      "Space": "activate"
+      "Space": "activate",
+      "ArrowDown": "open",
+      "ArrowUp": "open",
+      "Escape": "close"
     }
   },
   "relations": [
@@ -329,6 +387,20 @@
         "The keys of a shortcut are the kbd component's (soft caps inside a button):",
         "fetched with the button, so the first paint draws them as they stay."
       ]
+    },
+    {
+      "name": "cl-button-icon",
+      "lazy": true,
+      "$comment": [
+        "The arrow part of a split button (menu with split, C119)."
+      ]
+    },
+    {
+      "name": "cl-menu-context",
+      "lazy": true,
+      "$comment": [
+        "The menu of a menu or split button (C119)."
+      ]
     }
   ],
   "templates": {
@@ -352,7 +424,10 @@
     "keys": {
       "Tab": "reach",
       "Enter": "activate",
-      "Space": "activate"
+      "Space": "activate",
+      "ArrowDown": "open",
+      "ArrowUp": "open",
+      "Escape": "close"
     }
   },
   "css-variables": {
@@ -567,7 +642,8 @@
     "version 1.13.0 (2026-11-11, CB-01, decision C15): the button without a fill writes the class sf-button--ghost, the name of its appearance; sf-button--link, the class it wrote before, is written beside it until 2027-01-01 (journal class-button-link-to-ghost), so a page selector that reached it still does. Both classes are drawn by the same rules: computed styles identical in light and dark. Settings, values, events and keys unchanged.",
     "version 1.13.0, also (2026-11-11, docs review R076, written as 1.12.2 on fix/theme-cycle-host): theme-cycle under a host that draws the theme itself (the Loader started with theme: false, as a Docara page and its examples are): the name and the icon say the theme the document draws (its theme-dark / theme-light class, else the system scheme) instead of the Loader's untouched light; a press that cannot move the theme says why once in the console (the host owns the theme, or SF.Loader is absent) and still stays put without change. Its shared helper src/smart/helpers/cycle.js changed (module.smart-helpers 1.5.0, unreleased). Nothing drawn differently where the Loader owns the theme; settings, values, events and keys unchanged.",
     "version 1.13.1 (2026-11-13, a patch, defect BS-1 of ui-control research 2026-11-13-button-schemes, rule C13): a status other than danger -- success, warning, info or any other word -- was dropped without a sound and the scheme colour drawn. It still draws so, and the console says it once per page for each word (helpers/control-status.js, shared with sf-button-icon and sf-menu-context items; error and critical stay the former names of danger). Nothing drawn differently; settings, values, events and keys unchanged.",
-    "version 1.14.0 (2026-11-13): a minor (§4.10; owner decision C116, the button set; ui-control research 2026-11-13-buttons-system). Three words become former names until 2027-01-01, each noted in SF.deprecations and said once per page in the console (helpers/button-set.js, change journal value-button-set-c116): scheme secondary draws as on-surface (the secondary colour stays in core for badges, tabs and segments); appearance surface draws as tonal with the on-surface scheme, the soft grey button (C113) -- surface with on-surface-variant, retired in 1.11.0, is part of it now; a danger button that asks for tonal or surface draws as outline (a danger button is filled, outline or a fill-less icon). The lists of appearance and scheme no longer name surface and secondary. danger stays the only status (BS-1 warns on any other word; error and critical are its former names). Examples: the outline one is Экспорт in on-surface, the new-tab one on-surface, the surface one is the soft tonal on-surface button. Also in 1.14.0 (2026-11-13, coordinator report from sf-input-image): a changed aria-label reaches the inner button or link. aria-label is the host's (§3.1), not a setting, so it was not observed and the host-attribute forwarder leaves it out: after a new image was dropped «Заменить изображение «photo.png»» kept the first name (confirmed on ui 4c012852f by tests/browser/button-name-update.browser.mjs). sf-button now observes it, as sf-button-icon does, and draws again with the new name. Settings other than these values, events and keys unchanged."
+    "version 1.14.0 (2026-11-13): a minor (§4.10; owner decision C116, the button set; ui-control research 2026-11-13-buttons-system). Three words become former names until 2027-01-01, each noted in SF.deprecations and said once per page in the console (helpers/button-set.js, change journal value-button-set-c116): scheme secondary draws as on-surface (the secondary colour stays in core for badges, tabs and segments); appearance surface draws as tonal with the on-surface scheme, the soft grey button (C113) -- surface with on-surface-variant, retired in 1.11.0, is part of it now; a danger button that asks for tonal or surface draws as outline (a danger button is filled, outline or a fill-less icon). The lists of appearance and scheme no longer name surface and secondary. danger stays the only status (BS-1 warns on any other word; error and critical are its former names). Examples: the outline one is Экспорт in on-surface, the new-tab one on-surface, the surface one is the soft tonal on-surface button. Also in 1.14.0 (2026-11-13, coordinator report from sf-input-image): a changed aria-label reaches the inner button or link. aria-label is the host's (§3.1), not a setting, so it was not observed and the host-attribute forwarder leaves it out: after a new image was dropped «Заменить изображение «photo.png»» kept the first name (confirmed on ui 4c012852f by tests/browser/button-name-update.browser.mjs). sf-button now observes it, as sf-button-icon does, and draws again with the new name. Settings other than these values, events and keys unchanged.",
+    "version 1.15.0 (2026-11-13): a minor (§4.10; owner decision C119, ui-control research 2026-11-13-buttons-system R206, prototype prototypes/buttons-system.html#split). The settings menu (sf-menu-context entries; JSON on the attribute, a list as the property) and split, and the event select {id, entry}, are added; no new tag. menu alone is a menu button: the whole button opens the menu (its press opens it and sends no press), aria-haspopup=\"menu\", aria-expanded, expand_more at the end unless icon-end is written. menu with split is a split button: the label part is the button as before (press); the arrow part is sf-button-icon (lazy relation cl-button-icon) with the same appearance, scheme, size, height and radius -- square, so both parts stand on the ladder height at every size, height and density -- named «Другие варианты: <label>», aria-haspopup and aria-expanded; the menu is sf-menu-context (lazy relation cl-menu-context), popup, end-aligned under the arrow, rows 32 up to size 1/2 and 40 from 1. The joint is component.buttons' sf-button-split: inner corners square, a 1 px seam (the page between filled parts, one shared border between outlined ones), as a button group. Two tab stops; Enter, Space or ArrowDown open on the first row, ArrowUp on the last, Escape returns focus to the arrow. Only the main (default primary) and the regular (outline) look split; another look or danger draws as a menu button, and a label repeated in the menu, split without entries, menu on a link or beside a cycle are said once per page in the console. The menu's own events stay inside; the page hears select. Also in 1.15.0 (owner decision C118, research R205): the danger outline's border is red, the error role at the ink family's 64 step (3.4:1 light, 5.1:1 dark), the same red as its hover plate (component.buttons 1.12.0); primary and on-surface outlines keep the shared grey."
   ],
   "x-rule": {
     "$comment-after": [

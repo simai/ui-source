@@ -15,6 +15,10 @@ SF.RuleLoader['cl-button'] = {
     // The keys of a shortcut are the kbd component's (soft caps inside a button):
     // fetched with the button, so the first paint draws them as they stay.
     { name: 'kbd' },
+    // The arrow part of a split button (menu with split, C119).
+    { name: 'cl-button-icon', lazy: true },
+    // The menu of a menu or split button (C119).
+    { name: 'cl-menu-context', lazy: true },
   ],
 };
 
