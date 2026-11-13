@@ -202,16 +202,6 @@
         "description": "Dated alias of precision until 2027-01-01.",
         "minimum": 0,
         "maximum": 20
-      },
-      "label=\"none|text|tooltip\"": {
-        "type": "string",
-        "default": "none",
-        "description": "Dated alias of value-display until 2027-01-01.",
-        "enum": [
-          "none",
-          "text",
-          "tooltip"
-        ]
       }
     },
     "additionalProperties": false

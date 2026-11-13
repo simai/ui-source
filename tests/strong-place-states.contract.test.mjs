@@ -36,8 +36,13 @@ const stateInks = () => {
   const onSurface = /sf-button--(outline|ghost)[^{]*sf-button--on-surface|sf-button--on-surface[^{]*sf-button--(outline|ghost)/u;
   for (const [, selector, body] of buttons.matchAll(/([^{}]+)\{([^{}]*)\}/gu)) {
     if (!/:hover|:active|\.active\b/u.test(selector) || !onSurface.test(selector)) continue;
-    for (const [, prop, value] of body.matchAll(/(--sf-button-text-container--color|--sf-icon--color):\s*var\((--sf-[a-z0-9-]+)\)/gu)) {
-      if (prop && value.startsWith('--sf-on-surface')) inks.add(value);
+    // A value is one role, var(--sf-x), or a theme pair, light-dark(var(--sf-x),
+    // var(--sf-y)) (C113 follow-up: the dark label keeps --sf-on-surface):
+    // every role it can resolve to counts.
+    for (const [, value] of body.matchAll(/(?:--sf-button-text-container--color|--sf-icon--color):\s*([^;]+);/gu)) {
+      const roles = /^var\(--sf-[a-z0-9-]+\)$|^light-dark\(var\(--sf-[a-z0-9-]+\), var\(--sf-[a-z0-9-]+\)\)$/u.test(value.trim())
+        ? [...value.matchAll(/var\((--sf-[a-z0-9-]+)\)/gu)].map(([, role]) => role) : [];
+      for (const role of roles) if (role.startsWith('--sf-on-surface')) inks.add(role);
     }
   }
   return inks;

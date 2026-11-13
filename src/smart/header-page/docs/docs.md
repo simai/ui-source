@@ -20,8 +20,8 @@ Attributes:
   `true` (or `on`) draw it in that state. Present and empty is `true`.
 - `expressive` — the decorative level (owner decision C91, level 2): a tinted
   head, primary tone 50 at 16 (dark 24) fading down to nothing by the head's
-  foot, in a padded field with the surface radius. A head narrower than 32rem
-  (the g6 step) stays plain: on a narrow column the colour adds nothing. Off by
+  foot, in a padded field with the surface radius. A head narrower than 30rem
+  (the g5 step, R164 variant C) stays plain: on a narrow column the colour adds nothing. Off by
   default; `data-sf-style="expressive"` on the root or a container turns it on
   for every head under it, `data-sf-style="strict"` turns it off again.
 - `root-class`

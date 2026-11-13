@@ -126,7 +126,10 @@ test('the element takes a hue only for initials, and the default draws no hue cl
   const shared = read('src/smart/avatar/js/templates/shared.js');
   assert.match(element, /if \(!this\.isText\) \{\s*return "";/u);
   assert.match(element, /resolvedHue: this\.resolvedHue/u);
-  assert.match(element, /resolveAvatarHue\(\s*this\.hue,\s*this\.heading \|\| this\.getAttribute\("aria-label"\) \|\| this\.text,\s*this\.tone,?\s*\)/u);
+  // The card without a photo takes auto when no hue is set (C124); the round
+  // avatar's default stays neutral.
+  assert.match(element, /const cardDefault =\s*this\.templateName === "card" && !this\.hue && !this\.tone \? "auto" : "";/u);
+  assert.match(element, /resolveAvatarHue\(\s*this\.hue \|\| cardDefault,\s*this\.heading \|\| this\.getAttribute\("aria-label"\) \|\| this\.text,\s*this\.tone,?\s*\)/u);
   assert.match(shared, /if \(context\.resolvedHue\) \{\s*classes\.push\(`sf-hue-\$\{context\.resolvedHue\}`\)/u);
   assert.equal([...shared.matchAll(/sf-avatar--tone-/gu)].length, 0);
 });

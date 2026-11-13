@@ -218,13 +218,14 @@ $sf-avatar-hue-classes: ();
     --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-violet-container));
   }
 
-  /* The decorative level (owner decisions C91 level 2 and C65): initials of
-     the largest size take a cover of their hue -- the C17 plate stepping into
-     a second container step towards the far corner, mixed in OKLab, roles
-     only -- under the same ink. C65 put
-     covers on placeholders from 64 px; the avatar ladder ends at size 3 (56 px,
-     52 on a phone), so size 3 is where it starts, and the smaller sizes stay
-     flat. No hue, no cover: the neutral look stays neutral (C17). Off unless
+  /* The decorative level (owner decisions C91 level 2 and C65): initials
+     with a hue on a placeholder from 64 px (C65: covers only on placeholders
+     from 64, the d6 step) take a cover of their hue -- the C17 plate stepping
+     into a second container step towards the far corner, mixed in OKLab,
+     roles only -- under the same ink. The avatar ladder ends at size 3
+     (56 px, 52 on a phone), so the ladder's avatars stay flat (C65: avatars
+     are flat); an avatar the author sizes to 64 px or more takes it. No hue,
+     no cover: the neutral look stays neutral (C17). Off unless
      sf-avatar--expressive (sf-avatar's expressive setting) or
      data-sf-style="expressive" above it says so; the nearest data-sf-style
      wins, strict being the default. The switch is a number the image's size
@@ -241,10 +242,14 @@ $sf-avatar-hue-classes: ();
     --sf-style--expressive: 1;
   }
 
-  .sf-avatar--text.sf-avatar--size-3:is(#{$sf-avatar-hue-classes}) {
+  /* The image is as wide as the avatar from the d6 step (64 px) on, and has
+     no size below it: read from the avatar's width (the size step or the
+     author's), not the painted box, which is the width less the 1 px ring on
+     each side; one pixel of slack, so 64 itself takes it. */
+  .sf-avatar--text:is(#{$sf-avatar-hue-classes}) {
     background-image: linear-gradient(135deg in oklab, transparent, var(--sf-hue-container));
     background-repeat: no-repeat;
-    background-size: calc(100% * var(--sf-style--expressive, 0)) calc(100% * var(--sf-style--expressive, 0));
+    background-size: calc(clamp(0px, (var(--sf-avatar--width, 0px) - var(--sf-d6) + var(--sf-px)) * 1000, 100%) * var(--sf-style--expressive, 0)) calc(100% * var(--sf-style--expressive, 0));
   }
 
   @media (forced-colors: active) {

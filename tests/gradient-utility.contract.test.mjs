@@ -78,7 +78,16 @@ test('the solid kinds stand on their own first colour, deeper in the dark theme'
   assert.match(duo, /color: var\(--sf-white\);/u);
   // The plate is a strong coloured place: white ink, the accent turned white.
   for (const line of ['--sf-surface-place-solid: var(--sf-gradient--from);', '--sf-on-surface: var(--sf-white);', '--sf-outline-variant: var(--sf-white--alfa-24);',
-    '--sf-primary: var(--sf-white);', '--sf-on-primary: var(--sf-gradient--from);', '@include aliases.sf-role-aliases(places.$sf-place-aliased);']) assert.ok(duo.includes(line), line);
+    '--sf-primary: var(--sf-white);', '--sf-on-primary: var(--sf-gradient--from);', '@include aliases.sf-role-aliases(places.$sf-place-aliased);',
+    // The icon role and the hovered and pressed ink are the plate's white (C107),
+    // the neutral fill and the tonal accent step 12 / 16 / 20, disabled 8 (C113).
+    '--sf-on-surface-icon: var(--sf-white);', '--sf-on-surface-hover: var(--sf-white);', '--sf-on-surface-active: var(--sf-white);',
+    '--sf-surface-container: var(--sf-white--alfa-12);', '--sf-surface-container-hover: var(--sf-white--alfa-16);', '--sf-surface-container-active: var(--sf-white--alfa-20);',
+    '--sf-surface-disabled: var(--sf-white--alfa-8);',
+    // A neutral button's and the tonal accent's hover and press: the strong place's steps (D2b, R190 AA-10).
+    '--sf-place--control-hover: var(--sf-white--alfa-8);', '--sf-place--control-active: var(--sf-white--alfa-4);',
+    '--sf-primary-container-hover: var(--sf-place--control-hover);', '--sf-primary-container-active: var(--sf-place--control-active);',
+    '--sf-place--ink: var(--sf-white);']) assert.ok(duo.includes(line), line);
   const cover = block('gradient-cover');
   assert.match(cover, /--sf-gradient--from: #\{tone\('c', 90, 30, 'primary'\)\};/u);
   assert.match(cover, /--sf-gradient--to: #\{tone\('c', 80, 20, 'primary'\)\};/u);
