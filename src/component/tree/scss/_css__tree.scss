@@ -148,7 +148,7 @@
     color: var(--sf-on-primary-container);
     font-weight: var(--sf-font-weight-medium);
     --sf-icon--color: var(--sf-on-primary-container);
-    @include places.sf-place-fill;
+    @include places.sf-place-fill(var(--sf-primary-container-active));
   }
 
   // A row is flush against the rows above and below it, so the ring turns

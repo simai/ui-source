@@ -6,8 +6,8 @@
 // light theme and #fff in the dark: the label and the icon carried their roles,
 // but the button element under them kept the browser's ButtonText, and an icon
 // tab its icon button's resting grey. Here, in both themes, for every skin
-// (default, underline, pills, full, vertical), every appearance (default, outline,
-// ghost) and both variants (text, icons):
+// (default, underline, pills, full, vertical), every scheme (default, outline,
+// link) and both variants (text, icons):
 //   - the tab element's colour equals its label's colour (the icon's, for an
 //     icon tab) for the selected, the resting and the disabled tab;
 //   - the same under the pointer, for underline, full and outline tabs;
@@ -39,7 +39,7 @@ const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'com
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
   'smart/smart/button/js/button.js', 'smart/smart/button-icon/js/button-icon.js', 'smart/smart/tabs/js/tabs.js'];
 const TYPES = ['', 'underline', 'pills', 'full', 'vertical'];
-const SCHEMES = ['default', 'outline', 'ghost'];
+const SCHEMES = ['default', 'outline', 'link'];
 const VARIANTS = ['', 'icons'];
 const ITEMS = 'Один::icon=home|Два::icon=star|Три::icon=edit,disabled';
 
@@ -95,7 +95,7 @@ try {
     const page = await browser.newPage({viewport: {width: 1200, height: 900}});
     page.on('pageerror', (error) => { if (!/publicPath/u.test(error.message)) failures.push({name: 'page error', said: error.message}); });
     const body = TYPES.flatMap((type) => SCHEMES.flatMap((scheme) => VARIANTS.map((variant) =>
-      `<sf-tabs data-k="${type || 'default'}/${scheme}/${variant || 'text'}" ${type ? `type="${type}"` : ''} appearance="${scheme}"
+      `<sf-tabs data-k="${type || 'default'}/${scheme}/${variant || 'text'}" ${type ? `type="${type}"` : ''} scheme="${scheme}"
         ${variant ? 'variant="icons"' : ''} items="${ITEMS}" aria-label="Вкладки"></sf-tabs>`))).join('');
     await page.setContent(`<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8"></head><body style="margin:16px">${body}<i id="role"></i></body></html>`);
     for (const path of SHEETS) await page.addStyleTag({path: join(out, path)});
@@ -144,7 +144,7 @@ try {
     // Under the pointer: the resting tab of underline, full and outline rows.
     const hovered = [];
     for (const key of ['underline/default/text', 'underline/default/icons', 'full/default/text', 'full/default/icons',
-      'default/outline/text', 'default/ghost/text']) {
+      'default/outline/text', 'default/link/text']) {
       const selector = `sf-tabs[data-k="${key}"] .sf-tabs-top :is(.sf-button, .sf-icon-button) >> nth=1`;
       await page.hover(selector);
       // The control eases its colours in; read them once the transition is over

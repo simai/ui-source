@@ -20,7 +20,7 @@ const rule = (selector, from = sheet) => {
 // 1.3.0 (C97 point 7) narrows the looks to cards, row and counter; steps and
 // course stay values until 2027-01-01 (tests/pager-c97.contract.test.mjs).
 test('version 1.3.0: the five values still parse, three are the component\'s looks', () => {
-  assert.equal(component.version, '1.3.0');
+  assert.equal(component.version, '1.3.1'); // 1.3.0 with the precheck's PB-01 grey (content 5)
   assert.deepEqual(component.settings.appearance.values, ['cards', 'row', 'steps', 'course', 'counter']);
 });
 

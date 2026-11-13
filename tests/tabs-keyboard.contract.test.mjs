@@ -151,27 +151,18 @@ test('ordinary Tabs does not bind or activate a Smart-owned root and only enumer
   assert.deepEqual([...context.getTabButtons(root)], [own]);
 });
 
-// sf-tabs 1.2.0 (docs precheck TB-06): the look is `appearance`, as on every
-// other component; `scheme` is its dated alias until 2027-01-01.
-test('Tabs names its look appearance, keeps scheme as a dated alias, and does not restrict custom values', async () => {
+test('Tabs documents legacy appearance semantics without reinterpreting or restricting custom scheme values', async () => {
   const manifest = JSON.parse(await readFile(new URL('../src/smart/tabs/smart.manifest.json', import.meta.url), 'utf8'));
-  const appearance = manifest.inputs.properties.appearance;
-  assert.equal(appearance.default, 'default');
-  assert.equal(appearance.enum, undefined);
-  assert.match(appearance.description, /default, outline or ghost/);
-  assert.match(appearance.description, /not a semantic color selector/);
-  assert.match(manifest.inputs.properties.scheme.description, /alias for appearance/);
-  const aliases = JSON.parse(await readFile(new URL('../src/smart/tabs/aliases.json', import.meta.url), 'utf8')).aliases;
-  const setting = aliases.find((row) => row.from === 'scheme');
-  assert.deepEqual([setting.to, setting.kind, setting.remove_after], ['appearance', 'setting', '2027-01-01']);
-  const value = aliases.find((row) => row.from === 'link');
-  assert.deepEqual([value.to, value.kind, value.setting, value.remove_after], ['ghost', 'value', 'appearance', '2027-01-01']);
+  const scheme = manifest.inputs.properties.scheme;
+  assert.equal(scheme.default, 'default');
+  assert.equal(scheme.enum, undefined);
+  assert.match(scheme.description, /default, outline or link/);
+  assert.match(scheme.description, /not a semantic color selector/);
   for (const tag of ['sf-button', 'sf-button-icon']) {
     const branch = template.split(`<${tag}\n`)[1].split(`</${tag}>`)[0];
-    assert.match(branch, /appearance=\$\{buttonAppearance\(context\)\}/);
-    assert.match(branch, /scheme="primary"/);
+    assert.match(branch, /appearance="primary"/);
+    assert.match(branch, /scheme=\$\{context.scheme\}/);
   }
-  assert.match(template, /look === 'link' \? 'ghost' : look/);
 });
 
 // Which control a two-option switch is, and why a pill row looked all-selected
@@ -185,14 +176,14 @@ test('Tabs documentation sends a segmented switch to the button group and explai
   ]);
 
   // The pills skin only rounds the tabs: the paint is the button appearance
-  // that `appearance` selects.
+  // that `scheme` selects.
   assert.match(skin, /\.sf-tabs--pills > \.sf-tabs-top-container > \.sf-tabs-top \.sf-button/);
   assert.doesNotMatch(
     skin.split('.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-button')[1]?.slice(0, 600) ?? '',
     /background-color|--sf-button--color/,
   );
   assert.match(docs, /## Pills, and what a two-option switch is/);
-  assert.match(docs, /appearance="outline"/);
+  assert.match(docs, /scheme="outline"/);
   assert.match(docs, /<sf-segmented aria-label="Вид"/);
   assert.match(docs, /Tabs are for panels/);
 });
