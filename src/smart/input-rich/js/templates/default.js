@@ -20,8 +20,10 @@ import {createFieldContract} from '../../../../component/field-contract';
 
 // Icon button size one step below the field's, so the toolbar sits inside the
 // frame on the same ladder. The look is the editor toolbar's of decision C15:
-// ghost on-surface (RT-06; link is ghost's old name).
-const BUTTON_SIZE = {'1/2': '1/3', '1': '1/2', '2': '1'};
+// ghost on-surface (RT-06; link is ghost's old name). The field ladder's outer
+// steps (fields ladder, 2026-11-14): size 3 takes size 2 buttons; 1/3 has no
+// button rung below and takes 1/3, as the 1/2 field does.
+const BUTTON_SIZE = {'1/3': '1/3', '1/2': '1/3', '1': '1/2', '2': '1', '3': '2'};
 
 function toolButton(context, tool) {
   const {component, buttonSize, fieldDisabled: disabled, readonly, state, roving} = context;

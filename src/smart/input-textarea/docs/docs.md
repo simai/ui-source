@@ -73,9 +73,16 @@ height. Measured on the light theme at 1000px:
 
 | size | one row (control height) | block padding | each further row |
 | ---- | ------------------------ | ------------- | ---------------- |
+| 1/3  | 28px                     | 5px           | 16px             |
 | 1/2  | 32px                     | 6px           | 20px             |
 | 1    | 40px                     | 8px           | 24px             |
 | 2    | 48px                     | 10px          | 28px             |
+| 3    | 56px                     | 9px           | 36px             |
+
+On a touch phone the text of a field is lifted to 16px so iOS does not zoom
+in; the lines of a textarea then stand on at least the size-1 line (20px on a
+phone), so the lines of a 1/2 field no longer touch. A fixed one-row field
+keeps its control height.
 
 With `auto-grow` and `max-rows="8"` a field of size 1 is 40px empty and
 208px at eight rows, then scrolls inside. `min-rows`, `max-rows` and the

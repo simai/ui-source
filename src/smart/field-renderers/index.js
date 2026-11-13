@@ -1032,7 +1032,7 @@ function renderIncludeEdit(field, value, host) {
                 name=${fieldName(field)}
                 value=${scalarValue(value) ?? ''}
                 rows="8"
-                spellcheck="false"
+                spell-check="false"
                 ?required=${Boolean(field.required)}
                 aria-label=${field.label || field.key || ''}
                 ?disabled=${field.readonly === true}

@@ -24,12 +24,14 @@ const sfInputTextareaMeta = {
     "size": {
       "kind": "enum",
       "values": [
+        "1/3",
         "1/2",
         "1",
-        "2"
+        "2",
+        "3"
       ],
       "default": "1",
-      "description": "The step of the control ladder the field stands on: the text size, the side padding and the height of one row are those of sf-input of the same size."
+      "description": "The field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the text size, the side padding and the height of one row are those of sf-input of the same size."
     },
     "appearance": {
       "kind": "enum",

@@ -5,7 +5,7 @@ import {
 } from '../../component/textarea/js/_textarea';
 import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
-import { fieldSize } from '../../component/field-size';
+import { ladderSize } from '../../component/field-size';
 import { InheritedValueField } from '../helpers/inherited-value';
 import { FormField, ShownRequired, innerControlName } from '../helpers/form-field';
 import { renderTextareaTemplate } from './js/templates/default';
@@ -49,7 +49,7 @@ class SfTextarea extends ShownRequired(FormField(TextareaElement)) {
   }
 
   get size() {
-    return fieldSize(this.getAttribute('size') || '1', 'sf-input-textarea');
+    return ladderSize(this.getAttribute('size'));
   }
 
   get minlength() {
@@ -144,7 +144,7 @@ class SfTextarea extends ShownRequired(FormField(TextareaElement)) {
 
     return this.createTemplateContext({
       ...props,
-      // The size the field draws: a retired size (1/3) is the one it keeps.
+      // The size the field draws: one of the field ladder's five steps.
       size: this.size,
       value: this.hasAttribute('value') || !textarea ? props.value : textarea.value,
       // The default form.reset() puts back is the declared value, never the

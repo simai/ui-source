@@ -1,7 +1,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
-import {fieldSize} from '../../component/field-size';
-import {FormField} from '../helpers/form-field';
+import {ladderSize} from '../../component/field-size';
+import {FormField, ShownRequired} from '../helpers/form-field';
 import {renderRichTextTemplate} from './js/templates/default';
 import {richTextFromPlainText, richTextHref, sanitizeRichText} from './js/rich-text-html.mjs';
 import manifest from './component.json';
@@ -179,7 +179,7 @@ function pointAt(root, target) {
 
 // ------------------------------------------------------------ the element
 
-class SfRichText extends FormField(RichTextElement) {
+class SfRichText extends ShownRequired(FormField(RichTextElement)) {
   static get props() {
     return {
       ...super.props,
@@ -208,7 +208,7 @@ class SfRichText extends FormField(RichTextElement) {
   // ---------------------------------------------------------- settings
 
   get size() {
-    return fieldSize(this.getAttribute('size') || '1', 'sf-input-rich');
+    return ladderSize(this.getAttribute('size'));
   }
 
   get effectiveDisabled() {
@@ -268,7 +268,10 @@ class SfRichText extends FormField(RichTextElement) {
       value: this.value,
       readonly: Boolean(this.readonly),
       required: Boolean(this.required),
-      invalid: Boolean(this.invalid),
+      // The page's error, or the required one a failed form check shows
+      // (ShownRequired, C55 F1 / TR-15: as sf-input-textarea 1.8.0).
+      invalid: this.sfShownInvalid(this.invalid),
+      errorMessage: this.sfShownMessage(this.invalid, props.errorMessage),
       rows: this.rows,
       maxRows: this.maxRows,
       tools: this.toolList(),

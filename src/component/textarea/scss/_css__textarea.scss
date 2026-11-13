@@ -1,3 +1,5 @@
+@use '../../inputs/scss/field-ladder' as ladder;
+
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) */
 .sf-textarea {
@@ -51,6 +53,9 @@
 .sf-textarea textarea {
   inline-size: 100%;
   min-inline-size: 0;
+  /* The line the text is drawn on: the size's, or on a touch phone at least
+     the touch line (below), so the auto-grow rows count the same line. */
+  --sf-textarea--line: max(var(--sf-textarea-textarea--line-height), var(--sf-textarea--touch-line, var(--sf-textarea-textarea--line-height)));
   --sf-textarea-textarea--border: var(--sf-px) solid;
   --sf-textarea-textarea--border-end-end-radius: var(--sf-textarea--radius);
   --sf-textarea-textarea--border-end-start-radius: var(--sf-textarea--radius);
@@ -69,7 +74,7 @@
   font-family: var(--sf-textarea-textarea--font-family);
   font-size: var(--sf-textarea-textarea--font-size);
   font-weight: var(--sf-textarea-textarea--font-weight);
-  line-height: var(--sf-textarea-textarea--line-height);
+  line-height: var(--sf-textarea--line);
   padding-bottom: var(--sf-textarea-textarea--padding-bottom);
   padding-inline-end: var(--sf-textarea-textarea--padding-inline-end);
   padding-inline-start: var(--sf-textarea-textarea--padding-inline-start);
@@ -322,8 +327,8 @@
   --sf-textarea--row-frame: calc(var(--sf-textarea-textarea--padding-top) + var(--sf-textarea-textarea--padding-bottom) + 2 * var(--sf-px));
   block-size: auto;
   field-sizing: content;
-  min-block-size: calc(var(--sf-textarea--min-rows, 1) * var(--sf-textarea-textarea--line-height) + var(--sf-textarea--row-frame));
-  max-block-size: calc(var(--sf-textarea--max-rows) * var(--sf-textarea-textarea--line-height) + var(--sf-textarea--row-frame));
+  min-block-size: calc(var(--sf-textarea--min-rows, 1) * var(--sf-textarea--line) + var(--sf-textarea--row-frame));
+  max-block-size: calc(var(--sf-textarea--max-rows) * var(--sf-textarea--line) + var(--sf-textarea--row-frame));
   overflow-y: auto;
   resize: none;
 }
@@ -469,8 +474,89 @@
     --sf-textarea--radius: min(var(--sf-textarea-radius, var(--sf-radius--ui)), var(--sf-ui-1\/2--control-height) / 2);
   }
 
-  .sf-textarea:is(.sf-textarea--size-1, .sf-textarea--size-2, .sf-textarea--size-1\/2):not(.sf-textarea--flush) textarea {
+  .sf-textarea:is(.sf-textarea--size-1\/3, .sf-textarea--size-1\/2, .sf-textarea--size-1, .sf-textarea--size-2, .sf-textarea--size-3):not(.sf-textarea--flush) textarea {
     --sf-textarea-textarea--padding-inline-start: var(--sf-textarea-padding-inline, calc(var(--sf-textarea--value-inset) - var(--sf-px)));
     --sf-textarea-textarea--padding-inline-end: var(--sf-textarea-padding-inline, calc(var(--sf-textarea--value-inset) - var(--sf-px)));
+  }
+}
+
+/* The outer steps of the field ladder (inputs/scss/_field-ladder.scss, as
+   sf-input and the six fields of the fields ladder): at 1/3 and 3 one row is
+   as tall as sf-input of the size (28 / 56 on a desktop), the text is the
+   size's, the label, the hint and the error a step below. The value starts
+   where sf-input's does at those steps (C77 names the kept sizes only), with
+   the corner correction of the kept sizes; the corner is at most half the
+   one-row height. The textarea drew 1/3 and 3 at 1/2 and 2 before. */
+@layer sf.components {
+  @each $size in ladder.$outer {
+    $class: ladder.size-class('sf-textarea', $size);
+
+    .sf-textarea.#{$class} {
+      --sf-textarea--inset: #{ladder.outer-inset($size)};
+      --sf-textarea--radius: min(var(--sf-textarea-radius, var(--sf-radius--ui)), #{ladder.height($size)} / 2);
+    }
+
+    .sf-textarea.#{$class} .sf-textarea-hint-text-wrap {
+      --sf-textarea-hint-text-wrap--font-family: var(--sf-text--family);
+      --sf-textarea-hint-text-wrap--font-weight: var(--sf-font-weight-regular);
+      --sf-textarea-hint-text-wrap--font-size: #{ladder.label-size($size)};
+      --sf-textarea-hint-text-wrap--line-height: #{ladder.label-height($size)};
+    }
+
+    .sf-textarea.#{$class} .sf-textarea-required {
+      --sf-textarea-required--font-size: #{ladder.label-size($size)};
+      --sf-textarea-required--line-height: #{ladder.label-height($size)};
+    }
+
+    .sf-textarea.#{$class} .sf-textarea-text {
+      --sf-textarea-text--font-size: #{ladder.label-size($size)};
+      --sf-textarea-text--line-height: #{ladder.label-height($size)};
+    }
+
+    .sf-textarea.#{$class} textarea {
+      --sf-textarea-textarea--font-family: var(--sf-text--family);
+      --sf-textarea-textarea--font-weight: var(--sf-font-weight-regular);
+      --sf-textarea-textarea--font-size: #{ladder.text-size($size)};
+      --sf-textarea-textarea--line-height: #{ladder.text-height($size)};
+      --sf-textarea-textarea--padding-bottom: var(--sf-textarea-padding-block, #{ladder.padding-block($size)});
+      --sf-textarea-textarea--padding-top: var(--sf-textarea-padding-block, #{ladder.padding-block($size)});
+    }
+
+    .sf-textarea.#{$class} textarea[rows="1"] {
+      block-size: #{ladder.height($size)};
+    }
+
+    .sf-textarea.#{$class} textarea::placeholder {
+      --sf-textarea-placeholder--font-size: #{ladder.text-size($size)};
+      --sf-textarea-placeholder--line-height: #{ladder.text-height($size)};
+    }
+
+    .sf-textarea:not(.error).#{$class}.sf-textarea--bordered:has(textarea:enabled:not(:disabled):not(.disabled):not(:read-only):active) textarea {
+      --sf-textarea-textarea--border-color: var(--sf-primary-active);
+    }
+
+    .sf-textarea.sf-textarea--flush.#{$class} textarea {
+      --sf-textarea-textarea--padding-top: var(--sf-textarea-padding-block, #{ladder.ui($size, space-y-tightness-default)});
+      --sf-textarea-textarea--padding-bottom: var(--sf-textarea-padding-block, #{ladder.ui($size, space-y-tightness-default)});
+    }
+  }
+}
+
+/* TR-2: on a touch phone the core lifts a field's text to 16px so iOS does
+   not zoom into it (core/scss/_sf_css__touch_fields.scss, same query), and
+   keeps the size's line: right for a one-line field, but the 1/2 textarea
+   then drew 16px text on a 16px line and its lines touched. Its lines stand
+   on at least the text line of size 1 (20 on a phone), the line the phone
+   ladder gives that text. A fixed one-row field (rows="1", not growing) is
+   the one-line field's box and keeps the size's line inside its control
+   height; size 3 is not lifted and keeps its own line. */
+@media (hover: none) and (pointer: coarse) {
+  @media not all and (min-width: 60rem) {
+    @layer sf.components {
+      .sf-textarea:not(.sf-textarea--size-3):not(.sf-textarea--auto-grow) textarea:not([rows="1"]),
+      .sf-textarea.sf-textarea--auto-grow:not(.sf-textarea--size-3) textarea {
+        --sf-textarea--touch-line: var(--sf-text-height-1);
+      }
+    }
   }
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-rich",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "title": "Rich text",
   "summary": "A form field for formatted text: paragraphs, headings 2 to 4, bold, italic, links, bulleted and numbered lists and quotes, with a toolbar, undo and redo. Its value is HTML of that subset and nothing else: the value it is given, every paste and drop and every edit are cleaned to it.",
   "kind": "smart",
@@ -61,11 +61,13 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "The field ladder, as sf-textarea's: the frame, the padding and the text of the same size; the toolbar's buttons a rung below.",
+        "description": "The field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the frame, the padding and the text of the same size; the toolbar's buttons a rung below (1/3 at 1/3).",
         "enum": [
+          "1/3",
           "1/2",
           "1",
-          "2"
+          "2",
+          "3"
         ]
       },
       "appearance": {
@@ -321,11 +323,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-rich/index.js",
-        "sha256": "c9069dc5dd4b13d2759cda3ada3816712ebb86743286bb4cecc33dba05f22a01"
+        "sha256": "0444874381f1f18376040a0a6ea68c07da794c4b16f081a30bafb2634865f4af"
       },
       {
         "path": "src/smart/input-rich/js/templates/default.js",
-        "sha256": "98525c7e1778aeebd8a2552c3b31ac945cf81bebb551af95420dd6c5dcfc4291"
+        "sha256": "613f0862ec095c113a75e2426c3b75f21b1631f956f85db503866c04ac5065b4"
       },
       {
         "path": "src/smart/input-rich/js/rich-text-html.mjs",
@@ -337,7 +339,7 @@
       },
       {
         "path": "src/smart/input-rich/scss/_smart__rich_text.scss",
-        "sha256": "e41a164b54ef1da9e07ea9a39c019068e983c289bccd87569d092ef3557bf5e6"
+        "sha256": "e7eac52e1220bcb1cb98d1f36020d69b3e286c2fb6fce9388a07253150fbc446"
       },
       {
         "path": "src/smart/input-rich/rule.js",
@@ -345,7 +347,7 @@
       },
       {
         "path": "src/smart/input-rich/docs.md",
-        "sha256": "f030405893465fa7223ce94ad1e9b35e27eb96d27dcfe680adbc75e0e9446f2f"
+        "sha256": "7a3c8d6c501ea2b7d63993b7377989b6f31c634913ed011194b98870513968de"
       }
     ],
     "generated_runtime": []

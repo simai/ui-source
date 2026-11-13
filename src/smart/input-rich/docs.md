@@ -57,17 +57,24 @@ again with the same subset: a request can be written by anyone.
 - `hint` -- the line under the field; `invalid` with `error-message` shows
   the message in its place.
 - `required` -- the form is not sent while the value is `""`
-  (`value-missing`).
+  (`value-missing`); after a failed form check the field shows the required
+  error as sf-input-textarea does (red frame, «Заполните поле» under it),
+  gone once there is text.
 - `disabled`, `readonly` -- as on sf-textarea: a disabled field is not
   focusable and not sent; a read-only one is read and selected, its toolbar
   disabled, its value sent.
-- `size="1/2|1|2"` -- the field ladder; the frame, padding and text are
-  sf-textarea's of the same size, the toolbar's buttons a rung below
+- `size="1/3|1/2|1|2|3"` -- the field ladder, as sf-input's; the frame,
+  padding and text are sf-input-textarea's of the same size and the text
+  starts where the textarea's does (C77: 12 / 16 / 20 from the outer edge,
+  12 in a compact region and on a phone), the toolbar's buttons a rung below
+  (1/3 at 1/3)
   (ghost on-surface icon buttons; the block levels P, H2, H3, H4 in the same
   square). Headings in the text climb the text ladder from the field's
   text: h4 is the field's text, h3 a rung above, h2 two rungs above, all
-  bold, so no heading is smaller than the text. The link editor is one
-  rung: its address field, hint and buttons are the field's size (at most 1).
+  bold, so no heading is smaller than the text. On a touch phone the text
+  and the headings are at least 16px, on at least the size-1 line, so iOS
+  does not zoom in. The link editor is one rung, the toolbar's: its address
+  field, hint and buttons are one size.
 - `appearance="bordered|filled"` -- sf-textarea's two boxes (filled with its
   bottom line in `--sf-outline`, C52).
 - `rows` -- the fewest lines shown (6); the field grows with its text.

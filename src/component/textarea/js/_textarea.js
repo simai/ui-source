@@ -2,7 +2,7 @@ import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import textareaUtility from '../json/textarea.utility.json';
 import { syncFieldContract } from '../../field-contract';
-import { fieldSize, retireFieldSizeClass } from '../../field-size';
+import { ladderSize } from '../../field-size';
 import { bindFormReset } from '../../form-reset-helper';
 import { maskService } from '../../mask-service';
 
@@ -254,7 +254,8 @@ async function bindMask(root, textarea) {
 }
 
 function bindTextarea(root) {
-  retireFieldSizeClass(root, 'sf-textarea');
+  // The textarea stands on the field ladder (field-size.js): 1/3 and 3 are
+  // its own steps, no class to move.
   if (!root || root.dataset[TEXTAREA_BOUND_FLAG] === '1') return;
   const textarea = getTextareaNode(root);
   if (!textarea) return;
@@ -407,7 +408,7 @@ class Textarea extends ComponentObserver {
     } = this.params || {};
 
     const className = this.attrs.class || this.attrs.className;
-    const normalizedSize = fieldSize(size, 'sf-textarea');
+    const normalizedSize = ladderSize(size);
     const normalizedVariant = boundedValue(type, TEXTAREA_VARIANTS, 'bordered');
 
     this.template = document.createElement('label');
