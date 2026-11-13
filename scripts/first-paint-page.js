@@ -212,9 +212,12 @@
   // A run of white space between tags is one space wherever white space
   // collapses: the template's indentation is not kept.
   const collapses = (node) => !/^pre|^break-spaces/u.test(getComputedStyle(node.parentElement ?? document.body).whiteSpace);
+  // Only ASCII white space is indentation (what collapses in HTML): trim()
+  // also strips U+00A0, and a node of only &nbsp; was printed as a space.
+  const indentation = (data) => /^[\t\n\f\r ]*$/u.test(data);
   function text(node, mode) {
     let data = node.data;
-    if (!data.trim() && collapses(node)) data = data.includes('\n') ? '\n' : (data ? ' ' : '');
+    if (indentation(data) && collapses(node)) data = data.includes('\n') ? '\n' : (data ? ' ' : '');
     if (mode.skeleton && data.trim() && !isIconText(node)) {
       return `<span class="sf-first-paint-bar" aria-hidden="true">${escText(data)}</span>`;
     }
