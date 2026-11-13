@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "title": "Text fields",
   "summary": "A native single-line form control with Framework presentation, validation messaging and optional mask integration.",
   "kind": "smart",
@@ -105,7 +105,7 @@
       "input-type": {
         "type": "string",
         "default": "text",
-        "description": "The kind of text the field takes, the native input type: text, email, password (with a reveal button), search, tel, url or number (with min, max and step).",
+        "description": "The kind of text the field takes, the native input type: text, email, password, search, tel, url or number (with min, max and step).",
         "enum": [
           "text",
           "email",
@@ -211,6 +211,11 @@
         "type": "boolean",
         "default": false,
         "description": "The value can be read, selected and copied but not changed; it is sent with the form. The field draws the region line instead of the control border."
+      },
+      "clearable": {
+        "type": "boolean",
+        "default": false,
+        "description": "A clear button (×) at the field's end while the field holds a value: a glyph inside the field (C123), named «Очистить»; a press empties the field, says so with input and change and gives the focus back to it. A search field (input-type search) has it without the setting, in place of the browser's own."
       },
       "invalid": {
         "type": "boolean",
@@ -654,7 +659,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input/index.js",
-        "sha256": "16e221a087b3ace144ef2a67b1e2699677c24df2ef0e4fae9d0f7b0781f13696"
+        "sha256": "0d270a8c17a3000fce9e2d22095c4f7ffa05ab93cf911b22a1cea899ce0d2ace"
       },
       {
         "path": "src/smart/input/rule.js",
@@ -662,7 +667,7 @@
       },
       {
         "path": "src/smart/input/js/templates/default.js",
-        "sha256": "950b4cab69b718c19d5bc0e2a9defd13898af3964777c3a6945df7fbd6b244f7"
+        "sha256": "55e13122c96982a1e58fd1eb284ab2a2338473631d0c4c30373d699d205d844f"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

@@ -161,8 +161,11 @@ class SfLookup extends ShownRequired(FormField(LookupElement)) {
   }
 
   // Set from code it is not a change: no event, as for a native field.
+  // Kept as given and read against the options by the getter, so a bare value
+  // set before the options arrive takes its option's label once they do (it
+  // was resolved here, once, and kept the value as its label: «u1»).
   set value(next) {
-    this._value = next === undefined ? undefined : normaliseValue(next, {multiple: Boolean(this.multiple), options: this.options});
+    this._value = next;
     this._dirty = false;
     this._query = '';
     this.requestComponentUpdate('value');
@@ -214,7 +217,7 @@ class SfLookup extends ShownRequired(FormField(LookupElement)) {
     let values = state;
     if (typeof FormData === 'function' && state instanceof FormData) values = state.getAll(this.name || '').map(String);
     if (values === null || values === undefined) return;
-    this._value = normaliseValue(Array.isArray(values) ? values : [values].filter((one) => one !== ''), {multiple: Boolean(this.multiple), options: this.options});
+    this._value = Array.isArray(values) ? values : [values].filter((one) => one !== '');
     this.requestComponentUpdate('restore');
   }
 

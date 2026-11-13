@@ -61,7 +61,10 @@ beside every option that has no picture of its own, because a class and
 The actual toggle button is the primary Tab stop. It controls a named listbox;
 the optional searchbox is separate from its options. ArrowDown opens search
 (or the first available option); ArrowUp opens the last available option.
-Arrow keys and Home/End move option focus without changing selection. Enter or
+Arrow keys, Home/End, PageDown/PageUp (by what the list shows) and typed
+letters (type-ahead: a prefix typed within half a second, the same letter again
+for the next match) move option focus without changing selection; the focused
+option is brought into view at once, as far as it needs. Enter or
 Space selects; Escape closes without changing selection and restores the
 button. Tab closes and continues native page traversal. Home/End in search
 remain native editing keys. Independent tag-removal buttons remain reachable.
@@ -110,7 +113,9 @@ remain explicit overrides. Dropdown field defaults use var() fallbacks so an
 inherited --sf-dropdown--radius is not shadowed by a child default declaration.
 
 Positioning uses the shared `SF.Position` contract (Floating UI) and is on by
-default; `portal="false"` keeps the in-flow list. With Popover API support,
+default; `portal="false"` keeps the in-flow list, which opens below the field
+with the positioned list's height: the larger room the screen gives above or
+below the field, and its rows scroll beyond it. With Popover API support,
 portal panels use the native manual top layer. DOM
 ancestry, inherited theme/tokens and Lit-owned nodes remain intact. Without that
 API, the same panel is projected into a temporary context containing its
@@ -135,6 +140,14 @@ preserve the same search input and its focus; disabling projection restores the
 normal DOM position. Base Dropdown watches both portal and data-portal and binds
 projected-list pointer handlers only while they are needed. Each selection still
 emits one change event, including after repeated mode switches.
+
+## The chevron
+
+The chevron is the field's indicator (owner decision C123, 1.10.0): a glyph
+without a plate, the size of the field's leading picture (24 / 20 / 28 at 1,
+1/2, 2), quiet at rest and the text's ink while the field is under the pointer.
+The whole field opens the list. The chevron stays the button that holds the
+focus and `aria-expanded`, the field's one Tab stop; the field draws its ring.
 
 ## Inherited value
 

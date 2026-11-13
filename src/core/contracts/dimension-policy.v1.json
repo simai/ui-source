@@ -280,6 +280,14 @@
       "reason": "A column or panel width passed as an attribute or a documented default (a popover 20rem = g0, a modal 48rem = h2, a field grid column 14rem = f4, a resizer's 12rem and 40rem bounds = f2 and h0): steps of the size scale written in rem where an attribute value is expected."
     },
     {
+      "id": "dropdown-in-place-measured-room",
+      "category": "runtime-review",
+      "filePattern": "^component/dropdown/portal\\.js$",
+      "contextPattern": "\\$\\{Math\\.floor\\(cap\\)\\}px",
+      "status": "accepted-runtime-geometry",
+      "reason": "An in-place list (portal=\"false\") takes the anchored list's height (owner remark R171): the room above or below its field, measured with getBoundingClientRect on opening less the panel's edge padding (a space token), in CSS pixels, written as --sf-dropdown-available-block-size."
+    },
+    {
       "id": "measured-runtime-geometry",
       "category": "runtime-review",
       "filePattern": "^(?:component/(?:country-code/js/_country_code|menu/js/_menu|range-slider/js/_range_slider|scrollbar/js/_scrollbar|textarea/js/_textarea|tooltip/js/_tooltip)\\.js|core/js/(?:code-copy|effects|float-anchor|layer-stack|position)\\.js|core/js/composition/(?:inline-editor|overlay|sortable-inserter|sortable)\\.mjs|smart/(?:menu|menu-context|profile-picker|resizer|segmented)/index\\.js|smart/tree/js/templates/default\\.js)$",

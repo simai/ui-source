@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.inputs",
   "kind": "component",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/inputs/docs/docs.md",
@@ -14,9 +14,10 @@
     "src/component/inputs/rule.js",
     "src/component/inputs/scss/_css__custom.scss",
     "src/component/inputs/scss/_css__inputs.scss",
+    "src/component/inputs/scss/_field-action.scss",
     "src/component/inputs/scss/index.scss"
   ],
-  "content_sha256": "0a3b012ff15cf8da73617841c4b7e0acc092d9d0591fd785f43a5249177aa30b",
+  "content_sha256": "8d2ff152185d2831ca47d280fd3427639a83d63a8cd7d680ebd27cc8662a1c76",
   "dependencies": [
     {
       "id": "core.runtime",
