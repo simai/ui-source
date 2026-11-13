@@ -54,6 +54,15 @@ a real destination or action.
 Use `.sf-avatar-card--square` and `.sf-avatar-card--portrait` for new card
 markup. The older classes without the BEM modifier separator remain compatible.
 
+A card without a photo (owner decision C124) puts
+`.sf-avatar-card-placeholder` in `.sf-avatar-card-image`: with
+`.sf-avatar-card-placeholder--text sf-hue-<name>` and an
+`.sf-avatar-card-initials` span it draws the initials on the hue's container
+in its ink, 36 % of the box width in the medium weight; with
+`.sf-avatar-card-placeholder--icon` and an `.sf-icon` it draws the glyph at
+45 % of the box on the neutral fill. Both are shares of the media box
+(container query units), and the box keeps its ratio without a photo.
+
 ## Semantics and accessibility
 
 - An image that is repeated by an adjacent visible name uses `alt=""`.

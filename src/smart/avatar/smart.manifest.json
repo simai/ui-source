@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.avatar",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "title": "Avatar",
   "summary": "Shows a person or organisation as a photo or initials, with an optional availability or verification mark. The default and label templates render a native button whose aria-label names its action; the card template is static and adds a title, description and meta line.",
   "kind": "smart",
@@ -97,7 +97,7 @@
       "hue": {
         "type": "string",
         "default": "",
-        "description": "The hue of the static palette the initials are drawn in (owner decision C17): the plate is the hue's container, the ink its on-container. Empty: the neutral look. auto: one of eight hues (pink, amber, lime, green, teal, sky, indigo, purple) picked from the name (heading, else aria-label, else text) by a fixed hash, the same in every browser and on a server; no name, the neutral look. Only initials take a hue: an image and the placeholder stay as they are. --sf-avatar-background-color and --sf-avatar-color still win.",
+        "description": "The hue of the static palette the initials are drawn in (owner decision C17): the plate is the hue's container, the ink its on-container. Empty: the neutral look. auto: one of eight hues (pink, amber, lime, green, teal, sky, indigo, purple) picked from the name (heading, else aria-label, else text) by a fixed hash, the same in every browser and on a server; no name, the neutral look. Only initials take a hue: an image and the placeholder stay as they are. The card template without a photo draws the initials on the hue too, auto when hue is empty (owner decision C124). --sf-avatar-background-color and --sf-avatar-color still win.",
         "enum": [
           "",
           "auto",
@@ -316,7 +316,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/avatar/index.js",
-        "sha256": "c56c875a5181010be49fed6edf346b3edf525482a125bd74b276f03fa93b22f1"
+        "sha256": "01a08bd1bfeedb3c15966ecb5da4eb38a8f0a4978d35c4ea8a67e3f52b850d39"
       }
     ],
     "generated_runtime": [

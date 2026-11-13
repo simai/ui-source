@@ -125,3 +125,34 @@ test('Avatar card media box keeps its ratio without a photo', async () => {
   assert.match(sheet, /\.sf-avatar-card\.sf-avatar-card--square \.sf-avatar-card-image,[^{]*\{\s*aspect-ratio: 1 \/ 1;/u);
   assert.match(sheet, /\.sf-avatar-card\.sf-avatar-card--portrait \.sf-avatar-card-image,[^{]*\{\s*aspect-ratio: 9 \/ 16;/u);
 });
+
+// C124 (owner 2026-11-13): a card without a photo draws the initials of the
+// name on its hue (auto when no hue is set), and with no name the person glyph
+// at 45 % of the box on the neutral fill; the initials are 36 % of the box
+// width in the medium weight. Round avatars keep their look.
+test('Avatar card without a photo draws initials on the hue, else the glyph', async () => {
+  const [card, source, sheet, shared] = await Promise.all([
+    read('src/smart/avatar/js/templates/card.js'),
+    read('src/smart/avatar/index.js'),
+    read('src/component/avatars/scss/_css__avatar-card.scss'),
+    read('src/smart/avatar/js/templates/shared.js'),
+  ]);
+
+  assert.match(card, /context\.isText/);
+  assert.match(card, /sf-avatar-card-placeholder--text\$\{hue\}/);
+  assert.match(card, /` sf-hue-\$\{context\.resolvedHue\}`/);
+  assert.match(card, /<span class="sf-avatar-card-initials">\$\{context\.text\}<\/span>/);
+  assert.match(card, /sf-avatar-card-placeholder--icon[\s\S]*<i class="sf-icon" aria-hidden="true">person<\/i>/);
+  assert.doesNotMatch(card, /bg-surface-container/);
+  assert.match(source, /this\.templateName === "card" && !this\.hue && !this\.tone \? "auto" : ""/);
+
+  assert.match(sheet, /\.sf-avatar-card \.sf-avatar-card-placeholder \{[^}]*container-type: inline-size;[^}]*background-color: var\(--sf-surface-container\);[^}]*color: var\(--sf-on-surface-container-variant\);/u);
+  assert.match(sheet, /\.sf-avatar-card-placeholder--text:is\(#\{\$sf-avatar-card-hue-classes\}\) \{[^}]*var\(--sf-hue-container\);[^}]*var\(--sf-on-hue-container\);/u);
+  assert.match(sheet, /\.sf-avatar-card-initials \{[^}]*font-size: 36cqi;[^}]*font-weight: var\(--sf-font-weight-medium\);/u);
+  assert.match(sheet, /\.sf-avatar-card-placeholder \.sf-icon \{[^}]*--sf-icon--font-size: 45cqi;[^}]*--sf-icon--height: 45cqi;[^}]*--sf-icon--width: 45cqi;/u);
+  assert.doesNotMatch(sheet, /#[0-9a-f]{3,8}\b|rgba?\(/i);
+
+  // The round avatar is untouched: the same glyph and initials markup.
+  assert.match(shared, /<i class="sf-icon" aria-hidden="true">person<\/i>/);
+  assert.match(shared, /<span class="sf-avatar-text">\$\{context\.text\}<\/span>/);
+});

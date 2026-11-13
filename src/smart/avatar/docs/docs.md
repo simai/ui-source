@@ -74,8 +74,13 @@ size (owner decision C17: an avatar has no colours of its own):
 
 - Empty (the default) is the neutral look.
 - Only initials take a hue: an avatar with `image-url` shows the image with no
-  fill, and the placeholder icon stays neutral. The `card` template draws no
-  initials, so it takes none.
+  fill, and the placeholder icon stays neutral.
+- The `card` template without `image-url` (owner decision C124) draws the
+  initials of the name on its hue, 36 % of the media box width in the medium
+  weight; `auto` is the card's default when `hue` is empty, a named hue is
+  kept. With no name it draws the person glyph at 45 % of the box on the
+  neutral fill. The media box keeps its ratio (square 1:1, portrait 9:16), so
+  a photo arriving later moves nothing. Round avatars are unchanged.
 - `--sf-avatar-background-color` and `--sf-avatar-color` still win.
 - The plain classes are `sf-avatar--text sf-hue-<name>`: `sf-hue-<name>` gives
   the element the hue's roles (`--sf-hue-container`, `--sf-on-hue-container`
