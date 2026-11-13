@@ -133,6 +133,11 @@
   color: var(--sf-accordion-title--color, var(--sf-accordion-title-color, var(--sf-on-surface)));
   background-color: transparent;
   font: inherit;
+  /* The row sits on the accordion's own text line, so parts drawn on the
+     inherited line (a badge with line="text") match the title; a 16/24
+     page line grew the size 1/2 header to 36. */
+  font-size: var(--sf-accordion--text-size);
+  line-height: var(--sf-accordion--text-height);
   text-align: start;
   cursor: pointer;
   transition: background-color var(--sf-duration-fast) var(--sf-animation);

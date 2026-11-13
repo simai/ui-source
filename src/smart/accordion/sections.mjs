@@ -92,3 +92,11 @@ export function markerGlyph(marker, open) {
 // The badge is a size the header carries: 1/3 up to a size 1 header, then one
 // rung below the header (sf-badge has 1/3, 1/2 and 1).
 export const BADGE_SIZE = Object.freeze({'': '1/3', '1/3': '1/3', '1/2': '1/3', 1: '1/3', 2: '1/2', 3: '1'});
+
+// Where the badge would stand taller than the header's text line it takes
+// the line of the text beside it (sf-badge line="text": the title's size and
+// line, one figure a circle), so the header keeps its control height (C01,
+// C18; C95 point 6: a mark beside an item's text is as high as its line): at
+// size 1/2 a 1/3 badge (24, phone 20) grew the 32 header to 36 (phone 28 to
+// 32).
+export const BADGE_LINE = Object.freeze({'1/3': 'text', '1/2': 'text'});
