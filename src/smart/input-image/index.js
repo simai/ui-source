@@ -24,8 +24,9 @@
 //
 // The picture's description (alt) and «Декоративная» are inside the field when
 // the page asks for them (`alt`); the frame and the focal point are edited in
-// place (`edit`), never the pixels: they go in the value, and the server or
-// CDN cuts the sizes (C94 points 3, 4).
+// a window over the page (`edit`, C125: sf-modal, the whole screen on a
+// phone), never the pixels: they go in the value, and the server or CDN cuts
+// the sizes (C94 points 3, 4).
 //
 // The field half -- label, help text, error, required, disabled, read-only --
 // is the one every Framework field has (component/field-contract.js), so the
@@ -34,6 +35,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {tagSelector} from '../../core/js/tag-aliases.js';
+import {breakpointMedia} from '../../core/js/breakpoints.js';
 import {createFieldContract} from '../../component/field-contract';
 import {FIELD_SIZES, fieldSize} from '../../component/field-size';
 import {FormField} from '../helpers/form-field';
@@ -69,6 +71,7 @@ const DEFAULT_ACCEPT = 'image/*';
 const SOURCES = ['device', 'library', 'url'];
 const EDITS = ['crop', 'focus'];
 const MENU = `:scope .sf-image-field-parts > ${tagSelector('sf-menu-context')}`;
+const EDITOR_WINDOW = ':scope > .sf-image-field > .sf-image-field-window';
 
 // Whether the pointer is a finger: no hover, no drag words (IF-1).
 const coarseQuery = () => {
@@ -205,6 +208,13 @@ class SfImageField extends FormField(ImageFieldElement) {
       this._coarse = Boolean(event.matches);
       this.requestComponentUpdate('pointer');
     };
+    // Under md the editor's window is the whole screen (C125; the forms in
+    // popups are sheets there, C32).
+    this._phone = false;
+    this._onPhone = (event) => {
+      this._phone = Boolean(event.matches);
+      if (this._editor) this.requestComponentUpdate('phone');
+    };
     this._onInvalid = () => this._showMissing();
     this._onFocusOut = (event) => {
       if (event.relatedTarget && this.contains(event.relatedTarget)) return;
@@ -224,6 +234,9 @@ class SfImageField extends FormField(ImageFieldElement) {
     const query = coarseQuery();
     this._coarse = Boolean(query?.matches);
     query?.addEventListener?.('change', this._onCoarse);
+    this._phoneQuery = breakpointMedia('md', {below: true});
+    this._phone = Boolean(this._phoneQuery?.matches);
+    this._phoneQuery?.addEventListener?.('change', this._onPhone);
     this.addEventListener('invalid', this._onInvalid);
     this.addEventListener('focusout', this._onFocusOut);
   }
@@ -231,6 +244,8 @@ class SfImageField extends FormField(ImageFieldElement) {
   onDisconnected() {
     clearTimeout(this._announceTimer);
     coarseQuery()?.removeEventListener?.('change', this._onCoarse);
+    this._phoneQuery?.removeEventListener?.('change', this._onPhone);
+    this._phoneQuery = null;
     this.removeEventListener('invalid', this._onInvalid);
     this.removeEventListener('focusout', this._onFocusOut);
     this._upload?.controller?.abort();
@@ -820,7 +835,9 @@ class SfImageField extends FormField(ImageFieldElement) {
 
   // --------------------------------------------------------------- editor
   // The frame (crop) and the focal point (C94 point 3): edited on the picture
-  // itself, never cut. The working copy is kept until «Готово».
+  // itself, never cut, in a window over the page (C125: the field no longer
+  // grows under the picture). The working copy is kept until «Готово»; the
+  // window gives focus back to «Изменить» however it closes.
 
   get cropAspect() {
     const own = aspectRatio(this.getAttribute('aspect'));
@@ -838,7 +855,8 @@ class SfImageField extends FormField(ImageFieldElement) {
       crop: normaliseCrop(value.crop) || {aspect: this.cropAspect.replace(/\s/gu, ''), zoom: 1, x: 0.5, y: 0.5},
       focus: normaliseFocus(value.focus) || {x: 0.5, y: 0.5},
     };
-    this._focusAfterRender = 'stage';
+    // The window opens as it is drawn and puts focus on the picture (its
+    // autofocus), and remembers «Изменить» to give it back.
     this.requestComponentUpdate('editor');
     return 'applied';
   }
@@ -849,11 +867,12 @@ class SfImageField extends FormField(ImageFieldElement) {
     this.requestComponentUpdate('editor');
   }
 
+  // «Готово» (save) writes the working copy into the value; «Отмена» leaves
+  // it. Either way the window closes, and its sf-modal-closed drops the copy
+  // (onEditorClosed), as Escape, the scrim and the × do.
   _closeEditor(save) {
     const editor = this._editor;
-    if (!editor) return;
-    this._editor = null;
-    this._focusAfterRender = 'edit';
+    if (!editor || this._editorClosing) return;
     if (save && this.value) {
       const next = {...this.value};
       const modes = this.editList;
@@ -862,6 +881,33 @@ class SfImageField extends FormField(ImageFieldElement) {
       this._value = next;
       this._emitValue({value: next, file: next.file ?? null, source: 'edit'});
     }
+    const editorWindow = this.querySelector?.(EDITOR_WINDOW);
+    if (editorWindow && typeof editorWindow.close === 'function' && editorWindow.openState) {
+      this._editorClosing = true;
+      const outcome = save ? editorWindow.confirm?.() : editorWindow.close({reason: 'cancelled'});
+      if (outcome?.outcome !== 'refused') return;
+      this._editorClosing = false;
+    }
+    this._dropEditor();
+  }
+
+  // The window has closed, by «Готово», «Отмена», Escape, the scrim or its ×:
+  // the working copy goes and the window leaves the field. The window put
+  // focus back on «Изменить»; if it could not (the page moved it), the field
+  // does.
+  onEditorClosed(event) {
+    event?.stopPropagation?.();
+    if (event && event.target !== event.currentTarget) return;
+    this._dropEditor();
+  }
+
+  _dropEditor() {
+    this._editorClosing = false;
+    if (!this._editor) return;
+    this._editor = null;
+    this._drag = null;
+    const active = globalThis.document?.activeElement;
+    if (!active || !this.contains?.(active)) this._focusAfterRender = 'edit';
     this.requestComponentUpdate('editor');
   }
 
@@ -899,12 +945,11 @@ class SfImageField extends FormField(ImageFieldElement) {
       this._zoomBy(event.key === '-' ? -0.1 : 0.1);
       return;
     }
+    // Enter is «Готово»; Escape is the window's own (close-on-esc), which
+    // leaves the value as «Отмена» does.
     if (event.key === 'Enter') {
       event.preventDefault();
       this._closeEditor(true);
-    } else if (event.key === 'Escape') {
-      event.preventDefault();
-      this._closeEditor(false);
     }
   }
 
@@ -1026,7 +1071,6 @@ class SfImageField extends FormField(ImageFieldElement) {
       const selector = {
         choose: ':scope .sf-image-field-actions :is(sf-button, sf-button-icon):not([disabled])',
         url: ':scope .sf-image-field-url-input',
-        stage: ':scope .sf-image-field-stage',
         edit: ':scope .sf-image-field-edit',
       }[target];
       this.querySelector(selector || '')?.focus?.({preventScroll: true});
@@ -1110,6 +1154,7 @@ class SfImageField extends FormField(ImageFieldElement) {
       edits: this.editList,
       editor,
       editorState: this._editorState(),
+      phone: this._phone,
       altMode: this.altMode,
       altMissing: this._missingShown && this._altMissing(),
       urlOpen: this._urlOpen,

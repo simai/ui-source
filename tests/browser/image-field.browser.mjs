@@ -20,14 +20,24 @@
 //   each of the three sizes, the inset the field's own, the buttons one rung
 //   down, nothing overflows, and on the narrow column the buttons go under the
 //   name.
+// - «Изменить» (edit="crop,focus") opens the editor in a window over the page
+//   (C125, sf-modal), with the frame / focal point buttons, the stage in focus
+//   and zoom; «Готово» writes crop and focus into the value (one input, one
+//   change, source edit); «Отмена», Escape and the scrim leave it; focus comes
+//   back to «Изменить» each time; the window's sf-modal-* events stay in the
+//   field; at 1000 the window is centred and 40rem wide, at 390 it is the
+//   whole screen.
 import {resolve, join} from 'node:path';
 import {existsSync, readFileSync} from 'node:fs';
 
 const {chromium} = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
-const styles = ['core/core/css/core.css', 'component/component/buttons/css/buttons.css', 'smart/smart/input-image/css/input-image.css'];
-const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js', 'smart/smart/button-icon/js/button-icon.js', 'smart/smart/input-image/js/input-image.js'];
+// The window (sf-modal) stands by its utilities (fixed, inset, flex), as a page
+// with the loader gets them: the full utility sheet stands in for them.
+const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/buttons/css/buttons.css', 'component/component/icon-buttons/css/icon-buttons.css',
+  'component/component/close/css/close.css', 'component/component/modal/css/modal.css', 'smart/smart/input-image/css/input-image.css'];
+const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js', 'smart/smart/button-icon/js/button-icon.js', 'smart/smart/modal/js/modal.js', 'smart/smart/input-image/js/input-image.js'];
 const failures = [];
 const note = (detail) => failures.push(detail);
 
@@ -67,15 +77,20 @@ try {
       <sf-input-image id="s-half" size="1/2" label="1/2" value='${stored('half.svg', 40, 40, 900)}'></sf-input-image>
       <sf-input-image id="s-one" size="1" label="1" value='${stored('one.svg', 40, 40, 900)}'></sf-input-image>
       <sf-input-image id="s-two" size="2" label="2" value='${stored('two.svg', 40, 40, 900)}'></sf-input-image>
+      <sf-input-image id="ed" layout="preview" aspect="16/9" label="Обложка" edit="crop focus" value='${stored('cover.svg', 1600, 900, 4096)}'></sf-input-image>
     </form>
     <button id="after" type="button">После</button>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-  await page.waitForFunction(() => customElements.get('sf-input-image') && customElements.get('sf-button') && customElements.get('sf-button-icon'), null, {timeout: 8000});
+  await page.waitForFunction(() => customElements.get('sf-input-image') && customElements.get('sf-button') && customElements.get('sf-button-icon') && customElements.get('sf-modal'), null, {timeout: 8000});
   await page.waitForTimeout(800);
   await page.evaluate(() => {
     window.__events = [];
+    window.__windowEvents = [];
+    for (const type of ['sf-modal-open', 'sf-modal-opened', 'sf-modal-close', 'sf-modal-closed']) {
+      document.addEventListener(type, () => window.__windowEvents.push(type));
+    }
     for (const type of ['input', 'change', 'sf-image-field:select', 'sf-image-field:remove', 'sf-image-field:reject']) {
       document.addEventListener(type, (event) => {
         const host = event.target.closest?.('sf-input-image');
@@ -213,6 +228,105 @@ try {
   }
   if ((await events()).length) note({case: 'disabled and read-only send nothing'});
 
+  // The editor's window (C125), at 1000 and at 390.
+  const editor = () => page.evaluate(() => {
+    const host = document.getElementById('ed');
+    const content = document.querySelector('[data-sf-modal-portal] .sf-image-field-editor');
+    const root = content?.closest('[data-sf-modal-portal]')?.querySelector('[data-sf-modal-state]');
+    const panel = content?.closest('[data-sf-modal-panel]');
+    const box = panel?.getBoundingClientRect();
+    const round = (number) => Math.round(number * 100) / 100;
+    const active = document.activeElement;
+    return {
+      open: Boolean(root && root.getAttribute('data-sf-modal-state') === 'open' && box && box.width > 0),
+      inField: Boolean(host.querySelector('.sf-image-field .sf-image-field-editor, .sf-image-field-stage')),
+      heading: panel?.querySelector('[id$="title"], h2, [data-sf-modal-title]')?.textContent.trim() ?? null,
+      modes: Array.from(content?.querySelectorAll('.sf-image-field-editor-modes sf-button button') ?? []).map((button) => `${button.closest('sf-button')?.getAttribute('text')}:${button.getAttribute('aria-pressed') ?? button.closest('sf-button')?.getAttribute('aria-pressed')}`),
+      zoom: Array.from(content?.querySelectorAll('.sf-image-field-editor-zoom button') ?? []).map((button) => button.getAttribute('aria-label')),
+      footer: Array.from(panel?.querySelectorAll('.sf-modal-footer sf-button') ?? []).map((button) => `${button.querySelector('button')?.textContent.trim()}:${button.getAttribute('appearance') ?? 'filled'}`),
+      stageFocused: active?.classList?.contains('sf-image-field-stage') ?? false,
+      editFocused: Boolean(active?.closest?.('#ed .sf-image-field-edit')),
+      panel: box ? {left: round(box.left), right: round(window.innerWidth - box.right), top: round(box.top), bottom: round(window.innerHeight - box.bottom), width: round(box.width), height: round(box.height)} : null,
+      h0: (() => {
+        const probe = document.createElement('div');
+        probe.style.inlineSize = 'var(--sf-h0)';
+        document.body.append(probe);
+        const width = probe.getBoundingClientRect().width;
+        probe.remove();
+        return width;
+      })(),
+      viewport: {width: window.innerWidth, height: window.innerHeight},
+      value: host.value,
+      edit: host.querySelector('.sf-image-field-edit button')?.getAttribute('aria-haspopup') ?? host.querySelector('.sf-image-field-edit')?.getAttribute('aria-haspopup'),
+    };
+  });
+  const openEditor = async () => {
+    await page.click('#ed .sf-image-field-edit button');
+    await page.waitForFunction(() => document.querySelector('[data-sf-modal-portal] .sf-image-field-editor')?.closest('[data-sf-modal-panel]')?.getBoundingClientRect().width > 0, null, {timeout: 4000}).catch(() => {});
+    await page.waitForTimeout(500);
+    return editor();
+  };
+  const closed = async () => {
+    await page.waitForTimeout(600);
+    return editor();
+  };
+  const windows = {};
+  await events();
+  for (const width of [1000, 390]) {
+    await page.setViewportSize({width, height: 900});
+    await page.waitForTimeout(300);
+    const before = (await editor()).value;
+    const opened = await openEditor();
+    windows[width] = opened;
+    if (!opened.open || opened.inField || opened.heading !== 'Изменить изображение' || opened.modes.join(',') !== 'Кадр:true,Точка фокуса:false'
+      || opened.zoom.join(',') !== 'Уменьшить,Увеличить' || opened.footer.join(',') !== 'Отмена:ghost,Готово:filled' || !opened.stageFocused || opened.edit !== 'dialog') note({case: `${width}: «Изменить» opens the window`, got: opened});
+    const fits = width === 1000
+      ? Math.abs(opened.panel?.width - opened.h0) < 1 && Math.abs(opened.panel.left - opened.panel.right) < 1
+      : opened.panel?.width === opened.viewport.width && opened.panel.height === opened.viewport.height && opened.panel.left === 0 && opened.panel.top === 0;
+    if (!fits) note({case: `${width}: the window is ${width === 1000 ? 'centred, 40rem' : 'the whole screen'}`, got: opened.panel, h0: opened.h0, viewport: opened.viewport});
+    // Escape leaves the value.
+    await page.keyboard.press('+');
+    await page.keyboard.press('Escape');
+    const escaped = await closed();
+    if (escaped.open || JSON.stringify(escaped.value) !== JSON.stringify(before) || !escaped.editFocused) note({case: `${width}: Escape cancels, focus on «Изменить»`, got: escaped});
+    // «Отмена» leaves it.
+    await openEditor();
+    await page.keyboard.press('+');
+    await page.click('[data-sf-modal-portal] .sf-image-field-editor-cancel button');
+    const cancelled = await closed();
+    if (cancelled.open || JSON.stringify(cancelled.value) !== JSON.stringify(before) || !cancelled.editFocused) note({case: `${width}: «Отмена» cancels, focus on «Изменить»`, got: cancelled});
+    // The scrim leaves it (no scrim shows around the whole-screen window).
+    if (width === 1000) {
+      await openEditor();
+      await page.keyboard.press('+');
+      await page.mouse.click(5, 5);
+      const outside = await closed();
+      if (outside.open || JSON.stringify(outside.value) !== JSON.stringify(before) || !outside.editFocused) note({case: `${width}: the scrim cancels, focus on «Изменить»`, got: outside});
+    }
+    if ((await events()).length) note({case: `${width}: a cancelled edit sends nothing`});
+    // «Готово» writes the frame and the focal point.
+    await openEditor();
+    await page.keyboard.press('+');
+    await page.keyboard.press('+');
+    await page.keyboard.press('ArrowRight');
+    await page.click('[data-sf-modal-portal] .sf-image-field-editor-modes sf-button:nth-child(2) button');
+    await page.waitForTimeout(200);
+    await page.focus('[data-sf-modal-portal] .sf-image-field-stage');
+    await page.keyboard.press('Shift+ArrowUp');
+    await page.click('[data-sf-modal-portal] .sf-image-field-editor-done button');
+    const done = await closed();
+    const doneEvents = (await events()).filter((event) => event.id === 'ed').map((event) => `${event.type}:${event.source}`);
+    const crop = done.value?.crop;
+    const focus = done.value?.focus;
+    const expectedZoom = Math.round(((before?.crop?.zoom ?? 1) + 0.2) * 100) / 100;
+    if (done.open || !crop || crop.aspect !== '16/9' || crop.zoom !== expectedZoom || !focus || !done.editFocused
+      || doneEvents.join(',') !== 'input:edit,change:edit') note({case: `${width}: «Готово» writes crop and focus, focus on «Изменить»`, got: {done, doneEvents, expectedZoom}});
+  }
+  const leaked = await page.evaluate(() => window.__windowEvents.splice(0));
+  if (leaked.length) note({case: 'the window\'s sf-modal-* events leave the field', got: leaked});
+  await page.setViewportSize({width: 1000, height: 900});
+  await page.waitForTimeout(300);
+
   // Sizes on the ladder, at 1000 and 390.
   const geometry = () => page.evaluate(() => {
     const px = (name) => {
@@ -285,7 +399,7 @@ try {
     if (got.filled.actionsBelow !== narrow || (narrow && !got.filled.actionsAtBodyStart)) note({case: `${width}: buttons ${narrow ? 'under the name, at its start' : 'on the row'}`, got: got.filled});
   }
   if (errors.length) note({case: 'page errors', got: errors});
-  console.log(JSON.stringify({filled, empty, err, order, removed, picked, dropped, measured}, null, 1));
+  console.log(JSON.stringify({filled, empty, err, order, removed, picked, dropped, measured, windows}, null, 1));
 } finally {
   await browser.close();
 }
