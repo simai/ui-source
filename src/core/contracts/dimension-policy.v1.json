@@ -92,6 +92,14 @@
       "reason": "Drag placeholders and transforms preserve the exact DOMRect and pointer position."
     },
     {
+      "id": "notification-stack-measured-geometry",
+      "category": "runtime-review",
+      "filePattern": "^core/js/notify\\.js$",
+      "contextPattern": "(?:\\$\\{top \\? away : -away\\}px|\\$\\{clip\\}px|\\$\\{size\\}px)",
+      "status": "accepted-runtime-geometry",
+      "reason": "The notification stack (owner decision C50) places, clips and sizes from the toasts' rendered heights and the area's computed gap (--sf-space-1/2); the browser reports them in CSS pixels."
+    },
+    {
       "id": "policy-self",
       "category": "definition-review",
       "filePattern": "^core/contracts/dimension-policy\\.v1\\.json$",

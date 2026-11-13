@@ -10,6 +10,8 @@
       "  <sf-toast id=\"t2\" heading=\"Сохранено\"></sf-toast>",
       "  <sf-toast id=\"t-old\" title=\"Старое имя\" type=\"primary\"></sf-toast>",
       "  <sf-toast id=\"t-timed\" heading=\"Скопировано\"></sf-toast>",
+      "  <sf-toast id=\"t-link\" heading=\"Отчёт готов\" supporting-text=\"Выгрузка собрана.\" action-text=\"Открыть\" action-href=\"#report\" action=\"open\"></sf-toast>",
+      "  <sf-toast id=\"t-two\" heading=\"Письмо удалено\" action-text=\"Отменить\" action=\"undo\" secondary-action-text=\"Корзина\" secondary-action=\"trash\" action-href=\"#trash\"></sf-toast>",
       "</main>"
     ]
   },
@@ -185,6 +187,58 @@
           "script": "(document.getElementById('area').style.setProperty('--sf-toast-background-color', 'rgb(1, 2, 3)'), true)",
           "wait": 50,
           "check": "getComputedStyle(document.querySelector('#t1 .sf-toast')).getPropertyValue('--sf-toast--background-color').trim() === 'rgb(1, 2, 3)'"
+        }
+      ]
+    },
+    {
+      "id": "p10-link-action",
+      "title": "one light navigation action is a link at the end of the text, never beside buttons; its press is sf-toast-action {action} and the link is followed (owner decision C50)",
+      "covers": "settings.action-href, events.action",
+      "steps": [
+        {
+          "check": "(() => { const t = document.getElementById('t-link'); const a = t.querySelector('.sf-toast-supporting-text > a.sf-toast-link'); return Boolean(a) && a.getAttribute('href') === '#report' && a.textContent === 'Открыть' && a.parentElement.textContent === 'Выгрузка собрана. Открыть' && !t.querySelector('.sf-toast-bottom'); })()"
+        },
+        {
+          "user": "click:#t-link a.sf-toast-link",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-toast-action",
+                "count": 1,
+                "detail": {
+                  "action": "open"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "check": "location.hash === '#report'",
+          "wait": 50
+        }
+      ]
+    },
+    {
+      "id": "p11-two-actions",
+      "title": "two actions are two buttons under the text, and action-href does not turn the first into a link (C46, C50)",
+      "covers": "settings.secondary-action-text, settings.secondary-action",
+      "steps": [
+        {
+          "check": "(() => { const t = document.getElementById('t-two'); const b = [...t.querySelectorAll('.sf-toast-bottom button[data-toast-action]')]; return b.length === 2 && b[0].dataset.action === 'undo' && b[1].dataset.action === 'trash' && !t.querySelector('a.sf-toast-link'); })()"
+        },
+        {
+          "user": "click:#t-two .sf-toast-bottom button[data-action=\"trash\"]",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-toast-action",
+                "count": 1,
+                "detail": {
+                  "action": "trash"
+                }
+              }
+            ]
+          }
         }
       ]
     }
