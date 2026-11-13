@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.empty-state",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "title": "Empty state",
-  "summary": "What a list, a panel or a page says when it has nothing to show: no data, nothing found, no access or an error, with an icon, a real heading, a sentence and actions.",
+  "summary": "What a list, a panel or a page says when it has nothing to show: no data, the first time, nothing found, no access, an error, no connection or work being prepared, with an icon, a real heading, a sentence and actions.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -26,7 +26,9 @@
     "uses": [
       "component.featured-icon",
       "smart.button",
-      "smart.icon"
+      "smart.icon",
+      "smart.progress-ring",
+      "smart.spinner"
     ],
     "public_parts": []
   },
@@ -51,12 +53,15 @@
       "kind": {
         "type": "string",
         "default": "no-data",
-        "description": "The reason, which picks the default icon, title and text, and for error a «Повторить» action.",
+        "description": "The reason, which picks the default icon, tone, title and text: first-use offers a primary «Создать» (id create), error and offline «Повторить» (id retry), offline also retries by itself when the network returns, and processing draws a spinner in the icon's circle for work that finishes without the person, or with value a ring with the percentage.",
         "enum": [
           "no-data",
+          "first-use",
           "nothing-found",
           "no-access",
-          "error"
+          "error",
+          "offline",
+          "processing"
         ]
       },
       "size": {
@@ -72,11 +77,18 @@
       },
       "icon": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The section's icon (the one of its menu entry) for no-data and first-use, inbox without one; for nothing-found by filters pass filter_alt_off. The other reasons keep their own glyph unless this is set."
       },
       "heading": {
         "type": "string",
         "default": ""
+      },
+      "value": {
+        "type": "number",
+        "description": "processing only: the share done in per cent, 0 to 100 (clamped, whole). Set, the circle is an sf-progress-ring with the percentage; unset, the spinner turns. The inline form keeps the spinner. Provisional name (C120 (2) names no attribute).",
+        "minimum": 0,
+        "maximum": 100
       },
       "text": {
         "type": "string",
@@ -128,21 +140,25 @@
   "contracts": {
     "actions": {
       "type": "array",
-      "description": "Set as a property: [{id, text, appearance}], drawn at the component's size; each raises sf-empty-state-action {id}. Slot `actions` takes the host's own buttons instead."
+      "description": "Set as a property: [{id, text, appearance}], drawn at the component's size; each raises sf-empty-state-action {id}. Slot `actions` takes the host's own buttons instead. Unset: error and offline offer retry, first-use a primary create."
     }
   },
   "methods": {},
   "events": {
     "sf-empty-state-action": {
-      "summary": "The person pressed one of the actions (retry for an error without actions of its own).",
+      "summary": "The person pressed one of the actions (retry for an error or offline without actions of their own, create for first-use); for offline also sent by itself with auto: true when the window's online event says the network is back.",
       "payload": {
         "type": "object",
         "required": [
-          "id"
+          "id",
+          "auto"
         ],
         "properties": {
           "id": {
             "type": "string"
+          },
+          "auto": {
+            "type": "boolean"
           }
         },
         "additionalProperties": true
@@ -153,9 +169,12 @@
     "machines": {
       "kind": [
         "no-data",
+        "first-use",
         "nothing-found",
         "no-access",
-        "error"
+        "error",
+        "offline",
+        "processing"
       ]
     },
     "visual_states": [
@@ -194,7 +213,7 @@
       "Enter",
       "Space"
     ],
-    "focus": "The block title is a heading at heading-level; the inline form has no heading. With live=auto nothing-found and error are announced politely (role=status), the others are not; live=alert makes it an alert, live=off silent. The icon is decorative; the actions are ordinary buttons in the tab order. Inside a listbox or menu, place it outside the list element so it is never an item."
+    "focus": "The block title is a heading at heading-level; the inline form has no heading. With live=auto nothing-found, error, offline and processing are announced politely (role=status), the others are not; live=alert makes it an alert, live=off silent. The icon and the processing spinner are decorative; the processing ring (value set) is a progressbar named «Готово» with the share as its value; the actions are ordinary buttons in the tab order. Inside a listbox or menu, place it outside the list element so it is never an item."
   },
   "presentation": {
     "themes": [
@@ -262,33 +281,34 @@
     "source_artifacts": [
       {
         "path": "src/smart/empty-state/index.js",
-        "sha256": "168c639aee526fcbe3de35ddf54f80725e535aa3ee4a932389e03de02788e49b"
+        "sha256": "4024205279717fa4199cd3519bd0c26fb6f7d9890cfe4d06788934781b1c45db"
       },
       {
         "path": "src/smart/empty-state/js/templates/default.js",
-        "sha256": "21dfe6e1c8c7142c398411ccacd55e4e7dff66f9735fac85a30aecbf637f4970"
+        "sha256": "01045c9e22f512b9a34b8e8f3a0c142edb266d2e208fdbe62dd9dbdf1ed7c50b"
       },
       {
         "path": "src/smart/empty-state/scss/_smart__empty_state.scss",
-        "sha256": "5350d8377e7eab816bccd112fa5760264777658e596f8a8c61a8418600d45fad"
+        "sha256": "f30fb61e9084e0041620b80d91c85400797f9364008da593423c363059718833"
       },
       {
         "path": "src/smart/empty-state/rule.js",
-        "sha256": "5e8ae1ecb89ce8192d82dc822e0072b76b3b296fca823d52d572b1cdfc17cd80"
+        "sha256": "0e8a353e5a018d4085fd0690ba87e2b3a4114d9ef19b4a56869c9f40bee8610d"
       },
       {
         "path": "src/smart/empty-state/docs.md",
-        "sha256": "ce1ef173abb4324e57bef7ef4bb37fc86ce75759cf3f625c8234776a59f43dde"
+        "sha256": "be135c21f2508ee071696510eb279cf17955efe96cbd5ea5f9df905669b20bf8"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-empty-state wherever a list, panel or page has nothing to show, choosing the kind for the reason.",
+    "use_when": "Use sf-empty-state wherever a list, panel or page has nothing to show, choosing the kind for the reason; processing for work that finishes later without the person (minutes), not for a load the person waits for.",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not show an empty state while data is still loading; that is the skeleton's",
-      "Do not hand-build an empty message with a paragraph"
+      "Do not hand-build an empty message with a paragraph",
+      "Do not use processing for a wait of seconds; that is sf-skeleton, sf-spinner or a progress bar"
     ],
     "required_reads": [
       "inputs",

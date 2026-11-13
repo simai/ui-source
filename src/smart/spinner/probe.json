@@ -9,6 +9,7 @@
       "  <sf-spinner id=\"s1\" label=\"Загрузка данных\" announce></sf-spinner>",
       "  <sf-spinner id=\"s2\"></sf-spinner>",
       "  <sf-spinner id=\"s3\" label=\"\"></sf-spinner>",
+      "  <sf-spinner id=\"s4\" label-hidden></sf-spinner>",
       "  <sf-spinner id=\"s-old\" variant=\"dots\"></sf-spinner>",
       "</main>"
     ]
@@ -100,6 +101,16 @@
               "outcome": "applied"
             }
           }
+        }
+      ]
+    },
+    {
+      "id": "p6-label-hidden",
+      "title": "label-hidden keeps the label as the name and hides the words visually (SP-07)",
+      "covers": "settings.label-hidden",
+      "steps": [
+        {
+          "check": "(() => { const r = document.querySelector('#s4 .sf-loader-container'); const t = r.querySelector('.sf-loader--text'); const box = t.getBoundingClientRect(); return !r.hasAttribute('aria-hidden') && r.classList.contains('sf-loader--label-hidden') && t.textContent === 'Загрузка…' && box.width <= 1 && box.height <= 1; })()"
         }
       ]
     }

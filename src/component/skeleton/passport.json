@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.skeleton",
   "kind": "component",
-  "version": "1.1.1",
+  "version": "1.3.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/skeleton/docs/docs.md",
@@ -14,7 +14,7 @@
     "src/component/skeleton/scss/_skeleton.scss",
     "src/component/skeleton/scss/index.scss"
   ],
-  "content_sha256": "c85f4762a1800dadc01983a102a462067191a2d83c1acce7c4a57af48271da50",
+  "content_sha256": "ad2df518ee34793c82e70b166c296b0bf94142a52e958f752821578c28cba055",
   "dependencies": [
     {
       "id": "core.runtime",
@@ -43,6 +43,10 @@
     {
       "id": "tokens.radius",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.3.0"
     },
     {
       "id": "tokens.typography",

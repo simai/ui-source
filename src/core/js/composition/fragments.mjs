@@ -220,7 +220,7 @@ export function defineFragmentBoundary(registry = globalThis.customElements) {
       // listeners go with it, and what stands in its place is the error state.
       const state = globalThis.document.createElement('sf-empty-state');
       state.setAttribute('kind', 'error');
-      state.setAttribute('title', this.text('heading'));
+      state.setAttribute('heading', this.text('heading'));
       this.replaceChildren(state);
       this.dispatchEvent(new globalThis.CustomEvent('sf-fragment-error', {
         bubbles: true, composed: true,

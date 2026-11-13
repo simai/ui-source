@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-bar",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "title": "Progress Bar",
   "summary": "Continuous determinate progress with normalized value, accessible range semantics and explicit semantic tone.",
   "kind": "smart",
@@ -68,18 +68,19 @@
       "text-position": {
         "type": "string",
         "default": "none",
+        "description": "Where the percentage stands (owner decision C131 (4)): top -- one line over the bar, the label at the start and the value at the end; inline-end -- the value at the end of the bar's row; none. The words used before, bottom and right, are read as top and inline-end until 2027-01-01 (journal value-progress-text-position).",
         "enum": [
           "none",
-          "inline-end",
-          "bottom",
-          "right"
+          "top",
+          "inline-end"
         ]
       },
       "status": {
         "type": "string",
-        "default": "neutral",
-        "description": "What the progress reports, in the shared status vocabulary. The word this component used before, primary, is still accepted and means neutral. With warning-at or error-at the bar takes the more serious of this status and the threshold the value reached.",
+        "default": "",
+        "description": "What the value reports, in the shared status vocabulary (owner decision C131 (1)). Empty, the default, draws the theme's primary; neutral is grey, as in sf-dot and sf-badge; info, success, warning and error their roles. The word this component used before, primary, is still accepted and means the default. With warning-at or error-at the bar takes the more serious of this status and the threshold the value reached.",
         "enum": [
+          "",
           "neutral",
           "info",
           "success",
@@ -109,6 +110,11 @@
         "default": false,
         "description": "The work is paused: the bar is a warning (unless its status or a threshold says error) and says so to a screen reader: the value text reads «35 %, на паузе» / «35%, paused» when the page gives no value-text (C34). The page sets it where the work really stopped."
       },
+      "meter": {
+        "type": "boolean",
+        "default": false,
+        "description": "The value is an amount within a known range (a quota used, a disk filled), not a task's progress: role meter instead of progressbar (owner decision C131 (7)). A meter always has a value, so it is never indeterminate. The look does not change. The name is final (owner decision C138)"
+      },
       "label": {
         "type": "string",
         "default": ""
@@ -123,9 +129,10 @@
       },
       "tone": {
         "type": "string",
-        "default": "neutral",
+        "default": "",
         "description": "Legacy name for status, still honoured. See contracts/public-api-axes.json.",
         "enum": [
+          "",
           "neutral",
           "info",
           "success",
@@ -297,7 +304,10 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
+    "aliases": [
+      "text-position=bottom",
+      "text-position=right"
+    ],
     "deprecations": [],
     "replacement": null,
     "migrations": []
@@ -308,11 +318,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-bar/index.js",
-        "sha256": "9bf63e4d0823230aecdb3c3d000be4bb91789f0e9c3aa4dbbebcf6f68305a38e"
+        "sha256": "f427ff4ca47e2fd9e7f260a67f6dea41c5aa58bb3a0e6fd30907ef1dcc74dcf5"
       },
       {
         "path": "src/smart/progress-bar/js/templates/default.js",
-        "sha256": "3f9afcf12f6f9292dc7c0432f6dd7f5c5e2243427ac553c54c7b25f20617a70d"
+        "sha256": "58c0c8261f8cf0da140c212fe3ed712236e178e63b5f98231ad67a1676155fa6"
       },
       {
         "path": "src/smart/progress-bar/rule.js",
@@ -320,7 +330,7 @@
       },
       {
         "path": "src/smart/progress-bar/docs/docs.md",
-        "sha256": "5a7de9534df8c74bcb3c78bffdde0f94e07cd849420519d0d1e6469f6329104d"
+        "sha256": "5021fa7bf9bd261c44e69aa0a9835f7f4ace2818ae45c455c16bedf546245bf8"
       }
     ],
     "generated_runtime": [

@@ -2,7 +2,7 @@
 /* utility-hint: display/flex (.flex) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) */
 .sf-progress-bar {
   background-color: var(--sf-progress-bar--background-color, transparent);
-  color: var(--sf-progress-bar--color, var(--sf-progress-bar-color, var(--sf-on-surface)));
+  color: var(--sf-progress-bar--color, var(--sf-on-surface));
   font-family: var(--sf-progress-bar--font-family, var(--sf-text--family));
   font-weight: var(--sf-progress-bar--font-weight, var(--sf-font-weight-regular));
   gap: var(--sf-progress-bar--gap);
@@ -11,21 +11,28 @@
 }
 
 .sf-progress-bar .sf-progress-bar-main {
+  /* One track for the family (owner decision C131 (2)): the neutral fill of
+     the place, 12 % in both themes with C113 -- the same as sf-progress-ring
+     and sf-progress-scale. */
   --sf-progress-bar-main--background-color: var(--sf-progress-bar-track-color, var(--sf-surface-container));
-  --sf-progress-bar-main--border-radius: var(--sf-progress-bar-radius, var(--sf-radius--ui));
+  /* Round ends at every thickness (owner decision C131 (3)). */
+  --sf-progress-bar-main--border-radius: var(--sf-progress-bar-radius, var(--sf-radius-circle));
   background-color: var(--sf-progress-bar-main--background-color);
   border-radius: var(--sf-progress-bar-main--border-radius);
   height: var(--sf-progress-bar-height, var(--sf-progress-bar-main--height));
 }
 
 .sf-progress-bar .sf-progress-bar-progress {
-  /* Neutral is grey, not the theme's primary (dispatcher, applied decision
-     on docs precheck PB-01): the quiet ink of the place. A status names a
-     colour; the default reports nothing but the amount. */
-  --sf-progress-bar-progress--background-color: var(--sf-progress-bar-fill-color, var(--sf-on-surface-variant));
-  --sf-progress-bar-progress--border-radius: var(--sf-progress-bar-radius, var(--sf-radius--ui));
+  --sf-progress-bar-progress--background-color: var(--sf-progress-bar-fill-color, var(--sf-primary));
+  --sf-progress-bar-progress--border-radius: var(--sf-progress-bar-radius, var(--sf-radius-circle));
   background-color: var(--sf-progress-bar-progress--background-color);
   border-radius: var(--sf-progress-bar-progress--border-radius);
+}
+
+/* No status draws the theme's primary; neutral is the grey of sf-dot and
+   sf-badge (owner decision C131 (1)). */
+.sf-progress-bar.sf-progress-bar--neutral .sf-progress-bar-progress {
+  --sf-progress-bar-progress--background-color: var(--sf-progress-bar-fill-color, var(--sf-on-surface-variant));
 }
 
 .sf-progress-bar.sf-progress-bar--info .sf-progress-bar-progress {
@@ -44,6 +51,9 @@
   --sf-progress-bar-progress--background-color: var(--sf-progress-bar-fill-color, var(--sf-error));
 }
 
+/* Thickness (owner decision C131 (3)): 4 / 4 / 8 / 8 / 12 px at 1/3, 1/2, 1,
+   2, 3, from the length scale, so the same on a phone; the default size 1 is
+   8. The value text follows the text ladder of the size. */
 /* utility-hint: align-items/flex-end (.items-end) */
 .sf-progress-bar.sf-progress-bar--size-1 {
   --sf-progress-bar--font-size: var(--sf-text-size-1\/2);
@@ -52,7 +62,7 @@
 
 /* utility-hint: flex/1 (.flex-1) */
 .sf-progress-bar--size-1 .sf-progress-bar-main {
-  --sf-progress-bar-main--height: var(--sf-text-size-1\/5);
+  --sf-progress-bar-main--height: var(--sf-a8);
 }
 
 /* utility-hint: align-items/flex-start (.items-start) */
@@ -63,7 +73,7 @@
 
 /* utility-hint: flex/1 (.flex-1) */
 .sf-progress-bar--size-2 .sf-progress-bar-main {
-  --sf-progress-bar-main--height: var(--sf-text-size-1\/4);
+  --sf-progress-bar-main--height: var(--sf-a8);
 }
 
 /* utility-hint: align-items/flex-start (.items-start) */
@@ -74,7 +84,7 @@
 
 /* utility-hint: flex/1 (.flex-1) */
 .sf-progress-bar--size-3 .sf-progress-bar-main {
-  --sf-progress-bar-main--height: var(--sf-text-size-1\/3);
+  --sf-progress-bar-main--height: var(--sf-b2);
 }
 
 /* utility-hint: align-items/flex-end (.items-end) */
@@ -85,7 +95,7 @@
 
 /* utility-hint: flex/1 (.flex-1) */
 .sf-progress-bar--size-1\/3 .sf-progress-bar-main {
-  --sf-progress-bar-main--height: var(--sf-text-size-1\/7);
+  --sf-progress-bar-main--height: var(--sf-a4);
 }
 
 /* utility-hint: align-items/flex-end (.items-end) */
@@ -96,7 +106,7 @@
 
 /* utility-hint: flex/1 (.flex-1) */
 .sf-progress-bar--size-1\/2 .sf-progress-bar-main {
-  --sf-progress-bar-main--height: var(--sf-text-size-1\/6);
+  --sf-progress-bar-main--height: var(--sf-a4);
 }
 
 .sf-progress-bar--size-1, .sf-progress-bar--size-2 {
@@ -109,5 +119,51 @@
 
 .sf-progress-bar--size-1\/3, .sf-progress-bar--size-1\/2 {
   --sf-progress-bar--gap: var(--sf-progress-bar-gap, var(--sf-space-1\/4));
+}
+}
+
+@layer sf.components {
+/* The text (owner decision C131 (4)): top -- the name at the start and the
+   value at the end, on one text line over the bar -- or inline-end, the value
+   at the end of the bar's row; none. bottom and right are former words (top
+   and inline-end) until 2027-01-01. No text inside the track. The value is
+   the quiet ink with tabular figures; the name the place's ink. The line over
+   the bar is a picture of the name and value the bar already says (role and
+   aria-valuetext), so it is aria-hidden. */
+.sf-progress-bar[data-position="top"] {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--sf-progress-bar-gap, var(--sf-space-1\/4));
+}
+
+.sf-progress-bar .sf-progress-bar-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sf-space-1\/2);
+  min-inline-size: 0;
+}
+
+.sf-progress-bar .sf-progress-bar-label {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-progress-bar[data-position="top"] .sf-progress-bar-head .sf-progress-bar-text {
+  margin-inline-start: auto;
+}
+
+.sf-progress-bar .sf-progress-bar-text {
+  flex: none;
+  color: var(--sf-progress-bar-color, var(--sf-on-surface-variant));
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.sf-progress-bar[data-position="inline-end"] {
+  flex-direction: row;
+  align-items: center;
 }
 }

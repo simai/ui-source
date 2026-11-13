@@ -113,6 +113,8 @@ try {
     const fragment = (name) => document.querySelector(`sf-fragment[data-sf-fragment="${name}"]`);
     const state = (name) => ({state: fragment(name).getAttribute('data-sf-fragment-state'),
       emptyState: fragment(name).querySelector('sf-empty-state')?.getAttribute('kind') ?? null,
+      // The current name (sf-empty-state 1.1.0), never the dated alias title.
+      emptyAttrs: ['heading', 'title'].map((key) => fragment(name).querySelector('sf-empty-state')?.hasAttribute(key) ?? false),
       drawn: Boolean(fragment(name).querySelector('.probe-drawn'))});
     const answer = window.SF.Composition.publishEffects([
       {type: 'collection-changed.v1', value: {collection: 'files', reason: 'moved'}},
@@ -151,6 +153,7 @@ try {
   if (result.delivered !== 1) note({case: 'the route delivers the published effect', got: result});
   if (result.broken.state !== 'error' || result.broken.emptyState !== 'error') note({case: 'a fragment that throws is replaced by the error state', got: result.broken});
   if (result.never.state !== 'error' || result.never.emptyState !== 'error') note({case: 'a fragment that never loads fails after its load time', got: result.never});
+  if (String(result.broken.emptyAttrs) !== 'true,false') note({case: 'the error state names its heading by heading, not the dated alias title', got: result.broken.emptyAttrs});
   if (result.after !== 2 || result.routeState?.status !== 'settled') note({case: 'the working fragment\'s route still delivers', got: result});
   if (!result.retried || result.afterRetry.state !== null || !result.afterRetry.drawn) note({case: '«Повторить» puts the fragment back', got: result});
   const bare = result.bare;

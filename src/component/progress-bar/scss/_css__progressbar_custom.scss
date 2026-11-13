@@ -60,10 +60,16 @@
     transition-duration: 0s;
   }
 
-  /* Reduced motion: the segment stands still at the start, as the ring's arc
-     does. */
+  /* Reduced motion (PG-16, owner decision C131 (8), #q-motion
+     of control/research/2026-11-13-progress-family.md): a segment standing
+     still at the start read as 30 % done. With no value to show, the whole
+     track is tinted with the fill at the top of the fill family (32 %) and
+     no segment is drawn, so nothing on the bar looks like an amount. */
   .sf-progress-bar.sf-progress-bar--indeterminate .sf-progress-bar-progress {
+    inset-inline: 0;
+    width: auto;
     animation: none;
+    background-color: color-mix(in srgb, var(--sf-progress-bar-progress--background-color) 32%, transparent);
   }
 }
 }

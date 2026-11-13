@@ -2,7 +2,7 @@
   "$comment": "The source of sf-progress-scale's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/progress-scale (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.progress-scale",
   "tag": "sf-progress-scale",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "progress",
   "settings": {
@@ -41,14 +41,34 @@
     "status": {
       "type": "enum",
       "values": [
+        "",
         "neutral",
         "info",
         "success",
         "warning",
         "error"
       ],
-      "default": "neutral",
-      "summary": "What the progress reports, in the shared status vocabulary. The word this component used before, primary, is still accepted and means neutral."
+      "default": "",
+      "summary": "What the value reports, in the shared status vocabulary (owner decision C131 (1)). Empty, the default, draws the theme's primary; neutral is grey, as in sf-dot and sf-badge; info, success, warning and error their roles. The word this component used before, primary, is still accepted and means the default. With warning-at or error-at the scale takes the more serious of this status and the threshold the value reached."
+    },
+    "warning-at": {
+      "type": "number",
+      "optional": true,
+      "min": 0,
+      "max": 100,
+      "summary": "A threshold in per cent: from this value on, the component is a warning by itself (a disk 83 % full of a warning-at 80). The page sets the threshold; the component only compares. Unset, no threshold."
+    },
+    "error-at": {
+      "type": "number",
+      "optional": true,
+      "min": 0,
+      "max": 100,
+      "summary": "A threshold in per cent: from this value on, the component is an error by itself (a disk 83 % full of a warning-at 80). The page sets the threshold; the component only compares. Unset, no threshold. Above warning-at when both are set."
+    },
+    "meter": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The value is an amount within a known range (a quota used, a disk filled), not a task's progress: role meter instead of progressbar (owner decision C131 (7)). A meter always has a value, so it is never indeterminate. The look does not change. The name is final (owner decision C138)"
     },
     "label": {
       "type": "string",
@@ -90,6 +110,10 @@
   "lang": "lang/",
   "accessibility": {
     "role": "progressbar",
+    "when": {
+      "meter": false
+    },
+    "otherwise": "meter",
     "name": {
       "from": [
         "label",
@@ -97,7 +121,7 @@
       ]
     },
     "keys": {},
-    "$comment": "The root carries role progressbar with aria-valuemin 0, aria-valuemax 100, aria-valuenow the value and aria-valuetext the value-text when given; it takes no focus and no keys."
+    "$comment": "The root carries role progressbar, or meter when meter is on, with aria-valuemin 0, aria-valuemax 100, aria-valuenow the value and aria-valuetext the value-text when given; it takes no focus and no keys."
   },
   "css-variables": {
     "--sf-progress-scale-fill-color": {
@@ -190,7 +214,9 @@
     "settings: tone leaves for its dated alias row (status answers), and progress, an object the conversion read off setProgress, is no setting: value is the setting and chunk the action.",
     "line: a form size of the text line the scale stands on (a row, a cell), kept as it is.",
     "version 1.1.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
-    "version 1.1.4 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, chunk({done, total}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged."
+    "version 1.1.4 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, chunk({done, total}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged.",
+    "version 1.1.5 (2026-11-13, PG-12 of control/research/2026-11-13-progress-family.md, component.progress-scale 1.1.1): the blocks round down to a whole tenth, never up, so the drawing never shows more than aria-valuenow: 61 % lights 6 of 10 (it lit 7), 9 % none, 99 % nine, 100 % ten. The value text and aria-valuenow are unchanged.",
+    "version 1.2.0 (2026-11-13, owner decision C131, component.progress-scale 1.2.0): segments 2 px apart and each rounded, the bar's thickness (4 / 4 / 8 / 8 / 12 px at 1/3...3), the family's one neutral track; no status (empty, the new default) is primary and neutral is grey (primary is the former word for the default); warning-at, error-at and meter (the name final by owner decision C138, 2026-11-14) as on sf-progress-bar. Rounding down (PG-12) unchanged."
   ],
   "x-registry": {
     "capabilities": [
@@ -305,5 +331,8 @@
         "pattern": "^(?:100|[1-9]?[0-9])(?:\\.[0-9]+)?$"
       }
     }
+  },
+  "host-states": {
+    "data-status": "string"
   }
 }

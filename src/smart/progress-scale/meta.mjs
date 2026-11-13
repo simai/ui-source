@@ -61,14 +61,38 @@ const sfProgressScaleMeta = {
     "status": {
       "kind": "enum",
       "values": [
+        "",
         "neutral",
         "info",
         "success",
         "warning",
         "error"
       ],
-      "default": "neutral",
-      "description": "What the progress reports, in the shared status vocabulary. The word this component used before, primary, is still accepted and means neutral."
+      "default": "",
+      "description": "What the value reports, in the shared status vocabulary (owner decision C131 (1)). Empty, the default, draws the theme's primary; neutral is grey, as in sf-dot and sf-badge; info, success, warning and error their roles. The word this component used before, primary, is still accepted and means the default. With warning-at or error-at the scale takes the more serious of this status and the threshold the value reached."
+    },
+    "warning-at": {
+      "kind": "custom",
+      "valueType": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "A threshold in per cent: from this value on, the component is a warning by itself (a disk 83 % full of a warning-at 80). The page sets the threshold; the component only compares. Unset, no threshold."
+    },
+    "error-at": {
+      "kind": "custom",
+      "valueType": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "A threshold in per cent: from this value on, the component is an error by itself (a disk 83 % full of a warning-at 80). The page sets the threshold; the component only compares. Unset, no threshold. Above warning-at when both are set."
+    },
+    "meter": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "The value is an amount within a known range (a quota used, a disk filled), not a task's progress: role meter instead of progressbar (owner decision C131 (7)). A meter always has a value, so it is never indeterminate. The look does not change. The name is final (owner decision C138)"
     },
     "label": {
       "kind": "custom",
@@ -88,13 +112,14 @@ const sfProgressScaleMeta = {
     "tone": {
       "kind": "enum",
       "values": [
+        "",
         "neutral",
         "info",
         "success",
         "warning",
         "error"
       ],
-      "default": "neutral",
+      "default": "",
       "description": "Legacy name for status, still honoured. See contracts/public-api-axes.json."
     }
   }

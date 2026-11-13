@@ -86,13 +86,17 @@
     --sf-featured-icon--on-container: var(--sf-on-primary-container);
   }
 
+  /* The grey circle (soft and medium on the neutral tone) draws its glyph in
+     the explanation's ink, on-surface-variant: a decorative icon does not
+     outweigh the heading beside it (owner decision C120, #q-glyph). Every
+     grey circle of the Framework takes it here. */
   .sf-featured-icon--neutral,
   .sf-featured-icon--clear {
     --sf-featured-icon--tone: var(--sf-on-surface);
     --sf-featured-icon--container: var(--sf-surface-container);
     --sf-featured-icon--container-strong: var(--sf-surface-container-hover);
     --sf-featured-icon--on-tone: var(--sf-on-surface-inverse);
-    --sf-featured-icon--on-container: var(--sf-on-surface);
+    --sf-featured-icon--on-container: var(--sf-on-surface-variant);
   }
 
   .sf-featured-icon--info {

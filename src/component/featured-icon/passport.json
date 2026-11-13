@@ -12,7 +12,7 @@
     "src/component/featured-icon/scss/_css_featured-icon.scss",
     "src/component/featured-icon/scss/index.scss"
   ],
-  "content_sha256": "0a4b0d4bc758fae8d95cc5baab5761c2efe8a78f18a15d3907706546c0cb88a1",
+  "content_sha256": "c6fc6c4b2feb626d63662fe7b78fac4845dff8c0a84509d47f751f01dfaa0a55",
   "dependencies": [
     {
       "id": "tokens.colour",
