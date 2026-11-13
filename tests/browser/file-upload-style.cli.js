@@ -33,7 +33,7 @@ async page => {
       const cosmeticSilent=uploadEvents.length===beforeEvents;
       await update(()=>host.setAttribute('disabled','true'));const disabled=input.disabled;
       await update(()=>host.setAttribute('disabled','false'));const enabled=!input.disabled;
-      await update(()=>host.setItems([{...host.items[0],state:'error',errorMessage:'Повторить'},{...host.items[1],state:'done',progress:100}]));
+      await update(()=>host.setItems([{...host.items[0],state:'error',retryText:'Повторить'},{...host.items[1],state:'done',progress:100}]));
       const afterStates=counts();
       await update(()=>host.setAttribute('supporting-text','Только текстовые файлы'));
       const noStateReplay=JSON.stringify(afterStates)===JSON.stringify(counts());

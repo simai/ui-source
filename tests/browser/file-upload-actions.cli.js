@@ -14,7 +14,7 @@ async page => {
     },{size,theme,dir});
     await page.waitForFunction(()=>document.querySelectorAll('.sf-file-upload-input').length===2);
     await page.evaluate(()=>{
-      const items=['process','error'].map(state=>({name:'ДлинноеИмя'.repeat(14)+'.txt',state,progress:45,errorMessage:'Повторить',fileSize:'100 KB'}));
+      const items=['process','error'].map(state=>({name:'ДлинноеИмя'.repeat(14)+'.txt',state,progress:45,retryText:'Повторить',fileSize:'100 KB'}));
       SF.FileUpload.setItems(document.querySelector('#ordinary .sf-file-upload'),items);document.querySelector('sf-file-upload').items=items;
     });
     await page.waitForFunction(()=>document.querySelectorAll('[data-action=remove]').length===4);

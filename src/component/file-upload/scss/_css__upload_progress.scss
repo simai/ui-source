@@ -227,15 +227,11 @@
   --sf-upload-progress-text--line-height: var(--sf-text-height-1\/3);
 }
 
-.sf-upload-progress--process .sf-icon, .sf-upload-progress--done .sf-icon {
-  --sf-icon--color: var(--sf-primary);
-}
-
-.sf-upload-progress--process .sf-upload-progress-text, .sf-upload-progress--done .sf-upload-progress-text {
+.sf-upload-progress--ready .sf-upload-progress-text, .sf-upload-progress--process .sf-upload-progress-text, .sf-upload-progress--done .sf-upload-progress-text {
   --sf-upload-progress-text--color: var(--sf-on-surface-variant);
 }
 
-.sf-upload-progress--process .sf-icon-button > .sf-icon, .sf-upload-progress--error .sf-icon-button > .sf-icon {
+.sf-upload-progress--ready .sf-icon-button > .sf-icon, .sf-upload-progress--process .sf-icon-button > .sf-icon, .sf-upload-progress--done .sf-icon-button > .sf-icon, .sf-upload-progress--error .sf-icon-button > .sf-icon {
   --sf-icon--color: var(--sf-on-surface-variant);
 }
 
@@ -244,7 +240,13 @@
 }
 
 .sf-upload-progress--error .sf-upload-progress-text {
-  --sf-upload-progress-text--color: var(--sf-on-surface);
+  /* The reason a file did not go: the error role, as a field's error line. */
+  --sf-upload-progress-text--color: var(--sf-error);
+}
+
+/* The sent file's check, in the success role (FU-4). */
+.sf-upload-progress--done .sf-upload-progress-mark {
+  --sf-icon--color: var(--sf-success);
 }
 
 .sf-upload-progress--error .sf-upload-progress-repeat {

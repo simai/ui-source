@@ -196,7 +196,7 @@ test('sf-input-image: vocabulary names with dated colon aliases, error is invali
 
 test('sf-file-upload: each entry is a stream (§10.8); the colon names follow the vocabulary names (vocabulary 1.1.5 §9.1)', () => {
   const source = read('src/smart/file-upload/index.js');
-  assert.match(source, /class SfFileUpload extends FileUploadElement/u);
+  assert.match(source, /class SfFileUpload extends FormField\(FileUploadElement\)/u);
   for (const verb of ['begun', 'chunk', 'cancelled']) assert.match(source, new RegExp(`this\\.sfEmit\\('${verb}', `, 'u'), verb);
   assert.match(source, /'sf-file-upload:file-complete': 'completed'/u);
   assert.match(source, /'sf-file-upload:file-error': 'failed'/u);
@@ -207,7 +207,8 @@ test('sf-file-upload: each entry is a stream (§10.8); the colon names follow th
   const manifest = json('src/smart/file-upload/component.json');
   for (const verb of ['begun', 'chunk', 'completed', 'failed', 'cancelled']) assert.ok(manifest.events[verb], verb);
   assert.deepEqual(manifest.events.failed.carries.reason, 'string');
-  assert.equal(manifest.form, undefined, 'the area submits nothing; the host uploads');
+  // 1.2.0 (FU-9): the host is a form control; the files go under name.
+  assert.equal(manifest.form.submits, 'value');
   const rows = json('src/smart/file-upload/aliases.json').aliases.filter((row) => row.to);
   assert.deepEqual(rows.map((row) => row.to.replace('sf-file-upload-', '')), ['attach', 'attached', 'detach', 'rejected', 'retry', 'completed', 'failed', 'finished']);
   assert.ok(rows.every((row) => row.from.startsWith('sf-file-upload:')), 'only the names that shipped');

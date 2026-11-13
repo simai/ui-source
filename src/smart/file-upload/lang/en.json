@@ -1,10 +1,33 @@
 {
   "title": "File Upload",
   "runtime": {
+    "done": "Uploaded",
+    "done-line": "{size} · uploaded",
+    "error": "Not uploaded",
+    "error-line": "Not uploaded: {message}",
+    "formats-audio": "audio",
+    "formats-image": "images",
+    "formats-video": "video",
     "link-text": "Click to upload",
+    "not-added": "Not added: {n}",
+    "reject-count": {
+      "one": "“{name}” was not added: up to {n} file",
+      "other": "“{name}” was not added: up to {n} files"
+    },
+    "reject-duplicate": "“{name}” is already in the list",
+    "reject-empty": "“{name}” is empty",
+    "reject-min-size": "“{name}” is {size}; it must be at least {min}",
+    "reject-one": "“{name}” was not added: this field takes one file",
+    "reject-size": "“{name}” is {size}; the limit is {max}",
+    "reject-total": "“{name}” was not added: all files together up to {max}",
+    "reject-type": "“{name}” is not accepted: allowed {formats}",
     "remove": "Remove",
+    "remove-failed": "Remove or retry the files that failed",
     "retry": "Try again",
     "text": "or drag and drop",
-    "uploading": "Uploading"
+    "uploading": "Uploading",
+    "value-missing": "Add a file",
+    "value-missing-many": "Add at least one file",
+    "wait-for-uploads": "Wait until the files are uploaded"
   }
 }
