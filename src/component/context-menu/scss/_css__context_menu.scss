@@ -36,12 +36,21 @@
   --sf-context-menu-content--padding-inline-end: var(--sf-context-menu-padding-inline, var(--sf-space-1\/4));
   --sf-context-menu-content--padding-inline-start: var(--sf-context-menu-padding-inline, var(--sf-space-1\/4));
   --sf-context-menu-content--padding-top: var(--sf-context-menu-padding-block, var(--sf-space-1\/4));
+  /* The 1 px border is inside the inline inset (owner decision C105 H4, as
+     the fields' C77 inset; spacing audit C2): what stands at the inset --
+     the rows' plates, a search header, a drilling head, a footer, a panel's
+     body -- starts the inset less the border from the border's inner edge,
+     so a row's icon or text is 16 from the panel's outer edge (compact and
+     phone 12), not 17 (13). The scrollbar's gap on either side of its thumb
+     is the whole inset (C07, C106). */
+  --sf-context-menu-content--edge-inline-start: calc(var(--sf-context-menu-content--padding-inline-start) - var(--sf-context-menu-border-width, var(--sf-px)));
+  --sf-context-menu-content--edge-inline-end: calc(var(--sf-context-menu-content--padding-inline-end) - var(--sf-context-menu-border-width, var(--sf-px)));
   --sf-context-menu-content--border-radius: var(--sf-context-menu-radius, var(--sf-radius--surface));
   border-radius: var(--sf-context-menu-content--border-radius);
   background-color: var(--sf-context-menu-content--background-color);
   padding-bottom: var(--sf-context-menu-content--padding-bottom);
-  padding-inline-end: var(--sf-context-menu-content--padding-inline-end);
-  padding-inline-start: var(--sf-context-menu-content--padding-inline-start);
+  padding-inline-end: var(--sf-context-menu-content--edge-inline-end);
+  padding-inline-start: var(--sf-context-menu-content--edge-inline-start);
   padding-top: var(--sf-context-menu-content--padding-top);
   min-inline-size: 0;
   min-block-size: 0;
@@ -788,8 +797,8 @@
     var(--sf-context-menu--row-height),
     var(--sf-context-menu-content--padding-top),
     var(--sf-context-menu-content--padding-bottom),
-    var(--sf-context-menu-content--padding-inline-start),
-    var(--sf-context-menu-content--padding-inline-end)
+    var(--sf-context-menu-content--edge-inline-start),
+    var(--sf-context-menu-content--edge-inline-end)
   );
 }
 
@@ -800,7 +809,7 @@
   gap: var(--sf-context-menu-gap, var(--sf-px));
   min-block-size: 0;
   padding-block: var(--sf-context-menu-content--padding-top) var(--sf-context-menu-content--padding-bottom);
-  padding-inline: var(--sf-context-menu-content--padding-inline-start) var(--sf-context-menu-content--padding-inline-end);
+  padding-inline: var(--sf-context-menu-content--edge-inline-start) var(--sf-context-menu-content--edge-inline-end);
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -816,7 +825,7 @@
 .sf-context-menu .sf-context-menu-content--search > .sf-context-menu-drill-head {
   flex: none;
   margin-block-start: var(--sf-context-menu-content--padding-top);
-  margin-inline: var(--sf-context-menu-content--padding-inline-start) var(--sf-context-menu-content--padding-inline-end);
+  margin-inline: var(--sf-context-menu-content--edge-inline-start) var(--sf-context-menu-content--edge-inline-end);
 }
 
 /* The content has no padding of its own to reach past: the footer stands
@@ -825,7 +834,7 @@
   position: static;
   margin-block-end: 0;
   padding-block-end: var(--sf-context-menu--block-space);
-  padding-inline: calc(var(--sf-context-menu-content--padding-inline-start) + var(--sf-context-menu--inset-start)) calc(var(--sf-context-menu-content--padding-inline-end) + var(--sf-context-menu--inset-end));
+  padding-inline: calc(var(--sf-context-menu-content--edge-inline-start) + var(--sf-context-menu--inset-start)) calc(var(--sf-context-menu-content--edge-inline-end) + var(--sf-context-menu--inset-end));
 }
 
 .sf-context-menu-heading {
@@ -1050,6 +1059,8 @@
 
 .sf-context-menu--panel .sf-context-menu-body {
   padding: var(--sf-space-1\/4);
+  /* The border inside the inline inset, as the content's (C105 H4). */
+  padding-inline: calc(var(--sf-space-1\/4) - var(--sf-context-menu-border-width, var(--sf-px)));
   overflow-x: hidden;
   @include panel.scrollbar(var(--sf-space-1\/4), --sf-context-menu--track, var(--sf-context-menu--row-height), var(--sf-context-menu--thumb));
 }
@@ -1059,7 +1070,7 @@
 }
 
 .sf-context-menu--panel :is(.sf-context-menu-head, .sf-context-menu-top, .sf-context-menu-footer) {
-  margin-inline: var(--sf-context-menu-content--padding-inline-start) var(--sf-context-menu-content--padding-inline-end);
+  margin-inline: var(--sf-context-menu-content--edge-inline-start) var(--sf-context-menu-content--edge-inline-end);
 }
 
 /* A row of a panel holds anything -- a handle, a label, a checkbox, a pin --

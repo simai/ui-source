@@ -20,7 +20,7 @@
 //   when another surface opened after it is on top;
 // - sf-menu-navigate is cancellable: prevented, the page does not go;
 // - rows are drawn as the class runtime draws the same list (row heights,
-//   level indents), compact and documentation-tree as the class draws them;
+//   level indents), rail and documentation-tree as the class draws them;
 // - at 390 wide the row becomes the menu button, nothing scrolls sideways,
 //   the button opens the same links as a column and Escape closes it; at
 //   1000 it is a row again.
@@ -109,7 +109,7 @@ const PAGE = `<!doctype html><html lang="ru" class="theme-light"><head><meta cha
   </sf-menu>
   <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
     <div style="inline-size:240px"><sf-menu id="tree" appearance="documentation-tree" label="Документация" current="framework" items='${json(TREE)}'></sf-menu></div>
-    <sf-menu id="compact" appearance="compact" label="Компактно" items='${json([{id: 'inbox', label: 'Входящие', href: '#inbox', icon: 'inbox', badge: '3'}, {id: 'tasks', label: 'Задачи', icon: 'task_alt', children: [{id: 't1', label: 'Мои', href: '#t1'}]}])}'></sf-menu>
+    <sf-menu id="compact" appearance="rail" label="Рельс" items='${json([{id: 'inbox', label: 'Входящие', href: '#inbox', icon: 'inbox', badge: '3'}, {id: 'tasks', label: 'Задачи', icon: 'task_alt', children: [{id: 't1', label: 'Мои', href: '#t1'}]}])}'></sf-menu>
     <sf-menu id="prop" label="Свойство"></sf-menu>
   </div>
   <button id="after" type="button">После</button>
@@ -292,11 +292,11 @@ try {
     };
   });
   evidence.presentations = presentations;
-  check('appearance: documentation tree and compact are the class modifiers', presentations.tree === 'sf-menu sf-menu--documentation-tree'
-    && presentations.compact === 'sf-menu sf-menu--compact', presentations);
+  check('appearance: documentation tree and rail are the class modifiers (the rail writes its dated sf-menu--compact beside)', presentations.tree === 'sf-menu sf-menu--documentation-tree'
+    && presentations.compact === 'sf-menu sf-menu--rail sf-menu--compact', presentations);
   check('appearance: the tree marks the current page and opens the way to it', presentations.treeCurrent === '/catalog/products/framework/'
     && presentations.treeCurrentBackground !== 'rgba(0, 0, 0, 0)' && JSON.stringify(presentations.treeOpen) === '["catalog","products"]', presentations);
-  check('appearance: a compact rail opens no branch', presentations.compactLists === 0 && presentations.compactToggles === 0 && presentations.compactWords === 'absolute', presentations);
+  check('appearance: the rail opens no branch', presentations.compactLists === 0 && presentations.compactToggles === 0 && presentations.compactWords === 'absolute', presentations);
 
   // The row: panels below, deeper ones beside, one chain open.
   const rowState = () => page.evaluate(() => {

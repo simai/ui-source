@@ -163,8 +163,8 @@ function renderRegion(context, item, open, submenuId) {
 }
 
 function renderItem(context, item, level) {
-  // A compact rail opens no branch: its rows are the first level alone.
-  const branch = item.children.length > 0 && !context.compact;
+  // The rail opens no branch: its rows are the first level alone.
+  const branch = item.children.length > 0 && !context.rail;
   // A first-level item of a row that went to «Ещё»: its placeholder.
   if (level === 1 && context.hidden.has(item.id)) {
     return html`
@@ -264,6 +264,10 @@ export function renderMenuTemplate(context) {
     'sf-menu',
     context.flyouts ? 'sf-menu--horizontal' : '',
     context.appearance !== 'default' ? `sf-menu--${context.appearance}` : '',
+    // The rail writes its former class beside its own until 2027-01-01, so a
+    // page selector that reached sf-menu--compact still does (C134; journal
+    // class-menu-compact-to-rail).
+    context.appearance === 'rail' ? 'sf-menu--compact' : '',
     // The row's current section: a line on the header's edge (default) or,
     // with indicator fill, the C23 plate (C30).
     context.flyouts && context.indicator === 'fill' ? 'sf-menu--indicator-fill' : '',

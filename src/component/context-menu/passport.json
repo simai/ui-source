@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.context-menu",
   "kind": "component",
-  "version": "1.9.2",
+  "version": "1.9.3",
   "owner": "simai/ui-source",
   "files": [
     "src/component/context-menu/docs/docs.md",
@@ -14,7 +14,7 @@
     "src/component/context-menu/scss/_panel.scss",
     "src/component/context-menu/scss/index.scss"
   ],
-  "content_sha256": "f80871f587620d838d80d7c3c1e8104a12c949a3bd8b188a3a7bdc9caa33c4dc",
+  "content_sha256": "b8ee4a7fe858cc2df58b1d5932e9cc32760c0f91ffcb409b088c4ca58fda64c2",
   "dependencies": [
     {
       "id": "tokens.border",

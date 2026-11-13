@@ -166,12 +166,18 @@ function renderSeparator(context, index) {
 // for Fluent, USWDS, GOV.UK and Carbon. One entry per crumb, its separator
 // before it. The sheet draws the row itself, with no utility class (BC-07).
 // The name is the host's aria-label or the language file's word (BC-10: no
-// English literal of its own).
+// English literal of its own). The row never wraps; a trail opened in place
+// (every crumb asked for) is marked expanded and may.
 export function renderBreadcrumbsTemplate(context) {
   const rootClasses = joinClasses('sf-breadcrumbs', context.rootClass);
 
   return html`
-    <nav class=${rootClasses} style=${context.rootStyle || nothing} aria-label=${context.ariaLabel || nothing}>
+    <nav
+      class=${rootClasses}
+      style=${context.rootStyle || nothing}
+      aria-label=${context.ariaLabel || nothing}
+      data-sf-breadcrumbs-expanded=${context.expanded ? 'true' : nothing}
+    >
       <ol>
         ${context.items.map((item, index) => html`
           <li>

@@ -51,10 +51,10 @@ const CASES = {
 };
 
 // Three named languages and the theme switch are wider than a phone's strip:
-// a site gives the header's picker compact (codes) there, as docs.md says.
+// a site gives the header's picker labels="code" (codes) there, as docs.md says.
 const shell = (name, theme, width) => {
   const {languages} = CASES[name];
-  const compact = width < 600 && languages.split(' ').length > 2 ? ' compact' : '';
+  const codes = width < 600 && languages.split(' ').length > 2 ? ' labels="code"' : '';
   return `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';window.SF_BOOT_CONFIG={preloader:{enabled:false}};</script>
 <link rel="stylesheet" href="/distr/core/css/core.css"><script src="/distr/core/js/core.js"></script>
@@ -62,7 +62,7 @@ const shell = (name, theme, width) => {
 <body><sf-header-site>
   <a slot="brand" href="/">SIMAI</a>
   <nav aria-label="Разделы"><a href="/framework/">Framework</a><a href="/docara/">Docara</a></nav>
-  <sf-language id="picker" slot="tools" languages="${languages}" size="1/2"${compact}></sf-language>
+  <sf-language id="picker" slot="tools" languages="${languages}" size="1/2"${codes}></sf-language>
   <sf-segmented id="theme" slot="tools" appearance="segmented" theme-switch size="1/2"></sf-segmented>
 </sf-header-site>
 <main>
@@ -128,7 +128,7 @@ for (const theme of ['light', 'dark']) {
         ok(`${label}: the switch is the rung's control height`, near(g.track, ladder.control), JSON.stringify({track: g.track, ladder}));
         ok(`${label}: each segment carries its language`, g.segments.every((s) => s.lang && s.text), JSON.stringify(g.segments));
         ok(`${label}: the header holds the picker and the theme switch whole, no sideways scroll`, !g.overflow && g.themeRight <= width + 0.5, JSON.stringify({overflow: g.overflow, themeRight: g.themeRight}));
-        if (width < 600 && g.segments.length > 2) ok(`${label}: compact shows codes, each named by the language in itself`, g.segments.every((s) => /^[A-Z-]+$/u.test(s.text) && s.name && s.name !== s.text), JSON.stringify(g.segments));
+        if (width < 600 && g.segments.length > 2) ok(`${label}: labels="code" shows codes, each named by the language in itself`, g.segments.every((s) => /^[A-Z-]+$/u.test(s.text) && s.name && s.name !== s.text), JSON.stringify(g.segments));
       } else {
         const g = await tab.evaluate(() => {
           const r = (el) => el.getBoundingClientRect();

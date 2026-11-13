@@ -21,6 +21,13 @@
      scrolled. */
 .sf-settings-panel {
   --sf-settings-panel--inset: var(--sf-space-1\/4);
+  /* The 1 px border is inside the inline inset (owner decision C105 H4, as
+     the fields' C77 inset; spacing audit C2): the plates, the head and the
+     search start the inset less the border from the border's inner edge, so
+     a row's text is 16 from the panel's outer edge (compact and phone 12),
+     not 17 (13). The scrollbar's gap on either side of its thumb is the
+     whole inset (C106). */
+  --sf-settings-panel--inset-inline: calc(var(--sf-settings-panel--inset) - var(--sf-px));
   --sf-settings-panel--row-height: var(--sf-ui-1\/2--control-height);
   --sf-settings-panel--text: var(--sf-text-size-1\/2);
   --sf-settings-panel--line: var(--sf-text-height-1\/2);
@@ -83,7 +90,7 @@
   align-items: flex-end;
   gap: var(--sf-settings-panel--inset);
   padding-block: var(--sf-settings-panel--inset) 0;
-  padding-inline: calc(var(--sf-settings-panel--inset) + var(--sf-settings-panel--pad)) var(--sf-settings-panel--inset);
+  padding-inline: calc(var(--sf-settings-panel--inset-inline) + var(--sf-settings-panel--pad)) var(--sf-settings-panel--inset-inline);
   border-block-end: var(--sf-px) solid var(--sf-outline-variant);
 }
 
@@ -130,7 +137,7 @@
   align-items: center;
   gap: var(--sf-settings-panel--gap);
   min-block-size: calc(var(--sf-settings-panel--row-height) + 2 * var(--sf-settings-panel--inset));
-  padding-inline: calc(var(--sf-settings-panel--inset) + var(--sf-settings-panel--pad));
+  padding-inline: calc(var(--sf-settings-panel--inset-inline) + var(--sf-settings-panel--pad));
   border-block-end: var(--sf-px) solid var(--sf-outline-variant);
 }
 
@@ -152,7 +159,7 @@
   flex: 1 1 auto;
   flex-direction: column;
   min-block-size: 0;
-  padding: var(--sf-settings-panel--inset);
+  padding: var(--sf-settings-panel--inset) var(--sf-settings-panel--inset-inline);
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;

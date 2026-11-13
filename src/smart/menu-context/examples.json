@@ -141,19 +141,6 @@
       }
     },
     {
-      "name": "panel",
-      "title": "Панель с вкладками",
-      "settings": {
-        "aria-label": "Настройки",
-        "tabs": "Вид|Колонки",
-        "closable": true,
-        "size": "1"
-      },
-      "expect": {
-        "name": "Настройки"
-      }
-    },
-    {
       "name": "settings",
       "title": "Панель настроек",
       "settings": {

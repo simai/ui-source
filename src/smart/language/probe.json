@@ -7,7 +7,8 @@
     "body": [
       "<main>",
       "  <sf-language id=\"two\" languages=\"ru en\" size=\"1/2\"></sf-language>",
-      "  <sf-language id=\"compact\" languages=\"ru en de\" compact size=\"1/2\" apply=\"none\"></sf-language>",
+      "  <sf-language id=\"codes\" languages=\"ru en de\" labels=\"code\" size=\"1/2\" apply=\"none\"></sf-language>",
+      "  <sf-language id=\"compact-alias\" languages=\"ru en de\" compact size=\"1/2\" apply=\"none\"></sf-language>",
       "  <sf-language id=\"five\" languages=\"ru en de fr es\" size=\"1/2\"></sf-language>",
       "  <sf-language id=\"twelve\" languages=\"ru en de fr es it pt tr pl uk ja ar\" size=\"1/2\" apply=\"none\"></sf-language>",
       "  <sf-language id=\"rtl\" languages=\"ru en ar\"></sf-language>",
@@ -132,12 +133,22 @@
       ]
     },
     {
-      "id": "p4-compact",
-      "title": "compact shows the codes; each segment keeps the language's name as its accessible name",
-      "covers": "settings.compact",
+      "id": "p4-labels-code",
+      "title": "labels=\"code\" shows the codes; each segment keeps the language's name as its accessible name",
+      "covers": "settings.labels",
       "steps": [
         {
-          "check": "(() => { const radios = [...document.querySelectorAll('#compact button[role=\"radio\"]')]; return radios.map((b) => b.textContent.trim()).join(' ') === 'RU EN DE' && radios[2].getAttribute('aria-label') === 'Deutsch' && radios[2].lang === 'de'; })()"
+          "check": "(() => { const radios = [...document.querySelectorAll('#codes button[role=\"radio\"]')]; return radios.map((b) => b.textContent.trim()).join(' ') === 'RU EN DE' && radios[2].getAttribute('aria-label') === 'Deutsch' && radios[2].lang === 'de'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p4-compact-alias",
+      "title": "the dated boolean compact draws as labels=\"code\" and is noted once in SF.deprecations until 2027-01-01 (owner decision C134)",
+      "covers": "settings.labels, aliases compact",
+      "steps": [
+        {
+          "check": "(() => { const radios = [...document.querySelectorAll('#compact-alias button[role=\"radio\"]')]; const notes = SF.deprecations.list().filter((note) => note.component === 'sf-language' && note.from === 'compact'); return radios.map((b) => b.textContent.trim()).join(' ') === 'RU EN DE' && radios[2].getAttribute('aria-label') === 'Deutsch' && notes.length === 1 && notes[0].to === 'labels=\"code\"' && notes[0].remove_after === '2027-01-01'; })()"
         }
       ]
     },

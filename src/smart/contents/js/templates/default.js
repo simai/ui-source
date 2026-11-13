@@ -1,11 +1,11 @@
 import {html, nothing} from 'lit';
 
 // One list drawn four ways. The root is a <nav> named by the label: a heading
-// line, the compact view's button and progress line, and an ordered list of
+// line, the sheet view's button and progress line, and an ordered list of
 // in-page links, the current one aria-current="location". Which parts show is
-// the sheet's (scss/): column shows the heading and the list; compact the
+// the stylesheet's (scss/): column shows the heading and the list; sheet the
 // button and the progress, and the list as a raised panel while open; rail the
-// list as strokes; bar the list as a row. layout auto is column or compact by a
+// list as strokes; bar the list as a row. layout auto is column or sheet by a
 // media rule, so the printed markup is right before the script arrives.
 //
 // The heading is a heading (role heading at heading-level) that names the
@@ -17,7 +17,7 @@ import {html, nothing} from 'lit';
 // its host's divider (edge) or nobody (none); expand current folds the deeper
 // entries outside the current branch; an entry with a count or a status
 // carries a badge on the line of its text (sf-badge line="text") and says it
-// in its name; the compact view's veil stands behind the open list, which is a
+// in its name; the sheet view's veil stands behind the open list, which is a
 // bottom sheet on a phone.
 const STATUSES = ['error', 'warning', 'success'];
 const STATUS_ICONS = {error: 'error', warning: 'warning', success: 'check_circle'};
@@ -55,6 +55,10 @@ export function renderContentsTemplate(context) {
   const classes = [
     'sf-contents',
     `sf-contents--layout-${layout}`,
+    // The sheet writes its former class beside its own until 2027-01-01, so a
+    // page selector that reached sf-contents--layout-compact still does (C134;
+    // journal value-contents-layout-compact-to-sheet).
+    layout === 'sheet' ? 'sf-contents--layout-compact' : '',
     layout === 'auto' ? `sf-contents--collapse-${collapse}` : '',
     `sf-contents--size-${size === '1' ? '1' : 'half'}`,
     sticky ? 'sf-contents--sticky' : '',
