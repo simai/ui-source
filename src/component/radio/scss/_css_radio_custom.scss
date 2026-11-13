@@ -20,6 +20,19 @@
   flex-shrink: 0;
 }
 
+/* The ring's own clock (CR-4). It used to come from the `.transition` utility
+   the template wrote on the box -- every colour property, normal duration,
+   the move curve -- so the component's sheet did not know the ring moved and
+   its reduced-motion rule never reached it (CR-5: 284 ms of colour change
+   under reduce). The same timing now lives here, on the motion scale, and the
+   markup carries no utility. The dot itself does not move yet: its motion
+   waits for the owner (R210, prototypes/check-radio-motion.html). */
+.sf-radio-button .sf-radio-button-box {
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-duration: var(--sf-duration-normal);
+  transition-timing-function: var(--sf-ease-move);
+}
+
 /* The native control is the hit area. It covers the mark and reaches at
    least 24px on each axis (WCAG 2.2, 2.5.8) where the mark is smaller: a size
    1/2 mark is 16px on mobile, a size 1 mark 20. The inset only goes negative,
@@ -152,6 +165,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Reduced motion: the ring and the plate change in one frame (CR-5). */
+  .sf-radio-button .sf-radio-button-box,
   .sf-radio-button--type-font .sf-radio-text {
     transition-duration: 0s;
   }

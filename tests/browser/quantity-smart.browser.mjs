@@ -11,8 +11,9 @@
 //   bounds; a stepper is disabled at its bound; each key and each click sends
 //   input and change once, with the number in detail;
 // - typing is strict: letters and a decimal mark in an integer field are
-//   refused, a Russian page takes a comma, a value past the bound is clamped on
-//   Enter, Escape takes typing back;
+//   refused, a Russian page takes a comma, a value past the bound is kept on
+//   Enter and shown as the field's error (1.4.1, QR-1: aria-invalid, the range
+//   word in place of the hint, said by the status), Escape takes typing back;
 // - a held stepper repeats, with input per step and one change at the end;
 // - the class binder does not bind the Smart field a second time (one click is
 //   one step), the form submits the number with a point, a required empty field
@@ -207,7 +208,8 @@ try {
   await keyCase('End', 10, 'input:10:keyboard,change:10:keyboard');
   await keyCase('PageDown', 0, 'input:0:keyboard,change:0:keyboard');
 
-  // Typing: strict, clamped on Enter, Escape takes it back.
+  // Typing: strict, kept past the bound on Enter with the error shown (QR-1),
+  // Escape takes it back.
   await page.fill('#count .sf-quantity-wrap input', '');
   await events();
   await page.keyboard.type('7a,5');
@@ -216,9 +218,12 @@ try {
   if (typed.text !== '75' || typed.value !== 75) note({case: 'a letter and a decimal mark are refused in an integer field', got: typed});
   await page.keyboard.press('Enter');
   await page.waitForTimeout(80);
-  const clamped = await state('count');
-  const clampEvents = said(await events(), 'count');
-  if (clamped.value !== 10 || clamped.text !== '10' || clampEvents !== 'input:10:commit,change:10:commit' || !typeEvents.startsWith('input:7:typing')) note({case: 'typed 75 past max 10 is clamped on Enter', got: {clamped, typeEvents, clampEvents}});
+  const kept = await state('count');
+  const keptEvents = said(await events(), 'count');
+  const keptStatus = await page.evaluate(() => document.querySelector('#count .sf-quantity-status')?.textContent.trim() ?? null);
+  const keptValid = await page.evaluate(() => document.getElementById('count').checkValidity());
+  if (kept.value !== 75 || kept.text !== '75' || keptEvents !== 'change:75:commit' || !typeEvents.startsWith('input:7:typing')) note({case: 'typed 75 past max 10 is kept on Enter', got: {kept, typeEvents, keptEvents}});
+  if (kept.invalid !== 'true' || kept.description !== 'Значение должно быть не больше 10' || keptStatus !== kept.description || keptValid !== false) note({case: 'typed 75 past max 10 shows the range error', got: {kept, keptStatus, keptValid}});
   await page.keyboard.press('Backspace');
   await page.keyboard.press('Backspace');
   await page.keyboard.type('4');
@@ -226,7 +231,13 @@ try {
   await page.waitForTimeout(80);
   const escaped = await state('count');
   await events();
-  if (escaped.value !== 10 || escaped.text !== '10') note({case: 'Escape takes typing back', got: escaped});
+  if (escaped.value !== 75 || escaped.text !== '75') note({case: 'Escape takes typing back', got: escaped});
+  // A step from the kept number lands in the bounds, and the error goes.
+  await page.keyboard.press('ArrowDown');
+  await page.waitForTimeout(80);
+  const back = await state('count');
+  await events();
+  if (back.value !== 10 || back.invalid !== null || back.description !== 'От 0 до 10') note({case: 'a step back into the bounds takes the error away', got: back});
   await page.focus('#price .sf-quantity-wrap input');
   await page.fill('#price .sf-quantity-wrap input', '');
   await page.keyboard.type('12,345');

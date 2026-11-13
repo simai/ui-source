@@ -261,7 +261,7 @@
     },
     {
       "id": "typed-past-max-is-range-overflow",
-      "covers": "form.validity range-overflow before the commit clamps",
+      "covers": "form.validity range-overflow, kept past the bound (1.4.1)",
       "field": "<sf-input-quantity name=\"count\" min=\"0\" max=\"99\"></sf-input-quantity>",
       "user": "type:150",
       "expect": {

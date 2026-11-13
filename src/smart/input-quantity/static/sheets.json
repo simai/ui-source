@@ -18,7 +18,8 @@
     "utility/flex-wrap/default/css/default.min.css",
     "utility/justify-content/default/css/default.min.css",
     "utility/place-items/default/css/default.min.css",
-    "utility/position/default/css/default.min.css"
+    "utility/position/default/css/default.min.css",
+    "utility/sr-only/default/css/default.min.css"
   ],
   "examples": {
     "at-max": [
@@ -33,7 +34,8 @@
       "utility/flex-wrap/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "disabled": [
       "component/icon-buttons/css/icon-buttons.min.css",
@@ -60,7 +62,8 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/flex-wrap/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
-      "utility/place-items/default/css/default.min.css"
+      "utility/place-items/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "inherited": [
       "component/icon-buttons/css/icon-buttons.min.css",
@@ -75,7 +78,8 @@
       "utility/flex-wrap/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "invalid": [
       "component/icon-buttons/css/icon-buttons.min.css",
@@ -89,7 +93,8 @@
       "utility/flex-wrap/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "price": [
       "component/icon-buttons/css/icon-buttons.min.css",
@@ -103,7 +108,8 @@
       "utility/flex-wrap/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "readonly": [
       "component/icon-buttons/css/icon-buttons.min.css",
@@ -131,7 +137,8 @@
       "utility/flex-wrap/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "size-2": [
       "component/icon-buttons/css/icon-buttons.min.css",
@@ -145,7 +152,8 @@
       "utility/flex-wrap/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "unit": [
       "component/icon-buttons/css/icon-buttons.min.css",
@@ -158,7 +166,8 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/flex-wrap/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
-      "utility/place-items/default/css/default.min.css"
+      "utility/place-items/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ]
   }
 }

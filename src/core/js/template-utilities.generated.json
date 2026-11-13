@@ -230,7 +230,8 @@
     "flex-direction/default",
     "flex-wrap/default",
     "justify-content/default",
-    "place-items/default"
+    "place-items/default",
+    "sr-only/default"
   ],
   "cl-input-rich": [
     "align-items/default",
@@ -360,8 +361,7 @@
   "cl-radio": [
     "align-items/default",
     "display/default",
-    "justify-content/default",
-    "transition-property/default"
+    "justify-content/default"
   ],
   "cl-reference-link": [
     "align-items/default",

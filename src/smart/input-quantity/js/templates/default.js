@@ -131,6 +131,12 @@ export function renderQuantityTemplate(context) {
         ? html`<span id=${field.messageId} class="sf-quantity-hint-text-wrap"
                      data-field-message=${context.messageKind}>${context.message}</span>`
         : nothing}
+
+      ${context.interactive
+        // A number kept past a bound shows its error under the box; the status
+        // says it once, when the commit shows it (QR-1). Empty otherwise.
+        ? html`<span class="sf-quantity-status sr-only" role="status" aria-live="polite" aria-atomic="true">${context.announcement || ''}</span>`
+        : nothing}
     </div>
   `;
 }
