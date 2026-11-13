@@ -5,7 +5,7 @@ import countriesData from '../data/countries.json';
 import { bindFormReset } from '../../form-reset-helper';
 import { maskService } from '../../mask-service';
 import BundledPosition from '../../../core/js/position.js';
-import { fieldSize, retireFieldSizeClass } from '../../field-size';
+import { ladderSize } from '../../field-size';
 import { pageLanguage, pageText } from '../../../core/js/page-language';
 import { holdOpenSurfaceMark } from '../../../core/js/open-surface-mark';
 import { tagSelector } from '../../../core/js/tag-aliases.js';
@@ -1147,7 +1147,8 @@ function ensureCountrySearch(root, config) {
 }
 
 function bindCountryCode(root, { resetCountry = false, countries, maskPattern } = {}) {
-  retireFieldSizeClass(root, 'sf-country-code');
+  // The phone field stands on the field ladder (field-size.js): 1/3 and 3 are
+  // its own steps, no class to move.
   // Both ordinary and Smart bundles may contain this module. Keep reattachment
   // with the original owner of WeakMap defaults and authored configuration.
   if (root?.__sfCountryCodeBind && root.__sfCountryCodeBind !== bindCountryCode) {
@@ -1646,7 +1647,7 @@ class CountryCode extends ComponentObserver {
     const className = this.attrs.class || this.attrs.className;
     this.template = document.createElement('label');
     if (this.id) this.template.id = this.id;
-    this.template.classList.add('sf-country-code', `sf-country-code--size-${fieldSize(size, 'sf-country-code')}`);
+    this.template.classList.add('sf-country-code', `sf-country-code--size-${ladderSize(size)}`);
     if (toBoolean(disabled)) this.template.classList.add('disabled');
     if (toBoolean(open)) this.template.classList.add('open');
     if (className) {

@@ -42,7 +42,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {pageLocale} from '../../core/js/page-language';
 import {createFieldContract} from '../../component/field-contract';
-import {fieldSize} from '../../component/field-size';
+import {ladderSize} from '../../component/field-size';
 import {bindFormReset} from '../../component/form-reset-helper';
 import {InheritedValueField} from '../helpers/inherited-value';
 import {FormField, innerControlName, syncFieldValidity} from '../helpers/form-field';
@@ -161,7 +161,7 @@ class SfQuantity extends FormField(QuantityElement) {
     super.attributeChangedCallback(name, previous, next);
   }
 
-  get size() { return fieldSize(this.getAttribute('size') || '1', 'sf-input-quantity'); }
+  get size() { return ladderSize(this.getAttribute('size')); }
   get ariaLabel() { return this.getProp('ariaLabel') || ''; }
   get locale() { return this.getAttribute('locale') || pageLocale(this); }
 

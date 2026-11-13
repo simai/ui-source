@@ -1,6 +1,7 @@
 @use '../../../component/context-menu/scss/panel';
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../component/inputs/scss/field-action';
+@use '../../../component/inputs/scss/field-ladder' as ladder;
 
 @layer sf.components {
 /* sf-input-lookup (standard simai.smart-component 1.3.14 §6). The frame is
@@ -75,6 +76,27 @@
   --sf-lookup--row-height: var(--sf-ui-1\/2--control-height);
   --sf-field-action--glyph: var(--sf-text-height-1\/2);
   --sf-field-action--height: var(--sf-ui-1\/2--control-height);
+}
+
+/* The outer steps of the field ladder (inputs/scss/_field-ladder.scss): at
+   1/3 and 3 the lookup is as tall as sf-input of the size (28 / 56 on a
+   desktop). It drew the neighbouring kept size, 32 / 48. */
+@each $size in ladder.$outer {
+  .sf-lookup.#{ladder.size-class('sf-lookup', $size)} {
+    --sf-lookup--font-size: #{ladder.text-size($size)};
+    --sf-lookup--line-height: #{ladder.text-height($size)};
+    --sf-lookup--label-size: #{ladder.label-size($size)};
+    --sf-lookup--label-height: #{ladder.label-height($size)};
+    --sf-lookup--caption-size: #{ladder.label-size($size)};
+    --sf-lookup--caption-height: #{ladder.label-height($size)};
+    --sf-lookup--padding-block: var(--sf-lookup-padding-block, #{ladder.padding-block($size)});
+    --sf-lookup--padding-inline: var(--sf-lookup-padding-inline, #{ladder.ui($size, space-x)});
+    --sf-lookup--text-inset: #{ladder.ui($size, text-space-x)};
+    --sf-lookup--row-padding-block: #{ladder.ui($size, space-y-tightness-low)};
+    --sf-lookup--row-height: #{ladder.height($size)};
+    --sf-field-action--glyph: #{ladder.text-height($size)};
+    --sf-field-action--height: #{ladder.height($size)};
+  }
 }
 
 /* The label row and the message line: sf-input's. */
@@ -469,6 +491,15 @@
   .sf-lookup.sf-lookup--size-1\/2 {
     --sf-lookup--inset: max(var(--sf-space-1\/2), var(--sf-b2));
     --sf-lookup--line-radius: min(var(--sf-lookup--radius), var(--sf-ui-1\/2--control-height) / 2);
+  }
+
+  /* The outer steps keep sf-input's inset at those steps (C77 names 1/2, 1
+     and 2 only): the value at the step's own padding plus its text step. */
+  @each $size in ladder.$outer {
+    .sf-lookup.#{ladder.size-class('sf-lookup', $size)} {
+      --sf-lookup--inset: #{ladder.outer-inset($size)};
+      --sf-lookup--line-radius: min(var(--sf-lookup--radius), #{ladder.height($size)} / 2);
+    }
   }
 
   .sf-lookup:not(:has(.sf-lookup-chip)) .sf-lookup-frame {

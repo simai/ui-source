@@ -11,7 +11,7 @@ import {
 } from '../../component/country-code/js/_country_code';
 import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
-import { fieldSize } from '../../component/field-size';
+import {ladderSize} from '../../component/field-size';
 import { FormField } from '../helpers/form-field';
 import { noteDeprecated } from '../../core/js/deprecations.js';
 import { renderCountryCodeTemplate } from './js/templates/default';
@@ -54,7 +54,7 @@ class SfCountryCode extends FormField(CountryCodeElement) {
   }
 
   get size() {
-    return fieldSize(this.getAttribute('size') || '1', 'sf-input-country');
+    return ladderSize(this.getAttribute('size'));
   }
 
   // A telephone inside a field that is already labelled -- a record panel draws

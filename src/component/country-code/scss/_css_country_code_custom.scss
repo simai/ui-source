@@ -1,3 +1,5 @@
+@use '../../inputs/scss/field-ladder' as ladder;
+
 @layer sf.components {
 .sf-country-code {
   position: relative;
@@ -142,4 +144,101 @@
   --sf-country-code-flag--width: calc(var(--sf-country-code--flag-height) * 1.4);
   flex-shrink: 0;
 }
+}
+
+/* The outer steps of the field ladder (inputs/scss/_field-ladder.scss): at
+   1/3 and 3 the phone field is as tall as sf-input of the size (28 / 56 on a
+   desktop); it drew size 1, 40. The number is the text of the size, the
+   label and the help and error line a step below, a row of the list as tall
+   as the field. The flag keeps the inset of the nearest kept size: 1/3 the
+   12 of 1/2 (a 12 px flag, never under 12 in a compact region or on a
+   phone), 3 the 20 of 2. */
+@layer sf.components {
+  @each $size, $inset in ('1/3': max(var(--sf-space-1\/2), var(--sf-b2)), '3': var(--sf-space-2)) {
+    $class: ladder.size-class('sf-country-code', $size);
+
+    .sf-country-code.#{$class} {
+      --sf-country-code--inset: #{$inset};
+      --sf-country-code-row--block-size: #{ladder.height($size)};
+    }
+
+    .sf-country-code.#{$class} .sf-country-code-field {
+      block-size: #{ladder.height($size)};
+      --sf-country-code-field--padding-bottom: #{ladder.padding-block($size)};
+      --sf-country-code-field--padding-top: #{ladder.padding-block($size)};
+      --sf-country-code-field--padding-inline-end: calc(var(--sf-country-code--inset) - var(--sf-px));
+      --sf-country-code-field--padding-inline-start: calc(var(--sf-country-code--inset) - var(--sf-px));
+    }
+
+    .sf-country-code.#{$class} .sf-country-code-text,
+    .sf-country-code.#{$class} .sf-country-code-required,
+    .sf-country-code.#{$class} .sf-country-code-hint {
+      --sf-country-code-text--font-size: #{ladder.label-size($size)};
+      --sf-country-code-text--line-height: #{ladder.label-height($size)};
+      --sf-country-code-required--font-size: #{ladder.label-size($size)};
+      --sf-country-code-required--line-height: #{ladder.label-height($size)};
+      --sf-country-code-hint--font-size: #{ladder.label-size($size)};
+      --sf-country-code-hint--line-height: #{ladder.label-height($size)};
+    }
+
+    .sf-country-code.#{$class} .sf-country-code-flag-icon {
+      --sf-country-code-flag-icon--font-size: #{ladder.text-size($size)};
+      --sf-country-code-flag-icon--height: var(--sf-country-code--flag-height);
+      --sf-country-code-flag-icon--width: calc(var(--sf-country-code--flag-height) * 1.4);
+    }
+
+    .sf-country-code.#{$class} input {
+      --sf-country-code-input--font-size: #{ladder.text-size($size)};
+      --sf-country-code-input--line-height: #{ladder.text-height($size)};
+      --sf-country-code-input--font-family: var(--sf-text--family);
+      --sf-country-code-input--font-weight: var(--sf-font-weight-regular);
+      --sf-country-code-input--padding-inline-end: calc(var(--sf-px) * 0);
+      --sf-country-code-input--padding-inline-start: var(--sf-space-1\/4);
+    }
+
+    .sf-country-code.#{$class} .sf-country-code-field input::placeholder {
+      --sf-country-code-placeholder--font-size: #{ladder.text-size($size)};
+      --sf-country-code-placeholder--line-height: #{ladder.text-height($size)};
+    }
+  }
+
+  .sf-country-code.sf-country-code--size-1\/3 {
+    --sf-country-code--flag-height: var(--sf-country-code--inset);
+  }
+}
+
+@layer sf.states {
+  @each $size in ladder.$outer {
+    .sf-country-code.#{ladder.size-class('sf-country-code', $size)} .sf-country-code-item {
+      --sf-country-code-item--font-size: #{ladder.text-size($size)};
+      --sf-country-code-item--line-height: #{ladder.text-height($size)};
+      --sf-country-code-item--font-family: var(--sf-text--family);
+      --sf-country-code-item--font-weight: var(--sf-font-weight-regular);
+      --sf-country-code-item--gap: #{ladder.ui($size, text-space-x)};
+      --sf-country-code-item--padding-top: #{ladder.ui($size, space-y-tightness-default)};
+      --sf-country-code-item--padding-bottom: #{ladder.ui($size, space-y-tightness-default)};
+      --sf-country-code-item--padding-inline-start: calc(var(--sf-country-code--inset) - var(--sf-country-code-list--padding-inline-start, 0px));
+      --sf-country-code-item--padding-inline-end: calc(var(--sf-country-code--inset) - var(--sf-country-code-list--padding-inline-end, 0px));
+    }
+
+    .sf-country-code.#{ladder.size-class('sf-country-code', $size)} .sf-country-code-item .sf-country-code-flag {
+      --sf-country-code-flag--height: var(--sf-country-code--flag-height);
+      --sf-country-code-flag--width: calc(var(--sf-country-code--flag-height) * 1.4);
+      flex-shrink: 0;
+    }
+  }
+}
+
+/* The error line (fields ladder, 2026-11-14): with `invalid` and an error
+   message the phone field draws sf-input's error, the edge and the line under
+   the field in the error colour, the line in place of the help. It had no
+   error line. */
+@layer sf.states {
+  .sf-country-code.error .sf-country-code-field {
+    --sf-country-code-field--border-color: var(--sf-error);
+  }
+
+  .sf-country-code.error .sf-country-code-hint {
+    --sf-country-code-hint--color: var(--sf-error);
+  }
 }

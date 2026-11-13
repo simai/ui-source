@@ -1,0 +1,79 @@
+@use 'sass:map';
+
+// The field ladder (fields ladder, 2026-11-14), written once for every field
+// that stands on it: sf-input, sf-input-lookup, -quantity, -date, -code,
+// -color and -country (component/field-size.js FIELD_LADDER). A field of a
+// size is as tall as sf-button and sf-button-icon of that size, its value on
+// the text of that size, its label, help and error a step below, its pictures
+// on the value's line:
+//
+//   size     1/3   1/2   1     2     3
+//   height   28    32    40    48    56     (--sf-ui-<S>--control-height, desktop)
+//   value    1/3   1/2   1     2     3      (--sf-text-size / -height-<S>)
+//   label    1/4   1/3   1/2   1     2      (help and error lines too)
+//
+// sf-input wrote the outer steps first (inputs/scss/_css__custom.scss); the
+// other fields drew 1/3 and 3 at the neighbouring kept size (32 / 48) or at
+// size 1 (40). A sheet reads its step here instead of naming the tokens by
+// hand, so every field takes the same rung for the same part.
+
+$sizes: ('1/3', '1/2', '1', '2', '3');
+$outer: ('1/3', '3');
+
+$-escaped: ('1/4': '1\\/4', '1/3': '1\\/3', '1/2': '1\\/2', '1': '1', '2': '2', '3': '3');
+$-below: ('1/3': '1/4', '1/2': '1/3', '1': '1/2', '2': '1', '3': '2');
+
+// The size as a class or a token writes it: 1/3 -> 1\/3.
+@function esc($size) {
+  @return map.get($-escaped, $size);
+}
+
+// The step a label, a help line or an error line stands on.
+@function below($size) {
+  @return map.get($-below, $size);
+}
+
+// `--sf-ui-<S>--<part>` of the size: control-height, space-x, text-space-x,
+// space-y-tightness-default, space-y-tightness-low.
+@function ui($size, $part) {
+  @return var(--sf-ui-#{esc($size)}--#{$part});
+}
+
+@function height($size) {
+  @return ui($size, control-height);
+}
+
+@function text-size($size) {
+  @return var(--sf-text-size-#{esc($size)});
+}
+
+@function text-height($size) {
+  @return var(--sf-text-height-#{esc($size)});
+}
+
+@function label-size($size) {
+  @return text-size(below($size));
+}
+
+@function label-height($size) {
+  @return text-height(below($size));
+}
+
+// The block padding inside a frame of the size with a 1 px border: what makes a
+// one-line frame its control height.
+@function padding-block($size) {
+  @return calc(#{ui($size, space-y-tightness-default)} - var(--sf-px));
+}
+
+// `<block>--size-<S>` as a class selector: .sf-lookup--size-1\/3.
+@function size-class($block, $size) {
+  @return '#{$block}--size-#{esc($size)}';
+}
+
+// Where the value starts at an outer step (1/3, 3), from the frame's outer
+// edge: sf-input's at those steps, the step's padding, the border and the text
+// step (_css__custom.scss). C77's one inset (12 / 16 / 20) names the kept
+// sizes only.
+@function outer-inset($size) {
+  @return calc(#{ui($size, space-x)} + var(--sf-px) + #{ui($size, text-space-x)});
+}

@@ -134,19 +134,23 @@
     "size": {
       "type": "enum",
       "values": [
+        "1/3",
         "1/2",
         "1",
-        "2"
+        "2",
+        "3"
       ],
       "default": "1",
-      "summary": "Form size of the field."
+      "summary": "The field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the field is an sf-input of this size."
     },
     "input-size": {
       "type": "enum",
       "values": [
+        "1/3",
         "1/2",
         "1",
-        "2"
+        "2",
+        "3"
       ],
       "default": "1",
       "summary": "Legacy name for size, still honoured; size wins when both are set. See contracts/public-api-axes.json."

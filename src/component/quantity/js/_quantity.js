@@ -2,7 +2,7 @@ import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import quantityUtility from '../json/quantity.utility.json';
 import { syncFieldContract } from '../../field-contract';
-import { fieldSize, retireFieldSizeClass } from '../../field-size';
+import { ladderSize } from '../../field-size';
 import { bindFormReset } from '../../form-reset-helper';
 import { maskService } from '../../mask-service';
 import { pageLocale, pageText } from '../../../core/js/page-language';
@@ -379,7 +379,8 @@ function adjustValue(root, deltaSign) {
 }
 
 function bindQuantity(root) {
-  retireFieldSizeClass(root, 'sf-quantity');
+  // The quantity field stands on the field ladder (field-size.js): 1/3 and 3
+  // are its own steps, no class to move.
   if (!root || root.dataset[BOUND_FLAG] === '1') return;
   const input = root.querySelector('.sf-quantity-wrap input');
   if (!input) return;
@@ -676,7 +677,7 @@ class Quantity extends ComponentObserver {
       incrementIcon = 'add',
     } = this.params || {};
 
-    const normalizedSize = fieldSize(size, 'sf-quantity');
+    const normalizedSize = ladderSize(size);
 
     const className = this.attrs.class || this.attrs.className;
 

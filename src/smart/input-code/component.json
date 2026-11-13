@@ -48,12 +48,14 @@
     "size": {
       "type": "enum",
       "values": [
+        "1/3",
         "1/2",
         "1",
-        "2"
+        "2",
+        "3"
       ],
       "default": "1",
-      "summary": "A step of the form-field ladder, as sf-input's: the cells and their text."
+      "summary": "A step of the field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the cells and their text."
     },
     "appearance": {
       "type": "enum",

@@ -1,4 +1,5 @@
 import {html, nothing} from 'lit';
+import {createFieldContract} from '../../../../component/field-contract';
 import {renderInheritedSlot} from '../../../helpers/inherited-value';
 import {alphaOf, isPaletteName, paletteFill, solidOf} from '../color-math.js';
 import './default.css';
@@ -40,6 +41,15 @@ export function renderColorTemplate(context) {
     const shown = context.paintedName;
     // The value is read with the name: «Цвет метки: Синий».
     const spoken = shown ? `${name}: ${shown}` : name;
+    // The line under the field is sf-input's (fields ladder, 2026-11-14): the
+    // help, or the error in its place while the field is invalid and says why.
+    const field = createFieldContract(component, {
+        prefix: 'sf-input-color',
+        invalid: context.invalid,
+        hint: context.hint,
+        errorMessage: context.errorMessage,
+    });
+    const messageIsError = Boolean(field.invalid && context.errorMessage);
 
     // What the field says. A chosen palette colour is its word, an own colour
     // its code; while the inherited colour applies the field shows it in the
@@ -50,7 +60,7 @@ export function renderColorTemplate(context) {
         : html`<span class="sf-color-empty">${context.hasInheritedValue ? '' : context.inheritedText}</span>`;
 
     return html`
-        <div class="sf-color-field sf-color-field--size-${size}">
+        <div class="sf-color-field sf-color-field--size-${size}${field.invalid ? ' error' : ''}">
             ${context.label
                     // One field label look for every field (FB-10, CO-04):
                     // the trigger carries the same words as its name, so the
@@ -72,6 +82,7 @@ export function renderColorTemplate(context) {
                             aria-haspopup="dialog"
                             aria-expanded=${open ? 'true' : 'false'}
                             aria-label=${spoken}
+                            aria-describedby=${field.describedBy || nothing}
                             ?disabled=${disabled}>
                         ${renderChip(painted)}
                         <span class="sf-color-text">${text}</span>
@@ -87,7 +98,7 @@ export function renderColorTemplate(context) {
                                 <sf-button-icon
                                         appearance="ghost"
                                         scheme="on-surface"
-                                        size=${size === '2' ? '1' : '1/2'}
+                                        size=${({'1/3': '1/3', '2': '1', '3': '2'})[size] || '1/2'}
                                         icon="restart_alt"
                                         data-action="clear"
                                         aria-label=${context.clearLabel}
@@ -109,6 +120,10 @@ export function renderColorTemplate(context) {
                         ? html`<input type="hidden" name=${context.hiddenName} .value=${context.value}>`
                         : nothing}
             </div>
+            ${field.message
+                    ? html`<span class="sf-color-hint" id=${field.messageId}
+                                 data-field-message=${messageIsError ? 'error' : 'hint'}>${field.message}</span>`
+                    : nothing}
             ${context.brand ? renderChecks(context) : nothing}
             ${open ? renderWindow(context, name) : nothing}
         </div>

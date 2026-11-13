@@ -3,7 +3,7 @@ import {elementFromManifest} from '../../core/js/element-manifest';
 import BundledPosition from '../../core/js/position.js';
 import {holdOpenSurfaceMark} from '../../core/js/open-surface-mark';
 import {pageLocale} from '../../core/js/page-language.js';
-import {fieldSize} from '../../component/field-size';
+import {ladderSize} from '../../component/field-size';
 import {PanelScrollbar} from '../../component/panel-scrollbar';
 import {FormField, ShownRequired} from '../helpers/form-field';
 import {renderLookupTemplate} from './js/templates/default';
@@ -107,7 +107,7 @@ class SfLookup extends ShownRequired(FormField(LookupElement)) {
   // ---------------------------------------------------------- settings
 
   get size() {
-    return fieldSize(this.getAttribute('size') || '1', 'sf-input-lookup');
+    return ladderSize(this.getAttribute('size'));
   }
 
   get effectiveDisabled() {

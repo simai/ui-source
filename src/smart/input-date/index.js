@@ -1,7 +1,7 @@
 import SfBaseElement, {toNumber} from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
-import {fieldSize} from '../../component/field-size';
+import {ladderSize} from '../../component/field-size';
 import {FormField} from '../helpers/form-field';
 import {render} from 'lit';
 import {renderDatepickerTemplate} from './js/templates/default';
@@ -1001,7 +1001,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     // `size` is the canonical name, as on every field; `input-size` is its
     // legacy name and still honoured. The canonical name wins when both are set.
     get size() {
-        return fieldSize(this.getAttribute('size') || this.getAttribute('input-size') || '1', 'sf-input-date');
+        return ladderSize(this.getAttribute('size') || this.getAttribute('input-size'));
     }
 
     get inputSize() {
