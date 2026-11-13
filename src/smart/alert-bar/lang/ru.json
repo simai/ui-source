@@ -5,7 +5,7 @@
     "level-error": "Ошибка",
     "level-warning": "Предупреждение",
     "level-info": "Сведения",
-    "all": "Все {count}",
+    "more": "Ещё {count}",
     "collapse-list": "Свернуть список",
     "list": "Все уведомления",
     "hide-day": "Скрыть на сутки",

@@ -138,6 +138,17 @@ Combine one semantic type with `default`, `outlined` or `flat`. Default and flat
 semantic surfaces use their matching `on-*-container` text role. Outlined keeps
 the page text role and a semantic border/icon.
 
+The three looks (owner decision C110 as amended 2026-11-12; 1.3.0):
+
+| Look | Class | Border | Fill | Shadow |
+|---|---|---|---|---|
+| (а) border only | `sf-alert--outlined` | status outline | none (the page) | none |
+| (б) border and fill | `sf-alert--default` | status outline | status container | none |
+| (в) fill and shadow | `sf-alert--flat` | none | status container | `--sf-shadow-raised` |
+
+Only the flat look casts a shadow: the raised place's shadow, the card's (a soft key and ambient shade in the light theme, the key shade
+alone in the dark). Before 1.3.0 the flat look had no shadow.
+
 ## Behavior
 
 Static alerts need no JavaScript. A close action uses the short `data-close`

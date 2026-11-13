@@ -5,7 +5,7 @@
     "level-error": "Error",
     "level-warning": "Warning",
     "level-info": "Info",
-    "all": "All {count}",
+    "more": "{count} more",
     "collapse-list": "Hide the list",
     "list": "All notices",
     "hide-day": "Hide for a day",

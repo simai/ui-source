@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.alerts",
   "kind": "component",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/alerts/dismiss.js",
@@ -16,7 +16,7 @@
     "src/component/alerts/scss/_var__alerts.scss",
     "src/component/alerts/scss/index.scss"
   ],
-  "content_sha256": "c8f3ef2e603ffe957d991df7566a503ea1cdfedfdb30dce92082a9a446dcb994",
+  "content_sha256": "af4c466c04634541dce33ddb69cdaa6cd53cbc17d6b1d2a4be924337b83a2fd9",
   "dependencies": [
     {
       "id": "core.styles",

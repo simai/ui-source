@@ -24,7 +24,10 @@ and `root-style` settings to its root; the outer Smart host stays boxless.
 ## Settings
 
 - `status="neutral|info|success|warning|error"`
-- `appearance="default|outlined|flat"`
+- `appearance="default|outlined|flat"` — the three looks (owner decision
+  C110): `outlined` the border only, `default` the border and the status fill,
+  `flat` the status fill without a border, with the card's shadow
+  (`--sf-shadow-raised`; 1.4.0, component.alerts 1.3.0)
 - `icon` — `none` hides the leading status icon
 - `heading`
 - `supporting-text`

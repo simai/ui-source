@@ -9,14 +9,21 @@ import {html, nothing} from 'lit';
 // - Minimized (an error bar only): one button, the strip, that keeps the
 //   colour, the icon and the count and expands the bar on a press.
 // - Otherwise one row: the shown item's icon, its text with source and time,
-//   its action link (sf-button href), acknowledge, «Все N» when there are
+//   its action link (sf-button href), acknowledge, «Ещё N» when there are
 //   several, and at the end close (a warning or an info item) or minimize (an
-//   error item). With several items the list of all opens under the bar, each
-//   with its own action, acknowledge and close. The bar shows the most
-//   serious item; it has no paging arrows (owner decision C114 (3)).
+//   error item). The bar shows the most serious item; it has no paging
+//   arrows (owner decision C114 (3)).
+// - With several items, «Ещё N» (the others, not the shown one) opens the
+//   list of the others under the bar, in the page flow (C114 (3) as shown
+//   expanded, layout Р1, NS-12); open, the button reads «Свернуть список».
+//   Each row is the bar row's composition on the list's surface: the level
+//   icon in the level's colour (its word for a screen reader), the text with
+//   the source and time on the line below, the action and acknowledge, and
+//   the close for a warning or an info item; an error row keeps the close's
+//   place empty, so the columns line up. No level badge.
 //
 // One button family (AA-15): the action is tonal surface and every other
-// button (acknowledge, «Все N», hide) ghost, as on sf-alert and sf-toast
+// button (acknowledge, «Ещё N», hide) ghost, as on sf-alert and sf-toast
 // (owner decision C110 as amended 2026-11-12, variant E). Every button of
 // the bar and of its list is height="low" (owner decision C117, C27), the
 // family's one button height; the sheet's rung control is that height. The controls are sf-button and sf-button-icon of scheme on-surface: inside
@@ -84,29 +91,35 @@ function row(context) {
       ${actionLink(context, item, 'tonal')}
       ${acknowledgeButton(context, item, 'ghost')}
       ${many ? html`<sf-button class="sf-alert-bar-all" size=${size} height="low" appearance="ghost" scheme="on-surface"
-        text=${listOpen ? words.collapseList : words.all} expanded=${listOpen ? 'true' : 'false'} aria-controls=${listId}
+        text=${listOpen ? words.collapseList : words.more} expanded=${listOpen ? 'true' : 'false'} aria-controls=${listId}
         @click=${() => component.toggleList()}></sf-button>` : nothing}
     </div>` : nothing}
     ${end}
   </div>`;
 }
 
-function listOfAll(context) {
-  const {component, list, size, words, listId} = context;
+// The list of the others (Р1, NS-12): one row per item, as the bar row.
+function listOfOthers(context) {
+  const {component, others, size, words, icons, listId} = context;
   return html`<ul class="sf-alert-bar-list" id=${listId} aria-label=${words.list}>
-    ${list.map((item) => html`<li class="sf-alert-bar-item" data-level=${item.level} data-id=${item.id}>
-      <sf-badge class="sf-alert-bar-badge" status=${item.level} appearance="tonal" size="1/3" text=${item.levelWord}></sf-badge>
+    ${others.map((item) => {
+      const label = hideWord(context, item);
+      return html`<li class="sf-alert-bar-item" data-level=${item.level} data-id=${item.id}>
+      ${icon(icons[item.level], 'sf-alert-bar-item-icon')}
       <div class="sf-alert-bar-item-text">
-        <span class="sf-alert-bar-item-message">${item.text}</span>
+        <span class="sf-alert-bar-item-message"><span class="sr-only">${item.levelWord}: </span>${item.text}</span>
         ${meta(item, 'sf-alert-bar-item-meta')}
       </div>
-      <div class="sf-alert-bar-item-actions">
+      ${item.action || item.acknowledge ? html`<div class="sf-alert-bar-item-actions">
         ${actionLink(context, item, 'tonal')}
         ${acknowledgeButton(context, item, 'ghost')}
-        ${item.dismissible ? html`<sf-button class="sf-alert-bar-item-close" size=${size} height="low" appearance="ghost" scheme="on-surface"
-          text=${hideWord(context, item)} @click=${() => component.closeItem(item.id)}></sf-button>` : nothing}
-      </div>
-    </li>`)}
+      </div>` : nothing}
+      ${item.dismissible
+        ? html`<sf-button-icon class="sf-alert-bar-item-close" icon="close" size=${size} height="low" appearance="ghost" scheme="on-surface"
+          aria-label=${label} title=${label} @click=${() => component.closeItem(item.id)}></sf-button-icon>`
+        : html`<span class="sf-alert-bar-item-end" aria-hidden="true"></span>`}
+    </li>`;
+    })}
   </ul>`;
 }
 
@@ -124,6 +137,6 @@ export function renderAlertBarTemplate(context) {
   return html`<div class=${classes} style=${context.rootStyle || nothing} role="region" aria-label=${label || nothing}>
     <div class="sf-alert-bar-live sr-only" role="alert">${announce.alert}</div>
     <div class="sf-alert-bar-live sr-only" role="status">${announce.status}</div>
-    ${count === 0 ? nothing : isMinimized ? strip(context) : html`${row(context)}${listOpen ? listOfAll(context) : nothing}`}
+    ${count === 0 ? nothing : isMinimized ? strip(context) : html`${row(context)}${listOpen ? listOfOthers(context) : nothing}`}
   </div>`;
 }

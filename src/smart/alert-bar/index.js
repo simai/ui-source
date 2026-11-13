@@ -9,7 +9,7 @@
 //
 // The items are sorted error, warning, info, the newest first; the bar takes
 // the colour of the first and shows it, without paging arrows (owner decision
-// C114 (3)); the others are listed under the bar with «Все N». A warning closes for a day, an info item
+// C114 (3)); «Ещё N» lists the others under the bar (NS-12). A warning closes for a day, an info item
 // for good; an error item is never closed, its button minimizes the bar to a
 // strip that keeps the count.
 //
@@ -259,21 +259,28 @@ class SfAlertBar extends AlertBarElement {
     return applied();
   }
 
-  // An item leaves: the control that had focus hands it to the next control
-  // of the bar (§19.2: focus never falls to the page).
+  // An item leaves: the control that had focus hands it on (§19.2: focus
+  // never falls to the page). From a row of the open list it goes to the
+  // row that takes its place -- the next one, or from the last row the one
+  // before it (NS-12); with no row left, to the bar. From the bar, to the
+  // bar's first control.
   leave(id) {
     const active = this.ownerDocument.activeElement;
     const focused = Boolean(active && this.contains(active));
-    const where = active?.closest?.('.sf-alert-bar-item') ? 'list' : 'bar';
+    const row = active?.closest?.('.sf-alert-bar-item');
+    const rows = row ? [...this.querySelectorAll('.sf-alert-bar-item')] : [];
+    const place = row ? rows.indexOf(row) : -1;
     this._gone.add(id);
     const count = this.list.length;
     this._index = wrapIndex(this._index, count);
     if (count < 2) this._listOpen = false;
     this.requestComponentUpdate('leave');
     if (!focused) return;
+    const first = (scope) => scope?.querySelector('a[href], button:not([disabled])');
     this.whenDrawn(() => {
-      const scope = where === 'list' && this._listOpen ? '.sf-alert-bar-list' : '.sf-alert-bar-row';
-      const target = this.querySelector(`${scope} a[href], ${scope} button:not([disabled])`)
+      const left = this._listOpen ? [...this.querySelectorAll('.sf-alert-bar-item')] : [];
+      const target = (place >= 0 && left.length ? first(left[Math.min(place, left.length - 1)]) : null)
+        ?? first(this.querySelector('.sf-alert-bar-row'))
         ?? this.querySelector('.sf-alert-bar a[href], .sf-alert-bar button:not([disabled])');
       target?.focus({preventScroll: true});
     });
@@ -307,6 +314,8 @@ class SfAlertBar extends AlertBarElement {
     const index = wrapIndex(this._index, count);
     const current = list[index] ?? null;
     this._shownId = current?.id;
+    // The open list holds the others: every item but the one the bar shows.
+    const others = list.filter((item) => item !== current);
     const level = list[0]?.level ?? '';
     // The raw value stays under its own name; the template reads this one.
     const isMinimized = Boolean(this.minimized) && level === 'error';
@@ -320,6 +329,7 @@ class SfAlertBar extends AlertBarElement {
       size: this.size === '1' ? '1' : '1/2',
       label: this.label,
       list: list.map((item) => ({...item, levelWord: word(`level-${item.level}`)})),
+      others: others.map((item) => ({...item, levelWord: word(`level-${item.level}`)})),
       count,
       index,
       level,
@@ -329,7 +339,7 @@ class SfAlertBar extends AlertBarElement {
       announce: this._announce,
       icons: ICONS,
       words: {
-        all: word('all', {count}),
+        more: word('more', {count: others.length}),
         collapseList: word('collapse-list'),
         list: word('list'),
         hideDay: word('hide-day'),

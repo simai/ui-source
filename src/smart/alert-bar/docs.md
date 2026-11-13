@@ -36,7 +36,7 @@ One job per notice (owner decision C114 (1)):
 News that needs no action (a backup done) is a toast or a record in the
 notification centre, not the bar; the state of one page is `sf-alert`.
 
-The component owns the order, the colour, the list of all, the
+The component owns the order, the colour, the list of the others, the
 minimized strip and the announcements. The host owns the conditions: which
 there are, who may see them, when one ends, and what a person closed or
 acknowledged. **The bar stores nothing.**
@@ -63,10 +63,36 @@ bar.
 
 ## Several items
 
-With more than one item the bar shows the most serious one and «Все N», which
-opens the list of all under the bar, each item with its own action,
-acknowledge and close. It has no arrows to page through them (C114 (3)).
-Escape closes the list.
+With more than one item the bar shows the most serious one and «Ещё N» (1.6.0,
+owner decision C114 (3), layout Р1 of the notices study): N counts the others,
+not the item the bar shows. It has no arrows to page through them.
+
+«Ещё N» opens the list of the others under the bar, in the page flow: an area
+of the page on the `surface-area` place with a line under it, not a popup; the
+page moves down. Past 352 px (g1) the list scrolls inside itself and does not
+hand the scroll to the page. Open, the button reads «Свернуть список».
+
+Each row is built as the bar row, on the same rung, steps and low buttons:
+
+- the level icon at the line's size, in the level's colour (error, warning,
+  info); a screen reader hears the level word before the text («Ошибка: …»);
+- the text, with the source and time on the line below;
+- the action (tonal surface) and «Прочитано» (ghost), 8 apart;
+- the close (×, «Скрыть на сутки» or «Скрыть») 8 after them, for a warning or
+  an info item. An error row keeps that place empty, so the columns line up
+  with the bar's end button.
+
+There is no level badge and no text button «Скрыть на сутки» in a row any
+more. Up to 38rem of the bar's width a row does what the bar row does: the
+icon, the text and the close on the first line, the buttons under the text
+from its start, the space under them equal to the space above the text.
+
+Keyboard: Enter or Space on «Ещё N» opens the list and focus stays on it; Tab
+goes on through the bar (minimise or close) and then through the rows in
+order; Escape anywhere in the bar or the list closes it and puts focus back on
+the button. After «Прочитано» or × in a row, focus moves to the row that takes
+its place -- the next one, from the last row the one before; with no row left,
+to the bar. Nothing is announced: the person opened the list.
 
 ## Layout
 
@@ -83,13 +109,15 @@ width for its column and keeps 16 from the edge.
 
 Up to 608 px (38rem, the size step g9) of the bar's own width the icon, the
 text and the close share the first line. The actions go under the text and
-start where the text starts, 12 under it (8 on a phone); «Все N» stands at
+start where the text starts, 12 under it (8 on a phone); «Ещё N» stands at
 the line's end. The space under the last button equals what the eye sees
 above the first line, the top of its capitals.
 
 The action is a tonal surface button (`tonal on-surface`); acknowledge,
-«Все N» and close are ghost, as on sf-alert and sf-toast; in the list of all
-the same. On
+«Ещё N» and close are ghost, as on sf-alert and sf-toast; in the list of the
+others the same. The list's × is the notice's glyph on a surface, as on
+`sf-alert`: the page ink at 64 (black at 64 in the light theme, white at 64 in
+the dark), the text ink under a pointer. On
 the bar's strong colour the tonal plate's hover and press go towards the bar's
 colour in the light theme, so the white label keeps 4.5:1 and more.
 
@@ -175,8 +203,8 @@ The bar is a region named by `label`; it never takes focus. A bar printed
 with the page is not read out. What appears later is announced: a new danger
 item at once (`role="alert"`), any other new item politely
 (`role="status"`). Every control is a native button or link; when a closed
-item takes the focused control with it, focus goes to the next control of
-the bar. Motion is off under `prefers-reduced-motion: reduce`.
+item takes the focused control with it, focus goes to the next row of the
+open list (from the last row the one before), or to the bar's first control. Motion is off under `prefers-reduced-motion: reduce`.
 
 ## States
 
@@ -192,5 +220,5 @@ the bar. Motion is off under `prefers-reduced-motion: reduce`.
   column on a site bar), to line the text up with the header under it.
 - `--sf-alert-bar-gap` — the space between the bar's text and its actions
   (16).
-- `--sf-alert-bar-list-background-color` — the list of all's surface (it scrolls
+- `--sf-alert-bar-list-background-color` — the open list's surface (it scrolls
   past 352 px, the size step g1).

@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.alert-bar",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "title": "Alert bar",
-  "summary": "A full-width bar above a page or admin header for the conditions that need action now: error, warning, info. One bar for all of them, coloured by the most serious; it shows the most serious, and the others are listed under the bar with «All N». Warning closes for a day, info for good, error only minimizes to a strip. It stores nothing: the host keeps what was closed.",
+  "summary": "A full-width bar above a page or admin header for the conditions that need action now: error, warning, info. One bar for all of them, coloured by the most serious; it shows the most serious, and «N more» lists the others under the bar. Warning closes for a day, info for good, error only minimizes to a strip. It stores nothing: the host keeps what was closed.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -30,7 +30,6 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "smart.badge",
       "smart.button",
       "smart.button-icon",
       "smart.icon",
@@ -246,11 +245,11 @@
     "role": "region",
     "accessible_name": "internal",
     "keyboard": [
-      "Tab reaches the action link, acknowledge, each item's time (its tooltip), the paging arrows, «All N» and close in order",
+      "Tab reaches the action link, acknowledge, each item's time (its tooltip), «N more», close or minimize, then the rows of the open list in order",
       "Enter or Space presses a control; Enter follows the action link",
-      "Escape closes the open list and returns focus to «All N»"
+      "Escape anywhere in the bar or its open list closes the list and returns focus to «N more»"
     ],
-    "focus": "The bar never takes focus. A control that leaves (its item closed or acknowledged) hands focus to the next control of the bar, so focus never falls to the page."
+    "focus": "The bar never takes focus. A control that leaves (its item closed or acknowledged) hands focus on, so focus never falls to the page: from a row of the open list to the row that takes its place (the next, from the last row the one before), with no row left to the bar; from the bar to its first control."
   },
   "presentation": {
     "themes": [
@@ -312,23 +311,23 @@
     "source_artifacts": [
       {
         "path": "src/smart/alert-bar/index.js",
-        "sha256": "dde3cdd0fb91550ac4048c42da45403aca55bde3fee05bace4f723b571b57715"
+        "sha256": "22f6b9227c971ddbd6088a7ef28613e632e9f9a42458fac2cf1ab8765300f3ee"
       },
       {
         "path": "src/smart/alert-bar/js/templates/default.js",
-        "sha256": "4d55bdf83e083b0b403547f08f3cf450843a24f9f1b816c8ec84784e6920e0e8"
+        "sha256": "a277e0e9dc5c26d0ee727d51de4c4ebebcfcc58bc8b31c3037a38d54f98262c8"
       },
       {
         "path": "src/smart/alert-bar/scss/_smart__alert-bar.scss",
-        "sha256": "c9db9b25976e3a0760629e31cb5b03a0d9bd474497324fd5f15af45c5954152b"
+        "sha256": "83dcb79a55365e8e08ff0655b12361c56d657a60ca10929186bf96acb0b51b4e"
       },
       {
         "path": "src/smart/alert-bar/rule.js",
-        "sha256": "b5ee49c69b303a5eda38610daa2b73da6481c73bc91e6fba700c28d19e8d1ddd"
+        "sha256": "041250120255b9ff9834f7619fafda3511e07fb925803c001dfaf9885ccc6ccb"
       },
       {
         "path": "src/smart/alert-bar/docs.md",
-        "sha256": "eb4fa8bb9a84655be2b4561649640a0531d3aacc7890e1eabeb377eb29146ce8"
+        "sha256": "07a7d4deb579771a4361419981315d6f293df445747fd509f7f139029dc01541"
       }
     ],
     "generated_runtime": []

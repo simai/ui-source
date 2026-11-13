@@ -29,22 +29,22 @@
     },
     {
       "id": "p2-one-button-family",
-      "title": "several items: the most serious is shown with no arrows; the action is tonal surface, acknowledge and «Все 5» ghost (C114 (3), AA-15)",
+      "title": "several items: the most serious is shown with no arrows; the action is tonal surface, acknowledge and «Ещё 4» ghost (C114 (3), AA-15)",
       "covers": "settings.items order, one button family",
       "steps": [
         {
-          "check": "(() => { const el = document.querySelector('#many'); const all = el.querySelector('.sf-alert-bar-all'); const action = el.querySelector('.sf-alert-bar-row .sf-alert-bar-action'); const looks = [...el.querySelectorAll('.sf-alert-bar-row sf-button, .sf-alert-bar-row sf-button-icon')].map((one) => one.getAttribute('appearance')); return !el.querySelector('.sf-alert-bar-pager') && all.getAttribute('appearance') === 'ghost' && action.getAttribute('appearance') === 'tonal' && looks.filter((look) => look !== 'ghost').length === 1 && all.textContent.includes('Все 5'); })()"
+          "check": "(() => { const el = document.querySelector('#many'); const all = el.querySelector('.sf-alert-bar-all'); const action = el.querySelector('.sf-alert-bar-row .sf-alert-bar-action'); const looks = [...el.querySelectorAll('.sf-alert-bar-row sf-button, .sf-alert-bar-row sf-button-icon')].map((one) => one.getAttribute('appearance')); return !el.querySelector('.sf-alert-bar-pager') && all.getAttribute('appearance') === 'ghost' && action.getAttribute('appearance') === 'tonal' && looks.filter((look) => look !== 'ghost').length === 1 && all.textContent.includes('Ещё 4'); })()"
         }
       ]
     },
     {
       "id": "p3-list-of-all",
-      "title": "«Все 5» opens the list of all under the bar, each item with its own controls; Escape closes it and returns focus to the toggle",
+      "title": "«Ещё 4» opens the list of the other four under the bar, each row the bar row's composition (level icon, text, action, acknowledge, close; an error row keeps the close's place, no badge); Escape closes it and returns focus to the toggle (NS-12)",
       "covers": "the list, keyboard Escape, accessibility expanded",
       "steps": [
         {
           "user": "click:#many .sf-alert-bar-all button",
-          "check": "(() => { const el = document.querySelector('#many'); const list = el.querySelector('.sf-alert-bar-list'); const toggle = el.querySelector('.sf-alert-bar-all button'); return list && list.querySelectorAll(':scope > li').length === 5 && toggle.getAttribute('aria-expanded') === 'true' && toggle.getAttribute('aria-controls') === list.id && toggle.textContent.includes('Свернуть список') && list.querySelectorAll('.sf-alert-bar-item[data-level=\"error\"] .sf-alert-bar-item-close').length === 0 && list.querySelectorAll('.sf-alert-bar-item[data-level=\"warning\"] .sf-alert-bar-item-close').length === 3; })()"
+          "check": "(() => { const el = document.querySelector('#many'); const list = el.querySelector('.sf-alert-bar-list'); const toggle = el.querySelector('.sf-alert-bar-all button'); return list && list.querySelectorAll(':scope > li').length === 4 && !list.querySelector('.sf-alert-bar-item[data-id=\"disk\"]') && !list.querySelector('sf-badge') && list.querySelectorAll('.sf-alert-bar-item-icon').length === 4 && list.querySelectorAll('.sf-alert-bar-item[data-level=\"error\"] .sf-alert-bar-item-end').length === 1 && toggle.getAttribute('aria-expanded') === 'true' && toggle.getAttribute('aria-controls') === list.id && toggle.textContent.includes('Свернуть список') && list.querySelectorAll('.sf-alert-bar-item[data-level=\"error\"] .sf-alert-bar-item-close').length === 0 && list.querySelectorAll('.sf-alert-bar-item[data-level=\"warning\"] .sf-alert-bar-item-close').length === 3; })()"
         },
         {
           "user": "keyboard:Escape",
@@ -176,7 +176,7 @@
               }
             ]
           },
-          "check": "(() => { const el = document.querySelector('#many'); return el.querySelectorAll('.sf-alert-bar-list > li').length === 4 && !el.querySelector('.sf-alert-bar-item[data-id=\"down\"]'); })()"
+          "check": "(() => { const el = document.querySelector('#many'); return el.querySelectorAll('.sf-alert-bar-list > li').length === 3 && !el.querySelector('.sf-alert-bar-item[data-id=\"down\"]') && document.activeElement === el.querySelector('.sf-alert-bar-list > li .sf-alert-bar-action :is(a, button)') && el.querySelector('.sf-alert-bar-all').textContent.includes('Ещё 3'); })()"
         }
       ]
     },
@@ -304,7 +304,7 @@
     },
     {
       "id": "p11-narrow",
-      "title": "up to 38rem the icon, the text and the close share the first line, the actions go under the text from its start, «Все 3» at the end",
+      "title": "up to 38rem the icon, the text and the close share the first line, the actions go under the text from its start, «Ещё 2» at the end",
       "covers": "responsive container query",
       "steps": [
         {
@@ -318,7 +318,7 @@
       "covers": "lang en",
       "steps": [
         {
-          "check": "(() => { const el = document.querySelector('#en'); return el.querySelector(':scope > .sf-alert-bar').getAttribute('aria-label') === 'Important notices' && el.querySelector('.sf-alert-bar-all').textContent.includes('All 2') && el.querySelector('.sf-alert-bar-close button').getAttribute('aria-label') === 'Hide for a day'; })()"
+          "check": "(() => { const el = document.querySelector('#en'); return el.querySelector(':scope > .sf-alert-bar').getAttribute('aria-label') === 'Important notices' && el.querySelector('.sf-alert-bar-all').textContent.includes('1 more') && el.querySelector('.sf-alert-bar-close button').getAttribute('aria-label') === 'Hide for a day'; })()"
         }
       ]
     }

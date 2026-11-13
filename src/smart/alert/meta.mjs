@@ -41,7 +41,7 @@ const sfAlertMeta = {
         "flat"
       ],
       "default": "default",
-      "description": "How the alert looks: a filled surface, an outline, or flat."
+      "description": "How the alert looks, one of the three notice looks (owner decision C110): default the border and the status fill, outlined the border only, flat the status fill without a border, lifted by the card's shadow."
     },
     "icon": {
       "kind": "custom",

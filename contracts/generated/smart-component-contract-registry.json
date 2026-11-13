@@ -67,7 +67,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/alert/smart.manifest.json",
-      "manifest_sha256": "34c1991ac59f5206c883f379e48e04e51a02502fe6f79bc02f5001309bd375e2",
+      "manifest_sha256": "d3266aa32d56649edfa4d2738d372fe28ef739bcddaf0351075309e819eb4823",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -91,7 +91,6 @@
       "composition": {
         "public_parts": [],
         "uses": [
-          "smart.badge",
           "smart.button",
           "smart.button-icon",
           "smart.icon",
@@ -107,13 +106,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/alert-bar/smart.manifest.json",
-      "manifest_sha256": "cc50b637268a5c19e198ea0e057d6ef36ef4cf54bbfc1a300abba8ce0cbe8d90",
+      "manifest_sha256": "2fa254312ff096726c98c4542f7a0efdfebf558a6362226806c00a8e8cf0a8bc",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A full-width bar above a page or admin header for the conditions that need action now: error, warning, info. One bar for all of them, coloured by the most serious; it shows the most serious, and the others are listed under the bar with «All N». Warning closes for a day, info for good, error only minimizes to a strip. It stores nothing: the host keeps what was closed.",
+      "summary": "A full-width bar above a page or admin header for the conditions that need action now: error, warning, info. One bar for all of them, coloured by the most serious; it shows the most serious, and «N more» lists the others under the bar. Warning closes for a day, info for good, error only minimizes to a strip. It stores nothing: the host keeps what was closed.",
       "tags": [
         "alert",
         "alert-bar",

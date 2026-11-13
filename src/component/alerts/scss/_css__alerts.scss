@@ -353,8 +353,15 @@
   --sf-alert--background-color: var(--sf-alert-background-color, transparent);
 }
 
+/* The three looks of a notice (owner decision C110 as amended 2026-11-12):
+   (а) outlined -- the border only, no shadow; (б) default -- the border and
+   the role's fill, no shadow; (в) flat -- the role's fill without a border,
+   lifted by the raised place's shadow, the card's (--sf-shadow-raised, one of
+   the four shadow places: a soft key and ambient shade in the light theme,
+   the key shade alone in the dark). Only (в) casts a shadow. */
 .sf-alert--flat {
   --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-transparent));
+  box-shadow: var(--sf-shadow-raised);
 }
 
 /* The cross is a service glyph of the notice (owner decision C112, R198,
