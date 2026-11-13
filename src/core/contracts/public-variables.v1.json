@@ -3293,7 +3293,7 @@
         {
           "name": "--sf-contents-current-color",
           "role": "indicator-color",
-          "summary": "The current link, its bar, stroke or underline, and the reading progress.",
+          "summary": "The current section's line -- its bar, stroke or underline -- and the reading progress; since sf-contents 1.6.0 not the text, which is the surface's ink (C95 point 2).",
           "default": "var(--sf-primary)",
           "state": "current",
           "since": "2026-10-30"
@@ -3315,9 +3315,16 @@
         {
           "name": "--sf-contents-indent",
           "role": "indent",
-          "summary": "The step of a deeper level.",
-          "default": "var(--sf-space-1\\/2)",
+          "summary": "The step of a deeper level; by default the list's own inset (H4): 12 at size 1/2, 16 at size 1 (12 compact and on a phone).",
+          "default": "max(var(--sf-space-1\\/2), var(--sf-b2))",
           "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-contents-inset-inline",
+          "role": "padding-inline",
+          "summary": "The text's distance from the line, for the heading and the links (C95 point 1): a host whose divider is the line (line=\"edge\") sets it on its column, and its own parts under the contents read it too. By default the size's value inset (C77): size 1/2 max(--sf-space-1/2, --sf-b2), 12 on the desktop, compact and the phone; size 1 --sf-space-1, 16 (compact and phone 12).",
+          "default": "max(var(--sf-space-1\\/2), var(--sf-b2))",
+          "since": "2026-11-12"
         },
         {
           "name": "--sf-contents-gap",

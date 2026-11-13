@@ -122,6 +122,19 @@ A badge whose text is one character and that draws no icon -- a single-figure
 count -- carries `sf-badge--figure` and stays round in either room. `compact`
 is unchanged.
 
+## On the line of a text
+
+`line="text"` sizes a badge by the text it stands beside, not by a badge size:
+a count or a mark in a contents entry, a tab or a list row. Its height is that
+text's line, its number the text's own size, no block padding; one figure is a
+circle the line high, and it lies on the line with no offset. It inherits the
+size and line height, so it follows the host's size and density by itself
+(owner decision C95 point 6):
+
+```html
+<a href="#contacts">Контакты <sf-badge line="text" status="error" text="2"></sf-badge></a>
+```
+
 ## Run state
 
 `activity` says where a run stands. It is a second axis beside `status`, which

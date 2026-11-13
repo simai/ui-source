@@ -72,8 +72,9 @@ test('Smart Badge declares the run state: its settings, marks, roles and words',
     queued: {role: 'neutral', icon: 'schedule', word: 'Queued'},
   };
 
-  assert.equal(component.version, '1.4.0');
-  assert.equal(manifest.version, '1.4.0');
+  // 1.5.0 adds line="text" (C95 point 6); the run state is unchanged.
+  assert.equal(component.version, '1.5.0');
+  assert.equal(manifest.version, '1.5.0');
   assert.deepEqual(component.settings.activity.values, ['', ...Object.keys(states)]);
   assert.equal(component.settings.activity.default, '');
   assert.equal(component.settings.compact.type, 'boolean');
@@ -159,7 +160,8 @@ test('Badge draws its border inside its size and offers tight side room', async 
   ]);
 
   // 1.5.0: a tonal badge on a translucent fill lays its tone over the place (C43).
-  assert.equal(passport.version, '1.5.1');
+  // 1.6.0: sf-badge--line-text, the line of the text beside it (C95 point 6).
+  assert.equal(passport.version, '1.6.0');
   for (const side of ['block-start', 'block-end', 'inline-start', 'inline-end']) {
     assert.match(css, new RegExp(`padding-${side}: max\\(var\\(--sf-a0\\), calc\\(`), `padding-${side} gives up the border`);
   }

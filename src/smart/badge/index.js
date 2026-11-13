@@ -94,9 +94,11 @@ class SfBadge extends BadgeElement {
   }
 
   // In a row or a table cell the element takes the text line of a form size,
-  // so the row keeps its control height.
+  // so the row keeps its control height; text takes the line of the text it
+  // stands beside, its size and line inherited (C95 point 6).
   get line() {
-    const line = this.getAttribute('line') || '';
+    const line = (this.getAttribute('line') || '').trim().toLowerCase();
+    if (line === 'text') return 'text';
     return line ? fieldSize(line, 'sf-badge line') : '';
   }
 

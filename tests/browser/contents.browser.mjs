@@ -5,7 +5,8 @@
 // 1280 px, layout auto (a column): the h2 and h3 of the target are collected in
 // order, the h3 a level deeper; the first section is current at the top
 // (aria-current="location"); scrolling makes the section under the top of the
-// window current, sends sf-contents-change and writes the hash; at the end of
+// window current and sends sf-contents-change, and leaves the address alone
+// (hash choose, the default since 1.5.0, CT-10); at the end of
 // the page the last section is current; a chosen link scrolls (smoothly, and
 // instantly under reduced motion), focuses its section and marks it; Tab
 // reaches the links; the column stays in view (sticky). Geometry: each row is
@@ -118,7 +119,12 @@ try {
     await tab.evaluate(() => document.fonts.ready);
     await settle(tab);
     const collected = await tab.evaluate(() => ({
-      label: document.querySelector('#toc nav')?.getAttribute('aria-label'),
+      // The nav is named by its heading (1.5.0, CT-09): role heading, level 2.
+      label: (() => {
+        const nav = document.querySelector('#toc nav');
+        const heading = nav && document.getElementById(nav.getAttribute('aria-labelledby'));
+        return heading?.getAttribute('role') === 'heading' && heading.getAttribute('aria-level') === '2' ? heading.textContent.trim() : null;
+      })(),
       navs: document.querySelectorAll('#toc nav').length,
       links: Array.from(document.querySelectorAll('#toc .sf-contents-link')).map((a) => [a.getAttribute('href'), a.textContent.trim(), a.closest('li').dataset.depth]),
       head: document.querySelector('#toc .sf-contents-head')?.getClientRects().length ?? -1,
@@ -182,7 +188,7 @@ try {
     seen.scrolled = scrolled;
     if (scrolled.value !== 'settings' || JSON.stringify(scrolled.marked) !== '["#settings"]') failures.push(`1280: scrolled to Настройки, the current is ${JSON.stringify(scrolled)}`);
     if (!scrolled.changes.length || scrolled.changes.at(-1).id !== 'settings') failures.push(`1280: no sf-contents-change for settings: ${JSON.stringify(scrolled.changes)}`);
-    if (scrolled.hash !== '#settings') failures.push(`1280: the address shows ${scrolled.hash}`);
+    if (scrolled.hash !== '') failures.push(`1280: scrolling wrote the address ${scrolled.hash} (hash choose writes it on choose only)`);
     if (scrolled.sticky !== 16) failures.push(`1280: the column stands at ${scrolled.sticky}px, not the sticky 16px`);
     await tab.evaluate(() => window.scrollTo({top: document.documentElement.scrollHeight, behavior: 'instant'}));
     await settle(tab);
@@ -201,6 +207,8 @@ try {
     const landed = await tab.evaluate(() => Math.round(document.getElementById('cdn').getBoundingClientRect().top));
     seen.chosen = {...chosen, landed, behaviours: await tab.evaluate(() => window.__behaviours)};
     if (chosen.value !== 'cdn' || chosen.focus !== 'cdn') failures.push(`1280: a chosen link: ${JSON.stringify(chosen)}`);
+    const chosenHash = await tab.evaluate(() => location.hash);
+    if (chosenHash !== '#cdn') failures.push(`1280: a chosen link wrote the address ${chosenHash}, not #cdn`);
     if (Math.abs(landed) > 1) failures.push(`1280: the chosen section landed at ${landed}px`);
     if (seen.chosen.behaviours[0] !== 'smooth') failures.push(`1280: the scroll was ${seen.chosen.behaviours[0]}, not smooth`);
     const after = await current(tab);

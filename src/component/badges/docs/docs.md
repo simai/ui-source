@@ -54,6 +54,14 @@ own; class markup adds it. `sf-badge--compact` (the icon alone) is unchanged,
 and so are anchored counts, which have a geometry of their own. Probe:
 `tests/browser/badge-geometry.browser.mjs`.
 
+On the line of a text: `sf-badge--line-text` (`sf-badge line="text"`, owner
+decision C95 point 6, 2026-11-12) sizes a badge by the text it stands beside --
+a count or a mark in a contents entry, a tab or a list row. Its height is that
+text's line (`1lh`), its number the text's own size (inherited), no block
+padding and `--sf-space-1/4` at the sides, so one figure is a circle the line
+high; it stands on the top of the line box, so it lies on the line with no
+offset, and a flex row centres it. The size class is not read for the height.
+
 Disabled: `sf-badge--disabled` gives a badge the disable roles (`--sf-surface-disabled`
 fill, `--sf-on-surface-disabled` text, `--sf-outline-disabled` edge) whatever its look,
 for a badge inside a control that cannot be used now -- a choice card, a menu

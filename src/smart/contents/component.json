@@ -2,7 +2,7 @@
   "$comment": "The source of sf-contents's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.11 and vocabulary 1.1.5; the design target is tab 1 of ui-control prototypes/docara-four.html (owner-approved 2026-10-30).",
   "id": "smart.contents",
   "tag": "sf-contents",
-  "version": "1.4.3",
+  "version": "1.6.2",
   "kind": "leaf",
   "family": "navigation",
   "settings": {
@@ -16,7 +16,7 @@
         "bar"
       ],
       "default": "auto",
-      "summary": "How the contents are laid out (the axis of sf-dropdown and sf-empty-state: view is a reserved name, §3.1). column: a side list with the current section's bar; compact: one button showing the current section and the reading progress, opening the list; rail: short strokes at the edge, the names on hover and focus; bar: a sticky row of anchor tabs, for long forms; auto: column at and above the collapse step, compact below it (a media rule, so the first paint is right without the script)"
+      "summary": "How the contents are laid out (the axis of sf-dropdown and sf-empty-state: view is a reserved name, §3.1). column: a side list with the current section's bar; compact: one button showing the current section and the reading progress, opening the list; rail: short strokes at the edge, the names on hover and focus, and on a tap where nothing hovers; bar: a sticky row of anchor tabs, for long forms, what does not fit in «Ещё (n)» (overflow); auto: column at and above the collapse step, compact below it (a media rule, so the first paint is right without the script). Below md (44rem) the compact view's list opens as a bottom sheet. For an article on a phone, a column with sticky=\"false\" at the top of the text is the contents once, in place"
     },
     "collapse": {
       "type": "enum",
@@ -48,10 +48,18 @@
         "level": {
           "type": "number",
           "optional": true
+        },
+        "count": {
+          "type": "number",
+          "optional": true
+        },
+        "status": {
+          "type": "string",
+          "optional": true
         }
       },
       "x-markup": "the JSON island (data-sf-settings) or the property; without items, links written inside the element (<a href=\"#id\" data-level=\"3\">) are the items, and without those the headings of the target",
-      "summary": "The sections, [{id, text, level?}], when a server knows them: the element then collects nothing and spies on the elements with these ids. level is the heading level (2 when not given)",
+      "summary": "The sections, [{id, text, level?, count?, status?}], when a server knows them: the element then collects nothing and spies on the elements with these ids. level is the heading level (2 when not given). count (a number above 0) and status (error, warning or success) put a badge on the entry's line, sized by its text (sf-badge line=\"text\"), and say it in the entry's name («Контакты: 2 ошибки»); a section marked error is chosen to its first invalid field, not its heading (owner decision C95 point 6, CT-07). Links written inside carry them as data-count and data-status",
       "examples": [
         [
           {
@@ -62,7 +70,9 @@
           {
             "id": "cdn",
             "text": "Через CDN",
-            "level": 3
+            "level": 3,
+            "count": 2,
+            "status": "error"
           }
         ]
       ]
@@ -81,15 +91,56 @@
       "default": true,
       "summary": "Every layout stays in view while the page scrolls (position sticky, below --sf-contents-inset-block-start): the column, the rail, the bar, and the compact button, which takes the page surface as its backing so nothing shows through it"
     },
+    "line": {
+      "type": "enum",
+      "values": [
+        "own",
+        "edge",
+        "none"
+      ],
+      "default": "own",
+      "summary": "Who draws the line the entries stand on, in the column and the bar (owner decision C95 point 1, CT-01): own (the default) -- the element draws its 1 px line; edge -- the host's divider is the line: the element draws none and the current section's 2 px mark lies on its inline-start edge (the bar: its bottom edge), over the divider's pixel, so the host puts it flush against its divider (an inset shadow or a border on the column, the element its first child); none -- no line and no mark, the current section is its ink and weight alone. The text's distance from the line is --sf-contents-inset-inline"
+    },
+    "expand": {
+      "type": "enum",
+      "values": [
+        "all",
+        "current"
+      ],
+      "default": "all",
+      "summary": "Which deeper entries the column and the compact list show (owner decision C95 point 3, CT-11): all (the default) every level; current only the deeper entries of the current branch -- the top-level section being read and the entries under it -- the other branches folded to their top entry, as a long documentation page needs. The rail and the bar show every entry"
+    },
+    "overflow": {
+      "type": "enum",
+      "values": [
+        "more",
+        "scroll"
+      ],
+      "default": "more",
+      "summary": "With layout bar, what the row does with sections that do not fit: more (the default) puts them whole into a trailing «Ещё (n)» menu in their order, the current one always staying in the row, as sf-tabs does (owner decision C54); scroll lets the row scroll sideways without a scrollbar, as before 1.5.0 (journal behaviour-contents-bar-overflow-more)"
+    },
     "hash": {
-      "type": "boolean",
-      "default": true,
-      "summary": "The address shows the current section: a chosen section and the section scrolled to write #id with history.replaceState, so no history entry is added"
+      "type": "enum",
+      "values": [
+        "choose",
+        "scroll",
+        "false"
+      ],
+      "default": "choose",
+      "summary": "When the address shows the current section, with history.replaceState, so no history entry is added: choose (the default) writes #id when a section is chosen; scroll also when the page is scrolled to one; false never. Before 1.5.0 this was a boolean and on meant scroll; true and an empty attribute now read as choose (journal behaviour-contents-hash-choose)"
     },
     "label": {
       "type": "string",
       "default-from": "runtime.label",
       "summary": "The heading of the list and the navigation's accessible name; «На этой странице» / «On this page» in the page language when not set"
+    },
+    "heading-level": {
+      "type": "number",
+      "integer": true,
+      "min": 2,
+      "max": 6,
+      "default": 2,
+      "summary": "The outline level of the list's heading (role heading, aria-level) in the column, where it is shown; the navigation is named by it in every layout"
     }
   },
   "values": {
@@ -154,6 +205,15 @@
     },
     {
       "name": "cl-icon"
+    },
+    {
+      "name": "cl-menu-context",
+      "lazy": true,
+      "$comment": "«Ещё (n)» of the bar opens the standard menu (overflow more), as sf-tabs' does."
+    },
+    {
+      "name": "cl-badge",
+      "$comment": "An entry with a count or a status carries sf-badge line=\"text\" (C95 point 6)."
     }
   ],
   "templates": {
@@ -166,7 +226,7 @@
   "docs": "docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "The element draws a <nav> named by the label: a navigation landmark holding a list of in-page links, the current one aria-current=\"location\". In the compact view the list is opened by an sf-button (aria-expanded, aria-controls) named «label: current section», so its visible text is in its name; Escape closes it and gives focus back. In the rail view the names are visually hidden until hover or focus and stay the links' accessible names. The progress line is aria-hidden.",
+    "$comment": "The element draws a <nav> named by its heading (aria-labelledby; the heading is role heading at heading-level, shown in the column and hidden, still naming the navigation, in the other layouts): a navigation landmark holding a list of in-page links, the current one aria-current=\"location\". In the compact view the list is opened by an sf-button (aria-expanded, aria-controls) named «label: current section», so its visible text is in its name; Escape closes it and gives focus back. In the rail view the names are visually hidden until hover or focus and stay the links' accessible names; where nothing hovers, the first tap on a stroke shows the names (data-open) and a tap on a name goes there. In the bar, «Ещё (n)» is an sf-button (aria-haspopup menu) after the row, opening the standard menu of the sections it holds. With fewer than two sections nothing is drawn (data-empty): a contents of one entry says nothing the page does not. The progress line is aria-hidden. An entry with a count or a status is named with it («Контакты: 2 ошибки»), its badge aria-hidden. Below md the compact list is a bottom sheet over a veil; opening it focuses the current entry, Escape or the veil closes it and gives focus back to the button.",
     "role": "navigation",
     "name": {
       "from": [
@@ -182,7 +242,8 @@
   },
   "host-states": {
     "data-open": "boolean",
-    "data-compact": "boolean"
+    "data-compact": "boolean",
+    "data-empty": "boolean"
   },
   "css-variables": {
     "--sf-contents-color": {
@@ -202,6 +263,10 @@
       "state": "default"
     },
     "--sf-contents-indent": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-contents-inset-inline": {
       "type": "length",
       "state": "default"
     },
@@ -249,7 +314,11 @@
     "version 1.4.0 (2026-11-09): the panel declares a popup place (C16, the background system, owner 2026-11-08) (--sf-surface-place and the theme's roles back); the current entry is primary-container with its ink.",
     "version 1.4.1 (2026-11-10): a patch; nothing in the component changed. Its built sheet is a place (sf-place) and, with C43 (component.badges 1.5.0, tokens.colour 1.8.0), takes back the core role --sf-surface-underlay with one line, --sf-surface-underlay: initial, so a tonal badge inside it lays its tone over its own surface and not over a row further out. Nothing is drawn differently outside a selected row. Settings, values, events and keys unchanged.",
     "version 1.4.2 (2026-11-10): a patch, nothing drawn differently. The panel's last fallback background reads --sf-surface-page, the current name of the page surface (C16), where it read the former --sf-surface-0, which is var() of it everywhere; --sf-contents-background-color and --sf-contents-background still win.",
-    "version 1.4.3 (2026-11-11): a patch, nothing drawn differently. docs.md names the fallbacks of --sf-contents-background-color by their current names, --sf-surface-page and --sf-surface-popup (C16, C20), where it named the former --sf-surface-0 and --sf-elevation-2--surface; the sheet already reads them (1.4.2, 1.3.0)."
+    "version 1.4.3 (2026-11-11): a patch, nothing drawn differently. docs.md names the fallbacks of --sf-contents-background-color by their current names, --sf-surface-page and --sf-surface-popup (C16, C20), where it named the former --sf-surface-0 and --sf-elevation-2--surface; the sheet already reads them (1.4.2, 1.3.0).",
+    "version 1.5.0 (2026-11-12, owner remark R181, study control/research/2026-11-12-contents.md, defects CT-03, CT-04, CT-05, CT-09, CT-10; decision C95 point 5): a minor. CT-03: with fewer than two sections nothing is drawn -- the host says data-empty and the sheet hides the navigation, also in the printed markup (:has, no script); a host that wants its column gone reads sf-contents[data-empty]. CT-04: in the rail, where nothing hovers (a touch screen), the first tap on a stroke shows the names as the hover does (data-open; toggle does the same), and a tap on a name goes there; a tap outside, Escape or a section chosen hides them. CT-05: the bar puts the sections that do not fit into a trailing «Ещё (n)» by default (overflow more, owner decision C54 as sf-tabs), by the row engine core/js/overflow-row.js that sf-tabs' rules were taken into; the current section always stays in the row; overflow=\"scroll\" is the former scrolling row (journal behaviour-contents-bar-overflow-more). CT-09: the heading is role heading at heading-level (default 2), not an aria-hidden span, and names the navigation by aria-labelledby, so it is in a screen reader's list of headings where it is shown. CT-10: hash is an enum, choose by default: the address is written when a section is chosen, no longer on every scroll; scroll is the former behaviour, false off; true and an empty attribute read as choose (journal behaviour-contents-hash-choose). Docara turns hash off and is not affected; a page that relied on the address following the scroll writes hash=\"scroll\".",
+    "version 1.6.0 (2026-11-12, owner decision C95, prototype ui-control prototypes/contents-study.html, defects CT-01, CT-02, CT-06, CT-07, CT-08, CT-11, CT-12): a minor. CT-01: line=\"own|edge|none\" says who draws the line; edge is the host's divider -- no line of the element, the 2 px current mark on its inline-start edge over the divider's pixel (the C30 / R072 e construction of a bordered menu column), so Docara's outline column needs no override of the element's classes; none draws neither. CT-02: --sf-contents-inset-inline (default --sf-space-1/2), the text's distance from the line, public; the heading and the links read it, and a host's own parts under the contents read the same value. CT-06: the current section is the surface's ink at medium weight, the primary colour on the 2 px line only (as sf-menu's column and sf-tabs), in the column and in the compact list, where it was the primary-container fill; --sf-contents-current-color colours the line, the rail's stroke and the reading line, no longer a text (journal behaviour-contents-current-line-only). CT-11: expand=\"all|current\", all by default. CT-07: items carry count and status (error, warning, success): a badge on the entry's line, sf-badge line=\"text\" (sf-badge 1.5.0: the height is the text's line, 16 px beside a compact entry, the number the text's size), the name says it («Контакты: 2 ошибки», words count-* and status-*), and an entry marked error goes to the first invalid field of its section ([invalid], aria-invalid, :user-invalid) and focuses it. CT-08: below md (44rem) the compact list is a bottom sheet (the screen's width up to 44rem, rounded top, the modal shadow, a veil that closes it, the safe area), rows the phone ladder's and at least the touch target under a finger; opening the list focuses the current entry's link. CT-12: the reading line lies on the compact button's own bottom edge, inside the border, inset by the corner radius, and the sticky plate has no padding below it: the element ends where the button does. Long names wrap in the rail's chips too (within --sf-f2). The default heading «На этой странице» is unchanged (C95 point 5).",
+    "version 1.6.1 (2026-11-12, owner decision C77, R191 HS-12): a patch. The text of the column and the rows of the open compact list stand at the size's value inset, the one rule of fields and lists: size 1/2 is max(--sf-space-1/2, --sf-b2), 12 on the desktop, in a compact region and on a phone, where it was --sf-space-1/2, 8; size 1 is --sf-space-1, 16 (12 compact and on a phone), where the column took 12 and the open list --sf-ui-1--space-x. --sf-contents-inset-inline defaults to it; a value a host sets is unchanged. The bar and the compact button keep their button-like side space (C76).",
+    "version 1.6.2 (2026-11-12, owner decision C109 point 2, NI-8): a patch. A deeper level steps in by the list's own inset (H4 of the horizontal-spacing standard), --sf-contents--value-inset: 12 at size 1/2 on the desktop, in a compact region and on a phone, where it was --sf-space-1/2 (8 in compact and on a phone, under the 12 inset); 16 at size 1 (12 compact and on a phone). --sf-contents-indent still sets it."
   ],
   "x-registry": {
     "capabilities": [
