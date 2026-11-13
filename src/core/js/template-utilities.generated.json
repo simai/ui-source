@@ -47,7 +47,6 @@
     "sr-only/default"
   ],
   "cl-breadcrumbs": [
-    "align-items/default",
     "display/default"
   ],
   "cl-button": [

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-breadcrumbs's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/breadcrumbs (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.breadcrumbs",
   "tag": "sf-breadcrumbs",
-  "version": "1.1.7",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "navigation",
   "settings": {
@@ -58,9 +58,28 @@
         "hidden-items": {
           "type": "list",
           "optional": true
+        },
+        "siblings": {
+          "type": "list",
+          "optional": true,
+          "summary": "The crumb's sibling sections ({label, href, current, value}), offered as a menu from a button after the crumb when the host says siblings."
         }
       },
       "x-markup": "the attribute takes the list as JSON or the \"label::flag,key=value|label\" form; without it the sf-breadcrumbs-item children are the list"
+    },
+    "current": {
+      "type": "enum",
+      "values": [
+        "last",
+        "none"
+      ],
+      "default": "last",
+      "summary": "Which crumb is the page. last: the crumb that says current, else the last crumb, unless it says current: false. none: a trail of parents above the page's heading, every crumb with an address a link (owner decision C93 item 4). In sf-header-page's path slot the default is none."
+    },
+    "siblings": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Offer a crumb's siblings (items[].siblings) as a menu from a button after it (owner decision C93 item 3). Off by default."
     },
     "separator-icon": {
       "type": "icon",
@@ -101,13 +120,15 @@
     },
     "expand-on-ellipsis": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Whether a press on «…» opens its hidden crumbs as a menu beside it (C93 item 1). false: the page handles sf-breadcrumbs-press itself."
     },
     "max-items": {
       "type": "number",
       "integer": true,
       "min": 0,
-      "default": 4
+      "default": 0,
+      "summary": "A cap on the crumbs shown (3 or more): the start, «…» and the end. 0, the default: no cap; the trail folds only when it has no room for one line."
     }
   },
   "values": {},
@@ -137,6 +158,10 @@
     },
     {
       "name": "cl-icon"
+    },
+    {
+      "name": "cl-menu-context",
+      "lazy": true
     }
   ],
   "templates": {
@@ -212,7 +237,7 @@
       }
     ]
   },
-  "x-summary": "Shows the current page's place in a hierarchy as a trail of native links built from items, the items attribute or sf-breadcrumbs-item children. A long trail collapses its middle into an ellipsis button (max-items, default 4) that expands in place.",
+  "x-summary": "Shows where the page is in a hierarchy as a list of native links built from items, the items attribute or sf-breadcrumbs-item children. The last crumb is the page unless the items say otherwise or current is none (a trail of parents). A trail that has no room for one line folds its middle into a «…» button whose menu lists the hidden crumbs; on the phone it reads «… › parent › page». Long ancestor names are cut with an ellipsis and a tooltip; a crumb can offer its siblings as a menu (siblings).",
   "x-source": {
     "package": "framework",
     "folder": "breadcrumbs",
@@ -246,7 +271,8 @@
     "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.1.2: the scope (§7.7) opens with every placing, also while the trail waits for its items; a trail placed again before its items came kept the scope its removal ended (gate 36).",
     "version 1.1.3: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate).",
-    "version 1.1.5: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+    "version 1.1.5: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
+    "version 1.2.0 (R177, owner decision C93; defects BC-01..BC-11 of control/research/2026-11-12-breadcrumbs.md): BC-01 the page is decided over the whole trail: a crumb's current: false is kept, a one-crumb trail can be a link, and the new setting current=\"none\" (default \"last\"; \"none\" in sf-header-page's path) makes a trail of parents with no page. BC-02 opening «…» moves focus to the first crumb it revealed. BC-03 «…» carries aria-expanded=\"false\" and is a square of the 1/3 control height (aria-haspopup comes with the menu of C93 item 1, not with an in-place opening). BC-04 the trail's text is one step under the body on the desktop ladder (14/20) and the body step on the phone ladder and in compact density, never 12; a crumb one presses is 1/3 control height tall (28 desktop, 24 phone and compact). BC-05 a crumb with neither href nor value is text, not a focusable button. BC-06 the trail folds by room: while it takes more than one line one more crumb goes behind «…» (first the middle, then the first crumb: «… › parent › page»); max-items defaults to 0 and stays a cap. BC-07 the class sheet draws the row and the crumbs' boxes itself and the template carries no utility class, so the first paint needs the breadcrumbs and icon sheets and core.css. BC-08 the focus ring has --sf-radius--ui. BC-09 the trail is nav > ol > li, one crumb per entry with its separator. BC-10 no English literal for the name. BC-11 one collapse arithmetic (component/breadcrumbs/js/_trail.js) for this element and the class runtime. Owner decision C93 (all six points, 2026-11-12): (1) «…» opens its hidden crumbs as an sf-menu-context menu (aria-haspopup=\"menu\", the menu owns aria-expanded and gives focus back to «…»), the trail folds only by room; (2) on the phone ladder the trail starts at «… › parent › page»; (3) siblings (boolean, off) with items[].siblings: a button after the crumb opens them as a menu, the current one checked; (4) current=\"none\"; (5) links on-surface-variant, hover and press on-surface with an underline, the page on-surface medium; (6) an ancestor's name is cut at --sf-f2 (12rem) with an ellipsis and its whole text as the tooltip (title), the page wraps. The in-place opening stays as the element's expandEllipsis() only."
   ],
   "x-registry": {
     "ownership": {
@@ -313,7 +339,7 @@
         "Enter on links",
         "Enter or Space on the ellipsis button"
       ],
-      "focus": "Native links and the ellipsis button use keyboard-only focus-visible; the current page does not enter the tab order."
+      "focus": "Native links and the ellipsis button use keyboard-only focus-visible; the current page and text crumbs do not enter the tab order. Opening the ellipsis moves focus to the first crumb it revealed."
     },
     "alias-events": {
       "sf-breadcrumb-click": {
@@ -364,7 +390,7 @@
         }
       },
       "getDisplayItems": {
-        "summary": "Returns the items as they are shown: when there are more than max-items (at least 3) and the ellipsis is not expanded, the middle is replaced by one ellipsis item holding the hidden ones; every item is reindexed and only the last may be current.",
+        "summary": "Returns the items as they are shown: unless the ellipsis is open, the crumbs that fold -- by the max-items cap and by room -- are replaced by one ellipsis item holding them; every item is reindexed and at most one is current.",
         "arguments": [
           {
             "name": "items",

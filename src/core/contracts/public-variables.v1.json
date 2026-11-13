@@ -1892,15 +1892,15 @@
         {
           "name": "--sf-breadcrumbs-link-color",
           "role": "color",
-          "summary": "A crumb that links to its page, at rest.",
-          "default": "var(--sf-primary)",
+          "summary": "A crumb that links to its page, at rest (grey, owner decision C93 item 5).",
+          "default": "var(--sf-on-surface-variant)",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-breadcrumbs-link-hover-color",
           "role": "hover-color",
-          "summary": "A linked crumb under the pointer.",
-          "default": "var(--sf-primary-hover)",
+          "summary": "A linked crumb under the pointer or pressed.",
+          "default": "var(--sf-on-surface)",
           "since": "2026-10-27"
         },
         {

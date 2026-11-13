@@ -242,7 +242,8 @@
         "uses": [
           "component.breadcrumbs",
           "component.icons",
-          "smart.icon"
+          "smart.icon",
+          "smart.menu-context"
         ]
       },
       "contract_schema": {
@@ -254,13 +255,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/breadcrumbs/smart.manifest.json",
-      "manifest_sha256": "a1d6e8f5369c99d213783e6aa64ac5670cac9df71b5382456c70806d253e9f53",
+      "manifest_sha256": "4cb451c92af55a98e184e9dfa0efaa32a879eddd3430dc0f00d12171db762959",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "Shows the current page's place in a hierarchy as a trail of native links built from items, the items attribute or sf-breadcrumbs-item children. A long trail collapses its middle into an ellipsis button (max-items, default 4) that expands in place.",
+      "summary": "Shows where the page is in a hierarchy as a list of native links built from items, the items attribute or sf-breadcrumbs-item children. The last crumb is the page unless the items say otherwise or current is none (a trail of parents). A trail that has no room for one line folds its middle into a «…» button whose menu lists the hidden crumbs; on the phone it reads «… › parent › page». Long ancestor names are cut with an ellipsis and a tooltip; a crumb can offer its siblings as a menu (siblings).",
       "tags": [
         "breadcrumbs"
       ],

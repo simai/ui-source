@@ -3,11 +3,12 @@
   "schema_version": 1,
   "id": "component.breadcrumbs",
   "kind": "component",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/breadcrumbs/docs/docs.md",
     "src/component/breadcrumbs/index.js",
+    "src/component/breadcrumbs/js/_trail.js",
     "src/component/breadcrumbs/js/breadcrumbs.js",
     "src/component/breadcrumbs/rule.js",
     "src/component/breadcrumbs/scss/_css__breadcrumbs.scss",
@@ -15,7 +16,7 @@
     "src/component/breadcrumbs/scss/_var__breadcrumbs.scss",
     "src/component/breadcrumbs/scss/index.scss"
   ],
-  "content_sha256": "d9adde380930a0eb7582c52f93ee54c073ab22d7f5294e3e0226558313da0fa6",
+  "content_sha256": "c7d29d66ad72a5cf3e8514eab6c831237a6f17de4fa07a631a718ceb887c5638",
   "dependencies": [
     {
       "id": "core.runtime",
@@ -28,6 +29,10 @@
     {
       "id": "tokens.colour",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.3.0"
     },
     {
       "id": "tokens.space",
