@@ -77,6 +77,44 @@ sf-empty-state {
   line-height: var(--sf-text-large--height);
 }
 
+/* The decorative level (owner decision C91, level 2; C65 round 2, R160): one
+   circle of primary tone 50 behind the icon, 12 in the light theme and 20 in
+   the dark one (the fill steps), straight to nothing at twice the icon box,
+   centred on it, never reaching under the title. Only the state of a whole
+   page (size 2, a first run): in a list, a table or a card an empty state is
+   not an event (R160). Only no-data and nothing-found: no-access and error are
+   statuses, a colour and an icon. Off unless the expressive
+   setting or data-sf-style="expressive" above it says so; the nearest
+   data-sf-style wins, strict being the default. The switch is a number the
+   image's size multiplies, so off is the same box with no paint. */
+:where([data-sf-style="expressive"]) {
+  --sf-style--expressive: 1;
+}
+
+:where([data-sf-style="strict"]) {
+  --sf-style--expressive: 0;
+}
+
+.sf-empty-state.sf-empty-state--expressive {
+  --sf-style--expressive: 1;
+}
+
+.sf-empty-state.sf-empty-state--size-2:is(.sf-empty-state--no-data, .sf-empty-state--nothing-found):not(.sf-empty-state--inline) {
+  --sf-empty-state--icon-box: var(--sf-ui-3--control-height);
+  --sf-empty-state--spot-y: calc(var(--sf-empty-state-padding-block, var(--sf-space-2)) + var(--sf-empty-state--icon-box) / 2);
+  background-image: radial-gradient(circle var(--sf-empty-state--icon-box) at 50% var(--sf-empty-state--spot-y) in oklab,
+    light-dark(var(--sf-primary-50--alfa-12), var(--sf-primary-50--alfa-20)) 0%,
+    transparent 100%);
+  background-repeat: no-repeat;
+  background-size: calc(100% * var(--sf-style--expressive, 0)) calc(100% * var(--sf-style--expressive, 0));
+}
+
+@media (forced-colors: active) {
+  .sf-empty-state {
+    background-image: none;
+  }
+}
+
 /* The inline form: one line at a list row's height and inset, so it sits in
    a menu, a dropdown or a search without a frame of its own. The icon is the
    text's size, in the muted icon role; the words are muted ink. */

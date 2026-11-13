@@ -36,7 +36,7 @@ export function renderEmptyStateTemplate(context) {
   const actions = context.resolvedActions ?? [];
   const slotted = context.component?.hasSlotContent?.('actions') ? context.component.getSlotContent('actions') : nothing;
   return html`
-    <div class=${['sf-empty-state', `sf-empty-state--size-${size}`, `sf-empty-state--${context.kind}`, context.rootClass].filter(Boolean).join(' ')}
+    <div class=${['sf-empty-state', `sf-empty-state--size-${size}`, `sf-empty-state--${context.kind}`, context.expressive ? 'sf-empty-state--expressive' : '', context.rootClass].filter(Boolean).join(' ')}
          role=${context.liveRole ?? nothing}>
       <span class=${`sf-featured-icon sf-featured-icon--size-${ICON_SIZE[context.size] ?? '2'} sf-featured-icon--${context.tone} sf-featured-icon--soft sf-empty-state-icon`}
             aria-hidden="true"><i class="sf-icon">${context.shownIcon}</i></span>

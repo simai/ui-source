@@ -289,6 +289,7 @@ import '../../utility/gap/md/rule.js';
 import '../../utility/gap/sm/rule.js';
 import '../../utility/gap/xl/rule.js';
 import '../../utility/gap/xxl/rule.js';
+import '../../utility/gradient/default/rule.js';
 import '../../utility/gradient-color/default/rule.js';
 import '../../utility/gradient-stops/default/rule.js';
 import '../../utility/gradient-type/default/rule.js';

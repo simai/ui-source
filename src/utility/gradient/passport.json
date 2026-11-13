@@ -1,0 +1,35 @@
+{
+  "schema": "simai.framework.unit-passport",
+  "schema_version": 1,
+  "id": "utility.gradient",
+  "kind": "utility",
+  "version": "1.0.0",
+  "owner": "simai/ui-source",
+  "files": [
+    "src/utility/gradient/default/index.js",
+    "src/utility/gradient/default/index.scss",
+    "src/utility/gradient/default/rule.js",
+    "src/utility/gradient/default/scss/_sf_css__gradient_kind.scss",
+    "src/utility/gradient/default/scss/_sf_var__gradient_kind.scss",
+    "src/utility/gradient/default/scss/index.scss"
+  ],
+  "content_sha256": "aaf3a3fc86e9e4a9abdefa37775deff520f79f5fa072b6098701627cc89e7535",
+  "dependencies": [
+    {
+      "id": "tokens.colour",
+      "range": "^1.12.0"
+    },
+    {
+      "id": "tokens.opacity",
+      "range": "^1.0.1"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.4"
+    },
+    {
+      "id": "utility.gradient-type",
+      "range": "^1.1.0"
+    }
+  ]
+}

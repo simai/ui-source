@@ -375,7 +375,21 @@ class ScrollbarController {
       ? this.thumb.offsetWidth
       : this.thumb.offsetHeight;
     const maxThumbOffset = Math.max(0, viewportSize - thumbSize);
-    const ratio = maxScroll ? this.getLogicalScrollPosition(maxScroll) / maxScroll : 0;
+    const position = maxScroll ? this.getLogicalScrollPosition(maxScroll) : 0;
+    const ratio = maxScroll ? position / maxScroll : 0;
+
+    // Where the content goes on past the edge (owner decision C91, level 1):
+    // the sheet fades that edge out, so an area says "there is more" without
+    // its bar. start, end or both, in the logical direction; none at rest
+    // when everything fits.
+    const before = hasOverflow && position > 1;
+    const after = hasOverflow && position < maxScroll - 1;
+    const more = before && after ? 'both' : before ? 'start' : after ? 'end' : '';
+    if (more) {
+      if (this.root.dataset.sfScrollbarMore !== more) this.root.dataset.sfScrollbarMore = more;
+    } else if ('sfScrollbarMore' in this.root.dataset) {
+      delete this.root.dataset.sfScrollbarMore;
+    }
     const physicalOffset = Math.round(maxThumbOffset * ratio) *
       (this.isHorizontalRtl() ? -1 : 1);
 
@@ -425,6 +439,7 @@ class ScrollbarController {
     delete this.root.dataset.sfScrollbarState;
     delete this.root.dataset.sfScrollbarDragging;
     delete this.root.dataset.sfScrollbarOverflow;
+    delete this.root.dataset.sfScrollbarMore;
     delete this.root.dataset.sfScrollbarReady;
   }
 }

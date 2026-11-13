@@ -7,7 +7,7 @@ import {html, nothing} from 'lit';
 // the admin pages have always titled themselves at.
 export function renderPageHeaderTemplate(context) {
   const {component, heading, count, level, star, text, hostSlot, hasHostSlot, rootClass} = context;
-  const classes = ['sf-page-header', 'flex', 'flex-col', 'min-w-0', rootClass].filter(Boolean).join(' ');
+  const classes = ['sf-page-header', 'flex', 'flex-col', 'min-w-0', context.expressive ? 'sf-page-header--expressive' : '', rootClass].filter(Boolean).join(' ');
   const on = star === true;
   return html`<header class=${classes} style=${context.rootStyle || nothing}>
     ${hasHostSlot('path') ? html`<div class="sf-page-header-path flex items-cross-center min-w-0">${hostSlot('path')}</div>` : nothing}
