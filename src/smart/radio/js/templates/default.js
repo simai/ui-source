@@ -1,9 +1,6 @@
 import { html, nothing } from 'lit';
 import { keepHelpOutOfLabel } from '../../../../component/checkable-text-helper';
-
-// The help mark keeps the label's line: 1/3 beside the lines of sizes 1/2 and
-// 1, 1/2 beside size 2 (the mark adds no height of its own).
-const HELP_SIZE = { '1/2': '1/3', 1: '1/3', 2: '1/2' };
+import { checkableClasses, renderCheckableHelp, renderCheckableRow, renderCheckableText } from '../../../helpers/checkable-row';
 
 export function renderRadioTemplate(context) {
   const { size, label, description, help, checked, disabled, controlName, value, invalid, innerForm } =
@@ -33,18 +30,12 @@ export function renderRadioTemplate(context) {
         ? html`<span class="sf-radio-button-description">${description}</span>`
         : '';
 
-  const helpContent =
-    context.component?.hasSlotContent?.('help')
-      ? context.component.getSlotContent('help')
-      // help is the explanation: a «?» button after the label text that opens
-      // it (sf-help-mark), outside the control's activation.
-      : help
-        ? html`<sf-help-mark class="sf-radio-button-help" size=${HELP_SIZE[size] || '1/3'} text=${help} label=${context.helpLabel || nothing}></sf-help-mark>`
-        : '';
+  const helpContent = renderCheckableHelp(context, 'sf-radio-button-help');
 
-  const showContainer = !!(labelContent || descriptionContent || helpContent);
+  const showContainer = !!(labelContent || descriptionContent);
+  rootClasses.push(...checkableClasses(size, showContainer));
 
-  return html`
+  const control = html`
     <label class=${rootClasses.filter(Boolean).join(' ')} style=${context.rootStyle || nothing} @click=${keepHelpOutOfLabel}>
       <span class="sf-radio-button-box transition flex items-cross-center content-main-center">
         <input
@@ -58,21 +49,8 @@ export function renderRadioTemplate(context) {
         <span class="sf-radio-button-mark" aria-hidden="true"></span>
       </span>
 
-      ${showContainer
-        ? html`
-            <span class="sf-radio-button-container flex flex-col">
-              ${labelContent || helpContent
-                ? html`
-                    <span class="sf-radio-button-top flex">
-                      ${labelContent}
-                      ${helpContent}
-                    </span>
-                  `
-                : ''}
-              ${descriptionContent}
-            </span>
-          `
-        : ''}
+      ${renderCheckableText({ column: 'sf-radio-button-container', top: 'sf-radio-button-top' }, labelContent, descriptionContent)}
     </label>
   `;
+  return renderCheckableRow(size, control, helpContent);
 }

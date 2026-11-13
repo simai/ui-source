@@ -126,3 +126,14 @@ export const RADIO_TEXT_PARTS = Object.freeze({
   column: '.sf-radio-button-container',
   description: '.sf-radio-button-description',
 });
+
+// sf-switch reads the same binding since C63 W9 (it had its own copy in
+// component/switch/js/_switch.js, written first, the same algorithm).
+export const SWITCH_TEXT_PARTS = Object.freeze({
+  kind: 'sf-switch',
+  classKind: 'sf-switch',
+  text: '.sf-switch-container',
+  label: '.sf-switch-top',
+  column: '.sf-switch-container-wrap',
+  description: '.sf-switch-description',
+});

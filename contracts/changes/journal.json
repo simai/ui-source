@@ -11557,6 +11557,43 @@
       "source": "src/smart/{checkbox,radio,switch}/js/templates/default.js, src/component/checkable-text-helper.js keepHelpOutOfLabel"
     },
     {
+      "id": "behaviour-choice-row-step",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-checkbox 1.2.0, sf-radio 1.2.0 and sf-switch 1.4.0 (owner decisions C59, C63; audit 2026-11-11 W1, W5, W6, W9): the hit area is the control and its text, not the empty rest of the row; the help mark is the label's sibling; a control with text is a row of its step, (control height - line) / 2 above and below (40 at size 1, 60 with a description, 32 compact, max(step, 44) under a coarse pointer); the label is regular in all three. A column of choice controls now keeps one pitch without a gap; a page that spaced them with a gap of its own grows by the row padding.",
+      "items": [
+        {
+          "component": "sf-checkbox",
+          "attribute": "label",
+          "from": "a press anywhere in the row toggled the control (the <label> filled the row and held the help); the row was one line tall (24 at size 1); the label was medium",
+          "to": "the control and its text are the target (the <label> hugs its content, the help mark stands beside it); a row with text is its step tall: 40, 60 with a description line, 32 compact, the touch target under a coarse pointer; the label is regular"
+        },
+        {
+          "component": "sf-radio",
+          "attribute": "label",
+          "from": "a press anywhere in the row toggled the control (the <label> filled the row and held the help); the row was one line tall (24 at size 1); the label was medium",
+          "to": "the control and its text are the target (the <label> hugs its content, the help mark stands beside it); a row with text is its step tall: 40, 60 with a description line, 32 compact, the touch target under a coarse pointer; the label is regular"
+        },
+        {
+          "component": "sf-switch",
+          "attribute": "label",
+          "from": "a press anywhere in the row toggled the control (the <label> filled the row and held the help); the row was one line tall (24 at size 1)",
+          "to": "the control and its text are the target (the <label> hugs its content, the help mark stands beside it); a row with text is its step tall: 40, 60 with a description line, 32 compact, the touch target under a coarse pointer"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Drop a gap or margin a page put between choice controls in a column: the rows carry their own padding. A page that made a whole row the target wraps the control in its own row element (a list row, a menu row) as sf-list-item does. A labelled control inline beside 40 px controls (a toolbar) now has their height; beside plain text it is its step tall, not its line. A control with no label and no description stays the box.",
+      "examples": {
+        "before": "<div class=\"flex flex-col gap-2\"><sf-checkbox label=\"Новости\"></sf-checkbox><sf-checkbox label=\"Акции\"></sf-checkbox></div>",
+        "after": "<div class=\"flex flex-col\"><sf-checkbox label=\"Новости\"></sf-checkbox><sf-checkbox label=\"Акции\"></sf-checkbox></div>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/helpers/checkable-row.js, src/smart/helpers/checkable-row.css, src/smart/{checkbox,radio,switch}/js/templates/default.js, src/component/{checkbox,radio,switch}/scss; ui-control control/docs-review/decisions.md C59, C63"
+    },
+    {
       "id": "behaviour-dropdown-form-field",
       "recorded_on": "2026-11-11",
       "stage": "compat",

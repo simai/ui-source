@@ -11,8 +11,12 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 for (const kind of ['checkbox', 'radio', 'switch']) {
   test(`${kind}: the help setting draws sf-help-mark, and the label keeps presses from the help`, async () => {
     const source = await read(`src/smart/${kind}/js/templates/default.js`);
-    assert.match(source, /<sf-help-mark class="[^"]+" size=\$\{HELP_SIZE\[size\] \|\| '1\/3'\} text=\$\{help\}/);
-    assert.match(source, /const HELP_SIZE = \{ ?'1\/2': '1\/3', 1: '1\/3', 2: '1\/2' ?\}/);
+    // The help, the text column and the row come from the shared base (C63 W9).
+    const base = await read('src/smart/helpers/checkable-row.js');
+    assert.match(base, /<sf-help-mark class=\$\{className\} size=\$\{CHECKABLE_HELP_SIZE\[context\.size\] \|\| '1\/3'\} text=\$\{context\.help\}/);
+    assert.match(base, /CHECKABLE_HELP_SIZE = Object\.freeze\(\{'1\/2': '1\/3', 1: '1\/3', 2: '1\/2'\}\)/);
+    assert.match(source, /renderCheckableHelp\(context, 'sf-[a-z-]+-help'\)/);
+    assert.match(source, /return renderCheckableRow\(size, control, helpContent\);/);
     assert.match(source, /@click=\$\{keepHelpOutOfLabel\}/);
     assert.doesNotMatch(source, /aria-hidden="true"(?: icon="\$\{help\}"|>\$\{help\})/);
     const manifest = JSON.parse(await read(`src/smart/${kind}/component.json`));

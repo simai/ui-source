@@ -79,7 +79,6 @@
   "cl-checkbox": [
     "cursor/default",
     "display/default",
-    "flex-direction/default",
     "transition-property/default"
   ],
   "cl-confirm": [
@@ -361,7 +360,6 @@
   "cl-radio": [
     "align-items/default",
     "display/default",
-    "flex-direction/default",
     "justify-content/default",
     "transition-property/default"
   ],
@@ -411,7 +409,6 @@
   "cl-switch": [
     "align-items/default",
     "display/default",
-    "flex-direction/default",
     "justify-content/default",
     "transition-property/default"
   ],

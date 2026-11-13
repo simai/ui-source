@@ -1,0 +1,170 @@
+@layer sf.components {
+  /* The shared row of sf-checkbox, sf-radio and sf-switch (checkable-row.js;
+     audit 2026-11-11 W1, W5, W9; owner decisions C59, C63).
+
+     Only what the Smart elements draw reads these rules (.sf-checkable on the
+     element's own <label>, .sf-checkable-row around it and its help). The
+     class markup that list rows, menus, choice lists and table rows draw
+     (sf-list-item, sf-input-choice, the C49 rows) carries no .sf-checkable: its
+     row is the target as a whole and keeps its own geometry. */
+
+  /* The line and the row step of each size. */
+  .sf-checkable--size-1\/2 {
+    --sf-checkable--line: var(--sf-text-height-1\/2);
+    --sf-checkable--step: var(--sf-ui-1\/2--control-height);
+  }
+
+  .sf-checkable--size-1 {
+    --sf-checkable--line: var(--sf-text-height-1);
+    --sf-checkable--step: var(--sf-ui-1--control-height);
+  }
+
+  .sf-checkable--size-2 {
+    --sf-checkable--line: var(--sf-text-height-2);
+    --sf-checkable--step: var(--sf-ui-2--control-height);
+  }
+
+  /* W5: a control with text is a row of its step: (control height - line) / 2
+     above and below, no gap of its own, so a column of them keeps one pitch --
+     40 at size 1, 60 with a description line, 32 in compact; under a coarse
+     pointer the step is the touch target, max(step, --sf-d1), as the C49 rows
+     are. A bare box (no text: a table cell, a toolbar) stays the box. */
+  .sf-checkable,
+  .sf-checkable-row {
+    --sf-checkable--pad: calc((var(--sf-checkable--step) - var(--sf-checkable--line)) / 2);
+  }
+
+  .sf-checkable.sf-checkable--text {
+    padding-block: var(--sf-checkable--pad);
+  }
+
+  /* W1: the hit area is the control and its text, with the row's padding: the
+     label hugs its content, a press on the empty rest of the row does
+     nothing. */
+  .sf-checkable {
+    inline-size: fit-content;
+    max-inline-size: 100%;
+  }
+
+  /* position="end" (sf-checkbox, W4): the box stands at the row's end, so the
+     row is the control and keeps its full width. */
+  .sf-checkable:has(> .sf-checkbox-container + .sf-checkbox-box:last-child) {
+    inline-size: auto;
+  }
+
+  /* With help: the <label> and the mark beside it, outside the label (C59).
+     The label gives way before the mark wraps, so the mark never stands on a
+     line alone; it is --sf-space-1/4 after the text, in a box one line tall
+     at the label's first line, so it is centred on it. */
+  .sf-checkable-row {
+    max-inline-size: 100%;
+  }
+
+  .sf-checkable-row > .sf-checkable {
+    flex: 0 1 auto;
+    min-inline-size: 0;
+  }
+
+  .sf-checkable-row > .sf-checkable:has(> .sf-checkbox-container + .sf-checkbox-box:last-child) {
+    flex: 1 1 auto;
+  }
+
+  .sf-checkable-row > .sf-checkable-help {
+    display: flex;
+    flex: none;
+    align-items: center;
+    block-size: var(--sf-checkable--line);
+    margin-block-start: var(--sf-checkable--pad);
+    margin-inline-start: var(--sf-space-1\/4);
+  }
+
+  .sf-checkable-row:has(> .sf-checkable:not(.sf-checkable--text)) > .sf-checkable-help {
+    margin-block-start: 0;
+  }
+
+  /* With help and text, the «?» stands right after the name (C59, intent
+     acceptance 2026-11-12): beside the name's line when a description is
+     longer than the name, and before the box's space with position="end".
+     The row is a grid; the <label> and its text column hand their parts to it
+     (display: contents), so the help, a sibling of the label (C59), can sit
+     between the name and the end. The label is still the target: its
+     ::before covers the label's place in the row with the row's padding, so a
+     press on the control, the name or the description toggles and the empty
+     rest of the row does not (W1); with position="end" the label's place is
+     the whole row (W4). The «?» is drawn above it, outside the label. */
+  .sf-checkable-row:has(> .sf-checkable--text) {
+    display: grid;
+    grid-template-columns: auto minmax(0, auto) auto 1fr;
+    grid-template-areas:
+      "box name help ."
+      ". desc desc desc";
+    align-items: start;
+    inline-size: fit-content;
+    padding-block: var(--sf-checkable--pad);
+  }
+
+  .sf-checkable-row > .sf-checkable--text,
+  .sf-checkable-row > .sf-checkable--text > :is(.sf-checkbox-container, .sf-radio-button-container, .sf-switch-container-wrap) {
+    display: contents;
+  }
+
+  .sf-checkable-row > .sf-checkable--text::before {
+    content: "";
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+    align-self: stretch;
+    margin-block: calc(-1 * var(--sf-checkable--pad));
+  }
+
+  .sf-checkable-row > .sf-checkable--text > :is(.sf-checkbox-box, .sf-radio-button-box, .sf-switch-toggler) {
+    grid-area: box;
+  }
+
+  .sf-checkable-row > .sf-checkable--text > .sf-checkbox-box:first-child {
+    margin-inline-end: var(--sf-checkbox--gap);
+  }
+
+  .sf-checkable-row > .sf-checkable--text > .sf-radio-button-box {
+    margin-inline-end: var(--sf-radio-button--gap);
+  }
+
+  .sf-checkable-row > .sf-checkable--text > .sf-switch-toggler {
+    margin-inline-end: var(--sf-switch--gap);
+  }
+
+  .sf-checkable-row > .sf-checkable--text > * > :is(.sf-checkbox-top, .sf-radio-button-top, .sf-switch-top) {
+    grid-area: name;
+  }
+
+  .sf-checkable-row > .sf-checkable--text > * > :is(.sf-checkbox-description, .sf-radio-button-description, .sf-switch-description) {
+    grid-area: desc;
+  }
+
+  .sf-checkable-row:has(> .sf-checkable--text) > .sf-checkable-help {
+    grid-area: help;
+    margin-block-start: 0;
+  }
+
+  /* position="end" (sf-checkbox): the name, the «?», the free space, then the
+     box at the row's end; the description under the name. */
+  .sf-checkable-row:has(> .sf-checkable--text > .sf-checkbox-container + .sf-checkbox-box:last-child) {
+    grid-template-columns: minmax(0, auto) auto 1fr auto;
+    grid-template-areas:
+      "name help . box"
+      "desc desc desc .";
+    inline-size: auto;
+  }
+
+  .sf-checkable-row > .sf-checkable--text > .sf-checkbox-container + .sf-checkbox-box:last-child {
+    margin-inline-start: var(--sf-checkbox--gap);
+  }
+}
+
+@media (pointer: coarse) {
+  @layer sf.components {
+    .sf-checkable,
+    .sf-checkable-row {
+      --sf-checkable--pad: calc((max(var(--sf-checkable--step), var(--sf-d1)) - var(--sf-checkable--line)) / 2);
+    }
+  }
+}

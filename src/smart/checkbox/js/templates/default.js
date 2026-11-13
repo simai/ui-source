@@ -1,10 +1,7 @@
 import {html, nothing} from 'lit';
 import {keepHelpOutOfLabel} from '../../../../component/checkable-text-helper';
+import {checkableClasses, renderCheckableHelp, renderCheckableRow, renderCheckableText} from '../../../helpers/checkable-row';
 import './default.css'
-
-// The help mark keeps the label's line: 1/3 beside the lines of sizes 1/2 and
-// 1, 1/2 beside size 2 (the mark adds no height of its own).
-const HELP_SIZE = {'1/2': '1/3', 1: '1/3', 2: '1/2'};
 
 export function renderCheckboxTemplate(context) {
     const {
@@ -53,16 +50,10 @@ export function renderCheckboxTemplate(context) {
                 ? html`<span class="sf-checkbox-description">${description}</span>`
                 : '';
 
-    const helpContent =
-        context.component?.hasSlotContent?.('help')
-            ? context.component.getSlotContent('help')
-            // help is the explanation: a «?» button after the label text that
-            // opens it (sf-help-mark), outside the control's activation.
-            : help
-                ? html`<sf-help-mark class="sf-checkbox-help" size=${HELP_SIZE[size] || '1/3'} text=${help} label=${context.helpLabel || nothing}></sf-help-mark>`
-                : '';
+    const helpContent = renderCheckableHelp(context, 'sf-checkbox-help');
 
-    const showContainer = !!(labelContent || descriptionContent || helpContent);
+    const showContainer = !!(labelContent || descriptionContent);
+    rootClasses.push(...checkableClasses(size, showContainer));
     const isStart = position === 'start';
     const input = html`
         <span class="sf-checkbox-box transition flex">
@@ -78,25 +69,12 @@ export function renderCheckboxTemplate(context) {
         />
           <sf-icon aria-hidden="true" icon=${stateIcon || ''}></sf-icon>
       </span>`
-    return html`
+    const control = html`
         <label class=${rootClasses.filter(Boolean).join(' ')} style=${rootStyle || nothing} @click=${keepHelpOutOfLabel}>
             ${isStart ? input : ''}
-            ${showContainer
-                    ? html`
-                        <span class="sf-checkbox-container flex flex-col">
-              ${labelContent || helpContent
-                      ? html`
-                          <span class="sf-checkbox-top flex">
-                      ${labelContent}
-                      ${helpContent}
-                    </span>
-                      `
-                      : ''}
-              ${descriptionContent}
-            </span>
-                    `
-                    : ''}
+            ${renderCheckableText({column: 'sf-checkbox-container', top: 'sf-checkbox-top'}, labelContent, descriptionContent)}
             ${!isStart ? input : ''}
         </label>
     `;
+    return renderCheckableRow(size, control, helpContent);
 }
