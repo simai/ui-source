@@ -42,7 +42,9 @@ test('field composition: the country list is its field\'s list', async () => {
     assert.ok(states.includes(`.sf-country-code.sf-country-code--size-${size} .sf-country-code-item {`), size);
   }
   // Owner C87: the row starts on the field's value inset and draws the
-  // field's flag, at every size.
-  assert.equal(states.split('--sf-country-code-item--padding-inline-start: calc(var(--sf-country-code--inset) - var(--sf-country-code-list--padding-inline-start, 0px));').length - 1, SIZES.length);
-  assert.equal(states.split('--sf-country-code-flag--height: var(--sf-country-code--flag-height);').length - 1, SIZES.length);
+  // field's flag, at every size: the kept sizes one by one, the outer steps
+  // (1/3, 3) in one block over the shared field ladder (2026-11-14).
+  assert.match(states, /@each \$size in ladder\.\$outer \{\n    \.sf-country-code\.#\{ladder\.size-class\('sf-country-code', \$size\)\} \.sf-country-code-item \{/u);
+  assert.equal(states.split('--sf-country-code-item--padding-inline-start: calc(var(--sf-country-code--inset) - var(--sf-country-code-list--padding-inline-start, 0px));').length - 1, SIZES.length + 1);
+  assert.equal(states.split('--sf-country-code-flag--height: var(--sf-country-code--flag-height);').length - 1, SIZES.length + 1);
 });

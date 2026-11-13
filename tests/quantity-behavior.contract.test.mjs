@@ -118,7 +118,7 @@ test('composite pointer focus is quiet and keyboard focus restores the ring cont
 });
 
 test('constructor bounds size and exposes native readonly plus localized button labels', () => {
-  assert.match(source,/const normalizedSize = fieldSize\(size, 'sf-quantity'\);/);
+  assert.match(source,/const normalizedSize = ladderSize\(size\);/);
   assert.match(source,/input\.readOnly = Boolean\(readonly\)/);
   assert.match(source,/minus\.setAttribute\('aria-label', String\(decrementLabel\)\)/);
   assert.match(source,/plus\.setAttribute\('aria-label', String\(incrementLabel\)\)/);
