@@ -5,6 +5,14 @@ import { html, nothing } from 'lit';
 // closed list fetches nothing). The class script used to set the address only
 // when a press opened the list, so a list drawn open (open) kept empty images
 // (docs pre-check 2026-11-10 CC-02). eager-flags asks for every flag at once.
+// A file that does not come draws the country's emoji in its place, as the
+// field's own flag does.
+function flagFallback(event) {
+  const img = event.currentTarget;
+  const holder = img?.parentElement;
+  if (holder && img.dataset.flagFallback) holder.textContent = img.dataset.flagFallback;
+}
+
 function flagTemplate(country, flagBase = '', lazy = true) {
   const iso2 = String(country?.iso2 || '').trim().toLowerCase();
   const fallback = country?.flagEmoji || '';
@@ -23,6 +31,7 @@ function flagTemplate(country, flagBase = '', lazy = true) {
       data-flag-src=${src}
       data-loaded="1"
       data-flag-fallback=${fallback}
+      @error=${flagFallback}
     />
   `;
 }
@@ -78,6 +87,7 @@ export function renderCountryCodeTemplate(context) {
       data-mask-pattern=${maskPattern || ''}
       data-flag-base=${flagBase || ''}
       data-max-items=${String(maxItems || 0)}
+      data-preferred=${context.preferred === undefined ? nothing : context.preferred}
     >
       ${label
         // No label, no label row: a lone star over a control names nothing, and
@@ -94,7 +104,9 @@ export function renderCountryCodeTemplate(context) {
         <span class="sf-country-code-left flex items-center">
           <div class="sf-country-code-flag-icon" aria-hidden="true"></div>
           ${multiCountry
-            ? html`<i class="sf-icon">${open ? 'expand_less' : 'expand_more'}</i>`
+            // The small caret after the flag says the flag opens the list
+            // (owner C87, variant V4 with the caret).
+            ? html`<i class="sf-icon sf-country-code-caret" aria-hidden="true">arrow_drop_down</i>`
             : ''}
         </span>
         <input

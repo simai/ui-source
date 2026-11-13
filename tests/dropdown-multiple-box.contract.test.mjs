@@ -12,7 +12,17 @@ test('every option of a multiple dropdown carries the box', async () => {
   assert.ok(template.includes('function renderOptions(options = [], multiple = false)'));
   assert.ok(template.includes('${renderOptions(context.options, context.multiple)}'));
   assert.ok(template.includes('const withBox = multiple && (!option.type || option.type === "text");'));
-  assert.ok(template.includes('renderListItemOption(withBox ? {...option, type: "checkbox"} : option)'));
+  assert.ok(template.includes('renderListItemOption(withBox ? {...option, type: "checkbox"} : option, {multiple})'));
+});
+
+// A picture row (avatar, colour) of a single choice drew an empty box at its
+// end; the chosen row says it with its fill (owner C08; DEV P2, R143,
+// 2026-11-12). The box after the picture stays for a multiple list.
+test('an avatar or colour option draws its box only in a multiple list', async () => {
+  const listItem = await read('src/smart/list-item/js/templates/default.js');
+  assert.ok(listItem.includes('export function renderListItemOption(option = {}, {multiple = false} = {})'));
+  assert.ok(listItem.includes('multiple: Boolean(multiple),'));
+  assert.ok(listItem.includes('if ((context.type === "avatar" || context.type === "color") && (!isOption || context.multiple)) {'));
 });
 
 test('an option that draws a picture of its own keeps it', async () => {

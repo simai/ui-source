@@ -1,0 +1,286 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import test from 'node:test';
+import vm from 'node:vm';
+
+// sf-input-country, owner decision C87 (2026-11-12, variant V4 with the caret;
+// ui-control prototypes/phone-country-study.html#r3-variant) and DEV letter
+// msg-1fc1c8741a0f480cb867 P1 (a list drawn open showed broken flags).
+const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
+const source = await read('src/component/country-code/js/_country_code.js');
+const template = await read('src/smart/input-country/js/templates/default.js');
+const host = await read('src/smart/input-country/index.js');
+const css = await read('src/component/country-code/scss/_css_country_code.scss');
+const custom = await read('src/component/country-code/scss/_css_country_code_custom.scss');
+const langs = {en: await read('src/smart/input-country/lang/en.json'), ru: await read('src/smart/input-country/lang/ru.json')};
+const {items} = JSON.parse(await read('src/component/country-code/data/countries.json'));
+
+function runtime() {
+  const context = vm.createContext({COUNTRY_ITEMS: items, syncCountryAccessibility: () => {}});
+  for (const [start, end] of [
+    ['function normalizeIso2', 'function resolveDefaultFlagBase'],
+    ['function getCountryByIso2', 'function normalizeMaskPatternByStyle'],
+    ['function resolveInitialCountry', 'function syncDisabledState'],
+    ['function countryMatchRank', 'function ensureCountryGroups'],
+  ]) vm.runInContext(source.slice(source.indexOf(start), source.indexOf(end)), context);
+  return context;
+}
+const ctx = runtime();
+const root = {__sfCountryOptions: items};
+const country = (iso) => items.find((item) => item.iso2 === iso);
+const readNumber = (text, current, options) => {
+  const result = ctx.readTypedNumber(root, text, current ? country(current) : null, options);
+  return {text: result.text, iso: result.country?.iso2 ?? null, wait: result.wait};
+};
+
+test('the code is the first group of the number and the flag follows it', () => {
+  assert.deepEqual(readNumber('+49 30 123456', 'AZ'), {text: '+49 30 123456', iso: 'DE', wait: false});
+  assert.equal(readNumber('+374 50 123456', 'AZ').iso, 'AM');
+  // «+3745 0…» asks for +3745, which no country has; never for +374.
+  assert.equal(readNumber('+3745 0', 'AZ').iso, null);
+  assert.equal(readNumber('+7 701 123 45 67', 'RU').iso, 'KZ');
+  assert.equal(readNumber('+7 903 123 45 67', 'KZ').iso, 'RU');
+  assert.equal(readNumber('+7 ', 'KZ').iso, 'KZ');
+  assert.equal(readNumber('+1 416 555 0100', 'CA').iso, 'CA');
+});
+
+test('«8 9…» is Russia from any country, a lone 8 waits, digits take the current code', () => {
+  assert.deepEqual(readNumber('8 903 123 45 67', 'AZ'), {text: '+7 903 123-45-67', iso: 'RU', wait: false});
+  assert.equal(readNumber('8', 'AZ').wait, true);
+  assert.deepEqual(readNumber('903', 'RU'), {text: '+7 903', iso: 'RU', wait: false});
+  assert.deepEqual(readNumber('50 123456', 'AM'), {text: '+374 50 123456', iso: 'AM', wait: false});
+});
+
+test('an erased code leaves no country and keeps the number', () => {
+  assert.deepEqual(readNumber('+ 30 123456', 'DE'), {text: '+ 30 123456', iso: null, wait: false});
+  assert.equal(readNumber('+', 'DE').iso, null);
+});
+
+test('a finished code gets its space, unless a longer code starts with it', () => {
+  assert.equal(readNumber('+374', null).text, '+374 ');
+  assert.equal(readNumber('+79031234567', null).text, '+7 903 123-45-67');
+  assert.equal(readNumber('+1', null).text, '+1 ');
+  // Where a longer code starts with the one typed (a list that gives the
+  // Bahamas +1242), the person may still be typing: no space yet.
+  const own = {__sfCountryOptions: [{iso2: 'US', dialCode: '+1'}, {iso2: 'BS', dialCode: '+1242'}]};
+  assert.equal(ctx.readTypedNumber(own, '+1', null).text, '+1');
+  assert.equal(ctx.readTypedNumber(own, '+1242', null).country.iso2, 'BS');
+  // Deleting never adds the space back.
+  assert.equal(readNumber('+374', null, {deleting: true}).text, '+374');
+});
+
+test('extra digits are never cut', () => {
+  // Digits beyond the pattern stay at the end of the number.
+  assert.equal(readNumber('+7 903 123 45 67 89 01', 'RU').text, '+7 903 123-45-678901');
+});
+
+// DEV intent acceptance 2026-11-12 (ui-control control/evidence/
+// 2026-11-12-input-country-intent, points 3 and 4): typed text must read as
+// pasted text, and the country's pattern lays out the national digits.
+const typeInto = (sequence, current) => {
+  let value = '', iso = current;
+  const seen = [];
+  for (const char of sequence) {
+    const read = readNumber(value + char, iso);
+    if (!read.wait && read.iso) iso = read.iso;
+    value = read.text;
+    seen.push(value);
+  }
+  return {value, iso, seen};
+};
+
+test('P3: typing «+49 30 123456» gives one space after the code, as pasting does', () => {
+  const typed = typeInto('+49 30 123456', 'AZ');
+  assert.equal(typed.value, '+49 30 123456');
+  assert.equal(typed.iso, 'DE');
+  assert.deepEqual(typed.seen.filter((text) => /\s{2}/u.test(text)), []);
+  assert.equal(readNumber('+49 30 123456', 'AZ').text, typed.value);
+  // The code's own space and a typed one are one space.
+  assert.equal(readNumber('+49  ', 'DE').text, '+49 ');
+  assert.equal(readNumber('+49  30', 'DE').text, '+49 30');
+});
+
+test('P4: the country pattern lays out the number, typed or pasted', () => {
+  const typed = typeInto('8 903 123 45 67', 'AZ');
+  assert.equal(typed.value, '+7 903 123-45-67');
+  assert.equal(typed.iso, 'RU');
+  assert.deepEqual(typed.seen.filter((text) => /\s{2}/u.test(text)), []);
+  assert.equal(readNumber('+7 903 123 45 67', 'RU').text, '+7 903 123-45-67');
+  assert.equal(readNumber('+994501234567', 'AZ').text, '+994 50 123 45 67');
+  assert.equal(readNumber('+374 50 123456', 'AZ').text, '+374 50 123456');
+  // A half-typed number stops where its digits stop: no separator ahead.
+  assert.equal(readNumber('+7 903 12', 'RU').text, '+7 903 12');
+  assert.equal(readNumber('+7 903 123', 'RU').text, '+7 903 123');
+  assert.equal(readNumber('+7 903 1234', 'RU').text, '+7 903 123-4');
+  // The field's own pattern (fixed-mask, the brackets style) is used where given.
+  const brackets = () => '+0 (000) 000-00-00';
+  assert.equal(ctx.readTypedNumber(root, '+79031234567', country('RU'), {patternFor: brackets}).text, '+7 (903) 123-45-67');
+  // Deleting leaves the text as the person made it.
+  assert.equal(readNumber('+7 903 123-45-6', 'RU', {deleting: true}).text, '+7 903 123-45-6');
+  // The caret stays after the digit it followed.
+  assert.equal(ctx.caretAfterDigits('+7 903 123-45-67', 4), 6);
+  assert.equal(ctx.caretAfterDigits('+7 903 123-45-67', 9), 13);
+});
+
+test('P4: an empty field hints the chosen country code, not another country pattern', () => {
+  for (const locale of ['en', 'ru']) {
+    assert.equal(JSON.parse(langs[locale]).runtime.placeholder, '', locale);
+  }
+  assert.match(source, /placeholder = '',\n/u);
+  assert.match(source, /function syncCodePlaceholder\(root, input, country\) \{[\s\S]*?writeCountryPlaceholder\(input, country\?\.dialCode \|\| '\+'\);/u);
+  const select = source.slice(source.indexOf('function applyCountrySelection'), source.indexOf('// ─── The list'));
+  assert.match(select, /syncCodePlaceholder\(root, input, country\);/u);
+  assert.match(source, /function markCountryUnknown[\s\S]*?syncCodePlaceholder\(root, getNodes\(root\)\.input, null\);/u);
+  // An authored placeholder stays; the one the field wrote is told from it.
+  assert.match(source, /root\.__sfCountryOwnPlaceholder = placeholderIsOwn\(input\);/u);
+  const own = source.slice(source.indexOf('const countryWrittenPlaceholders'), source.indexOf('function syncCodePlaceholder'));
+  const sandbox = vm.createContext({WeakMap});
+  vm.runInContext(own, sandbox);
+  const input = {attrs: {}, getAttribute(name) { return this.attrs[name] ?? null; }, set placeholder(v) { this.attrs.placeholder = v; }, get placeholder() { return this.attrs.placeholder ?? ''; }};
+  assert.equal(sandbox.placeholderIsOwn(input), true);
+  sandbox.writeCountryPlaceholder(input, '+994');
+  assert.equal(input.placeholder, '+994');
+  assert.equal(sandbox.placeholderIsOwn(input), true);
+  input.attrs.placeholder = 'Mobile';
+  assert.equal(sandbox.placeholderIsOwn(input), false);
+});
+
+test('the search finds a country by its name in either language, its ISO code and its dial code', () => {
+  const row = (iso, label) => ({dataset: {iso2: iso, code: country(iso).dialCode}, querySelector: () => ({textContent: label}), textContent: label});
+  const de = row('DE', 'Германия (+49)'), dk = row('DK', 'Дания (+45)'), bd = row('BD', 'Бангладеш (+880)');
+  assert.equal(ctx.countryMatchRank(de, 'de'), 1);
+  assert.ok(ctx.countryMatchRank(dk, 'de') > 1);
+  assert.ok(ctx.countryMatchRank(bd, 'de') > ctx.countryMatchRank(de, 'de'));
+  assert.equal(ctx.countryMatchRank(de, 'герм'), 3);
+  assert.equal(ctx.countryMatchRank(de, 'germ'), 3);
+  assert.equal(ctx.countryMatchRank(de, '+49'), 1);
+  assert.equal(ctx.countryMatchRank(de, '4'), 2);
+  assert.equal(ctx.countryMatchRank(dk, '+49'), null);
+  assert.equal(ctx.countryMatchRank(dk, 'герм'), null);
+});
+
+test('every open path gives the rows their files and shows the chosen row (P1)', () => {
+  const open = source.slice(source.indexOf('function setOpenState'), source.indexOf('function resolveConfig'));
+  assert.match(open, /arrangeCountryList\(root\);/u);
+  assert.match(open, /if \(open\) \{[\s\S]*prefetchVisibleFlags\(root\);[\s\S]*revealChosenCountry\(root\);/u);
+  // Drawn open at bind, through the same path.
+  assert.match(source, /if \(root\.classList\.contains\('open'\)\) setOpenState\(root, true\);/u);
+  // A row image that does not load falls back to the emoji, template and markup alike.
+  assert.match(template, /@error=\$\{flagFallback\}/u);
+  assert.match(source, /img\.dataset\.flagFallback/u);
+});
+
+test('the field draws V4: rectangular flag on the C77 inset, a small caret, the code in the text', () => {
+  assert.match(template, /<i class="sf-icon sf-country-code-caret" aria-hidden="true">arrow_drop_down<\/i>/u);
+  assert.match(source, /icon\.textContent = 'arrow_drop_down';/u);
+  for (const size of ['1', '2', '1\\/2']) {
+    assert.ok(!css.includes(`--sf-country-code-field--padding-inline-start: var(--sf-ui-${size}--space-x);`), size);
+  }
+  assert.match(css, /--sf-country-code-field--padding-inline-start: calc\(var\(--sf-country-code--inset\) - var\(--sf-px\)\);/u);
+  assert.match(css, /\.sf-country-code\.sf-country-code--size-2 \{\s*--sf-country-code--inset: var\(--sf-space-2\);/u);
+  assert.match(css, /--sf-country-code-flag-icon--width: calc\(var\(--sf-country-code--flag-height\) \* 1\.4\);/u);
+  assert.match(custom, /--sf-country-code-flag--height: var\(--sf-country-code--flag-height\);/u);
+  // The code is locked only for one country or a country mask.
+  assert.match(source, /if \(config\.multiCountry && !config\.useMask\) return '';/u);
+});
+
+test('the list: search header, frequent group, chosen row filled, a sheet on a phone', () => {
+  assert.match(source, /const RECENT_KEY = 'sf-input-country:recent';/u);
+  assert.ok(!source.includes('PREFERRED_BY_LOCALE'), 'no locale names a frequent list by default');
+  assert.match(source, /list\.setAttribute\('data-sf-sheet', ''\);/u);
+  assert.match(css, /\.sf-country-code \.sf-country-code-item\[aria-selected="true"\] \{\s*--sf-country-code-item--background-color: var\(--sf-primary-container\);/u);
+  assert.match(css, /\.sf-country-code \.sf-country-code-list\[data-sf-sheet\] \{/u);
+  assert.match(css, /inline-size: var\(--sf-popup-panel-width\);/u);
+});
+
+// `preferred` is optional (owner, q-8794872748, 2026-11-12): without it the
+// list has no «Часто выбирают» group at all -- no heading, no recent choices on
+// top -- and no locale supplies a default list.
+function arrangeList({preferred, recent = [], locale = 'ru'}) {
+  const heads = [];
+  const itemsWrap = {
+    querySelector: (selector) => heads.find((head) => selector.includes(`data-group="${head.dataset.group}"`)) || null,
+    append: (node) => heads.push(node),
+  };
+  const node = () => ({dataset: {}, style: {}, hidden: false, setAttribute() {}, textContent: ''});
+  const rows = ['AZ', 'RU', 'KZ', 'DE', 'AM'].map((iso2) => ({...node(), dataset: {iso2}}));
+  const store = {'sf-input-country:recent': JSON.stringify(recent)};
+  const context = vm.createContext({
+    document: {createElement: node},
+    localStorage: {getItem: (key) => store[key] ?? null, setItem: (key, value) => { store[key] = value; }},
+    getNodes: () => ({itemsWrap, items: rows}),
+    pageText: (_text, word) => word,
+    COUNTRY_CODE_TEXT: {},
+    normalizeIso2: (value) => String(value || '').trim().toUpperCase(),
+    ensureCountryId: () => 'id',
+  });
+  vm.runInContext(source.slice(source.indexOf('const RECENT_KEY'), source.indexOf('// The rows in the order a person sees them.')), context);
+  const config = {multiCountry: true, showCode: true, locale, preferred};
+  context.arrangeCountryList({__sfCountryConfig: config, __sfCountryQuery: '', querySelector: () => null});
+  return {
+    heads: heads.filter((head) => !head.hidden).map((head) => head.textContent),
+    frequent: rows.filter((row) => row.dataset.group === 'frequent').sort((x, y) => Number(x.style.order) - Number(y.style.order)).map((row) => row.dataset.iso2),
+  };
+}
+
+test('no preferred: no frequent group header and no group rows, on a Russian page too', () => {
+  for (const locale of ['ru', 'en']) {
+    assert.deepEqual(arrangeList({locale}), {heads: [], frequent: []}, locale);
+    // A recent choice alone does not bring the group back.
+    assert.deepEqual(arrangeList({locale, recent: ['DE']}), {heads: [], frequent: []}, `${locale} recent`);
+  }
+});
+
+test('preferred set: the heading, recent choices first, then the named countries', () => {
+  assert.deepEqual(arrangeList({preferred: ['RU', 'KZ']}), {heads: ['frequent', 'allCountries'], frequent: ['RU', 'KZ']});
+  assert.deepEqual(arrangeList({preferred: ['RU', 'KZ'], recent: ['DE']}).frequent, ['DE', 'RU', 'KZ']);
+  // An empty value shows the recent choices alone, or nothing without them.
+  assert.deepEqual(arrangeList({preferred: [], recent: ['AM']}), {heads: ['frequent', 'allCountries'], frequent: ['AM']});
+  assert.deepEqual(arrangeList({preferred: []}), {heads: [], frequent: []});
+});
+
+// Leftovers of C87 (dispatcher queue msg-f78a24f9d8714b91a524): the form value
+// in E.164, the locked code that no edit reaches, the «nothing found» line.
+test('the form gets the number in E.164, the box keeps the text as typed', () => {
+  const sandbox = vm.createContext({});
+  vm.runInContext(source.slice(source.indexOf('function countryFormValue'), source.indexOf('function closeAllCountryCodes')), sandbox);
+  const e164 = sandbox.countryFormValue;
+  assert.equal(e164('+7 903 123-45-67', '+7'), '+79031234567');
+  assert.equal(e164('+49 30 123456', '+49'), '+4930123456');
+  assert.equal(e164('+7 (903) 123-45-67', '+7'), '+79031234567');
+  assert.equal(e164('+994 50 123 45 67', '+994'), '+994501234567');
+  // The code alone, an empty box, a bare «+»: no number.
+  assert.equal(e164('+7 ', '+7'), '');
+  assert.equal(e164('+994', '+994'), '');
+  assert.equal(e164('', '+7'), '');
+  assert.equal(e164('+', ''), '');
+  // An unknown code keeps what was typed; hide-code texts are the national part.
+  assert.equal(e164('+999 12 345', ''), '+99912345');
+  assert.equal(e164('903 123-45-67', '+7'), '+79031234567');
+  // The Smart host submits it.
+  assert.match(host, /sfFormValue\(\) \{\s*if \(this\.disabled\) return null;[\s\S]*?return countryFormValue\(this\.value, dial\);/u);
+});
+
+test('the locked code is not the person\'s to edit: edits reaching it apply to the number', () => {
+  const bind = source.slice(source.indexOf('function bindCountryCode'), source.indexOf('function unbindCountryCode'));
+  assert.match(bind, /input\.addEventListener\('beforeinput', onBeforeInput\);/u);
+  const guard = bind.slice(bind.indexOf('const onBeforeInput'), bind.indexOf("toggle.addEventListener('click'"));
+  assert.match(guard, /const prefix = getLockedPrefix\(root, config\);/u);
+  assert.match(guard, /if \(to <= at\) \{ keepCaretAfterPrefix\(input, prefix\); return; \}/u);
+  assert.match(guard, /input\.setRangeText\(text, at, Math\.max\(end, at\), 'end'\);/u);
+  // A selection over the code is no longer swallowed by keydown: select-all
+  // and Backspace clears the number.
+  const keydown = bind.slice(bind.indexOf('const onKeydownInput'), bind.indexOf('const onBeforeInput'));
+  assert.match(keydown, /if \(start !== end\) return;/u);
+  assert.match(source, /input\.removeEventListener\('beforeinput', root\.__sfCountryCodeBeforeInput\);/u);
+});
+
+test('a search that finds nothing says so in the page language', () => {
+  assert.match(source, /nothingFound: 'Nothing found'/u);
+  assert.match(source, /nothingFound: 'Ничего не найдено'/u);
+  assert.equal(JSON.parse(langs.en).runtime['nothing-found'], 'Nothing found');
+  assert.equal(JSON.parse(langs.ru).runtime['nothing-found'], 'Ничего не найдено');
+  assert.match(source, /syncCountryEmpty\(root, itemsWrap, root\.querySelector\('\.sf-country-code-search input'\),\s*Boolean\(query\) && items\.every\(\(item\) => item\.hidden\)\);/u);
+  assert.match(css, /\.sf-country-code \.sf-country-code-empty \{[^}]*color: var\(--sf-on-surface-variant\);/u);
+  assert.match(css, /\.sf-country-code \.sf-country-code-empty\[hidden\] \{\s*display: none;/u);
+});

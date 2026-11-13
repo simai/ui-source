@@ -14,13 +14,20 @@ are destroyed. This is consumer ownership, not a guarantee about downloading
 mask creation before its promise resolves.
 
 The shared picker exposes a named button and single-select listbox. Enter/Space
-opens at the selected option, ArrowDown/ArrowUp open or navigate, Home/End move
-to the boundaries, and typing searches country names. Navigation alone does not
+and ArrowDown/ArrowUp open the list with the cursor in its search field and the
+selected option scrolled into view; ArrowDown from the search moves to the first
+visible option, ArrowUp on the first option returns to the search, Home/End move
+to the boundaries, and typing on an option searches country names. Navigation alone does not
 change the number. Enter/Space commit; Escape cancels. Commit and Escape return
 focus to the button. Tab leaves without trapping focus. Disabled options are
 skipped; disabled fields cannot open. Option focus is inset, focus-visible only,
 and uses a system highlight in forced colors. The visible label/hint identify
 the native input rather than the text of the entire enclosing country list.
+
+The host submits the number in E.164 under its `name` (`+79031234567` for the
+`+7 903 123-45-67` the field shows; standard §17.1 item 2, the form format): `+`,
+the dial code and the national digits, no spaces, dashes or brackets. The code
+alone submits an empty value. `value` stays the text the person sees.
 
 The native tel input supports required, name and form. Default value comes from
 the authored value attribute; imperative edits and cosmetic renders do not replace
@@ -75,3 +82,45 @@ This does not establish every custom token palette or authored layout override.
 Actual assistive
 technology testing is not replaced by browser role/keyboard checks.
 The manifest lifecycle remains experimental.
+
+## Field and list (C87)
+
+The flag stays in the field as a rectangular image with a small caret beside it;
+the dial code is part of the number text (`+7 903 123-45-67`). Flag, caret and
+the start of the text follow the value inset of the field size (`--sf-space-1/2`,
+`--sf-space-1`, `--sf-space-2`; `--sf-space-1` on a phone and in compact density).
+
+Typing reads the country from the number and never cuts a digit: the first digit
+group gives the code (`+3745` is not read as `+374`), `+7` decides Russia or
+Kazakhstan by the next digit, `8 9…` becomes `+7 9…`, digits without `+` take the
+current country's code, and one space follows a finished code. After the code the
+digits follow the country's pattern as they are typed or pasted (`8 903 123 45 67`
+reads `+7 903 123-45-67`, `+49 30 123456` stays as it is); digits beyond the
+pattern stay at the end. A field without its own `placeholder` hints the chosen
+country's code, `+994` for Azerbaijan, and `+` while the code is unknown. Erasing the code
+leaves the field without a country: the flag turns into a dashed frame and the
+button is named "Country code not recognised. Choose a country". Pasting a number
+that starts with `+` or has ten or more digits replaces the whole value. With
+`multi-country` and no mask the code is not locked; a fixed country or a mask
+keeps it: no edit reaches the code. A digit typed before it goes after it,
+select-all and a digit keep the code and replace the number, select-all and
+Backspace or Delete clear the number and leave the code; choosing another
+country changes it.
+
+The list is as wide as the popup panel (`--sf-popup-panel-width`), or the field
+when that is wider. It starts with a search field ("Country or code") that finds
+by name, ISO code or dial code; Enter picks the first match and never submits the
+form; a search that finds nothing shows the line "Nothing found" ("Ничего не
+найдено") where the rows would be. When `preferred` is set and there is no
+query, the list shows "Frequently chosen" (the two most recent choices kept in
+`localStorage` under `sf-input-country:recent`, then the `preferred` countries)
+above "All countries". The chosen row is filled, not ticked. Picking a country
+keeps the national digits already typed.
+
+`preferred` is an optional comma-separated ISO list for the frequent group.
+Without the attribute there is no group: no "Frequently chosen" heading, no
+recent choices on top, one plain list; no locale supplies a default list. An
+empty value shows the recent choices alone. The group holds six rows at most.
+
+Below the `md` breakpoint the list opens as a bottom sheet over the page instead
+of a dropdown under the field.

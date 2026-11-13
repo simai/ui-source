@@ -171,7 +171,11 @@ export function renderListItemTemplate(context) {
   const renderTrailing = () => {
     if (trailingContent !== nothing) return trailingContent;
 
-    if (context.type === "avatar" || context.type === "color") {
+    // The box after a picture says the row may be one of several chosen. An
+    // option of a single choice says it is chosen with its fill alone (owner
+    // C08): sf-dropdown drew an empty box at the end of every avatar and
+    // colour row of a one-of list (DEV P2, owner R143, 2026-11-12).
+    if ((context.type === "avatar" || context.type === "color") && (!isOption || context.multiple)) {
       return html`
         <label
           class="sf-checkbox sf-checkbox--size-${context.sizeGroup
@@ -221,7 +225,7 @@ export function renderListItemTemplate(context) {
 // takes a place in a list, so it carries the listbox roles and answers a
 // pointer. The dropdown built this inline and nothing else could, which is why
 // a multi-select list outside a dropdown had to be hand-made out of checkboxes.
-export function renderListItemOption(option = {}) {
+export function renderListItemOption(option = {}, {multiple = false} = {}) {
   const size = String(option.size || "1");
 
   return renderListItemTemplate({
@@ -241,6 +245,7 @@ export function renderListItemOption(option = {}) {
     avatarImageUrl: option.avatarImageUrl,
     avatarTitle: option.avatarTitle,
     ariaLabel: option.ariaLabel,
+    multiple: Boolean(multiple),
     option: true,
   });
 }

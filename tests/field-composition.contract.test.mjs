@@ -39,7 +39,10 @@ test('field composition: the country list is its field\'s list', async () => {
   const states = css.slice(css.indexOf('@layer sf.states {\n/* The country list'));
   for (const size of SIZES) {
     assert.ok(states.includes(`--sf-country-code-item--padding-top: var(--sf-ui-${size}--space-y-tightness-default);`), size);
-    assert.ok(states.includes(`--sf-country-code-item--padding-inline-start: calc(var(--sf-ui-${size}--space-x) + var(--sf-px) - var(--sf-country-code-list--padding-inline-start, 0px));`), size);
-    assert.ok(states.includes(`--sf-country-code-flag--height: calc(var(--sf-text-height-${size}) * 3 / 4);`), size);
+    assert.ok(states.includes(`.sf-country-code.sf-country-code--size-${size} .sf-country-code-item {`), size);
   }
+  // Owner C87: the row starts on the field's value inset and draws the
+  // field's flag, at every size.
+  assert.equal(states.split('--sf-country-code-item--padding-inline-start: calc(var(--sf-country-code--inset) - var(--sf-country-code-list--padding-inline-start, 0px));').length - 1, SIZES.length);
+  assert.equal(states.split('--sf-country-code-flag--height: var(--sf-country-code--flag-height);').length - 1, SIZES.length);
 });

@@ -2,6 +2,7 @@ import countriesData from '../../component/country-code/data/countries.json';
 import { pageLanguage } from '../../core/js/page-language';
 import {
   bindCountryCode,
+  countryFormValue,
   normalizeCountriesList,
   normalizeIso2,
   resolveDefaultFlagBase,
@@ -48,8 +49,8 @@ class SfCountryCode extends FormField(CountryCodeElement) {
     this._countries = null;
     this._boundRoot = null;
     this._renderAttributes = new Set();
-    // The tel text is the value the form gets: every keystroke and every
-    // country chosen tells the form (§17.1) -- FormField listens for them.
+    // The number in E.164 is the value the form gets: every keystroke and
+    // every country chosen tells the form (§17.1) -- FormField listens for them.
   }
 
   get size() {
@@ -83,11 +84,13 @@ class SfCountryCode extends FormField(CountryCodeElement) {
     return this.querySelector(':scope .sf-country-code-field input') || null;
   }
 
-  // What the form gets (§17.1): the tel text as the person sees it, nothing
-  // while disabled.
+  // What the form gets (§17.1 item 2, the form format): the number in E.164,
+  // `+79031234567` for the `+7 903 123-45-67` the person sees; nothing for the
+  // code alone, nothing while disabled.
   sfFormValue() {
     if (this.disabled) return null;
-    return this.value;
+    const dial = this.querySelector(':scope .sf-country-code')?.dataset?.dialCode || '';
+    return countryFormValue(this.value, dial);
   }
 
   // §17.2: a required phone has digits after the dial code; the dial code
@@ -187,6 +190,12 @@ class SfCountryCode extends FormField(CountryCodeElement) {
     return String(this.getAttribute('mask-placeholder-char') || '_');
   }
 
+  // The countries on top of the list (owner C87): "RU,KZ,BY". Optional:
+  // without the attribute no group at all; an empty one, recent choices alone.
+  get preferred() {
+    return this.hasAttribute('preferred') ? String(this.getAttribute('preferred') || '') : undefined;
+  }
+
   get maxItems() {
     return Math.trunc(this.getNumberAttr('max-items', 0));
   }
@@ -222,6 +231,7 @@ class SfCountryCode extends FormField(CountryCodeElement) {
       iso2: this.iso2,
       flagBase: this.flagBase,
       maxItems: this.maxItems,
+      preferred: this.preferred,
       // The host is the form control where the browser has ElementInternals,
       // so the inner tel input carries no name (§17.1 item 6); elsewhere it is
       // named and joins the form the host names, as before.
