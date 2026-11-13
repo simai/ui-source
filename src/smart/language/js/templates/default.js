@@ -6,7 +6,7 @@ import {html, nothing} from 'lit';
 // - none (one language or none): nothing at all.
 // - inline (two or three): sf-segmented on its track, a radio
 //   group named by label, one segment per language labelled with its own
-//   name (compact: its code, the name kept as the segment's accessible
+//   name (labels="code": its code, the name kept as the segment's accessible
 //   name), each segment in its own language (lang).
 // - menu and search (four and more): sf-button-icon with the «translate»
 //   glyph, named «Язык: Русский», and sf-menu-context, a popup menu of radio
@@ -20,8 +20,8 @@ const stop = (event) => event.stopPropagation();
 function renderInline(context) {
   const items = context.list.map((language) => ({
     value: language.code,
-    label: context.compact ? language.short : language.label,
-    ariaLabel: context.compact ? language.label : '',
+    label: context.codes ? language.short : language.label,
+    ariaLabel: context.codes ? language.label : '',
     lang: language.code,
   }));
   return html`<sf-segmented

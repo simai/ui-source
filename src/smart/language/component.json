@@ -2,7 +2,7 @@
   "$comment": "The source of sf-language's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the site's language picker of the owner decision of 2026-11-06 (Federation bus msg-3063edc9fe684dfe9909).",
   "id": "smart.language",
   "tag": "sf-language",
-  "version": "1.2.4",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "language",
   "settings": {
@@ -36,7 +36,7 @@
         }
       },
       "default": [],
-      "summary": "The languages as a list, each {code, label?, short?, href?}: label replaces the name the browser gives («Қазақша» written otherwise), short the compact label (RU), href the address of the site in that language. A property, or the JSON island a server prints; when it holds a language it is the list, and languages is not read"
+      "summary": "The languages as a list, each {code, label?, short?, href?}: label replaces the name the browser gives («Қазақша» written otherwise), short the code label (RU, labels=\"code\"), href the address of the site in that language. A property, or the JSON island a server prints; when it holds a language it is the list, and languages is not read"
     },
     "href": {
       "type": "string",
@@ -68,10 +68,14 @@
       "default": 8,
       "summary": "In auto mode, the number of languages from which the menu has a search field"
     },
-    "compact": {
-      "type": "boolean",
-      "default": false,
-      "summary": "The switch shows codes (RU · EN) instead of names; each segment keeps the name as its accessible name. The menu is not affected"
+    "labels": {
+      "type": "enum",
+      "values": [
+        "name",
+        "code"
+      ],
+      "default": "name",
+      "summary": "What the switch's segments say: name, the language's name in itself (Русский · English); code, its code (RU · EN), each segment keeping the name as its accessible name. The menu is not affected. The former boolean compact is a dated alias of labels=\"code\" (owner decision C134: compact means density only; noted in SF.deprecations until 2027-01-01, journal attribute-language-compact-to-labels-code)"
     },
     "size": {
       "type": "enum",
@@ -289,7 +293,8 @@
     "version 1.2.2: a patch, the first paint. Until data-look the element holds one control of its size step high, and in the menu and search modes as wide (the icon button it draws), from a rule in core.css (core.styles 1.7.1), since the element has no sheet and core.css is the one sheet a page links before any code; the box is the ladder's control height of the step (--sf-ui-<step>--control-height), so it follows the desktop and the mobile ladder. The switch holds its height only (its width is its labels'). Printed static markup (data-sf-static) is its own box, so nothing is reserved then. A page's own placeholder (Docara's 2.5rem box) becomes unnecessary. Settings, values, events and what it draws unchanged. Also: a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, select({value}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, select(<string>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged.",
     "version 1.2.3 (2026-11-10): a patch; nothing in the component changed. Its menu panel is sf-menu-context, which since 1.14.1 draws its frame without the late utility class flex (component.context-menu owns the layout), so the first-paint snapshots lose that class; the component takes a patch with them. Settings, values, events and keys unchanged.",
     "version 1.2.4 (2026-11-11): a patch, nothing drawn differently by this element: the class button-group sheet changed (component.button-group 1.3.0, C47).",
-    "version 1.2.4, also (2026-11-11): the sf-button it draws writes sf-button--ghost beside the dated sf-button--link since sf-button 1.13.0 (CB-01), so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged."
+    "version 1.2.4, also (2026-11-11): the sf-button it draws writes sf-button--ghost beside the dated sf-button--link since sf-button 1.13.0 (CB-01), so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged.",
+    "version 1.3.0 (2026-11-13): a minor (owner decision C134, control/research/2026-11-13-navigation-density.md D5/Q1: the word compact means density only, data-sf-density). The setting labels (name | code, default name) says what the switch's segments show; the boolean compact, which showed the codes, leaves the settings and is a dated alias of labels=\"code\", read in the element's code (a boolean's presence cannot be a value alias of the shim): it draws the same, and each page notes it once in SF.deprecations until 2027-01-01 (journal attribute-language-compact-to-labels-code). labels written beside compact wins. The element's own uses (examples, probe, static snapshot) write labels=\"code\"."
   ],
   "x-registry": {
     "capabilities": [

@@ -21,9 +21,9 @@ const method = (name, next) => source.slice(source.indexOf(`  ${name}`), source.
 // 1.6.0 (C95, tests/contents-c95.contract.test.mjs) and 1.6.1 (C77 HS-12,
 // tests/contents-hs12.contract.test.mjs) and 1.6.2 (C109 NI-8,
 // tests/contents-c109.contract.test.mjs) keep every 1.5.0 fix below.
-test('contents is 1.6.2 in its manifest and its generated manifest', () => {
-  assert.equal(manifest.version, '1.6.2');
-  assert.equal(generated.version, '1.6.2');
+test('contents is 1.7.0 in its manifest and its generated manifest (C134: layout sheet)', () => {
+  assert.equal(manifest.version, '1.7.0');
+  assert.equal(generated.version, '1.7.0');
 });
 
 test('CT-03: fewer than two sections draw nothing, by the host state and in the printed markup', () => {
@@ -106,7 +106,7 @@ test('CT-10: the address is written on choose by default, on scroll only with ha
   const setCurrent = method('setCurrent(id, {emit = true, via = \'scroll\'} = {}) {', 'writeHash(id) {');
   assert.match(setCurrent, /if \(via === 'scroll' && this\.hashMode === 'scroll'\) this\.writeHash\(id\);/u);
   assert.doesNotMatch(setCurrent, /history\?\.replaceState/u);
-  const jump = method('jumpTo(id, event = null) {', '// The compact view\'s list');
+  const jump = method('jumpTo(id, event = null) {', '// The sheet view\'s list');
   assert.match(jump, /this\.setCurrent\(id, \{emit: true, via: 'choose'\}\);\s*this\.writeHash\(id\);/u);
   assert.match(source, /if \(!id \|\| this\.hashMode === 'false' \|\|/u);
   const record = journal.records.find((one) => one.id === 'behaviour-contents-hash-choose');

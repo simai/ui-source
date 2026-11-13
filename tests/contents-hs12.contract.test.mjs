@@ -20,8 +20,8 @@ const rule = (selector) => {
   return sheet.slice(start, sheet.indexOf('}', start));
 };
 
-test('HS-12 version: contents 1.6.1 or a later patch', () => {
-  assert.match(manifest.version, /^1\.6\.([1-9]\d*)$/u);
+test('HS-12 version: contents 1.6.1 or later (1.7.0: C134 layout sheet)', () => {
+  assert.match(manifest.version, /^1\.(6\.([1-9]\d*)|([7-9]|\d{2,})\.\d+)$/u);
   assert.equal(generated.version, manifest.version);
   assert.ok(manifest['x-decisions'].some((line) => line.startsWith('version 1.6.1 (2026-11-12, owner decision C77, R191 HS-12)')));
 });

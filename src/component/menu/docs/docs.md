@@ -153,15 +153,17 @@ may end with a `.sf-menu-region-foot` row. Smart Menu draws it from a
 </nav>
 ```
 
-## Compact menu and counters
+## Rail and counters
 
 A row's counter is a `.sf-badge` with `data-count` inside
 `.sf-menu-element-wrap`, after `.sf-menu-element-text`; it stands at the row's
 end, capped at 99+, hidden at 0, and its phrase ends the row's name. Add
-`sf-menu--compact` to the root `sf-menu` for a rail of top-level destinations:
+`sf-menu--rail` to the root `sf-menu` for a rail of top-level destinations:
 each row shows its icon or avatar alone, its words stay in its name out of
 sight, and the counter moves onto the icon's top end corner with the anchored
-badge's geometry and ring (step 1). Branches do not open in a compact menu.
+badge's geometry and ring (step 1). Branches do not open in the rail.
+`sf-menu--compact`, the rail's former class, draws the same until 2027-01-01:
+the word compact means density only (`data-sf-density`, owner decision C134).
 The row that is the current page takes the navigation plate; a row whose
 hidden list holds the current page, or one marked
 `sf-menu-element--holds-current`, takes the path's 2 px line on the rail's

@@ -209,7 +209,7 @@
 
   }
 
-  :where(.sf-menu:not(.sf-menu--compact)) .sf-menu-element-wrap > .sf-badge {
+  :where(.sf-menu:not(.sf-menu--rail, .sf-menu--compact)) .sf-menu-element-wrap > .sf-badge {
     margin-block: min(calc(var(--sf-px) * 0), calc((var(--sf-menu-element--line-height, var(--sf-text-height-1)) - var(--sf-badge--min-size)) / 2));
   }
 

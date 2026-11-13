@@ -10,7 +10,8 @@
       "  <article id=\"article\"><h2 id=\"intro\">Введение</h2><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><h2 id=\"install\">Подключение</h2><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><h3 id=\"cdn\">Через CDN</h3><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><h3 id=\"npm\">Через npm</h3><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><h2 id=\"settings\">Настройки</h2><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><h2 id=\"events\">События</h2><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><h2 id=\"a11y\">Доступность</h2><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p><p>Компонент берёт данные из манифеста, рисует начальный вид без кода и оживает, когда код загрузится.</p></article>",
       "  <aside><sf-contents id=\"toc\" layout=\"column\" target=\"#article\"></sf-contents></aside>",
       "</div>",
-      "<sf-contents id=\"compact\" layout=\"compact\"><a href=\"#c-intro\">Введение</a><a href=\"#c-install\">Подключение</a></sf-contents>",
+      "<sf-contents id=\"sheet\" layout=\"sheet\"><a href=\"#c-intro\">Введение</a><a href=\"#c-install\">Подключение</a></sf-contents>",
+      "<sf-contents id=\"sheet-alias\" layout=\"compact\"><a href=\"#c-intro\">Введение</a><a href=\"#c-install\">Подключение</a></sf-contents>",
       "<sf-contents id=\"given\" layout=\"rail\" hash=\"false\"><a href=\"#g-intro\">Введение</a><a href=\"#g-cdn\" data-level=\"3\">Через CDN</a></sf-contents>",
       "<div style=\"inline-size:15rem\"><sf-contents id=\"bar\" layout=\"bar\" sticky=\"false\"><a href=\"#b-general\">Основное</a><a href=\"#b-access\">Доступ</a><a href=\"#b-notifications\">Уведомления</a><a href=\"#b-integrations\">Интеграции</a><a href=\"#b-removal\">Удаление</a></sf-contents></div>",
       "<sf-contents id=\"one\" layout=\"column\"><a href=\"#intro\">Введение</a></sf-contents>",
@@ -64,27 +65,37 @@
       ]
     },
     {
-      "id": "p4-compact",
-      "title": "the compact button names the current section and opens and closes the list; Escape gives focus back",
+      "id": "p4-sheet",
+      "title": "the sheet's button names the current section and opens and closes the list; Escape gives focus back",
       "covers": "actions.toggle, host-states data-open, keyboard Escape",
       "steps": [
         {
-          "user": "click:#compact .sf-contents-toggle button"
+          "user": "click:#sheet .sf-contents-toggle button"
         },
         {
-          "check": "(() => { const c = document.querySelector('#compact'); const b = c.querySelector('.sf-contents-toggle button'); return c.getAttribute('data-open') === 'true' && b.getAttribute('aria-expanded') === 'true' && c.querySelector('.sf-contents-list').getClientRects().length > 0 && /: /.test(b.getAttribute('aria-label')); })()"
+          "check": "(() => { const c = document.querySelector('#sheet'); const b = c.querySelector('.sf-contents-toggle button'); return c.getAttribute('data-open') === 'true' && b.getAttribute('aria-expanded') === 'true' && c.querySelector('.sf-contents-list').getClientRects().length > 0 && /: /.test(b.getAttribute('aria-label')); })()"
         },
         {
           "user": "keyboard:Escape"
         },
         {
-          "check": "(() => { const c = document.querySelector('#compact'); const b = c.querySelector('.sf-contents-toggle button'); return !c.hasAttribute('data-open') && b.getAttribute('aria-expanded') === 'false' && document.activeElement === b && c.querySelector('.sf-contents-list').getClientRects().length === 0; })()"
+          "check": "(() => { const c = document.querySelector('#sheet'); const b = c.querySelector('.sf-contents-toggle button'); return !c.hasAttribute('data-open') && b.getAttribute('aria-expanded') === 'false' && document.activeElement === b && c.querySelector('.sf-contents-list').getClientRects().length === 0; })()"
+        }
+      ]
+    },
+    {
+      "id": "p4-sheet-alias",
+      "title": "layout compact is a dated alias of sheet: read as sheet, drawn the same with both classes, noted once in SF.deprecations until 2027-01-01 (owner decision C134)",
+      "covers": "settings.layout sheet, aliases compact",
+      "steps": [
+        {
+          "check": "(() => { const a = document.querySelector('#sheet'); const b = document.querySelector('#sheet-alias'); const nav = (el) => el.querySelector(':scope nav.sf-contents'); const notes = SF.deprecations.list().filter((note) => note.component === 'sf-contents' && note.from === 'compact'); return b.getAttribute('layout') === 'sheet' && b.getAttribute('data-compact') === 'true' && nav(a).classList.contains('sf-contents--layout-sheet') && nav(a).classList.contains('sf-contents--layout-compact') && nav(b).className === nav(a).className && notes.length === 1 && notes[0].to === 'sheet' && notes[0].remove_after === '2027-01-01'; })()"
         }
       ]
     },
     {
       "id": "p5-toggle-refused",
-      "title": "toggle is refused while the layout is not compact",
+      "title": "toggle is refused while the layout is not the sheet",
       "covers": "actions.toggle",
       "steps": [
         {

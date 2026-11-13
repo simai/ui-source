@@ -1,5 +1,7 @@
-// A compact menu (simai/ui-source#12): a rail of top-level destinations, each
-// row its icon or avatar alone. The words stay in the row for its accessible
+// The rail (simai/ui-source#12): a rail of top-level destinations, each
+// row its icon or avatar alone. Its class is sf-menu--rail; sf-menu--compact,
+// its former name, draws the same until 2027-01-01 (owner decision C134: the
+// word compact means density only; journal class-menu-compact-to-rail). The words stay in the row for its accessible
 // name, out of sight; a row's counter -- a .sf-badge in the row's wrap -- moves
 // onto the icon the way an anchored badge sits on its anchor, a count at the
 // top end corner, with the same geometry and ring. Branches do not open here.
@@ -15,28 +17,28 @@
     margin-inline-start: auto;
   }
 
-  .sf-menu.sf-menu--compact .sf-menu-element {
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element {
     justify-content: center;
     padding-inline: var(--sf-menu-element--padding-inline-end, var(--sf-space-1));
   }
 
   // The wrap holds the icon alone in the flow, so it is the icon's box: the
   // counter's anchor.
-  .sf-menu.sf-menu--compact .sf-menu-element-wrap {
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-wrap {
     position: relative;
     flex: none;
   }
 
-  .sf-menu.sf-menu--compact .sf-menu-element-text {
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-text {
     @include anchored.visually-hidden;
   }
 
-  .sf-menu.sf-menu--compact .sf-menu-element > .sf-icon-button,
-  .sf-menu.sf-menu--compact .sf-menu-item > .sf-menu {
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element > .sf-icon-button,
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-item > .sf-menu {
     display: none;
   }
 
-  .sf-menu.sf-menu--compact .sf-menu-element-wrap > .sf-badge {
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-wrap > .sf-badge {
     @include anchored.badge;
     margin-inline-start: 0;
   }
@@ -48,30 +50,30 @@
 // rail's start edge, as tall as the row (C30 amended, DEV answer b): the same
 // sign as a row's panel and a bordered column. The rail has no border and no
 // inset, so the line's place is the rail's own edge.
-  .sf-menu.sf-menu--compact .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
     @include menu.current-plate;
   }
 
-  .sf-menu.sf-menu--compact .sf-menu-element:is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) .sf-menu-element-icon {
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element:is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) .sf-menu-element-icon {
     --sf-icon--color: var(--sf-on-primary-container);
   }
 
-  .sf-menu.sf-menu--compact {
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) {
     --sf-menu--inset: calc(var(--sf-px) * 0);
     --sf-menu--border-width: calc(var(--sf-px) * 0);
     @include menu.path-line('.sf-menu-element.sf-menu-element--holds-current:not([aria-current])');
   }
 
   // An avatar is round unless it is the square one.
-  .sf-menu.sf-menu--compact .sf-menu-element-wrap:has(> .sf-avatar:not(.sf-avatar--square)) > .sf-badge {
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-wrap:has(> .sf-avatar:not(.sf-avatar--square)) > .sf-badge {
     --sf-badge--anchor-radius: var(--sf-radius-circle);
   }
 
-  .sf-menu.sf-menu--compact .sf-menu-element-wrap:has(> .sf-avatar--square) > .sf-badge {
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-wrap:has(> .sf-avatar--square) > .sf-badge {
     --sf-badge--anchor-radius: var(--sf-radius--ui);
   }
 
-  .sf-menu.sf-menu--compact .sf-menu-element-wrap > .sf-badge.sf-badge--dot {
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-wrap > .sf-badge.sf-badge--dot {
     @include anchored.dot;
   }
 }

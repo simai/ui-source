@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu",
-  "version": "1.6.3",
+  "version": "1.7.0",
   "title": "Menu",
   "summary": "Site navigation built from data -- nested sections, the current page, groups that open and close -- or from a nested list of links in the markup, drawn as the class menu: a column whose branches open in place, or a row whose branches open as panels placed by SF.Position, which becomes a button opening the same links when it does not fit. The WAI-ARIA disclosure navigation pattern, not an application menu.",
   "kind": "smart",
@@ -68,11 +68,11 @@
       "appearance": {
         "type": "string",
         "default": "default",
-        "description": "The class menu's presentations: default; documentation-tree, the tree with no borders and an indent per level; compact, a rail of first-level icons whose words stay in the link's name and whose branches do not open (both columns); navigation, a site header's sections -- rows with no frame and no fill at rest, a state-layer fill under the pointer and a plate on the current page -- a row or a column as orientation says.",
+        "description": "The class menu's presentations: default; documentation-tree, the tree with no borders and an indent per level; rail, a rail of first-level icons whose words stay in the link's name and whose branches do not open (both columns); navigation, a site header's sections -- rows with no frame and no fill at rest, a state-layer fill under the pointer and a plate on the current page -- a row or a column as orientation says. The old value compact is a dated alias of rail until 2027-01-01 (owner decision C134: compact means density only; noted in SF.deprecations, journal value-menu-appearance-compact-to-rail).",
         "enum": [
           "default",
           "documentation-tree",
-          "compact",
+          "rail",
           "navigation"
         ]
       },
@@ -354,7 +354,7 @@
       },
       "group": {
         "type": "boolean",
-        "description": "A first-level item that is a group: a heading over its items, never a destination. A row and the compact rail draw the items in the group's place, without the heading."
+        "description": "A first-level item that is a group: a heading over its items, never a destination. A row and the rail draw the items in the group's place, without the heading."
       },
       "collapsible": {
         "type": "boolean",
@@ -729,7 +729,9 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
+    "aliases": [
+      "appearance=compact"
+    ],
     "deprecations": [],
     "replacement": null,
     "migrations": []
@@ -740,15 +742,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu/index.js",
-        "sha256": "c01115e5c52468ed555096c19b8b054430d5540ac41f8943e3f16f32bfcf6807"
+        "sha256": "735618db63ac4c7ca0c940290d5812610d74b47f3f8092626ab1763b6bab2865"
       },
       {
         "path": "src/smart/menu/items.mjs",
-        "sha256": "be4cb4c4cdb50eeee0b314dac0235a4729306570ff3e6e816cd51b480a180ee7"
+        "sha256": "8a68254608763eb4c96a29c91c2236a939b4acbbc2ea0f99d1b9311e8f3d8d59"
       },
       {
         "path": "src/smart/menu/js/templates/default.js",
-        "sha256": "1c9f83cec51c7e79e8b3532e3714eafb8b269d120581e41857ad3de57a9efdc5"
+        "sha256": "0d19fa71f6e7d4faed6458e6d89ad79c2d528f8f1bfc59e9d1912dd1b68ac0e5"
       },
       {
         "path": "src/smart/menu/scss/_smart__menu.scss",
@@ -760,7 +762,7 @@
       },
       {
         "path": "src/smart/menu/docs.md",
-        "sha256": "5965adf8b3a6da988e11748bbd11f67e4aad452544ee6ef2032bd97a0aff6db3"
+        "sha256": "0cab2d5e235f72462ec3332e10931644865b7c136b8d4eaa47f895a22e706587"
       }
     ],
     "generated_runtime": []

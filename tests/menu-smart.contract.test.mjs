@@ -411,7 +411,7 @@ test('smart menu: the class menu\'s public variables wrap the values it drew bef
 // classes of its own over the menu. tests/browser/menu-navigation.browser.mjs
 // measures it on the built bytes.
 test('smart menu: appearance navigation is a row or a column of frameless rows', () => {
-  assert.deepEqual([...MENU_APPEARANCES], ['default', 'documentation-tree', 'compact', 'navigation']);
+  assert.deepEqual([...MENU_APPEARANCES], ['default', 'documentation-tree', 'rail', 'navigation']);
   assert.match(read('src/smart/menu/items.mjs'), /export const ROW_APPEARANCES = Object\.freeze\(\['default', 'navigation'\]\);/u);
   assert.match(source, /return this\.orientation === 'horizontal' && ROW_APPEARANCES\.includes\(this\.appearance\);/u);
   // Escape closes a navigation row's panel as it does a default row's.

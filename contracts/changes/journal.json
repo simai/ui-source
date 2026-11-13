@@ -11712,6 +11712,101 @@
       },
       "owner": "ui-source",
       "source": "src/core/scss/mix/_mix__places.scss (sf-place-glass-accent); src/core/scss/_sf_css__surface_places.scss; ui-control control/docs-review/decisions.md C70"
+    },
+    {
+      "id": "attribute-language-compact-to-labels-code",
+      "recorded_on": "2026-11-13",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-language 1.3.0: the word compact means density only (owner decision C134). The switch's segments say names or codes by the new setting labels=\"name|code\"; the boolean compact, which showed the codes, is read as labels=\"code\" until remove_after, draws the same, and each page notes it once in SF.deprecations. labels written beside compact wins.",
+      "items": [
+        {
+          "component": "sf-language",
+          "from": "compact",
+          "to": "labels=\"code\""
+        }
+      ],
+      "deprecated_on": "2026-11-13",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Replace the boolean compact on sf-language by labels=\"code\". An element without compact needs nothing: labels=\"name\" is the default.",
+      "examples": {
+        "before": "<sf-language languages=\"ru en de\" compact></sf-language>",
+        "after": "<sf-language languages=\"ru en de\" labels=\"code\"></sf-language>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/language/index.js; ui-control control/docs-review/decisions.md C134; control/research/2026-11-13-navigation-density.md D5, Q1"
+    },
+    {
+      "id": "value-menu-appearance-compact-to-rail",
+      "recorded_on": "2026-11-13",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-menu 1.7.0: the word compact means density only (owner decision C134). The icon rail is appearance=\"rail\"; appearance=\"compact\" is its dated value alias, rewritten by the shim, drawn the same and noted once in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-menu",
+          "attribute": "appearance",
+          "from": "compact",
+          "to": "rail"
+        }
+      ],
+      "deprecated_on": "2026-11-13",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-value",
+      "examples": {
+        "before": "<sf-menu appearance=\"compact\" items=\"…\"></sf-menu>",
+        "after": "<sf-menu appearance=\"rail\" items=\"…\"></sf-menu>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/menu/component.json aliases; ui-control control/docs-review/decisions.md C134; control/research/2026-11-13-navigation-density.md D5, Q1"
+    },
+    {
+      "id": "class-menu-compact-to-rail",
+      "recorded_on": "2026-11-13",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.menu 1.8.0: the class menu's rail is sf-menu--rail (owner decision C134: the word compact means density only); sf-menu--compact is its former name and is drawn by the same rules until remove_after. The Smart sf-menu with appearance rail writes both classes until then, so a page selector that reached sf-menu--compact still does.",
+      "items": [
+        {
+          "component": "sf-menu",
+          "from": "sf-menu--compact",
+          "to": "sf-menu--rail"
+        }
+      ],
+      "deprecated_on": "2026-11-13",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<ul class=\"sf-menu sf-menu--compact\">",
+        "after": "<ul class=\"sf-menu sf-menu--rail\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/menu/scss/_css__menu_compact.scss; src/smart/menu/js/templates/default.js; ui-control control/docs-review/decisions.md C134; control/research/2026-11-13-navigation-density.md D5, Q1"
+    },
+    {
+      "id": "value-contents-layout-compact-to-sheet",
+      "recorded_on": "2026-11-13",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-contents 1.7.0: the word compact means density only (owner decision C134). The button view that opens the list is layout=\"sheet\"; layout=\"compact\" is its dated value alias, rewritten by the shim, drawn the same and noted once in SF.deprecations. The element writes the class sf-contents--layout-sheet and, until remove_after, its former sf-contents--layout-compact beside it.",
+      "items": [
+        {
+          "component": "sf-contents",
+          "attribute": "layout",
+          "from": "compact",
+          "to": "sheet"
+        }
+      ],
+      "deprecated_on": "2026-11-13",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-value",
+      "examples": {
+        "before": "<sf-contents layout=\"compact\" target=\"#article\"></sf-contents>",
+        "after": "<sf-contents layout=\"sheet\" target=\"#article\"></sf-contents>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/contents/component.json aliases; ui-control control/docs-review/decisions.md C134; control/research/2026-11-13-navigation-density.md D5, Q1"
     }
   ]
 }
