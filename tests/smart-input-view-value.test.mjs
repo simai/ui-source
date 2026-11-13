@@ -7,7 +7,7 @@ const body=source.split('  templateContext() {')[1].split('\n  onDisconnected(')
 const run=new Function('innerControlName',body);
 const context={call:(self)=>run.call(self,(component,name)=>name)};
 function exercise(controlled,value,attributeValue='',defaultValue='initial') {
-  return context.call({getPropsContext:()=>({value:attributeValue,name:'title'}),hasAttribute:()=>controlled,
+  return context.call({sfShownInvalid:(v)=>Boolean(v),sfShownMessage:(i,m)=>(i?m:''),getPropsContext:()=>({value:attributeValue,name:'title'}),hasAttribute:()=>controlled,
     value,getInputElement:()=>({value}),defaultValue,createTemplateContext:v=>v});
 }
 test('uncontrolled view receives current native value separately from reset default',()=>{
@@ -21,7 +21,7 @@ test('empty native edit does not fall back to reset default',()=>{
   assert.equal(exercise(false,'').value,'');
 });
 test('initial uncontrolled render uses defaultValue when no native control exists',()=>{
-  const c=context.call({getPropsContext:()=>({value:''}),hasAttribute:()=>false,
+  const c=context.call({sfShownInvalid:(v)=>Boolean(v),sfShownMessage:(i,m)=>(i?m:''),getPropsContext:()=>({value:''}),hasAttribute:()=>false,
     getInputElement:()=>null,defaultValue:'Initial',createTemplateContext:v=>v});
   assert.equal(c.value,'Initial');
 });

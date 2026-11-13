@@ -5,7 +5,7 @@ import {holdOpenSurfaceMark} from '../../core/js/open-surface-mark';
 import {pageLocale} from '../../core/js/page-language.js';
 import {fieldSize} from '../../component/field-size';
 import {PanelScrollbar} from '../../component/panel-scrollbar';
-import {FormField} from '../helpers/form-field';
+import {FormField, ShownRequired} from '../helpers/form-field';
 import {renderLookupTemplate} from './js/templates/default';
 import {
   DEFAULTS,
@@ -56,7 +56,7 @@ const LookupElement = elementFromManifest(manifest, {
 // its own copy (as sf-dropdown's portal does).
 const position = () => globalThis.SF?.Position || BundledPosition;
 
-class SfLookup extends FormField(LookupElement) {
+class SfLookup extends ShownRequired(FormField(LookupElement)) {
   static get props() {
     return {
       ...super.props,
@@ -231,12 +231,14 @@ class SfLookup extends FormField(LookupElement) {
       label: this.label || '',
       hint: this.hint || '',
       placeholder: this.placeholder || '',
-      errorMessage: this.errorMessage || '',
+      // The page's error, or the required one a failed form check shows
+      // (ShownRequired, C55 acceptance F1: as sf-dropdown 1.9.0).
+      errorMessage: this.sfShownMessage(this.invalid, this.errorMessage || ''),
       name: this.name || '',
       multiple,
       required: Boolean(this.required),
       readonly: Boolean(this.readonly),
-      invalid: Boolean(this.invalid),
+      invalid: this.sfShownInvalid(this.invalid),
       // The form's disabled fieldset counts too, so the drawn state is not the
       // `disabled` getter's: it travels under its own name.
       fieldDisabled: this.effectiveDisabled,

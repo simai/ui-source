@@ -11196,6 +11196,36 @@
       "source": "src/smart/dropdown/index.js"
     },
     {
+      "id": "behaviour-text-fields-shown-required",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-input 1.8.0, sf-textarea 1.8.0 and sf-lookup 1.6.0 show their required error after a failed form check, as sf-dropdown 1.9.0 does (C55 acceptance F1): a required field left empty gets the error border, the value-missing word under it («Заполните поле»; sf-lookup «Выберите значение.»), aria-invalid and aria-errormessage, from the host's invalid event (a submit attempt, checkValidity(), reportValidity()) until the person's input fills it or the form is reset. Before, only the browser's bubble said it. Submitting, validity, the bubble and the focus on the first invalid field are unchanged.",
+      "items": [
+        {
+          "component": "sf-input",
+          "from": "required error in the browser bubble only",
+          "to": "error look and value-missing message after a failed check"
+        },
+        {
+          "component": "sf-textarea",
+          "from": "required error in the browser bubble only",
+          "to": "error look and value-missing message after a failed check"
+        },
+        {
+          "component": "sf-lookup",
+          "from": "required error in the browser bubble only",
+          "to": "error look and value-missing message after a failed check"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to change. A page that drew its own required message on the host's invalid event (invalid + error-message) keeps it: the page's error-message wins over the field's word.",
+      "owner": "ui-source",
+      "source": "src/smart/helpers/form-field.js ShownRequired"
+    },
+    {
       "id": "value-avatar-offline-dot-dim-ink",
       "recorded_on": "2026-11-11",
       "stage": "compat",

@@ -7,7 +7,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { fieldSize } from '../../component/field-size';
 import { InheritedValueField } from '../helpers/inherited-value';
-import { FormField, innerControlName } from '../helpers/form-field';
+import { FormField, ShownRequired, innerControlName } from '../helpers/form-field';
 import { renderTextareaTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -28,7 +28,7 @@ const TextareaElement = elementFromManifest(manifest, {
   aliases,
 });
 
-class SfTextarea extends FormField(TextareaElement) {
+class SfTextarea extends ShownRequired(FormField(TextareaElement)) {
   static get props() {
     return {
       ...super.props,
@@ -147,9 +147,19 @@ class SfTextarea extends FormField(TextareaElement) {
       // The size the field draws: a retired size (1/3) is the one it keeps.
       size: this.size,
       value: this.hasAttribute('value') || !textarea ? props.value : textarea.value,
+      // The default form.reset() puts back is the declared value, never the
+      // live one: a render while the person types (the shown required error
+      // clearing) made the first typed character the default (C55
+      // acceptance F1 R2, D2).
+      defaultValue: props.value ?? '',
       // The host is the form control where the browser has ElementInternals,
       // so the textarea carries no name (§17.1 item 6).
       controlName: innerControlName(this, props.name),
+      // The page's error, or the required one a failed form check shows
+      // (ShownRequired, C55 acceptance F1: as sf-dropdown 1.9.0).
+      invalid: this.sfShownInvalid(props.invalid),
+      error: false,
+      errorMessage: this.sfShownMessage(props.invalid, props.errorMessage),
       // Resolved names the template reads (contracts/template-context.json).
       type: this.appearance,
       minlength: this.minlength,

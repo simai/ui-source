@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-lookup",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "title": "Lookup",
   "summary": "A form field that picks people or objects from a search the host answers: type, see rows with a picture, a name and a caption, choose one or several. Chosen items are removable chips; the list says when it waits for more letters, searches, finds nothing, is unavailable or failed, with a retry.",
   "kind": "smart",
@@ -409,7 +409,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-lookup/index.js",
-        "sha256": "2f6f8005c4f49d4f937d735a877a79877a141ccc5563c1c73c0225b5db5a2d6d"
+        "sha256": "6cd9f52ea9f7fce5c027002c8ce6d6efb4b00b68cb66aa54409e5a9bfb764acb"
       },
       {
         "path": "src/smart/input-lookup/js/templates/default.js",
