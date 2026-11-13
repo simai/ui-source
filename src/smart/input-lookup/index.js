@@ -56,6 +56,12 @@ const LookupElement = elementFromManifest(manifest, {
 // its own copy (as sf-dropdown's portal does).
 const position = () => globalThis.SF?.Position || BundledPosition;
 
+// How long a search runs before the field says so (owner decision C130 (8):
+// a spinner after 1 s, sf-spinner's own delay, C138). A faster answer replaces
+// the rows without a flash; meanwhile the rows of the last answer stay (LS-5).
+// It was the debounce alone: «Поиск…» 130-150 ms after a key, whatever the server.
+export const SEARCH_LINE_DELAY = 1000;
+
 class SfLookup extends ShownRequired(FormField(LookupElement)) {
   static get props() {
     return {
@@ -89,6 +95,13 @@ class SfLookup extends ShownRequired(FormField(LookupElement)) {
     this._last = null;
     this._anchor = null;
     this._anchorPanel = null;
+    this._searching = false;
+    this._waitShown = false;
+    this._waitTimer = 0;
+    this._chipsOpen = false;
+    this._chipsShown = null;
+    this._fitPasses = 0;
+    this._fitObserver = null;
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -262,6 +275,12 @@ class SfLookup extends ShownRequired(FormField(LookupElement)) {
       loadingMore: this._loadingMore,
       refusal: this._refusal,
       ariaLabel: this.getAttribute('aria-label') || '',
+      searching: this._searching,
+      waitShown: this._waitShown,
+      chipsMode: this._chipsMode(),
+      // How many chips stand in the row while it is collapsed; null draws them all.
+      chipsCollapsed: this._chipsCollapsed(),
+      chipsShown: this._chipsCollapsed() ? this._chipsShown : null,
       component: this,
     });
   }
@@ -273,6 +292,8 @@ class SfLookup extends ShownRequired(FormField(LookupElement)) {
   afterRender() {
     this._syncPanel();
     this._scrollActiveIntoView();
+    this._watchChipRow();
+    this._fitChips();
     this.sfSyncFormState();
   }
 
@@ -280,7 +301,93 @@ class SfLookup extends ShownRequired(FormField(LookupElement)) {
     this._close({render: false});
     this._syncPanel({force: false});
     this._scrollbar?.disconnect();
+    this._fitObserver?.disconnect();
+    this._fitObserver = null;
     super.onDisconnected?.();
+  }
+
+  // ---------------------------------------------------------- one row of chips
+
+  _chipsMode() {
+    return this.multiple && String(this.getAttribute('chips') || '').trim().toLowerCase() === 'row' ? 'row' : 'wrap';
+  }
+
+  // Collapsed: row mode, chips chosen, the field not opened by a press or the focus.
+  _chipsCollapsed() {
+    return this._chipsMode() === 'row' && !this._chipsOpen && chosenList(this.value).length > 0;
+  }
+
+  _watchChipRow() {
+    const frame = this.querySelector('.sf-lookup-frame');
+    const wanted = this._chipsMode() === 'row' ? frame : null;
+    if (this._fitFrame === wanted) return;
+    this._fitObserver?.disconnect();
+    this._fitFrame = wanted;
+    if (!wanted || typeof ResizeObserver !== 'function') return;
+    this._fitObserver = new ResizeObserver(() => {
+      this._fitPasses = 0;
+      this._fitChips();
+    });
+    this._fitObserver.observe(wanted);
+  }
+
+  // How many chips the row holds, with «+N» after them and the search box's
+  // least room: measured from the drawn chips (those past the row are drawn
+  // out of the flow, so they keep their width). A new count draws again; a few
+  // passes settle a «+N» whose width changed with its number.
+  _fitChips() {
+    if (!this._chipsCollapsed()) {
+      this._chipsShown = null;
+      return;
+    }
+    const frame = this.querySelector('.sf-lookup-frame');
+    if (!frame || !frame.isConnected) return;
+    const tags = [...frame.querySelectorAll(':scope > .sf-lookup-chip')].map((host) => host.querySelector('.sf-tag') || host);
+    const total = tags.length;
+    if (!total) return;
+    const style = getComputedStyle(frame);
+    const room = frame.clientWidth - parseFloat(style.paddingInlineStart || 0) - parseFloat(style.paddingInlineEnd || 0);
+    if (!(room > 0)) return;
+    const gap = parseFloat(style.columnGap) || 0;
+    const input = this.input;
+    const least = input ? parseFloat(getComputedStyle(input).minInlineSize) || 0 : 0;
+    const more = frame.querySelector(':scope > .sf-lookup-more-chips');
+    const moreTag = more?.querySelector('.sf-tag') || more;
+    const moreWidth = moreTag ? moreTag.getBoundingClientRect().width : 0;
+    const widths = tags.map((tag) => tag.getBoundingClientRect().width);
+    let shown = 0;
+    let used = 0;
+    for (let index = 0; index < total; index += 1) {
+      const next = used + widths[index] + gap;
+      const rest = index + 1 < total ? moreWidth + gap : 0;
+      if (next + rest + least > room + 0.5) break;
+      used = next;
+      shown = index + 1;
+    }
+    // The first chip always stands; a name too long for the row ends in an ellipsis.
+    shown = Math.max(1, shown);
+    if (shown === this._chipsShown) return;
+    if (this._fitPasses > 3) return;
+    this._fitPasses += 1;
+    this._chipsShown = shown;
+    this.requestComponentUpdate('chips-fit');
+  }
+
+  _openChips() {
+    if (this._chipsMode() !== 'row' || this._chipsOpen) return;
+    this._chipsOpen = true;
+    this.requestComponentUpdate('chips-open');
+  }
+
+  onMoreChipsClick(event) {
+    event.stopPropagation();
+    if (this.effectiveDisabled) return;
+    this._openChips();
+    this.input?.focus({preventScroll: true});
+  }
+
+  onRootFocusIn() {
+    this._openChips();
   }
 
   // The panel is a manual popover in the top layer, anchored under the frame;
@@ -339,6 +446,25 @@ class SfLookup extends ShownRequired(FormField(LookupElement)) {
     // Whatever was asked before is older than what comes next.
     this._seq += 1;
     this._loadingMore = false;
+    this._stopWait();
+  }
+
+  _startWait() {
+    clearTimeout(this._waitTimer);
+    this._waitShown = false;
+    this._waitTimer = setTimeout(() => {
+      this._waitTimer = 0;
+      if (!this._searching && !this._loadingMore) return;
+      this._waitShown = true;
+      this.requestComponentUpdate('searching');
+    }, SEARCH_LINE_DELAY);
+  }
+
+  _stopWait() {
+    clearTimeout(this._waitTimer);
+    this._waitTimer = 0;
+    this._waitShown = false;
+    this._searching = false;
   }
 
   _openList() {
@@ -401,15 +527,16 @@ class SfLookup extends ShownRequired(FormField(LookupElement)) {
     const seq = this._seq;
     this._last = {query, cursor};
     const limit = this._maxResults();
+    // The rows of the last answer stay while this one runs (LS-5); the line
+    // with the spinner comes after SEARCH_LINE_DELAY.
     if (cursor === null) {
-      this._state = 'searching';
-      this._items = [];
+      this._searching = true;
       this._nextCursor = null;
       this._notice = '';
-      this._active = -1;
     } else {
       this._loadingMore = true;
     }
+    this._startWait();
     this.requestComponentUpdate('searching');
     let answer;
     let failed = false;
@@ -423,10 +550,12 @@ class SfLookup extends ShownRequired(FormField(LookupElement)) {
     if (seq !== this._seq || controller.signal.aborted || !this._open) return;
     this._controller = null;
     this._loadingMore = false;
+    this._stopWait();
     const read = failed ? {state: 'error', items: [], nextCursor: null} : readAnswer(answer, {exclude: this._exclude(), limit});
     if (cursor === null) {
       this._items = read.items;
       this._state = read.state;
+      this._active = -1;
     } else if (read.state === 'error' || read.state === 'unavailable') {
       this._state = read.state;
     } else {
@@ -658,6 +787,11 @@ class SfLookup extends ShownRequired(FormField(LookupElement)) {
     const next = event.relatedTarget;
     if (next && this.contains(next)) return;
     this.querySelector('.sf-lookup')?.classList.remove('sf-lookup--pointer-focus');
+    if (this._chipsOpen) {
+      this._chipsOpen = false;
+      this._chipsShown = null;
+      this._fitPasses = 0;
+    }
     if (!this.multiple && this._dirty) {
       this._dirty = false;
       this._query = '';

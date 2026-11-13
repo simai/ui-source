@@ -140,7 +140,13 @@ try {
   s = await state(page, 'p');
   const first = await page.evaluate(() => window.__calls.map(({query, cursor, limit}) => ({query, cursor, limit})));
   check('debounce: one call for the burst, with cursor null and limit max-results', JSON.stringify(first) === JSON.stringify([{query: 'ann', cursor: null, limit: 20}]), {first});
-  check('searching: spinner and Searching…', s.status === 'Searching…' && Boolean(await page.$('#p sf-spinner')), s);
+  // The line waits the spinner's delay (C130 (8), 1 s; LS-5): a call under it
+  // shows nothing, and the hint the query left goes at once.
+  check('searching: no line inside the delay', s.status === '' && !(await page.$('#p sf-spinner')), s);
+  await page.waitForTimeout(1000);
+  s = await state(page, 'p');
+  check('searching: after the delay the spinner and Searching…, one word (label-hidden)', s.status === 'Searching…'
+    && await page.evaluate(() => { const one = document.querySelector('#p sf-spinner'); return Boolean(one) && one.hasAttribute('label-hidden'); }), s);
 
   // A second query: the first call is aborted, and its late answer dropped.
   await page.keyboard.type('a');

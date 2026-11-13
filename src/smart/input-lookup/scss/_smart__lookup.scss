@@ -36,17 +36,27 @@
   --sf-field-action--glyph: var(--sf-text-height-1);
   --sf-field-action--height: var(--sf-ui-1--control-height);
   --sf-lookup--row-padding-inline: var(--sf-space-1\/2);
-  /* Wrapped chips: the rows stand far enough apart for sf-tag's remove targets
-     (--sf-c2 square, centred on the line) to meet at most, whatever line the
-     size and the viewport's text ladder give: 4px on a 20px line, 8 on 16. */
+  /* A chip is the field less --sf-space-1/4 above and below (owner decision
+     C58): 32 in a 40 field, 24 in 32 (size 1/2, compact 1), 28 in 36 (phone),
+     40 in 48, 48 in 56, 20 in 28 (1/3 desktop, 1/2 phone). Wrapped rows and
+     neighbouring chips stand --sf-space-1/4 apart; a remove target (at least
+     --sf-c2, centred on the chip) of a chip under 24 reaches 2 past it, so the
+     targets of two rows meet at most. Chips stood on the field's text line
+     before (24 in a 40 field), their rows 4 or 8 apart (LS-1). */
+  --sf-lookup--chip-height: calc(var(--sf-field-action--height) - 2 * var(--sf-space-1\/4));
   /* The list's inset (C05, R029; R017's 1/3 before): rows and their fills
      stand --sf-space-1/4 from the panel's edge, and the scrollbar stands in
      that inset (C07). */
   --sf-lookup--panel-padding: var(--sf-space-1\/4);
-  --sf-lookup--chip-row-gap: max(var(--sf-space-1\/4), calc(var(--sf-c2) - var(--sf-lookup--line-height)));
+  --sf-lookup--chip-row-gap: var(--sf-space-1\/4);
+  /* The remove cross, a small step by the chip's tag (owner decision C132,
+     the cross row: tags 1/3 and 1/2 → 8, 1 and 2 → 12); its target stays at
+     least --sf-c2 whatever the chip (LS-3). It was the tag's text step, 10. */
+  --sf-lookup--chip-cross: var(--sf-a8);
 }
 
 .sf-lookup.sf-lookup--size-2 {
+  --sf-lookup--chip-cross: var(--sf-b2);
   --sf-lookup--font-size: var(--sf-text-size-2);
   --sf-lookup--line-height: var(--sf-text-height-2);
   --sf-lookup--label-size: var(--sf-text-size-1);
@@ -97,6 +107,11 @@
     --sf-field-action--glyph: #{ladder.text-height($size)};
     --sf-field-action--height: #{ladder.height($size)};
   }
+}
+
+/* At 3 the chip is an sf-tag 2: the cross of tag 2, 12 (C132). */
+.sf-lookup.#{ladder.size-class('sf-lookup', '3')} {
+  --sf-lookup--chip-cross: var(--sf-b2);
 }
 
 /* The label row and the message line: sf-input's. */
@@ -255,10 +270,92 @@
   cursor: default;
 }
 
-/* Chips stand on the field's text line: one row of them keeps the height. */
-.sf-lookup .sf-lookup-chip {
+/* Chips (C58): the field less --sf-space-1/4 above and below, so a row of
+   them keeps the field's height: the frame pads them by that inset less its
+   hairline and the search box takes the chip's height. The chip is told its
+   line (--sf-tag--line), which makes it, its text line and its remove box
+   that high. A long name ends in an ellipsis, the chip no wider than 20rem
+   (the whole name is its title). */
+.sf-lookup .sf-lookup-chip,
+.sf-lookup .sf-lookup-more-chips {
+  --sf-tag--line: var(--sf-lookup--chip-height);
+}
+
+.sf-lookup .sf-lookup-chip > .sf-tag,
+.sf-lookup .sf-lookup-more-chips > .sf-tag {
   min-inline-size: 0;
-  max-inline-size: 100%;
+  max-inline-size: min(100%, var(--sf-g0));
+}
+
+.sf-lookup .sf-lookup-chip > .sf-tag > .sf-tag-container {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-lookup:has(.sf-lookup-chip) .sf-lookup-frame {
+  padding-block: var(--sf-lookup-padding-block, calc(var(--sf-space-1\/4) - var(--sf-px)));
+}
+
+.sf-lookup:has(.sf-lookup-chip) .sf-lookup-input {
+  block-size: var(--sf-lookup--chip-height);
+}
+
+/* The search box beside the chips (LS-15). It asked 4ch at every moment and
+   dropped to an empty row of its own whenever the chips left less (two chips
+   in a 1/2 field 208-348 wide on a desktop: 56 in place of 32). At rest and
+   empty it leaves the flow (it is still reached by Tab and a press in the
+   frame); focused it asks room for the caret, typed into 4ch, and a row of
+   its own only when the chips leave less. */
+.sf-lookup:has(.sf-lookup-chip) .sf-lookup-input:not(.sf-lookup-input--typed) {
+  min-inline-size: var(--sf-space-1);
+}
+
+.sf-lookup:has(.sf-lookup-chip) .sf-lookup-input:not(.sf-lookup-input--typed):not(:focus) {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  inline-size: 0;
+  min-inline-size: 0;
+  padding-inline: 0;
+}
+
+/* One row (chips="row", PROVISIONAL name; C58: filters, tables and cards).
+   While the field is closed the chips stand in one row at their own widths;
+   the component counts how many the row holds and draws «+N» after them. The
+   rest stay drawn out of the flow and unseen, so they are measured but not
+   reached. The focus coming into the field, or a press on «+N», opens it to
+   the wrapping rows of a form. */
+.sf-lookup.sf-lookup--chips-collapsed .sf-lookup-frame {
+  flex-wrap: nowrap;
+  overflow-x: clip;
+}
+
+.sf-lookup.sf-lookup--chips-collapsed .sf-lookup-chip > .sf-tag,
+.sf-lookup.sf-lookup--chips-collapsed .sf-lookup-more-chips > .sf-tag {
+  flex-shrink: 0;
+}
+
+/* One chip and «+N»: the chip gives way, its name ends in an ellipsis. */
+.sf-lookup.sf-lookup--chips-one .sf-lookup-chip:not(.sf-lookup-chip--over) > .sf-tag {
+  flex-shrink: 1;
+}
+
+.sf-lookup .sf-lookup-chip.sf-lookup-chip--over > .sf-tag {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.sf-lookup .sf-lookup-more-chips > .sf-tag {
+  cursor: pointer;
+}
+
+/* A search inside the delay with nothing to show yet draws no panel. */
+.sf-lookup.sf-lookup--open .sf-lookup-panel.sf-lookup-panel--blank {
+  display: none;
 }
 
 /* The clear is the field layer's action (C123; it was sf-button-close plain,
@@ -412,8 +509,19 @@
   min-inline-size: 0;
 }
 
+/* The line is drawn after the field has waited sf-spinner's delay itself
+   (SEARCH_LINE_DELAY, C130 (8)): its spinner shows with it, not a delay later. */
+.sf-lookup .sf-lookup-spinner {
+  --sf-loader--delay: 0s;
+}
+
 .sf-lookup .sf-lookup-state:has(.sf-lookup-state-text) {
   padding-block: var(--sf-lookup--row-padding-block);
+  /* A line is a row of the list (C05: a row is a control of the lookup's
+     size), 40 at size 1 on a desktop, its text centred in it; it was its text
+     line and padding, 28, and 52 while searching, with the spinner's own label
+     under the spinner (LS-16). */
+  min-block-size: var(--sf-lookup--row-height);
 }
 
 .sf-lookup .sf-lookup-state.sf-lookup-state--error,
@@ -440,6 +548,32 @@
 }
 
 @layer sf.states {
+  /* The chip's remove box (sf-tag draws an inline tag's box its line high and
+     wide): the chip high and no wider than --sf-c2, so the cross keeps its
+     place at the chip's end and the target is at least --sf-c2 square (the
+     tag's ::after reaches past a box under it: chips of 20). It was the line
+     square, 20 x 20 on a phone (LS-3). The cross is the small step the
+     chip's size takes (C132); sf-tag sets its own in this layer, by size. */
+  .sf-lookup .sf-lookup-chip > .sf-tag.sf-tag--inline.sf-tag--inline {
+    --sf-tag--close-size: var(--sf-lookup--chip-cross);
+  }
+
+  .sf-lookup .sf-lookup-chip > .sf-tag.sf-tag--inline.sf-tag--inline > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close {
+    block-size: var(--sf-lookup--chip-height);
+    inline-size: min(var(--sf-lookup--chip-height), var(--sf-c2));
+  }
+
+  /* The avatar in a chip is the chip less --sf-space-1/4 above and below
+     (C58): 24 in a 32 chip. sf-tag draws an inline tag's avatar its line
+     high, which was the chip (LS-2). */
+  .sf-lookup .sf-lookup-chip > .sf-tag.sf-tag--inline.sf-tag--inline > .sf-avatar {
+    --sf-lookup--chip-avatar: calc(var(--sf-lookup--chip-height) - 2 * var(--sf-space-1\/4));
+    --sf-avatar--height: var(--sf-lookup--chip-avatar);
+    --sf-avatar--width: var(--sf-lookup--chip-avatar);
+    --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-lookup--chip-avatar) / 2));
+    --sf-avatar--line-height: var(--sf-lookup--chip-avatar);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .sf-lookup .sf-lookup-frame {
       transition-duration: 0s;

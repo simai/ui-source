@@ -22,6 +22,12 @@
       "many": "{n} результатов",
       "other": "{n} результата"
     },
-    "value-missing": "Выберите значение"
+    "value-missing": "Выберите значение",
+    "more-chips": {
+      "one": "Ещё {n}: {names}",
+      "few": "Ещё {n}: {names}",
+      "many": "Ещё {n}: {names}",
+      "other": "Ещё {n}: {names}"
+    }
   }
 }

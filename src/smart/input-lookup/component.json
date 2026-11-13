@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-lookup's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.14. The people and object picker: owner decision q-efb6397065 (2026-10-29), UI Chat's request msg-8fbe39bb9acb40b9a08e item 1, design draft control/LOOKUP-FIELD-DESIGN-2026-10-30.md with the consumers' answers msg-41ac91281d8e4852a6f5.",
   "id": "smart.input-lookup",
   "tag": "sf-input-lookup",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -51,6 +51,15 @@
       "type": "boolean",
       "default": false,
       "summary": "Several items, shown as removable chips in the order chosen; the list stays open after a choice. Without it a choice is the value and closes the list."
+    },
+    "chips": {
+      "type": "enum",
+      "values": [
+        "wrap",
+        "row"
+      ],
+      "default": "wrap",
+      "summary": "PROVISIONAL name (the public name waits for the owner). Multiple only: wrap shows every chip on as many rows as they take (forms); row keeps one row and a «+N» chip for the rest (filters, tables, cards; owner decision C58). A press on «+N», or the focus coming into the field, opens it to every chip; leaving the field closes it."
     },
     "max-items": {
       "type": "number",
@@ -177,8 +186,9 @@
     {
       "name": "cl-tag",
       "$comment": [
-        "The chosen items are sf-tag chips on the field's text line, each with",
-        "a remove button named Remove <label>."
+        "The chosen items are sf-tag chips, the field less --sf-space-1/4 above",
+        "and below (C58), each with a remove button named Remove <label>; with",
+        "chips=\"row\" a «+N» sf-tag stands for the chips past the row."
       ]
     },
     {
@@ -321,7 +331,8 @@
     "version 1.7.0 (written on the branch as 1.6.0; 2026-11-11): a minor (C55 acceptance F1: one form reads as one). A required field left empty shows its required error once the form's check fails -- the host's invalid event on a submit attempt, checkValidity() or reportValidity() -- as sf-dropdown 1.9.0 does: the error border (filled: the error fill), its own «Выберите значение.» (lang runtime value-missing) under the field in the field-message type, aria-invalid and aria-errormessage on the control; the person's input that fills it, or form.reset(), clears it. Before, only the browser's bubble said it. The bubble and the browser's focus on the first invalid field are unchanged; the page's invalid and error-message win over it (helpers/form-field.js ShownRequired). R2 (DEV acceptance 2026-11-11, D1): the shown required error goes whenever the value stops being missing, whatever set it -- the person's input or change, a value set from script, a value attribute -- as sf-dropdown 1.9.0 (ShownRequired clears in the form sync every one of them ends in, not on input/change only). The required word has no full stop, as the other fields': «Выберите значение» / «Choose a value».",
     "version 1.7.1 (2026-11-13, R214 in passing): a patch. A value set from script as a bare value («u1», or a list of them) before the options arrived kept the value as its label for good: the setter resolved it against the options once. The setter and the form restore now keep the value as given and the getter reads it against the current options, as the value attribute always was, so the label comes whenever the options do: set before or after, as a property, in the data-sf-settings island or before the upgrade. options stays a property or the island (a list setting is property-only, core/js/element-manifest.js): an options attribute is not read, so a bare value beside one keeps the value as its label. Settings, values, events and keys unchanged.",
     "version 1.8.0 (2026-11-13, owner decision C123; R214): a minor, a look. The clear of a single field holding a value is the field layer's action (component.inputs 1.6.0, .sf-field-action) in place of sf-button-close plain: the close glyph the field's leading-picture size (24 / 20 / 28 at 1, 1/2, 2; it was 16), its end on the plain inset, no plate, on-surface-variant at rest and on-surface under the pointer, the ring round the glyph, its hit area the field's inner height (it was a 28 box); the search text keeps half an inset before it. Still named «Очистить», still a Tab stop; the relation cl-button-close gives way to cl-icon. Chips and their remove buttons unchanged. Settings, values, events and keys unchanged.",
-    "version 1.9.0 (2026-11-14, fields ladder; R222 groundwork): a minor. size takes the field ladder's five steps, 1/3, 1/2, 1, 2, 3 (component/field-size.js FIELD_LADDER), as sf-input: at 1/3 and 3 the field is 28 / 56 high at 1440 (24 / 48 compact, 24 / 52 on a phone), its value on the step's text, its label, help and error a step below, its inset sf-input's at those steps; it drew 1/3 and 3 at 32 / 48. Chips at 1/3 and 3 are inline sf-tag 1/3 and 2, the clear and the spinner a step to match. The sheet reads its steps from the shared field ladder (component/inputs/scss/_field-ladder.scss). 1/2, 1 and 2 unchanged; settings, values, events and keys unchanged."
+    "version 1.9.0 (2026-11-14, fields ladder; R222 groundwork): a minor. size takes the field ladder's five steps, 1/3, 1/2, 1, 2, 3 (component/field-size.js FIELD_LADDER), as sf-input: at 1/3 and 3 the field is 28 / 56 high at 1440 (24 / 48 compact, 24 / 52 on a phone), its value on the step's text, its label, help and error a step below, its inset sf-input's at those steps; it drew 1/3 and 3 at 32 / 48. Chips at 1/3 and 3 are inline sf-tag 1/3 and 2, the clear and the spinner a step to match. The sheet reads its steps from the shared field ladder (component/inputs/scss/_field-ladder.scss). 1/2, 1 and 2 unchanged; settings, values, events and keys unchanged.",
+    "version 1.10.0 (2026-11-14, lookup study control/research/2026-11-14-lookup.md, LS-1..LS-5, LS-15, LS-16): a minor, a look under existing decisions. LS-1: a chip is the field less --sf-space-1/4 above and below (owner decision C58), told to sf-tag as its line: 32 / 24 / 40 / 48 / 20 at 1, 1/2, 2, 3, 1/3 on a desktop (28 and 20 at 1 and 1/2 on a phone, 24 at compact 1); it stood on the text line, 24 / 20 / 28. The frame pads chips by that inset less the hairline and the search box is the chip high, so a row of chips keeps the field's height; rows and chips 4 apart. LS-2: an avatar in a chip is the chip less 8 (24 in 32); it was the chip. LS-3: the remove box is the chip high and at most --sf-c2 wide, its target at least 24 square everywhere (20 and 16 on a phone before); the cross a small step of C132, 8 at 1/3..1, 12 at 2 and 3 (it was the text step, 10 / 12 / 14). Long names end in an ellipsis, the chip at most 20rem. LS-4: chips=\"row\" (PROVISIONAL name, the public name to the owner): one row and a «+N» chip naming the rest; the focus coming in, or a press on «+N», opens the field to every chip, leaving closes it; the count follows the width (a ResizeObserver). The default, wrap, is unchanged. LS-5: a running search keeps the last answer's rows; «Поиск…» and the spinner come after 1 s (C130 (8), sf-spinner's delay; SEARCH_LINE_DELAY), and nothing is drawn for a first search inside it; it showed 130-150 ms after a key whatever the server. LS-16: the spinner is label-hidden (C138), one word on the line, and every state line is a row of the list high (C05): 40 at size 1 on a desktop; the searching line was 52 with «Загрузка…» under the spinner, the other lines 28. LS-15: the empty search box beside chips takes no room at rest (out of the flow, still reached by Tab and a press), room for the caret when focused and 4ch when typed into; it took 4ch always and dropped to an empty row whenever the chips left less (56 in place of 32). Values, events and keys unchanged; the setting chips is new."
   ],
   "x-registry": {
     "inputs": {

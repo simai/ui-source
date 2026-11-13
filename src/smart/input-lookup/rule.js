@@ -6,8 +6,9 @@ SF.RuleLoader['cl-input-lookup'] = {
   js: true,
   css: true,
   relation: [
-    // The chosen items are sf-tag chips on the field's text line, each with
-    // a remove button named Remove <label>.
+    // The chosen items are sf-tag chips, the field less --sf-space-1/4 above
+    // and below (C58), each with a remove button named Remove <label>; with
+    // chips="row" a «+N» sf-tag stands for the chips past the row.
     { name: 'cl-tag' },
     // A row's picture is the class markup of an avatar (.sf-avatar): a
     // photo or initials, drawn by the avatars sheet without an element per row.

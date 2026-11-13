@@ -47,7 +47,11 @@ lookup.provider = async (query, {cursor, limit, signal}) => ({items, nextCursor}
 2. After `debounce` (120 ms) the provider is called with
    `{cursor: null, limit, signal}`; `limit` is `max-results` (20). The
    previous call is aborted through `signal`, and an answer that arrives for
-   an older call is dropped.
+   an older call is dropped. While it runs the rows of the last answer stay;
+   only when it takes longer than 1 s (the spinner's delay, owner decisions
+   C130 and C138) the line under them says "Searching..." beside a spinner,
+   in one word: the spinner's own label is `label-hidden`. A faster answer
+   replaces the rows without a flash (1.10.0).
 3. `{items, nextCursor}` shows the rows, or "Nothing found";
    `{status: 'unavailable'}` shows "Search is unavailable" and no reason; a
    thrown error or a rejected promise shows the error line and Retry, which
@@ -76,6 +80,15 @@ or a `blob:` address.
   options come before or after it, it shows its option's label (1.7.1).
 - `multiple` -- several values as chips; the list stays open after a choice.
   Without it a choice is the value and closes the list.
+- `chips="wrap|row"` -- **PROVISIONAL name** (the public name waits for the
+  owner; it may change before it is final). Multiple only. `wrap` (the
+  default) shows every chip, on as many rows as they take: forms. `row`
+  keeps one row and a "+N" chip for the rest: filter bars, table cells, card
+  headers (owner decision C58). The "+N" names the hidden items in its
+  tooltip and accessible name; a press on it, or the focus coming into the
+  field (Tab, a press in the frame), opens the field to every chip, and
+  leaving the field closes it to one row again. The count follows the
+  field's width.
 - `max-items` -- multiple only: the most items; a choice past it is refused
   with the line "No more than N".
 - `min-length` (2), `max-results` (20), `debounce` (120) -- the search, as
@@ -95,6 +108,24 @@ The clear of a single field holding a value is a glyph without a plate (owner
 decision C123, 1.8.0): the field layer's `.sf-field-action`, the size of the
 field's leading picture (24 / 20 / 28 at 1, 1/2, 2), quiet at rest and the
 text's ink under the pointer, its hit area the field's height.
+
+### Chips
+
+A chip is the field less `--sf-space-1/4` above and below (owner decision
+C58, 1.10.0): 32 in a 40 field, 24 in a 32 one (size 1/2, compact size 1),
+28 on a phone (36), 40 at size 2, 48 at size 3, 20 at size 1/3 and at size
+1/2 on a phone; a row of chips keeps the field's height. Chips and their rows
+stand `--sf-space-1/4` apart. An avatar in a chip is the chip less
+`--sf-space-1/4` above and below (24 in a 32 chip). The remove cross is a
+small step (owner decision C132): 8 at sizes 1/3, 1/2 and 1, 12 at 2 and 3;
+its press target is at least 24 by 24 at every size, density and screen,
+the chip's height where the chip is taller. A long name ends in an ellipsis,
+the chip no wider than 20rem; the whole name is its tooltip.
+
+The search box beside the chips takes no room while it is empty and not
+focused, so it never stands on a row of its own at rest; focused it asks
+room for the caret, typed into four characters, and only then wraps when
+the chips leave less.
 
 ## Methods
 
@@ -120,7 +151,9 @@ set from code, a form reset and the browser's restore say nothing.
 - Enter chooses the active row; in a single field it closes the list.
 - Escape closes the list; a second Escape clears the query.
 - Backspace in the empty search box removes the last chip.
-- Tab reaches each chip's remove button and leaves the field.
+- Tab reaches each chip's remove button and leaves the field. With
+  `chips="row"` the focus coming in opens the field, so the hidden chips are
+  reached too.
 
 ## Accessibility
 
@@ -129,7 +162,8 @@ The combobox pattern: the search box is `role="combobox"` with
 `role="listbox"` (`aria-multiselectable` when multiple) and its rows
 `role="option"` with `aria-selected`. The state line under the rows -- the
 hint, Searching..., Nothing found, the unavailable line, the error and the
-max-items refusal -- is `role="status"`, polite. Chips are sf-tag with a remove button named
+max-items refusal -- is `role="status"`, polite; it is a row of the list high
+(40 at size 1 on a desktop). Chips are sf-tag with a remove button named
 "Remove Anna". Colours are role tokens, AA in light and dark.
 
 ## The list's geometry

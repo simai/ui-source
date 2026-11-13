@@ -20,12 +20,13 @@ const AVATAR_CLASS_SIZE = '1/4';
 // C14's plain close further): a glyph without a plate, the size of the
 // field's leading picture, its hit area the field's height.
 const BUTTON_SIZE = {'1/3': '1/3', '1/2': '1/3', '1': '1/2', '2': '1', '3': '2'};
-// A chip stands on the field's text line, a tag one size down (sf-tag line).
-// sf-tag's line names the kept sizes; at the outer steps of the field ladder
-// the chip says its tag itself, an inline tag one size down where the ladder
-// has one: 1/3 the 1/3 tag on its own line (16 on a desktop, the field's line
-// at 1/3), 3 the tag of size 2.
-const CHIP_TAG = {'1/3': {size: '1/3', inline: true}, '3': {size: '2', inline: true}};
+// A chip is an inline tag one size down, its text a step under the field's
+// (1/3 keeps the smallest tag). Its height is the field's less --sf-space-1/4
+// above and below (owner decision C58): the stylesheet publishes it to the tag
+// as its line (--sf-tag--line), so the chip, its avatar and its remove target
+// are read from the field ladder at every size and density (LS-1..LS-3). It
+// stood on the field's text line before (sf-tag line): 24 in a 40 field.
+const CHIP_TAG_SIZE = {'1/3': '1/3', '1/2': '1/3', '1': '1/2', '2': '1', '3': '2'};
 
 function avatar(item, size, extraClass = '') {
   if (!item.avatar) return nothing;
@@ -36,15 +37,17 @@ function avatar(item, size, extraClass = '') {
   return html`<span class="${classes} sf-avatar--text" aria-hidden="true">${item.avatar.initials}</span>`;
 }
 
-function chip(context, item) {
-  const {component, size, editable, fieldDisabled} = context;
+function chip(context, item, index) {
+  const {component, size, editable, fieldDisabled, chipsShown} = context;
   const label = String(item.label);
+  // Row mode (chips="row"): the chips past the row stay drawn, out of the
+  // flow and unseen, so the field can measure them; "+N" stands for them.
+  const over = chipsShown !== null && index >= chipsShown;
   return html`<sf-tag
-      class="sf-lookup-chip"
+      class=${over ? 'sf-lookup-chip sf-lookup-chip--over' : 'sf-lookup-chip'}
       kind=${item.avatar ? 'avatar' : 'default'}
-      line=${CHIP_TAG[size] ? nothing : size}
-      size=${CHIP_TAG[size]?.size || nothing}
-      ?inline=${Boolean(CHIP_TAG[size]?.inline)}
+      size=${CHIP_TAG_SIZE[size] || '1/2'}
+      inline
       text=${label}
       title=${item.caption ? `${label} — ${item.caption}` : label}
       avatar-image-url=${item.avatar?.src || nothing}
@@ -55,6 +58,28 @@ function chip(context, item) {
       data-sf-value=${String(item.value)}
       @sf-tag-close=${(event) => component.onChipClose(event, item)}
       @close=${(event) => event.stopPropagation()}
+    ></sf-tag>`;
+}
+
+// The chips that do not fit one row (chips="row", PROVISIONAL name; C58: one
+// row and a «+N» to press in filters, tables and cards). A press, or the focus
+// coming into the field, opens the field to every chip; leaving it closes it.
+function moreChips(context) {
+  const {component, size, chosen, chipsShown} = context;
+  if (chipsShown === null || chipsShown >= chosen.length) return nothing;
+  const rest = chosen.slice(chipsShown);
+  const names = rest.map((item) => String(item.label)).join(', ');
+  const said = component.sfWord('more-chips', {count: rest.length, vars: {names}});
+  return html`<sf-tag
+      class="sf-lookup-more-chips"
+      kind="default"
+      size=${CHIP_TAG_SIZE[size] || '1/2'}
+      inline
+      text=${`+${rest.length}`}
+      title=${said}
+      aria-label=${said}
+      closable="false"
+      @click=${(event) => component.onMoreChipsClick(event)}
     ></sf-tag>`;
 }
 
@@ -76,18 +101,29 @@ function row(context, item, index) {
 
 const SPINNER_SIZE = {'1/3': '1/3', '1/2': '1/3', '1': '1/3', '2': '1/2', '3': '1'};
 
+// The line says the wait once, in its own words (LS-16): the spinner keeps its
+// label for a screen reader only (label-hidden, C138), so no «Загрузка…» stands
+// under it and the line is a row high. The line itself waits the spinner's
+// delay before it is drawn (C130 (8)); the stylesheet lets the spinner show at
+// once with it, not a second later.
 function spinner(context) {
-  return html`<sf-spinner class="sf-lookup-spinner flex-none" size=${SPINNER_SIZE[context.size] || '1/3'} aria-hidden="true"></sf-spinner>`;
+  return html`<sf-spinner class="sf-lookup-spinner flex-none" size=${SPINNER_SIZE[context.size] || '1/3'} label-hidden aria-hidden="true"></sf-spinner>`;
 }
 
 function stateLine(context) {
-  const {component, listState, minChars, refusal, items, loadingMore, notice} = context;
+  const {component, listState, minChars, refusal, items, loadingMore, notice, searching, waitShown} = context;
   if (refusal) return html`<span class="sf-lookup-state-text">${refusal}</span>`;
+  // A search runs: the rows of the last answer stay; the line comes after the
+  // delay, and an old line (the hint, Nothing found) goes at once.
+  if (searching || loadingMore) {
+    if (waitShown) return html`<span class="sf-lookup-state-text">${component.sfWord('searching')}</span>`;
+    return listState === 'results' && !loadingMore
+      ? html`<span class="sf-lookup-visually-hidden">${component.sfWord('results', {count: items.length})}</span>`
+      : nothing;
+  }
   switch (listState) {
     case 'hint':
       return html`<span class="sf-lookup-state-text">${component.sfWord('hint-min-length', {count: minChars})}</span>`;
-    case 'searching':
-      return html`<span class="sf-lookup-state-text">${component.sfWord('searching')}</span>`;
     case 'empty':
       return html`<span class="sf-lookup-state-text">${component.sfWord('nothing-found')}</span>`;
     case 'unavailable':
@@ -95,10 +131,8 @@ function stateLine(context) {
     case 'error':
       return html`<span class="sf-lookup-state-text">${component.sfWord('error')}</span>`;
     case 'results':
-      return loadingMore
-        ? html`<span class="sf-lookup-state-text">${component.sfWord('searching')}</span>`
-        // Said, not shown: the rows are what a sighted person reads.
-        : html`${notice ? html`<span class="sf-lookup-state-text">${notice}</span>` : nothing}<span class="sf-lookup-visually-hidden">${component.sfWord('results', {count: items.length})}</span>`;
+      // Said, not shown: the rows are what a sighted person reads.
+      return html`${notice ? html`<span class="sf-lookup-state-text">${notice}</span>` : nothing}<span class="sf-lookup-visually-hidden">${component.sfWord('results', {count: items.length})}</span>`;
     default:
       return nothing;
   }
@@ -130,6 +164,10 @@ export function renderLookupTemplate(context) {
     editable,
     ariaLabel,
     refusal,
+    searching,
+    waitShown,
+    chipsMode,
+    chipsShown,
   } = context;
   const field = createFieldContract(component, {prefix: 'sf-lookup', required, invalid, hint, errorMessage});
   const ids = {
@@ -141,12 +179,18 @@ export function renderLookupTemplate(context) {
   };
   const message = field.invalid && errorMessage ? errorMessage : hint;
   const rowContext = {...context, ids};
-  const showList = listOpen && items.length > 0;
+  const showList = listOpen && items.length > 0 && (!searching || listState === 'results');
+  // Nothing to show yet (a first search inside the delay): the panel is not drawn.
+  const stateShown = Boolean(refusal) || ((searching || loadingMore) ? waitShown : !['closed', 'results'].includes(listState));
+  const blank = listOpen && !showList && !stateShown && listState !== 'error';
   const rootClasses = [
     'sf-lookup',
     `sf-lookup--size-${size}`,
     `sf-lookup--${appearance}`,
     multiple ? 'sf-lookup--multiple' : 'sf-lookup--single',
+    multiple && chipsMode === 'row' ? 'sf-lookup--chips-row' : '',
+    context.chipsCollapsed ? 'sf-lookup--chips-collapsed' : '',
+    context.chipsCollapsed && chipsShown === 1 && chosen.length > 1 ? 'sf-lookup--chips-one' : '',
     listOpen ? 'sf-lookup--open' : '',
     field.invalid ? 'error' : '',
     fieldDisabled ? 'sf-lookup--disabled' : '',
@@ -160,6 +204,7 @@ export function renderLookupTemplate(context) {
   return html`
     <div class=${rootClasses.join(' ')} style=${context.rootStyle || nothing}
       @pointerdown=${(event) => component.onRootPointerDown(event)}
+      @focusin=${() => component.onRootFocusIn()}
       @focusout=${(event) => component.onRootFocusOut(event)}>
       ${label
         ? html`<span class="sf-lookup-label flex" id=${ids.label} @click=${() => component.focus()}>
@@ -168,9 +213,10 @@ export function renderLookupTemplate(context) {
           </span>`
         : ''}
       <div class="sf-lookup-frame flex flex-wrap items-cross-center" @click=${(event) => component.onFrameClick(event)}>
-        ${multiple ? chosen.map((item) => chip(context, item)) : nothing}
+        ${multiple ? chosen.map((item, index) => chip(context, item, index)) : nothing}
+        ${multiple ? moreChips(context) : nothing}
         <input
-          class="sf-lookup-input flex-1"
+          class=${['sf-lookup-input', 'flex-1', queryText ? 'sf-lookup-input--typed' : ''].filter(Boolean).join(' ')}
           id=${field.controlId}
           type="text"
           role="combobox"
@@ -211,7 +257,7 @@ export function renderLookupTemplate(context) {
         ? html`<span id=${field.messageId} class="sf-lookup-hint-text-wrap"
             data-field-message=${field.invalid && errorMessage ? 'error' : 'hint'}>${message}</span>`
         : ''}
-      <div class="sf-lookup-panel" id=${ids.panel} popover="manual"
+      <div class=${blank ? 'sf-lookup-panel sf-lookup-panel--blank' : 'sf-lookup-panel'} id=${ids.panel} popover="manual"
         @mousedown=${(event) => component.onPanelMouseDown(event)}
         @click=${(event) => component.onPanelClick(event)}>
         <div class="sf-lookup-list" id=${ids.list} role="listbox"
@@ -220,7 +266,7 @@ export function renderLookupTemplate(context) {
           aria-multiselectable=${multiple ? 'true' : nothing}
           ?hidden=${!showList}>${showList ? items.map((item, index) => row(rowContext, item, index)) : nothing}</div>
         <div class=${['sf-lookup-state', 'flex', 'items-cross-center', refusal ? 'sf-lookup-state--refusal' : '', listState === 'error' && !refusal ? 'sf-lookup-state--error' : ''].filter(Boolean).join(' ')}>
-          ${listOpen && !refusal && (listState === 'searching' || (listState === 'results' && loadingMore)) ? spinner(rowContext) : nothing}
+          ${listOpen && !refusal && (searching || loadingMore) && waitShown ? spinner(rowContext) : nothing}
           <span class="sf-lookup-status" id=${ids.status} role="status" aria-live="polite">${listOpen ? stateLine(rowContext) : nothing}</span>
         </div>
         ${listOpen && listState === 'error'
