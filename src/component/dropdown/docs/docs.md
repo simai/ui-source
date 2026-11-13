@@ -20,7 +20,9 @@ Use the short `multiple` behavior attribute for several values. The list is
 positioned by the shared Framework positioning (`SF.Position`, built on Floating
 UI): below the field, flipped above when it does not fit and there is more
 room, shifted and height-limited inside the viewport, following scroll and
-resize. This is the default; `portal="false"` keeps the legacy in-flow list. The historical
+resize. This is the default; `portal="false"` keeps the legacy in-flow list, below
+the field with the positioned list's height (the larger room above or below the
+field; its rows scroll beyond it). The historical
 `data-multiple` and `data-portal` forms remain compatibility aliases. Native
 Popover is preferred; the fallback projection is reversible, remains inside a
 modal interaction boundary, and preserves Framework tokens, direction and
@@ -52,6 +54,9 @@ while it takes room in the layout the scroll area is marked
 `sf-list-container-wrap--scrollbar` and gives up its inline-end padding, the
 track being the inset, the page scrollbar's thumb (`--sf-scroll-thumb-width`)
 and the inset again: 14, the page's `--sf-scroll-bg-width` (owner decision C106).
+A projected list follows the page's scroll, never its own: a scroll inside the
+list does not place the panel again, and placing keeps the rows' scroll
+position (owner remark R171).
 
 Native form reset restores the selection captured at first connection. `change`
 bubbles after user selection and is the name to bind; `sf-dropdown:change` is
