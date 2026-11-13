@@ -20,8 +20,8 @@ const toastSettings = JSON.parse(read('src/smart/toast/component.json')).setting
 
 test('sf-alert: one action in the row from 36rem, two from 48rem of the notice\'s whole width', () => {
   assert.match(alerts, /\.sf-alert:has\(\.sf-alert-buttons\) \{\s*container: sf-alert \/ inline-size;/u);
-  assert.match(alerts, /@container sf-alert \(min-width: calc\(36rem - 2 \* 1rem - 2px\)\) \{\s*\.sf-alert:not\(\.sf-alert--actions-under\):not\(:has\(\.sf-alert-buttons > :nth-child\(2\)\)\) \{/u);
-  assert.match(alerts, /@container sf-alert \(min-width: calc\(48rem - 2 \* 1rem - 2px\)\) \{\s*\.sf-alert:not\(\.sf-alert--actions-under\) \{/u);
+  assert.match(alerts, /@container sf-alert \(min-width: calc\(36rem - 2 \* 1rem\)\) \{\s*\.sf-alert:not\(\.sf-alert--actions-under\):not\(:has\(\.sf-alert-buttons > :nth-child\(2\)\)\) \{/u);
+  assert.match(alerts, /@container sf-alert \(min-width: calc\(48rem - 2 \* 1rem\)\) \{\s*\.sf-alert:not\(\.sf-alert--actions-under\) \{/u);
   // In the row: centred on the text block, the plate overhanging the line by
   // the low button's block padding, as the close does (C35).
   assert.match(alerts, /flex-direction: row;\s*align-items: center;\s*column-gap: var\(--sf-space-1\);\s*padding-block-end: 0;/u);
@@ -30,7 +30,17 @@ test('sf-alert: one action in the row from 36rem, two from 48rem of the notice\'
 
 test('sf-toast: one action in the row from 20rem of the toast\'s whole width', () => {
   assert.match(toast, /\.sf-toast:has\(> \.sf-toast-container > \.sf-toast-bottom\) \{\s*container: sf-toast \/ inline-size;/u);
-  assert.match(toast, /@container sf-toast \(min-width: calc\(20rem - 2 \* 1rem - 2px\)\) \{\s*\.sf-toast:not\(\.sf-toast--actions-under\):not\(:has\(\.sf-toast-bottom > :nth-child\(2\)\)\)/u);
+  assert.match(toast, /@container sf-toast \(min-width: calc\(20rem - 2 \* 1rem\)\) \{\s*\.sf-toast:not\(\.sf-toast--actions-under\):not\(:has\(\.sf-toast-bottom > :nth-child\(2\)\)\)/u);
+});
+
+// The 1 px border is inside the inline inset (owner decision C105 H4/H6, as
+// the fields' C77 inset): the padding is --sf-space-1 less the border, so the
+// icon and the letters stand 16 from the outer edge (compact and phone 12).
+test('sf-alert and sf-toast: the border is inside the inline inset', () => {
+  for (const side of ['right', 'left']) {
+    assert.ok(alerts.includes(`var(--sf-alert--padding-${side}, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px))))`), `alert ${side}`);
+    assert.ok(toast.includes(`var(--sf-toast--padding-${side}, calc(var(--sf-space-1) - var(--sf-toast-border-width, var(--sf-px))))`), `toast ${side}`);
+  }
 });
 
 test('under the text, the inset under the last button is the inset above the capitals', () => {

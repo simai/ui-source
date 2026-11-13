@@ -37,6 +37,11 @@ sf-close--size-1`; its plate hangs out over the inline padding. The public
 `--sf-toast-padding-block`, `--sf-toast-padding-inline` and `--sf-toast-gap`
 still win.
 
+Since 1.3.3 (owner decision C105 H4/H6, as the fields' C77 inset) the 1 px
+border is inside the inline inset: the padding is `--sf-space-1` less
+`--sf-toast-border-width`, so the icon and the letters stand 16 from the outer
+edge (compact and phone 12); before they stood 17 (13).
+
 ## Where the action stands (1.3.0, owner decision C115)
 
 A toast with one action puts it in the row with the text from 20rem (320 px)

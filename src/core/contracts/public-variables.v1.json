@@ -311,7 +311,7 @@
           "name": "--sf-alert-padding-inline",
           "role": "padding-inline",
           "summary": "Space before and after the content.",
-          "default": "var(--sf-space-1)",
+          "default": "calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))",
           "since": "2026-10-13"
         },
         {
@@ -794,7 +794,7 @@
           "name": "--sf-toast-padding-inline",
           "role": "padding-inline",
           "summary": "Space before and after the content.",
-          "default": "var(--sf-space-1)",
+          "default": "calc(var(--sf-space-1) - var(--sf-toast-border-width, var(--sf-px)))",
           "since": "2026-10-18"
         },
         {

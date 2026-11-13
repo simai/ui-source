@@ -11,8 +11,11 @@
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/2) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
   /* The notice's geometry (owner decision C35, remarks R066 and R079), in
      tokens, so a compact region (data-sf-density) moves every step itself:
-     - one inline padding on both sides, --sf-space-1 (16; compact and phone
-       12); the block padding --sf-space-1/2 (12; compact and phone 8);
+     - one inline inset on both sides, --sf-space-1 (16; compact and phone
+       12) with the 1 px border inside it (owner decision C105 H4/H6, as the
+       fields' C77 inset: the padding is the step less the border, so the
+       icon and the letters stand 16 from the outer edge, not 17); the block
+       padding --sf-space-1/2 (12; compact and phone 8);
      - the first line stands in the box of a low size-1 control (the line +
        2 x --sf-ui-1--space-y-tightness-low: 32; compact and phone 28), the
        status icon, the text's first line and the close centred in it; the
@@ -36,8 +39,8 @@
     border-start-start-radius: var(--sf-toast-radius, var(--sf-toast--border-top-left-radius, var(--sf-radius--surface)));
     gap: var(--sf-toast-gap, var(--sf-toast--gap, var(--sf-space-1\/2)));
     padding-bottom: var(--sf-toast-padding-block, var(--sf-toast--padding-bottom, var(--sf-space-1\/2)));
-    padding-inline-end: var(--sf-toast-padding-inline, var(--sf-toast--padding-right, var(--sf-space-1)));
-    padding-inline-start: var(--sf-toast-padding-inline, var(--sf-toast--padding-left, var(--sf-space-1)));
+    padding-inline-end: var(--sf-toast-padding-inline, var(--sf-toast--padding-right, calc(var(--sf-space-1) - var(--sf-toast-border-width, var(--sf-px)))));
+    padding-inline-start: var(--sf-toast-padding-inline, var(--sf-toast--padding-left, calc(var(--sf-space-1) - var(--sf-toast-border-width, var(--sf-px)))));
     padding-top: var(--sf-toast-padding-block, var(--sf-toast--padding-top, var(--sf-space-1\/2)));
     /* A toast floats over the page, and the status containers are
        translucent fills: painted alone they let the table under a toast read
@@ -135,8 +138,8 @@
      block padding, as the close does (C35); narrower, or with two actions,
      under the text from its start. The toast with an action is the query
      container; the step is the toast's whole width, so the query (which reads
-     the content box) takes off its frame: two inline paddings (--sf-space-1,
-     16) and two borders (--sf-px). The author's switch (owner 2026-11-13,
+     the content box) takes off its frame: two inline insets (--sf-space-1,
+     16, the border inside them). The author's switch (owner 2026-11-13,
      #q-layout-override): the modifier .sf-toast--actions-under (sf-toast
      actions-layout="under") keeps the action under the text at every width,
      with the same gap and the even bottom. */
@@ -144,7 +147,7 @@
     container: sf-toast / inline-size;
   }
 
-  @container sf-toast (min-width: calc(20rem - 2 * 1rem - 2px)) {
+  @container sf-toast (min-width: calc(20rem - 2 * 1rem)) {
     .sf-toast:not(.sf-toast--actions-under):not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-container:has(> .sf-toast-bottom) {
       flex-direction: row;
       align-items: center;

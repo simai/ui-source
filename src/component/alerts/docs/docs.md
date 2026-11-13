@@ -40,6 +40,11 @@ sf-icon-button--close sf-icon-button--size-1 sf-icon-button--height-low` with
 over the inline padding. The public `--sf-alert-padding-block`,
 `--sf-alert-padding-inline` and `--sf-alert-gap` still win.
 
+Since 1.3.1 (owner decision C105 H4/H6, as the fields' C77 inset) the 1 px
+border is inside the inline inset: the padding is `--sf-space-1` less
+`--sf-alert-border-width`, so the icon and the letters stand 16 from the outer
+edge (compact and phone 12), on every look; before they stood 17 (13).
+
 ## Where the actions stand (1.2.0, owner decision C115)
 
 The actions stand in the row with the text while the notice is wide enough,
