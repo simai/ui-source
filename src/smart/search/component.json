@@ -2,7 +2,7 @@
   "$comment": "The source of sf-search's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). Made against standard simai.smart-component 1.3.13 and vocabulary 1.1.5; the design is variant 1 «Прожектор» of ui-control prototypes/search-and-settings.html, approved by the owner as it is on 2026-10-30. 1.1.0 asks a host through simai.search-port 1.0.0 (§4.9): the capability says what is possible and the setting says what is wanted.",
   "id": "smart.search",
   "tag": "sf-search",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "kind": "leaf",
   "family": "search",
   "settings": {
@@ -365,7 +365,8 @@
     "version 1.7.2 (2026-11-09): the panel declares a popup place; the selected row is primary-container with its ink (C16, the background system, owner 2026-11-08). Also: a patch (simai/ui-source#46, C19). The window's portal also carries the variables its area sets for the parts inside it (carryLayerOrigin area, as sf-modal 1.5.0 and sf-drawer 1.9.0 do since core.runtime 1.43.0), beside its own --sf-search-* values. Probe portal-origin-hostile covers the modal and drawer portals.",
     "version 1.7.3 (2026-11-10): a patch; nothing in the component changed. Its built sheet is a place (sf-place) and, with C43 (component.badges 1.5.0, tokens.colour 1.8.0), takes back the core role --sf-surface-underlay with one line, --sf-surface-underlay: initial, so a tonal badge inside it lays its tone over its own surface and not over a row further out. Nothing is drawn differently outside a selected row. Settings, values, events and keys unchanged.",
     "version 1.7.4 (2026-11-11): a patch, nothing drawn differently. The sheet reads the C16 roles by their current names where it read the former ones, which are var() of them wherever they are declared (src/core/contracts/token-aliases.v1.json, sf-role-aliases): --sf-on-surface-container--variant → --sf-on-surface-container-variant ×2; --sf-surface-transparent-active → --sf-surface-state-active; --sf-surface-transparent-hover → --sf-surface-state-hover. Settings, values, events and keys unchanged.",
-    "version 1.7.4, also (2026-11-11, C41 inverse places): a patch; its built sheet is a place (sf-place) and takes the theme's accent and boundary line back on the inverse places too (bg-surface-inverse, bg-surface-inverse-fixed; DEV 2026-11-10, form backgrounds study): nothing in the component changed."
+    "version 1.7.4, also (2026-11-11, C41 inverse places): a patch; its built sheet is a place (sf-place) and takes the theme's accent and boundary line back on the inverse places too (bg-surface-inverse, bg-surface-inverse-fixed; DEV 2026-11-10, form backgrounds study): nothing in the component changed.",
+    "version 1.7.5 (2026-11-12; written on the branch as 1.7.4): a patch; nothing in the component changed. Its built sheet is a place (sf-place) and, with C43 later (2026-11-12), takes back the core role --sf-surface-place-fill as well, with one line, --sf-surface-place-fill: initial, so an anchored badge inside it reads the fill of its own rows only and not of a selected row further out. Nothing is drawn differently outside an anchored badge's ring."
   ],
   "x-registry": {
     "capabilities": [

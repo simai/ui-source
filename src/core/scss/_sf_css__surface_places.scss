@@ -33,6 +33,7 @@
     // avatar's status dot -- is dark glass, not the photo (DEV, 2026-11-11).
     --sf-surface-place-ground: var(--sf-black);
     --sf-surface-underlay: initial;
+    --sf-surface-place-fill: initial;
     --sf-on-surface: var(--sf-on-surface-media);
     // The icon role (C107): no half step between white and white at 80 on
     // the alpha scale, so a control's glyph on glass is the glass's ink.
