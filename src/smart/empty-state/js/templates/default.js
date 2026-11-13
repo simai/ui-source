@@ -6,6 +6,18 @@ import {unsafeStatic, html as staticHtml} from 'lit/static-html.js';
 const ICON_SIZE = {'1/2': '1', 1: '2', 2: '3'};
 const BUTTON_SIZE = {'1/2': '1/2', 1: '1', 2: '1'};
 
+// The glyph of the icon place, or for processing a spinner in the same place
+// (owner decision C120): the circle, its tone and its size stay. The spinner
+// takes the featured icon's size step, whose diameter is the glyph's (both
+// read --sf-text-height-<step>), and the glyph's ink as its current colour.
+// Its label is empty, so it is hidden from a screen reader: the state's own
+// status says the words.
+function renderGlyph(context, step) {
+  return context.processing
+    ? html`<sf-spinner class="sf-empty-state-spinner" size=${step} label=""></sf-spinner>`
+    : html`<i class="sf-icon">${context.shownIcon}</i>`;
+}
+
 // The inline form: one line, the icon at the text's size, the words and the
 // first action as a link. No heading, so a list inside a menu or a dropdown
 // gains no outline entry and no item.
@@ -15,7 +27,10 @@ function renderInline(context) {
   return html`
     <div class=${['sf-empty-state', 'sf-empty-state--inline', `sf-empty-state--size-${size}`, `sf-empty-state--${context.kind}`, context.rootClass].filter(Boolean).join(' ')}
          role=${context.liveRole ?? nothing}>
-      <i class="sf-icon sf-empty-state-icon" aria-hidden="true">${context.shownIcon}</i>
+      ${context.processing
+        // The line's text height: the spinner step of the line's size.
+        ? html`<span class="sf-empty-state-icon" aria-hidden="true">${renderGlyph(context, size === '1' ? '1' : '1/2')}</span>`
+        : html`<i class="sf-icon sf-empty-state-icon" aria-hidden="true">${context.shownIcon}</i>`}
       <span class="sf-empty-state-line">${context.shownLine}</span>
       ${action
         // The link is one size below the line (1.0.x: size 1 with compact
@@ -39,7 +54,7 @@ export function renderEmptyStateTemplate(context) {
     <div class=${['sf-empty-state', `sf-empty-state--size-${size}`, `sf-empty-state--${context.kind}`, context.rootClass].filter(Boolean).join(' ')}
          role=${context.liveRole ?? nothing}>
       <span class=${`sf-featured-icon sf-featured-icon--size-${ICON_SIZE[context.size] ?? '2'} sf-featured-icon--${context.tone} sf-featured-icon--soft sf-empty-state-icon`}
-            aria-hidden="true"><i class="sf-icon">${context.shownIcon}</i></span>
+            aria-hidden="true">${renderGlyph(context, ICON_SIZE[context.size] ?? '2')}</span>
       ${staticHtml`<${tag} class="sf-empty-state-title">${context.shownTitle}</${tag}>`}
       ${context.shownText ? html`<p class="sf-empty-state-text">${context.shownText}</p>` : nothing}
       ${actions.length || slotted !== nothing

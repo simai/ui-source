@@ -1,14 +1,21 @@
 {
   "title": "Empty state",
   "runtime": {
+    "create": "Create",
     "error-text": "Try again",
     "error-title": "Could not load",
+    "first-use-text": "Create the first record and it will appear here",
+    "first-use-title": "Nothing here yet",
     "no-access-text": "Ask an administrator for access",
     "no-access-title": "No access",
     "no-data-text": "They will appear here once added",
     "no-data-title": "No records yet",
     "nothing-found-text": "Try another query or other filters",
     "nothing-found-title": "Nothing found",
+    "offline-text": "Check your connection; we will try again once it is back",
+    "offline-title": "No connection",
+    "processing-text": "This may take a few minutes. The result will appear here; you can close the page",
+    "processing-title": "Being prepared",
     "retry": "Try again"
   },
   "events": {

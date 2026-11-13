@@ -2,7 +2,7 @@
   "$comment": "The source of sf-empty-state's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/empty-state (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.empty-state",
   "tag": "sf-empty-state",
-  "version": "1.1.11",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "state",
   "settings": {
@@ -10,12 +10,15 @@
       "type": "enum",
       "values": [
         "no-data",
+        "first-use",
         "nothing-found",
         "no-access",
-        "error"
+        "error",
+        "offline",
+        "processing"
       ],
       "default": "no-data",
-      "summary": "The reason, which picks the default icon, title and text, and for error a «Повторить» action."
+      "summary": "The reason, which picks the default icon, tone, title and text: first-use offers a primary «Создать» (id create), error and offline «Повторить» (id retry), offline also retries by itself when the network returns, and processing draws a spinner in the icon's circle for work that finishes without the person."
     },
     "size": {
       "type": "enum",
@@ -30,7 +33,8 @@
     },
     "icon": {
       "type": "icon",
-      "default": ""
+      "default": "",
+      "summary": "The section's icon (the one of its menu entry) for no-data and first-use, inbox without one; for nothing-found by filters pass filter_alt_off. The other reasons keep their own glyph unless this is set."
     },
     "heading": {
       "type": "string",
@@ -81,10 +85,11 @@
   "events": {
     "action": {
       "carries": {
-        "id": "string"
+        "id": "string",
+        "auto": "boolean"
       },
       "own-verb": true,
-      "summary": "The person pressed one of the actions (retry for an error without actions of its own)."
+      "summary": "The person pressed one of the actions (retry for an error or offline without actions of their own, create for first-use); for offline also sent by itself with auto: true when the window's online event says the network is back."
     }
   },
   "actions": {},
@@ -107,6 +112,10 @@
     },
     {
       "name": "cl-icon"
+    },
+    {
+      "name": "cl-spinner",
+      "lazy": true
     }
   ],
   "templates": {
@@ -124,7 +133,9 @@
       "live": "auto",
       "kind": [
         "nothing-found",
-        "error"
+        "error",
+        "offline",
+        "processing"
       ]
     },
     "otherwise": "none",
@@ -136,7 +147,7 @@
     "keys": {
       "Tab": "reach"
     },
-    "$comment": "live auto: nothing-found and error are a polite status, the others say nothing; live alert: role alert (an error the person caused); live off: no role, the host announces. The name is the heading, the kind's words of the language file when unset; it is a real heading at heading-level in the block form, none in the inline form. Enter and Space belong to the action buttons (role button), not to the empty state."
+    "$comment": "live auto: nothing-found, error, offline and processing are a polite status, the others say nothing; live alert: role alert (an error the person caused); live off: no role, the host announces. The name is the heading, the kind's words of the language file when unset; it is a real heading at heading-level in the block form, none in the inline form. The spinner of processing has an empty label and is hidden, the status says the heading and the text. Enter and Space belong to the action buttons (role button), not to the empty state."
   },
   "css-variables": {
     "--sf-empty-state-max-inline-size": {
@@ -186,7 +197,7 @@
       }
     ]
   },
-  "x-summary": "What a list, a panel or a page says when it has nothing to show: no data, nothing found, no access or an error, with an icon, a real heading, a sentence and actions.",
+  "x-summary": "What a list, a panel or a page says when it has nothing to show: no data, the first time, nothing found, no access, an error, no connection or work being prepared, with an icon, a real heading, a sentence and actions.",
   "x-source": {
     "package": "framework",
     "folder": "empty-state",
@@ -219,7 +230,8 @@
     "version 1.1.8 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
     "version 1.1.9: the sf-button and sf-button-icon it draws are asked for their current names (appearance ghost for link, status danger for error; actions block, decisions C13 and C15), so the template uses no dated alias; nothing it draws changes.",
     "version 1.1.10 (2026-11-09): the default (size 1) title reads the heading-4 role, which holds rung 2 since the C21 heading ladder (tokens.typography: heading-5 moved to rung 1); the title stays at rung 2, one above the size-1-2 title and one below size 2, as before the ladder. Settings, values and events unchanged.",
-    "version 1.1.11 (2026-11-11, owner decision C44): the size 2 title reads the heading-3 step, whose size is that rung, so it keeps its size in a compact region; nothing else changes. Settings, values, events and keys unchanged."
+    "version 1.1.11 (2026-11-11, owner decision C44): the size 2 title reads the heading-3 step, whose size is that rung, so it keeps its size in a compact region; nothing else changes. Settings, values, events and keys unchanged.",
+    "version 1.3.0 (2026-11-13, owner decision C120, R208): three reasons. processing -- work that finishes without the person (a transcription, a report): an sf-spinner in the same soft neutral circle at the glyph's size and ink, a polite status, the title «Готовится» and a promise, no action. first-use -- the section's icon in the primary role and a primary «Создать» (id create) unless the host gives actions or the actions slot. offline -- cloud_off in the warning role, «Повторить» (id retry), and action {id: retry, auto: true} sent when the window's online event fires (the host loads; the element makes no request). The icon rule: icon is the section's icon for no-data and first-use (inbox without one); nothing-found search_off (filter_alt_off by filters, passed as icon); error in the error role; lock and cloud_off in the warning role. The glyph of the grey circle is on-surface-variant, set at .sf-featured-icon--neutral (component.featured-icon 1.1.3). The expressive setting of 1.2.0 on the integration is kept apart and merges beside this."
   ],
   "x-registry": {
     "capabilities": [
@@ -253,16 +265,19 @@
     "contracts": {
       "actions": {
         "type": "array",
-        "description": "Set as a property: [{id, text, appearance}], drawn at the component's size; each raises sf-empty-state-action {id}. Slot `actions` takes the host's own buttons instead."
+        "description": "Set as a property: [{id, text, appearance}], drawn at the component's size; each raises sf-empty-state-action {id}. Slot `actions` takes the host's own buttons instead. Unset: error and offline offer retry, first-use a primary create."
       }
     },
     "state": {
       "machines": {
         "kind": [
           "no-data",
+          "first-use",
           "nothing-found",
           "no-access",
-          "error"
+          "error",
+          "offline",
+          "processing"
         ]
       },
       "visual_states": [
@@ -309,11 +324,12 @@
       }
     },
     "ai_guidance": {
-      "use_when": "Use sf-empty-state wherever a list, panel or page has nothing to show, choosing the kind for the reason.",
+      "use_when": "Use sf-empty-state wherever a list, panel or page has nothing to show, choosing the kind for the reason; processing for work that finishes later without the person (minutes), not for a load the person waits for.",
       "do_not": [
         "Do not copy generated ui-smart code",
         "Do not show an empty state while data is still loading; that is the skeleton's",
-        "Do not hand-build an empty message with a paragraph"
+        "Do not hand-build an empty message with a paragraph",
+        "Do not use processing for a wait of seconds; that is sf-skeleton, sf-spinner or a progress bar"
       ],
       "required_reads": [
         "inputs",
@@ -335,7 +351,7 @@
         "Enter",
         "Space"
       ],
-      "focus": "The block title is a heading at heading-level; the inline form has no heading. With live=auto nothing-found and error are announced politely (role=status), the others are not; live=alert makes it an alert, live=off silent. The icon is decorative; the actions are ordinary buttons in the tab order. Inside a listbox or menu, place it outside the list element so it is never an item."
+      "focus": "The block title is a heading at heading-level; the inline form has no heading. With live=auto nothing-found, error, offline and processing are announced politely (role=status), the others are not; live=alert makes it an alert, live=off silent. The icon and the processing spinner are decorative; the actions are ordinary buttons in the tab order. Inside a listbox or menu, place it outside the list element so it is never an item."
     }
   }
 }

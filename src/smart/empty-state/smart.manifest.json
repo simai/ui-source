@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.empty-state",
-  "version": "1.1.11",
+  "version": "1.3.0",
   "title": "Empty state",
-  "summary": "What a list, a panel or a page says when it has nothing to show: no data, nothing found, no access or an error, with an icon, a real heading, a sentence and actions.",
+  "summary": "What a list, a panel or a page says when it has nothing to show: no data, the first time, nothing found, no access, an error, no connection or work being prepared, with an icon, a real heading, a sentence and actions.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -26,7 +26,8 @@
     "uses": [
       "component.featured-icon",
       "smart.button",
-      "smart.icon"
+      "smart.icon",
+      "smart.spinner"
     ],
     "public_parts": []
   },
@@ -51,12 +52,15 @@
       "kind": {
         "type": "string",
         "default": "no-data",
-        "description": "The reason, which picks the default icon, title and text, and for error a «Повторить» action.",
+        "description": "The reason, which picks the default icon, tone, title and text: first-use offers a primary «Создать» (id create), error and offline «Повторить» (id retry), offline also retries by itself when the network returns, and processing draws a spinner in the icon's circle for work that finishes without the person.",
         "enum": [
           "no-data",
+          "first-use",
           "nothing-found",
           "no-access",
-          "error"
+          "error",
+          "offline",
+          "processing"
         ]
       },
       "size": {
@@ -72,7 +76,8 @@
       },
       "icon": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The section's icon (the one of its menu entry) for no-data and first-use, inbox without one; for nothing-found by filters pass filter_alt_off. The other reasons keep their own glyph unless this is set."
       },
       "heading": {
         "type": "string",
@@ -123,21 +128,25 @@
   "contracts": {
     "actions": {
       "type": "array",
-      "description": "Set as a property: [{id, text, appearance}], drawn at the component's size; each raises sf-empty-state-action {id}. Slot `actions` takes the host's own buttons instead."
+      "description": "Set as a property: [{id, text, appearance}], drawn at the component's size; each raises sf-empty-state-action {id}. Slot `actions` takes the host's own buttons instead. Unset: error and offline offer retry, first-use a primary create."
     }
   },
   "methods": {},
   "events": {
     "sf-empty-state-action": {
-      "summary": "The person pressed one of the actions (retry for an error without actions of its own).",
+      "summary": "The person pressed one of the actions (retry for an error or offline without actions of their own, create for first-use); for offline also sent by itself with auto: true when the window's online event says the network is back.",
       "payload": {
         "type": "object",
         "required": [
-          "id"
+          "id",
+          "auto"
         ],
         "properties": {
           "id": {
             "type": "string"
+          },
+          "auto": {
+            "type": "boolean"
           }
         },
         "additionalProperties": true
@@ -148,9 +157,12 @@
     "machines": {
       "kind": [
         "no-data",
+        "first-use",
         "nothing-found",
         "no-access",
-        "error"
+        "error",
+        "offline",
+        "processing"
       ]
     },
     "visual_states": [
@@ -189,7 +201,7 @@
       "Enter",
       "Space"
     ],
-    "focus": "The block title is a heading at heading-level; the inline form has no heading. With live=auto nothing-found and error are announced politely (role=status), the others are not; live=alert makes it an alert, live=off silent. The icon is decorative; the actions are ordinary buttons in the tab order. Inside a listbox or menu, place it outside the list element so it is never an item."
+    "focus": "The block title is a heading at heading-level; the inline form has no heading. With live=auto nothing-found, error, offline and processing are announced politely (role=status), the others are not; live=alert makes it an alert, live=off silent. The icon and the processing spinner are decorative; the actions are ordinary buttons in the tab order. Inside a listbox or menu, place it outside the list element so it is never an item."
   },
   "presentation": {
     "themes": [
@@ -257,33 +269,34 @@
     "source_artifacts": [
       {
         "path": "src/smart/empty-state/index.js",
-        "sha256": "168c639aee526fcbe3de35ddf54f80725e535aa3ee4a932389e03de02788e49b"
+        "sha256": "820283776e4cb12ccec60e4af25ce7bdf267b291d25dbe9b6fe7e150001ed6f8"
       },
       {
         "path": "src/smart/empty-state/js/templates/default.js",
-        "sha256": "d370303f6a51e27b381cb3c093e378bac583bf1b894ee14ee13114aa69a453cc"
+        "sha256": "51b0b06d4741a4f5c68a0d0c2f78c25044675906847fbd30908d594f696a16c8"
       },
       {
         "path": "src/smart/empty-state/scss/_smart__empty_state.scss",
-        "sha256": "8b7bcbcc297fbca4a24ebb15262ef01d67158b80a512d81e1c9d6c09ac06560d"
+        "sha256": "530dd51821084858f506435cf353b36395283f8644ae3b4ce81bd5136e454966"
       },
       {
         "path": "src/smart/empty-state/rule.js",
-        "sha256": "5e8ae1ecb89ce8192d82dc822e0072b76b3b296fca823d52d572b1cdfc17cd80"
+        "sha256": "e3016bf84e153a07c4ebc7cd63fdca0e7b2f4bfca2857e97f1aa9bda5ac74471"
       },
       {
         "path": "src/smart/empty-state/docs.md",
-        "sha256": "2adce0364f3f75b34e00c12dbf6588f538978758fe013ff3755c8549ef81faf6"
+        "sha256": "8548d7e99a1acc5dc301bfd72d57841ac5b37dc5ca230b53029350f6906673ce"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-empty-state wherever a list, panel or page has nothing to show, choosing the kind for the reason.",
+    "use_when": "Use sf-empty-state wherever a list, panel or page has nothing to show, choosing the kind for the reason; processing for work that finishes later without the person (minutes), not for a load the person waits for.",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not show an empty state while data is still loading; that is the skeleton's",
-      "Do not hand-build an empty message with a paragraph"
+      "Do not hand-build an empty message with a paragraph",
+      "Do not use processing for a wait of seconds; that is sf-skeleton, sf-spinner or a progress bar"
     ],
     "required_reads": [
       "inputs",

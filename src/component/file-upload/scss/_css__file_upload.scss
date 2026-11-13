@@ -72,9 +72,9 @@
   line-height: var(--sf-file-upload-text--line-height);
 }
 
-.sf-file-upload .sf-featured-icon > .sf-icon {
-  color: var(--sf-icon-featured-icon--color);
-}
+/* The glyph at rest takes the featured icon's own ink: the grey circle's
+   on-surface-variant (owner decision C120). The rule that stood here read a
+   variable nothing defines, so the glyph fell back to the text's ink. */
 
 .sf-file-upload--size-1 .sf-file-upload-link {
   --sf-file-upload-link--font-size: var(--sf-text-size-1);

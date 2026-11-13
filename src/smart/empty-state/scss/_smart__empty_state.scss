@@ -77,6 +77,16 @@ sf-empty-state {
   line-height: var(--sf-text-large--height);
 }
 
+/* processing (owner decision C120): a spinner in the icon's circle, in the
+   glyph's ink (the spinner draws in its current colour), at the featured
+   icon's size step (the template), so the circle, its tone and its size stay
+   those of every other reason. */
+.sf-empty-state-spinner {
+  display: inline-flex;
+  line-height: 0;
+  color: var(--sf-featured-icon--foreground-color);
+}
+
 /* The inline form: one line at a list row's height and inset, so it sits in
    a menu, a dropdown or a search without a frame of its own. The icon is the
    text's size, in the muted icon role; the words are muted ink. */
@@ -100,6 +110,10 @@ sf-empty-state {
   flex: none;
   color: var(--sf-on-surface-variant);
   font-size: var(--sf-text-small--height);
+}
+
+.sf-empty-state--inline .sf-empty-state-spinner {
+  color: var(--sf-on-surface-variant);
 }
 
 .sf-empty-state--inline .sf-empty-state-line {

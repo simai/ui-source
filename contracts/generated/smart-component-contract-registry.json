@@ -830,7 +830,8 @@
         "uses": [
           "component.featured-icon",
           "smart.button",
-          "smart.icon"
+          "smart.icon",
+          "smart.spinner"
         ]
       },
       "contract_schema": {
@@ -842,13 +843,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/empty-state/smart.manifest.json",
-      "manifest_sha256": "f1b247c505ff5cc1188c23ea2d75f8a86e26c6c7496cf2ba68a60364d84afb10",
+      "manifest_sha256": "87797b11064023c3ac79b3fb530705b575788bbb3a4c490616ba8b704c450107",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "What a list, a panel or a page says when it has nothing to show: no data, nothing found, no access or an error, with an icon, a real heading, a sentence and actions.",
+      "summary": "What a list, a panel or a page says when it has nothing to show: no data, the first time, nothing found, no access, an error, no connection or work being prepared, with an icon, a real heading, a sentence and actions.",
       "tags": [
         "empty-state",
         "feedback",
@@ -956,7 +957,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/file-upload/smart.manifest.json",
-      "manifest_sha256": "af94eed78ad584615deb0e9b02bc603415da4f5c54b1235836b00e0daf4ef52a",
+      "manifest_sha256": "874a6aef5975920707fbf7fce8d510e0ba178ce025895ff9510e5d50f3b6e7d0",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
