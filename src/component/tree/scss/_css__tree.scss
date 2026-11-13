@@ -116,7 +116,9 @@
     cursor: pointer;
   }
 
-  .sf-tree:not(.sf-tree--static) .sf-tree-item:not([aria-disabled='true']):hover > .sf-tree-item-container {
+  .sf-tree:not(.sf-tree--static) .sf-tree-item:not([aria-disabled='true']):not([aria-current='page']):hover > .sf-tree-item-container {
+    /* The current page keeps its plate under the pointer, as the menu's
+       current row does (C129: the tree and the menu behave alike). */
     background: var(--sf-surface-container-hover);
     /* On hover the glyphs catch up with the name's ink (C107 point 4). */
     --sf-tree-item-icon--color: currentColor;
@@ -136,6 +138,19 @@
     /* A translucent fill: a tonal badge on it keeps its own tone (C43), an
        anchored badge's ring is the row's colour (C43 D3). */
     @include places.sf-place-fill(var(--sf-tree-selected-background-color, var(--sf-primary-container)));
+  }
+
+  /* The current page of a tree used as page navigation takes the navigation
+     menu's mark (C23; dispatcher, applied decision on docs precheck TI-01):
+     the primary plate of the fill family, on-primary-container words and a
+     medium label -- the weight is the second sign besides colour. A selected
+     row keeps the soft selected plate (C16), so the two read apart. */
+  .sf-tree .sf-tree-item[aria-current='page'] > .sf-tree-item-container {
+    background: var(--sf-primary-container-active);
+    color: var(--sf-on-primary-container);
+    font-weight: var(--sf-font-weight-medium);
+    --sf-icon--color: var(--sf-on-primary-container);
+    @include places.sf-place-fill(var(--sf-primary-container-active));
   }
 
   // A row is flush against the rows above and below it, so the ring turns
