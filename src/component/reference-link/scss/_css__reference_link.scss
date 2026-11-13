@@ -9,7 +9,12 @@
     /* The link's and the icon's inks; a state steps them (sf.states). */
     --sf-reference-link--link: var(--sf-link);
     --sf-reference-link--accent: var(--sf-primary);
-    --sf-reference-link--padding-block: var(--sf-space-1);
+    /* The card's one line is a step of the height ladder (C18; docs precheck
+       smart content RL-01): the size 3 control height around the text line,
+       the border inside it -- 56 on a desktop, 52 on a phone. It was
+       --sf-space-1 above and below plus the border, 58 (phone 46), off the
+       ladder. The inline padding stays the card's --sf-space-1. */
+    --sf-reference-link--padding-block: calc((var(--sf-ui-3--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-px));
     --sf-reference-link--padding-inline: var(--sf-space-1);
 
     position: relative;
@@ -155,6 +160,12 @@
     .sf-reference-link:not([class*="sf-reference-link--size-"]):not([class*="sf-reference-link--line-"]) {
       align-items: flex-start;
       flex-direction: column;
+    }
+
+    /* Two lines are not a control step: the stacked card keeps the card's
+       --sf-space-1 above and below. */
+    .sf-reference-link:not([class*="sf-reference-link--size-"]):not([class*="sf-reference-link--line-"]):not(.sf-reference-link--plain) {
+      --sf-reference-link--padding-block: var(--sf-space-1);
     }
 
     .sf-reference-link:not([class*="sf-reference-link--size-"]):not([class*="sf-reference-link--line-"]) :where(.sf-reference-link__meta, .sf-reference-link-text) {
