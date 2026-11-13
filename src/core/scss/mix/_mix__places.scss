@@ -59,6 +59,7 @@ $sf-place-theme-roles: (
   'on-surface': 'light-dark(var(--sf-neutral-10), var(--sf-neutral-90))',
   'on-surface-hover': 'light-dark(var(--sf-neutral-15), var(--sf-neutral-85))',
   'on-surface-active': 'light-dark(var(--sf-neutral-20), var(--sf-neutral-80))',
+  'on-surface-icon': 'light-dark(var(--sf-neutral-25), var(--sf-neutral-80))',
   'on-surface-variant': 'light-dark(var(--sf-neutral-40), var(--sf-neutral-70))',
   'on-surface-container-variant': 'light-dark(var(--sf-neutral-35), var(--sf-neutral-85))',
   'surface-state-hover': 'light-dark(var(--sf-neutral-50--alfa-4), var(--sf-neutral-90--alfa-4))',
@@ -454,6 +455,9 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
   --sf-surface-place-ground: var(--sf-#{$c});
   --sf-surface-underlay: initial;
   --sf-on-surface: var(--sf-on-#{$c});
+  // The icon role (C107): the alpha scale has no step between the ink and its
+  // 80, so a control's glyph on a strong colour is the place's ink.
+  --sf-on-surface-icon: var(--sf-on-#{$c});
   // The ink of a hovered and a pressed control is the place's ink too
   // (contrast lows, 2026-11-11): the theme's neutral 15 / 20 (85 / 80 in the
   // dark) turned a pressed outline or link button's label dark on red, 2.80

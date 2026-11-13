@@ -198,8 +198,11 @@
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-surface));
   }
 
+  /* The icon of a neutral button is half a step paler than its label (C107,
+     owner 2026-11-12): --sf-on-surface-icon. Hovered and pressed it takes the
+     label's colour (sf.states below). Secondary's ink is the custom sheet's. */
   .sf-button.sf-button--tonal.sf-button--on-surface .sf-icon, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary) .sf-icon {
-    --sf-icon--color: var(--sf-on-surface);
+    --sf-icon--color: var(--sf-on-surface-icon);
   }
 
   .sf-button.sf-button--outline.sf-button--primary, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) {
@@ -639,7 +642,7 @@
   }
 
   .sf-button.sf-button--surface:is(.sf-button--on-surface, .sf-button--secondary) .sf-icon {
-    --sf-icon--color: var(--sf-on-surface);
+    --sf-icon--color: var(--sf-on-surface-icon);
   }
 
   .sf-button.sf-button--surface.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--surface.sf-button--primary:not(:has(> *)) {
@@ -724,7 +727,7 @@
     --sf-icon--color: var(--sf-primary-hover);
   }
 
-  .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover .sf-icon {
+  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):hover .sf-icon, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover .sf-icon {
     --sf-icon--color: var(--sf-on-surface-hover);
   }
 
@@ -764,7 +767,7 @@
     --sf-icon--color: var(--sf-primary-active);
   }
 
-  .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active .sf-icon, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active .sf-icon {
+  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):active .sf-icon, .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled).active .sf-icon, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active .sf-icon, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active .sf-icon {
     --sf-icon--color: var(--sf-on-surface-active);
   }
 
@@ -845,6 +848,12 @@
 
   .sf-button.sf-button--surface:not(:disabled):not(.disabled):is(:active, .active) {
     --sf-button--border-color: var(--sf-surface-container-active);
+  }
+
+  /* The icon catches the label up under a pointer (C107 (4)): the surface
+     look's label keeps --sf-on-surface in every state. */
+  .sf-button.sf-button--surface.sf-button--on-surface:not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-icon {
+    --sf-icon--color: var(--sf-on-surface);
   }
 
   .sf-button.sf-button--surface:disabled:not(.sf-button-state-loading:not(.disabled)),

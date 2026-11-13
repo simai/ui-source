@@ -149,8 +149,12 @@
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-primary-active));
   }
 
+  /* An icon with no text is the icon of a button with text (C107 (3), owner
+     2026-11-12): --sf-on-surface-icon, half a step paler than a label; under
+     a pointer it takes --sf-on-surface (the custom sheet's sf.states). Only
+     the service marks inside a field or a row stay --sf-on-surface-variant. */
   .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon {
-    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface));
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface-icon));
   }
 
   .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close {

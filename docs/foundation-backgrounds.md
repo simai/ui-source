@@ -264,7 +264,9 @@ primary, secondary or tertiary. The hue role utilities (R087 item 1, option A,
 does not change with the theme. The class `.sf-surface-media` paints the glass
 with a blur (`--sf-blur-large`) and re-declares the roles a control on it
 reads from white on the alpha scale: states 4/8/12, fill 8/12/16, line 24,
-boundary 64, dim ink 80. An icon keeps its three roles.
+boundary 64, dim ink 80. An icon keeps its four roles (C107): the icon role
+`--sf-on-surface-icon` is the glass's ink there, because the alpha scale has no
+half step between white and white at 80.
 
 Coloured places (a header in the brand colour, a status banner) are held for
 the owner's answer: the proposal is that the `bg-<role>` and

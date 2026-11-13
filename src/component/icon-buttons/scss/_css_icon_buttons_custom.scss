@@ -174,6 +174,13 @@
     --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface));
   }
 
+  /* The plain neutral icon catches the label's ink up under a pointer (C107
+     (4)): at rest --sf-on-surface-icon, hovered and pressed --sf-on-surface,
+     as the quiet neutral above. A filled control keeps its inverse glyph. */
+  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--icon:not(.sf-icon-button--on-surface-variant):not(.sf-icon-button--default):not(:disabled):not(.disabled):is(:hover, :active, .active) {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface));
+  }
+
   /* A disabled icon button's spinner (disabled and loading) takes the disabled
      ink -- unless --sf-loader--color is set. */
   .sf-icon-button:is(:disabled:not(.sf-icon-button-state-loading:not(.disabled)), .disabled) .sf-icon-button-spinner {

@@ -113,6 +113,16 @@
     flex: none;
   }
 
+  /* A row's leading icon is one step paler than its label (C107, owner
+     2026-11-12; IC-1): --sf-on-surface-variant, as in sf-menu-context,
+     sf-list and the fields. It drew the label's --sf-on-surface (17.21:1)
+     beside a list whose icons were the variant (6.47:1). The current page
+     keeps the plate's on-colour and a disabled row its disabled ink (both
+     more specific); the branch's own button is a control and keeps its own. */
+  .sf-menu-element .sf-menu-element-icon {
+    --sf-icon--color: var(--sf-on-surface-variant);
+  }
+
   /* A row is its control height on every rung of the ladder (C18, C30): what
      stands in it is no taller than its text line. Its icons and its branch
      glyph are the line's size -- 24 on the desktop, 20 compact and on a phone

@@ -123,6 +123,15 @@
   flex-shrink: 0;
 }
 
+/* The chevron is a service mark inside a field (C107 (3), owner 2026-11-12;
+   IC-3): --sf-on-surface-variant, as the field's own icons beside it. It is
+   an sf-icon-button of the on-surface scheme, whose icon is the control role
+   (--sf-on-surface-icon); here, more specific, the field's mark. Under a
+   pointer it takes --sf-on-surface with every neutral icon button. */
+.sf-dropdown .sf-dropdown-field > .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--icon {
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
 .sf-dropdown-field > button {
   /* The chevron's glyph, not the button around it, ends at the field's
      padding: that is where an option's check ends in the open list, so the two
