@@ -2,8 +2,8 @@
 // Density (owner decision C22, 2026-11-09): data-sf-density="compact" on the
 // root or on any container moves every component one step down the one size
 // ladder -- control height, padding, gap, icon and text together (40 -> 32,
-// 24 -> 20, 16 -> 14). An explicit size on a component wins. Nothing is
-// scaled: no rem, no font-size alone (C18), only steps.
+// 24 -> 20, 16 -> 14). Nothing is scaled: no rem, no font-size alone (C18),
+// only steps.
 //
 // The mechanism is the ladder variables themselves (C19, core first): inside a
 // compact region each step variable holds the value of the step below it, so a
@@ -12,12 +12,14 @@
 // components draw in light DOM, so the attribute selectors below reach them
 // too.
 //
-// An explicit size: a Smart element whose page gave it a size attribute is
-// drawn at that size whatever the region says, so the region's shift is
-// undone under it (the normal values again). A size a component's template
-// gives to an element it draws is relative to the component's own size and is
-// not explicit: smart-base marks those data-sf-size-relative, and they follow
-// the region with their parent.
+// An explicit size is a step on the region's ladder (owner decision C79,
+// 2026-11-12, changing C22): a component given size="1" in a compact region
+// stands where no size stands (40 -> 32), size="2" one step below its normal
+// height (48 -> 40), and so on -- one form keeps one height whatever its
+// authors wrote. Before C79 an explicit size took the normal ladder back
+// under it, and a compact form drew size="1" fields at 40 beside no-size
+// buttons at 32. data-sf-density="normal" on an element or a container is the
+// one way back to the normal ladder (a fixed size).
 //
 // Desktop only (>= 60rem): below it the phone ladder already is the dense one
 // (control 36, text 14) and its touch targets stay (owner decision C36: compact
@@ -234,11 +236,6 @@ export function sourceDigest() {
   return hash.digest('hex');
 }
 
-// A page's own size attribute, not a native one (input size, select size),
-// not a width (a drawer's size: manifest x-scale, mark data-sf-size-scale)
-// and not part of a printed first-paint picture.
-export const EXPLICIT = ':not(input, select, textarea)[size]:not([data-sf-size-relative], [data-sf-size-scale], [data-sf-static] *)';
-
 export function render() {
   const rows = ladder();
   const aliases = derived();
@@ -259,10 +256,10 @@ export function render() {
  * Density (owner decision C22): data-sf-density="compact" on the root or on
  * a container moves every component one ladder step down -- height, padding,
  * gap, icon and text together. Each step variable holds the value of the step
- * below; components read their steps as always. An element with an explicit
- * size (a page's size attribute) takes the normal ladder back under it;
- * data-sf-density="normal" does the same for a region. Desktop only: below
- * 60rem the phone ladder already is the dense one.
+ * below; components read their steps as always, an explicit size too (C79: a
+ * size is a step on the region's ladder). data-sf-density="normal" takes the
+ * normal ladder back for an element or a region. Desktop only: below 60rem
+ * the phone ladder already is the dense one.
  *
  * The popup widths (C32) follow the text: normal x 14/16, rounded up to the
  * next step of the size scale.
@@ -278,17 +275,13 @@ export function render() {
 ${block('compact', '      ')}
     }
 
-    [data-sf-density="compact"] ${EXPLICIT},
     [data-sf-density="normal"] {
 ${block('normal', '      ')}
     }
 
     /* On <html> the variables only, which body reads: a font-size on the
-       root element would move rem, and with it every step of the ladder.
-       An explicit size takes the normal body text back too, for the text a
-       component inherits rather than sizes. */
+       root element would move rem, and with it every step of the ladder. */
     [data-sf-density="compact"]:not(:root),
-    [data-sf-density="compact"] ${EXPLICIT},
     [data-sf-density="normal"]:not(:root) {
       font-size: var(--sf-text--size);
       line-height: var(--sf-text--height);

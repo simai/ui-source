@@ -2555,7 +2555,8 @@ class SfBaseElement extends HTMLElement {
         : [child];
 
       this._liveSlotNodes.get(slotName).push(...slotNodes);
-      // The page's content: a size it gives stays explicit (density, C22).
+      // The page's content: a size it gives stays the page's (density, C22; it
+      // follows the region like any size since C79).
       noteAuthored(slotNodes);
       this.holdSlotNode(child);
     });
@@ -2724,7 +2725,7 @@ class SfBaseElement extends HTMLElement {
   }
 
   // A copy of captured page content is the page's as well (density, C22): a
-  // size in it stays explicit.
+  // size in it stays unmarked (it follows the region like any size, C79).
   authoredCopy(node) {
     const copy = node.cloneNode(true);
     const authored = globalThis.SF?.__internal?.density?.authored;

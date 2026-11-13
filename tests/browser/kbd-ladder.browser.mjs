@@ -14,7 +14,8 @@
 //     16/12, 16/12, 20/14, 24/16, 28/20 on the desktop; 16/12, 16/12, 16/12,
 //     20/14, 24/16 on the phone;
 //   - compact density (desktop): a button and a field without a size stand
-//     at 32 and take 16/12; an explicit size 2 keeps 24/16; a plain
+//     at 32 and take 16/12; an explicit size 2 follows the region (C79), 40
+//     and 20/14, a size 1's plate; a plain
 //     paragraph there (the region's 14/20) 16/12, the line not grown;
 //   - a one-character key is a square; a word is at least as wide as high;
 //     the room on each side and the gap between keys are --sf-space-1/4;
@@ -259,7 +260,8 @@ try {
         // Compact density: a control without a size stands one step down.
         if (!near(m.compact.button.height, 32)) fail(`compact sf-button without a size stands ${m.compact.button.height}, not 32`);
         plates('compact sf-button without a size', m.compact.button, [16, 12]);
-        plates('compact sf-button size 2', m.compact.size2, [24, 16]);
+        plates('compact sf-button size 2 (C79: one step down)', m.compact.size2, [20, 14]);
+        if (!near(m.compact.size2.height, 40)) fail(`compact sf-button size 2 stands ${m.compact.size2.height}, not 40 (C79)`);
         plates('compact sf-input without a size', m.compact.input, [16, 12]);
         // A compact region sets its own body text, 14/20: a plain paragraph
         // there takes it, and its keys 16/12; the line does not grow.

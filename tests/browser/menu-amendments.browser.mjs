@@ -27,8 +27,8 @@
 //   найдено», ↗ on a link with a target;
 // C06: the field's magnifier stands over the rows' icons, the field a row's
 //   height, at normal and compact density;
-// density: sf-input with no size follows data-sf-density=compact (32), one
-//   with an explicit size keeps it (C22: an explicit size wins).
+// density: sf-input with no size follows data-sf-density=compact (32), and
+//   one with an explicit size follows it too (C79, changing C22): size 1 is 32.
 // R179 (sf-menu 1.6.2), a touch phone at 390 and 360: a row that stays a row
 //   (sf-header-site collapse none; a bare row with overflow more) opens
 //   catalog > pumps > centrifugal with every chevron tapped; every open level
@@ -542,7 +542,7 @@ try {
         });
         seen[`inputs-${theme}-${run}`] = inputs;
         check(inputs.compact === 32 && inputs.auto === 32, `${k}: sf-input without a size is the compact row height, 32 (${inputs.auto})`);
-        check(inputs.one === 40, `${k}: sf-input size="1" keeps its explicit size, 40 (C22: an explicit size wins) (${inputs.one})`);
+        check(inputs.one === 32, `${k}: sf-input size="1" follows the compact region, 32 (C79: an explicit size follows its region) (${inputs.one})`);
         check(!consoleErrors.length, `${k}: console clean ${consoleErrors.join(' | ')}`);
         await tab.close();
       }

@@ -10545,6 +10545,30 @@
       "source": "src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
     },
     {
+      "id": "behaviour-explicit-size-follows-density",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "An explicit size follows the region's density (owner decision C79, changing C22): in data-sf-density=\"compact\" a component with a size comes down one ladder step, as one without a size does -- a field size=\"1\" and the buttons beside it are 32/32, size=\"2\" is 40 (it was 48). Before, an explicit size took the normal ladder back inside a compact region. data-sf-density=\"normal\" on an element or a region (an island) restores the normal heights, sizes included. The phone keeps its ladder (density is desktop-only). Panels and menus a component places on the body take the density of the control that opens it, sized or not.",
+      "items": [
+        {
+          "attribute": "size",
+          "from": "an explicit size draws the normal ladder inside a compact region",
+          "to": "an explicit size comes down a step with the region; data-sf-density=\"normal\" takes the normal ladder back"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite where the smaller controls are wanted. Where a sized control inside a compact region must keep its normal height, put data-sf-density=\"normal\" on it or on the group that holds it; do not raise its size by a step to compensate.",
+      "examples": {
+        "before": "<form data-sf-density=\"compact\"><sf-input size=\"2\"></sf-input></form> (48)",
+        "after": "<form data-sf-density=\"compact\"><sf-input size=\"2\"></sf-input></form> (40); <div data-sf-density=\"normal\"><sf-input size=\"2\"></sf-input></div> inside it (48)"
+      },
+      "owner": "ui-source",
+      "source": "scripts/generate-density.mjs; src/core/js/density.js; src/core/js/layer-stack.js; src/smart/menu-context/index.js; ui-control control/docs-review/decisions.md C79"
+    },
+    {
       "id": "behaviour-c77-field-value-inset",
       "recorded_on": "2026-11-11",
       "stage": "compat",

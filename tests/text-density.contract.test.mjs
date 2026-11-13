@@ -4,13 +4,15 @@ import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { CONTROL_STEPS, EXPLICIT, FAMILIES, TIGHTNESS_BELOW, ladder } from '../scripts/generate-density.mjs';
+import { CONTROL_STEPS, FAMILIES, TIGHTNESS_BELOW, ladder } from '../scripts/generate-density.mjs';
 
 // Density (owner decision C22, 2026-11-09): data-sf-density="compact" moves
 // every component one ladder step down -- control height, padding, gap, icon
 // and text together -- through the ladder variables the components read. The
 // body text moves with them (it was the only thing compact moved before: 16 ->
-// 14 on desktop, the step a phone already reads). An explicit size wins; no
+// 14 on desktop, the step a phone already reads). An explicit size is a step
+// on the region's ladder (owner decision C79, 2026-11-12, changing C22): it
+// comes down with the region; data-sf-density="normal" is the way back. No
 // rem, no font-size alone.
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -61,11 +63,19 @@ test('control heights, text aliases and text roles are declared again in a regio
   assert.ok(compact['--sf-text-medium--size']);
 });
 
-test('an explicit size and density normal take the normal ladder back', () => {
+test('an explicit size follows the region (C79); density normal takes the normal ladder back', () => {
   const source = read(DENSITY);
-  assert.ok(source.includes(`[data-sf-density="compact"] ${EXPLICIT},\n    [data-sf-density="normal"] {`));
+  // No selector gives a sized element the normal ladder: [size] is not named.
+  assert.doesNotMatch(source.replace(/\/\*[\s\S]*?\*\//gu, ''), /\[size\]/u);
+  assert.ok(source.includes(`\n    [data-sf-density="normal"] {`));
   const normal = block(`[data-sf-density="normal"] {`);
   for (const row of ladder()) assert.equal(normal[row.variable], row.normal, row.variable);
+  // The runtime agrees: an element's density is its region's, a size does not
+  // reset it (core/js/density.js and the copy in layer-stack.js).
+  for (const file of ['src/core/js/density.js', 'src/core/js/layer-stack.js']) {
+    const body = read(file).match(/function densityOf\(from\) \{[\s\S]*?\n\}/u)[0];
+    assert.doesNotMatch(body, /hasAttribute\('size'\)/u, file);
+  }
 });
 
 test('density applies only at the desktop breakpoint', () => {
@@ -92,13 +102,13 @@ test('Smart drawings mark the sizes they give as relative', () => {
   assert.match(read('src/core/js/layer-stack.js'), /densityOf\(host\)/u);
   const menu = read('src/smart/menu-context/index.js');
   assert.match(menu, /followDensity\(child, this\.surface\(\) \?\? this\)/u);
-  // A menu opened for a control is drawn in that control's density, unless
-  // the page gave it a size (C22).
-  assert.match(menu, /if \(!this\.hasAttribute\("size"\) \|\| this\.hasAttribute\(RELATIVE\)\) \{[\s\S]{0,120}?surface\.setAttribute\("data-sf-density", densityOf\(anchor\) \?\? "normal"\);/u);
+  // A menu opened for a control is drawn in that control's density, a menu
+  // the page gave a size too (C79).
+  assert.match(menu, /this\._owned\.density = surface\.getAttribute\("data-sf-density"\);\n\s*surface\.setAttribute\("data-sf-density", densityOf\(anchor\) \?\? "normal"\);/u);
+  assert.doesNotMatch(menu, /hasAttribute\(RELATIVE\)/u);
 });
 
-test('a size that is a width does not take the normal ladder back (manifest x-scale)', () => {
-  assert.match(EXPLICIT, /\[data-sf-size-scale\]/u);
+test('a size that is a width is marked as one (manifest x-scale)', () => {
   const drawer = JSON.parse(read('src/smart/drawer/component.json'));
   assert.equal(drawer.settings.size['x-scale'], 'width');
   const base = read('src/core/js/smart-base.js');
@@ -113,8 +123,7 @@ test('a size that is a width does not take the normal ladder back (manifest x-sc
 
 // Owner decision C32 (2026-11-09): a popup's width tied to text follows the
 // text -- compact = normal x 14/16, rounded up to the next step of the size
-// scale; a region of normal density or an explicit size takes the normal
-// width back.
+// scale; a region of normal density takes the normal width back.
 test('the popup widths follow the text in compact density (C32)', async () => {
   const {widths} = await import('../scripts/generate-density.mjs');
   const expected = {

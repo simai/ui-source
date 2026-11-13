@@ -66,7 +66,8 @@ class SfPageHeader extends PageHeaderElement {
       const nodes = this._liveSlotNodes.get(name) || [];
       nodes.push(child);
       this._liveSlotNodes.set(name, nodes);
-      // The page's content: a size it gives stays explicit (density, C22).
+      // The page's content: a size it gives stays the page's (density, C22; it
+      // follows the region like any size since C79).
       noteAuthored([child]);
       child.remove();
     }
