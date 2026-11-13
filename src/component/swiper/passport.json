@@ -12,7 +12,7 @@
     "src/component/swiper/rule.js",
     "src/component/swiper/scss/index.scss"
   ],
-  "content_sha256": "155d8a5313caa74fdf1c0255e1ab18a546af11e38729cda0f2171fdb29b39875",
+  "content_sha256": "78b8da0ffa23e6cab17cd0788d6a2e55a6a4ff3eef5815bb4c221aef03a3ece2",
   "dependencies": [
     {
       "id": "core.runtime",
