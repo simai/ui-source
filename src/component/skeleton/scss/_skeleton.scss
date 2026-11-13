@@ -1,9 +1,10 @@
 @layer sf.components {
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) */
 .sf-skeleton {
-  /* A control's fill and its pressed step (C16): the skeleton stands where a
-     line of text or a plate will, on whatever place it is on. */
-  --sf-skeleton-base: var(--sf-surface-container);
+  /* The fill is core's (owner decision C130 (4)): one rule in
+     core/scss/_sf_css__placeholder.scss gives --sf-skeleton-base to this
+     skeleton and to every first-paint bar, the neutral fill of the place
+     (--sf-surface-container, 12 % with C113). The wave's highlight is the pressed step. */
   --sf-skeleton-highlight: var(--sf-surface-container-active);
   --sf-skeleton-duration: calc(var(--sf-duration-slow) * 3);
   display: flex;
@@ -38,7 +39,7 @@
    opening on a slow CPU: rows at 7.7 s against 4.1 s with the bars still
    (stand 25, D7). A skeleton inside a pulsing one does not pulse again. */
 .sf-skeleton--animation-pulse {
-  animation: sf-skeleton-pulse var(--sf-skeleton-animation-duration, var(--sf-skeleton-duration)) var(--sf-animation) infinite;
+  animation: sf-placeholder-pulse var(--sf-skeleton-animation-duration, var(--sf-skeleton-duration)) var(--sf-animation) infinite;
 }
 
 .sf-skeleton--animation-pulse .sf-skeleton--animation-pulse {
@@ -68,46 +69,55 @@
 .sf-skeleton-text--size-1 {
   --sf-skeleton-text--height: var(--sf-text-size-1);
   --sf-skeleton-text--line: var(--sf-text-height-1);
+  --sf-skeleton-text--box: var(--sf-ui-1--control-height);
 }
 
 .sf-skeleton-text--size-2 {
   --sf-skeleton-text--height: var(--sf-text-size-2);
   --sf-skeleton-text--line: var(--sf-text-height-2);
+  --sf-skeleton-text--box: var(--sf-ui-2--control-height);
 }
 
 .sf-skeleton-text--size-3 {
   --sf-skeleton-text--height: var(--sf-text-size-3);
   --sf-skeleton-text--line: var(--sf-text-height-3);
+  --sf-skeleton-text--box: var(--sf-ui-3--control-height);
 }
 
 .sf-skeleton-text--size-4 {
   --sf-skeleton-text--height: var(--sf-text-size-4);
   --sf-skeleton-text--line: var(--sf-text-height-4);
+  --sf-skeleton-text--box: var(--sf-text-height-4);
 }
 
 .sf-skeleton-text--size-5 {
   --sf-skeleton-text--height: var(--sf-text-size-5);
   --sf-skeleton-text--line: var(--sf-text-height-5);
+  --sf-skeleton-text--box: var(--sf-text-height-5);
 }
 
 .sf-skeleton-text--size-6 {
   --sf-skeleton-text--height: var(--sf-text-size-6);
   --sf-skeleton-text--line: var(--sf-text-height-6);
+  --sf-skeleton-text--box: var(--sf-text-height-6);
 }
 
 .sf-skeleton-text--size-7 {
   --sf-skeleton-text--height: var(--sf-text-size-7);
   --sf-skeleton-text--line: var(--sf-text-height-7);
+  --sf-skeleton-text--box: var(--sf-text-height-7);
 }
 
 .sf-skeleton-text--size-1\/2 {
   --sf-skeleton-text--height: var(--sf-text-size-1\/2);
   --sf-skeleton-text--line: var(--sf-text-height-1\/2);
+  --sf-skeleton-text--box: var(--sf-ui-1\/2--control-height);
 }
 
 .sf-skeleton-text--size-1\/3 {
   --sf-skeleton-text--height: var(--sf-text-size-1\/3);
   --sf-skeleton-text--line: var(--sf-text-height-1\/3);
+  --sf-skeleton-text--box: var(--sf-ui-1\/3--control-height);
 }
 
 .sf-skeleton-text--size-1\/4 {
@@ -115,38 +125,67 @@
   --sf-skeleton-text--line: var(--sf-text-height-1\/4);
 }
 
+/* Steps 1/5...1/7 (SK-08): the text ladder has no line of its own below 1/4,
+   so these bars take the ladder's smallest line, 1/4's (12 px). Without one
+   a bar took whatever line an ancestor had set, or none: a row of 1/5 bars
+   was thinner than any line of text it stood for. */
 .sf-skeleton-text--size-1\/5 {
   --sf-skeleton-text--height: var(--sf-text-size-1\/5);
+  --sf-skeleton-text--line: var(--sf-text-height-1\/4);
 }
 
 .sf-skeleton-text--size-1\/6 {
   --sf-skeleton-text--height: var(--sf-text-size-1\/6);
+  --sf-skeleton-text--line: var(--sf-text-height-1\/4);
 }
 
 .sf-skeleton-text--size-1\/7 {
   --sf-skeleton-text--height: var(--sf-text-size-1\/7);
+  --sf-skeleton-text--line: var(--sf-text-height-1\/4);
 }
 
 .sf-skeleton-icon {
   inline-size: var(--sf-skeleton-text--height);
 }
 
+/* A shape with no size of its own (owner decision C130 (1)): circle, square
+   and rounded given no width and no height are the square box of their step,
+   so a circle of size 1 is an sf-avatar of size 1 and a square the box of an
+   sf-button: the control height at 1/3...3 (32/40/48/56 at 1/2...3), the text
+   line at 4...7. Below 1/3 the ladder has no control, and the box is the bar
+   (the text size), as an icon placeholder's. The shape does not stretch: its
+   skeleton keeps its own width. A width or a height still wins (they are
+   written in style), and so does type="icon". */
+.sf-skeleton-text:is(.sf-skeleton-circle, .sf-skeleton-square, .sf-skeleton-rounded):not(.sf-skeleton-icon, [style*="inline-size"], [style*="block-size"]) {
+  inline-size: var(--sf-skeleton-text--box, var(--sf-skeleton-text--height));
+  block-size: var(--sf-skeleton-text--box, var(--sf-skeleton-text--height));
+}
+
+.sf-skeleton:has(> .sf-skeleton-text:is(.sf-skeleton-circle, .sf-skeleton-square, .sf-skeleton-rounded):not(.sf-skeleton-icon, [style*="inline-size"], [style*="block-size"])) {
+  flex: none;
+}
+
 .sf-skeleton-circle {
   border-radius: var(--sf-radius-circle);
 }
 
+/* A square is a thumbnail or a control: the control's radius (C130 (1)); a
+   radius of 0 was a sharp hole in a page where everything is rounded. */
 .sf-skeleton-square {
-  border-radius: 0;
+  border-radius: var(--sf-skeleton-radius, var(--sf-radius--ui));
 }
 
+/* Rounded is a card or a picture: the surface radius (C130 (1)). */
 .sf-skeleton-rounded {
-  border-radius: var(--sf-radius--ui);
+  border-radius: var(--sf-skeleton-radius, var(--sf-radius--surface));
 }
 
 .sf-skeleton--animation-wave .sf-skeleton-text {
   overflow: hidden;
 }
 
+/* The pulse is core's sf-placeholder-pulse (C130 (4): one rule with the
+   first-paint bars); this name stays for a page that refers to it. */
 @keyframes sf-skeleton-pulse {
   50% {
     opacity: var(--sf-opacity-60);

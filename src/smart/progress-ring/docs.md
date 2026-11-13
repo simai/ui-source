@@ -18,19 +18,29 @@ page's, which passes `status`.
   ring.
 - `value="0..100"` — the value in per cent, a number; values are clamped.
 - `value-text` — the value as people say it, such as «3 из 5 файлов».
-- `status="neutral|info|success|warning|error"` — the colour of the filled
-  part, the same words and role tokens as sf-progress-bar; never inferred
-  from the value.
-- `size="1/2|1|2|3"` — the control ladder: the ring is the box of an
-  sf-icon-button or sf-avatar of the same size (36 px at 1 on a narrow
-  screen, 40 px on a wide one); 3 is the box of a featured icon of size 3,
-  the circle of a page's empty state (56 px on a wide screen), where
-  sf-empty-state `kind="processing"` with a `value` draws it.
+- `status="|neutral|info|success|warning|error"` — the colour of the filled
+  part, the same words and role tokens as sf-progress-bar (1.4.0, owner decision C131) — empty, the default, draws the theme's
+  primary; `neutral` is grey, as in sf-dot and sf-badge; the others their
+  roles. `primary`, the word used before, is read as the default.
+- `warning-at`, `error-at` (1.2.0) — thresholds in per cent, set by the page:
+  the ring draws the more serious of `status` and the threshold reached, and
+  says which on the host as `data-status`. Without them the ring never infers
+  a colour from the value.
+- `size="1/4|1/3|1/2|1|2|3"` (1.2.0) — the avatar's ladder: at every step the
+  ring is the box of an sf-avatar of the same size, 20 / 24 / 32 / 40 / 48 /
+  56 px on a wide screen, 20 / 20 / 28 / 36 / 44 / 52 on a phone, one step
+  down in a compact region; so a ring can wrap an avatar of its step. 3 is
+  also the circle of a page's empty state, where sf-empty-state
+  `kind="processing"` with a `value` draws it. The line is 2 px at every
+  size.
 - `indeterminate` — the value is unknown: the spinner's arc goes round the
   ring and no value is said.
 - `meter` — the ring shows an amount within a known range (a quota used), not
   a task's progress: role `meter`.
-- `show-text` — the percentage in the middle.
+- `show-text` — the percentage in the middle, 12 / 14 / 16 px at 1 / 2 / 3.
+  Below size 1 no percentage is shown: the box leaves letters below the text
+  ladder. The
+  value stays the ring's `aria-valuenow`, so a screen reader still says it.
 
 The ring carries the role and the value; what stands in the middle is beside
 it, so a picture keeps its own name. It is not interactive and never takes the
@@ -63,7 +73,7 @@ sf-avatar is fitted to it at every size.
 
 Public variables: `--sf-progress-ring-size`, `--sf-progress-ring-line-width`
 (2 px), `--sf-progress-ring-gap` (2 px), `--sf-progress-ring-fill-color`,
-`--sf-progress-ring-track-color` (`--sf-outline-variant`) and
+`--sf-progress-ring-track-color` (`--sf-surface-container`) and
 `--sf-progress-ring-color` (the percentage). A bare `0` is a valid line or
 gap. The fill moves between two values, and stands still under
 `prefers-reduced-motion`, as the indeterminate arc does.

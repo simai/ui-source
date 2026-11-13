@@ -2,20 +2,22 @@
   "$comment": "The source of sf-progress-ring's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.11, vocabulary 1.1.5. Owner request 2026-10-28 (UI Chat thread): «if a component is missing, create it -- e.g. a circular variant of progress, with and without data».",
   "id": "smart.progress-ring",
   "tag": "sf-progress-ring",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "progress",
   "settings": {
     "size": {
       "type": "enum",
       "values": [
+        "1/4",
+        "1/3",
         "1/2",
         "1",
         "2",
         "3"
       ],
       "default": "1",
-      "summary": "The control ladder: at each step the ring is the box of an sf-icon-button or an sf-avatar of the same size; 3 is the box of a featured icon of size 3, the circle of a page's empty state."
+      "summary": "The avatar's ladder (owner decision C131 (5)): at every step the ring is the box of an sf-avatar of the same size -- 20 / 24 / 32 / 40 / 48 / 56 px at 1/4...3 on a wide screen, 20 / 20 / 28 / 36 / 44 / 52 on a phone, one step down in a compact region -- so a ring can wrap an avatar of its step. 3 is also the circle of a page's empty state. The percentage shows from 1 up."
     },
     "value": {
       "type": "number",
@@ -27,14 +29,29 @@
     "status": {
       "type": "enum",
       "values": [
+        "",
         "neutral",
         "info",
         "success",
         "warning",
         "error"
       ],
-      "default": "neutral",
-      "summary": "What the value reports, in the shared status vocabulary; the page decides it (a threshold is the page's), the ring never infers it from the value."
+      "default": "",
+      "summary": "What the value reports, in the shared status vocabulary (owner decision C131 (1)). Empty, the default, draws the theme's primary; neutral is grey, as in sf-dot and sf-badge; info, success, warning and error their roles. The word this component used before, primary, is still accepted and means the default. With warning-at or error-at the ring takes the more serious of this status and the threshold the value reached."
+    },
+    "warning-at": {
+      "type": "number",
+      "optional": true,
+      "min": 0,
+      "max": 100,
+      "summary": "A threshold in per cent: from this value on, the component is a warning by itself (a disk 83 % full of a warning-at 80). The page sets the threshold; the component only compares. Unset, no threshold."
+    },
+    "error-at": {
+      "type": "number",
+      "optional": true,
+      "min": 0,
+      "max": 100,
+      "summary": "A threshold in per cent: from this value on, the component is an error by itself (a disk 83 % full of a warning-at 80). The page sets the threshold; the component only compares. Unset, no threshold. Above warning-at when both are set."
     },
     "indeterminate": {
       "type": "boolean",
@@ -164,7 +181,9 @@
     "skeleton: none; the ring has no port and no late data: its snapshot is its first paint (§5.4).",
     "box: no x-published root variable. The ring's box is a token a page already has (--sf-ui-<size>--control-height, or --sf-progress-ring-size where the page sets one), and the printed first paint carries the class sheet's box, so nothing is published on :root for a page to reserve it (§5.4).",
     "version 1.0.2 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, chunk({done, total}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged.",
-    "version 1.1.0 (2026-11-13, owner decision C120): size 3, the box of a featured icon of size 3 (--sf-ui-3--control-height, 56 px on a wide screen), so the ring of a job with a known share stands in the circle of a page's empty state (sf-empty-state processing with value). The line and the gap stay 2 px; the percentage is --sf-text-size-1/2, the next step after 1/3 at 2. Nothing else is drawn differently; the look of sizes 1/2, 1 and 2 is unchanged."
+    "version 1.1.0 (2026-11-13, owner decision C120): size 3, the box of a featured icon of size 3 (--sf-ui-3--control-height, 56 px on a wide screen), so the ring of a job with a known share stands in the circle of a page's empty state (sf-empty-state processing with value). The line and the gap stay 2 px; the percentage is --sf-text-size-1/2, the next step after 1/3 at 2. Nothing else is drawn differently; the look of sizes 1/2, 1 and 2 is unchanged.",
+    "version 1.1.1 (2026-11-13, PG-10 and PG-16 of control/research/2026-11-13-progress-family.md, component.progress-ring 1.2.1): size 1/2 shows no percentage with show-text (its box left 8 px letters, below the text ladder); the value stays aria-valuenow, so a screen reader still says it. Under reduced motion the indeterminate ring draws no arc: the whole ring is the track tinted with the fill at 32 % (interim until the owner picks the look, #q-motion), where a still 30 % arc read as a real value. Settings, values, events and keys unchanged.",
+    "version 1.2.0 (2026-11-13, owner decision C131, component.progress-ring 1.3.0): the ladder is the avatar's (1/4 and 1/3 added; boxes equal sf-avatar's at every step, desktop, phone and compact), the line 2 px at every size, the percentage 12 / 14 / 16 px at 1 / 2 / 3 and none below 1; no status (empty, the new default) is primary and neutral is grey (primary is the former word for the default); the track is the family's one neutral fill (was outline-variant); warning-at and error-at as on sf-progress-bar; reduced motion tints the whole ring 32 % for indeterminate."
   ],
   "x-registry": {
     "capabilities": [
@@ -256,5 +275,8 @@
         "pattern": "^(?:100|[1-9]?[0-9])(?:\\.[0-9]+)?$"
       }
     }
+  },
+  "host-states": {
+    "data-status": "string"
   }
 }

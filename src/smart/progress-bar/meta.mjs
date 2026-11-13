@@ -43,23 +43,24 @@ const sfProgressBarMeta = {
       "kind": "enum",
       "values": [
         "none",
-        "inline-end",
-        "bottom",
-        "right"
+        "top",
+        "inline-end"
       ],
-      "default": "none"
+      "default": "none",
+      "description": "Where the percentage stands (owner decision C131 (4)): top -- one line over the bar, the label at the start and the value at the end; inline-end -- the value at the end of the bar's row; none. The words used before, bottom and right, are read as top and inline-end until 2027-01-01 (journal value-progress-text-position)."
     },
     "status": {
       "kind": "enum",
       "values": [
+        "",
         "neutral",
         "info",
         "success",
         "warning",
         "error"
       ],
-      "default": "neutral",
-      "description": "What the progress reports, in the shared status vocabulary. The word this component used before, primary, is still accepted and means neutral. With warning-at or error-at the bar takes the more serious of this status and the threshold the value reached."
+      "default": "",
+      "description": "What the value reports, in the shared status vocabulary (owner decision C131 (1)). Empty, the default, draws the theme's primary; neutral is grey, as in sf-dot and sf-badge; info, success, warning and error their roles. The word this component used before, primary, is still accepted and means the default. With warning-at or error-at the bar takes the more serious of this status and the threshold the value reached."
     },
     "warning-at": {
       "kind": "custom",
@@ -93,6 +94,15 @@ const sfProgressBarMeta = {
       "default": "false",
       "description": "The work is paused: the bar is a warning (unless its status or a threshold says error) and says so to a screen reader: the value text reads «35 %, на паузе» / «35%, paused» when the page gives no value-text (C34). The page sets it where the work really stopped."
     },
+    "meter": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "The value is an amount within a known range (a quota used, a disk filled), not a task's progress: role meter instead of progressbar (owner decision C131 (7)). A meter always has a value, so it is never indeterminate. The look does not change."
+    },
     "label": {
       "kind": "custom",
       "valueType": "string",
@@ -111,13 +121,14 @@ const sfProgressBarMeta = {
     "tone": {
       "kind": "enum",
       "values": [
+        "",
         "neutral",
         "info",
         "success",
         "warning",
         "error"
       ],
-      "default": "neutral",
+      "default": "",
       "description": "Legacy name for status, still honoured. See contracts/public-api-axes.json."
     }
   }

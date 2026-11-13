@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-ring",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "title": "Progress Ring",
   "summary": "A value from 0 to 100, or an unknown one, drawn as a ring on the control ladder, with the percentage or a picture in the middle.",
   "kind": "smart",
@@ -49,8 +49,10 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "The control ladder: at each step the ring is the box of an sf-icon-button or an sf-avatar of the same size; 3 is the box of a featured icon of size 3, the circle of a page's empty state.",
+        "description": "The avatar's ladder (owner decision C131 (5)): at every step the ring is the box of an sf-avatar of the same size -- 20 / 24 / 32 / 40 / 48 / 56 px at 1/4...3 on a wide screen, 20 / 20 / 28 / 36 / 44 / 52 on a phone, one step down in a compact region -- so a ring can wrap an avatar of its step. 3 is also the circle of a page's empty state. The percentage shows from 1 up.",
         "enum": [
+          "1/4",
+          "1/3",
           "1/2",
           "1",
           "2",
@@ -67,15 +69,28 @@
       },
       "status": {
         "type": "string",
-        "default": "neutral",
-        "description": "What the value reports, in the shared status vocabulary; the page decides it (a threshold is the page's), the ring never infers it from the value.",
+        "default": "",
+        "description": "What the value reports, in the shared status vocabulary (owner decision C131 (1)). Empty, the default, draws the theme's primary; neutral is grey, as in sf-dot and sf-badge; info, success, warning and error their roles. The word this component used before, primary, is still accepted and means the default. With warning-at or error-at the ring takes the more serious of this status and the threshold the value reached.",
         "enum": [
+          "",
           "neutral",
           "info",
           "success",
           "warning",
           "error"
         ]
+      },
+      "warning-at": {
+        "type": "number",
+        "description": "A threshold in per cent: from this value on, the component is a warning by itself (a disk 83 % full of a warning-at 80). The page sets the threshold; the component only compares. Unset, no threshold.",
+        "minimum": 0,
+        "maximum": 100
+      },
+      "error-at": {
+        "type": "number",
+        "description": "A threshold in per cent: from this value on, the component is an error by itself (a disk 83 % full of a warning-at 80). The page sets the threshold; the component only compares. Unset, no threshold. Above warning-at when both are set.",
+        "minimum": 0,
+        "maximum": 100
       },
       "indeterminate": {
         "type": "boolean",
@@ -246,11 +261,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-ring/index.js",
-        "sha256": "d44b5dfe20353f04c9f980554ddf6f398faafb9893e6660adbc712f85d0bc0ce"
+        "sha256": "eb1f662d48f714f4ec19cae4d729b455ef141f5404f2876b4b395d7ac021ff2e"
       },
       {
         "path": "src/smart/progress-ring/js/templates/default.js",
-        "sha256": "cffbedc881b867d887c9e066eeea9e3db04c882731fad4e446b25e88bdaa9f87"
+        "sha256": "81e5f32e126418d9d71f3a079732623dc11b1825822c0f98df8de75c9b9b4744"
       },
       {
         "path": "src/smart/progress-ring/rule.js",
@@ -258,7 +273,7 @@
       },
       {
         "path": "src/smart/progress-ring/docs.md",
-        "sha256": "8f65482d8896ce534a02d57ce243a3a6896ab9180b501f0c89389bc5fb875d59"
+        "sha256": "45c1297477440e0e5e5f3dca4107f3b54477e32a38dc4ca6c4c7917d7d27b1f3"
       }
     ],
     "generated_runtime": []

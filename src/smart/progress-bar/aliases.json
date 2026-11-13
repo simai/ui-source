@@ -44,6 +44,28 @@
       "mode": "retired",
       "section": "§4.4",
       "note": "text-position is a writable setting; the method stays until the date and notes each call"
+    },
+    {
+      "from": "bottom",
+      "to": "top",
+      "kind": "value",
+      "setting": "text-position",
+      "component": "sf-progress-bar",
+      "since": "2026-11-13",
+      "remove_after": "2027-01-01",
+      "section": "owner decision C131 (4)",
+      "note": "journal value-progress-text-position: the label positions are top and inline-end; the former word is read as the new one until the date"
+    },
+    {
+      "from": "right",
+      "to": "inline-end",
+      "kind": "value",
+      "setting": "text-position",
+      "component": "sf-progress-bar",
+      "since": "2026-11-13",
+      "remove_after": "2027-01-01",
+      "section": "owner decision C131 (4)",
+      "note": "journal value-progress-text-position: the label positions are top and inline-end; the former word is read as the new one until the date"
     }
   ]
 }

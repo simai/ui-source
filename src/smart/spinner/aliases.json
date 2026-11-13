@@ -67,6 +67,39 @@
       "mode": "retired",
       "section": "§4.4",
       "note": "a reader retires; the method stays until the date and notes each call"
+    },
+    {
+      "from": "breathing",
+      "to": "arc",
+      "kind": "value",
+      "setting": "kind",
+      "component": "sf-spinner",
+      "since": "2026-11-13",
+      "remove_after": "2027-01-01",
+      "section": "owner decision C130 (5)",
+      "note": "journal value-spinner-one-look: one look, the arc; the former look draws the arc until the date"
+    },
+    {
+      "from": "comet",
+      "to": "arc",
+      "kind": "value",
+      "setting": "kind",
+      "component": "sf-spinner",
+      "since": "2026-11-13",
+      "remove_after": "2027-01-01",
+      "section": "owner decision C130 (5)",
+      "note": "journal value-spinner-one-look: one look, the arc; the former look draws the arc until the date"
+    },
+    {
+      "from": "dots",
+      "to": "arc",
+      "kind": "value",
+      "setting": "kind",
+      "component": "sf-spinner",
+      "since": "2026-11-13",
+      "remove_after": "2027-01-01",
+      "section": "owner decision C130 (5)",
+      "note": "journal value-spinner-one-look: one look, the arc; the former look draws the arc until the date"
     }
   ]
 }

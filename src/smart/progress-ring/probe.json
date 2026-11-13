@@ -13,6 +13,18 @@
       "  <sf-progress-ring id=\"r4\" aria-label=\"Копирование\" value=\"40\" size=\"2\"></sf-progress-ring>",
       "  <sf-progress-ring id=\"r-var\" label=\"Своя заливка\" value=\"50\"></sf-progress-ring>",
       "  <sf-progress-ring id=\"r6\" label=\"Расшифровка\" value=\"100\" size=\"3\" show-text></sf-progress-ring>",
+      "  <sf-progress-ring id=\"r-half\" label=\"Профиль\" value=\"62\" size=\"1/2\" show-text></sf-progress-ring>",
+      "  <div id=\"r-ladder\">",
+      "    <span class=\"r-step\"><sf-progress-ring label=\"Шаг 1/4\" value=\"50\" size=\"1/4\"></sf-progress-ring><sf-avatar size=\"1/4\" text=\"АК\"></sf-avatar></span>",
+      "    <span class=\"r-step\"><sf-progress-ring label=\"Шаг 1/3\" value=\"50\" size=\"1/3\"></sf-progress-ring><sf-avatar size=\"1/3\" text=\"АК\"></sf-avatar></span>",
+      "    <span class=\"r-step\"><sf-progress-ring label=\"Шаг 1/2\" value=\"50\" size=\"1/2\"></sf-progress-ring><sf-avatar size=\"1/2\" text=\"АК\"></sf-avatar></span>",
+      "    <span class=\"r-step\"><sf-progress-ring label=\"Шаг 1\" value=\"50\" size=\"1\"></sf-progress-ring><sf-avatar size=\"1\" text=\"АК\"></sf-avatar></span>",
+      "    <span class=\"r-step\"><sf-progress-ring label=\"Шаг 2\" value=\"50\" size=\"2\"></sf-progress-ring><sf-avatar size=\"2\" text=\"АК\"></sf-avatar></span>",
+      "    <span class=\"r-step\"><sf-progress-ring label=\"Шаг 3\" value=\"50\" size=\"3\"></sf-progress-ring><sf-avatar size=\"3\" text=\"АК\"></sf-avatar></span>",
+      "  </div>",
+      "  <sf-progress-ring id=\"r9\" label=\"Диск\" value=\"83\" warning-at=\"80\" error-at=\"95\" meter></sf-progress-ring>",
+      "  <sf-progress-ring id=\"r10\" label=\"Серое\" value=\"50\" status=\"neutral\"></sf-progress-ring>",
+      "  <sf-progress-ring id=\"r11\" label=\"Прежнее\" value=\"50\" status=\"primary\"></sf-progress-ring>",
       "</main>"
     ]
   },
@@ -144,6 +156,57 @@
       "steps": [
         {
           "check": "(() => { const root = document.querySelector('#r6 .sf-progress-ring'); const c = document.querySelector('#r6 .sf-progress-ring-content'); const probe = document.createElement('div'); probe.style.width = 'var(--sf-ui-3--control-height)'; document.body.append(probe); const want = probe.getBoundingClientRect().width; probe.remove(); return root.classList.contains('sf-progress-ring--size-3') && root.getBoundingClientRect().width === want && root.getBoundingClientRect().height === want && c.textContent.trim() === '100%' && c.scrollWidth <= c.clientWidth; })()"
+        }
+      ]
+    },
+    {
+      "id": "r8-half-no-text",
+      "title": "size 1/2 shows no percentage; the value stays the ring's (PG-10)",
+      "covers": "settings.show-text, settings.size",
+      "steps": [
+        {
+          "check": "(() => { const el = document.getElementById('r-half'); return !el.querySelector('.sf-progress-ring-content') && el.querySelector('.sf-progress-ring-indicator').getAttribute('aria-valuenow') === '62'; })()"
+        }
+      ]
+    },
+    {
+      "id": "r9-avatar-ladder",
+      "title": "at every step the ring is the box of an sf-avatar of the same size (C131 (5))",
+      "covers": "settings.size",
+      "steps": [
+        {
+          "wait": 300,
+          "check": "(() => { const steps = [...document.querySelectorAll('#r-ladder .r-step')]; return steps.length === 6 && steps.every((s) => { const r = s.querySelector('.sf-progress-ring').getBoundingClientRect(); const a = s.querySelector('.sf-avatar').getBoundingClientRect(); return r.width > 0 && Math.abs(r.width - a.width) < 0.5 && Math.abs(r.height - a.height) < 0.5; }); })()"
+        }
+      ]
+    },
+    {
+      "id": "r10-thresholds",
+      "title": "warning-at and error-at turn the ring a warning or an error by itself; the host says the drawn status (C131 (7))",
+      "covers": "settings.warning-at, settings.error-at, host-states data-status",
+      "steps": [
+        {
+          "check": "(() => { const a = document.querySelector('#r9'); return a.getAttribute('data-status') === 'warning' && a.querySelector('.sf-progress-ring').classList.contains('sf-progress-ring--warning') && a.querySelector('.sf-progress-ring-indicator').getAttribute('role') === 'meter'; })()"
+        },
+        {
+          "script": "(document.querySelector('#r9').value = 97, true)",
+          "wait": 100,
+          "check": "(() => { const a = document.querySelector('#r9'); return a.getAttribute('data-status') === 'error' && a.querySelector('.sf-progress-ring').classList.contains('sf-progress-ring--error'); })()"
+        },
+        {
+          "script": "(document.querySelector('#r9').value = 30, true)",
+          "wait": 100,
+          "check": "(() => { const a = document.querySelector('#r9'); return !a.hasAttribute('data-status') && !/sf-progress-ring--(warning|error)/.test(a.querySelector('.sf-progress-ring').className); })()"
+        }
+      ]
+    },
+    {
+      "id": "r11-status-default",
+      "title": "no status carries no class (primary); neutral is grey; primary is read as the default (C131 (1))",
+      "covers": "settings.status",
+      "steps": [
+        {
+          "check": "(() => { const none = (id) => !/sf-progress-ring--(neutral|primary|info|success|warning|error)/.test(document.querySelector(id + ' .sf-progress-ring').className); return none('#r1') && none('#r11') && document.querySelector('#r10 .sf-progress-ring').classList.contains('sf-progress-ring--neutral'); })()"
         }
       ]
     }

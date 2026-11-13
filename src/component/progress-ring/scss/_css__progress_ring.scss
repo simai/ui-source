@@ -46,10 +46,13 @@
     --sf-progress-ring--line-width: var(--sf-progress-ring-line-width, var(--sf-progress-ring--step-line-width));
     --sf-progress-ring--gap: var(--sf-progress-ring-gap, var(--sf-a2));
     --sf-progress-ring--fill: var(--sf-progress-ring-fill-color, var(--sf-primary));
-    --sf-progress-ring--track: var(--sf-progress-ring-track-color, var(--sf-outline-variant));
+    /* One track for the family (owner decision C131 (2)): the neutral fill of
+       the place, as sf-progress-bar and sf-progress-scale (was the 24 %
+       outline-variant line). */
+    --sf-progress-ring--track: var(--sf-progress-ring-track-color, var(--sf-surface-container));
     --sf-progress-ring--step-size: var(--sf-ui-1--control-height);
     --sf-progress-ring--step-line-width: var(--sf-a2);
-    --sf-progress-ring--font-size: var(--sf-text-size-1\/4);
+    --sf-progress-ring--font-size: var(--sf-text-size-1\/3);
     position: relative;
     display: inline-grid;
     flex: none;
@@ -102,6 +105,12 @@
     height: 100%;
   }
 
+  /* No status is the theme's primary; neutral the grey of sf-dot and sf-badge
+     (owner decision C131 (1)). */
+  .sf-progress-ring.sf-progress-ring--neutral {
+    --sf-progress-ring--fill: var(--sf-progress-ring-fill-color, var(--sf-on-surface-variant));
+  }
+
   .sf-progress-ring.sf-progress-ring--info {
     --sf-progress-ring--fill: var(--sf-progress-ring-fill-color, var(--sf-info));
   }
@@ -118,30 +127,55 @@
     --sf-progress-ring--fill: var(--sf-progress-ring-fill-color, var(--sf-error));
   }
 
-  /* The ladder: the box is the control height of the size, the line and the
-     text steps of their own scales. */
+  /* The ladder is the avatar's (owner decision C131 (5)): at every step the
+     ring is the box of an sf-avatar of the same size, so a ring can stand
+     where an avatar stands and wrap one. 20 / 24 / 32 / 40 / 48 / 56 px at
+     1/4...3 on a wide screen, 20 / 20 / 28 / 36 / 44 / 52 on a phone, one step
+     down the avatar's ladder in a compact region (the tokens are the
+     region's). The boxes are the avatar's own expressions (sf-avatar 1.5.1).
+     Size 3 is also the circle of a page's empty state (C120). The line is
+     2 px at every size; the percentage is 12 / 14 / 16 px at 1, 2, 3 and is
+     not shown below 1 (8 px is not text). */
+  .sf-progress-ring.sf-progress-ring--size-1\/4 {
+    --sf-progress-ring--step-size: var(--sf-icon-size-2);
+  }
+
+  .sf-progress-ring.sf-progress-ring--size-1\/3 {
+    --sf-progress-ring--step-size: calc(var(--sf-text-height-1\/3) + 2 * var(--sf-ui-1\/3--space-y-tightness-low));
+  }
+
   .sf-progress-ring.sf-progress-ring--size-1\/2 {
     --sf-progress-ring--step-size: var(--sf-ui-1\/2--control-height);
-    --sf-progress-ring--font-size: var(--sf-text-size-1\/5);
+  }
+
+  @media (min-width: 60rem) {
+    .sf-progress-ring.sf-progress-ring--size-1\/3 {
+      --sf-progress-ring--step-size: var(--sf-icon-size-3);
+    }
+
+    .sf-progress-ring.sf-progress-ring--size-1\/2 {
+      --sf-progress-ring--step-size: calc(var(--sf-text-height-1\/2) + var(--sf-space-1\/2));
+    }
   }
 
   .sf-progress-ring.sf-progress-ring--size-1 {
     --sf-progress-ring--step-size: var(--sf-ui-1--control-height);
-    --sf-progress-ring--font-size: var(--sf-text-size-1\/4);
+    --sf-progress-ring--font-size: var(--sf-text-size-1\/3);
   }
 
   .sf-progress-ring.sf-progress-ring--size-2 {
     --sf-progress-ring--step-size: var(--sf-ui-2--control-height);
-    --sf-progress-ring--font-size: var(--sf-text-size-1\/3);
+    --sf-progress-ring--font-size: var(--sf-text-size-1\/2);
   }
 
-  /* Size 3 (owner decision C120, 2026-11-13): the box of a featured icon of
-     size 3, the circle of a page's empty state (56 px on a wide screen), so
-     the ring of a job with a known share stands in that circle. The line and
-     the gap stay 2 px; the percentage takes the next text step. */
   .sf-progress-ring.sf-progress-ring--size-3 {
     --sf-progress-ring--step-size: var(--sf-ui-3--control-height);
-    --sf-progress-ring--font-size: var(--sf-text-size-1\/2);
+    --sf-progress-ring--font-size: var(--sf-text-size-1);
+  }
+
+  /* Below size 1 the middle holds a picture or nothing, never the percentage. */
+  .sf-progress-ring:is(.sf-progress-ring--size-1\/4, .sf-progress-ring--size-1\/3, .sf-progress-ring--size-1\/2) .sf-progress-ring-content[aria-hidden="true"] {
+    display: none;
   }
 
   /* Indeterminate: the spinner's arc -- a fixed 30% of the ring going round
@@ -162,8 +196,13 @@
       transition-duration: 0s;
     }
 
+    /* PG-16, interim until the owner picks the look (#q-motion): an arc
+       standing still read as 30 % done. With no value to show, the whole ring
+       is the track tinted with the fill at the top of the fill family (32 %),
+       with no arc. */
     .sf-progress-ring.sf-progress-ring--indeterminate .sf-progress-ring-indicator {
       animation: none;
+      background: color-mix(in srgb, var(--sf-progress-ring--fill) 32%, var(--sf-progress-ring--track));
     }
   }
 }

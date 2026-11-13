@@ -35,7 +35,7 @@ function renderMeter(context) {
   return html`<span class="sf-tile-metric-meter" role="meter" aria-label=${meter.name}
       aria-valuemin="0" aria-valuemax=${String(meter.max)} aria-valuenow=${String(meter.value)} aria-valuetext=${meter.text}>
     <sf-progress-bar class="sf-tile-metric-bar" aria-hidden="true" size=${size} value=${String(meter.percent)}
-      status=${context.status} warning-at=${meter.warningAt ?? nothing} error-at=${meter.errorAt ?? nothing}></sf-progress-bar>
+      status=${context.status === 'neutral' ? nothing : context.status} warning-at=${meter.warningAt ?? nothing} error-at=${meter.errorAt ?? nothing}></sf-progress-bar>
     <span class="sf-tile-metric-limit" aria-hidden="true">${meter.text}</span>
   </span>`;
 }

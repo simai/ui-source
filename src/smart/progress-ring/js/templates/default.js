@@ -1,7 +1,12 @@
 import { html, nothing } from 'lit';
 
-const SIZES = ['1/2', '1', '2', '3'];
+// The avatar's ladder (owner decision C131 (5)).
+const SIZES = ['1/4', '1/3', '1/2', '1', '2', '3'];
+// No status (empty) is the theme's primary and carries no class; neutral is
+// grey (C131 (1)).
 const STATUSES = ['neutral', 'info', 'success', 'warning', 'error'];
+// Below size 1 the box leaves no room for a percentage on the text ladder.
+const TEXTLESS = new Set(['1/4', '1/3', '1/2']);
 
 // A number from 0 to 100; anything else reads 0.
 export function normalizeValue(value) {
@@ -18,20 +23,24 @@ const on = (value) => value === true || value === '' || value === 'true';
 // percentage, which is aria-hidden: the ring says the value once.
 export function renderProgressRingTemplate(context) {
   const size = SIZES.includes(String(context.size)) ? String(context.size) : '1';
-  const status = STATUSES.includes(String(context.status)) ? String(context.status) : 'neutral';
+  const given = String(context.drawnStatus ?? context.status ?? '');
+  const status = STATUSES.includes(given) ? given : '';
   const indeterminate = on(context.indeterminate);
   const meter = on(context.meter);
   const value = normalizeValue(context.value);
   const role = meter ? 'meter' : 'progressbar';
   // A meter always has a value; only a progressbar can be indeterminate.
   const unknown = indeterminate && !meter;
-  const text = on(context.showText) && !unknown ? `${value}%` : '';
+  // Below size 1 no percentage is shown (PG-10, C131 (5)): the box leaves
+  // 8 px letters, below the text ladder. The value stays the ring's
+  // (aria-valuenow), so a screen reader still says it; the eye reads the arc.
+  const text = on(context.showText) && !unknown && !TEXTLESS.has(size) ? `${value}%` : '';
   const content = context.content && context.content !== nothing ? context.content : null;
 
   const rootClasses = [
     'sf-progress-ring',
     `sf-progress-ring--size-${size}`,
-    status === 'neutral' ? '' : `sf-progress-ring--${status}`,
+    status ? `sf-progress-ring--${status}` : '',
     unknown ? 'sf-progress-ring--indeterminate' : '',
     context.rootClass,
   ].filter(Boolean).join(' ');

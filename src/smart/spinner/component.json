@@ -2,7 +2,7 @@
   "$comment": "The source of sf-spinner's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/spinner (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.spinner",
   "tag": "sf-spinner",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "kind": "leaf",
   "family": "spinner",
   "settings": {
@@ -23,17 +23,26 @@
       "default-from": "runtime.label",
       "summary": "Empty: the text of the page's language (\"Loading…\" in English)."
     },
+    "delay": {
+      "type": "number",
+      "default": 1000,
+      "integer": true,
+      "min": 0,
+      "summary": "Provisional name (owner decision C130 (8), 2026-11-13; the decision names none). Milliseconds before the spinner shows: a wait shorter than that shows nothing. 0 shows at once. Written as data-delay; without the attribute the sheet's 1 s holds."
+    },
+    "label-hidden": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Provisional name (SP-07, 2026-11-13). The label is said and not shown: it stays the spinner's name for a screen reader (and what announce says) while the page shows the ring alone. label=\"\" takes the words from both."
+    },
     "kind": {
       "type": "enum",
       "values": [
         "",
-        "arc",
-        "breathing",
-        "comet",
-        "dots"
+        "arc"
       ],
       "default": "",
-      "summary": "The spinner's look: arc, breathing (the arc grows and shrinks as it turns), comet (an arc with a fading tail) or dots. Empty: the page's look, data-sf-spinner on the nearest ancestor (html, body or a block), else arc."
+      "summary": "One look, the arc (owner decision C130 (5)). breathing, comet and dots are former values until 2027-01-01 and draw the arc; so does a page's data-sf-spinner."
     },
     "dots": {
       "type": "number",
@@ -105,7 +114,7 @@
       ]
     },
     "keys": {},
-    "$comment": "role status (a polite, atomic live region) only while announce is on and the label is not empty; otherwise the drawing is aria-hidden and has no role. It takes no focus."
+    "$comment": "role status (a polite, atomic live region) only while announce is on and the label is not empty; otherwise the drawing is aria-hidden and has no role. It takes no focus. label-hidden keeps the label as the name and hides it visually; only label=\"\" leaves the spinner without a name."
   },
   "css-variables": {
     "--sf-spinner-color": {
@@ -184,11 +193,44 @@
         "mode": "retired",
         "section": "§4.4",
         "note": "a reader retires; the method stays until the date and notes each call"
+      },
+      {
+        "from": "breathing",
+        "to": "arc",
+        "kind": "value",
+        "setting": "kind",
+        "since": "2026-11-13",
+        "remove_after": "2027-01-01",
+        "since-version": "1.4.0",
+        "section": "owner decision C130 (5)",
+        "note": "journal value-spinner-one-look: one look, the arc; the former look draws the arc until the date"
+      },
+      {
+        "from": "comet",
+        "to": "arc",
+        "kind": "value",
+        "setting": "kind",
+        "since": "2026-11-13",
+        "remove_after": "2027-01-01",
+        "since-version": "1.4.0",
+        "section": "owner decision C130 (5)",
+        "note": "journal value-spinner-one-look: one look, the arc; the former look draws the arc until the date"
+      },
+      {
+        "from": "dots",
+        "to": "arc",
+        "kind": "value",
+        "setting": "kind",
+        "since": "2026-11-13",
+        "remove_after": "2027-01-01",
+        "since-version": "1.4.0",
+        "section": "owner decision C130 (5)",
+        "note": "journal value-spinner-one-look: one look, the arc; the former look draws the arc until the date"
       }
     ],
     "since-version": "1.1.0"
   },
-  "x-summary": "Indeterminate waiting indicator in one of four looks on the size ladder (arc, breathing, comet, dots), following the page's data-sf-spinner, with optional polite status announcement and Framework-owned motion.",
+  "x-summary": "Indeterminate waiting indicator, one look (the arc) on the size ladder, shown after a delay (1 s by default), in the place's quiet ink, with optional polite status announcement and Framework-owned motion.",
   "x-source": {
     "package": "framework",
     "folder": "spinner",
@@ -218,7 +260,9 @@
     "css-variables: six public variables read by the class sheet with the role token as fallback (src/core/contracts/public-variables.v1.json).",
     "version 1.2.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
     "version 1.2.4: the ring is drawn inside the icon's live area, not across its box (docs review R027, owner decision C11, 2026-11-07): on the 24-unit grid its outer edge is 20 units (radius 9 at stroke 2), as Material Symbols draw in 20 of their 24 units; the box stays the icon box of the step (simai/ui-source#10), the track, the arc, the comet and the dots share the ring, and the proportion is the same at every step (component.spinner 1.1.0). The docs say so.",
-    "version 1.3.0 (2026-11-11, DEV J1/S1, component.spinner 1.2.0): the ring under the arc is the spinner's ink at 16 % (the fill family of the alpha scale), drawn whole. The alpha is in --sf-spinner-track-color, whose default is color-mix(in srgb, currentColor 16%, transparent); the ring has no opacity of its own (it was --sf-surface-container under an opacity of 30 %, about 5 % of grey, and could not be seen). The words take the ink of the place (--sf-spinner-text-color defaults to currentColor, was --sf-on-surface): on a fill they are its on-colour. sf-button and sf-button-icon draw exactly as before (their ring was already this; they now set only the colour). Settings, values, events and keys unchanged."
+    "version 1.3.0 (2026-11-11, DEV J1/S1, component.spinner 1.2.0): the ring under the arc is the spinner's ink at 16 % (the fill family of the alpha scale), drawn whole. The alpha is in --sf-spinner-track-color, whose default is color-mix(in srgb, currentColor 16%, transparent); the ring has no opacity of its own (it was --sf-surface-container under an opacity of 30 %, about 5 % of grey, and could not be seen). The words take the ink of the place (--sf-spinner-text-color defaults to currentColor, was --sf-on-surface): on a fill they are its on-colour. sf-button and sf-button-icon draw exactly as before (their ring was already this; they now set only the colour). Settings, values, events and keys unchanged.",
+    "version 1.4.0 (2026-11-13, SP-07 of control/research/2026-11-13-skeleton-spinner.md, component.spinner 1.3.0): label-hidden (boolean, provisional name) keeps the label as the spinner's name for a screen reader and hides the words visually; the only way to hide them was label=\"\", which also took the name. The words stay in the drawing (.sf-loader--text, visually hidden by .sf-loader--label-hidden), so a spinner that does not announce is read in place and one that announces says them. Without label-hidden nothing changes.",
+    "version 1.4.0, the looks (2026-11-13, owner decision C130 (5), (6), (8)): one look, the arc. kind takes '' and arc; breathing, comet and dots are dated value aliases of arc until 2027-01-01 (journal value-spinner-one-look), and a page's data-sf-spinner draws the arc too (the class spinner notes it). A spinner on its own is on-surface-variant, its words small text (--sf-text-size-1/2) at every size; a control's own spinner keeps the control's ink. The show delay: the setting delay (milliseconds, default 1000, provisional name) hides the spinner for that long after it is drawn, by an animation of visibility, so a wait under a second shows nothing; written as data-delay only when the attribute is given, the sheet's 1 s otherwise. component.spinner 1.3.0."
   ],
   "x-registry": {
     "capabilities": [
@@ -286,7 +330,8 @@
         "Do not make Spinner focusable",
         "Do not omit the containing region's aria-busy state",
         "Do not announce an empty or non-localized label",
-        "Do not give every spinner its own kind to restyle a page: set data-sf-spinner on html (or a block) and every spinner the Framework draws follows it"
+        "Do not choose a spinner look: there is one, the arc; breathing, comet, dots and data-sf-spinner are former names until 2027-01-01",
+        "Do not set delay=\"0\" to make a short wait visible: a wait under a second shows nothing on purpose"
       ],
       "required_reads": [
         "inputs",

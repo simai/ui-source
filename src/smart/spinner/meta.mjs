@@ -38,17 +38,30 @@ const sfSpinnerMeta = {
       "valueType": "string",
       "description": "Empty: the text of the page's language (\"Loading…\" in English)."
     },
+    "delay": {
+      "kind": "custom",
+      "valueType": "integer",
+      "default": 1000,
+      "minimum": 0,
+      "description": "Provisional name (owner decision C130 (8), 2026-11-13; the decision names none). Milliseconds before the spinner shows: a wait shorter than that shows nothing. 0 shows at once. Written as data-delay; without the attribute the sheet's 1 s holds."
+    },
+    "label-hidden": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "Provisional name (SP-07, 2026-11-13). The label is said and not shown: it stays the spinner's name for a screen reader (and what announce says) while the page shows the ring alone. label=\"\" takes the words from both."
+    },
     "kind": {
       "kind": "enum",
       "values": [
         "",
-        "arc",
-        "breathing",
-        "comet",
-        "dots"
+        "arc"
       ],
       "default": "",
-      "description": "The spinner's look: arc, breathing (the arc grows and shrinks as it turns), comet (an arc with a fading tail) or dots. Empty: the page's look, data-sf-spinner on the nearest ancestor (html, body or a block), else arc."
+      "description": "One look, the arc (owner decision C130 (5)). breathing, comet and dots are former values until 2027-01-01 and draw the arc; so does a page's data-sf-spinner."
     },
     "dots": {
       "kind": "custom",
@@ -90,10 +103,7 @@ const sfSpinnerMeta = {
       "kind": "enum",
       "values": [
         "",
-        "arc",
-        "breathing",
-        "comet",
-        "dots"
+        "arc"
       ],
       "default": "",
       "description": "Legacy name for kind, still honoured. See contracts/public-api-axes.json."

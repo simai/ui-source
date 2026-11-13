@@ -32,6 +32,19 @@ function styleMap(style = {}) {
     .join('; ');
 }
 
+// True for a circle, square or rounded skeleton given no width (other than
+// the default 100 %) and no height: the sheet draws it as the square box of
+// its step (C130 (1)).
+function isShapeBox(variant, type, widths, heights) {
+  if (type === 'icon' || !['circle', 'square', 'rounded'].includes(variant)) return false;
+  const ownWidth = widths.some((value) => {
+    const resolved = resolveSize(value);
+    return resolved && resolved !== '100%';
+  });
+  const ownHeight = heights.some((value) => resolveSize(value));
+  return !ownWidth && !ownHeight;
+}
+
 export function renderSkeletonTemplate(context) {
   const {
     size,
@@ -60,8 +73,13 @@ export function renderSkeletonTemplate(context) {
   const type = rawType === 'icon' ? 'icon' : '';
   const widths = normalizeList(width, ['100%']);
   const heights = normalizeList(height);
+  // A shape with no size of its own is the square box of its step (owner
+  // decision C130 (1)): the sheet sizes it, so it is written with no width
+  // and its root does not stretch. "Of its own" is a width other than the
+  // setting's default 100 % or any height.
+  const box = isShapeBox(variant, type, widths, heights);
   const rootClasses = ['sf-skeleton', 'flex'];
-  if (type !== 'icon') {
+  if (type !== 'icon' && !box) {
     rootClasses.push('flex-1');
   }
   if (animation) {
@@ -72,7 +90,7 @@ export function renderSkeletonTemplate(context) {
   }
 
   const rootStyle =
-    type !== 'icon' && widths.length
+    type !== 'icon' && !box && widths.length
       ? styleMap({
           'inline-size': resolveSize(widths[0]),
         })
@@ -100,7 +118,7 @@ export function renderSkeletonTemplate(context) {
         const resolvedWidth = widths[index % widths.length] || '';
         const resolvedHeight = heights[index % heights.length] || '';
         const itemStyle =
-          type !== 'icon'
+          type !== 'icon' && !box
             ? styleMap({
                 'inline-size': resolveSize(resolvedWidth || '100%'),
                 'block-size': resolvedHeight ? resolveSize(resolvedHeight) : '',

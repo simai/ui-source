@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-scale",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "title": "Progress Scale",
   "summary": "Segmented determinate progress with exact accessible value, explicit semantic tone and ten visual steps.",
   "kind": "smart",
@@ -81,15 +81,33 @@
       },
       "status": {
         "type": "string",
-        "default": "neutral",
-        "description": "What the progress reports, in the shared status vocabulary. The word this component used before, primary, is still accepted and means neutral.",
+        "default": "",
+        "description": "What the value reports, in the shared status vocabulary (owner decision C131 (1)). Empty, the default, draws the theme's primary; neutral is grey, as in sf-dot and sf-badge; info, success, warning and error their roles. The word this component used before, primary, is still accepted and means the default. With warning-at or error-at the scale takes the more serious of this status and the threshold the value reached.",
         "enum": [
+          "",
           "neutral",
           "info",
           "success",
           "warning",
           "error"
         ]
+      },
+      "warning-at": {
+        "type": "number",
+        "description": "A threshold in per cent: from this value on, the component is a warning by itself (a disk 83 % full of a warning-at 80). The page sets the threshold; the component only compares. Unset, no threshold.",
+        "minimum": 0,
+        "maximum": 100
+      },
+      "error-at": {
+        "type": "number",
+        "description": "A threshold in per cent: from this value on, the component is an error by itself (a disk 83 % full of a warning-at 80). The page sets the threshold; the component only compares. Unset, no threshold. Above warning-at when both are set.",
+        "minimum": 0,
+        "maximum": 100
+      },
+      "meter": {
+        "type": "boolean",
+        "default": false,
+        "description": "The value is an amount within a known range (a quota used, a disk filled), not a task's progress: role meter instead of progressbar (owner decision C131 (7)). A meter always has a value, so it is never indeterminate. The look does not change."
       },
       "label": {
         "type": "string",
@@ -105,9 +123,10 @@
       },
       "tone": {
         "type": "string",
-        "default": "neutral",
+        "default": "",
         "description": "Legacy name for status, still honoured. See contracts/public-api-axes.json.",
         "enum": [
+          "",
           "neutral",
           "info",
           "success",
@@ -276,11 +295,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-scale/index.js",
-        "sha256": "6096eb415f1e9a9d4d4b69ff01b306becf0a420879313f72060d9d10aae82d2e"
+        "sha256": "176128c32f7674c7d6dcc16528ea4daa35de214a5c853f73663705bbef3ed289"
       },
       {
         "path": "src/smart/progress-scale/js/templates/default.js",
-        "sha256": "233027300700454bdf68818e1d4c8680915ff15c90897d7dca21dbf47f7d25b1"
+        "sha256": "458b0fbc281b81becabd5c1abc37710d19cf9854dc89426ddfebccba65c8b465"
       },
       {
         "path": "src/smart/progress-scale/rule.js",
@@ -288,7 +307,7 @@
       },
       {
         "path": "src/smart/progress-scale/docs/docs.md",
-        "sha256": "64de1e6e084ab60fecd86c542ceb2858e6b465e1a435f37c06873fdb113a6e63"
+        "sha256": "ba0ff30c954dd1f4509a7f1e9c2ece7f8f767888e2170d08b626df7f630fd77d"
       }
     ],
     "generated_runtime": [

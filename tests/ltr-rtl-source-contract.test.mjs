@@ -114,15 +114,16 @@ test('modal keeps physical values and adds semantic inline variants', async () =
   assert.match(smartTemplate, /sf-modal-close-button--inline-end/);
 });
 
-test('progress bar keeps right and accepts inline-end', async () => {
+test('progress bar reads right as inline-end', async () => {
   const [component, template, fileUpload] = await Promise.all([
     read('src/component/progress-bar/js/_progressbar.js'),
     read('src/smart/progress-bar/js/templates/default.js'),
     read('src/smart/file-upload/js/templates/default.js'),
   ]);
 
-  assert.match(component, /'right', 'inline-end'/);
-  assert.match(template, /'right', 'inline-end'/);
+  // right is the former word for inline-end until 2027-01-01 (C131 (4)).
+  assert.match(component, /right: 'inline-end'/);
+  assert.match(template, /right: 'inline-end'/);
   assert.match(fileUpload, /text-position="inline-end"/);
 });
 

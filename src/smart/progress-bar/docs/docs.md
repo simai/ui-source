@@ -15,10 +15,19 @@ cancellation.
   `aria-label` names the progress bar.
 - `value="0..100"` — exact current value, a number; values are clamped.
 - `value-text` — optional human-readable value such as “3 of 5 files”.
-- `size="1/3|1/2|1|2|3"`.
-- `text-position="none|inline-end|bottom"`; `right` is a physical legacy alias.
-- `status="neutral|info|success|warning|error"` — a process state supplied by
-  the application.
+- `size="1/3|1/2|1|2|3"` — the bar is 4 / 4 / 8 / 8 / 12 px thick with round
+  ends, the same on a phone; 8 by default (1.4.0). The track is the family's
+  one neutral fill.
+- `text-position="none|top|inline-end"` (1.4.0) — `top` puts one line over the
+  bar, the label at the start and the value at the end; `inline-end` the value
+  at the end of the bar's row. `bottom` and `right` are read as `top` and
+  `inline-end` until 2027-01-01.
+- `status="|neutral|info|success|warning|error"` (1.4.0, owner decision C131) — empty, the default, draws the theme's
+  primary; `neutral` is grey, as in sf-dot and sf-badge; the others their
+  roles. `primary`, the word used before, is read as the default.
+- `meter` (1.4.0, provisional name) — the bar shows an amount within a known
+  range (a quota used, a disk filled), not a task's progress: role `meter`.
+  A meter always has a value, so it is never indeterminate.
 - `warning-at`, `error-at` (1.2.0) — thresholds in per cent, set by the page:
   from `warning-at` on the bar is a warning by itself, from `error-at` an
   error. A meter of a disk, a quota or licence seats turns its tone when it
@@ -29,8 +38,10 @@ cancellation.
 - `indeterminate` (1.3.0) — the work runs and its size is not known yet: a
   segment of the fill crosses the track, and the bar leaves out
   `aria-valuenow` and the percentage text. Take it off once the size is known:
-  the same bar then fills from `value`, once, never back. Reduced motion stands
-  the segment still. Class markup: `sf-progress-bar--indeterminate`.
+  the same bar then fills from `value`, once, never back. Under reduced motion
+  (1.3.3) no segment is drawn: the whole track is tinted with the fill at
+  32 %, so nothing on the bar looks like an amount (interim, until the owner
+  picks the look). Class markup: `sf-progress-bar--indeterminate`.
 - `paused` (1.3.0) — the work stopped and will go on. The bar is a warning
   (an error from `status` or a threshold stays an error) and a screen reader
   hears it: the value text reads «35 %, на паузе» / «35%, paused» unless the

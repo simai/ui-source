@@ -48,7 +48,14 @@ test('every display component of group B is made from its component.json, langua
     }
     const table = json(`src/smart/${folder}/aliases.json`);
     const {rows} = readAliasTable(table, {tag: manifest.tag});
+    // The block's dates, or a later alias's own (sf-spinner's former looks,
+    // C130 (5): 2026-11-13 to the sweep of 2027-01-01).
+    const later = {'2026-11-13': '2027-01-01'};
     for (const row of rows) {
+      if (row.since in later) {
+        assert.equal(row.remove_after, later[row.since], `${folder}: ${row.from}`);
+        continue;
+      }
       assert.equal(row.since, '2026-10-27', `${folder}: ${row.from}`);
       assert.equal(row.remove_after, '2026-12-01', `${folder}: ${row.from}`);
     }

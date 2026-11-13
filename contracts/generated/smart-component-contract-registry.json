@@ -2318,7 +2318,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-bar/smart.manifest.json",
-      "manifest_sha256": "efc555911f615c7294435fcee9cbcc84f786f37abc1331cec8d411292c592581",
+      "manifest_sha256": "20ea6df38eb80a5b739647e22517a781ccee5e4301ed70db631ab34bd7f1c112",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2354,7 +2354,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-ring/smart.manifest.json",
-      "manifest_sha256": "ded4f0f93d5aa255d41cb174a353eb7dd8fb14085d077bcbf66c91536cdf78e1",
+      "manifest_sha256": "987024e178188c1a95362894f2f58fcebd4f59cfac467586e886d6e0c9e125d3",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2397,7 +2397,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-run/smart.manifest.json",
-      "manifest_sha256": "8ef1803216371b9a51b48baddbb7634635dbaf0acf17043de826cc278373dd3d",
+      "manifest_sha256": "5410bae672cc5381c47cd7a2696d9145d311383d2ccd500fac18ac889b899f42",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2445,7 +2445,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-scale/smart.manifest.json",
-      "manifest_sha256": "d80162c676e555a6a64a525839438bb27bfb8062a6d1e19b0c972444c558624a",
+      "manifest_sha256": "db31ef3fe572c602685ccaeab25ecbb5caeb75de9ac9aadca8e08a02dc4cddcb",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2720,7 +2720,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/skeleton/smart.manifest.json",
-      "manifest_sha256": "3dc11ad823295368a7bd4948cb3e92b4557856438ea53efe9c078758caf168b7",
+      "manifest_sha256": "bb90e4a2d2577266273ebee2ce6e96354bfe2cbb95ddbbbd65bf67b7863c1dbe",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2864,13 +2864,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/spinner/smart.manifest.json",
-      "manifest_sha256": "8a2c233cdb08c58d04cd7ecceaeda035fcaee6e767bf97d8a584d51652239328",
+      "manifest_sha256": "90a2af6690b57f804f356af785a9a81bc7511c84c4e7cf9d480a41b120982a77",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "Indeterminate waiting indicator in one of four looks on the size ladder (arc, breathing, comet, dots), following the page's data-sf-spinner, with optional polite status announcement and Framework-owned motion.",
+      "summary": "Indeterminate waiting indicator, one look (the arc) on the size ladder, shown after a delay (1 s by default), in the place's quiet ink, with optional polite status announcement and Framework-owned motion.",
       "tags": [
         "spinner"
       ],
@@ -3106,7 +3106,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tile-metric/smart.manifest.json",
-      "manifest_sha256": "29b5e478d3a3f930dc6d9ab296fc90b3d1a881c38b95b8a15d2a8381048f54c0",
+      "manifest_sha256": "bda1336a4fb2839f9eeed295e4d76683cbb5813efee1b374b89a0fca854ce55e",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

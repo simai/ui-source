@@ -10606,6 +10606,91 @@
       },
       "owner": "ui-source",
       "source": "src/component/quantity/scss/_css__quantity.scss, src/smart/input-quantity/index.js"
+    },
+    {
+      "id": "value-spinner-one-look",
+      "recorded_on": "2026-11-13",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "One spinner look, the arc (owner decision C130 (5)). breathing, comet and dots -- sf-spinner kind (and its former name variant), data-variant on .sf-loader-container, and a page's data-sf-spinner on html, body or a block -- still work until remove_after and draw the arc; each is noted in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-spinner",
+          "attribute": "kind",
+          "from": "breathing",
+          "to": "arc"
+        },
+        {
+          "component": "sf-spinner",
+          "attribute": "kind",
+          "from": "comet",
+          "to": "arc"
+        },
+        {
+          "component": "sf-spinner",
+          "attribute": "kind",
+          "from": "dots",
+          "to": "arc"
+        },
+        {
+          "component": "spinner",
+          "attribute": "data-variant",
+          "from": "breathing|comet|dots",
+          "to": "arc"
+        },
+        {
+          "component": "spinner",
+          "from": "data-sf-spinner",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-13",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove kind (or variant) from sf-spinner, data-variant from .sf-loader-container and data-sf-spinner from html, body or a block: every spinner is the arc. Nothing else changes; dots and filled stay read until the sweep and draw nothing.",
+      "examples": {
+        "before": "<html data-sf-spinner=\"dots\"> ... <sf-spinner kind=\"comet\"></sf-spinner>",
+        "after": "<html> ... <sf-spinner></sf-spinner>"
+      },
+      "owner": "ui-source",
+      "source": "src/component/spinner/js/_spinner.js noteFormerLook, src/smart/spinner/component.json aliases"
+    },
+    {
+      "id": "value-progress-text-position",
+      "recorded_on": "2026-11-13",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "The percentage of a progress bar stands on top (label at the start, value at the end) or at inline-end (owner decision C131 (4)). bottom and right -- sf-progress-bar text-position and data-position on .sf-progress-bar -- still work until remove_after, as top and inline-end; each is noted in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-progress-bar",
+          "attribute": "text-position",
+          "from": "bottom",
+          "to": "top"
+        },
+        {
+          "component": "sf-progress-bar",
+          "attribute": "text-position",
+          "from": "right",
+          "to": "inline-end"
+        },
+        {
+          "component": "progress-bar",
+          "attribute": "data-position",
+          "from": "bottom|right",
+          "to": "top|inline-end"
+        }
+      ],
+      "deprecated_on": "2026-11-13",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write text-position=\"top\" for bottom and text-position=\"inline-end\" for right. top puts the value over the bar's end with the label at the start, where bottom put it under the end.",
+      "examples": {
+        "before": "<sf-progress-bar value=\"40\" text-position=\"bottom\"></sf-progress-bar>",
+        "after": "<sf-progress-bar value=\"40\" text-position=\"top\"></sf-progress-bar>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/progress-bar/component.json aliases, src/component/progress-bar/js/_progressbar.js normalizeTextPosition"
     }
   ]
 }

@@ -20,7 +20,17 @@ an empty state or an error replaces the skeleton.
 - `sf-skeleton-icon` makes inline and block size equal for avatar and icon
   placeholders.
 - `sf-skeleton-circle`, `sf-skeleton-square` and `sf-skeleton-rounded` select
-  circle, unrounded and surface-radius geometry.
+  the circle, the control radius (`--sf-radius--ui`) and the card radius
+  (`--sf-radius--surface`) (owner decision C130 (1)). Given no width and no
+  height of their own, they are the square box of their step: the control
+  height at `1/3`...`3` (32/40/48/56 px at `1/2`...`3` on a wide screen, the
+  box of an `sf-avatar` or an `sf-button` of the same size) and the text line
+  at `4`...`7`; below `1/3`, the bar. Such a shape does not stretch its group.
+- Steps `1/5`...`1/7` have no line of their own on the text ladder; their bars
+  take the line of `1/4`.
+- The fill is the neutral fill of the place (`--sf-surface-container`, 12 %
+  with C113), given by one core rule shared with the first-paint bars of Smart
+  components; `--sf-skeleton-background-color` still sets it.
 
 Use Framework width and height utilities or the constructor's relative widths
 and dimension tokens. Match the final content closely enough that replacement

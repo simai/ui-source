@@ -740,7 +740,7 @@
         },
         {
           "id": "p11-cancelled-neutral",
-          "title": "cancelled is neutral: the bar's neutral status (no grey status exists) and the stopped badge «Отменено»; Retry asks all",
+          "title": "cancelled is neutral: the bar's neutral status (grey since sf-progress-bar 1.4.0) and the stopped badge «Отменено»; Retry asks all",
           "covers": "settings.run-state cancelled",
           "steps": [
             {

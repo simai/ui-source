@@ -389,6 +389,9 @@ export function domEvent(component, verb) {
   return `${component.tag}-${verb}`;
 }
 const valueAliases = (rows) => rows.filter((row) => row.kind === 'value' && row.setting);
+// The version a value alias came with: its own row's since-version where the
+// row says one (a later alias beside older ones), else the block's.
+const authoredSinceVersion = (component, row) => component.aliases?.rows?.find((r) => r.kind === 'value' && r.setting === row.setting && r.from === row.from)?.['since-version'];
 
 // A carried field or a parameter as JSON Schema: §4.2 types, values, nullable,
 // and the field's words (summary) and extra constraints (schema).
@@ -583,7 +586,7 @@ export function genManifest(component, lang, stamp = {}) {
       aliases: [...(reg.compatibility?.aliases ?? []), ...valueAliases(aliases).map((row) => `${row.setting}=${row.from}`), ...tagAliasesOf(component).map((row) => `<${row.from}>`)],
       // A deprecation names the component version the alias came with: only
       // when component.json says it (aliases["since-version"]).
-      deprecations: [...(reg.compatibility?.deprecations ?? []), ...(component.aliases?.['since-version'] ? valueAliases(aliases).map((row) => ({path: `${row.setting}=${row.from}`, since: component.aliases['since-version'], replacement: `${row.setting}=${row.to}`})) : []),
+      deprecations: [...(reg.compatibility?.deprecations ?? []), ...(component.aliases?.['since-version'] ? valueAliases(aliases).map((row) => ({path: `${row.setting}=${row.from}`, since: authoredSinceVersion(component, row) ?? component.aliases['since-version'], replacement: `${row.setting}=${row.to}`})) : []),
         ...tagAliasesOf(component).map((row) => ({path: `<${row.from}>`, since: row['since-version'] ?? component.version, replacement: `<${row.to}>`}))],
       replacement: reg.compatibility?.replacement ?? null,
       migrations: reg.compatibility?.migrations ?? [],

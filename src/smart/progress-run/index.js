@@ -61,10 +61,13 @@ export const RATE_SETTLE_MS = 5000;
 export const RATE_WINDOW_MS = 30000;
 
 // One state, one look in every look (C34, R073): the badge of sf-badge 1.4.0
-// and the status of the overall bar (sf-progress-bar 1.3.0).
+// and the status of the overall bar (sf-progress-bar 1.3.0). A job waiting or
+// running has no status: its bar is the theme's primary, as before (since
+// sf-progress-bar 1.4.0, owner decision C131 (1), neutral is grey); a
+// cancelled job's bar is that grey.
 export const STATE_LOOK = {
-  waiting: {activity: 'queued', bar: 'neutral'},
-  running: {activity: 'running', bar: 'neutral'},
+  waiting: {activity: 'queued', bar: ''},
+  running: {activity: 'running', bar: ''},
   paused: {activity: 'paused', bar: 'warning'},
   done: {activity: 'done', bar: 'success'},
   partial: {status: 'warning', icon: 'warning', bar: 'warning'},

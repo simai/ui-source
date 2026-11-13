@@ -7,6 +7,18 @@
 }
 
 @layer sf.base {
+/* The skeleton's fill, one rule (owner decision C130 (4), SK-05): an
+   sf-skeleton, a first-paint bar or fill, a box held for a Smart element
+   and a region on its way all draw the neutral fill of their place,
+   --sf-surface-container -- the grey plate's rest step, 12 % in both themes
+   with C113 -- and pulse with sf-placeholder-pulse below. A place that
+   redefines the fill (a dark plate, a tinted place) moves every skeleton
+   in it. */
+:where(.sf-skeleton, .sf-first-paint-bar, .sf-first-paint-fill, [data-sf-region-loading]),
+:where([data-sf-skeleton]):not(:defined) {
+  --sf-skeleton-base: var(--sf-surface-container);
+}
+
 /* The box before the code (owner, 2026-10-15, rule 5; the box rule of
    2026-10-28, stand 25 D1/D4). A Smart element whose code has not arrived
    yet keeps the box the page gave it, and core draws no shape of its own in
@@ -28,7 +40,6 @@
    The shape still names the kind for a manifest and a page; the room is the
    page's (it knows the loaded box) or the printed first paint's. */
 :where([data-sf-skeleton]):not(:defined):not(:has(> [data-sf-static])) {
-  --sf-skeleton-base: var(--sf-surface-container);
   --sf-skeleton-line: var(--sf-text-height-1);
   --sf-skeleton-bar: var(--sf-text-size-1);
   display: block;
@@ -115,7 +126,6 @@
    rows -- in that region only; the shell around it stays as it is. The
    region keeps its size, so nothing below it moves while the answer comes. */
 [data-sf-region-loading] {
-  --sf-skeleton-base: var(--sf-surface-container);
   --sf-skeleton-row: calc(var(--sf-text-height-1) + 2 * var(--sf-space-1));
   background-repeat: no-repeat;
   background-image:
@@ -158,7 +168,7 @@
      picture already shows it, or the element does not show it yet. */
 .sf-first-paint-bar {
   color: transparent !important;
-  background-color: var(--sf-surface-container);
+  background-color: var(--sf-skeleton-base);
   border-radius: var(--sf-radius--ui);
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
@@ -167,7 +177,7 @@
 }
 
 .sf-first-paint-fill {
-  background-color: var(--sf-surface-container);
+  background-color: var(--sf-skeleton-base);
 }
 
 :where(:not(:defined), :has(> [data-sf-static])) > [data-sf-held] {
