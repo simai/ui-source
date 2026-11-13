@@ -153,14 +153,16 @@
 
 
 
-  /* The mark is the picture before a label: the label follows it at the size's
-     text step, as an option label follows its picture in a list. */
+  /* The box is the picture before a label: the label follows it at the row
+     gap H2 of C105 (--sf-space-1/2: 12, compact and phone 8) at every size,
+     as the text follows its picture in a list row, so a checkbox lines up
+     with list rows that carry one (dispatcher ruling, R229 X1). */
   .sf-checkbox--size-1\/2 {
-    --sf-checkbox--gap: var(--sf-checkbox-gap, var(--sf-ui-1\/2--text-space-x));
+    --sf-checkbox--gap: var(--sf-checkbox-gap, var(--sf-space-1\/2));
   }
 
   .sf-checkbox--size-1 {
-    --sf-checkbox--gap: var(--sf-checkbox-gap, var(--sf-ui-1--text-space-x));
+    --sf-checkbox--gap: var(--sf-checkbox-gap, var(--sf-space-1\/2));
   }
 
 
@@ -226,7 +228,7 @@
   }
 
   .sf-checkbox--size-2 {
-    --sf-checkbox--gap: var(--sf-checkbox-gap, var(--sf-ui-2--text-space-x));
+    --sf-checkbox--gap: var(--sf-checkbox-gap, var(--sf-space-1\/2));
   }
 
   .sf-checkbox:not(.error).sf-checkbox--size-2:has(input:indeterminate) > .sf-checkbox-box .sf-icon {
