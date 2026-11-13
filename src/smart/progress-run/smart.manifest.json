@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-run",
-  "version": "1.3.3",
+  "version": "1.3.5",
   "title": "Progress",
   "summary": "A long job as a person sees it, in one of three looks (C34): full -- title and state badge, the overall bar with «N из M · %» and the time left, the counts as one line, the first errors, the steps with states, times and a log each, Pause/Continue, Cancel, Minimize, and once ended the summary with Retry and Hide; compact -- a table row's bar or badge; notice -- a corner panel's row. The host drives it; it polls nothing.",
   "kind": "smart",

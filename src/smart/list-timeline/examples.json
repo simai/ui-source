@@ -229,8 +229,8 @@
         }
       },
       "first-paint": {
-        "max-bytes": 32768,
-        "why": "The order history at its size: two days with their headings, fourteen events (twelve drawn) with markers, avatars, field changes, a comment, a run of eight with its first five drawn and three folded, and «Показать ещё»."
+        "max-bytes": 34816,
+        "why": "The order history at its size: two days with their headings, fourteen events (twelve drawn) with markers, avatars, field changes, a comment, a run of eight with its first five drawn and three folded, and «Показать ещё»; the derived skeleton of its late data (a bar around every text) is the larger file of the two."
       }
     },
     {

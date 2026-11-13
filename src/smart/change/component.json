@@ -2,7 +2,7 @@
   "$comment": "The source of sf-change's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.15 and vocabulary 1.1.5: owner decision C40 (2026-11-09; research ui-control control/research/2026-11-09-timeline-parts.md §5, prototype prototypes/timeline-parts.html#change).",
   "id": "smart.change",
   "tag": "sf-change",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "kind": "leaf",
   "family": "text",
   "settings": {
@@ -91,6 +91,14 @@
     "default": {
       "file": "js/templates/default.js",
       "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "presentation": {
+    "skeleton": {
+      "$comment": "The changes arrive after the first paint when the host loads them: the derived skeleton (static/default/<example>.skeleton.html) holds their box until they do (standard 1.3.8 §5.4; first-paint study R222).",
+      "late": [
+        "changes"
+      ]
     }
   },
   "examples": "examples.json",

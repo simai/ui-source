@@ -231,6 +231,14 @@
       "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
     }
   },
+  "presentation": {
+    "skeleton": {
+      "$comment": "The terms and values arrive as items after the first paint when the host loads them: the derived skeleton (static/default/<example>.skeleton.html) holds their box until they do (standard 1.3.8 §5.4; first-paint study R222).",
+      "late": [
+        "items"
+      ]
+    }
+  },
   "examples": "examples.json",
   "docs": "docs.md",
   "lang": "lang/",

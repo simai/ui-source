@@ -41,3 +41,18 @@ test('every Smart manifest declares its skeleton and names a known shape', () =>
     assert.ok(['template', 'none'].includes(skeleton.while_loading), `${name}: while_loading`);
   }
 });
+
+test('every component the gate holds to a box from attributes has its core rule (gate 24b)', () => {
+  // tests/fixtures/first-paint/box-from-attributes.json names the components
+  // whose bare tag keeps its box before its code; core.css is the one sheet a
+  // page links before any code, so the rule is core's (first-paint study R222).
+  const covered = JSON.parse(readFileSync(join(root, 'tests/fixtures/first-paint/box-from-attributes.json'), 'utf8')).components;
+  assert.ok(Object.keys(covered).length > 0);
+  const rules = sheet.replace(/\/\*[\s\S]*?\*\//gu, '');
+  for (const [folder, {holds, reads}] of Object.entries(covered)) {
+    assert.ok(existsSync(join(root, 'src/smart', folder, 'component.json')), `${folder}: a Smart component`);
+    assert.ok(['box', 'height'].includes(holds), `${folder}: holds the box or the height`);
+    assert.ok(String(reads ?? '').trim(), `${folder}: says which attributes the rule reads`);
+    assert.match(rules, new RegExp(`sf-${folder}[^{]*(:not\\(:defined\\)|:not\\(\\[data-look\\]\\))[^{]*\\{[^}]*block-size`, 'u'), `${folder}: core keeps its box before its code`);
+  }
+});
