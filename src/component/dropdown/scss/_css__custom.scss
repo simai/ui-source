@@ -294,20 +294,18 @@
   max-block-size: var(--sf-dropdown-tag-line--box);
 }
 
-/* The label follows the picture at the size's text step, the step an option
-   label keeps from its picture, so the value and the option label start on
-   one axis. The step is the picture's margin alone: the field's own gap would
-   add 4px that the option does not have. */
+/* The label follows the picture at the row step (owner C105, role H2:
+   --sf-space-1/2 -- 12, 8 in a compact region and on a phone -- at every
+   size), the step an option label keeps from its picture, so the value and
+   the option label start on one axis. The step is the picture's margin alone:
+   the field's own gap would add 4px that the option does not have. It was the
+   size's text step (--sf-ui-<S>--text-space-x, H1): 7, 8, 10. */
 .sf-dropdown .sf-dropdown-field:has(> .sf-dropdown-field-visual, > sf-icon > .sf-dropdown-field-visual) {
   column-gap: 0;
 }
 
-.sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field > .sf-dropdown-field-visual,
-.sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field > sf-icon > .sf-dropdown-field-visual { margin-inline-end: var(--sf-ui-1\/2--text-space-x); }
-.sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field > .sf-dropdown-field-visual,
-.sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field > sf-icon > .sf-dropdown-field-visual { margin-inline-end: var(--sf-ui-1--text-space-x); }
-.sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field > .sf-dropdown-field-visual,
-.sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field > sf-icon > .sf-dropdown-field-visual { margin-inline-end: var(--sf-ui-2--text-space-x); }
+.sf-dropdown:is(.sf-dropdown--size-1\/2, .sf-dropdown--size-1, .sf-dropdown--size-2) .sf-dropdown-field > .sf-dropdown-field-visual,
+.sf-dropdown:is(.sf-dropdown--size-1\/2, .sf-dropdown--size-1, .sf-dropdown--size-2) .sf-dropdown-field > sf-icon > .sf-dropdown-field-visual { margin-inline-end: var(--sf-space-1\/2); }
 
 /* A flag keeps its proportions at the optical size of an icon on the same
    line: three quarters of it, as an icon's glyph fills about three quarters of
@@ -489,4 +487,69 @@
     outline-offset: calc(-1 * var(--sf-focus-outline-width));
   }
 }
+}
+
+/* C77 (owner 2026-11-11): the value inset of sf-input. The chosen value
+   starts --sf-space-1/2, --sf-space-1 or --sf-space-2 from the field's outer
+   edge, the border counted inside it (size 1/2 keeps 12 on a phone), plus half
+   of what a rounder corner adds over the control radius; the input adds no
+   picture-to-label step of its own. A picture before the value and the chevron
+   stand at the plain inset. The tag field keeps its own inset (C76); its tags follow the corner. */
+@layer sf.components {
+  .sf-dropdown {
+    --sf-dropdown--inset: var(--sf-space-1);
+    --sf-dropdown--line-radius: min(var(--sf-dropdown-radius, var(--sf-dropdown--radius, var(--sf-radius--ui))), var(--sf-ui-1--control-height) / 2);
+    --sf-dropdown--value-inset: calc(var(--sf-dropdown--inset) + max(calc(var(--sf-px) * 0), var(--sf-dropdown--line-radius) - var(--sf-radius-1\/2)) / 2);
+  }
+
+  .sf-dropdown.sf-dropdown--size-2 {
+    --sf-dropdown--inset: var(--sf-space-2);
+    --sf-dropdown--line-radius: min(var(--sf-dropdown-radius, var(--sf-dropdown--radius, var(--sf-radius--ui))), var(--sf-ui-2--control-height) / 2);
+  }
+
+  /* Size 1/2 never goes below 12 (--sf-b2): on a phone, and in a compact
+     region, where C79 brings it down a step to 28 and --sf-space-1/2 is 8.
+     The inset follows the field's step with that floor: compact 1/2 and 1
+     are 12, compact 2 (40) keeps 16 (intent acceptance 2026-11-12). */
+  .sf-dropdown.sf-dropdown--size-1\/2 {
+    --sf-dropdown--inset: max(var(--sf-space-1\/2), var(--sf-b2));
+    --sf-dropdown--line-radius: min(var(--sf-dropdown-radius, var(--sf-dropdown--radius, var(--sf-radius--ui))), var(--sf-ui-1\/2--control-height) / 2);
+  }
+
+  .sf-dropdown.sf-dropdown--text:is(.sf-dropdown--size-1, .sf-dropdown--size-2, .sf-dropdown--size-1\/2) .sf-dropdown-field {
+    --sf-dropdown-field--padding-inline-start: calc(var(--sf-dropdown--value-inset) - var(--sf-px));
+    --sf-dropdown-field--padding-inline-end: calc(var(--sf-dropdown--inset) - var(--sf-px));
+  }
+
+  .sf-dropdown.sf-dropdown--text:is(.sf-dropdown--size-1, .sf-dropdown--size-2, .sf-dropdown--size-1\/2) .sf-dropdown-field:has(> .sf-dropdown-field-visual, > sf-icon > .sf-dropdown-field-visual) {
+    --sf-dropdown-field--padding-inline-start: calc(var(--sf-dropdown--inset) - var(--sf-px));
+  }
+
+  .sf-dropdown.sf-dropdown--text:is(.sf-dropdown--size-1, .sf-dropdown--size-2, .sf-dropdown--size-1\/2):is(.sf-dropdown--outlined, .sf-dropdown--filled) .sf-dropdown-field input {
+    --sf-dropdown-input--padding-inline-start: calc(var(--sf-px) * 0);
+  }
+
+  /* A tag inside the field follows its corner, 4 less (at least --sf-radius-1/2,
+     4), so a pill field holds pill-ended tags at an even gap; a page's
+     --sf-tag-radius still wins. */
+  .sf-dropdown .sf-dropdown-tag-container {
+    --sf-dropdown--tag-radius: var(--sf-tag-radius, max(var(--sf-radius-1\/2), var(--sf-dropdown--line-radius) - var(--sf-space-1\/4)));
+    --sf-tag--border-top-left-radius: var(--sf-dropdown--tag-radius);
+    --sf-tag--border-top-right-radius: var(--sf-dropdown--tag-radius);
+    --sf-tag--border-bottom-left-radius: var(--sf-dropdown--tag-radius);
+    --sf-tag--border-bottom-right-radius: var(--sf-dropdown--tag-radius);
+  }
+}
+
+/* C77, section 3: an option's text keeps the field's value edge at every
+   size (R191 HS-8): the row stands on the panel's plate, --sf-space-1/4 in,
+   so its padding is the field's inset less the plate -- 12 / 16 / 20 from the
+   panel's edge at 1/2, 1, 2 (it was --sf-space-1/2 at every size, 16). A
+   rounder field moves its value in by half of what its corner adds over the
+   control radius; its options move by the same amount. Doubled class: the
+   R029 rule above sets the same variable in this layer. */
+@layer sf.states {
+  .sf-dropdown.sf-dropdown .sf-list .sf-list-item {
+    --sf-list-item--padding-inline-start: calc(var(--sf-dropdown--inset, var(--sf-space-1)) - var(--sf-space-1\/4) + max(calc(var(--sf-px) * 0), var(--sf-dropdown--line-radius, var(--sf-radius-1\/2)) - var(--sf-radius-1\/2)) / 2);
+  }
 }

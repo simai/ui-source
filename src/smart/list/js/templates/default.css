@@ -48,7 +48,6 @@
   .sf-list--size-1\/2 {
     --sf-list--row-height: var(--sf-ui-1\/2--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--text-space-x));
-    --sf-list--text-step: var(--sf-ui-1\/2--text-space-x);
     --sf-list--font-size: var(--sf-text-size-1\/2);
     --sf-list--line-height: var(--sf-text-height-1\/2);
     --sf-list--lead-line: var(--sf-text-height-1\/2);
@@ -58,7 +57,6 @@
   .sf-list--size-1 {
     --sf-list--row-height: var(--sf-ui-1--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x));
-    --sf-list--text-step: var(--sf-ui-1--text-space-x);
     --sf-list--font-size: var(--sf-text-size-1);
     --sf-list--line-height: var(--sf-text-height-1);
     --sf-list--lead-line: var(--sf-text-height-1);
@@ -68,7 +66,6 @@
   .sf-list--size-2 {
     --sf-list--row-height: var(--sf-ui-2--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--text-space-x));
-    --sf-list--text-step: var(--sf-ui-2--text-space-x);
     --sf-list--font-size: var(--sf-text-size-2);
     --sf-list--line-height: var(--sf-text-height-2);
     --sf-list--lead-line: var(--sf-text-height-2);
@@ -124,8 +121,9 @@
 
   /* The count and the badge stand at the row's end, centred on the row: one
      line of the row, two lines of a two-line row. The title gives way to
-     them. The least gap before them is the row's own between its icon and
-     its text (sf-list-item's gap-2), also in a row with no icon. */
+     them. The least gap before them is the row's own between its picture and
+     its text (C105 H2, --sf-space-1/2, sf-list-item's wrap), also in a row
+     with no picture. */
   .sf-list__meta {
     display: inline-flex;
     flex: none;
@@ -136,7 +134,7 @@
 
   .sf-list__meta:empty { display: none; }
 
-  .sf-list-item--text .sf-list__meta { padding-inline-start: var(--sf-space-2); }
+  .sf-list-item--text .sf-list__meta { padding-inline-start: var(--sf-space-1\/2); }
 
   /* A narrow list (owner decision C47, 2026-11-10, option A; the list sets
      data-sf-list-narrow on its frame below 20rem of its own width): a row
@@ -180,8 +178,9 @@
     grid-column: -2;
     grid-row: 2;
     justify-self: start;
-    /* The text's start: the row's text step, the title's own inset. */
-    margin-inline-start: var(--sf-list--text-step);
+    /* The text's start: the title has no inset of its own (C77, C105 H2),
+       so the meta stands on the title's first letter. */
+    margin-inline-start: 0;
     padding-inline-start: 0;
   }
 
@@ -356,5 +355,50 @@
      by the system highlight at its start. */
   @media (forced-colors: active) {
     .sf-list__row--current { border-inline-start: var(--sf-px) solid Highlight; }
+  }
+}
+
+/* C77 (owner 2026-11-11; prototypes/field-inset.html): a row's text stands
+   where a field's value does in the same column -- --sf-space-1/2,
+   --sf-space-1 or --sf-space-2 from the list's outer edge, its border counted
+   inside (size 1/2 keeps 12 on a phone) -- and a row's picture at the same
+   place, its step after it. The row's highlight stands --sf-space-1/4 in from
+   the frame, as a menu's does (C30); a text row adds no picture-to-label step
+   of its own. The group headings and the rename field keep the rows' text
+   edge. */
+@layer sf.components {
+  .sf-list__frame {
+    --sf-list--padding-left: var(--sf-space-1\/4);
+    --sf-list--padding-right: var(--sf-space-1\/4);
+    --sf-list--edge: var(--sf-list--border-width, var(--sf-px));
+  }
+
+  .sf-list__frame.sf-list--size-1 { --sf-list--inset: var(--sf-space-1); }
+  .sf-list__frame.sf-list--size-2 { --sf-list--inset: var(--sf-space-2); }
+  /* Size 1/2 never goes below 12 (--sf-b2): on a phone, and in a compact
+     region, where C79 brings it down a step to 28 and --sf-space-1/2 is 8.
+     The inset follows the field's step with that floor: compact 1/2 and 1
+     are 12, compact 2 (40) keeps 16 (intent acceptance 2026-11-12). */
+  .sf-list__frame.sf-list--size-1\/2 { --sf-list--inset: max(var(--sf-space-1\/2), var(--sf-b2)); }
+
+  .sf-list__frame:is(.sf-list--size-1, .sf-list--size-2, .sf-list--size-1\/2) {
+    --sf-list--text-inset: calc(var(--sf-list--inset) - var(--sf-space-1\/4) - var(--sf-list--edge));
+  }
+
+  .sf-list__frame .sf-list__row > sf-list-item > .sf-list-item {
+    --sf-list-item--padding-inline-start: var(--sf-list--text-inset);
+    --sf-list-item--padding-inline-end: var(--sf-list--text-inset);
+  }
+
+  .sf-list__frame .sf-list__row > sf-list-item > .sf-list-item.sf-list-item--text .sf-list-item-container {
+    padding-inline-start: 0;
+  }
+
+  /* The text block's end stands at the row's inset too (R191 HS-2): its
+     --sf-ui-<S>--text-space-x at the end is gone in every row. The step after
+     a picture is the row's H2 (C105, sf-list-item's wrap): 12, compact and
+     phone 8. */
+  .sf-list__frame .sf-list__row > sf-list-item > .sf-list-item .sf-list-item-container {
+    padding-inline-end: 0;
   }
 }

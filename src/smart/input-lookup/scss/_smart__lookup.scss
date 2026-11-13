@@ -432,3 +432,70 @@
     }
   }
 }
+
+/* C77 (owner 2026-11-11): the value inset of sf-input. With no chip in the
+   frame the search text starts --sf-space-1/2, --sf-space-1 or --sf-space-2
+   from the outer edge, the border counted inside it (size 1/2 keeps 12 on a
+   phone), plus half of what a rounder corner adds over the control radius;
+   the clear at the end stands at the plain inset. Chips keep their place
+   (C76): with a chip in the frame only their corner follows a corner rounder
+   than the control radius, the field's corner as drawn less the chip's inset
+   (--sf-space-1/4), so the two stay concentric; at the control radius or
+   less a chip keeps the field's own. */
+@layer sf.components {
+  .sf-lookup {
+    --sf-lookup--inset: var(--sf-space-1);
+    --sf-lookup--line-radius: min(var(--sf-lookup--radius), var(--sf-ui-1--control-height) / 2);
+    --sf-lookup--value-inset: calc(var(--sf-lookup--inset) + max(calc(var(--sf-px) * 0), var(--sf-lookup--line-radius) - var(--sf-radius-1\/2)) / 2);
+  }
+
+  .sf-lookup.sf-lookup--size-2 {
+    --sf-lookup--inset: var(--sf-space-2);
+    --sf-lookup--line-radius: min(var(--sf-lookup--radius), var(--sf-ui-2--control-height) / 2);
+  }
+
+  /* Size 1/2 never goes below 12 (--sf-b2): on a phone, and in a compact
+     region, where C79 brings it down a step to 28 and --sf-space-1/2 is 8.
+     The inset follows the field's step with that floor: compact 1/2 and 1
+     are 12, compact 2 (40) keeps 16 (intent acceptance 2026-11-12). */
+  .sf-lookup.sf-lookup--size-1\/2 {
+    --sf-lookup--inset: max(var(--sf-space-1\/2), var(--sf-b2));
+    --sf-lookup--line-radius: min(var(--sf-lookup--radius), var(--sf-ui-1\/2--control-height) / 2);
+  }
+
+  .sf-lookup:not(:has(.sf-lookup-chip)) .sf-lookup-frame {
+    padding-inline-start: var(--sf-lookup-padding-inline, calc(var(--sf-lookup--value-inset) - var(--sf-px)));
+    padding-inline-end: var(--sf-lookup-padding-inline, calc(var(--sf-lookup--value-inset) - var(--sf-px)));
+  }
+
+  .sf-lookup:not(:has(.sf-lookup-chip)) .sf-lookup-frame:has(> :is(sf-button-close, sf-close), > .sf-lookup-clear) {
+    padding-inline-end: var(--sf-lookup-padding-inline, calc(var(--sf-lookup--inset) - var(--sf-px)));
+  }
+
+  .sf-lookup:not(:has(.sf-lookup-chip)) .sf-lookup-input {
+    padding-inline-start: calc(var(--sf-px) * 0);
+  }
+
+  /* With chips the first tag is the picture: it stands at the plain inset,
+     as an icon does. */
+  .sf-lookup:has(.sf-lookup-chip) .sf-lookup-frame {
+    padding-inline-start: var(--sf-lookup-padding-inline, calc(var(--sf-lookup--inset) - var(--sf-px)));
+    padding-inline-end: var(--sf-lookup-padding-inline, calc(var(--sf-lookup--inset) - var(--sf-px)));
+  }
+
+  /* The list's rows keep the field's text edge (section 3): a rounder field
+     moves its value in by half of what its corner adds, and so do the rows. */
+  .sf-lookup {
+    --sf-lookup--row-padding-inline: calc(var(--sf-space-1\/2) + max(calc(var(--sf-px) * 0), var(--sf-lookup--line-radius) - var(--sf-radius-1\/2)) / 2);
+  }
+
+  .sf-lookup .sf-lookup-chip {
+    /* The tag's own corner variables, not its public one: a page's
+       --sf-tag-radius still wins. */
+    --sf-lookup--chip-radius: var(--sf-tag-radius, min(var(--sf-lookup--radius), max(var(--sf-radius-1\/2), var(--sf-lookup--line-radius) - var(--sf-space-1\/4))));
+    --sf-tag--border-top-left-radius: var(--sf-lookup--chip-radius);
+    --sf-tag--border-top-right-radius: var(--sf-lookup--chip-radius);
+    --sf-tag--border-bottom-left-radius: var(--sf-lookup--chip-radius);
+    --sf-tag--border-bottom-right-radius: var(--sf-lookup--chip-radius);
+  }
+}

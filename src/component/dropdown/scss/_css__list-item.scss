@@ -353,6 +353,22 @@
   flex-shrink: 0;
 }
 
+/* A row's picture and its text (owner C105, role H2; R191 HS-1, HS-5): the
+   picture stands --sf-space-1/2 before the text -- 12, 8 in a compact region
+   and on a phone -- at every size, and the text block keeps no start inset of
+   its own after it. The step was the layout class gap-2 of the template
+   (--sf-space-2, 20) plus the text block's --sf-ui-<S>--text-space-x: 28 at
+   size 1. The same step stands before a row's trailing part (an avatar or a
+   colour row's mark). After the size rules above, which set the text block's
+   inset at the same weight. */
+.sf-list-item:is(.sf-list-item--icon, .sf-list-item--checkbox, .sf-list-item--avatar, .sf-list-item--color) .sf-list-item-wrap {
+  column-gap: var(--sf-space-1\/2);
+}
+
+.sf-list-item:is(.sf-list-item--icon, .sf-list-item--checkbox) .sf-list-item-wrap .sf-list-item-container {
+  --sf-list-item-container--padding-inline-start: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sf-list-item {
     transition-duration: 0s;

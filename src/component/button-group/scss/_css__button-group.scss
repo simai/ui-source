@@ -299,8 +299,16 @@
     /* A segment is the button less the track's padding on each side, so the
        track is as tall as the button; never below zero. */
     --sf-button-group--segment-padding-block: max(calc(var(--sf-px) * 0), calc(var(--sf-button--padding-top) - var(--sf-button-group--padding)));
+    /* The same on the sides (R191 HS-11, grouped-controls rule): a segment is
+       a step tighter than the button, so it takes the side padding of that
+       step -- the button's less the track's padding -- not the full size's
+       (a 32 px segment at size 1 had the 40 px button's 16). */
+    --sf-button-group--segment-padding-inline-start: max(calc(var(--sf-px) * 0), calc(var(--sf-button--padding-inline-start) - var(--sf-button-group--padding)));
+    --sf-button-group--segment-padding-inline-end: max(calc(var(--sf-px) * 0), calc(var(--sf-button--padding-inline-end) - var(--sf-button-group--padding)));
     position: relative;
     padding-block: var(--sf-button-group--segment-padding-block);
+    padding-inline-start: var(--sf-button-group--segment-padding-inline-start);
+    padding-inline-end: var(--sf-button-group--segment-padding-inline-end);
     justify-content: center;
     border-width: 0;
     border-radius: var(--sf-button-group--plate-radius);

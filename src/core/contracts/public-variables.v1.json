@@ -230,7 +230,7 @@
           "name": "--sf-input-padding-inline",
           "role": "padding-inline",
           "summary": "Space inside the field before and after its content.",
-          "default": "var(--sf-ui-1--space-x)",
+          "default": "calc(var(--sf-space-1) - var(--sf-px))",
           "since": "2026-10-13",
           "varies_with": [
             "size"
@@ -719,7 +719,7 @@
           "name": "--sf-textarea-padding-inline",
           "role": "padding-inline",
           "summary": "Space inside the field before and after the text.",
-          "default": "calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x))",
+          "default": "calc(var(--sf-space-1) - var(--sf-px))",
           "since": "2026-10-18",
           "varies_with": [
             "size"
@@ -3477,7 +3477,7 @@
           "name": "--sf-lookup-padding-inline",
           "role": "padding-inline",
           "summary": "Space inside the frame before the first chip and after the search box.",
-          "default": "var(--sf-ui-1--space-x)",
+          "default": "calc(var(--sf-space-1) - var(--sf-px))",
           "since": "2026-10-30",
           "varies_with": [
             "size"

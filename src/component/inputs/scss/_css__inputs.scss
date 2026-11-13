@@ -494,3 +494,63 @@
     --sf-input-field--border-color: var(--sf-outline);
   }
 }
+
+/* C77 (owner 2026-11-11; prototypes/field-inset.html, field-inset-pill.html):
+   one value inset per size, the border counted inside it. A value with no
+   picture before it starts --sf-space-1/2, --sf-space-1 or --sf-space-2 from
+   the field's outer edge (size 1/2, 1, 2; size 1/2 keeps 12 on a phone, where
+   --sf-space-1/2 is 8). The text box no longer adds the picture-to-label step
+   (--sf-ui-<S>--text-space-x) on its own: the step stands only after a
+   picture. A rounder corner moves the value in by half of what it adds over
+   the control radius, the corner counted as drawn (at most half the
+   single-line height); a picture stays at the plain inset. */
+@layer sf.components {
+  .sf-input {
+    --sf-input--inset: var(--sf-space-1);
+    --sf-input--line-radius: min(var(--sf-input--radius), var(--sf-ui-1--control-height) / 2);
+    --sf-input--value-inset: calc(var(--sf-input--inset) + max(calc(var(--sf-px) * 0), var(--sf-input--line-radius) - var(--sf-radius-1\/2)) / 2);
+  }
+
+  .sf-input.sf-input--size-2 {
+    --sf-input--inset: var(--sf-space-2);
+    --sf-input--line-radius: min(var(--sf-input--radius), var(--sf-ui-2--control-height) / 2);
+  }
+
+  /* Size 1/2 never goes below 12 (--sf-b2): on a phone, and in a compact
+     region, where C79 brings it down a step to 28 and --sf-space-1/2 is 8.
+     The inset follows the field's step with that floor: compact 1/2 and 1
+     are 12, compact 2 (40) keeps 16 (intent acceptance 2026-11-12). */
+  .sf-input.sf-input--size-1\/2 {
+    --sf-input--inset: max(var(--sf-space-1\/2), var(--sf-b2));
+    --sf-input--line-radius: min(var(--sf-input--radius), var(--sf-ui-1\/2--control-height) / 2);
+  }
+
+  .sf-input:is(.sf-input--size-1, .sf-input--size-2, .sf-input--size-1\/2) .sf-input-field {
+    --sf-input-field--padding-inline-start: var(--sf-input-padding-inline, calc(var(--sf-input--value-inset) - var(--sf-px)));
+    --sf-input-field--padding-inline-end: var(--sf-input-padding-inline, calc(var(--sf-input--value-inset) - var(--sf-px)));
+  }
+
+  /* A picture at either end stands at the plain inset, its step after it. */
+  .sf-input:is(.sf-input--size-1, .sf-input--size-2, .sf-input--size-1\/2) .sf-input-field:where(:has(> .sf-input-left, > .sf-icon:first-child)) {
+    --sf-input-field--padding-inline-start: var(--sf-input-padding-inline, calc(var(--sf-input--inset) - var(--sf-px)));
+  }
+
+  .sf-input:is(.sf-input--size-1, .sf-input--size-2, .sf-input--size-1\/2) .sf-input-field:where(:has(> input ~ :is(.sf-input-right, .sf-input-hint, .sf-icon))) {
+    --sf-input-field--padding-inline-end: var(--sf-input-padding-inline, calc(var(--sf-input--inset) - var(--sf-px)));
+  }
+
+  .sf-input:is(.sf-input--size-1, .sf-input--size-2, .sf-input--size-1\/2) .sf-input-field input {
+    --sf-input-input--padding-inline-start: calc(var(--sf-px) * 0);
+    --sf-input-input--padding-inline-end: calc(var(--sf-px) * 0);
+  }
+
+  /* A field is a row (owner C105, role H2): its leading picture stands
+     --sf-space-1/2 before the value -- 12, 8 in a compact region and on a
+     phone -- at every size, the step its options keep from their pictures,
+     so the value and an option's text start on one axis. It was the button's
+     picture-to-label step (--sf-ui-<S>--text-space-x, H1): 7, 8, 10. */
+  .sf-input:is(.sf-input--size-1, .sf-input--size-2, .sf-input--size-1\/2) .sf-input-field > :is(.sf-input-left, .sf-icon) ~ input { --sf-input-input--padding-inline-start: var(--sf-space-1\/2); }
+  .sf-input.sf-input--size-1 .sf-input-field > input:has(~ :is(.sf-input-right, .sf-input-hint, .sf-icon)) { --sf-input-input--padding-inline-end: var(--sf-ui-1--text-space-x); }
+  .sf-input.sf-input--size-2 .sf-input-field > input:has(~ :is(.sf-input-right, .sf-input-hint, .sf-icon)) { --sf-input-input--padding-inline-end: var(--sf-ui-2--text-space-x); }
+  .sf-input.sf-input--size-1\/2 .sf-input-field > input:has(~ :is(.sf-input-right, .sf-input-hint, .sf-icon)) { --sf-input-input--padding-inline-end: var(--sf-ui-1\/2--text-space-x); }
+}

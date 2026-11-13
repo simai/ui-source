@@ -52,19 +52,20 @@ export function renderListItemTemplate(context) {
     context.type,
   );
 
+  // The step between the picture and the text is the row's own (C105 H2,
+  // HS-5): the list item sheet sets it from the size and the density. A layout
+  // class here (gap-2, --sf-space-2) put 20 between them at every size.
   if (isDecoratedType) {
     wrapClasses.push(
       "flex",
       "flex-row",
       "flex-nowrap",
       "items-center",
-      "gap-2",
     );
   }
 
   if (context.type === "avatar" || context.type === "color") {
-    wrapClasses.splice(wrapClasses.indexOf("gap-2"), 1);
-    wrapClasses.push("justify-between", "gap-2");
+    wrapClasses.push("justify-between");
   }
 
   const renderLeading = () => {
