@@ -10401,6 +10401,43 @@
       "source": "src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
     },
     {
+      "id": "attribute-slider-range-c78",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-slider-range 1.4.0 (owner decisions C78, C80; defects S1-S7): label is the field's visible name, as on every field, and the setting that showed the value on the handles is value-display; the number settings take sf-input-quantity's names, so decimals is precision. The old forms keep working until remove_after and are noted in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-slider-range",
+          "from": "label=\"none|text|tooltip\"",
+          "to": "value-display",
+          "match": "<sf-(?:slider-range|range-slider)\\b[^>]*\\blabel=[\"'](?:none|text|tooltip)[\"']"
+        },
+        {
+          "component": "sf-slider-range",
+          "from": "decimals",
+          "to": "precision",
+          "match": "\\bdecimals=[\"']"
+        },
+        {
+          "component": "range-slider",
+          "from": "data-decimals",
+          "to": "data-precision",
+          "match": "data-decimals=[\"']"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write value-display for label when label holds none, text or tooltip (label=\"tooltip\" is value-display=\"tooltip\"), and give label the field's visible name instead of aria-label where the name should show. value-display=\"text\" now writes the value at the end of the name line, not under the handles, and the tooltip bubble shows only while a handle is dragged or keyboard-focused. Write precision for decimals on <sf-slider-range>, and data-precision for data-decimals on a hand-written .sf-range-slider.",
+      "examples": {
+        "before": "<sf-slider-range aria-label=\"Цена\" label=\"tooltip\" decimals=\"1\"></sf-slider-range>",
+        "after": "<sf-slider-range label=\"Цена\" value-display=\"tooltip\" precision=\"1\"></sf-slider-range>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/slider-range/component.json, src/component/range-slider/js/_range_slider.js; ui-control control/docs-review/decisions.md C78, C80"
+    },
+    {
       "id": "value-steps-one-list-format",
       "recorded_on": "2026-11-12",
       "stage": "compat",

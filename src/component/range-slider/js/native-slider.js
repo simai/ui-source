@@ -6,6 +6,26 @@ function numericList(value) {
   return (Array.isArray(value) ? value : [value]).map(Number);
 }
 
+// Digits after the point a number is written with: 0.1 has one, 2.5e-3 four,
+// 500 none. A value is rounded to the digits of its step and its minimum, so
+// three steps of 0.1 are 0.3, not 0.30000000000000004 (S2).
+export function decimalPlaces(value) {
+  const text = String(value ?? '').trim().toLowerCase();
+  if (!text || !Number.isFinite(Number(text))) return 0;
+  const [coefficient, exponent = '0'] = text.split('e');
+  const fraction = coefficient.split('.')[1]?.length || 0;
+  return Math.min(20, Math.max(0, fraction - Number(exponent)));
+}
+
+export function roundToDigits(value, digits) {
+  const rounded = Number(Number(value).toFixed(Math.min(20, Math.max(0, digits))));
+  return Object.is(rounded, -0) ? 0 : rounded;
+}
+
+function span(range) {
+  return range.max - range.min;
+}
+
 function createNode(tag, className) {
   const node = document.createElement(tag);
   node.className = className;
@@ -17,8 +37,15 @@ export function createNativeSlider(root, options) {
   const range = options.range;
   const margin = Number(options.margin || 0);
   const step = Number(options.step || 1);
+  // PageUp, PageDown and Shift with an arrow move by the large step: ten
+  // steps unless page-step says otherwise, as sf-input-quantity (S4; APG,
+  // Radix, Carbon).
+  const pageStep = Number(options.pageStep) > 0 ? Number(options.pageStep) : step * 10;
+  const digits = Math.max(decimalPlaces(step), decimalPlaces(range.min));
   const listeners = new Map();
   let disabled = false;
+  // Read-only (C80): focusable and read out, but neither keys nor a pointer move it.
+  let readonly = Boolean(options.readonly);
   let values = numericList(options.start).map((value) => clamp(value, range.min, range.max));
 
   root.classList.add(classes.target, classes.horizontal,
@@ -31,6 +58,18 @@ export function createNativeSlider(root, options) {
   connects.append(connect);
   base.append(track, connects);
   root.append(base);
+  // Ticks T1 (C80): a dot per step, at most twenty, over the rail and the fill.
+  const tickCount = span(range) / step;
+  if (options.ticks && Number.isFinite(tickCount) && tickCount >= 1 && tickCount <= 20) {
+    const ticks = createNode('div', 'sf-range-slider-ticks');
+    ticks.setAttribute('aria-hidden', 'true');
+    for (let index = 0; index <= Math.floor(tickCount + 1e-9); index += 1) {
+      const tick = createNode('span', 'sf-range-slider-tick');
+      tick.style.insetInlineStart = `${Math.min(100, (index * step / span(range)) * 100)}%`;
+      ticks.append(tick);
+    }
+    base.append(ticks);
+  }
 
   const handles = values.map((value, index) => {
     const origin = createNode('div', classes.origin);
@@ -50,14 +89,14 @@ export function createNativeSlider(root, options) {
   };
 
   const boundsFor = (index) => ({
-    min: index > 0 ? values[index - 1] + margin : range.min,
-    max: index < values.length - 1 ? values[index + 1] - margin : range.max,
+    min: index > 0 ? roundToDigits(values[index - 1] + margin, digits) : range.min,
+    max: index < values.length - 1 ? roundToDigits(values[index + 1] - margin, digits) : range.max,
   });
 
   const normalize = (value, index) => {
     const bounds = boundsFor(index);
-    const stepped = range.min + Math.round((Number(value) - range.min) / step) * step;
-    return clamp(stepped, bounds.min, bounds.max);
+    const stepped = roundToDigits(range.min + Math.round((Number(value) - range.min) / step) * step, digits);
+    return roundToDigits(clamp(stepped, bounds.min, bounds.max), digits);
   };
 
   const render = () => {
@@ -69,6 +108,8 @@ export function createNativeSlider(root, options) {
       handle.setAttribute('aria-valuemin', String(boundsFor(index).min));
       handle.setAttribute('aria-valuemax', String(boundsFor(index).max));
       handle.setAttribute('aria-valuetext', options.ariaFormat?.to?.(values[index]) || String(values[index]));
+      if (readonly) handle.setAttribute('aria-readonly', 'true');
+      else handle.removeAttribute('aria-readonly');
     });
     const start = values.length > 1 ? percents[0] : options.connect === 'upper' ? percents[0] : 0;
     const end = values.length > 1 ? percents[1] : options.connect === false ? percents[0] : options.connect === 'upper' ? 100 : percents[0];
@@ -95,15 +136,19 @@ export function createNativeSlider(root, options) {
   };
 
   const beginPointer = (event) => {
-    if (disabled || event.button !== 0) return;
+    if (disabled || readonly || event.button !== 0) return;
     const value = valueFromPointer(event);
     const index = values.length === 1 || Math.abs(values[0] - value) <= Math.abs(values[1] - value) ? 0 : 1;
     event.preventDefault();
+    // Marks the handle being dragged: its value bubble shows only meanwhile (C78).
+    const dragged = handles[index].handle;
+    dragged.classList.add('sf-range-slider-handle--dragging');
     emit('start', index);
     setHandle(index, value);
     const move = (next) => setHandle(index, valueFromPointer(next));
     const end = (next) => {
       setHandle(index, valueFromPointer(next), true);
+      dragged.classList.remove('sf-range-slider-handle--dragging');
       emit('end', index);
       window.removeEventListener('pointermove', move);
       window.removeEventListener('pointerup', end);
@@ -116,12 +161,17 @@ export function createNativeSlider(root, options) {
   handles.forEach(({handle}, index) => handle.addEventListener('keydown', (event) => {
     if (disabled || options.keyboardSupport === false) return;
     const direction = options.direction === 'rtl' ? -1 : 1;
-    const delta = ({ArrowRight: step * direction, ArrowLeft: -step * direction, ArrowUp: step, ArrowDown: -step})[event.key];
+    const by = event.shiftKey ? pageStep : step;
+    const delta = ({
+      ArrowRight: by * direction, ArrowLeft: -by * direction, ArrowUp: by, ArrowDown: -by,
+      PageUp: pageStep, PageDown: -pageStep,
+    })[event.key];
     let next = delta === undefined ? null : values[index] + delta;
     if (event.key === 'Home') next = boundsFor(index).min;
     if (event.key === 'End') next = boundsFor(index).max;
     if (next === null) return;
     event.preventDefault();
+    if (readonly) return;
     emit('start', index);
     setHandle(index, next, true);
     emit('end', index);
@@ -154,6 +204,10 @@ export function createNativeSlider(root, options) {
         handle.tabIndex = -1;
         handle.setAttribute('aria-disabled', 'true');
       });
+    },
+    setReadonly(next = true) {
+      readonly = Boolean(next);
+      render();
     },
     enable() {
       disabled = false;

@@ -1734,8 +1734,8 @@
         {
           "name": "--sf-range-slider-track-color",
           "role": "background",
-          "summary": "The track's fill outside the chosen part.",
-          "default": "var(--sf-surface-container)",
+          "summary": "The track's fill outside the chosen part (track B, owner decision C78).",
+          "default": "var(--sf-outline)",
           "since": "2026-10-27"
         },
         {

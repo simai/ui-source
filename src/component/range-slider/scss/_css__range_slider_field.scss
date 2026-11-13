@@ -1,0 +1,368 @@
+@layer sf.components {
+// The field around a Smart slider (C78): the visible name above, as every
+// field's label (sf-input-quantity's: the variant ink, regular, one text step
+// below the control, a quarter space under it), the value at the end of that
+// line when value-display="text", then the track line.
+.sf-range-slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-range-slider-group--gap, var(--sf-space-1\/4));
+  min-inline-size: 0;
+}
+
+.sf-range-slider-head {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--sf-space-1);
+  justify-content: space-between;
+  min-inline-size: 0;
+}
+
+.sf-range-slider-name {
+  color: var(--sf-range-slider-name--color, var(--sf-on-surface-variant));
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-range-slider--label-size, var(--sf-text-size-1\/2));
+  font-weight: var(--sf-font-weight-regular);
+  line-height: var(--sf-range-slider--label-height, var(--sf-text-height-1\/2));
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.sf-range-slider-output {
+  color: var(--sf-range-slider-value-color, var(--sf-on-surface));
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-range-slider--label-size, var(--sf-text-size-1\/2));
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--sf-font-weight-regular);
+  line-height: var(--sf-range-slider--label-height, var(--sf-text-height-1\/2));
+  margin-inline-start: auto;
+  white-space: nowrap;
+}
+
+// The line wraps only where the from/to field and the narrowest track do not
+// fit side by side (a size-2 field in a single 260 px form column): the field
+// then stands under the track, its numbers whole.
+.sf-range-slider-line {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sf-space-1);
+  min-inline-size: 0;
+}
+
+// The track and the scale under it; the from/to field stands beside them. The
+// track gives way to the field down to one size-2 control height -- the target
+// a finger needs (S6) -- and is never narrower.
+.sf-range-slider-track-column {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--sf-space-1\/4);
+  min-inline-size: var(--sf-ui-2--control-height);
+}
+
+.sf-range-slider-track-column > .sf-range-slider {
+  min-inline-size: 0;
+}
+
+// Sizes (S5, C18, C80): the slider row is the control height of its step, as
+// sf-button and every field of that step (32 / 40 / 48, phone 28 / 36 / 44;
+// density moves the ladder itself), so a slider stands on the line of the
+// fields beside it. The handle is the icon of the step (20 / 24 / 28), the
+// name one text step below the control. Size 1 is the default, also for a
+// hand-written .sf-range-slider without a size class.
+.sf-range-slider {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-block-size: var(--sf-range-slider--row, var(--sf-ui-1--control-height));
+}
+
+.sf-range-slider-group--size-1\/2,
+.sf-range-slider--size-1\/2 {
+  --sf-range-slider--row: var(--sf-ui-1\/2--control-height);
+  --sf-range-slider--label-size: var(--sf-text-size-1\/3);
+  --sf-range-slider--label-height: var(--sf-text-height-1\/3);
+  --sf-range-slider--space-x: var(--sf-ui-1\/2--space-x);
+  --sf-range-slider--text-size: var(--sf-text-size-1\/2);
+  --sf-range-slider--text-height: var(--sf-text-height-1\/2);
+  --sf-thumb-handle--height: var(--sf-icon-size-2);
+  --sf-thumb-handle--width: var(--sf-icon-size-2);
+}
+
+.sf-range-slider-group--size-1,
+.sf-range-slider--size-1 {
+  --sf-range-slider--row: var(--sf-ui-1--control-height);
+  --sf-range-slider--label-size: var(--sf-text-size-1\/2);
+  --sf-range-slider--label-height: var(--sf-text-height-1\/2);
+  --sf-range-slider--space-x: var(--sf-ui-1--space-x);
+  --sf-range-slider--text-size: var(--sf-text-size-1);
+  --sf-range-slider--text-height: var(--sf-text-height-1);
+}
+
+.sf-range-slider-group--size-2,
+.sf-range-slider--size-2 {
+  --sf-range-slider--row: var(--sf-ui-2--control-height);
+  --sf-range-slider--label-size: var(--sf-text-size-1);
+  --sf-range-slider--label-height: var(--sf-text-height-1);
+  --sf-range-slider--space-x: var(--sf-ui-2--space-x);
+  --sf-range-slider--text-size: var(--sf-text-size-2);
+  --sf-range-slider--text-height: var(--sf-text-height-2);
+  --sf-thumb-handle--height: var(--sf-icon-size-4);
+  --sf-thumb-handle--width: var(--sf-icon-size-4);
+}
+
+// Touch (S6): under a finger the handle takes a target of the larger of its
+// row and the size-2 control height (48, 44 on the phone ladder; platforms ask
+// 44-48), centred on the disc. Only the hit area grows; the disc is drawn as before.
+@media (pointer: coarse) {
+  .sf-range-slider .sf-range-slider-touch-area {
+    --sf-range-slider--hit: max(var(--sf-range-slider--row, var(--sf-ui-1--control-height)), var(--sf-ui-2--control-height));
+    inset-block: calc((var(--sf-thumb-handle--height, var(--sf-icon-size-3)) - var(--sf-range-slider--hit)) / 2);
+    inset-inline: calc((var(--sf-thumb-handle--width, var(--sf-icon-size-3)) - var(--sf-range-slider--hit)) / 2);
+  }
+}
+
+// Disabled (S7, C16 disabled roles): the name, the value and the scale take
+// the disabled content role, as a disabled field's label and text do; the
+// value no longer stays full ink beside a greyed handle.
+.sf-range-slider-group.disabled .sf-range-slider-name,
+.sf-range-slider-group.disabled .sf-range-slider-output,
+.sf-range-slider-group.disabled .sf-range-slider-scale {
+  color: var(--sf-on-surface-disabled);
+}
+
+.sf-range-slider:is([disabled], .disabled) .sf-thumb-text {
+  --sf-thumb-text--color: var(--sf-on-surface-disabled);
+}
+
+// The value bubble (owner decision C78, #p-bubble): value-display="tooltip"
+// shows a handle's value over it only while that handle is dragged or has the
+// keyboard focus, where a finger would cover a label under it. It floats over
+// the row and takes no room, so the slider row stays the control height.
+.sf-range-slider .sf-range-slider-labels.sf-thumb--label-tooltip {
+  inset-block-end: calc(100% + var(--sf-space-1\/4));
+  inset-inline: 0;
+  margin: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 3;
+}
+
+.sf-range-slider .sf-range-slider-labels--bottom.sf-thumb--label-tooltip {
+  inset-block-end: auto;
+  inset-block-start: calc(100% + var(--sf-space-1\/4));
+}
+
+.sf-range-slider .sf-range-slider-labels.sf-thumb--label-tooltip > .sf-tooltip {
+  opacity: 0;
+  transition: opacity var(--sf-duration-fast) var(--sf-animation);
+}
+
+.sf-range-slider:has(.sf-range-slider-handle-lower:is(.sf-range-slider-handle--dragging, :focus-visible)) .sf-range-slider-labels.sf-thumb--label-tooltip > [data-handle="0"],
+.sf-range-slider:has(.sf-range-slider-handle-upper:is(.sf-range-slider-handle--dragging, :focus-visible)) .sf-range-slider-labels.sf-thumb--label-tooltip > [data-handle="1"],
+.sf-range-slider:has(.sf-range-slider-handle:is(.sf-range-slider-handle--dragging, :focus-visible)) .sf-range-slider-labels--merged.sf-thumb--label-tooltip > [data-handle="0"] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-range-slider .sf-range-slider-labels.sf-thumb--label-tooltip > .sf-tooltip {
+    transition: none;
+  }
+}
+
+// Read-only, look R2 (owner decision C80, #r2-readonly): the same sign as a
+// read-only sf-input -- the light outline of a region at field height, no
+// fill -- and a neutral handle and fill that say "cannot move". The value
+// keeps full ink; the handles stay focusable and are read out. The frame is
+// the field's height (32 / 40 / 48) from its minimum: the root is a flex item
+// of the track column (flex-1, basis 0), where block-size alone gave way to the
+// content and drew the frame 26 / 22 px high.
+.sf-range-slider-group.readonly .sf-range-slider {
+  block-size: var(--sf-range-slider--row, var(--sf-ui-1--control-height));
+  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-radius: var(--sf-radius--ui);
+  box-sizing: border-box;
+  min-block-size: var(--sf-range-slider--row, var(--sf-ui-1--control-height));
+  padding-inline: calc(var(--sf-range-slider--space-x, var(--sf-ui-1--space-x)) - var(--sf-px));
+}
+
+// The scale under a framed track keeps to the track's ends.
+.sf-range-slider-group.readonly .sf-range-slider-scale {
+  padding-inline: calc(var(--sf-range-slider--space-x, var(--sf-ui-1--space-x)) - var(--sf-px));
+}
+
+.sf-range-slider.readonly .sf-thumb-handle,
+.sf-range-slider[data-readonly="true"] .sf-thumb-handle {
+  background-color: var(--sf-on-surface-variant);
+  box-shadow: none;
+}
+
+.sf-range-slider.readonly .sf-range-slider-progress-line,
+.sf-range-slider[data-readonly="true"] .sf-range-slider-progress-line {
+  background-color: var(--sf-on-surface-variant);
+}
+
+.sf-range-slider.readonly .sf-range-slider-handle,
+.sf-range-slider[data-readonly="true"] .sf-range-slider-handle {
+  cursor: default;
+}
+
+// Ticks, look T1 (owner decision C80, #r2-ticks): a dot per step when there
+// are at most twenty, cut out of track B in the colour of the place the
+// slider stands on -- one colour on the rail and on the fill, at least 3:1 on
+// both in both themes, read as notches.
+.sf-range-slider .sf-range-slider-ticks {
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 1;
+}
+
+.sf-range-slider .sf-range-slider-tick {
+  background-color: var(--sf-range-slider-tick--background-color, var(--sf-surface-place));
+  block-size: var(--sf-range-slider-track--height, var(--sf-a4));
+  border-radius: var(--sf-radius-circle);
+  inline-size: var(--sf-range-slider-track--height, var(--sf-a4));
+  inset-block-start: 50%;
+  margin-inline-start: calc(var(--sf-range-slider-track--height, var(--sf-a4)) / -2);
+  position: absolute;
+  transform: translateY(-50%);
+}
+
+// The scale (C78, C80): the ends, or the author's marks, under the track in
+// the variant ink one text step below the control. Each label stands in a
+// zero-wide anchor at its value: centred on it, the first and last held
+// inside the track, logical, so right-to-left needs nothing more.
+.sf-range-slider-scale {
+  block-size: var(--sf-range-slider--label-height, var(--sf-text-height-1\/2));
+  color: var(--sf-on-surface-variant);
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-range-slider--label-size, var(--sf-text-size-1\/2));
+  font-variant-numeric: tabular-nums;
+  line-height: var(--sf-range-slider--label-height, var(--sf-text-height-1\/2));
+  position: relative;
+}
+
+.sf-range-slider-scale-mark {
+  display: flex;
+  inline-size: 0;
+  inset-block-start: 0;
+  justify-content: center;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.sf-range-slider-scale-mark--start {
+  justify-content: flex-start;
+}
+
+.sf-range-slider-scale-mark--end {
+  justify-content: flex-end;
+}
+
+// The from/to field (owner decision C80, #r2-fields): a bordered field of the
+// step at the end of the track line -- sf-input's edge, radius, inline space
+// and text of the step -- holding one number or «5 000 – 20 000» and the unit
+// once. Hover and focus as a field; read-only and disabled as a field. The
+// field keeps its numbers whole and the track gives way: each box is as wide as
+// the wider end of the range (its rulers), and neither the field nor a box
+// shrinks below that.
+.sf-range-slider-field {
+  align-items: center;
+  background-color: var(--sf-transparent);
+  block-size: var(--sf-range-slider--row, var(--sf-ui-1--control-height));
+  border: var(--sf-px) solid var(--sf-outline);
+  border-radius: var(--sf-radius--ui);
+  box-sizing: border-box;
+  color: var(--sf-on-surface);
+  display: inline-flex;
+  flex: none;
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-range-slider--text-size, var(--sf-text-size-1));
+  font-variant-numeric: tabular-nums;
+  gap: var(--sf-space-1\/4);
+  line-height: var(--sf-range-slider--text-height, var(--sf-text-height-1));
+  padding-inline: calc(var(--sf-range-slider--space-x, var(--sf-ui-1--space-x)) - var(--sf-px));
+  transition: border-color var(--sf-duration-fast) var(--sf-animation);
+}
+
+// A box and its two rulers share one grid cell: the cell takes the wider ruler,
+// the box fills it. The caret has a pixel of its own after the last digit.
+.sf-range-slider-field-box {
+  display: inline-grid;
+  flex: none;
+}
+
+.sf-range-slider-field-box > * {
+  grid-area: 1 / 1;
+}
+
+.sf-range-slider-field-ruler {
+  padding-inline-end: var(--sf-px);
+  pointer-events: none;
+  visibility: hidden;
+  white-space: pre;
+}
+
+.sf-range-slider-field-input {
+  background: var(--sf-transparent);
+  border: 0;
+  color: inherit;
+  font: inherit;
+  inline-size: 100%;
+  margin: 0;
+  min-inline-size: 0;
+  padding: 0;
+}
+
+// In «5 000 – 20 000» the lower number stands against the dash.
+.sf-range-slider-field:has(.sf-range-slider-field-dash) .sf-range-slider-field-input[data-handle="0"] {
+  text-align: end;
+}
+
+// The ring belongs to the field, not to the bare box inside it (as sf-input).
+.sf-range-slider-field-input:focus-visible {
+  outline: none !important;
+}
+
+.sf-range-slider-field-unit,
+.sf-range-slider-field-dash {
+  color: var(--sf-on-surface-variant);
+  flex: none;
+}
+
+.sf-range-slider-group:not(.disabled):not(.readonly) .sf-range-slider-field:hover {
+  border-color: var(--sf-primary-hover);
+}
+
+.sf-range-slider-group:not(.disabled):not(.readonly) .sf-range-slider-field:focus-within {
+  border-color: var(--sf-primary);
+}
+
+.sf-range-slider-field:has(.sf-range-slider-field-input:focus-visible) {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+}
+
+.sf-range-slider-group.readonly .sf-range-slider-field {
+  border-color: var(--sf-outline-variant);
+}
+
+.sf-range-slider-group.disabled .sf-range-slider-field {
+  border-color: var(--sf-outline-disabled);
+  color: var(--sf-on-surface-disabled);
+}
+
+.sf-range-slider-group.disabled .sf-range-slider-field-unit,
+.sf-range-slider-group.disabled .sf-range-slider-field-dash {
+  color: var(--sf-on-surface-disabled);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-range-slider-field {
+    transition: none;
+  }
+}
+}

@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.slider-range",
-  "version": "1.3.1",
+  "version": "1.4.1",
   "title": "Range Slider",
-  "summary": "A slider for one number or a range of two on a track: drag, click or keys move a handle by step, the fill shows the chosen part, and the value can be shown as text or a tooltip on each handle.",
+  "summary": "A slider for one number or a range of two on a track, as a form field: a visible name above, drag, click or keys move a handle by step (PageUp/PageDown by ten), the value shown at the end of the name line, in a bubble while dragging, or in a from/to field beside the track; ticks and a scale on request; sizes 1/2, 1, 2; read-only and disabled.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -63,6 +63,30 @@
       "step": {
         "type": "number"
       },
+      "page-step": {
+        "type": "number",
+        "description": "How far PageUp, PageDown and Shift with an arrow move a handle; ten steps when empty, as sf-input-quantity."
+      },
+      "ticks": {
+        "type": "boolean",
+        "default": false,
+        "description": "A dot per step on the track, when there are at most twenty steps: look T1 (owner decision C80), cut out in the colour of the place the slider stands on."
+      },
+      "scale": {
+        "type": "boolean",
+        "default": false,
+        "description": "Writes the two ends (min and max) under the track, in the slider's language and digits (C78)."
+      },
+      "marks": {
+        "type": "string",
+        "default": "",
+        "description": "Labels under the track at chosen values, \"value:text\" joined by commas (\"1:плохо,3:нормально,5:отлично\"); a value without text writes its number. Replaces the two ends of scale."
+      },
+      "field": {
+        "type": "boolean",
+        "default": false,
+        "description": "The from/to field at the end of the track line (owner decision C80): one field «5 000 – 20 000 ₽» (or one number), the field height of the step; typing a number and Enter or leaving the box moves the handle, dragging rewrites the number. Hides the value at the end of the name line."
+      },
       "margin": {
         "type": "string",
         "default": ""
@@ -77,12 +101,27 @@
       },
       "label": {
         "type": "string",
+        "default": "",
+        "description": "The visible name above the slider, as every field's label (owner decision C78); it names the handles unless aria-label, aria-labelledby or lower-label/upper-label do. Until 2027-01-01 the words none, text and tooltip here still mean value-display."
+      },
+      "value-display": {
+        "type": "string",
         "default": "none",
-        "description": "How each handle shows its value: not at all, as text beside it, or as a tooltip.",
+        "description": "How the value is shown: not at all (each handle still reads it out), as text at the end of the name line, or in a bubble over the handle while it is dragged or keyboard-focused (C78). Formerly label, read until 2027-01-01.",
         "enum": [
           "none",
           "text",
           "tooltip"
+        ]
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "Size of the step, as every form field: the slider row is the control height (32 / 40 / 48, phone 28 / 36 / 44), the handle 20 / 24 / 28 (S5).",
+        "enum": [
+          "1/2",
+          "1",
+          "2"
         ]
       },
       "prefix-text": {
@@ -101,17 +140,31 @@
         "type": "string",
         "default": ""
       },
-      "decimals": {
+      "precision": {
+        "type": "integer",
+        "description": "Digits after the decimal mark in the value shown and read out; empty takes them from `step` (0.5 has one), as sf-input-quantity, and fewer than the step's are never shown, so a value is not rounded off its step. Formerly `decimals`, an alias until 2027-01-01.",
+        "minimum": 0,
+        "maximum": 20
+      },
+      "grouping": {
+        "type": "boolean",
+        "default": true,
+        "description": "Group thousands the page's language's way («20 000»); `grouping=\"false\"` writes the digits together, for a year or a code."
+      },
+      "locale": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The language the value is written in; unset, the page's (`lang`), so a Russian page reads «2,5 кг»."
       },
       "tooltip-position": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Where the value bubble stands while a handle is dragged: top (default) or bottom."
       },
       "text-position": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "No effect since 1.4.0: value-display=\"text\" writes the value at the end of the name line. Kept so old markup stays valid."
       },
       "label-position": {
         "type": "string",
@@ -121,10 +174,15 @@
         "type": "boolean",
         "default": false
       },
+      "readonly": {
+        "type": "boolean",
+        "default": false,
+        "description": "Shown and not changed (owner decision C80, look R2): a read-only field's light outline at field height, a neutral handle and fill; the handles stay focusable, carry aria-readonly and are read out, keys and the pointer change nothing. The value is still submitted."
+      },
       "name": {
         "type": "string",
         "default": "",
-        "description": "The name the value is submitted under in a form: the handle's value, or both values joined by a comma (\"20,80\") with two handles."
+        "description": "The name the value is submitted under in a form: the handle's number, or with two handles two entries under the one name (price=5000&price=20000). Nothing while disabled."
       },
       "value": {
         "type": "string",
@@ -138,6 +196,22 @@
         "type": "string",
         "default": "",
         "description": "Dated alias of prefix-text until 2026-12-01."
+      },
+      "decimals": {
+        "type": "integer",
+        "description": "Dated alias of precision until 2027-01-01.",
+        "minimum": 0,
+        "maximum": 20
+      },
+      "label=\"none|text|tooltip\"": {
+        "type": "string",
+        "default": "none",
+        "description": "Dated alias of value-display until 2027-01-01.",
+        "enum": [
+          "none",
+          "text",
+          "tooltip"
+        ]
       }
     },
     "additionalProperties": false
@@ -531,6 +605,8 @@
       "ArrowRight",
       "ArrowUp",
       "ArrowDown",
+      "PageUp",
+      "PageDown",
       "Home",
       "End"
     ],
@@ -604,7 +680,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/slider-range/index.js",
-        "sha256": "f0ef6cbe565786d1c499f71fdbd08479dbd9f6af5d6a1546184f8bab026e56b5"
+        "sha256": "4101efe9d5bac95831096c9545add167b195dd5f79125d52abbc2b432f56ade0"
       }
     ],
     "generated_runtime": [
