@@ -524,15 +524,19 @@
     }
   }
 
-  /* The states of the two ramp appearances: one step up on hover, with surface
-     raising its boundary alongside. */
-  .sf-tag.sf-tag--interactive.sf-tag--appearance-surface:not(:disabled):not(.disabled):hover,
+  /* The states of the two ramp appearances: one step up on hover, with outline
+     raising its boundary alongside. outline is the name the smart element
+     writes; surface is its former name until 2027-01-01 (journal
+     value-tag-appearance-surface-to-outline). Both rules named surface alone,
+     so an outline tag fell back to the default hover fill without the raised
+     boundary, and kept its rest look when disabled (M1, round-2 acceptance). */
+  .sf-tag.sf-tag--interactive:is(.sf-tag--appearance-outline, .sf-tag--appearance-surface):not(:disabled):not(.disabled):hover,
   .sf-tag.sf-tag--interactive.sf-tag--appearance-ghost:not(:disabled):not(.disabled):hover {
     /* The surface role of the step (C16; DEV audit 2026-11-10 defect 8). */
     --sf-tag--background-color: var(--sf-surface-state-select);
   }
 
-  .sf-tag.sf-tag--interactive.sf-tag--appearance-surface:not(:disabled):not(.disabled):hover {
+  .sf-tag.sf-tag--interactive:is(.sf-tag--appearance-outline, .sf-tag--appearance-surface):not(:disabled):not(.disabled):hover {
     --sf-tag--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-surface-state-active);
   }
 
@@ -542,7 +546,7 @@
      differently from the one beside it. So the ramp governs rest and hover here,
      not selection. */
 
-  .sf-tag.sf-tag--appearance-surface:is(:disabled, .disabled),
+  .sf-tag:is(.sf-tag--appearance-outline, .sf-tag--appearance-surface):is(:disabled, .disabled),
   .sf-tag.sf-tag--appearance-ghost:is(:disabled, .disabled) {
     --sf-tag--background-color: transparent;
     --sf-tag--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-surface-state-hover);
