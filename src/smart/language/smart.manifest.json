@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.language",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "title": "Language",
   "summary": "The site's language picker. Two or three languages are a segmented switch, all in sight, one press; four to seven an icon button («translate») with a menu, each row the name in itself and in English; eight and more the same menu with search by either name or the code. One language draws nothing. A choice is a cancellable change; then the element follows the language's href or applies the language to the page (SF.language.use, lang and dir on <html>).",
   "kind": "smart",
@@ -58,7 +58,7 @@
       "languages": {
         "type": "string",
         "default": "",
-        "description": "The languages, as BCP 47 codes separated by spaces or commas: «ru en de ar», «pt-BR». Each is named by the browser (Intl.DisplayNames) in itself and in English; no dictionary ships. items, when given, takes its place"
+        "description": "The languages, as BCP 47 codes separated by spaces or commas: «ru en de ar», «pt-BR». Each is named in itself and in English: the names of the 66 languages the component supports ship with it (data/names.json, CLDR), the browser (Intl.DisplayNames) names any other. items, when given, takes its place"
       },
       "href": {
         "type": "string",
@@ -145,7 +145,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The languages as a list, each {code, label?, short?, href?}: label replaces the name the browser gives («Қазақша» written otherwise), short the code label (RU, labels=\"code\"), href the address of the site in that language. A property, or the JSON island a server prints; when it holds a language it is the list, and languages is not read"
+        "description": "The languages as a list, each {code, label?, short?, href?}: label replaces the shipped or browser name («Қазақша» written otherwise), short the code label (RU, labels=\"code\"), href the address of the site in that language. A property, or the JSON island a server prints; when it holds a language it is the list, and languages is not read"
       }
     },
     "additionalProperties": false
@@ -269,7 +269,7 @@
     "keyboard": [
       "Inline: Tab reaches the chosen language; the arrows, Home and End move between languages and choose",
       "Menu: Tab reaches the trigger; Enter or Space opens the menu; the arrows move, a letter jumps, Enter chooses; Escape closes and returns focus to the trigger",
-      "Search: the field takes focus when the menu opens; Down moves to the rows"
+      "Search: the field takes focus when the menu opens; Down moves to the rows. The menu opens with the chosen language in view; without a search the chosen row takes the focus"
     ],
     "focus": "After a choice in the menu, focus returns to the trigger; in the switch it stays on the chosen segment."
   },
@@ -333,11 +333,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/language/index.js",
-        "sha256": "b189259c73984395f4663875b692a9b42763d12358944e73836f99b4507872a8"
+        "sha256": "c3d3bbfebcdf1e564e3a33f78337036b89c10479d440aea273fcf3143a28b587"
       },
       {
         "path": "src/smart/language/js/templates/default.js",
-        "sha256": "805b862aa9ff2173f08cb126bdb9132df62e5af8568e2cca7fdc0ff1d39679e5"
+        "sha256": "8f25b01bb6d07f64f803570d83da4f457b73477c076f3f0236acbb22d82e841d"
       },
       {
         "path": "src/smart/language/rule.js",
@@ -345,7 +345,7 @@
       },
       {
         "path": "src/smart/language/docs.md",
-        "sha256": "5b9e459a949c62b500252a8126dfbc55c9b3c77be8b5d2138830e0972b82cf12"
+        "sha256": "adecc5e4176187b4902076259d7b597c81383e883ab09c28e469c8c7ba65458a"
       }
     ],
     "generated_runtime": []
@@ -354,7 +354,7 @@
     "use_when": "Use sf-language once in a site header (sf-header-site's tools slot at size 1/2) or in a settings form to choose the site's language from a list of codes.",
     "do_not": [
       "Do not draw flags or a globe for languages; the element uses the translate glyph and the names",
-      "Do not ship a dictionary of language names; the browser names them",
+      "Do not give a supported language a label of your own to fix its name; the component ships the names of its languages (data/names.json) and the browser names the rest",
       "Do not use sf-language for a country or a region; it picks languages",
       "Do not build a separate switch for two languages and a menu for many; one element changes its look by the count"
     ],

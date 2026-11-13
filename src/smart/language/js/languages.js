@@ -1,7 +1,11 @@
 // The languages of sf-language, without the element: codes made canonical,
-// named by the browser (Intl.DisplayNames) in themselves and in English, the
-// direction each is written in, and the look a count of them takes. No
-// dictionary: what the browser cannot name is shown as its code.
+// named in themselves and in English, the direction each is written in, the
+// look a count of them takes, and what a search finds. The names of the
+// languages the component supports ship with it (data/names.json, from CLDR:
+// the browser's Intl.DisplayNames names fewer -- research LG-7); the browser
+// names the rest, and what neither can name is shown as its code. The
+// element gives this module the shipped names (useNames), so the module
+// itself has no import a plain Node.js test cannot take.
 
 export const MODES = ['auto', 'inline', 'menu', 'search'];
 export const SIZES = ['1/3', '1/2', '1', '2', '3'];
@@ -42,8 +46,32 @@ export function dirOf(code) {
   return RTL_LANGUAGES.has(primary) ? 'rtl' : 'ltr';
 }
 
-// A language's name in a language, from the browser; '' when it has none.
+// The shipped names, by canonical code in lower case.
+const SHIPPED = new Map();
+
+/** Takes the shipped names (data/names.json): {names: {<code>: {native, en, ru}}}. */
+export function useNames(data) {
+  SHIPPED.clear();
+  for (const [code, names] of Object.entries(data?.names ?? {})) {
+    if (names && typeof names === 'object') SHIPPED.set(code.toLowerCase(), names);
+  }
+}
+
+// A shipped name of a language in a language: native (in itself), en or ru;
+// '' when none ships.
+function shippedName(code, inLanguage) {
+  const names = SHIPPED.get(String(code).toLowerCase());
+  if (!names) return '';
+  const want = String(inLanguage).toLowerCase();
+  if (want === String(code).toLowerCase()) return names.native || '';
+  return names[want] || names[want.split('-')[0]] || '';
+}
+
+// A language's name in a language: the shipped one first, else the
+// browser's; '' when neither has one.
 function displayName(code, inLanguage) {
+  const shipped = shippedName(code, inLanguage);
+  if (shipped) return shipped;
   try {
     const name = new Intl.DisplayNames([inLanguage], {type: 'language', fallback: 'none'}).of(code);
     return name && name !== code ? name : '';
@@ -54,8 +82,13 @@ function displayName(code, inLanguage) {
 
 // A name begins with a capital in a list, as a person writes it in a menu
 // («Русский», «Español»); the capital is the language's own.
+// Georgian has no capitals in running text: its upper case (Mtavruli) is a
+// display style, so «ქართული» stays as it is.
+const UNCASED = /^[\u10D0-\u10FF]/u;
+
 function capitalised(name, code) {
   if (!name) return '';
+  if (UNCASED.test(name)) return name;
   try {
     return name.charAt(0).toLocaleUpperCase(code) + name.slice(1);
   } catch {
@@ -115,6 +148,39 @@ export function normalizeLanguages(languages, items, href = '') {
     });
   }
   return list;
+}
+
+// What a search compares: lower case in the root locale, without accents
+// (é and ё compare as e and е), so a query matches whatever case and marks it
+// is typed in.
+const folded = (value) => String(value ?? '').normalize('NFD').replace(/\p{M}+/gu, '').toLocaleLowerCase('und');
+
+// The words a name is made of: split at spaces, hyphens, brackets and the
+// like, so «português (Brasil)» is «português» and «brasil», and pt-BR is pt
+// and br as well as pt-br.
+const WORD_BREAK = /[\s\-\u2010-\u2015()（）[\],.;:'"«»·/]+/u;
+
+/** The word starts of a text, folded: what a search query must begin. */
+export function searchWords(...texts) {
+  const words = new Set();
+  for (const text of texts) {
+    const whole = folded(text).trim();
+    if (!whole) continue;
+    words.add(whole);
+    for (const word of whole.split(WORD_BREAK)) if (word) words.add(word);
+  }
+  return [...words];
+}
+
+/**
+ * Whether a query finds a language by its words (searchWords): each word of
+ * the query begins one of them. «ру» finds Русский and румынский, not
+ * белорусский or грузинский, where «ру» is inside the word (research LG-8).
+ */
+export function matchesQuery(words, query) {
+  const parts = folded(query).trim().split(WORD_BREAK).filter(Boolean);
+  if (!parts.length) return true;
+  return parts.every((part) => words.some((word) => word.startsWith(part)));
 }
 
 /** The look for a number of languages: none, inline, menu or search. */

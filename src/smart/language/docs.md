@@ -23,14 +23,20 @@ its track, the trigger `sf-button-icon`, the menu
 ## Languages
 
 `languages` takes BCP 47 codes separated by spaces or commas: `ru en de ar`,
-`pt-BR`. The names come from the browser (`Intl.DisplayNames`); no dictionary
-ships with the component:
+`pt-BR`. The names of the languages it supports ship with the component
+(66 languages, from CLDR, Беларуская, Հայերեն, ქართული, Татар, Кыргызча,
+Тоҷикӣ, Башҡорт and Саха тыла among them), so every browser names them alike; the browser
+(`Intl.DisplayNames`) names any other code:
 
 - the switch and the menu name each language in itself: «Русский»,
   «English», «Deutsch», «العربية»;
 - a menu row shows the English name beside it: «Deutsch … German»;
-- the search finds a language by its own name, its English name, its name in
-  the page's language and its code: «нем», «German» and «de» all find Deutsch.
+- the search finds a language by the start of a word of its own name, its
+  English name, its name in the page's language or its code, in any case and
+  without accents: «нем», «German» and «de» all find Deutsch; «ру» finds
+  Русский and Română (румынский), not Беларуская (белорусский);
+- the search panel keeps one width while you type (20rem, 18rem in compact
+  density; decision C32).
 
 `labels="code"` makes the switch show codes (RU · EN); each segment keeps the
 name as its accessible name. The boolean `compact` that did this before is a
@@ -114,7 +120,9 @@ and `mode="search"` as wide as high -- exactly the icon button it then draws.
 So a header's tools do not move when the trigger appears, and a page needs no
 placeholder of its own. The switch (`mode="inline"`, or `auto`, whose look
 depends on how many languages it is given) holds its height only; give a
-header picker `mode="menu"` when its width must be known before the code.
+header picker `mode="menu"` when its width must be known before the code,
+or print the switch's static markup: its width is its names', which the page
+knows only once something has drawn them.
 Static markup printed inside the element (`data-sf-static`) is its own box,
 so nothing is reserved then. The box is released when the element marks its
 look (`data-look`).
@@ -184,9 +192,11 @@ rungs: its rows are 32 px up to `1/2`, 40 px from `1`.
   label and the current language in itself; it says it opens a menu and
   whether it is open.
 - The menu is named by `label`; each row is a radio item in its own
-  language. The arrows move, a letter jumps, Enter chooses, Escape closes
-  and returns focus to the trigger. With a search the field takes focus when
-  the menu opens, and Down moves to the rows.
+  language. It opens with the chosen language in view, however far down the
+  list it is; without a search the chosen row takes the focus. The arrows
+  move, a letter jumps, Enter chooses, Escape closes and returns focus to the
+  trigger. With a search the field takes focus when the menu opens, and Down
+  moves to the rows.
 
 ## Reference
 

@@ -10,7 +10,9 @@ import {html, nothing} from 'lit';
 //   name), each segment in its own language (lang).
 // - menu and search (four and more): sf-button-icon with the «translate»
 //   glyph, named «Язык: Русский», and sf-menu-context, a popup menu of radio
-//   rows, each in its own language; search adds the menu's own search field.
+//   rows, each in its own language; search adds the menu's own search field
+//   (remote: the element narrows the rows by word starts) and the panel's
+//   constant width of decision C32 (width="panel": 20rem, 18rem compact).
 //
 // The parts' events stay inside the element (stopPropagation): the page hears
 // sf-language's change, never a segment's or a menu row's.
@@ -53,10 +55,15 @@ function renderMenu(context) {
     <sf-menu-context
       popup
       size=${context.menuSize}
+      width=${context.search ? 'panel' : nothing}
       aria-label=${context.label}
       .entries=${context.entries}
       @sf-menu-context-select=${(event) => context.component.onMenuSelect(event)}
       @sf-context-menu-select=${stop}
+      @sf-menu-context-search=${(event) => context.component.onMenuSearch(event)}
+      @sf-context-menu-search=${stop}
+      @sf-menu-context-closed=${(event) => context.component.onMenuClosed(event)}
+      @sf-context-menu-closed=${stop}
     ></sf-menu-context>`;
 }
 

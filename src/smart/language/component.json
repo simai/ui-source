@@ -2,14 +2,14 @@
   "$comment": "The source of sf-language's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the site's language picker of the owner decision of 2026-11-06 (Federation bus msg-3063edc9fe684dfe9909).",
   "id": "smart.language",
   "tag": "sf-language",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "kind": "leaf",
   "family": "language",
   "settings": {
     "languages": {
       "type": "string",
       "default": "",
-      "summary": "The languages, as BCP 47 codes separated by spaces or commas: «ru en de ar», «pt-BR». Each is named by the browser (Intl.DisplayNames) in itself and in English; no dictionary ships. items, when given, takes its place"
+      "summary": "The languages, as BCP 47 codes separated by spaces or commas: «ru en de ar», «pt-BR». Each is named in itself and in English: the names of the 66 languages the component supports ship with it (data/names.json, CLDR), the browser (Intl.DisplayNames) names any other. items, when given, takes its place"
     },
     "items": {
       "type": "list",
@@ -36,7 +36,7 @@
         }
       },
       "default": [],
-      "summary": "The languages as a list, each {code, label?, short?, href?}: label replaces the name the browser gives («Қазақша» written otherwise), short the code label (RU, labels=\"code\"), href the address of the site in that language. A property, or the JSON island a server prints; when it holds a language it is the list, and languages is not read"
+      "summary": "The languages as a list, each {code, label?, short?, href?}: label replaces the shipped or browser name («Қазақша» written otherwise), short the code label (RU, labels=\"code\"), href the address of the site in that language. A property, or the JSON island a server prints; when it holds a language it is the list, and languages is not read"
     },
     "href": {
       "type": "string",
@@ -280,9 +280,9 @@
     "name: sf-language, a one-word family like sf-search (owner, 2026-11-06); the family language is the Framework's in contracts/registry/names.json. No sf-input-language: the element is itself a form field (name).",
     "looks: by count, the owner's thresholds -- 1 none, 2-3 inline, 4-7 menu, 8+ search -- with inline-max (3) and search-from (8) to move them and mode inline|menu|search to fix one. The look is the value look and the host state data-look.",
     "reuse: nothing is drawn by the element itself and it has no sheet. inline is sf-button-group appearance=segmented (a grouped control is the height of sf-button of the same size by the group's own rule); menu is sf-button-icon appearance=link scheme=on-surface with the Material Symbols translate glyph (not a globe; no flags) and sf-menu-context popup with radio rows; search is the menu's own local search. sf-button-group 1.2.0 gained an item's lang for this.",
-    "names: Intl.DisplayNames, no dictionary -- the name in itself (new Intl.DisplayNames([code]).of(code), with the language's own capital: «Русский», «Español»), in English for the menu's value column («Deutsch … German»), and in the page's language for the search only («нем» finds Deutsch on a Russian page). items[].label overrides the name; a code the browser cannot name shows as its code.",
+    "names (until 1.4.0): Intl.DisplayNames, no dictionary -- the name in itself (new Intl.DisplayNames([code]).of(code), with the language's own capital: «Русский», «Español»), in English for the menu's value column («Deutsch … German»), and in the page's language for the search only («нем» finds Deutsch on a Russian page). items[].label overrides the name; a code the browser cannot name shows as its code.",
     "menu rows: the native name is the row's label, the English name its value at the row's end (left out when the two are the same, English), the radio mark on the chosen one. Each row carries lang; the English name sits inside that row, as in sf-menu-context's own language example.",
-    "search: sf-menu-context's local search over text, caption and keywords; the element puts the native name, the English name, the name in the page language and the code in keywords, so «нем», «German» and «de» all find Deutsch.",
+    "search (until 1.4.0): sf-menu-context's local search over text, caption and keywords; the element puts the native name, the English name, the name in the page language and the code in keywords, so «нем», «German» and «de» all find Deutsch.",
     "apply: change is the request, cancelable (vocabulary §5 change; the native name, the element being a form value control). Not cancelled: value is set, remember writes the code as a preference (SF.Preferences sf-language/<remember>: no Smart component touches localStorage itself, and a host that keeps preferences for its user gets it), then a language with an href is followed (location.assign) and one without is applied when apply=page: SF.language.use(code) -- which writes <html lang> -- and <html dir> from the language (Intl.Locale textInfo, else the right-to-left languages and scripts: ar, he, fa, ur, ps, sd, ug, yi, dv, ckb, syr …). Cancelled: nothing changes and the switch's plate goes back. Restoring a remembered language before the first paint is the site's (docs.md has the three lines).",
     "value: an element written without value shows <html lang> when the list has it (the same code, else the same primary language), else the first language; after a choice the value is its own. select(value) is the action.",
     "a11y: the trigger's accessible name and title are the word trigger, «Язык: Русский» / «Language: English» -- label and the current language in itself; every segment and row has lang; the keyboard is sf-button-group's (arrows, Home, End) and sf-menu-context's (arrows, letters, Enter, Escape back to the trigger; Down from the search field to the rows).",
@@ -294,7 +294,8 @@
     "version 1.2.3 (2026-11-10): a patch; nothing in the component changed. Its menu panel is sf-menu-context, which since 1.14.1 draws its frame without the late utility class flex (component.context-menu owns the layout), so the first-paint snapshots lose that class; the component takes a patch with them. Settings, values, events and keys unchanged.",
     "version 1.2.4 (2026-11-11): a patch, nothing drawn differently by this element: the class button-group sheet changed (component.button-group 1.3.0, C47).",
     "version 1.2.4, also (2026-11-11): the sf-button it draws writes sf-button--ghost beside the dated sf-button--link since sf-button 1.13.0 (CB-01), so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged.",
-    "version 1.3.0 (2026-11-13): a minor (owner decision C134, control/research/2026-11-13-navigation-density.md D5/Q1: the word compact means density only, data-sf-density). The setting labels (name | code, default name) says what the switch's segments show; the boolean compact, which showed the codes, leaves the settings and is a dated alias of labels=\"code\", read in the element's code (a boolean's presence cannot be a value alias of the shim): it draws the same, and each page notes it once in SF.deprecations until 2027-01-01 (journal attribute-language-compact-to-labels-code). labels written beside compact wins. The element's own uses (examples, probe, static snapshot) write labels=\"code\"."
+    "version 1.3.0 (2026-11-13): a minor (owner decision C134, control/research/2026-11-13-navigation-density.md D5/Q1: the word compact means density only, data-sf-density). The setting labels (name | code, default name) says what the switch's segments show; the boolean compact, which showed the codes, leaves the settings and is a dated alias of labels=\"code\", read in the element's code (a boolean's presence cannot be a value alias of the shim): it draws the same, and each page notes it once in SF.deprecations until 2027-01-01 (journal attribute-language-compact-to-labels-code). labels written beside compact wins. The element's own uses (examples, probe, static snapshot) write labels=\"code\".",
+    "version 1.4.0 (2026-11-14): a minor (research ui-control control/research/2026-11-14-language.md LG-5, LG-7, LG-8, LG-9; decision C32). Names: the names of 66 languages ship with the component as data (data/names.json, CLDR 48 through ICU 78 -- each in itself, in English and in Russian) and come before the browser's Intl.DisplayNames, which names every other code and page language; headless Chromium named be, hy, ka, tt, ky and tg only in English and ba, sah only as codes. A name takes its capital in a list except in Georgian, which has none in running text (Mtavruli is a display style). Search: the menu's search is remote (search.remote) and the element narrows the rows itself, by word starts -- each word of the query begins a word of the label, the native name, the English name, the name in the page language or the code, folded to lower case without accents -- so «ру» finds Русский and Română (румынский) but not Беларуская (белорусский) or ქართული (грузинский); keywords are no longer given. The search panel opens at decision C32's constant panel width (sf-menu-context width=\"panel\": 20rem, 18rem compact) and keeps it while typing; it went with its longest row (288 to 257). Opening: the chosen language is scrolled into view in the menu's own list, kept there while the menu is placed (a placement measures the panel at its natural height and takes the list back to the top) until the person acts in the menu; in the menu look the chosen row takes the focus, so the arrows go on from it. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [
@@ -375,7 +376,7 @@
       "use_when": "Use sf-language once in a site header (sf-header-site's tools slot at size 1/2) or in a settings form to choose the site's language from a list of codes.",
       "do_not": [
         "Do not draw flags or a globe for languages; the element uses the translate glyph and the names",
-        "Do not ship a dictionary of language names; the browser names them",
+        "Do not give a supported language a label of your own to fix its name; the component ships the names of its languages (data/names.json) and the browser names the rest",
         "Do not use sf-language for a country or a region; it picks languages",
         "Do not build a separate switch for two languages and a menu for many; one element changes its look by the count"
       ],
@@ -395,7 +396,7 @@
       "keyboard": [
         "Inline: Tab reaches the chosen language; the arrows, Home and End move between languages and choose",
         "Menu: Tab reaches the trigger; Enter or Space opens the menu; the arrows move, a letter jumps, Enter chooses; Escape closes and returns focus to the trigger",
-        "Search: the field takes focus when the menu opens; Down moves to the rows"
+        "Search: the field takes focus when the menu opens; Down moves to the rows. The menu opens with the chosen language in view; without a search the chosen row takes the focus"
       ],
       "focus": "After a choice in the menu, focus returns to the trigger; in the switch it stays on the chosen segment."
     },
