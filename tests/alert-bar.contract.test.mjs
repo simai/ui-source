@@ -83,7 +83,7 @@ test('the controls are the Framework\'s own: sf-button, sf-button-icon, sf-badge
   // No paging arrows (C114 (3)); one button family, the action tonal and the
   // rest ghost (AA-15, C110).
   assert.doesNotMatch(template, /sf-alert-bar-(pager|prev|next|position)/u);
-  assert.match(template, /<sf-button class="sf-alert-bar-all" size=\$\{size\} appearance="ghost"/u);
+  assert.match(template, /<sf-button class="sf-alert-bar-all" size=\$\{size\} height="low" appearance="ghost"/u);
   assert.equal((template.match(/<sf-button(-icon)? [^>]*appearance="tonal"/gu) ?? []).length, 0);
   assert.match(template, /actionLink\(context, item, 'tonal'\)/u);
 });
@@ -108,6 +108,16 @@ test('the sheet: one rung, the theme status roles, the narrow container and redu
   assert.match(sheet, /@media \(prefers-reduced-motion: no-preference\)/u);
   // No raw colour: theme roles and the ink's alpha mixes only.
   assert.doesNotMatch(sheet, /#[0-9a-f]{3,8}\b|rgb\(/iu);
+});
+
+test('C117 (NS-13): every button is height low and the rung control is the low step', () => {
+  // Six buttons: action, acknowledge, «All N», close, minimize, the list's close.
+  const buttons = template.match(/<sf-button(-icon)? class="sf-alert-bar-[a-z-]+"[^>]*>/gu) ?? [];
+  assert.equal(buttons.length, 6);
+  for (const one of buttons) assert.match(one, / height="low" /u, one);
+  assert.match(sheet, /--sf-alert-bar--control: calc\(var\(--sf-alert-bar--line\) \+ 2 \* var\(--sf-ui-1\\\/2--space-y-tightness-low\)\);/u);
+  assert.match(sheet, /--sf-alert-bar--control: calc\(var\(--sf-alert-bar--line\) \+ 2 \* var\(--sf-ui-1--space-y-tightness-low\)\);/u);
+  assert.doesNotMatch(sheet, /--sf-alert-bar--control: var\(--sf-ui-[^)]*--control-height\)/u);
 });
 
 test('the conformance probe covers the twelve behaviours', () => {

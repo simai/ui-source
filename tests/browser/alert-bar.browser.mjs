@@ -6,7 +6,8 @@
 // header, at 1440 and 390 px, light and dark: one warning, three items (the
 // error colour, no paging arrows (C114 (3)), two lines narrow) and a
 // minimized error bar. Measured on the ladder (rung 1/2): the text the rung's
-// line, the icon that line, every button the rung's control height, the bar's
+// line, the icon that line, every button the rung's low control height H
+// (C117: height low, L + 2 × the rung's low tightness step), the bar's
 // block inset (H − L) / 2 and its inline inset the edge, --sf-space-1 (C105;
 // an admin bar's page column is the whole width); wide, the icon, the text
 // and the buttons on one centre; narrow, the icon, the text's first line and
@@ -100,14 +101,16 @@ async function open(name, {width, theme}) {
   return {tab, context, errors};
 }
 
-// The ladder of a rung, measured from its tokens.
+// The ladder of a rung, measured from its tokens: control is the rung's
+// default control height (the strip's), low its low step (the bar's buttons,
+// C117).
 const LADDER = (rung) => {
   const r = rung.replace('/', '\\/');
   const probe = document.createElement('div');
-  probe.style.cssText = `position:absolute;inline-size:var(--sf-ui-${r}--control-height);block-size:var(--sf-text-height-${r});padding-inline:var(--sf-ui-${r}--space-x);padding-block:var(--sf-space-1);column-gap:var(--sf-ui-${r}--text-space-x)`;
+  probe.style.cssText = `position:absolute;inline-size:var(--sf-ui-${r}--control-height);block-size:var(--sf-text-height-${r});padding-inline:var(--sf-ui-${r}--space-x);padding-block:var(--sf-space-1);column-gap:var(--sf-ui-${r}--text-space-x);min-block-size:calc(var(--sf-text-height-${r}) + 2 * var(--sf-ui-${r}--space-y-tightness-low))`;
   document.body.append(probe);
   const s = getComputedStyle(probe);
-  const value = {control: parseFloat(s.inlineSize), line: parseFloat(s.blockSize), spaceX: parseFloat(s.paddingLeft), textSpaceX: parseFloat(s.columnGap), edge: parseFloat(s.paddingTop)};
+  const value = {control: parseFloat(s.inlineSize), line: parseFloat(s.blockSize), spaceX: parseFloat(s.paddingLeft), textSpaceX: parseFloat(s.columnGap), edge: parseFloat(s.paddingTop), low: parseFloat(s.minBlockSize)};
   probe.remove();
   return value;
 };
@@ -164,11 +167,11 @@ for (const theme of ['light', 'dark']) {
         ok(`${label}: the strip is the control height of the rung below, with the count`, near(g.bar.height, below.control) && g.stripText.includes('Важных уведомлений: 3'), JSON.stringify({h: g.bar.height, below, text: g.stripText}));
       } else {
         ok(`${label}: the text is the rung's line, the icon that line`, near(g.line, ladder.line) && near(g.icon[0], ladder.line) && near(g.icon[1], ladder.line), JSON.stringify({line: g.line, icon: g.icon, ladder}));
-        ok(`${label}: every button the rung's control height`, g.controls.length > 0 && g.controls.every((c) => near(c.h, ladder.control)), JSON.stringify(g.controls.map((c) => c.h)));
-        ok(`${label}: the block inset (H − L) / 2, the inline inset the edge (C105)`, near(g.padTop, (ladder.control - ladder.line) / 2) && near(g.padLeft, ladder.edge), JSON.stringify({padTop: g.padTop, padLeft: g.padLeft, ladder}));
+        ok(`${label}: every button the rung's low control height (C117)`, g.controls.length > 0 && g.controls.every((c) => near(c.h, ladder.low)), JSON.stringify(g.controls.map((c) => c.h)));
+        ok(`${label}: the block inset (H − L) / 2, the inline inset the edge (C105)`, near(g.padTop, (ladder.low - ladder.line) / 2) && near(g.padLeft, ladder.edge), JSON.stringify({padTop: g.padTop, padLeft: g.padLeft, ladder}));
         if (width >= 600) {
           const centre = g.icon[2];
-          ok(`${label}: wide, one row: icon, text and buttons on one centre`, near(g.bar.height, ladder.control + (ladder.control - ladder.line), 1) && g.controls.every((c) => near(c.mid, centre, 1)), JSON.stringify({h: g.bar.height, centre, mids: g.controls.map((c) => c.mid)}));
+          ok(`${label}: wide, one row: icon, text and buttons on one centre`, near(g.bar.height, ladder.low + (ladder.low - ladder.line), 1) && g.controls.every((c) => near(c.mid, centre, 1)), JSON.stringify({h: g.bar.height, centre, mids: g.controls.map((c) => c.mid)}));
           if (name === 'three') ok(`${label}: wide, no paging arrows (C114 (3))`, g.pager === null && g.position === null, `${g.pager} ${g.position}`);
         } else {
           const end = g.controls.find((c) => /sf-alert-bar-(close|minimize)/u.test(c.cls));

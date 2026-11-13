@@ -17,7 +17,9 @@ import {html, nothing} from 'lit';
 //
 // One button family (AA-15): the action is tonal surface and every other
 // button (acknowledge, «Все N», hide) ghost, as on sf-alert and sf-toast
-// (owner decision C110 as amended 2026-11-12, variant E). The controls are sf-button and sf-button-icon of scheme on-surface: inside
+// (owner decision C110 as amended 2026-11-12, variant E). Every button of
+// the bar and of its list is height="low" (owner decision C117, C27), the
+// family's one button height; the sheet's rung control is that height. The controls are sf-button and sf-button-icon of scheme on-surface: inside
 // the coloured bar the sheet sets the surface roles they read to the fill's
 // on- role, so they draw on it without a scheme of their own. The close is
 // the close glyph on an icon button, not kind="close": the drawn close mark
@@ -36,14 +38,14 @@ function meta(item, extra = '') {
 
 function actionLink(context, item, appearance) {
   if (!item.action) return nothing;
-  return html`<sf-button class="sf-alert-bar-action" size=${context.size} appearance=${appearance} scheme="on-surface"
+  return html`<sf-button class="sf-alert-bar-action" size=${context.size} height="low" appearance=${appearance} scheme="on-surface"
     text=${item.action.label} href=${item.action.href || nothing}
     @click=${(event) => context.component.onNavigate(event, item)}></sf-button>`;
 }
 
 function acknowledgeButton(context, item, appearance) {
   if (!item.acknowledge) return nothing;
-  return html`<sf-button class="sf-alert-bar-acknowledge" size=${context.size} appearance=${appearance} scheme="on-surface"
+  return html`<sf-button class="sf-alert-bar-acknowledge" size=${context.size} height="low" appearance=${appearance} scheme="on-surface"
     text=${item.acknowledge.label || context.words.acknowledge}
     @click=${() => context.component.acknowledgeItem(item.id)}></sf-button>`;
 }
@@ -66,10 +68,10 @@ function row(context) {
   let end = nothing;
   if (item.dismissible) {
     const label = hideWord(context, item);
-    end = html`<sf-button-icon class="sf-alert-bar-close" icon="close" size=${size} appearance="ghost" scheme="on-surface"
+    end = html`<sf-button-icon class="sf-alert-bar-close" icon="close" size=${size} height="low" appearance="ghost" scheme="on-surface"
       aria-label=${label} title=${label} @click=${() => component.closeItem(item.id)}></sf-button-icon>`;
   } else if (item.level === 'error') {
-    end = html`<sf-button-icon class="sf-alert-bar-minimize" icon="expand_less" size=${size} appearance="ghost" scheme="on-surface"
+    end = html`<sf-button-icon class="sf-alert-bar-minimize" icon="expand_less" size=${size} height="low" appearance="ghost" scheme="on-surface"
       aria-label=${words.minimize} title=${words.minimize} @click=${() => component.setMinimized(true)}></sf-button-icon>`;
   }
   return html`<div class="sf-alert-bar-row" data-level=${item.level}>
@@ -81,7 +83,7 @@ function row(context) {
     ${item.action || item.acknowledge || many ? html`<div class="sf-alert-bar-actions">
       ${actionLink(context, item, 'tonal')}
       ${acknowledgeButton(context, item, 'ghost')}
-      ${many ? html`<sf-button class="sf-alert-bar-all" size=${size} appearance="ghost" scheme="on-surface"
+      ${many ? html`<sf-button class="sf-alert-bar-all" size=${size} height="low" appearance="ghost" scheme="on-surface"
         text=${listOpen ? words.collapseList : words.all} expanded=${listOpen ? 'true' : 'false'} aria-controls=${listId}
         @click=${() => component.toggleList()}></sf-button>` : nothing}
     </div>` : nothing}
@@ -101,7 +103,7 @@ function listOfAll(context) {
       <div class="sf-alert-bar-item-actions">
         ${actionLink(context, item, 'tonal')}
         ${acknowledgeButton(context, item, 'ghost')}
-        ${item.dismissible ? html`<sf-button class="sf-alert-bar-item-close" size=${size} appearance="ghost" scheme="on-surface"
+        ${item.dismissible ? html`<sf-button class="sf-alert-bar-item-close" size=${size} height="low" appearance="ghost" scheme="on-surface"
           text=${hideWord(context, item)} @click=${() => component.closeItem(item.id)}></sf-button>` : nothing}
       </div>
     </li>`)}

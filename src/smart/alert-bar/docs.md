@@ -144,7 +144,10 @@ bar.addEventListener('sf-alert-bar-close', (event) => {
 
 - `items` — the list above (a property, or the JSON island).
 - `size="1/2|1"` — the ladder rung, `1/2` by default (the bar above an admin
-  header); `1` for a site page with larger type.
+  header); `1` for a site page with larger type. Every button of the bar and
+  of its list is `height="low"` (C117): 28 at `1/2`, 32 at `1` on desktop, the
+  height of the buttons in `sf-alert` and `sf-toast`; the bar's own height
+  follows it (36 and 40 on one line).
 - `label` — the region's name, «Важные уведомления» / «Important notices» by
   default.
 - `minimized` — the danger bar is minimized to its strip.

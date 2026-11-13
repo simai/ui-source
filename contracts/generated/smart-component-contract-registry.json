@@ -107,7 +107,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/alert-bar/smart.manifest.json",
-      "manifest_sha256": "5753eedd3996925b70139379f51fb3ee8303f5a246e037cd2f9f3506d22fc76c",
+      "manifest_sha256": "d93adc8f58aa586e0f69c97780583b22a1e0249404bde4b765b9871b80a61cb4",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
