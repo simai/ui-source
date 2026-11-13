@@ -65,6 +65,9 @@ $sf-avatar-card-hue-classes: ();
   container-type: inline-size;
   overflow: hidden;
   background-color: var(--sf-surface-container);
+  /* The container text role, as on the round placeholder (C124 "the round
+     placeholder's colours"): dimmed text inside reads the container ink. */
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   color: var(--sf-on-surface-container-variant);
 }
 
