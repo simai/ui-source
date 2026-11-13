@@ -124,6 +124,29 @@ shows through it. On solid places nothing
 changes. Glass (`.sf-surface-media`) declares `var(--sf-black)`, the opaque
 base of its tone: the dot there is solid dark glass, not the photo.
 
+### What a component reads on a place: three hooks (2026-11-11)
+
+A component that keeps its own value on the page but must follow a place
+reads three hooks. The page declares none of them, so
+`var(--sf-place--<hook>, <the component's own value>)` is unchanged on the page.
+
+- `--sf-place--ink-variant` is the dim ink on a fill on this place. Every
+  place declares it: an opaque place (a card, a popup, `bg-surface-*`) as its
+  `--sf-on-surface-container-variant`, a strong place (`bg-<colour>`) as its
+  full ink `on-<colour>` (its dim ink 80 over a fill stays under 4.5:1), glass
+  as white at 80. The grey plate (`bg-surface-container`) declares it too.
+- `--sf-place--ink` is the ink that stands in for a hue: a strong place and
+  glass declare their full ink, so coloured text there is one colour; an
+  opaque place takes it back (initial).
+- `--sf-place--fill-surface` is what a block that would lay the container
+  fill lays instead: nothing (`transparent`) on the grey plate, which is the
+  fill already, and on a popup in the dark theme, a raised step on which a
+  fill took coloured text under 4.5:1. Every other place takes it back.
+
+The code highlight reads all three: its comment, punctuation and line numbers
+take `--sf-place--ink-variant`, its text and every hue `--sf-place--ink`, and
+the code surface `--sf-place--fill-surface`. On the page it is drawn as before.
+
 ### The fill of a row (2026-11-11)
 
 `--sf-surface-place-fill` is the translucent fill a row lays over its place.
