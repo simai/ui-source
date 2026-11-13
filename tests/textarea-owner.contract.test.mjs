@@ -23,7 +23,7 @@ test('Textarea presentation uses UI, hairline, motion and safe resize contracts'
 
 test('Textarea constructor projects bounded native multiline metadata', async () => {
   const javascript = await source('component/textarea/js/_textarea.js');
-  assert.match(javascript, /fieldSize\(size, 'sf-textarea'\)/);
+  assert.match(javascript, /ladderSize\(size\)/);
   assert.match(javascript, /const TEXTAREA_VARIANTS = new Set\(\[/);
   assert.match(javascript, /textarea\.autocomplete = String\(autocomplete\)/);
   assert.match(javascript, /textarea\.inputMode = normalizeInputMode\(inputMode\)/);
@@ -52,7 +52,7 @@ test('Smart Textarea projects native metadata and closed visual axes', async () 
   }
   // Generated from the Loader relations (standard 1.4): the reset button's sheets too.
   assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.icons', 'component.textarea']);
-  assert.deepEqual(manifest.inputs.properties.size.enum, ['1/2', '1', '2']);
+  assert.deepEqual(manifest.inputs.properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
   assert.deepEqual(manifest.inputs.properties.type.enum, ['bordered', 'filled', 'flush']);
   assert.deepEqual(manifest.inputs.properties.appearance.enum, ['bordered', 'filled', 'flush']);
   assert.deepEqual(manifest.inputs.properties.inputmode.enum, ['', 'none', 'text', 'tel', 'url', 'email', 'numeric', 'decimal', 'search']);

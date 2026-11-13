@@ -1071,9 +1071,11 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
         "size": {
           "default": "1",
           "enum": [
+            "1/3",
             "1/2",
             "1",
-            "2"
+            "2",
+            "3"
           ],
           "type": "string"
         },

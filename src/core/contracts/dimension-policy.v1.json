@@ -184,6 +184,15 @@
       "reason": "The unit beside a quantity's number takes the same touch-phone floor the core gives the number (touch-field-zoom-floor), so the two stay one size (C53 D2)."
     },
     {
+      "id": "touch-field-zoom-floor-rich-text",
+      "category": "style-review",
+      "filePattern": "^smart/input-rich/scss/_smart__rich_text\\.scss$",
+      "contextPattern": "font-size: max\\(var\\(--sf-rich-text--(?:font|h[234])-size\\), 16px\\)",
+      "textPattern": "^16px$",
+      "status": "accepted-platform-boundary",
+      "reason": "The rich text's editing surface and its headings take the touch-phone floor the core gives input, textarea and select (touch-field-zoom-floor): the surface is none of them, and iOS zooms into it the same way (TR-3)."
+    },
+    {
       "id": "sass-unit-math",
       "category": "style-review",
       "filePattern": "^core/scss/mix/_mix__breakpoint\\.scss$",

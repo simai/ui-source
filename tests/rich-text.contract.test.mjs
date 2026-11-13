@@ -188,7 +188,7 @@ test('the manifest: a form field of the field family, its settings, events and w
   assert.deepEqual(Object.keys(component.settings).sort(), [
     'appearance', 'disabled', 'error-message', 'hint', 'invalid', 'label', 'max-rows', 'name', 'placeholder', 'readonly', 'required', 'rows', 'size',
   ]);
-  assert.deepEqual(component.settings.size.values, ['1/2', '1', '2']);
+  assert.deepEqual(component.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.deepEqual(component.values.value, {...component.values.value, type: 'string', default: ''});
   assert.deepEqual(Object.keys(component.events).sort(), ['change', 'input']);
   for (const event of Object.values(component.events)) assert.equal(event.carries, 'native');

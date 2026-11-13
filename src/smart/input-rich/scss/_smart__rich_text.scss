@@ -294,16 +294,15 @@
   min-inline-size: 0;
   padding-block: var(--sf-rich-text--padding-block);
   padding-inline: var(--sf-rich-text--padding-inline);
-  /* The text and its line: the size's, on a touch phone at least the touch
-     floor (TR-3, below); the rows count the line drawn. */
-  --sf-rich-text--text: max(var(--sf-rich-text--font-size), var(--sf-rich-text--touch-text, var(--sf-rich-text--font-size)));
+  /* The line: the size's, on a touch phone at least the touch line (TR-3,
+     below); the rows count the line drawn. */
   --sf-rich-text--line: max(var(--sf-rich-text--line-height), var(--sf-rich-text--touch-line, var(--sf-rich-text--line-height)));
   min-block-size: calc(var(--sf-rich-text--rows, 6) * var(--sf-rich-text--line) + 2 * var(--sf-rich-text--padding-block));
   max-block-size: calc(var(--sf-rich-text--max-rows) * var(--sf-rich-text--line) + 2 * var(--sf-rich-text--padding-block));
   overflow-y: auto;
   overflow-wrap: anywhere;
   font-family: var(--sf-text--family);
-  font-size: var(--sf-rich-text--text);
+  font-size: var(--sf-rich-text--font-size);
   font-weight: var(--sf-font-weight-regular);
   line-height: var(--sf-rich-text--line);
   color: inherit;
@@ -334,17 +333,17 @@
 }
 
 .sf-rich-text .sf-rich-text-editor h2 {
-  font-size: max(var(--sf-rich-text--h2-size), var(--sf-rich-text--touch-text, var(--sf-rich-text--h2-size)));
+  font-size: var(--sf-rich-text--h2-size);
   line-height: max(var(--sf-rich-text--h2-height), var(--sf-rich-text--touch-line, var(--sf-rich-text--h2-height)));
 }
 
 .sf-rich-text .sf-rich-text-editor h3 {
-  font-size: max(var(--sf-rich-text--h3-size), var(--sf-rich-text--touch-text, var(--sf-rich-text--h3-size)));
+  font-size: var(--sf-rich-text--h3-size);
   line-height: max(var(--sf-rich-text--h3-height), var(--sf-rich-text--touch-line, var(--sf-rich-text--h3-height)));
 }
 
 .sf-rich-text .sf-rich-text-editor h4 {
-  font-size: max(var(--sf-rich-text--h4-size), var(--sf-rich-text--touch-text, var(--sf-rich-text--h4-size)));
+  font-size: var(--sf-rich-text--h4-size);
   line-height: max(var(--sf-rich-text--h4-height), var(--sf-rich-text--touch-line, var(--sf-rich-text--h4-height)));
 }
 
@@ -496,8 +495,20 @@
   @media not all and (min-width: 60rem) {
     @layer sf.components {
       .sf-rich-text:not(.sf-rich-text--size-3) .sf-rich-text-editor {
-        --sf-rich-text--touch-text: 16px;
         --sf-rich-text--touch-line: var(--sf-text-height-1);
+        font-size: max(var(--sf-rich-text--font-size), 16px);
+      }
+
+      .sf-rich-text:not(.sf-rich-text--size-3) .sf-rich-text-editor h2 {
+        font-size: max(var(--sf-rich-text--h2-size), 16px);
+      }
+
+      .sf-rich-text:not(.sf-rich-text--size-3) .sf-rich-text-editor h3 {
+        font-size: max(var(--sf-rich-text--h3-size), 16px);
+      }
+
+      .sf-rich-text:not(.sf-rich-text--size-3) .sf-rich-text-editor h4 {
+        font-size: max(var(--sf-rich-text--h4-size), 16px);
       }
     }
   }
