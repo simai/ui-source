@@ -28,6 +28,12 @@ The historical `--sf-text-size-*`, `--sf-text-height-*` and
 `--sf-title-height-*` names remain 5.x compatibility aliases. New first-party
 styles use the canonical variables.
 
+After rungs 1..12 the title ladder has one named step (contract 1.7.0, owner
+decision C89): `--sf-title--height-card`, the card title line -- 24 px on a
+desktop (as rung 2) and 20 px on a phone (as rung 3), the line of 14 px text
+there, where rung 2 gives 18. It has no `--sf-title-height-*` alias, and
+density does not move it, as it moves no title line.
+
 Semantic roles are exposed as:
 
 - `--sf-label-small|medium|large--size/height`;

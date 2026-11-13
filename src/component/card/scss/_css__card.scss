@@ -15,7 +15,9 @@
 // A heading inside a card is the card's title, whatever its level (R082,
 // C19): the heading step of the text ladder, semibold -- 16 on a desktop,
 // 14 on a phone, the size of sf-list-attention's and sf-progress-run's
-// titles -- on the title line of rung 2: 24 on a desktop, 18 on a phone.
+// titles -- on the card title line of the title ladder (C89): 24 on a
+// desktop, 20 on a phone, the line of the text under it (rung 2 gave 18 on a
+// phone, tighter than the description below the title).
 // Headings do not follow density (C44): the size is the heading-6 step,
 // which the compact block of the density generator holds at its normal
 // value, and title lines never move, so a card title is the same in a
@@ -29,7 +31,7 @@
 @layer sf.utilities {
   .sf-card > :is(h1, h2, h3, h4, h5, h6) {
     font-size: var(--sf-card-title-size, var(--sf-heading-6--size));
-    line-height: var(--sf-title--height-2);
+    line-height: var(--sf-title--height-card);
     font-weight: var(--sf-card-title-weight, var(--sf-text--font-weight-6));
   }
 }

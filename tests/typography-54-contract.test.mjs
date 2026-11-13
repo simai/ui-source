@@ -18,17 +18,23 @@ const expectedTitleHeights = {
 
 test("5.4 title heights and semantic roles are canonical contract data", () => {
     assert.equal(validateContract(), contract);
-    assert.equal(contract.meta.version, "1.6.0");
+    assert.equal(contract.meta.version, "1.7.0");
 
     for (const mode of ["mobile", "desktop"])
     {
+        // The numbered rungs 1..12; the named card step (C89) is held below.
         assert.deepEqual(
-            Object.values(contract.typography.titleLineHeights).map(
-                aliases => aliasPx(aliases[mode]),
-            ),
+            Object.entries(contract.typography.titleLineHeights)
+                .filter(([step]) => /^\d+$/u.test(step))
+                .map(([, aliases]) => aliasPx(aliases[mode])),
             expectedTitleHeights[mode],
         );
     }
+    assert.deepEqual(
+        contract.typography.titleLineHeights.card,
+        { mobile: "c0", desktop: "c2" },
+        "the card title line is 20 on a phone and 24 on a desktop (C89)",
+    );
 
     assert.deepEqual(contract.typography.roles.heading["1"], {
         height: "6",

@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
-// The card title (R082, C19, C44): a heading inside .sf-card is the heading-6
-// step on the title line of rung 2 -- --sf-heading-6--size on
-// --sf-title--height-2, semibold -- whatever its level: 16/24 on a desktop,
-// 14/18 on a phone, and the same in a compact region on <html> or on a
-// container (headings do not follow density, C44). Was: 14/20 in a compact
-// region. It is read on the built sheets with the bare heading sizes of the
+// The card title (R082, C19, C44, C89): a heading inside .sf-card is the
+// heading-6 step on the card title line -- --sf-heading-6--size on
+// --sf-title--height-card, semibold -- whatever its level: 16/24 on a
+// desktop, 14/20 on a phone (C89; rung 2 gave 14/18), and the same in a
+// compact region on <html> or on a container (headings do not follow
+// density, C44). It is read on the built sheets with the bare heading sizes of the
 // headers utility loaded too, at 1440 and 390, light and dark, three loads
 // each, for every way the Framework draws a card title:
 //   - the .sf-card class with h2..h6 written by hand;
@@ -70,9 +70,9 @@ const server = createServer((request, response) => {
 }).listen(0, '127.0.0.1');
 await new Promise((settle) => server.once('listening', settle));
 
-// Desktop 16/24 and phone 14/18 (C21, R082), in every region: compact on
+// Desktop 16/24 and phone 14/20 (C21, R082, C89), in every region: compact on
 // <html> or on a container changes nothing (C44).
-const expected = (width) => (width >= 960 ? {size: 16, line: 24} : {size: 14, line: 18});
+const expected = (width) => (width >= 960 ? {size: 16, line: 24} : {size: 14, line: 20});
 const failures = [];
 const seen = {};
 const browser = await chromium.launch();
@@ -89,7 +89,7 @@ try {
         const titles = await tab.evaluate(() => [...document.querySelectorAll('.sf-card > :is(h1, h2, h3, h4, h5, h6)')].map((title) => {
           const probe = document.createElement('span');
           title.parentElement.append(probe);
-          probe.style.cssText = 'font-size:var(--sf-heading-6--size);line-height:var(--sf-title--height-2)';
+          probe.style.cssText = 'font-size:var(--sf-heading-6--size);line-height:var(--sf-title--height-card)';
           const system = {size: parseFloat(getComputedStyle(probe).fontSize), line: parseFloat(getComputedStyle(probe).lineHeight)};
           probe.style.cssText = 'font-weight:var(--sf-text--font-weight-6)';
           system.weight = Number(getComputedStyle(probe).fontWeight);
@@ -107,7 +107,7 @@ try {
           const want = expected(width);
           check(title.size === want.size && title.line === want.line, `${title.id}: ${want.size}/${want.line}`, {title});
           check(title.weight === 600, `${title.id}: semibold`, {title});
-          check(title.size === title.system.size && title.line === title.system.line && title.weight === title.system.weight, `${title.id}: the system's step (--sf-heading-6--size / --sf-title--height-2 / weight 6)`, {title});
+          check(title.size === title.system.size && title.line === title.system.line && title.weight === title.system.weight, `${title.id}: the system's step (--sf-heading-6--size / --sf-title--height-card / weight 6)`, {title});
         }
         check(errors.length === 0, 'the console stays clean', {errors});
         await tab.close();
