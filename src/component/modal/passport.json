@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.modal",
   "kind": "component",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/modal/index.js",
@@ -18,7 +18,7 @@
     "src/component/modal/scss/_css__modal_custom.scss",
     "src/component/modal/scss/index.scss"
   ],
-  "content_sha256": "135cd6c0d60580aa1e5e66c46b074100efd2ded0875d73191eea0523caaf1d61",
+  "content_sha256": "757b4bf9f97dbc7a36c60d8932c9d6adb80717cff8596cb7f2a735dec62226cf",
   "dependencies": [
     {
       "id": "component.close",

@@ -24,10 +24,10 @@ const rule = (css, selector) => {
   return css.slice(at, css.indexOf('}', at));
 };
 
-test('versions: smart.steps 1.4.0, component.step 1.3.0', () => {
-  assert.equal(component.version, '1.4.0');
-  assert.equal(json('src/smart/steps/smart.manifest.json').version, '1.4.0');
-  assert.equal(json('src/component/step/passport.json').version, '1.3.0');
+test('versions: smart.steps 1.4.1, component.step 1.3.1', () => {
+  assert.equal(component.version, '1.4.1');
+  assert.equal(json('src/smart/steps/smart.manifest.json').version, '1.4.1');
+  assert.equal(json('src/component/step/passport.json').version, '1.3.1');
 });
 
 test('C101 (1) role: an ordered process of a person; a server job is sf-progress-run, tasks in any order are not steps', () => {
@@ -188,13 +188,21 @@ test('ST-1..ST-14: each defect of the study is closed or named', () => {
     'ST-9': /sf-step-text/.test(template) && component.settings.items.of.text?.optional === true,
     'ST-10': /--sf-step--marker: var\(--sf-text-height-1\\\/2\)/.test(stepCss),
     'ST-11': /## Сценарии/.test(docs) && /## Состояния/.test(docs) && json('src/smart/steps/examples.json').examples.some((one) => one.name === 'states'),
-    'ST-12': /one list format/i.test(component['x-decisions'].at(-1)),
+    'ST-12': component['x-decisions'].some((note) => /^version 1\.4\.0 /.test(note) && /one list format/i.test(note)),
     'ST-13': /role="list"/.test(template) && !/role="group"/.test(template),
   };
   for (const [id, ok] of Object.entries(closed)) assert.ok(ok, id);
   // ST-14 (no product uses sf-steps) is not a code defect: sf-wizard is its host
   // and draws its row with layout="row" navigation="free".
   assert.match(read('src/smart/wizard/js/templates/default.js'), /layout="row" navigation="free"/);
+});
+
+// C105 H2 (spacing audit S1): the marker stands --sf-space-1/2 before its label
+// in the row and in the column -- one value, on the step's body.
+test('C105 H2: one marker → label gap for the row and the column', () => {
+  assert.match(stepCss, /\.sf-step \.sf-step-body \{\s*display: inline-flex;\s*align-items: center;\s*gap: var\(--sf-space-1\\\/2\);/);
+  assert.doesNotMatch(stepsCss, /column-gap: var\(--sf-space-1\\\/2\)/);
+  assert.doesNotMatch(stepCss, /\.sf-step-body \{[^}]*--sf-space-1\\\/3/);
 });
 
 test('the examples cover the study\'s scenarios and every state', () => {

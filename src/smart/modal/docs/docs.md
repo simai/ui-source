@@ -253,7 +253,8 @@ own. The same attribute frames `sf-drawer`.
 Decision C39: the window of a dangerous question. `size="question"` gives it
 the core's question width, `--sf-popup-question-width` (28rem, 26rem in a
 compact region; `--sf-modal-question-width` retunes it, `width` still wins),
-a `--sf-space-3` frame and a title at text step 2 in bold. The body's small
+the window frame (C105: `--sf-space-2`, 20 on a desktop and 16 in compact
+density and on a phone, the window's edge counted inside it) and a title at text step 2 in bold. The body's small
 scroll inset is taken out of the frame, so the title, the content and the
 footer start on one line and the × stands on the frame's corner. The title is
 `--sf-space-1` above the content; a footer's answers stand at the start,

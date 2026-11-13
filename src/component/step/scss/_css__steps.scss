@@ -105,7 +105,7 @@
 .sf-steps.sf-steps--layout-column:not([data-sf-measure]) .sf-step .sf-step-body {
   display: grid;
   grid-template-columns: var(--sf-step--marker) minmax(0, 1fr);
-  column-gap: var(--sf-space-1\/2);
+  /* The marker → label gap is the body's own (_css__step.scss, C105 H2). */
   align-items: start;
   inline-size: 100%;
 }
