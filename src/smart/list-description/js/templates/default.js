@@ -18,9 +18,10 @@ import {html, nothing} from 'lit';
 //   item's action after it; a hint under it.
 // - With no items: nothing at all.
 
-// The rung below the list's: the hint, a stacked label, the actions, the
-// help mark. The copy button stands on the value's own rung (C103: one line,
-// one step -- text 1, copy button size 1).
+// The rung below the list's: the hint, a stacked label, the help mark. The
+// copy button and the actions -- an item's beside its value, a section's
+// beside its heading -- stand on the line's own rung (C103: one line, one
+// step -- text 1, button size 1).
 const BELOW = {'1/2': '1/3', 1: '1/2', 2: '1'};
 // A badge value: sf-badge of this size, on the list's line (line="<size>").
 const BADGE = {'1/2': '1/3', 1: '1/3', 2: '1/2'};
@@ -29,7 +30,7 @@ const SIZE_CLASS = {'1/2': 'half', 1: '1', 2: '2'};
 function action(context, item) {
   if (!item.action) return nothing;
   const {component, size} = context;
-  const look = {size: BELOW[size], appearance: 'ghost', scheme: 'primary'};
+  const look = {size, appearance: 'ghost', scheme: 'primary'};
   return html`<span class="sf-list-description-action">${item.action.href
     ? html`<sf-button size=${look.size} appearance=${look.appearance} scheme=${look.scheme} text=${item.action.label}
         aria-label=${item.actionLabel} href=${item.action.href}

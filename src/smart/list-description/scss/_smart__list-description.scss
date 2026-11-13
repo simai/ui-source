@@ -39,7 +39,7 @@ sf-list-description {
   --sf-list-description--below-font-size: var(--sf-text-size-1\/2);
   --sf-list-description--control: var(--sf-ui-1--control-height);
   --sf-list-description--copy: var(--sf-ui-1--control-height);
-  --sf-list-description--action: var(--sf-ui-1\/2--control-height);
+  --sf-list-description--action: var(--sf-ui-1--control-height);
   --sf-list-description--space-x: var(--sf-ui-1--space-x);
   --sf-list-description--text-space-x: var(--sf-ui-1--text-space-x);
   --sf-list-description--padding-block: calc((var(--sf-list-description--control) - var(--sf-list-description--line)) / 2);
@@ -62,7 +62,7 @@ sf-list-description {
   --sf-list-description--below-font-size: var(--sf-text-size-1\/3);
   --sf-list-description--control: var(--sf-ui-1\/2--control-height);
   --sf-list-description--copy: var(--sf-ui-1\/2--control-height);
-  --sf-list-description--action: var(--sf-ui-1\/3--control-height);
+  --sf-list-description--action: var(--sf-ui-1\/2--control-height);
   --sf-list-description--space-x: var(--sf-ui-1\/2--space-x);
   --sf-list-description--text-space-x: var(--sf-ui-1\/2--text-space-x);
 }
@@ -74,7 +74,7 @@ sf-list-description {
   --sf-list-description--below-font-size: var(--sf-text-size-1);
   --sf-list-description--control: var(--sf-ui-2--control-height);
   --sf-list-description--copy: var(--sf-ui-2--control-height);
-  --sf-list-description--action: var(--sf-ui-1--control-height);
+  --sf-list-description--action: var(--sf-ui-2--control-height);
   --sf-list-description--space-x: var(--sf-ui-2--space-x);
   --sf-list-description--text-space-x: var(--sf-ui-2--text-space-x);
 }
@@ -264,9 +264,11 @@ sf-list-description {
   margin-block: calc((var(--sf-list-description--line) - var(--sf-list-description--copy)) / 2);
 }
 
-/* An action (an item's, a section's): an sf-button of the rung below, ghost;
-   on the value's line its overhang is taken back the same way, so a
-   one-line row stays H tall. (sf-button's host is display: contents; the
+/* An action (an item's, a section's): an sf-button of the line's own rung
+   (C103: one line, one step; it was the rung below, 32 beside a size 1
+   heading), ghost; on the value's line its overhang is taken back the same
+   way, so a one-line row stays H tall, and a section's head is the rung's
+   control height with it. (sf-button's host is display: contents; the
    drawn box is its button or link.) */
 .sf-list-description-action {
   display: inline-flex;
