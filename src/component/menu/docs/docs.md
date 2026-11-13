@@ -36,7 +36,11 @@ a vertical drawer instead of shrinking the horizontal menu into several rows.
 
 Use `aria-current="page"` on the current link. The documentation tree preset
 marks it with the navigation plate (C23), leaves an open branch unfilled and
-gives a closed branch that holds it a medium label (C30 amended, R065 a). A disabled disclosure uses a
+gives a closed branch that holds it a medium label (C30 amended, R065 a).
+Every row of the tree stands on the size 1 step -- 40, 32 compact, 36 on a
+phone -- whether it is a link, a split row or words: the tree draws the step
+inside the words' box (the wrap's padding, `--sf-menu--wrap-padding-block`),
+so the link is the whole row. A disabled disclosure uses a
 disabled button and cannot be toggled. Prefer removing unavailable navigation
 destinations over presenting a disabled link.
 

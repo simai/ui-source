@@ -235,7 +235,12 @@ test('smart menu R179 D2: a split control\'s link is the row\'s height, its chev
   // The row's block padding moves into the link: the link is as tall as the
   // row (44 in the drawer), the row's height unchanged.
   assert.ok(linkBody.includes(`margin-block: calc(-1 * ${pad('top')}) calc(-1 * ${pad('bottom')});`), 'margin-block');
-  assert.ok(linkBody.includes(`padding-block: ${pad('top')} ${pad('bottom')};`), 'padding-block');
+  // A look that draws the row's step inside the words' box (the documentation
+  // tree) keeps that padding in the link, so the split row is as tall as its
+  // plain rows (C01, C18): it stood 24 among 40s.
+  const wrap = 'var(--sf-menu--wrap-padding-block, calc(var(--sf-px) * 0))';
+  assert.ok(linkBody.includes(`padding-block: calc(${pad('top')} + ${wrap}) calc(${pad('bottom')} + ${wrap});`), 'padding-block');
+  assert.ok(linkBody.includes('padding-inline-start: calc(var(--sf-menu-element--padding-inline-start, var(--sf-space-1)) + var(--sf-menu--wrap-padding-inline, calc(var(--sf-px) * 0)));'), 'padding-inline-start');
   assert.ok(linkBody.includes('align-self: stretch;'));
   // The same fallbacks as the class sheet's chevron, so link and chevron agree.
   const classElement = read('src/component/menu/scss/_css__menu_element.scss');
@@ -245,7 +250,7 @@ test('smart menu R179 D2: a split control\'s link is the row\'s height, its chev
   const coarse = sheet.slice(sheet.indexOf('  @media (pointer: coarse) {'));
   assert.match(coarse, /^ {2}@media \(pointer: coarse\) \{\n\s*\.sf-smart-menu \.sf-menu:not\(\.sf-menu--horizontal\):not\(\.sf-menu--horizontal \.sf-menu\) > \.sf-menu-item > \.sf-menu-element > a\.sf-menu-element-wrap \+ button\.sf-icon-button \{/u);
   const toggle = coarse.slice(0, coarse.indexOf('}'));
-  assert.ok(toggle.includes(`--sf-menu--split-toggle: calc(var(--sf-menu-element--line-height, var(--sf-text-height-1)) + ${pad('top')} + ${pad('bottom')} + 2 * var(--sf-menu-element--border-width, var(--sf-px)));`), 'the row height');
+  assert.ok(toggle.includes(`--sf-menu--split-toggle: calc(var(--sf-menu-element--line-height, var(--sf-text-height-1)) + ${pad('top')} + ${pad('bottom')} + 2 * var(--sf-menu--wrap-padding-block, calc(var(--sf-px) * 0)) + 2 * var(--sf-menu-element--border-width, var(--sf-px)));`), 'the row height');
   assert.ok(toggle.includes('min-inline-size: var(--sf-menu--split-toggle);'));
   // Flush with the row's inner end edge, the glyph at the row's end padding,
   // the margin box the glyph's: the link's room does not change.

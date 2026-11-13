@@ -545,18 +545,27 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   --sf-menu-element--padding-top: calc(var(--sf-px) * 0);
   --sf-menu-element--padding-bottom: calc(var(--sf-px) * 0);
   --sf-menu-element--padding-right: calc(var(--sf-px) * 0);
+  /* The tree's row draws its step inside the words' box -- the link is the
+     whole row -- so the wrap's padding, not the row's, puts every row on the
+     ladder (C01, C18): the size 1 control height, 40, compact 32, phone 36.
+     It was space-1/3 a side, 28 in compact. Named here so a part beside the
+     wrap that takes the row's padding into its own box (sf-menu's split link)
+     takes this padding too. */
+  --sf-menu--wrap-padding-block: calc((var(--sf-ui-1--control-height) - var(--sf-menu-element--line-height, var(--sf-text-height-1))) / 2);
+  --sf-menu--wrap-padding-inline: var(--sf-space-1);
   min-width: var(--sf-0);
 }
 
 .sf-menu.sf-menu--documentation-tree .sf-menu-element-wrap {
   min-width: var(--sf-0);
-  padding-block: var(--sf-space-1\/3);
-  padding-inline: var(--sf-space-1);
+  padding-block: var(--sf-menu--wrap-padding-block);
+  padding-inline: var(--sf-menu--wrap-padding-inline);
   overflow-wrap: anywhere;
 }
 
 .sf-menu.sf-menu--documentation-tree .sf-menu-element--level-1 {
-  --sf-menu-element--padding-inline-start: var(--sf-0);
+  /* A length (above): sf-menu's split link adds it to the wrap's inset. */
+  --sf-menu-element--padding-inline-start: calc(var(--sf-px) * 0);
 }
 
 .sf-menu.sf-menu--documentation-tree .sf-menu-element--level-2 {

@@ -63,3 +63,23 @@ test('menu composition: the documentation tree writes its zeros as lengths', asy
     assert.ok(body.includes(`--sf-menu-element--${name}: calc(var(--sf-px) * 0);`), name);
   }
 });
+
+/* Measured before (nav-4 06e40ed3): the documentation tree's rows were 28 in
+   compact density, under the 32 step, and sf-menu's split rows in the tree
+   24 (compact 20) among 40s. The tree draws the step inside the words' box:
+   the wrap's block padding is the size 1 control height less the line,
+   published for sf-menu's split link; the first level's inset is a length,
+   which the link adds to the wrap's inline inset. */
+test('menu composition: the documentation tree puts every row on the size 1 step', async () => {
+  const css = await read('component/menu/scss/_css__menu.scss');
+  const row = css.slice(css.indexOf('.sf-menu.sf-menu--documentation-tree .sf-menu-element {'));
+  const rowBody = row.slice(0, row.indexOf('}'));
+  assert.ok(rowBody.includes('--sf-menu--wrap-padding-block: calc((var(--sf-ui-1--control-height) - var(--sf-menu-element--line-height, var(--sf-text-height-1))) / 2);'));
+  assert.ok(rowBody.includes('--sf-menu--wrap-padding-inline: var(--sf-space-1);'));
+  const wrap = css.slice(css.indexOf('.sf-menu.sf-menu--documentation-tree .sf-menu-element-wrap {'));
+  const wrapBody = wrap.slice(0, wrap.indexOf('}'));
+  assert.ok(wrapBody.includes('padding-block: var(--sf-menu--wrap-padding-block);'));
+  assert.ok(wrapBody.includes('padding-inline: var(--sf-menu--wrap-padding-inline);'));
+  assert.doesNotMatch(wrapBody, /space-1\\\/3/u, 'no fixed space step for the height');
+  assert.match(css, /\.sf-menu\.sf-menu--documentation-tree \.sf-menu-element--level-1 \{[^}]*--sf-menu-element--padding-inline-start: calc\(var\(--sf-px\) \* 0\);/u);
+});
