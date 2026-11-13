@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.badges",
   "kind": "component",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/badges/docs/docs.md",
