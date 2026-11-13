@@ -1,5 +1,5 @@
 import { pageText } from '../../../core/js/page-language';
-import { collapseRange, menuEntries, nextFit, trailOverflows } from './_trail';
+import { collapseRange, menuEntries, nextFit, starvedFit, trailOverflows, trailStarved } from './_trail';
 
 // The ordinary runtime of the class markup a server prints (nav.sf-breadcrumbs):
 // it folds a long trail behind one «…» button and opens it again in place.
@@ -326,17 +326,24 @@ function collapseBreadcrumbs(root) {
     return;
   }
 
-  const tail = getTail(items);
+  let tail = getTail(items);
   // Room only, on every ladder (C93 item 1; L1 of the C93 review): the whole
   // trail first, then one more crumb at a time while the row has no room.
+  // Folded as far as that goes, a crumb cut below a few letters takes the
+  // parent with it: «… › current» (starvedFit, N1 of the nav-4b acceptance).
   let fit = 0;
 
   applyRange(root, items, collapseRange(items.length, { maxItems, fit, tail }));
 
   while (trailOverflows(getList(root) || root, getLineEntries(root))) {
     const next = nextFit(items.length, { maxItems, fit, tail });
-    if (next === null) break;
-    fit = next;
+    if (next !== null) {
+      fit = next;
+    } else {
+      const last = trailStarved(getLineEntries(root)) ? starvedFit(items.length, { tail }) : null;
+      if (!last) break;
+      ({ tail, fit } = last);
+    }
     applyRange(root, items, collapseRange(items.length, { maxItems, fit, tail }));
   }
 

@@ -67,6 +67,14 @@
     gap: inherit;
   }
 
+  /* «…» never gives up its room (N1 of the nav-4b acceptance): its entry keeps
+     the separator and the whole button, so the next separator is never drawn
+     under it. A crumb squeezed instead below a few letters folds (_trail.js
+     starvedFit). The siblings button (C128) stays in its crumb's entry. */
+  .sf-breadcrumbs > :is(ol, ul) > li:has(> .sf-breadcrumbs-item[aria-expanded]:not([data-sf-breadcrumb-siblings])) {
+    flex: none;
+  }
+
   /* The flat form is its own row. */
   .sf-breadcrumbs:not(:has(> ol)):not(:has(> ul)) {
     align-items: flex-start;

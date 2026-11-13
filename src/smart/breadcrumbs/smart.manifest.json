@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.breadcrumbs",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "title": "Breadcrumbs",
   "summary": "Shows where the page is in a hierarchy as a list of native links built from items, the items attribute or sf-breadcrumbs-item children. The last crumb is the page unless the items say otherwise or current is none (a trail of parents). A trail that has no room for one line folds its middle into a «…» button whose menu lists the hidden crumbs; on the phone it reads «… › parent › page». Long ancestor names are cut with an ellipsis and a tooltip; a crumb can offer its siblings as a menu (siblings).",
   "kind": "smart",
@@ -347,7 +347,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/breadcrumbs/index.js",
-        "sha256": "f9c42a498fcd5185064526c0565943ba6ccdbeee1a6ad97edcf0e26a46a1fe3f"
+        "sha256": "f5077d54464a0cbb2130be89c9196751d4ad9480336742cc2fdfe2d793d1bc06"
       }
     ],
     "generated_runtime": [

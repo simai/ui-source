@@ -1,7 +1,14 @@
 import SfBaseElement, { toAttributeName } from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderBreadcrumbsTemplate } from './js/templates/default';
-import { collapseRange, menuEntries, nextFit, trailOverflows } from '../../component/breadcrumbs/js/_trail';
+import {
+  collapseRange,
+  menuEntries,
+  nextFit,
+  starvedFit,
+  trailOverflows,
+  trailStarved,
+} from '../../component/breadcrumbs/js/_trail';
 import { markCurrent, normalizeItem, parseItems, readFlag } from './js/items';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -61,6 +68,9 @@ class SfBreadcrumbs extends BreadcrumbsElement {
     this._preserveEllipsisExpanded = false;
     // How many crumbs room hides (BC-06): 0 until the trail is measured.
     this._fitHidden = 0;
+    // The tail room keeps: null (the parent and the page) until a crumb is
+    // cut below a few letters at the narrowest fold (starvedFit), then 1.
+    this._fitTail = null;
     this._fitSettled = null;
     this._roomObserver = null;
     this._roomFrame = 0;
@@ -316,7 +326,7 @@ class SfBreadcrumbs extends BreadcrumbsElement {
   // room -- what the last measure hid (BC-06).
   collapseOptions(items = []) {
     const last = items[items.length - 1];
-    const tail = last?.current ? 2 : 1;
+    const tail = this._fitTail || (last?.current ? 2 : 1);
     return {
       maxItems: this.getNumberAttr('maxItems', 0),
       // Room only, on every ladder (C93 item 1; L1 of the C93 review: a trail
@@ -399,9 +409,19 @@ class SfBreadcrumbs extends BreadcrumbsElement {
     // phone, the page's name wrapped on a wider screen.
     if (!this._ellipsisExpanded && trailOverflows(this.trailRow(), this.trailEntries())) {
       const items = this.sourceItems;
-      const next = nextFit(items.length, this.collapseOptions(items));
+      const options = this.collapseOptions(items);
+      const next = nextFit(items.length, options);
       if (next !== null) {
         this._fitHidden = next;
+        this.requestComponentUpdate('fit');
+        return;
+      }
+      // Folded as far as that goes, a crumb cut below a few letters takes the
+      // parent with it: «… › current» (N1 of the nav-4b acceptance).
+      const last = trailStarved(this.trailEntries()) ? starvedFit(items.length, options) : null;
+      if (last) {
+        this._fitTail = last.tail;
+        this._fitHidden = last.fit;
         this.requestComponentUpdate('fit');
         return;
       }
@@ -414,6 +434,7 @@ class SfBreadcrumbs extends BreadcrumbsElement {
   // A new list, setting or width measures the fold again from its start.
   restartFit() {
     this._fitHidden = 0;
+    this._fitTail = null;
   }
 
   // A name cut with an ellipsis (C93 item 6) has its whole text as the

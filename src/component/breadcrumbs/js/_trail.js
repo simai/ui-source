@@ -16,7 +16,9 @@
 //     the current page (or, in a trail of parents only, the parent). At its
 //     narrowest a trail reads «… › parent › current» (C93 item 2). Room is the
 //     only reason on every ladder: a trail that fits the phone stays whole, and
-//     no single crumb hides behind «…» (L1 of the C93 review).
+//     no single crumb hides behind «…» (L1 of the C93 review). Past that
+//     narrowest, a tail crumb cut below a few letters (cutBelowMin) folds too:
+//     «… › current» (starvedFit).
 //
 // A range is {start, end}: the crumbs start .. end - 1 are hidden. null hides
 // nothing.
@@ -103,6 +105,56 @@ export function cutByRoom(crumb, view = globalThis) {
   const cap = Number.parseFloat(view.getComputedStyle?.(container)?.maxInlineSize);
   if (!(cap > 0)) return true;
   return container.getBoundingClientRect().width < cap - 1;
+}
+
+// A cut name must still read: a crumb shown narrower than LABEL_MIN_EM of its
+// own text size (three letters or so with the ellipsis, the least of a name
+// one can tell apart) is no crumb at all (N1 of the nav-4b acceptance, after
+// C93 item 6). Folded as far as room goes, such a crumb goes behind «…» too
+// (starvedFit).
+export const LABEL_MIN_EM = 3;
+
+// Whether a crumb's words are cut to less than LABEL_MIN_EM for want of room.
+export function cutBelowMin(crumb, view = globalThis) {
+  const container = crumb?.querySelector?.(':scope > .sf-breadcrumbs-item-container');
+  if (!container) return false;
+  const label = container.querySelector(':scope > span') || container;
+  if (!(label.scrollWidth > label.clientWidth + 1)) return false;
+
+  const size = Number.parseFloat(view.getComputedStyle?.(label)?.fontSize);
+  const least = LABEL_MIN_EM * (size > 0 ? size : 16);
+  return container.getBoundingClientRect().width < least - 0.5;
+}
+
+// Whether a shown crumb of the trail is cut below the least that reads
+// (cutBelowMin). Separators, «…» and the siblings button have no words to cut.
+export function trailStarved(entries = [], view = globalThis) {
+  return entries.some((entry) => {
+    if (!entry || entry.hidden) return false;
+    const crumbs = entry.matches?.('.sf-breadcrumbs-item')
+      ? [entry]
+      : Array.from(entry.querySelectorAll?.(':scope > .sf-breadcrumbs-item') || []);
+    return crumbs.some(
+      (crumb) =>
+        !crumb.hidden &&
+        !crumb.classList?.contains('sf-breadcrumbs-item--separator') &&
+        !crumb.hasAttribute?.('aria-expanded') &&
+        cutBelowMin(crumb, view),
+    );
+  });
+}
+
+// The last fold: room has hidden all it may (nextFit gave null) and a crumb of
+// the tail is still cut below the least that reads. Then the parent goes too
+// and the page stands alone after «…»: «… › current». Only a tail of two (the
+// parent and the page) gives one up; a trail of parents keeps its parent.
+// Returns the options to fold with ({tail, fit}), or null.
+export function starvedFit(count, { tail = 2 } = {}) {
+  const kept = Math.max(1, Math.floor(Number(tail) || 0));
+  if (kept < 2) return null;
+
+  const hidden = maxFitHidden(count, 1);
+  return hidden > 0 ? { tail: 1, fit: hidden } : null;
 }
 
 // Whether the trail has no room for its crumbs (BC-06, C93 item 1). The row
