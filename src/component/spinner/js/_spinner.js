@@ -175,7 +175,7 @@ function noteFormerLook(root, named) {
   }
 }
 
-// The show delay (owner decision C130 (8); setting delay, provisional name):
+// The show delay (owner decision C130 (8); setting delay, its name final by C138):
 // milliseconds, written as data-delay; 0 shows at once. The sheet hides the
 // spinner for --sf-loader--delay, 1 s by default.
 function delayOf(root) {
@@ -255,7 +255,7 @@ function getSpinnerConfig(root) {
     hasExplicitHeight,
     infinite: root.dataset.infinite === 'true',
     announce: root.dataset.announce === 'true',
-    // The words are said, not shown (SP-07, provisional name label-hidden):
+    // The words are said, not shown (SP-07; label-hidden, its name final by C138):
     // the label stays in the drawing for a screen reader and leaves the eye.
     labelHidden: root.dataset.labelHidden === 'true',
     label:

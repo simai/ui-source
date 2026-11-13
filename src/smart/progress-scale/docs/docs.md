@@ -26,7 +26,7 @@ high percentage is not success.
 - `warning-at`, `error-at` (1.2.0) — thresholds in per cent, set by the page,
   as on sf-progress-bar: the scale draws the more serious of `status` and the
   threshold reached, and says which on the host as `data-status`.
-- `meter` (1.2.0, provisional name) — an amount within a known range, not a
+- `meter` (1.2.0) — an amount within a known range, not a
   task's progress: role `meter`.
 
 The application owns `aria-busy`, task lifecycle, completion and error

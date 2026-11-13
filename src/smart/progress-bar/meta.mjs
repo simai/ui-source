@@ -101,7 +101,7 @@ const sfProgressBarMeta = {
         "false"
       ],
       "default": "false",
-      "description": "The value is an amount within a known range (a quota used, a disk filled), not a task's progress: role meter instead of progressbar (owner decision C131 (7)). A meter always has a value, so it is never indeterminate. The look does not change."
+      "description": "The value is an amount within a known range (a quota used, a disk filled), not a task's progress: role meter instead of progressbar (owner decision C131 (7)). A meter always has a value, so it is never indeterminate. The look does not change. The name is final (owner decision C138)"
     },
     "label": {
       "kind": "custom",

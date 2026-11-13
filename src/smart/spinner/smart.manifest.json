@@ -65,13 +65,13 @@
       "delay": {
         "type": "integer",
         "default": 1000,
-        "description": "Provisional name (owner decision C130 (8), 2026-11-13; the decision names none). Milliseconds before the spinner shows: a wait shorter than that shows nothing. 0 shows at once. Written as data-delay; without the attribute the sheet's 1 s holds.",
+        "description": "Milliseconds before the spinner shows (owner decision C130 (8); the name is final by C138): a wait shorter than that shows nothing. 0 shows at once. Written as data-delay; without the attribute the sheet's 1 s holds.",
         "minimum": 0
       },
       "label-hidden": {
         "type": "boolean",
         "default": false,
-        "description": "Provisional name (SP-07, 2026-11-13). The label is said and not shown: it stays the spinner's name for a screen reader (and what announce says) while the page shows the ring alone. label=\"\" takes the words from both."
+        "description": "The label is said and not shown (SP-07; the name is final by C138): it stays the spinner's name for a screen reader (and what announce says) while the page shows the ring alone. label=\"\" takes the words from both."
       },
       "kind": {
         "type": "string",
@@ -300,7 +300,7 @@
       },
       {
         "path": "src/smart/spinner/docs/docs.md",
-        "sha256": "a57b162530173777ad684c3edce4e6bb996618437edbaf8de73e8951b83b6d5d"
+        "sha256": "52a5ed0a92cf9395bd3a3bdc55db7bb76a13557ae8651dcbfb4b8eb2f959b94d"
       }
     ],
     "generated_runtime": [

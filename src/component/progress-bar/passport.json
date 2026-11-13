@@ -14,7 +14,7 @@
     "src/component/progress-bar/scss/_css__progressbar_custom.scss",
     "src/component/progress-bar/scss/index.scss"
   ],
-  "content_sha256": "2b5bca5785405ba39eef1deb8b75fcd20446f96f85c8e1329a49d661004868f6",
+  "content_sha256": "2395f309ce990ff29e97ce7efce02995f0b25e0c9e0fe7e153e46969212dea7a",
   "dependencies": [
     {
       "id": "core.runtime",

@@ -2318,7 +2318,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-bar/smart.manifest.json",
-      "manifest_sha256": "20ea6df38eb80a5b739647e22517a781ccee5e4301ed70db631ab34bd7f1c112",
+      "manifest_sha256": "23f36aa773fec85d59b8c54e71b90b580fbf0b82c9e4c0a310480121431dc373",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2445,7 +2445,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-scale/smart.manifest.json",
-      "manifest_sha256": "db31ef3fe572c602685ccaeab25ecbb5caeb75de9ac9aadca8e08a02dc4cddcb",
+      "manifest_sha256": "feb47e1e7721f0b8f124009307c7956bab8ca2377206e7d69ac1dc14bfa0edf2",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2864,7 +2864,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/spinner/smart.manifest.json",
-      "manifest_sha256": "90a2af6690b57f804f356af785a9a81bc7511c84c4e7cf9d480a41b120982a77",
+      "manifest_sha256": "98417b29dde5a42ef49595974342fffe9adbb333b9c22c474966436eab550d2a",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

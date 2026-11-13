@@ -43,7 +43,7 @@ const sfSpinnerMeta = {
       "valueType": "integer",
       "default": 1000,
       "minimum": 0,
-      "description": "Provisional name (owner decision C130 (8), 2026-11-13; the decision names none). Milliseconds before the spinner shows: a wait shorter than that shows nothing. 0 shows at once. Written as data-delay; without the attribute the sheet's 1 s holds."
+      "description": "Milliseconds before the spinner shows (owner decision C130 (8); the name is final by C138): a wait shorter than that shows nothing. 0 shows at once. Written as data-delay; without the attribute the sheet's 1 s holds."
     },
     "label-hidden": {
       "kind": "boolean",
@@ -52,7 +52,7 @@ const sfSpinnerMeta = {
         "false"
       ],
       "default": "false",
-      "description": "Provisional name (SP-07, 2026-11-13). The label is said and not shown: it stays the spinner's name for a screen reader (and what announce says) while the page shows the ring alone. label=\"\" takes the words from both."
+      "description": "The label is said and not shown (SP-07; the name is final by C138): it stays the spinner's name for a screen reader (and what announce says) while the page shows the ring alone. label=\"\" takes the words from both."
     },
     "kind": {
       "kind": "enum",

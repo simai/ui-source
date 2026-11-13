@@ -107,7 +107,7 @@
       "meter": {
         "type": "boolean",
         "default": false,
-        "description": "The value is an amount within a known range (a quota used, a disk filled), not a task's progress: role meter instead of progressbar (owner decision C131 (7)). A meter always has a value, so it is never indeterminate. The look does not change."
+        "description": "The value is an amount within a known range (a quota used, a disk filled), not a task's progress: role meter instead of progressbar (owner decision C131 (7)). A meter always has a value, so it is never indeterminate. The look does not change. The name is final (owner decision C138)"
       },
       "label": {
         "type": "string",
@@ -307,7 +307,7 @@
       },
       {
         "path": "src/smart/progress-scale/docs/docs.md",
-        "sha256": "ba0ff30c954dd1f4509a7f1e9c2ece7f8f767888e2170d08b626df7f630fd77d"
+        "sha256": "559fbd80a3a34e5a917c42564afa62b35a453dd84646ba7081f06a79f5eee181"
       }
     ],
     "generated_runtime": [

@@ -25,7 +25,7 @@ cancellation.
 - `status="|neutral|info|success|warning|error"` (1.4.0, owner decision C131) — empty, the default, draws the theme's
   primary; `neutral` is grey, as in sf-dot and sf-badge; the others their
   roles. `primary`, the word used before, is read as the default.
-- `meter` (1.4.0, provisional name) — the bar shows an amount within a known
+- `meter` (1.4.0) — the bar shows an amount within a known
   range (a quota used, a disk filled), not a task's progress: role `meter`.
   A meter always has a value, so it is never indeterminate.
 - `warning-at`, `error-at` (1.2.0) — thresholds in per cent, set by the page:
@@ -40,8 +40,8 @@ cancellation.
   `aria-valuenow` and the percentage text. Take it off once the size is known:
   the same bar then fills from `value`, once, never back. Under reduced motion
   (1.3.3) no segment is drawn: the whole track is tinted with the fill at
-  32 %, so nothing on the bar looks like an amount (interim, until the owner
-  picks the look). Class markup: `sf-progress-bar--indeterminate`.
+  32 %, so nothing on the bar looks like an amount (owner decision C131 (8)).
+  Class markup: `sf-progress-bar--indeterminate`.
 - `paused` (1.3.0) — the work stopped and will go on. The bar is a warning
   (an error from `status` or a threshold stays an error) and a screen reader
   hears it: the value text reads «35 %, на паузе» / «35%, paused» unless the
