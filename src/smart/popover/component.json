@@ -2,7 +2,7 @@
   "$comment": "The source of sf-popover's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/popover (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.popover",
   "tag": "sf-popover",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "kind": "leaf",
   "family": "popover",
   "settings": {
@@ -14,10 +14,18 @@
         "top-start",
         "top-end",
         "inline-start",
-        "inline-end"
+        "inline-end",
+        "bottom",
+        "top",
+        "start",
+        "start-start",
+        "start-end",
+        "end",
+        "end-start",
+        "end-end"
       ],
       "default": "bottom-end",
-      "summary": "Which corner of the trigger the surface hangs from."
+      "summary": "Where the surface stands beside the trigger: top, bottom, start or end, centred on it, or with -start or -end its start or end edge on the trigger's (inline-start and inline-end are start-start and end-start). Logical: start and end follow the writing direction. At the window's edge it moves along the trigger's edge, or to the other side."
     },
     "label": {
       "type": "string",
@@ -32,7 +40,12 @@
     "offset": {
       "type": "string",
       "default": "",
-      "summary": "The gap between the trigger and the surface: a token (var(--sf-space-1\\/3)) or a CSS length. Left empty, the surface touches the trigger as before."
+      "summary": "The gap between the trigger and the surface: a token (var(--sf-space-1\\/3)) or a CSS length. Left empty, the surface touches the trigger as before; with an arrow it is the arrow's reach."
+    },
+    "arrow": {
+      "type": "boolean",
+      "default": false,
+      "summary": "An arrow toward the trigger, off by default. It carries the surface's own shadow (the overlay shadow drawn as a filter over the surface and the arrow); with an arrow the surface does not scroll by itself, and the gap is the arrow's reach (space 1/2) unless offset gives one."
     },
     "dismissible": {
       "type": "boolean",
@@ -326,7 +339,8 @@
     "version 1.5.1, also (2026-11-11, C41 inverse places): the content takes the theme's accent and boundary line back on the inverse places too (bg-surface-inverse, bg-surface-inverse-fixed), as the mixin sf-place-back-on-colour writes it.",
     "version 1.5.2 (2026-11-13, group build 2; written on the branch as 1.5.1, which the released pair already carries): a patch (owner decision C107, the icon colour; tokens.colour 1.13.0). The bubble is an opaque place and takes the theme's roles back: it now takes the fourth icon role too, --sf-on-surface-icon (neutral-25 light, neutral-80 dark), so a button's icon inside a popover opened on a coloured block is the half step under its label, not the coloured place's ink. Settings, values, events and keys unchanged.",
     "version 1.5.2, also (2026-11-12, C43 later; written on the branch as 1.5.0): the bubble takes back --sf-surface-place-fill (initial) beside --sf-surface-underlay, as every place now does, so an anchored badge in a popover opened from a selected row does not ring with that row.",
-    "version 1.5.2, also (2026-11-13, C113, owner): the popup place in the template writes the neutral fill at 12/16/20 (was 8/12/16) and the disabled plate at 8 (was 12), as the core theme does; settings, values, events and keys unchanged."
+    "version 1.5.2, also (2026-11-13, C113, owner): the popup place in the template writes the neutral fill at 12/16/20 (was 8/12/16) and the disabled plate at 8 (was 12), as the core theme does; settings, values, events and keys unchanged.",
+    "version 1.6.0 (written on the branch as 1.5.0; 2026-11-11, C59 stage S1, owner decision): one positioning engine and the popover kind. An open surface stands in the browser's top layer (a manual popover, core/js/position.js liftToTopLayer): an ancestor's overflow: hidden, a scroll container, a z-index, a transform or contain no longer clip or cover it; it stays where it was written in the document, so the host's variables, theme, lang, dir and density reach it as before. It is placed by the Framework's floating-surface engine, core/js/float-anchor.js (internal: not on window.SF and not in the public JS API contract until the later kinds prove its shape; built on SF.Position's public API, position.js unchanged): CSS anchor positioning (anchor-name on the host, position-area, position-try-fallbacks flip-inline / flip-block) where the browser has it, Floating UI where it has not, and Floating UI for the rest of an opening when no CSS area keeps the surface inside the window (CSS has no shift); both flip and shift at the four edges and say the side they took in data-sf-side. While a window or a drawer stands above it in the layer stack (one opened from its content) it steps down out of the top layer, so the window is drawn over it, and back up when the window closes. Placement takes top, bottom, start and end (centred) and start-start, start-end, end-start, end-end beside the six it had (default bottom-end, unchanged). The setting arrow (boolean, off): a square of the surface's fill at the trigger's centre (--sf-position-arrow-x/-y from the engine), and the overlay shadow drawn as --sf-shadow-overlay-filter (drop-shadow, the same two layers as --sf-shadow-overlay) over the surface and the arrow; with an arrow the surface has no scroll of its own and the gap defaults to space 1/2. A dialog surface takes the focus a frame after show(), toggle() or the trigger opened it (unless its content took it); the trigger says aria-controls when the surface has an id. The dismissal stays the Framework's own (Escape and an outside press through the layer stack, cancelable sf-popover-close with its reasons): a native auto popover's light dismiss can be neither cancelled nor given a reason. sf-input-rich's phone sheet is held in the top layer by the popover while it is open. Events, values, keys and the six public variables unchanged; tests/browser/popover-top-layer.browser.mjs, tests/popover-top-layer.contract.test.mjs."
   ],
   "x-rule": {
     "$comment": [
@@ -435,7 +449,7 @@
         "Space",
         "Escape"
       ],
-      "focus": "label names the surface. surface-role sets the surface's role (dialog by default; menu, listbox, group); the trigger gets aria-haspopup to match and aria-expanded. Opening moves focus into the surface; Escape or a press outside closes it and returns focus to the trigger. While it is open a modal or drawer behind it leaves Escape alone."
+      "focus": "label names the surface. surface-role sets the surface's role (dialog by default; menu, listbox, group); the trigger gets aria-haspopup to match, aria-expanded, and aria-controls when the surface has an id. Opening it with show(), toggle() or the trigger moves focus into a dialog surface (the surface itself, a frame later, unless its content took the focus first); a menu or a list moves its own. Tab goes on into its content and out to the page; Escape or a press outside closes it and returns focus to the trigger. While it is open a modal or drawer behind it leaves Escape alone."
     },
     "inputs": {
       "template": {

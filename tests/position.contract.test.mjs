@@ -65,9 +65,11 @@ test('an anchored surface is lifted into the top layer, unless it is already the
   assert.match(source, /const lower = settings\.topLayer \? liftToTopLayer\(floating\) : null;/);
   assert.match(source, /lower\?\.\(\);/);
   assert.match(source, /const Position = Object\.freeze\(\{anchor, anchorReference, referenceRect, liftToTopLayer,/);
-  // A surface the component lifted, or one in a lifted or modal layer, is left as it is.
-  assert.match(source, /if \(floating\.hasAttribute\('popover'\) \|\| inTopLayer\(floating\)\) return false;/);
-  assert.match(source, /for \(let node = floating\.parentElement; node; node = node\.parentElement\) if \(inTopLayer\(node\)\) return false;/);
+  // A surface the component lifted is left as it is; one inside a lifted or
+  // modal layer is lifted too, so it stands above its parent (C59 S1 D1).
+  assert.match(source, /return !floating\.hasAttribute\('popover'\) && !inTopLayer\(floating\);/);
+  const liftable = source.slice(source.indexOf('function liftable(floating)'), source.indexOf('export function liftToTopLayer'));
+  assert.doesNotMatch(liftable, /parentElement/, 'an ancestor in the top layer does not stop the lift');
   assert.match(source, /floating\.setAttribute\('popover', 'manual'\);/);
   // The lift is measured before the caps are read, so caps come from the lifted box.
   assert.ok(source.indexOf('liftToTopLayer(floating) : null') < source.indexOf('const floatingStyle = getComputedStyle(floating);'));
@@ -89,4 +91,16 @@ test('a container query box is asked whether it contains fixed panels, not assum
   assert.match(source, /css\.containerType !== 'normal' && probesFixedOrigin\(element\)/);
   assert.doesNotMatch(source, /\|\| \(Boolean\(css\.containerType\) && css\.containerType !== 'normal'\);/);
   assert.match(source, /probe\.style\.cssText = 'position:fixed;left:0;top:0;/);
+});
+
+test('a density switch restates the gap while open (C59 S1 acceptance M1)', async () => {
+  const source = await readFile(new URL('../src/core/js/position.js', import.meta.url), 'utf8');
+  // The length cache is keyed by the window's size and by the computed values
+  // of the tokens the lengths are written with, so a density switch misses it.
+  assert.match(source, /const key = `\$\{window\.innerWidth\}x\$\{window\.innerHeight\}\|\$\{values\}`;/);
+  assert.match(source, /getComputedStyle\(context\)\.getPropertyValue\(name\)/);
+  // A switch that moves no box still asks for a full fit.
+  assert.match(source, /attributeFilter: \['data-sf-density'\]/);
+  assert.match(source, /\.\.\.\(tokens\.length \? \[watchDensity\(floating\.ownerDocument, controller\.update\)\] : \[\]\)/);
+  // Behaviour: tests/browser/float-anchor-nested.browser.mjs (nested overlays, 390 start/end, density).
 });

@@ -546,6 +546,10 @@
        (mix/_mix__shadow.scss). */
     --sf-shadow-raised: #{shadow.sf-shadow('raised')};
     --sf-shadow-overlay: #{shadow.sf-shadow('overlay')};
+    /* The overlay shadow as a filter (C59): the same two layers drawn over a
+       surface's whole painted shape, so an arrow beside a popover carries the
+       panel's shadow (a box-shadow is drawn around the box only). */
+    --sf-shadow-overlay-filter: #{shadow.sf-drop-shadow('overlay')};
     --sf-shadow-modal: #{shadow.sf-shadow('modal')};
     /* Высота — это две вещи сразу: тень под элементом и поверхность под ним.
        В светлой теме работает тень, и поднятая поверхность остаётся обычной.

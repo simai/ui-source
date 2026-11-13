@@ -166,4 +166,95 @@
     inset-block-start: 0;
     inset-inline-end: 100%;
   }
+
+  /* The placements C59 adds (top, bottom, start, end, each with -start and
+     -end). Open, the surface is placed by core positioning in the top layer;
+     these say where it stands before that, as the first six do. */
+  sf-popover:is([data-placement='bottom']) > [slot='content'] {
+    margin-block-start: var(--sf-popover--offset, 0);
+    inset-block-start: 100%;
+    inset-inline-start: 0;
+  }
+
+  sf-popover:is([data-placement='top']) > [slot='content'] {
+    margin-block-end: var(--sf-popover--offset, 0);
+    inset-block-end: 100%;
+    inset-inline-start: 0;
+  }
+
+  sf-popover:is([data-placement='end'], [data-placement='end-start']) > [slot='content'] {
+    margin-inline-start: var(--sf-popover--offset, 0);
+    inset-block-start: 0;
+    inset-inline-start: 100%;
+  }
+
+  sf-popover[data-placement='end-end'] > [slot='content'] {
+    margin-inline-start: var(--sf-popover--offset, 0);
+    inset-block-end: 0;
+    inset-inline-start: 100%;
+  }
+
+  sf-popover:is([data-placement='start'], [data-placement='start-start']) > [slot='content'] {
+    margin-inline-end: var(--sf-popover--offset, 0);
+    inset-block-start: 0;
+    inset-inline-end: 100%;
+  }
+
+  sf-popover[data-placement='start-end'] > [slot='content'] {
+    margin-inline-end: var(--sf-popover--offset, 0);
+    inset-block-end: 0;
+    inset-inline-end: 100%;
+  }
+
+  /* The arrow (C59, off by default): a square of the surface's own fill,
+     turned 45 degrees, half of it past the edge that faces the trigger, at the
+     trigger's centre (the floating-surface engine, core/js/float-anchor.js, writes --sf-position-arrow-x and -y
+     and data-sf-side). A box-shadow is drawn around the surface's box only,
+     so an arrow beside it stood flat and its tip melted into a white page
+     (owner remark 2026-11-11). With an arrow the surface's overlay shadow is
+     the same two layers drawn as a filter over its whole painted shape, arrow
+     included: --sf-shadow-overlay-filter, kept equal to --sf-shadow-overlay
+     (tests/popover-top-layer.contract.test.mjs). The arrow stands outside the
+     box, so the surface does not clip: with an arrow it has no scroll of its
+     own -- long content belongs in a surface without one. */
+  sf-popover[arrow] > [slot='content'] {
+    overflow: visible;
+    max-block-size: none;
+    box-shadow: none;
+    filter: var(--sf-shadow-overlay-filter);
+  }
+
+  sf-popover[arrow] > [slot='content'][data-sf-side]:not([data-sf-sheet])::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inline-size: var(--sf-space-1\/2);
+    block-size: var(--sf-space-1\/2);
+    background: inherit;
+    rotate: 45deg;
+    pointer-events: none;
+  }
+
+  /* The arrow's centre stands on the panel's edge at the point it is given:
+     half its own size out and half back (space 1/4 is not half of space 1/2
+     on every step of the ladder). */
+  sf-popover[arrow] > [slot='content'][data-sf-side='block-end']::before {
+    inset-block-start: calc(var(--sf-space-1\/2) / -2);
+    left: calc(var(--sf-position-arrow-x, 50%) - var(--sf-space-1\/2) / 2);
+  }
+
+  sf-popover[arrow] > [slot='content'][data-sf-side='block-start']::before {
+    inset-block-end: calc(var(--sf-space-1\/2) / -2);
+    left: calc(var(--sf-position-arrow-x, 50%) - var(--sf-space-1\/2) / 2);
+  }
+
+  sf-popover[arrow] > [slot='content'][data-sf-side='inline-end']::before {
+    inset-inline-start: calc(var(--sf-space-1\/2) / -2);
+    top: calc(var(--sf-position-arrow-y, 50%) - var(--sf-space-1\/2) / 2);
+  }
+
+  sf-popover[arrow] > [slot='content'][data-sf-side='inline-start']::before {
+    inset-inline-end: calc(var(--sf-space-1\/2) / -2);
+    top: calc(var(--sf-position-arrow-y, 50%) - var(--sf-space-1\/2) / 2);
+  }
 }

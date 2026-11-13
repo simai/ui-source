@@ -133,6 +133,7 @@
     "src/core/js/early-port.js",
     "src/core/js/effects.js",
     "src/core/js/element-manifest.js",
+    "src/core/js/float-anchor.js",
     "src/core/js/format-date.js",
     "src/core/js/format-file-size.js",
     "src/core/js/format-intl.js",
@@ -221,7 +222,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "98dac5ef0fb94c4b12bba8ccdcfd5bd63ca79c1a152c9b97227c6d5b8975994a",
+  "content_sha256": "d613667fd7096b10afb6bbc081c57370180c64391ce4076ebeeddeaefc73d925",
   "dependencies": [
     {
       "id": "core.styles",
