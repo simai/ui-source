@@ -10401,6 +10401,31 @@
       "source": "src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
     },
     {
+      "id": "behaviour-glass-accent-is-white",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "Glass over media (.sf-surface-media) takes its own white ink as the accent, as a strong coloured place does (owner decision C70, variant B of prototypes/glass-accent.html): on its children --sf-primary is white (hover neutral 95, press neutral 90), --sf-on-primary black, the tonal fill white at 12 under white (hover 8, press 4, going down as on a strong place in the light theme), and the link and the focus ring are white too (a visited link white at 80). Before, glass kept the theme's blue accent, link and ring: a primary label read 1.16-1.75 on glass in the light theme. An opaque place on glass (a card, a popup, a popover's content) takes back the accent, link and ring the page had there.",
+      "items": [
+        {
+          "component": ".sf-surface-media",
+          "attribute": "--sf-primary, --sf-on-primary, --sf-primary-container*, --sf-on-primary-container, --sf-link*, --sf-focus, --sf-focus--color (on its children)",
+          "from": "the theme's blue accent, link and focus ring",
+          "to": "the glass's white ink"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite. A page that re-coloured buttons, links or the focus ring on .sf-surface-media itself can drop that rule; a page that wants its brand colour on glass sets --sf-primary (and --sf-link, --sf-focus) on the glass's children.",
+      "examples": {
+        "before": "<div class=\"sf-surface-media\"><sf-button text=\"Save\"></sf-button></div> (a blue button with a white label on dark glass)",
+        "after": "<div class=\"sf-surface-media\"><sf-button text=\"Save\"></sf-button></div> (a white button with a black label)"
+      },
+      "owner": "ui-source",
+      "source": "src/core/scss/mix/_mix__places.scss (sf-place-glass-accent); src/core/scss/_sf_css__surface_places.scss; ui-control control/docs-review/decisions.md C70"
+    },
+    {
       "id": "behaviour-highlight-follows-the-place",
       "recorded_on": "2026-11-11",
       "stage": "compat",

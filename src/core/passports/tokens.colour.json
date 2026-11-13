@@ -34,8 +34,12 @@
     "src/core/scss/vars/_sf_var__color.scss",
     "src/core/scss/vars/_sf_var__hue.scss"
   ],
-  "content_sha256": "3aa3dee6b6aed01fd91304d314fbe9dddf833eca1f2d979bfdd4d96d1588f6bd",
+  "content_sha256": "fb26d10c3c2214fdc063d247e80b1460d3b02dc6b9443df61fef74b1c5534c16",
   "dependencies": [
+    {
+      "id": "tokens.border",
+      "range": "^1.0.0"
+    },
     {
       "id": "tokens.elevation",
       "range": "^1.0.0"
