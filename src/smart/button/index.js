@@ -4,6 +4,7 @@ import { renderButtonTemplate } from "./js/templates/default";
 import { html } from "lit";
 import { resolveControlSpacing } from '../../core/js/control-spacing';
 import { noteDeprecated } from "../../core/js/deprecations.js";
+import { warnUnknownControlStatus } from "../helpers/control-status";
 import {
   ariaKeyShortcuts,
   isCommandShortcut,
@@ -298,6 +299,8 @@ class SfButton extends ButtonElement {
     const cycle = this.cycleState();
     if (cycle) warnCycleToggle(this, ["pressed", "text-pressed"]);
     noteSpacing(this);
+    // success, warning, info: no such buttons (C13, BS-1); said once per page.
+    warnUnknownControlStatus("sf-button", this.getAttribute("status"));
     const announce = Boolean(cycle && this.__sfCycleAnnounce);
     this.__sfCycleAnnounce = false;
     // A cycle with an icon shows the item's icon in place of the start icon;

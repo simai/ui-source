@@ -13,6 +13,7 @@
     "src/smart/helpers/anchored-badge.js",
     "src/smart/helpers/checkableReset.js",
     "src/smart/helpers/confirm-surface.js",
+    "src/smart/helpers/control-status.js",
     "src/smart/helpers/cycle.js",
     "src/smart/helpers/dom.js",
     "src/smart/helpers/draggable.js",
@@ -24,7 +25,7 @@
     "src/smart/helpers/refs.js",
     "src/smart/helpers/text.js"
   ],
-  "content_sha256": "f61fa8133ba1a93afdcbb129179774868aac9a4d0bdc201377ca7ad27b0ce45f",
+  "content_sha256": "33df6ef53d9001d6f8a7a1d45d01658f23f0e4e22a58f37d7c84b499891abf09",
   "dependencies": [
     {
       "id": "component.badges",
