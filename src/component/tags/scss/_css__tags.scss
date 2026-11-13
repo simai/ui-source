@@ -577,7 +577,7 @@
     --sf-tag--edge: var(--sf-a8);
     --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-tag--edge));
     --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-tag--edge));
-    --sf-tag--close-size: var(--sf-text-size-1\/4);
+    --sf-tag--close-size: calc(var(--sf-text-height-1\/3) / 2);
   }
 
   .sf-tag.sf-tag--size-1\/3 .sf-tag-color-icon {
@@ -591,7 +591,7 @@
     --sf-tag--edge: var(--sf-b2);
     --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-tag--edge));
     --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-tag--edge));
-    --sf-tag--close-size: var(--sf-text-size-1\/4);
+    --sf-tag--close-size: calc(var(--sf-text-height-1\/2) / 2);
   }
 
   .sf-tag.sf-tag--size-1 {
@@ -600,7 +600,7 @@
     --sf-tag--edge: var(--sf-b6);
     --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-tag--edge));
     --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-tag--edge));
-    --sf-tag--close-size: var(--sf-text-size-1\/3);
+    --sf-tag--close-size: calc(var(--sf-text-height-1) / 2);
   }
 
   .sf-tag.sf-tag--size-2 {
@@ -610,7 +610,7 @@
     --sf-tag--edge: var(--sf-c0);
     --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-tag--edge));
     --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-tag--edge));
-    --sf-tag--close-size: var(--sf-text-size-1\/2);
+    --sf-tag--close-size: calc(var(--sf-text-height-2) / 2);
   }
 
   .sf-tag.sf-tag--size-2 .sf-tag-color-icon {
@@ -946,15 +946,44 @@
   --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-tag--line, var(--sf-tag--line-height)) / 2));
   --sf-avatar--line-height: var(--sf-tag--line, var(--sf-tag--line-height));
 }
+
+/* C76's optical corrections (owner 2026-11-11, prototypes/tags-placement.html
+   #tags-uniform): the edge and the gap are measured by what is painted.
+   - A circle (the avatar, the colour dot) reads further from the tag's
+     straight edge than a square of the same box, so at the edge it moves out
+     by a sixteenth of its diameter (1 at 16, 1.25 at 20, 1.5 at 24); beside
+     the text it keeps the gap.
+   - A Material Symbols glyph paints 20 of its 24 (a twelfth of its box blank
+     on each side), so the icon's box moves out by its size / 12 on both
+     sides and the paint lands on the edge and on the gap (1.33 at 16, 2 at
+     24). The blank a single glyph's own shape adds is sf-icon's to report
+     (C76, a separate item).
+   - The check and the cross paint their own box: no correction.
+   Not in an inline tag, which keeps its host line's insets, nor in a colour
+   row of a list, which draws the dot with the tag's markup. */
+.sf-tag:not(.sf-tag--inline, .sf-list-item *) > .sf-avatar {
+  margin-inline-start: calc(var(--sf-avatar--width) / -16);
+}
+
+.sf-tag:not(.sf-tag--inline, .sf-list-item *) > .sf-tag-color-icon {
+  margin-inline-start: calc(var(--sf-tag-color-icon--width) / -16);
+}
+
+.sf-tag:not(.sf-tag--inline, .sf-list-item *) > .sf-icon,
+.sf-tag:not(.sf-tag--inline, .sf-list-item *) > sf-icon > .sf-icon {
+  margin-inline: calc(var(--sf-icon--width) / -12);
+}
 }
 
 @layer sf.states {
 /* The remove mark is drawn by the tag, whatever the close markup carries: a
    close written without a size class had no glyph at all, so a removable tag
    in plain markup showed no mark. The mark is a step of the cross ladder
-   (--sf-tag--close-size: 1/4 at tag sizes 1/3 and 1/2, then 1/3, 1/2 and 1),
-   with the line of every cross, 2 px (C14; it was 0.7 of the label's font size,
-   and its line fell to 1.05-1.75 px), and it sits
+   (--sf-tag--close-size: half the step's picture, C76 -- 8 / 10 / 12 / 14 at
+   tag sizes 1/3, 1/2, 1 and 2 on a desktop, 8 / 8 / 10 / 12 on a phone; size
+   3 keeps text-size-1), with the line of every cross, 2 px (C14; it was 0.7 of
+   the label's font size, and its line fell to 1.05-1.75 px) -- 1.5 where the
+   cross is 8 (C76, below) -- and it sits
    after the label at the label's own end step. The button keeps no padding of
    its own and reaches a target of --sf-c2 around the mark (WCAG 2.2, 2.5.8), the way
    a checkbox's native control does. */
@@ -1007,6 +1036,32 @@
 .sf-tag.sf-tag--size-3 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
   --sf-close-icon--width: var(--sf-tag--close-size);
   --sf-close-icon--height: var(--sf-tag--close-size);
+}
+
+/* C76: the cross is 8 at step 1/3 (and at 1/2 on a phone and in a compact
+   region, where the step's picture is 16), drawn with a 1.5 line: at 8 a 2 px
+   line is heavier than the letters beside it. Larger crosses keep the 2 px
+   line of C14. Its press target stays --sf-c2 (24). */
+.sf-tag.sf-tag--size-1\/3 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon,
+.sf-tag.sf-tag--size-1\/3 > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+  --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%3E%3Cpath%20d=%27M0%200L8%208M8%200L0%208%27%20stroke=%27black%27%20stroke-width=%271.5%27/%3E%3C/svg%3E");
+  --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%3E%3Cpath%20d=%27M0%200L8%208M8%200L0%208%27%20stroke=%27black%27%20stroke-width=%271.5%27/%3E%3C/svg%3E");
+}
+
+@media not all and (min-width: #{bp.$breakpoint-desktop}) {
+  .sf-tag.sf-tag--size-1\/2 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon,
+  .sf-tag.sf-tag--size-1\/2 > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+    --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%3E%3Cpath%20d=%27M0%200L8%208M8%200L0%208%27%20stroke=%27black%27%20stroke-width=%271.5%27/%3E%3C/svg%3E");
+    --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%3E%3Cpath%20d=%27M0%200L8%208M8%200L0%208%27%20stroke=%27black%27%20stroke-width=%271.5%27/%3E%3C/svg%3E");
+  }
+}
+
+@media (min-width: #{bp.$breakpoint-desktop}) {
+  [data-sf-density="compact"] .sf-tag.sf-tag--size-1\/2:not([data-sf-density="normal"] *) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon,
+  [data-sf-density="compact"] .sf-tag.sf-tag--size-1\/2:not([data-sf-density="normal"] *) > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+    --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%3E%3Cpath%20d=%27M0%200L8%208M8%200L0%208%27%20stroke=%27black%27%20stroke-width=%271.5%27/%3E%3C/svg%3E");
+    --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%3E%3Cpath%20d=%27M0%200L8%208M8%200L0%208%27%20stroke=%27black%27%20stroke-width=%271.5%27/%3E%3C/svg%3E");
+  }
 }
 }
 
