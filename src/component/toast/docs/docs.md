@@ -98,6 +98,23 @@ takes the place, size and colour of `.sf-toast > .sf-icon`, and
 `.sf-toast > sf-icon:not(:defined)` holds the same box before the element is
 defined. Class markup keeps `<i class="sf-icon">`.
 
+## Help link (1.3.2, owner decision C126)
+
+A link inside `.sf-toast-wrap` leads to help only («Узнать больше»); every
+action is a button. Any `a[href]` in the text takes the text's own ink
+(`--sf-toast-color`, else the level's on-container role or on-surface), not
+`--sf-link`; it is underlined at `--sf-link--underline-weight` with `--sf-a3`
+offset, the line doubles on hover and press, and the keyboard ring is the same
+ink, 3:1 and more against every level's fill in both themes. The rule is
+shared by the notice family (core `mix/_mix__notice-link.scss`). A toast that
+leaves by itself must not carry the only way to its help: keep such a toast
+until it is closed (`duration` 0).
+
+```html
+<div class="sf-toast-supporting-text">Её можно отправить коллегам.
+  <a href="/help/sharing">Узнать больше</a></div>
+```
+
 ## Accessibility and ownership
 
 Use `role="status"` only when non-urgent feedback is inserted dynamically and

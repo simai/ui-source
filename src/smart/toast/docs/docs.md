@@ -59,6 +59,20 @@ The class form is the modifier `sf-toast--actions-under`.
 |---|---|---|
 | `actions-layout` | `auto`, `under` | `auto` |
 
+A link in the toast's text leads to help only -- «Узнать больше» (1.3.2,
+owner decision C126); every action is a button. The link is the toast's own
+text ink on every level, underlined (1 px, doubled under the pointer), with a
+keyboard ring of the same ink -- the rule of the whole notice family (core
+`mix/_mix__notice-link.scss`). A toast that leaves by itself must not carry
+the only way to its help: keep it until it is closed (`duration` 0). The
+settings carry plain text, so the link is written in the class form (component
+toast):
+
+```html
+<div class="sf-toast-supporting-text">Её можно отправить коллегам.
+  <a href="/help/sharing">Узнать больше</a></div>
+```
+
 The status icon is an `sf-icon` (1.2.1), as on `sf-alert`: the toast asks the
 Loader for its glyph when it draws, so the glyph comes wherever the toast
 stands, a region the Loader does not observe (`data-sf-observer="ignore"`)

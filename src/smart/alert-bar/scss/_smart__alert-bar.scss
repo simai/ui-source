@@ -1,4 +1,5 @@
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__notice-link' as notice-link;
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
 @use '../../../utility/container/default/scss/sf_var__container' as container;
 @layer sf.components {
@@ -276,6 +277,12 @@
   flex: none;
   opacity: 0.8;
 }
+
+/* A link in the bar's text, or in an item of its list, is help only, in
+   the text's ink -- the level's on-colour on the bar, on-surface in the
+   list -- underlined (owner decision C126; core mix/_mix__notice-link.scss).
+   The actions are buttons. */
+@include notice-link.sf-notice-link('.sf-alert-bar :is(.sf-alert-bar-text, .sf-alert-bar-item-text)');
 
 /* The list of all, under the bar: an ordinary surface in the page flow (it
    pushes the page down, it does not float), each level a tonal badge, each

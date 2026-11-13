@@ -1,6 +1,7 @@
 @use 'sass:map';
 @use 'sass:string';
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__notice-link' as notice-link;
 /* The status words are the shared vocabulary: neutral, info, success, warning,
    error. The component renders the canonical class, and the two words this
    component used before — default and primary — are matched beside it so
@@ -346,6 +347,11 @@
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-success-container));
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-success-container));
   }
+
+  /* A link in the toast's text is help only, in the text's ink, underlined
+     (owner decision C126; core mix/_mix__notice-link.scss). The action is a
+     button. */
+  @include notice-link.sf-notice-link('.sf-toast .sf-toast-wrap');
 
   @media (prefers-reduced-motion: reduce) {
     .sf-toast {

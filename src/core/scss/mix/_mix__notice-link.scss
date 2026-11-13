@@ -1,0 +1,48 @@
+// SIMAI Framework
+// https://simai.io
+
+// THE HELP LINK IN A NOTICE'S TEXT (owner decision C126, C110 #q-link, 2026-11-13)
+//
+// One rule for the notice family: sf-alert, sf-toast and sf-alert-bar. A link
+// in a notice's text leads to help only («Узнать больше»); an action is a
+// button, never a link in the text. The link is the notice's own text ink,
+// not the theme's link blue, so it reads the same on every fill: the plain
+// look's on-surface, a status container's on-<status>-container, the strong
+// bar's on-<status>. It is underlined -- the line, not the colour, says
+// «link» -- at the theme's link weight (--sf-link--underline-weight, 1px) and
+// the theme's link offset (--sf-a3); under a pointer the line doubles. Visited,
+// hovered and pressed keep the ink (the base sheet gives a bare link the
+// link roles). The keyboard ring is the text ink too: the theme's focus
+// colour (primary 50 / 90) is the brand's hue, which a coloured fill of the
+// same family can drown; the text ink holds 4.5:1 on its own fill, so its
+// ring holds the 3:1 a focus indicator needs on every fill and theme. The ring
+// keeps the base geometry (_sf_css__border.scss :focus-visible); its colour is
+// set on the ring itself, so a component rule that names --sf-focus for a
+// link of its own (the toast's C50 .sf-toast-link) does not take it back.
+//
+// $text: the selector of the notice's text block(s), inside which a link is
+// help. Written in the component's own sheet, so it lands in the component's
+// layer.
+
+@mixin sf-notice-link($text) {
+  #{$text} a[href] {
+    color: inherit;
+    text-decoration-line: underline;
+    text-decoration-color: currentColor;
+    text-decoration-thickness: var(--sf-link--underline-weight);
+    text-underline-offset: var(--sf-a3);
+  }
+
+  #{$text} a[href]:is(:hover, :active, :visited) {
+    color: inherit;
+    text-decoration-color: currentColor;
+  }
+
+  #{$text} a[href]:is(:hover, :active) {
+    text-decoration-thickness: calc(2 * var(--sf-link--underline-weight));
+  }
+
+  #{$text} a[href]:focus-visible {
+    outline-color: currentColor;
+  }
+}

@@ -106,6 +106,22 @@
       "expect": {
         "name": "Есть обновление"
       }
+    },
+    {
+      "name": "help-link",
+      "title": "Ссылка на справку в тексте",
+      "settings": {
+        "heading": "Доступ по ссылке включён",
+        "action-text": "Скопировать ссылку",
+        "action": "copy",
+        "status": "info"
+      },
+      "slots": {
+        "supporting-text": "<span>Открыть страницу сможет любой, у кого есть ссылка. <a href=\"#help\">Узнать больше</a></span>"
+      },
+      "expect": {
+        "name": "Доступ по ссылке включён"
+      }
     }
   ],
   "pages": [

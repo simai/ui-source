@@ -103,6 +103,16 @@ An action is always as wide as its label: it is never shrunk or cut with an
 ellipsis. When the bar is short of room, the message wraps first, down to
 10rem (the size step f0), and then the actions wrap onto a line of their own.
 
+## Help link (1.5.1, owner decision C126)
+
+A link in the bar's text, or in an item of its open list, leads to help only
+(«Узнать больше»); the item's action and acknowledgement are buttons. The link
+is the text's own ink -- the level's on-colour on the bar's strong fill,
+on-surface in the list -- underlined (1 px, doubled under the pointer), with a
+keyboard ring of the same ink: the rule of the whole notice family (core
+`mix/_mix__notice-link.scss`). The bar's strong fill stays (C114 (4)); the
+other notices have no saturated look.
+
 ## Closing
 
 - A **warning** closes «на сутки»: `sf-alert-bar-close` carries `hide: "day"`.

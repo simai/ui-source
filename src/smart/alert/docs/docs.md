@@ -110,6 +110,30 @@ own (owner decision C114 (7)): `status="info" appearance="outlined"`, without
   supporting-text="Новый адрес получат все письма сайта."></sf-alert>
 ```
 
+## Help link (1.3.1, owner decision C126)
+
+A link in the alert's text leads to help only -- «Узнать больше», the page
+that explains the message. Every action is a button (`action-text`,
+`secondary-action-text`), never a link in the text. Put the text with its link
+in the `supporting-text` slot:
+
+```html
+<sf-alert status="info" heading="Доступ по ссылке включён"
+  action-text="Скопировать ссылку" action="copy">
+  <span slot="supporting-text">Открыть страницу сможет любой, у кого есть
+    ссылка. <a href="/help/sharing">Узнать больше</a></span>
+</sf-alert>
+```
+
+The link is the alert's own text ink -- on-surface on a neutral or outlined
+alert, on-`<status>`-container on a status container -- not the theme's link
+blue, so it holds the text's contrast on every status and look (4.5:1 and
+more). It is underlined at the theme's link weight (1 px), the line doubles
+under the pointer, and its keyboard ring is the same ink (3:1 and more against
+every fill, light and dark). A notice has no saturated look (white text on a
+strong status colour): the three looks stay, and the action stays tonal
+surface on every status (C110 E).
+
 ## Accessibility
 
 The root is a live region: `role="status"` (polite) for `neutral`, `info` and

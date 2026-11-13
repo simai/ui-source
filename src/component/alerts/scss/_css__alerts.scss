@@ -4,6 +4,7 @@
    markup and project CSS keep working. See contracts/public-api-axes.json. */
 @use 'var__alerts' as *;
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__notice-link' as notice-link;
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/2) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 /* The notice's geometry, the toast's numbers (owner decision C35, remarks
    R066 and R079; DEV acceptance D3: C35 covers every notice), in tokens, so a
@@ -379,6 +380,11 @@
 .sf-alert:is(.sf-alert--default, .sf-alert--flat, .sf-alert--outlined) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button:not(:disabled):is(:hover, :active) .sf-close > .sf-close-icon {
   --sf-close-icon--background-color: var(--sf-alert--color);
 }
+
+/* A link in the alert's text is help only, in the text's ink, underlined
+   (owner decision C126; core mix/_mix__notice-link.scss). The actions are
+   buttons. */
+@include notice-link.sf-notice-link('.sf-alert .sf-alert-content');
 
 @media (prefers-reduced-motion: reduce) {
   .sf-alert {

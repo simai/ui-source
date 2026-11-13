@@ -76,6 +76,21 @@ the eye sees above the first line, the top of its capitals (C114 (5), NS-9):
 under the buttons. Measured at 1440: 21.7 above the capitals, 22.8 under the
 button; on a phone 17.2 and 17.6.
 
+## Help link (1.2.1, owner decision C126)
+
+A link inside `.sf-alert-content` leads to help only («Узнать больше»); every
+action is a button in `.sf-alert-buttons`. Any `a[href]` in the text takes the
+text's own ink (`--sf-alert-color`, else the status's on-container role or
+on-surface), not `--sf-link`; it is underlined at `--sf-link--underline-weight`
+with `--sf-a3` offset, the line doubles on hover and press, and the keyboard
+ring is the same ink. The rule is shared by the notice family (core
+`mix/_mix__notice-link.scss`: sf-alert, sf-toast, sf-alert-bar).
+
+```html
+<div class="sf-alert-supporting-text">Открыть страницу сможет любой, у кого
+  есть ссылка. <a href="/help/sharing">Узнать больше</a></div>
+```
+
 ## Callout: a recipe, not a component
 
 Guidance before an action («changing the address affects every letter») is an
