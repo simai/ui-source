@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tag",
-  "version": "1.3.6",
+  "version": "1.4.0",
   "title": "Tags",
   "summary": "Compact static, selectable and removable labels with one explicit interaction owner.",
   "kind": "smart",
@@ -78,11 +78,12 @@
       "appearance": {
         "type": "string",
         "default": "default",
-        "description": "Visual appearance, read from the neutral alpha ramp and separate from type: surface keeps a faint fill and a boundary, ghost keeps nothing until it is hovered. Only the neutral types take it, because a status tag carries its meaning in its colour.",
+        "description": "Visual appearance, read from the neutral alpha ramp and separate from kind: outline keeps a faint fill and a hairline edge, ghost keeps nothing until it is hovered. surface is outline's former name until 2027-01-01 (journal value-tag-appearance-surface-to-outline; C15 retired the word) and draws the same. Only the neutral kinds take it, because a status tag carries its meaning in its colour.",
         "enum": [
           "default",
-          "surface",
-          "ghost"
+          "outline",
+          "ghost",
+          "surface"
         ]
       },
       "size": {
@@ -108,10 +109,21 @@
           "2"
         ]
       },
+      "height": {
+        "type": "string",
+        "default": "default",
+        "description": "The tag's height (owner decision C27, as sf-button): the size's tightness steps -- low, default, high, highest, the size's usual step and its neighbours on the height ladder -- through the class sf-tag--height-<height> of component.tags (none for default). A value outside the list reads as default.",
+        "enum": [
+          "low",
+          "default",
+          "high",
+          "highest"
+        ]
+      },
       "spacing": {
         "type": "string",
         "default": "normal",
-        "description": "Block padding of a free-standing tag, with the names the buttons use.",
+        "description": "Deprecated until 2027-01-01 (journal attribute-tag-spacing-to-height): the former name of height. compact, comfortable and spacious draw as low, high and highest; height wins when both are given.",
         "enum": [
           "compact",
           "normal",
@@ -387,7 +399,8 @@
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
     "aliases": [
-      "kind=quantity"
+      "kind=quantity",
+      "appearance=surface"
     ],
     "deprecations": [],
     "replacement": null,
@@ -408,7 +421,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tag/index.js",
-        "sha256": "db8d2e4ea9c14a71154309c8ec925206f52419e88989ae319d4e5d360642ff28"
+        "sha256": "6b914cb349538e9cf3423e3f9793148b15aabf7b54df9149fd93062a3660d8ab"
       }
     ],
     "generated_runtime": [

@@ -27,7 +27,11 @@
   --sf-pager--link-color: var(--sf-pager-link-color, var(--sf-primary));
   --sf-pager--meta-color: var(--sf-pager-meta-color, var(--sf-on-surface-variant));
   --sf-pager--track-color: var(--sf-pager-track-color, var(--sf-surface-container));
-  --sf-pager--fill-color: var(--sf-pager-fill-color, var(--sf-primary));
+  // The done part of the track and the done dots report an amount, as a
+  // neutral progress bar does: the place's quiet ink, not the theme's primary
+  // (applied decision on docs precheck PB-01; acceptance 2026-11-11: the pager
+  // draws its own dots and kept the blue).
+  --sf-pager--fill-color: var(--sf-pager-fill-color, var(--sf-on-surface-variant));
   display: block;
   box-sizing: border-box;
   min-inline-size: 0;

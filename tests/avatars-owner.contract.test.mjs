@@ -71,7 +71,10 @@ test('Smart Avatar projects image, shape and accessibility contracts', async () 
 
   // shape is made from component.json (core/js/element-manifest.js).
   assert.match(source, /elementFromManifest\(manifest/);
-  assert.deepEqual(JSON.parse(await read('src/smart/avatar/component.json')).settings.shape, {type: 'enum', values: ['circle', 'square'], default: 'circle'});
+  // Every setting has its summary (docs precheck smart content, item 11); the shape's contract is the rest.
+  const {summary, ...shape} = JSON.parse(await read('src/smart/avatar/component.json')).settings.shape;
+  assert.ok(summary);
+  assert.deepEqual(shape, {type: 'enum', values: ['circle', 'square'], default: 'circle'});
   assert.match(shared, /<img class="sf-avatar-image"/);
   assert.match(shared, /alt=""/);
   assert.match(shared, /aria-hidden="true"/);
@@ -155,4 +158,32 @@ test('Avatar card without a photo draws initials on the hue, else the glyph', as
   // The round avatar is untouched: the same glyph and initials markup.
   assert.match(shared, /<i class="sf-icon" aria-hidden="true">person<\/i>/);
   assert.match(shared, /<span class="sf-avatar-text">\$\{context\.text\}<\/span>/);
+});
+
+test('An avatar picture fills its circle once, ring included (R155, no ears)', async () => {
+  const styles = await read('src/component/avatars/scss/_css__avatars.scss');
+  const base = styles.match(/\n {2}\.sf-avatar \{([\s\S]*?)\n {2}\}/)[1];
+
+  // A background picture (dropdown, list and tag rows) is drawn once, centred,
+  // from the outer edge of the transparent ring.
+  assert.match(base, /background-repeat: no-repeat;/);
+  assert.match(base, /background-origin: border-box;/);
+  assert.match(base, /background-position: center;/);
+
+  // An <img> picture takes the ring off the avatar and draws it as its own
+  // inset outline, so it fills the same circle and hover still shows.
+  const holder = styles.match(/\.sf-avatar:has\(> \.sf-avatar-image\) \{([\s\S]*?)\}/)?.[1] ?? '';
+  for (const side of ['top', 'bottom', 'inline-start', 'inline-end']) {
+    assert.match(holder, new RegExp(`--sf-avatar--border-${side}-width: 0;`));
+  }
+  const image = styles.match(/\n {2}\.sf-avatar-image \{([\s\S]*?)\n {2}\}/)[1];
+  assert.match(image, /outline: var\(--sf-avatar-border-width, var\(--sf-px\)\) solid var\(--sf-avatar--border-color, var\(--sf-avatar-border-color, transparent\)\);/);
+  assert.match(image, /outline-offset: calc\(var\(--sf-avatar-border-width, var\(--sf-px\)\) \* -1\);/);
+
+  // Every renderer that draws a background picture uses the avatar's class.
+  for (const path of ['src/smart/dropdown/js/templates/default.js', 'src/smart/list-item/js/templates/default.js', 'src/smart/tag/js/templates/default.js']) {
+    const source = await read(path);
+    assert.match(source, /sf-avatar[^"`]*bg-cover|class=\$\{avatarClasses/, path);
+    assert.doesNotMatch(source, /background-repeat|background-origin/, `${path} leaves the picture to the avatar`);
+  }
 });

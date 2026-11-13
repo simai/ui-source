@@ -30,6 +30,19 @@ $sf-avatar-hue-classes: ();
     border-inline-start-width: var(--sf-avatar--border-inline-start-width, 0);
     border-style: var(--sf-avatar--border-style, solid);
     box-shadow: var(--sf-avatar--box-shadow);
+    /* A picture of a fixed size: in a row of wrapping text it keeps its
+       circle (docs precheck AV-03: line avatars became 12.7x16 ovals on a
+       phone, squeezed by the text beside them). */
+    flex-shrink: 0;
+    /* A picture drawn as the background (dropdown, list and tag rows set
+       background-image with bg-cover) fills the whole circle, ring included,
+       once and centred. With the defaults it was tiled from the inner edge of
+       the transparent ring, so slivers of the next copies showed above and
+       below the circle ("ears", R155, flags in the country list at 8x). The
+       ring, when coloured, is drawn over the picture's edge. */
+    background-origin: border-box;
+    background-position: center;
+    background-repeat: no-repeat;
     --sf-avatar--background-color: var(--sf-avatar-background-color, transparent);
     --sf-avatar--border-top-width: var(--sf-avatar-border-width, var(--sf-px));
     --sf-avatar--border-bottom-width: var(--sf-avatar-border-width, var(--sf-px));
@@ -145,18 +158,44 @@ $sf-avatar-hue-classes: ();
     --sf-avatar--width: var(--sf-ui-1\/2--control-height);
   }
 
+  /* The two smallest steps (C18, docs precheck AV-05). 1/3 is the low height
+     of size 1/3, 24 on a desktop and 20 on a phone; 1/4 is 20 on both, the
+     first step of the phone ladder. On a phone they were 24 and 16: 24 stayed
+     the desktop's and 16 is below the ladder. */
   .sf-avatar--size-1\/3 {
     --sf-avatar--font-size: var(--sf-text-size-1\/3);
-    --sf-avatar--height: var(--sf-icon-size-3);
+    --sf-avatar--height: calc(var(--sf-text-height-1\/3) + 2 * var(--sf-ui-1\/3--space-y-tightness-low));
     --sf-avatar--line-height: var(--sf-text-height-1\/3);
-    --sf-avatar--width: var(--sf-icon-size-3);
+    --sf-avatar--width: calc(var(--sf-text-height-1\/3) + 2 * var(--sf-ui-1\/3--space-y-tightness-low));
   }
 
   .sf-avatar--size-1\/4 {
     --sf-avatar--font-size: var(--sf-text-size-1\/4);
-    --sf-avatar--height: var(--sf-text-height-1\/2);
+    --sf-avatar--height: var(--sf-icon-size-2);
     --sf-avatar--line-height: var(--sf-text-height-1\/4);
-    --sf-avatar--width: var(--sf-text-height-1\/2);
+    --sf-avatar--width: var(--sf-icon-size-2);
+  }
+
+  /* Compact moves every avatar one step down its own ladder (dispatcher call
+     2026-11-12; density, C22): 20 / 24 / 32 / 40 / 48 / 56 become 16 / 20 /
+     24 / 32 / 40 / 48, no step skipped. 1/4 already did it through
+     --sf-icon-size-2; on a desktop 1/3 reads --sf-icon-size-3 (24, compact
+     20) and 1/2 the text line of 1/2 and --sf-space-1/2 (20 + 12, compact
+     16 + 8). Before, compact kept 1/4 at 20 and 1/3 at 24, and 1/2 read
+     its control height (28): the compact ladder stood 20 / 24 / 28. The steps are the
+     region's tokens, so an explicit size and data-sf-density="normal" take
+     the normal values back with them; the phone ladder (below 60rem) keeps
+     the rules above. */
+  @media (min-width: 60rem) {
+    .sf-avatar--size-1\/3 {
+      --sf-avatar--height: var(--sf-icon-size-3);
+      --sf-avatar--width: var(--sf-icon-size-3);
+    }
+
+    .sf-avatar--size-1\/2 {
+      --sf-avatar--height: calc(var(--sf-text-height-1\/2) + var(--sf-space-1\/2));
+      --sf-avatar--width: calc(var(--sf-text-height-1\/2) + var(--sf-space-1\/2));
+    }
   }
 
   .sf-avatar--placeholder, .sf-avatar--text {
@@ -265,11 +304,25 @@ $sf-avatar-hue-classes: ();
     --sf-avatar--border-top-left-radius: var(--sf-avatar-radius, var(--sf-radius--ui));
   }
 
+  /* An <img> picture fills the same circle as a background one. The ring is
+     taken off the avatar and drawn by the picture itself as an inset outline,
+     over its edge: an image inside the ring was a circle one ring smaller
+     than its size, and a lookup row clips its avatar to the inner edge. The
+     outline has the ring's width and colour, so hover still shows. */
+  .sf-avatar:has(> .sf-avatar-image) {
+    --sf-avatar--border-top-width: 0;
+    --sf-avatar--border-bottom-width: 0;
+    --sf-avatar--border-inline-start-width: 0;
+    --sf-avatar--border-inline-end-width: 0;
+  }
+
   .sf-avatar-image {
     inline-size: 100%;
     block-size: 100%;
     object-fit: cover;
     border-radius: inherit;
+    outline: var(--sf-avatar-border-width, var(--sf-px)) solid var(--sf-avatar--border-color, var(--sf-avatar-border-color, transparent));
+    outline-offset: calc(var(--sf-avatar-border-width, var(--sf-px)) * -1);
   }
 }
 

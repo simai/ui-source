@@ -1,4 +1,5 @@
 @use 'var__tags' as *;
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @layer sf.components {
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-a1) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
   .sf-tag {
@@ -103,11 +104,14 @@
     padding-top: var(--sf-tag--block, var(--sf-icon-button--padding-top));
   }
 
+  /* The colour mark keeps its circle in a long tag that wraps (docs precheck
+     TG-03: an 8x20 pill at 390): it never shrinks. */
   .sf-tag .sf-tag-color-icon {
     border-radius: var(--sf-tag-color-icon--border-radius);
     height: var(--sf-tag-color-icon--height);
     opacity: var(--sf-tag-color-icon--opacity);
     width: var(--sf-tag-color-icon--width);
+    flex-shrink: 0;
   }
 
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
@@ -356,7 +360,8 @@
      The boundary is an inset shadow rather than a border, because the tag is
      built with `border: 0` and a real border would make every tag two pixels
      taller than the one beside it. */
-  .sf-tag.sf-tag--appearance-surface:is(.sf-tag--color, .sf-tag--icon, .sf-tag--default, .sf-tag--avatar, .sf-tag--checkbox) {
+  /* outline; surface is its former name until 2027-01-01 (journal value-tag-appearance-surface-to-outline). */
+  .sf-tag:is(.sf-tag--appearance-outline, .sf-tag--appearance-surface):is(.sf-tag--color, .sf-tag--icon, .sf-tag--default, .sf-tag--avatar, .sf-tag--checkbox) {
     /* The rest fill and the boundary are the surface roles of the same steps
        (C16; DEV audit 2026-11-10 defect 8 and Q3), so they follow the place:
        --sf-alpha-4/8/12 are black or white, outside the surface roles, and
@@ -375,16 +380,13 @@
     --sf-tag--background-color: var(--sf-success-container-hover);
   }
 
+  /* A tag's state changes its fill, never its height (docs precheck smart content TG-01: an active
+     checkbox tag of size 1/2 took size 1's block padding and grew from 32 to 36, 28 to 32 on a
+     phone; the size 2 and 3 tags shrank to it). The size rules alone set the padding. */
   .sf-tag.sf-tag--interactive:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--success:not(:disabled):not(.disabled):active, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--success.active {
     --sf-tag--background-color: var(--sf-success-container-active);
-    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
-    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
   }
 
-  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--success.disabled, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--error.disabled, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--warning.disabled, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--color.disabled, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--icon.disabled, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--default.disabled, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--avatar.disabled, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--checkbox.disabled, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--info.disabled {
-    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
-    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
-  }
 
   .sf-tag.disabled .sf-dot-item {
     --sf-dot-item--background-color: var(--sf-surface-disabled);
@@ -396,8 +398,6 @@
 
   .sf-tag.sf-tag--interactive:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--error:not(:disabled):not(.disabled):active, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--error.active {
     --sf-tag--background-color: var(--sf-error-container-active);
-    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
-    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
   }
 
   .sf-tag.sf-tag--interactive.sf-tag--error:not(:disabled):not(.disabled):hover {
@@ -435,8 +435,6 @@
 
   .sf-tag.sf-tag--interactive:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--warning:not(:disabled):not(.disabled):active, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--warning.active, .sf-tag.sf-tag--interactive:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--info:not(:disabled):not(.disabled):active, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--info.active {
     --sf-tag--background-color: var(--sf-warning-container-active);
-    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
-    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
   }
 
   .sf-tag.sf-tag--interactive.sf-tag--color:not(:disabled):not(.disabled):hover, .sf-tag.sf-tag--interactive.sf-tag--checkbox:not(:disabled):not(.disabled):hover, .sf-tag.sf-tag--interactive.sf-tag--icon:not(:disabled):not(.disabled):hover, .sf-tag.sf-tag--interactive.sf-tag--default:not(:disabled):not(.disabled):hover, .sf-tag.sf-tag--interactive.sf-tag--avatar:not(:disabled):not(.disabled):hover {
@@ -445,8 +443,6 @@
 
   .sf-tag.sf-tag--interactive:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--color:not(:disabled):not(.disabled):active, .sf-tag.sf-tag--interactive:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--icon:not(:disabled):not(.disabled):active, .sf-tag.sf-tag--interactive:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--default:not(:disabled):not(.disabled):active, .sf-tag.sf-tag--interactive:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--avatar:not(:disabled):not(.disabled):active, .sf-tag.sf-tag--interactive:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--checkbox:not(:disabled):not(.disabled):active, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--color.active, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--icon.active, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--default.active, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--avatar.active, .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--checkbox.active {
     --sf-tag--background-color: var(--sf-primary-container);
-    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
-    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
   }
 
   .sf-tag.sf-tag--color.disabled .sf-tag-color-icon {
@@ -455,13 +451,6 @@
 
   .sf-tag.sf-tag--interactive:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--checkbox:not(:disabled):not(.disabled):active, .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--checkbox.active {
     --sf-tag--background-color: var(--sf-primary-container);
-    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
-    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
-  }
-
-  .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--checkbox.disabled {
-    --sf-tag--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
-    --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
   }
 
   .sf-tag.sf-tag--icon.disabled .sf-icon {
@@ -536,15 +525,19 @@
     }
   }
 
-  /* The states of the two ramp appearances: one step up on hover, with surface
-     raising its boundary alongside. */
-  .sf-tag.sf-tag--interactive.sf-tag--appearance-surface:not(:disabled):not(.disabled):hover,
+  /* The states of the two ramp appearances: one step up on hover, with outline
+     raising its boundary alongside. outline is the name the smart element
+     writes; surface is its former name until 2027-01-01 (journal
+     value-tag-appearance-surface-to-outline). Both rules named surface alone,
+     so an outline tag fell back to the default hover fill without the raised
+     boundary, and kept its rest look when disabled (M1, round-2 acceptance). */
+  .sf-tag.sf-tag--interactive:is(.sf-tag--appearance-outline, .sf-tag--appearance-surface):not(:disabled):not(.disabled):hover,
   .sf-tag.sf-tag--interactive.sf-tag--appearance-ghost:not(:disabled):not(.disabled):hover {
     /* The surface role of the step (C16; DEV audit 2026-11-10 defect 8). */
     --sf-tag--background-color: var(--sf-surface-state-select);
   }
 
-  .sf-tag.sf-tag--interactive.sf-tag--appearance-surface:not(:disabled):not(.disabled):hover {
+  .sf-tag.sf-tag--interactive:is(.sf-tag--appearance-outline, .sf-tag--appearance-surface):not(:disabled):not(.disabled):hover {
     --sf-tag--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-surface-state-active);
   }
 
@@ -554,7 +547,7 @@
      differently from the one beside it. So the ramp governs rest and hover here,
      not selection. */
 
-  .sf-tag.sf-tag--appearance-surface:is(:disabled, .disabled),
+  .sf-tag:is(.sf-tag--appearance-outline, .sf-tag--appearance-surface):is(:disabled, .disabled),
   .sf-tag.sf-tag--appearance-ghost:is(:disabled, .disabled) {
     --sf-tag--background-color: transparent;
     --sf-tag--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-surface-state-hover);
@@ -563,14 +556,28 @@
   /* Every size publishes its text on the root, so density, inline and an
      embedding component can read it. Sizes 1/3, 2 and 3 borrow the type, state
      and colour rules of 1/2 and 1 (aliased above) and set their own text and
-     spacing here. */
+     spacing here.
+
+     The edge (owner decision C76, prototypes/tags-placement.html#tags-uniform):
+     the space before the first painted part and after the last one -- text,
+     icon, avatar, dot, check or cross -- is one value per step, 8 / 12 / 16 /
+     20 at 1/3, 1/2, 1 and 2 (--sf-a8, --sf-b2, --sf-b6, --sf-c0), on a desktop
+     and on a phone; a compact region (C22) takes the step below on a desktop.
+     The parts stand a gap apart, the step's text-space-x (C69): the label's
+     padding beside a part, none at the tag's own edge (sf.states below). Before,
+     the tag's padding (the step's space-x) and the label's text-space-x both
+     stood before a text-only label: 18 / 21 / 24 at 1/3, 1/2, 1 against the
+     decision's 8 / 12 / 16 (docs precheck smart content TG-05). Size 3, which
+     C76 does not name, keeps the step's space-x (24, phone 22), the next edge
+     of the same series. An inline tag keeps the insets of its host's line. */
   .sf-tag.sf-tag--size-1\/3 {
     --sf-tag--font-size: var(--sf-text-size-1\/3);
     --sf-tag--line-height: var(--sf-text-height-1\/3);
     --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
-    --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-ui-1\/3--space-x));
-    --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-ui-1\/3--space-x));
-    --sf-tag--close-size: var(--sf-text-size-1\/4);
+    --sf-tag--edge: var(--sf-a8);
+    --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-tag--edge));
+    --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-tag--edge));
+    --sf-tag--close-size: calc(var(--sf-text-height-1\/3) / 2);
   }
 
   .sf-tag.sf-tag--size-1\/3 .sf-tag-color-icon {
@@ -581,22 +588,29 @@
   .sf-tag.sf-tag--size-1\/2 {
     --sf-tag--font-size: var(--sf-text-size-1\/2);
     --sf-tag--line-height: var(--sf-text-height-1\/2);
-    --sf-tag--close-size: var(--sf-text-size-1\/4);
+    --sf-tag--edge: var(--sf-b2);
+    --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-tag--edge));
+    --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-tag--edge));
+    --sf-tag--close-size: calc(var(--sf-text-height-1\/2) / 2);
   }
 
   .sf-tag.sf-tag--size-1 {
     --sf-tag--font-size: var(--sf-text-size-1);
     --sf-tag--line-height: var(--sf-text-height-1);
-    --sf-tag--close-size: var(--sf-text-size-1\/3);
+    --sf-tag--edge: var(--sf-b6);
+    --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-tag--edge));
+    --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-tag--edge));
+    --sf-tag--close-size: calc(var(--sf-text-height-1) / 2);
   }
 
   .sf-tag.sf-tag--size-2 {
     --sf-tag--font-size: var(--sf-text-size-2);
     --sf-tag--line-height: var(--sf-text-height-2);
     --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-default));
-    --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-ui-2--space-x));
-    --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-ui-2--space-x));
-    --sf-tag--close-size: var(--sf-text-size-1\/2);
+    --sf-tag--edge: var(--sf-c0);
+    --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-tag--edge));
+    --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-tag--edge));
+    --sf-tag--close-size: calc(var(--sf-text-height-2) / 2);
   }
 
   .sf-tag.sf-tag--size-2 .sf-tag-color-icon {
@@ -618,23 +632,47 @@
     --sf-tag-color-icon--width: var(--sf-text-height-3);
   }
 
-  /* Density, with the names the buttons use: compact, comfortable and spacious
-     move the block padding of each size one step each way. */
-  .sf-tag.sf-tag--size-1\/3.spacing-compact { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-low)); }
-  .sf-tag.sf-tag--size-1\/3.spacing-comfortable { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-high)); }
-  .sf-tag.sf-tag--size-1\/3.spacing-spacious { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-highest)); }
-  .sf-tag.sf-tag--size-1\/2.spacing-compact { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/2--space-y-tightness-low)); }
-  .sf-tag.sf-tag--size-1\/2.spacing-comfortable { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/2--space-y-tightness-high)); }
-  .sf-tag.sf-tag--size-1\/2.spacing-spacious { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/2--space-y-tightness-highest)); }
-  .sf-tag.sf-tag--size-1.spacing-compact { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1--space-y-tightness-low)); }
-  .sf-tag.sf-tag--size-1.spacing-comfortable { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1--space-y-tightness-high)); }
-  .sf-tag.sf-tag--size-1.spacing-spacious { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1--space-y-tightness-highest)); }
-  .sf-tag.sf-tag--size-2.spacing-compact { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-low)); }
-  .sf-tag.sf-tag--size-2.spacing-comfortable { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-high)); }
-  .sf-tag.sf-tag--size-2.spacing-spacious { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-highest)); }
-  .sf-tag.sf-tag--size-3.spacing-compact { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-low)); }
-  .sf-tag.sf-tag--size-3.spacing-comfortable { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-high)); }
-  .sf-tag.sf-tag--size-3.spacing-spacious { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-highest)); }
+  /* A compact region (desktop only: below the desktop breakpoint the phone
+     ladder is already the dense one) moves each edge one step down, as it
+     moves the tag's height: 8 / 8 / 12 / 16 at 1/3, 1/2, 1, 2 (C76
+     prototype, compact). An island of data-sf-density="normal" keeps the
+     edges above. */
+  @media (min-width: bp.$breakpoint-desktop) {
+    [data-sf-density="compact"] .sf-tag.sf-tag--size-1\/2:not([data-sf-density="normal"] *) {
+      --sf-tag--edge: var(--sf-a8);
+    }
+
+    [data-sf-density="compact"] .sf-tag.sf-tag--size-1:not([data-sf-density="normal"] *) {
+      --sf-tag--edge: var(--sf-b2);
+    }
+
+    [data-sf-density="compact"] .sf-tag.sf-tag--size-2:not([data-sf-density="normal"] *) {
+      --sf-tag--edge: var(--sf-b6);
+    }
+  }
+
+  /* The height (C27, as sf-button; docs precheck TG-02): sf-tag--height-low,
+     -high and -highest move the block padding of each size to the size's
+     tightness step, the size's usual step and its neighbours on the height
+     ladder; default needs no class. spacing-compact, -comfortable and
+     -spacious, which did the same under the buttons' former density names,
+     draw as low, high and highest until 2027-01-01 (journal
+     class-tag-spacing-to-height). */
+  .sf-tag.sf-tag--size-1\/3:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-low)); }
+  .sf-tag.sf-tag--size-1\/3:is(.sf-tag--height-high, .spacing-comfortable) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-high)); }
+  .sf-tag.sf-tag--size-1\/3:is(.sf-tag--height-highest, .spacing-spacious) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/3--space-y-tightness-highest)); }
+  .sf-tag.sf-tag--size-1\/2:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/2--space-y-tightness-low)); }
+  .sf-tag.sf-tag--size-1\/2:is(.sf-tag--height-high, .spacing-comfortable) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/2--space-y-tightness-high)); }
+  .sf-tag.sf-tag--size-1\/2:is(.sf-tag--height-highest, .spacing-spacious) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1\/2--space-y-tightness-highest)); }
+  .sf-tag.sf-tag--size-1:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1--space-y-tightness-low)); }
+  .sf-tag.sf-tag--size-1:is(.sf-tag--height-high, .spacing-comfortable) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1--space-y-tightness-high)); }
+  .sf-tag.sf-tag--size-1:is(.sf-tag--height-highest, .spacing-spacious) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-1--space-y-tightness-highest)); }
+  .sf-tag.sf-tag--size-2:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-low)); }
+  .sf-tag.sf-tag--size-2:is(.sf-tag--height-high, .spacing-comfortable) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-high)); }
+  .sf-tag.sf-tag--size-2:is(.sf-tag--height-highest, .spacing-spacious) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-2--space-y-tightness-highest)); }
+  .sf-tag.sf-tag--size-3:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-low)); }
+  .sf-tag.sf-tag--size-3:is(.sf-tag--height-high, .spacing-comfortable) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-high)); }
+  .sf-tag.sf-tag--size-3:is(.sf-tag--height-highest, .spacing-spacious) { --sf-tag--block: var(--sf-tag-padding-block, var(--sf-ui-3--space-y-tightness-highest)); }
 
   /* Inline: a tag that sits on the text line of another control -- a selected
      value in a dropdown, an input or a table cell. No block padding, one small
@@ -670,11 +708,11 @@
 
   /* Inline and compact together: a chip that fills a control of its own size,
      with the compact block padding of its size and its own text line. */
-  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-1\/3.spacing-compact { --sf-tag--block: var(--sf-ui-1\/3--space-y-tightness-low); }
-  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-1\/2.spacing-compact { --sf-tag--block: var(--sf-ui-1\/2--space-y-tightness-low); }
-  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-1.spacing-compact { --sf-tag--block: var(--sf-ui-1--space-y-tightness-low); }
-  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-2.spacing-compact { --sf-tag--block: var(--sf-ui-2--space-y-tightness-low); }
-  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-3.spacing-compact { --sf-tag--block: var(--sf-ui-3--space-y-tightness-low); }
+  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-1\/3:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-ui-1\/3--space-y-tightness-low); }
+  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-1\/2:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-ui-1\/2--space-y-tightness-low); }
+  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-1:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-ui-1--space-y-tightness-low); }
+  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-2:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-ui-2--space-y-tightness-low); }
+  .sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-3:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-ui-3--space-y-tightness-low); }
 
   /* The remove mark is the tag size's step of the cross ladder. The button
      keeps the whole line, so the target does not shrink with the mark. */
@@ -877,6 +915,25 @@
   --sf-avatar--line-height: var(--sf-text-height-3);
 }
 
+/* The edge of C76 is the tag's padding alone: a label (or a count) that is
+   the first or the last part keeps no padding of its own on that side, so a
+   text-only tag reads edge | text | edge, and a picture or the cross stands
+   on the edge with the step's gap between it and the label. Inside the
+   button of an interactive or checkbox tag the label is that button's first
+   or last part in the same way. An inline tag sets --sf-tag--label-* and is
+   not affected. */
+.sf-tag.sf-tag .sf-tag-container:first-child {
+  --sf-tag-container--padding-inline-start: 0;
+}
+
+.sf-tag.sf-tag .sf-tag-container:last-child {
+  --sf-tag-container--padding-inline-end: 0;
+}
+
+.sf-tag.sf-tag .sf-tag-count:last-child {
+  --sf-tag-count--padding-inline-end: 0;
+}
+
 /* A tag on another control's text line (inline, or line="..." on sf-tag):
    its avatar is that line, as its remove button is, so a chip's picture and
    the picture of the field's list rows are one step (the geometry standard:
@@ -889,15 +946,44 @@
   --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-tag--line, var(--sf-tag--line-height)) / 2));
   --sf-avatar--line-height: var(--sf-tag--line, var(--sf-tag--line-height));
 }
+
+/* C76's optical corrections (owner 2026-11-11, prototypes/tags-placement.html
+   #tags-uniform): the edge and the gap are measured by what is painted.
+   - A circle (the avatar, the colour dot) reads further from the tag's
+     straight edge than a square of the same box, so at the edge it moves out
+     by a sixteenth of its diameter (1 at 16, 1.25 at 20, 1.5 at 24); beside
+     the text it keeps the gap.
+   - A Material Symbols glyph paints 20 of its 24 (a twelfth of its box blank
+     on each side), so the icon's box moves out by its size / 12 on both
+     sides and the paint lands on the edge and on the gap (1.33 at 16, 2 at
+     24). The blank a single glyph's own shape adds is sf-icon's to report
+     (C76, a separate item).
+   - The check and the cross paint their own box: no correction.
+   Not in an inline tag, which keeps its host line's insets, nor in a colour
+   row of a list, which draws the dot with the tag's markup. */
+.sf-tag:not(.sf-tag--inline, .sf-list-item *) > .sf-avatar {
+  margin-inline-start: calc(var(--sf-avatar--width) / -16);
+}
+
+.sf-tag:not(.sf-tag--inline, .sf-list-item *) > .sf-tag-color-icon {
+  margin-inline-start: calc(var(--sf-tag-color-icon--width) / -16);
+}
+
+.sf-tag:not(.sf-tag--inline, .sf-list-item *) > .sf-icon,
+.sf-tag:not(.sf-tag--inline, .sf-list-item *) > sf-icon > .sf-icon {
+  margin-inline: calc(var(--sf-icon--width) / -12);
+}
 }
 
 @layer sf.states {
 /* The remove mark is drawn by the tag, whatever the close markup carries: a
    close written without a size class had no glyph at all, so a removable tag
    in plain markup showed no mark. The mark is a step of the cross ladder
-   (--sf-tag--close-size: 1/4 at tag sizes 1/3 and 1/2, then 1/3, 1/2 and 1),
-   with the line of every cross, 2 px (C14; it was 0.7 of the label's font size,
-   and its line fell to 1.05-1.75 px), and it sits
+   (--sf-tag--close-size: half the step's picture, C76 -- 8 / 10 / 12 / 14 at
+   tag sizes 1/3, 1/2, 1 and 2 on a desktop, 8 / 8 / 10 / 12 on a phone; size
+   3 keeps text-size-1), with the line of every cross, 2 px (C14; it was 0.7 of
+   the label's font size, and its line fell to 1.05-1.75 px) -- 1.5 where the
+   cross is 8 (C76, below) -- and it sits
    after the label at the label's own end step. The button keeps no padding of
    its own and reaches a target of --sf-c2 around the mark (WCAG 2.2, 2.5.8), the way
    a checkbox's native control does. */
@@ -950,6 +1036,32 @@
 .sf-tag.sf-tag--size-3 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
   --sf-close-icon--width: var(--sf-tag--close-size);
   --sf-close-icon--height: var(--sf-tag--close-size);
+}
+
+/* C76: the cross is 8 at step 1/3 (and at 1/2 on a phone and in a compact
+   region, where the step's picture is 16), drawn with a 1.5 line: at 8 a 2 px
+   line is heavier than the letters beside it. Larger crosses keep the 2 px
+   line of C14. Its press target stays --sf-c2 (24). */
+.sf-tag.sf-tag--size-1\/3 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon,
+.sf-tag.sf-tag--size-1\/3 > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+  --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%3E%3Cpath%20d=%27M0%200L8%208M8%200L0%208%27%20stroke=%27black%27%20stroke-width=%271.5%27/%3E%3C/svg%3E");
+  --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%3E%3Cpath%20d=%27M0%200L8%208M8%200L0%208%27%20stroke=%27black%27%20stroke-width=%271.5%27/%3E%3C/svg%3E");
+}
+
+@media not all and (min-width: #{bp.$breakpoint-desktop}) {
+  .sf-tag.sf-tag--size-1\/2 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon,
+  .sf-tag.sf-tag--size-1\/2 > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+    --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%3E%3Cpath%20d=%27M0%200L8%208M8%200L0%208%27%20stroke=%27black%27%20stroke-width=%271.5%27/%3E%3C/svg%3E");
+    --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%3E%3Cpath%20d=%27M0%200L8%208M8%200L0%208%27%20stroke=%27black%27%20stroke-width=%271.5%27/%3E%3C/svg%3E");
+  }
+}
+
+@media (min-width: #{bp.$breakpoint-desktop}) {
+  [data-sf-density="compact"] .sf-tag.sf-tag--size-1\/2:not([data-sf-density="normal"] *) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon,
+  [data-sf-density="compact"] .sf-tag.sf-tag--size-1\/2:not([data-sf-density="normal"] *) > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+    --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%3E%3Cpath%20d=%27M0%200L8%208M8%200L0%208%27%20stroke=%27black%27%20stroke-width=%271.5%27/%3E%3C/svg%3E");
+    --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%3E%3Cpath%20d=%27M0%200L8%208M8%200L0%208%27%20stroke=%27black%27%20stroke-width=%271.5%27/%3E%3C/svg%3E");
+  }
 }
 }
 

@@ -38,8 +38,10 @@
     flex: none;
   }
 
+  /* The low height of size 1/3: 24 on a desktop, 20 on a phone (docs
+     precheck FI-04; the fixed --sf-space-1/4 kept 24 on a phone too). */
   .sf-featured-icon--size-1\/3 {
-    --sf-featured-icon--padding: var(--sf-space-1\/4);
+    --sf-featured-icon--padding: var(--sf-ui-1\/3--space-y-tightness-low);
     --sf-featured-icon--icon-size: var(--sf-text-height-1\/3);
     --sf-featured-icon--square-radius: var(--sf-radius-1\/2);
   }

@@ -1,5 +1,6 @@
 import { html, nothing } from "lit";
 import { nearestFieldSize } from "../../../../component/field-size";
+import { cssUrl } from "../../../../core/js/css-url";
 
 // The mark in a row's box is bound as a property, not as an attribute. A press
 // anywhere in the row reaches the label that holds this input and flips its live
@@ -117,7 +118,7 @@ export function renderListItemTemplate(context) {
             class=${avatarClasses.join(" ")}
             aria-hidden="true"
             style=${context.avatarImageUrl
-              ? `background-image: url(${context.avatarImageUrl});`
+              ? `background-image: ${cssUrl(context.avatarImageUrl)};`
               : nothing}
           ></span>
           <div class="sf-avatar-label-group-container flex flex-col">
@@ -172,11 +173,12 @@ export function renderListItemTemplate(context) {
   const renderTrailing = () => {
     if (trailingContent !== nothing) return trailingContent;
 
-    // The box after a picture says the row may be one of several chosen. An
-    // option of a single choice says it is chosen with its fill alone (owner
-    // C08): sf-dropdown drew an empty box at the end of every avatar and
-    // colour row of a one-of list (DEV P2, owner R143, 2026-11-12).
-    if ((context.type === "avatar" || context.type === "color") && (!isOption || context.multiple)) {
+    // The box after a picture is a dropdown option's choice, and only where
+    // the list may hold several chosen. A row outside a dropdown has no choice
+    // to mark (docs precheck smart content LI-01: an empty checkbox stood at
+    // the end of every such row); an option of a single choice says it is
+    // chosen with its fill alone (owner C08; DEV P2, owner R143, 2026-11-12).
+    if (isOption && context.multiple && (context.type === "avatar" || context.type === "color")) {
       return html`
         <label
           class="sf-checkbox sf-checkbox--size-${context.sizeGroup

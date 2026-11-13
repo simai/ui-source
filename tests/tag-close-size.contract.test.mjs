@@ -40,11 +40,14 @@ test('sf-tag draws its remove button in the Smart markup', async () => {
 
 test('sf-tag draws its remove cross from the cross ladder, plain (C14)', async () => {
   const tags = await read('component/tags/scss/_css__tags.scss');
-  for (const [size, step] of [['1\\/3', '1\\/4'], ['1\\/2', '1\\/4'], ['1', '1\\/3'], ['2', '1\\/2'], ['3', '1']]) {
+  // Half the step's picture (C76: 8 / 10 / 12 / 14 at 1/3, 1/2, 1, 2 on a
+  // desktop, 8 thin at 1/3); size 3 keeps the ladder cross of C14.
+  for (const [size, mark] of [['1\\/3', 'calc(var(--sf-text-height-1\\/3) / 2)'], ['1\\/2', 'calc(var(--sf-text-height-1\\/2) / 2)'], ['1', 'calc(var(--sf-text-height-1) / 2)'], ['2', 'calc(var(--sf-text-height-2) / 2)'], ['3', 'var(--sf-text-size-1)']]) {
     const start = tags.indexOf(`.sf-tag.sf-tag--size-${size} {\n    --sf-tag--font-size:`);
     assert.ok(start >= 0, size);
-    assert.ok(tags.slice(start, tags.indexOf('}', start)).includes(`--sf-tag--close-size: var(--sf-text-size-${step});`), size);
+    assert.ok(tags.slice(start, tags.indexOf('}', start)).includes(`--sf-tag--close-size: ${mark};`), size);
   }
+  assert.match(tags, /\.sf-tag\.sf-tag--size-1\\\/3 > :is\(sf-button-close, sf-close\) > \.sf-icon-button\.sf-icon-button--close > \.sf-close > \.sf-close-icon \{\n  --sf-close-icon--mask-image: url\("data:image\/svg\+xml,[^"]*stroke-width=%271\.5%27/u, 'the 8 cross is drawn with a 1.5 line (C76)');
   assert.doesNotMatch(tags, /\* 0\.7\)/u, 'no cross scaled from the label');
   const css = await read('smart/tag/js/templates/default.css');
   assert.match(css, /--sf-close-icon--background-color: color-mix\(in srgb, var\(--sf-tag-color, var\(--sf-on-surface\)\) 64%, transparent\);/u);

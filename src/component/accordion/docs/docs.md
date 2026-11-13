@@ -62,7 +62,9 @@ one section a toggle -- a list that fills in later -- says
 
 ## Size
 
-Without a size class the accordion has a roomy header for content pages. In
+Without a size class the accordion has a roomy header for content pages: the
+page's text in a header as tall as the top step of the height ladder, the
+control height of size 3 (56 on a desktop, 52 on a phone). In
 dense interfaces put it on the control ladder with `sf-accordion--size-1/3`,
 `sf-accordion--size-1/2`, `sf-accordion--size-1`, `sf-accordion--size-2` or
 `sf-accordion--size-3` (on each `.sf-accordion`):

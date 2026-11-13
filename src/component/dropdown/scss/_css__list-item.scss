@@ -100,8 +100,8 @@
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-list-item.sf-list-item--checkbox.sf-list-item--size-1 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1 .sf-list-item-container {
-  --sf-list-item-container--padding-inline-end: var(--sf-ui-1--text-space-x);
-  --sf-list-item-container--padding-inline-start: var(--sf-ui-1--text-space-x);
+  --sf-list-item-container--padding-inline-end: 0;
+  --sf-list-item-container--padding-inline-start: 0;
   --sf-list-item-container--font-size: var(--sf-text-size-1);
   --sf-list-item-container--line-height: var(--sf-text-height-1);
 }
@@ -149,8 +149,8 @@
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-list-item.sf-list-item--checkbox.sf-list-item--size-2 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-2 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-2 .sf-list-item-container {
-  --sf-list-item-container--padding-inline-end: var(--sf-ui-2--text-space-x);
-  --sf-list-item-container--padding-inline-start: var(--sf-ui-2--text-space-x);
+  --sf-list-item-container--padding-inline-end: 0;
+  --sf-list-item-container--padding-inline-start: 0;
   --sf-list-item-container--font-size: var(--sf-text-size-2);
   --sf-list-item-container--line-height: var(--sf-text-height-2);
 }
@@ -178,8 +178,8 @@
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-list-item.sf-list-item--checkbox.sf-list-item--size-3 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-3 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-3 .sf-list-item-container {
-  --sf-list-item-container--padding-inline-end: var(--sf-ui-3--text-space-x);
-  --sf-list-item-container--padding-inline-start: var(--sf-ui-3--text-space-x);
+  --sf-list-item-container--padding-inline-end: 0;
+  --sf-list-item-container--padding-inline-start: 0;
   --sf-list-item-container--font-size: var(--sf-text-size-3);
   --sf-list-item-container--line-height: var(--sf-text-height-3);
 }
@@ -212,8 +212,8 @@
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-list-item.sf-list-item--checkbox.sf-list-item--size-1\/2 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1\/2 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/2 .sf-list-item-container {
-  --sf-list-item-container--padding-inline-end: var(--sf-ui-1\/2--text-space-x);
-  --sf-list-item-container--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
+  --sf-list-item-container--padding-inline-end: 0;
+  --sf-list-item-container--padding-inline-start: 0;
   --sf-list-item-container--font-size: var(--sf-text-size-1\/2);
   --sf-list-item-container--line-height: var(--sf-text-height-1\/2);
 }
@@ -247,8 +247,8 @@
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-list-item.sf-list-item--checkbox.sf-list-item--size-1\/3 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1\/3 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/3 .sf-list-item-container {
-  --sf-list-item-container--padding-inline-end: var(--sf-ui-1\/3--text-space-x);
-  --sf-list-item-container--padding-inline-start: var(--sf-ui-1\/3--text-space-x);
+  --sf-list-item-container--padding-inline-end: 0;
+  --sf-list-item-container--padding-inline-start: 0;
   --sf-list-item-container--font-size: var(--sf-text-size-1\/3);
   --sf-list-item-container--line-height: var(--sf-text-height-1\/3);
 }
@@ -374,6 +374,27 @@
     transition-duration: 0s;
   }
 }
+
+/* C77 (owner 2026-11-11, prototypes/field-inset.html): a row's text without
+   a picture starts at the size's inset from the row's edge -- --sf-space-1/2,
+   --sf-space-1 or --sf-space-2: 12 / 16 / 20 at 1/2, 1, 2; 12 / 12 / 16 in a
+   compact region and on a phone, size 1/2 never below 12 (--sf-b2) -- and a
+   row's picture stands at the same place, its C105 H2 step after it. The text
+   block keeps no --sf-ui-<S>--text-space-x of its own at either end (the size
+   rules above): a text-only row stood 21 / 24 / 30 from its edge (compact
+   18 / 21 / 24, phone 18 / 20 / 26; docs precheck smart content LI-02). The
+   same inset as sf-dropdown's value and options and sf-list's rows. Sizes 1/3
+   and 3, which C77 does not name, keep the size's space-x. A list or a
+   dropdown that sets the row's inset itself still wins (sf-list's frame rule,
+   the dropdown's states-layer rule). */
+.sf-list-item.sf-list-item--size-1\/2 { --sf-list-item--inset: max(var(--sf-space-1\/2), var(--sf-b2)); }
+.sf-list-item.sf-list-item--size-1 { --sf-list-item--inset: var(--sf-space-1); }
+.sf-list-item.sf-list-item--size-2 { --sf-list-item--inset: var(--sf-space-2); }
+
+.sf-list-item:is(.sf-list-item--size-1\/2, .sf-list-item--size-1, .sf-list-item--size-2) {
+  --sf-list-item--padding-inline-start: var(--sf-list-item--inset);
+  --sf-list-item--padding-inline-end: var(--sf-list-item--inset);
+}
 }
 
 @layer sf.states {
@@ -407,45 +428,45 @@
   --sf-tag--block: 0;
   --sf-tag--inline-start: 0;
   --sf-tag--inline-end: 0;
-  --sf-tag--label-start: var(--sf-ui-1\/3--text-space-x);
+  --sf-tag--label-start: 0;
   --sf-tag--label-end: var(--sf-ui-1\/3--text-space-x);
-  gap: 0;
+  gap: var(--sf-space-1\/2);
 }
 .sf-list-item.sf-list-item--color.sf-list-item--size-1\/2 .sf-tag.sf-tag {
   --sf-tag--background-color: transparent;
   --sf-tag--block: 0;
   --sf-tag--inline-start: 0;
   --sf-tag--inline-end: 0;
-  --sf-tag--label-start: var(--sf-ui-1\/2--text-space-x);
+  --sf-tag--label-start: 0;
   --sf-tag--label-end: var(--sf-ui-1\/2--text-space-x);
-  gap: 0;
+  gap: var(--sf-space-1\/2);
 }
 .sf-list-item.sf-list-item--color.sf-list-item--size-1 .sf-tag.sf-tag {
   --sf-tag--background-color: transparent;
   --sf-tag--block: 0;
   --sf-tag--inline-start: 0;
   --sf-tag--inline-end: 0;
-  --sf-tag--label-start: var(--sf-ui-1--text-space-x);
+  --sf-tag--label-start: 0;
   --sf-tag--label-end: var(--sf-ui-1--text-space-x);
-  gap: 0;
+  gap: var(--sf-space-1\/2);
 }
 .sf-list-item.sf-list-item--color.sf-list-item--size-2 .sf-tag.sf-tag {
   --sf-tag--background-color: transparent;
   --sf-tag--block: 0;
   --sf-tag--inline-start: 0;
   --sf-tag--inline-end: 0;
-  --sf-tag--label-start: var(--sf-ui-2--text-space-x);
+  --sf-tag--label-start: 0;
   --sf-tag--label-end: var(--sf-ui-2--text-space-x);
-  gap: 0;
+  gap: var(--sf-space-1\/2);
 }
 .sf-list-item.sf-list-item--color.sf-list-item--size-3 .sf-tag.sf-tag {
   --sf-tag--background-color: transparent;
   --sf-tag--block: 0;
   --sf-tag--inline-start: 0;
   --sf-tag--inline-end: 0;
-  --sf-tag--label-start: var(--sf-ui-3--text-space-x);
+  --sf-tag--label-start: 0;
   --sf-tag--label-end: var(--sf-ui-3--text-space-x);
-  gap: 0;
+  gap: var(--sf-space-1\/2);
 }
 }
 
@@ -482,6 +503,20 @@
   --sf-avatar--width: var(--sf-text-height-3);
   --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-3) / 2));
   --sf-avatar--line-height: var(--sf-text-height-3);
+}
+}
+
+/* A row's text starts at one place whatever its picture (docs precheck smart
+   content LI-02): the avatar's label and the colour mark's text stand the row's
+   own gap from the picture, as an icon row's and a checkbox row's do -- the
+   C105 H2 step, --sf-space-1/2 (12; 8 compact and on a phone). The colour
+   row's text stood 0 from its dot. The colour row's gap is set with its other
+   tag resets in the states layer above (its gap 0 there outranked a gap set
+   here; acceptance 2026-11-11 D3), and its label loses the tag's own start
+   space, so the text stands one gap from the dot as an icon row's does. */
+@layer sf.components {
+.sf-list-item.sf-list-item--avatar .sf-avatar-label-group {
+  column-gap: var(--sf-space-1\/2);
 }
 }
 
@@ -530,6 +565,56 @@
 .sf-list-item--two-line.sf-list-item--size-3 {
   --sf-list-item-supporting--font-size: var(--sf-text-size-2);
   --sf-list-item-supporting--line-height: var(--sf-text-height-2);
+}
+
+/* A two-line row is a step of the height ladder (docs precheck smart content
+   LI-03, LS-02; the answer of C31): the next size's control height -- 48 at
+   size 1 on a desktop, 44 on a phone; 40 at 1/2, 56 at 2 -- with the two lines
+   centred in it. It was the one-line row plus a line, 60 and 72 on a desktop.
+   Size 3 has no step above it and keeps its padding at zero over the lines.
+   Doubled class: the one-line block padding of sizes 1/2 and 1/3 (three
+   classes, four when disabled) outranked these rules, so a two-line 1/2 row
+   was its own padding over the lines -- 48 on a desktop, the same as size 1,
+   and 44 against size 1's 40 in a compact region (intent acceptance
+   2026-11-13, content-5). Now 40 / 48 / 56 at 1/2, 1, 2 (compact 32 / 40 /
+   48, phone 36 / 44 / 52), each the next size's control height. */
+.sf-list-item.sf-list-item--two-line.sf-list-item--two-line.sf-list-item--size-1\/3 {
+  --sf-list-item--two-line-block: max(calc(var(--sf-px) * 0), calc((var(--sf-ui-1\/2--control-height) - var(--sf-text-height-1\/3) - var(--sf-list-item-supporting--line-height)) / 2));
+  --sf-list-item--padding-top: var(--sf-list-item--two-line-block);
+  --sf-list-item--padding-bottom: var(--sf-list-item--two-line-block);
+}
+
+.sf-list-item.sf-list-item--two-line.sf-list-item--two-line.sf-list-item--size-1\/2 {
+  --sf-list-item--two-line-block: max(calc(var(--sf-px) * 0), calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1\/2) - var(--sf-list-item-supporting--line-height)) / 2));
+  --sf-list-item--padding-top: var(--sf-list-item--two-line-block);
+  --sf-list-item--padding-bottom: var(--sf-list-item--two-line-block);
+}
+
+.sf-list-item.sf-list-item--two-line.sf-list-item--two-line.sf-list-item--size-1 {
+  --sf-list-item--two-line-block: max(calc(var(--sf-px) * 0), calc((var(--sf-ui-2--control-height) - var(--sf-text-height-1) - var(--sf-list-item-supporting--line-height)) / 2));
+  --sf-list-item--padding-top: var(--sf-list-item--two-line-block);
+  --sf-list-item--padding-bottom: var(--sf-list-item--two-line-block);
+}
+
+.sf-list-item.sf-list-item--two-line.sf-list-item--two-line.sf-list-item--size-2 {
+  --sf-list-item--two-line-block: max(calc(var(--sf-px) * 0), calc((var(--sf-ui-3--control-height) - var(--sf-text-height-2) - var(--sf-list-item-supporting--line-height)) / 2));
+  --sf-list-item--padding-top: var(--sf-list-item--two-line-block);
+  --sf-list-item--padding-bottom: var(--sf-list-item--two-line-block);
+}
+
+.sf-list-item.sf-list-item--two-line.sf-list-item--two-line.sf-list-item--size-3 {
+  --sf-list-item--two-line-block: max(calc(var(--sf-px) * 0), calc((var(--sf-ui-3--control-height) - var(--sf-text-height-3) - var(--sf-list-item-supporting--line-height)) / 2));
+  --sf-list-item--padding-top: var(--sf-list-item--two-line-block);
+  --sf-list-item--padding-bottom: var(--sf-list-item--two-line-block);
+}
+
+/* Where the two lines fill the step (size 1/2 in a compact region: 16 + 16
+   in a 32 row) the bottom padding has nothing to give the divider back from,
+   and the row stood a pixel off the ladder (33). The lines then give it back:
+   the wrap ends the divider's width early, inside the supporting line's
+   leading, so the row is the step's height with its divider inside (C01). */
+.sf-list-item--two-line .sf-list-item-wrap {
+  margin-block-end: min(calc(var(--sf-px) * 0), calc(var(--sf-list-item--two-line-block, calc(var(--sf-px) * 0)) - var(--sf-list-item--border-bottom-width)));
 }
 
 .sf-list-item.disabled .sf-list-item-supporting {

@@ -1,7 +1,18 @@
 @layer sf.components {
+  /* A badge is a square drawing in the avatar's corner (docs precheck AV-01):
+     its height is its width, so a badge without its drawing -- a letter --
+     no longer stands as a 16x30 pill over the initials, and the drawing
+     fills the square. */
   .sf-avatar-badge {
     background-color: var(--sf-avatar-badge--background-color, transparent);
     width: var(--sf-avatar-badge--width);
+    height: var(--sf-avatar-badge--width);
+  }
+
+  .sf-avatar-badge > svg {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
   }
 
   .sf-avatar-badge--size-1 {

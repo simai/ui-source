@@ -103,10 +103,13 @@ function renderItem(item, context) {
     `;
   }
 
+  // A disabled item is plain text that says so (docs precheck BC-01): it was
+  // a div without aria-disabled, drawn in the link colour.
   return html`
     <div
       class=${common.className}
       aria-current=${common.ariaCurrent}
+      aria-disabled=${item.disabled ? 'true' : nothing}
       aria-label=${common.ariaLabel}
       data-sf-breadcrumb-index=${common.dataIndex}
       @click=${(event) => context.component?.handleItemClick?.(event, item)}

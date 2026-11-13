@@ -252,13 +252,13 @@ test('BC-07, BC-09: the class runtime reads the list form and prints no utility 
 
 test('the manifest names the new setting and the new default', async () => {
   const manifest = JSON.parse(await read('src/smart/breadcrumbs/component.json'));
-  assert.equal(manifest.version, '1.2.0');
+  assert.equal(manifest.version, '1.2.2'); // 1.2.0 with the content precheck's BC-01 (content 5)
   assert.deepEqual(manifest.settings.current.values, ['last', 'none']);
   assert.equal(manifest.settings.current.default, 'last');
   assert.equal(manifest.settings['max-items'].default, 0);
   assert.equal(manifest.settings.siblings.default, false);
   assert.ok(manifest.relations.some((relation) => relation.name === 'cl-menu-context' && relation.lazy === true));
   const passport = JSON.parse(await read('src/component/breadcrumbs/passport.json'));
-  assert.equal(passport.version, '1.1.0');
+  assert.equal(passport.version, '1.1.2'); // 1.1.0 with BC-01's disabled ink (content 5)
   assert.ok(passport.files.includes('src/component/breadcrumbs/js/_trail.js'));
 });

@@ -136,6 +136,14 @@
     outline-offset: var(--sf-focus--offset);
   }
 
+  /* A disabled item takes the disabled ink, its icon too (C16; docs precheck
+     BC-01): it was drawn in the link colour and read as a link. */
+  .sf-breadcrumbs-item.sf-breadcrumbs-item:is(:disabled, .disabled, [aria-disabled="true"]) .sf-breadcrumbs-item-container {
+    --sf-breadcrumbs-item-container--color: var(--sf-on-surface-disabled);
+    --sf-icon--color: var(--sf-on-surface-disabled);
+    cursor: default;
+  }
+
   @media (forced-colors: active) {
     .sf-breadcrumbs-item.sf-breadcrumbs-item--link:not(:disabled):not(.disabled):not([aria-disabled="true"]):focus-visible {
       outline: var(--sf-focus-outline-width) solid currentColor;

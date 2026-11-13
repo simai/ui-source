@@ -1,6 +1,6 @@
 import {html, nothing} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
-import {BADGE_SIZE, REGION_LIMIT, markerGlyph} from '../../sections.mjs';
+import {BADGE_LINE, BADGE_SIZE, REGION_LIMIT, markerGlyph} from '../../sections.mjs';
 
 function joinClasses(...tokens) {
   return tokens.flat().filter(Boolean).join(' ');
@@ -35,7 +35,8 @@ function renderHeaderContent(context, section, open) {
     ${section.icon ? html`<i class="sf-icon sf-accordion-lead" aria-hidden="true">${section.icon}</i>` : nothing}
     <span class="sf-accordion-title">${section.title}</span>
     ${section.badge
-      ? html`<sf-badge class="sf-accordion-badge" size=${BADGE_SIZE[context.size] || '1/3'} text=${section.badge}></sf-badge>`
+      ? html`<sf-badge class="sf-accordion-badge" size=${BADGE_SIZE[context.size] || '1/3'}
+          line=${BADGE_LINE[context.size] || nothing} text=${section.badge}></sf-badge>`
       : nothing}
     ${context.isStatic ? nothing : html`<i class="sf-icon" aria-hidden="true">${markerGlyph(context.marker, open)}</i>`}
   `;

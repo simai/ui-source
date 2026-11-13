@@ -29,13 +29,14 @@ test('dropdown tags: the field publishes its line and nothing else about the tag
 test('dropdown tags: compact chips of the field size from size 1 up, one size down below', async () => {
   for (const file of ['component/dropdown/js/_dropdown.js', 'smart/dropdown/js/templates/default.js']) {
     const source = await read(file);
-    for (const [field, tag, spacing] of [['1/2', '1/3', ''], ['1', '1', 'compact'], ['2', '2', 'compact']]) {
-      assert.ok(source.includes(`"${field}": {size: "${tag}", spacing: "${spacing}"}`), `${file}: ${field}`);
+    // The tag's low height (C27), spacing-compact before (docs precheck TG-02).
+    for (const [field, tag, height] of [['1/2', '1/3', ''], ['1', '1', 'low'], ['2', '2', 'low']]) {
+      assert.ok(source.includes(`"${field}": {size: "${tag}", height: "${height}"}`), `${file}: ${field}`);
     }
     assert.match(source, /sf-tag--size-\$\{tagSize\} sf-tag--inline\$\{tagSpacing\}/, file);
   }
   const tags = await read('component/tags/scss/_css__tags.scss');
-  assert.ok(tags.includes('.sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-1.spacing-compact { --sf-tag--block: var(--sf-ui-1--space-y-tightness-low); }'));
+  assert.ok(tags.includes('.sf-tag.sf-tag--inline.sf-tag--inline.sf-tag--size-1:is(.sf-tag--height-low, .spacing-compact) { --sf-tag--block: var(--sf-ui-1--space-y-tightness-low); }'));
 });
 
 test('dropdown tags: the chevron in a tag field is no taller than the line', async () => {

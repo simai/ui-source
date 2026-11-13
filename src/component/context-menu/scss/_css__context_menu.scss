@@ -355,11 +355,14 @@
   white-space: normal;
 }
 
+/* Names wrap between words (C32); a word breaks only when it alone is wider
+   than the row. anywhere let a row with a value at its end squeeze the name
+   mid-word («Плотнос / ть», docs precheck SE-01). */
 .sf-context-menu--drill .sf-context-menu-item-label,
 .sf-context-menu--drill .sf-context-menu-item-caption,
 .sf-context-menu-value-row .sf-context-menu-item-label,
 .sf-context-menu-value-row .sf-context-menu-item-caption {
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* What leads a row stands on the row's centre line, a two-line row too. */
@@ -379,7 +382,7 @@
 
 .sf-context-menu-item--switch .sf-context-menu-item-label,
 .sf-context-menu-item--switch .sf-context-menu-item-caption {
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* A row's shortcut is the kbd component's: plain glyphs in the muted ink,
@@ -931,7 +934,7 @@
 }
 
 .sf-context-menu .sf-context-menu-content[data-sf-width="list"] :is(.sf-context-menu-item-label, .sf-context-menu-item-caption) {
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .sf-context-menu .sf-context-menu-content[data-sf-width="list"] :is(.sf-context-menu-item-lead, .sf-context-menu-item-check) {

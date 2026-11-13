@@ -19,7 +19,10 @@
 }
 
 .sf-progress-bar .sf-progress-bar-progress {
-  --sf-progress-bar-progress--background-color: var(--sf-progress-bar-fill-color, var(--sf-primary));
+  /* Neutral is grey, not the theme's primary (dispatcher, applied decision
+     on docs precheck PB-01): the quiet ink of the place. A status names a
+     colour; the default reports nothing but the amount. */
+  --sf-progress-bar-progress--background-color: var(--sf-progress-bar-fill-color, var(--sf-on-surface-variant));
   --sf-progress-bar-progress--border-radius: var(--sf-progress-bar-radius, var(--sf-radius--ui));
   background-color: var(--sf-progress-bar-progress--background-color);
   border-radius: var(--sf-progress-bar-progress--border-radius);

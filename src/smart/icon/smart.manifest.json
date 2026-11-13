@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.icon",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "title": "Icons",
   "summary": "Semantic Material Symbol wrapper with exact Loader tracking, accessible decorative or informative modes and token-owned geometry.",
   "kind": "smart",
@@ -51,21 +51,25 @@
       },
       "icon": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The Material Symbols name of the glyph (home, mail, star); only that glyph's subset of the icon font is requested."
       },
       "filled": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "Draws the filled form of the glyph (the font's FILL axis at 1); off, the outline."
       },
       "weight": {
         "type": "integer",
         "default": 400,
+        "description": "The stroke weight on the font's wght axis, 100 to 700 in steps of 100; any other value draws 400.",
         "minimum": 100,
         "maximum": 700
       },
       "size": {
         "type": "string",
         "default": "",
+        "description": "The glyph's step of the icon ladder (--sf-icon-size-<step>), 1/4 to 7. Empty: the size the component around it gives (--sf-icon--font-size), otherwise step 3.",
         "enum": [
           "",
           "1/4",
@@ -83,6 +87,7 @@
       "type": {
         "type": "string",
         "default": "",
+        "description": "The icon font's style: outlined, rounded or sharp. Empty: the page's default from the Loader (SF_BOOT_CONFIG icons.type), otherwise outlined.",
         "enum": [
           "",
           "outlined",
@@ -93,18 +98,21 @@
       "grade": {
         "type": "integer",
         "default": 0,
+        "description": "The font's GRAD axis, -50 to 200: a finer weight that does not change the glyph's width; 0 by default.",
         "minimum": -50,
         "maximum": 200
       },
       "optical-size": {
         "type": "number",
         "default": 24,
+        "description": "The font's opsz axis, 20 to 48: the drawing tuned for that size in px; 24 by default.",
         "minimum": 20,
         "maximum": 48
       },
       "label": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The accessible name. Set: the icon is an image with this name (role img). Empty: the icon is decorative and hidden from assistive technology."
       },
       "badge-count": {
         "type": "string",
