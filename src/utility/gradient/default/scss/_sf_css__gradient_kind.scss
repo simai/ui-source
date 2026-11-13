@@ -123,7 +123,7 @@ $ramp: 'var(--sf-gradient--scrim-ramp, calc(var(--sf-space-4) * 4))';
     // A strong coloured place (C42): what stands on the plate takes white ink
     // on the alpha scale and the accent turns white with the plate's colour
     // for its label, so a filled button is a white button. White in both
-    // themes, as on glass over media (the same white role set, fill 8/12/16):
+    // themes, as on glass over media (the same white role set: fill 12/16/20, disabled 8, C113):
     // the dark plate is a deep tone, not tone 80 under tone-20 ink.
     --sf-surface-place: var(--sf-gradient--from);
     --sf-surface-place-solid: var(--sf-gradient--from);
@@ -135,12 +135,12 @@ $ramp: 'var(--sf-gradient--scrim-ramp, calc(var(--sf-space-4) * 4))';
     --sf-surface-state-hover: var(--sf-white--alfa-4);
     --sf-surface-state-select: var(--sf-white--alfa-8);
     --sf-surface-state-active: var(--sf-white--alfa-12);
-    --sf-surface-container: var(--sf-white--alfa-8);
-    --sf-surface-container-hover: var(--sf-white--alfa-12);
-    --sf-surface-container-active: var(--sf-white--alfa-16);
+    --sf-surface-container: var(--sf-white--alfa-12);
+    --sf-surface-container-hover: var(--sf-white--alfa-16);
+    --sf-surface-container-active: var(--sf-white--alfa-20);
     --sf-outline: var(--sf-white--alfa-64);
     --sf-outline-variant: var(--sf-white--alfa-24);
-    --sf-surface-disabled: var(--sf-white--alfa-12);
+    --sf-surface-disabled: var(--sf-white--alfa-8);
     --sf-on-surface-disabled: var(--sf-white--alfa-64);
     --sf-on-surface-muted: var(--sf-on-surface-disabled);
     @include aliases.sf-role-aliases(places.$sf-place-aliased);

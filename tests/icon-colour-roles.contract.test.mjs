@@ -153,8 +153,19 @@ test('a neutral icon beside text is not --sf-on-surface at rest (C107, R192)', (
 test('the controls of the C107 group name their roles', () => {
   const buttons = read('component/buttons/scss/_css__buttons.scss');
   assert.match(buttons, /\.sf-button\.sf-button--tonal\.sf-button--on-surface \.sf-icon, [^{]+\{\s*--sf-icon--color: var\(--sf-on-surface-icon\);/u);
-  assert.match(buttons, /\.sf-button\.sf-button--tonal\.sf-button--on-surface:not\(:disabled\):not\(\.disabled\):hover \.sf-icon, [^{]+\{\s*--sf-icon--color: var\(--sf-on-surface-hover\);/u,
-    'hovered, the icon is the label\'s --sf-on-surface-hover');
+  // Hovered and pressed, the icon catches its label up (C107 (4)). The label
+  // reads the state ink in the light theme and keeps --sf-on-surface in the
+  // dark one (C113 follow-up: the dark fill rises, a dimmer ink fell to
+  // 3.89:1), so the icon carries the same light-dark pair, never a role of
+  // its own.
+  for (const [state, ink] of [[':hover', 'hover'], [':active', 'active']]) {
+    const pair = `light-dark\\(var\\(--sf-on-surface-${ink}\\), var\\(--sf-on-surface\\)\\)`;
+    const head = `\\.sf-button\\.sf-button--tonal\\.sf-button--on-surface:not\\(:disabled\\):not\\(\\.disabled\\)${state}`;
+    assert.match(buttons, new RegExp(`${head} \\.sf-icon, [^{]+\\{\\s*--sf-icon--color: ${pair};`, 'u'),
+      `${ink}, the icon is the label's --sf-on-surface-${ink} (light) / --sf-on-surface (dark)`);
+    assert.match(buttons, new RegExp(`${head} :is\\(\\.sf-button-text-container, \\.sf-button-shortcut\\), [^{]+\\{\\s*--sf-button-text-container--color: ${pair};`, 'u'),
+      `${ink}, the label reads the same pair as its icon`);
+  }
   const iconButtons = read('component/icon-buttons/scss/_css_icon_buttons.scss');
   assert.match(iconButtons, /:is\(\.sf-icon-button--tonal, \.sf-icon-button--surface\):is\(\.sf-icon-button--on-surface, \.sf-icon-button--secondary\)\.sf-icon-button--icon \{\s*--sf-icon--color: var\(--sf-icon-button-color, var\(--sf-on-surface-icon\)\);/u, 'IC-2');
   assert.match(read('component/menu/scss/_css__menu_element.scss'), /\.sf-menu-element \.sf-menu-element-icon \{\s*--sf-icon--color: var\(--sf-on-surface-variant\);/u, 'IC-1');
