@@ -27,12 +27,13 @@ function resolveIcon(context) {
 
 // The notice's actions (owner decision C35, as the toast; DEV acceptance D3):
 // unsized (size 1) low buttons -- 32, compact and phone 28 -- whose label is
-// the notice's text size; the first tonal primary, its plate starting at the
-// text edge, the second ghost on-surface after it (the research's pair,
-// control/research/2026-11-09-notice-actions.md). The class toast writes the
-// same classes (component/toast/js/_toast.js).
-const ALERT_ACTION_CLASSES = 'sf-button sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low flex items-cross-center';
-const ALERT_SECONDARY_ACTION_CLASSES = 'sf-button sf-button--link sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center';
+// the notice's text size; the first tonal surface (owner decision C110 as
+// amended 2026-11-12, variant E: tonal on-surface, the same neutral plate on
+// every level), its plate starting at the text edge, the second ghost
+// on-surface after it. The class toast writes the same classes
+// (component/toast/js/_toast.js).
+const ALERT_ACTION_CLASSES = 'sf-button sf-button--tonal sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center';
+const ALERT_SECONDARY_ACTION_CLASSES = 'sf-button sf-button--ghost sf-button--link sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center';
 
 export function renderAlertTemplate(context) {
   const rootClasses = joinClasses(

@@ -1,0 +1,505 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-page-kbd",
+  "input": "docara-page-kbd.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m2",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "---\ndescription: Как обозначить клавишу или сочетание клавиш в инструкции, чтобы читатель отличил их от обычного текста и кода.\n---",
+                "hash": "sha256:0f69112d08a17d9e7acc9568e6a1850dc03ba5ab7969f2dab1f763088e0c96f3"
+              }
+            },
+            {
+              "id": "m3",
+              "type": "content.heading",
+              "data": {
+                "level": 1,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Клавиатурный ввод"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m4",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Клавиша выделяет кнопку клавиатуры внутри инструкции и отличает её от\nобычного текста и кода."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m5",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Пример"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m6",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Клавиша\"}\n```markdown\nНажмите :kbd[Esc], чтобы закрыть окно.\n```\n:::",
+                "hash": "sha256:25671d573500de92c4f9aa69f5f9ccbe43144be1c6bc6bd84bfb0f768f141097"
+              }
+            },
+            {
+              "id": "m7",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Разметка"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m8",
+              "type": "content.code",
+              "props": {
+                "lang": "markdown"
+              },
+              "data": {
+                "code": ":kbd[Ctrl]"
+              }
+            },
+            {
+              "id": "m13",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m10",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "В квадратных скобках — подпись клавиши, как на клавиатуре. Простой текст:\nHTML внутри не работает, знаки "
+                        },
+                        {
+                          "type": "text",
+                          "value": "<",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " и "
+                        },
+                        {
+                          "type": "text",
+                          "value": ">",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " выводятся как есть."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m12",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Пустая клавиша "
+                        },
+                        {
+                          "type": "text",
+                          "value": ":kbd[]",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " останавливает сборку с ошибкой\n"
+                        },
+                        {
+                          "type": "text",
+                          "value": "CONTENT_COMPONENT_SLOT_REQUIRED",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": "."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m14",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Варианты"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m15",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Сочетания"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m16",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Записывайте каждую клавишу отдельно, а между ними ставьте знак "
+                  },
+                  {
+                    "type": "text",
+                    "value": "+",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " обычным\nтекстом."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m17",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Сочетание клавиш\"}\n```markdown\nОткройте поиск сочетанием :kbd[⌘] + :kbd[K], затем нажмите :kbd[Enter].\n```\n:::",
+                "hash": "sha256:47e5a493b5da22a419caf1a6c553334e6403b8bc9441e36e7fdeece2ed30dd2b"
+              }
+            },
+            {
+              "id": "m18",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Доступность"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m25",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m20",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Клавиша выводится элементом "
+                        },
+                        {
+                          "type": "text",
+                          "value": "<kbd>",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": ": программы экранного доступа узнают в\nней клавиатурный ввод."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m22",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Пишите подпись словами или знаком, как на клавиатуре: "
+                        },
+                        {
+                          "type": "text",
+                          "value": "Esc",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": ", "
+                        },
+                        {
+                          "type": "text",
+                          "value": "Enter",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": ", "
+                        },
+                        {
+                          "type": "text",
+                          "value": "⌘",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": "."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m24",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Для команды меню, имени файла или кода выбирайте обычный текст или\nобратные кавычки, а не клавишу."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m26",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Параметры"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m27",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:start -->",
+                "hash": "sha256:860321e4de557e281dac7b89346f13310ed796026c8b3317fe1770546b1fa433"
+              }
+            },
+            {
+              "id": "m28",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Параметров нет."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m29",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:end -->",
+                "hash": "sha256:6bd16e03b82585965bc1a8efd729644fbcad103328d6c0dc83e7a1f805b6cfef"
+              }
+            },
+            {
+              "id": "m30",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Запись с параметрами, например "
+                  },
+                  {
+                    "type": "text",
+                    "value": ":kbd[Esc]{size=1}",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ", останавливает сборку с\nошибкой "
+                  },
+                  {
+                    "type": "text",
+                    "value": "CONTENT_COMPONENT_PROP_UNKNOWN",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": "."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m31",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "См. также"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m36",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m33",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../badge/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Бейдж"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m35",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../code/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Код"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[0]",
+        "what": "kept as content.foreign: setext heading"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[4]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[11]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[15]",
+        "what": "kept as content.foreign: html block"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[17]",
+        "what": "kept as content.foreign: html block"
+      }
+    ],
+    "bytes_equal": true,
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

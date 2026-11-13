@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.input-image",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "title": "Image field",
-  "summary": "A form field for one image: a thumbnail with the file name and size, «Заменить…» and «Убрать», a file dropped anywhere on it replaces the image; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File; the host uploads it.",
+  "summary": "A form field for one image: a row (thumbnail, name and size, the buttons) or a preview (the picture in its frame, the row under it); a file chosen, dropped or pasted, or a picture from the page's library or an address; the upload core's checks with the reason under the field; the description and «Декоративная», the frame and the focal point inside the field; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File, or sends it through the page's uploader.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -29,7 +29,12 @@
   "composition": {
     "uses": [
       "smart.button",
-      "smart.icon"
+      "smart.button-icon",
+      "smart.icon",
+      "smart.input",
+      "smart.menu-context",
+      "smart.progress-ring",
+      "smart.switch"
     ],
     "public_parts": []
   },
@@ -71,6 +76,21 @@
         "default": "image/*",
         "description": "What the file dialog offers and a drop accepts: `.ext`, `type/*` or `type/sub`, comma separated."
       },
+      "max-size": {
+        "type": "number",
+        "default": 0,
+        "description": "The largest file in bytes; 0 for none. A larger file is not taken and is said under the field (reason size) -- the name sf-file-upload has."
+      },
+      "min-width": {
+        "type": "number",
+        "default": 0,
+        "description": "The narrowest picture in pixels; 0 for none. The picture is read before it is taken, and a narrower one is said under the field (reason min-width)."
+      },
+      "min-height": {
+        "type": "number",
+        "default": 0,
+        "description": "The lowest picture in pixels; 0 for none (reason min-height)."
+      },
       "size": {
         "type": "string",
         "default": "1",
@@ -79,6 +99,63 @@
           "1/2",
           "1",
           "2"
+        ]
+      },
+      "layout": {
+        "type": "string",
+        "default": "row",
+        "description": "How the field stands (C94 point 1). row: the thumbnail, the name and size and the buttons on one row, for forms, settings and narrow panels. preview: the picture in its frame and that row under it, as wide as the picture (with a floor for a name and the buttons), for a cover, an avatar, a logo or a product photo. The buttons are never laid over the picture (point 2).",
+        "enum": [
+          "row",
+          "preview"
+        ]
+      },
+      "shape": {
+        "type": "string",
+        "default": "square",
+        "description": "The thumbnail's and the frame's shape: circle for a person, square for a thing.",
+        "enum": [
+          "square",
+          "circle"
+        ]
+      },
+      "aspect": {
+        "type": "string",
+        "default": "",
+        "description": "The preview frame's proportion and the editor's frame, «16/9», «1/1», «1.91/1». Empty: a circle is 1/1, else the picture's own proportion (16/9 until it loads)."
+      },
+      "fit": {
+        "type": "string",
+        "default": "cover",
+        "description": "cover: the picture fills its box and the focal point stays in it (a photo, a cover); contain: the whole picture is fitted (a logo). Never stretched.",
+        "enum": [
+          "cover",
+          "contain"
+        ]
+      },
+      "sources": {
+        "type": "string",
+        "default": "device",
+        "description": "Where a picture may come from, comma separated: device (the file dialog), library (the page's library: the field sends library and the page calls setValue()), url (an address typed in the field). One source: «Выбрать…» / «Заменить…» goes there; more: «Заменить ▾» opens a menu of them (C94 point 5)."
+      },
+      "library-label": {
+        "type": "string",
+        "default": "",
+        "description": "The library item's words in the menu, «Из письма»; «Из библиотеки» / From the library by default."
+      },
+      "edit": {
+        "type": "string",
+        "default": "",
+        "description": "What the person may edit on the picture, comma separated: crop (the frame in `aspect`, with zoom and position), focus (the focal point). «Изменить» opens the editor in the field; «Готово» writes crop {aspect, zoom, x, y} and focus {x, y} into the value. The original is never cut (C94 point 3)."
+      },
+      "alt": {
+        "type": "string",
+        "default": "none",
+        "description": "The picture's description inside the field (C94 point 4): field shows «Описание изображения» and «Декоративная»; required also keeps the form from submitting until it is written or the picture is marked decorative. The value carries alt and decorative.",
+        "enum": [
+          "none",
+          "field",
+          "required"
         ]
       },
       "meta": {
@@ -94,17 +171,17 @@
       "required": {
         "type": "boolean",
         "default": false,
-        "description": "The field must hold an image: the platform input is required while it is empty, so a form will not submit without one."
+        "description": "The field must hold an image: the form will not submit without one, and an empty field says «Выберите изображение.» under itself once focus leaves it or the form is checked. A required field has no remove button (IF-6)."
       },
       "disabled": {
         "type": "boolean",
         "default": false,
-        "description": "Shown and not changed: the buttons are disabled and a drop is refused."
+        "description": "Shown and not changed: no fill, the disabled line and ink, as sf-input; the buttons are disabled and a drop or paste is refused."
       },
       "readonly": {
         "type": "boolean",
         "default": false,
-        "description": "Shown without buttons; a drop is refused."
+        "description": "Shown without buttons, with the line of a region for its edge, as sf-input read-only; a drop or paste is refused."
       },
       "invalid": {
         "type": "boolean",
@@ -126,10 +203,15 @@
         "default": false,
         "description": "The error state; the same as invalid."
       },
+      "uploader": {
+        "type": "object",
+        "default": null,
+        "description": "The page's transfer, a property, the contract sf-file-upload's uploader has: async function (file, {signal, onProgress, value}) answering the stored value ({value, href} or an id). With it the field sends each file it takes and shows the transfer on the picture: a ring with the share onProgress(done, total) reports, «Отменить»; on a failure the thrown error's message under the field and «Повторить». While it runs the form will not submit. Without it the host uploads the File the events carry and calls setValue()."
+      },
       "value": {
         "type": "object",
         "default": null,
-        "description": "The image in the file shape {value, label, mime, size, href, file?}, or null; the attribute takes an address or the shape as JSON"
+        "description": "The image in the file shape {value, label, mime, size, href, file?}, plus what the field knows of the picture: width, height, alt, decorative, focus {x, y} and crop {aspect, zoom, x, y}, each only when there. null when empty; the attribute takes an address or the shape as JSON"
       }
     },
     "additionalProperties": false
@@ -170,21 +252,21 @@
       }
     },
     "choose": {
-      "summary": "Open the file dialog, as «Заменить…» and «Выбрать…» do. Returns false when the field is disabled or read-only.",
+      "summary": "Open the platform file dialog, as «Выбрать…» and «Заменить…» do with the device source. Returns false when the field is disabled or read-only.",
       "arguments": [],
       "returns": {
         "type": "boolean"
       }
     },
     "removeImage": {
-      "summary": "Remove the image as the person would with «Убрать»: input, change and sf-image-field-detach fire, focus goes to «Выбрать…». Returns whether there was an image to remove.",
+      "summary": "Remove the image as the person would with the remove button: input, change and sf-input-image-detach fire, focus goes to «Выбрать…»; a required field then says it is empty. Returns whether there was an image to remove.",
       "arguments": [],
       "returns": {
         "type": "boolean"
       }
     },
     "takeFile": {
-      "summary": "Take a File as the person would by choosing it (source input, drop or another the host names): the thumbnail shows it from an object URL and input, change and sf-image-field-attach fire. A file the accept list does not name is rejected instead. Returns whether it was taken.",
+      "summary": "Take a File as the person would by choosing it (source input, drop, paste or another the host names): the checks run (accept, max-size, min-width, min-height), the thumbnail shows it from an object URL and input, change and sf-input-image-attach fire; a refused file is said under the field and in rejected instead. With min-width or min-height the picture is read first, and the answer is a promise of the outcome.",
       "arguments": [
         {
           "name": "args",
@@ -256,7 +338,7 @@
   },
   "events": {
     "change": {
-      "summary": "The image was chosen, dropped or removed: once per change the person made, a CustomEvent on the host carrying the value, the File and the form name. The platform input's own change does not leave the host.",
+      "summary": "The image was chosen, dropped, pasted, taken by address, described, edited or removed: once per change the person made, a CustomEvent on the host carrying the value, the File and the form name (source names which). With an uploader, change (source upload) also follows a finished transfer, the value then carrying the stored id; a cancelled one sends source cancel. The platform input's own change and the inner fields' do not leave the host.",
       "payload": {
         "type": "object",
         "required": [
@@ -284,7 +366,13 @@
             "enum": [
               "input",
               "drop",
-              "remove"
+              "paste",
+              "url",
+              "alt",
+              "edit",
+              "remove",
+              "upload",
+              "cancel"
             ]
           },
           "name": {
@@ -296,7 +384,7 @@
       "canonical": true
     },
     "input": {
-      "summary": "Sent with every change, before it, with the same detail, as a native file input sends input and change together.",
+      "summary": "Sent with every change the person made, before it, with the same detail, as a native file input sends input and change together; while the description is typed, on each key.",
       "payload": {
         "type": "object",
         "required": [
@@ -324,7 +412,13 @@
             "enum": [
               "input",
               "drop",
-              "remove"
+              "paste",
+              "url",
+              "alt",
+              "edit",
+              "remove",
+              "upload",
+              "cancel"
             ]
           },
           "name": {
@@ -355,7 +449,8 @@
           "source": {
             "enum": [
               "input",
-              "drop"
+              "drop",
+              "paste"
             ]
           },
           "value": {
@@ -390,11 +485,12 @@
       "canonical": true
     },
     "sf-input-image-rejected": {
-      "summary": "Files the accept list does not name were left out, as the platform dialog would not have offered them; announced politely. Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-image-field:reject follows it with the same detail until 2026-12-01 (aliases.json).",
+      "summary": "Files the field did not take, each with its reason and the words said under the field: rejected [{file, name, reason, message}], reason type | empty | size | min-width | min-height | unreadable | count (the files beyond the first of a drop). Standard simai.smart-component 1.3.8 name (vocabulary 1.1.5 §9.1); sf-image-field:reject follows it with the same detail until 2026-12-01 (aliases.json).",
       "payload": {
         "type": "object",
         "required": [
           "files",
+          "rejected",
           "accept",
           "source"
         ],
@@ -402,10 +498,36 @@
           "files": {
             "type": "array"
           },
+          "rejected": {
+            "type": "array"
+          },
           "accept": {
             "type": "string"
           },
           "source": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      },
+      "canonical": true
+    },
+    "sf-input-image-library": {
+      "summary": "The person chose «Из библиотеки» (sources library): the page opens its own library -- Larena «Файлы», the letter's images -- and calls setValue() with the picture.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "value",
+          "name"
+        ],
+        "properties": {
+          "value": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "name": {
             "type": "string"
           }
         },
@@ -485,6 +607,13 @@
       },
       "alias_of": "sf-input-image-detach"
     },
+    "sf-image-field-library": {
+      "summary": "Dated alias of sf-input-image-library until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-input-image-library"
+    },
     "sf-image-field-rejected": {
       "summary": "Dated alias of sf-input-image-rejected until 2027-01-01 (same-detail).",
       "payload": {
@@ -502,6 +631,11 @@
       "drag": [
         "idle",
         "dragover"
+      ],
+      "upload": [
+        "idle",
+        "process",
+        "error"
       ]
     },
     "visual_states": [
@@ -545,7 +679,7 @@
       "Enter",
       "Space"
     ],
-    "focus": "A group named by the field label and described by the help or error text. «Заменить…», «Убрать» and «Выбрать…» are real buttons named for what they act on («Заменить изображение «logo.png»»); the thumbnail's alt is the file name. The drop target takes no focus, so it is never a stop or a trap. After a removal focus goes to «Выбрать…». A choice, a removal and a refused file are announced in a polite status."
+    "focus": "A group named by the field label and described by the help or error text. «Выбрать…», «Заменить…» (or «Заменить ▾» with a menu of sources), «Изменить» and the remove icon are real buttons named for what they act on («Заменить изображение «logo.png»»); the thumbnail's alt is the description the person wrote (empty for a decorative picture or none). The drop target takes no focus, so it is never a stop or a trap; a paste lands while any of its buttons has focus. After a removal focus goes to «Выбрать…». A choice, a removal, a refused file and a transfer's end are announced in a polite status. The editor's stage takes focus: the arrows move the frame or the point, + and − zoom, Enter finishes, Escape cancels."
   },
   "presentation": {
     "themes": [
@@ -620,41 +754,41 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-image/index.js",
-        "sha256": "61a3e931f829cf1fe160ea095b1565d1adadca082c3881b632911eff7294ccac"
+        "sha256": "b1c09de83360fe1d4dde23e07da7d0741b5da6e7eaaeb9ec51e71449795d3ee2"
       },
       {
         "path": "src/smart/input-image/value.mjs",
-        "sha256": "37669e869e35f9c70624ec018159a90ea0ff1a48ab522ac0e7d713256e1615ec"
+        "sha256": "19c833f975b2479df43e971b3bb143c784bbc8b4a09988acf9ab5a4928824da3"
       },
       {
         "path": "src/core/js/composition/file-size.mjs",
-        "sha256": "9de04c8110754d3a60c4943bb41b9314821dfd22d3875d65961c0839018a9f22"
+        "sha256": "7e9d4fd9622d9700b6f70cc3424de6c163c97626e00540f7aa11fa97ca220843"
       },
       {
         "path": "src/smart/input-image/js/templates/default.js",
-        "sha256": "07b0e52f30611e2487c13608316b4ee638b16b395d0133ca707e9dd7905a6589"
+        "sha256": "7a4a0053b5ce8a74884d00d38f4f429fc6e2fb2ca38f8f01ba3b08421ab12663"
       },
       {
         "path": "src/smart/input-image/scss/_smart__image_field.scss",
-        "sha256": "70dfe71ea3ce4cfeb14808093df042ba67c94df09ed6a2669d8e2fc612c4a9c0"
+        "sha256": "5e84487af93e05ec014aab2cb8892f9f953f73cefa402302385f560ab0148b3a"
       },
       {
         "path": "src/smart/input-image/rule.js",
-        "sha256": "589ee77e79af9c334015828a753f0df6b265bcaef8baee32e4f999e095a84fcf"
+        "sha256": "b6c2bed4076190ddeee001ba298f468a6cddd2ac89e3614b76be9c549f43c269"
       },
       {
         "path": "src/smart/input-image/docs.md",
-        "sha256": "0281fe6ae4d269f285d3a6111f74c6a7b79c963635ea0ef8088f534e1d7e1e36"
+        "sha256": "3ee5f3d6ae8395f064af40a420c591bd8aa5b54c1befa59762d631725be6720e"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-input-image for a form value that is one image -- a logo, a cover, a picture in a block -- shown, replaced and removed in place.",
+    "use_when": "Use sf-input-image for a form value that is one image -- a logo, a cover, an avatar, a picture in a block -- shown, replaced and removed in place; layout preview when the look matters, row in dense forms.",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not use it for several files or a transfer list: that is sf-file-upload",
-      "Do not expect it to upload: it raises the File and the host uploads it"
+      "Do not lay buttons over the picture or crop the original: the frame and focal point go in the value"
     ],
     "required_reads": [
       "inputs",

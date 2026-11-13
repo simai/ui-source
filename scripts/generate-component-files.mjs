@@ -197,7 +197,7 @@ export function attributesOf(component, lang = {}) {
     out['aria-label'] = {kind: 'custom', valueType: 'string', default: ''};
   }
   for (const row of aliasRows(component)) {
-    if (!settingAlias(row)) continue;
+    if (!attributeAlias(component, row)) continue;
     const target = settings[row.to];
     if (!target) continue;
     const attribute = attributeOf(target);
@@ -223,6 +223,14 @@ export function attributesOf(component, lang = {}) {
 
 // A dated alias of a setting: a setting row, or an attribute row (the
 // attribute alone is renamed) that is neither a host attribute nor retired.
+// An alias row that names an attribute of its own in the description: a
+// setting alias whose old name is not still a setting. A row like
+// multi-country (value "false") -> fixed-country records a value form of a
+// setting that stays; the setting describes the attribute, the row does not.
+export function attributeAlias(component, row) {
+  return settingAlias(row) && !Object.hasOwn(component.settings ?? {}, row.from);
+}
+
 export function settingAlias(row) {
   if (!row.to) return false;
   if (row.kind === 'setting') return true;
@@ -592,7 +600,7 @@ export function genManifest(component, lang, stamp = {}) {
 function declarativeOf(component, carried, lang) {
   const out = {...carried};
   const attributes = attributesOf(component, lang);
-  const aliasNames = new Set(aliasRows(component).filter(settingAlias).map((row) => row.from));
+  const aliasNames = new Set(aliasRows(component).filter((row) => attributeAlias(component, row)).map((row) => row.from));
   // A document sets the interface, never arbitrary classes or styles: the base
   // settings root-class and root-style stay out of the props a document holds.
   if ('props' in carried) out.props = Object.keys(attributes).filter((name) => !aliasNames.has(name) && !['root-class', 'root-style'].includes(name));

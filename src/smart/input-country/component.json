@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-country's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/country-code (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/country-code/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.input-country",
   "tag": "sf-input-country",
-  "version": "1.2.1",
+  "version": "1.5.0",
   "kind": "leaf",
   "family": "field",
   "settings": {
@@ -52,11 +52,23 @@
     },
     "use-country-masks": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Deprecated until 2027-01-01 (change journal attribute-input-country-presence-booleans): on by default, so it was switched off by the string \"false\", which is not an HTML boolean. Write fixed-mask instead; use-country-masks=\"false\" keeps working until the date."
+    },
+    "fixed-mask": {
+      "type": "boolean",
+      "default": false,
+      "summary": "With use-mask, one mask for every country -- mask-pattern -- instead of each country's own. The presence form of use-country-masks=\"false\"."
     },
     "show-code": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Deprecated until 2027-01-01 (change journal attribute-input-country-presence-booleans): on by default, so it was switched off by the string \"false\", which is not an HTML boolean. Write hide-code instead; show-code=\"false\" keeps working until the date."
+    },
+    "hide-code": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The dial code is not written before the number. The presence form of show-code=\"false\"."
     },
     "mask-style": {
       "type": "string",
@@ -64,7 +76,13 @@
     },
     "multi-country": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Deprecated until 2027-01-01 (change journal attribute-input-country-presence-booleans): on by default, so it was switched off by the string \"false\", which is not an HTML boolean. Write fixed-country instead; multi-country=\"false\" keeps working until the date."
+    },
+    "fixed-country": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Only the country iso2 or dial-code names: the flag and the code are a picture, not a list. The presence form of multi-country=\"false\"."
     },
     "iso2": {
       "type": "string",
@@ -84,7 +102,13 @@
     },
     "lazy-flags": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Deprecated until 2027-01-01 (change journal attribute-input-country-presence-booleans): on by default, so it was switched off by the string \"false\", which is not an HTML boolean. Write eager-flags instead; lazy-flags=\"false\" keeps working until the date."
+    },
+    "eager-flags": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Every flag of the list is fetched when the list is built, not as its row comes into view. The presence form of lazy-flags=\"false\"."
     },
     "show-mask-placeholder": {
       "type": "boolean",
@@ -97,6 +121,11 @@
     "max-items": {
       "type": "number",
       "default": 0
+    },
+    "preferred": {
+      "type": "string",
+      "default": "",
+      "summary": "Optional. Countries on top of the list under «Frequently chosen», as ISO codes: RU,KZ,BY. Up to two of the person's last choices come first, six rows at most. Without the attribute there is no group and no locale default; an empty value shows the recent choices alone."
     }
   },
   "values": {
@@ -234,6 +263,58 @@
         "since-version": "1.2.0",
         "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
         "note": "the element is sf-input-country; sf-country-code is a subclass defined beside it until the date"
+      },
+      {
+        "from": "multi-country",
+        "value": "false",
+        "to": "fixed-country",
+        "kind": "attribute",
+        "mode": "manifest-only",
+        "shim": "none",
+        "since": "2026-11-11",
+        "remove_after": "2027-01-01",
+        "since-version": "1.3.0",
+        "section": "§4.2, change journal attribute-input-country-presence-booleans",
+        "note": "the string form switches the default-on multi-country off; the element reads it itself until the date (no shim: the value is inverted, not renamed)"
+      },
+      {
+        "from": "use-country-masks",
+        "value": "false",
+        "to": "fixed-mask",
+        "kind": "attribute",
+        "mode": "manifest-only",
+        "shim": "none",
+        "since": "2026-11-11",
+        "remove_after": "2027-01-01",
+        "since-version": "1.3.0",
+        "section": "§4.2, change journal attribute-input-country-presence-booleans",
+        "note": "the string form switches the default-on use-country-masks off; the element reads it itself until the date (no shim: the value is inverted, not renamed)"
+      },
+      {
+        "from": "show-code",
+        "value": "false",
+        "to": "hide-code",
+        "kind": "attribute",
+        "mode": "manifest-only",
+        "shim": "none",
+        "since": "2026-11-11",
+        "remove_after": "2027-01-01",
+        "since-version": "1.3.0",
+        "section": "§4.2, change journal attribute-input-country-presence-booleans",
+        "note": "the string form switches the default-on show-code off; the element reads it itself until the date (no shim: the value is inverted, not renamed)"
+      },
+      {
+        "from": "lazy-flags",
+        "value": "false",
+        "to": "eager-flags",
+        "kind": "attribute",
+        "mode": "manifest-only",
+        "shim": "none",
+        "since": "2026-11-11",
+        "remove_after": "2027-01-01",
+        "since-version": "1.3.0",
+        "section": "§4.2, change journal attribute-input-country-presence-booleans",
+        "note": "the string form switches the default-on lazy-flags off; the element reads it itself until the date (no shim: the value is inverted, not renamed)"
       }
     ]
   },
@@ -256,19 +337,22 @@
     "settings.form: a host attribute the browser reads for a form-associated element (§17.1); the host joins the form it names, the inner tel input no longer does"
   ],
   "x-decisions": [
-    "lang-ru: runtime.placeholder in Russian is the same mask, +7(___)___-__-__; value-missing says «Введите номер телефона.» as the class script did",
+    "lang-ru: runtime.placeholder is empty in both languages: a field without a placeholder of its own hints the chosen country's dial code (+994), the class script writes it (C87, DEV P4); value-missing says «Введите номер телефона.» as the class script did",
     "a11y-role: textbox -- the native tel input carries the role and the name; the country toggle is a button with a listbox popup inside it (keyboard.panel)",
     "key-effects: host Enter/Space/ArrowDown/ArrowUp open the list, Escape closes it; in the list (panel) arrows, Home and End move focus, Enter and Space select, Escape closes",
     "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates (one source of markup, not two)",
     "examples: examples.json from studio.fixture.json and studio.scenario.json",
     "css-variables: five public variables read by the class sheet src/component/country-code/scss with the role token as fallback (§6); a state the public-variables probe cannot draw at rest (hover, an outline) takes no variable of its own yet",
     "version: 1.1.0 -- the setting form leaves for the host attribute behind a dated alias row; a minor while the alias holds (§4.10)",
-    "form: the host is the form control through ElementInternals (§17.1); it submits the tel text as the person sees it, required asks for digits after the dial code",
+    "form: the host is the form control through ElementInternals (§17.1); it submits the number in E.164 (§17.1 item 2, the form format: +79031234567 for the +7 903 123-45-67 it shows; the code alone submits empty) -- 1.5.0, the tel text as typed before -- and required asks for digits after the dial code",
     "host-states: none -- the open list and the disabled look are classes the class script writes on its own root (shared with the class component); moving them to host states is left for the class script",
     "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
     "version 1.2.0: the tag is sf-input-country (naming decision 2026-11-02: sf-[set]-<block>[-<variant>]); the folder, the id smart.input-country and the bundle cl-input-country follow it. sf-country-code stays a dated alias until 2027-01-01: a subclass the Smart base defines beside the new tag, listed in the rule, in sheets as :is(sf-input-country, sf-country-code) (change journal tag-sf-country-code-to-sf-input-country, path-smart-country-code-to-input-country).",
-    "version 1.2.1: a stored number names its country (simai/ui-source#34 item 1). With neither iso2 nor dial-code set, the country is the one whose dial code the value starts with -- the longest that matches; where countries share a code, the one it usually means (+7 Russia, or Kazakhstan for +7 6xx and 7xx; +1 the United States; +44 the United Kingdom). A field given '+7 900 123-45-67' used to take the first country of the list, Australia (+61), and read the number through its mask as '+79 0 0123 4567'. iso2 and dial-code still win; an empty or local value still starts on the first country (component.country-code)."
+    "version 1.2.1: a stored number names its country (simai/ui-source#34 item 1). With neither iso2 nor dial-code set, the country is the one whose dial code the value starts with -- the longest that matches; where countries share a code, the one it usually means (+7 Russia, or Kazakhstan for +7 6xx and 7xx; +1 the United States; +44 the United Kingdom). A field given '+7 900 123-45-67' used to take the first country of the list, Australia (+61), and read the number through its mask as '+79 0 0123 4567'. iso2 and dial-code still win; an empty or local value still starts on the first country (component.country-code).",
+    "version 1.3.0 (2026-11-11): four settings that were on by default and switched off by the string \"false\" (multi-country, use-country-masks, show-code, lazy-flags) have presence forms, HTML booleans as every other field's: fixed-country, fixed-mask, hide-code, eager-flags (docs pre-check 2026-11-10 CC-05, dispatcher decision b). The string forms keep working until 2027-01-01 and are noted in SF.deprecations (change journal attribute-input-country-presence-booleans). The open list shows at most eight rows from its first paint and its flags load in a sandboxed frame and in a list drawn open: the template writes each flag's address with the row as a lazy image (component.country-code, CC-01, CC-02). The list's height is its own eight rows, never the room left in the viewport: a documentation frame that grows with its document is that room, and the list and the frame followed each other (CC-01, DEV acceptance 2026-11-11; component.country-code 1.3.3). The label is the field label of sf-input already (FB-10).",
+    "version 1.5.0 (2026-11-12, C87 leftovers): the form value is the number in E.164 (+79031234567), not the text as typed; the locked code of fixed-country and use-mask fields is reached by no edit (a digit typed before it goes after it, select-all keeps it); a search that finds nothing says «Ничего не найдено» / «Nothing found» (word nothing-found, .sf-country-code-empty)",
+    "version 1.5.0, same unreleased version (2026-11-12, owner q-8794872748): preferred is an optional setting -- without the attribute (class data-preferred) the list has no «Frequently chosen» group at all, recent choices included; the locale default list (a Russian page: RU, KZ, BY, UZ, KG, AM) is removed; an empty value shows the recent choices alone"
   ],
   "x-registry": {
     "ownership": {

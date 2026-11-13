@@ -65,8 +65,11 @@
 
   /* The status icon is the line's size (C22: an icon follows its text), as
      in a button: 24, compact and phone 20. --sf-icon-size-3 stays 24 on the
-     phone, where the line is 20, so it is not the step here. */
-  .sf-toast .sf-icon,
+     phone, where the line is 20, so it is not the step here. Like the
+     status colour below, only the notice's own icon: an icon button inside
+     keeps its own glyph size (review R-N1). */
+  .sf-toast > .sf-icon,
+  .sf-toast > sf-icon > .sf-icon,
   .sf-toast > sf-icon:not(:defined) {
     --sf-icon--font-size: var(--sf-text-height-1);
     --sf-icon--height: var(--sf-text-height-1);
@@ -125,6 +128,16 @@
     gap: var(--sf-space-1\/3);
   }
 
+  /* The action is tonal surface on a toast of any level (owner decision
+     C110 as amended 2026-11-12, variant E; replaces C46): the theme's neutral
+     tonal plate, the same on every level, as on sf-alert. A toast of a level
+     is a soft coloured place (below), which re-declares the surface container
+     as the level's container, so the action takes the theme's neutral
+     container back on itself. */
+  .sf-toast .sf-toast-bottom .sf-button.sf-button--tonal.sf-button--on-surface {
+    @include places.sf-place-neutral-container;
+  }
+
   /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-toast-wrap--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
   .sf-toast .sf-toast-wrap {
     --sf-toast-wrap--background-color: transparent;
@@ -160,9 +173,28 @@
     overflow-wrap: anywhere;
   }
 
+  /* The cross is a service glyph of the notice (owner decision C112, R198,
+     AA-13; it refines C107 (1) for service glyphs on coloured places): the
+     on-surface ink at 64 of the alpha scale's ink family (48/64/80), black in
+     the light theme and white in the dark, on every level and on a neutral
+     toast alike -- translucent, so it reads as one tone over the popup and
+     any status tint. 64 holds 3:1 on every toast and on the strong alert bar
+     that shares the rule; 48 does not on the bar. Before it was the place's
+     --sf-on-surface-variant (C107 (1)), and before that the text ink (14.71:1
+     light). The glyph stays the size-1 close (16 in the 24 box of the status
+     icon, C103 and C112 (1)). Under a pointer it catches the text ink (C107
+     (4), as the quiet icon button does, C15). */
+  .sf-toast > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+  }
+
+  .sf-toast > .sf-icon-button.sf-icon-button--close:not(:disabled):is(:hover, :active) > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-toast--content-color, var(--sf-on-surface));
+  }
+
   /* The quiet icon role, as on the alert (C35 acceptance F1): the theme's
      dim ink on a fill, the alert's #515257 / #d4d4d9. Not the place's
-     --sf-on-surface-container--variant: a toast is a popup place, where C43
+     --sf-on-surface-container-variant: a toast is a popup place, where C43
      raised that role for the controls' keys (dark 90, the text's own ink), so
      the icon read it would lose its quiet tone (1.2.3). */
   .sf-toast:is(.sf-toast--neutral, .sf-toast--default) > .sf-icon,
@@ -183,10 +215,6 @@
     --sf-icon--color: var(--sf-info);
   }
 
-  .sf-toast:is(.sf-toast--info, .sf-toast--primary) > .sf-icon-button.sf-icon-button--link > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-on-info-container);
-  }
-
   .sf-toast:is(.sf-toast--info, .sf-toast--primary) .sf-toast-supporting-text {
     --sf-toast-supporting-text--color: var(--sf-toast-color, var(--sf-on-info-container));
   }
@@ -198,10 +226,6 @@
   .sf-toast.sf-toast--error > .sf-icon,
   .sf-toast.sf-toast--error > sf-icon > .sf-icon {
     --sf-icon--color: var(--sf-error);
-  }
-
-  .sf-toast.sf-toast--error > .sf-icon-button.sf-icon-button--link > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-on-error-container);
   }
 
   .sf-toast.sf-toast--error .sf-toast-supporting-text {
@@ -217,10 +241,6 @@
     --sf-icon--color: var(--sf-warning);
   }
 
-  .sf-toast.sf-toast--warning > .sf-icon-button.sf-icon-button--link > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-on-warning-container);
-  }
-
   .sf-toast.sf-toast--warning .sf-toast-supporting-text {
     --sf-toast-supporting-text--color: var(--sf-toast-color, var(--sf-on-warning-container));
   }
@@ -234,10 +254,6 @@
     --sf-icon--color: var(--sf-success);
   }
 
-  .sf-toast.sf-toast--success > .sf-icon-button.sf-icon-button--link > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-on-success-container);
-  }
-
   .sf-toast.sf-toast--success .sf-toast-supporting-text {
     --sf-toast-supporting-text--color: var(--sf-toast-color, var(--sf-on-success-container));
   }
@@ -249,39 +265,66 @@
   /* utility-hint: flex/1 (.flex-1) */
   :is(.sf-toast--neutral, .sf-toast--default) {
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-surface-container));
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-surface));
-    --sf-close-icon--background-color: var(--sf-on-surface);
   }
 
   /* utility-hint: flex/1 (.flex-1) */
+  /* A toast of a level is a soft coloured place over its popup plate (R190
+     AA-3, C16, C19): sf-place-soft(<level>), as bg-<c>-container and the
+     alert bar's soft levels, so a neutral outline button on it takes the
+     level's outline and state layers, not the theme's grey ones. The popup
+     stays its ground (--sf-surface-place-ground). */
   /* info is the information palette's, as success, warning and error are
      theirs (C17 info parity, dispatcher 2026-11-09); it read the brand's
      primary container before, and under a theme of another colour an info
      toast took that colour. */
   :is(.sf-toast--info, .sf-toast--primary) {
+    @include places.sf-place-soft(info);
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-info-container));
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-info-container));
-    --sf-close-icon--background-color: var(--sf-on-info-container);
   }
 
   /* utility-hint: flex/1 (.flex-1) */
   .sf-toast--error {
+    @include places.sf-place-soft(error);
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-error-container));
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-error-container));
-    --sf-close-icon--background-color: var(--sf-on-error-container);
   }
 
   .sf-toast--warning {
+    @include places.sf-place-soft(warning);
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-warning-container));
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-warning-container));
-    --sf-close-icon--background-color: var(--sf-on-warning-container);
   }
 
   .sf-toast--success {
+    @include places.sf-place-soft(success);
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-success-container));
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-success-container));
-    --sf-close-icon--background-color: var(--sf-on-success-container);
+  }
+
+  /* One light navigation action: a link at the end of the text (owner
+     decision C50), in the text's own colour on every status container, told
+     apart by its weight and underline. */
+  .sf-toast .sf-toast-link {
+    color: inherit;
+    font-weight: var(--sf-font-weight-medium);
+    text-decoration: underline;
+    text-underline-offset: var(--sf-a3);
+  }
+
+  .sf-toast .sf-toast-link:focus {
+    outline: none;
+  }
+
+  /* The ring of every focusable SIMAI Framework part (as .sf-link). */
+  .sf-toast .sf-toast-link:focus-visible {
+    border-radius: var(--sf-radius--ui);
+    outline-color: var(--sf-focus);
+    outline-offset: var(--sf-focus--offset);
+    outline-style: var(--sf-focus--style);
+    outline-width: var(--sf-focus--width);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -298,9 +341,10 @@
 }
 
 /* The page's notification area (core/js/notify.js, SF.notify): one place at an
-   edge of the window, in the top layer, where messages stack with a gap. The
-   area itself takes no clicks; its toasts do. A popover is otherwise a small
-   centred box with the browser's own border, fill and padding. */
+   edge of the window, in the top layer. The area itself takes no clicks; its
+   toasts do. A popover is otherwise a small centred box with the browser's
+   own border, fill and padding. Its messages are a stack (data-layout=stack,
+   the default, owner decision C50) or a list with a gap (data-layout=list). */
 @layer sf.components {
   .sf-notifications {
     position: fixed;
@@ -330,6 +374,21 @@
   .sf-notifications[data-placement^="top"] { inset-block-start: var(--sf-space-1); }
   .sf-notifications[data-placement^="bottom"] { inset-block-end: var(--sf-space-1); }
 
+  /* The live copy every message is said through (notify.js announce): out of
+     sight, in the tree, whatever slot the message takes. */
+  .sf-notifications > .sf-notifications-live {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    margin: calc(-1 * var(--sf-px));
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+    pointer-events: none;
+  }
+
   /* The same message shown again counts up rather than stacking twice. */
   .sf-notifications .sf-toast[data-count] {
     position: relative;
@@ -345,5 +404,65 @@
     color: var(--sf-surface-page);
     font-size: var(--sf-text-size-1\/3);
     line-height: var(--sf-text-height-1\/3);
+  }
+
+  /* The stack (C50). SF.notify draws the class toast, a box of its own, so the
+     size and the place are the toast's: a Smart sf-toast host is display:
+     contents and would hold neither. Every message stands on the area's edge;
+     notify.js moves each one away from it (translateY), narrows the ones
+     behind (scale, from the edge away from the window's) and clips them to the
+     front one's height; the area's height is what the stack covers. The gap
+     between open messages is the peek of a closed one: --sf-space-1/2, 12,
+     compact and phone 8. */
+  .sf-notifications[data-layout="stack"] {
+    display: block;
+  }
+  /* Open, the area still takes no pointer: the gaps between the messages
+     would swallow the page's clicks under them (C50 call). notify.js keeps
+     the stack open while the pointer crosses a gap. */
+  .sf-notifications[data-layout="stack"] > .sf-toast {
+    position: absolute;
+    inset-inline: 0;
+    margin: 0;
+    transition:
+      opacity var(--sf-duration-normal) var(--sf-ease-enter),
+      transform var(--sf-duration-normal) var(--sf-ease-enter),
+      clip-path var(--sf-duration-normal) var(--sf-ease-enter);
+  }
+  .sf-notifications[data-layout="stack"][data-placement^="bottom"] > .sf-toast {
+    inset-block-end: 0;
+    transform-origin: 50% 0;
+  }
+  .sf-notifications[data-layout="stack"][data-placement^="top"] > .sf-toast {
+    inset-block-start: 0;
+    transform-origin: 50% 100%;
+  }
+  .sf-notifications[data-layout="stack"] > .sf-toast > * {
+    transition: opacity var(--sf-duration-normal) var(--sf-ease-enter);
+  }
+  /* Behind the front one a message shows its edge alone: its content is out
+     of sight and out of reach, so a tap on the edge opens the stack. */
+  .sf-notifications[data-layout="stack"] > .sf-toast[data-stack-layer] > *,
+  .sf-notifications[data-layout="stack"] > .sf-toast[data-stack-layer]::before {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .sf-notifications[data-layout="stack"] > .sf-toast[data-stack-layer="hidden"] {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .sf-notifications[data-layout="stack"] > .sf-toast[data-stack-entering] {
+    opacity: 0;
+  }
+  .sf-notifications[data-layout="stack"] > .sf-toast.closing {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sf-notifications[data-layout="stack"] > .sf-toast,
+    .sf-notifications[data-layout="stack"] > .sf-toast > * {
+      transition: none;
+    }
   }
 }

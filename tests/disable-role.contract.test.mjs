@@ -50,8 +50,12 @@ const styleFiles = () => {
 
 // A whole declaration is read, not its first token: the role is as likely to sit
 // in a var() fallback as in the value itself.
-const PAINTS_CONTENT = /(?:^|[;{\s])color:[^;]*--sf-disable\b|--sf-[a-z0-9-]*--color:[^;]*--sf-disable\b/u;
-const PAINTS_FILL = /(?:background(?:-color)?|border-color|box-shadow|outline-color):[^;]*--sf-on-disable\b|--sf-[a-z0-9-]*--(?:background-color|border-color|outline-color):[^;]*--sf-on-disable\b/u;
+// Each role under its C16 name (--sf-surface-disabled, --sf-on-surface-disabled)
+// and its former one, which the sheets still read until they move.
+const FILL_ROLE = '(?:--sf-disable|--sf-surface-disabled)\\b';
+const CONTENT_ROLE = '(?:--sf-on-disable|--sf-on-surface-disabled)\\b';
+const PAINTS_CONTENT = new RegExp(`(?:^|[;{\\s])color:[^;]*${FILL_ROLE}|--sf-[a-z0-9-]*--color:[^;]*${FILL_ROLE}`, 'u');
+const PAINTS_FILL = new RegExp(`(?:background(?:-color)?|border-color|box-shadow|outline-color):[^;]*${CONTENT_ROLE}|--sf-[a-z0-9-]*--(?:background-color|border-color|outline-color):[^;]*${CONTENT_ROLE}`, 'u');
 
 test('the disabled fill role never paints content', () => {
   const offenders = [];
@@ -75,20 +79,23 @@ test('the disabled content role paints a fill only where the fill is the content
     }
   }
   assert.deepEqual(found.sort(), [
-    'src/component/context-menu/scss/_css__context_menu.scss: background-color: var(--sf-on-disable);',
-    'src/component/dropdown/scss/_css__list-item.scss: --sf-checkbox-box--border-color: var(--sf-on-disable);',
-    'src/component/icon-buttons/scss/_css_icon_buttons.scss: --sf-close-icon--background-color: var(--sf-on-disable);',
-    'src/component/icon-buttons/scss/_css_icon_buttons.scss: --sf-close-icon--background-color: var(--sf-on-disable);',
-    // The third is the destructive status: a disabled close goes grey whatever
-    // colour it carries when it is live.
-    'src/component/icon-buttons/scss/_css_icon_buttons.scss: --sf-close-icon--background-color: var(--sf-on-disable);',
-    'src/component/quantity/scss/_css__quantity.scss: background-color: var(--sf-on-disable);',
-    'src/component/radio/scss/_css_radio.scss: --sf-radio-button-mark--background-color: var(--sf-on-disable);',
+    'src/component/context-menu/scss/_css__context_menu.scss: background-color: var(--sf-on-surface-disabled);',
+    'src/component/dropdown/scss/_css__list-item.scss: --sf-checkbox-box--border-color: var(--sf-on-surface-disabled);',
+    // The icon button's disabled close: the second is the destructive status, a
+    // disabled close goes grey whatever colour it carries when it is live. (A
+    // third, the tonal secondary close, left with component.icon-buttons 1.6.0, C15.)
+    'src/component/icon-buttons/scss/_css_icon_buttons.scss: --sf-close-icon--background-color: var(--sf-on-surface-disabled);',
+    'src/component/icon-buttons/scss/_css_icon_buttons.scss: --sf-close-icon--background-color: var(--sf-on-surface-disabled);',
+    'src/component/quantity/scss/_css__quantity.scss: background-color: var(--sf-on-surface-disabled);',
+    'src/component/radio/scss/_css_radio.scss: --sf-radio-button-mark--background-color: var(--sf-on-surface-disabled);',
     // The slider's handle is the content of its rail, laid over the surface
     // so the fill does not show through (2026-11-01).
-    'src/component/range-slider/scss/_css__thumbs.scss: background: linear-gradient(var(--sf-on-disable), var(--sf-on-disable)) var(--sf-thumb-handle--ring-color, var(--sf-surface-place));',
-    'src/component/switch/scss/_css_switch.scss: --sf-switch-inner--background-color: var(--sf-on-disable);',
-    'src/smart/button-icon/js/templates/default.css: --sf-close-icon--background-color: var(--sf-on-disable);',
+    'src/component/range-slider/scss/_css__thumbs.scss: background: linear-gradient(var(--sf-on-surface-disabled), var(--sf-on-surface-disabled)) var(--sf-thumb-handle--ring-color, var(--sf-surface-place));',
+    // The chosen part of a disabled slider's rail is content too (C78 track B):
+    // it stands on the disabled rail in the handle's own role.
+    'src/component/range-slider/scss/_css__range_slider.scss: background-color: var(--sf-on-surface-disabled);',
+    'src/component/switch/scss/_css_switch.scss: --sf-switch-inner--background-color: var(--sf-on-surface-disabled);',
+    'src/smart/button-icon/js/templates/default.css: --sf-close-icon--background-color: var(--sf-on-surface-disabled);',
   ].sort());
 });
 
@@ -232,8 +239,10 @@ test('the disabled roles keep the alphas the owner chose', () => {
     const match = theme.match(new RegExp(`--sf-${name}: ([^;]+);`, 'u'));
     return match ? match[1].trim() : null;
   };
+  // The disabled plate is the state family's 8, a step under the lightest
+  // working plate (C113 item 3, TB-2; it was 12 over a resting plate of 8).
   assert.equal(value('disable'),
-    'light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12))');
+    'light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8))');
   assert.equal(value('on-disable'),
     'light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48))');
   assert.equal(value('outline-disable'),

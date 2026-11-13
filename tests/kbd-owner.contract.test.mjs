@@ -57,6 +57,11 @@ test('Kbd caps take the ink they sit in and mix their fill from it, on the alpha
   assert.match(keycap, /box-shadow: inset 0 calc\(-1 \* var\(--sf-px\)\) 0/u);
   const plain = css.slice(css.indexOf('@mixin plain'), css.indexOf('@layer'));
   assert.match(plain, /color: var\(--sf-kbd-plain-color, var\(--sf-on-surface-variant\)\)/u);
+  // The keycap's darker muted ink is the keycap's alone: a plain glyph and a
+  // cap take their place's back (kbd-places: dark menu glyphs read the full ink).
+  assert.match(keycap, /--sf-on-surface-variant: var\(--sf-on-surface-container-variant\);/u);
+  assert.match(plain, /--sf-on-surface-variant: inherit;\s*color: var\(--sf-kbd-plain-color/u);
+  assert.match(cap, /--sf-on-surface-variant: inherit;/u);
   // The row's own text (C38): inherited, no em (C18).
   assert.match(plain, /font-size: inherit;/u);
   // Every mixed step is one of the alpha scale's eleven.
@@ -82,7 +87,7 @@ test('Kbd sizes come from the ladder: the step below the place, never below 1/3'
   assert.match(code, /font-size: var\(--sf-kbd-font-size, var\(--sf-kbd--step-font-size, var\(--sf-text-size-1\\\/2\)\)\)/u);
   assert.match(code, /--sf-kbd--padding-inline: var\(--sf-kbd-padding-inline, var\(--sf-space-1\\\/4\)\)/u);
   assert.doesNotMatch(code, /gap: var\(--sf-kbd-gap, (?!var\(--sf-space-1\\\/4\)\))/u);
-  for (const token of ['--sf-radius--ui', '--sf-text--family', '--sf-font-weight-medium', '--sf-outline-variant', '--sf-on-surface-variant', '--sf-surface-area', '--sf-on-surface', '--sf-px']) {
+  for (const token of ['--sf-radius--ui', '--sf-text--family', '--sf-font-weight-medium', '--sf-outline-variant', '--sf-on-surface-variant', '--sf-surface-container', '--sf-on-surface', '--sf-px']) {
     assert.ok(css.includes(token), `missing ${token}`);
   }
   // The place list: each host size and text class says the step below its own.

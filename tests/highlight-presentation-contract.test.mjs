@@ -54,7 +54,8 @@ test('Highlight creates an accessible icon-only Clipboard action at size 1/2', a
   assert.match(clipboard, /'sf-icon-button--icon'/);
   assert.match(clipboard, /createElement\('sf-icon'\)/);
   assert.match(clipboard, /setAttribute\('icon', 'content_copy'\)/);
-  assert.match(clipboard, /setIcon\(button, state === 'success' \? 'check'/);
+  // The result glyph: check or error for the phase, the resting icon back after it (decision C48).
+  assert.match(clipboard, /if \(icon\) icon\.set\(phase === 'success' \? 'check' : 'error'\)/);
   assert.doesNotMatch(clipboard, /createElement\('i'\)/);
   assert.match(clipboard, /setAttribute\('aria-label', accessibleLabel\)/);
   assert.match(clipboard, /setAttribute\('aria-hidden', 'true'\)/);

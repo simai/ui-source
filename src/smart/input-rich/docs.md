@@ -64,9 +64,12 @@ again with the same subset: a request can be written by anyone.
 - `size="1/2|1|2"` -- the field ladder; the frame, padding and text are
   sf-textarea's of the same size, the toolbar's buttons a rung below
   (ghost on-surface icon buttons; the block levels P, H2, H3, H4 in the same
-  square). Headings in the text follow the field's text, not the page's:
-  h2 a rung above it, h3 the field's text, h4 a rung below, all bold.
-- `appearance="bordered|filled"` -- sf-textarea's two boxes.
+  square). Headings in the text climb the text ladder from the field's
+  text: h4 is the field's text, h3 a rung above, h2 two rungs above, all
+  bold, so no heading is smaller than the text. The link editor is one
+  rung: its address field, hint and buttons are the field's size (at most 1).
+- `appearance="bordered|filled"` -- sf-textarea's two boxes (filled with its
+  bottom line in `--sf-outline`, C52).
 - `rows` -- the fewest lines shown (6); the field grows with its text.
   `max-rows` -- the most before the text scrolls inside.
 
@@ -98,9 +101,15 @@ nothing.
   and End go to the first and the last; Enter or Space presses one.
 - Ctrl+B / Cmd+B bold, Ctrl+I / Cmd+I italic, Ctrl+K / Cmd+K the link
   editor, Ctrl+Z / Cmd+Z undo, Ctrl+Shift+Z / Cmd+Shift+Z and Ctrl+Y redo.
+- Bold and Italic say the marks of the text, not how it looks: a heading is
+  bold by its type, so Bold is pressed in it only on a bold mark. At a caret
+  the mark goes to the text typed next, composed with an IME, or pasted
+  as plain text (pasted rich text keeps its own marks); a cancelled
+  composition keeps it.
 - In the link editor Enter applies and Escape closes; the caret goes back to
   the text. The link editor is a popup form of the form's width; on a phone
-  it is a sheet at the bottom of the screen.
+  it is a sheet at the bottom of the screen. Its field and buttons are the
+  toolbar's size, and while it is open only the link tool looks active.
 
 ## Accessibility
 

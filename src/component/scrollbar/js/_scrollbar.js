@@ -136,8 +136,28 @@ class ScrollbarController {
     return Math.min(maxScroll, Math.max(0, position));
   }
 
-  setLogicalScrollPosition(position, maxScroll) {
+  // A step the reader asks for (a key, a page click on the track, Home and
+  // End) glides, unless the reader prefers reduced motion. Core sets smooth
+  // scrolling on the page only (html), so a viewport asks for it here; a
+  // thumb drag follows the pointer and stays instant.
+  stepBehavior() {
+    return globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth';
+  }
+
+  scrollStep(delta) {
+    this.viewport.scrollBy({...delta, behavior: this.stepBehavior()});
+  }
+
+  setLogicalScrollPosition(position, maxScroll, glide = false) {
     const boundedPosition = Math.min(maxScroll, Math.max(0, position));
+
+    if (glide) {
+      const target = this.axis === 'vertical'
+        ? {top: boundedPosition}
+        : {left: this.isHorizontalRtl() ? -boundedPosition : boundedPosition};
+      this.viewport.scrollTo({...target, behavior: this.stepBehavior()});
+      return;
+    }
 
     if (this.axis === 'vertical') {
       this.viewport.scrollTop = boundedPosition;
@@ -187,7 +207,7 @@ class ScrollbarController {
         : this.viewport.clientHeight;
       const step = this.getKeyboardStep();
       const page = Math.max(step, viewportSize - step);
-      this.viewport.scrollBy(
+      this.scrollStep(
         this.axis === 'horizontal'
           ? {left: direction * page}
           : {top: direction * page},
@@ -267,16 +287,16 @@ class ScrollbarController {
         : this.viewport.clientHeight;
       const page = Math.max(line, viewportSize - line);
       const verticalCommands = {
-        ArrowUp: () => this.viewport.scrollBy({top: -line}),
-        ArrowDown: () => this.viewport.scrollBy({top: line}),
-        PageUp: () => this.viewport.scrollBy({top: -page}),
-        PageDown: () => this.viewport.scrollBy({top: page}),
+        ArrowUp: () => this.scrollStep({top: -line}),
+        ArrowDown: () => this.scrollStep({top: line}),
+        PageUp: () => this.scrollStep({top: -page}),
+        PageDown: () => this.scrollStep({top: page}),
       };
       const horizontalCommands = {
-        ArrowLeft: () => this.viewport.scrollBy({left: -line}),
-        ArrowRight: () => this.viewport.scrollBy({left: line}),
-        PageUp: () => this.viewport.scrollBy({left: -page}),
-        PageDown: () => this.viewport.scrollBy({left: page}),
+        ArrowLeft: () => this.scrollStep({left: -line}),
+        ArrowRight: () => this.scrollStep({left: line}),
+        PageUp: () => this.scrollStep({left: -page}),
+        PageDown: () => this.scrollStep({left: page}),
       };
       const commands = {
         ...(this.axis === 'horizontal' ? horizontalCommands : verticalCommands),
@@ -284,14 +304,14 @@ class ScrollbarController {
           const contentSize = this.axis === 'horizontal'
             ? this.viewport.scrollWidth
             : this.viewport.scrollHeight;
-          this.setLogicalScrollPosition(0, Math.max(0, contentSize - viewportSize));
+          this.setLogicalScrollPosition(0, Math.max(0, contentSize - viewportSize), true);
         },
         End: () => {
           const contentSize = this.axis === 'horizontal'
             ? this.viewport.scrollWidth
             : this.viewport.scrollHeight;
           const maxScroll = Math.max(0, contentSize - viewportSize);
-          this.setLogicalScrollPosition(maxScroll, maxScroll);
+          this.setLogicalScrollPosition(maxScroll, maxScroll, true);
         },
       };
 
@@ -355,7 +375,21 @@ class ScrollbarController {
       ? this.thumb.offsetWidth
       : this.thumb.offsetHeight;
     const maxThumbOffset = Math.max(0, viewportSize - thumbSize);
-    const ratio = maxScroll ? this.getLogicalScrollPosition(maxScroll) / maxScroll : 0;
+    const position = maxScroll ? this.getLogicalScrollPosition(maxScroll) : 0;
+    const ratio = maxScroll ? position / maxScroll : 0;
+
+    // Where the content goes on past the edge (owner decision C91, level 1):
+    // the sheet fades that edge out, so an area says "there is more" without
+    // its bar. start, end or both, in the logical direction; none at rest
+    // when everything fits.
+    const before = hasOverflow && position > 1;
+    const after = hasOverflow && position < maxScroll - 1;
+    const more = before && after ? 'both' : before ? 'start' : after ? 'end' : '';
+    if (more) {
+      if (this.root.dataset.sfScrollbarMore !== more) this.root.dataset.sfScrollbarMore = more;
+    } else if ('sfScrollbarMore' in this.root.dataset) {
+      delete this.root.dataset.sfScrollbarMore;
+    }
     const physicalOffset = Math.round(maxThumbOffset * ratio) *
       (this.isHorizontalRtl() ? -1 : 1);
 
@@ -405,6 +439,7 @@ class ScrollbarController {
     delete this.root.dataset.sfScrollbarState;
     delete this.root.dataset.sfScrollbarDragging;
     delete this.root.dataset.sfScrollbarOverflow;
+    delete this.root.dataset.sfScrollbarMore;
     delete this.root.dataset.sfScrollbarReady;
   }
 }

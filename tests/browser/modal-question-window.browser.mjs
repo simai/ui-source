@@ -11,7 +11,11 @@
 //   width                 --sf-popup-question-width (28rem / compact 26rem),
 //                         the screen's width on a phone (bottom sheet)
 //   frame                 --sf-space-3 on every side; the × on its corner
-//   title                 --sf-text--size-2 / --sf-text--height-2, bold
+//   title                 the h4 step of the heading ladder, bold (C39, the
+//                         question window's title; C21: 20 on a desktop, 16
+//                         on a phone), on the h4 step's own line
+//                         --sf-heading-4--height (24 / 18); density moves
+//                         neither (C44): a compact title is the normal one
 //   title -> plate        --sf-space-1
 //   plate                 surface-container, --sf-radius--surface,
 //                         --sf-space-1 inside; the decisive sentence medium
@@ -37,6 +41,8 @@ if (shots) mkdirSync(shots, {recursive: true});
 const LOADS = Number(process.env.LOADS || 3);
 const failures = [];
 const note = (detail) => failures.push(detail);
+// The normal window's title line per view, theme, kind and load (C44).
+const normalTitleLine = new Map();
 const types = {js: 'text/javascript; charset=utf-8', css: 'text/css; charset=utf-8', json: 'application/json; charset=utf-8', woff2: 'font/woff2'};
 const page404 = new Set();
 
@@ -136,7 +142,7 @@ async function measure(page) {
       tokens: {
         width: token('--sf-popup-question-width'), space3: token('--sf-space-3'), space2: token('--sf-space-2'), space1: token('--sf-space-1'),
         space13: token('--sf-space-1\\/3'), space12: token('--sf-space-1\\/2'), radius: token('--sf-radius--surface'), control: token('--sf-ui-1--control-height'),
-        textSize2: token('--sf-text--size-2'), textHeight2: token('--sf-text--height-2'), container: colour('--sf-surface-container'),
+        heading4Size: token('--sf-heading-4--size'), heading4Height: token('--sf-heading-4--height'), container: colour('--sf-surface-container'),
       },
       surface: {...rect(surface), padding: [sc.paddingTop, sc.paddingRight, sc.paddingBottom, sc.paddingLeft].map(parseFloat),
         radius: [sc.borderTopLeftRadius, sc.borderTopRightRadius, sc.borderBottomRightRadius, sc.borderBottomLeftRadius].map(parseFloat),
@@ -187,8 +193,15 @@ function check(m, ctx) {
   table.frame = m.close.top - m.surface.top;
   table.closeEnd = m.surface.right - m.close.right;
   // title
-  want('title size = --sf-text--size-2', m.title.size, t.textSize2, 0.1);
-  want('title line = --sf-text--height-2', m.title.height, t.textHeight2, 0.1);
+  // The question window's title is the heading ladder's h4 step (C39 with
+  // C21), in a compact region too (C44): the size is the decision's number,
+  // not a token density moves, and the line is the normal window's.
+  want('title size = C21 h4 (20 desktop, 16 phone), density-independent (C44)', m.title.size, phone ? 16 : 20, 0.1);
+  want('title size = --sf-heading-4--size', m.title.size, t.heading4Size, 0.1);
+  want('title line = --sf-heading-4--height', m.title.height, t.heading4Height, 0.1);
+  const lineKey = `${ctx.view}/${ctx.theme}/${ctx.kind}/${ctx.load}`;
+  if (ctx.density === 'normal') normalTitleLine.set(lineKey, m.title.height);
+  else if (normalTitleLine.has(lineKey)) want('title line in a compact region = the normal one (C44)', m.title.height, normalTitleLine.get(lineKey), 0.1);
   if (Number(m.title.weight) < 700) note({...ctx, what: 'title bold', got: m.title.weight});
   table.title = `${m.title.size}/${m.title.height} ${m.title.weight}`;
   // title -> plate

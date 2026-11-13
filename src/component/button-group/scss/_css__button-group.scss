@@ -230,7 +230,7 @@
     /* The track is a translucent container fill, so the dimmed ink on it is the
        container's: 4.5:1 over the surfaces 0 to 3 in both themes. */
     background-color: var(--sf-button-group-background-color, var(--sf-surface-container));
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
 
   /* The size ladder: the track takes the button's height, its padding the
@@ -299,8 +299,16 @@
     /* A segment is the button less the track's padding on each side, so the
        track is as tall as the button; never below zero. */
     --sf-button-group--segment-padding-block: max(calc(var(--sf-px) * 0), calc(var(--sf-button--padding-top) - var(--sf-button-group--padding)));
+    /* The same on the sides (R191 HS-11, grouped-controls rule): a segment is
+       a step tighter than the button, so it takes the side padding of that
+       step -- the button's less the track's padding -- not the full size's
+       (a 32 px segment at size 1 had the 40 px button's 16). */
+    --sf-button-group--segment-padding-inline-start: max(calc(var(--sf-px) * 0), calc(var(--sf-button--padding-inline-start) - var(--sf-button-group--padding)));
+    --sf-button-group--segment-padding-inline-end: max(calc(var(--sf-px) * 0), calc(var(--sf-button--padding-inline-end) - var(--sf-button-group--padding)));
     position: relative;
     padding-block: var(--sf-button-group--segment-padding-block);
+    padding-inline-start: var(--sf-button-group--segment-padding-inline-start);
+    padding-inline-end: var(--sf-button-group--segment-padding-inline-end);
     justify-content: center;
     border-width: 0;
     border-radius: var(--sf-button-group--plate-radius);
@@ -312,8 +320,42 @@
     color: inherit;
   }
 
+  /* Width by content (owner decision C47 A): in a full-width track each
+     segment starts at its own width and the rest is shared equally, so a
+     long label is not squeezed to the share of a short one. A label stays on
+     one line -- a wrapped one made the track taller than a button of its
+     size -- and is cut with «…» only as the last step. */
   .sf-button-group--segmented.sf-button-group--full-width > .sf-button-group-segment {
-    flex: 1 1 0;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .sf-button-group--segmented > .sf-button-group-segment .sf-button-text-container {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* The labels do not fit on one line (C47 C): sf-segmented draws an
+     sf-dropdown of the same size in the track's place and keeps the track,
+     out of sight and out of reach, only to measure what it needs: its
+     one-line width. The same box measures a shown track for a moment
+     (data-sf-measure). Fixed, so the measured width never widens the page. */
+  .sf-button-group--segmented.sf-button-group--folded,
+  .sf-button-group--segmented[data-sf-measure] {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inline-size: max-content;
+    max-inline-size: none;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .sf-button-group-narrow {
+    display: block;
+    inline-size: 100%;
     min-inline-size: 0;
   }
 
@@ -383,9 +425,15 @@
   }
 
   /* The raised plate, the default since 1.4.0: the raised place (C20), white
-     in the light theme, a surface step lighter in the dark. */
+     with its shadow in the light theme. In the dark it is the pressed plate
+     (C42, owner 2026-11-10): the raised surface measured 1.03:1 against the
+     track on the page and vanished, while the fill's top step over the track
+     is lighter than the track on every neutral place. On a strong coloured
+     place the place says which plate is lighter (--sf-place--plate, mix
+     sf-place-strong-accent; DEV acceptance 2026-11-10, D4): the fill's top
+     step there is the place's ink, dark in the dark theme. */
   .sf-button-group--segmented.sf-button-group--plate-raised {
-    --sf-button-group--plate-fill: var(--sf-button-group-plate-background-color, var(--sf-surface-raised));
+    --sf-button-group--plate-fill: var(--sf-button-group-plate-background-color, var(--sf-place--plate, light-dark(var(--sf-surface-raised), var(--sf-surface-container-active))));
     --sf-button-group--plate-variant: var(--sf-on-surface-raised-variant);
     --sf-button-group--plate-shadow: var(--sf-shadow-raised);
   }
@@ -395,7 +443,7 @@
     --sf-on-surface-variant: var(--sf-button-group--plate-variant);
     --sf-button--box-shadow: var(--sf-button-group--plate-shadow);
     --sf-button--focus-ink: transparent;
-    color: var(--sf-button-group-plate-color, var(--sf-on-surface));
+    color: var(--sf-button-group-plate-color, var(--sf-place--on-plate, var(--sf-on-surface)));
   }
 
   /* The plate element. Hidden until the element has measured the selected
@@ -499,25 +547,27 @@
     color: currentColor;
   }
 
-  /* States, from the neutral alpha ramp: a segment that is not selected darkens
-     one step on hover and another when pressed, and its ink comes up to the
-     primary text role. The selected plate does not react to a hover. */
+  /* States, from the surface state roles (select 8, active 12; DEV acceptance
+     2026-11-10 Q3, so they follow a coloured place): a segment that is not
+     selected darkens one step on hover and another when pressed, and its ink
+     comes up to the primary text role. The selected plate does not react to a
+     hover. */
   .sf-button-group--segmented > .sf-button-group-segment:not(.active):not(:disabled):hover {
-    --sf-button--background-color: var(--sf-alpha-8);
+    --sf-button--background-color: var(--sf-surface-state-select);
     color: var(--sf-on-surface);
   }
 
   .sf-button-group--segmented > .sf-button-group-segment:not(.active):not(:disabled):active {
-    --sf-button--background-color: var(--sf-alpha-12);
+    --sf-button--background-color: var(--sf-surface-state-active);
     color: var(--sf-on-surface);
   }
 
   .sf-button-group--segmented > .sf-button-group-segment:disabled {
-    color: var(--sf-on-disable);
+    color: var(--sf-on-surface-disabled);
   }
 
   .sf-button-group--segmented > .sf-button-group-segment.active:disabled {
-    --sf-button--background-color: var(--sf-disable);
+    --sf-button--background-color: var(--sf-surface-disabled);
     --sf-button--box-shadow: none;
   }
 

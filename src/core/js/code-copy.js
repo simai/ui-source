@@ -24,20 +24,20 @@
 // under that component's name, so a word a product registers for
 // sf-button-copy (SF.language.register) is said here too. Core cannot import
 // a Smart component's files (core is what the Smart units depend on), so the
-// three words it says are written here as sf-button-copy ships them;
+// words are written once in core, as sf-button-copy ships them
+// (core/js/copy-feedback.js, decision C48);
 // tests/inline-code.contract.test.mjs holds them equal to its language files.
 // A refused copy selects the code and says which keys to press, as
 // sf-button-copy does.
 import {copyText} from './clipboard.js';
 import {pageWord} from './page-language.js';
+import {WORDS as COPY_WORDS, copyKeys} from './copy-feedback.js';
 
 export const ATTRIBUTE = 'data-sf-code-copy';
 export const TARGET = 'data-sf-code-copy-target';
 const STATUS_CLASS = 'sf-code-copy-status';
-export const WORDS = {
-  en: {copy: 'Copy', copied: 'Copied', selected: 'Selected — press {keys}'},
-  ru: {copy: 'Копировать', copied: 'Скопировано', selected: 'Выделено — нажмите {keys}'},
-};
+// sf-button-copy's words, kept once in core/js/copy-feedback.js (decision C48).
+export const WORDS = COPY_WORDS;
 // The status stays as long as sf-button-copy's does by default.
 const SHOWN_MS = 2000;
 // Where a word of code is part of something else (the base sheet's list).
@@ -57,7 +57,7 @@ export function isCopyable(code) {
   return !parent.closest(NOT_PROSE);
 }
 
-const keys = () => (/Mac|iPhone|iPad/u.test(globalThis.navigator?.platform ?? globalThis.navigator?.userAgent ?? '') ? '⌘C' : 'Ctrl+C');
+const keys = copyKeys;
 
 function mark(code) {
   code.setAttribute(TARGET, '');

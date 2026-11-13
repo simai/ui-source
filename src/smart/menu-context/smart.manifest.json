@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu-context",
-  "version": "1.14.3",
+  "version": "1.16.0",
   "title": "Context Menu",
   "summary": "The Framework's action menu and its settings panel: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, and the value rows a setting needs (switch, range, choice, a group of rows or tiles) with one change event and the set-value, set-all, reset and show actions, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
   "kind": "smart",
@@ -144,7 +144,7 @@
           "array"
         ],
         "default": "",
-        "description": "A panel with tabs: labels separated by |, or [{id, label}] as a property. The head (tabs and the close button) and the footer never scroll, the body does, and the panel keeps a fixed width (a ladder step, or width) whatever a tab holds."
+        "description": "Deprecated (owner decision C106, 2026-11-12; a former name until 2027-01-01): a list's view settings are sf-settings look=\"panel\". A panel with tabs: labels separated by |, or [{id, label}] as a property. The head (tabs and the close button) and the footer never scroll, the body does, and the panel keeps a fixed width (a ladder step, or width) whatever a tab holds."
       },
       "active-tab": {
         "type": "string",
@@ -210,7 +210,8 @@
           "search": "{placeholder, empty}, a field above the submenu that narrows its rows by label, caption and keywords",
           "keywords": "string, extra words a search matches",
           "avatar": "string, a picture URL drawn in the lead (a site's logo, a person)",
-          "initials": "string, drawn in the lead when there is no picture"
+          "initials": "string, drawn in the lead when there is no picture",
+          "swatch": "string, a CSS colour drawn as a circle in the lead instead of an icon (a code, var() of a token, light-dark() of two): a colour row of sf-settings, a label's colour"
         }
       },
       "separator": {
@@ -241,7 +242,8 @@
           "icon": "string, a Material Symbols name in the lead",
           "caption": "string, a second line under the name",
           "view": "'quiet' (the default: the options at the row's end, sized to their content, no frame and no dividers, the chosen one on a soft fill), 'band' (the framed full-width band, for a row that must show every option across the panel) or 'drill' (the chosen option under the label and a chevron; the options open as a level of the panel, a check mark on the chosen one, and choosing goes back -- for a list too long or too wordy to stand at the row's end). A drilling view needs a drilling panel: in a flyout menu the row stays the quiet one",
-          "options": "[{id, text, icon, checked, disabled}], side by side; a choice is marked at once and the menu stays open unless keepOpen is false"
+          "options": "[{id, text, icon, swatch, checked, disabled}], side by side; a choice is marked at once and the menu stays open unless keepOpen is false. An option's swatch is a CSS colour drawn as a circle where its icon would stand (in the drilled level's lead, or alone in a quiet row's option)",
+          "swatch": "string, a CSS colour drawn as a circle in the row's lead: the colour chosen now"
         }
       },
       "switch": {
@@ -949,19 +951,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu-context/index.js",
-        "sha256": "943bec39ace7f03119ad6966489616ed42ca17be07dd91f9b8232b408a556a27"
+        "sha256": "da641b682f057a3570e99b1cb9f35ca0be21be2d97522de512d1ca2e4772c7a5"
       },
       {
         "path": "src/smart/menu-context/js/templates/default.js",
-        "sha256": "e18525d4aba0c2f9b6cea177c73737a0f555a43783406a9330b6e3340972c2bc"
+        "sha256": "ce97aeb6140d218160b6b32be431a0d7b6183814d8cac746179c8f12466c6897"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",
-        "sha256": "d02bf4828821dac0f24cda67e7c71d8f67d54835c774a176996c1108ba7ce189"
+        "sha256": "f99ca087119cab1139fc03681aea7075a6797bc6c8186e78998d21a2efa44811"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu_custom.scss",
-        "sha256": "2a1fb31060c09bd4f52b41c7fe0211b3ed114d5a9bb039538d961c3f1eba136b"
+        "sha256": "ab86d4eccbd894c2bda24baaf98687d340ffdeaad236b673d69950b25665e9ff"
       }
     ],
     "generated_runtime": [

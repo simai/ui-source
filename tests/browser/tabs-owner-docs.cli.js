@@ -20,8 +20,6 @@ async page => {
       'component/icon-buttons/css/icon-buttons.css',
       'component/tabs/css/tabs.css',
       'smart/button-icon/css/button-icon.css',
-      'smart/tabs/css/tabs.css',
-      'smart/tabs/template/default.css',
     ]) await frame.addStyleTag({url: `${base}/${path}`});
     for (const name of ['icons', 'close', 'buttons', 'icon-buttons', 'tabs']) {
       await frame.addScriptTag({url: `${base}/smart/${name}/js/${name}.js`});
@@ -76,8 +74,12 @@ async page => {
   check(await smartKeyboard.locator('[role="tab"]').count() === 7, 'Smart variants render their complete tab lists');
   const firstGroup = smartKeyboard.locator('sf-tabs').first();
   await firstGroup.locator('[role="tab"]').first().focus();
+  // sf-tabs 1.3.0 (R184 T9): the arrow reaches the disabled tab, which
+  // selects nothing; the next one selects the tab after it.
   await firstGroup.locator('[role="tab"]').first().press('ArrowRight');
-  check(await firstGroup.locator('[role="tab"]').nth(2).getAttribute('aria-selected') === 'true', 'Smart keyboard navigation skips disabled tabs');
+  check(await firstGroup.locator('[role="tab"]').first().getAttribute('aria-selected') === 'true', 'Smart keyboard navigation reaches a disabled tab without selecting it');
+  await firstGroup.locator('[role="tab"]').nth(1).press('ArrowRight');
+  check(await firstGroup.locator('[role="tab"]').nth(2).getAttribute('aria-selected') === 'true', 'Smart keyboard navigation selects the tab past a disabled one');
   check(await smartKeyboard.locator('sf-tabs').nth(1).locator('[role="tab"][aria-label]').count() === 2, 'Smart icon tabs expose item labels');
   const vertical = smartKeyboard.locator('sf-tabs').nth(2);
   check(await vertical.locator('[role="tablist"]').getAttribute('aria-orientation') === 'vertical', 'Smart vertical variant announces its orientation');

@@ -11,9 +11,14 @@
 // aliases (aliases.json); the words are the language files'.
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
-// The copy and its fallback are core's (core/js/clipboard.js, SF.copyText;
-// reuse audit 2026-11-02, finding 11), shared with the clipboard class.
-import {copyText} from '../../core/js/clipboard.js';
+// The copy and what it says are core's (core/js/copy-feedback.js over
+// SF.copyText; decision C48, 2026-11-11), shared with the attribute route
+// data-sf-copy of the clipboard component: one phase, timer and set of words.
+import {createCopyFeedback, readCopyText} from '../../core/js/copy-feedback.js';
+import BundledPosition from '../../core/js/position.js';
+import {instancePath, partId} from '../../core/js/instance-path.js';
+import {tagSelector} from '../../core/js/tag-aliases.js';
+import {preloadControlIcons} from '../helpers/cycle';
 import {renderCopyButtonTemplate} from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -21,9 +26,8 @@ import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
 
-function isMac() {
-  return /Mac|iPhone|iPad/u.test(globalThis.navigator?.platform ?? globalThis.navigator?.userAgent ?? '');
-}
+// Prefer the placement helper Core published; an isolated bundle uses its own copy.
+const positioning = () => globalThis.SF?.Position || BundledPosition;
 
 const CopyButtonElement = elementFromManifest(manifest, {
   base: SfBaseElement,
@@ -39,8 +43,13 @@ class SfCopyButton extends CopyButtonElement {
   constructor() {
     super();
     this.state = {phase: 'idle', message: ''};
-    this._timer = null;
-    this._pending = false;
+    this._feedback = createCopyFeedback({
+      duration: () => this.duration,
+      onPhase: (phase, message) => {
+        this.state = {phase, message};
+        this.requestComponentUpdate('phase');
+      },
+    });
   }
 
   // An absent duration is two seconds: read as Number(null) it was zero, and
@@ -73,88 +82,70 @@ class SfCopyButton extends CopyButtonElement {
     if (!hasTarget) throw new Error('empty_source');
     const element = this.sourceElement();
     if (!element) throw new Error('missing_target');
-    if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) return element.value;
-    const rows = element.querySelectorAll(':scope .sf-code-lines > .sf-code-line > .sf-code-line__content');
-    if (rows.length) return Array.from(rows, (row) => (row.textContent === ' ' ? '' : row.textContent)).join('\n');
-    return element.textContent ?? '';
-  }
-
-  // Refused by the browser: the text is selected so the person can copy it.
-  selectSource(text) {
-    const element = this.sourceElement();
-    if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
-      element.focus();
-      element.select();
-      return;
-    }
-    const selection = globalThis.getSelection?.();
-    if (!selection) return;
-    selection.removeAllRanges();
-    if (element) {
-      const range = this.ownerDocument.createRange();
-      range.selectNodeContents(element);
-      selection.addRange(range);
-      return;
-    }
-    // A value with no element on the page: a hidden field holds it to select.
-    let holder = this.querySelector('.sf-copy-button-holder');
-    if (!holder) {
-      holder = this.ownerDocument.createElement('span');
-      holder.className = 'sf-copy-button-holder';
-      this.append(holder);
-    }
-    holder.textContent = text;
-    const range = this.ownerDocument.createRange();
-    range.selectNodeContents(holder);
-    selection.addRange(range);
+    return readCopyText(element);
   }
 
   // The action copy (component.json): the generated method calls this and
   // answers its outcome; the press of the template calls the method.
   async runCopy() {
-    if (this._pending) return {outcome: 'refused', reason: 'busy'};
-    this._pending = true;
-    this.setPhase('pending', '');
-    try {
-      const text = this.source();
-      if (!text) throw new Error('empty_source');
-      const method = await copyText(text, {document: this.ownerDocument});
-      this.setPhase('success', this.successText || this.words('copied'));
-      this.sfEmit('copied', {text, method});
-      return {outcome: 'applied', text, method};
-    } catch (error) {
-      const code = ['empty_source', 'missing_target', 'ambiguous_source'].includes(error?.message) ? error.message : 'denied';
-      if (code === 'denied') {
-        let text = '';
-        try { text = this.source(); } catch { /* nothing to select */ }
-        this.selectSource(text);
-        const keys = isMac() ? '⌘C' : 'Ctrl+C';
-        this.setPhase('error', this.words('selected', {keys}));
-      } else {
-        this.setPhase('error', this.errorText || this.words('failed'));
-      }
-      this.sfEmit('copy-failed', {code});
-      return {outcome: 'refused', reason: code};
-    } finally {
-      this._pending = false;
+    const result = await this._feedback.run({
+      read: () => this.source(),
+      // Refused by the browser: the target is selected, or the value in a
+      // hidden holder inside the host, so the person can copy it.
+      element: () => this.sourceElement(),
+      host: this,
+      holderClass: 'sf-copy-button-holder',
+      document: this.ownerDocument,
+      words: (key, vars) => this.words(key, vars),
+      messages: {copied: this.successText, failed: this.errorText},
+    });
+    if (result.outcome === 'applied') {
+      this.sfEmit('copied', {text: result.text, method: result.method});
+      return {outcome: 'applied', text: result.text, method: result.method};
     }
-  }
-
-  setPhase(phase, message) {
-    clearTimeout(this._timer);
-    this.state = {phase, message};
-    this.requestComponentUpdate('phase');
-    if (phase === 'success' || phase === 'error') {
-      this._timer = setTimeout(() => {
-        this.state = {phase: 'idle', message: ''};
-        this.requestComponentUpdate('phase');
-      }, this.duration);
-    }
+    if (result.reason === 'busy') return {outcome: 'refused', reason: 'busy'};
+    // The event's codes: the source's own, else denied (a refusal or no clipboard).
+    const code = ['empty_source', 'missing_target', 'ambiguous_source'].includes(result.reason) ? result.reason : 'denied';
+    this.sfEmit('copy-failed', {code});
+    return {outcome: 'refused', reason: code};
   }
 
   disconnectedCallback() {
-    clearTimeout(this._timer);
+    this._feedback.cancel();
+    this.stopResult();
     super.disconnectedCallback?.();
+  }
+
+  // The result glyphs are asked for with the first drawing, not when they are
+  // first drawn: an icon the subset has not got draws nothing until a second
+  // font arrives, and the error glyph came about a second after a refusal
+  // (docs pre-check, copy anatomy finding 7).
+  afterRender() {
+    super.afterRender?.();
+    preloadControlIcons(this, [this.successIcon || 'check', 'error']);
+    this.placeResult();
+  }
+
+  // The failed copy's words, shown above the control (the template draws the
+  // surface; this places it with SF.Position while it shows, and lets it go).
+  placeResult() {
+    const result = this.querySelector(':scope .sf-copy-button-result');
+    // The drawn control, under its current tag or an old one in its window.
+    const hosts = [tagSelector('sf-button'), tagSelector('sf-button-icon')].join(', ');
+    const control = this.querySelector(`:scope .sf-copy-button > :is(${hosts})`)?.querySelector('.sf-button, .sf-icon-button');
+    if (!result || result.hidden || !control) {
+      this.stopResult();
+      return;
+    }
+    if (this._result?.box === result) return;
+    this.stopResult();
+    const placed = positioning().anchor(control, result, {side: 'block-start', align: 'center', fitHeight: false});
+    this._result = {box: result, placed};
+  }
+
+  stopResult() {
+    this._result?.placed?.stop?.();
+    this._result = null;
   }
 
   templateContext() {
@@ -168,6 +159,7 @@ class SfCopyButton extends CopyButtonElement {
       successIcon: this.successIcon,
       // The name says what is copied when the host says so.
       name: this.label || this.text || this.words('copy'),
+      nameTooltipId: partId(instancePath(this, {kind: 'sf-button-copy'}), 'name'),
       phase: this.state.phase,
       message: this.state.message,
       rootClass: this.getRootClass(),

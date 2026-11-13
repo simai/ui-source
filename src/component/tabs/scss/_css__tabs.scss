@@ -109,6 +109,20 @@
   .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"] > [inert] > :is(sf-button-icon, sf-icon-button) {
     display: contents;
   }
+
+  // sticky (sf-tabs 1.3.0): the tab row stays in sight while its panels
+  // scroll past, --sf-tabs-sticky-top below the top of the view (a fixed
+  // header's height), on the page surface so nothing shows through it.
+  .sf-tabs.sf-tabs--sticky > .sf-tabs-top-container {
+    position: sticky;
+    inset-block-start: var(--sf-tabs-sticky-top, var(--sf-0));
+    z-index: var(--sf-z-index-5);
+    background-color: var(--sf-surface-page);
+  }
+
+  .sf-tabs.sf-tabs--sticky.sf-tabs--vertical > .sf-tabs-top-container {
+    align-self: flex-start;
+  }
 }
 
 @layer sf.overrides {
@@ -143,11 +157,13 @@
   .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
     --sf-button--border-top-width: 0;
     --sf-button--border-inline-start-width: 0;
-    --sf-button--border-bottom-width: var(--sf-tabs-indicator-width, calc(var(--sf-tabs--border-width, var(--sf-px)) * 2));
+    // The line is not the tab's border: it is drawn under the letters
+    // (owner decision C99, the selected line below).
+    --sf-button--border-bottom-width: 0;
     --sf-button--border-inline-end-width: 0;
     --sf-icon-button--border-top-width: 0;
     --sf-icon-button--border-inline-start-width: 0;
-    --sf-icon-button--border-bottom-width: var(--sf-tabs-indicator-width, calc(var(--sf-tabs--border-width, var(--sf-px)) * 2));
+    --sf-icon-button--border-bottom-width: 0;
     --sf-icon-button--border-inline-end-width: 0;
   }
 
@@ -189,6 +205,19 @@
   }
 
   .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > :is(.sf-button, .sf-icon-button) + :is(.sf-button, .sf-icon-button) {
+    --sf-button--border-inline-start-width: 0;
+    --sf-icon-button--border-inline-start-width: 0;
+  }
+
+  /* The same single seam when each button sits in a wrapper: the host of
+     sf-tabs' buttons (sf-button, display: contents) or a tab drawn by a
+     component of the page's own (span[role=tab]). The sibling rule above
+     never reaches them, so every seam of sf-tabs type="full" was drawn twice,
+     2 px of primary-active where the class markup draws 1. The rule sat in
+     sf-tabs' own Smart sheet, which the Loader never asks for (its rule has
+     no css: audit of dead Smart sheets, 2026-11-11). */
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > :not(:first-child) > :is(.sf-button, .sf-icon-button),
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"]:not(:first-child) :is(.sf-button, .sf-icon-button) {
     --sf-button--border-inline-start-width: 0;
     --sf-icon-button--border-inline-start-width: 0;
   }
@@ -313,13 +342,23 @@
     --sf-icon-button--background-color: var(--sf-transparent);
   }
 
+  // The icon beside a tab's label is half a step paler than the label where
+  // the label is --sf-on-surface (C107, owner 2026-11-12): --sf-on-surface-icon.
+  // A quieter label (underline, at rest) keeps its icon at its own ink; a
+  // filled tab keeps the fill's on-colour. Hovered and pressed, the icon takes
+  // the label's colour.
   .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-icon,
   .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) .sf-icon {
-    --sf-icon--color: var(--sf-tabs-color, var(--sf-on-surface));
+    --sf-icon--color: var(--sf-tabs-color, var(--sf-on-surface-icon));
   }
 
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) .sf-icon,
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled) .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-icon);
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled):is(:hover, :active) .sf-icon,
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled):is(:hover, :active) .sf-icon {
     --sf-icon--color: var(--sf-on-surface);
   }
 
@@ -356,14 +395,26 @@
     --sf-icon--color: var(--sf-on-primary);
   }
 
+  // Under the pointer or the keyboard a line tab's ink darkens, and nothing
+  // else: no grey line, which read as a near-selection (owner decision C96
+  // item 4, R184 T6).
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):focus-visible,
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):hover,
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):focus-visible,
   .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):hover {
     --sf-button--background-color: transparent;
-    --sf-button--border-color: var(--sf-outline-variant);
+    --sf-button--border-color: transparent;
     --sf-icon-button--background-color: transparent;
-    --sf-icon-button--border-color: var(--sf-outline-variant);
+    --sf-icon-button--border-color: transparent;
+    color: var(--sf-on-surface);
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):is(:hover, :focus-visible) .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-surface);
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button):not(.selected):not(:disabled):not(.disabled):is(:hover, :focus-visible) .sf-icon {
+    --sf-icon--color: var(--sf-on-surface);
   }
 
   // A tab sits flush against its neighbours, so the ring turns inwards, and a
@@ -413,32 +464,120 @@
 }
 
 @layer sf.overrides {
-  // An underline tab is its label and its line: no inline padding on the tab,
-  // one gap between tabs by size, from the ladder -- c0, c2 and c6 at 1/2, 1
-  // and 2 -- and a line of two, two and three pixels (owner, 2026-10-14). The
-  // tab keeps the control's height, which is its hit area.
-  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button,
-  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+  // An underline tab is a control of its size with its line under the letters
+  // (owner decision C99, variant A; R184 TS-1..TS-5). The tabs stand edge to
+  // edge (gap --sf-space-0), so the whole row is a hit area; each tab has the
+  // inline padding of a button of the same size, --sf-ui-<size>--space-x
+  // (14 / 16 / 20 at 1440, 12 / 14 / 18 on a phone, one step down in compact
+  // density, C79), and the label has none of its own, so the line is as wide
+  // as the letters. --sf-tabs-padding-inline sets that padding for every
+  // size. The first tab has no padding at its start and the last none at its
+  // end, so the first letters stand on the content edge like the heading
+  // above; a row that shares its width (fit, C96 item 7) keeps both. The
+  // gap and the padding were the ladder's raw c0 / c2 / c6 between tabs of no
+  // padding: 17-19 % of the row pressed nothing (C18).
+  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top {
+    --sf-tabs-top--gap: var(--sf-tabs-gap, var(--sf-space-0));
+  }
+
+  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    --sf-tabs--padding-inline: var(--sf-tabs-padding-inline, var(--sf-ui-1--space-x));
+    --sf-button--padding-inline-start: var(--sf-tabs--padding-inline);
+    --sf-button--padding-inline-end: var(--sf-tabs--padding-inline);
+  }
+
+  .sf-tabs--underline.sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    --sf-tabs--padding-inline: var(--sf-tabs-padding-inline, var(--sf-ui-1\/2--space-x));
+  }
+
+  .sf-tabs--underline.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    --sf-tabs--padding-inline: var(--sf-tabs-padding-inline, var(--sf-ui-2--space-x));
+  }
+
+  // The label is as wide as its letters: sf-button stretches it (flex-1) in a
+  // button wider than its content, which a shared row is.
+  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button .sf-button-text-container {
+    padding-inline: calc(var(--sf-px) * 0);
+    flex: 0 1 auto;
+  }
+
+  .sf-tabs--underline > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > :first-child > .sf-button,
+  .sf-tabs--underline > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > .sf-button:first-child {
     --sf-button--padding-inline-start: calc(var(--sf-px) * 0);
+  }
+
+  .sf-tabs--underline > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > :last-child > .sf-button,
+  .sf-tabs--underline > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > .sf-button:last-child {
     --sf-button--padding-inline-end: calc(var(--sf-px) * 0);
   }
 
-  .sf-tabs--underline.sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top {
-    --sf-tabs-top--gap: var(--sf-tabs-gap, var(--sf-c0));
+  // The line of the selected tab: two pixels at every size (owner decision C96
+  // item 2, R184 T6: it was three at size 2), exactly under the letters (C99,
+  // TS-4) and on the tab's bottom edge, over the divider; it switches at once,
+  // without a slide. A border, so forced colours keep it.
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) > .sf-button-text-container::after,
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled)::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: calc(var(--sf-tabs--line-drop) * -1);
+    border-block-end: var(--sf-tabs-indicator-width, calc(var(--sf-tabs--border-width, var(--sf-px)) * 2)) solid var(--sf-tabs-indicator-color, var(--sf-primary));
+    pointer-events: none;
   }
 
-  .sf-tabs--underline.sf-tabs--size-1 > .sf-tabs-top-container > .sf-tabs-top {
-    --sf-tabs-top--gap: var(--sf-tabs-gap, var(--sf-c2));
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    --sf-tabs--line-drop: var(--sf-button--padding-bottom);
   }
 
-  .sf-tabs--underline.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top {
-    --sf-tabs-top--gap: var(--sf-tabs-gap, var(--sf-c6));
+  // The current tab shortened beside «Ещё» (C54 D1) clips its label: its line
+  // is drawn by the tab, under its content box, which is the label.
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button {
+    position: relative;
   }
 
-  .sf-tabs--underline.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button,
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button > .sf-button-text-container {
+    position: static;
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button.selected:not(:disabled):not(.disabled) > .sf-button-text-container::after {
+    inset-inline: var(--sf-button--padding-inline-start) var(--sf-button--padding-inline-end);
+    inset-block-end: 0;
+  }
+
+  // An icon tab keeps the icon button's square padding; its line is drawn by
+  // the tab, centred and as wide as the icon (the text line of its size).
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+    --sf-tabs--line-drop: calc(var(--sf-px) * 0);
+    position: relative;
+  }
+
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled)::after {
+    margin-inline: auto;
+    inline-size: var(--sf-tabs--icon-line, var(--sf-text-height-1));
+  }
+
+  .sf-tabs--underline.sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+    --sf-tabs--icon-line: var(--sf-text-height-1\/2);
+  }
+
   .sf-tabs--underline.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
-    --sf-button--border-bottom-width: var(--sf-tabs-indicator-width, calc(var(--sf-px) * 3));
-    --sf-icon-button--border-bottom-width: var(--sf-tabs-indicator-width, calc(var(--sf-px) * 3));
+    --sf-tabs--icon-line: var(--sf-text-height-2);
+  }
+
+  // The spacing of a vertical row is the menu column's (owner decision C99,
+  // R184 TS-8; C96 item 5): rows --sf-space-1/4 apart (pitch 44 at size 1), letters
+  // --sf-space-1 from the column's edge (16), no padding on the label.
+  .sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top {
+    --sf-tabs-top--gap: var(--sf-tabs-gap, var(--sf-space-1\/4));
+  }
+
+  .sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    --sf-button--padding-inline-start: var(--sf-tabs-padding-inline, var(--sf-space-1));
+    --sf-button--padding-inline-end: var(--sf-tabs-padding-inline, var(--sf-space-1));
+  }
+
+  .sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button .sf-button-text-container {
+    padding-inline: calc(var(--sf-px) * 0);
   }
 
   // The tab's own font is its size's text role: the bare button computed the
@@ -467,16 +606,80 @@
     align-items: center;
     justify-content: center;
     min-inline-size: var(--sf-text-height-1\/3);
-    margin-inline-start: var(--sf-a6);
-    padding-inline: var(--sf-a4);
+    margin-inline-start: var(--sf-space-1\/4);
+    padding-inline: var(--sf-space-1\/4);
     border-radius: var(--sf-radius-circle);
     background-color: var(--sf-surface-container);
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     color: inherit;
-    font-size: var(--sf-text-size-1\/3);
-    line-height: var(--sf-text-height-1\/3);
+    // Sized by the label (rule C95, C96): the mark is as tall as the label's
+    // line and its number is at the label's size.
+    font-size: inherit;
+    line-height: inherit;
     font-weight: var(--sf-font-weight-medium);
     vertical-align: middle;
+  }
+
+  .sf-tabs--size-1-2 .sf-tabs-count {
+    min-inline-size: var(--sf-text-height-1\/2);
+  }
+
+  .sf-tabs--size-1 .sf-tabs-count {
+    min-inline-size: var(--sf-text-height-1);
+  }
+
+  .sf-tabs--size-2 .sf-tabs-count {
+    min-inline-size: var(--sf-text-height-2);
+  }
+
+  // The errors of a tab's panel, and of the tabs «Ещё» holds (owner decision
+  // C96 item 6): a badge on the label's line (sf-badge line="text", C95 point
+  // 6, in its class form), a quarter space after the label as a contents
+  // entry's (C95). The words beside it are what a screen reader says --
+  // «Доступ, 2 ошибки» -- and the number itself is not said twice.
+  .sf-tabs-errors,
+  .sf-tabs-more-errors {
+    margin-inline-start: var(--sf-space-1\/4);
+  }
+
+  // «Ещё»'s badge stands in its button beside the text box, not in it (the
+  // box is the button's drawn part), so the line and the size it takes from
+  // the text are named: the text box's of the button's size.
+  .sf-tabs-more > .sf-button.sf-button--size-1\/2 > .sf-badge.sf-tabs-more-errors {
+    --sf-badge--line-height: var(--sf-text-height-1\/2);
+    font-size: var(--sf-text-size-1\/2);
+  }
+
+  .sf-tabs-more > .sf-button.sf-button--size-1 > .sf-badge.sf-tabs-more-errors {
+    --sf-badge--line-height: var(--sf-text-height-1);
+    font-size: var(--sf-text-size-1);
+  }
+
+  .sf-tabs-more > .sf-button.sf-button--size-2 > .sf-badge.sf-tabs-more-errors {
+    --sf-badge--line-height: var(--sf-text-height-2);
+    font-size: var(--sf-text-size-2);
+  }
+
+  .sf-tabs-said {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  // fit (owner decision C96 item 7): the tabs share the row equally, each at
+  // least its own width. The host of a tab is display: contents, so the button
+  // is the row's flex item.
+  .sf-tabs-top-container[data-sf-tabs-fit] > .sf-tabs-top {
+    flex: 1 1 auto;
+  }
+
+  .sf-tabs-top-container[data-sf-tabs-fit] > .sf-tabs-top > * > :is(.sf-button, .sf-icon-button),
+  .sf-tabs-top-container[data-sf-tabs-fit] > .sf-tabs-top > :is(.sf-button, .sf-icon-button) {
+    flex: 1 1 0;
+    min-inline-size: max-content;
+    justify-content: center;
   }
 
   // Wrapping rows instead of scrolling one.
@@ -492,6 +695,15 @@
     overflow-x: clip;
   }
 
+  // The row is laid out once the element's sheets are in (the base's style
+  // gate, data-sf-style-pending on the host). Until then its tabs keep their
+  // room and are not shown: with the sheets held back, the frames between this
+  // sheet and the last of the others painted every tab of the row clipped,
+  // 2029 tabs on 376 rows (C54 D3, 470 rows at 1440).
+  [data-sf-style-pending] > .sf-tabs--overflow-more:not(.sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top > * {
+    visibility: hidden;
+  }
+
   .sf-tabs-top > .sf-tabs-overflowed,
   .sf-tabs-top > .sf-tabs-overflowed > * {
     display: none !important;
@@ -500,6 +712,23 @@
   .sf-tabs-more,
   .sf-tabs-settings {
     flex: none;
+  }
+
+  // The current tab alone wider than the row beside «Ещё» (C54 return D1): it
+  // alone is shortened, its words cut with an ellipsis; every other tab is
+  // whole or in «Ещё». The host is display: contents, so the button is the
+  // row's flex item.
+  .sf-tabs-top > .sf-tabs-squeezed > button {
+    flex: 0 1 auto;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .sf-tabs-top > .sf-tabs-squeezed .sf-button-text-container {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   // «Ещё (n)» is one line, a control of the tabs' size like a tab.
@@ -585,11 +814,11 @@
     color: var(--sf-on-primary);
   }
 
-  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button:is(.sf-button--outline, .sf-button--link):not(.selected):not(:disabled):not(.disabled):hover {
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):not(.selected):not(:disabled):not(.disabled):hover {
     color: var(--sf-primary-hover);
   }
 
-  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button:is(.sf-button--outline, .sf-button--link):not(.selected):not(:disabled):not(.disabled):is(:active, .active) {
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):not(.selected):not(:disabled):not(.disabled):is(:active, .active) {
     color: var(--sf-primary-active);
   }
 
@@ -615,7 +844,39 @@
   }
 
   .sf-tabs > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button):is(:disabled, .disabled) {
-    color: var(--sf-on-disable);
+    color: var(--sf-on-surface-disabled);
+  }
+
+  // A disabled tab stays focusable (aria-disabled, sf-tabs 1.3.0, R184 T9), so
+  // its button is not :disabled and the buttons' disabled look does not reach
+  // it: the class .disabled wears the same values here. The buttons' own
+  // pointer states already leave .disabled out.
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button.disabled:is(.sf-button--default, .sf-button--tonal) {
+    --sf-button--background-color: var(--sf-disable);
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button.disabled:is(.sf-button--default, .sf-button--tonal, .sf-button--outline, .sf-button--ghost, .sf-button--link) :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--color: var(--sf-on-disable);
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button.disabled .sf-icon {
+    --sf-icon--color: var(--sf-on-disable);
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button.disabled.sf-button--outline.sf-button--primary {
+    --sf-button--border-color: var(--sf-outline-disable);
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.disabled:is(.sf-icon-button--default, .sf-icon-button--tonal) {
+    --sf-icon-button--background-color: var(--sf-surface-disabled);
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.disabled .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-disabled);
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.disabled.sf-icon-button--outline {
+    --sf-icon-button--border-color: var(--sf-outline-variant);
   }
 
   // Pills: the selected tab is the only filled one. The others are text on
@@ -638,28 +899,123 @@
 
   .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):hover,
   .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):hover {
-    --sf-button--background-color: var(--sf-surface-transparent-hover);
-    --sf-icon-button--background-color: var(--sf-surface-transparent-hover);
+    --sf-button--background-color: var(--sf-surface-state-hover);
+    --sf-icon-button--background-color: var(--sf-surface-state-hover);
   }
 
   .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):focus-visible,
   .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):focus-visible {
-    --sf-button--background-color: var(--sf-surface-transparent-select);
-    --sf-icon-button--background-color: var(--sf-surface-transparent-select);
+    --sf-button--background-color: var(--sf-surface-state-select);
+    --sf-icon-button--background-color: var(--sf-surface-state-select);
   }
 
   .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):is(:active, .active),
   .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):is(:active, .active) {
-    --sf-button--background-color: var(--sf-surface-transparent-active);
-    --sf-icon-button--background-color: var(--sf-surface-transparent-active);
+    --sf-button--background-color: var(--sf-surface-state-active);
+    --sf-icon-button--background-color: var(--sf-surface-state-active);
   }
 
   .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-button-text-container {
     --sf-button-text-container--color: var(--sf-tabs-color, var(--sf-on-surface));
   }
 
+  // C107: the pill's icon half a step paler than its label at rest, the
+  // label's colour under a pointer.
   .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-icon,
   .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) .sf-icon {
+    --sf-icon--color: var(--sf-tabs-color, var(--sf-on-surface-icon));
+  }
+
+  .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-icon,
+  .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-icon {
     --sf-icon--color: var(--sf-tabs-color, var(--sf-on-surface));
+  }
+}
+
+@layer sf.states {
+  // Only the selected tab's label is medium, the others regular, as the
+  // menu's current item (owner decision C96 item 3, R184 T11). The name keeps
+  // the width of its medium face -- a hidden copy in the same cell, with no
+  // words for a screen reader -- so selecting a tab moves no neighbour.
+  .sf-tabs-top .sf-tabs-name {
+    display: inline-grid;
+    font-weight: var(--sf-font-weight-regular);
+  }
+
+  .sf-tabs-top .sf-tabs-name::after {
+    content: attr(data-text) / "";
+    grid-area: 1 / 1;
+    block-size: 0;
+    visibility: hidden;
+    font-weight: var(--sf-font-weight-medium);
+  }
+
+  .sf-tabs-top .selected .sf-tabs-name {
+    font-weight: var(--sf-font-weight-medium);
+  }
+
+  // The line switches at once (owner decision C96 item 2): the buttons fade
+  // their border colour, which drew the line fading from tab to tab.
+  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button) {
+    transition-property: background-color, box-shadow, color;
+  }
+
+  // Vertical tabs are the menu's column (owner decision C96 item 5, R184 T2;
+  // C23, C30): the resting tabs have no fill and the surface ink, the pointer
+  // lays the surface state over them, the current one is the menu's current
+  // fill with its ink, and the labels start at the start. On a phone the
+  // element draws the line with «Ещё» instead (look underline).
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled),
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) {
+    --sf-tabs--focus-ink: var(--sf-on-surface);
+    --sf-button--background-color: var(--sf-transparent);
+    --sf-button--border-color: var(--sf-transparent);
+    --sf-icon-button--background-color: var(--sf-transparent);
+    --sf-icon-button--border-color: var(--sf-transparent);
+    color: var(--sf-tabs-color, var(--sf-on-surface));
+  }
+
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):hover,
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-surface-state-hover);
+    --sf-icon-button--background-color: var(--sf-surface-state-hover);
+  }
+
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-tabs-color, var(--sf-on-surface));
+  }
+
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-icon,
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-variant);
+  }
+
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled),
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled),
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled):is(:hover, :active, :focus-visible),
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) {
+    --sf-tabs--focus-ink: var(--sf-on-primary-container);
+    --sf-button--background-color: var(--sf-primary-container-active);
+    --sf-button--border-color: var(--sf-transparent);
+    --sf-icon-button--background-color: var(--sf-primary-container-active);
+    --sf-icon-button--border-color: var(--sf-transparent);
+    color: var(--sf-on-primary-container);
+  }
+
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) .sf-button-text-container {
+    --sf-button-text-container--color: var(--sf-on-primary-container);
+  }
+
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) .sf-icon,
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled) .sf-icon {
+    --sf-icon--color: var(--sf-on-primary-container);
+  }
+
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    justify-content: flex-start;
+  }
+
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button-text-container {
+    text-align: start;
   }
 }

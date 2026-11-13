@@ -1,0 +1,274 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-examples-badge",
+  "input": "docara-examples-badge.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m1",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Компонент готов к работе "
+                  },
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "Новое",
+                      "appearance": "tonal",
+                      "scheme": "primary",
+                      "size": "1"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m2",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "Текст метки",
+                      "scheme": "success"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m3",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "С заливкой",
+                      "appearance": "main",
+                      "size": "1"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": "\n"
+                  },
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "Мягкий фон",
+                      "appearance": "tonal",
+                      "size": "1"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": "\n"
+                  },
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "Рамка",
+                      "appearance": "outline",
+                      "size": "1"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m4",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "Основной",
+                      "scheme": "primary",
+                      "size": "1"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": "\n"
+                  },
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "Вторичный",
+                      "scheme": "secondary",
+                      "size": "1"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": "\n"
+                  },
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "Третичный",
+                      "scheme": "tertiary",
+                      "size": "1"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": "\n"
+                  },
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "Нейтральный",
+                      "scheme": "neutral",
+                      "size": "1"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": "\n"
+                  },
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "Информация",
+                      "scheme": "info",
+                      "size": "1"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": "\n"
+                  },
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "Успех",
+                      "scheme": "success",
+                      "size": "1"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": "\n"
+                  },
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "Предупреждение",
+                      "scheme": "warning",
+                      "size": "1"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": "\n"
+                  },
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "Ошибка",
+                      "scheme": "danger",
+                      "size": "1"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": "\n"
+                  },
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "На поверхности",
+                      "appearance": "main",
+                      "scheme": "on-surface",
+                      "size": "1"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m5",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "1/3",
+                      "size": "1/3"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": "\n"
+                  },
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "1/2",
+                      "size": "1/2"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": "\n"
+                  },
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "1",
+                      "size": "1"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [],
+    "bytes_equal": true,
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

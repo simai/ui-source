@@ -1,0 +1,684 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-page-figure",
+  "input": "docara-page-figure.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m2",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "---\ndescription: Как вставить иллюстрацию с описанием для экранного доступа, подписью и закреплёнными пропорциями.\n---",
+                "hash": "sha256:1fb97af54c286d7632b73ceaada29c5ecad3a6fea408f365370ac29be7007eee"
+              }
+            },
+            {
+              "id": "m3",
+              "type": "content.heading",
+              "data": {
+                "level": 1,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Иллюстрация"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m4",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Иллюстрация показывает одно изображение с подписью и закреплёнными\nпропорциями. Выбирайте её, когда картинка объясняет текст и ей нужна подпись\nили ровная рамка."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m5",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Пример"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m6",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Иллюстрация\"}\n```markdown\n:::figure {ratio=16/9 fit=cover}\n![Панель проекта с графиком и карточкой](../../assets/figure-scene.webp)\n\nШирокая иллюстрация заполняет область 16:9.\n:::\n```\n:::",
+                "hash": "sha256:efb1964dccc0f5263011685e154bd7c7f191746888f058d57b0f8c07f3e21ae2"
+              }
+            },
+            {
+              "id": "m7",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Разметка"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m8",
+              "type": "content.code",
+              "props": {
+                "lang": "markdown"
+              },
+              "data": {
+                "code": ":::figure {ratio=4/3}\n![Описание изображения](../../assets/scheme.webp)\n\nПодпись под изображением.\n:::"
+              }
+            },
+            {
+              "id": "m15",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m10",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Первая строка — изображение Markdown. Блок без изображения останавливает\nсборку."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m12",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Строка после изображения становится подписью. Подпись необязательна."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m14",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Одно изображение на блок."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m16",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Варианты"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m17",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Пропорции"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m18",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "ratio",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " закрепляет соотношение сторон рамки, не искажая файл. По умолчанию\nизображение показывается в своих пропорциях."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m19",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Квадрат и панорама\"}\n```markdown\n:::figure {ratio=1/1 fit=contain}\n![Знак Docara](../../assets/docara-mark.svg)\n\nКвадратная рамка.\n:::\n\n:::figure {ratio=21/9 fit=cover}\n![Панель проекта с графиком и карточкой](../../assets/figure-scene.webp)\n\nПанорама 21:9.\n:::\n```\n:::",
+                "hash": "sha256:93dab567a111ece38a63e1d8941a1ee31d9be7ecd6c8ba73d84c74d870640147"
+              }
+            },
+            {
+              "id": "m20",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Заполнение"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m21",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "fit=cover",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " заполняет рамку и обрезает края; подходит для фотографий и сцен.\n"
+                  },
+                  {
+                    "type": "text",
+                    "value": "fit=contain",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " показывает изображение целиком; подходит для знаков и схем."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m22",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Обрезать или показать целиком\"}\n```markdown\n:::figure {ratio=16/9 fit=cover}\n![Телефон со страницей документации](../../assets/figure-tall.webp)\n\n`cover` обрезает высокий снимок сверху и снизу.\n:::\n\n:::figure {ratio=16/9 fit=contain}\n![Телефон со страницей документации](../../assets/figure-tall.webp)\n\n`contain` показывает тот же снимок целиком.\n:::\n```\n:::",
+                "hash": "sha256:10aa176f8fef40768016bb93760ddd43ba0177dc5192838b21de5997dee5fea6"
+              }
+            },
+            {
+              "id": "m23",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Доступность"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m32",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m25",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Текст в квадратных скобках — описание изображения ("
+                        },
+                        {
+                          "type": "text",
+                          "value": "alt",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": ") для программ\nэкранного доступа. Описывайте смысл: «Схема сборки: Markdown → HTML», а не\n«картинка»."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m27",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Пустое описание "
+                        },
+                        {
+                          "type": "text",
+                          "value": "![](…)",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " делает изображение украшением: программы экранного\nдоступа его пропускают. Так делайте, только если картинка ничего не\nдобавляет к тексту."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m29",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Подпись видна всем, но не заменяет описание."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m31",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Изображение загружается, когда читатель до него доходит, и не замедляет\nоткрытие страницы."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m33",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Параметры"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m34",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:start -->",
+                "hash": "sha256:860321e4de557e281dac7b89346f13310ed796026c8b3317fe1770546b1fa433"
+              }
+            },
+            {
+              "id": "m35",
+              "type": "content.table",
+              "data": {
+                "rows": [
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "Параметр"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Значения"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "По умолчанию"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Что задаёт"
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "ratio",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "auto",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "1/1",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "4/3",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "3/2",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "16/9",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "21/9",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "auto",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Соотношение сторон рамки изображения."
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "fit",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "cover",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "contain",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "cover",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "cover",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — изображение заполняет рамку и обрезается по краям, "
+                      },
+                      {
+                        "type": "text",
+                        "value": "contain",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — помещается целиком."
+                      }
+                    ]
+                  ]
+                ]
+              }
+            },
+            {
+              "id": "m36",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:end -->",
+                "hash": "sha256:6bd16e03b82585965bc1a8efd729644fbcad103328d6c0dc83e7a1f805b6cfef"
+              }
+            },
+            {
+              "id": "m37",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "См. также"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m44",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m39",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../media/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Текст с изображением"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " — изображение рядом с текстом"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m41",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "/ru/authoring/markdown/#ссылки-и-изображения",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Ссылки и изображения"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " — обычная картинка в тексте"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m43",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../hero/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Первый экран"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[0]",
+        "what": "kept as content.foreign: setext heading"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[4]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[11]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[14]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[18]",
+        "what": "kept as content.foreign: html block"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[20]",
+        "what": "kept as content.foreign: html block"
+      }
+    ],
+    "bytes_equal": true,
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

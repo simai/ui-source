@@ -1,0 +1,12 @@
+{
+  "title": "Change",
+  "runtime": {
+    "empty-text": "empty",
+    "to-text": "to",
+    "label-separator": ":",
+    "show-text": "Show changes",
+    "hide-text": "Hide changes",
+    "before-text": "Before",
+    "after-text": "After"
+  }
+}

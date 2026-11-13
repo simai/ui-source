@@ -47,7 +47,6 @@
     "sr-only/default"
   ],
   "cl-breadcrumbs": [
-    "align-items/default",
     "display/default"
   ],
   "cl-button": [
@@ -64,16 +63,22 @@
     "place-items/default",
     "pointer-events/default"
   ],
+  "cl-button-copy": [
+    "display/default"
+  ],
   "cl-button-icon": [
     "align-items/default",
     "display/default",
     "pointer-events/default",
     "sr-only/default"
   ],
+  "cl-change": [
+    "display/default",
+    "sr-only/default"
+  ],
   "cl-checkbox": [
     "cursor/default",
     "display/default",
-    "flex-direction/default",
     "transition-property/default"
   ],
   "cl-confirm": [
@@ -189,7 +194,8 @@
     "sr-only/default"
   ],
   "cl-input-color": [
-    "display/default"
+    "display/default",
+    "position/default"
   ],
   "cl-input-country": [
     "display/default",
@@ -198,7 +204,6 @@
     "transition-property/default"
   ],
   "cl-input-date": [
-    "align-content/default",
     "align-items/default",
     "display/default",
     "element-position/default",
@@ -207,7 +212,8 @@
     "grid-template-columns/default",
     "justify-content/default",
     "overflow/default",
-    "position/default"
+    "position/default",
+    "sr-only/default"
   ],
   "cl-input-lookup": [
     "align-items/default",
@@ -272,11 +278,11 @@
     "flex-direction/default",
     "flex-wrap/default",
     "flex/default",
-    "gap/default",
     "justify-content/default",
     "place-items/default"
   ],
   "cl-list-timeline": [
+    "display/default",
     "position/default",
     "sr-only/default"
   ],
@@ -310,19 +316,22 @@
     "place-items/default",
     "position/default",
     "text-color/default",
-    "title/default",
     "width/default",
     "z-index/default"
   ],
   "cl-pager": [
+    "align-items/default",
+    "display/default",
     "sr-only/default"
   ],
   "cl-pagination": [
     "align-items/default",
     "display/default",
     "flex-direction/default",
+    "flex/default",
     "justify-content/default",
-    "position/default"
+    "pointer-events/default",
+    "text-align/default"
   ],
   "cl-popover": [
     "display/default",
@@ -351,7 +360,6 @@
   "cl-radio": [
     "align-items/default",
     "display/default",
-    "flex-direction/default",
     "justify-content/default",
     "transition-property/default"
   ],
@@ -375,6 +383,11 @@
     "pointer-events/default",
     "text-align/default"
   ],
+  "cl-settings": [
+    "display/default",
+    "position/default",
+    "text-decoration/default"
+  ],
   "cl-skeleton": [
     "animation/default",
     "display/default",
@@ -391,23 +404,25 @@
     "flex/default"
   ],
   "cl-steps": [
-    "cursor/default",
-    "display/default",
-    "flex-direction/default",
-    "justify-content/default",
-    "place-items/default"
+    "sr-only/default"
   ],
   "cl-switch": [
     "align-items/default",
     "display/default",
-    "flex-direction/default",
     "justify-content/default",
     "transition-property/default"
   ],
   "cl-tabs": [
+    "align-items/default",
     "container/default",
     "display/default",
     "flex-direction/default",
+    "flex-wrap/default",
+    "justify-content/default",
+    "place-items/default",
+    "pointer-events/default",
+    "position/default",
+    "text-decoration/default",
     "visibility/default"
   ],
   "cl-tag": [
@@ -422,6 +437,11 @@
   "cl-tile-metric": [
     "position/default",
     "sr-only/default"
+  ],
+  "cl-time": [
+    "display/default",
+    "position/default",
+    "visibility/default"
   ],
   "cl-toast": [
     "align-items/default",

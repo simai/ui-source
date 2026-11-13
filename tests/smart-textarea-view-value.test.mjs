@@ -7,7 +7,7 @@ const body=source.split('  templateContext() {')[1].split('\n  onDisconnected(')
 const run=new Function('innerControlName',body);
 const context={call:(self)=>run.call(self,(component,name)=>name)};
 function read(controlled,field,declared='') {
-  return context.call({getPropsContext:()=>({value:declared}),hasAttribute:()=>controlled,
+  return context.call({sfShownInvalid:(v)=>Boolean(v),sfShownMessage:(i,m)=>(i?m:''),getPropsContext:()=>({value:declared}),hasAttribute:()=>controlled,
     querySelector:()=>field,createTemplateContext:v=>v}).value;
 }
 test('textarea external context receives current multiline native value',()=>{

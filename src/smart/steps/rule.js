@@ -7,5 +7,8 @@ SF.RuleLoader['cl-steps'] = {
   relation: [
     { name: 'step' },
     { name: 'icons' },
+    { name: 'cl-spinner' },
+    { name: 'cl-progress-bar' },
+    { name: 'sr-only/default' },
   ],
 };

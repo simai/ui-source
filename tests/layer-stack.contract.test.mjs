@@ -378,3 +378,42 @@ test('sf-modal places the page nodes of its slots and never re-serialises them (
   assert.ok(modal.includes('const MODAL_VARIABLES = Object.keys(manifest["css-variables"] || {});'));
   assert.ok((await read('src/smart/drawer/index.js')).includes("carryLayerOrigin(portal, this, {variables: DRAWER_VARIABLES, area: true, except: ['--sf-drawer-']})"));
 });
+
+// A closed layer's content starts while the layer is closed (ui-control
+// evidence 2026-11-11-modal-followups): the layer passes over its own closed
+// root, and nothing else, of the Loader's closed containers.
+test('a closed layer starts its content past its own root only, with the Loader\'s closed containers', async () => {
+  const loader = await read('src/core/js/loader.js');
+  const closed = /const UNSTARTED_PART = '([^']+)';\nconst CLOSED_CONTAINER = `\[hidden\], \[inert\], details:not\(\[open\]\), dialog:not\(\[open\]\), \$\{UNSTARTED_PART\}`;/u.exec(loader);
+  assert.ok(closed, 'the Loader\'s closed containers');
+  const inside = /const CLOSED_INSIDE = '([^']+)';\nconst UNSTARTED = '([^']+)';/u.exec(source);
+  assert.ok(inside, 'the layer\'s copy');
+  assert.equal(inside[1], `[hidden], [inert], details:not([open]), dialog:not([open]), ${closed[1]}`);
+  assert.equal(inside[2], closed[1]);
+  // The walk stops at the layer's root; an unstarted part, a Smart parent
+  // that has not taken its source, and a defined tag are left out.
+  assert.match(source, /node && node !== root; node = node\.parentElement/u);
+  assert.match(source, /closedInside\(element, root\) \|\| loader\.shouldDeferNestedSmartElement\?\.\(element\)/u);
+  // After the page has loaded, while the browser is idle; asked as a
+  // component asks for an element it draws.
+  assert.match(source, /readyState === 'complete'/u);
+  assert.match(source, /loader\.ensure\(tags, \{timeout: 10000\}\)/u);
+  // A page keeps the old timing with SF_BOOT_CONFIG.startClosedLayerContent =
+  // false, and the first-paint snapshots do: a closed layer is printed at rest.
+  assert.match(source, /view\.SF_BOOT_CONFIG\?\.startClosedLayerContent === false\) return;/u);
+  assert.match(await read('scripts/first-paint-lib.mjs'), /startClosedLayerContent: false,/u);
+  const modal = await read('src/smart/modal/index.js');
+  const drawer = await read('src/smart/drawer/index.js');
+  assert.match(modal, /this\.display !== "inline" && !this\.openState && !this\._closedContentStarted[^]{0,120}startClosedLayerContent\(\(\) => this\._root\(\)\)/u);
+  assert.match(drawer, /!this\.openState && !this\._closedContentStarted[^]{0,120}startClosedLayerContent\(\(\) => this\.getDrawerRoot\(\)\?\.querySelector\('\[data-sf-drawer-panel\]'\)\)/u);
+  // The old name was never released: no alias.
+  assert.doesNotMatch(source, /startClosedContent\b/u);
+  // Content added to the closed layer later is walked again (L2).
+  assert.match(source, /watcher\.observe\(root, \{childList: true, subtree: true\}\);/u);
+  assert.match(source, /const CLOSED_LAYER = '\.sf-modal\[inert\], \[data-sf-drawer-panel\]\[inert\]';/u);
+  // Code early, data on opening (M2): a component that fetches its own data
+  // waits for the layer to open; the old timing keeps the old behaviour.
+  assert.match(source, /export function whenClosedLayerOpens\(element, signal\) \{\n\s+const view = globalThis\.window;\n\s+if \(!view\?\.document \|\| view\.SF_BOOT_CONFIG\?\.startClosedLayerContent === false\) return null;/u);
+  const include = await read('src/smart/include/index.js');
+  assert.match(include, /const opens = whenClosedLayerOpens\(this, this\.sfScope\);/u);
+});

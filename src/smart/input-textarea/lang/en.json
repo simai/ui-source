@@ -1,5 +1,8 @@
 {
   "title": "Text area",
+  "runtime": {
+    "value-missing": "Fill in this field"
+  },
   "x-trait-words": {
     "trait": "field-inherit@1",
     "words": {

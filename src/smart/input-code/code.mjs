@@ -16,15 +16,52 @@ const MODE_FILTER = {
   numeric: /[^0-9]/gu,
   alphanumeric: /[^A-Za-z0-9]/gu,
 };
-
-const MODE_PATTERN = {
-  numeric: '[0-9]',
-  alphanumeric: '[A-Za-z0-9]',
-};
+// The cells per group a separator is drawn between (C82: 3 + 3, 4 + 4).
+export const CODE_GROUPS_MAX = 6;
 
 export function codeMode(value) {
-  const mode = String(value ?? '').trim().toLowerCase();
+  const raw = value && typeof value === 'object' ? value.mode : value;
+  const mode = String(raw ?? '').trim().toLowerCase();
   return CODE_MODES.includes(mode) ? mode : 'numeric';
+}
+
+// An own alphabet (owner C82, for example Steam Guard's
+// 23456789BCDFGHJKMNPQRTVWXY, without 0 O 1 I): each character once, no
+// spaces, as written. Empty when there is none.
+export function codeCharset(value) {
+  return [...new Set([...String(value ?? '')].filter((character) => !/\s/u.test(character)))].join('');
+}
+
+// What a code is made of, from the settings: {mode, charset, uppercase}. A
+// mode string alone is a kind without an alphabet or capitals. The charset,
+// when there is one, takes the place of the mode; uppercase turns letters
+// into capitals before the characters are kept.
+export function codeKind(value = 'numeric') {
+  if (value && typeof value === 'object') {
+    return {mode: codeMode(value.mode), charset: codeCharset(value.charset), uppercase: Boolean(value.uppercase)};
+  }
+  return {mode: codeMode(value), charset: '', uppercase: false};
+}
+
+// Only the characters the kind keeps, in order.
+export function keepCharacters(text, kind = 'numeric') {
+  const {mode, charset, uppercase} = codeKind(kind);
+  const source = uppercase ? String(text ?? '').toUpperCase() : String(text ?? '');
+  if (charset) return [...source].filter((character) => charset.includes(character)).join('');
+  return source.replace(MODE_FILTER[mode], '');
+}
+
+// Cells per group, or 0 for none: a group is two cells or more and shorter
+// than the code, so a separator always has cells on both sides.
+export function codeGroups(value, length = CODE_LENGTH_DEFAULT) {
+  const groups = Number.parseInt(String(value ?? ''), 10);
+  if (!Number.isFinite(groups) || groups < 2 || groups > CODE_GROUPS_MAX) return 0;
+  return groups < codeLength(length) ? groups : 0;
+}
+
+// Whether a separator follows the cell: the end of a group, not the code.
+export function separatorAfter(index, groups, length) {
+  return groups > 0 && index + 1 < codeLength(length) && (index + 1) % groups === 0;
 }
 
 export function codeLength(value) {
@@ -36,18 +73,15 @@ export function codeLength(value) {
 // Only the characters the mode keeps, no longer than the code: what typing,
 // pasting and autofill leave in the field.
 export function normaliseCode(value, mode = 'numeric', length = CODE_LENGTH_DEFAULT) {
-  return String(value ?? '').replace(MODE_FILTER[codeMode(mode)], '').slice(0, codeLength(length));
+  return keepCharacters(value, mode).slice(0, codeLength(length));
 }
 
-// The native constraint the field carries: exactly `length` characters of the
-// mode, so a required code that is not whole is invalid as the form sees it.
-export function codePattern(mode, length) {
-  return `${MODE_PATTERN[codeMode(mode)]}{${codeLength(length)}}`;
-}
-
-// What the keyboard offers: digits for a numeric code, letters otherwise.
+// What the keyboard offers: digits for a numeric code or an alphabet of
+// digits only, letters otherwise.
 export function codeInputMode(mode) {
-  return codeMode(mode) === 'numeric' ? 'numeric' : 'text';
+  const {mode: base, charset} = codeKind(mode);
+  if (charset) return /^[0-9]+$/u.test(charset) ? 'numeric' : 'text';
+  return base === 'numeric' ? 'numeric' : 'text';
 }
 
 // The cell the next character goes to: the caret's, never past the last cell.
@@ -56,6 +90,8 @@ export function currentCell(caret, length) {
   return Math.max(0, Math.min(at, codeLength(length) - 1));
 }
 
+// `mode` below is a mode string or a kind ({mode, charset, uppercase}).
+//
 // One edit the person made, as the field sees it after the browser applied it:
 // `previous` is the code before, `raw` the field's text now, `caret` where the
 // browser left the caret and `data` what was inserted (InputEvent.data).
@@ -77,7 +113,7 @@ export function applyEdit({previous = '', raw = '', caret = 0, data = null, inpu
   const size = codeLength(length);
   const kept = normaliseCode(previous, mode, size);
   const typed = data === null || data === undefined ? null : String(data);
-  const inserted = typed === null ? '' : typed.replace(MODE_FILTER[codeMode(mode)], '');
+  const inserted = typed === null ? '' : keepCharacters(typed, mode);
 
   if (inserted.length >= size) {
     const value = inserted.slice(0, size);
@@ -110,7 +146,7 @@ export function applyEdit({previous = '', raw = '', caret = 0, data = null, inpu
 // null when the text holds nothing the mode keeps.
 export function applyPaste({previous = '', text = '', start = 0, end = start, mode = 'numeric', length = CODE_LENGTH_DEFAULT}) {
   const size = codeLength(length);
-  const pasted = String(text ?? '').replace(MODE_FILTER[codeMode(mode)], '');
+  const pasted = keepCharacters(text, mode);
   if (!pasted) return null;
   if (pasted.length >= size) {
     const value = pasted.slice(0, size);
@@ -131,11 +167,13 @@ export const CODE_INPUT_TEXT = {
     digit: 'digit {n} of {m}',
     character: 'character {n} of {m}',
     group: 'Code',
+    'too-short': 'Enter the whole code',
   },
   ru: {
     digit: 'цифра {n} из {m}',
     character: 'символ {n} из {m}',
     group: 'Код',
+    'too-short': 'Введите код целиком',
   },
 };
 

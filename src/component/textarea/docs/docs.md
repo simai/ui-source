@@ -11,8 +11,13 @@ Use `label.sf-textarea` with a visible `.sf-textarea-text` and one native
 supported sizes are `1/3`, `1/2`, `1`, `2` and `3`.
 
 A filled field's placeholder keeps the quiet ink `--sf-on-surface-variant`
-(on the fill, `--sf-on-surface-container--variant`); only the text is
-`--sf-on-surface` (1.1.1, FA-08).
+(on the fill, `--sf-on-surface-container-variant`); only the text is
+`--sf-on-surface` (1.1.1, FA-08). Under the pointer the placeholder takes
+`--sf-on-surface-container-variant`, the dim ink made for a fill: on the hover
+step the place's dim ink fell under 4.5:1 in the dark theme (1.2.2, C113
+follow-up). At rest a filled field draws its bottom
+edge in `--sf-outline` (C52, as `sf-input`); hover and press colour it with the
+border.
 
 The control resizes vertically by default. Use the Framework utilities
 `resize-none`, `resize-y`, `resize-x` or `resize` only when the containing layout

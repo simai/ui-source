@@ -56,7 +56,7 @@ function row(context, item, index) {
   const chosen = component.isItemChosen(item);
   const active = index === activeIndex;
   return html`<div
-      class=${['sf-lookup-option', 'flex', 'items-cross-center', chosen ? 'sf-lookup-option--chosen' : '', active ? 'sf-lookup-option--active' : ''].filter(Boolean).join(' ')}
+      class=${['sf-lookup-option', 'flex', 'items-cross-center', item.caption ? 'sf-lookup-option--caption' : '', chosen ? 'sf-lookup-option--chosen' : '', active ? 'sf-lookup-option--active' : ''].filter(Boolean).join(' ')}
       id=${`${ids.option}-${index}`}
       role="option"
       aria-selected=${chosen ? 'true' : 'false'}
@@ -135,8 +135,6 @@ export function renderLookupTemplate(context) {
   const message = field.invalid && errorMessage ? errorMessage : hint;
   const rowContext = {...context, ids};
   const showList = listOpen && items.length > 0;
-  // A list where a row carries a caption sets every row at the caption row's
-  // height, so one list keeps one row height (LK-05, owner decision C49).
   const rootClasses = [
     'sf-lookup',
     `sf-lookup--size-${size}`,
@@ -212,7 +210,7 @@ export function renderLookupTemplate(context) {
       <div class="sf-lookup-panel" id=${ids.panel} popover="manual"
         @mousedown=${(event) => component.onPanelMouseDown(event)}
         @click=${(event) => component.onPanelClick(event)}>
-        <div class=${showList && items.some((item) => item.caption) ? 'sf-lookup-list sf-lookup-list--captions' : 'sf-lookup-list'} id=${ids.list} role="listbox"
+        <div class="sf-lookup-list" id=${ids.list} role="listbox"
           aria-labelledby=${label ? ids.label : nothing}
           aria-label=${!label && ariaLabel ? ariaLabel : nothing}
           aria-multiselectable=${multiple ? 'true' : nothing}

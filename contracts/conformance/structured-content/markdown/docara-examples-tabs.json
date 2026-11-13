@@ -1,0 +1,147 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-examples-tabs",
+  "input": "docara-examples-tabs.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m2",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::tabs {sync=install default=\"Архив\"}\n### Composer\n\n```bash\ncomposer create-project simai/docara my-docs\n```\n\n### Архив\n\nСкачайте архив и распакуйте его в пустой каталог.\n\n### Результат\n\nГотовый сайт появится в каталоге сборки.\n:::",
+                "hash": "sha256:c1143a132df0197518a7ef2ca6be6ae3a253360969e47a575d256a5681d13eaf"
+              }
+            },
+            {
+              "id": "m3",
+              "type": "content.tabs",
+              "slots": {
+                "tabs": [
+                  {
+                    "id": "m4",
+                    "type": "content.tab",
+                    "data": {
+                      "label": "Подпись первой вкладки"
+                    },
+                    "slots": {
+                      "default": [
+                        {
+                          "id": "m5",
+                          "type": "content.paragraph",
+                          "data": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Содержимое первой вкладки."
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m6",
+                    "type": "content.tab",
+                    "data": {
+                      "label": "Подпись второй вкладки"
+                    },
+                    "slots": {
+                      "default": [
+                        {
+                          "id": "m7",
+                          "type": "content.paragraph",
+                          "data": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Содержимое второй вкладки."
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m9",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::tabs {default=linux}\n### macOS\n\nbrew install docara\n\n### Linux\n\napt install docara\n:::",
+                "hash": "sha256:88e4bb0151c696cc33d42eb297ad618127c8e0b7d58ab9b60e140bb44eaefb07"
+              }
+            },
+            {
+              "id": "m11",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::tabs {sync=os}\n### macOS\n\nbrew install docara\n\n### Linux\n\napt install docara\n:::",
+                "hash": "sha256:a8ec3d5903ab3bc180bd81fc849dbbabe9a9c4b27203c786fab3f76ffa03a7ee"
+              }
+            },
+            {
+              "id": "m12",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Готово.",
+                    "marks": [
+                      "strong"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " Сайт собран и проверен."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[0]",
+        "what": "kept as content.foreign: attribute sync"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[2]",
+        "what": "kept as content.foreign: attribute default"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[3]",
+        "what": "kept as content.foreign: attribute sync"
+      }
+    ],
+    "bytes_equal": true,
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

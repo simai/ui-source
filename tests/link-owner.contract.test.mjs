@@ -26,7 +26,7 @@ test('Link preserves semantic state colors through canonical and legacy content'
     '--sf-link-hover',
     '--sf-link-active',
     '--sf-link-visited',
-    '--sf-on-disable',
+    '--sf-on-surface-disabled',
   ]) {
     assert.ok(css.includes(token), `missing ${token}`);
   }

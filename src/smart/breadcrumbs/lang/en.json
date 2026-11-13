@@ -2,6 +2,7 @@
   "title": "Breadcrumbs",
   "runtime": {
     "aria-label": "Breadcrumb",
-    "expand-label": "Show hidden breadcrumbs"
+    "expand-label": "Show hidden breadcrumbs",
+    "siblings-label": "Sibling sections"
   }
 }

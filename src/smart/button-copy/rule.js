@@ -9,5 +9,6 @@ SF.RuleLoader['cl-button-copy'] = {
     { name: 'cl-button' },
     { name: 'cl-button-icon' },
     { name: 'cl-icon' },
+    { name: 'tooltip' },
   ],
 };

@@ -16,6 +16,7 @@
         "badge",
         "breadcrumbs",
         "button",
+        "change",
         "checkbox",
         "confirm",
         "contents",
@@ -54,6 +55,7 @@
         "tag",
         "theme",
         "tile",
+        "time",
         "toast",
         "tooltip",
         "tree",
@@ -102,6 +104,10 @@
         },
         {
           "element": "sf-button-icon",
+          "status": "released"
+        },
+        {
+          "element": "sf-change",
           "status": "released"
         },
         {
@@ -358,6 +364,10 @@
         },
         {
           "element": "sf-tile-metric",
+          "status": "released"
+        },
+        {
+          "element": "sf-time",
           "status": "released"
         },
         {

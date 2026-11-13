@@ -1,0 +1,152 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-examples-figure",
+  "input": "docara-examples-figure.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m1",
+              "type": "content.figure",
+              "props": {
+                "ratio": "16/9",
+                "fit": "cover"
+              },
+              "data": {
+                "src": "../../assets/figure-scene.webp",
+                "alt": "Панель проекта с графиком и карточкой",
+                "caption": [
+                  {
+                    "type": "text",
+                    "value": "Широкая иллюстрация заполняет область 16:9."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m4",
+              "type": "content.figure",
+              "props": {
+                "ratio": "4/3"
+              },
+              "data": {
+                "src": "../../assets/scheme.webp",
+                "alt": "Описание изображения",
+                "caption": [
+                  {
+                    "type": "text",
+                    "value": "Подпись под изображением."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m7",
+              "type": "content.figure",
+              "props": {
+                "ratio": "1/1",
+                "fit": "contain"
+              },
+              "data": {
+                "src": "../../assets/docara-mark.svg",
+                "alt": "Знак Docara",
+                "caption": [
+                  {
+                    "type": "text",
+                    "value": "Квадратная рамка."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m10",
+              "type": "content.figure",
+              "props": {
+                "ratio": "21/9",
+                "fit": "cover"
+              },
+              "data": {
+                "src": "../../assets/figure-scene.webp",
+                "alt": "Панель проекта с графиком и карточкой",
+                "caption": [
+                  {
+                    "type": "text",
+                    "value": "Панорама 21:9."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m13",
+              "type": "content.figure",
+              "props": {
+                "ratio": "16/9",
+                "fit": "cover"
+              },
+              "data": {
+                "src": "../../assets/figure-tall.webp",
+                "alt": "Телефон со страницей документации",
+                "caption": [
+                  {
+                    "type": "text",
+                    "value": "cover",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " обрезает высокий снимок сверху и снизу."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m16",
+              "type": "content.figure",
+              "props": {
+                "ratio": "16/9",
+                "fit": "contain"
+              },
+              "data": {
+                "src": "../../assets/figure-tall.webp",
+                "alt": "Телефон со страницей документации",
+                "caption": [
+                  {
+                    "type": "text",
+                    "value": "contain",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " показывает тот же снимок целиком."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [],
+    "bytes_equal": true,
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

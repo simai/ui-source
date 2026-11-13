@@ -26,10 +26,6 @@
       "to": "--sf-surface-popup"
     },
     {
-      "from": "--sf-elevation-4--shadow",
-      "to": "--sf-shadow-popup-nested"
-    },
-    {
       "from": "--sf-elevation-4--surface",
       "to": "--sf-surface-popup-nested"
     },
@@ -731,7 +727,7 @@
     "decision": "C20, owner 2026-11-08 (ui-control control/docs-review/decisions.md; prototypes/shadows.html)",
     "since": "2026-11-09",
     "remove_after": "2027-01-01",
-    "summary": "Four shadows by place replace the numbered levels, the Figma layer styles and the three shadow colours: --sf-shadow-flat (none, the edge is --sf-outline-variant), --sf-shadow-raised, --sf-shadow-overlay, --sf-shadow-modal, drawn from --sf-shadow-key-color and --sf-shadow-ambient-color. Level 1 is raised, 2 and 3 overlay, 4 and 5 modal; the C16 names of a card's, a popup's and a nested popup's shadow are raised, overlay and overlay. A former name is var() of its successor on the theme root (src/core/scss/mix/_mix__role_aliases.scss, sf-shadow-aliases); a value changes where the place's shadow differs from the level's (it is a visible change, approved by the owner as C20). Level 2's and 5's surfaces and dim ink, held by C16, join popup and popup-nested. The elevation-N classes are former names too (journal utility-c20-elevation-former, dispatcher 2026-11-10): each becomes the surface class and the shadow class of its place, two names in `to`.",
+    "summary": "Four shadows by place replace the numbered levels, the Figma layer styles and the three shadow colours: --sf-shadow-flat (none, the edge is --sf-outline-variant), --sf-shadow-raised, --sf-shadow-overlay, --sf-shadow-modal, drawn from --sf-shadow-key-color and --sf-shadow-ambient-color. Level 1 is raised, 2 and 3 overlay, 4 and 5 modal; the C16 names of a card's, a popup's and a nested popup's shadow are raised, overlay and overlay. A former name is var() of its successor on the theme root (src/core/scss/mix/_mix__role_aliases.scss, sf-shadow-aliases); a value changes where the place's shadow differs from the level's (it is a visible change, approved by the owner as C20). Level 2's and 5's surfaces and dim ink, held by C16, join popup and popup-nested. Level 4's shadow is listed here only, not in tokens: C16 named it the nested popup's shadow (journal token-c16-theme-role-names), C20 reads it as modal (journal token-c20-shadow-places), and the built value is modal. The elevation-N classes are former names too (journal utility-c20-elevation-former, dispatcher 2026-11-10): each becomes the surface class and the shadow class of its place, two names in `to`.",
     "tokens": [
       {
         "from": "--sf-shadow-card",
@@ -978,6 +974,14 @@
     {
       "name": "--sf-neutral-80--alfa-48",
       "why": "The top of the former skeleton gradient (--sf-ui-skeleton); the skeletons are the control fill since C16 S3. Nothing in the Framework reads it; kept for pages that wrote it until remove_after."
+    },
+    {
+      "name": "--sf-neutral-50--alfa-32",
+      "why": "Since C41 (owner 2026-11-10) the strong step is 24 and since C113 (owner 2026-11-13) the neutral fill 12/16/20, in both themes; the former strong step (surface-container-strong) in the light theme. Nothing in the Framework reads it now; kept for pages that wrote it until remove_after."
+    },
+    {
+      "name": "--sf-neutral-90--alfa-32",
+      "why": "Since C41 (owner 2026-11-10) the strong step is 24 and since C113 (owner 2026-11-13) the neutral fill 12/16/20, in both themes; the former strong step (surface-container-strong) in the dark theme. Nothing in the Framework reads it now; kept for pages that wrote it until remove_after."
     }
   ],
   "palette_tokens": [

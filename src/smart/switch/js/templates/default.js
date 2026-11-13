@@ -1,10 +1,12 @@
 import { html, nothing } from 'lit';
 import { renderInheritedSlot } from '../../../helpers/inherited-value';
+import { keepHelpOutOfLabel } from '../../../../component/checkable-text-helper';
+import { checkableClasses, renderCheckableHelp, renderCheckableRow, renderCheckableText } from '../../../helpers/checkable-row';
 
 export function renderSwitchTemplate(context) {
   const { size, label, description, help, checked, disabled, checkboxName, value, ariaLabel } = context;
 
-  const rootClasses = ['sf-switch', `sf-switch--size-${size}`, 'flex', context.rootClass];
+  const rootClasses = ['sf-switch', `sf-switch--size-${size}`, context.short ? 'sf-switch--short' : '', 'flex', context.rootClass];
 
   const labelContent =
     context.component?.hasSlotContent?.('label')
@@ -23,17 +25,13 @@ export function renderSwitchTemplate(context) {
         ? html`<span class="sf-switch-description">${description}</span>`
         : '';
 
-  const helpContent =
-    context.component?.hasSlotContent?.('help')
-      ? context.component.getSlotContent('help')
-      : help
-        ? html`<i class="sf-icon" aria-hidden="true">${help}</i>`
-        : '';
+  const helpContent = renderCheckableHelp(context, 'sf-switch-help');
 
-  const showContainer = !!(labelContent || descriptionContent || helpContent);
+  const showContainer = !!(labelContent || descriptionContent);
+  rootClasses.push(...checkableClasses(size, showContainer));
 
-  return html`
-    <label class=${rootClasses.filter(Boolean).join(' ')} style=${context.rootStyle || nothing}>
+  const control = html`
+    <label class=${rootClasses.filter(Boolean).join(' ')} style=${context.rootStyle || nothing} @click=${keepHelpOutOfLabel}>
       <span class="sf-switch-toggler transition flex items-cross-center content-main-start">
         <input
           type="checkbox"
@@ -47,28 +45,9 @@ export function renderSwitchTemplate(context) {
         <span class="sf-switch-inner transition" aria-hidden="true"></span>
       </span>
 
-      ${showContainer
-        ? html`
-            <span class="sf-switch-container-wrap flex flex-col">
-              ${labelContent || helpContent
-                ? html`
-                    <span class="sf-switch-top flex">
-                      ${labelContent
-                        ? html`
-                            <span class="sf-switch-container flex items-cross-center content-main-center">
-                              ${labelContent}
-                            </span>
-                          `
-                        : ''}
-                      ${helpContent}
-                    </span>
-                  `
-                : ''}
-              ${descriptionContent}
-            </span>
-          `
-        : ''}
+      ${renderCheckableText({ column: 'sf-switch-container-wrap', top: 'sf-switch-top', wrap: 'sf-switch-container flex items-cross-center content-main-center' }, labelContent, descriptionContent)}
       ${renderInheritedSlot(context.component, { size, disabled, className: 'sf-switch-inherited' })}
     </label>
   `;
+  return renderCheckableRow(size, control, helpContent);
 }

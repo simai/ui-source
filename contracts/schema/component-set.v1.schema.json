@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/schema/framework/component-set.v1.json",
-  "x-simai-version": "1.0.0",
+  "x-simai-version": "1.1.0",
   "title": "SIMAI Framework component set passport",
   "description": "The passport of one component set (standard simai.component-set): set.json at the root of the set's package folder. A set is one repository outside the free SIMAI Framework that holds its own Smart components, its Docara documentation site and its demonstrations. The passport names the set, its licence, the SIMAI Framework it is built over, the sets it needs, the name families it owns and every component it holds. SIMAI Framework keeps no reference of a set's components: this file is the only list. The builder copies it into the build and the release beside the receipt, stamped with the release block.",
   "type": "object",
@@ -135,6 +135,12 @@
       "items": {"$ref": "#/$defs/component"},
       "description": "Every component the set holds. SIMAI Framework keeps no copy of this list."
     },
+    "exports": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/export"},
+      "description": "Since 1.1.0 (standard simai.component-set 1.3.0; owner decision D17, 2026-11-11), optional: the set's scripted API, every name its bundle gives with SF.RuleLoader.registerPackage(<set>, {exports}) and a page reads as SF.package('<set>').<name>, in the entry shape of SIMAI Framework's core/contracts/public-js-api.json. A set that gives exports lists every one; its browser probe holds the list against SF.package('<set>') with simai/ui-source scripts/set-exports-kit.mjs. A set's own function (layer set) is documented on the set's Functions page, a component's script API (layer component) on that component's page; an internal name is not listed for authors."
+    },
     "release": {
       "type": "object",
       "additionalProperties": false,
@@ -181,6 +187,40 @@
             }
           },
           "description": "Former tags kept as dated aliases (simai.change-lifecycle), with the set's journal record."
+        }
+      }
+    },
+    "export": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status", "layer", "audience", "kind", "summary"],
+      "properties": {
+        "name": {"type": "string", "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$", "description": "The export's key: a page reads it as SF.package('<set>').<name>."},
+        "status": {"enum": ["public", "internal"], "description": "public: a promise to a page, renamed or removed only through the set's change journal; internal: the set's own, may change in any release."},
+        "layer": {"enum": ["set", "component"], "description": "set: the set's own function, on the set's Functions page; component: a component's script API, on the page of the element named in component."},
+        "component": {"type": "string", "pattern": "^sf-[a-z][a-z0-9-]*$", "description": "With layer component, required there: the element of this set whose page documents the export."},
+        "audience": {"enum": ["public", "internal"], "description": "public: listed for authors; internal: not listed. An internal status is never listed."},
+        "author": {"type": "string", "minLength": 11, "description": "One sentence for authors, present tense, no history: what the export does for a page."},
+        "doc": {"type": "string", "pattern": "^[a-z0-9][a-z0-9/-]*$", "description": "Optional: the slug of the documentation page that describes the export, on the set's site."},
+        "kind": {"enum": ["object", "function", "class", "value"]},
+        "summary": {"type": "string", "minLength": 11},
+        "members": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1},
+          "description": "The members of an object export a page may read; the probe holds each one present."
+        },
+        "deprecated": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["since", "remove_after", "journal"],
+          "properties": {
+            "since": {"type": "string", "format": "date"},
+            "remove_after": {"type": "string", "format": "date"},
+            "journal": {"type": "string", "minLength": 1},
+            "to": {"type": "string", "minLength": 1}
+          },
+          "description": "A dated alias the set's change journal records."
         }
       }
     }

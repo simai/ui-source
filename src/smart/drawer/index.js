@@ -4,7 +4,7 @@ import {applied, refused, elementFromManifest} from '../../core/js/element-manif
 import {noteDeprecated} from '../../core/js/deprecations';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {carryLayerOrigin, closeLayer, focusablesIn, isTopLayer, layerIndex, layerZIndexAt, openLayer, openLayers,
-  raiseLayer, returnLayerFocus, landmarksAround, updateLayer} from '../../core/js/layer-stack';
+  raiseLayer, returnLayerFocus, landmarksAround, startClosedLayerContent, updateLayer} from '../../core/js/layer-stack';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -281,6 +281,15 @@ const drawerManager = {
 };
 
 class SfDrawer extends DrawerElement {
+  // A slotted child (slot="edge", or any other slot the page names) stays
+  // where the page wrote it until the drawer draws, and the drawing takes it
+  // to the panel in the same task (smart-base holdSlotNode, as sf-modal and
+  // sf-header-site). The base took it out of the document when the drawer
+  // connected, and a page that found it by id once sf-drawer was defined got
+  // null (ui-control evidence 2026-11-11-modal-followups). Unslotted content
+  // already stayed in the host until the drawing (_contentNodes).
+  static holdsSlotNodesUntilDrawn = true;
+
   // The manifest's settings, and what the drawer reads more closely: the size
   // ladder's legacy words, the base's template name.
   static get props() {
@@ -647,6 +656,15 @@ class SfDrawer extends DrawerElement {
       this.__sfFirstPaintEnded = true;
       this.prepareRenderContainer();
     }
+    // Out of view until the drawer's sheets are applied (the base's portal
+    // gate): under held-back sheets the closed panel stood in view beside
+    // the page and the page moved when they came. A modal drawer that opened
+    // in the meantime takes its first focus once it shows, which a hidden
+    // panel could not.
+    this.holdPortalUntilStyled(portal, () => {
+      const panel = this.getDrawerRoot()?.querySelector('[data-sf-drawer-panel]');
+      if (this.openState && this.modal && panel && !panel.contains(document.activeElement)) this.focusFirst();
+    });
     this.drawInto(result, portal);
     this.afterRender();
   }
@@ -724,6 +742,14 @@ class SfDrawer extends DrawerElement {
     handle?.addEventListener('keydown', this.onHandleKeyDown);
     this.applyStackPosition();
     this.observeDock(root);
+    // A closed drawer's panel content starts after the page's first paint,
+    // out of view (its panel is inert, so the Loader leaves it until it
+    // opens): a page that waited for a tag in it before opening it waited for
+    // ever (layer-stack.js startClosedLayerContent, as sf-modal).
+    if (!this.openState && !this._closedContentStarted) {
+      this._closedContentStarted = true;
+      startClosedLayerContent(() => this.getDrawerRoot()?.querySelector('[data-sf-drawer-panel]'));
+    }
     // Lifecycle copies retire (vocabulary §5.1, §16.13): still sent until their
     // date, and a listener that reads one is noted.
     const eventName = this._hasEmittedReady ? 'drawer:update' : 'drawer:ready';

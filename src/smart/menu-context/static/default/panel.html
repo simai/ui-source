@@ -6,11 +6,11 @@
 <div class="sf-context-menu-content">
 <div class="sf-context-menu-head">
 <sf-tabs class="sf-context-menu-tabs" type="underline" size="1" items="Вид|Колонки" active-index="0" data-sf-size-relative style="display: contents;">
-<div role="group" class="sf-tabs sf-tabs--size-1 sf-tabs--underline flex flex-col" data-active-index="0" data-sf-static>
-<div class="sf-tabs-top-container">
+<div role="group" class="sf-tabs sf-tabs--size-1 sf-tabs--overflow-more sf-tabs--underline flex flex-col" data-active-index="0" data-sf-static>
+<div class="sf-tabs-top-container sf-tabs-top-container--tools">
 <div role="tablist" class="sf-tabs-top flex content-main-start" aria-orientation="horizontal">
 
-<sf-button scheme="primary" appearance="default" size="1" text="Вид" root-class="selected" style="display: contents;" data-sf-size-relative>
+<sf-button appearance="primary" size="1" scheme="default" text="Вид" root-class="selected" style="display: contents;" data-sf-size-relative>
 
 
 <button type="button" class="sf-button sf-button--size-1 sf-button--default sf-button--primary flex items-cross-center selected" id="sf-menu-context-panel-1" role="tab" aria-controls="sf-menu-context-panel-5" aria-selected="true" aria-disabled="false" aria-labelledby="sf-menu-context-panel-2" tabindex="0" data-sf-tab-index="0" data-tab="0" data-sf-static>
@@ -23,7 +23,7 @@
 </button>
 </sf-button>
 
-<sf-button scheme="primary" appearance="default" size="1" text="Колонки" root-class style="display: contents;" data-sf-size-relative>
+<sf-button appearance="primary" size="1" scheme="default" text="Колонки" root-class style="display: contents;" data-sf-size-relative>
 
 
 <button type="button" class="sf-button sf-button--size-1 sf-button--default sf-button--primary flex items-cross-center" id="sf-menu-context-panel-3" role="tab" aria-controls="sf-menu-context-panel-6" aria-selected="false" aria-disabled="false" aria-labelledby="sf-menu-context-panel-4" tabindex="-1" data-sf-tab-index="1" data-tab="1" data-sf-static>
@@ -37,7 +37,16 @@
 </sf-button>
 
 </div>
+<sf-button class="sf-tabs-more" appearance="ghost" scheme="on-surface" icon-end="expand_more" aria-haspopup="menu" size="1" text="Ещё" style="display: contents;" data-sf-size-relative>
+<button type="button" class="sf-button sf-button--size-1 sf-button--ghost sf-button--link sf-button--on-surface flex items-cross-center" aria-haspopup="menu" data-sf-static>
 
+
+<span class="sf-button-text-container text-center pointer-event-none">
+Ещё
+</span>
+<sf-icon root-class="pointer-event-none" weight="400" aria-hidden="true" icon="expand_more" style="display: contents;"><i class="sf-icon sf-icon--weight-regular pointer-event-none" style="--sf-icon--grade:0;--sf-icon--optical-size:24" aria-hidden="true" data-sf-static>expand_more</i></sf-icon>
+</button>
+</sf-button>
 
 </div>
 <div class="sf-tabs-main-container">

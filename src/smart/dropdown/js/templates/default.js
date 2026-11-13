@@ -29,9 +29,11 @@ function renderOptions(options = [], multiple = false) {
     // so on a long list nothing on screen told the person what they had picked
     // (Larena storage QA, 2026-10-22). An option that draws a picture of its
     // own -- an icon, a colour, an avatar -- keeps it, because that is the
-    // place the box would take.
+    // place the box would take; an avatar or a colour row then draws its box
+    // after the picture, and only in a multiple list (C08: a single choice
+    // is the row's fill, no box).
     const withBox = multiple && (!option.type || option.type === "text");
-    parts.push(renderListItemOption(withBox ? {...option, type: "checkbox"} : option));
+    parts.push(renderListItemOption(withBox ? {...option, type: "checkbox"} : option, {multiple}));
   }
 
   return parts;
@@ -140,6 +142,8 @@ export function renderDropdownTemplate(context) {
     context.layout === "grid" ? "sf-dropdown--grid" : "",
     context.mode !== "tag" ? "sf-dropdown--text" : "",
     context.disabled ? "disabled" : "",
+    // The error look, as sf-input's root carries it (owner C55).
+    context.invalid ? "error" : "",
     "flex",
     "flex-col",
   ].filter(Boolean);
@@ -180,7 +184,7 @@ export function renderDropdownTemplate(context) {
                 <input
                   class="sf-dropdown-hidden-input"
                   type="hidden"
-                  name=${context.name}
+                  name=${context.controlName || nothing}
                   value=${context.value || ""}
                   ?disabled=${context.disabled}
                 />
@@ -196,7 +200,7 @@ export function renderDropdownTemplate(context) {
           <input
             class="sf-dropdown-hidden-input"
             type="hidden"
-            name=${context.name}
+            name=${context.controlName || nothing}
             value=${context.value || ""}
             ?disabled=${context.disabled}
           />
@@ -272,6 +276,15 @@ export function renderDropdownTemplate(context) {
           `
         : nothing}
       ${renderTrigger()}
+      ${context.message
+        // Under the field, in sf-input's field-message type, at the field's
+        // own gap (owner C55). No error icon, as sf-input draws none.
+        ? html`<span
+            id=${context.messageId}
+            class="sf-dropdown-message"
+            data-field-message=${context.invalid ? "error" : "hint"}
+          >${context.message}</span>`
+        : nothing}
 
       <div
         class=${`sf-list sf-list--size-${context.size} flex flex-col${

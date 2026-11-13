@@ -16,15 +16,30 @@
        --sf-list-heading-color            a group's heading */
   .sf-list__frame {
     --sf-list--row-radius: var(--sf-list-radius, var(--sf-radius--ui));
-    --sf-list--hover: var(--sf-list-hover-background-color, var(--sf-surface-container-hover));
+    /* One row hover for every list and menu (C42 (5), owner 2026-11-10). */
+    --sf-list--hover: var(--sf-list-hover-background-color, var(--sf-surface-state-select));
     --sf-list--current: var(--sf-list-current-background-color, var(--sf-primary-container-active));
     --sf-list--group-gap: var(--sf-list-gap, var(--sf-space-1\/3));
 
+    position: relative;
     display: flex;
     flex-direction: column;
     min-inline-size: 0;
     color: var(--sf-on-surface);
     font-family: var(--sf-text--family);
+  }
+
+  /* 1.5.1: what the narrow rule watches for the frame's width (index.js
+     watchWidth). Out of the flow, so it takes no slot of the frame's gap, and
+     of no height, so the narrow layout never changes its size. Before the
+     sheet it is an empty inline box of no size. */
+  .sf-list__width {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    block-size: 0;
+    visibility: hidden;
+    pointer-events: none;
   }
 
   /* The row's height and text, per step of the ladder: what the rename field
@@ -65,6 +80,12 @@
      control height either way: its avatar takes the line and stands centred
      in the place. */
   .sf-list__frame { --sf-list--lead-size: var(--sf-list--lead-line); }
+
+  /* The shared row menu is fetched after the page is ready. Until it upgrades
+     (its host turns display: contents) an empty sf-menu-context is a flex item
+     of the frame and takes a slot of its gap: the list drew --sf-space-1/2
+     taller for a few frames and then jumped (C40 first-paint watch). */
+  .sf-list__frame > .sf-list__menu { display: contents; }
   .sf-list--lead-wide { --sf-list--lead-size: var(--sf-list--lead-block); }
 
   .sf-list__lead {
@@ -100,8 +121,9 @@
 
   /* The count and the badge stand at the row's end, centred on the row: one
      line of the row, two lines of a two-line row. The title gives way to
-     them. The least gap before them is the row's own between its icon and
-     its text (sf-list-item's gap-2), also in a row with no icon. */
+     them. The least gap before them is the row's own between its picture and
+     its text (C105 H2, --sf-space-1/2, sf-list-item's wrap), also in a row
+     with no picture. */
   .sf-list__meta {
     display: inline-flex;
     flex: none;
@@ -112,7 +134,55 @@
 
   .sf-list__meta:empty { display: none; }
 
-  .sf-list-item--text .sf-list__meta { padding-inline-start: var(--sf-space-2); }
+  .sf-list-item--text .sf-list__meta { padding-inline-start: var(--sf-space-1\/2); }
+
+  /* A narrow list (owner decision C47, 2026-11-10, option A; the list sets
+     data-sf-list-narrow on its frame below 20rem of its own width): a row
+     with a badge or a count lays out as «picture | text», and the meta goes
+     under the second line, at the text's start, so the title keeps the
+     row's width and the badge stays whole. The row grows by whole bands
+     (geometry standard, multi-line rows): the band step --sf-space-1/4 and
+     the badge's own height, the row's line -- 52 + 4 + 20 = 76 on a phone at
+     size 1. Rows without a meta keep their layout and their height; the
+     picture place is one width in every row, so all titles start on one
+     line. */
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    row-gap: var(--sf-space-1\/4);
+  }
+
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item--text .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The picture: the leading place, or sf-icon's own glyph (its host is
+     display: contents). */
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > :first-child:not(.sf-list-item-container, sf-icon),
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > sf-icon:first-child > * {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+  }
+
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > .sf-list-item-container {
+    grid-column: -2;
+    grid-row: 1;
+    justify-self: stretch;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    margin: 0;
+  }
+
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap > .sf-list__meta:not(:empty) {
+    grid-column: -2;
+    grid-row: 2;
+    justify-self: start;
+    /* The text's start: the title has no inset of its own (C77, C105 H2),
+       so the meta stands on the title's first letter. */
+    margin-inline-start: 0;
+    padding-inline-start: 0;
+  }
 
   .sf-list__body,
   .sf-list__group {
@@ -127,13 +197,19 @@
   .sf-list__empty[hidden],
   .sf-list__next[hidden] { display: none; }
 
-  .sf-list__heading {
-    padding-block: var(--sf-space-1\/4);
+  /* A group's heading is block list's shared heading (.sf-group-heading,
+     component group-heading, C40): its type, weight and spaces are the class's;
+     the list keeps the words on the rows' text edge and their colour. The
+     space above a group after the first is the heading's --sf-space-3 in all,
+     the gap between groups included. */
+  .sf-list__group > .sf-list__heading {
+    margin-block-start: 0;
     padding-inline: var(--sf-list--text-inset);
-    color: var(--sf-list-heading-color, var(--sf-on-surface-variant));
-    font-size: var(--sf-label-medium--size);
-    line-height: var(--sf-label-medium--height);
-    font-weight: var(--sf-font-weight-medium);
+    color: var(--sf-list-heading-color, var(--sf-on-surface));
+  }
+
+  .sf-list__group + .sf-list__group {
+    margin-block-start: calc(var(--sf-space-3) - var(--sf-list--group-gap));
   }
 
   .sf-list__rows {
@@ -165,7 +241,7 @@
 
   /* A translucent fill: a tonal badge on the open row keeps its own tone
      (C43; core mix sf-place-fill, written out because this sheet is not Sass). */
-  .sf-list__row--current { background-color: var(--sf-list--current); --sf-surface-underlay: var(--sf-surface-place-solid); }
+  .sf-list__row--current { background-color: var(--sf-list--current); --sf-surface-underlay: var(--sf-surface-place-solid); --sf-surface-place-fill: var(--sf-list--current); }
 
   .sf-list__actions { margin-inline-end: var(--sf-space-1\/4); }
 
@@ -271,12 +347,58 @@
 
 @layer sf.states {
   /* The pointer over the row or over its «⋯»: one tint for both, the token
-     the row itself takes under the pointer. */
-  .sf-list__row:not(.sf-list__row--current):not(.sf-list__row--editing):hover { background-color: var(--sf-list--hover); }
+     the row itself takes under the pointer. A translucent fill, as the open
+     row (C43 D4). */
+  .sf-list__row:not(.sf-list__row--current):not(.sf-list__row--editing):hover { background-color: var(--sf-list--hover); --sf-surface-underlay: var(--sf-surface-place-solid); --sf-surface-place-fill: var(--sf-list--hover); }
 
   /* The open row is told by more than a tint: in forced colours it is marked
      by the system highlight at its start. */
   @media (forced-colors: active) {
     .sf-list__row--current { border-inline-start: var(--sf-px) solid Highlight; }
+  }
+}
+
+/* C77 (owner 2026-11-11; prototypes/field-inset.html): a row's text stands
+   where a field's value does in the same column -- --sf-space-1/2,
+   --sf-space-1 or --sf-space-2 from the list's outer edge, its border counted
+   inside (size 1/2 keeps 12 on a phone) -- and a row's picture at the same
+   place, its step after it. The row's highlight stands --sf-space-1/4 in from
+   the frame, as a menu's does (C30); a text row adds no picture-to-label step
+   of its own. The group headings and the rename field keep the rows' text
+   edge. */
+@layer sf.components {
+  .sf-list__frame {
+    --sf-list--padding-left: var(--sf-space-1\/4);
+    --sf-list--padding-right: var(--sf-space-1\/4);
+    --sf-list--edge: var(--sf-list--border-width, var(--sf-px));
+  }
+
+  .sf-list__frame.sf-list--size-1 { --sf-list--inset: var(--sf-space-1); }
+  .sf-list__frame.sf-list--size-2 { --sf-list--inset: var(--sf-space-2); }
+  /* Size 1/2 never goes below 12 (--sf-b2): on a phone, and in a compact
+     region, where C79 brings it down a step to 28 and --sf-space-1/2 is 8.
+     The inset follows the field's step with that floor: compact 1/2 and 1
+     are 12, compact 2 (40) keeps 16 (intent acceptance 2026-11-12). */
+  .sf-list__frame.sf-list--size-1\/2 { --sf-list--inset: max(var(--sf-space-1\/2), var(--sf-b2)); }
+
+  .sf-list__frame:is(.sf-list--size-1, .sf-list--size-2, .sf-list--size-1\/2) {
+    --sf-list--text-inset: calc(var(--sf-list--inset) - var(--sf-space-1\/4) - var(--sf-list--edge));
+  }
+
+  .sf-list__frame .sf-list__row > sf-list-item > .sf-list-item {
+    --sf-list-item--padding-inline-start: var(--sf-list--text-inset);
+    --sf-list-item--padding-inline-end: var(--sf-list--text-inset);
+  }
+
+  .sf-list__frame .sf-list__row > sf-list-item > .sf-list-item.sf-list-item--text .sf-list-item-container {
+    padding-inline-start: 0;
+  }
+
+  /* The text block's end stands at the row's inset too (R191 HS-2): its
+     --sf-ui-<S>--text-space-x at the end is gone in every row. The step after
+     a picture is the row's H2 (C105, sf-list-item's wrap): 12, compact and
+     phone 8. */
+  .sf-list__frame .sf-list__row > sf-list-item > .sf-list-item .sf-list-item-container {
+    padding-inline-end: 0;
   }
 }

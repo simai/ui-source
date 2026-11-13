@@ -44,13 +44,19 @@ async page => {
     check(s.buttons.every((b, i) => b.id && b.controls === s.panels[i].id && s.panels[i].labelledby === b.id), 'bidirectional panel links', context, s);
     const names = await Promise.all(['Обзор', 'Недоступно', 'История'].map(name => top.getByRole('tab', {name, exact: true}).count()));
     check(names.every(count => count === 1), 'text and icon tab accessible names', context, {names, buttons: s.buttons});
-    check(s.panels[0].tabindex === 0, 'text panel keyboard entry', context, s.panels);
+    // sf-tabs 1.3.0 (R184 T8): a panel is a tab stop only when nothing in it
+    // takes the focus -- panel 0 holds a field, panels 1 and 2 only text.
+    check(s.panels[0].tabindex === -1 && s.panels[1].tabindex === 0 && s.panels[2].tabindex === 0, 'text panel keyboard entry, a panel with a field is not a stop', context, s.panels);
     const ids = s.buttons.map(b => b.id);
     await button(0).focus();
     const forward = type === 'vertical' ? 'ArrowDown' : dir === 'rtl' ? 'ArrowLeft' : 'ArrowRight';
     const backward = type === 'vertical' ? 'ArrowUp' : dir === 'rtl' ? 'ArrowRight' : 'ArrowLeft';
+    // sf-tabs 1.3.0 (R184 T9): the arrow reaches the disabled tab, which
+    // selects nothing; the next arrow selects the tab after it.
     await page.keyboard.press(forward); s = await state();
-    check(s.active === 2 && s.focus === 2 && s.events.join() === '2', 'arrow skips disabled and moves focus once', context, s);
+    check(s.active === 0 && s.focus === 1 && s.events.join() === '' && s.buttons[1].tabindex === 0, 'arrow reaches the disabled tab and selects nothing', context, s);
+    await page.keyboard.press(forward); s = await state();
+    check(s.active === 2 && s.focus === 2 && s.events.join() === '2', 'arrow past the disabled tab selects and moves focus once', context, s);
     await button(2).focus(); await page.keyboard.press(backward); s = await state();
     check(s.active === 0 && s.focus === 0, 'reverse arrow moves focus', context, s);
     await button(0).focus(); await page.keyboard.press('End'); s = await state();

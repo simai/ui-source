@@ -20,12 +20,20 @@ Loading model:
 - `hue`: empty `| auto` or a hue of the static palette: `red | orange | amber |
   yellow | lime | green | teal | cyan | sky | blue | indigo | violet | purple |
   pink | brown | gray` -- see "Hues"
+- `expressive`: the decorative level (owner decision C91, level 2): initials
+  at `size="3"` with a hue stand on a cover of that hue: the plate stepping
+  into a second container step towards the far corner, the ink unchanged. Smaller sizes, a photo, the
+  placeholder and the neutral look stay flat. Off by default;
+  `data-sf-style="expressive"` on the root or a container turns it on for every
+  avatar under it, `data-sf-style="strict"` turns it off again
 - `tone`: the former name of `hue` until 2027-01-01, read when `hue` is empty;
   its `rose` is `pink` and its `violet` is `purple`
 - `status`: `none | online | offline | company | verified`
-  (the offline dot is the disabled ink over the place colour; its layers are
-  `--sf-avatar-offline-background-color` and `--sf-avatar-offline-overlay`,
-  set the overlay to `none` for a dot of exactly your colour)
+  (the offline dot is the place's dim ink, `--sf-on-surface-variant`, at
+  least 3:1 against the place and the avatar, laid over the nearest opaque
+  place, so it is opaque on a soft coloured place too; its layers are
+  `--sf-avatar-offline-background-color` (the colour) and
+  `--sf-avatar-offline-overlay` (`none` by default, a layer over it))
 - `aria-label` — a host attribute: the button's name, «Аватар» / "Avatar" when unset
 - `heading` — the name the label and card templates print; `title` is its
   dated alias until 2026-12-01 (`title` is a property of every element,

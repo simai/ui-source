@@ -4,7 +4,7 @@
      the values the code drew before them, so a page that sets none sees no
      change. Hover, the current cell, focus, error and disabled write their
      own. */
-  --sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-title-height-6));
+  --sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-ui-1--control-height));
   --sf-verification--gap: var(--sf-verification-gap, var(--sf-space-1\/3));
   --sf-verification--radius: var(--sf-verification-radius, var(--sf-radius--ui));
   --sf-verification--border-width: var(--sf-verification-border-width, var(--sf-px));
@@ -21,8 +21,23 @@
   direction: ltr;
 }
 
+/* A separator between groups of cells (C82: 3 + 3, 4 + 4): a short dash on
+   the cells' middle line, a picture only (aria-hidden with the cells). */
+.sf-verification-separator {
+  flex: none;
+  align-self: center;
+  inline-size: var(--sf-space-1\/2);
+  block-size: 0;
+  border-block-start: var(--sf-px) solid var(--sf-on-surface-variant);
+}
+
+.sf-verification:has(.sf-verification-input:disabled) .sf-verification-separator {
+  border-block-start-color: var(--sf-outline-disabled);
+}
+
 .sf-verification-cell,
 .sf-verification-form-wrap .sf-verification {
+  position: relative;
   display: grid;
   place-items: center;
   inline-size: var(--sf-verification--cell-size);
@@ -38,6 +53,11 @@
   line-height: var(--sf-verification--line-height, var(--sf-text-height-1));
 }
 
+/* The input lies over the cells and draws nothing of its own: no text, no
+   caret, no selection, no autofill fill (clipped to its transparent text).
+   It is not opacity 0: an invisible input lost the touch caret and the
+   long-press paste menu on some phones, and the cells draw its caret and
+   selection instead (K2, K3). */
 .sf-verification-input {
   position: absolute;
   inset: 0;
@@ -45,10 +65,20 @@
   inline-size: 100%;
   block-size: 100%;
   box-sizing: border-box;
+  margin: 0;
   border: 0;
   padding: 0;
-  opacity: 0;
+  background: var(--sf-transparent);
+  background-clip: text;
+  color: var(--sf-transparent);
+  caret-color: var(--sf-transparent);
+  -webkit-text-fill-color: var(--sf-transparent);
   cursor: text;
+}
+
+.sf-verification-input::selection {
+  background: var(--sf-transparent);
+  color: var(--sf-transparent);
 }
 
 /* !important: a page's unlayered :focus-visible rule beats any layered one, and
@@ -56,23 +86,83 @@
    2026-11-01). */
 .sf-verification-input:focus { outline: 0 !important; }
 
-.sf-verification:has(.sf-verification-input:focus-visible),
+/* The focus ring is the active cell's, not the row's (K1, owner R136), and
+   only when the focus came from the keyboard: a text input matches
+   :focus-visible after a click too, so the runtime that owns the field
+   (sf-input-code, or the class runtime) marks a pointer focus with
+   .sf-verification--pointer-focus until the field loses the focus, as
+   sf-input does with .sf-input--pointer-focus; a pointer focus keeps the
+   primary border of the current cell only. The retired one-input-per-cell
+   markup rings its focused cell, which is already one cell. */
+.sf-verification:not(.sf-verification--pointer-focus):has(.sf-verification-input:focus-visible) .sf-verification-cell.current,
 .sf-verification-form-wrap .sf-verification:has(input:focus-visible) {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
   outline-offset: var(--sf-focus--offset);
 }
 
-.sf-verification-cell.current { border-color: var(--sf-primary); }
+/* The cell the next character goes to is marked only while the field has the
+   focus: a field at rest drew a primary cell, so three fields on one page all
+   looked focused (docs pre-check 2026-11-10 CI-02). Hover no longer covers
+   it (K3, owner R138): a hover marks one other cell. */
+.sf-verification:has(.sf-verification-input:focus) .sf-verification-cell.current { border-color: var(--sf-primary); }
+
+/* A refused code marks its current cell in the error colour, as its border. */
+.sf-verification-form.error .sf-verification:has(.sf-verification-input:focus) .sf-verification-cell.current,
+.sf-verification.error:has(.sf-verification-input:focus) .sf-verification-cell.current {
+  border-color: var(--sf-verification-invalid-border-color, var(--sf-error));
+}
+
+/* The caret, drawn by the runtime that owns the field in the cell the next
+   character goes to: the input is transparent and draws none (K3). A whole
+   code puts it after the last character. It blinks unless motion is
+   reduced, where it stays. */
+.sf-verification-cell.caret::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline: 0;
+  margin: auto;
+  inline-size: calc(var(--sf-px) * 2);
+  block-size: var(--sf-verification--line-height, var(--sf-text-height-1));
+  background: var(--sf-on-surface);
+  pointer-events: none;
+}
+
+.sf-verification-cell.caret-end::after {
+  inset-inline-start: auto;
+  inset-inline-end: var(--sf-space-1\/4);
+  margin-inline: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sf-verification-cell.caret::after {
+    animation: sf-verification-caret calc(var(--sf-duration-slow) * 2) steps(1) infinite;
+  }
+}
+
+@keyframes sf-verification-caret {
+  50% { opacity: 0; }
+}
 
 .sf-verification--filled .sf-verification-cell,
 .sf-verification-form--filled .sf-verification-form-wrap .sf-verification {
   border-color: transparent;
   background: var(--sf-verification-background-color, var(--sf-surface-container));
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
 }
 
-.sf-verification:hover .sf-verification-cell,
+/* Hover marks the one cell under the pointer, set by the runtime that owns the
+   field (.hover); the whole group lit up before and hid the current cell's
+   mark (K4, owner R139). A filled cell takes the fill's hover step, without a
+   border, as a filled sf-input. The retired one-input-per-cell markup hovers
+   its cell, which is already one. */
+.sf-verification-cell.hover,
 .sf-verification-form-wrap .sf-verification:hover { border-color: var(--sf-primary-hover); }
+
+.sf-verification--filled .sf-verification-cell.hover {
+  border-color: var(--sf-transparent);
+  background: var(--sf-surface-container-hover);
+}
 
 .sf-verification-form.error .sf-verification-cell,
 .sf-verification.error .sf-verification-cell,
@@ -84,23 +174,33 @@
 
 .sf-verification:has(input:disabled) .sf-verification-cell,
 .sf-verification-form-wrap .sf-verification:has(input:disabled) {
-  border-color: var(--sf-outline-disable);
-  background: var(--sf-disable);
-  color: var(--sf-on-disable);
+  border-color: var(--sf-outline-disabled);
+  background: var(--sf-surface-disabled);
+  color: var(--sf-on-surface-disabled);
   cursor: not-allowed;
 }
 
+/* A cell is a control: its side is the control height of its size, 32 / 40 / 48
+   on a desktop and 28 / 36 / 44 on a phone, as a field of the same size. The
+   title heights it read drop two rungs on a phone (24 / 28 / 32; docs
+   pre-check 2026-11-10 CVF-01). */
 .sf-verification--size-1\/2,
-.sf-verification-form--size-1\/2 { --sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-title-height-4)); --sf-verification--font-size: var(--sf-text-size-1\/2); --sf-verification--line-height: var(--sf-text-height-1\/2); }
+.sf-verification-form--size-1\/2 { --sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-ui-1\/2--control-height)); --sf-verification--font-size: var(--sf-text-size-1\/2); --sf-verification--line-height: var(--sf-text-height-1\/2); }
 .sf-verification--size-1,
-.sf-verification-form--size-1 { --sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-title-height-6)); --sf-verification--font-size: var(--sf-text-size-1); --sf-verification--line-height: var(--sf-text-height-1); }
+.sf-verification-form--size-1 { --sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-ui-1--control-height)); --sf-verification--font-size: var(--sf-text-size-1); --sf-verification--line-height: var(--sf-text-height-1); }
 .sf-verification--size-2,
-.sf-verification-form--size-2 { --sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-title-height-7)); --sf-verification--font-size: var(--sf-text-size-2); --sf-verification--line-height: var(--sf-text-height-2); }
+.sf-verification-form--size-2 { --sf-verification--cell-size: var(--sf-verification-cell-size, var(--sf-ui-2--control-height)); --sf-verification--font-size: var(--sf-text-size-2); --sf-verification--line-height: var(--sf-text-height-2); }
 
 @media (forced-colors: active) {
   .sf-verification-cell,
   .sf-verification-form-wrap .sf-verification { border-color: CanvasText; }
-  .sf-verification:has(.sf-verification-input:focus-visible),
+  .sf-verification-cell.caret::after { background: CanvasText; }
+  .sf-verification-separator { border-block-start-color: CanvasText; }
+  .sf-verification:has(.sf-verification-input:focus) .sf-verification-cell.selected {
+    background: Highlight;
+    color: HighlightText;
+  }
+  .sf-verification:not(.sf-verification--pointer-focus):has(.sf-verification-input:focus-visible) .sf-verification-cell.current,
   .sf-verification-form-wrap .sf-verification:has(input:focus-visible) {
     outline: var(--sf-px) solid Highlight;
     outline-offset: var(--sf-px);
@@ -122,9 +222,26 @@
 
   /* The cell the next character goes to. In a filled field the fill rule came
      after .current and took its border away, so the caret had no place. */
-  .sf-verification--filled:not(.error) .sf-verification-cell.current,
   .sf-verification--filled:not(.error):has(.sf-verification-input:enabled:focus) .sf-verification-cell.current,
   .sf-verification-form--filled:not(.error):has(input:enabled:focus) .sf-verification-form-wrap .sf-verification:has(input:focus) {
     border-color: var(--sf-primary);
+  }
+}
+
+/* A filled field with the focus is drawn bordered, and hovers as one. */
+@layer sf.components {
+  .sf-verification--filled:not(.error):has(.sf-verification-input:enabled:focus) .sf-verification-cell.hover {
+    border-color: var(--sf-primary-hover);
+  }
+}
+
+/* A selection of several cells (K2): drag, double click, Shift with the
+   arrows, select-all. After the filled field's focus rule, of the same
+   weight, so it shows on both appearances. */
+@layer sf.components {
+  .sf-verification:has(.sf-verification-input:enabled:focus) .sf-verification-cell.selected {
+    border-color: var(--sf-primary);
+    background: var(--sf-primary-container);
+    color: var(--sf-on-primary-container);
   }
 }

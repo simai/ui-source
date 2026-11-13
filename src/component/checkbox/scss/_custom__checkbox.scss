@@ -28,6 +28,21 @@
     opacity: 0;
     cursor: inherit;
   }
+
+  /* The help mark («?», sf-help-mark) is the help's own button: it stands
+     above the native control's hit area, which reaches past a small box, so
+     a press on it is never a press on the box. */
+  .sf-checkbox .sf-checkbox-top .sf-help-mark {
+    position: relative;
+    z-index: var(--sf-z-index-1);
+  }
+
+  /* With the box at the end (position="end", the box after the text column)
+     the text column takes the rest of the row, so the box stands at the end
+     of the row, not right after the text. */
+  .sf-checkbox:has(> .sf-checkbox-box:last-child) > .sf-checkbox-container {
+    flex: 1 1 auto;
+  }
 }
 
 @layer sf.override {

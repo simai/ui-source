@@ -1,0 +1,134 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "break-everywhere",
+  "summary": "A break reads the same in every inline field: heading, item, alert title, table cell.",
+  "covers": [
+    "inline"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "g",
+              "type": "content.grid",
+              "props": {
+                "columns": 1
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "h",
+                    "type": "content.heading",
+                    "data": {
+                      "level": 2,
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "a"
+                        },
+                        {
+                          "type": "break"
+                        },
+                        {
+                          "type": "text",
+                          "value": "b"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "l",
+                    "type": "content.list",
+                    "slots": {
+                      "items": [
+                        {
+                          "id": "li",
+                          "type": "content.list-item",
+                          "data": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "x"
+                              },
+                              {
+                                "type": "break"
+                              },
+                              {
+                                "type": "text",
+                                "value": "y"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "w",
+                    "type": "content.alert",
+                    "data": {
+                      "title": [
+                        {
+                          "type": "text",
+                          "value": "t"
+                        },
+                        {
+                          "type": "break"
+                        },
+                        {
+                          "type": "text",
+                          "value": "u"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "t",
+                    "type": "content.table",
+                    "data": {
+                      "rows": [
+                        [
+                          [
+                            {
+                              "type": "text",
+                              "value": "c"
+                            },
+                            {
+                              "type": "break"
+                            },
+                            {
+                              "type": "text",
+                              "value": "d"
+                            }
+                          ]
+                        ]
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": true,
+    "html": "<article data-sf-composition-id=\"root\"><div class=\"grid grid-col-1 gap-2\" data-sf-composition-id=\"g\"><div class=\"min-w-0\"><h2 data-sf-composition-id=\"h\">a<br>b</h2></div><div class=\"min-w-0\"><ul data-sf-composition-id=\"l\"><li data-sf-composition-id=\"li\">x<br>y</li></ul></div><div class=\"min-w-0\"><div class=\"sf-alert sf-alert--neutral sf-alert--default flex items-start\" data-sf-composition-id=\"w\"><i class=\"sf-icon\" aria-hidden=\"true\">info</i><div class=\"sf-alert-wrap flex flex-col flex-1\"><div class=\"sf-alert-content flex flex-col flex-1\"><div class=\"sf-alert-text\">t<br>u</div></div></div></div></div><div class=\"min-w-0\"><div class=\"table-frame\" data-sf-composition-id=\"t\"><table class=\"table\"><thead><tr><th scope=\"col\">c<br>d</th></tr></thead></table></div></div></div></article>",
+    "diagnostics": [],
+    "assets": [
+      "component/alerts",
+      "utility/table-frame"
+    ]
+  }
+}

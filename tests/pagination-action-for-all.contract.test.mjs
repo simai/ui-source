@@ -22,6 +22,8 @@ test('setActionForAll stays idempotent, so a repeated state emits nothing', () =
     const owner = {actionForAll: false, events: [], counts: [],
         setState(patch) { Object.assign(this, patch); },
         requestCount(reason) { this.counts.push(reason); },
+        // The band's events are noted as deprecated (C97 point 5); a no-op here.
+        noteFooterEvent() {},
         // The manifest's event sender (core element-manifest.js); the detail is the vocabulary's.
         sfEmit(verb, detail) { this.events.push({name: verb, detail}); return true; }};
     setActionForAll.call(owner, true);

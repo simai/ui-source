@@ -1,6 +1,8 @@
 import SfBaseElement, { toAttributeName } from '../../core/js/smart-base';
 import {
   bindRangeSlider,
+  formatRangeSliderNumber,
+  formatRangeSliderText,
   getRangeSliderValue,
   setRangeSliderValue,
   unbindRangeSlider,
@@ -8,6 +10,9 @@ import {
 import { renderRangeSliderTemplate } from './js/templates/default';
 import { setLoaderDragState } from '../helpers/loaderDragState';
 import { elementFromManifest } from '../../core/js/element-manifest';
+import { noteDeprecated } from '../../core/js/deprecations.js';
+import { fieldSize } from '../../component/field-size';
+import { instancePath, partId } from '../../core/js/instance-path.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -45,6 +50,61 @@ function getValueHandleCount(value) {
   }
 
   return 1;
+}
+
+// label was how each handle showed its value (none | text | tooltip) until
+// 1.4.0; it is the visible name of the field now, as on every field (owner
+// decision C78), and that setting is value-display. Those three words in label
+// keep their old meaning until 2027-01-01 and are noted in SF.deprecations
+// (change journal attribute-slider-range-c78).
+const VALUE_DISPLAYS = ['none', 'text', 'tooltip'];
+
+function legacyValueDisplay(element) {
+  const label = String(element.getAttribute('label') ?? '').trim().toLowerCase();
+  return VALUE_DISPLAYS.includes(label) ? label : null;
+}
+
+// The marks of the scale, placed on the range: the ends (scale) or the
+// author's list "value:text,...", each at its share of the track.
+function scaleMarks(element) {
+  const min = Number(element.min ?? 0);
+  const max = Number(element.max ?? 100);
+  const span = max - min;
+  if (!(span > 0)) return [];
+  const raw = String(element.getAttribute('marks') ?? '').trim();
+  const list = raw
+    ? raw.split(',').map((item) => {
+      const at = item.indexOf(':');
+      const value = Number((at < 0 ? item : item.slice(0, at)).trim());
+      return {value, text: at < 0 ? null : item.slice(at + 1).trim()};
+    }).filter((mark) => Number.isFinite(mark.value) && mark.value >= min && mark.value <= max)
+    : element.hasAttribute('scale') && element.getAttribute('scale') !== 'false' ? [{value: min, text: null}, {value: max, text: null}] : [];
+  return list.map((mark) => ({
+    ...mark,
+    percent: ((mark.value - min) / span) * 100,
+    edge: mark.value === min ? 'start' : mark.value === max ? 'end' : '',
+  }));
+}
+
+// A number typed in the from/to field, read the way the slider writes it:
+// the locale's group marks and spaces go, its decimal mark (and the other of
+// «.» and «,» where the locale does not group with it) is a point. NaN for
+// text that is not a number.
+function parseTyped(text, locale) {
+  let group = ',';
+  let decimal = '.';
+  try {
+    const parts = new Intl.NumberFormat(locale || undefined).formatToParts(12345.6);
+    group = parts.find((part) => part.type === 'group')?.value ?? group;
+    decimal = parts.find((part) => part.type === 'decimal')?.value ?? decimal;
+  } catch { /* the platform's default marks */ }
+  let value = String(text ?? '').replace(/[\s\u00a0\u202f]/gu, '').replace(/[\u2212\u2013]/gu, '-');
+  const groupMark = group.replace(/[\s\u00a0\u202f]/gu, '');
+  if (groupMark && groupMark !== decimal) value = value.split(groupMark).join('');
+  value = value.split(decimal).join('.');
+  if (decimal !== ',' && groupMark !== ',') value = value.split(',').join('.');
+  if (!/^-?\d*(?:\.\d*)?$/u.test(value) || !/\d/u.test(value)) return Number.NaN;
+  return Number(value);
 }
 
 function getSliderHandleCount(root) {
@@ -197,8 +257,28 @@ class SfRangeSlider extends RangeSliderElement {
     return this.getBooleanAttr('keyboard', true);
   }
 
+  // The visible name above the slider (C78). A former value-display word is
+  // not a name.
   get label() {
-    return this.getAttribute('label') || 'none';
+    if (legacyValueDisplay(this)) return '';
+    return this.getAttribute('label') || '';
+  }
+
+  // The three form sizes (S5): the slider row is the control height of the step.
+  get size() {
+    return fieldSize(this.getAttribute('size') || '1', 'sf-slider-range');
+  }
+
+  get valueDisplay() {
+    const own = String(this.getAttribute('value-display') ?? '').trim().toLowerCase();
+    if (VALUE_DISPLAYS.includes(own)) return own;
+    const legacy = legacyValueDisplay(this);
+    if (legacy) {
+      noteDeprecated({component: 'sf-slider-range', kind: 'attribute', from: `label="${legacy}"`, to: `value-display="${legacy}"`,
+        since: '2026-11-12', remove_after: '2027-01-01'});
+      return legacy;
+    }
+    return 'none';
   }
 
   get suffix() {
@@ -213,9 +293,6 @@ class SfRangeSlider extends RangeSliderElement {
     return this.getAttribute('upper-label') || '';
   }
 
-  get decimals() {
-    return this.getAttribute('decimals') || '';
-  }
 
   get tooltipPosition() {
     return this.getAttribute('tooltip-position') || '';
@@ -243,6 +320,8 @@ class SfRangeSlider extends RangeSliderElement {
 
   templateContext() {
     const props = this.getPropsContext();
+    const valueDisplay = this.valueDisplay;
+    const name = this.label;
 
     return this.createTemplateContext({
       ...props,
@@ -250,7 +329,103 @@ class SfRangeSlider extends RangeSliderElement {
       rootClass: this.getRootClass(),
       multiple: this.multiple,
       start: this.initialValue,
+      name,
+      nameId: name ? `${partId(instancePath(this, {kind: 'sf-range-slider'}))}--name` : '',
+      valueDisplay,
+      size: this.size,
+      // The class draws a tooltip over each handle; the value as text sits at
+      // the end of the name line, drawn here (C78).
+      handleLabel: valueDisplay === 'tooltip' ? 'tooltip' : 'none',
+      outputText: this.outputText(),
+      scaleMarks: scaleMarks(this),
+      field: this.hasAttribute('field') && this.getAttribute('field') !== 'false',
+      fieldLabels: this.fieldLabels(),
+      fieldDecimal: String(this.step ?? '').includes('.') || Number(this.getAttribute('precision')) > 0,
+      ticks: this.hasAttribute('ticks') && this.getAttribute('ticks') !== 'false',
     });
+  }
+
+  // Each number of the from/to field is named as its handle is: lower-label and
+  // upper-label, else the field's name or the host's aria-label with «от»/«до».
+  fieldLabels() {
+    const name = this.label || this.getAttribute('aria-label') || '';
+    if (!this.multiple) return [name];
+    const words = [this.sfWord?.('from') || 'от', this.sfWord?.('to') || 'до'];
+    return [this.lowerLabel, this.upperLabel].map((own, index) => own || [words[index], name].filter(Boolean).join(' '));
+  }
+
+  // The numbers of the from/to field follow the handles; the box being typed in
+  // is left alone. The rulers beside each box hold the ends of the range in the
+  // slider's writing, so every box is as wide as the wider end: a value never
+  // outgrows its box (C80, acceptance R2). A ruler takes the box's text size,
+  // which core raises to 16px on a touch phone (touch_fields, no zoom on focus).
+  syncField(values) {
+    const root = this.getSliderRoot();
+    const inputs = this.querySelectorAll('.sf-range-slider-field-input');
+    if (!root || !inputs.length) return;
+    const list = values ?? String(this.value || '').split(',').map(Number).filter(Number.isFinite);
+    const ends = [this.min, this.max].map((bound) => formatRangeSliderNumber(root, bound));
+    this.querySelectorAll('.sf-range-slider-field-box').forEach((box) => {
+      const input = box.querySelector('.sf-range-slider-field-input');
+      const size = input ? getComputedStyle(input).fontSize : '';
+      box.querySelectorAll('.sf-range-slider-field-ruler').forEach((ruler, index) => {
+        if (ruler.textContent !== ends[index]) ruler.textContent = ends[index];
+        if (size && getComputedStyle(ruler).fontSize !== size) ruler.style.fontSize = size;
+      });
+    });
+    inputs.forEach((input, index) => {
+      if (document.activeElement !== input && list[index] !== undefined) input.value = formatRangeSliderNumber(root, list[index]);
+    });
+  }
+
+  onFieldKeyDown(event, index) {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    this.commitField(index);
+  }
+
+  // Enter or leaving the box puts the typed number on the handle (C80): the
+  // slider admits it within range, step and the other handle, the box then shows
+  // what was admitted, and a person's change is a change.
+  commitField(index) {
+    const root = this.getSliderRoot();
+    const input = this.querySelectorAll('.sf-range-slider-field-input')[index];
+    if (!root || !input || this.disabled || this.readonly) return;
+    const typed = parseTyped(input.value, root.getAttribute('data-locale') || root.closest('[lang]')?.getAttribute('lang'));
+    const before = getRangeSliderValue(root);
+    const current = Array.isArray(before) ? [...before] : [before];
+    if (Number.isFinite(typed)) current[index] = typed;
+    this.setValue(this.multiple ? current : current[0]);
+    const after = getRangeSliderValue(root);
+    const values = Array.isArray(after) ? after : [after];
+    input.value = formatRangeSliderNumber(root, values[index]);
+    if (String(after) !== String(before)) {
+      this.syncOutput(values);
+      this.emitChange({values, value: this.multiple ? values : values[0], handleCount: values.length, handle: index});
+    }
+  }
+
+  // A mark without text of its own writes its number the slider's way.
+  syncScale() {
+    const root = this.getSliderRoot();
+    if (!root) return;
+    this.querySelectorAll('.sf-range-slider-scale-mark').forEach((mark, index) => {
+      const own = scaleMarks(this)[index];
+      if (own && own.text === null) mark.textContent = formatRangeSliderNumber(root, own.value);
+    });
+  }
+
+  // The value as the name line writes it: «45 %», «5 000 – 20 000 ₽».
+  outputText(values) {
+    const root = this.getSliderRoot();
+    const list = values ?? String(this.value || '').split(',').map(Number).filter(Number.isFinite);
+    if (!root || !list.length) return '';
+    return formatRangeSliderText(root, list);
+  }
+
+  syncOutput(values) {
+    const output = this.querySelector('.sf-range-slider-output');
+    if (output) output.textContent = this.outputText(values);
   }
 
   template() {
@@ -278,15 +453,20 @@ class SfRangeSlider extends RangeSliderElement {
         'start',
         'multiple',
         'step',
+        'page-step',
         'margin',
         'connect',
         'keyboard',
         'label',
+        'value-display',
+        'size',
         'prefix-text',
         'suffix',
         'lower-label',
         'upper-label',
-        'decimals',
+        'precision',
+        'grouping',
+        'locale',
         'tooltip-position',
         'text-position',
         'label-position',
@@ -294,6 +474,11 @@ class SfRangeSlider extends RangeSliderElement {
         // Disabled is drawn by the template from the setting (§5.3), not
         // toggled on the root by a script.
         'disabled',
+        'readonly',
+        'ticks',
+        'scale',
+        'marks',
+        'field',
       ].includes(name),
     );
 
@@ -341,7 +526,42 @@ class SfRangeSlider extends RangeSliderElement {
       if (this.disabled && this._boundRoot.noUiSlider) {
         this._boundRoot.noUiSlider.disable();
       }
+      // The first render had no slider to format with.
+      this.syncOutput();
+      this.syncScale();
+      this.syncField();
     }
+    this.sfSyncForm();
+  }
+
+  // A form control (1.3.1, §17.1): the value a form gets is the one the slider
+  // shows; nothing while disabled. A range submits two entries under one name
+  // (price=5000&price=20000, as Radix and a pair of native inputs do: S3), so a
+  // server reads both without splitting a string. The value written first is
+  // the one a reset puts back.
+  connectedCallback() {
+    if (this._defaultValue === undefined) this._defaultValue = this.getAttribute('value');
+    super.connectedCallback?.();
+  }
+
+  sfFormValue() {
+    if (this.disabled || this.sfFormDisabled) return null;
+    const value = this.value;
+    if (value === undefined || value === null) return null;
+    const parts = String(value).split(',').map((part) => part.trim()).filter((part) => part !== '');
+    const name = this.getAttribute('name') || '';
+    if (parts.length > 1 && name && typeof FormData === 'function') {
+      const data = new FormData();
+      parts.slice(0, 2).forEach((part) => data.append(name, part));
+      return data;
+    }
+    return String(value);
+  }
+
+  formResetCallback() {
+    const initial = this._defaultValue;
+    this.setValue(initial === null || initial === undefined ? (this.start || this.min || '0') : initial);
+    this.sfSyncForm();
   }
 
   onDisconnected() {
@@ -416,6 +636,8 @@ class SfRangeSlider extends RangeSliderElement {
       return;
     }
 
+    this.syncOutput(this.multiple ? values : values.slice(0, 1));
+    this.syncField(this.multiple ? values : values.slice(0, 1));
     const serialized = serializeValue(this.multiple ? values : values[0]);
 
     if ((this.getAttribute('value') || '') === serialized) {
@@ -425,6 +647,7 @@ class SfRangeSlider extends RangeSliderElement {
     this._syncingValueAttribute = true;
     this.setAttribute('value', serialized);
     this._syncingValueAttribute = false;
+    this.sfSyncForm();
   };
 
   // The class component's change and sf-range-slider-change stop at the
@@ -435,9 +658,14 @@ class SfRangeSlider extends RangeSliderElement {
     event.stopPropagation();
     if (event.type !== 'change' || event.target !== this.getSliderRoot()) return;
     const {values, value, handleCount, handle} = event.detail || {};
-    // change keeps its native name (§8, §17.3).
-    this.sfEmit('change', { values, value, handleCount, handle });
+    this.emitChange({ values, value, handleCount, handle });
   };
+
+  // change keeps its native name (§8, §17.3); a drag, a key or the from/to
+  // field all send it from here, once per person's change.
+  emitChange(detail) {
+    this.sfEmit('change', detail);
+  }
 
   _handleSliderAlias = (event) => {
     const alias = sliderEventAliases[event.type];
@@ -512,10 +740,12 @@ class SfRangeSlider extends RangeSliderElement {
       // Reflect the value actually admitted by range/step/margin constraints.
       this.setAttribute('value', serializeValue(getRangeSliderValue(root)));
       this._syncingValueAttribute = false;
+      this.sfSyncForm();
       return this;
     }
 
     this.setAttribute('value', serialized);
+    this.sfSyncForm();
     return this;
   }
 
@@ -538,19 +768,25 @@ class SfRangeSlider extends RangeSliderElement {
       value: this.value,
       multiple: this.multiple,
       step: this.step,
+      pageStep: this.pageStep,
       margin: this.margin,
       connect: this.connect,
       keyboard: this.keyboard,
       label: this.label,
+      valueDisplay: this.valueDisplay,
+      size: this.size,
       prefixText: this.prefixText,
       suffix: this.suffix,
       lowerLabel: this.lowerLabel,
       upperLabel: this.upperLabel,
-      decimals: this.decimals,
+      precision: this.precision,
+      grouping: this.grouping,
+      locale: this.locale,
       tooltipPosition: this.tooltipPosition,
       textPosition: this.textPosition,
       labelPosition: this.labelPosition,
       disabled: this.disabled,
+      readonly: this.readonly,
       rootClass: this.getRootClass(),
     };
   }

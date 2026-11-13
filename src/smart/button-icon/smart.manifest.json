@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button-icon",
-  "version": "1.8.2",
+  "version": "1.9.0",
   "title": "Icon Buttons",
   "summary": "Native icon-only action with token geometry, accessible naming and shared loading semantics.",
   "kind": "smart",
@@ -172,6 +172,26 @@
           "submit",
           "reset"
         ]
+      },
+      "href": {
+        "type": "string",
+        "default": "",
+        "description": "An address: the icon button draws a link (an <a href>) with its look, as sf-button's href (decision C51: the quiet «Скачать <name>» at the end of a table row is a real link to the file). A relative address, a fragment, http(s), mailto or tel; any other scheme draws a button. native-type, pressed and a cycle do not apply; disabled or loading, the link has no href and says aria-disabled. The name is the aria-label, as on the button."
+      },
+      "target": {
+        "type": "string",
+        "default": "",
+        "description": "Where a link (href) opens, as an <a target>: _blank opens a new tab. Not written on a button."
+      },
+      "rel": {
+        "type": "string",
+        "default": "",
+        "description": "The link's relation, as an <a rel>. A link that opens in a new tab (target _blank) with no rel says noopener noreferrer. Not written on a button."
+      },
+      "download": {
+        "type": "string",
+        "default": "",
+        "description": "A link (href) that downloads its file, as an <a download>: the name it is saved under, or present and empty for the server's name. Not written on a button."
       },
       "badge-count": {
         "type": "string",
@@ -615,7 +635,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button-icon/index.js",
-        "sha256": "aaa79436b3596359b4057221cf10a22b11c9c80478dd8fe6886eab52d969555f"
+        "sha256": "54a234165596ada823bcd3bcc5a1c8872b57845670fdf5eb87042f93023eb063"
       }
     ],
     "generated_runtime": [

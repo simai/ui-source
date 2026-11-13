@@ -14,6 +14,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import { renderTreeItemTemplate } from './js/templates/default';
 import {isTreeItemNode, treeItemNodeToData} from './js/node-data.js';
+import {fileType} from '../../core/js/file-types/index.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -116,8 +117,9 @@ class SfTreeItem extends TreeItemElement {
     return true;
   }
 
-  get hasChildren() {
-    return !this.isFile && this.childItems.length > 0;
+  // A branch: children, or has-children before they are loaded (TR-5).
+  get isBranch() {
+    return !this.isFile && (this.childItems.length > 0 || Boolean(this.hasChildren));
   }
 
   get content() {
@@ -161,15 +163,36 @@ class SfTreeItem extends TreeItemElement {
       selected: this.selected || sourceData.selected || false,
       active: this.active || sourceData.active || false,
       disabled: this.disabled || sourceData.disabled || false,
+      hasChildren: Boolean(this.hasChildren) || sourceData.hasChildren || false,
       openIcon: this.getAttribute('open-icon') || sourceData.openIcon || '',
       closedIcon: this.getAttribute('closed-icon') || sourceData.closedIcon || '',
-      icon: this.icon,
+      icon: this.iconSetting(),
       chevronOpenIcon: this.getAttribute('chevron-open-icon') || sourceData.chevronOpenIcon || '',
       chevronClosedIcon: this.getAttribute('chevron-closed-icon') || sourceData.chevronClosedIcon || '',
       openLabel: this.getAttribute('open-label') || sourceData.openLabel || '',
       closeLabel: this.getAttribute('close-label') || sourceData.closeLabel || '',
       children: this.isFile ? [] : this.childItems.length ? this.childItems : sourceData.children || [],
     };
+  }
+
+  // icon as the node says it: a name, false for none, '' to choose (C102).
+  iconSetting() {
+    const icon = this.icon;
+    if (icon === false || icon === 'false') return false;
+    return typeof icon === 'string' && icon !== 'true' ? icon : '';
+  }
+
+  // The node's icon (core file-types, C102): icon → kind → the name's
+  // extension → folder or file. A node's own open-icon / closed-icon (the
+  // attributes, not their defaults) still name its glyph.
+  nodeIcon() {
+    const folder = this.isBranch || this.kind === 'folder';
+    const open = folder && this.isBranch && Boolean(this.open);
+    const openIcon = this.getAttribute('open-icon') || '';
+    const closedIcon = this.getAttribute('closed-icon') || '';
+    const custom = folder ? (open ? openIcon : closedIcon) : closedIcon || openIcon;
+    const icon = this.iconSetting();
+    return fileType({icon: icon === false ? false : icon || custom || '', kind: this.kind, name: this.label, folder, open}).icon;
   }
 
   templateContext() {
@@ -187,7 +210,9 @@ class SfTreeItem extends TreeItemElement {
       selected: this.selected,
       active: this.active,
       disabled: this.disabled,
-      icon: this.icon,
+      icon: this.iconSetting(),
+      nodeIcon: this.nodeIcon(),
+      folder: this.isBranch || this.kind === 'folder',
       openIcon: this.openIcon,
       closedIcon: this.closedIcon,
       chevronOpenIcon: this.chevronOpenIcon,
@@ -198,7 +223,7 @@ class SfTreeItem extends TreeItemElement {
       containerClass: this.containerClass,
       nameClass: this.nameClass,
       children: this.childItems,
-      hasChildren: this.hasChildren,
+      hasChildren: this.isBranch,
       rootClass: this.getRootClass(),
       rootStyle: this.getRootStyle(),
       onToggle: this.handleToggle,
@@ -239,7 +264,7 @@ class SfTreeItem extends TreeItemElement {
   // The actions expand, collapse and toggle-open.
   setOpen(open = true) {
     const next = Boolean(open);
-    if (this.isFile || !this.hasChildren) return {outcome: 'refused', reason: 'leaf'};
+    if (!this.isBranch) return {outcome: 'refused', reason: 'leaf'};
     if (this.disabled) return {outcome: 'refused', reason: 'disabled'};
     if (this.open === next) return {outcome: 'applied'};
     this.toggleAttribute('open', next);

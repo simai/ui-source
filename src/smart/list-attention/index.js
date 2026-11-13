@@ -195,6 +195,15 @@ export function normalizePassed(value) {
   }).filter((item) => item && item.title);
 }
 
+// The narrow column's parts (C45): the summary as a line of text, the quiet
+// line's two lines and its icon recheck.
+const NARROW_PARTS = [
+  '.sf-list-attention-summary-line',
+  '.sf-list-attention-quiet-title',
+  '.sf-list-attention-quiet-meta',
+  '.sf-list-attention-recheck--narrow',
+].join(', ');
+
 const ListAttentionElement = elementFromManifest(manifest, {
   base: SfBaseElement,
   lang: {en, ru},
@@ -389,8 +398,58 @@ class SfListAttention extends ListAttentionElement {
     return [...this.querySelectorAll('.sf-list-attention-item[data-id]')].map((row) => row.dataset.id);
   }
 
+  // Both forms of the head and of the quiet line are drawn and the sheet's
+  // container query shows one (C45). Until the sheet is in, the narrow
+  // column's parts are hidden, so a late sheet shows one form, not both. A
+  // ResizeObserver on the drawing finds the sheet: it reports before the
+  // frame is painted with it, and the parts are shown in that same frame.
+  whenRenderedStylesReady(target) {
+    this.holdNarrowParts();
+    return super.whenRenderedStylesReady(target);
+  }
+
+  sheetIn(root) {
+    return getComputedStyle(root).containerType === 'inline-size';
+  }
+
+  holdNarrowParts() {
+    const root = this.querySelector(':scope > .sf-list-attention');
+    if (!root || this._sheetSeen) return;
+    if (this.sheetIn(root)) {
+      this.releaseNarrowParts();
+      return;
+    }
+    for (const part of this.querySelectorAll(NARROW_PARTS)) part.hidden = true;
+    if (typeof ResizeObserver !== 'function' || this._sheetWatch?.root === root) return;
+    this._sheetWatch?.observer.disconnect();
+    const observer = new ResizeObserver(() => {
+      if (root.isConnected && this.sheetIn(root)) this.releaseNarrowParts();
+    });
+    this._sheetWatch = {root, observer};
+    observer.observe(root);
+    if (root.firstElementChild) observer.observe(root.firstElementChild);
+  }
+
+  releaseNarrowParts() {
+    this._sheetSeen = true;
+    this._sheetWatch?.observer.disconnect();
+    this._sheetWatch = null;
+    for (const part of this.querySelectorAll(NARROW_PARTS)) part.hidden = false;
+  }
+
+  onDisconnected() {
+    this._sheetWatch?.observer.disconnect();
+    this._sheetWatch = null;
+    super.onDisconnected?.();
+  }
+
   afterRender(changed) {
     super.afterRender?.(changed);
+    // The sheet gate let go (in, or its time ran out): the parts are shown.
+    if (!this._sheetSeen) {
+      const root = this.querySelector(':scope > .sf-list-attention');
+      if (root && this.sheetIn(root)) this.releaseNarrowParts();
+    }
     if (this._focusAfter === null) return;
     const target = this._focusAfter;
     this._focusAfter = null;
@@ -491,7 +550,10 @@ class SfListAttention extends ListAttentionElement {
         icon: ICONS[one],
         text: this.sfWord(`summary-${one}`, {count: counts[one]}),
       })),
+      // The same summary as one line of text, for a narrow column (C45).
+      summaryLine: STATUSES.filter((one) => counts[one]).map((one) => this.sfWord(`summary-${one}`, {count: counts[one]})).join(' · '),
       empty: this.empty === 'none' ? 'none' : 'line',
+      quietTitle: this.emptyText,
       emptyLine: checked ? this.sfWord('empty-checked-text', {vars: {text: this.emptyText, when: checked}}) : this.emptyText,
       checked,
       checkedLine: checked ? this.sfWord('checked-text', {vars: {when: checked}}) : '',

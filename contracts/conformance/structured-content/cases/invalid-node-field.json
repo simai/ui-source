@@ -32,6 +32,10 @@
     "html": "",
     "diagnostics": [
       {
+        "code": "executable_or_secret_field_forbidden",
+        "path": "$.root.slots.default[0].style"
+      },
+      {
         "code": "unknown_field",
         "path": "$.root.slots.default[0].style"
       }

@@ -27,6 +27,10 @@
     {
       "id": "tokens.border",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.12.0"
     }
   ]
 }

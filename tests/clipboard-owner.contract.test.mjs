@@ -10,7 +10,10 @@ const rule = fs.readFileSync(new URL('../src/component/clipboard/rule.js', impor
 const core = fs.readFileSync(new URL('../src/core/js/clipboard.js', import.meta.url), 'utf8');
 
 test('ordinary and constructed Copy share one lifecycle owner', () => {
-  assert.match(js, /const COPY_SELECTOR = '\.sf-clipboard, \.btn-clipboard'/);
+  // The attribute route (decision C48) and the deprecated class route.
+  assert.match(js, /const ROUTE_SELECTOR = '\[data-sf-copy\], \[data-sf-copy-target\]'/);
+  assert.match(js, /const LEGACY_SELECTOR = '\.sf-clipboard, \.btn-clipboard'/);
+  assert.match(js, /const COPY_SELECTOR = `\$\{ROUTE_SELECTOR\}, \$\{LEGACY_SELECTOR\}`/);
   assert.match(js, /initCopyTree/);
   assert.match(js, /MutationObserver/);
   assert.match(js, /init\(\) \{ bindCopyButton\(this\.html\); \}/);
@@ -21,6 +24,8 @@ test('Clipboard loads only its visual primitives while Highlight owns the revers
   assert.match(rule, /name: 'buttons'/);
   assert.match(rule, /name: 'icon-buttons'/);
   assert.match(rule, /name: 'icons'/);
+  assert.match(rule, /name: 'tooltip'/);
+  assert.match(rule, /data-sf-copy\|data-sf-copy-target/);
   assert.doesNotMatch(rule, /name: 'doc'|name: 'highlight'/);
 });
 
@@ -47,8 +52,12 @@ test('native clipboard has a checked fallback and explicit result events', () =>
   assert.match(js, /sf:copy-success/);
   assert.match(js, /sf:copy-error/);
   assert.match(js, /NotAllowedError'[\s\S]*copy_denied/);
+  // One refusal code on the attribute route, sf-button-copy's; the class route keeps its three until 2027-01-01 (L5).
+  assert.match(js, /if \(!legacy\) return 'denied';/);
+  assert.match(js, /normalizeCopyError\(result\.error, isLegacy\(button\)\)/);
   assert.match(js, /detail: \{ code \}/);
-  assert.match(js, /finally[\s\S]*removeAttribute\('aria-disabled'\)/);
+  // The pending mark goes with the phase (the helper's finally ends the copy).
+  assert.match(js, /if \(phase === 'pending'\) \{[\s\S]*?return;\n  \}\n  button\.removeAttribute\('aria-disabled'\)/);
 });
 
 test('feedback uses a stable status region without changing action name', () => {
@@ -64,6 +73,24 @@ test('Clipboard presentation follows token and focus contracts', () => {
   assert.match(css, /forced-colors: active/);
   assert.match(css, /prefers-reduced-motion: reduce/);
   assert.match(css, /\.sf-clipboard--overlay/);
-  assert.match(css, /\.sf-clipboard-status:empty/);
+  // The status takes no room, so a rule for an empty one is dead (acceptance note, 2026-11-11).
+  assert.doesNotMatch(css, /\.sf-clipboard-status:empty/);
+  // No layout shift (decision C48): the status takes no room.
+  assert.match(css, /\.sf-clipboard-status,\n  \.sf-clipboard-holder \{[^}]*clip-path: inset\(50%\);[^}]*position: absolute;/);
   assert.doesNotMatch(css, /outline:\s*none\s*!important|\.3s/);
+});
+
+test('the attribute route gives sf-button-copy\'s feedback through the core helper (decision C48)', () => {
+  assert.match(js, /createCopyFeedback, readCopyText/);
+  assert.match(js, /from '\.\.\/\.\.\/\.\.\/core\/js\/copy-feedback\.js'/);
+  // The name is the Framework tooltip, not the browser's title.
+  assert.match(js, /button\.removeAttribute\('title'\)/);
+  assert.match(js, /button\.setAttribute\('data-tooltip', surface\.id\)/);
+  // The refusal's words stand above the button, placed over the page.
+  assert.match(js, /positioning\(\)\.anchor\(button, controller\.result, \{ side: 'block-start'/);
+  // The legacy names are noted, with their dates.
+  assert.match(js, /noteDeprecated\(\{ component, kind: 'class', from: name, to: 'data-sf-copy', \.\.\.DEPRECATED \}\)/);
+  assert.match(js, /remove_after: '2027-01-01'/);
+  // One press handler for the document: an sf-button's inner button may be drawn again.
+  assert.match(js, /document\.addEventListener\('click', onDocumentClick\)/);
 });

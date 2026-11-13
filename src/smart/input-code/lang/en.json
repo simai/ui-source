@@ -3,6 +3,7 @@
   "runtime": {
     "character": "character {n} of {m}",
     "digit": "digit {n} of {m}",
-    "group": "Code"
+    "group": "Code",
+    "too-short": "Enter the whole code"
   }
 }

@@ -28,6 +28,12 @@ The historical `--sf-text-size-*`, `--sf-text-height-*` and
 `--sf-title-height-*` names remain 5.x compatibility aliases. New first-party
 styles use the canonical variables.
 
+After rungs 1..12 the title ladder has one named step (contract 1.7.0, owner
+decision C89): `--sf-title--height-card`, the card title line -- 24 px on a
+desktop (as rung 2) and 20 px on a phone (as rung 3), the line of 14 px text
+there, where rung 2 gives 18. It has no `--sf-title-height-*` alias, and
+density does not move it, as it moves no title line.
+
 Semantic roles are exposed as:
 
 - `--sf-label-small|medium|large--size/height`;
@@ -94,17 +100,25 @@ the radius ladder has no 6 (`--sf-radius-1/2` is 4px, `--sf-radius-1` 8px).
 The room and the size stay relative on purpose: one word of code sits in body
 text, a heading, a caption and a table cell, and has to scale with each; no
 fixed step is .2em, .4em or 85 % of all of them (at 16px text the code is
-13.6px, its room 2.72px by 5.44px). The name never parts at a hyphen: the
-code is one box as wide as its text (`display: inline-block`), so the line
-breaks before `sf-button-press`, not inside. Only a run longer than the whole
-line -- a URL, a token -- breaks inside its box (`max-inline-size: 100%`,
-`overflow-wrap: anywhere`; C10, 2026-11-10), so it never runs out of a narrow
-column; code with spaces breaks at them and keeps every word whole. The box's
-lines are the code font's own (`line-height: normal`), so the plate is as tall
-as it was on the text line and the text line keeps its height. A box takes no
-underline from a link around it, so it inherits the link's
-(`text-decoration: inherit`). As an atomic box it can stand at the start of a
-line after an opening bracket or before a closing one when the line is full.
+13.6px, its room 2.72px by 5.44px). Code stays inline and wraps as text does,
+at its spaces and hyphens, so a name at the end of a line may part at a hyphen
+(`sf-button-` / `press`) but never between two letters. A run that cannot fit
+a line of its own -- a URL, a token -- breaks where it must
+(`overflow-wrap: break-word`; C10, 2026-11-10), so it never runs out of a
+narrow column. In running text `break-word`, not `anywhere`: inline code
+keeps the no-break with the punctuation around it and the height of its line. The code's own line box is `line-height: 1`:
+with the inherited text line it rose a pixel above the strut whenever Inter
+was ready at the first layout, so a line with code grew 24 -> 25 at 1440.
+In a table cell (`td`, `th`) code takes `overflow-wrap: anywhere` (owner
+decision C10, variant A, 2026-11-11): a long value -- a JSON default, a rule
+address -- lowers the cell's min-content and never widens the table, so a
+label column beside it keeps its words. For that the table resets its
+`word-break: break-word` (which lowered every cell to a letter) to
+`overflow-wrap: break-word`, and its cells inherit it: a cell keeps its words
+and breaks one only when it cannot fit the column. The rule is on the table,
+not on the cells, so `.table-frame`, whose frame scrolls and which keeps every
+word whole (`overflow-wrap: normal` on its table), is not beaten by it.
+Cells never get `nowrap`.
 
 The public variables have one dash and are never set by the Framework; set
 them on `:root` or any container. The `--sf-code--*` names with two dashes
@@ -184,3 +198,16 @@ Core-only and Core plus Utility must yield the same computed H1-H6 and Display
 matrix at mobile and desktop breakpoints. Overriding a semantic role must alter
 the matching first-party selector; overriding a historical token must continue
 to alter a legacy consumer.
+
+`document.fonts.ready` says the files are in, not that the page draws with
+them. Under `font-display: optional` a face whose file was not in when its text
+was first laid out stays unused for that document while its status reads
+`loaded`. Before core.runtime 1.54.2 the Cyrillic Inter face of a Russian page
+started only when the first Cyrillic label was drawn (a Smart component's,
+after the first frame), so cold loads of the button and segmented demos drew
+their labels in the fallback on most cold loads, and the 500 labels looked
+regular. core.js now starts the Latin face, and the Cyrillic one where
+`<html lang>` is written in Cyrillic, from its first module
+(`core/js/text-fonts.js`; opt out with `SF_BOOT_CONFIG.fonts.early = false`).
+A probe that compares loads reads the font in use (Chrome DevTools Protocol
+`CSS.getPlatformFontsForNode`) rather than `document.fonts`.

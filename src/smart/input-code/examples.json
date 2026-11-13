@@ -41,6 +41,32 @@
       }
     },
     {
+      "name": "groups",
+      "title": "Группы 3 + 3",
+      "settings": {
+        "label": "Код из приложения",
+        "groups": 3,
+        "hint": "Шесть цифр из приложения-генератора"
+      },
+      "expect": {
+        "groups": 3
+      }
+    },
+    {
+      "name": "charset",
+      "title": "Свой алфавит, заглавные",
+      "settings": {
+        "label": "Код Steam Guard",
+        "length": 5,
+        "charset": "23456789BCDFGHJKMNPQRTVWXY",
+        "uppercase": true,
+        "hint": "Пять знаков из приложения Steam"
+      },
+      "expect": {
+        "uppercase": true
+      }
+    },
+    {
       "name": "masked",
       "title": "Скрытые символы",
       "settings": {
@@ -182,6 +208,43 @@
             }
           },
           {
+            "id": "charset-keeps-its-alphabet-in-capitals",
+            "covers": "settings.charset, settings.uppercase",
+            "field": "<sf-input-code name=\"code\" label=\"Код\" length=\"5\" charset=\"23456789BCDFGHJKMNPQRTVWXY\" uppercase></sf-input-code>",
+            "user": "type:b0c2o1df7",
+            "expect": {
+              "value": "BC2DF"
+            }
+          },
+          {
+            "id": "uppercase-alphanumeric-paste",
+            "covers": "settings.uppercase, settings.mode alphanumeric",
+            "field": "<sf-input-code name=\"code\" label=\"Код\" mode=\"alphanumeric\" uppercase></sf-input-code>",
+            "user": "type:ab-12cd",
+            "form": "submit",
+            "expect": {
+              "formData": {
+                "code": "AB12CD"
+              }
+            }
+          },
+          {
+            "id": "groups-draw-a-separator-outside-the-value",
+            "covers": "settings.groups",
+            "field": "<sf-input-code name=\"code\" label=\"Код\" groups=\"3\"></sf-input-code>",
+            "user": "type:123456",
+            "form": "submit",
+            "expect": {
+              "formData": {
+                "code": "123456"
+              },
+              "evaluate": {
+                "el.querySelectorAll('.sf-verification-separator[aria-hidden], .sf-verification-cells[aria-hidden] .sf-verification-separator').length": 1,
+                "el.querySelectorAll('.sf-verification-cell').length": 6
+              }
+            }
+          },
+          {
             "id": "setting-value-is-silent",
             "covers": "§8: a value set from outside sends nothing",
             "field": "<sf-input-code name=\"code\" label=\"Код\"></sf-input-code>",
@@ -212,14 +275,14 @@
             }
           },
           {
-            "id": "incomplete-code-is-pattern-mismatch",
-            "covers": "form.validity pattern-mismatch",
+            "id": "incomplete-code-is-too-short",
+            "covers": "form.validity too-short",
             "field": "<sf-input-code name=\"code\" label=\"Код\" value=\"12\"></sf-input-code>",
             "form": "submit",
             "expect": {
               "submitted": false,
               "validity": {
-                "patternMismatch": true
+                "tooShort": true
               }
             }
           },

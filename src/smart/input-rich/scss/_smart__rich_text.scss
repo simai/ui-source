@@ -9,9 +9,11 @@
 
    The rungs, by the field's size (1/2, 1, 2): the toolbar's buttons and the
    short text of a block level are the rung below (1/3, 1/2, 1); headings in
-   the text are the field's own text ladder, not the page's (RT-04): h2 a rung
-   above the field's text (1, 2, 3), h3 the field's text (1/2, 1, 2), h4 a
-   rung below (1/3, 1/2, 1), all bold, each with its rung's line. */
+   the text climb the text ladder from the field's own text (RT-04, the
+   heading ladder C21: the size never falls down the levels, and no heading
+   is smaller than the text): h4 is the field's text (1/2, 1, 2), h3 a rung
+   above (1, 2, 3), h2 two rungs above (2, 3, 4), all bold, each with its
+   rung's line. */
 .sf-rich-text {
   min-inline-size: 0;
   gap: var(--sf-space-1\/4);
@@ -22,12 +24,12 @@
   --sf-rich-text--label-height: var(--sf-text-height-1\/2);
   --sf-rich-text--tool-size: var(--sf-text-size-1\/2);
   --sf-rich-text--tool-height: var(--sf-text-height-1\/2);
-  --sf-rich-text--h2-size: var(--sf-text-size-2);
-  --sf-rich-text--h2-height: var(--sf-text-height-2);
-  --sf-rich-text--h3-size: var(--sf-text-size-1);
-  --sf-rich-text--h3-height: var(--sf-text-height-1);
-  --sf-rich-text--h4-size: var(--sf-text-size-1\/2);
-  --sf-rich-text--h4-height: var(--sf-text-height-1\/2);
+  --sf-rich-text--h2-size: var(--sf-text-size-3);
+  --sf-rich-text--h2-height: var(--sf-text-height-3);
+  --sf-rich-text--h3-size: var(--sf-text-size-2);
+  --sf-rich-text--h3-height: var(--sf-text-height-2);
+  --sf-rich-text--h4-size: var(--sf-text-size-1);
+  --sf-rich-text--h4-height: var(--sf-text-height-1);
   --sf-rich-text--padding-block: var(--sf-rich-text-padding-block, calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px)));
   --sf-rich-text--padding-inline: var(--sf-rich-text-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x)));
 }
@@ -39,12 +41,12 @@
   --sf-rich-text--label-height: var(--sf-text-height-1);
   --sf-rich-text--tool-size: var(--sf-text-size-1);
   --sf-rich-text--tool-height: var(--sf-text-height-1);
-  --sf-rich-text--h2-size: var(--sf-text-size-3);
-  --sf-rich-text--h2-height: var(--sf-text-height-3);
-  --sf-rich-text--h3-size: var(--sf-text-size-2);
-  --sf-rich-text--h3-height: var(--sf-text-height-2);
-  --sf-rich-text--h4-size: var(--sf-text-size-1);
-  --sf-rich-text--h4-height: var(--sf-text-height-1);
+  --sf-rich-text--h2-size: var(--sf-text-size-4);
+  --sf-rich-text--h2-height: var(--sf-text-height-4);
+  --sf-rich-text--h3-size: var(--sf-text-size-3);
+  --sf-rich-text--h3-height: var(--sf-text-height-3);
+  --sf-rich-text--h4-size: var(--sf-text-size-2);
+  --sf-rich-text--h4-height: var(--sf-text-height-2);
   --sf-rich-text--padding-block: var(--sf-rich-text-padding-block, calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px)));
   --sf-rich-text--padding-inline: var(--sf-rich-text-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--text-space-x)));
 }
@@ -56,12 +58,12 @@
   --sf-rich-text--label-height: var(--sf-text-height-1\/3);
   --sf-rich-text--tool-size: var(--sf-text-size-1\/3);
   --sf-rich-text--tool-height: var(--sf-text-height-1\/3);
-  --sf-rich-text--h2-size: var(--sf-text-size-1);
-  --sf-rich-text--h2-height: var(--sf-text-height-1);
-  --sf-rich-text--h3-size: var(--sf-text-size-1\/2);
-  --sf-rich-text--h3-height: var(--sf-text-height-1\/2);
-  --sf-rich-text--h4-size: var(--sf-text-size-1\/3);
-  --sf-rich-text--h4-height: var(--sf-text-height-1\/3);
+  --sf-rich-text--h2-size: var(--sf-text-size-2);
+  --sf-rich-text--h2-height: var(--sf-text-height-2);
+  --sf-rich-text--h3-size: var(--sf-text-size-1);
+  --sf-rich-text--h3-height: var(--sf-text-height-1);
+  --sf-rich-text--h4-size: var(--sf-text-size-1\/2);
+  --sf-rich-text--h4-height: var(--sf-text-height-1\/2);
   --sf-rich-text--padding-block: var(--sf-rich-text-padding-block, calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px)));
   --sf-rich-text--padding-inline: var(--sf-rich-text-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--text-space-x)));
 }
@@ -99,6 +101,7 @@
   min-inline-size: 0;
   border: var(--sf-px) solid;
   border-color: var(--sf-rich-text--border-color, transparent);
+  border-block-end-color: var(--sf-rich-text--line-color, var(--sf-rich-text--border-color, transparent));
   border-radius: var(--sf-rich-text--radius);
   background-color: var(--sf-rich-text--background-color);
   color: var(--sf-rich-text-color, var(--sf-on-surface));
@@ -115,15 +118,24 @@
 .sf-rich-text.sf-rich-text--filled .sf-rich-text-frame {
   --sf-rich-text--background-color: var(--sf-rich-text-background-color, var(--sf-surface-container));
   --sf-rich-text--border-color: var(--sf-rich-text-border-color, var(--sf-transparent-for-focus));
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
 }
 
 .sf-rich-text:not(.error):not(.sf-rich-text--disabled):not(.sf-rich-text--readonly) .sf-rich-text-frame:hover {
   --sf-rich-text--border-color: var(--sf-primary-hover);
 }
 
+/* The filled field's bottom line (C52, owner 2026-11-10; as sf-input): at rest
+   the field draws its bottom edge in --sf-outline, the fill at 8 % (C41)
+   being 1.10 to 1.23 from its place. A state that colours the border takes
+   the line with it. */
+.sf-rich-text:not(.error).sf-rich-text--filled:not(.sf-rich-text--disabled) .sf-rich-text-frame {
+  --sf-rich-text--line-color: var(--sf-rich-text-border-color, var(--sf-outline));
+}
+
 .sf-rich-text:not(.error).sf-rich-text--filled:not(.sf-rich-text--disabled):not(.sf-rich-text--readonly) .sf-rich-text-frame:hover {
   --sf-rich-text--background-color: var(--sf-surface-container-hover);
+  --sf-rich-text--line-color: var(--sf-rich-text--border-color);
 }
 
 /* Typing in it: the bordered field's focus surface, as sf-input-textarea's. */
@@ -167,16 +179,16 @@
 }
 
 .sf-rich-text.sf-rich-text--disabled .sf-rich-text-frame {
-  color: var(--sf-on-disable);
-  --sf-on-surface-variant: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
+  --sf-on-surface-variant: var(--sf-on-surface-disabled);
 }
 
 .sf-rich-text.sf-rich-text--disabled.sf-rich-text--bordered .sf-rich-text-frame {
-  --sf-rich-text--border-color: var(--sf-outline-disable);
+  --sf-rich-text--border-color: var(--sf-outline-disabled);
 }
 
 .sf-rich-text.sf-rich-text--disabled.sf-rich-text--filled .sf-rich-text-frame {
-  --sf-rich-text--background-color: var(--sf-disable);
+  --sf-rich-text--background-color: var(--sf-surface-disabled);
 }
 
 /* The toolbar: one row of icon buttons a rung below the field, in groups
@@ -225,22 +237,26 @@
    toolbar does not paint its own pressed fill (it had one of its own until 1.3.0). */
 
 .sf-rich-text .sf-rich-text-toolbar .sf-icon-button.sf-rich-text-tool[aria-disabled='true'] {
-  --sf-icon--color: var(--sf-on-disable);
-  color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-surface-disabled);
+  color: var(--sf-on-surface-disabled);
   cursor: default;
 }
 
 /* The link editor's surface: closed until the popover says it is open, also
    before the popover's code has arrived. It is a form in a popup, so its
-   width is the form's step (C32, --sf-popup-form-width), never wider than
-   the screen. */
+   width is the wide form's step (C32, --sf-popup-form-wide-width: the field,
+   its hint and Apply / Remove of the field's size fit one row, R121), never
+   wider than the screen. */
 .sf-rich-text sf-popover.sf-rich-text-link:not([data-open='true']) > [slot='content'] {
   display: none;
 }
 
+/* One spacing step in the whole form (R121): the edge of the surface and the
+   room between the address field and the actions are both --sf-space-1, so
+   the form keeps one rhythm at every density. */
 .sf-rich-text .sf-rich-text-link-panel {
   gap: var(--sf-space-1);
-  padding: var(--sf-space-2);
+  padding: var(--sf-space-1);
   color: var(--sf-on-surface);
 }
 
@@ -263,7 +279,7 @@
   max-inline-size: var(--sf-h1);
   max-block-size: calc(100dvh - var(--sf-space-4));
   margin: 0 auto;
-  padding-block-end: calc(var(--sf-space-2) + env(safe-area-inset-bottom, var(--sf-a0)));
+  padding-block-end: calc(var(--sf-space-1) + env(safe-area-inset-bottom, var(--sf-a0)));
   border-end-end-radius: 0;
   border-end-start-radius: 0;
   /* The popover's own surface, said here beside the modal shadow it stands
@@ -372,6 +388,17 @@
 }
 
 @layer sf.states {
+  /* While the link editor is open the link tool is the only one that looks
+     active (R121, owner review 2026-11-11): the other tools draw at rest --
+     no pressed fill, no hover or focus fill -- though they keep aria-pressed,
+     so a list or the paragraph the caret is in still says so. The pressed
+     look is the icon button's own, in this layer (C12), hence the repeated
+     class to stand above it. */
+  .sf-rich-text .sf-rich-text-toolbar:has(sf-popover.sf-rich-text-link[data-open='true']) .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-rich-text-tool:not([data-sf-tool='link']):not(:disabled):is(*, :hover, :active, :focus-visible) {
+    --sf-icon-button--background-color: transparent;
+    --sf-icon--color: var(--sf-on-surface);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .sf-rich-text .sf-rich-text-frame {
       transition-duration: 0s;
@@ -392,4 +419,10 @@
       border-block-start: var(--sf-px) solid CanvasText;
     }
   }
+}
+
+/* The second cue of a pressed tool, its filled glyph, rests too while the
+   link editor is open (R121); outside the layers, as the icon button's fill rule is. */
+.sf-rich-text .sf-rich-text-toolbar:has(sf-popover.sf-rich-text-link[data-open='true']) .sf-rich-text-tool:not([data-sf-tool='link'])[aria-pressed='true'] .sf-icon {
+  --sf-icon--fill: 0;
 }

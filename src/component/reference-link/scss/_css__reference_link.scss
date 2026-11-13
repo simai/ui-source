@@ -6,6 +6,9 @@
     --sf-reference-link--background-color: var(--sf-reference-link-background-color, transparent);
     --sf-reference-link--border-color: var(--sf-reference-link-border-color, var(--sf-outline-variant));
     --sf-reference-link--gap: var(--sf-space-1);
+    /* The link's and the icon's inks; a state steps them (sf.states). */
+    --sf-reference-link--link: var(--sf-link);
+    --sf-reference-link--accent: var(--sf-primary);
     --sf-reference-link--padding-block: var(--sf-space-1);
     --sf-reference-link--padding-inline: var(--sf-space-1);
 
@@ -41,7 +44,7 @@
 
   .sf-reference-link :where(.sf-reference-link__link, .sf-reference-link-left > a) {
     min-inline-size: var(--sf-0);
-    color: var(--sf-reference-link-link-color, var(--sf-link));
+    color: var(--sf-reference-link-link-color, var(--sf-reference-link--link));
     font: inherit;
     overflow-wrap: anywhere;
     text-decoration: underline;
@@ -58,7 +61,7 @@
     flex: none;
     block-size: var(--sf-reference-link--line-height, var(--sf-text-height-1));
     inline-size: var(--sf-reference-link--line-height, var(--sf-text-height-1));
-    color: var(--sf-primary);
+    color: var(--sf-reference-link--accent);
     font-size: var(--sf-reference-link--line-height, var(--sf-text-height-1));
     /* The icon component sizes itself from these, so the line is passed on. */
     --sf-icon--font-size: var(--sf-reference-link--line-height, var(--sf-text-height-1));
@@ -96,7 +99,14 @@
 @layer sf.states {
   /* The hover and press fills belong to the card. A plain reference has no card
      to fill, and filling the line behind the words was the grey patch the owner
-     saw behind a field's value. */
+     saw behind a field's value.
+     On the card's plates (the neutral fill's 16 and 20, which the dark theme
+     lightens) the resting inks lost 4.5:1: the meta (the place's dim ink)
+     3.78 pressed on a card, the link 3.90 pressed on a popup (C113
+     follow-up). The link and icon step along their own ladders
+     (--sf-link-hover / -active, --sf-primary-hover / -active: dark 85 / 90,
+     light 35 / 30), the dim ink takes the one made for a fill,
+     --sf-on-surface-container-variant (dark 85, 90 on a popup; light 35). */
   .sf-reference-link.sf-reference-link--plain:has(:where(.sf-reference-link__link, .sf-reference-link-left > a):is(:hover, :active)) {
     --sf-reference-link--background-color: transparent;
     --sf-reference-link--border-color: transparent;
@@ -104,11 +114,17 @@
 
   .sf-reference-link:not(.sf-reference-link--plain):has(:where(.sf-reference-link__link, .sf-reference-link-left > a):hover) {
     --sf-reference-link--background-color: var(--sf-surface-container-hover);
-    --sf-reference-link--border-color: var(--sf-outline-primary);
+    --sf-reference-link--border-color: var(--sf-primary-outline);
+    --sf-reference-link--link: var(--sf-link-hover);
+    --sf-reference-link--accent: var(--sf-primary-hover);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
 
   .sf-reference-link:not(.sf-reference-link--plain):has(:where(.sf-reference-link__link, .sf-reference-link-left > a):active) {
     --sf-reference-link--background-color: var(--sf-surface-container-active);
+    --sf-reference-link--link: var(--sf-link-active);
+    --sf-reference-link--accent: var(--sf-primary-active);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
 
   .sf-reference-link :where(.sf-reference-link__link, .sf-reference-link-left > a):focus {
@@ -123,14 +139,14 @@
   }
 
   .sf-reference-link:is(.disabled, [aria-disabled='true']) {
-    --sf-reference-link--border-color: var(--sf-outline-disable);
+    --sf-reference-link--border-color: var(--sf-outline-disabled);
 
-    color: var(--sf-on-disable);
+    color: var(--sf-on-surface-disabled);
   }
 
   .sf-reference-link:is(.disabled, [aria-disabled='true'])
     :where(.sf-reference-link__main, .sf-reference-link-left, .sf-reference-link__meta, .sf-reference-link-text, .sf-icon) {
-    color: var(--sf-on-disable);
+    color: var(--sf-on-surface-disabled);
   }
 
   @media (width < 32rem) { // below sm

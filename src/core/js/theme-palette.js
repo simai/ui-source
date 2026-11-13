@@ -1,17 +1,23 @@
 // A whole theme from one colour (owner, 2026-10-10: «a Smart component where
 // you choose the main colour and it makes all the other variables»).
 //
-// The Framework's colours are eight tonal palettes of sixteen tones each --
+// The Framework's colours are tonal palettes of sixteen tones each --
 // --sf-<palette>-<tone>, 98 down to 5 -- and every semantic token (--sf-primary,
-// --sf-surface, --sf-outline, ...) reads them through light-dark(). So a theme
-// is those 128 primitives, and nothing else needs to change.
+// --sf-surface, --sf-outline, ...) reads them through light-dark(). A theme is
+// the four dynamic palettes -- primary, secondary, tertiary and neutral, 64
+// primitives and their 80 translucent steps -- and nothing else needs to
+// change. The four status palettes are not the theme's: core declares them as
+// var() of the static hues (C17), and a theme that wrote them as literal
+// colours froze them at the hues of the day it was made (TG-01, 2026-11-11:
+// a themed page kept its old status tones whatever core declared).
 //
 // The palettes are made the way the SIMAI generator makes them (ui-doc,
 // fundamentals/color/color-generator), on Google's HCT colour space: the chosen
 // colour gives the primary palette its hue and chroma, and the others follow
 // fixed rules. Fed the Framework's own primary (#005bbe: hue 265, chroma 85 as
-// the generator's UI Kit values), these rules give back all 128 shipped
-// primitives exactly -- tests/theme-palette.contract.test.mjs holds that.
+// the generator's UI Kit values), these rules give back the 64 shipped
+// primitives of the dynamic palettes exactly -- tests/theme-palette.contract.test.mjs
+// holds that.
 //
 // The generator's own inputs are a hue and a chroma in whole numbers
 // (themeFromHct). A colour is read as them (themeFromColor): its hue to the
@@ -26,6 +32,7 @@
 import {Hct} from './vendor/material-color-utilities/hct/hct.js';
 import {TonalPalette} from './vendor/material-color-utilities/palettes/tonal_palette.js';
 import {argbFromHex, hexFromArgb} from './vendor/material-color-utilities/utils/string_utils.js';
+import {noteDeprecated} from './deprecations.js';
 
 export const THEME_TONES = Object.freeze([98, 95, 90, 85, 80, 70, 60, 50, 40, 35, 30, 25, 20, 15, 10, 5]);
 
@@ -36,8 +43,10 @@ export const THEME_TONES = Object.freeze([98, 95, 90, 85, 80, 70, 60, 50, 40, 35
 // the product comes from this palette or from the dynamic one the theme makes
 // (C18). The four status hues keep their numbers, byte for byte: red is error,
 // amber warning, green success, blue info. Information is a status, not the
-// brand (owner, 2026-10-21, simai/ui-source#14): blue is the fixed palette of
-// #005bbe, HCT hue 265.1 at chroma 58.6 -- the nearest tenth above #005bbe's
+// brand (owner, 2026-10-21, simai/ui-source#14), and it stays blue (owner
+// decision C100, 2026-11-12: blue reads best as information; the sky amendment
+// of 2026-11-11 is withdrawn), with no shift on a site whose brand colour is
+// blue (C90). Blue is the fixed palette of #005bbe, HCT hue 265.1 at chroma 58.6 -- the nearest tenth above #005bbe's
 // own 58.5, the one that puts tone 40 on #005bbe itself. Every added hue is
 // chroma 60, brown 30 and gray 0. No hue is shifted toward the theme colour
 // (research 3.3): a hue keeps its name on every site.
@@ -66,13 +75,9 @@ export const STATIC_HUES = Object.freeze({
 
 export const STATIC_HUE_NAMES = Object.freeze(Object.keys(STATIC_HUES));
 
-// The hue each status is.
+// The hue each status is. Core's --sf-<status>-<tone> are var() of these
+// hues' primitives; a theme does not write them (TG-01).
 export const STATUS_HUES = Object.freeze({error: 'red', warning: 'amber', success: 'green', info: 'blue'});
-
-function statusRule(status) {
-  const {hue, chroma} = STATIC_HUES[STATUS_HUES[status]];
-  return {hue, chroma};
-}
 
 // The translucent steps of every static hue: the status steps, tone 50 at the
 // state and fill families (4 to 32), tone 90 at 4, 8, 12 and 24, and tone 20
@@ -84,29 +89,33 @@ export const STATIC_ALPHA = Object.freeze({
   90: Object.freeze([4, 8, 12, 24]),
 });
 
+// The greys' chroma, and the line under which a colour is a grey (C16): a
+// colour no more chromatic than the greys has no hue to give a theme.
+const NEUTRAL_CHROMA = 5;
+
+// A grey colour makes a grey theme (C16, TG-03): its secondary and tertiary
+// take its own chroma, not 20 and 40 in a hue it barely has -- #111111 is HCT
+// hue 209, and a chroma-20 secondary of it is a bluish grey.
+const accent = (chroma) => (source) => (source.chroma < NEUTRAL_CHROMA ? source.chroma : chroma);
+
 // The generator's defaults. `hue` and `chroma` are either a number or a
 // function of the primary's; a caller may override any of them.
 export const THEME_RULES = Object.freeze({
   primary: {hue: (source) => source.hue, chroma: (source) => source.chroma},
-  secondary: {hue: (source) => source.hue, chroma: 20},
-  tertiary: {hue: (source) => (source.hue + 60) % 360, chroma: 40},
+  secondary: {hue: (source) => source.hue, chroma: accent(20)},
+  tertiary: {hue: (source) => (source.hue + 60) % 360, chroma: accent(40)},
   // The greys take the source's hue at chroma 5, or at the source's own chroma
   // when that is lower (C16): a near-grey brand colour made teal or violet
   // greys out of a hue it barely has.
-  neutral: {hue: (source) => source.hue, chroma: (source) => Math.min(5, source.chroma)},
-  // The four statuses are four hues of the static palette (C17): error is red,
-  // warning amber, success green and info blue, by the same numbers, so a
-  // status and its hue are one palette. A theme may still override a status
-  // here; the hue it was made from stays as it is.
-  error: statusRule('error'),
-  warning: statusRule('warning'),
-  success: statusRule('success'),
-  info: statusRule('info'),
+  neutral: {hue: (source) => source.hue, chroma: (source) => Math.min(NEUTRAL_CHROMA, source.chroma)},
+  // No status rule: the four statuses are four hues of the static palette
+  // (C17, C100: error red, warning amber, success green, info blue), declared by core
+  // and moved by no theme (TG-01).
 });
 
 export const THEME_PALETTES = Object.freeze(Object.keys(THEME_RULES));
 
-// The translucent steps core defines on a tone: --sf-<palette>-<tone>--alfa-<n>,
+// The translucent steps core defines on a dynamic palette's tone: --sf-<palette>-<tone>--alfa-<n>,
 // the tone with n% opacity (the alpha scale: state 4/8/12, fill 12-32, ink
 // 48/64/80). Core writes them as literal colours, so a theme that set the tones
 // alone left every container fill and hover in the old hue (DEV, 2026-10-18:
@@ -118,11 +127,54 @@ export const THEME_ALPHA = Object.freeze({
   secondary: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
   tertiary: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
   neutral: {50: [4, 8, 12, 16, 20, 24, 32, 48, 80], 60: [48, 64], 80: [48], 90: [4, 8, 12, 16, 20, 24, 32, 48]},
-  error: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
-  warning: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
-  success: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
-  info: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
 });
+
+const STATUS_NAMES = Object.freeze(Object.keys(STATUS_HUES));
+
+// The status palettes left the theme on 2026-11-12 (TG-01). Until
+// STATUS_COMPAT.remove_after a status override in the options is ignored and
+// theme.palettes.<status> still reads -- as the static hue core draws it with.
+// Each use is noted in SF.deprecations, like every compatibility note
+// (contracts/lifecycle-policy.json): always in the list, in the console only
+// when the page opts in (data-sf-deprecations="warn" or SF.deprecations.warn)
+// (journal option-theme-status-override, property-theme-status-palettes).
+// After that date the override throws and the read is undefined.
+export const STATUS_COMPAT = Object.freeze({since: '2026-11-12', remove_after: '2027-01-01',
+  docs: 'https://ui.simai.io/ru/smart-components/forms/theme-generator/'});
+
+function noteStatusUse(kind, names) {
+  const from = kind === 'option' ? `themeFromHct options ${names.join(', ')}` : `theme.palettes.${names.join(', ')}`;
+  noteDeprecated({component: 'theme-palette', kind, from,
+    to: `SF.ThemePalette.staticPalette()[SF.ThemePalette.STATUS_HUES.<status>] (${STATUS_COMPAT.docs})`,
+    since: STATUS_COMPAT.since, remove_after: STATUS_COMPAT.remove_after});
+}
+
+const compatOpen = (now = new Date()) => now.toISOString().slice(0, 10) <= STATUS_COMPAT.remove_after;
+
+/**
+ * The read-only status palettes of the former theme shape, until
+ * STATUS_COMPAT.remove_after: theme.palettes.error (and warning, success,
+ * info) is the static hue core draws that status with, each read noted in
+ * SF.deprecations (the console only when the page opts in). Not enumerable, so Object.keys, JSON and the CSS
+ * see the four theme palettes only. Returns the theme.
+ */
+export function withStatusCompat(theme) {
+  const palettes = theme?.palettes;
+  if (!palettes || !compatOpen()) return theme;
+  for (const status of STATUS_NAMES) {
+    if (Object.hasOwn(palettes, status)) continue;
+    Object.defineProperty(palettes, status, {
+      configurable: true,
+      enumerable: false,
+      get() {
+        noteStatusUse('property', [status]);
+        const {hue, chroma, tones} = staticPalette()[STATUS_HUES[status]];
+        return {hue, chroma, tones: {...tones}};
+      },
+    });
+  }
+  return theme;
+}
 
 const alphaHex = (percent) => Math.round((percent * 255) / 100).toString(16).padStart(2, '0');
 
@@ -153,9 +205,14 @@ export function colorToHct(color) {
   const hex = expand(color);
   const hct = Hct.fromInt(argbFromHex(hex));
   // As vivid as the hue holds at this tone: asked for far more, the tone
-  // comes back no more chromatic than the colour itself.
+  // comes back no more chromatic than the colour itself. Not a grey, though
+  // (C16, TG-03): at black and white the gamut holds no chroma at all, so
+  // #000000 and #ffffff are "as vivid as they can be" and read as chroma 85
+  // -- a pink theme from black, a teal one from white. A colour no more
+  // chromatic than the greys keeps its own chroma.
   const limit = Hct.from(hct.hue, 200, hct.tone).chroma;
-  const chroma = hct.chroma >= limit - 1 ? Math.max(VIVID_CHROMA, Math.round(hct.chroma)) : Math.round(hct.chroma);
+  const vivid = hct.chroma >= NEUTRAL_CHROMA && hct.chroma >= limit - 1;
+  const chroma = vivid ? Math.max(VIVID_CHROMA, Math.round(hct.chroma)) : Math.round(hct.chroma);
   return {hex, hue: Math.round(hct.hue) % 360, chroma, tone: round(hct.tone)};
 }
 
@@ -167,6 +224,11 @@ export function colorToHct(color) {
 export function themeFromHct({hue, chroma} = {}, options = {}) {
   if (!Number.isFinite(hue) || !Number.isFinite(chroma)) throw new TypeError('A theme is made from a hue and a chroma');
   const source = {hue: ((hue % 360) + 360) % 360, chroma: Math.max(0, chroma)};
+  const overridden = STATUS_NAMES.filter((status) => options?.[status] !== undefined);
+  if (overridden.length) {
+    if (!compatOpen()) throw new TypeError(`${overridden.join(', ')}: a status palette is core's static hue, not a theme's (TG-01)`);
+    noteStatusUse('option', overridden);
+  }
   const palettes = {};
   for (const name of THEME_PALETTES) {
     const rule = {...THEME_RULES[name], ...(options[name] ?? {})};
@@ -180,7 +242,7 @@ export function themeFromHct({hue, chroma} = {}, options = {}) {
       tones: Object.fromEntries(THEME_TONES.map((tone) => [tone, hexFromArgb(palette.tone(tone))])),
     };
   }
-  return {schema: 'simai.framework.theme', schema_version: 1, source, palettes};
+  return withStatusCompat({schema: 'simai.framework.theme', schema_version: 1, source, palettes});
 }
 
 /** The theme one colour makes (see colorToHct for how it is read). */
@@ -190,13 +252,18 @@ export function themeFromColor(color = DEFAULT_THEME_COLOR, options = {}) {
   return {...theme, source: {...theme.source, hex: read.hex, tone: read.tone}};
 }
 
-/** The theme's CSS custom properties, {name: value}. */
+/**
+ * The theme's CSS custom properties, {name: value}: the dynamic palettes'
+ * tones and translucent steps. A theme object stored before TG-01 still holds
+ * the four status palettes; they are not written, so core's static hues apply.
+ */
 export function themeVariables(theme) {
   const variables = {};
-  for (const [name, palette] of Object.entries(theme?.palettes ?? {})) {
+  const palettes = THEME_PALETTES.map((name) => [name, theme?.palettes?.[name]]).filter(([, palette]) => palette);
+  for (const [name, palette] of palettes) {
     for (const [tone, value] of Object.entries(palette.tones ?? {})) variables[`--sf-${name}-${tone}`] = value;
   }
-  for (const [name, palette] of Object.entries(theme?.palettes ?? {})) {
+  for (const [name, palette] of palettes) {
     for (const [tone, steps] of Object.entries(THEME_ALPHA[name] ?? {})) {
       const base = palette.tones?.[tone];
       if (!base) continue;
@@ -208,8 +275,7 @@ export function themeVariables(theme) {
 
 /**
  * The static palette: for every hue its HCT numbers and its sixteen tones,
- * {name: {hue, chroma, tones}}. The same TonalPalette as the theme's, so a
- * status palette the theme makes is the static hue it names, byte for byte.
+ * {name: {hue, chroma, tones}}. The same TonalPalette as the theme's.
  */
 export function staticPalette() {
   const palettes = {};
@@ -230,6 +296,103 @@ export function staticVariables(palettes = staticPalette()) {
     }
   }
   return variables;
+}
+
+// What a person should know about the theme a colour makes (docs study
+// 2026-11-11 TG-04; the checks of prototypes/theme-generator-study.html, C84):
+// the generator took a light colour to a darker button or a red one to a
+// button beside «Удалить» and said nothing.
+const relativeLuminance = (hex) => {
+  const channel = (at) => {
+    const value = parseInt(hex.slice(at, at + 2), 16) / 255;
+    return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * channel(1) + 0.7152 * channel(3) + 0.0722 * channel(5);
+};
+
+/** WCAG 2 contrast ratio of two #rrggbb colours. */
+export function contrastRatio(a, b) {
+  const [high, low] = [relativeLuminance(expand(a)), relativeLuminance(expand(b))].sort((x, y) => y - x);
+  return (high + 0.05) / (low + 0.05);
+}
+
+const hueDistance = (a, b) => {
+  const apart = Math.abs(a - b) % 360;
+  return apart > 180 ? 360 - apart : apart;
+};
+
+// The numbers of the checks: text on a filled control at 4.5 (WCAG AA); a
+// colour lighter than tone 58 or darker than 25 is not the one its buttons
+// get (tone 40); a vivid colour (chroma over 40) within 16 degrees of a
+// status hue reads as that status; under chroma 8 the accent is a grey.
+export const THEME_CHECKS = Object.freeze({contrast: 4.5, light: 58, dark: 25, statusHue: 16, statusChroma: 40, grey: 8});
+
+// The statuses a brand colour is checked against. Info is not one of them
+// (C90, C100): info is blue like the Framework's own colour, and a blue brand
+// beside a blue information block is the intended look, not a warning.
+const CHECKED_STATUSES = Object.freeze(['error', 'warning', 'success']);
+
+// The light scheme's --sf-on-primary is --sf-white: tone 100 of any palette.
+const ON_PRIMARY_LIGHT = hexFromArgb(TonalPalette.fromHueAndChroma(0, 0).tone(100));
+
+/**
+ * The checks of a theme, [{code, level, ...}], in this order:
+ * - {code: 'contrast', level: 'error', scheme: 'light'|'dark', ratio}: the
+ *   text on a filled control (--sf-on-primary on --sf-primary) is under 4.5;
+ * - {code: 'adjusted', level: 'warning', from, to, lighter}: the colour is
+ *   light or dark, and its buttons get tone 40 (`to`), not the colour itself;
+ * - {code: 'close-to-status', level: 'warning', status, hue}: the colour is
+ *   near the hue of error (red), warning (amber) or success (green), which
+ *   no theme moves (C17). Not info: info is blue, the Framework's own colour,
+ *   and stays blue beside a blue brand colour with nothing to warn of (C90,
+ *   C100);
+ * - {code: 'grey', level: 'notice'}: the colour is nearly grey, so are its
+ *   accents.
+ * The ratios are rounded to a tenth. A theme made from a hue and a chroma
+ * (no hex) has no 'adjusted' check.
+ */
+export function themeChecks(theme) {
+  const checks = [];
+  const primary = theme?.palettes?.primary?.tones;
+  const source = theme?.source ?? {};
+  if (!primary) return checks;
+  const light = contrastRatio(ON_PRIMARY_LIGHT, primary[40]);
+  const dark = contrastRatio(primary[20], primary[80]);
+  if (light < THEME_CHECKS.contrast) checks.push({code: 'contrast', level: 'error', scheme: 'light', ratio: round(light)});
+  if (dark < THEME_CHECKS.contrast) checks.push({code: 'contrast', level: 'error', scheme: 'dark', ratio: round(dark)});
+  if (source.hex && Number.isFinite(source.tone) && (source.tone > THEME_CHECKS.light || source.tone < THEME_CHECKS.dark)
+    && source.hex !== primary[40]) {
+    checks.push({code: 'adjusted', level: 'warning', from: source.hex, to: primary[40], lighter: source.tone > THEME_CHECKS.light});
+  }
+  if (source.chroma > THEME_CHECKS.statusChroma) {
+    for (const status of CHECKED_STATUSES) {
+      const hueName = STATUS_HUES[status];
+      if (hueDistance(source.hue, STATIC_HUES[hueName].hue) < THEME_CHECKS.statusHue) checks.push({code: 'close-to-status', level: 'warning', status, hue: hueName});
+    }
+  }
+  if (source.chroma < THEME_CHECKS.grey) checks.push({code: 'grey', level: 'notice'});
+  return checks;
+}
+
+/**
+ * The brand fill of a site's large areas -- its header and its cover (owner
+ * decision C84; Material's Fidelity idea): {'--sf-brand', '--sf-on-brand'}.
+ * A light colour (tone over THEME_CHECKS.light) fills them as it is, with
+ * black or white text, whichever reads better on it; its buttons and links
+ * keep the readable tone 40 of the primary palette. Any other colour fills
+ * them with the primary role and its text. A theme without a hex (made from a
+ * hue and a chroma) is the primary role too. The values are the colour itself
+ * or core's own roles, never a new tone.
+ */
+export function brandVariables(theme) {
+  const source = theme?.source ?? {};
+  const light = isThemeColor(source.hex) && Number.isFinite(source.tone) && source.tone > THEME_CHECKS.light;
+  if (!light) return {'--sf-brand': 'var(--sf-primary)', '--sf-on-brand': 'var(--sf-on-primary)'};
+  const hex = expand(source.hex);
+  const luminance = relativeLuminance(hex);
+  // The ratio against black is (L + 0.05) / 0.05, against white 1.05 / (L + 0.05).
+  const dark = (luminance + 0.05) / 0.05 >= 1.05 / (luminance + 0.05);
+  return {'--sf-brand': hex, '--sf-on-brand': dark ? 'var(--sf-black)' : 'var(--sf-white)'};
 }
 
 /** The theme as a stylesheet rule, for a page's or a site's own CSS. */
@@ -257,5 +420,5 @@ export function applyTheme(theme, target = globalThis.document?.documentElement)
 
 if (typeof window !== 'undefined') {
   window.SF = window.SF || {};
-  window.SF.ThemePalette = Object.freeze({themeFromColor, themeFromHct, colorToHct, themeToCss, themeVariables, applyTheme, isThemeColor, staticPalette, staticVariables, THEME_TONES, THEME_PALETTES, THEME_ALPHA, STATIC_HUES, STATIC_HUE_NAMES, STATUS_HUES, STATIC_ALPHA, DEFAULT_THEME_COLOR});
+  window.SF.ThemePalette = Object.freeze({themeFromColor, themeFromHct, colorToHct, themeToCss, themeVariables, themeChecks, contrastRatio, brandVariables, applyTheme, isThemeColor, staticPalette, staticVariables, THEME_TONES, THEME_PALETTES, THEME_ALPHA, STATIC_HUES, STATIC_HUE_NAMES, STATUS_HUES, STATIC_ALPHA, THEME_CHECKS, DEFAULT_THEME_COLOR});
 }

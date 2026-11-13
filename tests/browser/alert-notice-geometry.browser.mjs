@@ -8,7 +8,7 @@
 //
 //   - the actions of an sf-alert are unsized low buttons: 32 on desktop, 28
 //     compact and on a phone; their label is the notice's text size; the
-//     first is tonal primary, the second ghost on-surface;
+//     first is tonal on-surface (C110 variant E), the second ghost on-surface;
 //   - the close is sf-button-icon kind="close" height="low": 32 / 28 / 28,
 //     centred on the first line, its cross on the inline padding;
 //   - the title and its text are one block (0); text to the action plate is
@@ -48,8 +48,8 @@ const block = (id) => `
     <div class="sf-alert-wrap flex flex-col flex-1">
       <div class="sf-alert-content flex flex-col flex-1"><div class="sf-alert-text">Сессия закончится</div><div class="sf-alert-supporting-text">Несохранённые изменения пропадут.</div></div>
       <div class="sf-alert-buttons flex flex-wrap items-center">
-        <button type="button" class="sf-button sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low flex items-cross-center" data-action="a"><span class="sf-button-text-container">Продлить</span></button>
-        <button type="button" class="sf-button sf-button--link sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center" data-action="b"><span class="sf-button-text-container">Выйти</span></button>
+        <button type="button" class="sf-button sf-button--tonal sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center" data-action="a"><span class="sf-button-text-container">Продлить</span></button>
+        <button type="button" class="sf-button sf-button--ghost sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center" data-action="b"><span class="sf-button-text-container">Выйти</span></button>
       </div>
     </div>
     <button type="button" class="sf-icon-button sf-icon-button--close sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 sf-icon-button--height-low flex items-cross-center" aria-label="Закрыть" data-close>
@@ -134,7 +134,9 @@ const MEASURE = () => {
       const last = text ? box(text) : titleBox;
       Object.assign(result, {action: r(a.height), actionLabel: r(parseFloat(getComputedStyle(actions[0].querySelector('.sf-button-text-container') ?? actions[0]).fontSize)),
         textToAction: r(a.top - last.bottom), actionEdge: r(a.left - titleBox.left), actionToBottom: r(inner.bottom - a.bottom - parseFloat(style.paddingBottom))});
-      result.looks = actions.map((one) => ['tonal', 'link', 'default', 'outline'].find((look) => one.classList.contains(`sf-button--${look}`))
+      // ghost is the look without a fill (C15, CB-01 d584b340); sf-button--link
+      // is its former name, written beside it until 2027-01-01.
+      result.looks = actions.map((one) => ['tonal', 'ghost', 'link', 'default', 'outline'].find((look) => one.classList.contains(`sf-button--${look}`))
         + '/' + ['primary', 'on-surface'].find((scheme) => one.classList.contains(`sf-button--${scheme}`)));
       if (actions[1]) result.betweenActions = r(box(actions[1]).left - a.right);
     }
@@ -229,8 +231,8 @@ try {
             check(`${name} text to action plate`, t.textToAction, want.gap);
             check(`${name} action plate - text edge`, t.actionEdge, 0);
             check(`${name} action to padding`, t.actionToBottom, 0);
-            if (t.looks[0] !== 'tonal/primary') failures.push(`${key} ${zone}: ${name} first action ${t.looks[0]}, expected tonal/primary`);
-            if (t.looks[1] !== undefined && t.looks[1] !== 'link/on-surface') failures.push(`${key} ${zone}: ${name} second action ${t.looks[1]}, expected link/on-surface (ghost)`);
+            if (t.looks[0] !== 'tonal/on-surface') failures.push(`${key} ${zone}: ${name} first action ${t.looks[0]}, expected tonal/on-surface`);
+            if (t.looks[1] !== undefined && t.looks[1] !== 'ghost/on-surface') failures.push(`${key} ${zone}: ${name} second action ${t.looks[1]}, expected ghost/on-surface`);
           }
           if (t.betweenActions !== undefined) check(`${name} between actions`, t.betweenActions, want.between);
         }

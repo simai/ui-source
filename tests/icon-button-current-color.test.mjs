@@ -12,10 +12,12 @@ test('IconButton owns its semantic foreground on the root so currentColor glyphs
   // destructive status brought: default, tonal, outline, link/ghost and its own
   // disabled rule. The count is here so a new one cannot appear unnoticed; the
   // assertions below are what it must obey.
-  assert.equal(roles.length,16);
+  // Twelve since component.icon-buttons 1.6.0 (C15): the surface look on each
+  // scheme and tonal secondary left; their classes read as tonal and on-surface.
+  assert.equal(roles.length,12);
   for(const [,selector] of roles){assert.match(selector,/\.sf-icon-button/);assert.doesNotMatch(selector,/ \.sf-icon(?:,|\s*$)/);}
   assert.match(css,/\.sf-icon-button \.sf-icon \{\s*color: var\(--sf-icon--color/);
-  assert.ok(roles.some(([,selector,color])=>selector.includes(':disabled')&&color==='var(--sf-on-disable)'));
+  assert.ok(roles.some(([,selector,color])=>selector.includes(':disabled')&&color==='var(--sf-on-surface-disabled)'));
 });
 test('Modal minimize opts into the existing icon variant and keeps its decorative CSS line',async()=>{
   const template=await readFile(new URL('../src/smart/modal/js/templates/default.js',import.meta.url),'utf8');

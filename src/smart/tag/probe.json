@@ -87,7 +87,7 @@
       "covers": "events.close, aliases.json close",
       "steps": [
         {
-          "user": "click:#t-rm sf-button-icon button",
+          "user": "click:#t-rm sf-button-close button",
           "expect": {
             "events": [
               {
@@ -102,7 +102,7 @@
           }
         },
         {
-          "check": "(() => { let detail = null; document.querySelector('#t-rm').addEventListener('sf-tag-close', (e) => { detail = e.detail; }, {once: true}); document.querySelector('#t-rm sf-button-icon button').click(); return detail && !('component' in detail); })()"
+          "check": "(() => { let detail = null; document.querySelector('#t-rm').addEventListener('sf-tag-close', (e) => { detail = e.detail; }, {once: true}); document.querySelector('#t-rm sf-button-close button').click(); return detail && !('component' in detail); })()"
         }
       ]
     },
@@ -112,7 +112,7 @@
       "covers": "settings.closable optional",
       "steps": [
         {
-          "check": "Boolean(document.querySelector('#t-icon sf-button-icon')) && !document.querySelector('#t-line sf-button-icon')",
+          "check": "Boolean(document.querySelector('#t-icon sf-button-close')) && !document.querySelector('#t-line sf-button-close')",
           "expect": {
             "values": {
               "#t-icon.closable": true,
@@ -187,7 +187,7 @@
       "covers": "settings.close-label default-from runtime.remove",
       "steps": [
         {
-          "check": "document.querySelector('#t-rm sf-button-icon button').getAttribute('aria-label') === 'Удалить'"
+          "check": "document.querySelector('#t-rm sf-button-close button').getAttribute('aria-label') === 'Удалить'"
         }
       ]
     },

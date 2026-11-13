@@ -10,10 +10,15 @@
   },
   "runtime": {
     "customize": "Customize tabs",
+    "errors": {
+      "one": "{n} error",
+      "other": "{n} errors"
+    },
     "more": "More",
     "moved": "Moved",
     "pinned": "Always shown",
     "reset": "Reset",
+    "tab": "Tab {n}",
     "visible": "Shown"
   }
 }

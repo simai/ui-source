@@ -1,3 +1,6 @@
+@use 'sass:map';
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
+
 @layer sf.components {
   .sf-download-file {
     /* The public variables carry the element's name, sf-file-download
@@ -8,6 +11,8 @@
        container overlay. --sf-surface is not a token, so this was transparent
        already -- now it says so. */
     --sf-download-file--background-color: var(--sf-file-download-background-color, var(--sf-download-file-background-color, transparent));
+    /* The accent of the name and the icon; a state steps it (below). */
+    --sf-download-file--accent: var(--sf-primary);
     --sf-download-file--border-color: var(--sf-file-download-border-color, var(--sf-download-file-border-color, var(--sf-outline-variant)));
     /* One height per size, the button's (rule C01): the size's control height
        is its text height and the default block step on each side, and the
@@ -22,16 +27,31 @@
     --sf-download-file--text-height: var(--sf-text-height-1);
     --sf-download-file--icon-size: var(--sf-text-height-1);
     --sf-download-file--gap: var(--sf-ui-1--text-space-x);
+    /* How far a button inside the row (Повторить) reaches into the padding:
+       its low height less the text height, on each side, so the row keeps the
+       control height of its size (decisions C27, C51). */
+    --sf-download-file--end-inset: var(--sf-ui-1--space-y-tightness-low);
+    /* A failed row (decision C88): the status and the reason a step smaller
+       than the name, the same padding on every side (the prototype's: half
+       the space step up to size 1, the whole step at 2 and 3), the sign and
+       the text half a step apart. */
+    --sf-download-file--note-size: var(--sf-text-size-1\/2);
+    --sf-download-file--note-height: var(--sf-text-height-1\/2);
+    --sf-download-file--error-padding: var(--sf-space-1\/2);
+    --sf-download-file--error-gap: var(--sf-space-1\/2);
     /* The border width the padding gives back: the border below draws it. */
     --sf-download-file--border-width: var(--sf-px);
 
+    /* As wide as its text, up to its container (decision C51): a file reads
+       in one look, the type and the size right after the name. full-width
+       stretches it, the look it had before. */
     display: block;
     box-sizing: border-box;
-    inline-size: 100%;
+    inline-size: fit-content;
     min-inline-size: var(--sf-0);
     max-inline-size: 100%;
     padding: var(--sf-file-download-padding, var(--sf-download-file-padding, calc(var(--sf-download-file--padding-block) - var(--sf-download-file--border-width)) calc(var(--sf-download-file--padding-inline) - var(--sf-download-file--border-width))));
-    color: var(--sf-primary);
+    color: var(--sf-download-file--accent);
     background-color: var(--sf-download-file--background-color);
     border: var(--sf-px) solid var(--sf-download-file--border-color);
     border-radius: var(--sf-file-download-radius, var(--sf-download-file-radius, var(--sf-radius--ui)));
@@ -47,51 +67,107 @@
     appearance: none;
   }
 
-  /* A file that could not be prepared and its notice under it (decision C25):
-     one column of the component's own, the width the file takes alone. The
+  .sf-download-file.sf-download-file--full-width {
+    inline-size: 100%;
+  }
+
+  /* A file with a line under it -- why it could not be made -- or a button
+     beside it (decision C51): one column of the component's own. The
      element's host is display: contents, so without it the page's container
-     laid the two out -- a flex row put the notice beside the file (docs
-     pre-check 2026-11-10 DF-13). The gap is the prototype's
-     (prototypes/actions-rest.html). */
+     laid them out -- a flex row put the notice beside the file (docs
+     pre-check 2026-11-10 DF-13). The row keeps its own width in it; the gap
+     is the prototype's (prototypes/download-file.html). */
   .sf-download-file__stack {
     display: flex;
     flex-direction: column;
-    gap: var(--sf-space-1\/3);
+    align-items: flex-start;
+    gap: var(--sf-space-1\/4);
     box-sizing: border-box;
-    inline-size: 100%;
+    inline-size: fit-content;
     min-inline-size: var(--sf-0);
     max-inline-size: 100%;
+  }
+
+  /* As wide as the row it holds: in a flex row of the page it takes the
+     row's room, not the whole line. */
+  .sf-download-file__stack.sf-download-file__stack--full-width {
+    align-items: stretch;
+    inline-size: 100%;
+  }
+
+  /* The row and the button beside it: «Отменить» while the file is made,
+     «Скачать» when it is ready and was not fetched by itself. */
+  .sf-download-file__line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sf-space-1\/2);
+    box-sizing: border-box;
+    min-inline-size: var(--sf-0);
+    max-inline-size: 100%;
+  }
+
+  .sf-download-file__stack--full-width .sf-download-file__line > .sf-download-file {
+    flex: 1 1 auto;
+  }
+
+  /* Why a file could not be made: the last line of a failed row's text,
+     inside its frame, a step smaller than the name (decisions C51, C88). */
+  .sf-download-file__reason {
+    display: block;
+    margin: var(--sf-0);
+    color: var(--sf-on-surface-variant);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-download-file--note-size, var(--sf-text-size-1\/2));
+    line-height: var(--sf-download-file--note-height, var(--sf-text-height-1\/2));
+    overflow-wrap: break-word;
   }
 
   .sf-download-file :where(.sf-download-file__body, .sf-download-file-wrap) {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: var(--sf-file-download-gap, var(--sf-download-file-gap, var(--sf-download-file--gap)));
     min-inline-size: var(--sf-0);
   }
 
   .sf-download-file :where(.sf-download-file__main, .sf-download-file-container) {
     display: flex;
-    flex: 1 1 auto;
+    flex: 0 1 auto;
     align-items: center;
     gap: var(--sf-file-download-gap, var(--sf-download-file-gap, var(--sf-download-file--gap)));
     min-inline-size: var(--sf-0);
-    color: var(--sf-primary);
+    color: var(--sf-download-file--accent);
     font: inherit;
   }
 
-  /* The name is one line, cut with an ellipsis at the end when it does not
-     fit: the card keeps its control height, and no word is broken inside
-     (before, breaking anywhere split "квартал.pdf" across lines at size 3). The whole name stays the accessible name and the title. */
+  /* The name and, right after it, the type and the size (decision C51) --
+     under it when the row has no room for both on one line: the row's own
+     width decides, not the screen's (acceptance 2026-11-11 D1, D2). The
+     facts move first; the name then wraps on its spaces. */
+  .sf-download-file :where(.sf-download-file__text) {
+    display: flex;
+    flex: 0 1 auto;
+    flex-wrap: wrap;
+    row-gap: var(--sf-0);
+    align-items: baseline;
+    gap: var(--sf-file-download-gap, var(--sf-download-file-gap, var(--sf-download-file--gap)));
+    min-inline-size: var(--sf-0);
+  }
+
+  /* The name is never cut (decisions C34, C51): it wraps on its spaces, and
+     inside a word only when the word alone is wider than the row. Its
+     narrowest is its longest word (break-word, not anywhere): with anywhere
+     the name could be squeezed to a few letters a line beside the facts -- 8
+     lines in a 200 px box at 1440 (acceptance 2026-11-11 D1), «Смета. / csv»
+     beside «Не удалось собрать» at size 3 (D2). The row keeps its control
+     height while the name and the facts fit one line. */
   .sf-download-file :where(.sf-download-file__name, .sf-download-file-file-name) {
     flex: 0 1 auto;
     min-inline-size: var(--sf-0);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: normal;
     word-break: normal;
-    overflow-wrap: normal;
+    overflow-wrap: break-word;
   }
 
   .sf-download-file :where(.sf-download-file__size, .sf-download-file-file-size) {
@@ -105,11 +181,30 @@
      «PDF · 2,4 МБ». The dot stands only between two of them. */
   .sf-download-file :where(.sf-download-file__meta) {
     display: inline-flex;
-    flex: none;
+    flex: 0 1 auto;
+    flex-wrap: wrap;
     align-items: baseline;
+    min-inline-size: var(--sf-0);
     gap: var(--sf-space-1\/4);
     color: var(--sf-on-surface-variant);
     white-space: nowrap;
+  }
+
+  /* Preparing: the status is words, not two short facts, and it never takes
+     the name's whole room (docs acceptance 2026-11-10, L3). Before, the name
+     fell to 0-6 px in a 160-200 px cell and the status stood past the box.
+     Now the status keeps its line beside the name while both fit, and moves
+     under the name when they do not -- a whole line of the size's text, no
+     row gap -- as every row's facts do now (the text wraps, above). The
+     name takes its own width, not a floor: a floor (--sf-e8) as its basis
+     made the row two lines tall where one fitted, and in the phone's column
+     a basis is a height (probe 2026-11-11: 44 for 28 at size 1/3, 168 tall
+     at 390). */
+
+  .sf-download-file.sf-download-file--preparing :where(.sf-download-file__meta) {
+    flex: 0 1 auto;
+    min-inline-size: var(--sf-0);
+    white-space: normal;
   }
 
   .sf-download-file :where(.sf-download-file__type) {
@@ -128,7 +223,8 @@
     --sf-download-file--icon-size: var(--sf-download-file--text-height);
   }
 
-  .sf-download-file :where(.sf-download-file__tab-words) {
+  .sf-download-file :where(.sf-download-file__tab-words, .sf-download-file__said),
+  .sf-download-file__live {
     position: absolute;
     inline-size: var(--sf-px);
     block-size: var(--sf-px);
@@ -146,7 +242,7 @@
     flex: none;
     inline-size: var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size)));
     block-size: var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size)));
-    color: var(--sf-file-download-icon-color, var(--sf-download-file-icon-color, var(--sf-primary)));
+    color: var(--sf-file-download-icon-color, var(--sf-download-file-icon-color, var(--sf-download-file--accent)));
   }
 
   .sf-download-file :where(.sf-download-file__spinner) :is(.sf-loader--loading-indicator, .sf-loader-svg) {
@@ -155,11 +251,164 @@
     block-size: 100%;
   }
 
+  /* Preparing with a known share (value, decision C51): the Framework's
+     progress ring in the sign's box, one line step in from its edge on every
+     side (20 in the 24 of size 1), its line that step wide. */
+  .sf-download-file :where(.sf-download-file__ring) {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    inline-size: var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size)));
+    block-size: var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size)));
+  }
+
+  /* The ring's own step lengths, as its size classes set them; its public
+     variables stay the page's. */
+  .sf-download-file :where(.sf-download-file__ring) .sf-progress-ring {
+    --sf-progress-ring--step-size: calc(var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size))) - 2 * var(--sf-a2));
+    --sf-progress-ring--step-line-width: var(--sf-a2);
+  }
+
+  /* The share in words is figures of one width, so the row does not shake as
+     it counts. */
+  .sf-download-file.sf-download-file--preparing :where(.sf-download-file__status) {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* A button inside the row (Повторить, decision C51): at the row's end,
+     reaching into the padding so the row keeps its height. */
+  .sf-download-file :where(.sf-download-file__end) {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    margin-block: calc(-1 * var(--sf-download-file--end-inset));
+    margin-inline-start: auto;
+  }
+
+  /* A file that could not be made (decision C51): the error sign and border,
+     «Не удалось собрать» in place of the type and the size, «Повторить» at
+     the end. It is a group, not a link: nothing to fetch. */
+  .sf-download-file.sf-download-file--error {
+    --sf-download-file--border-color: var(--sf-error);
+
+    cursor: default;
+  }
+
+  /* A failed row (owner decision C88, prototype
+     prototypes/file-download-row-composition.html, variant B): one grid of
+     the sign, the text and «Повторить». The padding is the same on every
+     side; the sign stands on the name's first line; the name takes two lines
+     at most and ends in an ellipsis (the element's tooltip shows it whole,
+     and its words stay whole for a screen reader); «Не удалось собрать» and
+     the reason are a step smaller under it, in the text's column, inside the
+     frame. «Повторить» ends the first line, centred on it and reaching into
+     the padding by its own height. Before (C51 D1-D3) the row was a wrapping
+     flex line: the padding was 9 above and 23 beside at size 3, the sign
+     floated mid-row and the reason stood outside the frame. */
+  .sf-download-file.sf-download-file--error {
+    padding: var(--sf-file-download-padding, var(--sf-download-file-padding, calc(var(--sf-download-file--error-padding) - var(--sf-download-file--border-width))));
+  }
+
+  .sf-download-file.sf-download-file--error :where(.sf-download-file__body) {
+    display: grid;
+    grid-template-columns: auto minmax(var(--sf-0), 1fr) auto;
+    align-items: start;
+    column-gap: var(--sf-file-download-gap, var(--sf-download-file-gap, var(--sf-download-file--error-gap)));
+    row-gap: var(--sf-0);
+  }
+
+  .sf-download-file.sf-download-file--error :where(.sf-download-file__main) {
+    display: contents;
+  }
+
+  /* Block flow, not a flex column: the name's line clamp needs a block box
+     (as a flex item it is blockified and keeps its one-line width). */
+  .sf-download-file.sf-download-file--error :where(.sf-download-file__text) {
+    display: block;
+    min-inline-size: var(--sf-0);
+  }
+
+  /* The name breaks only between its words, at every size (dispatcher rule
+     F2 2026-11-12): a word wider than its line ends in an ellipsis, and the
+     whole name stays in the tooltip and for a screen reader. */
+  .sf-download-file.sf-download-file--error :where(.sf-download-file__name) {
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: normal;
+    word-break: normal;
+    text-overflow: ellipsis;
+    font-weight: var(--sf-font-weight-medium);
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  /* «Не удалось собрать» is words: they wrap on their spaces, a step smaller
+     than the name. */
+  .sf-download-file.sf-download-file--error :where(.sf-download-file__meta) {
+    display: block;
+    font-size: var(--sf-download-file--note-size);
+    line-height: var(--sf-download-file--note-height);
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  .sf-download-file.sf-download-file--error :where(.sf-download-file__end) {
+    align-self: start;
+    margin-inline-start: var(--sf-0);
+  }
+
+  /* When the name's column beside «Повторить» would hold fewer than 16
+     characters at the name's size (the element measures it): «Повторить»
+     goes under the text and starts at the text's edge -- its plate reaches
+     into the gap by its own padding, so its words line up with the name. When
+     its words do not fit there either, the element draws the icon alone (its
+     name in aria-label and a tooltip), the icon on the text's edge. */
+  .sf-download-file.sf-download-file--error.sf-download-file--narrow :where(.sf-download-file__body) {
+    grid-template-columns: auto minmax(var(--sf-0), 1fr);
+  }
+
+  .sf-download-file.sf-download-file--error.sf-download-file--narrow :where(.sf-download-file__end) {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+    margin-block: var(--sf-space-1\/4) calc(-1 * var(--sf-download-file--end-inset));
+    margin-inline-start: calc(-1 * (var(--sf-download-file--padding-inline) + var(--sf-download-file--end-inset) - var(--sf-download-file--padding-block)));
+  }
+
+  .sf-download-file.sf-download-file--error.sf-download-file--narrow.sf-download-file--retry-icon :where(.sf-download-file__end) {
+    margin-inline-start: calc(-1 * var(--sf-download-file--end-inset));
+  }
+
+  /* The tooltips stand outside the row's flow: the tooltip controller places
+     and shows them. */
+  .sf-download-file :where(.sf-download-file__tip[hidden]) {
+    display: none;
+  }
+
+  .sf-download-file.sf-download-file--error :where(.sf-download-file__icon, .sf-download-file__meta) {
+    color: var(--sf-error);
+  }
+
+  /* Ready after a long wait (decision C51): the success sign, «Готово · CSV ·
+     2,4 МБ» and «Скачать» beside it -- the download is a fresh press. */
+  .sf-download-file.sf-download-file--offer {
+    cursor: default;
+  }
+
+  .sf-download-file.sf-download-file--offer :where(.sf-download-file__icon) {
+    color: var(--sf-success);
+  }
+
+  .sf-download-file:is(.sf-download-file--error, .sf-download-file--offer) :where(.sf-download-file__main, .sf-download-file__name) {
+    color: var(--sf-on-surface);
+  }
+
   .sf-download-file :where(.sf-download-file__icon, .sf-icon) {
     flex: none;
     block-size: var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size)));
     inline-size: var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size)));
-    color: var(--sf-file-download-icon-color, var(--sf-download-file-icon-color, var(--sf-primary)));
+    color: var(--sf-file-download-icon-color, var(--sf-download-file-icon-color, var(--sf-download-file--accent)));
     font-size: var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size)));
     /* The glyph's own sheet is unlayered and sizes .sf-icon from these, so the
        size reaches it (as in reference-link). */
@@ -169,6 +418,10 @@
   }
 
   .sf-download-file--size-1\/3 {
+    --sf-download-file--note-size: var(--sf-text-size-1\/4);
+    --sf-download-file--note-height: var(--sf-text-height-1\/4);
+    --sf-download-file--error-padding: var(--sf-space-1\/2);
+    --sf-download-file--end-inset: var(--sf-ui-1\/3--space-y-tightness-low);
     --sf-download-file--padding-block: var(--sf-ui-1\/3--space-y-tightness-default);
     --sf-download-file--padding-inline: var(--sf-ui-1\/3--space-x);
     --sf-download-file--text-size: var(--sf-text-size-1\/3);
@@ -178,6 +431,10 @@
   }
 
   .sf-download-file--size-1\/2 {
+    --sf-download-file--note-size: var(--sf-text-size-1\/3);
+    --sf-download-file--note-height: var(--sf-text-height-1\/3);
+    --sf-download-file--error-padding: var(--sf-space-1\/2);
+    --sf-download-file--end-inset: var(--sf-ui-1\/2--space-y-tightness-low);
     --sf-download-file--padding-block: var(--sf-ui-1\/2--space-y-tightness-default);
     --sf-download-file--padding-inline: var(--sf-ui-1\/2--space-x);
     --sf-download-file--text-size: var(--sf-text-size-1\/2);
@@ -187,6 +444,10 @@
   }
 
   .sf-download-file--size-2 {
+    --sf-download-file--note-size: var(--sf-text-size-1);
+    --sf-download-file--note-height: var(--sf-text-height-1);
+    --sf-download-file--error-padding: var(--sf-space-1);
+    --sf-download-file--end-inset: var(--sf-ui-2--space-y-tightness-low);
     --sf-download-file--padding-block: var(--sf-ui-2--space-y-tightness-default);
     --sf-download-file--padding-inline: var(--sf-ui-2--space-x);
     --sf-download-file--text-size: var(--sf-text-size-2);
@@ -196,6 +457,10 @@
   }
 
   .sf-download-file--size-3 {
+    --sf-download-file--note-size: var(--sf-text-size-2);
+    --sf-download-file--note-height: var(--sf-text-height-2);
+    --sf-download-file--error-padding: var(--sf-space-1);
+    --sf-download-file--end-inset: var(--sf-ui-3--space-y-tightness-low);
     --sf-download-file--padding-block: var(--sf-ui-3--space-y-tightness-default);
     --sf-download-file--padding-inline: var(--sf-ui-3--space-x);
     --sf-download-file--text-size: var(--sf-text-size-3);
@@ -203,16 +468,48 @@
     --sf-download-file--icon-size: var(--sf-text-height-3);
     --sf-download-file--gap: var(--sf-ui-3--text-space-x);
   }
+
+  /* On a phone the type and the size go under the name, a step smaller, so
+     the name keeps the row's width (decision C51). */
+  @media (max-width: map.get(bp.$breakpoint-array, sm)) {
+    .sf-download-file :where(.sf-download-file__text) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--sf-0);
+    }
+
+    .sf-download-file :where(.sf-download-file__name) {
+      flex: none;
+      max-inline-size: 100%;
+    }
+
+    .sf-download-file :where(.sf-download-file__meta) {
+      font-size: var(--sf-text-size-1\/2);
+      line-height: var(--sf-text-height-1\/2);
+    }
+  }
 }
 
 @layer sf.states {
-  .sf-download-file:not(:disabled):not(.disabled):not([aria-disabled='true']):not([aria-busy='true']):hover {
+  /* The ink on the hover and press plates (C113 follow-up). The plates are
+     the neutral fill's 16 and 20, which the dark theme lightens, and the
+     resting inks lost 4.5:1 on them: the type and size (the place's dim ink)
+     3.78 pressed on a card, the name (--sf-primary) 3.90 pressed on a popup.
+     The name and icon step along the accent's own ladder, as an outline
+     primary button's label does (--sf-primary-hover / -active: dark 85 / 90,
+     light 35 / 30), and the dim ink takes the one made for a fill,
+     --sf-on-surface-container-variant (dark 85, 90 on a popup; light 35). */
+  .sf-download-file:not(:disabled):not(.disabled):not([aria-disabled='true']):not([aria-busy='true']):not(.sf-download-file--error):not(.sf-download-file--offer):hover {
     --sf-download-file--background-color: var(--sf-surface-container-hover);
-    --sf-download-file--border-color: var(--sf-outline-primary);
+    --sf-download-file--border-color: var(--sf-primary-outline);
+    --sf-download-file--accent: var(--sf-primary-hover);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
 
-  .sf-download-file:not(:disabled):not(.disabled):not([aria-disabled='true']):not([aria-busy='true']):active {
+  .sf-download-file:not(:disabled):not(.disabled):not([aria-disabled='true']):not([aria-busy='true']):not(.sf-download-file--error):not(.sf-download-file--offer):active {
     --sf-download-file--background-color: var(--sf-surface-container-active);
+    --sf-download-file--accent: var(--sf-primary-active);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
 
   .sf-download-file:focus {
@@ -233,15 +530,15 @@
   }
 
   .sf-download-file:is(:disabled, .disabled, [aria-disabled='true']) {
-    --sf-download-file--border-color: var(--sf-outline-disable);
+    --sf-download-file--border-color: var(--sf-outline-disabled);
 
-    color: var(--sf-on-disable);
+    color: var(--sf-on-surface-disabled);
     cursor: default;
   }
 
   .sf-download-file:is(:disabled, .disabled, [aria-disabled='true'])
     :where(.sf-download-file__main, .sf-download-file-container, .sf-download-file__size, .sf-download-file-file-size, .sf-icon) {
-    color: var(--sf-on-disable);
+    color: var(--sf-on-surface-disabled);
   }
 
   @media (forced-colors: active) {

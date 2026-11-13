@@ -478,13 +478,13 @@ const THEMES = ['theme-dark', 'theme-light'];
  * longer different is taken back, so a host moved to another area takes that
  * area's values.
  */
-// The density a host stands in (C22; core/js/density.js says the same): the
-// nearest region's, or "normal" under an explicit size. Written here, not
-// imported: this module is loaded on its own (shared runtime, tests).
+// The density a host stands in (C22, C79; core/js/density.js says the same):
+// the nearest region's -- an explicit size follows its region since C79.
+// Written here, not imported: this module is loaded on its own (shared
+// runtime, tests).
 function densityOf(from) {
   for (let node = from; node?.nodeType === 1; node = node.parentElement) {
     if (node.hasAttribute('data-sf-density')) return node.getAttribute('data-sf-density');
-    if (node.hasAttribute('size') && !node.hasAttribute('data-sf-size-relative') && !node.hasAttribute('data-sf-size-scale') && !/^(input|select|textarea)$/u.test(node.localName)) return 'normal';
   }
   return null;
 }
@@ -554,4 +554,156 @@ export function carryLayerOrigin(portal, host, {variables = [], prefixes = [], a
   for (const [name, value] of kept) portal.style.setProperty(name, value);
   if (kept.length) portal.dataset.sfLayerVariables = kept.map(([name]) => name).join(' ');
   else delete portal.dataset.sfLayerVariables;
+}
+
+// A closed layer's content starts while the layer is closed, after the page's
+// first paint, without being shown. The Loader leaves a Smart element inside a
+// closed container for later and fetches its code when the container opens
+// (standard 1.3.8 §7.2.1, simai/ui-source#47); a closed window's or drawer's
+// root is such a container (inert, out of view). So a page that waited for a
+// tag in a closed window before opening it -- customElements.whenDefined
+// ('sf-menu'), then fill the menu, then open() -- waited for ever (ui-control
+// evidence 2026-11-11-modal-followups). The layer asks for those tags itself,
+// as a component asks for an element it draws (SF.Loader.ensure), once the
+// page has loaded and the browser is idle: the first paint fetches nothing
+// more than before, and the content is drawn where it stands, inside the
+// closed root, which shows nothing.
+//
+// The layer's own closed root is the one container this passes over. A closed
+// container inside it (a tab panel, a closed <details>, an unstarted part)
+// keeps its own deferral, and an element inside a Smart parent that has not
+// taken its source yet waits for it (the Loader's rule), so the walk runs
+// again when what it asked for has drawn: a few rounds, each for the tags
+// the previous one uncovered.
+const CLOSED_INSIDE = '[hidden], [inert], details:not([open]), dialog:not([open]), [data-sf-start]:not([data-sf-started])';
+const UNSTARTED = '[data-sf-start]:not([data-sf-started])';
+const CONTENT_ROUNDS = 4;
+
+function closedInside(element, root) {
+  if (element.matches(UNSTARTED)) return true;
+  for (let node = element.parentElement; node && node !== root; node = node.parentElement) {
+    if (!node.matches(CLOSED_INSIDE)) continue;
+    // A closed <details> still shows its summary.
+    if (node.localName === 'details' && element.closest('summary')?.parentElement === node) continue;
+    return true;
+  }
+  return false;
+}
+
+function contentTags(root, loader) {
+  const registry = globalThis.customElements;
+  const tags = new Set();
+  for (const element of root.querySelectorAll('*')) {
+    const tag = element.localName;
+    if (!tag.includes('-') || tags.has(tag) || registry?.get?.(tag)) continue;
+    if (!loader.getSmartElementRuleName(element)) continue;
+    if (closedInside(element, root) || loader.shouldDeferNestedSmartElement?.(element)) continue;
+    tags.add(tag);
+  }
+  return [...tags];
+}
+
+function whenPageIdle(fn) {
+  const view = globalThis.window;
+  const idle = () => {
+    // requestIdleCallback is throttled in a hidden tab; a timer still runs.
+    if (typeof view.requestIdleCallback === 'function' && !view.document?.hidden) view.requestIdleCallback(fn, {timeout: 2000});
+    else view.setTimeout(fn, 200);
+  };
+  if (view.document?.readyState === 'complete') idle();
+  else view.addEventListener('load', idle, {once: true});
+}
+
+//
+// A page may keep the old timing, the content fetched when the layer opens:
+// SF_BOOT_CONFIG.startClosedLayerContent = false. The first-paint snapshots do
+// (scripts/first-paint-lib.mjs): a closed layer's first paint is the layer as
+// it rests before anything in it starts, and a start at idle time made the
+// picture and its sheet list depend on how soon the browser was idle.
+//
+// Content the page puts into the closed layer later (a list filled from its
+// data, a part loaded into it) starts the same way: the layer watches its
+// closed root and walks it again, a few rounds, once the page is idle after
+// an addition (ui-control evidence 2026-11-11-modal-followups-2-accept, L2).
+// An open root is the Loader's, as any part of the page.
+export function startClosedLayerContent(rootOf) {
+  const view = globalThis.window;
+  if (!view?.document || view.SF_BOOT_CONFIG?.startClosedLayerContent === false) return;
+  let round = 0;
+  let walking = false;
+  let again = false;
+  let watched = null;
+  let watcher = null;
+  const next = () => {
+    const loader = view.SF?.Loader;
+    const root = rootOf();
+    walking = false;
+    if (!root?.isConnected || !loader?.ensure || !loader.getSmartElementRuleName) return;
+    watch(root);
+    if (!root.matches(CLOSED_LAYER)) return;
+    const tags = contentTags(root, loader);
+    if (!tags.length || ++round > CONTENT_ROUNDS) {
+      if (again) walk();
+      return;
+    }
+    walking = true;
+    loader.ensure(tags, {timeout: 10000}).then(() => whenPageIdle(next));
+  };
+  const walk = () => {
+    again = false;
+    if (walking) {
+      again = true;
+      return;
+    }
+    round = 0;
+    walking = true;
+    whenPageIdle(next);
+  };
+  const watch = (root) => {
+    if (watched === root || typeof view.MutationObserver !== 'function') return;
+    watcher?.disconnect();
+    watched = root;
+    watcher = new view.MutationObserver((records) => {
+      if (!watched.isConnected) {
+        watcher.disconnect();
+        watcher = null;
+        watched = null;
+        return;
+      }
+      if (watched.matches(CLOSED_LAYER) && records.some((record) => record.addedNodes.length)) walk();
+    });
+    watcher.observe(root, {childList: true, subtree: true});
+  };
+  walking = true;
+  whenPageIdle(next);
+}
+
+// A closed window's root or drawer's panel: inert while closed (and while a
+// window is minimised).
+const CLOSED_LAYER = '.sf-modal[inert], [data-sf-drawer-panel][inert]';
+
+// A component that fetches its own data (sf-include) and stands in a closed
+// window or drawer fetches it once the layer opens, not at page load: the
+// layer starts its content early so the page can reach its code
+// (startClosedLayerContent), but a part, a list's rows or a user's data the
+// page never opens should not cost the server a request (ui-control
+// evidence 2026-11-11-modal-followups-2-accept, M2). Null when the element is
+// not in a closed layer, or when the page keeps the old timing
+// (SF_BOOT_CONFIG.startClosedLayerContent = false: then nothing in a closed
+// layer starts before it opens); otherwise a promise that settles when the
+// layer opens, or never once `signal` aborts.
+export function whenClosedLayerOpens(element, signal) {
+  const view = globalThis.window;
+  if (!view?.document || view.SF_BOOT_CONFIG?.startClosedLayerContent === false) return null;
+  const layer = element?.closest?.(CLOSED_LAYER);
+  if (!layer || typeof view.MutationObserver !== 'function') return null;
+  return new Promise((resolve) => {
+    const watcher = new view.MutationObserver(() => {
+      if (layer.matches(CLOSED_LAYER) && layer.isConnected) return;
+      watcher.disconnect();
+      resolve();
+    });
+    watcher.observe(layer, {attributes: true, attributeFilter: ['inert']});
+    signal?.addEventListener('abort', () => watcher.disconnect(), {once: true});
+  });
 }

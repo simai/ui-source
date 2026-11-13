@@ -17,8 +17,10 @@
 //   tall as an sf-button of its size (field.size, else the set's); choosing writes
 //   the option's own value, pressing the chosen one again writes null unless the
 //   field is required; the arrows choose; read-only shows the chosen one and
-//   lets none be pressed; disabled is the group's disabled; a long list wraps
-//   without scrolling; the dropdown choice is unchanged.
+//   lets none be pressed; disabled is the group's disabled; a long list that
+//   does not fit the field folds into an sf-dropdown of the group's size with
+//   the same options, the page no wider (owner decision C47 C); the dropdown
+//   choice is unchanged.
 import {resolve, join} from 'node:path';
 import {existsSync, readFileSync} from 'node:fs';
 import {chromium} from 'playwright';
@@ -274,8 +276,24 @@ try {
         && offAfter.writes.length === 0, {off, offAfter});
 
       const many = await group('many');
-      check(at('a long list wraps, never scrolls, never a dropdown'), many.labels.length === 9 && !many.scrolls
-        && (width === 360 ? many.rows > 1 : true) && !(await page.evaluate(() => Boolean(document.querySelector('#many sf-dropdown')))), many);
+      const fold = await page.evaluate(() => {
+        const host = document.querySelector('#many sf-segmented');
+        const box = document.getElementById('many').getBoundingClientRect();
+        const dropdown = host?.querySelector('sf-dropdown');
+        // sf-dropdown draws no box of its own: its place is the fold's box.
+        const rect = host?.querySelector('.sf-button-group-narrow')?.getBoundingClientRect();
+        const track = host?.querySelector('.sf-button-group');
+        return {folded: Boolean(host?.hasAttribute('data-sf-folded')), dropdown: Boolean(dropdown), size: dropdown?.getAttribute('size') ?? dropdown?.size ?? null,
+          options: Array.isArray(dropdown?.options) ? dropdown.options.length : null,
+          box: [box.left, box.right], drawn: rect ? [rect.left, rect.right, rect.height] : null,
+          trackVisibility: track ? getComputedStyle(track).visibility : null, page: document.documentElement.scrollWidth, viewport: innerWidth};
+      });
+      // C47 C: nine labels do not fit a 420 or 328 px field on one line, so the
+      // group is drawn as an sf-dropdown of its size, as wide as the field.
+      check(at('a long list folds into a dropdown of its size with every option'), many.labels.length === 9 && fold.folded && fold.dropdown
+        && String(fold.size) === '1/2' && fold.options === 9, {many, fold});
+      check(at('the folded list stays in its field and the page is no wider'), fold.drawn && fold.drawn[2] > 0 && fold.drawn[0] >= fold.box[0] - 0.5
+        && fold.drawn[1] <= fold.box[1] + 0.5 && fold.trackVisibility === 'hidden' && fold.page <= fold.viewport, {fold});
       check(at('no horizontal page scroll'), await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth));
 
       const dropdown = await page.evaluate(() => ({dropdown: Boolean(document.querySelector('#dropdown sf-dropdown')),

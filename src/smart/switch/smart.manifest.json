@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.switch",
-  "version": "1.3.4",
+  "version": "1.5.1",
   "title": "Switch",
   "summary": "An on/off control for a setting that applies at once: a native checkbox with role=\"switch\", a track and a moving thumb, with a label, description and help text.",
   "kind": "smart",
@@ -24,7 +24,8 @@
     "uses": [
       "component.icon-buttons",
       "component.icons",
-      "component.switch"
+      "component.switch",
+      "smart.help-mark"
     ],
     "public_parts": [
       "native-input",
@@ -62,6 +63,11 @@
           "2"
         ]
       },
+      "short": {
+        "type": "boolean",
+        "default": false,
+        "description": "A shorter track, one and a half times its height instead of two, for a tight row. The class sf-switch--short of the class markup, as a setting."
+      },
       "label": {
         "type": "string",
         "default": ""
@@ -72,7 +78,8 @@
       },
       "help": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The explanation behind a «?» button (sf-help-mark) after the label text; a press on the button opens it and never changes the control. The help slot takes an sf-help-mark of the page's own."
       },
       "disabled": {
         "type": "boolean",
@@ -416,15 +423,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/switch/index.js",
-        "sha256": "456d57b4a4b435da0a79707bc56c1b36d773d4f3f063918435421b574f937e69"
+        "sha256": "ab4c94afa4e8c4dc6d6af3d01ab9db3d298298f89dd6cdf5482e1a1f864ab756"
       },
       {
         "path": "src/smart/switch/rule.js",
-        "sha256": "d403c7ea02a0bf62234774f710690be219dd4c100469905cf14568467e30e6bf"
+        "sha256": "ef9ac934ded733e400776a394650e403dd1a4f28847891a4820cde1ccb87438a"
       },
       {
         "path": "src/smart/switch/js/templates/default.js",
-        "sha256": "4811099da0e84c5f3204f9937be5fec77dff7ddaf8a01b4a1c84447ef877d0f9"
+        "sha256": "a0b31e6e7c0383225fbf49f2f73a903595fcb3b32bf971627be7457ffefa1387"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

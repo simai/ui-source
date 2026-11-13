@@ -1,4 +1,7 @@
 import './public-path';
+// The text faces the page needs, started before anything else runs, so a
+// quick network brings Inter in before the first frame (core/js/text-fonts.js).
+import './text-fonts.js';
 import './internal.js';
 import './core-modules.js';
 import './aliases.js';
@@ -28,6 +31,9 @@ import './sanitize.js';
 import {publishFormat} from './format.js';
 import './breakpoints.js';
 import './clipboard.js';
+// What a copy says, one feedback for sf-button-copy and the attribute route
+// data-sf-copy (owner decision C48, 2026-11-11): SF.copyFeedback.
+import './copy-feedback.js';
 // Copy on click for code in running text, where a container opts in with
 // data-sf-code-copy (owner, 2026-11-07, R024): SF.codeCopy.
 import './code-copy.js';
@@ -64,6 +70,11 @@ publishFormat();
 if (typeof window !== 'undefined') {
   window.SF = window.SF || {};
   const SF = window.SF;
+  // SF.deprecations.warn, the console switch for old names (a page sets it
+  // to true): there and false from the start, unless the page set it first.
+  // Core alone writes it, so the bundles' own copies of deprecations.js stay
+  // as they are.
+  if (SF.deprecations && !('warn' in SF.deprecations)) SF.deprecations.warn = false;
   // SF.ready, before the Loader chunk is even asked for (simai/ui-source#16).
   installReady(window);
   // The ports declared on elements (data-sf-port islands): their first calls
@@ -150,6 +161,25 @@ if (typeof window !== 'undefined') {
     };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startEarly, {once: true});
     else startEarly();
+    // A Smart bundle the page included itself before core.js found no
+    // SF.runtimeModule and waits for sf-runtime-ready (ui-builder
+    // libs/sharedRuntime.js); the runtime runs when something asks for it.
+    // The Loader asks when it queues a part, and its scan passes a
+    // data-sf-observer="ignore" region by, so a page whose parts all stand in
+    // such regions -- a documentation example, a loader wrap -- had its own
+    // bundles wait for good and its elements never defined (2026-11-11,
+    // acceptance of fix/bare-glyphs-tail N4). The page asked for those
+    // elements by including their code, so once the Loader is ready (the
+    // moment it would have asked, so the first paint is the same) a bundle
+    // still waiting has the runtime started for it. A Smart part with no
+    // bundle on the page is still not loaded from an ignored region.
+    const handBundleWaiting = () => [...document.scripts]
+      .some((script) => /\/smart\/[^/]+\/js\/[^/]+?(?:\.min)?\.js(?:[?#]|$)/u.test(script.src));
+    window.addEventListener('sf-loader-ready', () => {
+      if (SF.__internal.runtimeModules || SF.__internal.runtimeLoading) return;
+      if (!handBundleWaiting() || !smartPartWaiting()) return;
+      SF.loadRuntime().catch((error) => console.warn('[SIMAI Framework] the shared runtime did not load', error));
+    }, {once: true});
   }
 }
 
@@ -318,7 +348,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       background: getPreloaderBackground(),
       modifier: 'loader-default',
       tempStyles:
-        'inset: 0;position: fixed;width: 100%;height: 100vh;opacity: 1;z-index: 1000;background-color: var(--sf-color--surface-highest, var(--sf-surface-0, #fff));text-align: center;',
+        'inset: 0;position: fixed;width: 100%;height: 100vh;opacity: 1;z-index: 1000;background-color: var(--sf-color--surface-highest, var(--sf-surface-page, #fff));text-align: center;',
       color: getPreloaderColor(),
       width: DEFAULT_PRELOADER.width,
       height: DEFAULT_PRELOADER.height,

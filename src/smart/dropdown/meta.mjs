@@ -44,6 +44,21 @@ const sfDropdownMeta = {
       ],
       "default": "false"
     },
+    "error-message": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The text shown under the field while it is invalid, in the error colour, in the field-message style; it is the trigger's error message for assistive technology (aria-describedby, aria-errormessage)."
+    },
+    "invalid": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "Marks the choice as wrong: the error border (filled: the error fill), aria-invalid on the trigger and error-message under the field. No error icon is drawn."
+    },
     "label": {
       "kind": "custom",
       "valueType": "string",

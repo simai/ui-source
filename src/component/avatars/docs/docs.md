@@ -23,13 +23,19 @@ a real destination or action.
 - composition: `.sf-avatar-label-group`, `.sf-avatar-group` and
   `.sf-avatar-card`;
 - state: online/offline indicator and company/verification badge. The
-  offline dot is the disabled ink laid over the colour of the place the
-  avatar stands on (C43), so a photo or the initials do not show through it.
+  offline dot is the dim ink of the place the avatar stands on
+  (`--sf-on-surface-variant`), at least 3:1 against the place and the avatar
+  (since 2026-11-11; the disabled ink it had before was under 3:1). The dot
+  lies over the nearest opaque place (`--sf-surface-place-ground`), so a
+  photo or the initials do not show through it, and on a soft coloured place
+  (`bg-<colour>-container`) the dot is that place's colour, opaque.
+  On a row with a fill (selected, open or hovered: core mix `sf-place-fill`)
+  the dot's ring lays the row's fill (`--sf-surface-place-fill`) over the place
+  colour, so the ring is the row's colour, as the anchored badge's ring is.
   Its two layers are public variables: `--sf-avatar-offline-background-color`
-  (default `var(--sf-surface-place)`) and `--sf-avatar-offline-overlay`
-  (default `linear-gradient(var(--sf-on-surface-disabled) 0 0)`). For a dot of
-  your own colour set both, the overlay to `none`:
-  `--sf-avatar-offline-background-color: #e53935; --sf-avatar-offline-overlay: none`;
+  (default `var(--sf-on-surface-variant)`) and `--sf-avatar-offline-overlay`
+  (default `none`, a layer over the colour). For a dot of your own colour set
+  the first: `--sf-avatar-offline-background-color: #e53935`;
 - hue, on initials only: `.sf-avatar--text.sf-hue-<name>`, where name is a
   hue of the static palette (`red`, `orange`, `amber`, `yellow`, `lime`,
   `green`, `teal`, `cyan`, `sky`, `blue`, `indigo`, `violet`, `purple`, `pink`,
@@ -43,6 +49,15 @@ a real destination or action.
   is `purple`) and the
   tokens `--sf-tone-<name>-container` and `--sf-on-tone-<name>-container`
   draw the same until 2027-01-01.
+- cover, the decorative level (owner decision C91, level 2):
+  `.sf-avatar--text.sf-avatar--size-3.sf-hue-<name>` under
+  `.sf-avatar--expressive`, or under `data-sf-style="expressive"` on the root or
+  a container, stands on a cover of its hue -- the `--sf-hue-container` plate
+  with a second container step laid over it towards the far corner, mixed in
+  OKLab, roles only -- in the same ink. C65 gives covers to placeholders from
+  64 px; size 3 (56 px, 52 on a phone) is the largest step of the ladder, so it
+  is the only one. Strict, the default, keeps the plate flat; the nearest
+  `data-sf-style` wins.
 
 Use `.sf-avatar-card--square` and `.sf-avatar-card--portrait` for new card
 markup. The older classes without the BEM modifier separator remain compatible.

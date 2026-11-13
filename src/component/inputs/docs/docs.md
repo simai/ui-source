@@ -17,10 +17,23 @@ Registration: `registerComponent('Inputs', Inputs)`
 - `size` is bounded to `1/3`, `1/2`, `1`, `2` or `3`; `type` is bounded to
   `bordered`, `filled` or the compatibility-only `hidden` presentation.
   A filled field's placeholder keeps the quiet ink `--sf-on-surface-variant`
-  (on the fill, `--sf-on-surface-container--variant`); only the value is
-  `--sf-on-surface` (1.3.1, FA-08).
+  (on the fill, `--sf-on-surface-container-variant`); only the value is
+  `--sf-on-surface` (1.3.1, FA-08). Under the pointer the placeholder takes
+  `--sf-on-surface-container-variant`, the dim ink made for a fill: on the
+  hover step the place's dim ink fell under 4.5:1 in the dark theme (1.4.2,
+  C113 follow-up).
+- A filled field draws its bottom edge in `--sf-outline` at rest (C52): the
+  12 % fill (C113, 1.4.2) alone stands 1.15 to 1.39 from its place. Hover and press
+  colour the line with the border; focus turns the whole border
+  `--sf-outline`. A project's `--sf-input-border-color` colours the line.
 - Read-only inputs remain focusable and selectable but do not use editable
   hover or active feedback.
+- A label row (`.sf-input-label`) that holds its text in `.sf-input-text`
+  and an `sf-help-mark` is running text, not a flex row: the mark stands
+  `--sf-input-label--gap` after the label's last word, centred on the line it
+  stands on, so on a wrapped label it follows the last word on the last line
+  (1.4.0, C33; written as 1.3.1 on fix/c33-wrapped-help-mark). A label row with bare text (the `label` slot of `sf-input`)
+  stays a flex row.
 
 ## Global helper
 

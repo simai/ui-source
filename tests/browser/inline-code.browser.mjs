@@ -6,12 +6,11 @@
 // a <code> in a paragraph, a list item, a table cell, a heading, a link and
 // chat-like markup gets the quiet neutral plate -- the background of
 // --sf-surface-container, .2em by .4em of room, 85 % of the text, a 6px
-// corner (--sf-a6), the mono family -- and never parts at a hyphen: it is one
-// box that moves to the next line whole. Only a run longer than the whole line
-// (a URL, a token) breaks inside its box, anywhere when it has no space, and
-// never runs out of its column; code with spaces breaks at them, every word
-// whole (C10, 2026-11-10). The box keeps the plate and the text line the
-// height they had as an inline (owner rule C10 geometry). The plate
+// corner (--sf-a6), the mono family. It stays inline and wraps as text does,
+// at its spaces and hyphens; a run that cannot fit a line of its own (a URL,
+// a token) breaks where it must and never runs out of its column; no word
+// parts between two letters (C10, 2026-11-10, round 2: break-word). A line
+// with code is as tall as one without. The plate
 // shows on a surface-2 stripe too. A <code> the Framework draws or that sits
 // in a block or a control is left as it was: inside an sf-button's text, a
 // highlighted block (sf-highlight), pre > code, kbd, samp, a code carrying an
@@ -66,6 +65,11 @@ const BODY = `
   <p id="narrow" style="inline-size:20ch">An event <code id="hyphen">sf-button-press</code> comes</p>
   <p id="url-box" style="inline-size:358px">Документация: <code id="url">https://ui.simai.io/ru/smart/actions/copy-button/?from=docs&amp;token=AbCdEfGhIjKlMnOpQrStUvWxYz0123456789</code> — ссылка.</p>
   <p id="words-box" style="inline-size:14ch">Run <code id="words">npm run build --watch --verbose</code> now</p>
+  <div id="tbl-box" style="inline-size:358px"><table id="tbl" style="border-collapse:collapse;inline-size:100%"><tbody>
+    <tr><td>Тег</td><td><code>&lt;sf-radio&gt;</code>, контракт <code>smart.radio</code> версии <code>1.1.4</code></td></tr>
+    <tr><td>Значение по умолчанию</td><td><code id="tbl-json">{"items":[{"value":"day","label":"День"},{"value":"week","label":"Неделя"}],"name":"period"}</code></td></tr>
+    <tr><td>Правило классов</td><td><code id="tbl-rule">simai/ui@2bd5a3ab478a46fcee24d2460e7792135b0bb864:distr/rule/rule.json#name=cl-radio</code></td></tr>
+  </tbody></table></div>
   <p id="line-box">One line <code id="line-code">sf-tag</code> of text</p>
   <p id="plain-line">One line of text</p>
   <p class="tone-secondary">Secondary <code id="tone-secondary">x</code></p>
@@ -162,9 +166,8 @@ const read = () => {
       role: code.getAttribute('role'), tabindex: code.getAttribute('tabindex'), label: code.getAttribute('aria-label')};
   }
   // Where each word of a code stands: a word is whole when its first and last
-  // letters sit on one line. Inside a box longer than the line a hyphen is a
-  // break like a space (CSS has no way to forbid it there), so a word here is
-  // a run of letters between spaces and hyphens: no word parts between two
+  // letters sit on one line. A hyphen is a break like a space, so a word here
+  // is a run of letters between spaces and hyphens: no word parts between two
   // letters.
   const wordsWhole = (code) => {
     const text = code.firstChild;
@@ -185,6 +188,15 @@ const read = () => {
     url: fits('url-box'),
     words: {...fits('words-box'), broken: wordsWhole(document.getElementById('words'))},
     hyphenBroken: wordsWhole(document.getElementById('hyphen')),
+    table: (() => {
+      const box = document.getElementById('tbl-box');
+      const table = document.getElementById('tbl');
+      const labels = [...table.querySelectorAll('td:first-child')];
+      return {box: box.getBoundingClientRect().width, table: table.getBoundingClientRect().width, scroll: box.scrollWidth - box.clientWidth,
+        labelBroken: labels.flatMap((td) => wordsWhole(td)), labelWidths: labels.map((td) => Math.round(td.getBoundingClientRect().width)),
+        rule: {...fits('tbl-box'), wrap: getComputedStyle(document.getElementById('tbl-rule')).overflowWrap},
+        prose: getComputedStyle(document.getElementById('url')).overflowWrap};
+    })(),
     line: {withCode: document.getElementById('line-box').getBoundingClientRect().height, plain: document.getElementById('plain-line').getBoundingClientRect().height},
   };
   return {expected, stripe, codes, layout, buttonHasCode: Boolean(document.querySelector('#btn-host button code'))};
@@ -222,7 +234,10 @@ for (const theme of THEMES) {
     untouched: Object.fromEntries(UNTOUCHED.map((id) => [id, codes[id] && {background: codes[id].background, padding: codes[id].paddingLeft, parent: codes[id].parent}])),
   };
 
-  check(`${theme}: the plate is a real colour`, expected.background !== TRANSPARENT && /rgba\(.+, 0\.1[56]\d*\)/u.test(expected.background), expected);
+  // The plate is the neutral fill, --sf-surface-container (C10, GF-17), which
+  // C41 (owner 2026-11-10) made 8 % and keeps translucent: a step darker than
+  // whatever place it is on.
+  check(`${theme}: the plate is a real colour`, expected.background !== TRANSPARENT && /rgba\(.+, 0\.08\)/u.test(expected.background), expected);
   check(`${theme}: the radius resolves to 6px`, expected.radius === '6px', expected);
   check(`${theme}: the code in sf-button stays in its button`, buttonHasCode);
 
@@ -239,23 +254,27 @@ for (const theme of THEMES) {
       {id, got: [code.paddingLeft, code.paddingRight], fontSize: code.fontSize});
     check(`${theme}: prose code takes the radius`, code.radius === expected.radius, {id, got: code.radius, expected: expected.radius});
     check(`${theme}: prose code is mono`, /ui-monospace/u.test(code.fontFamily), {id, got: code.fontFamily});
-    check(`${theme}: prose code is one box`, code.display === 'inline-block', {id, got: code.display});
+    check(`${theme}: prose code is inline and wraps`, code.display === 'inline' && code.whiteSpace !== 'nowrap', {id, got: [code.display, code.whiteSpace]});
     check(`${theme}: prose code outside an opted-in container is not a control`, code.role === null && code.tabindex === null, {id, role: code.role});
   }
   // The plate is visible on a surface-2 stripe: laid over the stripe it is
   // another colour, not the stripe again.
   check(`${theme}: the plate shows on a surface-2 stripe`, distance(plateOnStripe, stripeColour) >= 6, evidence[theme].stripe);
-  // A name with hyphens that does not fit the rest of the line moves to the
-  // next line whole: one line high, at the start of the column.
-  check(`${theme}: sf-button-press does not part at a hyphen`, layout.hyphenBroken.length === 0 && codes.hyphen.height < codes.hyphen.fontSize * 2
-    && Math.abs(layout.narrow.code.left - layout.narrow.column.left) < 1, evidence[theme].hyphen);
-  // A URL longer than the line breaks inside its box and stays in its column.
+  // A name with hyphens that does not fit the rest of the line may part at a
+  // hyphen, never between two letters, and stays in its column.
+  check(`${theme}: sf-button-press parts at a hyphen only`, layout.hyphenBroken.length === 0 && layout.narrow.scroll <= 0, evidence[theme].hyphen);
+  // A URL longer than the line breaks and stays in its column.
   check(`${theme}: a long URL stays in its column`, layout.url.code.right <= layout.url.column.right + 0.5 && layout.url.scroll <= 0
     && layout.url.code.height > codes.url.fontSize * 2, layout.url);
   // Code with spaces longer than the line breaks at its spaces (and hyphens),
   // never between two letters.
   check(`${theme}: code with spaces keeps its words whole`, layout.words.broken.length === 0 && layout.words.code.right <= layout.words.column.right + 0.5, layout.words);
-  // The box does not make the text line taller.
+  // A long value in a table cell breaks anywhere: the table stays in its
+  // box and the label column keeps its words (C10 variant A, 2026-11-11).
+  check(`${theme}: a long value in a table cell never widens the table`, layout.table.table <= layout.table.box + 0.5 && layout.table.scroll <= 0
+    && layout.table.rule.wrap === 'anywhere' && layout.table.prose === 'break-word', layout.table);
+  check(`${theme}: the label column keeps its words`, layout.table.labelBroken.length === 0, layout.table);
+  // Code does not make the text line taller.
   check(`${theme}: a line with code keeps the text line height`, Math.abs(layout.line.withCode - layout.line.plain) < 0.5, layout.line);
 
   // The tones are recipes: two public variables on any ancestor.

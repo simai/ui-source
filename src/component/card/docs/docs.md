@@ -17,10 +17,14 @@ off, so a heading or a paragraph inside does not add its page margin. The card
 has no semantics: when its content is one article or one link, the page puts
 that element inside it, not on it.
 
-A heading inside the card is its title, the same at every width: 16 px on
-a 22 px line, semibold, whatever its level (`h2` to `h6` keep their
-meaning, not their page size); `--sf-card-title-size` and
-`--sf-card-title-weight` change it. In a narrow card (three in a row on a phone) the words wrap, a long
+A heading inside the card is its title, whatever its level (`h2` to `h6`
+keep their meaning, not their page size): the heading-6 step
+(`--sf-heading-6--size`, the size of `--sf-text-size-1` at normal density) on
+the card title line `--sf-title--height-card`, semibold -- 16 px on a 24 px
+line on a desktop, 14 px on 20 on a phone, the line of the text under it, as
+the titles of the other components (1.6.0, R082, C89). Headings do not follow density (C44): in a compact region
+(`data-sf-density="compact"` on `<html>` or on a container) the title is the
+same; `--sf-card-title-size` and `--sf-card-title-weight` change it. In a narrow card (three in a row on a phone) the words wrap, a long
 word breaks at a hyphen where the language allows it (`hyphens: auto`, with
 the page's `lang`), and only a word with no hyphen point breaks anywhere.
 
@@ -42,7 +46,7 @@ padding. Use it inside a grid of cards that needs no frames.
 | `--sf-card-padding-block` | the space above and below the content | `--sf-space-2` |
 | `--sf-card-padding-inline` | the space beside the content | `--sf-space-2`, or 8 % of the card's column when that is less (a narrow card) |
 | `--sf-card-gap` | between the blocks | `--sf-content--space-text` |
-| `--sf-card-title-size` | a heading's size inside the card | `--sf-b6` (16 px at every width) |
+| `--sf-card-title-size` | a heading's size inside the card | `--sf-heading-6--size` (16 px on a desktop, 14 on a phone, in a compact region too) |
 | `--sf-card-title-weight` | a heading's weight inside the card | `--sf-text--font-weight-6` |
 
 In forced colours the edge is drawn in `CanvasText`.

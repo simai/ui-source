@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu",
-  "version": "1.6.0",
+  "version": "1.6.2",
   "title": "Menu",
   "summary": "Site navigation built from data -- nested sections, the current page, groups that open and close -- or from a nested list of links in the markup, drawn as the class menu: a column whose branches open in place, or a row whose branches open as panels placed by SF.Position, which becomes a button opening the same links when it does not fit. The WAI-ARIA disclosure navigation pattern, not an application menu.",
   "kind": "smart",
@@ -260,7 +260,7 @@
             },
             "open": {
               "type": "boolean",
-              "description": "A column's branch is open at first; a row's panels open only when asked."
+              "description": "A column's branch is open at first; in a row the first flagged branch of each level opens its panel at first."
             },
             "children": {
               "type": "array",
@@ -331,7 +331,7 @@
       },
       "open": {
         "type": "boolean",
-        "description": "A column's branch is open at first; a row's panels open only when asked."
+        "description": "A column's branch is open at first; in a row the first flagged branch of each level opens its panel at first."
       },
       "children": {
         "type": "array",
@@ -407,7 +407,8 @@
         }
       ],
       "returns": {
-        "type": "boolean"
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
       }
     },
     "close": {
@@ -429,7 +430,8 @@
         }
       ],
       "returns": {
-        "type": "boolean"
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
       }
     },
     "toggle": {
@@ -451,14 +453,16 @@
         }
       ],
       "returns": {
-        "type": "boolean"
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
       }
     },
     "closeAll": {
-      "summary": "Close a row's open panels and the panel of the button a collapsed menu is; a column's groups keep their state. Returns whether anything changed.",
+      "summary": "Close a row's open panels and the panel of the button a collapsed menu is; a column's groups keep their state. Answers an outcome: applied when anything closed, else refused with already.",
       "arguments": [],
       "returns": {
-        "type": "boolean"
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
       }
     },
     "isOpen": {
@@ -477,7 +481,7 @@
   },
   "events": {
     "sf-menu-navigate": {
-      "summary": "navigate (vocabulary).",
+      "summary": "A link of the menu is pressed to go to its page in the same tab: id, href and item of the link. Cancel it to route the page yourself; the browser then does not go. A press that opens another tab or window does not fire it.",
       "payload": {
         "type": "object",
         "required": [
@@ -499,7 +503,7 @@
       "canonical": true
     },
     "sf-menu-toggle": {
-      "summary": "toggle (vocabulary).",
+      "summary": "A branch opened or closed: id and item of the branch (null for the panel of a collapsed menu's button), open, and source -- user for a press, a key, the pointer resting or leaving, or focus leaving the menu; method for open, close, toggle and close-all. Fires once for each branch that changed.",
       "payload": {
         "type": "object",
         "required": [
@@ -736,11 +740,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu/index.js",
-        "sha256": "4a2a948fa333b6cb677fee2c61dd54c87e93d03bd97f019b41c39a955f354fe6"
+        "sha256": "c01115e5c52468ed555096c19b8b054430d5540ac41f8943e3f16f32bfcf6807"
       },
       {
         "path": "src/smart/menu/items.mjs",
-        "sha256": "291327b87089fe8c2bc35090ccdc2877fe0f941cb2554154919762552a583343"
+        "sha256": "be4cb4c4cdb50eeee0b314dac0235a4729306570ff3e6e816cd51b480a180ee7"
       },
       {
         "path": "src/smart/menu/js/templates/default.js",
@@ -748,7 +752,7 @@
       },
       {
         "path": "src/smart/menu/scss/_smart__menu.scss",
-        "sha256": "a611eeda93c2d73e9a391ebf5eb0bd81ea47bc5d9a9cab6fcd131f15cdc51c4c"
+        "sha256": "a2c3e54e994ba5847f5f22b2337c10ed46ec0a16386e0fd667e68390afca0fbd"
       },
       {
         "path": "src/smart/menu/rule.js",
@@ -756,7 +760,7 @@
       },
       {
         "path": "src/smart/menu/docs.md",
-        "sha256": "647b336526fea97b91ee78ff9ebb0bcc487b7b2f556ad788ac22d236946d22bc"
+        "sha256": "f0b45d2b40fb570b22ff08e205e50f481682fdb9642759d9ea54e02c876764d7"
       }
     ],
     "generated_runtime": []

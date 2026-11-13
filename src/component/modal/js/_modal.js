@@ -436,18 +436,23 @@ class Modal extends ComponentObserver {
       panel.setAttribute('data-sf-modal-has-height', '');
     }
 
+    // The window's frame is the question window's (decision C39; dispatcher
+    // decision d, docs pre-check 2026-11-10): the frame --sf-space-3, the
+    // title --sf-space-1 above the content, no line under the header, and the
+    // close button on the frame's corner, the title centred on its line. The
+    // frame was --sf-space-2 with a line under the header.
     const surface = document.createElement('div');
     surface.className = joinClasses(
       isInline
-        ? 'bg-surface border border-outline-variant radius-surface p-2 flex flex-col gap-1 min-w-0'
-        : 'bg-surface border border-outline-variant radius-surface shadow-modal p-2 flex flex-col gap-1 min-w-0',
+        ? 'bg-surface border border-outline-variant radius-surface p-3 flex flex-col gap-1 min-w-0'
+        : 'bg-surface border border-outline-variant radius-surface shadow-modal p-3 flex flex-col gap-1 min-w-0',
       params.surfaceClass,
     );
     surface.setAttribute('data-sf-modal-surface', '');
 
     const header = document.createElement('header');
     header.className = joinClasses(
-      'sf-modal-header flex items-start min-w-0 border-b border-outline-variant gap-1',
+      'sf-modal-header flex items-start min-w-0 gap-1',
       params.headerClass,
     );
 
@@ -462,7 +467,7 @@ class Modal extends ComponentObserver {
       const title = document.createElement('h2');
       title.id = `${this.modalId}-title`;
       root.setAttribute('aria-labelledby', title.id);
-      title.className = 'sf-modal-header-content title-3 m-0';
+      title.className = 'sf-modal-header-content sf-modal-title m-0';
       title.textContent = params.title || untitled(root);
 
       header.append(title);

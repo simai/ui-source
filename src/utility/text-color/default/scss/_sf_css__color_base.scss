@@ -15,6 +15,13 @@
         }
     }
 
+    // The hue roles (C17; the map's note in _sf_var__color_base.scss).
+    @each $modifier-name, $var-name in $color-hue-array {
+        .#{$infix}color-#{$modifier-name} {
+            color: var(--sf-#{$var-name});
+        }
+    }
+
     // The legacy palette classes, on the static palette (C17; the shade map in
     // core/scss/vars/_sf_var__color.scss).
     @each $palette-name, $palette-map in $color-array {

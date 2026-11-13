@@ -1,0 +1,239 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-examples-details",
+  "input": "docara-examples-details.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m1",
+              "type": "content.details",
+              "data": {
+                "summary": [
+                  {
+                    "type": "text",
+                    "value": "Что произойдёт после сборки?"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m3",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Docara создаст статический сайт, который можно открыть без серверного runtime."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m4",
+              "type": "content.details",
+              "data": {
+                "summary": [
+                  {
+                    "type": "text",
+                    "value": "Короткий вопрос"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m6",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Ответ или пояснение: абзацы, списки, код."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m7",
+              "type": "content.details",
+              "data": {
+                "summary": [
+                  {
+                    "type": "text",
+                    "value": "В тонкой рамке"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m9",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Вид по умолчанию: подходит почти везде."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m10",
+              "type": "content.details",
+              "props": {
+                "layout": "surface"
+              },
+              "data": {
+                "summary": [
+                  {
+                    "type": "text",
+                    "value": "На заливке"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m12",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Для блока, который стоит отдельно и должен быть заметен."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m13",
+              "type": "content.details",
+              "props": {
+                "layout": "lines"
+              },
+              "data": {
+                "summary": [
+                  {
+                    "type": "text",
+                    "value": "Между линиями"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m15",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Для нескольких вопросов подряд."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m16",
+              "type": "content.details",
+              "props": {
+                "layout": "lines"
+              },
+              "data": {
+                "summary": [
+                  {
+                    "type": "text",
+                    "value": "Ещё один вопрос"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m18",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Линии разделяют соседние блоки."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m19",
+              "type": "content.details",
+              "props": {
+                "open": true
+              },
+              "data": {
+                "summary": [
+                  {
+                    "type": "text",
+                    "value": "Открыто изначально"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m21",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Содержимое видно сразу, а читатель при желании может его свернуть."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [],
+    "bytes_equal": true,
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 /*
  * Generated from src/core/contracts/adaptive-sizing.v1.json.
- * contract-sha256: e67f7a53848281ea891dcb2ace865afd32a44f3cd9f9790649bd1b613612a8aa
+ * contract-sha256: 70458f051464210070cf3e914f84c0cef0dfacbd8e3f6dc6e0c9ad546e1f44d3
  * Do not edit semantic values in this file directly.
  */
 @layer sf.base {
@@ -17,6 +17,7 @@
     --sf-title--height-10: var(--sf-d2);
     --sf-title--height-11: var(--sf-d3);
     --sf-title--height-12: var(--sf-d4);
+    --sf-title--height-card: var(--sf-c0);
     --sf-title-height-1: var(--sf-title--height-1);
     --sf-title-height-2: var(--sf-title--height-2);
     --sf-title-height-3: var(--sf-title--height-3);
@@ -45,6 +46,7 @@
       --sf-title--height-10: var(--sf-d9);
       --sf-title--height-11: var(--sf-e0);
       --sf-title--height-12: var(--sf-e2);
+      --sf-title--height-card: var(--sf-c2);
       --sf-title-height-1: var(--sf-title--height-1);
       --sf-title-height-2: var(--sf-title--height-2);
       --sf-title-height-3: var(--sf-title--height-3);

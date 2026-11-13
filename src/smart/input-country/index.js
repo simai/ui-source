@@ -2,6 +2,7 @@ import countriesData from '../../component/country-code/data/countries.json';
 import { pageLanguage } from '../../core/js/page-language';
 import {
   bindCountryCode,
+  countryFormValue,
   normalizeCountriesList,
   normalizeIso2,
   resolveDefaultFlagBase,
@@ -12,6 +13,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { fieldSize } from '../../component/field-size';
 import { FormField } from '../helpers/form-field';
+import { noteDeprecated } from '../../core/js/deprecations.js';
 import { renderCountryCodeTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -47,8 +49,8 @@ class SfCountryCode extends FormField(CountryCodeElement) {
     this._countries = null;
     this._boundRoot = null;
     this._renderAttributes = new Set();
-    // The tel text is the value the form gets: every keystroke and every
-    // country chosen tells the form (§17.1) -- FormField listens for them.
+    // The number in E.164 is the value the form gets: every keystroke and
+    // every country chosen tells the form (§17.1) -- FormField listens for them.
   }
 
   get size() {
@@ -82,11 +84,13 @@ class SfCountryCode extends FormField(CountryCodeElement) {
     return this.querySelector(':scope .sf-country-code-field input') || null;
   }
 
-  // What the form gets (§17.1): the tel text as the person sees it, nothing
-  // while disabled.
+  // What the form gets (§17.1 item 2, the form format): the number in E.164,
+  // `+79031234567` for the `+7 903 123-45-67` the person sees; nothing for the
+  // code alone, nothing while disabled.
   sfFormValue() {
     if (this.disabled) return null;
-    return this.value;
+    const dial = this.querySelector(':scope .sf-country-code')?.dataset?.dialCode || '';
+    return countryFormValue(this.value, dial);
   }
 
   // §17.2: a required phone has digits after the dial code; the dial code
@@ -125,12 +129,27 @@ class SfCountryCode extends FormField(CountryCodeElement) {
     return this.getBooleanAttr('use-mask', false);
   }
 
+  // Four settings are on by default. They were switched off by the string
+  // "false" (multi-country="false"), which is no HTML boolean; each has a
+  // presence form now, and the string form is read until 2027-01-01 (1.3.0,
+  // change journal attribute-input-country-presence-booleans).
+  _presenceOff(presence, former) {
+    if (this.hasAttribute(presence) && this.getBooleanAttr(presence, true)) return true;
+    if (!this.hasAttribute(former)) return false;
+    const on = this.getBooleanAttr(former, true);
+    if (!on) {
+      noteDeprecated({component: 'sf-input-country', kind: 'attribute', from: `${former}="false"`, to: presence,
+        since: '2026-11-11', remove_after: '2027-01-01'});
+    }
+    return !on;
+  }
+
   get useCountryMasks() {
-    return this.getBooleanAttr('use-country-masks', true);
+    return !this._presenceOff('fixed-mask', 'use-country-masks');
   }
 
   get showCode() {
-    return this.getBooleanAttr('show-code', true);
+    return !this._presenceOff('hide-code', 'show-code');
   }
 
   get maskStyle() {
@@ -140,7 +159,7 @@ class SfCountryCode extends FormField(CountryCodeElement) {
   }
 
   get multiCountry() {
-    return this.getBooleanAttr('multi-country', true);
+    return !this._presenceOff('fixed-country', 'multi-country');
   }
 
   get iso2() {
@@ -160,7 +179,7 @@ class SfCountryCode extends FormField(CountryCodeElement) {
   }
 
   get lazyFlags() {
-    return this.getBooleanAttr('lazy-flags', true);
+    return !this._presenceOff('eager-flags', 'lazy-flags');
   }
 
   get showMaskPlaceholder() {
@@ -169,6 +188,12 @@ class SfCountryCode extends FormField(CountryCodeElement) {
 
   get maskPlaceholderChar() {
     return String(this.getAttribute('mask-placeholder-char') || '_');
+  }
+
+  // The countries on top of the list (owner C87): "RU,KZ,BY". Optional:
+  // without the attribute no group at all; an empty one, recent choices alone.
+  get preferred() {
+    return this.hasAttribute('preferred') ? String(this.getAttribute('preferred') || '') : undefined;
   }
 
   get maxItems() {
@@ -198,10 +223,15 @@ class SfCountryCode extends FormField(CountryCodeElement) {
         ? this.countries
         : normalizeCountriesList(COUNTRY_ITEMS, this.locale, this.maxItems),
       locale: this.locale,
+      multiCountry: this.multiCountry,
+      useCountryMasks: this.useCountryMasks,
+      showCode: this.showCode,
+      lazyFlags: this.lazyFlags,
       maskStyle: this.maskStyle,
       iso2: this.iso2,
       flagBase: this.flagBase,
       maxItems: this.maxItems,
+      preferred: this.preferred,
       // The host is the form control where the browser has ElementInternals,
       // so the inner tel input carries no name (§17.1 item 6); elsewhere it is
       // named and joins the form the host names, as before.

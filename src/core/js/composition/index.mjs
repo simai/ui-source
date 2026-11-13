@@ -122,7 +122,7 @@ const BINDING_FIELDS = new Set(['owner', 'ref', 'target', 'revision']);
 const FORBIDDEN_KEYS = new Set([
   'html', 'innerhtml', 'script', 'javascript', 'php', 'eval', 'function',
   'expression', 'query', 'sql', 'graphql', 'class', 'classname', 'rootclass',
-  'cssclass', 'secret', 'password', 'token', 'cookie', 'authorization', 'request',
+  'cssclass', 'style', 'secret', 'password', 'token', 'cookie', 'authorization', 'request',
 ]);
 const SAFE_SCHEMES = new Set(['http:', 'https:', 'mailto:', 'tel:']);
 const DEFAULT_LIMITS = Object.freeze({
@@ -226,11 +226,17 @@ function validateJsonSchema(value, schema, path, diagnostics) {
     for (const key of schema.required || []) {
       if (!(key in value)) diagnostics.push(diagnostic('schema_required', `${path}.${key}`, `Required field ${key} is missing`));
     }
+    // patternProperties: a key matching a pattern is declared by it (the
+    // inline model's extension keys, 2026-11-11).
+    const patterns = Object.entries(schema.patternProperties || {}).map(([pattern, childSchema]) => [new RegExp(pattern, 'u'), childSchema]);
     if (schema.additionalProperties === false) {
       const properties = schema.properties || {};
       for (const key of Object.keys(value)) {
-        if (!(key in properties)) diagnostics.push(diagnostic('schema_additional_property', `${path}.${key}`, `Field ${key} is not allowed`));
+        if (!(key in properties) && !patterns.some(([pattern]) => pattern.test(key))) diagnostics.push(diagnostic('schema_additional_property', `${path}.${key}`, `Field ${key} is not allowed`));
       }
+    }
+    for (const [pattern, childSchema] of patterns) {
+      for (const key of Object.keys(value)) if (!(key in (schema.properties || {})) && pattern.test(key)) validateJsonSchema(value[key], childSchema, `${path}.${key}`, diagnostics);
     }
     for (const [key, childSchema] of Object.entries(schema.properties || {})) {
       if (key in value) validateJsonSchema(value[key], childSchema, `${path}.${key}`, diagnostics);
@@ -462,7 +468,8 @@ export function validate(document, registry = undefined, options = {}) {
   pushUnknownFields(document, DOCUMENT_FIELDS, '$', diagnostics);
   if (!isSchema(document, 'simai.composition.document', 1)) diagnostics.push(diagnostic('schema_unknown', '$.schema', `Expected ${DOCUMENT_SCHEMA}, or simai.composition.document with schema_version 1`));
   if (typeof document.id !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,119}$/u.test(document.id)) diagnostics.push(diagnostic('document_id_invalid', '$.id', 'Document id is invalid'));
-  if (!PROFILES.has(document.profile)) diagnostics.push(diagnostic('profile_unknown', '$.profile', 'Profile is not supported'));
+  const knownProfile = PROFILES.has(document.profile);
+  if (!knownProfile) diagnostics.push(diagnostic('profile_unknown', '$.profile', 'Profile is not supported'));
   if (document.locale !== undefined && (typeof document.locale !== 'string' || !/^[a-zA-Z]{2,8}(?:-[a-zA-Z0-9]{1,8})*$/u.test(document.locale))) diagnostics.push(diagnostic('locale_invalid', '$.locale', 'Locale is invalid'));
   if (document.extensions !== undefined) validateExtensions(document.extensions, '$.extensions', diagnostics, supportedExtensions);
   scanForbiddenKeys(document, '$', diagnostics);
@@ -492,7 +499,9 @@ export function validate(document, registry = undefined, options = {}) {
       else diagnostics.push(unknown);
       return;
     }
-    if (!manifest.profiles.includes(document.profile)) diagnostics.push(diagnostic('type_profile_unsupported', `${path}.type`, `${node.type} does not support ${document.profile}`));
+    // An unknown profile is one diagnostic ($.profile): no type lists it, so a
+    // per-node check would repeat it once for every node of the Document.
+    if (knownProfile && !manifest.profiles.includes(document.profile)) diagnostics.push(diagnostic('type_profile_unsupported', `${path}.type`, `${node.type} does not support ${document.profile}`));
     validateJsonSchema(node.data || {}, manifest.data_schema, `${path}.data`, diagnostics);
     // A layout parameter may hold a value per breakpoint (utilities.mjs): each
     // value is checked on its own, the rest of the props as before.
@@ -510,7 +519,8 @@ export function validate(document, registry = undefined, options = {}) {
       if (depth > MAX_COMPOSED_DEPTH) diagnostics.push(diagnostic('composed_depth_limit', path, 'Site blocks are nested too deeply'));
       else {
         const expanded = validate({ ...document, root: expandComposed(node, manifest) }, resolvedRegistry, { ...options, composedDepth: depth });
-        diagnostics.push(...expanded.diagnostics.map((entry) => ({ ...entry, path: `${path}.composed${entry.path.replace(/^\$\.root/u, '').replace(/^\$/u, '')}` })));
+        // The Document's own profile diagnostic is already reported once.
+        diagnostics.push(...expanded.diagnostics.filter(({ code }) => code !== 'profile_unknown').map((entry) => ({ ...entry, path: `${path}.composed${entry.path.replace(/^\$\.root/u, '').replace(/^\$/u, '')}` })));
         notices.push(...(expanded.notices || []));
       }
     }
@@ -600,8 +610,9 @@ export async function normalize(document, registry = undefined, options = {}) {
     Object.values(node.slots || {}).flat().forEach((child) => visit(child, depth));
   };
   visit(normalized.root);
+  const notices = [...(result.notices || []), ...await settleForeignHashes(normalized.root)];
   return {
-    ...(result.notices ? { notices: result.notices } : {}),
+    ...(notices.length ? { notices } : {}),
     document: normalized,
     digest: await sha256(stableStringify(normalized)),
     dependencies: {
@@ -612,13 +623,54 @@ export async function normalize(document, registry = undefined, options = {}) {
   };
 }
 
+// content.foreign (F2.2): the hash of raw is written where it is missing and
+// checked where it is present. A mismatch keeps the block as it is, is
+// reported, and the block is not drawn.
+async function settleForeignHashes(root) {
+  const notices = [];
+  const visit = async (node, path) => {
+    if (!isPlainObject(node)) return;
+    if (node.type === 'content.foreign' && isPlainObject(node.data) && typeof node.data.raw === 'string') {
+      const hash = `sha256:${await sha256(node.data.raw)}`;
+      if (node.data.hash === undefined) node.data.hash = hash;
+      else if (node.data.hash !== hash) notices.push(diagnostic('foreign_hash_mismatch', `${path}.data.hash`, 'The hash does not match raw; the block is kept and not drawn', { id: node.id }));
+    }
+    for (const [name, children] of Object.entries(isPlainObject(node.slots) ? node.slots : {})) {
+      if (Array.isArray(children)) for (const [index, child] of children.entries()) await visit(child, `${path}.slots.${name}[${index}]`);
+    }
+  };
+  await visit(root, '$.root');
+  return notices;
+}
+
+const FOREIGN_SOURCE_NAMES = Object.freeze({ markdown: 'Markdown', editorjs: 'Editor.js', html: 'HTML' });
+// The editor's view of a foreign block: inert, its source and, for an
+// Editor.js block, the tool's name, as escaped text. raw is never markup.
+function foreignPlaceholder(node) {
+  let tool = '';
+  if (node.data.source === 'editorjs') {
+    try {
+      const parsed = JSON.parse(node.data.raw);
+      if (typeof parsed?.type === 'string' && /^[A-Za-z0-9_-]{1,64}$/u.test(parsed.type)) tool = parsed.type;
+    } catch { /* not a block: the source alone */ }
+  }
+  const label = `${FOREIGN_SOURCE_NAMES[node.data.source] || node.data.source}${tool ? ` · ${tool}` : ''}`;
+  return `<div class="sf-composition-unknown" role="note" data-sf-composition-type="content.foreign" data-sf-composition-id="${escapeHtml(node.id)}">${escapeHtml(label)}</div>`;
+}
+
 function escapeHtml(value) {
   return String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
 }
 
+const MARK_ELEMENTS = Object.freeze({ strong: 'strong', em: 'em', code: 'code', strike: 's' });
 function renderInline(content) {
   return (content || []).map((inline) => {
     if (inline.type === 'link') return `<a href="${escapeHtml(inline.href)}">${renderInline(inline.children)}</a>`;
+    // A soft line break (inline model 1.2.0) inside the marks it carries.
+    // Its extension keys (inline model) draw nothing.
+    if (inline.type === 'break' && (inline.marks === undefined || Array.isArray(inline.marks))) {
+      return (inline.marks || []).reduce((output, mark) => (MARK_ELEMENTS[mark] ? `<${MARK_ELEMENTS[mark]}>${output}</${MARK_ELEMENTS[mark]}>` : output), '<br>');
+    }
     if (inline.type !== 'text') {
       // An atom draws its own element, its props escaped as text; anything
       // else (validation refuses it) draws nothing rather than "undefined".
@@ -628,7 +680,8 @@ function renderInline(content) {
       return `<${view.tag}${attributes}>${escapeHtml(view.text)}</${view.tag}>`;
     }
     let output = escapeHtml(inline.value);
-    for (const mark of inline.marks || []) output = mark === 'strong' ? `<strong>${output}</strong>` : mark === 'em' ? `<em>${output}</em>` : `<code>${output}</code>`;
+    // A mark outside the closed list (validation refuses it) draws no element.
+    for (const mark of inline.marks || []) output = MARK_ELEMENTS[mark] ? `<${MARK_ELEMENTS[mark]}>${output}</${MARK_ELEMENTS[mark]}>` : output;
     return output;
   }).join('');
 }
@@ -668,9 +721,10 @@ function renderTable(node) {
   const headColumn = header === 'column' || header === 'both';
   const align = Array.isArray(node.props?.align) ? node.props.align : [];
   // The frame sets every cell to the start; a column set otherwise says so on
-  // its cells, with one of two fixed values.
-  const cellStyle = (index) => (align[index] === 'center' || align[index] === 'end' ? ` style="text-align: ${align[index]}"` : '');
-  const cell = (content, index, tag, scope) => `<${tag}${scope ? ` scope="${scope}"` : ''}${cellStyle(index)}>${renderInline(content)}</${tag}>`;
+  // its cells with the text-align utility class, never a style attribute, so
+  // the rendered HTML stays within a strict CSP (2026-11-10 review, P8).
+  const cellClass = (index) => (align[index] === 'center' || align[index] === 'end' ? ` class="text-${align[index]}"` : '');
+  const cell = (content, index, tag, scope) => `<${tag}${scope ? ` scope="${scope}"` : ''}${cellClass(index)}>${renderInline(content)}</${tag}>`;
   const row = (cells, inHead) => `<tr>${cells.map((content, index) => (inHead
     ? cell(content, index, 'th', 'col')
     : headColumn && index === 0 ? cell(content, index, 'th', 'row') : cell(content, index, 'td', null))).join('')}</tr>`;
@@ -963,6 +1017,9 @@ const BUILTIN_RENDERERS = {
   // attribute but a safe href survives.
   'content.html': ({ node }) => `<div${id(node)}>${sanitizeRichText(node.data.markup)}</div>`,
   'content.outlet': ({ node, outlet }) => `<div data-sf-outlet=""${id(node)}>${outlet || ''}</div>`,
+  // Nothing on a public page; an editor (unknown: 'placeholder') draws the
+  // inert placeholder.
+  'content.foreign': ({ node, context }) => (context?.options?.unknown === 'placeholder' ? foreignPlaceholder(node) : ''),
 };
 
 // context.resolveSource(src, {node}) → address: a host that keeps pictures
@@ -979,7 +1036,11 @@ export async function render(document, context = {}) {
   const normalized = await normalize(document, registry, { ...(context.options || {}), ...(resolveSource ? { resolveSource } : {}) });
   if (!normalized.document) return { html: '', assets: [], hydration: [], diagnostics: normalized.diagnostics, digest: null };
   const diagnostics = [];
-  const notices = [...(normalized.notices || [])].filter((entry) => !entry.code.startsWith('modifier'));
+  // A foreign block whose hash does not match is kept and not drawn: what
+  // drawing found, so a diagnostic of the render (F2.2).
+  const mismatched = new Set((normalized.notices || []).filter(({ code }) => code === 'foreign_hash_mismatch').map((entry) => entry.id));
+  diagnostics.push(...(normalized.notices || []).filter(({ code }) => code === 'foreign_hash_mismatch').map(({ id: _id, ...entry }) => entry));
+  const notices = [...(normalized.notices || [])].filter((entry) => !entry.code.startsWith('modifier') && entry.code !== 'foreign_hash_mismatch');
   const hydration = [];
   const routes = resolveRoutes(normalized.document.root, registry, normalizePorts(context.options?.ports), []);
   // The data of the blocks that declare it, resolved before drawing (data.mjs).
@@ -1020,6 +1081,11 @@ export async function render(document, context = {}) {
     // Only reached under unknown: 'placeholder' (validate's notice says
     // which node); normalize refused the Document otherwise.
     if (!manifest) return unknownPlaceholder(node);
+    if (node.type === 'content.foreign' && mismatched.has(node.id)) return '';
+    // C75 (owner 2026-11-11): a preserved block is kept, never dropped. An
+    // editor (unknown: 'placeholder') shows its plate; a public page draws
+    // nothing and the build is told, one notice per block.
+    if (node.type === 'content.foreign' && context.options?.unknown !== 'placeholder') notices.push(diagnostic('preserved_not_shown', `node:${node.id}`, `A preserved ${node.data.source} block is kept in the Document and not drawn on the page`, { source: node.data.source }));
     // A site block draws its type's current tree with the instance's values
     // and texts (composed.mjs); the instance stays one node of the Document.
     if (isComposed(manifest)) {

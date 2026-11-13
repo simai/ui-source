@@ -283,3 +283,22 @@ test('10. a foreign subtree prints without comments, as an HTML one does', () =>
     }
   }
 });
+
+test('11. only ASCII white space is indentation: a node of only &nbsp; keeps its no-break space', () => {
+  // String.prototype.trim() also strips U+00A0, so text() took a node of
+  // only &nbsp; for the template's indentation and printed a plain space.
+  const page = readFileSync(join(root, 'scripts/first-paint-page.js'), 'utf8');
+  const declared = page.match(/const indentation = (\(data\) => [^\n]+);/u);
+  assert.ok(declared, 'first-paint-page.js declares indentation()');
+  const indentation = new Function(`return ${declared[1]};`)();
+  for (const blank of ['', ' ', '\n', '\n    ', '\t\r\f ']) assert.equal(indentation(blank), true, JSON.stringify(blank));
+  for (const kept of [' ', '   ', '\n \n', ' ', '　', 'a']) assert.equal(indentation(kept), false, JSON.stringify(kept));
+  const body = page.slice(page.indexOf('function text(node, mode) {'), page.indexOf('return escText(data);'));
+  assert.match(body, /if \(indentation\(data\) && collapses\(node\)\)/u, 'text() collapses indentation only');
+  assert.doesNotMatch(body, /if \(!data\.trim\(\) && collapses/u, 'trim() is not the indentation test');
+  // Every no-break space a snapshot keeps is printed as &nbsp; (escText),
+  // never as a raw U+00A0 (sf-change's separators, list-timeline's cells).
+  for (const file of snapshots()) {
+    assert.doesNotMatch(readFileSync(file, 'utf8'), / /u, `${file}: an unescaped no-break space`);
+  }
+});

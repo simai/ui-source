@@ -11,7 +11,8 @@ const read = (path) => readFile(new URL(`../src/${path}`, import.meta.url), 'utf
 test('line composition: badge and scale take the text line', async () => {
   for (const name of ['badge', 'progress-scale', 'reference-link', 'tag']) {
     const manifest = JSON.parse(await read(`smart/${name}/smart.manifest.json`));
-    assert.deepEqual(manifest.inputs.properties.line.enum, ['', '1/2', '1', '2'], name);
+    // A badge also stands on the line of the text beside it (line="text", C95 point 6).
+    assert.deepEqual(manifest.inputs.properties.line.enum, name === 'badge' ? ['', '1/2', '1', '2', 'text'] : ['', '1/2', '1', '2'], name);
   }
   const badges = await read('component/badges/scss/_css__badges.scss');
   const scale = await read('component/progress-scale/scss/_css__progress_scale.scss');

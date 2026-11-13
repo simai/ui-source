@@ -10,7 +10,8 @@ class Element {
   getAttribute(key){return this.attrs[key]??null;}
   hasAttribute(key){return key in this.attrs;}
 }
-const runtime=vm.createContext({HTMLElement:Element,getComputedStyle:()=>({direction:'ltr'})});
+// The page language comes from core (page-language.js); here it is English.
+const runtime=vm.createContext({HTMLElement:Element,getComputedStyle:()=>({direction:'ltr'}),pageLocale:()=>'en'});
 vm.runInContext(source.slice(source.indexOf('const '),source.indexOf("if (typeof window !== 'undefined')")),runtime);
 
 test('range values preserve scientific step precision',()=>{
@@ -21,6 +22,31 @@ test('range values preserve scientific step precision',()=>{
   const root=new Element({'data-step':'1e-3'});
   assert.equal(runtime.getNumericValues([0.002])[0],0.002);
   assert.equal(runtime.formatValue(root,0.002),'0.002');
+});
+
+test('a value is written in the page language, or in data-locale',()=>{
+  assert.equal(runtime.formatValue(new Element({'data-step':'0.01','data-suffix':' кг','data-locale':'ru'}),1.234),'1,23\u00a0кг');
+  assert.equal(runtime.formatValue(new Element({'data-step':'1e-3','data-locale':'ru'}),0.002),'0,002');
+  assert.equal(runtime.formatValue(new Element({'data-step':'0.01'}),1.234),'1.23');
+});
+
+// Acceptance R3 (S1): the decimals come from the step, and a value on its step
+// is never shown rounded off it -- 2.6 with step 0.1 is «2,6», not «3».
+test('step 0.1 writes 2.6 as «2,6 кг», with or without a smaller precision',()=>{
+  const ru={'data-step':'0.1','data-suffix':' кг','data-locale':'ru'};
+  assert.equal(runtime.formatValue(new Element(ru),2.6),'2,6\u00a0кг');
+  assert.equal(runtime.formatValue(new Element(ru),2.5),'2,5\u00a0кг');
+  assert.equal(runtime.formatValue(new Element({...ru,'data-precision':'1'}),2.6),'2,6\u00a0кг');
+  assert.equal(runtime.formatValue(new Element({...ru,'data-precision':'0'}),2.6),'2,6\u00a0кг');
+  assert.equal(runtime.formatValue(new Element({...ru,'data-precision':'2'}),2.6),'2,60\u00a0кг');
+  assert.equal(runtime.formatRangeText(new Element(ru),[2.6,7.4]),'2,6 – 7,4\u00a0кг');
+});
+
+test('the Smart element writes no precision unless it is set',async()=>{
+  const manifest=JSON.parse(await readFile(new URL('../src/smart/slider-range/component.json',import.meta.url),'utf8'));
+  // A number setting without a default reads as 0 (core element-manifest), and
+  // data-precision="0" rounded 2.6 to «3» for step 0.1.
+  assert.equal(manifest.settings.precision.default,null);
 });
 
 test('display precision does not change values emitted by the engine',()=>{
@@ -69,4 +95,13 @@ test('range options normalize malformed public values without invalid geometry',
   assert.deepEqual({...fallback.range},{min:0,max:100});
   assert.deepEqual(Array.from(fallback.start),[0]);
   assert.equal(fallback.connect,'lower');
+});
+
+test('S1: thousands grouped, a unit held by a no-break space, precision before decimals',()=>{
+  assert.equal(runtime.formatValue(new Element({'data-suffix':' ₽','data-locale':'ru'}),20000),'20\u00a0000\u00a0₽');
+  assert.equal(runtime.formatValue(new Element({'data-prefix':'от ','data-locale':'ru'}),5000),'от\u00a05\u00a0000');
+  assert.equal(runtime.formatValue(new Element({'data-grouping':'false','data-locale':'ru'}),2026),'2026');
+  assert.equal(runtime.formatValue(new Element({'data-step':'0.5','data-suffix':' кг','data-locale':'ru'}),2.5),'2,5\u00a0кг');
+  assert.equal(runtime.formatValue(new Element({'data-precision':'2','data-decimals':'0','data-locale':'ru'}),2.5),'2,50');
+  assert.equal(runtime.formatValue(new Element({'data-decimals':'1','data-locale':'ru'}),2),'2,0');
 });

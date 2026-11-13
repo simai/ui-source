@@ -46,7 +46,8 @@ for (const kind of ['checkbox', 'radio', 'switch']) {
   test(`${kind} applies root customization to the label without replacing its native input`,async()=>{
     const source=await read(`src/smart/${kind}/js/templates/default.js`);
     assert.match(source,/rootClass/);
-    assert.match(source,/<label class=\$\{[^\n]+\} style=\$\{(?:context\.)?rootStyle \|\| nothing\}>/);
+    // The label also listens for clicks from the help (keepHelpOutOfLabel).
+    assert.match(source,/<label class=\$\{[^\n]+\} style=\$\{(?:context\.)?rootStyle \|\| nothing\}(?: @click=\$\{keepHelpOutOfLabel\})?>/);
     assert.match(source,/<input\s/);
     assert.doesNotMatch(source,/unsafeHTML|innerHTML\s*=/);
   });
@@ -57,6 +58,7 @@ for (const kind of ['button', 'button-icon', 'button-close', 'segmented', 'badge
     const source=await read(`src/smart/${kind}/js/templates/default.js`);
     assert.match(source,/rootClass/);
     assert.match(source,/style=\$\{context\.rootStyle \|\| nothing\}/);
-    if(kind==='file-download') assert.equal((source.match(/style=\$\{context\.rootStyle \|\| nothing\}/g)||[]).length,2);
+    // The row of each view takes them: the link, the button, the failed row and the ready one that offers «Скачать» (C51).
+    if(kind==='file-download') assert.equal((source.match(/style=\$\{context\.rootStyle \|\| nothing\}/g)||[]).length,4);
   });
 }

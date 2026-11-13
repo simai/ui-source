@@ -2,7 +2,7 @@
   "$comment": "The source of sf-button-icon's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/icon-button (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.button-icon",
   "tag": "sf-button-icon",
-  "version": "1.8.2",
+  "version": "1.9.0",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -130,6 +130,26 @@
       ],
       "default": "button",
       "summary": "Native button type attribute."
+    },
+    "href": {
+      "type": "string",
+      "default": "",
+      "summary": "An address: the icon button draws a link (an <a href>) with its look, as sf-button's href (decision C51: the quiet «Скачать <name>» at the end of a table row is a real link to the file). A relative address, a fragment, http(s), mailto or tel; any other scheme draws a button. native-type, pressed and a cycle do not apply; disabled or loading, the link has no href and says aria-disabled. The name is the aria-label, as on the button."
+    },
+    "target": {
+      "type": "string",
+      "default": "",
+      "summary": "Where a link (href) opens, as an <a target>: _blank opens a new tab. Not written on a button."
+    },
+    "rel": {
+      "type": "string",
+      "default": "",
+      "summary": "The link's relation, as an <a rel>. A link that opens in a new tab (target _blank) with no rel says noopener noreferrer. Not written on a button."
+    },
+    "download": {
+      "type": "string",
+      "default": "",
+      "summary": "A link (href) that downloads its file, as an <a download>: the name it is saved under, or present and empty for the server's name. Not written on a button."
     },
     "badge-count": {
       "type": "string",
@@ -294,7 +314,8 @@
       "Tab": "reach",
       "Enter": "activate",
       "Space": "activate"
-    }
+    },
+    "$comment": "With href (1.9.0) it is a native link, role link; Enter follows it and Space does not press it."
   },
   "css-variables": {
     "--sf-icon-button-background-color": {
@@ -484,7 +505,11 @@
     "version 1.7.2 (2026-11-10): a patch (R074). A cycle asks the Loader for every icon it can show when it is drawn (each item's icon, filled where the item is pressed; the theme icons for theme-cycle), and a toggle (pressed present, filled absent) for its icon in both forms: the names join the page's first icon request, so a press draws the next icon from the page's font instead of asking the service for a grown one (the icon stayed blank while it was built, up to ~30 s). Nothing drawn differently; settings, values and events unchanged.",
     "version 1.8.0 (2026-11-10): a minor (C35, the notice actions): the height setting, low, default, high or highest, as on sf-button (C27); the button stays square. It joins the unreleased 1.7.2 (R074, the icons a cycle or a toggle can show are asked for ahead) in one release; 1.7.2 never ships alone. Values, events and keys unchanged.",
     "version 1.8.1 (2026-11-10, C36 follow-up, accepted by DEV): a patch. A loading icon button keeps its scheme colour, as sf-button does since 1.12.0 (owner decision C36): the fill, the edge and the icon colour of the resting button; the spinner takes the icon colour and its background ring that colour at 16 % (DEV look call). It stays natively disabled and aria-busy. disabled and loading at once wears the disabled look: the template writes .disabled, and turning disabled on or off on a loading button does the same in place. Tonal danger now greys when disabled (component.icon-buttons 1.5.1).",
-    "version 1.8.2 (2026-11-10, pair next integration): one number above every claim of this release, 1.7.2 (R074), 1.8.0 (C35) and 1.8.1 (the C36 follow-up), which were built with different contents; nothing beyond the notes above changes. Settings, values, events and keys as the notes above say."
+    "version 1.8.2 (2026-11-10, pair next integration): one number above every claim of this release, 1.7.2 (R074), 1.8.0 (C35) and 1.8.1 (the C36 follow-up), which were built with different contents; nothing beyond the notes above changes. Settings, values, events and keys as the notes above say.",
+    "version 1.8.3 (2026-11-11): a patch (docs review R076). theme-cycle under a host that draws the theme itself (the Loader started with theme: false, as a Docara page and its examples are): the name and the icon say the theme the document draws (its theme-dark / theme-light class, else the system scheme) instead of the Loader's untouched light; a press that cannot move the theme says why once in the console (the host owns the theme, or SF.Loader is absent) and still stays put without change. Its shared helper src/smart/helpers/cycle.js changed (module.smart-helpers 1.5.0, unreleased). Nothing drawn differently where the Loader owns the theme; settings, values, events and keys unchanged.",
+    "version 1.8.4 (2026-11-11): a patch, nothing drawn differently. The sheet reads the C16 roles by their current names where it read the former ones, which are var() of them wherever they are declared (src/core/contracts/token-aliases.v1.json, sf-role-aliases): --sf-on-disable → --sf-on-surface-disabled. Settings, values, events and keys unchanged.",
+    "version 1.8.5 (2026-11-13, a patch, defect BS-1 of ui-control research 2026-11-13-button-schemes, rule C13): a status other than danger -- success, warning, info or any other word -- was dropped without a sound and the scheme colour drawn. It still draws so, and the console says it once per page for each word (helpers/control-status.js, shared with sf-button and sf-menu-context items; error stays the former name of danger). Nothing drawn differently; settings, values, events and keys unchanged.",
+    "version 1.9.0 (2026-11-11): a minor (owner decision C51). href, target, rel and download: with an href the icon button draws a native <a class=\"sf-icon-button\"> with its look -- the quiet «Скачать <name>» at the end of a table row is a real link to the file, so the browser's own link keys, context menu and download work. The address takes sf-button's rule (a relative address, a fragment, http(s), mailto, tel; any other scheme draws the button); target _blank with no rel says noopener noreferrer; download writes the <a download> name. Disabled or loading, the link has no href, role link and aria-disabled, as sf-button's link; native-type, pressed and a cycle do not apply to a link. component.icon-buttons 1.6.1: a.sf-icon-button takes no link underline. Nothing changes for a button."
   ],
   "x-rule": {
     "$comment-after": [

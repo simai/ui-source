@@ -108,6 +108,7 @@
   padding-inline: var(--sf-lookup--padding-inline);
   border: var(--sf-px) solid;
   border-color: var(--sf-lookup--border-color, transparent);
+  border-block-end-color: var(--sf-lookup--line-color, var(--sf-lookup--border-color, transparent));
   border-radius: var(--sf-lookup--radius);
   background-color: var(--sf-lookup--background-color);
   color: var(--sf-lookup-color, var(--sf-on-surface));
@@ -125,15 +126,24 @@
 .sf-lookup.sf-lookup--filled .sf-lookup-frame {
   --sf-lookup--background-color: var(--sf-lookup-background-color, var(--sf-surface-container));
   --sf-lookup--border-color: var(--sf-lookup-border-color, var(--sf-transparent-for-focus));
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
 }
 
 .sf-lookup:not(.error):not(.sf-lookup--disabled):not(.sf-lookup--readonly) .sf-lookup-frame:hover {
   --sf-lookup--border-color: var(--sf-primary-hover);
 }
 
+/* The filled field's bottom line (C52, owner 2026-11-10; as sf-input): at rest
+   the field draws its bottom edge in --sf-outline, the fill at 8 % (C41)
+   being 1.10 to 1.23 from its place. A state that colours the border takes
+   the line with it. */
+.sf-lookup:not(.error).sf-lookup--filled:not(.sf-lookup--disabled) .sf-lookup-frame {
+  --sf-lookup--line-color: var(--sf-lookup-border-color, var(--sf-outline));
+}
+
 .sf-lookup:not(.error).sf-lookup--filled:not(.sf-lookup--disabled):not(.sf-lookup--readonly) .sf-lookup-frame:hover {
   --sf-lookup--background-color: var(--sf-surface-container-hover);
+  --sf-lookup--line-color: var(--sf-lookup--border-color);
 }
 
 /* Typing in it: sf-input's focus surface. */
@@ -175,17 +185,17 @@
 }
 
 .sf-lookup.sf-lookup--disabled .sf-lookup-frame {
-  color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
   cursor: default;
-  --sf-on-surface-variant: var(--sf-on-disable);
+  --sf-on-surface-variant: var(--sf-on-surface-disabled);
 }
 
 .sf-lookup.sf-lookup--disabled.sf-lookup--bordered .sf-lookup-frame {
-  --sf-lookup--border-color: var(--sf-outline-disable);
+  --sf-lookup--border-color: var(--sf-outline-disabled);
 }
 
 .sf-lookup.sf-lookup--disabled.sf-lookup--filled .sf-lookup-frame {
-  --sf-lookup--background-color: var(--sf-disable);
+  --sf-lookup--background-color: var(--sf-surface-disabled);
 }
 
 /* The search box: the field's text, inset as sf-input's value is. */
@@ -294,14 +304,14 @@
   color: var(--sf-on-surface);
 }
 
-/* One list, one row height (LK-05, owner decision C49, the whole-lines rule):
-   where a row carries a caption, every row is the one-line row plus the
-   caption's line, and its text stands as far inside it as a one-line row's,
-   (row - line) / 2: 60 = 8 + 24 + 20 + 8 at size 1 on a desktop, 48 = 6 + 20
-   + 16 + 6 at size 1/2, 52 = 8 + 20 + 16 + 8 on a phone. A row without a
-   caption centres its label on the same height. Before, a caption row was 52
-   and a one-line row 40 in one list (phone 44 and 36). */
-.sf-lookup .sf-lookup-list.sf-lookup-list--captions .sf-lookup-option {
+/* A row with a caption (LK-05, owner decision C49 read literally, the
+   whole-lines rule): the one-line row plus the caption's line, its text as
+   far inside it as a one-line row's, (row - line) / 2: 60 = 8 + 24 + 20 + 8
+   at size 1 on a desktop, 48 = 6 + 20 + 16 + 6 at size 1/2, 72 at size 2, 52
+   on a phone. A one-line row keeps the row step (40 at size 1); the height is
+   the row's own, so no row changes height while the answers change. Before,
+   a caption row was 52 at size 1 (44 on a phone): 4 + 24 + 20 + 4. */
+.sf-lookup .sf-lookup-option.sf-lookup-option--caption {
   min-block-size: calc(var(--sf-lookup--row-height) + var(--sf-lookup--caption-height));
 }
 
@@ -317,7 +327,7 @@
 }
 
 .sf-lookup .sf-lookup-option:hover {
-  background-color: var(--sf-surface-transparent-hover);
+  background-color: var(--sf-surface-state-hover);
 }
 
 .sf-lookup .sf-lookup-option.sf-lookup-option--chosen {
@@ -420,5 +430,72 @@
     .sf-lookup .sf-lookup-option.sf-lookup-option--active {
       outline: var(--sf-px) solid Highlight;
     }
+  }
+}
+
+/* C77 (owner 2026-11-11): the value inset of sf-input. With no chip in the
+   frame the search text starts --sf-space-1/2, --sf-space-1 or --sf-space-2
+   from the outer edge, the border counted inside it (size 1/2 keeps 12 on a
+   phone), plus half of what a rounder corner adds over the control radius;
+   the clear at the end stands at the plain inset. Chips keep their place
+   (C76): with a chip in the frame only their corner follows a corner rounder
+   than the control radius, the field's corner as drawn less the chip's inset
+   (--sf-space-1/4), so the two stay concentric; at the control radius or
+   less a chip keeps the field's own. */
+@layer sf.components {
+  .sf-lookup {
+    --sf-lookup--inset: var(--sf-space-1);
+    --sf-lookup--line-radius: min(var(--sf-lookup--radius), var(--sf-ui-1--control-height) / 2);
+    --sf-lookup--value-inset: calc(var(--sf-lookup--inset) + max(calc(var(--sf-px) * 0), var(--sf-lookup--line-radius) - var(--sf-radius-1\/2)) / 2);
+  }
+
+  .sf-lookup.sf-lookup--size-2 {
+    --sf-lookup--inset: var(--sf-space-2);
+    --sf-lookup--line-radius: min(var(--sf-lookup--radius), var(--sf-ui-2--control-height) / 2);
+  }
+
+  /* Size 1/2 never goes below 12 (--sf-b2): on a phone, and in a compact
+     region, where C79 brings it down a step to 28 and --sf-space-1/2 is 8.
+     The inset follows the field's step with that floor: compact 1/2 and 1
+     are 12, compact 2 (40) keeps 16 (intent acceptance 2026-11-12). */
+  .sf-lookup.sf-lookup--size-1\/2 {
+    --sf-lookup--inset: max(var(--sf-space-1\/2), var(--sf-b2));
+    --sf-lookup--line-radius: min(var(--sf-lookup--radius), var(--sf-ui-1\/2--control-height) / 2);
+  }
+
+  .sf-lookup:not(:has(.sf-lookup-chip)) .sf-lookup-frame {
+    padding-inline-start: var(--sf-lookup-padding-inline, calc(var(--sf-lookup--value-inset) - var(--sf-px)));
+    padding-inline-end: var(--sf-lookup-padding-inline, calc(var(--sf-lookup--value-inset) - var(--sf-px)));
+  }
+
+  .sf-lookup:not(:has(.sf-lookup-chip)) .sf-lookup-frame:has(> :is(sf-button-close, sf-close), > .sf-lookup-clear) {
+    padding-inline-end: var(--sf-lookup-padding-inline, calc(var(--sf-lookup--inset) - var(--sf-px)));
+  }
+
+  .sf-lookup:not(:has(.sf-lookup-chip)) .sf-lookup-input {
+    padding-inline-start: calc(var(--sf-px) * 0);
+  }
+
+  /* With chips the first tag is the picture: it stands at the plain inset,
+     as an icon does. */
+  .sf-lookup:has(.sf-lookup-chip) .sf-lookup-frame {
+    padding-inline-start: var(--sf-lookup-padding-inline, calc(var(--sf-lookup--inset) - var(--sf-px)));
+    padding-inline-end: var(--sf-lookup-padding-inline, calc(var(--sf-lookup--inset) - var(--sf-px)));
+  }
+
+  /* The list's rows keep the field's text edge (section 3): a rounder field
+     moves its value in by half of what its corner adds, and so do the rows. */
+  .sf-lookup {
+    --sf-lookup--row-padding-inline: calc(var(--sf-space-1\/2) + max(calc(var(--sf-px) * 0), var(--sf-lookup--line-radius) - var(--sf-radius-1\/2)) / 2);
+  }
+
+  .sf-lookup .sf-lookup-chip {
+    /* The tag's own corner variables, not its public one: a page's
+       --sf-tag-radius still wins. */
+    --sf-lookup--chip-radius: var(--sf-tag-radius, min(var(--sf-lookup--radius), max(var(--sf-radius-1\/2), var(--sf-lookup--line-radius) - var(--sf-space-1\/4))));
+    --sf-tag--border-top-left-radius: var(--sf-lookup--chip-radius);
+    --sf-tag--border-top-right-radius: var(--sf-lookup--chip-radius);
+    --sf-tag--border-bottom-left-radius: var(--sf-lookup--chip-radius);
+    --sf-tag--border-bottom-right-radius: var(--sf-lookup--chip-radius);
   }
 }

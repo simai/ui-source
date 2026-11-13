@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.toast",
-  "version": "1.2.1",
+  "version": "1.3.1",
   "title": "Toast",
   "summary": "Transient overlay feedback with semantic roles, optional action, pause-safe lifetime and dismiss behavior.",
   "kind": "smart",
@@ -77,12 +77,27 @@
       "action-text": {
         "type": "string",
         "default": "",
-        "description": "Visible label of the one optional action."
+        "description": "Visible label of the first optional action: a link at the end of the text when action-href is set and there is no secondary action, a button under the text otherwise (owner decision C50)."
       },
       "action": {
         "type": "string",
         "default": "action",
         "description": "Stable action value emitted in sf-toast-action."
+      },
+      "action-href": {
+        "type": "string",
+        "default": "",
+        "description": "An address for the one light navigation action («Открыть», «Посмотреть», «Подробнее»): with it and without a secondary action, action-text is a link at the end of the text, followed as a link and reported in sf-toast-action. Undo, retry, extend and two actions stay buttons; a toast never shows both (owner decision C50)."
+      },
+      "secondary-action-text": {
+        "type": "string",
+        "default": "",
+        "description": "Visible label of a second action: both actions are buttons under the text, and action-href does not apply (C46, C50)."
+      },
+      "secondary-action": {
+        "type": "string",
+        "default": "secondary",
+        "description": "Stable secondary action value emitted in sf-toast-action."
       },
       "closable": {
         "type": "boolean",
@@ -417,7 +432,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/toast/index.js",
-        "sha256": "6815fe75db74440a65b4d3d2ca2b7a0606172ddaaf96dffbc1662fcb4821f9e0"
+        "sha256": "8d0690acaeb085da3c6ad8abe52829644374a87bf1a18db5ce0e3990c71b2c83"
       }
     ],
     "generated_runtime": [

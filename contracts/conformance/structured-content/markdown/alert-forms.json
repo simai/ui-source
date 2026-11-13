@@ -1,0 +1,134 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "alert-forms",
+  "input": "alert-forms.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m1",
+              "type": "content.alert",
+              "props": {
+                "status": "info"
+              },
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "Без типа"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m3",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Docara читает его как info."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m4",
+              "type": "content.alert",
+              "props": {
+                "status": "warning"
+              },
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "Заголовок третьего уровня"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m6",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Текст."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m7",
+              "type": "content.alert",
+              "props": {
+                "status": "success",
+                "appearance": "flat"
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m8",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Без заголовка: Docara остановит сборку, модель хранит как есть."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [
+      {
+        "code": "form_normalized",
+        "path": "$.root.slots.default[0]",
+        "what": "alert without type (Docara reads info)"
+      },
+      {
+        "code": "form_normalized",
+        "path": "$.root.slots.default[1]",
+        "what": "alert title level 3"
+      }
+    ],
+    "bytes_equal": false,
+    "printed": ":::alert {type=info}\n#### Без типа\n\nDocara читает его как info.\n:::\n\n:::alert {type=warning}\n#### Заголовок третьего уровня\n\nТекст.\n:::\n\n:::alert {type=success variant=flat}\nБез заголовка: Docara остановит сборку, модель хранит как есть.\n:::\n",
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      },
+      {
+        "code": "docara_alert_title_required",
+        "path": "$.root.slots.default[2].data.title",
+        "what": "Docara requires an alert title; none is written"
+      }
+    ]
+  }
+}

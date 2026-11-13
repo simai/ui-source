@@ -59,6 +59,7 @@
   background-color: var(--sf-textarea-textarea--background-color);
   border: var(--sf-textarea-textarea--border);
   border-color: var(--sf-textarea-textarea--border-color, transparent);
+  border-block-end-color: var(--sf-textarea-textarea--line-color, var(--sf-textarea-textarea--border-color, transparent));
   border-end-end-radius: var(--sf-textarea-textarea--border-end-end-radius);
   border-end-start-radius: var(--sf-textarea-textarea--border-end-start-radius);
   border-start-end-radius: var(--sf-textarea-textarea--border-start-end-radius);
@@ -90,6 +91,18 @@
 
 /* A filled field keeps the placeholder on on-surface-variant, which the fill
    remaps to on-surface-container--variant; only the value is on-surface (FA-08). */
+/* The filled placeholder is the place's dim ink, as the bordered one is (as on
+   sf-input; forms batch round 2, item C): the textarea re-declares
+   --sf-on-surface-variant as the ink on a fill, so the place's value is kept
+   on the host above it. A strong coloured place keeps its full ink there
+   (--sf-place--fill-placeholder): its dim ink over the fill stays under 4.5:1. */
+.sf-textarea.sf-textarea--filled {
+  --sf-textarea--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-variant));
+}
+
+.sf-textarea.sf-textarea--filled textarea::placeholder {
+  --sf-textarea-placeholder--color: var(--sf-textarea--place-variant);
+}
 
 .sf-textarea.sf-textarea--size-1.sf-textarea--bordered .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1.sf-textarea--filled .sf-textarea-hint-text-wrap, .sf-textarea.sf-textarea--size-1.sf-textarea--flush .sf-textarea-hint-text-wrap {
   --sf-textarea-hint-text-wrap--font-size: var(--sf-text-size-1\/2);
@@ -136,15 +149,15 @@
 }
 
 .sf-textarea.sf-textarea--bordered:has(textarea:disabled) textarea, .sf-textarea.sf-textarea--filled:has(textarea:disabled) textarea, .sf-textarea.sf-textarea--flush:has(textarea:disabled) textarea {
-  --sf-textarea-textarea--color: var(--sf-on-disable);
+  --sf-textarea-textarea--color: var(--sf-on-surface-disabled);
 }
 
 .sf-textarea.sf-textarea--bordered:has(textarea:disabled) textarea {
-  --sf-textarea-textarea--border-color: var(--sf-outline-disable);
+  --sf-textarea-textarea--border-color: var(--sf-outline-disabled);
 }
 
 .sf-textarea.sf-textarea--filled:has(textarea:disabled) textarea {
-  --sf-textarea-textarea--background-color: var(--sf-disable);
+  --sf-textarea-textarea--background-color: var(--sf-surface-disabled);
 }
 
 .sf-textarea.sf-textarea--bordered:has(textarea:enabled:not(:disabled):not(.disabled):focus-visible) textarea {
@@ -163,16 +176,36 @@
 
 .sf-textarea.sf-textarea--filled textarea {
   --sf-textarea-textarea--background-color: var(--sf-textarea-background-color, var(--sf-surface-container));
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   --sf-textarea-textarea--border-color: var(--sf-textarea-border-color, var(--sf-transparent-for-focus));
 }
 
+/* The filled field's bottom line (C52, owner 2026-11-10): with the fill at 12 %
+   (C113) the fill alone stands 1.15 to 1.39 from its place, so at rest the
+   field also draws its bottom edge in --sf-outline, the bordered field's
+   boundary. Only the bottom: the other edges stay the transparent border
+   that a state colours. A state that colours the border (hover, press)
+   takes the line with it, so the edge is one colour. */
+.sf-textarea:not(.error).sf-textarea--filled:not(:has(textarea:disabled)) textarea {
+  --sf-textarea-textarea--line-color: var(--sf-textarea-border-color, var(--sf-outline));
+}
+
+/* Under the pointer the plate is the hover step (16), and in the dark theme
+   the place's dim ink lost 4.5:1 on it: 4.25 on a card, 4.32 on a popup
+   (C113 acceptance). The placeholder then takes the dim ink made for a
+   fill, --sf-on-surface-container-variant, as the dropdown's and lookup's
+   filled fields do (dark 85 on a page or card, 90 on a popup, 95 on a
+   nested one; light 35): 6.59 on a card, 5.70 on a popup, 5.57 nested.
+   A strong coloured place keeps its full ink. */
 .sf-textarea:not(.error).sf-textarea--filled:has(textarea:enabled:not(:disabled):not(.disabled):not(:read-only):hover) textarea {
   --sf-textarea-textarea--background-color: var(--sf-surface-container-hover);
+  --sf-textarea--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-container-variant));
+  --sf-textarea-textarea--line-color: var(--sf-textarea-textarea--border-color);
 }
 
 .sf-textarea:not(.error).sf-textarea--filled:has(textarea:enabled:not(:disabled):not(.disabled):not(:read-only):active) textarea {
   --sf-textarea-textarea--border-color: var(--sf-primary-active);
+  --sf-textarea-textarea--line-color: var(--sf-textarea-textarea--border-color);
 }
 
 .sf-textarea.error.sf-textarea--filled textarea {
@@ -296,7 +329,7 @@
 }
 
 .sf-textarea:has(textarea:disabled) textarea::placeholder {
-  --sf-textarea-placeholder--color: var(--sf-on-disable);
+  --sf-textarea-placeholder--color: var(--sf-on-surface-disabled);
 }
 
 .sf-textarea:not(.error):has(textarea:enabled:not(:disabled):not(.disabled):not(:read-only):hover) textarea {
@@ -404,5 +437,40 @@
   /* The boundary of the ordinary field; lighter than the hover rule. */
   .sf-textarea:not(.error).sf-textarea--filled:has(textarea:focus-within) textarea {
     --sf-textarea-textarea--border-color: var(--sf-outline);
+  }
+}
+
+/* C77 (owner 2026-11-11): the value inset of sf-input. The text starts
+   --sf-space-1/2, --sf-space-1 or --sf-space-2 from the outer edge, the border
+   counted inside it (size 1/2 keeps 12 on a phone); the text box adds no
+   picture-to-label step. The multi-line box takes the corner of its
+   single-line field (at most half the single-line height: a full corner on a
+   two-line box swallows the first line), and a rounder corner moves the text
+   in by half of what it adds over the control radius. Flush keeps no
+   padding of its own. */
+@layer sf.components {
+  .sf-textarea {
+    --sf-textarea--inset: var(--sf-space-1);
+    --sf-textarea--radius: min(var(--sf-textarea-radius, var(--sf-radius--ui)), var(--sf-ui-1--control-height) / 2);
+    --sf-textarea--value-inset: calc(var(--sf-textarea--inset) + max(calc(var(--sf-px) * 0), var(--sf-textarea--radius) - var(--sf-radius-1\/2)) / 2);
+  }
+
+  .sf-textarea.sf-textarea--size-2 {
+    --sf-textarea--inset: var(--sf-space-2);
+    --sf-textarea--radius: min(var(--sf-textarea-radius, var(--sf-radius--ui)), var(--sf-ui-2--control-height) / 2);
+  }
+
+  /* Size 1/2 never goes below 12 (--sf-b2): on a phone, and in a compact
+     region, where C79 brings it down a step to 28 and --sf-space-1/2 is 8.
+     The inset follows the field's step with that floor: compact 1/2 and 1
+     are 12, compact 2 (40) keeps 16 (intent acceptance 2026-11-12). */
+  .sf-textarea.sf-textarea--size-1\/2 {
+    --sf-textarea--inset: max(var(--sf-space-1\/2), var(--sf-b2));
+    --sf-textarea--radius: min(var(--sf-textarea-radius, var(--sf-radius--ui)), var(--sf-ui-1\/2--control-height) / 2);
+  }
+
+  .sf-textarea:is(.sf-textarea--size-1, .sf-textarea--size-2, .sf-textarea--size-1\/2):not(.sf-textarea--flush) textarea {
+    --sf-textarea-textarea--padding-inline-start: var(--sf-textarea-padding-inline, calc(var(--sf-textarea--value-inset) - var(--sf-px)));
+    --sf-textarea-textarea--padding-inline-end: var(--sf-textarea-padding-inline, calc(var(--sf-textarea--value-inset) - var(--sf-px)));
   }
 }

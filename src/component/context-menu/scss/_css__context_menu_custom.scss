@@ -71,11 +71,15 @@
 .sf-context-menu .sf-context-menu-content {
   // The row (owner C05, R029): as tall as a control of the menu's step, its
   // icon and text --sf-space-1/2 inside its highlight, the highlight rounded
-  // as a control is. The scrollbar's thumb is the inset's width (C07).
+  // as a control is. The scrollbar's track is the inset, the thumb and the
+  // inset (C07; the scroll-area inset rule, owner C106 addendum to C105,
+  // 2026-11-12): the thumb is the page scrollbar's, --sf-scroll-thumb-width,
+  // so the track is 14, --sf-scroll-bg-width. It was the inset's width (12).
+  // Measured in a headed browser: headless Chrome ignores ::-webkit-scrollbar.
   --sf-context-menu--row-height: var(--sf-ui-1\/2--control-height);
   --sf-context-menu--row-padding: var(--sf-space-1\/2);
   --sf-context-menu--row-radius: var(--sf-context-menu-row-radius, var(--sf-radius--ui));
-  --sf-context-menu--thumb: var(--sf-space-1\/4);
+  --sf-context-menu--thumb: var(--sf-scroll-thumb-width);
   --sf-context-menu--item-inset-start-1\/2: var(--sf-context-menu--row-padding);
   --sf-context-menu--item-inset-end-1\/2: var(--sf-context-menu--row-padding);
   --sf-context-menu--label-inset-1\/2: calc(var(--sf-context-menu--item-inset-start-1\/2) + var(--sf-ui-1\/2--text-space-x));

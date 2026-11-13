@@ -28,14 +28,23 @@ function renderItemContent(item, context) {
   `;
 }
 
+// A crumb is a link when it has an address, a button when the page handles it
+// (a value, as a folder picker's crumbs that drive its window, or «…»), and
+// text otherwise (R177 BC-05): a crumb without either was a focusable button
+// that did nothing.
+function crumbTag(item) {
+  if (item.current || item.disabled) return 'div';
+  if (item.href) return 'a';
+  if (item.ellipsis || item.value) return 'button';
+  return 'div';
+}
+
 function renderItem(item, context) {
-  const isInteractive = !item.current && !item.disabled;
-  const tag = item.href && !item.disabled && !item.current ? 'a' : isInteractive ? 'button' : 'div';
+  const tag = crumbTag(item);
   const itemClasses = joinClasses(
     'sf-breadcrumbs-item',
-    item.current ? '' : 'sf-breadcrumbs-item--link',
-    item.current || item.ellipsis ? 'sf-breadcrumbs-item--default' : '',
-    item.ellipsis ? 'sf-breadcrumbs-item--ellipsis' : '',
+    item.current || (tag === 'div' && !item.disabled) ? '' : 'sf-breadcrumbs-item--link',
+    tag === 'div' || item.ellipsis ? 'sf-breadcrumbs-item--default' : '',
     item.active ? 'active' : '',
     item.disabled ? 'disabled' : '',
     context.itemClass,
@@ -43,7 +52,7 @@ function renderItem(item, context) {
     item.itemClass,
   );
   const containerClasses = joinClasses(
-    'sf-breadcrumbs-item-container flex items-cross-center',
+    'sf-breadcrumbs-item-container',
     context.containerClass,
     item.containerClass,
   );
@@ -84,6 +93,8 @@ function renderItem(item, context) {
         ?disabled=${item.disabled}
         aria-current=${common.ariaCurrent}
         aria-label=${common.ariaLabel}
+        aria-haspopup=${item.ellipsis ? 'menu' : nothing}
+        aria-expanded=${item.ellipsis ? 'false' : nothing}
         data-sf-breadcrumb-index=${common.dataIndex}
         @click=${(event) => context.component?.handleItemClick?.(event, item)}
       >
@@ -108,6 +119,26 @@ function renderItem(item, context) {
   `;
 }
 
+// The siblings of a crumb (owner decision C93 item 3, off unless the host
+// says siblings): a button after the crumb opens them as a menu.
+function renderSiblings(item, context) {
+  if (!context.siblings || item.ellipsis || !item.siblings?.length) return nothing;
+
+  return html`
+    <button
+      type="button"
+      class="sf-breadcrumbs-item sf-breadcrumbs-item--link sf-breadcrumbs-item--default"
+      aria-haspopup="menu"
+      aria-expanded="false"
+      aria-label=${`${context.siblingsLabel}: ${item.label}`}
+      data-sf-breadcrumb-siblings=${String(item.index)}
+      @click=${(event) => context.component?.handleSiblingsClick?.(event, item)}
+    >
+      <span class="sf-breadcrumbs-item-container">${renderIcon('expand_more')}</span>
+    </button>
+  `;
+}
+
 function renderSeparator(context, index) {
   const slotName = `separator-${index}`;
   const slotContent = context.component?.hasSlotContent?.(slotName)
@@ -124,25 +155,40 @@ function renderSeparator(context, index) {
       aria-hidden="true"
       data-sf-breadcrumb-separator=${String(index)}
     >
-      <span class="sf-breadcrumbs-item-container flex items-cross-center">
+      <span class="sf-breadcrumbs-item-container">
         ${slotContent !== nothing ? slotContent : renderIcon(context.separatorIcon)}
       </span>
     </div>
   `;
 }
 
+// The trail is a list (R177 BC-09): a reader says «list, N items» as it does
+// for Fluent, USWDS, GOV.UK and Carbon. One entry per crumb, its separator
+// before it. The sheet draws the row itself, with no utility class (BC-07).
+// The name is the host's aria-label or the language file's word (BC-10: no
+// English literal of its own).
 export function renderBreadcrumbsTemplate(context) {
-  const rootClasses = joinClasses(
-    'sf-breadcrumbs flex items-cross-center',
-    context.rootClass,
-  );
+  const rootClasses = joinClasses('sf-breadcrumbs', context.rootClass);
 
   return html`
-    <nav class=${rootClasses} style=${context.rootStyle || nothing} aria-label=${context.ariaLabel || 'Breadcrumb'}>
-      ${context.items.map((item, index) => html`
-        ${index > 0 ? renderSeparator(context, index - 1) : nothing}
-        ${renderItem(item, context)}
-      `)}
+    <nav class=${rootClasses} style=${context.rootStyle || nothing} aria-label=${context.ariaLabel || nothing}>
+      <ol>
+        ${context.items.map((item, index) => html`
+          <li>
+            ${index > 0 ? renderSeparator(context, index - 1) : nothing}
+            ${renderItem(item, context)}
+            ${renderSiblings(item, context)}
+          </li>
+        `)}
+      </ol>
     </nav>
+    ${context.items.some((item) => item.ellipsis) ||
+    (context.siblings && context.items.some((item) => item.siblings?.length))
+      ? html`<sf-menu-context
+          class="sf-breadcrumbs-menu"
+          popup
+          @sf-menu-context-select=${(event) => context.component?.handleMenuSelect?.(event)}
+        ></sf-menu-context>`
+      : nothing}
   `;
 }

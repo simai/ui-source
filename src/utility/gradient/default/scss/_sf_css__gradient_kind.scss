@@ -1,0 +1,224 @@
+@use 'sass:map';
+@use 'sf_var__gradient_kind' as *;
+@use '../../../gradient-type/default/scss/sf_mix__gradient' as *;
+@use '../../../../core/scss/mix/mix__role_aliases' as aliases;
+@use '../../../../core/scss/mix/mix__places' as places;
+@layer sf.utilities {
+// SIMAI Framework
+// https://simai.io
+
+// GRADIENT KINDS (owner decisions C65, 2026-11-11, and C91/C92, 2026-11-12;
+// standard simai.backgrounds, Gradients)
+//
+// Building parts. Components use two of them by default, both functional
+// (C91 level 1): the fade at a scroll edge and the scrim under text laid on a
+// picture. The decorative ones (level 2: the empty state's spot, cover
+// placeholders, a tinted section head) are off in components until a
+// component's expressive attribute (sf-<name>--expressive on a CSS component)
+// or data-sf-style="expressive" on the root or a container turns them on. Hero banners, promo and intro plates, gradient headings and
+// chart areas are recipes built from these classes (level 3), not components.
+//
+//   gradient-glow       two soft spots of the colour and its partner (a hero
+//                       recipe); gradient-glow-spot: one circle and straight
+//                       to nothing, centred on --sf-gradient--spot-x/-y
+//   gradient-tint       the colour fading down to nothing over a fixed length
+//                       (--sf-gradient--tint-size), not a share of the height
+//   gradient-duo        the colour into its partner, solid, white text (promo)
+//   gradient-cover      two near tones of the colour, solid, its own ink (a
+//                       cover or placeholder from 64 px)
+//   gradient-scrim      text on a picture (C92 look 3, long and soft): black 64
+//                       under the text, a long ramp of alpha steps above it;
+//                       the element's top padding is the ramp
+//                       (--sf-gradient--scrim-ramp); gradient-scrim-plate: a
+//                       flat band of black 64 instead (C92 look 5)
+//   gradient-fade       a mask: the content fades out at the end ("there is more")
+//   gradient-text       a large heading filled with the colour into its partner
+//                       (a recipe part: from 24 px, 3:1 at every point)
+//
+//   gradient-color-<c>  the colour: primary (the default), secondary, tertiary
+//                       or a static hue; .sf-hue-<c> on the element or above it
+//                       gives the same
+//   gradient-to-<c>     the partner instead of the default neighbour
+//   gradient-strength-<n>  8 | 12 | 16 (default) | 24, the alpha kinds
+//   gradient-dir-<side> t | tr | r | br | b | bl | l | tl, the linear kinds
+//
+// Variables for components: --sf-gradient--from and --sf-gradient--to (the
+// colours), --sf-gradient--angle, --sf-gradient--strength; the fade reads
+// --sf-gradient--fade-size, the tint --sf-gradient--tint-size, the spot
+// --sf-gradient--spot-size/-x/-y and the scrim --sf-gradient--scrim-ramp.
+//
+// Only palette tones and the alpha steps: an alpha kind is tone 50 of its
+// colour at a fill step, one step (+8) stronger in the dark theme, mixed with
+// transparent; a solid kind takes deeper tones in the dark theme. Every kind
+// is a background-image (fade: a mask) laid over a solid place colour: the
+// alpha kinds over the element's place, duo and cover over their own first
+// colour. Forced colours drop the image and keep the colour.
+
+$s: 'var(--sf-gradient--strength, 16)';
+$c: 'var(--sf-gradient--from)';
+$p: 'var(--sf-gradient--to)';
+$ramp: 'var(--sf-gradient--scrim-ramp, calc(var(--sf-space-4) * 4))';
+
+// The colour at an alpha step: light and dark steps as calc() expressions.
+@function ink($color, $light, $dark) {
+    @return 'light-dark(color-mix(in oklab, #{$color} calc((#{$light}) * 1%), transparent), color-mix(in oklab, #{$color} calc((#{$dark}) * 1%), transparent))';
+}
+@function tone($set, $light, $dark, $fallback) {
+    @return 'light-dark(var(--sf-gradient--#{$set}-#{$light}, var(--sf-#{$fallback}-#{$light})), var(--sf-gradient--#{$set}-#{$dark}, var(--sf-#{$fallback}-#{$dark})))';
+}
+
+// The colour inputs, inherited: .sf-hue-<c> first, so a gradient-color-<c>
+// on the same element wins, and gradient-to-<c> after both. This sheet owns
+// .sf-hue-<c> selectors beside core's, so its rule names them too: a page with
+// a hue loads the sheet, and a kind under a hue finds its tones.
+@each $color in $gradient-kind-colors {
+    .sf-hue-#{$color}, .gradient-color-#{$color} {
+        @each $tone in $gradient-color-tones {
+            --sf-gradient--c-#{$tone}: var(--sf-#{$color}-#{$tone});
+        }
+        @each $tone in $gradient-partner-tones {
+            --sf-gradient--p-#{$tone}: var(--sf-#{gradient-partner($color)}-#{$tone});
+        }
+    }
+}
+@each $color in $gradient-kind-colors {
+    .gradient-to-#{$color} {
+        @each $tone in $gradient-partner-tones {
+            --sf-gradient--p-#{$tone}: var(--sf-#{$color}-#{$tone});
+        }
+    }
+}
+
+// The kinds. Each names its colours and angle on itself; the settings below
+// come later and win.
+.gradient-glow, .gradient-tint {
+    --sf-gradient--from: var(--sf-gradient--c-50, var(--sf-primary-50));
+    --sf-gradient--to: var(--sf-gradient--p-50, var(--sf-tertiary-50));
+}
+.gradient-glow {
+    // The alpha stops are color-mix(), CSS Color 4 as the interpolation is,
+    // so there is no plain fallback line: without it the place shows alone.
+    background-image:
+        radial-gradient(ellipse 55% 90% at 20% 0% in oklab, #{ink($c, '#{$s} + 8', 'min(32, #{$s} + 16)')} 0%, #{ink($c, 'max(4, #{$s} - 4)', '#{$s} + 4')} 40%, transparent 100%),
+        radial-gradient(ellipse 45% 80% at 85% 10% in oklab, #{ink($p, '#{$s} + 8', 'min(32, #{$s} + 16)')} 0%, #{ink($p, 'max(4, #{$s} - 4)', '#{$s} + 4')} 40%, transparent 100%);
+}
+.gradient-glow.gradient-glow-spot {
+    // One circle and straight to nothing (round 2, R160): no second step and
+    // no ellipse reaching under the text. At strength 16: 12, dark 20.
+    background-image: radial-gradient(circle var(--sf-gradient--spot-size, calc(var(--sf-space-4) * 2.5)) at var(--sf-gradient--spot-x, 50%) var(--sf-gradient--spot-y, 33%) in oklab, #{ink($c, 'max(4, #{$s} - 4)', '#{$s} + 4')} 0%, transparent 100%);
+}
+.gradient-tint {
+    --sf-gradient--angle: 180deg;
+    // A fixed length (R164): on a tall narrow plate a share of the height was
+    // a long coloured tail.
+    background-image: linear-gradient(var(--sf-gradient--angle) in oklab, #{ink($c, $s, '#{$s} + 8')} 0, transparent var(--sf-gradient--tint-size, calc(var(--sf-space-4) * 6)));
+}
+.gradient-duo {
+    --sf-gradient--from: #{tone('c', 40, 30, 'primary')};
+    --sf-gradient--to: #{tone('p', 40, 30, 'tertiary')};
+    --sf-gradient--angle: 120deg;
+    background-color: var(--sf-gradient--from);
+    color: var(--sf-white);
+    @include sf-gradient-image(linear-gradient, 'var(--sf-gradient--angle)', 'var(--sf-gradient--from), var(--sf-gradient--to)');
+    // A strong coloured place (C42): what stands on the plate takes white ink
+    // on the alpha scale and the accent turns white with the plate's colour
+    // for its label, so a filled button is a white button. White in both
+    // themes, as on glass over media (the same white role set, fill 8/12/16):
+    // the dark plate is a deep tone, not tone 80 under tone-20 ink.
+    --sf-surface-place: var(--sf-gradient--from);
+    --sf-surface-place-solid: var(--sf-gradient--from);
+    --sf-surface-place-ground: var(--sf-gradient--from);
+    --sf-surface-underlay: initial;
+    --sf-on-surface: var(--sf-white);
+    --sf-on-surface-variant: var(--sf-white--alfa-80);
+    --sf-on-surface-container-variant: var(--sf-white--alfa-80);
+    --sf-surface-state-hover: var(--sf-white--alfa-4);
+    --sf-surface-state-select: var(--sf-white--alfa-8);
+    --sf-surface-state-active: var(--sf-white--alfa-12);
+    --sf-surface-container: var(--sf-white--alfa-8);
+    --sf-surface-container-hover: var(--sf-white--alfa-12);
+    --sf-surface-container-active: var(--sf-white--alfa-16);
+    --sf-outline: var(--sf-white--alfa-64);
+    --sf-outline-variant: var(--sf-white--alfa-24);
+    --sf-surface-disabled: var(--sf-white--alfa-12);
+    --sf-on-surface-disabled: var(--sf-white--alfa-64);
+    --sf-on-surface-muted: var(--sf-on-surface-disabled);
+    @include aliases.sf-role-aliases(places.$sf-place-aliased);
+    --sf-primary: var(--sf-white);
+    --sf-primary-hover: var(--sf-gradient--c-90, var(--sf-primary-90));
+    --sf-primary-active: var(--sf-gradient--c-80, var(--sf-primary-80));
+    --sf-on-primary: var(--sf-gradient--from);
+    --sf-primary-container: var(--sf-white--alfa-12);
+    --sf-primary-container-hover: var(--sf-white--alfa-8);
+    --sf-primary-container-active: var(--sf-white--alfa-4);
+    --sf-on-primary-container: var(--sf-white);
+    --sf-place--plate: var(--sf-white);
+    --sf-place--on-plate: var(--sf-gradient--from);
+}
+.gradient-cover {
+    --sf-gradient--from: #{tone('c', 90, 30, 'primary')};
+    --sf-gradient--to: #{tone('c', 80, 20, 'primary')};
+    --sf-gradient--angle: 135deg;
+    background-color: var(--sf-gradient--from);
+    color: #{tone('c', 10, 90, 'primary')};
+    @include sf-gradient-image(linear-gradient, 'var(--sf-gradient--angle)', 'var(--sf-gradient--from), var(--sf-gradient--to)');
+}
+.gradient-scrim {
+    // Long and soft (C92 look 3). Under the text the scrim holds black 64, so
+    // every line stands on the full step however many lines there are (the
+    // eased 64 -> 48 under a five-line caption left the title at 4.15:1 over
+    // a bright sky). Above the text the ramp, four times space-4 by default,
+    // steps down the alpha scale 48 -> 28 -> 16 -> 8 -> 0, weaker at the top
+    // (black 4 is a step kept for consumers, read by no sheet). The element's
+    // top padding is the ramp, with no text in it.
+    --sf-gradient--angle: 0deg;
+    color: var(--sf-white);
+    @include sf-gradient-image(linear-gradient, 'var(--sf-gradient--angle)',
+        'var(--sf-black--alfa-64) 0%, var(--sf-black--alfa-64) calc(100% - #{$ramp}), var(--sf-black--alfa-48) calc(100% - #{$ramp} * 0.85), var(--sf-black--alfa-28) calc(100% - #{$ramp} * 0.7), var(--sf-black--alfa-16) calc(100% - #{$ramp} * 0.45), var(--sf-black--alfa-8) calc(100% - #{$ramp} * 0.25), transparent 100%');
+}
+// The plate (C92 look 5): one flat band of black 64 under the text, for long
+// captions and busy photos; no ramp, so no top padding is needed.
+.gradient-scrim.gradient-scrim-plate {
+    background-color: var(--sf-black--alfa-64);
+    background-image: none;
+}
+// The fade is a mask, so it fades the content on any place -- a card, glass,
+// a pattern -- instead of painting a guess of the place colour. The mask reads
+// only the alpha of its stops: an opaque token, no raw colour.
+.gradient-fade {
+    --sf-gradient--angle: 180deg;
+    mask-image: linear-gradient(var(--sf-gradient--angle), var(--sf-black) calc(100% - var(--sf-gradient--fade-size, var(--sf-space-4))), transparent);
+}
+
+// A filled heading (a recipe part, R166): tone 40 of the colour into the
+// partner's 40, dark 80 -> 80, mixed in OKLab, painted through the glyphs.
+// Only for large text, 24 px and up, where 3:1 holds at every point; the
+// heading keeps its own ink underneath, which forced colours show.
+.gradient-text {
+    --sf-gradient--from: #{tone('c', 40, 80, 'primary')};
+    --sf-gradient--to: #{tone('p', 40, 80, 'tertiary')};
+    --sf-gradient--angle: 90deg;
+    @include sf-gradient-image(linear-gradient, 'var(--sf-gradient--angle)', 'var(--sf-gradient--from), var(--sf-gradient--to)');
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+@media (forced-colors: active) {
+    .gradient-text {
+        -webkit-text-fill-color: currentColor;
+        background-image: none;
+    }
+}
+
+// Settings.
+@each $step in $gradient-strengths {
+    .gradient-strength-#{$step} {
+        --sf-gradient--strength: #{$step};
+    }
+}
+@each $side, $angle in $gradient-dirs {
+    .gradient-dir-#{$side} {
+        --sf-gradient--angle: #{$angle};
+    }
+}
+}

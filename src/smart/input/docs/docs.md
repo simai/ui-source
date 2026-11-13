@@ -154,6 +154,21 @@ Quantity (`sf-input-quantity`).
 `1/2`, `1` and `2`). Visible presentation is
 `bordered` or `filled`. `hidden` is preserved for compatibility but is not a
 visible control and should not replace a native hidden field in new markup.
+Bordered is the default on every place. Filled is for a search or filter field
+over a table or a list, on the page, a card or a popup (C52): at rest it draws
+a thin bottom line in `--sf-outline` under its 8 % fill (C41), and a state
+that colours the border (hover, press) colours the line with it.
+
+## Required: the error after a submit attempt
+
+Since 1.8.0 a `required` field left empty shows its error once the form's
+check fails (a submit attempt, `checkValidity()`, `reportValidity()`), as
+`sf-dropdown` does: the error outline (on `appearance="filled"` the error
+fill), «Заполните поле» («Fill in this field») under the field in the field-message type at the field's
+gap, and `aria-invalid` / `aria-errormessage` on the control. The browser's
+own bubble and its focus on the first invalid field stay as they are. Typing
+that fills the field, or `form.reset()`, clears it. The page's `invalid` with
+`error-message` wins over it.
 
 ## Value and native form reset
 
@@ -180,8 +195,8 @@ The host element dispatches bubbling custom events from `SfBaseElement`:
 ## External project templates
 
 Base Input supplies readable secondary label/hint roles. Bordered placeholder
-uses on-surface-variant; filled placeholder uses on-surface to remain readable
-on its interactive tonal surface. Explicit disabled overrides are separate.
+uses on-surface-variant; the filled placeholder is the place's dim ink too
+(on a strong coloured place, the place's full ink). Explicit disabled overrides are separate.
 
 The default visible and hidden input roots consume the shared rootStyle context;
 the visible root also consumes rootClass. Author CSSOM token edits and root-style

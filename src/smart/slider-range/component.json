@@ -2,7 +2,7 @@
   "$comment": "The source of sf-slider-range's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/range-slider (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/range-slider/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.slider-range",
   "tag": "sf-slider-range",
-  "version": "1.3.0",
+  "version": "1.4.1",
   "kind": "leaf",
   "family": "slider",
   "settings": {
@@ -27,6 +27,31 @@
       "nullable": true,
       "default": null
     },
+    "page-step": {
+      "type": "number",
+      "nullable": true,
+      "summary": "How far PageUp, PageDown and Shift with an arrow move a handle; ten steps when empty, as sf-input-quantity."
+    },
+    "ticks": {
+      "type": "boolean",
+      "default": false,
+      "summary": "A dot per step on the track, when there are at most twenty steps: look T1 (owner decision C80), cut out in the colour of the place the slider stands on."
+    },
+    "scale": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Writes the two ends (min and max) under the track, in the slider's language and digits (C78)."
+    },
+    "marks": {
+      "type": "string",
+      "default": "",
+      "summary": "Labels under the track at chosen values, \"value:text\" joined by commas (\"1:плохо,3:нормально,5:отлично\"); a value without text writes its number. Replaces the two ends of scale."
+    },
+    "field": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The from/to field at the end of the track line (owner decision C80): one field «5 000 – 20 000 ₽» (or one number), the field height of the step; typing a number and Enter or leaving the box moves the handle, dragging rewrites the number. Hides the value at the end of the name line."
+    },
     "margin": {
       "type": "string",
       "default": ""
@@ -40,6 +65,11 @@
       "default": true
     },
     "label": {
+      "type": "string",
+      "default": "",
+      "summary": "The visible name above the slider, as every field's label (owner decision C78); it names the handles unless aria-label, aria-labelledby or lower-label/upper-label do. Until 2027-01-01 the words none, text and tooltip here still mean value-display."
+    },
+    "value-display": {
       "type": "enum",
       "values": [
         "none",
@@ -47,7 +77,17 @@
         "tooltip"
       ],
       "default": "none",
-      "summary": "How each handle shows its value: not at all, as text beside it, or as a tooltip."
+      "summary": "How the value is shown: not at all (each handle still reads it out), as text at the end of the name line, or in a bubble over the handle while it is dragged or keyboard-focused (C78). Formerly label, read until 2027-01-01."
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1",
+      "summary": "Size of the step, as every form field: the slider row is the control height (32 / 40 / 48, phone 28 / 36 / 44), the handle 20 / 24 / 28 (S5)."
     },
     "prefix-text": {
       "type": "string",
@@ -65,17 +105,34 @@
       "type": "string",
       "default": ""
     },
-    "decimals": {
+    "precision": {
+      "type": "number",
+      "integer": true,
+      "min": 0,
+      "max": 20,
+      "nullable": true,
+      "default": null,
+      "summary": "Digits after the decimal mark in the value shown and read out; empty takes them from `step` (0.5 has one), as sf-input-quantity, and fewer than the step's are never shown, so a value is not rounded off its step. Formerly `decimals`, an alias until 2027-01-01."
+    },
+    "grouping": {
+      "type": "boolean",
+      "default": true,
+      "summary": "Group thousands the page's language's way («20 000»); `grouping=\"false\"` writes the digits together, for a year or a code."
+    },
+    "locale": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The language the value is written in; unset, the page's (`lang`), so a Russian page reads «2,5 кг»."
     },
     "tooltip-position": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Where the value bubble stands while a handle is dragged: top (default) or bottom."
     },
     "text-position": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "No effect since 1.4.0: value-display=\"text\" writes the value at the end of the name line. Kept so old markup stays valid."
     },
     "label-position": {
       "type": "string",
@@ -84,6 +141,16 @@
     "disabled": {
       "type": "boolean",
       "default": false
+    },
+    "readonly": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Shown and not changed (owner decision C80, look R2): a read-only field's light outline at field height, a neutral handle and fill; the handles stay focusable, carry aria-readonly and are read out, keys and the pointer change nothing. The value is still submitted."
+    },
+    "name": {
+      "type": "string",
+      "default": "",
+      "summary": "The name the value is submitted under in a form: the handle's number, or with two handles two entries under the one name (price=5000&price=20000). Nothing while disabled."
     }
   },
   "values": {
@@ -122,6 +189,14 @@
     }
   },
   "actions": {},
+  "form": {
+    "value": "value",
+    "name": "name",
+    "default": "value",
+    "submits": "value",
+    "reset": "default",
+    "disabled": "disabled"
+  },
   "keyboard": {
     "host": {
       "Tab": "reach",
@@ -129,6 +204,8 @@
       "ArrowRight": "step:+1",
       "ArrowUp": "step:+1",
       "ArrowDown": "step:-1",
+      "PageUp": "step:+page",
+      "PageDown": "step:-page",
       "Home": "to:min",
       "End": "to:max"
     }
@@ -162,6 +239,8 @@
       "ArrowRight": "step:+1",
       "ArrowUp": "step:+1",
       "ArrowDown": "step:-1",
+      "PageUp": "step:+page",
+      "PageDown": "step:-page",
       "Home": "to:min",
       "End": "to:max"
     }
@@ -227,10 +306,32 @@
         "since-version": "1.3.0",
         "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
         "note": "the element is sf-slider-range; sf-range-slider is a subclass defined beside it until the date"
+      },
+      {
+        "from": "decimals",
+        "to": "precision",
+        "kind": "setting",
+        "since": "2026-11-12",
+        "remove_after": "2027-01-01",
+        "since-version": "1.4.0",
+        "section": "§3.1, change journal attribute-slider-range-c78",
+        "note": "the old attribute writes precision, the name sf-input-quantity gives the same setting (S1); the class component still reads data-decimals until the date"
+      },
+      {
+        "from": "label=\"none|text|tooltip\"",
+        "to": "value-display",
+        "kind": "attribute",
+        "mode": "manifest-only",
+        "shim": "none",
+        "since": "2026-11-12",
+        "remove_after": "2027-01-01",
+        "since-version": "1.4.0",
+        "section": "§4.2, change journal attribute-slider-range-c78",
+        "note": "label is the visible name now (C78); its three former words still set value-display, read by the element itself until the date (no shim: the attribute keeps its name, only those values move)"
       }
     ]
   },
-  "x-summary": "A slider for one number or a range of two on a track: drag, click or keys move a handle by step, the fill shows the chosen part, and the value can be shown as text or a tooltip on each handle.",
+  "x-summary": "A slider for one number or a range of two on a track, as a form field: a visible name above, drag, click or keys move a handle by step (PageUp/PageDown by ten), the value shown at the end of the name line, in a bubble while dragging, or in a from/to field beside the track; ticks and a scale on request; sizes 1/2, 1, 2; read-only and disabled.",
   "x-source": {
     "package": "framework",
     "folder": "range-slider",
@@ -254,7 +355,7 @@
     "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates",
     "examples: examples.json from studio.fixture.json and the docs",
     "css-variables: five public variables read by the class sheet src/component/range-slider/scss with the role token as fallback (§6); a state the public-variables probe cannot draw at rest (hover, an outline) takes no variable of its own yet",
-    "form: none -- the slider has no name and no form value today; a page reads value (it is not a form control in this version)",
+    "form (1.3.1): the host is a form control (§17.1). With `name` it submits its value -- one number, or both joined by a comma with two handles -- nothing while disabled, and a form reset puts the value it was written with back. It submitted nothing before (docs pre-check 2026-11-10 RS-03).",
     "events.change: sent once by the host through sfEmit for a person's change, without the element in its detail (§8); the shim sends sf-range-slider-change and onSliderChange after it. A value set from code sends neither any more (§8), where sf-range-slider-change used to follow it",
     "events sf-range-slider-update/-set/-start/-end and their onSlider* copies stay as they are, outside the interface: the class component's, read by the drag lock",
     "host-states: none -- disabled is drawn by the template from the setting (the script no longer toggles the class)",
@@ -262,7 +363,9 @@
     "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
     "version 1.2.0: the handle is a solid disc with a ring of the surface around it, and the fill ends under it (owner, 2026-11-01); hover and press draw a halo of the primary state layer, disabled is a solid disc of the disabled content role. The handle-inner-color variable is now opt-in: unset, it is transparent; a colour draws the hollow handle of 1.1. The look comes from the class sheet src/component/range-slider 1.1.0.",
     "version 1.2.1: no ring around the handle by default, a plain disc with a soft shadow, and the inactive track loses its shadow, a flat fill (owner, 2026-11-01). The ring stays opt-in through --sf-thumb-handle--ring-width and --sf-thumb-handle--ring-color. Class sheet src/component/range-slider 1.1.1.",
-    "version 1.3.0: the tag is sf-slider-range (naming decision 2026-11-02: sf-[set]-<block>[-<variant>]); the folder, the id smart.slider-range and the bundle cl-slider-range follow it. sf-range-slider stays a dated alias until 2027-01-01: a subclass the Smart base defines beside the new tag, listed in the rule, in sheets as :is(sf-slider-range, sf-range-slider) (change journal tag-sf-range-slider-to-sf-slider-range, path-smart-range-slider-to-slider-range)."
+    "version 1.3.0: the tag is sf-slider-range (naming decision 2026-11-02: sf-[set]-<block>[-<variant>]); the folder, the id smart.slider-range and the bundle cl-slider-range follow it. sf-range-slider stays a dated alias until 2027-01-01: a subclass the Smart base defines beside the new tag, listed in the rule, in sheets as :is(sf-slider-range, sf-range-slider) (change journal tag-sf-range-slider-to-sf-slider-range, path-smart-range-slider-to-slider-range).",
+    "version 1.3.1 (2026-11-11): the slider is a form control (docs pre-check 2026-11-10 RS-03). A new setting `name`; with it the host submits its value through ElementInternals -- the number, or both numbers joined by a comma with two handles -- and nothing while disabled; form.reset() puts back the value the element was written with. The values it shows are written in the page's language by the class it draws with (component.range-slider, «2,5», «20 000»; same root cause as the class fix). Nothing else is drawn differently.",
+    "version 1.4.0 (2026-11-12, owner decisions C78 and C80, defects S1-S7 from the docs study control/research/2026-11-11-range-slider.md): label is the field's visible name (the handles are named by it unless aria-label, aria-labelledby or lower/upper-label do) and the former label setting is value-display none|text|tooltip -- text at the end of the name line, tooltip a bubble shown only while the handle is dragged or keyboard-focused; label=\"none|text|tooltip\" keeps that meaning until 2027-01-01 (documentary alias, journal attribute-slider-range-c78). New: size 1/2|1|2 (row = control height of the step, handle 20/24/28), page-step (PageUp/PageDown/Shift+arrow, ten steps by default), precision (decimals is its dated alias), grouping, locale, readonly (R2: a read-only field's outline, neutral handle and fill), ticks (T1: dots in the place colour on the outline track), scale and marks (labels under the track), field (one from/to field at the end of the track line, Enter moves the handle). Values and ARIA are rounded to the step's digits; a range submits two entries under its name; the unit is held by a no-break space; disabled text takes the disabled content role; the touch target is at least the size-2 control height under a finger; the inactive track is --sf-outline (track B). Class sheet component.range-slider 1.4.0."
   ],
   "x-registry": {
     "ownership": {

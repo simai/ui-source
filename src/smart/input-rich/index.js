@@ -9,6 +9,29 @@ import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
 
+// The marks the toolbar sets: the elements that say them, and the style of
+// a run that says the mark is off (the cleaner splits a mark around it).
+const MARKS = {
+  strong: {selector: 'strong, b', off: ['fontWeight', 'normal']},
+  em: {selector: 'em, i', off: ['fontStyle', 'normal']},
+};
+const markElement = (doc, tag, on) => {
+  const element = doc.createElement(on ? tag : 'span');
+  if (!on) element.style[MARKS[tag].off[0]] = MARKS[tag].off[1];
+  return element;
+};
+// Content inside the pending marks ({strong?, em?}), strong outside em.
+const wrapMarks = (doc, marks, content) => {
+  let wrap = content;
+  for (const tag of Object.keys(MARKS)) {
+    if (marks[tag] === undefined) continue;
+    const element = markElement(doc, tag, marks[tag]);
+    element.append(wrap);
+    wrap = element;
+  }
+  return wrap;
+};
+
 // On a phone -- below the md breakpoint, where core declares
 // --sf-breakpoint-md -- a form in a popup is a sheet at the bottom of the
 // screen (decision C32), as sf-menu-context reads it.
@@ -27,9 +50,10 @@ const onPhone = (doc) => !doc.defaultView?.getComputedStyle(doc.documentElement)
 //
 // The value is never trusted: what the page gives, what is pasted or dropped,
 // and the editing surface after every keystroke and command go through the
-// one cleaner. A command may use document.execCommand where the browser has
-// it, but its result is cleaned the same way, and undo and redo are the
-// component's own history of cleaned states, so neither depends on it.
+// one cleaner. Every command is the component's own DOM operation (Bold and
+// Italic too: the browser's command reads the computed style as the mark),
+// its result is cleaned the same way, and undo and redo are the component's
+// own history of cleaned states.
 
 const RichTextElement = elementFromManifest(manifest, {
   base: SfBaseElement,
@@ -312,7 +336,8 @@ class SfRichText extends FormField(RichTextElement) {
     const on = (type, handler) => editor.addEventListener(type, handler, {signal});
     on('beforeinput', (event) => this._onBeforeInput(event));
     on('input', (event) => this._onInput(event));
-    on('compositionend', () => this._afterTyping('insertCompositionText'));
+    on('compositionstart', () => this._onCompositionStart());
+    on('compositionend', (event) => this._onCompositionEnd(event));
     on('keydown', (event) => this._onKeydown(event));
     on('paste', (event) => this._onPaste(event));
     on('dragstart', () => { this._dragFromSelf = true; });
@@ -340,6 +365,7 @@ class SfRichText extends FormField(RichTextElement) {
     this._history = [{html: editor.innerHTML, selection: null}];
     this._historyIndex = 0;
     this._lastTyping = 0;
+    this._pending = null;
     this._committed = this.value;
     this._syncEmpty();
     this._updateState();
@@ -387,9 +413,36 @@ class SfRichText extends FormField(RichTextElement) {
   }
 
   _onSelectionChange() {
-    if (!this._range()) return;
+    const range = this._range();
+    if (!range) return;
+    if (!this._inComposition) this._caretIntoMark(range);
     this._lastSelection = this._saveSelection();
     this._updateState();
+  }
+
+  // A caret on a mark's end edge -- at the block's level right after a bold
+  // run, or at the start of the text after it -- is a place the browser types
+  // into the mark, while the state read there said plain (E1; C12: the state
+  // is the one aria-pressed says). It is put at the end of the mark's text,
+  // the same character, so Bold reads the place the text goes.
+  _caretIntoMark(range) {
+    if (!range.collapsed) return;
+    const {startContainer: node, startOffset: offset} = range;
+    let before = null;
+    if (node.nodeType === 1) before = node.childNodes[offset - 1] ?? null;
+    else if (node.nodeType === 3 && offset === 0) before = node.previousSibling;
+    if (!before || before.nodeType !== 1 || !before.matches?.('strong, b, em, i, span')) return;
+    const doc = this.ownerDocument;
+    const walker = doc.createTreeWalker(before, 4);
+    let last = null;
+    for (let text = walker.nextNode(); text; text = walker.nextNode()) last = text;
+    if (!last?.data.length) return;
+    const caret = doc.createRange();
+    caret.setStart(last, last.data.length);
+    caret.collapse(true);
+    const selection = doc.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(caret);
   }
 
   _within(node, selector) {
@@ -422,22 +475,19 @@ class SfRichText extends FormField(RichTextElement) {
   _updateState() {
     const range = this._range();
     const node = this._startNode(range);
-    const command = (name) => {
-      try {
-        return Boolean(range?.collapsed && this.ownerDocument.queryCommandState?.(name));
-      } catch {
-        return false;
-      }
-    };
     const block = node ? this._within(node, 'p, h2, h3, h4, li') : null;
     const item = node ? this._within(node, 'li') : null;
+    // Bold and Italic say the marks alone, or the marks the next typing
+    // takes at a caret: never the computed style, which in a heading (bold
+    // by its type) said bold on every word.
+    const mark = (tag) => this._pendingMark(tag, range) ?? Boolean(node && this._within(node, MARKS[tag].selector));
     const next = {
       p: block?.localName === 'p',
       h2: block?.localName === 'h2',
       h3: block?.localName === 'h3',
       h4: block?.localName === 'h4',
-      strong: Boolean(node && this._within(node, 'strong, b')) || command('bold'),
-      em: Boolean(node && this._within(node, 'em, i')) || command('italic'),
+      strong: mark('strong'),
+      em: mark('em'),
       link: Boolean(node && this._within(node, 'a')),
       ul: item?.parentElement?.localName === 'ul',
       ol: item?.parentElement?.localName === 'ol',
@@ -449,6 +499,24 @@ class SfRichText extends FormField(RichTextElement) {
     const changed = Object.keys(next).some((key) => next[key] !== this._state[key]);
     this._state = next;
     if (changed) this.requestComponentUpdate('selection');
+  }
+
+  // The marks the next typing takes at a caret where Bold or Italic was
+  // pressed ({at, strong?, em?}); forgotten once the caret moves.
+  _pendingMarks(range = this._range()) {
+    if (!this._pending) return null;
+    // A composition moves the caret with its text: the marks stand until it
+    // ends, and Bold and Italic stay pressed meanwhile (M1, M2).
+    if (this._inComposition) return this._pending;
+    if (!range?.collapsed || this._saveSelection()?.start !== this._pending.at) {
+      this._pending = null;
+      return null;
+    }
+    return this._pending;
+  }
+
+  _pendingMark(tag, range) {
+    return this._pendingMarks(range)?.[tag];
   }
 
   // ---------------------------------------------------------- cleaning
@@ -555,6 +623,9 @@ class SfRichText extends FormField(RichTextElement) {
         event.preventDefault();
         this.runCommand('bold');
         return;
+      case 'insertText':
+        if (this._pending && event.data) this._typePending(event);
+        return;
       case 'formatItalic':
         event.preventDefault();
         this.runCommand('italic');
@@ -566,6 +637,92 @@ class SfRichText extends FormField(RichTextElement) {
     }
   }
 
+  // Text typed at a caret where Bold or Italic was pressed: it takes the
+  // pending marks (a mark off is a run of normal style the cleaner splits
+  // the mark around).
+  _typePending(event) {
+    const range = this._range();
+    const pending = this._pendingMarks(range);
+    this._pending = null;
+    if (!pending || !range) return;
+    event.preventDefault();
+    const doc = this.ownerDocument;
+    const text = doc.createTextNode(event.data);
+    range.insertNode(wrapMarks(doc, pending, text));
+    const caret = doc.createRange();
+    caret.setStart(text, text.data.length);
+    caret.collapse(true);
+    const selection = doc.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(caret);
+    this._afterTyping('insertText');
+    this._say('insertText');
+  }
+
+  _onCompositionStart() {
+    this._composing = this._pendingMarks();
+    this._inComposition = true;
+    this._composedFrom = this.editor?.innerHTML ?? '';
+  }
+
+  // Composed text (an IME) cannot be inserted by hand: the browser writes
+  // it. The marks pending when the composition started go round it once it
+  // ends, as typed text takes them; a composition that did not end at the
+  // pending caret plus its text keeps the text plain. A cancelled one (no
+  // text, the caret back where it began) keeps the marks pending (M1).
+  _onCompositionEnd(event) {
+    const pending = this._composing;
+    const before = this._composedFrom;
+    this._composing = null;
+    this._inComposition = false;
+    this._composedFrom = null;
+    this._pending = null;
+    const text = String(event.data ?? '');
+    const editor = this.editor;
+    const end = this._saveSelection();
+    const collapsed = Boolean(end && end.start === end.end);
+    if (pending && !text && collapsed && end.start === pending.at) this._pending = pending;
+    if (!pending || !text || !editor || !collapsed || end.start - text.length !== pending.at) {
+      this._afterTyping('insertCompositionText');
+      this._sayComposed(before);
+      return;
+    }
+    const doc = this.ownerDocument;
+    const range = doc.createRange();
+    const [startNode, startOffset] = pointAt(editor, pending.at);
+    const [endNode, endOffset] = pointAt(editor, end.start);
+    range.setStart(startNode, startOffset);
+    range.setEnd(endNode, endOffset);
+    if (range.toString() !== text) {
+      this._afterTyping('insertCompositionText');
+      this._sayComposed(before);
+      return;
+    }
+    range.insertNode(wrapMarks(doc, pending, range.extractContents()));
+    this._clean(end);
+    this._restoreSelection(end);
+    this._afterTyping('insertCompositionText');
+    this._sayComposed(before);
+  }
+
+  // One input that is not composing after every composition that changed
+  // the text, marks or none (M3): a listener that skips composing inputs, as
+  // many do, still hears an IME's edit. It waits one task: a browser that
+  // says the commit itself after compositionend (WebKit) is that input, and
+  // the component's is not sent. A cancel that left the text as it was says
+  // nothing, as nothing changed.
+  _sayComposed(before) {
+    const editor = this.editor;
+    if (!editor || editor.innerHTML === before) return;
+    const turn = {said: false};
+    this._composedSay = turn;
+    setTimeout(() => {
+      if (this._composedSay !== turn) return;
+      this._composedSay = null;
+      if (!turn.said) this._say('insertCompositionText');
+    }, 0);
+  }
+
   _onInput(event) {
     // The browser's own input while a command runs: the command says input
     // once, after cleaning.
@@ -575,6 +732,7 @@ class SfRichText extends FormField(RichTextElement) {
     }
     if (this._dispatching) return;
     if (event.isComposing) return;
+    if (this._composedSay) this._composedSay.said = true;
     this._afterTyping(event.inputType);
   }
 
@@ -611,7 +769,7 @@ class SfRichText extends FormField(RichTextElement) {
   // Cleaned HTML in place of the selection: the first paragraph joins the
   // text at the caret, what follows stands as blocks (the cleaner splits the
   // paragraph around them, so the text after the caret follows the last).
-  _insertClean(clean, inputType) {
+  _insertClean(clean, inputType, marks = null) {
     if (!clean) return;
     this._edit(() => {
       const range = this._range();
@@ -628,6 +786,16 @@ class SfRichText extends FormField(RichTextElement) {
       const template = doc.createElement('template');
       // The string is the subset's own output: nothing in it runs or loads.
       template.innerHTML = clean;
+      // Plain text pasted at a caret with pending marks takes them, as typed
+      // text does (M4): each paragraph's text inside the marks.
+      if (marks) {
+        for (const block of [...template.content.children]) {
+          if (block.localName !== 'p' || !block.firstChild) continue;
+          const content = doc.createDocumentFragment();
+          content.append(...block.childNodes);
+          block.append(wrapMarks(doc, marks, content));
+        }
+      }
       const nodes = [...template.content.childNodes];
       const fragment = doc.createDocumentFragment();
       nodes.forEach((node, index) => {
@@ -649,7 +817,10 @@ class SfRichText extends FormField(RichTextElement) {
   _onPaste(event) {
     event.preventDefault();
     if (this.effectiveDisabled || this.readonly) return;
-    this._insertClean(this._cleanTransfer(event.clipboardData), 'insertFromPaste');
+    const data = event.clipboardData;
+    // Rich paste keeps its own marks; plain text takes the pending ones.
+    const marks = data?.getData?.('text/html') ? null : this._pendingMarks();
+    this._insertClean(this._cleanTransfer(data), 'insertFromPaste', marks);
   }
 
   _onDrop(event) {
@@ -689,8 +860,8 @@ class SfRichText extends FormField(RichTextElement) {
   runCommand(id) {
     if (this.effectiveDisabled || this.readonly) return false;
     if (BLOCK_TAGS[id]) return this._edit(() => this._setBlock(BLOCK_TAGS[id]), 'formatBlock');
-    if (id === 'bold') return this._edit(() => this._toggleMark('bold', 'strong'), 'formatBold');
-    if (id === 'italic') return this._edit(() => this._toggleMark('italic', 'em'), 'formatItalic');
+    if (id === 'bold') return this._edit(() => this._toggleMark('strong'), 'formatBold');
+    if (id === 'italic') return this._edit(() => this._toggleMark('em'), 'formatItalic');
     if (id === 'bulleted-list') return this._edit(() => this._toggleList('ul'), 'insertUnorderedList');
     if (id === 'numbered-list') return this._edit(() => this._toggleList('ol'), 'insertOrderedList');
     if (id === 'quote') return this._edit(() => this._toggleQuote(), 'formatBlock');
@@ -715,6 +886,7 @@ class SfRichText extends FormField(RichTextElement) {
   }
 
   _applyHistory(inputType) {
+    this._pending = null;
     const editor = this.editor;
     const entry = this._history[this._historyIndex];
     if (!editor || !entry) return;
@@ -747,29 +919,48 @@ class SfRichText extends FormField(RichTextElement) {
     }
   }
 
-  _toggleMark(command, tag) {
-    const doc = this.ownerDocument;
-    let done = false;
-    try {
-      done = doc.execCommand(command, false);
-    } catch {
-      done = false;
-    }
-    if (done) return;
-    // Without the command: wrap the selection, or unwrap the mark it is in.
+  // Bold and Italic set the mark themselves. The browser's command reads
+  // the computed style as the mark: in a heading (bold by its type) it saw
+  // bold everywhere and took no mark, and at a caret its typing style was
+  // lost when the edit put the caret back. All the selected text marked: the
+  // mark comes off; otherwise it goes on. At a caret the mark waits for the
+  // typed text.
+  _toggleMark(tag) {
     const range = this._range();
-    if (!range || range.collapsed) return;
-    const startMark = this._within(range.startContainer, `${tag}, ${tag === 'strong' ? 'b' : 'i'}`);
-    const endMark = this._within(range.endContainer, `${tag}, ${tag === 'strong' ? 'b' : 'i'}`);
-    if (startMark && startMark === endMark) {
-      startMark.replaceWith(...startMark.childNodes);
+    if (!range) return;
+    const doc = this.ownerDocument;
+    const {selector} = MARKS[tag];
+    if (range.collapsed) {
+      const pending = this._pendingMarks(range);
+      const marked = pending?.[tag] ?? Boolean(this._within(this._startNode(range), selector));
+      this._pending = {...pending, at: this._saveSelection().start, [tag]: !marked};
       return;
     }
-    const fragment = range.extractContents();
-    fragment.querySelectorAll(`${tag}, ${tag === 'strong' ? 'b' : 'i'}`).forEach((mark) => mark.replaceWith(...mark.childNodes));
-    const mark = doc.createElement(tag);
-    mark.append(fragment);
-    range.insertNode(mark);
+    this._pending = null;
+    const root = range.commonAncestorContainer;
+    const texts = [];
+    if (root.nodeType === 3) texts.push(root);
+    else {
+      const walker = doc.createTreeWalker(root, 4);
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) if (range.intersectsNode(node)) texts.push(node);
+    }
+    const {startContainer, startOffset, endContainer, endOffset} = range;
+    const parts = [];
+    for (const text of texts) {
+      const from = text === startContainer ? startOffset : 0;
+      const to = text === endContainer ? endOffset : text.data.length;
+      if (to > from) parts.push({text, from, to});
+    }
+    if (!parts.length) return;
+    const on = !parts.every(({text}) => this._within(text, selector));
+    for (const part of parts) {
+      let {text} = part;
+      if (part.to < text.data.length) text.splitText(part.to);
+      if (part.from > 0) text = text.splitText(part.from);
+      const wrap = markElement(doc, tag, on);
+      text.replaceWith(wrap);
+      wrap.append(text);
+    }
   }
 
   _toggleList(type) {
@@ -884,8 +1075,12 @@ class SfRichText extends FormField(RichTextElement) {
     const box = button?.getBoundingClientRect();
     const width = this.ownerDocument.documentElement.clientWidth;
     const surface = popover?.querySelector(':scope > [slot="content"]');
-    const room = (surface && parseFloat(globalThis.getComputedStyle?.(surface).getPropertyValue('--sf-popup-form-width')))
-      || parseFloat(globalThis.getComputedStyle?.(this.ownerDocument.documentElement).fontSize || '16') * 20;
+    // The wide form's step (C32): the field, its hint and two buttons of the
+    // field's size stand in one row (R121). The token is in rem; it was read
+    // as a bare number, 24 px of room, so the editor never turned to the end.
+    const rem = parseFloat(globalThis.getComputedStyle?.(this.ownerDocument.documentElement).fontSize || '16') || 16;
+    const token = (surface && globalThis.getComputedStyle?.(surface).getPropertyValue('--sf-popup-form-wide-width').trim()) || '';
+    const room = (token.endsWith('rem') ? parseFloat(token) * rem : parseFloat(token)) || rem * 24;
     const placement = box && box.left + room > width && box.right - room >= 0 ? 'bottom-end' : 'bottom-start';
     popover?.setAttribute('placement', placement);
     this._link = {

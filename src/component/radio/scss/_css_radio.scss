@@ -23,6 +23,28 @@
   width: var(--sf-icon--width, var(--sf-icon-size-3));
 }
 
+/* An icon beside the label (class markup, or what the help slot holds) is the
+   line of its size, as in sf-checkbox (#49): it was 24 at every size, on the
+   20 line of size 1 on a phone, and the row grew from 36 to 40. The help
+   setting draws sf-help-mark, which sizes itself. */
+.sf-radio-button.sf-radio-button--size-1\/2 > .sf-radio-button-container > .sf-radio-button-top > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1\/2);
+  --sf-icon--height: var(--sf-text-height-1\/2);
+  --sf-icon--width: var(--sf-text-height-1\/2);
+}
+
+.sf-radio-button.sf-radio-button--size-1 > .sf-radio-button-container > .sf-radio-button-top > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1);
+  --sf-icon--height: var(--sf-text-height-1);
+  --sf-icon--width: var(--sf-text-height-1);
+}
+
+.sf-radio-button.sf-radio-button--size-2 > .sf-radio-button-container > .sf-radio-button-top > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-2);
+  --sf-icon--height: var(--sf-text-height-2);
+  --sf-icon--width: var(--sf-text-height-2);
+}
+
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-radio-button-box--gap) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-radio-button .sf-radio-button-box {
   /* Public variables (core/contracts/public-variables.v1.json): names with a
@@ -129,12 +151,12 @@
 
 .sf-radio-button.sf-radio-button--size-1\/2 .sf-radio-button-text {
   --sf-radio-button-text--font-family: var(--sf-text--family);
-  --sf-radio-button-text--font-weight: var(--sf-font-weight-medium);
+  --sf-radio-button-text--font-weight: var(--sf-font-weight-regular); /* C63 W6 */
 }
 
 .sf-radio-button.sf-radio-button--size-1 .sf-radio-button-text{
   --sf-radio-button-text--font-family: var(--sf-text--family);
-  --sf-radio-button-text--font-weight: var(--sf-font-weight-medium);
+  --sf-radio-button-text--font-weight: var(--sf-font-weight-regular); /* C63 W6 */
 }
 
 .sf-radio-button.sf-radio-button--size-1\/2 .sf-radio-button-top {
@@ -160,7 +182,7 @@
 }
 
 .sf-radio-button:has(input:disabled) .sf-radio-button-text {
-  --sf-radio-button-text--color: var(--sf-on-disable);
+  --sf-radio-button-text--color: var(--sf-on-surface-disabled);
 }
 
 
@@ -196,7 +218,7 @@
 
 .sf-radio-button.sf-radio-button--size-2 .sf-radio-button-text{
   --sf-radio-button-text--font-family: var(--sf-text--family);
-  --sf-radio-button-text--font-weight: var(--sf-font-weight-medium);
+  --sf-radio-button-text--font-weight: var(--sf-font-weight-regular); /* C63 W6 */
 }
 
 .sf-radio-button.sf-radio-button--size-2 .sf-radio-button-top {
@@ -213,7 +235,7 @@
 }
 
 
-.sf-radio-button:has(input:enabled:not(:disabled):not(.disabled):hover) .sf-radio-button-box {
+.sf-radio-button:has(input:enabled:not(:disabled):not(.disabled):hover):not(:has(sf-help-mark:hover, [slot="help"]:hover)) .sf-radio-button-box {
   --sf-radio-button-box--border-color: var(--sf-primary-hover);
 }
 
@@ -248,19 +270,19 @@
 }
 
 .sf-radio-button:has(input:disabled) .sf-radio-button-box {
-  --sf-radio-button-box--border-color: var(--sf-outline-disable);
+  --sf-radio-button-box--border-color: var(--sf-outline-disabled);
 }
 
 .sf-radio-button:has(input:disabled) .sf-radio-button-mark {
-  --sf-radio-button-mark--background-color: var(--sf-on-disable);
+  --sf-radio-button-mark--background-color: var(--sf-on-surface-disabled);
 }
 
 .sf-radio-button:has(input:disabled) > .sf-radio-button-container > .sf-radio-button-top > .sf-icon {
-  --sf-icon--color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 .sf-radio-button:has(input:disabled) .sf-radio-button-description {
-  --sf-radio-button-description--color: var(--sf-on-disable);
+  --sf-radio-button-description--color: var(--sf-on-surface-disabled);
 }
 
 .sf-radio-button.error .sf-radio-button-box {

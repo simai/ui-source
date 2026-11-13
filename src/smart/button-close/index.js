@@ -40,7 +40,7 @@ class SfClose extends CloseElement {
   // The size the box is drawn at (1.3.0, DEV D1 on C35). A page's size wins.
   // Without one, a close asked for a height is a control of its place, as an
   // unsized sf-button is: the place's step, size 1, which a compact region
-  // moves down because no size attribute holds it (C22) -- so
+  // moves down (C22; an explicit size comes down too since C79) -- so
   // <sf-button-close height="low"> is 32, compact and phone 28, the notice's
   // close. Without a size or a height it stays the default 1/3.
   get placeSize() {

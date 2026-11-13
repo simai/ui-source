@@ -126,6 +126,17 @@ the same way whichever control it is. The marker and the reset are one step
 down the size ladder and sit inside the field's box with the same gap above,
 below and after them.
 
+## Required: the error after a submit attempt
+
+Since 1.8.0 a `required` field left empty shows its error once the form's
+check fails (a submit attempt, `checkValidity()`, `reportValidity()`), as
+`sf-dropdown` does: the error outline (on `appearance="filled"` the error
+fill), «Заполните поле» («Fill in this field») under the field in the field-message type at the field's
+gap, and `aria-invalid` / `aria-errormessage` on the control. The browser's
+own bubble and its focus on the first invalid field stay as they are. Typing
+that fills the field, or `form.reset()`, clears it. The page's `invalid` with
+`error-message` wins over it.
+
 ## State and lifecycle
 
 `element.value` reads current native text; assignment updates the visible

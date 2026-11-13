@@ -66,10 +66,14 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
   font-weight: var(--sf-font-weight-medium);
 }
 
+// The keycap's plate is the neutral fill, translucent (C04, C16; DEV audit
+// 2026-11-10 defect 7): a step darker than whatever place it stands on. The
+// opaque area it had was 1.54:1 darker than a dark popup, a hole in it.
 @mixin keycap {
   @include sized;
   color: var(--sf-on-surface);
-  background: var(--sf-surface-area);
+  background: var(--sf-surface-container);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   border: var(--sf-px) solid var(--sf-kbd-border-color, var(--sf-outline-variant));
   box-shadow: inset 0 calc(-1 * var(--sf-px)) 0 var(--sf-kbd-border-color, var(--sf-outline-variant));
 }
@@ -85,6 +89,9 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
   @include sized;
   color: var(--sf-kbd-color, currentColor);
   background: var(--sf-kbd-background-color, var(--sf-kbd-background, color-mix(in srgb, currentColor 8%, transparent)));
+  // The keycap's darker ink is the keycap's (it stands on the neutral fill);
+  // a cap takes its button's back (see plain).
+  --sf-on-surface-variant: inherit;
   border: none;
   box-shadow: none;
 }
@@ -96,6 +103,11 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
   min-inline-size: var(--sf-0);
   block-size: auto;
   padding-inline: var(--sf-0);
+  // Every kbd is a keycap first, and the keycap redeclares the muted ink for
+  // its neutral plate (C41, 0450b02a). A plain glyph has no plate: it takes
+  // its row's muted ink back (C04, C38), or in a dark popup it read the full
+  // text colour (pair next 2 sweep, kbd-places).
+  --sf-on-surface-variant: inherit;
   color: var(--sf-kbd-plain-color, var(--sf-on-surface-variant));
   background: var(--sf-transparent);
   border: none;

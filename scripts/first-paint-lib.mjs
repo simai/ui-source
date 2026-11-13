@@ -389,6 +389,11 @@ export const BOOT_CONFIG = {
   cacheVersion: 'first-paint',
   pluginListVersion: 'first-paint',
   preloader: {enabled: false},
+  // A closed window's or drawer's first paint is the layer at rest, before
+  // its content starts (core layer-stack.js startClosedLayerContent): that
+  // start waits for the browser to be idle, and the picture and its sheets
+  // must not depend on when that came.
+  startClosedLayerContent: false,
   ...(Object.keys(config.packages).length
     ? {packages: Object.fromEntries(Object.entries(config.packages).map(([name, {base}]) => [name, {base}]))} : {}),
 };

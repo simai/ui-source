@@ -1,0 +1,19 @@
+{
+  "$comment": "The kinds of an entry and the extensions of a name that say them: one map for every SIMAI Framework part that shows a file or a page by its type -- sf-tree's rows today; sf-file-upload, sf-file-download and sf-view's file cells to follow; Docara's static tree, Larena's files and ui-mail read the same words (owner decision C102, 2026-11-12; research ui-control control/research/2026-11-12-tree.md section 7 items 2-3). A kind is one of twelve words; its icon is a Material Symbols name of the Framework's icon font. An extension is matched on the name's last dot, in lower case. A kind without extensions is said by the host (kind) or by the entry's place (folder: it has children). Keep the words: they are public (an entry's kind).",
+  "schema": "simai.framework.file-types",
+  "version": 1,
+  "kinds": {
+    "folder": {"icon": "folder", "open-icon": "folder_open", "extensions": []},
+    "file": {"icon": "draft", "extensions": []},
+    "page": {"icon": "article", "extensions": []},
+    "document": {"icon": "description", "extensions": ["md", "txt", "doc", "docx", "pdf", "rtf", "odt"]},
+    "image": {"icon": "image", "extensions": ["png", "jpg", "jpeg", "gif", "svg", "webp", "ico", "avif"]},
+    "code": {"icon": "code", "extensions": ["js", "mjs", "ts", "css", "scss", "html", "php", "py", "sh", "vue"]},
+    "data": {"icon": "data_object", "extensions": ["json", "yml", "yaml", "xml", "toml", "lock", "ini", "env"]},
+    "table": {"icon": "table_chart", "extensions": ["csv", "xls", "xlsx", "ods"]},
+    "archive": {"icon": "folder_zip", "extensions": ["zip", "tar", "gz", "rar", "7z"]},
+    "video": {"icon": "movie", "extensions": ["mp4", "mov", "webm"]},
+    "audio": {"icon": "audio_file", "extensions": ["mp3", "wav", "ogg", "m4a"]},
+    "link": {"icon": "link", "extensions": []}
+  }
+}

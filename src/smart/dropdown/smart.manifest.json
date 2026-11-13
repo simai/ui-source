@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.dropdown",
-  "version": "1.8.2",
+  "version": "1.10.1",
   "title": "Dropdown",
   "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
   "kind": "smart",
@@ -67,6 +67,16 @@
       "disabled": {
         "type": "boolean",
         "default": false
+      },
+      "error-message": {
+        "type": "string",
+        "default": "",
+        "description": "The text shown under the field while it is invalid, in the error colour, in the field-message style; it is the trigger's error message for assistive technology (aria-describedby, aria-errormessage)."
+      },
+      "invalid": {
+        "type": "boolean",
+        "default": false,
+        "description": "Marks the choice as wrong: the error border (filled: the error fill), aria-invalid on the trigger and error-message under the field. No error icon is drawn."
       },
       "label": {
         "type": "string",
@@ -228,6 +238,31 @@
     "toggleDropdown": {
       "summary": "Closes the list when open, opens it otherwise. Returns the element.",
       "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
+    "setError": {
+      "summary": "Show an error message and the invalid state, or clear both with an empty message. Writes error-message and invalid and sets the custom error the form will not submit over. Returns the element.",
+      "arguments": [
+        {
+          "name": "args",
+          "type": "object",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "message"
+            ]
+          }
+        }
+      ],
       "returns": {
         "type": "object",
         "description": "The element, for chaining."
@@ -452,7 +487,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "b94c84190aa7f8e774603a526c8e8d0a76286010ad3a67b86d0a0127239ca445"
+        "sha256": "56c19a5d738b6aa656184a62c0fe7775cf0bc9b517fe7f60f70cb0468a617e92"
       },
       {
         "path": "src/smart/dropdown/rule.js",
@@ -460,7 +495,7 @@
       },
       {
         "path": "src/smart/dropdown/js/templates/default.js",
-        "sha256": "022d3b19ab3d22be68abc6aa7633b7c6f8a4ccd3d6aba3a33da23539e633b71e"
+        "sha256": "07841d139bc38239dc326719aa3c411e26ef18daeff091838d8f4822e9ca6a27"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

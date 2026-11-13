@@ -3,13 +3,29 @@
   "runtime": {
     "file": "File",
     "preparing-text": "Preparing the file…",
-    "error-heading": "Could not prepare the file",
+    "preparing-value-text": "Preparing… {percent}",
+    "failed-text": "Could not be made",
     "retry-text": "Retry",
-    "new-tab-text": "(opens in a new tab)"
+    "retry-label": "Retry: {name}",
+    "cancel-text": "Cancel",
+    "cancel-label": "Cancel: {name}",
+    "ready-text": "Ready",
+    "get-text": "Download",
+    "get-label": "Download {name}",
+    "new-tab-text": "(opens in a new tab)",
+    "said-preparing": "Preparing the file “{name}”",
+    "said-ready": "The file is ready: “{name}”{said}",
+    "said-fetched": "The file is ready and downloaded: “{name}”{said}",
+    "said-offer": "The file is ready: “{name}”{said}. Button “Download”",
+    "said-cancelled": "Preparation cancelled: “{name}”",
+    "said-failed": "Error: could not make “{name}”."
   },
   "events": {
     "retry": {
       "label": "Retry"
+    },
+    "cancel": {
+      "label": "Cancel"
     }
   }
 }

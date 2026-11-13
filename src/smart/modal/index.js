@@ -28,7 +28,7 @@ const QUESTIONS = "sf-confirm, sf-confirm-change";
 import { getTopModalLayer, getModalLayerIndex, updateModalLayers, addModalLayer,
   removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus,
   isTopModalLayer } from "../../component/modal/js/_stack";
-import { carryLayerOrigin, layerZIndexAt, lockPageScroll } from "../../core/js/layer-stack";
+import { carryLayerOrigin, layerZIndexAt, lockPageScroll, startClosedLayerContent } from "../../core/js/layer-stack";
 import { breakpointMedia } from "../../core/js/breakpoints.js";
 
 // sf-modal from its component.json (standard simai.smart-component 1.3.8 §3,
@@ -97,6 +97,13 @@ class SfModal extends ModalElement {
   // Kept for code that reads it: the z-index comes from the one layer scale of
   // the core now (--sf-z-index-layer, whose default is this same 9000).
   static baseZIndex = 9000;
+  // The page's children -- slotted and loose -- stay where the page wrote them
+  // until the window draws, and the drawing takes them out and places them in
+  // the same task (smart-base holdSlotNode, as sf-header-site): they were out
+  // of the document from the window's connection to its first drawing, and a
+  // page that found its sf-menu by id once sf-modal was defined got null on
+  // 20 of 20 loads (ui-control evidence 2026-11-11-modal-followups, item 3).
+  static holdsSlotNodesUntilDrawn = true;
 
   static defaultTrueAttributes = new Set([
     "overlay",
@@ -292,12 +299,17 @@ class SfModal extends ModalElement {
     const loose = Array.from(this.childNodes).filter((node) =>
       node.nodeType === Node.ELEMENT_NODE
         // Static markup is a picture of the window, not its content (§5.4).
-        ? node.tagName.toLowerCase() !== "template" && !node.hasAttribute("data-sf-static")
+        // A slotted child is the base's: while it is held (holdSlotNode) it
+        // is still here and is not loose content a second time.
+        ? node.tagName.toLowerCase() !== "template" && !node.hasAttribute("data-sf-static") && !node.hasAttribute("slot")
         : node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== "");
     if (!loose.length) return;
     if (!this._liveSlotNodes.has("content")) this._liveSlotNodes.set("content", []);
     this._liveSlotNodes.get("content").push(...loose);
-    loose.forEach((node) => node.remove());
+    // Through the base's hold, as the slotted children go (smart-base.js
+    // holdSlotNode): left where the page wrote them until the first drawing
+    // (static holdsSlotNodesUntilDrawn).
+    loose.forEach((node) => this.holdSlotNode(node));
   }
 
   disconnectedCallback() {
@@ -707,13 +719,35 @@ class SfModal extends ModalElement {
       this.__sfFirstPaintEnded = true;
       this.prepareRenderContainer(changedAttributes);
     }
-    this.drawInto(templateResult, this.resolveRenderTarget());
+    const target = this.resolveRenderTarget();
+    this.holdWindowUntilStyled(target);
+    // The held children leave the host and are placed by the drawing in the
+    // same task, as the base's render does (releaseHeldSlotNodes).
+    this.releaseHeldSlotNodes();
+    this.drawInto(templateResult, target);
     this.afterRender(changedAttributes);
     this.runExternalHook("afterRender", {
       changedAttributes,
       root: this,
     });
     this.emitComponentEvent("after-render", { changedAttributes });
+  }
+
+  // The window drawn in its portal stays out of view until the sheets it
+  // draws with are applied (the base's holdPortalUntilStyled): under
+  // held-back sheets an open window painted for a moment as a card in the
+  // page flow, without its layer, scrim or x (DEV's acceptance 2026-11-11,
+  // N2). Once it shows, a window that opened in the meantime takes its first
+  // focus, which a hidden panel could not. An inline window draws in its
+  // host, where the page put it, and keeps what the base does for it.
+  holdWindowUntilStyled(target) {
+    if (this.display === "inline") return;
+    this.holdPortalUntilStyled(target, () => {
+      const root = this._root();
+      if (this._isOpen && this._modalState === "open" && root && !root.contains(document.activeElement)) {
+        this.focusFirst();
+      }
+    });
   }
 
   resolveRenderTarget() {
@@ -1166,6 +1200,15 @@ class SfModal extends ModalElement {
     this.applyStackPosition();
     // Projection can replace the panel while an existing layer remains open.
     updateModalLayers();
+
+    // A closed window's content starts after the page's first paint, unseen:
+    // the Loader leaves it until the window opens (its root is inert), and a
+    // page that waited for a tag in it before opening the window waited for
+    // ever (layer-stack.js startClosedLayerContent).
+    if (this.display !== "inline" && !this.openState && !this._closedContentStarted) {
+      this._closedContentStarted = true;
+      startClosedLayerContent(() => this._root());
+    }
 
     if (this.autoload && !this.openState && !this._hasAutoloaded) {
       this._hasAutoloaded = true;

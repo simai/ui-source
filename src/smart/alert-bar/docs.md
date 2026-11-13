@@ -39,7 +39,7 @@ acknowledged. **The bar stores nothing.**
 | `level` | required | `danger`, `warning` or `info`. |
 | `text` | required | What is wrong, as a sentence. |
 | `source` | | Where it comes from: «Сервер», «Сайт demo.test». |
-| `time` | | When it began, ISO 8601. Within a day it reads «5 минут назад», older as a date and a time. |
+| `time` | | When it began, ISO 8601, drawn by `sf-time`: within a day «5 минут назад», older «вчера, 19:40» or «5 ноября»; the full moment in its tooltip (pointer and Tab, Escape hides it). |
 | `action` | | `{label, href}`: the one action link. |
 | `acknowledge` | | `{label}`: an «Отметить, что видели» button. |
 | `dismissible` | | `false` keeps a warning or an info item from being closed. |
@@ -58,6 +58,17 @@ action, acknowledge and close. Escape closes the list.
 Up to 608 px (38rem, the size step g9) of the bar's own width the icon, the text and the close share
 the first line, the actions go under the text, the arrows are not drawn and
 «Все N» stands at the line's end.
+
+The action is a tonal surface button (`tonal on-surface`) and acknowledge and
+close are ghost, as on sf-alert and sf-toast; in the list of all the same. On
+the bar's strong colour the tonal plate's hover and press go towards the bar's
+colour in the light theme, so the white label keeps 4.5:1 and more.
+
+The close cross is the notice's service glyph (1.4.2, owner decision C112), as
+on sf-alert and sf-toast: the bar's own ink at 64 of the alpha scale's ink
+family -- white at 64 in the light theme, the level's tone 20 at 64 in the
+dark -- not the solid ink of the text; under a pointer it catches the text ink.
+Its size is the bar's line, the size of its status icon.
 
 An action is always as wide as its label: it is never shrunk or cut with an
 ellipsis. When the bar is short of room, the message wraps first, down to

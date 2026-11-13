@@ -4,8 +4,10 @@ SF.RuleLoader['cl-radio'] = {
   type: 'smart',
   mode: 'smart',
   js: true,
+  css: true,
   relation: [
     { name: 'radio' },
     { name: 'icons' },
+    { name: 'cl-help-mark' },
   ],
 };

@@ -44,6 +44,6 @@
     }
 
     .sf-input:has(input:disabled) > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input:has(input:disabled) > .sf-input-field > .sf-input-left > sf-icon > .sf-icon {
-        --sf-icon--color: var(--sf-on-disable);
+        --sf-icon--color: var(--sf-on-surface-disabled);
     }
 }

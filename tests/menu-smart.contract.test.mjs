@@ -76,12 +76,25 @@ test('smart menu: the current page from current, the location, or the item flag'
   assert.equal((template.match(/aria-current=\$\{current \? 'page' : nothing\}/gu) || []).length, 4);
 });
 
-test('smart menu: a column opens the way to the current page; a row opens only when asked', () => {
+test('smart menu: a column opens the way to the current page; a row opens what the items flag, one chain', () => {
   const items = normaliseItems([...TREE, {id: 'help', label: 'Помощь', open: true, children: [{id: 'faq', label: 'Вопросы'}]}]);
   assert.deepEqual([...openBranches(items, new Map(), 'catalog-2-1', true)], ['catalog', 'catalog-2', 'help']);
   assert.deepEqual([...openBranches(items, new Map([['catalog', false]]), 'catalog-2-1', true)], ['catalog-2', 'help']);
-  assert.deepEqual([...openBranches(items, new Map(), 'catalog-2-1', false)], []);
-  assert.deepEqual([...openBranches(items, new Map([['catalog', true]]), null, false)], ['catalog']);
+  // A row: the current page alone opens nothing; the open flag opens its
+  // panel (owner remark 2026-11-11, «Каталог» with open: true).
+  assert.deepEqual([...openBranches(items, new Map(), 'catalog-2-1', false)], ['help']);
+  assert.deepEqual([...openBranches(items, new Map([['help', false]]), 'catalog-2-1', false)], []);
+  assert.deepEqual([...openBranches(items, new Map([['catalog', true], ['help', false]]), null, false)], ['catalog']);
+  // One chain: the first flagged branch of the row, then the first flagged
+  // branch inside each panel; a disabled branch opens nothing.
+  const flagged = normaliseItems([
+    {id: 'a', label: 'A', open: true, children: [{id: 'a1', label: 'A1', children: [{id: 'a1x', label: 'x'}]}, {id: 'a2', label: 'A2', open: true, children: [{id: 'a2x', label: 'x'}]}]},
+    {id: 'b', label: 'B', open: true, children: [{id: 'b1', label: 'B1'}]},
+  ]);
+  assert.deepEqual([...openBranches(flagged, new Map(), null, false)], ['a', 'a2']);
+  assert.deepEqual([...openBranches(flagged, new Map(), null, true)], ['a', 'a2', 'b']);
+  const off = normaliseItems([{id: 'a', label: 'A', open: true, disabled: true, children: [{id: 'a1', label: 'A1'}]}, {id: 'b', label: 'B', open: true, children: [{id: 'b1', label: 'B1'}]}]);
+  assert.deepEqual([...openBranches(off, new Map(), null, false)], ['b']);
   // A row's open panels are one chain: opening a branch closes every panel
   // not above it.
   assert.match(source, /if \(this\.flyouts\) \{\n      const above = new Set\(pathTo\(this\.treeItems, item\.id\) \|\| \[\]\);\n      for \(const other of before\) if \(!above\.has\(other\)\) after\.delete\(other\);/u);
@@ -151,7 +164,13 @@ test('smart menu: the class markup, the class runtime kept off it', () => {
   // (component.menu 1.2.0, _css__menu_group.scss). The search head (C30
   // amended, R071 a) is the element's own part, which the class has not:
   // its rules select only the head, the field and the empty text.
-  const [ownParts, sticky] = sheet.split('// sticky (sf-menu 1.3.0)');
+  const [ownAndPhone, sticky] = sheet.split('// sticky (sf-menu 1.3.0)');
+  // The phone (R179) touches only the element's own parts: the split
+  // control's link and chevron, and the levels it marks in place.
+  const [ownParts, phone] = ownAndPhone.split('// The phone (R179, sf-menu 1.6.2)');
+  for (const selector of phone.match(/^ {2,4}[.a-z][^{\n]*\{/gmu)) {
+    assert.match(selector, /a\.sf-menu-element-wrap|\[data-sf-menu-in-place\]/u, selector);
+  }
   const [beforeSearch, searchPart] = ownParts.split('  // search (C30 amended, R071 a; C06)');
   const [searchRules, afterSearch] = searchPart.split('  @media (forced-colors: active)');
   const parts = beforeSearch + afterSearch;
@@ -182,6 +201,88 @@ test('smart menu: a row\'s panels are placed by SF.Position and Escape closes th
   // An outside press reaches it through the layer stack's one listener.
   assert.match(source, /holdOpenSurfaceMark\(this, hold, \{onOutsidePress: this\.onOutsidePress\}\);/u);
   assert.match(source, /onDisconnected\(\) \{[\s\S]*?this\.holdSurface\(false\);/u);
+});
+
+test('smart menu R179 D1: below md a row opens its deeper levels in place, never beside the panel', () => {
+  // syncAnchors: a side level (not the first, not a region) is not anchored
+  // on a phone; it is marked in place and any anchor it had is let go.
+  const sync = source.slice(source.indexOf('  syncAnchors() {'), source.indexOf('  releaseAnchor(submenu) {'));
+  assert.match(sync, /const inPlace = this\._narrow;/u);
+  assert.match(sync, /const side = row\.dataset\.sfMenuLevel !== '1' && !submenu\.matches\('\.sf-menu-region'\);\n\s*if \(side && inPlace\) \{\n\s*if \(this\._anchors\.has\(submenu\)\) this\.releaseAnchor\(submenu\);\n\s*submenu\.setAttribute\('data-sf-menu-in-place', ''\);\n\s*delete submenu\.dataset\.sfSide;\n\s*continue;/u);
+  // The check comes before any anchor is made for a side level.
+  assert.ok(sync.indexOf('if (side && inPlace)') < sync.indexOf('positioning().anchor(row, submenu, {\n'), 'in place is decided before a side anchor');
+  // Back above md the marks go and the side panels are anchored again.
+  assert.match(sync, /if \(!inPlace \|\| !this\.flyouts\) \{\n\s*for \(const submenu of this\.querySelectorAll\('ul\.sf-menu\[data-sf-menu-in-place\]'\)\) submenu\.removeAttribute\('data-sf-menu-in-place'\);/u);
+  assert.match(source, /if \(this\.collapse === 'narrow'\) this\.requestComponentUpdate\('narrow'\);\n(?:\s*\/\/.*\n)+\s*else if \(this\.flyouts\) this\.syncAnchors\(\);/u);
+  // md is the phone's breakpoint, as the sheets switch on it.
+  assert.match(source, /this\._narrowMedia = breakpointMedia\('md', \{below: true\}\);/u);
+  // The marked level is the panel's rows: in the flow, no frame, no surface,
+  // no shadow, a space-1 step per level; the path line on the first panel's
+  // border (the line's border width inherited, not reset).
+  const rule = sheet.slice(sheet.indexOf('.sf-smart-menu .sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item > .sf-menu[data-sf-menu-in-place] {'));
+  const body = rule.slice(0, rule.indexOf('}'));
+  for (const line of ['position: static;', 'padding: var(--sf-0);', 'border: var(--sf-0);', 'background: none;', 'box-shadow: none;', 'max-inline-size: none;', '--sf-menu--line-border: inherit;']) {
+    assert.ok(body.includes(line), line);
+  }
+  assert.match(sheet, /\[data-sf-menu-in-place\] \.sf-menu-element--level-3 \{\n\s*--sf-menu-element--padding-inline-start: calc\(var\(--sf-space-1\) \* 2\);/u);
+  assert.match(sheet, /\[data-sf-menu-in-place\] \.sf-menu-element--level-4 \{\n\s*--sf-menu-element--padding-inline-start: calc\(var\(--sf-space-1\) \* 3\);/u);
+});
+
+test('smart menu R179 D2: a split control\'s link is the row\'s height, its chevron a square under a coarse pointer', () => {
+  const pad = (side) => `var(--sf-menu-element--padding-${side}, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width))))`;
+  const link = sheet.slice(sheet.indexOf('.sf-smart-menu .sf-menu-element:has(> a.sf-menu-element-wrap + button.sf-icon-button) > a.sf-menu-element-wrap {'));
+  const linkBody = link.slice(0, link.indexOf('}'));
+  // The row's block padding moves into the link: the link is as tall as the
+  // row (44 in the drawer), the row's height unchanged.
+  assert.ok(linkBody.includes(`margin-block: calc(-1 * ${pad('top')}) calc(-1 * ${pad('bottom')});`), 'margin-block');
+  assert.ok(linkBody.includes(`padding-block: ${pad('top')} ${pad('bottom')};`), 'padding-block');
+  assert.ok(linkBody.includes('align-self: stretch;'));
+  // The same fallbacks as the class sheet's chevron, so link and chevron agree.
+  const classElement = read('src/component/menu/scss/_css__menu_element.scss');
+  assert.ok(classElement.includes(`margin-block-start: calc(-1 * ${pad('top')});`), 'the class chevron uses the same padding chain');
+  // Coarse pointer: the column's split chevron is the row's height wide,
+  // flush with the row's inner end edge.
+  const coarse = sheet.slice(sheet.indexOf('  @media (pointer: coarse) {'));
+  assert.match(coarse, /^ {2}@media \(pointer: coarse\) \{\n\s*\.sf-smart-menu \.sf-menu:not\(\.sf-menu--horizontal\):not\(\.sf-menu--horizontal \.sf-menu\) > \.sf-menu-item > \.sf-menu-element > a\.sf-menu-element-wrap \+ button\.sf-icon-button \{/u);
+  const toggle = coarse.slice(0, coarse.indexOf('}'));
+  assert.ok(toggle.includes(`--sf-menu--split-toggle: calc(var(--sf-menu-element--line-height, var(--sf-text-height-1)) + ${pad('top')} + ${pad('bottom')} + 2 * var(--sf-menu-element--border-width, var(--sf-px)));`), 'the row height');
+  assert.ok(toggle.includes('min-inline-size: var(--sf-menu--split-toggle);'));
+  // Flush with the row's inner end edge, the glyph at the row's end padding,
+  // the margin box the glyph's: the link's room does not change.
+  assert.ok(toggle.includes('--sf-menu--split-end: var(--sf-menu-element--padding-right, var(--sf-menu-element--padding-inline-end, var(--sf-space-1)));'));
+  assert.ok(toggle.includes('text-align: end;'));
+  assert.ok(toggle.includes('padding-inline-end: var(--sf-menu--split-end);'));
+  assert.ok(toggle.includes('margin-inline: calc(var(--sf-menu-element--line-height, var(--sf-text-height-1)) - var(--sf-menu--split-toggle) + var(--sf-menu--split-end)) calc(-1 * var(--sf-menu--split-end));'));
+  // The drawer's rows are the size 2 control height (44 on a phone): the
+  // padding the chevron and the link read is that row's.
+  assert.match(read('src/smart/header-site/scss/_smart__site_header.scss'), /\.sf-site-header-nav \.sf-menu \.sf-menu-element \{\n\s*--sf-menu-element--padding-block: calc\(\(var\(--sf-ui-2--control-height\) - var\(--sf-text-height-1\)\) \/ 2/u);
+});
+
+test('smart menu R179 D3: open, close, toggle and close-all declare the outcome object; isOpen a boolean', () => {
+  const component = JSON.parse(read('src/smart/menu/component.json'));
+  const outcome = {type: 'object', description: '{outcome: applied} or {outcome: refused, reason}'};
+  for (const name of ['open', 'close', 'toggle', 'close-all']) {
+    assert.deepEqual(component.actions[name]['x-returns'], outcome, name);
+    assert.deepEqual(component.actions[name]['x-outcomes'], ['applied', 'refused'], name);
+    assert.doesNotMatch(component.actions[name].summary, /Returns whether/u, name);
+  }
+  for (const name of ['open', 'close', 'toggle', 'closeAll']) assert.deepEqual(manifest.methods[name].returns, outcome, name);
+  assert.deepEqual(manifest.methods.isOpen.returns, {type: 'boolean'});
+  // The runtime answers what is declared.
+  assert.match(source, /return flyouts \|\| panel \? \{outcome: 'applied'\} : \{outcome: 'refused', reason: 'already'\};/u);
+  assert.match(source, /if \(!item \|\| !item\.children\.length\) return \{outcome: 'refused', reason: 'unknown'\};/u);
+});
+
+test('smart menu R179 D4: every event has a summary', () => {
+  const component = JSON.parse(read('src/smart/menu/component.json'));
+  for (const [name, event] of Object.entries(component.events)) {
+    assert.equal(typeof event.summary, 'string', name);
+    assert.ok(event.summary.length > 40, name);
+  }
+  assert.doesNotMatch(manifest.events['sf-menu-navigate'].summary, /\(vocabulary\)/u);
+  assert.doesNotMatch(manifest.events['sf-menu-toggle'].summary, /\(vocabulary\)/u);
+  assert.match(component.events.navigate.summary, /Cancel/u);
+  assert.match(component.events.toggle.summary, /source/u);
 });
 
 test('smart menu: navigate is cancellable and modified presses stay the browser\'s', () => {
@@ -344,15 +445,17 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
   // R070: a column's group headings are a row.
   assert.match(column, /\.sf-menu-group-heading \{\n  min-block-size: var\(--sf-ui-1--control-height\);\n  padding-inline: var\(--sf-menu--row-padding\);/u);
   // (The current page's medium label is the current-plate mixin's, above the block.)
-  // The states are the alpha scale's role tokens: state 4 and 12; an open
-  // branch is not filled (C23) -- never a number of its own.
-  assert.match(rule(`${enabled}:hover`), /var\(--sf-surface-transparent-hover\)/u);
-  assert.match(rule(`${enabled}:active`), /var\(--sf-surface-transparent-active\)/u);
+  // The states are the alpha scale's role tokens: the one row hover, select 8
+  // (C42 item 5), and press 12 (--sf-surface-state-active); an open branch is not filled (C23) -- never a
+  // number of its own.
+  assert.match(rule(`${enabled}:hover`), /var\(--sf-surface-state-select\)/u);
+  assert.match(rule(`${enabled}:active`), /var\(--sf-surface-state-active\)/u);
   assert.doesNotMatch(block, /:is\(\.open, \[aria-expanded='true'\]\)/u);
   // A column's open branch is not filled; a row's open branch -- first level
-  // and panel row -- has the neutral select plate (C30, R060), and only there.
-  assert.equal((block.match(/--sf-surface-transparent-select/gu) || []).length, 1);
-  assert.match(rule(".sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu-element.open:not(:disabled):not(.disabled):not([aria-disabled='true'])"), /--sf-menu-element--background-color: var\(--sf-surface-transparent-select\);/u);
+  // and panel row -- has the neutral select plate (C30, R060); beside the
+  // hover (C42 item 5) nothing else in the block reads it.
+  assert.equal((block.match(/--sf-surface-state-select/gu) || []).length, 2);
+  assert.match(rule(".sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu-element.open:not(:disabled):not(.disabled):not([aria-disabled='true'])"), /--sf-menu-element--background-color: var\(--sf-surface-state-select\);/u);
   // The current page (C23, owner 2026-11-09): the primary plate of the fill
   // family (primary-container-active, 20 light / 32 dark), its ink and a
   // medium label, written once in the current-plate mixin; the path's line,

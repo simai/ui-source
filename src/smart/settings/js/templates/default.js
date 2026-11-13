@@ -1,8 +1,10 @@
 import {html, nothing} from 'lit';
+import {renderPanel} from './panel.js';
 
 // sf-settings' markup: sf-menu-context with the items as its entries, and,
-// in a popup, the page's trigger beside it. The element draws nothing of its
-// own, so it has no sheet.
+// in a popup, the page's trigger beside it. In the drill, rows and tiles looks
+// the element draws nothing of its own; the panel look draws its panel
+// (templates/panel.js) with the element's sheet.
 //
 // - inline (no trigger): the menu stands open in the page's flow;
 // - popup (a trigger in the trigger slot, or one named by for): the trigger as
@@ -50,7 +52,25 @@ function renderMenu(context) {
 // printed picture from it, rather than drawing alone, empty, before it.
 const frame = (parts) => html`<div class="sf-settings-parts" style="display: contents">${parts}</div>`;
 
+// The colour window of the colour rows (C85): sf-input-color without its
+// palette (the menu's level is the palette) and without a box in the page --
+// a holder of no size, so only its window is seen; the window stands in the
+// top layer against the trigger, where no box of the page clips it. The
+// holder is inert while the window is closed, so its hidden field is never a
+// tab stop; _openOwnColor lifts that for as long as the window is open.
+function renderColor(context) {
+  const {component} = context;
+  return html`<span class="sf-settings-color" inert style="position: absolute; inline-size: 0; block-size: 0; overflow: hidden">
+    <sf-input-color palette="false"
+        @input=${(event) => event.stopPropagation()}
+        @change=${(event) => component._onColorPicked(event)}></sf-input-color>
+  </span>`;
+}
+
+// The panel look (owner decision C106) is this element's own markup
+// (templates/panel.js), not a menu: its role is a dialog over the page and a
+// group in the page's flow, and the action menu keeps the actions.
 export function renderSettingsTemplate(context) {
   const trigger = context.popup && context.hasSlot('trigger') ? context.slot('trigger') : nothing;
-  return frame(html`${trigger}${renderMenu(context)}`);
+  return frame(html`${trigger}${context.look === 'panel' ? renderPanel(context) : renderMenu(context)}${context.hasColor ? renderColor(context) : nothing}`);
 }

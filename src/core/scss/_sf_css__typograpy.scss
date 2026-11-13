@@ -178,6 +178,20 @@
     ); //var(--sf-text--margin-end-default);
   }
 
+  // The words of a table are whole: `word-break: break-word` lowered every
+  // cell's min-content to a letter, so the auto layout squeezed a label column
+  // below its longest word. A table keeps its words and breaks a word only
+  // when it cannot fit the column it was given (overflow-wrap: break-word,
+  // which does not lower min-content); room for a long value comes from the
+  // code rule below (C10 variant A, 2026-11-11). Set on the table, not on its
+  // cells, so the cells inherit it and a table that keeps every word whole --
+  // a .table-frame, whose frame scrolls instead -- says so once, on the table
+  // (the cell rule beat the frame's own and broke its words, pair-next-3).
+  table {
+    word-break: normal;
+    overflow-wrap: break-word;
+  }
+
   .label-small {
     font-size: var(--sf-label-small--size);
     line-height: var(--sf-label-small--height);
@@ -270,21 +284,29 @@
     color: var(--sf-code-color, var(--sf-code--color));
     font-family: var(--sf-code-font-family, var(--sf-code--font-family));
     font-size: var(--sf-code-font-size, var(--sf-code--font-size));
-    // A name is one word: sf-button-press never parts at its hyphens. The
-    // line breaks before the code instead (owner, 2026-11-07, R024): the
-    // code is one box as wide as its text, so it moves to the next line
-    // whole. Only a run longer than the whole line -- a URL, a token --
-    // breaks inside its box, anywhere when it has no space to break at
-    // (C10, 2026-11-10), so it never runs out of a narrow column; code with
-    // spaces breaks at them and keeps its words whole.
-    display: inline-block;
-    max-inline-size: 100%;
+    // Code stays inline (a box of its own would take the line's no-break
+    // with the punctuation around it and grow the line) and wraps as text
+    // does: at its spaces and hyphens. A run that cannot fit a line of its
+    // own -- a URL, a token -- breaks where it must (C10, 2026-11-10), so it
+    // never runs out of a narrow column. break-word, not anywhere, in
+    // running text (a cell takes anywhere, below).
+    overflow-wrap: break-word;
+    // The code's own line box stays inside the text line: inheriting the
+    // text line (24px at 16px text) around the mono face's baseline, it rose
+    // a pixel above the strut whenever Inter was ready at the first layout,
+    // and every line with code grew 24 -> 25 (C10, 2026-11-11). The plate is
+    // the font's box with its padding, so this does not change how it looks.
+    line-height: 1;
+  }
+
+  // In a table cell a long value -- a JSON default, a rule address -- may
+  // break anywhere, so it lowers the cell's min-content and never widens the
+  // table; the table's auto layout gives the room to the column that needs
+  // it, and a label column keeps its words (owner decision C10, variant A,
+  // 2026-11-11). Text the Framework draws in a cell (a class of its own, a
+  // block of code) is left alone, as in running text.
+  :where(td, th) code:where(:not([class*='sf-'], [class*='sf-'] > code, pre code, .sf-highlight code, .sf-code-surface code)) {
     overflow-wrap: anywhere;
-    // The box's lines are the code font's own, so the plate is as tall as
-    // it was on the text line and the text line keeps its height.
-    line-height: normal;
-    // A box takes no underline from a link around it; it draws the link's.
-    text-decoration: inherit;
   }
 
   // Copy on click, only where a container asks for it with

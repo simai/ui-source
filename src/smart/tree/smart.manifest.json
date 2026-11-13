@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tree",
-  "version": "2.1.1",
+  "version": "2.3.1",
   "title": "Tree",
   "summary": "A tree of entries: folders that open, files and links; one Tab stop walked with the arrows, optional selection, drops of records and files on an entry. Thousands of entries: keyed rows, a window over more than 300.",
   "kind": "smart",
@@ -24,8 +24,11 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.checkbox",
       "component.icon-buttons",
       "component.icons",
+      "component.spinner",
+      "component.tooltip",
       "component.tree",
       "component.tree-item",
       "smart.tree-item"
@@ -53,12 +56,52 @@
       "selection": {
         "type": "string",
         "default": "none",
-        "description": "What a press does: none opens the entry (or follows its link), one selects one entry, many toggles each",
+        "description": "What a press does: none opens the entry (or follows its link), one selects one entry, many toggles each, check puts a check box in every row -- a branch checks everything under it and shows mixed when only some of it is checked (aria-checked true, false, mixed)",
         "enum": [
           "none",
           "one",
-          "many"
+          "many",
+          "check"
         ]
+      },
+      "icons": {
+        "type": "string",
+        "default": "all",
+        "description": "The type icons: all on every row, branches on folders only, none on no row (the chevron stays)",
+        "enum": [
+          "all",
+          "branches",
+          "none"
+        ]
+      },
+      "file-types": {
+        "type": "string",
+        "default": "name",
+        "description": "name: a leaf without a kind takes its type from its name's extension («Смета.xlsx» a table); none: such a leaf is a file",
+        "enum": [
+          "name",
+          "none"
+        ]
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "The rows' step on the size ladder: the chevron's column and the type icon are the icon of the step, the row its control height, the name its text; the level step follows (column + row gap)",
+        "enum": [
+          "1/2",
+          "1",
+          "2"
+        ]
+      },
+      "static": {
+        "type": "boolean",
+        "default": false,
+        "description": "A structure shown in text, for documentation: a nested list (not role tree), every level shown, no chevrons, no Tab stop, no hover, rows the height of a text line, names in the code face, notes after them. The class markup is .sf-tree--static"
+      },
+      "reorder": {
+        "type": "boolean",
+        "default": false,
+        "description": "An entry can be dragged to another place in the tree: before or after a row, or into a folder or a page; the tree asks with move {ids, parent, before} and moves nothing itself"
       },
       "accept-records": {
         "type": "boolean",
@@ -164,6 +207,20 @@
         "type": "object"
       }
     },
+    "expandAll": {
+      "summary": "Opens every branch that is not disabled; toggle for each that opened",
+      "arguments": [],
+      "returns": {
+        "type": "object"
+      }
+    },
+    "collapseAll": {
+      "summary": "Closes every open branch",
+      "arguments": [],
+      "returns": {
+        "type": "object"
+      }
+    },
     "onToggle": {
       "summary": "Adds a listener for sf-tree-toggle from any item in the tree; the handler is called with (item, detail, event).",
       "arguments": [
@@ -247,8 +304,25 @@
       },
       "canonical": true
     },
+    "sf-tree-retry": {
+      "summary": "«Повторить» on the error row of a lazy branch (vocabulary §5 retry): the branch shows «Загрузка…» again; the host loads its children once more and gives a new items",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "value"
+        ],
+        "properties": {
+          "id": {},
+          "value": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-tree-move": {
-      "summary": "Records dragged from a list were dropped on an entry: the request to move them into it (vocabulary §5 move); the tree moves nothing itself",
+      "summary": "Records dragged from a list were dropped on an entry, or an entry of the tree was dragged to another place (reorder): the request to move them -- into parent (null: the top level), before the entry before (null: at the end) (vocabulary §5 move); the tree moves nothing itself",
       "payload": {
         "type": "object",
         "required": [
@@ -509,23 +583,23 @@
     "source_artifacts": [
       {
         "path": "src/smart/tree/index.js",
-        "sha256": "1a475d4073866f0eeaca1d85e3328e84aca4c8bc508dc71d98f78fb6e1cab87b"
+        "sha256": "631b0e2476f11db2f8077edcac5b4c8e8d7f03cf9986e284c5fd09a57103b305"
       },
       {
         "path": "src/smart/tree/js/templates/default.js",
-        "sha256": "987c056c2011fdcfe6736617456c827d86eab11e59c41d132071f3684d323144"
+        "sha256": "bf8e9edfdd25eb7dd243e4ec025754236b6da912b95ce9e0173880d3836f98c6"
       },
       {
         "path": "src/smart/tree/js/templates/default.css",
-        "sha256": "d3afbb0a397dc96f3744c5fd66b2e27fead78d147a42e7469f6ac877f7887682"
+        "sha256": "1783ad8ab81109fcb2c7e6990038b7ca09dcbedce7a4b2ebb788534dc5a64e1a"
       },
       {
         "path": "src/smart/tree/rule.js",
-        "sha256": "3b2e3bbbdfd0155e8ad3527fe8606f0f50f712388580baf7be504fb689b2b30c"
+        "sha256": "fb0d3098d1e76327e9666cd26b231d652836723bf3974aa56e00df60683591ed"
       },
       {
         "path": "src/smart/tree/docs/docs.md",
-        "sha256": "2a1c288eeb460c6e3629cdf9f2795054764fe78f9adc64783339181d5d4e704c"
+        "sha256": "ccddf218e1e3133009b3ecd17698da980d829acff0d03a37ef838c37e355155f"
       }
     ],
     "generated_runtime": [

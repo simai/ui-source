@@ -53,19 +53,20 @@ export function renderListItemTemplate(context) {
     context.type,
   );
 
+  // The step between the picture and the text is the row's own (C105 H2,
+  // HS-5): the list item sheet sets it from the size and the density. A layout
+  // class here (gap-2, --sf-space-2) put 20 between them at every size.
   if (isDecoratedType) {
     wrapClasses.push(
       "flex",
       "flex-row",
       "flex-nowrap",
       "items-center",
-      "gap-2",
     );
   }
 
   if (context.type === "avatar" || context.type === "color") {
-    wrapClasses.splice(wrapClasses.indexOf("gap-2"), 1);
-    wrapClasses.push("justify-between", "gap-2");
+    wrapClasses.push("justify-between");
   }
 
   const renderLeading = () => {
@@ -172,10 +173,12 @@ export function renderListItemTemplate(context) {
   const renderTrailing = () => {
     if (trailingContent !== nothing) return trailingContent;
 
-    // The mark at the end of an avatar or colour row is a dropdown option's
-    // choice; a row outside a dropdown has no choice to mark (docs precheck
-    // smart content LI-01: an empty checkbox stood at the end of every such row).
-    if (isOption && (context.type === "avatar" || context.type === "color")) {
+    // The box after a picture is a dropdown option's choice, and only where
+    // the list may hold several chosen. A row outside a dropdown has no choice
+    // to mark (docs precheck smart content LI-01: an empty checkbox stood at
+    // the end of every such row); an option of a single choice says it is
+    // chosen with its fill alone (owner C08; DEV P2, owner R143, 2026-11-12).
+    if (isOption && context.multiple && (context.type === "avatar" || context.type === "color")) {
       return html`
         <label
           class="sf-checkbox sf-checkbox--size-${context.sizeGroup
@@ -225,7 +228,7 @@ export function renderListItemTemplate(context) {
 // takes a place in a list, so it carries the listbox roles and answers a
 // pointer. The dropdown built this inline and nothing else could, which is why
 // a multi-select list outside a dropdown had to be hand-made out of checkboxes.
-export function renderListItemOption(option = {}) {
+export function renderListItemOption(option = {}, {multiple = false} = {}) {
   const size = String(option.size || "1");
 
   return renderListItemTemplate({
@@ -245,6 +248,7 @@ export function renderListItemOption(option = {}) {
     avatarImageUrl: option.avatarImageUrl,
     avatarTitle: option.avatarTitle,
     ariaLabel: option.ariaLabel,
+    multiple: Boolean(multiple),
     option: true,
   });
 }

@@ -98,6 +98,25 @@
     width: var(--sf-icon--width, var(--sf-icon-size-3));
   }
 
+  /* A label written straight into the button, without its text container,
+     took the browser's button font (13.33 px, line normal) and stood 31 px
+     high in a size 1 slot (docs pre-check 2026-11-10 CQT-01). The bare text
+     gets the size's own text step, so the button keeps its control height;
+     the text container stays the markup the docs teach. */
+  .sf-button:not(:has(> *)) {
+    font-family: var(--sf-text--family);
+    font-weight: var(--sf-font-weight-medium);
+    /* ...and the ink the text container would have drawn it in, the
+       appearance's on-colour, not the browser's buttontext (2026-11-11
+       acceptance D1: primary filled was white on light blue in dark). */
+    color: var(--sf-button-text-container--color);
+  }
+  .sf-button.sf-button--size-1\/3:not(:has(> *)) { font-size: var(--sf-text-size-1\/3); line-height: var(--sf-text-height-1\/3); }
+  .sf-button.sf-button--size-1\/2:not(:has(> *)) { font-size: var(--sf-text-size-1\/2); line-height: var(--sf-text-height-1\/2); }
+  .sf-button.sf-button--size-1:not(:has(> *)) { font-size: var(--sf-text-size-1); line-height: var(--sf-text-height-1); }
+  .sf-button.sf-button--size-2:not(:has(> *)) { font-size: var(--sf-text-size-2); line-height: var(--sf-text-height-2); }
+  .sf-button.sf-button--size-3:not(:has(> *)) { font-size: var(--sf-text-size-3); line-height: var(--sf-text-height-3); }
+
   .sf-button.sf-button--default.sf-button--primary {
     --sf-button--background-color: var(--sf-button-background-color, var(--sf-primary));
   }
@@ -110,20 +129,20 @@
     --sf-button-text-container--padding-inline-start: var(--sf-ui-1--text-space-x);
   }
 
-  .sf-button.sf-button--size-1.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1.sf-button--default.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1.sf-button--tonal.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1.sf-button--default.sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button.sf-button--size-1.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1.sf-button--default.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1.sf-button--tonal.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1:is(.sf-button--ghost, .sf-button--link).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1.sf-button--default.sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut) {
     --sf-button-text-container--font-size: var(--sf-text-size-1);
     --sf-button-text-container--line-height: var(--sf-text-height-1);
   }
 
-  .sf-button.sf-button--size-1.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--secondary .sf-button-text-container {
+  .sf-button.sf-button--size-1.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--ghost, .sf-button--link).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--ghost, .sf-button--link).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--ghost, .sf-button--link).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--ghost, .sf-button--link).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--tonal.sf-button--on-surface .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary) .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--ghost, .sf-button--link).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--secondary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--secondary .sf-button-text-container {
     --sf-button-text-container--font-family: var(--sf-text--family);
     --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
   }
 
-  .sf-button.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
+  .sf-button.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--default.sf-button--primary:not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-primary));
   }
-  .sf-button.sf-button--default.sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
+  .sf-button.sf-button--default.sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--default.sf-button--secondary:not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-secondary));
   }
 
@@ -138,7 +157,7 @@
     --sf-button--background-color: var(--sf-button-background-color, var(--sf-on-surface));
   }
 
-  .sf-button.sf-button--default.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
+  .sf-button.sf-button--default.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--default.sf-button--on-surface:not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-surface-inverse));
   }
 
@@ -154,11 +173,11 @@
     --sf-button--background-color: var(--sf-button-background-color, var(--sf-primary-container));
   }
 
-  .sf-button.sf-button--tonal.sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
+  .sf-button.sf-button--tonal.sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--tonal.sf-button--secondary:not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-secondary-container));
   }
 
-  .sf-button.sf-button--tonal.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
+  .sf-button.sf-button--tonal.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--tonal.sf-button--primary:not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-primary-container));
   }
 
@@ -172,15 +191,18 @@
 
   .sf-button.sf-button--tonal.sf-button--on-surface {
     --sf-button--background-color: var(--sf-button-background-color, var(--sf-surface-container));
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
 
-  .sf-button.sf-button--tonal.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
+  .sf-button.sf-button--tonal.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--tonal.sf-button--on-surface:not(:has(> *)), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-surface));
   }
 
-  .sf-button.sf-button--tonal.sf-button--on-surface .sf-icon, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) .sf-icon {
-    --sf-icon--color: var(--sf-on-surface);
+  /* The icon of a neutral button is half a step paler than its label (C107,
+     owner 2026-11-12): --sf-on-surface-icon. Hovered and pressed it takes the
+     label's colour (sf.states below). Secondary's ink is the custom sheet's. */
+  .sf-button.sf-button--tonal.sf-button--on-surface .sf-icon, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary) .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-icon);
   }
 
   .sf-button.sf-button--outline.sf-button--primary, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) {
@@ -188,15 +210,15 @@
     --sf-button--border-color: var(--sf-button-border-color, var(--sf-outline));
   }
 
-  .sf-button.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
+  .sf-button.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--outline.sf-button--primary:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-primary));
   }
 
-  .sf-button.sf-button--outline.sf-button--primary .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary .sf-icon {
+  .sf-button.sf-button--outline.sf-button--primary .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary .sf-icon {
     --sf-icon--color: var(--sf-primary);
   }
 
-  .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary), .sf-button.sf-button--loading.sf-button--default.sf-button--primary, .sf-button.sf-button--loading.sf-button--default.sf-button--secondary {
+  .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary), .sf-button.sf-button--loading.sf-button--default.sf-button--primary, .sf-button.sf-button--loading.sf-button--default.sf-button--secondary {
     --sf-button--background-color: var(--sf-button-background-color, transparent);
   }
 
@@ -205,7 +227,7 @@
     --sf-button-text-container--padding-inline-start: var(--sf-ui-2--text-space-x);
   }
 
-  .sf-button.sf-button--size-2.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2.sf-button--default.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2.sf-button--tonal.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2.sf-button--default.sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button.sf-button--size-2.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2.sf-button--default.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2.sf-button--tonal.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2:is(.sf-button--ghost, .sf-button--link).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2.sf-button--default.sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut) {
     --sf-button-text-container--font-size: var(--sf-text-size-2);
     --sf-button-text-container--line-height: var(--sf-text-height-2);
   }
@@ -215,7 +237,7 @@
     --sf-button-text-container--padding-inline-start: var(--sf-ui-3--text-space-x);
   }
 
-  .sf-button.sf-button--size-3.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3.sf-button--default.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3.sf-button--tonal.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3.sf-button--default.sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button.sf-button--size-3.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3.sf-button--default.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3.sf-button--tonal.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3:is(.sf-button--ghost, .sf-button--link).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3.sf-button--default.sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut) {
     --sf-button-text-container--font-size: var(--sf-text-size-3);
     --sf-button-text-container--line-height: var(--sf-text-height-3);
   }
@@ -225,7 +247,7 @@
     --sf-button-text-container--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
   }
 
-  .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2.sf-button--tonal.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2.sf-button--tonal.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2:is(.sf-button--ghost, .sf-button--link).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut) {
     --sf-button-text-container--font-size: var(--sf-text-size-1\/2);
     --sf-button-text-container--line-height: var(--sf-text-height-1\/2);
   }
@@ -235,7 +257,7 @@
     --sf-button-text-container--padding-inline-start: var(--sf-ui-1\/3--text-space-x);
   }
 
-  .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3.sf-button--tonal.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3.sf-button--tonal.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3:is(.sf-button--ghost, .sf-button--link).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut) {
     --sf-button-text-container--font-size: var(--sf-text-size-1\/3);
     --sf-button-text-container--line-height: var(--sf-text-height-1\/3);
   }
@@ -561,15 +583,17 @@
 
      Ghost used to be the transparent member of this pair. At rest it was
      identical to link and differed only by a hover tint of 8% instead of 16%,
-     too little for anyone to choose between them, so `--ghost` now reads as
-     `--link` and stays only as a compatibility name. */
+     too little for anyone to choose between them, so they became one look.
+     Its name is ghost (decision C15): `--ghost` is the class, `--link` its
+     former name, drawn by the same rules until 2027-01-01 (journal
+     class-button-link-to-ghost). */
   .sf-button.sf-button--surface {
     --sf-button--background-color: var(--sf-button-background-color, transparent);
   }
 
   .sf-button.sf-button--surface {
-    --sf-button--background-color: var(--sf-button-background-color, var(--sf-alpha-4));
-    --sf-button--border-color: var(--sf-button-border-color, var(--sf-alpha-8));
+    --sf-button--background-color: var(--sf-button-background-color, var(--sf-surface-state-hover));
+    --sf-button--border-color: var(--sf-button-border-color, var(--sf-surface-state-select));
     --sf-button--border-bottom-width: var(--sf-button-border-width, var(--sf-px));
     --sf-button--border-inline-end-width: var(--sf-button-border-width, var(--sf-px));
     --sf-button--border-inline-start-width: var(--sf-button-border-width, var(--sf-px));
@@ -613,15 +637,15 @@
     --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
   }
 
-  .sf-button.sf-button--surface:is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
+  .sf-button.sf-button--surface:is(.sf-button--on-surface, .sf-button--secondary) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--surface:is(.sf-button--on-surface, .sf-button--secondary):not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-surface));
   }
 
   .sf-button.sf-button--surface:is(.sf-button--on-surface, .sf-button--secondary) .sf-icon {
-    --sf-icon--color: var(--sf-on-surface);
+    --sf-icon--color: var(--sf-on-surface-icon);
   }
 
-  .sf-button.sf-button--surface.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
+  .sf-button.sf-button--surface.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--surface.sf-button--primary:not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-primary));
   }
 
@@ -634,7 +658,7 @@
      surface's own neutral ramp. Before, no rule named the pair and the label
      fell back to the plain ink -- black in light, white in dark (buttons
      review 2026-11-09). */
-  .sf-button.sf-button--surface:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
+  .sf-button.sf-button--surface:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--surface:is(.sf-button--danger, .sf-button--error):not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-error));
   }
 
@@ -644,20 +668,20 @@
 }
 
 @layer sf.states {
-  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):focus-visible, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):focus-visible, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled):focus-visible, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):focus-visible {
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):focus-visible, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):focus-visible, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not(.disabled):focus-visible, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):focus-visible {
     --sf-button--background-color: var(--sf-transparent-for-focus);
   }
 
   .sf-button.sf-button--default.sf-button--primary:disabled:not(.sf-button-state-loading:not(.disabled)), .sf-button.sf-button--default.sf-button--on-surface:disabled:not(.sf-button-state-loading:not(.disabled)), .sf-button.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary):disabled:not(.sf-button-state-loading:not(.disabled)), .sf-button.sf-button--tonal.sf-button--on-surface:disabled:not(.sf-button-state-loading:not(.disabled)), .sf-button.sf-button--default.sf-button--secondary:disabled:not(.sf-button-state-loading:not(.disabled)) {
-    --sf-button--background-color: var(--sf-disable);
+    --sf-button--background-color: var(--sf-surface-disabled);
   }
 
-  .sf-button.sf-button--default.sf-button--primary:disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--default.sf-button--on-surface:disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary):disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--tonal.sf-button--on-surface:disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--outline.sf-button--primary:disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--default.sf-button--secondary:disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
-    --sf-button-text-container--color: var(--sf-on-disable);
+  .sf-button.sf-button--default.sf-button--primary:disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--default.sf-button--on-surface:disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary):disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--tonal.sf-button--on-surface:disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--outline.sf-button--primary:disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--default.sf-button--secondary:disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--default.sf-button--primary:disabled:not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button.sf-button--default.sf-button--on-surface:disabled:not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button.sf-button--tonal:is(.sf-button--secondary, .sf-button--primary):disabled:not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button.sf-button--tonal.sf-button--on-surface:disabled:not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button.sf-button--outline.sf-button--primary:disabled:not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):disabled:not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:disabled:not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):disabled:not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button.sf-button--default.sf-button--secondary:disabled:not(.sf-button-state-loading:not(.disabled)):not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-on-surface-disabled);
   }
 
   .sf-button.sf-button--outline.sf-button--primary:disabled:not(.sf-button-state-loading:not(.disabled)) {
-    --sf-button--border-color: var(--sf-outline-disable);
+    --sf-button--border-color: var(--sf-outline-disabled);
   }
 
   .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):disabled:not(.sf-button-state-loading:not(.disabled)) {
@@ -683,28 +707,39 @@
     --sf-button--background-color: var(--sf-primary-container-hover);
   }
 
-  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):hover, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover {
-    --sf-button--background-color: var(--sf-surface-container-hover);
+  /* On a strong coloured place the hover and press fills are the place's own
+     steps (R190 AA-10; mix sf-place-strong-accent, --sf-place--control-hover
+     and -active), which keep the white label at 4.5:1 and more; elsewhere the
+     roles. */
+  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):hover, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-place--control-hover, var(--sf-surface-container-hover));
   }
 
-  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut) {
-    --sf-button-text-container--color: var(--sf-on-surface-hover);
+  /* The neutral label on a hovered or pressed fill (C113 follow-up). The
+     ink roles --sf-on-surface-hover / -active step toward the middle tone, as
+     they must for the filled on-surface plate that also reads them; on a
+     fill that the dark theme lightens, that took the label down while the
+     plate came up: 3.89:1 pressed on a popup. In the dark theme the label
+     keeps --sf-on-surface (5.14 pressed on a popup, 5.70 hovered) and the
+     plate alone carries the state; the light theme keeps the steps. */
+  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):hover:not(:has(> *)), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover:not(:has(> *)) {
+    --sf-button-text-container--color: light-dark(var(--sf-on-surface-hover), var(--sf-on-surface));
   }
 
-  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):hover, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled):hover {
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):hover, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not(.disabled):hover {
     --sf-button--background-color: var(--sf-primary-container-hover);
   }
 
-  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):hover:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not(.disabled):hover:not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-primary-hover);
   }
 
-  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):hover .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled):hover .sf-icon {
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):hover .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not(.disabled):hover .sf-icon {
     --sf-icon--color: var(--sf-primary-hover);
   }
 
-  .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover .sf-icon {
-    --sf-icon--color: var(--sf-on-surface-hover);
+  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):hover .sf-icon, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):hover .sf-icon {
+    --sf-icon--color: light-dark(var(--sf-on-surface-hover), var(--sf-on-surface));
   }
 
   .sf-button.sf-button--default.sf-button--primary:not(:disabled):not(.disabled):active, .sf-button.sf-button--default.sf-button--primary:not(:disabled):not(.disabled).active, .sf-button.sf-button--default.sf-button--secondary:not(:disabled):not(.disabled):active, .sf-button.sf-button--default.sf-button--secondary:not(:disabled):not(.disabled).active {
@@ -723,28 +758,28 @@
     --sf-button--background-color: var(--sf-primary-container-active);
   }
 
-  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):active, .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled).active, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active {
-    --sf-button--background-color: var(--sf-surface-container-active);
+  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):active, .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled).active, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active {
+    --sf-button--background-color: var(--sf-place--control-active, var(--sf-surface-container-active));
   }
 
-  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut) {
-    --sf-button-text-container--color: var(--sf-on-surface-active);
+  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):active:not(:has(> *)), .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled).active:not(:has(> *)), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active:not(:has(> *)), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active:not(:has(> *)) {
+    --sf-button-text-container--color: light-dark(var(--sf-on-surface-active), var(--sf-on-surface));
   }
 
-  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):active, .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled).active, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled):active, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled).active {
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):active, .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled).active, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not(.disabled):active, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not(.disabled).active {
     --sf-button--background-color: var(--sf-primary-container-active);
   }
 
-  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):active:not(:has(> *)), .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled).active:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not(.disabled):active:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not(.disabled).active:not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-primary-active);
   }
 
-  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):active .sf-icon, .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled).active .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled):active .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost).sf-button--primary:not(:disabled):not(.disabled).active .sf-icon {
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):active .sf-icon, .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled).active .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not(.disabled):active .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not(.disabled).active .sf-icon {
     --sf-icon--color: var(--sf-primary-active);
   }
 
-  .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active .sf-icon, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active .sf-icon, .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active .sf-icon {
-    --sf-icon--color: var(--sf-on-surface-active);
+  .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled):active .sf-icon, .sf-button.sf-button--tonal.sf-button--on-surface:not(:disabled):not(.disabled).active .sf-icon, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active .sf-icon, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled):active .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):not(:disabled):not(.disabled).active .sf-icon {
+    --sf-icon--color: light-dark(var(--sf-on-surface-active), var(--sf-on-surface));
   }
 
   /* The ring is an outline: it shares no property with the elevation shadow,
@@ -802,41 +837,50 @@
   }
 
   .sf-button.sf-button.sf-button:disabled:not(.sf-button-state-loading:not(.disabled)) .sf-icon {
-    --sf-icon--color: var(--sf-on-disable);
+    --sf-icon--color: var(--sf-on-surface-disabled);
   }
 
   /* The states of the two ramp appearances: the fill rises one step on hover and
-     another when pressed, and surface raises its border alongside. */
+     another when pressed, and surface raises its border alongside. The steps
+     are the surface roles (state hover 4, select 8, active 12, container
+     active 16; DEV acceptance 2026-11-10 Q3), not --sf-alpha-*, which is
+     black or white on every place and stayed grey on a coloured one. */
   .sf-button.sf-button--surface:not(:disabled):not(.disabled):hover {
-    --sf-button--background-color: var(--sf-alpha-8);
+    --sf-button--background-color: var(--sf-surface-state-select);
   }
 
   .sf-button.sf-button--surface:not(:disabled):not(.disabled):hover {
-    --sf-button--border-color: var(--sf-alpha-12);
+    --sf-button--border-color: var(--sf-surface-state-active);
   }
 
   .sf-button.sf-button--surface:not(:disabled):not(.disabled):is(:active, .active) {
-    --sf-button--background-color: var(--sf-alpha-12);
+    --sf-button--background-color: var(--sf-surface-state-active);
   }
 
   .sf-button.sf-button--surface:not(:disabled):not(.disabled):is(:active, .active) {
-    --sf-button--border-color: var(--sf-alpha-16);
+    --sf-button--border-color: var(--sf-surface-container-active);
+  }
+
+  /* The icon catches the label up under a pointer (C107 (4)): the surface
+     look's label keeps --sf-on-surface in every state. */
+  .sf-button.sf-button--surface.sf-button--on-surface:not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-icon {
+    --sf-icon--color: var(--sf-on-surface);
   }
 
   .sf-button.sf-button--surface:disabled:not(.sf-button-state-loading:not(.disabled)),
   .sf-button.sf-button--surface.disabled {
     --sf-button--background-color: transparent;
-    --sf-button--border-color: var(--sf-alpha-4);
+    --sf-button--border-color: var(--sf-surface-state-hover);
   }
 
   .sf-button.sf-button--surface:disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
-  .sf-button.sf-button--surface.disabled :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
-    --sf-button-text-container--color: var(--sf-on-disable);
+  .sf-button.sf-button--surface.disabled :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--surface:disabled:not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button.sf-button--surface.disabled:not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-on-surface-disabled);
   }
 
   .sf-button.sf-button--surface:disabled:not(.sf-button-state-loading:not(.disabled)) .sf-icon,
   .sf-button.sf-button--surface.disabled .sf-icon {
-    --sf-icon--color: var(--sf-on-disable);
+    --sf-icon--color: var(--sf-on-surface-disabled);
   }
 }
 
@@ -858,7 +902,7 @@
   .sf-button.sf-button--size-1.sf-button--default:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
   .sf-button.sf-button--size-1.sf-button--tonal:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
   .sf-button.sf-button--size-1.sf-button--outline:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
-  .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button.sf-button--size-1:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
     --sf-button-text-container--font-size: var(--sf-text-size-1);
     --sf-button-text-container--line-height: var(--sf-text-height-1);
   }
@@ -866,28 +910,28 @@
   .sf-button.sf-button--size-1.sf-button--default:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
   .sf-button.sf-button--size-1.sf-button--tonal:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
   .sf-button.sf-button--size-1.sf-button--outline:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
-  .sf-button.sf-button--size-1:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-1:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
   .sf-button.sf-button--size-2.sf-button--default:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
   .sf-button.sf-button--size-2.sf-button--tonal:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
   .sf-button.sf-button--size-2.sf-button--outline:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
-  .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-2:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
   .sf-button.sf-button--size-3.sf-button--default:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
   .sf-button.sf-button--size-3.sf-button--tonal:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
   .sf-button.sf-button--size-3.sf-button--outline:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
-  .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-3:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
   .sf-button.sf-button--size-1\/2.sf-button--default:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
   .sf-button.sf-button--size-1\/2.sf-button--tonal:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
   .sf-button.sf-button--size-1\/2.sf-button--outline:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
-  .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-1\/2:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
   .sf-button.sf-button--size-1\/3.sf-button--default:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
   .sf-button.sf-button--size-1\/3.sf-button--tonal:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
   .sf-button.sf-button--size-1\/3.sf-button--outline:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
-  .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error) .sf-button-text-container {
+  .sf-button.sf-button--size-1\/3:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) .sf-button-text-container {
     --sf-button-text-container--font-family: var(--sf-text--family);
     --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
   }
 
-  .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
+  .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error):not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-error));
   }
 
@@ -899,7 +943,7 @@
     --sf-button--background-color: var(--sf-button-background-color, var(--sf-error-container));
   }
 
-  .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
+  .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error):not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-error-container));
   }
 
@@ -913,16 +957,16 @@
   }
 
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
-  .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-error));
   }
 
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error) .sf-icon,
-  .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error) .sf-icon {
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) .sf-icon {
     --sf-icon--color: var(--sf-error);
   }
 
-  .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error),
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error),
   .sf-button.sf-button--loading.sf-button--default:is(.sf-button--danger, .sf-button--error) {
     --sf-button--background-color: var(--sf-button-background-color, transparent);
   }
@@ -930,7 +974,7 @@
   .sf-button.sf-button--size-2.sf-button--default:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
   .sf-button.sf-button--size-2.sf-button--tonal:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
   .sf-button.sf-button--size-2.sf-button--outline:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
-  .sf-button.sf-button--size-2:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button.sf-button--size-2:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
     --sf-button-text-container--font-size: var(--sf-text-size-2);
     --sf-button-text-container--line-height: var(--sf-text-height-2);
   }
@@ -938,7 +982,7 @@
   .sf-button.sf-button--size-3.sf-button--default:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
   .sf-button.sf-button--size-3.sf-button--tonal:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
   .sf-button.sf-button--size-3.sf-button--outline:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
-  .sf-button.sf-button--size-3:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button.sf-button--size-3:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
     --sf-button-text-container--font-size: var(--sf-text-size-3);
     --sf-button-text-container--line-height: var(--sf-text-height-3);
   }
@@ -946,7 +990,7 @@
   .sf-button.sf-button--size-1\/2.sf-button--default:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
   .sf-button.sf-button--size-1\/2.sf-button--tonal:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
   .sf-button.sf-button--size-1\/2.sf-button--outline:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
-  .sf-button.sf-button--size-1\/2:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button.sf-button--size-1\/2:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
     --sf-button-text-container--font-size: var(--sf-text-size-1\/2);
     --sf-button-text-container--line-height: var(--sf-text-height-1\/2);
   }
@@ -954,7 +998,7 @@
   .sf-button.sf-button--size-1\/3.sf-button--default:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
   .sf-button.sf-button--size-1\/3.sf-button--tonal:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
   .sf-button.sf-button--size-1\/3.sf-button--outline:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
-  .sf-button.sf-button--size-1\/3:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button.sf-button--size-1\/3:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
     --sf-button-text-container--font-size: var(--sf-text-size-1\/3);
     --sf-button-text-container--line-height: var(--sf-text-height-1\/3);
   }
@@ -963,24 +1007,24 @@
 
 @layer sf.states {
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):focus-visible,
-  .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):focus-visible {
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):focus-visible {
     --sf-button--background-color: var(--sf-transparent-for-focus);
   }
 
   .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error):disabled:not(.sf-button-state-loading:not(.disabled)),
   .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error):disabled:not(.sf-button-state-loading:not(.disabled)) {
-    --sf-button--background-color: var(--sf-disable);
+    --sf-button--background-color: var(--sf-surface-disabled);
   }
 
   .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error):disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
   .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error):disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
-  .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error):disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
-    --sf-button-text-container--color: var(--sf-on-disable);
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):disabled:not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error):disabled:not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error):disabled:not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):disabled:not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):disabled:not(.sf-button-state-loading:not(.disabled)):not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-on-surface-disabled);
   }
 
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):disabled:not(.sf-button-state-loading:not(.disabled)) {
-    --sf-button--border-color: var(--sf-outline-disable);
+    --sf-button--border-color: var(--sf-outline-disabled);
   }
 
   .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover {
@@ -992,17 +1036,17 @@
   }
 
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover,
-  .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover {
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover {
     --sf-button--background-color: var(--sf-error-container-hover);
   }
 
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut),
-  .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover:not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-error-hover);
   }
 
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover .sf-icon,
-  .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover .sf-icon {
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover .sf-icon {
     --sf-icon--color: var(--sf-error-hover);
   }
 
@@ -1018,22 +1062,22 @@
 
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):active,
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).active,
-  .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):active,
-  .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).active {
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):active,
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).active {
     --sf-button--background-color: var(--sf-error-container-active);
   }
 
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut),
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut),
-  .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut),
-  .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):active:not(:has(> *)), .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).active:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):active:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).active:not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-error-active);
   }
 
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):active .sf-icon,
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).active .sf-icon,
-  .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):active .sf-icon,
-  .sf-button:is(.sf-button--link, .sf-button--ghost):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).active .sf-icon {
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):active .sf-icon,
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).active .sf-icon {
     --sf-icon--color: var(--sf-error-active);
   }
 

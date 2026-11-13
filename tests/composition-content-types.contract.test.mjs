@@ -55,7 +55,7 @@ const CASES = {
   },
   'content.table': {
     node: { id: 't', type: 'content.table', data: { caption: [text('Sizes')], rows: [[[text('Name')], [text('Size')]], [[text('A')], [text('1')]]] }, props: { header: 'both', align: ['start', 'end'] } },
-    html: '<div class="table-frame" data-sf-composition-id="t"><table class="table"><caption>Sizes</caption><thead><tr><th scope="col">Name</th><th scope="col" style="text-align: end">Size</th></tr></thead><tbody><tr><th scope="row">A</th><td style="text-align: end">1</td></tr></tbody></table></div>',
+    html: '<div class="table-frame" data-sf-composition-id="t"><table class="table"><caption>Sizes</caption><thead><tr><th scope="col">Name</th><th scope="col" class="text-end">Size</th></tr></thead><tbody><tr><th scope="row">A</th><td class="text-end">1</td></tr></tbody></table></div>',
   },
   'content.figure': {
     node: { id: 'f', type: 'content.figure', data: { src: '/a.webp', alt: 'A "scene"', width: 1280, height: 720, caption: [text('Caption')] }, props: { ratio: '21/9', fit: 'contain' } },
@@ -114,15 +114,19 @@ test('the registry carries the first edition, each type at 1.0.0 with a builtin 
   for (const type of FIRST_EDITION) {
     const manifest = types.get(type);
     assert.ok(manifest, type);
-    assert.equal(manifest.version, '1.0.0', type);
+    // content.table 1.0.1 (2026-11-10): column alignment by class; 1.1.0 and
+    // every other type with an inline field at 1.1.0: inline model 1.2.0.
+    const inlineFields = ['content.table', 'content.list-item', 'content.figure', 'content.alert', 'content.details', 'content.step'];
+    assert.equal(manifest.version, inlineFields.includes(type) ? '1.1.0' : '1.0.0', type);
     assert.equal(manifest.category, 'content', type);
     assert.equal(manifest.renderer.kind, ['content.diagram', 'content.math'].includes(type) ? 'registered' : 'builtin', type);
     assert.ok(manifest.profiles.includes(type === 'content.outlet' ? 'ui-layout' : 'structured-content'), type);
   }
   assert.deepEqual(types.get('content.outlet').profiles, ['ui-layout'], 'the outlet stands in a layout only');
   assert.deepEqual(types.get('content.document').profiles, ['structured-content'], 'the content root is no layout node');
-  assert.equal(types.get('content.heading').version, '1.2.0', 'content.heading 1.2.0 takes alignment and visibility');
-  assert.equal(types.get('content.paragraph').version, '1.3.0', 'content.paragraph 1.2.0 prints its modifiers (G-39), 1.3.0 takes alignment and visibility');
+  assert.equal(types.get('content.heading').version, '1.3.0', 'content.heading 1.2.0 takes alignment and visibility, 1.3.0 inline model 1.2.0');
+  assert.equal(types.get('content.paragraph').version, '1.4.0', 'content.paragraph 1.2.0 prints its modifiers (G-39), 1.3.0 takes alignment and visibility, 1.4.0 inline model 1.2.0');
+  assert.equal(types.get('content.foreign').version, '1.0.0', 'content.foreign 1.0.0 (2026-11-10)');
 });
 
 test('the generated registry file is the builtins', async () => {

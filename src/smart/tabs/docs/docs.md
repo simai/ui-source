@@ -6,26 +6,28 @@ their accessible name. Text slots remain the accessible label of text tabs.
 Give each tablist an `aria-label`, or reference a visible heading through
 `aria-labelledby`.
 
-`appearance` selects how the built-in tab buttons look: `default`, `outline` or
-`ghost`, with the primary semantic color pair. It is not a selector for
-arbitrary semantic colors. `type` separately selects the Tabs skin
-(`underline`, `pills`, `full`, `vertical`, or the default).
-
-`scheme` is the former name of `appearance` and `link` the former name of
-`ghost`: both keep working with a console note until 2027-01-01 (journal
-`attribute-tabs-scheme-to-appearance`); `appearance` wins when both are given.
-A custom template still finds the value as `context.scheme` too.
+Tabs have two looks (owner decision C96, sf-tabs 1.3.0): the line -- no
+`type`, or `type="underline"` -- and the plate, `type="pills"`.
+`type="vertical"` is the menu's column. `type="full"` is retired: it draws the
+line with `fit="always"`. The historical `scheme` attribute (`default`,
+`outline` or `link`) no longer changes the look; it is not a selector for
+arbitrary semantic colors, and custom templates may still read it. `full` and
+the `outline`/`link` schemes are noted in `SF.deprecations` until 2027-01-01.
+Before 1.3.0 no `type` drew filled primary buttons; that look is gone.
 
 A nested `sf-tabs` in a panel slot keeps its own skin; parent skin selectors do
 not reach into the nested header. Horizontal lists scroll locally instead of
 squeezing labels into individual characters or widening the page. Default
 controls can wrap a label wider than the list. Prefer concise labels.
 
-The built-in text/icon templates have one enabled native tab stop, unique stable
+The built-in text/icon templates have one native tab stop, unique stable
 tab/panel IDs and reciprocal `aria-controls` / `aria-labelledby` relationships.
-Panels are keyboard-focusable. Horizontal navigation uses Left/Right (mirrored
-in RTL); `type="vertical"` uses Up/Down. Home/End select enabled endpoints.
-Arrows skip disabled tabs, wrap and move focus while activating the panel --
+A panel is a tab stop of its own only when it holds nothing focusable (APG).
+Horizontal navigation uses Left/Right (mirrored in RTL); `type="vertical"`
+uses Up/Down. Home/End go to the endpoints. A disabled tab says
+`aria-disabled="true"` and stays focusable: the arrows reach it, a press or a
+key selects nothing, and its item `hint` says why in a tooltip. Arrows wrap
+and move focus while activating the panel --
 unless a panel holds a part that starts later (`data-sf-start`, an assembly's
 `start: opened`): then the arrows only move the focus and Enter or Space opens
 the tab (manual activation, standard 1.3.8 §7.2.1).
@@ -33,7 +35,9 @@ Perpendicular arrows retain browser behavior. Keyboard events in panel content
 and nested Tabs do not navigate an outer Tabs instance.
 
 A person's choice (a press, a key, «Ещё») sends `sf-tabs-change` with
-`{selected, previous, current, item, items}` -- data only. The old name
+`{selected, previous, current, item, items}` -- data only -- after the tabs
+and panels show the new selection (`aria-selected`, `hidden`); with `lazy`,
+after a panel opened for the first time is drawn. The old name
 `sf-tab-change` follows until 2026-12-01 with its old detail (`component`,
 `tagName`, `template` added), each use noted in `SF.deprecations` with its
 dates. `goTo(index)` (the action `go-to`), `active-index` and `selected` (the
@@ -50,7 +54,8 @@ and restricts its queries/clicks to the nearest ordinary Tabs owner.
 A panel can be the page's own `<div role="tabpanel">` written inside the host
 (or placed there by an assembly, with `data-entry="<id>"` per entry): it is
 moved, not copied, into the panel row, and shown or closed by its `hidden`
-attribute. Tab, panel and label ids are the host's path id and a local name
+attribute. A slotted panel (`<p slot="panel-0">`) keeps its slot name on the
+panel it becomes. Tab, panel and label ids are the host's path id and a local name
 (`<id>--tab-1`), never a counter.
 
 `root-class`, author `style` and `root-style` apply to the visible root. Use
@@ -77,15 +82,13 @@ Reference pattern: https://www.w3.org/WAI/ARIA/apg/patterns/tabs/
 ## Pills, and what a two-option switch is
 
 `type="pills"` draws rounded tabs where the selected one is the only filled
-tab: it keeps the selected fill (primary, with on-primary ink), and the others
-are text on the surface with no fill and no border, whatever `appearance` says,
-painted only by the surface state layer of what the pointer does (4 % on
-hover, 8 % with keyboard focus, 12 % pressed), in the light and dark themes and
-with any theme colour. Until 2026-11-01 the unselected pills took the
-appearance fill, and with the default appearance a row of filled pills told the
-selected one apart by a step of the same colour; `appearance="outline"` (then
-`scheme="outline"`), once the advice for this, is no longer needed and gives
-the same pills.
+tab: a plate of `--sf-primary-container` with its ink, the selected role every
+component takes (C16). The others are text on the surface with no fill and no
+border, whatever `scheme` says, painted only by the surface state layer of what
+the pointer does (4 % on hover, 8 % with keyboard focus, 12 % pressed), in the
+light and dark themes and with any theme colour. Until 2026-11-01 the
+unselected pills took the `scheme` fill; `scheme="outline"`, once the advice
+for this, is no longer needed and gives the same pills.
 
 ```html
 <sf-tabs type="pills" aria-label="Разделы"></sf-tabs>
@@ -100,45 +103,132 @@ panels — use the segmented control, `sf-segmented`:
 ```
 
 It is a `radiogroup` with one tab stop, arrows, Home and End, and its track is
-the height of an `sf-button` of the same `size`, so it stands in a row with the
-header's buttons. Pills are a tablist of button-shaped tabs and do not follow
-the button height ladder; a pill row beside buttons will not line up with them.
-Tabs are for panels: each tab shows its own panel, and the switch only reports
-a value.
+the height of an `sf-button` of the same `size`. A pill is that height too
+(40 px on a desktop, 36 px on a phone at the default size), so a pill row
+lines up with the header's buttons. Tabs are for panels: each tab shows its own
+panel, and the switch only reports a value.
 
 ## Подчёркнутые вкладки: размеры
 
-У `type="underline"` вкладка — это её подпись и линия, без отступов по бокам.
-Между вкладками один промежуток по размеру: 20px при `size="1/2"`, 24px при
-`1`, 32px при `2`. Высота вкладки — высота контрола своего размера (32, 40,
-48px), и вся она нажимается. Линия 2, 2 и 3px.
+Вкладки стоят встык, без пустого промежутка: нажимается вся строка. Поле
+вкладки по бокам — поле кнопки того же размера (`--sf-ui-<size>--space-x`:
+14, 16 и 20px при `size="1/2"`, `1` и `2`; на телефоне 12, 14 и 18px), у
+подписи своего поля нет, поэтому между подписями 28, 32 и 40px. У первой
+вкладки нет поля в начале, у последней — в конце: буквы первой вкладки стоят
+на краю текста, как заголовок над ними. Если вкладки делят строку поровну
+(`fit`), поля остаются у всех. Высота вкладки — высота контрола своего
+размера (32, 40, 48px; в плотной области `data-sf-density="compact"` — на
+ступень ниже, как у кнопок), и вся она нажимается. Линия 2px на любом
+размере, ровно под буквами, и переходит к другой вкладке сразу, без
+скольжения. Поле вкладки меняется одной переменной `--sf-tabs-padding-inline`.
 
 Выбранная вкладка — подпись цветом `--sf-on-surface` и линия цветом темы
 (`--sf-primary`, меняется через `--sf-tabs-indicator-color`); остальные
-подписи спокойнее — `--sf-on-surface-variant`. Так выбранная вкладка читается
-выбранной в светлой и тёмной теме при любом цвете темы.
+подписи спокойнее — `--sf-on-surface-variant`. Полужирная только подпись
+выбранной вкладки, и место под полужирную подпись занято у каждой вкладки
+заранее: при выборе соседние вкладки не сдвигаются. Под указателем подпись
+только темнеет — серой линии нет.
+
+## Вертикальные вкладки
+
+`type="vertical"` — колонка, как у `sf-menu`: строки через
+`--sf-space-1/4` (шаг 44px при `size="1"`), буквы в 16px от края колонки
+(`--sf-space-1`), подписи от начала строки,
+текущая вкладка залита (`--sf-primary-container-active`), под указателем —
+слой состояния поверхности. На телефоне (уже ступени `md`) вертикальные
+вкладки становятся рядом с линией и «Ещё».
 
 ## Когда вкладки не помещаются
 
-`overflow="scroll"` (по умолчанию) прокручивает ряд, `overflow="wrap"`
-переносит вкладки на следующие строки. `overflow="more"` убирает не
-поместившиеся вкладки в кнопку «Ещё (n)» в конце ряда: она открывает
-стандартное меню с ними. Активная вкладка всегда остаётся на месте.
+`overflow="more"` (по умолчанию) убирает не поместившиеся вкладки целиком в
+кнопку «Ещё (n)» в конце ряда: она открывает стандартное меню с ними.
+Вкладки уходят по порядку, с конца ряда; закреплённые (`pinned`) и выбранная
+остаются в ряду. Если закреплённые и выбранная вместе не помещаются рядом с
+«Ещё», закреплённая уступает место выбранной и уходит в «Ещё» (с последней
+закреплённой). Выбранная вкладка, оставшаяся в ряду одна и всё равно шире
+ряда, — единственная, которую можно сократить многоточием; любая другая
+вкладка либо целиком в ряду, либо в «Ещё». Обрезанной вкладки, затухания у
+края и стрелок прокрутки нет.
+`overflow="scroll"` прокручивает ряд, как раньше было по умолчанию,
+`overflow="wrap"` переносит вкладки на следующие строки.
 
-## Значок, счётчик и ссылка
+`fit` делит ряд поровну, когда все вкладки помещаются: `auto` (по умолчанию) —
+на телефоне, если вкладок от двух до четырёх; `always` — всегда; `never` —
+никогда. Не поместившиеся вкладки и с `fit` уходят в «Ещё (n)».
 
-У вкладки, заданной через свойство `items` (или `setItems`), есть `id`
-(прежнее имя — `key`), а также могут быть `icon`, `count` (небольшой
-счётчик после подписи) и `href`. Вкладка с `href` — ссылка: при выборе она
-переходит по адресу, с Cmd/Ctrl — в новой вкладке браузера, а у активной стоит
-`aria-current="page"`.
+## Список вкладок
+
+Атрибут `items` принимает короткую строку — подписи через `|`, флаги после
+`::` (`Главная::icon-start=home|Архив::disabled`) — или JSON-массив, тот же,
+что свойство `items` и `setItems()`. Подпись, в которой есть `|` или `::`,
+пишите только в JSON, без похожих символов на замену:
+
+```html
+<sf-tabs aria-label="Разделы"
+  items='[{"id":"io","label":"Ввод | вывод"},{"id":"ns","label":"a::b","hint":"Пространство имён"}]'></sf-tabs>
+```
+
+## Значок, счётчик, ошибки и подсказка
+
+У вкладки есть `id` (прежнее имя — `key`), а также могут быть `icon`, `count`
+(небольшой счётчик после подписи), `errors`, `hint` и `href`.
 
 ```js
 tabs.items = [
   {id: 'all', label: 'Все', count: 128},
   {id: 'mine', label: 'Мои', count: 7, icon: 'person'},
+  {id: 'billing', label: 'Оплата', disabled: true, hint: 'Доступно владельцу'},
+];
+```
+
+`hint` — короткий текст во всплывающей подсказке вкладки; у выключенной
+вкладки — почему она выключена. Подсказку читает экранный диктор как описание
+вкладки.
+
+`errors` — число ошибок в панели вкладки. Вкладка показывает его меткой
+цвета ошибки на строке подписи (`sf-badge line="text"`: высота — строка
+подписи, цифра — размер подписи, одна цифра — кружок), и диктор читает его
+вместе с названием: «Доступ, 2 ошибки». Если вкладки с ошибками ушли в «Ещё»,
+кнопка «Ещё» показывает сумму их ошибок той же меткой и называется
+«Ещё (3), 9 ошибок». Форма после неудачной проверки передаёт ошибки по `id`
+вкладок и вызывает действие `go-to-error` — открывается первая по порядку
+вкладка с ошибкой, и фокус встаёт на первое неверное поле её панели
+(`aria-invalid="true"`, `invalid` или `:invalid`):
+
+```js
+tabs.setErrors({profile: 0, access: 2});
+tabs.goToError(); // {outcome: 'applied'} или {outcome: 'refused', reason: 'no-errors'}
+```
+
+## Ссылки вместо вкладок
+
+Если `href` есть у каждой вкладки, ряд — это навигация, а не вкладки: `<nav>`
+со ссылками того же вида, у текущей `aria-current="page"`, без ролей вкладок и
+без стрелок. Ссылку можно открыть в новой вкладке браузера (Cmd/Ctrl, средняя
+кнопка), нажатие переходит по адресу. Панели у такого ряда не рисуются, если
+их не дали. С `variant="icons"` ссылки — кнопки-значки того же размера и вида,
+названные подписью пункта.
+
+```js
+tabs.items = [
+  {id: 'orders', label: 'Заказы', href: '/orders'},
   {id: 'archive', label: 'Архив', href: '/archive'},
 ];
+```
+
+## Ленивые панели, адрес и закреплённый ряд
+
+- `lazy` — панель рисуется, когда её вкладку открыли впервые, и дальше
+  остаётся нарисованной.
+- `hash` — выбранная вкладка пишется в адрес (`#<id>`): «Назад» возвращает
+  прежнюю вкладку, а ссылка на `#<id>` вкладки или элемента внутри её панели
+  открывает эту вкладку.
+- `sticky` — ряд вкладок остаётся на виду, пока панель прокручивается, ниже
+  верха окна на `--sf-tabs-sticky-top` (высота закреплённой шапки).
+
+```html
+<sf-tabs aria-label="Профиль" lazy hash sticky
+  items="Профиль|Доступ|Уведомления"></sf-tabs>
 ```
 
 ## Настройка вкладок

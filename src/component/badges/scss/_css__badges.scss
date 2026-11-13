@@ -120,12 +120,12 @@
    every size, so a spinner in place of an icon changes nothing around it. The
    badge sheet draws the slot on its own, so the box is right before the spinner
    sheet has arrived; the arc then draws still from the drawing's own attributes.
-   The track is the ink at the sheet's faint opacity, as it is before the sheet:
-   the Framework's surface-coloured track would vanish on a tonal badge. */
+   The track is the spinner's own, the ink at 16 % (spinner sheet, DEV J1/S1);
+   it was the ink under the sheet's opacity of 30 %, which the sheet no longer
+   sets. */
 .sf-badge .sf-badge-spinner {
   --sf-loader-svg-width: var(--sf-badge-spinner--size);
   --sf-loader-svg-height: var(--sf-badge-spinner--size);
-  --sf-loader-track-color: var(--sf-spinner-track-color, currentColor);
   display: inline-flex;
   flex: none;
   inline-size: var(--sf-badge-spinner--size);
@@ -159,7 +159,7 @@
 
 .sf-badge.sf-badge--tonal.sf-badge--neutral {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-surface-container));
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-surface));
 }
 
@@ -179,12 +179,12 @@
 }
 
 .sf-badge.sf-badge--outline.sf-badge--primary {
-  --sf-badge--border-color: var(--sf-badge-border-color, var(--sf-outline-primary));
+  --sf-badge--border-color: var(--sf-badge-border-color, var(--sf-primary-outline));
   --sf-badge--color: var(--sf-badge-color, var(--sf-primary));
 }
 
 .sf-badge.sf-badge--outline.sf-badge--secondary {
-  --sf-badge--border-color: var(--sf-badge-border-color, var(--sf-outline-secondary));
+  --sf-badge--border-color: var(--sf-badge-border-color, var(--sf-secondary-outline));
   --sf-badge--color: var(--sf-badge-color, var(--sf-secondary));
 }
 
@@ -199,7 +199,7 @@
 }
 
 .sf-badge.sf-badge--outline.sf-badge--tertiary {
-  --sf-badge--border-color: var(--sf-badge-border-color, var(--sf-outline-tertiary));
+  --sf-badge--border-color: var(--sf-badge-border-color, var(--sf-tertiary-outline));
   --sf-badge--color: var(--sf-badge-color, var(--sf-tertiary));
 }
 
@@ -224,7 +224,7 @@
 }
 
 .sf-badge.sf-badge--outline.sf-badge--info {
-  --sf-badge--border-color: var(--sf-badge-border-color, var(--sf-outline-info));
+  --sf-badge--border-color: var(--sf-badge-border-color, var(--sf-info-outline));
   --sf-badge--color: var(--sf-badge-color, var(--sf-info));
 }
 
@@ -239,7 +239,7 @@
 }
 
 .sf-badge.sf-badge--outline.sf-badge--success {
-  --sf-badge--border-color: var(--sf-badge-border-color, var(--sf-outline-success));
+  --sf-badge--border-color: var(--sf-badge-border-color, var(--sf-success-outline));
   --sf-badge--color: var(--sf-badge-color, var(--sf-success));
 }
 
@@ -254,7 +254,7 @@
 }
 
 .sf-badge.sf-badge--outline.sf-badge--warning {
-  --sf-badge--border-color: var(--sf-badge-border-color, var(--sf-outline-warning));
+  --sf-badge--border-color: var(--sf-badge-border-color, var(--sf-warning-outline));
   --sf-badge--color: var(--sf-badge-color, var(--sf-warning));
 }
 
@@ -269,7 +269,7 @@
 }
 
 .sf-badge.sf-badge--outline:is(.sf-badge--error, .sf-badge--danger) {
-  --sf-badge--border-color: var(--sf-badge-border-color, var(--sf-outline-error));
+  --sf-badge--border-color: var(--sf-badge-border-color, var(--sf-error-outline));
   --sf-badge--color: var(--sf-badge-color, var(--sf-error));
 }
 
@@ -355,6 +355,37 @@
   --sf-badge--side-tight: var(--sf-ui-2--text-space-x);
 }
 
+/* The line of the text beside it (owner decision C95 point 6, 2026-11-12;
+   sf-tabs' count, C96 point 6, by the same rule): a count or a mark in a
+   contents entry, a tab, a list row is sized by the text it stands next to,
+   not by a badge size -- its height is that text's line (1lh), its number the
+   text's own size, no block padding, a quarter space at the sides, so one
+   figure is a circle the line high. It inherits the size and the line, so it
+   follows the host's size and density without a size of its own. The top of
+   the line box (vertical-align top), so it stands on the line with no offset;
+   in a flex row its centre is the row's. */
+.sf-badge.sf-badge--line-text {
+  --sf-badge--line-height: 1lh;
+  --sf-badge--padding-block: var(--sf-badge-padding-block, calc(var(--sf-px) * 0));
+  --sf-badge--side-room: var(--sf-space-1\/4);
+  --sf-badge--side-tight: var(--sf-space-1\/4);
+  --sf-badge-spinner--size: var(--sf-badge--line-height);
+  font-size: inherit;
+  vertical-align: top;
+}
+
+.sf-badge.sf-badge--line-text .sf-badge-text {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.sf-badge.sf-badge--line-text .sf-icon {
+  block-size: auto;
+  inline-size: auto;
+  font-size: inherit;
+  line-height: 1;
+}
+
 /* Tight: the size's own text inset, for dense places. Written after the size
    and line rules. */
 .sf-badge.sf-badge--tight {
@@ -386,8 +417,8 @@
    control's own words do. A state, so it draws over the public variables.
    sf-badge takes it through root-class (sf-input-choice 1.1.0, C28). */
 .sf-badge.sf-badge--disabled {
-  --sf-badge--background-color: var(--sf-disable);
-  --sf-badge--color: var(--sf-on-disable);
-  --sf-badge--border-color: var(--sf-outline-disable);
+  --sf-badge--background-color: var(--sf-surface-disabled);
+  --sf-badge--color: var(--sf-on-surface-disabled);
+  --sf-badge--border-color: var(--sf-outline-disabled);
 }
 }

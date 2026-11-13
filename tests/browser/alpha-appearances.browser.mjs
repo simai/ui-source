@@ -108,7 +108,8 @@ try {
     // Every family: ghost empty at rest, surface faint with a stronger boundary.
     const families = [
       {name: 'button', surface: 'button-surface', ghost: 'button-ghost', disabled: 'button-disabled', boundary: (s) => alpha(s.border)},
-      {name: 'icon button', surface: 'icon-surface', ghost: 'icon-ghost', disabled: 'icon-disabled', boundary: (s) => alpha(s.border)},
+      // The icon button has no surface look since component.icon-buttons 1.6.0 (C15): its
+      // former class draws as tonal (journal class-icon-button-retired-looks-c15).
       {name: 'tag', surface: 'tag-surface', ghost: 'tag-ghost', disabled: null, boundary: (s) => shadowAlpha(s.shadow)},
     ];
 
@@ -178,4 +179,4 @@ try {
   await browser.close();
 }
 if (failures.length) throw new Error(JSON.stringify(failures, null, 2));
-process.stdout.write('Alpha appearances: PASS — button, icon button and tag: ghost empty until touched, surface faint with a stronger boundary, status colour untouched, both themes from one declaration\n');
+process.stdout.write('Alpha appearances: PASS — button and tag: ghost empty until touched, surface faint with a stronger boundary, status colour untouched, both themes from one declaration\n');

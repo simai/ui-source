@@ -6,66 +6,17 @@
 <span class="sf-wizard-position">Шаг 6 из 6</span>
 
 </div>
-<sf-steps class="sf-wizard-steps" size="1" current="5" aria-label="Шаги" items="[{&quot;label&quot;:&quot;Адрес панели&quot;,&quot;state&quot;:&quot;completed&quot;},{&quot;label&quot;:&quot;Уведомления&quot;,&quot;state&quot;:&quot;skipped&quot;},{&quot;label&quot;:&quot;Защита&quot;,&quot;state&quot;:&quot;completed&quot;},{&quot;label&quot;:&quot;Копии&quot;,&quot;state&quot;:&quot;completed&quot;},{&quot;label&quot;:&quot;Проверка&quot;,&quot;state&quot;:&quot;completed&quot;},{&quot;label&quot;:&quot;Готово&quot;,&quot;state&quot;:&quot;default&quot;}]" style="display: contents;" data-sf-size-relative>
-<div role="group" class="sf-steps sf-steps--size-1 flex flex-col" aria-label="Шаги" data-sf-static>
-<div class="sf-steps-container flex items-center">
+<sf-steps class="sf-wizard-steps" layout="row" navigation="free" size="1" current="5" aria-label="Шаги" items="[{&quot;label&quot;:&quot;Адрес панели&quot;,&quot;state&quot;:&quot;done&quot;},{&quot;label&quot;:&quot;Уведомления&quot;,&quot;state&quot;:&quot;skipped&quot;},{&quot;label&quot;:&quot;Защита&quot;,&quot;state&quot;:&quot;done&quot;},{&quot;label&quot;:&quot;Копии&quot;,&quot;state&quot;:&quot;done&quot;},{&quot;label&quot;:&quot;Проверка&quot;,&quot;state&quot;:&quot;done&quot;},{&quot;label&quot;:&quot;Готово&quot;}]" style="display: contents;" data-sf-size-relative>
+<div class="sf-steps sf-steps--size-1 sf-steps--marker-number sf-steps--layout-row" data-sf-static>
+<ol class="sf-steps-container" role="list" aria-label="Шаги"><li class="sf-step sf-step--size-1 sf-step--state-done sf-step--passed" data-step-index="0"><button type="button" class="sf-step-body sf-step-control"><span class="sf-step-marker" aria-hidden="true"><i class="sf-icon">check</i></span><span class="sf-step-content"><span class="sf-step-container">Адрес панели</span><span class="sr-only">, Пройден</span></span></button></li><li class="sf-step sf-step--size-1 sf-step--state-skipped sf-step--passed" data-step-index="1"><button type="button" class="sf-step-body sf-step-control"><span class="sf-step-marker" aria-hidden="true">2</span><span class="sf-step-content"><span class="sf-step-container">Уведомления</span><span class="sr-only">, Пропущен</span></span></button></li><li class="sf-step sf-step--size-1 sf-step--state-done sf-step--passed" data-step-index="2"><button type="button" class="sf-step-body sf-step-control"><span class="sf-step-marker" aria-hidden="true"><i class="sf-icon">check</i></span><span class="sf-step-content"><span class="sf-step-container">Защита</span><span class="sr-only">, Пройден</span></span></button></li><li class="sf-step sf-step--size-1 sf-step--state-done sf-step--passed" data-step-index="3"><button type="button" class="sf-step-body sf-step-control"><span class="sf-step-marker" aria-hidden="true"><i class="sf-icon">check</i></span><span class="sf-step-content"><span class="sf-step-container">Копии</span><span class="sr-only">, Пройден</span></span></button></li><li class="sf-step sf-step--size-1 sf-step--state-done sf-step--passed" data-step-index="4"><button type="button" class="sf-step-body sf-step-control"><span class="sf-step-marker" aria-hidden="true"><i class="sf-icon">check</i></span><span class="sf-step-content"><span class="sf-step-container">Проверка</span><span class="sr-only">, Пройден</span></span></button></li><li class="sf-step sf-step--size-1 sf-step--state-current" data-step-index="5" aria-current="step"><span class="sf-step-body"><span class="sf-step-marker" aria-hidden="true">6</span><span class="sf-step-content"><span class="sf-step-container">Готово</span><span class="sr-only">, Текущий</span></span></span></li></ol>
 
-
-<button type="button" class="sf-step sf-step--size-1 sf-step--stage-completed flex items-center content-main-center cursor-pointer" data-step-index="0" aria-label="Адрес панели, Завершено">
-<i class="sf-icon" aria-hidden="true">check_circle</i>
-<div class="sf-step-container flex items-center content-main-center">Адрес панели</div>
-</button>
-
-<i aria-hidden="true" class="sf-icon sf-steps-separator sf-steps-separator--directional">chevron_right</i>
-
-
-<button type="button" class="sf-step sf-step--size-1 sf-step--stage-skipped flex items-center content-main-center cursor-pointer" data-step-index="1" aria-label="Уведомления, Пропущен">
-<i class="sf-icon" aria-hidden="true">do_not_disturb_on</i>
-<div class="sf-step-container flex items-center content-main-center">Уведомления</div>
-</button>
-
-<i aria-hidden="true" class="sf-icon sf-steps-separator sf-steps-separator--directional">chevron_right</i>
-
-
-<button type="button" class="sf-step sf-step--size-1 sf-step--stage-completed flex items-center content-main-center cursor-pointer" data-step-index="2" aria-label="Защита, Завершено">
-<i class="sf-icon" aria-hidden="true">check_circle</i>
-<div class="sf-step-container flex items-center content-main-center">Защита</div>
-</button>
-
-<i aria-hidden="true" class="sf-icon sf-steps-separator sf-steps-separator--directional">chevron_right</i>
-
-
-<button type="button" class="sf-step sf-step--size-1 sf-step--stage-completed flex items-center content-main-center cursor-pointer" data-step-index="3" aria-label="Копии, Завершено">
-<i class="sf-icon" aria-hidden="true">check_circle</i>
-<div class="sf-step-container flex items-center content-main-center">Копии</div>
-</button>
-
-<i aria-hidden="true" class="sf-icon sf-steps-separator sf-steps-separator--directional">chevron_right</i>
-
-
-<button type="button" class="sf-step sf-step--size-1 sf-step--stage-completed flex items-center content-main-center cursor-pointer" data-step-index="4" aria-label="Проверка, Завершено">
-<i class="sf-icon" aria-hidden="true">check_circle</i>
-<div class="sf-step-container flex items-center content-main-center">Проверка</div>
-</button>
-
-<i aria-hidden="true" class="sf-icon sf-steps-separator sf-steps-separator--directional">chevron_right</i>
-
-
-<button type="button" class="sf-step sf-step--size-1 sf-step--stage-default flex items-center content-main-center selected cursor-pointer" data-step-index="5" aria-current="step">
-
-<div class="sf-step-container flex items-center content-main-center">Готово</div>
-</button>
-
-
-
-</div>
 </div>
 </sf-steps>
 <div class="sf-wizard-compact">
 <div class="sf-wizard-compact-line">
 <span class="sf-wizard-compact-label">Шаг 6 из 6</span>
 <sf-button class="sf-wizard-all" appearance="ghost" scheme="on-surface-variant" size="1/2" text="Все шаги" expanded="false" aria-controls="sf-wizard-1-list" style="display: contents;" data-sf-size-relative>
-<button type="button" class="sf-button sf-button--size-1/2 sf-button--link sf-button--on-surface-variant sf-button--on-surface flex items-cross-center" aria-expanded="false" aria-controls="sf-wizard-1-list" data-sf-static>
+<button type="button" class="sf-button sf-button--size-1/2 sf-button--ghost sf-button--link sf-button--on-surface-variant sf-button--on-surface flex items-cross-center" aria-expanded="false" aria-controls="sf-wizard-1-list" data-sf-static>
 
 
 <span class="sf-button-text-container text-center pointer-event-none flex-1">

@@ -19,6 +19,21 @@ the Smart `sf-button` projection.
   keeps its width and is transparent over the fill, so the height of the size
   does not move) and the icons filled (`FILL 1`): two cues, not colour alone,
   the same roles in both themes. Hover and press over it step the container;
+  a tonal toggle (1.10.2, TB-3), whose resting plate is already the container,
+  takes the container's pressed step when pressed (`--sf-primary-container-active`,
+  20 % light / 32 % dark) so the fill differs from its unpressed plate, and
+  hover and press over it lay the surface's state layer
+  (`--sf-surface-state-hover` / `-active`) on that fill. A tonal on-surface
+  toggle rests on the neutral fill, which the dark theme draws as a light
+  tone, so the pressed container alone barely differs from it: pressed, it
+  also carries the selected state's layer (`--sf-surface-state-select`, 8);
+  hover over it takes the press layer (12) and press adds the hover layer
+  (12 and 4). The label of a tonal, outline, ghost or link on-surface or
+  secondary button keeps `--sf-on-surface` under the pointer in the dark
+  theme (the light theme keeps `--sf-on-surface-hover` / `-active`): the
+  stepped ink fell to 3.89:1 pressed on a popup. Secondary outline, surface,
+  ghost and link labels step along the secondary's ladder under the pointer
+  (`--sf-secondary-hover` / `-active`), as primary's do;
   focus draws the ring; disabled wears the disabled look and keeps the filled
   icon. `sf-button--pressed` draws the same look without `aria-pressed`.
   With the Loader's icon subset, give the icon of a pressed toggle
@@ -44,11 +59,13 @@ the Smart `sf-button` projection.
 ## Public axes
 
 - emphasis: `sf-button--default`, `sf-button--tonal`,
-  `sf-button--outline`, `sf-button--link`, `sf-button--surface`;
-  `sf-button--ghost` is a compatibility name for `link`;
+  `sf-button--outline`, `sf-button--ghost`, `sf-button--surface`;
+  `sf-button--link` is the former name of `ghost` (decision C15), drawn the
+  same until 2027-01-01 (journal `class-button-link-to-ghost`); the Smart
+  `sf-button` writes both until then;
 - scheme: `primary`, `on-surface` and `secondary` for every emphasis.
   `default` and `tonal` secondary have a secondary fill of their own;
-  `outline`, `surface` and `link` secondary are the on-surface button --
+  `outline`, `surface` and `ghost` secondary are the on-surface button --
   edge, fill, padding, height, hover, press and disabled -- with the label and
   the icons in `--sf-secondary` (1.4.0, owner decision 2026-11-07; before,
   these three had no rule: no padding, about 32px at size 1 and the browser's
@@ -139,8 +156,9 @@ the size of its icon (simai/ui-source#10):
 
 The spinner takes the label's ink (the disabled ink on a disabled button)
 unless `--sf-loader--color` is set; its background ring is that ink at 16 %
-(1.9.1, the fill family of the alpha scale, drawn whole, so it shows on a light
-filled button in dark; `--sf-spinner-track-color` wins),
+(the fill family of the alpha scale, drawn whole, so it shows on a light
+filled button in dark; since 1.9.2 it is the spinner's own ring, the button
+sets only the colour; `--sf-spinner-track-color` wins),
 and under `prefers-reduced-motion` it is a still arc. The constructor draws it;
 in hand-written markup put it where the icon was, or before the label with the
 `--overlay` class:

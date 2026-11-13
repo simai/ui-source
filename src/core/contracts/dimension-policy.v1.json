@@ -44,6 +44,14 @@
       "reason": "The panel offset is derived from its current rendered height."
     },
     {
+      "id": "input-date-ribbon-sheet-under-field",
+      "category": "runtime-review",
+      "filePattern": "^smart/input-date/index\\.js$",
+      "contextPattern": "max-block-size: max\\(50%, calc\\(100% - \\$\\{top\\}px - var\\(--sf-space-1\\)\\)\\)",
+      "status": "accepted-runtime-geometry",
+      "reason": "The phone ribbon's bottom sheet stops a step 1 under the field it fills (owner decision C62, prototypes/datepicker.html#lenta): the field's bottom edge is measured with getBoundingClientRect when the sheet opens, in CSS pixels, and is kept exact; the step itself is the space token."
+    },
+    {
       "id": "legacy-accessibility-font-setting",
       "category": "runtime-review",
       "filePattern": "^component/sf-system/js/04-blocks/_special\\.js$",
@@ -82,6 +90,14 @@
       "contextPattern": "(?:startRect|\\$\\{left\\}|\\$\\{top\\})",
       "status": "accepted-runtime-geometry",
       "reason": "Drag placeholders and transforms preserve the exact DOMRect and pointer position."
+    },
+    {
+      "id": "notification-stack-measured-geometry",
+      "category": "runtime-review",
+      "filePattern": "^core/js/notify\\.js$",
+      "contextPattern": "(?:\\$\\{top \\? away : -away\\}px|\\$\\{clip\\}px|\\$\\{size\\}px)",
+      "status": "accepted-runtime-geometry",
+      "reason": "The notification stack (owner decision C50) places, clips and sizes from the toasts' rendered heights and the area's computed gap (--sf-space-1/2); the browser reports them in CSS pixels."
     },
     {
       "id": "policy-self",
@@ -157,6 +173,15 @@
       "textPattern": "^16px$",
       "status": "accepted-platform-boundary",
       "reason": "WebKit zooms the page on focus of a field under 16 CSS pixels; the floor is in CSS px by the platform's rule."
+    },
+    {
+      "id": "touch-field-zoom-floor-quantity-unit",
+      "category": "style-review",
+      "filePattern": "^component/quantity/scss/_css__quantity\\.scss$",
+      "contextPattern": "font-size: max\\(var\\(--sf-quantity-input--font-size\\), 16px\\)",
+      "textPattern": "^16px$",
+      "status": "accepted-platform-boundary",
+      "reason": "The unit beside a quantity's number takes the same touch-phone floor the core gives the number (touch-field-zoom-floor), so the two stay one size (C53 D2)."
     },
     {
       "id": "sass-unit-math",
@@ -257,7 +282,7 @@
     {
       "id": "measured-runtime-geometry",
       "category": "runtime-review",
-      "filePattern": "^(?:component/(?:country-code/js/_country_code|menu/js/_menu|range-slider/js/_range_slider|scrollbar/js/_scrollbar|textarea/js/_textarea|tooltip/js/_tooltip)\\.js|core/js/(?:code-copy|effects|layer-stack|position)\\.js|core/js/composition/(?:inline-editor|overlay|sortable-inserter|sortable)\\.mjs|smart/(?:menu|menu-context|profile-picker|resizer|segmented)/index\\.js|smart/tree/js/templates/default\\.js)$",
+      "filePattern": "^(?:component/(?:country-code/js/_country_code|menu/js/_menu|range-slider/js/_range_slider|scrollbar/js/_scrollbar|textarea/js/_textarea|tooltip/js/_tooltip)\\.js|core/js/(?:code-copy|effects|float-anchor|layer-stack|position)\\.js|core/js/composition/(?:inline-editor|overlay|sortable-inserter|sortable)\\.mjs|smart/(?:menu|menu-context|profile-picker|resizer|segmented)/index\\.js|smart/tree/js/templates/default\\.js)$",
       "contextPattern": ".*",
       "status": "accepted-runtime-geometry",
       "reason": "Coordinates and sizes measured from the rendered page or the pointer (a floating panel's place, a drag ghost, a virtual list's spacer, a tooltip tail); the browser reports them in CSS pixels."

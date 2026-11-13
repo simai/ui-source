@@ -316,6 +316,8 @@
           "  <sf-pager id=\"course\" appearance=\"course\" current=\"2\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"l1\", \"title\": \"Что такое смарт-компонент\", \"meta\": \"5 минут\"}, {\"id\": \"l2\", \"title\": \"Первая страница\", \"meta\": \"8 минут\"}, {\"id\": \"l3\", \"title\": \"Данные и порт\", \"meta\": \"6 минут\"}, {\"id\": \"l4\", \"title\": \"Свой вид\", \"meta\": \"7 минут\"}, {\"id\": \"l5\", \"title\": \"Публикация\", \"meta\": \"4 минуты\"}]}</script></sf-pager>",
           "  <sf-pager id=\"counter\" appearance=\"counter\" current=\"2\" keys><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"1040\", \"title\": \"Заявка № 1040\"}, {\"id\": \"1041\", \"title\": \"Заявка № 1041\"}, {\"id\": \"1042\", \"title\": \"Заявка № 1042\"}, {\"id\": \"1043\", \"title\": \"Заявка № 1043\"}, {\"id\": \"1044\", \"title\": \"Заявка № 1044\"}, {\"id\": \"1045\", \"title\": \"Заявка № 1045\"}, {\"id\": \"1046\", \"title\": \"Заявка № 1046\"}, {\"id\": \"1047\", \"title\": \"Заявка № 1047\"}, {\"id\": \"1048\", \"title\": \"Заявка № 1048\"}, {\"id\": \"1049\", \"title\": \"Заявка № 1049\"}, {\"id\": \"1050\", \"title\": \"Заявка № 1050\"}, {\"id\": \"1051\", \"title\": \"Заявка № 1051\"}]}</script></sf-pager>",
           "  <div lang=\"en\"><sf-pager id=\"en\" appearance=\"steps\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"source\", \"title\": \"Источник\"}, {\"id\": \"fields\", \"title\": \"Поля\"}, {\"id\": \"check\", \"title\": \"Проверка\"}]}</script></sf-pager></div>",
+          "  <sf-pager id=\"record\" appearance=\"counter\" size=\"1/2\" current=\"19\" total=\"240\" list-href=\"#list\" keys></sf-pager>",
+          "  <sf-pager id=\"record-open\" appearance=\"counter\" size=\"1/2\" current=\"2\" has-next></sf-pager>",
           "</main>"
         ]
       },
@@ -708,6 +710,65 @@
           "steps": [
             {
               "check": "document.querySelector('#en .sf-pager-place').textContent.trim() === 'Step 1 of 3 · Источник' && document.querySelector('#en .sf-pager-forward .sf-button-text-container').textContent.trim() === 'Next' && document.querySelector('#en > nav').getAttribute('aria-label') === 'Adjacent pages'"
+            }
+          ]
+        },
+        {
+          "id": "c1-counter-across-pages",
+          "title": "counter (C97 point 7): «20 из 240» with no items; ] asks for record 21 by its place in the whole list and moves; «К списку» links back",
+          "covers": "settings.total, settings.list-href, keys [ ]",
+          "steps": [
+            {
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('record'); return el.querySelector('.sf-pager-place')?.textContent.trim() === '20 из 240' && el.querySelector('a.sf-pager-list')?.getAttribute('href') === '#list' && el.querySelector('a.sf-pager-list')?.getAttribute('aria-label') === 'К списку'; })()"
+            },
+            {
+              "script": "(document.body.focus(), true)",
+              "user": "keyboard:]",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-pager-navigate",
+                    "count": 1,
+                    "detail": {
+                      "direction": "next",
+                      "index": 20,
+                      "id": null,
+                      "href": null
+                    }
+                  }
+                ],
+                "values": {
+                  "#record.current": 20
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "c2-counter-unknown-total",
+          "title": "counter without a total: «3 из многих», Next while has-next, off once it is not",
+          "covers": "settings.has-next",
+          "steps": [
+            {
+              "wait": 200,
+              "check": "document.querySelector('#record-open .sf-pager-place')?.textContent.trim() === '3 из многих' && document.querySelector('#record-open .sf-pager-forward button')?.disabled === false"
+            },
+            {
+              "script": "(document.getElementById('record-open').removeAttribute('has-next'), true)",
+              "wait": 200,
+              "check": "document.querySelector('#record-open .sf-pager-forward button')?.disabled === true"
+            }
+          ]
+        },
+        {
+          "id": "c3-steps-noted",
+          "title": "steps and course still draw and are noted in SF.deprecations until 2027-01-01 (C97)",
+          "covers": "value-pager-steps-course-retired",
+          "steps": [
+            {
+              "wait": 200,
+              "check": "['steps', 'course'].every((from) => (SF.deprecations?.list?.() ?? []).some((note) => note.component === 'sf-pager' && note.from === from && note.remove_after === '2027-01-01'))"
             }
           ]
         }

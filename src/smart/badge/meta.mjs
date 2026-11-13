@@ -36,10 +36,11 @@ const sfBadgeMeta = {
         "",
         "1/2",
         "1",
-        "2"
+        "2",
+        "text"
       ],
       "default": "",
-      "description": "Takes the text line of this form size, for a table cell or a row of fields, so the row keeps its control height."
+      "description": "Takes the text line of this form size, for a table cell or a row of fields, so the row keeps its control height. text takes the line of the text it stands beside: the text's own size and line height, inherited, no block padding, so a count in a contents entry, a tab or a list row is as high as that row's line and one figure is a circle (owner decision C95 point 6)."
     },
     "appearance": {
       "kind": "enum",

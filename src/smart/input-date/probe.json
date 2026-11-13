@@ -359,6 +359,63 @@
       }
     },
     {
+      "id": "shift-page-keys-move-a-year",
+      "covers": "keyboard.panel Shift+PageDown step:+page and Shift+PageUp step:-page, a year each (x-keys; datepicker audit S05d)",
+      "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-input-date>",
+      "given": [
+        {
+          "action": {
+            "name": "open-panel",
+            "with": {
+              "options": {
+                "focusCalendar": true
+              }
+            }
+          },
+          "wait": 300
+        },
+        {
+          "user": "keyboard:Shift+PageDown",
+          "wait": 300
+        }
+      ],
+      "user": [
+        "keyboard:Shift+PageUp",
+        "keyboard:Shift+PageUp"
+      ],
+      "wait": 300,
+      "expect": {
+        "evaluate": {
+          "document.activeElement.dataset.date": "2025-09-03"
+        }
+      }
+    },
+    {
+      "id": "home-stops-at-min-date",
+      "covers": "keyboard.panel Home focus:first held to min-date (datepicker audit S05e)",
+      "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" min-date=\"2026-09-02\" locale=\"ru\"></sf-input-date>",
+      "given": [
+        {
+          "action": {
+            "name": "open-panel",
+            "with": {
+              "options": {
+                "focusCalendar": true
+              }
+            }
+          },
+          "wait": 300
+        }
+      ],
+      "user": "keyboard:Home",
+      "wait": 300,
+      "expect": {
+        "evaluate": {
+          "document.activeElement.dataset.date": "2026-09-02"
+        }
+      }
+    },
+    {
       "id": "enter-chooses-the-focused-day",
       "covers": "keyboard.panel Enter select",
       "field": "<sf-input-date name=\"d\" label=\"Дата\" value=\"2026-09-03\" locale=\"ru\"></sf-input-date>",

@@ -242,8 +242,8 @@ test('1.3.0: the toolbar, the headings and the link editor are drawn by the syst
   const tool = sheet.match(/\.sf-rich-text-tool \.sf-rich-text-tool-text \{([^}]*)\}/u)[1];
   assert.match(tool, /inline-size: var\(--sf-rich-text--tool-height\);/u);
   assert.match(tool, /block-size: var\(--sf-rich-text--tool-height\);/u);
-  // RT-04: headings on the field's text ladder at every size, never a page heading size.
-  for (const [size, [h2, h3, h4]] of Object.entries({'': ['2', '1', '1\\/2'], '--size-2': ['3', '2', '1'], '--size-1\\/2': ['1', '1\\/2', '1\\/3']})) {
+  // RT-04: headings climb the text ladder from the field's text (C21): h4 the text, h3 a rung above, h2 two.
+  for (const [size, [h2, h3, h4]] of Object.entries({'': ['3', '2', '1'], '--size-2': ['4', '3', '2'], '--size-1\\/2': ['2', '1', '1\\/2']})) {
     const selector = size ? `.sf-rich-text.sf-rich-text${size} {` : '.sf-rich-text {';
     const block = sheet.slice(sheet.indexOf(selector), sheet.indexOf('}', sheet.indexOf(selector)));
     assert.ok(block.includes(`--sf-rich-text--h2-size: var(--sf-text-size-${h2});`), `${selector} h2`);
@@ -251,11 +251,86 @@ test('1.3.0: the toolbar, the headings and the link editor are drawn by the syst
     assert.ok(block.includes(`--sf-rich-text--h4-size: var(--sf-text-size-${h4});`), `${selector} h4`);
   }
   // RT-02: the form's width step, and a sheet at the bottom of a phone screen in the top layer (C32).
-  assert.match(template, /width="var\(--sf-popup-form-width, 20rem\)"/u);
+  assert.match(template, /width="var\(--sf-popup-form-wide-width, 24rem\)"/u);
   const sheetRule = sheet.match(/\[slot='content'\]\[data-sf-sheet\] \{([^}]*)\}/u)[1];
   for (const declaration of ['position: fixed;', 'inset: auto 0 0;', 'max-inline-size: var(--sf-h1);', 'var(--sf-shadow-modal)']) {
     assert.ok(sheetRule.includes(declaration), declaration);
   }
   assert.match(source, /--sf-breakpoint-md/u);
   assert.match(source, /SF\?\.Position\?\.liftToTopLayer\?\.\(surface\)/u);
+  // R121: the link form is one rung (field, its hint and the buttons) and one spacing step.
+  for (const part of ['sf-rich-text-link-input', 'sf-rich-text-link-apply', 'sf-rich-text-link-remove']) {
+    assert.match(template, new RegExp(`class="${part}" size=\\$\\{linkSize\\}`, 'u'), part);
+  }
+  const panel = sheet.match(/\.sf-rich-text \.sf-rich-text-link-panel \{([^}]*)\}/u)[1];
+  assert.match(panel, /gap: var\(--sf-space-1\);/u);
+  assert.match(panel, /padding: var\(--sf-space-1\);/u);
+  // R121 (owner review 2026-11-11): the form is the toolbar's rung, the link button's size.
+  assert.match(template, /const linkSize = buttonSize;/u);
+  // While the link editor is open only the link tool looks active: the others rest, glyph unfilled.
+  assert.match(sheet, /:has\(sf-popover\.sf-rich-text-link\[data-open='true'\]\) \.sf-icon-button\.sf-icon-button\.sf-icon-button\.sf-icon-button\.sf-rich-text-tool:not\(\[data-sf-tool='link'\]\)[^{]*\{\s*--sf-icon-button--background-color: transparent;/u);
+  assert.match(sheet, /\[aria-pressed='true'\] \.sf-icon \{\s*--sf-icon--fill: 0;/u);
+});
+
+test('Bold and Italic say the marks only: a heading, bold by its type, is not a mark', () => {
+  const source = readFileSync(new URL('src/smart/input-rich/index.js', root), 'utf8');
+  // The state is the mark (or the pending mark at a caret), never the browser's computed-style state.
+  assert.match(source, /const mark = \(tag\) => this\._pendingMark\(tag, range\) \?\? Boolean\(node && this\._within\(node, MARKS\[tag\]\.selector\)\);/u);
+  assert.match(source, /strong: mark\('strong'\),\n\s+em: mark\('em'\),/u);
+  assert.doesNotMatch(source, /queryCommandState|execCommand\((?:command|'bold'|'italic')/u);
+  // The marks are set by the component; a mark off is a run of normal style the cleaner splits the mark around.
+  assert.match(source, /if \(id === 'bold'\) return this\._edit\(\(\) => this\._toggleMark\('strong'\), 'formatBold'\);/u);
+  assert.match(source, /strong: \{selector: 'strong, b', off: \['fontWeight', 'normal'\]\}/u);
+  assert.equal(editor('<h2><strong>ma<span style="font-weight: normal">Z</span>rk</strong></h2>'), '<h2><strong>ma</strong>Z<strong>rk</strong></h2>');
+  assert.equal(editor('<p><em>a<span style="font-style: normal">b</span></em></p>'), '<p><em>a</em>b</p>');
+  // A caret's pending marks go to the typed text and are forgotten when the caret moves.
+  assert.match(source, /case 'insertText':\n\s+if \(this\._pending && event\.data\) this\._typePending\(event\);/u);
+  // Composed text (an IME) takes the marks pending when the composition started.
+  assert.match(source, /on\('compositionstart', \(\) => this\._onCompositionStart\(\)\);/u);
+  assert.match(source, /_onCompositionStart\(\) \{\n\s+this\._composing = this\._pendingMarks\(\);\n\s+this\._inComposition = true;/u);
+  assert.match(source, /on\('compositionend', \(event\) => this\._onCompositionEnd\(event\)\);/u);
+  // M1, M2: a composition moves the caret, the pending marks stand until it ends (Bold stays pressed);
+  // a cancelled composition (no text, caret back) keeps them.
+  assert.match(source, /if \(this\._inComposition\) return this\._pending;/u);
+  assert.match(source, /if \(pending && !text && collapsed && end\.start === pending\.at\) this\._pending = pending;/u);
+  // M3: one input that is not composing after every composition that changed the text, unless the browser said it.
+  assert.equal((source.match(/this\._sayComposed\(before\);/gu) || []).length, 3);
+  assert.match(source, /if \(this\._composedSay\) this\._composedSay\.said = true;/u);
+  assert.doesNotMatch(source, /this\._say\('insertCompositionText'\);\n\s+\}\n\n\s+_onInput/u);
+  // M4: plain-text paste takes the pending marks, rich paste keeps its own.
+  assert.match(source, /const marks = data\?\.getData\?\.\('text\/html'\) \? null : this\._pendingMarks\(\);/u);
+  // E1: a caret on a mark's end edge reads (and types) in the mark.
+  assert.match(source, /if \(!this\._inComposition\) this\._caretIntoMark\(range\);/u);
+});
+
+// html@1 breaks and edges (2026-11-10 composition review, Q6; F1.4): every
+// row's value and editor output is pinned, and cleaning a value again never
+// changes it. Only the rows that carry value_before_2026_11_10 changed: a
+// white-space-only run beside an edge break hid the break from the first pass.
+test('the html@1 break corpus: pinned outputs, and value cleaning is idempotent', () => {
+  const corpus = json('tests/fixtures/html1-break-corpus.json');
+  assert.equal(corpus.rows.length, 19);
+  for (const row of corpus.rows) {
+    const value = sanitizeRichText(row.input, {mode: 'value', document: null});
+    assert.equal(value, row.value, `value: ${row.input}`);
+    assert.equal(sanitizeRichText(row.input, {mode: 'editor', document: null}), row.editor, `editor: ${row.input}`);
+    assert.equal(sanitizeRichText(value, {mode: 'value', document: null}), value, `idempotent: ${row.input}`);
+  }
+  assert.deepEqual(corpus.rows.filter((row) => 'value_before_2026_11_10' in row).map(({input}) => input), ['<p>&nbsp;<br>a</p>', '<p>a<br>&nbsp;</p>']);
+});
+
+test('value cleaning is idempotent for generated values with nbsp, spaces and breaks at block edges', () => {
+  let seed = 20261110;
+  const random = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 2 ** 32;
+  const parts = ['&nbsp;', ' ', '  ', ' ', '<br>', 'a', 'b', '<strong>', '</strong>', '<em>', '</em>', '<a href="/x">', '</a>', '<p>', '</p>', '<ul><li>', '</li></ul>', '<h2>', '</h2>', '<blockquote>', '</blockquote>'];
+  let changed = 0;
+  for (let index = 0; index < 5000; index += 1) {
+    let input = '';
+    for (let count = 1 + Math.floor(random() * 8); count > 0; count -= 1) input += parts[Math.floor(random() * parts.length)];
+    if (random() < 0.5) input = `<p>${input}</p>`;
+    const value = sanitizeRichText(input, {mode: 'value', document: null});
+    assert.equal(sanitizeRichText(value, {mode: 'value', document: null}), value, input);
+    if (value !== input) changed += 1;
+  }
+  assert.ok(changed > 1000, 'the generator reaches values the cleaner changes');
 });

@@ -36,6 +36,9 @@ const expectedTopLevel = [
     "typography",
 ];
 const expectedRanges = ["a", "b", "c", "d", "e", "f", "g", "h", "i"];
+// Title line steps named for the one title that reads them, after rungs 1..12.
+// They have no 5.x compatibility alias (--sf-title-height-*).
+export const namedTitleSteps = ["card"];
 const forbiddenContractKeys = new Set([
     "containerGutter",
     "containerWidth",
@@ -145,9 +148,24 @@ export function validateContract(candidate = contract)
     const titleRoles = Array.from({ length: 12 }, (_, index) => String(index + 1));
     assert.deepEqual(
         Object.keys(candidate.typography.titleLineHeights),
-        titleRoles,
-        "title line heights must cover roles 1..12 in order",
+        [...titleRoles, ...namedTitleSteps],
+        "title line heights must cover roles 1..12 in order, then the named steps",
     );
+    // The card title line (owner decision C89, 2026-11-12): 24 on a desktop as
+    // rung 2, 20 on a phone as rung 3 -- the line of 14 px text on a phone,
+    // where rung 2 gives 18. It stands between the two rungs in both modes.
+    const titleLine = (step, mode) => aliasPx(
+        candidate.typography.titleLineHeights[step][mode],
+        candidate,
+    );
+    for (const mode of ["mobile", "desktop"])
+    {
+        assert.ok(
+            titleLine("2", mode) <= titleLine("card", mode)
+            && titleLine("card", mode) <= titleLine("3", mode),
+            `title line card must stand between rungs 2 and 3 (${mode})`,
+        );
+    }
 
     for (const role of candidate.typography.pairedRoles)
     {

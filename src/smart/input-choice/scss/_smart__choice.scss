@@ -217,7 +217,9 @@
 
 .sf-choice .sf-choice-card:not(.sf-choice-card--disabled, .sf-choice-card--checked):hover {
   border-color: var(--sf-outline);
-  background-color: var(--sf-surface-transparent-hover);
+  background-color: var(--sf-surface-state-hover);
+  /* A translucent fill, as the checked card (C43 D4). */
+  @include places.sf-place-fill(var(--sf-surface-state-hover));
 }
 
 .sf-choice .sf-choice-card--checked,
@@ -227,7 +229,7 @@
   box-shadow: inset 0 0 0 var(--sf-px) var(--sf-choice--selected-border-color);
   /* A translucent fill: a tonal badge on the checked card («Популярный»)
      keeps its own tone (C43, owner 2026-11-10). */
-  @include places.sf-place-fill;
+  @include places.sf-place-fill(var(--sf-choice--selected-background-color));
 }
 
 .sf-choice.sf-choice--invalid .sf-choice-card:not(.sf-choice-card--checked, .sf-choice-card--disabled) {
@@ -238,8 +240,8 @@
    badge in their own disabled look, no hover; distinct from a card not
    chosen, which keeps on-surface words and the outline-variant edge. */
 .sf-choice .sf-choice-card--disabled {
-  border-color: var(--sf-outline-disable);
-  color: var(--sf-on-disable);
+  border-color: var(--sf-outline-disabled);
+  color: var(--sf-on-surface-disabled);
   cursor: default;
 }
 
@@ -252,11 +254,11 @@
 }
 
 .sf-choice .sf-choice-card--disabled .sf-choice-icon {
-  --sf-icon--color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 .sf-choice .sf-choice-card--disabled .sf-choice-rule {
-  background-color: var(--sf-outline-disable);
+  background-color: var(--sf-outline-disabled);
 }
 
 /* ---------------------------------------------------------------- list

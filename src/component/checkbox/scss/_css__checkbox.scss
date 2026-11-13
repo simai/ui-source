@@ -68,10 +68,15 @@
     font-weight: var(--sf-checkbox-label--font-weight);
     line-height: var(--sf-checkbox-label--line-height);
     --sf-checkbox-label--font-family: var(--sf-text--family);
-    --sf-checkbox-label--font-weight: var(--sf-font-weight-medium);
+    /* One label weight for the three choice controls (C63 W6): regular, as the
+       switch drew it; checkbox and radio drew medium. */
+    --sf-checkbox-label--font-weight: var(--sf-font-weight-regular);
   }
 
-  .sf-checkbox .sf-icon {
+  /* The icons of the control and of its class markup; the help mark's «?» is
+     its own button's glyph, sized and coloured by sf-help-mark (it took the
+     size-2 line, 28 in a 32 button). :where keeps the weight of the rules. */
+  .sf-checkbox .sf-icon:where(:not(sf-help-mark *)) {
     color: var(--sf-icon--color, var(--sf-on-surface-variant));
     font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
     height: var(--sf-icon--height, var(--sf-icon-size-3));
@@ -98,11 +103,11 @@
     --sf-icon--width: var(--sf-text-height-1);
   }
 
-  .sf-checkbox.sf-checkbox--size-1\/2 .sf-icon {
+  .sf-checkbox.sf-checkbox--size-1\/2 .sf-icon:where(:not(sf-help-mark *)) {
     --sf-icon--font-size: var(--sf-text-height-1\/2);
   }
 
-  .sf-checkbox.sf-checkbox--size-1 .sf-icon {
+  .sf-checkbox.sf-checkbox--size-1 .sf-icon:where(:not(sf-help-mark *)) {
     --sf-icon--font-size: var(--sf-text-height-1);
   }
 
@@ -163,11 +168,11 @@
 }
 
 @layer sf.states {
-  .sf-checkbox:not(.error):has(input:not(:checked)) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:indeterminate) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):hover):has(input:indeterminate) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active):has(input:checked) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active):has(input:indeterminate) .sf-checkbox-label, .sf-checkbox.error:has(input:not(:checked)) .sf-checkbox-label {
+  .sf-checkbox:not(.error):has(input:not(:checked)) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:indeterminate) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):hover):not(:has(sf-help-mark:hover, [slot="help"]:hover)):has(input:indeterminate) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active):not(:has(sf-help-mark:active, [slot="help"]:active)):has(input:checked) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active):not(:has(sf-help-mark:active, [slot="help"]:active)):has(input:indeterminate) .sf-checkbox-label, .sf-checkbox.error:has(input:not(:checked)) .sf-checkbox-label {
     --sf-checkbox-label--color: var(--sf-on-surface);
   }
 
-  .sf-checkbox:not(.error):has(input:indeterminate):not(:has(input:disabled)) .sf-checkbox-box, .sf-checkbox:not(.error):has(input:checked):not(:has(input:disabled)) .sf-checkbox-box, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active) .sf-checkbox-box {
+  .sf-checkbox:not(.error):has(input:indeterminate):not(:has(input:disabled)) .sf-checkbox-box, .sf-checkbox:not(.error):has(input:checked):not(:has(input:disabled)) .sf-checkbox-box, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active):not(:has(sf-help-mark:active, [slot="help"]:active)) .sf-checkbox-box {
     --sf-checkbox-box--background-color: var(--sf-checkbox-checked-background-color, var(--sf-primary));
     --sf-checkbox-box--border-color: var(--sf-checkbox-checked-background-color, var(--sf-primary));
   }
@@ -192,7 +197,7 @@
     --sf-icon--width: var(--sf-text-height-2);
   }
 
-  .sf-checkbox.sf-checkbox--size-2 .sf-icon {
+  .sf-checkbox.sf-checkbox--size-2 .sf-icon:where(:not(sf-help-mark *)) {
     --sf-icon--font-size: var(--sf-text-height-2);
   }
 
@@ -222,24 +227,24 @@
 
   .sf-checkbox:not(.error):has(input:indeterminate):not(:has(input:disabled)) > .sf-checkbox-box .sf-icon,
   .sf-checkbox:not(.error):has(input:checked):not(:has(input:disabled)) > .sf-checkbox-box .sf-icon,
-  .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active) > .sf-checkbox-box .sf-icon {
+  .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active):not(:has(sf-help-mark:active, [slot="help"]:active)) > .sf-checkbox-box .sf-icon {
     --sf-icon--color: var(--sf-on-primary);
   }
 
-  .sf-checkbox:has(input:disabled) > .sf-checkbox-container > .sf-checkbox-top .sf-icon,
+  .sf-checkbox:has(input:disabled) > .sf-checkbox-container > .sf-checkbox-top .sf-icon:where(:not(sf-help-mark *)),
   .sf-checkbox:has(input:disabled):has(input:indeterminate) > .sf-checkbox-box .sf-icon,
   .sf-checkbox:has(input:disabled):has(input:checked) > .sf-checkbox-box .sf-icon {
-    --sf-icon--color: var(--sf-on-disable);
+    --sf-icon--color: var(--sf-on-surface-disabled);
   }
 
   .sf-checkbox:has(input:disabled):has(input:not(:checked)) .sf-checkbox-label,
   .sf-checkbox:has(input:disabled):has(input:indeterminate) .sf-checkbox-label,
   .sf-checkbox:has(input:disabled):has(input:checked) .sf-checkbox-label {
-    --sf-checkbox-label--color: var(--sf-on-disable);
+    --sf-checkbox-label--color: var(--sf-on-surface-disabled);
   }
 
 
-  .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):hover) .sf-checkbox-box {
+  .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):hover):not(:has(sf-help-mark:hover, [slot="help"]:hover)) .sf-checkbox-box {
     --sf-checkbox-box--border-color: var(--sf-primary-hover);
   }
 
@@ -257,15 +262,15 @@
   }
 
   .sf-checkbox:has(input:disabled) .sf-checkbox-box {
-    --sf-checkbox-box--border-color: var(--sf-outline-disable);
+    --sf-checkbox-box--border-color: var(--sf-outline-disabled);
   }
 
   .sf-checkbox:has(input:disabled):has(input:checked, input:indeterminate) .sf-checkbox-box {
-    --sf-checkbox-box--background-color: var(--sf-disable);
+    --sf-checkbox-box--background-color: var(--sf-surface-disabled);
   }
 
   .sf-checkbox:has(input:disabled) .sf-checkbox-description {
-    --sf-checkbox-description--color: var(--sf-on-disable);
+    --sf-checkbox-description--color: var(--sf-on-surface-disabled);
   }
 }
 

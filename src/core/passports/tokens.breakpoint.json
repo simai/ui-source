@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "tokens.breakpoint",
   "kind": "tokens",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "owner": "simai/ui-source",
   "summary": "The breakpoints and their mixins.",
   "includes": [
@@ -16,6 +16,11 @@
     "src/core/scss/mix/_mix__breakpoint.scss",
     "src/core/scss/vars/_sf_var__breakpoint.scss"
   ],
-  "content_sha256": "2871468d538018a188a78d081dbd50970da417a92fcf78cd3dcd8eb642d3b9d1",
-  "dependencies": []
+  "content_sha256": "50fcd9f4b6f2ac2679fee35ca34b4ac681571429b2ea06191682256e8a891d1d",
+  "dependencies": [
+    {
+      "id": "tokens.size",
+      "range": "^1.3.1"
+    }
+  ]
 }

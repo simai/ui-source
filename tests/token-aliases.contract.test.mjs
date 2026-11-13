@@ -28,12 +28,21 @@ const files = (directory, extensions) => readdirSync(directory, {withFileTypes: 
 });
 
 test('the alias list and the mixin are one list, and the dates follow the change journal', () => {
+  const twice = pairs.filter(([from]) => aliases.shadows.tokens.some((entry) => entry.from === from)).map(([from]) => from);
+  assert.deepEqual(twice, [], 'a former name has one successor: it is in tokens or in shadows, never both');
   const declared = [...mixin.matchAll(/^ {2}'([a-z0-9-]+)': \('([a-z0-9-]+)',\),$/gmu)].map(([, to, from]) => [`--sf-${from}`, `--sf-${to}`]);
   assert.deepEqual(declared, pairs);
-  assert.equal(pairs.length, 51);
+  assert.equal(pairs.length, 50);
   const journal = JSON.parse(read('contracts/changes/journal.json')).records;
   const tokens = journal.find((record) => record.id === 'token-c16-theme-role-names');
-  assert.deepEqual(tokens.items.map(({from, to}) => [from, to]), pairs);
+  // A C16 name C20 later gave a place of its own (level 4's shadow: modal) is
+  // listed under shadows alone: one former name, one successor. The C16 record
+  // keeps it (the journal is append-only); the C20 record names the successor.
+  const shadowed = new Set(aliases.shadows.tokens.map(({from}) => from));
+  assert.deepEqual(tokens.items.filter(({from}) => !shadowed.has(from)).map(({from, to}) => [from, to]), pairs);
+  assert.deepEqual(tokens.items.filter(({from}) => shadowed.has(from)).map(({from}) => from), ['--sf-elevation-4--shadow']);
+  const c20 = journal.find((record) => record.id === 'token-c20-shadow-places');
+  for (const {from, to} of aliases.shadows.tokens) assert.equal(c20.items.find((item) => item.from === from)?.to, to, `${from}: the C20 record`);
   assert.equal(tokens.remove_after, aliases.remove_after);
   const variables = journal.find((record) => record.id === 'token-component-background-color-names');
   assert.deepEqual(variables.items.map(({from, to}) => [from, to]), aliases.component_variables.map(({from, to}) => [from, to]));

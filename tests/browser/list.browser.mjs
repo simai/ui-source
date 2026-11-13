@@ -95,7 +95,8 @@ try {
   const drawn = await page.evaluate(() => {
     const list = document.getElementById('list');
     return {
-      headings: [...list.querySelectorAll('.sf-list__heading')].map((node) => node.textContent.trim()),
+      // 1.4.0 (C40): today's and yesterday's heading carry the date in sf-time beside the word.
+      headings: [...list.querySelectorAll('.sf-list__heading')].map((node) => node.textContent.replace(node.querySelector('sf-time')?.textContent ?? '', '').trim()),
       level: list.querySelector('.sf-list__heading').getAttribute('aria-level'),
       frame: {role: list.querySelector('.sf-list__frame').getAttribute('role'), label: list.querySelector('.sf-list__frame').getAttribute('aria-label')},
       labelled: [...list.querySelectorAll('.sf-list__rows')].every((ul) => document.getElementById(ul.getAttribute('aria-labelledby'))?.classList.contains('sf-list__heading')),
@@ -269,7 +270,7 @@ try {
   await page.evaluate(() => document.documentElement.setAttribute('lang', 'en'));
   await make({hasMore: true, attributes: {'group-by': 'day'}, cancel: {'load-more': true}});
   const english = await page.evaluate(() => ({
-    first: document.querySelector('.sf-list__heading').textContent.trim(),
+    first: [document.querySelector('.sf-list__heading')].map((node) => node.textContent.replace(node.querySelector('sf-time')?.textContent ?? '', '').trim())[0],
     last: [...document.querySelectorAll('.sf-list__heading')].at(-1).textContent.trim(),
     more: document.querySelector('.sf-list__next sf-button').getAttribute('text'),
     actions: document.querySelector('.sf-list__actions').getAttribute('aria-label'),

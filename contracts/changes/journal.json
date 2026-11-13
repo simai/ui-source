@@ -4222,7 +4222,7 @@
       "recorded_on": "2026-11-03",
       "stage": "compat",
       "kind": "tag",
-      "summary": "sf-image-field is sf-input-image (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-input-image's class, the Loader's rule lists it, the Framework's sheets match :is(sf-input-image, sf-image-field), and the first old-tag element of a page is noted in SF.deprecations and once on the console. The events named after the tag are renamed with it and the old names are dated aliases (sf-image-field-attach, sf-image-field-detach, sf-image-field-rejected).",
+      "summary": "sf-image-field is sf-input-image (Smart component naming, 2026-11-02: sf-[set]-<block>[-<variant>]). The old tag works until remove_after: the Smart base defines it as a subclass of sf-input-image's class, the Loader's rule lists it, the Framework's sheets match :is(sf-input-image, sf-image-field), and the first old-tag element of a page is noted in SF.deprecations and once on the console. The events named after the tag are renamed with it and the old names are dated aliases (sf-image-field-attach, sf-image-field-detach, sf-image-field-rejected; sf-image-field-library for the library event added on 2026-11-12, sf-input-image 1.4.0).",
       "items": [
         {
           "component": "sf-input-image",
@@ -4243,6 +4243,11 @@
           "component": "sf-input-image",
           "from": "sf-image-field-rejected",
           "to": "sf-input-image-rejected"
+        },
+        {
+          "component": "sf-input-image",
+          "from": "sf-image-field-library",
+          "to": "sf-input-image-library"
         },
         {
           "component": "sf-input-image",
@@ -7779,442 +7784,442 @@
         },
         {
           "from": "color-gray",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray(?![a-z0-9-])"
         },
         {
           "from": "color-gray-0",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-0(?![a-z0-9-])"
         },
         {
           "from": "color-gray-1",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-1(?![a-z0-9-])"
         },
         {
           "from": "color-gray-2",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-2(?![a-z0-9-])"
         },
         {
           "from": "color-gray-3",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-3(?![a-z0-9-])"
         },
         {
           "from": "color-gray-4",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-4(?![a-z0-9-])"
         },
         {
           "from": "color-gray-5",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-5(?![a-z0-9-])"
         },
         {
           "from": "color-gray-6",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-6(?![a-z0-9-])"
         },
         {
           "from": "color-gray-7",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-7(?![a-z0-9-])"
         },
         {
           "from": "color-gray-8",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-8(?![a-z0-9-])"
         },
         {
           "from": "color-gray-9",
-          "to": null,
+          "to": "sf-hue-gray color-hue",
           "match": "(?<![a-z0-9:-])color-gray-9(?![a-z0-9-])"
         },
         {
           "from": "color-red",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red(?![a-z0-9-])"
         },
         {
           "from": "color-red-0",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-0(?![a-z0-9-])"
         },
         {
           "from": "color-red-1",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-1(?![a-z0-9-])"
         },
         {
           "from": "color-red-2",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-2(?![a-z0-9-])"
         },
         {
           "from": "color-red-3",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-3(?![a-z0-9-])"
         },
         {
           "from": "color-red-4",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-4(?![a-z0-9-])"
         },
         {
           "from": "color-red-5",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-5(?![a-z0-9-])"
         },
         {
           "from": "color-red-6",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-6(?![a-z0-9-])"
         },
         {
           "from": "color-red-7",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-7(?![a-z0-9-])"
         },
         {
           "from": "color-red-8",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-8(?![a-z0-9-])"
         },
         {
           "from": "color-red-9",
-          "to": null,
+          "to": "sf-hue-red color-hue",
           "match": "(?<![a-z0-9:-])color-red-9(?![a-z0-9-])"
         },
         {
           "from": "color-orange",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange(?![a-z0-9-])"
         },
         {
           "from": "color-orange-0",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-0(?![a-z0-9-])"
         },
         {
           "from": "color-orange-1",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-1(?![a-z0-9-])"
         },
         {
           "from": "color-orange-2",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-2(?![a-z0-9-])"
         },
         {
           "from": "color-orange-3",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-3(?![a-z0-9-])"
         },
         {
           "from": "color-orange-4",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-4(?![a-z0-9-])"
         },
         {
           "from": "color-orange-5",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-5(?![a-z0-9-])"
         },
         {
           "from": "color-orange-6",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-6(?![a-z0-9-])"
         },
         {
           "from": "color-orange-7",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-7(?![a-z0-9-])"
         },
         {
           "from": "color-orange-8",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-8(?![a-z0-9-])"
         },
         {
           "from": "color-orange-9",
-          "to": null,
+          "to": "sf-hue-orange color-hue",
           "match": "(?<![a-z0-9:-])color-orange-9(?![a-z0-9-])"
         },
         {
           "from": "color-yellow",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-0",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-0(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-1",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-1(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-2",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-2(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-3",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-3(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-4",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-4(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-5",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-5(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-6",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-6(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-7",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-7(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-8",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-8(?![a-z0-9-])"
         },
         {
           "from": "color-yellow-9",
-          "to": null,
+          "to": "sf-hue-yellow color-hue",
           "match": "(?<![a-z0-9:-])color-yellow-9(?![a-z0-9-])"
         },
         {
           "from": "color-green",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green(?![a-z0-9-])"
         },
         {
           "from": "color-green-0",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-0(?![a-z0-9-])"
         },
         {
           "from": "color-green-1",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-1(?![a-z0-9-])"
         },
         {
           "from": "color-green-2",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-2(?![a-z0-9-])"
         },
         {
           "from": "color-green-3",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-3(?![a-z0-9-])"
         },
         {
           "from": "color-green-4",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-4(?![a-z0-9-])"
         },
         {
           "from": "color-green-5",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-5(?![a-z0-9-])"
         },
         {
           "from": "color-green-6",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-6(?![a-z0-9-])"
         },
         {
           "from": "color-green-7",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-7(?![a-z0-9-])"
         },
         {
           "from": "color-green-8",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-8(?![a-z0-9-])"
         },
         {
           "from": "color-green-9",
-          "to": null,
+          "to": "sf-hue-green color-hue",
           "match": "(?<![a-z0-9:-])color-green-9(?![a-z0-9-])"
         },
         {
           "from": "color-blue",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue(?![a-z0-9-])"
         },
         {
           "from": "color-blue-0",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-0(?![a-z0-9-])"
         },
         {
           "from": "color-blue-1",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-1(?![a-z0-9-])"
         },
         {
           "from": "color-blue-2",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-2(?![a-z0-9-])"
         },
         {
           "from": "color-blue-3",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-3(?![a-z0-9-])"
         },
         {
           "from": "color-blue-4",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-4(?![a-z0-9-])"
         },
         {
           "from": "color-blue-5",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-5(?![a-z0-9-])"
         },
         {
           "from": "color-blue-6",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-6(?![a-z0-9-])"
         },
         {
           "from": "color-blue-7",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-7(?![a-z0-9-])"
         },
         {
           "from": "color-blue-8",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-8(?![a-z0-9-])"
         },
         {
           "from": "color-blue-9",
-          "to": null,
+          "to": "sf-hue-blue color-hue",
           "match": "(?<![a-z0-9:-])color-blue-9(?![a-z0-9-])"
         },
         {
           "from": "color-purple",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple(?![a-z0-9-])"
         },
         {
           "from": "color-purple-0",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-0(?![a-z0-9-])"
         },
         {
           "from": "color-purple-1",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-1(?![a-z0-9-])"
         },
         {
           "from": "color-purple-2",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-2(?![a-z0-9-])"
         },
         {
           "from": "color-purple-3",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-3(?![a-z0-9-])"
         },
         {
           "from": "color-purple-4",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-4(?![a-z0-9-])"
         },
         {
           "from": "color-purple-5",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-5(?![a-z0-9-])"
         },
         {
           "from": "color-purple-6",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-6(?![a-z0-9-])"
         },
         {
           "from": "color-purple-7",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-7(?![a-z0-9-])"
         },
         {
           "from": "color-purple-8",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-8(?![a-z0-9-])"
         },
         {
           "from": "color-purple-9",
-          "to": null,
+          "to": "sf-hue-purple color-hue",
           "match": "(?<![a-z0-9:-])color-purple-9(?![a-z0-9-])"
         },
         {
           "from": "color-pink",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink(?![a-z0-9-])"
         },
         {
           "from": "color-pink-0",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-0(?![a-z0-9-])"
         },
         {
           "from": "color-pink-1",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-1(?![a-z0-9-])"
         },
         {
           "from": "color-pink-2",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-2(?![a-z0-9-])"
         },
         {
           "from": "color-pink-3",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-3(?![a-z0-9-])"
         },
         {
           "from": "color-pink-4",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-4(?![a-z0-9-])"
         },
         {
           "from": "color-pink-5",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-5(?![a-z0-9-])"
         },
         {
           "from": "color-pink-6",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-6(?![a-z0-9-])"
         },
         {
           "from": "color-pink-7",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-7(?![a-z0-9-])"
         },
         {
           "from": "color-pink-8",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-8(?![a-z0-9-])"
         },
         {
           "from": "color-pink-9",
-          "to": null,
+          "to": "sf-hue-pink color-hue",
           "match": "(?<![a-z0-9:-])color-pink-9(?![a-z0-9-])"
         },
         {
@@ -8229,442 +8234,442 @@
         },
         {
           "from": "bg-gray",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-0",
-          "to": null,
+          "to": "sf-hue-gray bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-gray-0(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-1",
-          "to": null,
+          "to": "sf-hue-gray bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-gray-1(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-2",
-          "to": null,
+          "to": "sf-hue-gray bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-gray-2(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-3",
-          "to": null,
+          "to": "sf-hue-gray bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-gray-3(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-4",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-4(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-5",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-5(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-6",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-6(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-7",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-7(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-8",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-8(?![a-z0-9-])"
         },
         {
           "from": "bg-gray-9",
-          "to": null,
+          "to": "sf-hue-gray bg-hue",
           "match": "(?<![a-z0-9:-])bg-gray-9(?![a-z0-9-])"
         },
         {
           "from": "bg-red",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red(?![a-z0-9-])"
         },
         {
           "from": "bg-red-0",
-          "to": null,
+          "to": "sf-hue-red bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-red-0(?![a-z0-9-])"
         },
         {
           "from": "bg-red-1",
-          "to": null,
+          "to": "sf-hue-red bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-red-1(?![a-z0-9-])"
         },
         {
           "from": "bg-red-2",
-          "to": null,
+          "to": "sf-hue-red bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-red-2(?![a-z0-9-])"
         },
         {
           "from": "bg-red-3",
-          "to": null,
+          "to": "sf-hue-red bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-red-3(?![a-z0-9-])"
         },
         {
           "from": "bg-red-4",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-4(?![a-z0-9-])"
         },
         {
           "from": "bg-red-5",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-5(?![a-z0-9-])"
         },
         {
           "from": "bg-red-6",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-6(?![a-z0-9-])"
         },
         {
           "from": "bg-red-7",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-7(?![a-z0-9-])"
         },
         {
           "from": "bg-red-8",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-8(?![a-z0-9-])"
         },
         {
           "from": "bg-red-9",
-          "to": null,
+          "to": "sf-hue-red bg-hue",
           "match": "(?<![a-z0-9:-])bg-red-9(?![a-z0-9-])"
         },
         {
           "from": "bg-orange",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-0",
-          "to": null,
+          "to": "sf-hue-orange bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-orange-0(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-1",
-          "to": null,
+          "to": "sf-hue-orange bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-orange-1(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-2",
-          "to": null,
+          "to": "sf-hue-orange bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-orange-2(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-3",
-          "to": null,
+          "to": "sf-hue-orange bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-orange-3(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-4",
-          "to": null,
+          "to": "sf-hue-orange bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-orange-4(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-5",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange-5(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-6",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange-6(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-7",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange-7(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-8",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange-8(?![a-z0-9-])"
         },
         {
           "from": "bg-orange-9",
-          "to": null,
+          "to": "sf-hue-orange bg-hue",
           "match": "(?<![a-z0-9:-])bg-orange-9(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-0",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-0(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-1",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-1(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-2",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-2(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-3",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-3(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-4",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-4(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-5",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-5(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-6",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-6(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-7",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-yellow-7(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-8",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue",
           "match": "(?<![a-z0-9:-])bg-yellow-8(?![a-z0-9-])"
         },
         {
           "from": "bg-yellow-9",
-          "to": null,
+          "to": "sf-hue-yellow bg-hue",
           "match": "(?<![a-z0-9:-])bg-yellow-9(?![a-z0-9-])"
         },
         {
           "from": "bg-green",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green(?![a-z0-9-])"
         },
         {
           "from": "bg-green-0",
-          "to": null,
+          "to": "sf-hue-green bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-green-0(?![a-z0-9-])"
         },
         {
           "from": "bg-green-1",
-          "to": null,
+          "to": "sf-hue-green bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-green-1(?![a-z0-9-])"
         },
         {
           "from": "bg-green-2",
-          "to": null,
+          "to": "sf-hue-green bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-green-2(?![a-z0-9-])"
         },
         {
           "from": "bg-green-3",
-          "to": null,
+          "to": "sf-hue-green bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-green-3(?![a-z0-9-])"
         },
         {
           "from": "bg-green-4",
-          "to": null,
+          "to": "sf-hue-green bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-green-4(?![a-z0-9-])"
         },
         {
           "from": "bg-green-5",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green-5(?![a-z0-9-])"
         },
         {
           "from": "bg-green-6",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green-6(?![a-z0-9-])"
         },
         {
           "from": "bg-green-7",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green-7(?![a-z0-9-])"
         },
         {
           "from": "bg-green-8",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green-8(?![a-z0-9-])"
         },
         {
           "from": "bg-green-9",
-          "to": null,
+          "to": "sf-hue-green bg-hue",
           "match": "(?<![a-z0-9:-])bg-green-9(?![a-z0-9-])"
         },
         {
           "from": "bg-blue",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-0",
-          "to": null,
+          "to": "sf-hue-blue bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-blue-0(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-1",
-          "to": null,
+          "to": "sf-hue-blue bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-blue-1(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-2",
-          "to": null,
+          "to": "sf-hue-blue bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-blue-2(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-3",
-          "to": null,
+          "to": "sf-hue-blue bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-blue-3(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-4",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-4(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-5",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-5(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-6",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-6(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-7",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-7(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-8",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-8(?![a-z0-9-])"
         },
         {
           "from": "bg-blue-9",
-          "to": null,
+          "to": "sf-hue-blue bg-hue",
           "match": "(?<![a-z0-9:-])bg-blue-9(?![a-z0-9-])"
         },
         {
           "from": "bg-purple",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-0",
-          "to": null,
+          "to": "sf-hue-purple bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-purple-0(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-1",
-          "to": null,
+          "to": "sf-hue-purple bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-purple-1(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-2",
-          "to": null,
+          "to": "sf-hue-purple bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-purple-2(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-3",
-          "to": null,
+          "to": "sf-hue-purple bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-purple-3(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-4",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-4(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-5",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-5(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-6",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-6(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-7",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-7(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-8",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-8(?![a-z0-9-])"
         },
         {
           "from": "bg-purple-9",
-          "to": null,
+          "to": "sf-hue-purple bg-hue",
           "match": "(?<![a-z0-9:-])bg-purple-9(?![a-z0-9-])"
         },
         {
           "from": "bg-pink",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-0",
-          "to": null,
+          "to": "sf-hue-pink bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-pink-0(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-1",
-          "to": null,
+          "to": "sf-hue-pink bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-pink-1(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-2",
-          "to": null,
+          "to": "sf-hue-pink bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-pink-2(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-3",
-          "to": null,
+          "to": "sf-hue-pink bg-hue-container",
           "match": "(?<![a-z0-9:-])bg-pink-3(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-4",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-4(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-5",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-5(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-6",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-6(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-7",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-7(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-8",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-8(?![a-z0-9-])"
         },
         {
           "from": "bg-pink-9",
-          "to": null,
+          "to": "sf-hue-pink bg-hue",
           "match": "(?<![a-z0-9:-])bg-pink-9(?![a-z0-9-])"
         },
         {
@@ -8679,452 +8684,452 @@
         },
         {
           "from": "border-gray",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray(?![a-z0-9-])"
         },
         {
           "from": "border-gray-0",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-0(?![a-z0-9-])"
         },
         {
           "from": "border-gray-1",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-1(?![a-z0-9-])"
         },
         {
           "from": "border-gray-2",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-2(?![a-z0-9-])"
         },
         {
           "from": "border-gray-3",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-3(?![a-z0-9-])"
         },
         {
           "from": "border-gray-4",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-4(?![a-z0-9-])"
         },
         {
           "from": "border-gray-5",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-5(?![a-z0-9-])"
         },
         {
           "from": "border-gray-6",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-6(?![a-z0-9-])"
         },
         {
           "from": "border-gray-7",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-7(?![a-z0-9-])"
         },
         {
           "from": "border-gray-8",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-8(?![a-z0-9-])"
         },
         {
           "from": "border-gray-9",
-          "to": null,
+          "to": "sf-hue-gray border-hue",
           "match": "(?<![a-z0-9:-])border-gray-9(?![a-z0-9-])"
         },
         {
           "from": "border-red",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red(?![a-z0-9-])"
         },
         {
           "from": "border-red-0",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-0(?![a-z0-9-])"
         },
         {
           "from": "border-red-1",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-1(?![a-z0-9-])"
         },
         {
           "from": "border-red-2",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-2(?![a-z0-9-])"
         },
         {
           "from": "border-red-3",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-3(?![a-z0-9-])"
         },
         {
           "from": "border-red-4",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-4(?![a-z0-9-])"
         },
         {
           "from": "border-red-5",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-5(?![a-z0-9-])"
         },
         {
           "from": "border-red-6",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-6(?![a-z0-9-])"
         },
         {
           "from": "border-red-7",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-7(?![a-z0-9-])"
         },
         {
           "from": "border-red-8",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-8(?![a-z0-9-])"
         },
         {
           "from": "border-red-9",
-          "to": null,
+          "to": "sf-hue-red border-hue",
           "match": "(?<![a-z0-9:-])border-red-9(?![a-z0-9-])"
         },
         {
           "from": "border-orange",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange(?![a-z0-9-])"
         },
         {
           "from": "border-orange-0",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-0(?![a-z0-9-])"
         },
         {
           "from": "border-orange-1",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-1(?![a-z0-9-])"
         },
         {
           "from": "border-orange-2",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-2(?![a-z0-9-])"
         },
         {
           "from": "border-orange-3",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-3(?![a-z0-9-])"
         },
         {
           "from": "border-orange-4",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-4(?![a-z0-9-])"
         },
         {
           "from": "border-orange-5",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-5(?![a-z0-9-])"
         },
         {
           "from": "border-orange-6",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-6(?![a-z0-9-])"
         },
         {
           "from": "border-orange-7",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-7(?![a-z0-9-])"
         },
         {
           "from": "border-orange-8",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-8(?![a-z0-9-])"
         },
         {
           "from": "border-orange-9",
-          "to": null,
+          "to": "sf-hue-orange border-hue",
           "match": "(?<![a-z0-9:-])border-orange-9(?![a-z0-9-])"
         },
         {
           "from": "border-yellow",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-0",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-0(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-1",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-1(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-2",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-2(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-3",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-3(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-4",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-4(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-5",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-5(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-6",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-6(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-7",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-7(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-8",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-8(?![a-z0-9-])"
         },
         {
           "from": "border-yellow-9",
-          "to": null,
+          "to": "sf-hue-yellow border-hue",
           "match": "(?<![a-z0-9:-])border-yellow-9(?![a-z0-9-])"
         },
         {
           "from": "border-green",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green(?![a-z0-9-])"
         },
         {
           "from": "border-green-0",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-0(?![a-z0-9-])"
         },
         {
           "from": "border-green-1",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-1(?![a-z0-9-])"
         },
         {
           "from": "border-green-2",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-2(?![a-z0-9-])"
         },
         {
           "from": "border-green-3",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-3(?![a-z0-9-])"
         },
         {
           "from": "border-green-4",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-4(?![a-z0-9-])"
         },
         {
           "from": "border-green-5",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-5(?![a-z0-9-])"
         },
         {
           "from": "border-green-6",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-6(?![a-z0-9-])"
         },
         {
           "from": "border-green-7",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-7(?![a-z0-9-])"
         },
         {
           "from": "border-green-8",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-8(?![a-z0-9-])"
         },
         {
           "from": "border-green-9",
-          "to": null,
+          "to": "sf-hue-green border-hue",
           "match": "(?<![a-z0-9:-])border-green-9(?![a-z0-9-])"
         },
         {
           "from": "border-blue",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue(?![a-z0-9-])"
         },
         {
           "from": "border-blue-0",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-0(?![a-z0-9-])"
         },
         {
           "from": "border-blue-1",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-1(?![a-z0-9-])"
         },
         {
           "from": "border-blue-2",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-2(?![a-z0-9-])"
         },
         {
           "from": "border-blue-3",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-3(?![a-z0-9-])"
         },
         {
           "from": "border-blue-4",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-4(?![a-z0-9-])"
         },
         {
           "from": "border-blue-5",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-5(?![a-z0-9-])"
         },
         {
           "from": "border-blue-6",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-6(?![a-z0-9-])"
         },
         {
           "from": "border-blue-7",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-7(?![a-z0-9-])"
         },
         {
           "from": "border-blue-8",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-8(?![a-z0-9-])"
         },
         {
           "from": "border-blue-9",
-          "to": null,
+          "to": "sf-hue-blue border-hue",
           "match": "(?<![a-z0-9:-])border-blue-9(?![a-z0-9-])"
         },
         {
           "from": "border-purple",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple(?![a-z0-9-])"
         },
         {
           "from": "border-purple-0",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-0(?![a-z0-9-])"
         },
         {
           "from": "border-purple-1",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-1(?![a-z0-9-])"
         },
         {
           "from": "border-purple-2",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-2(?![a-z0-9-])"
         },
         {
           "from": "border-purple-3",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-3(?![a-z0-9-])"
         },
         {
           "from": "border-purple-4",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-4(?![a-z0-9-])"
         },
         {
           "from": "border-purple-5",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-5(?![a-z0-9-])"
         },
         {
           "from": "border-purple-6",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-6(?![a-z0-9-])"
         },
         {
           "from": "border-purple-7",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-7(?![a-z0-9-])"
         },
         {
           "from": "border-purple-8",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-8(?![a-z0-9-])"
         },
         {
           "from": "border-purple-9",
-          "to": null,
+          "to": "sf-hue-purple border-hue",
           "match": "(?<![a-z0-9:-])border-purple-9(?![a-z0-9-])"
         },
         {
           "from": "border-pink",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink(?![a-z0-9-])"
         },
         {
           "from": "border-pink-0",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-0(?![a-z0-9-])"
         },
         {
           "from": "border-pink-1",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-1(?![a-z0-9-])"
         },
         {
           "from": "border-pink-2",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-2(?![a-z0-9-])"
         },
         {
           "from": "border-pink-3",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-3(?![a-z0-9-])"
         },
         {
           "from": "border-pink-4",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-4(?![a-z0-9-])"
         },
         {
           "from": "border-pink-5",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-5(?![a-z0-9-])"
         },
         {
           "from": "border-pink-6",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-6(?![a-z0-9-])"
         },
         {
           "from": "border-pink-7",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-7(?![a-z0-9-])"
         },
         {
           "from": "border-pink-8",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-8(?![a-z0-9-])"
         },
         {
           "from": "border-pink-9",
-          "to": null,
+          "to": "sf-hue-pink border-hue",
           "match": "(?<![a-z0-9:-])border-pink-9(?![a-z0-9-])"
         }
       ],
       "deprecated_on": "2026-11-09",
       "remove_after": "2027-01-01",
       "rewrite": "manual",
-      "manual": "Use a role class (color-error, bg-success-container, border-info and the rest) where the colour says something, or the static palette primitive the class reads (palette_utilities in src/core/contracts/token-aliases.v1.json), for example color: var(--sf-red-50) for color-red-5.",
+      "manual": "Each item names its successor (R087 item 1, option A, 2026-11-10): the hue of the same name chosen with .sf-hue-<hue> and the hue role utility. color-<hue>[-N] becomes sf-hue-<hue> color-hue; border-<hue>[-N] becomes sf-hue-<hue> border-hue (it reads --sf-hue-outline, as border-primary reads --sf-primary-outline); bg-<hue>[-N] becomes sf-hue-<hue> bg-hue-container where the legacy class read a tint (tone 70 and lighter) and sf-hue-<hue> bg-hue where it read a deeper tone. The roles follow the theme (light 40 / dark 80 for color-hue and bg-hue, 50 / 60 for the outline, 50 at 12 / 24 for the container), so most successors are not the legacy tone: check the look, and where the exact tone matters write the static primitive the class reads (palette_utilities in src/core/contracts/token-aliases.v1.json), for example color: var(--sf-red-50) for color-red-5. Where the colour says something use a status role (color-error, bg-success-container). color-white, color-black, bg-white, bg-black, border-white and border-black have no successor class: use a role (color-on-primary, bg-surface-page) or var(--sf-white) / var(--sf-black).",
       "examples": {
         "before": "<span class=\"color-red-5\">",
-        "after": "<span class=\"color-error\">"
+        "after": "<span class=\"sf-hue-red color-hue\">"
       },
       "owner": "ui-source",
       "source": "src/core/scss/vars/_sf_var__color.scss, src/utility/text-color, src/utility/background-color, src/utility/border-color"
@@ -9930,6 +9935,185 @@
       "source": "src/core/contracts/public-variables.v1.json, src/component/download-file/scss/_css_download-file.scss"
     },
     {
+      "id": "class-icon-button-retired-looks-c15",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The class icon button follows decision C15 as the Smart one does (value-icon-button-looks-c15; docs pre-check 2026-11-10, navigation item 2): sf-icon-button--surface is retired and draws as sf-icon-button--tonal with the scheme it is written with, and sf-icon-button--secondary is retired and draws as the quiet neutral, sf-icon-button--on-surface sf-icon-button--on-surface-variant (component.icon-buttons 1.6.0). The alpha-ramp surface look and the secondary container tonal look are gone; the names keep drawing their successors until remove_after.",
+      "items": [
+        {
+          "component": "sf-icon-button",
+          "from": "sf-icon-button--surface",
+          "to": "sf-icon-button--tonal",
+          "match": "(?<![a-z0-9-])sf-icon-button--surface(?![a-z0-9-])"
+        },
+        {
+          "component": "sf-icon-button",
+          "from": "sf-icon-button--secondary",
+          "to": "sf-icon-button--on-surface sf-icon-button--on-surface-variant",
+          "match": "(?<![a-z0-9-])sf-icon-button--secondary(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<button class=\"sf-icon-button sf-icon-button--icon sf-icon-button--surface sf-icon-button--on-surface sf-icon-button--size-1\">",
+        "after": "<button class=\"sf-icon-button sf-icon-button--icon sf-icon-button--tonal sf-icon-button--on-surface sf-icon-button--size-1\">"
+      },
+      "manual": "Write sf-icon-button--tonal for sf-icon-button--surface and keep the scheme class. For sf-icon-button--secondary write sf-icon-button--on-surface and sf-icon-button--on-surface-variant: one class becomes two, so it is not a plain rename.",
+      "owner": "ui-source",
+      "source": "src/component/icon-buttons/scss/_css_icon_buttons.scss"
+    },
+    {
+      "id": "class-carousel-surface-names",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The carousel's surface modifiers carry the C16 place names (docs pre-check 2026-11-10, CR-01): sf-carousel-switch--surface-zero is sf-carousel-switch--surface-page and sf-carousel-pagination--surface-2 is sf-carousel-pagination--surface-area (component.carousel 1.2.0). The former classes draw the same until remove_after.",
+      "items": [
+        {
+          "component": "sf-carousel",
+          "from": "sf-carousel-switch--surface-zero",
+          "to": "sf-carousel-switch--surface-page",
+          "match": "(?<![a-z0-9-])sf-carousel-switch--surface-zero(?![a-z0-9-])"
+        },
+        {
+          "component": "sf-carousel",
+          "from": "sf-carousel-pagination--surface-2",
+          "to": "sf-carousel-pagination--surface-area",
+          "match": "(?<![a-z0-9-])sf-carousel-pagination--surface-2(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<button class=\"sf-carousel-switch sf-carousel-switch--next sf-carousel-switch--surface-zero\">",
+        "after": "<button class=\"sf-carousel-switch sf-carousel-switch--next sf-carousel-switch--surface-page\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/carousel/scss/_css__carousel.scss"
+    },
+    {
+      "id": "class-fab-tonal-secondary-to-primary",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The floating action button's tonal pair is primary (dispatcher decision e, docs pre-check 2026-11-10; C15 retired secondary for the icon buttons): sf-fab--tonal sf-fab--primary draws the primary container under on-primary-container (component.fab 1.1.0). sf-fab--secondary is its former name and draws the same until remove_after.",
+      "items": [
+        {
+          "component": "sf-fab",
+          "from": "sf-fab--secondary",
+          "to": "sf-fab--primary",
+          "match": "(?<![a-z0-9-])sf-fab--secondary(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<button class=\"sf-fab sf-fab--tonal sf-fab--secondary sf-fab--size-1\">",
+        "after": "<button class=\"sf-fab sf-fab--tonal sf-fab--primary sf-fab--size-1\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/fab/scss/_css_fab.scss"
+    },
+    {
+      "id": "class-clipboard-size-names",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The clipboard button's size classes carry the size names, as every sized component's do (CP-03, docs pre-check 2026-11-10; component.clipboard 1.1.0): sf-clipboard--size-1/3, sf-clipboard--size-1 and sf-clipboard--size-2 are the control ladder's 1/3, 1 and 2 steps. sf-clipboard-1, -2 and -3 are their former names and draw the same until remove_after.",
+      "items": [
+        {
+          "component": "sf-clipboard",
+          "from": "sf-clipboard-1",
+          "to": "sf-clipboard--size-1/3",
+          "match": "(?<![a-z0-9-])sf-clipboard-1(?![a-z0-9-])"
+        },
+        {
+          "component": "sf-clipboard",
+          "from": "sf-clipboard-2",
+          "to": "sf-clipboard--size-1",
+          "match": "(?<![a-z0-9-])sf-clipboard-2(?![a-z0-9-])"
+        },
+        {
+          "component": "sf-clipboard",
+          "from": "sf-clipboard-3",
+          "to": "sf-clipboard--size-2",
+          "match": "(?<![a-z0-9-])sf-clipboard-3(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<button class=\"sf-clipboard sf-clipboard-surface sf-clipboard-1\">",
+        "after": "<button class=\"sf-clipboard sf-clipboard-surface sf-clipboard--size-1/3\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/clipboard/scss/_sf_copy.scss"
+    },
+    {
+      "id": "attribute-list-timeline-density-to-density",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-list-timeline takes its density from the page (data-sf-density, a compact context; decision C22), never from a setting of its own (C40). density is deprecated: until remove_after density=\"compact\" writes data-sf-density=\"compact\" on the list's root, noted in SF.deprecations; density=\"normal\" was the default and means nothing.",
+      "items": [
+        {
+          "component": "sf-list-timeline",
+          "from": "density",
+          "to": "data-sf-density"
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove density from the sf-list-timeline. For a compact list write data-sf-density=\"compact\" on it or on the region or page that holds it; density=\"normal\" is removed with nothing in its place (data-sf-density=\"normal\" keeps the list normal inside a compact region).",
+      "examples": {
+        "before": "<sf-list-timeline density=\"compact\">",
+        "after": "<sf-list-timeline data-sf-density=\"compact\">"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/list-timeline/index.js"
+    },
+    {
+      "id": "class-radio-type-font-to-segmented",
+      "recorded_on": "2026-11-10",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The radio's font-sample variant (sf-radio-wrap--type-font with sf-radio-group--font and sf-radio-button--type-font tiles, the constructor's type: \"font\") is deprecated: choosing one value from buttons is sf-segmented (DEV decision D11a/b, docs pre-check 2026-11-10 CRB-01, where the «Aa» tiles stood 24 high with doubled borders). The variant keeps drawing and submitting as before until remove_after; there is no automatic rewrite, a page moves the choice to an sf-segmented of the same values.",
+      "items": [
+        {
+          "component": "sf-radio",
+          "from": "sf-radio-wrap--type-font",
+          "to": null
+        },
+        {
+          "component": "sf-radio",
+          "from": "sf-radio-group--font",
+          "to": null
+        },
+        {
+          "component": "sf-radio",
+          "from": "sf-radio-button--type-font",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Replace the group of font-sample tiles with sf-segmented (one segment per value, the sample as the segment's label); keep the name and the values of the radios as the segmented control's name and values.",
+      "examples": {
+        "before": "<div class=\"sf-radio-button sf-radio-wrap--type-font sf-radio-button--size-1\"><div class=\"sf-radio-group sf-radio-group--font\"><label class=\"sf-radio-button sf-radio-button--size-1 sf-radio-button--type-font\">…</label></div></div>",
+        "after": "<sf-segmented name=\"font\" size=\"1\">…</sf-segmented>"
+      },
+      "owner": "ui-source",
+      "source": "src/component/radio/scss/_css_radio_custom.scss, src/component/radio/js/_radio.js; ui-control control/docs-review/decisions.md D11b"
+    },
+    {
       "id": "class-avatar-group-overlap-size-names",
       "recorded_on": "2026-11-10",
       "stage": "compat",
@@ -10075,35 +10259,6 @@
       "source": "src/smart/tag/index.js"
     },
     {
-      "id": "attribute-tabs-scheme-to-appearance",
-      "recorded_on": "2026-11-10",
-      "stage": "compat",
-      "kind": "attribute",
-      "summary": "sf-tabs names the look of its tab buttons appearance=\"default|outline|ghost\", as every other component does (docs precheck TB-06, sf-tabs 1.2.0). scheme, its former name, and link, ghost's former name, keep working with a console note until remove_after; appearance wins when both are given. Nothing draws differently.",
-      "items": [
-        {
-          "component": "sf-tabs",
-          "from": "scheme",
-          "to": "appearance"
-        },
-        {
-          "component": "sf-tabs",
-          "from": "appearance=\"link\"",
-          "to": "appearance=\"ghost\""
-        }
-      ],
-      "deprecated_on": "2026-11-10",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Write appearance in place of scheme on sf-tabs, and ghost in place of link; default and outline keep their names. A custom template may keep reading context.scheme until remove_after; context.appearance is the current name.",
-      "examples": {
-        "before": "<sf-tabs scheme=\"link\" aria-label=\"Разделы\"></sf-tabs>",
-        "after": "<sf-tabs appearance=\"ghost\" aria-label=\"Разделы\"></sf-tabs>"
-      },
-      "owner": "ui-source",
-      "source": "src/smart/tabs/index.js"
-    },
-    {
       "id": "value-slider-dots-type-to-roles",
       "recorded_on": "2026-11-10",
       "stage": "compat",
@@ -10172,6 +10327,735 @@
       "source": "src/smart/slider/js/templates/default.js"
     },
     {
+      "id": "event-view-save-kind-view",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "event",
+      "summary": "sf-view (simai/ui-view, sf-view 1.12.0, set view 1.7.0) hears a page's request to save a shared saved view as the vocabulary's save with kind view (vocabulary 1.1.5 §9): sf-view-save {kind: \"view\", key, label, revision?, roles?} on the view itself, which raises view.save_shared as before; a save of another kind is not the view's. The former name sf-view-saved-view-intent is a dated same-detail alias until remove_after: still heard, its detail (which has no kind) read as a view, and each use noted in SF.deprecations. The older sf-data-view-saved-view-intent (tag-sf-data-view-to-sf-view) now leads to sf-view-save too. sf-view-save sent without kind is a view and is not noted.",
+      "deprecated_on": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-event",
+      "examples": {
+        "before": "view.dispatchEvent(new CustomEvent('sf-view-saved-view-intent', {detail: {key: 'team', label: 'Team'}}))",
+        "after": "view.dispatchEvent(new CustomEvent('sf-view-save', {detail: {kind: 'view', key: 'team', label: 'Team'}}))"
+      },
+      "manual": "Dispatch sf-view-save on the view for sf-view-saved-view-intent (or sf-data-view-saved-view-intent) and add kind: \"view\" to the detail; key, label, revision and roles stay as they were.",
+      "owner": "ui-view",
+      "source": "simai/ui-view package/src/smart/view/aliases.json and component.json (events.save, aliases), kind event",
+      "items": [
+        {
+          "component": "sf-view",
+          "from": "sf-view-saved-view-intent",
+          "to": "sf-view-save"
+        },
+        {
+          "component": "sf-view",
+          "from": "sf-data-view-saved-view-intent",
+          "to": "sf-view-save"
+        }
+      ]
+    },
+    {
+      "id": "class-button-link-to-ghost",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "The class button's look without a fill is sf-button--ghost (decision C15, docs review R033, CB-01), as the Smart button's appearance already is (value-button-link-to-ghost); sf-button--link is its former name and is drawn by the same rules until remove_after. The Smart sf-button, sf-segmented's segments and sf-alert's second action write both classes until then, so a page selector that reached sf-button--link still does. The earlier record class-button-ghost-to-link went the other way and stays as history; sf-upgrade no longer reports or rewrites an item a later record reverses.",
+      "items": [
+        {
+          "component": "sf-button",
+          "from": "sf-button--link",
+          "to": "sf-button--ghost"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<button class=\"sf-button sf-button--link sf-button--on-surface\">",
+        "after": "<button class=\"sf-button sf-button--ghost sf-button--on-surface\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/buttons/scss/_css__buttons.scss; src/smart/button/js/templates/default.js; ui-control control/docs-review/decisions.md C15"
+    },
+    {
+      "id": "attribute-input-country-presence-booleans",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-input-country 1.3.0: four settings that are on by default were switched off by the string \"false\", which is not an HTML boolean (docs pre-check 2026-11-10 CC-05). Each has a presence form: multi-country=\"false\" is fixed-country, use-country-masks=\"false\" is fixed-mask, show-code=\"false\" is hide-code, lazy-flags=\"false\" is eager-flags. The string forms keep working until remove_after and are noted in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-input-country",
+          "from": "multi-country=\"false\"",
+          "to": "fixed-country",
+          "match": "multi-country=[\"']false[\"']"
+        },
+        {
+          "component": "sf-input-country",
+          "from": "use-country-masks=\"false\"",
+          "to": "fixed-mask",
+          "match": "use-country-masks=[\"']false[\"']"
+        },
+        {
+          "component": "sf-input-country",
+          "from": "show-code=\"false\"",
+          "to": "hide-code",
+          "match": "show-code=[\"']false[\"']"
+        },
+        {
+          "component": "sf-input-country",
+          "from": "lazy-flags=\"false\"",
+          "to": "eager-flags",
+          "match": "lazy-flags=[\"']false[\"']"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Replace each string form by its presence attribute: multi-country=\"false\" by fixed-country, use-country-masks=\"false\" by fixed-mask, show-code=\"false\" by hide-code, lazy-flags=\"false\" by eager-flags. multi-country=\"true\" and the like are the defaults and are simply removed.",
+      "examples": {
+        "before": "<sf-input-country iso2=\"RU\" multi-country=\"false\" use-country-masks=\"false\"></sf-input-country>",
+        "after": "<sf-input-country iso2=\"RU\" fixed-country fixed-mask></sf-input-country>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/input-country/index.js"
+    },
+    {
+      "id": "behaviour-input-color-visible-label",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-input-color 1.6.0 draws its label: `label` is shown above the row in the field label look of sf-input (dispatcher decision a, docs pre-check 2026-11-10 FB-10). It only named the colour input before, so a page that printed its own caption and passed the same words in label now shows them twice; a colour in a cell, a record panel or a toolbar that only needs a name passes aria-label instead.",
+      "items": [
+        {
+          "component": "sf-input-color",
+          "attribute": "label",
+          "from": "label as the accessible name only",
+          "to": "aria-label"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a colour needs a name and no visible label (a table cell, a record panel that draws the label beside it, a toolbar), write aria-label=\"…\" in place of label=\"…\". Where the page drew its own caption above the colour, remove the caption and keep label.",
+      "examples": {
+        "before": "<sf-input-color slot=\"tools\" label=\"Основной цвет сайта\"></sf-input-color>",
+        "after": "<sf-input-color slot=\"tools\" aria-label=\"Основной цвет сайта\"></sf-input-color>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/input-color/js/templates/default.js"
+    },
+    {
+      "id": "value-composition-catalogue-group-structure",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "The composition catalogue's group structure is layout (2026-11-04, the visual parity pass: Elements and Layout replace Structure, which said nothing to an author). A type manifest's catalogue.group and a slot's groups still accept structure and read it as layout (CATALOGUE_GROUP_ALIASES in src/core/js/composition/catalogue.mjs) until remove_after. Recorded on 2026-11-11, after the fact: the alias shipped with core.runtime 1.26.0 without a journal record (docs pre-check 2026-11-10, GF-16).",
+      "items": [
+        {
+          "attribute": "catalogue.group",
+          "from": "structure",
+          "to": "layout",
+          "match": "[\"']group[\"']\\s*:\\s*[\"']structure[\"']"
+        },
+        {
+          "attribute": "groups",
+          "from": "structure",
+          "to": "layout",
+          "match": "[\"']groups[\"']\\s*:\\s*\\[[^\\]]*[\"']structure[\"']"
+        }
+      ],
+      "deprecated_on": "2026-11-04",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "\"catalogue\": {\"group\": \"structure\"}",
+        "after": "\"catalogue\": {\"group\": \"layout\"}"
+      },
+      "manual": "In a composition type manifest write catalogue.group \"layout\" instead of \"structure\", and \"layout\" in a slot's groups; a smart element a block prints goes under \"elements\".",
+      "source": "src/core/js/composition/catalogue.mjs CATALOGUE_GROUP_ALIASES; docs/developer/block-author-guide.md"
+    },
+    {
+      "id": "global-sf-when-define",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "global",
+      "summary": "SF.whenDefine is the older name of SF.whenDefined (a promise that settles when the named Smart elements are defined, with their tag names). It keeps working as a dated alias of the same function until the sweep, and every read is noted in SF.deprecations (dispatcher, D17 follow-up, 2026-11-11: the documentation lists one name).",
+      "items": [
+        {
+          "from": "SF.whenDefine",
+          "to": "SF.whenDefined",
+          "match": "\\bSF\\??\\.whenDefine\\b"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "await SF.whenDefine('sf-input');",
+        "after": "await SF.whenDefined('sf-input');"
+      },
+      "manual": "Write SF.whenDefined where a page calls SF.whenDefine; the arguments and the promise are the same.",
+      "owner": "ui-control",
+      "source": "src/core/js/loader.js (WHEN_DEFINE_ALIAS)"
+    },
+    {
+      "id": "token-spinner-track-carries-alpha",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "The spinner's ring under the arc has no opacity of its own: --sf-spinner-track-color carries colour and alpha together, by default the spinner's ink at 16 % (the fill family of the alpha scale, DEV J1/S1). A stand-alone spinner's ring was --sf-surface-container under an opacity of 30 %, about 5 % of grey, and now shows (1.40 light, 1.48 dark against the page). A page that sets --sf-spinner-track-color to a solid colour now gets it whole, where the sheet drew it at 30 %. Rings in sf-button and sf-button-icon were already this and draw as before; the ring of a busy badge is the ink at 16 % where it was the ink at 30 %. The words under a spinner take the ink of the place (--sf-spinner-text-color defaults to currentColor, was --sf-on-surface).",
+      "items": [
+        {
+          "component": "sf-spinner",
+          "from": "--sf-spinner-track-color",
+          "to": "--sf-spinner-track-color",
+          "match": "--sf-spinner-track-color(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": ".panel { --sf-spinner-track-color: var(--sf-outline-variant); }",
+        "after": ".panel { --sf-spinner-track-color: color-mix(in srgb, var(--sf-outline-variant) 30%, transparent); }"
+      },
+      "manual": "Where a page sets --sf-spinner-track-color, give the colour its alpha in the value (color-mix(in srgb, <colour> 30%, transparent) keeps the former look); or remove it to take the spinner's ink at 16 %.",
+      "owner": "ui-source",
+      "source": "src/component/spinner/scss/_css__spinner.scss, _css__spinner_custom.scss; src/core/contracts/public-variables.v1.json"
+    },
+    {
+      "id": "class-clipboard-to-data-sf-copy",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "A button copies by what it says, not by a class (owner decision C48): any <button>, sf-button or sf-button-icon with data-sf-copy=\"text\" or data-sf-copy-target=\"#id\" copies and gives sf-button-copy's feedback. The class sf-clipboard (and btn-clipboard before it) keeps binding the button until remove_after and is noted once in SF.deprecations.",
+      "items": [
+        {
+          "component": "clipboard",
+          "from": "sf-clipboard",
+          "to": "data-sf-copy",
+          "match": "(?<![\\w.-])sf-clipboard(?![\\w-])"
+        },
+        {
+          "component": "clipboard",
+          "from": "btn-clipboard",
+          "to": "data-sf-copy",
+          "match": "(?<![\\w.-])btn-clipboard(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove the class sf-clipboard (or btn-clipboard) from the button and write what it copies as data-sf-copy (the text) or data-sf-copy-target (#id of the element whose value or text is copied); data-copy, data-target and data-clipboard-target become those (record attribute-clipboard-sources-to-data-sf-copy). The other classes of the button (sf-button, sf-icon-button, ...) stay. The sf-clipboard-* parts the component draws (-status, -fallback, -surface, --overlay, -1/-2/-3) are not this class and stay.",
+      "examples": {
+        "before": "<button class=\"sf-clipboard sf-icon-button\" data-copy=\"npm i @simai-studio/ui\" aria-label=\"Копировать команду\">",
+        "after": "<button class=\"sf-icon-button\" data-sf-copy=\"npm i @simai-studio/ui\" aria-label=\"Копировать команду\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/clipboard/js/index.js noteLegacy; ui-control control/docs-review/decisions.md C48"
+    },
+    {
+      "id": "attribute-clipboard-sources-to-data-sf-copy",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "What a copy button copies is named by data-sf-copy (the text) and data-sf-copy-target (#id) (owner decision C48). On a button with the class sf-clipboard the former names keep working until remove_after and are noted once in SF.deprecations: data-copy is data-sf-copy, data-target and data-clipboard-target are data-sf-copy-target.",
+      "items": [
+        {
+          "component": "clipboard",
+          "from": "data-copy",
+          "to": "data-sf-copy",
+          "match": "<[a-z][\\w-]*(?=[^>]*\\bclass=[\"'][^\"']*(?<![\\w-])(?:sf-clipboard|btn-clipboard)(?![\\w-]))[^>]*\\sdata-copy="
+        },
+        {
+          "component": "clipboard",
+          "from": "data-target",
+          "to": "data-sf-copy-target",
+          "match": "<[a-z][\\w-]*(?=[^>]*\\bclass=[\"'][^\"']*(?<![\\w-])(?:sf-clipboard|btn-clipboard)(?![\\w-]))[^>]*\\sdata-target="
+        },
+        {
+          "component": "clipboard",
+          "from": "data-clipboard-target",
+          "to": "data-sf-copy-target",
+          "match": "<[a-z][\\w-]*(?=[^>]*\\bclass=[\"'][^\"']*(?<![\\w-])(?:sf-clipboard|btn-clipboard)(?![\\w-]))[^>]*\\sdata-clipboard-target="
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "On a copy button (class sf-clipboard or btn-clipboard) write data-sf-copy for data-copy and data-sf-copy-target for data-target or data-clipboard-target, and remove the class (record class-clipboard-to-data-sf-copy). Only these buttons: a data-target elsewhere on the page is another component's and stays.",
+      "examples": {
+        "before": "<button class=\"sf-clipboard sf-icon-button\" data-clipboard-target=\"#key\" aria-label=\"Скопировать ключ\">",
+        "after": "<button class=\"sf-icon-button\" data-sf-copy-target=\"#key\" aria-label=\"Скопировать ключ\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/clipboard/js/index.js copySources, noteLegacy; ui-control control/docs-review/decisions.md C48"
+    },
+    {
+      "id": "behaviour-tabs-overflow-more",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-tabs 1.2.0 lays out tabs that do not fit with overflow=\"more\" by default: they go whole into a trailing «Ещё (n)» menu and the active tab stays in the row (owner decision C54). The row scrolled before; a page that wants the scrolling row writes overflow=\"scroll\".",
+      "items": [
+        {
+          "component": "sf-tabs",
+          "attribute": "overflow",
+          "from": "scroll (the default)",
+          "to": "more (the default); scroll written out"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a page relied on the scrolling row (a long row it scrolls itself, a test that scrolls the strip), write overflow=\"scroll\" on the sf-tabs. Nothing is needed for the new behaviour.",
+      "examples": {
+        "before": "<sf-tabs items=\"Обзор|Задачи|…\"></sf-tabs> (the row scrolls)",
+        "after": "<sf-tabs overflow=\"scroll\" items=\"Обзор|Задачи|…\"></sf-tabs>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/tabs/index.js"
+    },
+    {
+      "id": "event-file-download-download-to-request",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "event",
+      "summary": "sf-file-download's request to fetch a file is sf-file-download-request: sf-file-download-download said the word twice (owner decision C51, docs pre-check 2026-11-10 DF-11). The element sends the new name first and the old one after it with the same detail {href, fileName, download}; a listener on either name may cancel it, and one cancel stops the download. The older names sf-download-file-download and sf-download-file:click follow as before; the old tag's family names of the new events (sf-download-file-request, sf-download-file-cancel) follow too.",
+      "items": [
+        {
+          "component": "sf-file-download",
+          "from": "sf-file-download-download",
+          "to": "sf-file-download-request"
+        },
+        {
+          "component": "sf-file-download",
+          "from": "sf-download-file-request",
+          "to": "sf-file-download-request"
+        },
+        {
+          "component": "sf-file-download",
+          "from": "sf-download-file-cancel",
+          "to": "sf-file-download-cancel"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-event",
+      "examples": {
+        "before": "files.addEventListener('sf-file-download-download', (event) => { event.preventDefault(); prepare(event.target); });",
+        "after": "files.addEventListener('sf-file-download-request', (event) => { event.preventDefault(); prepare(event.target); });"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/file-download/aliases.json, src/smart/file-download/component.json events.request"
+    },
+    {
+      "id": "behaviour-timeline-stage-dots",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-list-timeline: a step (state) without an icon tells its state by the dot's shape, as an icon step does (owner decision C61, variant A): done a solid dot in --sf-primary, current the same dot ringed through a gap, upcoming an empty dot with a --sf-on-surface-variant ring. Before, every such dot was the neutral grey and only the line told the state. A status tone (success, warning, error) still wins.",
+      "items": [
+        {
+          "component": "sf-list-timeline",
+          "attribute": "items[].state",
+          "from": "a neutral dot for every state",
+          "to": "done solid, current ringed, upcoming empty"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite in markup or data. A page that coloured its own step dots over .sf-list-timeline-dot can drop that rule.",
+      "examples": {
+        "before": "<sf-list-timeline steps></sf-list-timeline> (items with state, no icon: grey dots)",
+        "after": "<sf-list-timeline steps></sf-list-timeline> (the same items: solid, ringed, empty dots)"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
+    },
+    {
+      "id": "behaviour-c77-field-value-inset",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "Fields, textarea, dropdown, lookup and sf-list rows start their text at one value inset with the border counted inside (owner decision C77): size 1/2 --sf-space-1/2 (12), never below 12 (--sf-b2, on the phone and in a compact region, where C79 brings it down to 28), size 1 --sf-space-1 (16, 12 compact and phone), size 2 --sf-space-2 (20, 16 compact and phone). The extra --sf-ui-<S>--text-space-x before the text is gone. With a rounded field the text moves in by (radius - 4)/2, the radius capped at half the single-line height, so a pill field puts its text where a rounded sf-button does; icons stay at the plain inset. Textarea takes the single-line radius; a tag inside a lookup takes the field radius less 4. sf-list rows sit --sf-space-1/4 in from the frame, as menu rows do, and a row's text block takes no text-space-x at its end. A dropdown's options keep the field's value edge at every size: their padding is the field's inset less the panel's plate (12 / 16 / 20 from the panel's edge at 1/2, 1, 2).",
+      "items": [
+        {
+          "component": "sf-input, sf-input-*",
+          "attribute": "--sf-input-padding-inline",
+          "from": "var(--sf-ui-1--space-x) plus text-space-x on the input",
+          "to": "calc(var(--sf-space-1) - var(--sf-px)) plus the rounding correction"
+        },
+        {
+          "component": "sf-input-textarea",
+          "attribute": "--sf-textarea-padding-inline",
+          "from": "calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x))",
+          "to": "calc(var(--sf-space-1) - var(--sf-px)) plus the rounding correction"
+        },
+        {
+          "component": "sf-input-lookup",
+          "attribute": "--sf-lookup-padding-inline",
+          "from": "var(--sf-ui-1--space-x)",
+          "to": "calc(var(--sf-space-1) - var(--sf-px)) plus the rounding correction"
+        },
+        {
+          "component": "sf-list",
+          "attribute": "row text inset",
+          "from": "frame padding plus row padding plus text-space-x",
+          "to": "the size's value inset, row highlight --sf-space-1/4 from the frame"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite in markup. A page that set --sf-input-padding-inline, --sf-textarea-padding-inline or --sf-lookup-padding-inline keeps its value; a page that nudged text inside fields or list rows to line up with menus can drop that rule. The sf-pagination page box is a number box and keeps its earlier inset and width.",
+      "examples": {
+        "before": "<sf-input label=\"Name\"></sf-input> (text at 25 px from the field edge, size 1)",
+        "after": "<sf-input label=\"Name\"></sf-input> (text at 16 px, the menu and button inset)"
+      },
+      "owner": "ui-source",
+      "source": "src/component/inputs/scss/_css__inputs.scss; src/component/textarea/scss/_css__textarea.scss; src/component/dropdown/scss/_css__custom.scss; src/smart/input-lookup/scss/_smart__lookup.scss; src/smart/list/js/templates/default.css; ui-control control/docs-review/decisions.md C77"
+    },
+    {
+      "id": "behaviour-timeline-icon-steps",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-list-timeline 1.2.0: a step (state) with an icon follows the same logic as a step's dot (owner decision C61): done the solid primary circle, current the same solid circle ringed through a gap (it was the soft primary circle with a ring), upcoming an empty circle with a --sf-on-surface-variant ring (it was --sf-outline-variant). A status tone (error, warning, success) now wins over a step with an icon, as it does on a dot. In high contrast the step dots and icons keep their shape in the system colours.",
+      "items": [
+        {
+          "component": "sf-list-timeline",
+          "attribute": "items[].state",
+          "from": "an icon step: current soft, upcoming ringed in --sf-outline-variant, the status ignored",
+          "to": "an icon step: current solid and ringed through a gap, upcoming ringed in --sf-on-surface-variant, the status tone wins"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite in markup or data. A step that carried a status only for the log now shows the status tone on its icon; drop the status from such a step if the step state should show.",
+      "examples": {
+        "before": "{\"title\": \"Собран\", \"icon\": \"inventory_2\", \"state\": \"done\", \"status\": \"warning\"} (a primary circle)",
+        "after": "the same item (a warning circle; without status a primary circle)"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/list-timeline/js/templates/default.js, src/smart/list-timeline/scss/_smart__list-timeline.scss; ui-control control/docs-review/decisions.md C61"
+    },
+    {
+      "id": "behaviour-highlight-follows-the-place",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "Highlighted code follows the place it stands on (DEV 2026-11-11, variant C of the code comment contrast study). The highlight roles were resolved on the theme root, so on a popup, the grey plate, a strong colour or the inverse the code kept the page's inks: comments 3.21:1 on a dark popup, 2.86 on the dark grey plate, 1.27 / 1.10 on bg-primary, text 3.38 / 1.61 on bg-primary. The code now reads them through three core place hooks the page does not declare (--sf-place--ink-variant, --sf-place--ink, --sf-place--fill-surface): on a card, a popup and the grey plate the comment, the punctuation and the line numbers take the place's dim ink on a fill; on a strong colour and on glass the text and every hue take the place's ink, one colour; on the grey plate and on a dark popup the block lays no fill of its own. On the page nothing changes.",
+      "items": [
+        {
+          "component": "highlight",
+          "attribute": "--sf-highlight-comment, --sf-highlight-punctuation, --sf-highlight-line-number",
+          "from": "the page's dim ink on every place",
+          "to": "the place's dim ink on a fill (--sf-place--ink-variant); the page's on the page"
+        },
+        {
+          "component": "highlight",
+          "attribute": "--sf-highlight-text and the hue roles",
+          "from": "the page's ink and the theme's hues on every place",
+          "to": "the place's ink on a strong colour and on glass (--sf-place--ink), one colour; elsewhere as before"
+        },
+        {
+          "component": "highlight",
+          "attribute": ".sf-code-surface background",
+          "from": "the container fill on every place",
+          "to": "none on the grey plate and on a popup in the dark theme (--sf-place--fill-surface)"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite. The roles --sf-highlight-* are still the page's and a project's override of one still applies on the page; on a place the place's ink wins. A page that wants the former look on a place can set --sf-place--ink-variant, --sf-place--ink and --sf-place--fill-surface to initial on the code block.",
+      "examples": {
+        "before": "<div class=\"bg-primary\"><pre class=\"sf-code-surface\"><code class=\"hljs\">... (comments 1.27:1, keywords 1.26:1)",
+        "after": "<div class=\"bg-primary\"><pre class=\"sf-code-surface\"><code class=\"hljs\">... (the same markup: every role on-primary, 5:1 and above)"
+      },
+      "owner": "ui-source",
+      "source": "src/component/highlight/scss/_theme.scss; src/core/scss/mix/_mix__places.scss; ui-control prototypes/code-comment-contrast.html"
+    },
+    {
+      "id": "behaviour-filled-field-bottom-line",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "A filled field draws its bottom edge in --sf-outline at rest (owner decision C52, with C41's 8 % fill): sf-input, sf-input-textarea, sf-dropdown, sf-input-lookup and sf-input-rich with appearance=\"filled\". The fill alone stood 1.10 to 1.23 from its place. Hover and press colour the line with the border, focus and an open list turn the whole border --sf-outline as before; error and disabled fields have no line. A project's --sf-input-border-color (and the other fields' border variables) colours the line too. The filled look is for a search or filter field over a table or a list; a form keeps the bordered default.",
+      "items": [
+        {
+          "component": "sf-input",
+          "attribute": "appearance",
+          "from": "filled without a boundary at rest",
+          "to": "filled with a bottom line"
+        },
+        {
+          "component": "sf-input-textarea",
+          "attribute": "appearance",
+          "from": "filled without a boundary at rest",
+          "to": "filled with a bottom line"
+        },
+        {
+          "component": "sf-dropdown",
+          "attribute": "appearance",
+          "from": "filled without a boundary at rest",
+          "to": "filled with a bottom line"
+        },
+        {
+          "component": "sf-input-lookup",
+          "attribute": "appearance",
+          "from": "filled without a boundary at rest",
+          "to": "filled with a bottom line"
+        },
+        {
+          "component": "sf-input-rich",
+          "attribute": "appearance",
+          "from": "filled without a boundary at rest",
+          "to": "filled with a bottom line"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite for a search or filter field. A filled field in a form (C52: forms are bordered) becomes appearance=\"bordered\".",
+      "examples": {
+        "before": "<sf-input appearance=\"filled\" label=\"Имя\"></sf-input>",
+        "after": "<sf-input label=\"Имя\"></sf-input>"
+      },
+      "owner": "ui-source",
+      "source": "src/component/inputs/scss/_css__inputs.scss, src/component/textarea/scss/_css__textarea.scss, src/component/dropdown/scss/_css__dropdown.scss, src/smart/input-lookup/scss/_smart__lookup.scss, src/smart/input-rich/scss/_smart__rich_text.scss; ui-control control/docs-review/decisions.md C52"
+    },
+    {
+      "id": "behaviour-inverse-place-roles",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "bg-surface-inverse and bg-surface-inverse-fixed are places (C16): what stands on them takes the other theme's roles -- ink, dim ink, state layers, fill, lines and, on the children, the accent (the fixed one, the dark theme's in both themes). They painted only the background, and a field's label on bg-surface-inverse measured 1.31:1 light and 1.00:1 dark. A card or a popup on them takes the theme's roles back. Also: the grey plate bg-surface-container takes the boundary of the light grey steps (opaque neutral-50 in the light theme), so a bordered field's edge on it holds 3:1.",
+      "items": [
+        {
+          "component": "background-color",
+          "attribute": "class",
+          "from": "bg-surface-inverse paints only",
+          "to": "bg-surface-inverse is a place"
+        },
+        {
+          "component": "background-color",
+          "attribute": "class",
+          "from": "bg-surface-inverse-fixed paints only",
+          "to": "bg-surface-inverse-fixed is a place"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove the colour overrides a page wrote for text or controls on bg-surface-inverse (color-on-surface-inverse on each label, a light --sf-outline); the place gives them.",
+      "examples": {
+        "before": "<div class=\"bg-surface-inverse\"><span class=\"color-on-surface-inverse\">Подпись</span></div>",
+        "after": "<div class=\"bg-surface-inverse\"><span>Подпись</span></div>"
+      },
+      "owner": "ui-source",
+      "source": "src/core/scss/mix/_mix__places.scss sf-place-inverse; src/utility/background-color/default/scss/_sf_css__background_color.scss"
+    },
+    {
+      "id": "behaviour-choice-help-text",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-checkbox 1.2.0, sf-radio 1.2.0 and sf-switch 1.4.0: help holds the explanation text, shown by a «?» button (sf-help-mark) after the label; a press on it opens the explanation and never changes the control (audit 2026-11-11, W1). It was an icon name drawn as a decorative icon inside the label, so an icon name passed today shows as the explanation's text.",
+      "items": [
+        {
+          "component": "sf-checkbox",
+          "attribute": "help",
+          "from": "help as an icon name (a decorative icon beside the label)",
+          "to": "help as the explanation text (a «?» button, sf-help-mark)"
+        },
+        {
+          "component": "sf-radio",
+          "attribute": "help",
+          "from": "help as an icon name (a decorative icon beside the label)",
+          "to": "help as the explanation text (a «?» button, sf-help-mark)"
+        },
+        {
+          "component": "sf-switch",
+          "attribute": "help",
+          "from": "help as an icon name (a decorative icon beside the label)",
+          "to": "help as the explanation text (a «?» button, sf-help-mark)"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write the explanation in help (one or two short sentences) in place of an icon name. A page that wanted only a picture beside the label puts it in the label slot; an explanation with a link or a heading goes in the help slot as an sf-help-mark of its own.",
+      "examples": {
+        "before": "<sf-switch label=\"Синхронизация\" help=\"info\"></sf-switch>",
+        "after": "<sf-switch label=\"Синхронизация\" help=\"Через мобильную сеть синхронизация не идёт.\"></sf-switch>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/{checkbox,radio,switch}/js/templates/default.js, src/component/checkable-text-helper.js keepHelpOutOfLabel"
+    },
+    {
+      "id": "behaviour-choice-row-step",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-checkbox 1.2.0, sf-radio 1.2.0 and sf-switch 1.4.0 (owner decisions C59, C63; audit 2026-11-11 W1, W5, W6, W9): the hit area is the control and its text, not the empty rest of the row; the help mark is the label's sibling; a control with text is a row of its step, (control height - line) / 2 above and below (40 at size 1, 60 with a description, 32 compact, max(step, 44) under a coarse pointer); the label is regular in all three. A column of choice controls now keeps one pitch without a gap; a page that spaced them with a gap of its own grows by the row padding.",
+      "items": [
+        {
+          "component": "sf-checkbox",
+          "attribute": "label",
+          "from": "a press anywhere in the row toggled the control (the <label> filled the row and held the help); the row was one line tall (24 at size 1); the label was medium",
+          "to": "the control and its text are the target (the <label> hugs its content, the help mark stands beside it); a row with text is its step tall: 40, 60 with a description line, 32 compact, the touch target under a coarse pointer; the label is regular"
+        },
+        {
+          "component": "sf-radio",
+          "attribute": "label",
+          "from": "a press anywhere in the row toggled the control (the <label> filled the row and held the help); the row was one line tall (24 at size 1); the label was medium",
+          "to": "the control and its text are the target (the <label> hugs its content, the help mark stands beside it); a row with text is its step tall: 40, 60 with a description line, 32 compact, the touch target under a coarse pointer; the label is regular"
+        },
+        {
+          "component": "sf-switch",
+          "attribute": "label",
+          "from": "a press anywhere in the row toggled the control (the <label> filled the row and held the help); the row was one line tall (24 at size 1)",
+          "to": "the control and its text are the target (the <label> hugs its content, the help mark stands beside it); a row with text is its step tall: 40, 60 with a description line, 32 compact, the touch target under a coarse pointer"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Drop a gap or margin a page put between choice controls in a column: the rows carry their own padding. A page that made a whole row the target wraps the control in its own row element (a list row, a menu row) as sf-list-item does. A labelled control inline beside 40 px controls (a toolbar) now has their height; beside plain text it is its step tall, not its line. A control with no label and no description stays the box.",
+      "examples": {
+        "before": "<div class=\"flex flex-col gap-2\"><sf-checkbox label=\"Новости\"></sf-checkbox><sf-checkbox label=\"Акции\"></sf-checkbox></div>",
+        "after": "<div class=\"flex flex-col\"><sf-checkbox label=\"Новости\"></sf-checkbox><sf-checkbox label=\"Акции\"></sf-checkbox></div>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/helpers/checkable-row.js, src/smart/helpers/checkable-row.css, src/smart/{checkbox,radio,switch}/js/templates/default.js, src/component/{checkbox,radio,switch}/scss; ui-control control/docs-review/decisions.md C59, C63"
+    },
+    {
+      "id": "behaviour-dropdown-form-field",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-dropdown 1.9.0 is a form field through ElementInternals, as sf-input is (owner decision C55): the host submits the value under its name, and `required` now stops a submit while nothing is chosen (value-missing; the browser focuses the trigger and the field shows «Выберите вариант»). It drew a required mark only before. The hidden input .sf-dropdown-hidden-input is still drawn and holds the value, but carries no name while the host submits, so form.elements[name] and [name=…] find the sf-dropdown host, not the hidden input.",
+      "items": [
+        {
+          "component": "sf-dropdown",
+          "attribute": "required",
+          "from": "required as a mark only",
+          "to": "required as a constraint (value-missing)"
+        },
+        {
+          "component": "sf-dropdown",
+          "from": "input.sf-dropdown-hidden-input[name] as the form control",
+          "to": "the sf-dropdown host (value, validity, form)"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a required sf-dropdown may stay empty on submit, remove required (or choose a default); where a page read the hidden input by its name, read the host instead: form.elements[name].value, or the host's value property. FormData is unchanged: the same name carries the same value.",
+      "examples": {
+        "before": "form.querySelector('input[name=\"city\"]').value",
+        "after": "form.elements.city.value"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/dropdown/index.js"
+    },
+    {
+      "id": "behaviour-text-fields-shown-required",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-input 1.8.0, sf-textarea 1.8.0 and sf-lookup 1.6.0 show their required error after a failed form check, as sf-dropdown 1.9.0 does (C55 acceptance F1): a required field left empty gets the error border, the value-missing word under it («Заполните поле»; sf-lookup «Выберите значение.»), aria-invalid and aria-errormessage, from the host's invalid event (a submit attempt, checkValidity(), reportValidity()) until the person's input fills it or the form is reset. Before, only the browser's bubble said it. Submitting, validity, the bubble and the focus on the first invalid field are unchanged.",
+      "items": [
+        {
+          "component": "sf-input",
+          "from": "required error in the browser bubble only",
+          "to": "error look and value-missing message after a failed check"
+        },
+        {
+          "component": "sf-textarea",
+          "from": "required error in the browser bubble only",
+          "to": "error look and value-missing message after a failed check"
+        },
+        {
+          "component": "sf-lookup",
+          "from": "required error in the browser bubble only",
+          "to": "error look and value-missing message after a failed check"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to change. A page that drew its own required message on the host's invalid event (invalid + error-message) keeps it: the page's error-message wins over the field's word.",
+      "owner": "ui-source",
+      "source": "src/smart/helpers/form-field.js ShownRequired"
+    },
+    {
+      "id": "value-avatar-offline-dot-dim-ink",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-avatar: the offline dot is the place's dim ink, --sf-on-surface-variant, not the disabled ink laid over the place colour (defect fix: the disabled ink was under 3:1 for a status mark, light 3.10 against the page and 2.56 against the avatar, the dark grey plate 2.48 / 1.67; the dim ink is at least 6.44 / 4.43 on the page, a card and the grey plate in both themes). The two public variables stay: --sf-avatar-offline-background-color defaults to var(--sf-on-surface-variant) (was var(--sf-surface-place)) and --sf-avatar-offline-overlay to none (was the disabled ink).",
+      "items": [
+        {
+          "component": "sf-avatar",
+          "attribute": "--sf-avatar-offline-background-color",
+          "from": "var(--sf-surface-place)",
+          "to": "var(--sf-on-surface-variant)"
+        },
+        {
+          "component": "sf-avatar",
+          "attribute": "--sf-avatar-offline-overlay",
+          "from": "linear-gradient(var(--sf-on-surface-disabled) 0 0)",
+          "to": "none"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite in markup. A page that set only --sf-avatar-offline-background-color under the disabled ink now gets that colour alone; to keep the former dot set --sf-avatar-offline-background-color: var(--sf-surface-place) and --sf-avatar-offline-overlay: linear-gradient(var(--sf-on-surface-disabled) 0 0). A page that set the overlay to none sees no change.",
+      "examples": {
+        "before": "<sf-avatar text=\"АЗ\" status=\"offline\"></sf-avatar> (a light grey dot, rgb(145,146,150) on a white page)",
+        "after": "<sf-avatar text=\"АЗ\" status=\"offline\"></sf-avatar> (the same markup: a dot in the dim ink, neutral-40 light / neutral-70 dark)"
+      },
+      "owner": "ui-source",
+      "source": "src/component/avatars/scss/_css__avatar_online_indicator.scss; ui-control prototypes/avatar-offline.html"
+    },
+    {
+      "id": "behaviour-c53-quantity-width-by-digits",
+      "recorded_on": "2026-11-11",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-input-quantity 1.4.0 and component.quantity 1.2.0 (owner decision C53, remarks R111-R115): the field is as wide as the longest number it holds, not as its container; the steppers hug the number (--sf-quantity-gap defaults to 0, was --sf-space-2) and the number place carries --sf-space-1/4 on each side; the inherited marker and reset stand after the box. New settings steppers (sides | none), unit and digits. A page that relied on the field filling its cell, or on the 20 px gap, sees a narrower box.",
+      "items": [
+        {
+          "component": "sf-input-quantity",
+          "from": "the box as wide as its container",
+          "to": "digits"
+        },
+        {
+          "component": "sf-input-quantity",
+          "from": "--sf-quantity-gap: var(--sf-space-2)",
+          "to": "--sf-quantity-gap: 0"
+        }
+      ],
+      "deprecated_on": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite for most pages. Where a field must keep a wider box (a column of fields, a long expected number), set digits=\"N\" on the field (the same N on every field of a column); where the old gap was wanted, set --sf-quantity-gap. A year, a weight or a price reads better as steppers=\"none\" with unit=\"…\".",
+      "examples": {
+        "before": "<sf-input-quantity label=\"Год выпуска\" value=\"2026\" min=\"1900\" max=\"2100\">",
+        "after": "<sf-input-quantity label=\"Год выпуска\" value=\"2026\" min=\"1900\" max=\"2100\" grouping=\"false\" steppers=\"none\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/quantity/scss/_css__quantity.scss, src/smart/input-quantity/index.js"
+    },
+    {
       "id": "value-file-preview-target-default-same-tab",
       "recorded_on": "2026-11-11",
       "stage": "compat",
@@ -10195,6 +11079,877 @@
       },
       "owner": "ui-source",
       "source": "src/smart/file-preview/component.json"
+    },
+    {
+      "id": "behaviour-tabs-line-default",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-tabs 1.3.0 draws two looks (owner decision C96 item 1): the line, which is now what no type draws (it drew filled primary buttons, the selected one primary-active), and the plate (pills); vertical is the menu's column (item 5). Only the selected label is medium, the others regular, with the width reserved (item 3); the line is 2 px at every size (item 2); hover darkens the ink only (item 4).",
+      "items": [
+        {
+          "component": "sf-tabs",
+          "attribute": "type",
+          "from": "(none): filled primary buttons",
+          "to": "(none): the line, as type=\"underline\""
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to write for the new look. A page that wanted the filled row has no equivalent: use type=\"pills\" for a plate, or sf-segmented for a value switch.",
+      "examples": {
+        "before": "<sf-tabs items=\"Обзор|История\"></sf-tabs> (filled buttons)",
+        "after": "<sf-tabs items=\"Обзор|История\"></sf-tabs> (the line)"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/tabs/index.js"
+    },
+    {
+      "id": "value-tabs-full-to-underline",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-tabs type=\"full\" is retired (owner decision C96 item 1): it draws the line with fit always (the tabs share the row equally), and each use is noted in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-tabs",
+          "attribute": "type",
+          "from": "full",
+          "to": "underline"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write type=\"underline\" fit=\"always\" (or drop type) where full was written.",
+      "examples": {
+        "before": "<sf-tabs type=\"full\" items=\"…\"></sf-tabs>",
+        "after": "<sf-tabs fit=\"always\" items=\"…\"></sf-tabs>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/tabs/index.js"
+    },
+    {
+      "id": "value-tabs-scheme-retired",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-tabs scheme=\"outline\" and scheme=\"link\" no longer change the look (owner decision C96 item 1: one selected rule per look); each use is noted in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-tabs",
+          "attribute": "scheme",
+          "from": "outline",
+          "to": "(none)"
+        },
+        {
+          "component": "sf-tabs",
+          "attribute": "scheme",
+          "from": "link",
+          "to": "(none)"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove scheme from sf-tabs; choose the look with type (none or underline: the line; pills: the plate).",
+      "examples": {
+        "before": "<sf-tabs scheme=\"link\" items=\"…\"></sf-tabs>",
+        "after": "<sf-tabs items=\"…\"></sf-tabs>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/tabs/index.js"
+    },
+    {
+      "id": "behaviour-explicit-size-follows-density",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "An explicit size follows the region's density (owner decision C79, changing C22): in data-sf-density=\"compact\" a component with a size comes down one ladder step, as one without a size does -- a field size=\"1\" and the buttons beside it are 32/32, size=\"2\" is 40 (it was 48). Before, an explicit size took the normal ladder back inside a compact region. data-sf-density=\"normal\" on an element or a region (an island) restores the normal heights, sizes included. The phone keeps its ladder (density is desktop-only). Panels and menus a component places on the body take the density of the control that opens it, sized or not.",
+      "items": [
+        {
+          "attribute": "size",
+          "from": "an explicit size draws the normal ladder inside a compact region",
+          "to": "an explicit size comes down a step with the region; data-sf-density=\"normal\" takes the normal ladder back"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite where the smaller controls are wanted. Where a sized control inside a compact region must keep its normal height, put data-sf-density=\"normal\" on it or on the group that holds it; do not raise its size by a step to compensate.",
+      "examples": {
+        "before": "<form data-sf-density=\"compact\"><sf-input size=\"2\"></sf-input></form> (48)",
+        "after": "<form data-sf-density=\"compact\"><sf-input size=\"2\"></sf-input></form> (40); <div data-sf-density=\"normal\"><sf-input size=\"2\"></sf-input></div> inside it (48)"
+      },
+      "owner": "ui-source",
+      "source": "scripts/generate-density.mjs; src/core/js/density.js; src/core/js/layer-stack.js; src/smart/menu-context/index.js; ui-control control/docs-review/decisions.md C79"
+    },
+    {
+      "id": "behaviour-c105-row-picture-gap",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "A row's picture stands --sf-space-1/2 before its text (owner decision C105, role H2: 12, 8 in a compact region and on a phone) in sf-list-item, sf-list and the sf-menu column, at every size. sf-list-item drops the layout class gap-2 from its template and the text block's start inset after a picture; sf-menu's --sf-menu-element-wrap--gap defaults to --sf-space-1/2 (was --sf-space-1/3), and every level of a menu with icons puts the child's first column under the parent's words (C30 on all levels, C109). In sf-list a row without an icon among rows with one keeps the icon's place.",
+      "items": [
+        {
+          "component": "sf-list-item",
+          "attribute": "picture-to-text gap",
+          "from": "class gap-2 (--sf-space-2) plus --sf-ui-<S>--text-space-x",
+          "to": "column-gap: var(--sf-space-1/2) from the sheet"
+        },
+        {
+          "component": "sf-list",
+          "attribute": "least gap before a text row's count or badge",
+          "from": "--sf-space-2",
+          "to": "--sf-space-1/2"
+        },
+        {
+          "component": "sf-list",
+          "attribute": "rows without an icon among rows with one",
+          "from": "text at the row inset",
+          "to": "an empty icon place, text on the icon rows' vertical"
+        },
+        {
+          "component": "sf-menu",
+          "attribute": "--sf-menu-element-wrap--gap (default)",
+          "from": "var(--sf-space-1/3)",
+          "to": "var(--sf-space-1/2)"
+        },
+        {
+          "component": "sf-menu",
+          "attribute": "level 3 and 4 indent under an icon row",
+          "from": "row padding + space-1 per level",
+          "to": "the parent's text start (its icon and the wrap gap)"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite in markup. A page that set --sf-menu-element-wrap--gap keeps its value, and the menu's indent follows it. A page that relied on the gap-2 class in a list row's wrap can set column-gap on .sf-list-item-wrap.",
+      "examples": {
+        "before": "<sf-list> row with an icon: icon to text 28 px (size 1)",
+        "after": "<sf-list> row with an icon: icon to text 12 px, 8 on a phone"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/list-item/js/templates/default.js; src/component/dropdown/scss/_css__list-item.scss; src/smart/list/js/templates/default.css; src/smart/list/index.js; src/component/menu/scss/_css__menu_element.scss; ui-control control/docs-review/decisions.md C105, C109"
+    },
+    {
+      "id": "behaviour-c105-field-picture-gap",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "A field is a row (owner decision C105, role H2): its leading picture stands --sf-space-1/2 before the value -- 12, 8 in a compact region and on a phone -- at every size, the step its options keep from their pictures, so the value and an option's text start on one axis. sf-input (and sf-input-date, which draws one) after icon-start, and sf-dropdown after its chosen option's picture. It was the button's picture-to-label step --sf-ui-<S>--text-space-x (H1): 7, 8, 10; 6, 6, 8 on a phone.",
+      "items": [
+        {
+          "component": "sf-input",
+          "attribute": "leading picture to value",
+          "from": "var(--sf-ui-<S>--text-space-x)",
+          "to": "var(--sf-space-1/2)"
+        },
+        {
+          "component": "sf-dropdown",
+          "attribute": "chosen picture to value (.sf-dropdown-field-visual margin-inline-end)",
+          "from": "var(--sf-ui-<S>--text-space-x)",
+          "to": "var(--sf-space-1/2)"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite in markup. A page that needs the former step sets --sf-input-input--padding-inline-start on the field's input, or margin-inline-end on .sf-dropdown-field-visual.",
+      "examples": {
+        "before": "<sf-input icon-start=\"search\"></sf-input> (icon to value 8 px, size 1)",
+        "after": "<sf-input icon-start=\"search\"></sf-input> (icon to value 12 px, 8 on a phone)"
+      },
+      "owner": "ui-source",
+      "source": "src/component/inputs/scss/_css__inputs.scss; src/component/dropdown/scss/_css__custom.scss; ui-control control/docs-review/decisions.md C105"
+    },
+    {
+      "id": "behaviour-contents-hash-choose",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-contents 1.5.0 writes the address only when a section is chosen (hash=\"choose\", the default; CT-10 of the R181 study). It wrote #id on every scroll change too; hash is now an enum choose|scroll|false, and true or an empty attribute read as choose.",
+      "items": [
+        {
+          "component": "sf-contents",
+          "attribute": "hash",
+          "from": "true (the default): the address follows the scroll and the choice",
+          "to": "choose (the default): the address follows the choice; scroll written out"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a page relied on the address following the scroll, write hash=\"scroll\" on the sf-contents. hash=\"false\" (Docara) is unchanged.",
+      "examples": {
+        "before": "<sf-contents target=\"article\"></sf-contents> (the address follows the scroll)",
+        "after": "<sf-contents target=\"article\" hash=\"scroll\"></sf-contents>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/contents/index.js setCurrent, writeHash"
+    },
+    {
+      "id": "behaviour-contents-bar-overflow-more",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-contents 1.5.0 lays out the bar's sections that do not fit with overflow=\"more\" by default: they go whole into a trailing «Ещё (n)» menu and the current section stays in the row, as sf-tabs (owner decision C54; CT-05 of the R181 study). The row scrolled sideways with a hidden scrollbar before; a page that wants it writes overflow=\"scroll\".",
+      "items": [
+        {
+          "component": "sf-contents",
+          "attribute": "overflow",
+          "from": "none: the bar's row scrolled sideways, its scrollbar hidden",
+          "to": "more (the default); scroll written out"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a page relied on the scrolling row of layout=\"bar\", write overflow=\"scroll\" on the sf-contents. Nothing is needed for the new behaviour.",
+      "examples": {
+        "before": "<sf-contents layout=\"bar\">…</sf-contents> (the row scrolls)",
+        "after": "<sf-contents layout=\"bar\" overflow=\"scroll\">…</sf-contents>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/contents/index.js layoutOverflow; src/core/js/overflow-row.js"
+    },
+    {
+      "id": "behaviour-contents-current-line-only",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-contents 1.6.0 marks the current section with the primary colour on its 2 px line only (owner decision C95 point 2, CT-06): the text is the surface's ink at medium weight, as sf-menu's column and sf-tabs. The text was the primary colour in the column, the bar and the rail, and the compact list's current row was the primary-container fill. --sf-contents-current-color now colours the line, the stroke and the reading line, not the text.",
+      "items": [
+        {
+          "component": "sf-contents",
+          "attribute": "--sf-contents-current-color",
+          "from": "the current link's text and its line; the compact list's current row primary-container",
+          "to": "the current link's line only; the text on-surface, medium; the compact list's row a 2 px line, no fill"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite for the new look. A page that set --sf-contents-current-color to colour the current text colours .sf-contents-link[aria-current=\"location\"] itself, or keeps the line colour alone.",
+      "examples": {
+        "before": "<sf-contents target=\"article\"></sf-contents> (current text primary)",
+        "after": "<sf-contents target=\"article\"></sf-contents> (current text on-surface, primary line)"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/contents/scss/_smart__contents.scss"
+    },
+    {
+      "id": "behaviour-contents-c77-value-inset",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-contents 1.6.1 puts the column's text and the open compact list's rows at the size's value inset, the one rule of fields and lists (owner decision C77, R191 HS-12): size 1/2 max(--sf-space-1/2, --sf-b2), 12 on the desktop, in a compact region and on a phone, where the text stood at 8 on a phone and in a compact region; size 1 --sf-space-1, 16 on the desktop (12 compact and on a phone), where the column took 12. --sf-contents-inset-inline defaults to that inset; a value a host sets is unchanged.",
+      "items": [
+        {
+          "component": "sf-contents",
+          "attribute": "--sf-contents-inset-inline",
+          "from": "var(--sf-space-1/2) at every size (8 on a phone and in a compact region); the open list's rows at --sf-ui-<size>--space-x",
+          "to": "size 1/2 max(var(--sf-space-1/2), var(--sf-b2)) (12 everywhere), size 1 var(--sf-space-1) (16; 12 compact and phone); the open list's rows at the same inset"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite. A page that wants the former 8 on a phone sets --sf-contents-inset-inline on its own column.",
+      "examples": {
+        "before": "<sf-contents target=\"article\"></sf-contents> (390: text 8 from the line)",
+        "after": "<sf-contents target=\"article\"></sf-contents> (390: text 12 from the line)"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/contents/scss/_smart__contents.scss"
+    },
+    {
+      "id": "attribute-slider-range-c78",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-slider-range 1.4.0 (owner decisions C78, C80; defects S1-S7): label is the field's visible name, as on every field, and the setting that showed the value on the handles is value-display; the number settings take sf-input-quantity's names, so decimals is precision. The old forms keep working until remove_after and are noted in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-slider-range",
+          "from": "label=\"none|text|tooltip\"",
+          "to": "value-display",
+          "match": "<sf-(?:slider-range|range-slider)\\b[^>]*\\blabel=[\"'](?:none|text|tooltip)[\"']"
+        },
+        {
+          "component": "sf-slider-range",
+          "from": "decimals",
+          "to": "precision",
+          "match": "\\bdecimals=[\"']"
+        },
+        {
+          "component": "range-slider",
+          "from": "data-decimals",
+          "to": "data-precision",
+          "match": "data-decimals=[\"']"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write value-display for label when label holds none, text or tooltip (label=\"tooltip\" is value-display=\"tooltip\"), and give label the field's visible name instead of aria-label where the name should show. value-display=\"text\" now writes the value at the end of the name line, not under the handles, and the tooltip bubble shows only while a handle is dragged or keyboard-focused. Write precision for decimals on <sf-slider-range>, and data-precision for data-decimals on a hand-written .sf-range-slider.",
+      "examples": {
+        "before": "<sf-slider-range aria-label=\"Цена\" label=\"tooltip\" decimals=\"1\"></sf-slider-range>",
+        "after": "<sf-slider-range label=\"Цена\" value-display=\"tooltip\" precision=\"1\"></sf-slider-range>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/slider-range/component.json, src/component/range-slider/js/_range_slider.js; ui-control control/docs-review/decisions.md C78, C80"
+    },
+    {
+      "id": "value-steps-one-list-format",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-steps 1.4.0 (owner decision C101): one list format, JSON items with a state per item. The item state words are done, ahead, skipped, running and error; completed and default are their former words. The string form label::flag|label and error-step are the old form; separator-icon draws nothing (the steps are joined by a line). Each use is noted in SF.deprecations. The steps are passive by default: a page that let a person press them writes navigation=\"visited\" or \"free\".",
+      "items": [
+        {
+          "component": "sf-steps",
+          "attribute": "items.state",
+          "from": "completed",
+          "to": "done"
+        },
+        {
+          "component": "sf-steps",
+          "attribute": "items.state",
+          "from": "default",
+          "to": "ahead"
+        },
+        {
+          "component": "sf-steps",
+          "attribute": "items",
+          "from": "label::flag|label",
+          "to": "items as JSON [{label, state}]"
+        },
+        {
+          "component": "sf-steps",
+          "from": "error-step",
+          "to": "items[i].state = \"error\""
+        },
+        {
+          "component": "sf-steps",
+          "from": "separator-icon",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write items as JSON: [{\"label\": \"Корзина\", \"state\": \"done\"}, ...]. completed is done, default is ahead; error-step=\"2\" is \"state\": \"error\" on the third item; remove separator-icon. Steps a person may press need navigation=\"visited\" (back to the steps behind) or \"free\".",
+      "examples": {
+        "before": "<sf-steps current=\"2\" error-step=\"1\" items=\"Корзина::completed|Доставка|Оплата\"></sf-steps>",
+        "after": "<sf-steps current=\"2\" items='[{\"label\":\"Корзина\",\"state\":\"done\"},{\"label\":\"Доставка\",\"state\":\"error\"},{\"label\":\"Оплата\"}]'></sf-steps>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/steps/index.js; ui-control control/docs-review/decisions.md C101"
+    },
+    {
+      "id": "value-pagination-footer-parts-to-view",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-pagination is page navigation only (decision C97, 2026-11-12): its appearance setting is field, numbers, arrows, cursor or more. An sf-pagination written without appearance keeps drawing the footer of 1.4 until remove_after -- the range (now «41–60 из 240» in place of «Всего: 240»), the page-size part (now a quiet «По 20 ▾» button with a menu in place of the labelled select), the field «из 12», Show more and the band -- and each use is noted in SF.deprecations (kind value, appearance=(none)). The range and the page size belong to the list that shows them: sf-view composes them beside an sf-pagination of its own appearance. page-sizes, show-page-size and the event sf-pagination-size-change are the page-size part's and leave with it.",
+      "items": [
+        {
+          "component": "sf-pagination",
+          "attribute": "appearance",
+          "from": "(none)",
+          "to": "field",
+          "match": "<sf-pagination(?![^>]*\\bappearance=)[^>]*>"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "page-sizes",
+          "to": null,
+          "match": "<sf-pagination[^>]*\\bpage-sizes="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "show-page-size",
+          "to": null,
+          "match": "<sf-pagination[^>]*\\bshow-page-size="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-pagination-size-change",
+          "to": null,
+          "match": "sf-pagination-size-change"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write appearance on the sf-pagination (field for a dense table, numbers for a site or search, arrows when the count is not known, cursor for a cursor list, more for Show more). Put the range beside it as text («41–60 из 240», from the list's own page, size and total) and the page size as an sf-button appearance=\"ghost\" scheme=\"on-surface\" icon-end=\"arrow_drop_down\" «По 20» opening an sf-menu-context of kind: \"radio\" rows; handle the size there instead of sf-pagination-size-change. sf-view: see the footer recipe in ui-control control/evidence/2026-11-12-pagination-c97/README.md.",
+      "examples": {
+        "before": "<sf-pagination current=\"3\" total=\"240\" page-size=\"20\"></sf-pagination>",
+        "after": "<span class=\"range\">41–60 из 240</span> <sf-button appearance=\"ghost\" scheme=\"on-surface\" icon-end=\"arrow_drop_down\" text=\"По 20\"></sf-button> <sf-pagination appearance=\"field\" current=\"3\" total=\"240\" page-size=\"20\"></sf-pagination>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/pagination/index.js noteFooterParts, noteFooterEvent; src/smart/pagination/js/templates/default.js renderFooter"
+    },
+    {
+      "id": "value-pagination-show-more-to-more",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "Show more is its own appearance of sf-pagination, appearance=\"more\" (decision C97 point 1: never in one row with the arrows): «Показать ещё 20», then «Показано 40 из 240» and a thin bar. The footer of an sf-pagination without appearance still draws Show more when top is on and a next portion exists, now on a line of its own above the page row, until remove_after, noted in SF.deprecations (kind setting, top).",
+      "items": [
+        {
+          "component": "sf-pagination",
+          "from": "top",
+          "to": "appearance=\"more\"",
+          "match": "<sf-pagination(?![^>]*\\bappearance=)(?![^>]*\\btop=\"false\")[^>]*>"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "top-class",
+          "to": null,
+          "match": "<sf-pagination[^>]*\\btop-class="
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "A list that appends portions writes <sf-pagination appearance=\"more\"> (current is the number of portions shown, total and page-size as before; sf-pagination-load-more is unchanged). A list that pages writes top=\"false\" or an appearance other than more.",
+      "examples": {
+        "before": "<sf-pagination total=\"240\" page-size=\"20\" current=\"2\"></sf-pagination>",
+        "after": "<sf-pagination appearance=\"more\" total=\"240\" page-size=\"20\" current=\"2\"></sf-pagination>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/pagination/index.js noteFooterParts; src/smart/pagination/js/templates/default.js renderFooter, renderMore"
+    },
+    {
+      "id": "setting-pagination-band-to-view",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "The band of bulk controls («Отмечено: N · Действие ▾ · Применить · Для всех · ✕») belongs to sf-view (decision C97 point 5), which already draws it at the end of its card from the pagination's action settings. sf-pagination keeps drawing it (bottom, footer only) and sending its events until remove_after; each use of the band and each of its events is noted in SF.deprecations (kind setting actions, kind event <name>, to sf-view).",
+      "items": [
+        {
+          "component": "sf-pagination",
+          "from": "bottom",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bbottom="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "bottom-class",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bbottom-class="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "show-actions",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bshow-actions="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "actions",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bactions="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "action",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\baction="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "action-apply-text",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\baction-apply-text="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "show-action-for-all",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bshow-action-for-all="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "action-for-all",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\baction-for-all="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "action-for-all-label",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\baction-for-all-label="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "actions-label",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bactions-label="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "action-choose-label",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\baction-choose-label="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "actions-region-label",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bactions-region-label="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "clear-selection-label",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bclear-selection-label="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "selected-label",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bselected-label="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "selected-count",
+          "to": "sf-view",
+          "match": "<sf-pagination[^>]*\\bselected-count="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-pagination-selection-clear",
+          "to": "sf-view",
+          "match": "sf-pagination-selection-clear\\b"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-pagination-action-change",
+          "to": "sf-view",
+          "match": "sf-pagination-action-change\\b"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-pagination-action-for-all-change",
+          "to": "sf-view",
+          "match": "sf-pagination-action-for-all-change\\b"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "sf-pagination-apply",
+          "to": "sf-view",
+          "match": "sf-pagination-apply\\b"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Move the bulk actions to the list: sf-view draws the band itself (its own actions setting replaces the pagination's when it ships; until then it reads them from the pagination it owns). A page with its own sf-pagination and a band composes the band beside the list (sf-dropdown, sf-button, sf-checkbox, sf-button-icon) and acts on its own selection.",
+      "examples": {
+        "before": "<sf-pagination actions=\"archive:В архив\" selected-count=\"3\"></sf-pagination>",
+        "after": "<sf-view …> (the band is sf-view's) <sf-pagination slot=\"pagination\" appearance=\"field\"></sf-pagination>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/pagination/index.js noteFooterParts, noteFooterEvent; src/smart/pagination/js/templates/default.js renderBand"
+    },
+    {
+      "id": "attribute-pagination-footer-labels",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "The footer of decision C97 says no «Всего:» and no «Страницы:»: the range «41–60 из 240» names what is shown and the row says what it is. An author's own total-label still draws the 1.4 line «Всего: 240» in place of the range, and an author's own pages-label still draws its label before the field, until remove_after, each noted in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-pagination",
+          "from": "total-label",
+          "to": null,
+          "match": "<sf-pagination[^>]*\\btotal-label="
+        },
+        {
+          "component": "sf-pagination",
+          "from": "pages-label",
+          "to": null,
+          "match": "<sf-pagination[^>]*\\bpages-label="
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove total-label and pages-label from the sf-pagination. A different range wording is a word of the page language: SF.language.register('sf-pagination', '<lang>', {range: '{from}–{to} of {total}'}).",
+      "examples": {
+        "before": "<sf-pagination total-label=\"Записей:\"></sf-pagination>",
+        "after": "<sf-pagination></sf-pagination>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/pagination/index.js rangeText, noteFooterParts"
+    },
+    {
+      "id": "value-pager-steps-course-retired",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-pager is the neighbouring document (decision C97 point 7): cards, row and counter. appearance=\"steps\" (a wizard's Back, «Шаг 2 из 4», Next) is sf-wizard's job and appearance=\"course\" (lesson dots and the next lesson) has no product; both still draw until remove_after, each use noted in SF.deprecations (kind value, appearance). Image counters and carousel dots are sf-gallery's and sf-slider's.",
+      "items": [
+        {
+          "component": "sf-pager",
+          "attribute": "appearance",
+          "from": "steps",
+          "to": "sf-wizard",
+          "match": "<sf-pager[^>]*\\bappearance=[\"']steps[\"']"
+        },
+        {
+          "component": "sf-pager",
+          "attribute": "appearance",
+          "from": "course",
+          "to": null,
+          "match": "<sf-pager[^>]*\\bappearance=[\"']course[\"']"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Replace an sf-pager appearance=\"steps\" by sf-wizard (its steps, progress and rules of passage). A course of lessons is a page of its own (sf-steps or a list of links) until a product asks for one.",
+      "examples": {
+        "before": "<sf-pager appearance=\"steps\" current=\"1\"></sf-pager>",
+        "after": "<sf-wizard …></sf-wizard>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/pager/index.js noteRetired"
+    },
+    {
+      "id": "behaviour-theme-writes-no-status-palette",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "A theme is the four dynamic palettes -- primary, secondary, tertiary, neutral -- and no status palette (docs study 2026-11-11 TG-01). Core declares --sf-error-*, --sf-warning-*, --sf-success-* and --sf-info-* as var() of the static hues red, amber, green and blue (C17, C90, C100); themeFromColor and themeFromHct wrote them as literal colours too, so a page themed by sf-theme-generator, sf-input-color variant theme or applyTheme froze the statuses at the hues of the day (a theme made before a status hue moved would keep the old one). Now theme.palettes holds four palettes, THEME_PALETTES and THEME_ALPHA name four, and themeVariables, themeToCss and applyTheme write 144 variables (64 tones, 80 translucent steps) where they wrote 288. A theme object stored with eight palettes applies only its four theme palettes. The former API keeps working until 2027-01-01 with a warning: a status override in the options is ignored (option-theme-status-override) and theme.palettes.<status> reads the static hue (property-theme-status-palettes).",
+      "items": [
+        {
+          "component": "theme-palette",
+          "from": "theme.palettes.error|warning|success|info",
+          "to": "the static hue STATUS_HUES[status] (staticPalette()); theme.palettes.<status> reads it with a warning until 2027-01-01"
+        },
+        {
+          "component": "sf-theme-generator",
+          "from": "detail.variables: 288",
+          "to": "detail.variables: 144"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Code that read theme.palettes.error (or warning, success, info) reads SF.ThemePalette.staticPalette()[SF.ThemePalette.STATUS_HUES.error] instead. A site stylesheet written by themeToCss or the generator before this pair carries the status tones as literal values: drop its --sf-error-*, --sf-warning-*, --sf-success-* and --sf-info-* lines (or make the theme again) so core's static hues apply. A status colour of a site's own is not a theme: there is none, the statuses are fixed (C17).",
+      "examples": {
+        "before": "const red = SF.ThemePalette.themeFromColor('#e53935').palettes.error.tones[40];",
+        "after": "const red = SF.ThemePalette.staticPalette()[SF.ThemePalette.STATUS_HUES.error].tones[40];"
+      },
+      "owner": "ui-source",
+      "source": "src/core/js/theme-palette.js; src/smart/theme-generator; ui-control control/research/2026-11-11-theme-generator.md TG-01"
+    },
+    {
+      "id": "behaviour-grey-colour-makes-grey-theme",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "A grey colour makes a grey theme (C16, docs study 2026-11-11 TG-03). colorToHct took a colour as vivid as its hue holds at its tone for the vivid palette (chroma 85); at black and white the gamut holds no chroma, so #000000 made a pink theme (hue 0, chroma 85) and #ffffff a teal one. A colour under HCT chroma 5 (the neutral palette's chroma) now keeps its own chroma, and its secondary and tertiary palettes take that chroma instead of 20 and 40 -- a near-black like #111111 (hue 209) no longer gets bluish secondary containers. Every colour at chroma 5 or more, the Framework's own #005bbe among them, makes the same theme as before.",
+      "items": [
+        {
+          "component": "theme-palette",
+          "from": "colorToHct('#000000').chroma = 85",
+          "to": "0"
+        },
+        {
+          "component": "theme-palette",
+          "from": "themeFromColor('#111111').palettes.secondary.chroma = 20",
+          "to": "1 (the colour's own)"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite. A site whose stored brand colour is black, white or a near-grey and whose theme was written as CSS before this pair makes the theme again to drop the tinted palettes.",
+      "owner": "ui-source",
+      "source": "src/core/js/theme-palette.js (colorToHct, THEME_RULES); ui-control control/docs-review/decisions.md C16"
+    },
+    {
+      "id": "option-theme-status-override",
+      "kind": "option",
+      "summary": "A status palette in the options of themeFromColor or themeFromHct ({error|warning|success|info: {hue, chroma}}) no longer makes a theme palette: the statuses are core's static hues (C17, C90) and a theme holds four palettes (behaviour-theme-writes-no-status-palette). Until remove_after the override is ignored, noted in SF.deprecations (printed in the console only when the page opts in, as every compatibility note) (kind option); after it, themeFromHct throws a TypeError.",
+      "items": [
+        {
+          "component": "theme-palette",
+          "from": "themeFromColor(color, {error: {...}})",
+          "to": "themeFromColor(color)",
+          "match": "(?:themeFromColor|themeFromHct)\\([^)]*\\{[^)]*\\b(?:error|warning|success|info)\\s*:"
+        }
+      ],
+      "manual": "Remove the status keys from the options. A status colour of a site's own does not exist: the four statuses are fixed (C17).",
+      "examples": {
+        "before": "SF.ThemePalette.themeFromColor('#2e7d32', {secondary: {chroma: 30}, error: {hue: 10}})",
+        "after": "SF.ThemePalette.themeFromColor('#2e7d32', {secondary: {chroma: 30}})"
+      },
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "owner": "ui-source",
+      "source": "src/core/js/theme-palette.js (STATUS_COMPAT, warnStatusUse, withStatusCompat); ui-control control/research/2026-11-11-theme-generator.md TG-01"
+    },
+    {
+      "id": "property-theme-status-palettes",
+      "kind": "property",
+      "summary": "theme.palettes.error, .warning, .success and .info of a theme (themeFromColor, themeFromHct, sf-theme-generator's theme value, toJSON() and detail.theme) are not part of the theme any more (behaviour-theme-writes-no-status-palette). Until remove_after each still reads, read-only and not enumerable, as the static hue core draws that status with (red, amber, green, blue), noted in SF.deprecations (printed in the console only when the page opts in, as every compatibility note) (kind property); after it, it is undefined.",
+      "items": [
+        {
+          "component": "theme-palette",
+          "from": "theme.palettes.error",
+          "to": "SF.ThemePalette.staticPalette()[SF.ThemePalette.STATUS_HUES.error]",
+          "match": "palettes\\.(?:error|warning|success|info)\\b"
+        }
+      ],
+      "manual": "Read the status palette from the static palette: staticPalette()[STATUS_HUES.<status>] (the same tones core's --sf-<status>-<tone> resolve to).",
+      "examples": {
+        "before": "const red = theme.palettes.error.tones[40];",
+        "after": "const red = SF.ThemePalette.staticPalette()[SF.ThemePalette.STATUS_HUES.error].tones[40];"
+      },
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "owner": "ui-source",
+      "source": "src/core/js/theme-palette.js (STATUS_COMPAT, warnStatusUse, withStatusCompat); ui-control control/research/2026-11-11-theme-generator.md TG-01"
+    },
+    {
+      "id": "component-theme-generator-to-input-color-brand",
+      "kind": "component",
+      "summary": "sf-theme-generator leaves (owner decision C84, 2026-11-12): the brand colour is a mode of sf-input-color -- variant=\"brand\" for a settings screen (the field with the colour's checks under it), variant=\"theme\" for a site header (only a circle of the current colour) -- and the large tone tables and fine tuning move to the docs page «Конструктор темы». Until remove_after the element works as it did, noted in SF.deprecations on connect (printed in the console only when the page opts in, as every compatibility note).",
+      "items": [
+        {
+          "component": "sf-theme-generator",
+          "from": "sf-theme-generator",
+          "to": "sf-input-color variant=\"brand\"",
+          "match": "<sf-theme-generator\\b"
+        }
+      ],
+      "manual": "Replace the element with <sf-input-color variant=\"brand\">: value is the same #rrggbb; apply plus target becomes target (the brand field always puts the theme on target, empty = the document's root); swatches stay; hue and chroma have no field counterpart (fine tuning lives on the docs page «Конструктор темы», whose CSS export a site keeps); change and input carry theme, variables, css and checks as the generator's change did; listen to change instead of sf-theme-generator-committed.",
+      "examples": {
+        "before": "<sf-theme-generator value=\"#2e7d32\" swatches=\"#2e7d32|Лого\" apply target=\"#site\"></sf-theme-generator>",
+        "after": "<sf-input-color variant=\"brand\" label=\"Фирменный цвет\" value=\"#2e7d32\" swatches=\"#2e7d32|Лого\" target=\"#site\"></sf-input-color>"
+      },
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "owner": "ui-source",
+      "source": "ui-control control/docs-review/decisions.md C84; src/smart/theme-generator/index.js (RETIRED); src/smart/input-color (variant brand)"
+    },
+    {
+      "id": "utility-c65-gradient-names",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "The gradient stops have one name each and the palette's names (owner decision C65, 2026-11-11). gr1-*, gr2-* and gr3-* set the same three stops as from-*, via-* and to-*; the stop colours surface-0 and surface-1 are the C16 places surface-page and surface-area; surface-2 is the former neutral step 95 (dark 15), which no place matches in both themes. The former classes set the same colour as before until remove_after; the new stop list also opens every palette at every tone (from-teal-40), error, white, black and the place names surface-card, surface-popup, surface-popup-nested and surface-inverse.",
+      "items": [
+        {
+          "from": "gr1-*",
+          "to": "from-*"
+        },
+        {
+          "from": "gr2-*",
+          "to": "via-*"
+        },
+        {
+          "from": "gr3-*",
+          "to": "to-*"
+        },
+        {
+          "from": "from-surface-0",
+          "to": "from-surface-page",
+          "match": "(?<![a-z0-9:-])from-surface-0(?![a-z0-9-])"
+        },
+        {
+          "from": "via-surface-0",
+          "to": "via-surface-page",
+          "match": "(?<![a-z0-9:-])via-surface-0(?![a-z0-9-])"
+        },
+        {
+          "from": "to-surface-0",
+          "to": "to-surface-page",
+          "match": "(?<![a-z0-9:-])to-surface-0(?![a-z0-9-])"
+        },
+        {
+          "from": "from-surface-1",
+          "to": "from-surface-area",
+          "match": "(?<![a-z0-9:-])from-surface-1(?![a-z0-9-])"
+        },
+        {
+          "from": "via-surface-1",
+          "to": "via-surface-area",
+          "match": "(?<![a-z0-9:-])via-surface-1(?![a-z0-9-])"
+        },
+        {
+          "from": "to-surface-1",
+          "to": "to-surface-area",
+          "match": "(?<![a-z0-9:-])to-surface-1(?![a-z0-9-])"
+        },
+        {
+          "from": "from-surface-2",
+          "to": null,
+          "match": "(?<![a-z0-9:-])from-surface-2(?![a-z0-9-])"
+        },
+        {
+          "from": "via-surface-2",
+          "to": null,
+          "match": "(?<![a-z0-9:-])via-surface-2(?![a-z0-9-])"
+        },
+        {
+          "from": "to-surface-2",
+          "to": null,
+          "match": "(?<![a-z0-9:-])to-surface-2(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-utility",
+      "examples": {
+        "before": "<div class=\"gr-line-2 gr1-primary gr2-surface-0\">",
+        "after": "<div class=\"gr-line-2 from-primary via-surface-page\">"
+      },
+      "manual": "gr1-<colour>, gr2-<colour> and gr3-<colour> become from-, via- and to-<colour> mechanically. surface-0 and surface-1 become surface-page and surface-area. surface-2 has no place of the same colour in both themes: take surface-area or surface-card for a place, or a palette tone such as neutral-95 for a fixed light step.",
+      "owner": "ui-source",
+      "source": "src/utility/gradient-stops/default/scss/_sf_var__gradient_stops.scss; src/utility/gradient-color/default/scss/_sf_var__gradient.scss; ui-control control/docs-review/decisions.md C65"
+    },
+    {
+      "id": "behaviour-glass-accent-is-white",
+      "recorded_on": "2026-11-12",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "Glass over media (.sf-surface-media) takes its own white ink as the accent, as a strong coloured place does (owner decision C70, variant B of prototypes/glass-accent.html): on its children --sf-primary is white (hover neutral 95, press neutral 90), --sf-on-primary black, the tonal fill white at 12 under white (hover 8, press 4, going down as on a strong place in the light theme), and the link and the focus ring are white too (a visited link white at 80). Before, glass kept the theme's blue accent, link and ring: a primary label read 1.16-1.75 on glass in the light theme. An opaque place on glass (a card, a popup, a popover's content) takes back the accent, link and ring the page had there.",
+      "items": [
+        {
+          "component": ".sf-surface-media",
+          "attribute": "--sf-primary, --sf-on-primary, --sf-primary-container*, --sf-on-primary-container, --sf-link*, --sf-focus, --sf-focus--color (on its children)",
+          "from": "the theme's blue accent, link and focus ring",
+          "to": "the glass's white ink"
+        }
+      ],
+      "deprecated_on": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite. A page that re-coloured buttons, links or the focus ring on .sf-surface-media itself can drop that rule; a page that wants its brand colour on glass sets --sf-primary (and --sf-link, --sf-focus) on the glass's children.",
+      "examples": {
+        "before": "<div class=\"sf-surface-media\"><sf-button text=\"Save\"></sf-button></div> (a blue button with a white label on dark glass)",
+        "after": "<div class=\"sf-surface-media\"><sf-button text=\"Save\"></sf-button></div> (a white button with a black label)"
+      },
+      "owner": "ui-source",
+      "source": "src/core/scss/mix/_mix__places.scss (sf-place-glass-accent); src/core/scss/_sf_css__surface_places.scss; ui-control control/docs-review/decisions.md C70"
     }
   ]
 }

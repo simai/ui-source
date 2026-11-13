@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.empty-state",
-  "version": "1.1.10",
+  "version": "1.2.0",
   "title": "Empty state",
   "summary": "What a list, a panel or a page says when it has nothing to show: no data, nothing found, no access or an error, with an icon, a real heading, a sentence and actions.",
   "kind": "smart",
@@ -107,6 +107,11 @@
           "alert",
           "off"
         ]
+      },
+      "expressive": {
+        "type": "boolean",
+        "default": false,
+        "description": "The decorative level (owner decision C91, level 2): one soft circle of the primary colour behind the icon of a whole-page state (size 2) for no-data and nothing-found; a list, a table or a card stays plain. Off by default, a strict state; data-sf-style=\"expressive\" on the root or a container turns it on for every state under it, and data-sf-style=\"strict\" turns it off again."
       },
       "title": {
         "type": "string",
@@ -261,11 +266,11 @@
       },
       {
         "path": "src/smart/empty-state/js/templates/default.js",
-        "sha256": "d370303f6a51e27b381cb3c093e378bac583bf1b894ee14ee13114aa69a453cc"
+        "sha256": "21dfe6e1c8c7142c398411ccacd55e4e7dff66f9735fac85a30aecbf637f4970"
       },
       {
         "path": "src/smart/empty-state/scss/_smart__empty_state.scss",
-        "sha256": "631692e62b28b7f675d95fd46ee2fa9247226adb00748aec67e0639b62a3d676"
+        "sha256": "5350d8377e7eab816bccd112fa5760264777658e596f8a8c61a8418600d45fad"
       },
       {
         "path": "src/smart/empty-state/rule.js",
@@ -273,7 +278,7 @@
       },
       {
         "path": "src/smart/empty-state/docs.md",
-        "sha256": "2adce0364f3f75b34e00c12dbf6588f538978758fe013ff3755c8549ef81faf6"
+        "sha256": "ce1ef173abb4324e57bef7ef4bb37fc86ce75759cf3f625c8234776a59f43dde"
       }
     ],
     "generated_runtime": []

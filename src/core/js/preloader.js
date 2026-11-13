@@ -33,7 +33,7 @@ export function getPreloaderBackground(root = document.documentElement) {
   const fallback = root?.classList?.contains('theme-dark')
     ? '#0f1115'
     : '#ffffff';
-  return `var(--sf-color--surface-highest, var(--sf-surface-0, ${fallback}))`;
+  return `var(--sf-color--surface-highest, var(--sf-surface-page, ${fallback}))`;
 }
 
 export function createPreloaderContent(preloader = {}) {

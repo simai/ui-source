@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-country",
-  "version": "1.2.1",
+  "version": "1.5.0",
   "title": "Country Code",
   "summary": "A telephone field with a country picker: a button opens a searchable listbox of countries, and the chosen country sets the dial code, flag and, optionally, the input mask of the native tel input.",
   "kind": "smart",
@@ -89,11 +89,23 @@
       },
       "use-country-masks": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Deprecated until 2027-01-01 (change journal attribute-input-country-presence-booleans): on by default, so it was switched off by the string \"false\", which is not an HTML boolean. Write fixed-mask instead; use-country-masks=\"false\" keeps working until the date."
+      },
+      "fixed-mask": {
+        "type": "boolean",
+        "default": false,
+        "description": "With use-mask, one mask for every country -- mask-pattern -- instead of each country's own. The presence form of use-country-masks=\"false\"."
       },
       "show-code": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Deprecated until 2027-01-01 (change journal attribute-input-country-presence-booleans): on by default, so it was switched off by the string \"false\", which is not an HTML boolean. Write hide-code instead; show-code=\"false\" keeps working until the date."
+      },
+      "hide-code": {
+        "type": "boolean",
+        "default": false,
+        "description": "The dial code is not written before the number. The presence form of show-code=\"false\"."
       },
       "mask-style": {
         "type": "string",
@@ -101,7 +113,13 @@
       },
       "multi-country": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Deprecated until 2027-01-01 (change journal attribute-input-country-presence-booleans): on by default, so it was switched off by the string \"false\", which is not an HTML boolean. Write fixed-country instead; multi-country=\"false\" keeps working until the date."
+      },
+      "fixed-country": {
+        "type": "boolean",
+        "default": false,
+        "description": "Only the country iso2 or dial-code names: the flag and the code are a picture, not a list. The presence form of multi-country=\"false\"."
       },
       "iso2": {
         "type": "string",
@@ -121,7 +139,13 @@
       },
       "lazy-flags": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Deprecated until 2027-01-01 (change journal attribute-input-country-presence-booleans): on by default, so it was switched off by the string \"false\", which is not an HTML boolean. Write eager-flags instead; lazy-flags=\"false\" keeps working until the date."
+      },
+      "eager-flags": {
+        "type": "boolean",
+        "default": false,
+        "description": "Every flag of the list is fetched when the list is built, not as its row comes into view. The presence form of lazy-flags=\"false\"."
       },
       "show-mask-placeholder": {
         "type": "boolean",
@@ -134,6 +158,11 @@
       "max-items": {
         "type": "number",
         "default": 0
+      },
+      "preferred": {
+        "type": "string",
+        "default": "",
+        "description": "Optional. Countries on top of the list under «Frequently chosen», as ISO codes: RU,KZ,BY. Up to two of the person's last choices come first, six rows at most. Without the attribute there is no group and no locale default; an empty value shows the recent choices alone."
       },
       "value": {
         "type": "string",
@@ -298,7 +327,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-country/index.js",
-        "sha256": "b5dbea3c9d77259537a521ccda47e686c21a1b63d3feb2b3649672a583a8dab8"
+        "sha256": "33e23a7f577a83d55f66d3f7c829c3b5dd4e7bd6646e9b2db979d7c663db6e37"
       }
     ],
     "generated_runtime": [

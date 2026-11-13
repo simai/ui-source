@@ -230,7 +230,7 @@
           "name": "--sf-input-padding-inline",
           "role": "padding-inline",
           "summary": "Space inside the field before and after its content.",
-          "default": "var(--sf-ui-1--space-x)",
+          "default": "calc(var(--sf-space-1) - var(--sf-px))",
           "since": "2026-10-13",
           "varies_with": [
             "size"
@@ -719,7 +719,7 @@
           "name": "--sf-textarea-padding-inline",
           "role": "padding-inline",
           "summary": "Space inside the field before and after the text.",
-          "default": "calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x))",
+          "default": "calc(var(--sf-space-1) - var(--sf-px))",
           "since": "2026-10-18",
           "varies_with": [
             "size"
@@ -852,14 +852,14 @@
           "name": "--sf-modal-padding-inline",
           "role": "padding-inline",
           "summary": "Space inside the panel before and after its content; the surface-padding attribute still wins.",
-          "default": "var(--sf-space-2)",
+          "default": "var(--sf-space-3)",
           "since": "2026-10-18"
         },
         {
           "name": "--sf-modal-padding-block",
           "role": "padding-block",
           "summary": "Space inside the panel above and below its content; the surface-padding attribute still wins.",
-          "default": "var(--sf-space-2)",
+          "default": "var(--sf-space-3)",
           "since": "2026-10-18"
         },
         {
@@ -985,7 +985,7 @@
         {
           "name": "--sf-tabs-indicator-width",
           "role": "indicator-width",
-          "summary": "The thickness of the line under a tab, in the underline appearance; the tab keeps its height.",
+          "summary": "The thickness of the line under the selected tab's letters, in the underline appearance; the tab keeps its height.",
           "default": "calc(var(--sf-px) * 2)",
           "since": "2026-10-18",
           "varies_with": [
@@ -1016,13 +1016,31 @@
         {
           "name": "--sf-tabs-gap",
           "role": "gap",
-          "summary": "Space between tabs; full tabs stay joined.",
-          "default": "var(--sf-space-1)",
+          "summary": "Space between tabs: none in the line look, whose tabs stand edge to edge (owner decision C99), --sf-space-1 between plates, --sf-space-1/4 between vertical rows.",
+          "default": "var(--sf-space-0)",
           "since": "2026-10-18",
           "varies_with": [
             "appearance",
             "size"
           ]
+        },
+        {
+          "name": "--sf-tabs-padding-inline",
+          "role": "padding-inline",
+          "summary": "The inline padding of a tab in the line and vertical looks; the label has none, so the line is as wide as the letters. Line: the button padding of the tabs' size, --sf-ui-<size>--space-x; the first tab has none at its start and the last none at its end unless the row is shared (fit). Vertical: --sf-space-1, as the menu column.",
+          "default": "var(--sf-ui-1--space-x)",
+          "since": "2026-11-12",
+          "varies_with": [
+            "appearance",
+            "size"
+          ]
+        },
+        {
+          "name": "--sf-tabs-sticky-top",
+          "role": "inset-block-start",
+          "summary": "How far from the top of the view a sticky tab row stops (sticky): the height of a fixed header above it.",
+          "default": "var(--sf-0)",
+          "since": "2026-11-12"
         }
       ]
     },
@@ -1074,15 +1092,15 @@
         {
           "name": "--sf-avatar-offline-background-color",
           "role": "background",
-          "summary": "The colour under the offline dot: the place the avatar stands on, so neither the photo nor the initials show through the dot (C43).",
-          "default": "var(--sf-surface-place)",
+          "summary": "The colour of the offline dot: the place's dim ink (since 2026-11-11; it was the place colour under the disabled ink, under 3:1), laid over the nearest opaque place (--sf-surface-place-ground), so neither the photo nor the initials show through the dot, on a soft coloured place too.",
+          "default": "var(--sf-on-surface-variant)",
           "since": "2026-11-10"
         },
         {
           "name": "--sf-avatar-offline-overlay",
           "role": "overlay",
-          "summary": "The layer over that colour: the disabled ink. Set it to none for an offline dot of exactly --sf-avatar-offline-background-color.",
-          "default": "linear-gradient(var(--sf-on-surface-disabled) 0 0)",
+          "summary": "A layer over that colour, none by default (it was the disabled ink until 2026-11-11). A page may lay an image or a gradient over the dot here.",
+          "default": "none",
           "since": "2026-11-10"
         }
       ]
@@ -1203,7 +1221,7 @@
           "name": "--sf-button-group-color",
           "role": "color",
           "summary": "The label and icon colour of a segment that is not selected, at rest; hover, pressed and disabled keep their own.",
-          "default": "var(--sf-on-surface-container--variant)",
+          "default": "var(--sf-on-surface-container-variant)",
           "since": "2026-10-19",
           "varies_with": [
             "appearance"
@@ -1467,8 +1485,8 @@
         {
           "name": "--sf-quantity-gap",
           "role": "gap",
-          "summary": "Space between the steppers and the box.",
-          "default": "var(--sf-space-2)",
+          "summary": "Space between the steppers and the number.",
+          "default": "calc(var(--sf-px) * 0)",
           "since": "2026-10-25"
         },
         {
@@ -1622,7 +1640,7 @@
           "name": "--sf-verification-cell-size",
           "role": "size",
           "summary": "A cell's width and height, the same at every size when set.",
-          "default": "var(--sf-title-height-6)",
+          "default": "var(--sf-ui-1--control-height)",
           "since": "2026-10-25",
           "varies_with": [
             "size"
@@ -1734,8 +1752,8 @@
         {
           "name": "--sf-range-slider-track-color",
           "role": "background",
-          "summary": "The track's fill outside the chosen part.",
-          "default": "var(--sf-surface-container)",
+          "summary": "The track's fill outside the chosen part (track B, owner decision C78).",
+          "default": "var(--sf-outline)",
           "since": "2026-10-27"
         },
         {
@@ -1811,14 +1829,14 @@
           "name": "--sf-file-upload-dragged-over-background-color",
           "role": "background",
           "summary": "The area's fill while files are held over it.",
-          "default": "var(--sf-primary-transparent-select)",
+          "default": "var(--sf-primary-state-select)",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-file-upload-dragged-over-border-color",
           "role": "border-color",
           "summary": "The area's boundary while files are held over it.",
-          "default": "var(--sf-outline-primary)",
+          "default": "var(--sf-primary-outline)",
           "since": "2026-10-27"
         }
       ]
@@ -1868,6 +1886,13 @@
           "summary": "The weekday names over the grid.",
           "default": "var(--sf-on-surface-variant)",
           "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-datepicker-day-off",
+          "role": "color",
+          "summary": "The calendar's day-off role: the number of a weekend day, from the palette's red, not the error role (C67 H2). A day of the next or previous month takes it at 80 %.",
+          "default": "light-dark(var(--sf-red-40), var(--sf-red-80))",
+          "since": "2026-11-12"
         }
       ]
     },
@@ -1892,15 +1917,15 @@
         {
           "name": "--sf-breadcrumbs-link-color",
           "role": "color",
-          "summary": "A crumb that links to its page, at rest.",
-          "default": "var(--sf-primary)",
+          "summary": "A crumb that links to its page, at rest (grey, owner decision C93 item 5).",
+          "default": "var(--sf-on-surface-variant)",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-breadcrumbs-link-hover-color",
           "role": "hover-color",
-          "summary": "A linked crumb under the pointer.",
-          "default": "var(--sf-primary-hover)",
+          "summary": "A linked crumb under the pointer or pressed.",
+          "default": "var(--sf-on-surface)",
           "since": "2026-10-27"
         },
         {
@@ -1926,50 +1951,50 @@
         {
           "name": "--sf-steps-gap",
           "role": "gap",
-          "summary": "The space between a step and the separator next to it.",
-          "default": "var(--sf-steps-container--gap)",
+          "summary": "The space between two steps of a row (sf-steps 1.4.0).",
+          "default": "var(--sf-space-1\\/2)",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-steps-separator-color",
           "role": "color",
-          "summary": "The separator icon between two steps.",
-          "default": "var(--sf-on-surface-variant)",
+          "summary": "The line between two steps after the current one (sf-steps 1.4.0; it was the separator glyph).",
+          "default": "var(--sf-outline-variant)",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-steps-step-color",
           "role": "color",
-          "summary": "A step's label and number at rest.",
+          "summary": "The label and the number of a step ahead or skipped.",
           "default": "var(--sf-on-surface-variant)",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-steps-step-border-color",
           "role": "border-color",
-          "summary": "The outline of a step at rest.",
-          "default": "var(--sf-outline-variant)",
+          "summary": "The outline of an empty marker (a step ahead or skipped).",
+          "default": "var(--sf-outline)",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-steps-step-radius",
           "role": "radius",
-          "summary": "The corner radius of a step.",
+          "summary": "The corner radius of a step's marker.",
           "default": "var(--sf-radius-circle)",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-steps-current-border-color",
           "role": "border-color",
-          "summary": "The outline of the current step.",
-          "default": "var(--sf-outline-primary)",
+          "summary": "The ring of the current step's marker (2 px through a 2 px gap, C73).",
+          "default": "var(--sf-steps-completed-icon-color, var(--sf-primary))",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-steps-completed-icon-color",
           "role": "color",
-          "summary": "The check icon of a completed step.",
-          "default": "var(--sf-success)",
+          "summary": "The progress colour: the done and current markers and the line behind the current step (sf-steps 1.4.0; it was the green check).",
+          "default": "var(--sf-primary)",
           "since": "2026-10-27"
         }
       ]
@@ -2536,8 +2561,8 @@
         {
           "name": "--sf-spinner-track-color",
           "role": "stroke",
-          "summary": "The ring under the arc.",
-          "default": "var(--sf-surface-container)",
+          "summary": "The ring under the arc, colour and alpha together: the ring has no opacity of its own.",
+          "default": "color-mix(in srgb, currentColor 16%, transparent)",
           "since": "2026-10-27"
         },
         {
@@ -2570,8 +2595,8 @@
         {
           "name": "--sf-spinner-text-color",
           "role": "color",
-          "summary": "The words under the drawing.",
-          "default": "var(--sf-on-surface)",
+          "summary": "The words under the drawing: the ink of the place, the on-colour of the fill under the spinner.",
+          "default": "currentColor",
           "since": "2026-10-27"
         }
       ]
@@ -2953,7 +2978,7 @@
           "name": "--sf-list-item-background-color",
           "role": "background",
           "summary": "The row's fill.",
-          "default": "var(--sf-elevation-1--surface)",
+          "default": "var(--sf-transparent)",
           "since": "2026-10-27"
         },
         {
@@ -2993,8 +3018,8 @@
         {
           "name": "--sf-tree-item-gap",
           "role": "gap",
-          "summary": "The space between the chevron, the icon and the name.",
-          "default": "var(--sf-space-1\\/3)",
+          "summary": "The space between the chevron, the check box, the icon and the name (H2 of the horizontal-spacing standard); sf-tree's level step follows it.",
+          "default": "var(--sf-space-1\\/2)",
           "since": "2026-10-27"
         },
         {
@@ -3050,8 +3075,8 @@
         {
           "name": "--sf-tree-indent",
           "role": "indent",
-          "summary": "How far each level stands in from the one above.",
-          "default": "var(--sf-space-3)",
+          "summary": "How far each level stands in from the one above. By default the first column and the row gap, so a child's first column stands under its parent's second.",
+          "default": "calc(var(--sf-icon-size-3) + var(--sf-tree-item-gap))",
           "since": "2026-10-27"
         },
         {
@@ -3327,7 +3352,7 @@
         {
           "name": "--sf-contents-current-color",
           "role": "indicator-color",
-          "summary": "The current link, its bar, stroke or underline, and the reading progress.",
+          "summary": "The current section's line -- its bar, stroke or underline -- and the reading progress; since sf-contents 1.6.0 not the text, which is the surface's ink (C95 point 2).",
           "default": "var(--sf-primary)",
           "state": "current",
           "since": "2026-10-30"
@@ -3343,15 +3368,22 @@
           "name": "--sf-contents-background-color",
           "role": "background",
           "summary": "The bar's fill and the compact view's open list. The former name --sf-contents-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "var(--sf-surface-0)",
+          "default": "var(--sf-surface-page)",
           "since": "2026-11-08"
         },
         {
           "name": "--sf-contents-indent",
           "role": "indent",
-          "summary": "The step of a deeper level.",
-          "default": "var(--sf-space-1\\/2)",
+          "summary": "The step of a deeper level; by default the list's own inset (H4): 12 at size 1/2, 16 at size 1 (12 compact and on a phone).",
+          "default": "max(var(--sf-space-1\\/2), var(--sf-b2))",
           "since": "2026-10-30"
+        },
+        {
+          "name": "--sf-contents-inset-inline",
+          "role": "padding-inline",
+          "summary": "The text's distance from the line, for the heading and the links (C95 point 1): a host whose divider is the line (line=\"edge\") sets it on its column, and its own parts under the contents read it too. By default the size's value inset (C77): size 1/2 max(--sf-space-1/2, --sf-b2), 12 on the desktop, compact and the phone; size 1 --sf-space-1, 16 (compact and phone 12).",
+          "default": "max(var(--sf-space-1\\/2), var(--sf-b2))",
+          "since": "2026-11-12"
         },
         {
           "name": "--sf-contents-gap",
@@ -3486,7 +3518,7 @@
           "name": "--sf-lookup-padding-inline",
           "role": "padding-inline",
           "summary": "Space inside the frame before the first chip and after the search box.",
-          "default": "var(--sf-ui-1--space-x)",
+          "default": "calc(var(--sf-space-1) - var(--sf-px))",
           "since": "2026-10-30",
           "varies_with": [
             "size"
@@ -3680,7 +3712,7 @@
           "name": "--sf-card-title-size",
           "role": "font-size",
           "summary": "The size of a heading inside the card, its title.",
-          "default": "var(--sf-b6)",
+          "default": "var(--sf-heading-6--size)",
           "since": "2026-11-05"
         },
         {
@@ -3851,7 +3883,7 @@
           "name": "--sf-list-hover-background-color",
           "role": "hover-background",
           "summary": "A row under the pointer.",
-          "default": "var(--sf-surface-container-hover)",
+          "default": "var(--sf-surface-state-select)",
           "since": "2026-11-05"
         },
         {
@@ -3864,8 +3896,8 @@
         {
           "name": "--sf-list-heading-color",
           "role": "color",
-          "summary": "A group's heading.",
-          "default": "var(--sf-on-surface-variant)",
+          "summary": "A group's heading. On-surface since 1.4.0 (C40, the shared group heading).",
+          "default": "var(--sf-on-surface)",
           "since": "2026-11-05"
         }
       ]
@@ -3939,22 +3971,22 @@
         {
           "name": "--sf-change-confirm-before-background-color",
           "role": "background",
-          "summary": "The ground of the value as it was.",
-          "default": "var(--sf-surface-container)",
+          "summary": "The ground of the value as it was, behind the text of sf-change; none since 1.7.0 (C40).",
+          "default": "transparent",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-change-confirm-after-background-color",
           "role": "background",
-          "summary": "The ground of the value as it will be.",
-          "default": "var(--sf-primary-container)",
+          "summary": "The ground of the value as it will be, behind the text of sf-change; none since 1.7.0 (C40).",
+          "default": "transparent",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-change-confirm-after-color",
           "role": "color",
-          "summary": "The text of the value as it will be.",
-          "default": "var(--sf-on-primary-container)",
+          "summary": "The text of the value as it will be; sf-change's new value colour (--sf-change-after-color, on-surface) since 1.7.0 (C40).",
+          "default": "var(--sf-change--after)",
           "since": "2026-10-27"
         }
       ]
@@ -4370,14 +4402,14 @@
         {
           "name": "--sf-list-timeline-marker-color",
           "role": "color",
-          "summary": "The marker of an event with no status (neutral).",
+          "summary": "The glyph of a neutral marker and the dot of an event with no status.",
           "default": "var(--sf-on-surface-variant)",
           "since": "2026-11-08"
         },
         {
           "name": "--sf-list-timeline-time-color",
           "role": "color",
-          "summary": "The time's and the actor's colour.",
+          "summary": "The quiet meta line: the time and the text.",
           "default": "var(--sf-on-surface-variant)",
           "since": "2026-11-08"
         },
@@ -4385,14 +4417,14 @@
           "name": "--sf-list-timeline-day-color",
           "role": "color",
           "summary": "The day headings' colour.",
-          "default": "var(--sf-on-surface-variant)",
+          "default": "var(--sf-on-surface)",
           "since": "2026-11-08"
         },
         {
           "name": "--sf-list-timeline-gap",
           "role": "gap",
-          "summary": "The space after each event in normal density; the rung's text-space-x by default.",
-          "default": "var(--sf-ui-1--text-space-x)",
+          "summary": "The space between events (C40, R092); 0 inside one event.",
+          "default": "var(--sf-space-3)",
           "since": "2026-11-08"
         },
         {
@@ -4539,6 +4571,136 @@
           "summary": "The ink of plain glyphs (in a menu or a list box).",
           "default": "var(--sf-on-surface-variant)",
           "since": "2026-11-08"
+        }
+      ]
+    },
+    {
+      "component": "time",
+      "selector": "sf-time, .sf-time",
+      "variables": [
+        {
+          "name": "--sf-time-color",
+          "role": "color",
+          "summary": "The text colour; inherited from the place by default.",
+          "default": "inherit",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-time-focus-ring-color",
+          "role": "ring-color",
+          "summary": "The keyboard focus ring of a time with a tooltip.",
+          "default": "var(--sf-focus)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-time-radius",
+          "role": "radius",
+          "summary": "The focus ring's corner.",
+          "default": "var(--sf-radius--ui)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-time-font-variant-numeric",
+          "role": "font-variant-numeric",
+          "summary": "The numerals; tabular, so a column of times lines up.",
+          "default": "tabular-nums",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-time-white-space",
+          "role": "white-space",
+          "summary": "The wrap; nowrap, so «14:32» never breaks.",
+          "default": "nowrap",
+          "since": "2026-11-10"
+        }
+      ]
+    },
+    {
+      "component": "change",
+      "selector": "sf-change, .sf-change",
+      "variables": [
+        {
+          "name": "--sf-change-before-color",
+          "role": "color",
+          "summary": "The old value and the empty word «пусто».",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-change-after-color",
+          "role": "color",
+          "summary": "The new value.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-change-after-weight",
+          "role": "weight",
+          "summary": "The new value's weight.",
+          "default": "var(--sf-font-weight-medium)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-change-arrow-color",
+          "role": "color",
+          "summary": "The arrow between the values.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-change-label-color",
+          "role": "color",
+          "summary": "The labels: «Статус:» before the pair, the list's terms, «Было» and «Стало».",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-change-column-gap",
+          "role": "column-gap",
+          "summary": "Between the list's labels and pairs.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-11-10"
+        }
+      ]
+    },
+    {
+      "component": "group-heading",
+      "selector": ".sf-group-heading",
+      "variables": [
+        {
+          "name": "--sf-group-heading-date-color",
+          "role": "color",
+          "summary": "The quiet date beside a group's words, and a divider's words.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-group-heading-margin-block-start",
+          "role": "margin-block-start",
+          "summary": "The space above a heading; none above the first.",
+          "default": "var(--sf-space-3)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-group-heading-margin-block-end",
+          "role": "margin-block-end",
+          "summary": "The space below a heading.",
+          "default": "var(--sf-space-1\\/2)",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-group-heading-background-color",
+          "role": "background",
+          "summary": "Behind a sticky heading; the place's solid surface.",
+          "default": "var(--sf-surface-place-solid, var(--sf-surface-page))",
+          "since": "2026-11-10"
+        },
+        {
+          "name": "--sf-group-heading-line-color",
+          "role": "background",
+          "summary": "A divider's two hairlines.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-10"
         }
       ]
     }

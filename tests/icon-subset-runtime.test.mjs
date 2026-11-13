@@ -989,3 +989,80 @@ test('D2: a Smart tag whose module failed to load lets the first request go at o
     assert.deepEqual(store.asked(), []);
   });
 });
+
+// Docara example frames bring their own icon faces and mark the icons they
+// draw (decision with Docara, 2026-11-11): the Loader must not take the class
+// away while the face an icon is drawn in is loaded.
+test('subset mode: an icon drawn in a loaded face the page brought is loaded', async () => {
+  const saved = {document: globalThis.document, getComputedStyle: globalThis.getComputedStyle};
+  const faces = [];
+  const subsetStyles = [];
+  globalThis.document = {
+    fonts: {forEach: (fn) => faces.forEach(fn), addEventListener() {}, removeEventListener() {}},
+    querySelectorAll: (selector) => (selector === 'style[data-sf-icons-subset-family]' ? subsetStyles : []),
+  };
+  globalThis.getComputedStyle = (el) => ({fontFamily: el.drawnIn});
+  const tick = () => new Promise((done) => setTimeout(done, 0));
+  try {
+    const loader = new TestLoader();
+    loader.isIconSubsetEnabled = () => true;
+    loader.watchPageIconFaces = () => {};
+    const tracked = {icon: 'settings', attrs: {}};
+    const icon = {drawnIn: '"Material Symbols Outlined Full"'};
+    assert.equal(loader.isTrackedIconLoaded(tracked, icon), false, 'nothing loaded, not in a manifest');
+
+    faces.push({family: '"Material Symbols Outlined Full"', status: 'loading'});
+    await tick();
+    assert.equal(loader.isTrackedIconLoaded(tracked, icon), false, 'a face still loading is not loaded');
+
+    faces[0].status = 'loaded';
+    await tick();
+    assert.equal(loader.isTrackedIconLoaded(tracked, icon), true, 'the face the icon is drawn in, from any source');
+    assert.equal(loader.isTrackedIconLoaded(tracked), false, 'no element, no drawn family: the subset path decides');
+
+    const subsetIcon = {drawnIn: "'Material Symbols Outlined Subset', 'Material Symbols Outlined'"};
+    faces.push({family: 'Material Symbols Outlined', status: 'loaded'});
+    faces.push({family: 'Material Symbols Outlined Subset', status: 'loaded'});
+    await tick();
+    assert.equal(loader.isTrackedIconLoaded(tracked, subsetIcon), false,
+      'drawn in the Loader subset family: a full face left in document.fonts does not count');
+
+    const ownIcon = {drawnIn: '"Material Symbols Outlined Subset 1a2b"'};
+    faces.push({family: 'Material Symbols Outlined Subset 1a2b', status: 'loaded'});
+    subsetStyles.push({textContent: "@font-face { font-family: 'Material Symbols Outlined Subset 1a2b'; }"});
+    await tick();
+    assert.equal(loader.isTrackedIconLoaded(tracked, ownIcon), false, "a subset family of the Loader's own manifest");
+    subsetStyles.length = 0;
+    await tick();
+    assert.equal(loader.isTrackedIconLoaded(tracked, ownIcon), true, 'the same family brought by the page');
+
+    const textIcon = {drawnIn: '"Inter Variable", system-ui'};
+    faces.push({family: 'Inter Variable', status: 'loaded'});
+    await tick();
+    assert.equal(loader.isTrackedIconLoaded(tracked, textIcon), false, 'a text font is never an icon face');
+
+    const roundedIcon = {drawnIn: '"Docara Symbols Rounded Filled 6084d652c50f"'};
+    faces.push({family: 'Docara Symbols Rounded Filled 6084d652c50f', status: 'loaded'});
+    await tick();
+    assert.equal(loader.isTrackedIconLoaded({icon: 'home', attrs: {type: 'rounded'}}, roundedIcon), true,
+      'a catalogue family of the page');
+
+    // Docara runs the Loader with the subset off; its frames hold no face of
+    // the plain family, only the shell's own subset family.
+    const local = new TestLoader();
+    local.isIconSubsetEnabled = () => false;
+    local.waitForLocalIconFont = () => {};
+    local.watchPageIconFaces = () => {};
+    faces.length = 0;
+    const docaraIcon = {drawnIn: '"Material Symbols Outlined Subset 1923885bcfbd"'};
+    await tick();
+    assert.equal(local.isTrackedIconLoaded(tracked, docaraIcon), false, 'subset off, no face yet');
+    faces.push({family: 'Material Symbols Outlined Subset 1923885bcfbd', status: 'loaded'});
+    await tick();
+    assert.equal(local.isTrackedIconLoaded(tracked, docaraIcon), true, "subset off: the shell's subset family, loaded");
+    assert.equal(local.isTrackedIconLoaded(tracked, textIcon), false, 'subset off: a text font still is not');
+  } finally {
+    globalThis.document = saved.document;
+    globalThis.getComputedStyle = saved.getComputedStyle;
+  }
+});

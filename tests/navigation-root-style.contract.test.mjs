@@ -11,11 +11,11 @@ for (const [owner, tag] of [['breadcrumbs', 'nav'], ['steps', 'div']]) {
   });
 }
 
-test('available steps use readable text and disabled error preserves the disabled role', async () => {
+test('steps ahead use readable text and a disabled step is on the disabled roles whatever its state', async () => {
   const source = await readFile(new URL('../src/component/step/scss/_css__step.scss', import.meta.url), 'utf8');
   // The public --sf-steps-step-color (standard 1.3.8 §6) reads the role token as its fallback.
-  assert.match(source, /--sf-step-container--color: var\(--sf-steps-step-color, var\(--sf-on-surface-variant\)\)/);
+  assert.match(source, /\.sf-step\.sf-step--state-ahead \.sf-step-container,\n\.sf-step\.sf-step--state-skipped \.sf-step-container \{\n  color: var\(--sf-steps-step-color, var\(--sf-on-surface-variant\)\);/);
   assert.doesNotMatch(source, /--sf-on-surface-muted/);
-  assert.match(source, /\.sf-step.disabled.sf-step--stage-error \.sf-step-container\s*\{\s*--sf-step-container--color: var\(--sf-on-disable\)/);
-  assert.match(source, /\.sf-step.disabled.sf-step--stage-error \.sf-icon\s*\{\s*--sf-icon--color: var\(--sf-on-disable\)/);
+  assert.match(source, /\.sf-step\.sf-step--disabled \.sf-step-container,\n\.sf-step\.sf-step--disabled \.sf-step-text,\n\.sf-step\.sf-step--disabled \.sf-step-marker \{\n  color: var\(--sf-on-surface-disabled\);/);
+  assert.match(source, /\.sf-steps--marker-number \.sf-step\.sf-step--disabled \.sf-step-marker,[^{]*\{\n  border-color: var\(--sf-outline-disabled\);/);
 });

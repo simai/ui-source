@@ -45,9 +45,11 @@ function renderStepper(context, direction) {
 export function renderQuantityTemplate(context) {
   const {component, field} = context;
   const labelId = `${context.id}--label`;
+  const steppers = context.steppers !== 'none';
   const rootClasses = [
     'sf-quantity',
     `sf-quantity--size-${context.size}`,
+    steppers ? '' : 'sf-quantity--steppers-none',
     field.invalid ? 'error' : '',
     context.rootClass,
     LAYOUT.root,
@@ -64,7 +66,10 @@ export function renderQuantityTemplate(context) {
       : nothing;
   const hasLabel = labelContent !== nothing;
   const named = Boolean(context.label) && !component?.hasSlotContent?.('label');
-  const inheritedSlot = renderInheritedSlot(component, {size: context.size, disabled: !context.interactive});
+  // The inherited marker and the reset stand after the box, on its row (C53,
+  // F3): a stepper box has no free end, and inside it they pushed the
+  // steppers out of the border and the number to nothing.
+  const inheritedSlot = renderInheritedSlot(component, {size: context.size, disabled: !context.interactive, className: 'sf-quantity-inherited'});
   const value = context.value;
 
   return html`
@@ -74,8 +79,9 @@ export function renderQuantityTemplate(context) {
         ? html`<label class="sf-quantity-label ${LAYOUT.label}" for=${field.controlId}>${labelContent}</label>`
         : nothing}
 
-      <span class="sf-quantity-wrap ${LAYOUT.wrap}">
-        ${renderStepper(context, -1)}
+      <span class="sf-quantity-row">
+      <span class="sf-quantity-wrap ${LAYOUT.wrap}" style=${context.digitsStyle}>
+        ${steppers ? renderStepper(context, -1) : nothing}
         <input type="text"
                class=${`${LAYOUT.input}${field.invalid ? ' error' : ''}`}
                id=${field.controlId}
@@ -89,7 +95,7 @@ export function renderQuantityTemplate(context) {
                aria-valuemin=${context.min === null ? nothing : String(context.min)}
                aria-valuemax=${context.max === null ? nothing : String(context.max)}
                aria-valuenow=${value === null ? nothing : String(value)}
-               aria-valuetext=${value === null ? nothing : context.text}
+               aria-valuetext=${value === null ? nothing : context.valueText}
                aria-invalid=${field.invalid ? 'true' : nothing}
                aria-describedby=${context.message ? field.messageId : nothing}
                aria-errormessage=${field.invalid && context.message && context.messageKind === 'error' ? field.messageId : nothing}
@@ -101,9 +107,18 @@ export function renderQuantityTemplate(context) {
                @input=${(event) => component.onNativeInput(event)}
                @change=${(event) => component.onNativeChange(event)}
                @keydown=${(event) => component.onKeyDown(event)}
+               @mousedown=${(event) => component.onInputMouseDown(event)}
+               @mouseup=${(event) => component.onInputMouseUp(event)}
+               @focus=${(event) => component.onInputFocus(event)}
                @blur=${() => component.commitDraft('commit')}>
-        ${inheritedSlot}
-        ${renderStepper(context, 1)}
+        ${context.unit
+          // The unit after the number, in the box: part of the picture only;
+          // the spinbutton says it in its value text.
+          ? html`<span class="sf-quantity-unit" aria-hidden="true" @click=${() => component.focusDelegate?.()?.focus?.()}>${context.unit}</span>`
+          : nothing}
+        ${steppers ? renderStepper(context, 1) : nothing}
+      </span>
+      ${inheritedSlot}
       </span>
 
       ${context.controlName

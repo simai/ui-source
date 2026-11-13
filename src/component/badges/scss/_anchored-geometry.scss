@@ -47,6 +47,13 @@ $diagonal: 0.29289; // 1 - 1/sqrt(2)
   // --sf-badge--surface, the name a surface said it by before, still wins
   // until the alias list's remove_after.
   --sf-badge--ring: var(--sf-badge-ring-color, var(--sf-badge--surface, var(--sf-surface-place)));
+  // On a translucent fill (a selected, open, current or hovered row, core mix
+  // sf-place-fill) the place under the badge is the row: its fill over the
+  // place colour (C43 D3, D4, 2026-11-11). The fill is laid over the ring as a
+  // second shadow. Every place takes the fill back (C43 later, 2026-11-12), so
+  // it is read on its own: on a row of any place, a soft one too, it is the
+  // row's fill, and on a popup or a place opened from the row it is initial.
+  --sf-badge--ring-fill: var(--sf-surface-place-fill, transparent);
   // A count says something needs attention: the error role, unless the badge
   // names a scheme of its own (sf-badge--main sf-badge--primary, ...).
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-error));
@@ -71,7 +78,13 @@ $diagonal: 0.29289; // 1 - 1/sqrt(2)
   line-height: var(--sf-badge--anchored-size);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
-  box-shadow: 0 0 0 var(--sf-badge--ring-width) var(--sf-badge--ring);
+  // Under both, the nearest opaque place (--sf-surface-place-ground): on a soft
+  // place the ring is the soft tone over its ground, the place's own look, not
+  // the tone laid twice over the soft place showing through; on glass the
+  // ground is black, as under the status dot. On a solid place the ring is
+  // opaque and the ground is not seen. An author's --sf-badge-ring-color is
+  // the ring itself, so at rest it is what shows.
+  box-shadow: 0 0 0 var(--sf-badge--ring-width) var(--sf-badge--ring-fill), 0 0 0 var(--sf-badge--ring-width) var(--sf-badge--ring), 0 0 0 var(--sf-badge--ring-width) var(--sf-surface-place-ground, transparent);
 
   // RTL: the end is the left, and the badge is centred from its right edge.
   &:dir(rtl) {

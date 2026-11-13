@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.3.5'], ['list-feed', 'sf-list-feed', '1.1.1']]) {
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.6.0'], ['list-feed', 'sf-list-feed', '1.1.2']]) {
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -32,7 +32,7 @@ test('both are the Framework\'s, family list, registered and in the rule', () =>
 test('sf-list: rows are sf-list-item, one Tab stop, one shared menu, the next page by the core edge watch', () => {
   const contract = json('src/smart/list/component.json');
   assert.deepEqual(Object.keys(contract.settings).sort(),
-    ['actions', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size']);
+    ['actions', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings']);
   assert.deepEqual(contract.settings['group-by'].enum ?? contract.settings['group-by'].values, ['none', 'day', 'key']);
   assert.deepEqual(Object.keys(contract.events).sort(), ['apply', 'load-more', 'open', 'rename']);
   assert.equal(contract.events.rename.cancelable, true);
@@ -65,7 +65,7 @@ test('sf-list 1.1.0: avatar, count, badge and pinned are bounded row data drawn 
     ['actions', 'avatar', 'badge', 'count', 'date', 'disabled', 'group', 'icon', 'id', 'pinned', 'supporting', 'text']);
   // Additions only: no setting, event or action of 1.0.0 changed (1.2.0 adds no-wrap).
   assert.deepEqual(Object.keys(contract.settings).sort(),
-    ['actions', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size']);
+    ['actions', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings']);
   const item = contract['x-registry'].contracts.item.properties;
   assert.deepEqual(item.avatar.properties.shape.enum, ['circle', 'square']);
   // The badge's tone is the Framework's status vocabulary.
@@ -139,4 +139,42 @@ test('sf-list-feed: sf-message-log\'s behaviour under the list family\'s names, 
   const api = JSON.stringify(json('src/core/contracts/public-js-api.json'));
   assert.ok(api.includes('SF.readingPosition'));
   assert.match(read('src/core/js/index.js'), /import '\.\/reading-position\.js';/u);
+});
+
+test('sf-list 1.5.0: a narrow list puts a row\'s badge and count under its text, measured by the list itself (C47)', () => {
+  const source = read('src/smart/list/index.js');
+  // The list measures its own frame: no page breakpoint and no setting.
+  assert.match(source, /const NARROW_REM = 20;/u);
+  assert.match(source, /new ResizeObserver\(/u);
+  assert.match(source, /let narrow = width < NARROW_REM \* rem;/u);
+  assert.match(source, /this\._widthObserver\?\.disconnect\(\);/u);
+  // Also narrow when a row's title would keep less than half its text column
+  // or 10rem on one line (follow-up: 55 px titles on a 366 px phone column).
+  assert.match(source, /const TITLE_MIN_REM = 10;/u);
+  assert.match(source, /return title < Math\.max\(column \/ 2, TITLE_MIN_REM \* rem\);/u);
+  // The badges and counts are watched too, and the watch starts before the
+  // sheets are in, so a late sheet paints no squeezed frame first.
+  assert.match(source, /whenRenderedStylesReady\(target\) \{\s*this\.watchWidth\(\);\s*return super\.whenRenderedStylesReady\(target\);/u);
+  assert.match(source, /observer\.observe\(meta\)/u);
+  assert.match(source, /observer\.unobserve\(meta\)/u);
+  // 1.5.1: the frame's width is watched on .sf-list__width, a box of no height
+  // out of the flow; the frame itself, whose height the narrow layout changes,
+  // is not observed (a ResizeObserver loop error on every narrow list).
+  assert.match(source, /this\._widthObserver\.observe\(width\);/u);
+  assert.doesNotMatch(source, /_widthObserver\.observe\(frame\)/u);
+  assert.match(read('src/smart/list/js/templates/default.js'), /<span class="sf-list__width" aria-hidden="true"><\/span>/u);
+  const widthRule = read('src/smart/list/js/templates/default.css').match(/\.sf-list__width \{([^}]*)\}/u)?.[1] ?? '';
+  for (const declaration of ['position: absolute;', 'block-size: 0;', 'inset-inline: 0;']) assert.ok(widthRule.includes(declaration), declaration);
+  const contract = json('src/smart/list/component.json');
+  assert.equal(Object.keys(contract.settings).some((name) => /narrow|breakpoint/u.test(name)), false);
+  // The template never binds the mark, so a redraw keeps it.
+  assert.doesNotMatch(read('src/smart/list/js/templates/default.js'), /data-sf-list-narrow/u);
+  const css = read('src/smart/list/js/templates/default.css');
+  // The row grows by whole bands: the step --sf-space-1/4 and the badge's height.
+  assert.match(css, /\[data-sf-list-narrow\] \.sf-list__row \.sf-list-item-wrap:has\(> \.sf-list__meta:not\(:empty\)\) \{\s*display: grid;\s*grid-template-columns: auto minmax\(0, 1fr\);\s*row-gap: var\(--sf-space-1\\\/4\);/u);
+  assert.match(css, /\[data-sf-list-narrow\] \.sf-list__row \.sf-list-item-wrap > \.sf-list__meta:not\(:empty\) \{\s*grid-column: -2;\s*grid-row: 2;\s*justify-self: start;\s*(?:\/\*[^*]*\*\/\s*)?margin-inline-start: 0;\s*padding-inline-start: 0;/u);
+  // No raw length in the rule: every value is a token.
+  const narrow = css.slice(css.indexOf('[data-sf-list-narrow]'), css.indexOf('.sf-list__body,'));
+  assert.ok(narrow.length > 0);
+  assert.doesNotMatch(narrow, /\d+px|\d+rem/u);
 });

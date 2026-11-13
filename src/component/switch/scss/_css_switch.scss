@@ -5,7 +5,10 @@
   gap: var(--sf-switch--gap);
 }
 
-.sf-switch .sf-icon {
+/* The icons of the control and of its class markup; the help mark's «?» is
+   its own button's glyph, sized and coloured by sf-help-mark (it took the
+   size-2 line, 28 in a 32 button). :where keeps the weight of the rules. */
+.sf-switch .sf-icon:where(:not(sf-help-mark *)) {
   color: var(--sf-icon--color, var(--sf-on-surface-variant));
   font-size: var(--sf-icon--font-size, var(--sf-text-size-3));
   height: var(--sf-icon--height, var(--sf-text-size-3));
@@ -42,6 +45,7 @@
 .sf-switch .sf-switch-container {
   --sf-switch-container--background-color: transparent;
   --sf-switch-container--gap: var(--sf-a0);
+  --sf-switch-container--font-weight: var(--sf-font-weight-regular); /* C63 W6: one label weight, named */
   background-color: var(--sf-switch-container--background-color);
   color: var(--sf-switch-container--color);
   font-family: var(--sf-switch-container--font-family);
@@ -90,19 +94,19 @@
   width: var(--sf-switch-inner--width);
 }
 
-.sf-switch.sf-switch--size-1\/2 .sf-icon {
+.sf-switch.sf-switch--size-1\/2 .sf-icon:where(:not(sf-help-mark *)) {
   --sf-icon--font-size: var(--sf-text-height-1\/2);
   --sf-icon--height: var(--sf-text-height-1\/2);
   --sf-icon--width: var(--sf-text-height-1\/2);
 }
 
-.sf-switch.sf-switch--size-1 .sf-icon {
+.sf-switch.sf-switch--size-1 .sf-icon:where(:not(sf-help-mark *)) {
   --sf-icon--font-size: var(--sf-text-height-1);
   --sf-icon--height: var(--sf-text-height-1);
   --sf-icon--width: var(--sf-text-height-1);
 }
 
-.sf-switch.sf-switch--size-2 .sf-icon {
+.sf-switch.sf-switch--size-2 .sf-icon:where(:not(sf-help-mark *)) {
   --sf-icon--font-size: var(--sf-text-height-2);
   --sf-icon--height: var(--sf-text-height-2);
   --sf-icon--width: var(--sf-text-height-2);
@@ -137,7 +141,7 @@
 }
 
 .sf-switch:is(.disabled, :has(input:disabled)) .sf-switch-container {
-  --sf-switch-container--color: var(--sf-on-disable);
+  --sf-switch-container--color: var(--sf-on-surface-disabled);
 }
 
 .sf-switch.sf-switch--size-1\/2 .sf-switch-description {
@@ -164,6 +168,10 @@
 
 .sf-switch:has(input:checked):not(:has(input:disabled)) .sf-switch-toggler {
   --sf-switch-toggler--background-color: var(--sf-switch-checked-background-color, var(--sf-primary));
+  /* The edge takes the fill: an on switch is one primary pill. The outline
+     drew a grey ring around the primary track (docs pre-check 2026-11-10
+     SW-05); a pointer over it still shows the hover edge below. */
+  --sf-switch-toggler--border-color: var(--sf-switch-checked-background-color, var(--sf-primary));
 }
 
 /* The track stands as tall as the line of its size, which is the rule the
@@ -175,8 +183,11 @@
 .sf-switch {
   /* One clock for the whole gesture: the thumb travels and the fill changes
      over the same span, so the two halves read as one movement. A project that
-     wants it quicker or slower moves this, not four transitions. */
-  --sf-switch--duration: var(--sf-duration-normal);
+     wants it quicker or slower moves this, not four transitions. 200 ms on the
+     move curve (owner decision C66, variant 1): the scale has no 200 ms step
+     (fast 100, normal 300), so it is twice fast until one exists. */
+  --sf-switch--duration: calc(var(--sf-duration-fast) * 2);
+  --sf-switch--easing: var(--sf-ease-move);
   --sf-switch--ratio: 2;
   --sf-switch--seat: var(--sf-a2);
 }
@@ -224,8 +235,8 @@
 .sf-switch .sf-switch-inner {
   --sf-switch-inner--travel: 0px;
   transform: translateX(calc(var(--sf-switch-inner--travel) * var(--sf-switch-inner--direction, 1)));
-  transition: transform var(--sf-switch--duration) var(--sf-animation),
-              background-color var(--sf-switch--duration) var(--sf-animation);
+  transition: transform var(--sf-switch--duration) var(--sf-switch--easing),
+              background-color var(--sf-switch--duration) var(--sf-switch--easing);
 }
 
 .sf-switch:has(input:checked) .sf-switch-inner {
@@ -237,8 +248,8 @@
 }
 
 .sf-switch .sf-switch-toggler {
-  transition: background-color var(--sf-switch--duration) var(--sf-animation),
-              border-color var(--sf-switch--duration) var(--sf-animation);
+  transition: background-color var(--sf-switch--duration) var(--sf-switch--easing),
+              border-color var(--sf-switch--duration) var(--sf-switch--easing);
 }
 
 /* A glyph rides inside the thumb. With two of them the component shows one per
@@ -260,7 +271,7 @@
   --sf-icon--height: calc(var(--sf-switch-inner--height) - var(--sf-a4));
   --sf-icon--width: calc(var(--sf-switch-inner--height) - var(--sf-a4));
   grid-area: 1 / 1;
-  transition: opacity var(--sf-switch--duration) var(--sf-animation);
+  transition: opacity var(--sf-switch--duration) var(--sf-switch--easing);
 }
 
 .sf-switch .sf-switch-inner .sf-switch-icon--on {
@@ -289,21 +300,21 @@
   --sf-switch--gap: var(--sf-switch-gap, var(--sf-ui-2--text-space-x));
 }
 
-.sf-switch:is(.disabled, :has(input:disabled)) .sf-icon {
-  --sf-icon--color: var(--sf-on-disable);
+.sf-switch:is(.disabled, :has(input:disabled)) .sf-icon:where(:not(sf-help-mark *)) {
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 .sf-switch:is(.disabled, :has(input:disabled)) .sf-switch-description {
-  --sf-switch-description--color: var(--sf-on-disable);
+  --sf-switch-description--color: var(--sf-on-surface-disabled);
 }
 
 .sf-switch:is(.disabled, :has(input:disabled)) .sf-switch-inner {
-  --sf-switch-inner--background-color: var(--sf-on-disable);
+  --sf-switch-inner--background-color: var(--sf-on-surface-disabled);
 }
 
 /* utility-hint: justify-content/flex-start (.justify-start) */
 .sf-switch:is(.disabled, :has(input:disabled)) .sf-switch-toggler {
-  --sf-switch-toggler--border-color: var(--sf-outline-disable);
+  --sf-switch-toggler--border-color: var(--sf-outline-disabled);
 }
 
 .sf-switch:has(input:not(:disabled):not(.disabled):focus-visible) .sf-switch-toggler {
@@ -319,18 +330,16 @@
   outline: none;
 }
 
-.sf-switch:has(input:enabled:not(:disabled):not(.disabled):hover) .sf-switch-toggler {
+/* The hover edge is the off switch's: an on switch keeps its edge the fill's
+   colour, one primary pill with no ring (C66). */
+.sf-switch:has(input:enabled:not(:disabled):not(.disabled):not(:checked):hover):not(:has(sf-help-mark:hover, [slot="help"]:hover)) .sf-switch-toggler {
   --sf-switch-toggler--border-color: var(--sf-primary-hover);
 }
 
-.sf-switch:not(:disabled):not(.disabled):not(:has(input:disabled)):active .sf-switch-inner {
-  --sf-switch-inner--background-color: var(--sf-switch-checked-thumb-color, var(--sf-on-primary));
-}
-
-/* utility-hint: justify-content/flex-end (.justify-end) */
-.sf-switch:not(:disabled):not(.disabled):not(:has(input:disabled)):active .sf-switch-toggler {
-  --sf-switch-toggler--background-color: var(--sf-switch-checked-background-color, var(--sf-primary));
-}
+/* A press paints no on look (owner decision C66, variant 1; audit W7): the
+   press filled the track primary and the thumb white while the thumb stayed
+   put, so the fill ran ahead of the travel by the length of the press. The
+   colours and the travel now start together on release, on one clock. */
 }
 
 @layer sf.states {

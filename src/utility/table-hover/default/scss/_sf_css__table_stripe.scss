@@ -1,4 +1,5 @@
 @use '../../../table/default/scss/sf_var__table' as *;
+@use '../../../../core/scss/mix/mix__places' as places;
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
@@ -11,6 +12,11 @@ $prefix: --sf-table-;
     .table-hover>tbody>tr:hover>* {
         #{$prefix}accent-bg: var(#{$prefix}hover-bg);
         color: var(#{$prefix}hover-color);
+        // A translucent fill over the place, as a list row's (C43 D3, D4, the
+        // table rows): a tonal badge in the cell keeps its tone and an
+        // anchored badge rings with the cell. On a soft place and on glass the
+        // underlay is initial and the mix does nothing.
+        @include places.sf-place-fill(var(#{$prefix}accent-bg));
     }
 
     // A hovered stripe stacks the two layers (C16): the stripe and the hover
@@ -18,6 +24,7 @@ $prefix: --sf-table-;
     // neighbours either way.
     .table-hover.table-stripe>tbody>tr:nth-of-type(odd):hover>* {
         #{$prefix}accent-bg: #{$table-hover-stripe-bg};
+        @include places.sf-place-fill(var(#{$prefix}accent-bg));
     }
 // }
 }

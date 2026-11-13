@@ -3,8 +3,11 @@
   "runtime": {
     "aria-label": "Steps",
     "completed-label": "Completed",
+    "current-label": "Current",
+    "ahead-label": "Not started",
     "error-label": "Error",
     "skipped-label": "Skipped",
-    "running-label": "In progress"
+    "running-label": "In progress",
+    "count-label": "Step {n} of {count}"
   }
 }

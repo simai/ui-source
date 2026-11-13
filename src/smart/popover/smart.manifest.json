@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.popover",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "title": "Popover",
   "summary": "A surface anchored to a control the consumer supplies, with its own open state, dismissal and returned focus. Built as a general part because the Framework had the surface and not the behaviour: two composites wrote it by hand within a week, the second copying the first.",
   "kind": "smart",
@@ -48,14 +48,22 @@
       "placement": {
         "type": "string",
         "default": "bottom-end",
-        "description": "Which corner of the trigger the surface hangs from.",
+        "description": "Where the surface stands beside the trigger: top, bottom, start or end, centred on it, or with -start or -end its start or end edge on the trigger's (inline-start and inline-end are start-start and end-start). Logical: start and end follow the writing direction. At the window's edge it moves along the trigger's edge, or to the other side.",
         "enum": [
           "bottom-start",
           "bottom-end",
           "top-start",
           "top-end",
           "inline-start",
-          "inline-end"
+          "inline-end",
+          "bottom",
+          "top",
+          "start",
+          "start-start",
+          "start-end",
+          "end",
+          "end-start",
+          "end-end"
         ]
       },
       "label": {
@@ -71,7 +79,12 @@
       "offset": {
         "type": "string",
         "default": "",
-        "description": "The gap between the trigger and the surface: a token (var(--sf-space-1\\/3)) or a CSS length. Left empty, the surface touches the trigger as before."
+        "description": "The gap between the trigger and the surface: a token (var(--sf-space-1\\/3)) or a CSS length. Left empty, the surface touches the trigger as before; with an arrow it is the arrow's reach."
+      },
+      "arrow": {
+        "type": "boolean",
+        "default": false,
+        "description": "An arrow toward the trigger, off by default. It carries the surface's own shadow (the overlay shadow drawn as a filter over the surface and the arrow); with an arrow the surface does not scroll by itself, and the gap is the arrow's reach (space 1/2) unless offset gives one."
       },
       "dismissible": {
         "type": "boolean",
@@ -292,7 +305,7 @@
       "Space",
       "Escape"
     ],
-    "focus": "label names the surface. surface-role sets the surface's role (dialog by default; menu, listbox, group); the trigger gets aria-haspopup to match and aria-expanded. Opening moves focus into the surface; Escape or a press outside closes it and returns focus to the trigger. While it is open a modal or drawer behind it leaves Escape alone."
+    "focus": "label names the surface. surface-role sets the surface's role (dialog by default; menu, listbox, group); the trigger gets aria-haspopup to match, aria-expanded, and aria-controls when the surface has an id. Opening it with show(), toggle() or the trigger moves focus into a dialog surface (the surface itself, a frame later, unless its content took the focus first); a menu or a list moves its own. Tab goes on into its content and out to the page; Escape or a press outside closes it and returns focus to the trigger. While it is open a modal or drawer behind it leaves Escape alone."
   },
   "presentation": {
     "themes": [
@@ -350,7 +363,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/popover/index.js",
-        "sha256": "7f10ba4750c8825556e90f75bf8d9c2c32bfe4704b1a58e6b12c2b1889240658"
+        "sha256": "36da0acd898ab91d41a67eae6945143b089ae18122e354a5d89cee5990891e6a"
       },
       {
         "path": "src/smart/popover/rule.js",
@@ -362,7 +375,7 @@
       },
       {
         "path": "src/smart/popover/js/templates/default.css",
-        "sha256": "e5b8f1d5130554d0434f4bfa6cdd52fa05ac2144de0e5a8955c11ad46aa79721"
+        "sha256": "2560e4d0ba64aed660ab3b8a591b779ad4ee82fd315ae73cd4d9cf8143b4d067"
       }
     ],
     "generated_runtime": []

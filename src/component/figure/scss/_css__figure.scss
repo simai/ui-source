@@ -9,6 +9,21 @@
 // (cover) or stands whole inside it (sf-figure--contain), the rest of the box
 // filled with the container role. The caption is the small text of the page.
 // content.figure renders with it, and content.media draws its picture with it.
+//
+// Text on a picture (owner decisions C91 level 1 and C92): only three looks.
+// By default the caption stands under the media, on the page, no overlay
+// (look 8). sf-figure--caption-over lays it on the media's lower edge over the
+// long soft scrim (look 3): black 64 under the text, a long ramp of alpha
+// steps above it, white ink. sf-figure--caption-plate lays it on one flat band
+// of black 64 (look 5), for long captions and busy photos. Both hold 4.5:1 on
+// light and dark photos (measured, control/evidence 2026-11-12-gradients-c91-c92).
+//
+// A media box with no picture in it is a placeholder. Under the decorative
+// level (C91 level 2: sf-figure--expressive, or data-sf-style="expressive" on
+// the root or a container) it is a cover: its hue's container stepping into
+// the next container step, corner to corner, over the place's solid colour (an
+// .sf-hue-<c> on it or above, primary otherwise). Strict, the default, keeps
+// it flat.
 
 @layer sf.components {
   .sf-figure {
@@ -25,7 +40,7 @@
     box-sizing: border-box;
     overflow: hidden;
     // A container fill: dimmed text on it reads the container role.
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     background-color: var(--sf-figure-background-color, var(--sf-figure-background, var(--sf-surface-container)));
     border: var(--sf-figure-border-width, var(--sf-0)) solid var(--sf-figure-border-color, var(--sf-outline-variant));
     border-radius: var(--sf-figure-radius, var(--sf-radius--surface));
@@ -73,9 +88,96 @@
     overflow-wrap: break-word;
   }
 
+  // ── Text on a picture: the caption over the media's lower edge ──
+  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) {
+    display: grid;
+    grid-template-areas: "media";
+    gap: var(--sf-0);
+  }
+
+  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > :is(.sf-figure-media, .sf-figure-caption) {
+    grid-area: media;
+  }
+
+  // A caption taller than the picture (five lines on a small card) grows the
+  // box rather than leaving its last lines under the scrim on the page: the
+  // media stretches to the row and the picture covers it.
+  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-media {
+    align-self: stretch;
+  }
+
+  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-media > :is(img, video, svg, canvas, iframe),
+  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-media > picture > img {
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-caption {
+    position: relative;
+    align-self: end;
+    padding: var(--sf-space-1\/2);
+    border-end-start-radius: var(--sf-figure-radius, var(--sf-radius--surface));
+    border-end-end-radius: var(--sf-figure-radius, var(--sf-radius--surface));
+    color: var(--sf-white);
+    pointer-events: none;
+  }
+
+  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-caption :is(a, button) {
+    pointer-events: auto;
+  }
+
+  // Look 3, long and soft: the same steps as the gradient-scrim utility. The
+  // top padding is the ramp, so no line of text stands in it; under the text
+  // the scrim holds black 64.
+  .sf-figure.sf-figure--caption-over > .sf-figure-caption {
+    --sf-figure--ramp: calc(var(--sf-space-4) * 4);
+    padding-block-start: var(--sf-figure--ramp);
+    background-image: linear-gradient(0deg, var(--sf-black--alfa-64) 0%, var(--sf-black--alfa-64) calc(100% - var(--sf-figure--ramp)), var(--sf-black--alfa-48) calc(100% - var(--sf-figure--ramp) * 0.85), var(--sf-black--alfa-28) calc(100% - var(--sf-figure--ramp) * 0.7), var(--sf-black--alfa-16) calc(100% - var(--sf-figure--ramp) * 0.45), var(--sf-black--alfa-8) calc(100% - var(--sf-figure--ramp) * 0.25), transparent 100%);
+    background-image: linear-gradient(0deg in oklab, var(--sf-black--alfa-64) 0%, var(--sf-black--alfa-64) calc(100% - var(--sf-figure--ramp)), var(--sf-black--alfa-48) calc(100% - var(--sf-figure--ramp) * 0.85), var(--sf-black--alfa-28) calc(100% - var(--sf-figure--ramp) * 0.7), var(--sf-black--alfa-16) calc(100% - var(--sf-figure--ramp) * 0.45), var(--sf-black--alfa-8) calc(100% - var(--sf-figure--ramp) * 0.25), transparent 100%);
+  }
+
+  // Look 5, the plate: one flat band of black 64 under the text.
+  .sf-figure.sf-figure--caption-plate > .sf-figure-caption {
+    background-color: var(--sf-black--alfa-64);
+  }
+
+  // ── The decorative level (C91 level 2): a placeholder is a cover ──
+  // The style switch: the nearest data-sf-style wins; strict is the default.
+  :where([data-sf-style="expressive"]) {
+    --sf-style--expressive: 1;
+  }
+
+  :where([data-sf-style="strict"]) {
+    --sf-style--expressive: 0;
+  }
+
+  .sf-figure.sf-figure--expressive {
+    --sf-style--expressive: 1;
+  }
+
+  // The cover: the hue's container stepping into a second container step,
+  // corner to corner, laid over the place's solid colour -- roles only, so it
+  // follows the theme and the hue. The switch is a number the layers' size
+  // multiplies: off, they have no size and the flat container fill shows.
+  .sf-figure-media:not(:has(> :is(img, video, svg, canvas, iframe, picture))) {
+    --sf-figure--on: var(--sf-style--expressive, 0);
+    background-image:
+      linear-gradient(135deg in oklab, var(--sf-hue-container, var(--sf-primary-container)), var(--sf-hue-container-active, var(--sf-primary-container-active))),
+      linear-gradient(var(--sf-surface-place-solid), var(--sf-surface-place-solid));
+    background-repeat: no-repeat;
+    background-size: calc(100% * var(--sf-figure--on)) calc(100% * var(--sf-figure--on));
+  }
+
   @media (forced-colors: active) {
     .sf-figure-media {
       border-color: CanvasText;
+      background-image: none;
+    }
+
+    .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-caption {
+      background-image: none;
+      background-color: Canvas;
+      color: CanvasText;
     }
   }
 }

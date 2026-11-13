@@ -1,7 +1,7 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { bindFormReset } from '../../form-reset-helper';
-import { instancePath, partId, pathIsSettled } from '../../../core/js/instance-path.js';
+import { linkCheckableText, SWITCH_TEXT_PARTS } from '../../checkable-text-helper';
 
 const SWITCH_SELECTOR = 'label.sf-switch';
 const SWITCH_BOUND_FLAG = 'sfSwitchBound';
@@ -24,70 +24,13 @@ function getSwitchNodes(root) {
   return { input, toggler, inner, description };
 }
 
-// The parts of the description: the .sf-switch-description of class markup and
-// of a description setting, or whatever a description slot placed after the
-// label row.
-function descriptionParts(root) {
-  const wrap = root.querySelector('.sf-switch-container-wrap');
-  if (!wrap) return [...root.querySelectorAll('.sf-switch-description')];
-  return [...wrap.children].filter((node) => !node.classList.contains('sf-switch-top')
-    && !node.hasAttribute('aria-hidden')
-    && node.textContent.trim());
-}
-
-function splitIds(value) {
-  return String(value || '').split(/\s+/).filter(Boolean);
-}
-
 // The switch's name is its label alone; its description is the description
-// (standard simai.smart-component 1.3.8 §4.8; simai/ui-source#44). Everything
-// sits inside one <label> so a press anywhere flips the switch, and a label
-// names its control by all its text: the description, the inherited marker and
-// the reset button were read as part of the name. The input is named by the
-// label row (aria-labelledby) and described by the description
-// (aria-describedby). An author's aria-label or aria-labelledby wins; ids the
-// author put on aria-describedby are kept. Ids come from the instance path,
-// never a counter (#41).
+// (standard simai.smart-component 1.3.8 §4.8; simai/ui-source#44): the label
+// row names the checkbox (aria-labelledby), the description describes it
+// (aria-describedby). The binding is the one sf-checkbox and sf-radio read
+// (src/component/checkable-text-helper.js, C63 W9).
 function linkSwitchText(root) {
-  const { input } = getSwitchNodes(root);
-  if (!input) return;
-  const owner = root.closest('sf-switch') || root;
-  // A switch built before it is placed has no path yet: link it once it is.
-  if (!pathIsSettled(owner)) {
-    if (!root.__sfSwitchLinkPending && typeof requestAnimationFrame === 'function') {
-      root.__sfSwitchLinkPending = true;
-      requestAnimationFrame(() => {
-        root.__sfSwitchLinkPending = false;
-        if (pathIsSettled(owner)) linkSwitchText(root);
-      });
-    }
-    return;
-  }
-  const path = instancePath(owner, { kind: 'sf-switch' });
-  const linked = root.__sfSwitchLinked || { label: '', described: [] };
-
-  const label = root.querySelector('.sf-switch-container');
-  const ownLabel = linked.label && input.getAttribute('aria-labelledby') === linked.label;
-  if (label && label.textContent.trim() && !input.hasAttribute('aria-label')
-    && (ownLabel || !input.hasAttribute('aria-labelledby'))) {
-    if (!label.id) label.id = partId(path, 'label');
-    input.setAttribute('aria-labelledby', label.id);
-    linked.label = label.id;
-  } else if (ownLabel) {
-    input.removeAttribute('aria-labelledby');
-    linked.label = '';
-  }
-
-  const ids = descriptionParts(root).map((node, index) => {
-    if (!node.id) node.id = partId(path, index ? `description-${index + 1}` : 'description');
-    return node.id;
-  });
-  const authored = splitIds(input.getAttribute('aria-describedby')).filter((id) => !linked.described.includes(id));
-  const describedBy = [...new Set([...authored, ...ids])];
-  if (describedBy.length) input.setAttribute('aria-describedby', describedBy.join(' '));
-  else input.removeAttribute('aria-describedby');
-  linked.described = ids;
-  root.__sfSwitchLinked = linked;
+  linkCheckableText(root, SWITCH_TEXT_PARTS);
 }
 
 function syncSwitchState(root) {

@@ -11,6 +11,7 @@ sf-theme-generator {
 
 .sf-theme-generator {
   --sf-theme-generator--control-height: var(--sf-ui-1--control-height);
+  position: relative;
   --sf-theme-generator--gap: var(--sf-theme-generator-gap, var(--sf-space-1));
   display: flex;
   flex-direction: column;
@@ -49,6 +50,15 @@ sf-theme-generator {
   color: var(--sf-theme-generator-label-color, var(--sf-on-surface-variant));
 }
 
+/* One reset for one action (docs pre-check 2026-11-10 TG-02): the colour
+   field's own inherited reset (an icon one rung down) stood beside the
+   generator's «Сбросить», which puts the colour, the hue and the chroma back
+   together. The field keeps its «inherited» marker; its reset button is not
+   drawn here. */
+.sf-theme-generator-color [data-inherited-reset] {
+  display: none;
+}
+
 .sf-theme-generator-summary {
   display: list-item;
   min-block-size: var(--sf-theme-generator--control-height);
@@ -68,6 +78,50 @@ sf-theme-generator {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--sf-g0) / 2)), 1fr));
   gap: var(--sf-theme-generator--gap);
   padding-block-start: var(--sf-space-1\/2);
+}
+
+/* The checks (TG-04): one line each, an icon of the check's level and its
+   words at the labels' size. A warning's icon is the warning status's
+   graphic ink, an error's the error's, a notice's the labels' ink. */
+.sf-theme-generator-check-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-1\/4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Empty, the region stays in the tree (so what appears in it is announced)
+   but out of the flow: no gap of the column is spent on it. */
+.sf-theme-generator-checks[data-count="0"] {
+  position: absolute;
+  inline-size: var(--sf-px);
+  block-size: var(--sf-px);
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.sf-theme-generator-check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sf-space-1\/2);
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+  color: var(--sf-theme-generator-color, var(--sf-on-surface));
+}
+
+.sf-theme-generator-check > sf-icon {
+  flex: none;
+  color: var(--sf-theme-generator-label-color, var(--sf-on-surface-variant));
+}
+
+.sf-theme-generator-check[data-level="warning"] > sf-icon {
+  color: var(--sf-on-warning-container-graphic);
+}
+
+.sf-theme-generator-check[data-level="error"] > sf-icon {
+  color: var(--sf-on-error-container-graphic);
 }
 
 .sf-theme-generator-preview {

@@ -45,6 +45,28 @@
       "remove_after": "2027-01-01",
       "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
       "note": "the element is sf-slider-range; sf-range-slider is a subclass defined beside it until the date"
+    },
+    {
+      "from": "decimals",
+      "to": "precision",
+      "kind": "setting",
+      "component": "sf-slider-range",
+      "since": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "section": "§3.1, change journal attribute-slider-range-c78",
+      "note": "the old attribute writes precision, the name sf-input-quantity gives the same setting (S1); the class component still reads data-decimals until the date"
+    },
+    {
+      "from": "label=\"none|text|tooltip\"",
+      "to": "value-display",
+      "kind": "attribute",
+      "component": "sf-slider-range",
+      "since": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "mode": "manifest-only",
+      "section": "§4.2, change journal attribute-slider-range-c78",
+      "note": "label is the visible name now (C78); its three former words still set value-display, read by the element itself until the date (no shim: the attribute keeps its name, only those values move)",
+      "shim": "none"
     }
   ]
 }

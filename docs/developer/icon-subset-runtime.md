@@ -184,6 +184,29 @@ distribution it installed serves them too. Offline, the words themselves
 fetch — the ligature text of an icon with no font behind it.
 Projects do not need new markup or mandatory configuration.
 
+## A face the page brings itself
+
+With the subset on, an icon is also marked `sf-icon-loaded` when the face it is
+drawn in was brought by the page and has loaded: the first family of the icon's
+computed `font-family` is an icon font family (its name holds "Symbols
+Outlined", "Symbols Rounded" or "Symbols Sharp") with a loaded face in
+`document.fonts`, and it is not one of the Loader's own subset families. A
+Docara example frame (`data-docara-example-frame`) gets its faces from the
+shell -- "Material Symbols Outlined Full", its own subset and catalogue
+families, Rounded and Sharp -- and marks the icons it draws; the Loader used to
+know only the faces its own subset requests brought, so it took the class away
+on every scan while Docara put it back. The Loader owns the class there too,
+and keeps it while that face is loaded.
+
+The Loader's own subset families still answer by their manifest only: a subset
+face draws just the names it lists. A full face the Loader left in
+`document.fonts` after a fallback does not mark a new name while the icon is
+drawn in the subset family, and a text font (an icon whose stylesheet is not
+in yet inherits it) never does. A face that loads later (`loadingdone`) or is
+added already loaded (looked for every 100 ms for 10 s after the first icon the
+Loader could not mark) syncs the icons once (core.runtime 1.54.1, probe
+`tests/browser/icon-loaded-document-fonts.browser.mjs`).
+
 ## A page without the Loader
 
 core.css holds every `.sf-icon` at font-size 0 until it is marked

@@ -42,9 +42,10 @@ test('image field: a drop takes what the dialog would have offered, images by de
   assert.equal(manifest.inputs.properties.accept.default, 'image/*');
   assert.match(source, /const DEFAULT_ACCEPT = 'image\/\*';/u);
   assert.equal(JSON.parse(read('src/smart/input-image/component.json')).settings.accept.default, 'image/*');
-  // A refused drop is said, not silently dropped: rejected (standard 1.3.8,
-  // vocabulary §9.1), and sf-image-field:reject after it (aliases.json).
-  assert.match(source, /reject\(rejected, 'drop'\)/u);
+  // A refused file is said, not silently dropped: rejected (standard 1.3.8,
+  // vocabulary §9.1), and sf-image-field:reject after it (aliases.json). The
+  // drop, the dialog and a paste go through one intake (input-image-c94 test).
+  assert.match(source, /this\._takeFiles\(files, 'drop'\);/u);
   assert.match(source, /this\.sfEmit\('rejected', /u);
 });
 
@@ -69,15 +70,21 @@ test('image field: the words are Russian and English, and the visible words begi
 });
 
 test('image field: buttons are real buttons named for what they act on, the thumbnail has alt', () => {
-  for (const kind of ['replace', 'remove', 'choose']) {
-    assert.match(template, new RegExp(`<sf-button class="sf-image-field-${kind}"[^>]*aria-label=\\$\\{names\\.${kind}\\}`, 'u'), kind);
-  }
+  // «Заменить…» and «Выбрать…» are one button drawn by renderChoose; remove
+  // is an icon button (IF-9).
+  assert.match(template, /<sf-button class=\$\{replace \? 'sf-image-field-replace' : 'sf-image-field-choose'\}/u);
+  assert.match(template, /aria-label=\$\{replace \? names\.replace : names\.choose\}/u);
+  assert.match(template, /<sf-button-icon class="sf-image-field-remove"[^>]*aria-label=\$\{names\.remove\}/u);
   assert.match(source, /replace: fileName \? `\$\{words\.replaceName\} \$\{this\.quote\(fileName\)\}`/u);
-  assert.match(template, /<img class="sf-image-field-image" src=\$\{href\} alt=\$\{context\.fileName\}/u);
+  // The alt is the person's description, never the file name (IF-11).
+  assert.match(template, /<img class="sf-image-field-image" src=\$\{href\} alt=\$\{value\.decorative \? '' : value\.alt \|\| ''\}/u);
   // A group named by the label, described by the help or the error.
-  assert.match(template, /role="group"\s+aria-labelledby=\$\{context\.label \? labelId : nothing\}\s+aria-label=\$\{context\.label \? nothing : context\.names\.group\}\s+aria-describedby=\$\{context\.message \? field\.messageId : nothing\}\s+aria-invalid=/u);
+  // The row and the preview's frame take the same group attributes.
+  assert.match(template, /labelledby: context\.label \? `\$\{context\.id\}-label` : nothing,\n\s+label: context\.label \? nothing : context\.names\.group,\n\s+describedby: context\.message \? field\.messageId : nothing,\n\s+invalid: field\.invalid \? 'true' : nothing,/u);
+  assert.equal((template.match(/role="group"\n\s+(?:style=[^\n]+\n\s+)?aria-labelledby=\$\{group\.labelledby\}\n\s+aria-label=\$\{group\.label\}\n\s+aria-describedby=\$\{group\.describedby\}\n\s+aria-invalid=\$\{group\.invalid\}/gu) ?? []).length, 2);
   // The drop target takes no focus: Tab goes through the buttons and out.
-  const well = template.slice(template.indexOf('<div class="sf-image-field-well"'), template.indexOf('<span class="sf-image-field-thumb">'));
+  const well = template.slice(template.indexOf('<div class="sf-image-field-well"'), template.indexOf('<span class=${thumbClasses'));
+  assert.ok(well.length > 0 && well.length < 800, 'the slice is the well');
   assert.doesNotMatch(well, /tabindex/u);
   // The platform input is out of the tab order and out of sight, not
   // display: none, so the browser can still point at a required, empty field.
@@ -86,7 +93,7 @@ test('image field: buttons are real buttons named for what they act on, the thum
   assert.match(sheet, /\.sf-image-field-input,\n\.sf-image-field-live \{\n  position: absolute;/u);
   // State changes are said in a polite status, as sf-help-mark says its own.
   assert.match(template, /class="sf-image-field-live" role="status" aria-live="polite" aria-atomic="true"/u);
-  for (const said of ["text('chosen')", "text('removed')", "text('rejected')"]) assert.ok(source.includes(said), said);
+  for (const said of ["text('chosen')", "text('removed')", "this.sfWord('uploaded')", 'this.announce(rejected.map((entry) => entry.message)']) assert.ok(source.includes(said), said);
   // After «Убрать» the focus goes to «Выбрать…», not to the page.
   assert.match(source, /this\._focusAfterRender = 'choose';/u);
   assert.match(source, /focusDelegate\(\) \{\n    return this\.querySelector\(':scope \.sf-image-field-actions button:not\(\[disabled\]\)'\);/u);
@@ -94,7 +101,7 @@ test('image field: buttons are real buttons named for what they act on, the thum
 
 test('image field: input and change once each per choice or removal, with the File; code is not a change', () => {
   // Under their native names through sfEmit (core/js/element-manifest.js eventName).
-  assert.match(source, /for \(const type of \['input', 'change'\]\) this\.sfEmit\(type, \{value, file, source, name: this\.name\}\);/u);
+  assert.match(source, /_emitValue\(\{value, file, source\}, types = \['input', 'change'\]\) \{\n    this\.sfSyncFormState\(\);\n    for \(const type of types\) this\.sfEmit\(type, \{value, file, source, name: this\.name\}\);/u);
   // The platform input's own change and input stop at the host.
   assert.match(source, /onInputChange\(event\) \{\n    event\.stopPropagation\(\);/u);
   assert.match(source, /onInputEvent\(event\) \{\n    event\.stopPropagation\(\);/u);
@@ -130,16 +137,18 @@ test('image field: sizes are the form sizes and every measure is a ladder step',
   assert.match(template, /const BUTTON_SIZE = \{'1\/2': '1\/3', '1': '1\/2', '2': '1'\};/u);
   // No length written by hand: every width, height, gap and padding is a token.
   assert.doesNotMatch(sheet.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/@container[^{]*\{/u, ''), /:\s*[^;]*\b\d+(?:\.\d+)?(?:px|rem|em)\b/u);
-  // The image is fitted, never stretched.
-  assert.match(sheet, /\.sf-image-field-image \{[^}]*object-fit: contain;/u);
+  // The image fills its box (fit cover, IF-7) or is fitted whole (fit
+  // contain), never stretched.
+  assert.match(sheet, /\.sf-image-field-image \{[^}]*object-fit: cover;/u);
+  assert.match(sheet, /\[data-fit="contain"\] \.sf-image-field-image \{\s*object-fit: contain;/u);
 });
 
 test('image field: the loader knows it and asks for what it draws with', () => {
   const rule = read('src/smart/input-image/rule.js');
   assert.match(rule, /SF\.RuleLoader\['cl-input-image'\] = \{\n  tags: \['sf-input-image', 'sf-image-field'\],/u);
-  assert.match(rule, /\{ name: 'cl-button' \},\n    \{ name: 'cl-icon' \},/u);
+  assert.match(rule, /\{ name: 'cl-button' \},\n    \{ name: 'cl-button-icon' \},\n    \{ name: 'cl-icon' \},/u);
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/input-image\/rule\.js';/u);
-  assert.deepEqual(manifest.composition.uses, ['smart.button', 'smart.icon']);
+  assert.deepEqual(manifest.composition.uses, ['smart.button', 'smart.button-icon', 'smart.icon', 'smart.input', 'smart.menu-context', 'smart.progress-ring', 'smart.switch']);
 });
 
 // The public variables (2026-10-24): ten, each read with the value the field

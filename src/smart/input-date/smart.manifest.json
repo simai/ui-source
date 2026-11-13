@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-date",
-  "version": "1.4.5",
+  "version": "1.6.1",
   "title": "Datepicker",
   "summary": "Accessible date, date-and-time, time and date-range picker with popup and inline presentation, calendar and time navigation and host-owned values.",
   "kind": "composite",
@@ -36,6 +36,7 @@
       "component.datepicker",
       "smart.button",
       "smart.button-icon",
+      "smart.drawer",
       "smart.icon",
       "smart.input"
     ],
@@ -142,6 +143,11 @@
         "minimum": 0,
         "maximum": 6
       },
+      "weekend": {
+        "type": "string",
+        "default": "",
+        "description": "The days drawn as days off (red, and «выходной» in the day's name). Empty: the locale's (Intl week info; Saturday and Sunday where it does not say, Friday and Saturday in ar-EG). none: no day off, for a product whose weekends are working days. Or the days, comma separated, 0 or 7 Sunday to 6 Saturday: 6,7 or 5,6."
+      },
       "locale": {
         "type": "string",
         "default": "",
@@ -149,8 +155,8 @@
       },
       "format": {
         "type": "string",
-        "default": "DD.MM.YYYY",
-        "description": "How the value is shown in the field and read when typed, e.g. DD.MM.YYYY: the whole text one value, a four-digit year from 1000 to 9999, HH hours (00-23) and mm minutes. The default follows the mode: DD.MM.YYYY, DD.MM.YYYY HH:mm, HH:mm; a date format given to datetime mode gets « HH:mm». The value stays ISO."
+        "default": "",
+        "description": "How the value is shown in the field and read when typed, e.g. DD.MM.YYYY: the whole text one value, a four-digit year from 1000 to 9999, HH hours (00-23) and mm minutes. Empty: the locale's order of day, month and year and the signs between them (Intl formatToParts: DD.MM.YYYY in ru and de, MM/DD/YYYY in en-US, YYYY-MM-DD in sv-SE); datetime adds « HH:mm», time is HH:mm. A date format given to datetime mode gets « HH:mm». The value stays ISO."
       },
       "close-on-select": {
         "type": "boolean",
@@ -200,7 +206,7 @@
       "placeholder": {
         "type": "string",
         "default": "",
-        "description": "The field's placeholder text."
+        "description": "The field's placeholder text. Empty, in a field a date is typed in: the format in the letters of the locale's names for the parts (ДД.ММ.ГГГГ in ru, MM/DD/YYYY in en-US, TT.MM.JJJJ in de); a range or a read-only field has none."
       },
       "label": {
         "type": "string",
@@ -259,8 +265,8 @@
       },
       "mask-pattern": {
         "type": "string",
-        "default": "00.00.0000",
-        "description": "Input mask; when not set it is derived from format, so the default format DD.MM.YYYY gives 00.00.0000."
+        "default": "",
+        "description": "Input mask; when not set it is derived from format, every letter a digit: DD.MM.YYYY gives 00.00.0000, the en-US MM/DD/YYYY 00/00/0000."
       },
       "mask-lazy": {
         "type": "boolean",
@@ -290,7 +296,7 @@
       "readonly": {
         "type": "boolean",
         "default": false,
-        "description": "Keeps the field read-only: the date is chosen on the grid only. A single date can be typed by default; a range is always chosen on the grid."
+        "description": "The value is shown and submitted but not changed: the field cannot be typed in and opens no calendar, and an inline calendar (input=false) takes no choice on its grid (owner decision C62). A single date can be typed by default; a range is always chosen on the grid, which does not make it read-only."
       },
       "value": {
         "type": [
@@ -737,19 +743,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-date/index.js",
-        "sha256": "d9617a6c22867ee4ab8972b89a5eb66becc0c724974b20637f4312c813f1c6ad"
+        "sha256": "b6c12b1791db56c6575c3f76e6709316e46dbbfffacdff08cc7fa4fcfe9c8899"
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",
-        "sha256": "ccdcea51eceeb3b0901b9ff3ad829cdb003b4cc4e0938eb0b77aa7110336bcd9"
+        "sha256": "357908e72f70c4f9e65b2fc08d6af3b6a9d01335b9c382a9983471c4a1f30554"
       },
       {
         "path": "src/smart/input-date/rule.js",
-        "sha256": "7d163d5b9a341a6055b174ea308f358858e7a92c668e6840b791e6cc5ef42bc7"
+        "sha256": "a5aad8677a5cdd5f5548e0e44d01aefcb17693275b8da55c1d161d2e5ca80b43"
       },
       {
         "path": "src/smart/input-date/docs/smart-datepicker-guide.md",
-        "sha256": "8adebf92a752bf3bc15c78928c7661681eacfd76d694189a5776231b8023deb7"
+        "sha256": "182e3d12cbfae9bb95af793de906c37ebe760066688530da19ec9a86afd27635"
       }
     ],
     "generated_runtime": [

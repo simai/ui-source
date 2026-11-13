@@ -6,7 +6,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { inputSize } from '../../component/field-size';
 import { InheritedValueField } from '../helpers/inherited-value';
-import { FormField, innerControlName } from '../helpers/form-field';
+import { FormField, ShownRequired, innerControlName } from '../helpers/form-field';
 import { renderInputTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -27,7 +27,7 @@ const InputElement = elementFromManifest(manifest, {
   aliases,
 });
 
-class SfInput extends FormField(InputElement) {
+class SfInput extends ShownRequired(FormField(InputElement)) {
   static get props() {
     return {
       ...super.props,
@@ -159,6 +159,11 @@ class SfInput extends FormField(InputElement) {
       textEnd: this.textEnd,
       type: this.appearance,
       maskLazy: this.maskLazy,
+      // The page's error, or the required one a failed form check shows
+      // (ShownRequired, C55 acceptance F1: as sf-dropdown 1.9.0).
+      invalid: this.sfShownInvalid(props.invalid || props.error),
+      error: false,
+      errorMessage: this.sfShownMessage(props.invalid || props.error, props.errorMessage),
       // The host is the form control where the browser has ElementInternals,
       // so the native input carries no name (§17.1 item 6).
       controlName: innerControlName(this, props.name),
@@ -194,7 +199,7 @@ class SfInput extends FormField(InputElement) {
       // cleared the message while the red border and aria-invalid="true" came
       // back (Larena acceptance, 2026-10-22: the datetime's time field after
       // «Укажите время» and then 10:30).
-      const invalid = this.invalid;
+      const invalid = this.sfShownInvalid(this.invalid);
       this._boundRoot.classList.toggle('error', invalid);
       this.getInputElement()?.classList.toggle('error', invalid);
       bindInput(this._boundRoot);

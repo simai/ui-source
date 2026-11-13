@@ -95,17 +95,25 @@
       "id": "first-paint-fallbacks",
       "category": "script-data-template-review",
       "filePattern": "^core/js/(?:index|loader|preloader)\\.js$",
-      "contextPattern": "(?:var\\(--sf-surface-0, #fff\\)|^[?:] '#(?:e3e2e7|1a1b1f|0f1115|ffffff)')",
+      "contextPattern": "(?:var\\(--sf-surface-page, #fff\\)|^[?:] '#(?:e3e2e7|1a1b1f|0f1115|ffffff)')",
       "status": "accepted-first-paint-fallback",
       "reason": "The Loader and preloader paint before core.css arrives; their fallbacks are the theme's own page and ink values for that moment."
     },
     {
-      "id": "native-colour-input-value",
+      "id": "input-color-colour-space",
+      "category": "style-review",
+      "filePattern": "^smart/input-color/js/templates/default\\.css$",
+      "contextPattern": "hsl\\((?:var\\(--sf-color-hue, 0\\)|0|60|120|180|240|300|360) 100% 50%\\)",
+      "status": "accepted-system-definition",
+      "reason": "sf-input-color's own picker (owner decision C83) draws the colour space itself: the hue strip's six stops, the shade area's pure hue and the hue thumb are hues at full saturation, which no palette colour can stand for. Everything else in the picker reads palette tokens."
+    },
+    {
+      "id": "input-color-hue-thumb",
       "category": "script-data-template-review",
       "filePattern": "^smart/input-color/js/templates/default\\.js$",
-      "contextPattern": "#000000",
-      "status": "accepted-native-value",
-      "reason": "<input type=color> accepts only a #rrggbb value; #000000 is the browser's own empty value."
+      "contextPattern": "hsl\\(\\$\\{Math\\.round\\(h\\)\\} 100% 50%\\)",
+      "status": "accepted-system-definition",
+      "reason": "The hue strip's thumb is painted the hue it stands on, at full saturation (see input-color-colour-space)."
     }
   ]
 }

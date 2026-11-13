@@ -16,6 +16,9 @@ import {createRef} from "lit/directives/ref.js";
 import {Directive, PartType, directive} from "lit/directive.js";
 import { followLanguage, language } from "./page-language";
 import { drawing, markRelativeSizes, noteAuthored, sizedBefore } from "./density.js";
+
+// A region the Loader's page scan passes by (loader.js OBSERVER_IGNORE_SELECTOR).
+const IGNORED_REGION = '[data-sf-observer="ignore"]';
 // The properties a child takes from its parent (CSS inheritance), which a
 // boxless host passes on to its markup without having a box of its own. The
 // host keeps these, and every custom property, beside `display: contents`, so
@@ -374,6 +377,11 @@ class SfBaseElement extends HTMLElement {
   static externalTemplateCssMisses = new Set();
   static waitForStylesBeforeRenderReady = true;
   static styleReadyTimeout = 3000;
+  // How long a box of the element's own outside the host (a window's
+  // portal) stays out of view waiting for its sheets (holdPortalUntilStyled):
+  // longer than the host's gate, since a box shown before its sheets is a
+  // whole window drawn as a card in the page flow, not a few lines of text.
+  static portalStyleTimeout = 15000;
   // A component that takes the page's children into its markup can keep
   // them where the page wrote them until it draws, instead of taking them out
   // when it connects (holdSlotNode, releaseHeldSlotNodes). Between the two the
@@ -1341,6 +1349,7 @@ class SfBaseElement extends HTMLElement {
     }
 
     this._hasRendered = true;
+    this.adoptIgnoredGlyphs();
     this.afterRender(changedAttributes);
     this._childrenDefinedPromise = null;
     this.runExternalHook("afterRender", {
@@ -1348,6 +1357,27 @@ class SfBaseElement extends HTMLElement {
       root: this,
     });
     this.emitComponentEvent("after-render", { changedAttributes });
+  }
+
+  // Inside a data-sf-observer="ignore" region the Loader's page scan never
+  // sees what this element drew, so its class-markup glyphs (<i
+  // class="sf-icon">) are handed to the Loader after each drawing; they are
+  // asked for and marked loaded like any page icon (2026-11-11). Outside such
+  // a region the scan finds them, and nothing is done here. An element drawn
+  // before the Loader is ready hands them over when it is.
+  adoptIgnoredGlyphs() {
+    if (!this.closest?.(IGNORED_REGION)) return;
+    const loader = window.SF?.Loader;
+    if (typeof loader?.adoptStaticIcons === "function") {
+      loader.adoptStaticIcons(this);
+      return;
+    }
+    if (this._sfGlyphsAwaitLoader) return;
+    this._sfGlyphsAwaitLoader = true;
+    window.addEventListener("sf-loader-ready", () => {
+      this._sfGlyphsAwaitLoader = false;
+      if (this.isConnected) this.adoptIgnoredGlyphs();
+    }, {once: true});
   }
 
   shouldWaitForStylesReady() {
@@ -1407,6 +1437,13 @@ class SfBaseElement extends HTMLElement {
         ? loader.ensureStylesReady(this, { autoLoad })
         : true,
     );
+    // The sheets applied, without the time limit (holdPortalUntilStyled).
+    if (autoLoad) {
+      this._styleAppliedPromise = readiness.then(
+        () => { this._styleApplied = true; },
+        () => {},
+      );
+    }
     const timeout = Number(this.constructor.styleReadyTimeout ?? 3000);
     // The time limit is cleared once the sheets are in: a timer left behind
     // per element was a leak of its own (gate 36).
@@ -2502,14 +2539,24 @@ class SfBaseElement extends HTMLElement {
         this._liveSlotNodes.set(slotName, []);
       }
 
+      // A plain wrapper that only names the slot (<div slot="content">) gives
+      // the slot its children. A custom element is the content itself: it is
+      // never unwrapped. Counting its attributes alone made the answer depend
+      // on the upgrade order -- <sf-breadcrumbs slot="path"> carries only
+      // `slot` until its own class connects and writes style/data-sf-started,
+      // so a sf-header-page that upgraded first kept the bare items and
+      // dropped the trail (3 of 72 loads, 2026-11-12; every load when the
+      // header's script arrives first).
       const shouldUnwrapSlotHost =
+        !child.localName.includes("-") &&
         child.getAttributeNames().length === 1 && child.hasAttribute("slot");
       const slotNodes = shouldUnwrapSlotHost
         ? Array.from(child.childNodes)
         : [child];
 
       this._liveSlotNodes.get(slotName).push(...slotNodes);
-      // The page's content: a size it gives stays explicit (density, C22).
+      // The page's content: a size it gives stays the page's (density, C22; it
+      // follows the region like any size since C79).
       noteAuthored(slotNodes);
       this.holdSlotNode(child);
     });
@@ -2627,6 +2674,50 @@ class SfBaseElement extends HTMLElement {
   // Draws a template into a container of the element's own outside it (a
   // portal at the end of the body, a popup's body): the sizes the drawing
   // gives are relative to the element, as in its own box (density, C22).
+  // A component that draws into a box of its own outside the host -- a
+  // window's or a drawer's portal at the end of the body -- keeps that box out
+  // of view until the sheets it draws with are applied, as the base keeps the
+  // host (the style gate, data-sf-style-pending, at most styleReadyTimeout).
+  // The base's gate is on the host, which such a component leaves empty, so
+  // under held-back sheets an open window painted for a moment as a card in
+  // the page flow, and a closed drawer's panel stood in view beside the page
+  // (ui-control evidence 2026-11-11-modal-followups, N2). Call it before the
+  // drawing; `shown` runs once the box shows.
+  //
+  // The host's gate gives up after styleReadyTimeout (3 s); the box waits for
+  // the sheets themselves, at the latest portalStyleTimeout: under sheets
+  // that came after 3 s the window showed as a card for a few frames (DEV's
+  // acceptance 2026-11-11, L2: 5 of 72 hostile loads).
+  holdPortalUntilStyled(target, shown) {
+    if (this._styleApplied || !target || target === this) return;
+    // After the host's gate gave up the sheets may still be on their way.
+    const styles = this.stylesReadiness() ?? this._styleAppliedPromise;
+    if (!styles) return;
+    target.setAttribute("data-sf-style-pending", "");
+    (this._styleHeldTargets ??= new Set()).add(target);
+    if (shown) (this._styleHeldShown ??= new Set()).add(shown);
+    if (this._styleHeldWait) return;
+    const guard = Number(this.constructor.portalStyleTimeout ?? 15000);
+    let timer = null;
+    const applied = Promise.race([
+      this._styleAppliedPromise || styles,
+      new Promise((resolve) => {
+        timer = setTimeout(resolve, guard > 0 ? guard : 0);
+      }),
+    ]).finally(() => clearTimeout(timer));
+    this._styleHeldWait = Promise.all([styles, applied]).then(() => {
+      this._styleReady = true;
+      // Applied or given up: later boxes do not wait again.
+      this._styleApplied = true;
+      this._styleHeldTargets.forEach((one) => one.removeAttribute("data-sf-style-pending"));
+      this._styleHeldTargets.clear();
+      this._styleHeldWait = null;
+      const callbacks = [...(this._styleHeldShown || [])];
+      this._styleHeldShown?.clear();
+      callbacks.forEach((callback) => callback());
+    });
+  }
+
   drawInto(result, container) {
     if (!container) return;
     drawing(() => render(result, container));
@@ -2634,7 +2725,7 @@ class SfBaseElement extends HTMLElement {
   }
 
   // A copy of captured page content is the page's as well (density, C22): a
-  // size in it stays explicit.
+  // size in it stays unmarked (it follows the region like any size, C79).
   authoredCopy(node) {
     const copy = node.cloneNode(true);
     const authored = globalThis.SF?.__internal?.density?.authored;

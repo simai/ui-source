@@ -1,7 +1,10 @@
 ﻿import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { fieldSize, retireFieldSizeClass } from '../../field-size';
-import { pageText } from '../../../core/js/page-language';
+import { pageText, pageWord } from '../../../core/js/page-language';
+import { formatFileSize } from '../../../core/js/format-file-size.js';
+import { fileIcon } from '../../../core/js/composition/file-size.mjs';
+import { acceptFormats, fileRejection, positiveLimit } from './intake.mjs';
 // Every word this part says. A product adds a language with
 // SF.language.register('sf-file-upload', code, words); a ternary on «ru» allowed two
 // and no more.
@@ -12,6 +15,25 @@ const FILE_UPLOAD_ITEM_TEXT = {
     retry: 'Try again',
     linkText: 'Click to upload',
     text: 'or drag and drop',
+    // The words of a file that was not added (FU-6, FU-7), keyed as the Smart
+    // lang/<locale>.json runtime keys them, so one SF.language.register
+    // reaches both.
+    'not-added': 'Not added: {n}',
+    'reject-type': '“{name}” is not accepted: allowed {formats}',
+    'reject-one': '“{name}” was not added: this field takes one file',
+    'reject-duplicate': '“{name}” is already in the list',
+    'reject-empty': '“{name}” is empty',
+    'reject-size': '“{name}” is {size}; the limit is {max}',
+    'reject-min-size': '“{name}” is {size}; it must be at least {min}',
+    'reject-count': {one: '“{name}” was not added: up to {n} file', other: '“{name}” was not added: up to {n} files'},
+    'reject-total': '“{name}” was not added: all files together up to {max}',
+    'formats-image': 'images',
+    'formats-video': 'video',
+    'formats-audio': 'audio',
+    done: 'Uploaded',
+    'done-line': '{size} · uploaded',
+    error: 'Not uploaded',
+    'error-line': 'Not uploaded: {message}',
   },
   ru: {
     remove: 'Удалить',
@@ -19,6 +41,22 @@ const FILE_UPLOAD_ITEM_TEXT = {
     retry: 'Повторить',
     linkText: 'Выберите файл',
     text: 'или перетащите его сюда',
+    'not-added': 'Не добавлено {n}:',
+    'reject-type': '«{name}» не подходит: можно {formats}',
+    'reject-one': '«{name}» не добавлен: сюда можно только один файл',
+    'reject-duplicate': '«{name}» уже добавлен',
+    'reject-empty': '«{name}» пустой — в нём нет данных',
+    'reject-size': '«{name}» — {size}, а можно до {max}',
+    'reject-min-size': '«{name}» — {size}, а нужно от {min}',
+    'reject-count': {one: '«{name}» не добавлен: можно не больше {n} файла', few: '«{name}» не добавлен: можно не больше {n} файлов', many: '«{name}» не добавлен: можно не больше {n} файлов', other: '«{name}» не добавлен: можно не больше {n} файла'},
+    'reject-total': '«{name}» не добавлен: все файлы вместе — до {max}',
+    'formats-image': 'изображения',
+    'formats-video': 'видео',
+    'formats-audio': 'аудио',
+    done: 'Загружен',
+    'done-line': '{size} · загружен',
+    error: 'Не загрузился',
+    'error-line': 'Не загрузился: {message}',
   },
 };
 
@@ -38,27 +76,15 @@ function normalizeSize(value) {
   return fieldSize(value, 'sf-file-upload');
 }
 
-function formatFileSize(bytes) {
-  const size = Number(bytes);
-  if (!Number.isFinite(size) || size < 0) return '';
-  if (size < 1024) return `${size} B`;
 
-  const units = ['KB', 'MB', 'GB', 'TB'];
-  let value = size / 1024;
-  let index = 0;
+// An entry's state: ready (chosen, not sent), process (being sent), done,
+// error. A chosen file was process at 0 % at once and looked like an upload
+// that had stuck (FU-3); it is ready until the host or the uploader sends it.
+const ITEM_STATES = Object.freeze(['ready', 'process', 'done', 'error']);
 
-  while (value >= 1024 && index < units.length - 1) {
-    value /= 1024;
-    index += 1;
-  }
-
-  const formatted = value >= 10 ? value.toFixed(0) : value.toFixed(1);
-  return `${formatted}${units[index]}`;
-}
-
-function normalizeItemState(item) {
-  const state = String(item?.state || item?.status || 'process').toLowerCase();
-  return ['process', 'done', 'error'].includes(state) ? state : 'process';
+function normalizeItemState(item, fallback = 'process') {
+  const state = String(item?.state || item?.status || fallback).toLowerCase();
+  return ITEM_STATES.includes(state) ? state : 'process';
 }
 
 function getItemEventKey(item, index) {
@@ -94,7 +120,8 @@ function getFilesContainer(root) {
     }
   }
 
-  const next = root.nextElementSibling;
+  let next = root.nextElementSibling;
+  if (next?.classList?.contains('sf-file-upload-message')) next = next.nextElementSibling;
   if (next?.classList?.contains('sf-file-upload-files')) {
     return next;
   }
@@ -119,6 +146,18 @@ function getMultiple(root) {
 
 function getAccept(root) {
   return root.dataset.accept || root.getAttribute('accept') || '';
+}
+
+// A limit in bytes or files, from data-<name> or <name>: a positive number, or
+// none (FU-8). Each page wrote its own check (sf-chat-composer in ui-pro too).
+function getLimit(root, name) {
+  const key = name.replace(/-([a-z])/gu, (_, letter) => letter.toUpperCase());
+  return positiveLimit(root.dataset[key] ?? root.getAttribute(name));
+}
+
+function itemBytes(item) {
+  const bytes = Number(item?.file?.size ?? item?.size);
+  return Number.isFinite(bytes) && bytes > 0 ? bytes : 0;
 }
 
 // function getTriggerLink(root) {
@@ -177,11 +216,15 @@ function syncFileUploadInteraction(root) {
     const nextDisabled = disabled || previous.disabled;
     if (button.disabled !== nextDisabled) button.disabled = nextDisabled;
     previous.managedDisabled = disabled;
-    if (button.dataset.action !== 'remove') return;
+    // Remove and Retry are named with their file: three rows said «Удалить»
+    // three times, and the retry button said only its word (FU-10).
     const currentLabel = button.getAttribute('aria-label');
     if (!button.hasAttribute('aria-labelledby') && (!currentLabel || currentLabel === previous.label)) {
       const name = button.closest('.sf-upload-progress')?.querySelector('.sf-upload-progress-name')?.textContent?.trim() || '';
-      const label = `${pageText(FILE_UPLOAD_ITEM_TEXT, 'remove', root, 'sf-file-upload')} ${name}`.trim();
+      const word = button.dataset.action === 'retry'
+        ? button.textContent.trim() || pageText(FILE_UPLOAD_ITEM_TEXT, 'retry', root, 'sf-file-upload')
+        : pageText(FILE_UPLOAD_ITEM_TEXT, 'remove', root, 'sf-file-upload');
+      const label = `${word} ${name}`.trim();
       if (currentLabel !== label) button.setAttribute('aria-label', label);
       previous.label = label;
     }
@@ -217,14 +260,71 @@ function syncFileUploadInteraction(root) {
   });
 }
 
+// What a row says, from its item: the same for the class row and the Smart
+// template, so the two draw one row.
+//   ready    name, size; Remove                      (FU-3)
+//   process  name, size; Remove; the bar
+//   done     name, «size · загружен», the check; Remove   (FU-4: it had no
+//            way out and kept its 100 % bar)
+//   error    name, «Не загрузился: <message>»; Remove; «Повторить»   (FU-5:
+//            the message was the retry button's label, so the reason was the
+//            thing a person pressed to send the same file again)
+// `progress: null` is a transfer whose share is not known yet: the bar runs
+// without a number. A missing progress reads 100 on done and 0 otherwise.
+function describeUploadItem(item, owner = null, fallbackState = 'process') {
+  const state = normalizeItemState(item, fallbackState);
+  const name = String(item?.name || item?.fileName || 'File');
+  const size = String(item?.fileSize || item?.sizeText || '');
+  const raw = item?.progress;
+  const progress = raw === null
+    ? null
+    : Math.max(0, Math.min(100, Number(raw ?? (state === 'done' ? 100 : 0)) || 0));
+  const message = String(item?.errorMessage || item?.error || '');
+  let line = size;
+  if (state === 'done') line = size ? fileUploadWord(owner, 'done-line', {vars: {size}}) : fileUploadWord(owner, 'done');
+  else if (state === 'error') line = message ? fileUploadWord(owner, 'error-line', {vars: {message}}) : fileUploadWord(owner, 'error');
+  return {
+    state,
+    name,
+    size,
+    line,
+    message,
+    progress,
+    icon: uploadItemIcon(item, state),
+    retryText: String(item?.retryText || fileUploadWord(owner, 'retry')),
+  };
+}
+
+// A row's glyph says what the file is (C81: a type icon where there is no
+// thumbnail): the core file icons by media type, the type guessed from the
+// extension when the item has none, a plain file otherwise; an error row
+// shows the error glyph. It was cloud_upload in every state, in the primary
+// colour, outside the three icon roles (FU-12).
+const EXTENSION_TYPES = Object.freeze({
+  pdf: 'application/pdf',
+  png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp', svg: 'image/svg+xml', heic: 'image/heic', avif: 'image/avif',
+  mp4: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska',
+  mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg', m4a: 'audio/mp4',
+  zip: 'application/zip', rar: 'application/vnd.rar', '7z': 'application/x-7z-compressed', gz: 'application/gzip', tar: 'application/x-tar',
+  csv: 'text/csv', xls: 'application/vnd.ms-excel', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', ods: 'application/vnd.oasis.opendocument.spreadsheet',
+  ppt: 'application/vnd.ms-powerpoint', pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', odp: 'application/vnd.oasis.opendocument.presentation',
+  doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', odt: 'application/vnd.oasis.opendocument.text', rtf: 'application/rtf', txt: 'text/plain', md: 'text/markdown',
+});
+
+function uploadItemIcon(item, state) {
+  if (item?.icon) return String(item.icon);
+  if (state === 'error') return 'error';
+  const name = String(item?.name || item?.fileName || item?.file?.name || '');
+  const extension = name.includes('.') ? name.split('.').pop().toLowerCase() : '';
+  const type = String(item?.file?.type || item?.mime || EXTENSION_TYPES[extension] || '');
+  const icon = fileIcon(type);
+  return icon === 'download' ? 'draft' : icon;
+}
+
 function createUploadProgressItem(item, size = '1', owner = null) {
   const normalizedSize = normalizeSize(size);
-  const state = String(item.state || item.status || 'done').toLowerCase();
-  const fileName = String(item.name || item.fileName || 'File');
-  const fileSize = String(item.fileSize || item.sizeText || '');
-  const progress = Math.max(0, Math.min(100, Number(item.progress ?? 100) || 0));
-  const iconName = String(item.icon || 'cloud_upload');
-  const errorMessage = String(item.errorMessage || item.retryText || pageText(FILE_UPLOAD_ITEM_TEXT, 'retry', owner, 'sf-file-upload'));
+  const row = describeUploadItem(item, owner, 'done');
+  const {state, progress} = row;
 
   const root = document.createElement('div');
   root.className = [
@@ -238,7 +338,10 @@ function createUploadProgressItem(item, size = '1', owner = null) {
 
   const leftIcon = document.createElement('i');
   leftIcon.classList.add('sf-icon');
-  leftIcon.textContent = iconName;
+  // The glyphs are pictures: their ligature names («cloud_upload», «check_circle»,
+  // «delete») were read as text (docs pre-check 2026-11-10 FU-03).
+  leftIcon.setAttribute('aria-hidden', 'true');
+  leftIcon.textContent = row.icon;
 
   const content = document.createElement('div');
   content.className = 'sf-upload-progress-content flex flex-col flex-1';
@@ -251,77 +354,73 @@ function createUploadProgressItem(item, size = '1', owner = null) {
 
   const nameNode = document.createElement('div');
   nameNode.className = 'sf-upload-progress-name';
-  nameNode.textContent = fileName;
+  nameNode.textContent = row.name;
 
   const textNode = document.createElement('div');
   textNode.className = 'sf-upload-progress-text';
-  textNode.textContent = fileSize;
+  textNode.textContent = row.line;
 
   left.append(nameNode, textNode);
   top.append(left);
 
   if (state === 'done') {
     const doneIcon = document.createElement('i');
-    doneIcon.className = 'sf-icon sf-icon-solid';
+    doneIcon.className = 'sf-icon sf-icon-solid sf-upload-progress-mark';
+    doneIcon.setAttribute('aria-hidden', 'true');
     doneIcon.textContent = 'check_circle';
     top.append(doneIcon);
-  } else if (state === 'error') {
-    const removeButton = document.createElement('button');
-    removeButton.type = 'button';
-    removeButton.className =
-      `sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-${normalizedSize} flex items-cross-center content-main-center self-cross-start`;
-    removeButton.dataset.action = 'remove';
+  }
 
-    const removeIcon = document.createElement('i');
-    removeIcon.className = 'sf-icon';
-    removeIcon.textContent = 'delete';
-    removeButton.append(removeIcon);
-    top.append(removeButton);
+  // Every state can be taken out of the list.
+  const removeButton = document.createElement('button');
+  removeButton.type = 'button';
+  removeButton.className =
+    `sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-${normalizedSize} flex items-cross-center content-main-center self-cross-start`;
+  removeButton.dataset.action = 'remove';
+  const removeIcon = document.createElement('i');
+  removeIcon.className = 'sf-icon';
+  removeIcon.setAttribute('aria-hidden', 'true');
+  removeIcon.textContent = 'delete';
+  removeButton.append(removeIcon);
+  top.append(removeButton);
+  content.append(top);
 
+  if (state === 'error') {
     const retry = document.createElement('button');
     retry.type = 'button';
     retry.className = 'sf-upload-progress-repeat self-cross-start';
     retry.dataset.action = 'retry';
-    retry.textContent = errorMessage;
-    content.append(top, retry);
-    root.append(leftIcon, content);
-    return root;
-  } else {
-    const removeButton = document.createElement('button');
-    removeButton.type = 'button';
-    removeButton.className =
-      `sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-${normalizedSize} flex items-cross-center content-main-center self-cross-start`;
-    removeButton.dataset.action = 'remove';
-
-    const removeIcon = document.createElement('i');
-    removeIcon.className = 'sf-icon';
-    removeIcon.textContent = 'delete';
-    removeButton.append(removeIcon);
-    top.append(removeButton);
+    retry.textContent = row.retryText;
+    content.append(retry);
   }
 
-  const progressBar = document.createElement('div');
-  progressBar.className =
-    `sf-progress-bar sf-progress-bar--size-${normalizedSize} flex flex-row items-cross-center`;
-  progressBar.dataset.value = String(progress);
-  progressBar.dataset.textPosition = 'inline-end';
+  // A chosen file that is not being sent, and a sent one, have no bar: there
+  // is no transfer to show (FU-3, FU-4).
+  if (state === 'process') {
+    const progressBar = document.createElement('div');
+    progressBar.className =
+      `sf-progress-bar sf-progress-bar--size-${normalizedSize} flex flex-row items-cross-center`;
+    if (progress === null) progressBar.dataset.indeterminate = 'true';
+    else progressBar.dataset.value = String(progress);
+    progressBar.dataset.textPosition = 'inline-end';
 
-  const progressMain = document.createElement('div');
-  progressMain.className = 'sf-progress-bar-main';
+    const progressMain = document.createElement('div');
+    progressMain.className = 'sf-progress-bar-main';
 
-  const progressValue = document.createElement('div');
-  progressValue.className = 'sf-progress-bar-progress transition';
-  progressValue.style.width = `${progress}%`;
+    const progressValue = document.createElement('div');
+    progressValue.className = 'sf-progress-bar-progress transition';
+    if (progress !== null) progressValue.style.width = `${progress}%`;
 
-  const progressText = document.createElement('div');
-  progressText.className = 'sf-progress-bar-text';
-  progressText.textContent = `${progress}%`;
+    const progressText = document.createElement('div');
+    progressText.className = 'sf-progress-bar-text';
+    progressText.textContent = progress === null ? '' : `${progress}%`;
 
-  progressMain.append(progressValue);
-  progressBar.append(progressMain, progressText);
-  content.append(top, progressBar);
+    progressMain.append(progressValue);
+    progressBar.append(progressMain, progressText);
+    content.append(progressBar);
+  }
+
   root.append(leftIcon, content);
-
   return root;
 }
 
@@ -431,13 +530,16 @@ function syncFileUploadStateEvents(root, nextItems = [], previousItems = []) {
   }
 }
 
-function normalizeFileItems(files = []) {
+// A chosen file's size is written by the core formatter in the page's
+// language: «342 КБ» on a Russian page, «342 KB» on an English one (C25,
+// docs pre-check 2026-11-10 FU-01). The part's own formatter wrote «342KB»
+// in English units with no space on every page.
+function normalizeFileItems(files = [], root = null) {
   return Array.from(files).map((file) => ({
     id: `${file.name}-${file.size}-${file.lastModified}`,
     name: file.name,
-    fileSize: formatFileSize(file.size),
-    progress: 0,
-    state: 'process',
+    fileSize: formatFileSize(file.size, {node: root}),
+    state: 'ready',
     file,
   }));
 }
@@ -489,10 +591,16 @@ function retryFileUploadItem(root, index) {
   const nextItems = currentItems.map((item) => ({ ...item }));
   const currentItem = nextItems[normalizedIndex];
 
+  // Back in process with its share not known yet: the bar runs without a
+  // number until the transfer reports one. It went to 0 % and stood there,
+  // which read as a second failure when nothing sent the file again (FU-11);
+  // sf-file-upload's uploader sends it, an ordinary area's page answers
+  // retry.
   currentItem.state = 'process';
-  currentItem.progress = 0;
+  currentItem.progress = null;
   delete currentItem.errorMessage;
-  delete currentItem.retryText;
+  delete currentItem.error;
+  delete currentItem.reason;
 
   const previousItems = Array.from(root.__sfFileUploadItems || []);
   root.__sfFileUploadItems = nextItems;
@@ -513,21 +621,6 @@ function retryFileUploadItem(root, index) {
   return true;
 }
 
-// Whether a file is one the accept list names: `.ext`, `type/*` or `type/sub`,
-// as the platform dialog reads it. The dialog filters what a person may pick; a
-// drop went past it and took any file at all.
-function acceptsFile(accept, file) {
-  const tokens = String(accept || '').split(',').map((token) => token.trim().toLowerCase()).filter(Boolean);
-  if (!tokens.length) return true;
-  const name = String(file?.name || '').toLowerCase();
-  const type = String(file?.type || '').toLowerCase();
-  return tokens.some((token) => {
-    if (token.startsWith('.')) return name.endsWith(token);
-    if (token.endsWith('/*')) return type.startsWith(token.slice(0, -1));
-    return type === token;
-  });
-}
-
 function emitSelect(root, files, source = 'input') {
   root.dispatchEvent(
     new CustomEvent('sf-file-upload:select', {
@@ -541,16 +634,154 @@ function emitSelect(root, files, source = 'input') {
   );
 }
 
+// A choice adds to the list on a multiple area, so files can be added in
+// portions; a file already listed (same name, size and time) is not listed
+// twice. A single area keeps one file: a new choice replaces it, and the
+// replaced entry leaves with remove {reason: 'replaced'}. The choice assigned
+// the new files over the list, so a second pick wiped the first (study
+// 2026-11-11 FU-1). Returns the entries that entered the list.
 function applySelectedFiles(root, files = [], source = 'input') {
-  const nextFiles = normalizeFileItems(files);
+  const chosen = normalizeFileItems(files, root);
   const previousItems = Array.from(root.__sfFileUploadItems || []);
+  const multiple = getMultiple(root);
+  const listed = new Set(previousItems.map((item, index) => getItemEventKey(item, index)));
+  const added = multiple
+    ? chosen.filter((item, index) => !listed.has(item.id) && chosen.findIndex((other) => other.id === item.id) === index)
+    : chosen.slice(0, 1);
+  if (!added.length) return [];
+  const replaced = multiple ? [] : previousItems;
+  const nextFiles = multiple ? [...previousItems, ...added] : added;
   root.__sfFileUploadItems = nextFiles;
   renderFileUploadItems(root, nextFiles);
   syncFileUploadStateEvents(root, nextFiles, previousItems);
-  nextFiles.forEach((item, index) => {
-    emitFileUploadItemAdd(root, item, index, nextFiles, source);
+  replaced.forEach((item, index) => {
+    root.dispatchEvent(new CustomEvent('sf-file-upload:remove', {
+      bubbles: true,
+      detail: {item, index, items: nextFiles, reason: 'replaced'},
+    }));
   });
-  emitSelect(root, nextFiles, source);
+  added.forEach((item) => {
+    emitFileUploadItemAdd(root, item, nextFiles.indexOf(item), nextFiles, source);
+  });
+  emitSelect(root, added, source);
+  return added;
+}
+
+function fileUploadWord(root, key, options = {}) {
+  return pageWord(FILE_UPLOAD_ITEM_TEXT, key, root, {component: 'sf-file-upload', ...options});
+}
+
+// The formats an accept list names, as people read them: «PDF, DOCX»,
+// «изображения». `type/*` is the kind's word; it wrote «*» before.
+// The names are the core's (intake.mjs): image/jpeg reads «JPG», image/svg+xml
+// «SVG».
+function formatAcceptWords(accept, root = null) {
+  return acceptFormats(accept, (kind) => fileUploadWord(root, `formats-${kind}`));
+}
+
+// Where a file that was not added is said: the line under the area (C81: the
+// message under the field, not a row in the list), a polite status a screen
+// reader announces. The Smart template draws it; an ordinary area gets one
+// after it on the first rejection.
+function getMessage(root, create = false) {
+  if (!root) return null;
+  const next = root.nextElementSibling;
+  if (next?.classList?.contains('sf-file-upload-message')) return next;
+  if (!create || isManagedRenderRoot(root) || typeof document === 'undefined' || typeof root.after !== 'function') return null;
+  const message = document.createElement('div');
+  message.className = 'sf-file-upload-message';
+  message.setAttribute('role', 'status');
+  message.hidden = true;
+  root.after(message);
+  return message;
+}
+
+function showFileUploadRejections(root, rejected = []) {
+  const message = getMessage(root, rejected.length > 0);
+  root.__sfFileUploadRejected = rejected;
+  if (!message) return;
+  message.replaceChildren();
+  message.hidden = !rejected.length;
+  if (!rejected.length) return;
+  if (rejected.length === 1) {
+    message.textContent = rejected[0].message;
+    return;
+  }
+  const head = document.createElement('span');
+  head.textContent = fileUploadWord(root, 'not-added', {count: rejected.length});
+  const list = document.createElement('ul');
+  rejected.forEach((entry) => {
+    const line = document.createElement('li');
+    line.textContent = entry.message;
+    list.append(line);
+  });
+  message.append(head, list);
+}
+
+// What a choice or a drop leaves out, and why: a type the accept list does
+// not name (on a pick too: the dialog's «All files» skipped the filter), a
+// second file on a single area, a file already listed. The drop took the
+// first file and said nothing of the rest (FU-6); a wrong type sent
+// rejected and showed nothing (FU-7). Each one is said under the area and in
+// reject {files, rejected: [{file, name, reason, message}], accept, source}.
+function takeFiles(root, files = [], source = 'input') {
+  const accept = getAccept(root);
+  const multiple = getMultiple(root);
+  const kept = multiple ? Array.from(root.__sfFileUploadItems || []) : [];
+  const listed = new Set(kept.map((item, index) => getItemEventKey(item, index)));
+  const maxSize = getLimit(root, 'max-size');
+  const minSize = getLimit(root, 'min-size');
+  const maxFiles = multiple ? getLimit(root, 'max-files') : 0;
+  const maxTotal = getLimit(root, 'max-total-size');
+  const size = (bytes) => formatFileSize(bytes, {node: root});
+  let count = kept.length;
+  let total = kept.reduce((sum, item) => sum + itemBytes(item), 0);
+  const accepted = [];
+  const rejected = [];
+  Array.from(files).forEach((file) => {
+    const name = String(file?.name || '');
+    const key = `${file?.name}-${file?.size}-${file?.lastModified}`;
+    const bytes = Number(file?.size) || 0;
+    let reason = '';
+    let vars = {name};
+    let words = {};
+    const own = fileRejection(file, {accept, maxSize, minSize});
+    if (!multiple && accepted.length) reason = 'one';
+    else if (listed.has(key)) reason = 'duplicate';
+    else if (own === 'type') {
+      reason = 'type';
+      vars = {name, formats: formatAcceptWords(accept, root)};
+    } else if (own === 'empty') reason = 'empty';
+    else if (own === 'size') {
+      reason = 'size';
+      vars = {name, size: size(bytes), max: size(maxSize)};
+    } else if (own === 'min-size') {
+      reason = 'min-size';
+      vars = {name, size: size(bytes), min: size(minSize)};
+    } else if (maxFiles && count >= maxFiles) {
+      reason = 'count';
+      words = {count: maxFiles};
+    } else if (maxTotal && total + bytes > maxTotal) {
+      reason = 'total';
+      vars = {name, max: size(maxTotal)};
+    }
+    if (reason) {
+      rejected.push({file, name, reason: reason === 'one' ? 'count' : reason, message: fileUploadWord(root, `reject-${reason}`, {vars, ...words})});
+      return;
+    }
+    listed.add(key);
+    count += 1;
+    total += bytes;
+    accepted.push(file);
+  });
+  showFileUploadRejections(root, rejected);
+  if (rejected.length) {
+    root.dispatchEvent(new CustomEvent('sf-file-upload:reject', {
+      bubbles: true,
+      detail: {files: rejected.map((entry) => entry.file), rejected, accept, source},
+    }));
+  }
+  return accepted.length ? applySelectedFiles(root, accepted, source) : [];
 }
 
 function bindFileUpload(root) {
@@ -608,7 +839,7 @@ function bindFileUpload(root) {
     if (isDisabledRoot(root)) return;
     const files = Array.from(event.target?.files || []);
     if (!files.length) return;
-    applySelectedFiles(root, files, 'input');
+    takeFiles(root, files, 'input');
     event.target.value = '';
   };
 
@@ -636,22 +867,13 @@ function bindFileUpload(root) {
     event.preventDefault();
     if (isDisabledRoot(root) || !files.length) return;
 
-    const accepted = files.filter((file) => acceptsFile(getAccept(root), file));
-    const rejected = files.filter((file) => !accepted.includes(file));
-    if (rejected.length) {
-      root.dispatchEvent(new CustomEvent('sf-file-upload:reject', {
-        bubbles: true,
-        detail: {files: rejected, accept: getAccept(root), source: 'drop'},
-      }));
-    }
-    if (!accepted.length) return;
-    const normalized = getMultiple(root) ? accepted : accepted.slice(0, 1);
-    applySelectedFiles(root, normalized, 'drop');
+    const added = takeFiles(root, files, 'drop');
+    if (!added.length) return;
     // A pick sends change from the native input; a drop sent none, so a form
     // listening for change never heard of a dropped file.
     root.dispatchEvent(new CustomEvent('change', {
       bubbles: true,
-      detail: {files: normalized, source: 'drop'},
+      detail: {files: added.map((item) => item.file), source: 'drop'},
     }));
   };
 
@@ -783,6 +1005,8 @@ function setFileUploadItems(target, items = []) {
 }
 
 function clearFileUpload(target) {
+  const root = target instanceof HTMLElement ? target.closest(FILE_UPLOAD_SELECTOR) || target : null;
+  if (root) showFileUploadRejections(root, []);
   return setFileUploadItems(target, []);
 }
 
@@ -799,7 +1023,9 @@ class FileUpload extends ComponentObserver {
     } = this.params || {};
     const step = normalizeSize(size);
     const wrapper = document.createElement('div');
-    wrapper.className = 'sf-file-upload-wrap flex flex-col gap-1';
+    // The list keeps its distance from the area itself (FU-12), the same
+    // inside this wrapper and under a Smart host.
+    wrapper.className = 'sf-file-upload-wrap flex flex-col';
     const root = document.createElement('div');
     if (this.id) root.id = this.id;
     root.className = `sf-file-upload sf-file-upload--size-${step} flex flex-col items-cross-center cursor-pointer`;
@@ -815,6 +1041,7 @@ class FileUpload extends ComponentObserver {
     featured.className = `sf-featured-icon sf-featured-icon--size-${step} sf-featured-icon--soft sf-featured-icon--circle sf-featured-icon--neutral`;
     const glyph = document.createElement('i');
     glyph.className = 'sf-icon';
+    glyph.setAttribute('aria-hidden', 'true');
     glyph.textContent = icon;
     featured.append(glyph);
     const bottom = document.createElement('div');
@@ -836,9 +1063,13 @@ class FileUpload extends ComponentObserver {
       bottom.append(support);
     }
     root.append(featured, bottom);
+    const message = document.createElement('div');
+    message.className = 'sf-file-upload-message';
+    message.setAttribute('role', 'status');
+    message.hidden = true;
     const files = document.createElement('div');
     files.className = 'sf-file-upload-files grid grid-col-1 gap-1 w-full';
-    wrapper.append(root, files);
+    wrapper.append(root, message, files);
     this.root = root;
     this.template = wrapper;
   }
@@ -904,4 +1135,9 @@ export {
   setFileUploadItems,
   clearFileUpload,
   retryFileUploadItem,
+  takeFiles,
+  formatAcceptWords,
+  normalizeItemState,
+  describeUploadItem,
+  ITEM_STATES,
 };

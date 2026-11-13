@@ -108,8 +108,17 @@ const DRAW = {
   'file-download': {css: ['icons', 'download-file'], js: 'file-download',
     html: '<sf-file-download file-name="Отчёт.pdf" file-size="2 МБ" href="#"></sf-file-download>'},
   'copy-button': {css: ['icon-buttons', 'icons', 'smart/smart/button-copy/css/button-copy.css'], js: 'button-copy',
-    html: '<sf-button-copy value="a" label="Копировать" duration="60000"></sf-button-copy><sf-button-copy value="b" label="Копировать" duration="60000"></sf-button-copy><sf-button-copy value="c" label="Копировать" duration="60000"></sf-button-copy>',
-    open: 'const [, ok, failed] = document.querySelectorAll("sf-button-copy"); ok.setPhase("success", ""); failed.setPhase("error", "")'},
+    html: '<sf-button-copy value="a" label="Копировать" duration="60000"></sf-button-copy><sf-button-copy value="b" label="Копировать" duration="60000"></sf-button-copy>',
+    // Through the action copy (setPhase went with C48, c2c0b936): the page's
+    // clipboard answers at once, and a copy with nothing to copy is refused.
+    // One result at a time on a page (button-copy return L4, 04028cf0): a
+    // control that shows a result ends the one before it, so a success and a
+    // refusal cannot stand together. Each result is drawn on a page of its own
+    // (`opens`), and a variable passes when one of them takes it.
+    opens: [
+      '(async () => { const [, ok] = document.querySelectorAll("sf-button-copy"); if (navigator.clipboard) navigator.clipboard.writeText = async () => {}; await ok.copy(); })()',
+      '(async () => { const [, failed] = document.querySelectorAll("sf-button-copy"); failed.removeAttribute("value"); await failed.copy(); })()',
+    ]},
   'help-mark': {css: ['icon-buttons', 'icons', 'smart/smart/help-mark/css/help-mark.css'], js: 'help-mark',
     html: '<sf-help-mark id="hm" heading="Заголовок" text="Пояснение"></sf-help-mark>', open: 'document.getElementById("hm").open()'},
   datepicker: {css: ['datepicker', 'buttons', 'icon-buttons'], js: 'input-date',
@@ -209,15 +218,32 @@ const DRAW = {
   // divider is drawn; an empty value takes the label colour too.
   'list-description': {css: ['buttons', 'icon-buttons', 'icons', 'smart/smart/list-description/css/list-description.css'], js: ['list-description', 'button-copy'],
     html: `<sf-list-description dividers><script type="application/json" data-sf-settings>${JSON.stringify({items: [{label: 'Адрес', value: 'demo.test'}, {label: 'Путь', value: '/var/www', mono: true, copy: true}]})}</script></sf-list-description>`},
-  // sf-list-timeline (2026-11-08): one day of two events, the first without
-  // a status (the neutral marker) and with the connector under it.
-  'list-timeline': {css: ['buttons', 'icons', 'smart/smart/list-timeline/css/list-timeline.css'], js: 'list-timeline',
-    html: `<sf-list-timeline now="2026-10-27T12:00:00+03:00"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', time: '2026-10-27T11:58:00+03:00', title: 'A', actor: 'Анна'}, {id: 'b', time: '2026-10-27T11:00:00+03:00', status: 'success', title: 'B'}]})}</script></sf-list-timeline>`},
+  // sf-list-timeline 1.1 (C40): one day under the shared heading, two
+  // events, the first without a status (the neutral marker) and with the
+  // connector under it.
+  'list-timeline': {css: ['buttons', 'icons', 'featured-icon', 'group-heading', 'avatars', 'tooltip', 'smart/smart/time/css/time.css', 'smart/smart/change/css/change.css', 'smart/smart/list-timeline/css/list-timeline.css'], js: ['list-timeline', 'time', 'change', 'avatar'],
+    html: `<sf-list-timeline now="2026-10-27T12:00:00+03:00"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', time: '2026-10-27T11:58:00+03:00', icon: 'edit', title: 'A', actor: 'Анна'}, {id: 'b', time: '2026-10-27T11:00:00+03:00', status: 'success', title: 'B'}]})}</script></sf-list-timeline>`},
+  // .sf-group-heading (C40): a sticky heading with its date, then a divider.
+  // Not the first child: a first heading has no space above by design.
+  'group-heading': {css: ['group-heading'], js: [],
+    html: '<p style="margin:0">Лента</p><div class="sf-group-heading sf-group-heading--sticky" role="heading" aria-level="3">Сегодня <span class="sf-group-heading-date">9 ноября</span></div><div class="sf-group-heading sf-group-heading--divider" role="separator">Вчера</div>'},
+  // sf-time (2026-11-10, C40): a time with its tooltip, so the ring and the
+  // tooltip's anchor are drawn.
+  // The ring is drawn at :focus-visible only, so the time is focused as the
+  // keyboard focuses it.
+  time: {css: ['tooltip', 'smart/smart/time/css/time.css'], js: 'time',
+    html: '<sf-time format="time" datetime="2026-11-09T14:32:00+03:00"></sf-time>',
+    open: 'document.querySelector("sf-time .sf-time[tabindex], sf-time .sf-time, sf-time [tabindex]")?.focus({focusVisible: true})'},
+  // sf-change (2026-11-10, C40): a list of two changes, so the terms, the
+  // arrow and both values are drawn.
+  change: {css: ['smart/smart/change/css/change.css'], js: 'change',
+    html: '<sf-change layout="list" changes=\'[{"label":"Вес","before":"4,2 кг","after":"4,6 кг"},{"label":"Склад","before":"А","after":"Б"}]\'></sf-change>'},
   // sf-input-choice (2026-11-08): two cards, the first chosen, so the chosen
   // card's fill and edge are drawn beside a card at rest.
   choice: {css: ['badges', 'icons', 'smart/smart/input-choice/css/input-choice.css'], js: ['input-choice', 'badge'],
     html: `<sf-input-choice label="Тариф" value="a"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{value: 'a', label: 'A', caption: 'Первый', icon: 'language'}, {value: 'b', label: 'B', caption: 'Второй', icon: 'storefront'}]})}</script></sf-input-choice>`},
-  'change-confirm': {css: ['buttons', 'smart/smart/confirm-change/css/confirm-change.css'], js: 'confirm-change',
+  // sf-confirm-change 1.7.0 (C40) draws its values with sf-change.
+  'change-confirm': {css: ['buttons', 'smart/smart/change/css/change.css', 'smart/smart/confirm-change/css/confirm-change.css'], js: ['confirm-change', 'change'],
     html: '<sf-confirm-change heading="Переименовать раздел" changes=\'[{"label":"Название","before":"Новости","after":"События"}]\'></sf-confirm-change>'},
   // Block list (2026-11-05): a grouped list with an open row, so the heading
   // and the open tint have parts to reach; a feed with a run of one author and
@@ -297,7 +323,9 @@ const ROLES = {
   radius: {properties: ['border-top-left-radius'], value: '13px'},
   'padding-inline': {properties: ['padding-inline-start', 'padding-left'], value: '17px'},
   'padding-block': {properties: ['padding-top'], value: '19px'},
-  gap: {properties: ['column-gap', 'row-gap'], value: '23px'},
+  // A gap may be the room after each entry but the last (sf-list-timeline's
+  // events, padding-block-end).
+  gap: {properties: ['column-gap', 'row-gap', 'padding-block-end', 'padding-bottom'], value: '23px'},
   // A level's indent: a flat tree's row stands in by a margin (sf-tree), a
   // nested group by its padding.
   indent: {properties: ['margin-inline-start', 'margin-left', 'padding-inline-start'], value: '31px'},
@@ -317,8 +345,9 @@ const ROLES = {
   'ring-gap': {properties: ['--sf-progress-ring--gap'], value: '11px'},
   'indicator-color': {properties: ['border-bottom-color', 'background-color'], value: 'rgb(10, 11, 12)'},
   'indicator-width': {properties: ['border-bottom-width', 'block-size', 'height'], value: '5px'},
-  // The ring of an anchored badge is a spread shadow in the surface's colour.
-  'ring-color': {properties: ['box-shadow'], value: 'rgb(13, 14, 15)'},
+  // The ring of an anchored badge is a spread shadow in the surface's colour;
+  // a focus ring is an outline (sf-time).
+  'ring-color': {properties: ['box-shadow', 'outline-color'], value: 'rgb(13, 14, 15)'},
   // The space above an entry of a feed (sf-list-feed): a run and a turn.
   'margin-block-start': {properties: ['margin-block-start', 'margin-top'], value: '37px'},
 };
@@ -331,6 +360,10 @@ try {
   for (const entry of contract.components) {
     const draw = DRAW[entry.component];
     if (!draw) { note({component: entry.component, said: 'no markup in the probe for this component'}); continue; }
+    // `opens`: states that cannot stand together on one page, each drawn on a
+    // page of its own; a variable passes when one of them takes it.
+    let merged = null;
+    for (const open of draw.opens ?? [draw.open]) {
     const page = await browser.newPage({viewport: {width: 1000, height: 700}});
     // core.js added as an inline module cannot work out its own address; every
     // probe that adds it this way sees that one error, and it changes nothing here.
@@ -346,7 +379,7 @@ try {
       await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
     }
     await page.waitForTimeout(700);
-    if (draw.open) { await page.evaluate(draw.open); await page.waitForTimeout(500); }
+    if (open) { await page.evaluate(open); await page.waitForTimeout(500); }
     const measured = await page.evaluate(({selector, variables, roles}) => {
       const roots = [...document.querySelectorAll(selector)];
       if (!roots.length) return {missing: selector};
@@ -365,17 +398,25 @@ try {
         const after = read();
         document.documentElement.style.removeProperty(variable.name);
         // Taken by some element that did not have it before.
-        const ok = after.some((value, at) => (value === role.value || value.startsWith(`${role.value} `) || value.includes(`(${role.value}`) || value.includes(` ${role.value}`)) && before[at] !== value);
+        // A layer of several (background-image: the offline dot's disabled ink
+        // over its place, 5a9953ef) is the value followed by a comma.
+        const ok = after.some((value, at) => (value === role.value || value.startsWith(`${role.value} `) || value.startsWith(`${role.value},`) || value.includes(`(${role.value}`) || value.includes(` ${role.value}`)) && before[at] !== value);
         answers.push({name: variable.name, role: variable.role, ok});
       }
       return {answers};
     }, {selector: entry.selector, variables: entry.variables, roles: ROLES});
+    await page.close();
+    if (!merged || measured.missing) merged = measured;
+    else if (merged.answers && measured.answers) {
+      merged.answers = merged.answers.map((answer, at) => ({...answer, ok: answer.ok || measured.answers[at].ok}));
+    }
+    }
+    const measured = merged;
     results[entry.component] = measured;
     if (measured.missing) note({component: entry.component, said: `nothing drawn for ${measured.missing}`});
     for (const answer of measured.answers ?? []) {
       if (!answer.unmeasured && !answer.ok) note({component: entry.component, variable: answer.name, role: answer.role, said: 'no part of the component took the value'});
     }
-    await page.close();
   }
 } finally {
   await browser.close();

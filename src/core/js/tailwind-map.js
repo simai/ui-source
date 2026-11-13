@@ -1,3 +1,18 @@
+// A legacy alias is rewritten only when the whole class is a utility name:
+// a family prefix followed by one of its values. A prefix alone is not
+// enough -- an author's own class pr-row, mt-section, right-panel or
+// grid-cols-wrap is a name, not a utility, and it stays as written (DEV,
+// dropdown-panels study R193: pr-row became p-inline-end-row at load).
+const SIZE = String.raw`(?:\d+(?:\.\d+)?|\d+\/\d+|px|\[[^\]\s]+\])`;
+const PADDING_VALUE = new RegExp(`^${SIZE}$`);
+const MARGIN_VALUE = new RegExp(`^(?:${SIZE}|auto)$`);
+const POSITION_VALUE = new RegExp(`^(?:${SIZE}|auto|full)$`);
+const BORDER_SIDE_VALUE =
+  /^(?:\d+|px|solid|dashed|dotted|double|hidden|none|inset|\[[^\]\s]+\])$/;
+const GRID_COLS_VALUE = /^(?:\d+|none|subgrid|\[[^\]\s]+\])$/;
+const sideValue = (mp, value) =>
+  (mp === 'p' ? PADDING_VALUE : MARGIN_VALUE).test(value);
+
 export function mapTailwindBaseClass(className) {
   if (!className) return null;
   const TAILWIND_COLOR_MAP = {
@@ -179,6 +194,7 @@ export function mapTailwindBaseClass(className) {
   const sideMatch = base.match(/^(m[trbl]|p[trbl])-(.+)$/);
   if (sideMatch) {
     const [, sideKey, value] = sideMatch;
+    if (!sideValue(sideKey[0], value)) return null;
     if (negative && sideKey[0] === 'p') return null;
     return `${negative}${sideMap[sideKey]}-${value}`;
   }
@@ -186,26 +202,27 @@ export function mapTailwindBaseClass(className) {
   const legacySideMatch = base.match(/^(m|p)-(left|right)-(.+)$/);
   if (legacySideMatch) {
     const [, mp, side, value] = legacySideMatch;
+    if (!sideValue(mp, value)) return null;
     if (negative && mp === 'p') return null;
     const mappedSide = side === 'left' ? 'inline-start' : 'inline-end';
     return `${negative}${mp}-${mappedSide}-${value}`;
   }
 
   const borderSideMatch = base.match(/^border-(l|r)-(.+)$/);
-  if (borderSideMatch) {
+  if (borderSideMatch && BORDER_SIDE_VALUE.test(borderSideMatch[2])) {
     const side = borderSideMatch[1] === 'l' ? 'inline-start' : 'inline-end';
     return `border-${side}-${borderSideMatch[2]}`;
   }
 
   const borderSideLegacyMatch = base.match(/^border-(left|right)-(.+)$/);
-  if (borderSideLegacyMatch) {
+  if (borderSideLegacyMatch && BORDER_SIDE_VALUE.test(borderSideLegacyMatch[2])) {
     const side =
       borderSideLegacyMatch[1] === 'left' ? 'inline-start' : 'inline-end';
     return `border-${side}-${borderSideLegacyMatch[2]}`;
   }
 
   const gridColsMatch = base.match(/^grid-cols-(.+)$/);
-  if (gridColsMatch) {
+  if (gridColsMatch && GRID_COLS_VALUE.test(gridColsMatch[1])) {
     return `grid-col-${gridColsMatch[1]}`;
   }
 
@@ -364,7 +381,7 @@ export function mapTailwindBaseClass(className) {
   }
 
   const positionMatch = base.match(/^(left|right)-(.+)$/);
-  if (positionMatch) {
+  if (positionMatch && POSITION_VALUE.test(positionMatch[2])) {
     const side = positionMatch[1] === 'left' ? 'inline-start' : 'inline-end';
     return `${side}-${positionMatch[2]}`;
   }

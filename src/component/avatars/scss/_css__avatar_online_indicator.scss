@@ -12,7 +12,26 @@
   border-top-width: var(--sf-px);
   width: var(--sf-online-indicator--width);
   height: var(--sf-online-indicator--height);
-  background-color: var(--sf-online-indicator--background-color);
+  // The dot is a cut-out: what is under it (the photo, the initials) must not
+  // show through. It is drawn as before -- the ring the place colour, the fill
+  // the state colour -- with the fill as a layer over the nearest opaque place
+  // (--sf-surface-place-ground), so on a soft coloured place the dot is the
+  // soft place's own look, opaque. On the page, a card or a popup the place
+  // colour is opaque already and nothing changes; on glass the ground is
+  // black, so the dot is dark glass. Where no ground is declared the bottom is
+  // transparent: exactly the former dot.
+  background-color: var(--sf-surface-place-ground, transparent);
+  background-image: linear-gradient(var(--sf-online-indicator--background-color) 0 0);
+  // On a translucent fill (a selected, open or hovered row, core mix
+  // sf-place-fill) the place under the dot is the row: its fill over the place
+  // colour (C43 D3, 2026-11-11, as the anchored badge's ring). The fill is laid
+  // over the ring as an outline on the border's own band. It is read only
+  // where the underlay is set (100% fill, 0% underlay: invalid where the
+  // underlay is initial), so off a row, on a soft place and on glass the
+  // outline is transparent and the ring is exactly the place colour.
+  --sf-online-indicator--ring-fill: color-mix(in srgb, var(--sf-surface-place-fill) 100%, var(--sf-surface-underlay) 0%);
+  outline: var(--sf-px) solid var(--sf-online-indicator--ring-fill, transparent);
+  outline-offset: calc(-1 * var(--sf-px));
   --sf-online-indicator--height: var(--sf-b6);
   --sf-online-indicator--width: var(--sf-b6);
 }
@@ -47,17 +66,20 @@
   --sf-online-indicator--width: var(--sf-b0);
 }
 
-// Offline is the disabled ink (C43: the muted role is the disabled one).
-// That ink is an alpha and the dot stands on the avatar, not on the place, so
-// the photo or the initials would show through it (a green photo read as
-// online). It stacks over the place's colour instead, as C43 lays every alpha
-// over the solid place: the dot is the disabled ink on the place it is on.
-// Both layers are public (core/contracts/public-variables.v1.json): a page
-// that wants a colour of its own sets the background colour variable and
-// the overlay variable to none, and gets exactly that colour.
+// Offline is the place's dim ink, --sf-on-surface-variant, read on the dot so
+// it follows the place (defect fix 2026-11-11). The disabled ink over the
+// place (C43) stayed under 3:1 for a status mark: light 3.10 against the
+// page and 2.56 against the avatar, the grey plate 2.56 / 2.15, the dark
+// plate 2.48 / 1.67. The dim ink gives 7.79 / 6.44 on the page and at least
+// 6.44 / 4.43 on every place (ui-control prototypes/avatar-offline.html).
+// It is a layer over the nearest opaque place, as the fill is, so the photo
+// or the initials never show through it.
+// Both layers stay public (core/contracts/public-variables.v1.json): the
+// background colour variable is the dot's colour, and the overlay, none by
+// default, is a layer a page may lay over it.
 .sf-online-indicator--offline {
-  --sf-online-indicator--background-color: var(--sf-avatar-offline-background-color, var(--sf-surface-place));
-  background-image: var(--sf-avatar-offline-overlay, linear-gradient(var(--sf-on-surface-disabled) 0 0));
+  --sf-online-indicator--background-color: var(--sf-avatar-offline-background-color, var(--sf-on-surface-variant));
+  background-image: var(--sf-avatar-offline-overlay, none), linear-gradient(var(--sf-online-indicator--background-color) 0 0);
 }
 
 .sf-online-indicator--online {

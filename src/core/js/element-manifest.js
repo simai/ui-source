@@ -54,6 +54,7 @@
 // Members the runtime adds start with `sf`, which no manifest name may
 // (§3.1), so a generated setting or action never collides with them.
 
+import { watchIgnoredGlyphs } from './ignored-glyphs.js';
 import { dispatchAliased } from './aliases.js';
 import { pageWord } from './page-language.js';
 import { noteDeprecated } from './deprecations.js';
@@ -523,6 +524,38 @@ function isShown(element) {
   return true;
 }
 
+// A label's activation of a form-associated host (§17.1, RD-1). A <label>
+// around a Smart form control, or one `for` its id, takes the host as its
+// labeled control: the host is the first labelable element inside it. The
+// platform then clicks the host, which has no activation of its own, and the
+// native control drawn inside stays as it was. The host passes that press on
+// as a native label would: the control takes the focus, and a checkbox or a
+// radio is clicked (it toggles and sends its own input and change).
+// Only a click addressed to the host itself is passed on; a press on the
+// control, its own text or a part inside reaches them as before and is not
+// handled twice. A checkable's host click goes no further: its ancestors hear
+// the control's click instead, one click for one press, as with a native one.
+const LABEL_CONTROLS = 'input:not([type="hidden"]), select, textarea';
+const CHECKABLE = new Set(['checkbox', 'radio']);
+const nearestFormHost = (node) => {
+  for (let element = node.parentElement; element; element = element.parentElement) {
+    if (element.constructor?.formAssociated === true) return element;
+  }
+  return null;
+};
+function activateFromLabel(event) {
+  if (event.target !== this || event.defaultPrevented) return;
+  const control = this.sfLabelControl?.();
+  if (!control || control === this || !this.contains(control) || control.matches?.(':disabled')) return;
+  // A person's press moves the focus to the control first, as a label does;
+  // a script's host.click() leaves the focus where it is.
+  if (event.isTrusted) control.focus?.({focusVisible: false});
+  if (control.localName === 'input' && CHECKABLE.has(String(control.type).toLowerCase())) {
+    event.stopPropagation();
+    control.click();
+  }
+}
+
 /**
  * The class a component extends: its manifest's plumbing over `base`.
  *
@@ -580,6 +613,24 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
       completeOwnAccessors(new.target, ManifestElement.prototype, read.members);
       takeObjectForms(new.target, ManifestElement.prototype, read.actions, positionalActions);
       this.sfInternals = formAssociated && typeof this.attachInternals === 'function' ? this.attachInternals() : null;
+      if (formAssociated) this.addEventListener('click', activateFromLabel);
+    }
+
+    /**
+     * The control a label's activation reaches (§17.1): a form-associated
+     * host is labelable, so a <label> around it (or for its id) clicks the
+     * host itself, and the native control drawn inside never hears it. This
+     * is that control: the component's own `getInputElement()`, else its
+     * first native control that is not a nested form host's. A component
+     * overrides it; null leaves the activation as it is.
+     */
+    sfLabelControl() {
+      const own = typeof this.getInputElement === 'function' ? this.getInputElement() : undefined;
+      if (own !== undefined) return own || null;
+      for (const control of this.querySelectorAll(LABEL_CONTROLS)) {
+        if (nearestFormHost(control) === this) return control;
+      }
+      return null;
     }
 
     connectedCallback() {
@@ -587,6 +638,18 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
       super.connectedCallback();
       // A leaf outside an assembly starts with the page (§7.2.1 `now`).
       this.toggleAttribute('data-sf-started', true);
+      // An element on the Smart base hands its glyphs over after each drawing;
+      // one on a plain base is watched while it sits in an ignored region.
+      if (typeof this.adoptIgnoredGlyphs !== 'function') {
+        this.__sfGlyphWatch?.disconnect();
+        this.__sfGlyphWatch = watchIgnoredGlyphs(this);
+      }
+    }
+
+    disconnectedCallback() {
+      super.disconnectedCallback?.();
+      this.__sfGlyphWatch?.disconnect();
+      this.__sfGlyphWatch = null;
     }
 
     /**

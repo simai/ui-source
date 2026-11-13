@@ -18,6 +18,19 @@ const THEME_PREFERENCES = ['system', 'light', 'dark'];
 // review R037): brightness_auto is automatic screen brightness on Android.
 const THEME_ICONS = { system: 'desktop_windows', light: 'light_mode', dark: 'dark_mode' };
 
+// A theme switch whose choice cannot move the theme says why, once per
+// element (R076, as sf-button's theme-cycle): a host that draws the theme
+// itself (the Loader started with theme: false, as a Docara page and its
+// examples are), or no Loader. Nothing is selected and no change is sent.
+function warnThemeNotOwned(host) {
+  if (host.__sfThemeWarned) return;
+  host.__sfThemeWarned = true;
+  const reason = globalThis.SF?.Loader
+    ? 'the page\'s theme belongs to its host (the Loader runs with theme: false); a host that hands the theme to the Loader makes it work (a Docara example: theme_switch=true)'
+    : 'SF.Loader is absent';
+  globalThis.console?.warn?.(`[SIMAI Framework] ${host.localName} theme-switch: the choice changes nothing: ${reason}.`);
+}
+
 // The Loader's theme preference: what the person chose, not the theme drawn,
 // so system stays selected while the system is dark.
 function themePreference() {
@@ -52,6 +65,11 @@ function noteSpacing(host) {
   Object.defineProperty(root, '__sfSegmentedSpacingWarned', {value: true, configurable: true});
   globalThis.console?.warn?.('[SIMAI Framework] sf-segmented: spacing is deprecated until 2027-01-01 and draws the side padding only; write height="low|default|high|highest" for the control height. See contracts/changes/journal.json (attribute-segmented-spacing-to-height).');
 }
+
+// The sizes sf-dropdown has: a track of another size keeps scrolling inside
+// itself when its labels do not fit (C47 C folds only where the field can be
+// as tall as the track).
+const FOLD_SIZES = new Set(['1/2', '1', '2']);
 
 function parseItems(value = []) {
   if (Array.isArray(value)) return value;
@@ -141,7 +159,10 @@ const ButtonGroupElement = elementFromManifest(manifest, {
       // change already finds the page in the theme it chose; a Loader that
       // cannot change the theme (absent, or SF_BOOT_CONFIG.theme false)
       // selects nothing.
-      if (this.themeSwitch && globalThis.SF?.Loader?.setTheme?.(value) !== true) return 'theme';
+      if (this.themeSwitch && globalThis.SF?.Loader?.setTheme?.(value) !== true) {
+        warnThemeNotOwned(this);
+        return 'theme';
+      }
       this.value = value;
       this.emitValueChange({ previous, value, item });
       return 'applied';
@@ -259,6 +280,8 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     window.removeEventListener('sf-theme-change', this.handleThemeChange);
     this._plateObserver?.disconnect();
     this._plateObserver = null;
+    this._fitObserver?.disconnect();
+    this._fitObserver = null;
     this._plateFor = null;
     clearTimeout(this._plateTimer);
     this._releaseReset?.();
@@ -297,7 +320,95 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
       // The host is the form control where the browser has ElementInternals;
       // the hidden input is drawn only without them (§17.1 item 6).
       hiddenName: this.sfInternals ? '' : this.name,
+      folded: this.folded,
+      foldedSize: this.size,
+      foldedOptions: this.folded ? this.foldedOptions() : [],
     });
+  }
+
+  // C47 (owner decision 2026-11-10): the track is as wide as its labels (A),
+  // and when they do not fit on one line in the place it has, the element
+  // draws an sf-dropdown of the same size that shows the chosen value (C).
+  // It measures itself -- no breakpoint for the author to pick: the track's
+  // one-line width against the width it is given, again whenever either
+  // changes (ResizeObserver), so a wider screen or a shorter label brings the
+  // track back.
+  get folded() {
+    return Boolean(this._folded) && this.foldable;
+  }
+
+  get foldable() {
+    return this.appearance !== 'buttons' && this.orientation !== 'vertical' && FOLD_SIZES.has(String(this.size));
+  }
+
+  foldedOptions() {
+    return this.normalizedItems.map((item) => ({
+      type: 'text',
+      size: this.size,
+      text: item.count !== '' ? `${item.label} · ${item.count}` : item.label,
+      value: item.value,
+      disabled: item.disabled,
+      selected: item.value === this.value,
+    }));
+  }
+
+  // What the labels need on one line and what the element is given: a shown
+  // track is measured at its one-line width for a moment (data-sf-measure, in
+  // the same task, never painted); a folded one is laid out at that width all
+  // along, and the dropdown's place is what a track would get.
+  measureFit() {
+    const root = this.querySelector(':scope > .sf-button-group');
+    if (!root) return null;
+    if (this.folded) {
+      const narrow = this.querySelector(':scope > .sf-button-group-narrow');
+      return {need: root.getBoundingClientRect().width, room: narrow ? narrow.getBoundingClientRect().width : 0};
+    }
+    const room = root.getBoundingClientRect().width;
+    root.setAttribute('data-sf-measure', '');
+    const need = root.getBoundingClientRect().width;
+    root.removeAttribute('data-sf-measure');
+    return {need, room};
+  }
+
+  checkFit() {
+    if (!this.isConnected) return;
+    if (!this.foldable) {
+      if (this._folded) {
+        this._folded = false;
+        this.requestComponentUpdate?.('fit');
+      }
+      return;
+    }
+    const fit = this.measureFit();
+    if (!fit || !fit.need || !fit.room) return;
+    // A pixel of slack: a track that fits exactly is a track.
+    const fold = fit.need > fit.room + 1;
+    if (fold === Boolean(this._folded)) return;
+    this._folded = fold;
+    this.toggleAttribute('data-sf-folded', fold);
+    this.requestComponentUpdate?.('fit');
+  }
+
+  observeFit() {
+    if (typeof ResizeObserver === 'undefined') return;
+    if (!this._fitObserver) {
+      this._fitObserver = new ResizeObserver(() => this.checkFit());
+      globalThis.document?.fonts?.ready?.then?.(() => this.checkFit());
+    }
+    this._fitObserver.disconnect();
+    const root = this.querySelector(':scope > .sf-button-group');
+    const narrow = this.querySelector(':scope > .sf-button-group-narrow');
+    if (root) this._fitObserver.observe(root);
+    if (narrow) this._fitObserver.observe(narrow);
+  }
+
+  // The dropdown's change is the host's: the dropdown's own event stops here
+  // and the host sends change once, as a segment press does.
+  handleFoldedChange(event) {
+    event.stopPropagation();
+    const next = event.detail?.value ?? event.target?.value;
+    if (next === undefined || next === null) return;
+    this.select(String(next));
   }
 
   template() {
@@ -323,6 +434,8 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     this.bindReset();
     this.sfSyncFormState();
     this.placePlate();
+    this.observeFit();
+    this.checkFit();
   }
 
   // The plate of the track (1.4.0, owner decision D11c): one element under
@@ -427,6 +540,13 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
   }
 
   focus(options) {
+    if (this.folded) {
+      // sf-dropdown's host draws no box (display: contents); its trigger
+      // is the focus stop that owns the dropdown keyboard.
+      const trigger = this.querySelector(':scope > .sf-button-group-narrow [aria-haspopup="listbox"]');
+      trigger?.focus?.(options);
+      return this;
+    }
     const button = this.querySelector('button[role="radio"][tabindex="0"]:not(:disabled)');
     button?.focus?.(options);
 
@@ -434,12 +554,15 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
   }
 
   handleClick = (event) => {
+    if (event.target?.closest?.('.sf-button-group-narrow')) return;
     const target = event.target?.closest?.('[data-sf-button-group-value]');
     if (!target || !this.contains(target)) return;
     this.select(target.getAttribute('data-sf-button-group-value'));
   };
 
   handleKeyDown = (event) => {
+    // The dropdown keeps its own keys (sf-dropdown standard).
+    if (event.target?.closest?.('.sf-button-group-narrow')) return;
     if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key)) return;
 
     const enabled = this.normalizedItems.filter((item) => !item.disabled);

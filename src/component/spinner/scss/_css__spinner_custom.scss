@@ -99,8 +99,11 @@ $sf-loader-looks: (
 .sf-loader-container .sf-loader-ring-filled {
   display: var(--sf-loader--look-track, inline);
   fill: none;
-  opacity: var(--sf-opacity-30);
-  stroke: var(--sf-loader-track-color, var(--sf-surface-container));
+  /* Drawn whole: the alpha is in --sf-loader-track-color. 1, not nothing: the
+     drawing's own opacity attribute (0.3, for the paint before this sheet)
+     would hold otherwise. */
+  opacity: 1;
+  stroke: var(--sf-loader-track-color, color-mix(in srgb, currentColor 16%, transparent));
   stroke-linecap: round;
   stroke-width: var(--sf-loader-stroke-width);
 }

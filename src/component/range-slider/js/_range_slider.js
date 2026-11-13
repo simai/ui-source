@@ -1,4 +1,5 @@
 import { createNativeSlider } from './native-slider';
+import { pageLocale } from '../../../core/js/page-language';
 
 const RANGE_SLIDER_SELECTOR = '.sf-range-slider';
 const RANGE_SLIDER_BOUND_FLAG = 'sfRangeSliderBound';
@@ -63,13 +64,18 @@ function getDecimalPlaces(value) {
   return Math.min(100, Math.max(0, fraction - Number(exponent)));
 }
 
+// Digits after the decimal mark: data-precision, as sf-input-quantity names it
+// (S1); data-decimals is its former name and is still read until 2027-01-01.
+// Unset, the step's digits (0.5 has one). Never fewer than the step's: a value
+// on its step is not shown rounded off it (2.6 with step 0.1 is «2,6», not «3»).
 function getValueDecimals(root) {
-  const decimalsAttr = root.getAttribute('data-decimals');
+  const stepDecimals = getDecimalPlaces(root.getAttribute('data-step'));
+  const decimalsAttr = root.getAttribute('data-precision') ?? root.getAttribute('data-decimals');
   if (decimalsAttr !== null && decimalsAttr !== '') {
-    return Math.min(100, Math.max(0, Math.trunc(toNumber(decimalsAttr, 0))));
+    return Math.min(100, Math.max(stepDecimals, Math.trunc(toNumber(decimalsAttr, 0))));
   }
 
-  return getDecimalPlaces(root.getAttribute('data-step'));
+  return stepDecimals;
 }
 
 function isMultipleRoot(root) {
@@ -113,19 +119,60 @@ function getHandleLabelPosition(root, mode = 'none') {
   return mode === 'text' ? 'bottom' : 'top';
 }
 
+// A unit is held to its number by a no-break space (S1): «20 000 ₽» never
+// breaks before «₽». An author's ordinary space at the joint becomes one.
+function unitText(text, side) {
+  const value = String(text || '');
+  return side === 'prefix' ? value.replace(/[ \t]+$/u, '\u00a0') : value.replace(/^[ \t]+/u, '\u00a0');
+}
+
 function formatValue(root, value) {
   const decimals = getValueDecimals(root);
-  const prefix = root.getAttribute('data-prefix') || '';
-  const suffix = root.getAttribute('data-suffix') || '';
+  const prefix = unitText(root.getAttribute('data-prefix'), 'prefix');
+  const suffix = unitText(root.getAttribute('data-suffix'), 'suffix');
   const numeric = Number(value);
 
   if (!Number.isFinite(numeric)) {
     return `${prefix}${value ?? ''}${suffix}`;
   }
 
-  const baseValue = numeric.toFixed(decimals);
+  return `${prefix}${formatDecimal(root, numeric, decimals)}${suffix}`;
+}
 
-  return `${prefix}${baseValue}${suffix}`;
+// The number in the page's language, as sf-input-quantity writes it: a Russian
+// page reads «1,23 кг», not «1.23 кг» (docs pre-check 2026-11-10 CRS-01). The
+// `data-locale` of the slider wins over the page's `lang`. Thousands are
+// grouped the locale's way unless data-grouping="false" (a year, a code).
+// Number.toFixed is the fallback where Intl refuses the digits.
+function formatDecimal(root, numeric, decimals) {
+  const locale = root.getAttribute('data-locale') || pageLocale(root);
+  const grouping = String(root.getAttribute('data-grouping') ?? '').trim().toLowerCase() !== 'false';
+  try {
+    return new Intl.NumberFormat(locale, {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: Math.min(20, decimals),
+      useGrouping: grouping,
+    }).format(numeric);
+  } catch {
+    return numeric.toFixed(decimals);
+  }
+}
+
+// The number alone, in the slider's language and digits: the joined value of a
+// range and the from/to field write each number this way, the unit once.
+function formatNumberOnly(root, value) {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? formatDecimal(root, numeric, getValueDecimals(root)) : String(value ?? '');
+}
+
+// One value with its prefix and unit; a range as «от 5 000 – 20 000 ₽»: the
+// prefix before the first number, the unit after the last (C78 name line).
+function formatRangeText(root, values = []) {
+  const list = (Array.isArray(values) ? values : [values]).map(Number);
+  if (list.length < 2) return formatValue(root, list[0]);
+  const prefix = unitText(root.getAttribute('data-prefix'), 'prefix');
+  const suffix = unitText(root.getAttribute('data-suffix'), 'suffix');
+  return `${prefix}${formatNumberOnly(root, list[0])} – ${formatNumberOnly(root, list[1])}${suffix}`;
 }
 
 function createVisualNode(mode = 'none', position = 'top') {
@@ -227,6 +274,13 @@ function bindSliderAccessibility(root, owner = root) {
         next[name] = value;
       }
     });
+    // The visible name of the field (C78: label above the slider, as every
+    // field) names a handle nothing else names.
+    const visibleName = root.getAttribute('data-labelledby');
+    if (visibleName && !handle.hasAttribute('aria-label') && !handle.hasAttribute('aria-labelledby')) {
+      handle.setAttribute('aria-labelledby', visibleName);
+      next['aria-labelledby'] = visibleName;
+    }
     if (isDisabledRoot(root)) {
       handle.setAttribute('aria-disabled', 'true');
       next['aria-disabled'] = 'true';
@@ -238,6 +292,7 @@ function bindSliderAccessibility(root, owner = root) {
   const ownerFilter = owner === root
     ? [...accessibleAttributes, ...handleLabelAttributes]
     : [...accessibleAttributes, 'lower-label', 'upper-label'];
+  ownerFilter.push('data-labelledby');
   if (owner === root) {
     state.observer.observe(root, {
       attributes: true,
@@ -247,7 +302,7 @@ function bindSliderAccessibility(root, owner = root) {
     state.observer.observe(owner, { attributes: true, attributeFilter: ownerFilter });
     state.observer.observe(root, {
       attributes: true,
-      attributeFilter: [...handleLabelAttributes, 'disabled', 'class'],
+      attributeFilter: [...handleLabelAttributes, 'data-labelledby', 'disabled', 'class'],
     });
   }
   root[SLIDER_ACCESSIBILITY_STATE] = state;
@@ -293,8 +348,11 @@ function bindHandleLabels(root) {
   row.className = `sf-range-slider-labels sf-thumb sf-thumb--label-${mode} sf-range-slider-labels--${position}`;
   // Each handle exposes its exact value and units through ARIA already.
   row.setAttribute('aria-hidden', 'true');
-  const entries = getHandles(root).map((handle) => {
+  const entries = getHandles(root).map((handle, index) => {
     const label = handle.querySelector(mode === 'tooltip' ? '.sf-tooltip' : '.sf-thumb-text');
+    // The sheet shows a tooltip only while its own handle is dragged or
+    // keyboard-focused (C78), so each label knows its handle.
+    label.dataset.handle = String(index);
     const text = mode === 'tooltip' ? label.querySelector('.sf-tooltip-text') : label;
     row.append(label);
     return {handle, label, text};
@@ -317,6 +375,7 @@ function bindHandleLabels(root) {
     const sizes = entries.map(({label}) => label.getBoundingClientRect().width);
     const gap = Number.parseFloat(getComputedStyle(row).columnGap) || 0;
     const plan = planLabelPositions(bounds.width, centers, sizes, gap);
+    row.classList.toggle('sf-range-slider-labels--merged', plan.merged);
     if (plan.merged) {
       entries[0].text.textContent = state.values.join(' – ');
       entries[1].label.style.display = 'none';
@@ -363,6 +422,12 @@ function isDisabledRoot(root) {
   return root.hasAttribute('disabled') || root.classList.contains('disabled');
 }
 
+function isReadonlyRoot(root) {
+  if (typeof root?.hasAttribute !== 'function') return false;
+  return root.hasAttribute('readonly') || Boolean(root.classList?.contains?.('readonly')) ||
+    toBoolean(root.getAttribute('data-readonly'), false);
+}
+
 function createSliderOptions(root) {
   const {min, max} = getNormalizedRange(root);
   const multiple = isMultipleRoot(root);
@@ -376,18 +441,23 @@ function createSliderOptions(root) {
     start: handleCount > 1 ? start : [start[0]],
     direction: getComputedStyle(root).direction === 'rtl' ? 'rtl' : 'ltr',
     ariaFormat: {
-      to: (value) => `${root.getAttribute('data-prefix') || ''}${value}${root.getAttribute('data-suffix') || ''}`,
+      to: (value) => formatValue(root, value),
     },
     connect: getConnect(root, multiple),
     step: root.hasAttribute('data-step') &&
       toNumber(root.getAttribute('data-step'), 0) > 0
       ? toNumber(root.getAttribute('data-step'), 1)
       : undefined,
+    pageStep: toNumber(root.getAttribute('data-page-step'), 0) > 0
+      ? toNumber(root.getAttribute('data-page-step'), 0)
+      : undefined,
     margin: multiple && root.hasAttribute('data-margin') &&
       toNumber(root.getAttribute('data-margin'), 0) > 0
       ? Math.min(max - min, toNumber(root.getAttribute('data-margin'), 0))
       : undefined,
     range: { min, max },
+    readonly: isReadonlyRoot(root),
+    ticks: toBoolean(root.getAttribute('data-ticks'), false),
     keyboardSupport:
       !root.hasAttribute('data-keyboard') ||
       toBoolean(root.getAttribute('data-keyboard'), true),
@@ -495,8 +565,11 @@ function bindRangeSlider(root, accessibilityOwner) {
     const { range, margin = 0 } = slider.options;
     getHandles(root).forEach((node, index) => {
       node.setAttribute('aria-valuenow', String(numericValues[index]));
-      node.setAttribute('aria-valuemin', String(index > 0 ? Math.max(range.min, numericValues[index - 1] + margin) : range.min));
-      node.setAttribute('aria-valuemax', String(index < numericValues.length - 1 ? Math.min(range.max, numericValues[index + 1] - margin) : range.max));
+      // Rounded to the step's digits, as the values are (S2): 0.2 + 0.1 is 0.3.
+      const digits = Math.max(getDecimalPlaces(slider.options.step ?? ''), getDecimalPlaces(range.min));
+      const bound = (number) => String(Number(Number(number).toFixed(Math.min(20, Math.max(digits, getDecimalPlaces(margin))))));
+      node.setAttribute('aria-valuemin', index > 0 ? bound(Math.max(range.min, numericValues[index - 1] + margin)) : String(range.min));
+      node.setAttribute('aria-valuemax', index < numericValues.length - 1 ? bound(Math.min(range.max, numericValues[index + 1] - margin)) : String(range.max));
     });
     updateHandleLabels(root, numericValues);
     dispatchSliderEvent(root, 'update', numericValues, { handle });
@@ -617,6 +690,8 @@ rangeSliderObserver.observe(document.documentElement, {
 });
 
 export {
+  formatNumberOnly as formatRangeSliderNumber,
+  formatRangeText as formatRangeSliderText,
   bindRangeSlider,
   getRangeSliderValue,
   initExistingRangeSliders,

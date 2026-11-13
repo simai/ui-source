@@ -30,13 +30,16 @@ test('accordion, popover and the colour field carry their docs in the source (#3
 });
 
 test('sf-switch names its input by the label row and describes it by the description (#44 item 1)', () => {
-  const source = read('src/component/switch/js/_switch.js');
-  assert.match(source, /function linkSwitchText\(root\)/u);
+  // Since C63 W9 the switch reads the binding sf-checkbox and sf-radio read.
+  const own = read('src/component/switch/js/_switch.js');
+  assert.match(own, /function linkSwitchText\(root\) \{\s*linkCheckableText\(root, SWITCH_TEXT_PARTS\);/u);
+  const source = read('src/component/checkable-text-helper.js');
+  assert.match(source, /export const SWITCH_TEXT_PARTS = Object\.freeze\(\{[^}]*text: '\.sf-switch-container'/u);
   assert.match(source, /setAttribute\('aria-labelledby', label\.id\)/u);
   assert.match(source, /setAttribute\('aria-describedby'/u);
   // Ids from the instance path, never a counter (#41).
   assert.match(source, /partId\(path, 'label'\)/u);
-  assert.doesNotMatch(source.slice(source.indexOf('function linkSwitchText')), /\+\+/u);
+  assert.doesNotMatch(source.slice(source.indexOf('export function linkCheckableText')), /\+\+/u);
   // The manifest says the same: the name from the label or aria-label.
   const component = json('src/smart/switch/component.json');
   assert.deepEqual(component.accessibility.name.from.slice(0, 2), ['label', 'aria-label']);
@@ -65,6 +68,8 @@ test('the field renderers read a date in the page\'s language and a phone by its
   assert.match(set, /const DATE_VIEW = \{dateStyle: 'medium', timeZone: 'UTC'\};/u);
   assert.match(set, /const DATETIME_VIEW = \{dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC'\};/u);
   assert.match(set, /import \{formatDate\} from "\.\.\/\.\.\/core\/js\/format-date\.js";/u);
+  // C40: a date in view is a time element with the record's own day and clock.
+  assert.match(set, /html`<time class="sf-field-view" datetime=\$\{datetime\}>\$\{text\}<\/time>`/u);
   const country = read('src/component/country-code/js/_country_code.js');
   assert.match(country, /function countryFromNumber\(root, value\)/u);
   assert.match(country, /countryFromNumber\(root, value\) \|\|\n\s+root\.__sfCountryOptions\?\.\[0\]/u);

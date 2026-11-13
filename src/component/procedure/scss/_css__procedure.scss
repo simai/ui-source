@@ -56,7 +56,7 @@
     block-size: var(--sf-procedure--marker-size);
     color: var(--sf-procedure-marker-color, var(--sf-on-surface));
     // A container fill: dimmed text on it reads the container role.
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     background-color: var(--sf-procedure-marker-background-color, var(--sf-procedure-marker-background, var(--sf-surface-container)));
     border: var(--sf-px) solid var(--sf-outline-variant);
     border-radius: var(--sf-radius-circle);

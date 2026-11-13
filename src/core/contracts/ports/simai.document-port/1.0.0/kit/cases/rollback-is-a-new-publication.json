@@ -1,0 +1,369 @@
+{
+  "id": "rollback-is-a-new-publication",
+  "intent": "document.rollback",
+  "capability": "publish",
+  "summary": "Rolling back to publication p1 makes a new publication of p1's revision; the draft is left alone.",
+  "given": {
+    "capabilities": [
+      "history",
+      "publish"
+    ],
+    "target": {
+      "level": "page",
+      "ref": "page:/about/team/",
+      "parents": [
+        {
+          "level": "section",
+          "ref": "section:/about/"
+        },
+        {
+          "level": "site",
+          "ref": "site:s1"
+        }
+      ]
+    },
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "revision": "7",
+    "at": "2026-11-11T09:00:00Z",
+    "values": {
+      "ru": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "ru",
+        "root": {
+          "id": "root",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "shell",
+                "type": "layout.regions",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "r-main",
+                      "type": "layout.region",
+                      "props": {
+                        "name": "main",
+                        "landmark": "main"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "id": "main-1",
+                            "type": "content.paragraph",
+                            "data": {
+                              "content": [
+                                {
+                                  "text": "Команда"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "en": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "en",
+        "root": {
+          "id": "root",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "shell",
+                "type": "layout.regions",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "r-main",
+                      "type": "layout.region",
+                      "props": {
+                        "name": "main",
+                        "landmark": "main"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "id": "main-1",
+                            "type": "content.paragraph",
+                            "data": {
+                              "content": [
+                                {
+                                  "text": "Team"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "limits": {
+      "max_nodes": 200,
+      "max_bytes": 262144
+    },
+    "drafts": [
+      {
+        "revision": "6",
+        "at": "2026-11-10T09:00:00Z",
+        "languages": [
+          "ru",
+          "en"
+        ],
+        "values": {
+          "ru": {
+            "schema": "simai.composition.document",
+            "schema_version": 1,
+            "id": "page",
+            "profile": "ui-layout",
+            "locale": "ru",
+            "root": {
+              "id": "root",
+              "type": "layout.page",
+              "slots": {
+                "default": [
+                  {
+                    "id": "shell",
+                    "type": "layout.regions",
+                    "slots": {
+                      "regions": [
+                        {
+                          "id": "r-main",
+                          "type": "layout.region",
+                          "props": {
+                            "name": "main",
+                            "landmark": "main"
+                          },
+                          "slots": {
+                            "default": [
+                              {
+                                "id": "main-1",
+                                "type": "content.paragraph",
+                                "data": {
+                                  "content": [
+                                    {
+                                      "text": "Команда, черновик 6"
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "en": {
+            "schema": "simai.composition.document",
+            "schema_version": 1,
+            "id": "page",
+            "profile": "ui-layout",
+            "locale": "en",
+            "root": {
+              "id": "root",
+              "type": "layout.page",
+              "slots": {
+                "default": [
+                  {
+                    "id": "shell",
+                    "type": "layout.regions",
+                    "slots": {
+                      "regions": [
+                        {
+                          "id": "r-main",
+                          "type": "layout.region",
+                          "props": {
+                            "name": "main",
+                            "landmark": "main"
+                          },
+                          "slots": {
+                            "default": [
+                              {
+                                "id": "main-1",
+                                "type": "content.paragraph",
+                                "data": {
+                                  "content": [
+                                    {
+                                      "text": "Team, draft 6"
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      {
+        "revision": "4",
+        "at": "2026-11-09T09:00:00Z",
+        "languages": [
+          "ru"
+        ],
+        "values": {
+          "ru": {
+            "schema": "simai.composition.document",
+            "schema_version": 1,
+            "id": "page",
+            "profile": "ui-layout",
+            "locale": "ru",
+            "root": {
+              "id": "root",
+              "type": "layout.page",
+              "slots": {
+                "default": [
+                  {
+                    "id": "shell",
+                    "type": "layout.regions",
+                    "slots": {
+                      "regions": [
+                        {
+                          "id": "r-main",
+                          "type": "layout.region",
+                          "props": {
+                            "name": "main",
+                            "landmark": "main"
+                          },
+                          "slots": {
+                            "default": [
+                              {
+                                "id": "main-1",
+                                "type": "content.paragraph",
+                                "data": {
+                                  "content": [
+                                    {
+                                      "text": "Команда, черновик 4"
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    ],
+    "publications": [
+      {
+        "id": "p2",
+        "revision": "6",
+        "state": "published",
+        "at": "2026-11-10T10:00:00Z",
+        "languages": [
+          "ru",
+          "en"
+        ],
+        "client_key": "pub-6"
+      },
+      {
+        "id": "p1",
+        "revision": "4",
+        "state": "superseded",
+        "at": "2026-11-09T10:00:00Z",
+        "languages": [
+          "ru"
+        ],
+        "client_key": "pub-4"
+      }
+    ],
+    "published": "p2"
+  },
+  "when": {
+    "intent": "document.rollback",
+    "payload": {
+      "publication": "p1",
+      "client_key": "back-1",
+      "expected_published": "p2"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "publication"
+    ],
+    "expect": [
+      {
+        "path": "data.publication.id",
+        "not_in": [
+          "p1",
+          "p2"
+        ]
+      },
+      {
+        "path": "data.publication.revision",
+        "equals": "4"
+      },
+      {
+        "path": "data.publication.from",
+        "equals": "p1"
+      },
+      {
+        "path": "data.publication.state",
+        "equals": "published"
+      }
+    ]
+  },
+  "after": [
+    {
+      "when": {
+        "intent": "document.load",
+        "payload": {}
+      },
+      "then": {
+        "answer": "applied",
+        "expect": [
+          {
+            "path": "data.revision",
+            "equals": "7"
+          },
+          {
+            "path": "data.published.revision",
+            "equals": "4"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,4 +1,6 @@
 import {html, nothing} from 'lit';
+import {keepHelpOutOfLabel} from '../../../../component/checkable-text-helper';
+import {checkableClasses, renderCheckableHelp, renderCheckableRow, renderCheckableText} from '../../../helpers/checkable-row';
 import './default.css'
 
 export function renderCheckboxTemplate(context) {
@@ -31,27 +33,27 @@ export function renderCheckboxTemplate(context) {
 
     const labelContent =
         context.component?.hasSlotContent?.('label')
-            ? context.component.getSlotContent('label')
+            // A slotted label is held in a plain span so the input is named
+            // by the label alone (aria-labelledby), not by the help beside it.
+            ? html`<span data-sf-checkbox-label>${context.component.getSlotContent('label')}</span>`
             : label
                 ? html`<span class="sf-checkbox-label">${label}</span>`
                 : '';
 
     const descriptionContent =
         context.component?.hasSlotContent?.('description')
-            ? context.component.getSlotContent('description')
+            // A slotted description is held in a plain span so the input can
+            // name it as its description (aria-describedby): a bare text node
+            // has no id. The span draws nothing of its own.
+            ? html`<span data-sf-checkbox-description>${context.component.getSlotContent('description')}</span>`
             : description
                 ? html`<span class="sf-checkbox-description">${description}</span>`
                 : '';
 
-    const helpContent =
-        context.component?.hasSlotContent?.('help')
-            ? context.component.getSlotContent('help')
-            : help
-                ? html`
-                            <sf-icon aria-hidden="true" icon="${help}"></sf-icon>`
-                : '';
+    const helpContent = renderCheckableHelp(context, 'sf-checkbox-help');
 
-    const showContainer = !!(labelContent || descriptionContent || helpContent);
+    const showContainer = !!(labelContent || descriptionContent);
+    rootClasses.push(...checkableClasses(size, showContainer));
     const isStart = position === 'start';
     const input = html`
         <span class="sf-checkbox-box transition flex">
@@ -67,25 +69,12 @@ export function renderCheckboxTemplate(context) {
         />
           <sf-icon aria-hidden="true" icon=${stateIcon || ''}></sf-icon>
       </span>`
-    return html`
-        <label class=${rootClasses.filter(Boolean).join(' ')} style=${rootStyle || nothing}>
+    const control = html`
+        <label class=${rootClasses.filter(Boolean).join(' ')} style=${rootStyle || nothing} @click=${keepHelpOutOfLabel}>
             ${isStart ? input : ''}
-            ${showContainer
-                    ? html`
-                        <span class="sf-checkbox-container flex flex-col">
-              ${labelContent || helpContent
-                      ? html`
-                          <span class="sf-checkbox-top flex">
-                      ${labelContent}
-                      ${helpContent}
-                    </span>
-                      `
-                      : ''}
-              ${descriptionContent}
-            </span>
-                    `
-                    : ''}
+            ${renderCheckableText({column: 'sf-checkbox-container', top: 'sf-checkbox-top'}, labelContent, descriptionContent)}
             ${!isStart ? input : ''}
         </label>
     `;
+    return renderCheckableRow(size, control, helpContent);
 }

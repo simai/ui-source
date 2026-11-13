@@ -25,18 +25,24 @@ import {html, nothing} from 'lit';
 const STATE_ICONS = {done: 'check_circle', skipped: 'do_not_disturb_on', running: 'progress_activity', error: 'error'};
 const ALERT_STATUS = {done: 'success', error: 'error'};
 
+// The row is sf-steps 1.4 (owner decision C101): a row always (the wizard
+// draws its own compact head when narrow), the steps the wizard's rule lets a
+// person reach as buttons (navigation free over the wizard's own reachable),
+// each step's state in sf-steps' words.
 function stepsRow(context) {
   const {steps, index, size, words, component} = context;
   const items = steps.map((step) => ({
     label: step.label,
-    state: step.current && !step.state ? 'default' : (STAGE[step.state] ?? 'default'),
+    ...(step.state || !step.current ? {state: STAGES[step.state || '']} : {}),
     ...(step.reachable ? {} : {disabled: true}),
   }));
   return html`<sf-steps class="sf-wizard-steps" size=${size} current=${String(index)} aria-label=${words.steps}
+    layout="row" navigation="free"
     items=${JSON.stringify(items)} @sf-steps-change=${(event) => component.onProgress(event)}></sf-steps>`;
 }
 
-const STAGE = {done: 'completed', skipped: 'skipped', running: 'running', error: 'error'};
+// sf-steps' word for each state of a wizard step.
+const STAGES = {done: 'done', skipped: 'skipped', running: 'running', error: 'error', '': 'ahead'};
 
 function stepList(context, extra = '') {
   const {steps, component, words, id} = context;

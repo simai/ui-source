@@ -47,7 +47,14 @@
     background-color: var(--sf-placeholder-content--background-color, var(--sf-placeholder-right--background-color, var(--sf-transparent)));
   }
 
+  /* In a row the content shares the line from a zero basis: with its text's
+     width as the basis it wrapped under the visual as soon as the text was
+     longer than the room beside it, and the row drew as a column (368 px cell,
+     docs pre-check 2026-11-10 CPH-01). It wraps under the visual only below a
+     reading width of its own, the size step f0. */
   .sf-placeholder--row > :is(.sf-placeholder__content, .sf-placeholder-right) {
+    flex: 1 1 var(--sf-0);
+    min-inline-size: min(100%, var(--sf-f0));
     align-items: flex-start;
   }
 

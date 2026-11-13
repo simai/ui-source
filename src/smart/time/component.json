@@ -1,0 +1,218 @@
+{
+  "$comment": "The source of sf-time's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.15 and vocabulary 1.1.5: owner decision C40 (2026-11-09; research ui-control control/research/2026-11-09-timeline-parts.md §5, prototype prototypes/timeline-parts.html#time).",
+  "id": "smart.time",
+  "tag": "sf-time",
+  "version": "1.0.1",
+  "kind": "leaf",
+  "family": "text",
+  "settings": {
+    "datetime": {
+      "type": "string",
+      "default": "",
+      "summary": "The moment, ISO 8601 with its offset (2026-11-09T14:32:00+03:00) or milliseconds. Empty or not a date: the element draws nothing"
+    },
+    "format": {
+      "type": "enum",
+      "values": [
+        "auto",
+        "time",
+        "date",
+        "datetime",
+        "relative"
+      ],
+      "default": "auto",
+      "summary": "auto: within threshold of now relative («28 минут назад»), today the time («14:32»), yesterday «вчера, 19:40», this year the day and month («5 ноября»), older the date with the year («30 дек. 2025 г.»); time: «14:32»; date: «9 ноября»; datetime: the full moment («9 ноября 2026 г. в 14:32»); relative: always relative"
+    },
+    "now": {
+      "type": "string",
+      "default": "",
+      "summary": "The moment auto and relative count from, ISO 8601; empty: the reader's clock, and the element draws itself again each minute while it is relative and at the reader's midnight. A fixed now is for tests and documentation"
+    },
+    "threshold": {
+      "type": "string",
+      "default": "PT1H",
+      "summary": "For auto: how long from now the moment stays relative, an ISO 8601 duration (PT1H, PT15M, P1D). Past it auto says the time or the date"
+    },
+    "tooltip": {
+      "type": "enum",
+      "values": [
+        "auto",
+        "none"
+      ],
+      "default": "auto",
+      "summary": "auto: when the text is not the full moment, the full date and time show in a tooltip on hover and on keyboard focus (Escape hides it), and the element is a Tab stop unless it stands inside a link or a button; none: no tooltip and no Tab stop (a day heading's date, a place that already says the moment)"
+    }
+  },
+  "values": {},
+  "events": {},
+  "actions": {},
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Escape": "close"
+    }
+  },
+  "relations": [
+    {
+      "name": "tooltip"
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "A time element: datetime is the exact moment (ISO), its text what the place needs. With a tooltip the full moment is the time element's description (aria-describedby, the tooltip controller) and the element takes keyboard focus (tabindex 0) unless it is inside a link or a button, so the moment is one Tab and one hover away; Escape hides the tooltip. No title attribute (a title is out of reach of the keyboard and many screen readers) and no micro forms («5м» reads as five metres).",
+    "role": "time",
+    "name": {
+      "from": [
+        "content"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Escape": "close"
+    }
+  },
+  "host-states": {
+    "data-empty": "boolean",
+    "data-relative": "boolean"
+  },
+  "css-variables": {
+    "--sf-time-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-time-focus-ring-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-time-radius": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-time-font-variant-numeric": {
+      "type": "keyword",
+      "state": "default"
+    },
+    "--sf-time-white-space": {
+      "type": "keyword",
+      "state": "default"
+    }
+  },
+  "x-summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», then the date, relative within the first hour, with the full date and time in a tooltip on hover and keyboard focus, inside a time element. The words are core's SF.format; the element draws itself again while relative and at midnight.",
+  "x-source": {
+    "package": "framework",
+    "folder": "time",
+    "brief": "Owner decision C40 (2026-11-09, decisions.md row C40): a new sf-time, the time with the exact date on hover and focus, <time datetime>, format auto by default (the first hour «N минут назад», today the hours, yesterday «вчера, 19:40», then the date). Nine components formatted time by hand (research timeline-parts §4); the Framework's sf-list-timeline, sf-list and sf-alert-bar and the Pro components move to it."
+  },
+  "x-words": [],
+  "x-decisions": [
+    "name: sf-time, family text (C40). The tag names the HTML element it draws, as sf-button draws a button.",
+    "words: core's SF.format only (format-date.js, format-relative.js) in the page language of the element, nothing counted here. auto: |now - moment| < threshold relative (formatRelativeTime); calendar day 0 the time (date null, time short); day -1 the language's yesterday-at («вчера, {time}»); the same year day and month long; else the medium date with the year. The calendar day is the reader's (calendarDayOffset), so 23:59 yesterday is «вчера» at 00:01.",
+    "threshold: an ISO 8601 duration of days, hours, minutes and seconds (PnDTnHnMnS, weeks as PnW); one that is not read as PT1H. GitHub's relative-time idea with a smaller default (P30D there): in a list and a table relative times cannot be compared by eye.",
+    "tooltip: the Framework's tooltip composition (.sf-tooltip-anchor, data-tooltip, .sf-tooltip--dark size 1/3, arrow bottom-center), so hover, :focus-visible, Escape, the placement and the description link are the tooltip controller's (component.tooltip). Shown when the text is not the full moment (format datetime has none). The tooltip text is the full moment, date long and time short.",
+    "focus: tabindex 0 on the time element only with a tooltip and only when the element is not inside a link, a button or a summary (those are the Tab stop; a nested stop would be a second one).",
+    "live: with the reader's clock, one timer per element: to the next minute while relative, to the reader's midnight (msUntilNextDay plus a second) otherwise in auto and relative; none for time, date and datetime, none with a fixed now, and none off the page. A hidden document draws again when it shows.",
+    "empty: a datetime that is no date draws nothing (gap) and sets data-empty.",
+    "geometry: inline text in the place's type and line; tabular numerals and no wrap by default (--sf-time-font-variant-numeric, --sf-time-white-space), so a column of times lines up and «14:32» never breaks. The colour is inherited unless --sf-time-color is set. The focus ring is the Framework's two-pixel primary ring.",
+    "css-variables: five public variables (§6) -- the colour, the focus ring colour, the ring's corner, the numerals and the wrap -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "theme",
+      "i18n",
+      "responsive"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "time",
+      "date",
+      "relative",
+      "tooltip",
+      "text"
+    ],
+    "state": {
+      "machines": {
+        "time": [
+          "empty",
+          "absolute",
+          "relative"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "empty"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "none",
+      "forbidden_client_responsibilities": [
+        "formatting the moment by hand (the words are SF.format's)"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-time wherever a moment is shown: a list's or a table's «when», a message's time, «изменено …» in a record head, a file version, a notification.",
+      "do_not": [
+        "Do not format a date by hand next to it; give the moment and choose format",
+        "Do not use format relative in a table or a log; auto keeps it to the first hour",
+        "Do not put a title attribute on it; the tooltip says the moment"
+      ],
+      "required_reads": [
+        "inputs",
+        "accessibility"
+      ],
+      "minimal_example": "<sf-time datetime=\"2026-11-09T14:32:00+03:00\"></sf-time>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "recommended",
+      "keyboard": [
+        "Tab reaches a time with a tooltip (not inside a link or a button) and shows the full moment; Escape hides it"
+      ],
+      "focus": "A Tab stop only with a tooltip and outside a link or a button."
+    }
+  }
+}

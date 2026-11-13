@@ -20,7 +20,7 @@ const code = source.split('\n').filter((line) => !line.trimStart().startsWith('/
 test('the manifest: places, navigation, progress, one value, seven events, four actions', () => {
   assert.equal(manifest.tag, 'sf-wizard');
   assert.equal(manifest.family, 'wizard');
-  assert.equal(manifest.version, '1.2.4');
+  assert.equal(manifest.version, '1.2.6');
   assert.deepEqual(manifest.settings.place.values, ['inline', 'modal', 'pages']);
   assert.deepEqual(manifest.settings.navigation.values, ['linear', 'free', 'visited']);
   assert.deepEqual(manifest.settings.progress.values, ['auto', 'row', 'count', 'column']);
@@ -117,14 +117,14 @@ test('the sheet: one rung, the container widths, 44px under a coarse pointer, th
   assert.doesNotMatch(sheet, /#[0-9a-f]{3,8}\b|rgb\(/iu);
 });
 
-test('sf-steps 1.2.0: an item\'s own state, skipped and running', () => {
+test('sf-steps 1.4.0 (C101): the wizard row is a row, its reachable steps buttons, the states in today\'s words', () => {
   const steps = json('src/smart/steps/component.json');
-  assert.equal(steps.version, '1.2.1');
-  assert.deepEqual(steps.settings.items.of.state.values, ['default', 'completed', 'skipped', 'running', 'error']);
-  const stepsTemplate = read('src/smart/steps/js/templates/default.js');
-  assert.match(stepsTemplate, /skipped: 'do_not_disturb_on', running: 'progress_activity'/u);
-  const stepSheet = read('src/component/step/scss/_css__step.scss');
-  assert.match(stepSheet, /@keyframes sf-step-running/u);
+  assert.equal(steps.version, '1.4.0');
+  assert.deepEqual(steps.settings.items.of.state.values, ['done', 'ahead', 'skipped', 'running', 'error', 'completed', 'default']);
+  const template = read('src/smart/wizard/js/templates/default.js');
+  assert.match(template, /layout="row" navigation="free"/u);
+  assert.match(template, /const STAGES = \{done: 'done', skipped: 'skipped', running: 'running', error: 'error', '': 'ahead'\};/u);
+  assert.doesNotMatch(template, /'completed'|'default'/u);
 });
 
 test('the conformance probe covers the frame, validation, moves, the post and go-to-step', () => {

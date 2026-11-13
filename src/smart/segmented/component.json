@@ -2,7 +2,7 @@
   "$comment": "The source of sf-segmented's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/button-group (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/button-group/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.segmented",
   "tag": "sf-segmented",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "kind": "leaf",
   "family": "button",
   "settings": {
@@ -154,7 +154,7 @@
         "scheme"
       ],
       "default": "raised",
-      "summary": "The plate under the selected option on the track. raised, the default: a neutral raised surface with its shadow (white in the light theme). scheme: the scheme's fill, an accent for the one switch on a screen that needs it."
+      "summary": "The plate under the selected option on the track. raised, the default: a neutral raised surface with its shadow (white in the light theme; in the dark the fill's pressed step, lighter than the track on any place, C42). scheme: the scheme's fill, an accent for the one switch on a screen that needs it."
     },
     "backdrop": {
       "type": "enum",
@@ -277,6 +277,13 @@
       "lazy": true,
       "$comment": [
         "spinner: a loading item shows it, fetched after the page is ready."
+      ]
+    },
+    {
+      "name": "cl-dropdown",
+      "lazy": true,
+      "$comment": [
+        "cl-dropdown: when the labels do not fit on one line the element draws an sf-dropdown in the track's place (owner decision C47 C), fetched after the page is ready."
       ]
     }
   ],
@@ -419,7 +426,10 @@
     "version 1.4.1 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, select({value}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged.",
     "version 1.4.2 (2026-11-09, one above the released 1.4.1): the group's spacing reaches its sf-button segments as root-class=\"spacing-<value>\" (the class sheet's spacing class, same drawing) instead of sf-button's spacing, which decision C27 deprecates (journal attribute-button-spacing-to-height): a page that sets spacing on the group gets no sf-button deprecation warning from the Framework's own template. Settings, values and look unchanged.",
     "version 1.4.3 (2026-11-10): a patch (R074). The group asks the Loader for every item's icon when it is drawn, as a cycle does, so a segment drawn later (out of loading, items set afresh) finds its glyph in the page's font. Nothing drawn differently; settings, values and events unchanged.",
-    "version 1.5.0 (2026-11-10): a minor (§4.10; owner decision C27, as sf-button 1.10.0). The setting height (low, default, high, highest; default default) picks the control height from the size's tightness steps: a track segment carries the class sf-button--height-<height> of component.buttons (none for default), so its block padding is the step less the track's padding and the track stands as tall as an sf-button of that size and height; the buttons look writes height on its sf-button. spacing is deprecated (journal attribute-segmented-spacing-to-height, until 2027-01-01): it keeps drawing the side padding as before, says so once in the console and in SF.deprecations, and is not turned into a height. The group never writes spacing on its sf-button (1.4.2). Narrow widths are unchanged."
+    "version 1.5.0 (2026-11-10): a minor (§4.10; owner decision C27, as sf-button 1.10.0). The setting height (low, default, high, highest; default default) picks the control height from the size's tightness steps: a track segment carries the class sf-button--height-<height> of component.buttons (none for default), so its block padding is the step less the track's padding and the track stands as tall as an sf-button of that size and height; the buttons look writes height on its sf-button. spacing is deprecated (journal attribute-segmented-spacing-to-height, until 2027-01-01): it keeps drawing the side padding as before, says so once in the console and in SF.deprecations, and is not turned into a height. The group never writes spacing on its sf-button (1.4.2). Narrow widths are unchanged.",
+    "1.5.0 also carries (2026-11-10, C42 item 3, owner): the raised plate in the dark theme is --sf-surface-container-active, lighter than the track on any place (light unchanged: the raised surface with its shadow); the default of --sf-button-group-plate-background-color for plate raised is light-dark(var(--sf-surface-raised), var(--sf-surface-container-active)) in component.button-group 1.3.0.",
+    "1.5.0 also carries (2026-11-11, CB-01, decision C15): each segment writes sf-button--ghost beside sf-button--link, its former name (journal class-button-link-to-ghost, until 2027-01-01). Nothing is drawn differently.",
+    "version 1.6.0 (2026-11-11, owner decision C47, prototypes/segmented-narrow.html): the track is as wide as its labels (A): in full-width each segment starts at its own width and the rest is shared (flex 1 1 auto in component.button-group), a label stays on one line and is cut with «…» only as the last step. When the labels do not fit on one line in the place the element is given (C), it draws an sf-dropdown of the same size (1/2, 1 or 2; a track of another size keeps scrolling inside itself) that shows the chosen value, with the same options (a count is written after the label, «Непрочитанные · 3») and the host's own change, sent once. It measures itself with a ResizeObserver -- the track's one-line width against the width it is given -- and comes back to the track when they fit again; there is no breakpoint to set and no small-type mode. The folded track stays in the tree out of sight and out of reach (inert) only to be measured. The dropdown keeps its own keys (ArrowDown opens, Enter chooses); the host's arrow keys do not reach it. The host carries data-sf-folded while it draws the dropdown. Its height setting is the track's; the dropdown is drawn at the default height. The folded dropdown is the track's height at every size and view: a field of text in sf-dropdown is now its control height (component.dropdown 1.6.0, written as 1.5.3 on fix/smart-forms-b), so size 1/2 on a phone is 28 as the track, not 31-32 (DEV acceptance 2026-11-11, C47 C). A theme-switch whose choice the Loader cannot apply (a host that owns the theme, the Loader started with theme: false, or no Loader) says why once in the console (R076, as sf-button theme-cycle); it still selects nothing and sends no change."
   ],
   "x-registry": {
     "capabilities": [

@@ -55,7 +55,10 @@
 //
 // 2. probes in steps (the A4 modal probe; the overlays): one page of several
 //    elements, a fresh page per probe.
-//      page    {lang?, body: [lines]}
+//      page    {lang?, timeZone?, body: [lines]}
+//              timeZone: the IANA zone the page runs in (Europe/Moscow), so a probe
+//              that reads the local clock means the same on every host; unset,
+//              the host's zone
 //      probes  [{id, title, covers?, steps: [step]}]
 //    A step does one of
 //      user    click:<selector> (focuses and clicks it) | keyboard:<Key>
@@ -504,7 +507,7 @@ try {
     let passed = 0;
     for (const check of list) {
       const lang = probe.page?.lang === 'en' ? 'en-US' : 'ru-RU';
-      const context = await browser.newContext({locale: lang, viewport: {width: 1280, height: 800}});
+      const context = await browser.newContext({locale: lang, ...(probe.page?.timeZone ? {timezoneId: probe.page.timeZone} : {}), viewport: {width: 1280, height: 800}});
       const page = await context.newPage();
       const errors = [];
       page.on('pageerror', (error) => errors.push(String(error?.message || error)));

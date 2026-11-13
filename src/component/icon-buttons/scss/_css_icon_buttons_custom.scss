@@ -123,10 +123,8 @@
     /* The icon's colour (C36 follow-up): the spinner stands where the icon
        stood and reads the same variables the icon does. */
     color: var(--sf-loader--color, var(--sf-icon--color, var(--sf-icon-color, currentColor)));
-    /* The background ring is the spinner's own ink at 16 % (the fill family of
-       the alpha scale), drawn whole, so it shows on every fill; a page's
-       --sf-spinner-track-color still wins (DEV look call on C36). */
-    --sf-loader-track-color: var(--sf-spinner-track-color, color-mix(in srgb, currentColor 16%, transparent));
+    /* The background ring is the spinner's own: that ink at 16 %, drawn whole
+       (spinner sheet, DEV J1/S1); the button sets only the colour. */
   }
 
   .sf-icon-button .sf-icon-button-spinner .sf-loader-ring-filled {
@@ -154,11 +152,11 @@
      resting colour. A close control draws its cross through sf-button-close, whose
      own element stands between the control and the mark, so that colour is
      handed down too. */
-  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:not(.sf-icon-button--default) {
+  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):not(.sf-icon-button--default) {
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface-variant));
   }
 
-  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:not(.sf-icon-button--default) .sf-close-icon {
+  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):not(.sf-icon-button--default) .sf-close-icon {
     --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface-variant));
   }
 }
@@ -168,18 +166,25 @@
      docs review R033): a glyph without a fill in --sf-on-surface-variant
      darkens to --sf-on-surface on hover and press, as Material 3 and GitHub
      do, so the state layer and the ink say the same thing. */
-  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled):not(.disabled):is(:hover, :active, .active) {
+  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled):not(.disabled):is(:hover, :active, .active) {
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface));
   }
 
-  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--on-surface-variant:is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-close-icon {
+  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-close-icon {
     --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface));
+  }
+
+  /* The plain neutral icon catches the label's ink up under a pointer (C107
+     (4)): at rest --sf-on-surface-icon, hovered and pressed --sf-on-surface,
+     as the quiet neutral above. A filled control keeps its inverse glyph. */
+  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--icon:not(.sf-icon-button--on-surface-variant):not(.sf-icon-button--default):not(:disabled):not(.disabled):is(:hover, :active, .active) {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface));
   }
 
   /* A disabled icon button's spinner (disabled and loading) takes the disabled
      ink -- unless --sf-loader--color is set. */
   .sf-icon-button:is(:disabled:not(.sf-icon-button-state-loading:not(.disabled)), .disabled) .sf-icon-button-spinner {
-    color: var(--sf-loader--color, var(--sf-on-disable));
+    color: var(--sf-loader--color, var(--sf-on-surface-disabled));
   }
 }
 
@@ -209,6 +214,49 @@
 
   .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):active {
     --sf-icon-button--background-color: var(--sf-primary-container-active);
+  }
+
+  /* A tonal toggle (TB-3, rule C12), as sf-button's: a tonal (or surface)
+     icon button already rests on a container at the first fill step (12
+     light / 24 dark), so the pressed container at that step left primary with
+     its unpressed plate and the other schemes with a change of hue alone.
+     Pressed, it takes the container's pressed step (20 / 32, the
+     container's -active), whatever its scheme. The fill family stops at 32, so
+     hover and press over it lay the surface's state layer on that fill (4 and
+     12 of the state family, the place's own ink on a coloured place). */
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled),
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active) {
+    --sf-icon-button--background-color: var(--sf-icon-button-pressed-background-color, var(--sf-primary-container-active));
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):hover {
+    background-image: linear-gradient(var(--sf-surface-state-hover), var(--sf-surface-state-hover));
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):active {
+    background-image: linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
+  }
+
+  /* The neutral toggle (C12, after C113). A tonal or surface icon button in on-surface or secondary rests on the
+     neutral fill at 12, which in the dark theme is a light tone over the
+     place; the pressed container (primary 50 at 32) is a dark tone and came
+     out barely apart from it: 1.08 / 1.01 / 1.06 on a dark page, card and
+     popup. The fill family ends at 32, so the pressed toggle carries the
+     selected state's layer over the fill (--sf-surface-state-select, 8):
+     1.33 / 1.23 / 1.13 from the unpressed plate (light 1.24). Over it, hover
+     takes the press layer (12) and press adds the hover layer to that (12 and
+     4), one state step each, so the label keeps 4.5:1 on a popup. Primary and the
+     other coloured schemes rest on their own container and keep TB-3's look. */
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) {
+    background-image: linear-gradient(var(--sf-surface-state-select), var(--sf-surface-state-select));
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):hover {
+    background-image: linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):active {
+    background-image: linear-gradient(var(--sf-surface-state-hover), var(--sf-surface-state-hover)), linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
   }
 
   @media (forced-colors: active) {

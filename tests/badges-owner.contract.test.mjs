@@ -72,8 +72,9 @@ test('Smart Badge declares the run state: its settings, marks, roles and words',
     queued: {role: 'neutral', icon: 'schedule', word: 'Queued'},
   };
 
-  assert.equal(component.version, '1.4.0');
-  assert.equal(manifest.version, '1.4.0');
+  // 1.5.0 adds line="text" (C95 point 6); the run state is unchanged.
+  assert.equal(component.version, '1.5.0');
+  assert.equal(manifest.version, '1.5.0');
   assert.deepEqual(component.settings.activity.values, ['', ...Object.keys(states)]);
   assert.equal(component.settings.activity.default, '');
   assert.equal(component.settings.compact.type, 'boolean');
@@ -159,7 +160,8 @@ test('Badge draws its border inside its size and offers tight side room', async 
   ]);
 
   // 1.5.0: a tonal badge on a translucent fill lays its tone over the place (C43).
-  assert.equal(passport.version, '1.5.1');
+  // 1.6.0: sf-badge--line-text, the line of the text beside it (C95 point 6).
+  assert.equal(passport.version, '1.6.0');
   for (const side of ['block-start', 'block-end', 'inline-start', 'inline-end']) {
     assert.match(css, new RegExp(`padding-${side}: max\\(var\\(--sf-a0\\), calc\\(`), `padding-${side} gives up the border`);
   }
@@ -195,8 +197,19 @@ test('a tonal badge on a translucent fill lays its tone over the solid place (C4
     assert.match(body, /--sf-surface-underlay: initial;/u, name);
   }
   assert.match(popover, /--sf-surface-underlay: initial;/u);
+  // Every place takes the row's fill back too (C43 later, 2026-11-12): the
+  // theme map an opaque place re-declares, the soft and strong places, glass
+  // and the popover, so the ring reads it on its own.
+  assert.match(theme, /\s--sf-surface-place-fill: initial;/u);
+  assert.match(mix, /'surface-place-fill': 'initial'/u);
+  for (const name of ['sf-place-soft', 'sf-place-strong']) {
+    const body = mix.slice(mix.indexOf(`@mixin ${name}`), mix.indexOf('\n}\n', mix.indexOf(`@mixin ${name}`)));
+    assert.match(body, /--sf-surface-place-fill: initial;/u, name);
+  }
+  assert.match(popover, /--sf-surface-place-fill: initial;/u);
+  assert.match(await read('src/core/scss/_sf_css__surface_places.scss'), /\.sf-surface-media \{[^}]*--sf-surface-place-fill: initial;/u);
   // A translucent fill declares the place it stands on.
-  assert.match(mix, /@mixin sf-place-fill \{\s*--sf-surface-underlay: var\(--sf-surface-place-solid\);\s*\}/u);
+  assert.match(mix, /@mixin sf-place-fill\(\$fill\) \{\s*--sf-surface-underlay: var\(--sf-surface-place-solid\);[^}]*--sf-surface-place-fill: #\{\$fill\};\s*\}/u);
   // The solid colour: the page's, an opaque or strong place's; initial on a
   // translucent (soft) place, so a row there leaves the role off (DEV D1).
   assert.match(theme, /\s--sf-surface-place-solid: var\(--sf-surface-page\);/u);
@@ -204,15 +217,65 @@ test('a tonal badge on a translucent fill lays its tone over the solid place (C4
   assert.match(mix.slice(mix.indexOf('@mixin sf-place('), mix.indexOf('\n}\n', mix.indexOf('@mixin sf-place('))), /--sf-surface-place-solid: #\{\$surface\};/u);
   // The Framework's selected, current and open rows include it.
   const rows = [
-    ['src/component/dropdown/scss/_css__list-item.scss', /\.sf-list-item\.selected \{[^}]*@include places\.sf-place-fill;/u],
-    ['src/component/dropdown/scss/_css__list.scss', /\.sf-list--menu \.sf-list-item\.selected \{[^}]*@include places\.sf-place-fill;/u],
-    ['src/component/context-menu/scss/_css__context_menu.scss', /\.sf-context-menu-item--current \{[^}]*@include places\.sf-place-fill;/u],
-    ['src/component/context-menu/scss/_css__context_menu.scss', /\.sf-context-menu-item--chosen \{[^}]*@include places\.sf-place-fill;/u],
-    ['src/component/admin-menu/scss/_css__admin_menu.scss', /\.sf-admin-menu-search-row\.selected \{[^}]*@include places\.sf-place-fill;/u],
-    ['src/component/tree/scss/_css__tree.scss', /\[aria-selected='true'\] > \.sf-tree-item-container \{[^}]*@include places\.sf-place-fill;/u],
-    ['src/component/menu/scss/_css__menu.scss', /@mixin current-plate \{[^}]*@include places\.sf-place-fill;/u],
-    ['src/smart/list/js/templates/default.css', /\.sf-list__row--current \{[^}]*--sf-surface-underlay: var\(--sf-surface-place-solid\);/u],
-    ['src/smart/input-choice/scss/_smart__choice.scss', /\.sf-choice \.sf-choice-card--checked:hover \{[^}]*@include places\.sf-place-fill;/u],
+    ['src/component/dropdown/scss/_css__list-item.scss', /\.sf-list-item\.selected \{[^}]*@include places\.sf-place-fill\(/u],
+    ['src/component/dropdown/scss/_css__list.scss', /\.sf-list--menu \.sf-list-item\.selected \{[^}]*@include places\.sf-place-fill\(/u],
+    ['src/component/context-menu/scss/_css__context_menu.scss', /\.sf-context-menu-item--current \{[^}]*@include places\.sf-place-fill\(/u],
+    ['src/component/context-menu/scss/_css__context_menu.scss', /\.sf-context-menu-item--chosen \{[^}]*@include places\.sf-place-fill\(/u],
+    ['src/component/admin-menu/scss/_css__admin_menu.scss', /\.sf-admin-menu-search-row\.selected \{[^}]*@include places\.sf-place-fill\(/u],
+    ['src/component/tree/scss/_css__tree.scss', /\[aria-selected='true'\] > \.sf-tree-item-container \{[^}]*@include places\.sf-place-fill\(/u],
+    ['src/component/menu/scss/_css__menu.scss', /@mixin current-plate \{[^}]*@include places\.sf-place-fill\(/u],
+    ['src/smart/list/js/templates/default.css', /\.sf-list__row--current \{[^}]*--sf-surface-underlay: var\(--sf-surface-place-solid\); --sf-surface-place-fill: var\(--sf-list--current\);/u],
+    ['src/smart/input-choice/scss/_smart__choice.scss', /\.sf-choice \.sf-choice-card--checked:hover \{[^}]*@include places\.sf-place-fill\(/u],
   ];
   for (const [path, pattern] of rows) assert.match(await read(path), pattern, path);
+});
+
+// C43 D3 and D4 (2026-11-11): the anchored badge's ring on a translucent row is
+// the row's colour, and the hovered and open rows are translucent fills too.
+test('an anchored badge rings with the row it stands on, and hover rows keep a tonal badge (C43 D3, D4)', async () => {
+  const [geometry, cm, tree, list, item, menu, choice, smartList] = await Promise.all([
+    read('src/component/badges/scss/_anchored-geometry.scss'),
+    read('src/component/context-menu/scss/_css__context_menu.scss'),
+    read('src/component/tree/scss/_css__tree.scss'),
+    read('src/component/dropdown/scss/_css__list.scss'),
+    read('src/component/dropdown/scss/_css__list-item.scss'),
+    read('src/component/menu/scss/_css__menu.scss'),
+    read('src/smart/input-choice/scss/_smart__choice.scss'),
+    read('src/smart/list/js/templates/default.css'),
+  ]);
+  // The fill is read on its own (every place takes it back, C43 later), laid
+  // over the ring, and both over the nearest opaque place.
+  assert.match(geometry, /--sf-badge--ring-fill: var\(--sf-surface-place-fill, transparent\);/u);
+  assert.match(geometry, /box-shadow: 0 0 0 var\(--sf-badge--ring-width\) var\(--sf-badge--ring-fill\), 0 0 0 var\(--sf-badge--ring-width\) var\(--sf-badge--ring\), 0 0 0 var\(--sf-badge--ring-width\) var\(--sf-surface-place-ground, transparent\);/u);
+  assert.doesNotMatch(geometry, /--sf-badge--ring-fill: [^;]*underlay/u);
+  // Every include names its fill.
+  for (const [name, css] of Object.entries({cm, tree, list, item, menu, choice})) {
+    assert.doesNotMatch(css, /sf-place-fill;/u, name);
+  }
+  // The hover and open rows.
+  assert.match(cm, /\.sf-context-menu-item\[aria-expanded="true"\] \{[^}]*@include places\.sf-place-fill\(var\(--sf-surface-state-select\)\);/u);
+  assert.match(cm, /\.sf-context-menu-item--chosen:not\(:disabled\):hover \{[^}]*@include places\.sf-place-fill\(var\(--sf-primary-container-hover\)\);/u);
+  assert.match(tree, /:hover > \.sf-tree-item-container \{[^}]*@include places\.sf-place-fill\(var\(--sf-surface-container-hover\)\);/u);
+  assert.match(list, /\.sf-list--menu \[role="option"\]\.sf-list-item:not\(:disabled\):not\(\.disabled\):hover \{[^}]*@include places\.sf-place-fill\(/u);
+  assert.match(item, /\.sf-list \[role="option"\]\.sf-list-item:not\(:disabled\):not\(\.disabled\):hover \{[^}]*@include places\.sf-place-fill\(/u);
+  assert.match(menu, /\.sf-menu-element\.open:not\(:disabled\)[^{]*\{[^}]*@include places\.sf-place-fill\(var\(--sf-menu-element--background-color\)\);/u);
+  assert.match(choice, /:not\(\.sf-choice-card--disabled, \.sf-choice-card--checked\):hover \{[^}]*@include places\.sf-place-fill\(var\(--sf-surface-state-hover\)\);/u);
+  assert.match(smartList, /\.sf-list__row:not\(\.sf-list__row--current\):not\(\.sf-list__row--editing\):hover \{[^}]*--sf-surface-underlay: var\(--sf-surface-place-solid\); --sf-surface-place-fill: var\(--sf-list--hover\);/u);
+});
+
+// C43 D3 and D4, the table rows (2026-11-12): a striped, hovered or active
+// cell is a translucent fill too, read from the cell's accent; a cell at rest
+// declares nothing.
+test('striped, hovered and active table cells are fills of their accent (C43 D3, D4)', async () => {
+  const [table, active, hover, stripe] = await Promise.all([
+    read('src/utility/table/default/scss/_sf_css__table.scss'),
+    read('src/utility/table-active/default/scss/_sf_css__table_active.scss'),
+    read('src/utility/table-hover/default/scss/_sf_css__table_stripe.scss'),
+    read('src/utility/table-stripe/default/scss/_sf_css__table_stripe.scss'),
+  ]);
+  const fill = /@include places\.sf-place-fill\(var\(#\{\$prefix\}accent-bg\)\);/gu;
+  assert.equal(active.match(fill)?.length, 1, 'table-active');
+  assert.equal(hover.match(fill)?.length, 2, 'table-hover and hovered stripe');
+  assert.equal(stripe.match(fill)?.length, 2, 'table-stripe and table-stripe-col');
+  assert.doesNotMatch(table, /sf-place-fill/u, 'a cell at rest');
 });

@@ -123,9 +123,31 @@
   cursor: pointer;
 }
 
+/* A row that holds more than one line keeps the space a one-line row has
+   above and below its text, (row step - line) / 2, and grows by whole lines
+   (docs/foundation-composition-geometry.md §4; owner decision C49 on G1-b,
+   2026-11-10): a row with a caption or a value under its name, in any menu;
+   a drilling panel's row and a switch row, which wrap. They kept the base
+   rule's 2px, so a caption row was 40 [2/2] and a wrapped switch row grew by
+   2px insets instead of lines (3 lines 64 at 1440 where 32 + 2 x 20 = 72).
+   One line: the same height, the same place (the row's minimum is the step).
+   :where() keeps these at the base rule's weight, so a tile, a choice option
+   and a list's row keep their own block padding. */
+.sf-context-menu-item:where(:has(.sf-context-menu-item-caption, .sf-context-menu-item-under)),
+:where(.sf-context-menu--drill) .sf-context-menu-item,
+.sf-context-menu-item:where(.sf-context-menu-item--switch),
+.sf-context-menu-value-row:where(:has(.sf-context-menu-item-caption)) {
+  padding-block: calc((var(--sf-context-menu--row-step, var(--sf-context-menu--row-height)) - var(--sf-context-menu--line)) / 2);
+}
+
 .sf-context-menu-item:not(:disabled):hover,
 .sf-context-menu-item[aria-expanded="true"] {
-  background-color: var(--sf-surface-container-hover);
+  /* One row hover for every list and menu (C42 (5), owner 2026-11-10): the
+     select state, 8. It was the plate's hover, 20 before C41. A translucent
+     fill, as the current row: a tonal badge keeps its tone and an anchored
+     badge's ring is the row's colour (C43 D4). */
+  background-color: var(--sf-surface-state-select);
+  @include places.sf-place-fill(var(--sf-surface-state-select));
 }
 
 /* Selected or current is one role in every component (C16): primary-container
@@ -134,8 +156,9 @@
   background-color: var(--sf-primary-container);
   color: var(--sf-on-primary-container);
   --sf-icon--color: var(--sf-on-primary-container);
-  /* A translucent fill: a tonal badge on it keeps its own tone (C43). */
-  @include places.sf-place-fill;
+  /* A translucent fill: a tonal badge on it keeps its own tone (C43), an
+     anchored badge's ring is the row's colour (C43 D3). */
+  @include places.sf-place-fill(var(--sf-primary-container));
 }
 
 /* The chosen row of a pick-one list -- a language, a drilled choice's option:
@@ -148,16 +171,17 @@
   background-color: var(--sf-primary-container);
   color: var(--sf-on-primary-container);
   --sf-icon--color: var(--sf-on-primary-container);
-  @include places.sf-place-fill;
+  @include places.sf-place-fill(var(--sf-primary-container));
 }
 
 .sf-context-menu-item--chosen:not(:disabled):hover {
   background-color: var(--sf-primary-container-hover);
+  @include places.sf-place-fill(var(--sf-primary-container-hover));
 }
 
 .sf-context-menu-item:disabled {
-  color: var(--sf-on-disable);
-  --sf-icon--color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
+  --sf-icon--color: var(--sf-on-surface-disabled);
   cursor: default;
 }
 
@@ -188,6 +212,22 @@
   font-weight: var(--sf-font-weight-medium);
   line-height: 1;
   object-fit: cover;
+}
+
+/* A colour in the lead (sf-settings' colour rows, C85): a circle of the
+   text's square less a quarter step, as an icon's glyph sits in its line, on
+   the hairline every colour swatch has (sf-input-color, R169). */
+.sf-context-menu-item-swatch {
+  box-sizing: border-box;
+  display: block;
+  flex: none;
+  inline-size: calc(var(--sf-context-menu--line) - var(--sf-space-1\/4));
+  block-size: calc(var(--sf-context-menu--line) - var(--sf-space-1\/4));
+  margin: calc(var(--sf-space-1\/4) / 2);
+  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-radius: var(--sf-radius-circle);
+  background-color: var(--sf-context-menu-swatch, transparent);
+  background-clip: padding-box;
 }
 
 .sf-context-menu-item-icon,
@@ -458,12 +498,13 @@
 
 .sf-context-menu-choice-option.sf-context-menu-item:not(:disabled):hover {
   color: var(--sf-on-surface);
-  background-color: var(--sf-surface-container-hover);
+  background-color: var(--sf-surface-state-select);
+  @include places.sf-place-fill(var(--sf-surface-state-select));
 }
 
 .sf-context-menu-choice-option[aria-checked="true"] {
   background-color: var(--sf-primary-container);
-  @include places.sf-place-fill;
+  @include places.sf-place-fill(var(--sf-primary-container));
   color: var(--sf-on-primary-container);
   font-weight: var(--sf-font-weight-medium);
   --sf-icon--color: var(--sf-on-primary-container);
@@ -550,12 +591,12 @@
 }
 
 .sf-context-menu-item:disabled > .sf-context-menu-item-switch {
-  border-color: var(--sf-outline-disable);
+  border-color: var(--sf-outline-disabled);
   background-color: transparent;
 }
 
 .sf-context-menu-item:disabled .sf-context-menu-item-switch-thumb {
-  background-color: var(--sf-on-disable);
+  background-color: var(--sf-on-surface-disabled);
 }
 
 /* ─── a number in a range: the slider and its number ──────────────────── */
@@ -577,7 +618,7 @@
 }
 
 .sf-context-menu-range-input:disabled {
-  accent-color: var(--sf-on-disable);
+  accent-color: var(--sf-on-surface-disabled);
 }
 
 .sf-context-menu-range-value {
@@ -630,16 +671,23 @@
   padding-block: var(--sf-space-1\/3);
   padding-inline: var(--sf-a4);
   background-color: var(--sf-surface-container);
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   color: var(--sf-on-surface-variant);
   white-space: normal;
 }
 
 .sf-context-menu-tile.sf-context-menu-item:not(:disabled):hover {
   background-color: var(--sf-surface-container-hover);
+  @include places.sf-place-fill(var(--sf-surface-container-hover));
 }
 
+/* A tile is a control: its icon is half a step paler than its name (C107,
+   owner 2026-11-12), and takes the name's colour under a pointer. */
 .sf-context-menu-tile-icon {
+  --sf-icon--color: var(--sf-on-surface-icon);
+}
+
+.sf-context-menu-tile.sf-context-menu-item:not(.sf-context-menu-tile--on):not(:disabled):is(:hover, :active) .sf-context-menu-tile-icon {
   --sf-icon--color: var(--sf-on-surface);
 }
 
@@ -660,12 +708,13 @@
 
 .sf-context-menu-tile--on.sf-context-menu-item {
   background-color: var(--sf-primary-container);
-  @include places.sf-place-fill;
+  @include places.sf-place-fill(var(--sf-primary-container));
   color: var(--sf-on-primary-container);
 }
 
 .sf-context-menu-tile--on.sf-context-menu-item:not(:disabled):hover {
   background-color: var(--sf-primary-container-hover);
+  @include places.sf-place-fill(var(--sf-primary-container-hover));
 }
 
 .sf-context-menu-tile--on .sf-context-menu-tile-icon,
@@ -676,8 +725,8 @@
 
 .sf-context-menu-tile.sf-context-menu-item:disabled .sf-context-menu-tile-icon,
 .sf-context-menu-tile.sf-context-menu-item:disabled .sf-context-menu-tile-name {
-  color: var(--sf-on-disable);
-  --sf-icon--color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 .sf-context-menu-note {
@@ -986,32 +1035,75 @@
   display: none;
 }
 
+/* The body is the panel's scroll area (the scroll-area inset rule, owner
+   C106 addendum to C105, 2026-11-12): one inset I = --sf-space-1/4 on every
+   side of the rows' plates, from the panel's edge; while its scrollbar takes
+   room the body gives up its inline-end padding and the track is I, the
+   thumb, I (14, --sf-scroll-bg-width). sf-menu-context marks it
+   sf-context-menu-body--scrollbar. It kept a stable gutter before: an empty
+   14 beside rows that did not scroll, and 18 from a plate to the edge when
+   they did. The content gives its inline padding to the body; the head and
+   the footer keep their places. */
+.sf-context-menu.sf-context-menu--panel .sf-context-menu-content {
+  padding-inline: 0;
+}
+
 .sf-context-menu--panel .sf-context-menu-body {
-  padding-block: var(--sf-space-1\/4);
-  scrollbar-gutter: stable;
+  padding: var(--sf-space-1\/4);
   overflow-x: hidden;
+  @include panel.scrollbar(var(--sf-space-1\/4), --sf-context-menu--track, var(--sf-context-menu--row-height), var(--sf-context-menu--thumb));
+}
+
+.sf-context-menu--panel .sf-context-menu-body.sf-context-menu-body--scrollbar {
+  padding-inline-end: 0;
+}
+
+.sf-context-menu--panel :is(.sf-context-menu-head, .sf-context-menu-top, .sf-context-menu-footer) {
+  margin-inline: var(--sf-context-menu-content--padding-inline-start) var(--sf-context-menu-content--padding-inline-end);
 }
 
 /* A row of a panel holds anything -- a handle, a label, a checkbox, a pin --
-   on one line: what leads, the text that takes the rest and gives way with an
-   ellipsis, what ends it. A row as tall as a menu item of the panel's size. */
+   on one line, placed by role and not by count (R193, DP-1): what stands
+   before the text leads (a handle), the text takes the rest of the row and
+   gives way with an ellipsis, and what follows it -- the mark, a pin -- ends
+   the row at its inline end. A row with no handle starts with its text, and
+   its mark still stands at the end: three positional columns put the mark in
+   the text's place then, right after a label of any length (55-141 px from
+   the row start on the docs page). A row as tall as a menu item of the
+   panel's size. */
 .sf-context-menu-row {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  display: flex;
   align-items: center;
   gap: var(--sf-space-1\/3);
   min-block-size: var(--sf-ui-1\/2--control-height);
   padding-inline: var(--sf-context-menu--inset-start) var(--sf-context-menu--inset-end);
 }
 
+.sf-context-menu-row > * {
+  flex: none;
+}
+
 .sf-context-menu--size-1 .sf-context-menu-row {
   min-block-size: var(--sf-ui-1--control-height);
+}
+
+.sf-context-menu-row > .sf-context-menu-row-text {
+  flex: 1 1 0;
+  min-inline-size: 0;
 }
 
 .sf-context-menu-row-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* A panel row is a plate (C05, R193 DP-3): rounded as a control, the hover
+   plate under the pointer, and a chosen row -- its checkbox or radio checked --
+   the theme's light fill (owner decision C106 (2)). The plate stands the
+   inset from the panel's edge (the body's padding). */
+.sf-context-menu-row {
+  border-radius: var(--sf-context-menu--row-radius);
 }
 
 /* ─── the scrollbar: only when the rows do not fit, in the inset ───────── */
@@ -1052,6 +1144,21 @@
      line in the primary colour (Highlight in forced colours). */
   .sf-context-menu-search {
     @include panel.search-focus;
+  }
+
+  /* A panel row (R193 DP-3, C05, owner decision C106 (2)): the hover plate
+     under the pointer; checked, the theme's light fill, and its own hover. */
+  .sf-context-menu-row:hover {
+    background-color: var(--sf-surface-state-select);
+  }
+
+  .sf-context-menu-row:has(> :is(sf-checkbox, sf-radio, input) :checked, > input:checked) {
+    background-color: var(--sf-primary-container);
+    color: var(--sf-on-primary-container);
+  }
+
+  .sf-context-menu-row:has(> :is(sf-checkbox, sf-radio, input) :checked, > input:checked):hover {
+    background-color: var(--sf-primary-container-hover);
   }
 
   .sf-context-menu-item:focus-visible,
@@ -1120,9 +1227,11 @@
       min-block-size: var(--sf-d1);
     }
 
-    /* A list's row is the touch target's height here, so a wrapped choice
-       keeps the space that row has around its one line (G1-a). */
-    .sf-context-menu .sf-context-menu-content[data-sf-width="list"] {
+    /* A row is the touch target's height here, so a row of more than one
+       line -- a wrapped choice in a list (G1-a), a caption row, a drilling
+       or switch row (C49, G1-b) -- keeps the space that row has around its
+       one line. */
+    .sf-context-menu .sf-context-menu-content {
       --sf-context-menu--row-step: max(var(--sf-context-menu--row-height), var(--sf-d1));
     }
   }

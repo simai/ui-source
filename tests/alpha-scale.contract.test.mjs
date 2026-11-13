@@ -9,7 +9,10 @@ import {fileURLToPath} from 'node:url';
 //   state   4, 8, 12          what a pointer does to a surface: hover, select,
 //                             press. The same step in both themes, because the
 //                             gesture is the same gesture.
-//   fill    12, 16, 20        a tinted plate on a light surface, and the two
+//   fill    8, 12, 16, 24     the neutral plate (surface-container), its hover
+//                             and press, and the strong step -- the same in
+//                             both themes (C41, owner 2026-11-10).
+//           12, 16, 20        a tinted plate on a light surface, and the two
 //           24, 28, 32        steps its own hover and press take; the dark
 //                             theme sits twelve higher, where the same tint
 //                             over a dark surface reads as the same plate.
@@ -103,8 +106,12 @@ test('the neutral half of the scale shares its steps', () => {
     if (!statSync(path).isFile() || path.endsWith('_sf_css__theme.scss')) continue;
     for (const match of readFileSync(path, 'utf8').matchAll(/var\(--sf-alpha-(\d+)\)/gu)) used.add(Number(match[1]));
   }
-  assert.deepEqual(neutral.filter((step) => !used.has(step)), [],
-    'a neutral step nothing asks for is one more thing to rule out');
+  // Since DEV acceptance 2026-11-10 Q3 the components read the surface roles
+  // of these steps, so no Framework source asks for the neutral ramp. It stays
+  // declared: it is a public token (ui-doc guide/colour/transparency and
+  // design-tokens) a project may read. No component may go back to it.
+  assert.deepEqual([...used], [], 'the components read the surface roles, not --sf-alpha-*');
+  assert.deepEqual(neutral, [4, 8, 12, 16], 'the public neutral ramp keeps its four steps');
 });
 
 test('every translucent surface is mixed from the theme neutral, and the veil from the pure base', () => {
@@ -117,13 +124,17 @@ test('every translucent surface is mixed from the theme neutral, and the veil fr
   // up with a tone that was too dark for the job -- so the same interface was
   // lightened by two different greys, and the steps could not match across
   // themes (owner, 2026-10-08).
+  // The neutral fill takes the fill family's first steps, 12/16/20 and 24
+  // strong, in both themes (C113, owner 2026-11-13; was 8/12/16 since C41):
+  // the weight of the coloured containers, and no "+12 dark" for grey 90.
   const surfaces = {
     'surface-state-hover': 4,
     'surface-state-select': 8,
-    'surface-container-strong': 32,
-    'surface-container': 16,
-    'surface-container-hover': 20,
-    'surface-container-active': 24,
+    'surface-state-active': 12,
+    'surface-container-strong': 24,
+    'surface-container': 12,
+    'surface-container-hover': 16,
+    'surface-container-active': 20,
   };
   const wrong = [];
   for (const [role, step] of Object.entries(surfaces)) {
@@ -132,16 +143,20 @@ test('every translucent surface is mixed from the theme neutral, and the veil fr
   }
   assert.deepEqual(wrong, [], 'a translucent surface takes one step of one tone per theme');
 
-  // The plate starts at 16 because at 12 it was the colour of a pressed
-  // surface, and a plate that cannot be told from a press is not a plate.
-  assert.notEqual(surfaces['surface-container'], surfaces['surface-state-select']);
-  assert.ok(surfaces['surface-container'] > surfaces['surface-state-select']);
+  // The plate is the pressed state's step, 12. C113 accepts the overlap, as
+  // C41 did with 8: a state is drawn over a plate, not instead of it, and a
+  // chosen row is primary-container, not grey (C23).
+  // What stays apart: the plate is above the hover state, the pressed plate is
+  // above every state, and the strong step is above every plate.
+  assert.equal(surfaces['surface-container'], surfaces['surface-state-active']);
+  assert.ok(surfaces['surface-container'] > surfaces['surface-state-hover']);
+  assert.ok(surfaces['surface-container-active'] > surfaces['surface-state-active']);
   // And the veil is above every plate: a plate sits on the page, a veil covers
   // it. At 24 the backdrop of a modal was the colour of a pressed card.
   assert.ok(surfaces['surface-container-strong'] > surfaces['surface-container-active']);
-  // No two surface roles share a value: each is a different thing to see.
-  const steps = Object.values(surfaces);
-  assert.equal(new Set(steps).size, steps.length, `two surface roles share a step: ${steps}`);
+  // The plate family has four different steps: each is a different thing to see.
+  const plates = ['surface-container', 'surface-container-hover', 'surface-container-active', 'surface-container-strong'].map((role) => surfaces[role]);
+  assert.equal(new Set(plates).size, plates.length, `two plate roles share a step: ${plates}`);
 
   // The veil is the exception, and it is one on purpose: it darkens a scene
   // rather than tinting a surface. On the neutral tone it came out 7.4 points
@@ -161,7 +176,9 @@ test('an ink step (48 and above) is a fill only for glass and the scrim', () => 
   // The skeletons are a fill since C16 S3 (16 and 24), no longer ink 48.
   for (const path of [themePath, placesPath, 'src/core/scss/_sf_css__placeholder.scss', 'src/core/figma_variables/figma_layer_styles.scss', 'src/component/skeleton/scss/_skeleton.scss']) {
     for (const [, name, value] of read(path).matchAll(/(--sf-[a-z0-9-]+):\s*([^;]+);/gu)) {
-      if (name.startsWith('--sf-on-') || name.includes('outline') || name.startsWith('--sf-alpha')) continue;
+      // A place's ink hook (--sf-place--ink, --sf-place--ink-variant) is the colour of
+      // text on the place, not a fill: glass dims its text with white at 80.
+      if (name.startsWith('--sf-on-') || name.startsWith('--sf-place--ink') || name.includes('outline') || name.startsWith('--sf-alpha')) continue;
       if (!/--alfa-(48|64|80)\b/u.test(value)) continue;
       if (!allowed.has(name)) wrong.push(`${path}: ${name}: ${value.trim()}`);
     }
@@ -170,8 +187,8 @@ test('an ink step (48 and above) is a fill only for glass and the scrim', () => 
 });
 
 // A fill on a coloured place (C16, owner 2026-11-08): on a strong colour the
-// control fill is the place's ink at 12, 16 and 20 -- a named exception to the
-// neutral plate's 16/20/24, because white at 16 already gave 4.40 on a
+// control fill is the place's ink at 12, 16 and 20 -- the neutral plate's steps
+// since C113 (it was a named exception to C41's 8/12/16), because white at 16 already gave 4.40 on a
 // near-grey header (surfaces research 4.1). 12 there equals the pressed state;
 // the two are never next to each other. The states stay 4/8/12, the line 24,
 // the boundary 64 and the dim ink 80.

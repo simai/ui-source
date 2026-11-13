@@ -67,10 +67,6 @@ $sf-avatar-hue-classes: ();
     width: var(--sf-icon--width, var(--sf-icon-size-3));
   }
 
-  .sf-avatar .sf-online-indicator {
-    background-color: var(--sf-online-indicator--background-color);
-  }
-
   .sf-avatar .sf-avatar-badge.sf-avatar-badge--company {
     --sf-avatar-badge--border: var(--sf-px) solid;
     --sf-avatar-badge--border-end-end-radius: var(--sf-radius-circle);
@@ -204,7 +200,7 @@ $sf-avatar-hue-classes: ();
 
   .sf-avatar--placeholder, .sf-avatar--text {
     --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-surface-container));
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
 
   /* The hue of initials (owner decision C17, 2026-11-08): sf-hue-<name> gives
@@ -259,6 +255,41 @@ $sf-avatar-hue-classes: ();
   .sf-avatar--text.sf-avatar--tone-violet {
     --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-tone-violet-container));
     --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-violet-container));
+  }
+
+  /* The decorative level (owner decisions C91 level 2 and C65): initials of
+     the largest size take a cover of their hue -- the C17 plate stepping into
+     a second container step towards the far corner, mixed in OKLab, roles
+     only -- under the same ink. C65 put
+     covers on placeholders from 64 px; the avatar ladder ends at size 3 (56 px,
+     52 on a phone), so size 3 is where it starts, and the smaller sizes stay
+     flat. No hue, no cover: the neutral look stays neutral (C17). Off unless
+     sf-avatar--expressive (sf-avatar's expressive setting) or
+     data-sf-style="expressive" above it says so; the nearest data-sf-style
+     wins, strict being the default. The switch is a number the image's size
+     multiplies, so off is the C17 plate exactly. */
+  :where([data-sf-style="expressive"]) {
+    --sf-style--expressive: 1;
+  }
+
+  :where([data-sf-style="strict"]) {
+    --sf-style--expressive: 0;
+  }
+
+  .sf-avatar.sf-avatar--expressive {
+    --sf-style--expressive: 1;
+  }
+
+  .sf-avatar--text.sf-avatar--size-3:is(#{$sf-avatar-hue-classes}) {
+    background-image: linear-gradient(135deg in oklab, transparent, var(--sf-hue-container));
+    background-repeat: no-repeat;
+    background-size: calc(100% * var(--sf-style--expressive, 0)) calc(100% * var(--sf-style--expressive, 0));
+  }
+
+  @media (forced-colors: active) {
+    .sf-avatar--text {
+      background-image: none;
+    }
   }
 
   .sf-avatar--square {

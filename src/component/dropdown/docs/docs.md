@@ -5,7 +5,9 @@ concealed option list.
 
 The root uses `.sf-dropdown`, one of the five size modifiers `1/3`, `1/2`, `1`,
 `2`, or `3`, one appearance modifier (`outlined` or `filled`), and either the
-`text` or `tag` presentation. The visible label stays separate from each
+`text` or `tag` presentation. A filled field draws its bottom edge in
+`--sf-outline` (C52, as `sf-input`); focus and an open list colour the whole
+border that colour. The visible label stays separate from each
 option's stable `data-value`. A named hidden input owns the submitted value.
 
 The actual toggle button is the primary Tab stop. The shared interaction
@@ -48,7 +50,8 @@ written as an `sf-input` (the markup before R029) still works and keeps its
 box, the inset around it. The scrollbar shows only when the rows do not fit;
 while it takes room in the layout the scroll area is marked
 `sf-list-container-wrap--scrollbar` and gives up its inline-end padding, the
-track being the inset, a thumb of `--sf-space-1/4` and the inset again.
+track being the inset, the page scrollbar's thumb (`--sf-scroll-thumb-width`)
+and the inset again: 14, the page's `--sf-scroll-bg-width` (owner decision C106).
 
 Native form reset restores the selection captured at first connection. `change`
 bubbles after user selection and is the name to bind; `sf-dropdown:change` is

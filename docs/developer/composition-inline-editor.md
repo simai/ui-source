@@ -3,10 +3,23 @@
 `SF.Composition.startInlineEdit(element, options)` (Smart component
 `smart.inline-editor`) edits the text of a
 rendered `content.heading` or `content.paragraph` in place, using the inline
-content model those types already define: text runs with `strong`, `em` and
-`code` marks, links whose children are text runs and, since type version
-1.1.0, inline component atoms. Lists are not part of this model and are not
-offered.
+content model those types already define: text runs with `strong`, `em`,
+`code` and, since inline model 1.2.0, `strike` marks, links whose children are
+text runs and breaks, the soft line break and, since type version 1.1.0,
+inline component atoms. Lists are not part of this model and are not offered.
+
+Inline model 1.2.0 (2026-11-10; `content.heading` 1.3.0, `content.paragraph`
+1.4.0 and every type with an inline field at its next minor) adds
+`{"type": "break", "marks"?: [...]}` and the mark `strike`. Shift+Enter inserts
+a break with the marks and link of the character before it; the editor draws
+it as `<br>` (`data-sf-inline-break` when it carries marks), reads `<br>` and
+`s`/`strike`/`del` back, and copies a break as a line end in plain text. The
+model never removes a break: consecutive breaks, breaks at an edge, inside
+marks and inside a link are kept. The toolbar offers bold, italic and code;
+`strike` is a known mark (kept, toggled by `toggleMark`, drawn as `<s>`) with
+no shortcut and a toolbar button only when `options.marks` names it. An older pair keeps a break opaque while
+editing and refuses it at validation, so a producer writes breaks only to
+hosts on this pair.
 
 ## Inline component atoms
 
@@ -41,6 +54,19 @@ it silently. Validation still refuses an unknown entry: the host learns of it
 when it saves, not by losing it. `inlineText` returns the text runs only;
 offsets count one unit for each atom or opaque entry.
 
+A mark the model does not know survives the same way (2026-11-10): marks are
+sorted with the known ones first in their canonical order and the unknown ones
+after them in the order they came; `toggleMark` touches only a known mark, and
+the editor draws an unknown mark as a `span` carrying `data-sf-inline-mark`
+and reads it back from there, never as an element of that name. The field's
+`options.marks` limit the known marks only. Validation still refuses an
+unknown mark, and the renderer draws no element for it.
+
+An atom is never inside a link, whatever the model is given: a link that holds
+one is split around it (`[link a, atom, link b]`), and an atom pasted inside an
+`<a>` stands beside the link. An opaque entry from a newer producer keeps its
+place in its link.
+
 The editor code loads on demand: place `<sf-inline-editor></sf-inline-editor>`
 on the editor page and wait for it; before that `startInlineEdit` throws
 `inline_editor_not_loaded`. `document.querySelector('sf-inline-editor').edit(element,
@@ -67,9 +93,11 @@ Editing: Ctrl/Cmd+B, I and E toggle bold, italic and code on the selection;
 Ctrl/Cmd+K opens a link address field (http, https, mailto, tel, relative and
 fragment links only; unsafe addresses show an accessible error); Ctrl/Cmd+Z,
 Ctrl/Cmd+Shift+Z and Ctrl/Cmd+Y use the editor's own history; Enter commits,
-Escape cancels, moving focus away commits. Paste keeps only bold, italic, code
+Escape cancels, moving focus away commits, Shift+Enter inserts a soft line break (key effect `break`). Paste keeps only bold, italic, code
 and safe links from HTML (Word and web pages), drops styles, scripts, images
-and unsafe links, and joins pasted paragraphs into one line. IME composition
+and unsafe links, and joins pasted paragraphs into one line. Only HTML this
+editor copied keeps its `data-sf-inline-*` attributes (atoms, marks it cannot
+draw); a paste from elsewhere loses them first. IME composition
 is never interrupted; one value event follows the committed text. Drag-in drops
 are ignored. `options.marks` narrows marks, `options.links: false` disables
 links, `options.messages` overrides the Russian/English toolbar texts.

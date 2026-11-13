@@ -33,7 +33,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {fieldSize} from '../../component/field-size';
 import {createFieldContract} from '../../component/field-contract';
-import {FormField, innerControlName} from '../helpers/form-field';
+import {FormField, innerControlName, syncFieldValidity} from '../helpers/form-field';
 import {renderCodeInputTemplate} from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -43,13 +43,16 @@ import {
   MASK_GLYPH,
   applyEdit,
   applyPaste,
+  codeCharset,
+  codeGroups,
   codeInputMode,
+  codeKind,
   codeLength,
   codeMode,
-  codePattern,
   currentCell,
   normaliseCode,
   positionWords,
+  separatorAfter,
 } from './code.mjs';
 import './scss/index.scss';
 
@@ -83,6 +86,12 @@ class SfCodeInput extends FormField(CodeInputElement) {
     this._focusValue = null;
     this._changeSent = false;
     this._form = null;
+    // The cell a mouse drag started on, or -1, and whether the click that
+    // ends a mouse press is already handled (K2).
+    this._dragFrom = -1;
+    this._mousePressed = false;
+    // The cell the mouse is over, or -1 (K4).
+    this._hover = -1;
     this.addEventListener('beforeinput', this.onBeforeInput);
     this.addEventListener('input', this.onInput, true);
     this.addEventListener('paste', this.onPaste);
@@ -94,6 +103,13 @@ class SfCodeInput extends FormField(CodeInputElement) {
     this.addEventListener('select', this.onCaret);
     this.addEventListener('selectionchange', this.onCaret);
     this.addEventListener('keyup', this.onCaret);
+    this.addEventListener('pointerdown', this.onPointerDown);
+    this.addEventListener('pointermove', this.onPointerMove);
+    this.addEventListener('pointerup', this.onPointerUp);
+    this.addEventListener('pointercancel', this.onPointerUp);
+    this.addEventListener('pointerleave', this.onPointerLeave);
+    this.addEventListener('dblclick', this.onDoubleClick);
+    this.addEventListener('copy', this.onCopy);
   }
 
   get length() {
@@ -102,6 +118,32 @@ class SfCodeInput extends FormField(CodeInputElement) {
 
   get mode() {
     return codeMode(this.getAttribute('mode'));
+  }
+
+  // An own alphabet (C82): only these characters are kept; set, it takes the
+  // place of the mode.
+  get charset() {
+    return codeCharset(this.getAttribute('charset'));
+  }
+
+  // Cells per group, a separator between the groups (C82: 3 + 3, 4 + 4), or 0.
+  get groups() {
+    return codeGroups(this.getAttribute('groups'), this.length);
+  }
+
+  // What the code is made of: the mode, the alphabet and whether letters
+  // become capitals (C82), as code.mjs reads it.
+  // (The setting is copied in by member, not as an object key: the loader
+  // reads a bare word of this file as a utility class, and the bare
+  // `uppercase` asked for utility.font-transform.)
+  get kind() {
+    const settings = {mode: this.mode, charset: this.charset};
+    settings.uppercase = this.uppercase;
+    return codeKind(settings);
+  }
+
+  get numeric() {
+    return codeInputMode(this.kind) === 'numeric';
   }
 
   get size() {
@@ -113,14 +155,14 @@ class SfCodeInput extends FormField(CodeInputElement) {
   // The code: the native input's, kept to the mode and the length.
   get value() {
     const input = this.getInputElement();
-    return normaliseCode(input ? input.value : (this.getAttribute('value') ?? this.defaultValue), this.mode, this.length);
+    return normaliseCode(input ? input.value : (this.getAttribute('value') ?? this.defaultValue), this.kind, this.length);
   }
 
   // Setting the value writes the field and its cells, as the native input's
   // own value does: no input, change or complete event, which are the
   // person's.
   set value(next) {
-    const value = next === null || next === undefined ? '' : normaliseCode(next, this.mode, this.length);
+    const value = next === null || next === undefined ? '' : normaliseCode(next, this.kind, this.length);
     if (next === null || next === undefined) this.removeAttribute('value');
     else this.setAttribute('value', value);
     const input = this.getInputElement();
@@ -159,7 +201,7 @@ class SfCodeInput extends FormField(CodeInputElement) {
 
   // «цифра 3 из 6» -- the cell the caret is in, in the page's language.
   positionText(cell) {
-    return positionWords(this.text(this.mode === 'numeric' ? 'digit' : 'character'), cell, this.length);
+    return positionWords(this.text(this.numeric ? 'digit' : 'character'), cell, this.length);
   }
 
   ownInput(target) {
@@ -177,7 +219,7 @@ class SfCodeInput extends FormField(CodeInputElement) {
     this._selection = {start: input.selectionStart ?? 0, end: input.selectionEnd ?? 0};
     // A typed character the mode does not keep is not written at all.
     if (event.inputType === 'insertText' && typeof event.data === 'string'
-      && event.data.length > 0 && normaliseCode(event.data, this.mode, this.length) === '') {
+      && event.data.length > 0 && normaliseCode(event.data, this.kind, this.length) === '') {
       event.preventDefault();
     }
   };
@@ -196,7 +238,7 @@ class SfCodeInput extends FormField(CodeInputElement) {
       data: event.data ?? null,
       inputType: event.inputType || '',
       selection: this._selection,
-      mode: this.mode,
+      mode: this.kind,
       length: this.length,
     });
     this._selection = null;
@@ -219,7 +261,7 @@ class SfCodeInput extends FormField(CodeInputElement) {
       text,
       start: input.selectionStart ?? 0,
       end: input.selectionEnd ?? 0,
-      mode: this.mode,
+      mode: this.kind,
       length: this.length,
     });
     if (!next || next.value === input.value) return;
@@ -237,6 +279,7 @@ class SfCodeInput extends FormField(CodeInputElement) {
       this.setAttribute('value', value);
       this._writingValue = false;
     }
+    this.markCell();
     this.syncCells();
     if (value.length === this.length) {
       if (this._completed !== value) {
@@ -252,36 +295,62 @@ class SfCodeInput extends FormField(CodeInputElement) {
     }
   }
 
-  // The keys are the field's own: Backspace clears the cell before the caret
-  // and steps back, Delete clears the one after it, the arrows move between
-  // the cells. Home and End go to the first cell and past the last character
-  // on every platform: a Mac field leaves them to the page, and scrolls. The
-  // caret's cell is read once the key has done its work.
+  // The keys are the field's own: Backspace clears the marked cell, or the
+  // one before a bare caret, and steps back; Delete clears the marked cell;
+  // the arrows move a cell at a time (a native arrow only collapses the
+  // one-cell mark, and the mark would come back on the same cell), Shift
+  // with them grows the selection by a cell. Home and End go to the first
+  // cell and past the last character on every platform: a Mac field leaves
+  // them to the page, and scrolls. The caret's cell is read once the key has
+  // done its work.
   onKeydown = (event) => {
     const input = this.ownInput(event.target);
     if (!input) return;
-    if ((event.key === 'Home' || event.key === 'End') && !event.altKey && !event.ctrlKey && !event.metaKey) {
+    const plain = !event.altKey && !event.ctrlKey && !event.metaKey;
+    const start = input.selectionStart ?? 0;
+    const end = input.selectionEnd ?? start;
+    const length = input.value.length;
+    if ((event.key === 'Home' || event.key === 'End') && plain) {
       event.preventDefault();
-      const at = event.key === 'Home' ? 0 : input.value.length;
-      if (event.shiftKey) input.setSelectionRange(Math.min(at, input.selectionStart ?? 0), Math.max(at, input.selectionEnd ?? 0));
+      const at = event.key === 'Home' ? 0 : length;
+      if (event.shiftKey) input.setSelectionRange(Math.min(at, start), Math.max(at, end), at < start ? 'backward' : 'forward');
       else input.setSelectionRange(at, at);
+    } else if ((event.key === 'ArrowLeft' || event.key === 'ArrowRight') && plain) {
+      event.preventDefault();
+      const back = event.key === 'ArrowLeft';
+      if (event.shiftKey) {
+        if (back) input.setSelectionRange(Math.max(0, start - 1), end, 'backward');
+        else input.setSelectionRange(start, Math.min(length, end + 1), 'forward');
+      } else {
+        const at = back ? Math.max(0, start - 1) : Math.min(length, start + 1);
+        input.setSelectionRange(at, at);
+      }
+      this.onCaret();
     }
     setTimeout(this.onCaret, 0);
   };
 
-  // A click lands in the cell under the pointer: the input lies transparent
-  // over the cells and its own caret position knows nothing of them.
+  // The cell under a point: the input lies transparent over the cells and its
+  // own caret position knows nothing of them.
+  cellAt(x) {
+    const cells = this.cells();
+    const index = cells.findIndex((cell) => x < cell.getBoundingClientRect().right);
+    return index === -1 ? cells.length - 1 : Math.max(index, 0);
+  }
+
+  // A tap or a click lands in the cell under the pointer. A mouse press has
+  // placed the caret already (onPointerDown), and its click must not collapse
+  // what a drag or a double click selected (K2: the click reset a drag of
+  // cells 2-5 to a caret at 4); a selection of more than one cell is kept.
   onClick = (event) => {
     const input = this.ownInput(event.target);
     if (!input || input.disabled) return;
-    const cells = this.cells();
-    const x = event.clientX;
-    let index = cells.findIndex((cell) => {
-      const box = cell.getBoundingClientRect();
-      return x < box.right;
-    });
-    if (index === -1) index = cells.length - 1;
-    const at = Math.min(Math.max(index, 0), input.value.length);
+    if (this._mousePressed) {
+      this._mousePressed = false;
+      return;
+    }
+    if ((input.selectionEnd ?? 0) - (input.selectionStart ?? 0) > 1) return;
+    const at = Math.min(this.cellAt(event.clientX), input.value.length);
     input.setSelectionRange(at, at);
     this.onCaret();
   };
@@ -307,12 +376,112 @@ class SfCodeInput extends FormField(CodeInputElement) {
     if (changed && !this._changeSent) input.dispatchEvent(new Event('change', {bubbles: true}));
     this._focusValue = null;
     this._changeSent = false;
+    input.closest('.sf-verification')?.classList.remove('sf-verification--pointer-focus');
+    this.syncCells();
+    // While focusout runs the input may still be the active element.
+    setTimeout(this.onCaret, 0);
+  };
+
+  // A press on the field: its focus is the pointer's, so the sheet draws no
+  // ring on the active cell, only its primary border, until the focus leaves
+  // (K1, as sf-input's .sf-input--pointer-focus).
+  // A mouse selects by cells (K2): a press puts the caret in the cell under
+  // it, a drag selects the cells it crosses, a double click the whole code.
+  // The browser's own selection would follow the transparent input's text,
+  // not the cells. A touch is left to the browser (its caret, long-press menu
+  // and paste), then the click puts the caret in the cell.
+  onPointerDown = (event) => {
+    const input = this.ownInput(event.target);
+    if (!input) return;
+    input.closest('.sf-verification')?.classList.add('sf-verification--pointer-focus');
+    this._mousePressed = false;
+    if (event.pointerType !== 'mouse' || event.button !== 0 || input.disabled) return;
+    event.preventDefault();
+    this._mousePressed = true;
+    if (input.ownerDocument?.activeElement !== input) input.focus({preventScroll: true});
+    const at = Math.min(this.cellAt(event.clientX), input.value.length);
+    this._dragFrom = -1;
+    input.setSelectionRange(at, at);
+    this.markCell();
+    this._dragFrom = at;
+    try { input.setPointerCapture(event.pointerId); } catch { /* a synthetic press */ }
     this.syncCells();
   };
 
-  onCaret = () => {
+  // A double click selects the whole code, as a word in a field.
+  onDoubleClick = (event) => {
+    const input = this.ownInput(event.target);
+    if (!input || input.disabled) return;
+    this._dragFrom = -1;
+    input.setSelectionRange(0, input.value.length, 'forward');
     this.syncCells();
   };
+
+  // The pointer marks the one cell it is over (K4: the whole group lit up on
+  // hover, and hid the current cell's mark); a drag selects.
+  onPointerMove = (event) => {
+    const input = this.ownInput(event.target);
+    if (!input) return;
+    const at = this.cellAt(event.clientX);
+    if (event.pointerType === 'mouse') {
+      const hover = input.disabled ? -1 : at;
+      if (hover !== this._hover) {
+        this._hover = hover;
+        this.syncCells();
+      }
+    }
+    if (this._dragFrom < 0 || !(event.buttons & 1)) return;
+    const from = Math.min(this._dragFrom, at);
+    const to = Math.min(Math.max(this._dragFrom, at) + 1, input.value.length);
+    if (to > from && (input.selectionStart !== from || input.selectionEnd !== to)) {
+      input.setSelectionRange(from, to, at < this._dragFrom ? 'backward' : 'forward');
+      this.syncCells();
+    }
+  };
+
+  onPointerLeave = () => {
+    if (this._hover === -1) return;
+    this._hover = -1;
+    this.syncCells();
+  };
+
+  onPointerUp = () => {
+    if (this._dragFrom < 0) return;
+    this._dragFrom = -1;
+    this.onCaret();
+  };
+
+  // Copy gives the code that is selected, never a masked one (K2).
+  onCopy = (event) => {
+    const input = this.ownInput(event.target);
+    if (!input) return;
+    if (this.mask) {
+      event.preventDefault();
+      return;
+    }
+    const start = input.selectionStart ?? 0;
+    const end = input.selectionEnd ?? start;
+    if (end <= start || !event.clipboardData) return;
+    event.preventDefault();
+    event.clipboardData.setData('text/plain', input.value.slice(start, end));
+  };
+
+  onCaret = () => {
+    this.markCell();
+    this.syncCells();
+  };
+
+  // A bare caret inside the code becomes a one-cell selection (input-otp's
+  // rule): what is marked is what typing replaces and Backspace or Delete
+  // clears (K3). A caret after the last character stays bare: the next
+  // character goes there.
+  markCell() {
+    const input = this.getInputElement();
+    if (!input || input.ownerDocument?.activeElement !== input || this._dragFrom >= 0) return;
+    const start = input.selectionStart;
+    if (start === null || start !== input.selectionEnd || start >= input.value.length) return;
+    input.setSelectionRange(start, start + 1, 'forward');
+  }
 
   cells() {
     return Array.from(this.querySelectorAll(':scope .sf-verification-cell'));
@@ -327,25 +496,54 @@ class SfCodeInput extends FormField(CodeInputElement) {
   }
 
   // The cells show the code (or a dot for each character when masked), the
-  // filled ones `active`, the caret's `current`; the position line says the
-  // caret's cell, spoken once each time it moves.
+  // filled ones `active`, the caret's `current` -- only while the field has
+  // the focus: a field at rest marked the next cell and looked focused (K6);
+  // the sheet gates it on focus too. A bare caret is drawn in its cell
+  // (`caret`; `caret-end` after the last character of a whole code, K3): the
+  // input itself is transparent. A selection of more than one cell paints
+  // its cells `selected` (K2). The position line says the caret's cell,
+  // spoken once each time it moves.
   syncCells() {
     const input = this.getInputElement();
     if (!input) return;
     const value = input.value;
+    const focused = input.ownerDocument?.activeElement === input;
+    const start = input.selectionStart ?? value.length;
+    const end = input.selectionEnd ?? start;
+    const one = end - start <= 1;
     const current = this.caretCell(input);
+    const bare = focused && start === end && !this.readonly;
     this.cells().forEach((cell, index) => {
       const character = value[index] || '';
       const shown = character && this.mask ? MASK_GLYPH : character;
       if (cell.textContent !== shown) cell.textContent = shown;
       cell.classList.toggle('active', index < value.length);
-      cell.classList.toggle('current', index === current);
+      cell.classList.toggle('current', focused && one && index === current);
+      const selected = focused && !one && index >= start && index < end;
+      cell.classList.toggle('selected', selected);
+      // Hover marks one cell, never over the current cell's mark or a
+      // selection (K4).
+      cell.classList.toggle('hover', index === this._hover && !selected && !(focused && one && index === current));
+      cell.classList.toggle('caret', bare && index === current);
+      cell.classList.toggle('caret-end', bare && index === current && start >= this.length);
     });
     // A live line: a screen reader says it each time the caret changes cell,
     // and reads it with the field when the field takes focus.
     const position = this.querySelector(':scope .sf-code-input-position');
     const words = this.positionText(current);
     if (position && position.textContent !== words) position.textContent = words;
+  }
+
+  // A code that is not whole is too short. The inner input carries no
+  // pattern: its mismatch was the browser's English tooltip over the cells
+  // («Please match the requested format.», K5), and the characters are already
+  // kept to the mode. The host says it through ElementInternals, in the page's
+  // words; a custom error and an empty required field come first, as before.
+  sfSyncValidity() {
+    const input = this.getInputElement();
+    const value = input?.value ?? '';
+    const short = Boolean(input) && !input.disabled && value.length > 0 && value.length < this.length;
+    syncFieldValidity(this, input, short ? {tooShort: this.text('too-short')} : {});
   }
 
   onFormReset = () => {
@@ -394,10 +592,10 @@ class SfCodeInput extends FormField(CodeInputElement) {
     // The template's defaultValue is the component's, as written; what the
     // native input starts from is that code cleaned to the mode and length,
     // under its own name, so a template never reads a resolved prop changed.
-    const defaultCode = normaliseCode(this.defaultValue, this.mode, this.length);
+    const defaultCode = normaliseCode(this.defaultValue, this.kind, this.length);
     const value = hasControlledValue
-      ? normaliseCode(this.getAttribute('value'), this.mode, this.length)
-      : (input ? normaliseCode(input.value, this.mode, this.length) : defaultCode);
+      ? normaliseCode(this.getAttribute('value'), this.kind, this.length)
+      : (input ? normaliseCode(input.value, this.kind, this.length) : defaultCode);
 
     return this.createTemplateContext({
       ...props,
@@ -422,8 +620,14 @@ class SfCodeInput extends FormField(CodeInputElement) {
       mode: this.mode,
       length: this.length,
       mask: this.mask,
-      inputMode: codeInputMode(this.mode),
-      pattern: codePattern(this.mode, this.length),
+      inputMode: codeInputMode(this.kind),
+      // Letters become capitals: the keyboard offers them (C82). Not named
+      // after the setting: the loader reads template words as utility classes.
+      capitals: this.kind.uppercase,
+      groups: this.groups,
+      // The cells a group separator follows (C82).
+      separators: Array.from({length: this.length}, (_, index) => index)
+        .filter((index) => separatorAfter(index, this.groups, this.length)),
       ariaLabel: this.ariaLabel,
       groupLabel: this.ariaLabel || this.text('group'),
       messageContent: messageIsError ? errorContent : hint,

@@ -93,6 +93,22 @@ test('rejects unknown profiles, depth, byte limits and cyclic documents', async 
   assert.ok(validate(cyclic).diagnostics.some(({ code }) => code === 'document_not_json'));
 });
 
+test('an unknown profile is one diagnostic, whatever the size of the Document', () => {
+  const paragraph = (index) => ({ id: `p${index}`, type: 'content.paragraph', data: { content: [{ type: 'text', value: `Line ${index}.` }] } });
+  const documentOf = (profile, count) => ({
+    schema: 'simai.composition.document', schema_version: 1, id: 'sized', profile,
+    root: { id: 'root', type: 'content.document', slots: { default: Array.from({ length: count - 1 }, (_, index) => paragraph(index)) } },
+  });
+  for (const count of [1, 10, 500]) {
+    const checked = validate(documentOf('page', count));
+    assert.deepEqual(checked.diagnostics.map(({ code, path }) => [code, path]), [['profile_unknown', '$.profile']], `${count} nodes`);
+    // A known profile is unchanged: content.document is structured content only.
+    assert.equal(validate(documentOf('structured-content', count)).valid, true, `${count} nodes, structured-content`);
+    const layout = validate(documentOf('ui-layout', count)).diagnostics;
+    assert.deepEqual(layout.map(({ code, path }) => [code, path]), [['type_profile_unsupported', '$.root.type']], `${count} nodes, ui-layout`);
+  }
+});
+
 test('rejects arbitrary classes, ready queries and unsupported required extensions', async () => {
   const document = await fixture('catalog-page.json');
   document.root.props = { class: 'hidden' };

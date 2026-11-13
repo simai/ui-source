@@ -18,6 +18,6 @@
       "one": "{n} result",
       "other": "{n} results"
     },
-    "value-missing": "Choose a value."
+    "value-missing": "Choose a value"
   }
 }

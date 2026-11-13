@@ -18,6 +18,7 @@
 // action and answers an outcome, the words are the language files'.
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
+import {whenClosedLayerOpens} from '../../core/js/layer-stack';
 import {renderIncludeTemplate} from './js/templates/default';
 import manifest from './component.json';
 import en from './lang/en.json';
@@ -100,6 +101,8 @@ class SfInclude extends IncludeElement {
     // kept until then (sfAwaitingData).
     this._settled = false;
     this._connected = false;
+    // The opening of the closed layer the first load waits for, if any.
+    this._layerWait = null;
   }
 
   get address() {
@@ -147,8 +150,24 @@ class SfInclude extends IncludeElement {
   }
 
   // Starts the first load: now, or once the region nears the viewport.
+  // In a closed window or drawer the first load waits for the layer to
+  // open: the layer starts its content early, its code, not its data.
   arm() {
-    if (!this.isConnected || this._phase !== 'idle' || !this.address) return;
+    if (!this.isConnected || this._phase !== 'idle' || !this.address || this._layerWait) return;
+    const opens = whenClosedLayerOpens(this, this.sfScope);
+    if (opens) {
+      const scope = this.sfScope;
+      this._layerWait = opens;
+      opens.then(() => {
+        if (this._layerWait !== opens || scope.aborted) return;
+        this._layerWait = null;
+        this.arm();
+      });
+      scope.addEventListener('abort', () => {
+        if (this._layerWait === opens) this._layerWait = null;
+      }, {once: true});
+      return;
+    }
     const Sight = globalThis.IntersectionObserver;
     if (this.load !== 'view' || typeof Sight !== 'function') {
       void this.fetchPart();

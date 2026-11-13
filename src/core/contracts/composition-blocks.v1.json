@@ -18,6 +18,7 @@
       "content.document": null,
       "content.figure": "media",
       "content.file": "media",
+      "content.foreign": null,
       "content.grid": "layout",
       "content.heading": "text",
       "content.html": "media",
@@ -561,7 +562,8 @@
               "",
               "1/2",
               "1",
-              "2"
+              "2",
+              "text"
             ],
             "type": "string"
           },
@@ -609,7 +611,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.badge",
-      "version": "1.4.0"
+      "version": "1.5.0"
     },
     "sf-button": {
       "inputs": {
@@ -807,7 +809,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button",
-      "version": "1.12.1"
+      "version": "1.13.0"
     },
     "sf-button-icon": {
       "inputs": {
@@ -966,7 +968,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button-icon",
-      "version": "1.8.2"
+      "version": "1.8.4"
     },
     "sf-checkbox": {
       "inputs": {
@@ -1034,7 +1036,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.checkbox",
-      "version": "1.1.6"
+      "version": "1.2.0"
     },
     "sf-divider": {
       "component": "component.content-divider",
@@ -1078,6 +1080,10 @@
             "default": false,
             "type": "boolean"
           },
+          "error-message": {
+            "default": "",
+            "type": "string"
+          },
           "inherited-text": {
             "default": "",
             "type": "string"
@@ -1085,6 +1091,10 @@
           "inherited-value": {
             "default": "",
             "type": "string"
+          },
+          "invalid": {
+            "default": false,
+            "type": "boolean"
           },
           "label": {
             "default": "",
@@ -1157,7 +1167,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.dropdown",
-      "version": "1.8.1"
+      "version": "1.9.0"
     },
     "sf-icon": {
       "inputs": {
@@ -1435,7 +1445,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.input",
-      "version": "1.7.1"
+      "version": "1.7.2"
     },
     "sf-input-textarea": {
       "inputs": {
@@ -1634,6 +1644,10 @@
             "default": "",
             "type": "string"
           },
+          "short": {
+            "default": false,
+            "type": "boolean"
+          },
           "size": {
             "default": "1",
             "enum": [
@@ -1652,7 +1666,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.switch",
-      "version": "1.3.4"
+      "version": "1.5.0"
     }
   },
   "parameter_sets": {

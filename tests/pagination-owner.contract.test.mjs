@@ -16,21 +16,23 @@ test("Pagination exposes a named navigation list with one current page", async (
   assert.match(template, /<nav[\s\S]*aria-label=\$\{context\.ariaLabel\}/);
   assert.match(template, /<ol class="sf-pagination-list/);
   assert.match(template, /<li class="sf-pagination-item/);
-  assert.match(template, /aria-current=\$\{item\.selected \? "page" : nothing\}/);
+  // numbers (C97): the current page says aria-current="page", the others nothing.
+  assert.match(template, /aria-current=\$\{slot\.selected \? "page" : nothing\}/);
   assert.doesNotMatch(template, /aria-current=.*"false"/);
 });
 
-// The gap between the numbers is gone. It was first required to be an
-// aria-hidden span with no action, then on 2026-10-03 a button that named the
-// page it jumped to, and on 2026-10-04 the owner of the consumer replaced the
-// whole scheme with a window around the current page plus a number field. There
-// is nothing left to disclose, so what this test guards now is that the gap does
-// not come back without the scheme that needed it.
-test("Pagination has no gap between the numbers to disclose", async () => {
+// The gap between the numbers: first an aria-hidden span with no action, then
+// on 2026-10-03 a button that named the page it jumped to, then on 2026-10-04
+// gone with the numbers (the consumer's owner: a window and a field). Decision
+// C97 (2026-11-12) brings the numbers back for sites and search, and with them
+// the gap -- not a control: an aria-hidden mark in an item of its own, never a
+// button that jumps into the middle of what it hides.
+test("Pagination's gap between the numbers is a mark, not a control", async () => {
   const template = await read("src/smart/pagination/js/templates/default.js");
   const styles = await read("src/component/pagination/scss/_css__page_number.scss");
 
-  assert.doesNotMatch(template, /ellipsis/);
+  assert.match(template, /if \(slot\.type === "gap"\) \{\s*return html`<li class="sf-pagination-item sf-pagination-slot sf-pagination-slot--gap" aria-hidden="true"><span class="sf-pagination-gap">…<\/span><\/li>`;/);
+  assert.doesNotMatch(template, /<button[^>]*sf-pagination-gap/);
   // The component layer keeps its ellipsis modifier: nothing in the Framework
   // forbids a host from writing a page number row of its own.
   assert.match(styles, /\.sf-page-number--ellipsis/);
@@ -58,17 +60,18 @@ test("Pagination renders source-driven summary and localized control labels", as
   // Round four took the marked count out of the footer; the band of bulk
   // controls is where it is said, and only while something is marked.
   assert.doesNotMatch(template, /context\.selectedCount\}\/\$\{context\.total/);
-  // The total as shown: N, or «~N» while it is an estimate (gate 29).
-  assert.match(template, /context\.totalLabel\} \$\{context\.shownTotal/);
+  // The total as shown: N, or «~N» while it is an estimate (gate 29); the
+  // footer says it as a range, «41–60 из 240» (C97 point 2).
+  assert.match(runtime, /this\.sfWord\("range", \{vars: \{from, to, total: this\.shownTotal\}\}\)/);
   assert.match(runtime, /get shownTotal\(\) \{\s*return this\.totalExact \? String\(this\.total\) : `~\$\{this\.total\}`;/);
   assert.doesNotMatch(template, /0\/10|Показать количество/);
-  // Greyed controls were the earlier answer here. The consumer's owner replaced
-  // it on 2026-10-03: a direction that leads nowhere is not shown, and neither
-  // is Show more when there is no next portion. A disabled control still reads
-  // as a promise, and the row of controls changed shape anyway as pages ran out.
-  assert.match(template, /\$\{context\.hasPrev\s*\?\s*html`/);
+  // A direction that leads nowhere: hidden from 2026-10-03 (the consumer's
+  // owner), and disabled in place again since decision C97 point 4 (2026-11-12):
+  // hidden, the field moved sideways by 96 px while a person paged (PG-02).
+  // Show more is still not shown when there is no next portion.
+  assert.match(template, /disabled: !context\.hasPrev,/);
+  assert.match(template, /disabled: !context\.hasNext,/);
   assert.match(template, /\$\{context\.top && context\.hasNext\s*\?\s*html`/);
-  assert.doesNotMatch(template, /\?disabled=\$\{!context\.has(Prev|Next)\}/);
 });
 
 test("Pagination handles an empty set without a fake page action", async () => {
@@ -79,7 +82,7 @@ test("Pagination handles an empty set without a fake page action", async () => {
   // records and whether more follow.
   assert.match(runtime, /get pageItems\(\) \{[\s\S]*?if \(this\.exactCount && this\.total === 0\) \{\s*return \[\]/);
   // The action go-to-page answers an outcome (standard 1.3.8 §4.4).
-  assert.match(runtime, /goToPage\(page\) \{\s*if \(this\.exactCount && this\.total === 0\) \{\s*return \{ outcome: "refused", reason: "empty" \}/);
+  assert.match(runtime, /goToPage\(page(?:, \{ link = false, address = false \} = \{\})?\) \{\s*if \(this\.exactCount && this\.total === 0\) \{\s*return \{ outcome: "refused", reason: "empty" \}/);
   assert.match(await read("src/smart/pagination/js/templates/default.js"), /!context\.countKnown \|\| context\.total > 0/);
   assert.match(runtime, /getBooleanAttr\("show-page-size", true\)/);
 });
@@ -119,7 +122,8 @@ test(
     assert.match(template, /kind: "last"/);
     assert.match(template, /sf-pagination-direction--\$\{kind\}/);
     assert.doesNotMatch(template, /<span class="sf-pagination-last">/);
-    assert.match(template, /item\.edge \? "sf-pagination-item--edge"/);
+    // The current page of numbers is marked by its own class (C97).
+    assert.match(template, /sf-pagination-page--current/);
     assert.match(
       styles,
       /\[dir="rtl"\] \.sf-pagination \.sf-pagination-direction \.sf-icon/,

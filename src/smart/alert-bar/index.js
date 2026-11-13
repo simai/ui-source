@@ -23,7 +23,7 @@
 // is the action and answers an outcome, the words are the language files'.
 import SfBaseElement from '../../core/js/smart-base';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
-import {toDate, formatDate, formatRelativeTime} from '../../core/js/format';
+import {toDate} from '../../core/js/format';
 import {renderAlertBarTemplate} from './js/templates/default';
 import manifest from './component.json';
 import en from './lang/en.json';
@@ -43,8 +43,6 @@ const RANK = {error: 0, warning: 1, info: 2};
 export const HIDE = {warning: 'day', info: 'always'};
 // sf-alert's status icons, by the theme's status words.
 export const ICONS = {error: 'error', warning: 'warning', info: 'info'};
-// Within a day a time reads «5 минут назад»; older, as a date and a time.
-const RELATIVE_SPAN = 86400000;
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
 
@@ -211,16 +209,6 @@ class SfAlertBar extends AlertBarElement {
     return `${this.sfWord(`level-${item.level}`)}: ${item.text}`;
   }
 
-  // A time as a person reads it: «5 минут назад» within a day, else a date
-  // and a time, in the page language.
-  timeText(item) {
-    if (!item.time) return '';
-    const now = Date.now();
-    return Math.abs(now - item.at) < RELATIVE_SPAN
-      ? formatRelativeTime(item.time, {node: this, now: new Date(now)})
-      : formatDate(item.time, {date: 'medium', time: 'short', node: this});
-  }
-
   // ---------------------------------------------------------------- presses
 
   page(step) {
@@ -338,7 +326,7 @@ class SfAlertBar extends AlertBarElement {
       component: this,
       size: this.size === '1' ? '1' : '1/2',
       label: this.label,
-      list: list.map((item) => ({...item, timeText: this.timeText(item), levelWord: word(`level-${item.level}`)})),
+      list: list.map((item) => ({...item, levelWord: word(`level-${item.level}`)})),
       count,
       index,
       level,

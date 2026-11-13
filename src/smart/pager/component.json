@@ -2,7 +2,7 @@
   "$comment": "The source of sf-pager's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.13 and vocabulary 1.1.5; the design target is tab 2 of ui-control's prototypes/docara-four.html, with the owner's decisions of 2026-10-30.",
   "id": "smart.pager",
   "tag": "sf-pager",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "kind": "leaf",
   "family": "navigation",
   "settings": {
@@ -16,7 +16,7 @@
         "counter"
       ],
       "default": "cards",
-      "summary": "How the neighbours are shown: cards, two cards «Back / title» and «Next / title» (documentation); row, one line of the two titles (a blog, a product); steps, a wizard's Back, «Step 2 of 5» with a segmented track and a primary Next that says Done on the last step; course, lesson dots and a card for the next lesson; counter, «3 of 12» between two icon buttons (record browsing)"
+      "summary": "How the neighbours are shown (decision C97): cards, two cards «Back / title» and «Next / title» (the bottom of a documentation page, Docara); row, the previous and the next article by their titles, each up to two lines, stacked on a phone; counter, «‹ 3 из 240 ›» in a record card: the record's place in its list across the list's pages (total, has-next), keys, the way back to the list (list-href). Deprecated until 2027-01-01 (change journal value-pager-steps-course-retired), still drawn: steps, a wizard's Back, «Step 2 of 5» and Next (sf-wizard is the wizard), and course, lesson dots and the next lesson (no product). Image counters and dots belong to sf-gallery and sf-slider."
     },
     "size": {
       "type": "enum",
@@ -74,6 +74,23 @@
       "default": [],
       "summary": "The pages, steps, lessons or records in order, each {id, title, href?, meta?}; current is a place in it. A property, or the JSON island a server prints. meta is a lesson's note such as «6 минут»"
     },
+    "total": {
+      "type": "number",
+      "integer": true,
+      "min": 0,
+      "default": 0,
+      "summary": "counter: how many records the list has across its pages («3 из 240»). current is then the record's place in the whole list, from 0, and a move past the records in items is still asked (navigate carries the index), so the host loads that page of the list. 0: the count is items' length, or not known with has-next."
+    },
+    "has-next": {
+      "type": "boolean",
+      "default": false,
+      "summary": "counter without total: the host says another record follows. The place reads «3 из многих» and Next stays on while it is said."
+    },
+    "list-href": {
+      "type": "string",
+      "default": "",
+      "summary": "counter: the address of the list the record was opened from (its filter and page kept by the host). Set, a quiet icon link «К списку» / «Back to the list» stands before the arrows."
+    },
     "label": {
       "type": "string",
       "default-from": "runtime.label",
@@ -97,7 +114,7 @@
     "keys": {
       "type": "boolean",
       "default": false,
-      "summary": "ArrowLeft and ArrowRight on the page move to the previous and the next item (mirrored on a right-to-left page), unless focus is in a field or a key was taken by another component. For the counter view"
+      "summary": "ArrowLeft and ArrowRight on the page move to the previous and the next item (mirrored on a right-to-left page), and for counter [ and ] as well, unless focus is in a field or a key was taken by another component. For the counter view"
     }
   },
   "values": {
@@ -240,9 +257,23 @@
           "appearance": "counter",
           "keys": true
         }
+      },
+      "BracketLeft": {
+        "effect": "step:-1",
+        "when": {
+          "appearance": "counter",
+          "keys": true
+        }
+      },
+      "BracketRight": {
+        "effect": "step:+1",
+        "when": {
+          "appearance": "counter",
+          "keys": true
+        }
       }
     },
-    "x-keys": "ArrowLeft and ArrowRight step the position by one record (mirrored on a right-to-left page), on the counter view with keys set"
+    "x-keys": "ArrowLeft and ArrowRight step the position by one record (mirrored on a right-to-left page), and [ and ] on the counter view, with keys set"
   },
   "host-states": {
     "data-complete": "boolean"
@@ -281,7 +312,7 @@
       "state": "default"
     }
   },
-  "x-summary": "Navigation to the neighbouring page or step by meaning: the previous and the next documentation page as two cards or one row of links, a wizard's Back and Next with its step track, a course's lesson dots and next lesson, or a record counter. Not list paging: sf-pagination keeps 1, 2, 3 ….",
+  "x-summary": "Navigation to the neighbouring document by meaning (decision C97): the previous and the next documentation page as two cards, the previous and the next article as one row of titles, or a record's place in its list («‹ 3 из 240 ›»). Not list paging: sf-pagination keeps 1, 2, 3 ….",
   "x-source": {
     "package": "framework",
     "folder": "pager",
@@ -309,7 +340,10 @@
     "version 1.1.0 background-color-names: the public variable --sf-pager-card-background-color (C16 naming: a variable that sets a colour ends in -color, as the other 53 do). The former name --sf-pager-card-background is still read under the new one until 2027-01-01 (change journal token-component-background-color-names, src/core/contracts/token-aliases.v1.json); nothing draws differently.",
     "version 1.1.1 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives the action's method its one object argument, goTo({index}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged.",
     "version 1.2.1 (2026-11-09): cards stand on --sf-surface-card and the current dot takes the place's colour (C16, the background system, owner 2026-11-08).",
-    "version 1.3.0 (2026-11-11, docs precheck PB-01 applied decision; content acceptance): a minor. The done part of the steps track, the done dots and the current dot's ring report an amount, as a neutral progress bar does: they take --sf-on-surface-variant (grey) where they took --sf-primary; --sf-pager-fill-color still sets them. Settings, values, events and keys unchanged. Also (C16 leftovers): Its docs gave a stale default: the cards' fill is --sf-surface-card (since 1.2.1), not --sf-surface-0."
+    "version 1.2.3 (2026-11-11): a patch, nothing drawn differently. The sheet reads the C16 roles by their current names where it read the former ones, which are var() of them wherever they are declared (src/core/contracts/token-aliases.v1.json, sf-role-aliases): --sf-outline-primary → --sf-primary-outline. Settings, values, events and keys unchanged.",
+    "version 1.2.4 (2026-11-12, study R183, defects PR-02, PR-04, PR-05, decision C97): a patch; settings, values, events and keys unchanged. row shows each title whole up to two lines, where it cut it to one with an ellipsis (PR-04); cards and row stack on a phone (below the sm step, 32rem), the previous side first and the next one at the end of the line below (PR-05); the steps place line wraps under itself rather than cutting the step's name (PR-02; steps is interim, C97 moves it to sf-wizard). The first-paint snapshots follow at the group build.",
+    "version 1.3.0 (2026-11-12, decision C97 point 7; study R183, defects PR-01, PR-03, PR-06): a minor. sf-pager is the neighbouring document, in three looks: cards (docs page bottom, Docara), row (the previous and the next article; titles up to two lines, stacked on a phone, 1.2.4) and counter. counter is the record card's «‹ 3 из 240 ›»: the settings total (the list's count across its pages; current is then the place in the whole list and a move past items is still asked, navigate {index}, so the host loads that page), has-next (no total: «3 из многих», word position-many, Next while it is said) and list-href (a quiet icon link «К списку», word to-list, before the arrows); its arrows are ghost on-surface icon buttons (were outline); keys adds [ and ] for counter. steps and course are deprecated until 2027-01-01 and still draw, each use noted in SF.deprecations (change journal value-pager-steps-course-retired): steps is sf-wizard's job, course has no product. Image counters and carousel dots are sf-gallery's and sf-slider's and are not added. Events unchanged; change carries item null for a record outside items.",
+    "version 1.3.1 (written on fix/content-precheck as 1.3.0; 2026-11-11, docs precheck PB-01 applied decision; content acceptance): a minor. The done part of the steps track, the done dots and the current dot's ring report an amount, as a neutral progress bar does: they take --sf-on-surface-variant (grey) where they took --sf-primary; --sf-pager-fill-color still sets them. Settings, values, events and keys unchanged. Also (C16 leftovers): Its docs gave a stale default: the cards' fill is --sf-surface-card (since 1.2.1), not --sf-surface-0."
   ],
   "x-registry": {
     "capabilities": [

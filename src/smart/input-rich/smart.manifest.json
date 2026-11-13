@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-rich",
-  "version": "1.3.0",
+  "version": "1.3.2",
   "title": "Rich text",
   "summary": "A form field for formatted text: paragraphs, headings 2 to 4, bold, italic, links, bulleted and numbered lists and quotes, with a toolbar, undo and redo. Its value is HTML of that subset and nothing else: the value it is given, every paste and drop and every edit are cleaned to it.",
   "kind": "smart",
@@ -138,7 +138,8 @@
       },
       "aria-label": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Accessible name for a field drawn without a visible label; it names the editing surface. A visible label wins."
       }
     },
     "additionalProperties": false
@@ -320,11 +321,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-rich/index.js",
-        "sha256": "6f45f6b51c2e12c81f12be8e81a5f97cbe502af8ce38bf988e93fe444d72a9ae"
+        "sha256": "c9069dc5dd4b13d2759cda3ada3816712ebb86743286bb4cecc33dba05f22a01"
       },
       {
         "path": "src/smart/input-rich/js/templates/default.js",
-        "sha256": "d11298a1e6bf4f14a2c1c6e23c13cbadb609a04b9d9b450e16276f6e4ffede27"
+        "sha256": "98525c7e1778aeebd8a2552c3b31ac945cf81bebb551af95420dd6c5dcfc4291"
       },
       {
         "path": "src/smart/input-rich/js/rich-text-html.mjs",
@@ -332,11 +333,11 @@
       },
       {
         "path": "src/core/js/composition/html-subset.mjs",
-        "sha256": "20d9de5be17653b2d2ade6c38f9c4f92447d14ab20694eb003659d271be42405"
+        "sha256": "39c5d4f3595e02a959d389a0663c4648b3c87cc96bc8113d2b0902397a07b3aa"
       },
       {
         "path": "src/smart/input-rich/scss/_smart__rich_text.scss",
-        "sha256": "ec7738fa5fbf0380161ed38d3e12e443b3244c5bf69a4a78c9cdbbca9f6487d5"
+        "sha256": "e41a164b54ef1da9e07ea9a39c019068e983c289bccd87569d092ef3557bf5e6"
       },
       {
         "path": "src/smart/input-rich/rule.js",
@@ -344,7 +345,7 @@
       },
       {
         "path": "src/smart/input-rich/docs.md",
-        "sha256": "727981bdc831515aa04a143beabce2c990e338a3a6175b2d2665e80dfb7bb306"
+        "sha256": "f030405893465fa7223ce94ad1e9b35e27eb96d27dcfe680adbc75e0e9446f2f"
       }
     ],
     "generated_runtime": []

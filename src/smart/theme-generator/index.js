@@ -17,14 +17,17 @@
 // -apply and sf-theme-apply following until 2026-12-01 (aliases.json).
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
+import {noteDeprecated} from '../../core/js/deprecations.js';
 import {
   applyTheme,
   colorToHct,
   isThemeColor,
+  themeChecks,
   themeFromColor,
   themeFromHct,
   themeToCss,
   themeVariables,
+  withStatusCompat,
   DEFAULT_THEME_COLOR,
   THEME_PALETTES,
 } from '../../core/js/theme-palette.js';
@@ -34,6 +37,9 @@ import aliases from './aliases.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
+
+// The journal record component-theme-generator-to-input-color-brand.
+const RETIRED = Object.freeze({since: '2026-11-12', remove_after: '2027-01-01'});
 
 // The tones the preview shows: light to dark, the brand tone (40) among them.
 const PREVIEW_TONES = [90, 70, 50, 40, 30, 10];
@@ -61,6 +67,9 @@ const readNumber = (value, [min, max], clamp = false) => {
 };
 
 const copy = (value) => JSON.parse(JSON.stringify(value));
+// A copy of the theme for a host: the four theme palettes, and until
+// 2027-01-01 the former status palettes as read-only, warned reads (TG-01).
+const themeCopy = (theme) => withStatusCompat(copy(theme));
 
 const ThemeGeneratorElement = elementFromManifest(manifest, {
   base: SfBaseElement,
@@ -126,7 +135,7 @@ class SfThemeGenerator extends ThemeGeneratorElement {
 
   /** The theme shown now (a copy: changing it changes nothing). */
   get theme() {
-    return copy(this._currentTheme());
+    return themeCopy(this._currentTheme());
   }
 
   /** The theme as one stylesheet rule of its 128 primitives. */
@@ -136,7 +145,7 @@ class SfThemeGenerator extends ThemeGeneratorElement {
 
   /** The theme object (simai.framework.theme.v1). */
   toJSON() {
-    return copy(this._currentTheme());
+    return themeCopy(this._currentTheme());
   }
 
   /** The action reset: back to SIMAI Framework's own colour; a committed choice. */
@@ -176,10 +185,31 @@ class SfThemeGenerator extends ThemeGeneratorElement {
       value: this.value,
       hue: this.hue,
       chroma: this.chroma,
-      theme: copy(theme),
+      theme: themeCopy(theme),
       variables: themeVariables(theme),
       css: themeToCss(theme, this.selector),
+      checks: themeChecks(theme),
     };
+  }
+
+  /** What a person should know about the theme now (core themeChecks, TG-04). */
+  get checks() {
+    return themeChecks(this._currentTheme());
+  }
+
+  // A check in words: the language file's check-<code>, with its numbers.
+  _checkText(check) {
+    const word = (key) => this.sfWord(key);
+    switch (check.code) {
+      case 'contrast':
+        return this.sfWord('check-contrast', {vars: {scheme: word(`scheme-${check.scheme}`), ratio: String(check.ratio).replace('.', word('decimal'))}});
+      case 'adjusted':
+        return this.sfWord(check.lighter ? 'check-adjusted-light' : 'check-adjusted-dark', {vars: {from: check.from, to: check.to}});
+      case 'close-to-status':
+        return this.sfWord(`check-status-${check.status}`);
+      default:
+        return this.sfWord(`check-${check.code}`);
+    }
   }
 
   _emitChange() {
@@ -249,6 +279,12 @@ class SfThemeGenerator extends ThemeGeneratorElement {
 
   connectedCallback() {
     super.connectedCallback?.();
+    // Leaving (owner decision C84, 2026-11-12): the brand colour is a mode of
+    // sf-input-color, and the large tone tables go to the docs page
+    // «Конструктор темы». The element works as it did until the date, noted in
+    // SF.deprecations (in the console only when the page opts in).
+    noteDeprecated({component: 'sf-theme-generator', kind: 'component', from: 'sf-theme-generator',
+      to: 'sf-input-color variant="brand"', since: RETIRED.since, remove_after: RETIRED.remove_after});
     this._committedKey = this._key();
     this._sync();
   }
@@ -335,7 +371,9 @@ class SfThemeGenerator extends ThemeGeneratorElement {
         chromaHint: text('chroma-hint'),
         reset: text('reset'),
         preview: text('preview'),
+        checks: text('checks'),
       },
+      checks: themeChecks(theme).map((check) => ({...check, text: this._checkText(check)})),
       palettes: THEME_PALETTES.map((name) => ({
         name,
         label: text(name),

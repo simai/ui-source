@@ -9,15 +9,18 @@
 //
 // .sf-surface-media is glass over a photo or a video: black at 48 with a blur,
 // white ink, the same in both themes (C16, C14). It re-declares the roles the
-// controls on it read from white on the alpha scale -- states 4/8/12, fill
-// 16/20/24, line 24, boundary 64, dim ink 80 -- so an icon keeps its three
-// roles and a control needs no new one. In sf.base with the theme, so a
+// controls on it read from white on the alpha scale -- the ink and its hovered
+// and pressed steps (all white), states 4/8/12, fill
+// 12/16/20 (the neutral fill family, C113), disabled plate 8, line 24, boundary 64, dim ink 80 -- so an icon keeps its four
+// roles (C107: the icon role is the glass's ink, the alpha scale has no half
+// step) and a control needs no new one. In sf.base with the theme, so a
 // utility on the same element still wins.
 //
 // Coloured places are the bg-<role> and bg-<role>-container utilities (owner,
 // 2026-11-08), not a second class family: mix/_mix__places.scss.
 
 @use 'mix/mix__role_aliases' as aliases;
+@use 'mix/mix__places' as places;
 
 @layer sf.base {
   .sf-surface-media {
@@ -26,21 +29,44 @@
     backdrop-filter: blur(var(--sf-blur-large));
     --sf-surface-place: var(--sf-surface-media);
     --sf-surface-place-solid: initial;
+    // Under glass is a picture, not a place: the ground is black, the opaque
+    // base of the glass tone (black at 48), so a cut-out on glass -- the
+    // avatar's status dot -- is dark glass, not the photo (DEV, 2026-11-11).
+    --sf-surface-place-ground: var(--sf-black);
     --sf-surface-underlay: initial;
+    --sf-surface-place-fill: initial;
+    // The place hooks (mix/_mix__places.scss): white on glass, coloured text
+    // one colour, as on a strong place.
+    --sf-place--ink-variant: var(--sf-white--alfa-80);
+    --sf-place--ink: var(--sf-on-surface-media);
+    --sf-place--fill-surface: initial;
     --sf-on-surface: var(--sf-on-surface-media);
+    // The icon role (C107): no half step between white and white at 80 on
+    // the alpha scale, so a control's glyph on glass is the glass's ink.
+    --sf-on-surface-icon: var(--sf-on-surface-media);
+    // Hovered and pressed ink (C107 open item 5): white, as on a strong
+    // colour; the state shows in the fill.
+    --sf-on-surface-hover: var(--sf-on-surface-media);
+    --sf-on-surface-active: var(--sf-on-surface-media);
     --sf-on-surface-variant: var(--sf-white--alfa-80);
     --sf-on-surface-container-variant: var(--sf-white--alfa-80);
     --sf-surface-state-hover: var(--sf-white--alfa-4);
     --sf-surface-state-select: var(--sf-white--alfa-8);
     --sf-surface-state-active: var(--sf-white--alfa-12);
-    --sf-surface-container: var(--sf-white--alfa-16);
-    --sf-surface-container-hover: var(--sf-white--alfa-20);
-    --sf-surface-container-active: var(--sf-white--alfa-24);
+    --sf-surface-container: var(--sf-white--alfa-12);
+    --sf-surface-container-hover: var(--sf-white--alfa-16);
+    --sf-surface-container-active: var(--sf-white--alfa-20);
     --sf-outline: var(--sf-white--alfa-64);
     --sf-outline-variant: var(--sf-white--alfa-24);
-    --sf-surface-disabled: var(--sf-white--alfa-12);
+    --sf-place--container-outline: var(--sf-outline);
+    --sf-surface-disabled: var(--sf-white--alfa-8);
     --sf-on-surface-disabled: var(--sf-white--alfa-64);
     --sf-on-surface-muted: var(--sf-on-surface-disabled);
     @include aliases.sf-role-aliases(('on-surface-container-variant', 'surface-state-hover', 'surface-state-select', 'surface-state-active', 'surface-disabled', 'on-surface-disabled'));
+    @include places.sf-place-glass-outer;
+  }
+  // The accent on glass is the glass's ink (C70, owner 2026-11-11): white.
+  .sf-surface-media > * {
+    @include places.sf-place-glass-accent;
   }
 }
