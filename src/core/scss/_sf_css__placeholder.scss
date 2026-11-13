@@ -242,20 +242,41 @@
   background-color: var(--sf-skeleton-base);
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
-  -webkit-mask:
-    var(--sf-first-paint-bar--mask-dot) 0 var(--sf-first-paint-bar--top) / calc(2 * var(--sf-first-paint-bar--end)) calc(2 * var(--sf-first-paint-bar--end)) no-repeat,
-    var(--sf-first-paint-bar--mask-dot) 100% var(--sf-first-paint-bar--top) / calc(2 * var(--sf-first-paint-bar--end)) calc(2 * var(--sf-first-paint-bar--end)) no-repeat,
-    var(--sf-first-paint-bar--mask-dot) 0 calc(var(--sf-first-paint-bar--top) + var(--sf-first-paint-bar--height) - 2 * var(--sf-first-paint-bar--end)) / calc(2 * var(--sf-first-paint-bar--end)) calc(2 * var(--sf-first-paint-bar--end)) no-repeat,
-    var(--sf-first-paint-bar--mask-dot) 100% calc(var(--sf-first-paint-bar--top) + var(--sf-first-paint-bar--height) - 2 * var(--sf-first-paint-bar--end)) / calc(2 * var(--sf-first-paint-bar--end)) calc(2 * var(--sf-first-paint-bar--end)) no-repeat,
-    var(--sf-first-paint-bar--mask-band) var(--sf-first-paint-bar--end) var(--sf-first-paint-bar--top) / calc(100% - 2 * var(--sf-first-paint-bar--end)) var(--sf-first-paint-bar--height) no-repeat,
-    var(--sf-first-paint-bar--mask-band) 0 calc(var(--sf-first-paint-bar--top) + var(--sf-first-paint-bar--end)) / 100% calc(var(--sf-first-paint-bar--height) - 2 * var(--sf-first-paint-bar--end)) no-repeat;
-  mask:
-    var(--sf-first-paint-bar--mask-dot) 0 var(--sf-first-paint-bar--top) / calc(2 * var(--sf-first-paint-bar--end)) calc(2 * var(--sf-first-paint-bar--end)) no-repeat,
-    var(--sf-first-paint-bar--mask-dot) 100% var(--sf-first-paint-bar--top) / calc(2 * var(--sf-first-paint-bar--end)) calc(2 * var(--sf-first-paint-bar--end)) no-repeat,
-    var(--sf-first-paint-bar--mask-dot) 0 calc(var(--sf-first-paint-bar--top) + var(--sf-first-paint-bar--height) - 2 * var(--sf-first-paint-bar--end)) / calc(2 * var(--sf-first-paint-bar--end)) calc(2 * var(--sf-first-paint-bar--end)) no-repeat,
-    var(--sf-first-paint-bar--mask-dot) 100% calc(var(--sf-first-paint-bar--top) + var(--sf-first-paint-bar--height) - 2 * var(--sf-first-paint-bar--end)) / calc(2 * var(--sf-first-paint-bar--end)) calc(2 * var(--sf-first-paint-bar--end)) no-repeat,
-    var(--sf-first-paint-bar--mask-band) var(--sf-first-paint-bar--end) var(--sf-first-paint-bar--top) / calc(100% - 2 * var(--sf-first-paint-bar--end)) var(--sf-first-paint-bar--height) no-repeat,
-    var(--sf-first-paint-bar--mask-band) 0 calc(var(--sf-first-paint-bar--top) + var(--sf-first-paint-bar--end)) / 100% calc(var(--sf-first-paint-bar--height) - 2 * var(--sf-first-paint-bar--end)) no-repeat;
+  /* Longhands, not the mask shorthand: the shorthand's position / size slash
+     would sit after a token in the built sheet (declared-tokens test). The
+     layers, in order: four corner dots, then the two crossing bands. */
+  -webkit-mask-image: var(--sf-first-paint-bar--mask-dot), var(--sf-first-paint-bar--mask-dot), var(--sf-first-paint-bar--mask-dot), var(--sf-first-paint-bar--mask-dot), var(--sf-first-paint-bar--mask-band), var(--sf-first-paint-bar--mask-band);
+  -webkit-mask-position:
+    0 var(--sf-first-paint-bar--top),
+    100% var(--sf-first-paint-bar--top),
+    0 calc(var(--sf-first-paint-bar--top) + var(--sf-first-paint-bar--height) - 2 * var(--sf-first-paint-bar--end)),
+    100% calc(var(--sf-first-paint-bar--top) + var(--sf-first-paint-bar--height) - 2 * var(--sf-first-paint-bar--end)),
+    var(--sf-first-paint-bar--end) var(--sf-first-paint-bar--top),
+    0 calc(var(--sf-first-paint-bar--top) + var(--sf-first-paint-bar--end));
+  -webkit-mask-size:
+    calc(2 * var(--sf-first-paint-bar--end)) calc(2 * var(--sf-first-paint-bar--end)),
+    calc(2 * var(--sf-first-paint-bar--end)) calc(2 * var(--sf-first-paint-bar--end)),
+    calc(2 * var(--sf-first-paint-bar--end)) calc(2 * var(--sf-first-paint-bar--end)),
+    calc(2 * var(--sf-first-paint-bar--end)) calc(2 * var(--sf-first-paint-bar--end)),
+    calc(100% - 2 * var(--sf-first-paint-bar--end)) var(--sf-first-paint-bar--height),
+    100% calc(var(--sf-first-paint-bar--height) - 2 * var(--sf-first-paint-bar--end));
+  -webkit-mask-repeat: no-repeat;
+  mask-image: var(--sf-first-paint-bar--mask-dot), var(--sf-first-paint-bar--mask-dot), var(--sf-first-paint-bar--mask-dot), var(--sf-first-paint-bar--mask-dot), var(--sf-first-paint-bar--mask-band), var(--sf-first-paint-bar--mask-band);
+  mask-position:
+    0 var(--sf-first-paint-bar--top),
+    100% var(--sf-first-paint-bar--top),
+    0 calc(var(--sf-first-paint-bar--top) + var(--sf-first-paint-bar--height) - 2 * var(--sf-first-paint-bar--end)),
+    100% calc(var(--sf-first-paint-bar--top) + var(--sf-first-paint-bar--height) - 2 * var(--sf-first-paint-bar--end)),
+    var(--sf-first-paint-bar--end) var(--sf-first-paint-bar--top),
+    0 calc(var(--sf-first-paint-bar--top) + var(--sf-first-paint-bar--end));
+  mask-size:
+    calc(2 * var(--sf-first-paint-bar--end)) calc(2 * var(--sf-first-paint-bar--end)),
+    calc(2 * var(--sf-first-paint-bar--end)) calc(2 * var(--sf-first-paint-bar--end)),
+    calc(2 * var(--sf-first-paint-bar--end)) calc(2 * var(--sf-first-paint-bar--end)),
+    calc(2 * var(--sf-first-paint-bar--end)) calc(2 * var(--sf-first-paint-bar--end)),
+    calc(100% - 2 * var(--sf-first-paint-bar--end)) var(--sf-first-paint-bar--height),
+    100% calc(var(--sf-first-paint-bar--height) - 2 * var(--sf-first-paint-bar--end));
+  mask-repeat: no-repeat;
   user-select: none;
   animation: sf-placeholder-pulse calc(var(--sf-duration-slow) * 3) var(--sf-animation) infinite;
 }
