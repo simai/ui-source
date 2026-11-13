@@ -50,7 +50,11 @@ class SfToast extends ToastElement {
     return this.getProp('status');
   }
 
+  // An error or a warning stays until a person closes it, whatever duration
+  // it is given (owner decision C114 (6), NS-2); the class toast holds the
+  // same rule on its root.
   get duration() {
+    if (this.status === 'error' || this.status === 'warning') return 0;
     const duration = Number(this.getAttribute('duration'));
     return Number.isFinite(duration) && duration > 0 ? duration : 0;
   }

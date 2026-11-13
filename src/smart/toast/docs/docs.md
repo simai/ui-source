@@ -1,7 +1,8 @@
 # sf-toast
 
-Smart Toast projects the ordinary transient-feedback contract through a custom
-element. It owns rendering, optional lifetime and removal of its host; the
+Smart Toast is a short reply to an action (owner decision C114 (1)), through a
+custom element; a page raises it with `SF.notify`, which keeps one
+notification area per page. It owns rendering, optional lifetime and removal of its host; the
 application still owns stack placement and business effects.
 
 ```html
@@ -41,7 +42,14 @@ starts at the padding. Between several actions of a class toast,
 
 `duration` is milliseconds. Its default `0` keeps the toast until explicit
 dismissal; a positive value pauses while pointer or focus is inside the toast.
-Keep messages with essential content or actions persistent.
+Keep messages with essential content or actions persistent. An error or a
+warning ignores `duration` and stays until a person closes it (1.3.0, owner
+decision C114 (6)).
+
+With one action the toast puts it in the row with the text from 20rem of its
+own width, centred on the text block (owner decision C115, layout L3a); a
+narrower toast keeps it under the text from its start, with the space under
+it equal to the space above the capitals of the first line (C114 (5)).
 
 The status icon is an `sf-icon` (1.2.1), as on `sf-alert`: the toast asks the
 Loader for its glyph when it draws, so the glyph comes wherever the toast

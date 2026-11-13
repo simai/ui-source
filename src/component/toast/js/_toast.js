@@ -23,7 +23,17 @@ function normalizeType(value) {
   return TOAST_TYPES.has(status) ? status : 'neutral';
 }
 
+// An error or a warning never leaves by itself (owner decision C114 (6),
+// NS-2; WCAG 2.2.1): it stays until a person closes it, whatever data-duration
+// it carries. A success, an info and a neutral message keep their time.
+const STAYING_TOAST_TYPES = new Set(['warning', 'error']);
+
+function staysUntilClosed(root) {
+  return [...STAYING_TOAST_TYPES].some((status) => root.classList?.contains(`sf-toast--${status}`));
+}
+
 function readDuration(root) {
+  if (staysUntilClosed(root)) return 0;
   const duration = Number(root.getAttribute('data-duration'));
   return Number.isFinite(duration) && duration > 0 ? duration : 0;
 }
@@ -189,7 +199,7 @@ function createToastElement(options = {}) {
     'flex',
     'items-cross-start',
   );
-  if (Number.isFinite(Number(duration)) && Number(duration) > 0) {
+  if (!STAYING_TOAST_TYPES.has(normalizeType(status ?? type)) && Number.isFinite(Number(duration)) && Number(duration) > 0) {
     root.dataset.duration = String(Number(duration));
   }
   if (role === 'status' || role === 'alert') root.setAttribute('role', role);

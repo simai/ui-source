@@ -14,17 +14,29 @@ the most serious and shows it first.
        "action": {"label": "Освободить место", "href": "/server/disk/"}},
       {"id": "backup", "level": "warning", "text": "Последняя копия demo.test не удалась.",
        "action": {"label": "Открыть копии", "href": "/backups/"},
-       "acknowledge": {"label": "Отметить, что видели"}}
+       "acknowledge": {"label": "Прочитано"}}
     ]}
   </script>
 </sf-alert-bar>
 ```
 
-Put it once per page, above the header. News that needs no action (a backup
-done) belongs in a notification centre or a toast, not in the bar; a notice
-inside the page flow is `sf-alert`.
+Put it once per page, above the header. Its fill runs the page's whole width;
+its content stands on the page column.
 
-The component owns the order, the colour, paging, the list of all, the
+One job per notice (owner decision C114 (1)):
+
+| Component | Its job |
+|---|---|
+| `sf-alert-bar` | the state of the whole product that needs action now |
+| `sf-alert` | the state of this page or section |
+| `sf-toast` (`SF.notify`) | a short reply to an action |
+| the notification centre (the Larena admin menu) | the history: what happened while you were away |
+| `sf-confirm` | a decision |
+
+News that needs no action (a backup done) is a toast or a record in the
+notification centre, not the bar; the state of one page is `sf-alert`.
+
+The component owns the order, the colour, the list of all, the
 minimized strip and the announcements. The host owns the conditions: which
 there are, who may see them, when one ends, and what a person closed or
 acknowledged. **The bar stores nothing.**
@@ -41,7 +53,7 @@ acknowledged. **The bar stores nothing.**
 | `source` | | Where it comes from: «Сервер», «Сайт demo.test». |
 | `time` | | When it began, ISO 8601, drawn by `sf-time`: within a day «5 минут назад», older «вчера, 19:40» or «5 ноября»; the full moment in its tooltip (pointer and Tab, Escape hides it). |
 | `action` | | `{label, href}`: the one action link. |
-| `acknowledge` | | `{label}`: an «Отметить, что видели» button. |
+| `acknowledge` | | `{label}`: an «Прочитано» button. |
 | `dismissible` | | `false` keeps a warning or an info item from being closed. |
 
 The items are sorted: danger, warning, info; inside a level the newest
@@ -51,16 +63,33 @@ bar.
 
 ## Several items
 
-With more than one item the bar shows «‹ 1 из N ›» to page through them and
-«Все N», which opens the list of all under the bar, each item with its own
-action, acknowledge and close. Escape closes the list.
+With more than one item the bar shows the most serious one and «Все N», which
+opens the list of all under the bar, each item with its own action,
+acknowledge and close. It has no arrows to page through them (C114 (3)).
+Escape closes the list.
 
-Up to 608 px (38rem, the size step g9) of the bar's own width the icon, the text and the close share
-the first line, the actions go under the text, the arrows are not drawn and
-«Все N» stands at the line's end.
+## Layout
 
-The action is a tonal surface button (`tonal on-surface`) and acknowledge and
-close are ghost, as on sf-alert and sf-toast; in the list of all the same. On
+The steps are the Framework's horizontal standard (C105): 16 from the edge,
+12 from the icon to the text, 16 from the text to the actions, 8 between the
+buttons and from the actions to the end button (on a phone 12, 8, 12 and 8,
+the same tokens).
+
+The content stands on the page column. A site bar (`size="1"`) takes the
+inset of the `.container` at the window's step, so its icon lines up with the
+logo of `sf-header-site` under it. An admin bar (`size="1/2"`) has the whole
+width for its column and keeps 16 from the edge.
+`--sf-alert-bar-padding-inline` sets another inset for both.
+
+Up to 608 px (38rem, the size step g9) of the bar's own width the icon, the
+text and the close share the first line. The actions go under the text and
+start where the text starts, 12 under it (8 on a phone); «Все N» stands at
+the line's end. The space under the last button equals what the eye sees
+above the first line, the top of its capitals.
+
+The action is a tonal surface button (`tonal on-surface`); acknowledge,
+«Все N» and close are ghost, as on sf-alert and sf-toast; in the list of all
+the same. On
 the bar's strong colour the tonal plate's hover and press go towards the bar's
 colour in the light theme, so the white label keeps 4.5:1 and more.
 
@@ -146,9 +175,9 @@ the bar. Motion is off under `prefers-reduced-motion: reduce`.
 - `--sf-alert-bar-error-background-color`, `--sf-alert-bar-warning-background-color`,
   `--sf-alert-bar-info-background-color` — the level fills (the theme's error,
   warning and info roles by default; the text keeps their on- role).
-- `--sf-alert-bar-padding-inline` — the bar's inline inset (the rung's
-  space-x), to line the text up with the header under it.
-- `--sf-alert-bar-gap` — the space between the bar's text, its actions and
-  its end button (the rung's space-x).
+- `--sf-alert-bar-padding-inline` — the bar's inline inset (16, or the page
+  column on a site bar), to line the text up with the header under it.
+- `--sf-alert-bar-gap` — the space between the bar's text and its actions
+  (16).
 - `--sf-alert-bar-list-background-color` — the list of all's surface (it scrolls
   past 352 px, the size step g1).

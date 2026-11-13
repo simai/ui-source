@@ -8,8 +8,8 @@
 //   </script></sf-alert-bar>
 //
 // The items are sorted error, warning, info, the newest first; the bar takes
-// the colour of the first and shows it. Several are paged «‹ 1 из N ›» and
-// listed under the bar with «Все N». A warning closes for a day, an info item
+// the colour of the first and shows it, without paging arrows (owner decision
+// C114 (3)); the others are listed under the bar with «Все N». A warning closes for a day, an info item
 // for good; an error item is never closed, its button minimizes the bar to a
 // strip that keeps the count.
 //
@@ -211,13 +211,6 @@ class SfAlertBar extends AlertBarElement {
 
   // ---------------------------------------------------------------- presses
 
-  page(step) {
-    const count = this.list.length;
-    if (count < 2) return;
-    this._index = wrapIndex(this._index + step, count);
-    this.requestComponentUpdate('page');
-  }
-
   toggleList(force) {
     const open = force === undefined ? !this._listOpen : Boolean(force);
     if (open === this._listOpen) return;
@@ -336,9 +329,6 @@ class SfAlertBar extends AlertBarElement {
       announce: this._announce,
       icons: ICONS,
       words: {
-        position: word('position', {n: index + 1, count}),
-        prev: word('prev'),
-        next: word('next'),
         all: word('all', {count}),
         collapseList: word('collapse-list'),
         list: word('list'),

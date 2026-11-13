@@ -1,12 +1,23 @@
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
+@use '../../../utility/container/default/scss/sf_var__container' as container;
 @layer sf.components {
 /* sf-alert-bar (standard simai.smart-component 1.3.14 §6). One rung of the
    ladder (docs/foundation-composition-geometry.md), 1/2 by default, 1 with
    size="1": the text is the rung's line L, the icon that line, the buttons
-   the rung's control height H, icon-to-text the rung's text-space-x, the
-   bar's inline inset its space-x and its block inset (H - L) / 2, the inset a
+   the rung's control height H, the bar's block inset (H - L) / 2, the inset a
    control's label has inside the control, so the bar's text stands where a
    button's label stands. The minimized strip is a control of the rung below.
+
+   The horizontal steps are the standard's (owner decision C105, AA-14): the
+   edge 16 (phone 12, --sf-space-1), icon to text 12 (phone 8,
+   --sf-space-1/2), text to actions 16 (--sf-space-1), between buttons and
+   actions to the end button 8 (--sf-space-1/3, as on sf-alert). The fill runs the bar's whole
+   width; the content stands on the page column (C114 (2), AA-16): a site bar
+   (size 1) takes the .container's inset of the window's step -- its gutter and
+   half of what the bar is wider than the step -- so its icon lines up with
+   the site header's logo; an admin bar (size 1/2) has the whole width for its
+   column, so its inset is the edge.
 
    The public variables are read with the role token as their fallback and
    never set here. */
@@ -29,8 +40,16 @@
   --sf-alert-bar--strip-line: var(--sf-text-height-1\/3);
   --sf-alert-bar--strip-font-size: var(--sf-text-size-1\/3);
   --sf-alert-bar--strip-height: var(--sf-ui-1\/3--control-height);
-  --sf-alert-bar--padding-inline: var(--sf-alert-bar-padding-inline, var(--sf-alert-bar--space-x));
-  --sf-alert-bar--gap: var(--sf-alert-bar-gap, var(--sf-alert-bar--space-x));
+  /* The inline inset: the edge, or on a site bar the page column's inset. */
+  --sf-alert-bar--edge: var(--sf-space-1);
+  --sf-alert-bar--column-inset: var(--sf-alert-bar--edge);
+  --sf-alert-bar--padding-inline: var(--sf-alert-bar-padding-inline, var(--sf-alert-bar--column-inset));
+  --sf-alert-bar--gap: var(--sf-alert-bar-gap, var(--sf-space-1));
+  --sf-alert-bar--icon-gap: var(--sf-space-1\/2);
+  --sf-alert-bar--between: var(--sf-space-1\/3);
+  /* Text to the actions when they stand under it (C115, the vertical
+     standard): 12, phone 8. */
+  --sf-alert-bar--under-gap: var(--sf-space-1\/2);
   --sf-alert-bar--padding-block: calc((var(--sf-alert-bar--control) - var(--sf-alert-bar--line)) / 2);
   display: block;
   position: relative;
@@ -53,6 +72,20 @@
   --sf-alert-bar--strip-line: var(--sf-text-height-1\/2);
   --sf-alert-bar--strip-font-size: var(--sf-text-size-1\/2);
   --sf-alert-bar--strip-height: var(--sf-ui-1\/2--control-height);
+  /* A site bar: the page column, as the .container of the site header's row
+     (below the first step its gutter, --sf-space-1). */
+  --sf-alert-bar--column-inset: var(--sf-container-gutter, var(--sf-alert-bar--edge));
+}
+
+/* The page column of a site bar at each step of the .container ladder: the
+   container's gutter and half of what the bar is wider than the step (100cqi
+   is the bar's own width: the bar is the query container of its row). */
+@each $step, $space in container.$container-array {
+  @include mq.breakpoint-media($step) {
+    .sf-alert-bar.sf-alert-bar--size-1 {
+      --sf-alert-bar--column-inset: calc(var(--sf-container-gutter, var(--sf-space-#{$space})) + max(calc(var(--sf-px) * 0), (100cqi - var(--sf-breakpoint-#{$step})) / 2));
+    }
+  }
 }
 
 /* The level's fill and its ink: the theme's status roles, light and dark. */
@@ -141,7 +174,7 @@
 }
 
 .sf-alert-bar-row > .sf-alert-bar-icon {
-  margin-inline-end: calc(var(--sf-alert-bar--text-space-x) - var(--sf-alert-bar--gap));
+  margin-inline-end: calc(var(--sf-alert-bar--icon-gap) - var(--sf-alert-bar--gap));
 }
 
 /* The text gives way first: it wraps down to its own floor (f0, 10rem), and
@@ -176,32 +209,26 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: var(--sf-alert-bar--text-space-x);
+  gap: var(--sf-alert-bar--between);
 }
 
 /* An action keeps its label's natural width: never shrunk, never cut. The
    sf-button host is display: contents, so the native control is the item. */
 .sf-alert-bar-actions > sf-button > :is(button, a),
-.sf-alert-bar-actions > .sf-alert-bar-pager,
 .sf-alert-bar-item-actions > sf-button > :is(button, a) {
   flex: none;
   white-space: nowrap;
 }
 
-.sf-alert-bar-pager {
-  display: inline-flex;
-  align-items: center;
-}
-
-.sf-alert-bar-position {
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
 /* sf-button and sf-button-icon lay out as display: contents: the native
-   control inside is the box, so placement rules name it. */
+   control inside is the box, so placement rules name it. The end button
+   stands 8 after the actions (C105 H5), not the 16 between groups. */
 .sf-alert-bar-row > :is(.sf-alert-bar-close, .sf-alert-bar-minimize) > :is(button, a) {
   flex: none;
+}
+
+.sf-alert-bar-row > .sf-alert-bar-actions + :is(.sf-alert-bar-close, .sf-alert-bar-minimize) > :is(button, a) {
+  margin-inline-start: calc(var(--sf-alert-bar--between) - var(--sf-alert-bar--gap));
 }
 
 /* Minimized: one thin strip of the rung below that keeps the colour, the
@@ -326,15 +353,27 @@
 
 /* Narrow (the bar's own width up to g9, 608 px; a container query cannot
    read a variable, so the step is written in rem): the icon, the text and the
-   close share the first line; the actions go under the text; no arrows,
-   «Все N» at the line's end; the list's items stack. */
+   close share the first line; the actions go under the text from its start
+   (AA-17, C114 (5)), «Все N» at the line's end; the list's items stack. The
+   inset is the edge: a narrow bar has no page column to line up with.
+
+   Even bottom (C114 (5), NS-8): with the actions under the text, the inset
+   under the last button is what the eye sees above the first line -- the
+   block inset, the control's inset above the text, and the room above the
+   capitals inside the line, (line - 1cap) / 2 (1cap is the font's own cap
+   height, so it follows the rung and the density by itself). */
 @container sf-alert-bar (max-width: 38rem) {
   .sf-alert-bar-row {
     display: grid;
     grid-template-columns: var(--sf-alert-bar--line) minmax(0, 1fr) auto;
     align-items: start;
-    column-gap: var(--sf-alert-bar--text-space-x);
-    row-gap: var(--sf-alert-bar--text-space-x);
+    column-gap: var(--sf-alert-bar--icon-gap);
+    row-gap: var(--sf-alert-bar--under-gap);
+    padding-inline: var(--sf-alert-bar-padding-inline, var(--sf-alert-bar--edge));
+  }
+
+  .sf-alert-bar-row:has(> .sf-alert-bar-actions) {
+    padding-block-end: calc(var(--sf-alert-bar--padding-block) + (var(--sf-alert-bar--control) - var(--sf-alert-bar--line)) / 2 + (var(--sf-alert-bar--line) - 1cap) / 2);
   }
 
   .sf-alert-bar-row > .sf-alert-bar-icon {
@@ -362,14 +401,15 @@
     grid-row: 1;
   }
 
+  .sf-alert-bar-row > .sf-alert-bar-actions + :is(.sf-alert-bar-close, .sf-alert-bar-minimize) > :is(button, a) {
+    margin-inline-start: 0;
+  }
+
   .sf-alert-bar-actions {
     flex-wrap: wrap;
     grid-column: 2 / 4;
     grid-row: 2;
-  }
-
-  .sf-alert-bar-pager {
-    display: none;
+    justify-content: flex-start;
   }
 
   .sf-alert-bar-all > :is(button, a) {

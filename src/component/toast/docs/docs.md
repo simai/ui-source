@@ -1,11 +1,15 @@
 # Toast
 
-Toast is concise transient overlay feedback that does not interrupt the current
-task. It is distinct from persistent inline Alert content.
+Toast is a short reply to an action, shown over the page, that does not
+interrupt the current task (owner decision C114 (1)). The state of a page is
+Alert; the state of the whole product is `sf-alert-bar`; the history of what
+happened is the notification centre (the Larena admin menu); a decision is
+`sf-confirm`.
 
 ## Public contract
 
-- Types: `default`, `primary`, `error`, `warning`, `success`.
+- Statuses: `neutral`, `info`, `success`, `warning`, `error` (`default` and
+  `primary` are still read as neutral and info).
 - Optional decorative icon, title, supporting text, one short action and one
   explicitly named close action.
 - Canonical behavior hooks: `data-action`, `data-close`, `data-duration`.
@@ -15,6 +19,9 @@ task. It is distinct from persistent inline Alert content.
 - A positive `data-duration` enables auto-dismiss. The remaining lifetime pauses
   while pointer or keyboard focus is inside the toast. Zero or no attribute is
   persistent.
+- An error or a warning never leaves by itself (1.3.0, owner decision C114 (6),
+  WCAG 2.2.1): it stays until a person closes it, whatever `data-duration` it
+  carries. Only success, info and neutral messages keep a time.
 
 ## Layout (1.2.0, owner decision C35)
 
@@ -29,6 +36,18 @@ sf-icon-button--size-1 sf-icon-button--height-low` with `sf-close
 sf-close--size-1`; its plate hangs out over the inline padding. The public
 `--sf-toast-padding-block`, `--sf-toast-padding-inline` and `--sf-toast-gap`
 still win.
+
+## Where the action stands (1.3.0, owner decision C115)
+
+A toast with one action puts it in the row with the text from 20rem (320 px)
+of the toast's own width -- every toast of the notification area, which is
+28rem wide -- centred on the text block; with a one-line text the label stands
+on the title line, with the icon and the close. Narrower, or with two
+actions, the action stands under the text from its start, at
+`--sf-space-1/2` (12, phone 8), and the space under it equals the space above
+the capitals of the first line (C114 (5), NS-10). A toast with an action is a
+size query container (`container: sf-toast`). A title-only toast with one
+action is 58 at 1440 (46 on a phone); it was 98 (78).
 
 ## Ink (1.2.1, C35 acceptance F1)
 
@@ -83,6 +102,7 @@ const handle = SF.notify({
   text: 'Средства будут зачислены в течение минуты.',
   action: {label: 'Открыть', onSelect: (record) => {}},  // optional
   duration: 5000,             // ms; 0 keeps it until closed; by status if omitted
+                              // (error and warning always stay until closed)
   source: 'billing',          // who raised it, for a notification centre
   key: 'topup:42',            // optional: messages with one key count up
 });
@@ -96,9 +116,11 @@ call returns `null` and warns in the console.
   default; `SF.notifications.configure({placement: 'top-end', max: 4})`).
   Messages stack with a gap; at most four show at once and the rest wait their
   turn; the same message again counts up (`×2`) instead of stacking twice.
-- A timer pauses while the pointer or the focus is on its toast. An error is
-  announced at once (`role="alert"`), everything else politely
-  (`role="status"`).
+- Neutral, info and success leave after 5 s by default. An error and a warning
+  stay until a person closes them (owner decision C114 (6)); they left after
+  10 s and 8 s before. A timer pauses while the pointer or the focus is on its
+  toast. An error is announced at once (`role="alert"`), everything else
+  politely (`role="status"`).
 - Every message is announced on the document as `sf-notification` with
   `{id, status, title, text, source, time}` before it is shown. A notification
   centre records it there; cancelling the event keeps the record and skips the

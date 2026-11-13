@@ -1,8 +1,10 @@
 # sf-alert
 
-A persistent inline notice: a status, a heading, a supporting text, up to two
-actions and an optional close button. It is not a replacement for the
-transient Toast. The default template applies the shared `root-class`, `style`
+A persistent inline notice: the state of this page or section (owner decision
+C114 (1)), with a status, a heading, a supporting text, up to two actions and
+an optional close button. The state of the whole product is `sf-alert-bar`, a
+short reply to an action is a toast (`SF.notify`), a decision is
+`sf-confirm`. The default template applies the shared `root-class`, `style`
 and `root-style` settings to its root; the outer Smart host stays boxless.
 
 ## Basic Usage
@@ -65,6 +67,31 @@ stands in the box of the low control, so the icon, the first line of text and
 the close share one centre; the first action's plate starts at the text edge;
 the close's plate hangs out over the inline padding, so its cross stands where
 the status icon stands on the other side.
+
+### Where the actions stand (1.3.0, owner decision C115)
+
+The actions stand in the row with the text while the alert is wide enough --
+one action from 36rem (576 px) of its own width, two from 48rem (768 px) --
+and under the text from its start when it is narrower (a container query on
+the alert, layout L3a). In the row they are centred on the text block; with a
+one-line text the button's label stands on the title line, with the icon and
+the close. Under the text, the space under the last button equals the space
+above the capitals of the first line (C114 (5)).
+
+| One action, title and text | 320 | 480 | 640 | 800 |
+|---|---|---|---|---|
+| height at 1440 (border included) | 204 | 156 | 102 (row) | 78 (row) |
+
+### Callout
+
+Guidance before an action is a recipe of this element, not a component of its
+own (owner decision C114 (7)): `status="info" appearance="outlined"`, without
+`closable` and without actions.
+
+```html
+<sf-alert status="info" appearance="outlined"
+  supporting-text="Новый адрес получат все письма сайта."></sf-alert>
+```
 
 ## Accessibility
 

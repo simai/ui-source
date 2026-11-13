@@ -2,7 +2,7 @@
   "$comment": "The source of sf-alert-bar's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the page alert bar the Larena storage thread asked for (Federation bus msg-f8fd87ae998c44438cc7), from the owner-approved prototype «Плашка важных уведомлений» (claude.ai artifact BAtvwTPsumKqguQgDwngaM, 2026-11-05).",
   "id": "smart.alert-bar",
   "tag": "sf-alert-bar",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "kind": "leaf",
   "family": "alert",
   "settings": {
@@ -104,7 +104,7 @@
       },
       "cancelable": true,
       "own-verb": true,
-      "summary": "A person pressed an item's acknowledge button («Отметить, что видели»): the host records that the condition was seen, for every person it concerns, until it happens again. Not cancelled, the item leaves the bar until the host sets the list again"
+      "summary": "A person pressed an item's acknowledge button («Прочитано»): the host records that the condition was seen, for every person it concerns, until it happens again. Not cancelled, the item leaves the bar until the host sets the list again"
     },
     "close": {
       "carries": {
@@ -231,7 +231,7 @@
       "state": "default"
     }
   },
-  "x-summary": "A full-width bar above a page or admin header for the conditions that need action now: error, warning, info. One bar for all of them, coloured by the most serious; several are paged «‹ 1 of N ›» and listed under the bar with «All N». Warning closes for a day, info for good, error only minimizes to a strip. It stores nothing: the host keeps what was closed.",
+  "x-summary": "A full-width bar above a page or admin header for the conditions that need action now: error, warning, info. One bar for all of them, coloured by the most serious; it shows the most serious, and the others are listed under the bar with «All N». Warning closes for a day, info for good, error only minimizes to a strip. It stores nothing: the host keeps what was closed.",
   "x-source": {
     "package": "framework",
     "folder": "alert-bar",
@@ -263,7 +263,8 @@
     "version 1.3.4 (2026-11-10, C16 leftovers; written as a note on 1.3.3, which is released): a patch; nothing draws differently. Its sheet reads the C16 role name --sf-surface-area where it read the former --sf-surface-1 (an alias of it until 2027-01-01, token-c16-theme-role-names), so a page that sets the new name reaches it; the value is the same in both themes and on every place. Settings, values, events and keys unchanged. (the list's fill)",
     "version 1.4.0 (2026-11-10, owner decision C40): an item's time is sf-time (cl-time), the Framework's one way to write a moment. Within a day it is relative as before (threshold P1D); older it reads as sf-time's auto («вчера, 19:40», «5 ноября», with the year when it is not this one) where 1.3 printed the medium date and the time; the full moment is in sf-time's tooltip, reached by the pointer and by Tab, and Escape hides it. Settings, values and events unchanged.",
     "version 1.4.0, also (2026-11-11, written on the pair's 1.3.4, carried by 1.4.0): each level declares --sf-surface-place-ground, the nearest opaque place, with its fill, as every solid place does. Settings, values, events and keys unchanged.",
-    "version 1.4.2 (2026-11-12, owner decision C112, R198; one number above the released 1.4.1): the close cross is the strong place's on-surface ink at 64 of the alpha scale's ink family (white at 64 in the light theme, the level's tone 20 at 64 in the dark), as the cross of sf-alert and sf-toast, instead of the solid on-colour of the text; under a pointer it catches the text ink. Its size is unchanged: the bar's line, the size of its status icon. Settings, values, events and keys unchanged."
+    "version 1.4.2 (2026-11-12, owner decision C112, R198; one number above the released 1.4.1): the close cross is the strong place's on-surface ink at 64 of the alpha scale's ink family (white at 64 in the light theme, the level's tone 20 at 64 in the dark), as the cross of sf-alert and sf-toast, instead of the solid on-colour of the text; under a pointer it catches the text ink. Its size is unchanged: the bar's line, the size of its status icon. Settings, values, events and keys unchanged.",
+    "version 1.5.0 (2026-11-13, owner decisions C114 and C115, C105; AA-14..AA-17, NS-8, NS-11; one number above the unreleased 1.4.2 it joins): a minor. The job is the state of the whole product that needs action now (C114 (1)); the sentence stands in the docs beside sf-alert (a page or section), sf-toast (a short reply to an action), the notification centre (history) and sf-confirm (a decision). No paging arrows (C114 (3)): the bar shows the most serious item and «All N» opens the list; the pager, its position text and the prev/next words are gone. One button family (AA-15, C110): the action tonal surface, acknowledge, «All N», close and minimize ghost («All N» was tonal). Horizontal steps of C105 (AA-14): edge --sf-space-1 (16, phone 12), icon to text --sf-space-1/2 (12, phone 8), text to actions --sf-space-1 (16), between buttons and actions to the end button --sf-space-1/3 (8, phone 4); they were the rung's space-x and text-space-x (14 / 7 / 14 / 7). The fill stays full-bleed and strong (C114 (4)); the content stands on the page column (C114 (2), AA-16): a size 1 (site) bar takes the .container inset of the window's step (gutter + half of what the bar is wider than the step), so its icon lines up with sf-header-site's logo; a size 1/2 (admin) bar keeps the edge; --sf-alert-bar-padding-inline still overrides both. Narrow (up to 38rem): the actions start at the text start (AA-17, C114 (5)), 12 under the text (phone 8, C115), and the bottom inset is even with the top (NS-8): the block inset + (H − L) / 2 + (L − 1cap) / 2 under the last button. The acknowledge word is «Прочитано» / «Mark as read» (C114 (2), NS-11). Settings, values, events and keys unchanged; the open «Ещё N» list of C114 (3) (NS-12) is not in this version."
   ],
   "x-registry": {
     "capabilities": [

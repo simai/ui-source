@@ -1,8 +1,11 @@
 # Alerts
 
-Alert is a persistent inline notice inside the page flow. Choose its semantic
-type from the message meaning: `clear`, `info`, `warning`, `danger` or
-`success`. Use Toast for transient overlay feedback.
+Alert is a persistent inline notice inside the page flow: the state of this
+page or section (owner decision C114 (1)). Choose its status from the message
+meaning: `neutral`, `info`, `success`, `warning` or `error` (`clear` and
+`danger` are still read). The state of the whole product is `sf-alert-bar`, a
+short reply to an action is a toast (`SF.notify`), a decision is
+`sf-confirm`.
 
 ## Anatomy
 
@@ -36,6 +39,47 @@ sf-icon-button--close sf-icon-button--size-1 sf-icon-button--height-low` with
 `sf-close sf-close--size-1`, the last child of `.sf-alert`; its plate hangs out
 over the inline padding. The public `--sf-alert-padding-block`,
 `--sf-alert-padding-inline` and `--sf-alert-gap` still win.
+
+## Where the actions stand (1.2.0, owner decision C115)
+
+The actions stand in the row with the text while the notice is wide enough,
+else under the text from its start (layout L3a):
+
+| Actions | In the row from the notice's own width |
+|---|---|
+| one | 36rem (576 px) |
+| two | 48rem (768 px) |
+
+The notice with actions is a size query container (`container: sf-alert`).
+The step is the notice's whole width, its padding and border included. In the
+row the actions are centred on the text block and their plate overhangs the
+line by the low button's block padding, as the close does: with a one-line
+text the button's label stands on the title line, with the icon and the close.
+Under the text they follow at `--sf-space-1/2` (12, phone 8). No attribute pins
+the position yet.
+
+With the actions under the text, the space under the last button equals what
+the eye sees above the first line, the top of its capitals (C114 (5), NS-9):
+`.sf-alert-wrap` ends with `--sf-alert--lead + (--sf-text-height-1 - 1cap) / 2`
+under the buttons. Measured at 1440: 21.7 above the capitals, 22.8 under the
+button; on a phone 17.2 and 17.6.
+
+## Callout: a recipe, not a component
+
+Guidance before an action («changing the address affects every letter») is an
+ordinary info alert (owner decision C114 (7)): `sf-alert--info
+sf-alert--outlined`, the border only, without the close and without actions.
+
+```html
+<div class="sf-alert sf-alert--info sf-alert--outlined flex items-start">
+  <i class="sf-icon" aria-hidden="true">info</i>
+  <div class="sf-alert-wrap flex flex-col flex-1">
+    <div class="sf-alert-content flex flex-col flex-1">
+      <div class="sf-alert-supporting-text">Новый адрес получат все письма сайта.</div>
+    </div>
+  </div>
+</div>
+```
 
 ## Ink (1.1.1, C35 acceptance F1)
 

@@ -16,7 +16,7 @@ const sheet = read('src/smart/alert-bar/scss/_smart__alert-bar.scss');
 test('the manifest: a leaf of block alert with items, four events and the close action', () => {
   assert.equal(manifest.tag, 'sf-alert-bar');
   assert.equal(manifest.family, 'alert');
-  assert.equal(manifest.version, '1.4.2');
+  assert.equal(manifest.version, '1.5.0');
   assert.deepEqual(Object.keys(manifest.settings), ['items', 'size', 'label']);
   assert.deepEqual(manifest.settings.items.schema.items.properties.level.enum, ['error', 'warning', 'info']);
   assert.deepEqual(manifest.settings.items.schema.items.required, ['id', 'level', 'text']);
@@ -47,9 +47,14 @@ test('the order, the hide periods and the level words', async () => {
   const en = json('src/smart/alert-bar/lang/en.json');
   assert.deepEqual(Object.keys(en.runtime).sort(), Object.keys(ru.runtime).sort());
   assert.equal(ru.runtime['hide-day'], 'Скрыть на сутки');
-  assert.equal(ru.runtime.position, '{n} из {count}');
   assert.equal(ru.runtime.all, 'Все {count}');
-  assert.equal(en.events.acknowledge.label, 'Mark as seen');
+  // The acknowledge word (owner decision C114 (2), NS-11).
+  assert.equal(ru.runtime.acknowledge, 'Прочитано');
+  assert.equal(ru.events.acknowledge.label, 'Прочитано');
+  assert.equal(en.runtime.acknowledge, 'Mark as read');
+  assert.equal(en.events.acknowledge.label, 'Mark as read');
+  // No paging (C114 (3)): the words of the arrows are gone with them.
+  for (const key of ['position', 'prev', 'next']) assert.equal(ru.runtime[key], undefined, key);
   // The most serious level is error, as on every message (decision C13);
   // the former danger is read as error.
   assert.equal(ru.runtime['level-error'], 'Ошибка');
@@ -75,6 +80,12 @@ test('the controls are the Framework\'s own: sf-button, sf-button-icon, sf-badge
   assert.match(template, /<sf-button-icon class="sf-alert-bar-close" icon="close"/u);
   assert.match(template, /<sf-badge class="sf-alert-bar-badge"/u);
   assert.doesNotMatch(template, /<button class="sf-button/u);
+  // No paging arrows (C114 (3)); one button family, the action tonal and the
+  // rest ghost (AA-15, C110).
+  assert.doesNotMatch(template, /sf-alert-bar-(pager|prev|next|position)/u);
+  assert.match(template, /<sf-button class="sf-alert-bar-all" size=\$\{size\} appearance="ghost"/u);
+  assert.equal((template.match(/<sf-button(-icon)? [^>]*appearance="tonal"/gu) ?? []).length, 0);
+  assert.match(template, /actionLink\(context, item, 'tonal'\)/u);
 });
 
 test('the sheet: one rung, the theme status roles, the narrow container and reduced motion', () => {
@@ -83,6 +94,17 @@ test('the sheet: one rung, the theme status roles, the narrow container and redu
   }
   assert.match(sheet, /--sf-alert-bar--padding-block: calc\(\(var\(--sf-alert-bar--control\) - var\(--sf-alert-bar--line\)\) \/ 2\);/u);
   assert.match(sheet, /@container sf-alert-bar \(max-width: 38rem\)/u);
+  // C105 steps (AA-14): edge 16, icon to text 12, text to actions 16,
+  // between buttons and to the end button 8.
+  assert.match(sheet, /--sf-alert-bar--edge: var\(--sf-space-1\);/u);
+  assert.match(sheet, /--sf-alert-bar--gap: var\(--sf-alert-bar-gap, var\(--sf-space-1\)\);/u);
+  assert.match(sheet, /--sf-alert-bar--icon-gap: var\(--sf-space-1\\\/2\);/u);
+  assert.match(sheet, /--sf-alert-bar--between: var\(--sf-space-1\\\/3\);/u);
+  // The page column of a site bar (AA-16): the .container inset per step.
+  assert.match(sheet, /\(100cqi - var\(--sf-breakpoint-#\{\$step\}\)\) \/ 2/u);
+  // Narrow: actions from the text start (AA-17) and an even bottom (NS-8).
+  assert.match(sheet, /justify-content: flex-start;/u);
+  assert.match(sheet, /padding-block-end: calc\(var\(--sf-alert-bar--padding-block\) \+ \(var\(--sf-alert-bar--control\) - var\(--sf-alert-bar--line\)\) \/ 2 \+ \(var\(--sf-alert-bar--line\) - 1cap\) \/ 2\);/u);
   assert.match(sheet, /@media \(prefers-reduced-motion: no-preference\)/u);
   // No raw colour: theme roles and the ink's alpha mixes only.
   assert.doesNotMatch(sheet, /#[0-9a-f]{3,8}\b|rgb\(/iu);
@@ -91,7 +113,7 @@ test('the sheet: one rung, the theme status roles, the narrow container and redu
 test('the conformance probe covers the twelve behaviours', () => {
   const probe = json('src/smart/alert-bar/probe.json');
   assert.deepEqual(probe.probes.map((one) => one.id), [
-    'p1-order-and-colour', 'p2-paging', 'p3-list-of-all', 'p4-close-warning', 'p5-close-info', 'p6-danger-minimizes',
+    'p1-order-and-colour', 'p2-one-button-family', 'p3-list-of-all', 'p4-close-warning', 'p5-close-info', 'p6-danger-minimizes',
     'p7-acknowledge', 'p8-navigate', 'p9-live-regions', 'p10-close-action', 'p11-narrow', 'p12-english',
   ]);
 });

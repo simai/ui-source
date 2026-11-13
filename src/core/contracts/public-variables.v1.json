@@ -3946,8 +3946,8 @@
         {
           "name": "--sf-alert-bar-padding-inline",
           "role": "padding-inline",
-          "summary": "The bar's inline inset, to line its text up with the header under it.",
-          "default": "var(--sf-ui-1/2--space-x)",
+          "summary": "The bar's inline inset, to line its text up with the header under it. By default the edge (--sf-space-1) on an admin bar (size 1/2) and the page column (the .container inset of the window's step) on a site bar (size 1); in the narrow layout the edge (owner decisions C105, C114 (2)).",
+          "default": "var(--sf-space-1)",
           "since": "2026-11-05"
         },
         {
@@ -3960,8 +3960,8 @@
         {
           "name": "--sf-alert-bar-gap",
           "role": "gap",
-          "summary": "The space between the bar's text, its actions and its end button.",
-          "default": "var(--sf-ui-1/2--space-x)",
+          "summary": "The space between the bar's text and its actions (C105 H6); the end button stands 8 (--sf-space-1/3) after the actions.",
+          "default": "var(--sf-space-1)",
           "since": "2026-11-05"
         }
       ]

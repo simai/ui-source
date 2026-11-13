@@ -5,15 +5,12 @@
     "level-error": "Error",
     "level-warning": "Warning",
     "level-info": "Info",
-    "position": "{n} of {count}",
-    "prev": "Previous notice",
-    "next": "Next notice",
     "all": "All {count}",
     "collapse-list": "Hide the list",
     "list": "All notices",
     "hide-day": "Hide for a day",
     "hide": "Hide",
-    "acknowledge": "Mark as seen",
+    "acknowledge": "Mark as read",
     "minimize": "Minimize the bar",
     "expand": "expand",
     "expand-label": "Expand the important notices",
@@ -21,7 +18,7 @@
   },
   "events": {
     "acknowledge": {
-      "label": "Mark as seen"
+      "label": "Mark as read"
     }
   }
 }

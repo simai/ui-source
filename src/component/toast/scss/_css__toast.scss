@@ -116,8 +116,48 @@
     padding-block: var(--sf-toast--lead);
   }
 
+  /* Even bottom (owner decision C114 (5), NS-10): with the action under the
+     text, the space under it is what the eye sees above the first line -- the
+     lead and the room above the capitals inside the line, (line - 1cap) / 2.
+     1cap is the font's own cap height; the container takes the text's font so
+     1cap is the text's. */
   .sf-toast .sf-toast-container:has(> .sf-toast-bottom) {
-    padding-block-end: 0;
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1);
+    padding-block-end: calc(var(--sf-toast--lead) + (var(--sf-text-height-1) - 1cap) / 2);
+  }
+
+  /* Where the action stands (owner decision C115, layout L3a; AA-7, AA-8): a
+     toast with one action puts it in the row with the text from 20rem of the
+     toast's own width (every toast of the notification area, 28rem), centred
+     on the text block, its plate overhanging the line by the low button's
+     block padding, as the close does (C35); narrower, or with two actions,
+     under the text from its start. The toast with an action is the query
+     container; the step is the toast's whole width, so the query (which reads
+     the content box) takes off its frame: two inline paddings (--sf-space-1,
+     16) and two borders (--sf-px). */
+  .sf-toast:has(> .sf-toast-container > .sf-toast-bottom) {
+    container: sf-toast / inline-size;
+  }
+
+  @container sf-toast (min-width: calc(20rem - 2 * 1rem - 2px)) {
+    .sf-toast:not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-container:has(> .sf-toast-bottom) {
+      flex-direction: row;
+      align-items: center;
+      column-gap: var(--sf-space-1);
+      padding-block-end: 0;
+    }
+
+    .sf-toast:not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-wrap {
+      flex: 1 1 0;
+      min-inline-size: var(--sf-0);
+    }
+
+    .sf-toast:not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-bottom {
+      flex: none;
+      flex-wrap: nowrap;
+      margin-block: calc(-1 * var(--sf-ui-1--space-y-tightness-low));
+    }
   }
 
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/center (.items-center) */

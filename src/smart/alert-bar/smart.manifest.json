@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.alert-bar",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "title": "Alert bar",
-  "summary": "A full-width bar above a page or admin header for the conditions that need action now: error, warning, info. One bar for all of them, coloured by the most serious; several are paged «‹ 1 of N ›» and listed under the bar with «All N». Warning closes for a day, info for good, error only minimizes to a strip. It stores nothing: the host keeps what was closed.",
+  "summary": "A full-width bar above a page or admin header for the conditions that need action now: error, warning, info. One bar for all of them, coloured by the most serious; it shows the most serious, and the others are listed under the bar with «All N». Warning closes for a day, info for good, error only minimizes to a strip. It stores nothing: the host keeps what was closed.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -136,7 +136,7 @@
       }
     },
     "sf-alert-bar-acknowledge": {
-      "summary": "A person pressed an item's acknowledge button («Отметить, что видели»): the host records that the condition was seen, for every person it concerns, until it happens again. Not cancelled, the item leaves the bar until the host sets the list again",
+      "summary": "A person pressed an item's acknowledge button («Прочитано»): the host records that the condition was seen, for every person it concerns, until it happens again. Not cancelled, the item leaves the bar until the host sets the list again",
       "payload": {
         "type": "object",
         "required": [
@@ -312,15 +312,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/alert-bar/index.js",
-        "sha256": "1c75122810f03bbd6222b98d95cd02ef4dc959f10c7f84cdb3d0c076c1dfd52f"
+        "sha256": "dde3cdd0fb91550ac4048c42da45403aca55bde3fee05bace4f723b571b57715"
       },
       {
         "path": "src/smart/alert-bar/js/templates/default.js",
-        "sha256": "97e3beef5ffe2a02b25f0bed348d29e364e7097ca2e7e6d5b9338678127c7e0c"
+        "sha256": "5ae9ac7d2fdefbd2c7ea51496c5fcf08d3b2806e744b637223113c776da2f154"
       },
       {
         "path": "src/smart/alert-bar/scss/_smart__alert-bar.scss",
-        "sha256": "05cab6479e849e86c2ac0d98e66c34e4898dedb5bdeb5bda0e601e1acbd2a2fb"
+        "sha256": "d36fae2f789512ab2a7ffdf74f8e45b21930c056a3115fd112afcb7f6e865fa5"
       },
       {
         "path": "src/smart/alert-bar/rule.js",
@@ -328,7 +328,7 @@
       },
       {
         "path": "src/smart/alert-bar/docs.md",
-        "sha256": "9028a50d98ae293bde6e61967357aa02e3dfaa69f4ce96124adf3d5114f7b0af"
+        "sha256": "da2e2ab8a442ef64233b165b6195055d9359a7ef360d962f0df634730ca8a1ff"
       }
     ],
     "generated_runtime": []

@@ -65,8 +65,63 @@
   padding-block: var(--sf-alert--lead);
 }
 
+/* Even bottom (owner decision C114 (5), NS-9): with the actions under the
+   text, the space under the last button is what the eye sees above the first
+   line -- the lead and the room above the capitals inside the line,
+   (line - 1cap) / 2. 1cap is the font's own cap height, so it follows the
+   density by itself; the wrap takes the text's font so 1cap is the text's. */
 .sf-alert .sf-alert-wrap:has(> .sf-alert-buttons) {
-  padding-block-end: 0;
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-1);
+  padding-block-end: calc(var(--sf-alert--lead) + (var(--sf-text-height-1) - 1cap) / 2);
+}
+
+/* Where the actions stand (owner decision C115, layout L3a; R194, AA-6,
+   AA-8): in the row with the text while the notice is wide enough -- one
+   action from 36rem of the notice's own width, two from 48rem -- and under the
+   text from its start when it is narrower. The notice with actions is the
+   query container. A container query reads the content box and cannot read a
+   variable, so each step is written in rem less the notice's frame, its two
+   inline paddings (--sf-space-1, 16) and two borders (--sf-px): the step is
+   the notice's whole width, as the owner's sheet measured it. In the row the actions are centred on the text block,
+   their plate overhanging the line by the low button's block padding, as the
+   close does (C35): with a one-line text the label stands on the title line,
+   with the icon and the close. The row has no even-bottom inset: the last line
+   is the text's. */
+.sf-alert:has(.sf-alert-buttons) {
+  container: sf-alert / inline-size;
+}
+
+@mixin sf-alert-actions-in-row {
+  .sf-alert-wrap:has(> .sf-alert-buttons) {
+    flex-direction: row;
+    align-items: center;
+    column-gap: var(--sf-space-1);
+    padding-block-end: 0;
+  }
+
+  .sf-alert-content {
+    flex: 1 1 0;
+    min-inline-size: var(--sf-0);
+  }
+
+  .sf-alert-buttons {
+    flex: none;
+    flex-wrap: nowrap;
+    margin-block: calc(-1 * var(--sf-ui-1--space-y-tightness-low));
+  }
+}
+
+@container sf-alert (min-width: calc(36rem - 2 * 1rem - 2px)) {
+  .sf-alert:not(:has(.sf-alert-buttons > :nth-child(2))) {
+    @include sf-alert-actions-in-row;
+  }
+}
+
+@container sf-alert (min-width: calc(48rem - 2 * 1rem - 2px)) {
+  .sf-alert {
+    @include sf-alert-actions-in-row;
+  }
 }
 
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-alert-buttons--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */

@@ -22,9 +22,12 @@ const NOTIFY_TEXT = {
 
 const STATUSES = new Set(['neutral', 'info', 'success', 'warning', 'error']);
 const ICONS = {success: 'check_circle', info: 'info', warning: 'warning', error: 'error', neutral: ''};
-// Long enough to read a sentence; an error stays a little longer. 0 keeps a
-// message until it is closed.
-const DURATIONS = {neutral: 5000, info: 5000, success: 5000, warning: 8000, error: 10000};
+// Long enough to read a sentence. 0 keeps a message until it is closed: an
+// error or a warning always stays until a person closes it (owner decision
+// C114 (6), NS-2, WCAG 2.2.1), whatever duration it is given; it was 10 s and
+// 8 s. The class toast holds the same rule (component/toast, readDuration).
+const DURATIONS = {neutral: 5000, info: 5000, success: 5000, warning: 0, error: 0};
+const STAYS = new Set(['warning', 'error']);
 const PLACEMENTS = new Set(['top-start', 'top-end', 'bottom-start', 'bottom-end']);
 
 const state = {
@@ -144,7 +147,8 @@ function normalise(options) {
   const status = STATUSES.has(options.status) ? options.status : 'neutral';
   const title = String(options.title ?? '').trim();
   const text = String(options.text ?? '').trim();
-  const duration = Number.isFinite(Number(options.duration)) ? Math.max(0, Number(options.duration)) : DURATIONS[status];
+  const given = Number.isFinite(Number(options.duration)) ? Math.max(0, Number(options.duration)) : DURATIONS[status];
+  const duration = STAYS.has(status) ? 0 : given;
   return {status, title, text, duration};
 }
 

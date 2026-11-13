@@ -9,14 +9,15 @@ import {html, nothing} from 'lit';
 // - Minimized (an error bar only): one button, the strip, that keeps the
 //   colour, the icon and the count and expands the bar on a press.
 // - Otherwise one row: the shown item's icon, its text with source and time,
-//   its action link (sf-button href), acknowledge, the pager «‹ 1 из N ›» and
-//   «Все N» when there are several, and at the end close (a warning or an
-//   info item) or minimize (an error item). With several items the list of
-//   all opens under the bar, each with its own action, acknowledge and close.
+//   its action link (sf-button href), acknowledge, «Все N» when there are
+//   several, and at the end close (a warning or an info item) or minimize (an
+//   error item). With several items the list of all opens under the bar, each
+//   with its own action, acknowledge and close. The bar shows the most
+//   serious item; it has no paging arrows (owner decision C114 (3)).
 //
-// The action is tonal surface and the second (acknowledge, hide) ghost, as on
-// sf-alert and sf-toast (owner decision C110 as amended 2026-11-12, variant
-// E). The controls are sf-button and sf-button-icon of scheme on-surface: inside
+// One button family (AA-15): the action is tonal surface and every other
+// button (acknowledge, «Все N», hide) ghost, as on sf-alert and sf-toast
+// (owner decision C110 as amended 2026-11-12, variant E). The controls are sf-button and sf-button-icon of scheme on-surface: inside
 // the coloured bar the sheet sets the surface roles they read to the fill's
 // on- role, so they draw on it without a scheme of their own. The close is
 // the close glyph on an icon button, not kind="close": the drawn close mark
@@ -80,14 +81,7 @@ function row(context) {
     ${item.action || item.acknowledge || many ? html`<div class="sf-alert-bar-actions">
       ${actionLink(context, item, 'tonal')}
       ${acknowledgeButton(context, item, 'ghost')}
-      ${many ? html`<span class="sf-alert-bar-pager">
-        <sf-button-icon class="sf-alert-bar-prev" icon="chevron_left" size=${size} appearance="ghost" scheme="on-surface"
-          aria-label=${words.prev} @click=${() => component.page(-1)}></sf-button-icon>
-        <span class="sf-alert-bar-position">${words.position}</span>
-        <sf-button-icon class="sf-alert-bar-next" icon="chevron_right" size=${size} appearance="ghost" scheme="on-surface"
-          aria-label=${words.next} @click=${() => component.page(1)}></sf-button-icon>
-      </span>
-      <sf-button class="sf-alert-bar-all" size=${size} appearance="tonal" scheme="on-surface"
+      ${many ? html`<sf-button class="sf-alert-bar-all" size=${size} appearance="ghost" scheme="on-surface"
         text=${listOpen ? words.collapseList : words.all} expanded=${listOpen ? 'true' : 'false'} aria-controls=${listId}
         @click=${() => component.toggleList()}></sf-button>` : nothing}
     </div>` : nothing}
