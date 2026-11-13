@@ -209,11 +209,11 @@
           },
           {
             "id": "charset-keeps-its-alphabet-in-capitals",
-            "covers": "settings.charset, settings.uppercase",
+            "covers": "settings.charset, settings.uppercase; a character typed past the end replaces the last cell (C82 prototype)",
             "field": "<sf-input-code name=\"code\" label=\"Код\" length=\"5\" charset=\"23456789BCDFGHJKMNPQRTVWXY\" uppercase></sf-input-code>",
             "user": "type:b0c2o1df7",
             "expect": {
-              "value": "BC2DF"
+              "value": "BC2D7"
             }
           },
           {

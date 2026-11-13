@@ -40,6 +40,15 @@ const unit = (number) => {
   return Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : 0.5;
 };
 
+// Reads a list of names (sources, edit) against the names it may hold, in
+// their order there. Commas, spaces or both separate them: the docs write
+// `device,library,url`, a page may write `device library url` or
+// `crop, focus`, and each reads the same.
+export function listOf(text, known) {
+  const asked = String(text ?? '').split(/[\s,]+/u).filter(Boolean);
+  return known.filter((name) => asked.includes(name));
+}
+
 // A point on the picture, 0..1 across and down: the focal point (C94 point 3).
 export function normaliseFocus(input) {
   if (!input || typeof input !== 'object') return null;

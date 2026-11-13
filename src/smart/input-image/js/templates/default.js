@@ -100,9 +100,9 @@ function renderActions(context) {
       ${renderChoose(context, {replace: true})}
       ${context.edits.length && value.href && !context.broken
         ? html`<sf-button class="sf-image-field-edit" size=${size} appearance="ghost" scheme="on-surface"
-                          text=${words.edit} aria-label=${names.edit} aria-expanded=${context.editor ? 'true' : 'false'}
+                          text=${words.edit} aria-label=${names.edit} aria-haspopup="dialog"
                           ?disabled=${context.disabled}
-                          @click=${() => (context.editor ? component._closeEditor(false) : component._openEditor())}></sf-button>`
+                          @click=${() => component._openEditor()}></sf-button>`
         : nothing}
       ${context.removable
         ? html`<sf-button-icon class="sf-image-field-remove" size=${size} appearance="ghost" scheme="on-surface-variant"
@@ -231,13 +231,21 @@ function renderUrl(context) {
   </div>`;
 }
 
-// The editor (C94 point 3): the frame or the focal point, on the picture,
-// with the mouse, a finger or the arrows. Nothing is cut: «Готово» writes
-// crop {aspect, zoom, x, y} and focus {x, y} into the value.
+// The editor (C94 point 3) in its own window over the page (C125): the frame
+// or the focal point, on the picture, with the mouse, a finger or the arrows,
+// in an sf-modal -- a centred window on a wide screen, the whole screen under
+// md (the forms in popups are sheets there, C32). Nothing is cut: «Готово»
+// writes crop {aspect, zoom, x, y} and focus {x, y} into the value, «Отмена»,
+// Escape, the scrim and the × leave it. The window says nothing to the page:
+// its own sf-modal-* events stop at it, so a page that listens to its own
+// window does not hear this one.
+const EDITOR_PART = '1/2';
+const EDITOR_ANSWER = '1';
+const stopWindowEvent = (event) => event.stopPropagation();
+
 function renderEditor(context) {
   const {editor, value, component, words} = context;
   if (!editor || !value?.href) return nothing;
-  const size = BUTTON_SIZE[context.size] ?? '1/2';
   const crop = editor.mode === 'crop';
   const pct = (number) => `${Math.round(number * 1000) / 10}%`;
   const imageStyleText = crop
@@ -245,44 +253,50 @@ function renderEditor(context) {
     : 'object-fit: contain';
   const stageAspect = crop ? String(editor.crop.aspect || '1/1').replace('/', ' / ') : context.frameAspect;
   const pointer = (event) => component.onStagePointer(event);
-  return html`<div class="sf-image-field-editor">
-    ${context.edits.length > 1
-      ? html`<span class="sf-image-field-editor-modes" role="group" aria-label=${words.editName}>
-          ${context.edits.map((mode) => html`<sf-button size=${size} appearance=${editor.mode === mode ? 'tonal' : 'ghost'}
-              scheme="on-surface" text=${mode === 'crop' ? words.crop : words.focus}
-              icon-start=${mode === 'crop' ? 'crop' : 'center_focus_strong'}
-              aria-pressed=${editor.mode === mode ? 'true' : 'false'}
-              @click=${() => component._setEditorMode(mode)}></sf-button>`)}
-        </span>`
-      : nothing}
-    <div class=${['sf-image-field-stage', context.shape === 'circle' && crop ? 'sf-image-field-stage--circle' : ''].filter(Boolean).join(' ')}
-         tabindex="0" role="application" aria-roledescription=${words.stageName}
-         aria-label=${context.editorState} aria-describedby=${`${context.id}-editor-hint`}
-         style=${`--sf-image-field--aspect: ${stageAspect}`}
-         @keydown=${(event) => component.onStageKey(event)}
-         @pointerdown=${pointer} @pointermove=${pointer} @pointerup=${pointer} @pointercancel=${pointer}>
-      <img src=${value.href} alt="" draggable="false" style=${imageStyleText}>
-      ${crop ? html`<span class="sf-image-field-stage-grid" aria-hidden="true"></span>` : nothing}
-      ${crop && context.shape === 'circle' ? html`<span class="sf-image-field-stage-mask" aria-hidden="true"></span>` : nothing}
-      ${crop ? nothing : html`<span class="sf-image-field-focus-dot" aria-hidden="true"
-                                    style=${`inset-inline-start: ${pct(editor.focus.x)}; inset-block-start: ${pct(editor.focus.y)}`}></span>`}
-    </div>
-    <span class="sf-image-field-editor-hint" id=${`${context.id}-editor-hint`}>${crop ? words.cropHint : words.focusHint}</span>
-    <span class="sf-image-field-editor-foot">
-      ${crop
-        ? html`<sf-button-icon size=${size} appearance="ghost" scheme="on-surface-variant" icon="zoom_out"
-                               aria-label=${words.zoomOut} title=${words.zoomOut}
-                               @click=${() => component._zoomBy(-0.1)}></sf-button-icon>
-          <sf-button-icon size=${size} appearance="ghost" scheme="on-surface-variant" icon="zoom_in"
-                          aria-label=${words.zoomIn} title=${words.zoomIn}
-                          @click=${() => component._zoomBy(0.1)}></sf-button-icon>`
+  return html`<sf-modal class="sf-image-field-window" open heading=${words.editTitle}
+                        width="var(--sf-h0)" fullscreen=${context.phone ? 'true' : 'false'}
+                        @sf-modal-open=${stopWindowEvent} @sf-modal-opened=${stopWindowEvent}
+                        @sf-modal-close=${stopWindowEvent}
+                        @sf-modal-closed=${(event) => component.onEditorClosed(event)}>
+    <div slot="content" class="sf-image-field-editor">
+      ${context.edits.length > 1
+        ? html`<span class="sf-image-field-editor-modes" role="group" aria-label=${words.editName}>
+            ${context.edits.map((mode) => html`<sf-button size=${EDITOR_PART} appearance=${editor.mode === mode ? 'tonal' : 'ghost'}
+                scheme="on-surface" text=${mode === 'crop' ? words.crop : words.focus}
+                icon-start=${mode === 'crop' ? 'crop' : 'center_focus_strong'}
+                aria-pressed=${editor.mode === mode ? 'true' : 'false'}
+                @click=${() => component._setEditorMode(mode)}></sf-button>`)}
+          </span>`
         : nothing}
-      <sf-button class="sf-image-field-editor-cancel" size=${size} appearance="outline" scheme="on-surface"
-                 text=${words.editCancel} @click=${() => component._closeEditor(false)}></sf-button>
-      <sf-button class="sf-image-field-editor-done" size=${size} text=${words.editDone}
-                 @click=${() => component._closeEditor(true)}></sf-button>
-    </span>
-  </div>`;
+      <div class=${['sf-image-field-stage', context.shape === 'circle' && crop ? 'sf-image-field-stage--circle' : ''].filter(Boolean).join(' ')}
+           tabindex="0" role="application" aria-roledescription=${words.stageName} autofocus
+           aria-label=${context.editorState} aria-describedby=${`${context.id}-editor-hint`}
+           style=${`--sf-image-field--aspect: ${stageAspect}`}
+           @keydown=${(event) => component.onStageKey(event)}
+           @pointerdown=${pointer} @pointermove=${pointer} @pointerup=${pointer} @pointercancel=${pointer}>
+        <img src=${value.href} alt="" draggable="false" style=${imageStyleText}>
+        ${crop ? html`<span class="sf-image-field-stage-grid" aria-hidden="true"></span>` : nothing}
+        ${crop && context.shape === 'circle' ? html`<span class="sf-image-field-stage-mask" aria-hidden="true"></span>` : nothing}
+        ${crop ? nothing : html`<span class="sf-image-field-focus-dot" aria-hidden="true"
+                                      style=${`inset-inline-start: ${pct(editor.focus.x)}; inset-block-start: ${pct(editor.focus.y)}`}></span>`}
+      </div>
+      <span class="sf-image-field-editor-hint" id=${`${context.id}-editor-hint`}>${crop ? words.cropHint : words.focusHint}</span>
+      ${crop
+        ? html`<span class="sf-image-field-editor-zoom">
+            <sf-button-icon class="sf-image-field-zoom-out" size=${EDITOR_PART} appearance="ghost" scheme="on-surface-variant" icon="zoom_out"
+                            aria-label=${words.zoomOut} title=${words.zoomOut}
+                            @click=${() => component._zoomBy(-0.1)}></sf-button-icon>
+            <sf-button-icon class="sf-image-field-zoom-in" size=${EDITOR_PART} appearance="ghost" scheme="on-surface-variant" icon="zoom_in"
+                            aria-label=${words.zoomIn} title=${words.zoomIn}
+                            @click=${() => component._zoomBy(0.1)}></sf-button-icon>
+          </span>`
+        : nothing}
+    </div>
+    <sf-button slot="footer" class="sf-image-field-editor-cancel" size=${EDITOR_ANSWER} appearance="ghost" scheme="on-surface"
+               text=${words.editCancel} @click=${() => component._closeEditor(false)}></sf-button>
+    <sf-button slot="footer" class="sf-image-field-editor-done" size=${EDITOR_ANSWER} text=${words.editDone}
+               @click=${() => component._closeEditor(true)}></sf-button>
+  </sf-modal>`;
 }
 
 // The description and «Декоративная» (C94 point 4), when the page asks for

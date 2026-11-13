@@ -148,7 +148,9 @@ test('image field: the loader knows it and asks for what it draws with', () => {
   assert.match(rule, /SF\.RuleLoader\['cl-input-image'\] = \{\n  tags: \['sf-input-image', 'sf-image-field'\],/u);
   assert.match(rule, /\{ name: 'cl-button' \},\n    \{ name: 'cl-button-icon' \},\n    \{ name: 'cl-icon' \},/u);
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/input-image\/rule\.js';/u);
-  assert.deepEqual(manifest.composition.uses, ['smart.button', 'smart.button-icon', 'smart.icon', 'smart.input', 'smart.menu-context', 'smart.progress-ring', 'smart.switch']);
+  assert.deepEqual(manifest.composition.uses, ['smart.button', 'smart.button-icon', 'smart.icon', 'smart.input', 'smart.menu-context', 'smart.modal', 'smart.progress-ring', 'smart.switch']);
+  // The editor's window (C125) loads when it opens.
+  assert.match(rule, /\{ name: 'cl-modal', lazy: true \},/u);
 });
 
 // The public variables (2026-10-24): ten, each read with the value the field

@@ -363,7 +363,7 @@ test('C94 point 1, 2: two layouts in one element; the row under the picture keep
   assert.doesNotMatch(sheet, /sf-image-field-over/u);
 });
 
-test('C94 point 3: the frame and the focal point are edited in the field and written into the value, the original untouched', () => {
+test('C94 point 3: the frame and the focal point are edited and written into the value, the original untouched', () => {
   const field = host({layout: 'preview', edit: 'crop,focus', aspect: '16/9'});
   field.setValue({value: 'm', href: '/m.png', width: 1600, height: 900});
   assert.equal(field._openEditor(), 'applied');
@@ -379,11 +379,69 @@ test('C94 point 3: the frame and the focal point are edited in the field and wri
   assert.deepEqual(plain(field.value.focus), {x: 0.5, y: 0.4});
   assert.equal(field.value.href, '/m.png', 'the address is the original');
   assert.equal(field.events.at(-1)[1].source, 'edit');
-  // Cancel keeps the value.
+  // Cancel keeps the value. Escape on the stage is the window's (C125), not
+  // the stage's: the stage leaves it to sf-modal's close-on-esc.
   field._openEditor();
   field.onStageKey({key: 'ArrowLeft', shiftKey: true, preventDefault() {}});
-  field.onStageKey({key: 'Escape', preventDefault() {}});
+  let prevented = false;
+  field.onStageKey({key: 'Escape', preventDefault() { prevented = true; }});
+  assert.equal(prevented, false, 'Escape reaches the window');
+  assert.ok(field._editor, 'the stage does not close the window itself');
+  field._closeEditor(false);
+  assert.equal(field._editor, null);
   assert.deepEqual(plain(field.value.crop), {aspect: '16/9', zoom: 1.1, x: 0.54, y: 0.5});
+});
+
+test('C125: the editor is a window over the page (sf-modal), the whole screen on a phone; it closes through the window', () => {
+  // The template draws the editor in an sf-modal: the parts are the editor's,
+  // «Отмена» (quiet, C116) and «Готово» stand in its footer.
+  const editor = template.slice(template.indexOf('function renderEditor'), template.indexOf('// The description and'));
+  assert.match(editor, /<sf-modal class="sf-image-field-window" open heading=\$\{words\.editTitle\}/u);
+  assert.match(editor, /width="var\(--sf-h0\)" fullscreen=\$\{context\.phone \? 'true' : 'false'\}/u);
+  assert.match(editor, /<div slot="content" class="sf-image-field-editor">/u);
+  assert.match(editor, /<sf-button slot="footer" class="sf-image-field-editor-cancel" size=\$\{EDITOR_ANSWER\} appearance="ghost" scheme="on-surface"/u);
+  assert.match(editor, /<sf-button slot="footer" class="sf-image-field-editor-done" size=\$\{EDITOR_ANSWER\} text=/u);
+  assert.match(editor, /@sf-modal-closed=\$\{\(event\) => component\.onEditorClosed\(event\)\}/u);
+  assert.match(editor, /role="application" aria-roledescription=\$\{words\.stageName\} autofocus/u);
+  assert.match(template, /aria-label=\$\{names\.edit\} aria-haspopup="dialog"/u);
+  assert.doesNotMatch(template, /aria-expanded=\$\{context\.editor/u);
+  assert.equal(ru['edit-title'], 'Изменить изображение');
+  assert.equal(en['edit-title'], 'Edit the image');
+  assert.ok(manifest.relations.some(({name, lazy}) => name === 'cl-modal' && lazy), 'sf-modal loads when the window opens');
+
+  // Through a stand-in window: «Готово» writes the value and asks the window
+  // to close; the copy goes when the window says it closed.
+  const field = host({layout: 'preview', edit: 'crop', aspect: '1/1'});
+  field.setValue({value: 'm', href: '/m.png', width: 800, height: 800});
+  const calls = [];
+  const modal = {openState: true, close(options) { calls.push(['close', options.reason]); return {outcome: 'applied'}; }, confirm() { calls.push(['confirm']); return {outcome: 'applied'}; }};
+  field.querySelector = () => modal;
+  field._openEditor();
+  field._zoomBy(0.5);
+  field._closeEditor(true);
+  assert.deepEqual(calls, [['confirm']]);
+  assert.equal(field.value.crop.zoom, 1.5, 'the value is written at «Готово»');
+  assert.ok(field._editor, 'kept while the window closes');
+  field._closeEditor(true);
+  assert.deepEqual(calls, [['confirm']], 'one close per window');
+  const event = {stopped: false, target: modal, currentTarget: modal, stopPropagation() { this.stopped = true; }};
+  field.onEditorClosed(event);
+  assert.equal(event.stopped, true, 'the window\'s events stop at it');
+  assert.equal(field._editor, null);
+  assert.equal(field._focusAfterRender, 'edit', 'focus goes back to «Изменить»');
+  // Escape, the scrim, the × : the window closes by itself, the value stays.
+  field._openEditor();
+  field._zoomBy(0.5);
+  field.onEditorClosed({target: modal, currentTarget: modal, stopPropagation() {}});
+  assert.equal(field.value.crop.zoom, 1.5);
+  // «Отмена» asks the window to close as cancelled.
+  field._openEditor();
+  field._closeEditor(false);
+  assert.deepEqual(calls.at(-1), ['close', 'cancelled']);
+  // A phone: the template context says so, and the window is the whole screen.
+  assert.equal(field.templateContext().phone, false);
+  field._phone = true;
+  assert.equal(field.templateContext().phone, true);
 });
 
 test('C94 point 4: the description and «Декоративная» are inside the field, switched on by the page', () => {
@@ -437,4 +495,20 @@ test('the reference and the events say the same: library is declared, rejected c
   assert.ok(manifest.events.library);
   assert.deepEqual(Object.keys(manifest.events.rejected.carries), ['files', 'rejected', 'accept', 'source']);
   assert.deepEqual(manifest.events.change.carries.source.values, ['input', 'drop', 'paste', 'url', 'alt', 'edit', 'remove', 'upload', 'cancel']);
+});
+
+test('sources and edit read commas, spaces or both (1.4.1): the evidence wrote spaces, the docs write commas', () => {
+  const sources = ['device', 'library', 'url'];
+  for (const text of ['device,library,url', 'device library url', 'url, device ,library', ' device\tlibrary\nurl ', 'device,,library  url']) {
+    assert.deepEqual(value.listOf(text, sources), sources, text);
+  }
+  assert.deepEqual(value.listOf('library device', sources), ['device', 'library'], 'in the known order');
+  assert.deepEqual(value.listOf('device-library urls', sources), [], 'a name is whole, not a part');
+  assert.deepEqual(value.listOf(null, sources), []);
+  assert.deepEqual(plain(host({sources: 'device library url'}).sourceList), sources);
+  assert.equal(host({sources: 'device library url'}).templateContext().menuEntries.length, 3, 'a space list makes the menu');
+  assert.deepEqual(plain(host({edit: 'crop focus'}).editList), ['crop', 'focus']);
+  assert.deepEqual(plain(host({edit: 'focus, crop'}).editList), ['crop', 'focus']);
+  assert.deepEqual(plain(host({edit: 'crop'}).editList), ['crop']);
+  assert.match(source, /import \{[^}]*\blistOf,[^}]*\} from '\.\/value\.mjs';/u, 'the element reads the one list rule');
 });
