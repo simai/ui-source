@@ -68,6 +68,8 @@
      project's --sf-primary or --sf-outline-variant reaches inside. */
   :where(.bg-primary, .bg-secondary, .bg-tertiary, .bg-info, .bg-success, .bg-warning, .bg-error, :is(.sf-alert-bar--error, .sf-alert-bar--danger, .sf-alert-bar--warning, .sf-alert-bar--info) :is(.sf-alert-bar-row, .sf-alert-bar-strip), .bg-surface-inverse, .bg-surface-inverse-fixed, .bg-primary-container, .bg-secondary-container, .bg-tertiary-container, .bg-info-container, .bg-success-container, .bg-warning-container, .bg-error-container, .sf-surface-media) sf-popover > [slot='content'] {
     --sf-outline-variant: light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24));
+    --sf-on-surface-hover: light-dark(var(--sf-neutral-15), var(--sf-neutral-85));
+    --sf-on-surface-active: light-dark(var(--sf-neutral-20), var(--sf-neutral-80));
   }
 
   /* Inside bg-surface-4 the content takes back the accent the step found
@@ -94,6 +96,8 @@
     --sf-place--plate: initial;
     --sf-place--on-plate: initial;
     --sf-place--fill-placeholder: initial;
+    --sf-place--control-hover: initial;
+    --sf-place--control-active: initial;
   }
 
   /* On glass (C70, mix sf-place-back-on-colour): the accent, the link and the

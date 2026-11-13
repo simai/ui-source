@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.header-site",
-  "version": "1.8.3",
+  "version": "1.9.0",
   "title": "Site header",
   "summary": "The top bar of a SIMAI site: brand, navigation, actions and tools in one row on the container's width, collapsing below a Framework breakpoint into a menu button that opens the navigation and actions as a side panel in the shared layer stack. Every SIMAI site uses it: the effects catalogue, Docara documentation sites and the simai.io hub.",
   "kind": "smart",
@@ -63,6 +63,15 @@
           "lg",
           "xl",
           "always"
+        ]
+      },
+      "menu-placement": {
+        "type": "string",
+        "default": "inline-start",
+        "description": "The side of the collapsed bar's menu button and of its side panel (C104): inline-start, the button first in the bar and the panel from the start edge; inline-end, the button last, after the tools, and the panel from the end edge. The two always share a side; a right-to-left page mirrors both",
+        "enum": [
+          "inline-start",
+          "inline-end"
         ]
       },
       "sticky": {
@@ -357,15 +366,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-site/index.js",
-        "sha256": "df2b46f5832edce6b3e8c99f9367e7d0c7b9844529a1223ffcfdfc54a184cfe6"
+        "sha256": "f4f2760f1c3560bbfc8ebadb5532742363eb9265665532e10bde948276f993ee"
       },
       {
         "path": "src/smart/header-site/js/templates/default.js",
-        "sha256": "99f489890f88bb5bf6de00da38e1a35ac327bdac4f710fc8d64c25216341e3ee"
+        "sha256": "62f949abb8758892c37691ae2b160b7ebf4dd8baa163a1781ac0882735994e69"
       },
       {
         "path": "src/smart/header-site/scss/_smart__site_header.scss",
-        "sha256": "04e7520163a05b603ebcce83bb732a3c66f536b4a2bde1f6e69cdf90856e33d5"
+        "sha256": "96ae6c717c717da28b241b5e665b4ebfbad53e24ec091a9e5508368604d6bee7"
       },
       {
         "path": "src/smart/header-site/rule.js",
@@ -373,7 +382,7 @@
       },
       {
         "path": "src/smart/header-site/docs.md",
-        "sha256": "cf81155a8e39a6e4e80c14af232d99ebc059657540be5d26f10d56959bcde439"
+        "sha256": "4cdda91d5fa9f01cc5493387e2fb95ee40915c1616b87efac52cd132158ed1e3"
       }
     ],
     "generated_runtime": []

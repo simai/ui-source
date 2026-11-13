@@ -14,7 +14,9 @@ import {html, nothing} from 'lit';
 //   info item) or minimize (an error item). With several items the list of
 //   all opens under the bar, each with its own action, acknowledge and close.
 //
-// The controls are sf-button and sf-button-icon of scheme on-surface: inside
+// The action is tonal surface and the second (acknowledge, hide) ghost, as on
+// sf-alert and sf-toast (owner decision C110 as amended 2026-11-12, variant
+// E). The controls are sf-button and sf-button-icon of scheme on-surface: inside
 // the coloured bar the sheet sets the surface roles they read to the fill's
 // on- role, so they draw on it without a scheme of their own. The close is
 // the close glyph on an icon button, not kind="close": the drawn close mark
@@ -76,7 +78,7 @@ function row(context) {
       ${meta(item)}
     </div>
     ${item.action || item.acknowledge || many ? html`<div class="sf-alert-bar-actions">
-      ${actionLink(context, item, 'outline')}
+      ${actionLink(context, item, 'tonal')}
       ${acknowledgeButton(context, item, 'ghost')}
       ${many ? html`<span class="sf-alert-bar-pager">
         <sf-button-icon class="sf-alert-bar-prev" icon="chevron_left" size=${size} appearance="ghost" scheme="on-surface"
@@ -103,9 +105,9 @@ function listOfAll(context) {
         ${meta(item, 'sf-alert-bar-item-meta')}
       </div>
       <div class="sf-alert-bar-item-actions">
-        ${actionLink(context, item, 'outline')}
-        ${acknowledgeButton(context, item, 'outline')}
-        ${item.dismissible ? html`<sf-button class="sf-alert-bar-item-close" size=${size} appearance="outline" scheme="on-surface"
+        ${actionLink(context, item, 'tonal')}
+        ${acknowledgeButton(context, item, 'ghost')}
+        ${item.dismissible ? html`<sf-button class="sf-alert-bar-item-close" size=${size} appearance="ghost" scheme="on-surface"
           text=${hideWord(context, item)} @click=${() => component.closeItem(item.id)}></sf-button>` : nothing}
       </div>
     </li>`)}

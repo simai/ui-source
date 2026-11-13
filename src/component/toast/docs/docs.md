@@ -23,8 +23,8 @@ the status icon is the line's size (`--sf-text-height-1`: 24, compact and
 phone 20) and stands with the first line of text and the close in the box of a
 low size-1 control (32, compact and phone 28). The title and its text are one
 block (no gap); the actions follow at `--sf-space-1/2`, `--sf-space-1/3`
-apart: `sf-button sf-button--tonal sf-button--primary sf-button--size-1
-sf-button--height-low`. The close is `sf-icon-button sf-icon-button--close
+apart: `sf-button sf-button--tonal sf-button--on-surface sf-button--size-1
+sf-button--height-low` (tonal surface, the same neutral plate on every level). The close is `sf-icon-button sf-icon-button--close
 sf-icon-button--size-1 sf-icon-button--height-low` with `sf-close
 sf-close--size-1`; its plate hangs out over the inline padding. The public
 `--sf-toast-padding-block`, `--sf-toast-padding-inline` and `--sf-toast-gap`
@@ -35,7 +35,17 @@ still win.
 The status icon is the status's role `--sf-<status>` (neutral: the quiet
 `--sf-on-surface-variant`, read from the container), as on the alert: the container's graphic tone
 (`--sf-on-<status>-container-graphic`) it read before was 2.86-3.04:1 on a dark
-toast. The close's cross is the toast's text ink, `--sf-on-<status>-container`.
+toast.
+
+The close's cross is a service glyph (1.2.5, owner decision C112, AA-13; it
+refines C107 for service glyphs on coloured places): the on-surface ink at 64
+of the alpha scale's ink family (48/64/80) --
+`light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64))` -- on every
+level and on a neutral toast alike; under a pointer it catches the text ink.
+Its size is the size-1 close, 16 in the 24 box of the status icon. It painted
+the text ink (`--sf-on-<status>-container`) first, then
+`--sf-on-surface-variant`. The level's graphic tone is not used: on a dark
+toast it reads 2.93:1.
 
 The neutral icon is the theme's dim ink on a fill, the alert's (1.2.3): `#515257`
 in light, `#d4d4d9` in dark. The toast is a popup place, and the popup's own

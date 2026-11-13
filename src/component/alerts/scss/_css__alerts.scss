@@ -3,6 +3,7 @@
    component used before — clear and danger — are matched beside it so existing
    markup and project CSS keep working. See contracts/public-api-axes.json. */
 @use 'var__alerts' as *;
+@use '../../../core/scss/mix/mix__places' as places;
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/2) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 /* The notice's geometry, the toast's numbers (owner decision C35, remarks
    R066 and R079; DEV acceptance D3: C35 covers every notice), in tokens, so a
@@ -76,15 +77,17 @@
   gap: var(--sf-alert-buttons--gap);
 }
 
-/* The tonal action on a notice of any level is a solid light plate (owner
-   decision C46, 2026-11-10, option D of the C35 acceptance): its translucent
-   fill, --sf-primary-container and its states, is laid over the solid colour
-   of the place under the notice (--sf-surface-place-solid, the C43 rule), not
-   over the notice's tint. So the plate is the same on every level and the
-   level's tone does not show through it. The second action stays ghost
-   on-surface (C35). A loading button keeps its own stripes. */
-.sf-alert .sf-alert-buttons .sf-button.sf-button--tonal.sf-button--primary:not(.sf-button-state-loading) {
-  background-image: linear-gradient(var(--sf-button--background-color), var(--sf-button--background-color)), linear-gradient(var(--sf-surface-place-solid), var(--sf-surface-place-solid));
+/* The primary action is tonal surface on a notice of any level (owner
+   decision C110 as amended 2026-11-12, variant E; replaces C46): the theme's
+   neutral tonal plate, --sf-surface-container and its states, the same on
+   every level; the second action ghost on-surface (C35). A status notice is
+   a soft coloured place (below), which re-declares the surface container as
+   the level's container -- a plate in the status tone, the cancelled variant
+   D -- so the action takes the theme's neutral container back on itself. A
+   strong place's tonal step is not read here (an alert inside a bg-<c>
+   region). */
+.sf-alert .sf-alert-buttons .sf-button.sf-button--tonal.sf-button--on-surface {
+  @include places.sf-place-neutral-container;
 }
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-alert-content--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
@@ -217,6 +220,29 @@
   --sf-icon--color: var(--sf-success);
 }
 
+/* A status notice on its container (default and flat) is a soft coloured
+   place (R190 AA-3, C16, C19): it declares sf-place-soft(<status>), as
+   bg-<c>-container and the alert bar's soft levels do, so what stands on it
+   takes the status's own outline, states and fills -- a neutral outline
+   button's edge is the status outline (3.76-3.94 light), not the theme's grey
+   (2.76-2.90), and its hover the status state layer, not a grey one. An
+   outlined notice stands on the page and stays the page's place. */
+.sf-alert.sf-alert--info:is(.sf-alert--default, .sf-alert--flat) {
+  @include places.sf-place-soft(info);
+}
+
+.sf-alert:is(.sf-alert--error, .sf-alert--danger):is(.sf-alert--default, .sf-alert--flat) {
+  @include places.sf-place-soft(error);
+}
+
+.sf-alert.sf-alert--warning:is(.sf-alert--default, .sf-alert--flat) {
+  @include places.sf-place-soft(warning);
+}
+
+.sf-alert.sf-alert--success:is(.sf-alert--default, .sf-alert--flat) {
+  @include places.sf-place-soft(success);
+}
+
 .sf-alert:is(.sf-alert--neutral, .sf-alert--clear).sf-alert--outlined {
   --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-outline));
 }
@@ -270,31 +296,28 @@
   --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-transparent));
 }
 
-/* One notice, one ink (C35 acceptance F1): the cross is the notice's text ink
-   and the status icon the status's own role (--sf-<status>; neutral the quiet
-   --sf-on-surface-variant), as on sf-toast, so the Smart alert, the class alert and the toast draw one
-   notice alike. The Smart alert's close stands inside an sf-button-icon host
-   (display: contents), so the cross is reached through any close host, not
-   only a class .sf-icon-button child. Neutral, and an outlined alert whose
-   text stands on the page: --sf-on-surface. */
-.sf-alert > :is(.sf-icon-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close)) .sf-close-icon {
-  --sf-close-icon--background-color: var(--sf-on-surface);
+/* The cross is a service glyph of the notice (owner decision C112, R198,
+   AA-12; it refines C107 (1) for service glyphs on coloured places): the
+   on-surface ink at 64, the middle step of the alpha scale's ink family
+   (48/64/80), black in the light theme and white in the dark -- translucent,
+   so it reads as one tone on every look and status, the neutral container,
+   a status container and the page under an outlined alert alike. Step 64 holds
+   3:1 against every notice fill in both themes; 48 does not on the strong
+   alert bar, the sibling that shares this rule. Before it was the place's
+   --sf-on-surface-variant (C107 (1)), a solid grey; before that the text ink.
+   The glyph stays the size-1 close (16 in the 24 box of the status icon, C103
+   and C112 (1)). Under a pointer it catches the text ink (C107 (4), as the
+   quiet icon button does, C15). The Smart alert's close stands inside an
+   sf-button-icon host (display: contents), so the cross is reached through
+   any close host, not only a class .sf-icon-button child; the appearance and
+   .sf-close keep the rule above the icon button's own cross colour. */
+.sf-alert:is(.sf-alert--default, .sf-alert--flat, .sf-alert--outlined) > :is(.sf-icon-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close)) .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
 }
 
-.sf-alert.sf-alert--info:is(.sf-alert--default, .sf-alert--flat) > :is(.sf-icon-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close)) .sf-close-icon {
-  --sf-close-icon--background-color: var(--sf-on-info-container);
-}
-
-.sf-alert:is(.sf-alert--error, .sf-alert--danger):is(.sf-alert--default, .sf-alert--flat) > :is(.sf-icon-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close)) .sf-close-icon {
-  --sf-close-icon--background-color: var(--sf-on-error-container);
-}
-
-.sf-alert.sf-alert--warning:is(.sf-alert--default, .sf-alert--flat) > :is(.sf-icon-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close)) .sf-close-icon {
-  --sf-close-icon--background-color: var(--sf-on-warning-container);
-}
-
-.sf-alert.sf-alert--success:is(.sf-alert--default, .sf-alert--flat) > :is(.sf-icon-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close)) .sf-close-icon {
-  --sf-close-icon--background-color: var(--sf-on-success-container);
+.sf-alert:is(.sf-alert--default, .sf-alert--flat, .sf-alert--outlined) > .sf-icon-button:not(:disabled):is(:hover, :active) .sf-close > .sf-close-icon,
+.sf-alert:is(.sf-alert--default, .sf-alert--flat, .sf-alert--outlined) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button:not(:disabled):is(:hover, :active) .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
 }
 
 @media (prefers-reduced-motion: reduce) {

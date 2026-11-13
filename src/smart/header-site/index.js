@@ -30,7 +30,42 @@ import ru from './lang/ru.json';
 import './scss/index.scss';
 
 const SLOTS = ['brand', 'nav', 'actions', 'tools', 'sheet'];
+const TAGS = ['sf-header-site', 'sf-site-header'];
+const SWITCH_OPERATIONS = ['toggle', 'open', 'close'];
 let sequence = 0;
+
+// A switch of the page's own (owner decision C104, as sf-drawer's
+// data-drawer): an element with data-header-site="toggle", "open" or "close"
+// naming the bar's id in aria-controls. sf-button carries its data-* and
+// aria-controls to its native button, so the press finds them there. One
+// listener for the document, bound when the first bar connects.
+function controlsBar(element, id) {
+  return (element.getAttribute('aria-controls') || '').split(/\s+/u).includes(id);
+}
+
+function barSwitches(id) {
+  if (!id || typeof document === 'undefined') return [];
+  return Array.from(document.querySelectorAll('[data-header-site][aria-controls]'))
+    .filter((element) => SWITCH_OPERATIONS.includes(element.getAttribute('data-header-site')) && controlsBar(element, id));
+}
+
+let switchesBound = false;
+function bindSwitches() {
+  if (switchesBound || typeof document === 'undefined') return;
+  document.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const trigger = event.target.closest('[data-header-site][aria-controls]');
+    const operation = trigger?.getAttribute('data-header-site');
+    if (!trigger || !SWITCH_OPERATIONS.includes(operation)) return;
+    for (const id of trigger.getAttribute('aria-controls').split(/\s+/u)) {
+      const bar = id ? document.getElementById(id) : null;
+      if (bar && TAGS.includes(bar.localName) && typeof bar[operation] === 'function') {
+        bar[operation](operation === 'close' ? {reason: 'close'} : undefined);
+      }
+    }
+  });
+  switchesBound = true;
+}
 
 
 const SiteHeaderElement = elementFromManifest(manifest, {
@@ -59,6 +94,16 @@ class SfSiteHeader extends SiteHeaderElement {
     this.isOpen = false;
     this._media = null;
     this._onMedia = () => this.syncCollapsed();
+    this._outsideSwitch = false;
+    this._switchFrame = 0;
+    this._onResize = () => {
+      if (this._switchFrame) return;
+      this._switchFrame = globalThis.requestAnimationFrame?.(() => {
+        this._switchFrame = 0;
+        this.syncSwitches();
+      }) ?? 0;
+      if (!this._switchFrame) this.syncSwitches();
+    };
     this._scrollFrame = 0;
     this._onScroll = () => {
       if (this._scrollFrame) return;
@@ -86,6 +131,10 @@ class SfSiteHeader extends SiteHeaderElement {
     }
     this.watchCollapse();
     this.watchScroll();
+    bindSwitches();
+    if (typeof globalThis.addEventListener === 'function') globalThis.addEventListener('resize', this._onResize, {passive: true});
+    this._offSwitches?.();
+    this._offSwitches = this.onAfterRender(() => this.syncSwitches(), {once: false});
   }
 
   disconnectedCallback() {
@@ -93,6 +142,11 @@ class SfSiteHeader extends SiteHeaderElement {
     this._media?.removeEventListener?.('change', this._onMedia);
     this._media = null;
     this.unwatchScroll();
+    if (typeof globalThis.removeEventListener === 'function') globalThis.removeEventListener('resize', this._onResize);
+    if (this._switchFrame) globalThis.cancelAnimationFrame?.(this._switchFrame);
+    this._switchFrame = 0;
+    this._offSwitches?.();
+    this._offSwitches = null;
     super.disconnectedCallback?.();
   }
 
@@ -168,6 +222,37 @@ class SfSiteHeader extends SiteHeaderElement {
     this.sfHostState('data-scrolled', scrolled);
   }
 
+  // The page's switches (data-header-site): each says whether the panel is
+  // open, and while a toggle or open switch outside the panel is on screen
+  // the bar draws no menu button of its own (C104). Checked after each
+  // drawing and on resize, as sf-drawer's controlled checks its switch.
+  syncSwitches() {
+    const switches = barSwitches(this.id);
+    const expanded = this.isOpen ? 'true' : 'false';
+    for (const element of switches) {
+      if (element.getAttribute('data-header-site') !== 'close' && element.getAttribute('aria-expanded') !== expanded) {
+        element.setAttribute('aria-expanded', expanded);
+      }
+    }
+    const panel = this.panel();
+    const outside = switches.some((element) => element.getAttribute('data-header-site') !== 'close'
+      && !panel?.contains(element)
+      && element.getClientRects().length > 0
+      && (element.checkVisibility?.({visibilityProperty: true}) ?? true));
+    if (outside !== this._outsideSwitch) {
+      this._outsideSwitch = outside;
+      this.requestComponentUpdate('switch');
+    }
+  }
+
+  // The page's switch on screen, when the bar draws no menu button.
+  outsideSwitch() {
+    if (!this._outsideSwitch) return null;
+    const panel = this.panel();
+    return barSwitches(this.id).find((element) => element.getAttribute('data-header-site') !== 'close'
+      && !panel?.contains(element) && element.getClientRects().length > 0) ?? null;
+  }
+
   navMenus() {
     const nodes = [].concat(this._liveSlotNodes?.get('nav') || []);
     return nodes.flatMap((node) => (node.localName === 'sf-menu' ? [node] : Array.from(node.querySelectorAll?.('sf-menu') || [])));
@@ -188,7 +273,7 @@ class SfSiteHeader extends SiteHeaderElement {
   // The menu button is the control the host's focus() reaches while the bar is
   // collapsed (the host is display: contents and has no box).
   focusDelegate() {
-    return this.collapsed ? this.menuButton() : null;
+    return this.collapsed ? (this.menuButton() ?? this.outsideSwitch()) : null;
   }
 
   // The action open.
@@ -212,6 +297,7 @@ class SfSiteHeader extends SiteHeaderElement {
       onTab: (event) => this.onTab(event),
       place: ({zIndex}) => this.place(zIndex),
     });
+    this.syncSwitches();
     this.requestComponentUpdate('open');
     // Lit draws the open panel in a microtask; a frame later it has a box to
     // take focus.
@@ -238,11 +324,12 @@ class SfSiteHeader extends SiteHeaderElement {
     this.sfHostState('data-open', false);
     const wasTop = closeLayer(this, {restoreFocus: false});
     this.place('');
+    this.syncSwitches();
     this.requestComponentUpdate('close');
     if (restoreFocus) {
       // Focus goes back to the menu button that opened it (§19.2), or by the
       // stack's rule when that is gone.
-      const button = this.menuButton();
+      const button = this.menuButton() ?? this.outsideSwitch();
       const target = button?.getClientRects().length ? button : this._returnTo;
       returnLayerFocus(wasTop, target, this._returnAncestors);
     }
@@ -319,6 +406,8 @@ class SfSiteHeader extends SiteHeaderElement {
       id: this._id,
       open: this.isOpen,
       collapse: this.collapse,
+      menuPlacement: this.menuPlacement === 'inline-end' ? 'inline-end' : 'inline-start',
+      ownMenuButton: !this._outsideSwitch,
       sticky: this.sticky,
       size: this.size,
       navigationAlign: this.navigationAlign,

@@ -284,9 +284,10 @@ function createToastElement(options = {}) {
     buttons.forEach((one) => {
       const actionButton = document.createElement('button');
       actionButton.type = 'button';
-      // The notice's action (owner decision C35): an unsized low button, tonal
-      // primary, its label the notice's text size (as the Smart sf-toast).
-      actionButton.className = 'sf-button sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low flex items-cross-center';
+      // The notice's action (owner decision C35; C110 variant E): an unsized
+      // low button, tonal surface (tonal on-surface), its label the notice's
+      // text size (as the Smart sf-toast).
+      actionButton.className = 'sf-button sf-button--tonal sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center';
       actionButton.setAttribute('data-action', one.action || 'action');
       actionButton.setAttribute('data-toast-action', one.action || 'action');
 

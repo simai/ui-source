@@ -2,7 +2,7 @@
   "$comment": "The source of sf-header-site's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.11 and vocabulary 1.1.5; the brief is ui-control's site-header design brief of 2026-10-28.",
   "id": "smart.header-site",
   "tag": "sf-header-site",
-  "version": "1.8.3",
+  "version": "1.9.0",
   "kind": "leaf",
   "family": "header",
   "settings": {
@@ -18,6 +18,15 @@
       ],
       "default": "lg",
       "summary": "Below this Framework breakpoint (sm 32rem, md 44rem, lg 60rem, xl 72rem) the nav and the actions leave the bar for the side panel and the menu button appears; always: the panel at every width; none: never. A media rule, so the first paint is right without the script"
+    },
+    "menu-placement": {
+      "type": "enum",
+      "values": [
+        "inline-start",
+        "inline-end"
+      ],
+      "default": "inline-start",
+      "summary": "The side of the collapsed bar's menu button and of its side panel (C104): inline-start, the button first in the bar and the panel from the start edge; inline-end, the button last, after the tools, and the panel from the end edge. The two always share a side; a right-to-left page mirrors both"
     },
     "sticky": {
       "type": "boolean",
@@ -280,7 +289,9 @@
     "version 1.8.1 (2026-11-10, pair ui-a0370c0c99fb acceptance, D1): a patch. The page's slot nodes (the named slots and the nav) stay where the page wrote them until the bar draws, and the drawing takes them out and places them in the same task (static holdsSlotNodesUntilDrawn, core.runtime 1.50.0). They were out of the document from the bar's connection to its first drawing, one or more tasks, and a page that found its sf-menu by id once sf-menu was defined got null on 8 of 20 loads (prototypes/menu-simple.html, the phone tree). Beside a printed first paint they stay held out of view (data-sf-held). Settings, values, events, keys and the drawing unchanged; tests/browser/header-site-slot-in-document.browser.mjs.",
     "version 1.8.1 also carries C43 in its built sheet (2026-11-10, pair next integration): as a place (sf-place) it takes back --sf-surface-underlay with one line, --sf-surface-underlay: initial; nothing is drawn differently outside a selected row.",
     "version 1.8.2 (2026-11-10, C16 leftovers; written as a note on 1.8.1, which is released): a patch; nothing draws differently. Its sheet reads the C16 role name --sf-surface-page where it read the former --sf-surface-0 (an alias of it until 2027-01-01, token-c16-theme-role-names), so a page that sets the new name reaches it; the value is the same in both themes and on every place. Settings, values, events and keys unchanged.",
-    "version 1.8.3 (2026-11-11): a patch: the class button-group sheet its tools draw with changed (component.button-group 1.3.0, C47), and the catalogue example names its colour with aria-label (sf-input-color 1.6.0 draws label visibly)."
+    "version 1.8.3 (2026-11-11): a patch: the class button-group sheet its tools draw with changed (component.button-group 1.3.0, C47), and the catalogue example names its colour with aria-label (sf-input-color 1.6.0 draws label visibly).",
+    "version 1.8.4 (2026-11-12, R189 MP-3): a patch. The side panel's close button stands on the menu button's axis, as the sheet always said: it is drawn first in the panel's head, at the bar's own gutter (the .container steps of the row, or --sf-container-gutter when a product sets it), the heading after it. It stood at the head's far end, 291 px from the menu button's axis in a 390 window. The DOM order is unchanged (heading, then close), so the first-paint markup and what a reader hears are the same. Settings, values, slots, events and keys unchanged.",
+    "version 1.9.0 (2026-11-12, owner decision C104, R189 MP-1, MP-2, MP-6 and the wide-window rest of MP-3): a minor, additions. (1) menu-placement inline-start (the default, the bar as before) or inline-end: the menu button is the bar's last item, after the tools, and the side panel comes from the end edge; its close button stands at the end of the head, on the button's axis. (2) A switch of the page's own opens the panel, as sf-drawer's data-drawer: an element with data-header-site=\"toggle\", \"open\" or \"close\" naming the bar's id in aria-controls. The bar keeps the switch's aria-expanded, and while a toggle or open switch outside the panel is on screen it draws no menu button of its own (checked after each drawing and on resize; focus goes back to the switch). (3) MP-6: while open, the scrim and the panel stand above everything in the bar: they take --sf-z-index-1 inside the bar's stacking context, and the brand, the tools and the menu button are isolated, so a z-index inside them (sf-button's text, z-index 1) stays under the scrim; closed, nothing is isolated, so a menu that drops from the tools is not capped. (4) MP-3 in a wide window: the panel's head adds the row's centring offset, half of what the page is wider than the row's container step (the page width as the container breakout reads it), so with collapse always the close stands on the menu button's axis at 1440 too; it is held inside the panel when the offset is wider than the panel. Slots, events, keys and the first paint of a bar without these settings unchanged."
   ],
   "x-registry": {
     "capabilities": [

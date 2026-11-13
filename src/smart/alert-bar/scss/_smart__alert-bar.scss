@@ -92,6 +92,23 @@
   .sf-alert-bar#{$level} :is(.sf-alert-bar-row, .sf-alert-bar-strip) > * {
     @include places.sf-place-strong-accent($c);
   }
+
+  /* The close cross (owner decision C112, R198): the notice's service glyph
+     is the place's on-surface ink at 64 of the alpha scale's ink family
+     (48/64/80), as on sf-alert and sf-toast -- here the strong place's own
+     ink (sf-ink: white in the light theme, the level's tone 20 in the dark),
+     not the solid on-colour of the text. 64 holds 3:1 on every level's fill
+     in both themes; 48 does not. Declared on the glyph, so it wins over the
+     icon button's own glyph colour; under a pointer it catches the text ink
+     (C107 (4)) below. The glyph stays the bar's line, the size of its status
+     icon (C112 (1)). */
+  .sf-alert-bar#{$level} .sf-alert-bar-row > .sf-alert-bar-close > .sf-icon-button .sf-icon {
+    --sf-icon--color: #{places.sf-ink($c, 64)};
+  }
+}
+
+.sf-alert-bar-row > .sf-alert-bar-close > .sf-icon-button:not(:disabled):is(:hover, :active) .sf-icon {
+  --sf-icon--color: var(--sf-alert-bar--ink);
 }
 
 .sf-alert-bar-row,
