@@ -114,7 +114,13 @@ the two-level limit of C24). In a horizontal navigation row (C30, R057-R060):
 A section that is a page and has subsections is a split row: the link and
 a native button beside it (`aria-expanded`, `aria-controls`, named
 «<section>: подразделы»); under a coarse pointer the button is a whole
-control wide.
+control wide. Under a fine pointer the button keeps the row's height (the
+whole height of the row at the chevron presses it), and its plate -- hover,
+press and focus ring -- is a square of the row's step, centred on the row:
+40 x 40 for a size 1 row, 32 x 32 compact, the row's own height for a row
+shorter than its step (R219). The glyph stays over the plain branches'
+glyphs; the square takes the row's end padding and the gap before the link,
+so the row's layout does not move.
 
 A row's icon, branch indicator and counter sit inside the row's line height:
 the icon and the split-row disclosure take `--sf-menu-element--line-height`,

@@ -539,10 +539,12 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
 }
 
 .sf-menu.sf-menu--documentation-tree .sf-menu-element {
-  --sf-menu-element--border-width: var(--sf-0);
-  --sf-menu-element--padding-top: var(--sf-0);
-  --sf-menu-element--padding-bottom: var(--sf-0);
-  --sf-menu-element--padding-right: var(--sf-0);
+  /* Lengths, not the bare 0 of --sf-0: the row's step and the split
+     chevron's square add them to lengths, and calc() refuses a number there. */
+  --sf-menu-element--border-width: calc(var(--sf-px) * 0);
+  --sf-menu-element--padding-top: calc(var(--sf-px) * 0);
+  --sf-menu-element--padding-bottom: calc(var(--sf-px) * 0);
+  --sf-menu-element--padding-right: calc(var(--sf-px) * 0);
   min-width: var(--sf-0);
 }
 
