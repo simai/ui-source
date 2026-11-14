@@ -107,14 +107,14 @@ const FormElement = elementFromManifest(manifest, {
   lang: {en, ru},
   source: 'ru',
   actions: {
-    checkValidity() {
+    'check-validity'() {
       return this.checkFields({focus: false, submit: false}) ? applied() : refused('invalid');
     },
     reset() {
       this.restore();
       return applied();
     },
-    setErrors(args = {}) {
+    'set-errors'(args = {}) {
       const errors = isObject(args?.errors) ? args.errors : (isObject(args) && !('errors' in args) ? args : {});
       return this.applyHostErrors(errors);
     },
