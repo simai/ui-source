@@ -34,6 +34,7 @@ const slices = [
 
 function harness({prepared = false, declared = {}, index = null, config = {}, currentScript = null} = {}) {
   const warnings = [];
+  const errors = [];
   const aliasRows = [];
   const fetched = [];
   const ensured = [];
@@ -47,7 +48,7 @@ function harness({prepared = false, declared = {}, index = null, config = {}, cu
   };
   const body = {nodeType: 1};
   const context = {
-    console: {warn: (message) => warnings.push(String(message))},
+    console: {warn: (message) => warnings.push(String(message)), error: (message) => errors.push(String(message))},
     document: {body},
     localStorage: {
       getItem: (key) => (stored.has(key) ? stored.get(key) : null),
@@ -117,7 +118,7 @@ function harness({prepared = false, declared = {}, index = null, config = {}, cu
     this.resolveSmartRoot = resolveSmartRoot;
   `, Object.assign(context, {__scans: scans, __scripts: scripts, __ensured: ensured}));
   const loader = new context.SFLoaderPlugin();
-  return {loader, rules, warnings, notes, stored, scans, scripts, body, aliasRows, fetched, ensured, context,
+  return {loader, rules, warnings, errors, notes, stored, scans, scripts, body, aliasRows, fetched, ensured, context,
     resolveSmartRoot: context.resolveSmartRoot};
 }
 
@@ -253,13 +254,63 @@ test('a package may take over a Core rule that has not loaded, never one that ha
   assert.equal(loader.pathPluginJs('cl-table', true, 'default', 'smart'), '/pro/table/js/table.js');
 
   loader.registerPackage('other', {rules: {'cl-table': {tags: ['sf-table'], type: 'smart', js: true}}});
-  assert.equal(rules['cl-table'].package, 'pro');
-  assert.ok(warnings.some((text) => text.includes('already belongs to package "pro"')));
+  assert.equal(rules['cl-table'].package, 'pro', 'pro is declared first and keeps the rule');
 
   loader.module['cl-spinner'] = 'cl-spinner';
   loader.registerPackage('pro', {rules: {'cl-spinner': {tags: ['sf-spinner'], type: 'smart', js: true}}});
   assert.equal(rules['cl-spinner'].package, undefined);
   assert.ok(warnings.some((text) => text.includes('"cl-spinner" is already loaded from the Smart base')));
+});
+
+// Pro bundles the sets, so a page that declares pro and a set gets two copies
+// of the same rules. The rule files arrive in network order; the page's order
+// of declaration decides, the same on every load, and the pair is one error.
+test('two packages defining one rule: the package the page declares first keeps it, whatever arrives first', async () => {
+  const view = {
+    'cl-view-table': {tags: ['sf-view-table', 'sf-table'], type: 'smart', js: true},
+    'cl-view': {tags: ['sf-view'], type: 'smart', js: true},
+  };
+  const copy = () => JSON.parse(JSON.stringify(view));
+  for (const arrival of [['pro', 'view'], ['view', 'pro']]) {
+    for (const [first, second] of [['pro', 'view'], ['view', 'pro']]) {
+      const {loader, rules, errors, warnings} = harness({declared: {[first]: {base: `/${first}`}, [second]: {base: `/${second}`}}});
+      // The declared rule files register in arrival order while they load.
+      const settled = loader.loadDeclaredPackageRules();
+      for (const name of arrival) loader.registerPackage(name, {rules: copy()});
+      assert.equal(errors.length, 0, 'nothing is said before every declared rule file has answered');
+      await settled;
+      const where = `declared ${first} first, ${arrival[0]} arrived first`;
+      assert.equal(rules['cl-view-table'].package, first, where);
+      assert.equal(rules['cl-view'].package, first, where);
+      assert.equal(loader.pathPluginJs('cl-view-table', true, 'default', 'smart'), `/${first}/view-table/js/view-table.js`, where);
+      assert.equal(errors.length, 1, `${where}: one error for the pair`);
+      assert.match(errors[0], new RegExp(`packages "${first}" and "${second}" both define <sf-view>, <sf-view-table>`));
+      assert.match(errors[0], new RegExp(`this page uses package "${first}" \\(the page declares it first\\)`));
+      assert.match(errors[0], /never both/);
+      assert.ok(!warnings.some((text) => text.includes('cannot take it')), `${where}: no race warning is left`);
+    }
+  }
+});
+
+test('a rule another package already loaded stays with it, and a pair is said once per new rule', async () => {
+  const {loader, rules, errors} = harness({prepared: true, declared: {view: {base: '/view'}, pro: {base: '/pro'}}});
+  await loader.loadDeclaredPackageRules();
+  loader.registerPackage('pro', {rules: {'cl-editor': {tags: ['sf-editor'], type: 'smart', js: true}}});
+  loader.loadedPlugins['cl-editor'] = true;
+  loader.registerPackage('view', {rules: {'cl-editor': {tags: ['sf-editor'], type: 'smart', js: true}}});
+  assert.equal(rules['cl-editor'].package, 'pro', 'a loaded rule is never taken');
+  assert.equal(errors.length, 1);
+  assert.match(errors[0], /this page uses package "pro" \(its copy had already loaded\)/);
+  loader.registerPackage('view', {rules: {'cl-editor': {tags: ['sf-editor'], type: 'smart', js: true}}});
+  assert.equal(errors.length, 1, 'the same rule again is not said again');
+
+  // Two packages the page never declared: the first registered keeps the rule.
+  const own = harness({prepared: true});
+  await own.loader.loadDeclaredPackageRules();
+  own.loader.registerPackage('one', {base: '/one', rules: {'cl-x': {tags: ['sf-x'], type: 'smart', js: true}}});
+  own.loader.registerPackage('two', {base: '/two', rules: {'cl-x': {tags: ['sf-x'], type: 'smart', js: true}}});
+  assert.equal(own.rules['cl-x'].package, 'one');
+  assert.match(own.errors[0], /uses package "one" \(it registered first and neither is declared\)/);
 });
 
 test('a 404 in one base never marks the same name missing in another', () => {

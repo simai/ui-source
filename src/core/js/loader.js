@@ -326,6 +326,9 @@ function SFLoaderPlugin(params) {
   this.searchEnd = false;
   this.packages = Object.create(null);
   this.packageWarnings = new Set();
+  this.packageOrder = 0;
+  this.packageConflicts = new Map();
+  this.packageRulesSettled = false;
   this.installPackageApi();
   // A set named on the core script (data-sf-sets) is declared like one in
   // SF_BOOT_CONFIG.packages; the configuration wins over the attribute.
@@ -442,8 +445,16 @@ SFLoaderPlugin.prototype.declarePackages = function (declared) {
     }
     const base = read?.base
       || (read?.version ? npmBase(name, read.version, this.setNpmRoot()) : '');
+    // The page's order of declaration decides which package keeps a rule two
+    // of them define (registerPackage): data-sf-sets first, then
+    // SF_BOOT_CONFIG.packages, then the constructor's packages, each in the
+    // order written. A name declared twice keeps its first place.
+    const order = this.packages[name]?.declared
+      ? this.packages[name].order
+      : (this.packageOrder = (this.packageOrder || 0) + 1);
     this.packages[name] = {
       name,
+      order,
       base,
       rule: read?.rule || (base ? `${base}/rule.js` : ''),
       version: read?.version || '',
@@ -495,6 +506,17 @@ SFLoaderPlugin.prototype.resolveIndexedPackages = function () {
 };
 
 SFLoaderPlugin.prototype.loadDeclaredPackageRules = function () {
+  // Once every declared rule file has answered, a rule two packages define
+  // has its final owner, and each pair of packages that met is said once.
+  const settle = (value) => {
+    this.packageRulesSettled = true;
+    this.reportPackageConflicts();
+    return value;
+  };
+  const loadAll = () => {
+    const loading = load();
+    return loading ? loading.then(settle) : settle(null);
+  };
   const load = () => {
     const loads = Object.values(this.packages)
         .filter((pkg) => pkg.declared && pkg.rule)
@@ -516,7 +538,7 @@ SFLoaderPlugin.prototype.loadDeclaredPackageRules = function () {
     return loads.length ? Promise.all(loads) : null;
   };
   const indexed = this.resolveIndexedPackages();
-  this.packageRulesReady = indexed ? indexed.then(load) : load();
+  this.packageRulesReady = indexed ? indexed.then(loadAll) : loadAll();
   return this.packageRulesReady;
 };
 
@@ -671,12 +693,20 @@ SFLoaderPlugin.prototype.registerPackage = function (name, options = {}) {
     }
     const current = this.findPlugins[key];
     if (current?.package && current.package !== packageName) {
-      this.warnPackage(`owner:${packageName}:${key}`,
-          `rule "${key}" already belongs to package "${current.package}"; `
-          + `package "${packageName}" cannot take it`);
-      return;
-    }
-    if (current && (this.module[key] || this.loadedPlugins[key])) {
+      // Two packages define one rule (pro bundles the sets, so a page that
+      // declares pro and a set it bundles gets two copies). The rule files
+      // arrive in network order, so the first to arrive must not decide: the
+      // package the page declared first keeps the rule, every load the same.
+      // A rule already loaded stays with its holder (an element cannot be
+      // defined twice). The pair is said once, as an error, when the
+      // declared rule files have all answered.
+      const holder = this.packages[current.package];
+      const loaded = Boolean(this.module[key] || this.loadedPlugins[key]);
+      const takes = !loaded && packageRank(pkg) < packageRank(holder);
+      this.notePackageConflict(current.package, packageName, key, current,
+          takes ? packageName : current.package, loaded ? 'loaded' : 'order');
+      if (!takes) return;
+    } else if (current && (this.module[key] || this.loadedPlugins[key])) {
       this.warnPackage(`loaded:${packageName}:${key}`,
           `rule "${key}" is already loaded from `
           + `${current.package ? `package "${current.package}"` : 'the Smart base'}; `
@@ -688,7 +718,56 @@ SFLoaderPlugin.prototype.registerPackage = function (name, options = {}) {
   });
 
   if (added.length) this.rulesChanged();
+  if (this.packageRulesSettled) this.reportPackageConflicts();
   return added;
+};
+
+// The place a package holds in the page's declaration; a package the page did
+// not declare (registered by a script of its own) comes after every declared
+// one, and among those the first registered keeps what it registered.
+function packageRank(pkg) {
+  return pkg?.declared && Number.isFinite(pkg.order) ? pkg.order : Number.POSITIVE_INFINITY;
+}
+
+SFLoaderPlugin.prototype.notePackageConflict = function (holderName, comerName, key, rule, winner, why) {
+  const [first, second] = packageRank(this.packages[holderName]) <= packageRank(this.packages[comerName])
+    ? [holderName, comerName]
+    : [comerName, holderName];
+  const pair = `${first}|${second}`;
+  if (!this.packageConflicts) this.packageConflicts = new Map();
+  if (!this.packageConflicts.has(pair)) {
+    this.packageConflicts.set(pair, {first, second, winner, why, rules: new Set(), tags: new Set(), said: false});
+  }
+  const row = this.packageConflicts.get(pair);
+  if (!row.rules.has(key)) row.said = false;
+  row.rules.add(key);
+  (Array.isArray(rule?.tags) && rule.tags.length ? [rule.tags[0]] : [key]).forEach((tag) => row.tags.add(tag));
+  if (why === 'loaded') {
+    row.winner = winner;
+    row.why = why;
+  }
+};
+
+// One console error per pair of packages that define the same components:
+// both names, the components, which package the page gets and why.
+SFLoaderPlugin.prototype.reportPackageConflicts = function () {
+  (this.packageConflicts || new Map()).forEach((row) => {
+    if (row.said) return;
+    row.said = true;
+    const loser = row.winner === row.first ? row.second : row.first;
+    const winnerPackage = this.packages[row.winner];
+    const reason = row.why === 'loaded'
+      ? 'its copy had already loaded'
+      : (winnerPackage?.declared
+        ? 'the page declares it first'
+        : 'it registered first and neither is declared');
+    const tags = [...row.tags].sort();
+    console.error(`SFLoader: packages "${row.first}" and "${row.second}" both define `
+        + `${tags.map((tag) => `<${tag}>`).join(', ')}; `
+        + `this page uses package "${row.winner}" (${reason}), and the copies in `
+        + `package "${loser}" are not loaded. A page declares pro or the sets it `
+        + 'bundles, never both: remove one of them from its declaration.');
+  });
 };
 
 // Everything the Loader derived from the rule map, dropped so the next read
