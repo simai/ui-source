@@ -144,3 +144,15 @@ test('the menu\'s panel head chooses a tab on sf-tabs-change and only stops the 
   assert.match(head, /@sf-tab-change=\$\{\(event\) => event\.stopPropagation\(\)\}/u);
   assert.equal((head.match(/chooseTab\(/gu) || []).length, 1);
 });
+
+test('ST-2, C166: the pin is sf-button-icon that names itself; RT-1: the footer buttons a button group apart', () => {
+  const panel = read('src/smart/settings/js/templates/panel.js');
+  assert.match(panel, /<sf-button-icon class="sf-settings-row-pin" icon="push_pin" appearance="ghost"/u);
+  assert.doesNotMatch(panel, /<button type="button" class="sf-settings-row-pin"/u);
+  assert.match(panel, /title=\$\{row\.pinned \? words\.unpin : words\.pin\}/u);
+  assert.match(panel, /tabindex="-1"/u);
+  assert.match(css, /\.sf-settings-row-pin > \.sf-icon-button \{/u);
+  assert.match(css, /--sf-settings-panel--pin: calc\(var\(--sf-text-height-1\\\/3\) \+ 2 \* var\(--sf-ui-1\\\/3--space-y-tightness-low\)\);/u);
+  const footer = css.match(/\.sf-settings-panel-footer \{([^}]*)\}/u)[1];
+  assert.match(footer, /gap: var\(--sf-space-1\\\/3\);/u);
+});

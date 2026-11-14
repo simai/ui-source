@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm",
-  "version": "1.3.3",
+  "version": "1.3.5",
   "title": "Confirmation",
   "summary": "A question put to a person in place -- a delete asked in its row, a member removed, a view reset: what will happen, two answers, a pending state while the answer is applied, the outcome, and an optional time it runs out. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -97,7 +97,7 @@
       "appearance": {
         "type": "string",
         "default": "inline",
-        "description": "inline: the question and its answers in the flow of a row, no frame of their own. card: in a framed card with its own inset. window: the content of a question window (sf-modal size=\"question\", decision C39) -- the window's title is the question, so it only names the group here; the consequences on a quiet plate, the decisive sentence (consequence) on its own line, the page's options, the name to type (require), then the answers at the start, the filled danger answer first.",
+        "description": "inline: the question and its answers inside its row, above the row's line, on a quiet plate (owner decision C166, R245: the place's surface-container, --sf-radius-2, --sf-space-1/2 by --sf-space-1 inside, --sf-space-1/2 all round on a phone), no frame of their own. card: in a framed card with its own inset. window: the content of a question window (sf-modal size=\"question\", decision C39) -- the window's title is the question, so it only names the group here; the consequences on a quiet plate, the decisive sentence (consequence) on its own line, the page's options, the name to type (require), then the answers at the start, the filled danger answer first.",
         "enum": [
           "inline",
           "card",
@@ -334,7 +334,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/confirm/index.js",
-        "sha256": "aab7cc8a771f8e9d9898dea8226a366e64a98eedcdacaffc3cff3d7777028866"
+        "sha256": "3082173bdc74d5791e9c59800eafd199aa24b2368aa82b585de5819e35562253"
       },
       {
         "path": "src/smart/confirm/js/templates/default.js",
@@ -342,7 +342,7 @@
       },
       {
         "path": "src/smart/confirm/js/templates/default.css",
-        "sha256": "94ea4cf158c7a620a934911d0285be7fabc0e13dd87648974241a75b4d17fabf"
+        "sha256": "64d2d01b122ae20aa2cf04e4e2c014a066e9b783b22fa06e930b3fd094b3a8dc"
       },
       {
         "path": "src/smart/confirm/rule.js",
@@ -350,11 +350,11 @@
       },
       {
         "path": "src/smart/confirm/docs.md",
-        "sha256": "c3ac79dec983af3ae73911c3cae2151371961f0d7e15d6609945a8ba1c78765c"
+        "sha256": "9e0c644b19480c49cd95d0985d57551ca0034899ba5cd75008d2dec6ab45d531"
       },
       {
         "path": "src/smart/confirm/component.json",
-        "sha256": "ec02eda0f077065b850e554bb639d92df744bab0e50bc98d214bf381a8ae68fe"
+        "sha256": "e233137c714eb7d453dbd62da8d99597d21e29a2f2f34ebc1fae1fdc3dac8205"
       },
       {
         "path": "src/smart/confirm/lang/en.json",

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm-change",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "title": "Change confirmation",
   "summary": "A prepared change put to a person: each value as it was and as it will be, two answers of equal weight, until when it can be answered, and then only the outcome. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -491,7 +491,7 @@
       },
       {
         "path": "src/smart/confirm-change/js/templates/default.css",
-        "sha256": "2ca0d44596a18f473cdde4a74a4cd7761689a4e5926a02701585ff65b5802903"
+        "sha256": "c1b7e99f48c50d28fbd8b67efd0507e939c2723a08726cf7a17635cef2fd0213"
       },
       {
         "path": "src/smart/confirm-change/rule.js",
@@ -503,7 +503,7 @@
       },
       {
         "path": "src/smart/confirm-change/component.json",
-        "sha256": "eecbe1381ddcb05e3ff22ddeba931a48af6eb88a7a3314508552d976d3a7faf3"
+        "sha256": "cf2bbb8b9539086ee792fbcd8e2b79120dd1966e3f4f277ae27b83cefe4353b9"
       },
       {
         "path": "src/smart/confirm-change/aliases.json",
