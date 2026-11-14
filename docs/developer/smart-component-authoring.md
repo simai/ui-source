@@ -139,7 +139,8 @@ the next one.
   which are gone by then. A carrier whose
   only attribute is `slot` is unwrapped and its children kept; with any other
   attribute it is kept whole, so a listener on the carrier itself goes with
-  it.
+  it. A custom element, a `figure`, a `picture` and an element holding a
+  `figcaption` are content, never carriers: they are kept whole.
 
 - **Static markup is replaced in the first render** (standard
   simai.smart-component 1.3.8 §5.4, simai/ui-source#40). What a server or a

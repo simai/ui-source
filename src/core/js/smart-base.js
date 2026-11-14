@@ -2546,9 +2546,14 @@ class SfBaseElement extends HTMLElement {
       // `slot` until its own class connects and writes style/data-sf-started,
       // so a sf-header-page that upgraded first kept the bare items and
       // dropped the trail (3 of 72 loads, 2026-11-12; every load when the
-      // header's script arrives first).
+      // header's script arrives first). A figure is one piece too, and so is
+      // a picture or anything holding a figcaption: unwrapped, a
+      // <figure slot="slide"> with its caption became two slides, the image
+      // and the caption (gallery GL evidence, 2026-11-14).
       const shouldUnwrapSlotHost =
         !child.localName.includes("-") &&
+        child.localName !== "figure" && child.localName !== "picture" &&
+        !Array.from(child.children ?? []).some((node) => node.localName === "figcaption") &&
         child.getAttributeNames().length === 1 && child.hasAttribute("slot");
       const slotNodes = shouldUnwrapSlotHost
         ? Array.from(child.childNodes)

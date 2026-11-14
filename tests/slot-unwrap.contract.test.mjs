@@ -38,3 +38,22 @@ test('the decision does not change with the slotted element\'s upgrade', () => {
   assert.equal(decide(el('sf-breadcrumbs', {slot: 'path'})), false, 'not yet upgraded');
   assert.equal(decide(el('sf-breadcrumbs', {slot: 'path', style: 'display: contents;', 'data-sf-started': ''})), false, 'upgraded');
 });
+
+// A figure, a picture or anything that holds a figcaption is one piece: a
+// <figure slot="slide"> with an image and its caption is one slide, not two
+// (gallery GL evidence 2026-11-14, open question 1).
+test('a figure, a picture and a captioned element are never unwrapped', () => {
+  const expression = capture.match(/const shouldUnwrapSlotHost =([^;]+);/u)[1];
+  const decide = new Function('child', `return (${expression});`);
+  const el = (localName, attributes, children = []) => ({
+    localName,
+    children: children.map((name) => ({localName: name})),
+    getAttributeNames: () => Object.keys(attributes),
+    hasAttribute: (name) => Object.hasOwn(attributes, name),
+  });
+  assert.equal(decide(el('figure', {slot: 'slide'}, ['img', 'figcaption'])), false, 'a captioned figure');
+  assert.equal(decide(el('figure', {slot: 'slide'}, ['img'])), false, 'a bare figure');
+  assert.equal(decide(el('picture', {slot: 'slide'}, ['source', 'img'])), false, 'a picture');
+  assert.equal(decide(el('div', {slot: 'slide'}, ['img', 'figcaption'])), false, 'a div with a caption');
+  assert.equal(decide(el('div', {slot: 'slide'}, ['img', 'img'])), true, 'a plain wrapper still gives its children');
+});

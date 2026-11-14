@@ -73,7 +73,9 @@ text remains unchanged, and an intentionally empty element remains a slide.
 
 A direct child with only slot="slide" is a slot container: its children are
 the items. Its wrapper is not the slide. A slotted element with another
-attribute, such as class, is retained as one item. For a card with a heading,
+attribute, such as class, is retained as one item, and so is a figure, a
+picture or an element holding a figcaption (a picture with its caption is
+one slide). For a card with a heading,
 paragraph and link use one attributed article, or put a whole article inside
 the bare slot container. Do not leave the heading, text and link as separate
 top-level children unless they are intended to be separate slides.
