@@ -2,7 +2,7 @@
   "$comment": "The source of sf-avatar-group's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/avatars (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.avatar-group",
   "tag": "sf-avatar-group",
-  "version": "1.2.5",
+  "version": "1.2.8",
   "kind": "leaf",
   "family": "avatar",
   "settings": {
@@ -18,35 +18,43 @@
     },
     "image-url": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The picture of the default, user and profile templates."
     },
     "avatar-url": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The picture of the label template."
     },
     "avatar-size": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The avatar's size step in the default and user templates (1/4 ... 3; the former words tiny, small, big and extra_big still read)."
     },
     "check": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Draws the verified badge on the default template's avatar."
     },
     "name": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The person's name in the user template."
     },
     "source": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The line under the name in the user template, with a link glyph: where the person comes from."
     },
     "label-text": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The title of the label template."
     },
     "label-second-text": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The line under the title in the label template."
     },
     "avatars": {
       "type": "list",
@@ -59,25 +67,30 @@
     },
     "avatars-more": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The group template's last avatar: a number (drawn +N) or a short text for the people not shown."
     },
     "round-size": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The avatars' size step in the group template (and in the default one when given)."
     },
     "label-size": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The avatar's size step in the label template."
     },
     "profile-size": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The profile template's avatar size step: 2 or 3 (the former words small and big still read)."
     }
   },
   "values": {
     "active": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Draws the online badge on the default template's avatar; check (verified) wins when both are set."
     }
   },
   "events": {},
@@ -110,6 +123,14 @@
     "profile": {
       "file": "js/templates/default.js",
       "$comment": "The profile combination of the one Lit template in JavaScript (§5.2 migration form), chosen by template=\"profile\"."
+    }
+  },
+  "presentation": {
+    "skeleton": {
+      "$comment": "The people arrive as avatars after the first paint when the host loads them: the derived skeleton (static/default/<example>.skeleton.html) holds their box until they do (standard 1.3.8 §5.4; first-paint study R222).",
+      "late": [
+        "avatars"
+      ]
     }
   },
   "examples": "examples.json",
@@ -205,7 +226,10 @@
     "version 1.2.2 (2026-11-10): the offline dot of a member is the disabled ink laid over the place it stands on (C43, owner 2026-11-10; avatars 1.3.5): it read the muted ink, which became the translucent disabled ink in avatars 1.3.4 and let the photo show through. The bundle's sheet carries the avatars sheet, so this version records the change. Settings, values, events and keys unchanged.",
     "version 1.2.3 (2026-11-10): the offline dot's two layers are public variables of the avatar sheet, --sf-avatar-offline-background-color (the place) and --sf-avatar-offline-overlay (the disabled ink over it; avatars 1.3.6): a page that sets the colour and the overlay none gets exactly that colour. The default look is unchanged. css-variables lists both. Settings, values, events and keys unchanged.",
     "version 1.2.4 (2026-11-11, audit of dead Smart sheets): a patch, nothing drawn differently. The bundle no longer imports the avatars class sheet: its rule has no css, so the copy in smart/avatar-group/css/avatar-group.css never reached a page (force-linking it changed nothing on any snapshot, 1440 light/dark, 390); the avatars sheet comes by the rule's relation as before. Settings, values, events and keys unchanged.",
-    "version 1.2.5 (2026-11-12, avatar offline dot): a patch. A member's offline dot is the place's dim ink, not the disabled ink (avatars 1.3.7, the avatar sheet's defect fix, journal value-avatar-offline-dot-dim-ink)."
+    "version 1.2.5 (2026-11-12, avatar offline dot): a patch. A member's offline dot is the place's dim ink, not the disabled ink (avatars 1.3.7, the avatar sheet's defect fix, journal value-avatar-offline-dot-dim-ink).",
+    "version 1.2.6 (written on fix/content-precheck as 1.2.4; 2026-11-10, docs precheck AV-06): a patch. The group prints its overlap in the size names, sf-avatar-group--size-1/4, -1/3 and -1/2 (the --sf-space step of the overlap), in place of xs, sm and md, which stay dated aliases in component.avatars 1.4.0 until 2027-01-01 (journal class-avatar-group-overlap-size-names). Every setting has its summary. Every template draws sf-avatar's own parts (docs precheck smart content AG-01 measured on this pair: default 48, group 40, label 48, profile 56, user 40, all round). Drawn the same; settings, values, events and keys unchanged.",
+    "version 1.2.7 (2026-11-13, docs precheck smart content SC-S02): a patch, nothing drawn differently. active has its summary.",
+    "version 1.2.8 (2026-11-13, first-paint study R222, integration-fix/first-paint-5 af52cd76; the note is written by group build 3, the branch moved the number without one): a patch, nothing drawn differently once the data is in. avatars often arrives from the host after the first paint, so the component declares it late (presentation.skeleton.late) and the build derives its skeletons (static/default/<example>.skeleton.html), which hold the box until the data comes (standard 1.3.8 §5.4). Settings, values, events and keys unchanged."
   ],
   "x-rule": {
     "regex": "/<sf-avatar-group\\b/i"

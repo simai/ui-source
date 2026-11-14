@@ -32,11 +32,16 @@
       --sf-menu-element--padding-bottom,
       var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))
     );
-    padding-inline-end: var(
+    /* The same across (owner decision C105 H4, as the fields' C77 inset;
+       spacing audit M2): the border is inside the inline inset, so a bordered
+       row's icon or text stands 16 from its outer edge (compact and phone
+       12), not 17 (13). A row without a border (navigation, the
+       documentation tree) is unchanged. */
+    padding-inline-end: calc(var(
       --sf-menu-element--padding-right,
       var(--sf-menu-element--padding-inline-end, var(--sf-space-1))
-    );
-    padding-inline-start: var(--sf-menu-element--padding-inline-start, var(--sf-space-1));
+    ) - var(--sf-menu-element--border-width));
+    padding-inline-start: calc(var(--sf-menu-element--padding-inline-start, var(--sf-space-1)) - var(--sf-menu-element--border-width));
     border-color: var(--sf-menu-element--border-color);
     border-style: var(--sf-menu-element--border-style, solid);
     border-block-start-width: var(
@@ -158,7 +163,58 @@
     margin-block-end: calc(-1 * var(--sf-menu-element--padding-bottom, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))));
   }
 
-  :where(.sf-menu:not(.sf-menu--compact)) .sf-menu-element-wrap > .sf-badge {
+  /* The split row's chevron under a fine pointer (R219; C01, C18, C103, C15):
+     its plate is a square of the row's step -- a size 1 row's control height,
+     40, 32 compact -- centred on the row, never the row-tall strip the
+     stretched box drew (28 x 48 in the documentation's sidebar). The box
+     keeps the row's height, so the whole height of the row at the chevron
+     still presses it; the plate, its press shade and its focus ring are drawn
+     on the square. A row shorter than its step (a documentation tree's row)
+     gets a square of its own height. The glyph stays where it stood, over the
+     plain branches' glyphs: the square grows into the row's end padding as
+     far as that padding goes, the rest over the gap before the link, so the
+     row's layout does not move (a row item in a header keeps its width); it
+     never covers the link. Under a coarse pointer the touch target rules
+     (sf-menu, the row's panels) are unchanged. */
+  @media not (pointer: coarse) {
+    .sf-menu-element > button.sf-icon-button {
+      --sf-menu--split-plate: var(--sf-ui-1--control-height);
+      --sf-menu--split-grow: calc(var(--sf-menu--split-plate) - var(--sf-menu-element--line-height, var(--sf-text-height-1)));
+      --sf-menu--split-end: min(var(--sf-menu--split-grow) / 2, var(--sf-menu-element--padding-right, var(--sf-menu-element--padding-inline-end, var(--sf-space-1))));
+      position: relative;
+      box-sizing: border-box;
+      min-inline-size: var(--sf-menu--split-plate);
+      inline-size: var(--sf-menu--split-plate);
+      padding-inline: var(--sf-0);
+      margin-inline-start: calc(-1 * min(var(--sf-menu--split-grow) - var(--sf-menu--split-end), var(--sf-menu-element--gap, var(--sf-space-1\/3))));
+      margin-inline-end: calc(-1 * var(--sf-menu--split-end));
+      background-color: var(--sf-transparent);
+      box-shadow: none;
+    }
+
+    .sf-menu-element > button.sf-icon-button::before {
+      content: '';
+      position: absolute;
+      z-index: 0;
+      inset-block-start: 50%;
+      inset-inline-start: 50%;
+      block-size: min(100% + 2 * var(--sf-menu-element--border-width, calc(var(--sf-px) * 0)), var(--sf-menu--split-plate));
+      aspect-ratio: 1;
+      box-sizing: border-box;
+      border-radius: inherit;
+      background-color: var(--sf-icon-button--background-color, var(--sf-transparent));
+      box-shadow: var(--sf-icon-button--focus-inset, 0 0 var(--sf-transparent)), var(--sf-icon-button--box-shadow, 0 0 var(--sf-transparent));
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .sf-menu-element > button.sf-icon-button:dir(rtl)::before {
+      transform: translate(50%, -50%);
+    }
+
+  }
+
+  :where(.sf-menu:not(.sf-menu--rail, .sf-menu--compact)) .sf-menu-element-wrap > .sf-badge {
     margin-block: min(calc(var(--sf-px) * 0), calc((var(--sf-menu-element--line-height, var(--sf-text-height-1)) - var(--sf-badge--min-size)) / 2));
   }
 
@@ -284,6 +340,22 @@
       outline: var(--sf-focus-outline-width) solid currentColor;
       outline-offset: calc(var(--sf-focus-outline-width) * -1);
       box-shadow: none;
+    }
+  }
+}
+
+/* The split chevron's focus ring (R219) is the icon button's own ring, drawn
+   on the square: the icon button writes its ring in sf.states, so the move is
+   written there too. */
+@layer sf.states {
+  @media not (pointer: coarse) {
+    .sf-menu-element > button.sf-icon-button:not(:disabled):not(.disabled):focus-visible {
+      outline: none;
+    }
+
+    .sf-menu-element > button.sf-icon-button:not(:disabled):not(.disabled):focus-visible::before {
+      outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+      outline-offset: var(--sf-focus--offset);
     }
   }
 }

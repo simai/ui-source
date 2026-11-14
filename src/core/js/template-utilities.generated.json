@@ -18,7 +18,6 @@
   ],
   "cl-avatar": [
     "align-items/default",
-    "background-color/default",
     "display/default",
     "element-position/default",
     "flex-direction/default",
@@ -78,8 +77,7 @@
   ],
   "cl-checkbox": [
     "cursor/default",
-    "display/default",
-    "transition-property/default"
+    "display/default"
   ],
   "cl-confirm": [
     "display/default"
@@ -215,6 +213,9 @@
     "position/default",
     "sr-only/default"
   ],
+  "cl-input-image": [
+    "display/default"
+  ],
   "cl-input-lookup": [
     "align-items/default",
     "display/default",
@@ -230,7 +231,8 @@
     "flex-direction/default",
     "flex-wrap/default",
     "justify-content/default",
-    "place-items/default"
+    "place-items/default",
+    "sr-only/default"
   ],
   "cl-input-rich": [
     "align-items/default",
@@ -360,8 +362,7 @@
   "cl-radio": [
     "align-items/default",
     "display/default",
-    "justify-content/default",
-    "transition-property/default"
+    "justify-content/default"
   ],
   "cl-reference-link": [
     "align-items/default",

@@ -25,6 +25,7 @@
 // by core/js/element-manifest.js; the host is the form control.
 import SfBaseElement from '../../core/js/smart-base';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
+import {noteDeprecated} from '../../core/js/deprecations.js';
 import {pageLocale} from '../../core/js/page-language';
 import BundledPreferences from '../../core/js/preferences.js';
 import {tagSelector} from '../../core/js/tag-aliases.js';
@@ -38,6 +39,13 @@ import ru from './lang/ru.json';
 // The parts it draws, found under their current names and their former ones.
 const MENU = `:scope > .sf-language-parts > ${tagSelector('sf-menu-context')}`;
 const TRIGGER = `:scope > .sf-language-parts > ${tagSelector('sf-button-icon')}`;
+
+// The boolean compact showed the codes; it is a dated alias of labels="code"
+// (owner decision C134: compact means density only; journal
+// attribute-language-compact-to-labels-code), read here, since a boolean's
+// presence cannot be a value alias of the shim.
+const COMPACT_ALIAS = {component: 'sf-language', tag: 'sf-language', kind: 'attribute', from: 'compact', to: 'labels="code"', since: '2026-11-13', remove_after: '2027-01-01'};
+const LABELS = ['name', 'code'];
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
 
@@ -107,6 +115,37 @@ class SfLanguage extends FormField(LanguageElement) {
     if (code) this.setAttribute('value', code);
     else this.removeAttribute('value');
     this.sfSyncFormState?.();
+  }
+
+  // What the segments say: name or code. labels wins; without it the dated
+  // boolean compact says code, noted once per element in SF.deprecations.
+  get labelsShown() {
+    const own = this.getAttribute('labels');
+    if (LABELS.includes(own)) return own;
+    if (own === null && this.hasAttribute('compact')) {
+      if (!this._compactNoted) {
+        this._compactNoted = true;
+        noteDeprecated(COMPACT_ALIAS);
+      }
+      return 'code';
+    }
+    return 'name';
+  }
+
+  // The property of the dated boolean, for a script that set it: it writes the
+  // attribute, which is read (and noted) as above.
+  get compact() {
+    return this.hasAttribute('compact');
+  }
+
+  set compact(next) {
+    this.toggleAttribute('compact', Boolean(next));
+  }
+
+  // compact is observed so a change of it draws again (the base's
+  // attributeChangedCallback asks for the update).
+  static get observedAttributes() {
+    return [...new Set([...super.observedAttributes, 'compact'])];
   }
 
   // What the element looks like now: none, inline, menu or search.
@@ -247,7 +286,7 @@ class SfLanguage extends FormField(LanguageElement) {
       size,
       // The menu has two rungs: rows of 32 px up to 1/2, of 40 px from 1.
       menuSize: size === '1/3' || size === '1/2' ? '1/2' : '1',
-      compact: Boolean(this.compact),
+      codes: this.labelsShown === 'code',
       disabled: Boolean(this.disabled || this.sfFormDisabled),
       list,
       current,

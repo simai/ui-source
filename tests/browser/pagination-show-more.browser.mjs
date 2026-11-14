@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
-// sf-pagination (owner, 2026-10-14), measured on the built bytes: «Показать
-// ещё» takes the room between the pages and the page size, an easy target
-// with no hole either side of it.
+// sf-pagination, measured on the built bytes: «Показать ещё» (owner decision
+// C97 (1), which replaced the 2026-10-14 rule that it fill the room between
+// the pages and the page size) is never in one row with the arrows: with top
+// it stands in its own row above them, and appearance="more" is a look of its
+// own.
 import {resolve, join} from 'node:path';
 import {existsSync, readFileSync} from 'node:fs';
 import {chromium} from 'playwright';
@@ -38,16 +40,50 @@ try {
   // distr, so the page names the distr this probe routes.
   await page.evaluate(() => { window.sfPath = 'https://cdn.jsdelivr.net/gh/simai/ui@main/distr/'; });
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
-  await page.waitForFunction(() => customElements.get('sf-pagination') && document.querySelector('#p .sf-pagination-more button'), null, {timeout: 8000});
+  await page.waitForFunction(() => customElements.get('sf-pagination') && document.querySelector('#p .sf-pagination-more-button button')
+    && document.querySelector('#p .sf-pagination-direction--next button'), null, {timeout: 8000});
   await page.waitForTimeout(300);
+  // Owner decision C97 (1): «Показать ещё» is not in one row with the arrows.
+  // With top it stands in a row of its own above them (sf-pagination-top),
+  // centred, an sf-button of the pagination's size (as tall as its arrows).
   const got = await page.evaluate(() => {
-    const more = document.querySelector('#p .sf-pagination-more');
-    const button = more.querySelector('button').getBoundingClientRect();
-    const box = more.getBoundingClientRect();
-    return {box: Math.round(box.width), button: Math.round(button.width), row: Math.round(document.querySelector('#p .sf-pagination-more').parentElement.getBoundingClientRect().width)};
+    const r = (node) => { const b = node.getBoundingClientRect(); return {x: b.x, right: b.right, y: b.y, bottom: b.bottom, w: b.width, h: b.height, cx: b.x + b.width / 2}; };
+    const top = document.querySelector('#p .sf-pagination-top');
+    const main = document.querySelector('#p .sf-pagination-main');
+    const button = document.querySelector('#p .sf-pagination-more-button button');
+    const arrow = document.querySelector('#p .sf-pagination-direction--next button');
+    return {top: top && r(top), main: r(main), button: r(button), arrow: r(arrow), inTop: Boolean(top && top.contains(button)),
+      text: button.textContent.replace(/\s+/gu, ' ').trim()};
   });
-  if (got.button !== got.box || got.box < got.row / 4) failures.push({case: '«Показать ещё» fills the room between', got});
+  if (!got.inTop) failures.push({case: '«Показать ещё» stands in its own row (sf-pagination-top)', got});
+  else {
+    if (got.button.bottom > got.main.y + 0.5) failures.push({case: '«Показать ещё» stands above the arrows, not on their line', got});
+    if (Math.abs(got.button.cx - got.top.cx) > 0.5) failures.push({case: '«Показать ещё» is centred in its row', got});
+  }
+  if (Math.abs(got.button.h - got.arrow.h) > 0.5) failures.push({case: '«Показать ещё» is as tall as the arrows of the same size', got});
+  if (got.text !== 'Показать ещё') failures.push({case: 'the button says «Показать ещё»', got: got.text});
   console.log(JSON.stringify(got));
+
+  // The «Показать ещё» look (C97 (1)): a look of its own -- the button with
+  // the next portion, «Показано N из M» and a bar, and no arrows.
+  await page.setContent('<!doctype html><html lang="ru" class="theme-light"><body style="margin:20px"><div style="width:1000px"><sf-pagination id="m" appearance="more" total="240" page-size="20" current="1"></sf-pagination></div></body></html>');
+  for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
+  await page.evaluate(() => { window.sfPath = 'https://cdn.jsdelivr.net/gh/simai/ui@main/distr/'; });
+  for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
+  await page.waitForFunction(() => customElements.get('sf-pagination') && document.querySelector('#m .sf-pagination-more-button'), null, {timeout: 8000});
+  await page.waitForTimeout(300);
+  const look = await page.evaluate(() => {
+    const el = document.getElementById('m');
+    const button = el.querySelector('.sf-pagination-more-button');
+    return {button: button.querySelector('button')?.textContent.replace(/\s+/gu, ' ').trim() || button.getAttribute('text'),
+      shown: el.querySelector('.sf-pagination-shown')?.textContent.replace(/\s+/gu, ' ').trim() ?? null,
+      bar: Boolean(el.querySelector('sf-progress-bar')), arrows: el.querySelectorAll('.sf-pagination-direction').length};
+  });
+  if (!/Показать ещё 20/u.test(look.button ?? '')) failures.push({case: 'the more look offers the next portion', got: look});
+  if (!/Показано 20 из 240/u.test(look.shown ?? '')) failures.push({case: 'the more look says how many are shown', got: look});
+  if (!look.bar) failures.push({case: 'the more look draws its bar', got: look});
+  if (look.arrows) failures.push({case: 'the more look draws no arrows', got: look});
+  console.log(JSON.stringify(look));
 } finally {
   await browser.close();
 }

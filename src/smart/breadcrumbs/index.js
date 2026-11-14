@@ -1,7 +1,14 @@
 import SfBaseElement, { toAttributeName } from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderBreadcrumbsTemplate } from './js/templates/default';
-import { collapseRange, foldGains, menuEntries, nextFit, onPhoneLadder, startFit, trailLines, trailWraps } from '../../component/breadcrumbs/js/_trail';
+import {
+  collapseRange,
+  menuEntries,
+  nextFit,
+  starvedFit,
+  trailOverflows,
+  trailStarved,
+} from '../../component/breadcrumbs/js/_trail';
 import { markCurrent, normalizeItem, parseItems, readFlag } from './js/items';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -61,8 +68,9 @@ class SfBreadcrumbs extends BreadcrumbsElement {
     this._preserveEllipsisExpanded = false;
     // How many crumbs room hides (BC-06): 0 until the trail is measured.
     this._fitHidden = 0;
-    this._fitStartLines = 0;
-    this._fitNoGain = false;
+    // The tail room keeps: null (the parent and the page) until a crumb is
+    // cut below a few letters at the narrowest fold (starvedFit), then 1.
+    this._fitTail = null;
     this._fitSettled = null;
     this._roomObserver = null;
     this._roomFrame = 0;
@@ -318,11 +326,12 @@ class SfBreadcrumbs extends BreadcrumbsElement {
   // room -- what the last measure hid (BC-06).
   collapseOptions(items = []) {
     const last = items[items.length - 1];
-    const tail = last?.current ? 2 : 1;
+    const tail = this._fitTail || (last?.current ? 2 : 1);
     return {
       maxItems: this.getNumberAttr('maxItems', 0),
-      // The phone ladder starts at «… › parent › page» (C93 item 2).
-      fit: Math.max(this._fitHidden, startFit(items.length, { tail, phone: onPhoneLadder() })),
+      // Room only, on every ladder (C93 item 1; L1 of the C93 review: a trail
+      // that fits the phone stays whole).
+      fit: this._fitHidden,
       tail,
     };
   }
@@ -373,7 +382,7 @@ class SfBreadcrumbs extends BreadcrumbsElement {
   }
 
   // Room (BC-06, owner decision C93 item 1): after each drawing, while the
-  // trail takes more than one line, one more crumb goes behind «…». A new
+  // row has no room for its crumbs, one more crumb goes behind «…». A new
   // width starts again from the full trail. The trail's own change of size
   // (it got shorter) does not count as a new width.
   afterUpdate(changedAttributes, mode) {
@@ -381,8 +390,12 @@ class SfBreadcrumbs extends BreadcrumbsElement {
     this.fitTrail();
   }
 
+  trailRow() {
+    return this.querySelector(':scope > nav > ol');
+  }
+
   trailEntries() {
-    const list = this.querySelector(':scope > nav > ol');
+    const list = this.trailRow();
     return list ? Array.from(list.children) : [];
   }
 
@@ -392,22 +405,23 @@ class SfBreadcrumbs extends BreadcrumbsElement {
     if (!this.isConnected || !this._isMounted || !this._hasRendered) return;
     this.observeRoom();
 
-    if (!this._fitStartLines) this._fitStartLines = trailLines(this.trailEntries());
-
-    if (!this._ellipsisExpanded && !this._fitNoGain && trailWraps(this.trailEntries())) {
+    // Folded as far as it goes, the tail keeps what room is left: cut on the
+    // phone, the page's name wrapped on a wider screen.
+    if (!this._ellipsisExpanded && trailOverflows(this.trailRow(), this.trailEntries())) {
       const items = this.sourceItems;
-      const next = nextFit(items.length, this.collapseOptions(items));
+      const options = this.collapseOptions(items);
+      const next = nextFit(items.length, options);
       if (next !== null) {
         this._fitHidden = next;
         this.requestComponentUpdate('fit');
         return;
       }
-
-      // Folded as far as it goes and no line was saved: the page's own name
-      // is longer than the line. The crumbs come back until the room changes.
-      if (this._fitHidden > 0 && !foldGains(this._fitStartLines, trailLines(this.trailEntries()))) {
-        this._fitNoGain = true;
-        this._fitHidden = 0;
+      // Folded as far as that goes, a crumb cut below a few letters takes the
+      // parent with it: «… › current» (N1 of the nav-4b acceptance).
+      const last = trailStarved(this.trailEntries()) ? starvedFit(items.length, options) : null;
+      if (last) {
+        this._fitTail = last.tail;
+        this._fitHidden = last.fit;
         this.requestComponentUpdate('fit');
         return;
       }
@@ -420,8 +434,7 @@ class SfBreadcrumbs extends BreadcrumbsElement {
   // A new list, setting or width measures the fold again from its start.
   restartFit() {
     this._fitHidden = 0;
-    this._fitStartLines = 0;
-    this._fitNoGain = false;
+    this._fitTail = null;
   }
 
   // A name cut with an ellipsis (C93 item 6) has its whole text as the
@@ -504,6 +517,7 @@ class SfBreadcrumbs extends BreadcrumbsElement {
       expandLabel: this.getAttribute('expand-label') || this.sfWord('expand-label'),
       siblingsLabel: this.sfWord('siblings-label'),
       siblings: this.siblingsShown,
+      expanded: this._ellipsisExpanded,
       component: this,
       items,
       rootClass: this.getRootClass(),

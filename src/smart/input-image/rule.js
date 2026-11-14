@@ -5,8 +5,8 @@
 // button-icon) and the glyph of an empty or broken thumbnail (the icon font);
 // on demand, when the page turns them on, the upload ring (sf-progress-ring),
 // the description and the address fields (sf-input), «Декоративная» (sf-
-// switch) and the menu of sources (sf-menu-context). The file dialog is the
-// platform's and brings nothing.
+// switch), the menu of sources (sf-menu-context) and the editor's window
+// (sf-modal, C125). The file dialog is the platform's and brings nothing.
 SF.RuleLoader['cl-input-image'] = {
   tags: ['sf-input-image', 'sf-image-field'],
   type: 'smart',
@@ -21,5 +21,6 @@ SF.RuleLoader['cl-input-image'] = {
     { name: 'cl-input', lazy: true },
     { name: 'cl-switch', lazy: true },
     { name: 'cl-menu-context', lazy: true },
+    { name: 'cl-modal', lazy: true },
   ],
 };

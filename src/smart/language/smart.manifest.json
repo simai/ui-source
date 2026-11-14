@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.language",
-  "version": "1.2.4",
+  "version": "1.3.0",
   "title": "Language",
   "summary": "The site's language picker. Two or three languages are a segmented switch, all in sight, one press; four to seven an icon button («translate») with a menu, each row the name in itself and in English; eight and more the same menu with search by either name or the code. One language draws nothing. A choice is a cancellable change; then the element follows the language's href or applies the language to the page (SF.language.use, lang and dir on <html>).",
   "kind": "smart",
@@ -88,10 +88,14 @@
         "description": "In auto mode, the number of languages from which the menu has a search field",
         "minimum": 2
       },
-      "compact": {
-        "type": "boolean",
-        "default": false,
-        "description": "The switch shows codes (RU · EN) instead of names; each segment keeps the name as its accessible name. The menu is not affected"
+      "labels": {
+        "type": "string",
+        "default": "name",
+        "description": "What the switch's segments say: name, the language's name in itself (Русский · English); code, its code (RU · EN), each segment keeping the name as its accessible name. The menu is not affected. The former boolean compact is a dated alias of labels=\"code\" (owner decision C134: compact means density only; noted in SF.deprecations until 2027-01-01, journal attribute-language-compact-to-labels-code)",
+        "enum": [
+          "name",
+          "code"
+        ]
       },
       "size": {
         "type": "string",
@@ -141,7 +145,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The languages as a list, each {code, label?, short?, href?}: label replaces the name the browser gives («Қазақша» written otherwise), short the compact label (RU), href the address of the site in that language. A property, or the JSON island a server prints; when it holds a language it is the list, and languages is not read"
+        "description": "The languages as a list, each {code, label?, short?, href?}: label replaces the name the browser gives («Қазақша» written otherwise), short the code label (RU, labels=\"code\"), href the address of the site in that language. A property, or the JSON island a server prints; when it holds a language it is the list, and languages is not read"
       }
     },
     "additionalProperties": false
@@ -329,11 +333,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/language/index.js",
-        "sha256": "525e4ca2691212f5af54706492f81dcc2706d17d8a8edeb6333032c32286fd65"
+        "sha256": "b189259c73984395f4663875b692a9b42763d12358944e73836f99b4507872a8"
       },
       {
         "path": "src/smart/language/js/templates/default.js",
-        "sha256": "a34fcc92baa25708a2b53b040b7f0c912a50e6e9d5402869a3fa7de6fac7c767"
+        "sha256": "805b862aa9ff2173f08cb126bdb9132df62e5af8568e2cca7fdc0ff1d39679e5"
       },
       {
         "path": "src/smart/language/rule.js",
@@ -341,7 +345,7 @@
       },
       {
         "path": "src/smart/language/docs.md",
-        "sha256": "d92e55d4682ae70e736a28159e79d8091596857cfbb28101be287605af58eebe"
+        "sha256": "5b9e459a949c62b500252a8126dfbc55c9b3c77be8b5d2138830e0972b82cf12"
       }
     ],
     "generated_runtime": []

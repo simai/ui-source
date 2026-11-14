@@ -28,10 +28,19 @@
     }
   }
 
+  /* A tab name wraps between words; a word breaks only when it alone is
+     wider than the tab (docs precheck TB-02: anywhere let the vertical list
+     shrink to «Безопасност / ь» on a phone). */
   .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button-text-container {
     min-inline-size: 0;
     white-space: normal;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
+  }
+
+  /* The vertical list is at least as wide as its longest word; the panel
+     beside it gives way. */
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container {
+    min-inline-size: min-content;
   }
 
   .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-icon {
@@ -81,6 +90,24 @@
   .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top {
     --sf-tabs-top--gap: 0;
     flex: 1;
+  }
+
+  /* A tab drawn by a component of the page's own (sf-tabs setData component)
+     is a span[role=tab] around an inert copy of that component. Under
+     type="full" it is the tab's flex item and stretches like the other tabs;
+     its inert wrapper and the component's host step out of the layout, so
+     the button inside fills it (docs precheck TB-04, acceptance 2026-11-11
+     D1: the rule sat in sf-tabs' own sheet, which the Loader never asks for,
+     and the tab stayed 97 wide beside 1310). */
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"] {
+    display: flex;
+    min-inline-size: max-content;
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"] > [inert],
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"] > [inert] > sf-button,
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"] > [inert] > :is(sf-button-icon, sf-icon-button) {
+    display: contents;
   }
 
   // sticky (sf-tabs 1.3.0): the tab row stays in sight while its panels
@@ -138,6 +165,19 @@
     --sf-icon-button--border-inline-start-width: 0;
     --sf-icon-button--border-bottom-width: 0;
     --sf-icon-button--border-inline-end-width: 0;
+  }
+
+  /* type="full" shares the row in equal columns, each at least as wide as
+     its tab (a row wider than the list scrolls as before). Columns, not flex
+     growth from a zero basis: a basis of zero counts a button's padding and
+     border on top of its share, so a tab drawn by a page's own component
+     (sf-tabs setData component, a span around an inert copy) came out 32 px
+     narrower than a button beside it (acceptance 2026-11-11 D1). Equal
+     labels and icon tabs measure the same as with flex. */
+  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(max-content, 1fr);
   }
 
   .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button,
@@ -540,6 +580,34 @@
     padding-inline: calc(var(--sf-px) * 0);
   }
 
+  // A tab's icon stands a control's icon gap from its label (owner decision
+  // C105 H1, R229 T1 / T3): --sf-ui-<size>--text-space-x, 7 / 8 / 10 at 1440,
+  // one step down in compact density, 6 / 6 / 8 on a phone, the same as the
+  // plate, whose label keeps the button's own padding. The line and the
+  // vertical look take that padding away (C99: the line under the letters),
+  // and the padding was also the icon gap, so the icon stood on the letters.
+  // The gap stands between the tab's flex items (icon, label, end icon); the
+  // count and the errors are inside the label and keep their quarter step.
+  .sf-tabs:is(.sf-tabs--underline, .sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    column-gap: var(--sf-tabs--icon-gap, var(--sf-ui-1--text-space-x));
+  }
+
+  .sf-tabs.sf-tabs--size-1-2:is(.sf-tabs--underline, .sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    --sf-tabs--icon-gap: var(--sf-ui-1\/2--text-space-x);
+  }
+
+  .sf-tabs.sf-tabs--size-2:is(.sf-tabs--underline, .sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+    --sf-tabs--icon-gap: var(--sf-ui-2--text-space-x);
+  }
+
+  // Plates stand a neighbour's step apart (owner decision C105 H5, R229 T6):
+  // --sf-space-1/4, 4 at every width and density, as tags and segments. The
+  // row's default --sf-space-1 (16, 12 compact and on a phone) is H6, the
+  // step between groups.
+  .sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top {
+    --sf-tabs-top--gap: var(--sf-tabs-gap, var(--sf-space-1\/4));
+  }
+
   // The tab's own font is its size's text role: the bare button computed the
   // browser's default under a label of the right size.
   .sf-tabs.sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button {
@@ -573,11 +641,16 @@
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     color: inherit;
     // Sized by the label (rule C95, C96): the mark is as tall as the label's
-    // line and its number is at the label's size.
+    // line and its number is at the label's size. It stands on the top of the
+    // line box, one line high, as the errors badge does (sf-badge line="text"):
+    // vertical-align middle set its middle on the baseline's x-height and the
+    // line box grew under it, the row 41.6 px where the ladder says 40 (37.2
+    // on the phone, 33.2 dense; navigation intent acceptance 2026-11-13).
+    block-size: 1lh;
     font-size: inherit;
     line-height: inherit;
     font-weight: var(--sf-font-weight-medium);
-    vertical-align: middle;
+    vertical-align: top;
   }
 
   .sf-tabs--size-1-2 .sf-tabs-count {
@@ -618,6 +691,27 @@
   .sf-tabs-more > .sf-button.sf-button--size-2 > .sf-badge.sf-tabs-more-errors {
     --sf-badge--line-height: var(--sf-text-height-2);
     font-size: var(--sf-text-size-2);
+  }
+
+  // With the badge, «Ещё» reads as a tab with errors (owner decision C105
+  // H1, R229 T8): the badge a quarter step after the label, the chevron the
+  // button's icon gap (--sf-ui-<size>--text-space-x) after the badge. The
+  // label's own end padding moves past the badge: it stood between the label
+  // and the badge (12), and the chevron touched the badge (0).
+  .sf-tabs-more > .sf-button:has(> .sf-tabs-more-errors) > .sf-button-text-container {
+    --sf-button-text-container--padding-inline-end: calc(var(--sf-px) * 0);
+  }
+
+  .sf-tabs-more > .sf-button.sf-button--size-1\/2 > .sf-badge.sf-tabs-more-errors {
+    margin-inline-end: var(--sf-ui-1\/2--text-space-x);
+  }
+
+  .sf-tabs-more > .sf-button.sf-button--size-1 > .sf-badge.sf-tabs-more-errors {
+    margin-inline-end: var(--sf-ui-1--text-space-x);
+  }
+
+  .sf-tabs-more > .sf-button.sf-button--size-2 > .sf-badge.sf-tabs-more-errors {
+    margin-inline-end: var(--sf-ui-2--text-space-x);
   }
 
   .sf-tabs-said {

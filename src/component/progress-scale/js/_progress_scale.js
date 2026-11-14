@@ -4,9 +4,10 @@ import registerComponent from '../../register-helper';
 const PROGRESS_SCALE_SELECTOR = '.sf-progress-scale';
 const BOUND_FLAG = 'sfProgressScaleBound';
 const SIZE_VALUES = ['1/3', '1/2', '1', '2', '3'];
-// The shared status words. `primary` was the old word for no status: it has no
-// colour of its own and draws the default, as before; `info` was turned into it.
-const TONE_VALUES = ['info', 'success', 'warning', 'error'];
+// The shared status words (owner decision C131 (1)): no status draws the
+// theme's primary and carries no class; neutral is grey, as in sf-dot and
+// sf-badge. `primary` is the former word for no status.
+const TONE_VALUES = ['neutral', 'info', 'success', 'warning', 'error'];
 
 function normalizeProgressScaleValue(value) {
   const parsed = Number(value);
@@ -14,8 +15,11 @@ function normalizeProgressScaleValue(value) {
   return Math.max(0, Math.min(100, parsed));
 }
 
+// The blocks never show more than is done (PG-12): 61 % lights 6 of 10, not 7;
+// a block lights only once its tenth is reached. The epsilon keeps a value
+// that is a whole tenth in decimal (70) from falling a block short in binary.
 function normalizeProgressScaleStep(value) {
-  return Math.ceil(normalizeProgressScaleValue(value) / 10) * 10;
+  return Math.floor(normalizeProgressScaleValue(value) / 10 + 1e-9) * 10;
 }
 
 function normalizeProgressScaleSize(value) {
@@ -94,7 +98,8 @@ function renderProgressScale(root) {
   root.dataset.size = size;
   root.dataset.tone = tone;
   root.dataset.showText = String(showText);
-  root.setAttribute('role', 'progressbar');
+  // Meter (C131 (7)): an amount within a known range, not a task's progress.
+  root.setAttribute('role', root.dataset.meter === 'true' ? 'meter' : 'progressbar');
   root.setAttribute('aria-valuemin', '0');
   root.setAttribute('aria-valuemax', '100');
   root.setAttribute('aria-valuenow', String(value));
@@ -159,6 +164,10 @@ function setProgressScaleState(target, state = {}) {
     if (valueText) root.dataset.valueText = valueText;
     else delete root.dataset.valueText;
   }
+  if (Object.prototype.hasOwnProperty.call(state, 'meter')) {
+    if (state.meter) root.dataset.meter = 'true';
+    else delete root.dataset.meter;
+  }
 
   return renderProgressScale(root);
 }
@@ -176,6 +185,7 @@ function getProgressScaleState(target) {
     showText: normalizeBoolean(root.dataset.showText, true),
     label: root.getAttribute('aria-label') || '',
     valueText: root.getAttribute('aria-valuetext') || '',
+    meter: root.dataset.meter === 'true',
   };
 }
 
@@ -186,8 +196,8 @@ class ProgressScale extends ComponentObserver {
   constructor(props) {
     super(props);
     const {
-      size = '1', value = 0, status, tone = 'primary', showText = true,
-      label = '', valueText = '',
+      size = '1', value = 0, status, tone = '', showText = true,
+      label = '', valueText = '', meter = false,
     } = this.params || {};
     const root = document.createElement('div');
     root.className = 'sf-progress-scale flex flex-col';
@@ -197,6 +207,7 @@ class ProgressScale extends ComponentObserver {
     root.dataset.showText = String(normalizeBoolean(showText, true));
     if (String(label).trim()) root.dataset.label = String(label).trim();
     if (String(valueText).trim()) root.dataset.valueText = String(valueText).trim();
+    if (meter) root.dataset.meter = 'true';
     this.template = root;
   }
 

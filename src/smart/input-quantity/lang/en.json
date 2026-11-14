@@ -5,7 +5,8 @@
     "increment": "Increase value",
     "range-underflow": "The value must be at least {min}",
     "range-overflow": "The value must be at most {max}",
-    "step-mismatch": "The value must be a multiple of {step}"
+    "step-mismatch": "The value must be a multiple of {step}",
+    "remove": "Remove"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",
@@ -13,6 +14,11 @@
       "inherited": "inherited",
       "reset": "Reset to inherited",
       "described": "Inherited: {value}"
+    }
+  },
+  "events": {
+    "remove": {
+      "label": "Remove"
     }
   }
 }

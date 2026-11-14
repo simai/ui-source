@@ -168,13 +168,16 @@
   // a press anywhere on the row's line before the chevron is the link's --
   // in the phone's drawer 44 tall, not the 20 of its words. It reaches the
   // row's start edge the same way. The row's look does not move: the link
-  // draws no plate of its own.
+  // draws no plate of its own. A look that draws the row's step inside the
+  // words' box (the documentation tree: --sf-menu--wrap-padding-*) keeps that
+  // padding too, so the split row stands on the step its plain rows stand on
+  // (C01, C18): it stood 24 among 40s, compact 20 among 32s.
   .sf-smart-menu .sf-menu-element:has(> a.sf-menu-element-wrap + button.sf-icon-button) > a.sf-menu-element-wrap {
     align-self: stretch;
     margin-block: calc(-1 * var(--sf-menu-element--padding-top, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width))))) calc(-1 * var(--sf-menu-element--padding-bottom, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))));
-    padding-block: var(--sf-menu-element--padding-top, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))) var(--sf-menu-element--padding-bottom, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width))));
+    padding-block: calc(var(--sf-menu-element--padding-top, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))) + var(--sf-menu--wrap-padding-block, calc(var(--sf-px) * 0))) calc(var(--sf-menu-element--padding-bottom, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))) + var(--sf-menu--wrap-padding-block, calc(var(--sf-px) * 0)));
     margin-inline-start: calc(-1 * var(--sf-menu-element--padding-inline-start, var(--sf-space-1)));
-    padding-inline-start: var(--sf-menu-element--padding-inline-start, var(--sf-space-1));
+    padding-inline-start: calc(var(--sf-menu-element--padding-inline-start, var(--sf-space-1)) + var(--sf-menu--wrap-padding-inline, calc(var(--sf-px) * 0)));
   }
 
   // Under a coarse pointer the split control's chevron in a column is a
@@ -186,7 +189,7 @@
   // width.
   @media (pointer: coarse) {
     .sf-smart-menu .sf-menu:not(.sf-menu--horizontal):not(.sf-menu--horizontal .sf-menu) > .sf-menu-item > .sf-menu-element > a.sf-menu-element-wrap + button.sf-icon-button {
-      --sf-menu--split-toggle: calc(var(--sf-menu-element--line-height, var(--sf-text-height-1)) + var(--sf-menu-element--padding-top, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))) + var(--sf-menu-element--padding-bottom, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))) + 2 * var(--sf-menu-element--border-width, var(--sf-px)));
+      --sf-menu--split-toggle: calc(var(--sf-menu-element--line-height, var(--sf-text-height-1)) + var(--sf-menu-element--padding-top, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))) + var(--sf-menu-element--padding-bottom, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))) + 2 * var(--sf-menu--wrap-padding-block, calc(var(--sf-px) * 0)) + 2 * var(--sf-menu-element--border-width, var(--sf-px)));
       --sf-menu--split-end: var(--sf-menu-element--padding-right, var(--sf-menu-element--padding-inline-end, var(--sf-space-1)));
       text-align: end;
       min-inline-size: var(--sf-menu--split-toggle);

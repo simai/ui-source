@@ -44,6 +44,13 @@ padding, so `main`, `tonal` and `outline` badges standing side by side line up.
 On a `line-*` size, which has no block padding, the text line gives up the
 border instead.
 
+Indicator sizes: a badge is a non-interactive indicator, not a control, so its
+heights may stand below the control ladder (C18): a `line-*` badge is its text
+line, 16 at `line-1/2` on a phone. Size `1/3` is 24 on a desktop and 20 on a
+phone; nothing in a badge is a target to press. A badge that opens or removes
+something is a button or a tag, and takes the control ladder (DEV, docs
+precheck BG-01, 2026-11-10).
+
 Side room: by default the text sits `--sf-space-1/2` from the badge's edges at
 every size (owner decision 2026-11-07). `sf-badge--tight` takes the space step
 under it, `--sf-space-1/3` (8 px, 4 in a compact region, 8 on the phone), for
@@ -245,16 +252,17 @@ Smart-элементы: у `sf-avatar`, `sf-icon` и `sf-icon-button` есть �
 непрочитанных». Другой язык добавляется так:
 `SF.language.register('sf-badge', 'de', {count: '{count} ungelesen', dot: 'neu'})`.
 
-### Компактное меню
+### Узкая колонка (рельс)
 
-`sf-menu sf-menu--compact` — рельс разделов первого уровня: в строке видна
+`sf-menu sf-menu--rail` — рельс разделов первого уровня: в строке видна
 только иконка или аватар, слова строки скрыты, но остаются в её имени. Счётчик
 строки — `.sf-badge` с `data-count` внутри `.sf-menu-element-wrap` — переходит
-на иконку с той же геометрией, размером шага `1` и кольцом. Ветки в компактном
-меню не раскрываются. В развёрнутом меню тот же счётчик стоит в конце строки.
+на иконку с той же геометрией, размером шага `1` и кольцом. Ветки в рельсе не
+раскрываются. Прежний класс `sf-menu--compact` работает так же до 2027-01-01:
+слово «compact» означает только плотность (решение C134). В развёрнутом меню тот же счётчик стоит в конце строки.
 
 ```html
-<ul class="sf-menu sf-menu--compact">
+<ul class="sf-menu sf-menu--rail">
   <li class="sf-menu-item">
     <a href="/inbox" class="sf-menu-element sf-menu-element--level-1">
       <span class="sf-menu-element-wrap">

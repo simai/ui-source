@@ -4,12 +4,15 @@
    markup and project CSS keep working. See contracts/public-api-axes.json. */
 @use 'var__alerts' as *;
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__notice-link' as notice-link;
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/2) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 /* The notice's geometry, the toast's numbers (owner decision C35, remarks
    R066 and R079; DEV acceptance D3: C35 covers every notice), in tokens, so a
    compact region (data-sf-density) moves every step itself:
-   - one inline padding on both sides, --sf-space-1 (16; compact and phone
-     12); the block padding and the icon gap --sf-space-1/2 (12; compact and
+   - one inline inset on both sides, --sf-space-1 (16; compact and phone
+     12) with the 1 px border inside it (owner decision C105 H4/H6, as the
+     fields' C77 inset: the padding is the step less the border, so the icon
+     and the letters stand 16 from the outer edge, not 17); the block padding and the icon gap --sf-space-1/2 (12; compact and
      phone 8);
    - the first line stands in the box of a low size-1 control (the line +
      2 x --sf-ui-1--space-y-tightness-low: 32; compact and phone 28), the
@@ -36,8 +39,8 @@
   border-width: var(--sf-alert-border-width, var(--sf-alert--border-width, var(--sf-px)));
   gap: var(--sf-alert-gap, var(--sf-alert--gap, var(--sf-space-1\/2)));
   padding-bottom: var(--sf-alert-padding-block, var(--sf-alert--padding-bottom, var(--sf-space-1\/2)));
-  padding-inline-end: var(--sf-alert-padding-inline, var(--sf-alert--padding-right, var(--sf-space-1)));
-  padding-inline-start: var(--sf-alert-padding-inline, var(--sf-alert--padding-left, var(--sf-space-1)));
+  padding-inline-end: var(--sf-alert-padding-inline, var(--sf-alert--padding-right, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
+  padding-inline-start: var(--sf-alert-padding-inline, var(--sf-alert--padding-left, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
   padding-top: var(--sf-alert-padding-block, var(--sf-alert--padding-top, var(--sf-space-1\/2)));
   background-color: var(--sf-alert--background-color);
   border-color: var(--sf-alert--border-color, transparent);
@@ -65,8 +68,68 @@
   padding-block: var(--sf-alert--lead);
 }
 
+/* Even bottom (owner decision C114 (5), NS-9): with the actions under the
+   text, the space under the last button is what the eye sees above the first
+   line -- the lead and the room above the capitals inside the line,
+   (line - 1cap) / 2. 1cap is the font's own cap height, so it follows the
+   density by itself; the wrap takes the text's font so 1cap is the text's. */
 .sf-alert .sf-alert-wrap:has(> .sf-alert-buttons) {
-  padding-block-end: 0;
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-1);
+  padding-block-end: calc(var(--sf-alert--lead) + (var(--sf-text-height-1) - 1cap) / 2);
+}
+
+/* Where the actions stand (owner decision C115, layout L3a; R194, AA-6,
+   AA-8): in the row with the text while the notice is wide enough -- one
+   action from 36rem of the notice's own width, two from 48rem -- and under the
+   text from its start when it is narrower. The notice with actions is the
+   query container. A container query reads the content box and cannot read a
+   variable, so each step is written in rem less the notice's frame, its two
+   inline insets (--sf-space-1, 16, the border inside them): the step is
+   the notice's whole width, as the owner's sheet measured it. In the row the actions are centred on the text block,
+   their plate overhanging the line by the low button's block padding, as the
+   close does (C35): with a one-line text the label stands on the title line,
+   with the icon and the close. The row has no even-bottom inset: the last line
+   is the text's.
+   The author's switch (owner 2026-11-13, #q-layout-override): the modifier
+   .sf-alert--actions-under (sf-alert actions-layout="under") keeps the
+   actions under the text at every width, with the same gap and the even
+   bottom -- a long text in the row is taller than under it (174 against 146
+   at 800), and the sheet cannot count the text's lines. */
+.sf-alert:has(.sf-alert-buttons) {
+  container: sf-alert / inline-size;
+}
+
+@mixin sf-alert-actions-in-row {
+  .sf-alert-wrap:has(> .sf-alert-buttons) {
+    flex-direction: row;
+    align-items: center;
+    column-gap: var(--sf-space-1);
+    padding-block-end: 0;
+  }
+
+  .sf-alert-content {
+    flex: 1 1 0;
+    min-inline-size: var(--sf-0);
+  }
+
+  .sf-alert-buttons {
+    flex: none;
+    flex-wrap: nowrap;
+    margin-block: calc(-1 * var(--sf-ui-1--space-y-tightness-low));
+  }
+}
+
+@container sf-alert (min-width: calc(36rem - 2 * 1rem)) {
+  .sf-alert:not(.sf-alert--actions-under):not(:has(.sf-alert-buttons > :nth-child(2))) {
+    @include sf-alert-actions-in-row;
+  }
+}
+
+@container sf-alert (min-width: calc(48rem - 2 * 1rem)) {
+  .sf-alert:not(.sf-alert--actions-under) {
+    @include sf-alert-actions-in-row;
+  }
 }
 
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-alert-buttons--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
@@ -292,8 +355,15 @@
   --sf-alert--background-color: var(--sf-alert-background-color, transparent);
 }
 
+/* The three looks of a notice (owner decision C110 as amended 2026-11-12):
+   (а) outlined -- the border only, no shadow; (б) default -- the border and
+   the role's fill, no shadow; (в) flat -- the role's fill without a border,
+   lifted by the raised place's shadow, the card's (--sf-shadow-raised, one of
+   the four shadow places: a soft key and ambient shade in the light theme,
+   the key shade alone in the dark). Only (в) casts a shadow. */
 .sf-alert--flat {
   --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-transparent));
+  box-shadow: var(--sf-shadow-raised);
 }
 
 /* The cross is a service glyph of the notice (owner decision C112, R198,
@@ -319,6 +389,11 @@
 .sf-alert:is(.sf-alert--default, .sf-alert--flat, .sf-alert--outlined) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button:not(:disabled):is(:hover, :active) .sf-close > .sf-close-icon {
   --sf-close-icon--background-color: var(--sf-alert--color);
 }
+
+/* A link in the alert's text is help only, in the text's ink, underlined
+   (owner decision C126; core mix/_mix__notice-link.scss). The actions are
+   buttons. */
+@include notice-link.sf-notice-link('.sf-alert .sf-alert-content');
 
 @media (prefers-reduced-motion: reduce) {
   .sf-alert {

@@ -22,10 +22,15 @@ ways, for documentation, help, long articles and long settings forms.
 | `layout` | What it is | Where |
 | --- | --- | --- |
 | `column` | a heading and the list on a line, the current section's bar on it; sticky | documentation and help on a wide screen |
-| `compact` | one button with the current section and a reading-progress line on its bottom edge; it opens the list, a bottom sheet on a phone | a phone, a narrow column |
+| `sheet` | one button with the current section and a reading-progress line on its bottom edge; it opens the list, a bottom sheet on a phone | a phone, a narrow column |
 | `rail` | a short stroke per section at the inline end, longer for the current one; the names show on hover and focus, and on a touch screen on the first tap on a stroke | articles and landings, where the contents should not compete |
 | `bar` | a sticky row of anchor tabs with the current tab underlined; what does not fit goes into «Ещё (n)» | long forms and settings pages in an admin |
-| `auto` (default) | `column` at and above the `collapse` step, `compact` below it | a documentation page that serves every width |
+| `auto` (default) | `column` at and above the `collapse` step, `sheet` below it | a documentation page that serves every width |
+
+`layout="compact"`, the sheet's former name, is a dated alias of `sheet` until
+2027-01-01, noted in `SF.deprecations`; the element writes the class
+`sf-contents--layout-compact` beside `sf-contents--layout-sheet` until then.
+The word compact means density only (`data-sf-density`, owner decision C134).
 
 `collapse` is the Framework breakpoint of `auto`: `sm` (32rem), `md` (44rem),
 `lg` (60rem, the default), `xl` (72rem). The switch is a media rule in the
@@ -48,7 +53,7 @@ component's sheet, so the first paint is right before the script arrives.
 heading and the links. Its default is the size's value inset, the one rule of
 fields and lists (C77): size `1/2` is `max(--sf-space-1/2, --sf-b2)`, 12 on the
 desktop, in a compact region and on a phone; size `1` is `--sf-space-1`, 16
-(12 compact and on a phone). The rows of the open compact list stand at the
+(12 compact and on a phone). The rows of the sheet's open list stand at the
 same inset. A host sets it once on its
 column, and its own parts under the contents read the same variable:
 
@@ -89,7 +94,7 @@ tall as the contents list, and the list scrolls away with the page.
 </div>
 ```
 
-The compact button sticks too, and the page scrolls under it, so it carries a
+The sheet's button sticks too, and the page scrolls under it, so it carries a
 band of the page's surface (`--sf-contents-background-color`) as wide as the element.
 Put the element where that band belongs: in the page's own column, not inside a
 box with its own fill. A page that would rather let the button scroll away sets
@@ -191,7 +196,7 @@ and the bar show every entry.
 
 ## On a phone
 
-Below `md` (44rem) the compact view's list opens as a bottom sheet: the
+Below `md` (44rem) the sheet view's list opens as a bottom sheet: the
 screen's width up to 44rem, the top corners rounded, over a veil, clear of the
 safe area, the rows the phone ladder's and at least the touch target under a
 finger. Opening it focuses the current entry; Escape, the veil or a chosen
@@ -201,14 +206,14 @@ text on a wide screen).
 
 ## Settings
 
-- `layout="auto|column|compact|rail|bar"`
+- `layout="auto|column|sheet|rail|bar"` (`compact` is a dated alias of `sheet`)
 - `collapse="sm|md|lg|xl"` — the step of `auto`
 - `target` — a selector of the content whose headings are collected
 - `levels` — `2-3`, `2`, `2,3`
 - `items` — a list, property or JSON island
-- `size="1/2|1"` — the ladder rung of the text and of the compact button;
+- `size="1/2|1"` — the ladder rung of the text and of the sheet's button;
   `1/2` by default
-- `sticky` — every layout stays in view while the page scrolls: the column, the rail, the bar and the compact button; on by default
+- `sticky` — every layout stays in view while the page scrolls: the column, the rail, the bar and the sheet's button; on by default
 - `hash="choose|scroll|false"` — when the address shows the current
   section: on a chosen section (default), also while scrolling, or never.
   Before 1.5.0 it was a boolean and on meant scroll; `true` now reads as
@@ -227,7 +232,7 @@ text on a wide screen).
 
 - `refresh()` — collects the headings again, for content that changed after
   the contents drew.
-- `toggle()` — opens or closes the compact view's list, and shows or hides
+- `toggle()` — opens or closes the sheet view's list, and shows or hides
   the rail's names; refused in the column and the bar.
 
 ## Fewer than two sections
@@ -244,7 +249,7 @@ The element draws a `<nav>` named by its heading (`aria-labelledby`): a
 navigation landmark. The heading is `role="heading"` at `heading-level`, so in
 the column it is in a screen reader's list of headings; in the other layouts
 it is not shown and still names the navigation. Do not
-wrap it in a second `<nav>`. Tab reaches each link. In the compact view the
+wrap it in a second `<nav>`. Tab reaches each link. In the sheet view the
 button says «label: section» and `aria-expanded`; Enter or Space opens the
 list, Escape closes it and gives focus back to the button, a press outside or
 a chosen section closes it. In the rail view the names are hidden until hover
@@ -259,11 +264,11 @@ comes after the row in Tab order and opens a menu of the sections it holds. The 
 | `--sf-contents-color` | the links' ink | `--sf-on-surface-variant` |
 | `--sf-contents-current-color` | the current section's bar, stroke or underline, and the progress (not its text) | `--sf-primary` |
 | `--sf-contents-line-color` | the column's line, the bar's edge, the progress track | `--sf-outline-variant` |
-| `--sf-contents-background-color` | the bar's fill, the sticky compact button's band and the compact view's open list | `--sf-surface-page` / `--sf-surface-popup` |
+| `--sf-contents-background-color` | the bar's fill, the sticky sheet button's band and the sheet view's open list | `--sf-surface-page` / `--sf-surface-popup` |
 | `--sf-contents-indent` | the step of a deeper level | the list's inset (H4, C109): 12 at size 1/2; 16 at size 1, 12 compact and on a phone |
 | `--sf-contents-inset-inline` | the text's distance from the line (heading and links) | the size's value inset: 1/2 `max(--sf-space-1/2, --sf-b2)`, 1 `--sf-space-1` |
 | `--sf-contents-gap` | the space between the links | `0` (column), `--sf-space-1/2` (rail), `--sf-space-1/4` (bar) |
-| `--sf-contents-inset-block-start` | where the sticky column, rail, bar or compact button stops | `--sf-space-1` |
+| `--sf-contents-inset-block-start` | where the sticky column, rail, bar or sheet button stops | `--sf-space-1` |
 | `--sf-contents-z-index` | the bar and the open list above the page | `--sf-z-index-5` |
 
 ## Lifecycle events

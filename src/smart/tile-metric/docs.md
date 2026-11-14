@@ -44,7 +44,9 @@ means: it sets `value` (the tile loads nothing), says whether a rise is good
 - `status` `neutral|success|warning|error|info` and `hint` — the page's
   statement about the number, drawn as a status icon and a short line. With
   thresholds the tile draws the more serious of `status` and the threshold
-  reached; the status drawn is the host state `data-status`.
+  reached; the status drawn is the host state `data-status`. Without `hint`
+  the line is the status word («Внимание», «Ошибка», from the language
+  files), so a threshold that fired is never an icon alone.
 - `href` — the whole tile is one link. `openable` — without `href`, the whole
   tile is one button that sends `sf-tile-metric-open` `{id}` (the element's
   id). Nothing interactive belongs inside a tile.
@@ -96,6 +98,10 @@ it is its picture. The change and the status say their meaning in words
 beside the arrow and the icon, so colour is never the only sign.
 
 ## Changes
+
+- 1.3.0 (2026-11-13) — a status without `hint` (a threshold that fired)
+  shows its word beside the icon («Внимание», «Ошибка»), where only a screen
+  reader heard it.
 
 - 1.0.0 (2026-11-07) — the first version, for the Larena admin screens
   (Federation bus msg-993e1e39 item 1).

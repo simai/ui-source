@@ -1,7 +1,8 @@
 # sf-toast
 
-Smart Toast projects the ordinary transient-feedback contract through a custom
-element. It owns rendering, optional lifetime and removal of its host; the
+Smart Toast is a short reply to an action (owner decision C114 (1)), through a
+custom element; a page raises it with `SF.notify`, which keeps one
+notification area per page. It owns rendering, optional lifetime and removal of its host; the
 application still owns stack placement and business effects.
 
 ```html
@@ -39,24 +40,24 @@ stands where the status icon stands on the other side. Without an icon the text
 starts at the padding. Between several actions of a class toast,
 `--sf-space-1/3`.
 
-Actions (1.3.0, owner decision C50; the model of `SF.Toast.create`). One light
-navigation action («Открыть», «Посмотреть», «Подробнее») is a link at the end
-of the text: `action-text` with `action-href`, and no secondary action.
+Actions (1.4.0, owner decisions C50 and C126; the model of `SF.Toast.create`).
+Every action is a button (C126 (1)). One light navigation action («Открыть»,
+«Посмотреть», «Подробнее») is the action button drawn as a link: `action-text`
+with `action-href`, and no secondary action.
 
 ```html
 <sf-toast heading="Отчёт готов" supporting-text="Выгрузка за ноябрь собрана."
   action-text="Открыть" action-href="/reports/11" action="open"></sf-toast>
 ```
 
-The link is `a.sf-toast-link` in the text's own ink, medium weight,
-underlined, with the Framework focus ring; it is followed as a link and its
-press is `sf-toast-action` with its `action`. `action-href="#"` does not jump:
-the page answers the event. A no-break space keeps the link with the last word
-of the text (1.3.1), so it never stands alone on a line. Undo, retry, extend and two actions are buttons
-under the text (C35, C46): `action-text` alone is one button;
-`secondary-action-text` and `secondary-action` add a second, and then both are
-buttons and `action-href` does not apply. A toast never shows a link and
-buttons together.
+The button-link is an `<a href>` in the action button's classes (the tonal low
+button of C110 E) and stands where the action stands (C115); it is followed as
+a link and its press is `sf-toast-action` with its `action`. `action-href="#"`
+does not jump: the page answers the event. Before 1.4.0 it was `a.sf-toast-link`
+at the end of the text (C50). A link in the text leads to help only (C126, see
+below). Undo, retry, extend and two actions are buttons too (C35, C46):
+`action-text` alone is one button; `secondary-action-text` and
+`secondary-action` add a second, and then `action-href` does not apply.
 
 ```html
 <sf-toast heading="Письмо удалено" action-text="Отменить" action="undo"
@@ -65,7 +66,36 @@ buttons together.
 
 `duration` is milliseconds. Its default `0` keeps the toast until explicit
 dismissal; a positive value pauses while pointer or focus is inside the toast.
-Keep messages with essential content or actions persistent.
+Keep messages with essential content or actions persistent. An error or a
+warning ignores `duration` and stays until a person closes it (1.3.0, owner
+decision C114 (6)).
+
+With one action the toast puts it in the row with the text from 20rem of its
+own width, centred on the text block (owner decision C115, layout L3a); a
+narrower toast keeps it under the text from its start, with the space under
+it equal to the space above the capitals of the first line (C114 (5)).
+`actions-layout="under"` (owner 2026-11-13, #q-layout-override) keeps the
+action under the text at every width, with the same gap and the even bottom,
+for a long text; `auto`, the default, is L3a, and any other word is `auto`.
+The class form is the modifier `sf-toast--actions-under`.
+
+| Setting | Values | Default |
+|---|---|---|
+| `actions-layout` | `auto`, `under` | `auto` |
+
+A link in the toast's text leads to help only -- «Узнать больше» (1.3.2,
+owner decision C126); every action is a button. The link is the toast's own
+text ink on every level, underlined (1 px, doubled under the pointer), with a
+keyboard ring of the same ink -- the rule of the whole notice family (core
+`mix/_mix__notice-link.scss`). A toast that leaves by itself must not carry
+the only way to its help: keep it until it is closed (`duration` 0). The
+settings carry plain text, so the link is written in the class form (component
+toast):
+
+```html
+<div class="sf-toast-supporting-text">Её можно отправить коллегам.
+  <a href="/help/sharing">Узнать больше</a></div>
+```
 
 The status icon is an `sf-icon` (1.2.1), as on `sf-alert`: the toast asks the
 Loader for its glyph when it draws, so the glyph comes wherever the toast

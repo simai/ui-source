@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.toast",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "title": "Toast",
   "summary": "Transient overlay feedback with semantic roles, optional action, pause-safe lifetime and dismiss behavior.",
   "kind": "smart",
@@ -77,7 +77,7 @@
       "action-text": {
         "type": "string",
         "default": "",
-        "description": "Visible label of the first optional action: a link at the end of the text when action-href is set and there is no secondary action, a button under the text otherwise (owner decision C50)."
+        "description": "Visible label of the first optional action, always a button (owner decision C126 (1)): with action-href and no secondary action the button is a link to that address (owner decision C50)."
       },
       "action": {
         "type": "string",
@@ -87,7 +87,7 @@
       "action-href": {
         "type": "string",
         "default": "",
-        "description": "An address for the one light navigation action («Открыть», «Посмотреть», «Подробнее»): with it and without a secondary action, action-text is a link at the end of the text, followed as a link and reported in sf-toast-action. Undo, retry, extend and two actions stay buttons; a toast never shows both (owner decision C50)."
+        "description": "An address for the one light navigation action («Открыть», «Посмотреть», «Подробнее»): with it and without a secondary action, the action button is a link to it (an <a> in the button's classes, in the action's place), followed as a link and reported in sf-toast-action (owner decisions C50, C126 (1): every action is a button; a link in the text is help only)."
       },
       "secondary-action-text": {
         "type": "string",
@@ -98,6 +98,15 @@
         "type": "string",
         "default": "secondary",
         "description": "Stable secondary action value emitted in sf-toast-action."
+      },
+      "actions-layout": {
+        "type": "string",
+        "default": "auto",
+        "description": "Where the action stands: auto puts it in the row with the text while the toast is wide enough and under the text when narrower (layout L3a); under keeps it under the text at every width, for a long text. Any other word is auto.",
+        "enum": [
+          "auto",
+          "under"
+        ]
       },
       "closable": {
         "type": "boolean",
@@ -432,7 +441,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/toast/index.js",
-        "sha256": "8d0690acaeb085da3c6ad8abe52829644374a87bf1a18db5ce0e3990c71b2c83"
+        "sha256": "8383bd44c50d2aeae4e0ca5e5d0d28010ca1554f4203116f790e06b8952b709f"
       }
     ],
     "generated_runtime": [

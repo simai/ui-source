@@ -2,113 +2,139 @@
   "$comment": "The source of sf-gallery's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/gallery (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.gallery",
   "tag": "sf-gallery",
-  "version": "1.1.12",
+  "version": "1.2.1",
   "kind": "leaf",
   "family": "gallery",
   "settings": {
     "modal-id": {
       "type": "id",
-      "default": ""
+      "default": "",
+      "summary": "Passed to the lightbox's sf-modal: the window's id, which data-sf-modal-close and data-sf-modal-hide controls name. Empty: a path id."
     },
     "heading": {
       "type": "string",
-      "default-from": "runtime.heading"
+      "default-from": "runtime.heading",
+      "summary": "Passed to the lightbox's sf-modal: the window's title in its header. Empty: «Галерея» on a Russian page, «Gallery» on an English one."
     },
     "text": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Passed to the lightbox's sf-modal: plain text in the window's body when there is no slide."
     },
     "inline": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Shows the slides on the page (true, the default). false with lightbox shows them only in the full-screen window."
     },
     "lightbox": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Opens a slide in a full-screen window (an sf-modal) when it is pressed (true, the default)."
     },
     "arrows": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Passed to the gallery's sliders (sf-slider): draws the previous and next arrows."
     },
     "dots": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Passed to the gallery's sliders (sf-slider): draws the dots under the slides (off by default: the thumbnails show the place)."
     },
     "thumbs": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Passed to the gallery's sliders (sf-slider): draws the row of thumbnails under the slides (on by default)."
     },
     "loop": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Passed to the gallery's sliders (sf-slider): the last slide is followed by the first."
     },
     "space-between": {
       "type": "number",
-      "default": 12
+      "default": null,
+      "summary": "Passed to the gallery's sliders (sf-slider): the gap between slides in pixels. Unset (the default), the slider's own gap, the --sf-space-1 step (16 on a desktop, 12 on a phone)."
     },
     "speed": {
       "type": "number",
-      "default": 450
+      "default": 450,
+      "summary": "Passed to the gallery's sliders (sf-slider): the length of a slide's move, in milliseconds."
     },
     "button-type": {
       "type": "string",
-      "default": "primary"
+      "default": "primary",
+      "summary": "Passed to the gallery's sliders (sf-slider): the arrow buttons' colour scheme, an sf-button-icon scheme."
     },
     "button-size": {
       "type": "string",
-      "default": "1"
+      "default": "1",
+      "summary": "Passed to the gallery's sliders (sf-slider): the arrow buttons' size step."
     },
     "dots-type": {
       "type": "string",
-      "default": "primary-dark"
+      "default": "primary-container",
+      "summary": "Passed to the gallery's sliders (sf-slider): The dots' plate by its colour role: primary-container (the default; a primary-container plate with on-primary-container dots), primary (a primary plate with on-primary dots), surface-container (a raised neutral plate with on-surface dots), surface-inverse (an inverse plate with on-surface-inverse dots). Former words, dated aliases until 2027-01-01: primary-dark is primary-container, primary-light is primary, light and clear are surface-container, dark is surface-inverse."
     },
     "dots-size": {
       "type": "string",
-      "default": "2"
+      "default": "2",
+      "summary": "Passed to the gallery's sliders (sf-slider): the dots' size step."
     },
     "thumbs-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Passed to the gallery's sliders (sf-slider): classes on the thumbnails row."
     },
     "thumb-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Passed to the gallery's sliders (sf-slider): classes on each thumbnail."
     },
     "slide-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Passed to the gallery's sliders (sf-slider): classes on each slide."
     },
     "inline-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Classes on the slider shown on the page."
     },
     "lightbox-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Classes on the slider in the full-screen window."
     },
     "overlay": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Passed to the lightbox's sf-modal: draws the scrim behind the window."
     },
     "show-header": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Passed to the lightbox's sf-modal: draws the window's header with the heading and its buttons."
     },
     "show-close": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Passed to the lightbox's sf-modal: draws the close button in the header."
     },
     "close-on-esc": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Passed to the lightbox's sf-modal: Escape closes the window."
     },
     "close-on-overlay": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Passed to the lightbox's sf-modal: a press on the scrim closes the window."
     },
     "preserve-scroll-gap": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Passed to the lightbox's sf-modal: while the page is locked, keeps the scrollbar's width so the page does not shift."
     },
     "position": {
       "type": "enum",
@@ -119,23 +145,28 @@
         "top",
         "bottom"
       ],
-      "default": "center"
+      "default": "center",
+      "summary": "Passed to the lightbox's sf-modal: where the window stands: center, or a side panel at left, right, top or bottom."
     },
     "fullscreen": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Passed to the lightbox's sf-modal: the window takes the whole viewport."
     },
     "width": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Passed to the lightbox's sf-modal: the window's width, a CSS length."
     },
     "height": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Passed to the lightbox's sf-modal: the window's height, a CSS length."
     },
     "backdrop-blur": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Passed to the lightbox's sf-modal: blurs the page behind the scrim, by blur-type."
     },
     "blur-type": {
       "type": "enum",
@@ -145,54 +176,66 @@
         "medium",
         "large"
       ],
-      "default": "medium"
+      "default": "medium",
+      "summary": "Passed to the lightbox's sf-modal: the blur's strength: none, small, medium (the default) or large."
     },
     "overlay-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Passed to the lightbox's sf-modal: classes on the scrim."
     },
     "close-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Passed to the lightbox's sf-modal: classes on the close button."
     },
     "surface-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Passed to the lightbox's sf-modal: classes on the window's surface."
     },
     "surface-padding": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Passed to the lightbox's sf-modal: the surface's padding, a CSS length."
     },
     "panel-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Passed to the lightbox's sf-modal: classes on the panel that holds the surface."
     },
     "header-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Passed to the lightbox's sf-modal: classes on the header."
     },
     "body-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Passed to the lightbox's sf-modal: classes on the body's scrolling area."
     },
     "content-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Passed to the lightbox's sf-modal: classes on the wrapper of the slides."
     },
     "footer-class": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "Passed to the lightbox's sf-modal: classes on the footer."
     }
   },
   "values": {
     "open": {
       "type": "boolean",
       "default": false,
+      "summary": "The lightbox is open: setting it opens the sf-modal at the current slide, removing it closes the window.",
       "reflect": true
     },
     "current": {
       "type": "number",
       "default": 1,
+      "summary": "The one-based slide the inline slider and the lightbox show; the gallery writes it back as the visitor moves, kept within 1 and the number of slides.",
       "integer": true,
       "min": 1
     }
@@ -449,6 +492,56 @@
         "mode": "retired",
         "section": "§4.4",
         "note": "a reader retires; the method stays until the date and notes each call"
+      },
+      {
+        "from": "primary-dark",
+        "to": "primary-container",
+        "kind": "value",
+        "setting": "dots-type",
+        "section": "§16 item 20",
+        "note": "journal value-slider-dots-type-to-roles (docs precheck Q4): the dots' words name the plate's colour role; handed to the gallery's sliders",
+        "since": "2026-11-10",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "primary-light",
+        "to": "primary",
+        "kind": "value",
+        "setting": "dots-type",
+        "section": "§16 item 20",
+        "note": "journal value-slider-dots-type-to-roles (docs precheck Q4): the dots' words name the plate's colour role; handed to the gallery's sliders",
+        "since": "2026-11-10",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "light",
+        "to": "surface-container",
+        "kind": "value",
+        "setting": "dots-type",
+        "section": "§16 item 20",
+        "note": "journal value-slider-dots-type-to-roles (docs precheck Q4): the dots' words name the plate's colour role; handed to the gallery's sliders",
+        "since": "2026-11-10",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "clear",
+        "to": "surface-container",
+        "kind": "value",
+        "setting": "dots-type",
+        "section": "§16 item 20",
+        "note": "journal value-slider-dots-type-to-roles (docs precheck Q4): the dots' words name the plate's colour role; handed to the gallery's sliders",
+        "since": "2026-11-10",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "dark",
+        "to": "surface-inverse",
+        "kind": "value",
+        "setting": "dots-type",
+        "section": "§16 item 20",
+        "note": "journal value-slider-dots-type-to-roles (docs precheck Q4): the dots' words name the plate's colour role; handed to the gallery's sliders",
+        "since": "2026-11-10",
+        "remove_after": "2027-01-01"
       }
     ]
   },
@@ -494,7 +587,9 @@
     "version 1.1.4: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
     "version 1.1.8: the outcomes applied and refused come from core/js/element-manifest.js (core.runtime 1.25.0, duplication audit A-26) instead of a copy of its own; the slider and the window it draws are asked for through SF.Loader.ensure (A-18) instead of a bare whenDefined wait, with no timeout as before.",
     "version 1.1.11: its frameless surface asks for shadow-flat, the place name of shadow-0 (C20, the shadow system, owner 2026-11-08); it draws the same. Also: a patch, nothing drawn or done differently. The generated reference gives each action's method its one object argument, open({index}), toggle({index}), goTo({index}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, open(<number>), toggle(<number>), goTo(<number>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged.",
-    "version 1.1.12 (2026-11-11): a patch, nothing drawn differently by this element: the class slider sheet it draws with changed (component.slider 1.1.2, the disabled arrow)."
+    "version 1.1.12 (2026-11-11): a patch, nothing drawn differently by this element: the class slider sheet it draws with changed (component.slider 1.1.2, the disabled arrow).",
+    "version 1.2.0 (2026-11-10, docs precheck smart content GA-04, Q4): a minor. dots-type takes sf-slider 1.2.0's role words (primary-container, the default, primary, surface-container, surface-inverse); the former words are dated value aliases until 2027-01-01 (journal value-slider-dots-type-to-roles). Also: Every setting has its summary. space-between has no default of its own: unset, the sliders keep their --sf-space-1 gap (the manifest said 12, a raw pixel number the gallery never sent). Settings, values, events and keys unchanged.",
+    "version 1.2.1 (2026-11-13, docs precheck smart content SC-S02): a patch, nothing drawn differently. open and current have their summaries."
   ],
   "x-rule": {
     "regex": "/data-sf-gallery(?:\\s|=|>|$)/"

@@ -8,7 +8,7 @@ import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 import {URL} from 'node:url';
 
-import {capRange, collapseRange, fitRange, foldGains, maxFitHidden, menuEntries, nextFit, onPhoneLadder, startFit, trailLines, trailWraps} from '../src/component/breadcrumbs/js/_trail.js';
+import {capRange, collapseRange, cutBelowMin, cutByRoom, fitRange, LABEL_MIN_EM, maxFitHidden, menuEntries, nextFit, starvedFit, trailOverflows, trailStarved} from '../src/component/breadcrumbs/js/_trail.js';
 import {markCurrent, normalizeItem, parseItems, readFlag} from '../src/smart/breadcrumbs/js/items.js';
 
 const root = new URL('../', import.meta.url);
@@ -74,7 +74,9 @@ test('BC-06: room hides the middle first, then the first crumb, never the tail',
       .filter((index) => !range || index < range.start || index >= range.end);
   };
   assert.deepEqual(shown(6, 0), [0, 1, 2, 3, 4, 5]);
-  assert.deepEqual(shown(6, 1), [0, 2, 3, 4, 5]);
+  // Two at least (L1): one crumb behind «…» saves no width.
+  assert.deepEqual(shown(6, 1), [0, 3, 4, 5]);
+  assert.deepEqual(shown(6, 2), [0, 3, 4, 5]);
   assert.deepEqual(shown(6, 3), [0, 4, 5]);
   // «… › parent › page» (C93 item 2).
   assert.deepEqual(shown(6, 4), [4, 5]);
@@ -83,7 +85,12 @@ test('BC-06: room hides the middle first, then the first crumb, never the tail',
   assert.deepEqual(shown(3, 9, 1), [2]);
   assert.equal(maxFitHidden(2, 2), 0);
   assert.equal(fitRange(2, 1, 2), null);
-  assert.deepEqual(fitRange(3, 1, 2), {start: 0, end: 1});
+  // «Главная › Настройки › Почта» never becomes «… › Настройки › Почта».
+  assert.equal(maxFitHidden(3, 2), 0);
+  assert.equal(fitRange(3, 1, 2), null);
+  // A trail of parents «simai.ru › Данные» never becomes «… › Данные».
+  assert.equal(maxFitHidden(2, 1), 0);
+  assert.deepEqual(fitRange(4, 1, 2), {start: 0, end: 2});
 });
 
 test('BC-06: room asks for more than the cap only when the cap is not enough', () => {
@@ -92,49 +99,116 @@ test('BC-06: room asks for more than the cap only when the cap is not enough', (
   assert.deepEqual(collapseRange(6, {maxItems: 4, fit: 4}), {start: 0, end: 4});
   assert.equal(nextFit(6, {maxItems: 4, fit: 0}), 4);
   assert.equal(nextFit(6, {maxItems: 4, fit: 4}), null);
-  assert.equal(nextFit(6, {fit: 0}), 1);
+  assert.equal(nextFit(6, {fit: 0}), 2);
   assert.equal(nextFit(2, {fit: 0}), null);
   // No cap by default (C93 item 1): nothing folds until room asks.
   assert.equal(collapseRange(9, {}), null);
 });
 
-test('BC-06: a trail wraps when a crumb starts a new row or its words wrap', () => {
-  const box = (top, height, width = 40) => ({hidden: false, getBoundingClientRect: () => ({top, height, width})});
-  // A row of 28 px targets and 20 px text crumbs, centred.
-  assert.equal(trailWraps([box(0, 28), box(4, 20), box(0, 28)]), false);
-  assert.equal(trailWraps([box(0, 28), box(34, 28)]), true);
-  assert.equal(trailWraps([box(0, 28), box(0, 48)]), true);
-  assert.equal(trailWraps([box(0, 28), {hidden: true, getBoundingClientRect: () => ({top: 90, height: 28, width: 40})}]), false);
-  assert.equal(trailWraps([]), false);
+// A fake crumb: a container with a label of `text` px in a box of `room` px,
+// the container capped at `cap` px (NaN: no cap).
+const crumb = ({text = 40, room = text, cap = NaN} = {}) => {
+  const label = {scrollWidth: text, clientWidth: Math.min(text, room)};
+  const container = {
+    querySelector: () => label,
+    getBoundingClientRect: () => ({width: Math.min(text, room, Number.isNaN(cap) ? Infinity : cap)}),
+    cap,
+  };
+  return {
+    classList: {contains: () => false},
+    matches: () => true,
+    querySelector: () => container,
+    getBoundingClientRect: () => ({top: 0, height: 28, width: Math.min(text, room)}),
+  };
+};
+const view = {getComputedStyle: (element) => ({maxInlineSize: Number.isNaN(element.cap) ? 'none' : `${element.cap}px`})};
+const row = (scrollWidth = 300, clientWidth = 300) => ({scrollWidth, clientWidth});
+
+test('BC-06, L1: a crumb is cut for want of room only below its own cap', () => {
+  // Whole name: no want of room.
+  assert.equal(cutByRoom(crumb({text: 80}), view), false);
+  // An ancestor cut at its cap (C93 item 6) is cut by design, not by room.
+  assert.equal(cutByRoom(crumb({text: 300, cap: 192}), view), false);
+  // Cut narrower than its cap: the row ran out of room.
+  assert.equal(cutByRoom(crumb({text: 300, room: 120, cap: 192}), view), true);
+  // The page has no cap: cut at all (the phone's ellipsis) is want of room.
+  assert.equal(cutByRoom(crumb({text: 300, room: 120}), view), true);
 });
 
-test('C93 item 1: a fold that saves no line gives the crumbs back', () => {
-  const box = (top, height, width = 40) => ({hidden: false, getBoundingClientRect: () => ({top, height, width})});
-  // One line of 28 px targets with a 20 px page centred in it.
-  assert.equal(trailLines([box(0, 28), box(0, 28), box(4, 20)]), 1);
-  // The page's own name on a line of its own, wrapped to two text lines.
-  assert.equal(trailLines([box(0, 28), box(0, 28), box(36, 40)]), 2);
-  assert.equal(trailLines([box(0, 28), box(36, 28), box(72, 20)]), 3);
-  assert.equal(trailLines([]), 0);
-  // Whole trail: 2 lines; folded as far as it goes: still 2. Nothing gained.
-  assert.equal(foldGains(2, 2), false);
-  // Whole trail: 3 lines; folded: 2. The fold stays.
-  assert.equal(foldGains(3, 2), true);
-  // Nothing measured at the start: keep what the fold did.
-  assert.equal(foldGains(0, 2), true);
+test('BC-06, L1, L2: the trail folds only when the row has no room', () => {
+  // A trail that fits stays whole, on every ladder.
+  assert.equal(trailOverflows(row(), [crumb(), crumb({text: 300, cap: 192}), crumb({text: 90})], view), false);
+  // A row wider than its box.
+  assert.equal(trailOverflows(row(340, 300), [crumb()], view), true);
+  // A crumb squeezed below its cap, or the page's name cut on the phone.
+  assert.equal(trailOverflows(row(), [crumb(), crumb({text: 300, room: 60, cap: 192})], view), true);
+  assert.equal(trailOverflows(row(), [crumb(), crumb({text: 300, room: 60})], view), true);
+  // An entry below the first (a page that wraps the row by its own CSS).
+  const low = {...crumb(), getBoundingClientRect: () => ({top: 34, height: 28, width: 40})};
+  assert.equal(trailOverflows(row(), [crumb(), low], view), true);
+  // A page name wrapped by words in the rest of the row is taller, not lower.
+  const tall = {...crumb(), getBoundingClientRect: () => ({top: 0, height: 48, width: 200})};
+  assert.equal(trailOverflows(row(), [crumb(), tall], view), false);
+  // Hidden entries take no part.
+  assert.equal(trailOverflows(row(), [crumb(), {...low, hidden: true}], view), false);
+  assert.equal(trailOverflows(null, [], view), false);
 });
 
-test('C93 item 1: both runtimes give the crumbs back when the fold saved no line', async () => {
+test('N1 (nav-4b): a crumb cut below a few letters folds, the parent with it', async () => {
+  const sized = {getComputedStyle: (element) => ({...view.getComputedStyle(element), fontSize: '14px'})};
+  assert.equal(LABEL_MIN_EM, 3);
+  // Whole, or cut but still three letters and more (3em of 14 px = 42 px): reads.
+  assert.equal(cutBelowMin(crumb({text: 30}), sized), false);
+  assert.equal(cutBelowMin(crumb({text: 300, room: 42, cap: 192}), sized), false);
+  // Cut to less: no crumb at all; a cut to nothing too.
+  assert.equal(cutBelowMin(crumb({text: 300, room: 20, cap: 192}), sized), true);
+  assert.equal(cutBelowMin(crumb({text: 300, room: 0}), sized), true);
+  // Separators, «…» and the siblings button are never starved; hidden entries take no part.
+  const sep = {...crumb({text: 300, room: 0}), classList: {contains: (name) => name === 'sf-breadcrumbs-item--separator'}};
+  const button = {...crumb({text: 300, room: 0}), hasAttribute: (name) => name === 'aria-expanded'};
+  assert.equal(trailStarved([crumb(), sep, button], sized), false);
+  assert.equal(trailStarved([crumb(), crumb({text: 300, room: 10})], sized), true);
+  assert.equal(trailStarved([crumb(), {...crumb({text: 300, room: 10}), hidden: true}], sized), false);
+  // The last fold: «… › current». A trail of parents keeps its parent; two crumbs never fold.
+  assert.deepEqual(starvedFit(5, {tail: 2}), {tail: 1, fit: 4});
+  assert.deepEqual(fitRange(5, 4, 1), {start: 0, end: 4});
+  assert.deepEqual(starvedFit(3, {tail: 2}), {tail: 1, fit: 2});
+  assert.deepEqual(fitRange(3, 2, 1), {start: 0, end: 2});
+  assert.equal(starvedFit(5, {tail: 1}), null);
+  assert.equal(starvedFit(2, {tail: 2}), null);
+  assert.equal(nextFit(5, {fit: 4, tail: 1}), null);
+  // Both runtimes take the last fold only after room has hidden all it may.
+  const [classic, smart, sheet, itemSheet] = await Promise.all([
+    read('src/component/breadcrumbs/js/breadcrumbs.js'),
+    read('src/smart/breadcrumbs/index.js'),
+    read('src/component/breadcrumbs/scss/_css__breadcrumbs.scss'),
+    read('src/component/breadcrumbs/scss/_css__breadcrumbs_item.scss'),
+  ]);
+  assert.match(classic, /trailStarved\(getLineEntries\(root\)\) \? starvedFit\(items\.length, \{ tail \}\)/);
+  assert.match(smart, /trailStarved\(this\.trailEntries\(\)\) \? starvedFit\(items\.length, options\)/);
+  assert.match(smart, /restartFit\(\) \{\n\s+this\._fitHidden = 0;\n\s+this\._fitTail = null;/);
+  // «…» never shrinks: its entry and the button keep their size.
+  assert.match(sheet, /> li:has\(> \.sf-breadcrumbs-item\[aria-expanded\]:not\(\[data-sf-breadcrumb-siblings\]\)\) \{\n\s+flex: none;/);
+  assert.match(itemSheet, /\.sf-breadcrumbs-item\[aria-expanded\] \{\n\s+justify-content: center;\n\s+min-inline-size: var\(--sf-breadcrumbs--target\);\n\s+flex: none;/);
+});
+
+test('L1: both runtimes fold by room from the whole trail on every ladder', async () => {
   const [classic, smart] = await Promise.all([
     read('src/component/breadcrumbs/js/breadcrumbs.js'),
     read('src/smart/breadcrumbs/index.js'),
   ]);
   for (const source of [classic, smart]) {
-    assert.match(source, /trailLines\(/);
-    assert.match(source, /foldGains\(/);
+    assert.match(source, /trailOverflows\(/);
+    assert.doesNotMatch(source, /\bstartFit|onPhoneLadder|foldGains|trailLines/);
   }
-  assert.match(smart, /_fitNoGain = true/);
+  assert.match(smart, /fit: this\._fitHidden,/);
+  assert.match(classic, /let fit = 0;/);
   assert.match(smart, /restartFit\(\)/);
+  // A two-crumb trail never hides one crumb behind «…»: nothing can fold.
+  assert.equal(nextFit(2, {fit: 0, tail: 2}), null);
+  assert.equal(nextFit(2, {fit: 0, tail: 1}), null);
+  assert.equal(nextFit(3, {fit: 0, tail: 2}), null);
+  assert.equal(nextFit(4, {fit: 0, tail: 2}), 2);
 });
 
 test('BC-11: both runtimes fold with the one shared module', async () => {
@@ -147,12 +221,12 @@ test('BC-11: both runtimes fold with the one shared module', async () => {
   for (const source of [classic, smart]) {
     assert.doesNotMatch(source, /Math\.floor\(visibleSlots \/ 2\)/);
     assert.match(source, /collapseRange\(/);
-    assert.match(source, /trailWraps\(/);
+    assert.match(source, /trailOverflows\(/);
     assert.match(source, /ResizeObserver/);
   }
 });
 
-test('C93 items 1, 2, 3: «…» and siblings open menus; the phone starts at «… › parent › page»', async () => {
+test('C93 items 1, 3: «…» and siblings open menus', async () => {
   const [classic, smart] = await Promise.all([
     read('src/component/breadcrumbs/js/breadcrumbs.js'),
     read('src/smart/breadcrumbs/index.js'),
@@ -161,11 +235,6 @@ test('C93 items 1, 2, 3: «…» and siblings open menus; the phone starts at «
   assert.match(smart, /menu\.toggleFor\(anchor, \{ align: 'start' \}\)/);
   assert.match(smart, /handleSiblingsClick = /);
   assert.match(classic, /openHiddenMenu\(root, ellipsis, hiddenItems\)/);
-  for (const source of [classic, smart]) assert.match(source, /startFit\(items\.length, \{ tail, phone: onPhoneLadder\(\) \}\)/);
-  assert.equal(startFit(6, {tail: 2, phone: true}), 4);
-  assert.equal(startFit(6, {tail: 2, phone: false}), 0);
-  assert.equal(onPhoneLadder({matchMedia: () => ({matches: false})}), true);
-  assert.equal(onPhoneLadder({matchMedia: () => ({matches: true})}), false);
   assert.deepEqual(menuEntries([{label: 'А', href: '/a'}, {label: 'Б', current: true, value: 'b'}]), [
     {id: '0', text: 'А', href: '/a'},
     {id: '1', text: 'Б', value: 'b', current: true, checked: true},
@@ -252,13 +321,13 @@ test('BC-07, BC-09: the class runtime reads the list form and prints no utility 
 
 test('the manifest names the new setting and the new default', async () => {
   const manifest = JSON.parse(await read('src/smart/breadcrumbs/component.json'));
-  assert.equal(manifest.version, '1.2.0');
+  assert.equal(manifest.version, '1.2.4'); // above every branch's 1.2.3
   assert.deepEqual(manifest.settings.current.values, ['last', 'none']);
   assert.equal(manifest.settings.current.default, 'last');
   assert.equal(manifest.settings['max-items'].default, 0);
   assert.equal(manifest.settings.siblings.default, false);
   assert.ok(manifest.relations.some((relation) => relation.name === 'cl-menu-context' && relation.lazy === true));
   const passport = JSON.parse(await read('src/component/breadcrumbs/passport.json'));
-  assert.equal(passport.version, '1.1.0');
+  assert.equal(passport.version, '1.1.4'); // above every branch's 1.1.3
   assert.ok(passport.files.includes('src/component/breadcrumbs/js/_trail.js'));
 });

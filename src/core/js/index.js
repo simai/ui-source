@@ -54,9 +54,11 @@ import {
   DEFAULT_PRELOADER,
   getPreloaderBackground,
   getPreloaderColor,
-  pageHasFirstPaint,
+  pageHasPreloadedModules,
+  pageShowsContent,
   startPreloaderMotion,
   stopPreloaderMotion,
+  watchForContent,
 } from './preloader';
 
 // SF.format, before anything below can be asked to format.
@@ -331,10 +333,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
   // A page that ships its modules preloaded (SF_PRELOADED, Docara) defines
   // them at once and is left alone, as it was.
   const holdUndefinedUntilDefined = () => {
-    if (
-      window.SF_PRELOADED &&
-      Object.keys(window.SF_PRELOADED.modules || {}).length
-    ) {
+    if (pageHasPreloadedModules(window)) {
       return;
     }
     installPendingTags(window);
@@ -358,16 +357,25 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     };
 
     if (cfg.enabled === false || document.querySelector('.sf-loader')) return;
+    // Preloaded modules draw their elements before this runs: nothing is
+    // left for a preloader to stand in for (input-choice audit 2026-11-11).
+    if (pageHasPreloadedModules(window)) return;
 
     const svgContent = cfg.content || createPreloaderContent(cfg);
     let wrap = null;
     let preloaderWrap = null;
     let preloaderRun = false;
     let delayTimer = null;
+    let stopWatch = null;
 
+    // Gone in the same frame: display:none on the element itself, so no
+    // transition or late sheet keeps it over the page (R216).
     const hide = () => {
+      stopWatch?.();
+      stopWatch = null;
       if (wrap) {
         wrap.classList.add('hidden');
+        wrap.style.display = 'none';
       }
     };
     const stopAnimation = () => {
@@ -379,9 +387,10 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     const buildPreloader = () => {
       if (preloaderRun || document.querySelector('.sf-loader')) return;
       // A page with static markup or skeletons shows them, never the
-      // preloader over them (§5.4). Read when the preloader would show, after
-      // its delay, when the server's markup has been parsed.
-      if (pageHasFirstPaint(document)) return;
+      // preloader over them (§5.4), nor over Smart elements already drawn.
+      // Read when the preloader would show, after its delay, when the
+      // server's markup has been parsed.
+      if (pageShowsContent(document) || pageHasPreloadedModules(window)) return;
 
       wrap = document.createElement('div');
       const inner = document.createElement('div');
@@ -409,6 +418,17 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       };
 
       startPreloaderMotion(preloaderWrap, () => preloaderRun, cfg);
+
+      // Up, it leaves at once when a component draws under it: never a
+      // preloader over drawn content (R216, any site).
+      stopWatch = watchForContent(() => {
+        preloaderRun = false;
+        stopAnimation();
+        hide();
+        if (window.SF_BOOT_CONFIG?.preloader) {
+          window.SF_BOOT_CONFIG.preloader.preloaderActive = false;
+        }
+      });
     };
 
     const cancelBuild = () => {
@@ -452,7 +472,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       document.addEventListener(
         'DOMContentLoaded',
         () => {
-          if (!pageHasFirstPaint(document)) return;
+          if (!pageShowsContent(document)) return;
           cancelBuild();
           preloaderRun = false;
           stopAnimation();

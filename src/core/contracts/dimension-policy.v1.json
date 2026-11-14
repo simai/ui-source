@@ -137,6 +137,15 @@
       "reason": "C18 lists the 1-2px line as an exception: a border, a focus offset, a visually hidden 1px box, an anti-aliasing half pixel. A hairline marks an edge and keeps its pixel width at any root size (owner, 2026-10-10)."
     },
     {
+      "id": "notice-frame-in-container-step",
+      "category": "condition-review",
+      "filePattern": "^component/(?:alerts/scss/_css__alerts|toast/scss/_css__toast)\\.scss$",
+      "contextPattern": "^\\s*@container sf-(?:alert|toast) \\(min-width: calc\\(",
+      "textPattern": "^(?:1rem|2px)$",
+      "status": "accepted-size-step",
+      "reason": "Owner decision C115 (layout L3a): the notice's actions go into the row from 36 / 48 rem (a toast 20 rem) of the notice's whole width. A container query reads the content box and cannot read a variable, so the step takes off the notice's frame as written lengths: its two inline paddings (1rem each, --sf-space-1) and its two borders (1px each, --sf-px)."
+    },
+    {
       "id": "breakpoint-and-container-steps",
       "category": "condition-review",
       "filePattern": "\\.(?:s?css)$",
@@ -231,6 +240,15 @@
       "reason": "Sized from the text around them by decision: inline code's room (C10, R024: .2em by .4em), an underline's offset. No ladder step is a fixed share of every text size."
     },
     {
+      "id": "text-bar-capital-height",
+      "category": "style-review",
+      "filePattern": "^(?:core/scss/_sf_css__placeholder\\.scss|component/skeleton/scss/_skeleton\\.scss)$",
+      "contextPattern": "(?:@supports \\(block-size: round\\(nearest, 1em, 1em\\)\\)|--sf-first-paint-bar--(?:height|top):)",
+      "textPattern": "^\\d*\\.?\\d+em$",
+      "status": "accepted-owner-decision",
+      "reason": "Owner decision C136 (1): a text skeleton bar is as tall as the capitals of the text it stands for, Inter's capital height 0.727 em rounded to an even pixel with the size ladder's 2 px step, centred in the line (the glyph box's middle, 0.6055 em from its top). These are font metrics relative to the text, not sizes; the @supports test only asks whether round() parses."
+    },
+    {
       "id": "documentation-prose",
       "category": [
         "script-data-template-review",
@@ -278,6 +296,14 @@
       "textPattern": "^(?:5|5\\.5|6|6\\.5|7|7\\.5|8|8\\.5|9|9\\.5|10|11|12|13|14|15|16|17|18|19|20|22|24|26|28|30|32|34|36|38|40|44|48|52|56|60|64|68|72|76|80|88|96|104|112|120|128|136|144|152)rem$",
       "status": "accepted-size-step",
       "reason": "A column or panel width passed as an attribute or a documented default (a popover 20rem = g0, a modal 48rem = h2, a field grid column 14rem = f4, a resizer's 12rem and 40rem bounds = f2 and h0): steps of the size scale written in rem where an attribute value is expected."
+    },
+    {
+      "id": "dropdown-in-place-measured-room",
+      "category": "runtime-review",
+      "filePattern": "^component/dropdown/portal\\.js$",
+      "contextPattern": "\\$\\{Math\\.floor\\(cap\\)\\}px",
+      "status": "accepted-runtime-geometry",
+      "reason": "An in-place list (portal=\"false\") takes the anchored list's height (owner remark R171): the room above or below its field, measured with getBoundingClientRect on opening less the panel's edge padding (a space token), in CSS pixels, written as --sf-dropdown-available-block-size."
     },
     {
       "id": "measured-runtime-geometry",

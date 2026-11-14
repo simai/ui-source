@@ -13,13 +13,19 @@ Compact labels for categories, filters, selected values and statuses.
   `sf-tag-check`;
 - states: `active`, `disabled`;
 - behavior markers: `sf-tag--interactive`, `sf-tag--removable`;
-- appearance: `sf-tag--appearance-surface`, `sf-tag--appearance-ghost`.
+- appearance: `sf-tag--appearance-outline`, `sf-tag--appearance-ghost`; `sf-tag--appearance-surface` is the former name of outline until 2027-01-01 (journal `value-tag-appearance-surface-to-outline`).
 
 The appearance axis is separate from the type. `surface` and `ghost` take their
 colour from the neutral alpha ramp rather than from a role, so a tag used as a
 filter or a quiet label reads the same on any background and in both themes.
 Because a tag is built without a border, both draw their boundary as an inset
 line, which keeps a tag exactly as tall as its neighbours.
+
+Height: `sf-tag--height-low`, `sf-tag--height-high` and
+`sf-tag--height-highest` move a tag of any size to its neighbouring steps of
+the height ladder (C27, as `sf-button--height-*`); the default needs no class.
+`spacing-compact`, `spacing-comfortable` and `spacing-spacious` are their former
+names until 2027-01-01 (journal `class-tag-spacing-to-height`).
 
 A picture before the label is the label's line high. On another control's text
 line (`sf-tag--inline`, `line` on `sf-tag`) an avatar is that line, as the remove

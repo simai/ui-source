@@ -77,7 +77,7 @@ const CASES = {
 
 const shell = (name, theme) => {
   const {look, items, popup, size} = CASES[name];
-  const trigger = popup ? '<sf-button-icon id="trigger" icon="tune" appearance="link" scheme="on-surface" size="1/2" aria-label="Настройки"></sf-button-icon>' : '';
+  const trigger = popup ? '<sf-button-icon id="trigger" icon="tune" appearance="ghost" scheme="on-surface" size="1/2" aria-label="Настройки"></sf-button-icon>' : '';
   return `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';window.SF_BOOT_CONFIG={preloader:{enabled:false}};</script>
 <link rel="stylesheet" href="/distr/core/css/core.css"><script src="/distr/core/js/core.js"></script>

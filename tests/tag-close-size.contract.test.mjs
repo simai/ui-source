@@ -47,6 +47,8 @@ test('sf-tag draws its remove cross from the cross ladder, plain (C14)', async (
     assert.ok(start >= 0, size);
     assert.ok(tags.slice(start, tags.indexOf('}', start)).includes(`--sf-tag--close-size: var(--sf-micro--cross-${size});`), size);
   }
+  // Every 8 cross (1/3 and, since C132, 1/2) is drawn with a 1.5 line (C76; group build 3).
+  assert.match(tags, /\.sf-tag\.sf-tag--size-1\\\/3 > :is\(sf-button-close, sf-close\) > \.sf-icon-button\.sf-icon-button--close > \.sf-close > \.sf-close-icon,\n\.sf-tag\.sf-tag--size-1\\\/2 > \.sf-icon-button[^{]*\.sf-tag\.sf-tag--size-1\\\/2 > :is\(sf-button-close, sf-close\) > \.sf-icon-button\.sf-icon-button--close > \.sf-close > \.sf-close-icon \{\n  --sf-close-icon--mask-image: url\("data:image\/svg\+xml,[^"]*stroke-width=%271\.5%27/u, 'the 8 cross is drawn with a 1.5 line (C76)');
   assert.doesNotMatch(tags, /\* 0\.7\)/u, 'no cross scaled from the label');
   const css = await read('smart/tag/js/templates/default.css');
   assert.match(css, /--sf-close-icon--background-color: color-mix\(in srgb, var\(--sf-tag-color, var\(--sf-on-surface\)\) 64%, transparent\);/u);

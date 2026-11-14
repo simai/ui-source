@@ -1,5 +1,3 @@
-import { breakpointMedia } from '../../../core/js/breakpoints.js';
-
 // Which crumbs of a trail are hidden behind «…» (R177 BC-06, BC-11).
 //
 // One answer for every runtime that collapses a trail: the ordinary script
@@ -12,11 +10,15 @@ import { breakpointMedia } from '../../../core/js/breakpoints.js';
 //   - a cap: max-items, when the page sets one (3 or more). It keeps the shape
 //     it always had: floor((max - 1) / 2) crumbs at the start, the rest at the
 //     end, «…» in between.
-//   - room (owner decision C93 item 1): while the trail does not fit on one
-//     line, one more crumb goes behind «…». The first crumb goes last of the
-//     ancestors, and the tail is never hidden: the parent and the current page
-//     (or, in a trail of parents only, the parent). At its narrowest a trail
-//     reads «… › parent › current» (C93 item 2).
+//   - room (owner decision C93 item 1): while the row has no room for its
+//     crumbs (trailOverflows), one more crumb goes behind «…». The first crumb
+//     goes last of the ancestors, and the tail is never hidden: the parent and
+//     the current page (or, in a trail of parents only, the parent). At its
+//     narrowest a trail reads «… › parent › current» (C93 item 2). Room is the
+//     only reason on every ladder: a trail that fits the phone stays whole, and
+//     no single crumb hides behind «…» (L1 of the C93 review). Past that
+//     narrowest, a tail crumb cut below a few letters (cutBelowMin) folds too:
+//     «… › current» (starvedFit).
 //
 // A range is {start, end}: the crumbs start .. end - 1 are hidden. null hides
 // nothing.
@@ -37,12 +39,19 @@ export function capRange(count, maxItems) {
   return { start: leading, end: total - trailing };
 }
 
-// How many crumbs room can hide at most: everything but the tail.
+// Room hides two crumbs at least: one crumb behind «…» saves next to no width
+// and costs a tap (L1 of the C93 review). A trail that cannot spare two keeps
+// every crumb and cuts its names instead.
+export const MIN_FOLD = 2;
+
+// How many crumbs room can hide at most: everything but the tail, or nothing
+// when that is less than MIN_FOLD.
 export function maxFitHidden(count, tail = 2) {
   const total = Math.max(0, Math.floor(Number(count) || 0));
   const kept = Math.max(1, Math.floor(Number(tail) || 0));
+  const max = total - kept;
 
-  return Math.max(0, total - kept);
+  return max >= MIN_FOLD ? max : 0;
 }
 
 // The crumbs hidden when room hides `hidden` of them.
@@ -50,7 +59,8 @@ export function fitRange(count, hidden, tail = 2) {
   const total = Math.max(0, Math.floor(Number(count) || 0));
   const kept = Math.max(1, Math.floor(Number(tail) || 0));
   const max = maxFitHidden(total, kept);
-  const wanted = Math.min(Math.floor(Number(hidden) || 0), max);
+  const asked = Math.floor(Number(hidden) || 0);
+  const wanted = Math.min(asked > 0 ? Math.max(asked, MIN_FOLD) : 0, max);
 
   if (wanted <= 0) return null;
 
@@ -77,86 +87,104 @@ export function collapseRange(count, { maxItems = 0, fit = 0, tail = 2 } = {}) {
 export function nextFit(count, { maxItems = 0, fit = 0, tail = 2 } = {}) {
   const range = collapseRange(count, { maxItems, fit, tail });
   const hidden = range ? range.end - range.start : 0;
-  const next = hidden + 1;
+  const next = Math.max(hidden + 1, MIN_FOLD);
 
   return next <= maxFitHidden(count, tail) ? next : null;
 }
 
-// Whether the shown crumbs take more than one line: two crumbs on different
-// rows, or one crumb whose words wrapped (it is taller than the row). Hidden
-// entries (display: none) take no part.
-export function trailWraps(entries = []) {
-  const boxes = [];
+// Whether a crumb's words are cut for want of room. An ancestor is cut at
+// its own cap by design (--sf-breadcrumbs--label-max, C93 item 6), whatever
+// the room; cut narrower than that cap, or a crumb with no cap cut at all
+// (the page on the phone), means the row ran out of room.
+export function cutByRoom(crumb, view = globalThis) {
+  const container = crumb?.querySelector?.(':scope > .sf-breadcrumbs-item-container');
+  if (!container) return false;
+  const label = container.querySelector(':scope > span') || container;
+  if (!(label.scrollWidth > label.clientWidth + 1)) return false;
 
-  for (const entry of entries) {
-    if (!entry || entry.hidden) continue;
+  const cap = Number.parseFloat(view.getComputedStyle?.(container)?.maxInlineSize);
+  if (!(cap > 0)) return true;
+  return container.getBoundingClientRect().width < cap - 1;
+}
+
+// A cut name must still read: a crumb shown narrower than LABEL_MIN_EM of its
+// own text size (three letters or so with the ellipsis, the least of a name
+// one can tell apart) is no crumb at all (N1 of the nav-4b acceptance, after
+// C93 item 6). Folded as far as room goes, such a crumb goes behind «…» too
+// (starvedFit).
+export const LABEL_MIN_EM = 3;
+
+// Whether a crumb's words are cut to less than LABEL_MIN_EM for want of room.
+export function cutBelowMin(crumb, view = globalThis) {
+  const container = crumb?.querySelector?.(':scope > .sf-breadcrumbs-item-container');
+  if (!container) return false;
+  const label = container.querySelector(':scope > span') || container;
+  if (!(label.scrollWidth > label.clientWidth + 1)) return false;
+
+  const size = Number.parseFloat(view.getComputedStyle?.(label)?.fontSize);
+  const least = LABEL_MIN_EM * (size > 0 ? size : 16);
+  return container.getBoundingClientRect().width < least - 0.5;
+}
+
+// Whether a shown crumb of the trail is cut below the least that reads
+// (cutBelowMin). Separators, «…» and the siblings button have no words to cut.
+export function trailStarved(entries = [], view = globalThis) {
+  return entries.some((entry) => {
+    if (!entry || entry.hidden) return false;
+    const crumbs = entry.matches?.('.sf-breadcrumbs-item')
+      ? [entry]
+      : Array.from(entry.querySelectorAll?.(':scope > .sf-breadcrumbs-item') || []);
+    return crumbs.some(
+      (crumb) =>
+        !crumb.hidden &&
+        !crumb.classList?.contains('sf-breadcrumbs-item--separator') &&
+        !crumb.hasAttribute?.('aria-expanded') &&
+        cutBelowMin(crumb, view),
+    );
+  });
+}
+
+// The last fold: room has hidden all it may (nextFit gave null) and a crumb of
+// the tail is still cut below the least that reads. Then the parent goes too
+// and the page stands alone after «…»: «… › current». Only a tail of two (the
+// parent and the page) gives one up; a trail of parents keeps its parent.
+// Returns the options to fold with ({tail, fit}), or null.
+export function starvedFit(count, { tail = 2 } = {}) {
+  const kept = Math.max(1, Math.floor(Number(tail) || 0));
+  if (kept < 2) return null;
+
+  const hidden = maxFitHidden(count, 1);
+  return hidden > 0 ? { tail: 1, fit: hidden } : null;
+}
+
+// Whether the trail has no room for its crumbs (BC-06, C93 item 1). The row
+// never wraps (L2: a line never starts with «›»), so room runs out in one of
+// three ways: the row is wider than its box, a crumb is cut for want of room
+// (cutByRoom), or a page that wraps the row anyway (its own CSS) put an
+// entry below the first. A page name that wraps by words in the rest of the
+// row is not a want of room (C93 item 6). Hidden entries take no part.
+export function trailOverflows(row, entries = [], view = globalThis) {
+  if (row && row.scrollWidth > row.clientWidth + 1) return true;
+
+  const shown = entries.filter((entry) => {
+    if (!entry || entry.hidden) return false;
     const box = entry.getBoundingClientRect?.();
-    if (!box || (box.width === 0 && box.height === 0)) continue;
-    boxes.push(box);
-  }
+    return Boolean(box) && !(box.width === 0 && box.height === 0);
+  });
+  if (shown.length === 0) return false;
 
-  if (boxes.length === 0) return false;
-
+  const boxes = shown.map((entry) => entry.getBoundingClientRect());
   const lowest = Math.min(...boxes.map((box) => box.height));
-  const firstTop = boxes[0].top;
+  if (boxes.some((box) => box.top - boxes[0].top >= lowest / 2)) return true;
 
-  return boxes.some(
-    (box) => box.top - firstTop >= lowest / 2 || box.height - lowest > lowest / 2,
-  );
-}
-
-// How many lines the shown crumbs take: a crumb that starts below the line
-// before it (by half the lowest crumb or more) opens a new line. The fold
-// compares it before and after folding (see foldGains).
-export function trailLines(entries = []) {
-  const boxes = [];
-
-  for (const entry of entries) {
-    if (!entry || entry.hidden) continue;
-    const box = entry.getBoundingClientRect?.();
-    if (!box || (box.width === 0 && box.height === 0)) continue;
-    boxes.push(box);
-  }
-
-  if (boxes.length === 0) return 0;
-
-  const lowest = Math.min(...boxes.map((box) => box.height));
-  let lines = 1;
-  let top = boxes[0].top;
-
-  for (const box of boxes) {
-    if (box.top - top >= lowest / 2) {
-      lines += 1;
-      top = box.top;
-    }
-  }
-
-  return lines;
-}
-
-// Whether a fold that cannot go further was worth it: it took fewer lines
-// than the trail took where the measure started. When the page's own name is
-// longer than the line (it wraps, owner decision C93 item 6), hiding its
-// ancestors leaves it on its own line all the same; then the fold gained
-// nothing and the crumbs come back (C93 item 1: fold only for room).
-export function foldGains(startLines, lines) {
-  const before = Math.floor(Number(startLines) || 0);
-  const after = Math.floor(Number(lines) || 0);
-
-  return before === 0 || after < before;
-}
-
-// Where a measure starts. On the phone ladder (below 60rem) the trail is one
-// line «… › parent › page» from the start (owner decision C93 item 2); on a
-// wider screen it starts whole and folds only when it has no room.
-export function startFit(count, { tail = 2, phone = false } = {}) {
-  return phone ? maxFitHidden(count, tail) : 0;
-}
-
-// Whether the page is on the phone ladder (the ladders switch at lg).
-export function onPhoneLadder(view = globalThis) {
-  const query = breakpointMedia('lg', { view });
-  return query ? !query.matches : false;
+  return shown.some((entry) => {
+    const crumbs = entry.matches?.('.sf-breadcrumbs-item')
+      ? [entry]
+      : Array.from(entry.querySelectorAll?.(':scope > .sf-breadcrumbs-item') || []);
+    return crumbs.some(
+      (crumb) => !crumb.classList?.contains('sf-breadcrumbs-item--separator') && cutByRoom(crumb, view),
+    );
+  });
 }
 
 // The menu entries of crumbs (sf-menu-context entries): hidden crumbs behind

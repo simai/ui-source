@@ -41,13 +41,24 @@ const ProgressScaleElement = elementFromManifest(manifest, {
   },
 });
 
+// The threshold the value reached (C131 (7)); unset thresholds are none.
+const RANK = { warning: 1, error: 2 };
+function thresholdReached(value, warningAt, errorAt) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return '';
+  if (Number.isFinite(errorAt) && number >= errorAt) return 'error';
+  if (Number.isFinite(warningAt) && number >= warningAt) return 'warning';
+  return '';
+}
+
 class SfProgressScale extends ProgressScaleElement {
   static get props() {
     return {
       ...super.props,
       // The axis is called status, and speaks the shared vocabulary. `tone`
       // and its value `primary` keep working: see contracts/public-api-axes.json.
-      status: {default: 'neutral', values: ['neutral', 'info', 'success', 'warning', 'error'], aliases: ['tone'], valueAliases: {neutral: ['primary']}},
+      // No status (empty) is the theme's primary; neutral is grey (C131 (1)).
+      status: {default: '', values: ['', 'neutral', 'info', 'success', 'warning', 'error'], aliases: ['tone'], valueAliases: {'': ['primary']}},
     };
   }
 
@@ -78,6 +89,20 @@ class SfProgressScale extends ProgressScaleElement {
     return this.getProp('status');
   }
 
+  // A threshold holds only where the page set it.
+  threshold(attribute) {
+    if (!this.hasAttribute(attribute)) return null;
+    const number = Number(this.getAttribute(attribute));
+    return Number.isFinite(number) ? number : null;
+  }
+
+  // The status drawn (C131 (7), as sf-progress-bar): the more serious of the
+  // page's status and the threshold the value reached.
+  get drawnStatus() {
+    const reached = thresholdReached(this.value, this.threshold('warning-at'), this.threshold('error-at'));
+    return (RANK[reached] ?? 0) > (RANK[this.status] ?? 0) ? reached : this.status;
+  }
+
   // The accessible name: label, else the host's aria-label (§3.1, §4.8).
   get accessibleLabel() {
     return this.label || this.getAttribute('aria-label') || '';
@@ -86,8 +111,12 @@ class SfProgressScale extends ProgressScaleElement {
   templateContext() {
     const props = this.getPropsContext();
 
+    const status = this.drawnStatus;
+    this.sfHostState('data-status', status);
     return this.createTemplateContext({
       ...props,
+      drawnStatus: status,
+      meter: Boolean(this.meter),
       component: this,
       line: this.line,
       label: this.accessibleLabel,
@@ -106,6 +135,8 @@ class SfProgressScale extends ProgressScaleElement {
       value: normalizeProgressValue(this.value),
       showText: this.showText,
       status: this.status,
+      drawnStatus: this.drawnStatus,
+      meter: Boolean(this.meter),
       label: this.label,
       valueText: this.valueText,
     };
@@ -119,7 +150,7 @@ class SfProgressScale extends ProgressScaleElement {
   }
 
   resolveUpdateMode(changedAttributes = []) {
-    const directPatchAttributes = ['value', 'show-text', 'status', 'tone', 'label', 'value-text', 'aria-label'];
+    const directPatchAttributes = ['value', 'show-text', 'status', 'tone', 'warning-at', 'error-at', 'meter', 'label', 'value-text', 'aria-label'];
     if (
       changedAttributes.length > 0 &&
       changedAttributes.every((attr) => directPatchAttributes.includes(attr))
@@ -133,10 +164,12 @@ class SfProgressScale extends ProgressScaleElement {
   updateDom() {
     const root = this.querySelector('.sf-progress-scale');
     if (!root) return false;
+    this.sfHostState('data-status', this.drawnStatus);
     return setProgressScaleState(root, {
       value: this.value,
       showText: this.showText,
-      tone: this.status,
+      tone: this.drawnStatus,
+      meter: Boolean(this.meter),
       label: this.accessibleLabel,
       valueText: this.valueText,
     });

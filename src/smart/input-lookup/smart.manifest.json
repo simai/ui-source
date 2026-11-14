@@ -40,7 +40,7 @@
       "component.avatars",
       "component.icons",
       "smart.button",
-      "smart.button-close",
+      "smart.icon",
       "smart.spinner",
       "smart.tag"
     ],
@@ -409,11 +409,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-lookup/index.js",
-        "sha256": "6cd9f52ea9f7fce5c027002c8ce6d6efb4b00b68cb66aa54409e5a9bfb764acb"
+        "sha256": "db4cd6e7eef9654e6ff308ea389b9f44653efbc711b359f47805b645b5d716e1"
       },
       {
         "path": "src/smart/input-lookup/js/templates/default.js",
-        "sha256": "0849e14c1b3e70bf7b6d25003407898216d480be5b8bed315bff3507aaca9d25"
+        "sha256": "445b91c639375abc0a4ea63c96a385d39c663b390859fc401e39be619773a687"
       },
       {
         "path": "src/smart/input-lookup/js/lookup-model.mjs",
@@ -421,15 +421,15 @@
       },
       {
         "path": "src/smart/input-lookup/scss/_smart__lookup.scss",
-        "sha256": "40dc68b9674c216ea1a1c6a51271320d6cee8e04e22764b92418853062532119"
+        "sha256": "865d929c449ee88faf3275a5de05e022646205e4a8775e901ea73d32d334923b"
       },
       {
         "path": "src/smart/input-lookup/rule.js",
-        "sha256": "ce88f2a06406a430034ff0407e415413786298dc8816c3561eb515b92f2ae9e4"
+        "sha256": "4fff3dc9380036b0234f2e7efa4fcf86b6760b8e14a8d236efca7902edf0f670"
       },
       {
         "path": "src/smart/input-lookup/docs.md",
-        "sha256": "02ab019ccac7b3ec9cc40fbec859adcf88d1c364ca875f106bce16221909d289"
+        "sha256": "b11e486fb885f9abbd23b4cf0e414d076e052e7381e41a49543e3e6052aad612"
       }
     ],
     "generated_runtime": []

@@ -1,5 +1,6 @@
 @use '../../../component/context-menu/scss/panel';
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../component/inputs/scss/field-action';
 
 @layer sf.components {
 /* sf-input-lookup (standard simai.smart-component 1.3.14 §6). The frame is
@@ -29,9 +30,10 @@
      control of the lookup's size, its avatar or text --sf-space-1/2 inside
      its highlight. Before R029 a row's text kept the field's axis. */
   --sf-lookup--row-height: var(--sf-ui-1--control-height);
-  /* The clear's box: the icon button's control at the step it is asked for
-     (templates/default.js CLEAR_SIZE). */
-  --sf-lookup--clear-box: var(--sf-ui-1\/3--control-height);
+  /* The clear is the field layer's action (C123): the leading picture's
+     size, the field's height, the field's plain inset. */
+  --sf-field-action--glyph: var(--sf-text-height-1);
+  --sf-field-action--height: var(--sf-ui-1--control-height);
   --sf-lookup--row-padding-inline: var(--sf-space-1\/2);
   /* Wrapped chips: the rows stand far enough apart for sf-tag's remove targets
      (--sf-c2 square, centred on the line) to meet at most, whatever line the
@@ -55,7 +57,8 @@
   --sf-lookup--text-inset: var(--sf-ui-2--text-space-x);
   --sf-lookup--row-padding-block: var(--sf-ui-2--space-y-tightness-low);
   --sf-lookup--row-height: var(--sf-ui-2--control-height);
-  --sf-lookup--clear-box: var(--sf-ui-1\/2--control-height);
+  --sf-field-action--glyph: var(--sf-text-height-2);
+  --sf-field-action--height: var(--sf-ui-2--control-height);
 }
 
 .sf-lookup.sf-lookup--size-1\/2 {
@@ -70,6 +73,8 @@
   --sf-lookup--text-inset: var(--sf-ui-1\/2--text-space-x);
   --sf-lookup--row-padding-block: var(--sf-ui-1\/2--space-y-tightness-low);
   --sf-lookup--row-height: var(--sf-ui-1\/2--control-height);
+  --sf-field-action--glyph: var(--sf-text-height-1\/2);
+  --sf-field-action--height: var(--sf-ui-1\/2--control-height);
 }
 
 /* The label row and the message line: sf-input's. */
@@ -234,14 +239,16 @@
   max-inline-size: 100%;
 }
 
-/* The clear is sf-button-close, plain (C14): the icon button's square box of
-   its step, the cross inside it (LK-08: it was the text line high and the
-   button's width wide, 28 by 24, 24 by 20 on a phone). A plain close draws no
-   spot, so the box is its target alone: it stands over the frame's block
-   padding by what it passes the text line, and a value never grows the field.
-   The host is display: contents; the box is the button. */
-.sf-lookup .sf-lookup-frame > :is(sf-button-close, sf-close) > .sf-lookup-clear {
-  margin-block: calc((var(--sf-lookup--line-height) - var(--sf-lookup--clear-box)) / 2);
+/* The clear is the field layer's action (C123; it was sf-button-close plain,
+   C14): a glyph without a plate, its hit area the field's inner height. It
+   stands over the frame's block padding by what it passes the text line, so a
+   value never grows the field; the value keeps half an inset before it. */
+.sf-lookup .sf-lookup-frame > .sf-field-action {
+  margin-block: calc(-1 * var(--sf-lookup--padding-block));
+}
+
+.sf-lookup .sf-lookup-frame > .sf-lookup-input:has(+ .sf-field-action) {
+  padding-inline-end: calc(var(--sf-field-action--inset) / 4);
 }
 
 /* The list: sf-dropdown's menu surface, in the top layer under the frame. */
@@ -448,6 +455,7 @@
    less a chip keeps the field's own. */
 @layer sf.components {
   .sf-lookup {
+    --sf-field-action--inset: var(--sf-lookup--inset);
     --sf-lookup--inset: var(--sf-space-1);
     --sf-lookup--line-radius: min(var(--sf-lookup--radius), var(--sf-ui-1--control-height) / 2);
     --sf-lookup--value-inset: calc(var(--sf-lookup--inset) + max(calc(var(--sf-px) * 0), var(--sf-lookup--line-radius) - var(--sf-radius-1\/2)) / 2);
@@ -503,3 +511,6 @@
     --sf-tag--border-bottom-right-radius: var(--sf-lookup--chip-radius);
   }
 }
+
+/* C123: the field layer's action rules (inputs/scss/field-action.scss). */
+@include field-action.rules('.sf-lookup-frame');

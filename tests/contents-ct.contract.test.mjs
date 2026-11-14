@@ -108,7 +108,7 @@ test('CT-10: the address is written on choose by default, on scroll only with ha
   const setCurrent = method('setCurrent(id, {emit = true, via = \'scroll\'} = {}) {', 'writeHash(id) {');
   assert.match(setCurrent, /if \(via === 'scroll' && this\.hashMode === 'scroll'\) this\.writeHash\(id\);/u);
   assert.doesNotMatch(setCurrent, /history\?\.replaceState/u);
-  const jump = method('jumpTo(id, event = null) {', '// The compact view\'s list');
+  const jump = method('jumpTo(id, event = null) {', '// The sheet view\'s list');
   assert.match(jump, /this\.setCurrent\(id, \{emit: true, via: 'choose'\}\);\s*this\.writeHash\(id\);/u);
   assert.match(source, /if \(!id \|\| this\.hashMode === 'false' \|\|/u);
   const record = journal.records.find((one) => one.id === 'behaviour-contents-hash-choose');

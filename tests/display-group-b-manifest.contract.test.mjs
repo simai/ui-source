@@ -48,9 +48,17 @@ test('every display component of group B is made from its component.json, langua
     }
     const table = json(`src/smart/${folder}/aliases.json`);
     const {rows} = readAliasTable(table, {tag: manifest.tag});
+    // The migration's rows keep its dates; a later rename carries its own
+    // (sf-slider/sf-gallery 1.2.0 dots-type words, journal
+    // value-slider-dots-type-to-roles: 2026-11-10 to 2027-01-01; sf-spinner's
+    // former looks, C130 (5): 2026-11-13 to 2027-01-01).
+    const allowed = [['2026-10-27', '2026-12-01'], ['2026-11-10', '2027-01-01'], ['2026-11-13', '2027-01-01']];
     for (const row of rows) {
-      assert.equal(row.since, '2026-10-27', `${folder}: ${row.from}`);
-      assert.equal(row.remove_after, '2026-12-01', `${folder}: ${row.from}`);
+      const dates = [row.since, row.remove_after];
+      assert.ok(
+        allowed.some(([since, until]) => dates[0] === since && dates[1] === until),
+        `${folder}: ${row.from} ${dates.join(' to ')}`,
+      );
     }
   }
 });

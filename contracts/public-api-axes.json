@@ -156,11 +156,11 @@
       ],
       "state": "converted",
       "value_legacy": {
-        "neutral": [
+        "": [
           "primary"
         ]
       },
-      "note": "`primary` was a colour role inside a list of statuses; it is answered as neutral, and info gained a fill it never had"
+      "note": "`primary` was a colour role inside a list of statuses; since owner decision C131 (1) it is answered as the empty default, which draws primary, while neutral is grey"
     },
     {
       "component": "progress-scale",
@@ -170,7 +170,7 @@
       ],
       "state": "converted",
       "value_legacy": {
-        "neutral": [
+        "": [
           "primary"
         ]
       }

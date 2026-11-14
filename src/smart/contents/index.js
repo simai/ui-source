@@ -1,11 +1,11 @@
 // sf-contents: the table of contents of one page («Оглавление») -- its
 // sections as in-page links, the current one marked while the page scrolls.
 //
-// One list, four views (the sheet's): a side column with the current
-// section's bar, a compact button with the reading progress that opens the
-// list, strokes at the edge with the names on hover and focus, and a sticky
-// row of anchor tabs; auto is the column on a wide screen and the compact
-// button below the collapse step, by a media rule, so the printed markup is
+// One list, four views (the stylesheet's): a side column with the current
+// section's bar, the sheet -- a button with the reading progress that opens
+// the list -- strokes at the edge with the names on hover and focus, and a
+// sticky row of anchor tabs; auto is the column on a wide screen and the sheet
+// below the collapse step, by a media rule, so the printed markup is
 // right before this code arrives.
 //
 // The sections are the items a server gives (the JSON island, or the
@@ -30,6 +30,7 @@ import {fitInOrder, fitBesideMore, rowRoom, standardMenu, triggerExtra} from '..
 import {followDensity} from '../../core/js/density.js';
 import {renderContentsTemplate} from './js/templates/default';
 import manifest from './component.json';
+import aliases from './aliases.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
@@ -57,10 +58,12 @@ const HOLD_MS = 300;
 let sequence = 0;
 
 
+// layout compact is a dated value alias of sheet (aliases.json, C134).
 const ContentsElement = elementFromManifest(manifest, {
   base: SfBaseElement,
   lang: {en, ru},
   source: 'ru',
+  aliases,
   actions: {
     refresh() {
       this.collect();
@@ -173,8 +176,11 @@ class SfContents extends ContentsElement {
     if (this._isMounted) this.collect();
   }
 
+  // The sheet view is showing: layout sheet, or auto below the collapse step.
+  // (The getter and the host state data-compact keep their names: they are
+  // not the setting's value.)
   get compact() {
-    if (this.layout === 'compact') return true;
+    if (this.layout === 'sheet') return true;
     if (this.layout !== 'auto') return false;
     return this._media ? !this._media.matches : false;
   }
@@ -507,12 +513,12 @@ class SfContents extends ContentsElement {
     this.writeHash(id);
   }
 
-  // The compact view's list, or the rail's names (CT-04), can open.
+  // The sheet view's list, or the rail's names (CT-04), can open.
   get canOpen() {
     return this.compact || this.layout === 'rail';
   }
 
-  // The action toggle opens the compact view's list, and in the rail shows
+  // The action toggle opens the sheet view's list, and in the rail shows
   // the names.
   openList() {
     if (this.isOpen) return applied();
@@ -521,7 +527,7 @@ class SfContents extends ContentsElement {
     this.sfHostState('data-open', true);
     document.addEventListener('pointerdown', this._onOutside, true);
     this.requestComponentUpdate('open');
-    // The compact list (a bottom sheet on a phone) opens on the current
+    // The sheet's list (a bottom sheet on a phone) opens on the current
     // entry: focus goes to its link, so the keyboard and a screen reader start
     // where the reader is (C95 point 4, CT-08). The rail keeps focus.
     if (this.compact) this._focusCurrent = true;
@@ -562,7 +568,7 @@ class SfContents extends ContentsElement {
     this.closeList({restoreFocus: true});
   }
 
-  // The compact button is what the host's focus() reaches in the compact
+  // The sheet's button is what the host's focus() reaches in the sheet
   // view (the host is display: contents and has no box).
   focusDelegate() {
     return this.compact ? this.toggleButton() : this.querySelector(':scope .sf-contents-link');

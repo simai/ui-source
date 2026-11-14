@@ -8,7 +8,9 @@ import {html, nothing} from 'lit';
 //   so every part is a span the sheet lays out.
 // - The change says its direction in words (visually hidden) beside the arrow
 //   of a tonal sf-badge, the status its word beside the icon, so colour is
-//   never the only sign.
+//   never the only sign. With a hint the word is said before it (visually
+//   hidden); without one the word is the line's text («Внимание»), so a
+//   threshold that fired is never an icon alone.
 // - The limit is a meter; the sf-progress-bar under it is its picture
 //   (aria-hidden), with the page's thresholds.
 // - loading keeps the label and draws a skeleton bar on each line that waits.
@@ -35,7 +37,7 @@ function renderMeter(context) {
   return html`<span class="sf-tile-metric-meter" role="meter" aria-label=${meter.name}
       aria-valuemin="0" aria-valuemax=${String(meter.max)} aria-valuenow=${String(meter.value)} aria-valuetext=${meter.text}>
     <sf-progress-bar class="sf-tile-metric-bar" aria-hidden="true" size=${size} value=${String(meter.percent)}
-      status=${context.status} warning-at=${meter.warningAt ?? nothing} error-at=${meter.errorAt ?? nothing}></sf-progress-bar>
+      status=${context.status === 'neutral' ? nothing : context.status} warning-at=${meter.warningAt ?? nothing} error-at=${meter.errorAt ?? nothing}></sf-progress-bar>
     <span class="sf-tile-metric-limit" aria-hidden="true">${meter.text}</span>
   </span>`;
 }
@@ -45,8 +47,8 @@ function renderStatus(context) {
   if (status === 'neutral' && !hint) return nothing;
   return html`<span class=${`sf-tile-metric-status sf-tile-metric-status--${status}`}>
     ${status === 'neutral' ? nothing : html`<i class="sf-icon sf-tile-metric-status-icon" aria-hidden="true">${context.statusIcon}</i>`}
-    ${context.statusWord ? html`<span class="sr-only">${context.statusWord}${hint ? ': ' : ''}</span>` : nothing}
-    ${hint ? html`<span class="sf-tile-metric-hint">${hint}</span>` : nothing}
+    ${context.statusWord && hint ? html`<span class="sr-only">${context.statusWord}: </span>` : nothing}
+    ${hint || context.statusWord ? html`<span class="sf-tile-metric-hint">${hint || context.statusWord}</span>` : nothing}
   </span>`;
 }
 

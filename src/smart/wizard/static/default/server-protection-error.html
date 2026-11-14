@@ -35,8 +35,9 @@
 </button>
 </sf-button>
 </div>
-<sf-progress-bar class="sf-wizard-bar" size="1/3" value="50" label="Ход мастера" value-text="Шаг 3 из 6" style="display: contents;" data-sf-size-relative data-status="neutral">
-<div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="sf-progress-bar sf-progress-bar--size-1/3 sf-progress-bar--neutral flex" data-value="50" data-position="none" data-label="Ход мастера" data-value-text="Шаг 3 из 6" aria-label="Ход мастера" aria-valuenow="50" aria-valuetext="Шаг 3 из 6" data-sf-progress-bar-bound="1" data-sf-static>
+<sf-progress-bar class="sf-wizard-bar" size="1/3" value="50" label="Ход мастера" value-text="Шаг 3 из 6" style="display: contents;" data-sf-size-relative>
+<div aria-valuemin="0" aria-valuemax="100" class="sf-progress-bar sf-progress-bar--size-1/3 flex" data-value="50" data-position="none" data-label="Ход мастера" data-value-text="Шаг 3 из 6" role="progressbar" aria-label="Ход мастера" aria-valuenow="50" aria-valuetext="Шаг 3 из 6" data-sf-progress-bar-bound="1" data-sf-static>
+
 <div class="sf-progress-bar-main">
 <div class="sf-progress-bar-progress transition" style="width: 50%;"></div>
 </div>
@@ -55,7 +56,7 @@
 </div>
 
 <sf-alert class="sf-wizard-result" status="error" supporting-text="Let’s Encrypt не ответил: домен panel.example.ru пока не указывает на этот сервер. Проверьте запись A и повторите." style="display: contents;">
-<div class="sf-alert sf-alert--error sf-alert--default flex items-start" role="alert" data-sf-static>
+<div class="sf-alert sf-alert--error sf-alert--default flex items-start" role="status" data-sf-static>
 <sf-icon aria-hidden="true" icon="error" style="display: contents;"><i class="sf-icon sf-icon--weight-regular" style="--sf-icon--grade:0;--sf-icon--optical-size:24" aria-hidden="true" data-sf-static>error</i></sf-icon>
 <div class="sf-alert-wrap flex flex-col flex-1">
 <div class="sf-alert-content flex flex-col flex-1">

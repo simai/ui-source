@@ -24,9 +24,14 @@ remain Previous slide / Next slide; configure the existing Swiper a11y messages
 for another language. No separate localization API is introduced.
 
 Pagination uses the shared Slider CSS: available pages are outlined and the
-current page is filled, using semantic foreground roles. The existing dots-type
-and dots-size options select the existing schemes and sizes. Transparent clear
-dark indicators need an inverse backdrop. Keyboard focus is focus-visible,
+current page is filled, using semantic foreground roles. dots-type names the
+plate the dots sit on by its colour role: `primary-container` (the default),
+`primary`, `surface-container` or `surface-inverse`; dots-size selects the size.
+The former words keep working with a console note until 2027-01-01
+(journal `value-slider-dots-type-to-roles`): `primary-dark` is
+`primary-container`, `primary-light` is `primary`, `light` and `clear` are
+`surface-container`, `dark` is `surface-inverse`. `primary` alone drew as
+`primary-dark` before 1.2.0 and is now the primary plate. Keyboard focus is focus-visible,
 bounded by the gap; forced-colors uses system colors. No Smart-only dot paint
 or separate visual token scale is needed.
 

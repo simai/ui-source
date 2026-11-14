@@ -18,7 +18,7 @@ must remain visible outside the tooltip.
     <i class="sf-icon" aria-hidden="true">save</i>
   </button>
   <span id="save-description" class="sf-tooltip sf-tooltip--dark
-    sf-tooltip--size-1/3 sf-tooltip--arrow-bottom-center" hidden>
+    sf-tooltip--size-1/3" hidden>
     <span class="sf-tooltip-content">
       <span class="sf-tooltip-text">Сохранить изменения</span>
       <span class="sf-tooltip-tail" aria-hidden="true"></span>
@@ -33,6 +33,24 @@ over the anchor or surface. It opens on hover and on keyboard focus
 (`:focus-visible`) only: the focus a mouse press leaves does not open it, and
 a press on the trigger -- a pointer, or Enter or Space -- hides it until the
 pointer leaves and the focus goes.
+
+Timing (the tooltip kind of C59, owner decision 2026-11-11):
+
+- a pointer resting on the trigger opens the tooltip after 0.5 s, so a pointer
+  crossing a toolbar does not open one on every button;
+- once a tooltip shows, its neighbours open at once: while one is open and for
+  0.3 s after the last one closed;
+- keyboard focus opens it at once;
+- on a touch screen nothing hovers: a long press (held 0.5 s) shows the
+  tooltip, it stays while the finger is down and 1.5 s after; the release of a
+  long press is not a press of the trigger (its click is not sent), and the
+  browser's own long-press menu does not open over it; a short tap is an
+  ordinary press.
+
+No tail by default: write a `sf-tooltip--arrow-*` class only where a tail is
+wanted. A light tooltip has no frame: its elevation is the window's shadow,
+drawn over the content and the tail together (`--sf-shadow-overlay-filter`),
+so a tail carries the same shadow as the window.
 
 ## Surface variants
 

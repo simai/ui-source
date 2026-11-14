@@ -5,6 +5,8 @@ import { html } from "lit";
 import { resolveControlSpacing } from '../../core/js/control-spacing';
 import { noteDeprecated } from "../../core/js/deprecations.js";
 import { warnUnknownControlStatus } from "../helpers/control-status";
+import { buttonSetLook, sayButtonSetFormers } from "../helpers/button-set";
+import { tagSelector } from "../../core/js/tag-aliases.js";
 import {
   ariaKeyShortcuts,
   isCommandShortcut,
@@ -56,6 +58,8 @@ const COMPONENT_ATTRIBUTES = new Set([
   "text-pressed",
   "cycle",
   "theme-cycle",
+  "menu",
+  "split",
   "shortcut",
   "shortcut-listen",
   "aria-label",
@@ -94,24 +98,94 @@ function noteSpacing(host) {
   globalThis.console?.warn?.("[SIMAI Framework] sf-button: spacing is deprecated until 2027-01-01 and draws the side padding only; write height=\"low|default|high|highest\" for the control height. See contracts/changes/journal.json (attribute-button-spacing-to-height).");
 }
 
-// surface with the quiet scheme on-surface-variant is retired (1.11.0,
-// following C15 on the icon buttons; buttons review 2026-11-09): on the
-// surface fill the quiet ink read 4.88:1 in the dark theme and a key on it
-// 4.38:1. The pair draws as surface with on-surface until 2027-01-01 (change
-// journal value-button-surface-quiet-scheme), noted in SF.deprecations and
-// said once per page in the console with its replacement. A combination of two
-// settings, so the component reads it itself rather than through a value alias.
-function retiredSurfaceQuiet(host) {
-  const appearance = host.getAttribute("appearance") ?? host.getAttribute("type");
-  return appearance === "surface" && host.getAttribute("scheme") === "on-surface-variant";
+// The button set (1.14.0, owner decision C116; helpers/button-set.js):
+// scheme="secondary" draws as on-surface, appearance="surface" as the soft grey
+// button (tonal + on-surface, C113), and a danger button that asks for tonal or
+// surface draws as outline. Each is a former name until 2027-01-01, noted in
+// SF.deprecations and said once per page (change journal
+// value-button-set-c116). surface with on-surface-variant, retired in 1.11.0
+// (value-button-surface-quiet-scheme), is part of the retired surface now and
+// draws the same soft grey button. Words of two settings, so the component
+// reads them itself rather than through value aliases.
+function setLook(host) {
+  return buttonSetLook({
+    appearance: host.getAttribute("appearance") ?? host.getAttribute("type"),
+    scheme: host.getAttribute("scheme"),
+    status: host.getAttribute("status"),
+  });
 }
 
-function noteSurfaceQuiet() {
-  noteDeprecated({component: "sf-button", kind: "value", attribute: "scheme", from: "on-surface-variant", to: "on-surface", since: "2026-11-09", remove_after: "2027-01-01"});
+// menu and split (1.15.0, owner decision C119; ui-control research
+// 2026-11-13-buttons-system R206). menu is a list of sf-menu-context entries;
+// the attribute takes JSON, the property a list. With menu alone the button is
+// a menu button: the whole button opens the menu and draws its own arrow. With
+// split as well it is a split button: the label part acts (press) and a square
+// arrow part of the same height opens the menu, two tab stops, joined like a
+// button group. A split button is the main (default primary) or the regular
+// (outline) look only; another look, or a danger one, draws as a menu button
+// and says so once per page.
+function parseMenu(value) {
+  if (Array.isArray(value)) return value;
+  if (value === null || value === undefined || value === "") return [];
+  if (typeof value === "string") {
+    try {
+      const list = JSON.parse(value);
+      return Array.isArray(list) ? list : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
+}
+
+function menuEntries(host) {
+  const list = host.getProp?.("menu");
+  return Array.isArray(list) ? list.filter((entry) => entry && typeof entry === "object") : [];
+}
+
+// Said once per page for each reason (every bundle carries its own copy of
+// this module, so the set lives on the shared global, as BS-1's does).
+function sayMenuOnce(key, message) {
   const root = globalThis.SF = globalThis.SF || {};
-  if (root.__sfButtonSurfaceQuietWarned) return;
-  Object.defineProperty(root, "__sfButtonSurfaceQuietWarned", {value: true, configurable: true});
-  globalThis.console?.warn?.("[SIMAI Framework] sf-button: appearance=\"surface\" with scheme=\"on-surface-variant\" is retired until 2027-01-01 and draws as scheme=\"on-surface\"; write scheme=\"on-surface\", or appearance=\"tonal\" or \"outline\" to keep the quiet scheme. See contracts/changes/journal.json (value-button-surface-quiet-scheme).");
+  if (!(root.__sfButtonMenuWarned instanceof Set)) {
+    Object.defineProperty(root, "__sfButtonMenuWarned", {value: new Set(), configurable: true});
+  }
+  if (root.__sfButtonMenuWarned.has(key)) return;
+  root.__sfButtonMenuWarned.add(key);
+  globalThis.console?.warn?.(`[SIMAI Framework] sf-button: ${message}`);
+}
+
+// The menu element the template draws, by its current and its former tag.
+const MENU_ELEMENT = `:scope > ${tagSelector("sf-menu-context")}`;
+
+const SPLIT_ANSWERS = Object.freeze({menu: "menu", split: "split"});
+
+// What the button is: null (a plain button), "menu" or "split".
+function menuMode(host, {appearance, scheme, status, text}) {
+  const entries = menuEntries(host);
+  const split = host.hasAttribute("split") && host.getAttribute("split") !== "false";
+  if (!entries.length) {
+    if (split) sayMenuOnce("split-empty", "split without menu entries is a plain button; give menu its entries (C119).");
+    return null;
+  }
+  if (hasCycle(host)) {
+    sayMenuOnce("menu-cycle", "menu and cycle cannot share a button; the cycle is kept and the menu is left out.");
+    return null;
+  }
+  if (host.getAttribute("href")) {
+    sayMenuOnce("menu-href", "menu on a link (href) is left out; a link opens a page, not a menu.");
+    return null;
+  }
+  const label = String(text || "").trim().toLowerCase();
+  if (split && label && entries.some((entry) => String(entry.text ?? "").trim().toLowerCase() === label)) {
+    sayMenuOnce("split-repeat", `the main action «${text}» is repeated in the menu of a split button; the menu holds the other actions only (C119).`);
+  }
+  if (!split) return SPLIT_ANSWERS.menu;
+  const danger = status === "danger" || status === "error";
+  const main = appearance === "default" && scheme === "primary";
+  if (!danger && (main || appearance === "outline")) return SPLIT_ANSWERS.split;
+  sayMenuOnce(`split-look|${appearance}|${scheme}|${danger ? "danger" : ""}`, `split is the main (default primary) or the regular (outline) look only (C119); appearance="${appearance}" scheme="${scheme}"${danger ? " status=\"danger\"" : ""} draws as a menu button.`);
+  return SPLIT_ANSWERS.menu;
 }
 
 // href (1.4.0) takes the addresses a link may follow: a relative one, a
@@ -160,7 +234,19 @@ class SfButton extends ButtonElement {
       ...super.props,
       // The attribute takes JSON or value::label::flags|…; the property a list.
       cycle: {type: Array, default: [], parser: parseCycle},
+      // The menu's entries (1.15.0, C119): JSON on the attribute, a list as
+      // the property, shaped as sf-menu-context's entries.
+      menu: {type: Array, default: [], parser: parseMenu},
     };
+  }
+
+  get menu() {
+    return this.getProp("menu");
+  }
+
+  set menu(value) {
+    Object.defineProperty(this, "menu", {configurable: true, enumerable: true, writable: true, value});
+    this.requestComponentUpdate?.("menu");
   }
 
   // cycle is a list setting (§4.2) whose attribute keeps its JSON form, as
@@ -184,6 +270,16 @@ class SfButton extends ButtonElement {
     });
   }
 
+  // aria-label is the host's (§3.1), not a setting, so the manifest makes no
+  // observed attribute of it, and the forwarder leaves it out (it is in
+  // COMPONENT_ATTRIBUTES): a name changed after the first drawing never reached
+  // the inner button. sf-input-image's «Заменить изображение «photo.png»» kept
+  // the first file's name after a new drop (1.14.0); sf-button-icon watched it
+  // since 2026-11-06. A change now draws the button again with the new name.
+  static get observedAttributes() {
+    return [...new Set([...super.observedAttributes, "aria-label"])];
+  }
+
   constructor() {
     super();
     this._attributeObserver = null;
@@ -191,13 +287,21 @@ class SfButton extends ButtonElement {
     this._shortcutListener = null;
   }
 
-  // scheme: surface with on-surface-variant reads as on-surface (1.11.0).
+  // appearance and scheme: the set's former words read as their successors
+  // (C116): surface as tonal, a danger tonal or surface as outline.
+  get appearance() {
+    const look = setLook(this);
+    return look.formers.some((former) => former.attribute === "appearance") ? look.appearance : super.appearance;
+  }
+
+  set appearance(value) {
+    super.appearance = value;
+  }
+
+  // secondary, and the scheme the retired surface brings, read as on-surface.
   get scheme() {
-    if (retiredSurfaceQuiet(this)) {
-      noteSurfaceQuiet();
-      return "on-surface";
-    }
-    return super.scheme;
+    const look = setLook(this);
+    return look.formers.some((former) => former.attribute === "scheme" || former.from === "surface" && former.to === "tonal") ? look.scheme : super.scheme;
   }
 
   set scheme(value) {
@@ -301,6 +405,10 @@ class SfButton extends ButtonElement {
     noteSpacing(this);
     // success, warning, info: no such buttons (C13, BS-1); said once per page.
     warnUnknownControlStatus("sf-button", this.getAttribute("status"));
+    // secondary, surface, a danger tonal or surface (C116); said once per page.
+    sayButtonSetFormers("sf-button", setLook(this).formers);
+    const mode = menuMode(this, {appearance: this.appearance, scheme: this.scheme, status: this.status, text: this.text});
+    this._menuMode = mode;
     const announce = Boolean(cycle && this.__sfCycleAnnounce);
     this.__sfCycleAnnounce = false;
     // A cycle with an icon shows the item's icon in place of the start icon;
@@ -319,6 +427,8 @@ class SfButton extends ButtonElement {
       // Resolved names the template reads (contracts/template-context.json).
       iconStart: this.iconStart,
       iconEnd: this.iconEnd,
+      // A menu button draws its arrow at the end unless the page wrote an end icon.
+      menuArrow: mode === "menu" && this.iconEnd === null ? "expand_more" : "",
       appearance: this.appearance,
       type: this.appearance,
       status: this.status,
@@ -340,7 +450,14 @@ class SfButton extends ButtonElement {
       // A cycle's name says its current value; without an aria-label the
       // shown label is the name.
       ariaLabel: cycle ? (this.getAttribute("aria-label") || (cycleIcon && !this.text) ? cycle.name : "") : this.getAttribute("aria-label") || "",
-      expanded: this.expanded,
+      // A menu button says it has a menu and whether it is open; the menu
+      // writes aria-expanded while it is open.
+      expanded: mode === "menu" ? Boolean(this.expanded) : this.expanded,
+      hasPopup: mode === "menu" ? "menu" : "",
+      // The split button (C119): the arrow part's name and the menu's entries.
+      menuMode: mode,
+      menuEntries: mode ? menuEntries(this) : [],
+      splitLabel: mode === "split" ? this.sfWord("split-more", {vars: {label: this.text || this.getAttribute("aria-label") || ""}}) : "",
       pressed: cycle ? undefined : this.pressed,
       textPressed: cycle ? "" : this.textPressed,
       // The cycle's item: its icon in place of the start icon, or, without
@@ -373,6 +490,56 @@ class SfButton extends ButtonElement {
 
   resolveUpdateMode() {
     return "lit";
+  }
+
+  // ─── the menu (1.15.0, C119) ───────────────────────────────────────────────
+  get menuElement() {
+    return this.querySelector(MENU_ELEMENT);
+  }
+
+  // The control that opens the menu: the arrow part's native button on a
+  // split button, the button itself on a menu button.
+  menuAnchor() {
+    if (this._menuMode === "split") {
+      const arrow = this.querySelector(":scope > .sf-button-split > .sf-button-split-arrow");
+      return arrow?.querySelector("button") ?? null;
+    }
+    if (this._menuMode === "menu") return this.querySelector(".sf-button");
+    return null;
+  }
+
+  /** Opens or closes the menu; focus "first" or "last" picks the row it lands on. */
+  toggleMenu({focus = "first", open = false} = {}) {
+    const menu = this.menuElement;
+    const anchor = this.menuAnchor();
+    if (!menu || !anchor || anchor.disabled) return;
+    const align = this._menuMode === "split" ? "end" : "start";
+    customElements.whenDefined("sf-menu-context").then(() => {
+      if (open) {
+        if (menu._owned?.anchor === anchor) return;
+        menu.openFor(anchor, {align, focus});
+      } else {
+        menu.toggleFor(anchor, {align, focus});
+      }
+    });
+  }
+
+  // ArrowDown and ArrowUp on the control that opens the menu open it on the
+  // first and the last row; Enter and Space press the native button, whose
+  // click toggles it.
+  onMenuKey(event) {
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    event.preventDefault();
+    this.toggleMenu({focus: event.key === "ArrowUp" ? "last" : "first", open: true});
+  }
+
+  // A row was chosen: the menu closes itself and returns focus to the control
+  // that opened it; the page hears sf-button-select, not the menu's event.
+  onMenuSelect(event) {
+    event.stopPropagation();
+    const id = event.detail?.id ?? null;
+    this.sfEmit("select", {id, entry: event.detail?.entry ?? null});
   }
 
   onConnected() {
@@ -434,6 +601,11 @@ class SfButton extends ButtonElement {
     if (!button || !(event.target instanceof Node) || !button.contains(event.target)) return;
     // A link that is off (href, disabled or loading: 1.4.0) is not pressed either.
     if (button.disabled || button.getAttribute("aria-disabled") === "true") return;
+    // A menu button's press opens its menu (C119); it is not an action.
+    if (this._menuMode === "menu") {
+      this.toggleMenu();
+      return;
+    }
     this.sfEmit("press", {});
     // A cycle moves to its next value after the press (D11d).
     pressCycle(this, this.cycleState());
@@ -500,6 +672,8 @@ class SfButton extends ButtonElement {
       rel: this.getAttribute("rel") || "",
       shortcut: this.shortcut,
       shortcutListen: this.shortcutListen,
+      menu: menuEntries(this),
+      split: this.hasAttribute("split") && this.getAttribute("split") !== "false",
       ariaLabel: this.getAttribute("aria-label") || "",
     };
   }

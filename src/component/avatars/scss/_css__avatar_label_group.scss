@@ -3,11 +3,18 @@
 .sf-avatar-label-group {
   background-color: var(--sf-avatar-label-group--background-color, transparent);
   gap: var(--sf-avatar-label-group--gap);
+  /* The group may be narrower than its text, so the no-wrap lines can end
+     in an ellipsis (docs precheck smart content AV-01): as a grid or flex
+     item it took the text's whole width -- 499 in a 300 frame -- and the
+     lines ran out without one. */
+  min-inline-size: 0;
+  max-inline-size: 100%;
 }
 
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-avatar-label-group .sf-avatar-label-group-container {
   background-color: var(--sf-avatar-label-group-container--background-color, transparent);
+  min-inline-size: 0;
 }
 
 .sf-avatar-label-group .sf-avatar-label-group-title {

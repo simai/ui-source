@@ -17,18 +17,21 @@ import {unsafeStatic, html as staticHtml} from 'lit/static-html.js';
 //   figures and text, and the time at the end; the running one is
 //   aria-current; a step with a log is a toggle (aria-expanded,
 //   aria-controls) over its log;
-// - output: a toggle (sf-button, aria-expanded, aria-controls); open, a pre in
-//   a scroller of role log (not live, focusable to scroll), with copy
-//   (sf-button-copy, the pre as its target) and download;
+// - output: once there is output, a toggle (sf-button, aria-expanded,
+//   aria-controls); open, a pre in a scroller of role log (not live,
+//   focusable to scroll), with copy (sf-button-copy, the pre as its target)
+//   and download. A job with no output has no toggle;
 // - actions: «Ещё N ошибок» at the start, then Minimize, Pause/Continue,
 //   Cancel, Retry and Hide, as their states allow.
-// The result line is the one status live region: it says the result and the
-// state changes; nothing else is live.
+// The result line is the status live region: it says the result and the
+// state changes. A second region, polite and visually hidden, says the count
+// while the job runs, at most every ANNOUNCE_MS (index.js); nothing else is
+// live.
 //
-// look compact: one line -- the bar and «62 % · 3 мин» while it runs, the
-// badge once it stopped -- and icon actions. look notice: the mark in the
-// icon field (the ring, or the state's icon), the name and a line of
-// figures, and Expand.
+// look row (a table row; compact is its dated former name, C134): one line --
+// the bar and «62 % · 3 мин» while it runs, the badge once it stopped -- and
+// icon actions. look notice: the mark in the icon field (the ring, or the
+// state's icon), the name and a line of figures, and Expand.
 
 // The rung below the run's: texts, times, the output, the badges and the
 // buttons. A size the template gives is relative to the run's (density, C22).
@@ -62,7 +65,8 @@ function heading(context) {
 }
 
 function progress(context) {
-  // A run of steps alone (1.2's look) has no overall bar: its steps say it.
+  // A run of steps alone (1.2's look) has no overall bar while it waits or
+  // once it ended: its steps say it. While it runs with no size, the bar runs.
   if (!context.showBar) return nothing;
   return html`<div class="sf-progress-run-progress">
     ${context.showBar ? bar(context) : nothing}
@@ -139,6 +143,9 @@ function step(context, item) {
 
 function output(context) {
   const {component, ids, size, outputOpen, words} = context;
+  // No output, no toggle: an empty «Вывод» is a button that opens nothing.
+  // The first chunk brings it.
+  if (!context.outputShown) return nothing;
   const below = BELOW[size];
   return html`<div class="sf-progress-run-output-block">
     <div class="sf-progress-run-output-bar">
@@ -153,7 +160,6 @@ function output(context) {
     </div>
     ${outputOpen ? html`<div class="sf-progress-run-output" id=${ids.output} role="log" aria-live="off" aria-label=${context.outputLabel} tabindex="0">
       <pre class="sf-progress-run-output-text" id=${`${ids.output}-text`}>${context.outputShown}</pre>
-      ${context.outputShown ? nothing : html`<span class="sf-progress-run-output-empty">${words.emptyOutput}</span>`}
     </div>` : nothing}
   </div>`;
 }
@@ -190,13 +196,13 @@ function iconActions(context) {
   return html`<span class="sf-progress-run-icon-actions">
     ${showPause ? one('pause', 'pause', words.pause, () => component.onPause()) : nothing}
     ${showResume ? one('resume', 'play_arrow', words.resume, () => component.onResume()) : nothing}
-    ${showCancel && view === 'compact' ? one('cancel', 'close', words.cancel, () => component.onCancel()) : nothing}
-    ${showRetry && view === 'compact' ? one('retry', 'replay', context.retryWord, () => component.onRetry()) : nothing}
+    ${showCancel && view === 'row' ? one('cancel', 'close', words.cancel, () => component.onCancel()) : nothing}
+    ${showRetry && view === 'row' ? one('retry', 'replay', context.retryWord, () => component.onRetry()) : nothing}
     ${view === 'notice' ? one('expand', 'open_in_full', `${words.expand}: ${regionLabel}`, () => component.onExpand()) : nothing}
   </span>`;
 }
 
-function compact(context) {
+function row(context) {
   const {state, ended, size} = context;
   const running = state === 'running' || state === 'paused';
   const short = state === 'paused'
@@ -247,12 +253,18 @@ export function renderProgressRunTemplate(context) {
     `sf-progress-run--size-${size === '1/2' ? 'half' : '1'}`,
     `sf-progress-run--${state}`,
     `sf-progress-run--view-${view}`,
+    // The row writes its former class beside its own until 2027-01-01, so a
+    // page selector that reached sf-progress-run--view-compact still does
+    // (C134; journal value-progress-run-look-compact-to-row).
+    view === 'row' ? 'sf-progress-run--view-compact' : '',
     context.rootClass,
   ].filter(Boolean).join(' ');
-  if (view === 'compact' || view === 'notice') {
+  const live = html`<div class="sf-progress-run-live sr-only" aria-live="polite" aria-atomic="true">${context.spoken}</div>`;
+  if (view === 'row' || view === 'notice') {
     return html`<div class=${classes} style=${context.rootStyle || nothing} role="group" aria-label=${context.regionLabel}>
-      ${view === 'compact' ? compact(context) : notice(context)}
+      ${view === 'row' ? row(context) : notice(context)}
       <div class=${`sf-progress-run-result sf-progress-run-result--${state} sr-only`} role="status">${context.announcement}</div>
+      ${view === 'notice' ? live : nothing}
     </div>`;
   }
   return html`<section class=${classes} style=${context.rootStyle || nothing}
@@ -264,5 +276,6 @@ export function renderProgressRunTemplate(context) {
     ${context.steps.length ? html`<ol class="sf-progress-run-steps" aria-label=${context.words.steps}>${context.steps.map((item) => step(context, item))}</ol>` : nothing}
     ${output(context)}
     ${actions(context)}
+    ${live}
   </section>`;
 }

@@ -17,12 +17,13 @@ test('every option of a multiple dropdown carries the box', async () => {
 
 // A picture row (avatar, colour) of a single choice drew an empty box at its
 // end; the chosen row says it with its fill (owner C08; DEV P2, R143,
-// 2026-11-12). The box after the picture stays for a multiple list.
+// 2026-11-12). The box after the picture stays for a multiple list, and a row
+// outside a dropdown draws none (docs precheck smart content LI-01).
 test('an avatar or colour option draws its box only in a multiple list', async () => {
   const listItem = await read('src/smart/list-item/js/templates/default.js');
   assert.ok(listItem.includes('export function renderListItemOption(option = {}, {multiple = false} = {})'));
   assert.ok(listItem.includes('multiple: Boolean(multiple),'));
-  assert.ok(listItem.includes('if ((context.type === "avatar" || context.type === "color") && (!isOption || context.multiple)) {'));
+  assert.ok(listItem.includes('if (isOption && context.multiple && (context.type === "avatar" || context.type === "color")) {'));
 });
 
 test('an option that draws a picture of its own keeps it', async () => {

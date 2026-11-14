@@ -13,7 +13,9 @@ function getButtonOptions(type = 'primary') {
   const normalizedType = normalizeOption(type);
   const options = {
     primary: { type: 'default', scheme: 'primary' },
-    secondary: { type: 'tonal', scheme: 'secondary' },
+    // The soft grey arrows (decision C116, BS-2): secondary is no colour of a
+    // button any more; the button-type keeps its name.
+    secondary: { type: 'tonal', scheme: 'on-surface' },
     dark: { type: 'default', scheme: 'on-surface' },
     // ghost, not its former name link: a link here was counted as the page's
     // own use in SF.deprecations (pair ui-a0370c0c99fb acceptance, F3).
@@ -23,10 +25,16 @@ function getButtonOptions(type = 'primary') {
   return options[normalizedType] || options.primary;
 }
 
-function getDotsClasses(type = 'primary-dark', size = '2') {
+// The dots' plate by its colour role (sf-slider 1.2.0, docs precheck Q4). The
+// former words are dated aliases until 2027-01-01 (the shim rewrites them on
+// the host); they stay here for a value handed to the template directly.
+function getDotsClasses(type = 'primary-container', size = '2') {
   const normalizedType = normalizeOption(type);
   const typeClasses = {
-    primary: ['sf-slider-dots--primary', 'sf-slider-dots--dark'],
+    'primary-container': ['sf-slider-dots--primary', 'sf-slider-dots--dark'],
+    primary: ['sf-slider-dots--primary', 'sf-slider-dots--light'],
+    'surface-container': ['sf-slider-dots--clear', 'sf-slider-dots--light'],
+    'surface-inverse': ['sf-slider-dots--clear', 'sf-slider-dots--dark'],
     'primary-light': ['sf-slider-dots--primary', 'sf-slider-dots--light'],
     'primary-dark': ['sf-slider-dots--primary', 'sf-slider-dots--dark'],
     light: ['sf-slider-dots--clear', 'sf-slider-dots--light'],
@@ -36,7 +44,7 @@ function getDotsClasses(type = 'primary-dark', size = '2') {
 
   return joinClasses(
     'sf-slider-dots',
-    typeClasses[normalizedType] || typeClasses['primary-dark'],
+    typeClasses[normalizedType] || typeClasses['primary-container'],
     'sf-slider-dots--framed',
     `sf-slider-dots--size-${size || '2'}`,
     'flex',

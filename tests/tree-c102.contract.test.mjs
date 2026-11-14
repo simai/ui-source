@@ -197,7 +197,7 @@ test('C102 5 (§7 item 7): static, list semantics and the .sf-tree--static class
   // Text-height rows in the code face, no pointer, no hover.
   assert.match(sheet, /\.sf-tree\.sf-tree--static \.sf-tree-item > \.sf-tree-item-container \{[^}]*min-block-size: var\(--sf-tree--text-height\);[^}]*cursor: auto;/u);
   assert.match(sheet, /\.sf-tree\.sf-tree--static \.sf-tree-item \.sf-tree-item-name \{[^}]*font-family: var\(--sf-code-font-family, var\(--sf-mono\)\);/u);
-  assert.match(sheet, /\.sf-tree:not\(\.sf-tree--static\) \.sf-tree-item:not\(\[aria-disabled='true'\]\):hover > \.sf-tree-item-container/u);
+  assert.match(sheet, /\.sf-tree:not\(\.sf-tree--static\) \.sf-tree-item:not\(\[aria-disabled='true'\]\):not\(\[aria-current='page'\]\):hover > \.sf-tree-item-container/u);
   // The class tree leaves static markup alone.
   assert.match(classTree, /isSmartTreeRoot\(root\) \|\|\n\s+isStaticTree\(root\)/u);
   // A static tree is never windowed.
@@ -285,4 +285,19 @@ test('C102 §7 item 12: a long name stays one line with a tooltip (TR-14, still 
   ]);
   assert.match(sheet, /sf-tree > \.sf-tree:not\(\.sf-tree--static\) \.sf-tree-item-name \{[^}]*text-overflow: ellipsis;/u);
   assert.match(source, /const cut = name\.scrollWidth - name\.clientWidth > 0\.5;/u);
+});
+
+test('C129: the current page of a tree takes the navigation menu plate (C23) and keeps it under the pointer', async () => {
+  const [sheet, menu] = await Promise.all([
+    read('src/component/tree/scss/_css__tree.scss'),
+    read('src/component/menu/scss/_css__menu.scss'),
+  ]);
+  // The menu's plate: the primary fill of the fill family, on-primary-container words, medium.
+  assert.match(menu, /@mixin current-plate \{[^}]*--sf-primary-container-active\);[^}]*--sf-on-primary-container\);[^}]*--sf-font-weight-medium\);/u);
+  const current = sheet.match(/\.sf-tree \.sf-tree-item\[aria-current='page'\] > \.sf-tree-item-container \{[^}]*\}/u)?.[0] ?? '';
+  assert.match(current, /background: var\(--sf-primary-container-active\);/u);
+  assert.match(current, /color: var\(--sf-on-primary-container\);/u);
+  assert.match(current, /font-weight: var\(--sf-font-weight-medium\);/u);
+  // After the selected plate, so a row that is both reads as the page.
+  assert.ok(sheet.indexOf("[aria-current='page'] > .sf-tree-item-container {") > sheet.indexOf("[aria-selected='true'] > .sf-tree-item-container {"));
 });

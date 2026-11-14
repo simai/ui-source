@@ -13,7 +13,7 @@
 // R072 e / R065 a: a bordered column draws the 2 px line on its own start
 //   border at the closed branch that holds the current page, clear of the
 //   corner's curve on its first row; a column without a border has the
-//   medium label alone; the compact rail takes the same line on its start
+//   medium label alone; the rail takes the same line on its start
 //   edge (DEV answer b); a bordered menu with search has one frame (minor 1);
 // R070: a column's group headings are a row's height, the rows' size and
 //   weight of type, on-surface-variant, the words on the first level's line;
@@ -112,7 +112,7 @@ const page = (search) => {
 <main>
   <div class="side"><sf-menu id="bordered" label="Каталог в рамке" appearance="navigation" bordered current="${current}" items='${json(CATALOG)}'></sf-menu></div>
   <div class="side"><sf-menu id="plain" label="Каталог" appearance="navigation" current="${current}" items='${json(CATALOG)}'></sf-menu></div>
-  <div class="side"><sf-menu id="rail" label="Рельс" appearance="compact" current="${current}" items='${json(CATALOG.map((item) => ({...item, icon: 'folder'})))}'></sf-menu></div>
+  <div class="side"><sf-menu id="rail" label="Рельс" appearance="rail" current="${current}" items='${json(CATALOG.map((item) => ({...item, icon: 'folder'})))}'></sf-menu></div>
   <div class="side"><sf-menu id="groups" label="Настройки" appearance="navigation" current="password" items='${json(SETTINGS)}'></sf-menu></div>
   <div class="side tall"><sf-menu id="search" label="Поиск по настройкам" appearance="navigation" search current="password" items='${json(SETTINGS)}'></sf-menu></div>
   <div class="side tall" data-sf-density="compact"><sf-menu id="search-compact" label="Плотный поиск" appearance="navigation" search current="password" items='${json(SETTINGS)}'></sf-menu></div>
@@ -247,7 +247,7 @@ try {
         k = key('rail');
         check(rail.holds && rail.content !== 'none' && rail.width === '2px' && rail.background === rail.primary && Math.abs(rail.offset) <= 0.5
           && rail.top === 0 && rail.bottom === 0 && Math.abs(rail.height - (rail.rowHeight - rail.rowBorder)) <= 0.5 && rail.radiusStart === '0px' && rail.radiusEnd === '2px' && rail.listBorder === '0px',
-        `${k}: the compact rail marks the section holding the current page with the path's 2 px primary line on its start edge, the row's full height inside its own transparent border, no 3 px bar (${JSON.stringify(rail)})`);
+        `${k}: the rail marks the section holding the current page with the path's 2 px primary line on its start edge, the row's full height inside its own transparent border, no 3 px bar (${JSON.stringify(rail)})`);
         check(/, 0\)$/u.test(rail.plate) || rail.plate === 'transparent', `${k}: the row holding the current page has no plate, as everywhere on the path (${rail.plate})`);
         // The rail's current row keeps the C23 plate.
         await tab.evaluate(() => { document.querySelector('#rail').current = 'valves'; });

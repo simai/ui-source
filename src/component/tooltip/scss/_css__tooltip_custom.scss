@@ -14,9 +14,9 @@
   max-inline-size: 100%;
 }
 
-/* Every look reads the border variables; the dark (default) one draws none
-   until a page sets a width. The light look's hairline and the forced-colours
-   border below come later and win. */
+/* Every look reads the border variables and draws none until a page sets a
+   width (C59: windows have a shadow, no frame; the light look lost its
+   hairline). The forced-colours border below comes later and wins. */
 .sf-tooltip .sf-tooltip-content {
   border: var(--sf-tooltip-border-width, 0) solid var(--sf-tooltip-border-color, var(--sf-outline-variant));
 }

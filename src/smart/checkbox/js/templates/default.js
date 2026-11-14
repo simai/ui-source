@@ -56,7 +56,7 @@ export function renderCheckboxTemplate(context) {
     rootClasses.push(...checkableClasses(size, showContainer));
     const isStart = position === 'start';
     const input = html`
-        <span class="sf-checkbox-box transition flex">
+        <span class="sf-checkbox-box flex">
         <input
                 type="checkbox"
                 name=${name || nothing}

@@ -37,6 +37,8 @@ export function renderSpinnerTemplate(context) {
       data-dot-radius=${valueOrNothing(context.dotRadius)}
       data-infinite=${String(!!context.infinite)}
       data-announce=${String(!!context.announce)}
+      data-label-hidden=${context.labelHidden ? 'true' : nothing}
+      data-delay=${context.component?.hasAttribute?.('delay') ? String(context.delay ?? 1000) : nothing}
       data-direction=${normalizeChoice(
         context.direction,
         ['clockwise', 'counterclockwise'],

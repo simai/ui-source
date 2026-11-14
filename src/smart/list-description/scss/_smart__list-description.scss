@@ -3,12 +3,15 @@
    of the ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2
    or 2 with size: the label and the value are the rung's line L and type,
    the hint and a stacked label the rung below's, the status icon L,
-   icon-to-text the rung's text-space-x, the column gap the rung's space-x. A
+   icon-to-text the row gap H2 of C105 (--sf-space-1/2: 12, compact and
+   phone 8, as a list row), the column gap the rung's space-x. A
    row's block inset is (H - L) / 2, so a one-line row is the rung's control
    height H, as a list row is; a divider gives up its hairline from the inset
    (padding gives up the border). The copy button is an sf-button-copy of the
-   rung below, on the value's first line, whose height takes no room beyond
-   that line.
+   rung itself (C103: a value and the button beside it stand on one step;
+   docs precheck LD-05: it was the rung below, 32 beside a size 1 value), on
+   the value's first line, whose height takes no room beyond that line: it is
+   the row's control height H.
 
    The labels stand in a column of their own: the dl is a grid of two
    columns and every row a subgrid of it, so each label and each value start
@@ -36,7 +39,8 @@ sf-list-description {
   --sf-list-description--below-line: var(--sf-text-height-1\/2);
   --sf-list-description--below-font-size: var(--sf-text-size-1\/2);
   --sf-list-description--control: var(--sf-ui-1--control-height);
-  --sf-list-description--copy: var(--sf-ui-1\/2--control-height);
+  --sf-list-description--copy: var(--sf-ui-1--control-height);
+  --sf-list-description--action: var(--sf-ui-1--control-height);
   --sf-list-description--space-x: var(--sf-ui-1--space-x);
   --sf-list-description--text-space-x: var(--sf-ui-1--text-space-x);
   --sf-list-description--padding-block: calc((var(--sf-list-description--control) - var(--sf-list-description--line)) / 2);
@@ -58,7 +62,8 @@ sf-list-description {
   --sf-list-description--below-line: var(--sf-text-height-1\/3);
   --sf-list-description--below-font-size: var(--sf-text-size-1\/3);
   --sf-list-description--control: var(--sf-ui-1\/2--control-height);
-  --sf-list-description--copy: var(--sf-ui-1\/3--control-height);
+  --sf-list-description--copy: var(--sf-ui-1\/2--control-height);
+  --sf-list-description--action: var(--sf-ui-1\/2--control-height);
   --sf-list-description--space-x: var(--sf-ui-1\/2--space-x);
   --sf-list-description--text-space-x: var(--sf-ui-1\/2--text-space-x);
 }
@@ -69,7 +74,8 @@ sf-list-description {
   --sf-list-description--below-line: var(--sf-text-height-1);
   --sf-list-description--below-font-size: var(--sf-text-size-1);
   --sf-list-description--control: var(--sf-ui-2--control-height);
-  --sf-list-description--copy: var(--sf-ui-1--control-height);
+  --sf-list-description--copy: var(--sf-ui-2--control-height);
+  --sf-list-description--action: var(--sf-ui-2--control-height);
   --sf-list-description--space-x: var(--sf-ui-2--space-x);
   --sf-list-description--text-space-x: var(--sf-ui-2--text-space-x);
 }
@@ -225,6 +231,11 @@ sf-list-description {
   --sf-icon--height: var(--sf-list-description--line);
   --sf-icon--color: currentColor;
   flex: none;
+  /* Icon to text is a row's H2 (C105): --sf-space-1/2, whatever the rung,
+     as an sf-list row; the line's own gap is the rung's text-space-x
+     (between the value, the copy button and the action), so the icon makes
+     up the difference. */
+  margin-inline-end: calc(var(--sf-space-1\/2) - var(--sf-list-description--text-space-x));
 }
 
 .sf-list-description-icon--success {
@@ -250,7 +261,7 @@ sf-list-description {
   overflow-wrap: anywhere;
 }
 
-/* The copy button: the rung below's control, centred on the value's first
+/* The copy button: the rung's control, centred on the value's first
    line, its overhang taken back, so a one-line row stays H tall. (The host
    is display: contents; its box is the sf-copy-button span.) */
 .sf-list-description-copy > .sf-copy-button {
@@ -259,9 +270,11 @@ sf-list-description {
   margin-block: calc((var(--sf-list-description--line) - var(--sf-list-description--copy)) / 2);
 }
 
-/* An action (an item's, a section's): an sf-button of the rung below, ghost;
-   on the value's line its overhang is taken back as the copy button's, so a
-   one-line row stays H tall. (sf-button's host is display: contents; the
+/* An action (an item's, a section's): an sf-button of the line's own rung
+   (C103: one line, one step; it was the rung below, 32 beside a size 1
+   heading), ghost; on the value's line its overhang is taken back the same
+   way, so a one-line row stays H tall, and a section's head is the rung's
+   control height with it. (sf-button's host is display: contents; the
    drawn box is its button or link.) */
 .sf-list-description-action {
   display: inline-flex;
@@ -269,7 +282,7 @@ sf-list-description {
 }
 
 .sf-list-description-line .sf-list-description-action :is(button, a) {
-  margin-block: calc((var(--sf-list-description--line) - var(--sf-list-description--copy)) / 2);
+  margin-block: calc((var(--sf-list-description--line) - var(--sf-list-description--action)) / 2);
 }
 
 /* overflow truncate: one line with an ellipsis; the whole value, wrapped in

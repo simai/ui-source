@@ -13,6 +13,9 @@
 //     the control or something inside it);
 //   - every button keeps the height of its size step (tap targets do not shrink);
 //   - at 60rem the row is still one line.
+// Owner decision C97 (1), (3): «Показать ещё» stands in a row of its own above
+// the arrows (sf-pagination-top), and the page size is a quiet button «По 20 ▾»
+// with a menu (.sf-pagination-size), where it was a dropdown field.
 import {resolve, join} from 'node:path';
 import {existsSync, readFileSync} from 'node:fs';
 import {chromium} from 'playwright';
@@ -54,9 +57,9 @@ try {
     for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
     for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
     await page.waitForFunction(() => customElements.get('sf-pagination')
-      && document.querySelector('#p .sf-pagination-more button')
+      && document.querySelector('#p .sf-pagination-more-button button')
       && document.querySelector('#p .sf-pagination-direction--last button')
-      && document.querySelector('#p .sf-pagination-count .sf-dropdown-field, #p .sf-pagination-count sf-dropdown'), null, {timeout: 10000});
+      && document.querySelector('#p .sf-pagination-size button'), null, {timeout: 10000});
     await page.waitForTimeout(500);
 
     const got = await page.evaluate(() => {

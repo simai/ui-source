@@ -66,7 +66,7 @@ try {
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
   await page.waitForFunction(() => customElements.get('sf-theme-generator')
     && document.querySelector('#plain [data-palette="primary"] [data-tone="40"]')
-    && document.querySelector('#plain sf-input-color .sf-color-input'), null, {timeout: 8000});
+    && document.querySelector('#plain sf-input-color .sf-color-trigger'), null, {timeout: 8000});
   await page.evaluate(() => {
     window.__seen = [];
     const keep = (event) => window.__seen.push({type: event.type, id: event.target.id, value: event.detail.value, hue: event.detail.hue,

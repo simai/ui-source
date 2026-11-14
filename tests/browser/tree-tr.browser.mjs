@@ -110,7 +110,8 @@ try {
       });
       const row = long.querySelector('[data-sf-entry="l2"]');
       row.dispatchEvent(new PointerEvent('pointerenter', {pointerType: 'mouse'}));
-      await wait(100);
+      // C59: a hover opens the tooltip after 0.5 s.
+      await wait(650);
       const surface = row.getAttribute('data-tooltip') && document.getElementById(row.getAttribute('data-tooltip'));
       r.hover = surface ? {shown: !surface.hidden, text: surface.textContent.trim(), role: surface.getAttribute('role')} : null;
       row.dispatchEvent(new PointerEvent('pointerleave', {pointerType: 'mouse'}));

@@ -160,9 +160,14 @@ test('Tabs documents legacy appearance semantics without reinterpreting or restr
   assert.match(scheme.description, /not a semantic color selector/);
   for (const tag of ['sf-button', 'sf-button-icon']) {
     const branch = template.split(`<${tag}\n`)[1].split(`</${tag}>`)[0];
-    assert.match(branch, /appearance="primary"/);
-    assert.match(branch, /scheme=\$\{context.scheme\}/);
+    // The tab buttons are asked on their own axes (defect BT-1): one look
+    // whatever the retired scheme (owner decision C96 item 1), colour primary;
+    // a custom template still gets the scheme unchanged in context.scheme.
+    assert.match(branch, /appearance="default"/);
+    assert.match(branch, /scheme="primary"/);
+    assert.doesNotMatch(branch, /scheme=\$\{context.scheme\}/);
   }
+  assert.doesNotMatch(template, /TAB_LOOKS/);
 });
 
 // Which control a two-option switch is, and why a pill row looked all-selected

@@ -87,6 +87,61 @@
       "mode": "retired",
       "section": "§4.4",
       "note": "a reader retires; the method stays until the date and notes each call"
+    },
+    {
+      "from": "primary-dark",
+      "to": "primary-container",
+      "kind": "value",
+      "setting": "dots-type",
+      "component": "sf-gallery",
+      "since": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "journal value-slider-dots-type-to-roles (docs precheck Q4): the dots' words name the plate's colour role; handed to the gallery's sliders"
+    },
+    {
+      "from": "primary-light",
+      "to": "primary",
+      "kind": "value",
+      "setting": "dots-type",
+      "component": "sf-gallery",
+      "since": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "journal value-slider-dots-type-to-roles (docs precheck Q4): the dots' words name the plate's colour role; handed to the gallery's sliders"
+    },
+    {
+      "from": "light",
+      "to": "surface-container",
+      "kind": "value",
+      "setting": "dots-type",
+      "component": "sf-gallery",
+      "since": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "journal value-slider-dots-type-to-roles (docs precheck Q4): the dots' words name the plate's colour role; handed to the gallery's sliders"
+    },
+    {
+      "from": "clear",
+      "to": "surface-container",
+      "kind": "value",
+      "setting": "dots-type",
+      "component": "sf-gallery",
+      "since": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "journal value-slider-dots-type-to-roles (docs precheck Q4): the dots' words name the plate's colour role; handed to the gallery's sliders"
+    },
+    {
+      "from": "dark",
+      "to": "surface-inverse",
+      "kind": "value",
+      "setting": "dots-type",
+      "component": "sf-gallery",
+      "since": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "journal value-slider-dots-type-to-roles (docs precheck Q4): the dots' words name the plate's colour role; handed to the gallery's sliders"
     }
   ]
 }

@@ -12,8 +12,8 @@ import {renderConfirmFooter} from "../../../helpers/confirm-surface.js";
 //
 // The answers call the actions confirm and cancel, which a page reaches as
 // data-sf-action="<id>.confirm" and "<id>.cancel" (§8, §19.4). A dangerous
-// acceptance (status="danger") is a filled danger answer beside a quiet
-// declining one (decision C25); a plain question has two outlined answers.
+// acceptance (status="danger") is a filled danger answer (decision C25), a
+// plain one outlined; «Отмена» beside it is always quiet (ghost, C116).
 export function renderConfirmTemplate(context) {
     if (context.appearance === "window") return renderConfirmWindow(context);
     return html`

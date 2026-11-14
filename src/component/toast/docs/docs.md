@@ -1,13 +1,18 @@
 # Toast
 
-Toast is concise transient overlay feedback that does not interrupt the current
-task. It is distinct from persistent inline Alert content.
+Toast is a short reply to an action, shown over the page, that does not
+interrupt the current task (owner decision C114 (1)). The state of a page is
+Alert; the state of the whole product is `sf-alert-bar`; the history of what
+happened is the notification centre (the Larena admin menu); a decision is
+`sf-confirm`.
 
 ## Public contract
 
-- Types: `default`, `primary`, `error`, `warning`, `success`.
-- Optional decorative icon, title, supporting text, one inline link or up to
-  two short action buttons, and one explicitly named close action.
+- Statuses: `neutral`, `info`, `success`, `warning`, `error` (`default` and
+  `primary` are still read as neutral and info).
+- Optional decorative icon, title, supporting text, up to two short action
+  buttons (the one light action may be a link button), and one explicitly named
+  close action. A link in the text leads to help only (C126).
 - Canonical behavior hooks: `data-action`, `data-close`, `data-duration`.
   `data-toast-action` and `data-toast-close` remain compatibility aliases.
 - `sf-toast-action` reports the stable action value; `sf-toast-close` is emitted
@@ -15,6 +20,9 @@ task. It is distinct from persistent inline Alert content.
 - A positive `data-duration` enables auto-dismiss. The remaining lifetime pauses
   while pointer or keyboard focus is inside the toast. Zero or no attribute is
   persistent.
+- An error or a warning never leaves by itself (1.3.0, owner decision C114 (6),
+  WCAG 2.2.1): it stays until a person closes it, whatever `data-duration` it
+  carries. Only success, info and neutral messages keep a time.
 
 ## Layout (1.2.0, owner decision C35)
 
@@ -29,6 +37,40 @@ sf-icon-button--size-1 sf-icon-button--height-low` with `sf-close
 sf-close--size-1`; its plate hangs out over the inline padding. The public
 `--sf-toast-padding-block`, `--sf-toast-padding-inline` and `--sf-toast-gap`
 still win.
+
+Since 1.3.3 (owner decision C105 H4/H6, as the fields' C77 inset) the 1 px
+border is inside the inline inset: the padding is `--sf-space-1` less
+`--sf-toast-border-width`, so the icon and the letters stand 16 from the outer
+edge (compact and phone 12); before they stood 17 (13).
+
+## Where the action stands (1.3.0, owner decision C115)
+
+A toast with one action puts it in the row with the text from 20rem (320 px)
+of the toast's own width -- every toast of the notification area, which is
+28rem wide -- centred on the text block; with a one-line text the label stands
+on the title line, with the icon and the close. Narrower, or with two
+actions, the action stands under the text from its start, at
+`--sf-space-1/2` (12, phone 8), and the space under it equals the space above
+the capitals of the first line (C114 (5), NS-10). A toast with an action is a
+size query container (`container: sf-toast`). A title-only toast with one
+action is 58 at 1440 (46 on a phone); it was 98 (78).
+
+The modifier `.sf-toast--actions-under` (1.3.0, owner 2026-11-13,
+#q-layout-override; on `sf-toast` the setting `actions-layout="under"`; for
+the class toast `SF.Toast.create({actionsLayout: 'under'})`) keeps the action under the
+text at every width, with the same gap and the even bottom, for a long text.
+
+The action's label under the pointer in the dark theme (1.3.0, C113
+follow-up): a toast is a popup place, lighter than the page in the dark theme,
+and the neutral tonal and ghost plates step up the fill family over it
+(12 / 16 / 20 %, C113). The label the buttons keep under the pointer in the
+dark theme, `--sf-on-surface`, read 4.38:1 hovered and 4.01:1 pressed on a
+neutral toast (4.43-4.72 pressed on the levels). On a toast the label and its
+icon take the ink family's full step under the pointer, `--sf-alpha-base`
+(white in the dark theme), so the plates keep C113's steps and the label holds
+4.5:1 in every state and level (tonal 5.64-6.71 hovered, 5.16-6.08 pressed;
+ghost 5.65-8.06 and 5.17-7.77); the light theme keeps the buttons' stepped
+inks (`--sf-on-surface-hover` / `-active`).
 
 ## Ink (1.2.1, C35 acceptance F1)
 
@@ -62,22 +104,41 @@ takes the place, size and colour of `.sf-toast > .sf-icon`, and
 `.sf-toast > sf-icon:not(:defined)` holds the same box before the element is
 defined. Class markup keeps `<i class="sf-icon">`.
 
-## Actions (1.3.0, owner decision C50)
+## Actions (1.4.0, owner decisions C50 and C126)
 
-One light navigation action («Открыть», «Посмотреть», «Подробнее») is a link at
-the end of the text: `SF.Toast.create({link: {text, href, action}})` draws
-`<a class="sf-toast-link" data-action>` after the supporting text, in the
-text's own ink, medium weight and underlined, with the Framework focus ring.
-Undo, retry, extend and two actions are buttons under the text (C35, C46):
-`actions: [{text, action}, {text, action}]` (at most two; `actionText` and
-`action` remain the one-button form). A toast never mixes the two: a link takes
-the place of the buttons. A link without `href` gets `#`, and its click does not
-jump: the page answers `sf-toast-action`.
+Every action is a button (owner decision C126 (1)). One light navigation
+action («Открыть», «Посмотреть», «Подробнее») is the one action button drawn as
+a link: `SF.Toast.create({link: {text, href, action}})` draws
+`<a class="sf-button sf-button--tonal ..." href data-action>` in the action's
+place (C115), the same tonal low button as `actionText`. Undo, retry, extend
+and two actions are buttons too (C35, C46): `actions: [{text, action}, {text,
+action}]` (at most two; `actionText` and `action` remain the one-button form).
+With `link` the other actions do not apply. A link without `href` gets `#`,
+and its click does not jump: the page answers `sf-toast-action`. Before 1.4.0
+the light action was `a.sf-toast-link` at the end of the text (C50); that link
+and its no-break space are gone.
 
 `SF.Toast.pause(toast, reason)` and `SF.Toast.resume(toast, reason)` stand and
 restart a toast's timer for a reason of the page's own; the timer runs only
 while no reason (pointer, focus or the page's) holds it, and resuming a reason
 that was not standing changes nothing.
+
+## Help link (1.3.2, owner decision C126)
+
+A link inside `.sf-toast-wrap` leads to help only («Узнать больше»); every
+action is a button. Any `a[href]` in the text takes the text's own ink
+(`--sf-toast-color`, else the level's on-container role or on-surface), not
+`--sf-link`; it is underlined at `--sf-link--underline-weight` with `--sf-a3`
+offset, the line doubles on hover and press, and the keyboard ring is the same
+ink, 3:1 and more against every level's fill in both themes. The rule is
+shared by the notice family (core `mix/_mix__notice-link.scss`). A toast that
+leaves by itself must not carry the only way to its help: keep such a toast
+until it is closed (`duration` 0).
+
+```html
+<div class="sf-toast-supporting-text">Её можно отправить коллегам.
+  <a href="/help/sharing">Узнать больше</a></div>
+```
 
 ## Accessibility and ownership
 
@@ -98,9 +159,10 @@ const handle = SF.notify({
   status: 'success',          // neutral | info | success | warning | error
   title: 'Пополнение выполнено',
   text: 'Средства будут зачислены в течение минуты.',
-  action: {label: 'Открыть', href: '/billing'},           // optional: a link
+  action: {label: 'Открыть', href: '/billing'},           // optional: a link button
   // actions: [{label: 'Отменить', onSelect: (record) => {}}],  // or buttons
   duration: 5000,             // ms; 0 keeps it until closed; by status if omitted
+                              // (error and warning always stay until closed)
   source: 'billing',          // who raised it, for a notification centre
   key: 'topup:42',            // optional: messages with one key count up
 });
@@ -129,10 +191,13 @@ call returns `null` and warns in the console.
   reduced motion nothing moves, it only changes. There is no «ещё N».
   `SF.notifications.configure({layout: 'list'})` keeps the list of earlier
   pairs: every message whole with a gap.
-- An action is `action: {label, href}` for one light navigation action, drawn
-  as a link at the end of the text; `action: {label, onSelect}` or
-  `actions: [one, two]` are buttons under the text. `onSelect(record)` runs on
+- An action is a button (C126): `action: {label, href}` for one light
+  navigation action is the action button drawn as a link; `action: {label,
+  onSelect}` or `actions: [one, two]` are buttons. `onSelect(record)` runs on
   either, and the message closes.
+- Neutral, info and success leave after 5 s by default. An error and a warning
+  stay until a person closes them (owner decision C114 (6)); they left after
+  10 s and 8 s before.
 - A timer pauses while the pointer or the focus is on its toast, and every
   timer stands while the page is out of sight (another tab, a minimised
   window) and resumes with the time it had left.
@@ -169,6 +234,7 @@ status colour does: an icon button inside the toast keeps its own glyph size
 
 - The link keeps to the last word of the text it ends: a no-break space stands
   before it, so a full line no longer sends it alone onto a line of its own.
+  (Gone in 1.4.0: the light action is a button, C126.)
 - SF.notify (core.runtime 1.55.0): messages raised together while the toast
   sheet is still loading wait for it together, hidden, and then each slides
   in from the edge. Before, two messages of one task did not wait: they were
@@ -177,3 +243,12 @@ status colour does: an icon button inside the toast keeps its own glyph size
   `position: fixed`, which an open popover has from the browser's own style.
   The first message no longer waits for a stylesheet link that is switched
   off or answered with an error.
+
+## Version notes (1.4.0, group build 3)
+
+- 1.4.0 joins the integration's C50 actions (1.3.1) and the notices family's
+  C114 / C115 / C126 / C105 work (written as 1.3.0, 1.3.2 and 1.3.3 on
+  fix/notices-c114-c115). Where they overlap the newer decisions win: the light
+  action is a button-link (C126 (1)), errors and warnings stay (C114 (6)), the
+  action stands in the C115 place. C50's two actions, `data-action`, the timer
+  pause and the SF.notify stack are kept.

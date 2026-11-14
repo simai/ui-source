@@ -31,7 +31,17 @@ export function renderCopyButtonTemplate(context) {
   // its status, so a host styling the button reaches it.
   return html`
     <span class=${['sf-copy-button', 'sf-tooltip-anchor', `sf-copy-button--${context.phase}`, context.rootClass].filter(Boolean).join(' ')}>
-      ${context.text
+      ${context.inField && !context.text
+        // Inside a field (owner decision C123): the field layer's action, a
+        // glyph without a plate the size of the field's leading icon, its
+        // hit area the field's height; the field's step, not the button's
+        // size, sets it. The name tooltip and the result stay as they are.
+        ? html`<button type="button" class="sf-field-action sf-copy-button-action"
+                 aria-label=${context.name} data-tooltip=${context.nameTooltipId}
+                 style=${context.rootStyle || nothing}
+                 aria-disabled=${context.phase === 'pending' ? 'true' : nothing}
+                 @click=${() => context.component.copy()}><sf-icon icon=${icon} aria-hidden="true"></sf-icon></button>`
+        : context.text
         ? html`<sf-button size=${common.size} appearance=${common.appearance} scheme=${common.scheme}
                  icon-start=${icon} text=${context.text} aria-label=${context.name}
                  root-style=${context.rootStyle || nothing}

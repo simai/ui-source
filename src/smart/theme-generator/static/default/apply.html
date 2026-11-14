@@ -3,20 +3,15 @@
 <div role="group" class="sf-theme-generator sf-theme-generator--size-1" aria-label="Генератор темы" data-sf-static>
 <div class="sf-theme-generator-choice">
 <div class="sf-theme-generator-color">
-<sf-input-color size="1" label="Основной цвет" value="#6a1b9a" inherited-value="#005bbe" inherited-text="цвет SIMAI Framework" style="display: contents;" data-sf-size-relative>
+<sf-input-color palette="false" size="1" label="Основной цвет" value="#6a1b9a" inherited-value="#005bbe" inherited-text="цвет SIMAI Framework" style="display: contents;" data-sf-size-relative>
 <div class="sf-color-field sf-color-field--size-1" data-sf-static>
 <span class="sf-color-label" aria-hidden="true">Основной цвет</span>
-
-<div class="sf-color sf-color--bordered sf-color--size-1" data-set="true">
-<label class="sf-color-swatch" title="Выбрать цвет">
-<span class="sf-color-chip" aria-hidden="true" style="--sf-color-chip: #6a1b9a"></span>
-<input type="color" class="sf-color-input" aria-label="Основной цвет">
-</label>
-
-<span class="sf-color-text">
-<code>#6a1b9a</code>
-</span>
-
+<div class="sf-color sf-color--bordered sf-color--size-1" data-set="true" data-open="false">
+<div class="sf-color-frame">
+<button type="button" class="sf-color-trigger" aria-haspopup="dialog" title="Выбрать цвет" aria-expanded="false" aria-label="Основной цвет: #6a1b9a">
+<span aria-hidden="true" class="sf-color-chip" style="--sf-color-fill: #6a1b9a; --sf-color-solid: #6a1b9a"></span>
+<span class="sf-color-text"><code>#6a1b9a</code></span>
+</button>
 
 <span class="sf-field-inherited-slot sf-field-inherited-slot--size-1 flex items-cross-center sf-color-inherited-slot">
 <span data-inherited-marker aria-hidden="true" class="sf-field-inherited sf-field-inherited--size-1/2" hidden></span>
@@ -24,7 +19,11 @@
 </span>
 
 
+<sf-icon root-class="sf-color-chevron" aria-hidden="true" icon="keyboard_arrow_down" style="display: contents;"><i class="sf-icon sf-icon--weight-regular sf-color-chevron" style="--sf-icon--grade:0;--sf-icon--optical-size:24" aria-hidden="true" data-sf-static>keyboard_arrow_down</i></sf-icon>
 </div>
+
+</div>
+
 
 </div>
 </sf-input-color>
@@ -65,6 +64,10 @@
 
 
 
+
+
+
+
 </span>
 <span class="sf-input-hint-text-wrap" id="sf-theme-generator-apply-3" data-field-message="hint">От 0 до 360</span>
 </label>
@@ -91,12 +94,19 @@
 
 
 
+
+
+
+
 </span>
 <span class="sf-input-hint-text-wrap" id="sf-theme-generator-apply-6" data-field-message="hint">От 0 до 150</span>
 </label>
 </sf-input>
 </div>
 </details>
+<div class="sf-theme-generator-checks" role="status" aria-label="Проверка цвета" data-count="0">
+
+</div>
 <section class="sf-theme-generator-preview" aria-label="Предпросмотр темы">
 
 <div class="sf-theme-generator-row" data-palette="primary">

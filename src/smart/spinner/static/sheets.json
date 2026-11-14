@@ -24,6 +24,10 @@
       "utility/position/default/css/default.min.css",
       "utility/stroke-color/default/css/default.min.css"
     ],
+    "label-hidden": [
+      "component/spinner/css/spinner.min.css",
+      "core/css/core.css"
+    ],
     "no-words": [
       "component/spinner/css/spinner.min.css",
       "core/css/core.css",

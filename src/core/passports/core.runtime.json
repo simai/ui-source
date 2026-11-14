@@ -128,6 +128,7 @@
     "src/core/js/control-spacing.js",
     "src/core/js/copy-feedback.js",
     "src/core/js/core-modules.js",
+    "src/core/js/css-url.js",
     "src/core/js/density.js",
     "src/core/js/deprecations.js",
     "src/core/js/early-port.js",
@@ -223,7 +224,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "5b538c1651452bcfd15e84ec00731af643b8cbd56f40d0ecb6219b8e1d89c7eb",
+  "content_sha256": "60647746129bd3dd239f00d47d0efa53400ca996cf68a7f6b62c1a17445ee395",
   "dependencies": [
     {
       "id": "core.styles",

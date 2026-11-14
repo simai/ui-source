@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button-icon",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "title": "Icon Buttons",
   "summary": "Native icon-only action with token geometry, accessible naming and shared loading semantics.",
   "kind": "smart",
@@ -83,7 +83,7 @@
       "appearance": {
         "type": "string",
         "default": "default",
-        "description": "How the icon button looks, one ladder from the strongest (rule C15): default (filled), tonal, outline, ghost (no fill or edge until a pointer or the keyboard reaches it). link is ghost's former name; surface was retired and is drawn as tonal with the on-surface scheme.",
+        "description": "How the icon button looks, one ladder from the strongest (rule C15): default (filled), tonal, outline, ghost (no fill or edge until a pointer or the keyboard reaches it). link is ghost's former name; surface was retired and is drawn as tonal with the on-surface scheme. A danger icon button is default, outline or ghost (rule C116): tonal and surface with status danger draw as outline until 2027-01-01, with one console warning.",
         "enum": [
           "default",
           "tonal",
@@ -104,7 +104,7 @@
       "status": {
         "type": "string",
         "default": "",
-        "description": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control.",
+        "description": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control. danger is the only status of an icon button (rule C116): there are no success, warning or info icon buttons; another word draws no status and warns once per page.",
         "enum": [
           "",
           "danger"
@@ -635,7 +635,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button-icon/index.js",
-        "sha256": "54a234165596ada823bcd3bcc5a1c8872b57845670fdf5eb87042f93023eb063"
+        "sha256": "13a0c1266140702609c83345315991ef6ce1980469c048e0f807ae7e85d6a4e7"
       }
     ],
     "generated_runtime": [

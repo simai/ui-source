@@ -38,8 +38,10 @@
     flex: none;
   }
 
+  /* The low height of size 1/3: 24 on a desktop, 20 on a phone (docs
+     precheck FI-04; the fixed --sf-space-1/4 kept 24 on a phone too). */
   .sf-featured-icon--size-1\/3 {
-    --sf-featured-icon--padding: var(--sf-space-1\/4);
+    --sf-featured-icon--padding: var(--sf-ui-1\/3--space-y-tightness-low);
     --sf-featured-icon--icon-size: var(--sf-text-height-1\/3);
     --sf-featured-icon--square-radius: var(--sf-radius-1\/2);
   }
@@ -84,13 +86,17 @@
     --sf-featured-icon--on-container: var(--sf-on-primary-container);
   }
 
+  /* The grey circle (soft and medium on the neutral tone) draws its glyph in
+     the explanation's ink, on-surface-variant: a decorative icon does not
+     outweigh the heading beside it (owner decision C120, #q-glyph). Every
+     grey circle of the Framework takes it here. */
   .sf-featured-icon--neutral,
   .sf-featured-icon--clear {
     --sf-featured-icon--tone: var(--sf-on-surface);
     --sf-featured-icon--container: var(--sf-surface-container);
     --sf-featured-icon--container-strong: var(--sf-surface-container-hover);
     --sf-featured-icon--on-tone: var(--sf-on-surface-inverse);
-    --sf-featured-icon--on-container: var(--sf-on-surface);
+    --sf-featured-icon--on-container: var(--sf-on-surface-variant);
   }
 
   .sf-featured-icon--info {

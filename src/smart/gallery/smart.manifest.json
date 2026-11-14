@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.gallery",
-  "version": "1.1.12",
+  "version": "1.2.1",
   "title": "Gallery",
   "summary": "An ordered media collection shown in an inline Slider, with an optional Modal lightbox holding a second Slider. The gallery owns the one-based current slide and keeps both views on it.",
   "kind": "smart",
@@ -47,110 +47,136 @@
       },
       "modal-id": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Passed to the lightbox's sf-modal: the window's id, which data-sf-modal-close and data-sf-modal-hide controls name. Empty: a path id."
       },
       "heading": {
-        "type": "string"
+        "type": "string",
+        "description": "Passed to the lightbox's sf-modal: the window's title in its header. Empty: «Галерея» on a Russian page, «Gallery» on an English one."
       },
       "text": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Passed to the lightbox's sf-modal: plain text in the window's body when there is no slide."
       },
       "inline": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Shows the slides on the page (true, the default). false with lightbox shows them only in the full-screen window."
       },
       "lightbox": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Opens a slide in a full-screen window (an sf-modal) when it is pressed (true, the default)."
       },
       "arrows": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Passed to the gallery's sliders (sf-slider): draws the previous and next arrows."
       },
       "dots": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "Passed to the gallery's sliders (sf-slider): draws the dots under the slides (off by default: the thumbnails show the place)."
       },
       "thumbs": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Passed to the gallery's sliders (sf-slider): draws the row of thumbnails under the slides (on by default)."
       },
       "loop": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "Passed to the gallery's sliders (sf-slider): the last slide is followed by the first."
       },
       "space-between": {
         "type": "number",
-        "default": 12
+        "description": "Passed to the gallery's sliders (sf-slider): the gap between slides in pixels. Unset (the default), the slider's own gap, the --sf-space-1 step (16 on a desktop, 12 on a phone)."
       },
       "speed": {
         "type": "number",
-        "default": 450
+        "default": 450,
+        "description": "Passed to the gallery's sliders (sf-slider): the length of a slide's move, in milliseconds."
       },
       "button-type": {
         "type": "string",
-        "default": "primary"
+        "default": "primary",
+        "description": "Passed to the gallery's sliders (sf-slider): the arrow buttons' colour scheme, an sf-button-icon scheme."
       },
       "button-size": {
         "type": "string",
-        "default": "1"
+        "default": "1",
+        "description": "Passed to the gallery's sliders (sf-slider): the arrow buttons' size step."
       },
       "dots-type": {
         "type": "string",
-        "default": "primary-dark"
+        "default": "primary-container",
+        "description": "Passed to the gallery's sliders (sf-slider): The dots' plate by its colour role: primary-container (the default; a primary-container plate with on-primary-container dots), primary (a primary plate with on-primary dots), surface-container (a raised neutral plate with on-surface dots), surface-inverse (an inverse plate with on-surface-inverse dots). Former words, dated aliases until 2027-01-01: primary-dark is primary-container, primary-light is primary, light and clear are surface-container, dark is surface-inverse."
       },
       "dots-size": {
         "type": "string",
-        "default": "2"
+        "default": "2",
+        "description": "Passed to the gallery's sliders (sf-slider): the dots' size step."
       },
       "thumbs-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Passed to the gallery's sliders (sf-slider): classes on the thumbnails row."
       },
       "thumb-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Passed to the gallery's sliders (sf-slider): classes on each thumbnail."
       },
       "slide-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Passed to the gallery's sliders (sf-slider): classes on each slide."
       },
       "inline-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes on the slider shown on the page."
       },
       "lightbox-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Classes on the slider in the full-screen window."
       },
       "overlay": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Passed to the lightbox's sf-modal: draws the scrim behind the window."
       },
       "show-header": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Passed to the lightbox's sf-modal: draws the window's header with the heading and its buttons."
       },
       "show-close": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Passed to the lightbox's sf-modal: draws the close button in the header."
       },
       "close-on-esc": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Passed to the lightbox's sf-modal: Escape closes the window."
       },
       "close-on-overlay": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Passed to the lightbox's sf-modal: a press on the scrim closes the window."
       },
       "preserve-scroll-gap": {
         "type": "boolean",
-        "default": true
+        "default": true,
+        "description": "Passed to the lightbox's sf-modal: while the page is locked, keeps the scrollbar's width so the page does not shift."
       },
       "position": {
         "type": "string",
         "default": "center",
+        "description": "Passed to the lightbox's sf-modal: where the window stands: center, or a side panel at left, right, top or bottom.",
         "enum": [
           "center",
           "left",
@@ -161,23 +187,28 @@
       },
       "fullscreen": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "Passed to the lightbox's sf-modal: the window takes the whole viewport."
       },
       "width": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Passed to the lightbox's sf-modal: the window's width, a CSS length."
       },
       "height": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Passed to the lightbox's sf-modal: the window's height, a CSS length."
       },
       "backdrop-blur": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "Passed to the lightbox's sf-modal: blurs the page behind the scrim, by blur-type."
       },
       "blur-type": {
         "type": "string",
         "default": "medium",
+        "description": "Passed to the lightbox's sf-modal: the blur's strength: none, small, medium (the default) or large.",
         "enum": [
           "none",
           "small",
@@ -187,47 +218,58 @@
       },
       "overlay-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Passed to the lightbox's sf-modal: classes on the scrim."
       },
       "close-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Passed to the lightbox's sf-modal: classes on the close button."
       },
       "surface-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Passed to the lightbox's sf-modal: classes on the window's surface."
       },
       "surface-padding": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Passed to the lightbox's sf-modal: the surface's padding, a CSS length."
       },
       "panel-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Passed to the lightbox's sf-modal: classes on the panel that holds the surface."
       },
       "header-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Passed to the lightbox's sf-modal: classes on the header."
       },
       "body-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Passed to the lightbox's sf-modal: classes on the body's scrolling area."
       },
       "content-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Passed to the lightbox's sf-modal: classes on the wrapper of the slides."
       },
       "footer-class": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "Passed to the lightbox's sf-modal: classes on the footer."
       },
       "open": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "The lightbox is open: setting it opens the sf-modal at the current slide, removing it closes the window."
       },
       "current": {
         "type": "integer",
         "default": 1,
+        "description": "The one-based slide the inline slider and the lightbox show; the gallery writes it back as the visitor moves, kept within 1 and the number of slides.",
         "minimum": 1
       },
       "title": {
@@ -620,7 +662,13 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
+    "aliases": [
+      "dots-type=primary-dark",
+      "dots-type=primary-light",
+      "dots-type=light",
+      "dots-type=clear",
+      "dots-type=dark"
+    ],
     "deprecations": [],
     "replacement": null,
     "migrations": []

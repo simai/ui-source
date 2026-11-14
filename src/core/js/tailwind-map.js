@@ -3,7 +3,9 @@
 // enough -- an author's own class pr-row, mt-section, right-panel or
 // grid-cols-wrap is a name, not a utility, and it stays as written (DEV,
 // dropdown-panels study R193: pr-row became p-inline-end-row at load).
-const SIZE = String.raw`(?:\d+(?:\.\d+)?|\d+\/\d+|px|\[[^\]\s]+\])`;
+// The size ladder a0..i9 is a value too (pt-a5, -left-b2, mr-i9): the
+// documentation names it, and the built sheets ship it for every side family.
+const SIZE = String.raw`(?:\d+(?:\.\d+)?|\d+\/\d+|[a-i]\d|px|\[[^\]\s]+\])`;
 const PADDING_VALUE = new RegExp(`^${SIZE}$`);
 const MARGIN_VALUE = new RegExp(`^(?:${SIZE}|auto)$`);
 const POSITION_VALUE = new RegExp(`^(?:${SIZE}|auto|full)$`);
@@ -383,7 +385,9 @@ export function mapTailwindBaseClass(className) {
   const positionMatch = base.match(/^(left|right)-(.+)$/);
   if (positionMatch && POSITION_VALUE.test(positionMatch[2])) {
     const side = positionMatch[1] === 'left' ? 'inline-start' : 'inline-end';
-    return `${side}-${positionMatch[2]}`;
+    // A negative offset keeps its sign: -left-b2 is the documented
+    // left: calc(0rem - var(--sf-b2)), shipped as -inline-start-b2.
+    return `${negative}${side}-${positionMatch[2]}`;
   }
 
   return null;

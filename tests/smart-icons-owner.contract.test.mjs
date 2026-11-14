@@ -24,8 +24,13 @@ test('Smart Icons exposes the source font families and axes', async () => {
   const aliases = JSON.parse(await read('src/smart/icon/aliases.json'));
   assert.match(source, /"outlined", "rounded", "sharp"/);
   assert.deepEqual(manifest.settings.type.values, ['', 'outlined', 'rounded', 'sharp']);
-  assert.deepEqual(manifest.settings.grade, {type: 'number', integer: true, min: -50, max: 200, default: 0});
-  assert.deepEqual(manifest.settings['optical-size'], {type: 'number', min: 20, max: 48, default: 24});
+  // Each axis also has its summary (docs precheck smart content SC-S02).
+  const {summary: gradeSummary, ...grade} = manifest.settings.grade;
+  const {summary: opticalSummary, ...optical} = manifest.settings['optical-size'];
+  assert.deepEqual(grade, {type: 'number', integer: true, min: -50, max: 200, default: 0});
+  assert.deepEqual(optical, {type: 'number', min: 20, max: 48, default: 24});
+  assert.match(gradeSummary, /GRAD/);
+  assert.match(opticalSummary, /opsz/);
   assert.ok(aliases.aliases.some((row) => row.kind === 'value' && row.setting === 'type' && row.from === 'shape' && row.to === 'sharp'));
   assert.match(source, /type === "shape" \? "sharp" : type/);
   assert.match(template, /--sf-icon--grade/);

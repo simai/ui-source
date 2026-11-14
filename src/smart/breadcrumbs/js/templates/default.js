@@ -103,10 +103,13 @@ function renderItem(item, context) {
     `;
   }
 
+  // A disabled item is plain text that says so (docs precheck BC-01): it was
+  // a div without aria-disabled, drawn in the link colour.
   return html`
     <div
       class=${common.className}
       aria-current=${common.ariaCurrent}
+      aria-disabled=${item.disabled ? 'true' : nothing}
       aria-label=${common.ariaLabel}
       data-sf-breadcrumb-index=${common.dataIndex}
       @click=${(event) => context.component?.handleItemClick?.(event, item)}
@@ -163,12 +166,18 @@ function renderSeparator(context, index) {
 // for Fluent, USWDS, GOV.UK and Carbon. One entry per crumb, its separator
 // before it. The sheet draws the row itself, with no utility class (BC-07).
 // The name is the host's aria-label or the language file's word (BC-10: no
-// English literal of its own).
+// English literal of its own). The row never wraps; a trail opened in place
+// (every crumb asked for) is marked expanded and may.
 export function renderBreadcrumbsTemplate(context) {
   const rootClasses = joinClasses('sf-breadcrumbs', context.rootClass);
 
   return html`
-    <nav class=${rootClasses} style=${context.rootStyle || nothing} aria-label=${context.ariaLabel || nothing}>
+    <nav
+      class=${rootClasses}
+      style=${context.rootStyle || nothing}
+      aria-label=${context.ariaLabel || nothing}
+      data-sf-breadcrumbs-expanded=${context.expanded ? 'true' : nothing}
+    >
       <ol>
         ${context.items.map((item, index) => html`
           <li>

@@ -232,9 +232,10 @@ test('the appearances are part of the public API, and documented', () => {
   // has one source. If the two ever drift, Studio and the runtime would disagree
   // about what exists. Since decision C15 (sf-button 1.9.0, sf-button-icon
   // 1.6.0) ghost is the quiet appearance and link its dated alias; the icon
-  // button retired surface (drawn as tonal on-surface), the button keeps it.
+  // button retired surface (drawn as tonal on-surface), and since decision C116
+  // (sf-button 1.14.0) the button too: a former name drawn as tonal on-surface.
   const expected = {
-    button: ['default', 'tonal', 'outline', 'ghost', 'surface'],
+    button: ['default', 'tonal', 'outline', 'ghost'],
     'button-icon': ['default', 'tonal', 'outline', 'ghost'],
   };
   for (const [component, values] of Object.entries(expected)) {
@@ -245,15 +246,17 @@ test('the appearances are part of the public API, and documented', () => {
     const docs = read(`src/smart/${component}/docs/docs.md`);
     assert.ok(docs.includes(`appearance="${values.join('|')}"`), `${component}: the docs name the list`);
   }
-  assert.match(read('src/smart/button/docs/docs.md'), /alpha ramp/u, 'sf-button says what surface is built on');
+  assert.match(read('src/smart/button/docs/docs.md'), /`surface` is a former name until 2027-01-01/u, 'sf-button says surface is a former name (C116)');
   for (const component of ['button', 'button-icon']) {
     assert.ok(JSON.parse(read(`src/smart/${component}/smart.manifest.json`)).compatibility.aliases.includes('appearance=link'), component);
   }
 
   // On a tag the appearance is its own axis, because `type` there says what the
   // tag carries or reports, not how it looks.
+  // sf-tag 1.4.0 (docs precheck 2026-11-10): `surface` drew an outline, so the
+  // current name is `outline`; `surface` stays a dated alias until 2027-01-01.
   const tag = JSON.parse(read('src/smart/tag/smart.manifest.json'));
-  assert.deepEqual(tag.inputs.properties.appearance.enum, ['default', 'surface', 'ghost']);
+  assert.deepEqual(tag.inputs.properties.appearance.enum, ['default', 'outline', 'ghost', 'surface']);
   assert.ok(
     !tag.inputs.properties.type.enum.includes('surface'),
     'the tag type stays what it was: an appearance is not a content shape',
@@ -261,11 +264,11 @@ test('the appearances are part of the public API, and documented', () => {
   const runtime = read('src/smart/tag/index.js');
   // The setting is made from component.json (core/js/element-manifest.js).
   assert.match(runtime, /elementFromManifest\(manifest/u);
-  assert.deepEqual(JSON.parse(read('src/smart/tag/component.json')).settings.appearance.values, ['default', 'surface', 'ghost']);
+  assert.deepEqual(JSON.parse(read('src/smart/tag/component.json')).settings.appearance.values, ['default', 'outline', 'ghost', 'surface']);
   const template = read('src/smart/tag/js/templates/default.js');
   assert.match(template, /sf-tag--appearance-\$\{context\.appearance\}/u, 'and it reaches the class list');
   const docs = read('src/smart/tag/docs/docs.md');
-  assert.match(docs, /appearance="default\|surface\|ghost"/u);
+  assert.match(docs, /appearance="default\|outline\|ghost"/u);
   assert.match(docs, /alpha ramp/u);
 });
 

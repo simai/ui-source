@@ -111,7 +111,7 @@
   }
 
   // The rail shows the icon alone; the status stays in the link's name.
-  .sf-menu.sf-menu--compact .sf-menu-element-wrap > .sf-dot {
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-wrap > .sf-dot {
     display: none;
   }
 

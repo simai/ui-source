@@ -1,4 +1,9 @@
 @layer sf.components {
+/* The media box keeps the card's ratio, photo or not: set on the img alone,
+   a card without a photo drew a box 0 px tall (192 x 0, owner remark R212),
+   and the box now stands at its size before the photo arrives. */
+.sf-avatar-card.sf-avatar-card--square .sf-avatar-card-image,
+.sf-avatar-card.sf-avatar-card-square .sf-avatar-card-image,
 .sf-avatar-card.sf-avatar-card--square img,
 .sf-avatar-card.sf-avatar-card-square img {
   aspect-ratio: 1 / 1;
@@ -8,6 +13,8 @@
   max-height: 100%;
   object-fit: cover;
 }
+.sf-avatar-card.sf-avatar-card--portrait .sf-avatar-card-image,
+.sf-avatar-card.sf-avatar-card-portrait .sf-avatar-card-image,
 .sf-avatar-card.sf-avatar-card--portrait img,
 .sf-avatar-card.sf-avatar-card-portrait img {
   aspect-ratio: 9 / 16;

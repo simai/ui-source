@@ -9,7 +9,6 @@
   --sf-accordion--border-color: var(--sf-accordion-border-color, var(--sf-outline-variant));
   --sf-accordion--background-color: var(--sf-accordion-background-color, var(--sf-surface-container));
   --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  --sf-accordion--trigger-padding-block: var(--sf-space-2);
   --sf-accordion--trigger-padding-inline: var(--sf-space-3);
   --sf-accordion--content-padding: var(--sf-space-3);
   /* Text, icon and the trigger's least height. Declared on every accordion, so
@@ -17,7 +16,13 @@
   --sf-accordion--text-size: var(--sf-text--size);
   --sf-accordion--text-height: var(--sf-text--height);
   --sf-accordion--icon-size: var(--sf-text-height-1);
-  --sf-accordion--trigger-min-block-size: auto;
+  /* The roomy default header is the top step of the height ladder, the
+     control height of size 3: 56 on a desktop, 52 on a phone. It was the
+     line plus --sf-space-2 above and below, 64 and 52: 64 is no desktop step
+     (C18, docs precheck AC-01). The block padding centres the line in it, so
+     a title that wraps grows the header by whole lines. */
+  --sf-accordion--trigger-min-block-size: var(--sf-ui-3--control-height);
+  --sf-accordion--trigger-padding-block: max(calc(var(--sf-px) * 0), calc((var(--sf-ui-3--control-height) - var(--sf-accordion--text-height)) / 2));
 
   border-end-end-radius: var(--sf-accordion--radius);
   border-end-start-radius: var(--sf-accordion--radius);
@@ -86,7 +91,13 @@
   --sf-accordion--icon-size: var(--sf-text-height-3);
 }
 
+/* The frame stands inside the header's height (docs precheck smart content
+   AC-02): the outline's two edges and the flush divider are taken from the
+   header, so every look's closed section is the size's control height -- the
+   outline was 2 px taller, the flush 1 px. */
 .sf-accordion.sf-accordion--outline {
+  --sf-accordion--frame-block: calc(var(--sf-accordion--border-width) * 2);
+
   border: var(--sf-accordion--border-width) solid
     var(--sf-accordion--border-color);
   background-color: transparent;
@@ -94,6 +105,7 @@
 
 .sf-accordion.sf-accordion--flush {
   --sf-accordion--radius: var(--sf-radius-square);
+  --sf-accordion--frame-block: var(--sf-accordion--border-width);
 
   border-block-end: var(--sf-accordion--border-width) solid
     var(--sf-accordion--border-color);
@@ -112,8 +124,8 @@
   gap: var(--sf-space-1);
   width: 100%;
   margin: 0;
-  min-block-size: var(--sf-accordion--trigger-min-block-size);
-  padding: var(--sf-accordion--trigger-padding-block)
+  min-block-size: calc(var(--sf-accordion--trigger-min-block-size) - var(--sf-accordion--frame-block, calc(var(--sf-px) * 0)));
+  padding: max(calc(var(--sf-px) * 0), calc(var(--sf-accordion--trigger-padding-block) - var(--sf-accordion--frame-block, calc(var(--sf-px) * 0)) / 2))
     var(--sf-accordion--trigger-padding-inline);
   border: 0;
   box-sizing: border-box;
@@ -121,6 +133,11 @@
   color: var(--sf-accordion-title--color, var(--sf-accordion-title-color, var(--sf-on-surface)));
   background-color: transparent;
   font: inherit;
+  /* The row sits on the accordion's own text line, so parts drawn on the
+     inherited line (a badge with line="text") match the title; a 16/24
+     page line grew the size 1/2 header to 36. */
+  font-size: var(--sf-accordion--text-size);
+  line-height: var(--sf-accordion--text-height);
   text-align: start;
   cursor: pointer;
   transition: background-color var(--sf-duration-fast) var(--sf-animation);

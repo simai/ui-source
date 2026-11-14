@@ -46,6 +46,17 @@
       "remove_after": "2026-12-01",
       "section": "§16 item 20",
       "note": "journal value-tag-quantity-to-default; the number stays in count"
+    },
+    {
+      "from": "surface",
+      "to": "outline",
+      "kind": "value",
+      "setting": "appearance",
+      "component": "sf-tag",
+      "since": "2026-11-10",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "C15 retired surface; journal value-tag-appearance-surface-to-outline"
     }
   ]
 }

@@ -116,7 +116,7 @@ test('the browser colour dialog is gone; the window is the Framework\'s own (C83
 
 test('the manifest declares the window\'s settings and words', () => {
     const manifest = json(`${base}/component.json`);
-    assert.equal(manifest.version, '1.7.0');
+    assert.equal(manifest.version, '1.7.1');
     assert.equal(manifest.settings.palette.default, true);
     assert.equal(manifest.settings.custom.default, true);
     assert.equal(manifest.settings.alpha.default, false);
@@ -128,6 +128,8 @@ test('the sheet: one height in the row (CO-03), three swatch bounds (CO-06), pai
     const sheet = read(`${base}/js/templates/default.css`);
     assert.doesNotMatch(sheet, /\.sf-color-preset/u, 'the product colours left the row for the window');
     assert.match(sheet, /\.sf-color-frame \{[^}]*block-size: var\(--sf-color--control-height\)/u);
+    // The field holds the control's height from the first paint (C83 acceptance 2026-11-13: 40 then 56).
+    assert.match(sheet, /\.sf-color-field > \.sf-color \{\s*min-block-size: var\(--sf-color--control-height\);/u);
     assert.match(sheet, /\.sf-color--outlined \.sf-color-chip \{\s*border-color: var\(--sf-outline\)/u);
     assert.match(sheet, /\.sf-color--plain \.sf-color-chip \{\s*border-width: 0/u);
     assert.match(sheet, /\.sf-color-chip \{[^}]*background-clip: padding-box/u);

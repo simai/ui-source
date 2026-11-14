@@ -72,6 +72,11 @@
       "utility/display/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
     ],
+    "size-3": [
+      "component/progress-ring/css/progress-ring.min.css",
+      "core/css/core.css",
+      "utility/display/default/css/default.min.css"
+    ],
     "status": [
       "component/progress-ring/css/progress-ring.min.css",
       "core/css/core.css",

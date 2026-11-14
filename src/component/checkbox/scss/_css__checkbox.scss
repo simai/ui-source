@@ -1,6 +1,12 @@
 @layer sf.components {
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
   .sf-checkbox {
+    /* One clock for the box and the tick, the switch's (owner decisions C66,
+       C121): 200 ms on the move curve. The scale has no 200 ms step (fast 100,
+       normal 300), so it is twice fast until one exists. Internal: a project
+       that wants it otherwise moves this, not three transitions. */
+    --sf-checkbox--duration: calc(var(--sf-duration-fast) * 2);
+    --sf-checkbox--easing: var(--sf-ease-move);
     background-color: var(--sf-checkbox--background-color, transparent);
     gap: var(--sf-checkbox--gap);
   }
@@ -28,9 +34,9 @@
     box-shadow: var(--sf-checkbox-box--box-shadow);
     height: var(--sf-checkbox-box--height);
     width: var(--sf-checkbox-box--width);
-    transition-duration: var(--sf-duration-fast);
+    transition-duration: var(--sf-checkbox--duration);
     transition-property: background-color, border-color, box-shadow, color;
-    transition-timing-function: var(--sf-animation);
+    transition-timing-function: var(--sf-checkbox--easing);
   }
 
   /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
@@ -147,14 +153,16 @@
 
 
 
-  /* The mark is the picture before a label: the label follows it at the size's
-     text step, as an option label follows its picture in a list. */
+  /* The box is the picture before a label: the label follows it at the row
+     gap H2 of C105 (--sf-space-1/2: 12, compact and phone 8) at every size,
+     as the text follows its picture in a list row, so a checkbox lines up
+     with list rows that carry one (dispatcher ruling, R229 X1). */
   .sf-checkbox--size-1\/2 {
-    --sf-checkbox--gap: var(--sf-checkbox-gap, var(--sf-ui-1\/2--text-space-x));
+    --sf-checkbox--gap: var(--sf-checkbox-gap, var(--sf-space-1\/2));
   }
 
   .sf-checkbox--size-1 {
-    --sf-checkbox--gap: var(--sf-checkbox-gap, var(--sf-ui-1--text-space-x));
+    --sf-checkbox--gap: var(--sf-checkbox-gap, var(--sf-space-1\/2));
   }
 
 
@@ -172,7 +180,10 @@
     --sf-checkbox-label--color: var(--sf-on-surface);
   }
 
-  .sf-checkbox:not(.error):has(input:indeterminate):not(:has(input:disabled)) .sf-checkbox-box, .sf-checkbox:not(.error):has(input:checked):not(:has(input:disabled)) .sf-checkbox-box, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active):not(:has(sf-help-mark:active, [slot="help"]:active)) .sf-checkbox-box {
+  .sf-checkbox:not(.error):has(input:indeterminate):not(:has(input:disabled)) .sf-checkbox-box, .sf-checkbox:not(.error):has(input:checked):not(:has(input:disabled)) .sf-checkbox-box {
+    /* Pressing paints nothing (C121, CR-1): the box used to take the checked
+       fill on :active, so it stood blue and empty until the release brought
+       the tick. Fill and tick now change together, after the release. */
     --sf-checkbox-box--background-color: var(--sf-checkbox-checked-background-color, var(--sf-primary));
     --sf-checkbox-box--border-color: var(--sf-checkbox-checked-background-color, var(--sf-primary));
   }
@@ -217,7 +228,7 @@
   }
 
   .sf-checkbox--size-2 {
-    --sf-checkbox--gap: var(--sf-checkbox-gap, var(--sf-ui-2--text-space-x));
+    --sf-checkbox--gap: var(--sf-checkbox-gap, var(--sf-space-1\/2));
   }
 
   .sf-checkbox:not(.error).sf-checkbox--size-2:has(input:indeterminate) > .sf-checkbox-box .sf-icon {
@@ -226,8 +237,7 @@
   }
 
   .sf-checkbox:not(.error):has(input:indeterminate):not(:has(input:disabled)) > .sf-checkbox-box .sf-icon,
-  .sf-checkbox:not(.error):has(input:checked):not(:has(input:disabled)) > .sf-checkbox-box .sf-icon,
-  .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active):not(:has(sf-help-mark:active, [slot="help"]:active)) > .sf-checkbox-box .sf-icon {
+  .sf-checkbox:not(.error):has(input:checked):not(:has(input:disabled)) > .sf-checkbox-box .sf-icon {
     --sf-icon--color: var(--sf-on-primary);
   }
 
@@ -276,7 +286,8 @@
 
 @layer sf.states {
   @media (prefers-reduced-motion: reduce) {
-    .sf-checkbox .sf-checkbox-box {
+    .sf-checkbox .sf-checkbox-box,
+    .sf-checkbox > .sf-checkbox-box .sf-icon {
       transition-duration: 0s;
     }
   }

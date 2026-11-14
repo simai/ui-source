@@ -2,7 +2,7 @@
   "$comment": "The source of sf-skeleton's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/skeleton (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.skeleton",
   "tag": "sf-skeleton",
-  "version": "1.1.3",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "skeleton",
   "settings": {
@@ -155,7 +155,10 @@
     "items: kept as a string of attribute sets (name=value, … | …); only aria-* and data-* attributes reach the bars.",
     "examples: examples.json from studio.fixture.json plus the shapes and the animations; probe.json checks the count, the hidden geometry and the alias.",
     "css-variables: five public variables read by the class sheet with the role token as fallback (src/core/contracts/public-variables.v1.json).",
-    "version 1.1.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+    "version 1.1.1: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
+    "version 1.1.4 (2026-11-10, docs precheck SK-01): a patch. A circle or a square without a width of its own has equal sides, as the icon placeholder has: a given height is both sides, else the line height (with component.skeleton 1.1.1). It took the row's full width before, a long pill, and in a flex row a narrow upright one. Settings, values, events and keys unchanged. Acceptance 2026-11-11 (D2): the setting's default width, 100 %, no longer counts as a width of its own, so <sf-skeleton kind=\"circle\"> is a size-step circle, not a full-row bar; a width the contract ignores (64px) is none either.",
+    "version 1.2.0 (2026-11-13, owner decision C130 (1), (4); component.skeleton 1.2.0): a circle, square or rounded skeleton with no width (other than the default 100 %) and no height is the square box of its step -- the control height at 1/3...3 (32/40/48/56 at 1/2...3: sf-avatar and sf-button of the same size), the text line at 4...7, the bar below 1/3 -- written with no width, and its root does not stretch (no flex-1). Square takes the control radius (was 0), rounded the card radius (was the control radius). The fill comes from one core rule shared with the first-paint bars (--sf-skeleton-base: the place's --sf-surface-container, 12 % with C113) and the pulse is core's sf-placeholder-pulse. Bars at 1/5...1/7 take the line of 1/4 (SK-08). Settings, values, events and keys unchanged.",
+    "version 1.3.0 (2026-11-13, owner decision C136; component.skeleton 1.3.0): a text bar is as tall as the capitals of its text, rounded to an even pixel, and stands in the middle of the line: 8 / 10 / 12 / 14 / 18 / 26 px on 12/16, 14/20, 16/24, 20/28, 24/36, 36/40 (was the text size); one radius, --sf-radius--ui, on every text bar; several lines of text with one width end in a 60 % line (a list of widths is kept). The line and block heights, settings, values and events are unchanged."
   ],
   "x-registry": {
     "capabilities": [

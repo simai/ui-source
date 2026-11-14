@@ -301,6 +301,8 @@ const DRAW = {
   highlight: {css: ['highlight'], js: [], html: '<div class="sf-highlight sf-code-surface"><div class="sf-highlight__head sf--highlight-head"><span class="sf-highlight__language">js</span></div><pre class="sf-code-surface__scroll"><code>let a = 1;</code></pre></div>'},
   card: {css: ['card'], js: [], html: '<div class="sf-card"><h4>Title</h4><p>Text</p></div>'},
   figure: {css: ['figure'], js: [], html: '<figure class="sf-figure sf-figure--ratio-16x9 sf-figure--contain"><div class="sf-figure-media"><svg viewBox="0 0 10 10" aria-hidden="true"><rect width="10" height="10"/></svg></div><figcaption class="sf-figure-caption">Caption</figcaption></figure>'},
+  // A flag still waiting for its file: the placeholder fill shows.
+  flag: {css: ['flag'], js: [], html: '<span class="sf-flag sf-flag--rect" data-country="zz"></span>'},
   procedure: {css: ['procedure'], js: [], html: '<ol class="sf-procedure"><li class="sf-procedure-step"><div class="sf-procedure-title">One</div><div class="sf-procedure-content"><p>Text</p></div></li><li class="sf-procedure-step"><div class="sf-procedure-title">Two</div></li></ol>'},
 };
 
@@ -315,6 +317,8 @@ const ROLES = {
   'border-color': {properties: ['border-top-color', 'border-bottom-color', 'border-inline-start-color', 'border-inline-end-color'], value: 'rgb(7, 8, 9)'},
   // A drop target drawn with an outline (sf-tree-item).
   'outline-color': {properties: ['outline-color'], value: 'rgb(16, 17, 18)'},
+  // A hairline drawn as an outline inside the edge (sf-flag).
+  'outline-width': {properties: ['outline-width'], value: '7px'},
   'border-width': {properties: ['border-top-width', 'border-bottom-width'], value: '7px'},
   radius: {properties: ['border-top-left-radius'], value: '13px'},
   'padding-inline': {properties: ['padding-inline-start', 'padding-left'], value: '17px'},

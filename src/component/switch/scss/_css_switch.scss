@@ -286,18 +286,21 @@
   opacity: 0;
 }
 
-/* The mark is the picture before a label: the label follows it at the size's
-   text step, as an option label follows its picture in a list. */
+/* The track is the picture before a label: the label follows it at the row
+   gap H2 of C105 (--sf-space-1/2: 12, compact and phone 8) at every size and
+   on either side of the track, as the text follows its picture in a list row,
+   so a switch lines up with a checkbox, a radio and list rows (C63: one row
+   rule for the three; dispatcher ruling, R229). */
 .sf-switch--size-1\/2 {
-  --sf-switch--gap: var(--sf-switch-gap, var(--sf-ui-1\/2--text-space-x));
+  --sf-switch--gap: var(--sf-switch-gap, var(--sf-space-1\/2));
 }
 
 .sf-switch--size-1 {
-  --sf-switch--gap: var(--sf-switch-gap, var(--sf-ui-1--text-space-x));
+  --sf-switch--gap: var(--sf-switch-gap, var(--sf-space-1\/2));
 }
 
 .sf-switch--size-2 {
-  --sf-switch--gap: var(--sf-switch-gap, var(--sf-ui-2--text-space-x));
+  --sf-switch--gap: var(--sf-switch-gap, var(--sf-space-1\/2));
 }
 
 .sf-switch:is(.disabled, :has(input:disabled)) .sf-icon:where(:not(sf-help-mark *)) {

@@ -112,9 +112,11 @@ test('quantity: the control is a WAI-ARIA spinbutton and the steppers are named 
   }
   assert.match(box, /inputmode=\$\{context\.precision > 0 \? 'decimal' : 'numeric'\}/u);
   const stepper = template.slice(template.indexOf('<button type="button"'), template.indexOf('</button>'));
-  assert.match(stepper, /tabindex="-1"/u);
-  assert.match(stepper, /aria-label=\$\{down \? context\.decrementLabel : context\.incrementLabel\}/u);
-  assert.match(stepper, /aria-controls=\$\{field\.controlId\}/u);
+  // Out of the tab order; only the trash of the remove mode (C122) is in it.
+  assert.match(stepper, /tabindex=\$\{trash \? '0' : '-1'\}/u);
+  assert.match(stepper, /aria-label=\$\{trash \? context\.removeLabel : down \? context\.decrementLabel : context\.incrementLabel\}/u);
+  assert.match(stepper, /aria-controls=\$\{trash \? nothing : field\.controlId\}/u);
+  assert.match(template, /const trash = down && context\.removeShown;/u);
   assert.match(stepper, /\?disabled=\$\{!context\.interactive \|\| reached\}/u);
   // The words are the class component's, in both languages, in the language
   // files (standard 1.3.8 §11); the labels default to them.
@@ -150,7 +152,7 @@ test('quantity: input and change on the host with one detail shape; the box\'s o
   assert.match(source, /this\.stepBy\(direction, 'button', \{change: false\}\)/u);
   assert.match(source, /stopHold\(\) \{[\s\S]*?this\.commitChange\('button'\);/u);
   // The manifest says the events the source sends, change canonical, in the axes table.
-  assert.deepEqual(Object.keys(manifest.events).sort(), ['change', 'input', 'sf-field-reset', 'sf-field:reset']);
+  assert.deepEqual(Object.keys(manifest.events).sort(), ['change', 'input', 'sf-field-reset', 'sf-field:reset', 'sf-input-quantity-remove', 'sf-quantity-remove']);
   assert.equal(manifest.events.change.canonical, true);
   assert.deepEqual(manifest.events.change.payload, manifest.events.input.payload);
   assert.deepEqual(Object.keys(manifest.events.change.payload.properties), ['value', 'text', 'name', 'source']);

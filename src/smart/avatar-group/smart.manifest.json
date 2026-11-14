@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.avatar-group",
-  "version": "1.2.5",
+  "version": "1.2.8",
   "title": "Avatars",
   "summary": "Ready combinations of avatars: a person with a source, a stacked group with a remainder, an avatar with two lines of label, and a profile avatar with a verified badge. Drawn from sf-avatar's parts; for a single avatar with a name or a card use sf-avatar.",
   "kind": "smart",
@@ -61,55 +61,68 @@
       },
       "image-url": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The picture of the default, user and profile templates."
       },
       "avatar-url": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The picture of the label template."
       },
       "avatar-size": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The avatar's size step in the default and user templates (1/4 ... 3; the former words tiny, small, big and extra_big still read)."
       },
       "check": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "Draws the verified badge on the default template's avatar."
       },
       "name": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The person's name in the user template."
       },
       "source": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The line under the name in the user template, with a link glyph: where the person comes from."
       },
       "label-text": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The title of the label template."
       },
       "label-second-text": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The line under the title in the label template."
       },
       "avatars-more": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The group template's last avatar: a number (drawn +N) or a short text for the people not shown."
       },
       "round-size": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The avatars' size step in the group template (and in the default one when given)."
       },
       "label-size": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The avatar's size step in the label template."
       },
       "profile-size": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The profile template's avatar size step: 2 or 3 (the former words small and big still read)."
       },
       "active": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "Draws the online badge on the default template's avatar; check (verified) wins when both are set."
       },
       "data": {
         "type": "string",

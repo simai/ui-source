@@ -1,0 +1,108 @@
+// An action inside a field (owner decision C123, 2026-11-13; R214; research
+// control/research/2026-11-13-field-icon-actions.md, prototype
+// prototypes/field-icon-actions.html, variant A), written once and used by
+// every field that draws one: sf-input (clear, password reveal), sf-button-copy
+// standing in a field, sf-dropdown's chevron and sf-input-lookup's clear. A
+// sheet that draws such a field includes `rules` once; the field's root says
+// its step through three variables, the ones its leading picture already
+// reads:
+//
+// - --sf-field-action--glyph: the leading icon's size, the field's text line
+//   (--sf-text-height-<S>: 24 / 20 / 28 at sizes 1, 1/2, 2 on a desktop);
+// - --sf-field-action--height: the field's control height;
+// - --sf-field-action--inset: the field's plain inset (C77), where a picture
+//   at either end stands.
+//
+// (1) A glyph without a plate in any state: the quiet ink (on-surface-variant,
+//     C107 (3)) at rest, the text's ink under the pointer and on a press
+//     (C107 (4)); the keyboard ring stands round the glyph, inside the field.
+// (2) The glyph is the leading icon's size and its end stands on the inset,
+//     as the leading icon's start does.
+// (3) The hit area is invisible: the field's inner height (its control height
+//     less the two border pixels) and the glyph plus half the inset wide, never
+//     under 24 (--sf-c2) either way. Two actions side by side keep half an
+//     inset between their glyphs; the last one gives back the quarter inset it
+//     stands out past the glyph, so the glyph ends on the inset.
+// Buttons outside fields keep their plates (C15, C116): only .sf-field-action
+// takes this look.
+@mixin rules($fields: '.sf-input-field') {
+  @layer sf.components {
+    .sf-field-action {
+      --sf-field-action--ink: var(--sf-on-surface-variant);
+      --sf-field-action--glyph-size: var(--sf-field-action--glyph, var(--sf-text-height-1));
+      --sf-field-action--side: calc(var(--sf-field-action--inset, var(--sf-space-1)) / 4);
+      --sf-field-action--hit-block: max(calc(var(--sf-field-action--height, var(--sf-ui-1--control-height)) - 2 * var(--sf-px)), var(--sf-c2));
+      --sf-field-action--hit-inline: max(calc(var(--sf-field-action--glyph-size) + 2 * var(--sf-field-action--side)), var(--sf-c2));
+      appearance: none;
+      display: inline-flex;
+      flex: none;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      block-size: var(--sf-field-action--hit-block);
+      inline-size: var(--sf-field-action--hit-inline);
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: none;
+      box-shadow: none;
+      color: var(--sf-field-action--ink);
+      font: inherit;
+      cursor: pointer;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .sf-field-action[hidden] {
+      display: none;
+    }
+
+    .sf-field-action .sf-icon {
+      --sf-icon--font-size: var(--sf-field-action--glyph-size);
+      --sf-icon--height: var(--sf-field-action--glyph-size);
+      --sf-icon--width: var(--sf-field-action--glyph-size);
+      --sf-icon--color: var(--sf-field-action--ink);
+      color: var(--sf-field-action--ink);
+      border-radius: var(--sf-radius--ui);
+      pointer-events: none;
+    }
+
+    // The last action at the field's end: its glyph, not its hit area, ends
+    // on the inset. It gives back half of what the hit area stands out past
+    // the glyph, which is the quarter inset unless the 24 floor widened it.
+    #{$fields} > .sf-field-action:last-child,
+    #{$fields} > :last-child .sf-field-action {
+      margin-inline-end: calc((var(--sf-field-action--glyph-size) - var(--sf-field-action--hit-inline)) / 2);
+    }
+  }
+
+  @layer sf.states {
+    .sf-field-action:not(:disabled):not([aria-disabled="true"]):is(:hover, :active) {
+      --sf-field-action--ink: var(--sf-on-surface);
+    }
+
+    .sf-field-action:is(:disabled, [aria-disabled="true"]) {
+      --sf-field-action--ink: var(--sf-on-surface-disabled);
+      cursor: default;
+    }
+
+    // The ring is the glyph's, 1 px out from it, inside the field. !important:
+    // a page's unlayered :focus-visible beats every layered rule, and drew a
+    // second frame round the whole hit area (see sf-dropdown, 2026-11-01).
+    .sf-field-action:focus-visible {
+      outline: none !important;
+    }
+
+    .sf-field-action:focus-visible .sf-icon {
+      outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+      outline-offset: var(--sf-px);
+    }
+
+    @media (forced-colors: active) {
+      .sf-field-action:focus-visible .sf-icon {
+        outline-color: Highlight;
+      }
+    }
+  }
+}

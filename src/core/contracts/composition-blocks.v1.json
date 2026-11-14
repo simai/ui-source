@@ -623,8 +623,7 @@
               "default",
               "tonal",
               "outline",
-              "ghost",
-              "surface"
+              "ghost"
             ],
             "type": "string"
           },
@@ -721,7 +720,6 @@
             "default": "primary",
             "enum": [
               "primary",
-              "secondary",
               "on-surface",
               "on-surface-variant"
             ],
@@ -766,6 +764,10 @@
             ],
             "type": "string"
           },
+          "split": {
+            "default": false,
+            "type": "boolean"
+          },
           "status": {
             "default": "",
             "enum": [
@@ -809,7 +811,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button",
-      "version": "1.13.1"
+      "version": "1.15.0"
     },
     "sf-button-icon": {
       "inputs": {
@@ -984,7 +986,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button-icon",
-      "version": "1.9.0"
+      "version": "1.10.0"
     },
     "sf-checkbox": {
       "inputs": {
@@ -1052,7 +1054,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.checkbox",
-      "version": "1.2.1"
+      "version": "1.3.1"
     },
     "sf-divider": {
       "component": "component.content-divider",
@@ -1183,7 +1185,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.dropdown",
-      "version": "1.9.1"
+      "version": "1.10.1"
     },
     "sf-icon": {
       "inputs": {
@@ -1268,7 +1270,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.icon",
-      "version": "1.1.7"
+      "version": "1.1.8"
     },
     "sf-input": {
       "inputs": {
@@ -1290,6 +1292,10 @@
           "autocomplete": {
             "default": "",
             "type": "string"
+          },
+          "clearable": {
+            "default": false,
+            "type": "boolean"
           },
           "default-value": {
             "default": "",
@@ -1461,7 +1467,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.input",
-      "version": "1.8.0"
+      "version": "1.9.0"
     },
     "sf-input-textarea": {
       "inputs": {
@@ -1682,7 +1688,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.switch",
-      "version": "1.5.1"
+      "version": "1.5.3"
     }
   },
   "parameter_sets": {

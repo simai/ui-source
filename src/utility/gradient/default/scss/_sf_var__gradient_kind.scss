@@ -28,7 +28,7 @@ $gradient-wheel: ('red', 'orange', 'amber', 'yellow', 'lime', 'green', 'teal', '
 }
 
 // The tones a kind reads from its colour (c) and from the partner (p).
-$gradient-color-tones: (10, 20, 30, 40, 50, 80, 90);
+$gradient-color-tones: (10, 20, 30, 40, 50, 80, 90, 95);
 $gradient-partner-tones: (30, 40, 50, 80);
 
 // Alpha kinds: strength 8 | 12 | 16 (default) | 24, the fill steps.

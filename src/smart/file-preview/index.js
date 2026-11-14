@@ -121,6 +121,9 @@ class SfFilePreview extends FilePreviewElement {
       fileSize: this.fileSize,
       icon: this.icon,
       href: this.href,
+      kind: this.kind,
+      // The field's former name, until 2027-01-01 (docs precheck smart content
+      // FP-05; journal event-file-preview-value-type-to-kind): the same value.
       type: this.kind,
       mimeType: this.mimeType,
       imageUrl: this.imageUrl,

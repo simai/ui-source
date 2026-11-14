@@ -45,6 +45,18 @@
       "remove_after": "2027-01-01",
       "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
       "note": "the element is sf-input-quantity; sf-quantity is a subclass defined beside it until the date"
+    },
+    {
+      "from": "sf-quantity-remove",
+      "to": "sf-input-quantity-remove",
+      "kind": "event",
+      "component": "sf-input-quantity",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "mode": "same-detail",
+      "cancelable": true,
+      "section": "§8",
+      "note": "the event name carries the tag: the remove event (1.5.0, provisional name) keeps the old tag's name while sf-quantity is defined, as tag rename R0 asks of every tagged event"
     }
   ]
 }

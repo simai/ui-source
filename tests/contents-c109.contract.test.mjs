@@ -22,14 +22,8 @@ const rule = (selector) => {
   return sheet.slice(start, sheet.indexOf('}', start));
 };
 
-// 1.6.2 or later: a later patch keeps the C109 line (1.6.3, C43 D4).
-const atLeast = (version, floor) => {
-  const [a, b] = [version, floor].map((v) => v.split('.').map(Number));
-  return a[0] - b[0] || a[1] - b[1] || a[2] - b[2];
-};
-
-test('C109 version: contents 1.6.2', () => {
-  assert.ok(atLeast(manifest.version, '1.6.2') >= 0, manifest.version);
+test('C109 version: contents 1.6.2 or later (1.7.0: C134 layout sheet)', () => {
+  assert.match(manifest.version, /^1\.(6\.([2-9]|\d{2,})|([7-9]|\d{2,})\.\d+)$/u);
   assert.equal(generated.version, manifest.version);
   assert.ok(manifest['x-decisions'].some((line) => line.startsWith('version 1.6.2 (2026-11-12, owner decision C109 point 2, NI-8)')));
 });

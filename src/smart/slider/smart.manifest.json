@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.slider",
-  "version": "1.1.11",
+  "version": "1.2.0",
   "title": "Slider",
   "summary": "A row of slides moved by arrows, dots, swipe or keys, built on the shared Swiper adapter; with linked thumbnails a second slider picks the slide.",
   "kind": "smart",
@@ -67,12 +67,15 @@
       },
       "dots-type": {
         "type": "string",
-        "default": "primary-dark",
-        "description": "The dots' colours: primary-dark (the default), primary-light, primary (as primary-dark), light, dark, clear (as light).",
+        "default": "primary-container",
+        "description": "The dots' plate by its colour role: primary-container (the default; a primary-container plate with on-primary-container dots), primary (a primary plate with on-primary dots), surface-container (a raised neutral plate with on-surface dots), surface-inverse (an inverse plate with on-surface-inverse dots). Former words, dated aliases until 2027-01-01: primary-dark is primary-container, primary-light is primary, light and clear are surface-container, dark is surface-inverse.",
         "enum": [
+          "primary-container",
+          "primary",
+          "surface-container",
+          "surface-inverse",
           "primary-dark",
           "primary-light",
-          "primary",
           "light",
           "dark",
           "clear"
@@ -308,7 +311,13 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
+    "aliases": [
+      "dots-type=primary-dark",
+      "dots-type=primary-light",
+      "dots-type=light",
+      "dots-type=clear",
+      "dots-type=dark"
+    ],
     "deprecations": [],
     "replacement": null,
     "migrations": []

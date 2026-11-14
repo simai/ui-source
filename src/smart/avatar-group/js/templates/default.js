@@ -34,11 +34,13 @@ function step(value, fallback = '1') {
   return SIZES.includes(named) ? named : fallback;
 }
 
-// How far the avatars of a group overlap, by the size they are drawn at.
+// How far the avatars of a group overlap, by the size they are drawn at: the
+// --sf-space step of the overlap, in the size names (1.2.4, docs precheck
+// AV-06; xs, sm and md before, journal class-avatar-group-overlap-size-names).
 function groupStep(size) {
-  if (size === '1/4' || size === '1/3') return 'xs';
-  if (size === '1/2') return 'sm';
-  return 'md';
+  if (size === '1/4' || size === '1/3') return '1/4';
+  if (size === '1/2') return '1/3';
+  return '1/2';
 }
 
 function avatar(options) {

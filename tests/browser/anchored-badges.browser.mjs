@@ -18,7 +18,7 @@
 //     name back when the badge hides;
 //   - sf-avatar, sf-icon and sf-button-icon take badge-count, badge-dot,
 //     badge-cap and badge-label, in Russian and English, plural forms right;
-//   - a compact sf-menu and a compact admin menu put a row's counter on its
+//   - a rail sf-menu (sf-menu--rail) and a compact admin menu put a row's counter on its
 //     icon; the online indicator keeps the bottom end beside a count.
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
@@ -327,7 +327,7 @@ try {
   for (const width of [1000, 390]) {
     const row = (id, icon, text, count) => `<li class="sf-menu-item"><a href="#${id}" id="${id}" class="sf-menu-element sf-menu-element--level-1"><span class="sf-menu-element-wrap"><i class="sf-icon sf-menu-element-icon" aria-hidden="true">${icon}</i><span class="sf-menu-element-text">${text}</span><span class="sf-badge" data-count="${count}"></span></span></a></li>`;
     const page = await open({width, body: `
-      <nav aria-label="Разделы" style="inline-size:72px"><ul class="sf-menu sf-menu--compact" id="compact">${row('inbox', 'inbox', 'Входящие', 3)}${row('tasks', 'task', 'Задачи', 120)}${row('none', 'home', 'Главная', 0)}</ul></nav>
+      <nav aria-label="Разделы" style="inline-size:72px"><ul class="sf-menu sf-menu--rail" id="compact">${row('inbox', 'inbox', 'Входящие', 3)}${row('tasks', 'task', 'Задачи', 120)}${row('none', 'home', 'Главная', 0)}</ul></nav>
       <nav aria-label="Разделы полностью" style="inline-size:280px"><ul class="sf-menu" id="full">${row('inbox-full', 'inbox', 'Входящие', 3)}</ul></nav>
       <div class="sf-admin-menu-panel small" id="admin"><a href="#a" id="admin-item" class="sf-admin-menu-item flex items-cross-center"><span class="sf-admin-menu-item-container flex items-cross-center"><i class="sf-icon" aria-hidden="true">group</i><span>Пользователи</span><span class="sf-badge" data-count="8"></span></span></a></div>`});
     const compact = await page.evaluate(() => {

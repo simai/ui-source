@@ -25,8 +25,13 @@
 // it is typed or pasted. The decimal mark is the page's language's (a comma in
 // Russian; the other of «.» and «,» is taken as one too unless the language
 // groups with it). The value is committed on Enter and when the field loses
-// focus: then it is rounded to the field's digits, clamped to the bounds and
-// written back in the page's format.
+// focus: then it is rounded to the field's digits and written back in the
+// page's format. A number past a bound or off the step is kept as typed, not
+// clamped (QR-1): the field shows its error under the box -- the standard
+// invalid state, aria-invalid, the range word, said once by a polite status --
+// and the form will not submit it (§17.2: the invalid state is shown when the
+// validity fails after the person touched the field). The steppers and the
+// keys still stop at the bounds.
 //
 // Since standard simai.smart-component 1.3.8 it is built from its
 // component.json (§3, §4, §17, §20): the settings are made by
@@ -39,7 +44,7 @@
 // the value stands at a bound (data-at-min, data-at-max, §5.3,
 // simai/ui-source#46 item 4).
 import SfBaseElement from '../../core/js/smart-base';
-import {elementFromManifest} from '../../core/js/element-manifest';
+import {camelName, elementFromManifest} from '../../core/js/element-manifest';
 import {pageLocale} from '../../core/js/page-language';
 import {createFieldContract} from '../../component/field-contract';
 import {fieldSize} from '../../component/field-size';
@@ -69,6 +74,18 @@ const REPEAT_DELAY = 400;
 const REPEAT_INTERVAL = 60;
 // PageUp and PageDown move this many steps unless the field names its own.
 const PAGE_STEPS = 10;
+
+// The remove mode for a cart line (owner decision C122). PROVISIONAL NAMES:
+// the setting, its label and the event are the research's proposal and wait
+// for the owner's word. The code reads them from here only, so a rename is
+// this map plus the keys of component.json and lang/*.json (`events.<event>`),
+// then generate-component-files. The DOM name of the event follows §8:
+// `sf-input-quantity-<event>`.
+const REMOVE_MODE = Object.freeze({
+  setting: 'removable',
+  label: 'remove-label',
+  event: 'remove',
+});
 
 // The actions (§4.4): each answers an outcome, and none is a person's change,
 // so none sends an event, as a native field's stepUp() does not.
@@ -146,9 +163,19 @@ class SfQuantity extends FormField(QuantityElement) {
     this._reported = undefined;
     this._committed = undefined;
     this._hold = null;
+    // A press that began on the trash (C122): only such a press removes, never
+    // the click that ends a held «−» run reaching the bound.
+    this._removePress = false;
+    // The range or step error a commit showed (QR-1), and what the status
+    // says: shown until the value is valid again or the form is reset.
+    this._rangeShown = false;
+    this._announcement = '';
     this._releaseReset = null;
     this._resetControl = null;
     this.__sfStopHold = () => this.stopHold();
+    // The browser's own check (a submit, checkValidity(), reportValidity())
+    // fires invalid on the host: a range or step error it found is shown too.
+    this.addEventListener('invalid', () => this.showRangeError());
   }
 
   attributeChangedCallback(name, previous, next) {
@@ -305,19 +332,60 @@ class SfQuantity extends FormField(QuantityElement) {
 
   // value-missing is the box's own (required, and empty -- an inherited value
   // is a hint and does not count, §20.2); the range and the step are read off
-  // the value, which a person may type past a bound until the commit clamps it.
+  // the value, which a person may type past a bound and commit: it is kept, and
+  // the error is shown (QR-1).
   sfSyncFormState() {
     this.sfSyncForm();
-    const value = this.value;
+    syncFieldValidity(this, this.getInputElement(), this.ownValidity());
+  }
+
+  // What the value breaks that the text box cannot know: {flag: message} for
+  // the range and the step, empty while the value keeps them.
+  ownValidity(value = this.value) {
     const own = {};
-    if (value !== null) {
-      if (this.min !== null && value < this.min) own.rangeUnderflow = this.sfWord('range-underflow', {vars: {min: formatNumber(this.min, this.numberOptions)}});
-      if (this.max !== null && value > this.max) own.rangeOverflow = this.sfWord('range-overflow', {vars: {max: formatNumber(this.max, this.numberOptions)}});
-      const base = this.min ?? 0;
-      const steps = (value - base) / this.step;
-      if (Math.abs(steps - Math.round(steps)) > 1e-7) own.stepMismatch = this.sfWord('step-mismatch', {vars: {step: formatNumber(this.step, this.numberOptions)}});
-    }
-    syncFieldValidity(this, this.getInputElement(), own);
+    if (value === null) return own;
+    if (this.min !== null && value < this.min) own.rangeUnderflow = this.sfWord('range-underflow', {vars: {min: formatNumber(this.min, this.numberOptions)}});
+    if (this.max !== null && value > this.max) own.rangeOverflow = this.sfWord('range-overflow', {vars: {max: formatNumber(this.max, this.numberOptions)}});
+    const base = this.min ?? 0;
+    const steps = (value - base) / this.step;
+    if (Math.abs(steps - Math.round(steps)) > 1e-7) own.stepMismatch = this.sfWord('step-mismatch', {vars: {step: formatNumber(this.step, this.numberOptions)}});
+    return own;
+  }
+
+  // The first word of what the value breaks, '' while it keeps the rules.
+  get rangeMessage() {
+    return Object.values(this.ownValidity())[0] || '';
+  }
+
+  // The invalid state the field draws: the page's, or the range error a
+  // commit showed. The page's message wins; the range word fills in when the
+  // page says invalid without one.
+  get shownInvalid() {
+    return this.invalid || this._rangeShown;
+  }
+
+  get shownErrorMessage() {
+    if (this.invalid && this.errorMessage) return this.errorMessage;
+    return this._rangeShown ? this.rangeMessage : this.errorMessage;
+  }
+
+  // A commit, or the browser's own check (a submit, checkValidity()), shows
+  // the range error while the value breaks the range or the step, and the
+  // status says it once. A valid value takes it away.
+  showRangeError() {
+    const message = this.rangeMessage;
+    const shown = Boolean(message);
+    if (shown === this._rangeShown && (!shown || this._announcement === message)) return;
+    this._rangeShown = shown;
+    this._announcement = message;
+    this.requestComponentUpdate('invalid');
+  }
+
+  hideRangeError() {
+    if (!this._rangeShown) return;
+    this._rangeShown = false;
+    this._announcement = '';
+    this.requestComponentUpdate('invalid');
   }
 
   // The browser's restore of a form (back, reload): the submitted number.
@@ -383,6 +451,40 @@ class SfQuantity extends FormField(QuantityElement) {
 
   atMax(value = this.value) {
     return value !== null && this.max !== null && value >= this.max;
+  }
+
+  // ---- The remove mode (C122) ------------------------------------------------
+
+  // Off by default: a shop may not want removal made easier (a product page).
+  // Read through the map, not by its own name, so the generated accessors of
+  // the two settings stay the manifest's.
+  get removeModeOn() {
+    return Boolean(this[camelName(REMOVE_MODE.setting)]);
+  }
+
+  get removeModeLabel() {
+    return this[camelName(REMOVE_MODE.label)] || '';
+  }
+
+  // The «−» is the trash while the mode is on, the field can change and the
+  // value stands on its lower bound; a field with no lower bound never shows it.
+  removeShown(value = this.value) {
+    return this.removeModeOn && this.interactive && this.steppers !== 'none' && this.atMin(value);
+  }
+
+  // «0» typed and committed with Enter asks for removal too (Baymard: people
+  // type 0 to remove), while 0 is below the bound; with the mode off it is the
+  // ordinary out-of-range commit (QR-1).
+  typedRemove() {
+    if (!this.removeModeOn || !this.interactive || this._draft === null) return false;
+    if (this.min === null || !(this.min > 0)) return false;
+    return parseNumber(this._draft, this.numberOptions) === 0;
+  }
+
+  // The field never removes itself: it asks, and the page removes the line and
+  // offers «Вернуть» (C25). Cancelable; answers whether nobody refused.
+  requestRemove(source, value = this.value) {
+    return this.sfEmit(REMOVE_MODE.event, {value, name: this.name, source}, {cancelable: true});
   }
 
   // ---- The inherited-value seam -------------------------------------------
@@ -466,14 +568,16 @@ class SfQuantity extends FormField(QuantityElement) {
     return this.writeValue(next, source, {change});
   }
 
-  // The typed text, made the value: rounded, clamped, written back.
+  // The typed text, made the value: rounded and written back, kept as typed
+  // past a bound (QR-1); the error shows instead of a silent clamp.
   commitDraft(source = 'commit') {
     if (this._draft === null) return false;
     const typed = parseNumber(this._draft, this.numberOptions);
     const next = typed === null || !Number.isFinite(typed)
       ? (typed === null ? null : this.value)
-      : clamp(roundTo(typed, this.precision), this.min, this.max);
+      : roundTo(typed, this.precision);
     this.writeValue(next, source);
+    this.showRangeError();
     return true;
   }
 
@@ -557,18 +661,34 @@ class SfQuantity extends FormField(QuantityElement) {
       return;
     }
     if (event.key === 'Enter') {
+      if (this.typedRemove()) {
+        // Not refused: the typing is taken back -- the page removes the line.
+        // Refused: the «0» goes the ordinary way, kept with its error (QR-1).
+        // Either way no implicit submit of the form.
+        event.preventDefault();
+        if (this.requestRemove('typing', 0)) this.revertDraft();
+        else this.commitDraft('commit');
+        return;
+      }
       this.commitDraft('commit');
       return;
     }
     if (event.key === 'Escape' && this._draft !== null) {
       event.preventDefault();
       event.stopPropagation();
-      this._draft = null;
-      this._value = this._committedValue();
-      this._reported = this._value;
-      this.syncInputText(true);
-      this.syncControlState();
+      this.revertDraft();
     }
+  }
+
+  // The typing taken back to the committed value.
+  revertDraft() {
+    this._draft = null;
+    this._value = this._committedValue();
+    this._reported = this._value;
+    this.syncInputText(true);
+    this.syncControlState();
+    // Back to a committed number past a bound: its error shows again.
+    this.showRangeError();
   }
 
   // ---- The steppers ---------------------------------------------------------
@@ -578,8 +698,15 @@ class SfQuantity extends FormField(QuantityElement) {
   // behind it (Enter or Space on the button, a screen reader's activation,
   // button.click()) steps once.
   onStepPointerDown(event, direction) {
+    this._removePress = false;
     if (event.button !== 0 || !this.interactive) return;
     if (event.currentTarget.disabled) return;
+    // The trash takes a press of its own (C122): no step, no hold; the click
+    // that follows asks for removal.
+    if (direction < 0 && this.removeShown()) {
+      this._removePress = true;
+      return;
+    }
     this.stopHold();
     this.commitDraft('commit');
     this._hold = {direction, moved: false, timer: 0, interval: 0};
@@ -609,6 +736,15 @@ class SfQuantity extends FormField(QuantityElement) {
 
   onStepClick(event, direction) {
     event.preventDefault();
+    if (direction < 0 && this.removeShown()) {
+      // A pointer press that began on the trash, or a click with no pointer
+      // behind it (Enter, Space). The click that ends a held «−» run which
+      // reached the bound began on the minus and removes nothing.
+      const asked = this._removePress || event.detail === 0;
+      this._removePress = false;
+      if (asked) this.requestRemove('button');
+      return;
+    }
     if (event.detail > 0) return;
     this.commitDraft('commit');
     this.stepBy(direction, 'button');
@@ -664,7 +800,7 @@ class SfQuantity extends FormField(QuantityElement) {
       }
     }
     const [minus, plus] = this.querySelectorAll(':scope .sf-quantity-count');
-    if (minus) minus.disabled = !this.interactive || this.atMin(value);
+    if (minus) minus.disabled = !this.interactive || (this.atMin(value) && !this.removeShown(value));
     if (plus) plus.disabled = !this.interactive || this.atMax(value);
     // At a bound, said on the host (§5.3, simai/ui-source#46 item 4).
     this.sfHostState('data-at-min', this.atMin(value));
@@ -676,6 +812,9 @@ class SfQuantity extends FormField(QuantityElement) {
     const hidden = this.querySelector(':scope .sf-quantity-value');
     if (hidden) hidden.value = this.formValue;
     this.sfSyncFormState();
+    // The shown range error goes as soon as the value keeps the rules again,
+    // whatever moved it: typing, a step, a value set from script.
+    if (this._rangeShown && !this.rangeMessage) this.hideRangeError();
   }
 
   afterRender(callback) {
@@ -690,6 +829,8 @@ class SfQuantity extends FormField(QuantityElement) {
       this._releaseReset = input ? bindFormReset(input, () => {
         this._value = undefined;
         this._draft = null;
+        this._rangeShown = false;
+        this._announcement = '';
         this._reported = undefined;
         this._committed = undefined;
         this.requestComponentUpdate('reset');
@@ -709,14 +850,18 @@ class SfQuantity extends FormField(QuantityElement) {
 
   templateContext() {
     const props = this.getPropsContext();
+    const invalid = this.shownInvalid;
+    const errorMessage = this.shownErrorMessage;
     const field = createFieldContract(this, {
       prefix: 'sf-quantity',
       required: this.required,
-      invalid: this.invalid,
+      invalid,
       hint: this.hint,
-      errorMessage: this.errorMessage,
+      errorMessage,
     });
-    const errorContent = this.hasSlotContent?.('error') ? this.getSlotContent('error') : this.errorMessage;
+    const errorContent = this.hasSlotContent?.('error') && !(this._rangeShown && !this.invalid)
+      ? this.getSlotContent('error')
+      : errorMessage;
     const hintContent = this.hasSlotContent?.('hint') ? this.getSlotContent('hint') : this.hint;
     const value = this.value;
 
@@ -749,8 +894,9 @@ class SfQuantity extends FormField(QuantityElement) {
       required: this.required,
       disabled: this.disabled,
       readonly: this.readonly,
-      invalid: this.invalid,
-      errorMessage: this.errorMessage,
+      invalid,
+      errorMessage,
+      announcement: this._announcement,
       ariaLabel: this.ariaLabel,
       decrementLabel: this.decrementLabel,
       incrementLabel: this.incrementLabel,
@@ -760,6 +906,8 @@ class SfQuantity extends FormField(QuantityElement) {
       interactive: this.interactive,
       atMin: this.atMin(value),
       atMax: this.atMax(value),
+      removeShown: this.removeShown(value),
+      removeLabel: this.removeModeLabel,
       shownPlaceholder: this.hasInheritedValue ? this.inheritedDisplayValue() : this.placeholder,
       message: field.invalid && errorContent ? errorContent : hintContent,
       messageKind: field.invalid && errorContent ? 'error' : 'hint',

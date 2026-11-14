@@ -49,11 +49,12 @@ const sfTagMeta = {
       "kind": "enum",
       "values": [
         "default",
-        "surface",
-        "ghost"
+        "outline",
+        "ghost",
+        "surface"
       ],
       "default": "default",
-      "description": "Visual appearance, read from the neutral alpha ramp and separate from type: surface keeps a faint fill and a boundary, ghost keeps nothing until it is hovered. Only the neutral types take it, because a status tag carries its meaning in its colour."
+      "description": "Visual appearance, read from the neutral alpha ramp and separate from kind: outline keeps a faint fill and a hairline edge, ghost keeps nothing until it is hovered. surface is outline's former name until 2027-01-01 (journal value-tag-appearance-surface-to-outline; C15 retired the word) and draws the same. Only the neutral kinds take it, because a status tag carries its meaning in its colour."
     },
     "size": {
       "kind": "enum",
@@ -78,6 +79,17 @@ const sfTagMeta = {
       "default": "",
       "description": "Takes the text line of this form size as an inline tag one size down, for a table cell, so the row keeps its control height. Overrides size and inline."
     },
+    "height": {
+      "kind": "enum",
+      "values": [
+        "low",
+        "default",
+        "high",
+        "highest"
+      ],
+      "default": "default",
+      "description": "The tag's height (owner decision C27, as sf-button): the size's tightness steps -- low, default, high, highest, the size's usual step and its neighbours on the height ladder -- through the class sf-tag--height-<height> of component.tags (none for default). A value outside the list reads as default."
+    },
     "spacing": {
       "kind": "enum",
       "values": [
@@ -87,7 +99,7 @@ const sfTagMeta = {
         "spacious"
       ],
       "default": "normal",
-      "description": "Block padding of a free-standing tag, with the names the buttons use."
+      "description": "Deprecated until 2027-01-01 (journal attribute-tag-spacing-to-height): the former name of height. compact, comfortable and spacious draw as low, high and highest; height wins when both are given."
     },
     "inline": {
       "kind": "boolean",

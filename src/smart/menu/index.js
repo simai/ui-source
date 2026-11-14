@@ -276,7 +276,7 @@ class SfSmartMenu extends MenuElement {
   // orientation, appearance, collapse, current-from-location and the words are
   // the manifest's accessors (attribute and property).
 
-  // The documentation tree and the compact rail are columns; the default and
+  // The documentation tree and the rail are columns; the default and
   // the navigation can be a row.
   get horizontal() {
     return this.orientation === 'horizontal' && ROW_APPEARANCES.includes(this.appearance);
@@ -294,10 +294,10 @@ class SfSmartMenu extends MenuElement {
     return this.horizontal && !this.collapsed;
   }
 
-  // Groups are drawn with their headings in a column; a row and the compact
+  // Groups are drawn with their headings in a column; a row and the
   // rail draw their items in the group's place.
   get groupsDrawn() {
-    return !this.flyouts && this.appearance !== 'compact';
+    return !this.flyouts && this.appearance !== 'rail';
   }
 
   get panelOpen() {
@@ -357,11 +357,12 @@ class SfSmartMenu extends MenuElement {
   // that is not above it, closing one closes the panels inside it. A column's
   // groups open and close each on its own. A disabled branch is not opened or
   // closed by the person. Answers an outcome: applied, or refused with
-  // unknown (no such branch), compact (no groups), disabled or already.
+  // unknown (no such branch), compact (the rail: no groups; the reason keeps
+  // its name, an outcome is not an attribute value), disabled or already.
   setOpen(id, open, source = 'method') {
     const item = this.item(id);
     if (!item || !item.children.length) return {outcome: 'refused', reason: 'unknown'};
-    if (this.appearance === 'compact') return {outcome: 'refused', reason: 'compact'};
+    if (this.appearance === 'rail') return {outcome: 'refused', reason: 'compact'};
     // A group that is not collapsible, or a group a row does not draw, stays
     // as it is.
     if (item.group && (!item.collapsible || !this.groupsDrawn)) return {outcome: 'refused', reason: 'fixed'};
@@ -778,7 +779,7 @@ class SfSmartMenu extends MenuElement {
   // search (C30 amended 2026-11-09, R071 a): a column only -- a row keeps a
   // search button in its header.
   get searchActive() {
-    return Boolean(this.search) && !this.flyouts && this.appearance !== 'compact';
+    return Boolean(this.search) && !this.flyouts && this.appearance !== 'rail';
   }
 
   get searchQuery() {
@@ -1208,7 +1209,7 @@ class SfSmartMenu extends MenuElement {
       flyouts: this.flyouts,
       collapsed: this.collapsed,
       panelOpen: this.panelOpen,
-      compact: this.appearance === 'compact',
+      rail: this.appearance === 'rail',
       appearance: this.appearance,
       label: this.getAttribute('aria-label') || this.getProp('label') || this._childLabel,
       toggleLabel: this.getAttribute('toggle-label') || this.sfWord('toggle-label'),

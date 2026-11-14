@@ -60,7 +60,13 @@ padding of its size (`--sf-ui-<size>--space-x`, or `--sf-tabs-padding-inline`),
 the label none, the first tab none at its start and the last none at its end
 (kept in a shared `fit` row), and the selected line is drawn under the label's
 letters, not as the tab's border. Vertical rows stand `--sf-space-1/4` apart
-with `--sf-space-1` padding. The panel spacing beside a vertical row uses
+with `--sf-space-1` padding. A tab's icon stands the button's icon gap from
+its label in every look (owner decision C105 H1: `--sf-ui-<size>--text-space-x`,
+7 / 8 / 10 at 1440, one step down in compact density, 6 / 6 / 8 on a phone);
+in the line and vertical looks it is the tab's `column-gap`, so the label and
+its line keep no padding. Plates stand `--sf-space-1/4` apart (C105 H5, as tags
+and segments). With errors, «Ещё» puts its badge a quarter step after the
+label and the chevron the icon gap after the badge. The panel spacing beside a vertical row uses
 `--sf-tabs--gap` with `--sf-space-2` fallback. Typography comes from the base button profile and the
 surrounding text for panels; Tabs does not introduce another text-size scale.
 
