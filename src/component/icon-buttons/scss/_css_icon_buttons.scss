@@ -170,10 +170,22 @@
 
   .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon, .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close {
     --sf-icon-button--background-color: var(--sf-icon-button-background-color, var(--sf-on-surface));
+    /* The glyph of the plate on a place with its own ink, as on sf-button
+       (component.buttons 1.14.0; inverse places IP, 2026-11-14). The plate
+       is --sf-on-surface, which a strong coloured place, the duo gradient,
+       glass and an inverse place re-declare as their ink; the theme's glyph,
+       --sf-on-surface-inverse, they cannot re-declare (a tooltip reads it
+       with --sf-surface-inverse). There the plate is the accent the place
+       made of its ink (--sf-primary), so its glyph is the accent's label,
+       --sf-on-primary. Only where the place declares --sf-place--ink:
+       elsewhere -- the page, a card, a popup, which take it back (initial)
+       -- this name is invalid (the 0 % mix reads the hook and nothing of it)
+       and the theme's glyph stays. */
+    --sf-icon-button--on-place-ink: color-mix(in srgb, var(--sf-on-primary), var(--sf-place--ink) 0%);
   }
 
   .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon {
-    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface-inverse));
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-icon-button--on-place-ink, var(--sf-on-surface-inverse)));
   }
 
   .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--close > .sf-close > .sf-close-icon {
@@ -197,7 +209,7 @@
   }
 
   .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface-inverse));
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-icon-button--on-place-ink, var(--sf-on-surface-inverse)));
   }
 
   .sf-icon-button.sf-icon-button--size-2.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {

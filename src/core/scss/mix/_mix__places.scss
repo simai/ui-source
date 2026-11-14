@@ -237,8 +237,9 @@ $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warn
   }
   @return $list;
 }
-// The inverse places re-declare the accent and the boundary line as well
-// (sf-place-inverse), so an opaque place on them takes both back.
+// The inverse places re-declare the accent, the boundary line, the status
+// containers' ink, the link and the ring as well (sf-place-inverse), so an
+// opaque place on them takes all of them back.
 $sf-place-inverse-selectors: ('.bg-surface-inverse', '.bg-surface-inverse-fixed');
 // The duo gradient plate (utility/gradient) is a strong coloured place too:
 // white ink and a white accent on its own colour, so a card or a popup on it
@@ -573,19 +574,31 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
     --sf-#{$role}: #{sf-place-light-dark-half($value, $half)};
   }
   @include aliases.sf-role-aliases($sf-place-aliased);
-  // The accent the place found, kept for an opaque place on it (D1).
-  @each $role, $value in $sf-place-accent-roles {
+  // The accent the place found, kept for an opaque place on it (D1); the
+  // status containers' ink, the link and the ring too (inverse places IP,
+  // 2026-11-14), re-declared on its children (sf-place-inverse-accent).
+  @each $role, $value in map.merge($sf-place-accent-roles, map.merge($sf-place-container-ink-roles, $sf-place-glass-link-roles)) {
     --sf-place--outer-#{$role}: var(--sf-#{$role});
   }
+  --sf-place--outer-focus--color: var(--sf-focus--color);
 }
 
 // The other theme's accent on an inverse place: on its children, in sf.base,
 // as on a strong place (sf-place-strong-accent), so the place still reads the
 // accent it found and an opaque place among the children takes it back.
+// The status containers' ink, the link and the ring are the other theme's
+// as well (inverse places IP, 2026-11-14): the theme's tone 10 status ink,
+// primary 40 link and primary 50 ring read 1.42, 1.70 and 2.93:1 on the
+// light theme's dark inverse (1.29, 1.14 and 1.01 on the dark theme's light
+// one). An inverse place, unlike a strong colour, is a theme, so a hue keeps
+// its hue there: the other theme's tone of it, as its accent already is.
+// --sf-focus--color, resolved at the root, is re-declared with the ring.
 @mixin sf-place-inverse-accent($fixed: false) {
-  @each $role, $value in $sf-place-accent-roles {
-    --sf-#{$role}: #{sf-place-light-dark-half($value, if($fixed, 'dark', 'swap'))};
+  $half: if($fixed, 'dark', 'swap');
+  @each $role, $value in map.merge($sf-place-accent-roles, map.merge($sf-place-container-ink-roles, $sf-place-glass-link-roles)) {
+    --sf-#{$role}: #{sf-place-light-dark-half($value, $half)};
   }
+  --sf-focus--color: var(--sf-focus);
 }
 
 // The theme's neutral tonal plate on a control that stands on a soft

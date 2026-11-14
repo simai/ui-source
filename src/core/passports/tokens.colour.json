@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "tokens.colour",
   "kind": "tokens",
-  "version": "1.14.0",
+  "version": "1.16.0",
   "owner": "simai/ui-source",
   "summary": "The colour roles and palettes: the static palette (C17, generated), the hue role classes, the theme's light and dark roles, the places (coloured and media) that re-declare them, the Figma colour variables and the colour utilities' variables.",
   "includes": [
@@ -34,7 +34,7 @@
     "src/core/scss/vars/_sf_var__color.scss",
     "src/core/scss/vars/_sf_var__hue.scss"
   ],
-  "content_sha256": "e4142c929557a85fe7aa06ebf9c62b85d947364f65228bba00b66ddbcea30679",
+  "content_sha256": "9094fe6d0a4d8881d7ee3222d9c7bf72690dc4b951c287900467d089f5926c26",
   "dependencies": [
     {
       "id": "tokens.border",

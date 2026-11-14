@@ -19,6 +19,14 @@ decorative and uses `aria-hidden="true"`.
   The danger outline's border is red, the error role at the ink family's 64
   step (1.8.0, owner decision C118, as on the buttons); the other outlines
   keep the shared grey `--sf-outline`;
+- on a place with its own ink (1.9.0, inverse places 2026-11-14) -- a strong
+  coloured place (`bg-primary` ... `bg-error`, a strong alert bar), the duo
+  gradient, glass (`sf-surface-media`) or an inverse place: a filled
+  `on-surface` (or `secondary`) icon button is the place's ink with the
+  place's accent label as its glyph (`--sf-on-primary`: the place's colour,
+  black on glass), not `--sf-on-surface-inverse`, which read 1.29:1 on the
+  white, as on `sf-button` (component.buttons 1.14.0). A card or a popup on
+  such a place takes the theme's look back;
 - size: `1/3`, `1/2`, `1`, `2`, or `3`;
 - density: default, `spacing-compact`, `spacing-comfortable`, or
   `spacing-spacious`; `tightness-low`, `tightness-high` and `tightness-highest`
