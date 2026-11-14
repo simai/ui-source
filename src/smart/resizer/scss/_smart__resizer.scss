@@ -61,6 +61,49 @@ sf-resizer[aria-disabled="true"] {
   cursor: default;
 }
 
+/* Below the layout's split step (40rem of the container, a .sf-workspace
+   region in its narrow layout) there is no handle: one panel shows at a time
+   and the width waits for a wide screen (owner decision C158 (4)). */
+sf-resizer[data-sf-resizer-narrow] {
+  display: none;
+}
+
+/* A folded panel (collapsible, C158 (2)): it keeps only its edge -- its own
+   border, the handle on it and the «Показать» button -- with its width written
+   0. Important against the page's own padding and overflow (a state, as
+   [hidden] is); the content is hidden, so nothing in it takes focus. */
+[data-folded]:has(> sf-resizer[collapsible]) {
+  min-inline-size: 0 !important;
+  padding-inline: 0 !important;
+  overflow: visible !important;
+}
+
+[data-folded]:has(> sf-resizer[collapsible]) > :not(sf-resizer, [data-sf-resizer-unfold]) {
+  display: none !important;
+}
+
+/* The «Показать» button: only on a folded panel, centred on its edge at the
+   top, over the handle's strip. */
+[data-sf-resizer-unfold] {
+  display: none;
+}
+
+[data-folded] > [data-sf-resizer-unfold] {
+  position: absolute;
+  inset-block-start: var(--sf-space-1\/4);
+  inset-inline-start: 100%;
+  z-index: calc(var(--sf-resizer-z-index, var(--sf-z-index-7, 70)) + 1);
+  display: inline-flex;
+  margin-inline-start: calc(var(--sf-ui-1\/2--control-height) / -2);
+}
+
+[data-folded]:has(> sf-resizer[edge="inline-start"]) > [data-sf-resizer-unfold] {
+  inset-inline-start: auto;
+  inset-inline-end: 100%;
+  margin-inline-start: 0;
+  margin-inline-end: calc(var(--sf-ui-1\/2--control-height) / -2);
+}
+
 html[data-sf-resizer-active],
 html[data-sf-resizer-active] * {
   cursor: col-resize !important;
