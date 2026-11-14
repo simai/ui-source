@@ -1,0 +1,30 @@
+{
+  "id": "result-open-is-the-hosts-decision",
+  "intent": "result.open",
+  "capability": null,
+  "summary": "A page result chosen is the host's to route: it answers applied and may answer with the recent queries it now keeps.",
+  "given": {
+    "capabilities": [
+      "recent"
+    ],
+    "recent": [
+      "theme"
+    ]
+  },
+  "when": {
+    "intent": "result.open",
+    "payload": {
+      "id": "buttons",
+      "query": "but",
+      "group": "pages",
+      "url": "/components/buttons/"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "recent"
+    ],
+    "note": "recent is [but, theme], newest first: the host records the query the result was found by. The panel then raises its own cancelable sf-search-navigate and, where nobody takes it, follows the result's url -- which is what a documentation site over a static index wants. A host without recent answers applied with no data."
+  }
+}

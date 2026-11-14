@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.search",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "title": "Site search",
   "summary": "Site search in a window: a large rounded field and a separate results card under it over the shared scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. The panel asks a host through simai.search-port and draws what the host announces it can answer: grouped results, scopes, recent and popular queries, commands, a correction and a preview beside the list. Each block is also a setting, so the capability says what is possible and the setting says what is wanted. A page with no host of its own gets the built-in ones: a static JSON index (index) or a provider function.",
   "kind": "smart",
@@ -83,12 +83,12 @@
       "scopes": {
         "type": "boolean",
         "default": true,
-        "description": "Filter pills over the results once there is a query: all, then one per result group, each with its count. A want over the capability scopes: where the host does not announce it the pills are absent, and a setting cannot turn on what the host cannot do"
+        "description": "Filters over the results once there is a query: an sf-tag-group of one choice -- all, then one per result group, each with its count (one Tab stop, ←/→ inside, a check on the chosen). A want over the capability scopes: where the host does not announce it the filters are absent, and a setting cannot turn on what the host cannot do"
       },
       "recent": {
         "type": "boolean",
         "default": true,
-        "description": "Recent queries on an empty field, each with a remove button, and a clear button (recent.forget, recent.clear). A want over the capability recent: the queries are the host's data, so where the host does not announce it the block is absent"
+        "description": "Recent queries (up to 5) and pages opened from the window (up to 3) on an empty field, each with a remove button, and a clear button that clears both (recent.forget, recent.clear). A want over the capability recent: the queries are the host's data, so where the host does not announce it the block is absent"
       },
       "recent-key": {
         "type": "string",
@@ -113,7 +113,7 @@
       "keys": {
         "type": "boolean",
         "default": true,
-        "description": "A footer with the keys: arrows to select, Enter to open, Escape to clear or close. The panel's own setting: the keys are the panel's, so no capability stands behind it"
+        "description": "Key hints at the window's foot: none until the first ↑ or ↓ in the window, then three at most on one line (select, then Enter's and Escape's meaning in this state), the third hidden in a narrow window, none under a finger. The panel's own setting: the keys are the panel's, so no capability stands behind it"
       },
       "provider": {
         "type": "object",
@@ -411,15 +411,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/search/index.js",
-        "sha256": "19f9a91bd849ed2c82e88635304a092f6b4f7d789b63de70a37bebb1958fadd0"
+        "sha256": "1893de33283bd503de6dee40e118b4e2fcca69b301d7df65ba4c438db76ca12f"
       },
       {
         "path": "src/smart/search/js/templates/default.js",
-        "sha256": "eb499643277d63d2c5f8ad9f92fb1d778d9564dc9d6e730ce415682b6c64c821"
+        "sha256": "a0320be2aeaa0a1db7be41c559151b8a44eb3a45f90b36a90bd235372a887f9d"
       },
       {
         "path": "src/smart/search/scss/_smart__search.scss",
-        "sha256": "8d5019e4a6acfe0078e7f7112b5a81f09c085980f8d399f4d2093e3b92994a11"
+        "sha256": "bb4e0e3537696d812efd07b7d0065a056a8b8936b863e72071f92e78cd57c983"
       },
       {
         "path": "src/smart/search/rule.js",
@@ -427,7 +427,7 @@
       },
       {
         "path": "src/smart/search/docs.md",
-        "sha256": "4a045d16883ceef2ea4d7df298ae02bc5ed6243c876adb42b16e81b5af242e2f"
+        "sha256": "05c9258d546aee6f34b714b7fdd80777db997a0748506db326ade8134f01b98f"
       }
     ],
     "generated_runtime": []

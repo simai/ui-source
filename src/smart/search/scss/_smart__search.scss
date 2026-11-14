@@ -1,21 +1,24 @@
 @use 'sass:map';
 @use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../component/context-menu/scss/panel';
 
 @layer sf.components {
-/* Site search (standard simai.smart-component 1.3.13 §6): the window sf-search
-   draws into its portal while open -- a scrim, a large rounded field and a
-   results card under it, two raised surfaces. Every length is a token of the
-   one ladder (docs/foundation-composition-geometry.md):
+/* The search window (owner decisions C162, C175; standard simai.smart-component
+   1.3.15 §6): the window sf-search draws into its portal while open -- a
+   scrim and one surface. Every length is a token of the one ladder:
 
-   - the field is the size 2 control height, its glyph 24 px;
-   - a result row is the size 2 control height (a size 1 title over a size 1/3
-     path), its icon a size 1/2 square (32 px) holding a 20 px glyph; a row of
-     one line is the size 1 control height;
-   - one axis: the field's glyph, the rows' squares and the captions are
-     centred on, or start at, the same inline position (the card's inset plus
-     the row's), and the field's text starts where the rows' titles start; the
-     field's X is centred over the rows' go arrows.
+   - one surface, the window radius and shadow (C175 (1), C56, C159): 36rem,
+     48rem with the preview pane (C175 (5));
+   - the field is the window's head with no frame and a line under it (C06):
+     a row's height and the plate inset above and below, its glyph over the
+     rows' glyphs and its 16 text over the rows' titles;
+   - rows as in menus and lists (C49, C148 (1)): a glyph 20, the plate inset
+     4 (C106), the row's padding 16 at size 1, 12 compact and on a phone
+     (C77), the glyph 12 before the text (C105 H2), one line 40, a title over
+     a path 48 (compact 44); under a finger 44 and 60;
+   - the group caption is the popup lists' one (C175 (3));
+   - full screen below lg (C162 (7)).
 
    The public variables are read with the role token as their fallback and
    never set here. */
@@ -23,15 +26,15 @@
   --sf-search--inset-block: var(--sf-search-inset-block-start, var(--sf-d6));
   --sf-search--surface: var(--sf-search-background-color, var(--sf-search-background, var(--sf-surface-popup)));
   @include places.sf-place(var(--sf-search--surface), var(--sf-on-surface-popup-variant));
-  --sf-search--radius: var(--sf-search-radius, var(--sf-radius-2));
+  --sf-search--radius: var(--sf-search-radius, var(--sf-radius--surface));
   --sf-search--pad: var(--sf-space-1\/4);
-  --sf-search--row-pad: var(--sf-space-1\/2);
+  --sf-search--row-pad: var(--sf-space-1);
   --sf-search--row-gap: var(--sf-space-1\/2);
-  --sf-search--square: var(--sf-ui-1\/2--control-height);
-  --sf-search--field-glyph: var(--sf-icon-size-3);
-  --sf-search--row-glyph: var(--sf-icon-size-2);
+  --sf-search--glyph: var(--sf-icon-size-2);
+  --sf-search--row: var(--sf-ui-1--control-height);
+  --sf-search--row-two: calc(var(--sf-text-height-1) + var(--sf-text-height-1\/3) + 2 * var(--sf-search--pad));
+  --sf-search--button: var(--sf-ui-1\/2--control-height);
   --sf-search--axis: calc(var(--sf-search--pad) + var(--sf-search--row-pad));
-  --sf-search--text-start: calc(var(--sf-search--axis) + var(--sf-search--square) + var(--sf-search--row-gap));
   position: fixed;
   inset: 0;
   display: block;
@@ -48,23 +51,33 @@
   position: absolute;
   inset: 0;
   /* The shared scrim (core --sf-scrim-*) unless the page sets the search's
-     own colour, which is then the whole scrim, as it always was. It was a light
-     neutral at 32 of its own, where every other window dims the page with
-     the shared black (reuse audit 2026-11-02), at 64 since C16 and C20. */
+     own colour, which is then the whole scrim (C16, C20). */
   background: var(--sf-search-scrim-color, var(--sf-scrim-color, var(--sf-black--alfa-64)));
 }
 
+/* One surface (C175 (1)): the head, the filters, the rows and the keys. */
 .sf-search-window {
   position: absolute;
   inset-block-start: var(--sf-search--inset-block);
   inset-inline: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--sf-space-1\/3);
   box-sizing: border-box;
-  inline-size: min(var(--sf-search-inline-size, var(--sf-g8)), 100% - 2 * var(--sf-space-2));
+  inline-size: min(var(--sf-search-inline-size, var(--sf-popup--window-form-width, var(--sf-g8))), 100% - 2 * var(--sf-space-2));
   max-block-size: calc(100% - 2 * var(--sf-search--inset-block));
   margin-inline: auto;
+  overflow: hidden;
+  border-radius: var(--sf-search--radius);
+  background: var(--sf-search--surface);
+  box-shadow: var(--sf-shadow-overlay);
+  container-type: inline-size;
+  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+}
+
+/* With a host that shows previews the window is the wide step (C175 (5),
+   C159 (1)). A public width still wins. */
+.sf-search-window--pane {
+  inline-size: min(var(--sf-search-inline-size, var(--sf-popup--window-wide-width, var(--sf-h2))), 100% - 2 * var(--sf-space-2));
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -90,51 +103,77 @@
   }
 }
 
-/* The field: a pill on the size 2 control height. */
-.sf-search-field {
+/* The head (C06, C175 (1)): no frame, a line under it; the glyph over the
+   rows' glyphs, the text over their titles; the X at the end. */
+.sf-search-head {
   display: flex;
   flex: none;
   align-items: center;
+  gap: var(--sf-search--row-gap);
   box-sizing: border-box;
-  block-size: var(--sf-ui-2--control-height);
-  padding-inline-start: calc(var(--sf-search--axis) + (var(--sf-search--square) - var(--sf-search--field-glyph)) / 2);
-  padding-inline-end: calc(var(--sf-search--axis) + var(--sf-search--row-glyph) / 2 - var(--sf-ui-1\/2--control-height) / 2);
-  border-radius: var(--sf-radius-rounded);
-  background: var(--sf-search--surface);
-  box-shadow: var(--sf-shadow-overlay);
-  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+  min-block-size: calc(var(--sf-search--row) + 2 * var(--sf-search--pad));
+  padding-block: var(--sf-search--pad);
+  padding-inline: var(--sf-search--axis) calc(var(--sf-search--pad) + var(--sf-space-1\/3));
+  border-block-end: var(--sf-px) solid var(--sf-outline-variant);
 }
 
 .sf-search-glyph {
   display: inline-flex;
-  --sf-icon--font-size: var(--sf-search--field-glyph);
-  --sf-icon--width: var(--sf-search--field-glyph);
-  --sf-icon--height: var(--sf-search--field-glyph);
-  --sf-icon--color: var(--sf-on-surface-variant);
   flex: none;
-  margin-inline-end: calc(var(--sf-search--text-start) - var(--sf-search--axis) - (var(--sf-search--square) + var(--sf-search--field-glyph)) / 2);
+  --sf-icon--font-size: var(--sf-search--glyph);
+  --sf-icon--width: var(--sf-search--glyph);
+  --sf-icon--height: var(--sf-search--glyph);
+  --sf-icon--color: var(--sf-on-surface-variant);
 }
 
-/* The back arrow is the phone sheet's (below); the button's host is
-   display: contents, so its native button is what is shown and hidden. */
+/* «Назад» (C175 (7)): in a command's step, and on the full-screen window
+   below lg, where it closes. It stands where the glyph stood, centred on the
+   glyph's column. The button's host is display: contents, so its native
+   button is what is shown, hidden and placed. */
 .sf-search-back > button {
+  display: none;
+  flex: none;
+  margin-inline: calc((var(--sf-search--glyph) - var(--sf-search--button)) / 2);
+}
+
+.sf-search-window--step .sf-search-back > button {
+  display: inline-flex;
+}
+
+.sf-search-window--step .sf-search-glyph {
   display: none;
 }
 
-.sf-search-input {
+/* The query: the step's and the operators' tags (C175 (7), (8)) on the
+   text's line, then the input. */
+.sf-search-query {
+  display: flex;
   flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sf-space-1\/4);
   min-inline-size: 0;
-  block-size: 100%;
+  /* A tag in a field sits on the field's text line (sf-tag inline, C145 (1)):
+     the head's row less the plate inset on either side. */
+  --sf-tag--line: calc(var(--sf-search--row) - 2 * var(--sf-search--pad));
+}
+
+.sf-search-input {
+  flex: 1 1 6rem;
+  min-inline-size: 0;
+  block-size: var(--sf-search--row);
   margin: 0;
   padding: 0;
   border: 0;
   background: transparent;
   color: var(--sf-on-surface);
+  caret-color: var(--sf-primary);
   font: inherit;
-  font-size: var(--sf-text-size-2);
-  line-height: var(--sf-text-height-2);
+  /* The head's text stands over the rows' text (C06, SW-4). */
+  font-size: var(--sf-text-size-1);
+  line-height: var(--sf-text-height-1);
   /* The window's one field holds the focus whenever the window is open, and
-     its caret marks it; a ring around the pill would say nothing more. */
+     its caret marks it. */
   outline: none;
 }
 
@@ -145,16 +184,17 @@
 
 .sf-search-clear > button {
   flex: none;
-  margin-inline-start: var(--sf-space-1\/3);
 }
 
-/* With a host that shows previews there is room for the pane beside the list,
-   so the window takes half as much again. A public width still wins. */
-.sf-search-window--pane {
-  inline-size: min(var(--sf-search-inline-size, calc(var(--sf-g8) * 1.5)), 100% - 2 * var(--sf-space-2));
+/* The filters (C175 (4)): sf-tag-group of one choice, tags the size of a
+   1/2 button, 4 apart, on the rows' inset. */
+.sf-search-scopes {
+  flex: none;
+  padding-block: var(--sf-space-1\/3) var(--sf-space-1\/4);
+  padding-inline: var(--sf-search--axis);
 }
 
-/* The results card. */
+/* The rows' area. */
 .sf-search-card {
   display: flex;
   flex: 0 1 auto;
@@ -162,30 +202,27 @@
   box-sizing: border-box;
   min-block-size: 0;
   max-block-size: var(--sf-search-list-max-block-size, none);
-  padding: var(--sf-search--pad);
   overflow: auto;
   overscroll-behavior: contain;
-  border-radius: var(--sf-search--radius);
-  background: var(--sf-search--surface);
-  box-shadow: var(--sf-shadow-overlay);
-  --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
 }
 
 .sf-search-body {
   display: flex;
   flex-direction: column;
+  min-inline-size: 0;
+  padding: var(--sf-search--pad);
 }
 
+/* A group's caption: the popup lists' one (C175 (3)), on the rows' text
+   start. */
 .sf-search-caption {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: var(--sf-space-1\/2);
   padding-block: var(--sf-space-1\/3) var(--sf-space-1\/4);
   padding-inline: var(--sf-search--row-pad);
-  color: var(--sf-on-surface-variant);
-  font-size: var(--sf-text-size-1\/3);
-  line-height: var(--sf-text-height-1\/3);
+  @include panel.group-heading;
 }
 
 .sf-search-caption-action {
@@ -195,6 +232,7 @@
   background: transparent;
   color: var(--sf-primary);
   font: inherit;
+  font-weight: var(--sf-font-weight-regular);
   cursor: pointer;
 }
 
@@ -202,57 +240,69 @@
   text-decoration: underline;
 }
 
-/* A row: the soft square, the title over the path, and a trailing go arrow,
-   shortcut or remove button. */
+/* A row: a menu or list row (C49, C148): the glyph or avatar, the title over
+   the path, and at the end a command's keys, a step's chevron, the time, or
+   the selected row's buttons. */
 .sf-search-row {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: var(--sf-search--row-gap);
+  gap: var(--sf-space-1\/3);
   box-sizing: border-box;
-  min-block-size: var(--sf-ui-2--control-height);
-  padding-block: calc((var(--sf-ui-2--control-height) - var(--sf-text-height-1) - var(--sf-text-height-1\/3)) / 2);
+  min-block-size: var(--sf-search--row);
   padding-inline: var(--sf-search--row-pad);
-  border-radius: calc(var(--sf-search--radius) - var(--sf-search--pad));
+  border-radius: var(--sf-radius--ui);
   color: var(--sf-on-surface);
   cursor: pointer;
 }
 
-.sf-search-row--single {
-  min-block-size: var(--sf-ui-1--control-height);
-  padding-block: calc((var(--sf-ui-1--control-height) - var(--sf-search--square)) / 2);
+.sf-search-row--two {
+  min-block-size: var(--sf-search--row-two);
 }
 
 .sf-search-row--selected {
   /* The selected role (C16). */
   background: var(--sf-primary-container);
   color: var(--sf-on-primary-container);
+  --sf-on-surface-variant: var(--sf-on-primary-container);
+}
+
+.sf-search-row--more {
+  color: var(--sf-primary);
+}
+
+/* The row's own part: a link for a page (C175 (6)), a span otherwise. It
+   holds the picture and the words; the row's end stands beside it. */
+.sf-search-row-main {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--sf-search--row-gap);
+  min-inline-size: 0;
+  padding-block: var(--sf-search--pad);
+  color: inherit;
+  text-decoration: none;
+}
+
+a.sf-search-row-main:focus-visible {
+  outline: none;
 }
 
 .sf-search-row-icon {
   display: inline-flex;
   flex: none;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--sf-search--square);
-  block-size: var(--sf-search--square);
-  border-radius: var(--sf-radius-1);
-  background: var(--sf-surface-container);
-  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   --sf-icon--color: var(--sf-on-surface-variant);
-  --sf-icon--font-size: var(--sf-search--row-glyph);
-  --sf-icon--width: var(--sf-search--row-glyph);
-  --sf-icon--height: var(--sf-search--row-glyph);
+  --sf-icon--font-size: var(--sf-search--glyph);
+  --sf-icon--width: var(--sf-search--glyph);
+  --sf-icon--height: var(--sf-search--glyph);
 }
 
-.sf-search-row--selected .sf-search-row-icon {
-  background: var(--sf-primary-container);
-  --sf-icon--color: var(--sf-on-primary-container);
+.sf-search-row--more .sf-search-row-icon {
+  --sf-icon--color: var(--sf-primary);
 }
 
-.sf-search-row--recent .sf-search-row-icon,
-.sf-search-row--recent.sf-search-row--selected .sf-search-row-icon {
-  background: transparent;
-  --sf-icon--color: var(--sf-on-surface-variant);
+.sf-search-row-avatar {
+  flex: none;
 }
 
 .sf-search-row-text {
@@ -262,8 +312,16 @@
   min-inline-size: 0;
 }
 
+.sf-search-row-line {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1\/3);
+  min-inline-size: 0;
+}
+
 .sf-search-row-title,
 .sf-search-row-path {
+  min-inline-size: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -274,25 +332,71 @@
   line-height: var(--sf-text-height-1);
 }
 
+.sf-search-row-badge {
+  flex: none;
+}
+
 .sf-search-row-path {
   color: var(--sf-on-surface-variant);
   font-size: var(--sf-text-size-1\/3);
   line-height: var(--sf-text-height-1\/3);
 }
 
-/* The match (owner decision C139 (8), as sf-input-lookup's): the medium
-   weight on the row's own colour, no fill -- the fill was the selected row's
-   colour too (C16). A page that sets --sf-search-mark-color still gets that
-   fill behind the match. */
+.sf-search-row-meta,
+.sf-search-row-next,
+.sf-search-row-keys {
+  flex: none;
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1\/3);
+  line-height: var(--sf-text-height-1\/3);
+}
+
+.sf-search-row-next {
+  --sf-icon--color: var(--sf-on-surface-variant);
+  --sf-icon--font-size: var(--sf-search--glyph);
+  --sf-icon--width: var(--sf-search--glyph);
+  --sf-icon--height: var(--sf-search--glyph);
+}
+
+/* The row's buttons: 32, 8 apart (C105 H5), the last one's edge on the
+   row's plate inset, so its glyph stands over the head's X. */
+.sf-search-row-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--sf-space-1\/3);
+  margin-inline-end: calc(var(--sf-space-1\/3) - var(--sf-search--row-pad));
+}
+
+/* A recent row's cross: on the row a pointer stands on and on the selected
+   row; a finger always sees it (SW-18). */
+.sf-search-row-actions--recent {
+  opacity: 0;
+}
+
+.sf-search-row:hover .sf-search-row-actions--recent,
+.sf-search-row--selected .sf-search-row-actions--recent,
+.sf-search-row-actions--recent:focus-within {
+  opacity: 1;
+}
+
+@media (pointer: coarse) {
+  .sf-search-row-actions--recent {
+    opacity: 1;
+  }
+}
+
+/* The match (owner decision C139 (8), C162 (3)): the medium weight on the
+   row's own colour, no fill. A page that sets --sf-search-mark-color still
+   gets that fill behind the match. */
 .sf-search-mark {
   background: var(--sf-search-mark-color, transparent);
   color: inherit;
   font-weight: var(--sf-font-weight-medium);
 }
 
-/* A search runs over the rows of the last answer (C139 (4)): they stay, a
-   step paler -- titles on on-surface-variant, paths and pictures on
-   on-surface-disabled -- until the answer replaces them. */
+/* A search runs over the rows of the last answer (C139 (4), C162 (4)): they
+   stay, a step paler, until the answer replaces them. */
 .sf-search-body--stale .sf-search-row:not(.sf-search-row--selected) {
   color: var(--sf-on-surface-variant);
 }
@@ -306,14 +410,12 @@
 }
 
 /* The «Поиск…» line (C139 (4), C130 (8)): a row of the list, the spinner in
-   the rows' square column and the words where the titles start. It is drawn
-   after the wait delay itself, so its spinner shows with it, not a second
-   later (sf-spinner's own delay is for a spinner drawn at once). */
+   the glyphs' column and the words where the titles start. */
 .sf-search-wait {
   display: flex;
   align-items: center;
   gap: var(--sf-search--row-gap);
-  min-block-size: var(--sf-ui-1--control-height);
+  min-block-size: var(--sf-search--row);
   padding-inline: var(--sf-search--row-pad);
   color: var(--sf-on-surface-variant);
   font-size: var(--sf-text-size-1);
@@ -325,82 +427,33 @@
   display: inline-flex;
   flex: none;
   justify-content: center;
-  inline-size: var(--sf-search--square);
+  inline-size: var(--sf-search--glyph);
 }
 
 /* Nothing found and a failure: the inline empty state on the rows' inset
-   (C120 (3), (5)), the popular queries under it. */
+   (C120 (3), (5), C162 (5)). */
 .sf-search-state {
   padding: var(--sf-space-1\/3) var(--sf-search--row-pad) 0;
 }
 
-.sf-search-go {
-  --sf-icon--color: var(--sf-on-surface-variant);
-  --sf-icon--font-size: var(--sf-search--row-glyph);
-  --sf-icon--width: var(--sf-search--row-glyph);
-  --sf-icon--height: var(--sf-search--row-glyph);
-  flex: none;
-  visibility: hidden;
-}
-
-.sf-search-row--selected .sf-search-go {
-  visibility: visible;
-}
-
-.sf-search-remove {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--sf-ui-1\/3--control-height);
-  block-size: var(--sf-ui-1\/3--control-height);
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: var(--sf-radius--ui);
-  background: transparent;
-  cursor: pointer;
-  opacity: 0;
-  --sf-icon--color: var(--sf-on-surface-variant);
-  --sf-icon--font-size: var(--sf-icon-size-1);
-  --sf-icon--width: var(--sf-icon-size-1);
-  --sf-icon--height: var(--sf-icon-size-1);
-}
-
-.sf-search-row:hover .sf-search-remove,
-.sf-search-row--selected .sf-search-remove {
-  opacity: 1;
-}
-
-.sf-search-remove:hover {
-  background: var(--sf-surface-state-active);
-}
-
-/* Pills: the scopes (pressed is the filter in force) and the popular
-   queries. A pill's text starts on the rows' axis. */
-.sf-search-scopes,
+/* The popular queries: quiet pills on the rows' inset. */
 .sf-search-pills {
   display: flex;
   flex-wrap: wrap;
   gap: var(--sf-space-1\/4);
-  padding: var(--sf-space-1\/4) calc(var(--sf-search--row-pad) - var(--sf-space-1\/3));
-}
-
-.sf-search-scopes {
-  flex: none;
-  padding-block-end: var(--sf-space-1\/3);
+  padding: var(--sf-space-1\/4) var(--sf-search--row-pad);
 }
 
 .sf-search-pill {
   display: inline-flex;
   align-items: center;
   box-sizing: border-box;
-  min-block-size: var(--sf-ui-1\/3--control-height);
+  min-block-size: var(--sf-ui-1\/2--control-height);
   margin: 0;
   padding-block: 0;
-  padding-inline: var(--sf-space-1\/3);
+  padding-inline: var(--sf-space-1\/2);
   border: 0;
-  border-radius: var(--sf-radius-rounded);
+  border-radius: var(--sf-radius--ui);
   background: var(--sf-surface-container);
   --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   color: var(--sf-on-surface-variant);
@@ -414,50 +467,13 @@
   background: var(--sf-surface-container-hover);
 }
 
-.sf-search-scope {
-  background: transparent;
-}
-
-.sf-search-scope:hover {
-  background: var(--sf-surface-state-hover);
-}
-
-.sf-search-scope[aria-pressed='true'] {
-  /* The chosen scope: the selected role (C16). */
-  background: var(--sf-primary-container);
-  --sf-on-surface-variant: var(--sf-on-primary-container);
-  color: var(--sf-on-primary-container);
-  font-weight: var(--sf-font-weight-medium);
-}
-
 .sf-search-count {
   margin-inline-start: var(--sf-space-1\/4);
   font-size: var(--sf-text-size-1\/3);
-  font-weight: var(--sf-font-weight-regular);
-}
-
-.sf-search-scope[aria-pressed='true'] .sf-search-count {
-  color: var(--sf-on-surface-variant);
-}
-
-/* The filter in force has a check before its name (owner decision C145 (2)):
-   the glyph as tall as the pill's text line, the chip's icon gap after it
-   (C105 H2, 4). */
-.sf-search-scope[aria-pressed='true'] {
-  --sf-icon--color: var(--sf-on-primary-container);
-  --sf-icon--font-size: var(--sf-text-height-1\/2);
-  --sf-icon--width: var(--sf-text-height-1\/2);
-  --sf-icon--height: var(--sf-text-height-1\/2);
-}
-
-.sf-search-scope-check,
-.sf-search-scope > sf-icon:not(:defined) {
-  flex: none;
-  margin-inline-end: var(--sf-space-1\/4);
 }
 
 .sf-search-notice {
-  padding: var(--sf-space-1\/3) var(--sf-search--row-pad);
+  padding: var(--sf-space-1\/3) var(--sf-search--axis);
   color: var(--sf-on-surface-variant);
   font-size: var(--sf-text-size-1);
   line-height: var(--sf-text-height-1);
@@ -466,13 +482,13 @@
 /* «Возможно, вы искали …»: offered over the results of the query as asked. */
 .sf-search-correction {
   display: flex;
+  flex: none;
   align-items: center;
   gap: var(--sf-space-1\/3);
   box-sizing: border-box;
   inline-size: 100%;
-  padding: var(--sf-space-1\/3) var(--sf-search--row-pad);
+  padding: var(--sf-space-1\/3) var(--sf-search--axis);
   border: 0;
-  border-radius: var(--sf-radius--ui);
   background: none;
   color: var(--sf-primary);
   font: inherit;
@@ -486,29 +502,28 @@
   background: var(--sf-surface-container-hover);
 }
 
-/* The list and the words of the row the person stands on. */
+/* The list and the words of the row the person stands on (C175 (5)): two
+   halves, a line at the pane's start. */
 .sf-search-split {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--sf-search--pad);
-  align-items: start;
+  align-items: stretch;
 }
 
 .sf-search-preview {
-  position: sticky;
-  inset-block-start: 0;
   display: flex;
   flex-direction: column;
   gap: var(--sf-space-1\/4);
   min-inline-size: 0;
-  padding: var(--sf-space-1\/2) var(--sf-search--row-pad);
+  padding: var(--sf-space-1\/2) var(--sf-space-1);
+  border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
   overflow-wrap: anywhere;
 }
 
 .sf-search-preview-path {
   color: var(--sf-on-surface-variant);
-  font-size: var(--sf-text-size-1);
-  line-height: var(--sf-text-height-1);
+  font-size: var(--sf-text-size-1\/3);
+  line-height: var(--sf-text-height-1\/3);
 }
 
 .sf-search-preview-title {
@@ -518,6 +533,8 @@
 .sf-search-preview-text {
   margin: 0;
   color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
 }
 
 .sf-search-message {
@@ -528,14 +545,15 @@
   text-align: center;
 }
 
-/* The keys: arrows to select, Enter to open, Escape to clear or close. */
+/* The key hints (C175 (11), R252): none until the first ↑/↓ in the window,
+   then three at most on one line; the third leaves a narrow window. */
 .sf-search-keys {
   display: flex;
   flex: none;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: var(--sf-space-1\/4) var(--sf-space-1);
-  margin-block-start: var(--sf-search--pad);
-  padding: var(--sf-space-1\/3) var(--sf-search--row-pad) var(--sf-space-1\/4);
+  overflow: hidden;
+  padding: var(--sf-space-1\/3) var(--sf-search--axis);
   border-block-start: var(--sf-px) solid var(--sf-outline-variant);
   color: var(--sf-on-surface-variant);
   font-size: var(--sf-text-size-1\/3);
@@ -544,57 +562,80 @@
 
 .sf-search-key {
   display: inline-flex;
+  flex: none;
   align-items: center;
   gap: var(--sf-space-1\/4);
+  white-space: nowrap;
+}
+
+@container (max-width: 26rem) {
+  .sf-search-key:nth-child(n + 3) {
+    display: none;
+  }
 }
 
 /* The window's buttons draw the Framework's ring under the keyboard (the
    field's own ring is its caret, above). */
 .sf-search-pill:focus-visible,
 .sf-search-caption-action:focus-visible,
-.sf-search-remove:focus-visible {
+.sf-search-correction:focus-visible {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
   outline-offset: var(--sf-focus--offset);
 }
 
-/* A phone: a full-screen sheet, the field on top with a back arrow at its
-   start; the X only clears (the arrow closes). A media rule, so the first
-   frame the window draws is right. */
-@media not all and (min-width: map.get(bp.$breakpoint-array, sm)) {
-  .sf-search-window {
+/* Below lg the window is the whole screen (C162 (7), C139 (7)) with «Назад»
+   at the head's start, which closes it; no preview pane (C175 (5)). A media
+   rule, so the first frame the window draws is right. */
+@media not all and (min-width: map.get(bp.$breakpoint-array, lg)) {
+  .sf-search-window,
+  .sf-search-window--pane {
     inset: 0;
     inline-size: auto;
     max-block-size: none;
-    gap: 0;
-    background: var(--sf-search--surface);
-    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
-  }
-
-  .sf-search-field {
-    padding-inline-start: calc(var(--sf-search--axis) + var(--sf-search--square) / 2 - var(--sf-ui-1\/2--control-height) / 2);
     border-radius: 0;
     box-shadow: none;
-    border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+  }
+
+  .sf-search-card {
+    flex: 1 1 auto;
+    max-block-size: none;
   }
 
   .sf-search-back > button {
     display: inline-flex;
-    margin-inline-end: calc(var(--sf-search--text-start) - var(--sf-search--axis) - (var(--sf-search--square) + var(--sf-ui-1\/2--control-height)) / 2);
   }
 
   .sf-search-glyph {
     display: none;
   }
 
-  .sf-search-field:not(.sf-search-field--filled) .sf-search-clear > button {
-    visibility: hidden;
+  .sf-search-split {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .sf-search-card {
-    flex: 1 1 auto;
-    max-block-size: none;
-    border-radius: 0;
-    box-shadow: none;
+  .sf-search-preview {
+    display: none;
+  }
+}
+
+/* Under a finger (below lg): rows 44 and 60 (C49, C148 (1)), no key hints and
+   no keys on the rows (C175 (11)). */
+@media (pointer: coarse) and (not (min-width: map.get(bp.$breakpoint-array, lg))) {
+  .sf-search-portal {
+    --sf-search--row: var(--sf-ui-2--control-height);
+    --sf-search--row-two: calc(var(--sf-ui-2--control-height) + 2 * var(--sf-space-1\/2));
+  }
+
+  .sf-search-keys,
+  .sf-search-row-keys {
+    display: none;
+  }
+}
+
+/* Under a finger at any width the key hints are not drawn (C175 (11)). */
+@media (pointer: coarse) {
+  .sf-search-keys {
+    display: none;
   }
 }
 }

@@ -1,0 +1,24 @@
+{
+  "id": "query-unavailable-is-honest",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "A search the host cannot run now is answered unavailable, not with an empty list.",
+  "given": {},
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 4,
+      "query": "tab",
+      "limit": 50,
+      "offset": 0
+    }
+  },
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": [
+      "reason",
+      "sequence"
+    ],
+    "note": "The panel says the search is unavailable and keeps the query. An index that is being rebuilt, a store that is down and a request that failed are the same answer: unavailable, never applied with results: []."
+  }
+}

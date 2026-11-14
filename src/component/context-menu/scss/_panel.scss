@@ -133,3 +133,15 @@ $thumb: var(--sf-scroll-thumb-width);
     }
   }
 }
+
+// C175 (3) (owner 2026-11-14): a group's heading in a list that drops or
+// pops up -- a menu, a choice list, the search window -- is one quiet caption,
+// 12/16 in the medium weight on the variant colour. Headings of lists on a
+// page are C40's (sf-group-heading). Each panel keeps its own paddings.
+// sf-menu-context's .sf-context-menu-heading already writes these values.
+@mixin group-heading {
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1\/3);
+  line-height: var(--sf-text-height-1\/3);
+  font-weight: var(--sf-font-weight-medium);
+}

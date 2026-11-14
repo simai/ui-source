@@ -1,0 +1,29 @@
+{
+  "id": "base-host-needs-no-capability",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "A host that announces no capability at all still answers a working search: the field, the results and the keyboard need none of them.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 1,
+      "query": "tab",
+      "limit": 50,
+      "offset": 0
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "sequence"
+    ],
+    "data_must_include": [
+      "results",
+      "echo"
+    ],
+    "note": "results and echo are the whole of the base: no scopes, no recent, no popular, no correction, no preview. The panel draws the rows, marks the match, moves the selection with the arrows and opens one with Enter. A host adds a capability when it can answer more, never to make the search work."
+  }
+}
