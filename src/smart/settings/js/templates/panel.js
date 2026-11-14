@@ -37,7 +37,7 @@ function mark(kind, checked) {
 // One row. `row` is {key, kind: field|switch|option, role, checked, text,
 // caption, disabled, hidden, current, setting, option, handle, pin, pinned}.
 function renderRow(row, context) {
-    const {words} = context;
+    const {words, size} = context;
     const main = html`<span class="sf-settings-row-main" role=${row.role}
             aria-checked=${row.checked ? 'true' : 'false'}
             aria-disabled=${row.disabled ? 'true' : nothing}
@@ -55,12 +55,13 @@ function renderRow(row, context) {
     // The pin is the Framework's icon button (defect ST-2, owner decision
     // C166; C160 (1)): it shows its name as the Framework tooltip (the short
     // word, its title), and its accessible name says what a press does with
-    // the row («Закрепить: Тёги», «Открепить: Тёги»). One Tab stop with the
+    // the row («Закрепить: Тёги», «Открепить: Тёги»). Its icon is the row's
+    // line: the panel's size, height low (1/2: 20 in 28; 1: 24 in 32). One Tab stop with the
     // rows: the arrow inward reaches it (tabindex -1 on its button). Its
     // data-* go down to the native button with the host's other attributes.
     const pin = row.pin
         ? html`<sf-button-icon class="sf-settings-row-pin" icon="push_pin" appearance="ghost"
-                scheme=${row.pinned ? 'primary' : 'on-surface-variant'} size="1/3" height="low"
+                scheme=${row.pinned ? 'primary' : 'on-surface-variant'} size=${size === '1' ? '1' : '1/2'} height="low"
                 tabindex="-1"
                 aria-label=${`${row.pinned ? words.unpin : words.pin}: ${row.text}`}
                 title=${row.pinned ? words.unpin : words.pin}

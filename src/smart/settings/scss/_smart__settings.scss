@@ -34,9 +34,9 @@
   --sf-settings-panel--line: var(--sf-text-height-1\/2);
   --sf-settings-panel--pad: var(--sf-space-1\/2);
   --sf-settings-panel--gap: var(--sf-space-1\/2);
-  /* The pin's square: sf-button-icon size 1/3, height low -- its icon
-     (--sf-text-height-1/3) and the low step on either side (24, phone 20). */
-  --sf-settings-panel--pin: calc(var(--sf-text-height-1\/3) + 2 * var(--sf-ui-1\/3--space-y-tightness-low));
+  /* The pin's square: sf-button-icon of the panel's size, height low -- its
+     icon (the row's line) and the low step on either side. */
+  --sf-settings-panel--pin: calc(var(--sf-text-height-1\/2) + 2 * var(--sf-ui-1\/2--space-y-tightness-low));
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -63,6 +63,7 @@
   --sf-settings-panel--text: var(--sf-text-size-1);
   --sf-settings-panel--line: var(--sf-text-height-1);
   --sf-settings-panel--pad: var(--sf-ui-1--space-x);
+  --sf-settings-panel--pin: calc(var(--sf-text-height-1) + 2 * var(--sf-ui-1--space-y-tightness-low));
 }
 
 /* Compact (C22): the rows and the text a step down, the H4 inset 12. */
@@ -289,7 +290,7 @@
 
 /* The pin's place in the control, and the pin over it: shown on the row a
    pointer is over, on a pinned row and while it has the focus. The pin is
-   sf-button-icon size 1/3, height low (ST-2, C166): its host is
+   sf-button-icon of the panel's size, height low (ST-2, C166): its host is
    display:contents, so its native button is the row's grid item, and the
    place in the control is as wide as that button. */
 .sf-settings-row-pin-place {

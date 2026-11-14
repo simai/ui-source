@@ -152,7 +152,10 @@ test('ST-2, C166: the pin is sf-button-icon that names itself; RT-1: the footer 
   assert.match(panel, /title=\$\{row\.pinned \? words\.unpin : words\.pin\}/u);
   assert.match(panel, /tabindex="-1"/u);
   assert.match(css, /\.sf-settings-row-pin > \.sf-icon-button \{/u);
-  assert.match(css, /--sf-settings-panel--pin: calc\(var\(--sf-text-height-1\\\/3\) \+ 2 \* var\(--sf-ui-1\\\/3--space-y-tightness-low\)\);/u);
+  // Its icon is the row's line: the panel's size, height low; its place is its square.
+  assert.match(panel, /size=\$\{size === '1' \? '1' : '1\/2'\} height="low"/u);
+  assert.match(css, /--sf-settings-panel--pin: calc\(var\(--sf-text-height-1\\\/2\) \+ 2 \* var\(--sf-ui-1\\\/2--space-y-tightness-low\)\);/u);
+  assert.match(css, /--sf-settings-panel--pin: calc\(var\(--sf-text-height-1\) \+ 2 \* var\(--sf-ui-1--space-y-tightness-low\)\);/u);
   const footer = css.match(/\.sf-settings-panel-footer \{([^}]*)\}/u)[1];
   assert.match(footer, /gap: var\(--sf-space-1\\\/3\);/u);
 });
