@@ -522,7 +522,7 @@ class SfForm extends FormElement {
       footer: this.footer === 'sticky' ? 'sticky' : 'static',
       groups,
       requiredNote: editing && !instant && fields.some((field) => field.required === true && field.readonly !== true && field.propertyType !== 'boolean'),
-      summary: editing && this._submitted && errors.length > 1 ? errors : null,
+      errorList: editing && this._submitted && errors.length > 1 ? errors : null,
       dirty: this._dirty,
       words: {
         requiredNote: word('required-note'),
@@ -530,7 +530,7 @@ class SfForm extends FormElement {
         cancel: word('cancel'),
         edit: word('edit'),
         unsaved: word('unsaved'),
-        summary: word('summary', {count: errors.length}),
+        errorsTitle: word('errors-title', {count: errors.length}),
       },
       rootClass: this.getRootClass(),
     });

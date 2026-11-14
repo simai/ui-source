@@ -6,7 +6,7 @@
     "cancel": "Cancel",
     "edit": "Edit",
     "unsaved": "You have unsaved changes",
-    "summary": {
+    "errors-title": {
       "one": "Fix {n} field",
       "other": "Fix {n} fields"
     },

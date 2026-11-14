@@ -91,6 +91,10 @@
             "no-console-error"
           ]
         }
+      },
+      "first-paint": {
+        "max-bytes": 12288,
+        "why": "a whole form, two groups of four fields with their labels, «*», «?», hint and the buttons: every field holds its row before any code, so the form does not grow as the controls arrive"
       }
     },
     {
@@ -342,6 +346,10 @@
           "blank": true,
           "note": ""
         }
+      },
+      "first-paint": {
+        "max-bytes": 12288,
+        "why": "a whole form, two groups of four fields with their labels, «*», «?», hint and the buttons: every field holds its row before any code, so the form does not grow as the controls arrive"
       }
     }
   ],

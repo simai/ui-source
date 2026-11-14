@@ -42,7 +42,7 @@ test('C182 (1), (3): the controls are the field renderers\' own, the frame is th
 test('C182 (6): errors at the fields, a summary role alert with links from two errors, the focus to it', () => {
   assert.match(template, /class="sf-form-summary" role="alert" tabindex="-1"/u);
   assert.match(source, /wrong\.length > 1 \? this\.focusSummary\(\) : this\.focusField\(wrong\[0\]\)/u);
-  assert.match(source, /context\.summary|summary: editing && this\._submitted && errors\.length > 1/u);
+  assert.match(source, /errorList: editing && this\._submitted && errors\.length > 1/u);
 });
 
 test('C182 (7): the buttons under the fields, «Сохранить» first and never disabled, the unsaved note a status', () => {

@@ -231,7 +231,7 @@
   "keyboard": {
     "host": {
       "Tab": "reach",
-      "Enter": "submit"
+      "Enter": "commit"
     }
   },
   "relations": [
@@ -261,7 +261,7 @@
     },
     "keys": {
       "Tab": "reach",
-      "Enter": "submit"
+      "Enter": "commit"
     }
   },
   "host-states": {

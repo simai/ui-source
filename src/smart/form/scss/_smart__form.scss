@@ -65,8 +65,8 @@
 }
 
 .sf-form-summary:focus-visible {
-  outline: var(--sf-focus--width) solid var(--sf-focus--color, var(--sf-primary));
-  outline-offset: var(--sf-focus--width);
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
 }
 
 .sf-form-summary-title {
