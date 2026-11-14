@@ -9,8 +9,7 @@
 // browser and restored the next time. With `collapsible` the panel folds to
 // its edge and comes back (owner decision C158 (2)).
 import {attachResizer, setResizerValue} from './engine.mjs';
-import {language} from '../../core/js/page-language';
-import {pageWord} from '../../core/js/page-language';
+import {language, pageWord} from '../../core/js/page-language';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {installAliases} from '../../core/js/aliases.js';
 import BundledPreferences from '../../core/js/preferences.js';
