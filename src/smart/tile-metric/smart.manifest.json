@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tile-metric",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "title": "Metric tile",
   "summary": "A metric tile: a label, a value with its unit, the change against a previous period said in words and by an arrow, a limit as a meter with thresholds, a status with a short hint, a slot for a chart, a skeleton while it loads, and the whole tile as one link or button. Tiles stand in a row that wraps (sf-tile-metric-grid).",
   "kind": "smart",
@@ -162,7 +162,7 @@
       "loading": {
         "type": "boolean",
         "default": false,
-        "description": "The value is on its way: the tile keeps its size, the label stays, the value, the change and the limit are skeleton bars, aria-busy is true"
+        "description": "The value is on its way: the label stays and each line that waits keeps the place of the line that comes -- the value, the change badge (with previous, delta or period-text, or without max), the meter and its words (with max), the status line (with status or hint) -- as pulsing skeleton bars and boxes; aria-busy is true"
       },
       "size": {
         "type": "string",
@@ -303,15 +303,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/tile-metric/index.js",
-        "sha256": "2ae30bbb064c7cc01a37d1b5581f1c877cf0b07ec12cd27dd5785b756b1a23c7"
+        "sha256": "daf43a5660ef72e0c37c12a4b4f64cf03be89cfc889693159a2f3c7e261b075b"
       },
       {
         "path": "src/smart/tile-metric/js/templates/default.js",
-        "sha256": "323f28354e7de7d3a1723fb574bb18a6d3042fa63656b1a7e68e7baaa8a816f4"
+        "sha256": "35eb4ed58b25a2d3c1f2edf617f802568b53858e1891888112ec38b3d3115cac"
       },
       {
         "path": "src/smart/tile-metric/scss/_smart__tile-metric.scss",
-        "sha256": "3045ef74e6044459f2a45903dfb1d5bece4699c3723c1a078d09a2d44a7e0d68"
+        "sha256": "d5ed80ef36e5c9c4b7a58f998d5f45b6793077c0de4faabdf43b968d8eeb5765"
       },
       {
         "path": "src/smart/tile-metric/rule.js",
@@ -319,7 +319,7 @@
       },
       {
         "path": "src/smart/tile-metric/docs.md",
-        "sha256": "1345b697a943f5b12bedf4d3b1b886fa37540346daff1ff16017cc8eeedc8da7"
+        "sha256": "3ede4c81aaaf289a53c20e8144f3a5780a61e56c1ea7734e825d94ea7045d55e"
       }
     ],
     "generated_runtime": []

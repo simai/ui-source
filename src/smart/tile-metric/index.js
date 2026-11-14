@@ -140,6 +140,27 @@ class SfTileMetric extends TileMetricElement {
     this.sfEmit('open', {id: this.id || ''});
   }
 
+  // The lines a loading tile keeps (owner decision C130 (2): a skeleton takes
+  // exactly the data's place; tile study TM-1): those its settings promise.
+  // The change line when the page gave what it is worked out from (previous,
+  // delta) or what it is against (period-text), or when the tile has no limit
+  // -- a plain number comes with its change; a limit tile with max set
+  // shows its meter and the meter's words instead. The status line when the
+  // page states one (status, hint). The words are fillers of the right
+  // length: the bars stand for them.
+  skeleton(status) {
+    const max = this.given('max');
+    const promised = this.given('previous') !== null || this.given('delta') !== null || Boolean(this.periodText);
+    const limited = max !== null && max > 0;
+    const statusWord = status === 'neutral' ? '' : this.words(`status-${status}`);
+    return {
+      value: this.valueText || '000 000',
+      change: promised || !limited ? '+00,0 %' : '',
+      limit: limited ? (this.limitText || this.words('limit', {value: '00', max: this.say(max)})) : '',
+      status: this.hint || statusWord,
+    };
+  }
+
   templateContext() {
     const loading = Boolean(this.loading);
     const value = loading ? null : this.given('value');
@@ -172,6 +193,7 @@ class SfTileMetric extends TileMetricElement {
       hint: this.hint,
       hasChart,
       chart: hasChart ? this.getSlotContent('chart') : null,
+      skeleton: loading ? this.skeleton(status) : null,
       loadingWord: this.words('loading'),
       rootClass: this.getRootClass(),
     });

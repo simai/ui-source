@@ -3160,7 +3160,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tile-metric/smart.manifest.json",
-      "manifest_sha256": "383bb2f9219e7fff4db65c0081c10d246c359a458eea1ee914aa69aad310c346",
+      "manifest_sha256": "5139845ae98d89f01cfa5e8d19e218c27b91097ca0ade4fc70a2fe64b5478dfc",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

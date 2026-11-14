@@ -55,8 +55,13 @@ means: it sets `value` (the tile loads nothing), says whether a rise is good
 - `href` — the whole tile is one link. `openable` — without `href`, the whole
   tile is one button that sends `sf-tile-metric-open` `{id}` (the element's
   id). Nothing interactive belongs inside a tile.
-- `loading` — the value is on its way: the label stays, the value and the
-  change are skeleton bars, `aria-busy` is true, `data-loading` is on the host.
+- `loading` — the value is on its way: the label stays and every line that
+  waits keeps the place of the line that comes, so nothing moves when the
+  numbers arrive: the value, the change badge (with `previous`, `delta` or
+  `period-text`, or without `max`), the meter and its words (with `max`), the
+  status line (with `status` or `hint`) — pulsing skeleton bars and boxes.
+  `aria-busy` is true, `data-loading` is on the host. Before its code arrives
+  the tile already holds the same box.
 - `size` `1/2|1|2` — the rung of the ladder: 1/2 for a dense row, 2 for a
   page's headline figure.
 
