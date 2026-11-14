@@ -301,11 +301,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-scale/index.js",
-        "sha256": "176128c32f7674c7d6dcc16528ea4daa35de214a5c853f73663705bbef3ed289"
+        "sha256": "f3987c4272c23b51fa0e4ce01a98332e2b209f370077ee6c976a482f759e45a2"
       },
       {
         "path": "src/smart/progress-scale/js/templates/default.js",
-        "sha256": "458b0fbc281b81becabd5c1abc37710d19cf9854dc89426ddfebccba65c8b465"
+        "sha256": "b60af2880bad979c46df7d277011ede3d6e4a1cd1737e41b6ef25b3db1f71e42"
       },
       {
         "path": "src/smart/progress-scale/rule.js",
@@ -313,7 +313,7 @@
       },
       {
         "path": "src/smart/progress-scale/docs/docs.md",
-        "sha256": "559fbd80a3a34e5a917c42564afa62b35a453dd84646ba7081f06a79f5eee181"
+        "sha256": "dc36cdb25d65d61af1d75860175cfc24bb54a9bca26a4a901a79f6f655df133e"
       }
     ],
     "generated_runtime": [
