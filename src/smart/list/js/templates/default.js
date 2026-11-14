@@ -170,7 +170,7 @@ const row = (context, item) => {
                     ?disabled=${disabled}
             ><span slot="trailing" class="sf-list__meta">${metaContent(context, item)}</span></sf-list-item>`;
     return html`
-        <li class="sf-list__row ${current ? "sf-list__row--current" : ""}" data-id=${item.id}>
+        <li class="sf-list__row ${current ? "sf-list__row--current" : ""} ${context.countOf(item) ? "sf-list__row--unread" : ""}" data-id=${item.id}>
             ${listItem}
             ${menu
                 ? html`<button

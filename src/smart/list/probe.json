@@ -210,6 +210,18 @@
           "check": "!document.querySelector('#l .sf-list--no-wrap') && !document.querySelector('#l .sf-list__row[data-id=\"w1\"] sf-list-item')?.hasAttribute('title')"
         }
       ]
+    },
+    {
+      "id": "p7-unread-title",
+      "title": "a row with a count is unread: its title semibold beside the grey count, its second line regular; a row without one regular (C167 (3))",
+      "covers": "settings.items count",
+      "steps": [
+        {
+          "script": "(document.querySelector('#l').setItems([{id: 'u1', text: 'Анна Белова', supporting: 'Пришлю договор', count: 3}, {id: 'u2', text: 'Новости', supporting: 'Отчёт за октябрь'}], {hasMore: false}), true)",
+          "wait": 200,
+          "check": "(() => { const row = (id) => document.querySelector('#l .sf-list__row[data-id=\"' + id + '\"]'); const w = (el) => getComputedStyle(el).fontWeight; const a = row('u1'); const b = row('u2'); return a && b && a.classList.contains('sf-list__row--unread') && w(a.querySelector('.sf-list-item-title')) === '600' && w(a.querySelector('.sf-list-item-supporting')) === '400' && a.querySelector('.sf-list__count') && !b.classList.contains('sf-list__row--unread') && w(b.querySelector('.sf-list-item-title')) === '400'; })()"
+        }
+      ]
     }
   ]
 }

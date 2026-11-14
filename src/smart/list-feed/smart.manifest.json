@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-feed",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "title": "Feed",
   "summary": "A feed: a scrolling column of entries read from the newest at the end -- a conversation, comments, an activity history, an audit log. Keeps the reading place while history is added above, follows the end only when the reader is there, «to the latest», asks once for earlier history, announces what is new once, draws a growing entry in place. The host draws each entry.",
   "kind": "composite",
@@ -824,7 +824,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-feed/index.js",
-        "sha256": "ba16be96fe47d09966c2edf175ec23617e28bc9f2373f053fecf4551e26a5ca1"
+        "sha256": "4b879b0e4d884fc21e9b6258cc9c4287aa0aa1c99d45105708f945518337e7e6"
       },
       {
         "path": "src/smart/list-feed/js/templates/default.js",
@@ -832,7 +832,7 @@
       },
       {
         "path": "src/smart/list-feed/js/templates/default.css",
-        "sha256": "7d97478d645396acc632926661b619f8f0b8569e96fe7de7d2351122c40add8a"
+        "sha256": "ece08811c8ef856949e5dcdcefb98858f51540e2753a06e1854335dc57ad5a4e"
       },
       {
         "path": "src/smart/list-feed/rule.js",
@@ -840,11 +840,11 @@
       },
       {
         "path": "src/smart/list-feed/docs.md",
-        "sha256": "c0fe1f75283aa6c7aa943fa25f4e565d60d9a0f352868a88e2a7ef5d95638c31"
+        "sha256": "cab76f61a5c5229532ec21b1a3096f3918ab6c47221ac860115f58469ef1894d"
       },
       {
         "path": "src/smart/list-feed/component.json",
-        "sha256": "86b8bfffcd606b9bca19676704048791721c9d130f387565ef85c63cf2959a43"
+        "sha256": "056867fd2c2bc48a794a200e175dcc42a4081113a2d8e30260b64e75f01f6b2c"
       },
       {
         "path": "src/smart/list-feed/lang/en.json",
