@@ -9,6 +9,8 @@ import {
   isRememberedIconSubsetUsable,
   normalizeIconFontLoadWeight,
 } from './icon-subset-memory.js';
+import { checkIconGlyph, markCustomGlyph, registeredIcon } from "./icon-glyphs.js";
+
 export function initIconSubsetState(loader) {
   loader.iconFontReady = false;
   loader.iconSubsetPending = false;
@@ -74,6 +76,20 @@ export function installIconSubsetRuntime(
     ["sf-icon-bold", "700"],
   ]);
   const defaultIconWeight = "400";
+  // An icon without a weight of its own draws at the weight of the label
+  // beside it (owner decision C151 point 4: the icons sheet lets it inherit
+  // font-weight): regular text and medium labels (buttons, tabs, headings).
+  // The medium face comes in the same request as the regular one, so an icon
+  // by a medium label never waits for a second font. A heavier label draws
+  // the nearest face, medium.
+  const labelIconWeight = "500";
+  const withLabelWeight = (weights) => {
+    const list = [...weights].map(String);
+    if (list.includes(defaultIconWeight) && !list.includes(labelIconWeight)) {
+      list.push(labelIconWeight);
+    }
+    return list;
+  };
   const iconTypeClassMap = new Map([
     ["sf-icon--rounded", "rounded"],
     ["sf-icon-rounded", "rounded"],
@@ -788,6 +804,9 @@ export function installIconSubsetRuntime(
 
     const normalizedIcon = String(icon || "").trim();
     if (!normalizedIcon) return 0;
+    // A registered glyph (SF.icons.register, C151 point 6) is drawn from its
+    // SVG; its name never goes to the font.
+    if (registeredIcon(normalizedIcon)) return 0;
 
     const loadAttrs = this.getIconLoadAttrs(attrs);
     const descriptorKey = this.getLoadedIconDescriptorKey(
@@ -1010,6 +1029,7 @@ export function installIconSubsetRuntime(
     if (!tracked?.icon) {
       return false;
     }
+    if (registeredIcon(tracked.icon)) return true;
 
     const loadAttrs = this.getIconLoadAttrs(tracked.attrs);
 
@@ -1133,6 +1153,7 @@ export function installIconSubsetRuntime(
     const icon = String(
       el.getAttribute("data-icon") || el.textContent || "",
     ).trim();
+    markCustomGlyph(el, icon);
     if (!icon) return null;
 
     const attrs = {
@@ -1274,6 +1295,7 @@ export function installIconSubsetRuntime(
 
       if (shouldBeLoaded) {
         el.classList.add("sf-icon-loaded");
+        checkIconGlyph(el);
       } else {
         el.classList.remove("sf-icon-loaded");
       }
@@ -1347,6 +1369,7 @@ export function installIconSubsetRuntime(
           }
           if (this.isTrackedIconLoaded(tracked, el)) {
             el.classList.add("sf-icon-loaded");
+            checkIconGlyph(el);
             this.adoptedIconsPending.delete(el);
           }
         });
@@ -1367,6 +1390,7 @@ export function installIconSubsetRuntime(
       }
       if (this.isTrackedIconLoaded(tracked, el)) {
         el.classList.add("sf-icon-loaded");
+        checkIconGlyph(el);
         this.adoptedIconsPending.delete(el);
       } else {
         // A glyph whose new name the font in place does not draw waits
@@ -1667,7 +1691,6 @@ export function installIconSubsetRuntime(
       `  font-feature-settings: 'liga';\n` +
       `  font-variation-settings: ` +
       `'FILL' var(--sf-icon--fill, 0), ` +
-      `'wght' var(--sf-icon--weight, 400), ` +
       `'GRAD' var(--sf-icon--grade, 0), ` +
       `'opsz' var(--sf-icon--optical-size, 24);\n` +
       `}\n`
@@ -2599,8 +2622,9 @@ export function installIconSubsetRuntime(
       icon_names: icons.join(","),
       type,
     });
-    if (requestConfig.weights.size) {
-      query.set("weight", [...requestConfig.weights].sort().join(","));
+    const requestWeights = withLabelWeight(requestConfig.weights);
+    if (requestWeights.length) {
+      query.set("weight", requestWeights.sort().join(","));
     }
     if (requestConfig.fill) query.set("fill", "1");
     if (requestConfig.grade) query.set("grade", requestConfig.grade);

@@ -311,7 +311,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button",
-    "version": "1.15.0"
+    "version": "1.16.0"
   },
   "sf-button-icon": {
     "inputs": {
@@ -726,6 +726,15 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "type": "string"
         },
+        "mirror": {
+          "default": "auto",
+          "enum": [
+            "auto",
+            "on",
+            "off"
+          ],
+          "type": "string"
+        },
         "optical-size": {
           "default": 24,
           "maximum": 48,
@@ -768,7 +777,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.icon",
-    "version": "1.2.0"
+    "version": "1.3.0"
   },
   "sf-input": {
     "inputs": {

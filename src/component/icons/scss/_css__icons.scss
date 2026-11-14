@@ -1,4 +1,5 @@
 @use 'sass:list';
+@use 'sass:map';
 @use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @use 'var__icons' as *;
 @use 'sf_icon_rotate' as *;
@@ -18,6 +19,43 @@ $sf-icon-steps: (
   '7': (var(--sf-icon-size-6), var(--sf-icon-size-7)),
 );
 
+// The optical size of each step (C151 point 4): the opsz axis follows the
+// glyph's px size, 20 at most below 20 and 48 at most (the font's range), as
+// (phone, desktop). The compact region keeps the desktop axis: a step's
+// drawing differs by less than the axis can show.
+$sf-icon-optical: (
+  '1/4': (20, 20),
+  '1/3': (20, 20),
+  '1/2': (20, 20),
+  '1': (20, 20),
+  '2': (20, 20),
+  '3': (20, 24),
+  '4': (24, 28),
+  '5': (28, 32),
+  '6': (32, 36),
+  '7': (36, 40),
+);
+
+// The UI ladder (owner decision C151 point 1): in a region with
+// data-sf-icon-scale="ladder" a size is the ladder step of its host, the text
+// line of that step -- 16, 20, 24, 28, 36 on a desktop, one step down on a
+// phone and in a compact region (the step variables hold those values). 1/4
+// keeps 12 and 4 to 7 the empty-state glyphs, as on the old scale.
+$sf-icon-ladder: (
+  '1/3': (var(--sf-text-height-1\/3), var(--sf-text-height-1\/3)),
+  '1/2': (var(--sf-text-height-1\/2), var(--sf-text-height-1\/2)),
+  '1': (var(--sf-text-height-1), var(--sf-text-height-1)),
+  '2': (var(--sf-text-height-2), var(--sf-text-height-2)),
+  '3': (var(--sf-text-height-3), var(--sf-text-height-3)),
+);
+$sf-icon-ladder-optical: (
+  '1/3': (20, 20),
+  '1/2': (20, 20),
+  '1': (20, 24),
+  '2': (24, 28),
+  '3': (24, 36),
+);
+
 @function icon-step-class($size) {
   @if $size == '1/4' { @return '1\\/4'; }
   @if $size == '1/3' { @return '1\\/3'; }
@@ -25,13 +63,19 @@ $sf-icon-steps: (
   @return $size;
 }
 
-@mixin icon-step($size, $steps, $props: ('--sf-icon--font-size', '--sf-icon--width', '--sf-icon--height')) {
+@mixin icon-step($size, $steps, $props: ('--sf-icon--font-size', '--sf-icon--width', '--sf-icon--height'), $optical: null) {
   $phone: list.nth($steps, 1);
   $desktop: list.nth($steps, 2);
   @each $p in $props { #{$p}: #{$phone}; }
-  @if $phone != $desktop {
+  @if $optical { --sf-icon--optical-size: #{list.nth($optical, 1)}; }
+  @if $phone != $desktop or ($optical and list.nth($optical, 1) != list.nth($optical, 2)) {
     @media (min-width: bp.$breakpoint-desktop) {
-      @each $p in $props { #{$p}: #{$desktop}; }
+      @if $phone != $desktop {
+        @each $p in $props { #{$p}: #{$desktop}; }
+      }
+      @if $optical and list.nth($optical, 1) != list.nth($optical, 2) {
+        --sf-icon--optical-size: #{list.nth($optical, 2)};
+      }
     }
   }
 }
@@ -47,19 +91,19 @@ $sf-icon-steps: (
 
 .sf-icon {
   --sf-icon--fill: 0;
-  --sf-icon--weight: var(--sf-weight--regular);
-  --sf-icon--grade: 0;
-  --sf-icon--optical-size: 24;
   --sf-icon--line-height: 1;
 
+  // The axes (owner decision C151 point 4). Weight is not an axis here: the
+  // glyph's font-weight (below) drives the wght axis of a variable face and
+  // picks the static face of a subset. Grade and optical size are inherited
+  // variables: the theme gives the grade, the size step the optical size, an
+  // author's attribute either of them.
   font-variation-settings:
     'FILL' var(--sf-icon-fill, var(--sf-icon--fill)),
-    'wght' var(--sf-icon-weight, var(--sf-icon--weight)),
-    'GRAD' var(--sf-icon--grade),
-    'opsz' var(--sf-icon--optical-size);
+    'GRAD' var(--sf-icon--grade, 0),
+    'opsz' var(--sf-icon--optical-size, 24);
 
   font-family: var(--sf-icon--font-family, 'Material Symbols Outlined');
-  font-weight: var(--sf-icon-weight, var(--sf-icon--weight));
   font-style: normal;
   font-size: var(--sf-icon-glyph-size, var(--sf-icon--font-size, var(--sf-text-height-1)));
   line-height: var(--sf-icon-line-height, var(--sf-icon--line-height, 1));
@@ -73,7 +117,13 @@ $sf-icon-steps: (
   flex: none;
   -webkit-font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
-  vertical-align: bottom;
+  // In running text the glyph sits on the middle of the line (C151 point 5):
+  // at bottom a 16 px glyph in a 16/24 paragraph sat 4 px low. In a flex row
+  // or a button this changes nothing.
+  vertical-align: middle;
+  // The glyph never leaves its box (C151 point 2): a name the font does not
+  // draw spells its letters, up to 384 px wide over the label beside it.
+  overflow: clip;
   height: var(--sf-icon-glyph-size, var(--sf-icon--height, var(--sf-text-height-1)));
   width: var(--sf-icon-glyph-size, var(--sf-icon--width, var(--sf-text-height-1)));
   &:not(.hidden) {
@@ -93,13 +143,61 @@ $sf-icon-steps: (
   // button on a phone and in a compact region (16 / 16 / 20 / 24 on a phone).
   // The steps no button draws (1/4, 1/3, 1/2, 5, 6, 7) go one icon step down
   // on a phone, as the compact region already moves them (C22); 12 is the
-  // floor (C132). The names keep their desktop sizes: what a name means is
-  // the open owner question #q-names (control/research/2026-11-14-icons.md).
+  // floor (C132). These are the old icon scale's names, the default until
+  // 2027-01-01; the ladder names (C151 point 1) follow below.
   @each $size, $steps in $sf-icon-steps {
     &--size-#{icon-step-class($size)} {
-      @include icon-step($size, $steps);
+      @include icon-step($size, $steps, $optical: map.get($sf-icon-optical, $size));
     }
   }
+}
+
+// The UI ladder names (C151 point 1), where a region or the icon asks for
+// them; more specific than the old scale above, so they win wherever both
+// match.
+@each $size, $steps in $sf-icon-ladder {
+  [data-sf-icon-scale='ladder'] .sf-icon--size-#{icon-step-class($size)} {
+    @include icon-step($size, $steps, $optical: map.get($sf-icon-ladder-optical, $size));
+  }
+}
+
+// Weight (C151 point 4): unset, the glyph takes the font-weight around it --
+// the label's beside it. Written with :root so it outranks the subset
+// stylesheet the icon service sends (.sf-icon { font-weight: var(--sf-icon--weight, 400) }).
+// An author's weight (the weight classes, --sf-icon-weight) still sets it.
+:root .sf-icon {
+  font-weight: var(--sf-icon-weight, var(--sf-icon--weight, inherit));
+}
+
+// Grade (C151 point 4): light ink on a dark ground reads heavier; -25 brings
+// it back. A light region inside a dark one takes 0 again; an author's grade
+// on the icon wins.
+.theme-dark {
+  --sf-icon--grade: -25;
+}
+
+.theme-light {
+  --sf-icon--grade: 0;
+}
+
+// An unknown name (C151 point 2): the box of its size stays, empty.
+.sf-icon[data-sf-icon-missing] {
+  -webkit-text-fill-color: transparent;
+}
+
+// A right-to-left part turns the directional glyphs over (C151 point 3). The
+// scale property, so a rotate class (transform) still applies.
+.sf-icon[data-sf-icon-mirror]:dir(rtl) {
+  scale: -1 1;
+}
+
+// A registered glyph (SF.icons.register, C151 point 6): its SVG masks the
+// box in the current colour; the name's letters stay unseen.
+.sf-icon[data-sf-icon-custom] {
+  -webkit-text-fill-color: transparent;
+  background-color: currentColor;
+  -webkit-mask: var(--sf-icon--custom) center / contain no-repeat;
+  mask: var(--sf-icon--custom) center / contain no-repeat;
 }
 
 @each $name in (thin, extra-light, light, regular, medium, semi-bold, bold) {
@@ -167,11 +265,18 @@ sf-icon:not(:defined) {
   flex: none;
   width: var(--sf-icon--width, var(--sf-text-height-1));
   height: var(--sf-icon--height, var(--sf-text-height-1));
-  vertical-align: bottom;
+  vertical-align: middle;
 }
 
 @each $size, $steps in $sf-icon-steps {
   sf-icon[size="#{$size}"]:not(:defined) {
+    @include icon-step($size, $steps, ('--sf-icon--width', '--sf-icon--height'));
+  }
+}
+
+@each $size, $steps in $sf-icon-ladder {
+  [data-sf-icon-scale='ladder'] sf-icon[size="#{$size}"]:not(:defined),
+  sf-icon[data-sf-icon-scale='ladder'][size="#{$size}"]:not(:defined) {
     @include icon-step($size, $steps, ('--sf-icon--width', '--sf-icon--height'));
   }
 }

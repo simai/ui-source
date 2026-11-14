@@ -43,6 +43,9 @@ import './reading-position.js';
 // The glyphs a person chooses from (duplication audit 2026-11-03, A-1):
 // SF.icons.choices.
 import './icon-choices.js';
+// Registered glyphs, mirroring and the unknown-name check every icon slot
+// shares (owner decision C151): SF.icons.register.
+import './icon-glyphs.js';
 import {installReady} from './ready.js';
 import {applyRememberedIconSubset} from './icon-subset-memory.js';
 import pageStorage from './page-storage.js';

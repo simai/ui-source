@@ -545,13 +545,14 @@
       "status": "public",
       "layer": "core",
       "audience": "public",
-      "author": "Lists the icons a person can choose from.",
+      "author": "Lists the icons a person can choose from and registers a product's own glyphs.",
       "doc": "guide/functions/person/icons",
       "kind": "object",
       "loaded_by": "core",
-      "summary": "The icon helpers every set shares. SF.icons.choices: the frozen list of the hundred and twenty glyph names a person chooses from (a record section, a menu row), drawn as sf-dropdown options of kind icon.",
+      "summary": "The icon helpers every set shares. SF.icons.choices: the frozen list of the hundred and twenty glyph names a person chooses from (a record section, a menu row), drawn as sf-dropdown options of kind icon; SF.icons.choices.words[name] gives each glyph's Russian and English words, which sf-dropdown searches (owner decision C151 point 8). SF.icons.register(name, svg): a product's own or a brand glyph, drawn from its SVG in the current colour at the slot's size wherever an icon name is accepted -- sf-icon, a button's icon, a menu row, a tab, the class markup -- and never asked of the icon font (C151 point 6); answers false and warns for a name outside lowercase letters, digits, _ and -, or a drawing that is not an <svg>.",
       "members": [
-        "choices"
+        "choices",
+        "register"
       ]
     },
     {

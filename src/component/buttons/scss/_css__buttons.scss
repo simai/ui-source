@@ -91,6 +91,14 @@
     padding-inline-start: var(--sf-button-text-container--padding-inline-start);
   }
 
+  /* An icon beside the label takes the label's weight (owner decision C151
+     point 4): every button label is medium. Set on the button, so a weight
+     the author gives the icon itself still wins; an icon-only button keeps
+     the regular glyph. */
+  .sf-button:has(.sf-button-text-container) {
+    --sf-icon--weight: var(--sf-font-weight-medium);
+  }
+
   .sf-button .sf-icon {
     color: var(--sf-icon--color, var(--sf-on-surface-variant));
     font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));

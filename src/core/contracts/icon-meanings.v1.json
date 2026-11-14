@@ -1,0 +1,130 @@
+{
+  "$comment": "One meaning, one glyph (owner decision C151 point 7, icons study IC-10, prototype #q-dups). glyph is the name to write; alternates are other glyphs found for the same meaning, which scripts/check-icon-alternates.mjs warns about in a product build. No alias names: an alternate keeps drawing what it draws. settings stays the glyph of settings; tune is not written for it, and refresh means reload, not reset. The documentation page «смысл → значок» reads this table.",
+  "schema": "simai.icon-meanings",
+  "version": 1,
+  "meanings": [
+    {
+      "meaning": {
+        "ru": "ещё (меню действий)",
+        "en": "more (an actions menu)"
+      },
+      "glyph": "more_horiz",
+      "alternates": [
+        "more_vert"
+      ]
+    },
+    {
+      "meaning": {
+        "ru": "закрыть",
+        "en": "close"
+      },
+      "glyph": "close",
+      "alternates": [
+        "cancel",
+        "clear"
+      ]
+    },
+    {
+      "meaning": {
+        "ru": "раскрыть список",
+        "en": "open a list"
+      },
+      "glyph": "expand_more",
+      "alternates": [
+        "keyboard_arrow_down",
+        "arrow_drop_down"
+      ]
+    },
+    {
+      "meaning": {
+        "ru": "далее, вложенное",
+        "en": "next, nested"
+      },
+      "glyph": "chevron_right",
+      "alternates": [
+        "keyboard_arrow_right",
+        "navigate_next"
+      ]
+    },
+    {
+      "meaning": {
+        "ru": "назад",
+        "en": "back"
+      },
+      "glyph": "arrow_back",
+      "alternates": [
+        "chevron_left",
+        "keyboard_arrow_left"
+      ]
+    },
+    {
+      "meaning": {
+        "ru": "изменить",
+        "en": "edit"
+      },
+      "glyph": "edit",
+      "alternates": [
+        "edit_square",
+        "mode_edit"
+      ]
+    },
+    {
+      "meaning": {
+        "ru": "удалить",
+        "en": "delete"
+      },
+      "glyph": "delete",
+      "alternates": [
+        "delete_outline",
+        "delete_forever"
+      ]
+    },
+    {
+      "meaning": {
+        "ru": "фильтр, вид",
+        "en": "filter, view"
+      },
+      "glyph": "tune",
+      "alternates": []
+    },
+    {
+      "meaning": {
+        "ru": "сбросить",
+        "en": "reset"
+      },
+      "glyph": "restart_alt",
+      "alternates": []
+    },
+    {
+      "meaning": {
+        "ru": "готово, выбрано",
+        "en": "done, chosen"
+      },
+      "glyph": "check",
+      "alternates": [
+        "done",
+        "check_circle"
+      ]
+    },
+    {
+      "meaning": {
+        "ru": "копировать",
+        "en": "copy"
+      },
+      "glyph": "content_copy",
+      "alternates": [
+        "file_copy"
+      ]
+    },
+    {
+      "meaning": {
+        "ru": "язык",
+        "en": "language"
+      },
+      "glyph": "translate",
+      "alternates": [
+        "language"
+      ]
+    }
+  ]
+}

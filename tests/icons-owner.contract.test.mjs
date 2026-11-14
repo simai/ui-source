@@ -14,8 +14,13 @@ const readUiDoc = path => readFile(new URL(path, uiDocRoot), 'utf8');
 test('ordinary Icons has valid semantic defaults and token geometry', async () => {
   const styles = await read('src/component/icons/scss/_css__icons.scss');
 
-  assert.match(styles, /--sf-icon--weight: var\(--sf-weight--regular\)/);
-  assert.match(styles, /--sf-icon--optical-size: 24/);
+  // Unset weight inherits the label's (C151 point 4); grade and optical size
+  // are inherited variables with the font's defaults as fallbacks.
+  assert.doesNotMatch(styles, /--sf-icon--weight: var\(--sf-weight--regular\)/);
+  assert.match(styles, /:root \.sf-icon \{\n  font-weight: var\(--sf-icon-weight, var\(--sf-icon--weight, inherit\)\);/);
+  assert.match(styles, /'opsz' var\(--sf-icon--optical-size, 24\)/);
+  assert.match(styles, /'GRAD' var\(--sf-icon--grade, 0\)/);
+  assert.match(styles, /\.theme-dark \{\n  --sf-icon--grade: -25;/);
   assert.match(styles, /--sf-icon--line-height: 1/);
   assert.match(styles, /color: var\(--sf-icon--color, var\(--sf-icon-color, currentColor\)\)/);
   // Without a size the glyph is a size-1 button's icon (24, phone and compact

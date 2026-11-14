@@ -121,7 +121,6 @@ export function iconSubsetCssFromManifest(manifest = {}) {
     `  font-feature-settings: 'liga';\n` +
     `  font-variation-settings: ` +
     `'FILL' var(--sf-icon--fill, 0), ` +
-    `'wght' var(--sf-icon--weight, 400), ` +
     `'GRAD' var(--sf-icon--grade, 0), ` +
     `'opsz' var(--sf-icon--optical-size, 24);\n` +
     `}\n`;
