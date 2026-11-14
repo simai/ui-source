@@ -77,6 +77,84 @@ The existing `.text*` selectors remain aliases for Body Text. A numeric
 `utility/headers` remains a compatible entrypoint but consumes the same
 Heading role variables as Core; it has no separate size or line-height table.
 
+## Links, text flow and headings (C186)
+
+Owner decision C186 (2026-11-14; study control/research/2026-11-14-plain-group-3.md
+in ui-control). One rule for every link, line and heading of running text.
+
+### Links
+
+- **Underline.** A link in running text (`a` without a class, an `a` with a
+  `link-*` utility, `sf-link`) is always underlined: the line is the link's
+  colour at ink 48 (`--sf-link--underline-ink`, the alpha scale's ink family),
+  1px (`--sf-link--underline-weight`), offset `--sf-a3`; under the pointer and
+  pressed it takes the full colour. In navigation, a menu, a tab list and a
+  table (`nav`, `menu`, `role=navigation|menu|menubar|tablist|table|grid|treegrid`,
+  `table`) a link has no line until the pointer or the keyboard comes to it.
+  `link-underline-none` still removes the line.
+- **Visited.** Off by default: a visited link keeps the link colour. A site or
+  documentation turns the visited colour (`--sf-link-visited`) on for a region,
+  or the whole page on `<html>`, with `data-sf-visited="on"` -- the switch the
+  reference link reads (C147 (5)).
+- **New tab.** A link in text with `target="_blank"` gets `arrow_outward`
+  after its last word -- the text's size, 4 from the word (`--sf-space-1/4`),
+  never on a line of its own -- and «(откроется в новой вкладке)» («(opens in a
+  new tab)») for a screen reader in the page's language
+  (`core/js/new-tab-link.js`, `SF.newTabLink`; the word is sf-file-download's
+  `new-tab-text`). A link that already shows a new-tab icon, and a link that is
+  part of a component (a class of its own, or a parent with an `sf-` class),
+  is left alone.
+- **Keyboard ring.** 2px `--sf-focus`, 2px from the words (`--sf-a2`), the UI
+  corner (`--sf-radius--ui`, 4), drawn around each line of a wrapped link
+  (`box-decoration-break: clone`).
+- **On a strong place** (`bg-<colour>`, glass, the inverse) a link is the
+  place's ink (`--sf-place--ink`) and keeps its underline: the theme's link blue
+  was 1.0:1 on `bg-primary`.
+
+### Text flow
+
+- **Long runs.** Paragraphs, lists, quotes and tables take
+  `overflow-wrap: anywhere` (the deprecated `word-break: break-word` before):
+  an address, a mail or a file name breaks where it must, and a table stays
+  inside its holder instead of widening it. A word that fits a line is never
+  broken. `.table-frame` keeps its words whole and scrolls.
+- **Hyphenation.** On in narrow running text only: on a screen of the phone ladder (below the one breakpoint, 60rem), or
+  in a container query container under 40rem (`p`, `li`, `dd`, `blockquote`,
+  `figcaption`), and wherever `text-hyphens` asks for it. Never in headings,
+  code, `address`, mail and phone links and `[translate="no"]` names. It needs
+  the page's `lang`.
+- **Balance.** h1-h4 (and `.sf-h-1..4`) balance their lines
+  (`text-wrap: balance`); running text avoids a lone last word (`pretty`).
+- **One family of utilities.** `text-nowrap`, `text-break` (anywhere),
+  `text-break-normal`, `text-hyphens`; `truncate` (one line with an ellipsis)
+  and `line-clamp-N` cut text. The former names keep drawing what they drew
+  until 2027-01-01 and the Loader notes each one once in `SF.deprecations`
+  (journal `class-text-flow-utility-aliases`):
+
+  | former | write |
+  | --- | --- |
+  | `wrap-none` | `text-nowrap` |
+  | `text-break-word`, `text-break-all` | `text-break` |
+  | `t-ellipsis`, `t-clip` | `truncate` |
+
+### Headings
+
+- The C21 sizes are unchanged. On a phone h3 takes the next title line, 18/24
+  (it was 18/20, and a two-line h3 touched); the desktop keeps 24/28
+  (`mobileHeight` of the heading role in `adaptive-sizing.v1.json`).
+- `.sf-h-1..6` is the only class that makes text look like a heading (C21,
+  C44). `.title-N` is a text size on its title line, with no weight, family or
+  margins: not a heading. `.title-7..12` are larger than h1 -- the display
+  rung, for a banner or a hero.
+- `utility/headers` holds the heading sizes only; the copy of core's
+  `.bg-surface-overlay` it carried is gone (core keeps the rule).
+
+### Code block
+
+Code in a block is one step below the text: step 1/2, 14/20 on a desktop and
+12/16 on a phone, in the system mono (`--sf-code--font-family`). Its hues come
+from the static palette (component.highlight 1.4.0).
+
 ## Code in running text
 
 A `<code>` in author markup -- a paragraph, a list item, a table cell, a
