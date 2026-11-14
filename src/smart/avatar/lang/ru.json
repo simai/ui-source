@@ -1,6 +1,8 @@
 {
   "title": "Аватар",
   "runtime": {
-    "aria-label": "Аватар"
+    "aria-label": "Аватар",
+    "status-online": "в сети",
+    "status-offline": "не в сети"
   }
 }

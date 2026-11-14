@@ -7,6 +7,8 @@ import { renderLabelTemplate } from "./js/templates/label";
 import { getInitials } from "../helpers/text";
 import { resolveAvatarHue } from "./js/tone.mjs";
 import {elementBadge, nameWithBadge} from "../helpers/anchored-badge";
+import {preloadControlIcons} from "../helpers/cycle";
+import {avatarPictureIcons} from "./js/picture";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
 import en from "./lang/en.json";
@@ -67,6 +69,53 @@ class SfAvatar extends AvatarElement {
     this.setAttribute("aria-label", value);
   }
 
+  // The name the avatar is read by (avatar study AV-2, 2026-11-14): the
+  // host's aria-label, else the heading the author gave, else the initials of
+  // text, else the language file's word («Аватар»). heading named nobody: it
+  // gave the initials and the hue, and the button still read «Аватар» (10 of
+  // 36 avatars on the docs page). el.ariaLabel keeps answering the attribute
+  // or the word, as it did.
+  get accessibleName() {
+    return (
+      this.getAttribute("aria-label") ||
+      String(this.heading ?? "").trim() ||
+      String(this.text ?? "").trim() ||
+      this.sfWord("aria-label")
+    );
+  }
+
+  // The presence word (AV-4): online and offline join the name as the count
+  // does -- «Анна Белова, в сети, 3 непрочитанных» -- in the page's language
+  // (lang runtime status-online / status-offline). The company and verified
+  // marks are not presence and add nothing.
+  get presenceWord() {
+    if (this.status === "online") return this.sfWord("status-online");
+    if (this.status === "offline") return this.sfWord("status-offline");
+    return "";
+  }
+
+  get spokenName() {
+    const presence = this.presenceWord;
+    const name = presence ? `${this.accessibleName}, ${presence}` : this.accessibleName;
+    return nameWithBadge(name, elementBadge(this).phrase);
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    // The placeholder's glyph is asked for before the avatar draws, as the
+    // tag's is (R074 F3): one request with the page's first icons.
+    if (this.isConnected) this.preloadIcons();
+  }
+
+  preloadIcons() {
+    const icons = avatarPictureIcons({
+      imageUrl: this.imageUrl,
+      text: this.displayText,
+      icon: this.icon,
+    });
+    preloadControlIcons(this, icons.map((icon) => ({icon, filled: false})));
+  }
+
   // The text attribute as given; the template draws displayText (the text,
   // else initials), an exemption of contracts/template-context.json.
   get text() {
@@ -91,6 +140,12 @@ class SfAvatar extends AvatarElement {
     }
 
     if (this.isImage) {
+      return "";
+    }
+
+    // A glyph the author names (a bot, a system) stands in for the initials
+    // of the name, which still names the avatar (AV-8).
+    if (String(this.icon ?? "").trim()) {
       return "";
     }
 
@@ -128,8 +183,10 @@ class SfAvatar extends AvatarElement {
     return this.createTemplateContext({
       ...props,
       ariaLabel: this.ariaLabel,
-      // The count joins the name: «Анна Белова, 3 непрочитанных».
-      buttonLabel: nameWithBadge(this.ariaLabel, badge.phrase),
+      // The name, the presence and the count: «Анна Белова, в сети,
+      // 3 непрочитанных».
+      buttonLabel: this.spokenName,
+      icon: this.icon,
       size: this.size,
       line: this.line,
       shape: this.shape,
@@ -160,6 +217,7 @@ class SfAvatar extends AvatarElement {
   }
 
   template() {
+    this.preloadIcons();
     return this.templateRenderer()(this.templateContext());
   }
 
@@ -184,7 +242,7 @@ class SfAvatar extends AvatarElement {
     }
 
     if (changedAttributes.includes("aria-label")) {
-      button.setAttribute("aria-label", nameWithBadge(this.ariaLabel, elementBadge(this).phrase));
+      button.setAttribute("aria-label", this.spokenName);
     }
 
     if (changedAttributes.includes("disabled")) {
@@ -206,6 +264,7 @@ class SfAvatar extends AvatarElement {
       hue: this.hue,
       tone: this.tone,
       status: this.status,
+      icon: this.icon,
       ariaLabel: this.ariaLabel,
       heading: this.heading,
       description: this.description,

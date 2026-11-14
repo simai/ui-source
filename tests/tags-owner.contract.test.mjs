@@ -39,9 +39,14 @@ test('select and remove actions cannot be nested', async () => {
 
 test('decorative leading visuals stay out of the accessibility tree', async () => {
   const template = await source('src/smart/tag/js/templates/default.js');
-  for (const className of ['sf-tag-check', 'sf-tag-icon', 'sf-tag-color-icon', 'sf-dot', 'sf-avatar']) {
+  for (const className of ['sf-tag-check', 'sf-tag-icon', 'sf-tag-color-icon', 'sf-dot']) {
     assert.match(template, new RegExp(`${className}[^>]*aria-hidden="true"`));
   }
+  // The avatar is the one avatar drawing, hidden from assistive technology
+  // (avatar js/picture.js, AV-8).
+  assert.match(template, /return avatarPicture\(\{/);
+  const picture = await source('src/smart/avatar/js/picture.js');
+  assert.match(picture, /export function avatarPicture[\s\S]*?<span[\s\S]*?aria-hidden="true"/);
 });
 
 test('Smart runtime emits exact change and close intents', async () => {

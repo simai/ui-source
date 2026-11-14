@@ -1,6 +1,6 @@
 import { html, nothing } from "lit";
 import { renderInheritedSlot } from "../../../helpers/inherited-value";
-import { cssUrl } from "../../../../core/js/css-url";
+import { avatarPicture } from "../../../avatar/js/picture";
 import {
   renderListItemHeading,
   renderListItemOption,
@@ -66,8 +66,15 @@ function renderFieldVisual(context) {
   if (option.type === "color" && option.colorClass) {
     return html`<span class="sf-tag-color-icon sf-dropdown-field-visual ${option.colorClass}" aria-hidden="true"></span>`;
   }
-  if (option.type === "avatar" && option.avatarImageUrl) {
-    return html`<span class="sf-avatar sf-avatar--size-1/2 bg-cover sf-dropdown-field-visual" aria-hidden="true" style=${`background-image: ${cssUrl(option.avatarImageUrl)};`}></span>`;
+  // sf-avatar's own drawing (js/picture.js, avatar study AV-8): the photo an
+  // <img>, else the initials of the option's name, else the person glyph.
+  if (option.type === "avatar") {
+    return avatarPicture({
+      size: "1/2",
+      imageUrl: option.avatarImageUrl,
+      name: option.avatarTitle || option.text,
+      extraClass: "sf-dropdown-field-visual",
+    });
   }
   return nothing;
 }
@@ -92,15 +99,11 @@ function renderTag(context, option) {
         ? html`<sf-icon icon=${option.icon} root-class="sf-tag-icon" aria-hidden="true"></sf-icon>`
         : nothing}
       ${option.type === "avatar"
-        ? html`
-            <span
-              class="sf-avatar sf-avatar--size-${tagSize} bg-cover"
-              aria-hidden="true"
-              style=${option.avatarImageUrl
-                ? `background-image: ${cssUrl(option.avatarImageUrl)};`
-                : nothing}
-            ></span>
-          `
+        ? avatarPicture({
+            size: tagSize,
+            imageUrl: option.avatarImageUrl,
+            name: option.avatarTitle || option.text,
+          })
         : nothing}
       <span class="sf-tag-container">${label}</span>
       <button

@@ -206,21 +206,16 @@
   inline-size: var(--sf-context-menu--line);
 }
 
-/* A picture in the lead: a site's logo or a person, the icon's size, with
-   its initials on the secondary tone when there is no picture. */
-.sf-context-menu-item-avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--sf-context-menu--line);
-  block-size: var(--sf-context-menu--line);
-  border-radius: var(--sf-radius--ui);
-  background-color: var(--sf-secondary-container);
-  color: var(--sf-on-secondary-container);
-  font-size: var(--sf-text-size-1\/4);
-  font-weight: var(--sf-font-weight-medium);
-  line-height: 1;
-  object-fit: cover;
+/* A picture in the lead: a site's logo or a person, the icon's size. It is
+   sf-avatar's drawing (the avatars sheet: the photo, the initials on the
+   neutral plate, the person glyph; square, as the row drew it); the menu
+   gives it the row's line only (avatar study AV-8, 2026-11-14). It was the
+   menu's own picture on the secondary container in the medium weight. */
+.sf-avatar.sf-context-menu-item-avatar {
+  --sf-avatar--width: var(--sf-context-menu--line);
+  --sf-avatar--height: var(--sf-context-menu--line);
+  --sf-avatar--font-size: var(--sf-text-size-1\/4);
+  --sf-avatar--line-height: 1;
 }
 
 /* A colour in the lead (sf-settings' colour rows, C85): a circle of the
@@ -414,19 +409,13 @@
   padding: var(--sf-context-menu--space-y) var(--sf-context-menu--inset-end) var(--sf-context-menu--space-y) var(--sf-context-menu--inset-start);
 }
 
-.sf-context-menu-header-avatar {
-  display: flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--sf-d0);
-  block-size: var(--sf-d0);
-  border-radius: 50%;
-  background-color: var(--sf-secondary-container);
-  color: var(--sf-on-secondary-container);
-  font-size: var(--sf-text-size-1\/3);
-  font-weight: var(--sf-font-weight-medium);
-  object-fit: cover;
+/* The header's picture: sf-avatar's drawing at the d0 step (the avatars
+   sheet; avatar study AV-8), the menu giving it the step only. */
+.sf-avatar.sf-context-menu-header-avatar {
+  --sf-avatar--width: var(--sf-d0);
+  --sf-avatar--height: var(--sf-d0);
+  --sf-avatar--font-size: var(--sf-text-size-1\/3);
+  --sf-avatar--line-height: 1;
 }
 
 .sf-context-menu-header-text {

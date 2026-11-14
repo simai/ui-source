@@ -63,7 +63,8 @@ test('Avatar publishes the full size scale and both semantic shapes', async () =
 test('Smart Avatar projects image, shape and accessibility contracts', async () => {
   const [source, shared, card, manifest, docs] = await Promise.all([
     read('src/smart/avatar/index.js'),
-    read('src/smart/avatar/js/templates/shared.js'),
+    // The picture is the one avatar drawing (js/picture.js, AV-8).
+    read('src/smart/avatar/js/picture.js'),
     read('src/smart/avatar/js/templates/card.js'),
     read('src/smart/avatar/smart.manifest.json'),
     read('src/smart/avatar/docs/docs.md'),
@@ -138,14 +139,15 @@ test('Avatar card without a photo draws initials on the hue, else the glyph', as
     read('src/smart/avatar/js/templates/card.js'),
     read('src/smart/avatar/index.js'),
     read('src/component/avatars/scss/_css__avatar-card.scss'),
-    read('src/smart/avatar/js/templates/shared.js'),
+    read('src/smart/avatar/js/picture.js'),
   ]);
 
   assert.match(card, /context\.isText/);
   assert.match(card, /sf-avatar-card-placeholder--text\$\{hue\}/);
   assert.match(card, /` sf-hue-\$\{context\.resolvedHue\}`/);
   assert.match(card, /<span class="sf-avatar-card-initials">\$\{context\.text\}<\/span>/);
-  assert.match(card, /sf-avatar-card-placeholder--icon[\s\S]*<i class="sf-icon" aria-hidden="true">person<\/i>/);
+  // The glyph is the icon setting's, person by default (sf-avatar 1.6.0, AV-8).
+  assert.match(card, /sf-avatar-card-placeholder--icon[\s\S]*<i class="sf-icon" aria-hidden="true">\$\{context\.icon \|\| "person"\}<\/i>/);
   assert.doesNotMatch(card, /bg-surface-container/);
   assert.match(source, /this\.templateName === "card" && !this\.hue && !this\.tone \? "auto" : ""/);
 
@@ -155,8 +157,10 @@ test('Avatar card without a photo draws initials on the hue, else the glyph', as
   assert.match(sheet, /\.sf-avatar-card-placeholder \.sf-icon \{[^}]*--sf-icon--font-size: 45cqi;[^}]*--sf-icon--height: 45cqi;[^}]*--sf-icon--width: 45cqi;/u);
   assert.doesNotMatch(sheet, /#[0-9a-f]{3,8}\b|rgba?\(/i);
 
-  // The round avatar is untouched: the same glyph and initials markup.
-  assert.match(shared, /<i class="sf-icon" aria-hidden="true">person<\/i>/);
+  // The round avatar keeps its initials markup; its glyph is an sf-icon
+  // element of the icon setting, person by default (sf-avatar 1.6.0, AV-8).
+  assert.match(shared, /<sf-icon icon=\$\{context\.icon \|\| AVATAR_PLACEHOLDER_ICON\} aria-hidden="true"><\/sf-icon>/);
+  assert.match(shared, /export const AVATAR_PLACEHOLDER_ICON = "person";/);
   assert.match(shared, /<span class="sf-avatar-text">\$\{context\.text\}<\/span>/);
 });
 
@@ -180,10 +184,12 @@ test('An avatar picture fills its circle once, ring included (R155, no ears)', a
   assert.match(image, /outline: var\(--sf-avatar-border-width, var\(--sf-px\)\) solid var\(--sf-avatar--border-color, var\(--sf-avatar-border-color, transparent\)\);/);
   assert.match(image, /outline-offset: calc\(var\(--sf-avatar-border-width, var\(--sf-px\)\) \* -1\);/);
 
-  // Every renderer that draws a background picture uses the avatar's class.
-  for (const path of ['src/smart/dropdown/js/templates/default.js', 'src/smart/list-item/js/templates/default.js', 'src/smart/tag/js/templates/default.js']) {
+  // Every host draws its picture with the one avatar drawing (js/picture.js,
+  // avatar study AV-8): an <img>, no background picture of its own.
+  for (const path of ['src/smart/dropdown/js/templates/default.js', 'src/smart/list-item/js/templates/default.js', 'src/smart/tag/js/templates/default.js', 'src/smart/input-lookup/js/templates/default.js', 'src/smart/menu-context/js/templates/default.js', 'src/smart/list/js/templates/default.js']) {
     const source = await read(path);
-    assert.match(source, /sf-avatar[^"`]*bg-cover|class=\$\{avatarClasses/, path);
-    assert.doesNotMatch(source, /background-repeat|background-origin/, `${path} leaves the picture to the avatar`);
+    assert.match(source, /import \{\s*avatarPicture\s*\} from ["']\.\.\/\.\.\/\.\.\/avatar\/js\/picture["']/, path);
+    assert.match(source, /avatarPicture\(/, path);
+    assert.doesNotMatch(source, /background-image|bg-cover|background-repeat|background-origin/, `${path} leaves the picture to the avatar`);
   }
 });

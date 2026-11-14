@@ -2,6 +2,7 @@ import {html, nothing} from 'lit';
 import {live} from 'lit/directives/live.js';
 import {createFieldContract} from '../../../../component/field-contract';
 import {matchRanges, splitByRanges} from '../lookup-model.mjs';
+import {avatarPicture} from '../../../avatar/js/picture';
 
 // The field: a label row, one frame holding the chips and the search box, the
 // hint or error line under it, and the list panel -- a popover the component
@@ -29,13 +30,18 @@ const BUTTON_SIZE = {'1/3': '1/3', '1/2': '1/3', '1': '1/2', '2': '1', '3': '2'}
 // stood on the field's text line before (sf-tag line): 24 in a 40 field.
 const CHIP_TAG_SIZE = {'1/3': '1/3', '1/2': '1/3', '1': '1/2', '2': '1', '3': '2'};
 
+// sf-avatar's own drawing (js/picture.js, avatar study AV-8): the photo, else
+// the initials, else the person glyph, with the row's geometry class.
 function avatar(item, size, extraClass = '') {
   if (!item.avatar) return item.icon ? html`<sf-icon class=${`${extraClass} sf-lookup-icon flex-none`} icon=${item.icon} aria-hidden="true"></sf-icon>` : nothing;
-  const classes = `sf-avatar sf-avatar--size-${size} inline-flex flex-none items-cross-center content-main-center overflow-hidden ${extraClass}`;
-  if (item.avatar.src) {
-    return html`<span class=${classes} aria-hidden="true"><img class="sf-avatar-image" src=${item.avatar.src} alt="" loading="lazy" decoding="async"></span>`;
-  }
-  return html`<span class="${classes} sf-avatar--text" aria-hidden="true">${item.avatar.initials}</span>`;
+  return avatarPicture({
+    size,
+    imageUrl: item.avatar.src,
+    text: item.avatar.initials,
+    name: item.label,
+    lazy: true,
+    extraClass: `overflow-hidden ${extraClass}`.trim(),
+  });
 }
 
 function chip(context, item, index) {

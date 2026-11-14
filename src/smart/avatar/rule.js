@@ -7,6 +7,8 @@ SF.RuleLoader['cl-avatar'] = {
   relation: [
     { name: 'avatars' },
     { name: 'badges' },
+    // The placeholder's glyph is an sf-icon element, so its name reaches the icon font request (avatar study AV-8).
+    { name: 'cl-icon' },
   ],
 };
 

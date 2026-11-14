@@ -1,7 +1,7 @@
 import {html, nothing} from 'lit';
 import './default.css';
 import {closeSize} from '../close-size.js';
-import {cssUrl} from '../../../../core/js/css-url';
+import {avatarPicture} from '../../../avatar/js/picture';
 
 // Sizes 1, 2 and 3 take the larger dot; 1/2 and 1/3 the smaller.
 const LARGE_SIZES = new Set(['1', '2', '3']);
@@ -46,34 +46,19 @@ function renderStatusDot(context) {
         `;
 }
 
+// The avatar is sf-avatar's own drawing (js/picture.js, avatar study AV-8):
+// the photo an <img> filling the circle, the initials on the neutral plate,
+// the person glyph without either. It was a background image here.
 function renderAvatar(context) {
     if (context.component?.hasSlotContent?.('avatar')) {
         return context.component.getSlotContent('avatar');
     }
 
-    if (context.avatarImageUrl) {
-        return html`
-            <span
-                    class="sf-avatar sf-avatar--size-1/4 bg-cover"
-                    aria-hidden="true"
-                    style=${`background-image: ${cssUrl(context.avatarImageUrl)};`}
-            ></span>
-        `;
-    }
-
-    if (context.avatarText) {
-        return html`
-            <span class="sf-avatar sf-avatar--size-1/4 sf-avatar--text flex justify-center items-center" aria-hidden="true">
-        ${context.avatarText}
-      </span>
-        `;
-    }
-
-    return html`
-        <span class="sf-avatar sf-avatar--size-1/4 sf-avatar--placeholder flex justify-center items-center" aria-hidden="true">
-      <sf-icon icon="person" aria-hidden="true"></sf-icon>
-    </span>
-    `;
+    return avatarPicture({
+        size: '1/4',
+        imageUrl: context.avatarImageUrl,
+        text: context.avatarText,
+    });
 }
 
 function renderLeading(context) {

@@ -8,5 +8,7 @@ SF.RuleLoader['cl-avatar-group'] = {
   relation: [
     { name: 'avatars' },
     { name: 'icons' },
+    // The placeholder's glyph is an sf-icon element (avatar study AV-8).
+    { name: 'cl-icon' },
   ],
 };

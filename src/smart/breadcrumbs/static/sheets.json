@@ -6,6 +6,7 @@
     "theme-dark"
   ],
   "sheets": [
+    "component/avatars/css/avatars.min.css",
     "component/breadcrumbs/css/breadcrumbs.min.css",
     "component/buttons/css/buttons.min.css",
     "component/context-menu/css/context-menu.min.css",
@@ -48,6 +49,7 @@
       "utility/visibility/default/css/default.min.css"
     ],
     "long-trail": [
+      "component/avatars/css/avatars.min.css",
       "component/breadcrumbs/css/breadcrumbs.min.css",
       "component/buttons/css/buttons.min.css",
       "component/context-menu/css/context-menu.min.css",
