@@ -55,7 +55,7 @@ const page = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><
       const overlay = document.getElementById('overlay');
       overlay.attach(document.getElementById('canvas'));
       overlay.setDocument(model, {describe: (node) => ({label: (names[node.type] || node.type) + ' ' + node.id, badges: []})});
-      overlay.setActions([{id: 'move-up', label: 'Выше'}, {id: 'move-down', label: 'Ниже'}, {id: 'remove', label: 'Удалить'}]);
+      overlay.setActions([{id: 'move-up', label: 'Выше', icon: 'arrow_upward'}, {id: 'move-down', label: 'Ниже', icon: 'arrow_downward'}, {id: 'remove', label: 'Удалить', icon: 'delete'}]);
       await customElements.whenDefined('sf-drawer');
       await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
       document.documentElement.dataset.ready = 'true';
@@ -113,7 +113,8 @@ try {
       await tab.locator('#canvas [data-sf-composition-id="link-main"] a').click();
       await frame();
       await untouched('a click on a link in a block');
-      await tab.locator('.sf-composition-overlay-action[data-action="move-up"]').click();
+      // An action is an icon button since 1.9.0 (owner decision C170 (1), CO-1).
+      await tab.locator('button[data-action="move-up"]').click();
       await frame();
       await untouched('a toolbar action');
       const seam = await tab.evaluate(() => {

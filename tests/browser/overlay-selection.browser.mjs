@@ -127,11 +127,21 @@ const prepareFrame = async (page, path, {actions = ACTIONS} = {}) => {
       const inner = window.lab.block(id).getBoundingClientRect();
       const outer = frame.getBoundingClientRect();
       const box = (element) => { if (!element || element.hidden) return null; const r = element.getBoundingClientRect(); return {left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height}; };
+      // A frame's line stands 2 clear of its block since 1.9.0 (owner decision
+      // C170 (2b)): the block is the frame's content box, inside its border and padding.
+      const inside = (element) => {
+        const r = box(element);
+        if (!r) return null;
+        const style = getComputedStyle(element);
+        const x = parseFloat(style.borderLeftWidth) + parseFloat(style.paddingLeft);
+        const y = parseFloat(style.borderTopWidth) + parseFloat(style.paddingTop);
+        return {left: r.left + x, top: r.top + y, right: r.right - x, bottom: r.bottom - y, width: r.width - 2 * x, height: r.height - 2 * y};
+      };
       const scroller = document.getElementById('well').getBoundingClientRect();
       return {
         block: {left: outer.left + inner.left, top: outer.top + inner.top, right: outer.left + inner.right, bottom: outer.top + inner.bottom, width: inner.width, height: inner.height},
-        frame: box(overlay.querySelector('.sf-composition-overlay-frame--selected')),
-        hover: box(overlay.querySelector('.sf-composition-overlay-frame--hover')),
+        frame: inside(overlay.querySelector('.sf-composition-overlay-frame--selected')),
+        hover: inside(overlay.querySelector('.sf-composition-overlay-frame--hover')),
         toolbar: box(overlay.querySelector('.sf-composition-overlay-toolbar')),
         port: {top: scroller.top, bottom: scroller.bottom, left: scroller.left, right: scroller.right},
       };
@@ -170,7 +180,8 @@ try {
 
   // Item 1, 2: icon-only at 32px, named by the label, a tooltip with the shortcut.
   await select(page, 'b2');
-  const tools = await page.evaluate(() => [...document.querySelectorAll('.sf-composition-overlay-toolbar button')].map((button) => {
+  // What the row shows: «⋯» stays out while every action fits (C170 (1)).
+  const tools = await page.evaluate(() => [...document.querySelectorAll('.sf-composition-overlay-toolbar button')].filter((button) => button.getClientRects().length).map((button) => {
     const box = button.getBoundingClientRect();
     return {action: button.dataset.action, name: button.getAttribute('aria-label'), text: button.textContent.trim().length, width: Math.round(box.width), height: Math.round(box.height), left: Math.round(box.left)};
   }));
@@ -198,7 +209,7 @@ try {
   const before = tools.map((tool) => tool.left);
   await page.evaluate((actions) => document.getElementById('ov').setActions(actions.map((action) => (action.id === 'up' ? {...action, disabled: true} : action))), ACTIONS);
   await settle(page);
-  const dimmed = await page.evaluate(() => [...document.querySelectorAll('.sf-composition-overlay-toolbar button')].map((button) => ({left: Math.round(button.getBoundingClientRect().left), disabled: button.disabled, action: button.dataset.action})));
+  const dimmed = await page.evaluate(() => [...document.querySelectorAll('.sf-composition-overlay-toolbar button')].filter((button) => button.getClientRects().length).map((button) => ({left: Math.round(button.getBoundingClientRect().left), disabled: button.disabled, action: button.dataset.action})));
   check(JSON.stringify(dimmed.map((one) => one.left)) === JSON.stringify(before) && dimmed[1].disabled && !dimmed[2].disabled, 'an unavailable action stays where it is, its neighbours do not move', {before, dimmed});
   await page.mouse.move(5, 5);
   const heardBefore = (await heard(page, 'apply')).length;
@@ -285,32 +296,36 @@ try {
   check(!look.hover.hidden && look.hover.width === '1px' && look.hover.style === 'solid' && look.hover.fill === 'rgba(0, 0, 0, 0)' && look.hover.text === '', 'hover is a 1 px frame with no label and no fill', look.hover);
   check(look.selected.width === '2px' && look.selected.fill === 'rgba(0, 0, 0, 0)', 'selection is a 2 px frame with no tint', look.selected);
 
-  // Item 6: one place to add, at the seam under the pointer.
-  await select(page, 'b2');
+  // Item 6: the «+» under the selected block at all times (owner decision C170
+  // (3)), and one more place at the seam under the pointer.
+  await select(page, 'b1');
   await page.mouse.move(5, 5);
   await settle(page);
   const shown = () => page.evaluate(() => [...document.querySelectorAll('.sf-composition-overlay-insert[data-sf-insert-shown]')].map((button) => ({index: button.dataset.index, opacity: getComputedStyle(button).opacity, size: Math.round(button.querySelector('.sf-composition-overlay-insert-mark').getBoundingClientRect().width), line: Math.round(button.getBoundingClientRect().top + button.getBoundingClientRect().height / 2)})));
-  check((await shown()).length === 0, 'nothing to add is shown on the selected block', await shown());
+  const own = await shown();
+  report.own = own;
+  check(own.length === 1 && own[0].index === '1' && own[0].size === 28, 'the «+» under the selected block is shown, the 28 px icon button', own);
   const seamBox = await boxes(page, 'b3');
   await page.mouse.move(seamBox.block.left + 200, seamBox.block.top + 9);
   await page.waitForTimeout(60);
   const seam = await shown();
   report.seam = seam;
-  check(seam.length === 1 && seam[0].index === '2' && seam[0].size === 24 && Math.abs(seam[0].line - seamBox.block.top) <= 1, 'one line and one 24 px «+», only at the seam under the pointer', {seam, at: seamBox.block.top});
+  const pointed = seam.filter((one) => one.index === '2');
+  check(seam.length === 2 && pointed.length === 1 && pointed[0].size === 28 && Math.abs(pointed[0].line - seamBox.block.top) <= 1, 'one more line and «+» at the seam under the pointer', {seam, at: seamBox.block.top});
   await page.mouse.move(seamBox.block.left + 200, seamBox.block.top + 30);
   await page.waitForTimeout(40);
   const stays = (await shown()).length;
   await page.waitForTimeout(220);
   const gone = (await shown()).length;
   report.seamLeave = {after40ms: stays, after260ms: gone};
-  check(stays === 1 && gone === 0, 'the place stays a moment after the pointer leaves, then goes', report.seamLeave);
+  check(stays === 2 && gone === 1, 'the place stays a moment after the pointer leaves, then goes; the selected block keeps its «+»', report.seamLeave);
   // The pointer reaches the button, however it comes.
   await page.mouse.move(seamBox.block.left + 300, seamBox.block.top - 5);
   await page.waitForTimeout(60);
-  const mark = await page.evaluate(() => { const box = document.querySelector('.sf-composition-overlay-insert[data-sf-insert-shown] .sf-composition-overlay-insert-mark').getBoundingClientRect(); return {x: box.left + box.width / 2, y: box.top + box.height / 2}; });
+  const mark = await page.evaluate(() => { const box = document.querySelector('.sf-composition-overlay-insert[data-sf-insert-shown][data-index="2"] .sf-composition-overlay-insert-mark').getBoundingClientRect(); return {x: box.left + box.width / 2, y: box.top + box.height / 2}; });
   await page.mouse.move(mark.x, mark.y, {steps: 4});
   await page.waitForTimeout(260);
-  check((await shown()).length === 1, 'the place stays while the pointer is on its button', null);
+  check((await shown()).length === 2, 'the place stays while the pointer is on its button', null);
   await page.mouse.click(mark.x, mark.y);
   const inserted = (await heard(page, 'insert')).at(-1);
   check(inserted?.index === 2 && inserted?.parent === '' && inserted?.slot === 'default', 'the «+» asks for its place', inserted);
@@ -469,7 +484,8 @@ try {
   report.outside = {place: await page.evaluate(() => document.getElementById('ov').getAttribute('data-sf-overlay-place')), gap: Math.abs(outside.frame.top - outside.block.top)};
   check(report.outside.place === 'viewport' && report.outside.gap <= 1, 'an overlay outside the scroller follows it by script', report.outside);
 
-  // {id, label} callers: the same text buttons, the same events, on a canvas too.
+  // {id, label} callers: rows of «Ещё» since 1.9.0 (owner decision C170 (1),
+  // CO-1: no hand-drawn text buttons), the same events, on a canvas too.
   await page.goto(`${base}/canvas`);
   await page.waitForFunction(() => customElements.get('sf-editor-overlay'), null, {timeout: 25000});
   const plain = await page.evaluate(async () => {
@@ -485,6 +501,7 @@ try {
     // What the selection asks to observe has reported before the count starts.
     await new Promise((done) => setTimeout(done, 200));
     const buttons = [...overlay.querySelectorAll('.sf-composition-overlay-action')];
+    const more = overlay.querySelector('[data-sf-overlay-more] button');
     const element = document.querySelector('[data-sf-composition-id="b"]').getBoundingClientRect();
     const toolbar = overlay.querySelector('.sf-composition-overlay-toolbar').getBoundingClientRect();
     const position = overlay.position;
@@ -494,11 +511,21 @@ try {
     await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
     const after = document.querySelector('[data-sf-composition-id="b"]').getBoundingClientRect();
     const frame = overlay.querySelector('.sf-composition-overlay-frame--selected').getBoundingClientRect();
-    buttons[0].click();
+    more.click();
+    let menu = null;
+    for (let tries = 0; tries < 60 && !menu?.querySelector('[role="menuitem"]'); tries += 1) {
+      await new Promise((done) => setTimeout(done, 50));
+      menu = document.querySelector('sf-menu-context');
+    }
+    const rows = [...(menu?.querySelectorAll('[role="menuitem"]') || [])];
+    const labels = rows.map((row) => row.textContent.replace(/\s+/g, ' ').trim());
+    rows[0]?.click();
     return {
-      labels: buttons.map((button) => [button.tagName, button.dataset.action, button.textContent]),
+      buttons: buttons.length,
+      labels,
       above: toolbar.bottom <= element.top + 0.5,
-      gap: Math.abs(after.top - frame.top),
+      // The frame's line stands 2 clear of the block (C170 (2b)): 4 out.
+      gap: Math.abs(after.top - frame.top - 4),
       runs,
       heard,
       same: document.getElementById('canvas').innerHTML === before,
@@ -506,7 +533,7 @@ try {
     };
   });
   report.plain = plain;
-  check(JSON.stringify(plain.labels) === JSON.stringify([['BUTTON', 'up', 'Выше'], ['BUTTON', 'remove', 'Удалить']]), '{id, label} actions are the same text buttons', plain.labels);
+  check(plain.buttons === 0 && JSON.stringify(plain.labels) === JSON.stringify(['Выше', 'Удалить']), '{id, label} actions are rows of «Ещё», no text button', plain);
   check(JSON.stringify(plain.heard) === JSON.stringify([{action: 'up', scope: 'entry', ids: ['b']}, {action_id: 'up', node_id: 'b'}]), '{id, label} actions send what they sent', plain.heard);
   check(plain.place === 'content' && plain.gap <= 0.5 && plain.runs === 0, 'on the page itself the parts travel with the content too', plain);
   check(plain.above && plain.same, 'the toolbar stands above the node and the canvas HTML is untouched', plain);

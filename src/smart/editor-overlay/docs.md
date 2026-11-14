@@ -19,8 +19,15 @@ Document: рамки при наведении и выборе, панель д�
 ```js
 await customElements.whenDefined('sf-editor-overlay');
 overlay.attach(canvas);
-overlay.setDocument(document, {describe: (node) => ({label: titleOf(node), badges: node.shared ? ['Общий'] : []})});
-overlay.setActions([{id: 'move-up', label: 'Выше'}, {id: 'remove', label: 'Удалить'}]);
+overlay.setDocument(document, {describe: (node) => ({label: titleOf(node), icon: iconOf(node)})});
+overlay.setActions([
+  {id: 'move', label: 'Перетащить', icon: 'drag_indicator'},
+  {id: 'settings', label: 'Настройки', icon: 'settings', priority: 'pin'},
+  {id: 'move-up', label: 'Выше', icon: 'arrow_upward', priority: 1},
+  {id: 'move-down', label: 'Ниже', icon: 'arrow_downward', priority: 1},
+  {id: 'remove', label: 'Удалить', icon: 'delete', tone: 'danger', priority: 2},
+  {id: 'copy', label: 'Копировать'},
+]);
 overlay.setDropFilter((place, item) => place.slot === 'default');
 ```
 
@@ -55,13 +62,26 @@ overlay.setDropFilter((place, item) => place.slot === 'default');
 
 ## Actions
 
-`setActions` takes up to 16 actions `{id, label, icon, shortcut, disabled, tone}`.
-Only `id` (`^[a-z][a-z0-9-]{0,63}$`) and `label` are required, so `{id, label}` works
-as it always did: a text button.
+`setActions` takes up to 16 actions `{id, label, icon, shortcut, disabled, tone, priority}`.
+Only `id` (`^[a-z][a-z0-9-]{0,63}$`) and `label` are required.
 
-- `icon` is an icon name: the button becomes `sf-icon-button` at size 1/2 (32 px),
-  icon only, with `label` as its accessible name and `sf-tooltip` holding the label
-  and the shortcut;
+The toolbar (owner decision C170, 1.9.0) starts with the selected block's kind icon
+and name, as `describe(node)` gives them (`{label, icon}`, `icon` a Material Symbols
+name); the name is cut with an ellipsis before the row would overflow. No label is
+drawn above the frame: a block's parameters belong in the host's side panel, opened
+by an action such as «Настройки». Then the icon actions stand in groups: neighbours
+with the same `priority` are one group, the grip (`drag_indicator`) is a group of its
+own; buttons 4 apart, a separator between groups. Up to five icon actions stand in the
+row; the rest, and every action without an icon, are under ⋯ «Ещё» at the end, the
+standard menu. The host decides which actions are frequent by giving them an icon and
+putting them first.
+
+- `icon` is an icon name: the button is `sf-icon-button` at size 1/2 (32 px; 44 on a
+  phone), icon only, with `label` as its accessible name and `sf-tooltip` holding the
+  label and the shortcut. Without an icon the action is a row of «Ещё»;
+- `priority` is the word of the row engine (owner decision C155): when the row has no
+  room, whole groups leave for «Ещё», the biggest number first and a group without a
+  number before any numbered one; `"pin"` never leaves, nor does the grip;
 - `shortcut` is the keys as the tooltip shows them: `⌥↑`, `⌥↓`, `⌘D`, `⌫`, `Enter`.
   While focus is in the tree, on the toolbar or in the frame, the key sends the same
   `sf-composition-overlay-apply` as the button, for the selected node. After a click
@@ -76,11 +96,20 @@ as it always did: a text button.
   block dims, one line shows where it lands, the canvas scrolls near its edges and
   Escape cancels. A drop sends `sf-composition-overlay-move`, whose `position` is the
   place among the other siblings, without the block itself. A press without a move
-  sends nothing; from the keyboard it is an ordinary `apply`. Without a grip, a canvas
-  bound with `for` is still dragged by the selected node's label.
+  sends nothing; from the keyboard it is an ordinary `apply`. Without a grip a block
+  moves from the keyboard (the tree: Space picks it up, arrows choose, Enter drops) or
+  by the host's own «Выше» / «Ниже» actions; the frame has no label to drag by
+  since 1.9.0.
 
 The toolbar updates its buttons in place, by `id`: another `setActions` loses neither
 focus nor a tooltip, so a host may call it on every change.
+
+The selected block is a 2 px line 2 px clear of its content; the hover a 1 px line.
+The «+» under the selected block is always shown, a round button above the line; the
+seam under the pointer shows its own «+». Below the sm breakpoint (32rem, a phone) the
+toolbar is a bar at the bottom of the screen with 44 px buttons and the «+» that adds
+after the selected block; there is no grip there. While a block is dragged, its place
+is the kit's one 2 px drop line, the same as `sf-sortable`'s.
 
 ## Which placement to choose
 
@@ -241,14 +270,14 @@ and the overlay carries `data-sf-overlay-frame="unreachable"`.
 - `rect` — `{x, y, width, height}` in frame-document coordinates (the
   element's viewport box plus the frame's scroll), for a part that has no
   element of its own;
-- `label` — the frame label and the tree item's name;
+- `label` — the toolbar's name and the tree item's name;
 - `parent` — the id of another node in the list; nodes with the same parent
   are siblings, and a node without one is on the top level;
 - `editable` — allows plain-string inline editing (needs `element`).
 
 The list is checked (`SF.CompositionOverlay.checkOverlayNodes`): an unknown
 key, a duplicate id, a missing rect and element or a parent cycle is a
-`TypeError`. `describe(node)` returning `{label, badges}` works as with
+`TypeError`. `describe(node)` returning `{label, icon, badges}` works as with
 `setDocument`. The selection survives a new list when its id is still there.
 After the frame reloads (a new `srcdoc`), call `setNodes` with the new
 document's elements.
