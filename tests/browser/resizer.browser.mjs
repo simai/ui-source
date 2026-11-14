@@ -207,18 +207,21 @@ try {
   // arrows of an RTL page move the edge the way they point (RS-5); a panel
   // that scrolls keeps the whole strip on its edge, scrolled or not (RS-2);
   // the content beside a panel keeps min (RS-9).
+  // A page taller than the window: the rows below are measured where they
+  // stand, in view.
+  await again.setViewportSize({width: 1000, height: 2400});
   const study = await again.evaluate(async () => {
     document.body.insertAdjacentHTML('beforeend', `
-      <div id="study" style="display:flex; inline-size:600px; block-size:160px; margin-top:20px">
-        <nav id="s-rtl-box" dir="rtl" style="display:flex; flex:0 0 auto"><nav id="s-rtl" style="inline-size:var(--rw, 240px); block-size:160px; background:#eee"><sf-resizer id="s-rtl-h" min="200px" max="400px" property="--rw"></sf-resizer></nav></nav>
+      <div id="study" style="display:flex; flex-wrap:wrap; inline-size:700px; margin-top:20px">
+        <div id="s-rtl-box" dir="rtl" style="display:flex; flex:0 0 auto; inline-size:700px"><nav id="s-rtl" style="inline-size:var(--rw, 240px); block-size:160px; background:#eee"><sf-resizer id="s-rtl-h" min="200px" max="400px" property="--rw"></sf-resizer></nav><main style="flex:1">Текст</main></div>
         <nav id="s-off" style="inline-size:240px; block-size:160px; background:#eee"><sf-resizer id="s-off-h" disabled></sf-resizer></nav>
       </div>
-      <div style="display:flex; inline-size:600px; block-size:160px">
+      <div style="display:flex; inline-size:700px; block-size:160px">
         <nav id="s-scroll" style="inline-size:240px; overflow:auto; background:#eee"><div style="block-size:600px"></div><sf-resizer id="s-scroll-h" min="200px" max="400px"></sf-resizer></nav>
         <main style="flex:1">Страница</main>
       </div>
-      <div style="display:flex; inline-size:400px; block-size:100px">
-        <nav id="s-room" style="inline-size:var(--room, 160px); background:#eee"><sf-resizer id="s-room-h" min="120px" max="400px" property="--room"></sf-resizer></nav>
+      <div style="display:flex; inline-size:700px; block-size:100px">
+        <nav id="s-room" style="inline-size:var(--room, 160px); background:#eee"><sf-resizer id="s-room-h" min="120px" max="640px" property="--room"></sf-resizer></nav>
         <main style="flex:1 1 auto; min-inline-size:0">Текст рядом</main>
       </div>`);
     await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
@@ -253,7 +256,9 @@ try {
   if (study.off.tabIndex !== -1 || study.off.disabled !== 'true') note({case: 'a disabled handle is no Tab stop', got: study.off});
   if (study.rtlArrowLeft !== 16) note({case: 'ArrowLeft moves an RTL end edge left: wider', got: study.rtlArrowLeft});
   if (study.before !== '3/0' || study.scrolled !== '3/0' || study.sideways !== 0) note({case: 'a scrolling panel keeps the whole strip on its edge', got: study});
-  if (study.roomMax !== '280' || study.roomEnd !== 280) note({case: 'the content beside keeps min', got: study});
+  // 700 less the content's min 120: End stops at 580, not at max 640 (the
+  // value is a share since C158 (3), so the room is read from the width).
+  if (study.roomMax !== '100' || study.roomEnd !== 580) note({case: 'the content beside keeps min', got: study});
 
   // Owner decision C158: a collapsible panel folds past min by half of min
   // and on Enter, comes back on Enter and by its «Показать» button, and says
@@ -278,7 +283,7 @@ try {
   });
   await again.waitForTimeout(300);
   const c158 = {};
-  await again.evaluate(() => document.getElementById('fold').scrollIntoView({block: 'center'}));
+  await again.evaluate(() => window.scrollTo(0, 0));
   const edge = await again.evaluate(() => { const box = document.getElementById('fold').getBoundingClientRect(); return {x: box.right, y: box.top + box.height / 2}; });
   await again.mouse.move(edge.x, edge.y);
   await again.mouse.down();

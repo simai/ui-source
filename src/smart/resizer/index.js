@@ -208,8 +208,12 @@ export class SfResizer extends ResizerElement {
     this._folded = this.collapsible && (value === '0' || (value === null && readFolded(this.storageKey)));
     this._restore = this._wanted;
     // A panel that folds shows the «Показать» button on its edge: its code is
-    // asked for now, so the button draws whole the first time it is needed.
-    if (this.collapsible) globalThis.SF?.Loader?.ensure?.(['sf-button-icon']);
+    // asked for when a pointer or the keyboard reaches the handle, before it
+    // can fold, so the button draws whole the first time; a page that never
+    // folds a panel never loads it.
+    const warm = () => this.warmUnfold();
+    this.addEventListener('pointerenter', warm, {once: true, signal: this.sfScope});
+    this.addEventListener('focusin', warm, {once: true, signal: this.sfScope});
     if (this.target()) {
       this.control();
       this.layout();
@@ -246,12 +250,27 @@ export class SfResizer extends ResizerElement {
     this.place();
   }
 
-  // The panel the handle controls (aria-controls, C158 (3)): an id is given
-  // to a panel that has none.
+  warmUnfold() {
+    if (this.collapsible) globalThis.SF?.Loader?.ensure?.(['sf-button-icon']);
+  }
+
+  // The panel the handle controls (aria-controls, C158 (3)): by its id; a
+  // panel without one is named by element reference where the browser has
+  // it (ariaControlsElements), so the page's markup gets no made-up id, and
+  // is given an id where it does not.
   control() {
     const target = this.target();
     if (!target) return;
-    if (!target.id) target.id = `sf-resizer-panel-${++panelIds}`;
+    if (target.id) {
+      this.setAttribute('aria-controls', target.id);
+      return;
+    }
+    if ('ariaControlsElements' in this) {
+      this.removeAttribute('aria-controls');
+      this.ariaControlsElements = [target];
+      return;
+    }
+    target.id = `sf-resizer-panel-${++panelIds}`;
     this.setAttribute('aria-controls', target.id);
   }
 
@@ -288,6 +307,7 @@ export class SfResizer extends ResizerElement {
     if (!target) return;
     const folded = Boolean(this._folded && this.collapsible && !this._narrow);
     if (folded) {
+      this.warmUnfold();
       this.unfoldButton();
       target.setAttribute(FOLDED, '');
       if (this.property) target.style.setProperty(this.property, '0px');
