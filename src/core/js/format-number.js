@@ -16,11 +16,21 @@ import {formatLocale, intlFormatter} from './format-intl.js';
  *   currency-<CODE>   1 234,50 ₽ (an ISO 4217 code)
  *   unit-<unit>       45,3 ГБ (an Intl unit: gigabyte, megabit-per-second)
  *
- * Anything else reads as number.
+ * Anything else reads as number. Words join with a space: a kind (currency-,
+ * unit-, percent) and a precision (integer, decimal-<n>, compact), so
+ * «currency-RUB integer» is 1 235 ₽, «currency-RUB decimal-2» 1 234,50 ₽ and
+ * «currency-RUB compact» 1,1 млн ₽. The precision wins whatever the order.
  */
 export function numberOptions(format = 'number', step = 0) {
-  const word = String(format || 'number').trim();
-  if (word === 'integer') return {maximumFractionDigits: 0};
+  const words = String(format || 'number').trim().split(/\s+/u).filter(Boolean);
+  if (words.length > 1) {
+    const PRECISION = /^(?:integer|compact|decimal-\d{1,2})$/u;
+    const kinds = words.filter((one) => !PRECISION.test(one));
+    const precision = words.filter((one) => PRECISION.test(one));
+    return [...kinds, ...precision].reduce((options, one) => ({...options, ...numberOptions(one, step)}), {});
+  }
+  const word = words[0] ?? 'number';
+  if (word === 'integer') return {minimumFractionDigits: 0, maximumFractionDigits: 0};
   if (word === 'percent') return {style: 'percent', maximumFractionDigits: 1};
   if (word === 'compact') return {notation: 'compact', maximumFractionDigits: 1};
   const decimal = /^decimal-(\d{1,2})$/u.exec(word);

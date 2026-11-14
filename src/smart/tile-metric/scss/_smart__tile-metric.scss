@@ -1,4 +1,6 @@
+@use 'sass:map';
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 
 // A tile is a place (C16): a cut-out and the dim ink on it take the card's.
 // In sf.base, so a utility on the tile still wins.
@@ -93,6 +95,7 @@ sf-tile-metric {
 }
 
 .sf-tile-metric-label,
+.sf-tile-metric-flat,
 .sf-tile-metric-period,
 .sf-tile-metric-limit,
 .sf-tile-metric-hint {
@@ -193,9 +196,23 @@ sf-tile-metric {
   overflow-wrap: anywhere;
 }
 
+/* The chart under the numbers (owner C168 (3), 2026-11-14): the page's small
+   picture (an sf-chart-sparkline, an svg) across the tile's whole width, 32
+   high, in the hint's colour -- the change's colour is the badge's, the line
+   carries no meaning of its own; no axes, no captions. An svg drawn with
+   currentColor takes it. */
 .sf-tile-metric-chart {
   display: block;
   min-inline-size: 0;
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-tile-metric-chart > * {
+  display: block;
+  box-sizing: border-box;
+  inline-size: 100%;
+  block-size: var(--sf-c6);
+  max-inline-size: 100%;
 }
 
 .sf-tile-metric-chart[hidden] {
@@ -233,13 +250,28 @@ sf-tile-metric {
   }
 }
 
-/* A row of tiles that wraps: columns at least min-width wide, one column on a
-   phone; the gap is the size-1 rung's space. */
+/* A row of tiles that wraps: columns at least min-width wide; the gap is the
+   one between cells (C105 H6, --sf-space-1). On a phone (below the sm step)
+   the small tiles go two in a row and sizes 1 and 2 take the whole row
+   (owner C168 (4), 2026-11-14). */
 .sf-tile-metric-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--sf-tile-metric-min-width, var(--sf-f4))), 1fr));
   gap: var(--sf-space-1);
   align-items: stretch;
+}
+
+@media not all and (min-width: map.get(bp.$breakpoint-array, sm)) {
+  .sf-tile-metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* The host is display: contents once drawn: its tile is the grid item. */
+  .sf-tile-metric-grid > :not(sf-tile-metric, [size="1/2"]),
+  .sf-tile-metric-grid > sf-tile-metric:not([size="1/2"]),
+  .sf-tile-metric-grid > sf-tile-metric:not([size="1/2"]) > .sf-tile-metric {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (forced-colors: active) {

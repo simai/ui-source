@@ -2524,8 +2524,10 @@ class SfBaseElement extends HTMLElement {
 
     this._slotTemplatesCaptured = true;
 
+    // Any element names a slot: an <svg slot="chart"> is an SVGElement, not an
+    // HTMLElement, and was left outside the drawing (tile TM-11, 2026-11-14).
     Array.from(this.children).forEach((child) => {
-      if (!(child instanceof HTMLElement)) {
+      if (!(child instanceof Element)) {
         return;
       }
 

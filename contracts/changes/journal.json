@@ -12405,6 +12405,31 @@
       "source": "src/smart/tag/js/templates/default.js; ui-control control/docs-review/decisions.md C140"
     },
     {
+      "id": "behaviour-tile-metric-money-whole",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-tile-metric 1.4.0 (owner decision C168 (2), tile study TM-7): money on a tile is whole by default. A currency-<CODE> format without a precision word writes «1 111 111 ₽» (the tile adds integer); the kopecks only with decimal-2 (format=\"currency-RUB decimal-2\"), and «1,1 млн ₽» with compact (format=\"currency-RUB compact\"), for a narrow 1/2 tile. Core's format words join with a space, a kind and a precision; one word reads as before everywhere else.",
+      "items": [
+        {
+          "component": "sf-tile-metric",
+          "attribute": "format",
+          "from": "format=\"currency-RUB\" writing «1 111 111,00 ₽»",
+          "to": "format=\"currency-RUB decimal-2\" for the kopecks; format=\"currency-RUB\" is whole"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "A tile that must show kopecks adds decimal-2 to its format: format=\"currency-RUB decimal-2\". A summary keeps the whole roubles; a narrow 1/2 tile may write format=\"currency-RUB compact\".",
+      "examples": {
+        "before": "<sf-tile-metric label=\"Выручка\" value=\"1111111.4\" format=\"currency-RUB\"></sf-tile-metric>",
+        "after": "<sf-tile-metric label=\"Выручка\" value=\"1111111.4\" format=\"currency-RUB decimal-2\"></sf-tile-metric>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/tile-metric/index.js tileFormat; src/core/js/format-number.js; ui-control control/docs-review/decisions.md C168"
+    },
+    {
       "id": "token-c178-one-family-names",
       "recorded_on": "2026-11-14",
       "stage": "compat",

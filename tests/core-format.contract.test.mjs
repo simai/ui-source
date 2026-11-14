@@ -123,6 +123,17 @@ test('numbers: integer, decimal, percent, compact, currency, in two languages', 
   assert.deepEqual(numberOptions('unit-gigabyte'), {style: 'unit', unit: 'gigabyte', unitDisplay: 'short', maximumFractionDigits: 1});
 });
 
+test('numbers: a kind and a precision join with a space, the precision wins in any order (C168 (2))', () => {
+  const ru = (value, format) => plain(formatNumber(value, format, {locale: 'ru'}));
+  assert.equal(ru(1111111.456, 'currency-RUB integer'), '1 111 111 ₽');
+  assert.equal(ru(1111111.456, 'currency-RUB decimal-2'), '1 111 111,46 ₽');
+  assert.equal(ru(1111111.456, 'decimal-2 currency-RUB'), '1 111 111,46 ₽');
+  assert.equal(ru(1111111, 'currency-RUB compact'), '1,1 млн ₽');
+  assert.equal(ru(45.25, 'decimal-2 unit-gigabyte'), '45,25 ГБ');
+  assert.equal(ru(45.25, 'currency-RUB'), '45,25 ₽', 'one word is as before');
+  assert.deepEqual(numberOptions('integer'), {minimumFractionDigits: 0, maximumFractionDigits: 0});
+});
+
 test('file sizes at the unit boundaries, in two languages', () => {
   const ru = (bytes) => plain(formatFileSize(bytes, {locale: 'ru'}));
   const en = (bytes) => plain(formatFileSize(bytes, {locale: 'en'}));
