@@ -13,6 +13,10 @@
         $infix: breakpoint-infix(xs, $breakpoint-array);
 
         // White Space
+        // wrap-none is a former name (owner decision C186 (8), 2026-11-14):
+        // write text-nowrap (utility/text-wrap). It keeps drawing what it drew
+        // until 2027-01-01; the Loader notes it in SF.deprecations (journal
+        // class-text-flow-utility-aliases).
         @each $white-space-name, $white-space-value in $white-space-array {
             .#{$infix}#{$white-space-name} {
                 white-space: #{$white-space-value};

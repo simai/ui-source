@@ -166,30 +166,77 @@
   // every other step of the ladder.
 
   // Content settings
+  //
+  // A long run -- an address, a mail, a file name, a token -- breaks where it
+  // must and never runs out of its column (owner decision C186 (7),
+  // 2026-11-14): overflow-wrap: anywhere on paragraphs, lists and quotes. It
+  // replaces the deprecated word-break: break-word, which did the same in a
+  // block; a word that fits a line of its own is never broken.
   p,
   table,
   ol,
   ul,
   q,
   blockquote {
-    word-break: break-word;
+    overflow-wrap: anywhere;
     margin-bottom: var(
                     --sf-text--space-bottom
     ); //var(--sf-text--margin-end-default);
   }
 
-  // The words of a table are whole: `word-break: break-word` lowered every
-  // cell's min-content to a letter, so the auto layout squeezed a label column
-  // below its longest word. A table keeps its words and breaks a word only
-  // when it cannot fit the column it was given (overflow-wrap: break-word,
-  // which does not lower min-content); room for a long value comes from the
-  // code rule below (C10 variant A, 2026-11-11). Set on the table, not on its
-  // cells, so the cells inherit it and a table that keeps every word whole --
-  // a .table-frame, whose frame scrolls instead -- says so once, on the table
-  // (the cell rule beat the frame's own and broke its words, pair-next-3).
+  // A table's cells break a long run anywhere too (C186 (7)), so an address
+  // or a file name in a cell lowers the cell's min-content and the table
+  // stays inside its holder instead of widening it (a 14rem holder: 433px
+  // before, 224 = the holder after) -- what C10 asked for code in a cell.
+  // word-break stays normal: a word is broken only when it cannot fit the
+  // column it was given. Set on the table, not on its cells, so the cells
+  // inherit it and a table that keeps every word whole -- a .table-frame,
+  // whose frame scrolls instead -- says so once, on the table (the cell rule
+  // beat the frame's own and broke its words, pair-next-3).
   table {
     word-break: normal;
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  // Line breaking of running text and headings (C186 (9)): a heading h1-h4
+  // balances its lines, so a two-line heading does not leave one word below;
+  // running text avoids a lone last word (pretty). A browser without either
+  // wraps as before. h5 and h6 are the size of the text and wrap as text.
+  :where(h1, h2, h3, h4, .sf-h-1, .sf-h-2, .sf-h-3, .sf-h-4) {
+    text-wrap: balance;
+  }
+
+  :where(p, li, dd, blockquote, figcaption) {
+    text-wrap: pretty;
+  }
+
+  // Hyphenation (C186 (6)): only in narrow running text -- a column, card
+  // or cell narrower than 40rem (the container step 40, C181), or a screen
+  // on the phone ladder -- and wherever the text-hyphens utility asks for
+  // it. The screen side is the ladder's one breakpoint and its exact
+  // complement (C01, C22, C36: every width has one ladder), not 40rem: a
+  // second screen width in core would be a ladder of its own. A word is
+  // hyphenated in the page's language, so a page needs the right lang
+  // (<html lang="ru">); without one nothing is hyphenated. Never in
+  // headings, code, names and addresses: those are set to manual below (a
+  // key, kbd, is the kbd component's alone and never breaks).
+  @media not all and (min-width: 60rem) {
+    :where(p, li, dd, blockquote, figcaption) {
+      -webkit-hyphens: auto;
+      hyphens: auto;
+    }
+  }
+
+  @container (max-width: 40rem) {
+    :where(p, li, dd, blockquote, figcaption) {
+      -webkit-hyphens: auto;
+      hyphens: auto;
+    }
+  }
+
+  :where(h1, h2, h3, h4, h5, h6, .sf-h-1, .sf-h-2, .sf-h-3, .sf-h-4, .sf-h-5, .sf-h-6, code, samp, pre, var, address, a[href^='mailto:'], a[href^='tel:'], [translate='no']) {
+    -webkit-hyphens: manual;
+    hyphens: manual;
   }
 
   .label-small {
