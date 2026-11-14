@@ -1,5 +1,9 @@
 # Tab
 
+> Retired (owner decision C187 (8), 2026-11-14): `.sf-tab` joins `sf-tabs`. It keeps
+> working until 2027-01-01, and the Loader notes it in `SF.deprecations`; write `.sf-tabs`
+> (or `<sf-tabs>`) instead.
+
 Legacy low-level adapter for projects that render two visual representations
 inside each tab item. New interfaces should use the `Tabs` component.
 

@@ -1,5 +1,9 @@
 # Hide Show
 
+> Retired (owner decision C187 (8), 2026-11-14): `.sf-hide-show` keeps working until
+> 2027-01-01, and the Loader notes it in `SF.deprecations`. A section that opens and
+> closes is `sf-accordion` (C154).
+
 Hide Show is the small behavior-only primitive for revealing and hiding content. The
 root is `.sf-hide-show`; controls use the concise `data-action="show|hide|toggle"`
 hook and owned content uses `data-content`. Use native buttons for actions and

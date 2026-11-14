@@ -176,6 +176,7 @@
     "src/core/js/reading-position.js",
     "src/core/js/ready.js",
     "src/core/js/region-navigation.js",
+    "src/core/js/retired-classes.table.js",
     "src/core/js/rule.js",
     "src/core/js/rule.src.js",
     "src/core/js/runtime.js",
@@ -231,7 +232,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "beda416f8d0a59c144197d68003036bff4b632d0ab525ec806430ee21fa2ebb5",
+  "content_sha256": "9a1633cf36f6d9a523c8b303d4f16ef03ebe22cff3890ab7cfce827c9e9a0aa3",
   "dependencies": [
     {
       "id": "core.styles",

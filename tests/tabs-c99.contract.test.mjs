@@ -20,7 +20,9 @@ const rule = (selector) => {
   assert.ok(blocks.length, selector);
   return blocks.join('\n');
 };
-const UNDERLINE = '.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top';
+// The line is also what a .sf-tabs without a look modifier draws (C96 (1)).
+const LINE = ':is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical)))';
+const UNDERLINE = `${LINE} > .sf-tabs-top-container > .sf-tabs-top`;
 
 test('TS-1: no tab spacing reads a raw ladder step', () => {
   assert.doesNotMatch(sheet, /--sf-tabs-top--gap: var\(--sf-tabs-gap, var\(--sf-c\d\)\)/u);
@@ -36,8 +38,8 @@ test('TS-3: a line tab has the button padding of its size and the label none', (
   assert.match(base, /--sf-tabs--padding-inline: var\(--sf-tabs-padding-inline, var\(--sf-ui-1--space-x\)\)/u);
   assert.match(base, /--sf-button--padding-inline-start: var\(--sf-tabs--padding-inline\)/u);
   assert.match(base, /--sf-button--padding-inline-end: var\(--sf-tabs--padding-inline\)/u);
-  assert.match(rule(`.sf-tabs--underline.sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button`), /var\(--sf-ui-1\\\/2--space-x\)/u);
-  assert.match(rule(`.sf-tabs--underline.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button`), /var\(--sf-ui-2--space-x\)/u);
+  assert.match(rule(`${LINE}.sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button`), /var\(--sf-ui-1\\\/2--space-x\)/u);
+  assert.match(rule(`${LINE}.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button`), /var\(--sf-ui-2--space-x\)/u);
   const label = rule(`${UNDERLINE} .sf-button .sf-button-text-container`);
   assert.match(label, /padding-inline: calc\(var\(--sf-px\) \* 0\)/u);
   assert.match(label, /flex: 0 1 auto/u);

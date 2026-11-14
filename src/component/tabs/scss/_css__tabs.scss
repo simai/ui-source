@@ -76,17 +76,24 @@
     padding-bottom: var(--sf-tabs-top-container--padding-bottom, 0);
   }
 
-  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top {
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container > .sf-tabs-top {
     --sf-tabs-top--margin: 0 0 calc(var(--sf-tabs-border-width, var(--sf-tabs--border-width, var(--sf-px))) * -1) 0;
   }
 
   .sf-tabs--pills > .sf-tabs-top-container,
-  .sf-tabs--full > .sf-tabs-top-container,
   .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container {
     --sf-tabs-top-container--border-color: transparent;
     --sf-tabs-top-container--border-width: 0;
   }
 
+  // Two looks (owner decision C96 (1), 2026-11-14): the line, which a
+  // .sf-tabs without a look modifier draws (it drew filled buttons before),
+  // and the plate, .sf-tabs--pills; .sf-tabs--vertical is the menu column.
+  // The line's rules read :is(.sf-tabs--underline, .sf-tabs:not(.sf-tabs--pills,
+  // .sf-tabs--vertical)) at the specificity they had. .sf-tabs--full is a
+  // former name until 2027-01-01: it draws the line, the tabs sharing the row
+  // equally (C96 (7)), and the Loader notes it in SF.deprecations
+  // (src/core/js/retired-classes.table.js).
   .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top {
     --sf-tabs-top--gap: 0;
     flex: 1;
@@ -153,8 +160,8 @@
     --sf-icon-button--border-top-left-radius: var(--sf-radius-rounded);
   }
 
-  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button,
-  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container > .sf-tabs-top .sf-button,
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
     --sf-button--border-top-width: 0;
     --sf-button--border-inline-start-width: 0;
     // The line is not the tab's border: it is drawn under the letters
@@ -184,62 +191,6 @@
   .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
     flex: 1 0 0;
     min-inline-size: max-content;
-    --sf-button--border-top-width: var(--sf-tabs--border-width, var(--sf-px));
-    --sf-button--border-inline-start-width: var(--sf-tabs--border-width, var(--sf-px));
-    --sf-button--border-bottom-width: var(--sf-tabs--border-width, var(--sf-px));
-    --sf-button--border-inline-end-width: var(--sf-tabs--border-width, var(--sf-px));
-    --sf-button--border-bottom-right-radius: var(--sf-radius-square);
-    --sf-button--border-bottom-left-radius: var(--sf-radius-square);
-    --sf-button--border-top-right-radius: var(--sf-radius-square);
-    --sf-button--border-top-left-radius: var(--sf-radius-square);
-    --sf-icon-button--border-top-width: var(--sf-tabs--border-width, var(--sf-px));
-    --sf-icon-button--border-inline-start-width: var(--sf-tabs--border-width, var(--sf-px));
-    --sf-icon-button--border-bottom-width: var(--sf-tabs--border-width, var(--sf-px));
-    --sf-icon-button--border-inline-end-width: var(--sf-tabs--border-width, var(--sf-px));
-    --sf-icon-button--border-color: var(--sf-primary-active);
-    --sf-button--border-color: var(--sf-primary-active);
-    --sf-icon-button--border-bottom-right-radius: var(--sf-radius-square);
-    --sf-icon-button--border-bottom-left-radius: var(--sf-radius-square);
-    --sf-icon-button--border-top-right-radius: var(--sf-radius-square);
-    --sf-icon-button--border-top-left-radius: var(--sf-radius-square);
-  }
-
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > :is(.sf-button, .sf-icon-button) + :is(.sf-button, .sf-icon-button) {
-    --sf-button--border-inline-start-width: 0;
-    --sf-icon-button--border-inline-start-width: 0;
-  }
-
-  /* The same single seam when each button sits in a wrapper: the host of
-     sf-tabs' buttons (sf-button, display: contents) or a tab drawn by a
-     component of the page's own (span[role=tab]). The sibling rule above
-     never reaches them, so every seam of sf-tabs type="full" was drawn twice,
-     2 px of primary-active where the class markup draws 1. The rule sat in
-     sf-tabs' own Smart sheet, which the Loader never asks for (its rule has
-     no css: audit of dead Smart sheets, 2026-11-11). */
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > :not(:first-child) > :is(.sf-button, .sf-icon-button),
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"]:not(:first-child) :is(.sf-button, .sf-icon-button) {
-    --sf-button--border-inline-start-width: 0;
-    --sf-icon-button--border-inline-start-width: 0;
-  }
-
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > .sf-button:first-child,
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > :first-child .sf-button:first-child,
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > .sf-icon-button:first-child,
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > :first-child .sf-icon-button:first-child {
-    --sf-button--border-top-left-radius: var(--sf-radius--ui);
-    --sf-button--border-bottom-left-radius: var(--sf-radius--ui);
-    --sf-icon-button--border-top-left-radius: var(--sf-radius--ui);
-    --sf-icon-button--border-bottom-left-radius: var(--sf-radius--ui);
-  }
-
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > .sf-button:last-child,
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > :last-child .sf-button:last-child,
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > .sf-icon-button:last-child,
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top > :last-child .sf-icon-button:last-child {
-    --sf-button--border-top-right-radius: var(--sf-radius--ui);
-    --sf-button--border-bottom-right-radius: var(--sf-radius--ui);
-    --sf-icon-button--border-top-right-radius: var(--sf-radius--ui);
-    --sf-icon-button--border-bottom-right-radius: var(--sf-radius--ui);
   }
 
   .sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button,
@@ -306,10 +257,10 @@
     --sf-icon--color: var(--sf-on-primary-container);
   }
 
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled),
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled),
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled):is(:hover, :active, :focus-visible),
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled),
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled),
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled):is(:hover, :active, :focus-visible),
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) {
     --sf-button--background-color: transparent;
     --sf-button--border-color: var(--sf-tabs-indicator-color, var(--sf-primary));
     --sf-icon-button--background-color: transparent;
@@ -321,87 +272,42 @@
   // on-surface-active and the others on on-surface, the chosen tab read
   // dimmer than the rest in the dark theme and its grey line as a border,
   // so it looked disabled (ui-effects, 2026-11-01).
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-button-text-container {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-button-text-container {
     --sf-button-text-container--color: var(--sf-tabs-color, var(--sf-on-surface-variant));
   }
 
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-button-text-container {
-    --sf-button-text-container--color: var(--sf-tabs-color, var(--sf-on-surface));
-  }
-
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-icon,
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) .sf-icon {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-icon,
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) .sf-icon {
     --sf-icon--color: var(--sf-tabs-color, var(--sf-on-surface-variant));
   }
 
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled),
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled),
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled),
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled),
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) {
     --sf-button--background-color: var(--sf-transparent);
     --sf-icon-button--background-color: var(--sf-transparent);
   }
 
-  // The icon beside a tab's label is half a step paler than the label where
-  // the label is --sf-on-surface (C107, owner 2026-11-12): --sf-on-surface-icon.
-  // A quieter label (underline, at rest) keeps its icon at its own ink; a
-  // filled tab keeps the fill's on-colour. Hovered and pressed, the icon takes
-  // the label's colour.
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-icon,
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled) .sf-icon {
-    --sf-icon--color: var(--sf-tabs-color, var(--sf-on-surface-icon));
-  }
-
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) .sf-icon,
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled) .sf-icon {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) .sf-icon,
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled) .sf-icon {
     --sf-icon--color: var(--sf-on-surface-icon);
   }
 
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled):is(:hover, :active) .sf-icon,
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled):is(:hover, :active) .sf-icon {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled):is(:hover, :active) .sf-icon,
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled):is(:hover, :active) .sf-icon {
     --sf-icon--color: var(--sf-on-surface);
   }
 
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) .sf-button-text-container {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) .sf-button-text-container {
     --sf-button-text-container--color: var(--sf-on-surface);
-  }
-
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled),
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled) {
-    --sf-icon-button--border-color: var(--sf-primary-active);
-    --sf-button--border-color: var(--sf-primary-active);
-  }
-
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):focus-visible,
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):hover,
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):focus-visible,
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):hover {
-    --sf-tabs--focus-ink: var(--sf-on-primary);
-    --sf-icon-button--border-color: var(--sf-primary-hover);
-    --sf-button--border-color: var(--sf-primary-hover);
-    --sf-icon-button--background-color: var(--sf-primary-hover);
-    --sf-button--background-color: var(--sf-primary-hover);
-  }
-
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):focus-visible .sf-button-text-container,
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):hover .sf-button-text-container {
-    --sf-button-text-container--color: var(--sf-on-primary);
-  }
-
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):focus-visible .sf-icon,
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):hover .sf-icon,
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):focus-visible .sf-icon,
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):hover .sf-icon {
-    --sf-icon--color: var(--sf-on-primary);
   }
 
   // Under the pointer or the keyboard a line tab's ink darkens, and nothing
   // else: no grey line, which read as a near-selection (owner decision C96
   // item 4, R184 T6).
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):focus-visible,
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):hover,
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):focus-visible,
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):hover {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):focus-visible,
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):hover,
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):focus-visible,
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):hover {
     --sf-button--background-color: transparent;
     --sf-button--border-color: transparent;
     --sf-icon-button--background-color: transparent;
@@ -409,11 +315,11 @@
     color: var(--sf-on-surface);
   }
 
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):is(:hover, :focus-visible) .sf-button-text-container {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):is(:hover, :focus-visible) .sf-button-text-container {
     --sf-button-text-container--color: var(--sf-on-surface);
   }
 
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button):not(.selected):not(:disabled):not(.disabled):is(:hover, :focus-visible) .sf-icon {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button):not(.selected):not(:disabled):not(.disabled):is(:hover, :focus-visible) .sf-icon {
     --sf-icon--color: var(--sf-on-surface);
   }
 
@@ -428,7 +334,7 @@
     outline-offset: calc(var(--sf-focus--width) * -1);
   }
 
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button):not(:disabled):not(.disabled):focus-visible {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button):not(:disabled):not(.disabled):focus-visible {
     --sf-tabs--focus-ink: var(--sf-on-surface);
   }
 
@@ -444,23 +350,14 @@
   /* A tab is a control of its size: its indicator is a border inside that
      height, and the padding gives the border back, so an underlined or full
      tab row is as tall as a plain one (it was taller by its indicator). */
-  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container > .sf-tabs-top .sf-button {
     padding-block-end: calc(var(--sf-button--padding-bottom) - var(--sf-button--border-bottom-width));
   }
 
-  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
     padding-block-end: calc(var(--sf-icon-button--padding-bottom) - var(--sf-icon-button--border-bottom-width));
   }
 
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-button {
-    padding-block-start: calc(var(--sf-button--padding-top) - var(--sf-button--border-top-width));
-    padding-block-end: calc(var(--sf-button--padding-bottom) - var(--sf-button--border-bottom-width));
-  }
-
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
-    padding-block-start: calc(var(--sf-icon-button--padding-top) - var(--sf-icon-button--border-top-width));
-    padding-block-end: calc(var(--sf-icon-button--padding-bottom) - var(--sf-icon-button--border-bottom-width));
-  }
 }
 
 @layer sf.overrides {
@@ -476,38 +373,38 @@
   // above; a row that shares its width (fit, C96 item 7) keeps both. The
   // gap and the padding were the ladder's raw c0 / c2 / c6 between tabs of no
   // padding: 17-19 % of the row pressed nothing (C18).
-  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top {
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container > .sf-tabs-top {
     --sf-tabs-top--gap: var(--sf-tabs-gap, var(--sf-space-0));
   }
 
-  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container > .sf-tabs-top .sf-button {
     --sf-tabs--padding-inline: var(--sf-tabs-padding-inline, var(--sf-ui-1--space-x));
     --sf-button--padding-inline-start: var(--sf-tabs--padding-inline);
     --sf-button--padding-inline-end: var(--sf-tabs--padding-inline);
   }
 
-  .sf-tabs--underline.sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))).sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button {
     --sf-tabs--padding-inline: var(--sf-tabs-padding-inline, var(--sf-ui-1\/2--space-x));
   }
 
-  .sf-tabs--underline.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))).sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top .sf-button {
     --sf-tabs--padding-inline: var(--sf-tabs-padding-inline, var(--sf-ui-2--space-x));
   }
 
   // The label is as wide as its letters: sf-button stretches it (flex-1) in a
   // button wider than its content, which a shared row is.
-  .sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button .sf-button-text-container {
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container > .sf-tabs-top .sf-button .sf-button-text-container {
     padding-inline: calc(var(--sf-px) * 0);
     flex: 0 1 auto;
   }
 
-  .sf-tabs--underline > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > :first-child > .sf-button,
-  .sf-tabs--underline > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > .sf-button:first-child {
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > :first-child > .sf-button,
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > .sf-button:first-child {
     --sf-button--padding-inline-start: calc(var(--sf-px) * 0);
   }
 
-  .sf-tabs--underline > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > :last-child > .sf-button,
-  .sf-tabs--underline > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > .sf-button:last-child {
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > :last-child > .sf-button,
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > .sf-button:last-child {
     --sf-button--padding-inline-end: calc(var(--sf-px) * 0);
   }
 
@@ -515,8 +412,8 @@
   // item 2, R184 T6: it was three at size 2), exactly under the letters (C99,
   // TS-4) and on the tab's bottom edge, over the divider; it switches at once,
   // without a slide. A border, so forced colours keep it.
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) > .sf-button-text-container::after,
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled)::after {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected:not(:disabled):not(.disabled) > .sf-button-text-container::after,
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled)::after {
     content: "";
     position: absolute;
     inset-inline: 0;
@@ -525,42 +422,42 @@
     pointer-events: none;
   }
 
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-button {
     --sf-tabs--line-drop: var(--sf-button--padding-bottom);
   }
 
   // The current tab shortened beside «Ещё» (C54 D1) clips its label: its line
   // is drawn by the tab, under its content box, which is the label.
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button {
     position: relative;
   }
 
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button > .sf-button-text-container {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button > .sf-button-text-container {
     position: static;
   }
 
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button.selected:not(:disabled):not(.disabled) > .sf-button-text-container::after {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button.selected:not(:disabled):not(.disabled) > .sf-button-text-container::after {
     inset-inline: var(--sf-button--padding-inline-start) var(--sf-button--padding-inline-end);
     inset-block-end: 0;
   }
 
   // An icon tab keeps the icon button's square padding; its line is drawn by
   // the tab, centred and as wide as the icon (the text line of its size).
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
     --sf-tabs--line-drop: calc(var(--sf-px) * 0);
     position: relative;
   }
 
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled)::after {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled)::after {
     margin-inline: auto;
     inline-size: var(--sf-tabs--icon-line, var(--sf-text-height-1));
   }
 
-  .sf-tabs--underline.sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))).sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
     --sf-tabs--icon-line: var(--sf-text-height-1\/2);
   }
 
-  .sf-tabs--underline.sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))).sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
     --sf-tabs--icon-line: var(--sf-text-height-2);
   }
 
@@ -588,15 +485,15 @@
   // and the padding was also the icon gap, so the icon stood on the letters.
   // The gap stands between the tab's flex items (icon, label, end icon); the
   // count and the errors are inside the label and keep their quarter step.
-  .sf-tabs:is(.sf-tabs--underline, .sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+  .sf-tabs:is(.sf-tabs--underline, .sf-tabs--vertical, :not(.sf-tabs--pills)) > .sf-tabs-top-container > .sf-tabs-top .sf-button {
     column-gap: var(--sf-tabs--icon-gap, var(--sf-ui-1--text-space-x));
   }
 
-  .sf-tabs.sf-tabs--size-1-2:is(.sf-tabs--underline, .sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+  .sf-tabs.sf-tabs--size-1-2:is(.sf-tabs--underline, .sf-tabs--vertical, :not(.sf-tabs--pills)) > .sf-tabs-top-container > .sf-tabs-top .sf-button {
     --sf-tabs--icon-gap: var(--sf-ui-1\/2--text-space-x);
   }
 
-  .sf-tabs.sf-tabs--size-2:is(.sf-tabs--underline, .sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top .sf-button {
+  .sf-tabs.sf-tabs--size-2:is(.sf-tabs--underline, .sf-tabs--vertical, :not(.sf-tabs--pills)) > .sf-tabs-top-container > .sf-tabs-top .sf-button {
     --sf-tabs--icon-gap: var(--sf-ui-2--text-space-x);
   }
 
@@ -792,7 +689,7 @@
 
   // An underline row sits on the divider; the trigger (its host is display:
   // contents, so the button is the flex item) sits with it.
-  .sf-tabs--underline > .sf-tabs-top-container--tools > .sf-tabs-more > button {
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container--tools > .sf-tabs-more > button {
     margin-block-end: calc(var(--sf-tabs-border-width, var(--sf-tabs--border-width, var(--sf-px))) * -1);
   }
 
@@ -849,7 +746,6 @@
   }
 }
 
-
 @layer sf.states {
   // The tab's own colour is its label's ink (simai/ui-source#23). The label and
   // the icon carry their roles, but the button element under them kept the
@@ -876,25 +772,17 @@
     color: var(--sf-primary-active);
   }
 
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button):not(.selected):not(:disabled):not(.disabled) {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button):not(.selected):not(:disabled):not(.disabled) {
     color: var(--sf-tabs-color, var(--sf-on-surface-variant));
   }
 
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button):not(.selected):not(:disabled):not(.disabled) {
-    color: var(--sf-tabs-color, var(--sf-on-surface));
-  }
-
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button).selected:not(:disabled):not(.disabled) {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button).selected:not(:disabled):not(.disabled) {
     color: var(--sf-on-surface);
   }
 
   // A selected pill is primary-container (C16): its own colour is that ink.
   .sf-tabs.sf-tabs--pills > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button).selected:not(:disabled):not(.disabled) {
     color: var(--sf-on-primary-container);
-  }
-
-  .sf-tabs.sf-tabs--full > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button):not(.selected):not(:disabled):not(.disabled):is(:hover, :focus-visible) {
-    color: var(--sf-on-primary);
   }
 
   .sf-tabs > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button):is(:disabled, .disabled) {
@@ -1010,7 +898,7 @@
 
   // The line switches at once (owner decision C96 item 2): the buttons fade
   // their border colour, which drew the line fading from tab to tab.
-  .sf-tabs.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button) {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button) {
     transition-property: background-color, box-shadow, color;
   }
 

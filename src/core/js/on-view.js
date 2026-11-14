@@ -3,7 +3,10 @@
 // animation utility's classes and `animation-on-view` holds its animation at
 // the first frame until it enters the viewport, then plays it once:
 //
-//   <div class="animation animation-from-bottom animation-on-view">...</div>
+//   <div class="animation animation-on-view">...</div>
+//
+// (animation-from-left, -right and -bottom are former names until 2027-01-01,
+// owner decision C187 (6); the Loader notes them in SF.deprecations.)
 //
 // Core marks such an element data-sf-on-view="waiting" -- the utility's sheet
 // pauses the animation there, so the element keeps its from-state and never

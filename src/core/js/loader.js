@@ -22,7 +22,7 @@ import {
 import {html as staticHtml, unsafeStatic} from 'lit/static-html.js';
 import {installPendingTags} from './pending-tags.js';
 import {noteDeprecated} from './deprecations.js';
-import {noteUtilityClassAlias} from './utility-class-aliases.js';
+import {noteRetiredUtilitySheets, noteUtilityClassAlias} from './utility-class-aliases.js';
 import {
   checkSetIndex,
   declarationLine,
@@ -1988,7 +1988,8 @@ SFLoaderPlugin.prototype.getTokenRuleKeys = function (token) {
   if (!this.tokenRuleMatches) this.tokenRuleMatches = new Map();
   const known = this.tokenRuleMatches.get(token);
   if (known) return known;
-  // A former text-flow utility name (C186 (8)) is noted once in
+  // A retired class name or family (C186 (8), C187 (1); the one table
+  // src/core/js/retired-classes.table.js) is noted once in
   // SF.deprecations; it still loads and draws as before until its date.
   noteUtilityClassAlias(token);
   const keys = [];
@@ -2002,6 +2003,8 @@ SFLoaderPlugin.prototype.getTokenRuleKeys = function (token) {
     if (re.global || re.sticky) re.lastIndex = 0;
     if (re.test(token)) keys.push(key);
   }
+  // A class of a retired utility sheet (C187 (1)) is noted the same way.
+  noteRetiredUtilitySheets(token, keys);
   this.tokenRuleMatches.set(token, keys);
   return keys;
 };

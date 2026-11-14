@@ -320,7 +320,7 @@ test('C96 1 (T1): two looks, the line by default and the plate; full and the sch
 
 test('C96 2 (T6): the line is 2 px at every size and switches at once', () => {
   assert.doesNotMatch(sheet, /calc\(var\(--sf-px\) \* 3\)/u);
-  assert.match(sheet, /sf-tabs--underline > \.sf-tabs-top-container > \.sf-tabs-top :is\(\.sf-button, \.sf-icon-button\) \{\s*transition-property: background-color, box-shadow, color;/u);
+  assert.match(sheet, /sf-tabs--underline, :not\(\.sf-tabs--pills, \.sf-tabs--vertical\)\) > \.sf-tabs-top-container > \.sf-tabs-top :is\(\.sf-button, \.sf-icon-button\) \{\s*transition-property: background-color, box-shadow, color;/u);
 });
 
 test('C96 3 (T11): only the selected label is medium, with its width reserved', () => {

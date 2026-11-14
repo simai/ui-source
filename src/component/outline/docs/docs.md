@@ -1,5 +1,9 @@
 # Outline
 
+> Retired (owner decision C187 (8), 2026-11-14): `.sf-outline` keeps working until
+> 2027-01-01, and the Loader notes it in `SF.deprecations`. Its name clashes with the
+> colour role `--sf-outline`; a page's own contents list is `sf-contents`.
+
 Outline is semantic navigation through the headings of the current document.
 Use it for long pages where readers need to see the structure and move directly
 to a section.

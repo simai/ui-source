@@ -4,7 +4,18 @@
 // TRANSITION
 
 // Transition Timing Function
+//
+// The utilities speak the motion roles (owner decision C187 (6), on C66,
+// C121, C130): ease-enter, ease-exit and ease-move read the theme's
+// --sf-ease-* curves; ease-linear is linear. ease-in, ease-out and
+// ease-in-out are former names until 2027-01-01 (ease-in -> ease-exit,
+// ease-out -> ease-enter, ease-in-out -> ease-move): they keep the curves
+// they drew, and the Loader notes them in SF.deprecations
+// (src/core/js/retired-classes.table.js).
 $transition-timing-function-array: (
+    enter: var(--sf-ease-enter),
+    exit: var(--sf-ease-exit),
+    move: var(--sf-ease-move),
     linear: linear,
     in: cubic-bezier(0.4, 0, 1, 1),
     out: cubic-bezier(0, 0, 0.2, 1),

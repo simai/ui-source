@@ -3,6 +3,10 @@
 
 // RING
 
+// Widths 0, 1, 2 are the ring (owner decision C187 (3), on C173 (6): a line
+// is one or two pixels). ring-3 and ring-4 are former names until 2027-01-01:
+// they draw what they drew, and the Loader notes them in SF.deprecations
+// (src/core/js/retired-classes.table.js).
 $ring-width-array: (
     1: a1,
     2: a2,
@@ -10,3 +14,25 @@ $ring-width-array: (
     4: a4,
     0: 0,
 );
+
+// The ring is the selection frame and does not erase the element's shadow
+// (C187 (3), UT-4): it writes its layers to --sf-ring-shadow and draws them
+// in front of --sf-place-shadow, which the shadow utilities (utility/
+// box-shadow) set beside their own box-shadow. Whichever of the two sheets
+// comes last, the element shows both. Both variables are internal to the two
+// utilities.
+@mixin ring-box-shadow($width-value) {
+    --sf-ring-width: var(--sf-#{$width-value});
+    --sf-ring-shadow:
+        var(--sf-ring-inset, ) 0 0 0
+        calc(var(--sf-ring-width) + var(--sf-ring-offset-width, 0px))
+        color-mix(
+            in srgb,
+            transparent,
+            var(--sf-ring-color, currentColor)
+            calc(var(--sf-ring--alfa, 1) * 100%)
+        ),
+        0 0 0 var(--sf-ring-offset-width, 0px)
+        var(--sf-ring-offset-color, transparent);
+    box-shadow: var(--sf-ring-shadow), var(--sf-place-shadow, 0 0 transparent);
+}
