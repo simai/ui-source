@@ -22,8 +22,10 @@ test('Smart Icons exposes the source font families and axes', async () => {
   // The settings are made from component.json (core/js/element-manifest.js).
   const manifest = JSON.parse(await read('src/smart/icon/component.json'));
   const aliases = JSON.parse(await read('src/smart/icon/aliases.json'));
-  assert.match(source, /"outlined", "rounded", "sharp"/);
-  assert.deepEqual(manifest.settings.type.values, ['', 'outlined', 'rounded', 'sharp']);
+  // One family (1.2.0, icons study IC-4): rounded, sharp and shape are dated
+  // value aliases of outlined; their fonts were never shipped.
+  assert.match(source, /get iconType\(\) \{\n    return "outlined";/);
+  assert.deepEqual(manifest.settings.type.values, ['', 'outlined']);
   // Each axis also has its summary (docs precheck smart content SC-S02).
   const {summary: gradeSummary, ...grade} = manifest.settings.grade;
   const {summary: opticalSummary, ...optical} = manifest.settings['optical-size'];
@@ -31,8 +33,11 @@ test('Smart Icons exposes the source font families and axes', async () => {
   assert.deepEqual(optical, {type: 'number', min: 20, max: 48, default: 24});
   assert.match(gradeSummary, /GRAD/);
   assert.match(opticalSummary, /opsz/);
-  assert.ok(aliases.aliases.some((row) => row.kind === 'value' && row.setting === 'type' && row.from === 'shape' && row.to === 'sharp'));
-  assert.match(source, /type === "shape" \? "sharp" : type/);
+  for (const from of ['shape', 'rounded', 'sharp']) {
+    assert.ok(aliases.aliases.some((row) => row.kind === 'value' && row.setting === 'type' && row.from === from && row.to === 'outlined'), from);
+  }
+  assert.ok(aliases.aliases.filter((row) => row.from !== 'shape').every((row) => row.remove_after === '2027-01-01'));
+  assert.doesNotMatch(template, /sf-icon--rounded|sf-icon--sharp/);
   assert.match(template, /--sf-icon--grade/);
   assert.match(template, /--sf-icon--optical-size/);
   assert.match(styles, /'opsz' var\(--sf-icon--optical-size\)/);

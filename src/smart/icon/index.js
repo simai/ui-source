@@ -27,12 +27,12 @@ function clampAxis(value, fallback, minimum, maximum) {
 
 // sf-icon from its component.json (standard simai.smart-component 1.3.8 §3,
 // §4): the settings are the attributes and properties core/js/element-manifest.js
-// makes from the manifest, `loaded` is the value the Loader reports, and the
-// family's old name `shape` is a dated value alias of `sharp` (aliases.json).
-// What stays here is behaviour: the exact subset the glyph waits for, the
-// axes' bounds and the badge. One family is drawn, outlined (1.2.0, icons
-// study IC-4): rounded and sharp -- and shape -- are dated value aliases of
-// outlined until 2027-01-01, their fonts were never shipped.
+// makes from the manifest, and `loaded` is the value the Loader reports. One
+// family is drawn, outlined (1.2.0, icons study IC-4): rounded, sharp and the
+// older shape are dated value aliases of outlined until 2027-01-01
+// (aliases.json); their fonts were never shipped. What stays here is
+// behaviour: the exact subset the glyph waits for, the axes' bounds and the
+// badge.
 // One IntersectionObserver for every icon that cannot draw yet: an icon in a
 // copy that is not rendered (a closed panel, a display: none menu or header
 // copy) checks again, and asks the Loader for its glyph, when the copy is
