@@ -34,7 +34,7 @@ test('C145 (3): sf-tag-group is a list of tags 4 apart', () => {
   assert.equal(manifest.version, '1.0.0');
   assert.deepEqual(manifest.settings.selection.enum ?? manifest.settings.selection.values ?? ['none', 'one', 'many'], ['none', 'one', 'many']);
   // The core holds its box before its code.
-  assert.match(read('src/core/scss/_sf_css__placeholder.scss'), /:where\(sf-tag-group:not\(:defined\)\) \{[^}]*gap: var\(--sf-space-1\\\/4\);/u);
+  assert.match(read('src/core/scss/_sf_css__placeholder.scss'), /:where\(sf-tag-group:not\(:defined\)\) \{[^}]*gap: var\((?:--sf-space-1\\\/4|--sf-gap--tags)\);/u);
 });
 
 test('C145 (4): the group is one Tab stop with the lookup chips\' keys and words', () => {
@@ -88,7 +88,7 @@ test('C145 (1): a tag in a field is the field less 8; its cross follows its heig
   for (const size of ['1\\/2', '1', '2']) {
     assert.ok(dropdown.includes(`.sf-dropdown.sf-dropdown--tag.sf-dropdown--size-${size} { --sf-dropdown-tag-line--box: calc(var(--sf-ui-${size}--control-height) - 2 * var(--sf-space-1\\/4)); }`), size);
   }
-  assert.match(read('src/component/dropdown/scss/_css__dropdown.scss'), /\.sf-dropdown\.sf-dropdown--tag \.sf-dropdown-tag-container \{\s*--sf-dropdown-tag-container--gap: var\(--sf-space-1\\\/4\);/u);
+  assert.match(read('src/component/dropdown/scss/_css__dropdown.scss'), /\.sf-dropdown\.sf-dropdown--tag \.sf-dropdown-tag-container \{\s*--sf-dropdown-tag-container--gap: var\((?:--sf-space-1\\\/4|--sf-gap--tags)\);/u);
 });
 
 test('C145 amendment R238: the first tag in a field stands 4 from its start edge, as above and below', () => {
@@ -101,13 +101,13 @@ test('C145 amendment R238: the first tag in a field stands 4 from its start edge
   assert.match(read('src/component/dropdown/scss/_css__custom.scss'), /\.sf-dropdown\.sf-dropdown\.sf-dropdown--tag > \.sf-dropdown-field\.sf-dropdown-field \{[^}]*--sf-dropdown-field--padding-inline-start: calc\(var\(--sf-space-1\\\/4\) - var\(--sf-px\)\);/u);
 });
 
-test('versions: sf-tag 1.8.0, component.tags 1.7.0, sf-tag-group 1.0.0, sf-dropdown 1.12.0, component.dropdown 1.10.0, sf-input-lookup 1.12.1', () => {
-  assert.equal(json('src/smart/dropdown/component.json').version, '1.12.0');
-  assert.equal(json('src/component/dropdown/passport.json').version, '1.10.0');
-  assert.equal(json('src/smart/input-lookup/component.json').version, '1.12.1');
-  assert.equal(json('src/smart/input-lookup/smart.manifest.json').version, '1.12.1');
-  assert.equal(json('src/smart/tag/component.json').version, '1.8.0');
-  assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.8.0');
+test('versions: sf-tag 1.8.0, component.tags 1.7.0, sf-tag-group 1.0.0, sf-dropdown 1.12.0, component.dropdown 1.10.0, sf-input-lookup 1.12.1 (group build 6: the integration line\'s higher numbers carry these notes)', () => {
+  assert.equal(json('src/smart/dropdown/component.json').version, '1.13.0');
+  assert.equal(json('src/component/dropdown/passport.json').version, '1.13.1');
+  assert.equal(json('src/smart/input-lookup/component.json').version, '1.13.1');
+  assert.equal(json('src/smart/input-lookup/smart.manifest.json').version, '1.13.1');
+  assert.equal(json('src/smart/tag/component.json').version, '1.9.1');
+  assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.9.1');
   assert.equal(json('src/component/tags/passport.json').version, '1.7.0');
   assert.equal(json('src/smart/tag-group/smart.manifest.json').version, '1.0.0');
 });
