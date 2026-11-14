@@ -120,10 +120,13 @@ export function checkScopes(data = contract()) {
 }
 
 // The role a declaration's context names: toolbar before tags before actions
-// (a toolbar's footer is still a toolbar).
+// (a toolbar's footer is still a toolbar). A row of chips is a row of tags
+// (chips, chip-row, chip-list, chip-group); one chip is not a row: its inner
+// room is its own inset (sf-file-preview's chip, DEV GB5 answers -- the
+// check read the --chip look as a row and baselined it as GB5-RT-1).
 const ROLES = [
   ['toolbar', /toolbar/iu, '--sf-gap--toolbar'],
-  ['tags', /(?:^|[^a-z])(?:tags?-container|tags|chips?|tag-group)(?:[^a-z]|$)/iu, '--sf-gap--tags'],
+  ['tags', /(?:^|[^a-z])(?:tags?-container|tags|chips|chip-(?:row|list|group)|tag-group)(?:[^a-z]|$)/iu, '--sf-gap--tags'],
   ['actions', /(?:actions|buttons|footer|button-row)/iu, '--sf-gap--actions'],
 ];
 const GAP_PROP = (prop) => /^(?:gap|column-gap)$/u.test(prop) || (prop.startsWith('--') && /(?:gap|between)/u.test(prop));

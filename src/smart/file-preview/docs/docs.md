@@ -14,7 +14,10 @@ runtime refuses it), so it is the `appearance` axis, as sf-confirm's.
   the name in two lines, `PDF · 2,4 МБ · 12 нояб.` under it, the actions at the
   end, 8 apart (4 in compact density; C105 H5).
 - `appearance="chip"` — a message attachment: 48 high, at most 288 (`--sf-f8`) wide, the 32
-  holder, the name in one line, `PDF · 2,4 МБ`, only «×».
+  holder, the name in one line, `PDF · 2,4 МБ`, only «×». The holder and the «×» stand
+  the chip's inset from its edges, the same on every side (the chip's height less
+  the holder's, halved: 8, 6 in compact density), and the name the same inset after
+  the holder; the name has no padding of its own.
 - `appearance="tile"` — a media library: the picture 4:3 on top, the name in
   one line the tile's width, the meta beside download and remove under it
   (under the picture, C94).
