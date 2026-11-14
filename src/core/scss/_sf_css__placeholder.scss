@@ -119,6 +119,40 @@
   inline-size: var(--sf-language--box);
 }
 
+/* sf-header-site before its sheet (headers study HD-13: without printed
+   markup the bar was 19 px of inline slot content, then 130 px of its drawn
+   but unstyled row, then 73 px, within 160 ms; 390: 17, 116, 61). Its height
+   is known from its attributes alone, by the same rule its sheet draws with:
+   the size's control height, a space-1 inset above and below and the 1 px
+   edge, or the page's --sf-site-header-block-size. Until the element is
+   defined the host holds that box, its slot content held out of view; once
+   it has drawn, the drawn bar holds it, its row out of view, until the bar's
+   own sheet arrives and lets both go (block-size auto, the row visible).
+   Static markup printed inside (data-sf-static) is its own box and is left
+   alone. A row taller than the bar (size 1/2 with size-1 controls in it)
+   is the one thing the attributes cannot tell. */
+:where(:is(sf-header-site, sf-site-header)) {
+  --sf-site-header--box: var(--sf-site-header-block-size, calc(var(--sf-ui-1--control-height) + 2 * var(--sf-space-1) + var(--sf-px)));
+}
+
+:where(:is(sf-header-site, sf-site-header))[size="1/2"] {
+  --sf-site-header--box: var(--sf-site-header-block-size, calc(var(--sf-ui-1\/2--control-height) + 2 * var(--sf-space-1) + var(--sf-px)));
+}
+
+:where(:is(sf-header-site, sf-site-header)):not(:defined):not(:has(> [data-sf-static])),
+:where(:is(sf-header-site, sf-site-header)) > :where(.sf-site-header:not([data-sf-static])) {
+  display: block;
+  box-sizing: border-box;
+  block-size: var(--sf-site-header--box);
+  overflow: clip;
+  border-block-end: var(--sf-px) solid var(--sf-site-header-border-color, var(--sf-outline-variant));
+}
+
+:where(:is(sf-header-site, sf-site-header)):not(:defined):not(:has(> [data-sf-static])) > *,
+:where(:is(sf-header-site, sf-site-header)) > :where(.sf-site-header:not([data-sf-static])) > * {
+  visibility: hidden;
+}
+
 /* sf-input before it draws (first-paint study R222, pilot of «box from
    attributes»: a bare <sf-input> had no box until its code arrived, and the
    field then pushed the page down by up to 88 px). Its box is known from its

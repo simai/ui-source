@@ -15,7 +15,29 @@
   min-block-size: var(--sf-ui-1\/2--control-height);
 }
 
+/* The title: the heading, the count, the install mark and the star, the
+   line's gap apart. A long heading closes down to its ellipsis beside the
+   actions (the docs' promise, HD-12): for the line's wrapping the title counts
+   as no wider than the g0 step (20rem), or its words when they are shorter,
+   so the actions keep the line while the title has that room beside them and
+   move to a line of their own only when it has not. It grows to its words and
+   no further; narrower than its words, the heading takes the ellipsis and the
+   marks stay whole after it. */
+.sf-page-header-title {
+  flex: 1 1 var(--sf-g0);
+  max-inline-size: max-content;
+  gap: var(--sf-page-header-line-gap, var(--sf-space-1));
+}
+
+/* The marks keep their size; only the heading gives way. The badge and the
+   icon button hosts are display: contents, so their boxes are the items. */
+.sf-page-header-title > :not(.sf-page-header-heading),
+.sf-page-header-title > :not(.sf-page-header-heading) > * {
+  flex: none;
+}
+
 .sf-page-header-heading {
+  flex: 0 1 auto;
   color: var(--sf-page-header-heading-color, inherit);
 }
 
@@ -25,10 +47,14 @@
    instead of pushing the page sideways (OV-2: four actions took 507 px of a
    358 px line at 390 and the page scrolled 133 px); min-inline-size 0 lets
    the row, on a line of its own, be no wider than that line. Wrapping is the
-   fix until the shared «Ещё» for action rows is decided. */
+   fix until the shared «Ещё» for action rows is decided. The actions stand
+   at the end of the line, and stay there when they move to a line of their
+   own or wrap inside it (HD-11: the wrapped row jumped to the line's start). */
 .sf-page-header-actions {
   flex-wrap: wrap;
+  justify-content: flex-end;
   min-inline-size: 0;
+  margin-inline-start: auto;
   gap: var(--sf-page-header-actions-gap, var(--sf-space-1\/3));
 }
 

@@ -2,9 +2,12 @@ import {html, nothing} from 'lit';
 
 // Framework utilities and the header's own sheet (scss/: the gaps and colours
 // are its public variables): a column for the path above the line, and a line
-// holding the heading, its count, the install mark and the star, then the
-// actions pushed to the end. The heading is the fourth heading step, the size
-// the admin pages have always titled themselves at.
+// holding the title -- the heading, its count, the install mark and the star --
+// then the actions at the end. The heading is the fourth heading step, the size
+// the admin pages have always titled themselves at. The title is a group of its
+// own so that a long heading closes down to its ellipsis beside the actions
+// instead of taking a line and pushing the count and the actions under it
+// (HD-12); the count and the marks stay right after the words.
 export function renderPageHeaderTemplate(context) {
   const {component, heading, count, level, star, text, hostSlot, hasHostSlot, rootClass} = context;
   const classes = ['sf-page-header', 'flex', 'flex-col', 'min-w-0', context.expressive ? 'sf-page-header--expressive' : '', rootClass].filter(Boolean).join(' ');
@@ -13,27 +16,28 @@ export function renderPageHeaderTemplate(context) {
     ${hasHostSlot('path') ? html`<div class="sf-page-header-path flex items-cross-center min-w-0">${hostSlot('path')}</div>` : nothing}
     <div class="sf-page-header-line flex items-cross-center flex-wrap min-w-0">
       ${hasHostSlot('start') ? hostSlot('start') : nothing}
-      <h1 class="sf-page-header-heading sf-h-4 m-0 min-w-0 truncate">${heading}</h1>
-      ${count !== '' && count !== null && count !== undefined
-        ? html`<sf-badge appearance="tonal" scheme="neutral" size="1/2" text=${String(count)}></sf-badge>`
-        : nothing}
-      ${level === 'install'
-        ? html`<sf-badge appearance="outline" scheme="tertiary" size="1/2" text=${text('all-sites')}></sf-badge>`
-        : nothing}
-      ${star === true || star === false
-        // The star's name says what pressing it does («В избранное», «Убрать
-        // из избранного»), so it says the state too and carries no
-        // aria-pressed (1.2.2, rule C12): both at once read «Убрать из
-        // избранного, нажата». The filled glyph in its own colour shows it.
-        ? html`<sf-button-icon size="1/2" appearance="ghost" scheme="on-surface"
-            class=${on ? 'sf-page-header-star sf-page-header-star--on' : 'sf-page-header-star'}
-            icon="star"
-            ?filled=${on}
-            aria-label=${on ? text('unstar') : text('star')}
-            title=${on ? text('unstar') : text('star')}
-            @click=${() => component.toggleStar()}></sf-button-icon>`
-        : nothing}
-      <span class="grow"></span>
+      <div class="sf-page-header-title flex items-cross-center min-w-0">
+        <h1 class="sf-page-header-heading sf-h-4 m-0 min-w-0 truncate">${heading}</h1>
+        ${count !== '' && count !== null && count !== undefined
+          ? html`<sf-badge appearance="tonal" scheme="neutral" size="1/2" text=${String(count)}></sf-badge>`
+          : nothing}
+        ${level === 'install'
+          ? html`<sf-badge appearance="outline" scheme="tertiary" size="1/2" text=${text('all-sites')}></sf-badge>`
+          : nothing}
+        ${star === true || star === false
+          // The star's name says what pressing it does («В избранное», «Убрать
+          // из избранного»), so it says the state too and carries no
+          // aria-pressed (1.2.2, rule C12): both at once read «Убрать из
+          // избранного, нажата». The filled glyph in its own colour shows it.
+          ? html`<sf-button-icon size="1/2" appearance="ghost" scheme="on-surface"
+              class=${on ? 'sf-page-header-star sf-page-header-star--on' : 'sf-page-header-star'}
+              icon="star"
+              ?filled=${on}
+              aria-label=${on ? text('unstar') : text('star')}
+              title=${on ? text('unstar') : text('star')}
+              @click=${() => component.toggleStar()}></sf-button-icon>`
+          : nothing}
+      </div>
       ${hasHostSlot('actions') ? html`<div class="sf-page-header-actions flex items-cross-center">${hostSlot('actions')}</div>` : nothing}
     </div>
   </header>`;

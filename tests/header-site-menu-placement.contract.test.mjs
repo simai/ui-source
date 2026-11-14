@@ -99,6 +99,7 @@ test('header site C104: the docs name both settings and the version is a minor',
   assert.match(docs, /menu-placement="inline-end"/u);
   assert.match(docs, /data-header-site="toggle"/u);
   assert.match(docs, /aria-controls="site-header"/u);
-  assert.equal(component.version, '1.9.0');
+  // 1.9.0 brought C104; later patches of the 1.9 line keep it.
+  assert.match(component.version, /^1\.9\.\d+$/u);
   assert.ok(component['x-decisions'].some((line) => line.startsWith('version 1.9.0 (2026-11-12, owner decision C104')));
 });

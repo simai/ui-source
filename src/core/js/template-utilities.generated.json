@@ -157,7 +157,6 @@
     "align-items/default",
     "display/default",
     "flex-direction/default",
-    "flex-grow/default",
     "flex-wrap/default",
     "margin/default",
     "min-width/default",

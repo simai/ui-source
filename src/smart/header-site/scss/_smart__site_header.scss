@@ -32,6 +32,11 @@
   /* The open panel's width, read by the panel and by its head. */
   --sf-site-header--sheet-size: var(--sf-site-header-sheet-inline-size, min(90vw, var(--sf-g1)));
   min-block-size: var(--sf-site-header--block-size);
+  /* core.css holds the drawn bar at its height and clips it until this sheet
+     arrives (HD-13, the first paint without printed markup); with the sheet
+     the bar is as tall as its row. */
+  block-size: auto;
+  overflow: visible;
   border-block-end: var(--sf-px) solid var(--sf-site-header-border-color, var(--sf-outline-variant));
   background: var(--sf-site-header-background-color, var(--sf-site-header-background, var(--sf-surface-page)));
   color: var(--sf-site-header-color, var(--sf-on-surface));
@@ -65,14 +70,18 @@
   box-shadow: var(--sf-shadow-raised);
 }
 
-/* The row: brand · nav … actions · tools, on one centre line. */
+/* The row: brand · nav … actions · tools, on one centre line. Its parts are
+   groups, --sf-space-1 apart (C105 H6: 16, a phone 12). */
 .sf-site-header-row {
   display: flex;
   align-items: center;
-  gap: var(--sf-site-header-gap, var(--sf-space-2));
+  gap: var(--sf-site-header-gap, var(--sf-space-1));
   box-sizing: border-box;
   min-block-size: calc(var(--sf-site-header--block-size) - var(--sf-px));
   padding-block: var(--sf-space-1);
+  /* Shown again once this sheet is in (core.css keeps it out of view before,
+     HD-13). */
+  visibility: inherit;
 }
 
 .sf-site-header-brand {
@@ -143,7 +152,12 @@
   display: flex;
   flex: none;
   align-items: center;
-  gap: var(--sf-space-1);
+}
+
+/* The actions (a link, a button) are neighbours of one group: 8 apart, 4 in
+   a compact region (C105 H5, --sf-space-1/3). */
+.sf-site-header-actions {
+  gap: var(--sf-space-1\/3);
 }
 
 /* The tools are a toolbar of icon-sized controls: one even step between them,
@@ -222,6 +236,27 @@
      page's own ellipsis) instead of scrolling the page sideways. */
   .sf-site-header-brand {
     flex: 0 1 auto;
+  }
+
+  /* ... and its words end in an ellipsis of the bar's own (HD-10: the brand
+     box shrank, but its text ran on under the tools). A link fits the brand
+     and its words close down: the link itself when it holds only words,
+     else the words beside its picture. The picture keeps its size. :where
+     keeps the rules at the brand's weight, so a page's own brand CSS stays in
+     charge. */
+  .sf-site-header-brand :where(a) {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .sf-site-header-brand :where(a:not(:has(img, svg))),
+  .sf-site-header-brand :where(a:has(img, svg) > :not(img, svg)),
+  .sf-site-header-brand > :where(:not(a, img, svg):not(:has(a, img, svg))) {
+    display: block;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .sf-site-header-panel {
@@ -320,7 +355,7 @@
   .sf-site-header-panel-heading {
     font-size: var(--sf-text-medium--size);
     line-height: var(--sf-text-medium--height);
-    font-weight: 700;
+    font-weight: var(--sf-heading--weight);
   }
 
   &.sf-site-header--open .sf-site-header-nav,

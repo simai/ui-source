@@ -8,5 +8,7 @@ SF.RuleLoader['cl-header-site'] = {
   relation: [
     { name: 'cl-button-icon' },
     { name: 'cl-icon' },
+    // The side panel's close (C14).
+    { name: 'cl-button-close' },
   ],
 };
