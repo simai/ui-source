@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "aria-label": "Қадамдар",
+    "completed-label": "Өтті",
+    "current-label": "Ағымдағы",
+    "ahead-label": "Алда",
+    "error-label": "Қате",
+    "skipped-label": "Өткізілді",
+    "running-label": "Орындалуда",
+    "count-label": "Қадам {n} / {count}"
+  }
+}

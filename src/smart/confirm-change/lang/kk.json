@@ -1,0 +1,15 @@
+{
+  "runtime": {
+    "accept-text": "Растау",
+    "accepted-text": "Қолданылды",
+    "accepting-text": "Қолданылуда…",
+    "after-text": "Болады",
+    "before-text": "Болды",
+    "changes-label": "Не өзгереді",
+    "decline-text": "Қабылдамау",
+    "declining-text": "Қабылданбауда…",
+    "empty-value-text": "бос",
+    "expired-text": "Растау уақыты өтіп кетті",
+    "until-text": "{time} дейін растауға болады"
+  }
+}

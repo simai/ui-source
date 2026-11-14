@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "activity-running": "Орындалуда",
+    "activity-waiting": "Сіздің жауабыңыз керек",
+    "activity-done": "Дайын",
+    "activity-stopped": "Тоқтатылды",
+    "activity-failed": "Сәтсіз аяқталды",
+    "activity-paused": "Кідірісте",
+    "activity-queued": "Кезекте"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "empty-text": "бос",
+    "label-separator": ":",
+    "show-text": "Өзгерістерді көрсету",
+    "hide-text": "Өзгерістерді жасыру",
+    "before-text": "Бұрын",
+    "after-text": "Кейін"
+  }
+}

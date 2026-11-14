@@ -1,0 +1,8 @@
+{
+  "schema": "simai.language-pack-index",
+  "schema_version": 1,
+  "delivery": "framework",
+  "languages": [
+    "kk"
+  ]
+}

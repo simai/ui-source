@@ -395,7 +395,9 @@ function resolveConfig(root, input) {
   ).toLowerCase();
   const maskStyle = rawMaskStyle === 'brackets' ? 'brackets' : 'native';
   return {
-    locale: locale === 'ru' ? 'ru' : 'en',
+    // The page's language as it is: ru and en name countries from the table,
+    // any other language through Intl (C177 (9): a third language was English).
+    locale: locale.split('-')[0] || 'en',
     useMask: toBoolean(root.dataset.useMask ?? input?.dataset.useMask, false),
     useCountryMasks: toBoolean(
       root.dataset.useCountryMasks ?? input?.dataset.useCountryMasks,
@@ -427,10 +429,26 @@ function resolveConfig(root, input) {
   };
 }
 
+// A country's name in a language the table does not carry, from Intl; null
+// where Intl has no name for it (it answers the code back).
+const REGION_NAMES = new Map();
+function regionName(iso2, locale) {
+  if (!iso2 || !locale) return null;
+  try {
+    if (!REGION_NAMES.has(locale)) REGION_NAMES.set(locale, new Intl.DisplayNames([locale], {type: 'region'}));
+    const name = REGION_NAMES.get(locale).of(String(iso2).toUpperCase());
+    return name && name.toUpperCase() !== String(iso2).toUpperCase() ? name : null;
+  } catch {
+    return null;
+  }
+}
+
 function getCountryLabel(country, locale) {
   if (!country) return '';
   if (country.label) return String(country.label);
-  const name = (locale === 'en' ? country.nameEn || country.nameRu : country.nameRu || country.nameEn) || country.iso2;
+  const name = (locale === 'ru' ? country.nameRu || country.nameEn
+    : locale === 'en' ? country.nameEn || country.nameRu
+      : regionName(country.iso2, locale) || country.nameEn || country.nameRu) || country.iso2;
   return name ? `${name} (${country.dialCode})` : String(country.dialCode || '');
 }
 

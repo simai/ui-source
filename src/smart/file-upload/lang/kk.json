@@ -1,0 +1,32 @@
+{
+  "runtime": {
+    "done": "Жүктелді",
+    "done-line": "{size} · жүктелді",
+    "error": "Жүктелмеді",
+    "error-line": "Жүктелмеді: {message}",
+    "formats-audio": "аудио",
+    "formats-image": "суреттер",
+    "formats-video": "бейне",
+    "link-text": "Файлды таңдаңыз",
+    "not-added": "Қосылмады: {n}",
+    "reject-count": {
+      "one": "«{name}» қосылмады: {n} файлдан артық болмайды",
+      "other": "«{name}» қосылмады: {n} файлдан артық болмайды"
+    },
+    "reject-duplicate": "«{name}» тізімде бар",
+    "reject-empty": "«{name}» бос — онда дерек жоқ",
+    "reject-min-size": "«{name}» — {size}, кемінде {min} болуы керек",
+    "reject-one": "«{name}» қосылмады: мұнда тек бір файл болады",
+    "reject-size": "«{name}» — {size}, шегі — {max}",
+    "reject-total": "«{name}» қосылмады: барлық файлдар бірге {max} аспауы керек",
+    "reject-type": "«{name}» сәйкес келмейді: рұқсат етілгені — {formats}",
+    "remove": "Жою",
+    "remove-failed": "Қатесі бар файлдарды алып тастаңыз немесе қайталаңыз",
+    "retry": "Қайталау",
+    "text": "немесе осында сүйреп әкеліңіз",
+    "uploading": "Жүктелуде",
+    "value-missing": "Файл қосыңыз",
+    "value-missing-many": "Кемінде бір файл қосыңыз",
+    "wait-for-uploads": "Файлдар жүктелгенше күтіңіз"
+  }
+}

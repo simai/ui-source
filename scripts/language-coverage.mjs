@@ -35,10 +35,14 @@ export function languageFolders(root = ROOT) {
   return folders;
 }
 
+// The words a component says on screen: `runtime`, and the words of a trait it
+// opts into (`x-trait-words`, looked up under the component's own name).
+export const runtimeWords = (json) => ({...(json?.['x-trait-words']?.words ?? {}), ...(json?.runtime ?? {})});
+
 const readRuntime = (dir, code) => {
   const file = path.join(dir, `${code}.json`);
   if (!existsSync(file)) return null;
-  return JSON.parse(readFileSync(file, 'utf8')).runtime ?? {};
+  return runtimeWords(JSON.parse(readFileSync(file, 'utf8')));
 };
 
 const placeholders = (word) => [...new Set([...JSON.stringify(word).matchAll(/\{([a-z][\w-]*)\}/giu)].map((match) => match[1]))].sort();

@@ -57,7 +57,7 @@ function createTrack(viewport, axis) {
   const label = viewport.getAttribute('aria-label');
 
   if (labelledBy) thumb.setAttribute('aria-labelledby', labelledBy);
-  else thumb.setAttribute('aria-label', label || pageText(SCROLLBAR_TEXT, 'scroll', viewport));
+  else thumb.setAttribute('aria-label', label || pageText(SCROLLBAR_TEXT, 'scroll', viewport, 'sf-scrollbar'));
 
   if (!viewport.id) {
     viewportId += 1;

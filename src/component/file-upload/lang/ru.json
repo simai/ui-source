@@ -2,6 +2,7 @@
   "runtime": {
     "remove": "Удалить",
     "uploading": "Загрузка",
+    "uploading-name": "Загрузка {name}",
     "retry": "Повторить",
     "linkText": "Выберите файл",
     "text": "или перетащите его сюда",

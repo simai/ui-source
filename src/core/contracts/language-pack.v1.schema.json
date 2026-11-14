@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/contracts/language-pack.v1.schema.json",
+  "title": "SIMAI Framework language pack v1",
+  "description": "Every word of one language for one delivery (the Framework, ui-pro, ui-chart, a product), by component. ru and en are built into the components; any other language is a pack, fetched only by a page in that language. Spec: docs/developer/language-packs.md (owner decision C177, 2026-11-14).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "schema_version", "lang", "words"],
+  "properties": {
+    "$schema": {"type": "string", "description": "Where an editor finds this schema."},
+    "schema": {"const": "simai.language-pack", "description": "The format, named without a version."},
+    "schema_version": {"const": 1},
+    "delivery": {"type": "string", "pattern": "^[a-z][a-z0-9-]{0,39}$", "default": "framework", "description": "Whose words: framework, pro, chart, or a product's own name. A Framework pack's words give way to any other pack's and to words registered one by one."},
+    "lang": {"type": "string", "pattern": "^[a-z]{2,3}(-[a-z0-9]{2,8})*$", "description": "The language, a lower-case BCP 47 tag: kk, de, pt-br. A region tag is tried before its language."},
+    "name": {"type": "string", "minLength": 1, "description": "The language's name in itself: Қазақша, Deutsch."},
+    "dir": {"enum": ["ltr", "rtl"], "default": "ltr", "description": "The writing direction of the language."},
+    "status": {"enum": ["draft", "reviewed"], "default": "draft", "description": "draft: not yet read by a native speaker (a machine draft, an unchecked translation); reviewed: read and corrected by one."},
+    "review": {"type": "string", "description": "Who reviewed it, or what is still to check."},
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["words", "translated", "share"],
+      "description": "How much of the delivery's words the pack says; the rest is said in English. Written by scripts/build-language-packs.mjs.",
+      "properties": {
+        "words": {"type": "integer", "minimum": 0},
+        "translated": {"type": "integer", "minimum": 0},
+        "share": {"type": "number", "minimum": 0, "maximum": 100}
+      }
+    },
+    "words": {
+      "type": "object",
+      "description": "The words by component, under the name the component registers its words with: its tag (sf-pagination), or the name its documentation gives (sf-file-size for size units).",
+      "propertyNames": {"pattern": "^[a-z][a-z0-9-]*$"},
+      "additionalProperties": {
+        "type": "object",
+        "description": "One component's words: the keys of its lang/en.json runtime.",
+        "propertyNames": {"pattern": "^[A-Za-z][A-Za-z0-9._-]*$"},
+        "additionalProperties": {"$ref": "#/$defs/word"}
+      }
+    }
+  },
+  "$defs": {
+    "word": {
+      "oneOf": [
+        {"type": "string", "description": "A word or phrase. {name} is filled by the component; {n} is a number in the language's own digits."},
+        {
+          "type": "object",
+          "description": "A word that takes a number: one string per plural category of the language (Intl.PluralRules), other always.",
+          "additionalProperties": false,
+          "required": ["other"],
+          "properties": {
+            "zero": {"type": "string"},
+            "one": {"type": "string"},
+            "two": {"type": "string"},
+            "few": {"type": "string"},
+            "many": {"type": "string"},
+            "other": {"type": "string"}
+          }
+        }
+      ]
+    }
+  }
+}

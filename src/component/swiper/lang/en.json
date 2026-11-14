@@ -1,5 +1,5 @@
 {
   "runtime": {
-    "goToSlide": "Go to slide"
+    "goToSlide": "Go to slide {n}"
   }
 }

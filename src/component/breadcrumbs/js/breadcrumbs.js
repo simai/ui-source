@@ -37,7 +37,7 @@ function getExpandLabel(root) {
   return (
     root.getAttribute('data-expand-label') ||
     root.getAttribute('expand-label') ||
-    pageText(BREADCRUMBS_TEXT, 'expandLabel', root)
+    pageText(BREADCRUMBS_TEXT, 'expandLabel', root, 'sf-breadcrumbs')
   );
 }
 

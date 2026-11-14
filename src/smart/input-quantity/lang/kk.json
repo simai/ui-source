@@ -1,0 +1,21 @@
+{
+  "runtime": {
+    "decrement": "Мәнді азайту",
+    "increment": "Мәнді көбейту",
+    "range-underflow": "Мән кемінде {min} болуы керек",
+    "range-overflow": "Мән {max} аспауы керек",
+    "step-mismatch": "Мән {step} еселігі болуы керек",
+    "remove": "Жою",
+    "value-missing": "Өрісті толтырыңыз",
+    "bad-input": "Сан енгізіңіз",
+    "help": "Толығырақ: {label}"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "мұраланады",
+      "reset": "Мұраланған мәнге қайтару",
+      "described": "Мұраланған: {value}"
+    }
+  }
+}

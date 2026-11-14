@@ -192,7 +192,11 @@ function syncFileUploadInteraction(root) {
   // the way the remove button does, unless the author named it.
   files?.querySelectorAll('.sf-upload-progress').forEach(item => {
     const name = item.querySelector('.sf-upload-progress-name')?.textContent?.trim() || '';
-    const label = `${pageText(FILE_UPLOAD_ITEM_TEXT, 'uploading', root, 'sf-file-upload')} ${name}`.trim();
+    // The name has its place in the words ({name}), so a language that puts
+    // it first can (C177 (9)).
+    const label = name
+      ? pageText(FILE_UPLOAD_ITEM_TEXT, 'uploading-name', root, 'sf-file-upload').replace('{name}', name)
+      : pageText(FILE_UPLOAD_ITEM_TEXT, 'uploading', root, 'sf-file-upload');
     const host = item.querySelector('sf-progress-bar');
     if (host) {
       const managed = host.dataset.sfUploadLabel;

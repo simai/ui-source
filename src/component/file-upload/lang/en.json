@@ -2,6 +2,7 @@
   "runtime": {
     "remove": "Remove",
     "uploading": "Uploading",
+    "uploading-name": "Uploading {name}",
     "retry": "Try again",
     "linkText": "Click to upload",
     "text": "or drag and drop",

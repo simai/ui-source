@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "phoneLabel": "Телефон нөмірі",
+    "phoneRequired": "Телефон нөмірін енгізіңіз.",
+    "countryLabel": "Ел коды",
+    "countryUnknown": "Ел коды танылмады. Елді таңдаңыз",
+    "searchPlaceholder": "Ел немесе код",
+    "frequent": "Жиі таңдалатындар",
+    "allCountries": "Барлық елдер",
+    "nothingFound": "Ештеңе табылмады"
+  }
+}

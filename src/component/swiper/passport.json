@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.swiper",
   "kind": "component",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/swiper/docs/docs.md",
@@ -15,7 +15,7 @@
     "src/component/swiper/rule.js",
     "src/component/swiper/scss/index.scss"
   ],
-  "content_sha256": "ccd7cb1d014978af96204e727ab2e4b185098d480d8b76dc31e6f8d431bb482b",
+  "content_sha256": "72ac275d88c8b3e21cb96df13c9ae233e1145ca8684e4c3d53aa7e790673323b",
   "dependencies": [
     {
       "id": "core.runtime",

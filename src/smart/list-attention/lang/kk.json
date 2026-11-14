@@ -1,0 +1,58 @@
+{
+  "runtime": {
+    "label": "Назар аударуды қажет етеді",
+    "empty-text": "Бәрі дұрыс",
+    "empty-checked-text": "{text} · тексерілді: {when}",
+    "status-error": "Қате",
+    "status-warning": "Ескерту",
+    "status-info": "Мәлімет",
+    "status-success": "Дайын",
+    "status-passed": "Өтті",
+    "summary-error": {
+      "one": "{n} қате",
+      "other": "{n} қате"
+    },
+    "summary-warning": {
+      "one": "{n} ескерту",
+      "other": "{n} ескерту"
+    },
+    "summary-info": {
+      "one": "{n} ұсыныс",
+      "other": "{n} ұсыныс"
+    },
+    "summary-success": {
+      "one": "{n} шешілді",
+      "other": "{n} шешілді"
+    },
+    "group-error": "Қателер",
+    "group-warning": "Ескертулер",
+    "group-info": "Ұсыныстар",
+    "group-success": "Шешілді",
+    "group-passed": "Өтті",
+    "affected-text": "әсер етті: {text}",
+    "age-now": "жаңа ғана",
+    "age-minutes": "{n} мин",
+    "age-hours": "{n} сағ",
+    "age-days": {
+      "one": "{n} күн",
+      "other": "{n} күн"
+    },
+    "checked-text": "Тексерілді: {when}",
+    "checked-now": "жаңа ғана",
+    "checked-minutes": "{n} мин бұрын",
+    "checked-time": "{time}",
+    "checked-date": "{date}, {time}",
+    "recheck-label": "Қайта тексеру",
+    "more-text": "Барлық мәселелер ({n})",
+    "show-all-text": "Барлығын көрсету ({n})",
+    "more-label": "Тағы: {title}",
+    "snooze-day-text": "Бір күнге кейінге қалдыру",
+    "snooze-week-text": "Бір аптаға кейінге қалдыру",
+    "dismiss-text": "Еске салмау",
+    "help-text": "Тексеру туралы толығырақ",
+    "snoozed-day-notice": "Бір күнге қалдырылды: {title}",
+    "snoozed-week-notice": "Бір аптаға қалдырылды: {title}",
+    "dismissed-notice": "Енді еске салмаймыз: {title}",
+    "undo-text": "Қайтару"
+  }
+}

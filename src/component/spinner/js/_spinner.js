@@ -415,7 +415,7 @@ class Spinner extends ComponentObserver {
       // overrode every size class.
       width,
       height,
-      label = pageText(SPINNER_TEXT, 'label', props?.root ?? document.documentElement),
+      label = pageText(SPINNER_TEXT, 'label', props?.root ?? document.documentElement, 'sf-spinner'),
       // No look unless one is asked for: the page's (data-sf-spinner) applies.
       variant,
       dots = SPINNER_DOTS,
