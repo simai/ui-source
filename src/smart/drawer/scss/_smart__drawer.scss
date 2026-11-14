@@ -1,6 +1,8 @@
 @use 'sass:map';
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/vars/sf_var__breakpoint' as bp;
+@use '../../../core/scss/mix/mix__window-footer' as window-footer;
+@use '../../../core/scss/mix/mix__sheet' as sheet;
 @property --sf-drawer-stack-offset {
   syntax: "<length>";
   inherits: true;
@@ -213,6 +215,8 @@
   .sf-drawer.is-open .sf-drawer-panel {
     transition-timing-function: var(--sf-ease-enter);
     transform: translateX(var(--sf-0));
+    /* A finger pushing the panel toward its edge (C157 (4)): it follows. */
+    translate: var(--sf-drawer-swipe, 0px) 0;
   }
 
   /* A closed panel is not drawn once it has slid out. Moved by its own width
@@ -252,13 +256,19 @@
     padding-inline: var(--sf-drawer--inset-start) var(--sf-drawer--inset-end);
   }
 
+  /* The panel's title is the window's (owner decision C157 (7) = C159 (5),
+     2026-11-14): the h4 step, 20 on 24 on a desktop and 16 on a phone, in
+     bold -- the question window's step (C39). It was heading 6 (16), smaller
+     than the question window's and sf-modal's. Headings do not follow
+     density (C44): a compact panel keeps it. */
   .sf-drawer-title {
+    flex: 1 1 auto;
     min-width: 0;
     overflow: hidden;
     color: var(--sf-on-surface);
-    font-size: var(--sf-heading-6--size);
-    line-height: var(--sf-heading-6--height);
-    font-weight: var(--sf-heading--weight);
+    font-size: var(--sf-heading-4--size);
+    line-height: var(--sf-heading-4--height);
+    font-weight: var(--sf-font-weight-bold);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -298,6 +308,68 @@
   .sf-drawer-body > :only-child {
     flex: 1 1 auto;
     min-block-size: 0;
+  }
+
+  /* The foot (owner decision C157 (3), 2026-11-14): pinned under the body
+     while the panel scrolls, the actions at its start, the main one first,
+     a button group's gap between them (8, compact 4: C105 H5, C144) -- the
+     footer of every window and panel (core mix/_mix__window-footer.scss,
+     shared with sf-modal); a filter writes «Применить (N)», then
+     «Сбросить». The panel's frame around it. A page wrote its own bar
+     before (Pro, Larena, ui-mail; study DR-4). Without slot="footer" it
+     takes no room. */
+  .sf-drawer-foot {
+    position: sticky;
+    inset-block-end: 0;
+    z-index: 1;
+    display: flex;
+    flex: none;
+    flex-wrap: wrap;
+    background: inherit;
+    padding-block: var(--sf-space-1) var(--sf-drawer--inset);
+    padding-inline: var(--sf-drawer--inset-start) var(--sf-drawer--inset-end);
+  }
+
+  .sf-drawer-foot:empty {
+    display: none;
+  }
+
+  @include window-footer.window-footer('.sf-drawer-foot', var(--sf-space-1\/3));
+
+  /* The body's end padding is the gap to the foot when there is one. */
+  .sf-drawer-panel:has(> .sf-drawer-foot:not(:empty)) > .sf-drawer-body {
+    padding-block-end: var(--sf-space-1);
+  }
+
+  /* The body's edges (as sf-modal's, C159 (3)): a hairline under the head
+     only while content is above it, over the foot only while content is
+     below it; the drawer marks which. */
+  .sf-drawer[data-sf-drawer-more-start] .sf-drawer-head {
+    box-shadow: 0 var(--sf-px) 0 var(--sf-outline-variant);
+  }
+
+  .sf-drawer[data-sf-drawer-more-end] .sf-drawer-foot {
+    box-shadow: 0 calc(-1 * var(--sf-px)) 0 var(--sf-outline-variant);
+  }
+
+  /* «Назад» in the head of a nested panel (C157 (6)) points to the start of
+     the line: in a right-to-left page the arrow turns. */
+  .sf-drawer-back:dir(rtl) .sf-icon {
+    transform: scaleX(-1);
+  }
+
+  /* One panel at an edge (C157 (6)): a drawer opened from a floating panel
+     at the same edge is drawn inside it. The panel under it hides at once
+     while it is open (no slide, its edge controls with it) and shows again
+     when it closes; the nested one comes and goes at once, so the content
+     of the one panel changes in place. */
+  .sf-drawer[data-sf-drawer-under] :is(.sf-drawer-panel, .sf-drawer-edge) {
+    visibility: hidden;
+    transition: none;
+  }
+
+  .sf-drawer[data-sf-drawer-nested] .sf-drawer-panel {
+    transition: none;
   }
 
   /* With no head above it the body's own small top padding is the whole top of
@@ -365,6 +437,39 @@
     position: static;
   }
 
+  /* Controls on the scrim (study VP-16): what stands on the edge beside a
+     floating panel stands on the scrim, black at 64 over any page. It takes
+     the core glass role a control over a picture has (C14 (3), C16): a dark
+     round plate (--sf-surface-media, black 48; hover 64, press 80) and a
+     white glyph (--sf-on-surface-media), the same in both themes, and the
+     glass's white focus ring, which the theme's blue was not on black. The
+     close there is sf-button-close appearance="media"; a page's own icon
+     buttons in the edge slot («Открыть полностью») take the same plate. In
+     the theme's grey the close stood on the scrim at about 1:1. A column of
+     the page has no scrim: its edge keeps the page's look. */
+  .sf-drawer:not([data-sf-drawer-column='true']) .sf-drawer-edge {
+    @include places.sf-place-glass-accent;
+    --sf-on-surface: var(--sf-on-surface-media);
+    --sf-on-surface-icon: var(--sf-on-surface-media);
+    --sf-on-surface-hover: var(--sf-on-surface-media);
+    --sf-on-surface-active: var(--sf-on-surface-media);
+    --sf-on-surface-variant: var(--sf-on-surface-media);
+  }
+
+  .sf-drawer:not([data-sf-drawer-column='true']) .sf-drawer-edge .sf-icon-button:not(.sf-button-close) {
+    --sf-icon-button--radius: var(--sf-radius-rounded);
+    --sf-icon-button--background-color: var(--sf-surface-media);
+    color: var(--sf-on-surface-media);
+  }
+
+  .sf-drawer:not([data-sf-drawer-column='true']) .sf-drawer-edge .sf-icon-button:not(.sf-button-close):not(:disabled):hover {
+    --sf-icon-button--background-color: var(--sf-surface-media-hover);
+  }
+
+  .sf-drawer:not([data-sf-drawer-column='true']) .sf-drawer-edge .sf-icon-button:not(.sf-button-close):not(:disabled):active {
+    --sf-icon-button--background-color: var(--sf-surface-media-active);
+  }
+
   /* A phone (below md, where the forms in popups are sheets, C32): a side
      panel is the whole screen, without a radius and without a border
      (owner decision C56, as sf-modal's side panel; study DR-5). Every step
@@ -386,6 +491,16 @@
       inset-inline: var(--sf-space-1) auto;
       flex-direction: row;
     }
+
+    /* A swipe toward the panel's edge closes it (C157 (4)): the browser
+       keeps the vertical scroll and hands the sideways drag to the drawer. */
+    .sf-drawer:not([data-sf-drawer-placement='bottom']):not([data-sf-drawer-column='true']) .sf-drawer-panel {
+      touch-action: pan-y;
+    }
+  }
+
+  .sf-drawer[data-sf-drawer-size='full']:not([data-sf-drawer-placement='bottom']) .sf-drawer-panel {
+    touch-action: pan-y;
   }
 
   /* Docked drawers are modeless page columns: no scrim, square edges. One
@@ -481,11 +596,11 @@
     touch-action: none;
   }
 
+  /* The one sheet's grab bar (C157 (5), core mix/_mix__sheet.scss): 24 x 4
+     on every screen in the quiet ink. It was the outline's colour, and 16
+     wide on a phone (the space ladder's step). */
   .sf-drawer-handle-bar {
-    inline-size: var(--sf-space-3);
-    block-size: var(--sf-space-1\/4);
-    border-radius: var(--sf-radius-rounded);
-    background: var(--sf-outline);
+    @include sheet.sheet-bar;
   }
 
   .sf-drawer-handle:focus-visible {

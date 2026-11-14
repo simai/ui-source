@@ -2,6 +2,7 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @use '../../../core/scss/mix/mix__window-footer' as window-footer;
+@use '../../../core/scss/mix/mix__sheet' as sheet;
 @layer sf.components {
 .sf-modal-focus-guard {
   position: fixed;
@@ -67,10 +68,13 @@
 .sf-modal[data-sf-modal-position='right'] [data-sf-modal-panel],
 .sf-modal[data-sf-modal-position='inline-start'] [data-sf-modal-panel],
 .sf-modal[data-sf-modal-position='inline-end'] [data-sf-modal-panel] {
+  /* A side window is an sf-drawer by its old name (owner decision C157 (1),
+     until 2027-01-01): it takes the drawer's step 1, 24rem (C157 (2)), not
+     the width of its text (305 px in the drawer study). */
   display: flex;
-  max-width: min(100%, var(--sf-modal-drawer-width, auto));
+  max-width: min(100%, var(--sf-modal-drawer-width, var(--sf-g2)));
   min-height: 100%;
-  width: var(--sf-modal-drawer-width, auto);
+  width: var(--sf-modal-drawer-width, var(--sf-g2));
 }
 
 .sf-modal[data-sf-modal-position='top'] [data-sf-modal-panel],
@@ -78,6 +82,38 @@
   display: flex;
   max-height: min(100%, var(--sf-modal-drawer-height, 100vh));
   min-width: 100%;
+}
+
+/* The one sheet (owner decision C157 (5); core mix/_mix__sheet.scss): a
+   window at the bottom -- a question or a form on a phone (C159 (2)), the
+   old position="bottom" -- is the screen's width up to 44rem, centred, with
+   the sheet's grab bar on top, and a finger drags it down (sf-modal reads
+   the swipe). It stretched to the window's width and had no bar. */
+.sf-modal[data-sf-modal-position='bottom']:not([data-sf-modal-fullscreen='true']) [data-sf-modal-panel] {
+  min-width: 0;
+  inline-size: 100%;
+  max-inline-size: var(--sf-h1);
+  margin-inline: auto;
+  translate: 0 var(--sf-sheet--drag, 0px);
+}
+
+.sf-modal[data-sf-modal-position='bottom'] [data-sf-modal-panel].is-dragging {
+  transition: none;
+}
+
+.sf-modal[data-sf-modal-position='bottom']:not([data-sf-modal-fullscreen='true']) [data-sf-modal-surface]::before {
+  @include sheet.sheet-bar-row;
+  /* The handle row stands at the sheet's top edge, over the frame; the gap
+     after it is the frame's. */
+  margin-block: calc(-1 * var(--sf-modal--frame, var(--sf-space-2)) + (var(--sf-ui-1\/2--control-height) - var(--sf-a4)) / 2)
+    calc((var(--sf-ui-1\/2--control-height) - var(--sf-a4)) / 2 - var(--sf-modal-surface-gap, var(--sf-space-1)));
+  flex: none;
+}
+
+/* The sheet itself takes the drag (its body keeps its own scroll: a scroll
+   box's content answers to its own touch-action). */
+.sf-modal[data-sf-modal-position='bottom']:not([data-sf-modal-fullscreen='true']) [data-sf-modal-surface] {
+  touch-action: none;
 }
 
 .sf-modal[data-sf-modal-position='left'] [data-sf-modal-surface],

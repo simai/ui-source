@@ -38,6 +38,13 @@ import { getTopModalLayer, getModalLayerIndex, updateModalLayers, addModalLayer,
   removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus,
   isTopModalLayer } from "../../component/modal/js/_stack";
 import { carryLayerOrigin, layerZIndexAt, lockPageScroll, startClosedLayerContent } from "../../core/js/layer-stack";
+import { inHandleRow, startsOnControl, trackSwipe } from "../../core/js/sheet-swipe";
+
+// A side window or a sheet is sf-drawer's (owner decision C157 (1),
+// 2026-11-14): sf-modal position="inline-start|inline-end|left|right|bottom"
+// is its old name until this date, noted once per value.
+const EDGE_POSITIONS = ["inline-start", "inline-end", "left", "right", "bottom"];
+const EDGE_POSITIONS_UNTIL = "2027-01-01";
 import { breakpointMedia } from "../../core/js/breakpoints.js";
 
 // sf-modal from its component.json (standard simai.smart-component 1.3.8 §3,
@@ -222,6 +229,7 @@ class SfModal extends ModalElement {
     this._answer = null;
     this.onKeyDown = this.onKeyDown.bind(this);
     this.handleOverlayClick = this.handleOverlayClick.bind(this);
+    this.handleSheetPointerDown = this.handleSheetPointerDown.bind(this);
     this.handleCloseClick = this.handleCloseClick.bind(this);
     this.handleHideClick = this.handleHideClick.bind(this);
   }
@@ -1473,6 +1481,41 @@ class SfModal extends ModalElement {
 
     root.removeEventListener("click", this.handleOverlayClick);
     root.addEventListener("click", this.handleOverlayClick);
+    root.removeEventListener("pointerdown", this.handleSheetPointerDown);
+    root.addEventListener("pointerdown", this.handleSheetPointerDown);
+    this.noteEdgePosition();
+  }
+
+  // The old name of a side panel or a sheet (C157 (1)): written by the page,
+  // not the phone's own sheet of a centred window (shownPosition).
+  noteEdgePosition() {
+    const position = this.getAttribute("position") || "";
+    if (!EDGE_POSITIONS.includes(position)) return;
+    noteDeprecated({
+      component: "sf-modal", tag: "sf-modal", kind: "value", attribute: "position", from: position,
+      to: position === "bottom" ? "sf-drawer placement=\"bottom\"" : "sf-drawer",
+      since: "2026-11-14", remove_after: EDGE_POSITIONS_UNTIL,
+    });
+  }
+
+  // A window at the bottom is the one sheet (owner decision C157 (5)): a
+  // swipe down from its handle row closes it as the x does -- a window with
+  // changed fields asks first (C159 (6)), a saving one waits.
+  handleSheetPointerDown(event) {
+    if (event.button !== 0 || !this._isOpen || this.shownPosition !== "bottom" || this.shownFullscreen) return;
+    const root = this._root();
+    const surface = root?.querySelector("[data-sf-modal-surface]");
+    const panel = root?.querySelector("[data-sf-modal-panel]");
+    if (!surface || !panel || !surface.contains(event.target) || startsOnControl(event.target)) return;
+    if (!inHandleRow(event, surface)) return;
+    trackSwipe(event, {
+      surface: panel,
+      direction: "down",
+      variable: "--sf-sheet--drag",
+      onEnd: ({ dismiss }) => {
+        if (dismiss && this.dismissible) this.close({ reason: "close" });
+      },
+    });
   }
 
   bindSlotEventHandlers() {

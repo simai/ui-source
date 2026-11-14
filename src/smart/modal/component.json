@@ -2,7 +2,7 @@
   "$comment": "The source of sf-modal's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/modal (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.modal",
   "tag": "sf-modal",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "kind": "leaf",
   "family": "modal",
   "settings": {
@@ -94,7 +94,7 @@
         "bottom"
       ],
       "default": "center",
-      "summary": "Where the window stands: center, a side panel at inline-start or inline-end (following the document direction), top or bottom; left and right are the physical forms."
+      "summary": "Where the window stands: center, or top. A side window (inline-start, inline-end; left and right their physical forms) and a sheet at the bottom are sf-drawer's (owner decision C157 (1)): those values are its old names until 2027-01-01 -- they still work, are noted in SF.deprecations, and draw as the drawer does: a side window takes the drawer's step 1 (24rem), a sheet the one sheet (44rem at most, the grab bar, a swipe down closes it)."
     },
     "size": {
       "type": "enum",
@@ -787,6 +787,7 @@
     "events modal:ready, modal:update retire (§4.1, §16.13); readers getModalRoot, getSlotHtml retire (§4.4, §16.13)"
   ],
   "x-decisions": [
+    "version 1.10.0 (2026-11-14, owner decision C157 (1), (2), (5)): a minor. position=\"inline-start|inline-end|left|right|bottom\" is the old name of an sf-drawer until 2027-01-01, noted once per value (SF.deprecations, kind value, to sf-drawer). A side window stands at the drawer's step 1, 24rem (--sf-modal-drawer-width still wins); it was its text's width. A window at the bottom -- a question or a form on a phone (C159 (2)) or the old position=\"bottom\" -- is the one sheet of core mix/_mix__sheet.scss: at most 44rem, centred, the grab bar (24 x 4, on-surface-variant) in a handle row on top, and a swipe down from that row closes it as the x does (a window with changed fields asks first, C159 (6); a saving one waits).",
     "own-verb-words: minimize is a verb of vocabulary §5 (modal `hide`), so minimize/minimized are not own verbs; content-upload and content-uploaded stay own verbs with their words in lang events.<verb>.label (§8, vocabulary §5.1).",
     "alias-conflict: vocabulary 1.1.5 decides. modal:after-hide → sf-modal-minimized and modal:after-show → sf-modal-expanded (the facts of minimize and expand, vocabulary §4; `change` reports a person's value change only, §8), modal:before-show → sf-modal-expand (the table's sf-modal-minimize is the reverse act), the content events → sf-modal-content-upload(ed) (loading is not a value change). The converter's sf-modal-hidden/-shown/-hide/-show never shipped and get no rows.",
     "detail-adapter: §8 takes page elements out of detail, so the new names carry {modalId, phase, …} only; each old modal:* name keeps its old detail (component, modal, root added) through a split row and the element's detail adapter (sfAliasAdapters), sent after the new name with one shared cancel.",
