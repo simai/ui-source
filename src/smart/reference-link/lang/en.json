@@ -1,3 +1,9 @@
 {
-  "title": "Reference Link"
+  "title": "Reference Link",
+  "runtime": {
+    "new-tab-text": "(opens in a new tab)",
+    "copy-label": "Copy link",
+    "missing-text": "deleted",
+    "forbidden-text": "no access"
+  }
 }

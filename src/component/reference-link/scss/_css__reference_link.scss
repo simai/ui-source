@@ -57,8 +57,24 @@
     color: var(--sf-reference-link-link-color, var(--sf-reference-link--link));
     font: inherit;
     overflow-wrap: anywhere;
-    text-decoration: underline;
+    /* Underline (C147 (3)): in a card, a field, a table -- a size, a line,
+       plain -- the link is underlined under the pointer and on keyboard
+       focus only (sf.states below); in running text (inline) always. */
+    text-decoration-line: none;
+    text-decoration-thickness: var(--sf-px);
     text-underline-offset: var(--sf-a3);
+  }
+
+  /* A long name (C147 (9)): a card shows up to two lines, then an ellipsis;
+     the element puts the whole name in a tooltip. A size, a line and plain
+     keep their one line (below). */
+  .sf-reference-link:not([class*="sf-reference-link--size-"]):not([class*="sf-reference-link--line-"]):not(.sf-reference-link--plain):where(:not(.sf-reference-link--inline))
+    :where(.sf-reference-link__link, .sf-reference-link-left > a) {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
 
   .sf-reference-link :where(.sf-reference-link__link, .sf-reference-link-left > a)::after {
@@ -151,8 +167,8 @@
     --sf-reference-link--border-color: transparent;
   }
 
-  .sf-reference-link:not(.sf-reference-link--plain):has(:where(.sf-reference-link__link, .sf-reference-link-left > a):hover),
-  .sf-reference-link:not(.sf-reference-link--plain):has(:where(.sf-reference-link__link, .sf-reference-link-left > a)):has(:where(.sf-reference-link__meta, .sf-reference-link-text):hover) {
+  .sf-reference-link:not(.sf-reference-link--plain):where(:not(.sf-reference-link--inline)):has(:where(.sf-reference-link__link, .sf-reference-link-left > a):hover),
+  .sf-reference-link:not(.sf-reference-link--plain):where(:not(.sf-reference-link--inline)):has(:where(.sf-reference-link__link, .sf-reference-link-left > a)):has(:where(.sf-reference-link__meta, .sf-reference-link-text):hover) {
     --sf-reference-link--background-color: var(--sf-surface-container-hover);
     --sf-reference-link--border-color: var(--sf-primary-outline);
     --sf-reference-link--link: var(--sf-link-hover);
@@ -160,8 +176,8 @@
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
 
-  .sf-reference-link:not(.sf-reference-link--plain):has(:where(.sf-reference-link__link, .sf-reference-link-left > a):active),
-  .sf-reference-link:not(.sf-reference-link--plain):has(:where(.sf-reference-link__link, .sf-reference-link-left > a)):has(:where(.sf-reference-link__meta, .sf-reference-link-text):active) {
+  .sf-reference-link:not(.sf-reference-link--plain):where(:not(.sf-reference-link--inline)):has(:where(.sf-reference-link__link, .sf-reference-link-left > a):active),
+  .sf-reference-link:not(.sf-reference-link--plain):where(:not(.sf-reference-link--inline)):has(:where(.sf-reference-link__link, .sf-reference-link-left > a)):has(:where(.sf-reference-link__meta, .sf-reference-link-text):active) {
     --sf-reference-link--background-color: var(--sf-surface-container-active);
     --sf-reference-link--link: var(--sf-link-active);
     --sf-reference-link--accent: var(--sf-primary-active);
@@ -174,6 +190,14 @@
   .sf-reference-link:is(.sf-reference-link--line-1\/2, .sf-reference-link--line-1, .sf-reference-link--line-2):has(:where(.sf-reference-link__link, .sf-reference-link-left > a, .sf-reference-link__meta, .sf-reference-link-text):is(:hover, :active)) {
     --sf-reference-link--background-color: transparent;
     --sf-reference-link--border-color: transparent;
+  }
+
+  /* Under the pointer and on keyboard focus the link is underlined (C147
+     (3)): in a card the whole card is the link, so the pointer anywhere on
+     it -- the route included -- underlines the name. */
+  .sf-reference-link :where(.sf-reference-link__link, .sf-reference-link-left > a):is(:hover, :focus-visible),
+  .sf-reference-link:has(:where(.sf-reference-link__meta, .sf-reference-link-text):hover) :where(.sf-reference-link__link, .sf-reference-link-left > a) {
+    text-decoration-line: underline;
   }
 
   .sf-reference-link :where(.sf-reference-link__link, .sf-reference-link-left > a):focus {
@@ -329,5 +353,176 @@
      C105 before the words, --sf-space-1/4 (4), at every size (RL-8). */
   .sf-reference-link:is(.sf-reference-link--plain, .sf-reference-link--line-1\/2, .sf-reference-link--line-1, .sf-reference-link--line-2) {
     --sf-reference-link--main-gap: var(--sf-space-1\/4);
+  }
+}
+
+@layer sf.components {
+  /* A new tab (C147 (4), as C25 for a file opened to view): the sign after
+     the words, H3 of C105 (--sf-space-1/4, 4) from them, the size of the
+     line's icon; the words are for a screen reader only. Neither is
+     underlined or copied. */
+  .sf-reference-link :where(.sf-reference-link__tab) {
+    margin-inline-start: var(--sf-space-1\/4);
+    color: inherit;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    --sf-icon--font-size: var(--sf-reference-link--line-height, var(--sf-text-height-1));
+    --sf-icon--height: var(--sf-reference-link--line-height, var(--sf-text-height-1));
+    --sf-icon--width: var(--sf-reference-link--line-height, var(--sf-text-height-1));
+  }
+
+  .sf-reference-link :where(.sf-reference-link__tab-words) {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* A target that is gone (C147 (6)): no link, so no link ink -- the words
+     and the broken-link icon in the dim ink, the reason after the name. */
+  .sf-reference-link.sf-reference-link--gone :where(.sf-reference-link__main, .sf-reference-link__link, .sf-reference-link__label, .sf-reference-link__icon, .sf-reference-link__reason) {
+    color: var(--sf-on-surface-variant);
+  }
+
+  .sf-reference-link :where(.sf-reference-link__reason) {
+    font-weight: var(--sf-font-weight-regular);
+  }
+
+  .sf-reference-link :where(.sf-reference-link__reason)::before {
+    content: ' · ';
+    white-space: pre;
+  }
+
+  /* Copy the address (C147 (8)): the card's icon button (size 1/2) at its
+     inline end, above the link's overlay; the card keeps its height and
+     gives the button its room and the card's gap. */
+  .sf-reference-link.sf-reference-link--copy {
+    padding-inline-end: calc(var(--sf-reference-link-padding-inline, var(--sf-reference-link--padding-inline)) + var(--sf-ui-1\/2--control-height) + var(--sf-reference-link-gap, var(--sf-reference-link--gap)));
+  }
+
+  .sf-reference-link :where(.sf-reference-link__copy) {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: 50%;
+    inset-inline-end: var(--sf-reference-link-padding-inline, var(--sf-reference-link--padding-inline));
+    translate: 0 -50%;
+  }
+}
+
+@layer sf.components {
+  /* In text (C147 (1)): the reference is a link in the sentence. It flows
+     and wraps with the words and takes the size of the text around it, so
+     the line keeps its height; no card, no frame, no overlay. The icon --
+     the record's type (C147 (2)), none by default -- is the line's height
+     and stands H3 of C105 (--sf-space-1/4, 4) before the name; the record's
+     number follows the name in the dim ink. The name is always underlined
+     (C147 (3)); the icon, the number and the new-tab sign are not. */
+  .sf-reference-link.sf-reference-link--inline {
+    display: inline;
+    position: static;
+    inline-size: auto;
+    min-inline-size: var(--sf-0);
+    max-inline-size: none;
+    padding: var(--sf-0);
+    color: inherit;
+    background-color: transparent;
+    border: 0;
+    border-radius: var(--sf-radius--ui);
+  }
+
+  .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__link) {
+    color: var(--sf-reference-link-link-color, var(--sf-link));
+    font: inherit;
+    overflow-wrap: inherit;
+    text-decoration: none;
+    border-radius: var(--sf-radius--ui);
+  }
+
+  .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__link)::after {
+    content: none;
+  }
+
+  .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__label) {
+    text-decoration-line: underline;
+    text-decoration-thickness: var(--sf-px);
+    text-underline-offset: var(--sf-a3);
+  }
+
+  /* The icons are one line high: 1lh of the text the reference stands in.
+     The glyph's size reads its parent's line; its box then reads its own
+     line, which the icon sets to its size (line-height 1), so the box is
+     that same line. */
+  .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__icon, .sf-reference-link__tab) {
+    color: inherit;
+    --sf-icon--font-size: 1lh;
+    --sf-icon--height: 1lh;
+    --sf-icon--width: 1lh;
+  }
+
+  .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__icon) {
+    margin-inline-end: var(--sf-space-1\/4);
+  }
+
+  /* The number is one word: «№ 4812» never breaks at its space. */
+  .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__number) {
+    color: var(--sf-on-surface-variant);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .sf-reference-link.sf-reference-link--inline:is(.disabled, .sf-reference-link--gone) :where(.sf-reference-link__label) {
+    text-decoration-line: none;
+  }
+
+  .sf-reference-link.sf-reference-link--inline.sf-reference-link--gone :where(.sf-reference-link__link) {
+    color: var(--sf-on-surface-variant);
+  }
+
+  .sf-reference-link.sf-reference-link--inline.disabled :where(.sf-reference-link__link, .sf-reference-link__icon, .sf-reference-link__number) {
+    color: var(--sf-on-surface-disabled);
+  }
+}
+
+@layer sf.states {
+  /* Visited (C147 (5)): only where the page asks for it -- a site or
+     documentation marks a region (or <html>) data-sf-visited="on" -- and
+     only for a reference in text. Apps, tables and cards never show it.
+     :visited takes colour alone, so the ink is set here, not through the
+     element's variable. */
+  :where([data-sf-visited="on"]) .sf-reference-link.sf-reference-link--inline a.sf-reference-link__link:visited {
+    color: var(--sf-link-visited);
+  }
+
+  .sf-reference-link.sf-reference-link--inline a.sf-reference-link__link:hover {
+    color: var(--sf-reference-link-link-color, var(--sf-link-hover));
+  }
+
+  .sf-reference-link.sf-reference-link--inline a.sf-reference-link__link:active {
+    color: var(--sf-reference-link-link-color, var(--sf-link-active));
+  }
+
+  .sf-reference-link.sf-reference-link--inline a.sf-reference-link__link:focus {
+    outline: none;
+  }
+
+  .sf-reference-link.sf-reference-link--inline a.sf-reference-link__link:focus-visible {
+    outline-color: var(--sf-focus);
+    outline-offset: var(--sf-focus--offset);
+    outline-style: var(--sf-focus--style);
+    outline-width: var(--sf-focus--width);
+  }
+
+  /* The card's ring is drawn on the card; in text the ring is the link's. */
+  .sf-reference-link.sf-reference-link--inline:has(a.sf-reference-link__link:focus-visible) {
+    outline: none;
+  }
+
+  @media (forced-colors: active) {
+    .sf-reference-link.sf-reference-link--inline a.sf-reference-link__link:focus-visible {
+      outline-color: Highlight;
+    }
   }
 }

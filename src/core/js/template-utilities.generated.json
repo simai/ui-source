@@ -366,7 +366,10 @@
   ],
   "cl-reference-link": [
     "align-items/default",
-    "display/default"
+    "display/default",
+    "flex-direction/default",
+    "justify-content/default",
+    "place-items/default"
   ],
   "cl-resizer": [
     "display/default",

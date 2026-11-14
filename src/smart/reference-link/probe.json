@@ -11,6 +11,12 @@
       "  <sf-reference-link id=\"r-off\" label=\"Архив\" href=\"#\" disabled></sf-reference-link>",
       "  <sf-reference-link id=\"r-named\" label=\"Ещё\" href=\"#\" aria-label=\"Все заказы клиента\"></sf-reference-link>",
       "  <sf-reference-link id=\"r-bad\" label=\"Неизвестно\" href=\"#\" appearance=\"box\"></sf-reference-link>",
+      "  <p id=\"para\">Подробности в задаче <sf-reference-link id=\"r-in\" appearance=\"inline\" icon=\"task_alt\" label=\"Подписать договор\" text=\"№ 4812\" href=\"#t4812\"></sf-reference-link> и в <sf-reference-link id=\"r-doc\" appearance=\"inline\" label=\"документации\" href=\"#docs\"></sf-reference-link>.</p>",
+      "  <sf-reference-link id=\"r-tab\" appearance=\"inline\" label=\"Исходный код\" href=\"https://github.com/simai/ui-source\" target=\"_blank\"></sf-reference-link>",
+      "  <sf-reference-link id=\"r-gone\" appearance=\"inline\" icon=\"task_alt\" label=\"№ 4790\" href=\"#t4790\" state=\"missing\"></sf-reference-link>",
+      "  <sf-reference-link id=\"r-closed\" label=\"Сделка филиала\" text=\"D-2026-0398\" state=\"forbidden\"></sf-reference-link>",
+      "  <sf-reference-link id=\"r-copy\" label=\"Начало работы\" text=\"/ru/guide/\" href=\"https://ui.simai.io/ru/guide/\" copy></sf-reference-link>",
+      "  <div style=\"inline-size: 12rem\"><sf-reference-link id=\"r-cut\" line=\"1\" icon=\"\" label=\"Договор поставки оборудования для филиала в Екатеринбурге\" href=\"#deal\"></sf-reference-link></div>",
       "</main>"
     ]
   },
@@ -48,11 +54,11 @@
     },
     {
       "id": "p3-disabled",
-      "title": "disabled has no link and says aria-disabled",
+      "title": "disabled has no link; its label is a link that is unavailable",
       "covers": "settings.disabled",
       "steps": [
         {
-          "check": "!document.querySelector('#r-off a') && document.querySelector('#r-off .sf-reference-link').getAttribute('aria-disabled') === 'true'"
+          "check": "!document.querySelector('#r-off a') && document.querySelector('#r-off [role=\"link\"]').getAttribute('aria-disabled') === 'true'"
         }
       ]
     },
@@ -91,6 +97,59 @@
         },
         {
           "check": "getComputedStyle(document.querySelector('#r .sf-reference-link')).borderTopColor === 'rgb(1, 2, 3)'"
+        }
+      ]
+    },
+    {
+      "id": "p7-inline",
+      "title": "inline is a run in the sentence: the type icon, the name underlined, the number, no arrow by default",
+      "covers": "settings.appearance inline, settings.text, settings.icon default in text (C147 (1)-(3))",
+      "steps": [
+        {
+          "check": "(() => { const r = document.querySelector('#r-in .sf-reference-link'); const a = r && r.querySelector('a.sf-reference-link__link'); const p = document.querySelector('#para'); return r && r.classList.contains('sf-reference-link--inline') && getComputedStyle(r).display === 'inline' && a.querySelector('.sf-reference-link__icon').textContent === 'task_alt' && a.querySelector('.sf-reference-link__number').textContent === '№ 4812' && getComputedStyle(a.querySelector('.sf-reference-link__label')).textDecorationLine === 'underline' && !document.querySelector('#r-doc .sf-reference-link__icon') && Math.round(p.getBoundingClientRect().height) === Math.round(parseFloat(getComputedStyle(p).lineHeight)); })()"
+        }
+      ]
+    },
+    {
+      "id": "p8-new-tab",
+      "title": "target _blank adds the open_in_new sign and the words to the name",
+      "covers": "settings.target (C147 (4)), lang runtime new-tab-text",
+      "steps": [
+        {
+          "check": "(() => { const a = document.querySelector('#r-tab a'); return a.getAttribute('rel') === 'noopener noreferrer' && a.querySelector('.sf-reference-link__tab').textContent === 'open_in_new' && a.querySelector('.sf-reference-link__tab-words').textContent === '(откроется в новой вкладке)'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p9-gone",
+      "title": "state missing or forbidden: no link, the broken-link icon, the reason in words",
+      "covers": "settings.state (C147 (6)), lang runtime missing-text, forbidden-text",
+      "steps": [
+        {
+          "check": "(() => { const g = document.querySelector('#r-gone'); const c = document.querySelector('#r-closed'); return !g.querySelector('a') && g.querySelector('.sf-reference-link__icon').textContent === 'link_off' && g.querySelector('.sf-reference-link__reason').textContent === 'удалена' && !c.querySelector('a') && c.querySelector('.sf-reference-link__reason').textContent === 'нет доступа'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p10-copy",
+      "title": "copy puts the clipboard route button at the card end with the full address",
+      "covers": "settings.copy (C147 (8))",
+      "steps": [
+        {
+          "check": "(() => { const b = document.querySelector('#r-copy button.sf-reference-link__copy'); return b && b.getAttribute('data-sf-copy') === 'https://ui.simai.io/ru/guide/' && b.getAttribute('aria-label') === 'Копировать ссылку' && !document.querySelector('#r .sf-reference-link__copy'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p11-cut-name",
+      "title": "a name cut on its line has its whole text in the Framework tooltip",
+      "covers": "C147 (9)",
+      "steps": [
+        {
+          "wait": 300
+        },
+        {
+          "check": "(() => { const a = document.querySelector('#r-cut a'); const t = document.getElementById(a.getAttribute('data-tooltip')); return t && t.classList.contains('sf-tooltip') && t.textContent.trim() === 'Договор поставки оборудования для филиала в Екатеринбурге' && !document.querySelector('#r a[data-tooltip]'); })()"
         }
       ]
     }

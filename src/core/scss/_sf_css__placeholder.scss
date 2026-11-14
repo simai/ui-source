@@ -189,8 +189,30 @@
   block-size: var(--sf-reference-link--box);
 }
 
+/* In text (appearance inline, C147 (1)) the reference is a run of words in
+   the sentence, not a box: no height of its own, and its name is written
+   from the label attribute in the link's ink and line until the element
+   draws, so the sentence does not close up and open again. */
+:where(sf-reference-link[appearance="inline"]:not(:defined)):not(:has(> [data-sf-static])) {
+  display: inline;
+  block-size: auto;
+}
+
+:where(sf-reference-link[appearance="inline"][label]:not(:defined)):not(:has(> [data-sf-static]))::before {
+  content: attr(label);
+  color: var(--sf-link);
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--sf-px);
+  text-underline-offset: var(--sf-a3);
+}
+
+:where(sf-reference-link[appearance="inline"][label]:is([state="missing"], [state="forbidden"]):not(:defined)):not(:has(> [data-sf-static]))::before {
+  color: var(--sf-on-surface-variant);
+  text-decoration-line: none;
+}
+
 @media (width < map.get(bp.$breakpoint-array, sm)) { // below sm: the card stacks, as its sheet draws it
-  :where(sf-reference-link:not(:defined):not([line]:not([line=""])):not([size]:not([size=""]))):not(:has(> [data-sf-static])) {
+  :where(sf-reference-link:not(:defined):not([appearance="inline"]):not([line]:not([line=""])):not([size]:not([size=""]))):not(:has(> [data-sf-static])) {
     block-size: calc(var(--sf-reference-link--box-pad) + var(--sf-reference-link--box-line)
       + var(--sf-space-1) + var(--sf-reference-link--box-route) * var(--sf-reference-link--box-line));
   }
