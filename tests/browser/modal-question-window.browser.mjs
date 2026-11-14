@@ -21,7 +21,7 @@
 //   plate                 surface-container, --sf-radius--surface,
 //                         --sf-space-1 inside; the decisive sentence medium
 //   plate -> field/check  --sf-space-2; label -> field --sf-space-1/3
-//   -> answers            --sf-space-3; answers step 1, gap --sf-space-1/2,
+//   -> answers            --sf-space-3; answers step 1, gap --sf-space-1/3 (C144),
 //                         the filled danger answer first, at the start
 //   one start line        title, plate, label, field and the first answer
 //
@@ -240,7 +240,7 @@ function check(m, ctx) {
   } else {
     table.answersGap = m.buttons[1].left - m.buttons[0].right;
   }
-  want('answers gap = --sf-space-1/2', table.answersGap, t.space12);
+  want('answers gap = --sf-space-1/3 (C144)', table.answersGap, t.space13);
   // one start line
   const starts = {title: m.title.left, plate: m.plate.left, label: m.label?.left, field: m.field?.left, checkbox: m.checkbox?.left, answer: m.buttons[0].left};
   for (const [name, left] of Object.entries(starts)) if (left !== undefined) want(`start line: ${name}`, left, inner);
