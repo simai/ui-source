@@ -70,10 +70,25 @@ $-below: ('1/3': '1/4', '1/2': '1/3', '1': '1/2', '2': '1', '3': '2');
   @return '#{$block}--size-#{esc($size)}';
 }
 
-// Where the value starts at an outer step (1/3, 3), from the frame's outer
-// edge: sf-input's at those steps, the step's padding, the border and the text
-// step (_css__custom.scss). C77's one inset (12 / 16 / 20) names the kept
-// sizes only.
-@function outer-inset($size) {
-  @return calc(#{ui($size, space-x)} + var(--sf-px) + #{ui($size, text-space-x)});
+// C77's inset at every step (text inputs 2026-11-14, TI-2, TI-3): where the
+// value starts from the frame's outer edge, the 1 px border counted inside it.
+// The kept steps are the decision's own -- 1/2 = 12, 1 = 16, 2 = 20, compact
+// 12 / 12 / 16 -- and the outer steps follow the same space ladder: 1/3 as
+// 1/2 (12, never below --sf-b2), 3 one space step above 2 (--sf-space-3: 24,
+// compact 20). On a phone (below 60rem, the space tokens' own break) every
+// step is 12 (C77: «телефон 12»): size 1 is --sf-space-1 there already, 2 and
+// 3 come down to it. Before, 1/3 and 3 stood at the step's padding plus the
+// border plus the text step (19 / 37, phone 16 / 33), and a phone 2 at 16.
+@mixin inset($property, $size) {
+  @if $size == '1/3' or $size == '1/2' {
+    #{$property}: max(var(--sf-space-1\/2), var(--sf-b2));
+  } @else if $size == '1' {
+    #{$property}: var(--sf-space-1);
+  } @else {
+    #{$property}: var(--sf-space-1);
+
+    @media (min-width: 60rem) {
+      #{$property}: var(--sf-space-#{$size});
+    }
+  }
 }

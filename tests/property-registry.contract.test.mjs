@@ -64,12 +64,10 @@ test('the password renderers never put the value into markup and write only type
   assert.match(edit, /input-type="password"/u);
   assert.match(edit, /autocomplete="new-password"/u);
   assert.match(edit, /spellcheck="false"/u);
-  // A toggle whose name changes («Показать пароль» / «Скрыть пароль») is not a
-  // pressed toggle (rule C12, point 3): no pressed setting, no aria-pressed.
-  assert.doesNotMatch(edit, /pressed/u);
-  assert.match(edit, /aria-label=\$\{setText\(host, 'showPassword'\)\}/u);
-  assert.doesNotMatch(body('togglePasswordShown'), /pressed/u);
-  assert.match(body('togglePasswordShown'), /setText\(host, shown \? 'hidePassword' : 'showPassword'\)/u);
+  // One eye: sf-input's own (C123 (4)); the set draws no second button beside
+  // the field (text inputs study, TI-7).
+  assert.doesNotMatch(edit, /sf-button-icon|visibility|showPassword/u);
+  assert.doesNotMatch(source, /function togglePasswordShown\(/u);
   // No value binding of any kind, and no data-* carrying anything.
   assert.doesNotMatch(edit, /[\s.]value=|data-|console\./u);
   // The only write is the typed text, and erasing withdraws it.
@@ -81,7 +79,7 @@ test('the password renderers never put the value into markup and write only type
   assert.match(body('renderTextEdit'), /if \(isPasswordField\(field\)\) return renderPasswordEdit/u);
   assert.match(source, /const VIEW_RENDERERS = \{\n    string: renderStringView,/u);
   assert.match(source, /string: renderStringCell,/u);
-  for (const key of ['passwordSet', 'passwordUnset', 'passwordKeep', 'showPassword', 'hidePassword']) {
+  for (const key of ['passwordSet', 'passwordUnset', 'passwordKeep']) {
     assert.equal((source.match(new RegExp(`^        ${key}: '`, 'gmu')) ?? []).length, 2, `${key} in en and ru`);
   }
 });

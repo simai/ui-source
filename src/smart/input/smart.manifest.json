@@ -667,7 +667,7 @@
       },
       {
         "path": "src/smart/input/js/templates/default.js",
-        "sha256": "55e13122c96982a1e58fd1eb284ab2a2338473631d0c4c30373d699d205d844f"
+        "sha256": "bcb01501dea9e00db5c20396fbd2707a937159392b3d16b8e391f2a75a9b2831"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
