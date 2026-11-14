@@ -249,6 +249,66 @@
     * (var(--sf-input--box-line) + var(--sf-input--box-gap)));
 }
 
+/* sf-tile-metric before it draws (tile study TM-3, owner decision C130 (2):
+   a row of tiles was 0 px for 80-230 ms, then 300 at once). Its box is known
+   from its attributes, on the ladder the tile's sheet draws with: the card's
+   inset (the size's space, the hairline inside it), the label line, the value
+   two steps up, and the lines its settings promise -- the change's badge line
+   when previous, delta or period-text is set or there is no limit (the
+   loading skeleton's own rule), the meter's bar and its words' line with
+   max, the status line with status or hint. A label or a hint that wraps is
+   what the attributes cannot tell. Static markup printed inside
+   (data-sf-static) is its own box. */
+:where(sf-tile-metric:not(:defined)) {
+  --sf-tile-metric--box-space: var(--sf-ui-1--space-x);
+  --sf-tile-metric--box-gap: var(--sf-ui-1--text-space-x);
+  --sf-tile-metric--box-line: var(--sf-text-height-1\/2);
+  --sf-tile-metric--box-value: var(--sf-text-height-3);
+  --sf-tile-metric--box-badge: calc(var(--sf-c0) + 2 * var(--sf-a4));
+  --sf-tile-metric--box-bar: var(--sf-a8);
+  --sf-tile-metric--box-change: 1;
+  --sf-tile-metric--box-meter: 0;
+  --sf-tile-metric--box-status: 0;
+}
+
+:where(sf-tile-metric[size="1/2"]:not(:defined)) {
+  --sf-tile-metric--box-space: var(--sf-ui-1\/2--space-x);
+  --sf-tile-metric--box-gap: var(--sf-ui-1\/2--text-space-x);
+  --sf-tile-metric--box-line: var(--sf-text-height-1\/3);
+  --sf-tile-metric--box-value: var(--sf-text-height-2);
+  --sf-tile-metric--box-badge: calc(var(--sf-b6) + 2 * var(--sf-a4));
+  --sf-tile-metric--box-bar: var(--sf-a4);
+}
+
+:where(sf-tile-metric[size="2"]:not(:defined)) {
+  --sf-tile-metric--box-space: var(--sf-ui-2--space-x);
+  --sf-tile-metric--box-gap: var(--sf-ui-2--text-space-x);
+  --sf-tile-metric--box-line: var(--sf-text-height-1);
+  --sf-tile-metric--box-value: var(--sf-text-height-4);
+  --sf-tile-metric--box-badge: calc(var(--sf-c2) + 2 * var(--sf-a4));
+}
+
+/* From the desktop breakpoint a badge's line is the text height and the
+   size's low tightness (component.badges, C140 (5)). */
+@media (min-width: 60rem) {
+  :where(sf-tile-metric:not(:defined)) { --sf-tile-metric--box-badge: calc(var(--sf-text-height-1\/2) + 2 * var(--sf-ui-1\/2--space-y-tightness-low)); }
+  :where(sf-tile-metric[size="1/2"]:not(:defined)) { --sf-tile-metric--box-badge: calc(var(--sf-text-height-1\/3) + 2 * var(--sf-ui-1\/3--space-y-tightness-low)); }
+  :where(sf-tile-metric[size="2"]:not(:defined)) { --sf-tile-metric--box-badge: calc(var(--sf-text-height-1) + 2 * var(--sf-ui-1--space-y-tightness-low)); }
+}
+
+:where(sf-tile-metric[max]:not([max=""]):not(:defined)) { --sf-tile-metric--box-change: 0; --sf-tile-metric--box-meter: 1; }
+:where(sf-tile-metric:is([previous]:not([previous=""]), [delta]:not([delta=""]), [period-text]:not([period-text=""])):not(:defined)) { --sf-tile-metric--box-change: 1; }
+:where(sf-tile-metric:is([status]:not([status=""], [status="neutral"]), [hint]:not([hint=""])):not(:defined)) { --sf-tile-metric--box-status: 1; }
+
+:where(sf-tile-metric:not(:defined)):not(:has(> [data-sf-static])) {
+  display: block;
+  min-block-size: calc(2 * var(--sf-tile-metric--box-space)
+    + var(--sf-tile-metric--box-line) + var(--sf-tile-metric--box-gap) + var(--sf-tile-metric--box-value)
+    + var(--sf-tile-metric--box-change) * (var(--sf-tile-metric--box-gap) + var(--sf-tile-metric--box-badge))
+    + var(--sf-tile-metric--box-meter) * (var(--sf-tile-metric--box-gap) + var(--sf-tile-metric--box-bar) + var(--sf-tile-metric--box-gap) / 2 + var(--sf-tile-metric--box-line))
+    + var(--sf-tile-metric--box-status) * (var(--sf-tile-metric--box-gap) + var(--sf-tile-metric--box-line)));
+}
+
 /* sf-tag before it draws (tags study TG-15: a bare tag was 0 px for 120-140
    ms, then the whole tag, and the line it stood in jumped). Its box is known
    from its attributes, on the ladder the tag sheet draws with: one control of

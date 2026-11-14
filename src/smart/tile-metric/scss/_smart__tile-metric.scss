@@ -219,34 +219,40 @@ sf-tile-metric {
   display: none;
 }
 
-/* While the numbers load: a bar on each line that waits, the line's height,
-   so nothing moves when they arrive. */
-.sf-tile-metric-skeleton {
-  display: block;
+/* While the numbers load (owner decision C130; tile study TM-1): each line
+   that waits keeps its own place. A word is core's first-paint bar in the
+   line's own type (.sf-first-paint-bar, C136), so the value's line is the
+   value's; a box -- the change badge, the meter's bar -- is the real part,
+   hidden, under one fill of the skeleton colour and the control radius
+   (C130 (1)), pulsing as the bars do (C130 (3), (4)). Nothing moves when the
+   numbers arrive. */
+.sf-tile-metric-skeleton--shape {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  max-inline-size: 100%;
+}
+
+.sf-tile-metric-meter > .sf-tile-metric-skeleton--shape {
+  display: flex;
+}
+
+.sf-tile-metric-skeleton--shape > * {
+  visibility: hidden;
+}
+
+.sf-tile-metric-skeleton--shape::after {
+  content: "";
+  position: absolute;
+  inset: 0;
   border-radius: var(--sf-radius--ui);
-  background: var(--sf-skeleton-base, var(--sf-surface-container));
+  background: var(--sf-surface-container);
+  animation: sf-placeholder-pulse calc(var(--sf-duration-slow) * 3) var(--sf-animation) infinite;
 }
 
-.sf-tile-metric-skeleton--value {
-  inline-size: 60%;
-  block-size: calc(var(--sf-tile-metric--value-line) * 0.75);
-  align-self: center;
-}
-
-.sf-tile-metric-skeleton--line {
-  inline-size: 40%;
-  block-size: calc(var(--sf-tile-metric--line) * 0.75);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .sf-tile-metric--loading .sf-tile-metric-skeleton {
-    animation: sf-tile-metric-pulse calc(var(--sf-duration-slow) * 4) var(--sf-ease-move) infinite;
-  }
-}
-
-@keyframes sf-tile-metric-pulse {
-  50% {
-    opacity: 0.5;
+@media (prefers-reduced-motion: reduce) {
+  .sf-tile-metric-skeleton--shape::after {
+    animation: none;
   }
 }
 
@@ -279,7 +285,7 @@ sf-tile-metric {
     border-color: CanvasText;
   }
 
-  .sf-tile-metric-skeleton {
+  .sf-tile-metric-skeleton--shape::after {
     background: GrayText;
   }
 }
