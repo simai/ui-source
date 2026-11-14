@@ -26,7 +26,7 @@
     "src/core/scss/_sf_css__typograpy.scss",
     "src/core/scss/vars/_sf_var__link.scss"
   ],
-  "content_sha256": "0b5282312c42732f0301cbe23d0dd024d9450bceb5cd5f3d1bf9e0703320106c",
+  "content_sha256": "d7917f5ce99d0b03c26a093d210bcdd92dca728342a8bd6a644e6efd3e7681e0",
   "dependencies": [
     {
       "id": "font.inter",
@@ -59,10 +59,6 @@
     },
     {
       "id": "tokens.space",
-      "range": "^1.0.0"
-    },
-    {
-      "id": "utility.font-weight",
       "range": "^1.0.0"
     },
     {

@@ -13,8 +13,10 @@ const read = (path) => readFileSync(resolve(root, path), 'utf8');
 
 test('the base focus ring reads tokens that exist', () => {
   const border = read('src/core/scss/_sf_css__border.scss');
+  // The width's value is the export's (figma_focus.scss, @use'd by the border sheet; C178).
+  const declared = `${border}\n${read('src/core/figma_variables/figma_focus.scss')}`;
   for (const name of ['color', 'offset', 'style', 'width']) {
-    assert.match(border, new RegExp(`--sf-focus--${name}:`, 'u'), `--sf-focus--${name} is declared`);
+    assert.match(declared, new RegExp(`--sf-focus--${name}:`, 'u'), `--sf-focus--${name} is declared`);
     assert.match(border, new RegExp(`outline-${name}: var\\(--sf-focus--${name}\\)`, 'u'), `outline-${name} reads it`);
   }
   assert.doesNotMatch(
@@ -33,14 +35,16 @@ test('the base ring is keyboard-only', () => {
 test('the focus colour comes from the theme and the ring is drawn in pixels', () => {
   const border = read('src/core/scss/_sf_css__border.scss');
   assert.match(border, /--sf-focus--color: var\(--sf-focus\)/u, 'the theme colour, not a new blue');
-  // The width is one value under two names: the ring reads --sf-focus--width,
-  // the Figma export declares --sf-focus-outline-width. The ring marks an edge,
+  // The width is one value under one name (C178, 2026-11-14): the export
+  // declares --sf-focus--width and the former --sf-focus-outline-width reads
+  // it until 2027-01-01. The ring marks an edge,
   // so it is counted in pixels like every hairline: 2px wide, 1px off the
   // element, whatever the root font size (owner, 2026-10-10). On the rem scale
   // a larger root font thickened the ring and pushed it away.
-  assert.match(border, /--sf-focus--width: var\(--sf-focus-outline-width\)/u, 'one value, two names');
+  assert.match(border, /--sf-focus-outline-width: var\(--sf-focus--width\)/u, 'the former name reads the family name');
   const focusExport = read('src/core/figma_variables/figma_focus.scss');
-  assert.match(focusExport, /--sf-focus-outline-width: calc\(var\(--sf-px\) \* 2\)/u, 'two pixels');
+  assert.match(focusExport, /--sf-focus--width: calc\(var\(--sf-px\) \* 2\)/u, 'two pixels');
+  assert.doesNotMatch(focusExport, /--sf-focus-outline-width/u, 'the value lives under the family name');
   assert.doesNotMatch(focusExport, /--sf-a\d/u, 'not on the rem scale');
   const theme = read('src/core/scss/_sf_css__theme.scss');
   // One declaration with a branch per theme, and a solid role in both: at 24%

@@ -1,10 +1,14 @@
 @layer sf.base {
   :root {
-    --sf-ui-blur-small: blur(var(--sf-blur-small));;
-    --sf-ui-blur-medium: blur(var(--sf-blur-medium));;
-    --sf-ui-blur-large: blur(var(--sf-blur-large));;
-    --sf-ui-blur-surface-overlay: blur(var(--sf-surface-overlay--blur));;
-    --sf-ui-focus: 0 0 0 var(--sf-focus-outline-width) var(--sf-focus);
+    /* Former names (owner decision C178, 2026-11-14): the blur family is
+       --sf-blur-*, a radius a rule writes as blur(var(--sf-blur-medium)).
+       These filter values keep their value until 2027-01-01
+       (src/core/contracts/token-aliases.v1.json, families). */
+    --sf-ui-blur-small: blur(var(--sf-blur-small));
+    --sf-ui-blur-medium: blur(var(--sf-blur-medium));
+    --sf-ui-blur-large: blur(var(--sf-blur-large));
+    --sf-ui-blur-surface-overlay: blur(var(--sf-surface-overlay--blur));
+    --sf-ui-focus: 0 0 0 var(--sf-focus--width) var(--sf-focus);
     /* The skeleton is a control's fill since C16 (owner, 2026-11-08): 16, and
        the wave's highlight 24 (--sf-surface-container-active). It was a
        gradient of two ink steps (48), which the alpha scale keeps for what is
