@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-description",
-  "version": "1.1.6",
+  "version": "1.2.0",
   "title": "Description list",
   "summary": "A description list: facts as label and value rows (a site summary, server facts, a record's card with sections, a record's header, a job's parameters, licence details). The labels stand in one column for the whole record and go over their values on a phone; a value can be monospace, figures, a link, copied with a button, a badge, carry a status, a hint and an action; a label a help mark; a section a title and an action; a long value wraps or is cut with the whole of it on demand; an empty one says «Не указан». layout grid is a summary in up to four columns.",
   "kind": "smart",
@@ -74,7 +74,7 @@
       "layout": {
         "type": "string",
         "default": "auto",
-        "description": "columns: the labels in a column of their own (as wide as the longest label, up to --sf-list-description-label-width), the values beside them; stacked: each label over its value; auto: columns, stacked in a column narrower than 24rem (a phone); grid: the summary under a record's heading -- each label over its value, as many columns as fit at 11rem each and at most columns, every value on one line with an ellipsis and its whole text as title",
+        "description": "columns: the labels in a column of their own (as wide as the longest label, up to --sf-list-description-label-width), the values beside them; stacked: each label over its value; auto: columns, stacked in a column of 20rem or narrower (a 20rem side panel) and on a phone (below md), beside from a 24rem side panel up (owner decision C180 (3)); grid: the summary under a record's heading -- each label over its value, as many columns as fit at 11rem each and at most columns, every value on one line with an ellipsis and its whole text as title",
         "enum": [
           "auto",
           "columns",
@@ -291,7 +291,7 @@
       },
       {
         "path": "src/smart/list-description/scss/_smart__list-description.scss",
-        "sha256": "8674a7534c550a3032834f8e97d677e53abb0a11d4777c4ac56a0d4d3069b882"
+        "sha256": "977f8c411b7c9d46ac3cd225b2a5b7d9f4efdd5e5c514417e2653b0065ca40cc"
       },
       {
         "path": "src/smart/list-description/rule.js",
@@ -299,7 +299,7 @@
       },
       {
         "path": "src/smart/list-description/docs.md",
-        "sha256": "217614ddc5253b02f737ccd6380425205f7d5e3e8475ac4ca2ff54fa0582c36c"
+        "sha256": "85b6d739211d7c87678d34eb48881e3b26388789a3d356dcd6fb6383bb3aa80f"
       }
     ],
     "generated_runtime": []
