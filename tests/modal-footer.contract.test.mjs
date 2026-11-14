@@ -13,7 +13,7 @@ test('sf-modal footer: actions at the end, a ladder gap, under the utilities', a
     read('src/smart/modal/js/templates/default.js'),
     read('src/component/modal/js/_modal.js'),
   ]);
-  assert.match(styles, /@layer sf\.base \{\s*\.sf-modal-footer \{\s*align-items: center;\s*justify-content: flex-end;\s*gap: var\(--sf-modal-footer-gap, var\(--sf-space-1\\\/2\)\);/);
+  assert.match(styles, /@layer sf\.base \{\s*\.sf-modal-footer \{\s*align-items: center;\s*justify-content: flex-end;\s*gap: var\(--sf-modal-footer-gap, var\(--sf-space-1\\\/3\)\);/);
   // A gap utility in the template would sit above sf.base and beat the default.
   for (const source of [smart, component]) {
     assert.match(source, /'sf-modal-footer flex flex-wrap',/);

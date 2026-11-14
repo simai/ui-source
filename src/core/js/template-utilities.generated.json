@@ -101,7 +101,6 @@
   "cl-dropdown": [
     "align-items/default",
     "background-color/default",
-    "background-size/default",
     "cursor/default",
     "display/default",
     "flex-direction/default",
@@ -222,7 +221,6 @@
     "flex-direction/default",
     "flex-wrap/default",
     "flex/default",
-    "justify-content/default",
     "overflow/default"
   ],
   "cl-input-quantity": [
@@ -246,6 +244,7 @@
   "cl-input-textarea": [
     "display/default",
     "flex-direction/default",
+    "resize/default",
     "transition-property/default"
   ],
   "cl-language": [
@@ -274,7 +273,6 @@
   "cl-list-item": [
     "align-items/default",
     "background-color/default",
-    "background-size/default",
     "cursor/default",
     "display/default",
     "flex-direction/default",
@@ -427,7 +425,6 @@
     "visibility/default"
   ],
   "cl-tag": [
-    "background-size/default",
     "display/default",
     "flex-direction/default",
     "flex-wrap/default",

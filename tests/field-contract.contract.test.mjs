@@ -39,7 +39,8 @@ test('input and textarea Smart templates expose the same native field semantics'
   for (const source of [inputTemplate, textareaTemplate]) {
     assert.match(source, /\?required=\$\{field\.required\}/);
     assert.match(source, /aria-invalid=\$\{field\.invalid/);
-    assert.match(source, /aria-describedby=\$\{messageContent/);
+    // The textarea names its count beside the message (C141 (1)): describedBy = the message id, then the count's.
+    assert.match(source, /aria-describedby=\$\{(?:messageContent|describedBy)/);
     assert.match(source, /aria-errormessage=\$\{field\.invalid && errorContent/);
     assert.match(source, /createFieldContract\(context\.component/);
     assert.match(source, /data-field-message=\$\{field\.invalid && errorContent/);

@@ -7,6 +7,20 @@ $sf-avatar-hue-classes: ();
   $sf-avatar-hue-classes: list.append($sf-avatar-hue-classes, '.sf-hue-#{$hue}', $separator: comma);
 }
 
+// A host's avatar picture (src/smart/avatar/js/picture.js: a tag, a list row,
+// a dropdown, a lookup chip, a menu row) writes no utility class: this gives
+// it the box sf-avatar writes in utilities -- an inline flex box that does
+// not shrink and centres what it holds. In sf.base, under the utilities, so
+// a class a host adds still wins.
+@layer sf.base {
+  .sf-avatar--picture {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
 @layer sf.components {
   /* utility-hint: display/block */
   .sf-avatar {

@@ -139,7 +139,8 @@ the next one.
   which are gone by then. A carrier whose
   only attribute is `slot` is unwrapped and its children kept; with any other
   attribute it is kept whole, so a listener on the carrier itself goes with
-  it.
+  it. A custom element, a `figure`, a `picture` and an element holding a
+  `figcaption` are content, never carriers: they are kept whole.
 
 - **Static markup is replaced in the first render** (standard
   simai.smart-component 1.3.8 §5.4, simai/ui-source#40). What a server or a
@@ -226,7 +227,14 @@ the next one.
   values cleared, the late settings left out of the island, the host marked
   `data-sf-first-paint="skeleton" aria-busy="true"`. The element keeps a
   printed skeleton until the late settings arrive (`sfAwaitingData()`), then
-  replaces it in one frame. A hand-written `skeleton.html`
+  replaces it in one frame. Each late list holds on its own
+  (`sfLateHeld()` names the ones still awaited): a component with more than
+  one late list (sf-progress-run: `steps`, `counters`) gets skeletons that
+  name the lists they stand for, `data-sf-late="steps counters"`, so a job
+  printed with counters and no steps holds its counters alone and never waits
+  for steps that are not coming; the skeleton turns into content once every
+  named list has arrived. A skeleton without `data-sf-late` holds every
+  declared late list (a component with one late list prints none). A hand-written `skeleton.html`
   (`presentation.skeleton.file`, with `{{setting}}` and `<template
   data-sf-repeat="rows">` repeated from `presentation.skeleton.repeat`)
   overrides the derived one, and is what a part whose data is unknown when an

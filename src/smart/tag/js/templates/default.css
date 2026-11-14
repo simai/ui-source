@@ -27,6 +27,24 @@
         cursor: default;
     }
 
+    /* The row a tag stands in (js/tag-row.js; owner decision C58, tags study
+       TG-2): in a one-row container the tags that do not fit leave the row and
+       a plain count «+N» of the row's size stands after the last one shown;
+       the first tag always stands and, alone, ends in an ellipsis. */
+    sf-tag[data-sf-tag-over] {
+        display: none !important;
+    }
+
+    sf-tag[data-sf-tag-shrink] > .sf-tag {
+        flex-shrink: 1;
+    }
+
+    .sf-tag[data-sf-tag-more] {
+        display: inline-flex;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
     .sf-tag--interactive:has(> .sf-tag-action:focus-visible) {
         outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
         outline-offset: var(--sf-focus--offset);

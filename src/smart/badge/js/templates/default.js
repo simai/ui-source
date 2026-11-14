@@ -44,8 +44,10 @@ export function renderBadgeTemplate(context) {
   const textContent = hasTextSlot
     ? context.component.getSlotContent('text')
     : context.drawnText;
-  // Compact needs something to show: with no icon the text stays visible.
-  const isCompact = Boolean(context.compact) && (leftIconContent !== nothing || rightIconContent !== nothing);
+  // Icon-only needs something to show: with no icon the text stays visible.
+  // compact is its dated alias (owner decision C134: compact means density
+  // only); the shim maps the attribute and the property onto icon-only.
+  const isIconOnly = Boolean(context.iconOnly) && (leftIconContent !== nothing || rightIconContent !== nothing);
   // A figure -- one character and no icon, a single-figure count -- stays
   // round in either side room: its side room is the block padding, so the
   // size's height is its width.
@@ -61,7 +63,10 @@ export function renderBadgeTemplate(context) {
     `sf-badge--${context.paintedScheme}`,
     `sf-badge--size-${context.size}`,
     context.line ? `sf-badge--line-${context.line}` : '',
-    isCompact ? 'sf-badge--compact' : '',
+    // The class sf-badge--icon-only, and until 2027-01-01 its former name
+    // sf-badge--compact beside it, so a page selector that reached it still
+    // does (journal class-badges-compact-to-icon-only).
+    isIconOnly ? 'sf-badge--icon-only sf-badge--compact' : '',
     context.tight ? 'sf-badge--tight' : '',
     isFigure ? 'sf-badge--figure' : '',
     // Inline: a badge is as wide as its text. As a block-level flex box it
@@ -86,7 +91,7 @@ export function renderBadgeTemplate(context) {
       ${hasTextContent
         ? html`
             <span
-              class=${`sf-badge-text-container flex items-center${isCompact ? ' sr-only' : ''}`}
+              class=${`sf-badge-text-container flex items-center${isIconOnly ? ' sr-only' : ''}`}
               aria-hidden=${hasAccessibleLabel ? 'true' : nothing}
             >
               <span class="sf-badge-text">${textContent}</span>

@@ -11,14 +11,18 @@ function renderSliderNode(context, type = 'inline') {
   const authoredSpaceBetween = context.component?.hasAttribute('space-between');
   const authoredSpeed = context.component?.hasAttribute('speed');
 
+  // Both sliders take ratio auto: the gallery's frame is its pictures' own
+  // box (--sf-gallery--ratio on each inline picture, contained), so a slide
+  // with a caption under the picture keeps the caption and no picture is
+  // cropped to the slider's 16/9 (GL-7).
   return html`
     <sf-slider
       data-sf-gallery-slider=${type}
       class=${sliderClass}
-      button-type=${context.buttonType}
+      button-type=${context.component?.hasAttribute?.('button-type') ? context.buttonType : nothing}
       button-size=${context.buttonSize}
       dots=${String(context.dots)}
-      dots-type=${context.dotsType}
+      dots-type=${context.component?.hasAttribute?.('dots-type') ? context.dotsType : nothing}
       dots-size=${context.dotsSize}
       thumbs=${String(context.thumbs)}
       thumbs-class=${context.thumbsClass}
@@ -28,6 +32,7 @@ function renderSliderNode(context, type = 'inline') {
       space-between=${authoredSpaceBetween ? String(context.spaceBetween) : nothing}
       speed=${authoredSpeed ? String(context.speed) : nothing}
       slide-class=${context.slideClass}
+      ratio="auto"
     ></sf-slider>
   `;
 }
@@ -35,7 +40,10 @@ function renderSliderNode(context, type = 'inline') {
 export function renderGalleryTemplate(context) {
   const showInline = context.inline || !context.lightbox;
   return html`
-    <div class=${joinClasses('sf-gallery flex flex-col gap-1', context.rootClass)}>
+    <div
+      class=${joinClasses('sf-gallery flex flex-col gap-1', context.rootClass)}
+      style=${context.frameRatio ? `--sf-gallery--ratio: ${context.frameRatio}` : nothing}
+    >
       ${showInline
         ? html`
             <div class="sf-gallery-inline" data-sf-gallery-inline>

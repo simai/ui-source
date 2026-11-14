@@ -74,3 +74,67 @@ projection. Overlay mode still requires the author to keep important text and
 interactive content away from controls.
 
 An arrow with nowhere to go is a disabled button: the script sets disabled with Swiper's swiper-button-disabled, so it leaves the tab order, and the arrow holding the focus hands it to the other one (1.1.2, docs pre-check 2026-11-10 SL-04). A button arrow draws the system's disabled look; another element keeps the 0.4 opacity.
+
+## Region, swipe and keys (1.2.0)
+
+The block is a region the reader can find and leave: `role="region"`,
+`aria-roledescription` «карусель» / «carousel» and a name — the page's
+`aria-label` or `aria-labelledby`, else `data-label`, else «Слайды» / «Slides».
+Each slide is a group described as «слайд» / «slide» and named by its position,
+«2 из 5» / «2 of 5»; `data-slide-label` (`{n}`, `{count}`) and
+`data-slide-roledescription` give other words, and a product adds a language
+with `SF.language.register('sf-slider', code, words)` (keys `label`,
+`carousel`, `slide`, `position`). The strip is `aria-live="polite"`, and `off`
+while autoplay turns it. An authored role, description or name stays, and
+unbinding puts back what was there.
+
+A finger, a pen or the mouse drags the slides (the engine, component.swiper
+1.1.0): let go past 15 % of a slide, or with a flick, and the next or previous
+slide shows; less, and the strip settles back. A vertical move scrolls the page
+(`touch-action: pan-y`), a drag never ends in a click on a link under it, and
+fields inside a slide keep their own pointer and keys. The thumbnail strip is
+pressed, not dragged. `data-swiper-allow-touch-move="false"` turns dragging
+off; `data-swiper-simulate-touch="false"` leaves the mouse out.
+
+With `data-swiper-keyboard="true"`, ArrowLeft and ArrowRight page wherever the
+focus is in the block — on an arrow, a dot or a slide — mirrored in a
+right-to-left block. Before 1.2.0 the keys listened on the strip only, and the
+focus is never there.
+
+Several slides in view stand `--sf-slider--space-between` apart, by default
+`--sf-space-1/2`; the engine read no gap before, so they touched. The
+thumbnails take the small-part radius `--sf-radius--ui` (C18) instead of a
+square corner and stand `--sf-slider-thumbnails--space-between` apart.
+
+
+## Decision C143 (1.2.0)
+
+- From eight slides (`.swiper-slide` in the strip) the pagination element is
+  a counter «2 / 12» (`.sf-slider-dots--count`, drawn only, `aria-hidden`);
+  up to seven it is dots: one Tab stop, ArrowLeft / ArrowRight / Home / End
+  page and move the focus.
+- Dots are 8 px in both sizes, the current one a 24 × 8 pill
+  (`--sf-slider-dots-dot--active-width`). `.sf-slider-dots--plate` is the
+  popup plate over a picture, `.sf-slider-dots--bare` the row start under
+  cards; both draw filled on-surface-variant dots and a primary pill.
+- `.sf-slider-arrows--plate` sets ghost arrows on popup plates with the
+  overlay shadow; the button's state fill lies over the plate.
+- `sf-slider--content` peeks the next card (1.15 per view, 2.2 from sm)
+  unless `data-slides-per-view`, `data-swiper-slides-per-view` or options set
+  the count; its controls are one row, arrows `--sf-space-1/3` apart.
+- `data-ratio` (`16/9`, `4/3`, `3/2`, `1/1`, `21/9`) keeps the strip of a
+  picture slider in that ratio.
+- `data-autoplay` turns the slides only with a shown pause button,
+  `.sf-slider-rotation` (a button, or an sf-button-icon whose button carries
+  the class); `data-pause-label` / `data-play-label` name it, else «Остановить
+  прокрутку» / «Запустить прокрутку». Without one the slider does not turn,
+  and a pause button with nothing to pause is hidden. The thumbnails never
+  autoplay.
+- Thumbnails are buttons (gallery study GL-2): `role="button"`, named by the
+  picture's `alt` (else «Перейти к слайду 2»), the shown one `aria-current`;
+  they are one Tab stop -- the shown one -- and ArrowLeft / ArrowRight
+  (mirrored right to left), Home and End move the slide and the focus, Enter
+  and Space press. The focus ring is drawn inside the thumbnail's radius.
+- With thumbnails, the controls over a picture stand over the slides only:
+  the arrows are centred on the picture and the position sits at its bottom,
+  not over the thumbnails.

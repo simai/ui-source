@@ -13,7 +13,7 @@ import {
   roundTo,
   stepFrom,
 } from '../src/smart/input-quantity/value.mjs';
-import {FIELD_SIZES} from '../src/component/field-size.js';
+import {FIELD_LADDER} from '../src/component/field-size.js';
 
 // sf-quantity (owner, 2026-10-25): a number field with «−» and «+» over the class
 // component quantity, for the integer fields of the property and data views.
@@ -87,8 +87,8 @@ test('quantity: it is a form field like sf-input, with the inherited value', () 
   assert.ok(JSON.parse(read('src/smart/input-quantity/aliases.json')).aliases.some((row) => row.from === 'error' && row.to === 'invalid'));
   assert.match(source, /inheritedValue: \{attribute: 'inherited-value', default: ''\}/u);
   assert.match(source, /ariaLabel: \{attribute: 'aria-label', default: ''\}/u);
-  assert.match(source, /get size\(\) \{ return fieldSize\(this\.getAttribute\('size'\) \|\| '1', 'sf-input-quantity'\); \}/u);
-  assert.deepEqual(manifest.inputs.properties.size.enum, [...FIELD_SIZES]);
+  assert.match(source, /get size\(\) \{ return ladderSize\(this\.getAttribute\('size'\)\); \}/u);
+  assert.deepEqual(manifest.inputs.properties.size.enum, [...FIELD_LADDER]);
   assert.match(source, /createFieldContract\(this, \{\n      prefix: 'sf-quantity',/u);
   // The seams the inherited-value mixin asks for.
   for (const seam of ['inheritedOwnValue()', 'inheritedDisplayValue()', 'inheritedFocusTarget()', 'clearOwnValue()']) {

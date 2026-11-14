@@ -520,7 +520,7 @@
             "type": "string"
           },
           "appearance": {
-            "default": "main",
+            "default": "tonal",
             "enum": [
               "main",
               "tonal",
@@ -532,10 +532,6 @@
             "default": "",
             "type": "string"
           },
-          "compact": {
-            "default": false,
-            "type": "boolean"
-          },
           "icon": {
             "default": "",
             "type": "string"
@@ -543,6 +539,10 @@
           "icon-end": {
             "default": "",
             "type": "string"
+          },
+          "icon-only": {
+            "default": false,
+            "type": "boolean"
           },
           "icon-position": {
             "default": "start",
@@ -611,7 +611,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.badge",
-      "version": "1.5.0"
+      "version": "1.6.0"
     },
     "sf-button": {
       "inputs": {
@@ -852,6 +852,10 @@
             "default": false,
             "type": "boolean"
           },
+          "download": {
+            "default": "",
+            "type": "string"
+          },
           "filled": {
             "default": false,
             "type": "boolean"
@@ -864,6 +868,10 @@
               "high",
               "highest"
             ],
+            "type": "string"
+          },
+          "href": {
+            "default": "",
             "type": "string"
           },
           "icon": {
@@ -907,6 +915,10 @@
               "square",
               "rounded"
             ],
+            "type": "string"
+          },
+          "rel": {
+            "default": "",
             "type": "string"
           },
           "scheme": {
@@ -955,6 +967,10 @@
               "",
               "danger"
             ],
+            "type": "string"
+          },
+          "target": {
+            "default": "",
             "type": "string"
           },
           "theme-cycle": {
@@ -1038,7 +1054,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.checkbox",
-      "version": "1.2.0"
+      "version": "1.3.1"
     },
     "sf-divider": {
       "component": "component.content-divider",
@@ -1169,7 +1185,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.dropdown",
-      "version": "1.9.0"
+      "version": "1.11.0"
     },
     "sf-icon": {
       "inputs": {
@@ -1237,9 +1253,7 @@
             "default": "",
             "enum": [
               "",
-              "outlined",
-              "rounded",
-              "sharp"
+              "outlined"
             ],
             "type": "string"
           },
@@ -1254,7 +1268,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.icon",
-      "version": "1.1.7"
+      "version": "1.2.0"
     },
     "sf-input": {
       "inputs": {
@@ -1276,6 +1290,10 @@
           "autocomplete": {
             "default": "",
             "type": "string"
+          },
+          "clearable": {
+            "default": false,
+            "type": "boolean"
           },
           "default-value": {
             "default": "",
@@ -1447,7 +1465,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.input",
-      "version": "1.7.2"
+      "version": "1.9.1"
     },
     "sf-input-textarea": {
       "inputs": {
@@ -1471,12 +1489,16 @@
             "type": "string"
           },
           "auto-grow": {
-            "default": false,
+            "default": true,
             "type": "boolean"
           },
           "autocomplete": {
             "default": "",
             "type": "string"
+          },
+          "counter": {
+            "default": false,
+            "type": "boolean"
           },
           "disabled": {
             "default": false,
@@ -1534,13 +1556,14 @@
             "type": "string"
           },
           "max-rows": {
+            "default": 10,
             "type": "number"
           },
           "maxlength": {
             "type": "number"
           },
           "min-rows": {
-            "default": 1,
+            "default": 3,
             "type": "number"
           },
           "minlength": {
@@ -1566,6 +1589,10 @@
             "default": "",
             "type": "string"
           },
+          "resize": {
+            "default": false,
+            "type": "boolean"
+          },
           "rows": {
             "default": 3,
             "type": "number"
@@ -1573,15 +1600,25 @@
           "size": {
             "default": "1",
             "enum": [
+              "1/3",
               "1/2",
               "1",
-              "2"
+              "2",
+              "3"
             ],
             "type": "string"
           },
           "spell-check": {
             "default": true,
             "type": "boolean"
+          },
+          "text": {
+            "default": "plain",
+            "enum": [
+              "plain",
+              "code"
+            ],
+            "type": "string"
           },
           "value": {
             "default": "",
@@ -1600,7 +1637,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.input-textarea",
-      "version": "1.7.5"
+      "version": "1.9.0"
     },
     "sf-switch": {
       "inputs": {
@@ -1668,7 +1705,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.switch",
-      "version": "1.5.0"
+      "version": "1.5.3"
     }
   },
   "parameter_sets": {

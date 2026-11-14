@@ -1110,9 +1110,17 @@ export function installIconSubsetRuntime(
       }
     }
 
-    attrs.type = this.normalizeIconType(
-      attrs.type || this.getDefaultIconType(),
-    );
+    // sf-icon draws one family, outlined (smart.icon 1.2.0, icons study IC-4):
+    // its type rounded and sharp are dated aliases of outlined, and the page
+    // is scanned before the element upgrades and rewrites the attribute. Asked
+    // for here, those families had no font to load and fell back to the old
+    // Material Icons font with a console warning on every load. The class
+    // markup families (.sf-icon-rounded, .sf-icon-shape) are untouched: a host
+    // that ships their fonts (Docara) still draws them.
+    attrs.type =
+      el.localName === "sf-icon"
+        ? "outlined"
+        : this.normalizeIconType(attrs.type || this.getDefaultIconType());
 
     return { icon, attrs };
   };

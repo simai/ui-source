@@ -153,8 +153,10 @@ test('smart accordion: the class accordion\'s public variables wrap the values i
     '--sf-accordion--border-color: var(--sf-accordion-border-color, var(--sf-outline-variant));',
     '--sf-accordion--background-color: var(--sf-accordion-background-color, var(--sf-surface-container));',
     'color: var(--sf-accordion-title--color, var(--sf-accordion-title-color, var(--sf-on-surface)));',
-    'color: var(--sf-icon--color, var(--sf-accordion-icon-color, var(--sf-on-surface-variant)));',
-    'color: var(--sf-accordion-content--color, var(--sf-accordion-content-color, var(--sf-on-surface-variant)));',
+    // The header is a control: its icons take the control icon role (C107).
+    'color: var(--sf-icon--color, var(--sf-accordion-icon-color, var(--sf-on-surface-icon)));',
+    // The content is body text (accordion study AC-14).
+    'color: var(--sf-accordion-content--color, var(--sf-accordion-content-color, var(--sf-on-surface)));',
     'var(--sf-accordion-divider-color, var(--sf-outline-variant))',
   ]) assert.ok(classSheet.includes(line), line);
   // Hover and pressed write their own.

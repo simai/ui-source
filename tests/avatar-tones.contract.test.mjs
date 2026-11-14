@@ -123,7 +123,8 @@ test('a hue adds no raw colour to the component sheet; the former tone roles hol
 
 test('the element takes a hue only for initials, and the default draws no hue class', () => {
   const element = read('src/smart/avatar/index.js');
-  const shared = read('src/smart/avatar/js/templates/shared.js');
+  // The picture's classes are the one avatar drawing (js/picture.js, AV-8).
+  const shared = read('src/smart/avatar/js/picture.js');
   assert.match(element, /if \(!this\.isText\) \{\s*return "";/u);
   assert.match(element, /resolvedHue: this\.resolvedHue/u);
   // The card without a photo takes auto when no hue is set (C124); the round

@@ -42,9 +42,11 @@ test('SF_PRELOADED disables the previous-page plugin-list fallback', () => {
 
 test('an undefined Smart icon reserves its final control geometry', () => {
   assert.match(iconStyles, /sf-icon:not\(:defined\) \{/);
-  assert.match(iconStyles, /width: var\(--sf-icon--width, var\(--sf-icon-size-3\)\)/);
-  assert.match(iconStyles, /height: var\(--sf-icon--height, var\(--sf-icon-size-3\)\)/);
-  assert.match(iconStyles, /sf-icon\[size="1\/2"\]:not\(:defined\)/);
+  // No size: a size-1 button's icon (24, phone 20; icons study IC-2); each
+  // size reserves its step from the same table the drawn glyph reads.
+  assert.match(iconStyles, /width: var\(--sf-icon--width, var\(--sf-text-height-1\)\)/);
+  assert.match(iconStyles, /height: var\(--sf-icon--height, var\(--sf-text-height-1\)\)/);
+  assert.match(iconStyles, /@each \$size, \$steps in \$sf-icon-steps \{\n  sf-icon\[size="#\{\$size\}"\]:not\(:defined\)/);
   assert.match(
     iconButtonStyles,
     /sf-icon-button--size-1\.sf-icon-button--icon :is\(\.sf-icon, sf-icon:not\(:defined\)\)/,

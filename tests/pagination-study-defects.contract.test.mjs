@@ -49,7 +49,7 @@ test('PG-11: the last-page button is drawn only where the jump can be answered',
 });
 
 test('PG-10: three settings, all off by default, and the word of the title', () => {
-  assert.equal(component.version, '1.5.0');
+  assert.equal(component.version, '1.5.1');
   assert.deepEqual(
     [component.settings.href.type, component.settings.href.default],
     ['string', ''],
@@ -78,7 +78,8 @@ test('PG-10: with href the arrows are links, prev and next say rel', () => {
 
 test('PG-10: a link press is reported cancelable; a cancel keeps the browser here', () => {
   const calls = [];
-  const self = {goToPage: (page, options) => { calls.push([page, options]); return {outcome: 'applied', taken: true}; }};
+  const self = {href: '?page={page}', pageSize: 20, goToPage: (page, options) => { calls.push([page, options]); return {outcome: 'applied', taken: true}; }};
+  self.pageHref = bind(self, 'pageHref');
   const follow = bind(self, 'followLink');
   let prevented = false;
   follow({button: 0, preventDefault: () => { prevented = true; }}, 4);
@@ -90,6 +91,44 @@ test('PG-10: a link press is reported cancelable; a cancel keeps the browser her
   follow({button: 1, preventDefault() {}}, 4);
   assert.deepEqual(calls, [], 'a new tab or window is the browser\'s alone');
   assert.match(source, /link \? \{ cancelable: true \} : \{\}/u);
+});
+
+// DEV's intent acceptance (2026-11-14) returned PG-10: «next» showed
+// ?page=4 and opened ?page=5 on a click and on Enter. The move drew the
+// arrows of page 4 (next → 5) before the browser read the link's href. A
+// followed link now opens the address it showed, read before the move.
+test('PG-10 return: a followed link opens the page its href showed', () => {
+  const assigned = [];
+  const scope = {globalThis: {location: {assign: (href) => assigned.push(href)}}};
+  const self = {href: '?page={page}&size={page-size}', pageSize: 20, current: 3};
+  self.pageHref = bind(self, 'pageHref');
+  // The move re-renders: the template now names the page after the new one.
+  self.goToPage = (page) => { self.current = page; return {outcome: 'applied'}; };
+  const follow = bind(self, 'followLink', scope);
+  for (const [from, page] of [[3, 4], [4, 3], [3, 1], [3, 12], [1, 2], [12, 11]]) {
+    self.current = from;
+    assigned.length = 0;
+    let prevented = false;
+    follow({button: 0, preventDefault: () => { prevented = true; }}, page);
+    assert.deepEqual(assigned, [`?page=${page}&size=20`], `from ${from} the link to ${page} opens ${page}`);
+    assert.equal(prevented, true, 'the browser does not follow the re-rendered href');
+  }
+
+  // Taken in place by the host: nothing is opened.
+  assigned.length = 0;
+  self.goToPage = () => ({outcome: 'applied', taken: true});
+  follow({button: 0, preventDefault() {}}, 4);
+  assert.deepEqual(assigned, []);
+
+  // Refused (the current page): no move and no re-render, the browser keeps its default.
+  self.goToPage = () => ({outcome: 'refused', reason: 'current'});
+  let prevented = false;
+  follow({button: 0, preventDefault: () => { prevented = true; }}, 3);
+  assert.deepEqual([assigned, prevented], [[], false]);
+
+  // The address is read before the move, in the source order.
+  const body = source.slice(source.indexOf('\n  followLink('), source.indexOf('\n  }\n', source.indexOf('\n  followLink(')));
+  assert.ok(body.indexOf('this.pageHref(page)') < body.indexOf('this.goToPage(page, { link: true })'));
 });
 
 test('PG-10: page-param reads the page from the address and writes a history entry', () => {

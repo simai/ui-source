@@ -1,5 +1,21 @@
 import {html, nothing} from "lit";
 import {renderAnchoredBadge} from "../../../helpers/anchored-badge";
+import {avatarClasses as pictureClasses, avatarContent} from "../picture";
+
+// sf-avatar's box in utility classes, as its templates have always written
+// it (their words stay here, where the Loader's template-utilities table
+// reads them); a host's picture takes the same box from the avatars sheet.
+const AVATAR_LAYOUT = Object.freeze({
+    box: "transition flex-none",
+    inline: "inline-flex",
+    center: "items-cross-center content-main-center",
+    anchor: "relative",
+});
+
+/** The classes of sf-avatar's own picture: the sheet's and its utilities. */
+export function avatarClasses(context, options = {}) {
+    return pictureClasses(context, {...options, layout: AVATAR_LAYOUT});
+}
 
 function getCompanyBadge(context) {
     return html`<span aria-hidden="true"
@@ -51,79 +67,9 @@ function getVerifiedBadge(context) {
     `;
 }
 
-export function avatarClasses(context, options = {}) {
-    const includeRootClass = options.includeRootClass !== false;
-    const classes = [
-        "sf-avatar",
-        "transition",
-        'flex-none',
-        `sf-avatar--size-${context.size}`,
-        context.line ? `sf-avatar--line-${context.line}` : "",
-        "inline-flex",
-    ].filter(Boolean);
-
-    if (context.isImage) {
-        classes.push("items-cross-center", "content-main-center");
-    }
-
-    if (context.isText) {
-        classes.push(
-            "sf-avatar--text",
-            "items-cross-center",
-            "content-main-center",
-        );
-
-        // The hue's role set (core .sf-hue-<name>, C17); the class sheet
-        // draws the plate and the ink from it.
-        if (context.resolvedHue) {
-            classes.push(`sf-hue-${context.resolvedHue}`);
-        }
-    }
-
-    if (!context.isImage && !context.isText) {
-        classes.push(
-            "sf-avatar--placeholder",
-            "items-cross-center",
-            "content-main-center",
-        );
-    }
-
-    // The decorative level (C91 level 2): the sheet turns the initials'
-    // plate of the largest size into a cover of its hue.
-    if (context.expressive) {
-        classes.push("sf-avatar--expressive");
-    }
-
-    if (context.status !== "none") {
-        classes.push("relative");
-    }
-
-    if (context.shape === "square") {
-        classes.push("sf-avatar--square");
-    }
-
-    if (context.status === "online") {
-        classes.push("sf-avatar--status-icon-online-indicator");
-    }
-
-    if (includeRootClass && context.rootClass) {
-        classes.push(context.rootClass);
-    }
-
-    return classes.join(" ");
-}
-
-export function avatarContent(context) {
-    if (context.isText) {
-        return html`<span class="sf-avatar-text">${context.text}</span>`;
-    }
-
-    if (context.isImage) {
-        return html`<img class="sf-avatar-image" src=${context.imageUrl} alt="" />`;
-    }
-
-    return html`<i class="sf-icon" aria-hidden="true">person</i>`;
-}
+// The picture's classes and content are the one avatar drawing every host
+// shares (js/picture.js, avatar study AV-8).
+export {avatarContent};
 
 export function onlineIndicator(context) {
     if (context.component?.hasSlotContent?.("online-indicator")) {

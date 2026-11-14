@@ -10,7 +10,12 @@
   --sf-accordion--background-color: var(--sf-accordion-background-color, var(--sf-surface-container));
   --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   --sf-accordion--trigger-padding-inline: var(--sf-space-3);
-  --sf-accordion--content-padding: var(--sf-space-3);
+  /* The content stands its header's inset from every edge (accordion study
+     AC-14): the text starts under the title and as far below the header's
+     line as from the side -- at sizes it sat 6 / 8 / 10 under the line, the
+     size's block tightness. Resolved here, on the section, so a size rule
+     that moves the inset moves the content with it. */
+  --sf-accordion--content-padding: var(--sf-accordion--trigger-padding-inline);
   /* Text, icon and the trigger's least height. Declared on every accordion, so
      a nested one does not inherit its parent's size. */
   --sf-accordion--text-size: var(--sf-text--size);
@@ -38,14 +43,18 @@
    is a line tall, and the block padding is the size's default tightness, so
    the header is exactly --sf-ui-N--control-height -- the height of an sf-input
    or an sf-button of the same size -- and never shorter. The inline padding is
-   the size's space-x, and the content takes the same inline padding, so its
-   text starts under the title. Without a size class the accordion keeps its
-   roomy default. */
+   the value inset of an sf-input of the same size (owner C77, C105 H4;
+   accordion study AC-5): --sf-space-1/2 (never below 12, --sf-b2), --sf-space-1
+   and --sf-space-2 at 1/2, 1 and 2 -- 12 / 16 / 20, and 12 / 12 / 16 in a
+   compact region and on a phone -- so a section's title and text start where
+   the value of the field beside it starts (size 1/2 stood at 14, the
+   button's space-x). Sizes 1/3 and 3, which C77 does not name, keep the
+   size's space-x. The content takes the same inset (above). Without a size
+   class the accordion keeps its roomy default. */
 .sf-accordion.sf-accordion--size-1\/3 {
   --sf-accordion--trigger-padding-block: var(--sf-ui-1\/3--space-y-tightness-default);
   --sf-accordion--trigger-padding-inline: var(--sf-ui-1\/3--space-x);
   --sf-accordion--trigger-min-block-size: var(--sf-ui-1\/3--control-height);
-  --sf-accordion--content-padding: var(--sf-ui-1\/3--space-y-tightness-default) var(--sf-ui-1\/3--space-x);
   --sf-accordion--text-size: var(--sf-text-size-1\/3);
   --sf-accordion--text-height: var(--sf-text-height-1\/3);
   --sf-accordion--icon-size: var(--sf-text-height-1\/3);
@@ -53,9 +62,8 @@
 
 .sf-accordion.sf-accordion--size-1\/2 {
   --sf-accordion--trigger-padding-block: var(--sf-ui-1\/2--space-y-tightness-default);
-  --sf-accordion--trigger-padding-inline: var(--sf-ui-1\/2--space-x);
+  --sf-accordion--trigger-padding-inline: max(var(--sf-space-1\/2), var(--sf-b2));
   --sf-accordion--trigger-min-block-size: var(--sf-ui-1\/2--control-height);
-  --sf-accordion--content-padding: var(--sf-ui-1\/2--space-y-tightness-default) var(--sf-ui-1\/2--space-x);
   --sf-accordion--text-size: var(--sf-text-size-1\/2);
   --sf-accordion--text-height: var(--sf-text-height-1\/2);
   --sf-accordion--icon-size: var(--sf-text-height-1\/2);
@@ -63,9 +71,8 @@
 
 .sf-accordion.sf-accordion--size-1 {
   --sf-accordion--trigger-padding-block: var(--sf-ui-1--space-y-tightness-default);
-  --sf-accordion--trigger-padding-inline: var(--sf-ui-1--space-x);
+  --sf-accordion--trigger-padding-inline: var(--sf-space-1);
   --sf-accordion--trigger-min-block-size: var(--sf-ui-1--control-height);
-  --sf-accordion--content-padding: var(--sf-ui-1--space-y-tightness-default) var(--sf-ui-1--space-x);
   --sf-accordion--text-size: var(--sf-text-size-1);
   --sf-accordion--text-height: var(--sf-text-height-1);
   --sf-accordion--icon-size: var(--sf-text-height-1);
@@ -73,9 +80,8 @@
 
 .sf-accordion.sf-accordion--size-2 {
   --sf-accordion--trigger-padding-block: var(--sf-ui-2--space-y-tightness-default);
-  --sf-accordion--trigger-padding-inline: var(--sf-ui-2--space-x);
+  --sf-accordion--trigger-padding-inline: var(--sf-space-2);
   --sf-accordion--trigger-min-block-size: var(--sf-ui-2--control-height);
-  --sf-accordion--content-padding: var(--sf-ui-2--space-y-tightness-default) var(--sf-ui-2--space-x);
   --sf-accordion--text-size: var(--sf-text-size-2);
   --sf-accordion--text-height: var(--sf-text-height-2);
   --sf-accordion--icon-size: var(--sf-text-height-2);
@@ -85,7 +91,6 @@
   --sf-accordion--trigger-padding-block: var(--sf-ui-3--space-y-tightness-default);
   --sf-accordion--trigger-padding-inline: var(--sf-ui-3--space-x);
   --sf-accordion--trigger-min-block-size: var(--sf-ui-3--control-height);
-  --sf-accordion--content-padding: var(--sf-ui-3--space-y-tightness-default) var(--sf-ui-3--space-x);
   --sf-accordion--text-size: var(--sf-text-size-3);
   --sf-accordion--text-height: var(--sf-text-height-3);
   --sf-accordion--icon-size: var(--sf-text-height-3);
@@ -121,7 +126,10 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--sf-space-1);
+  /* Icon → title → badge → marker: a row's step, role H2 of the horizontal
+     spacing standard (owner C105; accordion study AC-4): --sf-space-1/2, 12,
+     and 8 in a compact region and on a phone. It was --sf-space-1, 16 / 12. */
+  gap: var(--sf-space-1\/2);
   width: 100%;
   margin: 0;
   min-block-size: calc(var(--sf-accordion--trigger-min-block-size) - var(--sf-accordion--frame-block, calc(var(--sf-px) * 0)));
@@ -195,6 +203,25 @@
   transition: transform var(--sf-duration-fast) var(--sf-animation);
 }
 
+/* The header is a control, so its icons -- the one before the title and the
+   marker -- take the icon role of a control (owner C107 (1)-(3); accordion
+   study AC-6): --sf-on-surface-icon, half a step lighter than the title. The
+   section's own redefinition of --sf-on-surface-variant (the container's
+   variant) no longer reaches them. Hover and press bring them to the title's
+   colour (C107 (4)). A page's --sf-icon--color or --sf-accordion-icon-color
+   still wins. */
+.sf-accordion .sf-accordion-trigger .sf-icon {
+  color: var(--sf-icon--color, var(--sf-accordion-icon-color, var(--sf-on-surface-icon)));
+}
+
+.sf-accordion .sf-accordion-trigger:is(:hover, :active) .sf-icon {
+  color: var(--sf-icon--color, var(--sf-accordion-icon-color, currentColor));
+}
+
+.sf-accordion.sf-accordion--static .sf-accordion-trigger:is(:hover, :active) .sf-icon {
+  color: var(--sf-icon--color, var(--sf-accordion-icon-color, var(--sf-on-surface-icon)));
+}
+
 .sf-accordion-trigger[aria-expanded='true'] .sf-icon,
 .sf-accordion--legacy[aria-expanded='true'] > .sf-icon {
   transform: rotate(90deg);
@@ -215,11 +242,20 @@
 
 .sf-accordion .sf-accordion-content {
   padding: var(--sf-accordion--content-padding);
-  color: var(--sf-accordion-content--color, var(--sf-accordion-content-color, var(--sf-on-surface-variant)));
+  /* Body text, not the muted colour of a hint (accordion study AC-14): a
+     section's content is what the reader opened it for. */
+  color: var(--sf-accordion-content--color, var(--sf-accordion-content-color, var(--sf-on-surface)));
   font-family: var(--sf-text--family);
   font-size: var(--sf-accordion--text-size);
   font-weight: var(--sf-font-weight-regular);
   line-height: var(--sf-accordion--text-height);
+}
+
+/* A closed panel left findable (hidden="until-found", AC-8) keeps its box for
+   the browser's search but shows nothing: no padding, so the closed section
+   is its header alone, as with the hidden attribute. */
+.sf-accordion .sf-accordion-content[hidden='until-found'] {
+  padding-block: 0;
 }
 
 /* A single section (simai/ui-source#19): the heading is a heading, not a

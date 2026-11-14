@@ -18,7 +18,11 @@
     --sf-list--row-radius: var(--sf-list-radius, var(--sf-radius--ui));
     /* One row hover for every list and menu (C42 (5), owner 2026-11-10). */
     --sf-list--hover: var(--sf-list-hover-background-color, var(--sf-surface-state-select));
-    --sf-list--current: var(--sf-list-current-background-color, var(--sf-primary-container-active));
+    /* The open row is the selected role's one fill, primary-container: 12 in
+       the light theme, 24 in the dark (owner decision C31, C16; list item
+       study LI-7). It was the pressed step, 20 / 32, beside the standalone
+       row's 12 / 24: two fills for one state. */
+    --sf-list--current: var(--sf-list-current-background-color, var(--sf-primary-container));
     --sf-list--group-gap: var(--sf-list-gap, var(--sf-space-1\/3));
 
     position: relative;

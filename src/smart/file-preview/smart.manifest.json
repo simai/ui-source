@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.file-preview",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "title": "File Preview",
   "summary": "Accessible Smart projection of the ordinary File Preview row.",
   "kind": "smart",
@@ -25,7 +25,9 @@
     "uses": [
       "component.file-preview",
       "component.icon-buttons",
-      "component.icons"
+      "component.icons",
+      "smart.button",
+      "smart.progress-bar"
     ],
     "public_parts": []
   },
@@ -55,17 +57,17 @@
       "file-size": {
         "type": "string",
         "default": "",
-        "description": "The file's size as text, for example 12 KB."
+        "description": "The file's size: a number of bytes (2457600), drawn in the page's language and units by the core's size format (2,3 МБ; decision C25) and said with the unit as a word (2,3 мегабайта; C51); text a host already wrote (12 KB) is drawn as written."
       },
       "icon": {
         "type": "string",
         "default": "description",
-        "description": "The glyph in the holder when no picture is shown (a Material Symbols name)."
+        "description": "The glyph in the holder when no picture is shown (a Material Symbols name). Unset: the glyph of the file's type -- from mime-type, else from the name's extension (PDF, a sheet, slides, an archive, ... each its own; decision C81), else description."
       },
       "href": {
         "type": "string",
         "default": "",
-        "description": "The file's address: the name links to it and the download action opens it. Empty: the row is not a link and the download action does nothing."
+        "description": "The file's address: the name is a link to it (decision C51; it downloads in the same tab, or opens in target when download is false) and the download action fetches it. Empty: the name is text and the download action does nothing."
       },
       "kind": {
         "type": "string",
@@ -122,13 +124,34 @@
         "default": false,
         "description": "Makes the row unavailable: the actions do nothing and the row takes the disabled look."
       },
+      "state": {
+        "type": "string",
+        "default": "ready",
+        "description": "The file's state, as the upload core's rows (decision C81). ready: the file is there -- the name is its link, the size under it, download and remove. uploading: the name as text, under it the upload row's bar with its per cent at the end (value; no value: the bar runs), aria-busy; remove stays (the host cancels), download is not offered. error: the name as text, under it «Не загрузился» and error-text in the error colour, «Повторить» (the retry event) at the end of the row -- under the text in a narrow row, where decision C88 places it -- and remove.",
+        "enum": [
+          "ready",
+          "uploading",
+          "error"
+        ]
+      },
+      "value": {
+        "type": "number",
+        "description": "While uploading: the share sent, per cent (0 to 100, clamped), drawn by the bar and its per cent. Absent: the bar runs without a share.",
+        "minimum": 0,
+        "maximum": 100
+      },
+      "error-text": {
+        "type": "string",
+        "default": "",
+        "description": "Why the file did not upload, after «Не загрузился:» in a failed row (state error)."
+      },
       "download-label": {
         "type": "string",
-        "description": "Empty: the text of the page's language (\"Download file\" in English)."
+        "description": "Empty: the text of the page's language with the file's name («Скачать Отчёт.pdf», \"Download Report.pdf\" in English; decision C51)."
       },
       "remove-label": {
         "type": "string",
-        "description": "Empty: the text of the page's language (\"Remove file\" in English)."
+        "description": "Empty: the text of the page's language with the file's name («Удалить Отчёт.pdf», \"Remove Report.pdf\" in English; decision C51)."
       },
       "compact": {
         "type": "boolean",
@@ -269,6 +292,29 @@
         "additionalProperties": true
       },
       "canonical": true
+    },
+    "sf-file-preview-retry": {
+      "summary": "A person pressed «Повторить» in a row that did not upload (vocabulary §5 retry): the host sends the file again and sets state.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "action",
+          "value"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "value": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
     },
     "sf-file-preview:download": {
       "summary": "A download action was requested. Bubbles, is composed and is cancelable: preventDefault() stops the built-in navigation to href.",
@@ -417,11 +463,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/file-preview/index.js",
-        "sha256": "43804f0549e1a9778c52965a833042950a6c3b6e61ce781de99a517e6bbc6949"
+        "sha256": "5562cbaba91a7720a2edd6a52da191b46db97eb2e6bfbda3719e1b391beb0181"
       },
       {
         "path": "src/smart/file-preview/js/templates/default.js",
-        "sha256": "e14ec516189e290bb6d000420cab4060ba571acae0836cc3135e18a76b9c3d87"
+        "sha256": "5d01c9ebb21e770d283f7cfed54ebff4b45f6e7d74ed7e2aa31626c7dc687c0a"
       }
     ],
     "generated_runtime": []

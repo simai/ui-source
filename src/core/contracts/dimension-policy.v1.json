@@ -146,6 +146,15 @@
       "reason": "Owner decision C115 (layout L3a): the notice's actions go into the row from 36 / 48 rem (a toast 20 rem) of the notice's whole width. A container query reads the content box and cannot read a variable, so the step takes off the notice's frame as written lengths: its two inline paddings (1rem each, --sf-space-1) and its two borders (1px each, --sf-px)."
     },
     {
+      "id": "file-row-retry-under-text",
+      "category": "condition-review",
+      "filePattern": "^component/file-preview/scss/_css__file_preview\\.scss$",
+      "contextPattern": "^\\s*@container \\(max-width: 22\\.5",
+      "textPattern": "^22\\.5rem$",
+      "status": "accepted-size-step",
+      "reason": "Owner decision C88: in a column narrower than 360 px «Повторить» goes under the text of a failed file row. sf-file-download measures the same 22.5rem in script (js/error-fit.js NARROW_BELOW_REM); sf-file-preview's failed row reads it with a container query, which cannot read a variable."
+    },
+    {
       "id": "breakpoint-and-container-steps",
       "category": "condition-review",
       "filePattern": "\\.(?:s?css)$",
@@ -191,6 +200,15 @@
       "textPattern": "^16px$",
       "status": "accepted-platform-boundary",
       "reason": "The unit beside a quantity's number takes the same touch-phone floor the core gives the number (touch-field-zoom-floor), so the two stay one size (C53 D2)."
+    },
+    {
+      "id": "touch-field-zoom-floor-rich-text",
+      "category": "style-review",
+      "filePattern": "^smart/input-rich/scss/_smart__rich_text\\.scss$",
+      "contextPattern": "font-size: max\\((?:var\\(--sf-heading-[345]--size\\), )?var\\(--sf-rich-text--(?:font|h[234])-size\\), 16px\\)",
+      "textPattern": "^16px$",
+      "status": "accepted-platform-boundary",
+      "reason": "The rich text's editing surface and its headings take the touch-phone floor the core gives input, textarea and select (touch-field-zoom-floor): the surface is none of them, and iOS zooms into it the same way (TR-3). A heading's floor also names the page heading one level down (C141 (7))."
     },
     {
       "id": "sass-unit-math",

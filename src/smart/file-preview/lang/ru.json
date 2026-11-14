@@ -2,7 +2,12 @@
   "title": "Предпросмотр файла",
   "runtime": {
     "aria-label": "Файл",
-    "download-label": "Скачать файл",
-    "remove-label": "Удалить файл"
+    "download-label": "Скачать {name}",
+    "remove-label": "Удалить {name}",
+    "uploading-label": "Загрузка {name}",
+    "error-text": "Не загрузился",
+    "error-line": "Не загрузился: {message}",
+    "retry-text": "Повторить",
+    "retry-label": "Повторить {name}"
   }
 }

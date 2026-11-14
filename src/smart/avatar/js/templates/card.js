@@ -18,7 +18,7 @@ function cardPlaceholder(context) {
   return html`<div
     class="sf-avatar-card-placeholder sf-avatar-card-placeholder--icon flex items-center justify-center w-full h-full"
     aria-hidden="true"
-  ><i class="sf-icon" aria-hidden="true">person</i></div>`;
+  ><i class="sf-icon" aria-hidden="true">${context.icon || "person"}</i></div>`;
 }
 
 export function renderCardTemplate(context) {

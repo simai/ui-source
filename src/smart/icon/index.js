@@ -16,7 +16,6 @@ const weightClasses = new Map([
   [600, "semi-bold"],
   [700, "bold"],
 ]);
-const iconTypes = ["outlined", "rounded", "sharp"];
 const iconSizes = ["1/4", "1/3", "1/2", "1", "2", "3", "4", "5", "6", "7"];
 
 function clampAxis(value, fallback, minimum, maximum) {
@@ -28,10 +27,12 @@ function clampAxis(value, fallback, minimum, maximum) {
 
 // sf-icon from its component.json (standard simai.smart-component 1.3.8 §3,
 // §4): the settings are the attributes and properties core/js/element-manifest.js
-// makes from the manifest, `loaded` is the value the Loader reports, and the
-// family's old name `shape` is a dated value alias of `sharp` (aliases.json).
-// What stays here is behaviour: the exact subset the glyph waits for, the
-// axes' bounds and the badge.
+// makes from the manifest, and `loaded` is the value the Loader reports. One
+// family is drawn, outlined (1.2.0, icons study IC-4): rounded, sharp and the
+// older shape are dated value aliases of outlined until 2027-01-01
+// (aliases.json); their fonts were never shipped. What stays here is
+// behaviour: the exact subset the glyph waits for, the axes' bounds and the
+// badge.
 // One IntersectionObserver for every icon that cannot draw yet: an icon in a
 // copy that is not rendered (a closed panel, a display: none menu or header
 // copy) checks again, and asks the Loader for its glyph, when the copy is
@@ -178,19 +179,11 @@ class SfIcon extends IconElement {
     return weightClasses.get(weight) || weightClasses.get(400);
   }
 
+  // The one family sf-icon draws (IC-4). A page's default family
+  // (SF_BOOT_CONFIG icons.type) no longer changes it: rounded and sharp fell
+  // back to the old Material Icons font on every load.
   get iconType() {
-    const requestedType = String(this.getProp("type") || "")
-      .trim()
-      .toLowerCase();
-    const type =
-      requestedType ||
-      window.SF?.Loader?.getDefaultIconType?.() ||
-      window.SF_BOOT_CONFIG?.icons?.type ||
-      window.SF_ICON_TYPE ||
-      "outlined";
-    const normalizedType = type === "shape" ? "sharp" : type;
-
-    return iconTypes.includes(normalizedType) ? normalizedType : "outlined";
+    return "outlined";
   }
 
   get iconSize() {
@@ -211,8 +204,6 @@ class SfIcon extends IconElement {
       icon: this.getProp("icon"),
       loaded: this.getProp("loaded"),
       filled: this.getProp("filled"),
-      rounded: this.iconType === "rounded",
-      sharp: this.iconType === "sharp",
       weightClass: this.weightClass,
       size: this.iconSize,
       grade: this.iconGrade,

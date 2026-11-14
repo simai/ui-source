@@ -37,7 +37,7 @@ import {mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync, rmSync}
 import {dirname, join, relative} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {ensureLocalPlaywright} from './playwright-local.mjs';
-import {components, assemblies, describe, hostSpec, exampleFiles, serveOutput, head, coreScript, repo, smartRoot, partFolder, assemblyModule, givesLateData, fontsReady, sizeProblem, freezeClock} from './first-paint-lib.mjs';
+import {components, assemblies, describe, hostSpec, exampleFiles, serveOutput, head, coreScript, repo, smartRoot, partFolder, assemblyModule, givesLateData, lateGiven, lateHeld, fontsReady, sizeProblem, freezeClock} from './first-paint-lib.mjs';
 import {renderSkeletonTemplate, renderPartSkeleton} from './first-paint-skeleton.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -60,7 +60,7 @@ const results = {written: [], stale: [], missing: [], failed: [], tooLarge: [], 
 async function snapshot(component, example) {
   const id = `${component.folder}/${example.name}`;
   const path = `/page/${id}`;
-  const spec = {...hostSpec(component, example), late: component.late};
+  const spec = {...hostSpec(component, example), late: component.late, lateHeld: lateHeld(component, lateGiven(component, example))};
   pages.set(path, `${head({title: id, extra: '<script src="/first-paint-page.js"></script>'})}<body>
 <main id="stage"></main>
 <script>window.__sfFirstPaintBuild(${JSON.stringify(spec).replace(/</g, '\\u003c')});</script>

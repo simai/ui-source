@@ -51,10 +51,41 @@
     max-width: 100%;
   }
 
-  /* A caption under an image, inline and in the lightbox. */
+  /* The inline frame (GL-7, decision C143 (8)): every picture is the box of
+     the gallery's ratio -- the first picture's width/height, else the ratio
+     setting, else 16/9 -- and is shown whole in it (contain): a product photo
+     is not cropped. core.styles draws the same box before the code arrives
+     (an undefined sf-gallery), so the first frame is the final one. */
+  .sf-gallery-inline {
+    --sf-slider-slide--height: auto;
+    --sf-slider-slide--min-height: 0;
+    --sf-slider-slide-img--height: auto;
+    --sf-slider-slide-img--object-fit: var(--sf-gallery-object-fit, contain);
+  }
+
+  .sf-gallery-inline .sf-gallery-slide > * {
+    flex: 1 1 100%;
+    min-inline-size: 0;
+  }
+
+  .sf-gallery-inline .sf-gallery-slide img {
+    aspect-ratio: var(--sf-gallery--ratio, 16 / 9);
+    display: block;
+  }
+
+  .sf-gallery figure,
+  :where([data-sf-gallery-slider='lightbox']) figure {
+    margin: 0;
+  }
+
+  /* A caption under an image, inline and in the lightbox: small and muted
+     (decisions C92 view 8, C98), a quarter step under the picture. */
   .sf-gallery figcaption,
   :where([data-sf-gallery-slider='lightbox']) figcaption {
-    color: var(--sf-gallery-caption-color, inherit);
+    color: var(--sf-gallery-caption-color, var(--sf-on-surface-variant));
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+    margin-block-start: var(--sf-space-1\/4);
   }
 
   :where([data-sf-gallery-slider='lightbox']) figcaption {

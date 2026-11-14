@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.slider",
   "kind": "component",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/slider/docs/docs.md",
@@ -18,11 +18,11 @@
     "src/component/slider/scss/_var__slider.scss",
     "src/component/slider/scss/index.scss"
   ],
-  "content_sha256": "c439c7a8b9e08ba2ed1457b59f2c7a5018b4b610f65fadfe0bd251934ac152cc",
+  "content_sha256": "6c9115855f6e7a50d1c8d049249203993219c3075f0c11755b3500e123587a4a",
   "dependencies": [
     {
       "id": "component.swiper",
-      "range": "^1.0.0"
+      "range": "^1.1.0"
     },
     {
       "id": "core.runtime",
@@ -51,6 +51,10 @@
     {
       "id": "tokens.space",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.7.0"
     }
   ]
 }

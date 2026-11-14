@@ -6,7 +6,10 @@ control when the element performs an action.
 
 ## Public contract
 
-- emphasis: `main`, `tonal`, `outline` (`appearance`; `type` is its former name);
+- emphasis: `tonal` (the default, also the class with no look), `outline`
+  (a mark beside a title), `main` (the attention count alone, with `error`;
+  `sf-badge--main` with any other colour draws tonal until 2027-01-01, owner
+  decision C140) (`appearance`; `type` is its former name);
 - scheme: `neutral`, `primary`, `secondary`, `tertiary`, `info`, `success`,
   `warning`, `error`, `on-surface` (a status may also be given as `status`).
   `danger`, the former name of `error`, still draws the error badge and is
@@ -14,8 +17,8 @@ control when the element performs an action.
 - size: `1/3`, `1/2`, `1`;
 - optional text and decorative icon at the logical start or end.
 
-`tonal + on-surface` is not a designed pair and normalizes to
-`main + on-surface`. Unknown values normalize to the safe neutral defaults.
+`tonal + on-surface` draws the grey tonal badge. Unknown values normalize to
+the safe defaults, tonal and neutral.
 
 ## Semantics
 
@@ -46,19 +49,24 @@ border instead.
 
 Indicator sizes: a badge is a non-interactive indicator, not a control, so its
 heights may stand below the control ladder (C18): a `line-*` badge is its text
-line, 16 at `line-1/2` on a phone. Size `1/3` is 24 on a desktop and 20 on a
-phone; nothing in a badge is a target to press. A badge that opens or removes
+line, 16 at `line-1/2` on a phone. Sizes `1/3`, `1/2`, `1` are 24, 28, 32 on
+a desktop and on a phone (C140 (5); the phone text stays 12, 12, 14), 24, 24,
+28 in a compact region; nothing in a badge is a target to press. A badge that opens or removes
 something is a button or a tag, and takes the control ladder (DEV, docs
 precheck BG-01, 2026-11-10).
 
 Side room: by default the text sits `--sf-space-1/2` from the badge's edges at
-every size (owner decision 2026-11-07). `sf-badge--tight` keeps the size's own text inset
-(`--sf-ui-*--text-space-x`, the room badges had before 2026-11-07) for dense
-places -- a table, a counter, a chip in a row. `sf-badge--figure` marks a badge
-of one character, a single-figure count: it keeps the tight room, so it stays
-round (as wide as it is high) whatever the default. `sf-badge` sets it on its
-own; class markup adds it. `sf-badge--compact` (the icon alone) is unchanged,
-and so are anchored counts, which have a geometry of their own. Probe:
+every size (owner decision 2026-11-07). `sf-badge--tight` takes the space step
+under it, `--sf-space-1/3` (8 px, 4 in a compact region, 8 on the phone), for
+dense places -- a table, a counter, a chip in a row; until 1.8.0 it took the
+button's text inset (6 / 7 / 8, 5 / 6 on the phone), which is off the space
+ladder. `sf-badge--figure` marks a badge of one character, a single-figure
+count: it takes `--sf-space-1/4` at the sides, so it stays round (as wide as it
+is high) whatever the default; a class counter (`[data-count]`) takes the same.
+`sf-badge` sets it on its own; class markup adds it. `sf-badge--icon-only` (the
+icon alone; `sf-badge--compact`, its former name, draws the same until
+2027-01-01, owner decision C134) is unchanged, and so are anchored counts, which
+have a geometry of their own. Probe:
 `tests/browser/badge-geometry.browser.mjs`.
 
 On the line of a text: `sf-badge--line-text` (`sf-badge line="text"`, owner
@@ -135,7 +143,7 @@ Smart-элементы: у `sf-avatar`, `sf-icon` и `sf-icon-button` есть �
 | Якорь | `.sf-avatar`, `.sf-icon-button` или `.sf-badge-anchor` |
 | Шаг якоря-обёртки | `sf-badge-anchor--size-1/3\|1/2\|1\|2\|3`, без класса — `1` |
 | Форма якоря-обёртки | `sf-badge-anchor--round`, `--rounded` (радиус `--sf-radius--ui`), `--square` (по умолчанию) |
-| Цвет | по умолчанию роль ошибки (`--sf-error` / `--sf-on-error`); `sf-badge--main sf-badge--primary` и другие схемы бейджа меняют его; публичные `--sf-badge-background-color`, `--sf-badge-color` |
+| Цвет | роль ошибки (`--sf-error` / `--sf-on-error`): число на якоре — внимание (C140); публичные `--sf-badge-background-color`, `--sf-badge-color` |
 | Кольцо | `--sf-badge-ring-color` — цвет поверхности под якорем |
 
 Скрипт компонента (`SF.AnchoredBadge`) держит бейджи с `data-count` и

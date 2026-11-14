@@ -47,7 +47,7 @@ const words = (self, file = ru) => (key, {vars = {}} = {}) => String(file.runtim
 const show = (places) => places.map((place) => (place === 'gap' ? '…' : place)).join(' ');
 
 test('C97 point 1: five appearances, field the default; no appearance is the compatible footer', () => {
-  assert.equal(component.version, '1.5.0');
+  assert.equal(component.version, '1.5.1');
   assert.deepEqual(component.settings.appearance.values, ['field', 'numbers', 'arrows', 'cursor', 'more']);
   assert.equal(component.settings.appearance.default, 'field');
   assert.match(source, /get footer\(\) \{\s*return !this\.hasAttribute\("appearance"\);/u);

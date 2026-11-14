@@ -38,6 +38,41 @@ function normalizeSlotNodes(content) {
   return normalizeSlideContent(content).filter((node) => node instanceof Node);
 }
 
+// A copy of a page's slide for a slider (GL-10). Only the picture shown
+// first loads at once; the others, and every picture of the closed lightbox,
+// wait until they are near the view. A plain cloneNode cannot do that: a
+// copied parser-made <img loading="lazy"> starts its download at once
+// (Chrome), so every picture of every gallery loaded with the page. The copy
+// is made from the slide's markup with the pictures' sources held back, and
+// each picture gets its loading (the page's own, else lazy or eager) and
+// decoding before its source.
+const SOURCE_ATTRIBUTES = ['srcset', 'src'];
+
+function copySlide(slide, eager) {
+  if (!(slide instanceof Element)) return slide.cloneNode(true);
+  const template = document.createElement('template');
+  template.innerHTML = slide.outerHTML;
+  if (template.content.childNodes.length !== 1 || !template.content.firstElementChild) {
+    return slide.cloneNode(true);
+  }
+  const held = [];
+  const inert = template.content.firstElementChild;
+  [inert, ...inert.querySelectorAll('img, source')].filter((node) => node.matches('img, source')).forEach((node) => {
+    const sources = SOURCE_ATTRIBUTES.filter((name) => node.hasAttribute(name)).map((name) => [name, node.getAttribute(name)]);
+    sources.forEach(([name]) => node.removeAttribute(name));
+    held.push(sources);
+  });
+  const copy = document.importNode(inert, true);
+  [copy, ...copy.querySelectorAll('img, source')].filter((node) => node.matches('img, source')).forEach((node, index) => {
+    if (node.localName === 'img') {
+      if (!node.hasAttribute('loading')) node.loading = eager ? 'eager' : 'lazy';
+      if (!node.hasAttribute('decoding')) node.decoding = 'async';
+    }
+    held[index].forEach(([name, value]) => node.setAttribute(name, value));
+  });
+  return copy;
+}
+
 const GALLERY_TRIGGER_SELECTOR = '[data-sf-gallery]';
 let delegatedGallery = null;
 
@@ -79,9 +114,10 @@ const DELEGATED_MODAL_ATTRIBUTES = [
   'footer-class',
 ];
 
+// The lightbox of a page's linked pictures shows the place too (GL-3, C143 (4)).
 const DELEGATED_SLIDER_DEFAULTS = {
   arrows: 'true',
-  dots: 'false',
+  dots: 'true',
   'lightbox-class': 'sf-gallery-lightbox-slider h-full',
 };
 
@@ -113,6 +149,9 @@ const DELEGATED_SLIDER_ATTRIBUTE_ALIASES = {
   class: 'lightbox-class',
   'root-class': 'lightbox-class',
 };
+
+// How far a press may move and still be a press, not a swipe (CSS px).
+const LIGHTBOX_TAP_SLOP = 10;
 
 const LIGHTBOX_BACKGROUND_CLOSE_IGNORE_SELECTOR = [
   'a',
@@ -373,6 +412,8 @@ class SfGallery extends GalleryElement {
     this._pendingLightboxBackgroundClose = false;
     this._currentRenderMode = '';
     this._nestedDefinitionSyncQueued = false;
+    this._opener = null;
+    this._handleViewerKeyDown = this._handleViewerKeyDown.bind(this);
     this._handleGalleryClick = this._handleGalleryClick.bind(this);
     this._handleGalleryKeyDown = this._handleGalleryKeyDown.bind(this);
     this._handleInlineSlideChange = this._handleInlineSlideChange.bind(this);
@@ -405,6 +446,7 @@ class SfGallery extends GalleryElement {
   disconnectedCallback() {
     this.removeEventListener('click', this._handleGalleryClick);
     this.removeEventListener('keydown', this._handleGalleryKeyDown);
+    document.removeEventListener('keydown', this._handleViewerKeyDown);
     this._detachNestedListeners();
     super.disconnectedCallback();
   }
@@ -575,7 +617,26 @@ class SfGallery extends GalleryElement {
       current: this.current,
       rootClass: this.getRootClass(),
       slidesTotal: this.slidesTotal,
+      frameRatio: this._frameRatio(),
     };
+  }
+
+  // The inline frame (GL-7, decision C143 (8)): ratio w/h when the page sets
+  // one; auto takes the first picture's width and height attributes, which
+  // also gave that picture its box before the code arrived; else '' and the
+  // sheet's 16/9.
+  _frameRatio() {
+    const parse = (width, height) => {
+      const w = Number.parseFloat(width);
+      const h = Number.parseFloat(height);
+      return w > 0 && h > 0 ? `${w} / ${h}` : '';
+    };
+    const ratio = String(this.getProp('ratio') || 'auto').trim();
+    const written = ratio.match(/^(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)$/);
+    if (written) return parse(written[1], written[2]);
+    const first = normalizeSlotNodes(this.getSlotContent('slide'))[0];
+    const image = first?.matches?.('img') ? first : first?.querySelector?.('img');
+    return image ? parse(image.getAttribute('width'), image.getAttribute('height')) : '';
   }
 
   templateContext() {
@@ -727,6 +788,7 @@ class SfGallery extends GalleryElement {
 
   _syncSliderSlot(sliderElement, mode) {
     if (!sliderElement?.setSlot) {
+      this._holdUndefinedSlider(sliderElement, mode);
       return;
     }
 
@@ -738,6 +800,18 @@ class SfGallery extends GalleryElement {
     this._rememberSliderIndex(sliderElement, this.current - 1);
     sliderElement.setSlot('slide', ...slides);
   }
+  // Until sf-slider's code arrives the inline slider holds the pictures as
+  // its own children, so core.styles' rule for an undefined sf-slider shows
+  // the first one in its frame: the gallery's box does not fall to 0 between
+  // the gallery drawing and the slider drawing (GL-7). The slider takes them
+  // as its slides when it upgrades; the queued sync then sets them anew.
+  _holdUndefinedSlider(sliderElement, mode) {
+    if (mode !== 'inline' || !sliderElement || sliderElement.childElementCount) return;
+    const slides = this._buildSliderSlideNodes(mode);
+    slides.forEach((slide) => slide.setAttribute('slot', 'slide'));
+    sliderElement.append(...slides);
+  }
+
   _queueNestedDefinitionSync() {
     if (this._nestedDefinitionSyncQueued) {
       return;
@@ -803,7 +877,7 @@ class SfGallery extends GalleryElement {
         wrapper.setAttribute('tabindex', '0');
       }
 
-      const content = slide.cloneNode(true);
+      const content = copySlide(slide, mode === 'inline' && index === this.current - 1);
       this.copyRuntimeData(slide, content);
       wrapper.append(content);
       return wrapper;
@@ -952,21 +1026,27 @@ class SfGallery extends GalleryElement {
     });
   }
 
+  // A press on the empty field around the picture closes the lightbox; a
+  // swipe that starts or ends there pages (GL-4): the press is not taken
+  // from the slider, and only one that did not move closes.
   _handleLightboxBackgroundPointerDown(event) {
-    if (!this._isLightboxBackgroundTarget(event.target)) {
-      this._lightboxBackgroundPointerActive = false;
-      return;
-    }
+    this._lightboxPointerStart = { x: event.clientX, y: event.clientY };
+    this._lightboxBackgroundPointerActive = this._isLightboxBackgroundTarget(event.target);
+  }
 
-    this._lightboxBackgroundPointerActive = true;
-    this._stopLightboxBackgroundEvent(event);
+  _lightboxPointerMoved(event) {
+    const start = this._lightboxPointerStart;
+    if (!start) return false;
+    return Math.hypot(event.clientX - start.x, event.clientY - start.y) > LIGHTBOX_TAP_SLOP;
   }
 
   _handleLightboxBackgroundPointerUp(event) {
-    if (
-      !this._lightboxBackgroundPointerActive &&
-      !this._isLightboxBackgroundTarget(event.target)
-    ) {
+    if (!this._lightboxBackgroundPointerActive || !this._isLightboxBackgroundTarget(event.target)) {
+      this._lightboxBackgroundPointerActive = false;
+      return;
+    }
+    if (this._lightboxPointerMoved(event)) {
+      this._lightboxBackgroundPointerActive = false;
       return;
     }
 
@@ -976,6 +1056,11 @@ class SfGallery extends GalleryElement {
 
   _handleLightboxBackgroundClick(event) {
     if (!this._isLightboxBackgroundTarget(event.target)) {
+      return;
+    }
+    // The click after a swipe is the swipe's: it neither closes nor reaches a link.
+    if (this._lightboxPointerMoved(event)) {
+      this._stopLightboxBackgroundEvent(event);
       return;
     }
 
@@ -1021,10 +1106,37 @@ class SfGallery extends GalleryElement {
       this._refreshLightboxSlider();
       this._syncSliderToIndex(this._lightboxSlider, targetIndex);
     });
+    document.removeEventListener('keydown', this._handleViewerKeyDown);
+    document.addEventListener('keydown', this._handleViewerKeyDown);
     this.sfEmit('opened', {
       current: this.current,
       total: this.slidesTotal,
     });
+  }
+
+  // The lightbox pages with the keys (GL-4): ArrowLeft / ArrowRight (mirrored
+  // right to left), Home and End, wherever the focus is in the window except
+  // a field; the dots and the thumbnails page by their own keys first.
+  _handleViewerKeyDown(event) {
+    if (!this.openState || event.defaultPrevented) return;
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    const target = event.target instanceof Element ? event.target : null;
+    if (target?.closest?.('input, textarea, select, [contenteditable]:not([contenteditable="false"])')) return;
+    const windowRoot = this._modal?.modalRoot || this._modal;
+    if (target && target !== document.body && windowRoot && !windowRoot.contains(target)) return;
+    const total = this.slidesTotal;
+    if (!total) return;
+    const slider = this._lightboxSlider?.querySelector?.('.sf-slider') || this._lightboxSlider;
+    const rtl = slider ? getComputedStyle(slider).direction === 'rtl' : false;
+    const step = { ArrowRight: rtl ? -1 : 1, ArrowLeft: rtl ? 1 : -1 }[event.key];
+    let next;
+    if (step) next = this.current + step;
+    else if (event.key === 'Home') next = 1;
+    else if (event.key === 'End') next = total;
+    else return;
+    event.preventDefault();
+    if (this.getProp('loop')) next = ((next - 1 + total) % total) + 1;
+    this.goTo(Math.min(Math.max(next, 1), total));
   }
 
   _handleModalAfterClose(event) {
@@ -1032,10 +1144,37 @@ class SfGallery extends GalleryElement {
     if (this.hasAttribute('open')) {
       this.removeAttribute('open');
     }
+    document.removeEventListener('keydown', this._handleViewerKeyDown);
     this.sfEmit('closed', {
       current: this.current,
       total: this.slidesTotal,
     });
+    // After the window gave focus back (it restores what it saw at open).
+    requestAnimationFrame(() => this._returnFocus());
+  }
+
+  // Focus goes back to what opened the viewer (WAI-ARIA APG modal dialog;
+  // file preview study FP-10): the picture in the strip, now the one the
+  // viewer was left on, so after paging the strip's own slide in view takes
+  // it -- the slide that opened it moved out of view with the strip and the
+  // window's restore fell through to the page (MAIN). A trigger outside the
+  // strip (a delegated link) gets it back itself. Only when focus is nowhere
+  // a person put it: on the page's body or an element around the gallery.
+  _returnFocus() {
+    const opener = this._opener;
+    this._opener = null;
+    if (this.openState || !this.isConnected) return;
+    const active = this.ownerDocument.activeElement;
+    const lost = !active || active === this.ownerDocument.body
+      || (active !== this && active.contains?.(this))
+      || (this.contains(active) && !active.matches?.('[data-sf-gallery-open]'));
+    const inline = this.querySelector(`[data-sf-gallery-inline] [data-sf-gallery-open="${this.current}"]`);
+    const outside = opener?.isConnected && !this.contains(opener) ? opener : null;
+    const target = outside || inline || (opener?.isConnected ? opener : null);
+    if (!target || active === target) return;
+    if (lost || (inline && active?.matches?.('[data-sf-gallery-inline] [data-sf-gallery-open]'))) {
+      target.focus({ preventScroll: true });
+    }
   }
 
   _syncCurrentFromEvent(event, fromLightbox = false) {
@@ -1075,6 +1214,8 @@ class SfGallery extends GalleryElement {
       this.goTo(at);
     }
 
+    const active = this.ownerDocument.activeElement;
+    if (!this.openState && active && active !== this.ownerDocument.body) this._opener = active;
     this.setAttribute('open', '');
     this._modal?.open?.();
     return applied();

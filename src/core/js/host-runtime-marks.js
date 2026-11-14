@@ -14,6 +14,8 @@ export const HOST_RUNTIME_MARKS = new Set([
   "data-sf-assembly",
   "data-sf-static",
   "data-sf-first-paint",
+  // The late lists a printed skeleton holds (element-manifest.js sfLateHeld).
+  "data-sf-late",
   "data-sf-held",
   "data-sf-skeleton",
   "data-sf-observer",

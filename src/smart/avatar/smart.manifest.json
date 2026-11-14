@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.avatar",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "title": "Avatar",
   "summary": "Shows a person or organisation as a photo or initials, with an optional availability or verification mark. The default and label templates render a native button whose aria-label names its action; the card template is static and adds a title, description and meta line.",
   "kind": "smart",
@@ -25,7 +25,8 @@
   "composition": {
     "uses": [
       "component.avatars",
-      "component.badges"
+      "component.badges",
+      "smart.icon"
     ],
     "public_parts": []
   },
@@ -83,7 +84,7 @@
       "image-url": {
         "type": "string",
         "default": "",
-        "description": "The picture's address. Empty: the initials of text (or of heading), else the person placeholder."
+        "description": "The picture's address. Empty: the initials of text (or of heading), else the placeholder glyph (icon, person by default)."
       },
       "image-alt": {
         "type": "string",
@@ -99,6 +100,11 @@
         "type": "string",
         "default": "",
         "description": "The initials drawn when there is no picture; empty takes them from heading."
+      },
+      "icon": {
+        "type": "string",
+        "default": "",
+        "description": "The placeholder's glyph (a Material Symbols name) for a bot, a system or a service: shown when there is no picture and no text, in place of the initials of the name, which still names the avatar. Empty: the initials of the name, else person. Drawn on the neutral plate, as the person glyph is."
       },
       "hue": {
         "type": "string",
@@ -150,7 +156,7 @@
       "status": {
         "type": "string",
         "default": "none",
-        "description": "A mark at the corner: online, offline, the company badge or the verified badge; none draws nothing.",
+        "description": "A mark at the corner: online, offline, the company badge or the verified badge; none draws nothing. Online and offline join the accessible name in the page's language («в сети», «не в сети»).",
         "enum": [
           "none",
           "online",
@@ -162,7 +168,7 @@
       "heading": {
         "type": "string",
         "default": "",
-        "description": "The person's name in the label and card templates; also the source of the initials."
+        "description": "The person's name: printed in the label and card templates, the source of the initials, and the avatar's accessible name when aria-label is not given."
       },
       "description": {
         "type": "string",
@@ -217,7 +223,7 @@
       "aria-label": {
         "type": "string",
         "default": "",
-        "description": "Empty: the text of the page's language (\"Avatar\" in English)."
+        "description": "Empty: the heading, else the text, else the word of the page's language (\"Avatar\" in English)."
       },
       "title": {
         "type": "string",
@@ -329,7 +335,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/avatar/index.js",
-        "sha256": "01a08bd1bfeedb3c15966ecb5da4eb38a8f0a4978d35c4ea8a67e3f52b850d39"
+        "sha256": "dbbf22467209c2b9e6ec453650f63429afb3a2620714c7719e10aee14f443487"
       }
     ],
     "generated_runtime": [

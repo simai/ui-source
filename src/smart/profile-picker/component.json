@@ -2,7 +2,7 @@
   "$comment": "The source of sf-profile-picker's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/profile-picker (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.profile-picker",
   "tag": "sf-profile-picker",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "kind": "leaf",
   "family": "picker",
   "settings": {
@@ -299,7 +299,8 @@
     "version 1.4.2 (2026-11-11): a patch, nothing drawn differently. The sheet reads the C16 roles by their current names where it read the former ones, which are var() of them wherever they are declared (src/core/contracts/token-aliases.v1.json, sf-role-aliases): --sf-on-disable → --sf-on-surface-disabled ×2. Settings, values, events and keys unchanged.",
     "version 1.4.3 (2026-11-12; written on the branch as 1.4.2): a patch (owner decision C106, the scroll-area inset rule, an addendum to C105). The shared dropping-panel partial component/context-menu/scss/_panel.scss now takes the page scrollbar's thumb, --sf-scroll-thumb-width, as its default: the track is the inset --sf-space-1/4, the thumb and the inset again, 14 (the page's --sf-scroll-bg-width; it was 12, a thumb of --sf-space-1/4). The thumb keeps a transparent border of the inset and background-clip: padding-box; a scrollbar that takes room still marks its area (component/panel-scrollbar.js) and the area gives up its inline-end padding; no scrollbar-gutter. Settings, values, events and keys unchanged; probe dropdown-panels-inset, evidence ui-control control/evidence/2026-11-12-scrollbar-14.",
     "version 1.4.4 (2026-11-13; numbered above the integration's 1.4.3): a patch (owner decision C116 #q-cancel, the button set: «Отмена» is quiet everywhere). The «Отмена» beside «Создать» and beside the danger «Удалить» is ghost on-surface; it was outlined. Settings, values, events and keys unchanged.",
-    "version 1.4.5 (2026-11-14, owner decision C105 H4, spacing audit follow-up of C2): a patch. The panel's 1 px border is inside its inline inset, as sf-menu-context's and sf-settings' panels: the panel's inline padding is --sf-space-1/4 less the border, so the rows' plates, the add row, the form and the footer stand one pixel nearer the outer edge, and a row's icon or text is 16 from it (compact and phone 12), not 17 and 13. The block padding and the scrollbar's gap on either side of its thumb stay the whole inset (C07, C106; track 14). Settings, values, events and keys unchanged. (1.4.4 is fix/button-look-bt's number.)"
+    "version 1.4.5 (2026-11-14, owner decision C105 H4, spacing audit follow-up of C2): a patch. The panel's 1 px border is inside its inline inset, as sf-menu-context's and sf-settings' panels: the panel's inline padding is --sf-space-1/4 less the border, so the rows' plates, the add row, the form and the footer stand one pixel nearer the outer edge, and a row's icon or text is 16 from it (compact and phone 12), not 17 and 13. The block padding and the scrollbar's gap on either side of its thumb stay the whole inset (C07, C106; track 14). Settings, values, events and keys unchanged. (1.4.4 is fix/button-look-bt's number.)",
+    "version 1.4.6 (2026-11-14, owner decision C105 H5 and dispatcher ruling C144, DEV spacing gate R236): a patch, a look. A row's actions (Rename · Delete) stand --sf-space-1/3 apart (8, 4 compact); they stood flush. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

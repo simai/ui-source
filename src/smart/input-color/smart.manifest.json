@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-color",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "title": "Color",
   "summary": "A colour field: a swatch, the value and a chevron that open the Framework's own compact window -- the static palette first, the product's own colours, recent own colours and «Своё» (shade area, eyedropper, hue and alpha strips, a code in Hex, RGB, HSL or HSB) -- and a way back to an inherited colour. The value is a palette name or a code. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
   "kind": "smart",
@@ -70,11 +70,13 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "The size ladder step, so a colour beside a text field lines up with it.",
+        "description": "The field ladder step, as sf-input's (1/3, 1/2, 1, 2, 3), so a colour beside a text field lines up with it.",
         "enum": [
+          "1/3",
           "1/2",
           "1",
-          "2"
+          "2",
+          "3"
         ]
       },
       "appearance": {
@@ -140,6 +142,21 @@
         "type": "string",
         "default": "",
         "description": "The field's label, drawn above the row as sf-input's label and naming the colour input (1.6.0). For a name without a visible label, write aria-label."
+      },
+      "hint": {
+        "type": "string",
+        "default": "",
+        "description": "Help text under the field, as sf-input's: the label's type, a step below the field's text."
+      },
+      "invalid": {
+        "type": "boolean",
+        "default": false,
+        "description": "The error state: the frame's edge and the line under the field take the error colour."
+      },
+      "error-message": {
+        "type": "string",
+        "default": "",
+        "description": "The error shown under the field in place of the hint while the field is invalid."
       },
       "choose-label": {
         "type": "string",
@@ -474,11 +491,11 @@
       },
       {
         "path": "src/smart/input-color/js/templates/default.js",
-        "sha256": "50aa366131d2aa5905e7ba8ddf768e134e97688566d72b7bd2134a6473a5ca56"
+        "sha256": "43be2027f0da8aeb573cfc1c5f7ae98fdd7ac3f295687f573a73786688b13d48"
       },
       {
         "path": "src/smart/input-color/js/templates/default.css",
-        "sha256": "8ed9e7f13e9aa24190f51ab348f38c7acf177df0c659a29056a86e1ef5b93873"
+        "sha256": "a57b992bd4617f1891b5c613dd08112929d0a8c3d548b2d203db80a31a1b0ea6"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

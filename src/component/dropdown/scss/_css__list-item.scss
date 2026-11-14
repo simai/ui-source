@@ -608,6 +608,28 @@
   --sf-list-item--padding-bottom: var(--sf-list-item--two-line-block);
 }
 
+/* A row with a caption is never lower than a menu row with a caption (owner
+   decision C49; list item study LI-1, dispatcher ruling 2026-11-14): one
+   control of step 1/2 and the caption's line under it -- 48 = 32 + 16 on a
+   desktop, 44 = 28 + 16 in a compact region, 60 = 44 + 16 under a finger,
+   where the step is the touch target (--sf-d1), as sf-menu-context's caption
+   rows are. A taller step keeps the next size's control height above
+   (56 at size 2). Group build 3 drew size 1 at 48 / compact 40 / phone 44 and
+   size 1/2 at 36 on a phone, under the 44 a finger needs. Every term is a
+   token of the ladder; the two lines stand centred in the row. Size 1/3 has
+   no caption step under it and keeps its own. */
+.sf-list-item.sf-list-item--two-line.sf-list-item--two-line:is(.sf-list-item--size-1\/2, .sf-list-item--size-1, .sf-list-item--size-2, .sf-list-item--size-3) {
+  --sf-list-item--caption-step: var(--sf-ui-1\/2--control-height);
+  align-items: center;
+  min-block-size: calc(var(--sf-list-item--caption-step) + var(--sf-text-height-1\/3));
+}
+
+@media (pointer: coarse) {
+  .sf-list-item.sf-list-item--two-line.sf-list-item--two-line:is(.sf-list-item--size-1\/2, .sf-list-item--size-1, .sf-list-item--size-2, .sf-list-item--size-3) {
+    --sf-list-item--caption-step: max(var(--sf-ui-1\/2--control-height), var(--sf-d1));
+  }
+}
+
 /* Where the two lines fill the step (size 1/2 in a compact region: 16 + 16
    in a 32 row) the bottom padding has nothing to give the divider back from,
    and the row stood a pixel off the ladder (33). The lines then give it back:
@@ -641,6 +663,51 @@
 .sf-list-item--size-1 { --sf-list-item-handle--size: var(--sf-text-height-1); }
 .sf-list-item--size-2 { --sf-list-item-handle--size: var(--sf-text-height-2); }
 .sf-list-item--size-3 { --sf-list-item-handle--size: var(--sf-text-height-3); }
+
+/* The picture place of a row: an icon or an avatar takes the row's line. */
+.sf-list-item--size-1\/3 { --sf-list-item--picture: var(--sf-text-height-1\/3); }
+.sf-list-item--size-1\/2 { --sf-list-item--picture: var(--sf-text-height-1\/2); }
+.sf-list-item--size-1 { --sf-list-item--picture: var(--sf-text-height-1); }
+.sf-list-item--size-2 { --sf-list-item--picture: var(--sf-text-height-2); }
+.sf-list-item--size-3 { --sf-list-item--picture: var(--sf-text-height-3); }
+
+/* A row without a picture among rows with one keeps the picture's place
+   (owner decision C105; list item study LI-17): its text starts where its
+   neighbours' text does, the picture's line and the H2 step after it. A
+   pinned text row of an sf-sortable list started its text at 40 beside icon
+   rows at 76. The list is the row's own: sf-sortable, a list or listbox role,
+   or sf-list's body; a dropdown's options keep their own layout. */
+:is(sf-sortable, [role="list"], [role="listbox"], [data-sf-list]):has(.sf-list-item:is(.sf-list-item--icon, .sf-list-item--avatar)) .sf-list-item.sf-list-item--text:not([role="option"]) > .sf-list-item-wrap {
+  padding-inline-start: calc(var(--sf-list-item--picture) + var(--sf-space-1\/2));
+}
+
+/* A row's text block takes the row's free width, so its trailing part -- a
+   «⋯», a count, a time -- stands at the row's end edge, not right after the
+   text (list item study LI-16: 211 px from the end of a 384 row). An option
+   keeps its layout: its mark already stands at the end. */
+.sf-list-item:not([role="option"]) > .sf-list-item-wrap > .sf-list-item-container {
+  flex: 1 1 auto;
+}
+
+/* An avatar row's text block (list item study LI-5): the title and its
+   supporting line, as an icon row's, on the row's text steps and inks. */
+.sf-list-item.sf-list-item--avatar .sf-list-item-container {
+  --sf-list-item-container--padding-inline-start: 0;
+  --sf-list-item-container--padding-inline-end: 0;
+  --sf-list-item-container--font-family: var(--sf-text--family);
+  --sf-list-item-container--font-weight: var(--sf-font-weight-regular);
+  --sf-list-item-container--color: var(--sf-list-item-color, var(--sf-on-surface));
+}
+
+.sf-list-item.sf-list-item--avatar.sf-list-item--size-1\/3 .sf-list-item-container { --sf-list-item-container--font-size: var(--sf-text-size-1\/3); --sf-list-item-container--line-height: var(--sf-text-height-1\/3); }
+.sf-list-item.sf-list-item--avatar.sf-list-item--size-1\/2 .sf-list-item-container { --sf-list-item-container--font-size: var(--sf-text-size-1\/2); --sf-list-item-container--line-height: var(--sf-text-height-1\/2); }
+.sf-list-item.sf-list-item--avatar.sf-list-item--size-1 .sf-list-item-container { --sf-list-item-container--font-size: var(--sf-text-size-1); --sf-list-item-container--line-height: var(--sf-text-height-1); }
+.sf-list-item.sf-list-item--avatar.sf-list-item--size-2 .sf-list-item-container { --sf-list-item-container--font-size: var(--sf-text-size-2); --sf-list-item-container--line-height: var(--sf-text-height-2); }
+.sf-list-item.sf-list-item--avatar.sf-list-item--size-3 .sf-list-item-container { --sf-list-item-container--font-size: var(--sf-text-size-3); --sf-list-item-container--line-height: var(--sf-text-height-3); }
+
+.sf-list-item.disabled.sf-list-item--avatar .sf-list-item-container {
+  --sf-list-item-container--color: var(--sf-on-surface-disabled);
+}
 
 .sf-list-item-handle .sf-icon {
   color: var(--sf-icon--color);

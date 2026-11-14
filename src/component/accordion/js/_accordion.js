@@ -11,6 +11,12 @@ const PLUS_MINUS_MODIFIER = 'sf-accordion--plus-minus';
 const SINGLE_MODIFIER = 'sf-accordion--single';
 // A group that keeps its one section a toggle says so.
 const SINGLE_TOGGLE_ATTRIBUTE = 'data-single-section';
+// A closed panel the page wrote as hidden="until-found" (Docara's details
+// block) stays findable: the browser's find-in-page searches it and opens it,
+// firing beforematch first. The runtime keeps that value when it closes the
+// panel again and never adds the hidden class to it, whose display: none
+// would take the text out of the search (accordion study AC-8).
+const UNTIL_FOUND = 'until-found';
 
 class SfAccordion {
   static componentName = 'Accordion';
@@ -26,6 +32,8 @@ class SfAccordion {
       el?.querySelector?.('.sf-icon');
     this.onClick = this.handleClick.bind(this);
     this.onKeydown = this.handleKeydown.bind(this);
+    this.onBeforeMatch = this.handleBeforeMatch.bind(this);
+    this.findable = this.content?.getAttribute?.('hidden') === UNTIL_FOUND;
   }
 
   init() {
@@ -50,12 +58,15 @@ class SfAccordion {
     // that may not have arrived yet) gets the `hidden` attribute too, so its
     // content is out of the tab order and the accessibility tree before the
     // first toggle (simai/ui-source#30).
+    // A findable panel keeps hidden="until-found" and loses the hidden class.
     if (this.content && !this.isOpen()) {
-      this.content.hidden = true;
-      this.content.classList.add('hidden');
+      this.hideContent();
+    } else if (this.findable) {
+      this.content.classList.remove('hidden');
     }
     this.syncState();
     this.trigger.addEventListener('click', this.onClick);
+    this.content?.addEventListener('beforematch', this.onBeforeMatch);
     if (usesLegacyTrigger) {
       this.trigger.addEventListener('keydown', this.onKeydown);
     }
@@ -111,6 +122,7 @@ class SfAccordion {
     if (!this.el) return;
     this.trigger?.removeEventListener('click', this.onClick);
     this.trigger?.removeEventListener('keydown', this.onKeydown);
+    this.content?.removeEventListener('beforematch', this.onBeforeMatch);
     accordionInstances.delete(this.el);
     this.el.classList.remove('sf-accordion--legacy');
     delete this.el.dataset.sfAccordionInit;
@@ -141,6 +153,26 @@ class SfAccordion {
     this.toggle();
   }
 
+  // Find-in-page found text in a closed panel: the browser is about to show
+  // it, so the section opens as a click would open it -- aria-expanded, the
+  // active mark, the chevron, and in single mode the other section closes.
+  handleBeforeMatch() {
+    if (this.staticHeader) return;
+    this.setOpen(true);
+  }
+
+  // Closes the panel: hidden="until-found" for a findable one, else the
+  // hidden attribute and class.
+  hideContent() {
+    if (this.findable) {
+      this.content.setAttribute('hidden', UNTIL_FOUND);
+      this.content.classList.remove('hidden');
+      return;
+    }
+    this.content.hidden = true;
+    this.content.classList.add('hidden');
+  }
+
   handleKeydown(event) {
     if (event.key !== 'Enter' && event.key !== ' ') return;
     event.preventDefault();
@@ -162,10 +194,11 @@ class SfAccordion {
 
     if (open) {
       this.closeSingleModeSiblings();
+      this.content.hidden = false;
+      this.content.classList.remove('hidden');
+    } else {
+      this.hideContent();
     }
-
-    this.content.hidden = !open;
-    this.content.classList.toggle('hidden', !open);
     this.syncState();
   }
 

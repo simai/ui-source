@@ -1,7 +1,7 @@
 import {html, nothing} from 'lit';
 import './default.css';
 import {closeSize} from '../close-size.js';
-import {cssUrl} from '../../../../core/js/css-url';
+import {avatarPicture} from '../../../avatar/js/picture';
 
 // Sizes 1, 2 and 3 take the larger dot; 1/2 and 1/3 the smaller.
 const LARGE_SIZES = new Set(['1', '2', '3']);
@@ -46,34 +46,19 @@ function renderStatusDot(context) {
         `;
 }
 
+// The avatar is sf-avatar's own drawing (js/picture.js, avatar study AV-8):
+// the photo an <img> filling the circle, the initials on the neutral plate,
+// the person glyph without either. It was a background image here.
 function renderAvatar(context) {
     if (context.component?.hasSlotContent?.('avatar')) {
         return context.component.getSlotContent('avatar');
     }
 
-    if (context.avatarImageUrl) {
-        return html`
-            <span
-                    class="sf-avatar sf-avatar--size-1/4 bg-cover"
-                    aria-hidden="true"
-                    style=${`background-image: ${cssUrl(context.avatarImageUrl)};`}
-            ></span>
-        `;
-    }
-
-    if (context.avatarText) {
-        return html`
-            <span class="sf-avatar sf-avatar--size-1/4 sf-avatar--text flex justify-center items-center" aria-hidden="true">
-        ${context.avatarText}
-      </span>
-        `;
-    }
-
-    return html`
-        <span class="sf-avatar sf-avatar--size-1/4 sf-avatar--placeholder flex justify-center items-center" aria-hidden="true">
-      <sf-icon icon="person" aria-hidden="true"></sf-icon>
-    </span>
-    `;
+    return avatarPicture({
+        size: '1/4',
+        imageUrl: context.avatarImageUrl,
+        text: context.avatarText,
+    });
 }
 
 function renderLeading(context) {
@@ -129,10 +114,52 @@ function renderClose(context) {
         `;
 }
 
+// A status on a tag that is neither pressed nor removed is a badge (owner
+// decision C140 (6), badges study BG-6): the tag draws the tonal badge of the
+// same status -- the same container fill, the same hue -- in the badge's size
+// for a row of the tag's size (host -> badge: 1/3 in rows 1/3 to 1, 1/2 in a
+// row 2, 1 in a row 3), or on the tag's line when it has one. Status on a tag
+// is for a filter or a chosen value: interactive or closable.
+const BADGE_FOR_TAG = {'1/3': '1/3', '1/2': '1/3', '1': '1/3', '2': '1/2', '3': '1'};
+
+function renderStatusBadge(context, textContent) {
+    const classes = [
+        'sf-badge',
+        'sf-badge--tonal',
+        `sf-badge--${context.status}`,
+        `sf-badge--size-${BADGE_FOR_TAG[context.size] || '1/3'}`,
+        context.line ? `sf-badge--line-${context.line}` : '',
+        'sf-tag-badge',
+        'inline-flex',
+        'flex-row',
+        'flex-nowrap',
+        'justify-center',
+        'items-center',
+        `${context.rootClass || ''}`,
+    ].filter(Boolean);
+    return html`<span class=${classes.join(' ')} style=${context.rootStyle || nothing}><span
+        class="sf-badge-text-container flex items-center"><span
+        class="sf-badge-text">${textContent}</span></span></span>`;
+}
+
+// The Framework's plain tooltip (component.tooltip, class markup), hidden
+// until the tooltip controller shows it on hover or keyboard focus of the
+// trigger: a name cut with an ellipsis says itself whole (owner decision C58;
+// tags study TG-1). The label stays whole in the markup, so a screen reader
+// hears all of it; the tooltip is for the eye.
+function renderCutTooltip(context) {
+    if (!context.cutTooltipId) return nothing;
+    return html`<span id=${context.cutTooltipId} class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-tag-tooltip" aria-hidden="true" hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${context.cutText}</span></span></span>`;
+}
+
 export function renderTagTemplate(context) {
     const textContent = context.component?.hasSlotContent?.('text')
         ? context.component.getSlotContent('text')
         : context.text;
+
+    if (context.status && !context.interactive && !context.closable) {
+        return renderStatusBadge(context, textContent);
+    }
 
     const classes = [
         'sf-tag',
@@ -173,11 +200,13 @@ export function renderTagTemplate(context) {
                     class=${classes.join(' ')}
                     style=${context.rootStyle || nothing}
             >
+                ${renderCutTooltip(context)}
                 <button
                         type="button"
                         class="sf-tag-action inline-flex flex-row flex-nowrap items-center min-w-0"
                         aria-label=${context.ariaLabel || nothing}
                         aria-pressed=${String(context.active)}
+                        data-tooltip=${context.cutTooltipId || nothing}
                         ?disabled=${context.disabled}
                         @click=${() => context.component.onToggle()}
                 >
@@ -198,9 +227,10 @@ export function renderTagTemplate(context) {
                     style=${context.rootStyle || nothing}
                     aria-label=${context.ariaLabel || nothing}
                     aria-pressed=${String(context.active)}
+                    data-tooltip=${context.cutTooltipId || nothing}
                     ?disabled=${context.disabled}
                     @click=${() => context.component.onToggle()}
-            >${content}</button>
+            >${content}${renderCutTooltip(context)}</button>
         `;
     }
 
@@ -210,10 +240,12 @@ export function renderTagTemplate(context) {
                     class=${classes.join(' ')}
                     style=${context.rootStyle || nothing}
             >
+                ${renderCutTooltip(context)}
                 <button
                         type="button"
                         class="sf-tag-action inline-flex flex-row flex-nowrap items-center min-w-0"
                         aria-label=${context.ariaLabel || nothing}
+                        data-tooltip=${context.cutTooltipId || nothing}
                         ?disabled=${context.disabled}
                 >
                     ${renderLeading(context)}
@@ -229,6 +261,7 @@ export function renderTagTemplate(context) {
         <div
                 class=${classes.join(' ')}
                 style=${context.rootStyle || nothing}
-        >${content}</div>
+                data-tooltip=${context.cutTooltipId || nothing}
+        >${content}${renderCutTooltip(context)}</div>
     `;
 }

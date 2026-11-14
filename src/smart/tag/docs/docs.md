@@ -69,7 +69,27 @@ pressing shows what being chosen looks like.
   the listener has it as `event.target`;
 - disabled controls emit neither `change` nor `close`;
 - the old kind `quantity` is a dated alias of `default` until 2026-12-01 and
-  must not be used in new markup.
+  must not be used in new markup;
+- a long name ends in an ellipsis (the tag is at most 20rem and its container)
+  and its whole text is the tag's tooltip; the label stays whole in the markup
+  for a screen reader (C58);
+- in a one-row container (a flex row that does not wrap: filters, a table
+  cell, a card) the tags keep their width; those that do not fit leave the row
+  and a plain count «+N» stands after the last one shown, its title naming
+  them. The first tag always stands and ends in an ellipsis. A row that wraps
+  (a form) wraps (C58);
+- closable tags in one row inside a field (`.sf-input-field`) are one Tab
+  stop: ArrowLeft and ArrowRight walk them, Home and End go to the ends, Delete
+  or Backspace removes the one stood on (`sf-tag-close`; the host removes the
+  element) and the focus goes to its neighbour; each step is said, «Москва, 1
+  из 3, Delete — убрать», as the chips of `sf-input-lookup` (C139 (6)). The
+  cross under the mouse is unchanged. Outside a field each cross is its own
+  stop.
+
+Tags in a row stand `gap-1/4` (4 px) apart (C105 H5). A colour from data is a
+palette step through `--sf-tag-background-color`, for example
+`var(--sf-teal-50--alfa-24)`, so the label keeps its contrast in both themes
+(C140 BG-7).
 
 ## Slots
 
