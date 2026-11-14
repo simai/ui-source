@@ -18,7 +18,14 @@
 //      script -- has the box the drawn element has;
 //   4. an unknown tag is reported, never printed, and stays in the page as
 //      written; the page's own utilities (gap-2 on a wrapper) are in its sheets;
-//   5. the output is the same on every run.
+//   5. the output is the same on every run;
+//   6. text a page gives sf-button as its label is printed once, as the text
+//      attribute, and the printed page without script shows it once;
+//   7. a value an element writes into its control's property (sf-input-quantity
+//      value="3") is printed and shown without script;
+//   8. sf-segmented's selected option is highlighted in the printed page
+//      without script (the plate's measured place is not printed; the option
+//      paints the plate itself, data-sf-static).
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {dirname, join, resolve} from 'node:path';
@@ -129,6 +136,64 @@ try {
     const second = JSON.stringify(await printer.print(page, {id: 'again'}));
     assert.equal(first, second);
   });
+
+  // The printed page alone: its sheets, its markup, no script.
+  const still = async (got, read) => {
+    const printed = `<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8">${got.sheets.map((sheet) => `<link rel="stylesheet" href="/distr/${sheet}">`).join('')}</head><body><main id="stage">${got.html}</main></body></html>`;
+    const site = await serveOutput(out, {pages: new Map([['/printed', printed]])});
+    const context = await browser.newContext(PAGE_CONTEXT);
+    try {
+      const page = await context.newPage();
+      await page.goto(`${site.origin}/printed`, {waitUntil: 'load'});
+      await page.evaluate(() => document.fonts.ready);
+      return await page.evaluate(read);
+    } finally {
+      await context.close();
+      await site.close();
+    }
+  };
+
+  await check('6. a text child that is sf-button\'s label is printed once, as its text attribute', async () => {
+    const got = await printer.print('<sf-button>Сохранить</sf-button>', {id: 'button-text'});
+    assert.match(got.html, /^<sf-button[^>]* text="Сохранить">/u);
+    assert.equal(got.html.split('Сохранить').length - 1, 2, 'in the attribute and in the picture, never as a text child');
+    assert.deepEqual(got.elements[0].notes, []);
+    assert.equal(got.summary.textShownTwice, 0);
+    const shown = await still(got, () => {
+      let count = 0;
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        if (node.data.trim() !== 'Сохранить') continue;
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        if ([...range.getClientRects()].some((box) => box.width > 0)) count += 1;
+      }
+      return count;
+    });
+    assert.equal(shown, 1, 'shown once before any script');
+  });
+
+  await check('7. a value written into the control\'s property is printed (sf-input-quantity value="3")', async () => {
+    const got = await printer.print('<sf-input-quantity value="3"></sf-input-quantity><sf-input-quantity value="1250" precision="0"></sf-input-quantity>', {id: 'quantity'});
+    const values = [...got.html.matchAll(/<input type="text" role="spinbutton"[^>]*>/gu)].map(([input]) => input.match(/ value="([^"]*)"/u)?.[1]?.replaceAll('&nbsp;', '\u00a0'));
+    assert.equal(values.length, 2);
+    assert.equal(values[0], '3');
+    assert.ok(values[1] && values[1].replace(/\D/gu, '') === '1250', `the second shows 1250 as the page's format (${values[1]})`);
+    const shown = await still(got, () => [...document.querySelectorAll('input[role=spinbutton]')].map((input) => input.value));
+    assert.deepEqual(shown, values);
+  });
+
+  await check('8. sf-segmented\'s selected option is highlighted before any script', async () => {
+    const got = await printer.print('<sf-segmented value="b" items=\'[{"value":"a","label":"День"},{"value":"b","label":"Неделя"}]\'></sf-segmented>', {id: 'segmented'});
+    assert.match(got.html, /data-plate="placed"[^>]* data-sf-static/u);
+    const look = await still(got, () => {
+      const active = document.querySelector('.sf-button-group--segmented > .active');
+      const plate = document.querySelector('.sf-button-group--segmented > .sf-button-group-plate');
+      return {fill: getComputedStyle(active).backgroundColor, plate: getComputedStyle(plate).display};
+    });
+    assert.notEqual(look.fill, 'rgba(0, 0, 0, 0)', 'the selected option paints the plate itself');
+    assert.equal(look.plate, 'none', 'the plate element waits for its measured place');
+  });
 } finally {
   await printer.close();
   await browser.close();
@@ -138,4 +203,4 @@ if (failures.length) {
   console.error(`first-paint print: ${failures.length} failed`);
   process.exit(1);
 }
-console.log('first-paint print: 5 checks passed');
+console.log('first-paint print: 8 checks passed');

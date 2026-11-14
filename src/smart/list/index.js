@@ -73,6 +73,11 @@ const NARROW_REM = 20;
 // long badge on a 366 px phone column left the title 55 px, «Порта…»).
 const TITLE_MIN_REM = 10;
 const NARROW = "data-sf-list-narrow";
+// 1.14.0: a frame in a shrink-to-fit place, taken out of the container query.
+const FIT = "data-sf-list-fit";
+
+// The frame's content box width: what the container query reads.
+const contentWidth = (frame, style) => frame.clientWidth - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0);
 
 /**
  * The item's picture, or null: {image-url?, text?, shape?, icon?}. A sign
@@ -513,6 +518,8 @@ class SfList extends ListElement {
         this.unwatchEnd();
         this._widthObserver?.disconnect();
         this._widthObserver = null;
+        cancelAnimationFrame(this._fitFrame);
+        this._fitFrame = 0;
         this._widthFrame = null;
         this._widthMetas = null;
         clearTimeout(this._dayTimer);
@@ -533,20 +540,25 @@ class SfList extends ListElement {
     }
 
     // A narrow list (owner decision C47, 2026-11-10): below 20rem of its own
-    // width the list marks its frame, and a row's badge and count go under
-    // its second line, at the text's start, so the title keeps the row's
-    // width and the badge stays whole. A wider list is narrow too when, laid
-    // out on one line, a row's title would keep less than half of the row's
-    // text column or less than 10rem (a long badge in a phone column). The
-    // list measures itself: no page breakpoint and no setting. A
-    // ResizeObserver, not a container query: an inline-size container takes
-    // no width from its rows, and a list in a shrink-to-fit place (a popover,
-    // an auto-width flex item) would fold to nothing. It watches the frame's
+    // width a row's badge and count go under its second line, at the text's
+    // start, so the title keeps the row's width and the badge stays whole. A
+    // wider list is narrow too when, laid out on one line, a row's title would
+    // keep less than half of the row's text column or less than 10rem (a long
+    // badge in a phone column). No page breakpoint and no setting.
+    // 1.14.0: the 20rem is a container query on the frame (the sheet's
+    // container sf-list), so a printed first paint is narrow before any
+    // script (DEV, ui-chat chat-threads at 390: CLS 0.09 when the code
+    // adopted). The code marks the frame (data-sf-list-narrow) only for what
+    // the sheet cannot know: a squeezed title; and, for a frame in a
+    // shrink-to-fit place (a popover, an auto-width flex item), whose
+    // inline-size container would take no width from its rows and fold to
+    // nothing, it takes the frame out of the query (data-sf-list-fit) and
+    // marks it below 20rem by measuring, as before. It watches the frame's
     // width and every row's badge and count, and is started as soon as the
     // rows are drawn, before the list's sheet is in: the observer reports
     // before the frame is painted, so the frame painted with the sheet is
-    // already laid out narrow or wide. The mark is an attribute the template
-    // does not bind, so a redraw keeps it.
+    // already laid out narrow or wide. The marks are attributes the template
+    // does not bind, so a redraw keeps them.
     // 1.5.1: the frame's width is read from .sf-list__width, a box of no
     // height across the frame, not from the frame. The narrow layout changes
     // the frame's height; a frame observed itself then changed size inside the
@@ -594,18 +606,26 @@ class SfList extends ListElement {
     // would keep less than half of its text column (or 10rem) beside its
     // badge and count. The one-line layout is measured with the mark taken
     // off and put back in the same task, so nothing of it is painted and the
-    // answer does not depend on the layout it chooses.
+    // answer does not depend on the layout it chooses. Below 20rem the
+    // sheet's container query lays the rows out narrow; the mark is written
+    // only where the query does not answer (no sheet yet, or a fitted frame).
     measureNarrow() {
         const frame = this._widthFrame;
         if (!frame?.isConnected) return;
+        this.checkFit(frame);
         const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
         const style = getComputedStyle(frame);
-        const width = frame.clientWidth - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0);
+        const width = contentWidth(frame, style);
         if (!(width > 0)) {
             frame.removeAttribute(NARROW);
             return;
         }
+        const queried = style.containerType === "inline-size";
         let narrow = width < NARROW_REM * rem;
+        if (narrow && queried) {
+            frame.removeAttribute(NARROW);
+            return;
+        }
         if (!narrow) {
             const was = frame.hasAttribute(NARROW);
             if (was) frame.removeAttribute(NARROW);
@@ -614,6 +634,31 @@ class SfList extends ListElement {
             if (was && !narrow) return;
         }
         frame.toggleAttribute(NARROW, narrow);
+    }
+
+    // A frame whose inline-size container folds it: in a shrink-to-fit place
+    // the contained frame is narrower than its rows would make it (no content
+    // width at all), and it is taken out of the query. Measured with the mark
+    // flipped and put back in the same task, so the observer's callback ends
+    // on the layout it began with (a size changed inside it would be a
+    // ResizeObserver loop); the change itself is made in the next frame.
+    checkFit(frame) {
+        const had = frame.hasAttribute(FIT);
+        const style = getComputedStyle(frame);
+        if (!had && (style.containerType !== "inline-size" || contentWidth(frame, style) >= 1)) return;
+        const now = frame.getBoundingClientRect().width;
+        frame.toggleAttribute(FIT, !had);
+        const other = frame.getBoundingClientRect().width;
+        frame.toggleAttribute(FIT, had);
+        const fit = (had ? now : other) > (had ? other : now) + 0.5;
+        if (fit === had) return;
+        cancelAnimationFrame(this._fitFrame);
+        this._fitFrame = requestAnimationFrame(() => {
+            this._fitFrame = 0;
+            if (!frame.isConnected || frame !== this._widthFrame) return;
+            frame.toggleAttribute(FIT, fit);
+            this.measureNarrow();
+        });
     }
 
     // On one line: the title's room is what the badge and count leave of the

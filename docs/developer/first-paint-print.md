@@ -162,11 +162,12 @@ const result = await printFirstPaint(markup, {distr: '/path/to/ui/distr', id: 'o
     those tags the build does not define.
   - `"notes"`: what the printed first paint cannot hold, said rather than
     hidden:
-    - `text-shown-twice`: the element took text the page gave it (for
-      example, `<sf-button>Сохранить</sf-button>`) into its picture. A text
-      node cannot be held out of view, so the page's text is printed after
-      the picture and shows beside it until the element draws. Give the text
-      as the element's setting (`text="Сохранить"`) and the note goes away.
+    - `text-shown-twice`: the element took text the page gave it into its
+      picture, and the print still holds that text beside the picture. A
+      text node cannot be held out of view, so it shows twice until the
+      element draws. An element whose `text` setting is that label
+      (`<sf-button>Сохранить</sf-button>`) is printed with `text="Сохранить"`
+      instead and has no note; another element that takes text keeps it.
   - `"source"`: the element as the page wrote it.
 - `summary`: the counts of the entries above. `snapshots` counts the
   elements that matched a committed snapshot, and `textShownTwice` counts the
@@ -211,9 +212,23 @@ build it was taken from.
 - No skeleton is printed. A docs example gives its data in its markup, so its
   first paint is the static markup. The Framework prints skeletons only for
   its own examples that give data late.
-- A value the element sets as a property and not as an attribute (an
-  `<input>`'s current value) is not in the markup, because the serializer
-  prints attributes. The field's box is right, but its text appears when the
-  element draws.
+- What a form control inside the picture shows is printed as its default:
+  an `<input>`'s current value as `value`, a checkbox's or radio's tick as
+  `checked`, an option's `selected`, a `<textarea>`'s text. An element writes
+  the value it shows into the control's property, not its attribute (the
+  number of `sf-input-quantity`, the text of a field), so before this the
+  field's box was printed and its value came with the code. A password or
+  file input is never printed with a value.
+- Limit: the print reads the page's markup, so it holds what the element
+  shows from its attributes and its defaults. A value the page's own script
+  gives an element later (`element.value = 3` after load) does not exist in
+  the markup and appears when that script runs. Write it as the attribute
+  (`value="3"`) when the first paint must show it.
+- Text the page gives an element that takes it as its label
+  (`<sf-button>Сохранить</sf-button>`; the element has a `text` setting and
+  drew that text as it) is printed as the element's `text` attribute, not as
+  a text child after the picture: a text node cannot be held out of view, and
+  printed after the picture it showed twice until the element drew. The
+  element reads the attribute first, so it draws the same label.
 - Component packages (ui-pro's `pro`) are drawn when `--config` declares
   them, as for `snapshot-first-paint.mjs --config`.

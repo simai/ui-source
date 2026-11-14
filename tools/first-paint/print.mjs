@@ -70,18 +70,25 @@ const STATE = () => {
 // In the browser, on the drawn element's page: what its printed first paint
 // cannot hold, said rather than hidden.
 //   text-shown-twice  the element took text the page gave it into its
-//                     picture; a text node cannot be held out of view
-//                     (data-sf-held), so the page's text is printed after the
-//                     picture and shows beside it until the element draws.
-const NOTES = ({source, printed}) => {
+//                     picture, and the print still holds that text beside the
+//                     picture: a text node cannot be held out of view
+//                     (data-sf-held), so it shows twice until the element
+//                     draws. An element whose text setting is that label
+//                     (sf-button) is printed with it as the attribute instead
+//                     (first-paint-page.js holder), and has no note.
+const NOTES = ({source, html}) => {
   const host = window.__sfFirstPaintHost;
-  const template = document.createElement('template');
-  template.innerHTML = source;
+  const parse = (markup) => {
+    const template = document.createElement('template');
+    template.innerHTML = markup;
+    return template.content.firstElementChild;
+  };
   const texts = (el) => [...(el?.childNodes ?? [])].filter((node) => node.nodeType === 3 && node.data.trim()).map((node) => node.data.trim());
-  const given = texts(template.content.firstElementChild);
+  const given = texts(parse(source));
   const kept = new Set(texts(host));
+  const printed = html.includes(' data-sf-static') ? new Set(texts(parse(html))) : new Set();
   const notes = [];
-  if (printed && given.some((one) => !kept.has(one))) notes.push('text-shown-twice');
+  if (given.some((one) => !kept.has(one) && printed.has(one))) notes.push('text-shown-twice');
   return notes;
 };
 
@@ -220,7 +227,7 @@ ${coreScript}
       await settleSheets(page, net);
       const after = await page.evaluate(STATE);
       if (errors.length) return {status: 'failed', reason: 'the page threw while the element drew', errors};
-      return {status: 'printed', html, sheets: sortedUnique(net.sheets.map(sheetPath)), nested: after.nested, notes: await page.evaluate(NOTES, {source: element.markup, printed: html.includes(' data-sf-static')})};
+      return {status: 'printed', html, sheets: sortedUnique(net.sheets.map(sheetPath)), nested: after.nested, notes: await page.evaluate(NOTES, {source: element.markup, html})};
     } catch (error) {
       return {status: 'failed', reason: String(error?.message ?? error).split('\n')[0].slice(0, 400), errors};
     } finally {

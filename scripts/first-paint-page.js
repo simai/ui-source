@@ -149,7 +149,28 @@
     return kept.map((part) => part.trim()).join('; ') + (kept.length ? ';' : '');
   }
 
-  function attributes(el, extra = []) {
+  // What a form control shows, as a server prints it. A component writes the
+  // value it shows (from its value attribute, or a default) into the
+  // control's property, not its attribute -- sf-input-quantity's number, a
+  // field's text, a checkbox's tick -- and the property is not markup: the
+  // first paint showed the field's box and the value only came with the code.
+  // The control's own state is printed as its default (value, checked,
+  // selected, a textarea's text), the shown state wins over the attribute.
+  // Never a password, never a file; a skeleton clears values anyway.
+  const UNPRINTED_INPUTS = new Set(['password', 'file', 'image', 'submit', 'reset', 'button']);
+  function liveState(el, mode) {
+    if (mode?.skeleton || el.namespaceURI !== XHTML) return null;
+    if (el.localName === 'input') {
+      const type = (el.getAttribute('type') || 'text').toLowerCase();
+      if (UNPRINTED_INPUTS.has(type)) return null;
+      if (type === 'checkbox' || type === 'radio') return {checked: el.checked};
+      return {value: el.value};
+    }
+    if (el.localName === 'option') return {selected: el.selected};
+    return null;
+  }
+
+  function attributes(el, extra = [], live = null) {
     const out = [];
     for (const {name, value} of el.attributes) {
       if (RUNTIME.has(name)) continue;
@@ -167,9 +188,20 @@
       out.push([name, value]);
     }
     for (const one of extra) if (!out.some(([name]) => name === one[0])) out.push(one);
+    if (live) {
+      for (const [name, value] of Object.entries(live)) {
+        const at = out.findIndex(([one]) => one === name);
+        const printed = typeof value === 'boolean' ? (value ? '' : null) : value;
+        // An empty value that no attribute gave stays unwritten.
+        if (printed === null || (printed === '' && name === 'value' && at < 0)) {
+          if (at >= 0) out.splice(at, 1);
+        } else if (at >= 0) out[at] = [name, printed];
+        else out.push([name, printed]);
+      }
+    }
     return out.map(([name, value]) => (value === '' ? ` ${name}` : ` ${name}="${escAttr(value)}"`)).join('');
   }
-  const open = (el, extra) => `<${el.localName}${attributes(el, extra)}>`;
+  const open = (el, extra, live = null) => `<${el.localName}${attributes(el, extra, live)}>`;
   const close = (el) => (VOID.has(el.localName) ? '' : `</${el.localName}>`);
   // A foreign subtree (svg, math) as the browser writes it, the markers and
   // the comments out: a template's part markers (<!---->, <!--?lit$…-->) sit
@@ -261,6 +293,8 @@
     else if (el.localName === 'template') inner = el.innerHTML;
     else if (RAW.has(el.localName)) inner = el.textContent;
     else if (mode.skeleton && el.localName === 'textarea') inner = '';
+    // The parser drops one newline right after <textarea>.
+    else if (el.localName === 'textarea') inner = (el.value.startsWith('\n') ? '\n' : '') + escText(el.value);
     else {
       const nested = isCustom(el);
       const live = el.hasAttribute('data-sf-live');
@@ -273,7 +307,7 @@
         } else if (node.nodeType === 1) inner += picture(node, nested && !isCustom(node) && !node.hasAttribute('slot'), mode);
       }
     }
-    let head = open(el, extra);
+    let head = open(el, extra, liveState(el, mode));
     if (mode.skeleton) head = skeletonize(el, head);
     return `${head}${inner}${close(el)}`;
   }
@@ -331,12 +365,23 @@
       else if (custom) inner += picture(node, true, mode);
       else inner += picture(node, false, mode);
     }
+    // Text the page gave an element that takes it as its label (sf-button:
+    // <sf-button>Сохранить</sf-button>) is the element's text setting, and is
+    // printed so: a text node cannot be held out of view (data-sf-held), and
+    // printed after the picture it showed twice until the element drew. The
+    // attribute is what the element reads first, so it draws the same label.
+    const extra = [];
+    const taken = (originals.get(el) ?? []).filter(({node}) => node.nodeType === 3 && node.parentNode !== el && node.data.trim());
+    const label = taken.map(({node}) => node.data.trim()).join(' ');
+    const asText = label && custom && !el.hasAttribute('text')
+      && el.constructor?.manifest?.settings?.text && String(el.text ?? '').trim() === label;
+    if (asText) extra.push(['text', label]);
     // Page children the element took away (into its markup, a template, a
     // layer elsewhere): printed as the page gave them.
     for (const {node, html} of originals.get(el) ?? []) {
       if (node.parentNode === el || !html || placed.has(node)) continue;
       if (node.nodeType === 3) {
-        if (node.data.trim()) inner += html;
+        if (node.data.trim() && !asText) inner += html;
         continue;
       }
       // A Smart element the page gave and the element placed in its markup
@@ -349,7 +394,6 @@
       }
       inner += html.replace(/^<([\w-]+)/u, '<$1 data-sf-held');
     }
-    const extra = [];
     if (hosts.includes(el) && mode.skeleton) {
       extra.push(['data-sf-first-paint', 'skeleton'], ['aria-busy', 'true']);
       // The late lists this skeleton stands for, when the component has
@@ -423,7 +467,7 @@
       if (node.nodeType === 3) inner += text(node, {skeleton: false});
       else if (node.nodeType === 1) inner += composed(node, false);
     }
-    return `${open(el, top ? [['data-sf-static', '']] : [])}${inner}${close(el)}`;
+    return `${open(el, top ? [['data-sf-static', '']] : [], liveState(el, {skeleton: false}))}${inner}${close(el)}`;
   }
 
   // The assembly's host as a server prints it: its attributes, and its live

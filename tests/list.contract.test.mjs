@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.9.0'], ['list-feed', 'sf-list-feed', '1.1.2']]) {
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.14.0'], ['list-feed', 'sf-list-feed', '1.1.2']]) {
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -180,4 +180,36 @@ test('sf-list 1.5.0: a narrow list puts a row\'s badge and count under its text,
   const narrow = css.slice(css.indexOf('[data-sf-list-narrow]'), css.indexOf('.sf-list__body,'));
   assert.ok(narrow.length > 0);
   assert.doesNotMatch(narrow, /\d+px|\d+rem/u);
+});
+
+test('sf-list 1.14.0: the narrow layout is a container query on the frame, so a printed first paint is narrow before any script (C47, DEV msg-e5f5f6524)', () => {
+  const css = read('src/smart/list/js/templates/default.css');
+  const source = read('src/smart/list/index.js');
+  // The frame is the container sf-list; below 20rem (the size step g0, C47's
+  // width) the rows lay out narrow from the sheet alone.
+  assert.match(css, /\.sf-list__frame \{\s*container: sf-list \/ inline-size;\s*\}/u);
+  const query = css.match(/@container sf-list \(inline-size < 20rem\) \{([\s\S]*?)\n  \}\n/u)?.[1] ?? '';
+  assert.ok(query, 'the container query is in the sheet');
+  const marked = css.slice(css.indexOf('  .sf-list__frame[data-sf-list-narrow]'), css.indexOf('.sf-list__body,'));
+  // The same rules, as strong as the marked ones (the frame's two classes).
+  const rules = (text, prefix) => [...text.matchAll(/([^{}]+)\{([^{}]*)\}/gu)]
+    .map(([, selector, body]) => [selector.replace(/\/\*[\s\S]*?\*\//gu, '').trim().replaceAll(prefix, '').replace(/\s+/gu, ' '), body.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/\s+/gu, ' ').trim()]);
+  const inQuery = rules(query, '.sf-list__frame.sf-list ');
+  const byMark = rules(marked, '.sf-list__frame[data-sf-list-narrow] ');
+  assert.equal(inQuery.length, 5);
+  assert.deepEqual(inQuery, byMark);
+  assert.doesNotMatch(query, /\d+px/u);
+  // The code marks the frame only where the query does not answer: a title
+  // squeezed by a long badge, no sheet yet, or a frame taken out of the
+  // query because a shrink-to-fit place would fold it.
+  assert.match(source, /const queried = style\.containerType === "inline-size";/u);
+  assert.match(source, /if \(narrow && queried\) \{\s*frame\.removeAttribute\(NARROW\);\s*return;\s*\}/u);
+  assert.match(source, /const FIT = "data-sf-list-fit";/u);
+  assert.match(css, /\.sf-list__frame\[data-sf-list-fit\] \{\s*container-type: normal;\s*\}/u);
+  // The fit check ends the observer's callback on the layout it began with
+  // (no ResizeObserver loop) and changes it in the next frame.
+  const check = source.slice(source.indexOf('    checkFit(frame) {'), source.indexOf('    // On one line: the title'));
+  assert.match(check, /frame\.toggleAttribute\(FIT, !had\);[\s\S]*frame\.toggleAttribute\(FIT, had\);/u);
+  assert.match(check, /requestAnimationFrame\(\(\) => \{[\s\S]*frame\.toggleAttribute\(FIT, fit\);/u);
+  assert.equal(json('src/smart/list/component.json').version, '1.14.0');
 });
