@@ -45,6 +45,10 @@ export function renderListItemTemplate(context) {
     !isOption && context.interactive ? "sf-list-item--interactive" : "",
     handleSlot ? "sf-list-item--sortable" : "",
     !isOption && context.pinned ? "sf-list-item--pinned" : "",
+    // Owner decision C148: an inset line under the row (divided), a title
+    // of up to two lines (lines="2"). An option keeps neither.
+    !isOption && context.divided ? "sf-list-item--divided" : "",
+    !isOption && String(context.lines) === "2" ? "sf-list-item--lines-2" : "",
     context.rootClass,
   ].filter(Boolean);
 
@@ -186,7 +190,15 @@ export function renderListItemTemplate(context) {
   };
 
   const renderTrailing = () => {
-    if (trailingContent !== nothing) return trailingContent;
+    // The row's end part is one box (owner decision C148 (2), (3)): a plain
+    // <span slot="trailing"> gives the slot its children (the base unwraps a
+    // wrapper that only names the slot), so loose nodes -- a time and a
+    // badge, two buttons -- are put back in a box of the row's own. An
+    // element the page gave keeps its own box.
+    if (trailingContent !== nothing) {
+      if (isOption || (typeof Element !== "undefined" && trailingContent instanceof Element)) return trailingContent;
+      return html`<span class="sf-list-item-trailing">${trailingContent}</span>`;
+    }
 
     // The box after a picture is a dropdown option's choice, and only where
     // the list may hold several chosen. A row outside a dropdown has no choice

@@ -22,10 +22,11 @@
 //   avatar, the count, the badge and the «⋯» stay whole, inside the row; a
 //   short title is not cut; a row's height is the same as without no-wrap
 //   for a text that fits;
-// - without no-wrap a long one-line title wraps as in 1.1 and carries no
-//   tooltip;
+// - without no-wrap a long title is one line too (owner decision C148 (5),
+//   sf-list-item 1.6.0) and the host carries no tooltip of the list's;
 // - a narrow list (sf-list 1.5.0, owner decision C47; the 280px column is
-//   below 20rem): a row with a badge or a count puts them under its text, at
+//   below 20rem): a one-line row with a badge or a count (a two-line row keeps
+//   them in its end column, C148 (2)) puts them under its text, at
 //   the text's start; the row grows by the band step and their height
 //   (geometry standard, multi-line rows);
 // - the geometry is the same in light and dark; no sideways scroll, no page error.
@@ -171,9 +172,11 @@ try {
                 parts: parts.map((node) => ({...box(node), natural: node.scrollWidth})),
                 dots: dots ? {...box(dots), opacity: dotsStyle.opacity, visibility: dotsStyle.visibility, display: dotsStyle.display} : null,
                 colour: getComputedStyle(container).color,
-                // C47 (sf-list 1.5.0): a narrow list puts the badge and count
-                // under the text; the row grows by the band step and their height.
-                under: row.closest('.sf-list__frame').hasAttribute('data-sf-list-narrow') && Boolean(meta && meta.children.length),
+                // C47 (sf-list 1.5.0): a narrow list puts a one-line row's badge
+                // and count under the text; the row grows by the band step and
+                // their height. A two-line row keeps them in its end column
+                // and its height (owner decision C148 (2), sf-list 1.10.0).
+                under: row.closest('.sf-list__frame').hasAttribute('data-sf-list-narrow') && Boolean(meta && meta.children.length) && !item.classList.contains('sf-list-item--two-line'),
                 meta: meta && meta.children.length ? box(meta) : null,
                 // Where the title's text starts: a one-line row's text is the
                 // container's own, after its inline padding.
@@ -203,17 +206,12 @@ try {
           for (const [name, list] of [['cut', got.cut], ['wrap', got.wrap], ['flat', got.flat]]) {
             for (const row of list) {
               const where = `${label}: #${name} row ${row.id}`;
-              // Without no-wrap a long one-line title wraps (1.1); a two-line
-              // row's title and second line were already one line each
-              // (sf-list-item's own two-line rule).
-              const fits = !(row.title.content === LONG && name === 'wrap' && !row.twoLine);
-              if (fits) {
-                const lines = row.twoLine ? two : tokens.control;
-                const want = row.under ? Math.max(lines + tokens.band + row.meta.h, touch ? tokens.d1 : 0) : row.twoLine ? (touch ? Math.max(two, tokens.d1) : two) : one;
-                ok(`${where} is ${want}px high`, near(row.row.h, want), {h: row.row.h, want, tokens});
-              } else {
-                ok(`${where}: a long title wraps without no-wrap`, row.title.h > row.title.lineHeight * 1.5 && row.row.h > (row.twoLine ? two : one), {title: row.title, row: row.row});
-              }
+              // A title is one line with or without no-wrap (owner decision
+              // C148 (5), sf-list-item 1.6.0): a long one-line title no longer
+              // wraps, it is cut.
+              const lines = row.twoLine ? two : tokens.control;
+              const want = row.under ? Math.max(lines + tokens.band + row.meta.h, touch ? tokens.d1 : 0) : row.twoLine ? (touch ? Math.max(two, tokens.d1) : two) : one;
+              ok(`${where} is ${want}px high`, near(row.row.h, want), {h: row.row.h, want, tokens});
               if (touch) ok(`${where} is at least 44px under a finger`, row.row.h >= 44 - 0.5, row.row.h);
               ok(`${where}: its content on the row's centre line`, near(row.content.cy, row.row.cy), {content: row.content, row: row.row});
               ok(`${where}: «⋯» shown without a hover`, row.dots && row.dots.opacity === '1' && row.dots.visibility === 'visible' && row.dots.display !== 'none' && row.dots.w > 0, row.dots);
@@ -264,10 +262,8 @@ try {
           const key = `${width} ${pointer} ${size}`;
           // Heights and the «⋯» exactly; a title's width to the pixel (the
           // dark theme's text antialiasing moves a glyph run by half a pixel).
-          // A title that wraps (#wrap c, without no-wrap) is left out: its
-          // line breaks follow that half pixel, in 1.1.1 as well.
+          // Every title is one line since C148 (5), so none is left out.
           const shape = ([got.cut, got.wrap, got.flat].map((list) => list
-            .filter((row) => !(list === got.wrap && row.title.content === LONG && !row.twoLine))
             .map((row) => [row.row.h, row.title.w, row.dots.w, row.dots.h])));
           geometry[key] = geometry[key] ?? {};
           geometry[key][theme] = shape;

@@ -9,6 +9,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import { renderListItemTemplate } from './js/templates/default';
 import { nearestFieldSize } from '../../component/field-size';
+import { watchLongPress } from './js/long-press';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -23,6 +24,35 @@ const ROVING = '[data-sf-list-roving]';
 const LIST = 'sf-sortable, [role="listbox"], [role="list"], [data-sf-list]';
 const INTERACTIVE = 'a[href], button, input, select, textarea, summary, [contenteditable]:not([contenteditable="false"]), [tabindex]:not([data-sf-list-roving])';
 const pendingLists = new Set();
+// The controls a row holds (a «⋯», «Позвонить»): owner decision C148 (3).
+const CONTROL = 'a[href], button, input, select, textarea, [contenteditable]:not([contenteditable="false"]), [tabindex]:not([data-sf-list-roving])';
+const TEXT_ENTRY = 'input, select, textarea, [contenteditable]:not([contenteditable="false"])';
+
+// A row's controls in its end part, in order: the ones a person reaches from
+// the row with the arrows. An element that holds another (an sf-button-icon
+// host given a tabindex around its own <button>) is the inner one.
+function controlsOf(row) {
+  const found = [];
+  for (const part of row.querySelectorAll(':scope > .sf-list-item-wrap > :is([slot="trailing"], .sf-list-item-trailing)')) {
+    const all = [part, ...part.querySelectorAll(CONTROL)].filter((el) => el.matches(CONTROL));
+    for (const el of all) {
+      if (el.disabled || el.getAttribute('aria-disabled') === 'true' || el.closest('[hidden], [inert]')) continue;
+      if (all.some((other) => other !== el && el.contains(other))) continue;
+      found.push(el);
+    }
+  }
+  return found;
+}
+
+// Every control inside a row of a list takes no Tab stop of its own: the row
+// is its list's one stop (C148 (3); a list of forty rows with a «⋯» each was
+// eighty stops). The controls a component draws later (sf-button-icon's own
+// <button>) are caught as they come.
+function tameControls(row) {
+  for (const el of row.querySelectorAll(CONTROL)) {
+    if (el !== row && el.tabIndex !== -1) el.tabIndex = -1;
+  }
+}
 
 function listOf(row) {
   const host = row.closest('sf-list-item') || row;
@@ -105,7 +135,26 @@ class SfListItem extends ListItemElement {
     this._rowBound = true;
     this.addEventListener('sf-after-render', () => {
       const row = this.querySelector(':scope > .sf-list-item');
-      if (row?.matches(ROVING)) scheduleRoving(listOf(row));
+      if (row?.matches(ROVING)) {
+        scheduleRoving(listOf(row));
+        // Only a row a person presses reaches its controls by the arrows; a
+        // row of an sf-sortable list alone keeps them as Tab stops.
+        if (this.interactive) this.watchControls(row);
+      }
+    });
+    // A cut title is the row's tooltip (C148 (5)): measured when a pointer
+    // comes to the row, so a row that grew wide enough loses it.
+    this.addEventListener('pointerenter', () => this.markCut());
+    // A long press under a finger opens the row's menu, as its «⋯» does
+    // (C148 (6)); the click the release sends then opens nothing.
+    this._stopLongPress = watchLongPress(this, {
+      accepts: (event) => {
+        const row = this.querySelector(':scope > .sf-list-item');
+        if (!this.interactive || this.disabled || !row?.contains(event.target)) return false;
+        const control = event.target.closest(INTERACTIVE);
+        return !(control && control !== row && row.contains(control)) && Boolean(this.menuControl());
+      },
+      press: () => this.menuControl()?.click(),
     });
     this.addEventListener('keydown', (event) => this.onRowKeyDown(event));
     this.addEventListener('click', (event) => this.onRowClick(event));
@@ -122,8 +171,58 @@ class SfListItem extends ListItemElement {
   disconnectedCallback() {
     const row = this.querySelector(':scope > .sf-list-item');
     const list = row?.matches(ROVING) ? listOf(row) : null;
+    this._controlsObserver?.disconnect();
+    this._controlsObserver = null;
+    this._controlsRow = null;
     super.disconnectedCallback?.();
     if (list) scheduleRoving(list);
+  }
+
+  // The row's controls are kept out of the Tab order, now and as they are
+  // drawn (C148 (3)).
+  watchControls(row) {
+    tameControls(row);
+    if (this._controlsRow === row || typeof MutationObserver !== 'function') return;
+    this._controlsObserver?.disconnect();
+    this._controlsRow = row;
+    this._controlsObserver = new MutationObserver(() => tameControls(row));
+    this._controlsObserver.observe(row, {childList: true, subtree: true});
+  }
+
+  // The control a long press stands for: the row's menu button (a control
+  // that says it opens a menu), else the last control at the row's end -- the
+  // «⋯» by the Framework's order of a row's actions.
+  menuControl() {
+    const row = this.querySelector(':scope > .sf-list-item');
+    if (!row) return null;
+    const controls = controlsOf(row);
+    return controls.find((el) => /^(true|menu)$/u.test(el.getAttribute('aria-haspopup') || '')) || controls.at(-1) || null;
+  }
+
+  // C148 (5): the title (and the caption) is one line cut with an ellipsis,
+  // or two lines with lines="2"; when either is cut, the whole of it is the
+  // row's tooltip. A title the page gave the host is the page's.
+  markCut() {
+    const row = this.querySelector(':scope > .sf-list-item');
+    if (!row || row.getAttribute('role') === 'option' || this.hasAttribute('title')) return;
+    const textBlock = row.querySelector(':scope > .sf-list-item-wrap > .sf-list-item-container');
+    if (!textBlock) return;
+    const title = textBlock.querySelector(':scope > .sf-list-item-title') || textBlock;
+    const caption = textBlock.querySelector(':scope > .sf-list-item-supporting');
+    const cut = (el) => Boolean(el) && (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1);
+    const titleCut = cut(title);
+    const captionCut = cut(caption);
+    if (!titleCut && !captionCut) {
+      if (row.dataset.sfListCut) {
+        row.removeAttribute('title');
+        delete row.dataset.sfListCut;
+      }
+      return;
+    }
+    const words = (el) => (el?.textContent || '').replace(/\s+/gu, ' ').trim();
+    const tip = captionCut ? [words(title), words(caption)].filter(Boolean).join(' · ') : words(title);
+    row.title = tip;
+    row.dataset.sfListCut = 'true';
   }
 
   // The row takes focus on the host's behalf: the host is boxless.
@@ -132,10 +231,43 @@ class SfListItem extends ListItemElement {
     return row?.matches(ROVING) ? row : null;
   }
 
+  // C148 (3), as the APG layout grid: from the row the arrow toward its end
+  // (ArrowRight; ArrowLeft right to left) goes to its first control and on,
+  // the other arrow back to the previous control and then to the row; Escape,
+  // ArrowUp and ArrowDown on a control go back to the row. A field in the
+  // row keeps its own arrows.
+  onControlKeyDown(event, row) {
+    const controls = controlsOf(row);
+    if (!controls.length) return false;
+    const rtl = getComputedStyle(row).direction === 'rtl';
+    const forward = rtl ? 'ArrowLeft' : 'ArrowRight';
+    const back = rtl ? 'ArrowRight' : 'ArrowLeft';
+    const at = controls.indexOf(event.target);
+    if (event.target === row) {
+      if (event.key !== forward) return false;
+      event.preventDefault();
+      controls[0].focus();
+      return true;
+    }
+    if (at < 0 || event.target.matches(TEXT_ENTRY)) return false;
+    let target = null;
+    if (event.key === forward) target = controls[Math.min(controls.length - 1, at + 1)];
+    else if (event.key === back) target = at === 0 ? row : controls[at - 1];
+    else if (['Escape', 'ArrowUp', 'ArrowDown'].includes(event.key)) target = row;
+    if (!target) return false;
+    event.preventDefault();
+    // The Escape is the row's: a panel around the list stays open.
+    event.stopPropagation();
+    target.focus();
+    return true;
+  }
+
   onRowKeyDown(event) {
     const row = this.querySelector(':scope > .sf-list-item');
-    if (!row?.matches(ROVING) || event.target !== row || event.defaultPrevented || reordering()) return;
+    if (!row?.matches(ROVING) || event.defaultPrevented || reordering()) return;
     if (event.altKey || event.ctrlKey || event.metaKey) return;
+    if (this.interactive && !event.shiftKey && this.onControlKeyDown(event, row)) return;
+    if (event.target !== row) return;
     const rows = rowsOf(listOf(row)).filter((entry) => !entry.classList.contains('disabled'));
     const at = rows.indexOf(row);
     const target = {
@@ -160,6 +292,8 @@ class SfListItem extends ListItemElement {
   onRowClick(event) {
     const row = this.querySelector(':scope > .sf-list-item');
     if (!this.interactive || !row || !row.contains(event.target)) return;
+    // The release of a long press that opened the row's menu.
+    if (this._stopLongPress?.swallowed()) return;
     // A control inside the row (a trailing action) acts for itself.
     const control = event.target.closest(INTERACTIVE);
     if (control && control !== row && row.contains(control)) return;
@@ -244,6 +378,8 @@ class SfListItem extends ListItemElement {
       interactive: this.interactive,
       sortableItem: this.sortableItem,
       pinned: this.pinned,
+      divided: this.divided,
+      lines: this.lines,
       ariaLabel: this.getAttribute('aria-label') || '',
       // Resolved names the template reads (contracts/template-context.json).
       kind: this.kind,

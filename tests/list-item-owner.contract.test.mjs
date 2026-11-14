@@ -58,7 +58,9 @@ test('List Item source contract includes machine value and all visible labels up
 test('List Item presentation uses semantic tokens and owner-scoped states', async () => {
   const style = await read('src/component/dropdown/scss/_css__list-item.scss');
 
-  assert.match(style, /--sf-list-item--border-bottom-width: var\(--sf-px\)/);
+  // No line between rows by default (owner decision C148 (4)); divided draws an inset one.
+  assert.match(style, /--sf-list-item--border-bottom-width: 0;/);
+  assert.match(style, /\.sf-list-item\.sf-list-item--divided > \.sf-list-item-wrap > \.sf-list-item-container::after \{/);
   assert.match(style, /transition-property: background-color, border-color, box-shadow, color/);
   assert.match(style, /transition-duration: var\(--sf-duration-fast\)/);
   assert.match(style, /\.sf-list \[role="option"\]\.sf-list-item[^\n]*:hover/);

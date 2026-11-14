@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.9.0'], ['list-feed', 'sf-list-feed', '1.1.2']]) {
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.10.0'], ['list-feed', 'sf-list-feed', '1.1.2']]) {
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -32,7 +32,7 @@ test('both are the Framework\'s, family list, registered and in the rule', () =>
 test('sf-list: rows are sf-list-item, one Tab stop, one shared menu, the next page by the core edge watch', () => {
   const contract = json('src/smart/list/component.json');
   assert.deepEqual(Object.keys(contract.settings).sort(),
-    ['actions', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings']);
+    ['actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings']);
   assert.deepEqual(contract.settings['group-by'].enum ?? contract.settings['group-by'].values, ['none', 'day', 'key']);
   assert.deepEqual(Object.keys(contract.events).sort(), ['apply', 'load-more', 'open', 'rename']);
   assert.equal(contract.events.rename.cancelable, true);
@@ -65,7 +65,7 @@ test('sf-list 1.1.0: avatar, count, badge and pinned are bounded row data drawn 
     ['actions', 'avatar', 'badge', 'count', 'date', 'disabled', 'group', 'icon', 'id', 'pinned', 'supporting', 'text']);
   // Additions only: no setting, event or action of 1.0.0 changed (1.2.0 adds no-wrap).
   assert.deepEqual(Object.keys(contract.settings).sort(),
-    ['actions', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings']);
+    ['actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings']);
   const item = contract['x-registry'].contracts.item.properties;
   assert.deepEqual(item.avatar.properties.shape.enum, ['circle', 'square']);
   // The badge's tone is the Framework's status vocabulary.
@@ -174,10 +174,44 @@ test('sf-list 1.5.0: a narrow list puts a row\'s badge and count under its text,
   assert.doesNotMatch(read('src/smart/list/js/templates/default.js'), /data-sf-list-narrow/u);
   const css = read('src/smart/list/js/templates/default.css');
   // The row grows by whole bands: the step --sf-space-1/4 and the badge's height.
-  assert.match(css, /\[data-sf-list-narrow\] \.sf-list__row \.sf-list-item-wrap:has\(> \.sf-list__meta:not\(:empty\)\) \{\s*display: grid;\s*grid-template-columns: auto minmax\(0, 1fr\);\s*row-gap: var\(--sf-space-1\\\/4\);/u);
-  assert.match(css, /\[data-sf-list-narrow\] \.sf-list__row \.sf-list-item-wrap > \.sf-list__meta:not\(:empty\) \{\s*grid-column: -2;\s*grid-row: 2;\s*justify-self: start;\s*(?:\/\*[^*]*\*\/\s*)?margin-inline-start: 0;\s*padding-inline-start: 0;/u);
+  assert.match(css, /\[data-sf-list-narrow\] \.sf-list__row \.sf-list-item:not\(\.sf-list-item--two-line\) > \.sf-list-item-wrap:has\(> \.sf-list__meta:not\(:empty\)\) \{\s*display: grid;\s*grid-template-columns: auto minmax\(0, 1fr\);\s*row-gap: var\(--sf-space-1\\\/4\);/u);
+  assert.match(css, /\[data-sf-list-narrow\] \.sf-list__row \.sf-list-item:not\(\.sf-list-item--two-line\) > \.sf-list-item-wrap > \.sf-list__meta:not\(:empty\) \{\s*grid-column: -2;\s*grid-row: 2;\s*justify-self: start;\s*(?:\/\*[^*]*\*\/\s*)?margin-inline-start: 0;\s*padding-inline-start: 0;/u);
   // No raw length in the rule: every value is a token.
   const narrow = css.slice(css.indexOf('[data-sf-list-narrow]'), css.indexOf('.sf-list__body,'));
   assert.ok(narrow.length > 0);
   assert.doesNotMatch(narrow, /\d+px|\d+rem/u);
+});
+
+test('owner decision C148: the list row -- end column, one Tab stop with arrows into its controls, no lines but divided, one line or lines="2", long press', () => {
+  const item = json('src/smart/list-item/component.json');
+  assert.equal(item.version, '1.6.0');
+  assert.deepEqual([item.settings.divided.type, item.settings.divided.default], ['boolean', false]);
+  assert.deepEqual([item.settings.lines.values, item.settings.lines.default], [['1', '2'], '1']);
+  const list = json('src/smart/list/component.json');
+  assert.deepEqual([list.settings.divided.type, list.settings.divided.default], ['boolean', false]);
+  const sheet = read('src/component/dropdown/scss/_css__list-item.scss');
+  // (4) no line by default; divided draws one from the text, none under the last row.
+  assert.match(sheet, /--sf-list-item--border-bottom-width: 0;/u);
+  assert.match(sheet, /:is\(sf-list-item:last-child, li:last-child > sf-list-item\) > \.sf-list-item\.sf-list-item--divided/u);
+  // (2) the end column: the title's line over the caption's, no step between them.
+  assert.match(sheet, /grid-template-rows: var\(--sf-list-item--title-line\) var\(--sf-list-item-supporting--line-height\);/u);
+  // (5) one line with an ellipsis, two with lines="2".
+  assert.match(sheet, /\.sf-list-item\.sf-list-item--lines-2[^{]*\{[^}]*-webkit-line-clamp: 2;/u);
+  // (6) a finger's target for the row's buttons.
+  assert.match(sheet, /min-block-size: var\(--sf-d1\);\s*min-inline-size: var\(--sf-d1\);/u);
+  const row = read('src/smart/list-item/index.js');
+  // (3) the controls take no Tab stop; the arrows and Escape walk them.
+  assert.match(row, /function tameControls\(row\)/u);
+  assert.match(row, /onControlKeyDown\(event, row\)/u);
+  assert.match(row, /\['Escape', 'ArrowUp', 'ArrowDown'\]\.includes\(event\.key\)/u);
+  assert.match(row, /markCut\(\)/u);
+  // (6) the long press, shared by the row and the list (no swipe).
+  const press = read('src/smart/list-item/js/long-press.js');
+  assert.match(press, /const LONG_PRESS_MS = 500;/u);
+  assert.doesNotMatch(press + row, /swipe\w*\(/u);
+  const source = read('src/smart/list/index.js');
+  assert.match(source, /import \{watchLongPress\} from "\.\.\/list-item\/js\/long-press\.js";/u);
+  assert.match(source, /querySelector\(":scope > \.sf-list__actions"\)/u);
+  // The list's badge and count take the caption's line in a two-line row.
+  assert.match(read('src/smart/list/js/templates/default.js'), /const line = item\.supporting \? "text" : context\.size;/u);
 });

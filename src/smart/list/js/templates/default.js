@@ -84,7 +84,10 @@ const leadContent = (context, item) => {
 const metaContent = (context, item) => {
     const count = context.countOf(item);
     const badge = context.badgeOf(item);
-    const line = context.size;
+    // A two-line row's badge and count stand on its caption's line, in the
+    // row's end column (owner decision C148 (2)): the line of the text they
+    // stand in. A one-line row's take the row's line.
+    const line = item.supporting ? "text" : context.size;
     // A row is a dense place: its badge and count keep the tight side room
     // (sf-badge tight), so the wider default of sf-badge 1.3.0 does not push
     // the row's text aside. The count is a quantity: sf-badge tonal, grey
@@ -155,6 +158,7 @@ const row = (context, item) => {
                     title=${tip || nothing}
                     ?selected=${current}
                     ?disabled=${disabled}
+                    ?divided=${context.divided}
             ><span slot="leading" class="sf-list__lead">${leadContent(context, item)}</span><span
                     slot="trailing" class="sf-list__meta">${metaContent(context, item)}</span></sf-list-item>`
         : html`<sf-list-item
@@ -168,6 +172,7 @@ const row = (context, item) => {
                     title=${tip || nothing}
                     ?selected=${current}
                     ?disabled=${disabled}
+                    ?divided=${context.divided}
             ><span slot="trailing" class="sf-list__meta">${metaContent(context, item)}</span></sf-list-item>`;
     return html`
         <li class="sf-list__row ${current ? "sf-list__row--current" : ""}" data-id=${item.id}>
