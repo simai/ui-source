@@ -12,6 +12,8 @@ test('Modal preloads its generated close action through normal Loader relations'
   assert.ok(names('modal').includes('close'));
   assert.ok(names('modal').includes('icon-buttons'));
   assert.ok(names('cl-modal').includes('modal'));
-  assert.ok(names('cl-gallery').includes('cl-modal'));
+  // sf-gallery 1.3.0 (C150) draws no window: its viewer is a dialog of its own.
+  assert.ok(!names('cl-gallery').includes('cl-modal'));
+  assert.ok(names('cl-gallery').includes('cl-button-close'));
   assert.equal(new Set(names('modal')).size,names('modal').length);
 });

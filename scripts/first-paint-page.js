@@ -18,6 +18,8 @@
   const RUNTIME = new Set([
     PAGE, 'data-sf-started', 'data-sf-style-ready', 'data-sf-style-pending', 'data-sf-instance',
     'data-sf-loaded', 'data-sf-upgraded', 'data-sf-ready', 'data-sf-held',
+    // sf-gallery's masonry placement (C150 (11)): measured, the page's own.
+    'data-sf-masonry',
   ]);
   const VOID = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr']);
   const RAW = new Set(['script', 'style']);

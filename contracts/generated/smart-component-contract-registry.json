@@ -925,6 +925,8 @@
           "component.icon-buttons",
           "component.icons",
           "smart.button",
+          "smart.confirm",
+          "smart.gallery",
           "smart.progress-bar"
         ]
       },
@@ -937,7 +939,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/file-preview/smart.manifest.json",
-      "manifest_sha256": "d774ba50b3d312465ffc65b50f13eae06f90cd7e4ea7cb6ee0bcee91fe4e2674",
+      "manifest_sha256": "bb6b58611915055814b1906fd1a738e09ed28cd696f73339128f5820ead1dac1",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -996,8 +998,10 @@
       "composition": {
         "public_parts": [],
         "uses": [
-          "smart.modal",
-          "smart.slider"
+          "component.checkbox",
+          "component.figure",
+          "smart.button-close",
+          "smart.button-icon"
         ]
       },
       "contract_schema": {
@@ -1009,13 +1013,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/gallery/smart.manifest.json",
-      "manifest_sha256": "f064af384fcb01ae21f0d8c9683d18603e13b76e0a4d71bd76ce7e0984842a66",
+      "manifest_sha256": "d2587d5b3495da097a0187ef9589e21a18d360511b59bf7e3d08559ba4e5f833",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "An ordered media collection shown in an inline Slider, with an optional Modal lightbox holding a second Slider. The gallery owns the one-based current slide and keeps both views on it.",
+      "summary": "A set of pictures: a grid of picture tiles (or masonry, or the main picture with thumbnails) that opens the page's full-screen viewer, with an optional choice of tiles for a media library. The viewer is SF.Gallery.view(items, options), shared with sf-file-preview.",
       "tags": [
         "gallery"
       ],

@@ -43,7 +43,7 @@
     },
     {
       "name": "detach",
-      "title": "Открепить",
+      "title": "Убрать",
       "settings": {
         "file-name": "contract.docx",
         "href": "#"
@@ -99,6 +99,49 @@
       "expect": {
         "role": "group",
         "name": "Устав.pdf"
+      }
+    },
+    {
+      "name": "meta",
+      "title": "Тип, размер, дата",
+      "settings": {
+        "file-name": "Смета на ремонт.xlsx",
+        "file-size": "2411724",
+        "file-date": "2026-11-03",
+        "href": "#"
+      },
+      "expect": {
+        "role": "group",
+        "name": "Смета на ремонт.xlsx"
+      }
+    },
+    {
+      "name": "chip",
+      "title": "Вложение",
+      "settings": {
+        "appearance": "chip",
+        "file-name": "Договор поставки.pdf",
+        "file-size": "2516582"
+      },
+      "expect": {
+        "role": "group",
+        "name": "Договор поставки.pdf"
+      }
+    },
+    {
+      "name": "tile",
+      "title": "Плитка медиатеки",
+      "settings": {
+        "appearance": "tile",
+        "stored": true,
+        "file-name": "Договор поставки.pdf",
+        "file-size": "2516582",
+        "image-url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='90'%3E%3Crect width='100%25' height='100%25' fill='%23ffffff'/%3E%3Crect x='12' y='12' width='60' height='6' fill='%23333333'/%3E%3Crect x='12' y='28' width='96' height='3' fill='%23bbbbbb'/%3E%3Crect x='12' y='36' width='96' height='3' fill='%23bbbbbb'/%3E%3Crect x='12' y='44' width='70' height='3' fill='%23bbbbbb'/%3E%3C/svg%3E",
+        "href": "#"
+      },
+      "expect": {
+        "role": "group",
+        "name": "Договор поставки.pdf"
       }
     }
   ],

@@ -12,5 +12,9 @@ SF.RuleLoader['cl-file-preview'] = {
     { name: 'cl-progress-bar', lazy: true },
     // «Повторить» in a row that did not upload (state error), the C88 retry button.
     { name: 'cl-button', lazy: true },
+    // The page's full-screen viewer, SF.Gallery.view, asked for when a picture, a PDF or a video is opened (decision C149 (6)).
+    { name: 'cl-gallery', lazy: true },
+    // «Удалить «<имя>»?» before a stored file is erased (decision C149 (8)).
+    { name: 'cl-confirm', lazy: true },
   ],
 };
