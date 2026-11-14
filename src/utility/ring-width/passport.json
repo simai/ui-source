@@ -28,7 +28,7 @@
     "src/utility/ring-width/hover/scss/_sf_css__ring_width.scss",
     "src/utility/ring-width/hover/scss/index.scss"
   ],
-  "content_sha256": "60419b59f4897f9965c64d14a35278376e3c812132f10390e0f9ddc42eee7fee",
+  "content_sha256": "fd0890114d0fff4f9613726e18e008992e9b48b8e6ba74f99e49ac779dcb9175",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

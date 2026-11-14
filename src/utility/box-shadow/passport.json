@@ -18,7 +18,7 @@
     "src/utility/box-shadow/hover/scss/_sf_css__shadow.scss",
     "src/utility/box-shadow/hover/scss/index.scss"
   ],
-  "content_sha256": "3a4eae00efd55ff0e014b63d3d70b86da19d594a0c17839b94cbb12003850f3e",
+  "content_sha256": "6ba1f48efce360ce723489c9643adbb4cf8e0fe6831424ad12f4da243d46f196",
   "dependencies": [
     {
       "id": "tokens.colour",

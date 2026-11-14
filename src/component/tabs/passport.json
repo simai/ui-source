@@ -14,7 +14,7 @@
     "src/component/tabs/scss/_css__tabs.scss",
     "src/component/tabs/scss/index.scss"
   ],
-  "content_sha256": "55aa27fc4b7fefee2bed969f6a39ed81eb43a271bcfdf361d19c2462304b020f",
+  "content_sha256": "2401ba411f47afa65d1e8be215a2fe346c7d65653029f89ee838b9640fdbbe71",
   "dependencies": [
     {
       "id": "core.runtime",
