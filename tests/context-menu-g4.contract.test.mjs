@@ -1,4 +1,4 @@
-// sf-menu-context 1.18.0 and component.kbd 1.3.3: the defects CM-2, CM-3, CM-5,
+// sf-menu-context 1.18.0 and component.kbd 1.3.3: the defects CM-2, CM-5,
 // CM-6 and CM-9 of ui-control research 2026-11-14-context-menu.
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -7,11 +7,11 @@ import {shortcutView} from '../src/component/kbd/js/shortcut.js';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
-test('CM-3: the menu is size 1 by default, a step on the region ladder like sf-menu rows (C22, C79)', () => {
+test('the menu keeps size 1/2 by default (owner decision C134); the region ladder moves it (C79)', () => {
   const component = JSON.parse(read('src/smart/menu-context/component.json'));
-  assert.equal(component.settings.size.default, '1');
+  assert.equal(component.settings.size.default, '1/2');
   assert.deepEqual(component.settings.size.values, ['1/2', '1']);
-  assert.match(read('src/smart/menu-context/index.js'), /size: \{ default: "1" \}/u);
+  assert.match(read('src/smart/menu-context/index.js'), /size: \{ default: "1\/2" \}/u);
 });
 
 test('CM-5 and CM-2: a point anchor opens at the point and gives the focus back to what is under it', () => {

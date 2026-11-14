@@ -126,8 +126,8 @@
       },
       "size": {
         "type": "string",
-        "default": "1",
-        "description": "The menu's size, a step on the region's ladder as sf-menu's rows are (decisions C22, C79): rows as tall as a field of that size and its text, insets, search and footer. 1, the default, is 40px rows and 16px text on a page, 32 and 14 in a compact region, the phone's ladder on a phone (rows at least 44 under a finger); 1/2 is a step below (32/14, compact 28/12). A submenu takes its parent's size.",
+        "default": "1/2",
+        "description": "The menu's size, a step on the region's ladder (decisions C79, C134): rows as tall as a field of that size and its text, insets, search and footer. 1/2, the default, is 32px rows and 14px text on a page, 28 and 12 in a compact region, rows of at least 44 under a finger on a phone; 1 is a step above (40/16, compact 32/14). The density is the one of the control that opens the menu, or of what stands under the point it opens at. A submenu takes its parent's size.",
         "enum": [
           "1/2",
           "1"
@@ -951,7 +951,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu-context/index.js",
-        "sha256": "6a1f346b8433f21c8c5c7be5dbf27572752d63f2b5d4e8417db7646d34435cf7"
+        "sha256": "2bc237ba103c938d7d537888d1f1136a89d9cc938e5e0c66464004bed0a0a07d"
       },
       {
         "path": "src/smart/menu-context/js/templates/default.js",

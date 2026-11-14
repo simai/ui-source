@@ -1362,11 +1362,10 @@ class SfContextMenu extends ContextMenuElement {
       role: { default: "menu" },
       contentClass: { default: "" },
       rootClass: { default: "" },
-      // The menu's size, a step on the region's ladder like sf-menu's rows
-      // (C22/C79, CM-3): "1" by default -- 40px rows and 16px text on a page,
-      // 32 and 14 in a compact region, the phone's ladder on a phone -- or
-      // "1/2", a step below.
-      size: { default: "1" },
+      // The menu's size, a step on the region's ladder (C79): "1/2" by
+      // default (owner decision C134: 32px rows on a page, 28 in a compact
+      // region, 44 under a finger on a phone) or "1" (40, 32 compact).
+      size: { default: "1/2" },
       // How wide the menu opens: "content" (its longest line, the default),
       // "trigger" (exactly the control that opened it), a kind of decision
       // C32 ("list", "panel", "form", "form-wide") or a CSS length.
