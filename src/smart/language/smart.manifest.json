@@ -350,7 +350,7 @@
       },
       {
         "path": "src/smart/language/js/templates/default.js",
-        "sha256": "e2c747a588971f27b0b00879ae1d9b07e8f7f8685a33bd20bfeaf73d4c7d671d"
+        "sha256": "6c192244d3ae62bd1fe7d6d75f3ee363af0b8e285d9db00e34c82bd158ec384c"
       },
       {
         "path": "src/smart/language/rule.js",

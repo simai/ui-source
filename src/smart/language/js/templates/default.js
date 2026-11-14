@@ -56,10 +56,17 @@ function renderInline(context) {
 // in the same grid cell and hidden, so the button keeps the width of the
 // widest code whatever is chosen (C142: the width does not change with the
 // language). The hidden codes are out of the accessibility tree; the
-// button's name is its aria-label.
+// button's name is its aria-label. The cell is one text line wide (core
+// sheet), the width core holds for the trigger before this code arrives, so
+// nothing moves when it draws (C130); two capitals stand in it. A list with
+// a longer code -- more than two letters (PT-BR) or letters wider than a
+// capital (简体) -- sizes the cell to its widest code instead.
+const NARROW_CODE = /^[\p{Script=Latin}\p{Script=Cyrillic}\p{Script=Greek}\p{Script=Armenian}\p{Script=Georgian}]{1,2}$/u;
+
 function renderCode(context) {
   const shown = context.current?.short ?? '';
-  return html`<span slot="text" class="sf-language-code" style="display: inline-grid">${context.list.map((language) => {
+  const wide = context.list.some((language) => !NARROW_CODE.test(String(language.short ?? '')));
+  return html`<span slot="text" class="sf-language-code" style=${wide ? 'display: inline-grid; inline-size: auto; grid-template-columns: auto' : 'display: inline-grid'}>${context.list.map((language) => {
     const own = language.short === shown;
     return html`<span
         style=${own ? 'grid-area: 1 / 1' : 'grid-area: 1 / 1; visibility: hidden'}

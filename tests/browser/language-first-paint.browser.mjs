@@ -17,7 +17,10 @@
 //     variables -- side padding, glyph, text space, a code slot one text
 //     line wide, text space, glyph -- and the drawn trigger is that box
 //     (2026-11-14: the header moved 63-78 px while core held a square), so
-//     the mark after it never moves;
+//     the mark after it never moves. The slot is exactly one line wide, so
+//     two capitals wider than the line (RU at the 12/16 step, MN at every
+//     step, either in the fallback face of a cold load) widen nothing: the
+//     «code» cases choose MN (2026-11-14, C130: 0.7-6 px before);
 //   - mode inline at each size: the box is one control high before and
 //     after, so the row below never moves (its width is its labels');
 //   - mode field: the label line, its gap and the field, before and after;
@@ -65,6 +68,7 @@ const page = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><
   <span id="header-after" class="mark"></span></div>
 ${SIZES.map((size) => ['menu', 'search'].map((mode) => `<div class="row"><sf-language data-case="${mode} ${size}" mode="${mode}" size="${size}" languages="ru en de fr es" apply="none"></sf-language><span class="mark after"></span></div>`).join('')).join('')}
 ${SIZES.map((size) => `<div class="row"><sf-language data-case="auto ${size}" size="${size}" languages="ru en" apply="none"></sf-language><span class="mark after"></span></div>`).join('')}
+${SIZES.map((size) => `<div class="row"><sf-language data-case="code ${size}" size="${size}" languages="ru mn" value="mn" apply="none"></sf-language><span class="mark after"></span></div>`).join('')}
 ${SIZES.map((size) => `<div class="row"><sf-language data-case="inline ${size}" mode="inline" size="${size}" languages="ru en" apply="none"></sf-language></div><div class="mark below"></div>`).join('')}
 ${['1/3', '1', '3'].map((size) => `<div class="row" style="display:block;inline-size:20rem"><sf-language data-case="field ${size}" mode="field" size="${size}" label="Язык" languages="ru en de" apply="none"></sf-language></div><div class="mark below"></div>`).join('')}
 </body></html>`;
@@ -148,11 +152,11 @@ try {
     const headerXs = [...new Set(frames.map((frame) => frame.header.x).filter((x) => x !== null))];
     if (headerXs.length !== 1) failures.push(`${theme} ${width}: the button after the header picker moved: ${headerXs.join(' -> ')}`);
     // The tools before it are what moved in Docara: the bar ends with the picker, so it grows toward them.
-    // core.css holds the «RU ▾» trigger's width from the button ladder, so they stay where the first frame
-    // put them. A frame or two while the web font swaps in may differ by under a pixel.
+    // core.css holds the «RU ▾» trigger's width from the button ladder, and the drawn code slot is that
+    // width whatever the face, so they stay where the first frame put them.
     const beforeXs = [...new Set(frames.map((frame) => frame.header.before).filter((x) => x !== null))];
     summary.headerShift = beforeXs;
-    if (!near(beforeXs[0], beforeXs.at(-1), 1)) failures.push(`${theme} ${width}: the tool before the header picker moved: ${beforeXs.join(' -> ')}`);
+    if (!near(Math.min(...beforeXs), Math.max(...beforeXs))) failures.push(`${theme} ${width}: the tool before the header picker moved: ${beforeXs.join(' -> ')}`);
     for (const [name, end] of Object.entries(last?.cases ?? {})) {
       const [mode] = name.split(' ');
       const before = frames.map((frame) => frame.cases[name]).filter((one) => one && !one.look);
@@ -160,14 +164,14 @@ try {
       summary.cases[name] = {before: first ? {box: first.box, rowHeight: first.rowHeight} : null, after: {box: end.box, drawn: end.drawn, look: end.look, rowHeight: end.rowHeight}};
       if (!first) { failures.push(`${theme} ${width} ${name}: no frame before it drew`); continue; }
       if (!end.drawn) { failures.push(`${theme} ${width} ${name}: nothing drawn`); continue; }
-      if (mode === 'menu' || mode === 'search' || mode === 'auto') {
+      if (mode === 'menu' || mode === 'search' || mode === 'auto' || mode === 'code') {
         if (!near(first.box[1], end.drawn[1])) failures.push(`${theme} ${width} ${name}: height before ${first.box[1]}, trigger drawn ${end.drawn[1]}`);
-        // The code of two capitals fits the slot of one text line; at the smallest steps of the phone
-        // ladder it runs 0.7 px past it, so the tolerance is one pixel.
-        if (!near(first.box[0], end.drawn[0], 1)) failures.push(`${theme} ${width} ${name}: width before ${first.box[0]}, trigger drawn ${end.drawn[0]}`);
+        // The code stands in a slot exactly one text line wide: two capitals wider than the line stand
+        // out of it into the text space and widen nothing.
+        if (!near(first.box[0], end.drawn[0])) failures.push(`${theme} ${width} ${name}: width before ${first.box[0]}, trigger drawn ${end.drawn[0]}`);
         const after = [...new Set(frames.map((frame) => frame.cases[name]?.after).filter((x) => x !== undefined && x !== null))];
         summary.cases[name].shift = after;
-        if (!near(after[0], after.at(-1), 1)) failures.push(`${theme} ${width} ${name}: the mark after it moved ${after.join(' -> ')}`);
+        if (!near(Math.min(...after), Math.max(...after))) failures.push(`${theme} ${width} ${name}: the mark after it moved ${after.join(' -> ')}`);
       } else if (mode === 'field') {
         if (!near(first.box[1], end.drawn[1])) failures.push(`${theme} ${width} ${name}: height before ${first.box[1]}, field drawn ${end.drawn[1]}`);
         const below = [...new Set(frames.map((frame) => frame.cases[name]?.below).filter((y) => y !== undefined && y !== null))];
