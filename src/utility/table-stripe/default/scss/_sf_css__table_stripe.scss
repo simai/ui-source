@@ -26,5 +26,14 @@ $prefix: --sf-table-;
         color: var(#{$prefix}stripe-color);
         @include places.sf-place-fill(var(#{$prefix}accent-bg));
     }
+
+    // The row under the pointer (every .table has it, C146 (4)) stacks over a
+    // stripe (C16): the stripe and the hover are one step each, so the row
+    // stays apart from its neighbours either way.
+    .table-stripe>tbody>tr:nth-of-type(odd):hover>*,
+    .table-stripe-col>tbody>tr:hover>:nth-child(2n) {
+        #{$prefix}accent-bg: #{$table-hover-stripe-bg};
+        @include places.sf-place-fill(var(#{$prefix}accent-bg));
+    }
 // }
 }

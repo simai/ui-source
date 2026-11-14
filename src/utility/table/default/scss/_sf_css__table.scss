@@ -1,4 +1,5 @@
 @use 'sf_var__table' as *;
+@use '../../../../core/scss/mix/mix__places' as places;
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
@@ -39,7 +40,11 @@ $prefix: --sf-table-;
         border-color: var(#{$prefix}border-color);
         text-align: start;
 
+        // A row stands on its step (C146 (1)): the step is the cell's least
+        // height and the content sits in its middle (the row groups below),
+        // the head the same.
         > :not(caption) > * > * {
+            block-size: $table-row-block-size;
             padding: $table-cell-padding-y $table-cell-padding-x;
             //background-color: var(#{$prefix}bg);
             border-block-end-width: var(--sf-px);
@@ -57,22 +62,54 @@ $prefix: --sf-table-;
             padding-inline-end: $table-cell-inset;
         }
 
-        > tbody {
-            vertical-align: inherit;
-        }
-
-        > thead {
-            vertical-align: bottom;
+        // The cells inherit it, so a cell's own align utility still wins.
+        > thead,
+        > tbody,
+        > tfoot {
+            vertical-align: middle;
         }
 
         // The plain data table every set draws (owner decision 2026-11-03,
-        // component sets, point 12): a head cell reads as a head, start
-        // aligned like the body, and the caption says what the table holds in
-        // the quieter supporting line under it (caption-side: bottom above).
+        // component sets, point 12): a head cell is start aligned like the
+        // body, and the caption says what the table holds in the quieter
+        // supporting line under it (caption-side: bottom above).
         > thead > tr > th,
         > tbody > tr > th[scope='row'] {
-            font-weight: var(--sf-font-weight-bold);
             text-align: start;
+        }
+
+        // The head is quiet (C146 (2)): the row's text in the medium weight
+        // and the supporting role, on no fill of its own, with the row's line
+        // under it.
+        > thead > tr > th {
+            color: var(--sf-on-surface-variant);
+            font-weight: var(--sf-font-weight-medium);
+        }
+
+        // A row's own head still reads as the row's name.
+        > tbody > tr > th[scope='row'] {
+            font-weight: var(--sf-font-weight-bold);
+        }
+
+        // The row under the pointer takes the lightest state layer (C146 (4),
+        // C16), as a list row does; a zebra is the author's choice
+        // (.table-stripe). Low in weight (:where), so an active row
+        // (.table-active, the select layer) keeps its fill under the pointer.
+        > tbody > tr:where(:hover) > * {
+            #{$prefix}accent-bg: var(#{$prefix}hover-bg);
+            color: var(#{$prefix}hover-color);
+            // A translucent fill over the place, as a list row's (C43 D3, D4,
+            // the table rows): a tonal badge in the cell keeps its tone.
+            @include places.sf-place-fill(var(#{$prefix}accent-bg));
+        }
+
+        // A name of two lines, then an ellipsis (C146 (7)): the cell holds a
+        // .line-clamp-2 and the whole name in its title. Where two lines fill
+        // the two-line rung (C146 (1)), the clamp gives the row's line its
+        // pixel, which the lines' own leading leaves empty, so the row stands
+        // on the rung and not a pixel past it; never more than that pixel.
+        > :not(caption) > * > * > .line-clamp-2 {
+            margin-block-end: clamp(calc(-1 * var(--sf-px)), #{$table-two-lines-room}, 0px);
         }
 
         > caption {
@@ -91,17 +128,25 @@ $prefix: --sf-table-;
             padding: 0;
         }
 
-        // A column of numbers lines up on its digits: end aligned, tabular.
+        // A column of numbers (C146 (3)): end aligned in the head and the
+        // cells, tabular digits, and a number never breaks at its group
+        // space.
         .table-numeric {
             font-variant-numeric: tabular-nums;
             text-align: end;
+            white-space: nowrap;
         }
     }
 
     .table-sm,
     .table-small {
         > :not(caption) > * > * {
+            block-size: $table-row-block-size-sm;
             padding: $table-cell-padding-y-sm $table-cell-padding-x-sm;
+        }
+
+        > :not(caption) > * > * > .line-clamp-2 {
+            margin-block-end: clamp(calc(-1 * var(--sf-px)), #{$table-two-lines-room-sm}, 0px);
         }
 
         > :not(caption) > * > :where(:first-child) {

@@ -284,8 +284,13 @@ test('striped, hovered and active table cells are fills of their accent (C43 D3,
   const fill = /@include places\.sf-place-fill\(var\(#\{\$prefix\}accent-bg\)\);/gu;
   assert.equal(active.match(fill)?.length, 1, 'table-active');
   assert.equal(hover.match(fill)?.length, 2, 'table-hover and hovered stripe');
-  assert.equal(stripe.match(fill)?.length, 2, 'table-stripe and table-stripe-col');
-  assert.doesNotMatch(table, /sf-place-fill/u, 'a cell at rest');
+  // table-stripe, table-stripe-col, and a hovered stripe of either: every
+  // .table has the row under the pointer (C146 (4)).
+  assert.equal(stripe.match(fill)?.length, 3, 'table-stripe, table-stripe-col and the hovered stripes');
+  // The row under the pointer is the one fill of the table itself (C146 (4));
+  // a cell at rest declares nothing.
+  assert.equal(table.match(fill)?.length, 1, 'the hovered row');
+  assert.match(table, /> tbody > tr:where\(:hover\) > \* \{\s*#\{\$prefix\}accent-bg: var\(#\{\$prefix\}hover-bg\);/u);
 });
 
 // C43 D3 and D4, the rows the first round left out (badge-rows-5, 2026-11-13):
