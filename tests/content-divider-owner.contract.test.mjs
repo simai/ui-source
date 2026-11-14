@@ -30,6 +30,18 @@ test('Content Divider labels use body roles and action paint stays composable', 
   assert.doesNotMatch(css, /(?:\d*\.)?\d+(?:px|rem)/);
 });
 
+test('Content Divider legacy buttons keep the ladder height and the place fill', async () => {
+  const css = await read('src/component/contentDivider/scss/_css__contentDivider.scss');
+  const button = css.match(/\n  \.sf-divider-button \{[^}]*\}/)?.[0] || '';
+
+  // C01: the border is inside the height of the button ladder.
+  assert.match(button, /box-sizing: border-box/);
+  assert.match(button, /min-block-size: var\(--sf-ui-1--control-height\)/);
+  assert.match(button, /padding: var\(--sf-0\) var\(--sf-space-1\)/);
+  // C16: the cut-out colour of the place the divider stands on.
+  assert.match(button, /background-color: var\(--sf-surface-place, var\(--sf-surface-page\)\)/);
+});
+
 test('Content Divider requires CSS only and uses a bounded Loader signature', async () => {
   const rule = await read('src/component/contentDivider/rule.js');
 

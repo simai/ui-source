@@ -119,16 +119,23 @@
   }
 
   /* Legacy action paint remains source-compatible. New markup composes the
-     regular Button or Icon Button component inside sf-divider-buttons. */
+     regular Button or Icon Button component inside sf-divider-buttons.
+     The height is the button ladder's, the border drawn inside it (C01): 40
+     on a desktop, 36 on a phone, 32 compact (border-box, no block padding;
+     it was 42 / 38, the border added to the height). The fill is the place
+     the divider stands on, its cut-out colour (C16): a card's on a card, the
+     page's on the page (it was always the page's, a dark patch on a card in
+     the dark theme). */
   .sf-divider-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
     min-block-size: var(--sf-ui-1--control-height);
-    padding: var(--sf-space-1\/3) var(--sf-space-1);
+    padding: var(--sf-0) var(--sf-space-1);
     border: var(--sf-divider--thickness) solid var(--sf-outline);
     border-inline-end-width: 0;
-    background-color: var(--sf-surface-page);
+    background-color: var(--sf-surface-place, var(--sf-surface-page));
     color: var(--sf-on-surface);
     font-family: inherit;
     font-size: var(--sf-text-size-1);
