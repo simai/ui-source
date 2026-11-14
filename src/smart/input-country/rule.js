@@ -6,5 +6,7 @@ SF.RuleLoader['cl-input-country'] = {
   js: true,
   relation: [
     { name: 'country-code' },
+    // The «?» after the label (help, owner decision C153 (8)) is sf-help-mark: fetched with the field.
+    { name: 'cl-help-mark' },
   ],
 };

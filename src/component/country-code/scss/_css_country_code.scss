@@ -15,7 +15,8 @@
 }
 
 .sf-country-code .sf-country-code-text {
-  --sf-country-code-text--color: var(--sf-on-surface-variant);
+  /* C153 (1): the label in the text ink. */
+  --sf-country-code-text--color: var(--sf-on-surface);
   --sf-country-code-text--font-family: var(--sf-text--family);
   --sf-country-code-text--font-weight: var(--sf-font-weight-regular);
   color: var(--sf-country-code-text--color);
@@ -26,7 +27,8 @@
 }
 
 .sf-country-code .sf-country-code-required {
-  --sf-country-code-required--color: var(--sf-error);
+  /* C153 (2): the mark in the label's ink. */
+  --sf-country-code-required--color: var(--sf-on-surface);
   --sf-country-code-required--font-family: var(--sf-text--family);
   --sf-country-code-required--font-weight: var(--sf-font-weight-regular);
   color: var(--sf-country-code-required--color);
@@ -392,9 +394,11 @@
   --sf-country-code-placeholder--color: var(--sf-on-surface-disabled);
 }
 
-.sf-country-code:has(input:enabled:not(:disabled):not(.disabled):focus-visible) .sf-country-code-field {
+/* C153 (4): focus by mouse or keys draws a 2 px edge of the focus colour
+   inside the field, over its border; no ring outside, nothing moves. */
+.sf-country-code:has(input:enabled:not(:disabled):not(.disabled):focus) .sf-country-code-field {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-  outline-offset: var(--sf-focus--offset);
+  outline-offset: calc(-1 * var(--sf-focus--width));
 }
 
 /* The global :focus-visible rule paints the ring on whatever holds the focus.
@@ -408,7 +412,8 @@
 }
 
 .sf-country-code:has(input:enabled:not(:disabled):not(.disabled):hover) .sf-country-code-field {
-  --sf-country-code-field--border-color: var(--sf-primary-hover);
+  /* C153 (4): hover in the text ink. */
+  --sf-country-code-field--border-color: var(--sf-on-surface);
 }
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
@@ -594,4 +599,40 @@
   min-block-size: 0;
   max-block-size: none;
 }
+}
+
+/* C153 (1), (2): a disabled field's label and mark take the disabled ink. */
+.sf-country-code:has(input:disabled) .sf-country-code-text {
+  --sf-country-code-text--color: var(--sf-on-surface-disabled);
+}
+
+.sf-country-code:has(input:disabled) .sf-country-code-required {
+  --sf-country-code-required--color: var(--sf-on-surface-disabled);
+}
+
+/* C153 (1): at size 1 the label stays 14 on a phone (below 60rem), as sf-input's. */
+@media not all and (min-width: 60rem) {
+  .sf-country-code.sf-country-code.sf-country-code--size-1 .sf-country-code-text,
+  .sf-country-code.sf-country-code.sf-country-code--size-1 .sf-country-code-required {
+    --sf-country-code-text--font-size: var(--sf-text-size-1);
+    --sf-country-code-text--line-height: var(--sf-text-height-1);
+    --sf-country-code-required--font-size: var(--sf-text-size-1);
+    --sf-country-code-required--line-height: var(--sf-text-height-1);
+  }
+}
+
+/* C153 (5): a number the browser filled is tinted whole in the primary select
+   state, as sf-input's; the value keeps the text ink in both themes. The
+   browser's own box on the bare input is held off by a transition that never
+   ends, and its text colour by the fill colour of the text. */
+@layer sf.states {
+  .sf-country-code .sf-country-code-field:has(input:is(:autofill, :-webkit-autofill)) {
+    background-image: linear-gradient(var(--sf-primary-state-select), var(--sf-primary-state-select));
+  }
+
+  .sf-country-code .sf-country-code-field input:is(:autofill, :-webkit-autofill) {
+    -webkit-text-fill-color: var(--sf-country-code-input--color);
+    caret-color: var(--sf-country-code-input--color);
+    transition: background-color 0s 2147483647s, color 0s 2147483647s;
+  }
 }

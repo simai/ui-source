@@ -322,7 +322,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-choice/index.js",
-        "sha256": "eeb75fdea5fb701a24ce505ec4fb80ce44a99e9330929a96e094e9008886f133"
+        "sha256": "56d130ea213b687f7449fc245bfda650f44510fcfdde88f37537ad129c925b88"
       },
       {
         "path": "src/smart/input-choice/js/templates/default.js",

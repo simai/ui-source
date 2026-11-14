@@ -15,5 +15,7 @@ SF.RuleLoader['cl-input-rich'] = {
     { name: 'cl-popover' },
     { name: 'cl-input' },
     { name: 'cl-button' },
+    // The «?» after the label (help, owner decision C153 (8)) is sf-help-mark: fetched with the field.
+    { name: 'cl-help-mark' },
   ],
 };

@@ -41,6 +41,7 @@
       "component.icons",
       "smart.button",
       "smart.button-icon",
+      "smart.help-mark",
       "smart.icon",
       "smart.spinner",
       "smart.tag"
@@ -100,6 +101,11 @@
         "type": "string",
         "default": "",
         "description": "The line under the field; it describes the search box."
+      },
+      "help": {
+        "type": "string",
+        "default": "",
+        "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
       },
       "name": {
         "type": "string",
@@ -469,7 +475,7 @@
       },
       {
         "path": "src/smart/input-lookup/js/templates/default.js",
-        "sha256": "a4ee7f5a1e0acd870260bd08c6f96235f6958a7180f98a7372dca8db3b6385b9"
+        "sha256": "9a3dea0ce84eb1ff5d330e503e19ac6a827a9cd6bb3acfe98e8afe2214186b1c"
       },
       {
         "path": "src/smart/input-lookup/js/lookup-model.mjs",
@@ -477,15 +483,15 @@
       },
       {
         "path": "src/smart/input-lookup/scss/_smart__lookup.scss",
-        "sha256": "c9e55c0ba0cf367780be043c725559d3beedb53c94edc5d0bd2e4724be8b49da"
+        "sha256": "eeb01f9ad7b62f1ab61a8d82160312e0303e3ab33112a02cbec9a6b4c5657cab"
       },
       {
         "path": "src/smart/input-lookup/rule.js",
-        "sha256": "1337247c2b8a26ed340e578d8a7723cf0eb5865df6862f4a0bbdd79bbf6dd256"
+        "sha256": "43c6b561f22e9fd3f91d4c143c8505347aeff536c6febf4127e4eaff562a9fb3"
       },
       {
         "path": "src/smart/input-lookup/docs.md",
-        "sha256": "931639b92bf45a9d327e067b9fd5f422b8235f56e665a75938e15aa406bdfde0"
+        "sha256": "2434880da7b433ec8175ac6defc4b1fd977c91c9df5196b7f6738351256dab33"
       }
     ],
     "generated_runtime": []

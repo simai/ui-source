@@ -3,7 +3,9 @@
   "runtime": {
     "value-missing": "Fill in this field",
     "count-text": "{count} / {max}",
-    "too-long": "At most {max} characters"
+    "too-long": "At most {max} characters",
+    "too-short": "At least {min} characters",
+    "help": "More about: {label}"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",

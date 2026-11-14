@@ -24,7 +24,8 @@
     "uses": [
       "component.icon-buttons",
       "component.icons",
-      "component.textarea"
+      "component.textarea",
+      "smart.help-mark"
     ],
     "public_parts": [
       "native-textarea",
@@ -148,6 +149,11 @@
         "type": "string",
         "default": "",
         "description": "The help line under the field; on an error the error message takes its place."
+      },
+      "help": {
+        "type": "string",
+        "default": "",
+        "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
       },
       "name": {
         "type": "string",
@@ -509,11 +515,11 @@
       },
       {
         "path": "src/smart/input-textarea/rule.js",
-        "sha256": "53361350a98629446cb8e162ac08e171592a85342efa3b4254096ae601e49ba3"
+        "sha256": "d852af54749dc1a0f4793c2150820acbc4b6f44dc336d64a684af08130e226fe"
       },
       {
         "path": "src/smart/input-textarea/js/templates/default.js",
-        "sha256": "5d6bce4afaf65ad40aff18ebcc096c50cfbc954886c76f8e92262f8f87fae717"
+        "sha256": "d7cc3eca1f30bed4eb2d26f6e9a5d55af464857bc667ad69b7e83b2e081437dc"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

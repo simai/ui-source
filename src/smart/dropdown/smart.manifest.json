@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.dropdown",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "title": "Dropdown",
   "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
   "kind": "smart",
@@ -26,6 +26,7 @@
       "component.icon-buttons",
       "component.inputs",
       "smart.button-icon",
+      "smart.help-mark",
       "smart.icon",
       "smart.input",
       "smart.list-item"
@@ -81,6 +82,11 @@
       "label": {
         "type": "string",
         "default": ""
+      },
+      "help": {
+        "type": "string",
+        "default": "",
+        "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
       },
       "layout": {
         "type": "string",
@@ -489,15 +495,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "593beebec92423747fc503f6afb178b0311023207268ce4dc604fa79ba75ddfc"
+        "sha256": "8ee7bb308e276bed005fe024de2408047baec23487497614e5db8f5d9bcec075"
       },
       {
         "path": "src/smart/dropdown/rule.js",
-        "sha256": "2b4d4f6f7673b009586e9691819c8091a4228b0c2428a76d0421db55cdc7fe96"
+        "sha256": "a0d34f8ec653f2168e93b79a46a2c0466a42b21465187fe9c6a51f1fa7b07f2c"
       },
       {
         "path": "src/smart/dropdown/js/templates/default.js",
-        "sha256": "ad529d3d3ca5f4b439a60a7fffe9b3ce38865c799b983947239bae799d3f25f2"
+        "sha256": "ca817a016476b92ffae11801b8de781fe634e00b5a9bacb7a4d6c7d58cbbc795"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

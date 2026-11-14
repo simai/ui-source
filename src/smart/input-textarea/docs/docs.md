@@ -181,3 +181,13 @@ rebinds field, reset and Mask hooks without duplicate listeners.
 Use Smart Textarea for free text that may contain multiple lines. Use Input for
 single-line values, and a specialized editor for rich text or code. Keep a
 visible accessible label and a repair-oriented error message.
+
+## Label, help, errors and focus (C153)
+
+Since 1.10.0 (owner decision C153) sf-input-textarea follows sf-input: `help` draws a «?» (`sf-help-mark`) after the label and its «*», a step below the value, the label row keeping its height, named «Подробнее: <label>». The field
+shows its own errors in the page's language -- a failed submit shows every
+wrong field and focuses the first, a changed field is checked on leaving, a
+shown error goes the moment the value is right -- and the browser's bubble
+never shows. See sf-input «Errors the field shows itself». The label is in the text ink, the «*» in the label's
+ink; hover draws the border in the text ink and focus a 2 px primary edge
+inside the field, with no ring outside it.

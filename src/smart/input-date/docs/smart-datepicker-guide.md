@@ -298,3 +298,11 @@ Listen to `change`, the name every form value control uses. Its detail
 contains the ISO value, formatted value, range flag and format.
 `sf-datepicker-change` and `sf-change` are legacy names for the same change
 and are still emitted.
+
+## Label, help, errors and focus (C153)
+
+Since 1.8.0 (owner decision C153) sf-input-date follows sf-input: the `help` setting is passed to the date field's sf-input, which draws the «?». The field
+shows its own errors in the page's language -- a failed submit shows every
+wrong field and focuses the first, a changed field is checked on leaving, a
+shown error goes the moment the value is right -- and the browser's bubble
+never shows. See sf-input «Errors the field shows itself».

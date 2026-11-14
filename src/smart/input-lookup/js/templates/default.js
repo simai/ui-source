@@ -1,4 +1,5 @@
 import {html, nothing} from 'lit';
+import {renderFieldHelp} from '../../../helpers/field-help';
 import {live} from 'lit/directives/live.js';
 import {createFieldContract} from '../../../../component/field-contract';
 import {matchRanges, splitByRanges} from '../lookup-model.mjs';
@@ -323,6 +324,7 @@ export function renderLookupTemplate(context) {
         ? html`<span class="sf-lookup-label flex" id=${ids.label} @click=${() => component.focus()}>
             <span class="sf-lookup-text">${label}</span>
             ${required ? html`<span class="sf-lookup-required" aria-hidden="true">*</span>` : ''}
+            ${renderFieldHelp({help: context.help, label, size, className: 'sf-lookup-help', component})}
           </span>`
         : ''}
       ${frame(rowContext)}

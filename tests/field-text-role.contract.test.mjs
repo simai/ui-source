@@ -1,12 +1,15 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
-for(const [component,file,roles] of [
-  ['inputs','_css__inputs.scss',['input-placeholder','input-text','input-hint-text-wrap']],
-  ['textarea','_css__textarea.scss',['textarea-text','textarea-placeholder','textarea-hint-text-wrap']],
-  ['quantity','_css__quantity.scss',['quantity-text','quantity-placeholder']],
+for(const [component,file,roles,label] of [
+  ['inputs','_css__inputs.scss',['input-placeholder','input-hint-text-wrap'],'input-text'],
+  ['textarea','_css__textarea.scss',['textarea-placeholder','textarea-hint-text-wrap'],'textarea-text'],
+  ['quantity','_css__quantity.scss',['quantity-placeholder'],'quantity-text'],
 ])test(`${component}: readable secondary text uses the text role, not the muted role`,async()=>{
   const source=await readFile(new URL(`../src/component/${component}/scss/${file}`,import.meta.url),'utf8');
+  // C153 (1): the label is in the text ink (a step below the value), not the variant.
+  assert.ok(source.includes(`--sf-${label}--color: var(--sf-on-surface);`),`${label} is the text ink`);
+  assert.ok(!source.includes(`--sf-${label}--color: var(--sf-on-surface-muted);`));
   for(const role of roles){
     assert.ok(source.includes(`--sf-${role}--color: var(--sf-on-surface-variant);`));
     assert.ok(!source.includes(`--sf-${role}--color: var(--sf-on-surface-muted);`));

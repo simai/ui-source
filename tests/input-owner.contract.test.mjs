@@ -12,7 +12,8 @@ test('Input presentation uses semantic UI, hairline and motion tokens', async ()
   assert.match(css, /transition-property:\s*background-color, border-color, box-shadow, color/);
   assert.match(css, /transition-duration:\s*var\(--sf-duration-fast\)/);
   assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
-  assert.match(css, /\.sf-input:not\(\.sf-input--pointer-focus\):has\(/);
+  // C153 (4), R242: mouse and keys alike, a 2 px edge inside the field.
+  assert.match(css, /\.sf-input:has\(input:enabled:not\(:disabled\):not\(\.disabled\):focus\) \.sf-input-field \{\s*outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\s*outline-offset: calc\(-1 \* var\(--sf-focus--width\)\);/);
   assert.doesNotMatch(css, /(?:^|[\s:])1px(?:[\s;]|$)/m);
 });
 
@@ -49,7 +50,7 @@ test('Smart Input projects the same native metadata and closed visual axes', asy
   // has to fetch: see loader-relation-completeness.contract.test.mjs. The list is
   // generated from the Loader relations (standard 1.4): the reset button's sheet
   // too, and the kbd sheet a shortcut's keys draw with (1.7.0, C38).
-  assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.inputs', 'component.kbd', 'smart.icon']);
+  assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.inputs', 'component.kbd', 'smart.help-mark', 'smart.icon']);
   // sf-input keeps the ladder's outer steps (1.6.0, actions block item 4).
   assert.deepEqual(manifest.inputs.properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
   assert.deepEqual(manifest.inputs.properties.radius.enum, ['', 'default', 'square', 'rounded']);

@@ -24,7 +24,9 @@ Main attributes:
 - `required`
 - `placeholder`
 - `input-type` — `text`, `email`, `password`, `search`, `tel`, `url` or
-  `number`
+  `number`; a number field draws no browser arrows and shows tabular digits
+  (1.10.0) — a number the person steps through takes
+  `sf-input-quantity steppers="none"` or with its steppers instead
 - `min`, `max`, `step` — the range and step of a number field
 - `autocomplete`
 - `inputmode`
@@ -32,11 +34,22 @@ Main attributes:
 - `maxlength`
 - `pattern`
 - `hint`
+- `help` — the explanation behind a «?» (`sf-help-mark`) after the label and
+  its «*» (1.10.0, owner decision C153 (8)); the mark is a step below the value
+  as the label is, the label row keeps its height, and the mark is named
+  «Подробнее: <label>» («More about: <label>»). The whole field family has it
+- `maxlength` draws the count «32 / 40» at the end of the message row from 80 %
+  of the limit (C141 (1)); past the limit the count and the border turn to the
+  error and the field says «Не больше 40 знаков». `counter` shows the count
+  always
 - `value`
 - `inherited-value`, `inherited-text`, `reset-label` — see «Inherited value»
 - `default-value`
 - `name`
 - `icon-start`
+- `text-start` — a fixed text at the field's start, before the value
+  (`https://`, `+7`), in the hint's ink; screen readers hear it with the
+  field (1.10.0, owner decision C153 (9))
 - `text-end`
 - `shortcut` — a key combination drawn at the end of the field as kbd keys
   (`mod+k` reads ⌘K on a Mac, Ctrl K elsewhere) and written as
@@ -185,16 +198,53 @@ a copy button), then an indicator (a dropdown's chevron).
 
 Buttons outside fields (toolbars, table rows, window headers) keep their plates.
 
-## Required: the error after a submit attempt
+## Label, required mark and the required line
 
-Since 1.8.0 a `required` field left empty shows its error once the form's
-check fails (a submit attempt, `checkValidity()`, `reportValidity()`), as
-`sf-dropdown` does: the error outline (on `appearance="filled"` the error
-fill), «Заполните поле» («Fill in this field») under the field in the field-message type at the field's
-gap, and `aria-invalid` / `aria-errormessage` on the control. The browser's
-own bubble and its focus on the first invalid field stay as they are. Typing
-that fills the field, or `form.reset()`, clears it. The page's `invalid` with
-`error-message` wins over it.
+Since 1.10.0 (owner decision C153) the label is in the text ink, one step
+below the value (14 at size 1, on a phone too). The required «*» is in the
+label's ink, not the error colour, and assistive technology does not read it:
+the native `required` says it. A form with required fields says once, above
+or below them, «* — обязательные поля» («* — required fields»); this line is
+the form's own text, written by the author. A form whose fields are mostly
+required may mark the others «необязательно» («optional») in their label
+instead.
+
+## Errors the field shows itself
+
+Since 1.10.0 (owner decision C153 (3)) every field of the family (sf-input,
+sf-input-textarea, -lookup, -quantity, -rich, -date, -country, -color,
+-choice, -code, -image and sf-dropdown) shows its own errors, and the
+browser's bubble never shows:
+
+- a submit attempt that fails shows every wrong field at once and moves the
+  focus to the first of them; `checkValidity()` / `reportValidity()` from a
+  script shows them without moving the focus;
+- afterwards, and on any field whose value the person changed, leaving the
+  field checks it;
+- a shown error goes the moment the value is right, while the person types;
+- the words are the component's, in the page's language (`lang/ru.json`,
+  `lang/en.json`: «Заполните поле», «Введите адрес целиком, например
+  ivan@clinic.ru», «Проверьте формат», «Не меньше {min}», …); a script's
+  `setCustomValidity()` text is shown as given;
+- `form.reset()` clears every shown error.
+
+The error is the error outline (on `appearance="filled"` the error fill), the
+words under the field in the field-message type, and `aria-invalid` /
+`aria-errormessage` on the control. The page's `invalid` with `error-message`
+wins over it.
+
+## Hover, focus and autofill
+
+Hover draws the border in the text ink. Focus, by mouse or keys, draws a 2 px
+primary edge inside the field: no ring outside it, nothing moves, and a
+scrolling container never cuts it. A field the browser filled is tinted in the
+primary select state, its text in the text ink, in both themes.
+
+## Keys
+
+The clear (×) is not a Tab stop: Escape empties a `clearable` or search field
+that holds a value (with `input` and `change`; the focus stays). The password
+reveal is a Tab stop.
 
 ## Value and native form reset
 

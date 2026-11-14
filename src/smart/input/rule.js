@@ -13,6 +13,8 @@ SF.RuleLoader['cl-input'] = {
     // The keys of a shortcut are the kbd component's (soft caps inside a field):
     // fetched with the field, so the first paint draws them as they stay.
     { name: 'kbd' },
+    // The «?» after the label (help, owner decision C153 (8)) is sf-help-mark: fetched with the field.
+    { name: 'cl-help-mark' },
   ],
 };
 

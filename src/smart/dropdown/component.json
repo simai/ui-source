@@ -2,7 +2,7 @@
   "$comment": "The source of sf-dropdown's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/dropdown (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.dropdown",
   "tag": "sf-dropdown",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "kind": "leaf",
   "family": "dropdown",
   "traits": [
@@ -40,6 +40,11 @@
     "label": {
       "type": "string",
       "default": ""
+    },
+    "help": {
+      "type": "string",
+      "default": "",
+      "summary": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
     },
     "layout": {
       "type": "enum",
@@ -263,6 +268,12 @@
         "The picture of a single choice in the field and an icon tag's icon are sf-icon elements,",
         "so their names reach the first icon font request (2026-11-09, as sf-tag 1.3.2)."
       ]
+    },
+    {
+      "name": "cl-help-mark",
+      "$comment": [
+        "The «?» after the label (help, owner decision C153 (8)) is sf-help-mark: fetched with the field."
+      ]
     }
   ],
   "templates": {
@@ -425,7 +436,8 @@
     "version 1.10.1 (written on fix/content-precheck as 1.8.2; 2026-11-10, docs precheck TG-02): a patch. A chosen value's tag in a field of size 1 or 2 prints sf-tag--height-low, its former spacing-compact's new name (component.tags 1.3.0, journal class-tag-spacing-to-height); drawn the same. An avatar option's picture address is a quoted url(), so an address with a space draws (docs precheck smart content LI-01). Settings, values, events and keys unchanged.",
     "version 1.11.0 (2026-11-14, avatar study AV-8, 2026-11-14; control/research/2026-11-14-avatar.md): a minor, a picture change. An avatar option's picture in the field and in its tag is sf-avatar's own drawing (smart avatar js/picture.js): the photo an <img> (was a background image), else the initials of the option's name on the neutral plate (the tag drew an empty circle, the field nothing), else the person glyph. Settings, events and keys unchanged.",
     "version 1.12.0 (2026-11-14, owner decision C145 (1), variant A; tags study control/research/2026-11-14-tags.md #q-height-context; one number above the 1.11.0 of fix/avatar-defects-g4): a minor, a look. A chosen value's tag in a tag-mode field is part of the field: the field less --sf-space-1/4 above and below at every size -- 24 / 32 / 40 in fields 32 / 40 / 48, 20 / 24 / 32 in a compact region, 20 / 28 / 36 on a phone -- drawn inline one size below the field (1/3, 1/2, 1), so its label is one text step under the field's; its picture is the tag less 8 and at least 16; its cross follows its height (8 up to 28, 12 from 32) and its remove target is at least 24; tags stand --sf-space-1/4 apart in a row and between rows. It sat on the field's text line at 1/2 (20 in 32; 16 in a compact or phone 28) and was a low chip of the field's own size from 1 up. With component.dropdown 1.10.0. Settings, values, events and keys unchanged.",
-    "version 1.13.0 (2026-11-14, owner decision C151 point 8; written on fix/icons-c151 above every origin fix branch, max 1.12.0 on fix/tags-c145): a minor. Search finds an icon option by its glyph's words as well as its label, in Russian and in English (SF.icons.choices.words, core/js/icon-choices.js iconWords; a glyph outside the choice is found by its name read as words): a product's icon chooser labels its options with the glyph name, and «папка» found nothing in the grid of 120 glyphs. Options, events and drawing unchanged."
+    "version 1.13.0 (2026-11-14, owner decision C151 point 8; written on fix/icons-c151 above every origin fix branch, max 1.12.0 on fix/tags-c145): a minor. Search finds an icon option by its glyph's words as well as its label, in Russian and in English (SF.icons.choices.words, core/js/icon-choices.js iconWords; a glyph outside the choice is found by its name read as words): a product's icon chooser labels its options with the glyph name, and «папка» found nothing in the grid of 120 glyphs. Options, events and drawing unchanged.",
+    "version 1.14.0 (2026-11-14, owner decision C153; research ui-control control/research/2026-11-14-text-inputs.md, prototype prototypes/text-inputs-study.html): a minor. The label is in the text ink a step below the value (14 on a phone at size 1), the required «*» in the label's ink and hidden from assistive technology; hover draws the border in the text ink (the focus edge was already inside). The field shows its own errors as sf-input does (C153 (3), helpers/form-field.js): a failed check of the form shows every wrong field at once and the first takes the focus when the person submitted; afterwards, once the value was changed, leaving the field checks it; a shown error goes the moment the value is right; the words are the component's, in the page's language; the browser's bubble is cancelled. New setting help (C153 (8)): sf-help-mark after the label and its «*», a step below the value, held to the label's line so the row keeps its height, named «Подробнее: <label>» (lang help). (1.13.0 is taken by fix/icons-c151.)"
   ],
   "x-rule": {
     "$comment": [

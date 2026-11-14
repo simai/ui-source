@@ -168,12 +168,14 @@ export const CODE_INPUT_TEXT = {
     character: 'character {n} of {m}',
     group: 'Code',
     'too-short': 'Enter the whole code',
+    'value-missing': 'Enter the code',
   },
   ru: {
     digit: 'цифра {n} из {m}',
     character: 'символ {n} из {m}',
     group: 'Код',
     'too-short': 'Введите код целиком',
+    'value-missing': 'Введите код',
   },
 };
 

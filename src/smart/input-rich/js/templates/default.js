@@ -1,4 +1,5 @@
 import {html, nothing} from 'lit';
+import {renderFieldHelp} from '../../../helpers/field-help';
 import {createFieldContract} from '../../../../component/field-contract';
 
 // The field: a label row, one frame holding the toolbar over the editing
@@ -150,6 +151,7 @@ export function renderRichTextTemplate(context) {
         ? html`<span class="sf-rich-text-label flex" id=${labelId} @click=${() => component.focus()}>
             <span class="sf-rich-text-text">${label}</span>
             ${required ? html`<span class="sf-rich-text-required" aria-hidden="true">*</span>` : ''}
+            ${renderFieldHelp({help: context.help, label, size, className: 'sf-rich-text-help', component})}
           </span>`
         : ''}
       <div class="sf-rich-text-frame flex flex-col"

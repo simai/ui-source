@@ -404,11 +404,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-code/index.js",
-        "sha256": "8b170093580e0b138cbdb21667100169515c71b1ad5cda322ec2880cd9782d74"
+        "sha256": "6c3449c970e9a17cfd4f8e3d017e1ee4a9a047095c32af43d55b247522e33e35"
       },
       {
         "path": "src/smart/input-code/code.mjs",
-        "sha256": "d896b3966b7fbeff12dbcd9388f683213c31a65e3cc1d4cf8331e200f835081f"
+        "sha256": "d0a9fcfc56511e63a2e865a2f7609416609381b4e7505cf7b7354643b72f8eff"
       },
       {
         "path": "src/smart/input-code/js/templates/default.js",

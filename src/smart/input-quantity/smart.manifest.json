@@ -30,7 +30,8 @@
     "uses": [
       "component.icon-buttons",
       "component.icons",
-      "component.quantity"
+      "component.quantity",
+      "smart.help-mark"
     ],
     "public_parts": []
   },
@@ -66,6 +67,11 @@
         "type": "string",
         "default": "",
         "description": "Help text under the field; slot `hint` takes markup instead."
+      },
+      "help": {
+        "type": "string",
+        "default": "",
+        "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
       },
       "placeholder": {
         "type": "string",
@@ -656,7 +662,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-quantity/index.js",
-        "sha256": "aa1b57817b67f6638ede46f5a2b6edd15a0a4f6428a48a9c6550fcb0090f22b9"
+        "sha256": "f098f6b8a7c933be6330ef43c651481e4d0f433774fe340d4ff295e2cf90cb6b"
       },
       {
         "path": "src/smart/input-quantity/value.mjs",
@@ -664,15 +670,15 @@
       },
       {
         "path": "src/smart/input-quantity/js/templates/default.js",
-        "sha256": "db49e1142a1b6bb8c9069ad1816e2a69cab2e104df411636ee4f826e7b8f6e77"
+        "sha256": "da8a64821e019578e6a52f767fd60e35ea9d45ba389d3de8ae2030fef744716b"
       },
       {
         "path": "src/smart/input-quantity/rule.js",
-        "sha256": "94f813277eb02c9007f5acb45d65fda587433e59fa7dcaf0b0725716e03339f0"
+        "sha256": "df5b4d8725c1e9396f78c1969ae6d86279cdadb94e39f42de69c1e2d3523d8cf"
       },
       {
         "path": "src/smart/input-quantity/docs.md",
-        "sha256": "1906b0776772dc42d7ded605de70369c52395d109743dea5932d55ae9180c943"
+        "sha256": "5c8f1d3ff400523a31018ad4c18df437b917cab3cd58164d4b24a1710f2296fe"
       }
     ],
     "generated_runtime": []

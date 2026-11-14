@@ -27,6 +27,7 @@
     "create-email": "Add the address {text}",
     "create-error": "Could not create it",
     "chip-position": "{label}, {position} of {total}, Delete to remove",
-    "done": "Done"
+    "done": "Done",
+    "help": "More about: {label}"
   }
 }
