@@ -11974,6 +11974,247 @@
       },
       "owner": "ui-source",
       "source": "src/component/carousel/js/_carousel.js"
+    },
+    {
+      "id": "attribute-sf-gallery-slider-and-window-retired",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-gallery is a grid of picture tiles with a full-screen viewer (owner decision C150, study ui-control control/research/2026-11-14-gallery.md): the tiles, their ratio, the viewer's bar and zoom are the Framework's, so the settings of the old slider and modal window it was built from no longer draw anything. Each one still set on a gallery is noted once in SF.deprecations (kind attribute) until remove_after; the gallery's look is chosen by layout, tile-size, ratio, caption and selection.",
+      "items": [
+        {
+          "component": "sf-gallery",
+          "from": "modal-id",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\smodal-id(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "text",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\stext(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "arrows",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sarrows(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "dots",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sdots(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "thumbs",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sthumbs(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "space-between",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sspace-between(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "speed",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sspeed(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "button-type",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sbutton-type(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "button-size",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sbutton-size(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "dots-type",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sdots-type(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "dots-size",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sdots-size(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "thumbs-class",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sthumbs-class(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "thumb-class",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sthumb-class(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "slide-class",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sslide-class(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "inline-class",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sinline-class(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "lightbox-class",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\slightbox-class(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "overlay",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\soverlay(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "show-header",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sshow-header(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "show-close",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sshow-close(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "close-on-esc",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sclose-on-esc(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "close-on-overlay",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sclose-on-overlay(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "preserve-scroll-gap",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\spreserve-scroll-gap(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "position",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sposition(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "fullscreen",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sfullscreen(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "width",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\swidth(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "height",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sheight(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "backdrop-blur",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sbackdrop-blur(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "blur-type",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sblur-type(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "overlay-class",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\soverlay-class(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "close-class",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sclose-class(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "surface-class",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\ssurface-class(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "surface-padding",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\ssurface-padding(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "panel-class",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\spanel-class(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "header-class",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sheader-class(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "body-class",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sbody-class(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "content-class",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\scontent-class(?:=|[\\s>])"
+        },
+        {
+          "component": "sf-gallery",
+          "from": "footer-class",
+          "to": null,
+          "match": "<sf-gallery[^>]*\\sfooter-class(?:=|[\\s>])"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove these attributes from sf-gallery. The grid's tile is chosen by tile-size (s, m, l) and ratio (1/1, 4/3, 16/9, auto); a product card writes layout=\"thumbnails\"; captions show under the tiles with caption=\"under\"; the viewer's close, keys, arrows and backdrop are fixed by the decision. A page that opened the gallery's modal window calls the element's open(index) or SF.Gallery.view(items, {start}).",
+      "examples": {
+        "before": "<sf-gallery modal-id=\"photos\" arrows thumbs space-between=\"16\">…</sf-gallery>",
+        "after": "<sf-gallery tile-size=\"m\" ratio=\"1/1\">…</sf-gallery>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/gallery/index.js noteRetired"
     }
   ]
 }

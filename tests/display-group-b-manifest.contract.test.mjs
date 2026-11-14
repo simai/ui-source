@@ -65,7 +65,7 @@ test('the events take the tag and the vocabulary (§8, vocabulary 1.1.5 §5, §7
   const names = (folder) => Object.values(readManifest(json(`src/smart/${folder}/component.json`)).events).map((event) => event.name);
   assert.deepEqual(names('file-preview'), ['sf-file-preview-download', 'sf-file-preview-detach']);
   assert.deepEqual(names('profile-picker'), ['sf-profile-picker-select', 'sf-profile-picker-create', 'sf-profile-picker-rename', 'sf-profile-picker-delete', 'sf-profile-picker-reset']);
-  assert.deepEqual(names('gallery'), ['change', 'sf-gallery-opened', 'sf-gallery-closed']);
+  assert.deepEqual(names('gallery'), ['change', 'sf-gallery-opened', 'sf-gallery-closed', 'sf-gallery-select']);
   assert.deepEqual(names('slider'), ['change']);
   assert.deepEqual(names('resizer'), ['sf-resizer-resize']);
   assert.deepEqual(names('alert'), ['sf-alert-action', 'sf-alert-close']);

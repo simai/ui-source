@@ -1,19 +1,22 @@
 import SfBaseElement from '../../core/js/smart-base';
 import { applied, elementFromManifest } from '../../core/js/element-manifest';
 import { noteDeprecated } from '../../core/js/deprecations';
-import { tagSelector } from '../../core/js/tag-aliases.js';
 import { renderGalleryTemplate } from './js/templates/default';
+import { installViewer } from './js/viewer.js';
 import { normalizeSlideContent } from '../../component/slider/js/_slide-content';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
 
-// sf-gallery from its component.json (standard simai.smart-component 1.3.8
-// §3, §4, §8): its settings, values and actions are made by
-// core/js/element-manifest.js, and the old names -- title, blur, sf-change,
-// sf-open, sf-close and the readers getModal(), getInlineSlider(),
-// getLightboxSlider() -- are dated rows of aliases.json.
+// sf-gallery 1.3.0 from its component.json (standard simai.smart-component
+// 1.3.8 §3, §4, §8), owner decision C150 (2026-11-14): a set of pictures is a
+// grid of picture tiles by default, or the main picture with thumbnails; a
+// press opens the one full-screen viewer of the page (js/viewer.js, SF.Gallery,
+// shared with sf-file-preview, C149 (6)); a media library chooses tiles with
+// check boxes. The slider and the window it was built from (sf-slider,
+// sf-modal) are gone: a row that scrolls is sf-slider (C143). Their settings
+// are dated rows of aliases.json, read and ignored until the date.
 const GalleryElement = elementFromManifest(manifest, {
   base: SfBaseElement,
   lang: { en, ru },
@@ -21,345 +24,142 @@ const GalleryElement = elementFromManifest(manifest, {
   aliases,
 });
 
+const viewer = installViewer();
+
+const RETIRE = { since: '2026-11-14', remove_after: '2027-01-01' };
+const RETIRED_SETTINGS = aliases.aliases
+  .filter((row) => row.kind === 'setting' && row.to === null && row.since === RETIRE.since)
+  .map((row) => row.from);
 
 // What retires without a new name (aliases.json rows with `to: null`): kept
-// until the date, and each call is noted with it.
-function noteRetired(from) {
-  noteDeprecated({ component: 'sf-gallery', tag: 'sf-gallery', kind: 'action', from, to: null,
-    since: aliases.since, remove_after: aliases.remove_after });
+// until the date, and each use is noted with it.
+function noteRetired(from, kind = 'action', dates = aliases) {
+  noteDeprecated({ component: 'sf-gallery', tag: 'sf-gallery', kind, attribute: kind === 'attribute' ? from : '', from, to: null,
+    since: dates.since, remove_after: dates.remove_after });
 }
-
 
 function normalizeSlotNodes(content) {
   if (!content || content === null || typeof content === 'undefined') {
     return [];
   }
 
-  return normalizeSlideContent(content).filter((node) => node instanceof Node);
+  return normalizeSlideContent(content).filter((node) => node instanceof Element);
 }
 
-// A copy of a page's slide for a slider (GL-10). Only the picture shown
-// first loads at once; the others, and every picture of the closed lightbox,
-// wait until they are near the view. A plain cloneNode cannot do that: a
-// copied parser-made <img loading="lazy"> starts its download at once
-// (Chrome), so every picture of every gallery loaded with the page. The copy
-// is made from the slide's markup with the pictures' sources held back, and
-// each picture gets its loading (the page's own, else lazy or eager) and
-// decoding before its source.
+// A copy of a page's picture for a tile (GL-10, C150 (6)). A plain cloneNode
+// cannot hold a picture back: a copied parser-made <img loading="lazy">
+// starts its download at once (Chrome). The copy is made from the markup
+// with the sources held back, and each picture gets its loading (the page's
+// own, else lazy, or eager when asked) and decoding before its source. The
+// picture's own object-position -- its focus point (C94 (3)) -- stays.
 const SOURCE_ATTRIBUTES = ['srcset', 'src'];
 
-function copySlide(slide, eager) {
-  if (!(slide instanceof Element)) return slide.cloneNode(true);
+function copyPicture(node, eager = false) {
+  if (!(node instanceof Element)) return null;
   const template = document.createElement('template');
-  template.innerHTML = slide.outerHTML;
-  if (template.content.childNodes.length !== 1 || !template.content.firstElementChild) {
-    return slide.cloneNode(true);
-  }
-  const held = [];
+  template.innerHTML = node.outerHTML;
   const inert = template.content.firstElementChild;
-  [inert, ...inert.querySelectorAll('img, source')].filter((node) => node.matches('img, source')).forEach((node) => {
-    const sources = SOURCE_ATTRIBUTES.filter((name) => node.hasAttribute(name)).map((name) => [name, node.getAttribute(name)]);
-    sources.forEach(([name]) => node.removeAttribute(name));
+  if (!inert) return node.cloneNode(true);
+  const held = [];
+  [inert, ...inert.querySelectorAll('img, source')].filter((one) => one.matches('img, source')).forEach((one) => {
+    const sources = SOURCE_ATTRIBUTES.filter((name) => one.hasAttribute(name)).map((name) => [name, one.getAttribute(name)]);
+    sources.forEach(([name]) => one.removeAttribute(name));
     held.push(sources);
   });
   const copy = document.importNode(inert, true);
-  [copy, ...copy.querySelectorAll('img, source')].filter((node) => node.matches('img, source')).forEach((node, index) => {
-    if (node.localName === 'img') {
-      if (!node.hasAttribute('loading')) node.loading = eager ? 'eager' : 'lazy';
-      if (!node.hasAttribute('decoding')) node.decoding = 'async';
+  [copy, ...copy.querySelectorAll('img, source')].filter((one) => one.matches('img, source')).forEach((one, index) => {
+    if (one.localName === 'img') {
+      if (!one.hasAttribute('loading') || eager) one.loading = eager ? 'eager' : 'lazy';
+      if (!one.hasAttribute('decoding')) one.decoding = 'async';
+      one.removeAttribute('slot');
+      one.removeAttribute('title');
     }
-    held[index].forEach(([name, value]) => node.setAttribute(name, value));
+    held[index].forEach(([name, value]) => one.setAttribute(name, value));
   });
+  copy.removeAttribute('slot');
   return copy;
 }
 
+function usableHref(value) {
+  const href = String(value || '').trim();
+  return href && href !== '#' ? href : '';
+}
+
+// What one child of the gallery is: an <img>, a <picture>, a <figure> with its
+// caption, or a link to the large file around a small picture.
+function readSlide(slide) {
+  const image = slide.matches('img') ? slide : slide.querySelector('img');
+  const picture = slide.matches('img, picture') ? slide : (slide.querySelector('picture') || image);
+  const link = slide.matches('a[href]') ? slide : slide.querySelector('a[href]');
+  const figcaption = slide.querySelector('figcaption');
+  const caption = slide.getAttribute('data-caption') || figcaption?.textContent?.trim() || slide.getAttribute('title')
+    || image?.getAttribute('title') || '';
+  const source = slide.getAttribute('data-src') || image?.getAttribute('data-src') || usableHref(link?.getAttribute('href'))
+    || image?.getAttribute('src') || '';
+  return {
+    slide,
+    picture,
+    alt: image?.getAttribute('alt') || '',
+    caption,
+    item: {
+      src: source,
+      type: slide.getAttribute('data-type') || link?.getAttribute('type') || undefined,
+      alt: image?.getAttribute('alt') || '',
+      caption,
+      width: Number(image?.getAttribute('width')) || undefined,
+      height: Number(image?.getAttribute('height')) || undefined,
+    },
+  };
+}
+
 const GALLERY_TRIGGER_SELECTOR = '[data-sf-gallery]';
-let delegatedGallery = null;
+// How long a finger holds a tile before it is chosen (C150 (9), a phone).
+const LONG_PRESS_MS = 500;
+const LONG_PRESS_SLOP = 10;
 
-const DELEGATED_MODAL_DEFAULTS = {
-  width: 'calc(100vw - var(--sf-space-3) * 2)',
-  height: 'calc(100dvh - var(--sf-space-6) * 2)',
-  overlay: 'true',
-  'show-header': 'false',
-  'show-close': 'true',
-  'body-class': 'sf-gallery-lightbox-body h-full',
-  'content-class': 'sf-gallery-lightbox-modal-content h-full min-h-0',
-  'surface-class': 'p-0 border-0 radius-square bg-transparent shadow-flat',
-  'surface-padding': '0',
-};
-
-const DELEGATED_MODAL_ATTRIBUTES = [
-  'heading',
-  'text',
-  'overlay',
-  'show-header',
-  'show-close',
-  'close-on-esc',
-  'close-on-overlay',
-  'preserve-scroll-gap',
-  'position',
-  'fullscreen',
-  'width',
-  'height',
-  'backdrop-blur',
-  'blur-type',
-  'overlay-class',
-  'close-class',
-  'surface-class',
-  'surface-padding',
-  'panel-class',
-  'header-class',
-  'body-class',
-  'content-class',
-  'footer-class',
-];
-
-// The lightbox of a page's linked pictures shows the place too (GL-3, C143 (4)).
-const DELEGATED_SLIDER_DEFAULTS = {
-  arrows: 'true',
-  dots: 'true',
-  'lightbox-class': 'sf-gallery-lightbox-slider h-full',
-};
-
-const DELEGATED_SLIDER_ATTRIBUTES = [
-  'arrows',
-  'dots',
-  'thumbs',
-  'loop',
-  'space-between',
-  'speed',
-  'button-type',
-  'button-size',
-  'dots-type',
-  'dots-size',
-  'thumbs-class',
-  'thumb-class',
-  'slide-class',
-  'lightbox-class',
-];
-
-// A trigger's data-sf-modal-title and data-sf-modal-blur still configure the
-// lightbox: heading and backdrop-blur are their names since standard 1.3.8.
-const DELEGATED_MODAL_ATTRIBUTE_ALIASES = {
-  title: 'heading',
-  blur: 'backdrop-blur',
-};
-
-const DELEGATED_SLIDER_ATTRIBUTE_ALIASES = {
-  class: 'lightbox-class',
-  'root-class': 'lightbox-class',
-};
-
-// How far a press may move and still be a press, not a swipe (CSS px).
-const LIGHTBOX_TAP_SLOP = 10;
-
-const LIGHTBOX_BACKGROUND_CLOSE_IGNORE_SELECTOR = [
-  'a',
-  'button',
-  'input',
-  'select',
-  'textarea',
-  'label',
-  'summary',
-  'video',
-  'audio',
-  'iframe',
-  'img',
-  'picture',
-  'svg',
-  '[role="button"]',
-  '[data-sf-gallery-open]',
-  '[data-sf-modal-close]',
-  'sf-button',
-  tagSelector('sf-button-icon'),
-  '.sf-slider-controls',
-  '.sf-slider-arrows',
-  '.sf-slider-dots',
-  '.sf-slider-pagination',
-  '.sf-slider-thumbnails',
-  '.sf-gallery-external-caption',
-].join(',');
-
-function getDelegatedAttribute(trigger, items, attrNames) {
-  for (const attrName of attrNames) {
-    const directValue = trigger?.getAttribute?.(attrName);
-
-    if (directValue !== null && typeof directValue !== 'undefined') {
-      return directValue;
-    }
-  }
-
-  for (const item of items) {
-    for (const attrName of attrNames) {
-      if (item.hasAttribute?.(attrName)) {
-        return item.getAttribute(attrName);
-      }
-    }
-  }
-
-  return undefined;
-}
-
-function applyDelegatedAttribute(gallery, attrName, value, fallback) {
-  const nextValue = typeof value !== 'undefined' ? value : fallback;
-
-  if (typeof nextValue === 'undefined' || nextValue === null) {
-    gallery.removeAttribute(attrName);
-    return;
-  }
-
-  gallery.setAttribute(attrName, String(nextValue));
-}
-
-function applyDelegatedNamespaceOptions({
-  gallery,
-  trigger,
-  items,
-  namespace,
-  attributes,
-  defaults = {},
-  aliases = {},
-}) {
-  attributes.forEach((attrName) => {
-    const sourceNames = [
-      attrName,
-      ...Object.entries(aliases)
-        .filter(([, targetName]) => targetName === attrName)
-        .map(([sourceName]) => sourceName),
-    ];
-    const value = getDelegatedAttribute(
-      trigger,
-      items,
-      sourceNames.flatMap((sourceName) => [
-        `data-sf-${namespace}-${sourceName}`,
-        `data-sf-gallery-${sourceName}`,
-      ]),
-    );
-
-    applyDelegatedAttribute(gallery, attrName, value, defaults[attrName]);
-  });
-}
-
-function getGalleryGroupValue(element) {
+function galleryGroup(element) {
   return String(element?.getAttribute?.('data-sf-gallery') || '').trim();
 }
 
-function isUsableGalleryHref(value) {
-  const normalized = String(value || '').trim();
-  return normalized && normalized !== '#';
+// A page's linked pictures: one data-sf-gallery group is one set (the same
+// viewer). The large file is the link's address (or data-sf-src / data-src);
+// the caption its data-caption, title or figure caption; the picture's alt
+// stays the picture's.
+function delegatedItem(element) {
+  const image = element.matches?.('img') ? element : element.querySelector?.('img');
+  const source = element.getAttribute?.('data-sf-src') || element.getAttribute?.('data-src')
+    || usableHref(element.getAttribute?.('href')) || element.getAttribute?.('src') || image?.currentSrc || image?.src || '';
+  if (!source) return null;
+  const figcaption = element.closest?.('figure')?.querySelector?.('figcaption');
+  return {
+    src: source,
+    type: element.getAttribute?.('data-type') || undefined,
+    alt: image?.getAttribute?.('alt') || '',
+    caption: element.getAttribute?.('data-caption') || element.getAttribute?.('title') || figcaption?.textContent?.trim?.() || '',
+  };
 }
 
-function getGalleryItemSource(element) {
-  const image = element.matches?.('img')
-    ? element
-    : element.querySelector?.('img');
-  const dataSource =
-    element.getAttribute?.('data-sf-src') ||
-    element.getAttribute?.('data-src') ||
-    element.getAttribute?.('href') ||
-    element.getAttribute?.('src');
+function delegatedGroup(trigger) {
+  const group = galleryGroup(trigger);
+  if (!group) return [trigger];
+  return Array.from(document.querySelectorAll(GALLERY_TRIGGER_SELECTOR)).filter((item) => galleryGroup(item) === group);
+}
 
-  if (isUsableGalleryHref(dataSource)) {
-    return dataSource;
+function delegatedOption(trigger, items, names) {
+  for (const element of [trigger, ...items]) {
+    for (const name of names) {
+      if (element?.hasAttribute?.(name)) return element.getAttribute(name);
+    }
   }
-
-  return image?.currentSrc || image?.src || '';
+  return null;
 }
-
-function getGalleryItemCaption(element) {
-  const image = element.matches?.('img')
-    ? element
-    : element.querySelector?.('img');
-  const figure = element.closest?.('figure');
-  const figcaption = figure?.querySelector?.('figcaption');
-
-  return (
-    element.getAttribute?.('data-caption') ||
-    element.getAttribute?.('title') ||
-    image?.getAttribute?.('alt') ||
-    figcaption?.textContent?.trim?.() ||
-    ''
-  );
-}
-
-function createDelegatedGallerySlide(element) {
-  const source = getGalleryItemSource(element);
-  if (!source) {
-    return null;
-  }
-
-  const caption = getGalleryItemCaption(element);
-  const figure = document.createElement('figure');
-  const image = document.createElement('img');
-
-  figure.className = 'sf-gallery-external-slide flex flex-col gap-1 m-0';
-  image.src = source;
-  image.alt = caption;
-  image.loading = 'lazy';
-  image.decoding = 'async';
-  image.className = 'sf-gallery-external-image';
-  figure.append(image);
-
-  if (caption) {
-    const figcaption = document.createElement('figcaption');
-    figcaption.className = 'sf-gallery-external-caption color-white';
-    figcaption.textContent = caption;
-    figure.append(figcaption);
-  }
-
-  return figure;
-}
-
-function getDelegatedGalleryItems(trigger) {
-  const group = getGalleryGroupValue(trigger);
-  if (!group) {
-    return [trigger];
-  }
-
-  return Array.from(document.querySelectorAll(GALLERY_TRIGGER_SELECTOR)).filter(
-    (item) => getGalleryGroupValue(item) === group,
-  );
-}
-
-function getDelegatedGallery() {
-  if (delegatedGallery?.isConnected) {
-    return delegatedGallery;
-  }
-
-  delegatedGallery = document.createElement('sf-gallery');
-  delegatedGallery.setAttribute('data-sf-gallery-delegated', '');
-  delegatedGallery.setAttribute('inline', 'false');
-  delegatedGallery.setAttribute('lightbox', 'true');
-  document.body.append(delegatedGallery);
-
-  return delegatedGallery;
-}
-
-function configureDelegatedGallery(gallery, trigger, items) {
-  applyDelegatedNamespaceOptions({
-    gallery,
-    trigger,
-    items,
-    namespace: 'modal',
-    attributes: DELEGATED_MODAL_ATTRIBUTES,
-    defaults: DELEGATED_MODAL_DEFAULTS,
-    aliases: DELEGATED_MODAL_ATTRIBUTE_ALIASES,
-  });
-  applyDelegatedNamespaceOptions({
-    gallery,
-    trigger,
-    items,
-    namespace: 'slider',
-    attributes: DELEGATED_SLIDER_ATTRIBUTES,
-    defaults: DELEGATED_SLIDER_DEFAULTS,
-    aliases: DELEGATED_SLIDER_ATTRIBUTE_ALIASES,
-  });
-}
-
-let galleryUid = 0;
 
 class SfGallery extends GalleryElement {
   static globalDelegationBound = false;
+  // The page's pictures stay where they were until the first drawing takes
+  // them, so the grid core.styles holds before the code (C150 (6)) is never
+  // empty for a frame.
+  static holdsSlotNodesUntilDrawn = true;
 
   static get props() {
     return {
@@ -370,278 +170,249 @@ class SfGallery extends GalleryElement {
   }
 
   static bindGlobalDelegation() {
-    if (SfGallery.globalDelegationBound) {
-      return;
-    }
-
+    if (SfGallery.globalDelegationBound) return;
     SfGallery.globalDelegationBound = true;
     document.addEventListener('click', SfGallery.handleDelegatedGalleryClick);
   }
 
   static handleDelegatedGalleryClick(event) {
+    if (event.defaultPrevented || event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     const trigger = event.target.closest?.(GALLERY_TRIGGER_SELECTOR);
-    if (!trigger || trigger.closest('sf-gallery')) {
-      return;
-    }
-
-    const items = getDelegatedGalleryItems(trigger);
-    const slides = items.map(createDelegatedGallerySlide).filter(Boolean);
-    if (!slides.length) {
-      return;
-    }
-
-    const index = Math.max(items.indexOf(trigger), 0) + 1;
+    if (!trigger || trigger.closest('sf-gallery')) return;
+    const elements = delegatedGroup(trigger);
+    const items = elements.map(delegatedItem);
+    const at = elements.indexOf(trigger);
+    if (!items[at]) return;
+    const listed = items.filter(Boolean);
     event.preventDefault();
-
-    const gallery = getDelegatedGallery();
-    configureDelegatedGallery(gallery, trigger, items);
-    gallery.setSlot('slide', ...slides);
-    gallery.setAttribute('current', String(index));
-    requestAnimationFrame(() => gallery.open(index));
+    const loop = delegatedOption(trigger, elements, ['data-sf-gallery-loop', 'data-sf-slider-loop']);
+    viewer.view(listed, {
+      start: listed.indexOf(items[at]) + 1,
+      opener: trigger,
+      label: delegatedOption(trigger, elements, ['data-sf-modal-heading', 'data-sf-modal-title', 'data-sf-gallery-title']) || undefined,
+      loop: loop !== null && loop !== 'false',
+    });
   }
 
   constructor() {
     super();
-    this._modalId = '';
-    this._inlineSlider = null;
-    this._lightboxSlider = null;
-    this._modal = null;
     this._current = null;
-    this._syncingCurrent = false;
-    this._lightboxBackgroundPointerActive = false;
-    this._pendingLightboxBackgroundClose = false;
-    this._currentRenderMode = '';
-    this._nestedDefinitionSyncQueued = false;
-    this._opener = null;
-    this._handleViewerKeyDown = this._handleViewerKeyDown.bind(this);
-    this._handleGalleryClick = this._handleGalleryClick.bind(this);
-    this._handleGalleryKeyDown = this._handleGalleryKeyDown.bind(this);
-    this._handleInlineSlideChange = this._handleInlineSlideChange.bind(this);
-    this._handleLightboxSlideChange =
-      this._handleLightboxSlideChange.bind(this);
-    this._handleLightboxBackgroundPointerDown =
-      this._handleLightboxBackgroundPointerDown.bind(this);
-    this._handleLightboxBackgroundPointerUp =
-      this._handleLightboxBackgroundPointerUp.bind(this);
-    this._handleLightboxBackgroundClick =
-      this._handleLightboxBackgroundClick.bind(this);
-    this._handleModalAfterOpen = this._handleModalAfterOpen.bind(this);
-    this._handleModalAfterClose = this._handleModalAfterClose.bind(this);
-    this._handleModalAfterRender = this._handleModalAfterRender.bind(this);
+    this._selected = new Set();
+    this._lastPicked = null;
+    this._tileCache = { nodes: [], tiles: [] };
+    this._viewing = false;
+    this._syncing = false;
+    this._press = null;
+    this._swallowClick = false;
+    this._handleClick = this._handleClick.bind(this);
+    this._handleKeyDown = this._handleKeyDown.bind(this);
+    this._handleChange = this._handleChange.bind(this);
+    this._handlePointerDown = this._handlePointerDown.bind(this);
+    this._handlePointerEnd = this._handlePointerEnd.bind(this);
   }
 
   connectedCallback() {
-    if (!this._modalId) {
-      this._modalId =
-        this.getAttribute('modal-id') ||
-        this.id ||
-        `sf-gallery-${++galleryUid}`;
-    }
-
+    // Every child is a picture of the set (§4.5): a child the page did not
+    // name joins the slide slot.
+    Array.from(this.children).forEach((child) => {
+      if (!child.hasAttribute('slot') && !child.hasAttribute('data-sf-static') && child.localName !== 'script' && child.localName !== 'template') {
+        child.setAttribute('slot', 'slide');
+      }
+    });
+    RETIRED_SETTINGS.filter((name) => this.hasAttribute(name)).forEach((name) => noteRetired(name, 'attribute', RETIRE));
     super.connectedCallback();
-    this.addEventListener('click', this._handleGalleryClick);
-    this.addEventListener('keydown', this._handleGalleryKeyDown);
+    this.addEventListener('click', this._handleClick);
+    this.addEventListener('keydown', this._handleKeyDown);
+    this.addEventListener('change', this._handleChange);
+    this.addEventListener('pointerdown', this._handlePointerDown);
+    this.addEventListener('pointerup', this._handlePointerEnd);
+    this.addEventListener('pointercancel', this._handlePointerEnd);
   }
 
   disconnectedCallback() {
-    this.removeEventListener('click', this._handleGalleryClick);
-    this.removeEventListener('keydown', this._handleGalleryKeyDown);
-    document.removeEventListener('keydown', this._handleViewerKeyDown);
-    this._detachNestedListeners();
+    this.removeEventListener('click', this._handleClick);
+    this.removeEventListener('keydown', this._handleKeyDown);
+    this.removeEventListener('change', this._handleChange);
+    this.removeEventListener('pointerdown', this._handlePointerDown);
+    this.removeEventListener('pointerup', this._handlePointerEnd);
+    this.removeEventListener('pointercancel', this._handlePointerEnd);
+    clearTimeout(this._press?.timer);
+    if (this._viewing) viewer.close();
     super.disconnectedCallback();
   }
 
-  get modalId() {
-    return this.getAttribute('modal-id') || this._modalId || '';
+  // ── the set ──
+  _slides() {
+    return normalizeSlotNodes(this.getSlotContent('slide'));
+  }
+
+  // The tiles are built once per set of children: a change of the current
+  // picture or of the choice draws the same nodes again.
+  _tiles() {
+    const nodes = this._slides();
+    const cache = this._tileCache;
+    if (nodes.length === cache.nodes.length && nodes.every((node, index) => node === cache.nodes[index])) return cache.tiles;
+    // Each copy is made when a look first draws it: a copy of the first
+    // picture made eager for the main frame would load even in the grid.
+    const tiles = nodes.map((node, index) => {
+      const read = readSlide(node);
+      const copies = {};
+      const copy = (name, eager = false) => {
+        if (!(name in copies)) {
+          copies[name] = copyPicture(read.picture, eager);
+          if (copies[name]) this.copyRuntimeData(read.picture, copies[name]);
+        }
+        return copies[name];
+      };
+      return {
+        ...read,
+        index: index + 1,
+        tilePicture: () => copy('tile'),
+        mainPicture: () => copy('main', index === 0),
+        thumbPicture: () => copy('thumb'),
+      };
+    });
+    this._tileCache = { nodes, tiles };
+    return tiles;
+  }
+
+  get slidesTotal() {
+    return this._slides().length;
   }
 
   get openState() {
     return this.getProp('open');
   }
 
-  get slidesTotal() {
-    const sliderTotal = this._getActiveSliderTotal();
-    if (sliderTotal !== null) {
-      return sliderTotal;
-    }
-
-    const slides = normalizeSlotNodes(this.getSlotContent('slide'));
-    return slides.length || 0;
-  }
-
   get current() {
-    if (this._current !== null) {
-      return this._normalizeCurrent(this._current);
-    }
-
-    const sliderIndex = this._getActiveSliderIndex();
-    if (sliderIndex !== null) {
-      return this._normalizeCurrent(sliderIndex + 1);
-    }
-
-    return this._getConfiguredCurrent();
+    if (this._current !== null) return this._normalizeCurrent(this._current);
+    return this._normalizeCurrent(this.getProp('current') || 1);
   }
 
-  // current is a value a page may also write (§4.3): the slide to show.
+  // current is a value a page may also write (§4.3): the picture to show.
   set current(value) {
     if (value === null || value === undefined || value === '') this.removeAttribute('current');
     else this.setAttribute('current', String(value));
-  }
-
-  _getConfiguredCurrent() {
-    return this._normalizeCurrent(this.getProp('current') || 1);
   }
 
   _normalizeCurrent(value) {
     const total = this.slidesTotal;
     const parsed = Number.parseInt(String(value || 1), 10);
     const safe = Number.isFinite(parsed) ? parsed : 1;
-
-    if (!total) {
-      return Math.max(safe, 1);
-    }
-
-    return Math.min(Math.max(safe, 1), total);
+    return total ? Math.min(Math.max(safe, 1), total) : Math.max(safe, 1);
   }
 
-  _setCurrent(index, source = 'api', options = {}) {
-    const { emit = true, syncAttribute = false } = options;
+  _setCurrent(index, source = 'api', { emit = true } = {}) {
     const next = this._normalizeCurrent(index);
-    // The slide shown before this change: the gallery's own position, else the
-    // configured one. Reading the slider here would read the new position on a
-    // person's first swipe, which then sent no change at all.
-    const previous = this._current !== null ? this._normalizeCurrent(this._current) : this._getConfiguredCurrent();
-
-    if (next === previous && this._current === next) {
-      return this;
-    }
-
+    const previous = this.current;
     this._current = next;
-
-    // Keep the starting position for a pending nested Slider render, including
-    // the Slider that originated this change (it must not be driven back).
-    this._rememberSliderIndex(this._inlineSlider, next - 1);
-    this._rememberSliderIndex(this._lightboxSlider, next - 1);
-
-    if (syncAttribute) {
-      this._syncingCurrent = true;
+    if (String(this.getAttribute('current') ?? '') !== String(next)) {
+      this._syncing = true;
       this.setAttribute('current', String(next));
-      this._syncingCurrent = false;
+      this._syncing = false;
     }
-
-    if (source !== 'inline') {
-      this._syncSliderToIndex(this._inlineSlider, next - 1);
-    }
-
-    if (source !== 'lightbox') {
-      this._syncSliderToIndex(this._lightboxSlider, next - 1);
-    }
-
+    if (source !== 'lightbox' && this._viewing) viewer.view(this._viewerItems(), { ...this._viewerOptions(), start: next });
+    // The thumbnails look draws the shown picture: a drawing, not a DOM update.
+    if (this.getProp('layout') === 'thumbnails') this.requestComponentUpdate('shown');
     if (emit && next !== previous) {
       // §8: data only; sf-change follows with the same detail until the date.
-    this.sfEmit('change', {
-        previous,
-        current: next,
-        total: this.slidesTotal,
-        from: source,
-      });
+      this.sfEmit('change', { previous, current: next, total: this.slidesTotal, from: source });
     }
-
-    return this;
+    return next;
   }
 
-  _getActiveSliderElement() {
-    if (this.openState && this._lightboxSlider) {
-      return this._lightboxSlider;
+  // ── selection (C150 (9)) ──
+  get selected() {
+    return [...this._selected].sort((a, b) => a - b);
+  }
+
+  set selected(value) {
+    const list = Array.isArray(value) ? value : String(value ?? '').split(/[\s,]+/u);
+    const total = this.slidesTotal;
+    this._selected = new Set(list.map((one) => Number.parseInt(String(one), 10))
+      .filter((one) => Number.isFinite(one) && one >= 1 && (!total || one <= total)));
+    this.requestComponentUpdate('selected');
+  }
+
+  get _selecting() {
+    return this.getProp('selection') === 'many';
+  }
+
+  _toggleSelected(index, range = false) {
+    if (!this._selecting) return;
+    if (range && this._lastPicked !== null) {
+      const [from, to] = [Math.min(this._lastPicked, index), Math.max(this._lastPicked, index)];
+      for (let one = from; one <= to; one += 1) this._selected.add(one);
+    } else if (this._selected.has(index)) {
+      this._selected.delete(index);
+    } else {
+      this._selected.add(index);
     }
-
-    return this._inlineSlider || this._lightboxSlider || null;
+    this._lastPicked = index;
+    this._selectionChanged();
   }
 
-  _getSliderIndex(sliderElement) {
-    const slider = sliderElement?._boundSlider || null;
-    if (!slider) {
-      return null;
-    }
-
-    const index =
-      typeof slider.realIndex === 'number'
-        ? slider.realIndex
-        : slider.activeIndex;
-
-    return Number.isFinite(index) ? index : null;
+  _selectionChanged() {
+    this.requestComponentUpdate('selected');
+    this.sfEmit('select', { selected: this.selected, count: this._selected.size, total: this.slidesTotal });
   }
 
-  _getActiveSliderIndex() {
-    return this._getSliderIndex(this._getActiveSliderElement());
-  }
-
-  _getSliderTotal(sliderElement) {
-    const slider = sliderElement?._boundSlider || null;
-    if (!slider) {
-      return null;
-    }
-
-    const indexedSlides = new Set();
-    slider.slides?.forEach?.((slide) => {
-      const index = slide?.getAttribute?.('data-swiper-slide-index');
-
-      if (index !== null && typeof index !== 'undefined') {
-        indexedSlides.add(index);
-      }
-    });
-
-    if (indexedSlides.size) {
-      return indexedSlides.size;
-    }
-
-    const total =
-      slider.slides?.length ??
-      sliderElement?.querySelectorAll?.('.swiper-slide')?.length ??
-      0;
-
-    return total > 0 ? total : null;
-  }
-
-  _getActiveSliderTotal() {
-    return this._getSliderTotal(this._getActiveSliderElement());
-  }
-
+  // ── drawing ──
   get state() {
     const props = this.getPropsContext();
-
     return {
       ...props,
-      modalId: this.modalId,
       open: this.openState,
       current: this.current,
       rootClass: this.getRootClass(),
       slidesTotal: this.slidesTotal,
-      frameRatio: this._frameRatio(),
     };
   }
 
-  // The inline frame (GL-7, decision C143 (8)): ratio w/h when the page sets
-  // one; auto takes the first picture's width and height attributes, which
-  // also gave that picture its box before the code arrived; else '' and the
-  // sheet's 16/9.
-  _frameRatio() {
-    const parse = (width, height) => {
-      const w = Number.parseFloat(width);
-      const h = Number.parseFloat(height);
-      return w > 0 && h > 0 ? `${w} / ${h}` : '';
-    };
-    const ratio = String(this.getProp('ratio') || 'auto').trim();
-    const written = ratio.match(/^(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)$/);
-    if (written) return parse(written[1], written[2]);
-    const first = normalizeSlotNodes(this.getSlotContent('slide'))[0];
-    const image = first?.matches?.('img') ? first : first?.querySelector?.('img');
-    return image ? parse(image.getAttribute('width'), image.getAttribute('height')) : '';
+  _word(key, vars, count) {
+    return this.sfWord(key, { vars, count });
   }
 
   templateContext() {
+    const tiles = this._tiles();
+    const total = tiles.length;
+    const selecting = this._selecting;
+    const selectedCount = selecting ? this._selected.size : 0;
+    const ratio = ['1/1', '4/3', '16/9', 'auto'].includes(this.getProp('ratio')) ? this.getProp('ratio') : '1/1';
+    const [w, h] = this.hasAttribute('ratio') && ratio !== 'auto' ? ratio.split('/') : [];
+    const label = this.getAttribute('heading') || this.getAttribute('aria-label') || this._word('heading');
     return this.createTemplateContext({
       ...this.state,
+      label,
+      ratio,
+      mainRatio: w && h ? `${w} / ${h}` : '',
+      layout: this.getProp('layout') === 'thumbnails' ? 'thumbnails' : 'grid',
+      tileSize: ['s', 'm', 'l'].includes(this.getProp('tileSize')) ? this.getProp('tileSize') : 'm',
+      caption: this.getProp('caption') === 'under' ? 'under' : 'viewer',
+      inline: this.getProp('inline') !== false,
+      lightbox: this.getProp('lightbox') !== false,
+      selecting,
+      selectedCount,
+      selectedText: this._word('selected-count', { count: selectedCount }, selectedCount),
+      barLabel: this._word('selection'),
+      clearLabel: this._word('clear-selection'),
+      actions: this.hasSlotContent('actions') ? this.getSlotContent('actions') : '',
+      countText: this._word('count', { n: this.current, total }),
+      tiles: tiles.map((tile) => {
+        const vars = { n: tile.index, total, alt: tile.alt };
+        const thumbnails = this.getProp('layout') === 'thumbnails';
+        return {
+          index: tile.index,
+          caption: tile.caption,
+          picture: thumbnails ? null : tile.tilePicture(),
+          mainPicture: thumbnails && tile.index === this.current ? tile.mainPicture() : null,
+          thumbPicture: thumbnails && total > 1 ? tile.thumbPicture() : null,
+          selected: selecting && this._selected.has(tile.index),
+          openLabel: this._word(tile.alt ? 'open-picture-named' : 'open-picture', vars),
+          thumbLabel: this._word(tile.alt ? 'show-picture-named' : 'show-picture', vars),
+          pickLabel: this._word(tile.alt ? 'pick-picture-named' : 'pick-picture', vars),
+        };
+      }),
     });
   }
 
@@ -649,485 +420,193 @@ class SfGallery extends GalleryElement {
     return renderGalleryTemplate(this.templateContext());
   }
 
-  afterRender() {
-    this._detachNestedListeners();
-    this._bindNestedComponents();
-    this._syncSliderSlots();
-    this._attachNestedListeners();
-    this._syncSlidersToCurrent();
-    this._queueNestedDefinitionSync();
-  }
-
   resolveUpdateMode(changedAttributes = []) {
-    if (
-      changedAttributes.length > 0 &&
-      changedAttributes.every((name) => name === 'current' || name === 'open')
-    ) {
+    if (changedAttributes.length > 0 && changedAttributes.every((name) => name === 'open' || name === 'current')) {
       return 'dom';
     }
-
     return 'lit';
   }
 
   updateDom(changedAttributes = []) {
-    if (this.resolveUpdateMode(changedAttributes) !== 'dom') {
-      return false;
+    if (this.resolveUpdateMode(changedAttributes) !== 'dom') return false;
+    if (this._syncing) return true;
+    if (changedAttributes.includes('current')) this._setCurrent(this.getProp('current'), 'api', { emit: false });
+    if (changedAttributes.includes('open')) {
+      if (this.openState && !this._viewing) this.open();
+      else if (!this.openState && this._viewing) viewer.close();
     }
-
-    const openChanged = changedAttributes.includes('open');
-    const modalAction = this.openState ? 'open' : 'close';
-    if (openChanged && typeof this._modal?.[modalAction] !== 'function') {
-      return false;
-    }
-
-    if (changedAttributes.includes('current') && !this._syncingCurrent) {
-      this._setCurrent(this.getProp('current'), 'api', { emit: false });
-    }
-
-    // Modal owns its transition. Re-rendering Gallery here would replace the
-    // unchanged inline Slider during its pointer/keyboard event lifecycle.
-    if (openChanged) {
-      this._modal[modalAction]();
-    }
-
     return true;
   }
 
-  _bindNestedComponents() {
-    this._inlineSlider = this.querySelector(
-      '[data-sf-gallery-slider="inline"]',
-    );
-    this._modal = this.querySelector('[data-sf-gallery-modal]');
-    this._lightboxSlider =
-      this.querySelector('[data-sf-gallery-slider="lightbox"]') ||
-      this._modal
-        ?.modalRoot
-        ?.querySelector?.('[data-sf-gallery-slider="lightbox"]');
+  afterRender() {
+    // A gallery the page opened in its markup (open) opens once it has drawn.
+    if (this.openState && !this._viewing && this.isConnected) requestAnimationFrame(() => this.openState && !this._viewing && this.open());
   }
 
-  _attachNestedListeners() {
-    this._modal?.addEventListener?.(
-      'sf-after-render',
-      this._handleModalAfterRender,
-    );
-    this._inlineSlider?.addEventListener?.(
-      'change',
-      this._handleInlineSlideChange,
-    );
-    this._lightboxSlider?.addEventListener?.(
-      'change',
-      this._handleLightboxSlideChange,
-    );
-    this._lightboxSlider?.addEventListener?.(
-      'pointerdown',
-      this._handleLightboxBackgroundPointerDown,
-      true,
-    );
-    this._lightboxSlider?.addEventListener?.(
-      'pointerup',
-      this._handleLightboxBackgroundPointerUp,
-      true,
-    );
-    this._lightboxSlider?.addEventListener?.(
-      'click',
-      this._handleLightboxBackgroundClick,
-      true,
-    );
-    this._modal?.addEventListener?.(
-      'sf-modal-opened',
-      this._handleModalAfterOpen,
-    );
-    this._modal?.addEventListener?.(
-      'sf-modal-closed',
-      this._handleModalAfterClose,
-    );
+  // ── the viewer ──
+  _viewerItems() {
+    return this._tiles().map((tile) => tile.item);
   }
 
-  _detachNestedListeners() {
-    this._modal?.removeEventListener?.(
-      'sf-after-render',
-      this._handleModalAfterRender,
-    );
-    this._inlineSlider?.removeEventListener?.(
-      'change',
-      this._handleInlineSlideChange,
-    );
-    this._lightboxSlider?.removeEventListener?.(
-      'change',
-      this._handleLightboxSlideChange,
-    );
-    this._lightboxSlider?.removeEventListener?.(
-      'pointerdown',
-      this._handleLightboxBackgroundPointerDown,
-      true,
-    );
-    this._lightboxSlider?.removeEventListener?.(
-      'pointerup',
-      this._handleLightboxBackgroundPointerUp,
-      true,
-    );
-    this._lightboxSlider?.removeEventListener?.(
-      'click',
-      this._handleLightboxBackgroundClick,
-      true,
-    );
-    this._modal?.removeEventListener?.(
-      'sf-modal-opened',
-      this._handleModalAfterOpen,
-    );
-    this._modal?.removeEventListener?.(
-      'sf-modal-closed',
-      this._handleModalAfterClose,
-    );
+  _viewerOptions() {
+    return {
+      label: this.getAttribute('heading') || this._word('heading'),
+      loop: this.getProp('loop') === true,
+      onChange: ({ current }) => this._setCurrent(current, 'lightbox'),
+      onClose: ({ current }) => this._viewerClosed(current),
+    };
   }
 
-  _syncSliderSlots() {
-    this._syncSliderSlot(this._inlineSlider, 'inline');
-    this._syncSliderSlot(this._lightboxSlider, 'lightbox');
+  // Where the focus goes when the viewer closes (GL-5, C150 (7)): the tile of
+  // the picture the person ended on (or the main picture), else whatever
+  // opened the viewer.
+  _returnTarget(opener) {
+    return (current) => {
+      const tile = this.querySelector(`[data-sf-gallery-open="${current}"]`)
+        || this.querySelector('.sf-gallery-main [data-sf-gallery-open]');
+      if (tile instanceof HTMLElement && tile.isConnected && tile.getClientRects().length) return tile;
+      return opener;
+    };
   }
 
-  _syncSliderSlot(sliderElement, mode) {
-    if (!sliderElement?.setSlot) {
-      this._holdUndefinedSlider(sliderElement, mode);
-      return;
+  _viewerClosed(current) {
+    this._viewing = false;
+    if (this.hasAttribute('open')) {
+      this._syncing = true;
+      this.removeAttribute('open');
+      this._syncing = false;
     }
-
-    const slides = this._buildSliderSlideNodes(mode);
-    if (!slides.length) {
-      return;
-    }
-
-    this._rememberSliderIndex(sliderElement, this.current - 1);
-    sliderElement.setSlot('slide', ...slides);
-  }
-  // Until sf-slider's code arrives the inline slider holds the pictures as
-  // its own children, so core.styles' rule for an undefined sf-slider shows
-  // the first one in its frame: the gallery's box does not fall to 0 between
-  // the gallery drawing and the slider drawing (GL-7). The slider takes them
-  // as its slides when it upgrades; the queued sync then sets them anew.
-  _holdUndefinedSlider(sliderElement, mode) {
-    if (mode !== 'inline' || !sliderElement || sliderElement.childElementCount) return;
-    const slides = this._buildSliderSlideNodes(mode);
-    slides.forEach((slide) => slide.setAttribute('slot', 'slide'));
-    sliderElement.append(...slides);
+    this.sfEmit('closed', { current, total: this.slidesTotal });
   }
 
-  _queueNestedDefinitionSync() {
-    if (this._nestedDefinitionSyncQueued) {
-      return;
-    }
-
-    const needsSliderUpgrade =
-      (this._inlineSlider && !this._inlineSlider.setSlot) ||
-      (this._lightboxSlider && !this._lightboxSlider.setSlot);
-    const needsLightboxRender = this.getProp('lightbox') && !this._lightboxSlider;
-    const needsModalUpgrade = this._modal && !this._modal.open;
-
-    if (!needsSliderUpgrade && !needsModalUpgrade && !needsLightboxRender) {
-      return;
-    }
-
-    this._nestedDefinitionSyncQueued = true;
-    const tags = [];
-    if (needsSliderUpgrade) tags.push('sf-slider');
-    if (needsModalUpgrade) tags.push('sf-modal');
-
-    // The slider and the window are asked for, not only waited for
-    // (SF.Loader.ensure, core.runtime 1.19.0; duplication audit A-18): a
-    // gallery drawn into a page after the Loader's scan no longer waits on a
-    // definition nobody fetches. It waits as long as before (no timeout).
-    const loader = globalThis.SF?.Loader;
-    const wait = typeof loader?.ensure === 'function'
-      ? loader.ensure(tags, {timeout: Infinity})
-      : Promise.allSettled(tags.map((tag) => window.customElements?.whenDefined?.(tag)));
-
-    Promise.resolve(wait).then(() => {
-      requestAnimationFrame(() => {
-        this._nestedDefinitionSyncQueued = false;
-
-        if (!this.isConnected) {
-          return;
-        }
-
-        this._detachNestedListeners();
-        this._bindNestedComponents();
-        this._syncSliderSlots();
-        this._attachNestedListeners();
-        this._syncSlidersToCurrent();
-
-        if (this.openState) {
-          this._modal?.open?.();
-        }
-      });
-    });
-  }
-
-  _buildSliderSlideNodes(mode = 'inline') {
-    const slides = normalizeSlotNodes(this.getSlotContent('slide'));
-
-    return slides.map((slide, index) => {
-      const wrapper = document.createElement('div');
-      wrapper.className =
-        'sf-gallery-slide flex content-main-center items-cross-center w-full min-w-0';
-      wrapper.setAttribute('data-sf-gallery-index', String(index + 1));
-
-      if (mode === 'inline' && this.getProp('lightbox')) {
-        wrapper.setAttribute('data-sf-gallery-open', String(index + 1));
-        wrapper.setAttribute('role', 'button');
-        wrapper.setAttribute('tabindex', '0');
-      }
-
-      const content = copySlide(slide, mode === 'inline' && index === this.current - 1);
-      this.copyRuntimeData(slide, content);
-      wrapper.append(content);
-      return wrapper;
-    });
-  }
-
-  _syncSlidersToCurrent() {
-    const index = Math.max(this.current - 1, 0);
-    this._syncSliderToIndex(this._inlineSlider, index);
-    this._syncSliderToIndex(this._lightboxSlider, index);
-  }
-
-  _refreshLightboxSlider() {
-    if (!this._lightboxSlider) {
-      this._bindNestedComponents();
-    }
-
-    this._lightboxSlider?.refresh?.();
-
-    const root = this._lightboxSlider?.querySelector?.('.sf-slider');
-    if (root) {
-      window.SF?.Slider?.refresh?.(root);
-    }
-  }
-
-  _rememberSliderIndex(sliderElement, index) {
-    if (!sliderElement?.setAttribute) {
-      return;
-    }
-
-    const value = String(index);
-    if (sliderElement.getAttribute('data-swiper-initial-slide') !== value) {
-      sliderElement.setAttribute('data-swiper-initial-slide', value);
-    }
-  }
-
-  _syncSliderToIndex(sliderElement, index) {
-    this._rememberSliderIndex(sliderElement, index);
-    const slider = sliderElement?._boundSlider || null;
-    if (!slider || typeof index !== 'number' || index < 0) {
-      return;
-    }
-
-    const currentIndex =
-      typeof slider.realIndex === 'number'
-        ? slider.realIndex
-        : slider.activeIndex;
-
-    if (currentIndex === index) {
-      return;
-    }
-
-    if (slider.params?.loop && typeof slider.slideToLoop === 'function') {
-      slider.slideToLoop(index, 0);
-      return;
-    }
-
-    if (typeof slider.slideTo === 'function') {
-      slider.slideTo(index, 0);
-    }
-  }
-
-  _handleGalleryClick(event) {
-    const trigger = event.target.closest?.('[data-sf-gallery-open]');
-    if (!trigger || !this.getProp('lightbox')) {
-      return;
-    }
-
-    const index = Number.parseInt(
-      trigger.getAttribute('data-sf-gallery-open') || '1',
-      10,
-    );
-    this.open(index);
-  }
-
-  _handleGalleryKeyDown(event) {
-    const trigger = event.target.closest?.('[data-sf-gallery-open]');
-    if (!trigger || !this.getProp('lightbox')) {
-      return;
-    }
-
-    if (event.key !== 'Enter' && event.key !== ' ') {
-      return;
-    }
-
-    event.preventDefault();
-    const index = Number.parseInt(
-      trigger.getAttribute('data-sf-gallery-open') || '1',
-      10,
-    );
-    this.open(index);
-  }
-
-  // A nested slider's change is the gallery's business: it becomes the
-  // gallery's own change and stops here (§7.4: a part's events stop at the
-  // component that holds it).
-  _handleInlineSlideChange(event) {
-    if (event.target !== this._inlineSlider) return;
-    event.stopPropagation();
-    this._syncCurrentFromEvent(event, false);
-  }
-
-  _handleLightboxSlideChange(event) {
-    if (event.target !== this._lightboxSlider) return;
-    event.stopPropagation();
-    this._syncCurrentFromEvent(event, true);
-  }
-
-  _isLightboxBackgroundTarget(target) {
-    if (!this.openState || !this.getProp('closeOnOverlay')) {
-      return false;
-    }
-
-    if (!(target instanceof Element)) {
-      return false;
-    }
-
-    if (target.closest(LIGHTBOX_BACKGROUND_CLOSE_IGNORE_SELECTOR)) {
-      return false;
-    }
-
-    const activeSlide = target.closest('.swiper-slide-active');
-    const gallerySlide = target.closest('.sf-gallery-slide');
-    return Boolean(activeSlide || gallerySlide);
-  }
-
-  _stopLightboxBackgroundEvent(event) {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-  }
-
-  _requestLightboxBackgroundClose() {
-    if (this._pendingLightboxBackgroundClose) {
-      return;
-    }
-
-    this._pendingLightboxBackgroundClose = true;
-    requestAnimationFrame(() => {
-      this._pendingLightboxBackgroundClose = false;
-      this._lightboxBackgroundPointerActive = false;
-      if (!this.openState) {
-        return;
-      }
-
-      this.close();
-    });
-  }
-
-  // A press on the empty field around the picture closes the lightbox; a
-  // swipe that starts or ends there pages (GL-4): the press is not taken
-  // from the slider, and only one that did not move closes.
-  _handleLightboxBackgroundPointerDown(event) {
-    this._lightboxPointerStart = { x: event.clientX, y: event.clientY };
-    this._lightboxBackgroundPointerActive = this._isLightboxBackgroundTarget(event.target);
-  }
-
-  _lightboxPointerMoved(event) {
-    const start = this._lightboxPointerStart;
-    if (!start) return false;
-    return Math.hypot(event.clientX - start.x, event.clientY - start.y) > LIGHTBOX_TAP_SLOP;
-  }
-
-  _handleLightboxBackgroundPointerUp(event) {
-    if (!this._lightboxBackgroundPointerActive || !this._isLightboxBackgroundTarget(event.target)) {
-      this._lightboxBackgroundPointerActive = false;
-      return;
-    }
-    if (this._lightboxPointerMoved(event)) {
-      this._lightboxBackgroundPointerActive = false;
-      return;
-    }
-
-    this._stopLightboxBackgroundEvent(event);
-    this._requestLightboxBackgroundClose();
-  }
-
-  _handleLightboxBackgroundClick(event) {
-    if (!this._isLightboxBackgroundTarget(event.target)) {
-      return;
-    }
-    // The click after a swipe is the swipe's: it neither closes nor reaches a link.
-    if (this._lightboxPointerMoved(event)) {
-      this._stopLightboxBackgroundEvent(event);
-      return;
-    }
-
-    this._stopLightboxBackgroundEvent(event);
-    this._requestLightboxBackgroundClose();
-  }
-
-  _handleModalAfterRender(event) {
-    if (event.target !== this._modal) {
-      return;
-    }
-
-    const slider = this._modal?.modalRoot
-      ?.querySelector?.('[data-sf-gallery-slider="lightbox"]');
-    if (!slider || slider === this._lightboxSlider) {
-      return;
-    }
-
-    this._detachNestedListeners();
-    this._lightboxSlider = slider;
-    this._attachNestedListeners();
-    this._syncSliderSlot(slider, 'lightbox');
-    this._syncSliderToIndex(slider, Math.max(this.current - 1, 0));
-    this._queueNestedDefinitionSync();
-  }
-
-  _handleModalAfterOpen(event) {
-    // Modal events bubble; ignore those of a modal nested in the lightbox.
-    if (event?.target && event.target !== this._modal) return;
-    const targetIndex = Math.max(this.current - 1, 0);
-
+  // The actions (§4.4) answer outcomes. `index` comes as a number or as
+  // {index}, the manifest's parameter object.
+  open(index = null) {
+    const at = index && typeof index === 'object' ? index.index : index;
+    if (this.getProp('lightbox') === false) return { outcome: 'refused', reason: 'no-lightbox' };
+    const items = this._viewerItems();
+    if (!items.length) return { outcome: 'refused', reason: 'empty' };
+    if (at !== null && typeof at !== 'undefined') this._setCurrent(at, 'api');
+    const active = document.activeElement;
+    const opener = active && active !== document.body ? active : null;
+    this._viewing = true;
+    viewer.view(items, { ...this._viewerOptions(), start: this.current, opener: this._returnTarget(opener) });
     if (!this.hasAttribute('open')) {
+      this._syncing = true;
       this.setAttribute('open', '');
+      this._syncing = false;
     }
-
-    this._refreshLightboxSlider();
-    this._syncSliderToIndex(this._lightboxSlider, targetIndex);
-    requestAnimationFrame(() => {
-      if (!this.openState) {
-        return;
-      }
-
-      this._refreshLightboxSlider();
-      this._syncSliderToIndex(this._lightboxSlider, targetIndex);
-    });
-    document.removeEventListener('keydown', this._handleViewerKeyDown);
-    document.addEventListener('keydown', this._handleViewerKeyDown);
-    this.sfEmit('opened', {
-      current: this.current,
-      total: this.slidesTotal,
-    });
+    this.sfEmit('opened', { current: this.current, total: items.length });
+    return applied();
   }
 
-  // The lightbox pages with the keys (GL-4): ArrowLeft / ArrowRight (mirrored
-  // right to left), Home and End, wherever the focus is in the window except
-  // a field; the dots and the thumbnails page by their own keys first.
-  _handleViewerKeyDown(event) {
-    if (!this.openState || event.defaultPrevented) return;
-    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-    const target = event.target instanceof Element ? event.target : null;
-    if (target?.closest?.('input, textarea, select, [contenteditable]:not([contenteditable="false"])')) return;
-    const windowRoot = this._modal?.modalRoot || this._modal;
-    if (target && target !== document.body && windowRoot && !windowRoot.contains(target)) return;
+  close() {
+    if (!this._viewing && !this.openState) return { outcome: 'refused', reason: 'closed' };
+    if (this._viewing) viewer.close();
+    else this.removeAttribute('open');
+    return applied();
+  }
+
+  toggle(index = null) {
+    return this._viewing ? this.close() : this.open(index);
+  }
+
+  goTo(index) {
+    const at = index && typeof index === 'object' ? index.index : index;
+    if (!Number.isFinite(Number.parseInt(String(at), 10))) return { outcome: 'refused', reason: 'invalid' };
+    this._setCurrent(at, 'api');
+    return applied();
+  }
+
+  next() {
     const total = this.slidesTotal;
-    if (!total) return;
-    const slider = this._lightboxSlider?.querySelector?.('.sf-slider') || this._lightboxSlider;
-    const rtl = slider ? getComputedStyle(slider).direction === 'rtl' : false;
+    const next = this.getProp('loop') === true && this.current >= total ? 1 : this.current + 1;
+    return this.goTo(next);
+  }
+
+  prev() {
+    const total = this.slidesTotal;
+    const prev = this.getProp('loop') === true && this.current <= 1 ? total : this.current - 1;
+    return this.goTo(prev);
+  }
+
+  clearSelection() {
+    if (!this._selected.size) return { outcome: 'refused', reason: 'empty' };
+    this._selected.clear();
+    this._lastPicked = null;
+    this._selectionChanged();
+    return applied();
+  }
+
+  // §4.4: the readers of the slider and the window retire; kept until the
+  // date and noted on each call. There is no slider or window to give.
+  getModal() {
+    noteRetired('getModal');
+    return null;
+  }
+
+  getInlineSlider() {
+    noteRetired('getInlineSlider');
+    return null;
+  }
+
+  getLightboxSlider() {
+    noteRetired('getLightboxSlider');
+    return null;
+  }
+
+  // ── the person ──
+  _handleClick(event) {
+    if (this._swallowClick) {
+      this._swallowClick = false;
+      event.preventDefault();
+      return;
+    }
+    const clear = event.target.closest?.('[data-sf-gallery-clear]');
+    if (clear) {
+      this.clearSelection();
+      this.querySelector('[data-sf-gallery-open]')?.focus?.();
+      return;
+    }
+    if (event.target.closest?.('.sf-figure-pick')) return;
+    const thumb = event.target.closest?.('[data-sf-gallery-thumb]');
+    if (thumb) {
+      this._setCurrent(Number(thumb.getAttribute('data-sf-gallery-thumb')), 'inline');
+      return;
+    }
+    const trigger = event.target.closest?.('[data-sf-gallery-open]');
+    if (!trigger) return;
+    const index = Number.parseInt(trigger.getAttribute('data-sf-gallery-open') || '1', 10);
+    // Once anything is chosen, a press on a tile chooses; Shift a range.
+    if (this._selecting && (this._selected.size || event.shiftKey)) {
+      event.preventDefault();
+      this._toggleSelected(index, event.shiftKey);
+      return;
+    }
+    if (this.getProp('lightbox') === false) return;
+    this.open(index);
+  }
+
+  _handleChange(event) {
+    const box = event.target.closest?.('[data-sf-gallery-pick]');
+    if (!box) return;
+    // The check box's change is the gallery's select, not the page's change.
+    event.stopPropagation();
+    this._toggleSelected(Number(box.getAttribute('data-sf-gallery-pick')), Boolean(this._shiftPick));
+    this._shiftPick = false;
+  }
+
+  _handleKeyDown(event) {
+    if (event.target.closest?.('[data-sf-gallery-pick]')) this._shiftPick = event.shiftKey;
+    if (event.key === 'Escape' && this._selecting && this._selected.size && !event.defaultPrevented) {
+      event.preventDefault();
+      this.clearSelection();
+      return;
+    }
+    const thumb = event.target.closest?.('[data-sf-gallery-thumb]');
+    if (!thumb || event.altKey || event.ctrlKey || event.metaKey) return;
+    const total = this.slidesTotal;
+    const rtl = getComputedStyle(thumb).direction === 'rtl';
     const step = { ArrowRight: rtl ? -1 : 1, ArrowLeft: rtl ? 1 : -1 }[event.key];
     let next;
     if (step) next = this.current + step;
@@ -1135,113 +614,38 @@ class SfGallery extends GalleryElement {
     else if (event.key === 'End') next = total;
     else return;
     event.preventDefault();
-    if (this.getProp('loop')) next = ((next - 1 + total) % total) + 1;
-    this.goTo(Math.min(Math.max(next, 1), total));
+    next = Math.min(Math.max(next, 1), total);
+    this._setCurrent(next, 'inline');
+    requestAnimationFrame(() => this.querySelector(`[data-sf-gallery-thumb="${next}"]`)?.focus());
   }
 
-  // The focus goes back to the picture that opened the lightbox (GL-5); when
-  // the person paged there, to the inline picture now shown (the opener is
-  // out of view).
-  _restoreFocus() {
-    const opener = this._opener;
-    this._opener = null;
-    const usable = (element) => element instanceof HTMLElement && element.isConnected
-      && !element.closest('[inert]') && element.getClientRects().length > 0;
-    const shown = this._inlineSlider?.querySelector?.(`.swiper-slide-active [data-sf-gallery-open], [data-sf-gallery-open="${this.current}"]:not([inert] *)`);
-    const target = usable(opener) ? opener : (usable(shown) ? shown : null);
-    target?.focus?.({ preventScroll: true });
+  // A phone has no hover: a long press on a tile chooses it, and then the
+  // check boxes show on every tile (C150 (9)).
+  _handlePointerDown(event) {
+    if (event.target.closest?.('[data-sf-gallery-pick]')) this._shiftPick = event.shiftKey;
+    if (!this._selecting || event.pointerType !== 'touch') return;
+    const trigger = event.target.closest?.('[data-sf-gallery-open]');
+    if (!trigger) return;
+    clearTimeout(this._press?.timer);
+    const press = { x: event.clientX, y: event.clientY };
+    press.timer = setTimeout(() => {
+      this._press = null;
+      this._swallowClick = true;
+      this._toggleSelected(Number(trigger.getAttribute('data-sf-gallery-open')));
+    }, LONG_PRESS_MS);
+    press.move = (moveEvent) => {
+      if (Math.hypot(moveEvent.clientX - press.x, moveEvent.clientY - press.y) > LONG_PRESS_SLOP) this._handlePointerEnd();
+    };
+    this.addEventListener('pointermove', press.move);
+    this._press = press;
   }
 
-  _handleModalAfterClose(event) {
-    if (event?.target && event.target !== this._modal) return;
-    if (this.hasAttribute('open')) {
-      this.removeAttribute('open');
-    }
-    document.removeEventListener('keydown', this._handleViewerKeyDown);
-    // After the window gave the focus back to where it was (its section):
-    // the next frame, so the window's own return comes first.
-    requestAnimationFrame(() => requestAnimationFrame(() => this._restoreFocus()));
-    this.sfEmit('closed', {
-      current: this.current,
-      total: this.slidesTotal,
-    });
-  }
-
-  _syncCurrentFromEvent(event, fromLightbox = false) {
-    const next =
-      Number(event.detail?.realIndex ?? event.detail?.activeIndex ?? 0) + 1;
-    if (!Number.isFinite(next) || this._syncingCurrent) {
-      return;
-    }
-
-    this._syncingCurrent = true;
-    this._setCurrent(next, fromLightbox ? 'lightbox' : 'inline');
-    this._syncingCurrent = false;
-  }
-
-  // §4.4: readers retire; kept until the date and noted on each call.
-  getModal() {
-    noteRetired('getModal');
-    return this._modal || null;
-  }
-
-  getInlineSlider() {
-    noteRetired('getInlineSlider');
-    return this._inlineSlider || null;
-  }
-
-  getLightboxSlider() {
-    noteRetired('getLightboxSlider');
-    return this._lightboxSlider || null;
-  }
-
-  // The actions (§4.4) answer outcomes. `index` comes as a number or as
-  // {index}, the manifest's parameter object.
-  open(index = null) {
-    const at = index && typeof index === 'object' ? index.index : index;
-    if (!this.getProp('lightbox')) return { outcome: 'refused', reason: 'no-lightbox' };
-    const active = document.activeElement;
-    const windowRoot = this._modal?.modalRoot || this._modal;
-    if (!this.openState && active && active !== document.body && !windowRoot?.contains?.(active)) {
-      this._opener = active;
-    }
-    if (at !== null && typeof at !== 'undefined') {
-      this.goTo(at);
-    }
-
-    this.setAttribute('open', '');
-    this._modal?.open?.();
-    return applied();
-  }
-
-  close() {
-    if (!this.openState) return { outcome: 'refused', reason: 'closed' };
-    this.removeAttribute('open');
-    this._modal?.close?.();
-    return applied();
-  }
-
-  toggle(index = null) {
-    if (this.openState) {
-      return this.close();
-    }
-
-    return this.open(index);
-  }
-
-  goTo(index) {
-    const at = index && typeof index === 'object' ? index.index : index;
-    if (!Number.isFinite(Number.parseInt(String(at), 10))) return { outcome: 'refused', reason: 'invalid' };
-    this._setCurrent(at, 'api', { syncAttribute: true });
-    return applied();
-  }
-
-  next() {
-    return this.goTo(this.current + 1);
-  }
-
-  prev() {
-    return this.goTo(this.current - 1);
+  _handlePointerEnd() {
+    const press = this._press;
+    if (!press) return;
+    clearTimeout(press.timer);
+    this.removeEventListener('pointermove', press.move);
+    this._press = null;
   }
 }
 

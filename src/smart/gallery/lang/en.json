@@ -1,6 +1,27 @@
 {
   "title": "Gallery",
   "runtime": {
-    "heading": "Gallery"
+    "heading": "Gallery",
+    "open-picture": "Open picture {n} of {total}",
+    "open-picture-named": "Open picture {n} of {total}: {alt}",
+    "show-picture": "Show picture {n}",
+    "show-picture-named": "Show picture {n}: {alt}",
+    "pick-picture": "Select picture {n}",
+    "pick-picture-named": "Select picture {n}: {alt}",
+    "count": "{n} / {total}",
+    "selection": "Selection",
+    "selected-count": "{count} selected",
+    "clear-selection": "Clear selection",
+    "viewer-label": "Viewer",
+    "viewer-count": "{n} / {total}",
+    "viewer-count-words": "{n} of {total}",
+    "viewer-zoom-in": "Zoom in",
+    "viewer-zoom-out": "Zoom out",
+    "viewer-close": "Close",
+    "viewer-previous": "Previous picture",
+    "viewer-next": "Next picture",
+    "viewer-download": "Download {name}",
+    "viewer-open-tab": "Open in a new tab",
+    "viewer-document": "Document"
   }
 }

@@ -1252,13 +1252,20 @@
     },
     {
       "name": "SF.Gallery",
-      "status": "internal",
+      "status": "public",
       "layer": "component",
-      "audience": "internal",
-      "author": "Is a helper of the legacy system scripts; a page does not call it.",
+      "audience": "public",
+      "author": "Opens pictures, videos and PDF files in the full-screen viewer and returns a handle to page it and close it.",
+      "doc": "smart/content/gallery#javascript",
       "kind": "object",
-      "loaded_by": "component/sf-system",
-      "summary": "A helper of the legacy system scripts (component/sf-system); the runtime's."
+      "loaded_by": "smart/gallery",
+      "summary": "The full-screen viewer of sf-gallery (owner decisions C150 (7), (8) and C149 (6)): view(items, options) opens a list of pictures, videos or PDF links at a start index and returns {close, goTo, next, prev, current, total, open}; close() closes it; current and open read the open viewer. Shared by sf-gallery and sf-file-preview; it replaced the legacy system scripts' internal gallery constructor.",
+      "members": [
+        "view",
+        "close",
+        "current",
+        "open"
+      ]
     },
     {
       "name": "SF.Highlight",

@@ -7,7 +7,9 @@ SF.RuleLoader['cl-gallery'] = {
   js: true,
   css: true,
   relation: [
-    { name: 'cl-slider' },
-    { name: 'cl-modal' },
+    { name: 'cl-button-icon' },
+    { name: 'cl-button-close' },
+    { name: 'figure' },
+    { name: 'checkbox' },
   ],
 };

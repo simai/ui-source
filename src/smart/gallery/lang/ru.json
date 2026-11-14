@@ -1,6 +1,27 @@
 {
   "title": "Галерея",
   "runtime": {
-    "heading": "Галерея"
+    "heading": "Галерея",
+    "open-picture": "Открыть фото {n} из {total}",
+    "open-picture-named": "Открыть фото {n} из {total}: {alt}",
+    "show-picture": "Показать фото {n}",
+    "show-picture-named": "Показать фото {n}: {alt}",
+    "pick-picture": "Выбрать фото {n}",
+    "pick-picture-named": "Выбрать фото {n}: {alt}",
+    "count": "{n} / {total}",
+    "selection": "Выбор",
+    "selected-count": "Выбрано {count}",
+    "clear-selection": "Снять выбор",
+    "viewer-label": "Просмотр",
+    "viewer-count": "{n} / {total}",
+    "viewer-count-words": "{n} из {total}",
+    "viewer-zoom-in": "Увеличить",
+    "viewer-zoom-out": "Уменьшить",
+    "viewer-close": "Закрыть",
+    "viewer-previous": "Предыдущее фото",
+    "viewer-next": "Следующее фото",
+    "viewer-download": "Скачать {name}",
+    "viewer-open-tab": "Открыть в новой вкладке",
+    "viewer-document": "Документ"
   }
 }

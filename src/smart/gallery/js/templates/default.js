@@ -1,96 +1,107 @@
 import { html, nothing } from 'lit';
 import './default.css';
 
+// sf-gallery draws its pictures as the one picture tile of the Framework
+// (component.figure 1.3.0: .sf-figure--tile in a .sf-figure-grid, owner
+// decision C150 (10)); the full-screen viewer is its own part (js/viewer.js).
+
 function joinClasses(...tokens) {
   return tokens.flat().filter(Boolean).join(' ').trim();
 }
 
-function renderSliderNode(context, type = 'inline') {
-  const isInline = type === 'inline';
-  const sliderClass = isInline ? context.inlineClass : context.lightboxClass;
-  const authoredSpaceBetween = context.component?.hasAttribute('space-between');
-  const authoredSpeed = context.component?.hasAttribute('speed');
+const RATIO_CLASS = {
+  '1/1': 'sf-figure--ratio-1x1',
+  '4/3': 'sf-figure--ratio-4x3',
+  '16/9': 'sf-figure--ratio-16x9',
+  auto: '',
+};
 
-  // Both sliders take ratio auto: the gallery's frame is its pictures' own
-  // box (--sf-gallery--ratio on each inline picture, contained), so a slide
-  // with a caption under the picture keeps the caption and no picture is
-  // cropped to the slider's 16/9 (GL-7).
+function pick(context, tile) {
+  if (!context.selecting) return nothing;
   return html`
-    <sf-slider
-      data-sf-gallery-slider=${type}
-      class=${sliderClass}
-      button-type=${context.buttonType}
-      button-size=${context.buttonSize}
-      dots=${String(context.dots)}
-      dots-type=${context.component?.hasAttribute?.('dots-type') ? context.dotsType : nothing}
-      dots-size=${context.dotsSize}
-      thumbs=${String(context.thumbs)}
-      thumbs-class=${context.thumbsClass}
-      thumb-class=${context.thumbClass}
-      arrows=${String(context.arrows)}
-      loop=${String(context.loop)}
-      space-between=${authoredSpaceBetween ? String(context.spaceBetween) : nothing}
-      speed=${authoredSpeed ? String(context.speed) : nothing}
-      slide-class=${context.slideClass}
-      ratio="auto"
-    ></sf-slider>
+    <label class="sf-figure-pick sf-checkbox sf-checkbox--size-1 flex">
+      <span class="sf-checkbox-box flex">
+        <input type="checkbox" .checked=${tile.selected} data-sf-gallery-pick=${tile.index}
+          aria-label=${tile.pickLabel}>
+        <span class="sf-icon" aria-hidden="true"></span>
+      </span>
+    </label>
+  `;
+}
+
+function media(context, tile) {
+  if (!context.lightbox && !context.selecting) {
+    return html`<div class="sf-figure-media">${tile.picture}</div>`;
+  }
+  return html`
+    <button type="button" class="sf-figure-media" data-sf-gallery-open=${tile.index}
+      aria-label=${tile.openLabel} aria-haspopup=${context.lightbox ? 'dialog' : nothing}>${tile.picture}</button>
+  `;
+}
+
+function renderGrid(context) {
+  const ratioClass = RATIO_CLASS[context.ratio] ?? RATIO_CLASS['1/1'];
+  return html`
+    ${renderBar(context)}
+    <div class=${joinClasses('sf-gallery sf-gallery--grid sf-figure-grid', `sf-figure-grid--${context.tileSize}`,
+      context.selectedCount ? 'sf-figure-grid--selecting' : '', context.rootClass)}
+      role="list" aria-label=${context.label || nothing}>
+      ${context.tiles.map((tile) => html`
+        <figure role="listitem" data-sf-gallery-index=${tile.index}
+          class=${joinClasses('sf-figure sf-figure--tile', ratioClass, context.ratio === 'auto' ? 'sf-figure--ratio-auto' : '',
+            tile.selected ? 'sf-figure--selected' : '')}>
+          ${media(context, tile)}
+          ${context.caption === 'under' && tile.caption ? html`<figcaption class="sf-figure-caption">${tile.caption}</figcaption>` : nothing}
+          ${pick(context, tile)}
+        </figure>
+      `)}
+    </div>
+  `;
+}
+
+// The second look (C150 (1)): the main picture, whole in its frame, and a row
+// of thumbnails under it -- a product card. The thumbnails are one Tab stop,
+// paged by the arrow keys (as sf-slider's, GL-2).
+function renderThumbnails(context) {
+  const shown = context.tiles[context.current - 1] || context.tiles[0];
+  if (!shown) return html`<div class=${joinClasses('sf-gallery sf-gallery--thumbnails', context.rootClass)}></div>`;
+  return html`
+    <div class=${joinClasses('sf-gallery sf-gallery--thumbnails', context.rootClass)}
+      style=${context.mainRatio ? `--sf-gallery--ratio: ${context.mainRatio}` : nothing}>
+      <figure class="sf-figure sf-figure--contain sf-gallery-main">
+        ${context.lightbox
+          ? html`<button type="button" class="sf-figure-media" data-sf-gallery-open=${shown.index}
+              aria-label=${shown.openLabel} aria-haspopup="dialog">${shown.mainPicture}</button>`
+          : html`<div class="sf-figure-media">${shown.mainPicture}</div>`}
+      </figure>
+      ${context.tiles.length > 1 ? html`
+        <div class="sf-gallery-thumbs" role="group" aria-label=${context.label || nothing}>
+          ${context.tiles.map((tile) => html`
+            <button type="button" class="sf-figure-media sf-gallery-thumb"
+              data-sf-gallery-thumb=${tile.index} tabindex=${tile.index === shown.index ? '0' : '-1'}
+              aria-current=${tile.index === shown.index ? 'true' : nothing} aria-label=${tile.thumbLabel}>${tile.thumbPicture}</button>
+          `)}
+        </div>
+        <span class="sf-gallery-count" aria-live="polite">${context.countText}</span>
+      ` : nothing}
+    </div>
+  `;
+}
+
+// «Выбрано N» with the page's actions and «Снять выбор» (C150 (9)).
+function renderBar(context) {
+  if (!context.selecting) return nothing;
+  return html`
+    <div class="sf-gallery-bar" ?hidden=${!context.selectedCount} role="region" aria-label=${context.barLabel}>
+      <span class="sf-gallery-bar-count" aria-live="polite">${context.selectedText}</span>
+      <span class="sf-gallery-bar-actions">${context.actions}</span>
+      <sf-button-icon data-sf-gallery-clear appearance="ghost" scheme="on-surface" size="1/2" icon="close"
+        aria-label=${context.clearLabel}></sf-button-icon>
+    </div>
   `;
 }
 
 export function renderGalleryTemplate(context) {
-  const showInline = context.inline || !context.lightbox;
-  return html`
-    <div
-      class=${joinClasses('sf-gallery flex flex-col gap-1', context.rootClass)}
-      style=${context.frameRatio ? `--sf-gallery--ratio: ${context.frameRatio}` : nothing}
-    >
-      ${showInline
-        ? html`
-            <div class="sf-gallery-inline" data-sf-gallery-inline>
-              ${renderSliderNode(context, 'inline')}
-            </div>
-          `
-        : nothing}
-      ${context.lightbox
-        ? html`
-            <sf-modal
-              data-sf-gallery-modal
-              modal-id=${context.modalId}
-              heading=${context.heading}
-              text=${context.text}
-              ?open=${context.open}
-              overlay=${String(context.overlay)}
-              show-header=${String(context.showHeader)}
-              show-close=${String(context.showClose)}
-              show-footer="false"
-              close-on-esc=${String(context.closeOnEsc)}
-              close-on-overlay=${String(context.closeOnOverlay)}
-              preserve-scroll-gap=${String(context.preserveScrollGap)}
-              position=${context.position}
-              fullscreen=${String(context.fullscreen)}
-              width=${context.width}
-              height=${context.height}
-              backdrop-blur=${String(context.backdropBlur)}
-              blur-type=${context.blurType}
-              overlay-class=${context.overlayClass}
-              close-class=${context.closeClass}
-              surface-class=${context.surfaceClass}
-              surface-padding=${context.surfacePadding}
-              panel-class=${joinClasses('sf-gallery-lightbox-panel min-w-0 max-w-full', context.panelClass)}
-              header-class=${context.headerClass}
-              body-class=${context.bodyClass}
-              content-class=${context.contentClass}
-              footer-class=${context.footerClass}
-            >
-              <div
-                slot="content"
-                class="sf-gallery-lightbox-content flex flex-col gap-1 h-full"
-              >
-                ${renderSliderNode(context, 'lightbox')}
-              </div>
-            </sf-modal>
-          `
-        : nothing}
-    </div>
-  `;
+  if (!context.inline) return html`<div class=${joinClasses('sf-gallery', context.rootClass)} hidden></div>`;
+  return context.layout === 'thumbnails' ? renderThumbnails(context) : renderGrid(context);
 }

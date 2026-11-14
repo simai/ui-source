@@ -75,6 +75,50 @@ container step, corner to corner, over the place's solid colour (an
 it follows the theme. `data-sf-style="strict"`, the default, keeps it flat;
 the nearest one wins.
 
+## Picture tile
+
+`sf-figure--tile` is the one picture tile of the SIMAI Framework (owner
+decision C150 (10)): sf-gallery draws it, and the file upload's gallery look,
+ui-mail's «Изображения» and SIMAI Pro's chat previews use it too. Every tile
+of a set takes one ratio -- 1:1 unless a ratio class names another
+(`sf-figure--ratio-4x3`, `sf-figure--ratio-16x9`), `sf-figure--ratio-auto`
+keeps each picture's own -- and the picture covers the box around its focus
+point (the image field's focus written as the picture's `object-position`).
+The box holds its shape, the quiet fill and the radius from the first frame,
+so nothing moves when the picture arrives. The media box may be a `button`
+or a link: it opens the viewer (`SF.Gallery.view`, see sf-gallery).
+
+`sf-figure-grid` lays tiles out: as many columns as fit at the tile's minimum,
+never fewer than the minimum count, one group's gap (`--sf-space-1/3`, 8; 4
+in compact density).
+
+| Class | Tile minimum | At least |
+|:---|:---|:---|
+| `sf-figure-grid sf-figure-grid--s` | `--sf-e2` (96) | 3 columns |
+| `sf-figure-grid` | `--sf-f0` (160) | 2 columns |
+| `sf-figure-grid sf-figure-grid--l` | `--sf-f5` (240) | 1 column |
+
+A tile that can be chosen carries `sf-figure-pick`, a class check box on a
+popup plate in its start corner, shown on hover and focus and on every tile
+once the grid has `sf-figure-grid--selecting`; a chosen tile adds
+`sf-figure--selected` (a primary ring inside the box, the picture a step in).
+
+```html
+<div class="sf-figure-grid sf-figure-grid--s" role="list" aria-label="Фото">
+  <figure class="sf-figure sf-figure--tile" role="listitem">
+    <button type="button" class="sf-figure-media" aria-label="Открыть фото 1 из 3">
+      <img src="/a.webp" alt="" width="1280" height="960" loading="lazy">
+    </button>
+    <label class="sf-figure-pick sf-checkbox sf-checkbox--size-1 flex">
+      <span class="sf-checkbox-box flex">
+        <input type="checkbox" aria-label="Выбрать фото 1 из 3">
+        <span class="sf-icon" aria-hidden="true"></span>
+      </span>
+    </label>
+  </figure>
+</div>
+```
+
 ## Variables
 
 | Variable | What | Default |

@@ -1,20 +1,14 @@
 # sf-gallery
 
-Smart gallery component with inline slider and optional lightbox modal.
+A set of pictures (owner decision C150, 2026-11-14): a grid of picture tiles
+by default, or the main picture with a row of thumbnails under it (a product
+card). A press on a picture opens the full-screen viewer of the page, which
+pages, zooms and closes the same way everywhere. A media library chooses
+pictures with check boxes. A row of slides that scrolls is `sf-slider`
+(C143), not a gallery look.
 
-Nested Sliders inherit the same token-driven spacing, motion reduction,
-autoplay pause and hidden-slide focus rules as the ordinary Slider unless the
-author supplies explicit numeric compatibility overrides.
-
-The gallery owns the selected position. `current`, `goTo(index)` and
-`open(index)` use one-based slide numbers. Inline and lightbox views retain that
-selection when the modal closes or a nested Slider is reinitialized. Consumers
-do not need to reset the child Slider position after rendering.
-
-Updates containing only `current` and/or `open` do not rerender Gallery's
-contents: the existing inline Slider remains alive while Modal handles its
-transition. These updates emit `sf-updated` with `updateMode: "dom"` rather
-than `sf-after-render`. Configuration or slot changes still use rendering.
+The gallery owns the shown position. `current`, `goTo(index)` and
+`open(index)` use one-based picture numbers.
 
 ## Tag
 
@@ -23,252 +17,206 @@ than `sf-after-render`. Configuration or slot changes still use rendering.
 ## Loading model
 
 - detected by `tags: ['sf-gallery']` in `src/smart/gallery/rule.js`
-- also detected by `data-sf-gallery` for delegated lightbox usage
-- loaded as smart bundle `cl-gallery`
-- its composition stylesheet is loaded with the Smart bundle (`css: true`)
-- related smart bundles are loaded through relations:
-  - `cl-slider`
-  - `cl-modal`
-- related base components are loaded through transitive relations:
-  - `slider`
-  - `modal`
-  - `icon-buttons`
-  - `icons`
+- also detected by `data-sf-gallery` on the page's own links and pictures
+- loaded as smart bundle `cl-gallery`, its stylesheet with it (`css: true`)
+- relations: `cl-button-icon`, `cl-button-close` (the viewer's controls),
+  `figure` (the tile and the grid), `checkbox` (the selection check box)
+
+Before the code arrives core.styles already lays the page's pictures out as
+the grid (or the main picture of the thumbnails look) in their ratio, with the
+quiet container fill, so nothing moves when the gallery draws (C150 (6)).
+Pictures after the first rows load lazily: the tiles are made with
+`loading="lazy"` and `decoding="async"` unless the page wrote its own; give
+the page's own pictures after the first `loading="lazy"` too, since the
+browser fetches what the page itself writes.
 
 ## Basic usage
 
-The rendered Gallery root can shrink to the available width in block, grid and
-flex containers. This prevents the inline Slider's measured width from imposing
-an automatic minimum on its parent; content is not hidden to mask overflow.
-An explicitly oversized author layout still needs its own responsive constraints.
-
-Lightbox layout reuses Slider dimension/fit tokens and the Modal scroll area.
-Authored `figure`, `picture`, image and caption styles are not overwritten.
-Long captions remain in the scrollable modal content instead of being clipped
-to a fixed image height. `width`, `height` and `fullscreen` still belong to Modal.
-The image-height default is exposed as `--sf-gallery-media--max-height` and
-uses the viewport minus a spacing-token reserve. Delegated defaults also use
-spacing tokens instead of fixed pixel offsets.
-
 ```html
-<sf-gallery arrows="true" dots="true" thumbs="true">
-  <img slot="slide" src="/upload/photo-1.jpg" alt="Photo 1">
-  <img slot="slide" src="/upload/photo-2.jpg" alt="Photo 2">
-  <img slot="slide" src="/upload/photo-3.jpg" alt="Photo 3">
+<sf-gallery heading="Фото">
+  <img src="/upload/photo-1.jpg" alt="Фасад" width="1280" height="960">
+  <img src="/upload/photo-2.jpg" alt="Холл" width="1280" height="960" loading="lazy">
+  <img src="/upload/photo-3.jpg" alt="Двор" width="1280" height="960" loading="lazy">
 </sf-gallery>
 ```
 
-## Lightbox only
+Every child is a picture of the set: an `img`, a `picture`, a `figure` with
+its `figcaption`, or a link to the large file around a small picture
+(`<a href="/large.jpg"><img src="/small.jpg" alt="…"></a>`). The large file
+is the link's address, else `data-src`, else the picture's own. The caption is
+`data-caption`, the figure caption or `title`. A picture's `object-position`
+(the image field's focus point) is kept in its tile.
+
+## Looks and settings
+
+| Setting | Values | What |
+|:---|:---|:---|
+| `layout` | `grid` (default), `thumbnails` | the grid of tiles, or the main picture whole in its frame with thumbnails and «3 / 12» under it |
+| `tile-size` | `s` 96, `m` 160 (default), `l` 240 | the tile's minimum; as many columns as fit, never fewer than 3 / 2 / 1 |
+| `ratio` | `1/1` (default), `4/3`, `16/9`, `auto` | one shape for every tile, the picture covering it around its focus point; `auto` keeps each picture's own. In the thumbnails look it is the main frame's (4/3 without the attribute) |
+| `caption` | `viewer` (default), `under` | captions in the viewer, or also under the tiles |
+| `selection` | `none` (default), `many` | check boxes on the tiles, «Выбрано N» and the page's actions over the grid |
+| `heading` | text | the grid's and the viewer's accessible name («Галерея» by default) |
+| `inline` | `true` (default) | `false` draws nothing on the page: the gallery is only its viewer |
+| `lightbox` | `true` (default) | `false`: a press opens nothing |
+| `loop` | `false` (default) | the viewer pages from the last picture to the first |
+
+The grid's gap is one group's, `--sf-space-1/3`: 8, and 4 in compact density.
+
+Values: `open` (the viewer is open), `current` (the one-based picture shown),
+`selected` (the chosen pictures' numbers, a list; a page may write it).
+
+## The viewer
+
+Full screen and black in both themes (pictures are judged on black):
+
+- the bar: «3 / 12» (and the file's name when it has one) at the start; the
+  zoom, download, open-in-a-tab and «Закрыть» buttons at the end, 8 apart;
+- arrows at the sides; none on a phone, where a horizontal swipe pages;
+- the caption under the picture;
+- keys: ← → page (mirrored right to left), Home and End go to the first and
+  the last, + and − zoom, the arrow keys pan a zoomed picture, Escape first
+  un-zooms, then closes;
+- zoom: a double click or a double tap zooms to the picture's own pixels at
+  that point and back, the zoom button, + and −, a pinch on a phone; a drag
+  pans a zoomed picture;
+- a swipe down closes, as does a press on the empty field around the picture;
+- the focus goes to «Закрыть» on open, and back to the tile of the picture
+  shown last on close.
+
+A video plays in the browser's own player, a PDF file shows in the browser's
+own viewer in a frame (C149 (6)).
+
+## Selection (media library)
+
+With `selection="many"` each tile has a check box in its start corner, shown
+on hover and focus and on every tile once anything is chosen. A press on a
+picture opens it while nothing is chosen and chooses it once something is;
+Shift chooses a range; on a phone a long press chooses. Over the grid the bar
+says «Выбрано N», holds the page's actions (slot `actions`) and «Снять выбор»;
+Escape clears the choice.
 
 ```html
-<sf-gallery inline="false" lightbox="true" width="min(96vw, 1200px)" height="80vh">
-  <img slot="slide" src="/upload/photo-1.jpg" alt="Photo 1">
-  <img slot="slide" src="/upload/photo-2.jpg" alt="Photo 2">
+<sf-gallery selection="many" tile-size="s">
+  <img src="/upload/a.jpg" alt="Фасад">
+  <img src="/upload/b.jpg" alt="Холл">
+  <sf-button slot="actions" appearance="ghost" size="1/2">Удалить</sf-button>
 </sf-gallery>
 ```
 
 ## Delegated gallery
 
-Use `data-sf-gallery` on links or images to create a shared lightbox without writing an explicit `sf-gallery` element.
+Use `data-sf-gallery` on links or pictures to open the viewer without an
+`sf-gallery` element:
 
 ```html
 <a href="/upload/photo-1.jpg" data-sf-gallery="product">
   <img src="/upload/photo-1-thumb.jpg" alt="Photo 1">
 </a>
-
 <a href="/upload/photo-2.jpg" data-sf-gallery="product">
   <img src="/upload/photo-2-thumb.jpg" alt="Photo 2">
 </a>
 ```
 
-Elements with the same `data-sf-gallery` value are grouped. Empty `data-sf-gallery` opens only the clicked item.
+Elements with the same `data-sf-gallery` value are one set. An empty value
+opens only the pressed one. `data-sf-gallery-title` names the viewer
+(`data-sf-modal-heading` and `data-sf-modal-title` are still read), and
+`data-sf-gallery-loop` pages round.
 
-## Delegated modal and slider options
+## JavaScript
 
-Delegated gallery maps namespaced attributes to the internal components:
+The viewer is the gallery's part, and its script API is `SF.Gallery`. It
+exists once the gallery is loaded, so a page asks for it first:
 
-- `data-sf-modal-*` -> internal `sf-modal` options through `sf-gallery`
-- `data-sf-slider-*` -> internal lightbox `sf-slider` options through `sf-gallery`
-
-Example:
-
-```html
-<a
-  href="/upload/photo-1.jpg"
-  data-sf-gallery="product"
-  data-sf-modal-surface-padding="0"
-  data-sf-modal-show-header="false"
-  data-sf-modal-width="900px"
-  data-sf-modal-height="80vh"
-  data-sf-slider-arrows="true"
-  data-sf-slider-dots="false"
-  data-sf-slider-thumbs="true"
->
-  <img src="/upload/photo-1-thumb.jpg" alt="Photo 1">
-</a>
+```js
+await SF.Loader.ensure(['sf-gallery']);
+const viewer = SF.Gallery.view([
+  {src: '/upload/plan.jpg', alt: 'План этажа', caption: 'Этаж 2'},
+  {src: '/upload/tour.mp4', name: 'tour.mp4'},
+  {src: '/upload/contract.pdf', name: 'Договор.pdf', meta: 'PDF · 1,2 МБ', download: true, open: true},
+], {start: 1, opener: document.activeElement});
+viewer.next();
 ```
 
-Supported delegated modal attributes:
+`SF.Gallery.view(items, options)` opens the viewer (or shows new items in the
+open one) and returns a handle `{close(), goTo(n), next(), prev(), current,
+total, open}`; `SF.Gallery.close()` closes it; `SF.Gallery.current` and
+`SF.Gallery.open` read the open viewer.
 
-- `data-sf-modal-heading` (or the older `data-sf-modal-title`)
-- `data-sf-modal-text`
-- `data-sf-modal-overlay`
-- `data-sf-modal-show-header`
-- `data-sf-modal-show-close`
-- `data-sf-modal-close-on-esc`
-- `data-sf-modal-close-on-overlay`
-- `data-sf-modal-preserve-scroll-gap`
-- `data-sf-modal-position`
-- `data-sf-modal-fullscreen`
-- `data-sf-modal-width`
-- `data-sf-modal-height`
-- `data-sf-modal-backdrop-blur` (or the older `data-sf-modal-blur`)
-- `data-sf-modal-blur-type`
-- `data-sf-modal-overlay-class`
-- `data-sf-modal-close-class`
-- `data-sf-modal-surface-class`
-- `data-sf-modal-surface-padding`
-- `data-sf-modal-panel-class`
-- `data-sf-modal-header-class`
-- `data-sf-modal-body-class`
-- `data-sf-modal-content-class`
-- `data-sf-modal-footer-class`
+An item is `{src, type, mime, alt, caption, name, meta, width, height,
+download, open, href}`; a string is `{src}`. `type` is `image` (the default),
+`video` or `pdf`; without it `mime` or the address's extension says. `name`
+shows in the bar above the counter; `download` (true, or a file name) and
+`open` (true) add the download and open-in-a-tab buttons.
 
-Supported delegated slider attributes:
+Options:
 
-- `data-sf-slider-arrows`
-- `data-sf-slider-dots`
-- `data-sf-slider-thumbs`
-- `data-sf-slider-loop`
-- `data-sf-slider-space-between`
-- `data-sf-slider-speed`
-- `data-sf-slider-button-type`
-- `data-sf-slider-button-size`
-- `data-sf-slider-dots-type`
-- `data-sf-slider-dots-size`
-- `data-sf-slider-slide-class`
-- `data-sf-slider-lightbox-class`
-- `data-sf-slider-class` alias for `lightbox-class`
-- `data-sf-slider-root-class` alias for `lightbox-class`
+| Option | Default | What |
+|:---|:---|:---|
+| `start` | 1 | the one-based item to open at |
+| `opener` | the focused element | where the focus goes back: an element, or a function `(current) => element` |
+| `label` | «Просмотр» | the viewer's accessible name |
+| `counter` | `slash` | `slash` «3 / 12», `words` «3 из 12» |
+| `loop` | false | page from the last item to the first |
+| `zoom` | true | false turns zoom off |
+| `labels` | | `{previous, next}`: the side arrows' names («Предыдущее фото», «Следующее фото») |
+| `onChange` | | `({current, previous, total})` after each page |
+| `onClose` | | `({current, total})` after the focus went back |
 
-Legacy `data-sf-gallery-*` options are still accepted as fallback for matching option names.
+### From sf-file-preview
 
-## Attributes
+The file preview (C149) opens its files in this viewer; it does not import the
+module, it calls the global:
 
-- `template`
-- `modal-id`
-- `heading` — the lightbox's heading; «Галерея» / «Gallery» from the language
-  file when unset
-- `text`
-- `open`
-- `current`
-- `inline`
-- `lightbox`
-- `arrows`
-- `dots`
-- `thumbs`
-- `loop`
-- `space-between`
-- `speed`
-- `button-type`
-- `button-size`
-- `dots-type`
-- `dots-size`
-- `root-class`
-- `slide-class`
-- `inline-class`
-- `lightbox-class`
-- `overlay`
-- `show-header`
-- `show-close`
-- `close-on-esc`
-- `close-on-overlay`
-- `preserve-scroll-gap`
-- `position="center|left|right|top|bottom"`
-- `fullscreen`
-- `width`
-- `height`
-- `backdrop-blur`
-- `blur-type="none|small|medium|large"`
-- `overlay-class`
-- `close-class`
-- `surface-class`
-- `surface-padding`
-- `panel-class`
-- `header-class`
-- `body-class`
-- `content-class`
-- `footer-class`
-
-## Slots
-
-- `slide`
-
-Each meaningful item returned by the shared `slide` slot is cloned into the
-inline and lightbox sliders. Formatting whitespace and comments do not create
-slides or increment the current index. Empty elements and meaningful text are
-preserved. A node with only `slot="slide"` is a container whose children are
-items; an attributed node (for example `div slot="slide" class="p-2"`) is
-retained whole, and so is a `figure`, a `picture` or any node holding a
-`figcaption`, with or without other attributes. Keep a composite card inside one item, not separate sibling
-heading/text/link nodes. Template and setSlot input use the same boundaries.
+```js
+await SF.Loader.ensure(['sf-gallery']);
+SF.Gallery.view(files.map((file) => ({
+  src: file.url, type: file.kind /* image | video | pdf */, name: file.name,
+  meta: file.meta, download: file.name, open: true,
+})), {
+  start: index + 1,
+  opener: (current) => tiles[current - 1] || trigger,
+  counter: 'words',
+  labels: {previous: 'Предыдущий файл', next: 'Следующий файл'},
+});
+```
 
 ## Actions
 
 Each answers an outcome, `{outcome: "applied"}` or `{outcome: "refused", reason}`:
 
-- `open(index)` — opens the lightbox, at a one-based slide when given;
-  refused (`no-lightbox`) without a lightbox
-- `close()` — refused (`closed`) when the lightbox is closed
+- `open(index)` — opens the viewer, at a one-based picture when given;
+  refused (`no-lightbox`) with `lightbox="false"`, (`empty`) without pictures
+- `close()` — refused (`closed`) when the viewer is closed
 - `toggle(index)`
 - `goTo(index)`, `next()`, `prev()`
+- `clearSelection()` — refused (`empty`) when nothing is chosen
 
-## Frame, keys and loading (1.2.2)
+## Slots
 
-- The inline pictures keep one frame from the first paint: `ratio="auto"`
-  (the default) takes the first picture's `width` and `height` attributes,
-  else 16/9; `ratio="1/1"` (or another `w/h`) sets it. Every picture is shown
-  whole in the frame (`object-fit: contain`, `--sf-gallery-object-fit`): a
-  product photo is not cropped. Before the code arrives the page's first
-  picture already stands in that frame, with room for the thumbnails.
-- The arrows are the slider's quiet ones on plates (`button-type`
-  `secondary`); the place is shown on a plate: dots up to seven pictures, a
-  counter «3 / 12» from eight (`dots`, on by default). The thumbnails are
-  buttons, one Tab stop, paged by the arrow keys.
-- A caption under a picture (`figure` + `figcaption`) is small and
-  on-surface-variant. `<figure slot="slide"><img><figcaption>` is one slide
-  (core.runtime: a figure is never unwrapped).
-- In the lightbox ArrowLeft / ArrowRight, Home and End page, and a swipe
-  pages; a press on the empty field around the picture closes it. On close
-  the focus goes back to the picture that opened it (to the picture now
-  shown, when the person paged).
-- Only the first shown picture loads at once; the others load as they come
-  near the view (`loading="lazy"`, `decoding="async"`, unless the page wrote
-  its own). Give the page's own pictures after the first `loading="lazy"`
-  too: the browser fetches what the page itself writes.
+- `slide` — the pictures (a child without a `slot` joins it)
+- `actions` — the page's buttons in the selection bar
 
 ## Events
 
-- `change {previous, current, total, from}` — the shown slide changed (`from`:
-  `inline`, `lightbox` or `api`). A nested slider's own `change` stops at the
-  gallery.
-- `sf-gallery-opened {current, total}` — the lightbox opened.
-- `sf-gallery-closed {current, total}` — the lightbox closed.
+- `change {previous, current, total, from}` — the shown picture changed
+  (`from`: `api` or `lightbox`).
+- `sf-gallery-opened {current, total}` — the viewer opened.
+- `sf-gallery-closed {current, total}` — the viewer closed.
+- `sf-gallery-select {selected, count, total}` — the choice changed.
 
 The detail carries data only. Until 2026-12-01 the old names keep working and
-are noted in `SF.deprecations.list()`: the attributes `title` (now `heading`)
-and `blur` (now `backdrop-blur`), the events `sf-change`, `sf-open` and
-`sf-close` (sent after the new ones with the same detail), and the readers
-`getModal()`, `getInlineSlider()` and `getLightboxSlider()`.
+are noted in `SF.deprecations.list()`: the attribute `title` (now `heading`),
+the events `sf-change`, `sf-open` and `sf-close`, and the readers
+`getModal()`, `getInlineSlider()` and `getLightboxSlider()`, which now answer
+`null`. Until 2027-01-01 the settings of the slider and the window the gallery
+was built from (`arrows`, `dots`, `thumbs`, `modal-id`, `width`, `height`,
+`backdrop-blur` and the rest) are read, ignored and noted.
 
-Public variables: `--sf-gallery-min-inline-size`, `--sf-gallery-media-max-height`,
-`--sf-gallery-object-fit`, `--sf-gallery-slide-min-height`,
-`--sf-gallery-caption-color`.
+Public variables: `--sf-gallery-min-inline-size` (the root's narrowest size),
+`--sf-gallery-object-fit` (the thumbnails look's main picture),
+`--sf-gallery-media-max-height`, `--sf-gallery-slide-min-height` and
+`--sf-gallery-caption-color` (the viewer's picture and caption).
 
-Shared lifecycle events are also available:
-
-- `sf-connected`
-- `sf-before-render`
-- `sf-after-render`
-- `sf-updated`
-- `sf-disconnected`
+Shared lifecycle events are also available: `sf-connected`,
+`sf-before-render`, `sf-after-render`, `sf-updated`, `sf-disconnected`.

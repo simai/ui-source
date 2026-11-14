@@ -2,144 +2,187 @@
   "$comment": "The source of sf-gallery's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/gallery (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.gallery",
   "tag": "sf-gallery",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "gallery",
   "settings": {
-    "modal-id": {
-      "type": "id",
-      "default": "",
-      "summary": "Passed to the lightbox's sf-modal: the window's id, which data-sf-modal-close and data-sf-modal-hide controls name. Empty: a path id."
+    "layout": {
+      "type": "enum",
+      "values": [
+        "grid",
+        "thumbnails"
+      ],
+      "default": "grid",
+      "summary": "How the pictures stand (owner decision C150 (1)). grid, the default: a grid of picture tiles. thumbnails: the main picture, whole in its frame, with a row of thumbnails under it and the place «3 / 12» -- a product card. A row that scrolls is sf-slider (C143), not a gallery look."
+    },
+    "tile-size": {
+      "type": "enum",
+      "values": [
+        "s",
+        "m",
+        "l"
+      ],
+      "default": "m",
+      "summary": "The grid's tile minimum (C150 (2)): s 6rem (96), m 10rem (160, the default), l 15rem (240). As many columns as fit at that minimum, never fewer than three (s), two (m) or one (l), so a phone keeps a grid. The gap is one group's, --sf-space-1/3 (8; 4 in compact density, C150 (3))."
+    },
+    "ratio": {
+      "type": "enum",
+      "values": [
+        "1/1",
+        "4/3",
+        "16/9",
+        "auto"
+      ],
+      "default": "1/1",
+      "summary": "One shape for every tile (C150 (4)): 1/1 (the default), 4/3 or 16/9, the picture covering the tile around its focus point -- the picture's object-position, which the image field writes from its focus {x, y} (C94 (3)); auto keeps each picture's own shape, uncropped. With layout thumbnails a written ratio is the main frame's (4/3 without one), the picture whole in it."
+    },
+    "caption": {
+      "type": "enum",
+      "values": [
+        "viewer",
+        "under"
+      ],
+      "default": "viewer",
+      "summary": "Where a picture's caption shows (C150 (5)). viewer, the default: only in the viewer, under the picture. under: also under each tile, small and muted, whole lines (C92 view 8) -- news, a portfolio. The caption is the figure's figcaption, else the child's data-caption or title."
+    },
+    "selection": {
+      "type": "enum",
+      "values": [
+        "none",
+        "many"
+      ],
+      "default": "none",
+      "summary": "Choosing pictures, a media library (C150 (9)). many: a check box in each tile's start corner on a popup plate, shown on hover and focus and on every tile once anything is chosen; then a press on a tile chooses it, Shift a range; a bar «Выбрано N» with the page's actions (slot actions) and «Снять выбор» stands over the grid; a phone chooses by a long press. Escape clears. The choice is the value selected and the event select."
     },
     "heading": {
       "type": "string",
       "default-from": "runtime.heading",
-      "summary": "Passed to the lightbox's sf-modal: the window's title in its header. Empty: «Галерея» on a Russian page, «Gallery» on an English one."
-    },
-    "text": {
-      "type": "string",
-      "default": "",
-      "summary": "Passed to the lightbox's sf-modal: plain text in the window's body when there is no slide."
+      "summary": "The set's name: the grid's and the thumbnails' accessible name and the viewer's. Empty: «Галерея» on a Russian page, «Gallery» on an English one."
     },
     "inline": {
       "type": "boolean",
       "default": true,
-      "summary": "Shows the slides on the page (true, the default). false with lightbox shows them only in the full-screen window."
+      "summary": "Shows the pictures on the page (true, the default). false draws nothing on the page: the pictures show only in the viewer, opened by open()."
     },
     "lightbox": {
       "type": "boolean",
       "default": true,
-      "summary": "Opens a slide in a full-screen window (an sf-modal) when it is pressed (true, the default)."
-    },
-    "arrows": {
-      "type": "boolean",
-      "default": true,
-      "summary": "Passed to the gallery's sliders (sf-slider): draws the previous and next arrows."
-    },
-    "dots": {
-      "type": "boolean",
-      "default": true,
-      "summary": "Passed to the gallery's sliders (sf-slider): shows the place, on a popup plate over the picture: dots up to seven pictures, from eight a counter «3 / 12» (decisions C143 (4), C97 (7)). On by default; false hides it."
-    },
-    "thumbs": {
-      "type": "boolean",
-      "default": true,
-      "summary": "Passed to the gallery's sliders (sf-slider): draws the row of thumbnails under the slides (on by default)."
-    },
-    "ratio": {
-      "type": "string",
-      "default": "auto",
-      "summary": "The frame of the inline pictures, held from the first paint (decision C143 (8)): auto (the default) takes the first picture's ratio from its width and height attributes, else 16/9; a ratio written w/h (1/1, 4/3, 3/2, 16/9, 21/9, 3/4, 2/3 also hold the frame before the code arrives) sets it. Every picture is shown whole in the frame (object-fit contain): a product photo is not cropped."
+      "summary": "A press on a picture opens the full-screen viewer (true, the default; C150 (7)). false: the tiles are pictures only."
     },
     "loop": {
       "type": "boolean",
       "default": false,
-      "summary": "Passed to the gallery's sliders (sf-slider): the last slide is followed by the first."
+      "summary": "In the viewer and with next() / prev(), the last picture is followed by the first."
+    },
+    "modal-id": {
+      "type": "id",
+      "default": "",
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: the window's id, which data-sf-modal-close and data-sf-modal-hide controls name. Empty: a path id."
+    },
+    "text": {
+      "type": "string",
+      "default": "",
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: plain text in the window's body when there is no slide."
+    },
+    "arrows": {
+      "type": "boolean",
+      "default": true,
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the gallery's sliders (sf-slider): draws the previous and next arrows."
+    },
+    "dots": {
+      "type": "boolean",
+      "default": true,
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the gallery's sliders (sf-slider): shows the place, on a popup plate over the picture: dots up to seven pictures, from eight a counter «3 / 12» (decisions C143 (4), C97 (7)). On by default; false hides it."
+    },
+    "thumbs": {
+      "type": "boolean",
+      "default": true,
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the gallery's sliders (sf-slider): draws the row of thumbnails under the slides (on by default)."
     },
     "space-between": {
       "type": "number",
       "default": null,
-      "summary": "Passed to the gallery's sliders (sf-slider): the gap between slides in pixels. Unset (the default), the slider's own gap, the --sf-space-1 step (16 on a desktop, 12 on a phone)."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the gallery's sliders (sf-slider): the gap between slides in pixels. Unset (the default), the slider's own gap, the --sf-space-1 step (16 on a desktop, 12 on a phone)."
     },
     "speed": {
       "type": "number",
       "default": 450,
-      "summary": "Passed to the gallery's sliders (sf-slider): the length of a slide's move, in milliseconds."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the gallery's sliders (sf-slider): the length of a slide's move, in milliseconds."
     },
     "button-type": {
       "type": "string",
       "default": "secondary",
-      "summary": "Passed to the gallery's sliders (sf-slider): the arrows' look. secondary (the default) draws sf-slider's quiet arrows: ghost on-surface icon buttons on popup plates with the overlay shadow over a picture (decisions C116, C143 (2)); primary, dark and light are sf-slider's other looks."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the gallery's sliders (sf-slider): the arrows' look. secondary (the default) draws sf-slider's quiet arrows: ghost on-surface icon buttons on popup plates with the overlay shadow over a picture (decisions C116, C143 (2)); primary, dark and light are sf-slider's other looks."
     },
     "button-size": {
       "type": "string",
       "default": "1",
-      "summary": "Passed to the gallery's sliders (sf-slider): the arrow buttons' size step."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the gallery's sliders (sf-slider): the arrow buttons' size step."
     },
     "dots-type": {
       "type": "string",
       "default": "primary-container",
-      "summary": "Passed to the gallery's sliders (sf-slider): The dots' plate by its colour role: primary-container (the default; a primary-container plate with on-primary-container dots), primary (a primary plate with on-primary dots), surface-container (a raised neutral plate with on-surface dots), surface-inverse (an inverse plate with on-surface-inverse dots). Former words, dated aliases until 2027-01-01: primary-dark is primary-container, primary-light is primary, light and clear are surface-container, dark is surface-inverse."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the gallery's sliders (sf-slider): The dots' plate by its colour role: primary-container (the default; a primary-container plate with on-primary-container dots), primary (a primary plate with on-primary dots), surface-container (a raised neutral plate with on-surface dots), surface-inverse (an inverse plate with on-surface-inverse dots). Former words, dated aliases until 2027-01-01: primary-dark is primary-container, primary-light is primary, light and clear are surface-container, dark is surface-inverse."
     },
     "dots-size": {
       "type": "string",
       "default": "2",
-      "summary": "Passed to the gallery's sliders (sf-slider): the dots' size step."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the gallery's sliders (sf-slider): the dots' size step."
     },
     "thumbs-class": {
       "type": "string",
       "default": "",
-      "summary": "Passed to the gallery's sliders (sf-slider): classes on the thumbnails row."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the gallery's sliders (sf-slider): classes on the thumbnails row."
     },
     "thumb-class": {
       "type": "string",
       "default": "",
-      "summary": "Passed to the gallery's sliders (sf-slider): classes on each thumbnail."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the gallery's sliders (sf-slider): classes on each thumbnail."
     },
     "slide-class": {
       "type": "string",
       "default": "",
-      "summary": "Passed to the gallery's sliders (sf-slider): classes on each slide."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the gallery's sliders (sf-slider): classes on each slide."
     },
     "inline-class": {
       "type": "string",
       "default": "",
-      "summary": "Classes on the slider shown on the page."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Classes on the slider shown on the page."
     },
     "lightbox-class": {
       "type": "string",
       "default": "",
-      "summary": "Classes on the slider in the full-screen window."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Classes on the slider in the full-screen window."
     },
     "overlay": {
       "type": "boolean",
       "default": true,
-      "summary": "Passed to the lightbox's sf-modal: draws the scrim behind the window."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: draws the scrim behind the window."
     },
     "show-header": {
       "type": "boolean",
       "default": true,
-      "summary": "Passed to the lightbox's sf-modal: draws the window's header with the heading and its buttons."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: draws the window's header with the heading and its buttons."
     },
     "show-close": {
       "type": "boolean",
       "default": true,
-      "summary": "Passed to the lightbox's sf-modal: draws the close button in the header."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: draws the close button in the header."
     },
     "close-on-esc": {
       "type": "boolean",
       "default": true,
-      "summary": "Passed to the lightbox's sf-modal: Escape closes the window."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: Escape closes the window."
     },
     "close-on-overlay": {
       "type": "boolean",
       "default": true,
-      "summary": "Passed to the lightbox's sf-modal: a press on the scrim closes the window."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: a press on the scrim closes the window."
     },
     "preserve-scroll-gap": {
       "type": "boolean",
       "default": true,
-      "summary": "Passed to the lightbox's sf-modal: while the page is locked, keeps the scrollbar's width so the page does not shift."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: while the page is locked, keeps the scrollbar's width so the page does not shift."
     },
     "position": {
       "type": "enum",
@@ -151,27 +194,27 @@
         "bottom"
       ],
       "default": "center",
-      "summary": "Passed to the lightbox's sf-modal: where the window stands: center, or a side panel at left, right, top or bottom."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: where the window stands: center, or a side panel at left, right, top or bottom."
     },
     "fullscreen": {
       "type": "boolean",
       "default": false,
-      "summary": "Passed to the lightbox's sf-modal: the window takes the whole viewport."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: the window takes the whole viewport."
     },
     "width": {
       "type": "string",
       "default": "",
-      "summary": "Passed to the lightbox's sf-modal: the window's width, a CSS length."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: the window's width, a CSS length."
     },
     "height": {
       "type": "string",
       "default": "",
-      "summary": "Passed to the lightbox's sf-modal: the window's height, a CSS length."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: the window's height, a CSS length."
     },
     "backdrop-blur": {
       "type": "boolean",
       "default": false,
-      "summary": "Passed to the lightbox's sf-modal: blurs the page behind the scrim, by blur-type."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: blurs the page behind the scrim, by blur-type."
     },
     "blur-type": {
       "type": "enum",
@@ -182,67 +225,73 @@
         "large"
       ],
       "default": "medium",
-      "summary": "Passed to the lightbox's sf-modal: the blur's strength: none, small, medium (the default) or large."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: the blur's strength: none, small, medium (the default) or large."
     },
     "overlay-class": {
       "type": "string",
       "default": "",
-      "summary": "Passed to the lightbox's sf-modal: classes on the scrim."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: classes on the scrim."
     },
     "close-class": {
       "type": "string",
       "default": "",
-      "summary": "Passed to the lightbox's sf-modal: classes on the close button."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: classes on the close button."
     },
     "surface-class": {
       "type": "string",
       "default": "",
-      "summary": "Passed to the lightbox's sf-modal: classes on the window's surface."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: classes on the window's surface."
     },
     "surface-padding": {
       "type": "string",
       "default": "",
-      "summary": "Passed to the lightbox's sf-modal: the surface's padding, a CSS length."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: the surface's padding, a CSS length."
     },
     "panel-class": {
       "type": "string",
       "default": "",
-      "summary": "Passed to the lightbox's sf-modal: classes on the panel that holds the surface."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: classes on the panel that holds the surface."
     },
     "header-class": {
       "type": "string",
       "default": "",
-      "summary": "Passed to the lightbox's sf-modal: classes on the header."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: classes on the header."
     },
     "body-class": {
       "type": "string",
       "default": "",
-      "summary": "Passed to the lightbox's sf-modal: classes on the body's scrolling area."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: classes on the body's scrolling area."
     },
     "content-class": {
       "type": "string",
       "default": "",
-      "summary": "Passed to the lightbox's sf-modal: classes on the wrapper of the slides."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: classes on the wrapper of the slides."
     },
     "footer-class": {
       "type": "string",
       "default": "",
-      "summary": "Passed to the lightbox's sf-modal: classes on the footer."
+      "summary": "Retired (owner decision C150, 2026-11-14; until 2027-01-01): a setting of the slider and the window the gallery was built from. The gallery is a grid and a full-screen viewer now; the value is read and draws nothing. Formerly: Passed to the lightbox's sf-modal: classes on the footer."
     }
   },
   "values": {
     "open": {
       "type": "boolean",
       "default": false,
-      "summary": "The lightbox is open: setting it opens the sf-modal at the current slide, removing it closes the window.",
+      "summary": "The viewer is open: setting it opens the full-screen viewer at the current picture, removing it closes it.",
       "reflect": true
     },
     "current": {
       "type": "number",
       "default": 1,
-      "summary": "The one-based slide the inline slider and the lightbox show; the gallery writes it back as the visitor moves, kept within 1 and the number of slides.",
+      "summary": "The one-based picture the thumbnails look shows and the viewer opens at; the gallery writes it back as the person pages, kept within 1 and the number of pictures.",
       "integer": true,
       "min": 1
+    },
+    "selected": {
+      "type": "list",
+      "default": [],
+      "of": "number",
+      "summary": "With selection many, the chosen pictures' one-based numbers in order. A page may write it (a list, or numbers separated by commas or spaces in the attribute) to choose."
     }
   },
   "events": {
@@ -260,7 +309,7 @@
           ]
         }
       },
-      "x-summary": "The shown slide changed: by a person in the inline view or the lightbox, or by an action (from api)"
+      "x-summary": "The current picture changed: in the viewer (from lightbox), by a thumbnail (from inline) or by an action (from api)"
     },
     "opened": {
       "carries": {
@@ -273,6 +322,17 @@
         "current": "number",
         "total": "number"
       }
+    },
+    "select": {
+      "carries": {
+        "selected": {
+          "type": "list",
+          "of": "number"
+        },
+        "count": "number",
+        "total": "number"
+      },
+      "x-summary": "The choice changed (selection many): the chosen pictures' one-based numbers, their count and the number of pictures. Its DOM name is sf-gallery-select."
     }
   },
   "actions": {
@@ -287,11 +347,11 @@
         "applied",
         "refused"
       ],
-      "x-summary": "Opens the lightbox, at index when given; refused (no-lightbox) without a lightbox",
-      "summary": "Moves to the given one-based slide when an index is passed, sets open and opens the lightbox modal. Returns the element.",
+      "x-summary": "Opens the viewer, at index when given; refused (no-lightbox) with lightbox false, (empty) without pictures",
+      "summary": "Moves to the given one-based picture when an index is passed, sets open and opens the full-screen viewer there. Answers an outcome.",
       "x-returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome: {outcome: applied} or {outcome: refused, reason}."
       }
     },
     "close": {
@@ -299,11 +359,11 @@
         "applied",
         "refused"
       ],
-      "x-summary": "Closes the lightbox; refused (closed) when it is closed",
-      "summary": "Removes open and closes the lightbox modal. Returns the element.",
+      "x-summary": "Closes the viewer; refused (closed) when it is closed",
+      "summary": "Closes the viewer and removes open; the focus goes back to the tile of the picture shown last. Answers an outcome.",
       "x-returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome: {outcome: applied} or {outcome: refused, reason}."
       }
     },
     "toggle": {
@@ -317,10 +377,10 @@
         "applied",
         "refused"
       ],
-      "summary": "Calls close() when open, open(index) otherwise. Returns the element.",
+      "summary": "close() when the viewer is open, open(index) otherwise. Answers an outcome.",
       "x-returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome: {outcome: applied} or {outcome: refused, reason}."
       }
     },
     "go-to": {
@@ -331,11 +391,11 @@
         "applied",
         "refused"
       ],
-      "x-summary": "Shows the slide at index (1-based, clamped to the slides)",
-      "summary": "Moves to a one-based slide, clamped to the slide count, reflects it to the current attribute, syncs both sliders and dispatches the native change event when it moved. Returns the element.",
+      "x-summary": "Shows the picture at index (1-based, clamped to the pictures)",
+      "summary": "Moves to a one-based picture, clamped to the count, reflects it to current, moves the open viewer there and sends change when it moved. Answers an outcome.",
       "x-returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome: {outcome: applied} or {outcome: refused, reason}."
       }
     },
     "next": {
@@ -343,10 +403,10 @@
         "applied",
         "refused"
       ],
-      "summary": "goTo(current + 1); stops at the last slide. Returns the element.",
+      "summary": "goTo(current + 1); stops at the last picture unless loop. Answers an outcome.",
       "x-returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome: {outcome: applied} or {outcome: refused, reason}."
       }
     },
     "prev": {
@@ -354,16 +414,31 @@
         "applied",
         "refused"
       ],
-      "summary": "goTo(current - 1); stops at the first slide. Returns the element.",
+      "summary": "goTo(current - 1); stops at the first picture unless loop. Answers an outcome.",
       "x-returns": {
         "type": "object",
-        "description": "The element, for chaining."
+        "description": "The outcome: {outcome: applied} or {outcome: refused, reason}."
+      }
+    },
+    "clear-selection": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "x-summary": "Clears the choice; refused (empty) when nothing is chosen",
+      "summary": "Clears the choice (selection many) and sends select. Answers an outcome.",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome: {outcome: applied} or {outcome: refused, reason}."
       }
     }
   },
   "slots": {
     "slide": {
-      "$comment": "Each child of the host is a slide; the gallery places it in its inline slider and its lightbox (§4.5)."
+      "$comment": "Each child of the host is a picture of the set (§4.5): an <img> (its alt, width and height, its object-position the focus point), a <picture>, a <figure> with its figcaption, or a link to the large file around a small picture (the link's href is what the viewer shows). A child without a slot joins this one."
+    },
+    "actions": {
+      "$comment": "The page's actions in the selection bar «Выбрано N» (selection many): sf-button size 1/2, ghost on-surface, as in the C150 prototype."
     }
   },
   "side-effects": [
@@ -373,15 +448,35 @@
     "host": {
       "Tab": "reach",
       "Enter": "open",
-      "Space": "open"
+      "Space": "open",
+      "ArrowLeft": "previous thumbnail",
+      "ArrowRight": "next thumbnail",
+      "Home": "first thumbnail",
+      "End": "last thumbnail",
+      "Escape": "clear the choice"
+    },
+    "viewer": {
+      "ArrowLeft": "previous",
+      "ArrowRight": "next",
+      "Home": "first",
+      "End": "last",
+      "+": "zoom in",
+      "-": "zoom out",
+      "Escape": "close"
     }
   },
   "relations": [
     {
-      "name": "cl-slider"
+      "name": "cl-button-icon"
     },
     {
-      "name": "cl-modal"
+      "name": "cl-button-close"
+    },
+    {
+      "name": "figure"
+    },
+    {
+      "name": "checkbox"
     }
   ],
   "templates": {
@@ -395,7 +490,7 @@
   "docs": "docs/docs.md",
   "lang": "lang/",
   "accessibility": {
-    "role": "none",
+    "role": "list",
     "name": {
       "from": [
         "heading"
@@ -406,19 +501,19 @@
       "Enter": "open",
       "Space": "open"
     },
-    "$comment": "The root has no role of its own: the inline view is sf-slider (its slides and arrows named by Swiper's a11y module) and the lightbox is sf-modal, a dialog named by heading that traps focus and closes on Escape. Enter and Space on a [data-sf-gallery-open] trigger open the lightbox. In the lightbox ArrowLeft / ArrowRight (mirrored right to left), Home and End page; closing gives the focus back to the picture that opened it. The thumbnails are buttons named by their pictures, one Tab stop, paged by the arrow keys (sf-slider)."
+    "$comment": "The grid is a list named by heading; each tile a list item whose picture is a button «Открыть фото 3 из 12: <alt>» (aria-haspopup dialog) -- named by its action (W3C WAI images tutorial). The thumbnails are a group of buttons «Показать фото N», one Tab stop, ← → Home End move and show (mirrored right to left), the shown one aria-current; the place «3 / 12» is polite. Selection: a real check box per tile «Выбрать фото N: <alt>», the bar a region «Выбор» with «Выбрано N» polite and «Снять выбор»; Escape clears. The viewer is a modal <dialog> named by heading, black in both themes: the focus goes to «Закрыть»; ← → (mirrored), Home, End page, + and − zoom, the arrow keys pan a zoomed picture, Escape un-zooms then closes; the place «3 / 12» is polite; closing gives the focus back to the tile of the picture shown last."
   },
   "css-variables": {
     "--sf-gallery-min-inline-size": {
       "type": "length",
       "state": "default"
     },
-    "--sf-gallery-media-max-height": {
-      "type": "length",
-      "state": "default"
-    },
     "--sf-gallery-object-fit": {
       "type": "keyword",
+      "state": "default"
+    },
+    "--sf-gallery-media-max-height": {
+      "type": "length",
       "state": "default"
     },
     "--sf-gallery-slide-min-height": {
@@ -547,10 +642,380 @@
         "note": "journal value-slider-dots-type-to-roles (docs precheck Q4): the dots' words name the plate's colour role; handed to the gallery's sliders",
         "since": "2026-11-10",
         "remove_after": "2027-01-01"
+      },
+      {
+        "from": "modal-id",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "text",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "arrows",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "dots",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "thumbs",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "space-between",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "speed",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "button-type",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "button-size",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "dots-type",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "dots-size",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "thumbs-class",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "thumb-class",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "slide-class",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "inline-class",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "lightbox-class",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "overlay",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "show-header",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "show-close",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "close-on-esc",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "close-on-overlay",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "preserve-scroll-gap",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "position",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "fullscreen",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "width",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "height",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "backdrop-blur",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "blur-type",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "overlay-class",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "close-class",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "surface-class",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "surface-padding",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "panel-class",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "header-class",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "body-class",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "content-class",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
+      },
+      {
+        "from": "footer-class",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-14",
+        "mode": "retired",
+        "section": "owner decision C150 (1), (7)",
+        "note": "a setting of the slider and the window the gallery was built from; read and noted until the date, it draws nothing",
+        "remove_after": "2027-01-01"
       }
     ]
   },
-  "x-summary": "An ordered media collection shown in an inline Slider, with an optional Modal lightbox holding a second Slider. The gallery owns the one-based current slide and keeps both views on it.",
+  "x-summary": "A set of pictures: a grid of picture tiles (or the main picture with thumbnails) that opens the page's full-screen viewer, with an optional choice of tiles for a media library. The viewer is SF.Gallery.view(items, options), shared with sf-file-preview.",
   "x-source": {
     "package": "framework",
     "folder": "gallery",
@@ -585,8 +1050,8 @@
     "lightbox: the template hands sf-modal its own names, heading and backdrop-blur, so the modal's dated aliases are not used by the Framework itself; a trigger's data-sf-modal-title and data-sf-modal-blur keep configuring the delegated lightbox.",
     "template: templates.default names the Lit template js/templates/default.js and styles its sheet js/templates/default.css, the migration form §5.2 allows.",
     "examples: examples.json from studio.fixture.json and studio.scenario.json plus the lightbox and the actions; probe.json drives go-to, next, open, close and the aliases.",
-    "skeleton: none; the slides are the page's children, drawn before any code; the lightbox is closed at first paint (§5.4).",
-    "css-variables: five public variables read by the gallery's own sheet; the slider's and the modal's pass through (src/core/contracts/public-variables.v1.json).",
+    "skeleton: block, none while loading; the pictures are the page's children, laid out as the grid by core.styles before any code (C150 (6)); the viewer is closed at first paint (§5.4).",
+    "css-variables: five public variables read by the gallery's own sheet: the root's narrowest size, the thumbnails look's fit, and the viewer's picture height, picture area and caption colour (src/core/contracts/public-variables.v1.json).",
     "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.1.2: the first-paint sheet list names the utility sheets its templates draw with (core.runtime 1.0.7 asks for them before the element draws: the style gate). The slide attributes are printed in the order the element sets them.",
     "version 1.1.4: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
@@ -595,7 +1060,8 @@
     "version 1.1.12 (2026-11-11): a patch, nothing drawn differently by this element: the class slider sheet it draws with changed (component.slider 1.1.2, the disabled arrow).",
     "version 1.2.0 (2026-11-10, docs precheck smart content GA-04, Q4): a minor. dots-type takes sf-slider 1.2.0's role words (primary-container, the default, primary, surface-container, surface-inverse); the former words are dated value aliases until 2027-01-01 (journal value-slider-dots-type-to-roles). Also: Every setting has its summary. space-between has no default of its own: unset, the sliders keep their --sf-space-1 gap (the manifest said 12, a raw pixel number the gallery never sent). Settings, values, events and keys unchanged.",
     "version 1.2.1 (2026-11-13, docs precheck smart content SC-S02): a patch, nothing drawn differently. open and current have their summaries.",
-    "version 1.2.2 (2026-11-14): a patch, the first-paint snapshots retaken with sf-slider 1.3.0 inside (a named carousel region, «1 из 3» slides, the strip draggable). The gallery's own button-type stays primary; settings, values, events and keys unchanged. Decision C143, same unreleased patch: the gallery hands dots-type to its sliders only when the page writes it, so its dots take sf-slider's default (8 px dots and a pill on a popup plate, a counter from eight pictures); the inline slider keeps sf-slider's 16/9 frame from the first paint, the lightbox slider takes ratio auto (its box is the window's). Gallery defects GL-1/2/3/4/5/7/8/10 (gallery study 2026-11-14), same unreleased patch, against decisions C116, C143, C18, C97, C92/C98, C130: button-type defaults to secondary, so the arrows are sf-slider's quiet ghost arrows on popup plates (was filled primary); dots default to true, so the place shows on a plate, dots up to seven pictures and a counter «3 / 12» from eight; the thumbnails are sf-slider 1.3.0's buttons (one Tab stop, arrow keys, the control radius); new setting ratio (auto: the first picture's width/height, else 16/9): the inline pictures are shown whole in that frame (object-fit contain, a square product photo is no longer cropped to 16/9) and core.styles holds the frame of an undefined sf-gallery, so the first frame is the final one; the inline caption is small (text 1/2) on on-surface-variant; in the lightbox ArrowLeft/ArrowRight, Home and End page and a swipe pages (component.swiper); closing gives the focus back to the picture that opened the lightbox; the copied pictures past the first shown one load lazily (loading lazy, decoding async). Same unreleased patch (core.runtime, gallery GL open question 1): <figure slot=\"slide\"><img><figcaption> is one slide with its caption; the base no longer unwraps a figure, a picture or an element holding a figcaption, so the page needs no class on the figure."
+    "version 1.2.2 (2026-11-14): a patch, the first-paint snapshots retaken with sf-slider 1.3.0 inside (a named carousel region, «1 из 3» slides, the strip draggable). The gallery's own button-type stays primary; settings, values, events and keys unchanged. Decision C143, same unreleased patch: the gallery hands dots-type to its sliders only when the page writes it, so its dots take sf-slider's default (8 px dots and a pill on a popup plate, a counter from eight pictures); the inline slider keeps sf-slider's 16/9 frame from the first paint, the lightbox slider takes ratio auto (its box is the window's). Gallery defects GL-1/2/3/4/5/7/8/10 (gallery study 2026-11-14), same unreleased patch, against decisions C116, C143, C18, C97, C92/C98, C130: button-type defaults to secondary, so the arrows are sf-slider's quiet ghost arrows on popup plates (was filled primary); dots default to true, so the place shows on a plate, dots up to seven pictures and a counter «3 / 12» from eight; the thumbnails are sf-slider 1.3.0's buttons (one Tab stop, arrow keys, the control radius); new setting ratio (auto: the first picture's width/height, else 16/9): the inline pictures are shown whole in that frame (object-fit contain, a square product photo is no longer cropped to 16/9) and core.styles holds the frame of an undefined sf-gallery, so the first frame is the final one; the inline caption is small (text 1/2) on on-surface-variant; in the lightbox ArrowLeft/ArrowRight, Home and End page and a swipe pages (component.swiper); closing gives the focus back to the picture that opened the lightbox; the copied pictures past the first shown one load lazily (loading lazy, decoding async). Same unreleased patch (core.runtime, gallery GL open question 1): <figure slot=\"slide\"><img><figcaption> is one slide with its caption; the base no longer unwraps a figure, a picture or an element holding a figcaption, so the page needs no class on the figure.",
+    "version 1.3.0 (2026-11-14, owner decision C150, gallery study ui-control control/research/2026-11-14-gallery.md, prototype prototypes/gallery-study.html): a minor; the gallery is a grid and a full-screen viewer, not a slider and a window. (1) layout grid (default) or thumbnails (main picture whole in a 4/3 frame, thumbnails 72 one Tab stop, «3 / 12»); a scrolling row is sf-slider. (2) tile-size s/m/l: as many columns as fit at 96/160/240, at least 3/2/1. (3) gap --sf-space-1/3 (8, compact 4). (4) ratio 1/1 (default), 4/3, 16/9, auto: one shape, cover around the picture's object-position (the image field's focus point). (5) caption viewer (default) or under. (6) The tile holds its shape and the quiet fill from the first frame (core.styles draws the same grid for an undefined sf-gallery; the children stay until the drawing takes them, holdsSlotNodesUntilDrawn), pictures lazy, 0 shift. (7) The viewer (js/viewer.js, SF.Gallery.view, a native modal dialog): full screen, black in both themes, «3 / 12» at the start, Zoom and Close at the end 8 apart, side arrows (none under md: swipe), the caption under the picture, ← → Home End, Escape, the focus back to the tile, a swipe down closes, controls in the over-photo look (C14 (3)). (8) Zoom: double click or double tap to the picture's own pixels (at least 2x) at that point, drag pans, + and −, the Zoom button, pinch; no rotation or filters. (9) selection many: check boxes on popup plates, Shift range, «Выбрано N» bar with slot actions, long press on a phone; value selected, event select (sf-gallery-select), action clear-selection. (10) The tile is component.figure 1.3.0's .sf-figure--tile in .sf-figure-grid, for sf-gallery, the C81 gallery look, ui-mail «Изображения» and SIMAI Pro chat previews. The viewer also shows video (the browser's player) and PDF (the browser's viewer in a frame) for sf-file-preview (C149 (6)). 36 settings of the slider and the window retire (aliases.json, journal setting-sf-gallery-slider-and-window-retired): read, noted in SF.deprecations, drawing nothing until 2027-01-01. Relations: cl-button-icon, cl-button-close, figure, checkbox (cl-slider and cl-modal leave). Focus return: one path (the viewer's), replacing GL-5's and FP-10's. Masonry waits (C150 question 11)."
   ],
   "x-rule": {
     "regex": "/data-sf-gallery(?:\\s|=|>|$)/"
@@ -606,7 +1072,8 @@
       "visual_states": [
         "default",
         "open",
-        "closed"
+        "closed",
+        "selected"
       ]
     },
     "ownership": {
@@ -645,13 +1112,12 @@
       }
     },
     "ai_guidance": {
-      "use_when": "Use sf-gallery for one ordered media collection with one-based current state, an inline Slider and optional Modal lightbox. Nested Sliders inherit token-driven spacing, reduced-motion behavior, autoplay pause and hidden-slide focus protection unless the author supplies explicit compatibility overrides.",
+      "use_when": "Use sf-gallery for a set of pictures: a grid of tiles by default (layout thumbnails for a product card), one shape for all tiles, a press opening the full-screen viewer; selection many for a media library. For a row that scrolls use sf-slider. To show any list of pictures, videos or PDF files full screen from page code, call SF.Gallery.view(items, {start}) after SF.Loader.ensure(['sf-gallery']).",
       "do_not": [
-        "The rendered Gallery root permits shrinking in grid/flex via min-width:0. Do not hide document overflow or reset Slider instances to compensate for parent intrinsic sizing; explicit author widths remain the author's responsive-layout responsibility.",
-        "current/open-only updates preserve the existing inline Slider and use updateMode:dom. Observe sf-updated for these state changes, not sf-after-render. Actual configuration and slot changes still render; do not recreate unchanged slide content just to open Modal.",
-        "Load the Gallery composition CSS declared by cl-gallery. Do not overwrite projected figure/image/caption inline styles. Reuse Slider dimension/fit tokens, --sf-gallery-media--max-height and Modal scrolling for long content; width/height/fullscreen remain Modal options.",
-        "Gallery owns the selected position across inline/lightbox rendering. Use its one-based current/goTo/open API; do not maintain a second current index on nested Sliders or repair their position with delayed callbacks.",
-        "Slide counts and inline/lightbox indices use meaningful slot items, excluding formatting whitespace and comments. Keep composite cards inside one attributed root or one child of a bare slot container; do not treat each sibling heading or link as part of an inferred card.",
+        "Do not draw a picture grid or a lightbox of your own: the tile is .sf-figure--tile in a .sf-figure-grid (component.figure) and the viewer is SF.Gallery.view.",
+        "Do not import js/viewer.js into another bundle: ask for sf-gallery and call SF.Gallery, so the page has one viewer.",
+        "Give each picture its width and height and its focus point as object-position; do not crop pictures on the server for the grid.",
+        "The slider and modal settings (arrows, dots, thumbs, width, height, overlay, ...) are retired and draw nothing.",
         "Do not copy generated ui-smart code",
         "Do not move host data or access decisions into the component"
       ],
@@ -662,7 +1128,7 @@
         "ownership",
         "provenance"
       ],
-      "minimal_example": "<sf-gallery></sf-gallery>",
+      "minimal_example": "<sf-gallery heading=\"Фото\"><img src=\"/a.jpg\" width=\"1200\" height=\"900\" alt=\"Фасад\"><img src=\"/b.jpg\" width=\"900\" height=\"1200\" alt=\"Холл\"></sf-gallery>",
       "owner_commands": [
         "npm run contract:verify",
         "npm test"
@@ -670,7 +1136,14 @@
     },
     "accessibility": {
       "keyboard": [
-        "Tab"
+        "Tab",
+        "Enter",
+        "Space",
+        "ArrowLeft",
+        "ArrowRight",
+        "Home",
+        "End",
+        "Escape"
       ]
     },
     "alias-events": {
@@ -763,7 +1236,7 @@
     },
     "methods": {
       "getModal": {
-        "summary": "Returns the lightbox sf-modal, or null when there is none.",
+        "summary": "Retired (2026-12-01): the gallery has no slider or window since 1.3.0; returns null and is noted.",
         "arguments": [],
         "returns": {
           "type": [
@@ -773,7 +1246,7 @@
         }
       },
       "getInlineSlider": {
-        "summary": "Returns the inline sf-slider, or null before render.",
+        "summary": "Retired (2026-12-01): the gallery has no slider or window since 1.3.0; returns null and is noted.",
         "arguments": [],
         "returns": {
           "type": [
@@ -783,7 +1256,7 @@
         }
       },
       "getLightboxSlider": {
-        "summary": "Returns the lightbox sf-slider, or null when there is none.",
+        "summary": "Retired (2026-12-01): the gallery has no slider or window since 1.3.0; returns null and is noted.",
         "arguments": [],
         "returns": {
           "type": [

@@ -6,8 +6,7 @@
   "summary": "Deterministic reference fixture for sf-gallery.",
   "locale": "ru",
   "props": {
-    "open": true,
-    "current": 0
+    "current": 1
   },
   "children": [
     {

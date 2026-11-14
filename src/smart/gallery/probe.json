@@ -6,13 +6,18 @@
     "lang": "ru",
     "body": [
       "<main style=\"inline-size: 40rem\">",
-      "  <sf-gallery id=\"g1\" thumbs=\"false\" heading=\"Фотографии\">",
-      "    <img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%233b82f6%22/%3E%3C/svg%3E\" alt=\"Синий\">",
-      "    <img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%2310b981%22/%3E%3C/svg%3E\" alt=\"Зелёный\">",
-      "    <img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23f59e0b%22/%3E%3C/svg%3E\" alt=\"Жёлтый\">",
+      "  <sf-gallery id=\"g1\" heading=\"Фотографии\">",
+      "    <img src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%233b82f6%22/%3E%3C/svg%3E\" width=\"640\" height=\"360\" alt=\"Синий\">",
+      "    <img src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%2310b981%22/%3E%3C/svg%3E\" width=\"640\" height=\"360\" alt=\"Зелёный\">",
+      "    <img src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23f59e0b%22/%3E%3C/svg%3E\" width=\"640\" height=\"360\" alt=\"Жёлтый\">",
       "  </sf-gallery>",
       "  <sf-gallery id=\"g-old\" title=\"Старое имя\" blur thumbs=\"false\">",
-      "    <img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%233b82f6%22/%3E%3C/svg%3E\" alt=\"Синий\">",
+      "    <img src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%233b82f6%22/%3E%3C/svg%3E\" width=\"640\" height=\"360\" alt=\"Синий\">",
+      "  </sf-gallery>",
+      "  <sf-gallery id=\"g-sel\" selection=\"many\" tile-size=\"s\">",
+      "    <img src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%233b82f6%22/%3E%3C/svg%3E\" width=\"640\" height=\"360\" alt=\"Синий\">",
+      "    <img src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%2310b981%22/%3E%3C/svg%3E\" width=\"640\" height=\"360\" alt=\"Зелёный\">",
+      "    <img src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23f59e0b%22/%3E%3C/svg%3E\" width=\"640\" height=\"360\" alt=\"Жёлтый\">",
       "  </sf-gallery>",
       "</main>"
     ]
@@ -24,7 +29,7 @@
       "covers": "actions.go-to, events.change, values.current",
       "steps": [
         {
-          "check": "Boolean(document.querySelector('#g1 [data-sf-gallery-slider=\"inline\"] .swiper'))",
+          "check": "document.querySelectorAll('#g1 .sf-figure-grid > .sf-figure--tile').length === 3",
           "wait": 900
         },
         {
@@ -105,7 +110,7 @@
     },
     {
       "id": "p3-lightbox",
-      "title": "open at an index opens the modal named by heading and sends opened; close sends closed",
+      "title": "open at an index opens the full-screen viewer named by heading and sends opened; close sends closed",
       "covers": "actions.open, actions.close, events.opened, events.closed, values.open",
       "steps": [
         {
@@ -137,7 +142,7 @@
           }
         },
         {
-          "check": "document.getElementById('g1').hasAttribute('open') && [...document.querySelectorAll('[role=\"dialog\"]')].some((d) => (d.getAttribute('aria-label') || d.textContent).includes('Фотографии'))"
+          "check": "document.getElementById('g1').hasAttribute('open') && document.querySelector('dialog[data-sf-gallery-viewer]').open && document.querySelector('dialog[data-sf-gallery-viewer]').getAttribute('aria-label') === 'Фотографии' && document.querySelector('.sf-gallery-viewer-count').textContent.trim() === '2 / 3'"
         },
         {
           "action": {
@@ -175,34 +180,48 @@
       ]
     },
     {
-      "id": "p4-slider-change-stops",
-      "title": "a nested slider's change stops at the gallery: the page hears the gallery's change only",
-      "covers": "§7.4, events.change",
+      "id": "p4-select",
+      "title": "selection many: a check box chooses, select {selected, count, total} goes out, the bar says «Выбрано 1»; clear-selection empties it",
+      "covers": "settings.selection, values.selected, events.select, actions.clear-selection",
       "steps": [
         {
-          "check": "Boolean(document.querySelector('#g1 [data-sf-gallery-slider=\"inline\"]')._boundSlider)",
+          "check": "document.querySelectorAll('#g-sel [data-sf-gallery-pick]').length === 3",
           "wait": 900
         },
         {
-          "script": "new Promise((done) => { const g = document.getElementById('g1'); const heard = []; const on = (e) => heard.push(e.target.localName); window.addEventListener('change', on); g.querySelector('[data-sf-gallery-slider=\"inline\"]')._boundSlider.slideNext(); setTimeout(() => { window.removeEventListener('change', on); done(heard.join(',')); }, 900); })",
+          "script": "new Promise((done) => { const g = document.getElementById('g-sel'); let heard = null; g.addEventListener('sf-gallery-select', (e) => { heard = e.detail; }, {once: true}); g.querySelector('[data-sf-gallery-pick=\"2\"]').click(); setTimeout(() => done(JSON.stringify([heard, g.selected, g.querySelector('.sf-gallery-bar-count').textContent.trim()])), 300); })",
+          "expect": {
+            "returns": "[{\"selected\":[2],\"count\":1,\"total\":3},[2],\"Выбрано 1\"]"
+          }
+        },
+        {
+          "action": {
+            "name": "clear-selection"
+          },
+          "target": "#g-sel",
           "wait": 300,
           "expect": {
-            "returns": "sf-gallery"
+            "returns": {
+              "outcome": "applied"
+            },
+            "values": {
+              "#g-sel.selected": []
+            }
           }
         }
       ]
     },
     {
       "id": "p5-aliases",
-      "title": "title and blur answer as heading and backdrop-blur; getModal is kept and noted",
+      "title": "title and blur answer as heading and backdrop-blur; getModal is kept, answers null and is noted",
       "covers": "aliases.json",
       "steps": [
         {
-          "check": "(() => { const g = document.getElementById('g-old'); return g.getAttribute('heading') === 'Старое имя' && g.hasAttribute('backdrop-blur') && g.querySelector('sf-modal').getAttribute('heading') === 'Старое имя'; })()",
+          "check": "(() => { const g = document.getElementById('g-old'); return g.getAttribute('heading') === 'Старое имя' && g.hasAttribute('backdrop-blur') && g.querySelector('.sf-figure-grid').getAttribute('aria-label') === 'Старое имя'; })()",
           "wait": 600
         },
         {
-          "script": "Boolean(document.getElementById('g-old').getModal())",
+          "script": "document.getElementById('g-old').getModal() === null",
           "expect": {
             "returns": true,
             "journal": [

@@ -135,25 +135,7 @@
     "width/default"
   ],
   "cl-gallery": [
-    "align-items/default",
-    "backdrop-filter-blur/default",
-    "background-color/default",
-    "border-radius/default",
-    "border-width/default",
-    "box-shadow/default",
-    "display/default",
-    "filter-blur/default",
-    "flex-direction/default",
-    "gap/default",
-    "height/default",
-    "justify-content/default",
-    "margin/default",
-    "max-width/default",
-    "min-height/default",
-    "min-width/default",
-    "padding/default",
-    "text-color/default",
-    "width/default"
+    "display/default"
   ],
   "cl-header-page": [
     "align-items/default",

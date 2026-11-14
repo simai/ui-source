@@ -131,7 +131,9 @@ export function Search(e = {modal:'[sf-modal]'}, param)
             // not imported), so SF.Gallery is absent and [sf-gallery] markup
             // is left alone, as [sf-modal] and [sf-overbox] are without their
             // modules. It used to throw inside the sf-loader-ready handler.
-            if (!SF.Gallery) return;
+            // Since sf-gallery 1.3.0 SF.Gallery is the viewer's object
+            // (SF.Gallery.view), not this constructor: leave the markup alone.
+            if (typeof SF.Gallery !== 'function') return;
             obGallery = new SF.Gallery(e.e, [e], _s.attrParamUpdate(e.e));
             obGallery.elements = [e];
             map.set(key, obGallery);

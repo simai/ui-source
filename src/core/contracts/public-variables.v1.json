@@ -2818,28 +2818,28 @@
         {
           "name": "--sf-gallery-media-max-height",
           "role": "max-block-size",
-          "summary": "The tallest an image may be in the lightbox.",
-          "default": "calc(100dvh - var(--sf-space-6) * 2)",
+          "summary": "The tallest a picture may be in the viewer.",
+          "default": "100%",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-gallery-object-fit",
           "role": "object-fit",
-          "summary": "How an image fits its slide, inline and in the lightbox.",
+          "summary": "How the main picture fits its frame in the thumbnails look.",
           "default": "contain",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-gallery-slide-min-height",
           "role": "min-block-size",
-          "summary": "The lowest a lightbox slide may be.",
+          "summary": "The lowest the viewer's picture area may be.",
           "default": "0",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-gallery-caption-color",
           "role": "color",
-          "summary": "A caption under an image, inline and in the lightbox.",
+          "summary": "The caption under the picture in the viewer.",
           "default": "var(--sf-on-surface-variant)",
           "since": "2026-10-27"
         }

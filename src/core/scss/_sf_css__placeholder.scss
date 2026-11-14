@@ -168,55 +168,94 @@
   padding-block-end: calc(var(--sf-space-1) + var(--sf-d2));
 }
 
-/* sf-gallery before it draws (GL-7, decision C143 (8)). Its pictures are the
-   page's children, so before the code they stood one under another: six
-   pictures 4400 px high, then 0 while the slider measured, then 1081. The
-   element knows its frame from its markup alone, so it holds it here: the
-   first picture, whole (contain), in the gallery's ratio -- its own width and
-   height attributes when ratio is auto (the default), else the ratio the
-   page wrote, else 16/9 -- with its caption small and muted under it, and
-   room for the thumbnails under that (thumbs is on by default). The gallery
-   draws the same box (--sf-gallery--ratio), so the first frame is the final
-   one. A lightbox-only gallery shows nothing on the page. */
+/* sf-gallery before it draws (owner decision C150 (6)). Its pictures are the
+   page's children, so before the code they stood one under another at their
+   own sizes (six pictures 4400 px high, GL-7). The element knows its grid from
+   its markup alone, so it is drawn here as the gallery draws it
+   (component.figure: .sf-figure-grid, .sf-figure--tile): as many columns as
+   fit at the tile's minimum -- tile-size s 6rem, m 10rem (the default), l
+   15rem -- never fewer than 3 / 2 / 1, gap --sf-space-1/3; each picture in the
+   tile's shape (ratio 1/1 by default, 4/3, 16/9; auto its own), covering it,
+   on the quiet fill with the surface radius. The children stay in place until
+   the drawing takes them (holdsSlotNodesUntilDrawn), so the first frame is the
+   final one. layout="thumbnails": the first picture whole in a 4/3 frame and
+   room for the row of thumbnails and the place under it. An inline="false"
+   gallery shows nothing on the page. */
 :where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) {
-  display: block;
+  --sf-gallery--tile: var(--sf-f0);
+  --sf-gallery--columns: 2;
+  --sf-gallery--gap: var(--sf-space-1\/3);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(var(--sf-gallery--tile), calc((100% - (var(--sf-gallery--columns) - 1) * var(--sf-gallery--gap)) / var(--sf-gallery--columns))), 1fr));
+  gap: var(--sf-gallery--gap);
+  min-inline-size: 0;
 }
-:where(sf-gallery:not(:defined):not([thumbs="false"])):not(:has(> [data-sf-static])) {
-  padding-block-end: calc(var(--sf-space-1) + var(--sf-d2));
+:where(sf-gallery:not(:defined)[tile-size="s"]):not(:has(> [data-sf-static])) {
+  --sf-gallery--tile: var(--sf-e2);
+  --sf-gallery--columns: 3;
 }
-:where(sf-gallery:not(:defined)[inline="false"]:not([lightbox="false"])):not(:has(> [data-sf-static])) {
+:where(sf-gallery:not(:defined)[tile-size="l"]):not(:has(> [data-sf-static])) {
+  --sf-gallery--tile: var(--sf-f5);
+  --sf-gallery--columns: 1;
+}
+:where(sf-gallery:not(:defined)[inline="false"]):not(:has(> [data-sf-static])) {
   display: none;
 }
-:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > :not(:first-child) {
-  display: none;
-}
-:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > :first-child {
+:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > * {
   display: block;
-  inline-size: 100%;
+  min-inline-size: 0;
   margin: 0;
 }
-:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > :first-child :where(img),
-:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > img:first-child {
+:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > :not(img, picture, figure, a) {
+  display: none;
+}
+:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > :is(img, picture, figure, a) :where(img),
+:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > img {
   display: block;
   inline-size: 100%;
   block-size: auto;
-  object-fit: contain;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--sf-radius--surface);
+  background-color: var(--sf-surface-container);
 }
-:where(sf-gallery:not(:defined):is(:not([ratio]), [ratio="auto"])):not(:has(> [data-sf-static])) > :first-child :where(img:not([width][height])),
-:where(sf-gallery:not(:defined):is(:not([ratio]), [ratio="auto"])):not(:has(> [data-sf-static])) > img:first-child:not([width][height]) {
-  aspect-ratio: 16 / 9;
-}
-@each $w, $h in (16, 9), (4, 3), (3, 2), (1, 1), (21, 9), (3, 4), (2, 3) {
-  :where(sf-gallery:not(:defined)[ratio="#{$w}/#{$h}"]):not(:has(> [data-sf-static])) > :first-child :where(img),
-  :where(sf-gallery:not(:defined)[ratio="#{$w}/#{$h}"]):not(:has(> [data-sf-static])) > img:first-child {
+@each $w, $h in (4, 3), (16, 9) {
+  :where(sf-gallery:not(:defined)[ratio="#{$w}/#{$h}"]):not(:has(> [data-sf-static])) > :is(img, picture, figure, a) :where(img),
+  :where(sf-gallery:not(:defined)[ratio="#{$w}/#{$h}"]):not(:has(> [data-sf-static])) > img {
     aspect-ratio: #{$w} / #{$h};
   }
 }
-:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > :first-child :where(figcaption) {
+:where(sf-gallery:not(:defined)[ratio="auto"]):not(:has(> [data-sf-static])) > :is(img, picture, figure, a) :where(img),
+:where(sf-gallery:not(:defined)[ratio="auto"]):not(:has(> [data-sf-static])) > img {
+  aspect-ratio: auto;
+}
+:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > * :where(figcaption) {
+  display: none;
+}
+:where(sf-gallery:not(:defined)[caption="under"]):not(:has(> [data-sf-static])) > * :where(figcaption) {
+  display: block;
   color: var(--sf-on-surface-variant);
   font-size: var(--sf-text-size-1\/2);
   line-height: var(--sf-text-height-1\/2);
   margin-block-start: var(--sf-space-1\/4);
+}
+:where(sf-gallery:not(:defined)[layout="thumbnails"]):not(:has(> [data-sf-static])) {
+  display: block;
+}
+:where(sf-gallery:not(:defined)[layout="thumbnails"]):not(:has(> [data-sf-static])) > :not(:first-child) {
+  display: none;
+}
+:where(sf-gallery:not(:defined)[layout="thumbnails"]):not(:has(> [data-sf-static])) > :first-child :where(img),
+:where(sf-gallery:not(:defined)[layout="thumbnails"]):not(:has(> [data-sf-static])) > img:first-child {
+  object-fit: contain;
+}
+:where(sf-gallery:not(:defined)[layout="thumbnails"]:not([ratio])):not(:has(> [data-sf-static])) > :first-child :where(img),
+:where(sf-gallery:not(:defined)[layout="thumbnails"]:not([ratio])):not(:has(> [data-sf-static])) > img:first-child {
+  aspect-ratio: 4 / 3;
+}
+/* The thumbnails' row (72 and the ring's room) and the place line under it. */
+:where(sf-gallery:not(:defined)[layout="thumbnails"]):not(:has(> [data-sf-static])):has(> :nth-child(2)) {
+  padding-block-end: calc(var(--sf-space-1\/3) * 2 + var(--sf-d8) + var(--sf-a2) * 2 + var(--sf-text-height-1\/2));
 }
 
 }

@@ -1,101 +1,313 @@
-/* Gallery owns composition, Slider owns slides and Modal owns scrolling.
-   Source content receives defaults through the cascade, never inline writes. */
+/* sf-gallery 1.3.0 (owner decision C150): the grid of picture tiles and the
+   «main picture + thumbnails» look; the tiles, the grid and the check boxes
+   are component.figure's (.sf-figure--tile, .sf-figure-grid, .sf-figure-pick)
+   and component.checkbox's, loaded with the relations figure and checkbox.
+   The full-screen viewer (js/viewer.js) is drawn here too. System values
+   only: the space, size, radius, colour and focus tokens. */
 @layer sf.components {
-  /* The rendered root is the grid/flex item (the custom host is display:contents).
-     Do not feed Swiper's measured slide width back into an automatic minimum. */
+  /* The rendered root is the grid or flex item (the custom host is
+     display:contents): it may shrink to the room it gets. */
   .sf-gallery {
     min-width: var(--sf-gallery-min-inline-size, 0);
   }
 
-  .sf-gallery-lightbox-content {
-    --sf-slider-slide--height: auto;
-    --sf-slider-slide--min-height: var(--sf-gallery-slide-min-height, 0);
-    --sf-slider-slide-img--width: auto;
-    --sf-slider-slide-img--height: auto;
-    --sf-slider-slide-img--object-fit: var(--sf-gallery-object-fit, contain);
-    min-height: 0;
+  .sf-gallery[hidden] {
+    display: none;
   }
 
-  .sf-gallery-lightbox-panel {
-    display: flex;
-    max-height: 100%;
-  }
-
-  .sf-gallery-lightbox-panel > [data-sf-modal-surface],
-  .sf-gallery-lightbox-panel [data-sf-modal-body],
-  .sf-gallery-lightbox-panel [data-sf-modal-body-viewport],
-  .sf-gallery-lightbox-panel [data-sf-modal-body-scroll] {
-    flex: 1 1 auto;
-    min-height: 0;
-    min-width: 0;
-  }
-
-  .sf-gallery-lightbox-panel [data-sf-modal-body-viewport] {
+  /* ── The second look: the main picture and the thumbnails (C150 (1)) ── */
+  .sf-gallery--thumbnails {
     display: flex;
     flex-direction: column;
+    gap: var(--sf-space-1\/3);
   }
 
-  :where([data-sf-gallery-slider='lightbox']) :where(figure, picture) {
-    align-items: center;
+  .sf-gallery-main {
+    margin: var(--sf-0);
+  }
+
+  .sf-gallery-main > .sf-figure-media {
+    aspect-ratio: var(--sf-gallery--ratio, 4 / 3);
+  }
+
+  .sf-gallery-main > .sf-figure-media > img {
+    block-size: 100%;
+    object-fit: var(--sf-gallery-object-fit, contain);
+  }
+
+  .sf-gallery-thumbs {
     display: flex;
-    flex-direction: column;
-    min-height: 0;
-    max-width: 100%;
-    width: 100%;
+    gap: var(--sf-space-1\/3);
+    overflow-x: auto;
+    /* Room for the current thumbnail's ring, given back at the sides. */
+    padding: var(--sf-a2);
+    margin-inline: calc(-1 * var(--sf-a2));
   }
 
-  :where([data-sf-gallery-slider='lightbox']) img {
+  .sf-gallery-thumb.sf-figure-media {
+    flex: none;
+    inline-size: var(--sf-d8);
+    aspect-ratio: 1 / 1;
+    border-radius: var(--sf-radius--ui);
+    cursor: pointer;
+    opacity: 0.64;
+  }
+
+  .sf-gallery-thumb > img {
     display: block;
-    min-height: 0;
-    max-height: var(--sf-gallery-media-max-height, var(--sf-gallery-media--max-height, calc(100dvh - var(--sf-space-6) * 2)));
-    max-width: 100%;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
   }
 
-  /* The inline frame (GL-7, decision C143 (8)): every picture is the box of
-     the gallery's ratio -- the first picture's width/height, else the ratio
-     setting, else 16/9 -- and is shown whole in it (contain): a product photo
-     is not cropped. core.styles draws the same box before the code arrives
-     (an undefined sf-gallery), so the first frame is the final one. */
-  .sf-gallery-inline {
-    --sf-slider-slide--height: auto;
-    --sf-slider-slide--min-height: 0;
-    --sf-slider-slide-img--height: auto;
-    --sf-slider-slide-img--object-fit: var(--sf-gallery-object-fit, contain);
+  .sf-gallery-thumb[aria-current="true"] {
+    opacity: 1;
+    outline: var(--sf-focus--width) solid var(--sf-primary);
+    outline-offset: var(--sf-a1);
   }
 
-  .sf-gallery-inline .sf-gallery-slide > * {
-    flex: 1 1 100%;
+  .sf-gallery-thumb:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-a1);
+  }
+
+  .sf-gallery-count {
+    color: var(--sf-on-surface-variant);
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Selection: «Выбрано N» and the page's actions (C150 (9)) ── */
+  .sf-gallery-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sf-space-1\/3);
+    min-block-size: var(--sf-ui-1--control-height);
+    margin-block-end: var(--sf-space-1\/3);
+    padding-inline: var(--sf-space-1\/4);
+    border-radius: var(--sf-radius--ui);
+    background-color: var(--sf-primary-container);
+    color: var(--sf-on-primary-container);
+  }
+
+  .sf-gallery-bar[hidden] {
+    display: none;
+  }
+
+  .sf-gallery-bar-count {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    padding-inline-start: var(--sf-space-1\/4);
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sf-gallery-bar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sf-space-1\/3);
+  }
+
+  .sf-gallery-bar-actions:empty {
+    display: none;
+  }
+
+  /* ── The viewer (C150 (7), (8); C149 (6)) ──
+     Full screen and black in both themes: pictures are judged on black. The
+     place is the media glass's (.sf-surface-media): white ink and the alpha
+     steps of white for the controls on it. */
+  .sf-gallery-viewer {
+    position: fixed;
+    inset: var(--sf-0);
+    inline-size: 100vw;
+    block-size: 100dvh;
+    max-inline-size: none;
+    max-block-size: none;
+    margin: var(--sf-0);
+    padding: var(--sf-0);
+    border: var(--sf-0);
+    overflow: hidden;
+    background-color: var(--sf-black);
+    backdrop-filter: none;
+    color: var(--sf-on-surface-media);
+    color-scheme: dark;
+  }
+
+  .sf-gallery-viewer[open] {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .sf-gallery-viewer::backdrop {
+    background-color: var(--sf-black);
+  }
+
+  /* The bar: «3 / 12» at the start, the actions at the end 8 apart (C105 H5). */
+  .sf-gallery-viewer-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--sf-space-1\/3);
+    padding: var(--sf-space-1\/2) var(--sf-space-1);
+  }
+
+  .sf-gallery-viewer-title {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
     min-inline-size: 0;
   }
 
-  .sf-gallery-inline .sf-gallery-slide img {
-    aspect-ratio: var(--sf-gallery--ratio, 16 / 9);
+  .sf-gallery-viewer-name {
+    overflow: hidden;
+    font-size: var(--sf-text-size-1);
+    font-weight: var(--sf-font-weight-medium);
+    line-height: var(--sf-text-height-1);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .sf-gallery-viewer-count {
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sf-gallery-viewer-name + .sf-gallery-viewer-count {
+    color: var(--sf-on-surface-variant);
+  }
+
+  .sf-gallery-viewer-actions {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--sf-space-1\/3);
+  }
+
+  .sf-gallery-viewer-stage {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: 0;
+    overflow: hidden;
+    padding-inline: var(--sf-space-6);
+    touch-action: none;
+  }
+
+  .sf-gallery-viewer-media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 100%;
+    block-size: 100%;
+    min-inline-size: 0;
+    min-block-size: var(--sf-gallery-slide-min-height, 0);
+  }
+
+  .sf-gallery-viewer-media > img {
     display: block;
+    max-inline-size: 100%;
+    max-block-size: var(--sf-gallery-media-max-height, 100%);
+    object-fit: contain;
+    cursor: zoom-in;
+    transform: translate(var(--sf-gallery-viewer--x, 0), calc(var(--sf-gallery-viewer--y, 0px) + var(--sf-gallery-viewer--drag, 0px))) scale(var(--sf-gallery-viewer--scale, 1));
+    transition: transform var(--sf-duration-fast) var(--sf-animation);
+    user-select: none;
+    -webkit-user-drag: none;
   }
 
-  .sf-gallery figure,
-  :where([data-sf-gallery-slider='lightbox']) figure {
-    margin: 0;
+  .sf-gallery-viewer-stage[data-zoomed] .sf-gallery-viewer-media > img {
+    cursor: grab;
+    transition: none;
   }
 
-  /* A caption under an image, inline and in the lightbox: small and muted
-     (decisions C92 view 8, C98), a quarter step under the picture. */
-  .sf-gallery figcaption,
-  :where([data-sf-gallery-slider='lightbox']) figcaption {
+  .sf-gallery-viewer-media > video {
+    display: block;
+    max-inline-size: 100%;
+    max-block-size: 100%;
+  }
+
+  /* A PDF in the browser's own viewer, in a frame (C149 (6)). */
+  .sf-gallery-viewer-media > iframe {
+    display: block;
+    inline-size: min(100%, var(--sf-h5));
+    block-size: 100%;
+    border: var(--sf-0);
+    background-color: var(--sf-white);
+  }
+
+  .sf-gallery-viewer-side {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+  }
+
+  .sf-gallery-viewer-side--previous {
+    inset-inline-start: var(--sf-space-1);
+  }
+
+  .sf-gallery-viewer-side--next {
+    inset-inline-end: var(--sf-space-1);
+  }
+
+  .sf-gallery-viewer-side :where(.sf-icon):dir(rtl) {
+    transform: scaleX(-1);
+  }
+
+  .sf-gallery-viewer-caption {
+    min-block-size: calc(var(--sf-text-height-1\/2) + var(--sf-space-1\/2) + var(--sf-space-1));
+    padding: var(--sf-space-1\/2) var(--sf-space-1) var(--sf-space-1);
     color: var(--sf-gallery-caption-color, var(--sf-on-surface-variant));
     font-size: var(--sf-text-size-1\/2);
     line-height: var(--sf-text-height-1\/2);
-    margin-block-start: var(--sf-space-1\/4);
+    text-align: center;
   }
 
-  :where([data-sf-gallery-slider='lightbox']) figcaption {
-    flex: 0 0 auto;
-    max-width: 100%;
+  /* A phone pages by swipe: no side arrows, the picture edge to edge. */
+  @media (max-width: 43.9375rem) {
+    .sf-gallery-viewer-stage {
+      padding-inline: var(--sf-0);
+    }
+
+    .sf-gallery-viewer-side {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sf-gallery-viewer-media > img {
+      transition: none;
+    }
   }
 }
 
-/* Swiper's unlayered height:100% must not clip long authored captions.
-   This only targets the runtime wrapper, not author content or inline view. */
-.sf-gallery-lightbox-content .sf-slider-main > .swiper-wrapper {
-  height: auto;
+/* The page under the viewer does not scroll. */
+:root:has(> body > .sf-gallery-viewer[open]) {
+  overflow: hidden;
+}
+
+/* The viewer's controls over a photo (C14 (3), C150 (7)): a dark translucent
+   circle -- black 48, 64 under the pointer, 80 pressed -- with a white icon
+   and a white 16 hairline, so the circle also reads on the black bar. The
+   close is sf-button-close appearance="media", which draws the same circle;
+   it takes the hairline here. In sf.overrides, as the close's own looks. */
+@layer sf.overrides {
+  .sf-gallery-viewer .sf-gallery-viewer-control .sf-icon-button {
+    border-radius: var(--sf-radius-circle);
+    background-color: var(--sf-black--alfa-48);
+    box-shadow: inset 0 0 0 var(--sf-a1) var(--sf-white--alfa-16);
+  }
+
+  .sf-gallery-viewer .sf-gallery-viewer-control .sf-icon-button:not(:disabled):hover {
+    background-color: var(--sf-black--alfa-64);
+  }
+
+  .sf-gallery-viewer .sf-gallery-viewer-control .sf-icon-button:not(:disabled):active {
+    background-color: var(--sf-black--alfa-80);
+  }
 }

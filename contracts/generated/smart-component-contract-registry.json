@@ -984,8 +984,10 @@
       "composition": {
         "public_parts": [],
         "uses": [
-          "smart.modal",
-          "smart.slider"
+          "component.checkbox",
+          "component.figure",
+          "smart.button-close",
+          "smart.button-icon"
         ]
       },
       "contract_schema": {
@@ -997,13 +999,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/gallery/smart.manifest.json",
-      "manifest_sha256": "e80f9b04974ace31c722bcf0822b1f0c91901ef782d99bc09c1fda7d313e85b5",
+      "manifest_sha256": "c5c1d2ddaebd7b1c2200159b5764af506c76248e9e1adfe87631c1722acbb673",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "An ordered media collection shown in an inline Slider, with an optional Modal lightbox holding a second Slider. The gallery owns the one-based current slide and keeps both views on it.",
+      "summary": "A set of pictures: a grid of picture tiles (or the main picture with thumbnails) that opens the page's full-screen viewer, with an optional choice of tiles for a media library. The viewer is SF.Gallery.view(items, options), shared with sf-file-preview.",
       "tags": [
         "gallery"
       ],
