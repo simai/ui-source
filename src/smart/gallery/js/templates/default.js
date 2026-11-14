@@ -39,16 +39,23 @@ function media(context, tile) {
   `;
 }
 
+// The grid, and its masonry look (C150 (11)): the same columns and gap, every
+// picture in its own shape (ratio auto), each tile into the shortest column
+// (component.figure .sf-figure-grid--masonry: grid-lanes where the browser has
+// it, else js/masonry.js places the tiles after the drawing).
 function renderGrid(context) {
-  const ratioClass = RATIO_CLASS[context.ratio] ?? RATIO_CLASS['1/1'];
+  const masonry = context.layout === 'masonry';
+  const ratio = masonry ? 'auto' : context.ratio;
+  const ratioClass = RATIO_CLASS[ratio] ?? RATIO_CLASS['1/1'];
   return html`
     ${renderBar(context)}
-    <div class=${joinClasses('sf-gallery sf-gallery--grid sf-figure-grid', `sf-figure-grid--${context.tileSize}`,
+    <div class=${joinClasses('sf-gallery', masonry ? 'sf-gallery--masonry' : 'sf-gallery--grid', 'sf-figure-grid',
+      masonry ? 'sf-figure-grid--masonry' : '', `sf-figure-grid--${context.tileSize}`,
       context.selectedCount ? 'sf-figure-grid--selecting' : '', context.rootClass)}
       role="list" aria-label=${context.label || nothing}>
       ${context.tiles.map((tile) => html`
         <figure role="listitem" data-sf-gallery-index=${tile.index}
-          class=${joinClasses('sf-figure sf-figure--tile', ratioClass, context.ratio === 'auto' ? 'sf-figure--ratio-auto' : '',
+          class=${joinClasses('sf-figure sf-figure--tile', ratioClass, ratio === 'auto' ? 'sf-figure--ratio-auto' : '',
             tile.selected ? 'sf-figure--selected' : '')}>
           ${media(context, tile)}
           ${context.caption === 'under' && tile.caption ? html`<figcaption class="sf-figure-caption">${tile.caption}</figcaption>` : nothing}

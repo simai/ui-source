@@ -3,6 +3,7 @@ import { applied, elementFromManifest } from '../../core/js/element-manifest';
 import { noteDeprecated } from '../../core/js/deprecations';
 import { renderGalleryTemplate } from './js/templates/default';
 import { installViewer } from './js/viewer.js';
+import { MasonryPlacement } from './js/masonry.js';
 import { normalizeSlideContent } from '../../component/slider/js/_slide-content';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -11,8 +12,9 @@ import ru from './lang/ru.json';
 
 // sf-gallery 1.3.0 from its component.json (standard simai.smart-component
 // 1.3.8 §3, §4, §8), owner decision C150 (2026-11-14): a set of pictures is a
-// grid of picture tiles by default, or the main picture with thumbnails; a
-// press opens the one full-screen viewer of the page (js/viewer.js, SF.Gallery,
+// grid of picture tiles by default, or the main picture with thumbnails, or
+// masonry (C150 (11): each picture in its own shape, into the shortest
+// column, js/masonry.js where the browser has no grid-lanes); a press opens the one full-screen viewer of the page (js/viewer.js, SF.Gallery,
 // shared with sf-file-preview, C149 (6)); a media library chooses tiles with
 // check boxes. The slider and the window it was built from (sf-slider,
 // sf-modal) are gone: a row that scrolls is sf-slider (C143). Their settings
@@ -25,6 +27,8 @@ const GalleryElement = elementFromManifest(manifest, {
 });
 
 const viewer = installViewer();
+
+const LAYOUTS = ['grid', 'thumbnails', 'masonry'];
 
 const RETIRE = { since: '2026-11-14', remove_after: '2027-01-01' };
 const RETIRED_SETTINGS = aliases.aliases
@@ -204,6 +208,7 @@ class SfGallery extends GalleryElement {
     this._syncing = false;
     this._press = null;
     this._swallowClick = false;
+    this._masonry = new MasonryPlacement();
     this._handleClick = this._handleClick.bind(this);
     this._handleKeyDown = this._handleKeyDown.bind(this);
     this._handleChange = this._handleChange.bind(this);
@@ -221,6 +226,9 @@ class SfGallery extends GalleryElement {
     });
     RETIRED_SETTINGS.filter((name) => this.hasAttribute(name)).forEach((name) => noteRetired(name, 'attribute', RETIRE));
     super.connectedCallback();
+    // Moved on the page: a drawn masonry grid is placed again.
+    const masonry = this._hasRendered && this._layout() === 'masonry' ? this.querySelector('.sf-figure-grid--masonry') : null;
+    if (masonry) this._masonry.attach(masonry);
     this.addEventListener('click', this._handleClick);
     this.addEventListener('keydown', this._handleKeyDown);
     this.addEventListener('change', this._handleChange);
@@ -237,6 +245,7 @@ class SfGallery extends GalleryElement {
     this.removeEventListener('pointerup', this._handlePointerEnd);
     this.removeEventListener('pointercancel', this._handlePointerEnd);
     clearTimeout(this._press?.timer);
+    this._masonry.detach();
     if (this._viewing) viewer.close();
     super.disconnectedCallback();
   }
@@ -386,7 +395,7 @@ class SfGallery extends GalleryElement {
       label,
       ratio,
       mainRatio: w && h ? `${w} / ${h}` : '',
-      layout: this.getProp('layout') === 'thumbnails' ? 'thumbnails' : 'grid',
+      layout: this._layout(),
       tileSize: ['s', 'm', 'l'].includes(this.getProp('tileSize')) ? this.getProp('tileSize') : 'm',
       caption: this.getProp('caption') === 'under' ? 'under' : 'viewer',
       inline: this.getProp('inline') !== false,
@@ -416,6 +425,10 @@ class SfGallery extends GalleryElement {
     });
   }
 
+  _layout() {
+    return LAYOUTS.includes(this.getProp('layout')) ? this.getProp('layout') : 'grid';
+  }
+
   template() {
     return renderGalleryTemplate(this.templateContext());
   }
@@ -439,6 +452,11 @@ class SfGallery extends GalleryElement {
   }
 
   afterRender() {
+    // Masonry (C150 (11)): where the browser has no grid-lanes, each tile is
+    // placed into the shortest column once it has drawn, and again whenever a
+    // tile's height changes.
+    if (this._layout() === 'masonry' && this.getProp('inline') !== false) this._masonry.attach(this.querySelector('.sf-figure-grid--masonry'));
+    else this._masonry.detach();
     // A gallery the page opened in its markup (open) opens once it has drawn.
     if (this.openState && !this._viewing && this.isConnected) requestAnimationFrame(() => this.openState && !this._viewing && this.open());
   }

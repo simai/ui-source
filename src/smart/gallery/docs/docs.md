@@ -1,8 +1,9 @@
 # sf-gallery
 
 A set of pictures (owner decision C150, 2026-11-14): a grid of picture tiles
-by default, or the main picture with a row of thumbnails under it (a product
-card). A press on a picture opens the full-screen viewer of the page, which
+by default, the main picture with a row of thumbnails under it (a product
+card), or masonry -- every picture in its own shape, each into the shortest
+column. A press on a picture opens the full-screen viewer of the page, which
 pages, zooms and closes the same way everywhere. A media library chooses
 pictures with check boxes. A row of slides that scrolls is `sf-slider`
 (C143), not a gallery look.
@@ -24,7 +25,10 @@ The gallery owns the shown position. `current`, `goTo(index)` and
 
 Before the code arrives core.styles already lays the page's pictures out as
 the grid (or the main picture of the thumbnails look) in their ratio, with the
-quiet container fill, so nothing moves when the gallery draws (C150 (6)).
+quiet container fill, so nothing moves when the gallery draws (C150 (6)). The
+masonry look holds its first frame where the browser has `display:
+grid-lanes`; elsewhere its columns stand as the quiet fill until the script
+places the pictures, and the block changes its height once (see «Masonry»).
 Pictures after the first rows load lazily: the tiles are made with
 `loading="lazy"` and `decoding="async"` unless the page wrote its own; give
 the page's own pictures after the first `loading="lazy"` too, since the
@@ -51,8 +55,8 @@ is the link's address, else `data-src`, else the picture's own. The caption is
 
 | Setting | Values | What |
 |:---|:---|:---|
-| `layout` | `grid` (default), `thumbnails` | the grid of tiles, or the main picture whole in its frame with thumbnails and «3 / 12» under it |
-| `tile-size` | `s` 96, `m` 160 (default), `l` 240 | the tile's minimum; as many columns as fit, never fewer than 3 / 2 / 1 |
+| `layout` | `grid` (default), `thumbnails`, `masonry` | the grid of tiles; the main picture whole in its frame with thumbnails and «3 / 12» under it; or masonry, each picture in its own shape in the shortest column |
+| `tile-size` | `s` 96, `m` 160 (default), `l` 240 | the tile's minimum; as many columns as fit, never fewer than 3 / 2 / 1 (2 for `l` in masonry) |
 | `ratio` | `1/1` (default), `4/3`, `16/9`, `auto` | one shape for every tile, the picture covering it around its focus point; `auto` keeps each picture's own. In the thumbnails look it is the main frame's (4/3 without the attribute) |
 | `caption` | `viewer` (default), `under` | captions in the viewer, or also under the tiles |
 | `selection` | `none` (default), `many` | check boxes on the tiles, «Выбрано N» and the page's actions over the grid |
@@ -62,6 +66,36 @@ is the link's address, else `data-src`, else the picture's own. The caption is
 | `loop` | `false` (default) | the viewer pages from the last picture to the first |
 
 The grid's gap is one group's, `--sf-space-1/3`: 8, and 4 in compact density.
+
+## Masonry
+
+`layout="masonry"` (owner decision C150 (11)) keeps the grid's columns
+(`tile-size`) and gap, never fewer than two columns, so a phone shows two.
+Every picture keeps its own shape, uncropped (`ratio` does not apply). The
+tiles go in order, each into the shortest column, a tie to the start one:
+the first at the top left, the second beside it, and no tile stands higher
+than the one before it, so reading and Tab go by rows, left to right, and
+never jump up. Selection, captions under the tiles and the viewer work as in
+the grid.
+
+```html
+<sf-gallery layout="masonry" heading="Портфолио">
+  <img src="/upload/1.jpg" alt="Фасад" width="1280" height="960">
+  <img src="/upload/2.jpg" alt="Лестница" width="960" height="1440" loading="lazy">
+  <img src="/upload/3.jpg" alt="Двор" width="1600" height="900" loading="lazy">
+</sf-gallery>
+```
+
+Where the browser has `display: grid-lanes` (Safari 26.4 and later today) it
+lays the tiles out itself. Elsewhere the gallery's script places them once it
+has drawn, from each tile's height, and again when a tile's height or the
+number of columns changes. Give every picture its `width` and `height`: the
+tile's shape comes from them, so the layout does not wait for the pictures
+and does not move when they arrive. A picture without them holds a square
+until it arrives, and the tiles under it move then. Before the code the
+page's pictures stand as the quiet fill of the same columns (in a browser
+with `grid-lanes`, already in their places), and the block changes its height
+once when they are placed.
 
 Values: `open` (the viewer is open), `current` (the one-based picture shown),
 `selected` (the chosen pictures' numbers, a list; a page may write it).

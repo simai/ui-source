@@ -17,7 +17,7 @@ const core = await read('src/core/scss/_sf_css__placeholder.scss');
 const ru = JSON.parse(await read('src/smart/gallery/lang/ru.json')).runtime;
 
 test('C150 (1): a grid by default, and the main picture with thumbnails', () => {
-  assert.deepEqual(manifest.settings.layout.values, ['grid', 'thumbnails']);
+  assert.deepEqual(manifest.settings.layout.values, ['grid', 'thumbnails', 'masonry']);
   assert.equal(manifest.settings.layout.default, 'grid');
   assert.match(template, /context\.layout === 'thumbnails' \? renderThumbnails\(context\) : renderGrid\(context\)/);
   assert.match(template, /class="sf-gallery-thumbs" role="group"/);
@@ -110,4 +110,22 @@ test('The viewer is one per page, on SF.Gallery, for pictures, videos and PDF fi
   assert.equal(kindOf({src: '/a.pdf'}), 'pdf');
   assert.equal(kindOf({src: '/download/7', mime: 'application/pdf'}), 'pdf');
   assert.equal(kindOf({src: '/a.pdf', type: 'image'}), 'image');
+});
+
+test('C150 (11): masonry - the grid\'s columns, own shapes, the shortest column, grid-lanes where there is one', async () => {
+  const masonry = await read('src/smart/gallery/js/masonry.js');
+  assert.ok(manifest.settings.layout.values.includes('masonry'));
+  assert.match(template, /masonry \? 'sf-figure-grid--masonry' : ''/);
+  assert.match(template, /const ratio = masonry \? 'auto' : context\.ratio;/);
+  assert.match(figure, /\.sf-figure-grid--masonry\.sf-figure-grid--l \{\s*--sf-figure-grid--columns: 2;/);
+  assert.match(figure, /@supports \(display: grid-lanes\) \{\s*\.sf-figure-grid--masonry \{\s*display: grid-lanes;/);
+  assert.match(figure, /\[data-sf-masonry="placed"\] > \* \{\s*position: absolute;/);
+  assert.match(masonry, /CSS\.supports\('display', 'grid-lanes'\)/);
+  // Each tile into the shortest column, a tie to the start one.
+  assert.match(masonry, /if \(ends\[next\] < ends\[column\] - TIE\) column = next;/);
+  assert.match(masonry, /tile\.style\.setProperty\('--sf-figure-grid--lane', String\(column \+ 1\)\);/);
+  assert.match(figure, /grid-column: var\(--sf-figure-grid--lane, 1\) \/ span 1;/);
+  assert.match(gallery, /this\._masonry\.attach\(this\.querySelector\('\.sf-figure-grid--masonry'\)\)/);
+  assert.match(core, /sf-gallery:not\(:defined\)\[layout="masonry"\]/);
+  assert.match(core, /@supports \(display: grid-lanes\)/);
 });

@@ -300,6 +300,49 @@
     --sf-figure-grid--columns: 1;
   }
 
+  // ── Masonry (owner decision C150 (11), 2026-11-14) ──
+  // The grid's third look: the same columns and gap, every picture in its own
+  // shape (tiles with sf-figure--ratio-auto; a picture without width and
+  // height holds a square until it arrives), each tile, in order, put into
+  // the shortest column -- so reading and Tab go by rows, left to right and
+  // only down. Never fewer than two columns: a phone keeps two. A browser
+  // with display: grid-lanes lays it out itself (tolerance 0: the shortest
+  // column, a tie to the start one). Elsewhere the tiles stand as the grid,
+  // each at the top of its row, until the set's script places them
+  // (data-sf-masonry="placed": each tile's column --sf-figure-grid--lane and
+  // block offset, the grid's height); the columns stay the grid's, so RTL
+  // mirrors them.
+  .sf-figure-grid--masonry {
+    align-items: start;
+  }
+
+  .sf-figure-grid--masonry.sf-figure-grid--l {
+    --sf-figure-grid--columns: 2;
+  }
+
+  .sf-figure-grid--masonry .sf-figure--tile > .sf-figure-media > img:not([width][height]),
+  .sf-figure-grid--masonry .sf-figure--tile > .sf-figure-media > picture > img:not([width][height]) {
+    aspect-ratio: auto 1 / 1;
+  }
+
+  .sf-figure-grid--masonry[data-sf-masonry="placed"] {
+    position: relative;
+  }
+
+  .sf-figure-grid--masonry[data-sf-masonry="placed"] > * {
+    position: absolute;
+    inset-inline: var(--sf-0);
+    grid-column: var(--sf-figure-grid--lane, 1) / span 1;
+  }
+
+  @supports (display: grid-lanes) {
+    .sf-figure-grid--masonry {
+      display: grid-lanes;
+      flow-tolerance: 0;
+      item-tolerance: 0;
+    }
+  }
+
   @media (forced-colors: active) {
     .sf-figure-media {
       border-color: CanvasText;

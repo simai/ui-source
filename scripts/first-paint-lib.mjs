@@ -40,7 +40,7 @@ export const PROPERTY_ONLY = new Set(['list', 'object', 'state']);
 // markers of a started, styled element.
 export const RUNTIME_ATTRIBUTES = [
   'data-sf-started', 'data-sf-style-ready', 'data-sf-style-pending', 'data-sf-snap-page',
-  'data-sf-instance', 'data-sf-loaded', 'data-sf-upgraded', 'data-sf-ready',
+  'data-sf-instance', 'data-sf-loaded', 'data-sf-upgraded', 'data-sf-ready', 'data-sf-masonry',
 ];
 
 const readJson = (file) => JSON.parse(readFileSync(file, 'utf8'));

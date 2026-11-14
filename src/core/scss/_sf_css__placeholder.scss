@@ -309,20 +309,21 @@
   display: block;
   inline-size: 100%;
   block-size: auto;
-  aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: var(--sf-radius--surface);
   background-color: var(--sf-surface-container);
 }
+/* One ratio for every tile; ratio="auto" and the masonry look keep each
+   picture's own, which its width and height give before it arrives. */
+:where(sf-gallery:not(:defined):not([layout="masonry"], [ratio="auto"])):not(:has(> [data-sf-static])) > :is(img, picture, figure, a) :where(img),
+:where(sf-gallery:not(:defined):not([layout="masonry"], [ratio="auto"])):not(:has(> [data-sf-static])) > img {
+  aspect-ratio: 1 / 1;
+}
 @each $w, $h in (4, 3), (16, 9) {
-  :where(sf-gallery:not(:defined)[ratio="#{$w}/#{$h}"]):not(:has(> [data-sf-static])) > :is(img, picture, figure, a) :where(img),
-  :where(sf-gallery:not(:defined)[ratio="#{$w}/#{$h}"]):not(:has(> [data-sf-static])) > img {
+  :where(sf-gallery:not(:defined)[ratio="#{$w}/#{$h}"]:not([layout="masonry"])):not(:has(> [data-sf-static])) > :is(img, picture, figure, a) :where(img),
+  :where(sf-gallery:not(:defined)[ratio="#{$w}/#{$h}"]:not([layout="masonry"])):not(:has(> [data-sf-static])) > img {
     aspect-ratio: #{$w} / #{$h};
   }
-}
-:where(sf-gallery:not(:defined)[ratio="auto"]):not(:has(> [data-sf-static])) > :is(img, picture, figure, a) :where(img),
-:where(sf-gallery:not(:defined)[ratio="auto"]):not(:has(> [data-sf-static])) > img {
-  aspect-ratio: auto;
 }
 :where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > * :where(figcaption) {
   display: none;
@@ -351,6 +352,47 @@
 /* The thumbnails' row (72 and the ring's room) and the place line under it. */
 :where(sf-gallery:not(:defined)[layout="thumbnails"]):not(:has(> [data-sf-static])):has(> :nth-child(2)) {
   padding-block-end: calc(var(--sf-space-1\/3) * 2 + var(--sf-d8) + var(--sf-a2) * 2 + var(--sf-text-height-1\/2));
+}
+/* layout="masonry" (C150 (11)): the grid's columns and gap, never fewer than
+   two, each picture in its own shape from its width and height (a square
+   while a picture without them arrives). A browser with display: grid-lanes
+   lays the page's pictures out as the gallery will -- each into the shortest
+   column -- so the first frame is the final one. Elsewhere the gallery's
+   script places them: until it does, the columns stand as a quiet fill (CSS
+   columns, one tile per picture, the pictures and captions unseen, so none
+   is seen where it will not stay), and the block changes its height once when they are
+   placed. */
+:where(sf-gallery:not(:defined)[layout="masonry"][tile-size="l"]):not(:has(> [data-sf-static])) {
+  --sf-gallery--columns: 2;
+}
+:where(sf-gallery:not(:defined)[layout="masonry"]):not(:has(> [data-sf-static])) > :is(img, picture, figure, a) :where(img:not([width][height])),
+:where(sf-gallery:not(:defined)[layout="masonry"]):not(:has(> [data-sf-static])) > img:not([width][height]) {
+  aspect-ratio: auto 1 / 1;
+}
+@supports not (display: grid-lanes) {
+  :where(sf-gallery:not(:defined)[layout="masonry"]):not(:has(> [data-sf-static])) {
+    display: block;
+    column-width: var(--sf-gallery--tile);
+    column-gap: var(--sf-gallery--gap);
+  }
+  :where(sf-gallery:not(:defined)[layout="masonry"]):not(:has(> [data-sf-static])) > * {
+    break-inside: avoid;
+    margin-block-end: var(--sf-gallery--gap);
+  }
+  :where(sf-gallery:not(:defined)[layout="masonry"]):not(:has(> [data-sf-static])) > :is(img, picture, figure, a) :where(img),
+  :where(sf-gallery:not(:defined)[layout="masonry"]):not(:has(> [data-sf-static])) > img {
+    object-position: 0 -200vmax !important;
+  }
+  :where(sf-gallery:not(:defined)[layout="masonry"]):not(:has(> [data-sf-static])) > * :where(figcaption) {
+    visibility: hidden;
+  }
+}
+@supports (display: grid-lanes) {
+  :where(sf-gallery:not(:defined)[layout="masonry"]):not(:has(> [data-sf-static])) {
+    display: grid-lanes;
+    flow-tolerance: 0;
+    item-tolerance: 0;
+  }
 }
 
 }

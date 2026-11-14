@@ -19,6 +19,14 @@
       "    <img src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%2310b981%22/%3E%3C/svg%3E\" width=\"640\" height=\"360\" alt=\"Зелёный\">",
       "    <img src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23f59e0b%22/%3E%3C/svg%3E\" width=\"640\" height=\"360\" alt=\"Жёлтый\">",
       "  </sf-gallery>",
+      "  <sf-gallery id=\"g-mas\" layout=\"masonry\">",
+      "    <img src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%233b82f6%22/%3E%3C/svg%3E\" width=\"640\" height=\"360\" alt=\"Картинка 3b82f6\">",
+      "    <img src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22360%22 height=%22640%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%2310b981%22/%3E%3C/svg%3E\" width=\"360\" height=\"640\" alt=\"Картинка 10b981\">",
+      "    <img src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22480%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23f59e0b%22/%3E%3C/svg%3E\" width=\"640\" height=\"480\" alt=\"Картинка f59e0b\">",
+      "    <img src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22640%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23ef4444%22/%3E%3C/svg%3E\" width=\"640\" height=\"640\" alt=\"Картинка ef4444\">",
+      "    <img src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%238b5cf6%22/%3E%3C/svg%3E\" width=\"640\" height=\"360\" alt=\"Картинка 8b5cf6\">",
+      "    <img src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22360%22 height=%22640%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%2314b8a6%22/%3E%3C/svg%3E\" width=\"360\" height=\"640\" alt=\"Картинка 14b8a6\">",
+      "  </sf-gallery>",
       "</main>"
     ]
   },
@@ -231,6 +239,17 @@
               }
             ]
           }
+        }
+      ]
+    },
+    {
+      "id": "p6-masonry",
+      "title": "layout masonry: every picture in its own shape, each tile into the shortest column, no tile higher than the one before it",
+      "covers": "settings.layout",
+      "steps": [
+        {
+          "check": "(() => { const t = [...document.querySelectorAll('#g-mas .sf-figure-grid--masonry > .sf-figure--tile')].map((x) => x.getBoundingClientRect()); if (t.length !== 6) return false; const lefts = new Set(t.map((r) => Math.round(r.left))); return lefts.size >= 2 && t.every((r, i) => !i || r.top >= t[i - 1].top - 1) && Math.abs(t[1].height / t[0].height - 3.16) < 0.2; })()",
+          "wait": 900
         }
       ]
     }

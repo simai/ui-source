@@ -15,6 +15,29 @@
     display: none;
   }
 
+  /* ── Masonry printed by a server (C150 (11)) ──
+     Printed markup does not carry the placement (it is measured on the page).
+     Until the code places the tiles, a browser without grid-lanes shows the
+     columns as the quiet fill, as core.styles does before the code: one tile
+     per picture down the columns, the pictures and captions unseen on the
+     tile's fill, so none is seen where it will not stay. */
+  @supports not (display: grid-lanes) {
+    .sf-gallery--masonry[data-sf-static] {
+      display: block;
+      column-width: var(--sf-figure-grid--tile);
+      column-gap: var(--sf-figure-grid--gap);
+    }
+
+    .sf-gallery--masonry[data-sf-static] > * {
+      break-inside: avoid;
+      margin-block-end: var(--sf-figure-grid--gap);
+    }
+
+    .sf-gallery--masonry[data-sf-static] :is(.sf-figure-media > :is(img, picture), .sf-figure-caption) {
+      visibility: hidden;
+    }
+  }
+
   /* ── The second look: the main picture and the thumbnails (C150 (1)) ── */
   .sf-gallery--thumbnails {
     display: flex;

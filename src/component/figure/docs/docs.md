@@ -98,6 +98,16 @@ in compact density).
 | `sf-figure-grid` | `--sf-f0` (160) | 2 columns |
 | `sf-figure-grid sf-figure-grid--l` | `--sf-f5` (240) | 1 column |
 
+`sf-figure-grid--masonry` (owner decision C150 (11)) is the grid's masonry
+look: the same columns and gap, never fewer than two, the tiles with
+`sf-figure--ratio-auto` (each picture in its own shape; one without `width`
+and `height` holds a square until it arrives), each tile in order in the
+shortest column, so reading and Tab go by rows and only down. A browser with
+`display: grid-lanes` lays it out itself; elsewhere a script places the tiles
+and marks the grid `data-sf-masonry="placed"` (each tile's `grid-column` and
+`inset-block-start`, the grid's `block-size`) -- sf-gallery `layout="masonry"`
+does this; until then the tiles stand as the grid, each at the top of its row.
+
 A tile that can be chosen carries `sf-figure-pick`, a class check box on a
 popup plate in its start corner, shown on hover and focus and on every tile
 once the grid has `sf-figure-grid--selecting`; a chosen tile adds

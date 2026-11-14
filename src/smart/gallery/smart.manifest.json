@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.gallery",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "title": "Gallery",
-  "summary": "A set of pictures: a grid of picture tiles (or the main picture with thumbnails) that opens the page's full-screen viewer, with an optional choice of tiles for a media library. The viewer is SF.Gallery.view(items, options), shared with sf-file-preview.",
+  "summary": "A set of pictures: a grid of picture tiles (or masonry, or the main picture with thumbnails) that opens the page's full-screen viewer, with an optional choice of tiles for a media library. The viewer is SF.Gallery.view(items, options), shared with sf-file-preview.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -50,16 +50,17 @@
       "layout": {
         "type": "string",
         "default": "grid",
-        "description": "How the pictures stand (owner decision C150 (1)). grid, the default: a grid of picture tiles. thumbnails: the main picture, whole in its frame, with a row of thumbnails under it and the place «3 / 12» -- a product card. A row that scrolls is sf-slider (C143), not a gallery look.",
+        "description": "How the pictures stand (owner decision C150 (1), (11)). grid, the default: a grid of picture tiles. thumbnails: the main picture, whole in its frame, with a row of thumbnails under it and the place «3 / 12» -- a product card. masonry: the grid's columns and gap, never fewer than two, every picture in its own shape, uncropped (ratio does not apply), each tile in order into the shortest column, so reading and Tab go by rows, left to right and only down; the browser's display: grid-lanes lays it out where it has one, elsewhere the gallery's script from each picture's width and height -- give them, or a picture holds a square until it arrives. A row that scrolls is sf-slider (C143), not a gallery look.",
         "enum": [
           "grid",
-          "thumbnails"
+          "thumbnails",
+          "masonry"
         ]
       },
       "tile-size": {
         "type": "string",
         "default": "m",
-        "description": "The grid's tile minimum (C150 (2)): s 6rem (96), m 10rem (160, the default), l 15rem (240). As many columns as fit at that minimum, never fewer than three (s), two (m) or one (l), so a phone keeps a grid. The gap is one group's, --sf-space-1/3 (8; 4 in compact density, C150 (3)).",
+        "description": "The grid's tile minimum (C150 (2)): s 6rem (96), m 10rem (160, the default), l 15rem (240). As many columns as fit at that minimum, never fewer than three (s), two (m) or one (l; two in the masonry look), so a phone keeps a grid. The gap is one group's, --sf-space-1/3 (8; 4 in compact density, C150 (3)).",
         "enum": [
           "s",
           "m",
@@ -773,7 +774,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/gallery/index.js",
-        "sha256": "4aa859014d2a8d4dea9a1979c49bb4902b02735e9ad98a427623062399882652"
+        "sha256": "2ffb45ba7540841bfd5911f78650de303bddf9689ef2131deca5f7f9feb3de37"
       }
     ],
     "generated_runtime": [
@@ -786,7 +787,7 @@
     ]
   },
   "ai_guidance": {
-    "use_when": "Use sf-gallery for a set of pictures: a grid of tiles by default (layout thumbnails for a product card), one shape for all tiles, a press opening the full-screen viewer; selection many for a media library. For a row that scrolls use sf-slider. To show any list of pictures, videos or PDF files full screen from page code, call SF.Gallery.view(items, {start}) after SF.Loader.ensure(['sf-gallery']).",
+    "use_when": "Use sf-gallery for a set of pictures: a grid of tiles by default (layout masonry for pictures of their own shapes, thumbnails for a product card), one shape for all tiles, a press opening the full-screen viewer; selection many for a media library. For a row that scrolls use sf-slider. To show any list of pictures, videos or PDF files full screen from page code, call SF.Gallery.view(items, {start}) after SF.Loader.ensure(['sf-gallery']).",
     "do_not": [
       "Do not draw a picture grid or a lightbox of your own: the tile is .sf-figure--tile in a .sf-figure-grid (component.figure) and the viewer is SF.Gallery.view.",
       "Do not import js/viewer.js into another bundle: ask for sf-gallery and call SF.Gallery, so the page has one viewer.",
