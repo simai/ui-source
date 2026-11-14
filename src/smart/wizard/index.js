@@ -15,13 +15,22 @@
 // The wizard keeps nothing the host must know: the states are the steps'
 // attributes, the answers its value, and every move and press an event.
 //
-// Places: inline, modal (an sf-modal the wizard composes) and pages (the
-// server's page per step: the footer's submit buttons post the step's form
-// with their word, sf-button 1.5.0 form/name/value).
+// Places: inline, modal (an sf-modal the wizard composes), drawer (an
+// sf-drawer it composes, owner decision C179 (3)) and pages (the server's
+// page per step: the footer's submit buttons post the step's form with their
+// word, sf-button 1.5.0 form/name/value).
+//
+// The draft (C179 (6)): the wizard keeps its place, the steps' states and
+// the answers itself, after every move and a moment after every edit, under
+// remember -- else the element's id -- in SF.Preferences (the browser's copy
+// is localStorage sf-pref:sf-wizard/<key>; a product that keeps preferences
+// for its user, SF.Preferences, gets it too). Closing a window is «continue
+// later»: no question, the draft stays, and close says where it stopped.
 import SfBaseElement from '../../core/js/smart-base';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {renderWizardTemplate} from './js/templates/default';
 import BundledPreferences from '../../core/js/preferences.js';
+import {breakpointMedia} from '../../core/js/breakpoints.js';
 import manifest from './component.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
@@ -37,6 +46,8 @@ export const STAGES = {done: 'completed', skipped: 'skipped', running: 'running'
 // browser's copy is localStorage sf-pref:sf-wizard/<key>; a host that keeps
 // preferences for its user gets it too).
 const STORE = 'sf-wizard/';
+// The draft is kept this long after the last edit (C179 (6)).
+const DRAFT_DELAY = 400;
 const preferences = () => globalThis.SF?.Preferences || BundledPreferences;
 
 // One wizard id per instance, the same on every render (a first-paint
@@ -101,6 +112,21 @@ export function primaryOf(step, last) {
 
 // A node inside a [hidden] element that stands within root (root's own
 // hidden, a closed step, does not count).
+// A Framework field that draws its own errors (C153 (3), the ShownValidity
+// mixin of smart/helpers/form-field.js): it has the shown-message reader.
+function showsOwnErrors(field) {
+  return typeof field?.sfShownMessage === 'function';
+}
+
+// The message the wizard writes on a field that does not draw its own errors.
+function fieldMessage(control, word) {
+  const validity = control?.validity;
+  if (!validity || validity.valid) return '';
+  if (validity.valueMissing) return word('required');
+  if (validity.customError) return control.validationMessage || word('invalid');
+  return word('invalid');
+}
+
 function hiddenWithin(node, root) {
   const hidden = node.parentElement?.closest('[hidden]');
   return Boolean(hidden && hidden !== root && root.contains(hidden));
@@ -170,8 +196,9 @@ class SfWizard extends WizardElement {
     this._steps = [];
     this._id = `sf-wizard-${++sequence}`;
     this._listOpen = false;
-    this._asking = null;
     this._dirty = false;
+    this._savedAt = 0;
+    this._draftTimer = 0;
     this._announce = '';
     this._marked = new Set();
     this._restored = false;
@@ -181,6 +208,7 @@ class SfWizard extends WizardElement {
     this._onClick = (event) => this.onBodyClick(event);
     this._onTrigger = (event) => this.onTrigger(event);
     this._onModal = (event) => this.onModalClose(event);
+    this._onPhone = () => this.requestComponentUpdate('phone');
   }
 
   // ------------------------------------------------------------ the steps
@@ -226,10 +254,22 @@ class SfWizard extends WizardElement {
 
   get place() {
     const value = this.getAttribute('place');
-    return ['inline', 'modal', 'pages'].includes(value) ? value : 'inline';
+    return ['inline', 'modal', 'drawer', 'pages'].includes(value) ? value : 'inline';
   }
 
-  // The value open (place modal); the action open() is the method of that name.
+  // A window place: an sf-modal or an sf-drawer the wizard composes.
+  get inWindow() {
+    return this.place === 'modal' || this.place === 'drawer';
+  }
+
+  // A phone (below sm, the step the windows' sheets read, C159 (2)): the
+  // window takes the whole screen and the footer stays at its bottom
+  // (C179 (4)).
+  get onPhone() {
+    return Boolean(this._phoneQuery?.matches);
+  }
+
+  // The value open (places modal and drawer); the action open() is the method of that name.
   get isOpen() {
     return this.hasAttribute('open') && this.getAttribute('open') !== 'false';
   }
@@ -284,6 +324,8 @@ class SfWizard extends WizardElement {
     super.onConnected?.();
     this.listen(this);
     this.bindTriggers();
+    this._phoneQuery = breakpointMedia('sm', {below: true});
+    this._phoneQuery?.addEventListener?.('change', this._onPhone);
     this.restore();
     if (this.isPages && this.focusTitle) this.whenDrawn(() => this.focusStepTitle(), {first: true});
   }
@@ -293,6 +335,9 @@ class SfWizard extends WizardElement {
     this.listen(null);
     this._stepObserver?.disconnect();
     this.unbindTriggers();
+    this._phoneQuery?.removeEventListener?.('change', this._onPhone);
+    this._phoneQuery = null;
+    if (this._draftTimer) { clearTimeout(this._draftTimer); this._draftTimer = 0; this.keep(); }
   }
 
   // The steps' events reach the wizard where the frame stands: in the host,
@@ -345,15 +390,39 @@ class SfWizard extends WizardElement {
 
   // ------------------------------------------------------------ remember
 
+  // The draft's key (C179 (6)): remember, else the element's id; none, the
+  // draft lives as long as the page (the steps keep their fields).
   get storeKey() {
-    const key = text(this.remember);
+    const key = text(this.remember) || text(this.id);
     return key && !this.isPages ? `${STORE}${key}` : '';
   }
 
   keep() {
+    if (this._draftTimer) { clearTimeout(this._draftTimer); this._draftTimer = 0; }
     const key = this.storeKey;
     if (!key) return;
     preferences()?.write(key, {v: 1, current: this.currentStep?.name ?? '', steps: this.stepStates, value: this.value});
+    const minute = (at) => Math.floor(at / 60000);
+    const shown = this._savedAt;
+    this._savedAt = Date.now();
+    if (!shown || minute(shown) !== minute(this._savedAt)) this.requestComponentUpdate('draft');
+  }
+
+  // A moment after an edit the draft is kept (one write per pause).
+  keepSoon() {
+    if (!this.storeKey) return;
+    if (this._draftTimer) clearTimeout(this._draftTimer);
+    this._draftTimer = setTimeout(() => { this._draftTimer = 0; this.keep(); }, DRAFT_DELAY);
+  }
+
+  // «Черновик сохранён в 12:04» in the page's language, once kept.
+  get savedLine() {
+    if (!this._savedAt || !this.storeKey) return '';
+    let time = '';
+    try {
+      time = new Intl.DateTimeFormat(this.closest('[lang]')?.getAttribute('lang') || undefined, {hour: '2-digit', minute: '2-digit'}).format(this._savedAt);
+    } catch { time = ''; }
+    return this.sfWord('saved', {vars: {time}});
   }
 
   forget() {
@@ -412,7 +481,6 @@ class SfWizard extends WizardElement {
     this._dirty = false;
     this.sfHostState('data-dirty', false);
     this._listOpen = false;
-    this._asking = null;
     this._announce = this.sfWord('moved', {vars: {n: index + 1, count: steps.length, step: steps[index].label}});
     this.requestComponentUpdate('move');
     if (person) this.sfEmit('change', {previous, current: steps[index].name, value: this.value});
@@ -498,13 +566,23 @@ class SfWizard extends WizardElement {
 
   markInvalid(control) {
     const field = this.fieldOf(control);
+    // A field that shows its own errors (owner decision C153 (3): sf-input
+    // and its family) says them in the Framework's words on its own invalid
+    // event, which the check above fired; it is not marked from outside, so
+    // the browser's words never stand in its message (study WZ-6).
+    if (field && showsOwnErrors(field)) {
+      this._marked.add(field);
+      return;
+    }
     if (field) {
       if (!field.hasAttribute('invalid')) {
         field.setAttribute('invalid', '');
         field.setAttribute('data-sf-wizard-invalid', '');
-        // An empty required field says it in the page's language; any other
-        // failure keeps the browser's own words (they name the rule).
-        const message = control.validity?.valueMissing ? this.sfWord('required') : control.validationMessage;
+        // The Framework's words in the page's language (C153 (3)): an empty
+        // required field says «required», the page's own custom error stays
+        // as written, any other failure says «invalid» -- never the
+        // browser's validationMessage.
+        const message = fieldMessage(control, (key) => this.sfWord(key));
         if (!field.getAttribute('error-message') && message) {
           field.setAttribute('error-message', message);
           field.setAttribute('data-sf-wizard-message', '');
@@ -564,6 +642,7 @@ class SfWizard extends WizardElement {
       this._dirty = true;
       this.sfHostState('data-dirty', true);
     }
+    this.keepSoon();
   }
 
   // ------------------------------------------------------------ presses
@@ -593,8 +672,9 @@ class SfWizard extends WizardElement {
       if (step.state !== 'done') step.element.setAttribute('state', 'done');
       const value = this.value;
       this.forget();
+      this._savedAt = 0;
       this.sfEmit('completed', {steps: this.stepStates, value});
-      if (this.place === 'modal') this.finishWindow('close');
+      if (this.inWindow) this.finishWindow('close');
       return applied();
     }
     this.show(at + 1, {mark: skip ? 'skipped' : 'done'});
@@ -720,12 +800,9 @@ class SfWizard extends WizardElement {
 
   // ------------------------------------------------------------ leaving
 
+  // «Продолжить позже», and every close of a window (C179 (6)): the draft
+  // is kept, nothing is asked.
   continueLater(event) {
-    if (this._dirty && !this._asking) {
-      event?.preventDefault();
-      this.ask('later');
-      return;
-    }
     this.leave('later', event);
   }
 
@@ -736,35 +813,17 @@ class SfWizard extends WizardElement {
       return refused('prevented');
     }
     this.keep();
-    this._asking = null;
-    if (this.place === 'modal') this.finishWindow(reason);
+    if (this.inWindow) this.finishWindow(reason);
     else if (!event && this.laterHref && reason === 'later') globalThis.location?.assign(this.laterHref);
     this.requestComponentUpdate('leave');
     return applied();
   }
 
-  ask(reason) {
-    this._asking = reason;
-    this.requestComponentUpdate('ask');
-    this.whenDrawn(() => this.find('.sf-wizard-confirm button')?.focus());
-  }
-
-  answer(event) {
-    const reason = this._asking;
-    if (!reason) return;
-    const accepted = Boolean(event?.detail?.accepted);
-    this._asking = null;
-    this.requestComponentUpdate('answer');
-    if (!accepted) { this.whenDrawn(() => this.focusStepTitle()); return; }
-    this._dirty = false;
-    this.sfHostState('data-dirty', false);
-    this.leave(reason);
-  }
-
   // ------------------------------------------------------------ the window
 
+  // The window the wizard composes: its sf-modal or sf-drawer.
   get modal() {
-    return this.querySelector(':scope > sf-modal.sf-wizard-modal') ?? this._modal ?? null;
+    return this.querySelector(':scope > :is(sf-modal.sf-wizard-modal, sf-drawer.sf-wizard-drawer)') ?? this._modal ?? null;
   }
 
   triggers() {
@@ -773,7 +832,7 @@ class SfWizard extends WizardElement {
   }
 
   bindTriggers() {
-    if (this.place !== 'modal') return;
+    if (!this.inWindow) return;
     for (const trigger of this.triggers()) {
       trigger.addEventListener('click', this._onTrigger);
       trigger.setAttribute('aria-haspopup', 'dialog');
@@ -790,7 +849,7 @@ class SfWizard extends WizardElement {
   }
 
   openWindow() {
-    if (this.place !== 'modal') return refused('place');
+    if (!this.inWindow) return refused('place');
     if (this.isOpen) return refused('open');
     if (!this.sfEmit('open', {}, {cancelable: true})) return refused('prevented');
     this.toggleAttribute('open', true);
@@ -800,8 +859,7 @@ class SfWizard extends WizardElement {
   }
 
   closeWindow(reason = 'api') {
-    if (this.place !== 'modal' || !this.isOpen) return refused('closed');
-    if (this._dirty) { this.ask(reason); return refused('asking'); }
+    if (!this.inWindow || !this.isOpen) return refused('closed');
     return this.leave(reason);
   }
 
@@ -813,13 +871,14 @@ class SfWizard extends WizardElement {
     this.requestComponentUpdate('close');
   }
 
-  // sf-modal asks before it closes (its close, Escape, the scrim): with
-  // input on the step the wizard asks first; else it is the wizard's close.
+  // The window asks before it closes (its ×, Escape, the scrim): it is the
+  // wizard's close, «continue later» (C179 (6)) -- the draft is kept and
+  // nothing is asked, so the window's own question about changes (C159 (6))
+  // does not come either.
   onModalClose(event) {
     if (event.target !== this.modal || this._closing) return;
     const reason = event.detail?.reason === 'escape' || event.detail?.reason === 'outside' ? event.detail.reason : 'close';
     event.preventDefault();
-    if (this._dirty) { this.ask(reason); return; }
     this.leave(reason);
   }
 
@@ -867,7 +926,8 @@ class SfWizard extends WizardElement {
       last,
       busy: this.busy,
       listOpen: this._listOpen,
-      asking: this._asking,
+      phone: this.onPhone,
+      saved: this.savedLine,
       announce: this._announce,
       form: this.isPages ? this.formOf(step) : null,
       stepNodes: this._steps,
@@ -889,9 +949,6 @@ class SfWizard extends WizardElement {
         hideSteps: word('hide-steps'),
         progress: word('progress'),
         running: step?.message || this.runningText || word('running-text'),
-        question: word('close-question'),
-        accept: word('close-accept'),
-        decline: word('close-decline'),
       },
       rootClass: this.getRootClass(),
     });
@@ -903,11 +960,12 @@ class SfWizard extends WizardElement {
 
   afterRender(changedAttributes) {
     super.afterRender?.(changedAttributes);
-    const modal = this.querySelector('sf-modal.sf-wizard-modal');
+    const modal = this.querySelector(':scope > :is(sf-modal.sf-wizard-modal, sf-drawer.sf-wizard-drawer)');
     if (modal && modal !== this._modal) {
       this._modal?.removeEventListener('sf-modal-close', this._onModal);
+      this._modal?.removeEventListener('sf-drawer-close', this._onModal);
       this._modal = modal;
-      modal.addEventListener('sf-modal-close', this._onModal);
+      modal.addEventListener(modal.localName === 'sf-drawer' ? 'sf-drawer-close' : 'sf-modal-close', this._onModal);
     }
     if (modal) {
       // The window follows the value open.

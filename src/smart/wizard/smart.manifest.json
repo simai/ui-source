@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.wizard",
-  "version": "1.2.7",
+  "version": "1.3.0",
   "title": "Wizard",
-  "summary": "The universal step-by-step wizard: a frame of sf-wizard-step children with the progress on top (a row up to 7 steps, «Шаг 4 из 12» and a bar above, a column inside the frame as an option, the current step and a bar on a phone), the step's title, «why» and body, and one footer: Back, Skip, one primary action. Step types info, form, action, review, result; states not started, done, skipped, running, error; navigation linear, free or visited; places inline, modal and pages (the server's page per step, its form posting). Continue later, a question before closing with unsaved input, and one value of all answers.",
+  "summary": "The universal step-by-step wizard: a frame of sf-wizard-step children with the progress on top (a row up to 7 steps, «Шаг 4 из 12» and a bar above, a column inside the frame as an option, the current step and a bar on a phone), the step's title, «why» and body, and one footer: Back, Skip, one primary action. Step types info, form, action, review, result; states not started, done, skipped, running, error; navigation linear, free or visited; places inline, modal (36rem, wide with the column), drawer (a side panel 30rem) and pages (the server's page per step, its form posting). The wizard's name is the page's or window's title (h4), the step's title one step under it (h5); on a phone a window takes the screen with the footer at its bottom. The draft is kept by the wizard itself, closing is continue later, and one value of all answers.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -35,7 +35,7 @@
       "component.scrollbar",
       "smart.alert",
       "smart.button",
-      "smart.confirm",
+      "smart.drawer",
       "smart.icon",
       "smart.modal",
       "smart.progress-bar",
@@ -66,10 +66,11 @@
       "place": {
         "type": "string",
         "default": "inline",
-        "description": "Where the wizard shows: inline in the page; modal, a window opened by a trigger (for, or the open action); pages, a page per step -- the server prints the wizard with the current step's body, the step's form posts and the server answers with the same wizard, the errors or the next step, and nothing is kept in the browser.",
+        "description": "Where the wizard shows (owner decision C179 (3)): inline in the page; modal, a window opened by a trigger (for, or the open action), the form width 36rem (wide 48rem with the column of steps, the whole screen on a phone) -- the place for most wizards; drawer, a side panel 30rem wide at the end edge (sf-drawer size 2) for a short wizard of two to four steps inside a record, opened the same way; pages, a page per step for a long installer -- the server prints the wizard with the current step's body, the step's form posts and the server answers with the same wizard, the errors or the next step, and nothing is kept in the browser.",
         "enum": [
           "inline",
           "modal",
+          "drawer",
           "pages"
         ]
       },
@@ -122,12 +123,12 @@
       "for": {
         "type": "string",
         "default": "",
-        "description": "Place modal: the id of a page element, or several separated by spaces, that opens the window when pressed."
+        "description": "Places modal and drawer: the id of a page element, or several separated by spaces, that opens the window when pressed."
       },
       "later": {
         "type": "boolean",
         "default": false,
-        "description": "Draws «Продолжить позже»: close {reason: later} with the place and the answers, the window closes or the browser goes to later-href, and remember keeps the place for the next opening."
+        "description": "Draws «Продолжить позже»: close {reason: later} with the place and the answers, the window closes or the browser goes to later-href; the draft is kept (remember). In a window the × does the same (C179 (6))."
       },
       "later-href": {
         "type": "string",
@@ -137,7 +138,7 @@
       "remember": {
         "type": "string",
         "default": "",
-        "description": "Places inline and modal: a key under which the wizard keeps the current step, the steps' states and the answers in this browser (localStorage, sf-pref:sf-wizard/<key>) and opens there next time; cleared when the wizard completes. Empty: nothing is kept (the host may keep what close and change carry). Place pages keeps nothing: the server knows the place."
+        "description": "Places inline, modal and drawer: the key the draft is kept under (owner decision C179 (6)) -- the current step, the steps' states and the answers, after every move and a moment after every edit, in SF.Preferences (in this browser localStorage sf-pref:sf-wizard/<key>; a product that keeps preferences for its user gets them too); the wizard opens there next time, and a quiet line under the footer says when the draft was kept. Cleared when the wizard completes. Empty: the element's id is the key; without an id the draft lives as long as the page. Place pages keeps nothing: the server knows the place."
       },
       "done-href": {
         "type": "string",
@@ -335,7 +336,7 @@
       }
     },
     "sf-wizard-close": {
-      "summary": "The person leaves the wizard: «Продолжить позже» (later), or the window's close, Escape, the scrim or the action. steps carries every step's {name, state} and value the answers, so a host keeps the progress. With input not yet submitted on the step, the wizard asks first («Закрыть мастер?») and sends close only after a yes.",
+      "summary": "The person leaves the wizard -- continue later (owner decision C179 (6)): «Продолжить позже» (later), or the window's ×, Escape, the scrim or the action. Nothing is asked: the draft is kept first (remember), steps carries every step's {name, state} and value the answers, so a product keeps the progress where it keeps its drafts.",
       "payload": {
         "type": "object",
         "required": [

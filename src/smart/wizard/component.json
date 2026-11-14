@@ -2,7 +2,7 @@
   "$comment": "The source of sf-wizard's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the universal step-by-step wizard of the owner decision 2026-11-06 (ui-control control/decisions/2026-11-06-sf-wizard.md), phase 1.0.",
   "id": "smart.wizard",
   "tag": "sf-wizard",
-  "version": "1.2.7",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "wizard",
   "settings": {
@@ -11,10 +11,11 @@
       "values": [
         "inline",
         "modal",
+        "drawer",
         "pages"
       ],
       "default": "inline",
-      "summary": "Where the wizard shows: inline in the page; modal, a window opened by a trigger (for, or the open action); pages, a page per step -- the server prints the wizard with the current step's body, the step's form posts and the server answers with the same wizard, the errors or the next step, and nothing is kept in the browser."
+      "summary": "Where the wizard shows (owner decision C179 (3)): inline in the page; modal, a window opened by a trigger (for, or the open action), the form width 36rem (wide 48rem with the column of steps, the whole screen on a phone) -- the place for most wizards; drawer, a side panel 30rem wide at the end edge (sf-drawer size 2) for a short wizard of two to four steps inside a record, opened the same way; pages, a page per step for a long installer -- the server prints the wizard with the current step's body, the step's form posts and the server answers with the same wizard, the errors or the next step, and nothing is kept in the browser."
     },
     "navigation": {
       "type": "enum",
@@ -67,12 +68,12 @@
     "for": {
       "type": "string",
       "default": "",
-      "summary": "Place modal: the id of a page element, or several separated by spaces, that opens the window when pressed."
+      "summary": "Places modal and drawer: the id of a page element, or several separated by spaces, that opens the window when pressed."
     },
     "later": {
       "type": "boolean",
       "default": false,
-      "summary": "Draws «Продолжить позже»: close {reason: later} with the place and the answers, the window closes or the browser goes to later-href, and remember keeps the place for the next opening."
+      "summary": "Draws «Продолжить позже»: close {reason: later} with the place and the answers, the window closes or the browser goes to later-href; the draft is kept (remember). In a window the × does the same (C179 (6))."
     },
     "later-href": {
       "type": "string",
@@ -82,7 +83,7 @@
     "remember": {
       "type": "string",
       "default": "",
-      "summary": "Places inline and modal: a key under which the wizard keeps the current step, the steps' states and the answers in this browser (localStorage, sf-pref:sf-wizard/<key>) and opens there next time; cleared when the wizard completes. Empty: nothing is kept (the host may keep what close and change carry). Place pages keeps nothing: the server knows the place."
+      "summary": "Places inline, modal and drawer: the key the draft is kept under (owner decision C179 (6)) -- the current step, the steps' states and the answers, after every move and a moment after every edit, in SF.Preferences (in this browser localStorage sf-pref:sf-wizard/<key>; a product that keeps preferences for its user gets them too); the wizard opens there next time, and a quiet line under the footer says when the draft was kept. Cleared when the wizard completes. Empty: the element's id is the key; without an id the draft lives as long as the page. Place pages keeps nothing: the server knows the place."
     },
     "done-href": {
       "type": "string",
@@ -190,7 +191,7 @@
         "value": "object"
       },
       "cancelable": true,
-      "summary": "The person leaves the wizard: «Продолжить позже» (later), or the window's close, Escape, the scrim or the action. steps carries every step's {name, state} and value the answers, so a host keeps the progress. With input not yet submitted on the step, the wizard asks first («Закрыть мастер?») and sends close only after a yes."
+      "summary": "The person leaves the wizard -- continue later (owner decision C179 (6)): «Продолжить позже» (later), or the window's ×, Escape, the scrim or the action. Nothing is asked: the draft is kept first (remember), steps carries every step's {name, state} and value the answers, so a product keeps the progress where it keeps its drafts."
     },
     "completed": {
       "carries": {
@@ -283,10 +284,10 @@
       "name": "cl-spinner"
     },
     {
-      "name": "cl-confirm"
+      "name": "cl-modal"
     },
     {
-      "name": "cl-modal"
+      "name": "cl-drawer"
     },
     {
       "name": "cl-icon"
@@ -352,7 +353,7 @@
       "state": "default"
     }
   },
-  "x-summary": "The universal step-by-step wizard: a frame of sf-wizard-step children with the progress on top (a row up to 7 steps, «Шаг 4 из 12» and a bar above, a column inside the frame as an option, the current step and a bar on a phone), the step's title, «why» and body, and one footer: Back, Skip, one primary action. Step types info, form, action, review, result; states not started, done, skipped, running, error; navigation linear, free or visited; places inline, modal and pages (the server's page per step, its form posting). Continue later, a question before closing with unsaved input, and one value of all answers.",
+  "x-summary": "The universal step-by-step wizard: a frame of sf-wizard-step children with the progress on top (a row up to 7 steps, «Шаг 4 из 12» and a bar above, a column inside the frame as an option, the current step and a bar on a phone), the step's title, «why» and body, and one footer: Back, Skip, one primary action. Step types info, form, action, review, result; states not started, done, skipped, running, error; navigation linear, free or visited; places inline, modal (36rem, wide with the column), drawer (a side panel 30rem) and pages (the server's page per step, its form posting). The wizard's name is the page's or window's title (h4), the step's title one step under it (h5); on a phone a window takes the screen with the footer at its bottom. The draft is kept by the wizard itself, closing is continue later, and one value of all answers.",
   "x-source": {
     "package": "framework",
     "folder": "wizard",
@@ -363,7 +364,7 @@
     "running-text"
   ],
   "x-decisions": [
-    "name: sf-wizard, the frame, and sf-wizard-step, each step (owner): block wizard (ui-control control/decisions/2026-11-02-smart-component-naming.md). It composes sf-steps (the row), sf-progress-bar (the bar), sf-button (every control), sf-alert (a step's result), sf-spinner (the running line), sf-confirm (the question before closing) and sf-modal (place modal); it copies none of them.",
+    "name: sf-wizard, the frame, and sf-wizard-step, each step (owner): block wizard (ui-control control/decisions/2026-11-02-smart-component-naming.md). It composes sf-steps (the row), sf-progress-bar (the bar), sf-button (every control), sf-alert (a step's result), sf-spinner (the running line), sf-modal (place modal) and sf-drawer (place drawer); it copies none of them.",
     "steps are children (owner): each sf-wizard-step child is a step; its children are the body, live nodes placed in the frame and never copied, so a server's form keeps its fields, its errors and its listeners. The wizard draws the title (role heading, aria-level level, tabindex -1, the focus target after a move), the «why», the running line, the result and the footer from the step's attributes.",
     "first paint without a second form (owner): the printed picture holds the steps inside the frame's body, marked data-sf-live, as the page gave them -- once -- and the frame, the progress and the footer around them as static markup. The wizard adopts the steps from there in the same task as it draws. scripts/first-paint-page.js prints a page child placed in a data-sf-live container in its place instead of copying it and printing it again held; the steps' own Smart fields keep their own printed pictures and draw when the wizard has placed them.",
     "types (owner): info (Далее), form (fields, validation, Далее saves the step), action (Запустить; running: the indicator and every press waits; done: the result and Далее; error: the result and Повторить), review (a summary with «Изменить» -- any element with data-wizard-step=\"<name>\" opens that step -- and Применить), result (Готово, no Back). action-text replaces the type's word; the last step of any other type says Готово.",
@@ -391,7 +392,8 @@
     "version 1.2.5 (2026-11-11): a patch, nothing drawn differently. The sheet reads the C16 roles by their current names where it read the former ones, which are var() of them wherever they are declared (src/core/contracts/token-aliases.v1.json, sf-role-aliases): --sf-on-disable → --sf-on-surface-disabled ×2; --sf-on-surface-container--variant → --sf-on-surface-container-variant ×2. Settings, values, events and keys unchanged.",
     "version 1.2.6 (group build 2: written on the branch as 1.2.5, also, which the released pair carries; 2026-11-12, fix/choice-controls-w): a patch, nothing in the component changed. The «server-backups» first-paint snapshot follows the sf-checkbox it draws (1.2.0, C59/C63: the shared .sf-checkable row of its control height); retaken from the group build 2026-11-12. Settings, values, events and keys unchanged.",
     "version 1.2.6, also (2026-11-13, defect BT-2, rules C15 / CB-01): a patch, nothing drawn differently. The review-step examples and the docs give the «Изменить» buttons appearance=\"ghost\", the name of the no-fill look, where they wrote link, its former name (an alias until 2027-01-01); the ones that go to a step keep their href, which is what makes a button a link. Settings, values, events and keys unchanged.",
-    "version 1.2.7 (2026-11-13, owner decision C105; spacing audit W1, W2, W3): a patch. (1) The list of steps (the column, and the list under the head) is a row list, not a set of buttons: a step's mark stands H2 before its label, --sf-space-1/2 (12 on a desktop, 8 compact and on a phone; it was the button's text-space-x, 8 / 7), and the row's edge H4 before its mark, the list inset of C77 (--sf-space-1 at size 1, 16 / 12 compact and phone; size 1/2 max(--sf-space-1/2, 12); it was the button's space-x, 16 / 14). (2) The frame's inset is a window's, H6: --sf-space-2 with the 1 px edge counted inside it, so the content starts 20 from the outer edge on a desktop and 16 in compact density and on a phone (it was --sf-space-3 outside the edge, 25 / 21 / 17); size 1/2 takes the same frame (it was --sf-space-2 outside the edge, 21 / 17). This supersedes the 24 of the docs pre-check of 2026-11-10 (dispatcher ruling, C105). A wizard in a window keeps no frame of its own and takes sf-modal's. The row of steps takes sf-steps 1.4.1. --sf-wizard-padding, when a page sets it, is the padding itself. Markup, first-paint snapshots, settings, values, events and keys unchanged."
+    "version 1.2.7 (2026-11-13, owner decision C105; spacing audit W1, W2, W3): a patch. (1) The list of steps (the column, and the list under the head) is a row list, not a set of buttons: a step's mark stands H2 before its label, --sf-space-1/2 (12 on a desktop, 8 compact and on a phone; it was the button's text-space-x, 8 / 7), and the row's edge H4 before its mark, the list inset of C77 (--sf-space-1 at size 1, 16 / 12 compact and phone; size 1/2 max(--sf-space-1/2, 12); it was the button's space-x, 16 / 14). (2) The frame's inset is a window's, H6: --sf-space-2 with the 1 px edge counted inside it, so the content starts 20 from the outer edge on a desktop and 16 in compact density and on a phone (it was --sf-space-3 outside the edge, 25 / 21 / 17); size 1/2 takes the same frame (it was --sf-space-2 outside the edge, 21 / 17). This supersedes the 24 of the docs pre-check of 2026-11-10 (dispatcher ruling, C105). A wizard in a window keeps no frame of its own and takes sf-modal's. The row of steps takes sf-steps 1.4.1. --sf-wizard-padding, when a page sets it, is the padding itself. Markup, first-paint snapshots, settings, values, events and keys unchanged.",
+    "version 1.3.0 (2026-11-14, owner decision C179 and the study's defects WZ-1, WZ-3, WZ-4, WZ-6, WZ-7): a minor. (1) The footer: Back at the start, the main action at the end in every place, the wizard's exception to C159 (4); the buttons of the footer, Skip included, stand --sf-space-1/3 apart (8, 4 compact; C105 H5, C173 (2)) where they stood the button's space-x (16, 14 on a phone). (2) The wizard's name is the page's or the window's title on the h4 step (20 on 24, 16 on a phone), bold; the step's title is h5 (16) in medium (it was rung 3, 24, over a name of 16); at size 1/2 h5 and the rung's text. (3) Place modal is a window of C159: the window's header with the name and the ×, size form 36rem (wide 48rem with the column of steps), no own width; new place drawer: sf-drawer size 2 (30rem) at the end edge, the name its title. (4) On a phone a window takes the whole screen and the footer sticks to its bottom, Back and the main sharing the row. (5) Next is always pressable; a field of the C153 family shows its own error in the Framework's words, other fields get «Заполните поле» or «Проверьте значение» (the page's custom error as written), never the browser's validationMessage. (6) The draft: kept after every move and a moment after every edit under remember, else the element's id; a quiet line «Черновик сохранён в 12:04» under the footer; closing (×, Escape, the scrim, «Продолжить позже») is continue later -- the question «Закрыть мастер?» and its words are gone. (7) Skip stays in the footer before the main action. Also: the step pages are no longer shown raw before the code arrives."
   ],
   "x-registry": {
     "capabilities": [

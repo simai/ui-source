@@ -20,8 +20,8 @@ const code = source.split('\n').filter((line) => !line.trimStart().startsWith('/
 test('the manifest: places, navigation, progress, one value, seven events, four actions', () => {
   assert.equal(manifest.tag, 'sf-wizard');
   assert.equal(manifest.family, 'wizard');
-  assert.equal(manifest.version, '1.2.7');
-  assert.deepEqual(manifest.settings.place.values, ['inline', 'modal', 'pages']);
+  assert.equal(manifest.version, '1.3.0');
+  assert.deepEqual(manifest.settings.place.values, ['inline', 'modal', 'drawer', 'pages']);
   assert.deepEqual(manifest.settings.navigation.values, ['linear', 'free', 'visited']);
   assert.deepEqual(manifest.settings.progress.values, ['auto', 'row', 'count', 'column']);
   assert.equal(manifest.settings['action-name'].default, 'wizard-action');
@@ -31,7 +31,7 @@ test('the manifest: places, navigation, progress, one value, seven events, four 
   assert.equal(manifest.events.invalid['own-verb'], true);
   assert.deepEqual(Object.keys(manifest.actions), ['open', 'close', 'go-to-step', 'next']);
   assert.deepEqual(manifest.relations.map((relation) => relation.name),
-    ['cl-wizard-step', 'cl-steps', 'cl-button', 'cl-progress-bar', 'cl-alert', 'cl-spinner', 'cl-confirm', 'cl-modal', 'cl-icon', 'scrollbar']);
+    ['cl-wizard-step', 'cl-steps', 'cl-button', 'cl-progress-bar', 'cl-alert', 'cl-spinner', 'cl-modal', 'cl-drawer', 'cl-icon', 'scrollbar']);
 });
 
 test('the step: five types, an optional mark, an address and a state', () => {
@@ -87,15 +87,20 @@ test('the steps are printed once: a live container the first paint fills in plac
   assert.match(page, /placed\.has\(node\)/u);
 });
 
-test('the window asks before it drops input; remembering is only for inline and modal', () => {
+test('C179 (6): the draft is kept by the wizard, closing is continue later without a question', () => {
   assert.match(source, /sf-pref:sf-wizard\//u);
-  assert.match(template, /<sf-confirm class="sf-wizard-confirm"/u);
+  assert.doesNotMatch(template, /sf-confirm/u);
+  assert.match(source, /const key = text\(this\.remember\) \|\| text\(this\.id\);/u);
+  assert.match(source, /this\.keepSoon\(\);/u);
+  assert.match(template, /class="sf-wizard-saved"/u);
   const ru = json('src/smart/wizard/lang/ru.json');
   const en = json('src/smart/wizard/lang/en.json');
   assert.deepEqual(Object.keys(en.runtime).sort(), Object.keys(ru.runtime).sort());
   assert.equal(ru.runtime.position, 'Шаг {n} из {count}');
-  assert.equal(ru.runtime['close-question'], 'Закрыть мастер? Введённое на этом шаге не сохранится.');
-  assert.equal(ru.runtime.required, 'Заполните это поле.');
+  assert.equal(ru.runtime['close-question'], undefined);
+  assert.equal(ru.runtime.required, 'Заполните поле');
+  assert.equal(ru.runtime.invalid, 'Проверьте значение');
+  assert.equal(ru.runtime.saved, 'Черновик сохранён в {time}');
 });
 
 test('accessibility: a named region, aria-current, a focusable title, a status line', () => {
@@ -143,4 +148,27 @@ test('C105: the step list is a row list and the frame a window inset', () => {
   assert.match(step, /padding-inline: var\(--sf-wizard--row-inset\);/);
   assert.doesNotMatch(step, /space-x/);
   assert.equal((sheet.match(/--sf-wizard--padding: var\(--sf-wizard-padding, calc\(var\(--sf-space-2\) - var\(--sf-px\)\)\);/g) || []).length, 2);
+});
+
+// C179 (1)-(4) and the study's defects WZ-1, WZ-3, WZ-4, WZ-6.
+test('C179: footer gap, names, window sizes, the phone footer and the Framework words', () => {
+  // (1), (7), WZ-1: one group of buttons, 8 (4 compact), Back first, the main last.
+  assert.match(sheet, /--sf-wizard--actions-gap: var\(--sf-space-1\\\/3\);/u);
+  for (const rule of ['.sf-wizard-footer {', '.sf-wizard-footer-end {']) {
+    const body = sheet.slice(sheet.indexOf(rule), sheet.indexOf('}', sheet.indexOf(rule)));
+    assert.match(body, /gap: var\(--sf-wizard--actions-gap\);/u, rule);
+  }
+  // (2), WZ-4: the name h4, the step's title h5 medium.
+  assert.match(sheet, /--sf-wizard--name-size: var\(--sf-heading-4--size\);/u);
+  assert.match(sheet, /--sf-wizard--title-size: var\(--sf-heading-5--size\);/u);
+  // (3), WZ-3: a window by name with its header (no show-header="false", no own width), a drawer 30rem.
+  assert.match(template, /<sf-modal class="sf-wizard-modal" heading=\$\{name\} size=\$\{size\}>/u);
+  assert.match(template, /context\.phone \? 'full' : context\.shape === 'column' \? 'wide' : 'form'/u);
+  assert.match(template, /<sf-drawer class="sf-wizard-drawer" heading=\$\{name\} size="2" placement="inline-end">/u);
+  assert.doesNotMatch(template, /show-header="false"|width="min\(48rem/u);
+  // (4): the footer sticks to the window's bottom on a phone.
+  assert.match(sheet, /\.sf-wizard--window \.sf-wizard-footer \{\n\s+position: sticky;/u);
+  // (5), WZ-6: no browser words.
+  assert.doesNotMatch(code, /: control\.validationMessage;/u);
+  assert.match(source, /typeof field\?\.sfShownMessage === 'function'/u);
 });
