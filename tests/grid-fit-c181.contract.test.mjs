@@ -58,7 +58,6 @@ test('C181: the build ships the fluid grid', {skip: distribution ? false : 'UI_C
   assert.ok(existsSync(sheet), sheet);
   const css = read(sheet);
   for (const [name, step] of Object.entries(FIT)) {
-    const escaped = name.replace(/[-]/gu, '\\-');
-    assert.match(css, new RegExp(`\\.grid-col-${escaped}\\s*\\{\\s*grid-template-columns: repeat\\(auto-fit, minmax\\(min\\(100%, var\\(--sf-${step}\\)\\), 1fr\\)\\)`, 'u'), name);
+    assert.match(css, new RegExp(`\\.grid-col-${name}\\s*\\{\\s*grid-template-columns: repeat\\(auto-fit, minmax\\(min\\(100%, var\\(--sf-${step}\\)\\), 1fr\\)\\)`, 'u'), name);
   }
 });
