@@ -16,7 +16,7 @@ const sheet = read('src/smart/alert-bar/scss/_smart__alert-bar.scss');
 test('the manifest: a leaf of block alert with items, four events and the close action', () => {
   assert.equal(manifest.tag, 'sf-alert-bar');
   assert.equal(manifest.family, 'alert');
-  assert.equal(manifest.version, '1.6.1');
+  assert.equal(manifest.version, '1.6.3');
   assert.deepEqual(Object.keys(manifest.settings), ['items', 'size', 'label']);
   assert.deepEqual(manifest.settings.items.schema.items.properties.level.enum, ['error', 'warning', 'info']);
   assert.deepEqual(manifest.settings.items.schema.items.required, ['id', 'level', 'text']);
@@ -96,7 +96,7 @@ test('the sheet: one rung, the theme status roles, the narrow container and redu
     assert.ok(sheet.includes(`var(${role}`), role);
   }
   assert.match(sheet, /--sf-alert-bar--padding-block: calc\(\(var\(--sf-alert-bar--control\) - var\(--sf-alert-bar--line\)\) \/ 2\);/u);
-  assert.match(sheet, /@container sf-alert-bar \(max-width: 38rem\)/u);
+  assert.match(sheet, /@container sf-alert-bar \(max-width: #\{mq\.container-step\(h0\)\}\)/u);
   // C105 steps (AA-14): edge 16, icon to text 12, text to actions 16,
   // between buttons and to the end button 8.
   assert.match(sheet, /--sf-alert-bar--edge: var\(--sf-space-1\);/u);
@@ -164,8 +164,8 @@ test('1.6.1: narrow, the open toggle keeps the place of «Ещё N»; a row\'s t
   // glyph rides the page's icon request.
   assert.match(source, /if \(context\.count > 1\) preloadControlIcons\(this, \[\{icon: COLLAPSE_ICON, filled: false\}\]\);/);
   assert.match(template, /aria-label=\$\{listOpen \? words\.collapseList : nothing\}/);
-  assert.match(sheet, /@container sf-alert-bar \(width > 38rem\) \{\s*\.sf-alert-bar-row \.sf-alert-bar-all > button > sf-icon > \.sf-icon \{\s*position: absolute;\s*visibility: hidden;/);
-  const narrow = sheet.slice(sheet.indexOf('@container sf-alert-bar (max-width: 38rem)'));
+  assert.match(sheet, /@container sf-alert-bar \(width > #\{mq\.container-step\(h0\)\}\) \{\s*\.sf-alert-bar-row \.sf-alert-bar-all > button > sf-icon > \.sf-icon \{\s*position: absolute;\s*visibility: hidden;/);
+  const narrow = sheet.slice(sheet.indexOf('@container sf-alert-bar (max-width: #{mq.container-step(h0)})'));
   assert.match(narrow, /\.sf-alert-bar-all > button\[aria-expanded="true"\] \{[^}]*inline-size: var\(--sf-alert-bar--control\);[^}]*padding-inline: 0;/);
   assert.match(narrow, /\.sf-alert-bar-all > button\[aria-expanded="true"\] > \.sf-button-text-container \{[^}]*clip-path: inset\(50%\);/);
   // A row's time: sf-time with tooltip none (no tooltip, no tabindex); the

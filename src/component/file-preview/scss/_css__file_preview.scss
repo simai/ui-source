@@ -1,3 +1,4 @@
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
 @layer sf.components {
   .sf-file-preview {
     --sf-file-preview--background-color: var(--sf-file-preview-background-color, transparent);
@@ -184,12 +185,13 @@
   }
 
   /* «Повторить» ends the row, first of its buttons; in a row narrower than
-     22.5rem it goes under the text from the text's edge (C88). */
+     24rem (the container step g2, C181; it was 22.5rem, no step) it goes
+     under the text from the text's edge (C88). */
   .sf-file-preview.sf-file-preview--error {
     container-type: inline-size;
   }
 
-  @container (max-width: 22.5rem) {
+  @container (max-width: #{mq.container-step(g2)}) {
     .sf-file-preview.sf-file-preview--error .sf-file-preview-actions {
       display: contents;
     }

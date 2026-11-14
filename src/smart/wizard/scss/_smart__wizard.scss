@@ -1,3 +1,4 @@
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
 @layer sf.components {
 /* sf-wizard (standard simai.smart-component 1.3.14 §6). One rung of the
    ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2 with
@@ -411,7 +412,7 @@
 /* ---------------------------------------------------------------- widths */
 
 /* Wide (40rem of the wizard's own width and more): the column, when asked. */
-@container sf-wizard (min-width: 40rem) {
+@container sf-wizard (min-width: #{mq.container-step(h0)}) {
   /* The column never sets the wizard's height beyond six of its rows (owner,
      2026-11-07): it is at least six rows tall, so a short step does not
      squeeze it; above that the body and the footer decide the height. The
@@ -458,7 +459,7 @@
 /* Narrow (under 40rem): always the compact head -- the step's label and the
    bar, never the row and never a column. The footer's primary takes the
    line's end, Back its start. */
-@container sf-wizard (max-width: 39.99rem) {
+@container sf-wizard (width < #{mq.container-step(h0)}) {
   /* sf-steps' host draws as its children (display: contents): its root
      is what goes. */
   .sf-wizard .sf-wizard-steps > .sf-steps {

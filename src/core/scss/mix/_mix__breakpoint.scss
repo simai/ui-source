@@ -141,6 +141,18 @@
   }
 }
 
+/// A step of the container threshold ladder (owner decision C181 (2)), for an
+/// @container condition: `@container sf-x (min-width: #{container-step(g6)})`.
+/// $frame is what the component's own frame takes off when the step is its
+/// whole width but the query reads its content box (two inline insets).
+@function container-step($step, $frame: 0rem) {
+  @if not map.has-key(bp.$container-step-array, $step) {
+    @error "Container step `#{$step}` is not on the ladder: #{map.keys(bp.$container-step-array)}.";
+  }
+
+  @return map.get(bp.$container-step-array, $step) - $frame;
+}
+
 /// Wraps content in a cascade layer.
 /// Supports nested layer names: `sf`, `base` -> `@layer sf.base`.
 @mixin layer-priority($primary, $secondary: null) {

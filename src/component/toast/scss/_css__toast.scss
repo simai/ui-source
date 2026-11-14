@@ -2,6 +2,7 @@
 @use 'sass:string';
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__notice-link' as notice-link;
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
 /* The status words are the shared vocabulary: neutral, info, success, warning,
    error. The component renders the canonical class, and the two words this
    component used before — default and primary — are matched beside it so
@@ -147,7 +148,7 @@
     container: sf-toast / inline-size;
   }
 
-  @container sf-toast (min-width: calc(20rem - 2 * 1rem)) {
+  @container sf-toast (min-width: #{mq.container-step(g0, $frame: 2 * 1rem)}) {
     .sf-toast:not(.sf-toast--actions-under):not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-container:has(> .sf-toast-bottom) {
       flex-direction: row;
       align-items: center;

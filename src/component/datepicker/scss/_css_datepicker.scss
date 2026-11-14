@@ -1,4 +1,5 @@
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
 @layer sf.components {
   /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
   .sf-datepicker {
@@ -75,10 +76,10 @@
     text-overflow: ellipsis;
   }
   /* Beside the grid the list needs twelve control heights and a gap: 440 px
-     on a phone (36), 488 on a desktop (40). Below the size step g4 (28rem,
-     448 px; a container query cannot read a variable) the list is a row above
-     the grid instead of a column squeezed under it. */
-  @container sf-datepicker (inline-size < 28rem) {
+     on a phone (36), 488 on a desktop (40). Below the container step g5 (30rem,
+     480 px, C181; it was g4, 448 px, no step of the ladder) the list is a row
+     above the grid instead of a column squeezed under it. */
+  @container sf-datepicker (inline-size < #{mq.container-step(g5)}) {
     .sf-datepicker .sf-datepicker-presets {
       flex: 1 1 100%;
       flex-direction: row;

@@ -89,7 +89,7 @@ Decision C88 (2026-11-12, still component.download-file 1.4.0): a failed row
 - `__meta` («Не удалось собрать») and `__reason` (why) are one text step
   smaller than the name, under it in the text's column, inside the frame.
 - `__end` ends the first line. `--narrow` (set by the Smart element when the
-  column is narrower than 22.5rem, 360 px, or the name beside the button
+  column is narrower than 24rem, 384 px (the container step g2, C181), or the name beside the button
   would keep fewer than 16 characters at its size) puts it under the text, the
   button's words on the text's edge; `--retry-icon` is the icon-only button
   there, for a column where the words do not fit even under the text.
