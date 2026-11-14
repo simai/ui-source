@@ -417,7 +417,7 @@
       "id": "view",
       "kind": "set",
       "repository": "simai/ui-view",
-      "status": "planned",
+      "status": "active",
       "families": [
         "view"
       ],
@@ -428,7 +428,7 @@
         },
         {
           "element": "sf-view-flow",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-view-properties",
@@ -440,7 +440,7 @@
         }
       ],
       "source": "simai/ui-view package/set.json (moved from ui-pro components/src/smart at c2a3b48); sf-view-flow: ui-view package/src/smart/view-flow (renamed from view-property-block, not yet released), owner decision 2026-11-06",
-      "note": "The set of data views (table, kanban, calendar, gantt and further views), owner decision 2026-11-03 point 12 (ui-control decisions/2026-11-03-component-sets.md): simai/ui-view, view.simai.io, Pro licence; other sets use its views. Planned until its first release under simai.component-set."
+      "note": "The set of data views (table, kanban, calendar, gantt and further views), owner decision 2026-11-03 point 12 (ui-control decisions/2026-11-03-component-sets.md): simai/ui-view, view.simai.io, Pro licence; other sets use its views. Active: released under simai.component-set (npm @simai-studio/view 1.7.1, release view-9eff67bbf11f); sf-view-flow ships in it with status preview."
     },
     {
       "id": "chat",
@@ -511,7 +511,7 @@
       "id": "editor",
       "kind": "set",
       "repository": "simai/ui-editor",
-      "status": "planned",
+      "status": "active",
       "families": [
         "editor"
       ],
@@ -526,92 +526,93 @@
         }
       ],
       "source": "simai/ui-editor package/set.json at ffc306d (sf-editor 1.2.0 moved from ui-pro components/src/smart at 4032e9f)",
-      "note": "The set of the page editor, owner decision 2026-11-03 (ui-control decisions/2026-11-03-component-sets.md; plan control/SETS-SPLIT-PLAN-2026-11-05.md, editor first): simai/ui-editor, its own subdomain, Pro licence. sf-editor-content is kept as a known name while it is retired in favour of sf-editor (decision point 13). sf-editor-inline and sf-editor-overlay stay SIMAI Framework components in the family (exceptions below, plan A-3). Planned until its first release under simai.component-set."
+      "note": "The set of the page editor, owner decision 2026-11-03 (ui-control decisions/2026-11-03-component-sets.md; plan control/SETS-SPLIT-PLAN-2026-11-05.md, editor first): simai/ui-editor, its own subdomain, Pro licence. sf-editor-content is kept as a known name while it is retired in favour of sf-editor (decision point 13). sf-editor-inline and sf-editor-overlay stay SIMAI Framework components in the family (exceptions below, plan A-3). Active: released under simai.component-set (npm @simai-studio/editor 1.1.1, release editor-6b1736f863ee)."
     },
     {
       "id": "chart",
       "kind": "set",
       "repository": "simai/ui-chart",
-      "status": "planned",
+      "status": "active",
+      "note": "Active: released under simai.component-set (npm @simai-studio/chart 1.1.0, release chart-58ba480db497); its 19 components ship with status preview.",
       "families": [
         "chart"
       ],
       "names": [
         {
           "element": "sf-chart-bar",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-box",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-candlestick",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-funnel",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-gauge",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-heatmap",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-line",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-map",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-metric",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-parts",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-pie",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-radar",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-sankey",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-scatter",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-sparkline",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-sunburst",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-timeline",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-treemap",
-          "status": "reserved"
+          "status": "released"
         },
         {
           "element": "sf-chart-waterfall",
-          "status": "reserved"
+          "status": "released"
         }
       ],
       "source": "ui-chart package/src/smart at 819d08b; ui-control decisions/2026-11-02-ui-chart-package.md and 2026-11-02-smart-component-naming.md"
@@ -620,14 +621,15 @@
       "id": "effects",
       "kind": "set",
       "repository": "simai/ui-effects",
-      "status": "planned",
+      "status": "active",
+      "note": "Active: released under simai.component-set (npm @simai-studio/effects 1.0.0); sf-effect ships with status preview.",
       "families": [
         "effect"
       ],
       "names": [
         {
           "element": "sf-effect",
-          "status": "reserved"
+          "status": "released"
         }
       ],
       "source": "ui-control EFFECTS-PACKAGE-PLAN-2026-11-03.md"
@@ -638,14 +640,14 @@
       "element": "sf-editor-inline",
       "owner": "framework",
       "family_owner": "editor",
-      "reason": "A SIMAI Framework component in the family editor, which the owner decision of 2026-11-03 gives to the set editor. To be decided: move it to the set editor, or rename it in the Framework through the change lifecycle.",
+      "reason": "A SIMAI Framework component in the family editor, which the owner decision of 2026-11-03 gives to the set editor. Owner decision 2026-11-14 (component sets tidy-up): it stays a SIMAI Framework component under its current name, a permanent exception (sets compose it; a rename would move every consumer twice).",
       "since": "2026-11-03"
     },
     {
       "element": "sf-editor-overlay",
       "owner": "framework",
       "family_owner": "editor",
-      "reason": "A SIMAI Framework component in the family editor, which the owner decision of 2026-11-03 gives to the set editor. To be decided: move it to the set editor, or rename it in the Framework through the change lifecycle.",
+      "reason": "A SIMAI Framework component in the family editor, which the owner decision of 2026-11-03 gives to the set editor. Owner decision 2026-11-14 (component sets tidy-up): it stays a SIMAI Framework component under its current name, a permanent exception (sets compose it; a rename would move every consumer twice).",
       "since": "2026-11-03"
     }
   ]
