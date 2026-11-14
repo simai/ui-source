@@ -1,6 +1,11 @@
 {
   "title": "Tags",
   "runtime": {
-    "remove": "Remove"
+    "remove": "Remove",
+    "more": {
+      "one": "{n} more: {names}",
+      "other": "{n} more: {names}"
+    },
+    "position": "{label}, {position} of {total}, Delete to remove"
   }
 }

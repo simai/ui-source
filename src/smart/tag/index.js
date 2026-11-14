@@ -4,6 +4,8 @@ import { noteDeprecated } from '../../core/js/deprecations.js';
 import { fieldSize } from '../../component/field-size';
 import { renderTagTemplate } from './js/templates/default';
 import { preloadControlIcons } from '../helpers/cycle';
+import { instancePath, partId } from '../../core/js/instance-path.js';
+import { tagInRow, tagLeftRow } from './js/tag-row.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -259,7 +261,57 @@ class SfTag extends TagElement {
       closeLabel: this.closeLabel,
       active: this.active,
       ariaLabel: this.getAttribute('aria-label') || '',
+      // A name cut with an ellipsis has its whole text as the tag's tooltip
+      // (C58; TG-1), the Framework's plain tooltip.
+      cutTooltipId: this._sfCut ? partId(instancePath(this, {kind: 'sf-tag'}), 'name') : '',
+      cutText: this._sfCut ? this.cutText() : '',
     });
+  }
+
+  // The label's whole text, as the tooltip says it.
+  cutText() {
+    const label = this.querySelector(':scope > .sf-tag .sf-tag-container');
+    return String(label?.textContent ?? this.text ?? '').trim();
+  }
+
+  // Whether the drawn label is cut: read from the label, since the column,
+  // the font and the row decide it, not the length of the text.
+  measureCut() {
+    const label = this.querySelector(':scope > .sf-tag .sf-tag-container');
+    const cut = Boolean(label && label.scrollWidth - label.clientWidth > 0.5);
+    if (cut === Boolean(this._sfCut)) return;
+    this._sfCut = cut;
+    this.requestComponentUpdate('cut');
+  }
+
+  watchCut() {
+    const label = this.querySelector(':scope > .sf-tag .sf-tag-container');
+    if (!label || typeof ResizeObserver === 'undefined') return;
+    if (this._sfCutLabel === label) return;
+    this._sfCutObserver?.disconnect();
+    this._sfCutLabel = label;
+    this._sfCutObserver = new ResizeObserver(() => this.measureCut());
+    this._sfCutObserver.observe(label);
+  }
+
+  afterRender(changed) {
+    const result = super.afterRender(changed);
+    this.watchCut();
+    this.measureCut();
+    // The row the tag stands in shows what fits and «+N», and walks closable
+    // tags in a field by keys (js/tag-row.js).
+    if (!this.hasAttribute('data-sf-tag-more')) tagInRow(this);
+    this._sfRow = this.parentElement;
+    return result;
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this._sfCutObserver?.disconnect();
+    this._sfCutObserver = null;
+    this._sfCutLabel = null;
+    tagLeftRow(this._sfRow);
+    this._sfRow = null;
   }
 
   onToggle() {

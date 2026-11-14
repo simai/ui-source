@@ -27,7 +27,9 @@ the height ladder (C27, as `sf-button--height-*`); the default needs no class.
 `spacing-compact`, `spacing-comfortable` and `spacing-spacious` are their former
 names until 2027-01-01 (journal `class-tag-spacing-to-height`).
 
-A picture before the label is the label's line high. On another control's text
+A picture before the label (avatar, icon, colour swatch) is the tag less 4
+above and below (owner decision C58: 24 in a 32 tag, 20 in 28, 16 in 24, 32 in
+40); the check square stays the box of the checkbox of the step. On another control's text
 line (`sf-tag--inline`, `line` on `sf-tag`) an avatar is that line, as the remove
 button is, so a chip in a field and the field's list rows show one avatar step.
 
@@ -46,7 +48,14 @@ the status dot is 6 px at 1/3 and 1/2, 8 px at 1 and 2 and 12 px at 3.
   remove button;
 - icon, color, avatar, dot and check visuals are decorative when the visible
   text already supplies the accessible name;
-- a group owns wrapping and spacing through Framework flex and gap utilities.
+- a group owns wrapping and spacing through Framework flex and gap utilities:
+  tags stand `gap-1/4` (4 px) apart, between their rows too (C105 H5, C58);
+- a long name ends in an ellipsis; a tag is at most 20rem and its container,
+  and never shrinks to give its width to a neighbour (C58);
+- a colour from data is a palette step through `--sf-tag-background-color`,
+  for example `var(--sf-teal-50--alfa-24)`: the step is translucent, so the
+  label keeps its contrast in a light and in a dark theme; an author hex is
+  not (C140 BG-7; a light hex reads 1.04:1 in the dark theme).
 
 Tag is a compact UI control and therefore uses `--sf-radius--ui`. Geometry,
 typography, role colors, focus and motion use Framework semantic tokens. A

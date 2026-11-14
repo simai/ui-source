@@ -25,8 +25,17 @@
     background-color: var(--sf-tag--background-color);
     box-shadow: var(--sf-tag--box-shadow);
     margin: 0;
-    max-inline-size: 100%;
+    /* A long name ends in an ellipsis and the tag is never wider than --sf-g0
+       nor its container (owner decision C58; tags study TG-1). */
+    max-inline-size: min(var(--sf-g0), 100%);
     min-inline-size: 0;
+    /* The picture before the label -- avatar, icon, colour swatch -- is the
+       tag less 4 above and below (C58: tag - 8; TG-7): the tag's line and its
+       block padding less two --sf-space-1/4. It keeps the row the label's line
+       by giving back what it passes it on both sides. */
+    --sf-tag--picture-pad: var(--sf-tag--block, var(--sf-tag-padding-block, var(--sf-tag--padding-top)));
+    --sf-tag--picture: calc(var(--sf-tag--line-height) + 2 * var(--sf-tag--picture-pad) - 2 * var(--sf-space-1\/4));
+    --sf-tag--picture-pull: calc(var(--sf-space-1\/4) - var(--sf-tag--picture-pad));
     transition: background-color var(--sf-duration-fast) var(--sf-animation),
       color var(--sf-duration-fast) var(--sf-animation),
       box-shadow var(--sf-duration-fast) var(--sf-animation);
@@ -34,6 +43,14 @@
 
   .sf-tag--interactive {
     cursor: pointer;
+  }
+
+  /* A tag never gives up its width to its neighbours (C58; TG-2: in a
+     one-row container five tags shrank letter by letter, 132 px tall). The
+     row shows what fits and «+N» for the rest (sf-tag's row, below); a tag on
+     another control's line keeps its host's rule. */
+  .sf-tag:not(.sf-tag--inline) {
+    flex-shrink: 0;
   }
 
   /* The check is a checkbox box of the tag's size: the text line of the size
@@ -66,6 +83,19 @@
 
   .sf-tag.active .sf-tag-check::before {
     opacity: 1;
+  }
+
+  /* Disabled and selected reads disabled, as sf-checkbox does (TG-10: the
+     bright primary square and fill stayed): the box takes the disabled
+     border, a disabled fill and the disabled ink for its mark. */
+  .sf-tag:is(.disabled, :disabled) .sf-tag-check {
+    border-color: var(--sf-outline-disabled);
+  }
+
+  .sf-tag.active:is(.disabled, :disabled) .sf-tag-check {
+    background-color: var(--sf-surface-disabled);
+    border-color: var(--sf-outline-disabled);
+    color: var(--sf-on-surface-disabled);
   }
 
   /* An avatar in a tag lays its container fill over the tag's: two fills,
@@ -135,7 +165,12 @@
     padding-inline-end: var(--sf-tag--label-end, var(--sf-tag-container--padding-inline-end));
     padding-inline-start: var(--sf-tag--label-start, var(--sf-tag-container--padding-inline-start));
     min-inline-size: 0;
-    overflow-wrap: anywhere;
+    /* One line: a long name ends in an ellipsis, the whole name is in the
+       markup for a screen reader and in the tag's tooltip (C58; TG-1). It
+       wrapped to three lines, 198 x 92 in a 200 column. */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .sf-tag .sf-tag-count {
@@ -196,8 +231,13 @@
     --sf-dot-item--background-color: var(--sf-success);
   }
 
+  /* One status, one colour on the badge and the tag (owner decision C140
+     (6); tags study TG-3): the label of a pressed or removable status tag is
+     the ink on the status container, the tonal badge's text, not the status
+     colour itself (--sf-success beside the badge's --sf-on-success-container). The dot keeps the
+     status colour. */
   .sf-tag.sf-tag--success .sf-tag-container {
-    --sf-tag-container--color: var(--sf-tag-color, var(--sf-success));
+    --sf-tag-container--color: var(--sf-tag-color, var(--sf-on-success-container));
   }
 
   .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--error {
@@ -211,7 +251,7 @@
   }
 
   .sf-tag.sf-tag--error .sf-tag-container {
-    --sf-tag-container--color: var(--sf-tag-color, var(--sf-error));
+    --sf-tag-container--color: var(--sf-tag-color, var(--sf-on-error-container));
   }
 
   .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--warning {
@@ -225,7 +265,7 @@
   }
 
   .sf-tag.sf-tag--warning .sf-tag-container {
-    --sf-tag-container--color: var(--sf-tag-color, var(--sf-warning));
+    --sf-tag-container--color: var(--sf-tag-color, var(--sf-on-warning-container));
   }
 
   .sf-tag:is(.sf-tag--size-1, .sf-tag--size-2, .sf-tag--size-3).sf-tag--checkbox {
@@ -429,7 +469,7 @@
   }
 
   .sf-tag.sf-tag--info .sf-tag-container {
-    --sf-tag-container--color: var(--sf-tag-color, var(--sf-info));
+    --sf-tag-container--color: var(--sf-tag-color, var(--sf-on-info-container));
   }
 
   .sf-tag:is(.sf-tag--size-1\/2, .sf-tag--size-1\/3).sf-tag--info {
@@ -516,6 +556,12 @@
   }
 
   .sf-tag.disabled {
+    --sf-tag--background-color: var(--sf-surface-disabled);
+  }
+
+  /* Disabled wins over selected and pressed (TG-10): the selected rules of
+     each size name the kind and .active, so this one names more. */
+  .sf-tag.sf-tag.sf-tag.disabled.active {
     --sf-tag--background-color: var(--sf-surface-disabled);
   }
 
@@ -1094,5 +1140,32 @@
 
 .sf-tag.sf-tag--line-2 {
   --sf-tag--line: var(--sf-text-height-2);
+}
+}
+
+@layer sf.states {
+/* The picture before the label is the tag less 4 above and below (owner
+   decision C58 and its table: 32 -> 24, 28 -> 20, 24 -> 16, 40 -> 32; tags
+   study TG-7: it was the label's line, 20 in a 32 tag and 24 in a 40 one).
+   Avatar, icon and colour swatch; --sf-tag--picture is computed on the tag
+   from its own line and block padding, so every size, density and screen
+   follows, and the picture gives back what it passes the line, so the tag's
+   height stays the control's. The check square stays the box of the
+   checkbox of the step (audit W8), a status dot the small ladder (C132). A
+   tag on another control's line (inline, line="...") keeps its host's rule:
+   its picture is that line (LK-06); a list's colour row draws the swatch with
+   the tag's markup and keeps its own. */
+:is(.sf-tag.sf-tag:not(.sf-tag--inline, .sf-list-item *), .sf-tag.sf-tag:not(.sf-tag--inline, .sf-list-item *) > .sf-tag-action) > :is(.sf-avatar, .sf-tag-color-icon, .sf-icon),
+:is(.sf-tag.sf-tag:not(.sf-tag--inline, .sf-list-item *), .sf-tag.sf-tag:not(.sf-tag--inline, .sf-list-item *) > .sf-tag-action) > sf-icon > .sf-icon {
+  --sf-avatar--height: var(--sf-tag--picture);
+  --sf-avatar--width: var(--sf-tag--picture);
+  --sf-avatar--line-height: var(--sf-tag--picture);
+  --sf-tag-color-icon--height: var(--sf-tag--picture);
+  --sf-tag-color-icon--width: var(--sf-tag--picture);
+  --sf-icon--font-size: var(--sf-tag--picture);
+  --sf-icon--height: var(--sf-tag--picture);
+  --sf-icon--width: var(--sf-tag--picture);
+  flex-shrink: 0;
+  margin-block: var(--sf-tag--picture-pull);
 }
 }

@@ -18,6 +18,9 @@ SF.RuleLoader['cl-tag'] = {
     // The icon of an icon tag and an avatar's placeholder are sf-icon elements,
     // so their names reach the icon font request (buttons review 2026-11-09).
     { name: 'cl-icon' },
+    // A name cut with an ellipsis has its whole text in the Framework's plain
+    // tooltip (owner decision C58; tags study TG-1): the tooltip controller.
+    { name: 'tooltip' },
   ],
 };
 

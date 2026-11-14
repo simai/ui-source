@@ -3057,6 +3057,7 @@
           "component.dot",
           "component.icon-buttons",
           "component.tags",
+          "component.tooltip",
           "smart.button-close",
           "smart.icon"
         ]
@@ -3070,7 +3071,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tag/smart.manifest.json",
-      "manifest_sha256": "eedfaac5c12f424076fd678553038114bf77f126b8c3b811f34fd8a8d21d6c09",
+      "manifest_sha256": "66be346ec20f133166cb7fe5e27d6cc1cafba760a5c87b870e6587e239e2fde9",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

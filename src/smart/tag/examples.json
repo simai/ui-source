@@ -73,14 +73,14 @@
       }
     },
     {
-      "name": "surface",
-      "title": "На поверхности",
+      "name": "outline",
+      "title": "С рамкой",
       "settings": {
         "text": "Черновик",
-        "appearance": "surface"
+        "appearance": "outline"
       },
       "expect": {
-        "appearance": "surface"
+        "appearance": "outline"
       }
     },
     {

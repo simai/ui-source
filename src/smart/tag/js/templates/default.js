@@ -157,6 +157,16 @@ function renderStatusBadge(context, textContent) {
         class="sf-badge-text">${textContent}</span></span></span>`;
 }
 
+// The Framework's plain tooltip (component.tooltip, class markup), hidden
+// until the tooltip controller shows it on hover or keyboard focus of the
+// trigger: a name cut with an ellipsis says itself whole (owner decision C58;
+// tags study TG-1). The label stays whole in the markup, so a screen reader
+// hears all of it; the tooltip is for the eye.
+function renderCutTooltip(context) {
+    if (!context.cutTooltipId) return nothing;
+    return html`<span id=${context.cutTooltipId} class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-tag-tooltip" aria-hidden="true" hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${context.cutText}</span></span></span>`;
+}
+
 export function renderTagTemplate(context) {
     const textContent = context.component?.hasSlotContent?.('text')
         ? context.component.getSlotContent('text')
@@ -205,11 +215,13 @@ export function renderTagTemplate(context) {
                     class=${classes.join(' ')}
                     style=${context.rootStyle || nothing}
             >
+                ${renderCutTooltip(context)}
                 <button
                         type="button"
                         class="sf-tag-action inline-flex flex-row flex-nowrap items-center min-w-0"
                         aria-label=${context.ariaLabel || nothing}
                         aria-pressed=${String(context.active)}
+                        data-tooltip=${context.cutTooltipId || nothing}
                         ?disabled=${context.disabled}
                         @click=${() => context.component.onToggle()}
                 >
@@ -230,9 +242,10 @@ export function renderTagTemplate(context) {
                     style=${context.rootStyle || nothing}
                     aria-label=${context.ariaLabel || nothing}
                     aria-pressed=${String(context.active)}
+                    data-tooltip=${context.cutTooltipId || nothing}
                     ?disabled=${context.disabled}
                     @click=${() => context.component.onToggle()}
-            >${content}</button>
+            >${content}${renderCutTooltip(context)}</button>
         `;
     }
 
@@ -242,10 +255,12 @@ export function renderTagTemplate(context) {
                     class=${classes.join(' ')}
                     style=${context.rootStyle || nothing}
             >
+                ${renderCutTooltip(context)}
                 <button
                         type="button"
                         class="sf-tag-action inline-flex flex-row flex-nowrap items-center min-w-0"
                         aria-label=${context.ariaLabel || nothing}
+                        data-tooltip=${context.cutTooltipId || nothing}
                         ?disabled=${context.disabled}
                 >
                     ${renderLeading(context)}
@@ -261,6 +276,7 @@ export function renderTagTemplate(context) {
         <div
                 class=${classes.join(' ')}
                 style=${context.rootStyle || nothing}
-        >${content}</div>
+                data-tooltip=${context.cutTooltipId || nothing}
+        >${content}${renderCutTooltip(context)}</div>
     `;
 }
