@@ -71,33 +71,125 @@
 
 @layer sf.base {
 /* sf-language before it draws (Docara, 2026-11-07: the header tools moved
-   left by 40 px when the trigger appeared). The element knows its box before
-   its code does, from its attributes alone: one control of its size step
-   high (size, default 1), and for the menu and search looks -- an icon button
-   -- as wide as high. So until it marks its look (data-look, set as it draws)
-   it holds that box itself, and a page needs no placeholder of its own. The
-   switch (mode inline, or auto, whose look depends on how many languages it
-   is given) holds its height only: its width is its labels'. Static markup
-   printed inside (data-sf-static) is its own box, so nothing is reserved
-   then. Here, not in a sheet of the component's, because the element has no
-   sheet and core.css is the one sheet a page links before any code. */
-:where(sf-language:not([data-look])) {
+   left by 40 px when the trigger appeared; C142, 2026-11-14: they moved by
+   63-78 px once the trigger became «RU ▾»). The element knows its box before
+   its code does, from its attributes alone, so until it marks its look
+   (data-look, set as it draws) it holds that box itself, and a page needs no
+   placeholder of its own:
+
+   - auto, menu and search (the default): the trigger, an sf-button of the
+     element's size (size, default 1) -- its side padding, the translate
+     glyph, the code with its text space on both sides, the expand_more
+     glyph. Each part is the button ladder's variable of that size; the code
+     stands in a slot one text line wide (below), so the drawn trigger is
+     as wide as the box held for it whatever language is chosen;
+   - inline: the track, one control of its size high; its width is its
+     labels', which no attribute gives;
+   - field: the field, its label line above it, the label's gap and one
+     control of the field's size (1/3 draws 1/2, 3 draws 2), as wide as its
+     container;
+   - one language (a languages list without a separator, no island) draws
+     nothing, so nothing is held.
+
+   Static markup printed inside (data-sf-static) is its own box, so nothing
+   is reserved then. Here, not in a sheet of the component's, because the
+   element has no sheet and core.css is the one sheet a page links before
+   any code. */
+:where(sf-language) {
   --sf-language--box: var(--sf-ui-1--control-height);
+  --sf-language--space-x: var(--sf-button-padding-inline, var(--sf-ui-1--space-x));
+  --sf-language--text-x: var(--sf-ui-1--text-space-x);
+  --sf-language--line: var(--sf-text-height-1);
+  --sf-language--field-label: var(--sf-text-height-1\/2);
+  --sf-language--field: var(--sf-ui-1--control-height);
+  /* side padding, glyph, text space, code slot, text space, glyph, side padding */
+  --sf-language--trigger: calc(2 * var(--sf-language--space-x) + 2 * var(--sf-language--text-x) + 3 * var(--sf-language--line));
+  --sf-language--field-box: calc(var(--sf-language--field-label) + var(--sf-space-1\/4) + var(--sf-language--field));
 }
 
-:where(sf-language[size="1/3"]:not([data-look])) { --sf-language--box: var(--sf-ui-1\/3--control-height); }
-:where(sf-language[size="1/2"]:not([data-look])) { --sf-language--box: var(--sf-ui-1\/2--control-height); }
-:where(sf-language[size="2"]:not([data-look])) { --sf-language--box: var(--sf-ui-2--control-height); }
-:where(sf-language[size="3"]:not([data-look])) { --sf-language--box: var(--sf-ui-3--control-height); }
+:where(sf-language[size="1/3"]) {
+  --sf-language--box: var(--sf-ui-1\/3--control-height);
+  --sf-language--space-x: var(--sf-button-padding-inline, var(--sf-ui-1\/3--space-x));
+  --sf-language--text-x: var(--sf-ui-1\/3--text-space-x);
+  --sf-language--line: var(--sf-text-height-1\/3);
+  --sf-language--field-label: var(--sf-text-height-1\/3);
+  --sf-language--field: var(--sf-ui-1\/2--control-height);
+}
+:where(sf-language[size="1/2"]) {
+  --sf-language--box: var(--sf-ui-1\/2--control-height);
+  --sf-language--space-x: var(--sf-button-padding-inline, var(--sf-ui-1\/2--space-x));
+  --sf-language--text-x: var(--sf-ui-1\/2--text-space-x);
+  --sf-language--line: var(--sf-text-height-1\/2);
+  --sf-language--field-label: var(--sf-text-height-1\/3);
+  --sf-language--field: var(--sf-ui-1\/2--control-height);
+}
+:where(sf-language[size="2"]) {
+  --sf-language--box: var(--sf-ui-2--control-height);
+  --sf-language--space-x: var(--sf-button-padding-inline, var(--sf-ui-2--space-x));
+  --sf-language--text-x: var(--sf-ui-2--text-space-x);
+  --sf-language--line: var(--sf-text-height-2);
+  --sf-language--field-label: var(--sf-text-height-1);
+  --sf-language--field: var(--sf-ui-2--control-height);
+}
+:where(sf-language[size="3"]) {
+  --sf-language--box: var(--sf-ui-3--control-height);
+  --sf-language--space-x: var(--sf-button-padding-inline, var(--sf-ui-3--space-x));
+  --sf-language--text-x: var(--sf-ui-3--text-space-x);
+  --sf-language--line: var(--sf-text-height-3);
+  --sf-language--field-label: var(--sf-text-height-1);
+  --sf-language--field: var(--sf-ui-2--control-height);
+}
 
 :where(sf-language:not([data-look])):not(:has(> [data-sf-static])) {
   display: inline-block;
   vertical-align: middle;
   block-size: var(--sf-language--box);
+  inline-size: var(--sf-language--trigger);
 }
 
-:where(sf-language:is([mode="menu"], [mode="search"]):not([data-look])):not(:has(> [data-sf-static])) {
-  inline-size: var(--sf-language--box);
+:where(sf-language[mode="inline"]:not([data-look])):not(:has(> [data-sf-static])) {
+  inline-size: auto;
+}
+
+:where(sf-language[mode="field"]:not([data-look])):not(:has(> [data-sf-static])) {
+  display: block;
+  inline-size: auto;
+  block-size: var(--sf-language--field-box);
+}
+
+/* Drawn, the element is its parts (display: contents); a part whose own
+   code has not come yet (sf-dropdown is fetched on its own) holds the same
+   box until it draws, or the row closed up for a frame between the two. */
+:where(sf-language .sf-language-parts > sf-button:not(:defined)) {
+  display: inline-block;
+  vertical-align: middle;
+  block-size: var(--sf-language--box);
+  inline-size: var(--sf-language--trigger);
+}
+
+:where(sf-language .sf-language-parts > :is(sf-segmented, sf-button-group):not(:defined)) {
+  display: inline-block;
+  vertical-align: middle;
+  block-size: var(--sf-language--box);
+}
+
+:where(sf-language .sf-language-parts > sf-dropdown:not(:defined)) {
+  display: block;
+  block-size: var(--sf-language--field-box);
+}
+
+:where(sf-language[languages]:not([languages*=" "], [languages*=","], [languages*=";"], [data-look])):not(:has(> [data-sf-static], > script)) {
+  display: none;
+}
+
+/* The code's slot in the trigger: one text line of the size wide (a code
+   of two capitals is a little narrower), the code in its middle. Every code
+   of the list already stands in the same grid cell, so the trigger keeps
+   its width whatever is chosen; the slot makes that width the one held
+   above. A wider code (PT-BR) widens the slot. */
+:where(sf-language .sf-language-code) {
+  min-inline-size: var(--sf-language--line);
+  justify-items: center;
 }
 
 /* Its menu waits for its own code in the parts the element drew: an empty
