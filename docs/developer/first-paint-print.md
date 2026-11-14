@@ -23,8 +23,12 @@ left in the page as written.
 ## Requirements
 
 - Node 20 or later.
-- The `playwright` package and its Chromium build (`npx playwright install
-  chromium`, or `PLAYWRIGHT_BROWSERS_PATH` set to where it is).
+- The ui-source checkout's own dependencies (`yarn install
+  --frozen-lockfile`). The tool uses the `playwright` version that
+  `package.json` declares (`scripts/playwright-local.mjs`), with its Chromium
+  (`npx playwright install chromium`, or `PLAYWRIGHT_BROWSERS_PATH` set to
+  where it is). A caller that has its own Playwright passes a launched
+  `browser` to `createPrinter` instead.
 - A SIMAI Framework build: a pair's `distr/` (the `simai/ui` repository's
   `distr/`, or the npm package `@simai-studio/ui`'s), or a ui-builder build
   output. The tool reads it and serves it on `127.0.0.1` for the browser.

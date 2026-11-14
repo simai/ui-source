@@ -21,14 +21,17 @@
 //   5. the output is the same on every run.
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {join, resolve} from 'node:path';
+import {dirname, join, resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {ensureLocalPlaywright} from '../../scripts/playwright-local.mjs';
 import {createPrinter} from '../../tools/first-paint/print.mjs';
 import {describe, hostSpec, isDistribution, serveOutput, head, coreScript, PAGE_CONTEXT} from '../../scripts/first-paint-lib.mjs';
 
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const smart = isDistribution(out) ? join(out, 'smart') : join(out, 'smart', 'smart');
-const {chromium} = await import('playwright').catch(() => import('/Users/rim/node_modules/playwright/index.mjs'));
+ensureLocalPlaywright(join(dirname(fileURLToPath(import.meta.url)), '..', '..'));
+const {chromium} = await import('playwright');
 const browser = await chromium.launch();
 const printer = await createPrinter({distr: out, browser});
 const failures = [];
@@ -94,7 +97,7 @@ try {
         await page.goto(`${site.origin}${path}`, {waitUntil: 'load'});
         if (drawn) await page.waitForFunction(() => [...document.querySelectorAll('sf-button')].every((one) => one.isRendered === true), null, {timeout: 20000});
         await page.evaluate(() => document.fonts.ready);
-        return page.evaluate(() => [...document.querySelectorAll('sf-button > .sf-button')].map((one) => Math.round(one.getBoundingClientRect().height * 10) / 10));
+        return await page.evaluate(() => [...document.querySelectorAll('sf-button > .sf-button')].map((one) => Math.round(one.getBoundingClientRect().height * 10) / 10));
       } finally {
         await context.close();
       }

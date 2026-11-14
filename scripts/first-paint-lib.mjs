@@ -304,7 +304,10 @@ const TYPES = new Map([
 export const isDistribution = (root) => existsSync(join(root, 'core', 'js', 'core.js')) && existsSync(join(root, 'smart'));
 
 /** The /distr/ mounts of a build output or of a distribution. */
-export function outputMounts(out) {
+export function outputMounts(given) {
+  // Absolute: a file is served only from inside its mount (a relative root
+  // served nothing).
+  const out = resolve(given);
   if (isDistribution(out)) return ['core', 'rule', 'component', 'utility', 'smart'].map((part) => [`/distr/${part}/`, join(out, part)]);
   return [
     ['/distr/core/', join(out, 'core', 'core')],

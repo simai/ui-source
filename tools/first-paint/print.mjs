@@ -15,6 +15,7 @@
 import {existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync} from 'node:fs';
 import {dirname, join, relative, resolve} from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
+import {ensureLocalPlaywright} from '../../scripts/playwright-local.mjs';
 import {BOOT_CONFIG, PAGE_CONTEXT, coreScript, esc, freezeClock, head, isDistribution, readConfig, serializeSettled, serveOutput, settleSheets, watchRequests} from '../../scripts/first-paint-lib.mjs';
 
 export const SCHEMA = 'simai.first-paint-print.v1';
@@ -131,7 +132,10 @@ export async function createPrinter({distr, config = null, concurrency = 4, port
   const site = await serveOutput(root, {pages, packages: run.packages, port});
   let browser = given;
   if (!browser) {
-    const {chromium} = await import('playwright').catch(() => import('/Users/rim/node_modules/playwright/index.mjs'));
+    // The playwright this repository declares (scripts/playwright-local.mjs),
+    // never a stray copy: a caller with its own passes `browser`.
+    ensureLocalPlaywright(join(here, '..', '..'));
+    const {chromium} = await import('playwright');
     browser = await chromium.launch();
   }
   const boot = {...BOOT_CONFIG};
@@ -235,7 +239,9 @@ ${coreScript}
     const {page, elements} = await split(String(markup));
     // A page of classic components only (class markup, no element) has its
     // sheets too: its markup is its own first paint.
-    const whole = pageSheets(String(markup));
+    // Settled into a value now: a failure is reported once the elements are
+    // done, never as an unhandled rejection meanwhile.
+    const whole = pageSheets(String(markup)).then((sheets) => ({sheets}), (error) => ({error}));
     const results = new Array(elements.length);
     let next = 0;
     const worker = async () => {
@@ -265,13 +271,15 @@ ${coreScript}
       const one = results[Number(number) - 1];
       return one.status === 'printed' ? one.html : one.source;
     });
+    const own = await whole;
+    if (own.error) throw new Error(`the page's own sheets: ${String(own.error?.message ?? own.error).split('\n')[0]}`);
     const count = (status) => results.filter((one) => one.status === status).length;
     return {
       schema: SCHEMA,
       id,
       theme: THEMES,
       html,
-      sheets: sortedUnique([...await whole, ...results.flatMap((one) => one.sheets ?? [])]),
+      sheets: sortedUnique([...own.sheets, ...results.flatMap((one) => one.sheets ?? [])]),
       summary: {
         elements: results.length,
         printed: count('printed'),
