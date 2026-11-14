@@ -890,19 +890,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",
-        "sha256": "4c31c7851db3c4b71072080d06053b3ea23ae004a496d20ca750b975e52676e1"
+        "sha256": "fef009613572507e362f8b16608f87685ead9a9abf7fc32d2a72a5809babfc5d"
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",
-        "sha256": "5cab2f405239ba8e40c20a294395bd10179b36890e704cc7a35932f3a5e81db7"
+        "sha256": "d7947721162f049e436430c1598b7316f4d45bc6a8589b5d9643ab5c6242c824"
       },
       {
         "path": "src/smart/drawer/rule.js",
-        "sha256": "bf6cc989fc8821b3d1d3789fa93018894c3c0b3211eb1fdfd0cc6e3de602047c"
+        "sha256": "732745a8eed05112d244a3e0d4ca6bdabd52781e2f27eb668f47c91b4fc4e05b"
       },
       {
         "path": "src/smart/drawer/docs.md",
-        "sha256": "79bc6138fb97f0f92178256c28955f10a4477ef4692612cda4763820bae8cc08"
+        "sha256": "7749d8586bf7f35dcb33ff34ad2d4952f4634d74b1537ad2cc35bd9b16f9b96a"
       }
     ],
     "generated_runtime": [
