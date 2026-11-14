@@ -30,7 +30,9 @@ Slots:
 
 - `path` — where the page is, usually an `sf-breadcrumbs` starting at the site.
 - `start` — the start of the line, for a phone's ☰.
-- `actions` — the main action, at the end of the line.
+- `actions` — the main action, at the end of the line. The actions stand 8
+  apart (C105 H5); a row of actions wider than the line moves to a line of its
+  own and wraps there, so the page never scrolls sideways.
 
 Event:
 

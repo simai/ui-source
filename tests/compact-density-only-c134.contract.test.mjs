@@ -42,7 +42,7 @@ test('C134 sf-language: labels name|code replaces the boolean compact, read in c
 
 test('C134 sf-menu: appearance rail, compact a dated value alias; the rail writes both classes and the class sheet draws either', () => {
   const manifest = json('src/smart/menu/component.json');
-  assert.equal(manifest.version, '1.7.1');
+  assert.equal(manifest.version, '1.8.0');
   assert.deepEqual(manifest.settings.appearance.values, ['default', 'documentation-tree', 'rail', 'navigation']);
   assert.deepEqual([...MENU_APPEARANCES], manifest.settings.appearance.values);
   const row = json('src/smart/menu/aliases.json').aliases.find((alias) => alias.kind === 'value' && alias.from === 'compact');

@@ -196,6 +196,12 @@ class SfSmartMenu extends MenuElement {
       // A row's deeper levels open in place below md and to the side above
       // it: the open chain is placed again for the width it now has.
       else if (this.flyouts) this.syncAnchors();
+      // The default row (collapse auto, overflow collapse) is «Ещё» above md
+      // and the «Меню» button below it: crossing md it is measured anew.
+      if (this.collapseOnPhone) {
+        this._autoCollapsed = false;
+        this.requestComponentUpdate('narrow');
+      }
     };
     this._narrowMedia?.addEventListener?.('change', this._onNarrow);
     // The words of a row change their width when the font arrives: «Ещё» is
@@ -245,7 +251,15 @@ class SfSmartMenu extends MenuElement {
   // A row with overflow more: the items that left the row stand under the
   // trailing «Ещё» branch.
   get moreActive() {
-    return this.overflow === 'more' && this.flyouts;
+    return (this.overflow === 'more' || (this.collapseOnPhone && !this._narrow)) && this.flyouts;
+  }
+
+  // The default row (collapse auto, overflow collapse; C30, OV-4): above md
+  // the items that do not fit leave for «Ещё» as with overflow more, the ones
+  // that fit stay; below md (a phone) the whole row that does not fit becomes
+  // the «Меню» button, as before.
+  get collapseOnPhone() {
+    return this.collapse === 'auto' && this.overflow === 'collapse' && this.horizontal;
   }
 
   // The tree the open panels, the current path and the keys walk: the items,
@@ -286,7 +300,7 @@ class SfSmartMenu extends MenuElement {
   get collapsed() {
     if (this.collapse === 'always') return true;
     if (this.collapse === 'narrow') return this._narrow;
-    return this.collapse === 'auto' && this.overflow === 'collapse' && this.horizontal && this._autoCollapsed;
+    return this.collapseOnPhone && this._narrow && this._autoCollapsed;
   }
 
   // Branches open as panels beside the row: a row that is shown as a row.
@@ -1074,7 +1088,7 @@ class SfSmartMenu extends MenuElement {
       return;
     }
     if (this._overflowHidden.length) this.setOverflowHidden([]);
-    if (this.collapse !== 'auto' || this.overflow !== 'collapse' || !this.horizontal) {
+    if (!this.collapseOnPhone || !this._narrow) {
       if (this._autoCollapsed) {
         this._autoCollapsed = false;
         this.requestComponentUpdate('collapse');
