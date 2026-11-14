@@ -61,6 +61,8 @@
     "src/core/contracts/content-spacing.docs.v1.json",
     "src/core/contracts/dimension-policy.v1.json",
     "src/core/contracts/effect.v1.schema.json",
+    "src/core/contracts/icon-meanings.v1.json",
+    "src/core/contracts/icon-names.v1.json",
     "src/core/contracts/interface-fragment.v1.schema.json",
     "src/core/contracts/packages/larena.package.json",
     "src/core/contracts/packages/pro.package.json",
@@ -144,6 +146,7 @@
     "src/core/js/host-port.js",
     "src/core/js/host-runtime-marks.js",
     "src/core/js/icon-choices.js",
+    "src/core/js/icon-glyphs.js",
     "src/core/js/icon-subset-memory.js",
     "src/core/js/iconSubsetRuntime.js",
     "src/core/js/ignored-glyphs.js",
@@ -224,7 +227,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "b6c22cc045d2a39b48596d330b802c5613afd8b99a4dba3bc59fae1a393d5dc9",
+  "content_sha256": "1c3747ed251453502c323d927e5c75fc4d031ed7ed1d57053f223bca969eb58c",
   "dependencies": [
     {
       "id": "core.styles",
