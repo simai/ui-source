@@ -49,7 +49,8 @@
       "utility/flex-wrap/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "exact": [
       "component/icon-buttons/css/icon-buttons.min.css",
@@ -123,7 +124,8 @@
       "utility/flex-wrap/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
       "utility/place-items/default/css/default.min.css",
-      "utility/position/default/css/default.min.css"
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "reference": [
       "component/icon-buttons/css/icon-buttons.min.css",

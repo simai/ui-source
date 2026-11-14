@@ -75,6 +75,7 @@
       "utility/text-decoration/default/css/default.min.css"
     ],
     "right-click": [
+      "component/avatars/css/avatars.min.css",
       "component/buttons/css/buttons.min.css",
       "component/context-menu/css/context-menu.min.css",
       "component/icons/css/icons.min.css",
