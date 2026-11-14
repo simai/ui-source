@@ -44,7 +44,13 @@
     --sf-success-container-strong: light-dark(var(--sf-success-50--alfa-24), var(--sf-success-90--alfa-24));
     --sf-on-success: light-dark(var(--sf-white), var(--sf-success-20));
     --sf-on-success-container: light-dark(var(--sf-success-10), var(--sf-success-90));
-    --sf-on-success-container-graphic: light-dark(var(--sf-success-50), var(--sf-success-60));
+    /* The graphic on a status container (a dot, an icon, a bar) is tone 70
+       in the dark theme since C178 (owner 2026-11-14, contrast matrix): tone
+       60 left 2.47 to 2.97:1 when the container lies over a popup or a nested
+       popup, and the neutral one 2.93:1 on every surface, under WCAG 1.4.11's
+       3:1. Tone 70 holds 3 and more on every surface; light (50) unchanged.
+       The outline keeps 60. */
+    --sf-on-success-container-graphic: light-dark(var(--sf-success-50), var(--sf-success-70));
     --sf-success-outline: light-dark(var(--sf-success-50), var(--sf-success-60));
     --sf-warning: light-dark(var(--sf-warning-40), var(--sf-warning-80));
     --sf-error: light-dark(var(--sf-error-40), var(--sf-error-80));
@@ -59,7 +65,7 @@
     --sf-error-container-strong: light-dark(var(--sf-error-50--alfa-24), var(--sf-error-90--alfa-24));
     --sf-on-error: light-dark(var(--sf-white), var(--sf-error-20));
     --sf-on-error-container: light-dark(var(--sf-error-10), var(--sf-error-90));
-    --sf-on-error-container-graphic: light-dark(var(--sf-error-50), var(--sf-error-60));
+    --sf-on-error-container-graphic: light-dark(var(--sf-error-50), var(--sf-error-70));
     --sf-error-outline: light-dark(var(--sf-error-50), var(--sf-error-60));
     --sf-warning-hover: light-dark(var(--sf-warning-35), var(--sf-warning-85));
     --sf-warning-active: light-dark(var(--sf-warning-30), var(--sf-warning-90));
@@ -72,7 +78,7 @@
     --sf-warning-container-strong: light-dark(var(--sf-warning-50--alfa-24), var(--sf-warning-90--alfa-24));
     --sf-on-warning: light-dark(var(--sf-white), var(--sf-warning-20));
     --sf-on-warning-container: light-dark(var(--sf-warning-10), var(--sf-warning-90));
-    --sf-on-warning-container-graphic: light-dark(var(--sf-warning-50), var(--sf-warning-60));
+    --sf-on-warning-container-graphic: light-dark(var(--sf-warning-50), var(--sf-warning-70));
     --sf-warning-outline: light-dark(var(--sf-warning-50), var(--sf-warning-60));
     --sf-tertiary-hover: light-dark(var(--sf-tertiary-35), var(--sf-tertiary-85));
     --sf-tertiary-active: light-dark(var(--sf-tertiary-30), var(--sf-tertiary-90));
@@ -85,7 +91,7 @@
     --sf-tertiary-container-strong: light-dark(var(--sf-tertiary-50--alfa-24), var(--sf-tertiary-90--alfa-24));
     --sf-on-tertiary: light-dark(var(--sf-white), var(--sf-tertiary-20));
     --sf-on-tertiary-container: light-dark(var(--sf-tertiary-10), var(--sf-tertiary-90));
-    --sf-on-tertiary-container-graphic: light-dark(var(--sf-tertiary-50), var(--sf-tertiary-60));
+    --sf-on-tertiary-container-graphic: light-dark(var(--sf-tertiary-50), var(--sf-tertiary-70));
     --sf-tertiary-outline: light-dark(var(--sf-tertiary-50), var(--sf-tertiary-60));
     --sf-secondary-hover: light-dark(var(--sf-secondary-35), var(--sf-secondary-85));
     --sf-secondary-active: light-dark(var(--sf-secondary-30), var(--sf-secondary-90));
@@ -98,7 +104,7 @@
     --sf-secondary-container-strong: light-dark(var(--sf-secondary-50--alfa-24), var(--sf-secondary-90--alfa-24));
     --sf-on-secondary: light-dark(var(--sf-white), var(--sf-secondary-20));
     --sf-on-secondary-container: light-dark(var(--sf-secondary-10), var(--sf-secondary-90));
-    --sf-on-secondary-container-graphic: light-dark(var(--sf-secondary-50), var(--sf-secondary-60));
+    --sf-on-secondary-container-graphic: light-dark(var(--sf-secondary-50), var(--sf-secondary-70));
     --sf-primary-hover: light-dark(var(--sf-primary-35), var(--sf-primary-85));
     --sf-primary-active: light-dark(var(--sf-primary-30), var(--sf-primary-90));
     --sf-primary-container: light-dark(var(--sf-primary-50--alfa-12), var(--sf-primary-50--alfa-24));
@@ -114,7 +120,7 @@
     --sf-primary-container-strong: light-dark(var(--sf-primary-50--alfa-24), var(--sf-primary-90--alfa-24));
     --sf-on-primary: light-dark(var(--sf-white), var(--sf-primary-20));
     --sf-on-primary-container: light-dark(var(--sf-primary-10), var(--sf-primary-90));
-    --sf-on-primary-container-graphic: light-dark(var(--sf-primary-50), var(--sf-primary-60));
+    --sf-on-primary-container-graphic: light-dark(var(--sf-primary-50), var(--sf-primary-70));
     --sf-primary-outline: light-dark(var(--sf-primary-50), var(--sf-primary-60));
     --sf-neutral-hover: light-dark(var(--sf-neutral-35), var(--sf-neutral-85));
     --sf-neutral-active: light-dark(var(--sf-neutral-30), var(--sf-neutral-90));
@@ -123,7 +129,7 @@
     --sf-neutral-container-active: light-dark(var(--sf-neutral-80), var(--sf-neutral-40));
     --sf-on-neutral: light-dark(var(--sf-white), var(--sf-neutral-20));
     --sf-on-neutral-container: light-dark(var(--sf-neutral-10), var(--sf-neutral-90));
-    --sf-on-neutral-container-graphic: light-dark(var(--sf-neutral-50), var(--sf-neutral-60));
+    --sf-on-neutral-container-graphic: light-dark(var(--sf-neutral-50), var(--sf-neutral-70));
     --sf-info: light-dark(var(--sf-info-40), var(--sf-info-80));
     --sf-info-hover: light-dark(var(--sf-info-35), var(--sf-info-85));
     --sf-info-active: light-dark(var(--sf-info-30), var(--sf-info-90));
@@ -132,7 +138,7 @@
     --sf-info-container-active: light-dark(var(--sf-info-50--alfa-20), var(--sf-info-50--alfa-32));
     --sf-on-info: light-dark(var(--sf-white), var(--sf-info-20));
     --sf-on-info-container: light-dark(var(--sf-info-10), var(--sf-info-90));
-    --sf-on-info-container-graphic: light-dark(var(--sf-info-50), var(--sf-info-60));
+    --sf-on-info-container-graphic: light-dark(var(--sf-info-50), var(--sf-info-70));
     --sf-info-outline: light-dark(var(--sf-info-50), var(--sf-info-60));
     /* Information had no translucent layers, so a hover or a selection on an
        info surface borrowed primary's (C16, surfaces research 6.3). The same
@@ -181,9 +187,12 @@
        black at 48 with a blur, ink white, the same in both themes because the
        picture does not change with the theme. Hover and press take the next
        steps of the ink family, which the alpha scale allows as a fill for glass
-       and the scrim only. */
-    --sf-surface-media: var(--sf-black--alfa-48);
-    --sf-surface-media-hover: var(--sf-black--alfa-64);
+       and the scrim only. Black at 64 at rest since C178 (owner 2026-11-14):
+       at 48 white text over a white picture held 3.69:1, under WCAG 1.4.3's
+       4.5; 64 gives 6.5. Under the pointer and pressed it is 80, the top of
+       the ink family: the scale has no step above it. */
+    --sf-surface-media: var(--sf-black--alfa-64);
+    --sf-surface-media-hover: var(--sf-black--alfa-80);
     --sf-surface-media-active: var(--sf-black--alfa-80);
     --sf-on-surface-media: var(--sf-white);
     --sf-surface-page: light-dark(var(--sf-white), var(--sf-neutral-5));
@@ -324,8 +333,10 @@
        darker still and takes the primary role. The same ink takes dim text
        under a state layer (surfaces research 6.1). Dark neutral-85 since C16
        (owner, 2026-11-08): on a resting fill over the popup's step
-       neutral-80 gave 4.30, neutral-85 gives 4.96. */
-    --sf-on-surface-container-variant: light-dark(var(--sf-neutral-35), var(--sf-neutral-85));
+       neutral-80 gave 4.30, neutral-85 gives 4.96. Dark neutral-90 since C178
+       (owner 2026-11-14), the value a popup place already declares (C43): on
+       the strong fill over a popup 85 gave 4.11:1, 90 gives 4.64. */
+    --sf-on-surface-container-variant: light-dark(var(--sf-neutral-35), var(--sf-neutral-90));
     /* The former tones of initials (C17, 2026-11-08): sf-avatar names a hue of
        the static palette now and draws its initials on the hue's container,
        .sf-hue-<name> (core/scss/_sf_css__hue.scss). The former roles hold the
@@ -562,7 +573,13 @@
     --sf-surface-card: light-dark(var(--sf-surface-page), var(--sf-surface-2));
     --sf-surface-raised: light-dark(var(--sf-surface-page), var(--sf-surface-3));
     --sf-surface-popup: light-dark(var(--sf-surface-page), var(--sf-surface-4));
-    --sf-surface-popup-nested: light-dark(var(--sf-surface-page), var(--sf-surface-5));
+    /* The nested popup takes the popup's step in the dark theme since C178
+       (owner 2026-11-14), as both take the page in the light one: on step 5
+       (neutral-30) the strong fill under the ink gave 4.08:1 and a pressed fill
+       under the dim ink 3.94, under WCAG 1.4.3's 4.5. The nested popup still
+       stands off its parent by the overlay shadow and its own edge
+       (neutral-70, mix/_mix__places.scss). */
+    --sf-surface-popup-nested: light-dark(var(--sf-surface-page), var(--sf-surface-4));
     /* The C16 names of the shadows (2026-11-08) join the four places: a card's
        shadow is the raised one, a popup's and a nested popup's the overlay.
        Former names until the alias list's remove_after (token-aliases.v1.json,
