@@ -24,8 +24,9 @@ const method = (name, next) => source.slice(source.indexOf(`  ${name}`), source.
 // hovered entry is a fill, tests/badges-owner.contract.test.mjs) keep every
 // 1.5.0 fix below.
 test('contents is 1.7.1 in its manifest and its generated manifest (1.7.1: the status mark writes sf-badge icon-only, C134)', () => {
-  assert.equal(manifest.version, '1.7.1');
-  assert.equal(generated.version, '1.7.1');
+  // 1.7.2: the bar reads the sticky layer, the phone sheet the window layer (C181 (3)).
+  assert.equal(manifest.version, '1.7.2');
+  assert.equal(generated.version, '1.7.2');
 });
 
 test('CT-03: fewer than two sections draw nothing, by the host state and in the printed markup', () => {
