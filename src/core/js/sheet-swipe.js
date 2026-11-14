@@ -108,10 +108,18 @@ export function trackSwipe(event, {surface, direction = 'down', variable = '--sf
 }
 
 // The handle row of a sheet drawn by the mixin's ::before: a press within it
-// (from the sheet's top, the 1/2 control's height) starts the swipe.
+// -- from the sheet's top, the 1/2 control's height (the row the bar is
+// centred in) -- starts the swipe.
+export function handleRowHeight(surface) {
+  const value = getComputedStyle(surface).getPropertyValue('--sf-ui-1/2--control-height').trim();
+  const match = /^(-?\d*\.?\d+)(px|rem|em)?$/u.exec(value);
+  if (!match) return 32;
+  const unit = match[2] || 'px';
+  const base = unit === 'px' ? 1 : parseFloat(getComputedStyle(unit === 'rem' ? document.documentElement : surface).fontSize) || 16;
+  return Number(match[1]) * base;
+}
+
 export function inHandleRow(event, surface) {
   const top = surface.getBoundingClientRect().top;
-  const bar = getComputedStyle(surface, '::before');
-  const row = (parseFloat(bar.marginTop) || 0) + (parseFloat(bar.height) || 0) + (parseFloat(bar.marginBottom) || 0);
-  return event.clientY - top <= (row || 32);
+  return event.clientY >= top && event.clientY - top <= handleRowHeight(surface);
 }

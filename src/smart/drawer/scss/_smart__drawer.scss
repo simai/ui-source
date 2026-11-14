@@ -336,6 +336,29 @@
 
   @include window-footer.window-footer('.sf-drawer-foot', var(--sf-space-1\/3));
 
+  /* A wrapper the page writes around its buttons (<div slot="footer">) draws
+     no box: its buttons are the foot's items, so the gap, the order and the
+     halves on a phone are the foot's. */
+  .sf-drawer-foot > :not(sf-button, sf-button-icon, sf-button-close, button, a) {
+    display: contents;
+  }
+
+  .sf-drawer-foot > * > :is([data-apart], [data-apart] > :is(button, a)) {
+    margin-inline-start: auto;
+  }
+
+  @media not all and (min-width: map.get(bp.$breakpoint-array, sm)) {
+    .sf-drawer-foot > :not(sf-button, sf-button-icon, sf-button-close, button, a) > :not(button, a) > :is(button, a) {
+      flex: 1 1 0;
+      min-inline-size: max-content;
+    }
+
+    .sf-drawer-foot > * > :is([data-apart], [data-apart] > :is(button, a)) {
+      margin-inline-start: 0;
+    }
+  }
+
+
   /* The body's end padding is the gap to the foot when there is one. */
   .sf-drawer-panel:has(> .sf-drawer-foot:not(:empty)) > .sf-drawer-body {
     padding-block-end: var(--sf-space-1);
@@ -459,6 +482,8 @@
   .sf-drawer:not([data-sf-drawer-column='true']) .sf-drawer-edge .sf-icon-button:not(.sf-button-close) {
     --sf-icon-button--radius: var(--sf-radius-rounded);
     --sf-icon-button--background-color: var(--sf-surface-media);
+    --sf-icon-button--border-color: transparent;
+    --sf-icon--color: var(--sf-on-surface-media);
     color: var(--sf-on-surface-media);
   }
 
