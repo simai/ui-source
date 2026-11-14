@@ -78,6 +78,11 @@
           "end"
         ]
       },
+      "controls": {
+        "type": "string",
+        "default": "",
+        "description": "A parent checkbox (owner decision C165 (2)): the ids of the checkboxes it stands for, space-separated (as aria-controls). It computes its own state from them -- checked when all are, indeterminate when some are, unchecked when none are -- and follows them as they change; a press on it checks them all, or unchecks them all when all were checked, and each changed one sends its change as a press would. A disabled one is counted in the state and left as it is: a press checks the ones that can change, or unchecks them when all of those were checked. The inner input says aria-controls. Empty: an ordinary checkbox."
+      },
       "disabled": {
         "type": "boolean",
         "default": false
@@ -415,7 +420,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/checkbox/index.js",
-        "sha256": "becdd33a28b146705a994108be803aa59446733a115ba85fdbae430cc0c8f93c"
+        "sha256": "13fb4f3dac2a23434cf7b448f4b190b6f6ca9da45506b5ad87d7952539b873f4"
       }
     ],
     "generated_runtime": [

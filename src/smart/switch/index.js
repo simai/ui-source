@@ -26,6 +26,23 @@ const SwitchElement = elementFromManifest(manifest, {
   aliases,
 });
 
+// A switch acts at once; in a form that is saved by a button the choice is
+// a checkbox (owner decision C165 (4)). The development warning says so once
+// per page, naming the first such switch; it reads only the form the switch
+// stands in, so it costs one closest() and one querySelector() per draw.
+const FORM_SWITCH_SAID = Symbol.for('sf.switch.form-switch-said');
+const SUBMIT_CONTROL = 'button:not([type]), button[type="submit"], input[type="submit"], input[type="image"], [type="submit"]';
+
+function sayFormSwitch(host) {
+  const global = globalThis;
+  if (global[FORM_SWITCH_SAID]) return;
+  const form = host.closest('form');
+  if (!form || !form.querySelector(SUBMIT_CONTROL)) return;
+  global[FORM_SWITCH_SAID] = true;
+  const name = host.id ? `#${host.id}` : (host.getAttribute('name') ? `[name="${host.getAttribute('name')}"]` : 'sf-switch');
+  console.warn(`SIMAI Framework: ${name} is a switch in a form saved by a button. A switch acts at once; in a form with a save button use sf-checkbox (owner decision C165 (4)).`);
+}
+
 class SfSwitch extends SwitchElement {
   static get props() {
     return {
@@ -159,6 +176,7 @@ class SfSwitch extends SwitchElement {
     }
     this.syncInheritedState();
     this.sfSyncForm();
+    sayFormSwitch(this);
   }
 
   onDisconnected() {
