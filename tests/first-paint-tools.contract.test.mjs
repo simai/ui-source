@@ -225,7 +225,13 @@ test('6. the text faces: optional on a page, block on the snapshot server only',
   assert.equal(measuredFonts('@font-face{font-family:"Inter Variable";font-display:optional}'), '@font-face{font-family:"Inter Variable";font-display: block}');
   assert.equal(measuredFonts('@font-face{font-family:"Inter Fallback";src:local(Arial)}'), '@font-face{font-family:"Inter Fallback";src:local(Arial)}');
   const snapshot = readFileSync(join(root, 'scripts/snapshot-first-paint.mjs'), 'utf8');
-  assert.equal((snapshot.match(/await page\.evaluate\(fontsReady\)/gu) ?? []).length, 2, 'every snapshot page waits for Inter');
+  // A component's page waits in serializeSettled (shared with
+  // tools/first-paint/print.mjs), an assembly's page here.
+  const lib = readFileSync(join(root, 'scripts/first-paint-lib.mjs'), 'utf8');
+  const settled = lib.slice(lib.indexOf('export async function serializeSettled'));
+  assert.match(settled.slice(0, settled.indexOf('\n}\n')), /await page\.evaluate\(fontsReady\)/u, 'serializeSettled waits for Inter');
+  assert.equal((snapshot.match(/await serializeSettled\(/gu) ?? []).length, 1, 'a component\'s page settles there');
+  assert.equal((snapshot.match(/await page\.evaluate\(fontsReady\)/gu) ?? []).length, 1, 'an assembly\'s page waits for Inter');
 });
 
 test('7. a closed surface prints closed, and a snapshot keeps to its size', () => {

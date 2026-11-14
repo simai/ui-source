@@ -376,9 +376,13 @@
 
   function serialize({skeleton = false, prefix = 'sf-first-paint'} = {}) {
     if (!host) throw new Error('nothing built');
+    // The example's island is given (spec.island); a page's markup
+    // (tools/first-paint/print.mjs, island null) carries its own, read back
+    // from the element as for any Smart element inside it.
+    const given = spec.island !== null && spec.island !== undefined;
     const island = {...(spec.island ?? {})};
     for (const name of skeleton ? spec.late ?? [] : []) delete island[name];
-    return stableIds(hosts.map((one) => holder(one, {skeleton}, one === host ? island : undefined)).join('\n'), prefix);
+    return stableIds(hosts.map((one) => holder(one, {skeleton}, one === host && given ? island : undefined)).join('\n'), prefix);
   }
 
   // ---------- an assembly (§7.3) ----------
