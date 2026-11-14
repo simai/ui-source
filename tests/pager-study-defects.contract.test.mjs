@@ -63,7 +63,7 @@ test('PR-04 return: a row narrower than sm stacks, side by side only from sm', (
 test('PR-05: cards and row stack in a narrow place', () => {
   // The cards' own width below the container step g6 (C181 (2); it was the
   // sm step of the screen, the same 32rem): each card spans both columns.
-  assert.match(sheet, /\.sf-pager--cards \{\s*container: sf-pager \/ inline-size;\s*\}/u);
+  assert.match(sheet, /\.sf-pager--cards \{\s*container: sf-pager \/ inline-size;\s*inline-size: 100%;\s*\}/u);
   const narrow = sheet.slice(sheet.indexOf('@container sf-pager (width < #{mq.container-step(g6)})'));
   assert.ok(narrow.length > 0 && sheet.includes('@container sf-pager'), 'a container query below the g6 step');
   assert.match(narrow, /\.sf-pager--cards \.sf-pager-side--prev,\s*\.sf-pager--cards \.sf-pager-side--next \{\s*grid-column: 1 \/ -1;/u);
