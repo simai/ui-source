@@ -275,9 +275,10 @@ test('the locked code is not the person\'s to edit: edits reaching it apply to t
   assert.match(source, /input\.removeEventListener\('beforeinput', root\.__sfCountryCodeBeforeInput\);/u);
 });
 
-test('a search that finds nothing says so in the page language', () => {
-  assert.match(source, /nothingFound: 'Nothing found'/u);
-  assert.match(source, /nothingFound: 'Ничего не найдено'/u);
+test('a search that finds nothing says so in the page language', async () => {
+  // The words are its language files (localization study LC-4).
+  assert.equal(JSON.parse(await read('src/component/country-code/lang/en.json')).runtime.nothingFound, 'Nothing found');
+  assert.equal(JSON.parse(await read('src/component/country-code/lang/ru.json')).runtime.nothingFound, 'Ничего не найдено');
   assert.equal(JSON.parse(langs.en).runtime['nothing-found'], 'Nothing found');
   assert.equal(JSON.parse(langs.ru).runtime['nothing-found'], 'Ничего не найдено');
   assert.match(source, /syncCountryEmpty\(root, itemsWrap, root\.querySelector\('\.sf-country-code-search input'\),\s*Boolean\(query\) && items\.every\(\(item\) => item\.hidden\)\);/u);

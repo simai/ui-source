@@ -43,10 +43,13 @@ test('no loading state writes its words out in English', () => {
 test('both modals take the loading words from the page language, as a named status', () => {
   const smart = read('src/smart/modal/index.js');
   const ordinary = read('src/component/modal/js/_modal.js');
-  assert.match(ordinary, /loading: ['"]Loading…['"]/u);
-  assert.match(ordinary, /loading: ['"]Загрузка…['"]/u);
-  assert.match(ordinary, /loadFailed: ['"]Не удалось загрузить содержимое['"]/u);
-  assert.match(ordinary, /frameFailed: ['"]/u);
+  // The class modal's words are its language files (localization study LC-4).
+  const ordinaryWords = (code) => JSON.parse(read(`src/component/modal/lang/${code}.json`)).runtime;
+  assert.match(ordinary, /const UNTITLED = \{en: LANG_WORDS\.en, ru: LANG_WORDS\.ru\};/u);
+  assert.equal(ordinaryWords('en').loading, 'Loading…');
+  assert.equal(ordinaryWords('ru').loading, 'Загрузка…');
+  assert.equal(ordinaryWords('ru').loadFailed, 'Не удалось загрузить содержимое');
+  assert.equal(typeof ordinaryWords('en').frameFailed, 'string');
   // sf-modal's words are its language files (standard 1.3.8 §11).
   const en = JSON.parse(read('src/smart/modal/lang/en.json')).runtime;
   const ru = JSON.parse(read('src/smart/modal/lang/ru.json')).runtime;
@@ -69,7 +72,7 @@ test('the spinner says the same English as the modals, with a true ellipsis', ()
   // sf-spinner's word is its language file (standard 1.3.8 §11).
   assert.equal(JSON.parse(read('src/smart/spinner/lang/en.json')).runtime.label, 'Loading…');
   assert.equal(JSON.parse(read('src/smart/spinner/lang/ru.json')).runtime.label, 'Загрузка…');
-  assert.match(read('src/component/spinner/js/_spinner.js'), /en: \{ label: 'Loading…' \}, ru: \{ label: 'Загрузка…' \}/u);
+  assert.deepEqual(['en', 'ru'].map((code) => JSON.parse(read(`src/component/spinner/lang/${code}.json`)).runtime.label), ['Loading…', 'Загрузка…']);
 });
 
 test('a load aborted by a newer one leaves the loading state to it', () => {

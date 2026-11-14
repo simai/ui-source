@@ -86,9 +86,11 @@ test('a masked value is written as shown, a cleared one as null or "", an incomp
   // The control's own mark and stock message, once the person leaves it.
   assert.match(masked, /if \(left && input\) \{\n\s+input\.setAttribute\('error-message', message\);\n\s+input\.toggleAttribute\('invalid', true\);/u);
   assert.match(masked, /const message = setText\(host, 'maskIncomplete'\);/u);
-  assert.equal((source.match(/^        maskIncomplete: '/gmu) ?? []).length, 2, 'en and ru');
-  assert.match(source, /maskIncomplete: 'Complete the field',/u);
-  assert.match(source, /maskIncomplete: 'Заполните поле полностью',/u);
+  // The set's words are its language files (localization study LC-5).
+  const words = (code) => JSON.parse(readFileSync(join(root, `src/smart/field-renderers/lang/${code}.json`), 'utf8')).runtime;
+  assert.equal(words('en').maskIncomplete, 'Complete the field');
+  assert.equal(typeof words('ru').maskIncomplete, 'string', 'en and ru');
+  assert.equal(words('ru').maskIncomplete, 'Заполните поле полностью');
 });
 
 test('the plain string edit is unchanged', () => {
