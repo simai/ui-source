@@ -231,6 +231,10 @@ const DRAW = {
   // tooltip's anchor are drawn.
   // The ring is drawn at :focus-visible only, so the time is focused as the
   // keyboard focuses it.
+  // sf-form (2026-11-14, C182): two groups and a sticky footer, so the gaps,
+  // the label, the group line and the footer's fill are drawn.
+  form: {css: ['buttons', 'inputs', 'smart/smart/form/css/form.css'], js: ['form', 'button', 'input'],
+    html: `<sf-form footer="sticky"><script type="application/json" data-sf-settings>${JSON.stringify({groups: [{key: 'a', label: 'A'}, {key: 'b', label: 'B'}], fields: [{key: 'x', label: 'X', propertyType: 'string', group: 'a'}, {key: 'y', label: 'Y', propertyType: 'string', group: 'b'}]})}</script></sf-form>`},
   time: {css: ['tooltip', 'smart/smart/time/css/time.css'], js: 'time',
     html: '<sf-time format="time" datetime="2026-11-09T14:32:00+03:00"></sf-time>',
     open: 'document.querySelector("sf-time .sf-time[tabindex], sf-time .sf-time, sf-time [tabindex]")?.focus({focusVisible: true})'},

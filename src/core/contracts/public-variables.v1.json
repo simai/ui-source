@@ -4694,6 +4694,47 @@
           "since": "2026-11-10"
         }
       ]
+    },
+    {
+      "component": "form",
+      "selector": "sf-form, .sf-form",
+      "variables": [
+        {
+          "name": "--sf-form-field-gap",
+          "role": "gap",
+          "summary": "The space between fields (C52).",
+          "default": "var(--sf-space-1)",
+          "since": "2026-11-14"
+        },
+        {
+          "name": "--sf-form-group-gap",
+          "role": "gap",
+          "summary": "The space between groups and before the buttons (C52).",
+          "default": "var(--sf-space-3)",
+          "since": "2026-11-14"
+        },
+        {
+          "name": "--sf-form-label-color",
+          "role": "color",
+          "summary": "The label, its «*» and the required note (C153 (1)).",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-14"
+        },
+        {
+          "name": "--sf-form-summary-background-color",
+          "role": "background",
+          "summary": "The errors summary's fill.",
+          "default": "var(--sf-error-container)",
+          "since": "2026-11-14"
+        },
+        {
+          "name": "--sf-form-footer-background-color",
+          "role": "background",
+          "summary": "The sticky footer's fill (footer=\"sticky\").",
+          "default": "var(--sf-surface-place-solid)",
+          "since": "2026-11-14"
+        }
+      ]
     }
   ]
 }

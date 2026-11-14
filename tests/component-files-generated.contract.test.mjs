@@ -82,6 +82,8 @@ const PHASE_A = [
   'change',
   // The row of tags (owner decision C145 (3), 2026-11-14).
   'tag-group',
+  // The form from field descriptions (owner decision C182, 2026-11-14).
+  'form',
 ];
 
 // Gate 1 (§4): the top-level fields of component.json are a closed list; 1.4

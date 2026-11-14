@@ -130,6 +130,10 @@
     "justify-items/default",
     "width/default"
   ],
+  "cl-form": [
+    "display/default",
+    "position/default"
+  ],
   "cl-gallery": [
     "align-items/default",
     "backdrop-filter-blur/default",

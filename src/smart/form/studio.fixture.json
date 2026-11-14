@@ -1,0 +1,90 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.form",
+  "title": "form reference",
+  "summary": "Deterministic reference fixture for sf-form.",
+  "locale": "ru",
+  "props": {
+    "label": "Кнопка в письме",
+    "groups": [
+      {
+        "key": "content",
+        "label": "Содержимое"
+      },
+      {
+        "key": "look",
+        "label": "Оформление"
+      }
+    ],
+    "fields": [
+      {
+        "key": "text",
+        "label": "Текст",
+        "propertyType": "string",
+        "required": true,
+        "group": "content",
+        "hint": "Не длиннее 30 знаков"
+      },
+      {
+        "key": "url",
+        "label": "Ссылка",
+        "propertyType": "string",
+        "required": true,
+        "group": "content",
+        "placeholder": "https://"
+      },
+      {
+        "key": "tone",
+        "label": "Тон",
+        "propertyType": "choice",
+        "group": "look",
+        "width": "m",
+        "options": [
+          {
+            "value": "accent",
+            "label": "Акцент"
+          },
+          {
+            "value": "quiet",
+            "label": "Тихая"
+          }
+        ]
+      },
+      {
+        "key": "radius",
+        "label": "Скругление, px",
+        "propertyType": "integer",
+        "group": "look",
+        "width": "s",
+        "min": 0,
+        "max": 24,
+        "help": "Только для залитой кнопки"
+      },
+      {
+        "key": "blank",
+        "label": "Открывать в новой вкладке",
+        "propertyType": "boolean",
+        "required": true,
+        "group": "look"
+      },
+      {
+        "key": "note",
+        "label": "Описание",
+        "propertyType": "text",
+        "group": "look",
+        "width": "full"
+      }
+    ],
+    "value": {
+      "text": "Подробнее",
+      "url": "https://simai.io",
+      "tone": "accent",
+      "radius": 8,
+      "blank": true,
+      "note": ""
+    }
+  },
+  "children": [],
+  "state": "default"
+}
