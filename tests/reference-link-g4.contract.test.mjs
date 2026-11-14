@@ -25,7 +25,8 @@ test('a line reference takes no fill on hover (RL-9)', () => {
 
 test('the icon is not copied, the route is selectable and still follows the link (RL-10, RL-11)', () => {
   assert.match(css, /\.sf-reference-link__icon, \.sf-reference-link-left > \.sf-icon\) \{[^}]*user-select: none;/u);
-  assert.match(css, /\.sf-reference-link__meta, \.sf-reference-link-text\) \{\s*position: relative;\s*z-index: 1;[^}]*user-select: text;/u);
+  // Only inside the Smart element: class markup keeps the overlay over the route (dispatcher 2026-11-14).
+  assert.match(css, /:where\(sf-reference-link\) \.sf-reference-link:has\([^{]*\.sf-reference-link__meta, \.sf-reference-link-text\) \{\s*position: relative;\s*z-index: 1;[^}]*user-select: text;/u);
   assert.match(template, /class="sf-reference-link__icon sf-icon" aria-hidden="true"/u);
   assert.match(element, /followFromRoute\(event\)/u);
   assert.match(element, /selection\.isCollapsed/u);

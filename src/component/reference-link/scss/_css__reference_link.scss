@@ -94,11 +94,16 @@
     text-align: end;
   }
 
-  /* The route stands above the link's overlay (RL-11): under it the route
-     could not be selected and a drag on it dragged the link. A press on it
-     still follows the link unless the reader has selected text there (the
-     Smart element forwards the click; see smart/reference-link). */
-  .sf-reference-link:has(:where(.sf-reference-link__link, .sf-reference-link-left > a)) :where(.sf-reference-link__meta, .sf-reference-link-text) {
+  /* In the Smart element the route stands above the link's overlay (RL-11):
+     under it the route could not be selected and a drag on it dragged the
+     link. A press on it still follows the link unless the reader has
+     selected text there: the element forwards the click (see
+     smart/reference-link). Markup written with the classes alone has no
+     script to forward it, so there the link's overlay keeps covering the
+     whole card, route included, and every press on the card navigates; the
+     route cannot be selected there (dispatcher, 2026-11-14: class markup
+     in Docara and products must not lose navigation). */
+  :where(sf-reference-link) .sf-reference-link:has(:where(.sf-reference-link__link, .sf-reference-link-left > a)) :where(.sf-reference-link__meta, .sf-reference-link-text) {
     position: relative;
     z-index: 1;
     cursor: pointer;
