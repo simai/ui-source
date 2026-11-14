@@ -2603,7 +2603,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/resizer/smart.manifest.json",
-      "manifest_sha256": "327e52150e5777209cfc567dc126a6a75a2fa81454c2e8b208f2e04836a91c43",
+      "manifest_sha256": "58494f1d16104a5cbf0a48d3c336477e54f9180399583dbe3622216b520e7d5d",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
