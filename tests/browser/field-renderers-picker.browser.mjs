@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
-// The record picker, against the three cases that break pickers, measured with
-// the consumer's own numbers: 448 targets, pages of 20, and a chosen record that
-// is not on the page in front of you.
+// The record picker -- sf-input-lookup since owner decision C139 (1) -- against
+// the cases that break pickers, measured with the consumer's own numbers: 448
+// targets, pages of 20, a record no page showed; and the deprecated
+// {picker: 'dropdown'} path kept until 2027-01-01.
 //
 // The harness is the host: it holds 448 records, answers a page at a time and
 // takes the write. That is the interface a record view will implement, and the
@@ -22,6 +23,7 @@ const modules = [
   'smart/smart/button-icon/js/button-icon.js', 'smart/smart/checkbox/js/checkbox.js',
   'smart/smart/list-item/js/list-item.js', 'smart/smart/input/js/input.js',
   'smart/smart/dropdown/js/dropdown.js', 'smart/smart/spinner/js/spinner.js',
+  'smart/smart/tag/js/tag.js', 'smart/smart/avatar/js/avatar.js', 'smart/smart/input-lookup/js/input-lookup.js',
   'smart/smart/field-renderers/js/field-renderers.js',
 ].map((p) => join(out, p));
 
@@ -43,6 +45,7 @@ try {
     const set = window.SF?.fieldRenderers;
     const {render} = window.SF || {};
     if (!set?.renderEditField || !render) return {missing: true, sf: Object.keys(window.SF || {})};
+    const wait = (ms) => new Promise((done) => setTimeout(done, ms));
 
     // 448 targets, as on the consumer's stand.
     const records = Array.from({length: 448}, (_, index) => ({
@@ -51,12 +54,14 @@ try {
     }));
     const field = {key: 'linked_solution', label: 'Связанное решение', propertyType: 'record'};
     const state = {value: null, page: null, search: '', asked: []};
+    let options;
     const host = {
       getFieldValue: () => state.value,
-      setFieldValue: (item, next) => { state.value = next; },
+      setFieldValue: (item, next) => { state.value = next; draw(); },
       getFieldOptionsPage: () => state.page,
       getFieldOptionSearch: () => state.search,
       setFieldOptionSearch: (item, text) => { state.search = text; },
+      // Pages of 20; the next page replaces the one held, as the consumer's port does.
       loadFieldOptions: (item, {cursor, search}) => {
         state.asked.push({cursor, search});
         const matching = search
@@ -70,84 +75,67 @@ try {
       },
     };
     const holder = document.getElementById('host');
-    const draw = () => render(set.renderEditField(field, state.value, host), holder);
+    const draw = () => render(set.renderEditField(field, state.value, host, options), holder);
+    const rows = () => [...holder.querySelectorAll('sf-input-lookup [role=option]')].map((row) => row.querySelector('.sf-lookup-option-label')?.textContent.trim());
 
     draw();
-    await new Promise((done) => setTimeout(done, 300));
-    const beforeLoad = {
-      control: holder.querySelector('sf-dropdown') ? 'sf-dropdown' : null,
-      search: holder.querySelector('sf-dropdown')?.getAttribute('search'),
-      options: holder.querySelectorAll('sf-dropdown .sf-list-item').length,
-    };
+    await wait(400);
+    const lookup = holder.querySelector('sf-input-lookup');
+    const beforeLoad = {control: lookup ? 'sf-input-lookup' : null, dropdown: Boolean(holder.querySelector('sf-dropdown')), asked: state.asked.length};
 
-    // A first page.
-    host.loadFieldOptions(field, {cursor: null, search: ''});
-    await new Promise((done) => setTimeout(done, 400));
-    const firstPage = {
-      options: holder.querySelectorAll('.sf-list-item').length,
-      hasMore: Boolean([...holder.querySelectorAll('sf-button')].find((b) => b.getAttribute('text') === 'Загрузить ещё')),
-    };
+    // C139 (3): a focus in the empty field asks the host for its first page.
+    lookup?.querySelector('.sf-lookup-input')?.focus();
+    await wait(500);
+    const firstPage = {options: rows().length, hasMore: Boolean(holder.querySelector('.sf-lookup-more')), asked: state.asked.slice()};
 
-    // The next page, by pressing the control the picker offers.
-    [...holder.querySelectorAll('sf-button')]
-      .find((button) => button.getAttribute('text') === 'Загрузить ещё')
-      ?.querySelector('button')?.click();
-    await new Promise((done) => setTimeout(done, 450));
-    const secondPage = {options: holder.querySelectorAll('.sf-list-item').length, asked: state.asked.length};
+    // The next page joins the first, asked for by Show more.
+    holder.querySelector('.sf-lookup-more')?.click();
+    await wait(500);
+    const secondPage = {options: rows().length, distinct: new Set(rows()).size, asked: state.asked.length};
 
     // Searching reaches a record that no page has shown.
-    host.loadFieldOptions(field, {cursor: null, search: 'платеж'});
-    await new Promise((done) => setTimeout(done, 400));
-    const searched = {
-      options: holder.querySelectorAll('.sf-list-item').length,
-      labels: [...holder.querySelectorAll('.sf-list-item')].map((node) => node.textContent.trim()).slice(0, 3),
-    };
+    lookup?.search('платеж');
+    await wait(600);
+    const searched = {options: rows().length, labels: rows().slice(0, 3)};
 
     // Choosing it writes the resolved object back, label included.
-    const option = [...holder.querySelectorAll('.sf-list-item')]
-      .find((node) => /Решение о платежах/u.test(node.textContent));
-    (option?.querySelector('input, button') ?? option)?.click();
-    await new Promise((done) => setTimeout(done, 400));
-    const afterChoice = {written: state.value};
+    [...holder.querySelectorAll('sf-input-lookup [role=option]')]
+      .find((node) => /Решение о платежах/u.test(node.textContent))
+      ?.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+    await wait(400);
+    const afterChoice = {written: state.value, box: holder.querySelector('sf-input-lookup .sf-lookup-input')?.value};
 
-    // And the chosen record stays visible when the page no longer holds it.
-    host.loadFieldOptions(field, {cursor: null, search: 'Решение 1'});
-    await new Promise((done) => setTimeout(done, 400));
-    const offPage = {
-      pageHolds: (state.page.items || []).some((item) => item.value === 'record-0317'),
-      shown: [...holder.querySelectorAll('.sf-list-item')]
-        .some((node) => /Решение о платежах/u.test(node.textContent)),
-      stillWritten: state.value?.value,
-    };
+    // The deprecated path: {picker: 'dropdown'} draws the searchable dropdown until 2027-01-01.
+    options = {picker: 'dropdown'};
+    draw();
+    await wait(400);
+    const deprecated = {dropdown: Boolean(holder.querySelector('sf-dropdown')), search: holder.querySelector('sf-dropdown')?.getAttribute('search'), lookup: Boolean(holder.querySelector('sf-input-lookup'))};
 
-    return {beforeLoad, firstPage, secondPage, searched, afterChoice, offPage, asked: state.asked};
+    return {beforeLoad, firstPage, secondPage, searched, afterChoice, deprecated, asked: state.asked};
   });
 
   if (measured.missing) {
     note({case: 'the set is reachable', got: measured, expected: 'window.SF.fieldRenderers on the page'});
   } else {
-    if (measured.beforeLoad?.control !== 'sf-dropdown' || measured.beforeLoad?.search !== 'true') {
-      note({case: 'the picker is a searchable dropdown', got: measured.beforeLoad, expected: 'a dropdown with search'});
+    if (measured.beforeLoad?.control !== 'sf-input-lookup' || measured.beforeLoad?.dropdown) {
+      note({case: 'the picker is sf-input-lookup (C139 (1))', got: measured.beforeLoad, expected: 'sf-input-lookup, no dropdown'});
     }
-    if (measured.firstPage?.options !== 20 || !measured.firstPage?.hasMore) {
-      note({case: 'a page at a time', got: measured.firstPage, expected: '20 options and an offer of more'});
+    if (measured.firstPage?.options !== 20 || !measured.firstPage?.hasMore || measured.firstPage?.asked?.[0]?.search !== '') {
+      note({case: 'a focus asks the first page', got: measured.firstPage, expected: '20 rows and Show more, asked with an empty search'});
     }
-    if (measured.secondPage?.options !== 20) {
-      note({case: 'the next page replaces the first', got: measured.secondPage,
-        expected: 'another page of 20, asked for by the control'});
+    if (measured.secondPage?.options !== 40 || measured.secondPage?.distinct !== 40) {
+      note({case: 'Show more joins the next page', got: measured.secondPage, expected: '40 rows, none twice'});
     }
     if (measured.searched?.options !== 1 || !/Решение о платежах/u.test(measured.searched?.labels?.[0] ?? '')) {
       note({case: 'search reaches a record no page showed', got: measured.searched, expected: 'the one match'});
     }
     if (measured.afterChoice?.written?.value !== 'record-0317'
-        || measured.afterChoice?.written?.label !== 'Решение о платежах') {
+        || measured.afterChoice?.written?.label !== 'Решение о платежах' || measured.afterChoice?.box !== 'Решение о платежах') {
       note({case: 'choosing writes the resolved object', got: measured.afterChoice,
-        expected: 'the value and the label the host already knew'});
+        expected: 'the value and the label, the box shows the label'});
     }
-    if (measured.offPage?.pageHolds !== false || measured.offPage?.shown !== true
-        || measured.offPage?.stillWritten !== 'record-0317') {
-      note({case: 'the chosen record stays visible off its page', got: measured.offPage,
-        expected: 'shown and still chosen while the page does not hold it'});
+    if (!measured.deprecated?.dropdown || measured.deprecated?.search !== 'true' || measured.deprecated?.lookup) {
+      note({case: 'the deprecated dropdown path', got: measured.deprecated, expected: 'a searchable sf-dropdown for {picker: dropdown}'});
     }
   }
 

@@ -3,6 +3,24 @@ import { createFieldContract } from '../../../../component/field-contract';
 import { renderInheritedSlot } from '../../../helpers/inherited-value';
 import { ariaKeyShortcuts, parseShortcut, shortcutView } from '../../../../component/kbd/js/shortcut';
 import './default.css'
+
+// A label written into the label slot keeps the label's look (text inputs
+// study 2026-11-14, TI-24): its words stand in .sf-input-text, as the label
+// setting's do, so they take the label's step, line and ink rather than the
+// page's (16 on 24 in the text ink, the row 4 taller at size 1). A help mark
+// written beside them stays a child of the label row, where the C33 / C133
+// rules place it after the last word.
+function isHelpMark(node) {
+  return node?.nodeType === 1 && (node.localName === 'sf-help-mark' || node.classList?.contains('sf-help-mark'));
+}
+
+function slottedLabel(content) {
+  const nodes = (Array.isArray(content) ? content : [content]).filter((node) => node != null && node !== nothing);
+  const text = nodes.filter((node) => !isHelpMark(node));
+  const marks = nodes.filter(isHelpMark);
+  return html`${text.length ? html`<span class="sf-input-text">${text}</span>` : nothing}${marks}`;
+}
+
 export function renderInputTemplate(context) {
   const {
     size,
@@ -132,7 +150,7 @@ export function renderInputTemplate(context) {
   }
   const labelContent =
     context.component?.hasSlotContent?.('label')
-      ? context.component.getSlotContent('label')
+      ? slottedLabel(context.component.getSlotContent('label'))
       : label
         ? html`
             <span class="sf-input-text">${label}</span>

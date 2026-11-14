@@ -23,7 +23,10 @@
 // - text, captions, the hint, the state line and a chosen row against their
 //   backgrounds, at least 4.5:1, in the light and the dark theme;
 // - removed while a search runs: the signal is aborted and nothing is left
-//   open.
+//   open;
+// - owner decision C139: the create row and its refusal, the mail row, recent
+//   items on focus and the hint at once, the single value's picture, one Tab
+//   stop and the chip keys, the matched part, LS-14 rows, the phone sheet.
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import {extname, join, resolve} from 'node:path';
@@ -91,7 +94,7 @@ const state = (page, id) => page.evaluate((one) => {
   const input = el.querySelector('.sf-lookup-input');
   return {
     expanded: input.getAttribute('aria-expanded'),
-    status: el.querySelector('[role=status]').textContent.replace(/\s+/gu, ' ').trim(),
+    status: el.querySelector('.sf-lookup-status').textContent.replace(/\s+/gu, ' ').trim(),
     rows: [...el.querySelectorAll('[role=option]')].map((row) => row.querySelector('.sf-lookup-option-label').textContent),
     selected: [...el.querySelectorAll('[role=option][aria-selected=true]')].map((row) => row.querySelector('.sf-lookup-option-label').textContent),
     active: input.getAttribute('aria-activedescendant'),
@@ -140,7 +143,13 @@ try {
   s = await state(page, 'p');
   const first = await page.evaluate(() => window.__calls.map(({query, cursor, limit}) => ({query, cursor, limit})));
   check('debounce: one call for the burst, with cursor null and limit max-results', JSON.stringify(first) === JSON.stringify([{query: 'ann', cursor: null, limit: 20}]), {first});
-  check('searching: spinner and Searching…', s.status === 'Searching…' && Boolean(await page.$('#p sf-spinner')), s);
+  // The line waits the spinner's delay (C130 (8), 1 s; LS-5): a call under it
+  // shows nothing, and the hint the query left goes at once.
+  check('searching: no line inside the delay', s.status === '' && !(await page.$('#p sf-spinner')), s);
+  await page.waitForTimeout(1000);
+  s = await state(page, 'p');
+  check('searching: after the delay the spinner and Searching…, one word (label-hidden)', s.status === 'Searching…'
+    && await page.evaluate(() => { const one = document.querySelector('#p sf-spinner'); return Boolean(one) && one.hasAttribute('label-hidden'); }), s);
 
   // A second query: the first call is aborted, and its late answer dropped.
   await page.keyboard.type('a');
@@ -284,7 +293,8 @@ try {
     el.addEventListener('input', (event) => window.__said.push(`input:${event.detail.action}:${event.detail.item?.value}`));
     el.addEventListener('change', (event) => window.__said.push(`change:${event.detail.action}:${event.detail.item?.value}`));
   });
-  await page.click('#m .sf-lookup-input');
+  // At rest with chips the box leaves the flow (LS-15): it is reached by Tab.
+  await page.focus('#m .sf-lookup-input');
   await page.keyboard.press('ArrowDown');
   await page.waitForTimeout(150);
   s = await state(page, 'm');
@@ -327,7 +337,7 @@ try {
   await page.waitForTimeout(150);
   s = await state(page, 'm');
   check('max-items: a choice past the cap is refused with a visible polite line', s.chips.length === 3 && s.status === 'No more than 3'
-    && await page.evaluate(() => document.querySelector('#m [role=status]').getAttribute('aria-live') === 'polite'
+    && await page.evaluate(() => document.querySelector('#m .sf-lookup-status').getAttribute('aria-live') === 'polite'
       && getComputedStyle(document.querySelector('#m .sf-lookup-state')).display !== 'none'), s);
   check('multiple: input then change per choice', await page.evaluate(() => JSON.stringify(window.__said) === JSON.stringify(['input:added:u2', 'change:added:u2', 'input:added:u3', 'change:added:u3'])), {said: await page.evaluate(() => window.__said)});
   check('the form has one entry per chosen value', await page.evaluate(() => JSON.stringify(new FormData(document.getElementById('g')).getAll('members')) === '["u1","u2","u3"]'));
@@ -436,7 +446,7 @@ try {
       <sf-input-lookup id="h" label="Person" hint="A hint" placeholder="Find a person"></sf-input-lookup>
       <sf-input-lookup id="fl" label="Person" appearance="filled" placeholder="Find a person"></sf-input-lookup>`, 3);
     await page.evaluate(() => { const el = document.getElementById('h'); el.provider = async () => ({items: []}); });
-    await page.click('#c .sf-lookup-input');
+    await page.focus('#c .sf-lookup-input');
     await page.keyboard.press('ArrowDown');
     await page.keyboard.press('ArrowDown');
     await page.waitForTimeout(400);
@@ -543,6 +553,167 @@ try {
     check('bare value: property before the options', shown['b-prop-late'].box === 'Anna Petrova' && shown['b-prop-late'].label === 'Anna Petrova', shown['b-prop-late']);
     check('bare value: properties set before the upgrade', shown['b-pre'].box === 'Boris Ivanov', shown['b-pre']);
     check('bare values, multiple: chips take the labels in order', JSON.stringify(shown['b-multi'].chips) === JSON.stringify(['Boris Ivanov', 'Anna Petrova']), shown['b-multi']);
+  }
+
+  // ---- owner decision C139 ---------------------------------------------------------
+  {
+    const TAGS = [{value: 't1', label: 'News'}, {value: 't2', label: 'Releases'}];
+    await open(page, 'theme-light', `
+      <button id="c139-before" type="button">Before</button>
+      <sf-input-lookup id="cr" label="Tags" multiple create>${island({options: TAGS})}</sf-input-lookup>
+      <sf-input-lookup id="ce" label="Tag" create>${island({options: TAGS})}</sf-input-lookup>
+      <sf-input-lookup id="em" label="To" multiple create="email" min-length="1"></sf-input-lookup>
+      <sf-input-lookup id="sg" label="Owner" suggest></sf-input-lookup>
+      <sf-input-lookup id="hn" label="Doer"></sf-input-lookup>
+      <sf-input-lookup id="av" label="Author" value="u1">${island({options: PEOPLE})}</sf-input-lookup>
+      <sf-input-lookup id="ic" label="Contract" value="r1">${island({options: [{value: 'r1', label: 'Contract 15', icon: 'description'}]})}</sf-input-lookup>
+      <sf-input-lookup id="ks" label="Members" multiple value='["u1","u2","u3"]'>${island({options: PEOPLE})}</sf-input-lookup>
+      <sf-input-lookup id="ms" label="Person"></sf-input-lookup>
+      <button id="c139-after" type="button">After</button>`, 9);
+    await page.evaluate(() => {
+      window.__c139 = [];
+      const later = (ms, value) => new Promise((settle) => setTimeout(() => settle(value), ms));
+      document.getElementById('cr').addEventListener('sf-input-lookup-create', (event) => { window.__c139.push(['create', event.detail.text, event.detail.kind]); event.detail.respond(later(50, {value: `new-${event.detail.text}`, label: event.detail.text})); });
+      document.getElementById('cr').addEventListener('change', (event) => window.__c139.push(['change', event.detail.action, event.detail.created === true]));
+      document.getElementById('ce').addEventListener('sf-input-lookup-create', (event) => event.detail.respond({error: 'Refused by the host'}));
+      document.getElementById('em').provider = async (query) => ({items: [{value: 'anna@example.com', label: 'Anna', caption: 'anna@example.com'}].filter((one) => one.caption.includes(query))});
+      document.getElementById('sg').provider = async (query) => { window.__c139.push(['suggest', query]); return {items: query ? [] : [{value: 'u9', label: 'Recent One'}]}; };
+      document.getElementById('hn').provider = async () => ({items: []});
+      document.getElementById('ms').provider = async () => ({items: [
+        {value: 'm1', label: 'Boris Ivanov', caption: 'Board', match: {label: [[0, 2]], caption: [[0, 2]]}},
+        {value: 'm2', label: 'Bob Stone'},
+      ]});
+    });
+    const rowsOf = (id) => page.evaluate((one) => [...document.querySelectorAll(`#${one} [role=option]`)].map((row) => row.textContent.replace(/\s+/gu, ' ').trim()), id);
+    // (2) create: the row last, the event, the item chosen with created true.
+    await page.focus('#cr .sf-lookup-input');
+    await page.keyboard.type('New tag');
+    await page.waitForTimeout(250);
+    let rows = await rowsOf('cr');
+    check('C139 (2): no match offers «Create «…»» as the one row', rows.length === 1 && rows[0].endsWith('Create «New tag»'), {rows});
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(250);
+    const created = await page.evaluate(() => ({said: window.__c139.slice(), value: document.getElementById('cr').value}));
+    check('C139 (2): create asks the host and chooses its item, change created true', JSON.stringify(created.said) === '[["create","New tag","item"],["change","added",true]]'
+      && created.value.at(-1)?.value === 'new-New tag', created);
+    await page.keyboard.type('news');
+    await page.waitForTimeout(200);
+    rows = await rowsOf('cr');
+    check('C139 (2): an exact match offers no create row', !rows.some((row) => row.includes('Create')), {rows});
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Escape');
+    await page.focus('#ce .sf-lookup-input');
+    await page.keyboard.type('Bad');
+    await page.waitForTimeout(200);
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(200);
+    const refused = await page.evaluate(() => ({line: document.querySelector('#ce .sf-lookup-status').textContent.trim(), value: document.getElementById('ce').value}));
+    check('C139 (2): a refusal is the host\'s line, the value unchanged', refused.line === 'Refused by the host' && refused.value === null, refused);
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Escape');
+    // (2) mail: only a whole address offers «Add the address …».
+    await page.focus('#em .sf-lookup-input');
+    await page.keyboard.type('anna@');
+    await page.waitForTimeout(300);
+    const partial = await rowsOf('em');
+    await page.keyboard.type('mail.org');
+    await page.waitForTimeout(300);
+    const whole = await rowsOf('em');
+    check('C139 (2): the mail row only for a whole address', !partial.some((row) => row.includes('Add the address')) && whole.at(-1)?.endsWith('Add the address anna@mail.org'), {partial, whole});
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Escape');
+    // (3) focus in an empty field: recent items from the host, else the hint at once.
+    await page.focus('#sg .sf-lookup-input');
+    await page.waitForTimeout(300);
+    const recent = {rows: await rowsOf('sg'), asked: await page.evaluate(() => window.__c139.filter((one) => one[0] === 'suggest'))};
+    check('C139 (3): suggest asks the host with an empty query on focus and shows its items', JSON.stringify(recent.asked) === '[["suggest",""]]' && JSON.stringify(recent.rows) === '["Recent One"]', recent);
+    await page.keyboard.press('Escape');
+    await page.focus('#hn .sf-lookup-input');
+    await page.waitForTimeout(60);
+    const hint = await state(page, 'hn');
+    check('C139 (3): without suggest the hint shows at once on focus', hint.expanded === 'true' && hint.status === 'Type at least 2 characters', hint);
+    await page.keyboard.press('Escape');
+    // (5) the single value's picture before the name, not the caption.
+    const picture = await page.evaluate(() => {
+      const box = (id) => {
+        const frame = document.querySelector(`#${id} .sf-lookup-frame`);
+        const pic = frame.querySelector('.sf-avatar, sf-icon');
+        const input = frame.querySelector('.sf-lookup-input');
+        return {kind: pic?.localName ?? null, gap: pic ? Math.round(input.getBoundingClientRect().left - pic.getBoundingClientRect().right) : null, text: input.value};
+      };
+      return {avatar: box('av'), icon: box('ic')};
+    });
+    check('C139 (5): a single value shows its avatar or icon before the name, the name alone', picture.avatar.kind !== null && picture.icon.kind === 'sf-icon' && picture.avatar.text === 'Anna Petrova', picture);
+    evidence.c139Picture = picture;
+    // (6) one Tab stop through a field with chips; the arrows walk them, Delete removes.
+    await page.focus('#c139-before');
+    const stops = [];
+    for (let i = 0; i < 20; i++) {
+      await page.keyboard.press('Tab');
+      const at = await page.evaluate(() => {
+        const el = document.activeElement;
+        return el.id === 'c139-after' ? 'after' : `${el.closest('sf-input-lookup')?.id ?? '?'}:${el.className.split(' ')[0] || el.localName}`;
+      });
+      stops.push(at);
+      if (at === 'after') break;
+    }
+    check('C139 (6): the chips field is one Tab stop', stops.filter((one) => one.startsWith('ks:')).length === 1, {stops});
+    evidence.c139TabStops = stops;
+    await page.focus('#ks .sf-lookup-input');
+    await page.keyboard.press('ArrowLeft');
+    await page.waitForTimeout(80);
+    const said = await page.evaluate(() => [...document.querySelectorAll('#ks [role=status]')].map((one) => one.textContent.trim()).filter(Boolean));
+    check('C139 (6): ArrowLeft takes the last chip and says its place', said.includes('Vera Smirnova, 3 of 3, Delete to remove'), {said});
+    await page.keyboard.press('ArrowLeft');
+    await page.keyboard.press('Delete');
+    await page.waitForTimeout(150);
+    const left = await state(page, 'ks');
+    check('C139 (6): Delete removes the active chip', JSON.stringify(left.chips) === '["Anna Petrova","Vera Smirnova"]', left);
+    await page.keyboard.press('Escape');
+    // (8) the matched part at weight 500, in the caption too; the server's only with ranges.
+    await page.focus('#ms .sf-lookup-input');
+    await page.keyboard.type('bo');
+    await page.waitForTimeout(300);
+    const marks = await page.evaluate(() => [...document.querySelectorAll('#ms [role=option]')].map((row) => [...row.querySelectorAll('.sf-lookup-match')].map((one) => `${one.textContent}:${getComputedStyle(one).fontWeight}`)));
+    check('C139 (8): a server answer marks only where it sent ranges, weight 500 in label and caption', JSON.stringify(marks) === '[["Bo:500","Bo:500"],[]]', {marks});
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Escape');
+    // LS-14: a name and caption row is the C49 menu row, 48 on a desktop at size 1.
+    await page.focus('#av .sf-lookup-input');
+    await page.keyboard.press('ArrowDown');
+    await page.waitForTimeout(200);
+    const heights = await page.evaluate(() => [...document.querySelectorAll('#av [role=option]')].map((row) => Math.round(row.getBoundingClientRect().height)));
+    check('LS-14: rows with a caption are 48 at size 1, without one the menu row', heights[0] === 48 && heights[1] === 48 && heights.every((one) => one >= 36), {heights});
+    evidence.c139RowHeights = heights;
+    await page.keyboard.press('Escape');
+  }
+
+  // ---- C139 (7): below lg the list is a sheet over the page --------------------------
+  {
+    const phone = await browser.newPage({viewport: {width: 390, height: 800}, hasTouch: true, isMobile: true});
+    // A phone reads the viewport meta; without it the page is laid out 980 wide.
+    current = shell('theme-light', `<sf-input-lookup id="sh" label="Owner">${island({options: PEOPLE})}</sf-input-lookup>`)
+      .replace('<meta charset="utf-8">', '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">');
+    await phone.goto(`${base}/probe`, {waitUntil: 'load'});
+    await phone.waitForFunction(() => customElements.get('sf-input-lookup') && document.querySelector('#sh .sf-lookup-input'), null, {timeout: 20000});
+    await phone.waitForTimeout(300);
+    await phone.tap('#sh .sf-lookup-frame');
+    await phone.waitForTimeout(400);
+    const sheet = await phone.evaluate(() => {
+      const panel = document.querySelector('#sh .sf-lookup-panel--sheet');
+      const box = panel?.getBoundingClientRect();
+      return {open: Boolean(panel), role: panel?.getAttribute('role'), modal: panel?.getAttribute('aria-modal'), width: Math.round(box?.width ?? 0), height: Math.round(box?.height ?? 0),
+        focus: document.activeElement?.classList.contains('sf-lookup-sheet-input'), done: panel?.querySelector('.sf-lookup-sheet-done')?.getAttribute('aria-label'), locked: getComputedStyle(document.documentElement).overflow === 'hidden'};
+    });
+    check('C139 (7): a sheet over the whole page, the search on top, focus in it', sheet.open && sheet.role === 'dialog' && sheet.modal === 'true' && sheet.width === 390 && sheet.height === 800 && sheet.focus && sheet.done === 'Done', sheet);
+    evidence.c139Sheet = sheet;
+    if (sheet.open) await phone.locator('#sh .sf-lookup-sheet-done').tap();
+    await phone.waitForTimeout(300);
+    const closed = await phone.evaluate(() => ({open: Boolean(document.querySelector('#sh .sf-lookup-panel--sheet')), focus: document.activeElement === document.querySelector('#sh .sf-lookup-input:not(.sf-lookup-sheet-input)')}));
+    check('C139 (7): Done closes the sheet and gives the focus back to the field', !closed.open && closed.focus, closed);
+    await phone.close();
   }
 } finally {
   await browser.close();

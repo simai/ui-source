@@ -31,7 +31,7 @@
 // validity, and the input carries no name (§17.1).
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
-import {fieldSize} from '../../component/field-size';
+import {ladderSize} from '../../component/field-size';
 import {createFieldContract} from '../../component/field-contract';
 import {FormField, innerControlName, syncFieldValidity} from '../helpers/form-field';
 import {renderCodeInputTemplate} from './js/templates/default';
@@ -147,7 +147,7 @@ class SfCodeInput extends FormField(CodeInputElement) {
   }
 
   get size() {
-    return fieldSize(this.getAttribute('size') || '1', 'sf-input-code');
+    return ladderSize(this.getAttribute('size'));
   }
 
   get ariaLabel() { return this.getProp('ariaLabel') || ''; }

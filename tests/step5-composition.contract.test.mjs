@@ -23,7 +23,7 @@ test('navigation composition: page numbers are size 1 controls and tab indicator
    name that looks like the ladder but is not says so. */
 test('renderer inputs: datepicker size, reference size, avatar line, file-preview file size', async () => {
   const datepicker = await manifest('input-date');
-  assert.deepEqual(datepicker.inputs.properties.size.enum, ['1/2', '1', '2']);
+  assert.deepEqual(datepicker.inputs.properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
   assert.match(datepicker.inputs.properties['input-size'].description, /Legacy name for size/);
   const runtime = await read('smart/input-date/index.js');
   assert.match(runtime, /this\.getAttribute\('size'\) \|\| this\.getAttribute\('input-size'\)/);

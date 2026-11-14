@@ -66,7 +66,105 @@ export function normaliseItem(raw) {
   if (caption) item.caption = caption;
   const avatar = normaliseAvatar(raw.avatar);
   if (avatar) item.avatar = avatar;
+  // An icon stands where an avatar would (a record's kind, a page): the
+  // avatar wins when both come (owner decision C139 (5)).
+  const icon = avatar ? '' : normaliseIcon(raw.icon);
+  if (icon) item.icon = icon;
+  // The host's match ranges (C139 (8)): only an answer of the host's carries
+  // them; a chosen item leaves them behind (choose()).
+  const match = normaliseMatch(raw.match, item);
+  if (match) item.match = match;
   return item;
+}
+
+/** An icon of the icon font by its name (letters, digits, _ and -), or ''. */
+export function normaliseIcon(icon) {
+  const name = String(icon ?? '').trim();
+  return /^[a-z0-9_-]{1,64}$/u.test(name) ? name : '';
+}
+
+/**
+ * Ranges [start, end) in a text: whole numbers inside it, sorted, the ones
+ * that touch or overlap joined; anything else is dropped.
+ */
+export function normaliseRanges(raw, length) {
+  if (!Array.isArray(raw)) return [];
+  const ranges = raw
+    .filter((one) => Array.isArray(one) && one.length === 2)
+    .map(([start, end]) => [Math.trunc(Number(start)), Math.trunc(Number(end))])
+    .filter(([start, end]) => Number.isFinite(start) && Number.isFinite(end) && start >= 0 && end > start && end <= length)
+    .sort((a, b) => a[0] - b[0]);
+  const joined = [];
+  for (const range of ranges) {
+    const last = joined.at(-1);
+    if (last && range[0] <= last[1]) last[1] = Math.max(last[1], range[1]);
+    else joined.push([...range]);
+  }
+  return joined;
+}
+
+/**
+ * The match ranges a host returned with an item: {label: [[start, end]],
+ * caption: [[start, end]]}, or a list of ranges for the label alone; offsets
+ * in UTF-16 code units of the text as sent. null when none is usable.
+ */
+export function normaliseMatch(raw, item) {
+  if (raw === null || raw === undefined) return null;
+  const given = Array.isArray(raw) ? {label: raw} : isObject(raw) ? raw : {};
+  const label = normaliseRanges(given.label, item.label.length);
+  const caption = item.caption ? normaliseRanges(given.caption, item.caption.length) : [];
+  if (!label.length && !caption.length) return null;
+  return {...(label.length ? {label} : {}), ...(caption.length ? {caption} : {})};
+}
+
+/**
+ * Where a query stands in a text, folded as filterOptions folds it (case,
+ * accents, ё): [[start, end]] in the text's own offsets, the first place
+ * only; [] when it is not there.
+ */
+export function matchRanges(text, query, locale) {
+  const needle = foldText(query, locale);
+  const source = String(text ?? '');
+  if (!needle || !source) return [];
+  let folded = '';
+  const starts = [];
+  const ends = [];
+  let offset = 0;
+  for (const char of source) {
+    for (const unit of foldChar(char, locale)) {
+      folded += unit;
+      starts.push(offset);
+      ends.push(offset + char.length);
+    }
+    offset += char.length;
+  }
+  const at = folded.indexOf(needle);
+  if (at < 0) return [];
+  return [[starts[at], ends[at + needle.length - 1]]];
+}
+
+function foldChar(char, locale) {
+  let lower;
+  try {
+    lower = char.toLocaleLowerCase(locale || undefined);
+  } catch {
+    lower = char.toLowerCase();
+  }
+  return lower.normalize('NFD').replace(/[\u0300-\u036f]/gu, '').replace(/ё/gu, 'е');
+}
+
+/** The text cut into plain and matched parts: [{text, match}], in order. */
+export function splitByRanges(text, ranges) {
+  const source = String(text ?? '');
+  const parts = [];
+  let at = 0;
+  for (const [start, end] of ranges ?? []) {
+    if (start > at) parts.push({text: source.slice(at, start), match: false});
+    parts.push({text: source.slice(start, end), match: true});
+    at = end;
+  }
+  if (at < source.length) parts.push({text: source.slice(at), match: false});
+  return parts;
 }
 
 /** A list of items: each normalised, the ones without a value and the repeats dropped. */
@@ -212,7 +310,7 @@ export function appendItems(shown, more) {
  * `maxItems` 0 is no cap.
  */
 export function choose(value, raw, {multiple = false, maxItems = 0} = {}) {
-  const item = normaliseItem(raw);
+  const item = withoutMatch(normaliseItem(raw));
   if (!item) return {value, outcome: 'unchanged'};
   if (!multiple) {
     if (value && keyOf(value.value) === keyOf(item.value)) return {value, outcome: 'unchanged'};
@@ -224,6 +322,63 @@ export function choose(value, raw, {multiple = false, maxItems = 0} = {}) {
   }
   if (maxItems > 0 && list.length >= maxItems) return {value: list, outcome: 'refused'};
   return {value: [...list, item], outcome: 'added'};
+}
+
+/** An item without the ranges of the answer it came in: a value never keeps them. */
+export function withoutMatch(item) {
+  if (!item || !item.match) return item;
+  const rest = {...item};
+  delete rest.match;
+  return rest;
+}
+
+// ---------------------------------------------------------------- create
+
+/**
+ * What `create` asks for (owner decision C139 (2)): '' off (the attribute
+ * absent or "false"), 'email' an address, 'item' anything else.
+ */
+export function createKind(raw) {
+  if (raw === null || raw === undefined || raw === false) return '';
+  const text = String(raw).trim().toLowerCase();
+  if (text === 'false') return '';
+  return text === 'email' ? 'email' : 'item';
+}
+
+/** A mail address as a person types one: name@host.zone, no spaces or brackets. */
+export function isEmailAddress(text) {
+  return /^[^\s@<>()[\]\\,;:"]+@[^\s@<>()[\]\\,;:".]+(\.[^\s@<>()[\]\\,;:".]+)*\.[^\s@<>()[\]\\,;:".\d]{2,}$/u.test(String(text ?? ''));
+}
+
+/**
+ * The «Создать «…»» row a query offers, last in the list: {text, kind}, or
+ * null -- create off, an empty query, an exact match among the rows or the
+ * chosen (label or caption; an address also by value), or a text that is no
+ * address when an address is asked for.
+ */
+export function createOffer(query, {kind = '', items = [], chosen = [], locale} = {}) {
+  if (!kind) return null;
+  const text = String(query ?? '').trim();
+  if (!text) return null;
+  const needle = foldText(text, locale);
+  const same = (item) => [item.label, item.caption, kind === 'email' ? item.value : undefined]
+    .some((one) => one !== undefined && one !== null && foldText(String(one), locale) === needle);
+  if ([...items, ...chosen].some(same)) return null;
+  if (kind === 'email' && !isEmailAddress(text)) return null;
+  return {text, kind};
+}
+
+/**
+ * The host's answer to a create: an item ({value, label, ...}, or {item})
+ * becomes {item}; {error: message}, an Error or a string is {error}; anything
+ * else is {error: ''} (the field says its own word).
+ */
+export function readCreated(answer) {
+  if (answer instanceof Error) return {error: String(answer.message ?? '')};
+  if (typeof answer === 'string') return {error: answer};
+  if (isObject(answer) && 'error' in answer) return {error: answer.error === true ? '' : String(answer.error ?? '')};
+  const item = withoutMatch(normaliseItem(isObject(answer) && isObject(answer.item) ? answer.item : answer));
+  return item ? {item} : {error: ''};
 }
 
 /** The value without one chosen item (a chip's remove button, Backspace). */

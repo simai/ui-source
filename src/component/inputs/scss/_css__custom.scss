@@ -173,6 +173,18 @@
    text in .sf-input-text (the label slot of sf-input with bare text) stays
    a flex row: its text would have no size of its own. */
 @layer sf.components {
+  /* The label row is the label's line whether a «?» stands in it or not
+     (C133 acceptance note 4, fields ladder 2026-11-14). A row written without
+     the flex class was a block, and its line was the page's (24 beside a 20
+     label at size 1; 20 beside 16 in a compact region and on a phone), while
+     the row with a mark, below, is the label's own line: the «?» shrank the
+     row by 4. The row is a flex row of its own, as every Framework template
+     and documented example writes it, so its height is the label's line in
+     both. */
+  .sf-input .sf-input-label {
+    display: flex;
+  }
+
   .sf-input .sf-input-label:has(> .sf-input-text):has(> sf-help-mark, > .sf-help-mark) {
     display: block;
     font-size: 0;

@@ -61,7 +61,10 @@ right half as it is over a checkerboard (C86).
 | Attribute | Default | What it does |
 | --- | --- | --- |
 | `label` | — | The field's label above it, as every field draws it; it also names the field. |
-| `size` | `1` | `1/2`, `1` or `2`: the control ladder step. |
+| `hint` | — | A help line under the field, a step below its text. |
+| `invalid` | `false` | Draws the error: the error border and the error line in place of the help line. |
+| `error-message` | — | The error line's text while the field is invalid. |
+| `size` | `1` | `1/3`, `1/2`, `1`, `2` or `3`: the field ladder step, as sf-input. |
 | `appearance` | `bordered` | How the swatch is bounded: `bordered`, `outlined`, `plain`. |
 | `palette` | `true` | `palette="false"` hides the sixteen hues. |
 | `custom` | `true` | `custom="false"` keeps the palette only (task labels, chart series). |
