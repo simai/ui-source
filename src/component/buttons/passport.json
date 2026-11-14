@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.buttons",
   "kind": "component",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/buttons/docs/docs.md",

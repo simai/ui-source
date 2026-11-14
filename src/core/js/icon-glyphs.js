@@ -67,6 +67,8 @@ export function markCustomGlyph(el, name) {
   const key = String(name || '').trim();
   if (key && registeredIcon(key)) {
     if (el.getAttribute('data-sf-icon-custom') !== key) el.setAttribute('data-sf-icon-custom', key);
+    // Drawn as letters before it was registered: it is no longer missing.
+    el.removeAttribute('data-sf-icon-missing');
     return true;
   }
   if (el.hasAttribute?.('data-sf-icon-custom')) el.removeAttribute('data-sf-icon-custom');

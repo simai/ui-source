@@ -283,10 +283,9 @@ class SfIcon extends IconElement {
   // its box stays empty and the name is said once in the console.
   afterRender(changed) {
     const result = super.afterRender(changed);
-    if (this.getProp("loaded") && !this.isRegisteredGlyph) {
-      const glyph = this.querySelector(":scope > i.sf-icon, :scope > .sf-badge-anchor > i.sf-icon");
-      if (glyph) checkIconGlyph(glyph);
-    }
+    const glyph = this.querySelector(":scope > i.sf-icon, :scope > .sf-badge-anchor > i.sf-icon");
+    if (glyph && this.isRegisteredGlyph) glyph.removeAttribute("data-sf-icon-missing");
+    else if (glyph && this.getProp("loaded")) checkIconGlyph(glyph);
     return result;
   }
 
