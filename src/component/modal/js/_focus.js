@@ -123,7 +123,9 @@ function trapModalFocus(panel, event) {
 const INITIAL_FOCUS = ['auto', 'safe', 'first', 'panel'];
 // status="error" on an sf-button is danger's dated alias (C13).
 const DANGER_SELECTOR = 'sf-button[status="danger"], sf-button[status="error"], .sf-button--danger, sf-confirm';
-const SAFE_SELECTOR = '[data-action="decline"], [data-sf-modal-close]:not(.sf-modal-close-button)';
+// The header's × is excluded: its button (.sf-modal-close-button) and, since
+// sf-modal draws it as sf-button-close (C14), that element (.sf-modal-close).
+const SAFE_SELECTOR = '[data-action="decline"], [data-sf-modal-close]:not(.sf-modal-close-button):not(.sf-modal-close)';
 
 function takesFocus(node) {
   if (!node || node.closest('[inert]') || node.closest('[hidden]')) return null;

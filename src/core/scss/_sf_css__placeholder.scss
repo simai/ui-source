@@ -159,6 +159,20 @@
   display: none;
 }
 
+/* A window's or a side panel's content waits for its code out of the page
+   flow (studies DR-13, MD-3): it belongs to a window over the page or a
+   panel at an edge of the screen, never to the page. Held only out of sight
+   (the pending-tags rule, visibility), the content of every closed sf-drawer
+   kept its box in the page for the first frames -- the page stood 2-3 times
+   its height for about 120 ms, then shrank -- and a closed sf-modal's
+   slotted content stood in the page as a line for about 100 ms. A window
+   drawn in the page (sf-modal display="inline") is part of it and keeps its
+   box. Static markup printed inside (data-sf-static) is the element's own
+   picture and stays. */
+:where(sf-drawer:not(:defined), sf-modal:not(:defined):not([display="inline"])):not(:has(> [data-sf-static])) {
+  display: none;
+}
+
 }
 
 @layer sf.base {

@@ -82,6 +82,16 @@ const SNAPS = ['auto', 'half', 'full'];
 // this, is a decision: down closes (or steps full down to half), up opens to full.
 const SWIPE_SHARE = 0.25;
 const SWIPE_SPEED = 0.5;
+// The fields a modal panel's first focus goes to before any other control
+// (focusFirst): what a person types or chooses in.
+const FIELD = [
+  'input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"])'
+    + ':not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"])',
+  'textarea', 'select', '[contenteditable="true"]',
+  '[role="textbox"]', '[role="combobox"]', '[role="searchbox"]', '[role="spinbutton"]',
+].join(',');
+// How long the first focus waits for a field drawn after the panel opened.
+const FIRST_FOCUS_WAIT_MS = 2000;
 
 function joinClasses(...parts) {
   return parts.flat().filter(Boolean).join(' ');
@@ -492,6 +502,11 @@ class SfDrawer extends DrawerElement {
     });
   }
 
+  // Whether the open panel draws its scrim: a modal one with overlay on.
+  get drawsScrim() {
+    return this.modal && this.overlay !== false;
+  }
+
   // A bottom sheet floats over the page; it is never a column of it.
   get docked() {
     return this.getBooleanAttr('docked', false) && !this.sheet;
@@ -767,22 +782,23 @@ class SfDrawer extends DrawerElement {
 
   template() {
     const context = this.templateContext();
+    // The close is sf-button-close (owner decision C14: one close button, its
+    // own component), at the icon button's 1/3 step as before. Its button
+    // carries sf-drawer-close (and close-class), the class a page and a theme
+    // address; the host carries data-sf-drawer-close, which a press on the
+    // button reaches as it bubbles (handleRootClick).
     const closeButton = context.showClose
-      ? html`<button
-          type="button"
-          class=${joinClasses(
-            'sf-icon-button sf-drawer-close sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1/3 m-0',
+      ? html`<sf-button-close
+          size="1/3"
+          root-class=${joinClasses(
+            'sf-drawer-close m-0',
             context.closePlacement === 'outside' && 'sf-drawer-close--outside',
             context.closeClass,
           )}
           aria-label=${context.closeLabel}
           data-drawer="close"
           data-sf-drawer-close=${context.drawerId}
-        >
-          <span class="sf-close sf-close--size-1/3 flex justify-center items-center" aria-hidden="true">
-            <span class="sf-close-icon"></span>
-          </span>
-        </button>`
+        ></sf-button-close>`
       : nothing;
     return html`<div
       class=${joinClasses('sf-drawer', context.open && 'is-open', context.rootClass)}
@@ -938,19 +954,53 @@ class SfDrawer extends DrawerElement {
         .filter((drawer) => drawer.openState && !drawer.docked && drawer.stackEdge === edge)
         .length;
       root.style.setProperty('--sf-drawer-stack-depth', String(depth));
+      // One scrim (C16, C20: black at 64; study DR-8): a modal drawer opened
+      // above this one draws the scrim, and this one's fades out under it.
+      // Each drew its own, and a nested panel stood over two -- about 87 %
+      // black. The scrim under the top panel takes the press, which closes
+      // the top panel only, as before.
+      const above = index < 0 ? [] : drawers.slice(drawers.indexOf(this) + 1);
+      const covered = above.some((drawer) => drawer.openState && drawer.drawsScrim);
+      root.toggleAttribute('data-sf-drawer-covered', covered);
     }
     return this;
   }
 
-  // The panel takes the focus, not the first control inside it. A modal has to
-  // hold the focus, which is why this exists -- but handing it to whatever
-  // control happens to be first put a focus ring on a star nobody had pressed,
-  // and a person reading the panel saw a control announced instead of the panel.
-  // A consumer that wants a field focused says so with `autofocus`.
+  // The first focus of a modal panel (study DR-12, dispatcher 2026-11-14, as
+  // sf-modal's initial focus does it for a window): the element the page
+  // marked with `autofocus`, else the first field of the content (a text
+  // field, a list, a text area), else its first control, else the panel. The
+  // head's close and the edge do not count: they are the panel's, not the
+  // content's. The panel itself took the focus before, so a filter panel
+  // opened with its search field one Tab away. A field drawn after the panel
+  // opened (an sf-input still loading) is waited for, frame by frame for up
+  // to two seconds, while the focus is still on the panel; anything the
+  // person does in between wins.
   focusFirst() {
     const panel = this.getDrawerRoot()?.querySelector('[data-sf-drawer-panel]');
-    const wanted = panel?.querySelector('[autofocus]');
-    (wanted || panel)?.focus?.();
+    if (!panel) return;
+    const target = this.firstFocusIn(panel);
+    (target || panel).focus?.({preventScroll: true});
+    if (target) return;
+    const until = performance.now() + FIRST_FOCUS_WAIT_MS;
+    const retry = () => {
+      if (document.activeElement !== panel || !panel.isConnected || !this.openState) return;
+      const late = this.firstFocusIn(panel);
+      if (late) late.focus({preventScroll: true});
+      else if (performance.now() < until) requestAnimationFrame(retry);
+    };
+    requestAnimationFrame(retry);
+  }
+
+  firstFocusIn(panel) {
+    const marked = panel.querySelector('[autofocus]');
+    if (marked && !marked.closest('[inert], [hidden]')) {
+      const own = focusablesIn(marked.parentElement).find((node) => node === marked || marked.contains(node));
+      if (own) return own;
+    }
+    const body = panel.querySelector('[data-sf-drawer-body]');
+    const stops = focusablesIn(body).filter((node) => node.tabIndex >= 0);
+    return stops.find((node) => node.matches(FIELD)) || stops[0] || null;
   }
 
   restoreFocus() {

@@ -8,5 +8,7 @@ SF.RuleLoader['cl-drawer'] = {
   relation: [
     { name: 'icon-buttons' },
     { name: 'close' },
+    // The close button: sf-button-close (owner decision C14).
+    { name: 'cl-button-close' },
   ],
 };

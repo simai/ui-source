@@ -7,6 +7,8 @@ SF.RuleLoader['cl-modal'] = {
   relation: [
     { name: 'modal' },
     { name: 'icon-buttons' },
+    // The close button: sf-button-close (owner decision C14).
+    { name: 'cl-button-close' },
     // spinner: the remote content's loading state shows it, fetched after the page is ready.
     { name: 'spinner', lazy: true },
   ],

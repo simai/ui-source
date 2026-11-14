@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.modal",
-  "version": "1.7.2",
+  "version": "1.8.0",
   "title": "Modal",
   "summary": "A dialog window over the page in the shared modal stack: centered or at a side, top or bottom edge, with header, content and footer slots, focus trap, scroll lock and focus return. It can also be minimized, load its content by Ajax or into an iframe, or render inline in the page flow.",
   "kind": "smart",
@@ -24,7 +24,8 @@
     "uses": [
       "component.icon-buttons",
       "component.modal",
-      "component.spinner"
+      "component.spinner",
+      "smart.button-close"
     ],
     "public_parts": []
   },
