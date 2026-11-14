@@ -96,28 +96,38 @@
   --sf-dropdown-tag-line--box: var(--sf-dropdown-tag-line--height);
 }
 
-/* A selected tag sits on the field's own text line, so a field holding tags is
-   as tall as one holding text. The tag itself knows how to do that: the script
-   renders it inline (sf-tag--inline) one size below the field, which gives the
-   label one text step down; the field only tells it how tall its line is.
-   Only size 1/2 does this; from size 1 up the chip has its own line. */
-.sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-tag-container {
+/* A tag in the field is part of the field (owner decision C145 (1), variant
+   A): the field less --sf-space-1/4 above and below, as sf-input-lookup's
+   chips -- 24 / 32 / 40 in fields 32 / 40 / 48, 20 / 24 / 32 compact, 20 /
+   28 / 36 on a phone. The tag takes no size of its own: the script draws it
+   inline one size below the field (its label one text step under the
+   field's), and the field tells it its height as its line; the field's
+   padding is that inset less the border, so a field of tags is as tall as a
+   field of text, its wrapped rows --sf-space-1/4 apart. The tag sat on the
+   field's text line at 1/2 (20 in 32, 16 compact and on a phone) and was a
+   low chip of the field's size from 1 up (32 in 40, 28 in a compact 32). */
+.sf-dropdown.sf-dropdown--tag.sf-dropdown--size-1\/2 { --sf-dropdown-tag-line--box: calc(var(--sf-ui-1\/2--control-height) - 2 * var(--sf-space-1\/4)); }
+.sf-dropdown.sf-dropdown--tag.sf-dropdown--size-1 { --sf-dropdown-tag-line--box: calc(var(--sf-ui-1--control-height) - 2 * var(--sf-space-1\/4)); }
+.sf-dropdown.sf-dropdown--tag.sf-dropdown--size-2 { --sf-dropdown-tag-line--box: calc(var(--sf-ui-2--control-height) - 2 * var(--sf-space-1\/4)); }
+
+.sf-dropdown.sf-dropdown--tag .sf-dropdown-tag-container {
   --sf-tag--line: var(--sf-dropdown-tag-line--box);
 }
 
-/* From size 1 up the tag is a compact chip of the field's own size, so the
-   field keeps only the step between its default and compact padding, less the
-   border: 3px around the chips, and a field of chips is as tall as a field of
-   text. */
-.sf-dropdown.sf-dropdown.sf-dropdown--tag.sf-dropdown--size-1 > .sf-dropdown-field.sf-dropdown-field {
-  --sf-dropdown-field--padding-top: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-ui-1--space-y-tightness-low) - var(--sf-px));
-  --sf-dropdown-field--padding-bottom: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-ui-1--space-y-tightness-low) - var(--sf-px));
-  --sf-dropdown-field--padding-inline-start: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-ui-1--space-y-tightness-low) - var(--sf-px));
+.sf-dropdown.sf-dropdown.sf-dropdown--tag > .sf-dropdown-field.sf-dropdown-field {
+  --sf-dropdown-field--padding-top: calc(var(--sf-space-1\/4) - var(--sf-px));
+  --sf-dropdown-field--padding-bottom: calc(var(--sf-space-1\/4) - var(--sf-px));
+  --sf-dropdown-field--padding-inline-start: calc(var(--sf-space-1\/4) - var(--sf-px));
 }
-.sf-dropdown.sf-dropdown.sf-dropdown--tag.sf-dropdown--size-2 > .sf-dropdown-field.sf-dropdown-field {
-  --sf-dropdown-field--padding-top: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-ui-2--space-y-tightness-low) - var(--sf-px));
-  --sf-dropdown-field--padding-bottom: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-ui-2--space-y-tightness-low) - var(--sf-px));
-  --sf-dropdown-field--padding-inline-start: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-ui-2--space-y-tightness-low) - var(--sf-px));
+
+/* The picture in a tag is the tag less --sf-space-1/4 above and below, never
+   under 16 (C145 (1), C132); sf-tag draws an inline tag's avatar its line
+   high, which is the whole tag here. */
+.sf-dropdown.sf-dropdown--tag .sf-dropdown-tag-container .sf-tag.sf-tag--inline.sf-tag--inline > .sf-avatar {
+  --sf-dropdown--tag-picture: max(var(--sf-b6), calc(var(--sf-dropdown-tag-line--box) - 2 * var(--sf-space-1\/4)));
+  --sf-avatar--height: var(--sf-dropdown--tag-picture);
+  --sf-avatar--width: var(--sf-dropdown--tag-picture);
+  --sf-avatar--line-height: var(--sf-dropdown--tag-picture);
 }
 
 .sf-dropdown .sf-dropdown-tag-container .sf-tag > :is(button, .sf-icon, .sf-avatar, .sf-tag-color-icon) {

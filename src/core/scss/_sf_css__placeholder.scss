@@ -201,6 +201,9 @@
   :where([data-sf-density="compact"] sf-tag:not(:defined):not([data-sf-density="normal"] *)) { --sf-tag--box-edge: var(--sf-a8); }
   :where([data-sf-density="compact"] sf-tag[size="1"]:not(:defined):not([data-sf-density="normal"] *)) { --sf-tag--box-edge: var(--sf-b2); }
   :where([data-sf-density="compact"] sf-tag[size="2"]:not(:defined):not([data-sf-density="normal"] *)) { --sf-tag--box-edge: var(--sf-b6); }
+  /* A 1/2 tag outside a compact region is 32 high: its cross is 12 (C145 (1)). */
+  :where(sf-tag:is(:not([size]), [size=""], [size="1/2"]):not(:defined):not([data-sf-density="compact"] *)),
+  :where([data-sf-density="compact"] [data-sf-density="normal"] sf-tag:is(:not([size]), [size=""], [size="1/2"]):not(:defined)) { --sf-tag--box-cross: var(--sf-micro--cross-1); }
 }
 
 /* On a text line (line="..."): the tag is that line high, one size down, with

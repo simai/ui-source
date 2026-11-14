@@ -57,6 +57,14 @@ pressing shows what being chosen looks like.
 
 ## Behavior
 
+- the height: outside a field a tag is the button of its `size` (height,
+  compact region, phone, corner). Inside a field the tag is the field's
+  (owner decision C145 (1)): `sf-input-lookup` and `sf-dropdown` draw it the
+  field less 8 — 24 / 32 / 40 in fields 32 / 40 / 48, 20 / 24 / 32 compact,
+  20 / 28 / 36 on a phone — with its label one step under the field's and its
+  picture the tag less 8, at least 16; a `size` written there does nothing.
+  The cross follows the height: 8 on tags up to 28, 12 from 32; its target is
+  at least 24;
 - `kind="checkbox"` renders one native toggle button, reflects `active` through
   `aria-pressed` and emits `change` with `detail.active` (Space or Enter toggle
   it). It shows no mark until it is chosen; chosen, a check mark (the icon

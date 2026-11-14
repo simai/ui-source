@@ -661,6 +661,15 @@
     --sf-tag--close-size: var(--sf-micro--cross-1\/2);
   }
 
+  /* A 1/2 tag on a desktop outside a compact region is 32 high: its cross is
+     12, the cross of every 32 tag (C145 (1), C132; a compact 1 is 32 too). */
+  @media (min-width: bp.$breakpoint-desktop) {
+    .sf-tag.sf-tag--size-1\/2:not([data-sf-density="compact"] *),
+    [data-sf-density="compact"] [data-sf-density="normal"] .sf-tag.sf-tag--size-1\/2 {
+      --sf-tag--close-size: var(--sf-micro--cross-1);
+    }
+  }
+
   .sf-tag.sf-tag--size-1 {
     --sf-tag--font-size: var(--sf-text-size-1);
     --sf-tag--line-height: var(--sf-text-height-1);
@@ -1053,6 +1062,18 @@
    after the label at the label's own end step. The button keeps no padding of
    its own and reaches a target of --sf-c2 around the mark (WCAG 2.2, 2.5.8), the way
    a checkbox's native control does. */
+.sf-tag > button.sf-icon-button:has(> .sf-close):not(.sf-icon-button--close) {
+  /* A remove button written without the close class (sf-dropdown's chips):
+     its target reaches --sf-c2 as the close's does (C145 (1), C76). */
+  position: relative;
+}
+
+.sf-tag > button.sf-icon-button:has(> .sf-close):not(.sf-icon-button--close)::after {
+  content: "";
+  position: absolute;
+  inset: min(calc(var(--sf-px) * 0), calc((100% - var(--sf-c2)) / 2)) min(calc(var(--sf-px) * 0), calc((100% - var(--sf-c2)) / 2));
+}
+
 .sf-tag > .sf-icon-button.sf-icon-button--close {
   /* Stated outright: the tag's own button rule pads with the tag's insets
      (at size 2 that made the button several times wider than its mark). */
@@ -1106,13 +1127,13 @@
 
 /* C76: a cross of 8 is drawn with a 1.5 line: at 8 a 2 px line is heavier
    than the letters beside it. Larger crosses keep the 2 px line of C14. Its
-   press target stays --sf-c2 (24). The cross is 8 at 1/3 and, since C132's
-   cross table (group build 3), at 1/2 on every screen; the phone and compact
-   rules below for 1/2 are the C76 cases it now covers. */
+   press target stays --sf-c2 (24). The cross follows the tag's height (owner
+   decision C145 (1), C132): 8 on tags up to 28, 12 from 32. So it is 8 at
+   1/3, and at 1/2 on a phone and in a compact region (28); a 1/2 tag on a
+   desktop is 32 and takes 12 with the 2 px line, as a compact 1 of the same
+   32 does (it drew 8 there: two crosses for one height). */
 .sf-tag.sf-tag--size-1\/3 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon,
-.sf-tag.sf-tag--size-1\/3 > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon,
-.sf-tag.sf-tag--size-1\/2 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon,
-.sf-tag.sf-tag--size-1\/2 > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+.sf-tag.sf-tag--size-1\/3 > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
   --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%3E%3Cpath%20d=%27M0%200L8%208M8%200L0%208%27%20stroke=%27black%27%20stroke-width=%271.5%27/%3E%3C/svg%3E");
   --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%3E%3Cpath%20d=%27M0%200L8%208M8%200L0%208%27%20stroke=%27black%27%20stroke-width=%271.5%27/%3E%3C/svg%3E");
 }

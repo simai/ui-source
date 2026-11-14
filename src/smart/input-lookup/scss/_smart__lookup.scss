@@ -49,14 +49,9 @@
      that inset (C07). */
   --sf-lookup--panel-padding: var(--sf-space-1\/4);
   --sf-lookup--chip-row-gap: var(--sf-space-1\/4);
-  /* The remove cross, a small step by the chip's tag (owner decision C132,
-     the cross row: tags 1/3 and 1/2 → 8, 1 and 2 → 12); its target stays at
-     least --sf-c2 whatever the chip (LS-3). It was the tag's text step, 10. */
-  --sf-lookup--chip-cross: var(--sf-a8);
 }
 
 .sf-lookup.sf-lookup--size-2 {
-  --sf-lookup--chip-cross: var(--sf-b2);
   --sf-lookup--font-size: var(--sf-text-size-2);
   --sf-lookup--line-height: var(--sf-text-height-2);
   --sf-lookup--label-size: var(--sf-text-size-1);
@@ -107,11 +102,6 @@
     --sf-field-action--glyph: #{ladder.text-height($size)};
     --sf-field-action--height: #{ladder.height($size)};
   }
-}
-
-/* At 3 the chip is an sf-tag 2: the cross of tag 2, 12 (C132). */
-.sf-lookup.#{ladder.size-class('sf-lookup', '3')} {
-  --sf-lookup--chip-cross: var(--sf-b2);
 }
 
 /* The label row and the message line: sf-input's. */
@@ -621,22 +611,22 @@
      wide): the chip high and no wider than --sf-c2, so the cross keeps its
      place at the chip's end and the target is at least --sf-c2 square (the
      tag's ::after reaches past a box under it: chips of 20). It was the line
-     square, 20 x 20 on a phone (LS-3). The cross is the small step the
-     chip's size takes (C132); sf-tag sets its own in this layer, by size. */
-  .sf-lookup .sf-lookup-chip > .sf-tag.sf-tag--inline.sf-tag--inline {
-    --sf-tag--close-size: var(--sf-lookup--chip-cross);
-  }
-
+     square, 20 x 20 on a phone (LS-3). The cross is the chip tag's own,
+     which follows its height (owner decision C145 (1), C132): 8 on chips up
+     to 28, 12 from 32. The field set it by its size before, so a 1 field on
+     a desktop drew 8 in a 32 chip where a compact 2 drew 12. */
   .sf-lookup .sf-lookup-chip > .sf-tag.sf-tag--inline.sf-tag--inline > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close {
     block-size: var(--sf-lookup--chip-height);
     inline-size: min(var(--sf-lookup--chip-height), var(--sf-c2));
   }
 
   /* The avatar in a chip is the chip less --sf-space-1/4 above and below
-     (C58): 24 in a 32 chip. sf-tag draws an inline tag's avatar its line
-     high, which was the chip (LS-2). */
+     (C58): 24 in a 32 chip, and never under 16 (C145 (1), C132: an avatar is
+     at least 16; it was 12 in the 20 chips of a compact or phone 1/2 field).
+     sf-tag draws an inline tag's avatar its line high, which was the chip
+     (LS-2). */
   .sf-lookup .sf-lookup-chip > .sf-tag.sf-tag--inline.sf-tag--inline > .sf-avatar {
-    --sf-lookup--chip-avatar: calc(var(--sf-lookup--chip-height) - 2 * var(--sf-space-1\/4));
+    --sf-lookup--chip-avatar: max(var(--sf-b6), calc(var(--sf-lookup--chip-height) - 2 * var(--sf-space-1\/4)));
     --sf-avatar--height: var(--sf-lookup--chip-avatar);
     --sf-avatar--width: var(--sf-lookup--chip-avatar);
     --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-lookup--chip-avatar) / 2));

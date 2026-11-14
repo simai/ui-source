@@ -73,7 +73,28 @@ test('C145 (7): a data colour is an 8 px palette dot on a neutral tag', () => {
   assert.ok(json('src/smart/tag/component.json').settings.color);
 });
 
-test('versions: sf-tag 1.8.0, component.tags 1.7.0, sf-tag-group 1.0.0', () => {
+test('C145 (1): a tag in a field is the field less 8; its cross follows its height', () => {
+  // Outside a field a 1/2 tag on a desktop is 32: its cross is 12, as a compact 1 of the same 32.
+  assert.match(css, /\.sf-tag\.sf-tag--size-1\\\/2:not\(\[data-sf-density="compact"\] \*\),[^{]*\{\s*--sf-tag--close-size: var\(--sf-micro--cross-1\);/u);
+  // A remove button without the close class reaches 24 too.
+  assert.match(css, /\.sf-tag > button\.sf-icon-button:has\(> \.sf-close\):not\(\.sf-icon-button--close\)::after/u);
+  // sf-input-lookup: the chip tag's own cross, an avatar of at least 16.
+  const lookup = read('src/smart/input-lookup/scss/_smart__lookup.scss');
+  assert.doesNotMatch(lookup, /--sf-lookup--chip-cross/u);
+  assert.match(lookup, /--sf-lookup--chip-avatar: max\(var\(--sf-b6\), calc\(var\(--sf-lookup--chip-height\) - 2 \* var\(--sf-space-1\\\/4\)\)\);/u);
+  assert.match(lookup, /--sf-lookup--chip-height: calc\(var\(--sf-field-action--height\) - 2 \* var\(--sf-space-1\\\/4\)\);/u);
+  // sf-dropdown: the field less 8 at every size, the rows 4 apart.
+  const dropdown = read('src/component/dropdown/scss/_css__custom.scss');
+  for (const size of ['1\\/2', '1', '2']) {
+    assert.ok(dropdown.includes(`.sf-dropdown.sf-dropdown--tag.sf-dropdown--size-${size} { --sf-dropdown-tag-line--box: calc(var(--sf-ui-${size}--control-height) - 2 * var(--sf-space-1\\/4)); }`), size);
+  }
+  assert.match(read('src/component/dropdown/scss/_css__dropdown.scss'), /\.sf-dropdown\.sf-dropdown--tag \.sf-dropdown-tag-container \{\s*--sf-dropdown-tag-container--gap: var\(--sf-space-1\\\/4\);/u);
+});
+
+test('versions: sf-tag 1.8.0, component.tags 1.7.0, sf-tag-group 1.0.0, sf-dropdown 1.12.0, component.dropdown 1.10.0, sf-input-lookup 1.12.0', () => {
+  assert.equal(json('src/smart/dropdown/component.json').version, '1.12.0');
+  assert.equal(json('src/component/dropdown/passport.json').version, '1.10.0');
+  assert.equal(json('src/smart/input-lookup/component.json').version, '1.12.0');
   assert.equal(json('src/smart/tag/component.json').version, '1.8.0');
   assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.8.0');
   assert.equal(json('src/component/tags/passport.json').version, '1.7.0');
