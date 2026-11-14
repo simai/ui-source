@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.gallery",
-  "version": "1.2.1",
+  "version": "1.2.3",
   "title": "Gallery",
   "summary": "An ordered media collection shown in an inline Slider, with an optional Modal lightbox holding a second Slider. The gallery owns the one-based current slide and keeps both views on it.",
   "kind": "smart",
@@ -100,8 +100,8 @@
       },
       "button-type": {
         "type": "string",
-        "default": "primary",
-        "description": "Passed to the gallery's sliders (sf-slider): the arrow buttons' colour scheme, an sf-button-icon scheme."
+        "default": "secondary",
+        "description": "Passed to the gallery's sliders (sf-slider) only when the page writes it: the arrow buttons' look, an sf-slider button-type. Unset: sf-slider's own, the quiet arrows -- over a picture on popup plates with the overlay shadow (decision C143); it was primary, filled primary circles (file preview study FP-10)."
       },
       "button-size": {
         "type": "string",
@@ -679,7 +679,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/gallery/index.js",
-        "sha256": "f9d08a07d4caf4518a18313426c4352738e8285ebe1b0bdb893856df6fc48d30"
+        "sha256": "df0f478f78987aee4305aeb1e9ee830fe4d2887cc8c3717637cb32e6b399aee5"
       }
     ],
     "generated_runtime": [

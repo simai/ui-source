@@ -15,7 +15,7 @@ function renderSliderNode(context, type = 'inline') {
     <sf-slider
       data-sf-gallery-slider=${type}
       class=${sliderClass}
-      button-type=${context.buttonType}
+      button-type=${context.component?.hasAttribute?.('button-type') ? context.buttonType : nothing}
       button-size=${context.buttonSize}
       dots=${String(context.dots)}
       dots-type=${context.dotsType}

@@ -1036,6 +1036,32 @@ class SfGallery extends GalleryElement {
       current: this.current,
       total: this.slidesTotal,
     });
+    // After the window gave focus back (it restores what it saw at open).
+    requestAnimationFrame(() => this._returnFocus());
+  }
+
+  // Focus goes back to what opened the viewer (WAI-ARIA APG modal dialog;
+  // file preview study FP-10): the picture in the strip, now the one the
+  // viewer was left on, so after paging the strip's own slide in view takes
+  // it -- the slide that opened it moved out of view with the strip and the
+  // window's restore fell through to the page (MAIN). A trigger outside the
+  // strip (a delegated link) gets it back itself. Only when focus is nowhere
+  // a person put it: on the page's body or an element around the gallery.
+  _returnFocus() {
+    const opener = this._opener;
+    this._opener = null;
+    if (this.openState || !this.isConnected) return;
+    const active = this.ownerDocument.activeElement;
+    const lost = !active || active === this.ownerDocument.body
+      || (active !== this && active.contains?.(this))
+      || (this.contains(active) && !active.matches?.('[data-sf-gallery-open]'));
+    const inline = this.querySelector(`[data-sf-gallery-inline] [data-sf-gallery-open="${this.current}"]`);
+    const outside = opener?.isConnected && !this.contains(opener) ? opener : null;
+    const target = outside || inline || (opener?.isConnected ? opener : null);
+    if (!target || active === target) return;
+    if (lost || (inline && active?.matches?.('[data-sf-gallery-inline] [data-sf-gallery-open]'))) {
+      target.focus({ preventScroll: true });
+    }
   }
 
   _syncCurrentFromEvent(event, fromLightbox = false) {
@@ -1075,6 +1101,8 @@ class SfGallery extends GalleryElement {
       this.goTo(at);
     }
 
+    const active = this.ownerDocument.activeElement;
+    if (!this.openState && active && active !== this.ownerDocument.body) this._opener = active;
     this.setAttribute('open', '');
     this._modal?.open?.();
     return applied();

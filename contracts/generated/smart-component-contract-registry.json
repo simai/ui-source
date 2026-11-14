@@ -917,7 +917,9 @@
         "uses": [
           "component.file-preview",
           "component.icon-buttons",
-          "component.icons"
+          "component.icons",
+          "smart.button",
+          "smart.progress-bar"
         ]
       },
       "contract_schema": {
@@ -929,7 +931,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/file-preview/smart.manifest.json",
-      "manifest_sha256": "10694a9ba3812e73499f3fb4fd25c080b769fd12d0e31a840aad95185aa2f4d5",
+      "manifest_sha256": "74cb95c87b55eb37496ca349e90f788bbe9f3ee24549738ff4aa5edbfcffa7be",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1001,7 +1003,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/gallery/smart.manifest.json",
-      "manifest_sha256": "2dc4d1ac1d04bf587fb3539612f993e476944f48244790577d14c595eb9bbd14",
+      "manifest_sha256": "1cae11f8ded57b5dd830dd815b60ebdeb6841c7f154a003760a6d27585141673",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

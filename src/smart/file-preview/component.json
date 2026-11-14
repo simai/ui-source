@@ -2,7 +2,7 @@
   "$comment": "The source of sf-file-preview's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/file-preview (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.file-preview",
   "tag": "sf-file-preview",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "file",
   "settings": {
@@ -14,17 +14,17 @@
     "file-size": {
       "type": "string",
       "default": "",
-      "summary": "The file's size as text, for example 12 KB."
+      "summary": "The file's size: a number of bytes (2457600), drawn in the page's language and units by the core's size format (2,3 МБ; decision C25) and said with the unit as a word (2,3 мегабайта; C51); text a host already wrote (12 KB) is drawn as written."
     },
     "icon": {
       "type": "icon",
       "default": "description",
-      "summary": "The glyph in the holder when no picture is shown (a Material Symbols name)."
+      "summary": "The glyph in the holder when no picture is shown (a Material Symbols name). Unset: the glyph of the file's type -- from mime-type, else from the name's extension (PDF, a sheet, slides, an archive, ... each its own; decision C81), else description."
     },
     "href": {
       "type": "string",
       "default": "",
-      "summary": "The file's address: the name links to it and the download action opens it. Empty: the row is not a link and the download action does nothing."
+      "summary": "The file's address: the name is a link to it (decision C51; it downloads in the same tab, or opens in target when download is false) and the download action fetches it. Empty: the name is text and the download action does nothing."
     },
     "kind": {
       "type": "enum",
@@ -81,15 +81,37 @@
       "default": false,
       "summary": "Makes the row unavailable: the actions do nothing and the row takes the disabled look."
     },
+    "state": {
+      "type": "enum",
+      "values": [
+        "ready",
+        "uploading",
+        "error"
+      ],
+      "default": "ready",
+      "summary": "The file's state, as the upload core's rows (decision C81). ready: the file is there -- the name is its link, the size under it, download and remove. uploading: the name as text, under it the upload row's bar with its per cent at the end (value; no value: the bar runs), aria-busy; remove stays (the host cancels), download is not offered. error: the name as text, under it «Не загрузился» and error-text in the error colour, «Повторить» (the retry event) at the end of the row -- under the text in a narrow row, where decision C88 places it -- and remove."
+    },
+    "value": {
+      "type": "number",
+      "optional": true,
+      "min": 0,
+      "max": 100,
+      "summary": "While uploading: the share sent, per cent (0 to 100, clamped), drawn by the bar and its per cent. Absent: the bar runs without a share."
+    },
+    "error-text": {
+      "type": "string",
+      "default": "",
+      "summary": "Why the file did not upload, after «Не загрузился:» in a failed row (state error)."
+    },
     "download-label": {
       "type": "string",
       "default-from": "runtime.download-label",
-      "summary": "Empty: the text of the page's language (\"Download file\" in English)."
+      "summary": "Empty: the text of the page's language with the file's name («Скачать Отчёт.pdf», \"Download Report.pdf\" in English; decision C51)."
     },
     "remove-label": {
       "type": "string",
       "default-from": "runtime.remove-label",
-      "summary": "Empty: the text of the page's language (\"Remove file\" in English)."
+      "summary": "Empty: the text of the page's language with the file's name («Удалить Отчёт.pdf», \"Remove Report.pdf\" in English; decision C51)."
     },
     "compact": {
       "type": "boolean",
@@ -114,6 +136,14 @@
         "value": "object"
       },
       "cancelable": true
+    },
+    "retry": {
+      "carries": {
+        "id": "string",
+        "action": "string",
+        "value": "object"
+      },
+      "summary": "A person pressed «Повторить» in a row that did not upload (vocabulary §5 retry): the host sends the file again and sets state."
     }
   },
   "actions": {},
@@ -131,6 +161,20 @@
     },
     {
       "name": "icon-buttons"
+    },
+    {
+      "name": "cl-progress-bar",
+      "lazy": true,
+      "$comment": [
+        "The upload row's bar under the name while the file uploads (state uploading, decision C81)."
+      ]
+    },
+    {
+      "name": "cl-button",
+      "lazy": true,
+      "$comment": [
+        "«Повторить» in a row that did not upload (state error), the C88 retry button."
+      ]
     }
   ],
   "templates": {
@@ -307,7 +351,8 @@
     "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
     "version 1.2.0 (2026-11-10, docs precheck smart content FP-02, FP-03, FP-05): a minor. target's default is empty, the same tab (C25: a file link downloads or opens in the tab it is in; a new tab only for opening to view, with its sign): it was _blank, so download=\"false\" and the name link opened a new tab by default; with target=\"_blank\" and download false the action shows open_in_new. download and detach carry value.kind; value.type, its former name, stays beside it until 2027-01-01 (journal event-file-preview-value-type-to-kind). With component.file-preview 1.0.2 the row on a fill (surface) is 56 on a desktop and 52 on a phone (it was 72 and 60). Every setting has its summary.",
-    "version 1.2.1 (2026-11-13, docs precheck smart content FP-06, owner decision C103): a patch. The download and remove buttons are size 1 (40, icon 24) beside the size 1 name; they were 1/2 (32, icon 20)."
+    "version 1.2.1 (2026-11-13, docs precheck smart content FP-06, owner decision C103): a patch. The download and remove buttons are size 1 (40, icon 24) beside the size 1 name; they were 1/2 (32, icon 20).",
+    "version 1.3.0 (2026-11-14, file preview study FP-1, FP-2, FP-3, FP-6, FP-7, FP-8, FP-15; decisions C34, C88, C81, C51, C25): a minor. The name breaks only between words (C34): spaces and the joints names use instead of them (_ - – — / +) where a <wbr> lets a line end; it takes two lines at most and ends in an ellipsis, the whole name in its tooltip and for a screen reader (C88); it was overflow-wrap anywhere («верси | я_подписано.pdf»). The name is a link to the file while it is there (C51; the download request goes first and a page may refuse it). Unset icon: the glyph of the file's type from mime-type or the name's extension (picture_as_pdf, table_chart, slideshow, folder_zip, ...; C81), it was description for every file; a screen reader hears the type and the size after the name («Отчёт.pdf, PDF, 2,3 мегабайта», C51). file-size in bytes is drawn by the core's size format («2,3 МБ», C25); text stays as written. The buttons are named with the file («Скачать Отчёт.pdf», «Удалить Отчёт.pdf», C51); a page's own labels are kept. New settings state (ready, uploading, error), value and error-text: the upload core's rows (C81) -- the bar under the name while uploading, «Не загрузился: …» in the error colour and «Повторить» (event retry) after a failure. Words added: uploading-label, error-text, error-line, retry-text, retry-label; download-label and remove-label carry {name}. With component.file-preview 1.1.0; core holds the row's box before the code (FP-15)."
   ],
   "x-registry": {
     "capabilities": [

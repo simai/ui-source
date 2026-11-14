@@ -152,6 +152,28 @@
     * (var(--sf-input--box-line) + var(--sf-input--box-gap)));
 }
 
+/* sf-file-preview before it draws (file preview study FP-15: the host was
+   0 px for about 100 ms, then 48, and the list under it jumped). Its row is
+   known from its attributes and the ladder its sheet draws with: the holder,
+   a size 2 control high (48 on a desktop, 44 on a phone); on a fill
+   (surface) a size 3 control; compact is the small tile alone. A name long
+   enough to wrap is the one thing the attributes cannot tell. */
+:where(sf-file-preview:not(:defined)):not(:has(> [data-sf-static])) {
+  display: block;
+  block-size: var(--sf-file-preview-holder-size, var(--sf-ui-2--control-height));
+}
+
+:where(sf-file-preview[surface]:not([surface="false"]):not(:defined)):not(:has(> [data-sf-static])) {
+  block-size: var(--sf-ui-3--control-height);
+}
+
+:where(sf-file-preview[compact]:not([compact="false"]):not(:defined)):not(:has(> [data-sf-static])) {
+  display: inline-block;
+  vertical-align: middle;
+  inline-size: calc(var(--sf-icon-size-2) + 2 * var(--sf-a6));
+  block-size: calc(var(--sf-icon-size-2) + 2 * var(--sf-a6));
+}
+
 /* Its menu waits for its own code in the parts the element drew: an empty
    undefined sf-menu-context would stand in the row as one more item, a gap
    wider than the trigger, until it upgrades into its popup. */
