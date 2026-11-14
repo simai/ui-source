@@ -16,8 +16,12 @@ root preserves the ordinary BEM classes and applies `root-class`, author
 
 ## Inputs
 
-- content: `text`, `count`, `icon`, `color-class`, `avatar-image-url`,
+- content: `text`, `count`, `icon`, `color` (a hue of the static palette by
+  name, or a hex drawn in the nearest hue), `color-class`, `avatar-image-url`,
   `avatar-text`, `avatar-status`;
+- link: `href` (C145 (6));
+- in a group: `key` (the tag's id in `sf-tag-group`'s `selected` and
+  `selected-ids`; empty: its text);
 - presentation: `kind`, `status`, `appearance`, `size`, `height`, `line`,
   `inline`, `root-class`;
 - state: `active` (a value: the tag holds it and reports it), `disabled`,
@@ -55,7 +59,16 @@ pressing shows what being chosen looks like.
 
 - `kind="checkbox"` renders one native toggle button, reflects `active` through
   `aria-pressed` and emits `change` with `detail.active` (Space or Enter toggle
-  it);
+  it). It shows no mark until it is chosen; chosen, a check mark (the icon
+  `check`, the picture of the tag's size) stands before the label on the
+  primary container fill (owner decision C145 (2));
+- `href` makes the tag one native link (`a.sf-tag.sf-tag--link`): no check
+  mark and no cross whatever `kind` and `closable` say, the label underlines on
+  hover. A relative address is kept; an address with a scheme only when it is
+  `http`, `https`, `mailto` or `tel`. A disabled link has no `href` (C145 (6));
+- `kind="color"` draws a dot of the palette hue `color` names (or the
+  `color-class` paints) before the label, at the point step of the tag's size —
+  8 px on the default tag; the tag stays neutral (C145 (7));
 - all other types render a static label; if `closable` is enabled, the only
   interactive descendant is the separately named remove action;
 - `interactive` (not for checkbox tags) renders the label, leading content and
@@ -84,12 +97,13 @@ pressing shows what being chosen looks like.
   element) and the focus goes to its neighbour; each step is said, «Москва, 1
   из 3, Delete — убрать», as the chips of `sf-input-lookup` (C139 (6)). The
   cross under the mouse is unchanged. Outside a field each cross is its own
-  stop.
+  stop; a row of tags written in `sf-tag-group` is one stop with the same keys
+  and opens its «+N» in a panel (C145 (3)–(5)).
 
-Tags in a row stand `gap-1/4` (4 px) apart (C105 H5). A colour from data is a
-palette step through `--sf-tag-background-color`, for example
-`var(--sf-teal-50--alfa-24)`, so the label keeps its contrast in both themes
-(C140 BG-7).
+Tags in a row stand `gap-1/4` (4 px) apart (C105 H5): write the row as
+`sf-tag-group`. A colour from data is the dot of `kind="color"` with `color`
+(C145 (7)); the fill stays neutral, so `--sf-tag-background-color` is for a
+page's own look, never for data (C140 BG-7).
 
 ## Slots
 

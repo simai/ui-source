@@ -54,12 +54,14 @@
   "keyboard": {
     "host": {
       "Tab": "reach",
-      "ArrowLeft": "previous",
-      "ArrowRight": "next",
-      "Home": "first",
-      "End": "last",
+      "ArrowLeft": "focus:prev",
+      "ArrowRight": "focus:next",
+      "Home": "focus:first",
+      "End": "focus:last",
       "Delete": "remove",
-      "Backspace": "remove"
+      "Backspace": "remove",
+      "Enter": "activate",
+      "Space": "activate"
     }
   },
   "relations": [
@@ -96,12 +98,14 @@
     },
     "keys": {
       "Tab": "reach",
-      "ArrowLeft": "previous",
-      "ArrowRight": "next",
-      "Home": "first",
-      "End": "last",
+      "ArrowLeft": "focus:prev",
+      "ArrowRight": "focus:next",
+      "Home": "focus:first",
+      "End": "focus:last",
       "Delete": "remove",
-      "Backspace": "remove"
+      "Backspace": "remove",
+      "Enter": "activate",
+      "Space": "activate"
     }
   },
   "css-variables": {},
@@ -154,8 +158,8 @@
       },
       "visual_states": [
         "default",
-        "overflow",
-        "open"
+        "open",
+        "selected"
       ]
     },
     "ownership": {

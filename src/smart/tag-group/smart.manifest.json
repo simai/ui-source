@@ -114,8 +114,8 @@
     },
     "visual_states": [
       "default",
-      "overflow",
-      "open"
+      "open",
+      "selected"
     ]
   },
   "persistence": {
@@ -195,13 +195,42 @@
       "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
       "version": 2
     },
-    "runtime_pair": null,
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
     "aliases": [],
     "deprecations": [],
     "replacement": null,
     "migrations": []
   },
-  "provenance": null,
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "a0deac27234c934d0bf707f16008d50f70284f97",
+    "source_artifacts": [
+      {
+        "path": "src/smart/tag-group/index.js",
+        "sha256": "637e502eb733199d0a8675b77c0b18367c1fcbeeb30edffbd81ca8e244d10949"
+      },
+      {
+        "path": "src/smart/tag-group/js/templates/default.js",
+        "sha256": "c1ae55d05b87d0d347a17343fdb5aab17f41e286ec623c31ee16daad3c61aeda"
+      },
+      {
+        "path": "src/smart/tag-group/js/templates/default.css",
+        "sha256": "72107fc257d1856099df8cbeceff6e53f5745062d26a7921c4eef2711c2f8b88"
+      },
+      {
+        "path": "src/smart/tag-group/rule.js",
+        "sha256": "fa3a898b62ce3caa309ed7eb12fb70a0dffeb6c30159e753bc6629d99cf134db"
+      },
+      {
+        "path": "src/smart/tag-group/docs.md",
+        "sha256": "91a19b991ae7a2d89f9fee6c5c0dfa689dc8bcd3d116012682891e4d28953bd8"
+      }
+    ],
+    "generated_runtime": []
+  },
   "ai_guidance": {
     "use_when": "Use sf-tag-group for any row of tags: chosen values to remove, filter chips above a list, a table cell's tags, an article's tag links.",
     "do_not": [

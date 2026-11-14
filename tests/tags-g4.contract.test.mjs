@@ -21,7 +21,7 @@ test('TG-1 (C58): a long name ends in an ellipsis, the tag is at most 20rem, the
   assert.doesNotMatch(label, /overflow-wrap: anywhere/u);
   const template = read('src/smart/tag/js/templates/default.js');
   assert.match(template, /class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1\/3 sf-tag-tooltip" aria-hidden="true" hidden/u);
-  assert.equal((template.match(/data-tooltip=\$\{context\.cutTooltipId \|\| nothing\}/gu) || []).length, 4, 'each trigger: checkbox, its removable form, interactive, static');
+  assert.equal((template.match(/data-tooltip=\$\{context\.cutTooltipId \|\| nothing\}/gu) || []).length, 5, 'each trigger: checkbox, its removable form, interactive, static, link (C145 (6))');
   assert.ok(json('src/smart/tag/component.json').relations.some((relation) => relation.name === 'tooltip'));
   assert.match(read('src/smart/tag/rule.js'), /\{ name: 'tooltip' \}/u);
   assert.match(read('src/smart/tag/index.js'), /label\.scrollWidth - label\.clientWidth > 0\.5/u);
@@ -40,7 +40,7 @@ test('TG-2 (C58): a tag keeps its width; a one-row container shows what fits and
     assert.match(words.more.other, /\{n\}.*\{names\}/u, locale);
   }
   // Hosts that lay out their own chips are left alone.
-  assert.match(row, /const MANAGED = 'sf-input-lookup, sf-lookup, sf-dropdown, \.sf-dropdown';/u);
+  assert.match(row, /const MANAGED = 'sf-input-lookup, sf-lookup, sf-dropdown, \.sf-dropdown(?:, sf-tag-group)?';/u);
 });
 
 test('TG-3 (C140 (6)): a pressed or removable status tag writes its label in the badge\'s ink', () => {
@@ -88,8 +88,16 @@ test('TG-16: the examples write the current names; the conformance page keeps th
   assert.equal(json('src/smart/tag/studio.fixture.json').props.type, 'default');
 });
 
-test('versions: sf-tag 1.7.0, component.tags 1.6.0', () => {
-  assert.equal(json('src/smart/tag/component.json').version, '1.7.0');
-  assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.7.0');
-  assert.equal(json('src/component/tags/passport.json').version, '1.6.0');
+// Later decisions move the versions on (C145: sf-tag 1.8.0, component.tags
+// 1.7.0); this file holds the floor the study set.
+const atLeast = (version, floor) => {
+  const [a, b] = [version, floor].map((value) => value.split('.').map(Number));
+  for (let index = 0; index < 3; index += 1) if (a[index] !== b[index]) return a[index] > b[index];
+  return true;
+};
+
+test('versions: sf-tag 1.7.0, component.tags 1.6.0 or later', () => {
+  assert.ok(atLeast(json('src/smart/tag/component.json').version, '1.7.0'));
+  assert.equal(json('src/smart/tag/smart.manifest.json').version, json('src/smart/tag/component.json').version);
+  assert.ok(atLeast(json('src/component/tags/passport.json').version, '1.6.0'));
 });

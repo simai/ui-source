@@ -435,6 +435,9 @@
     "min-width/default",
     "place-items/default"
   ],
+  "cl-tag-group": [
+    "display/default"
+  ],
   "cl-tile-metric": [
     "position/default",
     "sr-only/default"

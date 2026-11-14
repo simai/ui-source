@@ -308,8 +308,11 @@ function forget(row) {
 export function tagInRow(tag) {
   const row = tag.parentElement;
   if (!row || typeof requestAnimationFrame !== 'function') return;
-  // A group lays out and walks its own tags (sf-tag-group).
-  if (row.localName === 'sf-tag-group') return;
+  // A group lays out and walks its own tags (sf-tag-group): it is told.
+  if (row.localName === 'sf-tag-group') {
+    row.sfTagDrew?.();
+    return;
+  }
   let state = rows().get(row);
   if (!state) {
     state = {frame: 0, more: null, group: [], active: 0, busy: false};

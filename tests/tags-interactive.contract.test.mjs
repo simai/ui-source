@@ -15,6 +15,7 @@ test('interactive tags render the label as a native button beside the remove act
 });
 
 test('checkbox tags ignore interactive and stay one toggle button', () => {
-    assert.match(element, /return this\.type !== 'checkbox' && super\.interactive;/);
+    // A link tag (C145 (6)) is no button either.
+    assert.match(element, /return this\.type !== 'checkbox' && !this\.href && super\.interactive;/);
 });
 

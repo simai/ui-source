@@ -219,11 +219,12 @@ export function renderTagTemplate(context) {
         ? context.component.getSlotContent('text')
         : context.text;
 
-    if (context.status && !context.interactive && !context.closable && !context.href) {
+    // A tag with an address is a link first (C145 (6)), whatever its status.
+    if (context.href) return renderLinkTag(context, textContent);
+
+    if (context.status && !context.interactive && !context.closable) {
         return renderStatusBadge(context, textContent);
     }
-
-    if (context.href) return renderLinkTag(context, textContent);
 
     const classes = [
         'sf-tag',
