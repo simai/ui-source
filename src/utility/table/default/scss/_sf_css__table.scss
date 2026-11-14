@@ -103,6 +103,34 @@ $prefix: --sf-table-;
             @include places.sf-place-fill(var(#{$prefix}accent-bg));
         }
 
+        // Row actions (C146 (5), variant В; C164): the row's check box and its
+        // menu «≡» stand in cells of their own at the row's start, the check
+        // box first. A cell that holds one check box or one icon button and
+        // nothing else is as narrow as its control, so the extra width of the
+        // table goes to the data and «≡» stays at the start of the row at any
+        // number of columns. Low in weight (:where), so a width the author
+        // gives a column still wins.
+        > :not(caption) > * > :where(:has(> :is(sf-checkbox, :is(sf-button-icon, sf-icon-button), input[type='checkbox']):only-child)) {
+            inline-size: 0;
+            white-space: nowrap;
+        }
+
+        // The row's main field (the record's name) is a plain link that opens
+        // the record, so a middle click and «open in a new tab» work: the link
+        // colour at rest, visited or not (a list of records is not a page of
+        // reading), and the underline under the pointer and on keyboard focus.
+        // A link drawn as a button keeps its own look.
+        > tbody > tr > * > a:where([href]:not(.sf-button)) {
+            color: var(--sf-link);
+            text-decoration-color: currentColor;
+            text-underline-offset: var(--sf-a3);
+
+            &:hover,
+            &:focus-visible {
+                text-decoration-line: underline;
+            }
+        }
+
         // A name of two lines, then an ellipsis (C146 (7)): the cell holds a
         // .line-clamp-2 and the whole name in its title. Where two lines fill
         // the two-line rung (C146 (1)), the clamp gives the row's line its
