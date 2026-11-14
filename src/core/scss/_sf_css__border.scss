@@ -42,11 +42,13 @@
 	// stay 2px and 1px whatever the root font size (owner, 2026-10-10).
 	--sf-focus--offset: var(--sf-px);
 	--sf-focus--style: solid;
-	// One width, two names. The ring reads `--sf-focus--width`; the Figma export
-	// declares `--sf-focus-outline-width` and the forced-colours fallbacks still
-	// name it, so the ring derives from the export instead of repeating its value.
-	--sf-focus--width: var(--sf-focus-outline-width);
-	--sf-ui-focus-inset: inset 0 0 0 var(--sf-focus-outline-width) var(--sf-focus);
+	// One width, one name (owner decision C178, 2026-11-14): the focus family
+	// is --sf-focus--color/offset/style/width, the name the docs promise, and
+	// the export declares the value under it (figma_focus.scss). The former
+	// name --sf-focus-outline-width reads it until 2027-01-01
+	// (src/core/contracts/token-aliases.v1.json, families).
+	--sf-focus-outline-width: var(--sf-focus--width);
+	--sf-ui-focus-inset: inset 0 0 0 var(--sf-focus--width) var(--sf-focus);
 	// ------------------------------------------------
 	// Замена на переменные из figma - самые актуальные
 	// ------------------------------------------------

@@ -11,6 +11,6 @@ test('core exposes one token-based focus geometry for joined surfaces', async ()
 
   assert.match(
     styles,
-    /--sf-ui-focus-inset:\s*inset 0 0 0 var\(--sf-focus-outline-width\) var\(--sf-focus\)/,
+    /--sf-ui-focus-inset:\s*inset 0 0 0 var\(--sf-focus--width\) var\(--sf-focus\)/,
   );
 });

@@ -3,7 +3,6 @@
 
 // TYPOGRAPHY CSS
 @use '../../utility/line-height/default/scss/sf_var__line_height' as lineHeightVars;
-@use '../../utility/font-weight/default/scss/sf_var__font_weight' as fontWeightVars;
 @use '../../utility/letter-spacing/default/scss/sf_var__letter_spacing' as letterSpacingVars;
 @use '../../utility/text-max-width/default/scss/sf_var__text_measure' as textMeasureVars;
 @use '../figma_variables/figma_input_floating_the_others.scss';
@@ -58,10 +57,15 @@
   }
 
   :root {
-    --sf-font-weight-regular: 400;
-    --sf-font-weight-medium: 500;
-    --sf-font-weight-bold: 700;
-    --sf-font-weight-light: 300;
+    // Former names of the weight family (owner decision C178, 2026-11-14):
+    // the family is --sf-weight--thin ... --sf-weight--black, the table the
+    // typography guide promises (figma_typography_styles.scss holds the
+    // values). These read it until 2027-01-01
+    // (src/core/contracts/token-aliases.v1.json, families).
+    --sf-font-weight-regular: var(--sf-weight--regular);
+    --sf-font-weight-medium: var(--sf-weight--medium);
+    --sf-font-weight-bold: var(--sf-weight--bold);
+    --sf-font-weight-light: var(--sf-weight--light);
     --sf-space-auto: auto;
     //
     --sf-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
@@ -91,9 +95,9 @@
     // Default text variables
     --sf-text--size: var(--sf-text--size-1);
     --sf-text--height: var(--sf-text--height-1);
-    --sf-text--weight: 400; //var(--sf-text--font-weight-regular);
-    --sf-heading--weight: 700;
-    --sf-display--weight: 300;
+    --sf-text--weight: var(--sf-weight--regular);
+    --sf-heading--weight: var(--sf-weight--bold);
+    --sf-display--weight: var(--sf-weight--light);
     --sf-text--style: inherit;
     --sf-text--tracking: inherit;
     // The mark's plate is the mark role, the static yellow (C17); it read the
@@ -133,9 +137,10 @@
       --sf-text--line-height-#{$line-height-name}: #{$line-height-value};
     }
 
-    // Font weight variables
-    @each $font-weight-name, $font-weight-value in fontWeightVars.$font-weight-array {
-      --sf-text--font-weight-#{$font-weight-name}: #{$font-weight-value};
+    // Former names of the weight family, numbered 1-9 (owner decision C178,
+    // 2026-11-14): each reads its --sf-weight--* step until 2027-01-01.
+    @each $font-weight-name, $weight-step in (1: thin, 2: extra-light, 3: light, 4: regular, 5: medium, 6: semi-bold, 7: bold, 8: extra-bold, 9: black) {
+      --sf-text--font-weight-#{$font-weight-name}: var(--sf-weight--#{$weight-step});
     }
 
     // Text tracking utilities variables
