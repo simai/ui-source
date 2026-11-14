@@ -51,7 +51,9 @@ test('C140 (5): 24 · 28 · 32 on the phone too, through the badge\'s own lines;
 });
 
 test('C140 (3): one count rule in the hosts -- quantity grey tonal, attention red filled; labels in tabs and contents tonal', () => {
-  assert.match(read('src/smart/list/js/templates/default.js'), /class="sf-list__count" line=\$\{line\} appearance="main" status="error" tight/u);
+  // A list row's count is a quantity, grey tonal (list item study LI-8, fix/list-item-g4; group build 4 keeps it
+  // over this branch's red attention count, which a list row does not draw).
+  assert.match(read('src/smart/list/js/templates/default.js'), /class="sf-list__count" line=\$\{line\} appearance="tonal" tight/u);
   const menu = read('src/smart/menu/js/templates/default.js');
   assert.match(menu, /const ATTENTION = 'sf-badge--main sf-badge--error';/u);
   assert.match(menu, /const QUANTITY = 'sf-badge--tonal sf-badge--neutral';/u);

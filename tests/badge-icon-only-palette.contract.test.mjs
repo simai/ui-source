@@ -70,5 +70,6 @@ test('BG-7: a hex from data is drawn as a palette step; no raw colour reaches th
   assert.deepEqual(optionBadgeProps({color: 'danger'}), {scheme: 'error', rootStyle: ''});
   assert.deepEqual(optionBadgeProps({scheme: 'success'}), {scheme: 'success', rootStyle: ''});
   assert.deepEqual(optionBadgeProps({color: 'url(x)'}), {scheme: 'neutral', rootStyle: ''});
-  assert.equal(json('src/core/passports/module.smart-helpers.json').version, '1.7.0');
+  // 1.7.0: option-badge palette steps (BG-7); 1.8.0: char-count (fix/textarea-rich-g4).
+  assert.match(json('src/core/passports/module.smart-helpers.json').version, /^1\.([7-9]|\d{2,})\.\d+$/u);
 });

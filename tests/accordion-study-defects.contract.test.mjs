@@ -28,9 +28,12 @@ test('AC-5: at 1/2, 1 and 2 the inset is the value inset of sf-input of that siz
   assert.match(sizeRule('1'), /--sf-accordion--trigger-padding-inline: var\(--sf-space-1\);/u);
   assert.match(sizeRule('2'), /--sf-accordion--trigger-padding-inline: var\(--sf-space-2\);/u);
   // The same values sf-input reads.
+  // sf-input reads them from the field ladder (component/inputs field-ladder.inset, fix/fields-ladder-g4).
   const inputs = read('src/component/inputs/scss/_css__inputs.scss');
-  assert.match(inputs, /\.sf-input\.sf-input--size-1\\\/2 \{\s*--sf-input--inset: max\(var\(--sf-space-1\\\/2\), var\(--sf-b2\)\);/u);
-  assert.match(inputs, /\.sf-input\.sf-input--size-2 \{\s*--sf-input--inset: var\(--sf-space-2\);/u);
+  assert.match(inputs, /@include ladder\.inset\(--sf-input--inset, \$size\);/u);
+  const ladder = read('src/component/inputs/scss/_field-ladder.scss');
+  assert.match(ladder, /@if \$size == '1\/3' or \$size == '1\/2' \{\s*#\{\$property\}: max\(var\(--sf-space-1\\\/2\), var\(--sf-b2\)\);/u);
+  assert.match(ladder, /@media \(min-width: 60rem\) \{\s*#\{\$property\}: var\(--sf-space-#\{\$size\}\);/u);
   // Sizes C77 does not name keep the size's space-x.
   assert.match(sizeRule('1/3'), /--sf-accordion--trigger-padding-inline: var\(--sf-ui-1\\\/3--space-x\);/u);
   assert.match(sizeRule('3'), /--sf-accordion--trigger-padding-inline: var\(--sf-ui-3--space-x\);/u);
@@ -73,7 +76,10 @@ test('AC-9: before its code the bare element holds its box from core.css', () =>
   // The same insets as the class sheet.
   assert.match(core, /sf-accordion\[size="1\/2"\]:not\(:defined\)\) \{[^}]*--sf-accordion--box-inset: max\(var\(--sf-space-1\\\/2\), var\(--sf-b2\)\);/u);
   // Values from the systems only (C18): no raw length outside the comments.
-  const rules = core.slice(core.indexOf('sf-accordion before it draws'), core.indexOf('Its menu waits for its own code'))
+  // Its block only: other elements' first-paint blocks follow it in the same sheet (group build 4).
+  const start = core.indexOf('sf-accordion before it draws');
+  const next = core.slice(start).search(/\/\* sf-[a-z-]+ before it draws|Its menu waits for its own code/u);
+  const rules = core.slice(start, next > 0 ? start + next : core.indexOf('Its menu waits for its own code'))
     .replace(/\/\*[\s\S]*?\*\//gu, '');
   assert.doesNotMatch(rules, /\b\d+(?:px|rem|em)\b/u);
 });
