@@ -28,7 +28,7 @@ function renderTop(context) {
             <sf-button-icon appearance="ghost" scheme="on-surface" size="1/2" ?disabled=${context.disabled}
                 icon=${context.previousIcon} aria-label=${context.labels.previousMonth}
                 @click=${() => context.component.shiftMonth(-1)}></sf-button-icon>
-            <div class="sf-datepicker-period flex content-main-center items-cross-center gap-1/4">
+            <div class="sf-datepicker-period flex content-main-center items-cross-center">
                 <!-- The toggles are size 1/2, as tall as the compact size 1 they were:
                      density no longer changes a button's height (C01). The arrows
                      beside them are the same size: one band of buttons, one height
