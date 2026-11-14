@@ -115,7 +115,7 @@ try {
             for (const [id, items] of Object.entries(data)) document.getElementById(id).setItems(items);
             for (const list of document.querySelectorAll('sf-list:not(#wait)')) list.actions = [{id: 'archive', text: 'В архив', icon: 'archive'}];
           }, {data, size});
-          await tab.waitForFunction(() => customElements.get('sf-avatar') && customElements.get('sf-badge')
+          await tab.waitForFunction(() => customElements.get('sf-badge')
             && document.querySelectorAll('#cut .sf-list__actions').length === 3
             && document.querySelectorAll('#cut sf-badge > *').length >= 2, null, {timeout: 20000});
           await tab.evaluate(() => document.fonts.ready);
@@ -135,6 +135,10 @@ try {
               lineBelow: length(`var(--sf-text-height-${below})`),
               d1: length('var(--sf-d1)'),
               band: length('var(--sf-space-1\\/4)'),
+              // C49: a name + caption row is at least the 1/2 control step
+              // (44 under a coarse pointer) and a caption line (1/3).
+              captionStep: length('var(--sf-ui-1\\/2--control-height)'),
+              captionLine: length('var(--sf-text-height-1\\/3)'),
             };
             probe.remove();
             const box = (node) => { const r = node.getBoundingClientRect(); return {x: r.x, y: r.y, w: r.width, h: r.height, right: r.right, bottom: r.bottom, cy: r.y + r.height / 2}; };
@@ -153,7 +157,7 @@ try {
               const title = row.querySelector('.sf-list-item-title');
               const container = row.querySelector('.sf-list-item-container');
               const meta = row.querySelector('.sf-list__meta');
-              const parts = [drawn(row.querySelector('.sf-list__lead sf-avatar')) || row.querySelector('.sf-list__sign') || row.querySelector('.sf-list__glyph'),
+              const parts = [row.querySelector('.sf-list__lead .sf-avatar:not(.sf-list__sign)') || row.querySelector('.sf-list__sign') || row.querySelector('.sf-list__glyph'),
                 drawn(row.querySelector('sf-badge.sf-list__count')), drawn(row.querySelector('sf-badge.sf-list__badge'))].filter(Boolean);
               return {
                 id: row.dataset.id,
@@ -192,7 +196,8 @@ try {
           const {tokens} = got;
           const touch = pointer === 'coarse';
           const one = touch ? Math.max(tokens.control, tokens.d1) : tokens.control;
-          const two = tokens.control + tokens.lineBelow;
+          const two = Math.max(tokens.control + tokens.lineBelow,
+            (touch ? Math.max(tokens.captionStep, tokens.d1) : tokens.captionStep) + tokens.captionLine);
           ok(`${label}: the page's pointer is ${pointer}`, got.coarse === touch, got.coarse);
           ok(`${label}: --sf-d1 is 44px`, near(tokens.d1, 44), tokens);
           for (const [name, list] of [['cut', got.cut], ['wrap', got.wrap], ['flat', got.flat]]) {

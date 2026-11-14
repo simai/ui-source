@@ -65,7 +65,7 @@ export function renderListItemTemplate(context) {
     );
   }
 
-  if (context.type === "avatar" || context.type === "color") {
+  if ((isOption && context.type === "avatar") || context.type === "color") {
     wrapClasses.push("justify-between");
   }
 
@@ -107,6 +107,20 @@ export function renderListItemTemplate(context) {
       // the person glyph. It was a background image, and with no photo an
       // empty circle.
       const avatarSize = context.sizeGroup.item === "1/3" || context.sizeGroup.item === "1/2" ? "1/3" : context.sizeGroup.item === "1" ? "1/2" : context.sizeGroup.item === "2" ? "1" : "2";
+
+      // A row outside a dropdown (list item study LI-5): the picture is the
+      // row's leading part, as an icon row's glyph is, and the title and its
+      // supporting line are the row's own text block. In the label group the
+      // supporting line was dropped (a 28 row at size 1, under the ladder).
+      // An option keeps the label group sf-dropdown reads.
+      if (!isOption) {
+        return avatarPicture({
+          size: avatarSize,
+          imageUrl: context.avatarImageUrl,
+          name: context.avatarTitle,
+          disabled: context.disabled,
+        });
+      }
 
       return html`
         <div
@@ -154,11 +168,14 @@ export function renderListItemTemplate(context) {
 
   const renderText = () => {
     if (context.type === "color") return nothing;
-    if (context.type === "avatar") return nothing;
+    if (context.type === "avatar" && isOption) return nothing;
+    // An avatar row's title is its text, else its avatar-title (the label
+    // group showed avatar-title, which defaults to text).
+    const title = context.type === "avatar" && !textContent ? context.avatarTitle : textContent;
     if (twoLine) {
-      return html`<div class="sf-list-item-container"><span class="sf-list-item-title">${textContent}</span><span class="sf-list-item-supporting">${supportingContent}</span></div>`;
+      return html`<div class="sf-list-item-container"><span class="sf-list-item-title">${title}</span><span class="sf-list-item-supporting">${supportingContent}</span></div>`;
     }
-    return html`<div class="sf-list-item-container">${textContent}</div>`;
+    return html`<div class="sf-list-item-container">${title}</div>`;
   };
 
   // The handle stands in a slot of its own before everything else; a pinned
