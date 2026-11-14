@@ -3,17 +3,23 @@
   "schema_version": 1,
   "id": "component.featured-icon",
   "kind": "component",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/featured-icon/index.js",
+    "src/component/featured-icon/js/_featured-icon.js",
+    "src/component/featured-icon/js/index.js",
     "src/component/featured-icon/rule.js",
     "src/component/featured-icon/scss/_css_custom.scss",
     "src/component/featured-icon/scss/_css_featured-icon.scss",
     "src/component/featured-icon/scss/index.scss"
   ],
-  "content_sha256": "c6fc6c4b2feb626d63662fe7b78fac4845dff8c0a84509d47f751f01dfaa0a55",
+  "content_sha256": "d05960e67cfce3d5148806ccf9296da9ad2886470db4c8d21a178ebaa3ff6390",
   "dependencies": [
+    {
+      "id": "core.runtime",
+      "range": "^1.55.0"
+    },
     {
       "id": "tokens.colour",
       "range": "^1.0.0"

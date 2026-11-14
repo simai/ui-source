@@ -64,9 +64,14 @@
     --sf-featured-icon--square-radius: var(--sf-radius-1);
   }
 
+  /* Size 3 keeps the box of the size-3 control (56 on a desktop, 52 on a
+     phone, 48 compact) and draws its glyph one icon step above size 2: 32 on
+     a desktop, 28 on a phone and compact (DEV letter on plain group 1, IR-1;
+     the text line of size 3 gave 36 on a desktop and 24 on a phone, the same
+     as size 2). The padding is what the box leaves around the glyph. */
   .sf-featured-icon--size-3 {
-    --sf-featured-icon--padding: var(--sf-ui-3--space-y-tightness-default);
-    --sf-featured-icon--icon-size: var(--sf-text-height-3);
+    --sf-featured-icon--icon-size: calc(var(--sf-text-height-2) + var(--sf-a4));
+    --sf-featured-icon--padding: calc((var(--sf-ui-3--control-height) - var(--sf-featured-icon--icon-size)) / 2);
     --sf-featured-icon--square-radius: var(--sf-radius-2);
   }
 
@@ -90,6 +95,10 @@
      the explanation's ink, on-surface-variant: a decorative icon does not
      outweigh the heading beside it (owner decision C120, #q-glyph). Every
      grey circle of the Framework takes it here. */
+  /* One name per look (DEV letter on plain group 1, IR-2): the name the
+     documentation uses. The second name of each look -- clear, light, mid,
+     dark, modern -- is an alias until 2027-01-01, drawn by the same rule and
+     noted once in SF.deprecations (journal class-featured-icon-look-aliases). */
   .sf-featured-icon--neutral,
   .sf-featured-icon--clear {
     --sf-featured-icon--tone: var(--sf-on-surface);
@@ -149,12 +158,15 @@
     --sf-featured-icon--foreground-color: var(--sf-featured-icon--on-tone);
   }
 
+  /* No shadow at rest (C20): the raised shadow is a card's under the
+     pointer and a header's on scroll, never a mark's. elevated keeps its
+     grey fill and the tone's glyph. */
   .sf-featured-icon--elevated,
   .sf-featured-icon--modern {
     --sf-featured-icon--background-color: var(--sf-surface-container);
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     --sf-featured-icon--foreground-color: var(--sf-featured-icon--tone);
-    --sf-featured-icon--box-shadow: var(--sf-shadow-raised);
+    --sf-featured-icon--box-shadow: var(--sf-shadow-flat);
   }
 
   @media (forced-colors: active) {
