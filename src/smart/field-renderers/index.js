@@ -854,7 +854,7 @@ export function renderCellField(field = {}, value, host) {
 // value control reports a committed change as `change` on its host, once per
 // change the user makes, with each older name kept as an alias the manifest
 // marks `alias_of`. So the set binds the canonical name for all of them --
-// sf-input, sf-textarea, sf-switch, sf-dropdown, sf-button-group and
+// sf-input, sf-textarea, sf-switch, sf-checkbox, sf-dropdown, sf-segmented and
 // sf-datepicker -- where it bound three different alias names before. The one
 // event this file still binds under its own name is sf-file-upload:select,
 // which is not a value change but a selection; the `change` on that component
@@ -1440,15 +1440,21 @@ function renderTimeEdit(field, value, host) {
     `;
 }
 
-// A required boolean is a switch: two states are all it has. An optional one is
-// a pair of buttons with nothing chosen while the value is absent -- the
-// consumer owner's decision of 2026-10-06, and the reason is that a switch
-// cannot say «не задано»: rendering one over an absent value would write false
-// on the first save, a value nobody chose.
+// A required boolean has two states and nothing else. In a form saved with a
+// button it is a checkbox, and a switch only where the change acts at once
+// (owner decision C165 (4), form study FM-6): a switch says «on now», which a
+// form that has not been saved has not done. The host says it acts at once with
+// renderEditField(…, {apply: 'instant'}). The checkbox carries no `required`:
+// a required yes/no is one with a value, and an unticked box is «Нет», not an
+// empty answer. An optional one is a pair of buttons with nothing chosen while
+// the value is absent -- the consumer owner's decision of 2026-10-06, and the
+// reason is that neither a switch nor a checkbox can say «не задано»: rendering
+// one over an absent value would write false on the first save, a value nobody
+// chose.
 function renderBooleanEdit(field, value, host) {
     const optional = field.required !== true;
 
-    if (!optional) {
+    if (!optional && EDIT_APPLY === 'instant') {
         return html`
             <sf-switch
                     size=${EDIT_SIZE}
@@ -1457,6 +1463,18 @@ function renderBooleanEdit(field, value, host) {
                     aria-label=${field.label || field.key || ''}
                     @change=${(event) => host.setFieldValue(field, Boolean(event.target?.checked))}
             ></sf-switch>
+        `;
+    }
+
+    if (!optional) {
+        return html`
+            <sf-checkbox
+                    size=${EDIT_SIZE}
+                    name=${fieldName(field)}
+                    ?checked=${value === true}
+                    aria-label=${field.label || field.key || ''}
+                    @change=${(event) => host.setFieldValue(field, Boolean(event.target?.checked ?? event.detail?.checked))}
+            ></sf-checkbox>
         `;
     }
 
@@ -2202,6 +2220,20 @@ function renderFileEdit(field, value, host) {
 // type yet.
 const sizeOption = (options) => (options?.size === '1/2' ? '1/2' : '1');
 
+// `options.density`: 'compact' or 'normal', the density the control is drawn in
+// (owner decision C22; form study FM-5). Without it the control follows the
+// region it stands in, as every component does; with it the host sets the
+// region for this field alone -- a compact panel asks for 'compact' instead of
+// shrinking the field with size '1/2', which C22 forbids. Anything else is no
+// density at all.
+const DENSITIES = new Set(['compact', 'normal']);
+const densityOption = (options) => (DENSITIES.has(options?.density) ? options.density : '');
+
+// `options.apply`: 'instant' when a change acts at once (a settings panel, the
+// parameters of a block), anything else for a form saved with a button. Read by
+// the yes/no field only: a switch at once, a checkbox in a form (C165 (4)).
+let EDIT_APPLY = '';
+
 // A control that stays a control when it may not be changed: a choice as
 // buttons shows which button is chosen, which is what it is for, where the
 // view's badge would show a different thing (port 1.16.0).
@@ -2228,18 +2260,32 @@ export function renderEditField(field = {}, value, host, options = {}) {
     const outer = EDIT_SIZE;
     const outerDisabled = EDIT_DISABLED;
     const outerPicker = EDIT_PICKER;
+    const outerApply = EDIT_APPLY;
     EDIT_SIZE = sizeOption(options);
     EDIT_DISABLED = disabled;
     // `options.picker: 'dropdown'`: the record, relation, user and paged lookup
     // fields drawn as before C139, a searchable sf-dropdown (until 2027-01-01).
     EDIT_PICKER = options?.picker === 'dropdown' ? 'dropdown' : '';
+    EDIT_APPLY = options?.apply === 'instant' ? 'instant' : '';
     try {
-        return renderer(field, value, host);
+        return inDensity(renderer(field, value, host), densityOption(options));
     } finally {
         EDIT_SIZE = outer;
         EDIT_DISABLED = outerDisabled;
         EDIT_PICKER = outerPicker;
+        EDIT_APPLY = outerApply;
     }
+}
+
+// A density asked for one field is a region around it that draws no box of its
+// own: the variables of the density rules (core/scss/_sf_css__density.scss)
+// stand on it and every part of the control inherits them, the popups it opens
+// read it (core/js/density.js densityOf), and the control lays out in the
+// host's flex or grid as if the wrapper were not there. No density, no wrapper:
+// what a host had is unchanged.
+function inDensity(content, density) {
+    if (!density || content == null) return content;
+    return html`<div class="sf-field-density" style="display: contents" data-sf-density=${density}>${content}</div>`;
 }
 
 
@@ -2551,7 +2597,7 @@ export function renderViewField(field = {}, value, host, options = {}) {
     const outer = VIEW_LINE;
     VIEW_LINE = sizeOption(options);
     try {
-        return renderer(field, value, host);
+        return inDensity(renderer(field, value, host), densityOption(options));
     } finally {
         VIEW_LINE = outer;
     }

@@ -12732,6 +12732,30 @@
       "source": "src/smart/tag/js/templates/default.js; ui-control control/docs-review/decisions.md C140"
     },
     {
+      "id": "behaviour-field-renderers-required-boolean-checkbox",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "module.smart-field-renderers 1.12.0 (owner decision C165 (4), form study FM-6): renderEditField draws a required boolean as an sf-checkbox, a form saved with a button being the default host; the sf-switch it drew is kept for a host whose change acts at once, which says so with the option apply: 'instant'. The checkbox carries no required: an unticked box is the answer «Нет». An optional boolean is unchanged (sf-segmented, nothing chosen while unset).",
+      "items": [
+        {
+          "component": "field-renderers",
+          "from": "renderEditField(requiredBoolean, value, host) as an sf-switch",
+          "to": "renderEditField(requiredBoolean, value, host) as an sf-checkbox; renderEditField(requiredBoolean, value, host, {apply: 'instant'}) as an sf-switch"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "A host whose fields apply at once (a settings panel, block parameters) passes {apply: 'instant'} and keeps the switch. A host that styled or queried sf-switch inside a form field reads sf-checkbox; the change still reaches setFieldValue as a boolean.",
+      "examples": {
+        "before": "SF.fieldRenderers.renderEditField({key: 'live', propertyType: 'boolean', required: true}, true, host) // sf-switch",
+        "after": "SF.fieldRenderers.renderEditField({key: 'live', propertyType: 'boolean', required: true}, true, host, {apply: 'instant'}) // sf-switch where the change acts at once"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/field-renderers/index.js renderBooleanEdit"
+    },
+    {
       "id": "class-table-sm-to-density",
       "recorded_on": "2026-11-14",
       "stage": "compat",

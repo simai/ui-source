@@ -15,6 +15,7 @@ test('the renderer set gives a labelled field a name, not a second label', async
   for (const [renderer, tag] of [
     ['renderDateEdit', 'sf-input-date'],
     ['renderBooleanEdit', 'sf-switch'],
+    ['renderBooleanEdit', 'sf-checkbox'],
     ['renderPhoneEdit', 'sf-input-country'],
   ]) {
     const start = source.indexOf(`function ${renderer}(`);

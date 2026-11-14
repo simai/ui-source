@@ -65,7 +65,12 @@ try {
       {key: 'count', label: 'Счёт', propertyType: 'integer'},
       {key: 'when', label: 'Дата', propertyType: 'date'},
       {key: 'live', label: 'Опубликовано', propertyType: 'boolean', required: true},
+      // The same required yes/no where a change acts at once: a switch there,
+      // a checkbox in a form saved with a button (C165 (4), form study FM-6).
+      {key: 'instant', label: 'Показывать', propertyType: 'boolean', required: true, draw: {apply: 'instant'}},
       {key: 'maybe', label: 'Активно', propertyType: 'boolean'},
+      // A field drawn in a density the host asks for (C22, form study FM-5).
+      {key: 'dense', label: 'Плотно', propertyType: 'string', draw: {density: 'compact'}},
       // A consumer saw «Да»/«Нет» in an English admin, because the words were
       // written into the set. They come from the field now, so this one asks
       // for its own and the one above keeps the published fallback.
@@ -82,14 +87,14 @@ try {
       const box = document.createElement('div');
       box.dataset.field = field.key;
       holder.append(box);
-      const content = set.renderEditField(field, values[field.key], host);
+      const content = set.renderEditField(field, values[field.key], host, field.draw);
       if (content) render(content, box);
     }
     await new Promise((done) => setTimeout(done, 500));
 
     const element = (key) => {
       const box = document.querySelector(`[data-field="${key}"]`);
-      const node = box?.querySelector('sf-input, sf-input-textarea, sf-dropdown, sf-switch, sf-segmented, sf-input-date');
+      const node = box?.querySelector('sf-input, sf-input-textarea, sf-dropdown, sf-switch, sf-checkbox, sf-segmented, sf-input-date');
       return node ? {tag: node.tagName.toLowerCase(), size: node.getAttribute('size'),
         value: node.getAttribute('value'),
         chosen: [...box.querySelectorAll('button')].filter((b) => b.className.includes('sf-button--default')).length,
@@ -102,8 +107,15 @@ try {
     const before = {
       title: element('title'), about: element('about'), count: element('count'),
       when: element('when'), live: element('live'), maybe: element('maybe'), status: element('status'),
-      english: element('english'),
+      english: element('english'), instant: element('instant'), dense: element('dense'),
     };
+    const dense = document.querySelector('[data-field="dense"]');
+    before.density = {
+      region: dense?.querySelector('[data-sf-density]')?.getAttribute('data-sf-density') ?? null,
+      plain: Boolean(document.querySelector('[data-field="title"] [data-sf-density]')),
+      box: dense?.querySelector('[data-sf-density]') ? getComputedStyle(dense.querySelector('[data-sf-density]')).display : null,
+    };
+    before.liveRequired = document.querySelector('[data-field="live"] sf-checkbox')?.hasAttribute('required') ?? null;
     const words = (key) => [...document.querySelectorAll(`[data-field="${key}"] button`)]
       .map((button) => button.textContent.trim());
     before.maybeWords = words('maybe');
@@ -165,7 +177,7 @@ try {
   } else {
     const expected = {
       title: 'sf-input', about: 'sf-input-textarea', count: 'sf-input', when: 'sf-input-date',
-      live: 'sf-switch', maybe: 'sf-segmented', status: 'sf-dropdown',
+      live: 'sf-checkbox', instant: 'sf-switch', maybe: 'sf-segmented', status: 'sf-dropdown', dense: 'sf-input',
     };
     for (const [key, tag] of Object.entries(expected)) {
       if (rendered[key]?.tag !== tag) {
@@ -200,6 +212,15 @@ try {
     if (rendered.cells?.fallback !== 'Да' || rendered.cells?.asked !== 'No') {
       note({case: 'the cell template reads the words from the field too',
         got: rendered.cells, expected: {fallback: 'Да', asked: 'No'}});
+    }
+    // A required yes/no in a form is a box that may stay unticked: no `required`.
+    if (rendered.liveRequired !== false) {
+      note({case: 'a required yes/no checkbox does not ask to be ticked', got: rendered.liveRequired, expected: false});
+    }
+    // density: a region of its own around the field alone, drawing no box.
+    if (rendered.density?.region !== 'compact' || rendered.density?.plain || rendered.density?.box !== 'contents') {
+      note({case: 'a density asked for one field', got: rendered.density,
+        expected: {region: 'compact', plain: false, box: 'contents'}});
     }
     if (rendered.maybeAfter?.chosen !== 1) {
       note({case: 'the pressed button shows', got: rendered.maybeAfter,
