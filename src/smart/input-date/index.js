@@ -12,8 +12,12 @@ import {matchesBreakpoint} from '../../core/js/breakpoints.js';
 import {pageLocale} from '../../core/js/page-language';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 
 const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;

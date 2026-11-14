@@ -20,8 +20,12 @@ import {elementFromManifest} from '../../core/js/element-manifest';
 import {formatNumber} from '../../core/js/format-number.js';
 import {renderTileMetricTemplate} from './js/templates/default';
 import manifest from './component.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 import './scss/index.scss';
 
 // The label's id, one per tile on the page (the same on every render, so a

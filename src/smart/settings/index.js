@@ -40,8 +40,12 @@ import {
 import manifest from './component.json';
 // The panel look's sheet (C106); the menu looks draw nothing of their own.
 import './scss/index.scss';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // The menu it draws, found under its current name and its former one.
 const MENU = `:scope > .sf-settings-parts > ${tagSelector('sf-menu-context')}`;

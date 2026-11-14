@@ -13,8 +13,12 @@ import { FormField } from '../helpers/form-field';
 import { fileNameFromAddress, formatFileSize } from '../../core/js/composition/file-size.mjs';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // Every word this component says is lang/<locale>.json runtime (standard
 // 1.3.8 §11); a product adds any other language through

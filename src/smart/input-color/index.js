@@ -12,8 +12,12 @@ import {
 import {RECENT_SHOW, onRecentChange, recentColours, rememberColour} from './js/recent.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // A colour, for anywhere a colour is set: a theme, a site's own look, a label, a
 // chart series. It was built because the property set had no colour at all while a
