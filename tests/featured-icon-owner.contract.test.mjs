@@ -59,7 +59,8 @@ test('Featured Icon keeps one name per look, the others dated aliases noted once
     read('src/component/featured-icon/js/_featured-icon.js'),
     read('contracts/changes/journal.json'),
   ]);
-  const pairs = {light: 'soft', mid: 'medium', dark: 'solid', modern: 'elevated', clear: 'neutral'};
+  // C188 (8): medium and elevated draw tonal (soft) and are aliases too.
+  const pairs = {light: 'soft', medium: 'soft', mid: 'soft', elevated: 'soft', modern: 'soft', dark: 'solid', clear: 'neutral'};
   for (const [alias, name] of Object.entries(pairs)) {
     assert.ok(script.includes(`${alias}: '${name}'`), `${alias} -> ${name}`);
     assert.ok(css.includes(`sf-featured-icon--${name}`));
@@ -69,7 +70,7 @@ test('Featured Icon keeps one name per look, the others dated aliases noted once
   const record = JSON.parse(journal).records.find((entry) => entry.id === 'class-featured-icon-look-aliases');
   assert.ok(record, 'journal record');
   assert.equal(record.remove_after, '2027-01-01');
-  assert.equal(record.items.length, 5);
+  assert.equal(record.items.length, 7);
 });
 
 test('Featured Icon size 3 and elevated follow the ladders and C20', async () => {
@@ -77,9 +78,11 @@ test('Featured Icon size 3 and elevated follow the ladders and C20', async () =>
   const size3 = css.match(/\.sf-featured-icon--size-3 \{[^}]*\}/)?.[0] || '';
   assert.match(size3, /--sf-featured-icon--icon-size: calc\(var\(--sf-text-height-2\) \+ var\(--sf-a4\)\)/);
   assert.match(size3, /var\(--sf-ui-3--control-height\)/);
-  const elevated = css.match(/\.sf-featured-icon--modern \{[^}]*\}/)?.[0] || '';
-  assert.match(elevated, /--sf-featured-icon--box-shadow: var\(--sf-shadow-flat\)/);
-  assert.doesNotMatch(css, /shadow-raised/);
+  // C188 (8): elevated retires and draws the tonal look, no shadow at all.
+  const tonal = css.match(/\.sf-featured-icon--soft,[^{]*\{[^}]*\}/)?.[0] || '';
+  assert.match(tonal, /\.sf-featured-icon--elevated/);
+  assert.match(tonal, /\.sf-featured-icon--modern/);
+  assert.doesNotMatch(css, /shadow-raised|shadow-flat/);
 });
 
 test('Featured Icon documentation covers all axes and accessible naming', {

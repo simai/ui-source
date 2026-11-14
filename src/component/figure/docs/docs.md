@@ -19,11 +19,16 @@ it. It is CSS only and draws on the native `figure` and `figcaption`.
   radius. An `img`, `video`, `svg`, `canvas`, `iframe` or `picture` in it takes
   its full width.
 - `.sf-figure-caption` is the caption, in the page's small text and the
-  `--sf-on-surface-variant` role. It is optional.
+  `--sf-on-surface-variant` role. It is optional. It stands 8 px under the
+  picture at every width (4 in compact density; owner decision C188 (5), the
+  gallery's gap). A credit -- the author of the photo -- follows in the same
+  line after « · »: `Склад в Казани после ремонта · фото А. Петрова`.
 
 ## Ratio and fit
 
-Without a ratio the box keeps the media's own proportions. A named ratio --
+One list of ratios serves the figure, the gallery and a card's picture
+(owner decision C188 (6)): 1:1 · 4:3 · 3:2 · 16:9 · 21:9 · auto.
+Without a ratio (auto) the box keeps the media's own proportions. A named ratio --
 `sf-figure--ratio-1x1`, `-4x3`, `-3x2`, `-16x9` or `-21x9` -- gives the box
 that ratio, and the media fills it, cropped at the edges. With
 `sf-figure--contain` the media stands whole inside the box instead, and the
@@ -138,6 +143,6 @@ once the grid has `sf-figure-grid--selecting`; a chosen tile adds
 | `--sf-figure-border-width` | the box's edge's width | `--sf-0` (no edge) |
 | `--sf-figure-radius` | the box's corners | `--sf-radius--surface` |
 | `--sf-figure-caption-color` | the caption | `--sf-on-surface-variant` |
-| `--sf-figure-gap` | between the media and the caption | `--sf-space-1/2` |
+| `--sf-figure-gap` | between the media and the caption | `--sf-space-1/3` (8; 4 compact) |
 
 In forced colours the box's edge is drawn in `CanvasText`.

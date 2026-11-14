@@ -13184,7 +13184,7 @@
       "recorded_on": "2026-11-14",
       "stage": "compat",
       "kind": "class",
-      "summary": "component.featured-icon 1.2.0: one name per look, the name the documentation uses (DEV letter on plain group 1, IR-2): soft, medium, solid, elevated, neutral. Their second names -- light, mid, dark, modern, clear -- draw the same look until remove_after, and the component's script notes each one once in SF.deprecations.",
+      "summary": "component.featured-icon 1.3.0: two looks (owner decision C188 (8), 2026-11-14): tonal, named soft and drawn by default, and solid. medium (it took the hover fill as its resting one) draws tonal; elevated retires (C20, no shadow at rest) and draws tonal. One name per remaining look and tone (DEV letter on plain group 1, IR-2): medium, elevated and the second names light, mid, modern, dark and clear draw soft, solid or neutral until remove_after, and the component's script notes each one once in SF.deprecations.",
       "items": [
         {
           "component": "featured-icon",
@@ -13193,18 +13193,28 @@
         },
         {
           "component": "featured-icon",
+          "from": "sf-featured-icon--medium",
+          "to": "sf-featured-icon--soft"
+        },
+        {
+          "component": "featured-icon",
           "from": "sf-featured-icon--mid",
-          "to": "sf-featured-icon--medium"
+          "to": "sf-featured-icon--soft"
+        },
+        {
+          "component": "featured-icon",
+          "from": "sf-featured-icon--elevated",
+          "to": "sf-featured-icon--soft"
+        },
+        {
+          "component": "featured-icon",
+          "from": "sf-featured-icon--modern",
+          "to": "sf-featured-icon--soft"
         },
         {
           "component": "featured-icon",
           "from": "sf-featured-icon--dark",
           "to": "sf-featured-icon--solid"
-        },
-        {
-          "component": "featured-icon",
-          "from": "sf-featured-icon--modern",
-          "to": "sf-featured-icon--elevated"
         },
         {
           "component": "featured-icon",
@@ -13216,11 +13226,40 @@
       "remove_after": "2027-01-01",
       "rewrite": "rename-class",
       "examples": {
-        "before": "<div class=\"sf-featured-icon sf-featured-icon--light sf-featured-icon--clear\">",
+        "before": "<div class=\"sf-featured-icon sf-featured-icon--elevated sf-featured-icon--clear\">",
         "after": "<div class=\"sf-featured-icon sf-featured-icon--soft sf-featured-icon--neutral\">"
       },
       "owner": "ui-source",
-      "source": "src/component/featured-icon/scss/_css_featured-icon.scss; src/component/featured-icon/js/_featured-icon.js; ui-control control/research/2026-11-14-plain-group-1.md (IR-2)"
+      "source": "src/component/featured-icon/scss/_css_featured-icon.scss; src/component/featured-icon/js/_featured-icon.js; ui-control control/research/2026-11-14-plain-group-1.md (IR-2); control/docs-review/decisions.md C188 (8)"
+    },
+    {
+      "id": "class-content-divider-c188-aliases",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.content-divider 1.1.0 (owner decision C188 (3), (4)): a caption on the line is small and muted with no frame, and buttons on the line are real sf-button size 1/2 outline in .sf-divider-buttons. The framed caption (sf-divider-content-border, drawn as the plain caption) and the divider's own button paint (sf-divider-button and its --left, --right, --solo and -square modifiers, drawn as before) are aliases until remove_after; the component's script notes each once in SF.deprecations.",
+      "items": [
+        {
+          "component": "content-divider",
+          "from": "sf-divider-content-border",
+          "to": "sf-divider-content"
+        },
+        {
+          "component": "content-divider",
+          "from": "sf-divider-button",
+          "to": "sf-button"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Replace a framed caption's sf-divider-content-border with the plain sf-divider-content (it already draws without a frame). Replace each <button class=\"sf-divider-button ...\"> in .sf-divider-buttons with <sf-button size=\"1/2\" appearance=\"outline\" text=\"...\"> (an icon-only solo button: sf-button-icon size 1/2 outline with an aria-label); the buttons stand 8 apart without joined edges.",
+      "examples": {
+        "before": "<span class=\"sf-divider-buttons\"><button type=\"button\" class=\"sf-divider-button sf-divider-button--left\">Ещё 20</button><button type=\"button\" class=\"sf-divider-button sf-divider-button--right\">Все</button></span>",
+        "after": "<span class=\"sf-divider-buttons\"><sf-button size=\"1/2\" appearance=\"outline\" text=\"Ещё 20\"></sf-button><sf-button size=\"1/2\" appearance=\"outline\" text=\"Все\"></sf-button></span>"
+      },
+      "owner": "ui-source",
+      "source": "src/component/contentDivider/scss/_css__contentDivider.scss; src/component/contentDivider/js/_contentDivider.js; ui-control control/docs-review/decisions.md C188 (3), (4)"
     },
     {
       "id": "behaviour-tile-metric-money-whole",
