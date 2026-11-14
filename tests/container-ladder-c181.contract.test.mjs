@@ -56,6 +56,7 @@ const SCREEN_QUERIES = {
   'src/smart/drawer': 'page frame: below md a side panel is the whole screen (C157 (4)), below sm its foot\'s buttons share the row (C157 (3))',
   'src/smart/confirm': 'a dialog on a narrow screen; containing its inline size would collapse a card as wide as its content',
   'src/smart/confirm-change': 'a dialog on a narrow screen; containing its inline size would collapse a card as wide as its content',
+  'src/smart/list-description': 'owner decision C180 (3): on a phone (below md, sf-drawer\'s whole-screen panel) a label is always over its value; a phone\'s list is wider than a 24rem panel\'s, so no container step tells them apart',
   // To move to @container (each needs an inner element as the container).
   'src/component/reference-link': 'to move: the card stacks below sm; the rule styles the card itself',
   'src/component/admin-menu': 'to move: below sm',

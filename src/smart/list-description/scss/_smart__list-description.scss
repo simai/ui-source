@@ -1,4 +1,6 @@
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
+@use 'sass:map';
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @layer sf.components {
 /* sf-list-description (standard simai.smart-component 1.3.14 §6). One rung S
    of the ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2
@@ -17,7 +19,8 @@
    The labels stand in a column of their own: the dl is a grid of two
    columns and every row a subgrid of it, so each label and each value start
    on one axis however long the labels are. layout stacked, or layout auto
-   in a column narrower than 24rem, puts each label over its value.
+   in a column of 20rem or narrower (a 20rem side panel) or on a phone, puts
+   each label over its value (owner decision C180 (3)).
 
    Sections (decision C33, the record card): the list is one grid holding,
    per section, a head (title and action, a row of the rung's control
@@ -201,10 +204,14 @@ sf-list-description {
 }
 
 /* Monospace a step smaller, on the same line, so it looks the size of the
-   text around it. */
+   text around it. A path, a hash or a key wraps by characters, every line
+   full (owner decision C180 (5)): it broke only where it could not go on
+   (overflow-wrap anywhere), so a path wrapped at its hyphens and left ragged
+   lines that read as separate words. Prose wraps at its spaces as before. */
 .sf-list-description-text--mono {
   font-family: var(--sf-mono);
   font-size: var(--sf-list-description--below-font-size);
+  word-break: break-all;
 }
 
 /* Numbers and sums in figures of one width, so a column of them lines up. */
@@ -375,7 +382,17 @@ sf-list-description {
   white-space: nowrap;
 }
 
-@container (max-width: #{mq.container-step(g2)}) {
+/* layout auto (owner decision C180 (3)): the label beside its value from a
+   list wider than 20rem -- a 24rem side panel holds a 21.5rem list (its 20 px
+   gutters) and puts them side by side; a 20rem panel and anything narrower
+   stack. The decision names 22rem of list width for "a 24rem panel"; the
+   ladder's step below it, g0, is the one that keeps that panel beside (22rem
+   would stack it at 1440, where the list is 344 px). It was g2 (24rem): every
+   20 and 24rem panel stacked, rows 60 instead of 40. On a phone (below md, as
+   sf-drawer's whole-screen panel) a label is always over its value, however
+   wide the list (C33): a phone's list is wider than a 24rem panel's, so no
+   container step tells them apart. */
+@mixin list-description-stacked-auto {
   .sf-list-description--layout-auto .sf-list-description-list {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -385,6 +402,14 @@ sf-list-description {
     font-size: var(--sf-list-description--below-font-size);
     line-height: var(--sf-list-description--label-line);
   }
+}
+
+@container (max-width: #{mq.container-step(g0)}) {
+  @include list-description-stacked-auto;
+}
+
+@media not all and (min-width: map.get(bp.$breakpoint-array, md)) {
+  @include list-description-stacked-auto;
 }
 
 }
