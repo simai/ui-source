@@ -700,11 +700,21 @@
     padding-inline-start: calc(var(--sf-px) * 0);
   }
 
-  /* With chips the first tag is the picture: it stands at the plain inset,
-     as an icon does. */
+  /* With chips the end keeps the plain inset (the clear stands there). The
+     first tag stands as far from the start edge as from the top and bottom
+     (owner decision C145, amendment R238, 2026-11-14): (field - tag) / 2 =
+     --sf-space-1/4 from the outer edge, the border counted inside it, at
+     every size, compact and on a phone; inline-start, so the same in RTL. It
+     stood at the plain inset, 13 / 15 / 19 from the edge with 4 above and
+     below. The search text after the tags keeps its own text inset, and an
+     empty field's placeholder the C77 value inset (the rule above). */
   .sf-lookup:has(.sf-lookup-chip) .sf-lookup-frame {
     padding-inline-start: var(--sf-lookup-padding-inline, calc(var(--sf-lookup--inset) - var(--sf-px)));
     padding-inline-end: var(--sf-lookup-padding-inline, calc(var(--sf-lookup--inset) - var(--sf-px)));
+  }
+
+  .sf-lookup .sf-lookup-frame:has(> .sf-lookup-chip:first-child) {
+    padding-inline-start: var(--sf-lookup-padding-inline, calc(var(--sf-space-1\/4) - var(--sf-px)));
   }
 
   /* The list's rows keep the field's text edge (section 3): a rounder field
