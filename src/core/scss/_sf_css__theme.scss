@@ -333,10 +333,11 @@
        darker still and takes the primary role. The same ink takes dim text
        under a state layer (surfaces research 6.1). Dark neutral-85 since C16
        (owner, 2026-11-08): on a resting fill over the popup's step
-       neutral-80 gave 4.30, neutral-85 gives 4.96. Dark neutral-90 since C178
-       (owner 2026-11-14), the value a popup place already declares (C43): on
-       the strong fill over a popup 85 gave 4.11:1, 90 gives 4.64. */
-    --sf-on-surface-container-variant: light-dark(var(--sf-neutral-35), var(--sf-neutral-90));
+       neutral-80 gave 4.30, neutral-85 gives 4.96. Inside a popup the place
+       declares its own, one step up (C43, mix/_mix__places.scss): 90 on the
+       popup, 95 on the nested one, so the strong fill there holds 4.64 and
+       5.27 (C178 contrast matrix reads the place's value). */
+    --sf-on-surface-container-variant: light-dark(var(--sf-neutral-35), var(--sf-neutral-85));
     /* The former tones of initials (C17, 2026-11-08): sf-avatar names a hue of
        the static palette now and draws its initials on the hue's container,
        .sf-hue-<name> (core/scss/_sf_css__hue.scss). The former roles hold the

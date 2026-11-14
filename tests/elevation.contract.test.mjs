@@ -15,7 +15,11 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
 
 // The places (C16, C20): a card, a raised place, a popup and a nested popup,
-// each a surface step above the last in the dark theme. A window and a drawer
+// each a surface step above the last in the dark theme -- except the nested
+// popup, which takes the popup's step since C178 (owner 2026-11-14, contrast):
+// on step 5 the ink on a strong fill measured 4.08:1. It stands off its parent
+// by the overlay shadow and its own edge, as both do on the page in the light
+// theme. A window and a drawer
 // stand on the popup's surface and are told apart by the scrim.
 const PLACES = ['card', 'raised', 'popup', 'popup-nested'];
 
@@ -32,11 +36,13 @@ test('a raised surface is declared for every place, each above the last', () => 
 
   // The page itself stands on surface 0, so the first place has to leave it. At
   // surface 1 it did not: 1.10:1 against the page, which nobody sees on a large
-  // filled area. Every place after it stands strictly higher than the one below.
+  // filled area. Every place after it stands strictly higher than the one below,
+  // the nested popup on the popup's step (C178).
   assert.ok(steps[0] > 1, `the card must clear surface 1, found surface ${steps[0]}`);
   for (let i = 1; i < steps.length; i += 1) {
+    const nested = PLACES[i] === 'popup-nested';
     assert.ok(
-      steps[i] > steps[i - 1],
+      nested ? steps[i] === steps[i - 1] : steps[i] > steps[i - 1],
       `${PLACES[i]} stands on surface ${steps[i]}, not above ${PLACES[i - 1]} on surface ${steps[i - 1]}`,
     );
   }

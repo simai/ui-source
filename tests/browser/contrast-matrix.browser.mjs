@@ -19,7 +19,10 @@
 //   ink on a fill      the container fills (rest, hover, pressed, strong) are
 //                      translucent: each is laid over every opaque neutral
 //                      surface, and the ink, the container variant and the
-//                      icon role are read on the result;
+//                      icon role are read on the result; on a popup and a
+//                      nested popup the dim ink is the place's own (C43: 90 and
+//                      95 dark, mix/_mix__places.scss), as every popup place
+//                      declares it, and the theme's is reported, not required;
 //   status pairs       --sf-on-X on --sf-X, --sf-on-X-container and its graphic
 //                      on --sf-X-container (laid over every opaque surface),
 //                      for primary ... neutral, and each tone container;
@@ -35,8 +38,9 @@
 // covers fewer pairs than it says fails too, so the list only shrinks.
 //
 // Prints {matrix, failures, known, fixedKnown} and exits 1 on a failure.
-import {writeFileSync} from 'node:fs';
-import {join, resolve} from 'node:path';
+import {readFileSync, writeFileSync} from 'node:fs';
+import {dirname, join, resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {chromium} from 'playwright';
 
 const args = process.argv.slice(2);
@@ -52,6 +56,18 @@ const FILLS = ['container', 'container-hover', 'container-active', 'container-st
 const STATUS = ['primary', 'secondary', 'tertiary', 'error', 'warning', 'success', 'info', 'neutral'];
 const TONES = ['amber', 'green', 'indigo', 'lime', 'rose', 'sky', 'teal', 'violet'];
 const INK_AS_TEXT = ['error', 'primary', 'success', 'warning', 'info'];
+// The popup places' dim ink on a fill (C43), read from the mixin every popup
+// place takes it from, so this follows the source rather than a copy.
+const placesMixin = readFileSync(join(dirname(fileURLToPath(import.meta.url)), '../../src/core/scss/mix/_mix__places.scss'), 'utf8');
+const placeValue = (name) => {
+  const found = placesMixin.match(new RegExp(`^\\$${name}: '([^']+)';`, 'mu'));
+  if (!found) throw new Error(`mix/_mix__places.scss declares no $${name}`);
+  return found[1];
+};
+const PLACE_FILL_VARIANT = {
+  popup: placeValue('sf-place-popup-container-variant'),
+  'popup-nested': placeValue('sf-place-popup-nested-container-variant'),
+};
 
 // Pairs below AA, each a found defect with the owner that fixes it (C178:
 // listed, not hidden). A rule matches the key
@@ -62,7 +78,9 @@ const INK_AS_TEXT = ['error', 'primary', 'success', 'warning', 'info'];
 // left below AA -- glass text over a white picture (2), the dark status
 // container graphics over a popup (15), the dark neutral container graphic
 // (5), the ink and the dim ink on a fill over a dark popup (5) -- were fixed
-// in the core colour roles (core/scss/_sf_css__theme.scss, _sf_css__hue.scss).
+// in the core colour roles (core/scss/_sf_css__theme.scss, _sf_css__hue.scss);
+// of the last five, the dim ink on a fill over a popup is now read as the
+// popup place paints it (its own dim ink, C43).
 const KNOWN = [];
 
 // Every pair: [ink, surface, base, threshold, required, group].
@@ -81,7 +99,8 @@ function pairs() {
     for (const fill of FILLS) {
       const over = `--sf-surface-${fill}`;
       add('--sf-on-surface', over, surface, 4.5, true, 'ink on a fill');
-      add('--sf-on-surface-container-variant', over, surface, 4.5, true, 'ink on a fill');
+      add('--sf-on-surface-container-variant', over, surface, 4.5, !PLACE_FILL_VARIANT[place], 'ink on a fill');
+      if (PLACE_FILL_VARIANT[place]) add(PLACE_FILL_VARIANT[place], over, surface, 4.5, true, 'ink on a fill');
       add('--sf-on-surface-icon', over, surface, 3, true, 'icon on a fill');
       add('--sf-on-surface-variant', over, surface, 4.5, false, 'ink on a fill');
     }
@@ -121,7 +140,7 @@ try {
       // paints with it (a property that is not declared resolves to nothing).
       const colourOf = (name) => {
         if (name.startsWith('#')) return name;
-        probe.style.color = `var(${name}, rgb(1, 2, 3))`;
+        probe.style.color = name.startsWith('--') ? `var(${name}, rgb(1, 2, 3))` : name;
         const value = getComputedStyle(probe).color;
         return value === 'rgb(1, 2, 3)' ? null : value;
       };
