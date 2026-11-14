@@ -1,4 +1,3 @@
-@use '../../../../core/scss/mix/mix__shadow' as shadow;
 @use '../../default/scss/var__shadow' as *;
 @layer sf.utilities {
 // SIMAI Framework
@@ -7,13 +6,6 @@
 // SHADOW ON HOVER (C20, 2026-11-08): hover:shadow-raised lifts a card under
 // the pointer. The numbered classes are former names until 2027-01-01.
 
-@mixin place-shadow($place) {
-    @if $place == flat {
-        box-shadow: var(--sf-shadow-flat);
-    } @else {
-        box-shadow: shadow.sf-shadow($place);
-    }
-}
 
 @each $place in $shadow-places {
     .hover\:shadow-#{$place}:hover {

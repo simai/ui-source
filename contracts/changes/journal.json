@@ -12446,6 +12446,382 @@
       },
       "owner": "ui-source",
       "source": "src/utility/word-break/default/scss/_sf_css__word_break.scss; src/utility/white-space/default/scss/_sf_css__white_space.scss; src/utility/text-overflow/default/scss/_sf_css__text_overflow.scss; src/core/js/utility-class-aliases.js; ui-control control/docs-review/decisions.md C186"
+    },
+    {
+      "id": "utility-c187-retired-sheets",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "Owner decision C187 (2)-(6): whole utility families leave through a dated alias -- the raw spacing ladders (margin-ext, padding-ext, scroll-margin-ext, scroll-padding-ext), background-size-ext and transform-translate-ext; ring-opacity and divide-opacity (off the C41 alpha scale); 25 effect families (filters, backdrop filters but blur, masks, blend modes); transition-delay and will-change. Every class keeps drawing what it drew until remove_after (the sheets stay, utility.full.css keeps them), and the Loader notes each one once in SF.deprecations. None was used in the Framework, the ui-doc examples or the products on 2026-11-14.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "margin-ext",
+          "to": null,
+          "match": "(?<![\\w-])(?:(?:-m-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9|ottom-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9)))|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9|nline-(?:end-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9))|start-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9))))|top-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9)))|m-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9|ottom-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9)))|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9|nline-(?:end-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9))|start-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9))))|top-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9)))))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "padding-ext",
+          "to": null,
+          "match": "(?<![\\w-])(?:p-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9|ottom-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9)))|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9|nline-(?:end-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9))|start-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9))))|top-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9))))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-margin-ext",
+          "to": null,
+          "match": "(?<![\\w-])(?:(?:-scroll-m(?:-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9|nline-(?:end-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9))|start-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9)))))|b-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9))|t-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9)))|scroll-m(?:-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9|nline-(?:end-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9))|start-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9)))))|b-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9))|t-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9)))))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-padding-ext",
+          "to": null,
+          "match": "(?<![\\w-])(?:(?:-scroll-p(?:-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9|nline-(?:end-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9))|start-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9)))))|b-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9))|t-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9)))|scroll-p(?:-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9|nline-(?:end-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9))|start-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9)))))|b-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9))|t-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9)))))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "background-size-ext",
+          "to": null,
+          "match": "(?<![\\w-])(?:bg-size-(?:0|1(?:(?:0(?:0)?|1|2|3|4|5|6|7|8|9))?|2(?:(?:0|1|2|3|4|5|6|7|8|9))?|3(?:(?:0|1|2|3|4|5|6|7|8|9))?|4(?:(?:0|1|2|3|4|5|6|7|8|9))?|5(?:(?:0|1|2|3|4|5|6|7|8|9))?|6(?:(?:0|1|2|3|4|5|6|7|8|9))?|7(?:(?:0|1|2|3|4|5|6|7|8|9))?|8(?:(?:0|1|2|3|4|5|6|7|8|9))?|9(?:(?:0|1|2|3|4|5|6|7|8|9))?|a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9)))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "transform-translate-ext",
+          "to": null,
+          "match": "(?<![\\w-])(?:(?:-translate-(?:x-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9))|y-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9)))|translate-(?:x-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9))|y-(?:a(?:0|1|2|3|4|5|6|7|8|9)|b(?:0|1|2|3|4|5|6|7|8|9)|c(?:0|1|2|3|4|5|6|7|8|9)|d(?:0|1|2|3|4|5|6|7|8|9)|e(?:0|1|2|3|4|5|6|7|8|9)|f(?:0|1|2|3|4|5|6|7|8|9)|g(?:0|1|2|3|4|5|6|7|8|9)|h(?:0|1|2|3|4|5|6|7|8|9)|i(?:0|1|2|3|4|5|6|7|8|9)))))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "ring-opacity",
+          "to": null,
+          "match": "(?<![\\w-])(?:ring-opacity-(?:0|1|2|3|4|5|6|7|8|9|full))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "divider-opacity",
+          "to": "divide-outline-variant",
+          "match": "(?<![\\w-])(?:divide(?:-opacity-(?:0|1|2|3|4|5|6|7|8|9|full)|r-opacity-(?:0|1|2|3|4|5|6|7|8|9|full)))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "mix-blend-mode",
+          "to": null,
+          "match": "(?<![\\w-])(?:mix-blend-(?:color(?:-(?:burn|dodge))?|d(?:arken|ifference)|exclusion|h(?:ard-light|ue)|l(?:ighten|uminosity)|multiply|normal|overlay|plus-(?:darker|lighter)|s(?:aturation|creen|oft-light)))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "filter-brightness",
+          "to": null,
+          "match": "(?<![\\w-])(?:brightness-(?:0|1(?:\\/(?:2|3|4))?|2|3|4))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "filter-contrast",
+          "to": null,
+          "match": "(?<![\\w-])(?:contrast-(?:0|1(?:\\/(?:2|3|4))?|2|3|4))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "filter-grayscale",
+          "to": null,
+          "match": "(?<![\\w-])(?:grayscale(?:-none)?)(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "filter-hue-rotate",
+          "to": null,
+          "match": "(?<![\\w-])(?:(?:-hue-rotate-(?:15|30|60|90)|hue-rotate-(?:0|1(?:5|80)|30|60|90)))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "filter-invert",
+          "to": null,
+          "match": "(?<![\\w-])(?:invert(?:-none)?)(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "filter-opacity",
+          "to": null,
+          "match": "(?<![\\w-])(?:filter-opacity-(?:0|1|2|3|4|5|6|7|8|9|full))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "filter-saturate",
+          "to": null,
+          "match": "(?<![\\w-])(?:saturate-(?:0|1(?:\\/(?:2|3|4))?|2|3|4))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "filter-sepia",
+          "to": null,
+          "match": "(?<![\\w-])(?:sepia(?:-none)?)(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "backdrop-filer-hue-rotate",
+          "to": null,
+          "match": "(?<![\\w-])(?:(?:-backdrop-hue-rotate-(?:15|30|60|90)|backdrop-hue-rotate-(?:0|1(?:5|80)|30|60|90)))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "backdrop-filter-brightness",
+          "to": null,
+          "match": "(?<![\\w-])(?:backdrop-brightness-(?:0|1(?:\\/(?:2|3|4))?|2|3|4))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "backdrop-filter-contrast",
+          "to": null,
+          "match": "(?<![\\w-])(?:backdrop-contrast-(?:0|1(?:\\/(?:2|3|4))?|2|3|4))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "backdrop-filter-grayscale",
+          "to": null,
+          "match": "(?<![\\w-])(?:backdrop-grayscale(?:-none)?)(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "backdrop-filter-invert",
+          "to": null,
+          "match": "(?<![\\w-])(?:backdrop-invert(?:-none)?)(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "backdrop-filter-opacity",
+          "to": null,
+          "match": "(?<![\\w-])(?:backdrop-opacity-(?:0|1|2|3|4|5|6|7|8|9|full))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "backdrop-filter-saturate",
+          "to": null,
+          "match": "(?<![\\w-])(?:backdrop-saturate-(?:0|1(?:\\/(?:2|3|4))?|2|3|4))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "backdrop-filter-sepia",
+          "to": null,
+          "match": "(?<![\\w-])(?:backdrop-sepia(?:-none)?)(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "mask-clip",
+          "to": null,
+          "match": "(?<![\\w-])(?:mask-(?:border|content|fill|margin|none|padding|stroke|text|viewbox))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "mask-composite",
+          "to": null,
+          "match": "(?<![\\w-])(?:mask-(?:add|exclude|intersect|subtract))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "mask-mode",
+          "to": null,
+          "match": "(?<![\\w-])(?:mask-(?:alpha|luminance|source))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "mask-origin",
+          "to": null,
+          "match": "(?<![\\w-])(?:mask-origin-(?:border|content|fill|margin|padding|stroke|viewbox))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "mask-position",
+          "to": null,
+          "match": "(?<![\\w-])(?:mask-(?:bottom|center|inline-(?:end(?:-(?:bottom|top))?|start(?:-(?:bottom|top))?)|top))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "mask-repeat",
+          "to": null,
+          "match": "(?<![\\w-])(?:mask-repeat(?:-(?:none|round|space|x|y))?)(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "mask-size",
+          "to": null,
+          "match": "(?<![\\w-])(?:mask-(?:auto|co(?:ntain|ver)|full))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "mask-type",
+          "to": null,
+          "match": "(?<![\\w-])(?:mask-type-(?:alpha|luminance))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "transition-delay",
+          "to": null,
+          "match": "(?<![\\w-])(?:delay-(?:0|1|2|3|4|5|6|7|8|9))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "will-change",
+          "to": null,
+          "match": "(?<![\\w-])(?:will-change-(?:auto|contents|scroll(?:-position)?|transform))(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Space comes from the space steps and roles (m-*, p-*, gap-*, the C105/C173 roles); a ring or a divider takes a role colour at full strength (ring-primary, divide-outline-variant); blur-*, backdrop-blur-* and opacity-* stay; a delay or will-change belongs to the component that animates. Remove the class or write the step or role named in to.",
+      "owner": "ui-source",
+      "source": "src/core/js/retired-classes.table.js; ui-control control/research/2026-11-14-utilities-cleanup.md; control/docs-review/decisions.md C187"
+    },
+    {
+      "id": "class-c187-utility-renames",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C187 (3), (6): ring widths are 0, 1, 2 (ring-3 and ring-4 become ring-2), and the timing utilities speak the motion roles -- ease-enter, ease-exit, ease-move, ease-linear on --sf-ease-* (ease-in becomes ease-exit, ease-out ease-enter, ease-in-out ease-move). The former names keep drawing what they drew until remove_after, and the Loader notes each one once in SF.deprecations (core/js/retired-classes.table.js).",
+      "items": [
+        {
+          "component": "utility",
+          "from": "ring-3",
+          "to": "ring-2"
+        },
+        {
+          "component": "utility",
+          "from": "ring-4",
+          "to": "ring-2"
+        },
+        {
+          "component": "utility",
+          "from": "ease-in",
+          "to": "ease-exit"
+        },
+        {
+          "component": "utility",
+          "from": "ease-out",
+          "to": "ease-enter"
+        },
+        {
+          "component": "utility",
+          "from": "ease-in-out",
+          "to": "ease-move"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<div class=\"ring-3 ring-primary transition ease-in-out\">…</div>",
+        "after": "<div class=\"ring-2 ring-primary transition ease-move\">…</div>"
+      },
+      "owner": "ui-source",
+      "source": "src/core/js/retired-classes.table.js; src/utility/ring-width; src/utility/transition-timing-function; ui-control control/docs-review/decisions.md C187"
+    },
+    {
+      "id": "utility-c187-divide-spelling",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "Owner decision C187 (4): one spelling of the row dividers, divide-* (the Tailwind spelling). Every divider-* class of the width, style and colour families keeps drawing what it drew until remove_after, and the Loader notes each one once in SF.deprecations.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "divider-*",
+          "to": "divide-*"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-utility",
+      "examples": {
+        "before": "<ul class=\"divider-y-1 divider-outline-variant\">…</ul>",
+        "after": "<ul class=\"divide-y-1 divide-outline-variant\">…</ul>"
+      },
+      "owner": "ui-source",
+      "source": "src/core/js/retired-classes.table.js; src/utility/divider-width; src/utility/divider-style; src/utility/divider-color; ui-control control/docs-review/decisions.md C187"
+    },
+    {
+      "id": "class-c187-retired-classes",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C187 (6): animation-from-bottom, -left and -right leave the utilities (a slide-in lives in the component or in the effects package; animation-on-view stays). They keep drawing until remove_after, and the Loader notes each one once in SF.deprecations.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "animation-from-bottom",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "animation-from-left",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "animation-from-right",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove the class; where the motion is needed, the component that shows the element draws it, or use animation-on-view.",
+      "owner": "ui-source",
+      "source": "src/core/js/retired-classes.table.js; src/utility/animation; ui-control control/docs-review/decisions.md C187"
+    },
+    {
+      "id": "class-c187-retired-parts",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C187 (8): the single legacy tab (.sf-tab) joins sf-tabs; emoji (.sf-emoji), the heading outline (.sf-outline, whose name clashes with the colour role --sf-outline) and hide-show (.sf-hide-show) leave. They keep working until remove_after, and the Loader notes each one once in SF.deprecations.",
+      "items": [
+        {
+          "component": "tab",
+          "from": "sf-tab",
+          "to": "sf-tabs"
+        },
+        {
+          "component": "emoji",
+          "from": "sf-emoji",
+          "to": null
+        },
+        {
+          "component": "outline",
+          "from": "sf-outline",
+          "to": null
+        },
+        {
+          "component": "hide-show",
+          "from": "sf-hide-show",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Rebuild a .sf-tab block as .sf-tabs (or <sf-tabs>); a contents list is sf-contents, a section that opens and closes is sf-accordion; write an emoji as text.",
+      "owner": "ui-source",
+      "source": "src/core/js/retired-classes.table.js; src/component/tab; src/component/emoji; src/component/outline; src/component/hideShow; ui-control control/docs-review/decisions.md C187"
+    },
+    {
+      "id": "class-c96-tabs-looks",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C96 (1): the tabs have two looks, the line (a .sf-tabs without a look modifier, it drew filled primary buttons before) and the plate (.sf-tabs--pills). .sf-tabs--full keeps working until remove_after as the line with the tabs sharing the row equally, and the Loader notes it in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-tabs",
+          "from": "sf-tabs--full",
+          "to": "sf-tabs"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove sf-tabs--full; the line is the default. For tabs that share the row, <sf-tabs fit=\"always\">.",
+      "owner": "ui-source",
+      "source": "src/component/tabs/scss/_css__tabs.scss; src/core/js/retired-classes.table.js; ui-control control/docs-review/decisions.md C96"
     }
   ]
 }

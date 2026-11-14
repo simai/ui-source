@@ -1,4 +1,3 @@
-@use '../../../../core/scss/mix/mix__shadow' as shadow;
 @use 'var__shadow' as *;
 @layer sf.utilities {
 // SIMAI Framework
@@ -10,13 +9,6 @@
 // shadow is drawn from the geometry on this element, so a key or an ambient
 // colour set here (the coloured utilities, until 2027-01-01) reaches it.
 
-@mixin place-shadow($place) {
-    @if $place == flat {
-        box-shadow: var(--sf-shadow-flat);
-    } @else {
-        box-shadow: shadow.sf-shadow($place);
-    }
-}
 
 @each $place in $shadow-places {
     .shadow-#{$place} {

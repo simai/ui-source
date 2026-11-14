@@ -228,6 +228,14 @@ export function mapTailwindBaseClass(className) {
     return `grid-col-${gridColsMatch[1]}`;
   }
 
+  // Tailwind's columns-N is the Framework's layout-col-N (utility/column;
+  // C187 (7), UT-7): multi-column text for print and documents.
+  const columnsMatch = base.match(/^columns-(\d{1,2}|auto)$/);
+  if (columnsMatch) {
+    const value = columnsMatch[1];
+    if (value === 'auto' || (Number(value) >= 1 && Number(value) <= 12)) return `layout-col-${value}`;
+  }
+
   if (base === 'w-100') return 'w-full';
   if (base === 'h-100') return 'h-full';
 
@@ -395,6 +403,11 @@ export function mapTailwindBaseClass(className) {
 
 export function convertTailwindClassToken(token) {
   if (!token) return token;
+  // Tailwind's print:hidden hides an element on paper: the Framework's
+  // print-hidden (utility/display-print; owner decision C187 (7)). Only
+  // hidden: print-block and the other display-print classes also hide the
+  // element on screen, which Tailwind's print:block does not.
+  if (token === 'print:hidden') return 'print-hidden';
   const parts = token.split(':');
   const base = parts.pop();
   const variants = parts;

@@ -11,10 +11,17 @@ the `.sf-tabs-main-container` is its sibling. Skin selectors target that owned
 header, so a nested Tabs inside a panel keeps its own skin. Do not place another
 interactive Tabs inside a tab control. The Smart template uses the same shape.
 
+Two looks (owner decision C96 (1)): the line, which `.sf-tabs` draws without a
+look modifier (`.sf-tabs--underline` names it explicitly), and the plate,
+`.sf-tabs--pills`; `.sf-tabs--vertical` is the menu column. Before, `.sf-tabs`
+without a modifier drew filled primary buttons; that look is gone.
+`.sf-tabs--full` is a former name until 2027-01-01: it draws the line with the
+tabs sharing the row in equal columns (each at least as wide as its label),
+and the Loader notes it in `SF.deprecations`.
+
 Prefer short labels. Horizontal lists scroll locally when labels do not fit;
 controls are not squeezed into columns of individual characters. A default
-control wider than the list may wrap its long label without clipping. Full
-controls share available space while keeping a content-based minimum width.
+control wider than the list may wrap its long label without clipping.
 Containers can shrink inside flex/grid layouts while icons keep their size.
 Wrapping/scrolling does not change keyboard navigation semantics.
 
