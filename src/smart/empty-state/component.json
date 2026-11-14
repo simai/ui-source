@@ -4,7 +4,7 @@
   "tag": "sf-empty-state",
   "version": "1.4.1",
   "kind": "leaf",
-  "family": "state",
+  "family": "empty",
   "settings": {
     "kind": {
       "type": "enum",

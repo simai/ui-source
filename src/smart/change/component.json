@@ -4,7 +4,7 @@
   "tag": "sf-change",
   "version": "1.0.4",
   "kind": "leaf",
-  "family": "text",
+  "family": "change",
   "settings": {
     "before": {
       "type": "string",

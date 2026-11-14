@@ -4,7 +4,7 @@
   "tag": "sf-pager",
   "version": "1.3.2",
   "kind": "leaf",
-  "family": "navigation",
+  "family": "pager",
   "settings": {
     "appearance": {
       "type": "enum",

@@ -4,7 +4,7 @@
   "tag": "sf-input-date",
   "version": "1.8.2",
   "kind": "leaf",
-  "family": "field",
+  "family": "input",
   "settings": {
     "date": {
       "type": "string",

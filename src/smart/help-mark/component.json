@@ -4,7 +4,7 @@
   "tag": "sf-help-mark",
   "version": "1.4.1",
   "kind": "leaf",
-  "family": "hint",
+  "family": "help",
   "settings": {
     "text": {
       "type": "string",

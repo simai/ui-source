@@ -4,7 +4,7 @@
   "tag": "sf-input-color",
   "version": "1.9.1",
   "kind": "leaf",
-  "family": "field",
+  "family": "input",
   "traits": [
     "field-inherit@1"
   ],

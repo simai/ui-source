@@ -4,7 +4,7 @@
   "tag": "sf-profile-picker",
   "version": "1.6.1",
   "kind": "leaf",
-  "family": "picker",
+  "family": "profile",
   "settings": {
     "label": {
       "type": "string",

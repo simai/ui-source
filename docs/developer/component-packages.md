@@ -194,7 +194,17 @@ SF.RuleLoader.registerPackage('pro', {
   yet. While a component moves into a package, Core still ships its old rule,
   and a page that declared the package chose the package's bytes. A rule that
   has already loaded is kept, with a warning (a custom element cannot be
-  defined twice), and so is a rule another package owns.
+  defined twice).
+- Two packages that define the same rule (pro bundles the sets, so a page
+  that declares `pro` and `view` gets two copies of `sf-view-table`): the
+  package the page declares first keeps the rule, on every load, whichever
+  rule file arrives first. The order is the page's: `data-sf-sets` first, then
+  `SF_BOOT_CONFIG.packages` in the order written. A rule already loaded stays
+  with its holder; between two packages the page never declared, the first
+  registered keeps it. Each such pair is one console error, said once every
+  declared rule file has answered, naming both packages, the components and
+  the package in use. A page declares `pro` or the sets it bundles, never both
+  (`tests/browser/loader-package-order.browser.mjs`).
 
 ## Registering late
 

@@ -4,7 +4,7 @@
   "tag": "sf-time",
   "version": "1.0.1",
   "kind": "leaf",
-  "family": "text",
+  "family": "time",
   "settings": {
     "datetime": {
       "type": "string",

@@ -4,7 +4,7 @@
   "tag": "sf-input-image",
   "version": "1.6.2",
   "kind": "leaf",
-  "family": "field",
+  "family": "input",
   "settings": {
     "name": {
       "type": "string",

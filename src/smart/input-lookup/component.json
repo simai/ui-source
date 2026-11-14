@@ -4,7 +4,7 @@
   "tag": "sf-input-lookup",
   "version": "1.13.1",
   "kind": "leaf",
-  "family": "field",
+  "family": "input",
   "settings": {
     "size": {
       "type": "enum",

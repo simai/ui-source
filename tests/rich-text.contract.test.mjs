@@ -177,14 +177,14 @@ test('nothing off the subset survives any vector', () => {
   }
 });
 
-test('the manifest: a form field of the field family, its settings, events and words', () => {
+test('the manifest: a form field of the input family, its settings, events and words', () => {
   const component = json('src/smart/input-rich/component.json');
   const manifest = json('src/smart/input-rich/smart.manifest.json');
   const en = json('src/smart/input-rich/lang/en.json');
   const ru = json('src/smart/input-rich/lang/ru.json');
   assert.equal(component.tag, 'sf-input-rich');
   assert.equal(component.id, 'smart.input-rich');
-  assert.equal(component.family, 'field');
+  assert.equal(component.family, 'input', 'the family is the first word of the tag (C174, NM-5)');
   assert.deepEqual(Object.keys(component.settings).sort(), [
     'appearance', 'counter', 'disabled', 'error-message', 'hint', 'invalid', 'label', 'max-rows', 'maxlength', 'name', 'placeholder', 'readonly', 'required', 'rows', 'size',
   ]);

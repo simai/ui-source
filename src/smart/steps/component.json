@@ -4,7 +4,7 @@
   "tag": "sf-steps",
   "version": "1.4.1",
   "kind": "leaf",
-  "family": "navigation",
+  "family": "steps",
   "settings": {
     "size": {
       "type": "enum",

@@ -4,7 +4,7 @@
   "tag": "sf-input-country",
   "version": "1.6.0",
   "kind": "leaf",
-  "family": "field",
+  "family": "input",
   "settings": {
     "size": {
       "type": "enum",
