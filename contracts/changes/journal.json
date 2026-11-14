@@ -12237,6 +12237,37 @@
       "manual": "Listen for sf-input-quantity-remove where a page listened for sf-quantity-remove; the detail and the cancel are the same.",
       "owner": "ui-source",
       "source": "src/smart/input-quantity/aliases.json, src/smart/input-quantity/smart.manifest.json events.sf-quantity-remove"
+    },
+    {
+      "id": "behaviour-accordion-default-look-flush",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-accordion without an appearance draws lines (flush), not filled plates (owner decision C154 (2)): no fill and no radius, sections divided by a line and meeting, where they were separate plates of surface-container 20 apart (phone 16). An accordion inside a section draws lines whatever its appearance (C154 (8)). The marker at the end points down when closed and up when open (C154 (1)); it pointed right and turned down. Every closed panel is hidden=\"until-found\" (C154 (6)) in sf-accordion and in the class accordion's runtime, which rewrote hidden=\"until-found\" to hidden before.",
+      "items": [
+        {
+          "component": "sf-accordion",
+          "attribute": "appearance (default)",
+          "from": "default (filled plates)",
+          "to": "flush (lines)"
+        },
+        {
+          "component": ".sf-accordion",
+          "attribute": "marker turn",
+          "from": "right, down when open",
+          "to": "down, up when open"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "A page that wants the plates writes appearance=\"default\" on sf-accordion (class markup keeps them without a modifier). A page that turned the marker itself for the old right-pointing chevron drops that rule.",
+      "examples": {
+        "before": "<sf-accordion items='[…]'></sf-accordion> (filled plates 20 apart)",
+        "after": "<sf-accordion items='[…]'></sf-accordion> (lines); <sf-accordion appearance=\"default\" items='[…]'></sf-accordion> (plates)"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/accordion (index.js, sections.mjs, component.json); src/component/accordion (scss, js); src/core/scss/_sf_css__placeholder.scss; ui-control control/docs-review/decisions.md C154"
     }
   ]
 }

@@ -87,15 +87,16 @@ test('smart accordion: the class markup, the class runtime kept off it', () => {
 });
 
 test('smart accordion: its own sheet draws only what the class has no part for, from tokens', () => {
-  const rules = sheet.replace(/\/\/.*$/gmu, '');
+  // The expand-all row (C154 (7)) is the element's own part, not a section.
+  const rules = sheet.replace(/\/\/.*$/gmu, '').replace(/[^{}]*\.sf-accordion-all \{[^}]*\}/gu, '');
   // Nothing the class draws is redrawn: no padding, size, radius, fill or
   // border of a section or a header here.
   assert.doesNotMatch(rules, /padding|min-block-size|border-radius|border:|font-size|line-height/u);
   assert.doesNotMatch(rules, /\b\d+(?:\.\d+)?(?:px|rem|em|ms)\b/u);
   assert.doesNotMatch(rules, /#[0-9a-f]{3,8}\b|rgba?\(/iu);
-  // The icon before the title does not turn with the marker, in either
-  // direction: its selector outranks the class's rotation and RTL rules.
-  assert.match(sheet, /\.sf-accordion \.sf-accordion-heading \.sf-accordion-trigger \.sf-icon\.sf-accordion-lead \{\n  transform: none;/u);
+  // The icon before the title does not turn with the marker: the class
+  // sheet's part now (C154 (1)), not redrawn here.
+  assert.doesNotMatch(rules, /sf-accordion-lead/u);
   assert.match(sheet, /\.sf-accordion\.sf-accordion--disabled \.sf-accordion-trigger:disabled \{[^}]*color: var\(--sf-on-surface-disabled\);/u);
 });
 
@@ -105,7 +106,7 @@ test('smart accordion: buttons in headings, linked to their panels; regions only
   assert.match(template, /role=\$\{region \? 'region' : nothing\} aria-labelledby=\$\{region \? triggerId : nothing\}/u);
   assert.match(template, /const region = context\.sections\.length <= REGION_LIMIT;/u);
   assert.equal(REGION_LIMIT, 6);
-  assert.match(template, /\?hidden=\$\{!open\}/u);
+  assert.match(template, /hidden=\$\{open \? nothing : 'until-found'\}/u);
   // The single section is a plain element in the button's place.
   assert.match(template, /<span class="sf-accordion-trigger" id=\$\{triggerId\} data-sf-accordion-static>/u);
   // The arrows walk the headers, Home and End go to the ends; Enter and
@@ -125,18 +126,18 @@ test('smart accordion: the manifest says the methods and the event the source ha
   const declared = JSON.parse(readFileSync(new URL('../src/smart/accordion/component.json', import.meta.url), 'utf8'));
   assert.deepEqual(Object.keys(declared.events).sort(), [...sent].sort());
   assert.doesNotMatch(source, /new CustomEvent\(/u);
-  assert.deepEqual(Object.keys(manifest.item_contract.properties), ['id', 'title', 'content', 'slot', 'open', 'disabled', 'icon', 'badge']);
+  assert.deepEqual(Object.keys(manifest.item_contract.properties), ['id', 'title', 'content', 'slot', 'open', 'disabled', 'icon', 'badge', 'summary']);
   assert.doesNotMatch(source, /\bfetch\(|XMLHttpRequest|sendBeacon|localStorage/u);
 });
 
 test('smart accordion: the loader knows it and asks for what it draws with', () => {
   const rule = read('src/smart/accordion/rule.js');
   assert.match(rule, /SF\.RuleLoader\['cl-accordion'\] = \{\n  tags: \['sf-accordion'\],/u);
-  assert.match(rule, /\{ name: 'accordion' \},\n    \{ name: 'icons' \},\n    \{ name: 'cl-badge', lazy: true \},/u);
+  assert.match(rule, /\{ name: 'accordion' \},\n    \{ name: 'icons' \},\n    \{ name: 'cl-badge', lazy: true \},\n    \{ name: 'cl-button', lazy: true \},/u);
   // composition.uses is generated from the relations (standard 1.4): every
   // bundle the Loader fetches with it, the icon font's sheet among them.
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/accordion\/rule\.js';/u);
-  assert.deepEqual(manifest.composition.uses, ['component.accordion', 'component.icons', 'smart.badge']);
+  assert.deepEqual(manifest.composition.uses, ['component.accordion', 'component.icons', 'smart.badge', 'smart.button']);
 });
 
 // The public variables (2026-10-25): eight, read by the class sheet that

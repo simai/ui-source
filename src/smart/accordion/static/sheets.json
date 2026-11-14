@@ -8,19 +8,44 @@
   "sheets": [
     "component/accordion/css/accordion.min.css",
     "component/badges/css/badges.min.css",
+    "component/buttons/css/buttons.min.css",
     "component/icons/css/icons.min.css",
+    "component/kbd/css/kbd.min.css",
     "core/css/core.css",
     "smart/accordion/css/accordion.min.css",
+    "utility/align-items/default/css/default.min.css",
     "utility/display/default/css/default.min.css",
     "utility/flex-direction/default/css/default.min.css",
     "utility/flex-wrap/default/css/default.min.css",
+    "utility/flex/default/css/default.min.css",
+    "utility/font-weight/default/css/default.min.css",
     "utility/gap/default/css/default.min.css",
     "utility/justify-content/default/css/default.min.css",
     "utility/place-items/default/css/default.min.css",
+    "utility/pointer-events/default/css/default.min.css",
     "utility/position/default/css/default.min.css",
-    "utility/sr-only/default/css/default.min.css"
+    "utility/sr-only/default/css/default.min.css",
+    "utility/text-align/default/css/default.min.css"
   ],
   "examples": {
+    "expand-all": [
+      "component/accordion/css/accordion.min.css",
+      "component/buttons/css/buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
+      "core/css/core.css",
+      "smart/accordion/css/accordion.min.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/gap/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css"
+    ],
     "one-section": [
       "component/accordion/css/accordion.min.css",
       "component/icons/css/icons.min.css",
@@ -55,6 +80,16 @@
       "utility/place-items/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css"
+    ],
+    "summary": [
+      "component/accordion/css/accordion.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css",
+      "smart/accordion/css/accordion.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/gap/default/css/default.min.css",
+      "utility/position/default/css/default.min.css"
     ],
     "visible": [
       "component/accordion/css/accordion.min.css",

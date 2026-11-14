@@ -23,6 +23,24 @@ content's `hidden` and the root's `active` class in step, and draws the
 chevron; `sf-accordion--plus-minus` draws `add` / `remove` instead. A section
 that starts closed carries `hidden` (or the `hidden` class) on its content.
 
+The chevron is the header's last icon, at the end: it points down when the
+section is closed and up when it is open (owner decision C154 (1)); an icon
+before the title is marked `.sf-accordion-lead` and never turns. A short
+summary at the end of the header, before the chevron, is
+`<span class="sf-accordion-summary">` -- «Выбрано 2», «Курьер», in the hint's
+colour (C154 (3)).
+
+Every closed panel is `hidden="until-found"` (C154 (6)): the runtime turns
+`hidden` and the `hidden` class into it, so the browser's find-in-page finds
+the text and opens the section, and the runtime follows on `beforematch`
+(`aria-expanded`, `active`, the chevron, the other section in single mode).
+
+A section moves to its new height in 200 ms on `--sf-ease-move`, the chevron
+on the same clock (C154 (4), C66, C121): the clock is
+`--sf-accordion--duration` and `--sf-accordion--easing`, read from the
+section's `transition`; under `prefers-reduced-motion` the section opens at
+once.
+
 ## A single section
 
 One section needs no disclosure (simai/ui-source#19, #29). The only
@@ -55,10 +73,16 @@ one section a toggle -- a list that fills in later -- says
 
 ## Appearance
 
-- default: a filled surface (`--sf-surface-container`) with the surface radius;
-- `sf-accordion--outline`: a hairline border, no fill;
 - `sf-accordion--flush`: no fill and no radius, sections divided by a line --
-  for panels and lists of sections.
+  the look to use by default (C154 (2)); `<sf-accordion>` draws it without an
+  appearance;
+- without a modifier: a filled surface (`--sf-surface-container`) with the
+  surface radius;
+- `sf-accordion--outline`: a hairline border, no fill.
+
+An accordion inside a section's content always draws lines and has no side
+inset of its own, so its titles and text start under the outer section's
+text (C154 (8), C109). Nest one level; deeper is a tree (`sf-tree`).
 
 ## Size
 

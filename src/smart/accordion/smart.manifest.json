@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.accordion",
-  "version": "1.1.12",
+  "version": "1.2.0",
   "title": "Accordion",
-  "summary": "Sections that open and close, built from data -- a record's groups, a settings panel, an FAQ -- or from <details> in the markup, drawn as the class accordion: the same sizes on the control ladder, appearances, marker and single section. single keeps one open; the headers are buttons with the WAI-ARIA accordion keyboard.",
+  "summary": "Sections that open and close, built from data -- a record's groups, a settings panel, an FAQ, catalogue filters -- or from <details> in the markup, drawn as the class accordion: lines by default, the same sizes on the control ladder, appearances, marker and single section. The marker at the end points down and turns up when open, the section moves to its height in 200 ms; closed text is found by the browser's find-in-page; link makes a section's id its address; expand-all adds «Развернуть все». single keeps one open; the headers are buttons with the WAI-ARIA accordion keyboard.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -30,7 +30,8 @@
     "uses": [
       "component.accordion",
       "component.icons",
-      "smart.badge"
+      "smart.badge",
+      "smart.button"
     ],
     "public_parts": []
   },
@@ -72,8 +73,8 @@
       },
       "appearance": {
         "type": "string",
-        "default": "default",
-        "description": "default: a filled surface; outline: a hairline border, no fill; flush: no fill and no radius, sections divided by a line, for panels and lists.",
+        "default": "flush",
+        "description": "flush, the default (owner decision C154 (2)): no fill and no radius, sections divided by a line -- quiet on a page, in a card and in a panel; default: filled plates a step apart; outline: a hairline border, no fill. An accordion inside a section draws lines whatever its appearance (C154 (8)).",
         "enum": [
           "default",
           "outline",
@@ -105,10 +106,20 @@
         "minimum": 2,
         "maximum": 6
       },
+      "link": {
+        "type": "boolean",
+        "default": false,
+        "description": "A section's id is its address (owner decision C154 (5)): the section carries it as its element id, #id in the address opens the section and scrolls to it (on load and on hashchange), and opening a section by a press writes #id into the address with history.replaceState, without a new history entry."
+      },
+      "expand-all": {
+        "type": "boolean",
+        "default": false,
+        "description": "«Развернуть все / Свернуть все» (owner decision C154 (7)): a ghost button over the sections, at the end of the row, shown from five sections and never with single. It opens every section that can open; once all are open it reads «Свернуть все» and closes them. Each section that changes sends sf-accordion-toggle, source user."
+      },
       "items": {
         "type": "array",
         "default": [],
-        "description": "The sections, [{id, title, content | slot, open?, disabled?, icon?, badge?}]: an array in the property, the same array as JSON in the attribute. Without items the element takes the <details> written inside it.",
+        "description": "The sections, [{id, title, content | slot, open?, disabled?, icon?, badge?, summary?}]: an array in the property, the same array as JSON in the attribute. Without items the element takes the <details> written inside it (data-id, data-icon, data-badge, data-summary, data-disabled).",
         "examples": [
           [
             {
@@ -159,6 +170,10 @@
             "badge": {
               "type": "string",
               "description": "A count or a label after the title, drawn by sf-badge."
+            },
+            "summary": {
+              "type": "string",
+              "description": "A short summary at the end of the header, before the marker, in the hint's colour (owner decision C154 (3)): «Выбрано 2», «Курьер». One line; a long one ends in an ellipsis."
             }
           },
           "required": [
@@ -204,6 +219,10 @@
       "badge": {
         "type": "string",
         "description": "A count or a label after the title, drawn by sf-badge."
+      },
+      "summary": {
+        "type": "string",
+        "description": "A short summary at the end of the header, before the marker, in the hint's colour (owner decision C154 (3)): «Выбрано 2», «Курьер». One line; a long one ends in an ellipsis."
       }
     },
     "required": [
@@ -477,38 +496,39 @@
     "source_artifacts": [
       {
         "path": "src/smart/accordion/index.js",
-        "sha256": "99ed4d114cd05b0b13526f9f4b16f186438b2650a67476ba9974ba7074b7bf86"
+        "sha256": "d2e466e56252ee561a8c1fe2f3237fdb80975b8f22d770bbae8093e5106fe866"
       },
       {
         "path": "src/smart/accordion/sections.mjs",
-        "sha256": "1330fb2bbc6d18367fc9ddda76133805241d2de742cca0d0eca86f4ac1cce590"
+        "sha256": "8b8cfe9ec0fe5ae23aed0cc4861fec396e773f9cedc41c98884051a2b0e4e7ad"
       },
       {
         "path": "src/smart/accordion/js/templates/default.js",
-        "sha256": "22628ff597c07ee5226414d60e847280698637a9cac76138a5c76a2e31765272"
+        "sha256": "ef62d7e562e3e95e956bea6ad46a7849cd1d614f3153366ba489b100afa82eae"
       },
       {
         "path": "src/smart/accordion/scss/_smart__accordion.scss",
-        "sha256": "0ea013a7e4046d4f7c87a42e63ed9550580a82abc0bdbe6d17ccb84cb28e0b80"
+        "sha256": "2aeaa6f72e0bf8ed4e08a6ca65d9334ba976249e07ba285acaff42c3ea780e00"
       },
       {
         "path": "src/smart/accordion/rule.js",
-        "sha256": "cfab5a4eb5b9ebbd0f821bf34cbb42a8d07ee6811bdf07179e991fa2781e2277"
+        "sha256": "4da846a37191e6883f5794ed692ccb4bf9212edeaeeb97e0055ac515c3cacd79"
       },
       {
         "path": "src/smart/accordion/docs.md",
-        "sha256": "36d60113e33d100fbbeb1a3c4a3db1c30ccc9745e7c9df9ceb8307a12276a82f"
+        "sha256": "a78ec17b8aa703da5dd566eeafa300b1a8beee182d1e2eb3b0f8fa4c7c2da940"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-accordion for sections that open and close and come from data -- a record's groups of fields, a settings panel, an FAQ -- or are written as <details> in the markup.",
+    "use_when": "Use sf-accordion for sections that open and close and come from data -- a record's groups of fields, a settings panel, an FAQ, catalogue filters -- or are written as <details> in the markup. Nest at most one level (lines, under the outer title); deeper is sf-tree.",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not put markup in content: it is shown as text; use a slot",
       "Do not use it to switch between views of one thing: that is sf-tabs",
-      "Do not restyle its sections: they are the class accordion's, set its public variables"
+      "Do not restyle its sections: they are the class accordion's, set its public variables",
+      "Do not nest accordions more than one level: deeper is a hierarchy, sf-tree"
     ],
     "required_reads": [
       "inputs",

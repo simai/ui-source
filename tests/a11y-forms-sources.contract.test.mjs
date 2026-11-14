@@ -58,11 +58,11 @@ test('the class accordion hides a closed panel with the attribute from the first
   const source = read('src/component/accordion/js/_accordion.js');
   const init = source.slice(source.indexOf('  init() {'), source.indexOf('  isSingle() {'));
   assert.match(init, /this\.hideContent\(\);/u);
-  // A panel the page wrote hidden="until-found" keeps that value (accordion
-  // study AC-8); every other closed panel gets the attribute.
+  // Every closed panel gets the attribute, hidden="until-found" (owner
+  // decision C154 (6)): hidden from the eye, the tab order and the
+  // accessibility tree, and still found by the browser's find-in-page.
   const hide = source.slice(source.indexOf('  hideContent() {'), source.indexOf('  handleKeydown(event) {'));
   assert.match(hide, /this\.content\.setAttribute\('hidden', UNTIL_FOUND\);/u);
-  assert.match(hide, /this\.content\.hidden = true;/u);
 });
 
 test('the field renderers read a date in the page\'s language and a phone by its dial code (#34)', () => {

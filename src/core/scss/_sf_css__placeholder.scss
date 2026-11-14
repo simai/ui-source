@@ -158,15 +158,20 @@
    and the markup tell is held from core.css, the one sheet a page links
    before any code, on the ladder the class sheet draws with:
 
-   - the element is a column of sections, --sf-space-2 apart (flush ones
-     meet), so it is never shorter than one closed header of its size:
+   - the element is a column of sections that meet -- lines are the default
+     look (owner decision C154 (2)); filled and outlined ones stand
+     --sf-space-2 apart -- so it is never shorter than one closed header of
+     its size:
      --sf-ui-<S>--control-height, the roomy default --sf-ui-3--control-height;
      a page that knows the loaded box still declares it
      (--sf-skeleton-block-size);
    - each <details> written inside is a section already: its summary the
      header (a control height, the size's line and text, the header's inset),
      its other nodes the content, the header's inset from every edge. So the
-     box the element draws over them is the box they held.
+     box the element draws over them is the box they held;
+   - with expand-all and five <details> or more (not single), the row of
+     «Развернуть все» over them: the button's height and a group's step
+     (C154 (7)).
 
    Sections given as data (items) cannot be counted by a sheet; for them a
    host prints the first paint (standard §5.4). Static markup printed inside
@@ -176,15 +181,16 @@
   --sf-accordion--box-inset: var(--sf-space-3);
   --sf-accordion--box-text: var(--sf-text--size);
   --sf-accordion--box-line: var(--sf-text--height);
-  --sf-accordion--box-gap: var(--sf-space-2);
+  --sf-accordion--box-gap: calc(var(--sf-px) * 0);
+  --sf-accordion--box-all: var(--sf-ui-1--control-height);
 }
 
-:where(sf-accordion[size="1/3"]:not(:defined)) { --sf-accordion--box-header: var(--sf-ui-1\/3--control-height); --sf-accordion--box-inset: var(--sf-ui-1\/3--space-x); --sf-accordion--box-text: var(--sf-text-size-1\/3); --sf-accordion--box-line: var(--sf-text-height-1\/3); }
-:where(sf-accordion[size="1/2"]:not(:defined)) { --sf-accordion--box-header: var(--sf-ui-1\/2--control-height); --sf-accordion--box-inset: max(var(--sf-space-1\/2), var(--sf-b2)); --sf-accordion--box-text: var(--sf-text-size-1\/2); --sf-accordion--box-line: var(--sf-text-height-1\/2); }
+:where(sf-accordion[size="1/3"]:not(:defined)) { --sf-accordion--box-all: var(--sf-ui-1\/3--control-height); --sf-accordion--box-header: var(--sf-ui-1\/3--control-height); --sf-accordion--box-inset: var(--sf-ui-1\/3--space-x); --sf-accordion--box-text: var(--sf-text-size-1\/3); --sf-accordion--box-line: var(--sf-text-height-1\/3); }
+:where(sf-accordion[size="1/2"]:not(:defined)) { --sf-accordion--box-all: var(--sf-ui-1\/2--control-height); --sf-accordion--box-header: var(--sf-ui-1\/2--control-height); --sf-accordion--box-inset: max(var(--sf-space-1\/2), var(--sf-b2)); --sf-accordion--box-text: var(--sf-text-size-1\/2); --sf-accordion--box-line: var(--sf-text-height-1\/2); }
 :where(sf-accordion[size="1"]:not(:defined)) { --sf-accordion--box-header: var(--sf-ui-1--control-height); --sf-accordion--box-inset: var(--sf-space-1); --sf-accordion--box-text: var(--sf-text-size-1); --sf-accordion--box-line: var(--sf-text-height-1); }
-:where(sf-accordion[size="2"]:not(:defined)) { --sf-accordion--box-header: var(--sf-ui-2--control-height); --sf-accordion--box-inset: var(--sf-space-2); --sf-accordion--box-text: var(--sf-text-size-2); --sf-accordion--box-line: var(--sf-text-height-2); }
-:where(sf-accordion[size="3"]:not(:defined)) { --sf-accordion--box-header: var(--sf-ui-3--control-height); --sf-accordion--box-inset: var(--sf-ui-3--space-x); --sf-accordion--box-text: var(--sf-text-size-3); --sf-accordion--box-line: var(--sf-text-height-3); }
-:where(sf-accordion[appearance="flush"]:not(:defined)) { --sf-accordion--box-gap: calc(var(--sf-px) * 0); }
+:where(sf-accordion[size="2"]:not(:defined)) { --sf-accordion--box-all: var(--sf-ui-2--control-height); --sf-accordion--box-header: var(--sf-ui-2--control-height); --sf-accordion--box-inset: var(--sf-space-2); --sf-accordion--box-text: var(--sf-text-size-2); --sf-accordion--box-line: var(--sf-text-height-2); }
+:where(sf-accordion[size="3"]:not(:defined)) { --sf-accordion--box-all: var(--sf-ui-3--control-height); --sf-accordion--box-header: var(--sf-ui-3--control-height); --sf-accordion--box-inset: var(--sf-ui-3--space-x); --sf-accordion--box-text: var(--sf-text-size-3); --sf-accordion--box-line: var(--sf-text-height-3); }
+:where(sf-accordion:is([appearance="default"], [appearance="outline"]):not(:defined)) { --sf-accordion--box-gap: var(--sf-space-2); }
 
 :where(sf-accordion:not(:defined)):not(:has(> [data-sf-static])) {
   display: flex;
@@ -193,6 +199,10 @@
   min-block-size: max(var(--sf-skeleton-block-size, calc(var(--sf-px) * 0)), var(--sf-accordion--box-header));
   font-size: var(--sf-accordion--box-text);
   line-height: var(--sf-accordion--box-line);
+}
+
+:where(sf-accordion[expand-all]:not([single]):not(:defined):not(:has(> [data-sf-static])):has(> details:nth-of-type(5))) {
+  padding-block-start: calc(var(--sf-accordion--box-all) + var(--sf-space-1\/2));
 }
 
 :where(sf-accordion:not(:defined):not(:has(> [data-sf-static])) > details) {

@@ -49,14 +49,12 @@ test('AC-14: the content is body text, the header inset from every edge', () => 
   assert.match(sheet, /color: var\(--sf-accordion-content--color, var\(--sf-accordion-content-color, var\(--sf-on-surface\)\)\);/u);
 });
 
-test('AC-8: a findable panel stays hidden="until-found" and opens on beforematch', () => {
+test('AC-8, C154 (6): every closed panel is hidden="until-found" and opens on beforematch', () => {
   assert.match(runtime, /const UNTIL_FOUND = 'until-found';/u);
-  assert.match(runtime, /this\.findable = this\.content\?\.getAttribute\?\.\('hidden'\) === UNTIL_FOUND;/u);
   assert.match(runtime, /this\.content\?\.addEventListener\('beforematch', this\.onBeforeMatch\);/u);
-  assert.match(runtime, /this\.content\.setAttribute\('hidden', UNTIL_FOUND\);/u);
   // The hidden class (display: none) would take the text out of the search.
   const hide = runtime.slice(runtime.indexOf('  hideContent() {'));
-  assert.match(hide.slice(0, hide.indexOf('\n  }\n')), /if \(this\.findable\) \{[\s\S]*classList\.remove\('hidden'\);[\s\S]*return;/u);
+  assert.match(hide.slice(0, hide.indexOf('\n  }\n')), /^  hideContent\(\) \{\s*this\.content\.setAttribute\('hidden', UNTIL_FOUND\);\s*this\.content\.classList\.remove\('hidden'\);\s*$/u);
   // A closed findable panel shows no padding.
   assert.match(sheet, /\.sf-accordion \.sf-accordion-content\[hidden='until-found'\] \{\s*padding-block: 0;/u);
   // Core's reset leaves until-found to the browser.

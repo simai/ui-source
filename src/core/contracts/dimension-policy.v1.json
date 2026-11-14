@@ -343,6 +343,14 @@
       "contextPattern": "'font-size', '16px'",
       "status": "accepted-compatibility-boundary",
       "reason": "The low-vision panel resets its own text to 16 CSS px so the page's chosen text size (specialkegl) never scales the panel's controls."
+    },
+    {
+      "id": "accordion-section-height-motion",
+      "category": "runtime-review",
+      "filePattern": "^component/accordion/js/motion\\.js$",
+      "contextPattern": "\\{blockSize: \\[`\\$\\{from\\}px`, `\\$\\{to\\}px`\\]\\}",
+      "status": "accepted-runtime-geometry",
+      "reason": "The accordion section's height motion (owner decision C154 (4)): the section moves from the height it stood at to the one it stands at now, both measured with getBoundingClientRect in CSS pixels at the press; the clock is the class sheet's (--sf-accordion--duration, --sf-ease-move)."
     }
   ]
 }

@@ -3,19 +3,20 @@
   "schema_version": 1,
   "id": "component.accordion",
   "kind": "component",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/accordion/docs/docs.md",
     "src/component/accordion/index.js",
     "src/component/accordion/js/_accordion.js",
     "src/component/accordion/js/index.js",
+    "src/component/accordion/js/motion.js",
     "src/component/accordion/rule.js",
     "src/component/accordion/scss/_css__accordion.scss",
     "src/component/accordion/scss/_var__accordion.scss",
     "src/component/accordion/scss/index.scss"
   ],
-  "content_sha256": "d18241ee51ff97b7ec3439de561368c5e4c159626b55b4186b1bf8d3c2e700cc",
+  "content_sha256": "2f58796be6b21512e46593f29eee9fd7d3c5f015e9624498143b165a591654f3",
   "dependencies": [
     {
       "id": "core.runtime",

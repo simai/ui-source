@@ -14,7 +14,8 @@
         "uses": [
           "component.accordion",
           "component.icons",
-          "smart.badge"
+          "smart.badge",
+          "smart.button"
         ]
       },
       "contract_schema": {
@@ -26,13 +27,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/accordion/smart.manifest.json",
-      "manifest_sha256": "b4041fa999d8fccdc77a28743153e4671e15039339a455594bac66abd3797bb8",
+      "manifest_sha256": "c049f010ce7ce82e4752db428fcf4ce6066c87e1991afd467797ef4bcfd9bbbb",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "Sections that open and close, built from data -- a record's groups, a settings panel, an FAQ -- or from <details> in the markup, drawn as the class accordion: the same sizes on the control ladder, appearances, marker and single section. single keeps one open; the headers are buttons with the WAI-ARIA accordion keyboard.",
+      "summary": "Sections that open and close, built from data -- a record's groups, a settings panel, an FAQ, catalogue filters -- or from <details> in the markup, drawn as the class accordion: lines by default, the same sizes on the control ladder, appearances, marker and single section. The marker at the end points down and turns up when open, the section moves to its height in 200 ms; closed text is found by the browser's find-in-page; link makes a section's id its address; expand-all adds «Развернуть все». single keeps one open; the headers are buttons with the WAI-ARIA accordion keyboard.",
       "tags": [
         "accordion",
         "disclosure",
