@@ -29,7 +29,8 @@ test('Tooltip anchor positioning follows logical tail classes and tokens', async
   assert.match(css, /sf-tooltip--arrow-inline-start/);
   assert.match(css, /sf-tooltip--arrow-inline-end/);
   assert.match(css, /var\(--sf-tooltip-tail-half\)/);
-  assert.match(css, /var\(--sf-z-index-9\)/);
+  // C181 (3): a tooltip stands at the message layer.
+  assert.match(css, /var\(--sf-layer--message\)/);
   assert.doesNotMatch(css, /(?:^|[:\s])(?:#[0-9a-f]{3,8}|rgba?\()/im);
   assert.doesNotMatch(css, /:\s*(?!0(?:[;,)\s]|$))\d+(?:\.\d+)?(?:px|rem)\b/);
 });

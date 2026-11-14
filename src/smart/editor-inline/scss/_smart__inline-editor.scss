@@ -15,7 +15,7 @@
 
     .sf-inline-editor-toolbar {
         position: fixed;
-        z-index: var(--sf-composition-overlay-z-index, var(--sf-z-index-8, 80));
+        z-index: var(--sf-composition-overlay-z-index, var(--sf-layer--popover, 90));
         display: flex;
         flex-wrap: wrap;
         align-items: center;

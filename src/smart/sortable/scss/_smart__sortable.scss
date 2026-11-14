@@ -37,7 +37,7 @@
 
     .sf-sortable-ghost {
         position: fixed;
-        z-index: var(--sf-sortable-ghost-z-index, var(--sf-z-index-9, 90));
+        z-index: var(--sf-sortable-ghost-z-index, var(--sf-layer--popover, 90));
         margin: 0;
         pointer-events: none;
         opacity: var(--sf-sortable-ghost-opacity, .9);
@@ -48,7 +48,7 @@
 
     .sf-sortable-indicator {
         position: fixed;
-        z-index: var(--sf-sortable-ghost-z-index, var(--sf-z-index-9, 90));
+        z-index: var(--sf-sortable-ghost-z-index, var(--sf-layer--popover, 90));
         border-radius: var(--sf-radius-1\/3);
         background: var(--sf-sortable-indicator-color, var(--sf-primary, Highlight));
         pointer-events: none;
@@ -69,7 +69,7 @@
        column being moved is dimmed in every row. */
     .sf-sortable-column-outline {
         position: fixed;
-        z-index: var(--sf-sortable-ghost-z-index, var(--sf-z-index-9, 90));
+        z-index: var(--sf-sortable-ghost-z-index, var(--sf-layer--popover, 90));
         box-sizing: border-box;
         border: var(--sf-px) dashed var(--sf-primary-outline, var(--sf-primary, Highlight));
         border-radius: var(--sf-radius--ui);

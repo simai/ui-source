@@ -45,7 +45,7 @@
 .sf-site-header--sticky {
   position: sticky;
   inset-block-start: 0;
-  z-index: var(--sf-site-header-z-index, var(--sf-z-index-5));
+  z-index: var(--sf-site-header-z-index, var(--sf-layer--sticky));
   /* The flat place at the top of the page; the raised one while content runs
      under it (C20): the host says data-scrolled, the bar takes the raised
      shadow and, in the dark theme, the raised surface, a step lighter. A

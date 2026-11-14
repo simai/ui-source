@@ -421,7 +421,7 @@
     inline-size: min(var(--sf-g4), calc(100vw - 2 * var(--sf-space-1)));
     max-block-size: calc(100vh - 2 * var(--sf-space-1));
     pointer-events: none;
-    z-index: var(--sf-z-index-9);
+    z-index: var(--sf-layer--message);
   }
   .sf-notifications:not(:popover-open)[popover] {
     display: none;

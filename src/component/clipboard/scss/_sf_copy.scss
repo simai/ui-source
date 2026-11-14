@@ -105,7 +105,7 @@
       calc(100vw - var(--sf-space-2))
     );
     pointer-events: none;
-    z-index: var(--sf-z-index-9);
+    z-index: var(--sf-layer--message);
   }
 
   /* The result's ink is the glyph's own, as sf-button-copy's. */

@@ -339,7 +339,7 @@
   // point, the code's top centre; empty and transparent at rest.
   .sf-code-copy-status {
     position: fixed;
-    z-index: var(--sf-z-index-9);
+    z-index: var(--sf-layer--message);
     margin-block-start: calc(-1 * var(--sf-space-1\/4));
     padding: var(--sf-space-1\/4) var(--sf-space-1\/2);
     border-radius: var(--sf-radius--ui);

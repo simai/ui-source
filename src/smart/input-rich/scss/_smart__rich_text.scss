@@ -280,7 +280,7 @@
    the top layer, so no box of the page clips it or holds it. */
 .sf-rich-text sf-popover.sf-rich-text-link > [slot='content'][data-sf-sheet] {
   position: fixed;
-  z-index: var(--sf-z-index-9);
+  z-index: var(--sf-layer--popover);
   inset: auto 0 0;
   inline-size: 100%;
   max-inline-size: var(--sf-h1);

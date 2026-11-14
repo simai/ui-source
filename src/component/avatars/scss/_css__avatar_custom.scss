@@ -38,7 +38,7 @@
   inset-inline-start: 50%;
   inset-block-end: calc(100% + var(--sf-space-1));
   transform: translateX(-50%);
-  z-index: var(--sf-z-index-9);
+  z-index: var(--sf-layer--message);
   display: none;
   pointer-events: none;
 }

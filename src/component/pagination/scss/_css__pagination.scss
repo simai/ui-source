@@ -368,7 +368,8 @@
      of the card -- so it is rounded like one. */
   border-radius: var(--sf-pagination-actions--radius);
   box-shadow: var(--sf-shadow-raised);
-  z-index: var(--sf-z-index-3);
+  /* It holds the bottom of the card over the rows: the sticky layer (C181 (3)). */
+  z-index: var(--sf-layer--sticky);
 }
 
 /* A direction is a button, not a cell: its item box would otherwise take a gap

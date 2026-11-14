@@ -10,7 +10,8 @@
   inset-inline-start: 0;
   inset-block-start: 100%;
   inline-size: 100%;
-  z-index: 9;
+  // A list dropping from its field (C181 (3): the popover layer).
+  z-index: var(--sf-layer--popover);
 }
 .sf-country-code-left, .sf-country-code-item {
   cursor: pointer;

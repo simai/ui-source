@@ -243,7 +243,7 @@ sf-contents[data-empty] > .sf-contents {
      is the host's own. */
   &.sf-contents--sticky {
     position: sticky;
-    z-index: var(--sf-contents-z-index, var(--sf-z-index-5));
+    z-index: var(--sf-contents-z-index, var(--sf-layer--sticky));
     inset-block-start: var(--sf-contents--top);
     padding-block: var(--sf-space-1\/4) var(--sf-0);
     margin-block: calc(var(--sf-space-1\/4) * -1) var(--sf-0);
@@ -293,7 +293,7 @@ sf-contents[data-empty] > .sf-contents {
 
   &.sf-contents--open .sf-contents-list {
     position: absolute;
-    z-index: var(--sf-contents-z-index, var(--sf-z-index-5));
+    z-index: var(--sf-contents-z-index, var(--sf-layer--sticky));
     inset-block-start: calc(100% + var(--sf-space-1\/4));
     inset-inline: var(--sf-0);
     display: flex;
@@ -359,13 +359,13 @@ sf-contents[data-empty] > .sf-contents {
      sticky parts. */
   @media not all and (min-width: 44rem) {
     &.sf-contents--open {
-      z-index: var(--sf-z-index-9);
+      z-index: var(--sf-layer--window);
     }
 
     /* Before the list in the markup, so at the same level it lies under it. */
     &.sf-contents--open .sf-contents-veil {
       position: fixed;
-      z-index: var(--sf-z-index-9);
+      z-index: var(--sf-layer--window);
       inset: var(--sf-0);
       display: block;
       background-color: var(--sf-scrim-color, var(--sf-black--alfa-64));
@@ -373,7 +373,7 @@ sf-contents[data-empty] > .sf-contents {
 
     &.sf-contents--open .sf-contents-list {
       position: fixed;
-      z-index: var(--sf-z-index-9);
+      z-index: var(--sf-layer--window);
       inset: auto var(--sf-0) var(--sf-0);
       inline-size: 100%;
       max-inline-size: var(--sf-h1);
@@ -474,7 +474,7 @@ sf-contents[data-empty] > .sf-contents {
 @mixin bar {
   &.sf-contents--sticky {
     position: sticky;
-    z-index: var(--sf-contents-z-index, var(--sf-z-index-5));
+    z-index: var(--sf-contents-z-index, var(--sf-layer--sticky));
     inset-block-start: var(--sf-contents--top);
   }
 

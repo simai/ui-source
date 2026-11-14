@@ -116,7 +116,7 @@
   .sf-tabs.sf-tabs--sticky > .sf-tabs-top-container {
     position: sticky;
     inset-block-start: var(--sf-tabs-sticky-top, var(--sf-0));
-    z-index: var(--sf-z-index-5);
+    z-index: var(--sf-layer--sticky);
     background-color: var(--sf-surface-page);
   }
 

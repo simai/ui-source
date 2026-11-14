@@ -370,7 +370,7 @@ $sf-workspace-wide-default: h6;
                 position: absolute;
                 // Above anything main raises; the workspace is its own stacking
                 // context (a size container), so this stays inside it.
-                z-index: var(--sf-z-index-layer, 9000);
+                z-index: var(--sf-layer--window, 9000);
                 background: var(--sf-workspace-drawer-background-color, var(--sf-workspace-drawer-background, var(--sf-surface-popup)));
                 color: var(--sf-on-surface);
                 box-shadow: var(--sf-shadow-modal), 0 0 0 100vmax var(--sf-scrim-color, var(--sf-black--alfa-64));

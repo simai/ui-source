@@ -185,7 +185,7 @@ export function openDropdownPortal(root, list, onUnavailable) {
       // but outside the modal's clipped content panel.
       const boundary=root.closest('dialog[open], [role="dialog"][aria-modal="true"]');
       (boundary||document.body).append(state.context);state.context.append(list);
-      list.style.zIndex='var(--sf-z-index-9)';
+      list.style.zIndex='var(--sf-layer--popover)';
     }
     state.inheritance=new MutationObserver(state.schedule);
     for(let node=root;node;node=node.parentElement)state.inheritance.observe(node,{attributes:true,attributeFilter:['class','style','dir','hidden','inert','aria-hidden','open']});

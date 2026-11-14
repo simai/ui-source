@@ -2873,7 +2873,7 @@
           "name": "--sf-resizer-z-index",
           "role": "z-index",
           "summary": "The layer the handle stands in, above the panel's own layers and below overlays.",
-          "default": "var(--sf-z-index-7)",
+          "default": "var(--sf-layer--sticky)",
           "since": "2026-10-27"
         }
       ]
@@ -3200,7 +3200,7 @@
           "name": "--sf-site-header-z-index",
           "role": "z-index",
           "summary": "The sticky bar's place above the page, under every layer.",
-          "default": "var(--sf-z-index-5)",
+          "default": "var(--sf-layer--sticky)",
           "since": "2026-10-28"
         }
       ]
@@ -3394,7 +3394,7 @@
           "name": "--sf-contents-z-index",
           "role": "z-index",
           "summary": "The bar and the open list above the page, under every layer.",
-          "default": "var(--sf-z-index-5)",
+          "default": "var(--sf-layer--sticky)",
           "since": "2026-10-30"
         }
       ]

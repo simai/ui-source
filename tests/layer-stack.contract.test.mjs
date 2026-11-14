@@ -347,7 +347,7 @@ test('a layer removed from the document without closing does not hold the keys',
   assert.deepEqual(log, ['drawer:escape']);
 });
 
-test('the scale is one pair of core tokens, and the old bases are gone from the overlays', async () => {
+test('C181 (3): the scale is one pair of core tokens under the window layer, and the old bases are gone from the overlays', async () => {
   const size = await read('src/core/scss/_sf_css__size.scss');
   assert.match(size, /--sf-z-index-layer: #\{zIndexVars\.\$z-index-layer\};/);
   assert.match(size, /--sf-z-index-layer-step: #\{zIndexVars\.\$z-index-layer-step\};/);
@@ -357,7 +357,12 @@ test('the scale is one pair of core tokens, and the old bases are gone from the 
   const drawer = await read('src/smart/drawer/index.js');
   assert.doesNotMatch(drawer, /--sf-z-index-9/);
   assert.doesNotMatch(drawer, /const drawerStack = \[\]/);
-  assert.match(await read('src/smart/drawer/scss/_smart__drawer.scss'), /var\(--sf-drawer-z-index, var\(--sf-z-index-layer, 9000\)\)/);
+  assert.match(await read('src/smart/drawer/scss/_smart__drawer.scss'), /var\(--sf-drawer-z-index, var\(--sf-layer--window, 9000\)\)/);
+  // The window layer is the stack's base: the role reads the scale's token,
+  // and the stack (layerZIndexAt) counts up from the same token.
+  const roles = await read('src/core/figma_variables/figma_role_tokens.scss');
+  assert.match(roles, /--sf-layer--window: var\(--sf-z-index-layer\);/);
+  assert.match(roles, /--sf-layer--message: var\(--sf-z-index-layer\);/);
   const modal = await read('src/smart/modal/index.js');
   assert.match(modal, /return layerZIndexAt\(this\._stackIndex\);/);
   assert.match(await read('src/component/modal/js/_modal.js'), /String\(layerZIndexAt\(index\)\)/);
@@ -416,4 +421,30 @@ test('a closed layer starts its content past its own root only, with the Loader\
   assert.match(source, /export function whenClosedLayerOpens\(element, signal\) \{\n\s+const view = globalThis\.window;\n\s+if \(!view\?\.document \|\| view\.SF_BOOT_CONFIG\?\.startClosedLayerContent === false\) return null;/u);
   const include = await read('src/smart/include/index.js');
   assert.match(include, /const opens = whenClosedLayerOpens\(this, this\.sfScope\);/u);
+});
+
+// Owner decision C181 (3), 2026-11-14: five layers in order -- base, sticky,
+// popover, window, message -- replace the numbered z-index steps in
+// components. A component takes the layer of its role; the numbered steps stay
+// declared as aliases until 2027-01-01, and only the local stacking a part
+// keeps over its own siblings (--sf-z-index-1, --sf-z-index-2 or the raw -1..2
+// the C178 lint allows) is still written as a number.
+test('C181 (3): components take a layer role, never a numbered layer step', async () => {
+  const {readdirSync, statSync} = await import('node:fs');
+  const root = new URL('../', import.meta.url);
+  const walk = (dir) => readdirSync(new URL(dir, root)).flatMap((name) => {
+    const path = `${dir}/${name}`;
+    if (statSync(new URL(path, root)).isDirectory()) return name === 'static' ? [] : walk(path);
+    return /\.(scss|css|js)$/u.test(name) ? [path] : [];
+  });
+  const strip = (text) => text.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/(^|[^:])\/\/[^\n]*/gu, '$1');
+  const found = [];
+  for (const path of [...walk('src/component'), ...walk('src/smart')]) {
+    const text = strip(await read(path));
+    for (const match of text.matchAll(/--sf-z-index-([3-9]|layer)\b/gu)) found.push(`${path}: ${match[0]}`);
+  }
+  assert.deepEqual(found, [], 'a component reads --sf-layer--base | sticky | popover | window | message');
+  const roles = await read('src/core/figma_variables/figma_role_tokens.scss');
+  const order = ['base', 'sticky', 'popover', 'window', 'message'].map((name) => roles.indexOf(`--sf-layer--${name}:`));
+  assert.ok(order.every((at, index) => at > 0 && (index === 0 || at > order[index - 1])), 'the five layers are declared in their order');
 });

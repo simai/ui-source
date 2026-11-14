@@ -269,7 +269,7 @@ comes after the row in Tab order and opens a menu of the sections it holds. The 
 | `--sf-contents-inset-inline` | the text's distance from the line (heading and links) | the size's value inset: 1/2 `max(--sf-space-1/2, --sf-b2)`, 1 `--sf-space-1` |
 | `--sf-contents-gap` | the space between the links | `0` (column), `--sf-space-1/2` (rail), `--sf-space-1/4` (bar) |
 | `--sf-contents-inset-block-start` | where the sticky column, rail, bar or sheet button stops | `--sf-space-1` |
-| `--sf-contents-z-index` | the bar and the open list above the page | `--sf-z-index-5` |
+| `--sf-contents-z-index` | the bar and the open list above the page | `--sf-layer--sticky` |
 
 ## Lifecycle events
 

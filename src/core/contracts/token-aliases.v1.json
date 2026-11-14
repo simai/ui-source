@@ -2596,5 +2596,13 @@
         "see": "shadows"
       }
     ]
+  },
+  "layers": {
+    "decision": "C181 (3), owner 2026-11-14 (ui-control control/docs-review/decisions.md; research control/research/2026-11-14-standards-tokens-utilities.md; demo prototypes/foundation-names-demo.html); names of the five C173 (7) layer roles by the dispatcher",
+    "since": "2026-11-14",
+    "remove_after": "2027-01-01",
+    "survivors": ["--sf-layer--base", "--sf-layer--sticky", "--sf-layer--popover", "--sf-layer--window", "--sf-layer--message"],
+    "former": ["--sf-z-index--1", "--sf-z-index-0", "--sf-z-index-1", "--sf-z-index-2", "--sf-z-index-3", "--sf-z-index-4", "--sf-z-index-5", "--sf-z-index-6", "--sf-z-index-7", "--sf-z-index-8", "--sf-z-index-9"],
+    "summary": "Components take a layer role, never a numbered step (src/component and src/smart read none of --sf-z-index-3 ... 9; only local stacking --sf-z-index-1/-2 remains). The numbered steps stay declared with their own values until remove_after: on 2026-11-14 the group build 4 sheets read them 400 times, ui-doc content 60 times (the z-index utility pages and the token lists), ui-pro components 10 times. They are not one-to-one aliases of the roles (eleven steps, five roles): the roles read steps 0, 5, 9 and --sf-z-index-layer, so before the numbered steps go the roles must take the scale's numbers from src/utility/z-index/default/scss/_sf_var__z_index.scss."
   }
 }

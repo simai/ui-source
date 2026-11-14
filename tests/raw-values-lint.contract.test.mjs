@@ -14,7 +14,8 @@ import {inventory} from '../scripts/dimension-inventory-lib.mjs';
 // it is shown what it finds, what it lets through, and that the Framework's
 // own sources pass it: every px it finds in src is a length the C18 dimension
 // policy reviewed, and every stacking number beyond -1..2 is listed below
-// with its owner until the layer roles (C173 point 7) replace them.
+// with its owner until a layer role replaces it (none is left: the C173
+// layer roles, point 7, took the last six).
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const tool = join(root, 'tools', 'lint-raw-values.mjs');
 const rules = (findings) => findings.map((finding) => `${finding.rule} ${finding.text}`);
@@ -91,19 +92,14 @@ test('the command exits 1 on findings and 0 on a clean folder, skipping the Fram
   }
 });
 
-// The stacking numbers in the sources today, each a defect of its owner
-// scheduled for the layer roles (C173 point 7, a later group: «five layers in
-// order»). A new one fails here; a fixed one must leave the list.
-export const STACKING_DEFERRED = [
-  {file: 'src/component/country-code/scss/_css_country_code_custom.scss', rule: 'raw-z-index', text: 'z-index: 9', owner: 'country-code (component)', task: 'C173 (7) layer roles'},
-  {file: 'src/component/dropdown/scss/_css__custom.scss', rule: 'raw-z-index', text: 'z-index: 10', owner: 'dropdown (component)', task: 'C173 (7) layer roles'},
-  {file: 'src/component/range-slider/scss/_css__range_slider_field.scss', rule: 'raw-z-index', text: 'z-index: 3', owner: 'range-slider (component)', task: 'C173 (7) layer roles'},
-  {file: 'src/smart/popover/js/templates/default.css', rule: 'raw-z-index', text: 'z-index: 3', owner: 'sf-popover (Smart)', task: 'C173 (7) layer roles'},
-  {file: 'src/core/scss/_sf_css__loader.scss', rule: 'raw-z-index', text: 'z-index: 1000', owner: 'core (loader screen)', task: 'C173 (7) layer roles'},
-  {file: 'src/utility/editor/default/scss/_editor_default.scss', rule: 'raw-z-index', text: 'z-index: 100', owner: 'utility editor', task: 'C173 (7) layer roles'},
-];
+// The stacking numbers in the sources that wait for a layer role. The six the
+// C178 lint found (country-code 9, dropdown 10, range-slider 3, sf-popover 3,
+// the loading screen 1000, the editor utility 100) now read the C173/C181 layer
+// roles (--sf-layer--popover, --sf-layer--message, --sf-layer--window; C181 (3)), so none
+// is left; a new one fails here.
+export const STACKING_DEFERRED = [];
 
-test('C178: the Framework sources write no stacking number beyond the listed ones', () => {
+test('C178 C181 (3): the Framework sources write no stacking number beyond the listed ones', () => {
   const report = lintPaths(['src'].map((path) => join(root, path)), {rules: ['raw-z-index'], baseline: STACKING_DEFERRED});
   assert.deepEqual(report.findings.map((one) => `${one.file.slice(root.length + 1)}:${one.line} ${one.text}`), [],
     'use a layer token (--sf-z-index-N) or the layer stack; local stacking -1..2 is fine');

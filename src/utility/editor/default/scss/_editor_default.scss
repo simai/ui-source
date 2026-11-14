@@ -1,7 +1,8 @@
 .editor {
   &--default {
     &.active {
-      z-index: 100;
+      // An active editor block stands over the page: the popover layer (C181 (3)).
+      z-index: var(--sf-layer--popover);
     }
   }
 }

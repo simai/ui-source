@@ -42,7 +42,7 @@
     calc(100vw - var(--sf-space-2))
   );
   position: absolute;
-  z-index: var(--sf-z-index-9);
+  z-index: var(--sf-layer--message);
 }
 
 .sf-tooltip-anchor > :is(
