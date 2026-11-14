@@ -114,6 +114,11 @@
           "    <sf-tile-metric id=\"none\"></sf-tile-metric>",
           "    <sf-tile-metric id=\"chart\" label=\"Запросы\" value=\"320\"><span slot=\"chart\" id=\"spark\">график</span></sf-tile-metric>",
           "    <sf-tile-metric id=\"quota\" label=\"Место\" value=\"83\" max=\"100\" format=\"integer\" unit=\"%\" warning-at=\"80\" error-at=\"95\"></sf-tile-metric>",
+          "    <sf-tile-metric id=\"flat\" label=\"Сайтов на сервере\" value=\"24\" unit=\"сайта\" delta=\"0\" better=\"none\" delta-format=\"absolute\" period-text=\"за месяц\"></sf-tile-metric>",
+          "    <sf-tile-metric id=\"rub\" label=\"Выручка\" value=\"1111111\" previous=\"1000000.4\" delta-format=\"absolute\" format=\"currency-RUB\"></sf-tile-metric>",
+          "    <sf-tile-metric id=\"kop\" label=\"Выручка\" value=\"1111111\" format=\"currency-RUB decimal-2\"></sf-tile-metric>",
+          "    <sf-tile-metric id=\"short\" size=\"1/2\" label=\"Выручка\" value=\"1111111\" format=\"currency-RUB compact\"></sf-tile-metric>",
+          "    <sf-tile-metric id=\"line\" label=\"Запросы в секунду\" value=\"320\" previous=\"280\" format=\"integer\"><svg slot=\"chart\" id=\"line-svg\" viewBox=\"0 0 120 32\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><polyline fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" vector-effect=\"non-scaling-stroke\" points=\"0,24 30,26 60,20 90,16 120,6\"></polyline></svg></sf-tile-metric>",
           "  </div>",
           "</main>"
         ]
@@ -213,6 +218,41 @@
               "script": "(document.querySelector('#quota').value = 40, true)",
               "wait": 150,
               "check": "(() => { const el = document.querySelector('#quota'); return el.getAttribute('data-status') === 'neutral' && !el.querySelector('.sf-tile-metric-status'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p7-no-change-in-words",
+          "title": "no change is the words «без изменений» on the change's line before the period, with no badge and no sign (C168 (1))",
+          "covers": "settings.delta, settings.previous",
+          "steps": [
+            {
+              "check": "(() => { const line = document.querySelector('#flat .sf-tile-metric-delta'); const word = line.querySelector('.sf-tile-metric-flat'); return line && !line.querySelector('sf-badge') && word && word.textContent === 'без изменений' && word.getClientRects().length > 0 && !/[−-]/u.test(line.textContent) && line.querySelector('.sf-tile-metric-period').textContent === 'за месяц' && !line.querySelector('.sr-only'); })()"
+            },
+            {
+              "script": "(document.querySelector('#flat').delta = 2, true)",
+              "wait": 150,
+              "check": "(() => { const el = document.querySelector('#flat'); return el.querySelector('.sf-tile-metric-change') && !el.querySelector('.sf-tile-metric-flat') && el.querySelector('.sf-tile-metric-delta .sr-only').textContent === 'рост'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p8-money-whole",
+          "title": "money is whole by default, kopecks with decimal-2, «1,1 млн ₽» with compact (C168 (2))",
+          "covers": "settings.format",
+          "steps": [
+            {
+              "check": "(() => { const t = (id) => document.querySelector(id + ' .sf-tile-metric-value').textContent.replace(/\\s/gu, ' '); return t('#rub') === '1 111 111 ₽' && t('#kop') === '1 111 111,00 ₽' && t('#short') === '1,1 млн ₽' && document.querySelector('#rub .sf-tile-metric-change').getAttribute('text').replace(/\\s/gu, ' ') === '+111 111 ₽'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p9-chart-svg",
+          "title": "an svg in the chart slot is taken into the tile's chart place, across its width, 32 high, in the hint's colour (C168 (3))",
+          "covers": "slots.chart",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#line'); const tile = el.querySelector(':scope > .sf-tile-metric'); const place = tile.querySelector('.sf-tile-metric-chart'); const svg = document.getElementById('line-svg'); if (!svg || !place.contains(svg) || place.hidden) return false; const s = getComputedStyle(tile); const inner = tile.getBoundingClientRect().width - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight) - parseFloat(s.borderLeftWidth) - parseFloat(s.borderRightWidth); const r = svg.getBoundingClientRect(); const hint = getComputedStyle(tile.querySelector('.sf-tile-metric-label')).color; return Math.abs(r.width - inner) < 1 && Math.round(r.height) === 32 && getComputedStyle(svg).color === hint && r.top >= tile.querySelector('.sf-tile-metric-delta').getBoundingClientRect().bottom - 0.5; })()"
             }
           ]
         }

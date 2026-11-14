@@ -7,7 +7,9 @@ import {html, nothing} from 'lit';
 //   group named by its label. Inside a button only phrasing content belongs,
 //   so every part is a span the sheet lays out.
 // - The change says its direction in words (visually hidden) beside the arrow
-//   of a tonal sf-badge, the status its word beside the icon, so colour is
+//   of a tonal sf-badge (C140); no change is the visible words «без
+//   изменений», no badge and no sign (C168 (1)). The status says its word
+//   beside the icon, so colour is
 //   never the only sign. With a hint the word is said before it (visually
 //   hidden); without one the word is the line's text («Внимание»), so a
 //   threshold that fired is never an icon alone.
@@ -23,6 +25,14 @@ const skeleton = (part) => html`<span class=${`sf-tile-metric-skeleton sf-tile-m
 function renderDelta(context) {
   const {change: delta, size} = context;
   if (!delta) return nothing;
+  // No change is said in words on the change's line, with no badge and no
+  // sign: a grey «− 0» read as a fall (owner C168 (1), 2026-11-14).
+  if (delta.direction === 'flat') {
+    return html`<span class="sf-tile-metric-delta">
+      <span class="sf-tile-metric-flat">${delta.word}</span>
+      ${context.periodText ? html`<span class="sf-tile-metric-period">${context.periodText}</span>` : nothing}
+    </span>`;
+  }
   return html`<span class="sf-tile-metric-delta">
     <sf-badge class="sf-tile-metric-change" data-tone=${delta.tone} appearance="tonal" size=${BELOW[size]}
       status=${delta.badge || nothing} icon-start=${delta.arrow} text=${delta.text}></sf-badge>

@@ -36,6 +36,20 @@ export const ICONS = {success: 'check_circle', info: 'info', warning: 'warning',
 const BADGE = {positive: 'success', negative: 'error', neutral: ''};
 const ARROWS = {up: 'arrow_upward', down: 'arrow_downward', flat: 'remove'};
 
+/**
+ * The format word the tile writes with (owner C168 (2), 2026-11-14): money on
+ * a tile is whole by default -- «currency-RUB» is «1 111 111 ₽» -- and keeps
+ * its kopecks only when the page asks with a precision word
+ * («currency-RUB decimal-2»); «currency-RUB compact» writes «1,1 млн ₽» for a
+ * narrow 1/2 tile. Every other word is core's as given.
+ */
+export function tileFormat(format = 'number') {
+  const words = String(format || 'number').trim().split(/\s+/u).filter(Boolean);
+  const money = words.some((one) => /^currency-[A-Z]{3}$/u.test(one));
+  const precise = words.some((one) => /^(?:integer|compact|decimal-\d{1,2})$/u.test(one));
+  return money && !precise ? [...words, 'integer'].join(' ') : words.join(' ') || 'number';
+}
+
 /** The threshold a share of the limit reached, in per cent: '', warning or error. */
 export function thresholdStatus(percent, warningAt, errorAt) {
   if (!Number.isFinite(percent)) return '';
@@ -90,7 +104,7 @@ class SfTileMetric extends TileMetricElement {
   }
 
   say(value) {
-    return formatNumber(value, this.format, {node: this, gap: this.words('no-value')});
+    return formatNumber(value, tileFormat(this.format), {node: this, gap: this.words('no-value')});
   }
 
   change(value) {
