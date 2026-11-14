@@ -849,6 +849,7 @@
     "events sf-context-menu-open, sf-context-menu-close: were facts sent after the state changed (close was also the placed menu's request to its host); by §19.3 and vocabulary §4 they are the cancelable requests, and the facts are sf-context-menu-opened and sf-context-menu-closed"
   ],
   "x-decisions": [
+    "version 1.20.0 (2026-11-14, owner decision C157 (5)): a minor. A form on a phone is the one sheet (core mix/_mix__sheet.scss, component.context-menu 1.12.0): the grab bar 24 x 4 in on-surface-variant in a handle row on the sheet's own surface, and a swipe down from that row closes the form (reason close) -- core/js/sheet-swipe.js. Version above fix/list-item-g4's 1.19.0.",
     "own-verb-words: search (the host is told the query) and tab (a tab chosen) are verbs of the menu alone; their words are lang events.<verb>.label.",
     "version: 1.3.1 → 1.4.0: added the facts opened and closed, the close reason and the entries' shape; nothing removed.",
     "type-union: tabs is one string member (\"A|B\" in the attribute); the component's own property also takes a list [{id, label}], so the manifest declares the attribute form (§4.2).",

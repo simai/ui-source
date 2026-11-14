@@ -5,6 +5,7 @@ import {noteDeprecated} from '../../core/js/deprecations';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {carryLayerOrigin, closeLayer, focusablesIn, isTopLayer, layerIndex, layerZIndexAt, openLayer, openLayers,
   raiseLayer, returnLayerFocus, landmarksAround, startClosedLayerContent, updateLayer} from '../../core/js/layer-stack';
+import {inHandleRow, scrollsAlong, startsOnControl, trackSwipe} from '../../core/js/sheet-swipe';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -51,12 +52,18 @@ function retiredEvent(type, detail) {
 import './scss/index.scss';
 
 const DRAWER_SELECTOR = 'sf-drawer';
-// Only the edge. A foot area was tried and taken out: lit inserts a node that
-// appears later beside the markers of its siblings, and those markers move with
-// any node the drawer has already projected -- so a bar that appeared when a
-// record became editable landed inside the body, above everything. The panel
-// scrolls now, so a bar can simply stick to its bottom where it is.
-const DRAWER_AREAS = ['edge'];
+// The edge beside the panel and the foot under its body (owner decision C157
+// (3), 2026-11-14: a pinned footer, the actions at its start, the main one
+// first). Both are drawn empty by lit and filled by projectAreas, outside
+// lit's parts: a foot lit filled itself was tried before and taken out --
+// lit inserted a node that appeared later beside the markers of its
+// siblings, and a bar that appeared when a record became editable landed
+// inside the body, above everything.
+// The head holds one action of the page's before the close (study
+// control/research/2026-11-14-view-property-base.md VB-4: «Изменить» on a
+// record), filled the same way.
+const DRAWER_AREAS = ['edge', 'footer', 'header-action'];
+const AREA_SELECTORS = [['edge', '[data-sf-drawer-edge]'], ['footer', '[data-sf-drawer-foot]'], ['header-action', '[data-sf-drawer-action]']];
 const asksFor = (node, slot) => node.nodeType === 1 && node.getAttribute('slot') === slot;
 const asksForArea = (node) => DRAWER_AREAS.some((slot) => asksFor(node, slot));
 const PORTAL_ATTRIBUTE = 'data-sf-drawer-portal';
@@ -78,10 +85,10 @@ const PLACEMENTS = ['left', 'right', 'inline-start', 'inline-end', 'bottom'];
 // The heights a bottom sheet rests at, smallest first: its content (auto, up
 // to the room it has), half the room, and all of it.
 const SNAPS = ['auto', 'half', 'full'];
-// A drag of the sheet farther than this share of its height, or faster than
-// this, is a decision: down closes (or steps full down to half), up opens to full.
-const SWIPE_SHARE = 0.25;
-const SWIPE_SPEED = 0.5;
+// A drag of the sheet farther than a quarter of its height, or faster than
+// 0.5 px/ms, is a decision: down closes (or steps full down to half), up opens
+// to full (core/js/sheet-swipe.js). A side panel on a phone closes the same
+// way toward its own edge (C157 (4)).
 // The fields a modal panel's first focus goes to before any other control
 // (focusFirst): what a person types or chooses in.
 const FIELD = [
@@ -390,6 +397,8 @@ class SfDrawer extends DrawerElement {
     this.onWindowResize = this.onWindowResize.bind(this);
     this.onSheetPointerDown = this.onSheetPointerDown.bind(this);
     this.onHandleKeyDown = this.onHandleKeyDown.bind(this);
+    this.onPanelPointerDown = this.onPanelPointerDown.bind(this);
+    this.onPanelScroll = this.onPanelScroll.bind(this);
     this._switchVisible = false;
     this._dockColumn = true;
     this._declaredModal = null;
@@ -419,6 +428,8 @@ class SfDrawer extends DrawerElement {
   disconnectedCallback() {
     this._areaObserver?.disconnect();
     this._areaObserver = null;
+    this._edgeObserver?.disconnect();
+    this._edgeObserver = null;
     globalThis.removeEventListener?.('resize', this.onWindowResize);
     this._dockObserver?.disconnect();
     this._dockObserver = null;
@@ -609,6 +620,11 @@ class SfDrawer extends DrawerElement {
       sheet: this.sheet,
       snap: this.snap,
       handleLabel: this.sfWord('handle-label'),
+      // Opened from a panel at the same edge: this one is drawn inside it,
+      // with the way back in the head (C157 (6)).
+      nested: Boolean(this.nestedUnder()),
+      backLabel: this.sfWord('back-label'),
+      headerAction: this.asksForHeaderAction(),
       blockStart: this.getAttribute('block-start') || '',
       closePlacement: this.closePlacement,
       title: this.getAttribute('heading') || '',
@@ -708,13 +724,21 @@ class SfDrawer extends DrawerElement {
     if (this._areaObserver) return;
     this._areaObserver = new MutationObserver(() => {
       const root = this.getDrawerRoot();
+      // An action that arrives for a head that is not drawn draws it first.
+      if (root && !root.querySelector('[data-sf-drawer-action]') && this.asksForHeaderAction()) this.requestComponentUpdate('header-action');
       if (root) this.projectAreas(root);
     });
     this._areaObserver.observe(this, {childList: true});
   }
 
+  // Whether a child asks for the head's action: a head with no title and no
+  // close is still drawn for it.
+  asksForHeaderAction() {
+    return [...(this._contentNodes || []), ...this.children].some((node) => asksFor(node, 'header-action'));
+  }
+
   projectAreas(root) {
-    for (const [slot, selector] of [['edge', '[data-sf-drawer-edge]']]) {
+    for (const [slot, selector] of AREA_SELECTORS) {
       const area = root.querySelector(selector);
       if (!area) continue;
       const waiting = [
@@ -755,6 +779,14 @@ class SfDrawer extends DrawerElement {
     }
     handle?.removeEventListener('keydown', this.onHandleKeyDown);
     handle?.addEventListener('keydown', this.onHandleKeyDown);
+    const panel = root.querySelector('[data-sf-drawer-panel]');
+    panel?.removeEventListener('pointerdown', this.onPanelPointerDown);
+    panel?.addEventListener('pointerdown', this.onPanelPointerDown);
+    for (const scroller of [panel, root.querySelector('[data-sf-drawer-body]')]) {
+      scroller?.removeEventListener('scroll', this.onPanelScroll);
+      scroller?.addEventListener('scroll', this.onPanelScroll, {passive: true});
+    }
+    this.observeScrollEdges(root);
     this.applyStackPosition();
     this.observeDock(root);
     // A closed drawer's panel content starts after the page's first paint,
@@ -787,9 +819,15 @@ class SfDrawer extends DrawerElement {
     // carries sf-drawer-close (and close-class), the class a page and a theme
     // address; the host carries data-sf-drawer-close, which a press on the
     // button reaches as it bubbles (handleRootClick).
+    // Outside the panel the close stands on the scrim (study VP-16): it takes
+    // the look of a control over a picture (C14 (3), the core glass role --
+    // a dark round plate, a white cross, the same in both themes). In the
+    // theme's grey it stood on the scrim at about 1:1 and could not be seen.
+    const outside = context.closePlacement === 'outside' && !this._drawnWhole;
     const closeButton = context.showClose
       ? html`<sf-button-close
           size="1/3"
+          appearance=${outside ? 'media' : 'ghost'}
           root-class=${joinClasses(
             'sf-drawer-close m-0',
             context.closePlacement === 'outside' && 'sf-drawer-close--outside',
@@ -827,14 +865,19 @@ class SfDrawer extends DrawerElement {
       >
         ${context.sheet ? html`<button type="button" class="sf-drawer-handle" aria-label=${context.handleLabel}
             data-sf-drawer-handle><span class="sf-drawer-handle-bar" aria-hidden="true"></span></button>` : nothing}
-        ${context.title || (context.showClose && context.closePlacement === 'inside') || context.headerClass
+        ${context.title || (context.showClose && context.closePlacement === 'inside') || context.headerClass || context.nested || context.headerAction
                 ? html`
                   <header class=${joinClasses('sf-drawer-head', context.headerClass)}>
+                    ${context.nested ? html`<sf-button-icon class="sf-drawer-back" icon="arrow_back" appearance="ghost"
+                        scheme="on-surface" size="1/3" aria-label=${context.backLabel} title=${context.backLabel}
+                        data-sf-drawer-back></sf-button-icon>` : nothing}
                     ${context.title ? html`<div class="sf-drawer-title" id=${context.titleId}>${context.title}</div>` : nothing}
+                    <div class="sf-drawer-action" data-sf-drawer-action></div>
                     ${context.closePlacement === 'inside' ? closeButton : nothing}
                   </header>`
                 : nothing}
         <div class=${joinClasses('sf-drawer-body', context.bodyClass)} data-sf-drawer-body></div>
+        <footer class="sf-drawer-foot" data-sf-drawer-foot></footer>
       </section>
       <div class="sf-drawer-edge" data-sf-drawer-edge>
         ${context.closePlacement === 'outside' ? closeButton : nothing}
@@ -949,7 +992,27 @@ class SfDrawer extends DrawerElement {
       // same edge; the panel stands that many stack offsets in from the edge.
       const edge = this.stackEdge;
       const drawers = openDrawers();
-      const depth = this.docked || index < 0 ? 0 : drawers
+      // One panel at an edge (C157 (6)): a drawer opened from a floating
+      // panel at the same edge is drawn inside it -- the panel below hides
+      // while it is open, with no slide, and shows again when it closes; the
+      // nested one draws «Назад» in its head. The stack's offsets (the
+      // panel below showing past the one above, stack-offset) no longer
+      // apply between them.
+      // A closed drawer keeps the marks it had: a nested panel closing
+      // («Назад») goes at once, as it came, rather than sliding out over the
+      // panel it was drawn inside of.
+      const nested = index >= 0 && Boolean(this.nestedUnder());
+      if (index >= 0) {
+        const under = drawers.slice(drawers.indexOf(this) + 1)
+          .some((drawer) => drawer.openState && drawer.nestedUnder() === this);
+        root.toggleAttribute('data-sf-drawer-nested', nested);
+        root.toggleAttribute('data-sf-drawer-under', under);
+        if (nested !== Boolean(this._drawnNested)) {
+          this._drawnNested = nested;
+          if (this._isMounted) this.requestComponentUpdate('nested');
+        }
+      }
+      const depth = this.docked || index < 0 || nested ? 0 : drawers
         .slice(0, Math.max(0, drawers.indexOf(this)))
         .filter((drawer) => drawer.openState && !drawer.docked && drawer.stackEdge === edge)
         .length;
@@ -1030,46 +1093,131 @@ class SfDrawer extends DrawerElement {
 
   // A swipe on the handle or the head: the sheet follows the finger down, and
   // on release either closes (or steps down from full), opens to full when
-  // pushed up, or settles back. Controls inside the head keep their presses.
+  // pushed up, or settles back (core/js/sheet-swipe.js, the one sheet of
+  // C157 (5)). Controls inside the head keep their presses.
   onSheetPointerDown(event) {
     if (!this.sheet || !this.openState || event.button !== 0) return;
     const grip = event.currentTarget;
-    if (grip.classList.contains('sf-drawer-head') && event.target.closest('button, a[href], input, select, textarea, [tabindex]')) return;
+    if (grip.classList.contains('sf-drawer-head') && startsOnControl(event.target)) return;
     const panel = this.getDrawerRoot()?.querySelector('[data-sf-drawer-panel]');
     if (!panel) return;
-    const startY = event.clientY;
-    const startTime = event.timeStamp;
-    const height = panel.getBoundingClientRect().height || 1;
-    let moved = false;
-    let delta = 0;
-    grip.setPointerCapture?.(event.pointerId);
-    const move = (moveEvent) => {
-      delta = moveEvent.clientY - startY;
-      if (!moved && Math.abs(delta) < 4) return;
-      moved = true;
-      panel.classList.add('is-dragging');
-      panel.style.setProperty('--sf-drawer-sheet-drag', `${Math.max(0, delta)}px`);
-    };
-    const end = (endEvent) => {
-      grip.removeEventListener('pointermove', move);
-      grip.removeEventListener('pointerup', end);
-      grip.removeEventListener('pointercancel', end);
-      panel.classList.remove('is-dragging');
-      panel.style.removeProperty('--sf-drawer-sheet-drag');
-      if (!moved || endEvent.type === 'pointercancel') return;
-      // A drag that ends on the handle is not also a press of it.
-      grip.addEventListener('click', (clickEvent) => clickEvent.stopImmediatePropagation(), {capture: true, once: true});
-      const speed = delta / Math.max(1, endEvent.timeStamp - startTime);
-      if (delta > height * SWIPE_SHARE || speed > SWIPE_SPEED) {
-        if (this.snap === 'full') this.setSnap('half');
-        else this.close();
-      } else if (-delta > height * SWIPE_SHARE || speed < -SWIPE_SPEED) {
-        this.setSnap('full');
-      }
-    };
-    grip.addEventListener('pointermove', move);
-    grip.addEventListener('pointerup', end);
-    grip.addEventListener('pointercancel', end);
+    trackSwipe(event, {
+      surface: panel,
+      direction: 'down',
+      variable: '--sf-drawer-sheet-drag',
+      onEnd: ({dismiss, back}) => {
+        if (dismiss) {
+          if (this.snap === 'full') this.setSnap('half');
+          else this.closeChain('close');
+        } else if (back) {
+          this.setSnap('full');
+        }
+      },
+    });
+  }
+
+  // A side panel on a phone is the whole screen (C56), and a finger pushing
+  // it toward its own edge closes it (owner decision C157 (4)): the panel
+  // follows past the slop and closes past a quarter of its width or on a
+  // flick, as the sheet does downwards. Only touch and pen: a mouse drags
+  // to select text. A control, a field, or a box that scrolls sideways keeps
+  // the gesture.
+  onPanelPointerDown(event) {
+    if (this.sheet || !this.openState || event.button !== 0 || event.pointerType === 'mouse') return;
+    if (this.docked && this.dockColumn) return;
+    // The whole screen -- a phone (C56) or size full -- read off the panel
+    // itself, not a second copy of the stylesheet's breakpoint.
+    const panel = event.currentTarget;
+    if (panel.getBoundingClientRect().width < globalThis.innerWidth - 1) return;
+    if (startsOnControl(event.target) || scrollsAlong(event.target, panel, 'x')) return;
+    trackSwipe(event, {
+      surface: panel,
+      direction: this.stackEdge === 'left' ? 'left' : 'right',
+      variable: '--sf-drawer-swipe',
+      onEnd: ({dismiss}) => { if (dismiss) this.closeChain('close'); },
+    });
+  }
+
+  // The panel this one is drawn inside of (C157 (6)): the nearest open drawer
+  // below it at the same edge, both floating over the page (not a column of
+  // it, not a sheet). The next item opens inside the same panel, with the way
+  // back in its head; a panel at another edge or a window is a new layer.
+  nestedUnder() {
+    if (!this.openState || this.sheet || (this.docked && this.dockColumn)) return null;
+    const drawers = openDrawers();
+    const at = drawers.indexOf(this);
+    if (at <= 0) return null;
+    const edge = this.stackEdge;
+    for (let i = at - 1; i >= 0; i -= 1) {
+      const below = drawers[i];
+      if (!below.openState || below.sheet || (below.docked && below.dockColumn)) continue;
+      if (below.stackEdge === edge) return below;
+    }
+    return null;
+  }
+
+  // The close of a nested panel closes the whole panel: this one and every
+  // one it is drawn inside of, top first. «Назад» and Escape close the top
+  // one only. A listener that refuses one stops the walk there.
+  closeChain(reason = 'close') {
+    const chain = [];
+    for (let drawer = this; drawer; drawer = drawer.nestedUnder()) chain.push(drawer);
+    let outcome = applied();
+    for (const drawer of chain) {
+      outcome = drawer.close({reason});
+      if (outcome?.outcome === 'refused') break;
+    }
+    return outcome;
+  }
+
+  // The body's edges (as sf-modal's, owner decision C159 (3)): a hairline
+  // under the head only while content is above it, over the foot only while
+  // content is below it. The panel scrolls, or its body when a resizer
+  // stands in it.
+  onPanelScroll() {
+    const root = this.getDrawerRoot();
+    if (!root) return;
+    const panel = root.querySelector('[data-sf-drawer-panel]');
+    const body = root.querySelector('[data-sf-drawer-body]');
+    const scroller = [body, panel].find((node) => node && node.scrollHeight > node.clientHeight + 1
+      && /(auto|scroll)/u.test(getComputedStyle(node).overflowY));
+    const top = scroller ? scroller.scrollTop : 0;
+    const rest = scroller ? scroller.scrollHeight - scroller.clientHeight - scroller.scrollTop : 0;
+    root.toggleAttribute('data-sf-drawer-more-start', top > 1);
+    root.toggleAttribute('data-sf-drawer-more-end', rest > 1);
+    this.noteWhole(root, panel);
+  }
+
+  // A side panel that fills the screen -- a phone (C56, C157 (4)) or size
+  // full -- has no outside: its edge controls (an outside close, «Открыть
+  // полностью») come into the head's row at its end, on the panel, not on a
+  // scrim (no glass plate), and the head keeps their room
+  // (data-sf-drawer-whole, --sf-drawer-edge-room). Placed along the top they
+  // covered the title.
+  noteWhole(root, panel) {
+    const edge = root.querySelector('[data-sf-drawer-edge]');
+    const whole = Boolean(panel && this.openState && !this.sheet && !(this.docked && this.dockColumn)
+      && panel.getBoundingClientRect().width >= globalThis.innerWidth - 1);
+    root.toggleAttribute('data-sf-drawer-whole', whole);
+    const room = whole && edge && edge.childElementCount ? Math.ceil(edge.getBoundingClientRect().width) : 0;
+    if (room) root.style.setProperty('--sf-drawer-edge-room', `${room}px`);
+    else root.style.removeProperty('--sf-drawer-edge-room');
+    if (whole !== Boolean(this._drawnWhole)) {
+      this._drawnWhole = whole;
+      // The outside close changes its look with it.
+      if (this.closePlacement === 'outside') this.requestComponentUpdate('whole');
+    }
+  }
+
+  observeScrollEdges(root) {
+    if (typeof ResizeObserver !== 'function') return;
+    if (!this._edgeObserver) this._edgeObserver = new ResizeObserver(() => this.onPanelScroll());
+    this._edgeObserver.disconnect();
+    for (const area of ['[data-sf-drawer-panel]', '[data-sf-drawer-body]', '[data-sf-drawer-edge]']) {
+      const node = root.querySelector(area);
+      if (node) this._edgeObserver.observe(node);
+    }
+    this.onPanelScroll();
   }
 
   handleRootClick(event) {
@@ -1080,12 +1228,18 @@ class SfDrawer extends DrawerElement {
     }
     // A press outside is the top layer's only.
     if (event.target === root?.querySelector('[data-sf-drawer-overlay]') && this.closeOnOverlay && this.dismissible && drawerManager.isTop(this)) {
-      this.close({reason: 'outside'});
+      this.closeChain('outside');
+      return;
+    }
+    // «Назад» in the head of a nested panel: back to the one it opened from.
+    if (event.target instanceof Element && event.target.closest('[data-sf-drawer-back]')) {
+      event.preventDefault();
+      this.close({reason: 'close'});
       return;
     }
     if (event.target instanceof Element && event.target.closest('[data-sf-drawer-close]')) {
       event.preventDefault();
-      this.close({reason: 'close'});
+      this.closeChain('close');
     }
   }
 

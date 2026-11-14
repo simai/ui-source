@@ -1,0 +1,56 @@
+// The one bottom sheet (owner decision C157 (5), 2026-11-14; ui-control
+// control/research/2026-11-14-drawer.md #q-sheet): sf-drawer
+// placement="bottom" is the sheet, and every phone sheet -- the forms of
+// sf-menu-context, sf-settings' panel, sf-popover's form, sf-modal's window
+// on a phone -- draws the same one from here: the screen's width up to 44rem
+// (--sf-h1, C32), centred, the top corners rounded, a grab bar in a handle
+// row half a control tall, the modal shadow, clear of the home indicator. A
+// swipe down closes it (core/js/sheet-swipe.js). There were six sheets with
+// different grab bars (24 x 4 on-surface-variant, 16 x 4 on a phone, 20 x 4
+// outline-variant, none), caps and heads (study DR-10).
+//
+//   @include sheet.sheet-surface;          the box of the sheet
+//   @include sheet.sheet-bar;              the grab bar itself
+//   @include sheet.sheet-bar-row;          a ::before that is the handle row
+//                                          and its bar at once
+//
+// The bar is 24 x 4 on every screen (fixed steps of the size scale, not the
+// space ladder, which drew 16 on a phone), in the quiet ink of the place
+// (on-surface-variant), rounded. The handle row is the 1/2 control's height.
+
+@mixin sheet-surface {
+  position: fixed;
+  inset: auto 0 0;
+  inline-size: 100%;
+  max-inline-size: var(--sf-h1);
+  max-block-size: calc(100dvh - var(--sf-space-4));
+  margin-inline: auto;
+  margin-block-end: 0;
+  padding-block-end: env(safe-area-inset-bottom, 0px);
+  border-start-start-radius: var(--sf-radius--surface);
+  border-start-end-radius: var(--sf-radius--surface);
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
+  box-shadow: var(--sf-shadow-modal);
+  // A finger drags it down (core/js/sheet-swipe.js sets the distance).
+  translate: 0 var(--sf-sheet--drag, 0px);
+}
+
+@mixin sheet-bar {
+  flex: none;
+  inline-size: var(--sf-c2);
+  block-size: var(--sf-a4);
+  border-radius: var(--sf-radius-rounded);
+  background-color: var(--sf-on-surface-variant);
+}
+
+// A ::before that stands for the handle row: the bar, with the room of a
+// half-control row around it, centred. A press there starts a swipe
+// (sheet-swipe.js reads the same row height off the sheet's top).
+@mixin sheet-bar-row {
+  content: '';
+  display: block;
+  @include sheet-bar;
+  margin-block: calc((var(--sf-ui-1\/2--control-height) - var(--sf-a4)) / 2);
+  margin-inline: auto;
+}

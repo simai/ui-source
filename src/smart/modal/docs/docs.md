@@ -163,11 +163,13 @@ remain on the separate compact-control radius contract.
 - `close-on-esc`
 - `close-on-overlay`
 - `preserve-scroll-gap`
-- `position="center|inline-start|inline-end|top|bottom"`
-  - `inline-start` and `inline-end` are the modal side panel (use them instead of
-    a modal `sf-drawer`); they follow the document direction and are the
-    preferred values for new interfaces.
-  - `left` and `right` remain supported as physical compatibility aliases.
+- `position="center|top"`
+  - Everything at an edge is `sf-drawer` (owner decision C157 (1), 2026-11-14):
+    `inline-start`, `inline-end`, `left`, `right` and `bottom` are its old names
+    until 2027-01-01. They still work and are noted in `SF.deprecations.list()`;
+    a side window stands at the drawer's step 1 (24rem), a window at the bottom
+    is the one sheet (at most 44rem, the grab bar, a swipe down closes it).
+    Write `<sf-drawer placement="inline-end">` or `placement="bottom"` instead.
 - `mode="inline|ajax|iframe"`
 - `display="modal|inline"` — an inline window stands in the page's flow and is
   shown without `open`; `close()` puts it away and `open()` brings it back
@@ -289,6 +291,11 @@ opens the window again sets the question's `state="open"` first (or calls its
 Every window at the bottom edge (`position="bottom"`) now rounds only its top
 corners and draws no bottom edge; one whose frame is its own (no
 `surface-padding`) keeps the home-indicator area clear.
+
+A window at the bottom -- a question or a form on a phone -- is the one sheet of
+the Framework (decision C157 (5)), drawn as `sf-drawer placement="bottom"` is:
+the screen's width up to 44rem, the grab bar 24 × 4 on top, and a swipe down
+from it closes the window as × does (a window with changed fields asks first).
 
 ## Sizes and the phone
 

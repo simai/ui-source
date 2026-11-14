@@ -14,8 +14,12 @@
     "src/component/context-menu/scss/_panel.scss",
     "src/component/context-menu/scss/index.scss"
   ],
-  "content_sha256": "95a1283d85ebc1812aa24b14b43e885e2c7fd008190d3ea817c1877f139c2dd3",
+  "content_sha256": "805df3f909c082aaba5aaa59420468ba151c6897d389f1299551b75c186187da",
   "dependencies": [
+    {
+      "id": "core.styles",
+      "range": "^1.12.0"
+    },
     {
       "id": "tokens.border",
       "range": "^1.0.0"

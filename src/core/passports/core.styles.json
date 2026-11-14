@@ -28,10 +28,11 @@
     "src/core/scss/index.scss",
     "src/core/scss/mix/_mix__common.scss",
     "src/core/scss/mix/_mix__notice-link.scss",
+    "src/core/scss/mix/_mix__sheet.scss",
     "src/core/scss/mix/_mix__window-footer.scss",
     "src/core/scss/vars/_sf_var__display.scss"
   ],
-  "content_sha256": "709097bf2c98e5ba0aede09a4e44ce12603eedb61c2c7f2f52884a3eec81a462",
+  "content_sha256": "89166588147048902af2430adcef4718d550b499688128484a8ff7c576cd1157",
   "dependencies": [
     {
       "id": "font.inter",

@@ -29,8 +29,10 @@
      the container's breakout reads, --sf-container-breakout-page when a
      product sets it, else the window. Zero below the first step. */
   --sf-site-header--centring: calc(var(--sf-px) * 0);
-  /* The open panel's width, read by the panel and by its head. */
-  --sf-site-header--sheet-size: var(--sf-site-header-sheet-inline-size, min(90vw, var(--sf-g1)));
+  /* The open panel's width, read by the panel and by its head: the side
+     panel's step 1/2, 20rem (owner decision C157 (2): the three steps 20 ·
+     24 · 30rem, and 22rem moves to a step; it was --sf-g1, 22rem). */
+  --sf-site-header--sheet-size: var(--sf-site-header-sheet-inline-size, min(90vw, var(--sf-g0)));
   min-block-size: var(--sf-site-header--block-size);
   border-block-end: var(--sf-px) solid var(--sf-site-header-border-color, var(--sf-outline-variant));
   background: var(--sf-site-header-background-color, var(--sf-site-header-background, var(--sf-surface-page)));

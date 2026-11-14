@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.modal",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "title": "Modal",
   "summary": "A dialog window over the page in the shared modal stack: centered or at a side, top or bottom edge, with header, content and footer slots, focus trap, scroll lock and focus return. It can also be minimized, load its content by Ajax or into an iframe, or render inline in the page flow.",
   "kind": "smart",
@@ -125,7 +125,7 @@
       "position": {
         "type": "string",
         "default": "center",
-        "description": "Where the window stands: center, a side panel at inline-start or inline-end (following the document direction), top or bottom; left and right are the physical forms.",
+        "description": "Where the window stands: center, or top. A side window (inline-start, inline-end; left and right their physical forms) and a sheet at the bottom are sf-drawer's (owner decision C157 (1)): those values are its old names until 2027-01-01 -- they still work, are noted in SF.deprecations, and draw as the drawer does: a side window takes the drawer's step 1 (24rem), a sheet the one sheet (44rem at most, the grab bar, a swipe down closes it).",
         "enum": [
           "center",
           "left",
@@ -1458,7 +1458,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/modal/index.js",
-        "sha256": "f5ea39c39c84c744ce8f08740893bccf3db8882d0bb86315fc1f5167aec3abf9"
+        "sha256": "c43bd63bb8fc473aae301c9b2c576b92a83fddd88dd5831293cea8e6c568bd74"
       }
     ],
     "generated_runtime": [
