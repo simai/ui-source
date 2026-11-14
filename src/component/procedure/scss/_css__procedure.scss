@@ -10,6 +10,12 @@
 // gap between their blocks, so the blocks' own outer margins are taken off.
 // The numbers are a CSS counter and the line a pseudo-element: no script.
 //
+// The marker is the sf-steps number marker (owner decision C194, 2026-11-15,
+// after C101 (3)): the box of the body text line (24 on a desktop, 20 on a
+// phone and in compact density), an empty circle with a thin --sf-outline
+// edge, the number at the 1/2 text size. It reads the same tokens as the
+// sf-steps marker, so the two stay equal on every rung.
+//
 // sf-procedure-step--complete fills the marker with the primary role;
 // sf-procedure-step--current rings it. sf-procedure--list drops
 // the line. content.steps renders with it. sf-steps, the indicator of where
@@ -17,7 +23,7 @@
 
 @layer sf.components {
   .sf-procedure {
-    --sf-procedure--marker-size: var(--sf-ui-1\/2--control-height);
+    --sf-procedure--marker-size: var(--sf-text-height-1);
     --sf-procedure--gap: var(--sf-procedure-gap, var(--sf-content--space-related));
     --sf-procedure--line-width: var(--sf-procedure-line-width, var(--sf-px));
 
@@ -55,10 +61,9 @@
     inline-size: var(--sf-procedure--marker-size);
     block-size: var(--sf-procedure--marker-size);
     color: var(--sf-procedure-marker-color, var(--sf-on-surface));
-    // A container fill: dimmed text on it reads the container role.
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-    background-color: var(--sf-procedure-marker-background-color, var(--sf-procedure-marker-background, var(--sf-surface-container)));
-    border: var(--sf-px) solid var(--sf-outline-variant);
+    // No fill: an empty circle, as the sf-steps marker of a step ahead.
+    background-color: var(--sf-procedure-marker-background-color, var(--sf-procedure-marker-background, transparent));
+    border: var(--sf-px) solid var(--sf-outline);
     border-radius: var(--sf-radius-circle);
     font-size: var(--sf-text-size-1\/2);
     font-weight: var(--sf-font-weight-medium);

@@ -3770,8 +3770,8 @@
         {
           "name": "--sf-procedure-marker-background-color",
           "role": "background",
-          "summary": "The fill of a step's marker; a complete or current step draws its own. The former name --sf-procedure-marker-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "var(--sf-surface-container)",
+          "summary": "The fill of a step's marker; none by default, an empty circle as the sf-steps marker (C194); a complete or current step draws its own. The former name --sf-procedure-marker-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
+          "default": "transparent",
           "since": "2026-11-08"
         },
         {
