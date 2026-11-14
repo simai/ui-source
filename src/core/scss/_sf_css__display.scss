@@ -1,0 +1,84 @@
+// SIMAI Framework
+// https://simai.io
+
+// DISPLAY SETTINGS (owner decision C196, 2026-11-15; research ui-control
+// control/research/2026-11-15-accessibility-worldwide.md)
+//
+// What a person sets about how a site is shown, as root attributes core reads
+// on every page, with or without the sf-display-settings panel (a site may
+// set one itself, a server may print it):
+//
+//   data-sf-scheme         a colour scheme beside the light and dark themes:
+//                          black-on-white, white-on-black, yellow-on-black,
+//                          blue-on-sky, brown-on-cream;
+//   data-sf-text-scale     125, 150, 175 or 200: the root text size as a share
+//                          of the browser's own, so the steps multiply what
+//                          the person set in the browser, never replace it;
+//   data-sf-text-spacing   wide: the WCAG 1.4.12 values;
+//   data-sf-images         grey, or hide (the text alternative is shown in
+//                          the picture's place, core/js/display-settings.js);
+//   data-sf-motion         reduce: animations and transitions stop, as under
+//                          prefers-reduced-motion;
+//   data-sf-font           sans or serif (an option the site's author turns on);
+//   data-sf-links          underline (an option the site's author turns on;
+//                          always on inside a scheme).
+//
+// And what core answers on every site from the device itself:
+// prefers-contrast: more and prefers-reduced-transparency: reduce, beside the
+// forced-colors and prefers-reduced-motion rules the components carry.
+//
+// A scheme is a theme: it maps the eight theme families of the palette to
+// its two tones where the roles are derived (the document root), and the
+// roles that read white, black or a fixed hue directly to its tones. Every
+// role -- the icon and focus roles, the places' own dim ink -- then follows,
+// and a component keeps its shapes, states and focus ring. No component
+// background or edge is reset (the legacy .sf-special sheet reset them all
+// with !important and lost buttons and focus rings; SP-1, SP-7).
+
+@use 'sass:list';
+@use 'sass:map';
+@use 'mix/mix__role_aliases' as aliases;
+
+@layer sf.base {
+  // ---------------------------------------------------------------------
+  // The device first: more contrast, less transparency (all sites)
+  // ---------------------------------------------------------------------
+
+  // prefers-contrast: more -- quiet text and quiet edges go to full ink; the
+  // brand colour stays (a person asking for a bit more contrast does not get
+  // a different site).
+  @media (prefers-contrast: more) {
+    :root:not([data-sf-scheme]),
+    :root:not([data-sf-scheme]) .theme-light,
+    :root:not([data-sf-scheme]) .theme-dark {
+      --sf-on-surface-variant: var(--sf-on-surface);
+      --sf-on-surface-container-variant: var(--sf-on-surface);
+      --sf-on-surface-card-variant: var(--sf-on-surface);
+      --sf-on-surface-raised-variant: var(--sf-on-surface);
+      --sf-on-surface-popup-variant: var(--sf-on-surface);
+      --sf-on-surface-popup-nested-variant: var(--sf-on-surface);
+      --sf-on-surface-icon: var(--sf-on-surface);
+      --sf-outline: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
+      --sf-outline-variant: light-dark(var(--sf-neutral-50), var(--sf-neutral-60));
+      @include aliases.sf-role-aliases(('on-surface-container-variant', 'on-surface-card-variant', 'on-surface-popup-variant', 'on-surface-popup-nested-variant'));
+    }
+  }
+
+  // prefers-reduced-transparency: reduce -- glass and blur become solid.
+  @media (prefers-reduced-transparency: reduce) {
+    :root {
+      --sf-blur-small: var(--sf-blur-none);
+      --sf-blur-medium: var(--sf-blur-none);
+      --sf-blur-large: var(--sf-blur-none);
+      --sf-surface-overlay--blur: var(--sf-blur-none);
+    }
+
+    :root,
+    :root .theme-light,
+    :root .theme-dark {
+      --sf-surface-media: var(--sf-black--alfa-80);
+      --sf-surface-media-hover: var(--sf-black);
+      --sf-surface-media-active: var(--sf-black);
+    }
+  }
+}
