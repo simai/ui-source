@@ -21,7 +21,21 @@ export function renderCheckableHelp(context, className) {
   const component = context.component;
   if (component?.hasSlotContent?.('help')) return component.getSlotContent('help');
   if (!context.help) return '';
+  sayBareHelp(context.help, component);
   return html`<sf-help-mark class=${className} size=${CHECKABLE_HELP_SIZE[context.size] || '1/3'} text=${context.help} label=${context.helpLabel || nothing}></sf-help-mark>`;
+}
+
+// The help is an explanation the «?» opens, not a label: a single lowercase
+// word such as help="info" is almost always a placeholder (checks study CK-7).
+// The development warning says so once per page.
+const BARE_HELP_SAID = Symbol.for('sf.checkable.bare-help-said');
+
+function sayBareHelp(help, component) {
+  const global = globalThis;
+  if (global[BARE_HELP_SAID] || !/^[a-z]+$/u.test(String(help).trim())) return;
+  global[BARE_HELP_SAID] = true;
+  const name = component?.id ? `#${component.id}` : (component?.localName || 'help');
+  console.warn(`SIMAI Framework: ${name} has help="${String(help).trim()}". The help is the explanation the «?» opens: write a sentence, or leave help out.`);
 }
 
 // The text column: the label row (the name), then the description.

@@ -37,6 +37,91 @@ class SfCheckbox extends FormField(CheckboxElement) {
   constructor() {
     super();
     this._inputElement = null;
+    this._parentWatch = null;
+  }
+
+  // The checkboxes a parent stands for (controls, owner decision C165 (2)):
+  // the elements its ids name now -- sf-checkbox hosts or plain checkbox
+  // inputs -- in the page or the shadow root the parent stands in.
+  controlledBoxes() {
+    const ids = String(this.getAttribute('controls') || '').split(/\s+/u).filter(Boolean);
+    if (!ids.length) return [];
+    const root = this.getRootNode?.() || document;
+    return ids.map((id) => root.getElementById?.(id) || document.getElementById(id))
+      .filter((node) => node && node !== this && (node.localName === 'sf-checkbox' || node.matches?.('input[type="checkbox"]')));
+  }
+
+  static boxInput(node) {
+    return node.localName === 'sf-checkbox' ? node.querySelector('.sf-checkbox input[type="checkbox"]') : node;
+  }
+
+  static boxChecked(node) {
+    if (node.localName === 'sf-checkbox') return node.hasAttribute('checked') || Boolean(SfCheckbox.boxInput(node)?.checked);
+    return Boolean(node.checked);
+  }
+
+  // The parent's own state from its children: all, some, none.
+  syncFromControlled() {
+    const boxes = this.controlledBoxes();
+    if (!boxes.length || this._parentPressing) return;
+    const on = boxes.filter((node) => SfCheckbox.boxChecked(node)).length;
+    const all = on === boxes.length;
+    const some = on > 0 && !all;
+    if (this.hasAttribute('checked') !== all || this.hasAttribute('indeterminate') !== some) {
+      this.setState({checked: all, indeterminate: some});
+    }
+    const input = this.getInputElement();
+    if (input) input.setAttribute('aria-controls', boxes.map((node) => node.id).join(' '));
+  }
+
+  // A press on the parent: all of them checked, or all unchecked when all
+  // were; each one that changes says change, as a press of it would.
+  pressControlled() {
+    const boxes = this.controlledBoxes();
+    if (!boxes.length) return;
+    // A disabled child is counted in the state and never changed; the press
+    // turns on the ones that can change unless all of those are already on.
+    const free = boxes.filter((node) => !SfCheckbox.boxInput(node)?.disabled);
+    const next = !free.every((node) => SfCheckbox.boxChecked(node));
+    this._parentPressing = true;
+    try {
+      for (const node of boxes) {
+        const input = SfCheckbox.boxInput(node);
+        if (!input || input.disabled || Boolean(input.checked) === next) continue;
+        input.checked = next;
+        input.dispatchEvent(new Event('input', {bubbles: true, composed: true}));
+        input.dispatchEvent(new Event('change', {bubbles: true}));
+      }
+    } finally {
+      this._parentPressing = false;
+    }
+    this.syncFromControlled();
+  }
+
+  // Watches the children while controls names some: a change event from the
+  // page (heard at the document, so a child drawn later counts too) and the
+  // checked and indeterminate attributes a property or a page sets.
+  watchControlled() {
+    this._parentWatch?.();
+    this._parentWatch = null;
+    if (!this.getAttribute('controls')) return;
+    const doc = this.ownerDocument;
+    const ids = () => new Set(String(this.getAttribute('controls') || '').split(/\s+/u).filter(Boolean));
+    const onChange = (event) => {
+      const host = event.target?.closest?.('sf-checkbox') || event.target;
+      if (host && ids().has(host.id) && host !== this) this.syncFromControlled();
+    };
+    doc.addEventListener('change', onChange);
+    const observer = new MutationObserver((records) => {
+      if (records.some((record) => record.target !== this && ids().has(record.target.id))) this.syncFromControlled();
+    });
+    observer.observe(doc.documentElement, {subtree: true, attributes: true, attributeFilter: ['checked', 'disabled']});
+    const late = requestAnimationFrame(() => this.syncFromControlled());
+    this._parentWatch = () => {
+      doc.removeEventListener('change', onChange);
+      observer.disconnect();
+      cancelAnimationFrame(late);
+    };
   }
 
   // A checkbox with no visible label still needs a name: a table's row and
@@ -89,9 +174,25 @@ class SfCheckbox extends FormField(CheckboxElement) {
       this._inputElement = input;
     }
     this.sfSyncFormState();
+    // A parent (controls, C165 (2)): its state from its children.
+    if (this.getAttribute('controls')) {
+      if (!this._parentWatch || this._parentWatchFor !== this.getAttribute('controls')) {
+        this._parentWatchFor = this.getAttribute('controls');
+        this.watchControlled();
+      }
+      this.syncFromControlled();
+    } else if (this._parentWatch) {
+      this._parentWatch();
+      this._parentWatch = null;
+      this._parentWatchFor = null;
+      input.removeAttribute('aria-controls');
+    }
   }
 
   onDisconnected() {
+    this._parentWatch?.();
+    this._parentWatch = null;
+    this._parentWatchFor = null;
     this._releaseReset?.();
     this._releaseReset = null;
     if (this._inputElement) {
@@ -103,6 +204,12 @@ class SfCheckbox extends FormField(CheckboxElement) {
   _handleChange = () => {
     const input = this.getInputElement();
     if (!input) return;
+    // A parent's press is for its children (controls, C165 (2)).
+    if (this.getAttribute('controls') && !this._parentPressing) {
+      this.pressControlled();
+      this.sfSyncFormState();
+      return;
+    }
 
     if (input.checked) {
       this.setAttribute('checked', '');

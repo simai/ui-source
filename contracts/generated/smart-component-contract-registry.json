@@ -541,7 +541,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/checkbox/smart.manifest.json",
-      "manifest_sha256": "f83381841fd184b0714de788db6c6c4047119051bf1733b48d55fa0f477660b7",
+      "manifest_sha256": "553c4ff27958158c3ad79fd96b713aad4934e3e6982ae47990bb565048058f8d",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2518,7 +2518,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/radio/smart.manifest.json",
-      "manifest_sha256": "fb6af6b3d04664a8e930f2d9a217813444aa0cb3ee1f82099a8c37404180be72",
+      "manifest_sha256": "db1c417b9d2e2b31374e7efcceb5b1503634d7e85f0d686e6f3dceecc7a011aa",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2984,7 +2984,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/switch/smart.manifest.json",
-      "manifest_sha256": "e9cda5620df94b1b8ebee7882ae0ff3ac72c2f17fdf1b1461ee703ead855d3ba",
+      "manifest_sha256": "e079515ea5939895a22cbe0a3a5612078fcfda6bb5963e872d58ff15b28ddb50",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
