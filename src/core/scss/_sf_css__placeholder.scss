@@ -496,4 +496,30 @@
 :where(:not(sf-dropdown) > sf-list-item:not(:defined):not(:has(> [data-sf-static])) > [slot]) {
   display: none;
 }
+
+/* lines="2" (owner decision C148 (5)): the title takes up to two lines, so
+   the box is the row's block space around its words, never under its one-line
+   height: the same padding the row's sheet gives it (one line: the control's
+   space around the line; with a caption: the next step's control around the
+   two lines, at least the C49 caption row). */
+:where(:not(sf-dropdown) > sf-list-item[lines="2"]:not(:defined)):not(:has(> [data-sf-static])) {
+  block-size: auto;
+  min-block-size: var(--sf-list-item--box-control);
+  padding-block: calc((var(--sf-list-item--box-control) - var(--sf-list-item--box-line)) / 2);
+}
+
+:where(:not(sf-dropdown) > sf-list-item[lines="2"][supporting]:not([supporting=""]):not(:defined)):not(:has(> [data-sf-static])) {
+  block-size: auto;
+  min-block-size: var(--sf-list-item--box-two-line);
+  padding-block: max(0px, calc((var(--sf-list-item--box-next) - var(--sf-list-item--box-line) - var(--sf-list-item--box-caption-line)) / 2));
+}
+
+:where(:not(sf-dropdown) > sf-list-item[lines="2"]:not(:defined)):not(:has(> [data-sf-static]))::before {
+  display: -webkit-box;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
 }

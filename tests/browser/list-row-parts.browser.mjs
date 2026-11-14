@@ -15,7 +15,8 @@
 //   a one-line row of the same list keeps its control height;
 // - every row of a list with an avatar keeps the leading place, so the titles
 //   start at one x (an image, initials, a sign, an icon alone, nothing);
-// - the avatar, the count and the badge stand centred on the row; the count
+// - the avatar stands centred on the row, the count and the badge too in a
+//   one-line row, on the caption's line in a two-line one (C148 (2)); the count
 //   and the badge end before the «⋯» and inside the row; «99+» above 99, the
 //   count named in plural forms; the badge carries the tone as status;
 // - pinned items lead under «Закреплённые» («Pinned») before the day groups
@@ -165,6 +166,7 @@ try {
             badge: badge ? {...box(badge), status: row.querySelector('sf-badge.sf-list__badge').getAttribute('status')} : null,
             dots: dots ? box(dots) : null,
             twoLine: item.classList.contains('sf-list-item--two-line'),
+            caption: row.querySelector('.sf-list-item-supporting') ? box(row.querySelector('.sf-list-item-supporting')) : null,
             meta: meta && meta.children.length ? box(meta) : null,
             // C47 (sf-list 1.5.0): a narrow list puts a row's badge and count
             // under its text, at the text's start.
@@ -243,8 +245,16 @@ try {
           ok(`${label}: avatar ${row.id} centred on the row`, near(row.avatar.cy, row.row.cy), {avatar: row.avatar.cy, row: row.row.cy});
           ok(`${label}: avatar ${row.id} centred in the leading place`, near(row.avatar.x + row.avatar.w / 2, row.lead.x + row.lead.w / 2), {avatar: row.avatar, lead: row.lead});
         }
-        if (row.count) ok(`${label}: two-line count ${row.id} centred on the row`, near(row.count.cy, row.row.cy), {count: row.count.cy, row: row.row.cy});
-        if (row.badge) ok(`${label}: two-line badge ${row.id} centred on the row`, near(row.badge.cy, row.row.cy), {badge: row.badge.cy, row: row.row.cy});
+        // A two-line row's count and badge stand in its end column, on the
+        // caption's line (owner decision C148 (2), sf-list 1.10.0); a one-line
+        // row's are centred on the row.
+        if (row.twoLine) {
+          if (row.count) ok(`${label}: two-line count ${row.id} on the caption's line`, near(row.count.cy, row.caption.cy), {count: row.count.cy, caption: row.caption.cy});
+          if (row.badge) ok(`${label}: two-line badge ${row.id} on the caption's line`, near(row.badge.cy, row.caption.cy), {badge: row.badge.cy, caption: row.caption.cy});
+        } else {
+          if (row.count) ok(`${label}: one-line count ${row.id} centred on the row`, near(row.count.cy, row.row.cy), {count: row.count.cy, row: row.row.cy});
+          if (row.badge) ok(`${label}: one-line badge ${row.id} centred on the row`, near(row.badge.cy, row.row.cy), {badge: row.badge.cy, row: row.row.cy});
+        }
       }
       const titleTwo = got.two.map((row) => row.title.x);
       ok(`${label}: two-line list titles start at one x`, Math.max(...titleTwo) - Math.min(...titleTwo) <= 0.5, titleTwo);

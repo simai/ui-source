@@ -46,7 +46,10 @@ test('C105 H2 (HS-1, HS-5): a list row\'s picture stands --sf-space-1/2 before i
   assert.ok(sheet.indexOf('column-gap: var(--sf-space-1\\/2);') > sheet.lastIndexOf('--sf-list-item-container--padding-inline-start: var(--sf-ui-'),
     'the H2 rule follows the per-size text inset');
   const list = await read('src/smart/list/js/templates/default.css');
-  assert.match(list, /\.sf-list-item--text \.sf-list__meta \{ padding-inline-start: var\(--sf-space-1\\\/2\); \}/u, 'the least gap before a text row\'s meta is H2');
+  // The least gap before a row's end part is H2 in every row, a text row too:
+  // the row's own wrap gap (C148), not a padding of sf-list's meta.
+  assert.match(sheet, /\.sf-list-item:not\(\[role="option"\]\) > \.sf-list-item-wrap \{\n {2}column-gap: var\(--sf-space-1\\\/2\);\n\}/u, 'the least gap before a row\'s end part is H2');
+  assert.doesNotMatch(list, /\.sf-list__meta \{ padding-inline-start/u, 'no second step of sf-list\'s own');
   assert.doesNotMatch(list, /--sf-list--text-step/u, 'a narrow meta stands on the title\'s first letter');
 });
 

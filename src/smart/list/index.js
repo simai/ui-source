@@ -43,6 +43,7 @@ import {elementFromManifest} from "../../core/js/element-manifest";
 import {calendarDayOffset, formatRelativeDay, msUntilNextDay, toDate} from "../../core/js/format.js";
 import {scrollerOf, watchEdge} from "../../core/js/reading-position.js";
 import {renderListTemplate} from "./js/templates/default.js";
+import {watchLongPress} from "../list-item/js/long-press.js";
 import manifest from "./component.json";
 import en from "./lang/en.json";
 import ru from "./lang/ru.json";
@@ -426,6 +427,7 @@ class SfList extends ListElement {
             stickyHeadings: this.stickyHeadings === true,
             size: this.size,
             noWrap: this.noWrap === true,
+            divided: this.divided === true,
             sections: this.arranged(),
             leading: this.leading(),
             avatarOf,
@@ -507,6 +509,29 @@ class SfList extends ListElement {
     onConnected() {
         super.onConnected?.();
         this.watchDay();
+        // A long press on a row under a finger opens its menu, as its «⋯»
+        // does (owner decision C148 (6)); the click its release sends opens
+        // nothing. No swipe.
+        if (!this._longPress) {
+            this._longPress = watchLongPress(this, {
+                accepts: (event) => {
+                    const row = event.target.closest?.(".sf-list-item[data-sf-list-roving]");
+                    if (!row || !this.contains(row) || event.target.closest(".sf-list__actions, .sf-list__rename")) return false;
+                    const item = this._items.find((one) => one.id === this.idOf(row));
+                    return Boolean(item) && this.hasMenu(item);
+                },
+                press: (event) => {
+                    const row = event.target.closest?.(".sf-list-item[data-sf-list-roving]");
+                    const id = this.idOf(row);
+                    if (id != null) this.openMenu(id);
+                },
+            });
+            this.addEventListener("click", (event) => {
+                if (!this._longPress.swallowed()) return;
+                event.preventDefault();
+                event.stopPropagation();
+            }, true);
+        }
     }
 
     onDisconnected() {
@@ -609,7 +634,9 @@ class SfList extends ListElement {
         if (!narrow) {
             const was = frame.hasAttribute(NARROW);
             if (was) frame.removeAttribute(NARROW);
-            narrow = [...frame.querySelectorAll(".sf-list__row .sf-list-item-wrap > .sf-list__meta:not(:empty)")]
+            // A two-line row keeps its badge and count in its end column
+            // (owner decision C148 (2)): only one-line rows are measured.
+            narrow = [...frame.querySelectorAll(".sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list__meta:not(:empty)")]
                 .some((meta) => this.titleSqueezed(meta, rem));
             if (was && !narrow) return;
         }
@@ -698,8 +725,34 @@ class SfList extends ListElement {
     }
 
     onKey(event) {
+        if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+        // The «⋯» of a row is reached from the row (owner decision C148 (3),
+        // as the APG layout grid): ArrowRight (ArrowLeft right to left) from
+        // the row to it, the other arrow, Escape, ArrowUp or ArrowDown back.
+        // It is no Tab stop of its own.
+        const rtl = getComputedStyle(this.querySelector(":scope > .sf-list__frame") ?? this).direction === "rtl";
+        const forward = rtl ? "ArrowLeft" : "ArrowRight";
+        const actions = event.target.closest?.(".sf-list__actions");
+        if (actions) {
+            if (event.shiftKey || ![rtl ? "ArrowRight" : "ArrowLeft", "Escape", "ArrowUp", "ArrowDown"].includes(event.key)) return;
+            const back = actions.closest(".sf-list__row")?.querySelector(".sf-list-item[data-sf-list-roving]");
+            if (!back) return;
+            event.preventDefault();
+            // The Escape is the row's: a panel around the list stays open.
+            event.stopPropagation();
+            back.focus();
+            return;
+        }
         const row = event.target.closest?.(".sf-list-item[data-sf-list-roving]");
-        if (!row || event.target !== row || event.defaultPrevented) return;
+        if (!row || event.target !== row) return;
+        if (event.key === forward && !event.shiftKey) {
+            const button = row.closest(".sf-list__row")?.querySelector(":scope > .sf-list__actions");
+            if (button) {
+                event.preventDefault();
+                button.focus();
+            }
+            return;
+        }
         const id = this.idOf(row);
         const item = this._items.find((one) => one.id === id);
         if (!item) return;

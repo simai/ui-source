@@ -30,7 +30,12 @@
      everywhere -- a band 1.36 darker in a dark popup. */
   --sf-list-item--background-color: var(--sf-list-item-background-color, var(--sf-transparent));
   --sf-list-item--border-color: var(--sf-list-item-border-color, var(--sf-outline-variant));
-  --sf-list-item--border-bottom-width: var(--sf-px);
+  /* No line between rows (owner decision C148 (4), list item study LI-9):
+     rows are told apart by their space and their hover, as sf-list's rows and
+     a menu's are; groups by their headings (C40). A standalone row drew a
+     line under itself at every size, darker when disabled. An inset line
+     from the text is the `divided` setting (below). */
+  --sf-list-item--border-bottom-width: 0;
   --sf-list-item--border-style: solid;
   min-inline-size: 0;
   transition-property: background-color, border-color, box-shadow, color;
@@ -771,4 +776,131 @@
       border-inline-start: var(--sf-px) solid Highlight;
     }
   }
+}
+
+/* Owner decision C148 (list item study, prototypes/list-item-study.html,
+   2026-11-14): the row's end column, its one line, the inset line of
+   `divided`. A row of a page or of sf-list, never a dropdown's option, which
+   keeps its own layout. */
+@layer sf.components {
+/* The title's line of each size: where the end column puts its first line. */
+.sf-list-item--size-1\/3 { --sf-list-item--title-line: var(--sf-text-height-1\/3); }
+.sf-list-item--size-1\/2 { --sf-list-item--title-line: var(--sf-text-height-1\/2); }
+.sf-list-item--size-1 { --sf-list-item--title-line: var(--sf-text-height-1); }
+.sf-list-item--size-2 { --sf-list-item--title-line: var(--sf-text-height-2); }
+.sf-list-item--size-3 { --sf-list-item--title-line: var(--sf-text-height-3); }
+
+/* The step before the row's end part is the row's H2 step (C105), in a text
+   row as in a row with a picture: --sf-space-1/2, 12 (8 compact and on a
+   phone). */
+.sf-list-item:not([role="option"]) > .sf-list-item-wrap {
+  column-gap: var(--sf-space-1\/2);
+}
+
+/* C148 (5): a title is one line, cut at its end with an ellipsis; the whole
+   title is the row's tooltip when it is cut (index.js). A one-line row's
+   text wrapped onto as many lines as it took. */
+.sf-list-item:not([role="option"]):not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list-item-container {
+  overflow: hidden;
+  overflow-wrap: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* lines="2": the title takes up to two lines, then the ellipsis -- for
+   records and documents whose names differ at the end. The caption stays one
+   line. The row grows by the title's second line; a row whose title fits one
+   line keeps its height. */
+.sf-list-item.sf-list-item--lines-2:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list-item-container,
+.sf-list-item.sf-list-item--lines-2.sf-list-item--two-line > .sf-list-item-wrap > .sf-list-item-container > .sf-list-item-title {
+  display: -webkit-box;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+/* The row's end part, when the page gave loose nodes (template): a box at
+   the row's end, its buttons one group apart (C105, --sf-space-1/3). */
+.sf-list-item:not([role="option"]) > .sf-list-item-wrap > .sf-list-item-trailing {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--sf-space-1\/3);
+}
+
+/* C148 (2): a two-line row's end part is a column -- its first line on the
+   title's line (a time), its second on the caption's (a grey count or a
+   badge, C140) -- so the row keeps its height and its title its width. The
+   caption's type and dim ink, figures of one width. A part of buttons stays a
+   row of buttons, centred on the row (C148 (3)). */
+.sf-list-item.sf-list-item--two-line:not([role="option"]) > .sf-list-item-wrap > :is(.sf-list-item-trailing, span[slot="trailing"], div[slot="trailing"]):not(:has(:is(button, a[href], input, select, textarea, sf-button, :is(sf-button-icon, sf-icon-button), [role="button"]))) {
+  display: grid;
+  flex: none;
+  grid-template-rows: var(--sf-list-item--title-line) var(--sf-list-item-supporting--line-height);
+  align-items: center;
+  align-self: center;
+  justify-content: end;
+  justify-items: end;
+  /* No step between the two lines: they are the title's and the caption's. */
+  gap: 0 var(--sf-space-1\/4);
+  color: var(--sf-list-item-supporting-color, var(--sf-on-surface-variant));
+  font-size: var(--sf-list-item-supporting--font-size);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--sf-list-item-supporting--line-height);
+  white-space: nowrap;
+}
+
+.sf-list-item.disabled.sf-list-item--two-line:not([role="option"]) > .sf-list-item-wrap > :is(.sf-list-item-trailing, span[slot="trailing"], div[slot="trailing"]) {
+  color: var(--sf-on-surface-disabled);
+}
+
+/* C148 (4), divided: a line under the row from its text to its end edge, as
+   a list of settings or of people draws it; none under the last row of its
+   list. The line is inside the row's height. It starts where the text block
+   does (the line is its child, placed from the row's bottom at the text's own
+   start) and runs past the row's end, where the row cuts it. */
+.sf-list-item.sf-list-item--divided {
+  position: relative;
+  overflow: clip;
+}
+
+.sf-list-item.sf-list-item--divided > .sf-list-item-wrap > .sf-list-item-container::after {
+  content: "";
+  /* Block: an inline box's static place would be after the text. */
+  display: block;
+  position: absolute;
+  inset-block-end: 0;
+  inline-size: 100vmax;
+  block-size: var(--sf-px);
+  background-color: var(--sf-list-item-border-color, var(--sf-outline-variant));
+  pointer-events: none;
+}
+
+:is(sf-list-item:last-child, li:last-child > sf-list-item) > .sf-list-item.sf-list-item--divided > .sf-list-item-wrap > .sf-list-item-container::after {
+  content: none;
+}
+
+/* C148 (6): a long press on a row under a finger opens its menu (index.js),
+   so the press does not select the row's words or raise the browser's own
+   menu over it. */
+@media (pointer: coarse) {
+  .sf-list-item.sf-list-item--interactive {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* The row's «⋯» and its other buttons are a finger's target, --sf-d1 (44),
+     as sf-list's «⋯» is (C148 (6)), in a row with a caption, which is 60
+     under a finger and holds them. */
+  .sf-list-item.sf-list-item--interactive.sf-list-item--two-line > .sf-list-item-wrap > button[slot="trailing"],
+  .sf-list-item.sf-list-item--interactive.sf-list-item--two-line > .sf-list-item-wrap > [slot="trailing"] button,
+  .sf-list-item.sf-list-item--interactive.sf-list-item--two-line > .sf-list-item-wrap > .sf-list-item-trailing button {
+    min-block-size: var(--sf-d1);
+    min-inline-size: var(--sf-d1);
+  }
+}
 }

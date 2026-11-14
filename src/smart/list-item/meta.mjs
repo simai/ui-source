@@ -120,6 +120,24 @@ const sfListItemMeta = {
       "default": "false",
       "description": "A row of an sf-sortable list that does not move: no handle, its slot kept"
     },
+    "divided": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "An inset line under the row, from its text to its end edge, none under the last row of its list (owner decision C148 (4)); off, rows have no line between them"
+    },
+    "lines": {
+      "kind": "enum",
+      "values": [
+        "1",
+        "2"
+      ],
+      "default": "1",
+      "description": "How many lines the title takes before its ellipsis: 1, or 2 for records and documents whose names differ at the end (owner decision C148 (5)); the supporting line is always one line, and a cut title is the row's tooltip"
+    },
     "checked": {
       "kind": "boolean",
       "values": [

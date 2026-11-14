@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-item",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "title": "List item",
   "summary": "A row: an option sf-dropdown captures, or the general list row -- a supporting line, a row a person acts on, an item of an sf-sortable list, a pinned row.",
   "kind": "smart",
@@ -132,6 +132,20 @@
         "default": false,
         "description": "A row of an sf-sortable list that does not move: no handle, its slot kept"
       },
+      "divided": {
+        "type": "boolean",
+        "default": false,
+        "description": "An inset line under the row, from its text to its end edge, none under the last row of its list (owner decision C148 (4)); off, rows have no line between them"
+      },
+      "lines": {
+        "type": "string",
+        "default": "1",
+        "description": "How many lines the title takes before its ellipsis: 1, or 2 for records and documents whose names differ at the end (owner decision C148 (5)); the supporting line is always one line, and a cut title is the row's tooltip",
+        "enum": [
+          "1",
+          "2"
+        ]
+      },
       "checked": {
         "type": "boolean",
         "default": false,
@@ -179,7 +193,7 @@
       "const": "Icons, avatar images, color swatches and checkbox marks do not add focus targets."
     },
     "list_row": {
-      "const": "An interactive or sortable row is one stop of its list (the nearest sf-sortable, listbox, list or [data-sf-list], else its parent): roving tabindex, ArrowUp/ArrowDown/Home/End between rows; a keyboard reorder in progress keeps the arrows. One-line height is the control height of the size; two-line adds one line of the step below."
+      "const": "An interactive or sortable row is one stop of its list (the nearest sf-sortable, listbox, list or [data-sf-list], else its parent): roving tabindex, ArrowUp/ArrowDown/Home/End between rows; a keyboard reorder in progress keeps the arrows. Its controls are reached from the row with ArrowRight/ArrowLeft, Escape back (C148 (3)). A row with a supporting line is one control of step 1/2 plus the caption's line (C49): 48, compact 44, 60 under a finger."
     }
   },
   "methods": {},
@@ -270,11 +284,13 @@
       "ArrowUp",
       "Home",
       "End",
+      "ArrowRight",
+      "ArrowLeft",
       "Enter",
       "Space",
       "Escape"
     ],
-    "focus": "Owned by the parent Dropdown composite for options; a standalone preview is not focusable; an interactive or sortable row is a roving Tab stop of its list, with an inset focus ring."
+    "focus": "Owned by the parent Dropdown composite for options; a standalone preview is not focusable; an interactive or sortable row is a roving Tab stop of its list, with an inset focus ring. The controls in an interactive row are not Tab stops of their own (owner decision C148 (3)): ArrowRight (ArrowLeft in a right-to-left page) walks from the row to them and on, the other arrow back, Escape, ArrowUp and ArrowDown return to the row."
   },
   "presentation": {
     "themes": [
@@ -339,7 +355,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-item/index.js",
-        "sha256": "4c314f17123c9006035d73f1d7040c41e974a827625767e356204bcaf0480499"
+        "sha256": "b71c315b28c91c1b61749331164cabe7c96c2b1682e07f6f02925d02d532e98b"
       }
     ],
     "generated_runtime": [

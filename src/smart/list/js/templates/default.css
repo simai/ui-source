@@ -138,11 +138,19 @@
 
   .sf-list__meta:empty { display: none; }
 
-  .sf-list-item--text .sf-list__meta { padding-inline-start: var(--sf-space-1\/2); }
+  /* A two-line row's meta is sf-list-item's end column (owner decision C148
+     (2)): the badge and the count on the caption's line, under the title's
+     line, so the row keeps its height and its title its width. The step
+     before it is the row's own (sf-list-item's wrap, C105 H2), in a text row
+     too. sf-badge's host is display: contents: its badge is the column's
+     item. */
+  .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > *,
+  .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > sf-badge > * { grid-row: 2; }
 
   /* A narrow list (owner decision C47, 2026-11-10, option A; the list sets
-     data-sf-list-narrow on its frame below 20rem of its own width): a row
-     with a badge or a count lays out as «picture | text», and the meta goes
+     data-sf-list-narrow on its frame below 20rem of its own width): a
+     one-line row with a badge or a count (a two-line row keeps its end
+     column, C148 (2)) lays out as «picture | text», and the meta goes
      under the second line, at the text's start, so the title keeps the
      row's width and the badge stays whole. The row grows by whole bands
      (geometry standard, multi-line rows): the band step --sf-space-1/4 and
@@ -150,26 +158,26 @@
      size 1. Rows without a meta keep their layout and their height; the
      picture place is one width in every row, so all titles start on one
      line. */
-  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     row-gap: var(--sf-space-1\/4);
   }
 
-  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item--text .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item--text:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
     grid-template-columns: minmax(0, 1fr);
   }
 
   /* The picture: the leading place, or sf-icon's own glyph (its host is
      display: contents). */
-  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > :first-child:not(.sf-list-item-container, sf-icon),
-  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > sf-icon:first-child > * {
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > :first-child:not(.sf-list-item-container, sf-icon),
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > sf-icon:first-child > * {
     grid-column: 1;
     grid-row: 1;
     align-self: center;
   }
 
-  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > .sf-list-item-container {
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > .sf-list-item-container {
     grid-column: -2;
     grid-row: 1;
     justify-self: stretch;
@@ -178,7 +186,7 @@
     margin: 0;
   }
 
-  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap > .sf-list__meta:not(:empty) {
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list__meta:not(:empty) {
     grid-column: -2;
     grid-row: 2;
     justify-self: start;
@@ -404,5 +412,17 @@
      phone 8. */
   .sf-list__frame .sf-list__row > sf-list-item > .sf-list-item .sf-list-item-container {
     padding-inline-end: 0;
+  }
+}
+
+/* divided (owner decision C148 (4)): sf-list-item's inset line runs on under
+   the row's «⋯» to the row's own end, where the row cuts it: the list's row,
+   not the inner sf-list-item, is where the line is placed and clipped. */
+@layer sf.components {
+  .sf-list__row:has(> sf-list-item > .sf-list-item--divided) { position: relative; }
+
+  .sf-list__row > sf-list-item > .sf-list-item.sf-list-item--divided {
+    position: static;
+    overflow: visible;
   }
 }

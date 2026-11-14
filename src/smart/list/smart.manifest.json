@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "title": "List",
   "summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
   "kind": "smart",
@@ -106,7 +106,12 @@
       "no-wrap": {
         "type": "boolean",
         "default": false,
-        "description": "Every row's title and its second line stay one line each, cut at the end with an ellipsis; the whole text stays in the row for a screen reader and is the row's tooltip (title). Off: the title of a one-line row wraps."
+        "description": "Every row's whole text is its tooltip (title), cut or not. A row's title and its second line are one line each, cut at the end with an ellipsis, with or without it (owner decision C148 (5)); a cut row says its whole text in its tooltip by itself, and the whole text stays in the row for a screen reader. Kept for the lists that set it."
+      },
+      "divided": {
+        "type": "boolean",
+        "default": false,
+        "description": "An inset line under every row but the last of its group, from the row's text to the list's edge under the «⋯» (sf-list-item divided, owner decision C148 (4)); off, the rows have no lines and the groups are told apart by their headings (C40)"
       },
       "label": {
         "type": "string",
@@ -754,15 +759,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/list/index.js",
-        "sha256": "9f6e03080e2c1c440dbd6c3ef95f6d21fa26972303b5cad23fa8c32ff874d97a"
+        "sha256": "827e6108db3e5e43a6e1f631a1ca211e816b5f27e3e10b408f4517ac2074b697"
       },
       {
         "path": "src/smart/list/js/templates/default.js",
-        "sha256": "a2a9032476a94182f33200b0a9684d2e1de7e9bd56230379bb6b020a5693d216"
+        "sha256": "add17cae27c5591dbf8129f40299dca64ec905f2ab681a5ce5817ea2813c687e"
       },
       {
         "path": "src/smart/list/js/templates/default.css",
-        "sha256": "69e376fbfadd6ad60b237b103d90829b0130d30ff4d8a7157a1839a89279b816"
+        "sha256": "bbb51759687a302633d938247744f9f986b2c963ba3ea1ad8bcaca97ea31cb7b"
       },
       {
         "path": "src/smart/list/rule.js",
@@ -770,11 +775,11 @@
       },
       {
         "path": "src/smart/list/docs.md",
-        "sha256": "6d2b3c716ef7ce75b51f98e042b24a7b357d4272472cf89418196b710d4063a0"
+        "sha256": "9f079ff4ee742c9668970af33bde48d3edd1ba3fc97577eada2e664a3513092b"
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "32adf751002ee25a5720ac36133714bd757438df3c6b305d20a8b54aa714435c"
+        "sha256": "34f7a95af74d171948bbe06a6885a4ad5550d4087f3d3106ed25d6e3da5b000f"
       },
       {
         "path": "src/smart/list/lang/en.json",
