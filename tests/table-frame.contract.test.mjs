@@ -149,3 +149,18 @@ test('the .table head is quiet and a number column keeps its digits on one line'
   assert.doesNotMatch(css, /> thead > tr > th,[^{]*\{[^}]*font-weight/u);
   assert.match(css, /\.table-numeric \{\s*font-variant-numeric: tabular-nums;\s*text-align: end;\s*white-space: nowrap;/u);
 });
+
+// C146 (5), variant В (owner R239): the row's check box and menu «≡» stand in
+// narrow cells at the row's start, and the main field is a plain link.
+test('the .table row actions: narrow control cells and the name link', () => {
+  const css = read('src/utility/table/default/scss/_sf_css__table.scss');
+  // A cell that holds one check box or one icon button and nothing else is as
+  // narrow as its control, low in weight so an author's column width wins.
+  assert.match(css, /> :not\(caption\) > \* > :where\(:has\(> :is\(sf-checkbox, :is\(sf-button-icon, sf-icon-button\), input\[type='checkbox'\]\):only-child\)\) \{\s*inline-size: 0;\s*white-space: nowrap;/u);
+  // The name link keeps the link colour (visited too), underlined under the
+  // pointer and on keyboard focus; a link drawn as a button keeps its look.
+  assert.match(css, /> tbody > tr > \* > a:where\(\[href\]:not\(\.sf-button\)\) \{\s*color: var\(--sf-link\);/u);
+  assert.match(css, /&:hover,\s*&:focus-visible \{\s*text-decoration-line: underline;/u);
+  // No hover-only quick actions: the classes never hide a control until hover.
+  assert.doesNotMatch(css, /:hover[^{]*\{[^}]*(?:opacity|visibility)/u);
+});

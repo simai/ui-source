@@ -52,6 +52,10 @@ const page_html = `
     <tbody><tr><td data-wide="first">Значение один</td><td data-wide="second">Значение два</td><td>Значение три</td><td>Значение четыре</td><td>Значение пять</td><td class="table-numeric" data-wide="number">1 234 567,89</td></tr></tbody>
   </table>
 </div>
+<table class="table" data-probe="actions" style="inline-size:800px">
+  <thead><tr><th><input type="checkbox" aria-label="Выбрать все"></th><th><span class="sr-only">Действия</span></th><th>Заказ</th><th>Статус</th></tr></thead>
+  <tbody><tr><td data-act="check"><input type="checkbox" style="inline-size:20px;margin:0" aria-label="Выбрать № 1001"></td><td data-act="menu"><sf-button-icon icon="menu" aria-label="Действия: № 1001"></sf-button-icon></td><td data-act="name"><a href="#order-1001">№ 1001</a></td><td>Оплачен</td></tr></tbody>
+</table>
 <div class="table-frame" data-probe="own" style="--sf-table-frame-head-background:rgb(1, 2, 3)">
   <table class="table">
     <thead><tr><th data-head="own">Имя</th></tr></thead>
@@ -121,6 +125,15 @@ try {
       },
       bodyLastColumn: read(bodyLastColumn, 'border-right-width'),
       lastRow: read(lastRow, 'border-bottom-width', 'border-bottom-color'),
+      actions: (() => {
+        const at = (key) => document.querySelector(`[data-act="${key}"]`);
+        const px = (value) => Number.parseFloat(value);
+        const link = at('name').querySelector('a');
+        const ink = (() => { const probe = document.createElement('span'); probe.style.color = 'var(--sf-link)'; document.body.append(probe); const value = getComputedStyle(probe).color; probe.remove(); return value; })();
+        return {check: at('check').getBoundingClientRect().width, menu: at('menu').getBoundingClientRect().width, name: at('name').getBoundingClientRect().width,
+          checkPadding: getComputedStyle(at('check')).paddingLeft, checkPaddingEnd: getComputedStyle(at('check')).paddingRight, menuPadding: px(getComputedStyle(at('menu')).paddingLeft) + px(getComputedStyle(at('menu')).paddingRight), box: at('check').querySelector('input').getBoundingClientRect().width,
+          linkColor: getComputedStyle(link).color, linkInk: ink, linkLine: getComputedStyle(link).textDecorationLine};
+      })(),
       // A step is a token, so its value is a length the page resolves, not a
       // number: it is measured the way the cell resolves it.
       steps: {
@@ -161,6 +174,15 @@ try {
   // inset (C77): the text stands a step from the frame's outer edge.
   check('the inline padding is the same step in head and body', near(px(measured.head['padding-left']) + px(measured.steps.hairline), px(measured.steps.one)) && near(px(measured.body['padding-left']) + px(measured.steps.hairline), px(measured.steps.one)), {head: measured.head['padding-left'], body: measured.body['padding-left'], step: measured.steps.one});
   check('a cell starts at the top, at the start', measured.body['vertical-align'] === 'top' && measured.head['text-align'] === 'start', {body: measured.body, head: measured.head});
+
+  // C146 (5), variant В: the check box and «≡» cells are as narrow as their
+  // controls (the check box cell: the edge inset, the box, half the gap; the
+  // empty «≡» host here: its paddings), the rest goes to the data; the name is
+  // a link in the link colour, not underlined at rest.
+  const act = measured.actions;
+  check('the check box cell is as narrow as its control', near(act.check, px(act.checkPadding) + act.box + px(act.checkPaddingEnd), 1), {actions: act});
+  check('the «≡» cell is as narrow as its control', near(act.menu, act.menuPadding, 1) && act.name > 200, {actions: act});
+  check('the name link keeps the link colour, no underline at rest', act.linkColor === act.linkInk && act.linkLine === 'none', {actions: act});
 
   await page.close();
 } finally {

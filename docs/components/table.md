@@ -3,10 +3,12 @@
 ## Component brief
 
 The table classes draw a plain data table with no script: a reference, a
-report, a comparison. They are utilities (`src/utility/table*`), loaded by the
-RuleLoader when the class appears. Selection, row actions, sorting by a
-server, loading and empty states belong to `sf-view-table` (SIMAI Pro), not to
-these classes.
+report, a comparison, and a short list of records with row actions. They are
+utilities (`src/utility/table*`), loaded by the RuleLoader when the class
+appears. The classes draw the row actions' places (the check box and the row
+menu «≡» at the row's start, the name as a link, see Row actions); the page
+wires the menu. Keys across the cells, sorting by a server, loading and empty
+states belong to `sf-view-table` (SIMAI Pro), not to these classes.
 
 | Class | What it does |
 | --- | --- |
@@ -31,7 +33,7 @@ plain table and `sf-view-table`. What the classes draw:
 | (2) A quiet head | The head cells: the row's text, the medium weight, `--sf-on-surface-variant`, no fill of their own, the row's line under them. |
 | (3) The number column type | `.table-numeric` on the column's `<th>` and `<td>`s: end aligned, `tabular-nums`, `white-space: nowrap`. The unit goes in the head (`Сумма, ₽`). |
 | (4) Lines, hover and selected; zebra by choice | Lines between rows (`--sf-outline-variant`); the row under the pointer on the hover layer; a selected row (`.table-active`) on the select layer, also under the pointer; `.table-stripe` only when the author asks for it. |
-| (5) Row actions | Not in the classes: a table with row actions is `sf-view-table`. |
+| (5) Row actions, variant В | The check box and the row menu «≡» stand in cells of their own at the row's start, each as narrow as its control; the main field (the name) is a plain `<a href>` that opens the record (a middle click and a new tab work), the link colour at rest, underlined under the pointer and on keyboard focus. The right button, the menu key / Shift+F10 and a long press open the same menu as «≡» (the page wires it, see Row actions). No quick buttons under the pointer; the same on a phone. |
 | (6) The sort mark only on the sorted column | The classes draw no sort mark. A table that sorts puts `aria-sort` and the mark on the sorted column's head only (see Sorting). |
 | (7) A name up to two lines, then an ellipsis and a tooltip | `.line-clamp-2` around the name in its cell, and the whole name in `title` (below). |
 | (8) A table with actions is a grid | Not in the classes: a plain table has no keys of its own. |
@@ -175,6 +177,145 @@ Leave both out when every row is in the DOM; the browser counts them itself.
 Say the total in the caption as well when people choose pages: a screen
 reader announces the caption with the table, and `aria-rowcount` is read only
 by some.
+
+### Row actions
+
+Owner decision C146 (5), variant В, with the context menu rules C164: the row
+menu «≡» stands at the start of the row, after the check box, in the same
+place at any number of columns; the main field (the name) is a link that opens
+the record to view or edit it; the right button opens the same menu as «≡».
+There are no quick buttons under the pointer: opening is the link, the rest is
+in the menu. The same on a phone.
+
+What the classes do: a cell that holds one check box or one icon button and
+nothing else is as narrow as its control (low in weight, so a column width the
+author gives still wins), and a link that is a direct child of a body cell is
+the record's name (the link colour, visited or not; underlined under the
+pointer and on keyboard focus). The cells keep the table's rhythm: the edge
+inset before the check box and the gap between cells on each side of «≡»
+(C105 H4, H6).
+
+The markup:
+
+- the check box: `sf-checkbox` named «Выбрать <имя>», the head's «Выбрать
+  все»; at `.table-sm` give it `size="1/2"`;
+- «≡»: `sf-button-icon icon="menu" appearance="ghost"
+  scheme="on-surface-variant"`, named «Действия: <имя>», with `height="low"`
+  so the row keeps its step (40 / 32 / 36 with a 32 / 28 / 28 button; at
+  `.table-sm` `size="1/2" height="low"`); the head cell above it holds the
+  column's name for a screen reader only (`<span class="sr-only">Действия</span>`);
+- the name: a plain `<a href>` to the record, so a middle click and «open in a
+  new tab» work.
+
+Tab goes check box, «≡», name in each row. A table that needs keys across the
+cells (one Tab stop, arrows, C146 (8)) is `sf-view-table`.
+
+```html
+<table class="table" id="orders">
+  <caption class="sr-only">Заказы</caption>
+  <thead><tr>
+    <th scope="col"><sf-checkbox aria-label="Выбрать все"></sf-checkbox></th>
+    <th scope="col"><span class="sr-only">Действия</span></th>
+    <th scope="col">Заказ</th>
+    <th scope="col">Статус</th>
+    <th scope="col" class="table-numeric">Сумма, ₽</th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td><sf-checkbox aria-label="Выбрать № 1001"></sf-checkbox></td>
+      <td><sf-button-icon icon="menu" height="low" appearance="ghost" scheme="on-surface-variant" aria-label="Действия: № 1001"></sf-button-icon></td>
+      <td><a href="/orders/1001">№ 1001</a></td>
+      <td><sf-badge appearance="tonal" status="success" text="Оплачен"></sf-badge></td>
+      <td class="table-numeric">12 400,00</td>
+    </tr>
+  </tbody>
+</table>
+<sf-menu-context id="orders-menu" popup aria-label="Действия с заказом"></sf-menu-context>
+```
+
+The menu is one `sf-menu-context` for the table, opened at the row's «≡» by
+every way in (C164 (1), (2)): «≡» itself, the right button, the menu key and
+Shift+F10 on a control of the row, and a long press on a touch screen. The
+link and the check box keep the browser's own menu, and so does Shift with the
+right button. On a selected row the menu acts on every selected row («Выбрано
+N»); on another row it first selects that row alone (C164 (3)). «Удалить» is
+last, after a line, in the danger colour, and asks before it deletes (C164
+(5), C13, C25); an action that cannot be done stays in the list, dimmed, with
+its reason (C164 (4)).
+
+```js
+customElements.whenDefined('sf-menu-context').then(() => {
+  const table = document.getElementById('orders');
+  const menu = document.getElementById('orders-menu');
+  const rows = () => [...table.tBodies[0].rows];
+  const check = (tr) => tr.querySelector('sf-checkbox');
+  const select = (tr, on) => { check(tr).checked = on; tr.classList.toggle('table-active', on); };
+  const name = (tr) => tr.querySelector('a[href]').textContent.trim();
+  // C164 (3): a selected row acts for every selected row; another row is selected alone.
+  const target = (tr) => {
+    if (check(tr).checked) return rows().filter((row) => check(row).checked);
+    for (const row of rows()) select(row, row === tr);
+    return [tr];
+  };
+  const entries = (list) => [
+    {type: 'heading', text: list.length > 1 ? `Выбрано ${list.length}` : `Заказ ${name(list[0])}`},
+    ...(list.length > 1 ? [] : [{id: 'edit', text: 'Изменить', icon: 'edit'}]),
+    {id: 'copy', text: 'Дублировать', icon: 'content_copy'},
+    {type: 'separator'},
+    {id: 'delete', text: 'Удалить', icon: 'delete', danger: true},
+  ];
+  const open = (tr, toggle = false) => {
+    const more = tr.querySelector('sf-button-icon[icon="menu"]');
+    const anchor = more.querySelector('button') || more;
+    menu.entries = entries(target(tr));
+    return toggle ? menu.toggleFor(anchor) : menu.openFor(anchor);
+  };
+  const own = (node) => node.closest('a[href], input, sf-checkbox'); // the browser's menu stays there
+  let press = null;
+  table.addEventListener('click', (event) => {
+    if (press?.fired) { event.preventDefault(); press = null; return; }
+    const tr = event.target.closest('sf-button-icon[icon="menu"]')?.closest('tbody tr');
+    if (tr) open(tr, true);
+  });
+  table.addEventListener('contextmenu', (event) => {
+    const tr = event.target.closest('tbody tr');
+    if (press?.fired) { event.preventDefault(); return; }
+    if (!tr || event.shiftKey || own(event.target)) return;
+    event.preventDefault();
+    open(tr);
+  });
+  table.addEventListener('keydown', (event) => {
+    if (event.key !== 'ContextMenu' && !(event.shiftKey && event.key === 'F10')) return;
+    const tr = event.target.closest('tbody tr');
+    if (!tr || own(event.target)) return;
+    event.preventDefault();
+    open(tr);
+  });
+  // A long press (500 ms, the finger still): not every phone browser turns it into contextmenu.
+  table.addEventListener('pointerdown', (event) => {
+    const tr = event.target.closest('tbody tr');
+    if (event.pointerType !== 'touch' || !tr || own(event.target)) return;
+    press = {x: event.clientX, y: event.clientY, fired: false};
+    press.timer = setTimeout(() => { press.fired = true; open(tr); }, 500);
+  });
+  table.addEventListener('pointermove', (event) => {
+    if (press && !press.fired && Math.hypot(event.clientX - press.x, event.clientY - press.y) > 10) { clearTimeout(press.timer); press = null; }
+  });
+  for (const type of ['pointerup', 'pointercancel']) {
+    table.addEventListener(type, () => { if (press && !press.fired) { clearTimeout(press.timer); press = null; } });
+  }
+  table.addEventListener('change', (event) => {
+    const tr = event.target.closest('tr');
+    const on = Boolean(event.target.closest('sf-checkbox')?.checked);
+    if (tr?.parentElement === table.tBodies[0]) tr.classList.toggle('table-active', on);
+    else if (tr) for (const row of rows()) select(row, on);
+  });
+});
+```
+
+Keep a table with row actions as `.table`, not in `.table-frame`: the frame is
+a reading table, its first column (here the check box) is the one that stands
+still, and its gridlines would stand between the check box and «≡».
 
 ### Sorting
 
