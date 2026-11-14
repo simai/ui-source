@@ -68,6 +68,16 @@ const SCREEN_QUERIES = {
 // utilities, which read the breakpoint array.
 const FRAME_CONTAINERS = new Set(['src/core/scss/_sf_css__composition.scss', 'src/utility/query-layout/default/scss/index.scss']);
 
+// A plain CSS template has no Sass, so it cannot call container-step(); the
+// one condition such a file may write is listed here with its reason, exactly
+// (group build 6, dispatcher decision: a lint exception, not a redesign).
+const PLAIN_CSS_CONDITIONS = {
+  'src/smart/list/js/templates/default.css': {
+    prelude: 'sf-list (inline-size < 20rem)',
+    reason: 'sf-list 1.14.0 (fix/first-paint-fp): the narrow list of C47 by a container query on the frame, so a printed first paint is narrow before any script; 20rem is the size step g0 written out, the template is plain CSS',
+  },
+};
+
 const owner = (file) => file.split('/').slice(0, 3).join('/');
 const sources = () => ['src/component', 'src/smart', 'src/core/scss', 'src/core/figma_variables', 'src/utility'].flatMap(files);
 
@@ -106,6 +116,7 @@ test('C181: no @container condition in the sources writes a length of its own', 
   for (const file of sources()) {
     for (const prelude of preludes(uncomment(read(file)), 'container')) {
       seen += 1;
+      if (PLAIN_CSS_CONDITIONS[file]?.prelude === prelude) continue;
       if (LENGTH.test(literal(prelude))) offenders.push(`${file}: @container ${prelude}`);
       else if (!/container-step\(/u.test(prelude) && !FRAME_CONTAINERS.has(file)) offenders.push(`${file}: @container ${prelude} (not container-step())`);
     }
