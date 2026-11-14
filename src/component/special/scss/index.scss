@@ -1,10 +1,9 @@
+// The legacy low-vision version (owner decision C196 (7), until 2027-01-01).
+// Its colour schemes, line spacing, fonts and images are the core display
+// settings now (core/scss/_sf_css__display.scss): js/bridge.js writes the root
+// attributes from the panel's classes. The sheets that reset every
+// background, colour and edge with !important (SP-1), missed a comma (SP-2)
+// and set fonts and line heights on every element are gone. What stays: the
+// scheme tokens the panel's swatches read, and the letter spacing steps.
 @use 'tokens';
 @use 'kerning';
-@use 'interval';
-@use 'image';
-@use 'font';
-@use 'white';
-@use 'black';
-@use 'yellow';
-@use 'blue';
-@use 'green';

@@ -12403,6 +12403,75 @@
       },
       "owner": "ui-source",
       "source": "src/smart/tag/js/templates/default.js; ui-control control/docs-review/decisions.md C140"
+    },
+    {
+      "id": "display-settings-replaces-special",
+      "recorded_on": "2026-11-15",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C196 (2026-11-15): the low-vision version is the core display settings (root attributes data-sf-scheme, data-sf-text-scale, data-sf-text-spacing, data-sf-images, data-sf-motion, data-sf-font, data-sf-links) and the Smart component sf-display-settings. The legacy special module (class sf-special, the SF4 panel of the Bitrix templates) keeps its panel until 2027-01-01, but its classes are read as the new attributes (module.special 2.2.0, js/bridge.js) and its sheets that reset every background, colour and edge with !important are gone. The old scheme names are aliases of the nearest new scheme: white -> black-on-white, black -> white-on-black, yellow -> yellow-on-black (the yellow background goes), blue -> blue-on-sky, green -> yellow-on-black (the green scheme goes).",
+      "items": [
+        {
+          "component": "special",
+          "from": "body.sf-special-white",
+          "to": "<html data-sf-scheme=\"black-on-white\">"
+        },
+        {
+          "component": "special",
+          "from": "body.sf-special-black",
+          "to": "<html data-sf-scheme=\"white-on-black\">"
+        },
+        {
+          "component": "special",
+          "from": "body.sf-special-yellow",
+          "to": "<html data-sf-scheme=\"yellow-on-black\">"
+        },
+        {
+          "component": "special",
+          "from": "body.sf-special-blue",
+          "to": "<html data-sf-scheme=\"blue-on-sky\">"
+        },
+        {
+          "component": "special",
+          "from": "body.sf-special-green",
+          "to": "<html data-sf-scheme=\"yellow-on-black\">"
+        },
+        {
+          "component": "special",
+          "from": "html.special-interval-15, html.special-interval-20",
+          "to": "<html data-sf-text-spacing=\"wide\">"
+        },
+        {
+          "component": "special",
+          "from": "html.special-img-none",
+          "to": "<html data-sf-images=\"hide\">"
+        },
+        {
+          "component": "special",
+          "from": "html.special-img-black",
+          "to": "<html data-sf-images=\"grey\">"
+        },
+        {
+          "component": "special",
+          "from": "html.special-font-sans, html.special-font-serif",
+          "to": "<html data-sf-font=\"sans|serif\">"
+        },
+        {
+          "component": "sf-display-settings",
+          "from": "scheme white, black, yellow, blue, green (SF.displaySettings.write)",
+          "to": "black-on-white, white-on-black, yellow-on-black, blue-on-sky, yellow-on-black"
+        }
+      ],
+      "deprecated_on": "2026-11-15",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Replace the SF4 panel markup ([sf-special-panel], the class sf-special) with <sf-display-settings label=\"Версия для слабовидящих\"></sf-display-settings>. A page that printed a scheme class prints the root attribute instead: <html data-sf-scheme=\"white-on-black\">. The choice is kept in localStorage (sf-display-settings), not in the special* cookies.",
+      "examples": {
+        "before": "<div sf-special-panel class=\"sf-special\">…</div>",
+        "after": "<sf-display-settings label=\"Версия для слабовидящих\"></sf-display-settings>"
+      },
+      "owner": "ui-source",
+      "source": "src/core/js/display-settings.js; src/component/special/js/bridge.js; ui-control control/docs-review/decisions.md C196"
     }
   ]
 }

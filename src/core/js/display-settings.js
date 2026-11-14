@@ -23,6 +23,7 @@
 //
 // The state is on the shared global: every bundle carries its own copy of
 // this module.
+import {noteDeprecated} from './deprecations.js';
 import {pageWord} from './page-language.js';
 import {reducedMotion} from './motion.js';
 
@@ -31,6 +32,19 @@ export const SCHEMES = Object.freeze(['black-on-white', 'white-on-black', 'yello
 export const TEXT_SCALES = Object.freeze([100, 125, 150, 175, 200]);
 export const IMAGES = Object.freeze(['colour', 'grey', 'hide']);
 export const FONTS = Object.freeze(['site', 'sans', 'serif']);
+
+// The legacy low-vision version's scheme names (src/component/special, SF4
+// cookies `specialcolor`), each to the nearest new scheme until 2027-01-01
+// (C196 (3), (7); journal display-settings-replaces-special).
+export const LEGACY_SCHEMES = Object.freeze({
+  white: 'black-on-white',
+  black: 'white-on-black',
+  yellow: 'yellow-on-black',
+  blue: 'blue-on-sky',
+  green: 'yellow-on-black',
+});
+export const LEGACY_SINCE = '2026-11-15';
+export const LEGACY_REMOVE_AFTER = '2027-01-01';
 
 // The words core says itself; the same as sf-display-settings' language files
 // (tests/display-settings.contract.test.mjs holds them equal).
@@ -75,10 +89,18 @@ function storage() {
   }
 }
 
-/** A scheme name as core knows it, else ''. */
+/** A scheme name as core knows it: a new name, a legacy name aliased, else ''. */
 export function schemeName(value) {
-  const name = String(value ?? '').trim().toLowerCase();
-  return SCHEMES.includes(name) ? name : '';
+  const name = String(value ?? '').trim().toLowerCase().replace(/^special/u, '');
+  if (SCHEMES.includes(name)) return name;
+  const to = LEGACY_SCHEMES[name];
+  if (!to) return '';
+  noteDeprecated({
+    component: 'sf-display-settings', kind: 'value', attribute: 'scheme', from: String(value), to,
+    since: LEGACY_SINCE, remove_after: LEGACY_REMOVE_AFTER,
+    expired: Date.now() > Date.parse(`${LEGACY_REMOVE_AFTER}T23:59:59Z`),
+  });
+  return to;
 }
 
 /** The settings made safe: every field one of its values, unknown fields gone. */
