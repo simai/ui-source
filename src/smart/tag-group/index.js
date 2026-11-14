@@ -36,6 +36,7 @@
 // Every bundle carries its own copy of the modules it imports: the helpers of
 // the tag's row (smart/tag/js/tag-row.js) are stateless, and the live line
 // they write is one element on the page.
+import { instancePath, partId } from '../../core/js/instance-path.js';
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {overflows, setAttr, nameOf, stopOf, stopsIn, said} from '../tag/js/tag-row.js';
@@ -307,7 +308,9 @@ class SfTagGroup extends GroupElement {
       const surface = doc.createElement('div');
       surface.setAttribute('slot', 'content');
       surface.className = 'sf-tag-group__panel';
-      surface.id = `${this.id || 'sf-tag-group'}-more-${Math.random().toString(36).slice(2, 8)}`;
+      // The instance path names the panel (standard §7.1.1): the same id on
+      // every load, so a printed first paint is stable.
+      surface.id = partId(instancePath(this, {kind: 'sf-tag-group'}), 'more');
       const list = doc.createElement('sf-tag-group');
       list.setAttribute('layout', 'wrap');
       list.setAttribute(COPY, '');

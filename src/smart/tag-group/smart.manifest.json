@@ -210,7 +210,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tag-group/index.js",
-        "sha256": "637e502eb733199d0a8675b77c0b18367c1fcbeeb30edffbd81ca8e244d10949"
+        "sha256": "a5054cee090a0085523ad9a6aff9d33d807ebdc29be962791d7d02f556868200"
       },
       {
         "path": "src/smart/tag-group/js/templates/default.js",
