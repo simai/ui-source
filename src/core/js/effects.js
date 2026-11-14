@@ -39,6 +39,8 @@
 import {isSchema, schemaFields} from './composition/schema-name.mjs';
 import {noteDeprecated} from './deprecations.js';
 import {pageText} from './page-language.js';
+// The device's reduced motion or the site's «остановить движение» (C196).
+import {reducedMotion, watchMotion} from './motion.js';
 
 // The fields a writer of an effect.json emits: the format named without a
 // version, with schema_version beside it (format-names-without-version). A
@@ -268,7 +270,6 @@ export function effectSchemes(manifest) {
 // foreign, and runs only in a sandbox (pair-under-the-same-trust).
 export const pairIsForeign = (manifest) => typeof manifest?.pair === 'string' && PAIR_URL.test(manifest.pair);
 
-const reducedMotion = () => Boolean(globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
 const capabilities = (manifest) => (Array.isArray(manifest?.capabilities) ? manifest.capabilities : []);
 const STATE = 'data-sf-effect-state';
 const REASON = 'data-sf-effect-reason';
@@ -569,7 +570,6 @@ function mountModule(host, {manifest, module, stored = {}, locale, scheme} = {})
   document.addEventListener('visibilitychange', sync);
   // A person who turns reduced motion on is given a still frame at once: the
   // effect is mounted again with the context that says so.
-  const motion = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
   const onMotion = () => {
     if (destroyed) return;
     call('destroy');
@@ -578,7 +578,7 @@ function mountModule(host, {manifest, module, stored = {}, locale, scheme} = {})
     running = true;
     sync();
   };
-  motion?.addEventListener?.('change', onMotion);
+  const stopMotion = watchMotion(onMotion);
   // Off screen it asks for no frames either.
   const Sight = globalThis.IntersectionObserver;
   const sight = Sight ? new Sight((entries) => {
@@ -615,7 +615,7 @@ function mountModule(host, {manifest, module, stored = {}, locale, scheme} = {})
       if (destroyed) return;
       destroyed = true;
       document.removeEventListener('visibilitychange', sync);
-      motion?.removeEventListener?.('change', onMotion);
+      stopMotion();
       sight?.disconnect();
       call('destroy');
       // Whatever the effect left behind goes with it.

@@ -183,6 +183,30 @@
       ]
     },
     {
+      "name": "SF.displaySettings",
+      "status": "public",
+      "layer": "core",
+      "audience": "public",
+      "author": "Keeps the display settings a person chose on this site (text size, colour scheme, spacing, images, motion) in this browser and shows them on every page.",
+      "doc": "guide/functions/person/display-settings",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The person's display settings (owner decision C196): kept in localStorage sf-display-settings only, written on <html> as data-sf-scheme, data-sf-text-scale, data-sf-text-spacing, data-sf-images, data-sf-motion, data-sf-font and data-sf-links; the sf-display-settings panel writes them. Nothing is sent to a server.",
+      "members": [
+        "storageKey",
+        "schemes",
+        "textScales",
+        "defaults",
+        "read",
+        "current",
+        "write",
+        "reset",
+        "subscribe",
+        "reducedMotion",
+        "forcedColors"
+      ]
+    },
+    {
       "name": "SF.RegionNavigation",
       "status": "public",
       "layer": "core",

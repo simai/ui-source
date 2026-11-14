@@ -184,6 +184,14 @@
       "reason": "Sass maps naming size steps by their rem value for container queries, which cannot read a variable (g6, h0, h2, h4, h6, h8, i0, i2)."
     },
     {
+      "id": "wcag-text-spacing",
+      "category": "style-review",
+      "filePattern": "^core/scss/_sf_css__display\\.scss$",
+      "contextPattern": "^\\s*(?:letter-spacing: 0\\.12em|word-spacing: 0\\.16em|margin-block-end: 2em);",
+      "status": "accepted-platform-boundary",
+      "reason": "«Шире» (C196) is WCAG 1.4.12 Text Spacing itself: letters 0.12, words 0.16 and paragraphs 2 times the text size. The criterion is stated in em of the text, so the values follow it, not the space ladder."
+    },
+    {
       "id": "touch-field-zoom-floor",
       "category": "style-review",
       "filePattern": "^core/scss/_sf_css__touch_fields\\.scss$",

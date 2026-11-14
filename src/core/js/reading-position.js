@@ -23,6 +23,9 @@
 // controller, so the copies of this module that every bundle carries cannot
 // disagree (bundles each carry their own module copy).
 
+// The device's reduced motion or the site's «остановить движение» (C196).
+import {reducedMotion} from './motion.js';
+
 // Within this distance of the end counts as being there. 96px is about two
 // lines of text and an entry's action row: closer than that, a person reading
 // the end of a column is reading the end.
@@ -33,7 +36,6 @@ export const NEAR_START = 240;
 // The end of a list asks for its next page this far before it is in view.
 export const EDGE_MARGIN = '200px';
 
-const reducedMotion = () => globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 const frame = (callback) => (typeof globalThis.requestAnimationFrame === 'function'
   ? globalThis.requestAnimationFrame(callback)
   : setTimeout(callback, 16));

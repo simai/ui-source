@@ -29,7 +29,7 @@
     "src/core/scss/mix/_mix__notice-link.scss",
     "src/core/scss/vars/_sf_var__display.scss"
   ],
-  "content_sha256": "90cf24b8259cb5baf198869d74aa53f84ac5c05c41d4c1b202516c87b99ec49c",
+  "content_sha256": "a2b5ef33d11916bb48a8a6ac6ac3bcfeeb24ec99d1ae80685e49307d19d64e2a",
   "dependencies": [
     {
       "id": "font.inter",

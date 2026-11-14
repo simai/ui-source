@@ -153,7 +153,10 @@ export function startPreloaderMotion(
     return () => {};
   }
 
-  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+  // The device's reduced motion or the site's «остановить движение» (C196;
+  // core/js/motion.js -- not imported: this file is also loaded on its own).
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    || container.ownerDocument?.documentElement?.getAttribute?.('data-sf-motion') === 'reduce') {
     container.style.transition = 'none';
     container.style.transform = 'rotate(0deg)';
     marks.forEach((mark) => {

@@ -14,6 +14,9 @@ import './composition/index.mjs';
 import './assembly/index.mjs';
 import './position.js';
 import './preferences.js';
+// What a person asked this site to look like (owner decision C196): the root
+// attributes and the motion mark, before anything draws.
+import './display-settings.js';
 import './region-navigation.js';
 import './workspace.js';
 import './effects.js';

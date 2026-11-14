@@ -22,6 +22,8 @@
 // SF.notifications.configure({layout: 'list'}).
 import {pageText} from './page-language';
 import {closeLayer, openLayer} from './layer-stack';
+// The device's reduced motion or the site's «остановить движение» (C196).
+import {reducedMotion} from './motion.js';
 
 const NOTIFY_TEXT = {
   en: {region: 'Notifications'},
@@ -63,7 +65,6 @@ const state = {
   resize: null,
 };
 
-const reducedMotion = () => globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 
 // The messages on view, newest first, without the ones leaving.
 function onView() {
