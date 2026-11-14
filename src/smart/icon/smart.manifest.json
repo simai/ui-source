@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.icon",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "title": "Icons",
   "summary": "Semantic Material Symbol wrapper with exact Loader tracking, accessible decorative or informative modes and token-owned geometry.",
   "kind": "smart",
@@ -62,14 +62,14 @@
       "weight": {
         "type": "integer",
         "default": 400,
-        "description": "The stroke weight on the font's wght axis, 100 to 700 in steps of 100; any other value draws 400.",
+        "description": "The stroke weight on the font's wght axis, 100 to 700 in steps of 100. Unset, the glyph takes the weight of the text around it -- regular beside running text, medium beside a medium label (a button's, a tab's) -- and the regular and medium faces come in one request; any other value draws 400.",
         "minimum": 100,
         "maximum": 700
       },
       "size": {
         "type": "string",
         "default": "",
-        "description": "The glyph's step, 1/4 to 7. Steps 1, 2, 3 and 4 are the icons of a size 1/3, 1/2, 1 and 2 button (16, 20, 24, 28 on a desktop; 16, 16, 20, 24 on a phone and in a compact region); 1/4, 1/3, 1/2, 5, 6 and 7 are 12, 12, 14, 32, 36, 40 and one step smaller on a phone. Empty: the size the component around it gives (--sf-icon--font-size), otherwise the icon of a size-1 button (24, phone 20).",
+        "description": "The glyph's step. In a region (or on the icon) with data-sf-icon-scale=\"ladder\" a size is the UI ladder step of its host: 1/3, 1/2, 1, 2, 3 draw 16, 20, 24, 28, 36 on a desktop and one step down on a phone and in a compact region, like the button, field or row of that size; 4 to 7 are the large glyphs of empty states (28, 32, 36, 40, one step down on a phone). Elsewhere the old icon scale answers until 2027-01-01: 1/4, 1/3, 1/2, 1, 2, 3 draw 12, 12, 14, 16, 20, 24 (noted in SF.deprecations with the ladder name; journal value-icon-size-ladder). Empty: the size the component around it gives (--sf-icon--font-size), otherwise 24 (phone 20), the size-1 step.",
         "enum": [
           "",
           "1/4",
@@ -84,6 +84,16 @@
           "7"
         ]
       },
+      "mirror": {
+        "type": "string",
+        "default": "auto",
+        "description": "Turning over in a right-to-left part (dir=\"rtl\"): auto turns the glyphs that point along the line (arrows, chevrons, send, reply, undo and redo, lists and indents, open in new, log in and out), on turns any glyph, off none. Clocks, checks, media and logos stay as drawn under auto.",
+        "enum": [
+          "auto",
+          "on",
+          "off"
+        ]
+      },
       "type": {
         "type": "string",
         "default": "",
@@ -96,14 +106,14 @@
       "grade": {
         "type": "integer",
         "default": 0,
-        "description": "The font's GRAD axis, -50 to 200: a finer weight that does not change the glyph's width; 0 by default.",
+        "description": "The font's GRAD axis, -50 to 200: a finer weight that does not change the glyph's width. Unset, 0 on a light theme and -25 on a dark one (light ink on dark reads heavier).",
         "minimum": -50,
         "maximum": 200
       },
       "optical-size": {
         "type": "number",
         "default": 24,
-        "description": "The font's opsz axis, 20 to 48: the drawing tuned for that size in px; 24 by default.",
+        "description": "The font's opsz axis, 20 to 48: the drawing tuned for that size in px. Unset, it follows the glyph's size (20 up to 20 px, then the size, 48 at most).",
         "minimum": 20,
         "maximum": 48
       },
@@ -246,11 +256,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/icon/index.js",
-        "sha256": "58f9133d2b4f8e829b996e1fe5748049f5ce4958af934b00b944d9b99b2baad9"
+        "sha256": "8894667f99c9bf32b5345cce2367a85d220a8d2148d2628df8b2f762a5af64d7"
       },
       {
         "path": "src/smart/icon/js/templates/default.js",
-        "sha256": "abeb523c6f56999a4d13e08287a12c297acf3dee2736e515fe541da60537f819"
+        "sha256": "0aaad363fbac4475c034e609445e2209005a8d95b5d265329926fdbd4016caf8"
       },
       {
         "path": "src/smart/icon/rule.js",
@@ -258,7 +268,7 @@
       },
       {
         "path": "src/smart/icon/docs.md",
-        "sha256": "1f0197ec444dfdc7944a70eafb6ba7fc2a8bede9c97018964273f28213dab45b"
+        "sha256": "177964caeffb050efe824595dd37230734c108ea2c5cb6057fc8481dd719dcac"
       }
     ],
     "generated_runtime": [

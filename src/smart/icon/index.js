@@ -2,6 +2,8 @@ import SfBaseElement from "../../core/js/smart-base";
 import { elementFromManifest } from "../../core/js/element-manifest";
 import { renderIconTemplate } from "./js/templates/default";
 import { elementBadge } from "../helpers/anchored-badge";
+import { checkIconGlyph, mirrorsInRtl, registeredIcon } from "../../core/js/icon-glyphs.js";
+import { noteDeprecated } from "../../core/js/deprecations.js";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
 import en from "./lang/en.json";
@@ -17,6 +19,23 @@ const weightClasses = new Map([
   [700, "bold"],
 ]);
 const iconSizes = ["1/4", "1/3", "1/2", "1", "2", "3", "4", "5", "6", "7"];
+// The size names (owner decision C151 point 1): a size is the UI ladder step
+// of the host -- 1/3, 1/2, 1, 2, 3 draw 16, 20, 24, 28, 36, one step down on a
+// phone and in a compact region, like the button, field or row of that size;
+// 4 to 7 are the large glyphs of empty states. A region (or the icon itself)
+// takes these names with data-sf-icon-scale="ladder". Elsewhere the old icon
+// scale still answers until 2027-01-01 (journal value-icon-size-ladder): its
+// 1/4 to 3 drew 12, 12, 14, 16, 20, 24, and each use is noted in
+// SF.deprecations with the ladder name that draws the same.
+const OLD_SCALE_LADDER = Object.freeze({
+  "1/4": "",
+  "1/3": "",
+  "1/2": "",
+  "1": "1/3",
+  "2": "1/2",
+  "3": "1",
+});
+const LADDER_REGION = '[data-sf-icon-scale="ladder"]';
 
 function clampAxis(value, fallback, minimum, maximum) {
   const numericValue = Number(value);
@@ -91,6 +110,12 @@ class SfIcon extends IconElement {
       this.requestIconLoad();
       this.syncLoadedState();
     };
+    // A glyph registered after this icon drew (SF.icons.register, C151 point 6).
+    this.onIconRegistered = (event) => {
+      if (event?.detail?.name !== String(this.getProp("icon") || "").trim()) return;
+      this.syncLoadedState();
+      this.refresh("icon-registered");
+    };
   }
 
   watchRendered(watch) {
@@ -117,6 +142,7 @@ class SfIcon extends IconElement {
     super.connectedCallback();
     window.addEventListener("sf-icons-subset:ready", this.onIconSubsetReady);
     window.addEventListener("sf-loader-ready", this.onLoaderReady);
+    window.addEventListener("sf-icons:registered", this.onIconRegistered);
     this.requestIconLoad();
     this.syncLoadedState();
   }
@@ -124,6 +150,7 @@ class SfIcon extends IconElement {
   disconnectedCallback() {
     window.removeEventListener("sf-icons-subset:ready", this.onIconSubsetReady);
     window.removeEventListener("sf-loader-ready", this.onLoaderReady);
+    window.removeEventListener("sf-icons:registered", this.onIconRegistered);
     this.watchRendered(false);
     super.disconnectedCallback();
   }
@@ -144,6 +171,7 @@ class SfIcon extends IconElement {
   }
 
   requestIconLoad() {
+    if (this.isRegisteredGlyph) return;
     const loader = window.SF?.Loader;
     const iconCount = loader?.trackIconElement?.(this) || 0;
 
@@ -155,7 +183,7 @@ class SfIcon extends IconElement {
   syncLoadedState() {
     const loader = window.SF?.Loader;
     const tracked = loader?.getTrackedIconAttrs?.(this) || null;
-    const loaded = Boolean(
+    const loaded = this.isRegisteredGlyph || Boolean(
       tracked?.icon && loader?.isTrackedIconLoaded?.(tracked),
     );
 
@@ -173,7 +201,16 @@ class SfIcon extends IconElement {
     this.setState({ loaded });
   }
 
+  // A registered glyph (SF.icons.register) draws from its SVG, never the font.
+  get isRegisteredGlyph() {
+    return Boolean(registeredIcon(this.getProp("icon")));
+  }
+
+  // Unset, the weight is the label's beside it: the glyph inherits the
+  // font-weight around it (C151 point 4), so no weight class is written. An
+  // author's weight still wins.
   get weightClass() {
+    if (!this.hasAttribute("weight")) return "";
     let weight = this.getProp("weight");
     weight = this.toNumber(weight, 400);
     return weightClasses.get(weight) || weightClasses.get(400);
@@ -188,15 +225,42 @@ class SfIcon extends IconElement {
 
   get iconSize() {
     const size = String(this.getProp("size") || "").trim();
-    return iconSizes.includes(size) ? size : "";
+    if (!iconSizes.includes(size)) return "";
+    // An old-scale number outside a ladder region: noted once per value.
+    if (Object.hasOwn(OLD_SCALE_LADDER, size) && !this.closest?.(LADDER_REGION)) {
+      const ladder = OLD_SCALE_LADDER[size];
+      noteDeprecated({
+        component: "sf-icon",
+        kind: "value",
+        attribute: "size",
+        from: size,
+        to: ladder
+          ? `data-sf-icon-scale="ladder" size="${ladder}"`
+          : 'data-sf-icon-scale="ladder" size="1/3" (16, the smallest ladder step)',
+        tag: "sf-icon",
+        since: "2026-11-14",
+        remove_after: "2027-01-01",
+      });
+    }
+    return size;
   }
 
+  // Unset (""), the sheet's: grade -25 on a dark theme, the optical size from
+  // the glyph's size (C151 point 4).
   get iconGrade() {
+    if (!this.hasAttribute("grade")) return "";
     return clampAxis(this.getProp("grade"), 0, -50, 200);
   }
 
   get iconOpticalSize() {
+    if (!this.hasAttribute("optical-size")) return "";
     return clampAxis(this.getProp("opticalSize"), 24, 20, 48);
+  }
+
+  // Turns over in a right-to-left part (C151 point 3): a glyph that points
+  // along the line, or any with mirror="on"; never with mirror="off".
+  get iconMirrors() {
+    return mirrorsInRtl(this.getProp("icon"), this.getProp("mirror"));
   }
 
   get templateData() {
@@ -210,7 +274,20 @@ class SfIcon extends IconElement {
       opticalSize: this.iconOpticalSize,
       label: String(this.getProp("label") || "").trim(),
       badge: elementBadge(this),
+      custom: this.isRegisteredGlyph,
+      mirror: this.iconMirrors,
     };
+  }
+
+  // A loaded glyph that draws as letters is an unknown name (C151 point 2):
+  // its box stays empty and the name is said once in the console.
+  afterRender(changed) {
+    const result = super.afterRender(changed);
+    if (this.getProp("loaded") && !this.isRegisteredGlyph) {
+      const glyph = this.querySelector(":scope > i.sf-icon, :scope > .sf-badge-anchor > i.sf-icon");
+      if (glyph) checkIconGlyph(glyph);
+    }
+    return result;
   }
 
   // Classes someone else put on the glyph stay through a re-render: the

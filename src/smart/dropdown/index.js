@@ -10,6 +10,7 @@ import { PanelScrollbar } from '../../component/panel-scrollbar';
 import { InheritedValueField } from '../helpers/inherited-value';
 import { FormField, innerControlName } from '../helpers/form-field';
 import { instancePath, partId } from '../../core/js/instance-path.js';
+import { iconWords } from '../../core/js/icon-choices.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -539,9 +540,16 @@ class SfDropdown extends FormField(DropdownElement) {
       return this.options;
     }
 
-    return this.options.filter((option) =>
-      getOptionLabel(option).toLowerCase().includes(query),
-    );
+    // An icon option is found by its glyph's words too, in Russian and in
+    // English (owner decision C151 point 8, SF.icons.choices.words): a
+    // product's chooser labels its options with the glyph name, and «папка»
+    // found nothing in a grid of folder_open, topic and folder.
+    return this.options.filter((option) => {
+      if (getOptionLabel(option).toLowerCase().includes(query)) return true;
+      if (!option.icon) return false;
+      const words = iconWords(option.icon);
+      return [...words.ru, ...words.en].some((word) => word.toLowerCase().includes(query));
+    });
   }
 
   templateContext() {
