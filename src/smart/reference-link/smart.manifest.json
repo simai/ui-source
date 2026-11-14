@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.reference-link",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "title": "Reference Link",
   "summary": "Navigation surface that pairs a real destination with a compact reference.",
   "kind": "smart",
@@ -49,11 +49,17 @@
       "appearance": {
         "type": "string",
         "default": "card",
-        "description": "card is the reference as its own box: frame, fill and padding. plain is the link alone, taking the width of its text, for a reference inside something that is already a box -- a record’s field, a table cell -- where a second frame reads as a control the value is not.",
+        "description": "card is the reference as its own box: frame, fill and padding, the name on up to two lines, underlined under the pointer and on focus. inline is a link in running text (C147): it flows and wraps with the sentence, takes the size of the text around it and is always underlined; the type icon (icon, none by default) and the record's number (text) in a quiet ink go with the name. plain is the link alone on a line, taking the width of its text, for a reference inside something that is already a box -- a record’s field, a table cell -- underlined under the pointer; with line or size it keeps one line and ends in an ellipsis.",
         "enum": [
           "card",
+          "inline",
           "plain"
         ]
+      },
+      "copy": {
+        "type": "boolean",
+        "default": false,
+        "description": "A card only: a «Копировать ссылку» / Copy link icon button at its end copies the full address (the clipboard component's data-sf-copy route, decision C48). Off by default."
       },
       "disabled": {
         "type": "boolean",
@@ -68,7 +74,7 @@
       "icon": {
         "type": "string",
         "default": "arrow_forward",
-        "description": "Absent: the arrow; empty: no icon at all"
+        "description": "The type icon before the name. Absent: the arrow in a card, a size or on a line, none in text (inline); empty: no icon at all"
       },
       "label": {
         "type": "string",
@@ -97,15 +103,25 @@
           "2"
         ]
       },
+      "state": {
+        "type": "string",
+        "default": "",
+        "description": "The target is gone: missing (deleted) or forbidden (no access). No link then: the words dimmed, the broken-link icon, the reason in words after the name («удалена», «нет доступа», in the page's language); href is not followed. Empty: a live reference.",
+        "enum": [
+          "",
+          "missing",
+          "forbidden"
+        ]
+      },
       "target": {
         "type": "string",
         "default": "_self",
-        "description": "Native browsing-context target. Disclose new-context navigation in the name."
+        "description": "Native browsing-context target. _blank adds the open_in_new sign after the words and «(откроется в новой вкладке)» / \"(opens in a new tab)\" to the accessible name, in the page's language."
       },
       "text": {
         "type": "string",
         "default": "",
-        "description": "Compact route, source or reference shown beside the label."
+        "description": "Compact route, source or number shown beside the label: at the far end of a card or a line, after the name in a quiet ink in text (a record's number)."
       },
       "aria-label": {
         "type": "string",
@@ -120,15 +136,21 @@
     "navigation": {
       "enabled": "native anchor with a real href",
       "disabled": "non-interactive content with no href",
-      "boundary": "the complete reference surface is the pointer and keyboard-focus boundary"
+      "boundary": "the complete reference surface is the pointer and keyboard-focus boundary",
+      "gone": "state missing or forbidden: no link, the reason in words"
     },
     "canonical_elements": {
       "type": "string",
       "enum": [
         "sf-reference-link__main",
         "sf-reference-link__link",
+        "sf-reference-link__label",
         "sf-reference-link__icon",
-        "sf-reference-link__meta"
+        "sf-reference-link__meta",
+        "sf-reference-link__number",
+        "sf-reference-link__reason",
+        "sf-reference-link__tab",
+        "sf-reference-link__copy"
       ]
     },
     "interaction_states": {
@@ -261,7 +283,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/reference-link/index.js",
-        "sha256": "8eecbdfaf913e1b08b7b82ba574320078e2c7bbc917a63d047a2422c225cdf98"
+        "sha256": "42c97fadfd0c86c2e3876a95fcbe6e2b948a5e219f97c551585e5975a927fdfd"
       }
     ],
     "generated_runtime": [
@@ -279,7 +301,7 @@
       "Do not use Reference Link for a generic action or a plain text link",
       "Do not render an enabled reference without href",
       "Do not leave href on a disabled reference",
-      "Do not open a new context without disclosing it in the accessible name",
+      "Do not write the new-tab words or sign by hand: target _blank adds both",
       "Do not copy generated ui-smart code",
       "Do not move host data or access decisions into the component"
     ],
