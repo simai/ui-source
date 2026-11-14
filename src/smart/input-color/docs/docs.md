@@ -107,7 +107,11 @@ The brand colour is a mode of this field (C84; `sf-theme-generator` leaves on
 Both store a code, take no alpha and put the theme -- the four dynamic
 palettes only, never a status -- on `target` (a selector; empty, `<html>`),
 together with the brand fill of a header and a cover: `--sf-brand` and
-`--sf-on-brand` (core `brandVariables`). A light colour fills them as it is
+`--sf-on-brand` (core `brandVariables`). A `target` below the page takes the
+scheme it stands in as a theme class (`theme-light` / `theme-dark`: its
+nearest themed ancestor's, else the system's) and follows a switch while the
+colour is on, so a preview on a dark page has the dark theme's roles (C84);
+taking the colour off gives the target its own classes back. A light colour fills them as it is
 with black or white text; its buttons and links keep the readable tone 40. A
 header takes it as `background-color: var(--sf-brand, var(--sf-primary))` and
 `color: var(--sf-on-brand, var(--sf-on-primary))`. `input` and `change` carry

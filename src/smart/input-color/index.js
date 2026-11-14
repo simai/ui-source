@@ -326,7 +326,16 @@ class SfColor extends FormField(ColorElement) {
         const seed = this._themeSeed(color);
         const target = this._themeTarget();
         if (seed && palette.isThemeColor(seed) && target?.style) {
-            this._restoreTheme = setVariables(target, this._themeVariables(palette.themeFromColor(seed)));
+            // The theme through core's applyTheme: an area below the page
+            // takes the scheme around it and follows it (C84, RG-S3-31); the
+            // brand fill beside it.
+            const theme = palette.themeFromColor(seed);
+            const undoTheme = palette.applyTheme(theme, target);
+            const undoBrand = setVariables(target, palette.brandVariables?.(theme) ?? {});
+            this._restoreTheme = () => {
+                undoBrand();
+                undoTheme();
+            };
         }
         this._appliedColor = color;
     }

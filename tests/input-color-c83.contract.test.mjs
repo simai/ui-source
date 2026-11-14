@@ -116,8 +116,8 @@ test('the browser colour dialog is gone; the window is the Framework\'s own (C83
 
 test('the manifest declares the window\'s settings and words', () => {
     const manifest = json(`${base}/component.json`);
-    // 1.9.1: the open panel reads the popover layer (C181 (3)), above the open branches' 1.9.0.
-    assert.equal(manifest.version, '1.9.1');
+    // 1.10.0: the theme goes through core applyTheme, a target below the page follows its scheme (C84), above fix/role-layers-c173's 1.9.1.
+    assert.equal(manifest.version, '1.10.0');
     assert.equal(manifest.settings.palette.default, true);
     assert.equal(manifest.settings.custom.default, true);
     assert.equal(manifest.settings.alpha.default, false);
