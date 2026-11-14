@@ -129,6 +129,24 @@ const PACKAGE_ALIASES = Object.freeze({
   }),
 });
 
+// Former class names that still draw (a class's dated alias): the page keeps
+// working until remove_after, and the loader, which reads every class of the
+// page anyway, notes each use in SF.deprecations, so a CSS-only class is
+// listed there as a component's old attribute is. The records are in
+// contracts/changes/journal.json.
+const FORMER_CLASSES = Object.freeze({
+  // A table's row follows the density of its area (owner decision C185 (2)).
+  'table-sm': Object.freeze({component: 'table', to: 'data-sf-density="compact"', since: '2026-11-14', remove_after: '2027-01-01'}),
+  'table-small': Object.freeze({component: 'table', to: 'data-sf-density="compact"', since: '2026-11-14', remove_after: '2027-01-01'}),
+});
+
+function noteFormerClass(token) {
+  if (!Object.prototype.hasOwnProperty.call(FORMER_CLASSES, token)) return;
+  const {component, to, since, remove_after: removeAfter} = FORMER_CLASSES[token];
+  const expired = Date.now() > Date.parse(`${removeAfter}T23:59:59.999Z`);
+  noteDeprecated({component, kind: 'class', from: token, to, since, remove_after: removeAfter, ...(expired ? {expired: true} : {})});
+}
+
 function normalisePackageUrl(value) {
   if (typeof value !== 'string') return '';
   return value.trim().replace(/\/+$/, '');
@@ -2175,6 +2193,7 @@ SFLoaderPlugin.prototype.getAttributes = function (HtmlElement) {
         if (token) this.getTokenRuleKeys(token).forEach((key) => tokenMatched.add(key));
       });
       classTokens.forEach((token) => {
+        noteFormerClass(token);
         const exactRules = attributeRuleIndex.byClassHint.get(token) || [];
         exactRules.forEach((item) => candidates.set(item.key, item.rule));
 

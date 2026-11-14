@@ -48,8 +48,9 @@ test('Progress Scale preserves exact value while rounding visual segments only',
 
   // Round down (PG-12): the blocks never show more than is done.
   assert.match(ordinary, /Math\.floor\(normalizeProgressScaleValue\(value\) \/ 10 \+ 1e-9\) \* 10/);
-  assert.match(ordinary, /setAttribute\('aria-valuenow', String\(value\)\)/);
-  assert.match(template, /aria-valuenow=\$\{String\(value\)\}/);
+  // The exact value is aria-valuenow; a level of N (C185 (5)) counts steps.
+  assert.match(ordinary, /setAttribute\('aria-valuenow', level \? String\(lit\) : String\(value\)\)/);
+  assert.match(template, /aria-valuenow=\$\{levelSteps \? String\(lit\) : String\(value\)\}/);
   assert.match(template, /sf-progress-scale--\$\{step\}/);
   assert.doesNotMatch(template, /tabindex=/);
 });

@@ -13,16 +13,25 @@ $table-border-color: var(--sf-outline-variant);
 $table-accent-bg: var(--sf-transparent);
 
 $table-stripe-color: var(--sf-on-surface);
-// A stripe and a hovered row are the lightest state layer (C16): 4, and a
-// hovered stripe both, 8 ($table-hover-stripe-bg).
+// The zebra is a fill, the lightest layer (C16): 4. The row under the pointer
+// and the selected row are states drawn over it, 8 (owner decision C185 (3)):
+// so a hovered row never reads as a stripe, and on a stripe the state stacks
+// to 12 ($table-state-stripe-bg), the next step of the same state scale.
 $table-stripe-bg: var(--sf-surface-state-hover);
 
 $table-active-color: var(--sf-on-surface);
 $table-active-bg: var(--sf-surface-state-select);
 
 $table-hover-color: var(--sf-on-surface);
-$table-hover-bg: var(--sf-surface-state-hover);
-$table-hover-stripe-bg: var(--sf-surface-state-select);
+$table-hover-bg: var(--sf-surface-state-select);
+$table-state-stripe-bg: var(--sf-surface-state-active);
+$table-hover-stripe-bg: $table-state-stripe-bg;
+$table-active-stripe-bg: $table-state-stripe-bg;
+
+// The selected row's mark (C185 (3)): a line of the primary colour at the
+// row's start, a line of 2 px (C18 lists 1-2 px lines).
+$table-selected-line-width: calc(var(--sf-px) * 2);
+$table-selected-line-color: var(--sf-primary);
 
 // The cells stand on the size ladder (owner decisions C18, C49, C77, C105,
 // C146; table study 2026-11-14, TB-2, TB-3, TB-4). A row is a step of the

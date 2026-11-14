@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.table-active",
   "kind": "utility",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/table-active/default/index.js",
@@ -12,7 +12,7 @@
     "src/utility/table-active/default/scss/_sf_css__table_active.scss",
     "src/utility/table-active/default/scss/index.scss"
   ],
-  "content_sha256": "fd945ac9189b4607039f828e70f01ee9394bbac7e48250a5d45ae7a81c2830ae",
+  "content_sha256": "54c682b907ce1dff6b2a20f8adf8d7bcacace4617717015843cb6ae3666c1fd3",
   "dependencies": [
     {
       "id": "tokens.colour",

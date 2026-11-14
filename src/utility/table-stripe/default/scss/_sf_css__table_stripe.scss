@@ -27,12 +27,19 @@ $prefix: --sf-table-;
         @include places.sf-place-fill(var(#{$prefix}accent-bg));
     }
 
-    // The row under the pointer (every .table has it, C146 (4)) stacks over a
-    // stripe (C16): the stripe and the hover are one step each, so the row
-    // stays apart from its neighbours either way.
+    // The row under the pointer (every .table has it, C146 (4)) and the
+    // selected row are states over the stripe (C185 (3)): the stripe's 4 and
+    // the state's 8 stack to 12, so the row stays apart from its neighbours
+    // either way.
     .table-stripe>tbody>tr:nth-of-type(odd):hover>*,
     .table-stripe-col>tbody>tr:hover>:nth-child(2n) {
         #{$prefix}accent-bg: #{$table-hover-stripe-bg};
+        @include places.sf-place-fill(var(#{$prefix}accent-bg));
+    }
+
+    .table-stripe>tbody>tr[aria-selected='true']:nth-of-type(odd)>*,
+    .table-stripe-col>tbody>tr[aria-selected='true']>:nth-child(2n) {
+        #{$prefix}accent-bg: #{$table-active-stripe-bg};
         @include places.sf-place-fill(var(#{$prefix}accent-bg));
     }
 // }

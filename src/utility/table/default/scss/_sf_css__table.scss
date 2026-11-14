@@ -91,16 +91,35 @@ $prefix: --sf-table-;
             font-weight: var(--sf-font-weight-bold);
         }
 
-        // The row under the pointer takes the lightest state layer (C146 (4),
-        // C16), as a list row does; a zebra is the author's choice
-        // (.table-stripe). Low in weight (:where), so an active row
-        // (.table-active, the select layer) keeps its fill under the pointer.
+        // The row under the pointer takes the state layer (C146 (4), C16),
+        // 8, drawn over a zebra's 4 (C185 (3), .table-stripe); a zebra is the
+        // author's choice. Low in weight (:where), so a selected row keeps its
+        // own fill and line under the pointer.
         > tbody > tr:where(:hover) > * {
             #{$prefix}accent-bg: var(#{$prefix}hover-bg);
             color: var(#{$prefix}hover-color);
             // A translucent fill over the place, as a list row's (C43 D3, D4,
             // the table rows): a tonal badge in the cell keeps its tone.
             @include places.sf-place-fill(var(#{$prefix}accent-bg));
+        }
+
+        // The selected row (C185 (3)): the select state, 8 over the zebra's
+        // 4, and a line of the primary colour at the row's start, so the row
+        // reads as selected by its mark as well as its fill. aria-selected is
+        // what a row of a grid with selection already says; .table-active
+        // (its own sheet) is the class for the same row.
+        > tbody > tr[aria-selected='true'] > * {
+            #{$prefix}accent-bg: var(#{$prefix}active-bg);
+            color: var(#{$prefix}active-color);
+            @include places.sf-place-fill(var(#{$prefix}accent-bg));
+        }
+
+        > tbody > tr[aria-selected='true'] > :first-child {
+            box-shadow: inset $table-selected-line-width 0 0 $table-selected-line-color;
+
+            &:dir(rtl) {
+                box-shadow: inset calc(-1 * #{$table-selected-line-width}) 0 0 $table-selected-line-color;
+            }
         }
 
         // Row actions (C146 (5), variant В; C164): the row's check box and its
@@ -166,6 +185,12 @@ $prefix: --sf-table-;
         }
     }
 
+    // .table-sm and .table-small are former words (C185 (2)): a table's row
+    // follows the density of its area (32 in a compact one), and a row of
+    // 32 in a normal area is a table in a data-sf-density="compact" area. The
+    // two classes keep drawing the size-1/2 row until 2027-01-01 (contracts/
+    // changes/journal.json class-table-sm-to-density); the loader notes each
+    // use in SF.deprecations.
     .table-sm,
     .table-small {
         > :not(caption) > * > * {
