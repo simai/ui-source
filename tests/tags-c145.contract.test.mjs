@@ -91,10 +91,21 @@ test('C145 (1): a tag in a field is the field less 8; its cross follows its heig
   assert.match(read('src/component/dropdown/scss/_css__dropdown.scss'), /\.sf-dropdown\.sf-dropdown--tag \.sf-dropdown-tag-container \{\s*--sf-dropdown-tag-container--gap: var\(--sf-space-1\\\/4\);/u);
 });
 
-test('versions: sf-tag 1.8.0, component.tags 1.7.0, sf-tag-group 1.0.0, sf-dropdown 1.12.0, component.dropdown 1.10.0, sf-input-lookup 1.12.0', () => {
+test('C145 amendment R238: the first tag in a field stands 4 from its start edge, as above and below', () => {
+  const lookup = read('src/smart/input-lookup/scss/_smart__lookup.scss');
+  // sf-input-lookup: a frame starting with a chip pads its start by the chip's inset less the border.
+  assert.match(lookup, /\.sf-lookup \.sf-lookup-frame:has\(> \.sf-lookup-chip:first-child\) \{\s*padding-inline-start: var\(--sf-lookup-padding-inline, calc\(var\(--sf-space-1\\\/4\) - var\(--sf-px\)\)\);/u);
+  // The empty field's placeholder keeps the C77 value inset.
+  assert.match(lookup, /\.sf-lookup:not\(:has\(\.sf-lookup-chip\)\) \.sf-lookup-frame \{\s*padding-inline-start: var\(--sf-lookup-padding-inline, calc\(var\(--sf-lookup--value-inset\) - var\(--sf-px\)\)\);/u);
+  // sf-dropdown's tag field (no search text) pads its start the same way.
+  assert.match(read('src/component/dropdown/scss/_css__custom.scss'), /\.sf-dropdown\.sf-dropdown\.sf-dropdown--tag > \.sf-dropdown-field\.sf-dropdown-field \{[^}]*--sf-dropdown-field--padding-inline-start: calc\(var\(--sf-space-1\\\/4\) - var\(--sf-px\)\);/u);
+});
+
+test('versions: sf-tag 1.8.0, component.tags 1.7.0, sf-tag-group 1.0.0, sf-dropdown 1.12.0, component.dropdown 1.10.0, sf-input-lookup 1.12.1', () => {
   assert.equal(json('src/smart/dropdown/component.json').version, '1.12.0');
   assert.equal(json('src/component/dropdown/passport.json').version, '1.10.0');
-  assert.equal(json('src/smart/input-lookup/component.json').version, '1.12.0');
+  assert.equal(json('src/smart/input-lookup/component.json').version, '1.12.1');
+  assert.equal(json('src/smart/input-lookup/smart.manifest.json').version, '1.12.1');
   assert.equal(json('src/smart/tag/component.json').version, '1.8.0');
   assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.8.0');
   assert.equal(json('src/component/tags/passport.json').version, '1.7.0');
