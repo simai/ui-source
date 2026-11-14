@@ -879,7 +879,11 @@
   pointer-events: none;
 }
 
-:is(sf-list-item:last-child, li:last-child > sf-list-item) > .sf-list-item.sf-list-item--divided > .sf-list-item-wrap > .sf-list-item-container::after {
+/* None under the last row of the list. In sf-list every sf-list-item is
+   alone in its li.sf-list__row (or beside its «⋯»), so it is the last child
+   of every row: the last row there is the item in the last li. A bare item
+   outside an li is last when it is its parent's last child. */
+:is(:not(li) > sf-list-item:last-child, li:last-child > sf-list-item) > .sf-list-item.sf-list-item--divided > .sf-list-item-wrap > .sf-list-item-container::after {
   content: none;
 }
 
