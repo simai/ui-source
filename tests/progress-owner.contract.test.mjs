@@ -59,8 +59,10 @@ test('Progress percentage never infers error, warning or success paint', async (
   const styles = await read('src/component/progress-scale/scss/_css__progress_scale.scss');
 
   // The public variable reads first, the role token is its fallback (standard 1.3.8 §6);
-  // the neutral fill is grey (docs precheck PB-01, applied decision).
-  assert.match(styles, /--sf-progress-scale--fill-color: var\(--sf-progress-scale-fill-color, var\(--sf-on-surface-variant\)\)/);
+  // no status draws the theme's primary and neutral is grey (owner decision
+  // C131 (1); C185 MR-1 -- the docs precheck PB-01 grey default it replaces).
+  assert.match(styles, /^  --sf-progress-scale--fill-color: var\(--sf-progress-scale-fill-color, var\(--sf-primary\)\);/m);
+  assert.match(styles, /\.sf-progress-scale--neutral \{ --sf-progress-scale--fill-color: var\(--sf-progress-scale-fill-color, var\(--sf-on-surface-variant\)\); \}/);
   assert.match(styles, /sf-progress-scale--success/);
   assert.match(styles, /sf-progress-scale--warning/);
   assert.match(styles, /sf-progress-scale--error/);

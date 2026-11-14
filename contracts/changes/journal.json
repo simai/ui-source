@@ -13564,6 +13564,29 @@
       },
       "owner": "ui-source",
       "source": "src/core/figma_variables/figma_layer_styles.scss, src/core/contracts/token-aliases.v1.json (families)"
+    },
+    {
+      "id": "token-ring-alpha-spelling",
+      "recorded_on": "2026-11-15",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "The ring's strength variable is spelled --sf-ring--alpha (C187, DEV answer 2026-11-15: the English spelling). The ring-opacity-* utilities write the new name; the ring reads --sf-ring--alpha first and the former --sf-ring--alfa under it, so a page that sets the former name draws as before until remove_after.",
+      "items": [
+        {
+          "from": "--sf-ring--alfa",
+          "to": "--sf-ring--alpha",
+          "match": "--sf-ring--alfa(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-15",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-token",
+      "examples": {
+        "before": ".pick { --sf-ring--alfa: 0.5; }",
+        "after": ".pick { --sf-ring--alpha: 0.5; }"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/ring-width/default/scss/_sf_var__ring_width.scss; src/utility/ring-opacity"
     }
   ]
 }

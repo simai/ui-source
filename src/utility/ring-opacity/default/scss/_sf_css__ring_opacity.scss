@@ -15,7 +15,7 @@ $infix: xs;
 
         @each $opacity-name, $opacity-value in $opacity-array {
             .#{$infix}ring-opacity-#{$opacity-name} {
-                --sf-ring--alfa: #{$opacity-value};
+                --sf-ring--alpha: #{$opacity-value};
             }
         }
     }

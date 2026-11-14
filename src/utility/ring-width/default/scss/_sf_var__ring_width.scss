@@ -21,6 +21,12 @@ $ring-width-array: (
 // box-shadow) set beside their own box-shadow. Whichever of the two sheets
 // comes last, the element shows both. Both variables are internal to the two
 // utilities.
+//
+// The ring's strength is --sf-ring--alpha (C187, 2026-11-15: the English
+// spelling). The former spelling --sf-ring--alfa is read under it until
+// 2027-01-01 (journal token-ring-alpha-spelling), so a page that sets it draws
+// as before. Neither is declared on the root: an inherited root value would
+// hide the former name a page sets.
 @mixin ring-box-shadow($width-value) {
     --sf-ring-width: var(--sf-#{$width-value});
     --sf-ring-shadow:
@@ -30,7 +36,7 @@ $ring-width-array: (
             in srgb,
             transparent,
             var(--sf-ring-color, currentColor)
-            calc(var(--sf-ring--alfa, 1) * 100%)
+            calc(var(--sf-ring--alpha, var(--sf-ring--alfa, 1)) * 100%)
         ),
         0 0 0 var(--sf-ring-offset-width, 0px)
         var(--sf-ring-offset-color, transparent);
