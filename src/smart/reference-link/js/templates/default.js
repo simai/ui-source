@@ -39,14 +39,18 @@ export function renderReferenceLinkTemplate(context) {
             ${labelContent}
           </a>
         `
-      : html`<span>${labelContent}</span>`;
+      : disabled
+        ? // A disabled reference is a link the reader cannot follow: the label
+          // says so as a link that is unavailable (RL-16), not as plain text.
+          // No href and no tabindex, so it takes no focus and goes nowhere.
+          html`<span role="link" aria-disabled="true" aria-label=${ariaLabel || nothing}>${labelContent}</span>`
+        : html`<span>${labelContent}</span>`;
 
   return html`
     <div
       class=${rootClasses}
       style=${context.rootStyle || nothing}
       @click=${component?.handleRootClick}
-      aria-disabled=${disabled ? 'true' : nothing}
     >
       <div class="sf-reference-link__main sf-reference-link-left">
         ${icon ? html`<i class="sf-reference-link__icon sf-icon" aria-hidden="true">${icon}</i>` : nothing}
