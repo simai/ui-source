@@ -132,7 +132,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--sf-space-1\/3);
+    gap: var(--sf-gap--actions);
   }
 
   .sf-gallery-bar-actions:empty {
@@ -187,7 +187,7 @@
   .sf-gallery-viewer-name {
     overflow: hidden;
     font-size: var(--sf-text-size-1);
-    font-weight: var(--sf-font-weight-medium);
+    font-weight: var(--sf-weight--medium);
     line-height: var(--sf-text-height-1);
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -207,7 +207,7 @@
     display: flex;
     flex: none;
     align-items: center;
-    gap: var(--sf-space-1\/3);
+    gap: var(--sf-gap--actions);
   }
 
   .sf-gallery-viewer-stage {
@@ -292,7 +292,7 @@
   }
 
   /* A phone pages by swipe: no side arrows, the picture edge to edge. */
-  @media (max-width: 43.9375rem) {
+  @media not all and (min-width: 44rem) {
     .sf-gallery-viewer-stage {
       padding-inline: var(--sf-0);
     }

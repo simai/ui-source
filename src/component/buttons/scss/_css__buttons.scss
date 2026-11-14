@@ -96,7 +96,7 @@
      the author gives the icon itself still wins; an icon-only button keeps
      the regular glyph. */
   .sf-button:has(.sf-button-text-container) {
-    --sf-icon--weight: var(--sf-font-weight-medium);
+    --sf-icon--weight: var(--sf-weight--medium);
   }
 
   .sf-button .sf-icon {

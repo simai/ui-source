@@ -169,21 +169,21 @@ $sf-place-glass-accent-roles: map.merge($sf-place-accent-roles, $sf-place-glass-
 // (sf-place-strong-accent); its graphic is listed here. The theme's values are
 // the fallback of the take-back (sf-place-back-on-colour).
 $sf-place-container-ink-roles: (
-  'on-primary-container-graphic': 'light-dark(var(--sf-primary-50), var(--sf-primary-60))',
+  'on-primary-container-graphic': 'light-dark(var(--sf-primary-50), var(--sf-primary-70))',
   'on-secondary-container': 'light-dark(var(--sf-secondary-10), var(--sf-secondary-90))',
-  'on-secondary-container-graphic': 'light-dark(var(--sf-secondary-50), var(--sf-secondary-60))',
+  'on-secondary-container-graphic': 'light-dark(var(--sf-secondary-50), var(--sf-secondary-70))',
   'on-tertiary-container': 'light-dark(var(--sf-tertiary-10), var(--sf-tertiary-90))',
-  'on-tertiary-container-graphic': 'light-dark(var(--sf-tertiary-50), var(--sf-tertiary-60))',
+  'on-tertiary-container-graphic': 'light-dark(var(--sf-tertiary-50), var(--sf-tertiary-70))',
   'on-info-container': 'light-dark(var(--sf-info-10), var(--sf-info-90))',
-  'on-info-container-graphic': 'light-dark(var(--sf-info-50), var(--sf-info-60))',
+  'on-info-container-graphic': 'light-dark(var(--sf-info-50), var(--sf-info-70))',
   'on-success-container': 'light-dark(var(--sf-success-10), var(--sf-success-90))',
-  'on-success-container-graphic': 'light-dark(var(--sf-success-50), var(--sf-success-60))',
+  'on-success-container-graphic': 'light-dark(var(--sf-success-50), var(--sf-success-70))',
   'on-warning-container': 'light-dark(var(--sf-warning-10), var(--sf-warning-90))',
-  'on-warning-container-graphic': 'light-dark(var(--sf-warning-50), var(--sf-warning-60))',
+  'on-warning-container-graphic': 'light-dark(var(--sf-warning-50), var(--sf-warning-70))',
   'on-error-container': 'light-dark(var(--sf-error-10), var(--sf-error-90))',
-  'on-error-container-graphic': 'light-dark(var(--sf-error-50), var(--sf-error-60))',
+  'on-error-container-graphic': 'light-dark(var(--sf-error-50), var(--sf-error-70))',
   'on-neutral-container': 'light-dark(var(--sf-neutral-10), var(--sf-neutral-90))',
-  'on-neutral-container-graphic': 'light-dark(var(--sf-neutral-50), var(--sf-neutral-60))',
+  'on-neutral-container-graphic': 'light-dark(var(--sf-neutral-50), var(--sf-neutral-70))',
 );
 
 // The status containers' ink as the place's ink, on the children of a strong

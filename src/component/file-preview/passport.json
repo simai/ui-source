@@ -11,7 +11,7 @@
     "src/component/file-preview/scss/_css__file_preview.scss",
     "src/component/file-preview/scss/index.scss"
   ],
-  "content_sha256": "24eb522d2805c22fd179c4d338a1fe6f38aa3c3c1fb197f5cffac8e0ce676ef8",
+  "content_sha256": "6c9c703a1cd1d8296128fd1eba04010b9def4598b832e24d766006feb18febf1",
   "dependencies": [
     {
       "id": "tokens.border",

@@ -55,6 +55,7 @@ const SCREEN_QUERIES = {
   'src/component/modal': 'page frame: below md a window is a sheet of the screen',
   'src/smart/confirm': 'a dialog on a narrow screen; containing its inline size would collapse a card as wide as its content',
   'src/smart/confirm-change': 'a dialog on a narrow screen; containing its inline size would collapse a card as wide as its content',
+  'src/smart/gallery': 'page frame: the full-screen viewer is the screen; below md it pages by swipe, no side arrows (C150 (7))',
   // To move to @container (each needs an inner element as the container).
   'src/component/reference-link': 'to move: the card stacks below sm; the rule styles the card itself',
   'src/component/admin-menu': 'to move: below sm',
@@ -62,6 +63,7 @@ const SCREEN_QUERIES = {
   'src/component/pagination': 'to move: below md',
   'src/smart/pager': 'to move: below sm',
   'src/smart/progress-run': 'to move: below sm',
+  'src/smart/tile-metric': 'to move: below sm the tiles go two in a row (C168 (4)); the grid is the rule\'s own element',
   'src/smart/search': 'to move: below sm',
 };
 // Container conditions that are a page frame of their own: the workspace's

@@ -260,7 +260,7 @@
      its title semibold beside the grey count (C140 (3)), so unread is read
      before the number. The second line stays regular. */
   .sf-list__row--unread > sf-list-item > .sf-list-item .sf-list-item-title {
-    font-weight: var(--sf-text--font-weight-6);
+    font-weight: var(--sf-weight--semi-bold);
   }
 
   .sf-list__actions { margin-inline-end: var(--sf-space-1\/4); }
