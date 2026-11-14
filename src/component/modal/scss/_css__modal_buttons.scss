@@ -32,6 +32,14 @@
     );
   }
 
+  /* Drawn as sf-button-close (C14), the close is position: relative (the
+     close looks), and the corner offsets above -- which never moved the
+     static button they were written for -- shifted it 8 px off the frame's
+     corner. It stands in the header's row, as before. */
+  .sf-button-close.sf-modal-close-button {
+    inset: auto;
+  }
+
   .sf-modal-hide-button {
     --sf-modal-hide-right: var(--sf-space-2);
     --sf-modal-hide-top: var(--sf-space-1\/3);
