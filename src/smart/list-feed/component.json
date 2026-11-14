@@ -2,7 +2,7 @@
   "$comment": "The source of sf-list-feed's element plumbing (core/js/element-manifest.js); standard simai.smart-component 1.3.8, vocabulary 1.1.5. The feed variant of block list (duplication audit 2026-11-03 A-6): the behaviour of ui-pro's sf-message-log 1.2.5 on core's reading position (core/js/reading-position.js).",
   "id": "smart.list-feed",
   "tag": "sf-list-feed",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "list",
   "settings": {
@@ -475,6 +475,9 @@
       "name": "cl-button-icon"
     },
     {
+      "name": "cl-empty-state"
+    },
+    {
       "name": "sr-only/default"
     }
   ],
@@ -562,12 +565,14 @@
     "version 1.0.3: the sf-button and sf-button-icon it draws are asked for their current names (appearance ghost for link, status danger for error; actions block, decisions C13 and C15), so the template uses no dated alias; its «to the latest» button was appearance surface, retired on sf-button-icon, and is tonal in on-surface now (C15): a soft container fill in place of the faint alpha fill and edge.",
     "version 1.1.1: the jump-to-new button stands over the feed: the overlay place (C20, the shadow system, owner 2026-11-08), --sf-shadow-overlay on --sf-surface-popup. Nothing else changes. Also: a patch, nothing drawn or done differently. The generated reference gives each action's method its one object argument, setItems({items, options}), prependItems({items, options}), upsert({item, view, options}), setView({id, view}), detach({id}), cancel({id}), redraw({id}), scrollToLatest({options}), announce({text}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object); the element's code also takes the value alone, detach(<string>), cancel(<string>), redraw(<string>), announce(<string>), and the reference says so (x-registry.action-calls). Settings, values, events and keys unchanged.",
     "version 1.1.2 (2026-11-11): a patch; nothing in the component changed. The sf-button it draws writes sf-button--ghost beside the dated sf-button--link since sf-button 1.13.0 (CB-01), so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged.",
-    "version 1.2.0 (2026-11-14, owner decision C167 (4) and (2), list and feed study control/research/2026-11-14-list-feed.md, prototype prototypes/list-feed-study.html#q-entry): a minor, a look. The default entry (no renderItem) is a comment: the author over the first entry of a run -- one's own too, as «Вы» (you-text) -- in text 1/2, medium, on-surface, and the text under it with no fill, from the column's start across it (it was a capsule: someone else's filling the column, one's own as wide as its text at the end). Capsules are a conversation's look, the host's renderer. The day divider is block list's .sf-group-heading--divider (group-heading 1.1.0), sticky with .sf-group-heading--sticky, which a renderer draws; the feed itself draws no day and no «Новые» line yet: entries carry no date and no unread mark the feed reads, and «· время» after the author waits for the same field. Settings, values, events and keys unchanged."
+    "version 1.2.0 (2026-11-14, owner decision C167 (4) and (2), list and feed study control/research/2026-11-14-list-feed.md, prototype prototypes/list-feed-study.html#q-entry): a minor, a look. The default entry (no renderItem) is a comment: the author over the first entry of a run -- one's own too, as «Вы» (you-text) -- in text 1/2, medium, on-surface, and the text under it with no fill, from the column's start across it (it was a capsule: someone else's filling the column, one's own as wide as its text at the end). Capsules are a conversation's look, the host's renderer. The day divider is block list's .sf-group-heading--divider (group-heading 1.1.0), sticky with .sf-group-heading--sticky, which a renderer draws; the feed itself draws no day and no «Новые» line yet: entries carry no date and no unread mark the feed reads, and «· время» after the author waits for the same field. Settings, values, events and keys unchanged.",
+    "version 1.3.0 (2026-11-14, owner decision C120 (3), list and feed study control/research/2026-11-14-list-feed.md LF-5): a minor, a look. An empty feed draws the empty state of C120: sf-empty-state kind no-data at size 1/2 (the section icon inbox in its grey circle, the heading) in the middle of the region, heading the new word empty-text («Записей пока нет», «No entries yet»). The empty slot still wins: markup with an element inside is the page's own state, drawn whole; words alone (a <p> or <div> of text, as the docs example had) become the heading of the feed's state. It was the slot's text at the start of the box, and nothing at all without a slot. Settings, values, events and keys unchanged; the rule fetches sf-empty-state."
   ],
   "x-rule": {
     "$comment": [
       "The feed's frame draws two Smart controls -- «Show earlier» is an",
-      "sf-button, «To the latest» an sf-button-icon -- and a tag the feed renders is a",
+      "sf-button, «To the latest» an sf-button-icon -- and its empty state is an",
+      "sf-empty-state; a tag the feed renders is a",
       "tag it fetches. The announcer is visually hidden with the Framework's sr-only",
       "utility, which a class scan can miss on a node that starts empty, so it comes",
       "with the component. What an entry looks like is the host's renderer; a host",
@@ -660,7 +665,7 @@
         "properties": {
           "empty": {
             "type": "string",
-            "description": "Shown instead of the column while there are no entries (a greeting, an empty state)."
+            "description": "Shown instead of the column while there are no entries: the page's own markup whole (an sf-empty-state, a greeting); words alone (no element inside) become the heading of the feed's own empty state. Without it the feed draws sf-empty-state no-data, heading «Записей пока нет» (empty-text)."
           }
         }
       },

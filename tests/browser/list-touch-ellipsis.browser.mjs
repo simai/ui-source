@@ -190,7 +190,7 @@ try {
               cut: rows('cut'),
               wrap: rows('wrap'),
               flat: rows('flat'),
-              skeleton: [...document.querySelectorAll('#wait .sf-list__skeleton > span')].map(box),
+              skeleton: [...document.querySelectorAll('#wait .sf-list__skeleton > .sf-list__row')].map(box),
               scroll: document.documentElement.scrollWidth - document.documentElement.clientWidth,
               background: getComputedStyle(document.body).backgroundColor,
             };
@@ -241,7 +241,8 @@ try {
             ok(`${where}: the whole text is the tooltip`, row.tip === want, {tip: row.tip, want});
           }
           for (const row of got.wrap) ok(`${label}: without no-wrap row ${row.id} has no tooltip`, row.tip === null, row.tip);
-          ok(`${label}: the loading rows are as tall as a row`, got.skeleton.length === 3 && got.skeleton.every((span) => near(span.h, one)), {skeleton: got.skeleton, one});
+          // A list that has shown no rows yet waits in caption rows (1.12.0, C130).
+          ok(`${label}: the loading rows are as tall as a caption row`, got.skeleton.length === 3 && got.skeleton.every((span) => near(span.h, touch ? Math.max(two, tokens.d1) : two)), {skeleton: got.skeleton, two});
           ok(`${label}: no sideways scroll`, got.scroll <= 0, got.scroll);
           ok(`${label}: the text has its colour on the surface`, got.cut[0].colour !== got.background, {colour: got.cut[0].colour, background: got.background});
 

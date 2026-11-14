@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.11.0'], ['list-feed', 'sf-list-feed', '1.2.0']]) {
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.12.0'], ['list-feed', 'sf-list-feed', '1.3.0']]) {
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -48,7 +48,7 @@ test('sf-list: rows are sf-list-item, one Tab stop, one shared menu, the next pa
   assert.equal([...template.matchAll(/<sf-menu-context/gu)].length, 1);
   assert.match(template, /<sf-empty-state kind="no-data"/u);
   const source = read('src/smart/list/index.js');
-  assert.match(source, /import \{scrollerOf, watchEdge\} from "\.\.\/\.\.\/core\/js\/reading-position\.js";/u);
+  assert.match(source, /import \{EDGE_MARGIN, scrollerOf, watchEdge\} from "\.\.\/\.\.\/core\/js\/reading-position\.js";/u);
   assert.match(source, /formatRelativeDay\(moment, \{now, capital: true, node: this\}\)/u);
   assert.match(source, /this\.sfEmit\("load-more", \{direction: "after", after:/u);
   // A refused rename puts the old title back.

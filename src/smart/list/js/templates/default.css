@@ -328,18 +328,26 @@
     text-overflow: ellipsis;
   }
 
-  .sf-list__skeleton {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sf-space-1\/4);
+  /* The rows on their way (C130, LF-2): rows of the list, so each is as tall
+     as the row that comes; a bar is core's first-paint bar (.sf-first-paint-bar:
+     the skeleton fill, the pulse, the capitals' height in the middle of the
+     line, C136) drawn as a box of its own width: a box as tall as the face's
+     glyph box (line-height normal), so the bar stands where the words' band
+     would, on the line's baseline. The title's bar is shorter than the
+     caption's (C136 (4): even lines, the last one short). */
+  .sf-list__bar {
+    display: inline-block;
+    max-inline-size: 100%;
+    line-height: normal;
+    vertical-align: baseline;
   }
 
-  .sf-list__skeleton > span {
-    display: block;
-    block-size: var(--sf-list--row-height);
-    border-radius: var(--sf-list--row-radius);
-    background: var(--sf-surface-container);
-  }
+  .sf-list__bar--title { inline-size: 40%; }
+
+  .sf-list__bar--supporting { inline-size: 70%; }
+
+  /* Skeleton rows take no pointer, so the row hover never reaches them. */
+  .sf-list__row--skeleton { pointer-events: none; }
 }
 
 /* Under a finger (1.2.0) every row, the rename field, the loading rows and
@@ -355,8 +363,7 @@
 
     .sf-list__row > sf-list-item > .sf-list-item { min-block-size: var(--sf-list--touch-height); }
 
-    .sf-list__rename,
-    .sf-list__skeleton > span { block-size: var(--sf-list--touch-height); }
+    .sf-list__rename { block-size: var(--sf-list--touch-height); }
 
     .sf-list__actions {
       min-block-size: var(--sf-d1);

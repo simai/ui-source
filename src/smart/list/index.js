@@ -41,7 +41,17 @@
 import SfBaseElement from "../../core/js/smart-base";
 import {elementFromManifest} from "../../core/js/element-manifest";
 import {calendarDayOffset, formatRelativeDay, msUntilNextDay, toDate} from "../../core/js/format.js";
-import {scrollerOf, watchEdge} from "../../core/js/reading-position.js";
+import {EDGE_MARGIN, scrollerOf, watchEdge} from "../../core/js/reading-position.js";
+
+// Is the end within watchEdge's margin of the box that scrolls the list (or
+// of the window)? Read once, on the scroll that arms the watch.
+const EDGE_REACH = parseFloat(EDGE_MARGIN) || 0;
+function endInReach(sentinel, root) {
+    const end = sentinel.getBoundingClientRect();
+    const view = sentinel.ownerDocument.defaultView;
+    const box = root ? root.getBoundingClientRect() : {top: 0, bottom: view?.innerHeight ?? 0};
+    return end.top <= box.bottom + EDGE_REACH && end.bottom >= box.top - EDGE_REACH;
+}
 import {renderListTemplate} from "./js/templates/default.js";
 import {watchLongPress} from "../list-item/js/long-press.js";
 import manifest from "./component.json";
@@ -439,6 +449,9 @@ class SfList extends ListElement {
             selected: this.selected,
             editing: this._editing,
             loading,
+            // The skeleton's rows take the shape of the rows the list has
+            // shown, else the caption row (template skeleton()).
+            skeleton: {twoLine: this._items.length === 0 || this._items.some((item) => Boolean(item.supporting))},
             loadingText: this.sfWord("loading-text"),
             empty,
             emptyHeading: this.emptyText,
@@ -667,8 +680,15 @@ class SfList extends ListElement {
         return title < Math.max(column / 2, TITLE_MIN_REM * rem);
     }
 
-    // The end of the list asks for the next page when it comes within reach,
-    // never from a scroll handler (core/js/reading-position.js watchEdge).
+    // The end of the list asks for the next page when a person brings it
+    // within reach (core/js/reading-position.js watchEdge), not when it is
+    // there already: a list whose end shows on load waits for «Show more» or
+    // for the first scroll (list and feed study LF-8: the next page was asked
+    // for on load, with «Show more» on screen as well -- two answers to one
+    // question). The first scroll of the box that scrolls the list, after a
+    // page is drawn, arms the watch; if the end is in reach then, that scroll
+    // brought it there. The scroll is listened to once, to arm, never to
+    // measure the edge on every move.
     watchEnd() {
         const sentinel = this.querySelector(":scope > .sf-list__frame .sf-list__end");
         if (!this.hasMore || this.loading || !sentinel) {
@@ -679,7 +699,29 @@ class SfList extends ListElement {
         this.unwatchEnd();
         this._edge = sentinel;
         // Inside the box that scrolls the list, so the margin reaches ahead there.
-        this._stopEdge = watchEdge(sentinel, () => this.requestMore(), {root: scrollerOf(sentinel)});
+        // watchEdge reports the end coming into reach; its first report, before
+        // any scroll, says only that it is there already (reached). The first
+        // scroll then asks if the end is still in reach -- no new report comes
+        // for an end that never left; an end that comes into reach later is
+        // the watch's own report, asked once.
+        const root = scrollerOf(sentinel);
+        const scroller = root ?? this.ownerDocument;
+        let moved = false;
+        let reached = false;
+        const onScroll = () => {
+            moved = true;
+            scroller.removeEventListener("scroll", onScroll);
+            if (reached && endInReach(sentinel, root)) this.requestMore();
+        };
+        scroller.addEventListener("scroll", onScroll, {passive: true});
+        const stopEdge = watchEdge(sentinel, () => {
+            if (moved) this.requestMore();
+            else reached = true;
+        }, {root});
+        this._stopEdge = () => {
+            stopEdge();
+            scroller.removeEventListener("scroll", onScroll);
+        };
     }
 
     unwatchEnd() {

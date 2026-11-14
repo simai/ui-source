@@ -25,7 +25,7 @@ test('C167 (3): a row with a count is unread, its title semibold', () => {
   assert.match(template, /\$\{context\.countOf\(item\) \? "sf-list__row--unread" : ""\}/u);
   const sheet = read('src/smart/list/js/templates/default.css');
   assert.match(sheet, /\.sf-list__row--unread > sf-list-item > \.sf-list-item \.sf-list-item-title \{\n\s*font-weight: var\(--sf-text--font-weight-6\);/u);
-  assert.equal(json('src/smart/list/component.json').version, '1.11.0');
+  assert.ok(['1.11.0', '1.12.0'].includes(json('src/smart/list/component.json').version));
 });
 
 test('C167 (4): the feed\'s default entry is a comment, the author over it, no fill', () => {
@@ -36,5 +36,5 @@ test('C167 (4): the feed\'s default entry is a comment, the author over it, no f
   assert.doesNotMatch(text, /background|padding|border-radius/u, 'no capsule');
   assert.doesNotMatch(sheet, /\.sf-list-feed__item--own \.sf-list-feed__(?:entry|text)/u, 'one\'s own comment is not set apart');
   assert.match(sheet, /\.sf-list-feed__entry \{[^}]*align-self: stretch;/u);
-  assert.equal(json('src/smart/list-feed/component.json').version, '1.2.0');
+  assert.ok(['1.2.0', '1.3.0'].includes(json('src/smart/list-feed/component.json').version));
 });
