@@ -40,13 +40,16 @@ test('Smart Icons exposes the source font families and axes', async () => {
   assert.doesNotMatch(template, /sf-icon--rounded|sf-icon--sharp/);
   assert.match(template, /--sf-icon--grade/);
   assert.match(template, /--sf-icon--optical-size/);
-  assert.match(styles, /'opsz' var\(--sf-icon--optical-size\)/);
+  // Written only when the author set them (C151 point 4).
+  assert.match(template, /grade !== "" && grade != null \? `--sf-icon--grade:\$\{grade\}` : ""/);
+  assert.match(source, /if \(!this\.hasAttribute\("optical-size"\)\) return "";/);
+  assert.match(styles, /'opsz' var\(--sf-icon--optical-size, 24\)/);
 });
 
 test('Smart Icons accepts only the Framework icon size scale', async () => {
   const source = await read('src/smart/icon/index.js');
   assert.match(source, /const iconSizes = \["1\/4", "1\/3", "1\/2", "1", "2", "3", "4", "5", "6", "7"\]/);
-  assert.match(source, /iconSizes\.includes\(size\) \? size : ""/);
+  assert.match(source, /if \(!iconSizes\.includes\(size\)\) return "";/);
 });
 
 test('Core Loader tracks exact Smart icon descriptors', async () => {
