@@ -54,7 +54,10 @@ test('GL-4 and GL-5: the lightbox pages with keys and swipe; the focus goes back
   assert.match(gallery, /document\.addEventListener\('keydown', this\._handleViewerKeyDown\)/);
   assert.match(gallery, /else if \(event\.key === 'Home'\) next = 1;\s*else if \(event\.key === 'End'\) next = total;/);
   assert.match(gallery, /_lightboxPointerMoved\(event\)/);
-  assert.match(gallery, /requestAnimationFrame\(\(\) => requestAnimationFrame\(\(\) => this\._restoreFocus\(\)\)\)/);
+  // One focus return after the window's own (group build 4: content-slider-g4's _restoreFocus and
+  // file-preview-g4's _returnFocus did the same; file-preview's, which also returns to an outside trigger, stays).
+  assert.match(gallery, /requestAnimationFrame\(\(\) => this\._returnFocus\(\)\)/);
+  assert.doesNotMatch(gallery, /_restoreFocus/);
 });
 
 test('GL-10: copies past the first shown picture load lazily; the source is set last', () => {

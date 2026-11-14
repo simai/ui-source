@@ -1139,28 +1139,12 @@ class SfGallery extends GalleryElement {
     this.goTo(Math.min(Math.max(next, 1), total));
   }
 
-  // The focus goes back to the picture that opened the lightbox (GL-5); when
-  // the person paged there, to the inline picture now shown (the opener is
-  // out of view).
-  _restoreFocus() {
-    const opener = this._opener;
-    this._opener = null;
-    const usable = (element) => element instanceof HTMLElement && element.isConnected
-      && !element.closest('[inert]') && element.getClientRects().length > 0;
-    const shown = this._inlineSlider?.querySelector?.(`.swiper-slide-active [data-sf-gallery-open], [data-sf-gallery-open="${this.current}"]:not([inert] *)`);
-    const target = usable(opener) ? opener : (usable(shown) ? shown : null);
-    target?.focus?.({ preventScroll: true });
-  }
-
   _handleModalAfterClose(event) {
     if (event?.target && event.target !== this._modal) return;
     if (this.hasAttribute('open')) {
       this.removeAttribute('open');
     }
     document.removeEventListener('keydown', this._handleViewerKeyDown);
-    // After the window gave the focus back to where it was (its section):
-    // the next frame, so the window's own return comes first.
-    requestAnimationFrame(() => requestAnimationFrame(() => this._restoreFocus()));
     this.sfEmit('closed', {
       current: this.current,
       total: this.slidesTotal,
@@ -1226,11 +1210,6 @@ class SfGallery extends GalleryElement {
   open(index = null) {
     const at = index && typeof index === 'object' ? index.index : index;
     if (!this.getProp('lightbox')) return { outcome: 'refused', reason: 'no-lightbox' };
-    const active = document.activeElement;
-    const windowRoot = this._modal?.modalRoot || this._modal;
-    if (!this.openState && active && active !== document.body && !windowRoot?.contains?.(active)) {
-      this._opener = active;
-    }
     if (at !== null && typeof at !== 'undefined') {
       this.goTo(at);
     }
