@@ -76,7 +76,7 @@ test('C152 (3): two letters from 1/3, one at 1/4, the medium weight', async () =
   ]);
   assert.match(picture, /if \(String\(size \?\? ""\) !== "1\/4"\) return value;/u);
   assert.match(picture, /value\.match\(\/\^\(\\p\{L\}\\p\{M\}\*\)\\p\{L\}\/u\)/u);
-  assert.match(sheet, /font-weight: var\(--sf-avatar--font-weight, var\(--sf-font-weight-medium\)\);/u);
+  assert.match(sheet, /font-weight: var\(--sf-avatar--font-weight, var\(--sf-weight--medium\)\);/u);
 });
 
 test('C152 (4): the square corner grows with the step: 4, 8, 12', async () => {

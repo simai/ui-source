@@ -76,7 +76,7 @@ test('every number comes from the ladder, through a public variable', () => {
   assert.match(source, /background-color:\s*var\(--sf-table-frame-head-background, var\(--sf-table-frame-background\)\)/u);
   // The quiet head: the supporting role, the medium weight.
   assert.match(source, /--sf-table-frame-head-color:\s*var\(--sf-on-surface-variant\)/u);
-  assert.match(source, /> thead > tr > \* \{[^}]*font-weight: var\(--sf-font-weight-medium\);/u);
+  assert.match(source, /> thead > tr > \* \{[^}]*font-weight: var\(--sf-weight--medium\);/u);
   // Nine public variables, each defaulting to a token of the kit or the
   // ladder formula of a row (C49): no number is typed into the rule.
   const ladderPadding = (step) => `calc((var(--sf-ui-${step}--control-height) - var(--sf-text-height-1) - var(--sf-px)) / 2)`;
@@ -145,7 +145,7 @@ test('the .table classes take their cells from the ladder and the space system',
 // C146 (2), (3): the quiet head and the number column.
 test('the .table head is quiet and a number column keeps its digits on one line', () => {
   const css = read('src/utility/table/default/scss/_sf_css__table.scss');
-  assert.match(css, /> thead > tr > th \{\s*color: var\(--sf-on-surface-variant\);\s*font-weight: var\(--sf-font-weight-medium\);/u);
+  assert.match(css, /> thead > tr > th \{\s*color: var\(--sf-on-surface-variant\);\s*font-weight: var\(--sf-weight--medium\);/u);
   assert.doesNotMatch(css, /> thead > tr > th,[^{]*\{[^}]*font-weight/u);
   assert.match(css, /\.table-numeric \{\s*font-variant-numeric: tabular-nums;\s*text-align: end;\s*white-space: nowrap;/u);
 });

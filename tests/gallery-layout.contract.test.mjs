@@ -15,8 +15,8 @@ test('Gallery draws from its sheet and never writes the geometry of the media', 
 
 test('Gallery values come from the systems: no raw lengths, colours or !important', () => {
   // A media query cannot read a variable: the phone break is the system's
-  // md step written out; a zero length in a fallback is no value.
-  const sheet = css.replace(/\/\*[\s\S]*?\*\//g, '').replace(/@media \(max-width: 43\.9375rem\)/g, '').replace(/\b0px\b/g, '');
+  // md breakpoint written out (group build 5: below md, C181's screen query); a zero length in a fallback is no value.
+  const sheet = css.replace(/\/\*[\s\S]*?\*\//g, '').replace(/@media not all and \(min-width: 44rem\)/g, '').replace(/\b0px\b/g, '');
   assert.doesNotMatch(sheet, /\b\d+(?:\.\d+)?(?:px|rem|em)\b|#[0-9a-f]{3,8}\b|!important/);
 });
 

@@ -63,7 +63,7 @@ test('C150 (7): the full-screen black viewer: «3 / 12» at the start, zoom and 
   assert.equal(ru['viewer-count'], '{n} / {total}');
   assert.equal(ru['viewer-count-words'], '{n} из {total}');
   assert.match(css, /\.sf-gallery-viewer \{[\s\S]*?background-color: var\(--sf-black\);[\s\S]*?color-scheme: dark;/);
-  assert.match(css, /\.sf-gallery-viewer-actions \{\s*display: flex;\s*flex: none;\s*align-items: center;\s*gap: var\(--sf-space-1\\\/3\);/);
+  assert.match(css, /\.sf-gallery-viewer-actions \{\s*display: flex;\s*flex: none;\s*align-items: center;\s*gap: var\(--sf-gap--actions\);/);
   assert.match(viewer, /<sf-button-close class="sf-gallery-viewer-control" data-sf-gallery-viewer-close appearance="media" size="1"/);
   assert.match(viewer, /ArrowRight: rtl \? -1 : 1, ArrowLeft: rtl \? 1 : -1/);
   assert.match(viewer, /event\.key === 'Home'/);
@@ -71,7 +71,7 @@ test('C150 (7): the full-screen black viewer: «3 / 12» at the start, zoom and 
   assert.match(viewer, /dialog\.addEventListener\('cancel', this\._onCancel\)/);
   assert.match(viewer, /Math\.abs\(dx\) > PAGE_SWIPE && Math\.abs\(dx\) > Math\.abs\(dy\)/);
   assert.match(viewer, /dy > CLOSE_SWIPE && dy > Math\.abs\(dx\)/);
-  assert.match(css, /@media \(max-width: 43\.9375rem\) \{[\s\S]*?\.sf-gallery-viewer-side \{\s*display: none;/);
+  assert.match(css, /@media not all and \(min-width: 44rem\) \{[\s\S]*?\.sf-gallery-viewer-side \{\s*display: none;/);
   assert.match(gallery, /_returnTarget\(opener\)/);
 });
 
