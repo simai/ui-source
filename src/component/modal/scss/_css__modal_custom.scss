@@ -342,6 +342,37 @@
   width: var(--sf-modal-width);
 }
 
+/* A window is never taller than the screen (study MD-1): the panel stops at
+   the window's room (the root's box, the viewport under its frame), the
+   header and the footer stay in it, and only the body scrolls. A long body
+   grew the window past the screen -- 2528 px at a 900 px screen, the title,
+   the × and the answers off screen -- and nothing scrolled. The chain under
+   the panel may shrink below its content (min-block-size: 0) down to the
+   scroll box, which already scrolls. A window drawn in the page (inline)
+   grows with its content, as before. */
+.sf-modal:not(.sf-modal--inline) > [data-sf-modal-panel] {
+  display: flex;
+  flex-direction: column;
+  max-block-size: 100%;
+}
+
+.sf-modal:not(.sf-modal--inline) > [data-sf-modal-panel] > [data-sf-modal-surface] {
+  min-block-size: 0;
+  max-block-size: 100%;
+}
+
+.sf-modal:not(.sf-modal--inline) [data-sf-modal-body],
+.sf-modal:not(.sf-modal--inline) [data-sf-modal-body-viewport],
+.sf-modal:not(.sf-modal--inline) [data-sf-modal-body-scroll] {
+  flex: 1 1 auto;
+  min-block-size: 0;
+}
+
+.sf-modal:not(.sf-modal--inline) [data-sf-modal-body-viewport] {
+  display: flex;
+  flex-direction: column;
+}
+
 .sf-modal [data-sf-modal-panel][data-sf-modal-has-height] {
   display: flex;
   height: var(--sf-modal-height);
