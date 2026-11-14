@@ -347,15 +347,15 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "50bd28fc761bc009eb727f9ca695a212a891e5d7",
+    "source_revision": "31e16ee383c4eb278a3419f828c45cdb21cec10f",
     "source_artifacts": [
       {
         "path": "src/smart/form/index.js",
-        "sha256": "c1d4c689867ea1eefccc852fb62fced38a6c4d411abbc04c24f5187252a6e4de"
+        "sha256": "53817ea4ec84caa03823896606f02fd3995b90915484c670bead64770afb2f07"
       },
       {
         "path": "src/smart/form/js/templates/default.js",
-        "sha256": "89dbdf33b2a32ecc52cb507d264ea264e484efe04c5cbbb49f959e893c81f556"
+        "sha256": "4cce2bf925e8e22286dbb7655f9aaa5fd4f3338fca52949acb9cc0b77892556e"
       },
       {
         "path": "src/smart/form/rule.js",
