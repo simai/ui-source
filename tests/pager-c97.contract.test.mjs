@@ -46,7 +46,7 @@ function counter(over = {}) {
 }
 
 test('version 1.3.2: three looks, steps and course still parse', () => {
-  assert.equal(component.version, '1.3.2');
+  assert.equal(component.version, '1.3.3'); // group build 5 patch
   assert.deepEqual(component.settings.appearance.values, ['cards', 'row', 'steps', 'course', 'counter']);
   assert.match(component.settings.appearance.summary, /Deprecated until 2027-01-01/u);
   for (const name of ['total', 'has-next', 'list-href']) assert.ok(component.settings[name], `${name} is a setting`);

@@ -88,7 +88,7 @@ test('TG-16: the examples write the current names; the conformance page keeps th
 });
 
 test('versions: sf-tag 1.7.0, component.tags 1.6.0', () => {
-  assert.equal(json('src/smart/tag/component.json').version, '1.7.0');
-  assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.7.0');
+  assert.equal(json('src/smart/tag/component.json').version, '1.9.1'); // group build 5 patch above 1.9.0 on fix/tag-ring-r242
+  assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.9.1');
   assert.equal(json('src/component/tags/passport.json').version, '1.6.0');
 });

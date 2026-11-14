@@ -25,8 +25,8 @@ const rule = (css, selector) => {
 };
 
 test('versions: smart.steps 1.4.1, component.step 1.3.1', () => {
-  assert.equal(component.version, '1.4.1');
-  assert.equal(json('src/smart/steps/smart.manifest.json').version, '1.4.1');
+  assert.equal(component.version, '1.4.2'); // group build 5 patch
+  assert.equal(json('src/smart/steps/smart.manifest.json').version, '1.4.2');
   assert.equal(json('src/component/step/passport.json').version, '1.3.1');
 });
 

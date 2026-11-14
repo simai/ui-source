@@ -321,7 +321,7 @@ test('BC-07, BC-09: the class runtime reads the list form and prints no utility 
 
 test('the manifest names the new setting and the new default', async () => {
   const manifest = JSON.parse(await read('src/smart/breadcrumbs/component.json'));
-  assert.equal(manifest.version, '1.2.4'); // above every branch's 1.2.3
+  assert.equal(manifest.version, '1.2.5'); // above every branch's 1.2.3; group build 5 patch above 1.2.4
   assert.deepEqual(manifest.settings.current.values, ['last', 'none']);
   assert.equal(manifest.settings.current.default, 'last');
   assert.equal(manifest.settings['max-items'].default, 0);
