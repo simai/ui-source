@@ -19,8 +19,17 @@
   color: var(--sf-page-header-heading-color, inherit);
 }
 
+/* The actions are buttons of one group: 8 apart (C105 H5, --sf-space-1/3);
+   the line keeps 16 between the heading and the actions (H6, the line's gap).
+   A row of actions wider than the page wraps onto further rows of its own
+   instead of pushing the page sideways (OV-2: four actions took 507 px of a
+   358 px line at 390 and the page scrolled 133 px); min-inline-size 0 lets
+   the row, on a line of its own, be no wider than that line. Wrapping is the
+   fix until the shared «Ещё» for action rows is decided. */
 .sf-page-header-actions {
-  gap: var(--sf-page-header-actions-gap, var(--sf-space-1\/2));
+  flex-wrap: wrap;
+  min-inline-size: 0;
+  gap: var(--sf-page-header-actions-gap, var(--sf-space-1\/3));
 }
 
 /* The decorative level (owner decisions C91 level 2 and C65 round 2, R164,

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "title": "Menu",
   "summary": "Site navigation built from data -- nested sections, the current page, groups that open and close -- or from a nested list of links in the markup, drawn as the class menu: a column whose branches open in place, or a row whose branches open as panels placed by SF.Position, which becomes a button opening the same links when it does not fit. The WAI-ARIA disclosure navigation pattern, not an application menu.",
   "kind": "smart",
@@ -95,7 +95,7 @@
       "overflow": {
         "type": "string",
         "default": "collapse",
-        "description": "What a row does when its first level does not fit (the values of sf-tabs' overflow where they mean the same): more, priority+ -- the items that do not fit leave the row from its end for a trailing «Ещё» branch (more-label), the section that holds the current page stays while it fits beside it, and with no item left «Ещё» reads «Меню» (toggle-label); collapse, the row becomes the button (collapse auto); none, the row stays whole. sf-menu-overflow says which items left.",
+        "description": "What a row does when its first level does not fit (the values of sf-tabs' overflow where they mean the same): more, priority+ -- the items that do not fit leave the row from its end for a trailing «Ещё» branch (more-label), the section that holds the current page stays while it fits beside it, and with no item left «Ещё» reads «Меню» (toggle-label); collapse (the default), the same «Ещё» above md and the «Меню» button below md, a phone (collapse auto); none, the row stays whole. sf-menu-overflow says which items left.",
         "enum": [
           "more",
           "collapse",
@@ -742,7 +742,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu/index.js",
-        "sha256": "735618db63ac4c7ca0c940290d5812610d74b47f3f8092626ab1763b6bab2865"
+        "sha256": "411f2f4b3d9f47a31dd4f008c84d745e0e527304563cdd71970311508b7acd47"
       },
       {
         "path": "src/smart/menu/items.mjs",
@@ -762,7 +762,7 @@
       },
       {
         "path": "src/smart/menu/docs.md",
-        "sha256": "0cab2d5e235f72462ec3332e10931644865b7c136b8d4eaa47f895a22e706587"
+        "sha256": "cf2853f41942fd6471b5e1d86e38965e2f11e2f37f82fa18ee19e27785238746"
       }
     ],
     "generated_runtime": []
