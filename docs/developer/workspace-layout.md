@@ -42,7 +42,7 @@ default) and `sf-workspace--wide-h4 | -h6 | -h8 | -i0 | -i2` (56, 64, 72, 80,
 96rem; `h6` is the default), steps of the size ladder. Keep split below wide.
 
 The region widths are public variables (set them on the workspace or an
-ancestor; the Framework never sets them):
+ancestor; the Framework sets them only on a region with an edge, below):
 
 | Variable | Default | |
 | --- | --- | --- |
@@ -55,6 +55,36 @@ ancestor; the Framework never sets them):
 
 Main takes the rest. The row follows the writing direction: in a right-to-left
 document the rail is at the right and the drawer comes from the left.
+
+## An edge to resize: data-sf-workspace-resize
+
+A list or a panel region marked `data-sf-workspace-resize` has an edge a person
+drags, moves with the arrow keys or double-clicks back to the default (owner
+decision C158 (6)); one line of markup, the same for every product:
+
+```html
+<div class="sf-workspace">
+  <nav class="sf-workspace-list" aria-label="Чаты" data-sf-workspace-resize="chat-list">…</nav>
+  <main class="sf-workspace-main">…</main>
+  <aside class="sf-workspace-panel" data-sf-workspace-resize>…</aside>
+</div>
+```
+
+- The edge is an `sf-resizer` core places in the region (the list's on its
+  inline end, the panel's on its inline start). A page that wants other limits
+  or words places its own `<sf-resizer>` as the region's direct child; core
+  then places none.
+- The width goes into the region's own variable (`--sf-workspace-list`,
+  `--sf-workspace-panel`) and is kept in this browser as the view preference
+  `sf-resizer/<key>`: the attribute's value, or `sf-workspace-list` /
+  `sf-workspace-panel` when it is empty. Core writes the kept width before the
+  first paint, so the region does not jump when the handle arrives.
+- The region still scrolls; the handle stands outside its clip, whole, and does
+  not scroll with the rows.
+- The list folds (`collapsible`): dragged past its minimum by half of it, or
+  Enter on the edge; a «Показать» button on the edge brings it back.
+- Below the split width there is no edge: one region shows at a time, and the
+  width the person chose waits for a wide container.
 
 ## State: attributes
 

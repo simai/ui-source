@@ -10,7 +10,15 @@
 //   - the narrow view: when the region holding focus is hidden, focus goes to
 //     the region shown -- back to the list, onto the row the host marks with
 //     aria-current; on to main, onto its back control;
-//   - the events sf-workspace-view {view} and sf-workspace-panel {open}.
+//   - the events sf-workspace-view {view} and sf-workspace-panel {open};
+//   - the edge of a list or panel region marked data-sf-workspace-resize
+//     (owner decision C158 (6)): an sf-resizer placed in the region, the
+//     width in the region's own variable (--sf-workspace-list,
+//     --sf-workspace-panel), kept in this browser (SF.Preferences
+//     sf-resizer/<key>, the key the attribute's value or the region's name)
+//     and written before the first paint; the list folds to its edge
+//     (collapsible). The region scrolls as before; the handle stands outside
+//     its clip (sf-resizer 1.2.0) and is not there below the split step.
 //
 // The state is the element's attributes: data-sf-workspace-view (list|main)
 // and data-sf-workspace-panel (open). A host sets them, or calls
@@ -21,6 +29,7 @@
 // region, which must stay where it is in the DOM to be a column when the
 // container is wide. The contract is sf-drawer's, kept with the same stack.
 import {FOCUSABLE, closeLayer, focusablesIn, openLayer, tryFocus} from './layer-stack.js';
+import BundledPreferences from './preferences.js';
 
 const VIEW = 'data-sf-workspace-view';
 const PANEL = 'data-sf-workspace-panel';
@@ -29,6 +38,44 @@ const KEY = Symbol.for('sf.workspace');
 const CURRENT = '[aria-current]:not([aria-current="false"])';
 
 const region = (element, name) => element.querySelector(`:scope > .sf-workspace-${name}`);
+
+// The regions that may have an edge, the variable their width is in and the
+// side the edge stands on.
+const RESIZE = 'data-sf-workspace-resize';
+const EDGES = {
+  list: {property: '--sf-workspace-list', edge: 'inline-end', collapsible: true},
+  panel: {property: '--sf-workspace-panel', edge: 'inline-start', collapsible: false},
+};
+const preferences = () => globalThis.SF?.Preferences || BundledPreferences;
+
+// The edge of each region marked data-sf-workspace-resize: the region's own
+// sf-resizer when the page placed one (its min, max and words), else one made
+// here. The width the person kept is written into the region's variable now,
+// before the handle's bundle arrives, so the first frame has it.
+function placeEdges(element) {
+  for (const [name, spec] of Object.entries(EDGES)) {
+    const part = region(element, name);
+    if (!part || !part.hasAttribute(RESIZE)) continue;
+    let handle = part.querySelector(':scope > sf-resizer');
+    const key = part.getAttribute(RESIZE).trim() || `sf-workspace-${name}`;
+    if (!handle) {
+      handle = globalThis.document.createElement('sf-resizer');
+      handle.setAttribute('property', spec.property);
+      handle.setAttribute('edge', spec.edge);
+      handle.setAttribute('storage-key', key);
+      if (spec.collapsible) handle.setAttribute('collapsible', '');
+      // Kept before the handle is defined: its width, or its fold.
+      const kept = preferences()?.read(`sf-resizer/${key.replace(/[^\w.:-]+/gu, '-')}`);
+      if (kept?.folded === true && spec.collapsible) {
+        part.setAttribute('data-folded', '');
+        part.style.setProperty(spec.property, '0px');
+      } else if (Number.isFinite(kept?.width) && kept.width > 0) {
+        part.style.setProperty(spec.property, `${Math.round(kept.width)}px`);
+      }
+      part.append(handle);
+    }
+  }
+}
 
 // The node itself when a person can focus it, else the first that can be
 // inside it, else the node with a temporary tabindex.
@@ -55,6 +102,7 @@ class Workspace {
       : null;
     this.resize?.observe(element);
     element.addEventListener('click', (event) => this.onClick(event));
+    placeEdges(element);
   }
 
   readView() {

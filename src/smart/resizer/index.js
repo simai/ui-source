@@ -6,9 +6,10 @@
 // nothing but the width it writes: on its target (its parent, or the closest
 // ancestor matching `target`), as a custom property when `property` names one,
 // otherwise as inline-size. With `storage-key` the width is remembered in this
-// browser and restored the next time.
+// browser and restored the next time. With `collapsible` the panel folds to
+// its edge and comes back (owner decision C158 (2)).
 import {attachResizer, setResizerValue} from './engine.mjs';
-import {language} from '../../core/js/page-language';
+import {language, pageWord} from '../../core/js/page-language';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {installAliases} from '../../core/js/aliases.js';
 import BundledPreferences from '../../core/js/preferences.js';
@@ -70,10 +71,18 @@ function pixels(value, context) {
 const preferences = () => globalThis.SF?.Preferences || BundledPreferences;
 const preferenceKey = (key) => `sf-resizer/${String(key).replace(/[^\w.:-]+/gu, '-')}`;
 
+// The kept width, and whether the panel was folded (C158 (2)): {v: 1, width,
+// folded}; width is the width it comes back to.
+function readFolded(key) {
+  if (!key) return false;
+  return preferences()?.read(preferenceKey(key))?.folded === true;
+}
+
 function readStored(key) {
   if (!key) return null;
   const kept = preferences()?.read(preferenceKey(key));
-  if (Number.isFinite(kept?.width)) return kept.width;
+  if (Number.isFinite(kept?.width) && kept.width > 0) return kept.width;
+  if (kept) return null;
   // A width this browser kept before the standard, taken over once.
   try {
     const legacy = Number(globalThis.localStorage?.getItem(`sf-resizer:${key}`)) || null;
@@ -87,11 +96,27 @@ function readStored(key) {
   }
 }
 
-function writeStored(key, value) {
+function writeStored(key, value, folded = false) {
   if (!key) return;
-  if (value === null) preferences()?.remove(preferenceKey(key));
+  if (value === null && !folded) preferences()?.remove(preferenceKey(key));
+  else if (folded) preferences()?.write(preferenceKey(key), {v: 1, width: value ? Math.round(value) : 0, folded: true});
   else preferences()?.write(preferenceKey(key), {v: 1, width: Math.round(value)});
 }
+
+// The words of the value (aria-valuetext): «27 %», or folded (C158 (3)).
+const valueWords = (dictionary) => (share, folded, handle) => pageWord(dictionary, folded ? 'folded' : 'value', handle, {component: 'sf-resizer', source: 'ru', count: share});
+
+// The panel the handle folds is said folded by data-folded (the name the
+// study's prototype gives it); the «Показать» button that brings it back
+// stands on its edge (data-sf-resizer-unfold), and below the layout's split
+// step the handle is not there (data-sf-resizer-narrow, C158 (4)).
+const FOLDED = 'data-folded';
+const UNFOLD = 'data-sf-resizer-unfold';
+const NARROW = 'data-sf-resizer-narrow';
+// The layout split step: h0 of the size scale (40rem) of the container, the
+// step .sf-workspace stacks its regions at.
+const SPLIT_STEP = 'var(--sf-h0)';
+let panelIds = 0;
 
 // The handle placed outside a target that clips: absolute (against an
 // ancestor) or fixed (against the viewport); the measured place it is given.
@@ -131,7 +156,7 @@ function roomBeside(target, reserve) {
 }
 
 export class SfResizer extends ResizerElement {
-  static get observedAttributes() { return ['min', 'max', 'label', 'disabled', 'value']; }
+  static get observedAttributes() { return ['min', 'max', 'label', 'disabled', 'value', 'collapsible']; }
 
   constructor() {
     super();
@@ -156,7 +181,10 @@ export class SfResizer extends ResizerElement {
     this.syncLabel();
     // The gesture is the shared one (attachResizer): the element only says
     // what the width is the width of and where it is kept.
-    this._detach = attachResizer(this, {session: () => (this.disabled ? null : this.session())});
+    this._detach = attachResizer(this, {
+      session: () => (this.disabled || this._narrow ? null : this.session()),
+      text: valueWords(ResizerElement.sfWords),
+    });
     globalThis.addEventListener('resize', this._onWindowResize);
     document.addEventListener?.('scroll', this._onScroll, {capture: true, passive: true});
     // A language announced after the handle drew itself -- SF.language.use(),
@@ -173,8 +201,21 @@ export class SfResizer extends ResizerElement {
     // paint of 256 (study RS-8, 2026-11-14). Reading a limit forces the
     // layout it needs, so a percentage limit is still read against a real
     // width.
-    this._wanted = Number(this.getAttribute('value')) || readStored(this.storageKey) || null;
+    // A host's value of 0 is a folded panel (C158 (3): 0 is folded); so is
+    // a fold this browser kept.
+    const value = this.getAttribute('value');
+    this._wanted = Number(value) || readStored(this.storageKey) || null;
+    this._folded = this.collapsible && (value === '0' || (value === null && readFolded(this.storageKey)));
+    this._restore = this._wanted;
+    // A panel that folds shows the «Показать» button on its edge: its code is
+    // asked for when a pointer or the keyboard reaches the handle, before it
+    // can fold, so the button draws whole the first time; a page that never
+    // folds a panel never loads it.
+    const warm = () => this.warmUnfold();
+    this.addEventListener('pointerenter', warm, {once: true, signal: this.sfScope});
+    this.addEventListener('focusin', warm, {once: true, signal: this.sfScope});
     if (this.target()) {
+      this.control();
       this.layout();
       this.syncValue();
     }
@@ -203,8 +244,160 @@ export class SfResizer extends ResizerElement {
   // The width within its limits (fit), then the handle on the target's edge
   // (place).
   layout() {
+    this.narrowCheck();
     if (!this._dragging) this.fit();
+    this.showFold();
     this.place();
+  }
+
+  warmUnfold() {
+    if (this.collapsible) globalThis.SF?.Loader?.ensure?.(['sf-button-icon']);
+  }
+
+  // The panel the handle controls (aria-controls, C158 (3)): by its id; a
+  // panel without one is named by element reference where the browser has
+  // it (ariaControlsElements), so the page's markup gets no made-up id, and
+  // is given an id where it does not.
+  control() {
+    const target = this.target();
+    if (!target) return;
+    if (target.id) {
+      this.setAttribute('aria-controls', target.id);
+      return;
+    }
+    if ('ariaControlsElements' in this) {
+      this.removeAttribute('aria-controls');
+      this.ariaControlsElements = [target];
+      return;
+    }
+    target.id = `sf-resizer-panel-${++panelIds}`;
+    this.setAttribute('aria-controls', target.id);
+  }
+
+  // Below the layout's split step (40rem of the container, C158 (4)) the
+  // handle is not there: the layout shows one panel at a time, and the width
+  // the person chose waits for a wide screen. A region of .sf-workspace says
+  // its layout itself (--sf-workspace--layout); any other panel is measured
+  // against the width of its container.
+  narrowCheck() {
+    const target = this.target();
+    let narrow = false;
+    if (target?.parentElement) {
+      const parent = target.parentElement;
+      const layout = parent.classList.contains('sf-workspace')
+        ? getComputedStyle(target).getPropertyValue('--sf-workspace--layout').trim()
+        : '';
+      if (layout) narrow = layout === 'narrow';
+      else {
+        const width = parent.getBoundingClientRect().width;
+        const step = pixels(SPLIT_STEP, parent) ?? 0;
+        narrow = width > 0 && width < step;
+      }
+    }
+    if (narrow === Boolean(this._narrow)) return;
+    this._narrow = narrow;
+    this.toggleAttribute(NARROW, narrow);
+  }
+
+  // A folded panel: data-folded on it, its width written 0, the «Показать»
+  // button on its edge. Below the split step the panel shows as the layout
+  // places it (folding is a wide screen's), and folds again when it widens.
+  showFold() {
+    const target = this.target();
+    if (!target) return;
+    const folded = Boolean(this._folded && this.collapsible && !this._narrow);
+    if (folded) {
+      this.warmUnfold();
+      this.unfoldButton();
+      target.setAttribute(FOLDED, '');
+      if (this.property) target.style.setProperty(this.property, '0px');
+      else target.style.inlineSize = '0px';
+    } else if (target.hasAttribute(FOLDED)) {
+      target.removeAttribute(FOLDED);
+      this.unwrite(target);
+      if (this._wanted) this.apply(this._wanted);
+    }
+  }
+
+  // The «Показать» button on the folded panel's edge (C158 (2)), made the
+  // first time the panel folds: an sf-button-icon in a holder of its own in
+  // the panel (the holder stays where the button may redraw itself), shown
+  // only while the panel is folded. The glyph shows the side the panel opens
+  // from.
+  unfoldButton() {
+    const target = this.target();
+    if (!target) return null;
+    let holder = this._unfold;
+    if (!holder || holder.parentElement !== target) {
+      holder?.remove();
+      holder = document.createElement('span');
+      holder.setAttribute(UNFOLD, '');
+      holder.addEventListener('click', (event) => {
+        if (!event.target?.closest?.('button, sf-button-icon')) return;
+        event.stopPropagation();
+        this.fold(false, 'end');
+        this.focus({preventScroll: true});
+      });
+      target.append(holder);
+      this._unfold = holder;
+    }
+    const rtl = getComputedStyle(this).direction === 'rtl';
+    const startEdge = this.getAttribute('edge') === 'inline-start';
+    // A panel whose edge is on its right stands on the left of the page.
+    const icon = rtl === startEdge ? 'left_panel_open' : 'right_panel_open';
+    const word = this.sfWord('show');
+    const key = `${icon} ${word}`;
+    if (holder.__sfKey !== key) {
+      holder.__sfKey = key;
+      const button = document.createElement('sf-button-icon');
+      button.setAttribute('size', '1/2');
+      button.setAttribute('appearance', 'ghost');
+      button.setAttribute('scheme', 'on-surface');
+      button.setAttribute('icon', icon);
+      button.setAttribute('aria-label', word);
+      button.setAttribute('title', word);
+      holder.replaceChildren(button);
+    }
+    return holder;
+  }
+
+  // Folds the panel to its edge (on) or gives back the width it had (off).
+  // phase move: during a drag, said as move and not kept; end: kept and said.
+  fold(on, phase = 'end') {
+    if (!this.collapsible || this.disabled) return;
+    const target = this.target();
+    if (!target) return;
+    if (on && !this._folded) {
+      // A drag that folds gives back the width it started from, not the min
+      // it passed on the way.
+      const {min} = this.limits();
+      const width = Math.max(min, Math.round(phase === 'move' && this._dragFrom ? this._dragFrom : this.width()) || 0);
+      this._restore = width;
+      this._folded = true;
+      this.showFold();
+      this.syncValue(0);
+      this.announce(0, phase === 'move' ? 'move' : 'end');
+    } else if (!on && this._folded) {
+      this._folded = false;
+      const back = this._restore || this._wanted;
+      target.removeAttribute(FOLDED);
+      if (back) this.apply(back);
+      else this.unwrite(target);
+      const width = Math.round(this.width());
+      this.syncValue(width);
+      this.announce(width, phase === 'move' ? 'move' : 'end');
+      if (phase !== 'move') {
+        this._wanted = back || null;
+        if (back) writeStored(this.storageKey, back);
+        else writeStored(this.storageKey, null);
+      }
+      return;
+    } else if (on && phase !== 'move') this.announce(0, 'end');
+    if (on && phase !== 'move') writeStored(this.storageKey, this._restore, true);
+  }
+
+  folded() {
+    return Boolean(this._folded && this.collapsible && !this._narrow);
   }
 
   disconnectedCallback() {
@@ -220,8 +413,20 @@ export class SfResizer extends ResizerElement {
   }
 
   attributeChangedCallback(name, before, after) {
+    if (name === 'value' && after === '0' && after !== before && this.isConnected && this.collapsible) {
+      this.fold(true, 'move');
+      return;
+    }
     if (name === 'value' && after && after !== before && this.isConnected) {
+      if (this._folded) {
+        this._folded = false;
+        this.target()?.removeAttribute(FOLDED);
+      }
       this.restore(after);
+      return;
+    }
+    if (name === 'collapsible' && this.isConnected) {
+      this.schedule();
       return;
     }
     if (this.isConnected) {
@@ -263,7 +468,11 @@ export class SfResizer extends ResizerElement {
   }
 
   session() {
+    const fold = this.collapsible
+      ? {fold: (on, phase) => this.fold(on, phase), folded: () => this.folded()}
+      : {};
     return {
+      ...fold,
       measure: () => this.width(),
       limits: () => this.limits(),
       apply: (width, phase) => {
@@ -274,7 +483,10 @@ export class SfResizer extends ResizerElement {
       commit: (width) => this.commit(width),
       reset: () => this.reset(),
       // A drag owns the width while it lasts: a layout pass does not fit it.
-      start: () => { this._dragging = true; },
+      start: () => {
+        this._dragging = true;
+        this._dragFrom = this.folded() ? 0 : Math.round(this.width());
+      },
       end: () => {
         this._dragging = false;
         this.schedule();
@@ -318,6 +530,10 @@ export class SfResizer extends ResizerElement {
     if (this.disabled) return;
     const target = this.target();
     if (!target) return;
+    // The default width is an open panel.
+    this._folded = false;
+    this._restore = null;
+    target.removeAttribute(FOLDED);
     this._wanted = null;
     this._fitted = false;
     this._pageWidth = '';
@@ -363,6 +579,7 @@ export class SfResizer extends ResizerElement {
   fit() {
     const target = this.target();
     if (!target) return;
+    if (this.folded()) return;
     if (this._wanted) {
       this.apply(this._wanted);
       return;
@@ -452,6 +669,7 @@ export class SfResizer extends ResizerElement {
     // A disabled handle says so and leaves the Tab order: it kept tabindex=0
     // and was a stop that did nothing (study RS-6, 2026-11-14). A tabindex
     // the page wrote is put back when the handle is enabled again.
+    if (this._unfold) this.unfoldButton();
     if (this.disabled) {
       this.setAttribute('aria-disabled', 'true');
       if (this._ownTabIndex) this.removeAttribute('tabindex');
@@ -469,7 +687,7 @@ export class SfResizer extends ResizerElement {
   }
 
   syncValue(width = this.width()) {
-    setResizerValue(this, {limits: () => this.limits(), measure: () => width}, width);
+    setResizerValue(this, {limits: () => this.limits(), measure: () => width, folded: () => this.folded()}, width, valueWords(ResizerElement.sfWords));
   }
 }
 
@@ -477,4 +695,7 @@ if (!customElements.get('sf-resizer')) customElements.define('sf-resizer', SfRes
 
 globalThis.SF = globalThis.SF || {};
 // attach: the same gesture on any handle -- a table's column edges use it.
-globalThis.SF.Resizer = Object.freeze({SfResizer, attach: attachResizer, attachResizer});
+// Their value says its words in the page's language, as the handle's does,
+// unless the caller gives its own text().
+const attach = (root, options = {}) => attachResizer(root, {text: valueWords(ResizerElement.sfWords), ...options});
+globalThis.SF.Resizer = Object.freeze({SfResizer, attach, attachResizer: attach});

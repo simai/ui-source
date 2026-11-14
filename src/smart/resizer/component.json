@@ -46,7 +46,7 @@
     "storage-key": {
       "type": "string",
       "default": "",
-      "summary": "Remembers the width in this browser as the view preference sf-resizer/<key> (SF.Preferences); a double click forgets it."
+      "summary": "Remembers the width (and a fold) in this browser as the view preference sf-resizer/<key> (SF.Preferences); a double click forgets it."
     },
     "label": {
       "type": "string",
@@ -57,12 +57,17 @@
       "type": "boolean",
       "default": false
     },
+    "collapsible": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The panel folds to its edge when dragged past min by half of min, and Enter folds it and gives back the width it had; a «Show» button on the edge brings it back. Off by default."
+    },
     "value": {
       "type": "number",
       "nullable": true,
       "default": null,
-      "x-summary": "A width the host keeps for the person, in pixels; it wins over this browser's memory",
-      "summary": "A width in pixels the host keeps (a person's settings); it wins over the browser's memory."
+      "x-summary": "A width the host keeps for the person, in pixels (0: folded); it wins over this browser's memory",
+      "summary": "A width in pixels the host keeps (a person's settings); it wins over the browser's memory. With collapsible, 0 is a folded panel."
     }
   },
   "values": {},
@@ -93,8 +98,7 @@
       "PageDown": "step:-page",
       "Home": "to:min",
       "End": "to:max",
-      "Enter": "revert",
-      "Space": "revert"
+      "Enter": "toggle:folded"
     }
   },
   "relations": [],
@@ -124,10 +128,9 @@
       "PageDown": "step:-page",
       "Home": "to:min",
       "End": "to:max",
-      "Enter": "revert",
-      "Space": "revert"
+      "Enter": "toggle:folded"
     },
-    "$comment": "The host is a focusable separator (aria-orientation vertical by its role) with aria-valuenow the width in pixels between aria-valuemin and aria-valuemax; its description (title) says how to use it. ArrowLeft and ArrowRight follow the writing direction and the edge."
+    "$comment": "The host is a focusable separator (aria-orientation vertical by its role) that controls its panel (aria-controls); aria-valuenow is the share of the way from min to max, 0-100 (0: the narrowest, or folded), with the words in aria-valuetext («27 %», «Свёрнуто»); its description (title) says how to use it. ArrowLeft and ArrowRight follow the writing direction and the edge. Enter folds and restores a collapsible panel and restores the default width of one that is not; Space does nothing. A disabled handle and one below the layout's split step are out of the Tab order."
   },
   "css-variables": {
     "--sf-resizer-hit-size": {
@@ -182,6 +185,7 @@
     "settings.step: a numeral → number (§16 item 29); value: a width in pixels → number, nullable"
   ],
   "x-decisions": [
+    "version 1.3.0 (owner decision C158, resizer study control/research/2026-11-14-resizer.md, prototype prototypes/resizer-study.html): a minor. (1) The strip of 1.2.0 (24, 44 under a finger, centred on the edge; the panel's own border is the line at rest, the 2 px line after --sf-duration-normal, a focus ring around the strip) is the accepted look. (2) collapsible (boolean, off by default): a drag past min by half of min folds the panel to its edge -- data-folded on the panel (the prototype's name), its width written 0, its content hidden -- and back over that line opens it again; Enter folds and gives back the width it had (APG window splitter), a double click is the default width (and open), Space does nothing (it reverted before); an arrow that widens opens a folded panel at min; a «Показать» (Show) sf-button-icon stands on the folded panel's edge (data-sf-resizer-unfold), its glyph the side the panel opens from (left_panel_open / right_panel_open). A fold is kept with the width ({v:1, width, folded:true}); a host keeps it as value 0, and resize says width 0. Without collapsible Enter still restores the default. (3) aria-valuenow is the share of the way from min to max, 0-100, aria-valuemin 0, aria-valuemax 100, aria-valuetext the words («27 %», «Свёрнуто»; lang value and folded), aria-controls the panel (an id is given to a panel without one); SF.Resizer.attach edges say the same (their caller may pass its own text). (4) Below the layout's split step -- the container's width under 40rem (--sf-h0), or a .sf-workspace region whose layout is narrow -- the handle is not there (data-sf-resizer-narrow, display none) and a fold is not drawn; the width and the fold the person chose wait for a wide screen. (5) Table column edges: SF.Resizer.attach leaves Enter and Escape on edges it does not own (options.handles) to their component, which takes focus back to the header; a double click calls the caller's reset, which for a column is the fit to content; the edge's Tab order is the caller's (one Tab stop for the table, C146(8)). The header menu (Изменить ширину · По содержимому · По умолчанию) and its words are sf-view-table's (SIMAI Pro). (6) .sf-workspace regions with data-sf-workspace-resize get their edge from core (workspace.js places an sf-resizer, collapsible on the list) -- the width in the region's variable (--sf-workspace-list, --sf-workspace-panel), kept as sf-resizer/<key>, written before the first paint by core.",
     "number-type: min and max are CSS lengths with tokens (12rem, var(--sf-g3)), resolved in the target's context, so they stay strings; step is a number of pixels from 1; value is a number of pixels, nullable (no width kept).",
     "own-verb-words: resize is a verb of the resizer alone (vocabulary §5 has none for a width); its word is lang events.resize.label. It reports, it does not ask: not cancelable.",
     "version: 1.0.0 → 1.1.0: sf-resize is a dated alias of sf-resizer-resize, step and value are numbers; a minor while the alias holds (§4.10).",
@@ -221,6 +225,14 @@
             "written_by": [
               "sf-resizer"
             ]
+          },
+          "folded": {
+            "type": "boolean",
+            "description": "The panel was folded (collapsible); width is the width it comes back to.",
+            "seed": false,
+            "written_by": [
+              "sf-resizer"
+            ]
           }
         }
       }
@@ -245,7 +257,7 @@
     "contracts": {
       "attach": {
         "type": "object",
-        "description": "SF.Resizer.attach(root, {handles, session(handle) -> {measure, limits, apply, commit, reset, direction, step, start, end}}) gives any edge -- a table's column edges -- the same drag, keys, double click, cursor and separator value."
+        "description": "SF.Resizer.attach(root, {handles, session(handle) -> {measure, limits, apply, commit, reset, direction, step, start, end}, text}) gives any edge -- a table's column edges -- the same drag, keys, double click, cursor and separator value (share 0-100 with words); Enter and Escape on edges of options.handles are the caller's."
       }
     },
     "state": {
@@ -326,10 +338,9 @@
         "End",
         "PageUp",
         "PageDown",
-        "Enter",
-        "Space"
+        "Enter"
       ],
-      "focus": "The handle (unless disabled) is in the tab order with role separator, aria-orientation vertical and aria-valuenow/min/max in pixels. Arrows move the edge the way they point by a step (Shift: four), Home and End set a limit, Enter, Space and a double click restore the stylesheet's width."
+      "focus": "The handle (unless disabled, or below the layout's split step) is in the tab order with role separator, aria-orientation vertical, aria-controls its panel, aria-valuenow the share of the way from min to max (0-100) and aria-valuetext its words. Arrows move the edge the way they point by a step (Shift: four), Home and End set a limit, Enter folds and restores a collapsible panel (otherwise restores the default), a double click restores the stylesheet's width; Space does nothing."
     },
     "alias-events": {
       "sf-resize": {
