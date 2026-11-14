@@ -445,6 +445,28 @@
    surface. Back keeps the start and the main the end (C179 (1)); the two
    halves share the row (C179 (4)). */
 @media not all and (min-width: map.get(bp.$breakpoint-array, sm)) {
+  /* The frame fills the screen-high window: its holder (the window's
+     content box) and the frame grow, the step's body takes the room, so a
+     short step leaves the footer at the screen's bottom too. */
+  :where(.sf-modal-content):has(> .sf-wizard-window) {
+    flex: 1 1 auto;
+  }
+
+  .sf-wizard-window:has(> .sf-wizard--window) {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-block-size: 100%;
+  }
+
+  .sf-wizard--window {
+    flex: 1 1 auto;
+  }
+
+  .sf-wizard--window > .sf-wizard-main {
+    flex: 1 1 auto;
+  }
+
   .sf-wizard--window .sf-wizard-footer {
     position: sticky;
     inset-block-end: 0;
