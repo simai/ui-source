@@ -951,7 +951,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu-context/index.js",
-        "sha256": "2da65707267a8be1964fc10777d323cd0321a0f59ddb78851d4b204db7ab0cc5"
+        "sha256": "e8bdc90ec4b1349be86693dd3b62bc1856b2536f40d6fa20eaf6a9a05c3c3618"
       },
       {
         "path": "src/smart/menu-context/js/templates/default.js",
@@ -959,7 +959,7 @@
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",
-        "sha256": "cd3e8cb5d4c005db9bfcf6d64789a1a146d653ad2627d793dea608fd5be1eece"
+        "sha256": "f36e1a49a28b3a5ae3e11f1c236da4c73ecb977283d02ad0332cdb8bb7faa449"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu_custom.scss",

@@ -59,8 +59,11 @@ const DRAWER_SELECTOR = 'sf-drawer';
 // lit inserted a node that appeared later beside the markers of its
 // siblings, and a bar that appeared when a record became editable landed
 // inside the body, above everything.
-const DRAWER_AREAS = ['edge', 'footer'];
-const AREA_SELECTORS = [['edge', '[data-sf-drawer-edge]'], ['footer', '[data-sf-drawer-foot]']];
+// The head holds one action of the page's before the close (study
+// control/research/2026-11-14-view-property-base.md VB-4: «Изменить» on a
+// record), filled the same way.
+const DRAWER_AREAS = ['edge', 'footer', 'header-action'];
+const AREA_SELECTORS = [['edge', '[data-sf-drawer-edge]'], ['footer', '[data-sf-drawer-foot]'], ['header-action', '[data-sf-drawer-action]']];
 const asksFor = (node, slot) => node.nodeType === 1 && node.getAttribute('slot') === slot;
 const asksForArea = (node) => DRAWER_AREAS.some((slot) => asksFor(node, slot));
 const PORTAL_ATTRIBUTE = 'data-sf-drawer-portal';
@@ -86,9 +89,6 @@ const SNAPS = ['auto', 'half', 'full'];
 // 0.5 px/ms, is a decision: down closes (or steps full down to half), up opens
 // to full (core/js/sheet-swipe.js). A side panel on a phone closes the same
 // way toward its own edge (C157 (4)).
-// Below this breakpoint a side panel is the whole screen (C56) and a swipe
-// toward its edge closes it.
-const PHONE_QUERY = 'not all and (min-width: 44rem)';
 // The fields a modal panel's first focus goes to before any other control
 // (focusFirst): what a person types or chooses in.
 const FIELD = [
@@ -624,6 +624,7 @@ class SfDrawer extends DrawerElement {
       // with the way back in the head (C157 (6)).
       nested: Boolean(this.nestedUnder()),
       backLabel: this.sfWord('back-label'),
+      headerAction: this.asksForHeaderAction(),
       blockStart: this.getAttribute('block-start') || '',
       closePlacement: this.closePlacement,
       title: this.getAttribute('heading') || '',
@@ -723,9 +724,17 @@ class SfDrawer extends DrawerElement {
     if (this._areaObserver) return;
     this._areaObserver = new MutationObserver(() => {
       const root = this.getDrawerRoot();
+      // An action that arrives for a head that is not drawn draws it first.
+      if (root && !root.querySelector('[data-sf-drawer-action]') && this.asksForHeaderAction()) this.requestComponentUpdate('header-action');
       if (root) this.projectAreas(root);
     });
     this._areaObserver.observe(this, {childList: true});
+  }
+
+  // Whether a child asks for the head's action: a head with no title and no
+  // close is still drawn for it.
+  asksForHeaderAction() {
+    return [...(this._contentNodes || []), ...this.children].some((node) => asksFor(node, 'header-action'));
   }
 
   projectAreas(root) {
@@ -856,13 +865,14 @@ class SfDrawer extends DrawerElement {
       >
         ${context.sheet ? html`<button type="button" class="sf-drawer-handle" aria-label=${context.handleLabel}
             data-sf-drawer-handle><span class="sf-drawer-handle-bar" aria-hidden="true"></span></button>` : nothing}
-        ${context.title || (context.showClose && context.closePlacement === 'inside') || context.headerClass || context.nested
+        ${context.title || (context.showClose && context.closePlacement === 'inside') || context.headerClass || context.nested || context.headerAction
                 ? html`
                   <header class=${joinClasses('sf-drawer-head', context.headerClass)}>
                     ${context.nested ? html`<sf-button-icon class="sf-drawer-back" icon="arrow_back" appearance="ghost"
                         scheme="on-surface" size="1/3" aria-label=${context.backLabel} title=${context.backLabel}
                         data-sf-drawer-back></sf-button-icon>` : nothing}
                     ${context.title ? html`<div class="sf-drawer-title" id=${context.titleId}>${context.title}</div>` : nothing}
+                    <div class="sf-drawer-action" data-sf-drawer-action></div>
                     ${context.closePlacement === 'inside' ? closeButton : nothing}
                   </header>`
                 : nothing}
@@ -1115,9 +1125,10 @@ class SfDrawer extends DrawerElement {
   onPanelPointerDown(event) {
     if (this.sheet || !this.openState || event.button !== 0 || event.pointerType === 'mouse') return;
     if (this.docked && this.dockColumn) return;
-    const phone = globalThis.matchMedia?.(PHONE_QUERY)?.matches;
-    if (!phone && this.size !== 'full') return;
+    // The whole screen -- a phone (C56) or size full -- read off the panel
+    // itself, not a second copy of the stylesheet's breakpoint.
     const panel = event.currentTarget;
+    if (panel.getBoundingClientRect().width < globalThis.innerWidth - 1) return;
     if (startsOnControl(event.target) || scrollsAlong(event.target, panel, 'x')) return;
     trackSwipe(event, {
       surface: panel,

@@ -123,3 +123,20 @@ export function inHandleRow(event, surface) {
   const top = surface.getBoundingClientRect().top;
   return event.clientY >= top && event.clientY - top <= handleRowHeight(surface);
 }
+
+// A sheet that a swipe down from its handle row closes: binds the press on
+// the surface and answers the unbinding. `when` says whether the surface is
+// a sheet now (a form anchored on a wide screen is not); a press on a
+// control keeps the control's own press.
+//
+//   const unbind = swipeToClose(surface, {when: () => owned.sheet, onDismiss: () => close()});
+export function swipeToClose(surface, {when = () => true, onDismiss} = {}) {
+  if (!surface) return () => {};
+  const onPress = (event) => {
+    if (event.button !== 0 || !when()) return;
+    if (startsOnControl(event.target) || !inHandleRow(event, surface)) return;
+    trackSwipe(event, {surface, direction: 'down', onEnd: ({dismiss}) => { if (dismiss) onDismiss?.(); }});
+  };
+  surface.addEventListener('pointerdown', onPress);
+  return () => surface.removeEventListener('pointerdown', onPress);
+}

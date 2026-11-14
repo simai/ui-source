@@ -686,7 +686,8 @@
         "uses": [
           "component.close",
           "component.icon-buttons",
-          "smart.button-close"
+          "smart.button-close",
+          "smart.button-icon"
         ]
       },
       "contract_schema": {
@@ -698,13 +699,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/drawer/smart.manifest.json",
-      "manifest_sha256": "a204ffd5988a5c1e6081d6f671f81280d963ba58562515a418f870919de017b3",
+      "manifest_sha256": "7936efd7705a9592c78c58bc333dda3f4ad92885e5cc3dde569b54ac1c3c2a74",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "Workspace side panel that keeps the page usable: docked column or modeless panel. Modal side panels belong to sf-modal; the modal Drawer mode is deprecated.",
+      "summary": "Everything that opens from an edge (owner decision C157 (1)): a panel over the page with the one scrim (modal, the default), a modeless panel, a docked column of the page, the bottom sheet. sf-modal position=\"inline-*|bottom\" is the old name of a side panel or a sheet until 2027-01-01.",
       "tags": [
         "drawer"
       ],
@@ -1080,7 +1081,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/header-site/smart.manifest.json",
-      "manifest_sha256": "ba2f4d801fcb6b9b18f2f66ab8ef16da5863396a23a5985933454a3741bab50b",
+      "manifest_sha256": "4c5f777af1664da66f27194342977eeb0e8eaf875048bd07bf4c9078d9bf2b4f",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2114,7 +2115,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/menu-context/smart.manifest.json",
-      "manifest_sha256": "f8a7ea71860f69b95330afd4fb282249e1c1de7de893e5d9032dd81b290d3f98",
+      "manifest_sha256": "ee57edc7e23e328ce0cfd58490e89eda690a241117d0fba5c0772c72ca9d54e1",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2151,7 +2152,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/modal/smart.manifest.json",
-      "manifest_sha256": "027dba8efbd6afc37d193c8cf3c9091208d427a430a1cceef644b7457d2f25cd",
+      "manifest_sha256": "3c7d89d873b3f14e5a9dfb6e3086c56cae8ecf21f92932b1071f7ac59f924530",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2717,7 +2718,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/settings/smart.manifest.json",
-      "manifest_sha256": "d1310830f46548e2a25bb150b0d4b06c93be83dac1a5ba7d9cd49ee80c05ca3c",
+      "manifest_sha256": "caa853e3b91ef2c671567e803aa547ebeec43247cbd82c913ce8a3da4d4ce189",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

@@ -109,9 +109,13 @@ sf-list-description {
 
 .sf-list-description-label {
   /* The label's line: the rung's, or the rung below's when the label stands
-     over its value (stacked, grid, a narrow auto). The help mark is as tall. */
+     over its value (stacked, grid, a narrow auto). The help mark is as tall.
+     Its type is the rung below's in every layout (study VB-6, as C153 (1)
+     for field labels): beside its value it was the value's size, so a
+     layout switch -- auto in a narrower column -- moved it 16 -> 14. */
   --sf-list-description--label-line: var(--sf-list-description--line);
   min-inline-size: 0;
+  font-size: var(--sf-list-description--below-font-size);
   margin: 0;
   color: var(--sf-list-description-label-color, var(--sf-on-surface-variant));
   overflow-wrap: anywhere;

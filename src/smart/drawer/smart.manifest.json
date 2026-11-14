@@ -885,6 +885,7 @@
           "modal is a setting, not a deprecated mode: everything at an edge is sf-drawer (owner decision C157 (1)); sf-modal position=\"inline-*|bottom\" is its old name until 2027-01-01.",
           "slot=\"footer\": a pinned foot, the actions at its start, the main one first, 8 apart (compact 4), halves on a phone (C157 (3)).",
           "The title is on the window title's step (h4, bold), not heading 6 (C157 (7)).",
+          "slot=\"header-action\": one action in the head before the close; the head's buttons are 8 apart (compact 4); under a finger the close and «Назад» press across 44 (study view-property-base VB-1, VB-4).",
           "A panel opened from a floating panel at the same edge is drawn inside it with «Назад» in its head; the panel under it hides; its close, the scrim and a swipe close the whole panel, «Назад» and Escape the top one; stack-offset no longer applies between them (C157 (6)).",
           "On a phone a side panel closes with a swipe toward its edge (C157 (4)); the bottom sheet's grab bar is 24 x 4 in on-surface-variant on every screen (C157 (5)).",
           "The outside close stands on the scrim as sf-button-close appearance=\"media\"; icon buttons in the edge slot take the same plate (study VP-16)."
@@ -898,19 +899,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",
-        "sha256": "fef009613572507e362f8b16608f87685ead9a9abf7fc32d2a72a5809babfc5d"
+        "sha256": "56b6bd56603728aa207bfc3946a91dded5e5b6246d83db0b6c3876ac2194a9e9"
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",
-        "sha256": "f5419676ce44bbe052af1ce9857e83cccc6026a856c68291026f3cc371251e70"
+        "sha256": "14a819e42365abab4ff5f6bf2ce110ea3f981ca9e280d3ab4ed2e94871470a02"
       },
       {
         "path": "src/smart/drawer/rule.js",
-        "sha256": "732745a8eed05112d244a3e0d4ca6bdabd52781e2f27eb668f47c91b4fc4e05b"
+        "sha256": "a4281171a5f9998525e1b9db825d5533518800e0bdea7ec3b9d1c4bf0bed6a12"
       },
       {
         "path": "src/smart/drawer/docs.md",
-        "sha256": "75c8fa71fc957ae7fe793a9e811dce077c4deef448c7dc4b10f275a7ea584a87"
+        "sha256": "6b9d09509e7d275e9130237b4be84290e7472fe5101c3d1e3baaa419d2e53077"
       }
     ],
     "generated_runtime": [
