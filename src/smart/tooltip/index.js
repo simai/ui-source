@@ -1,5 +1,6 @@
 import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
+import { noteDeprecated } from '../../core/js/deprecations';
 import { renderTooltipTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -29,7 +30,14 @@ class SfTooltip extends TooltipElement {
     };
   }
 
+  // One size for every tooltip (owner decision C160 (3)): size is a former
+  // name that draws nothing until 2027-01-01; a size other than the plain
+  // one is noted (SF.deprecations), and the sheet draws every size alike.
   templateContext() {
+    const size = this.getAttribute('size');
+    if (size !== null && size !== '1/3') {
+      noteDeprecated({component: 'sf-tooltip', tag: 'sf-tooltip', kind: 'setting', attribute: 'size', from: 'size', to: null, since: '2026-11-14', remove_after: '2027-01-01'});
+    }
     return this.createTemplateContext({
       component: this,
       ...this.getPropsContext(),

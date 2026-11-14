@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.time",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "title": "Time",
   "summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», then the date, relative within the first hour, with the full date and time in a tooltip on hover and keyboard focus, inside a time element. The words are core's SF.format; the element draws itself again while relative and at midnight.",
   "kind": "smart",
@@ -199,7 +199,7 @@
       },
       {
         "path": "src/smart/time/js/templates/default.js",
-        "sha256": "1d024f12608ece73c58b9f3c95ca99cb09f0931f6815bc68d97bc238bec37535"
+        "sha256": "0d057a673f6ad1d56946ea8418d705ca8f38f4419328469851dfeac38434f47b"
       },
       {
         "path": "src/smart/time/scss/_smart__time.scss",

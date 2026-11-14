@@ -6,8 +6,10 @@ import {html, nothing} from 'lit';
 //   format gives. Nothing for a value that is no date.
 // - With a tooltip: the Framework's tooltip composition -- an anchor holding
 //   the time element (the trigger, data-tooltip naming the surface) and the
-//   surface, a dark tooltip of size 1/3 with its tail pointing down at the
-//   time. The tooltip controller (component.tooltip) links them: hover and
+//   surface, the dark tooltip without a tail: it opens below the time and
+//   flips above at the window's bottom edge, one size whatever the density
+//   (owner decision C160 (3), (4); C59: no arrow by default). The tooltip
+//   controller (component.tooltip) links them: hover and
 //   keyboard focus show it, Escape and a press hide it, aria-describedby
 //   names it. The surface is hidden in the markup and only the controller
 //   shows it, so a redraw never fights it.
@@ -23,7 +25,6 @@ export function renderTimeTemplate(context) {
   }
   return html`<span class="sf-time-anchor sf-tooltip-anchor"><time class=${classes} datetime=${said.iso}
       tabindex=${context.focusable ? '0' : nothing} data-tooltip=${context.tipId}>${said.shown}</time><span
-      class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-tooltip--arrow-bottom-center sf-time-tooltip"
-      id=${context.tipId} hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${said.full}</span><span
-      class="sf-tooltip-tail" aria-hidden="true"></span></span></span></span>`;
+      class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-time-tooltip"
+      id=${context.tipId} hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${said.full}</span></span></span></span>`;
 }

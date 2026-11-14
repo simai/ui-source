@@ -2,7 +2,7 @@
   "$comment": "The source of sf-time's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.15 and vocabulary 1.1.5: owner decision C40 (2026-11-09; research ui-control control/research/2026-11-09-timeline-parts.md §5, prototype prototypes/timeline-parts.html#time).",
   "id": "smart.time",
   "tag": "sf-time",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "kind": "leaf",
   "family": "text",
   "settings": {
@@ -116,12 +116,13 @@
     "name: sf-time, family text (C40). The tag names the HTML element it draws, as sf-button draws a button.",
     "words: core's SF.format only (format-date.js, format-relative.js) in the page language of the element, nothing counted here. auto: |now - moment| < threshold relative (formatRelativeTime); calendar day 0 the time (date null, time short); day -1 the language's yesterday-at («вчера, {time}»); the same year day and month long; else the medium date with the year. The calendar day is the reader's (calendarDayOffset), so 23:59 yesterday is «вчера» at 00:01.",
     "threshold: an ISO 8601 duration of days, hours, minutes and seconds (PnDTnHnMnS, weeks as PnW); one that is not read as PT1H. GitHub's relative-time idea with a smaller default (P30D there): in a list and a table relative times cannot be compared by eye.",
-    "tooltip: the Framework's tooltip composition (.sf-tooltip-anchor, data-tooltip, .sf-tooltip--dark size 1/3, arrow bottom-center), so hover, :focus-visible, Escape, the placement and the description link are the tooltip controller's (component.tooltip). Shown when the text is not the full moment (format datetime has none). The tooltip text is the full moment, date long and time short.",
+    "tooltip: the Framework's tooltip composition (.sf-tooltip-anchor, data-tooltip, .sf-tooltip--dark, no arrow: below the time, flipping above at the bottom edge, C160), so hover, :focus-visible, Escape, the placement and the description link are the tooltip controller's (component.tooltip). Shown when the text is not the full moment (format datetime has none). The tooltip text is the full moment, date long and time short.",
     "focus: tabindex 0 on the time element only with a tooltip and only when the element is not inside a link, a button or a summary (those are the Tab stop; a nested stop would be a second one).",
     "live: with the reader's clock, one timer per element: to the next minute while relative, to the reader's midnight (msUntilNextDay plus a second) otherwise in auto and relative; none for time, date and datetime, none with a fixed now, and none off the page. A hidden document draws again when it shows.",
     "empty: a datetime that is no date draws nothing (gap) and sets data-empty.",
     "geometry: inline text in the place's type and line; tabular numerals and no wrap by default (--sf-time-font-variant-numeric, --sf-time-white-space), so a column of times lines up and «14:32» never breaks. The colour is inherited unless --sf-time-color is set. The focus ring is the Framework's two-pixel primary ring.",
-    "css-variables: five public variables (§6) -- the colour, the focus ring colour, the ring's corner, the numerals and the wrap -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one."
+    "css-variables: five public variables (§6) -- the colour, the focus ring colour, the ring's corner, the numerals and the wrap -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
+    "version 1.1.0 (2026-11-14, owner decision C160 (3), (4); DEV change-time study CT-1, CT-2): a minor. The full-moment tooltip has no tail and opens below the time, flipping above at the window's bottom edge (it opened above with a tail pointing down; C59: no arrow by default), and is one size whatever the density (it was 24 high, 20 in a compact region: the tooltip's padding now takes the base steps). Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [
