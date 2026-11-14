@@ -251,6 +251,23 @@
 .sf-slider .sf-slider-thumbnails .swiper-slide-thumb-active {
   opacity: var(--sf-slider-thumbnails-slide-active--opacity, 1);
 }
+
+/* A thumbnail is a button (GL-2): it has the thumbnail's radius, so its focus
+   ring follows the picture's corners, and the ring is drawn inside it -- the
+   strip clips what stands outside. */
+.sf-slider .sf-slider-thumbnails .swiper-slide {
+  border-radius: var(--sf-slider-thumbnail--border-radius, var(--sf-slider-thumbnail-radius, var(--sf-radius--ui)));
+}
+.sf-slider .sf-slider-thumbnails .swiper-slide:focus-visible {
+  outline-offset: calc(var(--sf-focus--width) * -1);
+}
+
+/* With thumbnails the controls over a picture stand on the slides only: the
+   arrows centred on the picture, the place at its bottom, not over the
+   thumbnails under it (GL-3). */
+.sf-slider:not(.sf-slider--content):has(> .sf-slider-thumbnails) > .sf-slider-controls {
+  inset-block-end: calc(var(--sf-slider-gap, var(--sf-slider--gap, var(--sf-space-1))) + var(--sf-slider-thumbnail--block-size, var(--sf-slider-thumbnail-size, var(--sf-d2))));
+}
 }
 
 @layer sf.states {

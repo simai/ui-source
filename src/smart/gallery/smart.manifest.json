@@ -76,13 +76,18 @@
       },
       "dots": {
         "type": "boolean",
-        "default": false,
-        "description": "Passed to the gallery's sliders (sf-slider): draws the dots under the slides (off by default: the thumbnails show the place)."
+        "default": true,
+        "description": "Passed to the gallery's sliders (sf-slider): shows the place, on a popup plate over the picture: dots up to seven pictures, from eight a counter «3 / 12» (decisions C143 (4), C97 (7)). On by default; false hides it."
       },
       "thumbs": {
         "type": "boolean",
         "default": true,
         "description": "Passed to the gallery's sliders (sf-slider): draws the row of thumbnails under the slides (on by default)."
+      },
+      "ratio": {
+        "type": "string",
+        "default": "auto",
+        "description": "The frame of the inline pictures, held from the first paint (decision C143 (8)): auto (the default) takes the first picture's ratio from its width and height attributes, else 16/9; a ratio written w/h (1/1, 4/3, 3/2, 16/9, 21/9, 3/4, 2/3 also hold the frame before the code arrives) sets it. Every picture is shown whole in the frame (object-fit contain): a product photo is not cropped."
       },
       "loop": {
         "type": "boolean",
@@ -100,8 +105,8 @@
       },
       "button-type": {
         "type": "string",
-        "default": "primary",
-        "description": "Passed to the gallery's sliders (sf-slider): the arrow buttons' colour scheme, an sf-button-icon scheme."
+        "default": "secondary",
+        "description": "Passed to the gallery's sliders (sf-slider): the arrows' look. secondary (the default) draws sf-slider's quiet arrows: ghost on-surface icon buttons on popup plates with the overlay shadow over a picture (decisions C116, C143 (2)); primary, dark and light are sf-slider's other looks."
       },
       "button-size": {
         "type": "string",
@@ -679,7 +684,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/gallery/index.js",
-        "sha256": "f9d08a07d4caf4518a18313426c4352738e8285ebe1b0bdb893856df6fc48d30"
+        "sha256": "516a392cf34e03aceea2e7b88aff20e5f9e1f96ddb63a3344004e148d47d7497"
       }
     ],
     "generated_runtime": [

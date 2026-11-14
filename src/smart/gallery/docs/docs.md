@@ -222,6 +222,30 @@ Each answers an outcome, `{outcome: "applied"}` or `{outcome: "refused", reason}
 - `toggle(index)`
 - `goTo(index)`, `next()`, `prev()`
 
+## Frame, keys and loading (1.2.2)
+
+- The inline pictures keep one frame from the first paint: `ratio="auto"`
+  (the default) takes the first picture's `width` and `height` attributes,
+  else 16/9; `ratio="1/1"` (or another `w/h`) sets it. Every picture is shown
+  whole in the frame (`object-fit: contain`, `--sf-gallery-object-fit`): a
+  product photo is not cropped. Before the code arrives the page's first
+  picture already stands in that frame, with room for the thumbnails.
+- The arrows are the slider's quiet ones on plates (`button-type`
+  `secondary`); the place is shown on a plate: dots up to seven pictures, a
+  counter «3 / 12» from eight (`dots`, on by default). The thumbnails are
+  buttons, one Tab stop, paged by the arrow keys.
+- A caption under a picture (`figure` + `figcaption`) is small and
+  on-surface-variant. A `figure` that carries only `slot="slide"` is taken
+  apart by the slot rules: give it another attribute (a class).
+- In the lightbox ArrowLeft / ArrowRight, Home and End page, and a swipe
+  pages; a press on the empty field around the picture closes it. On close
+  the focus goes back to the picture that opened it (to the picture now
+  shown, when the person paged).
+- Only the first shown picture loads at once; the others load as they come
+  near the view (`loading="lazy"`, `decoding="async"`, unless the page wrote
+  its own). Give the page's own pictures after the first `loading="lazy"`
+  too: the browser fetches what the page itself writes.
+
 ## Events
 
 - `change {previous, current, total, from}` — the shown slide changed (`from`:

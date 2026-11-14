@@ -38,13 +38,18 @@
     },
     "dots": {
       "type": "boolean",
-      "default": false,
-      "summary": "Passed to the gallery's sliders (sf-slider): draws the dots under the slides (off by default: the thumbnails show the place)."
+      "default": true,
+      "summary": "Passed to the gallery's sliders (sf-slider): shows the place, on a popup plate over the picture: dots up to seven pictures, from eight a counter «3 / 12» (decisions C143 (4), C97 (7)). On by default; false hides it."
     },
     "thumbs": {
       "type": "boolean",
       "default": true,
       "summary": "Passed to the gallery's sliders (sf-slider): draws the row of thumbnails under the slides (on by default)."
+    },
+    "ratio": {
+      "type": "string",
+      "default": "auto",
+      "summary": "The frame of the inline pictures, held from the first paint (decision C143 (8)): auto (the default) takes the first picture's ratio from its width and height attributes, else 16/9; a ratio written w/h (1/1, 4/3, 3/2, 16/9, 21/9, 3/4, 2/3 also hold the frame before the code arrives) sets it. Every picture is shown whole in the frame (object-fit contain): a product photo is not cropped."
     },
     "loop": {
       "type": "boolean",
@@ -63,8 +68,8 @@
     },
     "button-type": {
       "type": "string",
-      "default": "primary",
-      "summary": "Passed to the gallery's sliders (sf-slider): the arrow buttons' colour scheme, an sf-button-icon scheme."
+      "default": "secondary",
+      "summary": "Passed to the gallery's sliders (sf-slider): the arrows' look. secondary (the default) draws sf-slider's quiet arrows: ghost on-surface icon buttons on popup plates with the overlay shadow over a picture (decisions C116, C143 (2)); primary, dark and light are sf-slider's other looks."
     },
     "button-size": {
       "type": "string",
@@ -401,7 +406,7 @@
       "Enter": "open",
       "Space": "open"
     },
-    "$comment": "The root has no role of its own: the inline view is sf-slider (its slides and arrows named by Swiper's a11y module) and the lightbox is sf-modal, a dialog named by heading that traps focus and closes on Escape. Enter and Space on a [data-sf-gallery-open] trigger open the lightbox."
+    "$comment": "The root has no role of its own: the inline view is sf-slider (its slides and arrows named by Swiper's a11y module) and the lightbox is sf-modal, a dialog named by heading that traps focus and closes on Escape. Enter and Space on a [data-sf-gallery-open] trigger open the lightbox. In the lightbox ArrowLeft / ArrowRight (mirrored right to left), Home and End page; closing gives the focus back to the picture that opened it. The thumbnails are buttons named by their pictures, one Tab stop, paged by the arrow keys (sf-slider)."
   },
   "css-variables": {
     "--sf-gallery-min-inline-size": {
@@ -590,7 +595,7 @@
     "version 1.1.12 (2026-11-11): a patch, nothing drawn differently by this element: the class slider sheet it draws with changed (component.slider 1.1.2, the disabled arrow).",
     "version 1.2.0 (2026-11-10, docs precheck smart content GA-04, Q4): a minor. dots-type takes sf-slider 1.2.0's role words (primary-container, the default, primary, surface-container, surface-inverse); the former words are dated value aliases until 2027-01-01 (journal value-slider-dots-type-to-roles). Also: Every setting has its summary. space-between has no default of its own: unset, the sliders keep their --sf-space-1 gap (the manifest said 12, a raw pixel number the gallery never sent). Settings, values, events and keys unchanged.",
     "version 1.2.1 (2026-11-13, docs precheck smart content SC-S02): a patch, nothing drawn differently. open and current have their summaries.",
-    "version 1.2.2 (2026-11-14): a patch, the first-paint snapshots retaken with sf-slider 1.3.0 inside (a named carousel region, «1 из 3» slides, the strip draggable). The gallery's own button-type stays primary; settings, values, events and keys unchanged. Decision C143, same unreleased patch: the gallery hands dots-type to its sliders only when the page writes it, so its dots take sf-slider's default (8 px dots and a pill on a popup plate, a counter from eight pictures); the inline slider keeps sf-slider's 16/9 frame from the first paint, the lightbox slider takes ratio auto (its box is the window's)."
+    "version 1.2.2 (2026-11-14): a patch, the first-paint snapshots retaken with sf-slider 1.3.0 inside (a named carousel region, «1 из 3» slides, the strip draggable). The gallery's own button-type stays primary; settings, values, events and keys unchanged. Decision C143, same unreleased patch: the gallery hands dots-type to its sliders only when the page writes it, so its dots take sf-slider's default (8 px dots and a pill on a popup plate, a counter from eight pictures); the inline slider keeps sf-slider's 16/9 frame from the first paint, the lightbox slider takes ratio auto (its box is the window's). Gallery defects GL-1/2/3/4/5/7/8/10 (gallery study 2026-11-14), same unreleased patch, against decisions C116, C143, C18, C97, C92/C98, C130: button-type defaults to secondary, so the arrows are sf-slider's quiet ghost arrows on popup plates (was filled primary); dots default to true, so the place shows on a plate, dots up to seven pictures and a counter «3 / 12» from eight; the thumbnails are sf-slider 1.3.0's buttons (one Tab stop, arrow keys, the control radius); new setting ratio (auto: the first picture's width/height, else 16/9): the inline pictures are shown whole in that frame (object-fit contain, a square product photo is no longer cropped to 16/9) and core.styles holds the frame of an undefined sf-gallery, so the first frame is the final one; the inline caption is small (text 1/2) on on-surface-variant; in the lightbox ArrowLeft/ArrowRight, Home and End page and a swipe pages (component.swiper); closing gives the focus back to the picture that opened the lightbox; the copied pictures past the first shown one load lazily (loading lazy, decoding async)."
   ],
   "x-rule": {
     "regex": "/data-sf-gallery(?:\\s|=|>|$)/"

@@ -168,6 +168,57 @@
   padding-block-end: calc(var(--sf-space-1) + var(--sf-d2));
 }
 
+/* sf-gallery before it draws (GL-7, decision C143 (8)). Its pictures are the
+   page's children, so before the code they stood one under another: six
+   pictures 4400 px high, then 0 while the slider measured, then 1081. The
+   element knows its frame from its markup alone, so it holds it here: the
+   first picture, whole (contain), in the gallery's ratio -- its own width and
+   height attributes when ratio is auto (the default), else the ratio the
+   page wrote, else 16/9 -- with its caption small and muted under it, and
+   room for the thumbnails under that (thumbs is on by default). The gallery
+   draws the same box (--sf-gallery--ratio), so the first frame is the final
+   one. A lightbox-only gallery shows nothing on the page. */
+:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) {
+  display: block;
+}
+:where(sf-gallery:not(:defined):not([thumbs="false"])):not(:has(> [data-sf-static])) {
+  padding-block-end: calc(var(--sf-space-1) + var(--sf-d2));
+}
+:where(sf-gallery:not(:defined)[inline="false"]:not([lightbox="false"])):not(:has(> [data-sf-static])) {
+  display: none;
+}
+:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > :not(:first-child) {
+  display: none;
+}
+:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > :first-child {
+  display: block;
+  inline-size: 100%;
+  margin: 0;
+}
+:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > :first-child :where(img),
+:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > img:first-child {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  object-fit: contain;
+}
+:where(sf-gallery:not(:defined):is(:not([ratio]), [ratio="auto"])):not(:has(> [data-sf-static])) > :first-child :where(img:not([width][height])),
+:where(sf-gallery:not(:defined):is(:not([ratio]), [ratio="auto"])):not(:has(> [data-sf-static])) > img:first-child:not([width][height]) {
+  aspect-ratio: 16 / 9;
+}
+@each $w, $h in (16, 9), (4, 3), (3, 2), (1, 1), (21, 9), (3, 4), (2, 3) {
+  :where(sf-gallery:not(:defined)[ratio="#{$w}/#{$h}"]):not(:has(> [data-sf-static])) > :first-child :where(img),
+  :where(sf-gallery:not(:defined)[ratio="#{$w}/#{$h}"]):not(:has(> [data-sf-static])) > img:first-child {
+    aspect-ratio: #{$w} / #{$h};
+  }
+}
+:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > :first-child :where(figcaption) {
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+  margin-block-start: var(--sf-space-1\/4);
+}
+
 }
 
 @layer sf.base {

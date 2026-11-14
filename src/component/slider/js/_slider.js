@@ -13,6 +13,7 @@ const SLIDER_TEXT = {
     position: '{n} of {count}',
     pause: 'Stop slides',
     play: 'Start slides',
+    thumb: 'Go to slide {n}',
   },
   ru: {
     label: 'Слайды',
@@ -21,6 +22,7 @@ const SLIDER_TEXT = {
     position: '{n} из {count}',
     pause: 'Остановить прокрутку',
     play: 'Запустить прокрутку',
+    thumb: 'Перейти к слайду {n}',
   },
 };
 
@@ -282,26 +284,87 @@ function createNavigationOptions(prevEl, nextEl) {
 // The Framework's slider takes no `thumbs` option, so a thumbnail was a picture
 // that did nothing. A thumbnail moves the main slider to its slide, and the one
 // shown is marked.
-function linkThumbnails(slider, thumbs) {
+// A thumbnail is a button (GL-2, SL-12): named by its picture's alt, else
+// «Перейти к слайду 2»; the thumbnails are one Tab stop -- the current one --
+// and ArrowLeft / ArrowRight (mirrored right to left), Home and End move the
+// slide and the focus with it, as the dots do (C143 (5)); Enter and Space
+// press it.
+function thumbnailName(root, slide, index) {
+  const alt = slide.querySelector('img[alt], [aria-label]');
+  const own = alt?.getAttribute('alt') ?? alt?.getAttribute('aria-label');
+  return own?.trim() || sliderWord(root, 'thumb').replaceAll('{n}', String(index + 1));
+}
+
+function linkThumbnails(root, slider, thumbs) {
   if (!slider || !thumbs?.slides?.length) return () => {};
+  const slides = Array.from(thumbs.slides);
+  const authored = slides.map((slide) => ({
+    role: slide.getAttribute('role'),
+    tabindex: slide.getAttribute('tabindex'),
+    label: slide.getAttribute('aria-label'),
+  }));
+  // The page's own name, as the engine kept it before writing «1 / 6».
+  const names = slides.map((slide, index) => (slide.__sfAuthoredLabel ?? authored[index].label)?.trim?.()
+    || thumbnailName(root, slide, index));
+  const name = () => slides.forEach((slide, index) => {
+    slide.setAttribute('role', 'button');
+    slide.setAttribute('aria-label', names[index]);
+  });
   const mark = () => {
-    thumbs.slides.forEach((slide, index) => {
+    slides.forEach((slide, index) => {
       const active = index === slider.activeIndex;
       slide.classList.toggle('swiper-slide-thumb-active', active);
+      slide.tabIndex = active ? 0 : -1;
       if (active) slide.setAttribute('aria-current', 'true');
       else slide.removeAttribute('aria-current');
     });
   };
-  const listeners = thumbs.slides.map((slide, index) => {
+  const listeners = slides.map((slide, index) => {
     const listener = () => slider.slideTo(index);
     slide.addEventListener('click', listener);
     return [slide, listener];
   });
+  const onKey = (event) => {
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    const slide = event.target instanceof Element ? event.target.closest('.swiper-slide') : null;
+    const at = slides.indexOf(slide);
+    if (at < 0) return;
+    const rtl = getComputedStyle(thumbs.el).direction === 'rtl';
+    const last = slides.length - 1;
+    let next;
+    if (event.key === 'Enter' || event.key === ' ') next = at;
+    else if (event.key === 'ArrowRight') next = at + (rtl ? -1 : 1);
+    else if (event.key === 'ArrowLeft') next = at + (rtl ? 1 : -1);
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = last;
+    else return;
+    event.preventDefault();
+    // The thumbnails' own keys: the strip's keyboard option does not page twice.
+    event.stopPropagation();
+    if (slider.params?.loop) next = ((next % (last + 1)) + last + 1) % (last + 1);
+    next = Math.min(Math.max(next, 0), last);
+    slider.slideTo(next);
+    mark();
+    slides[next]?.focus?.();
+  };
+  // The thumbnails' engine names its slides again on every update.
+  const onUpdate = () => { name(); mark(); };
+  thumbs.el.addEventListener('keydown', onKey);
+  thumbs.on?.('update', onUpdate);
   slider.on?.('slideChange', mark);
+  name();
   mark();
   return () => {
     listeners.forEach(([slide, listener]) => slide.removeEventListener('click', listener));
+    thumbs.el.removeEventListener('keydown', onKey);
+    thumbs.off?.('update', onUpdate);
     slider.off?.('slideChange', mark);
+    slides.forEach((slide, index) => {
+      if (!slide.isConnected) return;
+      [['role', authored[index].role], ['tabindex', authored[index].tabindex], ['aria-label', authored[index].label]]
+        .forEach(([attr, value]) => (value === null ? slide.removeAttribute(attr) : slide.setAttribute(attr, value)));
+      slide.removeAttribute('aria-current');
+    });
   };
 }
 
@@ -748,7 +811,7 @@ function bindSlider(root) {
     createSlideInteractivityGuard(slider),
     createAutoplayGuard(root, slider, rotationButton),
     createArrowStateGuard(slider, prevEl, nextEl),
-    linkThumbnails(slider, thumbs),
+    linkThumbnails(root, slider, thumbs),
     createLiveRegionGuard(slider, mainEl),
   ];
 

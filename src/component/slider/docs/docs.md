@@ -130,3 +130,11 @@ square corner and stand `--sf-slider-thumbnails--space-between` apart.
   прокрутку» / «Запустить прокрутку». Without one the slider does not turn,
   and a pause button with nothing to pause is hidden. The thumbnails never
   autoplay.
+- Thumbnails are buttons (gallery study GL-2): `role="button"`, named by the
+  picture's `alt` (else «Перейти к слайду 2»), the shown one `aria-current`;
+  they are one Tab stop -- the shown one -- and ArrowLeft / ArrowRight
+  (mirrored right to left), Home and End move the slide and the focus, Enter
+  and Space press. The focus ring is drawn inside the thumbnail's radius.
+- With thumbnails, the controls over a picture stand over the slides only:
+  the arrows are centred on the picture and the position sits at its bottom,
+  not over the thumbnails.
