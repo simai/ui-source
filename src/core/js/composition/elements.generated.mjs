@@ -685,7 +685,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.10.1"
+    "version": "1.12.0"
   },
   "sf-icon": {
     "inputs": {
@@ -967,7 +967,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input",
-    "version": "1.9.0"
+    "version": "1.9.1"
   },
   "sf-input-textarea": {
     "inputs": {
@@ -991,12 +991,16 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "type": "string"
         },
         "auto-grow": {
-          "default": false,
+          "default": true,
           "type": "boolean"
         },
         "autocomplete": {
           "default": "",
           "type": "string"
+        },
+        "counter": {
+          "default": false,
+          "type": "boolean"
         },
         "disabled": {
           "default": false,
@@ -1054,13 +1058,14 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "type": "string"
         },
         "max-rows": {
+          "default": 10,
           "type": "number"
         },
         "maxlength": {
           "type": "number"
         },
         "min-rows": {
-          "default": 1,
+          "default": 3,
           "type": "number"
         },
         "minlength": {
@@ -1086,6 +1091,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "type": "string"
         },
+        "resize": {
+          "default": false,
+          "type": "boolean"
+        },
         "rows": {
           "default": 3,
           "type": "number"
@@ -1093,15 +1102,25 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
         "size": {
           "default": "1",
           "enum": [
+            "1/3",
             "1/2",
             "1",
-            "2"
+            "2",
+            "3"
           ],
           "type": "string"
         },
         "spell-check": {
           "default": true,
           "type": "boolean"
+        },
+        "text": {
+          "default": "plain",
+          "enum": [
+            "plain",
+            "code"
+          ],
+          "type": "string"
         },
         "value": {
           "default": "",
@@ -1120,7 +1139,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input-textarea",
-    "version": "1.8.0"
+    "version": "1.9.0"
   },
   "sf-switch": {
     "inputs": {

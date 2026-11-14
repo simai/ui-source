@@ -14,13 +14,14 @@ const read = (path) => readFile(new URL(path, ROOT), 'utf8').then(withoutPublicV
    sf-input kept them first (actions block item 4, 2026-11-08): a toolbar
    search and a hero search stand beside buttons of 1/3 and 3. The fields
    ladder (2026-11-14) puts lookup, quantity, date, code, colour and phone on
-   the same five steps (field-size.js FIELD_LADDER); the rest keep three. */
+   the same five steps (field-size.js FIELD_LADDER), then the textarea and
+   the rich text; the rest keep three. */
 const INPUT_SIZES = ['1/3', '1/2', '1', '2', '3'];
 const FIELDS = {
-  textarea: 'textarea', dropdown: 'dropdown', 'file-upload': 'file-upload',
+  dropdown: 'dropdown', 'file-upload': 'file-upload',
 };
-const RETIRED_CLASS = /\.sf-(textarea|dropdown|file-upload|upload-progress)--size-(1\\\/3|3)(?![\w\\/-])/;
-const LADDER_FIELDS = ['input', 'input-lookup', 'input-quantity', 'input-date', 'input-code', 'input-color', 'input-country'];
+const RETIRED_CLASS = /\.sf-(dropdown|file-upload|upload-progress)--size-(1\\\/3|3)(?![\w\\/-])/;
+const LADDER_FIELDS = ['input', 'input-lookup', 'input-quantity', 'input-date', 'input-code', 'input-color', 'input-country', 'input-textarea', 'input-rich'];
 
 test('field sizes: the scale is 1/2, 1 and 2, and a retired size maps to its neighbour', () => {
   assert.deepEqual([...FIELD_SIZES], ['1/2', '1', '2']);
@@ -80,7 +81,7 @@ test('field sizes: sf-input stands on the whole control ladder', async () => {
 });
 
 test('field sizes: Smart manifests offer the three sizes and nothing else', async () => {
-  for (const name of ['input-textarea', 'dropdown', 'file-upload']) {
+  for (const name of ['dropdown', 'file-upload']) {
     const manifest = JSON.parse(await read(`src/smart/${name}/smart.manifest.json`));
     assert.deepEqual(manifest.inputs.properties.size.enum, [...FIELD_SIZES], name);
   }
@@ -95,7 +96,7 @@ test('field sizes: the fields of the field ladder offer its five steps', async (
   }
   const datepicker = JSON.parse(await read('src/smart/input-date/smart.manifest.json'));
   assert.deepEqual(datepicker.inputs.properties['input-size'].enum, INPUT_SIZES, 'datepicker input-size');
-  for (const name of LADDER_FIELDS.slice(1, 6).filter((n) => n !== 'input-color')) {
+  for (const name of [...LADDER_FIELDS.slice(1, 6).filter((n) => n !== 'input-color'), 'input-textarea', 'input-rich']) {
     assert.match(await read(`src/smart/${name}/index.js`), /ladderSize\(/, `${name} reads its size on the ladder`);
   }
 });
@@ -106,6 +107,8 @@ test('field sizes: the ladder fields size their outer steps from the shared ladd
     'src/component/quantity/scss/_css__quantity.scss': 'sf-quantity',
     'src/component/verification/scss/_css__verification_custom.scss': 'sf-verification',
     'src/component/country-code/scss/_css_country_code_custom.scss': 'sf-country-code',
+    'src/component/textarea/scss/_css__textarea.scss': 'sf-textarea',
+    'src/smart/input-rich/scss/_smart__rich_text.scss': 'sf-rich-text',
   };
   for (const [path, block] of Object.entries(sheets)) {
     const sheet = await read(path);
