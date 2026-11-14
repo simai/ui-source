@@ -1,0 +1,19 @@
+{
+  "$comment": "Dated aliases of sf-settings for the shim (core/js/aliases.js, standard §16 item 20).",
+  "component": "sf-settings",
+  "since": "2026-11-14",
+  "remove_after": "2027-01-01",
+  "aliases": [
+    {
+      "from": "tiles",
+      "to": "drill",
+      "kind": "value",
+      "setting": "look",
+      "component": "sf-settings",
+      "since": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "owner decision C176 (5): the tiles look left; its switches are rows of the drill look"
+    }
+  ]
+}

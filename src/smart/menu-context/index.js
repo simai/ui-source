@@ -32,6 +32,8 @@ const ContextMenuElement = elementFromManifest(manifest, {
 // positions with its own copy.
 const position = () => globalThis.SF?.Position || BundledPosition;
 const TYPEAHEAD_MS = 500;
+// The menus' own numbers for the ids of their icon options' tooltips.
+let menuTips = 0;
 
 // How wide a popup is by what it holds (owner decision C32, 2026-11-09): the
 // class sheet sizes each from core's --sf-popup-*-width steps, which follow
@@ -300,6 +302,12 @@ class SfContextMenu extends ContextMenuElement {
     this._afterRender = null;
     run?.();
     this.watchScrollbar();
+    // An icon option names itself by the Framework's tooltip (C160 (1)):
+    // the controller is a lazy plugin, asked for once a menu draws one.
+    if (!this._tipsAsked && this.querySelector(".sf-context-menu-choice-option[data-tooltip]")) {
+      this._tipsAsked = true;
+      globalThis.SF?.Loader?.ensurePlugin?.("tooltip");
+    }
     const content = this.querySelector(".sf-context-menu-content");
     if (content) this._itemObserver.observe(content, {
       childList: true, subtree: true, attributes: true,
@@ -980,7 +988,12 @@ class SfContextMenu extends ContextMenuElement {
       else content.removeAttribute("data-sf-width");
       this._owned.kindContent = content;
     }
-    const sheet = FORM_KINDS.has(kind) && onPhone();
+    // A form is the one sheet on a phone (C157 (5)), and so is a drilling
+    // popup -- a settings menu, the person menu with its settings rows (owner
+    // decision C176, defect SM-3): its levels open inside the same sheet with
+    // the way back in its head (C157 (6)).
+    const sheets = FORM_KINDS.has(kind) || (this.drill && !parentMenu);
+    const sheet = sheets && onPhone();
     const sized = width && width !== "content" && !kind;
     if (sized && content) {
       // A display: contents trigger (sf-button-icon, sf-button) is as wide as
@@ -1025,7 +1038,7 @@ class SfContextMenu extends ContextMenuElement {
     });
     // A form stays what the screen makes it: opened wide and the window
     // narrowed to a phone, it becomes the sheet; widened, it is anchored again.
-    if (FORM_KINDS.has(kind)) {
+    if (sheets) {
       owned.onResize = () => {
         if (this._owned === owned && onPhone() !== owned.sheet) place(onPhone());
       };
@@ -1434,6 +1447,8 @@ class SfContextMenu extends ContextMenuElement {
       onLabel: this.sfWord("on"),
       offLabel: this.sfWord("off"),
       drill: this.drill,
+      // The ids of the icon options' name tooltips (C160 (1)): one prefix per menu.
+      tipPrefix: this._tipPrefix ??= `sf-menu-tip-${++menuTips}`,
       level,
       role: this.menuRole,
       panel: this.panel,

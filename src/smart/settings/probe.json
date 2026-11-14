@@ -9,7 +9,8 @@
       "  <sf-settings id=\"drill\" look=\"drill\" label=\"Настройки чтения\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"theme\", \"type\": \"choice\", \"text\": \"Тема\", \"icon\": \"contrast\", \"value\": \"system\", \"options\": [{\"id\": \"system\", \"text\": \"Как в системе\", \"icon\": \"computer\"}, {\"id\": \"light\", \"text\": \"Светлая\", \"icon\": \"light_mode\"}, {\"id\": \"dark\", \"text\": \"Тёмная\", \"icon\": \"dark_mode\"}]}, {\"id\": \"lang\", \"type\": \"choice\", \"text\": \"Язык\", \"icon\": \"translate\", \"value\": \"ru\", \"options\": [{\"id\": \"ru\", \"text\": \"Русский\"}, {\"id\": \"en\", \"text\": \"English\"}, {\"id\": \"kk\", \"text\": \"Қазақша\"}, {\"id\": \"de\", \"text\": \"Deutsch\"}]}, {\"id\": \"font\", \"type\": \"choice\", \"text\": \"Размер текста\", \"icon\": \"format_size\", \"value\": \"m\", \"options\": [{\"id\": \"s\", \"text\": \"Мелкий\"}, {\"id\": \"m\", \"text\": \"Обычный\"}, {\"id\": \"l\", \"text\": \"Крупный\"}]}, {\"id\": \"sound\", \"type\": \"switch\", \"text\": \"Звук\", \"icon\": \"volume_up\", \"value\": true}]}</script></sf-settings>",
       "  <sf-settings id=\"rows\" look=\"rows\" label=\"Вид таблицы\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"type\": \"group\", \"text\": \"Вид таблицы\", \"items\": [{\"id\": \"density\", \"type\": \"choice\", \"text\": \"Плотность\", \"value\": \"normal\", \"options\": [{\"id\": \"compact\", \"text\": \"Плотно\"}, {\"id\": \"normal\", \"text\": \"Обычно\"}]}, {\"id\": \"align\", \"type\": \"choice\", \"text\": \"Выравнивание\", \"value\": \"start\", \"options\": [{\"id\": \"start\", \"text\": \"По левому краю\", \"icon\": \"format_align_left\"}, {\"id\": \"center\", \"text\": \"По центру\", \"icon\": \"format_align_center\"}, {\"id\": \"end\", \"text\": \"По правому краю\", \"icon\": \"format_align_right\"}]}, {\"id\": \"wrap\", \"type\": \"switch\", \"text\": \"Переносить строки\", \"value\": false}, {\"id\": \"stripes\", \"type\": \"switch\", \"text\": \"Полосы через строку\", \"value\": true}]}, {\"type\": \"separator\"}, {\"id\": \"scale\", \"type\": \"range\", \"text\": \"Масштаб\", \"value\": 100, \"min\": 80, \"max\": 140, \"step\": 10, \"unit\": \"%\"}]}</script></sf-settings>",
       "  <sf-settings id=\"tiles\" look=\"tiles\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"sound\", \"type\": \"switch\", \"text\": \"Звук\", \"icon\": \"volume_up\", \"value\": true, \"tile\": true}, {\"id\": \"night\", \"type\": \"switch\", \"text\": \"Ночь\", \"icon\": \"dark_mode\", \"value\": false, \"tile\": true}, {\"id\": \"alerts\", \"type\": \"switch\", \"text\": \"Сигналы\", \"icon\": \"notifications\", \"value\": true, \"tile\": true}, {\"id\": \"theme\", \"type\": \"choice\", \"text\": \"Тема\", \"icon\": \"contrast\", \"value\": \"system\", \"options\": [{\"id\": \"system\", \"text\": \"Авто\", \"icon\": \"computer\"}, {\"id\": \"light\", \"text\": \"Светлая\", \"icon\": \"light_mode\"}, {\"id\": \"dark\", \"text\": \"Тёмная\", \"icon\": \"dark_mode\"}]}, {\"id\": \"scale\", \"type\": \"range\", \"text\": \"Масштаб\", \"icon\": \"format_size\", \"value\": 100, \"min\": 80, \"max\": 140, \"step\": 10, \"unit\": \"%\"}]}</script></sf-settings>",
-      "  <sf-settings id=\"popup\" look=\"rows\" remember=\"probe\" label=\"Настройки чтения\"><sf-button-icon id=\"popup-trigger\" icon=\"tune\" appearance=\"ghost\" scheme=\"on-surface\" size=\"1/2\" aria-label=\"Настройки чтения\"></sf-button-icon><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"theme\", \"type\": \"choice\", \"text\": \"Тема\", \"icon\": \"contrast\", \"value\": \"system\", \"options\": [{\"id\": \"system\", \"text\": \"Как в системе\", \"icon\": \"computer\"}, {\"id\": \"light\", \"text\": \"Светлая\", \"icon\": \"light_mode\"}, {\"id\": \"dark\", \"text\": \"Тёмная\", \"icon\": \"dark_mode\"}]}, {\"id\": \"lang\", \"type\": \"choice\", \"text\": \"Язык\", \"icon\": \"translate\", \"value\": \"ru\", \"options\": [{\"id\": \"ru\", \"text\": \"Русский\"}, {\"id\": \"en\", \"text\": \"English\"}, {\"id\": \"kk\", \"text\": \"Қазақша\"}, {\"id\": \"de\", \"text\": \"Deutsch\"}]}, {\"id\": \"font\", \"type\": \"choice\", \"text\": \"Размер текста\", \"icon\": \"format_size\", \"value\": \"m\", \"options\": [{\"id\": \"s\", \"text\": \"Мелкий\"}, {\"id\": \"m\", \"text\": \"Обычный\"}, {\"id\": \"l\", \"text\": \"Крупный\"}]}, {\"id\": \"sound\", \"type\": \"switch\", \"text\": \"Звук\", \"icon\": \"volume_up\", \"value\": true}]}</script></sf-settings>",
+      "  <sf-settings id=\"fold\" look=\"rows\" label=\"Настройки чтения\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"theme\", \"type\": \"choice\", \"text\": \"Тема\", \"icon\": \"contrast\", \"value\": \"system\", \"options\": [{\"id\": \"system\", \"text\": \"Как в системе\", \"icon\": \"computer\"}, {\"id\": \"light\", \"text\": \"Светлая\", \"icon\": \"light_mode\"}, {\"id\": \"dark\", \"text\": \"Тёмная\", \"icon\": \"dark_mode\"}]}, {\"id\": \"font\", \"type\": \"choice\", \"text\": \"Размер текста\", \"icon\": \"format_size\", \"value\": \"m\", \"options\": [{\"id\": \"s\", \"text\": \"Мелкий\"}, {\"id\": \"m\", \"text\": \"Обычный\"}, {\"id\": \"l\", \"text\": \"Крупный\"}]}, {\"id\": \"width\", \"type\": \"choice\", \"text\": \"Ширина\", \"icon\": \"fit_width\", \"value\": \"n\", \"options\": [{\"id\": \"n\", \"text\": \"Узко\"}, {\"id\": \"w\", \"text\": \"Широко\"}]}, {\"id\": \"sound\", \"type\": \"switch\", \"text\": \"Звук\", \"icon\": \"volume_up\", \"value\": true}]}</script></sf-settings>",
+      "  <sf-settings id=\"popup\" look=\"rows\" remember=\"probe\" label=\"Настройки чтения\"><sf-button-icon id=\"popup-trigger\" icon=\"tune\" appearance=\"ghost\" scheme=\"on-surface\" aria-label=\"Настройки чтения\"></sf-button-icon><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"theme\", \"type\": \"choice\", \"text\": \"Тема\", \"icon\": \"contrast\", \"value\": \"system\", \"options\": [{\"id\": \"system\", \"text\": \"Как в системе\", \"icon\": \"computer\"}, {\"id\": \"light\", \"text\": \"Светлая\", \"icon\": \"light_mode\"}, {\"id\": \"dark\", \"text\": \"Тёмная\", \"icon\": \"dark_mode\"}]}, {\"id\": \"lang\", \"type\": \"choice\", \"text\": \"Язык\", \"icon\": \"translate\", \"value\": \"ru\", \"options\": [{\"id\": \"ru\", \"text\": \"Русский\"}, {\"id\": \"en\", \"text\": \"English\"}, {\"id\": \"kk\", \"text\": \"Қазақша\"}, {\"id\": \"de\", \"text\": \"Deutsch\"}]}, {\"id\": \"font\", \"type\": \"choice\", \"text\": \"Размер текста\", \"icon\": \"format_size\", \"value\": \"m\", \"options\": [{\"id\": \"s\", \"text\": \"Мелкий\"}, {\"id\": \"m\", \"text\": \"Обычный\"}, {\"id\": \"l\", \"text\": \"Крупный\"}]}, {\"id\": \"sound\", \"type\": \"switch\", \"text\": \"Звук\", \"icon\": \"volume_up\", \"value\": true}]}</script></sf-settings>",
       "  <button id=\"outside\" type=\"button\">Настройки</button>",
       "  <sf-settings id=\"named\" for=\"outside\" look=\"drill\" size=\"1\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"theme\", \"type\": \"choice\", \"text\": \"Тема\", \"icon\": \"contrast\", \"value\": \"system\", \"options\": [{\"id\": \"system\", \"text\": \"Как в системе\", \"icon\": \"computer\"}, {\"id\": \"light\", \"text\": \"Светлая\", \"icon\": \"light_mode\"}, {\"id\": \"dark\", \"text\": \"Тёмная\", \"icon\": \"dark_mode\"}]}, {\"id\": \"lang\", \"type\": \"choice\", \"text\": \"Язык\", \"icon\": \"translate\", \"value\": \"ru\", \"options\": [{\"id\": \"ru\", \"text\": \"Русский\"}, {\"id\": \"en\", \"text\": \"English\"}, {\"id\": \"kk\", \"text\": \"Қазақша\"}, {\"id\": \"de\", \"text\": \"Deutsch\"}]}, {\"id\": \"font\", \"type\": \"choice\", \"text\": \"Размер текста\", \"icon\": \"format_size\", \"value\": \"m\", \"options\": [{\"id\": \"s\", \"text\": \"Мелкий\"}, {\"id\": \"m\", \"text\": \"Обычный\"}, {\"id\": \"l\", \"text\": \"Крупный\"}]}, {\"id\": \"sound\", \"type\": \"switch\", \"text\": \"Звук\", \"icon\": \"volume_up\", \"value\": true}]}</script></sf-settings>",
       "  <sf-settings id=\"long\" look=\"drill\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"digest\", \"type\": \"choice\", \"text\": \"Как часто присылать сводку по задачам проекта\", \"icon\": \"mail\", \"value\": \"week\", \"options\": [{\"id\": \"day\", \"text\": \"Каждый день утром, до начала рабочего дня\"}, {\"id\": \"week\", \"text\": \"Раз в неделю, в понедельник утром, со всеми задачами\"}]}, {\"id\": \"mentions\", \"type\": \"switch\", \"text\": \"Уведомлять, когда меня упоминают в комментариях к задачам\", \"icon\": \"alternate_email\", \"value\": true}]}</script></sf-settings>",
@@ -133,24 +134,24 @@
     },
     {
       "id": "p4-rows",
-      "title": "rows: a group's title is a heading, a choice is quiet pills at the row's end, a range a slider with its unit; no levels",
+      "title": "rows: a group's title is a heading, a choice is quiet options at the row's end (or a drill row when they do not fit), a range a slider with its unit; the menu drills (C176)",
       "covers": "settings.look rows",
       "steps": [
         {
-          "check": "(() => { const el = document.querySelector('#rows'); const menu = el.querySelector('sf-menu-context'); return el.getAttribute('data-look') === 'rows' && menu.getAttribute('submenu') === 'flyout' && el.querySelector('.sf-context-menu-heading').textContent.trim() === 'Вид таблицы' && el.querySelectorAll('.sf-context-menu-choice-option').length === 5 && el.querySelector('input[type=\"range\"]').value === '100' && el.querySelector('.sf-context-menu-range-value').textContent.trim() === '100%'; })()"
+          "check": "(() => { const el = document.querySelector('#rows'); const menu = el.querySelector('sf-menu-context'); return el.getAttribute('data-look') === 'rows' && menu.getAttribute('submenu') === 'drill' && el.querySelector('.sf-context-menu-heading').textContent.trim() === 'Вид таблицы' && [...el.querySelectorAll('.sf-context-menu-value-row--choice, .sf-context-menu-item[aria-haspopup]')].length === 2 && el.querySelector('input[type=\"range\"]').value === '100' && el.querySelector('.sf-context-menu-range-value').textContent.trim() === '100%'; })()"
         }
       ]
     },
     {
-      "id": "p5-tiles",
-      "title": "tiles: the switches marked tile stand on top as tiles, a separator, the rest as rows; a tile press toggles its switch",
-      "covers": "settings.look tiles, items.tile",
+      "id": "p5-tiles-former",
+      "title": "tiles is a former name of drill until 2027-01-01 (C176 (5)): no tiles, the switches are rows, the choice drills; a switch row press toggles it",
+      "covers": "settings.look tiles (dated alias), aliases",
       "steps": [
         {
-          "check": "(() => { const el = document.querySelector('#tiles'); const tiles = [...el.querySelectorAll('.sf-context-menu-tile')]; return el.getAttribute('data-look') === 'tiles' && tiles.length === 3 && el.querySelector('.sf-context-menu-tiles').getAttribute('aria-label') === 'Быстрые настройки' && !!el.querySelector('.sf-context-menu-separator') && el.querySelectorAll('.sf-context-menu-choice-option').length === 3; })()"
+          "check": "(() => { const el = document.querySelector('#tiles'); return el.getAttribute('data-look') === 'drill' && !el.querySelector('.sf-context-menu-tile, .sf-context-menu-tiles') && el.querySelectorAll('[role=\"menuitemcheckbox\"]').length === 3 && el.querySelector('.sf-context-menu-item[aria-haspopup=\"menu\"]') !== null; })()"
         },
         {
-          "user": "click:#tiles .sf-context-menu-tile:nth-child(2)",
+          "script": "([...document.querySelectorAll('#tiles [role=\"menuitemcheckbox\"]')][1].click(), true)",
           "wait": 200,
           "expect": {
             "events": [
@@ -303,6 +304,39 @@
         },
         {
           "check": "(() => { const row = document.querySelector('#long .sf-context-menu-item'); const under = row.querySelector('.sf-context-menu-item-under'); return row.getBoundingClientRect().height > 40 && under.scrollWidth > under.clientWidth && under.getAttribute('title') === 'Раз в неделю, в понедельник утром, со всеми задачами'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p11-fold",
+      "title": "rows: a choice whose options do not fit beside its name is a drill row by itself -- the value under the name, a chevron, the options a level deeper; after a choice the menu is back at the list with the focus on that row and the new value under its name (C176 (3), (4))",
+      "covers": "settings.look rows, events.changed",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#fold'); const font = [...el.querySelectorAll('.sf-context-menu-item[aria-haspopup=\"menu\"]')].find((row) => row.textContent.includes('Размер текста')); return el.getAttribute('data-look') === 'rows' && !!font && font.querySelector('.sf-context-menu-item-under').textContent.trim() === 'Обычный' && [...el.querySelectorAll('.sf-context-menu-item-label')].every((label) => label.getClientRects().length > 0 && label.scrollWidth <= label.clientWidth + 1); })()"
+        },
+        {
+          "script": "([...document.querySelectorAll('#fold .sf-context-menu-item[aria-haspopup=\"menu\"]')].find((row) => row.textContent.includes('Размер текста')).click(), true)",
+          "wait": 300,
+          "check": "document.querySelectorAll('#fold .sf-context-menu-level-option').length === 3 && document.querySelector('#fold .sf-context-menu-level-title').textContent.trim() === 'Размер текста'"
+        },
+        {
+          "script": "([...document.querySelectorAll('#fold .sf-context-menu-level-option')].find((row) => row.textContent.includes('Крупный')).click(), true)",
+          "wait": 300,
+          "expect": {
+            "events": [
+              {
+                "name": "sf-settings-changed",
+                "count": 1,
+                "detail": {
+                  "id": "font",
+                  "value": "l",
+                  "previous": "m"
+                }
+              }
+            ]
+          },
+          "check": "(() => { const row = [...document.querySelectorAll('#fold .sf-context-menu-item[aria-haspopup=\"menu\"]')].find((one) => one.textContent.includes('Размер текста')); return !!row && row.querySelector('.sf-context-menu-item-under').textContent.trim() === 'Крупный' && document.activeElement === row && document.querySelector('#fold').values.font === 'l'; })()"
         }
       ]
     }

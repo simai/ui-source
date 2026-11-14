@@ -2,7 +2,7 @@ import {html, nothing} from 'lit';
 import {renderPanel} from './panel.js';
 
 // sf-settings' markup: sf-menu-context with the items as its entries, and,
-// in a popup, the page's trigger beside it. In the drill, rows and tiles looks
+// in a popup, the page's trigger beside it. In the drill and rows looks
 // the element draws nothing of its own; the panel look draws its panel
 // (templates/panel.js) with the element's sheet.
 //
@@ -17,6 +17,11 @@ import {renderPanel} from './panel.js';
 // long name wraps and a value ends in an ellipsis rather than the panel
 // growing.
 //
+// The menu drills in both looks: the drill look's choices open a level, and so
+// does a rows-look choice whose options did not fit beside its name (C176
+// (3)); a drilling popup is the one sheet on a phone (C157 (5), SM-3). The
+// look's rows carry no submenus of their own, so nothing flies out.
+//
 // The menu's value events stay inside (stopPropagation): the page hears
 // sf-settings-change, -changed and -reset, never the menu's.
 
@@ -30,7 +35,7 @@ function renderMenu(context) {
   return html`<sf-menu-context
       class=${['sf-settings', context.rootClass].filter(Boolean).join(' ')}
       ?popup=${context.popup}
-      submenu=${context.look === 'drill' ? 'drill' : 'flyout'}
+      submenu="drill"
       size=${context.size}
       aria-label=${context.label}
       style=${PANEL}
