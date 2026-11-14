@@ -20,7 +20,9 @@
 //   is an open owner question (tags study #q-keys).
 //
 // A host that lays out its own chips (sf-input-lookup, sf-dropdown) keeps its
-// own rules: its rows are left alone.
+// own rules: its rows are left alone. So does sf-tag-group (owner decision
+// C145 (3)-(5)): the group owns its row -- one Tab stop for every tag, «+N»
+// that opens the hidden tags -- with the helpers exported here.
 //
 // Every bundle that carries sf-tag carries a copy of this module; the rows
 // are kept on one shared record.
@@ -33,13 +35,13 @@ const rows = () => globalThis[ROWS] || (globalThis[ROWS] = new WeakMap());
 const OVER = 'data-sf-tag-over';
 const SHRINK = 'data-sf-tag-shrink';
 const MORE = 'data-sf-tag-more';
-const MANAGED = 'sf-input-lookup, sf-lookup, sf-dropdown, .sf-dropdown';
+const MANAGED = 'sf-input-lookup, sf-lookup, sf-dropdown, .sf-dropdown, sf-tag-group';
 
 const isTag = (node) => node?.localName === 'sf-tag';
 const tagsOf = (row) => [...row.children].filter(isTag);
 
 // What a row lays out: a host drawn with display: contents gives its boxes.
-function boxesOf(row) {
+export function boxesOf(row) {
   const out = [];
   for (const child of row.children) {
     if (child.hidden) continue;
@@ -51,13 +53,13 @@ function boxesOf(row) {
   return out;
 }
 
-function oneRow(row) {
+export function oneRow(row) {
   const view = getComputedStyle(row);
   return /flex/u.test(view.display) && view.flexWrap === 'nowrap' && view.flexDirection.startsWith('row');
 }
 
 // Whether anything the row lays out passes its content box, on either side.
-function overflows(row) {
+export function overflows(row) {
   const view = getComputedStyle(row);
   const box = row.getBoundingClientRect();
   const start = box.left + (parseFloat(view.borderLeftWidth) || 0) + (parseFloat(view.paddingLeft) || 0);
@@ -68,7 +70,7 @@ function overflows(row) {
   });
 }
 
-function setAttr(element, name, on) {
+export function setAttr(element, name, on) {
   if (on && !element.hasAttribute(name)) element.setAttribute(name, '');
   else if (!on && element.hasAttribute(name)) element.removeAttribute(name);
 }
@@ -103,7 +105,7 @@ function dropMore(state) {
   if (state.more?.isConnected) state.more.remove();
 }
 
-function nameOf(tag) {
+export function nameOf(tag) {
   return String(tag.text ?? tag.getAttribute('text') ?? tag.textContent ?? '').trim();
 }
 
@@ -151,13 +153,13 @@ function groupOf(row) {
 // Asked at the call, so a name the page registers later is found too.
 const crossButton = () => `:scope > .sf-tag > ${tagSelector('sf-button-close')} button, :scope > .sf-tag > .sf-icon-button`;
 
-function stopOf(tag) {
-  return tag.querySelector(':scope > button.sf-tag, :scope > .sf-tag > .sf-tag-action')
+export function stopOf(tag) {
+  return tag.querySelector(':scope > button.sf-tag, :scope > a.sf-tag[href], :scope > .sf-tag > .sf-tag-action')
     || tag.querySelector(crossButton());
 }
 
-function stopsIn(tag) {
-  return [...tag.querySelectorAll('button')];
+export function stopsIn(tag) {
+  return [...tag.querySelectorAll('button, a[href]')];
 }
 
 function untab(row, state) {
@@ -191,7 +193,7 @@ function untab(row, state) {
   });
 }
 
-function said(doc) {
+export function said(doc) {
   let line = doc.querySelector('[data-sf-tag-said]');
   if (!line) {
     line = doc.createElement('div');
@@ -306,6 +308,8 @@ function forget(row) {
 export function tagInRow(tag) {
   const row = tag.parentElement;
   if (!row || typeof requestAnimationFrame !== 'function') return;
+  // A group lays out and walks its own tags (sf-tag-group).
+  if (row.localName === 'sf-tag-group') return;
   let state = rows().get(row);
   if (!state) {
     state = {frame: 0, more: null, group: [], active: 0, busy: false};

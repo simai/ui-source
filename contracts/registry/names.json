@@ -359,6 +359,10 @@
           "status": "released"
         },
         {
+          "element": "sf-tag-group",
+          "status": "released"
+        },
+        {
           "element": "sf-theme-generator",
           "status": "released"
         },

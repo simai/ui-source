@@ -6,6 +6,7 @@ import { renderTagTemplate } from './js/templates/default';
 import { preloadControlIcons } from '../helpers/cycle';
 import { instancePath, partId } from '../../core/js/instance-path.js';
 import { tagInRow, tagLeftRow } from './js/tag-row.js';
+import { OPTION_BADGE_PALETTE, nearestPaletteHue } from '../helpers/option-badge.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -18,6 +19,9 @@ const TAG_KINDS = ['checkbox', 'icon', 'default', 'color', 'avatar'];
 // for nothing. Read from the element, so it can be asked before it draws.
 function drawnIcons(host) {
   const slotted = (name) => host.hasSlotContent?.(name);
+  // A filter tag's check mark is drawn when it is chosen (C145 (2)); it is
+  // asked for with the tag, so a press never shows a blank glyph.
+  if (host.type === 'checkbox' && !slotted('leading') && !host.href) return ['check'];
   if (host.type === 'icon' && !slotted('leading')) return [host.icon || 'sell'];
   if (host.type === 'avatar' && !slotted('avatar') && !host.avatarImageUrl && !host.avatarText) return ['person'];
   return [];
@@ -34,6 +38,35 @@ const preloadTagIcons = (host) =>
   preloadControlIcons(host, drawnIcons(host).map((icon) => ({icon, filled: false})));
 
 const TAG_STATUSES = ['', 'info', 'success', 'warning', 'error'];
+
+const HEX_COLOR = /^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/iu;
+
+// The hue of the colour dot (owner decision C145 (7); C140 BG-7): a hue of
+// the static palette by name, or the hue nearest a hex colour from data --
+// never the raw colour. Anything else: no hue (color-class may still paint).
+export function tagHue(value) {
+  const color = String(value ?? '').trim();
+  if (!color) return '';
+  const name = color.toLowerCase();
+  if (OPTION_BADGE_PALETTE.includes(name)) return name;
+  return HEX_COLOR.test(color) ? nearestPaletteHue(color) : '';
+}
+
+// A link's address (owner decision C145 (6)): a relative address, a path, a
+// fragment or a query is kept; an address with a scheme only when it is http,
+// https, mailto or tel. javascript:, data: and the rest lead nowhere.
+const SAFE_SCHEMES = new Set(['http:', 'https:', 'mailto:', 'tel:']);
+// eslint-disable-next-line no-control-regex -- matching control characters is the point
+const CONTROLS = /[\u0000- \u007f-\u009f]/gu;
+
+export function tagHref(value) {
+  const given = String(value ?? '').trim();
+  if (!given) return '';
+  const compact = given.replace(CONTROLS, '');
+  const scheme = /^([a-z][a-z0-9+.-]*):/iu.exec(compact);
+  if (!scheme) return given;
+  return SAFE_SCHEMES.has(`${scheme[1].toLowerCase()}:`) ? given : '';
+}
 
 const normalize = (value) => String(value ?? '').trim().toLowerCase();
 
@@ -219,6 +252,8 @@ class SfTag extends TagElement {
   }
 
   get closable() {
+    // A link is removed by no one (C145 (6)).
+    if (this.href) return false;
     if (this.type === 'checkbox') return this.hasAttribute('closable') && this.getBooleanAttr('closable', true);
 
     if (this.hasAttribute('closable')) {
@@ -232,7 +267,16 @@ class SfTag extends TagElement {
   // its label as a real button next to the remove action, so both are
   // reachable and operable from the keyboard. Checkbox tags are buttons already.
   get interactive() {
-    return this.type !== 'checkbox' && super.interactive;
+    return this.type !== 'checkbox' && !this.href && super.interactive;
+  }
+
+  // The address the tag leads to, made safe (tagHref): empty, it is no link.
+  get href() {
+    return tagHref(super.href);
+  }
+
+  set href(value) {
+    super.href = value;
   }
 
   set interactive(value) {
@@ -258,6 +302,8 @@ class SfTag extends TagElement {
       rootClass: this.rootClass,
       closable: this.closable,
       interactive: this.interactive,
+      href: this.href,
+      hue: tagHue(this.color),
       closeLabel: this.closeLabel,
       active: this.active,
       ariaLabel: this.getAttribute('aria-label') || '',
@@ -272,6 +318,12 @@ class SfTag extends TagElement {
   cutText() {
     const label = this.querySelector(':scope > .sf-tag .sf-tag-container');
     return String(label?.textContent ?? this.text ?? '').trim();
+  }
+
+  // The tag's id in a group (sf-tag-group's selected and selected-ids): its
+  // key, else its text.
+  get groupKey() {
+    return String(this.key || this.text || this.textContent || '').trim();
   }
 
   // Whether the drawn label is cut: read from the label, since the column,
@@ -315,7 +367,7 @@ class SfTag extends TagElement {
   }
 
   onToggle() {
-    if (this.disabled || this.type !== 'checkbox') return;
+    if (this.disabled || this.type !== 'checkbox' || this.href) return;
 
     const active = !this.active;
     this.toggleAttribute('active', active);
@@ -364,6 +416,9 @@ class SfTag extends TagElement {
       active: this.active,
       disabled: this.disabled,
       closable: this.closable,
+      href: this.href,
+      color: this.color,
+      key: this.key,
       ariaLabel: this.getAttribute('aria-label') || '',
       closeLabel: this.closeLabel,
     };

@@ -70,7 +70,8 @@ test('TG-8 (C139 (6)): closable tags in a field are one Tab stop with the lookup
 
 test('TG-10: disabled and selected reads disabled', () => {
   assert.match(css, /\.sf-tag\.sf-tag\.sf-tag\.disabled\.active \{\s*--sf-tag--background-color: var\(--sf-surface-disabled\);/u);
-  assert.match(css, /\.sf-tag\.active:is\(\.disabled, :disabled\) \.sf-tag-check \{\s*background-color: var\(--sf-surface-disabled\);\s*border-color: var\(--sf-outline-disabled\);\s*color: var\(--sf-on-surface-disabled\);/u);
+  // C145 (2): the check square is gone; a chosen disabled tag's mark takes the disabled ink.
+  assert.match(css, /\.sf-tag\.active:is\(\.disabled, :disabled\) \.sf-tag-check \{\s*--sf-icon--color: var\(--sf-on-surface-disabled\);\s*color: var\(--sf-on-surface-disabled\);/u);
 });
 
 test('TG-15: core holds a bare sf-tag\'s box from its attributes before its code', () => {

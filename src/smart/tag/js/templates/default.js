@@ -10,10 +10,16 @@ function dotSize(size) {
     return LARGE_SIZES.has(size) ? '1/2' : '1/3';
 }
 
+// A filter tag shows no mark until it is chosen; chosen, a check mark stands
+// before the label on the primary container fill (owner decision C145 (2),
+// tags study #q-selected B). The empty checkbox square on every tag is gone:
+// the row read as a form of check boxes. The mark is an sf-icon, the picture
+// of the tag's size (tag - 8, C58), so its name joins the icon request.
 function renderCheckboxIcon(context) {
-    return context.component?.hasSlotContent?.('leading')
-        ? context.component.getSlotContent('leading')
-        : html`<span class="sf-tag-check" aria-hidden="true"></span>`;
+    if (context.component?.hasSlotContent?.('leading')) return context.component.getSlotContent('leading');
+    return context.active
+        ? html`<sf-icon icon="check" root-class="sf-tag-icon sf-tag-check" aria-hidden="true"></sf-icon>`
+        : nothing;
 }
 
 // The icon is an sf-icon, as in every other component: the element tells the
@@ -28,12 +34,19 @@ function renderGenericIcon(context) {
         : html`<sf-icon icon=${iconName} root-class="sf-tag-icon" aria-hidden="true"></sf-icon>`;
 }
 
+// A colour from data is a dot of the static palette before the label; the
+// tag itself stays neutral (owner decision C145 (7), tags study #q-color B):
+// selection and hover read the same on every tag, and a label colour never
+// mimics a status. The hue's role set (.sf-hue-<name>, core) gives the dot its
+// strong fill in both themes.
 function renderColorIcon(context) {
-    const extraClass = context.colorClass || '';
-
-    return context.component?.hasSlotContent?.('leading')
-        ? context.component.getSlotContent('leading')
-        : html`<span class=${['sf-tag-color-icon', extraClass].filter(Boolean).join(' ')} aria-hidden="true"></span>`;
+    if (context.component?.hasSlotContent?.('leading')) return context.component.getSlotContent('leading');
+    const classes = [
+        'sf-tag-color-icon',
+        context.hue ? `sf-tag-color-icon--hue sf-hue-${context.hue}` : '',
+        context.colorClass || '',
+    ].filter(Boolean);
+    return html`<span class=${classes.join(' ')} aria-hidden="true"></span>`;
 }
 
 function renderStatusDot(context) {
@@ -77,6 +90,8 @@ function renderAvatar(context) {
 }
 
 function renderLeading(context) {
+    // A link carries no check mark (C145 (6)).
+    if (context.href && context.type === 'checkbox') return nothing;
     switch (context.type) {
         case 'checkbox':
             return renderCheckboxIcon(context);
@@ -157,6 +172,38 @@ function renderStatusBadge(context, textContent) {
         class="sf-badge-text">${textContent}</span></span></span>`;
 }
 
+// A tag that leads to a page (owner decision C145 (6), tags study #q-link B):
+// the whole tag is one native link, with no check mark and no cross; its
+// label underlines on hover like any link (component.tags, .sf-tag--link).
+// A tag list of an article (Docara, Larena sites) is the use.
+function renderLinkTag(context, textContent) {
+    const classes = [
+        'sf-tag',
+        `sf-tag--${context.status || (context.kind === 'checkbox' ? 'default' : context.kind) || 'default'}`,
+        context.appearance && context.appearance !== 'default' ? `sf-tag--appearance-${context.appearance}` : '',
+        `sf-tag--size-${context.size}`,
+        context.height && context.height !== 'default' ? `sf-tag--height-${context.height}` : '',
+        context.inline ? 'sf-tag--inline' : '',
+        context.line ? `sf-tag--line-${context.line}` : '',
+        'sf-tag--link',
+        'inline-flex',
+        'flex-row',
+        'flex-nowrap',
+        'items-center',
+        `${context.rootClass}`,
+        context.disabled ? 'disabled' : '',
+    ].filter(Boolean);
+    // A disabled link leads nowhere: no href, aria-disabled, out of the Tab order.
+    return html`<a
+            class=${classes.join(' ')}
+            style=${context.rootStyle || nothing}
+            href=${context.disabled ? nothing : context.href}
+            aria-disabled=${context.disabled ? 'true' : nothing}
+            aria-label=${context.ariaLabel || nothing}
+            data-tooltip=${context.cutTooltipId || nothing}
+    >${renderLeading(context)}<span class="sf-tag-container pointer-events-none">${textContent}</span>${renderCount(context)}${renderCutTooltip(context)}</a>`;
+}
+
 // The Framework's plain tooltip (component.tooltip, class markup), hidden
 // until the tooltip controller shows it on hover or keyboard focus of the
 // trigger: a name cut with an ellipsis says itself whole (owner decision C58;
@@ -172,9 +219,11 @@ export function renderTagTemplate(context) {
         ? context.component.getSlotContent('text')
         : context.text;
 
-    if (context.status && !context.interactive && !context.closable) {
+    if (context.status && !context.interactive && !context.closable && !context.href) {
         return renderStatusBadge(context, textContent);
     }
+
+    if (context.href) return renderLinkTag(context, textContent);
 
     const classes = [
         'sf-tag',

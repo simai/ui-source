@@ -1,0 +1,32 @@
+@layer sf.components {
+    /* sf-tag-group (owner decision C145 (3)): the row of tags. The host is
+       the box (index.js writes display: flex); the tags stand 4 apart (C105
+       H5: tags of one group gap-1/4), centred on one line. layout row keeps
+       one line -- the tags keep their width (the tag sheet) and those that do
+       not fit leave it for «+N» --; layout wrap wraps (a form). */
+    sf-tag-group {
+        align-items: center;
+        column-gap: var(--sf-space-1\/4);
+        flex-wrap: nowrap;
+        min-inline-size: 0;
+        row-gap: var(--sf-space-1\/4);
+    }
+
+    sf-tag-group[layout="wrap"] {
+        flex-wrap: wrap;
+    }
+
+    /* «+N»: the popover's trigger, a tag of the row's size, after the last
+       tag shown; it never gives up its width. */
+    sf-tag-group > [data-sf-tag-group-more] {
+        display: inline-flex;
+        flex-shrink: 0;
+    }
+
+    /* The hidden tags in the popover's surface (C145 (5)): a wrapping row of
+       the same tags, with their crosses, inside the surface's own padding
+       step. */
+    .sf-tag-group__panel {
+        padding: var(--sf-space-1\/3);
+    }
+}

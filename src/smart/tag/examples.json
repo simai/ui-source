@@ -109,6 +109,32 @@
         "line": "1",
         "size": "1/2"
       }
+    },
+    {
+      "name": "link",
+      "title": "Ссылка на страницу тега",
+      "settings": {
+        "kind": "default",
+        "text": "Доступность",
+        "href": "/tags/a11y"
+      },
+      "expect": {
+        "href": "/tags/a11y",
+        "closable": false
+      }
+    },
+    {
+      "name": "color",
+      "title": "Цвет из данных — точка",
+      "settings": {
+        "kind": "color",
+        "color": "teal",
+        "text": "Клиенты"
+      },
+      "expect": {
+        "kind": "color",
+        "closable": true
+      }
     }
   ],
   "pages": [
@@ -126,6 +152,11 @@
           "  <sf-tag id=\"t-qty\" kind=\"quantity\" text=\"Количество\" count=\"3\"></sf-tag>",
           "  <sf-tag id=\"t-off\" text=\"Нельзя\" disabled></sf-tag>",
           "  <sf-tag id=\"t-line\" kind=\"default\" text=\"Ждёт\" line=\"1\"></sf-tag>",
+          "  <sf-tag id=\"t-free\" text=\"Мои\"></sf-tag>",
+          "  <sf-tag id=\"t-link\" kind=\"default\" text=\"Доступность\" href=\"/tags/a11y\" closable></sf-tag>",
+          "  <sf-tag id=\"t-js\" kind=\"default\" text=\"Опасно\" href=\"javascript:alert(1)\"></sf-tag>",
+          "  <sf-tag id=\"t-dot\" kind=\"color\" color=\"teal\" text=\"Клиенты\"></sf-tag>",
+          "  <sf-tag id=\"t-hex\" kind=\"color\" color=\"#cdeee9\" text=\"Партнёры\"></sf-tag>",
           "</main>"
         ]
       },
@@ -314,6 +345,44 @@
             },
             {
               "check": "getComputedStyle(document.querySelector('#t-line .sf-tag')).backgroundColor === 'rgb(1, 2, 3)'"
+            }
+          ]
+        },
+        {
+          "id": "p12-selected-mark",
+          "title": "a filter tag shows no mark until chosen; chosen, a check mark (the icon check) on the primary container fill (C145 (2))",
+          "covers": "values.active, C145 (2)",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#t-free'); return !el.querySelector('.sf-tag-check') && !el.querySelector('sf-icon'); })()"
+            },
+            {
+              "user": "click:#t-free button.sf-tag",
+              "wait": 200,
+              "check": "(() => { const el = document.querySelector('#t-free'); const root = el.querySelector('button.sf-tag'); const probe = document.createElement('i'); probe.style.backgroundColor = 'var(--sf-primary-container)'; el.append(probe); const want = getComputedStyle(probe).backgroundColor; probe.remove(); return Boolean(el.querySelector('sf-icon[icon=\"check\"]')) && root.getAttribute('aria-pressed') === 'true' && getComputedStyle(root).backgroundColor === want; })()"
+            }
+          ]
+        },
+        {
+          "id": "p13-link",
+          "title": "href makes the tag one native link with no check mark and no cross; an unsafe scheme is dropped (C145 (6))",
+          "covers": "settings.href, C145 (6)",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#t-link'); const a = el.querySelector(':scope > a.sf-tag.sf-tag--link'); return Boolean(a) && a.getAttribute('href') === '/tags/a11y' && !el.querySelector('button') && !el.querySelector('.sf-tag-check') && getComputedStyle(a.querySelector('.sf-tag-container')).textDecorationLine === 'none'; })()"
+            },
+            {
+              "check": "(() => { const el = document.querySelector('#t-js'); return !el.querySelector('a') && Boolean(el.querySelector('.sf-tag')); })()"
+            }
+          ]
+        },
+        {
+          "id": "p14-color-dot",
+          "title": "kind color draws a dot of the palette hue at the point step (8 on the default tag); the tag stays neutral; a hex takes the nearest hue (C145 (7))",
+          "covers": "settings.color, C145 (7)",
+          "steps": [
+            {
+              "check": "(() => { const dot = document.querySelector('#t-dot .sf-tag-color-icon'); const r = dot.getBoundingClientRect(); const free = getComputedStyle(document.querySelector('#t-rm .sf-tag')).backgroundColor; return dot.classList.contains('sf-hue-teal') && Math.round(r.width) === 8 && Math.round(r.height) === 8 && getComputedStyle(document.querySelector('#t-dot .sf-tag')).backgroundColor === free && document.querySelector('#t-hex .sf-tag-color-icon').classList.contains('sf-hue-teal'); })()"
             }
           ]
         }

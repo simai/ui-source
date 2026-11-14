@@ -1,0 +1,222 @@
+{
+  "$comment": "The source of sf-tag-group's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.16 and vocabulary 1.1.5: owner decision C145 (3)-(5) (2026-11-14; tags study ui-control control/research/2026-11-14-tags.md #q-group, #q-keys, #q-more, prototype prototypes/tags-study.html).",
+  "id": "smart.tag-group",
+  "tag": "sf-tag-group",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "tag",
+  "settings": {
+    "layout": {
+      "type": "enum",
+      "values": [
+        "row",
+        "wrap"
+      ],
+      "default": "row",
+      "summary": "row: one line -- filters, a table cell, a card: the tags that do not fit leave it and «+N» opens them in a popover (C58, C145 (5)); wrap: the row wraps, every tag in view (a form)"
+    },
+    "selection": {
+      "type": "enum",
+      "values": [
+        "none",
+        "one",
+        "many"
+      ],
+      "default": "none",
+      "summary": "For filter tags (kind checkbox): none leaves each tag its own; one keeps a single tag chosen (choosing one clears the others; it can be cleared); many lets each be chosen. With one or many the group reports select"
+    }
+  },
+  "values": {
+    "selected": {
+      "type": "id",
+      "summary": "The chosen tag's key (its key, else its text; §18.2); with selection many, the first chosen. Writable: chooses that tag and no other"
+    },
+    "selected-ids": {
+      "type": "list",
+      "of": {
+        "id": "id"
+      },
+      "summary": "The keys of the chosen tags in the row's order (§18.2). Writable: chooses those tags and no other (with selection one, the first)"
+    }
+  },
+  "selection": "many",
+  "events": {
+    "select": {
+      "carries": {
+        "ids": "list",
+        "id": "id",
+        "selected": "boolean"
+      },
+      "summary": "A person chose or cleared a filter tag of the row (selection one or many): ids is the whole selection, id the tag pressed and selected whether it is now chosen (vocabulary §5 select)"
+    }
+  },
+  "actions": {},
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "ArrowLeft": "previous",
+      "ArrowRight": "next",
+      "Home": "first",
+      "End": "last",
+      "Delete": "remove",
+      "Backspace": "remove"
+    }
+  },
+  "relations": [
+    {
+      "name": "cl-tag",
+      "$comment": [
+        "The row's tags, sf-tag: their row helpers (smart/tag/js/tag-row.js) and the «+N» trigger."
+      ]
+    },
+    {
+      "name": "cl-popover",
+      "$comment": [
+        "«+N» opens the hidden tags in sf-popover, the Framework's panel (C145 (5): no new look)."
+      ]
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16); it draws nothing: the tags are the page's own nodes, left where they were written; «+N» is added by DOM."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "The host is a list (role list, named by the host's aria-label) and each tag a listitem; «+N» is a listitem of its own whose button opens a dialog popover (aria-expanded, aria-haspopup). The row is one Tab stop: ArrowLeft and ArrowRight walk the tags and «+N» (mirrored right to left), Home and End go to the ends, Delete or Backspace removes the removable tag stood on (sf-tag-close) and the focus goes to its neighbour; each step is said in a polite live line, «Москва, 1 из 3, Delete — убрать» (lang runtime position, position-plain), as sf-input-lookup's chips (C139 (6)). The panel's tags are a group of their own, walked the same way; Escape closes it and returns the focus to «+N».",
+    "role": "list",
+    "name": {
+      "from": [
+        "aria-label",
+        "aria-labelledby"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "ArrowLeft": "previous",
+      "ArrowRight": "next",
+      "Home": "first",
+      "End": "last",
+      "Delete": "remove",
+      "Backspace": "remove"
+    }
+  },
+  "css-variables": {},
+  "x-summary": "A row of tags: 4 apart, a list to a screen reader, one Tab stop with arrows and Delete, one line with «+N» that opens the hidden tags in a popover, and single or multiple choice for filter tags.",
+  "x-source": {
+    "package": "framework",
+    "folder": "tag-group",
+    "brief": "Owner decision C145 (2026-11-14, decisions.md row C145): (3) a new part sf-tag-group (working name, the owner agreed): gap 4, list semantics, one Tab stop, «+N», single and multiple selection for filters; (4) keys as C139 (6): one stop, Left/Right, Delete/Backspace removes, focus to the neighbour, an announcement; (5) «+N» opens a panel with the hidden tags and their crosses. Not now: tag heights (#q-height-context waits)."
+  },
+  "x-words": [],
+  "x-decisions": [
+    "name: sf-tag-group, family tag (C145 (3), the working name the owner agreed). It is a part of the tag, as sf-avatar-group of the avatar: the tags stay sf-tag; a row of buttons is sf-button-group's, a 2-5 option switch sf-segmented's.",
+    "the tags are the page's children: the group draws none and never moves one (the template returns nothing; DOM updates only, as sf-popover). It writes role list on itself and listitem on each tag.",
+    "gap 4 (C105 H5: tags of one group gap-1/4) in both directions; a row wraps only with layout wrap.",
+    "layout row: the tags keep their width (sf-tag sheet); the group measures the row and hides the tags that do not fit from the end (data-sf-tag-over, the tag sheet's own mark), then «+N» stands after the last one shown; the first tag always stands and ends in an ellipsis. Measured again on a resize, a tag drawn or changed, a tag added or removed, and when the fonts arrive.",
+    "«+N» (C145 (5), study #q-more A): an sf-popover (placement bottom-start, width --sf-g0, offset gap-1/4) whose trigger is an interactive default tag of the first tag's size and height, named «Ещё 3: Казань, Тверь, Омск»; its surface holds a wrapping sf-tag-group of copies of the hidden tags with their crosses and checks. A press on a copy acts on the page's tag (sf-tag-close and change are sent by the page's tag, never by the copy), so the page removes or chooses the tag it owns; the row is laid out again and the panel follows. The surface pads its row with --sf-space-1/3. No new look: the popover's surface and the tag's.",
+    "keys (C145 (4), as C139 (6)): one Tab stop for the row (roving tabindex over each tag's own stop -- the label button of a filter or interactive tag, the link, else the cross -- and «+N»); ArrowLeft / ArrowRight (mirrored right to left), Home, End; Delete and Backspace remove a removable tag (sf-tag-close; the page removes the element) and the focus goes to the neighbour that took its place, or the one before the last. A polite live line says «{label}, {n} из {total}, Delete — убрать» (or without the last part for a tag that is not removable). The mouse cross is unchanged.",
+    "selection (C145 (3), §18.2): none by default; one or many for filter tags (kind checkbox). A tag is known by its key setting, else its text. one clears the others when a tag is chosen; select {ids, id, selected} reports a person's change (x-native: a tag's own change keeps its name and detail). selected and selected-ids are read from the tags and can be written.",
+    "css-variables: none in 1.0.0 -- the gap is C105's and the look is the tag's and the popover's."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "theme",
+      "i18n",
+      "responsive",
+      "accessibility"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "tag",
+      "tags",
+      "group",
+      "chips",
+      "filters",
+      "overflow"
+    ],
+    "state": {
+      "machines": {
+        "more": [
+          "closed",
+          "open"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "overflow",
+        "open"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "none",
+      "forbidden_client_responsibilities": [
+        "removing a tag (the page removes the element on sf-tag-close)"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "children"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-tag-group for any row of tags: chosen values to remove, filter chips above a list, a table cell's tags, an article's tag links.",
+      "do_not": [
+        "Do not write the row's gap, «+N» or keys by hand; the group owns them",
+        "Do not use it for buttons (sf-button-group) or a 2-5 option switch (sf-segmented)",
+        "Do not remove a tag in the group yourself before sf-tag-close: the cross and Delete ask, the page removes"
+      ],
+      "required_reads": [
+        "inputs",
+        "accessibility"
+      ],
+      "minimal_example": "<sf-tag-group aria-label=\"Города\"><sf-tag kind=\"default\" closable text=\"Москва\"></sf-tag><sf-tag kind=\"default\" closable text=\"Казань\"></sf-tag></sf-tag-group>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "recommended",
+      "keyboard": [
+        "Tab reaches the row once; ArrowLeft and ArrowRight walk the tags and «+N», Home and End go to the ends",
+        "Delete or Backspace removes the removable tag stood on; the focus goes to its neighbour",
+        "Enter or Space on «+N» opens the hidden tags; Escape closes them"
+      ],
+      "focus": "One tag of the row is in the Tab order at a time: the one last stood on."
+    }
+  }
+}

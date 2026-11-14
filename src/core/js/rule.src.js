@@ -806,6 +806,7 @@ import '../../smart/steps/rule.js';
 import '../../smart/switch/rule.js';
 import '../../smart/tabs/rule.js';
 import '../../smart/tag/rule.js';
+import '../../smart/tag-group/rule.js';
 import '../../smart/input-textarea/rule.js';
 import '../../smart/theme-generator/rule.js';
 import '../../smart/tile-metric/rule.js';
