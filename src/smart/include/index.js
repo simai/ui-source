@@ -25,6 +25,9 @@ import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
 
+// The error row's glyphs (js/templates/default.js REASONS), asked for early.
+const REASON_ICONS = [{icon: 'error'}, {icon: 'cloud_off'}];
+
 // How near the viewport a load="view" part starts loading.
 export const VIEW_MARGIN = '200px';
 
@@ -125,6 +128,9 @@ class SfInclude extends IncludeElement {
     this.sfHostState('data-loading', this._phase === 'loading');
     this.sfHostState('data-failed', this._phase === 'error');
     globalThis.addEventListener?.('online', this._online);
+    // The reasons' glyphs join the page's first icon request: a part that
+    // fails because the network is gone could not fetch cloud_off then.
+    globalThis.SF?.Loader?.preloadIcons?.(REASON_ICONS);
     this.arm();
   }
 
