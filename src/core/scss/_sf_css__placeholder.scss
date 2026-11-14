@@ -186,6 +186,18 @@
   inline-size: var(--sf-language--trigger);
 }
 
+/* Its button, drawn by its code before the button sheet has come (the
+   sheet is fetched when the code asks for it), keeps the trigger's box too:
+   unstyled (the browser's button font, no glyphs yet) it was 7-10 px wider
+   for about 300 ms, and the tools beside it moved there and back (C130).
+   The button sheet draws the same box. A list with a longer code (its code
+   slot sized to the code, the template's inline-size auto) is left to the
+   sheet: its width is the code's. */
+:where(sf-language .sf-language-parts > sf-button > button:not(:has(.sf-language-code[style*="inline-size: auto"]))) {
+  inline-size: var(--sf-language--trigger);
+  block-size: var(--sf-language--box);
+}
+
 :where(sf-language .sf-language-parts > :is(sf-segmented, sf-button-group):not(:defined)) {
   display: inline-block;
   vertical-align: middle;
@@ -201,14 +213,26 @@
   display: none;
 }
 
-/* The code's slot in the trigger: one text line of the size wide (a code
-   of two capitals is a little narrower), the code in its middle. Every code
-   of the list already stands in the same grid cell, so the trigger keeps
-   its width whatever is chosen; the slot makes that width the one held
-   above. A wider code (PT-BR) widens the slot. */
+/* The code's slot in the trigger: exactly one text line of the size wide,
+   the code in its middle. Every code of the list already stands in the same
+   grid cell, so the trigger keeps its width whatever is chosen; the slot
+   makes that width the one held above, so the box held before the code and
+   the box drawn are equal. Two capitals are about one line wide: a little
+   narrower in Inter at most steps, a little wider at the 12/16 and 18/24
+   steps (RU 16.7 in 16) and in the fallback face a cold load draws first
+   (RU 24.8 in 24), and MN is the widest (20 in 16). Such a code stands out
+   of its slot by the same amount on each side, into the text space beside
+   it, and moves nothing (C130: the header shifted 0.7-2.6 px when the slot
+   grew to the code). A list with a longer code (PT-BR, 简体: more than two
+   letters, or letters wider than a capital) is drawn by the element with
+   its slot sized to the widest code instead (its template's inline style,
+   inline-size auto; never narrower than the line). */
 :where(sf-language .sf-language-code) {
+  inline-size: var(--sf-language--line);
   min-inline-size: var(--sf-language--line);
+  grid-template-columns: minmax(0, 1fr);
   justify-items: center;
+  white-space: nowrap;
 }
 
 /* sf-input before it draws (first-paint study R222, pilot of «box from
