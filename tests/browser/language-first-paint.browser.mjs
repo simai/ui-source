@@ -13,8 +13,10 @@
 //     (the tools before it are what moved in Docara);
 //   - mode menu and search at each size of the ladder (1/3, 1/2, 1, 2, 3):
 //     before the element draws, its box is a square one control of its size
-//     high, and that is the drawn trigger's box -- the column of buttons after
-//     each never moves sideways;
+//     high; the drawn trigger is that high and wider by its code and arrow
+//     (owner decision C142: «RU ▾»), which core.css cannot know from the
+//     attributes -- recorded, not failed, until a page prints the static
+//     markup or core.css holds the trigger's width;
 //   - mode inline and auto (two languages) at each size: the box is one
 //     control high before and after, so the row below never moves;
 //   - the frames see the element before its code (undefined, nothing drawn).
@@ -141,8 +143,12 @@ try {
     const headerXs = [...new Set(frames.map((frame) => frame.header.x).filter((x) => x !== null))];
     if (headerXs.length !== 1) failures.push(`${theme} ${width}: the button after the header picker moved: ${headerXs.join(' -> ')}`);
     // The tools before it are what moved in Docara: the bar ends with the picker, so it grows toward them.
+    // Owner decision C142 (1): the trigger shows the code beside the glyph («RU ▾»), so it is wider than
+    // the square core.css holds from the attributes alone; the tools before it move by the code's width
+    // until a page prints the static markup (or core.css learns the trigger's width: open question in
+    // ui-control control/evidence, C142). Recorded, not failed; the vertical box still holds.
     const beforeXs = [...new Set(frames.map((frame) => frame.header.before).filter((x) => x !== null))];
-    if (beforeXs.length !== 1) failures.push(`${theme} ${width}: the tool before the header picker moved: ${beforeXs.join(' -> ')}`);
+    summary.headerShift = beforeXs;
     for (const [name, end] of Object.entries(last?.cases ?? {})) {
       const [mode] = name.split(' ');
       const before = frames.map((frame) => frame.cases[name]).filter((one) => one && !one.look);
@@ -152,9 +158,10 @@ try {
       if (!end.drawn) { failures.push(`${theme} ${width} ${name}: nothing drawn`); continue; }
       if (mode === 'menu' || mode === 'search') {
         if (!near(first.box[0], first.box[1])) failures.push(`${theme} ${width} ${name}: the box before is not square ${first.box}`);
-        if (!near(first.box[0], end.drawn[0]) || !near(first.box[1], end.drawn[1])) failures.push(`${theme} ${width} ${name}: box before ${first.box}, trigger drawn ${end.drawn}`);
-        const xs = [...new Set(frames.map((frame) => frame.cases[name]?.after).filter((x) => x !== undefined && x !== null))];
-        if (xs.length !== 1) failures.push(`${theme} ${width} ${name}: the mark after it moved ${xs.join(' -> ')}`);
+        if (!near(first.box[1], end.drawn[1])) failures.push(`${theme} ${width} ${name}: height before ${first.box[1]}, trigger drawn ${end.drawn[1]}`);
+        // C142 (1): wider than the square by the code and its arrow (see the header above); recorded.
+        if (!(end.drawn[0] > first.box[0])) failures.push(`${theme} ${width} ${name}: the trigger is no wider than the glyph's square: ${end.drawn}`);
+        summary.cases[name].shift = [...new Set(frames.map((frame) => frame.cases[name]?.after).filter((x) => x !== undefined && x !== null))];
       } else {
         if (!near(first.box[1], end.drawn[1])) failures.push(`${theme} ${width} ${name}: height before ${first.box[1]}, switch drawn ${end.drawn[1]}`);
         const below = [...new Set(frames.map((frame) => frame.cases[name]?.below).filter((y) => y !== undefined && y !== null))];

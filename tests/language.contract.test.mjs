@@ -17,10 +17,10 @@ test('the manifest: a leaf of family language, a form field with one cancellable
   assert.equal(manifest.tag, 'sf-language');
   assert.equal(manifest.family, 'language');
   assert.equal(manifest.version, '1.4.0');
-  assert.deepEqual(Object.keys(manifest.settings), ['languages', 'items', 'href', 'mode', 'inline-max', 'search-from', 'labels', 'size', 'apply', 'remember', 'label', 'name', 'disabled']);
-  assert.deepEqual(manifest.settings.mode.values, ['auto', 'inline', 'menu', 'search']);
+  assert.deepEqual(Object.keys(manifest.settings), ['languages', 'items', 'href', 'missing', 'home', 'mode', 'inline-max', 'search-from', 'labels', 'size', 'apply', 'remember', 'label', 'name', 'disabled']);
+  assert.deepEqual(manifest.settings.mode.values, ['auto', 'inline', 'menu', 'search', 'field']);
   assert.deepEqual(manifest.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
-  assert.equal(manifest.settings['inline-max'].default, 3);
+  assert.equal(manifest.settings['inline-max'].default, 1);
   assert.equal(manifest.settings['search-from'].default, 8);
   assert.deepEqual(Object.keys(manifest.values), ['value', 'look']);
   assert.deepEqual(Object.keys(manifest.events), ['change']);
@@ -28,7 +28,7 @@ test('the manifest: a leaf of family language, a form field with one cancellable
   assert.deepEqual(Object.keys(manifest.events.change.carries), ['value', 'previous', 'href', 'dir', 'reason']);
   assert.deepEqual(Object.keys(manifest.actions), ['select']);
   assert.equal(manifest.form.value, 'value');
-  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-segmented', 'cl-button-icon', 'cl-icon', 'cl-menu-context']);
+  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-segmented', 'cl-button', 'cl-icon', 'cl-menu-context', 'cl-dropdown']);
   assert.equal(manifest['css-variables'], undefined, 'no sheet of its own');
 });
 
@@ -39,8 +39,10 @@ test('the name is registered in the Framework\'s family language', () => {
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/language\/rule\.js';/u);
 });
 
-test('the look follows the count: 1 none, 2-3 inline, 4-7 menu, 8+ search; the thresholds move; a mode fixes one', () => {
-  assert.deepEqual([0, 1, 2, 3, 4, 7, 8, 12].map((count) => lookFor(count)), ['none', 'none', 'inline', 'inline', 'menu', 'menu', 'search', 'search']);
+test('the look follows the count (C142): 1 none, 2-7 menu, 8+ search; inline only by mode or a written inline-max; a mode fixes one', () => {
+  assert.deepEqual([0, 1, 2, 3, 4, 7, 8, 12].map((count) => lookFor(count)), ['none', 'none', 'menu', 'menu', 'menu', 'menu', 'search', 'search']);
+  assert.equal(lookFor(2, {mode: 'inline'}), 'inline');
+  assert.equal(lookFor(3, {inlineMax: 3}), 'inline');
   assert.equal(lookFor(4, {inlineMax: 4}), 'inline');
   assert.equal(lookFor(5, {searchFrom: 5}), 'search');
   assert.equal(lookFor(12, {mode: 'inline'}), 'inline');
@@ -85,7 +87,9 @@ test('the page language picks the value: the same code, else the same primary la
 
 test('it composes the Framework\'s parts and keeps their events inside', () => {
   assert.match(template, /<sf-segmented[\s\S]*appearance="track"/u);
-  assert.match(template, /<sf-button-icon[\s\S]*icon="translate"[\s\S]*scheme="on-surface"/u);
+  assert.match(template, /<sf-button\n[\s\S]*icon-start="translate"[\s\S]*icon-end="expand_more"[\s\S]*scheme="on-surface"/u);
+  assert.match(template, /slot="text" class="sf-language-code" style="display: inline-grid"/u, 'every code in one grid cell: one width');
+  assert.doesNotMatch(template, /<sf-button-icon/u);
   assert.match(template, /<sf-menu-context[\s\S]*popup/u);
   assert.match(template, /@sf-button-group-change=\$\{stop\}/u);
   assert.match(source, /onGroupChange\(event\) \{\n {4}event\.stopPropagation\(\);/u);

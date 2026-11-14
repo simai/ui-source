@@ -6,8 +6,9 @@ SF.RuleLoader['cl-language'] = {
   js: true,
   relation: [
     { name: 'cl-segmented' },
-    { name: 'cl-button-icon' },
+    { name: 'cl-button' },
     { name: 'cl-icon' },
     { name: 'cl-menu-context', lazy: true },
+    { name: 'cl-dropdown', lazy: true },
   ],
 };

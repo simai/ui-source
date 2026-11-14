@@ -1726,7 +1726,8 @@
       "composition": {
         "public_parts": [],
         "uses": [
-          "smart.button-icon",
+          "smart.button",
+          "smart.dropdown",
           "smart.icon",
           "smart.menu-context",
           "smart.segmented"
@@ -1741,13 +1742,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/language/smart.manifest.json",
-      "manifest_sha256": "7faa49e18e74e8dea8cb8868442056d3529288ac37def63dcc5c093d0022c099",
+      "manifest_sha256": "c318253fc4398520528a7af2baded197e3d3e773bffc9142f6bfda4d3bd8a0d7",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "The site's language picker. Two or three languages are a segmented switch, all in sight, one press; four to seven an icon button («translate») with a menu, each row the name in itself and in English; eight and more the same menu with search by either name or the code. One language draws nothing. A choice is a cancellable change; then the element follows the language's href or applies the language to the page (SF.language.use, lang and dir on <html>).",
+      "summary": "The site's language picker. From two languages a button with the translate glyph, the current code and expand_more («RU ▾», one width whatever is chosen) opens a menu at the C32 panel width, each row the name in itself and its name in the page's language beside it; eight and more the same menu with search, on a phone a sheet at the bottom. A settings page can write mode=\"inline\" for a segmented switch (the arrows move, Enter chooses), a form mode=\"field\" for a dropdown field with its label; an app menu takes SfLanguage.menuEntry() for its «Язык» row. A language without this page stays, marked «нет перевода — откроется главная». One language draws nothing. A choice is a cancellable change; then the element follows the language's href or applies the language to the page (SF.language.use, lang and dir on <html>).",
       "tags": [
         "language",
         "locale",
@@ -2108,7 +2109,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/menu-context/smart.manifest.json",
-      "manifest_sha256": "a84a0d39dd1b433ce3679765b6f0e156ab931a6371ef05e4ab8a311289ca3f87",
+      "manifest_sha256": "6fd60801363279c229c9ad420ba0fb8599a088390d84aa1bc4e2e50e6f5e24e6",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

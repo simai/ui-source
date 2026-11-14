@@ -1136,6 +1136,10 @@ class SfContextMenu extends ContextMenuElement {
     if (this.size === "1") child.setAttribute("size", "1");
     child.entries = entry.submenu;
     if (entry.search) child.search = entry.search;
+    // A submenu's width, as the menu's own setting reads it (C32 kinds or a
+    // length): a submenu of language rows is the panel (C142 (7)), so the
+    // second name beside each name is not cut.
+    if (entry.width) child.setAttribute("width", entry.width);
     // Selections in the submenu are the parent's to announce: a host listens
     // on one element whatever depth the item sits at.
     child.addEventListener("sf-menu-context-select", (event) => {

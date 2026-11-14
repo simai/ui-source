@@ -45,9 +45,9 @@ test('LG-8/LG-9: the menu search is remote and narrowed by the element; the sear
   const index = read('src/smart/language/index.js');
   const template = read('src/smart/language/js/templates/default.js');
   assert.match(index, /remote: true/u);
-  assert.match(index, /matchesQuery\(searchWords\(/u);
+  assert.match(read('src/smart/language/js/languages.js'), /matchesQuery\(searchWords\(/u);
   assert.doesNotMatch(index, /keywords:/u);
-  assert.match(template, /width=\$\{context\.search \? 'panel' : nothing\}/u);
+  assert.match(template, /width="panel"/u, 'every menu is the C32 panel (C142 (3))');
   assert.match(template, /@sf-menu-context-search=/u);
   assert.match(template, /@sf-menu-context-closed=/u);
 });

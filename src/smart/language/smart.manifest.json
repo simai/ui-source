@@ -3,7 +3,7 @@
   "id": "smart.language",
   "version": "1.4.0",
   "title": "Language",
-  "summary": "The site's language picker. Two or three languages are a segmented switch, all in sight, one press; four to seven an icon button («translate») with a menu, each row the name in itself and in English; eight and more the same menu with search by either name or the code. One language draws nothing. A choice is a cancellable change; then the element follows the language's href or applies the language to the page (SF.language.use, lang and dir on <html>).",
+  "summary": "The site's language picker. From two languages a button with the translate glyph, the current code and expand_more («RU ▾», one width whatever is chosen) opens a menu at the C32 panel width, each row the name in itself and its name in the page's language beside it; eight and more the same menu with search, on a phone a sheet at the bottom. A settings page can write mode=\"inline\" for a segmented switch (the arrows move, Enter chooses), a form mode=\"field\" for a dropdown field with its label; an app menu takes SfLanguage.menuEntry() for its «Язык» row. A language without this page stays, marked «нет перевода — откроется главная». One language draws nothing. A choice is a cancellable change; then the element follows the language's href or applies the language to the page (SF.language.use, lang and dir on <html>).",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -30,7 +30,8 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "smart.button-icon",
+      "smart.button",
+      "smart.dropdown",
       "smart.icon",
       "smart.menu-context",
       "smart.segmented"
@@ -65,21 +66,32 @@
         "default": "",
         "description": "The address of the site in each language, as a pattern with {code}: «/{code}/» gives /ru/ and /en/. A language with its own href keeps it. A language with an href is followed, not applied in the page"
       },
+      "missing": {
+        "type": "string",
+        "default": "",
+        "description": "The languages this page has no translation of, as codes («de fr»; owner decision C142 (6)). They stay in the list, each menu row with the line «нет перевода — откроется главная» under its name, and a choice goes to home in that language"
+      },
+      "home": {
+        "type": "string",
+        "default": "",
+        "description": "The address of the site's main page in each language, as a pattern with {code} («/{code}/»): where a language of missing goes. Not set, a missing language goes to its own href"
+      },
       "mode": {
         "type": "string",
         "default": "auto",
-        "description": "The look. auto follows the count: two or three languages a segmented switch (inline), four to seven an icon button with a menu (menu), eight and more the menu with search (search); one language draws nothing in every mode",
+        "description": "The look. auto: two languages and more are a button with the current code («RU ▾») and a menu (menu), eight and more the menu with search (search), on a phone a sheet at the bottom -- one button for every count (owner decision C142). inline is the segmented switch, for a settings page where every language is in sight (the arrows move, Enter or Space chooses); field is a form field (sf-dropdown with its label above, C142 (8)); menu and search fix those looks. One language draws nothing in every mode",
         "enum": [
           "auto",
           "inline",
           "menu",
-          "search"
+          "search",
+          "field"
         ]
       },
       "inline-max": {
         "type": "integer",
-        "default": 3,
-        "description": "In auto mode, the most languages shown at once as a switch; more open a menu",
+        "default": 1,
+        "description": "In auto mode, the most languages drawn as a segmented switch; 1, the default since 1.4.0 (owner decision C142), never: auto draws the button and menu from two languages. A settings page writes mode=\"inline\" for the switch",
         "minimum": 1
       },
       "search-from": {
@@ -91,7 +103,7 @@
       "labels": {
         "type": "string",
         "default": "name",
-        "description": "What the switch's segments say: name, the language's name in itself (Русский · English); code, its code (RU · EN), each segment keeping the name as its accessible name. The menu is not affected. The former boolean compact is a dated alias of labels=\"code\" (owner decision C134: compact means density only; noted in SF.deprecations until 2027-01-01, journal attribute-language-compact-to-labels-code)",
+        "description": "What the switch's segments say: name, the language's name in itself (Русский · English); code, its code (RU · EN), each segment keeping the name as its accessible name. The menu and the trigger are not affected: the trigger shows the code. The former boolean compact is a dated alias of labels=\"code\" (owner decision C134: compact means density only; noted in SF.deprecations until 2027-01-01, journal attribute-language-compact-to-labels-code)",
         "enum": [
           "name",
           "code"
@@ -100,7 +112,7 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "The ladder rung: the switch is a button group of that size, the trigger an icon button of that size; the menu's rows are 32 px up to 1/2 and 40 px from 1. 1/2 fits the tools slot of sf-header-site",
+        "description": "The ladder rung: the trigger is a button of that size, the switch a segmented control of that size; the menu's rows are 32 px up to 1/2 and 40 px from 1. 1/2 fits the tools slot of sf-header-site",
         "enum": [
           "1/3",
           "1/2",
@@ -125,7 +137,7 @@
       },
       "label": {
         "type": "string",
-        "description": "The control's name: the switch's group and the menu are named by it, the trigger by it and the language, «Язык: Русский». «Язык» / «Language» in the page language when not set"
+        "description": "The control's name: the switch's group and the menu are named by it, the trigger by it and the current language's name in itself, «Язык: Русский» (the code the trigger shows is not its name). «Язык» / «Language» in the page language when not set"
       },
       "name": {
         "type": "string",
@@ -135,7 +147,7 @@
       "disabled": {
         "type": "boolean",
         "default": false,
-        "description": "Disables the switch or the trigger"
+        "description": "Disables the trigger or the switch"
       },
       "value": {
         "type": "string",
@@ -145,7 +157,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The languages as a list, each {code, label?, short?, href?}: label replaces the shipped or browser name («Қазақша» written otherwise), short the code label (RU, labels=\"code\"), href the address of the site in that language. A property, or the JSON island a server prints; when it holds a language it is the list, and languages is not read"
+        "description": "The languages as a list, each {code, label?, short?, href?, missing?}: label replaces the shipped or browser name («Қазақша» written otherwise), short the code the trigger and labels=\"code\" show, href the address of the site in that language, missing true for a language this page has no translation of (as missing). A property, or the JSON island a server prints; when it holds a language it is the list, and languages is not read"
       }
     },
     "additionalProperties": false
@@ -229,7 +241,8 @@
         "none",
         "inline",
         "menu",
-        "search"
+        "search",
+        "field"
       ]
     },
     "visual_states": [
@@ -267,9 +280,9 @@
     "role": "radiogroup",
     "accessible_name": "internal",
     "keyboard": [
-      "Inline: Tab reaches the chosen language; the arrows, Home and End move between languages and choose",
-      "Menu: Tab reaches the trigger; Enter or Space opens the menu; the arrows move, a letter jumps, Enter chooses; Escape closes and returns focus to the trigger",
-      "Search: the field takes focus when the menu opens; Down moves to the rows. The menu opens with the chosen language in view; without a search the chosen row takes the focus"
+      "Inline (mode=\"inline\"): Tab reaches the chosen language; the arrows, Home and End move the focus between languages and choose nothing; Enter or Space chooses (C142 (4))",
+      "Menu (auto from two languages): Tab reaches the trigger «RU ▾»; Enter or Space opens the menu; the arrows move, a letter jumps, Enter chooses; Escape closes and returns focus to the trigger",
+      "Search: the field takes focus when the menu opens; Down moves to the rows. The menu opens with the chosen language in view; without a search the chosen row takes the focus. On a phone's sheet (from search-from languages) no field takes the focus: the chosen row does"
     ],
     "focus": "After a choice in the menu, focus returns to the trigger; in the switch it stays on the chosen segment."
   },
@@ -333,30 +346,30 @@
     "source_artifacts": [
       {
         "path": "src/smart/language/index.js",
-        "sha256": "c3d3bbfebcdf1e564e3a33f78337036b89c10479d440aea273fcf3143a28b587"
+        "sha256": "ed5bc8615a21c93df7dd739a16baf5ee7c9e9f5b49c5ddbc7e7c68bce27ba462"
       },
       {
         "path": "src/smart/language/js/templates/default.js",
-        "sha256": "8f25b01bb6d07f64f803570d83da4f457b73477c076f3f0236acbb22d82e841d"
+        "sha256": "e2c747a588971f27b0b00879ae1d9b07e8f7f8685a33bd20bfeaf73d4c7d671d"
       },
       {
         "path": "src/smart/language/rule.js",
-        "sha256": "32607b90c20e906c0d5771dc6b8b46d9da14da34bc412ada98477899e4589fa1"
+        "sha256": "50f693d112621440ca8cc7992f2a3ecbba8efe5ac57347a1ed6f5fb1c650a360"
       },
       {
         "path": "src/smart/language/docs.md",
-        "sha256": "adecc5e4176187b4902076259d7b597c81383e883ab09c28e469c8c7ba65458a"
+        "sha256": "7cde400e9948b77eb60d95943a48d348922ae0a082c3a8da2ecbb9a93460385c"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-language once in a site header (sf-header-site's tools slot at size 1/2) or in a settings form to choose the site's language from a list of codes.",
+    "use_when": "Use sf-language once in a site header (sf-header-site's tools slot at size 1/2) to choose the site's language from a list of codes: a button «RU ▾» and a menu from two languages. On a settings page where every language should be in sight write mode=\"inline\" (a segmented switch).",
     "do_not": [
       "Do not draw flags or a globe for languages; the element uses the translate glyph and the names",
       "Do not give a supported language a label of your own to fix its name; the component ships the names of its languages (data/names.json) and the browser names the rest",
       "Do not use sf-language for a country or a region; it picks languages",
-      "Do not build a separate switch for two languages and a menu for many; one element changes its look by the count"
+      "Do not build a separate switch for two languages and a menu for many; one element is the same button and menu for every count, and mode=\"inline\" is the switch of a settings page"
     ],
     "required_reads": [
       "inputs",

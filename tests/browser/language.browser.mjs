@@ -4,14 +4,17 @@
 //
 // sf-language on the built bytes with the real Loader, in sf-header-site's
 // tools slot beside the theme switch, at 1440 and 390 px, light and dark:
-// two languages (the segmented switch), five (the «translate» icon button and
-// its menu, opened), twelve (the menu with search, opened) and Arabic chosen
-// (rtl on <html>). Measured on the ladder: the switch is the height of
-// sf-button of the same size and of the theme switch beside it (rung 1/2),
-// the trigger an icon button of the rung's control height, the glyph the
-// rung's icon, the menu's rows 32 px at 1/2 and 40 px at 1, every size of the
+// two languages (owner decision C142: the button «RU ▾» and its menu, as for
+// every count), five (the same button and menu, opened), twelve (the menu
+// with search, opened), three with Arabic chosen from the menu (rtl on
+// <html>) and mode="inline" (the segmented switch of a settings page).
+// Measured on the ladder: the switch is the height of sf-button of the same
+// size and of the theme switch beside it (rung 1/2), the trigger an sf-button
+// of the rung's control height with the translate glyph, the current code and
+// expand_more, one width whatever language is chosen, its menu the C32
+// panel with each name's name in the page's language beside it, the menu's rows 32 px at 1/2 and 40 px at 1, every size of the
 // ladder for the switch. The trigger's glyph is the on-surface role. The
-// menu rows carry lang and English beside the native name; the search finds
+// menu rows carry lang; the search finds
 // Deutsch by «нем», «German» and «de». No sideways scroll, no page errors.
 // With a screenshot folder, each case is saved there as a PNG.
 import {createServer} from 'node:http';
@@ -44,17 +47,19 @@ const base = `http://127.0.0.1:${server.address().port}`;
 
 const TWELVE = 'ru en de fr es it pt tr pl uk ja ar';
 const CASES = {
-  two: {languages: 'ru en'},
+  two: {languages: 'ru en', open: true},
   five: {languages: 'ru en de fr es', open: true},
   twelve: {languages: TWELVE, open: true},
   rtl: {languages: 'ru en ar', choose: 'ar'},
+  inline: {languages: 'ru en', mode: 'inline'},
 };
+const LOOKS = {two: 'menu', five: 'menu', twelve: 'search', rtl: 'menu', inline: 'inline'};
 
 // Three named languages and the theme switch are wider than a phone's strip:
 // a site gives the header's picker labels="code" (codes) there, as docs.md says.
 const shell = (name, theme, width) => {
-  const {languages} = CASES[name];
-  const codes = width < 600 && languages.split(' ').length > 2 ? ' labels="code"' : '';
+  const {languages, mode} = CASES[name];
+  const codes = (mode === 'inline' && width < 600 && languages.split(' ').length > 2 ? ' labels="code"' : '') + (mode ? ` mode="${mode}"` : '');
   return `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';window.SF_BOOT_CONFIG={preloader:{enabled:false}};</script>
 <link rel="stylesheet" href="/distr/core/css/core.css"><script src="/distr/core/js/core.js"></script>
@@ -67,7 +72,7 @@ const shell = (name, theme, width) => {
 </sf-header-site>
 <main>
   <sf-button id="ref-1-2" size="1/2" text="Кнопка"></sf-button>
-  ${['1/3', '1/2', '1', '2', '3'].map((size) => `<div class="ladder-row" data-size="${size}" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><sf-language class="ladder" languages="ru en" size="${size}" apply="none"></sf-language><sf-button size="${size}" text="Русский"></sf-button><sf-language class="ladder-menu" languages="ru en de fr" size="${size}" apply="none"></sf-language></div>`).join('')}
+  ${['1/3', '1/2', '1', '2', '3'].map((size) => `<div class="ladder-row" data-size="${size}" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><sf-language class="ladder" languages="ru en" mode="inline" size="${size}" apply="none"></sf-language><sf-button size="${size}" text="Русский"></sf-button><sf-language class="ladder-menu" languages="ru en de fr" size="${size}" apply="none"></sf-language></div>`).join('')}
 </main></body></html>`;
 };
 
@@ -86,7 +91,7 @@ async function open(name, {width, theme}) {
   tab.on('response', (r) => { if (r.status() === 404) errors.push(`404 ${new URL(r.url()).pathname}`); });
   await tab.goto(`${base}/page`);
   await tab.waitForFunction(() => customElements.get('sf-language') && document.querySelector('#picker[data-look]'), null, {timeout: 20000});
-  await tab.waitForFunction(() => [...document.querySelectorAll('sf-language sf-segmented, sf-language sf-button-icon, sf-button')].every((el) => el.querySelector('button, a')), null, {timeout: 10000}).catch(() => null);
+  await tab.waitForFunction(() => [...document.querySelectorAll('sf-language sf-segmented, sf-button')].every((el) => el.querySelector('button, a')), null, {timeout: 10000}).catch(() => null);
   await tab.waitForLoadState('networkidle', {timeout: 15000}).catch(() => null);
   await tab.evaluate(() => document.fonts.ready);
   await tab.waitForTimeout(500);
@@ -113,7 +118,7 @@ for (const theme of ['light', 'dark']) {
       const {tab, context, errors} = await open(name, {width, theme});
       const ladder = await tab.evaluate(LADDER, '1/2');
       const look = await tab.evaluate(() => document.querySelector('#picker').getAttribute('data-look'));
-      ok(`${label}: the look follows the count`, look === {two: 'inline', five: 'menu', twelve: 'search', rtl: 'inline'}[name], look);
+      ok(`${label}: the look follows the count`, look === LOOKS[name], look);
 
       if (look === 'inline') {
         const g = await tab.evaluate(() => {
@@ -132,21 +137,36 @@ for (const theme of ['light', 'dark']) {
       } else {
         const g = await tab.evaluate(() => {
           const r = (el) => el.getBoundingClientRect();
-          const button = document.querySelector('#picker sf-button-icon button');
-          const icon = button.querySelector('sf-icon, .sf-icon, i');
+          const button = document.querySelector('#picker sf-button button');
+          // The drawn glyph (the .sf-icon element), not the sf-icon host, which draws no box.
+          const icon = button.querySelector('.sf-icon') ?? button.querySelector('sf-icon, i');
+          const glyphs = [...button.querySelectorAll('.sf-icon')].map((one) => one.textContent.trim());
+          const shown = [...button.querySelectorAll('.sf-language-code > span')].filter((one) => getComputedStyle(one).visibility === 'visible').map((one) => one.textContent.trim());
           const theme = document.querySelector('#theme .sf-button-group');
           const root = getComputedStyle(document.documentElement);
           return {
             h: r(button).height, w: r(button).width, mid: r(button).top + r(button).height / 2, themeMid: r(theme).top + r(theme).height / 2,
             glyph: icon?.textContent.trim(), ink: getComputedStyle(icon ?? button).color, onSurface: root.getPropertyValue('--sf-on-surface').trim(),
-            name: button.getAttribute('aria-label'),
+            name: button.getAttribute('aria-label'), glyphs, shown,
           };
         });
-        ok(`${label}: the trigger is an icon button of the rung's control height, on the theme switch's centre`, near(g.h, ladder.control) && near(g.w, ladder.control) && near(g.mid, g.themeMid, 1), JSON.stringify(g));
-        ok(`${label}: the glyph is «translate» in the on-surface role, named «Язык: Русский»`, g.glyph === 'translate' && g.name === 'Язык: Русский', JSON.stringify(g));
+        ok(`${label}: the trigger is a button of the rung's control height, on the theme switch's centre`, near(g.h, ladder.control) && near(g.mid, g.themeMid, 1), JSON.stringify(g));
+        ok(`${label}: the trigger is «translate», the code RU and expand_more, named «Язык: Русский»`, g.glyphs.join() === 'translate,expand_more' && g.shown.join() === 'RU' && g.name === 'Язык: Русский', JSON.stringify(g));
+        const widths = await tab.evaluate(async () => {
+          const el = document.querySelector('#picker');
+          const codes = el.languageList.map((one) => one.code);
+          const out = [];
+          for (const code of [...codes.slice(1), codes[0]]) {
+            el.select(code);
+            await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
+            out.push(el.querySelector('sf-button button').getBoundingClientRect().width);
+          }
+          return out;
+        });
+        ok(`${label}: the trigger keeps one width whatever language is chosen (C142)`, widths.every((one) => near(one, g.w)), JSON.stringify({first: g.w, widths}));
         const onSurface = await tab.evaluate(() => { const probe = document.createElement('span'); probe.style.color = 'var(--sf-on-surface)'; document.body.append(probe); const c = getComputedStyle(probe).color; probe.remove(); return c; });
         ok(`${label}: the glyph's colour is --sf-on-surface`, rgb(g.ink) === rgb(onSurface), `${g.ink} vs ${onSurface}`);
-        await tab.click('#picker sf-button-icon button');
+        await tab.click('#picker sf-button button');
         await tab.waitForTimeout(500);
         const m = await tab.evaluate(() => {
           const r = (el) => el.getBoundingClientRect();
@@ -158,13 +178,16 @@ for (const theme of ['light', 'dark']) {
             count: rows.length, heights: [...new Set(rows.map((row) => Math.round(r(row).height * 10) / 10))],
             de: de && {label: de.querySelector('.sf-context-menu-item-label')?.textContent.trim(), value: de.querySelector('.sf-context-menu-item-value')?.textContent.trim()},
             langs: rows.every((row) => row.lang), checked: rows.filter((row) => row.getAttribute('aria-checked') === 'true').map((row) => row.lang),
-            panel: surface && r(surface), search: Boolean(field), focusOnField: document.activeElement === field,
+            panel: surface && r(surface), search: Boolean(field), focusOnField: document.activeElement === field, sheet: Boolean(surface?.hasAttribute('data-sf-sheet')),
             overflow: document.documentElement.scrollWidth > innerWidth,
           };
         });
-        const rows = name === 'twelve' ? 12 : 5;
+        const rows = CASES[name].languages.split(' ').length;
         ok(`${label}: the menu opens with a row per language, each in its language, Russian checked`, m.count === rows && m.langs && m.checked.join() === 'ru', JSON.stringify(m));
-        ok(`${label}: a row is the native name with English beside it`, m.de?.label === 'Deutsch' && m.de?.value === 'German', JSON.stringify(m.de));
+        if (CASES[name].languages.split(' ').includes('de')) ok(`${label}: a row is the native name with its name in the page's language beside it (C142 (3))`, m.de?.label === 'Deutsch' && m.de?.value === 'немецкий', JSON.stringify(m.de));
+        const sheet = name === 'twelve' && width < 600;
+        if (sheet) ok(`${label}: from eight languages on a phone the menu is the sheet at the bottom, the screen's width (C142 (5))`, m.sheet && m.panel && near(m.panel.width, width, 1) && near(m.panel.bottom, 760, 1), JSON.stringify(m.panel));
+        else ok(`${label}: the menu is the C32 panel, 20rem (C142 (3))`, m.panel && near(m.panel.width, 320, 1), JSON.stringify(m.panel));
         // The menu's own rung (sf-menu-context size 1/2): a row is a control
         // of the rung (owner C05, R029) -- 32 px wide, less on a phone where
         // the ladder is tighter.
@@ -179,7 +202,8 @@ for (const theme of ['light', 'dark']) {
         ok(`${label}: the menu's rows are one height, the menu's rung 1/2 (${row} px)`, m.heights.length === 1 && near(m.heights[0], row) && (width < 600 || near(row, 32)), JSON.stringify({heights: m.heights, row}));
         ok(`${label}: the menu stays in the window`, m.panel && m.panel.left >= -0.5 && m.panel.right <= width + 0.5 && !m.overflow, JSON.stringify(m.panel));
         if (name === 'twelve') {
-          ok(`${label}: the search field takes focus`, m.search && m.focusOnField, JSON.stringify(m));
+          if (sheet) ok(`${label}: the sheet's search is on top and takes no focus, so no keyboard covers the list (C142 (5))`, m.search && !m.focusOnField, JSON.stringify(m));
+          else ok(`${label}: the search field takes focus`, m.search && m.focusOnField, JSON.stringify(m));
           const found = [];
           for (const query of ['нем', 'German', 'de']) {
             await tab.fill('#picker .sf-context-menu-search-input', query);
@@ -190,31 +214,34 @@ for (const theme of ['light', 'dark']) {
           await tab.fill('#picker .sf-context-menu-search-input', '');
           await tab.waitForTimeout(150);
         } else {
-          ok(`${label}: five languages have no search`, !m.search, '');
+          ok(`${label}: ${rows} languages have no search`, !m.search, '');
         }
       }
       if (shots) await tab.screenshot({path: join(shots, `language-${name}-${width}-${theme}.png`), clip: {x: 0, y: 0, width, height: look === 'inline' ? 140 : 560}});
 
       if (name === 'rtl') {
-        await tab.click('#picker button[role="radio"][lang="ar"]');
+        const isOpen = await tab.evaluate(() => Boolean(document.querySelector('#picker sf-menu-context .sf-context-menu')?.matches(':popover-open')));
+        if (!isOpen) await tab.click('#picker sf-button button');
+        await tab.waitForTimeout(400);
+        await tab.click('#picker sf-menu-context [role="menuitemradio"][lang="ar"]');
         await tab.waitForTimeout(400);
         const a = await tab.evaluate(() => ({lang: document.documentElement.lang, dir: document.documentElement.dir, current: window.SF.language.current(), overflow: document.documentElement.scrollWidth > innerWidth,
-          order: (() => { const r = (el) => el.getBoundingClientRect(); const b = [...document.querySelectorAll('#picker button[role="radio"]')]; return b.map((x) => [x.lang, Math.round(r(x).left)]); })()}));
-        ok(`${label}: Arabic is applied: lang ar, dir rtl, SF.language ar, the switch runs right to left`, a.lang === 'ar' && a.dir === 'rtl' && a.current === 'ar' && a.order[0][1] > a.order[2][1] && !a.overflow, JSON.stringify(a));
+          shown: [...document.querySelectorAll('#picker .sf-language-code > span')].filter((one) => getComputedStyle(one).visibility === 'visible').map((one) => one.textContent.trim()).join()}));
+        ok(`${label}: Arabic is applied from the menu: lang ar, dir rtl, SF.language ar, the trigger shows AR`, a.lang === 'ar' && a.dir === 'rtl' && a.current === 'ar' && a.shown === 'AR' && !a.overflow, JSON.stringify(a));
         if (shots) await tab.screenshot({path: join(shots, `language-rtl-applied-${width}-${theme}.png`), clip: {x: 0, y: 0, width, height: 140}});
       }
 
       if (name === 'two' && width === 1440 && theme === 'light') {
-        // The ladder: every size of the switch is sf-button's height of the same size, and so is the trigger.
+        // The ladder: every size of the switch (mode="inline") is sf-button's height of the same size, and so is the trigger.
         const sizes = await tab.evaluate(() => ['1/3', '1/2', '1', '2', '3'].map((size) => {
           const r = (el) => el?.getBoundingClientRect();
           const row = document.querySelector(`.ladder-row[data-size="${size}"]`);
           const group = row.querySelector('sf-language.ladder .sf-button-group');
           const button = row.querySelector(':scope > sf-button button');
-          const trigger = row.querySelector('sf-language.ladder-menu sf-button-icon button');
+          const trigger = row.querySelector('sf-language.ladder-menu sf-button button');
           return {size, group: r(group)?.height, button: r(button)?.height, trigger: r(trigger)?.height, triggerWidth: r(trigger)?.width};
         }));
-        ok(`ladder: the switch and the trigger are sf-button's height at every size`, sizes.every((s) => near(s.group, s.button) && near(s.trigger, s.button) && near(s.triggerWidth, s.button)), JSON.stringify(sizes));
+        ok(`ladder: the switch and the trigger are sf-button's height at every size`, sizes.every((s) => near(s.group, s.button) && near(s.trigger, s.button)), JSON.stringify(sizes));
       }
       ok(`${label}: no page errors`, !errors.length, errors.join(' | '));
       await context.close();

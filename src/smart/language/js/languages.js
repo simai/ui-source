@@ -7,7 +7,7 @@
 // element gives this module the shipped names (useNames), so the module
 // itself has no import a plain Node.js test cannot take.
 
-export const MODES = ['auto', 'inline', 'menu', 'search'];
+export const MODES = ['auto', 'inline', 'menu', 'search', 'field'];
 export const SIZES = ['1/3', '1/2', '1', '2', '3'];
 
 // The languages written right to left, by their primary subtag, where the
@@ -96,8 +96,62 @@ function capitalised(name, code) {
   }
 }
 
-/** The name of a language in itself: «Deutsch» for de. */
+// A code's parts: the primary language, and the script and region subtags
+// that make it a variant (pt-BR, zh-Hant), or '' when it has none.
+function partsOf(code) {
+  const [primary = '', ...rest] = String(code).split('-');
+  const script = rest.find((part) => /^[a-z]{4}$/iu.test(part)) || '';
+  const region = rest.find((part) => /^([a-z]{2}|\d{3})$/iu.test(part)) || '';
+  return {primary: primary.toLowerCase(), script, region};
+}
+
+// A name from the browser in its standard form: the language and, in
+// brackets, what makes the variant («português (Brasil)», «中文（简体）»),
+// not the dialect name («português europeu», «简体中文»).
+function standardName(code, inLanguage) {
+  try {
+    const name = new Intl.DisplayNames([inLanguage], {type: 'language', languageDisplay: 'standard', fallback: 'none'}).of(code);
+    return name && name !== code ? name : '';
+  } catch {
+    return '';
+  }
+}
+
+function subtagName(type, subtag, inLanguage) {
+  try {
+    return new Intl.DisplayNames([inLanguage], {type, fallback: 'none'}).of(subtag) || '';
+  } catch {
+    return '';
+  }
+}
+
+// What makes a variant, in a language: the region («Бразилия») or the script.
+function qualifierIn(code, inLanguage) {
+  const {script, region} = partsOf(code);
+  if (region) return subtagName('region', region.toUpperCase(), inLanguage);
+  if (script) return subtagName('script', script.charAt(0).toUpperCase() + script.slice(1).toLowerCase(), inLanguage);
+  return '';
+}
+
+/** Whether a code is a variant of a language: it names a script or a region (pt-BR, zh-Hant). */
+export function isVariant(code) {
+  const {script, region} = partsOf(code);
+  return Boolean(script || region);
+}
+
+/**
+ * The name of a language in itself: «Deutsch» for de. A variant is the full
+ * name with what makes it one, in its own words (owner decision C142 (9)):
+ * «Português (Brasil)», «Português (Portugal)», «中文（简体）».
+ */
 export function nativeName(code) {
+  if (isVariant(code)) {
+    const full = standardName(code, code);
+    if (full) return capitalised(full, code);
+    const base = displayName(partsOf(code).primary, partsOf(code).primary);
+    const qualifier = qualifierIn(code, code);
+    if (base && qualifier) return capitalised(`${base} (${qualifier})`, code);
+  }
   return capitalised(displayName(code, code), code) || code.toUpperCase();
 }
 
@@ -111,43 +165,102 @@ export function nameIn(code, language) {
   return displayName(code, language);
 }
 
+/**
+ * The second name of a menu row: the language's name in the page's language
+ * (owner decision C142 (3): «Deutsch немецкий» on a Russian page, W3C
+ * language navigation), as it is written in running text. A variant says
+ * what makes it one: «португальский, Бразилия»; a script variant the name
+ * the component ships («китайский, упрощенное письмо»). '' when the page's
+ * language has no name for it.
+ */
+export function pageName(code, page) {
+  const language = text(page) || 'en';
+  if (isVariant(code)) {
+    const {primary, region} = partsOf(code);
+    if (region) {
+      const base = displayName(primary, language);
+      const qualifier = qualifierIn(code, language);
+      if (base && qualifier) return `${base}, ${qualifier}`;
+    }
+    const shipped = shippedName(code, language);
+    if (shipped) return shipped;
+    const full = standardName(code, language);
+    if (full) return full;
+  }
+  return displayName(code, language);
+}
+
 /** The code as a code label (labels="code") shows it: RU, EN, PT-BR. */
 export function shortLabel(code) {
   return code.toUpperCase();
 }
 
+// Chinese is told apart by its script, not its country (C142 (9)): the
+// labels Chinese sites themselves write.
+const CHINESE_SCRIPT = {hans: '简体', hant: '繁體'};
+const CHINESE_REGION_SCRIPT = {cn: 'hans', sg: 'hans', my: 'hans', tw: 'hant', hk: 'hant', mo: 'hant'};
+
+/**
+ * The code a list shows for a language (the trigger, labels="code"): the
+ * language alone while the list holds one variant of it («PT» for pt-BR);
+ * the region too when it holds two («PT-BR», «PT-PT»); Chinese by its script
+ * («简体», «繁體»). Owner decision C142 (9).
+ */
+export function shortLabelIn(code, list) {
+  const {primary, script, region} = partsOf(code);
+  const variants = list.filter((one) => partsOf(one).primary === primary).length;
+  if (variants < 2) return primary.toUpperCase();
+  if (primary === 'zh') {
+    const by = (script || CHINESE_REGION_SCRIPT[region.toLowerCase()] || '').toLowerCase();
+    if (CHINESE_SCRIPT[by]) return CHINESE_SCRIPT[by];
+  }
+  return shortLabel(code);
+}
+
 /**
  * The languages as given: codes in a string («ru en de», commas allowed), or a
- * list of codes or of {code, label, href}. `href` (a pattern with {code})
- * gives each language without its own href one. Unknown codes and repeats are
- * left out.
+ * list of codes or of {code, label, short, href, missing}. `href` (a pattern
+ * with {code}) gives each language without its own href one. A language this
+ * page has no translation for -- written in `missing` («de fr») or an item's
+ * missing: true -- stays in the list (C142 (6)); its address is `home` (a
+ * pattern with {code}) when given, the site's main page in that language.
+ * Unknown codes and repeats are left out.
  */
-export function normalizeLanguages(languages, items, href = '') {
+export function normalizeLanguages(languages, items, href = '', {missing = '', home = ''} = {}) {
   const source = Array.isArray(items) && items.length
     ? items
     : (Array.isArray(languages) ? languages : text(languages).split(/[\s,;]+/u));
   const pattern = text(href);
+  const homePattern = text(home);
+  const absent = new Set(text(missing).split(/[\s,;]+/u).map((one) => canonicalCode(one).toLowerCase()).filter(Boolean));
   const seen = new Set();
-  const list = [];
+  const given = [];
   for (const entry of source) {
-    const given = typeof entry === 'string' ? {code: entry} : (entry && typeof entry === 'object' ? entry : null);
-    if (!given) continue;
-    const code = canonicalCode(given.code ?? given.value ?? given.lang);
+    const one = typeof entry === 'string' ? {code: entry} : (entry && typeof entry === 'object' ? entry : null);
+    if (!one) continue;
+    const code = canonicalCode(one.code ?? one.value ?? one.lang);
     if (!code || seen.has(code.toLowerCase())) continue;
     seen.add(code.toLowerCase());
+    given.push([code, one]);
+  }
+  const codes = given.map(([code]) => code);
+  return given.map(([code, one]) => {
     const own = nativeName(code);
-    const label = text(given.label) || own;
-    list.push({
+    const untranslated = one.missing === true || absent.has(code.toLowerCase());
+    const address = untranslated && homePattern
+      ? homePattern.replace(/\{(code|lang)\}/gu, code)
+      : text(one.href) || (pattern ? pattern.replace(/\{(code|lang)\}/gu, code) : '');
+    return {
       code,
-      label,
+      label: text(one.label) || own,
       native: own,
       english: englishName(code),
-      short: text(given.short) || shortLabel(code),
-      href: text(given.href) || (pattern ? pattern.replace(/\{(code|lang)\}/gu, code) : ''),
+      short: text(one.short) || shortLabelIn(code, codes),
+      href: address,
+      missing: untranslated,
       dir: dirOf(code),
-    });
-  }
-  return list;
+    };
+  });
 }
 
 // What a search compares: lower case in the root locale, without accents
@@ -183,11 +296,18 @@ export function matchesQuery(words, query) {
   return parts.every((part) => words.some((word) => word.startsWith(part)));
 }
 
-/** The look for a number of languages: none, inline, menu or search. */
-export function lookFor(count, {mode = 'auto', inlineMax = 3, searchFrom = 8} = {}) {
+/**
+ * The look for a number of languages: none, inline, menu, search or field. In auto
+ * every count from two is the menu (owner decision C142: one button, no
+ * jump of width from a track to a button when a language is added), from
+ * searchFrom the menu with search; the track is mode="inline", for a
+ * settings page. inlineMax (1 since 1.4.0) still lets auto draw the track up
+ * to that count for a page that writes it.
+ */
+export function lookFor(count, {mode = 'auto', inlineMax = 1, searchFrom = 8} = {}) {
   if (count < 2) return 'none';
-  if (mode === 'inline' || mode === 'menu' || mode === 'search') return mode;
-  const inline = Number.isFinite(Number(inlineMax)) ? Number(inlineMax) : 3;
+  if (mode === 'inline' || mode === 'menu' || mode === 'search' || mode === 'field') return mode;
+  const inline = Number.isFinite(Number(inlineMax)) ? Number(inlineMax) : 1;
   const search = Number.isFinite(Number(searchFrom)) ? Number(searchFrom) : 8;
   if (count >= search) return 'search';
   return count <= inline ? 'inline' : 'menu';
@@ -203,4 +323,31 @@ export function matchLanguage(list, value) {
   return list.find((language) => language.code.toLowerCase() === primary)
     ?? list.find((language) => language.code.toLowerCase().split('-')[0] === primary)
     ?? null;
+}
+
+/**
+ * The menu rows of a list of languages (sf-menu-context entries): the name in
+ * itself; beside it, as the row's value, its name in the page's language
+ * (owner decision C142 (3)), left out when it is the same word; under it, for
+ * a language this page has no translation of, the line `missing` (C142 (6));
+ * the radio mark on the chosen one; each row in its own language. A query
+ * keeps the rows whose words it begins (research LG-8). `prefix` goes before
+ * each row's id (an app menu's «language:»).
+ */
+export function languageRows(list, current, {page = 'en', query = '', missing = '', prefix = ''} = {}) {
+  const same = (a, b) => String(a).toLocaleLowerCase() === String(b).toLocaleLowerCase();
+  return list
+    .filter((language) => !query || matchesQuery(searchWords(language.label, language.native, language.english, nameIn(language.code, page), pageName(language.code, page), language.code), query))
+    .map((language) => {
+      const second = pageName(language.code, page);
+      return {
+        id: `${prefix}${language.code}`,
+        text: language.label,
+        value: second && !same(second, language.label) && !same(second, language.native) ? second : undefined,
+        caption: language.missing && missing ? missing : undefined,
+        kind: 'radio',
+        checked: language.code === current?.code,
+        lang: language.code,
+      };
+    });
 }
