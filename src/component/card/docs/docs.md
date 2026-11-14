@@ -28,6 +28,12 @@ same; `--sf-card-title-size` and `--sf-card-title-weight` change it. In a narrow
 word breaks at a hyphen where the language allows it (`hyphens: auto`, with
 the page's `lang`), and only a word with no hyphen point breaks anywhere.
 
+A rounded block inside a card -- a card in a card, the picture of an
+`.sf-figure` -- takes the nested corner (C173 (5)): the card's corner less its
+inset, never under 4 px. With the surface radius (8) and the card's inset (20,
+16 on a phone) that is 4 px at every width (1.6.1). A plain card has no frame,
+so what it holds keeps its own corner.
+
 `sf-card--plain` keeps the column and drops the surface: no fill, no edge, no
 padding. Use it inside a grid of cards that needs no frames.
 

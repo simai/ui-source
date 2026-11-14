@@ -105,6 +105,21 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
     background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-transparent)));
   }
 
+  // A rounded block inside a card -- a card in a card, a figure's picture --
+  // takes the nested corner (C173 (5)): the card's corner less its inset,
+  // never under 4 -- max(var(--sf-a4), calc(<host corner> - <inset>)). The
+  // card's corner (8) is under its inset (20, 16 on a phone and compact), so
+  // it is 4 at every width; it was the card's own 8, too round inside the
+  // frame. A plain card has no frame and no inset, so what it holds keeps its
+  // own corner. The card's and the figure's own variables still win.
+  :where(.sf-card:not(.sf-card--plain)) .sf-card:not(.sf-card--plain) {
+    border-radius: var(--sf-card-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2))));
+  }
+
+  :where(.sf-card:not(.sf-card--plain)) .sf-figure {
+    --sf-figure-radius: max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2)));
+  }
+
   .sf-card--plain {
     padding: var(--sf-0);
     background-color: var(--sf-transparent);
