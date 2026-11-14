@@ -158,11 +158,18 @@ test('every public variable is read by its component\'s stylesheet', async () =>
   }
 });
 
+// One named exception (owner decision C140 (2), badges study BG-7): a colour
+// that comes from data -- a choice option's colour in a table cell or a filter
+// -- is the author's colour, and it reaches the badge through the badge's
+// public colour variables, as a palette step only (helpers/option-badge.js).
+const DATA_COLOUR = {'src/smart/helpers/option-badge.js': ['--sf-badge-background-color', '--sf-badge-color']};
+
 test('the Framework never sets a public variable', async () => {
   const names = contract.components.flatMap((entry) => entry.variables.map((variable) => variable.name));
   for (const file of await walk('src')) {
     const source = await read(file);
     for (const name of names) {
+      if (DATA_COLOUR[file]?.includes(name)) continue;
       assert.doesNotMatch(source, new RegExp(`(^|[;{\\s])${name}\\s*:`, 'mu'), `${file} sets ${name}`);
     }
   }

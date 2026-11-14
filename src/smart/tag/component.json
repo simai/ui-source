@@ -2,7 +2,7 @@
   "$comment": "The source of sf-tag's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/tag (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.tag",
   "tag": "sf-tag",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "kind": "leaf",
   "family": "tag",
   "settings": {
@@ -28,7 +28,7 @@
         "error"
       ],
       "default": "",
-      "summary": "What the tag reports, in the shared status vocabulary. Leave it empty for a tag that reports nothing."
+      "summary": "What the tag reports, in the shared status vocabulary, for a tag a person presses or removes (interactive or closable): the same hue as the badge of that status. On a tag that is neither, the status draws the tonal badge of that status instead (owner decision C140 (6)). Leave it empty for a tag that reports nothing."
     },
     "appearance": {
       "type": "enum",
@@ -176,6 +176,13 @@
   "relations": [
     {
       "name": "icon-buttons"
+    },
+    {
+      "name": "badges",
+      "$comment": [
+        "A status tag that is neither interactive nor closable draws the tonal",
+        "badge of its status (owner decision C140 (6)): the badge's class sheet."
+      ]
     },
     {
       "name": "tags"
@@ -361,7 +368,8 @@
     "version 1.3.5 (2026-11-10, sf-input-lookup precheck LK-06): a patch. The remove button is sf-button-close, plain (owner decision C14: a tag's remove has no spot, the cross darkens on hover and the keyboard ring stands around it); it was sf-button-icon kind=\"close\", the name C14 retired. The box, the cross and its 2px line are as before (the tag still asks for size 1/3 and draws the box from its line); the base of the plain ink is the tag's colour; a disabled tag's cross takes the disabled ink (on-disable). The rule loads cl-button-close in place of cl-button-icon. With component.tags 1.2.2, an avatar on a line tag is the line (24 at line 1 on a desktop, 20 on a phone; it was the tag's own text line, 20 and 16). Settings, values, events and keys unchanged. Also: the empty scss/_smart__tag.scss is gone: no bundle imported it and it held nothing (audit of dead Smart sheets, 2026-11-11); nothing drawn differently.",
     "version 1.3.6 (2026-11-11): a patch, nothing drawn differently. The sheet reads the C16 roles by their current names where it read the former ones, which are var() of them wherever they are declared (src/core/contracts/token-aliases.v1.json, sf-role-aliases): --sf-disable → --sf-surface-disabled. Settings, values, events and keys unchanged.",
     "version 1.3.6, also (2026-11-11, audit W8, choice controls): with component.tags 1.2.2 the check of kind checkbox is a checkbox box of the tag's size, the tag's text line, its mark at the tag's text size; it was 16 at every size.",
-    "version 1.4.0 (2026-11-10, docs precheck TG-02): a minor. The setting height (low, default, high, highest; default default) picks the tag's height from the size's tightness steps, as sf-button does (owner decision C27), through the class sf-tag--height-<height> of component.tags 1.3.0. spacing, which set the same block padding under the buttons' former density names, is deprecated (journal attribute-tag-spacing-to-height, until 2027-01-01): compact, comfortable and spacious draw as low, high and highest, height wins when both are given, and the page's spacing is noted once in SF.deprecations and the console. The tag prints sf-tag--height-* in place of spacing-*. appearance=\"outline\" names the faint fill with a hairline edge (applied decision on docs precheck smart content, d); surface, the word C15 retired, is its dated value alias until 2027-01-01 (journal value-tag-appearance-surface-to-outline), drawn the same and noted once; colours unchanged (fix/backgrounds-c41-c42 owns them). An active or disabled tag keeps its size's height (component.tags 1.3.0; docs precheck smart content TG-01: an active checkbox tag of size 1/2 grew from 32 to 36, 28 to 32 on a phone). An avatar tag's picture address is a quoted url(). Events and keys unchanged."
+    "version 1.4.0 (2026-11-10, docs precheck TG-02): a minor. The setting height (low, default, high, highest; default default) picks the tag's height from the size's tightness steps, as sf-button does (owner decision C27), through the class sf-tag--height-<height> of component.tags 1.3.0. spacing, which set the same block padding under the buttons' former density names, is deprecated (journal attribute-tag-spacing-to-height, until 2027-01-01): compact, comfortable and spacious draw as low, high and highest, height wins when both are given, and the page's spacing is noted once in SF.deprecations and the console. The tag prints sf-tag--height-* in place of spacing-*. appearance=\"outline\" names the faint fill with a hairline edge (applied decision on docs precheck smart content, d); surface, the word C15 retired, is its dated value alias until 2027-01-01 (journal value-tag-appearance-surface-to-outline), drawn the same and noted once; colours unchanged (fix/backgrounds-c41-c42 owns them). An active or disabled tag keeps its size's height (component.tags 1.3.0; docs precheck smart content TG-01: an active checkbox tag of size 1/2 grew from 32 to 36, 28 to 32 on a phone). An avatar tag's picture address is a quoted url(). Events and keys unchanged.",
+    "version 1.5.0 (2026-11-14, owner decision C140 (6), badges study control/research/2026-11-14-badges.md BG-6): a minor, a look. A status belongs to a tag a person presses or removes: a tag with status that is neither interactive nor closable draws the tonal badge of that status (sf-badge--tonal sf-badge--<status>, class sf-tag-badge), the badge's size for a row of the tag's size (1/3 for sizes 1/3, 1/2 and 1; 1/2 for 2; 1 for 3) or on the tag's line; it drew a tag with a status dot, the same mark as a tonal badge in another shape and a step taller (28 beside 24 on the phone). The badge's root takes the tag's root-class and root-style, as the tag's root did. Interactive and closable status tags are unchanged; their colours are the badge's hue of that status (container fill, status ink), info, success, warning and error alike. Relation badges added (the class sheet). Settings, values, events and keys unchanged."
   ],
   "x-rule": {
     "$comment-after": [

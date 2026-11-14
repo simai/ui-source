@@ -43,7 +43,7 @@ const sfTagMeta = {
         "error"
       ],
       "default": "",
-      "description": "What the tag reports, in the shared status vocabulary. Leave it empty for a tag that reports nothing."
+      "description": "What the tag reports, in the shared status vocabulary, for a tag a person presses or removes (interactive or closable): the same hue as the badge of that status. On a tag that is neither, the status draws the tonal badge of that status instead (owner decision C140 (6)). Leave it empty for a tag that reports nothing."
     },
     "appearance": {
       "kind": "enum",

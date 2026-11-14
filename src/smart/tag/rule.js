@@ -7,6 +7,9 @@ SF.RuleLoader['cl-tag'] = {
   css: true,
   relation: [
     { name: 'icon-buttons' },
+    // A status tag that is neither interactive nor closable draws the tonal
+    // badge of its status (owner decision C140 (6)): the badge's class sheet.
+    { name: 'badges' },
     { name: 'tags' },
     { name: 'avatars' },
     { name: 'dot' },

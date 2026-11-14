@@ -129,10 +129,42 @@ function renderClose(context) {
         `;
 }
 
+// A status on a tag that is neither pressed nor removed is a badge (owner
+// decision C140 (6), badges study BG-6): the tag draws the tonal badge of the
+// same status -- the same container fill, the same hue -- in the badge's size
+// for a row of the tag's size (host -> badge: 1/3 in rows 1/3 to 1, 1/2 in a
+// row 2, 1 in a row 3), or on the tag's line when it has one. Status on a tag
+// is for a filter or a chosen value: interactive or closable.
+const BADGE_FOR_TAG = {'1/3': '1/3', '1/2': '1/3', '1': '1/3', '2': '1/2', '3': '1'};
+
+function renderStatusBadge(context, textContent) {
+    const classes = [
+        'sf-badge',
+        'sf-badge--tonal',
+        `sf-badge--${context.status}`,
+        `sf-badge--size-${BADGE_FOR_TAG[context.size] || '1/3'}`,
+        context.line ? `sf-badge--line-${context.line}` : '',
+        'sf-tag-badge',
+        'inline-flex',
+        'flex-row',
+        'flex-nowrap',
+        'justify-center',
+        'items-center',
+        `${context.rootClass || ''}`,
+    ].filter(Boolean);
+    return html`<span class=${classes.join(' ')} style=${context.rootStyle || nothing}><span
+        class="sf-badge-text-container flex items-center"><span
+        class="sf-badge-text">${textContent}</span></span></span>`;
+}
+
 export function renderTagTemplate(context) {
     const textContent = context.component?.hasSlotContent?.('text')
         ? context.component.getSlotContent('text')
         : context.text;
+
+    if (context.status && !context.interactive && !context.closable) {
+        return renderStatusBadge(context, textContent);
+    }
 
     const classes = [
         'sf-tag',

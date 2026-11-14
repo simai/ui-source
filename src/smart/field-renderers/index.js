@@ -421,16 +421,17 @@ export function renderFilterField(field = {}, host) {
 // 51 on mobile.
 const CELL_LINE = '1/2';
 
-// A choice badge in a cell is tonal, not the filled default. sf-badges defaults
-// appearance to `main`, so the cells shipped filled and the consumer's owner
-// asked for the calmer one -- and a table row is the place for it: a column of
+// A choice badge in a cell is tonal (sf-badge's default since 1.6.0, C140; it
+// was main, so the cells shipped filled and the consumer's owner asked for the
+// calmer one) -- and a table row is the place for it: a column of
 // filled badges reads as a column of buttons. A field may still ask for another
 // of the three, which is the same arrangement as the boolean's words: the set
 // carries a sensible default, not a decision nobody can change.
 //
 // It composes with colour rather than replacing it. A scheme name reaches the
-// scheme's tonal badge; a hex colour already writes --sf-badge--background-color
-// as a 24% mix and its own text colour, so the tint survives the appearance
+// scheme's tonal badge; a hue or a hex colour writes the public
+// --sf-badge-background-color as the nearest palette hue's fill step (BG-7,
+// C140 (2)) and its own text colour, so the tint survives the appearance
 // untouched. Both are measured on the built bytes.
 const CELL_BADGE_APPEARANCE = 'tonal';
 

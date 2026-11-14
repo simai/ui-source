@@ -8,10 +8,10 @@
 //     the size's (text line + 2 * block padding; the line's on a line size), and
 //     the outline's border is inside it -- in sf-badge and in class markup;
 //   - side room: by default the text sits --sf-space-1/2 (owner, 2026-11-07) from
-//     the badge's edge, border included; tight keeps the size's own text inset
-//     (--sf-ui-*--text-space-x), the room before;
+//     the badge's edge, border included; tight takes --sf-space-1/3 at every
+//     size and line (BG-9, component.badges 1.8.0; the button's text inset before);
 //   - a single figure stays round (width = height) in both rooms, two figures do
-//     not take the figure mark; compact stays square; an anchored count keeps its
+//     not take the figure mark; icon-only stays square; an anchored count keeps its
 //     own geometry (as wide as high, its own padding);
 //   - the geometry in dark is the geometry in light, and the outline's border is
 //     seen in both.
@@ -35,12 +35,12 @@ const key = (value) => value.replace('/', '-');
 // The room each size and line takes, by default and tight (the tokens are read
 // in the page, so the adaptive step at 60rem is the page's own).
 const ROOM = {
-  'size-1/3': {room: '--sf-space-1\\/2', tight: '--sf-ui-1\\/3--text-space-x'},
-  'size-1/2': {room: '--sf-space-1\\/2', tight: '--sf-ui-1\\/2--text-space-x'},
-  'size-1': {room: '--sf-space-1\\/2', tight: '--sf-ui-1--text-space-x'},
-  'line-1/2': {room: '--sf-space-1\\/2', tight: '--sf-ui-1\\/2--text-space-x'},
-  'line-1': {room: '--sf-space-1\\/2', tight: '--sf-ui-1--text-space-x'},
-  'line-2': {room: '--sf-space-1\\/2', tight: '--sf-ui-2--text-space-x'},
+  'size-1/3': {room: '--sf-space-1\\/2', tight: '--sf-space-1\\/3'},
+  'size-1/2': {room: '--sf-space-1\\/2', tight: '--sf-space-1\\/3'},
+  'size-1': {room: '--sf-space-1\\/2', tight: '--sf-space-1\\/3'},
+  'line-1/2': {room: '--sf-space-1\\/2', tight: '--sf-space-1\\/3'},
+  'line-1': {room: '--sf-space-1\\/2', tight: '--sf-space-1\\/3'},
+  'line-2': {room: '--sf-space-1\\/2', tight: '--sf-space-1\\/3'},
 };
 
 const rows = [];
@@ -69,7 +69,7 @@ for (const size of SIZES) {
       rows.push(`<sf-badge id="ff-${key(size)}-${appearance}${tight ? '-t' : ''}" size="${size}" appearance="${appearance}" scheme="primary" text="12"${tight ? ' tight' : ''}></sf-badge>`);
     }
     rows.push(`<span id="cf-${key(size)}${tight ? '-t' : ''}" class="sf-badge sf-badge--outline sf-badge--primary sf-badge--size-${size} sf-badge--figure${tight ? ' sf-badge--tight' : ''} inline-flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">7</span></span></span>`);
-    rows.push(`<sf-badge id="k-${key(size)}${tight ? '-t' : ''}" size="${size}" appearance="outline" icon="check" text="Готово" compact${tight ? ' tight' : ''}></sf-badge>`);
+    rows.push(`<sf-badge id="k-${key(size)}${tight ? '-t' : ''}" size="${size}" appearance="outline" icon="check" text="Готово" icon-only${tight ? ' tight' : ''}></sf-badge>`);
   }
 }
 for (const line of LINES) {
@@ -140,6 +140,8 @@ const measure = (room) => {
     tokens[name] = length(name);
     tokens[tight] = length(tight);
   }
+  // A figure's and a class counter's room (BG-9).
+  tokens['--sf-space-1\\/4'] = length('--sf-space-1\\/4');
   const badges = {};
   for (const element of document.querySelectorAll('main > [id]')) {
     const badge = element.matches('.sf-badge') ? element : element.querySelector('.sf-badge');
@@ -226,10 +228,10 @@ try {
             if (!compact || !near(compact.width, compact.height) || !near(compact.height, word.height)) failures.push(`${label}: compact ${size}${suffix} is not square at the size: ${JSON.stringify(compact)}`);
           }
         }
-        // A class counter in a row (a menu's): the tight room, so one figure is round.
+        // A class counter in a row (a menu's): the quarter step, so one figure is round.
         const counter = badges['dc-1'];
         const counters = badges['dc-2'];
-        if (!counter || !near(counter.width, counter.height) || !counters || !near(counters.paddingInline, tokens[ROOM['size-1/3'].tight])) failures.push(`${label}: a class counter (data-count) does not keep the tight room: ${JSON.stringify([counter, counters])}`);
+        if (!counter || !near(counter.width, counter.height) || !counters || !near(counters.paddingInline, tokens['--sf-space-1\\/4'])) failures.push(`${label}: a class counter (data-count) does not keep the quarter step: ${JSON.stringify([counter, counters])}`);
         for (const step of ['1', '2', '3']) {
           const count = badges[`a-${step}`];
           if (!count || !near(count.width, count.height)) failures.push(`${label}: the anchored count on step ${step} is not round: ${JSON.stringify(count)}`);
@@ -240,7 +242,7 @@ try {
         // compact's width; two figures only by height, their text may be centred
         // in the size's minimum); other widths are compared within a load, across
         // the looks, above.
-        const shape = Object.fromEntries(Object.entries(badges).map(([id, box]) => [id, id.startsWith('ff-') ? [box.height, box.border] : /sf-badge--(figure|compact)/u.test(box.classes) ? [box.height, box.width, box.border] : [box.height, box.inset, box.insetEnd, box.border]]));
+        const shape = Object.fromEntries(Object.entries(badges).map(([id, box]) => [id, id.startsWith('ff-') ? [box.height, box.border] : /sf-badge--(figure|icon-only)/u.test(box.classes) ? [box.height, box.width, box.border] : [box.height, box.inset, box.insetEnd, box.border]]));
         geometry[theme] ??= shape;
         if (JSON.stringify(geometry[theme]) !== JSON.stringify(shape)) failures.push(`${label}: the geometry differs from load 1: ${Object.keys(shape).filter((id) => JSON.stringify(shape[id]) !== JSON.stringify(geometry[theme][id])).slice(0, 4).map((id) => `${id} ${JSON.stringify(geometry[theme][id])} -> ${JSON.stringify(shape[id])}`).join('; ')}`);
         if (load === 1) {
