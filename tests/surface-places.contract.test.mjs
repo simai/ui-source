@@ -44,10 +44,12 @@ test('no coloured-place class is declared: the bg- utilities are the places', ()
   assert.doesNotMatch(places, /\.sf-surface-(primary|secondary|tertiary|error|warning|success|info)\b/u);
 });
 
-test('glass is black 48, 64, 80 under white ink in both themes, and the place defaults to the page', () => {
+// C178 (owner 2026-11-14): black 64 at rest, so white text over a white
+// picture holds 4.5:1 (48 gave 3.69); hover and press take 80, the top step.
+test('glass is black 64, 80, 80 under white ink in both themes, and the place defaults to the page', () => {
   const value = (role) => (theme.match(new RegExp(`${role}: ([^;]+);`, 'u')) ?? [])[1];
-  assert.equal(value('--sf-surface-media'), 'var(--sf-black--alfa-48)');
-  assert.equal(value('--sf-surface-media-hover'), 'var(--sf-black--alfa-64)');
+  assert.equal(value('--sf-surface-media'), 'var(--sf-black--alfa-64)');
+  assert.equal(value('--sf-surface-media-hover'), 'var(--sf-black--alfa-80)');
   assert.equal(value('--sf-surface-media-active'), 'var(--sf-black--alfa-80)');
   assert.equal(value('--sf-on-surface-media'), 'var(--sf-white)');
   assert.match(value('--sf-surface-place'), /^var\(--sf-surface-(0|page)\)$/u);

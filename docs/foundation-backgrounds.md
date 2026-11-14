@@ -18,7 +18,7 @@ on any place.
 | area | `--sf-surface-area` | neutral-98 | neutral-10 | `--sf-surface-1` |
 | card | `--sf-surface-card` | white | surface-2 | `--sf-elevation-1--surface` |
 | popup | `--sf-surface-popup` | white | surface-4 | `--sf-elevation-3--surface` |
-| nested popup | `--sf-surface-popup-nested` | white | surface-5 | `--sf-elevation-4--surface` |
+| nested popup | `--sf-surface-popup-nested` | white | surface-4 (C178) | `--sf-elevation-4--surface` |
 | inverse | `--sf-surface-inverse` | neutral-20 | neutral-90 | (unchanged) |
 
 Each place has its dim ink: `--sf-on-surface-card-variant`,
@@ -284,9 +284,9 @@ primary, secondary or tertiary. The hue role utilities (R087 item 1, option A,
 | `color-hue` | `--sf-hue` | 40 | 80 |
 | `color-on-hue` | `--sf-on-hue` | white | 20 |
 | `color-on-hue-container` | `--sf-on-hue-container` | 10 | 90 |
-| `color-on-hue-container-graphic` | `--sf-on-hue-container-graphic` | 50 | 60 |
+| `color-on-hue-container-graphic` | `--sf-on-hue-container-graphic` | 50 | 70 |
 | `border-hue` | `--sf-hue-outline` | 50 | 60 |
-| `fill-hue-container-graphic` | `--sf-on-hue-container-graphic` | 50 | 60 |
+| `fill-hue-container-graphic` | `--sf-on-hue-container-graphic` | 50 | 70 |
 
 - The pairs are the status roles' pairs: `bg-hue` with `color-on-hue`,
   `bg-hue-container` with `color-on-hue-container`. `color-hue` is coloured
@@ -319,7 +319,7 @@ primary, secondary or tertiary. The hue role utilities (R087 item 1, option A,
 
 ## Glass over media
 
-`--sf-surface-media` is black at 48 (hover 64, pressed 80:
+`--sf-surface-media` is black at 64 (hover and pressed 80, C178:
 `--sf-surface-media-hover`, `--sf-surface-media-active`) under
 `--sf-on-surface-media` (white), the same in both themes because a picture
 does not change with the theme. The class `.sf-surface-media` paints the glass

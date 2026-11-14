@@ -205,7 +205,11 @@ test('the series are the static hues in the decided order, each the same hue in 
     return hue;
   });
   assert.deepEqual(hues, ORDER);
-  assert.equal(role('--sf-chart-brand'), role('--sf-on-primary-container-graphic'));
+  // The brand series keeps the chart ladder's tone 60 in the dark theme; the
+  // status container graphic moved to 70 with C178 (owner 2026-11-14), where a
+  // container over a popup left 60 under 3:1. A chart lies on surfaces 0 to 2.
+  assert.equal(role('--sf-chart-brand'), 'light-dark(var(--sf-primary-50), var(--sf-primary-60))');
+  assert.equal(role('--sf-on-primary-container-graphic'), 'light-dark(var(--sf-primary-50), var(--sf-primary-70))');
 });
 
 test('no theme colour moves a series: none reads a primitive a theme writes', () => {

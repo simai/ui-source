@@ -29,8 +29,8 @@ position: a chart keeps a series' role when others are hidden or reordered.
   former series 1 was the primary, and under a green or a violet theme it
   stood a few degrees from another series).
 - **One series is the brand.** A chart of one series takes `--sf-chart-brand`
-  (the primary graphic tone, `--sf-on-primary-container-graphic`), which moves
-  with a theme's colour.
+  (the primary's tones 50 and 60, the graphic tone before C178 moved the dark
+  container graphic to 70), which moves with a theme's colour.
 - **Contrast.** Every series holds 3:1 on `--sf-surface-0`, `-1` and `-2` in
   both themes (WCAG 1.4.11): at least 3.94:1 light and 4.77:1 dark.
 - **Colour-vision deficiency.** Series 1 to 5 stay apart under protanopia,

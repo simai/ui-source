@@ -31,7 +31,7 @@
     --sf-black--alfa-16: #00000029;
     --sf-black--alfa-28: #00000047;
     /* Glass over a photo or a video (C16 --sf-surface-media; C14 the media
-       close button): black at 48 at rest, 64 under the pointer, 80 pressed.
+       close button): black at 64 at rest (C178), 80 under the pointer and pressed.
        The ink family as a fill, which the alpha scale allows for glass and
        the scrim only. */
     --sf-black--alfa-48: #0000007a;

@@ -7,7 +7,7 @@
 // inverse. Things on a place are translucent -- a fill, a state layer, a line
 // -- so they come out right on any of them.
 //
-// .sf-surface-media is glass over a photo or a video: black at 48 with a blur,
+// .sf-surface-media is glass over a photo or a video: black at 64 with a blur,
 // white ink, the same in both themes (C16, C14). It re-declares the roles the
 // controls on it read from white on the alpha scale -- the ink and its hovered
 // and pressed steps (all white), states 4/8/12, fill
@@ -30,7 +30,7 @@
     --sf-surface-place: var(--sf-surface-media);
     --sf-surface-place-solid: initial;
     // Under glass is a picture, not a place: the ground is black, the opaque
-    // base of the glass tone (black at 48), so a cut-out on glass -- the
+    // base of the glass tone (black at 64), so a cut-out on glass -- the
     // avatar's status dot -- is dark glass, not the photo (DEV, 2026-11-11).
     --sf-surface-place-ground: var(--sf-black);
     --sf-surface-underlay: initial;
