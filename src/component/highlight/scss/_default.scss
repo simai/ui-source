@@ -217,9 +217,18 @@
     overflow: auto;
   }
 
+  /* Code in a block is one step below the text (owner decision C186 (10),
+     2026-11-14): step 1/2, 14/20 on a desktop (12/16 on a phone), as the
+     world sets code at 85-87 % of the text; it was the text's own step, on a
+     line height read from a variable declared nowhere
+     (--sf-text-medium--line-height). The face is the system mono
+     (--sf-code--font-family, --sf-mono; C18): the base code rule leaves a
+     block's code alone, so it fell to the browser's monospace (Courier, its
+     Cyrillic in Times). */
   :is(.sf-highlight, .source) code {
-    font-size: var(--sf-text-medium--size);
-    line-height: var(--sf-text-medium--line-height);
+    font-family: var(--sf-code-font-family, var(--sf-code--font-family));
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
     direction: ltr;
     text-align: start;
   }

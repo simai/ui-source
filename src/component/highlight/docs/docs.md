@@ -52,6 +52,17 @@ block, such as a chat bubble, sets it to follow its own corner),
 `--sf-highlight-border-color` and `--sf-highlight-border-width`. Code direction remains LTR inside an RTL
 document and long lines scroll locally.
 
+Code in a block is one step below the text (1.4.0, owner decision C186 (10)):
+step 1/2 (`--sf-text-size-1/2` on `--sf-text-height-1/2`), 14/20 on a
+desktop and 12/16 on a phone, in the system mono (`--sf-code--font-family`,
+`--sf-mono`; it fell to the browser's monospace, Courier with its Cyrillic in
+Times). The hues are the static palette's, not the status roles (C186 (11)):
+keyword violet, string and tag green, attribute and number blue, title amber,
+built-in teal, tone 40 on the light theme and 80 on the dark, each 4.5:1 or
+more on the block. The `--sf-highlight-*` names are unchanged; a project that
+set one keeps its value. Long lines scroll, and the head's wrap button wraps
+them (C186 (12)).
+
 Existing and inserted blocks initialize once. Applications can call
 `SF.Highlight.highlight(block)` or `SF.Highlight.refresh(block, nextSource)`.
 The global `window.hljs` and Loader registration name `hljs` remain available for

@@ -26,9 +26,12 @@ const sizes = ladder('src/core/figma_variables/figma_text_text_size.scss', 'sf-t
 const heights = ladder('src/core/figma_variables/figma_text_title_height.scss', 'sf-title--height');
 const roles = read('src/core/figma_variables/figma_typography_roles.scss');
 
+// A level may take another title line on a phone (mobileHeight; C186 (13):
+// h3 18/24 there).
 const measure = (screen) => LEVELS.map((level) => {
-  const {size, height} = contract.typography.roles.heading[level];
-  return {level, size: sizes[screen][size], height: heights[screen][height]};
+  const {size, height, mobileHeight} = contract.typography.roles.heading[level];
+  const line = screen === 'mobile' && mobileHeight ? mobileHeight : height;
+  return {level, size: sizes[screen][size], height: heights[screen][line]};
 });
 
 test('C21: the contract names the owner\'s steps and the sheet reads them', () => {
@@ -38,7 +41,7 @@ test('C21: the contract names the owner\'s steps and the sheet reads them', () =
     const {size, height} = contract.typography.roles.heading[level];
     assert.equal(size, height, `h${level} takes its line height from its own step`);
     assert.match(roles, new RegExp(`--sf-heading-${level}--size: var\\(--sf-text--size-${size}\\);`, 'u'));
-    assert.match(roles, new RegExp(`--sf-heading-${level}--height: var\\(--sf-title--height-${size}\\);`, 'u'));
+    assert.match(roles, new RegExp(`--sf-heading-${level}--height: var\\(--sf-title--height-${contract.typography.roles.heading[level].mobileHeight ?? size}\\);`, 'u'));
   }
 });
 
@@ -57,4 +60,6 @@ test('C21: the measured ladder', () => {
   assert.deepEqual(measure('desktop').map(({size}) => size), [36, 32, 24, 20, 16, 16]);
   assert.deepEqual(measure('desktop').map(({height}) => height), [40, 36, 28, 24, 18, 18]);
   assert.deepEqual(measure('mobile').map(({size}) => size), [24, 22, 18, 16, 14, 14]);
+  // C186 (13): h3 on a phone on the next title line, 18/24 (it was 18/20).
+  assert.deepEqual(measure('mobile').map(({height}) => height), [28, 26, 24, 18, 16, 16]);
 });

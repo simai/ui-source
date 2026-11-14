@@ -12732,6 +12732,49 @@
       "source": "src/smart/tag/js/templates/default.js; ui-control control/docs-review/decisions.md C140"
     },
     {
+      "id": "class-text-flow-utility-aliases",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C186 (8): one text-* family for how a line breaks -- text-nowrap, text-break (overflow-wrap: anywhere), text-break-normal, text-hyphens -- beside truncate and line-clamp-N. The former names keep drawing what they drew until remove_after, and the Loader notes each one once in SF.deprecations (core/js/utility-class-aliases.js).",
+      "items": [
+        {
+          "component": "utility",
+          "from": "wrap-none",
+          "to": "text-nowrap"
+        },
+        {
+          "component": "utility",
+          "from": "text-break-word",
+          "to": "text-break"
+        },
+        {
+          "component": "utility",
+          "from": "text-break-all",
+          "to": "text-break"
+        },
+        {
+          "component": "utility",
+          "from": "t-ellipsis",
+          "to": "truncate"
+        },
+        {
+          "component": "utility",
+          "from": "t-clip",
+          "to": "truncate"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<p class=\"wrap-none\">…</p> <p class=\"text-break-word\">…</p> <span class=\"t-ellipsis\">…</span>",
+        "after": "<p class=\"text-nowrap\">…</p> <p class=\"text-break\">…</p> <span class=\"truncate\">…</span>"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/word-break/default/scss/_sf_css__word_break.scss; src/utility/white-space/default/scss/_sf_css__white_space.scss; src/utility/text-overflow/default/scss/_sf_css__text_overflow.scss; src/core/js/utility-class-aliases.js; ui-control control/docs-review/decisions.md C186"
+    },
+    {
       "id": "class-featured-icon-look-aliases",
       "recorded_on": "2026-11-14",
       "stage": "compat",

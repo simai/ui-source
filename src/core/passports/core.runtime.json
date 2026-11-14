@@ -158,6 +158,7 @@
     "src/core/js/layer-stack.js",
     "src/core/js/loader.js",
     "src/core/js/mask.js",
+    "src/core/js/new-tab-link.js",
     "src/core/js/notify.js",
     "src/core/js/on-view.js",
     "src/core/js/open-surface-mark.js",
@@ -189,6 +190,7 @@
     "src/core/js/text-fonts.js",
     "src/core/js/theme-palette.js",
     "src/core/js/upgrade-properties.js",
+    "src/core/js/utility-class-aliases.js",
     "src/core/js/utilityModuleAliases.js",
     "src/core/js/vendor/material-color-utilities/LICENSE",
     "src/core/js/vendor/material-color-utilities/hct/cam16.js",
@@ -229,7 +231,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "fe42f1f2130e6bf52a85b4fa1d27859837e58ab86cf53e502dc4abda15fe7232",
+  "content_sha256": "beda416f8d0a59c144197d68003036bff4b632d0ab525ec806430ee21fa2ebb5",
   "dependencies": [
     {
       "id": "core.styles",

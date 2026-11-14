@@ -3,13 +3,20 @@
   .theme-dark {
     --sf-highlight-text: var(--sf-on-surface);
     --sf-highlight-background: transparent;
-    --sf-highlight-keyword: var(--sf-error);
-    --sf-highlight-title: var(--sf-tertiary);
-    --sf-highlight-attribute: var(--sf-primary);
-    --sf-highlight-string: var(--sf-info);
-    --sf-highlight-built-in: var(--sf-warning);
+    /* The hues of code are the static palette's (owner decision C186 (11),
+       2026-11-14; C13, C17), not the status roles: red said «error» on every
+       keyword and a string was the link's blue exactly. Keyword violet, string
+       and tag green, attribute (and number) blue, title amber, built-in teal,
+       at tone 40 on the light theme and 80 on the dark, as the link: each
+       holds 4.5:1 or more on the block's plate. The names are the same; a
+       project that set one keeps its value. */
+    --sf-highlight-keyword: light-dark(var(--sf-violet-40), var(--sf-violet-80));
+    --sf-highlight-title: light-dark(var(--sf-amber-40), var(--sf-amber-80));
+    --sf-highlight-attribute: light-dark(var(--sf-blue-40), var(--sf-blue-80));
+    --sf-highlight-string: light-dark(var(--sf-green-40), var(--sf-green-80));
+    --sf-highlight-built-in: light-dark(var(--sf-teal-40), var(--sf-teal-80));
     --sf-highlight-comment: var(--sf-on-surface-variant);
-    --sf-highlight-tag: var(--sf-success);
+    --sf-highlight-tag: light-dark(var(--sf-green-40), var(--sf-green-80));
     --sf-highlight-section: var(--sf-primary);
     --sf-highlight-bullet: var(--sf-warning);
     --sf-highlight-punctuation: var(--sf-on-surface-variant);

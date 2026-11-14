@@ -168,7 +168,12 @@
           "required": ["size", "height"],
           "properties": {
             "size": { "type": "string", "minLength": 1 },
-            "height": { "type": "string", "minLength": 1 }
+            "height": { "type": "string", "minLength": 1 },
+            "mobileHeight": { "type": "string", "minLength": 1 },
+            "note": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            }
           }
         },
         {

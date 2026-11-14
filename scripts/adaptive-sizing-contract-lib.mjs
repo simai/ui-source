@@ -222,11 +222,21 @@ export function validateContract(candidate = contract)
                 }
                 continue;
             }
+            // A role may take another line on a phone (mobileHeight, owner
+            // decision C186 (13): h3 18/24 on a phone, 24/28 on a desktop).
             assert.deepEqual(
-                Object.keys(definition).sort(),
+                Object.keys(definition).filter(key => !["mobileHeight", "note"].includes(key)).sort(),
                 ["height", "size"],
                 `semantic typography ${group}.${role} must bind size and height`,
             );
+            if ("note" in definition)
+            {
+                assert.ok(
+                    Array.isArray(definition.note)
+                    && definition.note.every(line => typeof line === "string"),
+                    `semantic typography ${group}.${role} note must be lines`,
+                );
+            }
             assert.ok(
                 candidate.typography.sizes[definition.size],
                 `semantic typography ${group}.${role} has unknown size`,
@@ -238,6 +248,13 @@ export function validateContract(candidate = contract)
                 heightMap[definition.height],
                 `semantic typography ${group}.${role} has unknown height`,
             );
+            if ("mobileHeight" in definition)
+            {
+                assert.ok(
+                    heightMap[definition.mobileHeight],
+                    `semantic typography ${group}.${role} has unknown mobile height`,
+                );
+            }
         }
     }
 

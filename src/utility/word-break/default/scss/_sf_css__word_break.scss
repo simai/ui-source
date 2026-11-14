@@ -5,24 +5,44 @@
 // SIMAI Framework
 // https://simai.io
 
-// TYPOFRAPHY
-
-// Set text utilites for breakpoints
-// For breakpoints use prefix:
-// 	sm:t-1
-// 	lg:t-bold
+// TEXT BREAKING AND HYPHENATION
+//
+// One text-* family for how a line breaks (owner decision C186 (8),
+// 2026-11-14): text-nowrap (utility/text-wrap), text-break, text-break-normal
+// and text-hyphens; truncate and line-clamp-N cut text. text-break-word and
+// text-break-all are former names, kept drawing what they drew until
+// 2027-01-01 (the Loader notes them in SF.deprecations; journal
+// class-text-flow-utility-aliases).
 
 // @include layer-priority(utility,default) {
     @include breakpoint-media(xs) {
 
         $infix: breakpoint-infix(xs, $breakpoint-array);
 
-        // Word Break
+        // A long run -- an address, a mail, a file name -- breaks anywhere it
+        // must, and lowers the box's min-content, so a column or a table
+        // cell does not widen for it (C186 (7), (8)).
+        .#{$infix}text-break {
+            overflow-wrap: anywhere;
+        }
+
+        // Words are whole: no break inside a word, even where it overflows.
         .#{$infix}text-break-normal {
             overflow-wrap: normal;
             word-break: normal;
         }
-        
+
+        // Hyphenation in the page's language (C186 (6)): for running text
+        // that core does not already hyphenate (core does in a column under
+        // 40rem). Needs the page's lang. Not for headings, code, names or
+        // addresses.
+        .#{$infix}text-hyphens {
+            -webkit-hyphens: auto;
+            hyphens: auto;
+        }
+
+        // Former names (until 2027-01-01): text-break-word -> text-break,
+        // text-break-all -> text-break.
         .#{$infix}text-break-word{overflow-wrap: break-word;}
         .#{$infix}text-break-all {word-break: break-all;}
     }

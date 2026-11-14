@@ -50,10 +50,12 @@ test('code wraps as text: inline, no nowrap, a run longer than the line breaks (
   // table (C10 variant A, owner 2026-11-11); no nowrap in a cell either.
   assert.match(sheet, /:where\(td, th\) code:where\(:not\([^{]+\{\s*overflow-wrap:\s*anywhere;\s*\}/u);
   assert.doesNotMatch(sheet, /:where\(td, th\)[^{]*\{[^}]*white-space:\s*nowrap/u);
-  // The words of a cell stay whole: the table resets its own break-word, and
-  // the cells inherit it, so a .table-frame that keeps every word whole is
-  // not beaten by a rule on its cells (pair-next-3 table-frame probe).
-  assert.match(sheet, /\n\s*table \{\s*word-break:\s*normal;\s*overflow-wrap:\s*break-word;\s*\}/u);
+  // A table breaks a long run anywhere (C186 (7), 2026-11-14, over C10's
+  // break-word), so a long value lowers its column and the table does not
+  // widen; the rule is on the table and the cells inherit it, so a
+  // .table-frame that keeps every word whole is not beaten by a rule on its
+  // cells (pair-next-3 table-frame probe).
+  assert.match(sheet, /\n\s*table \{\s*word-break:\s*normal;\s*overflow-wrap:\s*anywhere;\s*\}/u);
   assert.doesNotMatch(sheet, /:where\(td, th\) \{[^}]*(word-break|overflow-wrap)/u);
 });
 
