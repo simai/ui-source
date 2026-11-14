@@ -303,11 +303,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/resizer/index.js",
-        "sha256": "24a7b827ed6f3916f7f44dba40c7e8a1521ce1489af089a7fe1f934948bb184a"
+        "sha256": "0e57e12cc97fdcc36773cbeb46e61b8e5407364fd0d08e85bb8aa579538d75ce"
       },
       {
         "path": "src/smart/resizer/scss/_smart__resizer.scss",
-        "sha256": "b12ed7b2e797b4db3336ac60f0058063c6cbc9ea5293fcce66beb47cc9f23df7"
+        "sha256": "5250facf741321764200750a5757970d70530c8bbfed236e0822fcf9de200f57"
       },
       {
         "path": "src/smart/resizer/rule.js",
@@ -315,11 +315,11 @@
       },
       {
         "path": "src/smart/resizer/docs.md",
-        "sha256": "c0de5e36a9e13c0983a44a0a5ff883e6cc12e01dc7c75051d43841e610e17b08"
+        "sha256": "52e1bea7299adc07b88c59082075cb44532def65e6f1a4868d982b0087f4a0d7"
       },
       {
         "path": "src/smart/resizer/engine.mjs",
-        "sha256": "d7286295dd21d5ce0ce11cbc305ac68048ea48601e93502985579afcbd305d02"
+        "sha256": "03a60083b61b1ccdf3e47ab6d6083bb3100a87c03598b7ba7d1515f786067f68"
       }
     ],
     "generated_runtime": []

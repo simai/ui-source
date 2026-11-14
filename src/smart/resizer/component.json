@@ -98,8 +98,7 @@
       "PageDown": "step:-page",
       "Home": "to:min",
       "End": "to:max",
-      "Enter": "toggle:folded",
-      "Space": "none"
+      "Enter": "toggle:folded"
     }
   },
   "relations": [],
@@ -129,8 +128,7 @@
       "PageDown": "step:-page",
       "Home": "to:min",
       "End": "to:max",
-      "Enter": "toggle:folded",
-      "Space": "none"
+      "Enter": "toggle:folded"
     },
     "$comment": "The host is a focusable separator (aria-orientation vertical by its role) that controls its panel (aria-controls); aria-valuenow is the share of the way from min to max, 0-100 (0: the narrowest, or folded), with the words in aria-valuetext («27 %», «Свёрнуто»); its description (title) says how to use it. ArrowLeft and ArrowRight follow the writing direction and the edge. Enter folds and restores a collapsible panel and restores the default width of one that is not; Space does nothing. A disabled handle and one below the layout's split step are out of the Tab order."
   },

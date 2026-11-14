@@ -74,7 +74,9 @@ try {
       now: element.getAttribute('aria-valuenow'), min: element.getAttribute('aria-valuemin'),
       max: element.getAttribute('aria-valuemax'), label: element.getAttribute('aria-label'), tab: element.tabIndex};
   });
-  if (handle.role !== 'separator' || handle.now !== '256' || handle.min !== '200' || handle.max !== '400'
+  // The value is the share of the way from min to max (C158 (3)): 256 of
+  // 200-400 is 28.
+  if (handle.role !== 'separator' || handle.now !== '28' || handle.min !== '0' || handle.max !== '100'
     || handle.label !== 'Ширина меню' || handle.tab !== 0) {
     note({case: 'a separator with its value', got: handle});
   }
@@ -164,7 +166,7 @@ try {
     role: document.querySelector('#grid .edge').getAttribute('aria-valuenow')}));
   await again.dblclick('#grid .edge');
   const log = await again.evaluate(() => window.log);
-  if (dragged !== 160 || ended.width !== 260 || ended.role !== '260' || JSON.stringify(log) !== JSON.stringify([['commit', 160], ['commit', 260], ['reset']])) {
+  if (dragged !== 160 || ended.width !== 260 || ended.role !== '100' || JSON.stringify(log) !== JSON.stringify([['commit', 160], ['commit', 260], ['reset']])) {
     note({case: 'SF.Resizer.attach on drawn edges', got: {dragged, ended, log}});
   }
   // The name and the hint come from the shared reader (SF.language), so the
@@ -253,7 +255,77 @@ try {
   if (study.before !== '3/0' || study.scrolled !== '3/0' || study.sideways !== 0) note({case: 'a scrolling panel keeps the whole strip on its edge', got: study});
   if (study.roomMax !== '280' || study.roomEnd !== 280) note({case: 'the content beside keeps min', got: study});
 
-  console.log(JSON.stringify({handle, during, capped, floored, stepped, shifted, end, kept, phases, restored, reset, valued, dragged, ended, log, words, study}));
+  // Owner decision C158: a collapsible panel folds past min by half of min
+  // and on Enter, comes back on Enter and by its «Показать» button, and says
+  // so to a screen reader; Space does nothing; below the layout's split step
+  // (40rem of the container) there is no handle; a .sf-workspace region
+  // marked data-sf-workspace-resize gets its edge from core.
+  await again.evaluate(() => {
+    document.body.insertAdjacentHTML('beforeend', `
+      <div id="fold-row" style="display:flex; inline-size:900px; block-size:120px; margin-top:20px">
+        <nav id="fold" aria-label="Разделы" style="inline-size:var(--fw, 300px); background:#eee; padding:8px"><a href="#x" id="fold-link">Ссылка</a><sf-resizer id="fold-h" min="200px" max="400px" property="--fw" collapsible storage-key="probe-fold"></sf-resizer></nav>
+        <main style="flex:1 1 auto; min-inline-size:0">Текст рядом</main>
+      </div>
+      <div style="display:flex; inline-size:480px; block-size:80px">
+        <nav id="thin" style="inline-size:200px"><sf-resizer id="thin-h" min="160px" max="300px"></sf-resizer></nav>
+        <main style="flex:1">Узко</main>
+      </div>
+      <div class="sf-workspace" id="ws" style="inline-size:900px; block-size:160px">
+        <nav class="sf-workspace-list" id="ws-list" data-sf-workspace-resize="probe-ws"><div style="block-size:600px">Чаты</div></nav>
+        <div class="sf-workspace-main">Переписка</div>
+      </div>`);
+    window.SF.workspace(document.getElementById('ws'));
+  });
+  await again.waitForTimeout(300);
+  const c158 = {};
+  await again.evaluate(() => document.getElementById('fold').scrollIntoView({block: 'center'}));
+  const edge = await again.evaluate(() => { const box = document.getElementById('fold').getBoundingClientRect(); return {x: box.right, y: box.top + box.height / 2}; });
+  await again.mouse.move(edge.x, edge.y);
+  await again.mouse.down();
+  await again.mouse.move(edge.x - 220, edge.y, {steps: 10});
+  c158.foldDuring = await again.evaluate(() => document.getElementById('fold').hasAttribute('data-folded'));
+  await again.mouse.up();
+  c158.folded = await again.evaluate(() => {
+    const panel = document.getElementById('fold'); const handle = document.getElementById('fold-h');
+    return {folded: panel.hasAttribute('data-folded'), width: Math.round(panel.getBoundingClientRect().width), now: handle.getAttribute('aria-valuenow'),
+      text: handle.getAttribute('aria-valuetext'), controls: handle.getAttribute('aria-controls'), link: getComputedStyle(document.getElementById('fold-link')).display,
+      unfold: !!panel.querySelector('[data-sf-resizer-unfold]'), kept: JSON.parse(localStorage.getItem('sf-pref:sf-resizer/probe-fold') || 'null')};
+  });
+  await again.focus('#fold-h');
+  await again.keyboard.press('Enter');
+  c158.enterBack = await again.evaluate(() => [document.getElementById('fold').hasAttribute('data-folded'), Math.round(document.getElementById('fold').getBoundingClientRect().width), document.getElementById('fold-h').getAttribute('aria-valuetext')]);
+  await again.keyboard.press(' ');
+  c158.space = await again.evaluate(() => Math.round(document.getElementById('fold').getBoundingClientRect().width));
+  await again.keyboard.press('Enter');
+  await again.waitForTimeout(400);
+  await again.evaluate(() => document.querySelector('#fold [data-sf-resizer-unfold] button, #fold [data-sf-resizer-unfold] sf-button-icon')?.click());
+  await again.waitForTimeout(100);
+  c158.unfolded = await again.evaluate(() => [document.getElementById('fold').hasAttribute('data-folded'), Math.round(document.getElementById('fold').getBoundingClientRect().width), document.activeElement?.id]);
+  c158.thin = await again.evaluate(() => [getComputedStyle(document.getElementById('thin-h')).display, document.getElementById('thin-h').hasAttribute('data-sf-resizer-narrow')]);
+  c158.workspace = await again.evaluate(() => {
+    const list = document.getElementById('ws-list'); const handle = list.querySelector(':scope > sf-resizer');
+    if (!handle) return null;
+    const box = list.getBoundingClientRect(); const y = box.top + box.height / 2;
+    const caught = [-11, 0, 11].filter((dx) => document.elementFromPoint(box.right + dx, y) === handle).length;
+    return {property: handle.getAttribute('property'), collapsible: handle.hasAttribute('collapsible'), key: handle.getAttribute('storage-key'), caught, width: Math.round(handle.getBoundingClientRect().width)};
+  });
+  await again.focus('#ws-list > sf-resizer');
+  await again.keyboard.press('ArrowRight');
+  c158.workspaceWidth = await again.evaluate(() => [document.getElementById('ws-list').style.getPropertyValue('--sf-workspace-list'), Math.round(document.getElementById('ws-list').getBoundingClientRect().width)]);
+  if (!c158.foldDuring || !c158.folded.folded || c158.folded.now !== '0' || c158.folded.text !== 'Свёрнуто' || c158.folded.controls !== 'fold'
+    || c158.folded.link !== 'none' || !c158.folded.unfold || c158.folded.kept?.folded !== true || c158.folded.kept?.width !== 300) {
+    note({case: 'C158 (2)(3): a drag past half of min folds, said and kept', got: c158.folded, during: c158.foldDuring});
+  }
+  if (c158.enterBack[0] || c158.enterBack[1] !== 300 || c158.enterBack[2] !== '50\u00a0%') note({case: 'C158 (2): Enter gives the width back', got: c158.enterBack});
+  if (c158.space !== 300) note({case: 'C158 (2): Space does nothing', got: c158.space});
+  if (c158.unfolded[0] || c158.unfolded[1] !== 300 || c158.unfolded[2] !== 'fold-h') note({case: 'C158 (2): «Показать» brings the panel back and focus to the edge', got: c158.unfolded});
+  if (c158.thin[0] !== 'none' || !c158.thin[1]) note({case: 'C158 (4): no handle below the split step', got: c158.thin});
+  if (!c158.workspace || c158.workspace.property !== '--sf-workspace-list' || !c158.workspace.collapsible || c158.workspace.key !== 'probe-ws' || c158.workspace.caught !== 3 || c158.workspace.width !== 24) {
+    note({case: 'C158 (6): a .sf-workspace list region gets its edge, whole', got: c158.workspace});
+  }
+  if (!/px$/u.test(c158.workspaceWidth[0])) note({case: 'C158 (6): the width goes into the region variable', got: c158.workspaceWidth});
+
+  console.log(JSON.stringify({handle, during, capped, floored, stepped, shifted, end, kept, phases, restored, reset, valued, dragged, ended, log, words, study, c158}));
 } finally {
   await browser.close();
 }

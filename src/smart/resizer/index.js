@@ -9,7 +9,8 @@
 // browser and restored the next time. With `collapsible` the panel folds to
 // its edge and comes back (owner decision C158 (2)).
 import {attachResizer, setResizerValue} from './engine.mjs';
-import {language, pageWord} from '../../core/js/page-language';
+import {language} from '../../core/js/page-language';
+import {pageWord} from '../../core/js/page-language';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {installAliases} from '../../core/js/aliases.js';
 import BundledPreferences from '../../core/js/preferences.js';
@@ -113,9 +114,9 @@ const valueWords = (dictionary) => (share, folded, handle) => pageWord(dictionar
 const FOLDED = 'data-folded';
 const UNFOLD = 'data-sf-resizer-unfold';
 const NARROW = 'data-sf-resizer-narrow';
-// The layout split step: 40rem of the container, the step .sf-workspace
-// stacks its regions at (h0 on the size scale).
-const SPLIT_STEP = 'var(--sf-h0, 40rem)';
+// The layout split step: h0 of the size scale (40rem) of the container, the
+// step .sf-workspace stacks its regions at.
+const SPLIT_STEP = 'var(--sf-h0)';
 let panelIds = 0;
 
 // The handle placed outside a target that clips: absolute (against an
@@ -271,7 +272,7 @@ export class SfResizer extends ResizerElement {
       if (layout) narrow = layout === 'narrow';
       else {
         const width = parent.getBoundingClientRect().width;
-        const step = pixels(SPLIT_STEP, parent) ?? 640;
+        const step = pixels(SPLIT_STEP, parent) ?? 0;
         narrow = width > 0 && width < step;
       }
     }
@@ -351,8 +352,8 @@ export class SfResizer extends ResizerElement {
       // A drag that folds gives back the width it started from, not the min
       // it passed on the way.
       const {min} = this.limits();
-      const width = Math.max(min, Math.round(this.width()) || 0);
-      this._restore = phase === 'move' ? this._wanted || width : width;
+      const width = Math.max(min, Math.round(phase === 'move' && this._dragFrom ? this._dragFrom : this.width()) || 0);
+      this._restore = width;
       this._folded = true;
       this.showFold();
       this.syncValue(0);
@@ -463,7 +464,10 @@ export class SfResizer extends ResizerElement {
       commit: (width) => this.commit(width),
       reset: () => this.reset(),
       // A drag owns the width while it lasts: a layout pass does not fit it.
-      start: () => { this._dragging = true; },
+      start: () => {
+        this._dragging = true;
+        this._dragFrom = this.folded() ? 0 : Math.round(this.width());
+      },
       end: () => {
         this._dragging = false;
         this.schedule();
