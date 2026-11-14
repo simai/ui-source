@@ -92,9 +92,7 @@
   ],
   "cl-drawer": [
     "display/default",
-    "justify-content/default",
     "margin/default",
-    "place-items/default",
     "resize/default",
     "visibility/default"
   ],

@@ -4,7 +4,8 @@
     "close": "Закрыть",
     "back": "Назад",
     "on": "Вкл.",
-    "off": "Выкл."
+    "off": "Выкл.",
+    "selected": "Выбрано {count}"
   },
   "events": {
     "search": {

@@ -84,7 +84,10 @@ test('the panel is not the action menu: a dialog popup or a group, its own closi
   assert.match(source, /closePanel\(\{restoreFocus: false, reason: 'api'\}\)/u, 'Tab out closes it');
   assert.match(source, /panel\.toggleAttribute\('data-sf-sheet', sheet\)/u);
   assert.match(source, /aria-haspopup', 'dialog'/u);
-  assert.match(css, /\.sf-settings-panel\[data-sf-sheet\] \{[^}]*position: fixed;[^}]*max-inline-size: var\(--sf-h1\);/su);
+  // The one sheet (owner decision C157 (5)): drawn from the core sheet mixin.
+  assert.match(css, /\.sf-settings-panel\[data-sf-sheet\] \{[^}]*@include sheet\.sheet-surface;/su);
+  const mixin = readFileSync(new URL('../src/core/scss/mix/_mix__sheet.scss', import.meta.url), 'utf8');
+  assert.match(mixin, /@mixin sheet-surface \{[^}]*position: fixed;[^}]*max-inline-size: var\(--sf-h1\);/su);
 });
 
 test('a list is one Tab stop with the arrows inside; Alt+arrows move a row and say its place (DP-4, C106 (6))', () => {
@@ -132,7 +135,10 @@ test('the popup panel sends sf-menu-context\'s open/close events: open asks, ope
   // The same names and details as sf-menu-context's.
   const own = JSON.parse(read('src/smart/settings/component.json')).events;
   const menu = JSON.parse(read('src/smart/menu-context/component.json')).events;
-  for (const name of ['open', 'opened', 'close', 'closed']) assert.deepEqual(own[name].carries, menu[name].carries, name);
+  for (const name of ['opened', 'close', 'closed']) assert.deepEqual(own[name].carries, menu[name].carries, name);
+  // The menu's open names the object it is opened for (C164 (2)); the panel has no object.
+  assert.deepEqual(own.open.carries, {});
+  assert.deepEqual(Object.keys(menu.open.carries), ['target', 'targets']);
 });
 
 test('the menu\'s panel head chooses a tab on sf-tabs-change and only stops the former sf-tab-change (C106 follow-up 3)', () => {

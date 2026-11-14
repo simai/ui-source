@@ -21,7 +21,7 @@
 //   plate                 surface-container, --sf-radius--surface,
 //                         --sf-space-1 inside; the decisive sentence medium
 //   plate -> field/check  --sf-space-2; label -> field --sf-space-1/3
-//   -> answers            --sf-space-3; answers step 1, gap --sf-space-1/2,
+//   -> answers            --sf-space-3; answers step 1, gap --sf-space-1/3 (C144),
 //                         the filled danger answer first, at the start
 //   one start line        title, plate, label, field and the first answer
 //
@@ -142,7 +142,7 @@ async function measure(page) {
       position: document.querySelector('.sf-modal').getAttribute('data-sf-modal-position'),
       tokens: {
         width: token('--sf-popup-question-width'), space3: token('--sf-space-3'), space2: token('--sf-space-2'), space1: token('--sf-space-1'),
-        space13: token('--sf-space-1\\/3'), space12: token('--sf-space-1\\/2'), radius: token('--sf-radius--surface'), control: token('--sf-ui-1--control-height'),
+        space13: token('--sf-space-1\\/3'), space12: token('--sf-space-1\\/2'), radius: token('--sf-radius--surface'), control: token('--sf-ui-1--control-height'), handleRow: token('--sf-ui-1\\/2--control-height'),
         heading4Size: token('--sf-heading-4--size'), heading4Height: token('--sf-heading-4--height'), container: colour('--sf-surface-container'),
       },
       surface: {...rect(surface), padding: [sc.paddingTop, sc.paddingRight, sc.paddingBottom, sc.paddingLeft].map(parseFloat),
@@ -189,9 +189,12 @@ function check(m, ctx) {
   // C105 H6: the window inset --sf-space-2 from the outer edge, edge included.
   const pad = t.space2;
   const inner = m.surface.left + pad;
-  want('frame top', m.title.top - m.surface.top - Math.max(0, (m.header.height - m.title.height) / 2), pad);
+  // On a phone the window is the one sheet (owner decision C157 (5)): its
+  // top is the handle row, half a control tall, the grab bar in it.
+  const top = phone ? t.handleRow : pad;
+  want('frame top', m.title.top - m.surface.top - Math.max(0, (m.header.height - m.title.height) / 2), top);
   want('× on the corner: end', m.surface.right - m.close.right, pad);
-  want('× on the corner: top', m.close.top - m.surface.top, pad);
+  want('× on the corner: top', m.close.top - m.surface.top, top);
   table.frame = m.close.top - m.surface.top;
   table.closeEnd = m.surface.right - m.close.right;
   // title
@@ -240,7 +243,7 @@ function check(m, ctx) {
   } else {
     table.answersGap = m.buttons[1].left - m.buttons[0].right;
   }
-  want('answers gap = --sf-space-1/2', table.answersGap, t.space12);
+  want('answers gap = --sf-space-1/3 (C144)', table.answersGap, t.space13);
   // one start line
   const starts = {title: m.title.left, plate: m.plate.left, label: m.label?.left, field: m.field?.left, checkbox: m.checkbox?.left, answer: m.buttons[0].left};
   for (const [name, left] of Object.entries(starts)) if (left !== undefined) want(`start line: ${name}`, left, inner);

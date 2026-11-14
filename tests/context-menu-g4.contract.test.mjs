@@ -30,8 +30,11 @@ test('CM-6: an example opens the menu on a right-click over a row', () => {
   const {examples} = JSON.parse(read('src/smart/menu-context/examples.json'));
   const example = examples.find(({name}) => name === 'right-click');
   assert.ok(example, 'the right-click example');
-  assert.match(example.markup, /oncontextmenu="event\.preventDefault\(\);/u);
-  assert.match(example.markup, /menu\.openFor\(point\)/u);
+  // Since sf-menu-context 1.21.0 (owner decision C164 (1)) the menu binds the
+  // rows itself: `for` names the list, no handler of the page's own.
+  assert.equal(example.settings.for, 'files-right-click');
+  assert.match(example.markup, /id="files-right-click"/u);
+  assert.ok(!example.markup.includes('oncontextmenu'));
   assert.match(example.markup, /tabindex="0"/u);
   assert.ok(example.settings.popup);
   assert.ok(example.settings.entries.some((entry) => entry.shortcut === 'delete' && entry.danger));

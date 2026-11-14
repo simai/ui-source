@@ -38,7 +38,11 @@ test('Hidden elements and reduced-motion zero durations finish without a fixed d
 test('Modal motion references Framework tokens and Close keeps forced-color mask paint local',async()=>{
   const modal=await readFile(new URL('../src/component/modal/scss/_css__modal_custom.scss',import.meta.url),'utf8');
   const close=await readFile(new URL('../src/component/close/scss/_css__close.scss',import.meta.url),'utf8');
-  assert.match(modal,/var\(--sf-duration-normal\) var\(--sf-animation\)/);
+  // C159 (8): opening on the enter curve, closing --sf-duration-fast on the
+  // exit curve, less motion a short fade.
+  assert.match(modal,/var\(--sf-duration-normal\) var\(--sf-ease-enter\)/);
+  assert.match(modal,/transition-duration: var\(--sf-duration-fast\);\s*transition-timing-function: var\(--sf-ease-exit\);/);
+  assert.match(modal,/transition: opacity var\(--sf-duration-fast\) linear;/);
   assert.ok(modal.includes('var(--sf-space-1\\/2)'));
   assert.doesNotMatch(modal,/0\.24s|0\.75rem/);
   assert.match(modal,/@media \(prefers-reduced-motion: reduce\)/);

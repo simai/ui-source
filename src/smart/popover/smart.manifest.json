@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.popover",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "title": "Popover",
   "summary": "A surface anchored to a control the consumer supplies, with its own open state, dismissal and returned focus. Built as a general part because the Framework had the surface and not the behaviour: two composites wrote it by hand within a week, the second copying the first.",
   "kind": "smart",
@@ -375,7 +375,7 @@
       },
       {
         "path": "src/smart/popover/js/templates/default.css",
-        "sha256": "2560e4d0ba64aed660ab3b8a591b779ad4ee82fd315ae73cd4d9cf8143b4d067"
+        "sha256": "9b462af70a4316afce9004fe819275afc0c7f927db5deecbeb84afea720101f0"
       }
     ],
     "generated_runtime": []

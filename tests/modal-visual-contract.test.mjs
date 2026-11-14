@@ -110,7 +110,9 @@ test('modal lifecycle has a bounded frame fallback for offscreen documents', asy
   assert.match(motion, /requestAnimationFrame\(run\)/);
   assert.match(motion, /setTimeout\(run, 50\)/);
   assert.match(motion, /queueMicrotask\(run\)/);
-  assert.match(motion, /const cancelFrame = scheduleModalFrame/);
+  // The close measure waits a few frames for the closing state (C159 (8)).
+  assert.match(motion, /cancelFrame = scheduleModalFrame\(measure, view\)/);
+  assert.match(motion, /state !== 'closing' && frames\+\+ < STATE_FRAMES/);
   assert.match(ordinary, /scheduleModalClose, scheduleModalFrame/);
   assert.match(smart, /scheduleModalClose, scheduleModalFrame/);
   assert.match(ordinary, /scheduleModalFrame\(\(\) => \{/);

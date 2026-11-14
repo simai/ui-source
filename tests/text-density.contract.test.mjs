@@ -137,6 +137,9 @@ test('the popup widths follow the text in compact density (C32)', async () => {
     '--sf-popup-form-wide-width': ['var(--sf-g2)', 'var(--sf-g1)'],
     // The question window (C39): 28rem, 26rem in compact.
     '--sf-popup-question-width': ['var(--sf-g4)', 'var(--sf-g3)'],
+    // The window sizes (C159 (1)): form 36rem, 32rem in compact; wide 48rem, 44rem.
+    '--sf-popup--window-form-width': ['var(--sf-g8)', 'var(--sf-g6)'],
+    '--sf-popup--window-wide-width': ['var(--sf-h2)', 'var(--sf-h1)'],
   };
   const rows = Object.fromEntries(widths().map((row) => [row.variable, [row.normal, row.compact]]));
   assert.deepEqual(rows, expected);

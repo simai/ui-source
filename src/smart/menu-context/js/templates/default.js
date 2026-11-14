@@ -350,9 +350,13 @@ function renderEntry(entry, path, lead, context, query) {
     // A drilling row shows its value under the name, where a long one is cut
     // instead of pushing the row's end about (owner, 2026-10-30).
     const under = context?.drill && submenu ? entry.value ?? "" : "";
+    // A disabled row is dimmed but stays in the walk with its reason, the
+    // caption (owner decision C164 (4)): aria-disabled, never disabled.
+    const dimmed = Boolean(entry.disabled);
     const classes = joinClasses(
         "sf-context-menu-item",
         toggle ? "sf-context-menu-item--switch" : "",
+        dimmed ? "sf-context-menu-item--disabled" : "",
         isDestructive(entry) ? "sf-context-menu-item--danger" : "",
         entry.current ? "sf-context-menu-item--current" : "",
         chosen ? "sf-context-menu-item--chosen" : "",
@@ -377,8 +381,27 @@ function renderEntry(entry, path, lead, context, query) {
             aria-checked=${toggle ? String(Boolean(entry.value)) : checkable ? String(Boolean(entry.checked)) : nothing}
             aria-haspopup=${submenu ? "menu" : nothing}
             aria-expanded=${submenu ? "false" : nothing}
-            ?disabled=${Boolean(entry.disabled)}
+            aria-disabled=${dimmed ? "true" : nothing}
     >${body}</button>`;
+}
+
+// The order a level's rows are drawn in (owner decision C164 (5)): a
+// destructive row -- «Удалить» -- is always last, after a line, whatever
+// place the host gave it. A line left at either end, or doubled where a row
+// moved away, is not drawn. Each row keeps its own path.
+function actionOrder(shown) {
+    const destructive = (entry) => ROWS(entry) && entry.type !== "group"
+        && (Boolean(entry.danger) || entry.status === "danger" || entry.status === "error");
+    const danger = shown.filter(([entry]) => destructive(entry));
+    if (!danger.length) return shown;
+    const separator = (pair) => pair[0]?.type === "separator";
+    const rest = [];
+    for (const pair of shown.filter((one) => !danger.includes(one))) {
+        if (separator(pair) && (!rest.length || separator(rest[rest.length - 1]))) continue;
+        rest.push(pair);
+    }
+    while (rest.length && separator(rest[rest.length - 1])) rest.pop();
+    return rest.length ? [...rest, [{type: "separator"}, -1], ...danger] : danger;
 }
 
 // What is not a row: the blocks that stand between rows. A choice row is a
@@ -461,11 +484,16 @@ function renderEntries(context) {
     // rows has found nothing, whatever the field holds -- an answer to an older
     // query can arrive after the field was cleared -- so its note shows then too.
     const remote = Boolean(context.search?.remote);
-    const shown = entries.map((entry, index) => [entry, index]).filter(([entry]) => remote || matches(entry, query));
+    let shown = actionOrder(entries.map((entry, index) => [entry, index]).filter(([entry]) => remote || matches(entry, query)));
+    // On a selection the top level says how many rows it acts on, «Выбрано N»,
+    // in place of a heading the host gave the one object (C164 (3)).
+    const selection = level.depth === 0 && context.selectionLabel;
+    if (selection && shown[0]?.[0]?.type === "heading") shown = shown.slice(1);
     return html`
         ${level.depth > 0 ? renderDrillHead(context) : nothing}
         ${context.search ? renderSearch(context) : nothing}
         ${searchList(context, html`
+            ${selection ? html`<div class="sf-context-menu-heading sf-context-menu-heading--selection" role="presentation">${context.selectionLabel}</div>` : nothing}
             ${shown.map(([entry, index]) => renderEntry(entry, `${prefix}${index}`, lead, context, remote ? "" : query))}
             ${context.search && (query || remote) && !shown.some(([entry]) => ROWS(entry)) ? html`<p class="sf-context-menu-note" role="status">${context.search.empty ?? ""}</p>` : nothing}
         `)}
@@ -575,7 +603,9 @@ export function renderContextMenuTemplate(context) {
                 class=${rootClasses}
                 style=${context.rootStyle || nothing}
                 role=${context.role || "menu"}
-                aria-label=${context.ariaLabel || nothing}
+                aria-label=${(context.selectionLabel
+                    ? [context.ariaLabel || context.component?.getAttribute?.("aria-label"), context.selectionLabel].filter(Boolean).join(", ")
+                    : context.ariaLabel) || nothing}
         >
             <div class="sf-context-menu-frame">
                 ${renderTooltip(context)}

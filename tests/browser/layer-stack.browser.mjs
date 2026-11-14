@@ -23,11 +23,14 @@ const styles = [
   'core/core/css/core.css', 'core/core/css/utility.full.css',
   'component/component/modal/css/modal.css',
   'smart/smart/drawer/css/drawer.css',
+  // The close in both headers is sf-button-close (C14): its box and its cross.
+  'component/component/icon-buttons/css/icon-buttons.css', 'component/component/close/css/close.css',
 ];
 const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js',
   'smart/smart/drawer/js/drawer.js',
   'smart/smart/modal/js/modal.js',
+  'smart/smart/button-close/js/button-close.js',
 ];
 const absent = [...styles, ...modules].map((p) => join(out, p)).filter((path) => !existsSync(path));
 if (absent.length) {
