@@ -657,8 +657,14 @@
     --sf-icon-button--border-color: var(--sf-icon-button-border-color, color-mix(in srgb, var(--sf-error) 64%, transparent));
   }
 
+  /* On a place with its own ink -- a strong coloured place, the duo
+     gradient, glass, an inverse place, which declare it as --sf-place--ink --
+     the outline, ghost and link danger glyph is that ink, as on sf-button
+     (component.buttons 1.14.0; inverse places IP, 2026-11-14): red on a
+     colour read 1.22-2.05:1. The page and every opaque place (initial) keep
+     the hue; the edge and the state fills keep their hue. */
   .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon {
-    --sf-icon--color: var(--sf-icon-button-color, var(--sf-error));
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error)));
   }
 
   .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon,
@@ -667,7 +673,7 @@
   }
 
   .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon {
-    --sf-icon--color: var(--sf-icon-button-color, var(--sf-error-active));
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error-active)));
   }
 
   .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close > .sf-close > .sf-close-icon {
@@ -679,11 +685,11 @@
   }
 
   .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-error));
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error)));
   }
 
   .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-error-active));
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error-active)));
   }
 
 }

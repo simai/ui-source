@@ -25,8 +25,10 @@ decorative and uses `aria-hidden="true"`.
   `on-surface` (or `secondary`) icon button is the place's ink with the
   place's accent label as its glyph (`--sf-on-primary`: the place's colour,
   black on glass), not `--sf-on-surface-inverse`, which read 1.29:1 on the
-  white, as on `sf-button` (component.buttons 1.14.0). A card or a popup on
-  such a place takes the theme's look back;
+  white, as on `sf-button` (component.buttons 1.14.0); an `outline` or ghost
+  danger icon button draws its glyph in the place's ink (red read 1.22-2.05:1
+  there), its edge and state fills keep their hue. A card or a popup on such
+  a place takes the theme's look back;
 - size: `1/3`, `1/2`, `1`, `2`, or `3`;
 - density: default, `spacing-compact`, `spacing-comfortable`, or
   `spacing-spacious`; `tightness-low`, `tightness-high` and `tightness-highest`

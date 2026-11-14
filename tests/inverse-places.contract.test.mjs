@@ -46,3 +46,11 @@ test('IP: a filled neutral icon button reads the place accent label only where t
   assert.ok(icon.includes('--sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-icon-button--on-place-ink, var(--sf-on-surface-inverse)));'));
   assert.doesNotMatch(icon, /var\(--sf-icon-button-color, var\(--sf-on-surface-inverse\)\)/u, 'no bare inverse ink left');
 });
+
+test('IP: an outline, ghost or link danger icon button writes the place ink, the hue elsewhere', () => {
+  for (const hue of ['error', 'error-active']) {
+    assert.ok(icon.includes(`--sf-icon--color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-${hue})));`), hue);
+    assert.ok(icon.includes(`--sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-${hue})));`), hue);
+  }
+  assert.doesNotMatch(icon, /--sf-(?:icon--color|close-icon--background-color): var\(--sf-icon-button-color, var\(--sf-error(?:-active)?\)\);/u);
+});
