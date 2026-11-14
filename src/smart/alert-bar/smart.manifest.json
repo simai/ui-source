@@ -315,11 +315,11 @@
       },
       {
         "path": "src/smart/alert-bar/js/templates/default.js",
-        "sha256": "d6c70447a75a645b06c1d13ce79f69d4515df01a9e0877d4ea2592afa6fbf3e5"
+        "sha256": "15cf69215b9a406dc13928b21c1718c49ce42d6a67e9b1c78f1d7d004280df8b"
       },
       {
         "path": "src/smart/alert-bar/scss/_smart__alert-bar.scss",
-        "sha256": "252a0431caff4ec5d8bb9370f6073178a4875c084afa24d02c4e49a10514c476"
+        "sha256": "b67fbc1c8eb1464d3b3e252293b96464171e9340b6517574384da51c463ddcc2"
       },
       {
         "path": "src/smart/alert-bar/rule.js",
@@ -327,7 +327,7 @@
       },
       {
         "path": "src/smart/alert-bar/docs.md",
-        "sha256": "21077167ead80069dbc2b2c39242aec9fdb804211934fd3579d87c99c70252fb"
+        "sha256": "862224784d1638c24a0af0390cb738df275f5aafa0c1f464993de31f1fc2636d"
       }
     ],
     "generated_runtime": []
