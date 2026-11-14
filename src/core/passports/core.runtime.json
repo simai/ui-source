@@ -151,6 +151,9 @@
     "src/core/js/index.js",
     "src/core/js/instance-path.js",
     "src/core/js/internal.js",
+    "src/core/js/lang/file-size/en.json",
+    "src/core/js/lang/file-size/index.mjs",
+    "src/core/js/lang/file-size/ru.json",
     "src/core/js/layer-stack.js",
     "src/core/js/loader.js",
     "src/core/js/mask.js",
@@ -225,7 +228,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "91df1e5e318e86fdbd0afe015bcac330d02615b3fe5f5816978a2c690176fb9b",
+  "content_sha256": "a540387069671d1b2293b0bfe2b6e3b063d76cb5b4c633fbf43aba30bdf3368f",
   "dependencies": [
     {
       "id": "core.styles",

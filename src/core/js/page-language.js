@@ -250,8 +250,9 @@ export function localeText(dictionary, key, locale, component) {
 // (tests/language-files.contract.test.mjs, languageCoverage()). The marks
 // are kept on the shared global, because every bundle carries this module.
 function warnFallback(order, owner, key) {
-  const wanted = order[0];
-  if (!wanted || wanted.split('-')[0] === 'en') return;
+  // The language, not the region: de-AT and de are one warning.
+  const wanted = String(order[0] || '').split('-')[0];
+  if (!wanted || wanted === 'en') return;
   noteMissing(wanted, owner, key);
   const root = typeof globalThis !== 'undefined' ? globalThis : {};
   if (!(root.__sfFallbackWarnings instanceof Set)) root.__sfFallbackWarnings = new Set();

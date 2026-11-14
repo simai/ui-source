@@ -686,7 +686,7 @@ class Modal extends ComponentObserver {
         if (!this._fetchController || this._fetchController === controller) {
           this._finishLoading();
         }
-        return; // Загрузка отменена — не показываем ошибку
+        return; // The load was cancelled: no error is shown
       }
       this._contentError = error.message;
       this._finishLoading();
