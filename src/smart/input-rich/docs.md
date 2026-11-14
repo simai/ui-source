@@ -90,7 +90,7 @@ again with the same subset: a request can be written by anyone.
   importance (`data-sf-priority`: text levels, bold, italic, link first). The
   text levels are one button with the current level, «Абзац ▾», first in the
   row: it opens a menu where one level is chosen (C155 (5)). The toolbar is
-  always one row (`overflow="more"`, the default since 1.5.0, C155, R233):
+  always one row (`overflow="more"`, the default since 1.6.0, C155, R233):
   what does not fit leaves for ⋯ «Ещё» at its end — whole groups with their
   separator, undo and redo first, then the lists and the quote; the levels and
   bold, italic, link stay. ⋯ opens a menu with the tools that left, each with

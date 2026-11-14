@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-rich",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "title": "Rich text",
   "summary": "A form field for formatted text: paragraphs, headings 2 to 4, bold, italic, links, bulleted and numbered lists and quotes, with a toolbar, undo and redo. Its value is HTML of that subset and nothing else: the value it is given, every paste and drop and every edit are cleaned to it.",
   "kind": "smart",
@@ -84,7 +84,7 @@
       "overflow": {
         "type": "string",
         "default": "more",
-        "description": "What the toolbar does when its tools do not fit one row (owner decision C155, R233): more (the default) keeps one row and puts whole groups, with their separator, under ⋯ «Ещё» at its end -- undo and redo first, then the lists and the quote; the text levels and bold, italic, link stay; wrap lets the row wrap as before 1.5.0.",
+        "description": "What the toolbar does when its tools do not fit one row (owner decision C155, R233): more (the default) keeps one row and puts whole groups, with their separator, under ⋯ «Ещё» at its end -- undo and redo first, then the lists and the quote; the text levels and bold, italic, link stay; wrap lets the row wrap as before 1.6.0.",
         "enum": [
           "more",
           "wrap"
@@ -367,7 +367,7 @@
       },
       {
         "path": "src/smart/input-rich/docs.md",
-        "sha256": "bb3503a5cfd8824732b6e1738da309519faf1ca1c79e41437f91c3bbbfe3e6a8"
+        "sha256": "a17d5d62aca655dceccca8c300499ffa9d7e76fe4a8855346cedc4751af18609"
       }
     ],
     "generated_runtime": []

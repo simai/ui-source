@@ -12268,7 +12268,7 @@
       "recorded_on": "2026-11-14",
       "stage": "compat",
       "kind": "behaviour",
-      "summary": "sf-input-rich 1.5.0 keeps its toolbar on one row with overflow=\"more\" by default: groups that do not fit leave whole for ⋯ «Ещё» (owner decision C155, R233); the four text-level buttons are one «Абзац ▾» menu button (C155 (5)). The toolbar wrapped before; a page that wants that writes overflow=\"wrap\".",
+      "summary": "sf-input-rich 1.6.0 keeps its toolbar on one row with overflow=\"more\" by default: groups that do not fit leave whole for ⋯ «Ещё» (owner decision C155, R233); the four text-level buttons are one «Абзац ▾» menu button (C155 (5)). The toolbar wrapped before; a page that wants that writes overflow=\"wrap\".",
       "items": [
         {
           "component": "sf-input-rich",
