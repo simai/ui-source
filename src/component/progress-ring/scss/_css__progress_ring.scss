@@ -87,11 +87,12 @@
 
   /* The middle: the ring's box less the line and the gap on every side. */
   .sf-progress-ring .sf-progress-ring-content {
+    --sf-progress-ring--content-size: calc(var(--sf-progress-ring--size) - 2 * (var(--sf-progress-ring--line-width) + var(--sf-progress-ring--gap)));
     position: relative;
     display: grid;
     place-items: center;
-    inline-size: calc(var(--sf-progress-ring--size) - 2 * (var(--sf-progress-ring--line-width) + var(--sf-progress-ring--gap)));
-    block-size: calc(var(--sf-progress-ring--size) - 2 * (var(--sf-progress-ring--line-width) + var(--sf-progress-ring--gap)));
+    inline-size: var(--sf-progress-ring--content-size);
+    block-size: var(--sf-progress-ring--content-size);
     border-radius: var(--sf-radius-circle);
     white-space: nowrap;
   }
@@ -103,6 +104,18 @@
   .sf-progress-ring .sf-progress-ring-content > sf-avatar > .sf-avatar {
     width: 100%;
     height: 100%;
+    /* The avatar's box is the content box (C152 (8), DEV GB5 answers): its
+       initials take their size from that box, never the other way round. As
+       a grid item its least width was its letters' (two letters of a size
+       1/3 avatar made a 16 px box 20.52 wide in compact and 20.52 on a 20 px
+       phone box), and the presence point, placed from the box's edge, left
+       the line by 4.7 and 0.4 px. The letters are at most half the box, as
+       a line avatar's (.sf-avatar--line-*): a box as large as the avatar's
+       own step keeps its own size. */
+    min-inline-size: 0;
+    min-block-size: 0;
+    font-size: min(var(--sf-avatar--font-size), var(--sf-progress-ring--content-size) / 2);
+    line-height: min(var(--sf-avatar--line-height), var(--sf-progress-ring--content-size));
   }
 
   /* A slotted avatar's presence point stands on the ring at 45 degrees, at the
