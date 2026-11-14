@@ -12478,6 +12478,7 @@
       "deprecated_on": "2026-11-14",
       "remove_after": "2027-01-01",
       "rewrite": "manual",
+      "manual": "Replace a framed caption's sf-divider-content-border with the plain sf-divider-content (it already draws without a frame). Replace each <button class=\"sf-divider-button ...\"> in .sf-divider-buttons with <sf-button size=\"1/2\" appearance=\"outline\" text=\"...\"> (an icon-only solo button: sf-button-icon size 1/2 outline with an aria-label); the buttons stand 8 apart without joined edges.",
       "examples": {
         "before": "<span class=\"sf-divider-buttons\"><button type=\"button\" class=\"sf-divider-button sf-divider-button--left\">Ещё 20</button><button type=\"button\" class=\"sf-divider-button sf-divider-button--right\">Все</button></span>",
         "after": "<span class=\"sf-divider-buttons\"><sf-button size=\"1/2\" appearance=\"outline\" text=\"Ещё 20\"></sf-button><sf-button size=\"1/2\" appearance=\"outline\" text=\"Все\"></sf-button></span>"
