@@ -29,6 +29,21 @@ function nextHelpId() {
 }
 const DRAG_THRESHOLD = 4;
 const EDGE = 32;
+// A row without a handle is taken by a finger only after a long press (owner
+// C171 (2), 2026-11-14): a plain swipe over the list scrolls the page, as any
+// list does. Moving further than the slop before the time is a scroll.
+const LONG_PRESS = 500;
+const LONG_PRESS_SLOP = 8;
+/**
+ * The drop line: one line two pixels thick for every place something lands --
+ * a list's gap, a grid cell's side, a canvas seam of the editor overlay (owner
+ * C171 (4), 2026-11-14: the overlay drew three). Its look is one rule,
+ * .sf-sortable-indicator, in sf-sortable's sheet, which the overlay's rule
+ * loads with it.
+ */
+export const SORTABLE_DROP_LINE = 2;
+const LINE = SORTABLE_DROP_LINE;
+const HALF = SORTABLE_DROP_LINE / 2;
 
 const MESSAGES = {
   ru: {
@@ -38,6 +53,7 @@ const MESSAGES = {
     dropped: 'Положено: {item}, позиция {index} в «{list}».',
     cancelled: 'Перемещение отменено.',
     target: 'Цель: {target}.',
+    roledescription: 'перемещаемый',
   },
   en: {
     instructions: 'Space or Enter to pick up, arrows to move, Space or Enter to drop, Escape to cancel.',
@@ -46,6 +62,7 @@ const MESSAGES = {
     dropped: 'Dropped {item} at position {index} in “{list}”.',
     cancelled: 'Move cancelled.',
     target: 'Target: {target}.',
+    roledescription: 'draggable',
   },
 };
 
@@ -108,7 +125,7 @@ function scrollContainer(element) {
 }
 
 function indicator() {
-  let line = globalThis.document.querySelector('.sf-sortable-indicator');
+  let line = globalThis.document.querySelector('.sf-sortable-indicator:not([data-sf-drop-line-owner])');
   if (!line) {
     line = globalThis.document.createElement('div');
     line.className = 'sf-sortable-indicator';
@@ -247,13 +264,13 @@ function wrappedIndicatorRect(list, all, index) {
   const after = all[index - 1];
   if (before) {
     const target = before.getBoundingClientRect();
-    return { left: target.left - 1, top: target.top, width: 2, height: target.height };
+    return { left: target.left - HALF, top: target.top, width: LINE, height: target.height };
   }
   if (after) {
     const target = after.getBoundingClientRect();
-    return { left: target.right - 1, top: target.top, width: 2, height: target.height };
+    return { left: target.right - HALF, top: target.top, width: LINE, height: target.height };
   }
-  return { left: box.left, top: box.top, width: 2, height: box.height };
+  return { left: box.left, top: box.top, width: LINE, height: box.height };
 }
 
 function listIndicatorRect(list, all, index, horizontal) {
@@ -262,10 +279,76 @@ function listIndicatorRect(list, all, index, horizontal) {
   const after = all[index - 1];
   if (horizontal) {
     const x = before ? before.getBoundingClientRect().left : after ? after.getBoundingClientRect().right : box.left;
-    return { left: x - 1, top: box.top, width: 2, height: box.height };
+    return { left: x - HALF, top: box.top, width: LINE, height: box.height };
   }
   const y = before ? before.getBoundingClientRect().top : after ? after.getBoundingClientRect().bottom : box.top;
-  return { left: box.left, top: y - 1, width: box.width, height: 2 };
+  return { left: box.left, top: y - HALF, width: box.width, height: LINE };
+}
+
+/**
+ * The copy that follows the pointer: whole, not see-through (owner C171 (3),
+ * 2026-11-14: a 40 % copy -- the dimming of the item it was cloned from -- was
+ * hard to read), standing over the page on the overlay shadow (C20). The clone
+ * keeps its own look; a frame of the popup surface under it gives a row with
+ * no fill of its own a body, with the item's own corners.
+ */
+function ghostOf(item, box) {
+  const doc = globalThis.document;
+  const copy = item.cloneNode(true);
+  copy.removeAttribute('id');
+  for (const element of copy.querySelectorAll('[id]')) element.removeAttribute('id');
+  for (const name of ['data-sf-sortable-dragging', 'data-sf-sortable-lifted', 'data-sf-sortable-column-source', 'tabindex']) copy.removeAttribute(name);
+  copy.classList.add('sf-sortable-ghost-item');
+  Object.assign(copy.style, { margin: '0', inlineSize: '100%', boxSizing: 'border-box' });
+  const ghost = doc.createElement('div');
+  ghost.className = 'sf-sortable-ghost';
+  ghost.setAttribute('aria-hidden', 'true');
+  ghost.inert = true;
+  const style = globalThis.getComputedStyle(item);
+  ghost.style.borderRadius = style.borderRadius;
+  ghost.style.direction = style.direction;
+  Object.assign(ghost.style, { width: `${box.width}px`, left: `${box.left}px`, top: `${box.top}px` });
+  ghost.append(copy);
+  doc.body.append(ghost);
+  return ghost;
+}
+
+// A pointer drag ends with a click on what was under it (the handle, or a link
+// in a row): that click is the drop, not a press, and the handle's menu or the
+// link must not answer it. It comes in the same task as the pointerup.
+function swallowNextClick() {
+  const swallow = (event) => { event.preventDefault(); event.stopImmediatePropagation(); };
+  globalThis.addEventListener('click', swallow, { capture: true, once: true });
+  globalThis.setTimeout(() => globalThis.removeEventListener('click', swallow, { capture: true }), 0);
+}
+
+// What a reader says an item is (SO-1): a row that is a plain box takes a role
+// -- a button when nothing inside it is a control, a group when it holds one
+// (a control inside a button is not reachable) -- and every item says it can be
+// moved, in the page's language. A host's own role and description stay.
+const GENERIC = new Set(['DIV', 'SPAN', 'SECTION', 'ARTICLE', 'P']);
+function describeItem(item) {
+  if (!item.hasAttribute('role') && GENERIC.has(item.tagName)) {
+    const holdsControl = item.querySelector(`${INTERACTIVE},${HANDLE},[tabindex]`);
+    item.setAttribute('role', holdsControl ? 'group' : 'button');
+  }
+  if (!item.hasAttribute('aria-roledescription')) item.setAttribute('aria-roledescription', messages().roledescription);
+}
+
+/**
+ * A move a host asks for without dragging (the handle's menu): the same request
+ * and the same "dropped" words a drag ends with. index is the place the item
+ * takes once moved, as a drag's is.
+ */
+export function requestSortableMove(list, item, index) {
+  const all = items(list);
+  const id = item?.getAttribute?.('data-sf-sortable-item');
+  const from = all.indexOf(item);
+  if (!id || from < 0 || index < 0 || index >= all.length || index === from) return false;
+  const name = list.getAttribute('id') || list.group || list.getAttribute('group') || '';
+  emitIntent(list, { item: id, from: name, to: name, index, mode: 'move' });
+  list.announce?.(format(messages().dropped, { item: itemLabel(item), index: index + 1, list: listName(list) }));
+  return true;
 }
 
 // An sf-sortable list sends the new name and its aliases.json sends the old
@@ -374,7 +457,11 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
       if (!item.hasAttribute('tabindex') && !item.matches(INTERACTIVE)) item.tabIndex = 0;
       const described = (item.getAttribute('aria-describedby') || '').split(/\s+/u);
       if (this.instructions && !described.includes(this.instructions.id)) item.setAttribute('aria-describedby', [...described.filter(Boolean), this.instructions.id].join(' '));
-      if (!item.querySelector(HANDLE)) item.style.touchAction = 'none';
+      describeItem(item);
+      // A row without a handle is the handle itself; a finger takes it by a long
+      // press, so the page keeps scrolling over it (SO-3: touch-action none on
+      // the whole row stopped that).
+      item.toggleAttribute('data-sf-sortable-whole', !item.querySelector(HANDLE));
     }
 
     // The list keeps its live region and its instructions among its own
@@ -433,24 +520,37 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
       const pointer = event.pointerId;
       let started = false;
       const pending = new AbortController();
+      // A finger on a row without a handle: the drag waits for a long press.
+      const longPress = !handle && event.pointerType === 'touch';
+      let timer = 0;
+      const lift = (at) => {
+        if (!this.begin(item, at.pointerType || event.pointerType || 'mouse')) { pending.abort(); return false; }
+        started = true;
+        item.setPointerCapture?.(pointer);
+        shared.session.ghost = this.ghost(item, at);
+        // The item leaves the flow only once its copy is on screen; a copy
+        // library (mode copy) keeps its item where it is.
+        if (silhouetteFor(this) && this.mode !== 'copy') {
+          shared.session.silhouette = true;
+          // Asked before the item leaves the flow: with it gone, a grid of
+          // two cells is one cell and does not look like a grid.
+          shared.session.wrappedLists = new Set(isWrapped(items(this)) ? [this] : []);
+          item.setAttribute('data-sf-sortable-lifted', '');
+          this.retarget(at.clientX, at.clientY);
+        }
+        return true;
+      };
       const move = (moveEvent) => {
         if (moveEvent.pointerId !== pointer) return;
         if (!started) {
-          if (Math.hypot(moveEvent.clientX - start.x, moveEvent.clientY - start.y) < DRAG_THRESHOLD) return;
-          if (!this.begin(item, moveEvent.pointerType || 'mouse')) { pending.abort(); return; }
-          started = true;
-          item.setPointerCapture?.(pointer);
-          shared.session.ghost = this.ghost(item, moveEvent);
-          // The item leaves the flow only once its copy is on screen; a copy
-          // library (mode copy) keeps its item where it is.
-          if (silhouetteFor(this) && this.mode !== 'copy') {
-            shared.session.silhouette = true;
-            // Asked before the item leaves the flow: with it gone, a grid of
-            // two cells is one cell and does not look like a grid.
-            shared.session.wrappedLists = new Set(isWrapped(items(this)) ? [this] : []);
-            item.setAttribute('data-sf-sortable-lifted', '');
-            this.retarget(moveEvent.clientX, moveEvent.clientY);
+          const distance = Math.hypot(moveEvent.clientX - start.x, moveEvent.clientY - start.y);
+          if (longPress) {
+            // The finger moved before the press was long: it scrolls the page.
+            if (distance > LONG_PRESS_SLOP) pending.abort();
+            return;
           }
+          if (distance < DRAG_THRESHOLD) return;
+          if (!lift(moveEvent)) return;
         }
         moveEvent.preventDefault();
         this.track(moveEvent.clientX, moveEvent.clientY);
@@ -458,12 +558,25 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
       const up = (upEvent) => {
         if (upEvent.pointerId !== pointer) return;
         pending.abort();
-        if (started) this.drop();
+        if (started) { swallowNextClick(); this.drop(); }
       };
       const cancel = () => {
         pending.abort();
         if (started) finish(this, 'cancelled');
       };
+      pending.signal.addEventListener('abort', () => globalThis.clearTimeout(timer));
+      if (longPress) {
+        timer = globalThis.setTimeout(() => {
+          if (pending.signal.aborted || shared.session) return;
+          if (!lift(event)) return;
+          this.track(event.clientX, event.clientY);
+          // From here the finger moves the row, not the page: a touchmove
+          // the page does not scroll by, and no menu of the long press.
+          const hold = (touchEvent) => { if (touchEvent.cancelable) touchEvent.preventDefault(); };
+          globalThis.addEventListener('touchmove', hold, { signal: pending.signal, passive: false });
+          globalThis.addEventListener('contextmenu', hold, { signal: pending.signal, capture: true });
+        }, LONG_PRESS);
+      }
       globalThis.addEventListener('pointermove', move, { signal: pending.signal, passive: false });
       globalThis.addEventListener('pointerup', up, { signal: pending.signal });
       globalThis.addEventListener('pointercancel', cancel, { signal: pending.signal });
@@ -473,16 +586,8 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
 
     ghost(item, event) {
       const box = item.getBoundingClientRect();
-      const ghost = item.cloneNode(true);
-      ghost.removeAttribute('id');
-      for (const element of ghost.querySelectorAll('[id]')) element.removeAttribute('id');
-      ghost.classList.add('sf-sortable-ghost');
-      ghost.setAttribute('aria-hidden', 'true');
-      ghost.inert = true;
-      Object.assign(ghost.style, { width: `${box.width}px`, left: `${box.left}px`, top: `${box.top}px` });
       shared.session.offset = { x: event.clientX - box.left, y: event.clientY - box.top };
-      globalThis.document.body.append(ghost);
-      return ghost;
+      return ghostOf(item, box);
     }
 
     track(x, y) {
@@ -759,11 +864,11 @@ export function attachSortable(container, options = {}) {
       if (index > session.originalIndex && after) left = after.right - width;
       else left = before ? before.left : (after ? after.right - width : extent.left);
     } else {
-      left = (before ? before.left : after ? after.right : extent.left) - 1;
+      left = (before ? before.left : after ? after.right : extent.left) - HALF;
     }
     Object.assign(outline().style, {
       left: `${left}px`, top: `${extent.top}px`,
-      width: preview === 'column' ? `${width}px` : '2px', height: `${extent.height}px`,
+      width: preview === 'column' ? `${width}px` : `${LINE}px`, height: `${extent.height}px`,
     });
   };
 
@@ -821,14 +926,8 @@ export function attachSortable(container, options = {}) {
         if (Math.hypot(moveEvent.clientX - start.x, moveEvent.clientY - start.y) < DRAG_THRESHOLD) return;
         session.started = true;
         doc.documentElement.setAttribute('data-sf-sortable-active', '');
-        const ghost = item.cloneNode(true);
-        ghost.removeAttribute('id');
-        for (const element of ghost.querySelectorAll('[id]')) element.removeAttribute('id');
-        ghost.classList.add('sf-sortable-ghost');
-        ghost.setAttribute('aria-hidden', 'true');
-        ghost.inert = true;
-        Object.assign(ghost.style, {width: `${box.width}px`, height: `${box.height}px`, left: `${box.left}px`, top: `${box.top}px`});
-        doc.body.append(ghost);
+        const ghost = ghostOf(item, box);
+        ghost.style.height = `${box.height}px`;
         session.ghost = ghost;
         session.offset = {x: start.x - box.left, y: start.y - box.top};
         session.cells = cellsOf(item).filter(Boolean);
@@ -854,4 +953,4 @@ export function attachSortable(container, options = {}) {
   };
 }
 
-export default { SORTABLE_MOVE_EVENT, activeSortableSession, attachSortable, defineSortable, registerSortableDropTarget, sortableIndexAt };
+export default { SORTABLE_DROP_LINE, SORTABLE_MOVE_EVENT, activeSortableSession, attachSortable, defineSortable, registerSortableDropTarget, requestSortableMove, sortableIndexAt };

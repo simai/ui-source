@@ -951,7 +951,7 @@
       },
       {
         "path": "src/core/js/composition/sortable.mjs",
-        "sha256": "86ea4556fdcbccd34fc235f7caed26da558399694049e5dde13ec089ad277b56"
+        "sha256": "f72bdf43795744dcbd531cce4dd4c02db6d52563341caed61b3a556bd42be6b4"
       },
       {
         "path": "src/core/js/composition/canonical.mjs",

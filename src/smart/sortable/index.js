@@ -15,10 +15,11 @@ import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
 
-// Defined with its insertion point and inserter (inserter-items, opt-in). They
-// come with this bundle only: the composition overlay carries the drag module
-// too and has no use for them.
-defineSortable(inserterRegistry(), {base: manifestHost(manifest, {lang: {en, ru}, source: 'ru', aliases})});
+import { moveMenuRegistry } from '../../core/js/composition/sortable-move-menu.mjs';
+// Defined with its insertion point and inserter (inserter-items, opt-in) and
+// the handle's move menu (C171 (1)). They come with this bundle only: the
+// composition overlay carries the drag module too and has no use for them.
+defineSortable(moveMenuRegistry(inserterRegistry()), {base: manifestHost(manifest, {lang: {en, ru}, source: 'ru', aliases})});
 
 globalThis.SF = globalThis.SF || {};
 // attach: sf-sortable's pointer behaviour on any container (the column mode).
