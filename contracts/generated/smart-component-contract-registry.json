@@ -450,6 +450,7 @@
           "component.badges",
           "component.icon-buttons",
           "component.spinner",
+          "component.tooltip",
           "smart.button-close",
           "smart.icon"
         ]
@@ -463,7 +464,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-icon/smart.manifest.json",
-      "manifest_sha256": "b44b2f32bdb6c339150a100a2de17a6d8c450494530b2383d94df1e785f124f0",
+      "manifest_sha256": "bef3d1b0be2f8a266c1e8e444ccdee9b2d2509a8acd01764c1d4a9e5488149de",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1119,7 +1120,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/help-mark/smart.manifest.json",
-      "manifest_sha256": "e20dd26024d353b6f712b36680ad829ca976a878da1f6bd13fe1b5b93fb97cac",
+      "manifest_sha256": "1e862139b0fb33a45e4beb87ce34e662817a76b8f321b62a5745548a80b2df53",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3194,7 +3195,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/time/smart.manifest.json",
-      "manifest_sha256": "df2b1cefb4de22c9edb3f189380d22f84f4402fed192d17a9f4737ec400f8f08",
+      "manifest_sha256": "71bc40cf987072cd0ba5ae3b1761d3c823503d0b0b715edb3772fb57f38d6012",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3272,7 +3273,7 @@
       "kind": "smart",
       "lifecycle": "released",
       "manifest_path": "src/smart/tooltip/smart.manifest.json",
-      "manifest_sha256": "08eded130b79c0e003be0ce4ac361b326f111c82bc4a6173e1b3964af0a1b0a8",
+      "manifest_sha256": "b043c5d81760bce38fc56caa907f041ccb72c3bd7b6d8dc84f4aabe12b2ce941",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

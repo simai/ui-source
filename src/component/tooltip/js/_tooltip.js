@@ -71,6 +71,19 @@ function focusVisible(element) {
     return true;
   }
 }
+// At most two lines (owner decision C160 (2)): the sheet cuts a longer text
+// after its second line; the console says once per page which tooltip was
+// cut, so the page moves the explanation to a «?» beside the control
+// (sf-help-mark). Shared across bundles, as the group.
+const CUT_SAID = Symbol.for('sf.tooltip.cut-said');
+function sayCut(surface, trigger) {
+  const text = surface.querySelector('.sf-tooltip-text');
+  if (!text || text.scrollHeight <= text.clientHeight + 1) return;
+  if (globalThis[CUT_SAID]) return;
+  globalThis[CUT_SAID] = true;
+  const words = text.textContent.replace(/\s+/gu, ' ').trim();
+  globalThis.console?.warn?.(`[SIMAI Framework] tooltip: «${words.slice(0, 60)}${words.length > 60 ? '…' : ''}» (${trigger.closest?.('[id]')?.id ? `#${trigger.closest('[id]').id}` : trigger.localName}) is longer than two lines and was cut. A tooltip names a control; an explanation goes to a «?» beside it (sf-help-mark), decision C160.`);
+}
 const TRIGGER_SELECTOR = '[data-tooltip]';
 const SURFACE_SELECTOR = '.sf-tooltip, sf-tooltip';
 
@@ -366,6 +379,7 @@ class SfTooltipController {
     this.surface.hidden = false;
     this.surface.classList.add('active');
     this.startPosition();
+    sayCut(this.surface, this.trigger);
     this.trigger.ownerDocument.addEventListener(
       'keydown',
       this.onDocumentKeydown,

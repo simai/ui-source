@@ -40,7 +40,7 @@ const sfTooltipMeta = {
         "3"
       ],
       "default": "1/3",
-      "description": "Framework typography and spacing scale; 1/3, the default, is the plain tooltip: the small text step, regular, 4 x 8."
+      "description": "A former name that draws nothing (owner decision C160 (3), until 2027-01-01): every tooltip is one size, the text 12/16, padding 4 x 8. A size other than 1/3 is noted in SF.deprecations."
     },
     "arrow": {
       "kind": "enum",

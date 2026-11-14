@@ -226,6 +226,12 @@ const sfButtonIconMeta = {
       "default": "",
       "description": "The accessible name while the toggle is on, for a toggle whose name changes («Добавить в избранное» → «Убрать из избранного»). Set, the name says the state and aria-pressed is not written; the pressed look still follows pressed. Empty: aria-label stays the name and aria-pressed says the state"
     },
+    "tooltip": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The icon button shows its name as a Framework tooltip by itself (owner decision C160 (1)): under a resting pointer after 0.5 s, at once on keyboard focus, on a long press by touch, below the button and flipping above at the window's bottom edge; Escape and a press hide it. The text is the name (aria-label, the pressed name of a toggle, a cycle's current and next value) or, when the page wrote one, the host's title, which then draws no browser tooltip of its own. The tooltip is made on the first hover, focus or long press, not before; a button whose page linked a tooltip of its own (data-tooltip) keeps that one. \"off\": no tooltip -- for a button whose name stands next to it, or one that opens its own explanation (the «?» of sf-help-mark)."
+    },
     "theme-cycle": {
       "kind": "custom",
       "valueType": "string",
