@@ -429,7 +429,7 @@
   "cl-time": [
     "display/default",
     "position/default",
-    "visibility/default"
+    "sr-only/default"
   ],
   "cl-toast": [
     "align-items/default",

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-change-confirm's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/change-confirm (migration/convert-1.3.8.mjs over simai/ui-pro@9cbe061); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.confirm-change",
   "tag": "sf-confirm-change",
-  "version": "1.7.5",
+  "version": "1.9.0",
   "kind": "leaf",
   "family": "confirm",
   "settings": {
@@ -38,7 +38,7 @@
     "expires-at": {
       "type": "date",
       "optional": true,
-      "summary": "ISO 8601. Past it an open card reads as expired and says so once with sf-change-confirm-expired."
+      "summary": "ISO 8601. Until then the line under the answers says until when, the time an sf-time («Подтвердить можно до 23:30», «… до завтра, 10:00»; the exact moment and its zone in its tooltip). Past it an open card reads as expired and says so once with sf-change-confirm-expired."
     },
     "change-id": {
       "type": "id",
@@ -49,6 +49,15 @@
       "type": "boolean",
       "default": false,
       "summary": "The answers are shown and cannot be pressed (a send is in flight elsewhere)."
+    },
+    "status": {
+      "type": "enum",
+      "values": [
+        "",
+        "danger"
+      ],
+      "default": "",
+      "summary": "What the acceptance does (decision C25, as sf-confirm's setting): danger, a delete or anything that cannot be undone. The accepting answer is then a filled danger button; without it the accepting answer is the main one, filled primary (owner decision C183 (6)). The declining answer is quiet either way."
     },
     "accept-text": {
       "type": "string",
@@ -185,6 +194,9 @@
     },
     {
       "name": "cl-change"
+    },
+    {
+      "name": "cl-time"
     }
   ],
   "templates": {
@@ -222,27 +234,27 @@
   },
   "host-states": {},
   "css-variables": {
-    "--sf-change-confirm-radius": {
+    "--sf-confirm-change-radius": {
       "type": "length",
       "state": "default"
     },
-    "--sf-change-confirm-inset": {
+    "--sf-confirm-change-inset": {
       "type": "length",
       "state": "default"
     },
-    "--sf-change-confirm-gap": {
+    "--sf-confirm-change-gap": {
       "type": "length",
       "state": "default"
     },
-    "--sf-change-confirm-before-background-color": {
+    "--sf-confirm-change-before-background-color": {
       "type": "color",
       "state": "default"
     },
-    "--sf-change-confirm-after-background-color": {
+    "--sf-confirm-change-after-background-color": {
       "type": "color",
       "state": "default"
     },
-    "--sf-change-confirm-after-color": {
+    "--sf-confirm-change-after-color": {
       "type": "color",
       "state": "default"
     }
@@ -317,7 +329,7 @@
       }
     ]
   },
-  "x-summary": "A prepared change put to a person: each value as it was and as it will be, two answers of equal weight, until when it can be answered, and then only the outcome. Applies nothing; a press is an event.",
+  "x-summary": "A change someone else proposes (an assistant, a colleague, an import), put to a person: each value as it was and as it will be, «Подтвердить» first and filled, «Отклонить» quiet, until when it can be answered under them, and then only the outcome. Applies nothing; a press is an event.",
   "x-source": {
     "package": "ui-source",
     "folder": "confirm-change",
@@ -334,7 +346,8 @@
     "events.sf-change-confirm-decline → answer {id, accepted: false}; folded the same way, sent only when accepted is false",
     "events.sf-change-confirm-expire → expired: a fact takes the past form (vocabulary §5.1); the old name a dated same-detail alias",
     "actions.answer(kind) → answer {accepted}: \"accept\" and \"decline\" are still read until 2026-12-01 and each use is noted",
-    "css: the six --sf-change-confirm--* hooks become public variables --sf-change-confirm-<name> (single dash, never set by the component, the old hook names stay the internal layer)"
+    "css: the six --sf-change-confirm--* hooks become public variables --sf-change-confirm-<name> (single dash, never set by the component, the old hook names stay the internal layer)",
+    "css (1.8.0, DEV change-time study CT-13): the classes .sf-change-confirm* are .sf-confirm-change* and the six public variables --sf-change-confirm-<name> are --sf-confirm-change-<name>, the element's own name; the former classes are written beside the new ones and the former variables read under the new ones until 2027-01-01 (journal class-confirm-change-block-names, token-confirm-change-variable-names)"
   ],
   "x-decisions": [
     "version: 1.0.0 → 1.1.0, a minor while the old event names and answer(kind) hold dated aliases (§4.10).",
@@ -363,7 +376,9 @@
     "version 1.7.2 (2026-11-13): a patch, nothing drawn or done differently. The first-paint snapshots are retaken (fix/first-paint-nbsp): a text node of only a no-break space (the one before the new value) keeps it, where the snapshot dropped it.",
     "version 1.7.3 (2026-11-13; numbered above the integration's 1.7.2): a patch, nothing drawn or done differently. The shared confirm footer makes every «Отмена» quiet (owner decision C116 #q-cancel; sf-confirm 1.3.3); «Отклонить» here is a decision of the acceptance's weight, not a cancel, so this template asks the footer for its outlined declining answer (declineAppearance: \"outline\") and both answers stay outlined. Settings, values, events and keys unchanged.",
     "version 1.7.4 (2026-11-13, first-paint study R222, integration-fix/first-paint-5 af52cd76; the note is written by group build 3, the branch moved the number without one): a patch, nothing drawn differently once the data is in. changes often arrives from the host after the first paint, so the component declares it late (presentation.skeleton.late) and the build derives its skeletons (static/default/<example>.skeleton.html), which hold the box until the data comes (standard 1.3.8 §5.4). Settings, values, events and keys unchanged.",
-    "version 1.7.5 (2026-11-14, owner decision C173): a patch; nothing this element draws or reads changed. The answers and the footer stand the role token --sf-gap--actions apart (C173), the step --sf-space-1/3 they stood on. Settings, values, events and keys unchanged."
+    "version 1.7.5 (2026-11-14, owner decision C173): a patch; nothing this element draws or reads changed. The answers and the footer stand the role token --sf-gap--actions apart (C173), the step --sf-space-1/3 they stood on. Settings, values, events and keys unchanged.",
+    "version 1.8.0 (2026-11-14, DEV change-time study CT-3, CT-4, CT-13; decisions C166, C157 (3), C159 (4), C25): a minor. The answers stand at the start of the footer, the accepting one first, 8 apart (4 in a compact region), the status line after them, where they stood at the far end after the status line (CT-3: one rule for every question). The new setting status=\"danger\" (sf-confirm's name) makes the acceptance a filled danger button and the declining one quiet (ghost on-surface), decision C25; without it both stay outlined (the weight of the answers otherwise waits for the owner's question q-cc-weight). The card's classes carry the element's name, .sf-confirm-change, .sf-confirm-change--<state> and .sf-confirm-change__heading, __description, __changes, __list, __footer, __status, __actions; the former .sf-change-confirm* classes are written beside them until 2027-01-01. The six public variables are --sf-confirm-change-radius, -inset, -gap, -before-background-color, -after-background-color and -after-color; each former --sf-change-confirm-<name> is read under its new name until 2027-01-01. The 1.0 hooks --sf-change-confirm--before-fill, --after-fill and --after-ink are still read. Values, events, actions and keys unchanged.",
+    "version 1.9.0 (2026-11-14, owner decision C183 (6), (7); research ui-control control/research/2026-11-14-change-time.md §6, prototype prototypes/change-time-study.html#q-cc-weight, #q-cc-place; DEV change-time study CT-12): a minor. The accepting answer is the main one, filled primary (appearance default), the declining one quiet (ghost on-surface), where both were outlined; a delete (status=\"danger\") keeps the filled danger acceptance and the quiet decline of C25. The status line -- the deadline, the outcome -- stands under the answers, after them in the markup too (the shared footer's statusLast), 8 below them (4 compact) and no room while it is empty. The deadline is an sf-time (relation cl-time): the time today («Подтвердить можно до 23:30»), then «завтра, 10:00» and the date with the time, the exact moment and the zone in its tooltip; the words around it are until-text's. The card is for a change someone else proposes -- an assistant, a colleague, an import -- in a feed or a chat; a one-field change by the person's own action is sf-confirm inline beside an sf-change (C166), many fields or an irreversible one a window (C159) with an sf-change list (docs «Где спрашивать»). Settings, values, events, actions and keys unchanged."
   ],
   "x-rule": {
     "$comment": [

@@ -3935,46 +3935,46 @@
       ]
     },
     {
-      "component": "change-confirm",
-      "selector": "sf-confirm-change, .sf-change-confirm",
+      "component": "confirm-change",
+      "selector": "sf-confirm-change, .sf-confirm-change",
       "variables": [
         {
-          "name": "--sf-change-confirm-radius",
+          "name": "--sf-confirm-change-radius",
           "role": "radius",
-          "summary": "The card's corner.",
+          "summary": "The card's corner. The former name --sf-change-confirm-radius is still read, under this one, until 2027-01-01 (journal token-confirm-change-variable-names, CT-13).",
           "default": "var(--sf-radius-2)",
           "since": "2026-10-27"
         },
         {
-          "name": "--sf-change-confirm-inset",
+          "name": "--sf-confirm-change-inset",
           "role": "padding",
           "summary": "The card's padding.",
           "default": "var(--sf-space-1\\/2) var(--sf-space-1)",
           "since": "2026-10-27"
         },
         {
-          "name": "--sf-change-confirm-gap",
+          "name": "--sf-confirm-change-gap",
           "role": "gap",
           "summary": "The space between the card's rows.",
           "default": "var(--sf-space-1\\/2)",
           "since": "2026-10-27"
         },
         {
-          "name": "--sf-change-confirm-before-background-color",
+          "name": "--sf-confirm-change-before-background-color",
           "role": "background",
           "summary": "The ground of the value as it was, behind the text of sf-change; none since 1.7.0 (C40).",
           "default": "transparent",
           "since": "2026-10-27"
         },
         {
-          "name": "--sf-change-confirm-after-background-color",
+          "name": "--sf-confirm-change-after-background-color",
           "role": "background",
           "summary": "The ground of the value as it will be, behind the text of sf-change; none since 1.7.0 (C40).",
           "default": "transparent",
           "since": "2026-10-27"
         },
         {
-          "name": "--sf-change-confirm-after-color",
+          "name": "--sf-confirm-change-after-color",
           "role": "color",
           "summary": "The text of the value as it will be; sf-change's new value colour (--sf-change-after-color, on-surface) since 1.7.0 (C40).",
           "default": "var(--sf-change--after)",

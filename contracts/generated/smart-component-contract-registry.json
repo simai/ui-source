@@ -610,7 +610,8 @@
         "uses": [
           "smart.button",
           "smart.change",
-          "smart.icon"
+          "smart.icon",
+          "smart.time"
         ]
       },
       "contract_schema": {
@@ -622,13 +623,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/confirm-change/smart.manifest.json",
-      "manifest_sha256": "bc19bcb97595f23853846d56079e14c27a484b86d7e80384c91893d7884cbe5a",
+      "manifest_sha256": "18f233063e1bd043324efde9e0af93a2fbf6f6c060fa6a38eac5f6b35c3ae70b",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A prepared change put to a person: each value as it was and as it will be, two answers of equal weight, until when it can be answered, and then only the outcome. Applies nothing; a press is an event.",
+      "summary": "A change someone else proposes (an assistant, a colleague, an import), put to a person: each value as it was and as it will be, «Подтвердить» first and filled, «Отклонить» quiet, until when it can be answered under them, and then only the outcome. Applies nothing; a press is an event.",
       "tags": [
         "confirmation",
         "change",
@@ -3308,13 +3309,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/time/smart.manifest.json",
-      "manifest_sha256": "735fee37997d7e102e00fc1e0c03897aec4b85f26e02be58faabd1bc018b23d1",
+      "manifest_sha256": "44dc93396807c2eb5962a5cce4635eeb1ce78533ecbfc6250307d567fdf55682",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», then the date, relative within the first hour, with the full date and time in a tooltip on hover and keyboard focus, inside a time element. The words are core's SF.format; the element draws itself again while relative and at midnight.",
+      "summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», tomorrow «завтра, 10:00», then the date, relative within the first hour («только что» under a minute), with the full date, time and zone in a tooltip on hover and keyboard focus, inside a time element; in a list or a feed no Tab stop, the moment in the row's text. The words are the platform's (Intl) in the page language; the element draws itself again when its words change, on one timer for the page.",
       "tags": [
         "time",
         "date",

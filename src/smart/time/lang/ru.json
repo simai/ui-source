@@ -1,6 +1,34 @@
 {
   "title": "Время",
   "runtime": {
-    "yesterday-at": "вчера, {time}"
+    "date-at": "{date}, {time}",
+    "just-now": "только что",
+    "yesterday-at": "{day}, {time}",
+    "zone-asia-anadyr": "Анадырь",
+    "zone-asia-barnaul": "Барнаул",
+    "zone-asia-chita": "Чита",
+    "zone-asia-irkutsk": "Иркутск",
+    "zone-asia-kamchatka": "Петропавловск-Камчатский",
+    "zone-asia-khandyga": "Хандыга",
+    "zone-asia-krasnoyarsk": "Красноярск",
+    "zone-asia-magadan": "Магадан",
+    "zone-asia-novokuznetsk": "Новокузнецк",
+    "zone-asia-novosibirsk": "Новосибирск",
+    "zone-asia-omsk": "Омск",
+    "zone-asia-sakhalin": "Сахалин",
+    "zone-asia-srednekolymsk": "Среднеколымск",
+    "zone-asia-tomsk": "Томск",
+    "zone-asia-ust-nera": "Усть-Нера",
+    "zone-asia-vladivostok": "Владивосток",
+    "zone-asia-yakutsk": "Якутск",
+    "zone-asia-yekaterinburg": "Екатеринбург",
+    "zone-europe-astrakhan": "Астрахань",
+    "zone-europe-kaliningrad": "Калининград",
+    "zone-europe-kirov": "Киров",
+    "zone-europe-moscow": "Москва",
+    "zone-europe-samara": "Самара",
+    "zone-europe-saratov": "Саратов",
+    "zone-europe-ulyanovsk": "Ульяновск",
+    "zone-europe-volgograd": "Волгоград"
   }
 }

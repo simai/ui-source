@@ -51,6 +51,39 @@
         "format": "datetime",
         "now": "2026-11-09T15:00:00+03:00"
       }
+    },
+    {
+      "name": "just-now",
+      "title": "Меньше минуты — «только что»",
+      "settings": {
+        "datetime": "2026-11-09T14:59:30+03:00",
+        "now": "2026-11-09T15:00:00+03:00"
+      }
+    },
+    {
+      "name": "later-today",
+      "title": "Позже сегодня — «сегодня, 18:00»",
+      "settings": {
+        "datetime": "2026-11-09T18:00:00+03:00",
+        "now": "2026-11-09T15:00:00+03:00"
+      }
+    },
+    {
+      "name": "tomorrow",
+      "title": "Завтра — «завтра, 10:00»",
+      "settings": {
+        "datetime": "2026-11-10T10:00:00+03:00",
+        "now": "2026-11-09T15:00:00+03:00"
+      }
+    },
+    {
+      "name": "time-zone",
+      "title": "Пояс из профиля — Владивосток",
+      "settings": {
+        "datetime": "2026-11-08T19:40:00+03:00",
+        "now": "2026-11-09T15:00:00+03:00",
+        "time-zone": "Asia/Vladivostok"
+      }
     }
   ],
   "pages": [
@@ -75,7 +108,7 @@
           "covers": "settings.datetime, settings.format auto, settings.now",
           "steps": [
             {
-              "check": "(() => { const t = (id) => document.querySelector(`#${id} time`); return t('rel').textContent === '28 минут назад' && t('today').textContent === '09:12' && t('yday').textContent === 'вчера, 19:40' && t('year').textContent === '5 ноября' && /^30 дек\\.? 2025/u.test(t('old').textContent) && t('rel').getAttribute('datetime') === '2026-11-09T11:32:00.000Z' && document.querySelector('#rel').hasAttribute('data-relative') && !document.querySelector('#today').hasAttribute('data-relative'); })()"
+              "check": "(() => { const t = (id) => document.querySelector(`#${id} time`); return t('rel').textContent === '28 минут назад' && t('today').textContent === '09:12' && t('yday').textContent === 'вчера, 19:40' && t('year').textContent === '5 ноября' && t('old').textContent === '30 декабря 2025 г.' && t('rel').getAttribute('datetime') === '2026-11-09T11:32:00.000Z' && document.querySelector('#rel').hasAttribute('data-relative') && !document.querySelector('#today').hasAttribute('data-relative'); })()"
             }
           ]
         },

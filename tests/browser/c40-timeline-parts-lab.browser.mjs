@@ -14,7 +14,7 @@
 // new parts' sheets held back, watched frame by frame.
 //
 //   - sf-time: auto says «28 минут назад», «09:12», «вчера, 19:40»,
-//     «5 ноября», «30 дек. 2025 г.»; a time element with the exact moment;
+//     «5 ноября», «30 декабря 2025 г.»; a time element with the exact moment;
 //     tabular numerals; the tooltip with the full moment on keyboard focus,
 //     Escape hides it;
 //   - sf-change: the old value and the arrow on-surface-variant, the new
@@ -103,10 +103,11 @@ const MEASURE = () => {
     probe.remove();
     return result;
   };
-  // The words a person reads: the text outside tooltips (a time's full moment).
+  // The words a person reads: the text outside tooltips (a time's full moment)
+  // and outside visually hidden text (a list time's full moment, C183 (2)).
   const words = (element) => {
     if (!element) return '';
-    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {acceptNode: (node) => (node.parentElement.closest('.sf-tooltip') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT)});
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {acceptNode: (node) => (node.parentElement.closest('.sf-tooltip, sf-time .sr-only') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT)});
     let text = '';
     for (let node = walker.nextNode(); node; node = walker.nextNode()) text += node.textContent;
     return text.replace(/\s+/gu, ' ').trim();
@@ -312,7 +313,7 @@ try {
 
           // sf-time.
           const timeTexts = ['t-rel', 't-today', 't-yday', 't-year'].map((id) => m.times[id].text).join('|');
-          if (timeTexts !== '28 минут назад|09:12|вчера, 19:40|5 ноября' || !/^30 дек\.? 2025/u.test(m.times['t-old'].text)) fail(`sf-time auto ${timeTexts} ${m.times['t-old'].text}`);
+          if (timeTexts !== '28 минут назад|09:12|вчера, 19:40|5 ноября' || m.times['t-old'].text !== '30 декабря 2025 г.') fail(`sf-time auto ${timeTexts} ${m.times['t-old'].text}`);
           if (m.times['t-rel'].datetime !== '2026-11-09T11:32:00.000Z') fail(`sf-time datetime ${m.times['t-rel'].datetime}`);
           if (m.times['t-tip'].text !== '14:32' || m.timeLook.tabindex !== '0' || m.timeLook.numeric !== 'tabular-nums' || m.timeLook.whiteSpace !== 'nowrap') fail(`sf-time look ${JSON.stringify(m.timeLook)}`);
           if (m.timeLook.colour !== m.timeLook.paragraph) fail(`sf-time colour ${m.timeLook.colour}, its paragraph ${m.timeLook.paragraph}`);

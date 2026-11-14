@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.confirm-change",
-  "version": "1.7.5",
+  "version": "1.9.0",
   "title": "Change confirmation",
-  "summary": "A prepared change put to a person: each value as it was and as it will be, two answers of equal weight, until when it can be answered, and then only the outcome. Applies nothing; a press is an event.",
+  "summary": "A change someone else proposes (an assistant, a colleague, an import), put to a person: each value as it was and as it will be, «Подтвердить» first and filled, «Отклонить» quiet, until when it can be answered under them, and then only the outcome. Applies nothing; a press is an event.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -27,7 +27,8 @@
     "uses": [
       "smart.button",
       "smart.change",
-      "smart.icon"
+      "smart.icon",
+      "smart.time"
     ],
     "public_parts": []
   },
@@ -82,7 +83,7 @@
       "expires-at": {
         "type": "string",
         "default": "",
-        "description": "ISO 8601. Past it an open card reads as expired and says so once with sf-change-confirm-expired."
+        "description": "ISO 8601. Until then the line under the answers says until when, the time an sf-time («Подтвердить можно до 23:30», «… до завтра, 10:00»; the exact moment and its zone in its tooltip). Past it an open card reads as expired and says so once with sf-change-confirm-expired."
       },
       "change-id": {
         "type": "string",
@@ -93,6 +94,15 @@
         "type": "boolean",
         "default": false,
         "description": "The answers are shown and cannot be pressed (a send is in flight elsewhere)."
+      },
+      "status": {
+        "type": "string",
+        "default": "",
+        "description": "What the acceptance does (decision C25, as sf-confirm's setting): danger, a delete or anything that cannot be undone. The accepting answer is then a filled danger button; without it the accepting answer is the main one, filled primary (owner decision C183 (6)). The declining answer is quiet either way.",
+        "enum": [
+          "",
+          "danger"
+        ]
       },
       "accept-text": {
         "type": "string",
@@ -483,27 +493,27 @@
     "source_artifacts": [
       {
         "path": "src/smart/confirm-change/index.js",
-        "sha256": "c27b531436388508364d9baf83bbe59206d65be8e47c4fe6aa4561e0104e64db"
+        "sha256": "9eda95c32fe7dd95d11a7772ea10747538f8d4b911ccb276ceef50e37c8dcac1"
       },
       {
         "path": "src/smart/confirm-change/js/templates/default.js",
-        "sha256": "3b40f4feca106bc4cb3597a99d10ea46e3ce51d69169db4768515eeed0054a13"
+        "sha256": "52b72f3428f43b833001435e5c99f69f7a683669b499aac5d504991e6ed15008"
       },
       {
         "path": "src/smart/confirm-change/js/templates/default.css",
-        "sha256": "de360919434ce582e9014926eb8f9ec6d90e45843654a370ea2b5f230d7d785b"
+        "sha256": "38adc7b643d386d9b2fa1ad61d438f3025617aef3149bd2aa8a7bc237cc0ee31"
       },
       {
         "path": "src/smart/confirm-change/rule.js",
-        "sha256": "83281b1f461c39a422542a2f9eb9929b4e43d5a9b28b82b4dd788492e8690ca9"
+        "sha256": "7781420e2ba4e536a2be6d624540d0ba309a0eb68bc2de8cd15930e620cfdb33"
       },
       {
         "path": "src/smart/confirm-change/docs.md",
-        "sha256": "90a992a220db77bc774cb12b65d4fba9b96defc8e1f5b17803785d74678e796e"
+        "sha256": "0bb5754b06fc2509defed7cbeb64ff08db14359b33c2109e56aa2d226e232f9d"
       },
       {
         "path": "src/smart/confirm-change/component.json",
-        "sha256": "fbcc6e7f9ba5f0075010458a8d8c4660c87410ca81893ad76c4d4c14e63c7acf"
+        "sha256": "e0e539f764236723191e6f0c3c4bc91078ef638a5939086e3e05bc400f03a623"
       },
       {
         "path": "src/smart/confirm-change/aliases.json",

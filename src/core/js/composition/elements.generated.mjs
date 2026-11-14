@@ -477,6 +477,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "type": "string"
         },
+        "tooltip": {
+          "default": "",
+          "type": "string"
+        },
         "value": {
           "default": "",
           "type": "string"
@@ -486,7 +490,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button-icon",
-    "version": "1.10.1"
+    "version": "1.11.0"
   },
   "sf-checkbox": {
     "inputs": {

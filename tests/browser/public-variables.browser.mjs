@@ -247,7 +247,7 @@ const DRAW = {
   choice: {css: ['badges', 'icons', 'smart/smart/input-choice/css/input-choice.css'], js: ['input-choice', 'badge'],
     html: `<sf-input-choice label="Тариф" value="a"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{value: 'a', label: 'A', caption: 'Первый', icon: 'language'}, {value: 'b', label: 'B', caption: 'Второй', icon: 'storefront'}]})}</script></sf-input-choice>`},
   // sf-confirm-change 1.7.0 (C40) draws its values with sf-change.
-  'change-confirm': {css: ['buttons', 'smart/smart/change/css/change.css', 'smart/smart/confirm-change/css/confirm-change.css'], js: ['confirm-change', 'change'],
+  'confirm-change': {css: ['buttons', 'smart/smart/change/css/change.css', 'smart/smart/confirm-change/css/confirm-change.css'], js: ['confirm-change', 'change'],
     html: '<sf-confirm-change heading="Переименовать раздел" changes=\'[{"label":"Название","before":"Новости","after":"События"}]\'></sf-confirm-change>'},
   // Block list (2026-11-05): a grouped list with an open row, so the heading
   // and the open tint have parts to reach; a feed with a run of one author and

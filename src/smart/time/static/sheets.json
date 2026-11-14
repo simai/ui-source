@@ -11,6 +11,7 @@
     "smart/time/css/time.min.css",
     "utility/display/default/css/default.min.css",
     "utility/position/default/css/default.min.css",
+    "utility/sr-only/default/css/default.min.css",
     "utility/visibility/default/css/default.min.css"
   ],
   "examples": {
@@ -20,7 +21,24 @@
       "smart/time/css/time.min.css",
       "utility/display/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
+    ],
+    "just-now": [
+      "component/tooltip/css/tooltip.min.css",
+      "core/css/core.css",
+      "smart/time/css/time.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
+    ],
+    "later-today": [
+      "component/tooltip/css/tooltip.min.css",
+      "core/css/core.css",
+      "smart/time/css/time.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "older": [
       "component/tooltip/css/tooltip.min.css",
@@ -28,6 +46,7 @@
       "smart/time/css/time.min.css",
       "utility/display/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
     "reference": [
@@ -36,6 +55,7 @@
       "smart/time/css/time.min.css",
       "utility/display/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
     "relative": [
@@ -44,7 +64,24 @@
       "smart/time/css/time.min.css",
       "utility/display/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
+    ],
+    "time-zone": [
+      "component/tooltip/css/tooltip.min.css",
+      "core/css/core.css",
+      "smart/time/css/time.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
+    ],
+    "tomorrow": [
+      "component/tooltip/css/tooltip.min.css",
+      "core/css/core.css",
+      "smart/time/css/time.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
     ],
     "yesterday": [
       "component/tooltip/css/tooltip.min.css",
@@ -52,6 +89,7 @@
       "smart/time/css/time.min.css",
       "utility/display/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ]
   }

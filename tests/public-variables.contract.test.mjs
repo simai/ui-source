@@ -77,10 +77,10 @@ const FOLDERS = {
   // sf-include (2026-11-02): a sheet of its own, the placeholder's height and the error row.
   include: 'smart/include',
   // sf-confirm and sf-confirm-change (2026-11-03, block confirm): each a sheet
-  // beside its Lit template; sf-confirm-change's variables keep the stem of its
-  // former tag, sf-change-confirm (rename plan R2), so its entry does too.
+  // beside its Lit template; sf-confirm-change's variables carry its own name
+  // since 1.8.0 (CT-13), the former stem sf-change-confirm read under them.
   confirm: 'smart/confirm/js/templates',
-  'change-confirm': 'smart/confirm-change/js/templates',
+  'confirm-change': 'smart/confirm-change/js/templates',
   // sf-alert-bar (2026-11-05): a sheet of its own, the level fills, the inset and the list.
   'alert-bar': 'smart/alert-bar',
   // The Larena admin screens' tile, attention list and run progress (2026-11-07): sheets of their own.

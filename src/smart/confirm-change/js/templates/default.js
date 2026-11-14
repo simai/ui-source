@@ -15,11 +15,25 @@ import {renderConfirmFooter} from "../../../helpers/confirm-surface.js";
 // Черновик на Итоги» rather than a grid of loose words. A value is text, never
 // markup; an empty one reads «пусто». The group around it names the changes.
 //
-// Both answers are outlined and weigh the same: a change is decided, not
-// nudged, and a filled «Confirm» beside a quiet «Decline» is a nudge.
-// «Отклонить» is that decision, not a cancel, so it stays outlined when every
-// «Отмена» is quiet (decision C116 #q-cancel; the shared footer's
-// declineAppearance).
+// The answers weigh as a question's do (owner decision C183 (6), 1.9.0):
+// «Подтвердить» the main answer, filled primary, «Отклонить» quiet (ghost
+// on-surface). A dangerous change (status="danger": a delete, or anything
+// that cannot be undone) is the question of decision C25: the accepting
+// answer filled danger, the declining one quiet (DEV change-time study
+// CT-4). The answers stand at the start, the accepting one first, 8 apart (4
+// in a compact region) -- one rule for every question (C166, C157 (3), C159
+// (4); CT-3) -- and the status line (the deadline, the outcome) under them.
+//
+// The card is for a change someone else proposes -- an assistant, a
+// colleague, an import -- in a feed or a chat (C183 (7)). A change of one
+// field by the person's own action is a question in its row (sf-confirm
+// appearance="inline", C166) beside an sf-change; many fields or something
+// that cannot be undone is a window (sf-confirm appearance="window" or
+// sf-modal, C159) with an sf-change list.
+//
+// The classes carry the element's name, .sf-confirm-change__* (1.8.0); the
+// former .sf-change-confirm* are written beside them until 2027-01-01
+// (journal class-confirm-change-block-names).
 //
 // The status line is a polite live region and also the place focus goes when
 // the button that had it disappears (index.js, answer()).
@@ -29,23 +43,29 @@ import {renderConfirmFooter} from "../../../helpers/confirm-surface.js";
 export function renderChangeConfirmTemplate(context) {
     return html`
         <section
-                class="sf-change-confirm sf-change-confirm--${context.state}"
+                class="sf-confirm-change sf-confirm-change--${context.state} sf-change-confirm sf-change-confirm--${context.state}"
                 aria-labelledby=${context.heading ? context.headingId : nothing}
                 aria-label=${context.heading ? nothing : context.changesLabel}
                 data-state=${context.state}
                 ?hidden=${context.collapsed}
         >
             ${context.heading
-                ? html`<div class="sf-change-confirm__heading" id=${context.headingId} role="heading"
+                ? html`<div class="sf-confirm-change__heading sf-change-confirm__heading" id=${context.headingId} role="heading"
                             aria-level=${context.headingLevel}>${context.heading}</div>`
                 : nothing}
             ${context.hasDescription
-                ? html`<div class="sf-change-confirm__description">${context.descriptionContent}</div>`
+                ? html`<div class="sf-confirm-change__description sf-change-confirm__description">${context.descriptionContent}</div>`
                 : nothing}
-            <div class="sf-change-confirm__changes" role="group" aria-label=${context.changesLabel}>
-                <sf-change class="sf-change-confirm__list" layout="list" .changes=${context.changes}></sf-change>
+            <div class="sf-confirm-change__changes sf-change-confirm__changes" role="group" aria-label=${context.changesLabel}>
+                <sf-change class="sf-confirm-change__list sf-change-confirm__list" layout="list" .changes=${context.changes}></sf-change>
             </div>
-            ${renderConfirmFooter(context, "sf-change-confirm", {declineAppearance: "outline"})}
+            ${renderConfirmFooter(context, "sf-confirm-change", {
+                acceptStatus: context.danger ? "danger" : "",
+                acceptAppearance: "default",
+                declineAppearance: "ghost",
+                statusLast: true,
+                formerBlock: "sf-change-confirm",
+            })}
         </section>
     `;
 }
