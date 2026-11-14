@@ -1,0 +1,335 @@
+{
+  "$comment": "Names of the languages sf-language supports, from CLDR 48 (ICU 78 as Node.js ships it): each language in itself (native), in English (en) and in Russian (ru), the component's two languages. The browser's Intl.DisplayNames carries fewer languages (headless Chromium names be, hy, ka, tt, ky and tg only in English and ba, sah not at all; research 2026-11-14-language LG-7), so these names come first and Intl names every other language and page language. Spelled as CLDR writes them; the element gives a name its capital in a list. Data, not code: add a language here with all three names.",
+  "names": {
+    "ru": {
+      "native": "русский",
+      "en": "Russian",
+      "ru": "русский"
+    },
+    "en": {
+      "native": "English",
+      "en": "English",
+      "ru": "английский"
+    },
+    "de": {
+      "native": "Deutsch",
+      "en": "German",
+      "ru": "немецкий"
+    },
+    "fr": {
+      "native": "français",
+      "en": "French",
+      "ru": "французский"
+    },
+    "es": {
+      "native": "español",
+      "en": "Spanish",
+      "ru": "испанский"
+    },
+    "it": {
+      "native": "italiano",
+      "en": "Italian",
+      "ru": "итальянский"
+    },
+    "pt": {
+      "native": "português",
+      "en": "Portuguese",
+      "ru": "португальский"
+    },
+    "pt-BR": {
+      "native": "português (Brasil)",
+      "en": "Brazilian Portuguese",
+      "ru": "бразильский португальский"
+    },
+    "pt-PT": {
+      "native": "português europeu",
+      "en": "European Portuguese",
+      "ru": "европейский португальский"
+    },
+    "tr": {
+      "native": "Türkçe",
+      "en": "Turkish",
+      "ru": "турецкий"
+    },
+    "pl": {
+      "native": "polski",
+      "en": "Polish",
+      "ru": "польский"
+    },
+    "uk": {
+      "native": "українська",
+      "en": "Ukrainian",
+      "ru": "украинский"
+    },
+    "be": {
+      "native": "беларуская",
+      "en": "Belarusian",
+      "ru": "белорусский"
+    },
+    "kk": {
+      "native": "қазақ тілі",
+      "en": "Kazakh",
+      "ru": "казахский"
+    },
+    "uz": {
+      "native": "o‘zbek",
+      "en": "Uzbek",
+      "ru": "узбекский"
+    },
+    "az": {
+      "native": "azərbaycan",
+      "en": "Azerbaijani",
+      "ru": "азербайджанский"
+    },
+    "hy": {
+      "native": "հայերեն",
+      "en": "Armenian",
+      "ru": "армянский"
+    },
+    "ka": {
+      "native": "ქართული",
+      "en": "Georgian",
+      "ru": "грузинский"
+    },
+    "he": {
+      "native": "עברית",
+      "en": "Hebrew",
+      "ru": "иврит"
+    },
+    "ar": {
+      "native": "العربية",
+      "en": "Arabic",
+      "ru": "арабский"
+    },
+    "fa": {
+      "native": "فارسی",
+      "en": "Persian",
+      "ru": "персидский"
+    },
+    "hi": {
+      "native": "हिन्दी",
+      "en": "Hindi",
+      "ru": "хинди"
+    },
+    "bn": {
+      "native": "বাংলা",
+      "en": "Bangla",
+      "ru": "бенгальский"
+    },
+    "ja": {
+      "native": "日本語",
+      "en": "Japanese",
+      "ru": "японский"
+    },
+    "ko": {
+      "native": "한국어",
+      "en": "Korean",
+      "ru": "корейский"
+    },
+    "zh": {
+      "native": "中文",
+      "en": "Chinese",
+      "ru": "китайский"
+    },
+    "zh-Hans": {
+      "native": "简体中文",
+      "en": "Simplified Chinese",
+      "ru": "китайский, упрощенное письмо"
+    },
+    "zh-Hant": {
+      "native": "繁體中文",
+      "en": "Traditional Chinese",
+      "ru": "китайский, традиционное письмо"
+    },
+    "zh-TW": {
+      "native": "中文（台灣）",
+      "en": "Chinese (Taiwan)",
+      "ru": "китайский (Тайвань)"
+    },
+    "vi": {
+      "native": "Tiếng Việt",
+      "en": "Vietnamese",
+      "ru": "вьетнамский"
+    },
+    "th": {
+      "native": "ไทย",
+      "en": "Thai",
+      "ru": "тайский"
+    },
+    "id": {
+      "native": "Indonesia",
+      "en": "Indonesian",
+      "ru": "индонезийский"
+    },
+    "ms": {
+      "native": "Melayu",
+      "en": "Malay",
+      "ru": "малайский"
+    },
+    "nl": {
+      "native": "Nederlands",
+      "en": "Dutch",
+      "ru": "нидерландский"
+    },
+    "sv": {
+      "native": "svenska",
+      "en": "Swedish",
+      "ru": "шведский"
+    },
+    "no": {
+      "native": "norsk",
+      "en": "Norwegian",
+      "ru": "норвежский"
+    },
+    "nb": {
+      "native": "norsk bokmål",
+      "en": "Norwegian Bokmål",
+      "ru": "норвежский букмол"
+    },
+    "da": {
+      "native": "dansk",
+      "en": "Danish",
+      "ru": "датский"
+    },
+    "fi": {
+      "native": "suomi",
+      "en": "Finnish",
+      "ru": "финский"
+    },
+    "cs": {
+      "native": "čeština",
+      "en": "Czech",
+      "ru": "чешский"
+    },
+    "sk": {
+      "native": "slovenčina",
+      "en": "Slovak",
+      "ru": "словацкий"
+    },
+    "hu": {
+      "native": "magyar",
+      "en": "Hungarian",
+      "ru": "венгерский"
+    },
+    "ro": {
+      "native": "română",
+      "en": "Romanian",
+      "ru": "румынский"
+    },
+    "bg": {
+      "native": "български",
+      "en": "Bulgarian",
+      "ru": "болгарский"
+    },
+    "el": {
+      "native": "Ελληνικά",
+      "en": "Greek",
+      "ru": "греческий"
+    },
+    "tt": {
+      "native": "татар",
+      "en": "Tatar",
+      "ru": "татарский"
+    },
+    "ky": {
+      "native": "кыргызча",
+      "en": "Kyrgyz",
+      "ru": "киргизский"
+    },
+    "tg": {
+      "native": "тоҷикӣ",
+      "en": "Tajik",
+      "ru": "таджикский"
+    },
+    "ba": {
+      "native": "башҡорт",
+      "en": "Bashkir",
+      "ru": "башкирский"
+    },
+    "sah": {
+      "native": "саха тыла",
+      "en": "Yakut",
+      "ru": "саха"
+    },
+    "tk": {
+      "native": "türkmen dili",
+      "en": "Turkmen",
+      "ru": "туркменский"
+    },
+    "mn": {
+      "native": "монгол",
+      "en": "Mongolian",
+      "ru": "монгольский"
+    },
+    "cv": {
+      "native": "чӑваш чӗлхи",
+      "en": "Chuvash",
+      "ru": "чувашский"
+    },
+    "ce": {
+      "native": "нохчийн",
+      "en": "Chechen",
+      "ru": "чеченский"
+    },
+    "os": {
+      "native": "ирон",
+      "en": "Ossetic",
+      "ru": "осетинский"
+    },
+    "lv": {
+      "native": "latviešu",
+      "en": "Latvian",
+      "ru": "латышский"
+    },
+    "lt": {
+      "native": "lietuvių",
+      "en": "Lithuanian",
+      "ru": "литовский"
+    },
+    "et": {
+      "native": "eesti",
+      "en": "Estonian",
+      "ru": "эстонский"
+    },
+    "sr": {
+      "native": "српски",
+      "en": "Serbian",
+      "ru": "сербский"
+    },
+    "hr": {
+      "native": "hrvatski",
+      "en": "Croatian",
+      "ru": "хорватский"
+    },
+    "sl": {
+      "native": "slovenščina",
+      "en": "Slovenian",
+      "ru": "словенский"
+    },
+    "mk": {
+      "native": "македонски",
+      "en": "Macedonian",
+      "ru": "македонский"
+    },
+    "sq": {
+      "native": "shqip",
+      "en": "Albanian",
+      "ru": "албанский"
+    },
+    "bs": {
+      "native": "bosanski",
+      "en": "Bosnian",
+      "ru": "боснийский"
+    },
+    "ug": {
+      "native": "ئۇيغۇرچە",
+      "en": "Uyghur",
+      "ru": "уйгурский"
+    },
+    "ur": {
+      "native": "اردو",
+      "en": "Urdu",
+      "ru": "урду"
+    }
+  }
+}
