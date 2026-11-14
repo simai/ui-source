@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "toggle-label": "Мәзір",
+    "more-label": "Тағы",
+    "status-success": "тәртіпте",
+    "status-warning": "назар аударыңыз",
+    "status-error": "қате",
+    "status-info": "жаңасы бар",
+    "status-neutral": "дерек жоқ",
+    "subsections": "ішкі бөлімдер",
+    "search-placeholder": "Іздеу",
+    "search-found": "Табылды: {n}",
+    "search-empty": "Ештеңе табылмады",
+    "new-tab": "жаңа қойындыда ашылады"
+  }
+}

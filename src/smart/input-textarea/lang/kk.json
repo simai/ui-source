@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "value-missing": "Өрісті толтырыңыз",
+    "count-text": "{count} / {max}",
+    "too-long": "{max} таңбадан аспауы керек",
+    "too-short": "Кемінде {min} таңба",
+    "help": "Толығырақ: {label}"
+  }
+}

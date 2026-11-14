@@ -1,0 +1,36 @@
+{
+  "runtime": {
+    "label": "Сайт бойынша іздеу",
+    "placeholder": "Сайттан табу",
+    "clear-label": "Тазалау",
+    "close-label": "Жабу",
+    "back-label": "Артқа",
+    "scopes-label": "Қайдан іздеу",
+    "all-label": "Барлығы",
+    "results-label": "Нәтижелер",
+    "recent-label": "Соңғылар",
+    "recent-clear-label": "Тазалау",
+    "recent-remove-label": "«{query}» алып тастау",
+    "popular-label": "Жиі ізделетіндер",
+    "actions-label": "Жылдам әрекеттер",
+    "start-text": "Іздеу үшін сұрауды енгізе бастаңыз",
+    "loading-text": "Іздеп жатырмыз…",
+    "error-text": "Іздеу қазір қолжетімсіз",
+    "empty-text": "«{query}» бойынша ештеңе табылмады",
+    "count-text": {
+      "one": "{n} нәтиже",
+      "other": "{n} нәтиже"
+    },
+    "key-select-label": "таңдау",
+    "key-open-label": "ашу",
+    "key-clear-label": "тазалау",
+    "key-close-label": "жабу",
+    "correction-text": "«{query}» іздеген шығарсыз",
+    "preview-label": "Алдын ала қарау",
+    "refused-text": "Бұл сізге қолжетімсіз",
+    "action-text": "Пәрмен орындалмады",
+    "short-text": "Тағы біраз енгізіңіз",
+    "forbidden-text": "Бұған рұқсатыңыз жоқ",
+    "not-found-text": "Бұл енді жоқ"
+  }
+}

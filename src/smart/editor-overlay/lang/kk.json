@@ -1,0 +1,13 @@
+{
+  "runtime": {
+    "cancelled": "Жылжыту болдырылмады.",
+    "editing": "Өңделуде: {label}. Enter — сақтау, Escape — болдырмау.",
+    "insert": "Кірістіру",
+    "insert-at": "«{slot}» ішіне кірістіру, орны: {index}",
+    "picked": "Жылжытылуда: {label}. Орынды бағыт пернелерімен таңдаңыз, Enter — қою, Escape — болдырмау.",
+    "position": "{total} ішінен {index}",
+    "selected": "Таңдалды: {label}",
+    "toolbar": "Әрекеттер",
+    "tree": "Бет құрылымы"
+  }
+}

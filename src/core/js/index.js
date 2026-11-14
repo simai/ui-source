@@ -16,6 +16,10 @@ import './composition/index.mjs';
 // part of every page (localization study LC-1, 2026-11-14).
 import {setEditorWordsLoader} from './composition/editor-words-runtime.mjs';
 setEditorWordsLoader(() => import(/* webpackChunkName: "core-editor-words" */ './composition/editor-words.mjs'));
+// Every language but ru and en is a pack of its own, fetched only by a page
+// that speaks it (owner decision C177, 2026-11-14): core/js/language-packs.js.
+import {installLanguagePacks} from './language-packs.js';
+installLanguagePacks();
 import './assembly/index.mjs';
 import './position.js';
 import './preferences.js';

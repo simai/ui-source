@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "theme": "Тақырып",
+    "theme-system": "жүйедегідей",
+    "theme-light": "ашық",
+    "theme-dark": "қараңғы",
+    "theme-system-now": "жүйедегідей (қазір {theme})",
+    "cycle-next": "{name}. Басыңыз — {next}"
+  }
+}

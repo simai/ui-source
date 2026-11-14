@@ -123,10 +123,9 @@ class SfCountryCode extends ShownValidity(FormField(CountryCodeElement)) {
 
   get locale() {
     // The country names and the field's own words follow the page unless a
-    // locale is given: Russian on a Russian page, English otherwise.
-    return String(this.getAttribute('locale') || pageLanguage(this)).toLowerCase() === 'ru'
-      ? 'ru'
-      : 'en';
+    // locale is given: ru and en from the country table, any other language
+    // through Intl (C177 (9): a third language was English).
+    return String(this.getAttribute('locale') || pageLanguage(this)).toLowerCase().split('-')[0] || 'en';
   }
 
   get useMask() {

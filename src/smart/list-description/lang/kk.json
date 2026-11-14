@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "empty-text": "Көрсетілмеген",
+    "copy": "Көшіру: {label}",
+    "action": "{action}: {label}",
+    "help": "Толығырақ: {label}",
+    "status-success": "Тәртіпте",
+    "status-warning": "Ескерту",
+    "status-error": "Қате",
+    "status-info": "Мәлімет"
+  }
+}

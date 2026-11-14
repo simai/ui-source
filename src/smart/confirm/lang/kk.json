@@ -1,0 +1,14 @@
+{
+  "runtime": {
+    "accept-text": "Растау",
+    "accepted-text": "Дайын",
+    "accepting-text": "Орындалуда…",
+    "decline-text": "Болдырмау",
+    "declining-text": "Болдырмауда…",
+    "expired-text": "Жауап беру уақыты өтіп кетті",
+    "question-label": "Растау",
+    "require-error": "«{name}» дегенді жоғарыдағыдай дәл енгізіңіз",
+    "require-text": "Растау үшін мынаны енгізіңіз",
+    "until-text": "{time} дейін жауап беруге болады"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "runtime": {
+    "label": "Маңызды хабарламалар",
+    "level-error": "Қате",
+    "level-warning": "Ескерту",
+    "level-info": "Мәлімет",
+    "more": "Тағы {count}",
+    "collapse-list": "Тізімді жию",
+    "list": "Барлық хабарламалар",
+    "hide-day": "Бір тәулікке жасыру",
+    "hide": "Жасыру",
+    "acknowledge": "Оқылды",
+    "minimize": "Жолақты жию",
+    "expand": "ашу",
+    "expand-label": "Маңызды хабарламаларды ашу",
+    "count": "Маңызды хабарламалар: {count}"
+  }
+}

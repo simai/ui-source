@@ -33,7 +33,7 @@ test('page language: no component falls back to Russian', async () => {
     // The setting comes from the component's manifest (standard 1.3.8 §4).
     'src/smart/input-country/index.js': [/pageLanguage\(this\)/],
     'src/smart/input-country/component.json': [/"locale": \{\s*"type": "string",\s*"default": ""(,\s*"summary": "[^"]*")?\s*\}/],
-    'src/component/country-code/js/_country_code.js': [/pageLanguage\(root\)/, /locale: locale === 'ru' \? 'ru' : 'en'/],
+    'src/component/country-code/js/_country_code.js': [/pageLanguage\(root\)/, /locale: locale\.split\('-'\)\[0\] \|\| 'en'/],
     // These two followed the rule and could still only ever say two languages:
     // a ternary on «ru» is not something a product can add to. They ask the
     // registry now, like everything else (owner, 2026-10-11).

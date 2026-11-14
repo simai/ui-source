@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "label": "Тіл",
+    "trigger": "{label}: {name}",
+    "search": "Тілді табу",
+    "empty": "Тіл табылмады"
+  }
+}

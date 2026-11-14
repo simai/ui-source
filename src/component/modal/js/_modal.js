@@ -89,7 +89,7 @@ const UNTITLED = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 // The node the words are looked up from: the modal once it is on the page,
 // else the document, which is where a modal not yet attached will be.
 const modalText = (key, node) => pageText(UNTITLED, key, node?.isConnected ? node : document.documentElement, 'sf-modal');
-const untitled = (root) => pageText(UNTITLED, 'title', root);
+const untitled = (root) => pageText(UNTITLED, 'title', root, 'sf-modal');
 
 class Modal extends ComponentObserver {
   static componentName = 'Modal';
@@ -471,7 +471,7 @@ class Modal extends ComponentObserver {
         );
         // The page language's word, as the Smart window has; the glyph inside is
         // decoration and carries no name of its own.
-        closeButton.setAttribute('aria-label', pageText(UNTITLED, 'close', closeButton.isConnected ? closeButton : document.documentElement));
+        closeButton.setAttribute('aria-label', pageText(UNTITLED, 'close', closeButton.isConnected ? closeButton : document.documentElement, 'sf-modal'));
         closeButton.setAttribute('data-sf-modal-close', this.modalId);
         closeButton.innerHTML = '            <span\n' +
             '              class="sf-close sf-close--size-1/3 flex justify-center items-center"\n' +

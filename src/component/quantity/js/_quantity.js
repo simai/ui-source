@@ -671,8 +671,8 @@ class Quantity extends ComponentObserver {
       disabled = false,
       readonly = false,
       placeholder = '',
-      decrementLabel = pageText(QUANTITY_TEXT, 'decrement', document.documentElement),
-      incrementLabel = pageText(QUANTITY_TEXT, 'increment', document.documentElement),
+      decrementLabel = pageText(QUANTITY_TEXT, 'decrement', document.documentElement, 'sf-quantity'),
+      incrementLabel = pageText(QUANTITY_TEXT, 'increment', document.documentElement, 'sf-quantity'),
       decrementIcon = 'remove',
       incrementIcon = 'add',
     } = this.params || {};
