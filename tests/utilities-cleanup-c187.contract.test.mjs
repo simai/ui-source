@@ -88,17 +88,16 @@ test('C187 (3): lines 0 / 1 / 2; ring-3, ring-4 and ring-opacity retire; the res
 test('C187 (3), UT-4: the selection ring does not erase the shadow, whichever sheet comes last', () => {
   const ring = read('src/utility/ring-width/default/scss/_sf_var__ring_width.scss');
   assert.match(ring, /--sf-ring-shadow:/u);
-  assert.match(ring, /box-shadow: var\(--sf-ring-shadow\), var\(--sf-place-shadow, 0 0 #0000\);/u);
+  assert.match(ring, /box-shadow: var\(--sf-ring-shadow\), var\(--sf-place-shadow, 0 0 transparent\);/u);
   for (const variant of ['default', 'hover', 'focus', 'focus-visible']) {
     const css = read(`src/utility/ring-width/${variant}/scss/_sf_css__ring_width.scss`);
     assert.match(css, /@include ring-box-shadow\(\$width-value\);/u, variant);
     assert.doesNotMatch(css, /box-shadow:/u, `${variant} composes through the mixin`);
   }
-  const shadow = read('src/utility/box-shadow/default/scss/_var__shadow.scss');
-  assert.match(shadow, /--sf-place-shadow: #\{shadow\.sf-shadow\(\$place\)\};\s*box-shadow: var\(--sf-ring-shadow, 0 0 #0000\), var\(--sf-place-shadow\);/u);
-  assert.match(shadow, /box-shadow: var\(--sf-ring-shadow, var\(--sf-shadow-flat\)\);/u, 'flat stays none without a ring');
   for (const variant of ['default', 'hover']) {
-    assert.doesNotMatch(read(`src/utility/box-shadow/${variant}/scss/_sf_css__shadow.scss`), /@mixin place-shadow/u, `${variant} uses the shared mixin`);
+    const shadow = read(`src/utility/box-shadow/${variant}/scss/_sf_css__shadow.scss`);
+    assert.match(shadow, /--sf-place-shadow: #\{shadow\.sf-shadow\(\$place\)\};\s*box-shadow: var\(--sf-ring-shadow, 0 0 transparent\), var\(--sf-place-shadow\);/u, variant);
+    assert.match(shadow, /box-shadow: var\(--sf-ring-shadow, var\(--sf-shadow-flat\)\);/u, `${variant}: flat stays none without a ring`);
   }
 });
 

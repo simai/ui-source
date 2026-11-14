@@ -12,7 +12,8 @@ const rule = (selector) => {
   assert.ok(at >= 0, selector);
   return sheet.slice(at, sheet.indexOf('}', at));
 };
-const LOOKS = ':is(.sf-tabs--underline, .sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top .sf-button';
+// The line is also a .sf-tabs without a look modifier (C96 (1)).
+const LOOKS = ':is(.sf-tabs--underline, .sf-tabs--vertical, :not(.sf-tabs--pills)) > .sf-tabs-top-container > .sf-tabs-top .sf-button';
 
 test('T1 / T3: a line or vertical tab keeps the button icon gap of its size (H1)', () => {
   assert.match(rule(`.sf-tabs${LOOKS}`), /column-gap: var\(--sf-tabs--icon-gap, var\(--sf-ui-1--text-space-x\)\);/u);
@@ -21,7 +22,7 @@ test('T1 / T3: a line or vertical tab keeps the button icon gap of its size (H1)
 });
 
 test('C99 stays: the line label has no padding of its own', () => {
-  assert.match(rule('.sf-tabs--underline > .sf-tabs-top-container > .sf-tabs-top .sf-button .sf-button-text-container'), /padding-inline: calc\(var\(--sf-px\) \* 0\);/u);
+  assert.match(rule(':is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container > .sf-tabs-top .sf-button .sf-button-text-container'), /padding-inline: calc\(var\(--sf-px\) \* 0\);/u);
   assert.match(rule('.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button .sf-button-text-container'), /padding-inline: calc\(var\(--sf-px\) \* 0\);/u);
 });
 

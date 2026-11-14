@@ -1,4 +1,3 @@
-@use '../../../../core/scss/mix/mix__shadow' as shadow;
 // SIMAI Framework
 // https://simai.io
 
@@ -18,19 +17,3 @@ $shadow-array: (
   4: modal,
   5: modal
 );
-
-// A place shadow beside a ring (C187 (3), UT-4): the shadow is written to
-// --sf-place-shadow as well, and drawn behind --sf-ring-shadow, which the
-// ring utilities (utility/ring-width) set. A card with shadow-raised and a
-// selection ring-2 shows both, whichever sheet comes last; without a ring
-// the element draws the shadow as before. Both variables are internal to the
-// two utilities.
-@mixin place-shadow($place) {
-    @if $place == flat {
-        --sf-place-shadow: 0 0 #0000;
-        box-shadow: var(--sf-ring-shadow, var(--sf-shadow-flat));
-    } @else {
-        --sf-place-shadow: #{shadow.sf-shadow($place)};
-        box-shadow: var(--sf-ring-shadow, 0 0 #0000), var(--sf-place-shadow);
-    }
-}

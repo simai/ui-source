@@ -34,5 +34,5 @@ $ring-width-array: (
         ),
         0 0 0 var(--sf-ring-offset-width, 0px)
         var(--sf-ring-offset-color, transparent);
-    box-shadow: var(--sf-ring-shadow), var(--sf-place-shadow, 0 0 #0000);
+    box-shadow: var(--sf-ring-shadow), var(--sf-place-shadow, 0 0 transparent);
 }
