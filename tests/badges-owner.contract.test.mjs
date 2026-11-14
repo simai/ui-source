@@ -74,8 +74,8 @@ test('Smart Badge declares the run state: its settings, marks, roles and words',
   };
 
   // 1.6.0 renames compact to icon-only (C134); the run state is unchanged.
-  assert.equal(component.version, '1.6.0');
-  assert.equal(manifest.version, '1.6.0');
+  assert.equal(component.version, '1.6.1');
+  assert.equal(manifest.version, '1.6.1');
   assert.deepEqual(component.settings.activity.values, ['', ...Object.keys(states)]);
   assert.equal(component.settings.activity.default, '');
   assert.equal(component.settings['icon-only'].type, 'boolean');

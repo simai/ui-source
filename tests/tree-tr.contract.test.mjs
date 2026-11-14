@@ -90,8 +90,8 @@ test('tree versions: sf-tree 2.3.1, sf-tree-item 1.3.1 (C109 and C107 on top of 
     json('src/smart/tree/smart.manifest.json'),
     json('src/smart/tree-item/smart.manifest.json'),
   ]);
-  assert.equal(tree.version, '2.3.1');
-  assert.equal(item.version, '1.3.1');
-  assert.equal(treeManifest.version, '2.3.1');
-  assert.equal(itemManifest.version, '1.3.1');
+  assert.equal(tree.version, '2.3.2');
+  assert.equal(item.version, '1.3.2');
+  assert.equal(treeManifest.version, '2.3.2');
+  assert.equal(itemManifest.version, '1.3.2');
 });
