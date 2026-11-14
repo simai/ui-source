@@ -24,26 +24,37 @@ $table-hover-color: var(--sf-on-surface);
 $table-hover-bg: var(--sf-surface-state-hover);
 $table-hover-stripe-bg: var(--sf-surface-state-select);
 
-// The cells stand on the size ladder (owner decisions C18, C49, C77, C105;
-// table study 2026-11-14, TB-2, TB-3, TB-4). A row is a step of the ladder:
-// .table is size 1 (40 at 1440, 32 compact, 36 on a phone), .table-sm size
-// 1/2 (32, 28, 28). The cell's block padding is the step's control height
-// less the line of the text and the row's line, halved, as a menu row's (C49):
-// a one-line row stands on the step and its text in the middle. Across, the
-// first and the last cell keep the inset of a list row of the same step (C77,
+// The cells stand on the size ladder (owner decisions C18, C49, C77, C105,
+// C146; table study 2026-11-14, TB-2, TB-3, TB-4). A row is a step of the
+// ladder and the head row the same step (C146 (1)): .table is size 1 (40 at
+// 1440, 32 compact, 36 on a phone), .table-sm size 1/2 (32, 28, 28). The step
+// is the cell's least height, and the cell's content stands in its middle, so
+// a line of text and a control of the row (a 24 badge, C140) both keep the
+// row on the step. A row of two lines stands on the next step, the two-line
+// rung (C146 (1), (7): 48, 40 compact, 44 on a phone): the cell's block
+// padding is what that rung leaves around two lines and the row's line,
+// halved -- 1.5 on a phone; at 1440 and compact two lines fill the rung and
+// the padding is none (a padding below none is none), so a name clamped to
+// two lines (.line-clamp-2) gives the row's line its pixel, and a text left
+// to wrap stands a pixel past the rung. Across, the first
+// and the last cell keep the inset of a list row of the same step (C77,
 // C105 H4: 16 at 1, 12 at 1/2; 12 compact and on a phone), and two cells part
 // by the gap between cells (C105 H6, --sf-space-1; --sf-space-1/2 at 1/2),
 // half on each side. Every number is a token of the ladder or the space
-// system; the row's line (--sf-px) is the one length taken off.
+// system.
 //
 // The duplication audit (2026-11-03, A-4) held these back because the Pro
 // view tables inherit them: those set their own block padding (the more
 // specific rule wins) and read the cells' inline padding.
 $table-line-height: var(--sf-text-height-1);
-$table-cell-padding-y: calc((var(--sf-ui-1--control-height) - #{$table-line-height} - var(--sf-px)) / 2);
+$table-row-block-size: var(--sf-ui-1--control-height);
+$table-two-lines-room: calc(var(--sf-ui-2--control-height) - 2 * #{$table-line-height} - var(--sf-px));
+$table-cell-padding-y: calc(#{$table-two-lines-room} / 2);
 $table-cell-padding-x: calc(var(--sf-space-1) / 2);
 $table-cell-inset: var(--sf-space-1);
-$table-cell-padding-y-sm: calc((var(--sf-ui-1\/2--control-height) - #{$table-line-height} - var(--sf-px)) / 2);
+$table-row-block-size-sm: var(--sf-ui-1\/2--control-height);
+$table-two-lines-room-sm: calc(var(--sf-ui-1--control-height) - 2 * #{$table-line-height} - var(--sf-px));
+$table-cell-padding-y-sm: calc(#{$table-two-lines-room-sm} / 2);
 $table-cell-padding-x-sm: calc(var(--sf-space-1\/2) / 2);
 $table-cell-inset-sm: max(var(--sf-space-1\/2), var(--sf-b2));
 

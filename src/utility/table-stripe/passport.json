@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.table-stripe",
   "kind": "utility",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/table-stripe/default/index.js",
@@ -12,7 +12,7 @@
     "src/utility/table-stripe/default/scss/_sf_css__table_stripe.scss",
     "src/utility/table-stripe/default/scss/index.scss"
   ],
-  "content_sha256": "1f1c40f6667820fb5b323505c5618a938017135f60278dbcb9f20e3c3a284a4d",
+  "content_sha256": "bd04ba95dc62b9ef69b26a775c326bd2c7a3b55c8ff7b066144db946063639e2",
   "dependencies": [
     {
       "id": "tokens.colour",
