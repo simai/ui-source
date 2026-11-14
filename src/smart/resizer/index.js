@@ -126,7 +126,6 @@ let panelIds = 0;
 // it stands in, and so on up. A container (container-type) is a place of its
 // own. Two columns side by side on a wide page keep their handles; a narrow
 // place, or a phone, hides them.
-const SHRINK_DISPLAY = /^inline-(?:block|flex|grid|table)$/u;
 function columnsPlace(parent) {
   let box = parent;
   while (box.parentElement && box.parentElement !== box.ownerDocument.documentElement) {
@@ -134,7 +133,8 @@ function columnsPlace(parent) {
     if (style.containerType && style.containerType !== 'normal') break;
     const outer = getComputedStyle(box.parentElement);
     const flexRow = /flex/u.test(outer.display) && !/column/u.test(outer.flexDirection);
-    const wraps = SHRINK_DISPLAY.test(style.display) || style.float !== 'none'
+    // An inline-level box (inline-block, -flex, -grid) is as wide as its content.
+    const wraps = style.display.startsWith('inline-') || style.float !== 'none'
       || (flexRow && Number(style.flexGrow) === 0 && style.position !== 'absolute' && style.position !== 'fixed');
     if (!wraps) break;
     box = box.parentElement;

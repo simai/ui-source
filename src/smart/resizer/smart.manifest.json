@@ -303,7 +303,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/resizer/index.js",
-        "sha256": "f9e920f252f34ebfa1fc6f0600722b36c1125106987209fca243ee71c03f6446"
+        "sha256": "8f6d90e9a0d7a571072d188c8ec6d21f4d440420207118d1b61d2892c79b2658"
       },
       {
         "path": "src/smart/resizer/scss/_smart__resizer.scss",
