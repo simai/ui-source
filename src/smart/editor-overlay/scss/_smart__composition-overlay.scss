@@ -14,7 +14,7 @@
         --sf-composition-overlay-color: var(--sf-composition-overlay-frame-color, var(--sf-primary, Highlight));
         position: fixed;
         inset: 0;
-        z-index: var(--sf-composition-overlay-z-index, var(--sf-z-index-8, 80));
+        z-index: var(--sf-composition-overlay-z-index, var(--sf-layer--popover, 90));
         pointer-events: none;
     }
 
@@ -243,7 +243,7 @@
 
     .sf-composition-overlay-drop {
         position: fixed;
-        z-index: var(--sf-sortable-ghost-z-index, var(--sf-z-index-9, 90));
+        z-index: var(--sf-sortable-ghost-z-index, var(--sf-layer--popover, 90));
         border-radius: var(--sf-radius-1\/3);
         background: var(--sf-primary, Highlight);
         pointer-events: none;

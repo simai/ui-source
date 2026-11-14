@@ -48,6 +48,48 @@ function spaceSteps() {
   return {desktop, compact, phone};
 }
 
+// The z-index scale (utility/z-index/default/scss/_sf_var__z_index.scss): the
+// numbered steps of $z-index-array and the layer stack's base, $z-index-layer.
+export function zIndexScale() {
+  const text = readFileSync(join(root, 'src/utility/z-index/default/scss/_sf_var__z_index.scss'), 'utf8');
+  const array = /\$z-index-array:\s*\(([\s\S]*?)\);/u.exec(text)?.[1] ?? '';
+  const scale = new Map([...array.matchAll(/(-?\d+)\s*:\s*(-?\d+)/gu)].map((m) => [`--sf-z-index-${m[1]}`, Number(m[2])]));
+  const layer = /\$z-index-layer:\s*(\d+)\s*;/u.exec(text);
+  if (layer) scale.set('--sf-z-index-layer', Number(layer[1]));
+  return scale;
+}
+
+// The layer roles (C173 point 7, names and order C181 (3)): each reads one
+// step of the z-index scale, the contract records its number, and they keep
+// their order -- base under sticky under popover under window; a message not
+// under a window (above the page the layer stack orders windows and messages
+// by opening, core/js/layer-stack.js).
+const LAYER_ORDER = ['--sf-layer--base', '--sf-layer--sticky', '--sf-layer--popover', '--sf-layer--window', '--sf-layer--message'];
+const STRICT_BELOW = new Set(['--sf-layer--base', '--sf-layer--sticky', '--sf-layer--popover']);
+export function validateLayers(data = contract()) {
+  const errors = [];
+  const layers = data.tokens.filter((token) => token.layer);
+  const names = layers.map((token) => token.name);
+  if (JSON.stringify(names) !== JSON.stringify(LAYER_ORDER) || JSON.stringify(data.layer_order ?? []) !== JSON.stringify(LAYER_ORDER)) {
+    errors.push(`layers: ${names.join(', ') || 'none'}; C181 (3) gives ${LAYER_ORDER.join(' < ')}`);
+  }
+  const scale = zIndexScale();
+  layers.forEach((token, index) => {
+    const step = /^var\((--sf-z-index-(?:\d|layer))\)$/u.exec(token.value)?.[1];
+    if (!step || !scale.has(step)) {
+      errors.push(`${token.name}: ${token.value} is not a step of the z-index scale`);
+      return;
+    }
+    if (scale.get(step) !== token.z) errors.push(`${token.name}: ${step} is ${scale.get(step)}, the contract records ${token.z}`);
+    const next = layers[index + 1];
+    if (!next) return;
+    if (STRICT_BELOW.has(token.name) ? !(token.z < next.z) : !(token.z <= next.z)) {
+      errors.push(`${token.name} (${token.z}) is not ${STRICT_BELOW.has(token.name) ? 'under' : 'at most'} ${next.name} (${next.z})`);
+    }
+  });
+  return errors;
+}
+
 export function validate(data = contract()) {
   const errors = [];
   const naming = new RegExp(data.naming, 'u');
@@ -59,8 +101,9 @@ export function validate(data = contract()) {
     if (/\d(px|rem|em)\b/u.test(token.value)) errors.push(`${token.name}: a length in the value (${token.value}); a role is a reference to a step`);
   }
   if (data.tokens.length > data.cap) errors.push(`${data.tokens.length} role tokens, over the cap of ${data.cap} (C173 point 8)`);
+  errors.push(...validateLayers(data));
   const steps = spaceSteps();
-  for (const token of data.tokens) {
+  for (const token of data.tokens.filter((item) => !item.layer)) {
     for (const view of ['desktop', 'compact', 'phone']) {
       let px = null;
       if (token.step) px = atomPx(steps[view].get(token.step));
@@ -85,7 +128,8 @@ export function render(data = contract()) {
  * existing step. Declared on :root, where the width ladder redefines the
  * steps too; the density regions declare the step-dependent ones again
  * (core/scss/_sf_css__density.scss), or a compact region would read the
- * root's step (RT-15). A host whose corner or inset differs declares
+ * root's step (RT-15). The five layer roles read the z-index scale in their
+ * order (C173 point 7, C181 (3)). A host whose corner or inset differs declares
  * --sf-radius--inner on itself with the same formula:
  * max(var(--sf-a4), calc(<host corner> - <inset>)).
  */

@@ -2303,7 +2303,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
         // inside the viewport, following scroll and resize on its own.
         if (!this._panelAnchor || this._panelAnchorPanel !== panel || this._panelAnchorTrigger !== trigger) {
             this.stopPanelPosition();
-            Object.assign(panel.style, {overflowY: 'auto', zIndex: 'var(--sf-z-index-9)'});
+            Object.assign(panel.style, {overflowY: 'auto', zIndex: 'var(--sf-layer--popover)'});
             this._panelAnchorPanel = panel;
             this._panelAnchorTrigger = trigger;
             this._panelAnchor = (globalThis.SF?.Position || BundledPosition).anchor(trigger, panel, {

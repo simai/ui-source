@@ -345,7 +345,7 @@
     position: absolute;
     inset-block-start: 100%;
     inset-inline-start: 0;
-    z-index: var(--sf-z-index-9);
+    z-index: var(--sf-layer--popover);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -620,7 +620,7 @@
      no check (R170). Absolute until it is anchored under its button. */
   .sf-color-format-menu {
     position: absolute;
-    z-index: var(--sf-z-index-9);
+    z-index: var(--sf-layer--popover);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;

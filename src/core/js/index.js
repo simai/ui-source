@@ -347,7 +347,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       background: getPreloaderBackground(),
       modifier: 'loader-default',
       tempStyles:
-        'inset: 0;position: fixed;width: 100%;height: 100vh;opacity: 1;z-index: 1000;background-color: var(--sf-color--surface-highest, var(--sf-surface-page, #fff));text-align: center;',
+        'inset: 0;position: fixed;width: 100%;height: 100vh;opacity: 1;z-index: var(--sf-layer--window, 9000);background-color: var(--sf-color--surface-highest, var(--sf-surface-page, #fff));text-align: center;',
       color: getPreloaderColor(),
       width: DEFAULT_PRELOADER.width,
       height: DEFAULT_PRELOADER.height,

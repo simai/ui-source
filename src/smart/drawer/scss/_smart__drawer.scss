@@ -15,7 +15,7 @@
     position: fixed;
     inset: 0;
     inset-block-start: var(--sf-drawer-block-start, 0);
-    z-index: var(--sf-drawer-z-index, var(--sf-z-index-layer, 9000));
+    z-index: var(--sf-drawer-z-index, var(--sf-layer--window, 9000));
     pointer-events: none;
   }
 

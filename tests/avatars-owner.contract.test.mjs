@@ -37,7 +37,8 @@ test('Avatar presentation uses semantic tokens and native interactive states', a
   assert.match(styles, /:focus-visible/);
   assert.match(styles, /var\(--sf-radius--ui\)/);
   assert.match(styles, /var\(--sf-px\)/);
-  assert.match(styles, /var\(--sf-z-index-9\)/);
+  // C181 (3): the add button's tooltip stands at the message layer.
+  assert.match(styles, /var\(--sf-layer--message\)/);
   assert.match(styles, /var\(--sf-ui-1--control-height\)/);
   assert.match(styles, /\.sf-avatar-image[\s\S]*object-fit: cover/);
   assert.doesNotMatch(styles, /#[0-9a-f]{3,8}\b|rgba?\(/i);

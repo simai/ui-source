@@ -1009,7 +1009,7 @@ class SfContextMenu extends ContextMenuElement {
       surface.setAttribute("popover", "manual");
       if (!surface.matches(":popover-open")) surface.showPopover();
     } else {
-      surface.style.zIndex = "var(--sf-z-index-9)";
+      surface.style.zIndex = "var(--sf-layer--popover)";
     }
     const content = this.querySelector(".sf-context-menu-content");
     const kind = WIDTH_KINDS.has(width) ? width : "";

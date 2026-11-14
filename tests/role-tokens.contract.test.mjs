@@ -20,18 +20,20 @@ test('C173 (9): the source check passes -- names, density scopes, role gaps, scr
   assert.deepEqual(check(), []);
 });
 
-test('C173 (1)(2)(4)(5)(6)(8): thirteen names of the form --sf-<area>--<role>, within the cap of 17', () => {
+test('C173 (1)(2)(4)(5)(6)(7)(8) C181 (3): eighteen names of the form --sf-<area>--<role>, within the cap of 18', () => {
   const data = contract();
   assert.deepEqual(validate(data), []);
-  assert.equal(data.cap, 17);
+  // The owner raised the cap from 17 to 18 on 2026-11-14: 13 names and 5 layers.
+  assert.equal(data.cap, 18);
   assert.deepEqual(data.tokens.map((token) => token.name), [
     '--sf-gap--actions', '--sf-gap--toolbar', '--sf-gap--tags', '--sf-gap--groups', '--sf-gap--icon-text', '--sf-gap--icon-inline',
     '--sf-inset--panel', '--sf-inset--plate',
     '--sf-radius--inner',
     '--sf-line--border', '--sf-line--indicator',
     '--sf-hit--min', '--sf-hit--touch',
+    '--sf-layer--base', '--sf-layer--sticky', '--sf-layer--popover', '--sf-layer--window', '--sf-layer--message',
   ]);
-  const px = Object.fromEntries(data.tokens.map((token) => [token.name, [token.px.desktop, token.px.compact, token.px.phone]]));
+  const px = Object.fromEntries(data.tokens.filter((token) => !token.layer).map((token) => [token.name, [token.px.desktop, token.px.compact, token.px.phone]]));
   assert.deepEqual(px['--sf-gap--actions'], [8, 4, 8]);
   assert.deepEqual(px['--sf-gap--toolbar'], [4, 4, 4]);
   assert.deepEqual(px['--sf-gap--tags'], [4, 4, 4]);
@@ -46,8 +48,20 @@ test('C173 (1)(2)(4)(5)(6)(8): thirteen names of the form --sf-<area>--<role>, w
   assert.deepEqual(px['--sf-hit--touch'], [44, 44, 44]);
   // (5) one nested-corner rule: the host corner less the inset, never below 4.
   assert.equal(data.tokens.find((token) => token.name === '--sf-radius--inner').value, 'max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-inset--plate)))');
-  // (7) the five layers come later, as their own group: not declared now.
-  assert.deepEqual(data.deferred[0].names, ['--sf-layer--sticky', '--sf-layer--popup', '--sf-layer--overlay', '--sf-layer--toast', '--sf-layer--tooltip']);
+  // (7) five layers in order (names and order C181 (3)), each a step of the
+  // z-index scale: base 0 under sticky 50 under popover 90 under window 9000
+  // (the layer stack's base); a message starts at that base, where the stack
+  // orders windows and messages by opening.
+  const z = Object.fromEntries(data.tokens.filter((token) => token.layer).map((token) => [token.name, [token.value, token.z]]));
+  assert.deepEqual(z, {
+    '--sf-layer--base': ['var(--sf-z-index-0)', 0],
+    '--sf-layer--sticky': ['var(--sf-z-index-5)', 50],
+    '--sf-layer--popover': ['var(--sf-z-index-9)', 90],
+    '--sf-layer--window': ['var(--sf-z-index-layer)', 9000],
+    '--sf-layer--message': ['var(--sf-z-index-layer)', 9000],
+  });
+  assert.deepEqual(data.layer_order, Object.keys(z));
+  assert.deepEqual(data.deferred, []);
   // (8) no role names for heights, icons, shadows, motion, focus.
   for (const token of data.tokens) assert.doesNotMatch(token.name, /height|icon-size|shadow|duration|ease|focus/u);
 });
@@ -109,4 +123,27 @@ test('C173: the Framework rows of buttons, toolbars and tags read their role tok
     ['src/smart/input-lookup/scss/_smart__lookup.scss', 'var(--sf-gap--tags)'],
   ];
   for (const [file, text] of rows) assert.ok((await read(file)).includes(text), `${file}: ${text}`);
+});
+
+test('C173 (7) C181 (3): the order of the layers is checked, and every former stacking number reads a layer role', async () => {
+  const data = contract();
+  const swapped = structuredClone(data);
+  const popup = swapped.tokens.find((token) => token.name === '--sf-layer--popover');
+  Object.assign(popup, {value: 'var(--sf-z-index-4)', z: 40});
+  assert.deepEqual(validate(swapped), ['--sf-layer--sticky (50) is not under --sf-layer--popover (40)']);
+  const wrong = structuredClone(data);
+  wrong.tokens.find((token) => token.name === '--sf-layer--sticky').z = 60;
+  assert.deepEqual(validate(wrong), ['--sf-layer--sticky: --sf-z-index-5 is 50, the contract records 60']);
+  const {readFile} = await import('node:fs/promises');
+  const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
+  const uses = {
+    'src/component/country-code/scss/_css_country_code_custom.scss': '--sf-layer--popover',
+    'src/component/dropdown/scss/_css__custom.scss': '--sf-layer--popover',
+    'src/smart/popover/js/templates/default.css': '--sf-layer--popover',
+    'src/utility/editor/default/scss/_editor_default.scss': '--sf-layer--popover',
+    'src/component/range-slider/scss/_css__range_slider_field.scss': '--sf-layer--message',
+    'src/core/scss/_sf_css__loader.scss': '--sf-layer--window',
+  };
+  for (const [path, name] of Object.entries(uses)) assert.match(await read(path), new RegExp(`z-index: var\\(${name}\\);`, 'u'), path);
+  for (const path of ['src/core/js/index.js', 'src/core/js/loader.js']) assert.match(await read(path), /z-index: var\(--sf-layer--window, 9000\);/u, path);
 });

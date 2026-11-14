@@ -212,12 +212,26 @@ The list, its values and the cap are `src/core/contracts/role-tokens.v1.json`;
 | `--sf-line--indicator` | the chosen tab's line, a chosen frame (C99) | 2 × `--sf-px` | 2 |
 | `--sf-hit--min` | the smallest press area (C76, WCAG 2.5.8) | `--sf-c2` | 24 |
 | `--sf-hit--touch` | the press area on a touch screen (C49) | `--sf-d1` | 44 |
+| `--sf-layer--base` | the page itself | `--sf-z-index-0` | 0 |
+| `--sf-layer--sticky` | parts that stay while the page scrolls: a site header, sticky tabs, a table of contents, a table's action band, a pane splitter | `--sf-z-index-5` | 50 |
+| `--sf-layer--popover` | a panel dropping from its trigger: a list at a field, a menu, a calendar, a colour panel, a popover's surface out of the top layer, editor frames, a dragged copy | `--sf-z-index-9` | 90 |
+| `--sf-layer--window` | what covers the page: a window, a drawer, a bottom sheet and its veil, the loading screen; the layer stack's base | `--sf-z-index-layer` | 9000 |
+| `--sf-layer--message` | a tooltip, a value bubble, a copy status, the notification area | `--sf-z-index-layer` | 9000 |
 
-`--sf-radius--ui` (4) and `--sf-radius--surface` (8) stay. Five layer roles
-(`--sf-layer--sticky` … `--sf-layer--tooltip`) come in a later group. Control
-heights, icon sizes, shadows, motion and focus do not get role names: the
-ladder, the host (C151) and the existing names are the roles there. At most 17
-role names in all.
+`--sf-radius--ui` (4) and `--sf-radius--surface` (8) stay. The five layer
+roles (C173 point 7; names and order owner decision C181 (3)) keep the order
+base < sticky < popover < window <= message; a window and a message start at
+the layer stack's base, and above the page the stack (`core/js/layer-stack.js`)
+orders them by opening. A component takes the layer of its role, never a
+numbered step: the numbered steps `--sf-z-index--1` ... `--sf-z-index-9` stay
+declared as aliases until 2027-01-01 (built sheets, ui-doc and ui-pro still
+read them). A part that stands over its own siblings inside a component keeps
+a local number (-1 to 2, or `--sf-z-index-1`/`-2` until then); any other
+stacking number is the raw-value lint's (`tools/lint-raw-values.mjs`, C178).
+Control heights, icon sizes, shadows, motion and focus do not get role names:
+the ladder, the host (C151) and the existing names are the roles there. At most
+18 role names in all (the owner raised the cap from 17 on 2026-11-14: 13 names
+and 5 layers).
 
 Rules:
 

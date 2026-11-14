@@ -56,7 +56,8 @@ test('Fallback uses inherited Framework context, bounded placement and reversibl
   assert.match(source,/syncFallbackContext\(root,state\)/);
   assert.match(source,/name\.startsWith\('--sf-'\)/);
   for(const name of ['text-transform','word-spacing','font-variation-settings','line-height'])assert.ok(source.includes(`'${name}'`));
-  assert.match(source,/var\(--sf-z-index-9\)/);
+  // C181 (3): a portaled list stands at the popover layer, not a numbered step.
+  assert.match(source,/var\(--sf-layer--popover\)/);
   assert.match(source,/state\.parent\.insertBefore\(list,state\.next\)/);
   assert.match(source,/state\.context\.remove\(\)/);
   assert.match(source,/state\.inheritance\?\.disconnect\(\)/);
