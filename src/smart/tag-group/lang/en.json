@@ -1,0 +1,15 @@
+{
+  "title": "Tag group",
+  "runtime": {
+    "more": {
+      "one": "{n} more: {names}",
+      "other": "{n} more: {names}"
+    },
+    "more-panel": {
+      "one": "{n} more tag",
+      "other": "{n} more tags"
+    },
+    "position": "{label}, {position} of {total}, Delete to remove",
+    "position-plain": "{label}, {position} of {total}"
+  }
+}

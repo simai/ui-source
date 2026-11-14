@@ -31,12 +31,18 @@ test('badge contract exposes the Figma matrix and semantic extensions', async ()
     ],
   );
   assert.deepEqual(contract.BADGE_SIZES, ['1/3', '1/2', '1']);
-  assert.equal(contract.BADGE_VARIANTS.length, 78);
+  // The drawn looks (C140 (4)): tonal and outline in nine colours, main only
+  // with error -- 9 x 2 x 3 + 3.
+  assert.equal(contract.BADGE_VARIANTS.length, 57);
+  assert.deepEqual(
+    [...new Set(contract.BADGE_VARIANTS.filter(({type}) => type === 'main').map(({scheme}) => scheme))],
+    ['error'],
+  );
   assert.equal(
     contract.BADGE_VARIANTS.some(
       ({type, scheme}) => type === 'tonal' && scheme === 'on-surface',
     ),
-    false,
+    true,
   );
 });
 
@@ -52,14 +58,18 @@ test('badge CSS maps every semantic scheme to theme-aware tokens', async () => {
     ':is\\(\\.sf-badge--error, \\.sf-badge--danger\\)': 'error',
   };
 
+  // Drawn tonal (C140 (4)): the tonal look, main on a colour but error, no look.
+  const tonal = String.raw`\.sf-badge:where\(\.sf-badge--tonal, (\.sf-badge--main:not\(\.sf-badge--error, \.sf-badge--danger\), )?:not\(\.sf-badge--main, \.sf-badge--tonal, \.sf-badge--outline\)\)`;
   for (const [scheme, token] of Object.entries(tokenMap)) {
+    if (token === 'error') {
+      // The one filled look: the attention count.
+      assert.match(css, new RegExp(`sf-badge--main${scheme} \\{[\\s\\S]*--sf-badge--background-color: var\\(--sf-error\\);`));
+    } else {
+      assert.doesNotMatch(css, new RegExp(`\\.sf-badge\\.sf-badge--main\\.sf-badge--${scheme} \\{`));
+    }
     assert.match(
       css,
-      new RegExp(`sf-badge--main${scheme.startsWith(':is') ? scheme : `\\.sf-badge--${scheme}`} \\{[\\s\\S]*--sf-badge--background-color: var\\(--sf-${token}\\);`),
-    );
-    assert.match(
-      css,
-      new RegExp(`sf-badge--tonal${scheme.startsWith(':is') ? scheme : `\\.sf-badge--${scheme}`} \\{[\\s\\S]*--sf-badge--background-color: var\\(--sf-${token}-container\\);`),
+      new RegExp(`${tonal}${scheme.startsWith(':is') ? scheme : `\\.sf-badge--${scheme}`} \\{[\\s\\S]*--sf-badge--background-color: var\\(--sf-${token}-container\\);`),
     );
     assert.match(
       css,
@@ -73,12 +83,17 @@ test('badge contract normalizes invalid values and unsupported pairs', async () 
 
   assert.deepEqual(
     normalizeBadgeContract({type: 'unknown', scheme: 'unknown', size: '99'}),
-    {type: 'main', scheme: 'neutral', size: '1/3'},
+    {type: 'tonal', scheme: 'neutral', size: '1/3'},
   );
   assert.deepEqual(
     normalizeBadgeContract({type: 'tonal', scheme: 'on-surface', size: '1'}),
-    {type: 'main', scheme: 'on-surface', size: '1'},
+    {type: 'tonal', scheme: 'on-surface', size: '1'},
   );
+  // main is the attention count's (C140 (4)): with any colour but error it is tonal.
+  for (const scheme of ['neutral', 'primary', 'on-surface', 'info', 'success', 'warning']) {
+    assert.deepEqual(normalizeBadgeContract({type: 'main', scheme, size: '1'}), {type: 'tonal', scheme, size: '1'}, scheme);
+  }
+  assert.deepEqual(normalizeBadgeContract({type: 'main', scheme: 'error', size: '1'}), {type: 'main', scheme: 'error', size: '1'});
 });
 
 test('badge contract takes error, and reads the former danger as error (simai/ui-source#51)', async () => {
@@ -95,7 +110,7 @@ test('badge contract takes error, and reads the former danger as error (simai/ui
   assert.equal(canonicalBadgeScheme('primary'), 'primary');
   assert.equal(canonicalBadgeScheme('critical'), '');
   assert.equal(canonicalBadgeScheme(undefined), '');
-  // The matrix keeps its 78 rows; the error rows are where the danger rows were.
+  // The error rows are where the danger rows were: main, tonal, outline.
   assert.equal(BADGE_VARIANTS.filter(({scheme}) => scheme === 'error').length, 9);
   assert.equal(BADGE_VARIANTS.some(({scheme}) => scheme === 'danger'), false);
 });
@@ -155,9 +170,9 @@ test('Core and Smart renderers share the canonical classes and icon-only shape',
 test('Badge documentation records the matrix, semantic extension and official dark variant', async () => {
   const docs = await read('src/smart/badge/docs/docs.md');
 
-  assert.match(docs, /42 supported combinations/);
-  assert.match(docs, /36 semantic combinations/);
-  assert.match(docs, /`tonal \+ on-surface` is not a designed variant/);
-  assert.match(docs, /appearance="main" scheme="on-surface"/);
-  assert.match(docs, /not an\s+additional `inverse` scheme/);
+  // C140 (4): main is the attention count alone; the dark main on-surface badge is retired.
+  assert.match(docs, /57 combinations are drawn/);
+  assert.match(docs, /`main` with `error` alone, the attention count/);
+  assert.match(docs, /`tonal \+ on-surface` draws the grey tonal badge/);
+  assert.doesNotMatch(docs, /appearance="main" scheme="on-surface"/);
 });

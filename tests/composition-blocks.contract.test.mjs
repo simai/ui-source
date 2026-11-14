@@ -628,7 +628,8 @@ test('the Elements and Layout types draw SIMAI Framework utilities and smart ele
   assert.match(html, /<div class="p-top-6" aria-hidden="true" data-sf-composition-id="sp"><\/div>/u);
   assert.match(html, /<div class="flex" data-sf-composition-id="b"><sf-button icon="arrow_forward" icon-position="end" text="Подробнее"><\/sf-button><\/div>/u);
   assert.match(html, /<div class="flex" data-sf-composition-id="bi"><sf-button-icon appearance="tonal" aria-label="Нравится" icon="favorite"><\/sf-button-icon><\/div>/u);
-  assert.match(html, /<div class="flex" data-sf-composition-id="bd"><sf-badge appearance="tonal" scheme="primary" size="1\/2" text="Метка"><\/sf-badge><\/div>/u, 'unset, the badge reads its word in the Document\'s language');
+  // tonal is sf-badge's default since 1.6.0 (C140 (1)): a default is not printed.
+  assert.match(html, /<div class="flex" data-sf-composition-id="bd"><sf-badge scheme="primary" size="1\/2" text="Метка"><\/sf-badge><\/div>/u, 'unset, the badge reads its word in the Document\'s language');
   assert.match(html, /<div class="flex" data-sf-composition-id="i"><sf-icon icon="star" size="4"><\/sf-icon><\/div>/u);
   assert.deepEqual(checkPrintedElements(html), []);
   assert.doesNotMatch(html, /style=/u);

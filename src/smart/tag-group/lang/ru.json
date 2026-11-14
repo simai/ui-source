@@ -1,0 +1,19 @@
+{
+  "title": "Группа тегов",
+  "runtime": {
+    "more": {
+      "one": "Ещё {n}: {names}",
+      "few": "Ещё {n}: {names}",
+      "many": "Ещё {n}: {names}",
+      "other": "Ещё {n}: {names}"
+    },
+    "more-panel": {
+      "one": "Ещё {n} тег",
+      "few": "Ещё {n} тега",
+      "many": "Ещё {n} тегов",
+      "other": "Ещё {n} тега"
+    },
+    "position": "{label}, {position} из {total}, Delete — убрать",
+    "position-plain": "{label}, {position} из {total}"
+  }
+}

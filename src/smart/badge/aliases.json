@@ -77,6 +77,16 @@
       "remove_after": "2026-12-01",
       "section": "§16 item 20",
       "note": "the physical name the template read as end"
+    },
+    {
+      "from": "compact",
+      "to": "icon-only",
+      "kind": "setting",
+      "component": "sf-badge",
+      "since": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "owner decision C134 (ui-control control/research/2026-11-13-navigation-density.md D5, Q1; badges study control/research/2026-11-14-badges.md): the word compact means density only; the icon-only badge is icon-only and draws the class sf-badge--icon-only (sf-badge--compact is the class's dated alias, journal class-badges-compact-to-icon-only); the shim maps the attribute and the property"
     }
   ]
 }

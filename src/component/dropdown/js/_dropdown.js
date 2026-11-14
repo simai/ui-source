@@ -8,16 +8,15 @@ const DROPDOWN_SELECTOR = ".sf-dropdown";
 const BOUND_FLAG = "sfDropdownBound";
 const CHECKMARK_SELECTOR = ".sf-list-item-selected-item";
 
-// From size 1 up the field has room for a compact tag of its own size, with the
-// field's own text. Size 1/2 does not (one pixel would be left), so its tag
-// goes one size down onto the field line, rendered inline: its label is one
-// text step down and it takes no block padding.
-// The tag's height is its low step (C27; the tag's spacing-compact before,
-// journal class-tag-spacing-to-height).
+// A tag in the field is part of the field (owner decision C145 (1), variant
+// A): inline, one size below the field, so its label is one text step under
+// the field's; the field gives it its height (the field less --sf-space-1/4
+// above and below) as its line. From size 1 up it was a low chip of the
+// field's own size (C27), 32 in a 40 field.
 const FIELD_TAG = Object.freeze({
   "1/2": {size: "1/3", height: ""},
-  "1": {size: "1", height: "low"},
-  "2": {size: "2", height: "low"},
+  "1": {size: "1/2", height: ""},
+  "2": {size: "1", height: ""},
 });
 
 function isTagDropdown(root) {

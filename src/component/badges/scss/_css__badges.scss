@@ -36,19 +36,42 @@
   border-color: var(--sf-badge--border-color, transparent);
   border-style: var(--sf-badge--border-style, solid);
   vertical-align: middle;
-  --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-on-surface-variant));
-  --sf-badge--color: var(--sf-badge-color, var(--sf-on-surface-inverse));
+  /* The default look is the grey tonal one (owner decision C140 (1), badges
+     study BG-1): a badge that names no look -- sf-badge without appearance,
+     class markup without a look class -- is the calm mark. It was the dark
+     grey fill (on-surface-variant), which nobody chose. */
+  --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-surface-container));
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  --sf-badge--color: var(--sf-badge-color, var(--sf-on-surface));
   --sf-badge-spinner--size: var(--sf-text-size-1\/3);
   --sf-badge--font-size: var(--sf-text-size-1\/3);
-  --sf-badge--line-height: var(--sf-text-height-1\/3);
-  --sf-badge--padding-block: var(--sf-badge-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
+  --sf-badge--line-height: var(--sf-badge--line-1\/3);
+  --sf-badge--padding-block: var(--sf-badge-padding-block, var(--sf-badge--space-y-1\/3));
+  /* The badge's own lines (owner decision C140 (5)): a badge is a mark, not a
+     control, so it keeps 24 · 28 · 32 on the phone too, as the points and
+     counts of C132 do; the phone text size (12 · 12 · 14) stays. Below the
+     desktop breakpoint the lines are the desktop ladder's text heights
+     (--sf-b6 · --sf-c0 · --sf-c2, 16 · 20 · 24) and the block padding its
+     --sf-a4; from it they follow the text heights and the size's low
+     tightness, so a compact region keeps its denser badge (24 · 24 · 28). It
+     was 20 · 24 · 28 on the phone, and 20 is not a step after C132 (badges
+     study BG-4). */
+  --sf-badge--line-1\/3: var(--sf-b6);
+  --sf-badge--line-1\/2: var(--sf-c0);
+  --sf-badge--line-1: var(--sf-c2);
+  --sf-badge--space-y-1\/3: var(--sf-a4);
+  --sf-badge--space-y-1\/2: var(--sf-a4);
+  --sf-badge--space-y-1: var(--sf-a4);
   /* Side room (R020, owner decision 2026-11-07): a badge's text sits
-     --sf-space-1/2 from its edges at every size; sf-badge--tight takes the
-     size's own text inset (--sf-ui-*--text-space-x), the room a badge had
-     before, for dense places -- a table, a counter, a chip in a row. Each size
-     and line names its tight room; the tight modifier swaps it in. */
+     --sf-space-1/2 from its edges at every size; sf-badge--tight, for dense
+     places -- a table, a counter, a chip in a row -- takes the space step
+     under it, --sf-space-1/3 (8, 4 compact, 8 on the phone). It took the
+     button's text inset (6 / 7 / 8, 5 / 6 on the phone) until
+     component.badges 1.8.0: 5 and 7 are not space steps (badges study BG-9,
+     C19, C105). One room at every size and line; the line of the text has its
+     own (below). The tight modifier swaps it in. */
   --sf-badge--side-room: var(--sf-space-1\/2);
-  --sf-badge--side-tight: var(--sf-ui-1\/3--text-space-x);
+  --sf-badge--side-tight: var(--sf-space-1\/3);
   --sf-badge--padding-inline-end: var(--sf-badge-padding-inline, var(--sf-badge--side-room));
   --sf-badge--padding-inline-start: var(--sf-badge-padding-inline, var(--sf-badge--side-room));
   /* The size is the text line and the block padding, whatever the look: the
@@ -66,6 +89,21 @@
   --sf-badge--border-bottom-width: var(--sf-badge-border-width, var(--sf-a0));
   --sf-badge--border-inline-start-width: var(--sf-badge-border-width, var(--sf-a0));
   --sf-badge--border-inline-end-width: var(--sf-badge-border-width, var(--sf-a0));
+}
+
+/* From the desktop breakpoint the badge's lines are the text heights and the
+   size's low tightness, as they were: 24 · 28 · 32 in a normal region,
+   24 · 24 · 28 in a compact one (data-sf-density applies from the same
+   breakpoint). */
+@media (min-width: 60rem) {
+  .sf-badge {
+    --sf-badge--line-1\/3: var(--sf-text-height-1\/3);
+    --sf-badge--line-1\/2: var(--sf-text-height-1\/2);
+    --sf-badge--line-1: var(--sf-text-height-1);
+    --sf-badge--space-y-1\/3: var(--sf-ui-1\/3--space-y-tightness-low);
+    --sf-badge--space-y-1\/2: var(--sf-ui-1\/2--space-y-tightness-low);
+    --sf-badge--space-y-1: var(--sf-ui-1--space-y-tightness-low);
+  }
 }
 
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
@@ -98,11 +136,6 @@
   width: var(--sf-icon--width);
 }
 
-.sf-badge.sf-badge--main.sf-badge--neutral {
-  --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-on-surface-variant));
-  --sf-badge--color: var(--sf-badge-color, var(--sf-on-surface-inverse));
-}
-
 /* A tonal badge on a translucent fill (C43, owner 2026-11-10). Its fill is an
    alpha of its colour, so on a selected, open or current row -- itself an
    alpha of primary -- it came out as its alpha over the row's: a warning or an
@@ -111,8 +144,10 @@
    the badge lays its own tone over that colour, so it reads as it does on the
    place itself. Everywhere else the role is initial (guaranteed invalid), this
    declaration is invalid at computed-value time and background-image stays
-   none: the badge is drawn exactly as before, its background-color untouched. */
-.sf-badge.sf-badge--tonal {
+   none: the badge is drawn exactly as before, its background-color untouched.
+   The selector is every badge drawn tonal (owner decision C140 (4)): the
+   tonal look, main on any colour but error, and a badge with no look. */
+.sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)):not(.sf-badge--anchored) {
   background-image: linear-gradient(var(--sf-badge--background-color), var(--sf-badge--background-color)), linear-gradient(var(--sf-surface-underlay), var(--sf-surface-underlay));
 }
 
@@ -139,36 +174,33 @@
   block-size: 100%;
 }
 
-.sf-badge.sf-badge--tonal .sf-icon, .sf-badge.sf-badge--main .sf-icon, .sf-badge.sf-badge--outline .sf-icon {
+.sf-badge.sf-badge--tonal .sf-icon, .sf-badge.sf-badge--main .sf-icon, .sf-badge.sf-badge--outline .sf-icon, .sf-badge:not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline, .sf-badge--anchored) .sf-icon {
   --sf-icon--color: var(--sf-badge--color);
 }
 
-.sf-badge.sf-badge--tonal .sf-badge-text, .sf-badge.sf-badge--main .sf-badge-text, .sf-badge.sf-badge--outline .sf-badge-text {
+.sf-badge.sf-badge--tonal .sf-badge-text, .sf-badge.sf-badge--main .sf-badge-text, .sf-badge.sf-badge--outline .sf-badge-text, .sf-badge:not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline, .sf-badge--anchored) .sf-badge-text {
   --sf-badge-text--color: var(--sf-badge-color, var(--sf-badge--color));
 }
 
-.sf-badge.sf-badge--main.sf-badge--primary {
-  --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-primary));
-  --sf-badge--color: var(--sf-badge-color, var(--sf-on-primary));
-}
-
-.sf-badge.sf-badge--main.sf-badge--secondary {
-  --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-secondary));
-  --sf-badge--color: var(--sf-badge-color, var(--sf-on-secondary));
-}
-
-.sf-badge.sf-badge--tonal.sf-badge--neutral {
+/* Drawn tonal (owner decision C140 (4)): the tonal look, main on any colour
+   but error (its spelling until 2027-01-01, journal
+   value-badge-appearance-main-to-tonal), and a badge with no look (the
+   default, C140 (1)). on-surface has no tonal colour of its own: it is the
+   grey tonal badge, as the default is. The look is matched in :where(), so a
+   tonal colour weighs a class less than before (0,2,0): a place that draws
+   a badge its own way -- the menu rail's count on the icon -- wins. */
+.sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)):is(.sf-badge--neutral, .sf-badge--on-surface) {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-surface-container));
   --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-surface));
 }
 
-.sf-badge.sf-badge--tonal.sf-badge--primary {
+.sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)).sf-badge--primary {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-primary-container));
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-primary-container));
 }
 
-.sf-badge.sf-badge--tonal.sf-badge--secondary {
+.sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)).sf-badge--secondary {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-secondary-container));
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-secondary-container));
 }
@@ -188,12 +220,7 @@
   --sf-badge--color: var(--sf-badge-color, var(--sf-secondary));
 }
 
-.sf-badge.sf-badge--main.sf-badge--tertiary {
-  --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-tertiary));
-  --sf-badge--color: var(--sf-badge-color, var(--sf-on-tertiary));
-}
-
-.sf-badge.sf-badge--tonal.sf-badge--tertiary {
+.sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)).sf-badge--tertiary {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-tertiary-container));
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-tertiary-container));
 }
@@ -203,22 +230,12 @@
   --sf-badge--color: var(--sf-badge-color, var(--sf-tertiary));
 }
 
-.sf-badge.sf-badge--main.sf-badge--on-surface {
-  --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-on-surface));
-  --sf-badge--color: var(--sf-badge-color, var(--sf-on-surface-inverse));
-}
-
 .sf-badge.sf-badge--outline.sf-badge--on-surface {
   --sf-badge--border-color: var(--sf-badge-border-color, var(--sf-outline));
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-surface));
 }
 
-.sf-badge.sf-badge--main.sf-badge--info {
-  --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-info));
-  --sf-badge--color: var(--sf-badge-color, var(--sf-on-info));
-}
-
-.sf-badge.sf-badge--tonal.sf-badge--info {
+.sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)).sf-badge--info {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-info-container));
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-info-container));
 }
@@ -228,12 +245,7 @@
   --sf-badge--color: var(--sf-badge-color, var(--sf-info));
 }
 
-.sf-badge.sf-badge--main.sf-badge--success {
-  --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-success));
-  --sf-badge--color: var(--sf-badge-color, var(--sf-on-success));
-}
-
-.sf-badge.sf-badge--tonal.sf-badge--success {
+.sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)).sf-badge--success {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-success-container));
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-success-container));
 }
@@ -243,12 +255,7 @@
   --sf-badge--color: var(--sf-badge-color, var(--sf-success));
 }
 
-.sf-badge.sf-badge--main.sf-badge--warning {
-  --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-warning));
-  --sf-badge--color: var(--sf-badge-color, var(--sf-on-warning));
-}
-
-.sf-badge.sf-badge--tonal.sf-badge--warning {
+.sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)).sf-badge--warning {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-warning-container));
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-warning-container));
 }
@@ -258,12 +265,13 @@
   --sf-badge--color: var(--sf-badge-color, var(--sf-warning));
 }
 
+/* The one filled look: the attention count (owner decision C140 (3), (4)). */
 .sf-badge.sf-badge--main:is(.sf-badge--error, .sf-badge--danger) {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-error));
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-error));
 }
 
-.sf-badge.sf-badge--tonal:is(.sf-badge--error, .sf-badge--danger) {
+.sf-badge:where(.sf-badge--tonal, :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)):is(.sf-badge--error, .sf-badge--danger) {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-error-container));
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-error-container));
 }
@@ -276,9 +284,8 @@
 .sf-badge--size-1 {
   --sf-badge-spinner--size: var(--sf-text-size-1);
   --sf-badge--font-size: var(--sf-text-size-1);
-  --sf-badge--line-height: var(--sf-text-height-1);
-  --sf-badge--padding-block: var(--sf-badge-padding-block, var(--sf-ui-1--space-y-tightness-low));
-  --sf-badge--side-tight: var(--sf-ui-1--text-space-x);
+  --sf-badge--line-height: var(--sf-badge--line-1);
+  --sf-badge--padding-block: var(--sf-badge-padding-block, var(--sf-badge--space-y-1));
 }
 
 .sf-badge.sf-badge--size-1 .sf-icon {
@@ -295,9 +302,8 @@
 .sf-badge--size-1\/3 {
   --sf-badge-spinner--size: var(--sf-text-size-1\/3);
   --sf-badge--font-size: var(--sf-text-size-1\/3);
-  --sf-badge--line-height: var(--sf-text-height-1\/3);
-  --sf-badge--padding-block: var(--sf-badge-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
-  --sf-badge--side-tight: var(--sf-ui-1\/3--text-space-x);
+  --sf-badge--line-height: var(--sf-badge--line-1\/3);
+  --sf-badge--padding-block: var(--sf-badge-padding-block, var(--sf-badge--space-y-1\/3));
 }
 
 .sf-badge.sf-badge--size-1\/3 .sf-icon {
@@ -312,9 +318,8 @@
      --sf-b2, the step core's small-step table names 12). */
   --sf-badge-spinner--size: var(--sf-b2);
   --sf-badge--font-size: var(--sf-text-size-1\/2);
-  --sf-badge--line-height: var(--sf-text-height-1\/2);
-  --sf-badge--padding-block: var(--sf-badge-padding-block, var(--sf-ui-1\/2--space-y-tightness-low));
-  --sf-badge--side-tight: var(--sf-ui-1\/2--text-space-x);
+  --sf-badge--line-height: var(--sf-badge--line-1\/2);
+  --sf-badge--padding-block: var(--sf-badge-padding-block, var(--sf-badge--space-y-1\/2));
 }
 
 .sf-badge.sf-badge--size-1\/2 .sf-icon {
@@ -341,21 +346,18 @@
   --sf-badge--font-size: var(--sf-text-size-1\/3);
   --sf-badge--line-height: var(--sf-text-height-1\/2);
   --sf-badge--padding-block: var(--sf-badge-padding-block, calc(var(--sf-px) * 0));
-  --sf-badge--side-tight: var(--sf-ui-1\/2--text-space-x);
 }
 
 .sf-badge.sf-badge--line-1 {
   --sf-badge--font-size: var(--sf-text-size-1\/2);
   --sf-badge--line-height: var(--sf-text-height-1);
   --sf-badge--padding-block: var(--sf-badge-padding-block, calc(var(--sf-px) * 0));
-  --sf-badge--side-tight: var(--sf-ui-1--text-space-x);
 }
 
 .sf-badge.sf-badge--line-2 {
   --sf-badge--font-size: var(--sf-text-size-1);
   --sf-badge--line-height: var(--sf-text-height-2);
   --sf-badge--padding-block: var(--sf-badge-padding-block, calc(var(--sf-px) * 0));
-  --sf-badge--side-tight: var(--sf-ui-2--text-space-x);
 }
 
 /* The line of the text beside it (owner decision C95 point 6, 2026-11-12;
@@ -395,22 +397,27 @@
   --sf-badge--side-room: var(--sf-badge--side-tight);
 }
 
-/* Compact: the icon alone, the text a visually hidden copy that stays the name.
-   The box closes to a square: its inline padding takes the block padding, and
-   the size's minimum holds the rest. Written after the size and line rules. */
-.sf-badge.sf-badge--compact {
+/* Icon only: the icon alone, the text a visually hidden copy that stays the
+   name. The box closes to a square: its inline padding takes the block
+   padding, and the size's minimum holds the rest. Written after the size and
+   line rules. sf-badge--compact is the class's former name and draws the same
+   until 2027-01-01 (owner decision C134: the word compact means density only;
+   journal class-badges-compact-to-icon-only); the same specificity as before. */
+.sf-badge:is(.sf-badge--icon-only, .sf-badge--compact) {
   --sf-badge--padding-inline-start: var(--sf-badge-padding-inline, var(--sf-badge--padding-block));
   --sf-badge--padding-inline-end: var(--sf-badge-padding-inline, var(--sf-badge--padding-block));
 }
 
-/* A figure: one character, a single-figure count. It keeps the size's own
-   (tight) side room whatever the default, so the size's minimum makes it as
-   wide as it is high: round. sf-badge sets it. A counter written as class
-   markup (.sf-badge[data-count], which the badges runtime fills -- a menu
-   row's, an admin menu's) is dense by nature and takes the same room; an
-   anchored one keeps its own geometry. */
+/* A figure: one character, a single-figure count. It takes the quarter step
+   --sf-space-1/4 whatever the default, so the size's minimum makes it as wide
+   as it is high: round (a glyph and two quarter steps stay under the smallest
+   size, 20 on the phone; the tight room 8 + 8 would not). sf-badge sets it. A
+   counter written as class markup (.sf-badge[data-count], which the badges
+   runtime fills -- a menu row's, an admin menu's) is dense by nature and takes
+   the same room, as a count on the line of the text does; an anchored one
+   keeps its own geometry. */
 .sf-badge:is(.sf-badge--figure, [data-count]) {
-  --sf-badge--side-room: var(--sf-badge--side-tight);
+  --sf-badge--side-room: var(--sf-space-1\/4);
 }
 }
 

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFile, readdir} from 'node:fs/promises';
 
-import {FIELD_SIZES, RETIRED_FIELD_SIZES, fieldSize, nearestFieldSize, retireFieldSizeClass} from '../src/component/field-size.js';
+import {FIELD_LADDER, FIELD_SIZES, RETIRED_FIELD_SIZES, fieldSize, ladderSize, nearestFieldSize, retireFieldSizeClass} from '../src/component/field-size.js';
 import {withoutPublicVariables} from './support/public-variables.mjs';
 
 const ROOT = new URL('../', import.meta.url);
@@ -11,15 +11,16 @@ const read = (path) => readFile(new URL(path, ROOT), 'utf8').then(withoutPublicV
 /* Form fields come in three sizes. The two outer steps were retired because
    nothing used them and they could not hold a field's own pictures, tags and
    targets; this file keeps the scale from growing back one component at a time.
-   sf-input alone keeps them (actions block item 4, 2026-11-08): a plain text
-   field has no pictures or tags, and a toolbar search and a hero search stand
-   beside buttons of 1/3 and 3. */
+   sf-input kept them first (actions block item 4, 2026-11-08): a toolbar
+   search and a hero search stand beside buttons of 1/3 and 3. The fields
+   ladder (2026-11-14) puts lookup, quantity, date, code, colour and phone on
+   the same five steps (field-size.js FIELD_LADDER); the rest keep three. */
 const INPUT_SIZES = ['1/3', '1/2', '1', '2', '3'];
 const FIELDS = {
-  textarea: 'textarea', dropdown: 'dropdown', quantity: 'quantity',
-  verification: 'verification', 'country-code': 'country-code', 'file-upload': 'file-upload',
+  textarea: 'textarea', dropdown: 'dropdown', 'file-upload': 'file-upload',
 };
-const RETIRED_CLASS = /\.sf-(input|textarea|dropdown|quantity|verification|verification-form|country-code|file-upload|upload-progress)--size-(1\\\/3|3)(?![\w\\/-])/;
+const RETIRED_CLASS = /\.sf-(textarea|dropdown|file-upload|upload-progress)--size-(1\\\/3|3)(?![\w\\/-])/;
+const LADDER_FIELDS = ['input', 'input-lookup', 'input-quantity', 'input-date', 'input-code', 'input-color', 'input-country'];
 
 test('field sizes: the scale is 1/2, 1 and 2, and a retired size maps to its neighbour', () => {
   assert.deepEqual([...FIELD_SIZES], ['1/2', '1', '2']);
@@ -79,12 +80,42 @@ test('field sizes: sf-input stands on the whole control ladder', async () => {
 });
 
 test('field sizes: Smart manifests offer the three sizes and nothing else', async () => {
-  for (const name of ['input-textarea', 'dropdown', 'file-upload', 'input-country']) {
+  for (const name of ['input-textarea', 'dropdown', 'file-upload']) {
     const manifest = JSON.parse(await read(`src/smart/${name}/smart.manifest.json`));
     assert.deepEqual(manifest.inputs.properties.size.enum, [...FIELD_SIZES], name);
   }
+});
+
+test('field sizes: the fields of the field ladder offer its five steps', async () => {
+  assert.deepEqual([...FIELD_LADDER], INPUT_SIZES);
+  assert.deepEqual(['1/3', '3', ' 2 ', 'x', undefined].map((size) => ladderSize(size)), ['1/3', '3', '2', '1', '1']);
+  for (const name of LADDER_FIELDS) {
+    const manifest = JSON.parse(await read(`src/smart/${name}/smart.manifest.json`));
+    assert.deepEqual(manifest.inputs.properties.size.enum, INPUT_SIZES, name);
+  }
   const datepicker = JSON.parse(await read('src/smart/input-date/smart.manifest.json'));
-  assert.deepEqual(datepicker.inputs.properties['input-size'].enum, [...FIELD_SIZES], 'datepicker input-size');
+  assert.deepEqual(datepicker.inputs.properties['input-size'].enum, INPUT_SIZES, 'datepicker input-size');
+  for (const name of LADDER_FIELDS.slice(1, 6).filter((n) => n !== 'input-color')) {
+    assert.match(await read(`src/smart/${name}/index.js`), /ladderSize\(/, `${name} reads its size on the ladder`);
+  }
+});
+
+test('field sizes: the ladder fields size their outer steps from the shared ladder', async () => {
+  const sheets = {
+    'src/smart/input-lookup/scss/_smart__lookup.scss': 'sf-lookup',
+    'src/component/quantity/scss/_css__quantity.scss': 'sf-quantity',
+    'src/component/verification/scss/_css__verification_custom.scss': 'sf-verification',
+    'src/component/country-code/scss/_css_country_code_custom.scss': 'sf-country-code',
+  };
+  for (const [path, block] of Object.entries(sheets)) {
+    const sheet = await read(path);
+    assert.match(sheet, /@use '[./]+(component\/)?inputs\/scss\/field-ladder' as ladder;/, `${path} reads the ladder`);
+    assert.ok(sheet.includes(`ladder.size-class('${block}'`), `${path} sizes its outer steps from it`);
+  }
+  const colour = await read('src/smart/input-color/js/templates/default.css');
+  for (const size of ['1\\/3', '3']) {
+    assert.ok(colour.includes(`--sf-color--control-height: var(--sf-ui-${size}--control-height);`), `input-color ${size}`);
+  }
 });
 
 test('field sizes: every field reads its size through the one rule', async () => {

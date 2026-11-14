@@ -1,6 +1,13 @@
 {
   "title": "Теги",
   "runtime": {
-    "remove": "Удалить"
+    "remove": "Удалить",
+    "more": {
+      "one": "Ещё {n}: {names}",
+      "few": "Ещё {n}: {names}",
+      "many": "Ещё {n}: {names}",
+      "other": "Ещё {n}: {names}"
+    },
+    "position": "{label}, {position} из {total}, Delete — убрать"
   }
 }

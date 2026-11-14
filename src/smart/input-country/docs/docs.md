@@ -124,3 +124,11 @@ empty value shows the recent choices alone. The group holds six rows at most.
 
 Below the `md` breakpoint the list opens as a bottom sheet over the page instead
 of a dropdown under the field.
+
+## Sizes and messages (1.6.0)
+
+`size` takes the field ladder's five steps, `1/3`, `1/2`, `1`, `2` and `3`, as
+`sf-input`: the field is as tall as `sf-input` of the same size (28 / 32 / 40 /
+48 / 56 on a desktop). Under the field stands one message line a step below the
+field's text: `hint` while the field is valid, `error-message` once `invalid` is
+set, with the error border, `aria-invalid` and `aria-errormessage`.

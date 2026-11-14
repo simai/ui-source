@@ -63,7 +63,7 @@
         {
           "name": "--sf-badge-padding-inline",
           "role": "padding-inline",
-          "summary": "Space before and after the text: --sf-space-1/2 by default at every size; sf-badge--tight (sf-badge tight) and a single figure take the size's own text inset, so a figure stays round; a compact badge takes the block padding and stays square.",
+          "summary": "Space before and after the text: --sf-space-1/2 by default at every size; sf-badge--tight (sf-badge tight) takes --sf-space-1/3; a single figure and a class counter take --sf-space-1/4, so a figure stays round; an icon-only badge (sf-badge--icon-only, former sf-badge--compact) takes the block padding and stays square.",
           "default": "var(--sf-space-1/2)",
           "since": "2026-10-13",
           "varies_with": [

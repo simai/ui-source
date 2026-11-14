@@ -31,7 +31,7 @@ const sfInputMeta = {
         "3"
       ],
       "default": "1",
-      "description": "The step of the control ladder the field stands on, the height of sf-button and sf-button-icon of the same size. sf-input keeps the outer steps 1/3 and 3 (a compact toolbar search, a hero search); the other fields stay on 1/2, 1 and 2."
+      "description": "The step of the control ladder the field stands on, the height of sf-button and sf-button-icon of the same size. sf-input and the fields of the field ladder (lookup, quantity, date, code, colour, phone) stand on all five steps; textarea, dropdown, file upload, image and rich text stay on 1/2, 1 and 2."
     },
     "radius": {
       "kind": "enum",
