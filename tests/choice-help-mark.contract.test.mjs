@@ -50,12 +50,15 @@ test('position end grows the text column; the help stands above the hit area; no
   assert.doesNotMatch(pressed, /:active\)[^{]*\.sf-checkbox-box \{/);
 });
 
-test('radio: an icon beside the label is the line of its size; tag check: the tag line', async () => {
+test('radio: an icon beside the label is the line of its size; tag check: a mark only when chosen (C145 (2))', async () => {
   const radio = await read('src/component/radio/scss/_css_radio.scss');
   for (const step of ['1\\/2', '1', '2']) {
     assert.ok(radio.includes(`.sf-radio-button.sf-radio-button--size-${step} > .sf-radio-button-container > .sf-radio-button-top > .sf-icon {\n  --sf-icon--font-size: var(--sf-text-height-${step});`));
   }
   const tags = await read('src/component/tags/scss/_css__tags.scss');
-  assert.match(tags, /\.sf-tag \.sf-tag-check \{[^}]*block-size: var\(--sf-tag--line-height/);
+  // C145 (2): no square; the chosen tag's check mark is an icon, the picture
+  // of the tag's size (tag - 8, C58), hidden until the tag is chosen.
+  assert.match(tags, /\.sf-tag:not\(\.active\) \.sf-tag-check \{\s*display: none;/);
+  assert.doesNotMatch(tags, /\.sf-tag \.sf-tag-check \{[^}]*border:/);
   assert.doesNotMatch(tags, /\.sf-tag \.sf-tag-check \{[^}]*--sf-icon-size-1/);
 });

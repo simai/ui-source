@@ -53,49 +53,50 @@
     flex-shrink: 0;
   }
 
-  /* The check is a checkbox box of the tag's size: the text line of the size
-     (sf-checkbox draws its box as the line of its step), the radius and the
-     border of the checkbox, the mark at the tag's text size. It was 16 at
-     every size, 16 in a 32 tag and in a 56 one (audit 2026-11-11, W8). */
+  /* A filter tag shows no mark until it is chosen (owner decision C145 (2),
+     tags study #q-selected B): the empty checkbox square on every tag read
+     as a form of check boxes. Chosen, a check mark stands before the label
+     on the primary container fill, so the state is not told by colour alone.
+     The mark is the icon check, the picture of the tag's size (tag - 8,
+     C58): the Smart tag draws an sf-icon, class markup writes
+     <i class="sf-icon sf-tag-check" aria-hidden="true">check</i>. It keeps
+     the ink of the fill's own text role, as the old square's tick did. */
+  .sf-tag:not(.active) .sf-tag-check {
+    display: none;
+  }
+
   .sf-tag .sf-tag-check {
-    align-items: center;
-    block-size: var(--sf-tag--line-height, var(--sf-text-height-1\/2));
-    border: var(--sf-px) solid var(--sf-outline);
-    border-radius: var(--sf-radius--ui);
+    --sf-icon--color: var(--sf-on-primary-container);
     color: var(--sf-on-primary-container);
-    display: inline-flex;
     flex: 0 0 auto;
-    inline-size: var(--sf-tag--line-height, var(--sf-text-height-1\/2));
-    justify-content: center;
   }
 
-  .sf-tag .sf-tag-check::before {
-    content: '\2713';
-    font-size: var(--sf-tag--font-size, var(--sf-text-size-1\/2));
-    line-height: var(--sf-tag--line-height, var(--sf-text-height-1\/2));
-    opacity: 0;
-  }
-
-  .sf-tag.active .sf-tag-check {
-    background-color: var(--sf-primary);
-    border-color: var(--sf-primary);
-  }
-
-  .sf-tag.active .sf-tag-check::before {
-    opacity: 1;
-  }
-
-  /* Disabled and selected reads disabled, as sf-checkbox does (TG-10: the
-     bright primary square and fill stayed): the box takes the disabled
-     border, a disabled fill and the disabled ink for its mark. */
-  .sf-tag:is(.disabled, :disabled) .sf-tag-check {
-    border-color: var(--sf-outline-disabled);
-  }
-
+  /* Disabled and selected reads disabled, as sf-checkbox does (TG-10): the
+     mark takes the disabled ink. */
   .sf-tag.active:is(.disabled, :disabled) .sf-tag-check {
-    background-color: var(--sf-surface-disabled);
-    border-color: var(--sf-outline-disabled);
+    --sf-icon--color: var(--sf-on-surface-disabled);
     color: var(--sf-on-surface-disabled);
+  }
+
+  /* A tag that leads to a page (owner decision C145 (6), tags study #q-link
+     B): one native link, no check mark and no cross; the label underlines on
+     hover like any link, the fill stays the tag's. */
+  .sf-tag.sf-tag--link {
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .sf-tag.sf-tag--link:not(.disabled):hover .sf-tag-container {
+    text-decoration-line: underline;
+  }
+
+  .sf-tag.sf-tag--link.disabled {
+    cursor: default;
+  }
+
+  .sf-tag.sf-tag--link:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
   }
 
   /* An avatar in a tag lays its container fill over the tag's: two fills,
@@ -396,6 +397,12 @@
     --sf-tag-container--padding-inline-start: var(--sf-space-1\/3);
   }
 
+  /* A hue of the static palette (sf-tag color, C145 (7)): the hue's strong
+     fill, light and dark (core .sf-hue-<name>). */
+  .sf-tag .sf-tag-color-icon.sf-tag-color-icon--hue {
+    background-color: var(--sf-hue);
+  }
+
   .sf-tag.sf-tag--color .sf-tag-color-icon {
     --sf-tag-color-icon--border-radius: var(--sf-radius-circle);
   }
@@ -652,6 +659,15 @@
     --sf-tag--inline-start: var(--sf-tag-padding-inline, var(--sf-tag--edge));
     --sf-tag--inline-end: var(--sf-tag-padding-inline, var(--sf-tag--edge));
     --sf-tag--close-size: var(--sf-micro--cross-1\/2);
+  }
+
+  /* A 1/2 tag on a desktop outside a compact region is 32 high: its cross is
+     12, the cross of every 32 tag (C145 (1), C132; a compact 1 is 32 too). */
+  @media (min-width: bp.$breakpoint-desktop) {
+    .sf-tag.sf-tag--size-1\/2:not([data-sf-density="compact"] *),
+    [data-sf-density="compact"] [data-sf-density="normal"] .sf-tag.sf-tag--size-1\/2 {
+      --sf-tag--close-size: var(--sf-micro--cross-1);
+    }
   }
 
   .sf-tag.sf-tag--size-1 {
@@ -1046,6 +1062,18 @@
    after the label at the label's own end step. The button keeps no padding of
    its own and reaches a target of --sf-c2 around the mark (WCAG 2.2, 2.5.8), the way
    a checkbox's native control does. */
+.sf-tag > button.sf-icon-button:has(> .sf-close):not(.sf-icon-button--close) {
+  /* A remove button written without the close class (sf-dropdown's chips):
+     its target reaches --sf-c2 as the close's does (C145 (1), C76). */
+  position: relative;
+}
+
+.sf-tag > button.sf-icon-button:has(> .sf-close):not(.sf-icon-button--close)::after {
+  content: "";
+  position: absolute;
+  inset: min(calc(var(--sf-px) * 0), calc((100% - var(--sf-c2)) / 2)) min(calc(var(--sf-px) * 0), calc((100% - var(--sf-c2)) / 2));
+}
+
 .sf-tag > .sf-icon-button.sf-icon-button--close {
   /* Stated outright: the tag's own button rule pads with the tag's insets
      (at size 2 that made the button several times wider than its mark). */
@@ -1099,13 +1127,13 @@
 
 /* C76: a cross of 8 is drawn with a 1.5 line: at 8 a 2 px line is heavier
    than the letters beside it. Larger crosses keep the 2 px line of C14. Its
-   press target stays --sf-c2 (24). The cross is 8 at 1/3 and, since C132's
-   cross table (group build 3), at 1/2 on every screen; the phone and compact
-   rules below for 1/2 are the C76 cases it now covers. */
+   press target stays --sf-c2 (24). The cross follows the tag's height (owner
+   decision C145 (1), C132): 8 on tags up to 28, 12 from 32. So it is 8 at
+   1/3, and at 1/2 on a phone and in a compact region (28); a 1/2 tag on a
+   desktop is 32 and takes 12 with the 2 px line, as a compact 1 of the same
+   32 does (it drew 8 there: two crosses for one height). */
 .sf-tag.sf-tag--size-1\/3 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon,
-.sf-tag.sf-tag--size-1\/3 > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon,
-.sf-tag.sf-tag--size-1\/2 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon,
-.sf-tag.sf-tag--size-1\/2 > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+.sf-tag.sf-tag--size-1\/3 > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
   --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%3E%3Cpath%20d=%27M0%200L8%208M8%200L0%208%27%20stroke=%27black%27%20stroke-width=%271.5%27/%3E%3C/svg%3E");
   --sf-close-icon---webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%3E%3Cpath%20d=%27M0%200L8%208M8%200L0%208%27%20stroke=%27black%27%20stroke-width=%271.5%27/%3E%3C/svg%3E");
 }
@@ -1150,12 +1178,12 @@
    Avatar, icon and colour swatch; --sf-tag--picture is computed on the tag
    from its own line and block padding, so every size, density and screen
    follows, and the picture gives back what it passes the line, so the tag's
-   height stays the control's. The check square stays the box of the
-   checkbox of the step (audit W8), a status dot the small ladder (C132). A
+   height stays the control's. A chosen filter's check mark is an icon and
+   takes the picture too (C145 (2)); a status dot the small ladder (C132). A
    tag on another control's line (inline, line="...") keeps its host's rule:
    its picture is that line (LK-06); a list's colour row draws the swatch with
    the tag's markup and keeps its own. */
-:is(.sf-tag.sf-tag:not(.sf-tag--inline, .sf-list-item *), .sf-tag.sf-tag:not(.sf-tag--inline, .sf-list-item *) > .sf-tag-action) > :is(.sf-avatar, .sf-tag-color-icon, .sf-icon),
+:is(.sf-tag.sf-tag:not(.sf-tag--inline, .sf-list-item *), .sf-tag.sf-tag:not(.sf-tag--inline, .sf-list-item *) > .sf-tag-action) > :is(.sf-avatar, .sf-icon),
 :is(.sf-tag.sf-tag:not(.sf-tag--inline, .sf-list-item *), .sf-tag.sf-tag:not(.sf-tag--inline, .sf-list-item *) > .sf-tag-action) > sf-icon > .sf-icon {
   --sf-avatar--height: var(--sf-tag--picture);
   --sf-avatar--width: var(--sf-tag--picture);
@@ -1168,4 +1196,20 @@
   flex-shrink: 0;
   margin-block: var(--sf-tag--picture-pull);
 }
+
+/* The colour from data is a dot, not a picture (owner decision C145 (7),
+   tags study #q-color B): the point of the tag's step on the small ladder
+   (C132: 8 on the default 1/2 tag; 6 on 1/3, 12 on 1 and 2, 16 on 3), the
+   tag itself neutral. A list's colour row keeps its own swatch. */
+:is(.sf-tag.sf-tag:not(.sf-list-item *), .sf-tag.sf-tag:not(.sf-list-item *) > .sf-tag-action) > .sf-tag-color-icon {
+  --sf-tag-color-icon--height: var(--sf-tag--dot, var(--sf-micro--point-1\/2));
+  --sf-tag-color-icon--width: var(--sf-tag--dot, var(--sf-micro--point-1\/2));
+  flex-shrink: 0;
+}
+
+.sf-tag.sf-tag--size-1\/3 { --sf-tag--dot: var(--sf-micro--point-1\/3); }
+.sf-tag.sf-tag--size-1\/2 { --sf-tag--dot: var(--sf-micro--point-1\/2); }
+.sf-tag.sf-tag--size-1 { --sf-tag--dot: var(--sf-micro--point-1); }
+.sf-tag.sf-tag--size-2 { --sf-tag--dot: var(--sf-micro--point-2); }
+.sf-tag.sf-tag--size-3 { --sf-tag--dot: var(--sf-micro--point-3); }
 }

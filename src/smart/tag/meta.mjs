@@ -116,6 +116,18 @@ const sfTagMeta = {
       "default": "",
       "description": "Visible tag label."
     },
+    "href": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The address the tag leads to: the tag is one native link, with no check mark and no cross, its label underlined on hover (owner decision C145 (6)). A relative address is kept; with a scheme only http, https, mailto and tel"
+    },
+    "key": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The tag's id in sf-tag-group (its selected and selected-ids); empty: the tag's text"
+    },
     "count": {
       "kind": "custom",
       "valueType": "string",
@@ -133,6 +145,12 @@ const sfTagMeta = {
       "valueType": "string",
       "default": "",
       "description": "Framework semantic background utility for the color marker."
+    },
+    "color": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "A colour from data for kind color: a hue of the static palette by name (red, teal, violet...) or a hex colour, drawn in the palette hue nearest it, never as the raw colour. The tag shows it as a dot of the point step before the label (8 on the default 1/2 tag) and stays neutral (owner decision C145 (7))"
     },
     "avatar-image-url": {
       "kind": "custom",

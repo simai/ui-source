@@ -497,7 +497,7 @@
       },
       {
         "path": "src/smart/dropdown/js/templates/default.js",
-        "sha256": "22e17d999a40ca2e6c0ea5b7db75c4d91f07ec4bf8a8a8372603e241982b399e"
+        "sha256": "ad529d3d3ca5f4b439a60a7fffe9b3ce38865c799b983947239bae799d3f25f2"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

@@ -745,7 +745,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/dropdown/smart.manifest.json",
-      "manifest_sha256": "50aeda39b04e6ea38a89c088aa1fd25a25d07ac0fa338ac0cb897b6c3fdb9916",
+      "manifest_sha256": "d7272fc6cde9d1f5ddc0baca70a79dd7306c0f9246b6bf45300e90e497fd2e50",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1584,7 +1584,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-lookup/smart.manifest.json",
-      "manifest_sha256": "c83d43ce9b6cbccd67cb60139c42ee8c74a9b1b8f49d9355407fa008de71907d",
+      "manifest_sha256": "a04f6a00747e9cdba43f75105c5009e9051d99ae523c01391d8e6d3b90e83839",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3091,7 +3091,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tag/smart.manifest.json",
-      "manifest_sha256": "8ee1242c59f78e817a827d0b00a318e513a333c27684b0b5d6c804747b21bf65",
+      "manifest_sha256": "755dcfe7e25b756150d455a17bbad5f1f0ae41c06a4ff0c0a4d7889c2cbd9ac7",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3102,6 +3102,49 @@
         "tags"
       ],
       "title": "Tags"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
+        "interaction",
+        "theme",
+        "i18n",
+        "responsive",
+        "accessibility"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.popover",
+          "smart.tag"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-tag-group",
+      "id": "smart.tag-group",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/tag-group/smart.manifest.json",
+      "manifest_sha256": "3e312290ee25a67c634bf333487b1735947a4b6b7fb1f618b2066a9be07599cf",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "A row of tags: 4 apart, a list to a screen reader, one Tab stop with arrows and Delete, one line with «+N» that opens the hidden tags in a popover, and single or multiple choice for filter tags.",
+      "tags": [
+        "tag",
+        "tags",
+        "group",
+        "chips",
+        "filters",
+        "overflow"
+      ],
+      "title": "Tag group"
     },
     {
       "backend_adapters": [],
