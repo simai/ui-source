@@ -809,7 +809,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/editor-overlay/smart.manifest.json",
-      "manifest_sha256": "ef51c940556157927d2fae421c82d9cd39dad6d6e5d3ac28683c52a71f910bc2",
+      "manifest_sha256": "455ad42cd70487b0d6916f8e63f61f5387e2793ad6ced66eb1e4de079a2cd2c7",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1039,13 +1039,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/header-page/smart.manifest.json",
-      "manifest_sha256": "5af67deecaaf261d50e661052311accd93dfcc96dde334d998081139c446d0b4",
+      "manifest_sha256": "a201bdd41fd7530df133c2fbf781c2624a5a1209d8cbcf7cd31d857d45d02775",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "The head of an admin page: path, heading, count, favourite star, install mark and main action. Replaces the admin top bar together with sf-admin-menu.",
+      "summary": "The head of a work page of an app: path, heading, favourite star, install mark, actions (the main one last) and views (tabs); sticky on request. An app with a side menu has no top bar, so this is the page's head (C161).",
       "tags": [
         "page-header",
         "admin",
@@ -1081,7 +1081,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/header-site/smart.manifest.json",
-      "manifest_sha256": "bc8601f3f9f85adc8326b83e60614e7bb5418ce99e20fdae180b21142adaf309",
+      "manifest_sha256": "0f9cc6181b49f4dea568f9ba128bce745aeb4e46ce593ff72854290d09d176ca",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

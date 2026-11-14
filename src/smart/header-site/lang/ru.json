@@ -3,6 +3,9 @@
   "runtime": {
     "label": "Меню",
     "menu-label": "Открыть меню",
-    "close-label": "Закрыть меню"
+    "close-label": "Закрыть меню",
+    "settings": "Настройки",
+    "language": "Язык",
+    "theme": "Тема"
   }
 }

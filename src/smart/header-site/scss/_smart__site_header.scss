@@ -126,6 +126,7 @@
 .sf-site-header-panel-head,
 .sf-site-header-scrim,
 .sf-site-header-sheet,
+.sf-site-header-settings,
 .sf-site-header-menu-button > button {
   display: none;
 }
@@ -372,6 +373,35 @@
   &.sf-site-header--open .sf-site-header-actions,
   &.sf-site-header--open .sf-site-header-sheet {
     border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+  }
+
+  /* The settings group (C161 (8)): the language and the theme the bar's
+     tools held on a wide screen, under the sections as a group of the panel
+     -- its padding, gap and top line -- headed «Настройки» in the quiet
+     small words, each setting a row of its word and its control at the
+     row's end. */
+  &.sf-site-header--open .sf-site-header-settings {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sf-space-1);
+    padding: var(--sf-space-2);
+    border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+  }
+
+  .sf-site-header-settings-heading {
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+    color: var(--sf-on-surface-variant);
+  }
+
+  .sf-site-header-setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sf-space-1);
+    min-inline-size: 0;
   }
 
   /* The panel is the phone's menu (C30): its rows are touch rows, the size 2

@@ -2,19 +2,19 @@
   "$comment": "The source of sf-header-page's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/page-header (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.header-page",
   "tag": "sf-header-page",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "kind": "leaf",
   "family": "header",
   "settings": {
     "heading": {
       "type": "string",
       "default": "",
-      "summary": "The page heading, drawn as the fourth heading step"
+      "summary": "The page heading, drawn as the fourth heading step (20/24): a work page of an app titles itself there, an exception to C21's h1 at step 6 (owner decision C161 (2)); a page of a site keeps its own h1"
     },
     "count": {
       "type": "string",
       "default": "",
-      "summary": "How many records the page holds, as the host writes it (448, ~1 200); empty draws no count"
+      "summary": "How many records the page holds, as the host writes it (448, ~1 200), for a page without a table footer (a folder, a settings section); a list page shows no count here, its table footer gives the total (owner decision C161 (6)). Empty draws no count"
     },
     "level": {
       "type": "enum",
@@ -39,6 +39,11 @@
       "default": "more",
       "summary": "What the actions do when they do not fit their line (owner decision C155 (7), C161 (4)): more (the default) keeps one row and puts what does not fit under ⋯ «Ещё» at its end -- from the end, by an action's priority attribute where the page gives one (1 the most important; pin never leaves), the main (filled) action and a pressed toggle never; wrap lets the row wrap onto further rows of its own (OV-2)."
     },
+    "sticky": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The header stays at the top of the work area that scrolls it (the nearest box that scrolls, else the window), a half step of room above and below its line; flat while the area is at its top, it takes the raised place of C20 and folds the path away while content runs under it (host state data-scrolled). Off by default (owner decision C161 (7))"
+    },
     "star": {
       "type": "boolean",
       "optional": true,
@@ -58,10 +63,19 @@
   "actions": {},
   "slots": {
     "path": {},
-    "start": {},
+    "start": {
+      "$comment": [
+        "The start of the line, before the heading: «назад» (an sf-button-icon arrow_back, ghost on-surface) on the head of a page an app opens from a list -- a conversation, a letter, a record -- or a phone's menu button (owner decision C161 (1))."
+      ]
+    },
     "actions": {
       "$comment": [
-        "The page's actions, its main one (a filled sf-button) last. Each may carry priority=\"1\"... (a bigger number leaves for «Ещё» sooner; without one it leaves first, the last first) or priority=\"pin\" (never leaves) -- owner decision C155 (3), (8)."
+        "The page's actions. The header places the main one (a filled sf-button) last, at the end of the line, and the outlined and quiet ones before it in the page's order (owner decision C161 (3)); a window or a panel keeps its own order (C157 (3), C159 (4)). Each may carry priority=\"1\"... (a bigger number leaves for «Ещё» sooner; without one it leaves first, the last first) or priority=\"pin\" (never leaves) -- owner decision C155 (3), (8)."
+      ]
+    },
+    "tabs": {
+      "$comment": [
+        "The page's views (an sf-tabs, type underline) ending the header (owner decision C161 (5)): the header's gap below the line, and the tabs' own line is the header's lower edge."
       ]
     }
   },
@@ -112,6 +126,9 @@
       "Enter": "toggle:star",
       "Space": "toggle:star"
     }
+  },
+  "host-states": {
+    "data-scrolled": "boolean"
   },
   "css-variables": {
     "--sf-page-header-gap": {
@@ -172,7 +189,7 @@
       }
     ]
   },
-  "x-summary": "The head of an admin page: path, heading, count, favourite star, install mark and main action. Replaces the admin top bar together with sf-admin-menu.",
+  "x-summary": "The head of a work page of an app: path, heading, favourite star, install mark, actions (the main one last) and views (tabs); sticky on request. An app with a side menu has no top bar, so this is the page's head (C161).",
   "x-source": {
     "package": "framework",
     "folder": "page-header",
@@ -215,7 +232,8 @@
     "version 1.3.1 (2026-11-13, C91/C65 acceptance; one number above the unreleased 1.3.0 it joins): a patch. The tint's narrow threshold is the decided 30rem of R164 variant C, the g5 step of the size scale (1.3.0 had taken the g6 step, 32rem, on the belief that 30rem was not a step). A head between 30rem and 32rem wide now takes the tint under the expressive setting; nothing else changes.",
     "version 1.3.2 (2026-11-14, toolbar overflow study OV-2 and OV-11, owner decision C105 H5): a patch. The actions stand --sf-space-1/3 apart (8; compact 4), buttons of one group, instead of --sf-space-1/2 (12); the line keeps --sf-space-1 (16) between the heading and the actions (H6). The actions row wraps and may be narrower than its content: a row wider than the line moves to a line of its own and wraps there, so four actions at 390 no longer push the page 133 px sideways. The shared «Ещё» for action rows waits for the owner (q-actions); settings, events, keys and markup unchanged.",
     "version 1.3.3 (2026-11-14, headers study HD-11, HD-12; research ui-control control/research/2026-11-14-headers.md): a patch. (1) HD-12: a long heading ends in its ellipsis on one line as the docs say, instead of taking the line and pushing the count and the actions under it (1440: 750 px heading, header 124 -> 80). The heading, the count, the install mark and the star are one title group (.sf-page-header-title): for the line's wrapping it counts as no wider than the g0 step (20rem) or its words when shorter (flex 1 1 var(--sf-g0), max-inline-size max-content), so the actions keep the line while the title has that room; the marks keep their size and stay right after the words. (2) HD-11: the actions stand at the end of the line also when they move to a line of their own or wrap there (margin-inline-start auto, justify-content flex-end); OV-2's wrapped rows jumped to the line's start. Four actions at 390: no sideways scroll, every row ends at the line's end. The grow spacer is gone (the actions' auto margin does its work). Settings, values, slots, events and keys unchanged.",
-    "version 1.4.0 (2026-11-14, owner decision C155 (7), (8) with C161 (4); study ui-control control/research/2026-11-14-toolbar-overflow.md, R233): a minor. New setting overflow, more by default: the actions stay on one row and what does not fit leaves for ⋯ at its end, an sf-button-icon more_horiz on the actions' rung (the first action's size), ghost on-surface, named and titled «Ещё» / «More» (lang more), aria-haspopup menu. The actions leave from the end; an action's priority attribute orders them (1 the most important, a bigger number leaves sooner, none leaves first) and priority=\"pin\" keeps one; the main action (a filled sf-button) and a pressed toggle never leave. The row keeps the line beside the title while the title has its room (its words, at most the g0 step, HD-12) and takes a line of its own only when the actions that must stay do not fit there. ⋯ opens the standard sf-menu-context (lazy) listing the actions that left with their icons and words, a pressed toggle checked; a row presses the action's own button or link. The arithmetic is the shared row engine (core/js/overflow-row.js fitByPriority, layoutActionRow), the one sf-tabs, sf-contents, sf-menu, sf-input-rich and .sf-button-group use. Until the row is laid out it does not wrap and clips at the line's edge; the layout runs in a resize observer before paint, so no frame draws every action. overflow=\"wrap\" keeps 1.3.3's wrapping row. At 390 four actions (Импорт, Экспорт, Настроить, Создать) stand as Создать and ⋯ beside the heading where they wrapped onto two rows. Values, slots, events and keys unchanged."
+    "version 1.4.0 (2026-11-14, owner decision C155 (7), (8) with C161 (4); study ui-control control/research/2026-11-14-toolbar-overflow.md, R233): a minor. New setting overflow, more by default: the actions stay on one row and what does not fit leaves for ⋯ at its end, an sf-button-icon more_horiz on the actions' rung (the first action's size), ghost on-surface, named and titled «Ещё» / «More» (lang more), aria-haspopup menu. The actions leave from the end; an action's priority attribute orders them (1 the most important, a bigger number leaves sooner, none leaves first) and priority=\"pin\" keeps one; the main action (a filled sf-button) and a pressed toggle never leave. The row keeps the line beside the title while the title has its room (its words, at most the g0 step, HD-12) and takes a line of its own only when the actions that must stay do not fit there. ⋯ opens the standard sf-menu-context (lazy) listing the actions that left with their icons and words, a pressed toggle checked; a row presses the action's own button or link. The arithmetic is the shared row engine (core/js/overflow-row.js fitByPriority, layoutActionRow), the one sf-tabs, sf-contents, sf-menu, sf-input-rich and .sf-button-group use. Until the row is laid out it does not wrap and clips at the line's edge; the layout runs in a resize observer before paint, so no frame draws every action. overflow=\"wrap\" keeps 1.3.3's wrapping row. At 390 four actions (Импорт, Экспорт, Настроить, Создать) stand as Создать and ⋯ beside the heading where they wrapped onto two rows. Values, slots, events and keys unchanged.",
+    "version 1.5.0 (2026-11-14, owner decision C161, all eight points by recommendation; research ui-control control/research/2026-11-14-headers.md, prototype prototypes/headers-study.html): a minor, additions. (1) Boundary: a site shows sf-header-site; an app with a side menu has no top bar, and each page's head is this header in the work area (the main region of .sf-workspace), slot start holding «назад» -- SIMAI Pro's conversation head and ui-mail's column heads included; the docs say so. (2) The heading stays the fourth heading step (20/24, phone 16/18) as an exception to C21 for work pages; a site page keeps its h1 at step 6. (3) The header places the actions with the main one -- the filled sf-button -- last, at the end of the line, and the outlined and quiet ones before it in the page's order: authored main-first, the row read Создать, Импорт, Экспорт and now reads Импорт, Экспорт, Создать; the nodes are placed, never copied, so the reading and Tab order follow what is seen. Windows and panels keep main-first (C157 (3), C159 (4)); C39 stays for confirm windows. (4) A phone keeps the main action and puts the rest under «Ещё»: overflow more, the default since 1.4.0 (C155), unchanged. (5) New slot tabs: the page's views end the header the header's gap (--sf-space-1/2, 12; compact 8) below the line and the tabs' own line is the header's lower edge (no foot padding under it, the decorative level's included); HD-14, where every page put its own 0 or gap-2. (6) The count stays for a page without a table footer; a list page shows none, its footer gives the total (ui-admin 2026-10-12): the summary, the docs and the examples say so, the catalogue examples drop it. (7) New setting sticky, off by default: the drawn header is position sticky at the top of the nearest box that scrolls it (else the window), z-index --sf-z-index-1, --sf-space-1/2 above and below its line on the page's surface; while content runs under it the host says data-scrolled (a passive scroll listener on that box while sticky is on) and the header takes --sf-surface-raised and --sf-shadow-raised (C20, as sf-header-site) and folds its path away. (8) is sf-header-site's. Values, events and keys unchanged; tags not renamed (the naming study decides)."
   ],
   "x-rule": {
     "$comment": [
@@ -285,18 +303,19 @@
       }
     },
     "ai_guidance": {
-      "use_when": "Use sf-header-page at the top of every admin page: it is the only place a page states its path, heading, count, favourite and main action once the admin top bar is gone.",
+      "use_when": "Use sf-header-page at the top of every work page of an app (admin, SIMAI Pro, mail): an app with a side menu has no top bar, so this header states the page's path, heading, favourite, actions and views; a site uses sf-header-site instead.",
       "do_not": [
-        "Do not keep favourites in the component; answer sf-page-header-star from the host",
-        "Do not put totals in the menu; they belong here",
-        "Do not style the heading yourself; it is the fourth heading step"
+        "Do not keep favourites in the component; answer sf-header-page-toggle from the host",
+        "Do not put a list's total in the header; the table footer gives it (C161 (6))",
+        "Do not style the heading yourself; it is the fourth heading step",
+        "Do not draw a head of your own above a work page or place tabs under the header yourself; use the start and tabs slots"
       ],
       "required_reads": [
         "inputs",
         "events",
         "ownership"
       ],
-      "minimal_example": "<sf-header-page heading=\"Каталог решений\" count=\"448\" star=\"off\"><sf-breadcrumbs slot=\"path\"><sf-breadcrumbs-item href=\"/\">simai.ru</sf-breadcrumbs-item><sf-breadcrumbs-item href=\"/data\">Данные</sf-breadcrumbs-item></sf-breadcrumbs><sf-button slot=\"actions\" icon-start=\"add\">Создать</sf-button></sf-header-page>",
+      "minimal_example": "<sf-header-page heading=\"Каталог решений\" star=\"off\"><sf-breadcrumbs slot=\"path\" items='[{\"label\":\"Администрирование\",\"href\":\"/admin/\"},{\"label\":\"Данные\",\"href\":\"/admin/data/\"}]'></sf-breadcrumbs><sf-button slot=\"actions\" appearance=\"outline\" icon-start=\"download\" text=\"Экспорт\"></sf-button><sf-button slot=\"actions\" icon-start=\"add\" text=\"Создать\"></sf-button></sf-header-page>",
       "owner_commands": [
         "npm run contract:verify",
         "npm test"
