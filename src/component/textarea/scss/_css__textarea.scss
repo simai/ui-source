@@ -485,15 +485,15 @@
    sf-input and the six fields of the fields ladder): at 1/3 and 3 one row is
    as tall as sf-input of the size (28 / 56 on a desktop), the text is the
    size's, the label, the hint and the error a step below. The value starts
-   where sf-input's does at those steps (C77 names the kept sizes only), with
-   the corner correction of the kept sizes; the corner is at most half the
+   where sf-input's does at those steps (field-ladder.inset: C77 at every
+   step, fields ladder TI-2/TI-3), with the corner correction of the kept sizes; the corner is at most half the
    one-row height. The textarea drew 1/3 and 3 at 1/2 and 2 before. */
 @layer sf.components {
   @each $size in ladder.$outer {
     $class: ladder.size-class('sf-textarea', $size);
 
     .sf-textarea.#{$class} {
-      --sf-textarea--inset: #{ladder.outer-inset($size)};
+      @include ladder.inset(--sf-textarea--inset, $size);
       --sf-textarea--radius: min(var(--sf-textarea-radius, var(--sf-radius--ui)), #{ladder.height($size)} / 2);
     }
 

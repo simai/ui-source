@@ -488,7 +488,7 @@
       --sf-rich-text--h4-size: #{ladder.text-size($size)};
       --sf-rich-text--h4-height: #{ladder.text-height($size)};
       --sf-rich-text--padding-block: var(--sf-rich-text-padding-block, #{ladder.padding-block($size)});
-      --sf-rich-text--inset: #{ladder.outer-inset($size)};
+      @include ladder.inset(--sf-rich-text--inset, $size);
       --sf-rich-text--radius: min(var(--sf-rich-text-radius, var(--sf-radius--ui)), #{ladder.height($size)} / 2);
     }
   }
