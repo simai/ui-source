@@ -595,7 +595,7 @@
         },
         {
           "id": "p11-narrow",
-          "title": "up to 38rem the icon, the text and the close share the first line, the actions go under the text from its start, «Ещё 2» at the end",
+          "title": "up to 40rem the icon, the text and the close share the first line, the actions go under the text from its start, «Ещё 2» at the end",
           "covers": "responsive container query",
           "steps": [
             {

@@ -18,6 +18,16 @@
                 grid-template-columns: #{$grid-template-columns-value};
             }
         }
+
+        // Fluid columns, no narrower than a size step (C181 (1)): only the
+        // plain class -- the column count follows the place, not the screen.
+        @if $infix == '' {
+            @each $grid-template-columns-name, $grid-template-columns-step in $grid-template-columns-fit-array {
+                .grid-col-#{$grid-template-columns-name} {
+                    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--sf-#{$grid-template-columns-step})), 1fr));
+                }
+            }
+        }
     }
 // }
 }

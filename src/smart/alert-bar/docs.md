@@ -71,7 +71,7 @@ not the item the bar shows. It has no arrows to page through them.
 of the page on the `surface-area` place with a line under it, not a popup; the
 page moves down. Past 352 px (g1) the list scrolls inside itself and does not
 hand the scroll to the page. Open, the button reads «Свернуть список». Up to
-38rem of the bar's width the open button keeps the place of «Ещё N» at the end
+40rem of the bar's width the open button keeps the place of «Ещё N» at the end
 of the action line: it shows the collapse glyph alone, on the low control's
 square, and its name is still «Свернуть список» (screen reader and tooltip), so
 the longer label never wraps to a line of its own and the bar does not grow
@@ -89,7 +89,7 @@ Each row is built as the bar row, on the same rung, steps and low buttons:
   with the bar's end button.
 
 There is no level badge and no text button «Скрыть на сутки» in a row any
-more. Up to 38rem of the bar's width a row does what the bar row does: the
+more. Up to 40rem of the bar's width a row does what the bar row does: the
 icon, the text and the close on the first line, the buttons under the text
 from its start, the space under them equal to the space above the text.
 
@@ -113,7 +113,7 @@ logo of `sf-header-site` under it. An admin bar (`size="1/2"`) has the whole
 width for its column and keeps 16 from the edge.
 `--sf-alert-bar-padding-inline` sets another inset for both.
 
-Up to 608 px (38rem, the size step g9) of the bar's own width the icon, the
+Up to 640 px (40rem, the container step h0 of C181) of the bar's own width the icon, the
 text and the close share the first line. The actions go under the text and
 start where the text starts, 12 under it (8 on a phone); «Ещё N» stands at
 the line's end. The space under the last button equals what the eye sees
