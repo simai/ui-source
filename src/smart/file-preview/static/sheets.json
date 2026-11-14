@@ -6,12 +6,24 @@
     "theme-dark"
   ],
   "sheets": [
+    "component/buttons/css/buttons.min.css",
     "component/file-preview/css/file-preview.min.css",
     "component/icon-buttons/css/icon-buttons.min.css",
     "component/icons/css/icons.min.css",
+    "component/kbd/css/kbd.min.css",
+    "component/progress-bar/css/progress-bar.min.css",
     "core/css/core.css",
+    "utility/align-items/default/css/default.min.css",
+    "utility/display/default/css/default.min.css",
+    "utility/flex-direction/default/css/default.min.css",
+    "utility/flex/default/css/default.min.css",
+    "utility/font-weight/default/css/default.min.css",
     "utility/isolate/default/css/default.min.css",
-    "utility/position/default/css/default.min.css"
+    "utility/pointer-events/default/css/default.min.css",
+    "utility/position/default/css/default.min.css",
+    "utility/sr-only/default/css/default.min.css",
+    "utility/text-align/default/css/default.min.css",
+    "utility/transition-property/default/css/default.min.css"
   ],
   "examples": {
     "compact": [
@@ -38,6 +50,21 @@
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
     ],
+    "error": [
+      "component/buttons/css/buttons.min.css",
+      "component/file-preview/css/file-preview.min.css",
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css"
+    ],
     "image": [
       "component/file-preview/css/file-preview.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
@@ -53,6 +80,17 @@
       "core/css/core.css",
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
+    ],
+    "uploading": [
+      "component/file-preview/css/file-preview.min.css",
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/progress-bar/css/progress-bar.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/transition-property/default/css/default.min.css"
     ]
   }
 }
