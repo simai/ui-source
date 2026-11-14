@@ -11,6 +11,11 @@ import './tag-aliases.js';
 import './rule';
 import './mask';
 import './composition/index.mjs';
+// The composition editor words are a chunk of their own, fetched by
+// SF.Composition.loadEditorWords() on a page that draws an editor form, not
+// part of every page (localization study LC-1, 2026-11-14).
+import {setEditorWordsLoader} from './composition/editor-words-runtime.mjs';
+setEditorWordsLoader(() => import(/* webpackChunkName: "core-editor-words" */ './composition/editor-words.mjs'));
 import './assembly/index.mjs';
 import './position.js';
 import './preferences.js';

@@ -20,4 +20,8 @@ globalThis.SF.CompositionOverlay = Object.freeze({ OVERLAY_EVENTS, OVERLAY_EVENT
 // the runtime gives each the object form of §4.4 as well (setNodes({nodes,
 // options}), setMessages({messages})).
 const positional = ['attach', 'attach-frame', 'set-document', 'set-nodes', 'set-drop-filter', 'set-actions', 'set-messages', 'set-insertion-target', 'select', 'edit'];
+// An editor page draws parameter forms: the composition editor words, no
+// longer part of every page's core (localization study LC-1), are fetched
+// once now, so SF.Composition.editorFieldMessages() answers in full.
+globalThis.SF.Composition?.loadEditorWords?.();
 defineCompositionOverlay(globalThis.customElements, {base: manifestHost(manifest, {lang: {en, ru}, source: 'ru', aliases, positional})});

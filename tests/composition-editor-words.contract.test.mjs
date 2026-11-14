@@ -5,12 +5,10 @@ import {
   BUILTIN_EDITOR_MANIFESTS,
   BUILTIN_TYPE_MANIFESTS,
   Composition,
-  EDITOR_FIELD_WORDS,
-  editorFieldMessages,
   projectEditorFields,
   renderFieldFallback,
 } from '../src/core/js/composition/index.mjs';
-import { catalogueWordKeys, editorFieldKeys } from '../src/core/js/composition/editor-words.mjs';
+import { EDITOR_FIELD_WORDS, catalogueWordKeys, editorFieldKeys, editorFieldMessages, installEditorWords } from '../src/core/js/composition/editor-words.mjs';
 import { language } from '../src/core/js/page-language.js';
 
 // simai/ui-source#65: a host that draws a parameters form from a built-in
@@ -56,7 +54,6 @@ test('editorFieldMessages resolves a manifest in a named language and in the pag
   assert.equal(catalogueRu['sf.composition.catalogue.group.elements'], 'Элементы');
   assert.equal(catalogueRu['sf.composition.catalogue.group.layout'], 'Макет');
   assert.equal(catalogueRu['sf.composition.catalogue.type.element_button_icon'], 'Кнопка-значок');
-  assert.equal(Composition.editorFieldMessages, editorFieldMessages);
   assert.deepEqual(editorFieldMessages({ fields: [{ label_key: 'host.own.label', help_key: 'host.own.help', choices: ['a'] }] }, { locale: 'ru' }), {}, 'a host key is left to the host');
 });
 
@@ -94,4 +91,21 @@ test('the generated words contract matches the module', () => {
   assert.equal(contract.schema_version, 1);
   assert.equal(contract.owner, 'sf-composition');
   assert.deepEqual(contract.words, JSON.parse(JSON.stringify(EDITOR_FIELD_WORDS)));
+});
+
+// Localization study LC-1 (2026-11-14): the words are not part of core.min.js.
+// Core reads the installed words; the words module is a chunk of its own.
+test('core carries the editor words lookup, not the words; SF.Composition answers once they are installed', async () => {
+  const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
+  const index = read('../src/core/js/composition/index.mjs');
+  assert.doesNotMatch(index, /from '\.\/editor-words\.mjs'/u, 'composition/index.mjs does not import the words');
+  const core = read('../src/core/js/index.js');
+  assert.match(core, /setEditorWordsLoader\(\(\) => import\(\/\* webpackChunkName: "core-editor-words" \*\/ '\.\/composition\/editor-words\.mjs'\)\)/u);
+  for (const editor of ['editor-inline', 'editor-overlay']) assert.match(read(`../src/smart/${editor}/index.js`), /SF\.Composition\?\.loadEditorWords\?\.\(\)/u, `${editor} fetches the words`);
+  const figure = BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === 'content.figure');
+  assert.equal(typeof Composition.loadEditorWords, 'function');
+  installEditorWords(EDITOR_FIELD_WORDS);
+  assert.deepEqual(await Composition.loadEditorWords(), EDITOR_FIELD_WORDS);
+  assert.deepEqual(Composition.editorFieldMessages(figure, { locale: 'ru' }), editorFieldMessages(figure, { locale: 'ru' }));
+  assert.equal(Composition.EDITOR_FIELD_WORDS.ru['sf.composition.content_figure.src'], 'Адрес картинки');
 });
