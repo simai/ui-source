@@ -47,8 +47,13 @@ test('sf-tag draws its remove cross from the cross ladder, plain (C14)', async (
     assert.ok(start >= 0, size);
     assert.ok(tags.slice(start, tags.indexOf('}', start)).includes(`--sf-tag--close-size: var(--sf-micro--cross-${size});`), size);
   }
-  // Every 8 cross (1/3 and, since C132, 1/2) is drawn with a 1.5 line (C76; group build 3).
-  assert.match(tags, /\.sf-tag\.sf-tag--size-1\\\/3 > :is\(sf-button-close, sf-close\) > \.sf-icon-button\.sf-icon-button--close > \.sf-close > \.sf-close-icon,\n\.sf-tag\.sf-tag--size-1\\\/2 > \.sf-icon-button[^{]*\.sf-tag\.sf-tag--size-1\\\/2 > :is\(sf-button-close, sf-close\) > \.sf-icon-button\.sf-icon-button--close > \.sf-close > \.sf-close-icon \{\n  --sf-close-icon--mask-image: url\("data:image\/svg\+xml,[^"]*stroke-width=%271\.5%27/u, 'the 8 cross is drawn with a 1.5 line (C76)');
+  // Every 8 cross is drawn with a 1.5 line (C76; group build 3): 1/3, and 1/2
+  // where it is 28 (a phone, a compact region). A 1/2 tag on a desktop is 32
+  // and takes 12 with the 2 px line (C145 (1): the cross follows the height).
+  assert.match(tags, /\.sf-tag\.sf-tag--size-1\\\/3 > :is\(sf-button-close, sf-close\) > \.sf-icon-button\.sf-icon-button--close > \.sf-close > \.sf-close-icon \{\n  --sf-close-icon--mask-image: url\("data:image\/svg\+xml,[^"]*stroke-width=%271\.5%27/u, 'the 8 cross is drawn with a 1.5 line (C76)');
+  assert.match(tags, /@media not all and \(min-width: #\{bp\.\$breakpoint-desktop\}\) \{\n  \.sf-tag\.sf-tag--size-1\\\/2 > \.sf-icon-button/u, 'phone 1/2: 1.5 line');
+  assert.match(tags, /\[data-sf-density="compact"\] \.sf-tag\.sf-tag--size-1\\\/2:not\(\[data-sf-density="normal"\] \*\) > \.sf-icon-button/u, 'compact 1/2: 1.5 line');
+  assert.match(tags, /\.sf-tag\.sf-tag--size-1\\\/2:not\(\[data-sf-density="compact"\] \*\),[^{]*\{\s*--sf-tag--close-size: var\(--sf-micro--cross-1\);/u, 'desktop 1/2: 12');
   assert.doesNotMatch(tags, /\* 0\.7\)/u, 'no cross scaled from the label');
   const css = await read('smart/tag/js/templates/default.css');
   assert.match(css, /--sf-close-icon--background-color: color-mix\(in srgb, var\(--sf-tag-color, var\(--sf-on-surface\)\) 64%, transparent\);/u);
