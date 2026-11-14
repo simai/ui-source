@@ -339,7 +339,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-item/index.js",
-        "sha256": "4c314f17123c9006035d73f1d7040c41e974a827625767e356204bcaf0480499"
+        "sha256": "2cff73bf86158c56f80d7bf18e9b63dce4aaf8b947d99d8b21119c46ce611d05"
       }
     ],
     "generated_runtime": [

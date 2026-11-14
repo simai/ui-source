@@ -328,7 +328,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/slider/index.js",
-        "sha256": "236fc7789ef9d9e716b09f5db7c548663a04cdadbd3b6dacfc22b80766862d3c"
+        "sha256": "01c93c986cdb8bf16bf4192f254403a14fbf10386c8f3667348f4c14a9714191"
       }
     ],
     "generated_runtime": [

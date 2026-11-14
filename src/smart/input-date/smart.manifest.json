@@ -752,7 +752,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-date/index.js",
-        "sha256": "f2fc3183c3e2ecbf55109c5f4fa9608bfa981c921c5a3fc6924a031eadbc1d7c"
+        "sha256": "d48f36e5eb005f80d05d3ab25af00b9b748841ce34eba5766748d8f6813a548a"
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",

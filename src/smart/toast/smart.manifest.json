@@ -441,7 +441,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/toast/index.js",
-        "sha256": "8383bd44c50d2aeae4e0ca5e5d0d28010ca1554f4203116f790e06b8952b709f"
+        "sha256": "3bca1b37306a3ce3a92c41b0aec46c86404bdc9bb442d2084874bd1f2e644191"
       }
     ],
     "generated_runtime": [

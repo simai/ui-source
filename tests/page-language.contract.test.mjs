@@ -24,7 +24,7 @@ test('page language: no component falls back to Russian', async () => {
     // 2026-10-10, so an English page came out a patchwork: a record panel that
     // had switched above a toolbar that had not.
     // Its words are its language files now (standard 1.3.8 §11).
-    'src/smart/pagination/index.js': [/this\.sfWord\("page-label"\)/, /import en from "\.\/lang\/en\.json";/],
+    'src/smart/pagination/index.js': [/this\.sfWord\("page-label"\)/, /import enFile from "\.\/lang\/en\.json";\nimport ruFile from "\.\/lang\/ru\.json";[\s\S]*const en = \{runtime: enFile\.runtime\};/],
     'src/smart/field-renderers/index.js': [/pageText\(SET_TEXT, key, host/],
     'src/smart/input-date/index.js': [/pageLanguage\(node \?\? document\.documentElement\)/],
     // sf-tag's remove label is its language files' runtime.remove (standard 1.3.8 §11).
@@ -45,12 +45,12 @@ test('page language: no component falls back to Russian', async () => {
     // Its words are the language files' (standard 1.3.8 §11).
     'src/smart/input-date/index.js': [/node\.sfWord\(wordKey\(key\)\)/],
     // sf-drawer's words are its language files (standard 1.3.8 §11).
-    'src/smart/drawer/index.js': [/this\.sfWord\('close-label'\)/, /import en from '\.\/lang\/en\.json';/],
+    'src/smart/drawer/index.js': [/this\.sfWord\('close-label'\)/, /import enFile from '\.\/lang\/en\.json';\nimport ruFile from '\.\/lang\/ru\.json';[\s\S]*const en = \{runtime: enFile\.runtime\};/],
     // The resizer handle read [lang] itself over its own dictionary until
     // 2026-10-21 (ui-mail feedback ui-mail.resizer-language): a product could
     // neither choose its language nor teach it a third one. Its words are its
     // language files since standard 1.3.8 §11.
-    'src/smart/resizer/index.js': [/this\.sfWord\('label'\)/, /import en from '\.\/lang\/en\.json';/, /language\.onChange\(/],
+    'src/smart/resizer/index.js': [/this\.sfWord\('label'\)/, /import enFile from '\.\/lang\/en\.json';\nimport ruFile from '\.\/lang\/ru\.json';[\s\S]*const en = \{runtime: enFile\.runtime\};/, /language\.onChange\(/],
   };
   for (const [path, patterns] of Object.entries(sources)) {
     const source = await read(path);

@@ -1458,7 +1458,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/modal/index.js",
-        "sha256": "f5ea39c39c84c744ce8f08740893bccf3db8882d0bb86315fc1f5167aec3abf9"
+        "sha256": "889252ae92f0d329d7468827840549bef2d74d7dbe902f5e3704b0865118ba31"
       }
     ],
     "generated_runtime": [

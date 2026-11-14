@@ -261,7 +261,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/reference-link/index.js",
-        "sha256": "dc8265a4c45d327a9646a703894bbc20ce7f8457353cce4da023197503747aee"
+        "sha256": "eed2593197c8e3c81f4c5a252e68a9adc540180156ea2750279f678ba8667bce"
       }
     ],
     "generated_runtime": [

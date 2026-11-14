@@ -232,7 +232,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-page/index.js",
-        "sha256": "16bfb2df62801db920b77f756a7c2ebe7dbc720a499e3023dd00b1ae701a7d39"
+        "sha256": "b9f883f38c04b6a492ecc9a89f32f519e00315bebf6dd7cb62bbc0dfd84dda0d"
       },
       {
         "path": "src/smart/header-page/js/templates/default.js",

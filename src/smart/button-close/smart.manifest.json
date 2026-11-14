@@ -233,7 +233,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button-close/index.js",
-        "sha256": "07941a9c92b5b171b14867c43824a442b6426f7de7faef6387bf7dc86f057c5c"
+        "sha256": "fbe11cb36d2df8bab81935e30153ee3ff486483eee558206ee5980fe234b1592"
       }
     ],
     "generated_runtime": [

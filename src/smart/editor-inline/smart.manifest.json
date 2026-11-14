@@ -382,7 +382,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/editor-inline/index.js",
-        "sha256": "5456d63f8a4b3bd980c2c884df4e30842b757e79abeea4188eb2e93bf393a936"
+        "sha256": "5f5c9440af83afab646cf22e8888e61904590d6d1dac48d1f96de4e2c7e74421"
       },
       {
         "path": "src/smart/editor-inline/scss/_smart__inline-editor.scss",

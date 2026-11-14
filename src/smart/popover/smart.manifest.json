@@ -363,7 +363,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/popover/index.js",
-        "sha256": "36da0acd898ab91d41a67eae6945143b089ae18122e354a5d89cee5990891e6a"
+        "sha256": "be1501fefb2aaff84bd608e1a49477ccdddbb4295061e1c37a2c7cd1cecf32c6"
       },
       {
         "path": "src/smart/popover/rule.js",

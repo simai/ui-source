@@ -303,7 +303,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tile-metric/index.js",
-        "sha256": "c9f2904f6e2867676cc99eda63119a2df615570fc30e36901fe368da00787fcb"
+        "sha256": "a6cd7b8d7cb17a6277925171d58aebc43919de52305273cdeac343ff608370f5"
       },
       {
         "path": "src/smart/tile-metric/js/templates/default.js",

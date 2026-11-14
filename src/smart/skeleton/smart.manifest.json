@@ -245,7 +245,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/skeleton/index.js",
-        "sha256": "19293b13d468304694c2e7ff14a054ae13e6ff01804c3a19e9b2770f61a99e59"
+        "sha256": "dd20c27d4dc189de7d30c795d1b63368adab7a6c823e7eeda1979839e108fbee"
       },
       {
         "path": "src/smart/skeleton/js/templates/default.js",

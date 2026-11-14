@@ -244,7 +244,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/avatar-group/index.js",
-        "sha256": "c7e667fafc3c57bc75a3d5c6b9a3ee97cfc204850e4448a26b68dafff50d35fc"
+        "sha256": "a50c821bc2658a542418a611f936bc8c8d4ac99fe95fd3c1254f2f1d2ead4283"
       }
     ],
     "generated_runtime": [

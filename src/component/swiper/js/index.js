@@ -1,15 +1,11 @@
 import { pageText } from '../../../core/js/page-language';
+// The words live in the component's language files (localization study LC-4):
+// one place for every language, as the Smart components keep them.
+import LANG_WORDS from '../lang/index.mjs';
 // Every word this part says. A product adds a language with
 // SF.language.register('sf-swiper', code, words); a ternary on «ru» allowed two
 // and no more.
-const SWIPER_TEXT = {
-  en: {
-    goToSlide: 'Go to slide',
-  },
-  ru: {
-    goToSlide: 'Перейти к слайду',
-  },
-};
+const SWIPER_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const numeric = (value, fallback) => Number.isFinite(Number(value)) ? Number(value) : fallback;

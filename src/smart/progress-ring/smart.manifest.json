@@ -261,7 +261,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-ring/index.js",
-        "sha256": "eb1f662d48f714f4ec19cae4d729b455ef141f5404f2876b4b395d7ac021ff2e"
+        "sha256": "3ee5fc40dd4bdc0172c41fb8274f20dbdecd5f774560a23410a5661ffc5c8832"
       },
       {
         "path": "src/smart/progress-ring/js/templates/default.js",

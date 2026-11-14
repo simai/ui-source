@@ -347,7 +347,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/breadcrumbs/index.js",
-        "sha256": "f5077d54464a0cbb2130be89c9196751d4ad9480336742cc2fdfe2d793d1bc06"
+        "sha256": "ce3497ba167101b915d40c6e100fcd32e9cb98b3e2195bda41e8f978d3a79e38"
       }
     ],
     "generated_runtime": [

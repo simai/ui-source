@@ -311,7 +311,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/alert-bar/index.js",
-        "sha256": "6a00815d00ff450e0322e91e191a05c2964e8cce43dcb9447c9a30d006ada499"
+        "sha256": "1e179e4a4ea433d8ca2991138becf661263a00935a25852b42b62c8bb43457e7"
       },
       {
         "path": "src/smart/alert-bar/js/templates/default.js",

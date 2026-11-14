@@ -824,7 +824,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-feed/index.js",
-        "sha256": "ba16be96fe47d09966c2edf175ec23617e28bc9f2373f053fecf4551e26a5ca1"
+        "sha256": "0ebb2ffacc3b5022252353deacec4c9362148f6c4704c60aac8bacb9bc54e699"
       },
       {
         "path": "src/smart/list-feed/js/templates/default.js",

@@ -483,7 +483,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/confirm-change/index.js",
-        "sha256": "f2a671ad97506da386ca47cf9dcd80109693c10d85483a64375002725cb1b8ae"
+        "sha256": "c27b531436388508364d9baf83bbe59206d65be8e47c4fe6aa4561e0104e64db"
       },
       {
         "path": "src/smart/confirm-change/js/templates/default.js",

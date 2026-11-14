@@ -3,6 +3,10 @@ import registerComponent from '../../register-helper';
 import downloadFileUtility from '../json/download-file.utility.json';
 import { formatFileSize } from '../../../core/js/format-file-size.js';
 import { pageText, pageWord } from '../../../core/js/page-language';
+// The words live in the component's language files (localization study LC-4):
+// one place for every language, as the Smart components keep them.
+import LANG_WORDS from '../lang/index.mjs';
+const pick = (words, keys) => Object.fromEntries(keys.map((key) => [key, words[key]]));
 
 const DOWNLOAD_FILE_SELECTOR = '.sf-download-file';
 const DOWNLOAD_FILE_BOUND_FLAG = 'sfDownloadFileBound';
@@ -105,31 +109,13 @@ async function resolveRemoteFileSize(href, node = null) {
 }
 
 // The words a screen reader hears after a link that opens a tab.
-const NEW_TAB_WORDS = {
-  ru: { 'new-tab': '(откроется в новой вкладке)' },
-  en: { 'new-tab': '(opens in a new tab)' },
-};
+const NEW_TAB_WORDS = {en: pick(LANG_WORDS.en, ["new-tab"]), ru: pick(LANG_WORDS.ru, ["new-tab"])};
 
 // The size as it is said (decision C51): the unit in words, in the page's
 // language and in the number's form -- «112 байт», «2,4 мегабайта», «1 KB» is
 // «1 kilobyte». The visible «CSV · 112 Б» is hidden from a screen reader,
 // which hears «Смета.csv, CSV, 112 байт», the commas its pauses.
-const SIZE_WORDS = {
-  en: {
-    byte: { one: 'byte', other: 'bytes' },
-    kilobyte: { one: 'kilobyte', other: 'kilobytes' },
-    megabyte: { one: 'megabyte', other: 'megabytes' },
-    gigabyte: { one: 'gigabyte', other: 'gigabytes' },
-    terabyte: { one: 'terabyte', other: 'terabytes' },
-  },
-  ru: {
-    byte: { one: 'байт', few: 'байта', many: 'байт', other: 'байта' },
-    kilobyte: { one: 'килобайт', few: 'килобайта', many: 'килобайт', other: 'килобайта' },
-    megabyte: { one: 'мегабайт', few: 'мегабайта', many: 'мегабайт', other: 'мегабайта' },
-    gigabyte: { one: 'гигабайт', few: 'гигабайта', many: 'гигабайт', other: 'гигабайта' },
-    terabyte: { one: 'терабайт', few: 'терабайта', many: 'терабайт', other: 'терабайта' },
-  },
-};
+const SIZE_WORDS = {en: pick(LANG_WORDS.en, ["byte","kilobyte","megabyte","gigabyte","terabyte"]), ru: pick(LANG_WORDS.ru, ["byte","kilobyte","megabyte","gigabyte","terabyte"])};
 
 const SIZE_UNIT_WORDS = {
   'б': 'byte', b: 'byte', 'байт': 'byte', 'байта': 'byte', byte: 'byte', bytes: 'byte',

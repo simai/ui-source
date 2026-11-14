@@ -471,7 +471,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-lookup/index.js",
-        "sha256": "5faf0b7416f6f89519f459611b7a122cbe9fdf4fd26a41e014954c071e7eef4f"
+        "sha256": "26907898a295f8dbf2c07f969855c2332e15594eb9232460cc59dc770e67f465"
       },
       {
         "path": "src/smart/input-lookup/js/templates/default.js",

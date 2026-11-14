@@ -415,7 +415,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/checkbox/index.js",
-        "sha256": "be33a5057f125d3b2ed0c5237d6ee071ea9a733aea7295e91818d20a0a685184"
+        "sha256": "becdd33a28b146705a994108be803aa59446733a115ba85fdbae430cc0c8f93c"
       }
     ],
     "generated_runtime": [

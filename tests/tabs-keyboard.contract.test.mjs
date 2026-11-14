@@ -23,7 +23,7 @@ function setup({vertical = false, rtl = false, selected = 0, disabled = [1]} = {
     SfBaseElement: Base, HTMLElement: Element,
     // The manifest's plumbing (core/js/element-manifest.js) and the path ids
     // (core/js/instance-path.js) are out of these tests' scope.
-    elementFromManifest: (manifest, {base}) => base, manifest: {}, aliases: {}, en: {}, ru: {},
+    elementFromManifest: (manifest, {base}) => base, manifest: {}, aliases: {}, en: {}, ru: {}, enFile: {}, ruFile: {},
     instancePath: () => 'page/tabs', partId: (path) => path.replace(/\W+/gu, '-'),
     getComputedStyle: () => ({direction: rtl ? 'rtl' : 'ltr'}),
   });

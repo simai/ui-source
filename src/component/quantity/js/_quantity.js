@@ -7,11 +7,11 @@ import { bindFormReset } from '../../form-reset-helper';
 import { maskService } from '../../mask-service';
 import { pageLocale, pageText } from '../../../core/js/page-language';
 import { tagSelector } from '../../../core/js/tag-aliases.js';
+// The words live in the component's language files (localization study LC-4):
+// one place for every language, as the Smart components keep them.
+import LANG_WORDS from '../lang/index.mjs';
 
-const QUANTITY_TEXT = {
-  en: { decrement: 'Decrease value', increment: 'Increase value' },
-  ru: { decrement: 'Уменьшить значение', increment: 'Увеличить значение' },
-};
+const QUANTITY_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 
 const QUANTITY_SELECTOR = '.sf-quantity';
 const BOUND_FLAG = 'sfQuantityBound';

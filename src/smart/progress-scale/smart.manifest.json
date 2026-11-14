@@ -295,7 +295,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-scale/index.js",
-        "sha256": "176128c32f7674c7d6dcc16528ea4daa35de214a5c853f73663705bbef3ed289"
+        "sha256": "774182e91af0c839bb15833d08ac0c5c9472ca67a82672e100952144465f971a"
       },
       {
         "path": "src/smart/progress-scale/js/templates/default.js",

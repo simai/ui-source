@@ -17,21 +17,15 @@
 // decision: on an anchor of 1/3 or 1/2 a count is a dot, whatever it says, and
 // the number lives in the name and the tooltip alone.
 import {pageLocale, pageText} from '../../../core/js/page-language.js';
+// The words live in the component's language files (localization study LC-4):
+// one place for every language, as the Smart components keep them.
+import LANG_WORDS from '../lang/index.mjs';
 
 // The words, by language. A count is one phrase per plural form, separated by
 // «|» in the order of CLDR's categories -- one|few|many|other in Russian,
 // one|other in English -- with {count} where the number goes. A product adds a
 // language with SF.language.register('sf-badge', code, {count, dot}).
-export const ANCHORED_BADGE_TEXT = {
-    en: {
-        count: '{count} unread',
-        dot: 'new',
-    },
-    ru: {
-        count: '{count} непрочитанное|{count} непрочитанных|{count} непрочитанных|{count} непрочитанного',
-        dot: 'есть новое',
-    },
-};
+export const ANCHORED_BADGE_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 
 export const ANCHORED_BADGE_COMPONENT = 'sf-badge';
 export const DEFAULT_BADGE_CAP = 99;

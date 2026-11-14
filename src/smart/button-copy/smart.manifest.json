@@ -354,7 +354,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button-copy/index.js",
-        "sha256": "b1351943101ccb7f80a888c0617b2322bdb7b5beea4ccb0ec89155f2b502454a"
+        "sha256": "9deb90bf21c31ac41b4c9294d394aec62c81ca409aa7cb7b91a07994060e5976"
       },
       {
         "path": "src/smart/button-copy/js/templates/default.js",

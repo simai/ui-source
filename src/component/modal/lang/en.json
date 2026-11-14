@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "title": "Dialog",
+    "close": "Close",
+    "loading": "Loading…",
+    "loadFailed": "Failed to load content",
+    "frameFailed": "Failed to load iframe content"
+  }
+}

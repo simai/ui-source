@@ -5,60 +5,13 @@ import { pageText, pageWord } from '../../../core/js/page-language';
 import { formatFileSize } from '../../../core/js/format-file-size.js';
 import { fileIcon } from '../../../core/js/composition/file-size.mjs';
 import { acceptFormats, fileRejection, positiveLimit } from './intake.mjs';
+// The words live in the component's language files (localization study LC-4):
+// one place for every language, as the Smart components keep them.
+import LANG_WORDS from '../lang/index.mjs';
 // Every word this part says. A product adds a language with
 // SF.language.register('sf-file-upload', code, words); a ternary on «ru» allowed two
 // and no more.
-const FILE_UPLOAD_ITEM_TEXT = {
-  en: {
-    remove: 'Remove',
-    uploading: 'Uploading',
-    retry: 'Try again',
-    linkText: 'Click to upload',
-    text: 'or drag and drop',
-    // The words of a file that was not added (FU-6, FU-7), keyed as the Smart
-    // lang/<locale>.json runtime keys them, so one SF.language.register
-    // reaches both.
-    'not-added': 'Not added: {n}',
-    'reject-type': '“{name}” is not accepted: allowed {formats}',
-    'reject-one': '“{name}” was not added: this field takes one file',
-    'reject-duplicate': '“{name}” is already in the list',
-    'reject-empty': '“{name}” is empty',
-    'reject-size': '“{name}” is {size}; the limit is {max}',
-    'reject-min-size': '“{name}” is {size}; it must be at least {min}',
-    'reject-count': {one: '“{name}” was not added: up to {n} file', other: '“{name}” was not added: up to {n} files'},
-    'reject-total': '“{name}” was not added: all files together up to {max}',
-    'formats-image': 'images',
-    'formats-video': 'video',
-    'formats-audio': 'audio',
-    done: 'Uploaded',
-    'done-line': '{size} · uploaded',
-    error: 'Not uploaded',
-    'error-line': 'Not uploaded: {message}',
-  },
-  ru: {
-    remove: 'Удалить',
-    uploading: 'Загрузка',
-    retry: 'Повторить',
-    linkText: 'Выберите файл',
-    text: 'или перетащите его сюда',
-    'not-added': 'Не добавлено {n}:',
-    'reject-type': '«{name}» не подходит: можно {formats}',
-    'reject-one': '«{name}» не добавлен: сюда можно только один файл',
-    'reject-duplicate': '«{name}» уже добавлен',
-    'reject-empty': '«{name}» пустой — в нём нет данных',
-    'reject-size': '«{name}» — {size}, а можно до {max}',
-    'reject-min-size': '«{name}» — {size}, а нужно от {min}',
-    'reject-count': {one: '«{name}» не добавлен: можно не больше {n} файла', few: '«{name}» не добавлен: можно не больше {n} файлов', many: '«{name}» не добавлен: можно не больше {n} файлов', other: '«{name}» не добавлен: можно не больше {n} файла'},
-    'reject-total': '«{name}» не добавлен: все файлы вместе — до {max}',
-    'formats-image': 'изображения',
-    'formats-video': 'видео',
-    'formats-audio': 'аудио',
-    done: 'Загружен',
-    'done-line': '{size} · загружен',
-    error: 'Не загрузился',
-    'error-line': 'Не загрузился: {message}',
-  },
-};
+const FILE_UPLOAD_ITEM_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 
 
 const FILE_UPLOAD_SELECTOR = '.sf-file-upload';

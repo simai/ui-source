@@ -400,7 +400,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/steps/index.js",
-        "sha256": "a5b67588f33041a0ef926ec0273c3f2235ce691b309e2635762e0ac166d4ceda"
+        "sha256": "0c254954bff42c43f4385880b10450f6ac3f2c0afbe9f5aec21b7c9c490de9f6"
       }
     ],
     "generated_runtime": [

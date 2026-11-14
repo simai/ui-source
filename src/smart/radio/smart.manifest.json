@@ -348,7 +348,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/radio/index.js",
-        "sha256": "37cc88b4a4d4dc272d8db217a7991110a9a55969194fd9982a043301a209dcb8"
+        "sha256": "053914bba14b7cbb8b2a451a8f5821d828ab35fe2070b2bdd53eb93699106616"
       }
     ],
     "generated_runtime": [

@@ -931,7 +931,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/editor-overlay/index.js",
-        "sha256": "1e1369185c9e31e038f27e73b5f19ea02c0811608b26299023e7d1de305c7d57"
+        "sha256": "16da1a96f11981d494c838dc44477daa67ca074c787fb69e73cb47a2616914d9"
       },
       {
         "path": "src/smart/editor-overlay/scss/_smart__composition-overlay.scss",

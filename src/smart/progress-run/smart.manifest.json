@@ -548,7 +548,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-run/index.js",
-        "sha256": "092e8ab565814a822212ae77d129d55ed8d22c61c21b0138817b4494c6c4c538"
+        "sha256": "5831e8fce549452f3cbe06205156f8cc22790eb98e58b2210573be832a5a1ba9"
       },
       {
         "path": "src/smart/progress-run/js/templates/default.js",
