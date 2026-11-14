@@ -11,6 +11,9 @@ export function renderLabelTemplate(context) {
       ${avatarButton(context, {
         includeRootClass: false,
         includeRootStyle: false,
+        // The heading is printed beside the picture: the name is read once,
+        // from the text (C152 (1)).
+        nameShown: Boolean(context.heading),
       })}
       <div class="sf-avatar-label-group-container flex flex-col">
         ${context.heading

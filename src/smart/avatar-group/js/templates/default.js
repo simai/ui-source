@@ -1,5 +1,6 @@
 import { html, nothing } from 'lit';
-import { avatarClasses, avatarContent, statusBadge } from '../../../avatar/js/templates/shared';
+import { avatarClasses, avatarContent, statusBadge, withNameTooltip } from '../../../avatar/js/templates/shared';
+import { avatarPictureContext, avatarPicture } from '../../../avatar/js/picture';
 
 // The combinations are drawn from the avatar's own parts -- sf-avatar,
 // sf-avatar-group, sf-avatar-label-group, the online indicator and the verified
@@ -37,26 +38,28 @@ function step(value, fallback = '1') {
 // How far the avatars of a group overlap, by the size they are drawn at: the
 // --sf-space step of the overlap, in the size names (1.2.4, docs precheck
 // AV-06; xs, sm and md before, journal class-avatar-group-overlap-size-names).
+// Owner decision C152 (6), 2026-11-14: 4 up to size 1 and 8 at 2 and 3, so the
+// next circle with its 2 px cut-out leaves the letters whole (12 at size 1
+// covered the second letter: «АБ» read «АЕ»).
 function groupStep(size) {
-  if (size === '1/4' || size === '1/3') return '1/4';
-  if (size === '1/2') return '1/3';
-  return '1/2';
+  if (size === '2' || size === '3') return '1/3';
+  return '1/4';
 }
 
+// Up to four people are shown; the fifth place is «+N» (C152 (6)).
+const SHOWN = 4;
+
 function avatar(options) {
-  const imageUrl = options.imageUrl || '';
-  const context = {
+  // sf-avatar's drawing (js/picture.js): the photo over the initials, else
+  // the initials, else the glyph.
+  const context = avatarPictureContext({
     size: options.size,
-    line: '',
-    shape: 'circle',
-    imageUrl,
-    isImage: Boolean(imageUrl),
+    imageUrl: options.imageUrl || '',
     text: options.text || '',
-    isText: !imageUrl && Boolean(options.text),
     status: options.status || 'none',
     rootClass: options.rootClass || '',
     component: options.component,
-  };
+  });
   return html`
     <span class=${avatarClasses(context)} style=${options.rootStyle || nothing}>
       ${avatarContent(context)} ${statusBadge(context)}
@@ -119,21 +122,83 @@ function renderLabelTemplate(context) {
   });
 }
 
+// One person of the group: the picture (photo over the initials, C152 (2)),
+// role img named by the person, the hue of the name (C17, C152 (6)) and the
+// name in a tooltip, since a group prints no names (C152 (7)).
+function member(item, size, index, context) {
+  const name = String(item.name ?? item.heading ?? '').trim();
+  const picture = avatarPictureContext({
+    size,
+    imageUrl: item.imageUrl || item.image_url,
+    name,
+    text: item.text || item.initials,
+    hue: item.hue || (name ? 'auto' : ''),
+    status: item.status,
+    component: context.component,
+  });
+  const tipId = name && context.uid ? `${context.uid}-tip-${index}` : '';
+  const face = html`<span class=${avatarClasses(picture)} role="img" aria-label=${name || picture.text || nothing}
+    data-tooltip=${tipId || nothing}>${avatarContent(picture)} ${statusBadge(picture)}</span>`;
+  return withNameTooltip(face, name, tipId);
+}
+
+// The row of the full list behind «+N»: the picture and the printed name.
+function listRow(item) {
+  const name = String(item.name ?? item.heading ?? '').trim();
+  return html`<li class="sf-avatar-group-list-item">${avatarPicture({
+    size: '1/2',
+    imageUrl: item.imageUrl || item.image_url,
+    name,
+    text: item.text || item.initials,
+    hue: item.hue || (name ? 'auto' : ''),
+  })}<span class="sf-avatar-group-list-name">${name || item.text || item.initials || ''}</span></li>`;
+}
+
+// The group (owner decision C152 (6), 2026-11-14): up to four people, the
+// fifth place «+N» with the exact number of the others. When the host gives
+// the whole list (more than four in avatars) «+N» is a button of the same
+// size and shape that opens the list of everyone in an sf-popover; with only
+// a number (avatars-more) it stays text. The group is named «Участники: N»,
+// N everyone it stands for. Before: every avatar shown, «+N» a grey avatar
+// with no action or name, the group nameless.
 function renderGroupTemplate(context) {
   const size = step(context.roundSize, '1/2');
+  const list = Array.isArray(context.avatars) ? context.avatars : [];
   const more = String(context.avatarsMore ?? '').trim();
+  const extra = /^\d+$/u.test(more) ? Number(more) : 0;
+  const shown = list.slice(0, SHOWN);
+  const hidden = list.length - shown.length + extra;
+  const total = list.length + extra;
+  const words = context.words || {};
+  const groupLabel = words.group ? words.group(total) : '';
+  const moreLabel = words.more ? words.more(hidden) : '';
+  const withList = list.length > SHOWN;
+  if (withList) {
+    globalThis.SF?.Loader?.ensurePlugin?.('cl-popover');
+  }
+  if (shown.some((item) => String(item.name ?? item.heading ?? '').trim())) {
+    globalThis.SF?.Loader?.ensurePlugin?.('tooltip');
+  }
+
+  let tail = nothing;
+  if (withList) {
+    const plus = avatarPictureContext({ size, text: `+${hidden}` });
+    tail = html`<sf-popover class="sf-avatar-group-more" placement="bottom-start" label=${moreLabel || nothing}>
+      <button slot="trigger" type="button" class=${avatarClasses(plus)} aria-label=${moreLabel || nothing}>${avatarContent(plus)}</button>
+      <div slot="content"><ul class="sf-avatar-group-list">${list.map((item) => listRow(item))}</ul></div>
+    </sf-popover>`;
+  } else if (hidden > 0 || (more && !extra)) {
+    // No list from the host: «+N» (or the host's short text) is text.
+    tail = avatar({ size, text: extra ? `+${hidden}` : more, component: context.component });
+  }
+
   return html`
     <div class=${['sf-avatar-group', `sf-avatar-group--size-${groupStep(size)}`, 'flex', 'items-cross-center', context.rootClass]
       .filter(Boolean)
-      .join(' ')} style=${context.rootStyle || nothing}>
+      .join(' ')} style=${context.rootStyle || nothing} role="group" aria-label=${groupLabel || nothing}>
       <div class="sf-avatar-group-avatars flex">
-        ${context.avatars.map((item) => avatar({
-          size,
-          imageUrl: item.imageUrl || item.image_url,
-          text: item.text || item.initials,
-          component: context.component,
-        }))}
-        ${more ? avatar({ size, text: /^\d+$/u.test(more) ? `+${more}` : more, component: context.component }) : nothing}
+        ${shown.map((item, index) => member(item, size, index, context))}
+        ${tail}
       </div>
     </div>
   `;

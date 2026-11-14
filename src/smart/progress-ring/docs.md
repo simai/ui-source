@@ -62,6 +62,11 @@ is 20 px and its middle 12, below the smallest avatar. Size 1/4 has no avatar
 step below its 16 px: its middle is 8 px, so it holds neither an avatar nor the
 percentage -- put a ring of 1/4 beside the avatar, not around it.
 
+A slotted avatar's presence point (`status="online"` or `away`) stands on the
+ring itself at 45 degrees, towards the bottom end corner, at the ring's own
+step (owner decisions C132 (7), C152 (8)): 12 px with a 2 px cut-out on a
+ring of 1, centred on the middle of the line.
+
 ```html
 <button type="button" class="account" aria-label="Анна Ким, использовано 62 % лимита">
   <sf-progress-ring value="62" meter label="Использовано">

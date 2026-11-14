@@ -3,6 +3,7 @@
   "runtime": {
     "aria-label": "Аватар",
     "status-online": "в сети",
+    "status-away": "отошёл",
     "status-offline": "не в сети"
   }
 }

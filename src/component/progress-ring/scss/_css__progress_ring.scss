@@ -105,6 +105,36 @@
     height: 100%;
   }
 
+  /* A slotted avatar's presence point stands on the ring at 45 degrees, at the
+     ring's own step (owner decisions C132 (7) and C152 (8), 2026-11-14): its
+     centre on the middle of the line, towards the bottom end corner, its disc
+     and ring the point of the ring's size (--sf-micro--point-<size>,
+     --sf-micro--ring-<size>). The place-coloured ring cuts the line, as it
+     cuts the photo. Before, it stood at the corner of the avatar inside, a
+     step smaller and off the line. Measured from the avatar's box, which is
+     the content box, centred in the ring: the end offset is half the content
+     box less the line's middle radius times sin 45 degrees less half the
+     point, less the avatar's own ring (the point is placed inside it). */
+  .sf-progress-ring .sf-progress-ring-content > sf-avatar .sf-online-indicator,
+  .sf-progress-ring .sf-progress-ring-content > .sf-avatar > .sf-online-indicator {
+    --sf-progress-ring--point-inset: calc(
+      (var(--sf-progress-ring--size) / 2 - var(--sf-progress-ring--line-width) - var(--sf-progress-ring--gap))
+      - (var(--sf-progress-ring--size) / 2 - var(--sf-progress-ring--line-width) / 2) * sin(45deg)
+      - var(--sf-online-indicator--width) / 2
+    );
+    inset-block-end: calc(var(--sf-progress-ring--point-inset) - var(--sf-avatar--border-bottom-width, 0px));
+    inset-inline-end: calc(var(--sf-progress-ring--point-inset) - var(--sf-avatar--border-inline-end-width, 0px));
+  }
+
+  @each $size in ('1\\/4', '1\\/3', '1\\/2', '1', '2', '3') {
+    .sf-progress-ring.sf-progress-ring--size-#{$size} .sf-progress-ring-content > sf-avatar .sf-online-indicator,
+    .sf-progress-ring.sf-progress-ring--size-#{$size} .sf-progress-ring-content > .sf-avatar > .sf-online-indicator {
+      --sf-online-indicator--width: var(--sf-micro--point-#{$size});
+      --sf-online-indicator--height: var(--sf-micro--point-#{$size});
+      --sf-online-indicator--ring-width: var(--sf-micro--ring-#{$size});
+    }
+  }
+
   /* No status is the theme's primary; neutral the grey of sf-dot and sf-badge
      (owner decision C131 (1)). */
   .sf-progress-ring.sf-progress-ring--neutral {

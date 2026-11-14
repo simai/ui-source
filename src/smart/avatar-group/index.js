@@ -22,6 +22,9 @@ const AvatarsElement = elementFromManifest(manifest, {
   aliases,
 });
 
+// The tooltips' ids, one per element on the page (stable across renders).
+let sequence = 0;
+
 class SfAvatars extends AvatarsElement {
   static get props() {
     return {
@@ -223,10 +226,18 @@ class SfAvatars extends AvatarsElement {
 
   templateContext() {
     const props = this.getPropsContext();
+    if (!this._uid) this._uid = `sf-avatar-group-${++sequence}`;
 
     return this.createTemplateContext({
       ...props,
       component: this,
+      uid: this._uid,
+      // The group's name and the «+N» button's (C152 (6)), in the page's
+      // language: «Участники: 9», «Ещё 5 участников».
+      words: {
+        group: (count) => this.sfWord('group-label', {count}),
+        more: (count) => this.sfWord('more-label', {count}),
+      },
       imageUrl: this.imageUrl,
       avatarUrl: this.avatarUrl,
       avatarSize: this.avatarSize,

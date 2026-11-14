@@ -38,6 +38,23 @@ const INITIALS_SKIP_WORDS = new Set([
     "to",
 ]);
 
+// Words a name carries that are not the person's or the organisation's own
+// (owner decision C152 (3), 2026-11-14): legal forms (ООО «Ромашка» → Р),
+// titles (Dr. John Smith → JS) and name particles (Мария фон Штейн → МШ) are
+// skipped wherever they stand. Compared without case and without the dots
+// around them (normalizeInitialsWords strips those).
+const INITIALS_SERVICE_WORDS = new Set([
+    // legal forms
+    "ооо", "оао", "зао", "пао", "ао", "нао", "ип", "нко", "ано", "гуп", "муп", "фгуп", "гбу", "мбу", "чоп",
+    "llc", "inc", "ltd", "gmbh", "ag", "corp", "co", "llp", "plc", "lp", "bv", "oy", "ab", "srl", "sarl",
+    // titles
+    "dr", "prof", "mr", "mrs", "ms", "mx", "miss", "sir", "jr", "sr", "phd",
+    "д-р", "проф", "акад", "г-н", "г-жа", "доц",
+    // particles
+    "фон", "ван", "дер", "де", "ди", "да", "дю", "ла", "ле", "ибн", "бен", "оглы", "кызы",
+    "von", "van", "der", "den", "de", "di", "da", "du", "del", "della", "la", "le", "ten", "ter", "bin", "ibn",
+]);
+
 export function normalizeInitialsWords(value = "") {
     return String(value || "")
         .trim()
@@ -70,6 +87,10 @@ function firstGrapheme(word) {
 //   «Жан-Поль»             → «ЖП»   one hyphenated word reads as its parts
 //   «Анна-Мария Смирнова»  → «АС»   ...but a name of several words by its words
 //   «Анна»                 → «А»
+//   «ООО «Ромашка»»        → «Р»    legal forms, titles, particles skipped (C152)
+//   «Мария фон Штейн»      → «МШ»
+//   «Dr. John Smith»       → «JS»
+//   «anna@simai.ru»        → «A»    an address: the first letter before «@»
 //   «»                     → ''     or `fallback`: '?' where text must stand
 //
 // `maxLetters` caps the letters (two), `skipWords` replaces the skipped words,
@@ -81,7 +102,20 @@ export function getInitials(value = "", options = {}) {
         fallback = "",
         locale,
     } = options;
-    const words = normalizeInitialsWords(value);
+    let source = String(value ?? "").trim();
+    // An address reads by the name before «@»: one letter (C152 (3)),
+    // anna@simai.ru → A, not the letters of its parts.
+    if (/^[^\s@]+@[^\s@]+$/u.test(source)) {
+        const local = normalizeInitialsWords(source.slice(0, source.indexOf("@")).replace(/[._+-]+/gu, " "));
+        if (!local.length) return String(fallback);
+        const letter = firstGrapheme(local[0]);
+        return (locale ? letter.toLocaleUpperCase(locale) : letter.toUpperCase()) || String(fallback);
+    }
+    const allWords = normalizeInitialsWords(source);
+    // Legal forms, titles and particles go first; a name made of them alone
+    // keeps them, so it still has initials.
+    const ownWords = allWords.filter((word) => !INITIALS_SERVICE_WORDS.has(String(word).toLowerCase()));
+    const words = ownWords.length ? ownWords : allWords;
     let significantWords = words.filter(
         (word, index) =>
             index === 0 || !skipWords.has(String(word).toLowerCase()),

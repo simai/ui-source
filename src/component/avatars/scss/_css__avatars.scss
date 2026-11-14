@@ -30,7 +30,10 @@ $sf-avatar-hue-classes: ();
     border-start-start-radius: var(--sf-avatar--border-top-left-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
     color: var(--sf-avatar--color, var(--sf-avatar-color, var(--sf-on-surface-variant)));
     font-family: var(--sf-avatar--font-family, var(--sf-text--family));
-    font-weight: var(--sf-avatar--font-weight, var(--sf-font-weight-regular));
+    /* Initials in the medium weight (owner decision C152 (3), 2026-11-14;
+       Material, Fluent, Telegram): regular letters on a tinted plate read
+       thin at 1/3 and 1/2. */
+    font-weight: var(--sf-avatar--font-weight, var(--sf-font-weight-medium));
     width: var(--sf-avatar--width);
     height: var(--sf-avatar--height);
     background-color: var(--sf-avatar--background-color);
@@ -316,11 +319,29 @@ $sf-avatar-hue-classes: ();
     }
   }
 
+  /* The square (an organisation, a project, a group, a bot, an app) takes a
+     corner that grows with its step (owner decision C152 (4), 2026-11-14):
+     4 at 1/4 and 1/3 (--sf-radius-1/2), 8 at 1/2 and 1 (--sf-radius-1), 12
+     at 2 and 3 (--sf-b2). It was 4 at every step, a sharp square at 48 and
+     56. An avatar on a text line (no step) keeps the control corner. */
   .sf-avatar--square {
-    --sf-avatar--border-bottom-right-radius: var(--sf-avatar-radius, var(--sf-radius--ui));
-    --sf-avatar--border-bottom-left-radius: var(--sf-avatar-radius, var(--sf-radius--ui));
-    --sf-avatar--border-top-right-radius: var(--sf-avatar-radius, var(--sf-radius--ui));
-    --sf-avatar--border-top-left-radius: var(--sf-avatar-radius, var(--sf-radius--ui));
+    --sf-avatar--square-radius: var(--sf-radius--ui);
+    --sf-avatar--border-bottom-right-radius: var(--sf-avatar-radius, var(--sf-avatar--square-radius));
+    --sf-avatar--border-bottom-left-radius: var(--sf-avatar-radius, var(--sf-avatar--square-radius));
+    --sf-avatar--border-top-right-radius: var(--sf-avatar-radius, var(--sf-avatar--square-radius));
+    --sf-avatar--border-top-left-radius: var(--sf-avatar-radius, var(--sf-avatar--square-radius));
+  }
+
+  .sf-avatar--square:is(.sf-avatar--size-1\/4, .sf-avatar--size-1\/3) {
+    --sf-avatar--square-radius: var(--sf-radius-1\/2);
+  }
+
+  .sf-avatar--square:is(.sf-avatar--size-1\/2, .sf-avatar--size-1) {
+    --sf-avatar--square-radius: var(--sf-radius-1);
+  }
+
+  .sf-avatar--square:is(.sf-avatar--size-2, .sf-avatar--size-3) {
+    --sf-avatar--square-radius: var(--sf-b2);
   }
 
   /* An <img> picture fills the same circle as a background one. The ring is
@@ -342,6 +363,56 @@ $sf-avatar-hue-classes: ();
     border-radius: inherit;
     outline: var(--sf-avatar-border-width, var(--sf-px)) solid var(--sf-avatar--border-color, var(--sf-avatar-border-color, transparent));
     outline-offset: calc(var(--sf-avatar-border-width, var(--sf-px)) * -1);
+  }
+
+  /* The photo over the initials (owner decision C152 (2), 2026-11-14): the
+     initials (or the glyph) stand on their plate from the first frame; the
+     photo lies over them, transparent until it has come, then fades in, and
+     a photo that fails is dropped (data-sf-loaded, js/picture.js). Once it is
+     in, the plate and the letters step back, so a photo with transparent
+     parts looks as it did. It was an empty circle while loading and the
+     browser's broken-image glyph on an error. */
+  .sf-avatar:has(> .sf-avatar-image) {
+    position: relative;
+  }
+
+  .sf-avatar > .sf-avatar-image {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity var(--sf-duration-fast) var(--sf-animation, ease);
+  }
+
+  .sf-avatar > .sf-avatar-image[data-sf-loaded="true"] {
+    opacity: 1;
+  }
+
+  .sf-avatar > .sf-avatar-image[data-sf-loaded="error"] {
+    display: none;
+  }
+
+  .sf-avatar:has(> .sf-avatar-image[data-sf-loaded="true"]) {
+    --sf-avatar--background-color: transparent;
+    background-image: none;
+  }
+
+  .sf-avatar:has(> .sf-avatar-image[data-sf-loaded="true"]) > :is(.sf-avatar-text, sf-icon) {
+    visibility: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sf-avatar > .sf-avatar-image {
+      transition: none;
+    }
+  }
+
+  /* The anchor of a name tooltip (C152 (7)): the avatar's own box, so the
+     tooltip sheet, fetched when the first one draws, moves nothing. */
+  .sf-avatar-anchor {
+    display: inline-flex;
+    flex: none;
+    position: relative;
+    vertical-align: middle;
   }
 }
 

@@ -59,6 +59,40 @@
       }
     },
     {
+      "name": "group-list",
+      "title": "Группа со списком",
+      "settings": {
+        "template": "group",
+        "round-size": "1",
+        "avatars": [
+          {
+            "name": "Анна Белова"
+          },
+          {
+            "name": "Иван Петров"
+          },
+          {
+            "name": "Ольга Смирнова"
+          },
+          {
+            "name": "Илья Орлов"
+          },
+          {
+            "name": "Мария Козлова"
+          },
+          {
+            "name": "Алина Ким"
+          },
+          {
+            "name": "Борис Ильин"
+          }
+        ]
+      },
+      "expect": {
+        "template": "group"
+      }
+    },
+    {
       "name": "profile",
       "title": "Профиль",
       "settings": {
