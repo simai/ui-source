@@ -73,7 +73,7 @@ test('an opaque place and a popover on a strong place or glass take the ink, lin
   assert.ok(back.includes('@each $role, $value in map.merge($sf-place-container-ink-roles, $sf-place-glass-link-roles) {'));
   const onGlass = back.slice(back.indexOf(':where(.sf-surface-media) & {'));
   assert.ok(onGlass.includes('@each $role, $value in $sf-place-container-ink-roles {'), 'on glass too');
-  const strongPop = block(popover, ":where(.bg-primary, .bg-secondary, .bg-tertiary, .bg-info, .bg-success, .bg-warning, .bg-error, :is(.sf-alert-bar--error, .sf-alert-bar--danger, .sf-alert-bar--warning, .sf-alert-bar--info) :is(.sf-alert-bar-row, .sf-alert-bar-strip), .bg-surface-inverse, .bg-surface-inverse-fixed) sf-popover > [slot='content'] {\n    --sf-primary:");
+  const strongPop = block(popover, ":where(.bg-primary, .bg-secondary, .bg-tertiary, .bg-info, .bg-success, .bg-warning, .bg-error, :is(.sf-alert-bar--error, .sf-alert-bar--danger, .sf-alert-bar--warning, .sf-alert-bar--info) :is(.sf-alert-bar-row, .sf-alert-bar-strip), .bg-surface-inverse, .bg-surface-inverse-fixed, .gradient-duo) sf-popover > [slot='content'] {\n    --sf-primary:");
   const glassPop = block(popover, ":where(.sf-surface-media) sf-popover > [slot='content'] {");
   for (const role of INK_ROLES) {
     const value = theme.match(new RegExp(`\\s--sf-${role}: ([^;]+);`, 'u'))[1];
@@ -83,4 +83,7 @@ test('an opaque place and a popover on a strong place or glass take the ink, lin
   }
   for (const role of LINK_RING) assert.ok(strongPop.includes(`--sf-${role}: var(--sf-place--outer-${role}, `), `popover on a strong place: ${role}`);
   assert.ok(strongPop.includes('--sf-focus--color: var(--sf-place--outer-focus--color, var(--sf-focus));'));
+  // The duo gradient plate is a strong place (mix $sf-place-gradient-selectors): both of the popover's
+  // hand-written lists name it (smart.popover 1.6.3), the coloured one and the strong one.
+  assert.ok(popover.includes(".bg-surface-inverse, .bg-surface-inverse-fixed, .gradient-duo, .bg-primary-container,"), 'coloured list');
 });

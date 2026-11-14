@@ -72,7 +72,11 @@ test('level 3 is recipes: no component sheet draws a hero, promo, intro, filled 
       if (/\/(?:css|static)\//u.test(path)) continue;
       // The recipe parts: glow (hero), duo (promo), tint (intro plate), text
       // (a filled heading).
-      if (/gradient-(?:glow|duo|tint|text)\b/u.test(readFileSync(path, 'utf8'))) found.push(path.slice(root.length + 1));
+      // A sheet that only recognises the duo plate as a place -- a :where()
+      // list of places its surface takes the theme back on (sf-popover,
+      // places states 2026-11-14) -- draws nothing with it.
+      const text = readFileSync(path, 'utf8').replace(/:where\([^{}]*\) sf-popover > \[slot='content'\]/gu, '');
+      if (/gradient-(?:glow|duo|tint|text)\b/u.test(text)) found.push(path.slice(root.length + 1));
     }
   }
   assert.deepEqual(found, []);
