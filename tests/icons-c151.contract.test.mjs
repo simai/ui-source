@@ -80,6 +80,21 @@ test('C151 point 5: an icon in running text sits on the middle of the line', () 
   assert.equal(styles.match(/vertical-align: middle;/g).length, 2);
 });
 
+test('C151 point 5: the glyph inside an icon button keeps the bottom alignment, outside the layers', () => {
+  // Group build 5 return: a button laid out without flex (sf-file-preview's
+  // actions) stood 28.55 for 28 with a middle glyph. Heights on the ladder are
+  // measured by tests/browser/icons-c151-button-heights.browser.mjs.
+  const styles = read('src/component/icon-buttons/scss/_css_icon_buttons_custom.scss');
+  const rule = /\n\.sf-icon-button \.sf-icon,\n\.sf-icon-button sf-icon \{\n  vertical-align: bottom;\n\}\n/;
+  assert.match(styles, rule);
+  const at = styles.search(rule);
+  let depth = 0;
+  for (const char of styles.slice(0, at)) depth += char === '{' ? 1 : char === '}' ? -1 : 0;
+  assert.equal(depth, 0, 'the rule is unlayered, as the icon\'s own vertical-align is');
+  const passport = JSON.parse(read('src/component/icon-buttons/passport.json'));
+  assert.equal(passport.version, '1.9.1');
+});
+
 test('C151 point 6: SF.icons.register draws a product glyph in every icon slot', () => {
   assert.equal(glyphs.registerIcon('Bad Name', '<svg></svg>'), false);
   assert.equal(glyphs.registerIcon('c151-test', 'not svg'), false);

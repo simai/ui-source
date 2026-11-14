@@ -36,6 +36,12 @@ decorative and uses `aria-hidden="true"`.
 - radius: the normal control radius `--sf-radius--ui`, or explicit
   `radius-square` and `radius-rounded` overrides.
 
+The glyph inside an icon button keeps the bottom alignment (1.9.1, owner
+decision C151): an icon in running text sits on the middle of the line, but
+inside a button the glyph is the whole content. A button laid out without flex
+-- `sf-file-preview`'s actions, class markup without `.flex` -- stays on its
+ladder height (28 at size 1/2 compact and on a phone, not 28.55).
+
 `surface` takes its colour from the neutral alpha ramp instead of a scheme, so a
 toolbar or a row action reads the same on any background and in both themes: a
 faint fill and a hairline boundary. `tonal primary` tints with the primary
