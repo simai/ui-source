@@ -986,10 +986,12 @@
      gradient, glass, an inverse place, which declare it as --sf-place--ink --
      the label and the icons are that ink in every state, as the status
      containers' ink is there (places states, 2026-11-14): a hue on a colour
-     is that colour or near it (secondary and error read 1.00:1 on bg-primary,
-     1.36 on glass), and no strong place leaves a hue 4.5:1. The page and
-     every opaque place (initial) keep the hue and its steps. The fill and
-     the edge keep their hue. */
+     is that colour or near it (secondary and error read 1.00-2.05:1 on the
+     strong places and the inverse, 1.74-1.95 on glass over a light picture;
+     only the duo gradient's dark secondary and glass over a dark picture
+     passed 4.5, so no place keeps a hue in every theme and picture). The
+     page and every opaque place (initial) keep the hue and its steps. The
+     fill and the edge keep their hue. */
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
   .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-place--ink, var(--sf-error)));
