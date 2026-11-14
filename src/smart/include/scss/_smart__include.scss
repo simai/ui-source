@@ -9,7 +9,12 @@
    variables are read with the role token as their fallback and never set
    here. */
 .sf-include {
-  --sf-include--min-block-size: var(--sf-include-min-block-size, 0px);
+  /* The page's box for the part (C130 (2), include study IN-3): the include's
+     own variable, else the box the page declared for the first paint
+     (--sf-skeleton-block-size with data-sf-skeleton, core's placeholder
+     rule), so one declaration holds the place before the code, while the
+     part loads and until it arrives. */
+  --sf-include--min-block-size: var(--sf-include-min-block-size, var(--sf-skeleton-block-size, 0px));
   --sf-include--gap: var(--sf-include-gap, var(--sf-ui-1--text-space-x));
   --sf-include--padding: var(--sf-include-padding, var(--sf-ui-1--space-y) var(--sf-ui-1--space-x));
   --sf-include--border-color: var(--sf-include-border-color, var(--sf-outline-variant));
@@ -57,11 +62,19 @@
   --sf-icon--width: var(--sf-include--icon-size);
   --sf-icon--height: var(--sf-include--icon-size);
   flex: none;
-  color: var(--sf-on-surface-variant);
+  color: var(--sf-error);
 }
 
+/* The network is gone (C120 (3)): cloud_off in the warning colour. */
+.sf-include-error--warning .sf-include-error-icon {
+  color: var(--sf-warning);
+}
+
+/* The message takes what Retry leaves and wraps inside it; the row breaks
+   only when even its longest word does not fit beside Retry (IN-4: a basis
+   of --sf-f2 sent Retry under the words at 24rem). */
 .sf-include-message {
-  flex: 1 1 var(--sf-f2);
+  flex: 1 1 0%;
   min-inline-size: 0;
   font-size: var(--sf-text-size-1);
   line-height: var(--sf-text-height-1);

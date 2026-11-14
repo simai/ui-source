@@ -3550,8 +3550,8 @@
         {
           "name": "--sf-include-min-block-size",
           "role": "min-block-size",
-          "summary": "The least block size of the region while the part loads, so the page does not move when it arrives.",
-          "default": "0px",
+          "summary": "The least block size of the region while the part loads, so the page does not move when it arrives; by default the first paint's box, --sf-skeleton-block-size, which the page declares with data-sf-skeleton.",
+          "default": "var(--sf-skeleton-block-size, 0px)",
           "since": "2026-11-02"
         },
         {
