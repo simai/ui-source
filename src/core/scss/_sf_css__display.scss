@@ -343,4 +343,40 @@
     }
   }
 
+  // ---------------------------------------------------------------------
+  // «Перейти к содержимому»
+  // ---------------------------------------------------------------------
+
+  // Core writes the link first in <body> when the page has a main region and
+  // no link of its own (core/js/display-settings.js); an author's
+  // <a class="sf-skip-link" href="#main"> takes the same look. Out of sight
+  // until the keyboard reaches it.
+  .sf-skip-link:not(:focus) {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .sf-skip-link:focus {
+    position: fixed;
+    inset-block-start: var(--sf-space-1\/2);
+    inset-inline-start: var(--sf-space-1\/2);
+    z-index: calc(var(--sf-z-index-layer, 9000) + 1000);
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+    min-block-size: var(--sf-ui-1--control-height);
+    padding-inline: var(--sf-space-1\/2);
+    border-radius: var(--sf-radius--ui);
+    background-color: var(--sf-primary);
+    color: var(--sf-on-primary);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+    font-weight: var(--sf-font-weight-medium);
+    text-decoration: none;
+  }
 }

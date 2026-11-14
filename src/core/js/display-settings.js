@@ -17,8 +17,13 @@
 //   A browser that refuses storage keeps it for the page.
 // - Nothing here claims that a site meets a standard (C196 (6)).
 //
+// Also the link «Перейти к содержимому» / «Skip to content» (C196, core on
+// every site): written first in <body> when the page has a main region and no
+// such link of its own; <html data-sf-skip-link="off"> leaves it out.
+//
 // The state is on the shared global: every bundle carries its own copy of
 // this module.
+import {pageWord} from './page-language.js';
 import {reducedMotion} from './motion.js';
 
 export const STORAGE_KEY = 'sf-display-settings';
@@ -26,6 +31,13 @@ export const SCHEMES = Object.freeze(['black-on-white', 'white-on-black', 'yello
 export const TEXT_SCALES = Object.freeze([100, 125, 150, 175, 200]);
 export const IMAGES = Object.freeze(['colour', 'grey', 'hide']);
 export const FONTS = Object.freeze(['site', 'sans', 'serif']);
+
+// The words core says itself; the same as sf-display-settings' language files
+// (tests/display-settings.contract.test.mjs holds them equal).
+export const WORDS = {
+  en: {'skip-link-text': 'Skip to content'},
+  ru: {'skip-link-text': 'Перейти к содержимому'},
+};
 
 export const DEFAULTS = Object.freeze({
   scheme: '',
@@ -52,7 +64,7 @@ const CAPTION = 'sf-image-caption';
 function state() {
   const SF = (globalThis.SF = globalThis.SF || {});
   const internal = SF.__internal || (SF.__internal = {});
-  return (internal.displaySettings ||= {listeners: new Set(), memory: null, observer: null});
+  return (internal.displaySettings ||= {listeners: new Set(), memory: null, observer: null, skipClick: false});
 }
 
 function storage() {
@@ -228,6 +240,63 @@ export function forcedColors() {
   return matches('(forced-colors: active)');
 }
 
+// ---------------------------------------------------------------------------
+// «Перейти к содержимому»
+// ---------------------------------------------------------------------------
+
+function focusable(element) {
+  return element.matches?.('a[href], button, input, select, textarea, [tabindex], [contenteditable="true"]');
+}
+
+function skipTarget(link) {
+  const hash = link.getAttribute('href') ?? '';
+  if (!hash.startsWith('#') || hash.length < 2) return null;
+  try {
+    return link.ownerDocument.getElementById(decodeURIComponent(hash.slice(1)));
+  } catch {
+    return null;
+  }
+}
+
+// The keyboard follows the link: the target takes the focus (Safari and some
+// screen readers leave it where it was on a jump to a non-focusable element).
+function followSkip(event) {
+  const link = event.target?.closest?.('a.sf-skip-link');
+  if (!link) return;
+  const target = skipTarget(link);
+  if (!target) return;
+  if (!focusable(target)) target.setAttribute('tabindex', '-1');
+  target.focus({preventScroll: false});
+}
+
+/** Writes the skip link when the page has a main region and none of its own. */
+export function installSkipLink(doc = globalThis.document) {
+  if (!doc?.body || !doc.documentElement) return null;
+  const held = state();
+  if (!held.skipClick) {
+    held.skipClick = true;
+    doc.addEventListener('click', followSkip);
+  }
+  if (doc.documentElement.getAttribute('data-sf-skip-link') === 'off') return null;
+  if (doc.querySelector('a.sf-skip-link, a[data-sf-skip-link]')) return null;
+  const main = doc.querySelector('main, [role="main"]');
+  if (!main) return null;
+  if (!main.id) {
+    let id = 'sf-main';
+    for (let n = 2; doc.getElementById(id); n += 1) id = `sf-main-${n}`;
+    main.id = id;
+  }
+  const link = doc.createElement('a');
+  link.className = 'sf-skip-link';
+  link.href = `#${main.id}`;
+  link.setAttribute('data-sf-skip-link', 'core');
+  link.textContent = pageWord(WORDS, 'skip-link-text', doc.documentElement, {component: 'sf-display-settings', source: 'ru'});
+  doc.body.prepend(link);
+  return link;
+}
+
+// ---------------------------------------------------------------------------
+
 function subscribe(listener) {
   if (typeof listener !== 'function') return () => {};
   state().listeners.add(listener);
@@ -244,6 +313,7 @@ function start() {
   if (stored) applySettings(stored, root);
   else if (root.getAttribute(ATTRIBUTES.images) === 'hide') followImages(doc, true);
   const ready = () => {
+    installSkipLink(doc);
     if (root.getAttribute(ATTRIBUTES.images) === 'hide') followImages(doc, true);
   };
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', ready, {once: true});
@@ -272,6 +342,7 @@ if (typeof globalThis !== 'undefined') {
       subscribe,
       reducedMotion: () => reducedMotion(),
       forcedColors: () => forcedColors(),
+      installSkipLink: (doc) => installSkipLink(doc),
     });
     start();
   }

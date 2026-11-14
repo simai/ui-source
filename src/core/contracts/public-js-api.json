@@ -203,7 +203,8 @@
         "reset",
         "subscribe",
         "reducedMotion",
-        "forcedColors"
+        "forcedColors",
+        "installSkipLink"
       ]
     },
     {
