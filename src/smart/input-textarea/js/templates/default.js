@@ -1,4 +1,5 @@
 import { html, nothing } from 'lit';
+import {renderFieldHelp} from '../../../helpers/field-help';
 import { createFieldContract } from '../../../../component/field-contract';
 import { renderInheritedSlot } from '../../../helpers/inherited-value';
 
@@ -78,7 +79,8 @@ export function renderTextareaTemplate(context) {
   const labelContent = label
     ? html`
         <span class="sf-textarea-text">${label}</span>
-        ${required ? html`<span class="sf-textarea-required">*</span>` : ''}
+        ${required ? html`<span class="sf-textarea-required" aria-hidden="true">*</span>` : ''}
+        ${renderFieldHelp({help: context.help, label, size, className: 'sf-textarea-help', component: context.component})}
       `
     // A label row with nothing but a star names nothing: see sf-input.
     : '';

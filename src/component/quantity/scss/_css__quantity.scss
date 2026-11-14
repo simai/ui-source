@@ -18,7 +18,8 @@
 }
 
 .sf-quantity .sf-quantity-text {
-  --sf-quantity-text--color: var(--sf-on-surface-variant);
+  /* C153 (1): the label in the text ink. */
+  --sf-quantity-text--color: var(--sf-on-surface);
   --sf-quantity-text--font-family: var(--sf-text--family);
   --sf-quantity-text--font-weight: var(--sf-font-weight-regular);
   color: var(--sf-quantity-text--color);
@@ -60,7 +61,8 @@
 }
 
 .sf-quantity .sf-quantity-required {
-  --sf-quantity-required--color: var(--sf-error);
+  /* C153 (2): the mark in the label's ink. */
+  --sf-quantity-required--color: var(--sf-on-surface);
   --sf-quantity-required--font-family: var(--sf-text--family);
   --sf-quantity-required--font-weight: var(--sf-font-weight-regular);
   color: var(--sf-quantity-required--color);
@@ -351,16 +353,19 @@
 }
 
 .sf-quantity:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):hover) .sf-quantity-wrap {
-  --sf-quantity-wrap--border-color: var(--sf-primary-hover);
+  /* C153 (4): hover in the text ink. */
+  --sf-quantity-wrap--border-color: var(--sf-on-surface);
 }
 
 .sf-quantity:has(input:enabled:not(:disabled):not(.disabled):active) .sf-quantity-wrap input::placeholder {
   --sf-quantity-placeholder--color: var(--sf-on-surface);
 }
 
-.sf-quantity:not(.sf-quantity--pointer-focus):has(input:not(:disabled):not(.disabled):focus-visible) .sf-quantity-wrap {
+/* C153 (4), R242: focus by mouse or keys draws a 2 px edge of the focus colour
+   inside the wrap, over its border; no ring outside, nothing moves. */
+.sf-quantity:has(input:not(:disabled):not(.disabled):focus) .sf-quantity-wrap {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-  outline-offset: var(--sf-focus--offset);
+  outline-offset: calc(-1 * var(--sf-focus--width));
 }
 
 /* The ring belongs to the wrap, so the bare control gives its own up -- the same
@@ -593,9 +598,9 @@
     outline-offset: calc(var(--sf-focus--width) * -1);
   }
   @media (forced-colors: active) {
-    .sf-quantity:not(.sf-quantity--pointer-focus):has(input:not(:disabled):not(.disabled):focus-visible) .sf-quantity-wrap {
+    .sf-quantity:has(input:not(:disabled):not(.disabled):focus) .sf-quantity-wrap {
       outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: var(--sf-focus-outline-width);
+      outline-offset: calc(-1 * var(--sf-focus-outline-width));
       --sf-quantity-wrap--box-shadow: none;
     }
     .sf-quantity:not(.sf-quantity--pointer-focus) .sf-icon-button.sf-quantity-count:not(:disabled):focus-visible {
@@ -684,4 +689,24 @@
       --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc(#{ladder.ui($size, space-x)} + #{ladder.ui($size, text-space-x)} - var(--sf-space-1\/4)));
     }
   }
+}
+
+/* C153 (1): at size 1 the label stays 14 on a phone (below 60rem), as
+   sf-input's. (2) A disabled field's mark goes with its label. */
+@media not all and (min-width: 60rem) {
+  .sf-quantity.sf-quantity.sf-quantity--size-1 .sf-quantity-text,
+  .sf-quantity.sf-quantity.sf-quantity--size-1 .sf-quantity-required {
+    --sf-quantity-text--font-size: var(--sf-text-size-1);
+    --sf-quantity-text--line-height: var(--sf-text-height-1);
+    --sf-quantity-required--font-size: var(--sf-text-size-1);
+    --sf-quantity-required--line-height: var(--sf-text-height-1);
+  }
+}
+
+.sf-quantity:has(input:disabled) .sf-quantity-required {
+  --sf-quantity-required--color: var(--sf-on-surface-disabled);
+}
+
+.sf-quantity:has(input:disabled) .sf-quantity-text {
+  --sf-quantity-text--color: var(--sf-on-surface-disabled);
 }

@@ -602,6 +602,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "type": "string"
         },
+        "help": {
+          "default": "",
+          "type": "string"
+        },
         "inherited-text": {
           "default": "",
           "type": "string"
@@ -685,7 +689,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.12.0"
+    "version": "1.14.0"
   },
   "sf-icon": {
     "inputs": {
@@ -797,6 +801,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": false,
           "type": "boolean"
         },
+        "counter": {
+          "default": false,
+          "type": "boolean"
+        },
         "default-value": {
           "default": "",
           "type": "string"
@@ -806,6 +814,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "type": "boolean"
         },
         "error-message": {
+          "default": "",
+          "type": "string"
+        },
+        "help": {
           "default": "",
           "type": "string"
         },
@@ -958,6 +970,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "type": "string"
         },
+        "text-start": {
+          "default": "",
+          "type": "string"
+        },
         "value": {
           "default": "",
           "type": "string"
@@ -967,7 +983,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input",
-    "version": "1.9.1"
+    "version": "1.10.0"
   },
   "sf-input-textarea": {
     "inputs": {
@@ -1007,6 +1023,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "type": "boolean"
         },
         "error-message": {
+          "default": "",
+          "type": "string"
+        },
+        "help": {
           "default": "",
           "type": "string"
         },
@@ -1139,7 +1159,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input-textarea",
-    "version": "1.9.0"
+    "version": "1.10.0"
   },
   "sf-switch": {
     "inputs": {

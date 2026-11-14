@@ -17,7 +17,8 @@ test('sf-input: the host\'s invalid/error is the state, and the classes follow i
   // `error` is a dated alias of `invalid` (standard 1.3.8 §17.2): writing it
   // writes invalid, so the host's invalid alone is the state.
   // The required error a failed form check shows (ShownRequired) is part of it.
-  assert.match(body, /const invalid = this\.sfShownInvalid\(this\.invalid\);/u);
+  // A count past maxlength is an error too (C153 (10), C141 (1)).
+  assert.match(body, /const invalid = this\.sfShownInvalid\(this\.invalid\) \|\| this\.sfCount\(\)\.over;/u);
   assert.match(body, /this\._boundRoot\.classList\.toggle\('error', invalid\);/u);
   assert.match(body, /this\.getInputElement\(\)\?\.classList\.toggle\('error', invalid\);\s*bindInput\(this\._boundRoot\);/u);
   // The template draws aria-invalid from the same state and drops it when valid.
@@ -36,7 +37,8 @@ test('sf-datepicker passes invalid and error-message to its field', () => {
   const source = read('src/smart/input-date/index.js');
   assert.match(source, /invalid: \{type: Boolean, default: false\},/u);
   assert.match(source, /errorMessage: \{attribute: 'error-message', default: ''\},/u);
-  assert.ok(source.includes('invalid: this.invalid,') && source.includes('errorMessage: this.errorMessage,'));
+  // The page's error, or the one the field shows itself (C153 (3), ShownValidity).
+  assert.ok(source.includes('invalid: this.sfShownInvalid(this.invalid),') && source.includes('errorMessage: this.sfShownMessage(this.invalid, this.errorMessage),'));
   const template = read('src/smart/input-date/js/templates/default.js');
   assert.ok(template.includes('?invalid=${context.invalid}'));
   assert.ok(template.includes('error-message=${context.errorMessage || nothing}'));

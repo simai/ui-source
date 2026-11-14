@@ -50,7 +50,7 @@ import {createFieldContract} from '../../component/field-contract';
 import {ladderSize} from '../../component/field-size';
 import {bindFormReset} from '../../component/form-reset-helper';
 import {InheritedValueField} from '../helpers/inherited-value';
-import {FormField, innerControlName, syncFieldValidity} from '../helpers/form-field';
+import {FormField, ShownValidity, innerControlName, syncFieldValidity} from '../helpers/form-field';
 import {renderQuantityTemplate} from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -123,7 +123,7 @@ const QuantityElement = elementFromManifest(manifest, {
   actions,
 });
 
-class SfQuantity extends FormField(QuantityElement) {
+class SfQuantity extends ShownValidity(FormField(QuantityElement)) {
   static get props() {
     return {
       ...super.props,
@@ -334,8 +334,7 @@ class SfQuantity extends FormField(QuantityElement) {
   // is a hint and does not count, §20.2); the range and the step are read off
   // the value, which a person may type past a bound and commit: it is kept, and
   // the error is shown (QR-1).
-  sfSyncFormState() {
-    this.sfSyncForm();
+  sfSyncValidity() {
     syncFieldValidity(this, this.getInputElement(), this.ownValidity());
   }
 
@@ -361,12 +360,15 @@ class SfQuantity extends FormField(QuantityElement) {
   // commit showed. The page's message wins; the range word fills in when the
   // page says invalid without one.
   get shownInvalid() {
-    return this.invalid || this._rangeShown;
+    return this.invalid || this._rangeShown || this.sfShownInvalid(false);
   }
 
+  // C153 (3): the page's message, the range word, or what the field shows
+  // itself after a failed check or on leaving it (ShownValidity).
   get shownErrorMessage() {
     if (this.invalid && this.errorMessage) return this.errorMessage;
-    return this._rangeShown ? this.rangeMessage : this.errorMessage;
+    if (this._rangeShown) return this.rangeMessage;
+    return this.sfShownMessage(false, '') || this.errorMessage;
   }
 
   // A commit, or the browser's own check (a submit, checkValidity()), shows

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-country",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "title": "Country Code",
   "summary": "A telephone field with a country picker: a button opens a searchable listbox of countries, and the chosen country sets the dial code, flag and, optionally, the input mask of the native tel input.",
   "kind": "smart",
@@ -22,7 +22,8 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "component.country-code"
+      "component.country-code",
+      "smart.help-mark"
     ],
     "public_parts": []
   },
@@ -73,6 +74,11 @@
       "hint": {
         "type": "string",
         "default": ""
+      },
+      "help": {
+        "type": "string",
+        "default": "",
+        "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
       },
       "invalid": {
         "type": "boolean",
@@ -340,7 +346,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-country/index.js",
-        "sha256": "f4fc0669ec71f2f06691df52764ad963a3937063a9cd9ed362b166ea2df08545"
+        "sha256": "1708fa75614aab9a38960948b6b4f1018f4f1cdb93f865f67b1d48171b861f27"
       }
     ],
     "generated_runtime": [

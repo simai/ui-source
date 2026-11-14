@@ -14,5 +14,7 @@ SF.RuleLoader['cl-input-quantity'] = {
     { name: 'quantity' },
     { name: 'icons' },
     { name: 'icon-buttons' },
+    // The «?» after the label (help, owner decision C153 (8)) is sf-help-mark: fetched with the field.
+    { name: 'cl-help-mark' },
   ],
 };

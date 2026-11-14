@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-rich",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "title": "Rich text",
   "summary": "A form field for formatted text: paragraphs, headings 2 to 4, bold, italic, links, bulleted and numbered lists and quotes, with a toolbar, undo and redo. Its value is HTML of that subset and nothing else: the value it is given, every paste and drop and every edit are cleaned to it.",
   "kind": "smart",
@@ -35,6 +35,7 @@
       "component.icon-buttons",
       "component.icons",
       "smart.button",
+      "smart.help-mark",
       "smart.input",
       "smart.popover"
     ],
@@ -98,6 +99,11 @@
         "type": "string",
         "default": "",
         "description": "The line under the field; it describes the editing surface."
+      },
+      "help": {
+        "type": "string",
+        "default": "",
+        "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
       },
       "name": {
         "type": "string",
@@ -336,7 +342,7 @@
       },
       {
         "path": "src/smart/input-rich/js/templates/default.js",
-        "sha256": "5d5b34c3390d8e082ef3a400869bf63ae85736fa33045b4c109c6e48459e8bac"
+        "sha256": "75d91abb52752918a899926cd522148ae7ea1dfa50f273f3a79b16fa59225223"
       },
       {
         "path": "src/smart/input-rich/js/rich-text-html.mjs",
@@ -348,15 +354,15 @@
       },
       {
         "path": "src/smart/input-rich/scss/_smart__rich_text.scss",
-        "sha256": "be7061c6f7708d0aebba574e6158754fef69b428233396faa2ade6d28268e199"
+        "sha256": "f96467c14d1619306c4d5b2b7d13e34b1cecd5bec8fc3a42d50e4837de6b2d6f"
       },
       {
         "path": "src/smart/input-rich/rule.js",
-        "sha256": "2085d412b36c30cbef4d13ac7a713ae26b5f027af0a1ed611912ce384e3edc82"
+        "sha256": "c79ebecdf05bdad8b617e331690fb29acd757a069dbab3850696507ac63b0361"
       },
       {
         "path": "src/smart/input-rich/docs.md",
-        "sha256": "338b2791a2295c7e62fe49ce779200966d4c1c011c594a73c7bb3082c459d328"
+        "sha256": "90481e200115d5f8d6227bb4b7543a96b307556d76ab5117528284e2a5cf4357"
       }
     ],
     "generated_runtime": []

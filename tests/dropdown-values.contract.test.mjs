@@ -61,6 +61,8 @@ function fixture(){
     // The form plumbing (FormField, 1.9.0) is out of scope too: it adds
     // validity and the form value, not a selection rule.
     FormField:(Base)=>Base,innerControlName:(component,name)=>String(name||''),
+    // The field's own error on a failed check (C153 (3)) is out of scope too.
+    ownInvalid:()=>()=>{},
     instancePath:()=>'dd',partId:(path,local)=>`${path}--${local}`,toBoolean:v=>v===''||v==='true',CustomEvent:class{constructor(type,options){this.type=type;Object.assign(this,options);}}});
   vm.runInContext(smart.slice(smart.indexOf('function normalizeSize')),runtime);
   const e=vm.runInContext('new SfDropdown()',runtime);

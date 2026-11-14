@@ -33,7 +33,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {ladderSize} from '../../component/field-size';
 import {createFieldContract} from '../../component/field-contract';
-import {FormField, innerControlName, syncFieldValidity} from '../helpers/form-field';
+import {FormField, ShownValidity, innerControlName, syncFieldValidity} from '../helpers/form-field';
 import {renderCodeInputTemplate} from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -63,7 +63,7 @@ const CodeInputElement = elementFromManifest(manifest, {
   aliases,
 });
 
-class SfCodeInput extends FormField(CodeInputElement) {
+class SfCodeInput extends ShownValidity(FormField(CodeInputElement)) {
   static get props() {
     return {
       ...super.props,
@@ -575,18 +575,20 @@ class SfCodeInput extends FormField(CodeInputElement) {
     const props = this.getPropsContext();
     const component = this;
     const input = this.getInputElement();
-    const invalid = this.invalid;
+    // C153 (3): the page's error, or the one the field shows itself (ShownValidity).
+    const invalid = this.sfShownInvalid(this.invalid);
+    const shownMessage = this.sfShownMessage(this.invalid, this.errorMessage);
     const field = createFieldContract(this, {
       prefix: 'sf-code-input',
       required: this.required,
       invalid,
       hint: this.hint,
-      errorMessage: this.errorMessage,
+      errorMessage: shownMessage,
     });
     const hasLabel = Boolean(this.hasSlotContent?.('label') || this.label);
     const labelContent = this.hasSlotContent?.('label') ? this.getSlotContent('label') : this.label;
     const hint = this.hasSlotContent?.('hint') ? this.getSlotContent('hint') : this.hint;
-    const errorContent = this.hasSlotContent?.('error') ? this.getSlotContent('error') : this.errorMessage;
+    const errorContent = this.hasSlotContent?.('error') ? this.getSlotContent('error') : shownMessage;
     const messageIsError = Boolean(field.invalid && errorContent);
     const hasControlledValue = this.hasAttribute('value');
     // The template's defaultValue is the component's, as written; what the

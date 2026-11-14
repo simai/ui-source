@@ -138,6 +138,12 @@ const sfInputTextareaMeta = {
       "default": "",
       "description": "The help line under the field; on an error the error message takes its place."
     },
+    "help": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
+    },
     "name": {
       "kind": "custom",
       "valueType": "string",

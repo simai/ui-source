@@ -186,7 +186,7 @@ test('the manifest: a form field of the field family, its settings, events and w
   assert.equal(component.id, 'smart.input-rich');
   assert.equal(component.family, 'field');
   assert.deepEqual(Object.keys(component.settings).sort(), [
-    'appearance', 'counter', 'disabled', 'error-message', 'hint', 'invalid', 'label', 'max-rows', 'maxlength', 'name', 'placeholder', 'readonly', 'required', 'rows', 'size',
+    'appearance', 'counter', 'disabled', 'error-message', 'help', 'hint', 'invalid', 'label', 'max-rows', 'maxlength', 'name', 'placeholder', 'readonly', 'required', 'rows', 'size',
   ]);
   assert.deepEqual(component.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.deepEqual(component.values.value, {...component.values.value, type: 'string', default: ''});

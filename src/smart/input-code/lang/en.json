@@ -4,6 +4,7 @@
     "character": "character {n} of {m}",
     "digit": "digit {n} of {m}",
     "group": "Code",
-    "too-short": "Enter the whole code"
+    "too-short": "Enter the whole code",
+    "value-missing": "Enter the code"
   }
 }

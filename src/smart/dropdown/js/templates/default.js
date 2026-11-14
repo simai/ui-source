@@ -1,4 +1,5 @@
 import { html, nothing } from "lit";
+import {renderFieldHelp} from '../../../helpers/field-help';
 import { renderInheritedSlot } from "../../../helpers/inherited-value";
 import { cssUrl } from "../../../../core/js/css-url";
 import {
@@ -273,8 +274,9 @@ export function renderDropdownTemplate(context) {
             <span class="sf-dropdown-label flex">
               <span class="sf-dropdown-text">${context.label}</span>
               ${context.required
-                ? html`<span class="sf-dropdown-required">*</span>`
+                ? html`<span class="sf-dropdown-required" aria-hidden="true">*</span>`
                 : nothing}
+              ${renderFieldHelp({help: context.help, label: context.label, size: context.size, className: 'sf-dropdown-help', component: context.component})}
             </span>
           `
         : nothing}

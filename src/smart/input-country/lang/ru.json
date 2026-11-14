@@ -10,6 +10,9 @@
     "phone-required": "Введите номер телефона.",
     "placeholder": "",
     "search-placeholder": "Страна или код",
-    "value-missing": "Введите номер телефона."
+    "value-missing": "Введите номер телефона.",
+    "pattern-mismatch": "Введите номер целиком",
+    "too-short": "Введите номер целиком",
+    "help": "Подробнее: {label}"
   }
 }

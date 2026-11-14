@@ -33,6 +33,7 @@
     "create-email": "Добавить адрес {text}",
     "create-error": "Не удалось создать",
     "chip-position": "{label}, {position} из {total}, Delete — убрать",
-    "done": "Готово"
+    "done": "Готово",
+    "help": "Подробнее: {label}"
   }
 }

@@ -22,6 +22,7 @@
     "link-remove": "Убрать ссылку",
     "value-missing": "Заполните поле",
     "count-text": "{count} / {max}",
-    "too-long": "Не больше {max} знаков"
+    "too-long": "Не больше {max} знаков",
+    "help": "Подробнее: {label}"
   }
 }

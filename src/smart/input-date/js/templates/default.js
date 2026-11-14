@@ -105,6 +105,7 @@ function renderDatepickerInput(context) {
             ?disabled=${context.disabled} ?required=${context.required} ?invalid=${context.invalid}
             error-message=${context.errorMessage || nothing}
             hint=${context.hint || nothing} hint-icon=${context.hintIcon || nothing}
+            help=${context.help || nothing}
             ?mask=${context.mask}
             mask-pattern=${context.maskPattern || nothing} mask-lazy=${String(context.maskLazy)}
             mask-placeholder-char=${context.maskPlaceholderChar || nothing}

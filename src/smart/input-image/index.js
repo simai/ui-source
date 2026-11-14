@@ -38,7 +38,7 @@ import {tagSelector} from '../../core/js/tag-aliases.js';
 import {breakpointMedia} from '../../core/js/breakpoints.js';
 import {createFieldContract} from '../../component/field-contract';
 import {FIELD_SIZES, fieldSize} from '../../component/field-size';
-import {FormField} from '../helpers/form-field';
+import {FormField, ownInvalid} from '../helpers/form-field';
 import {renderImageFieldTemplate} from './js/templates/default';
 import {
   acceptFormats,
@@ -237,7 +237,9 @@ class SfImageField extends FormField(ImageFieldElement) {
     this._phoneQuery = breakpointMedia('md', {below: true});
     this._phone = Boolean(this._phoneQuery?.matches);
     this._phoneQuery?.addEventListener?.('change', this._onPhone);
-    this.addEventListener('invalid', this._onInvalid);
+    // C153 (3): never the browser's bubble; the first wrong field of a
+    // submit takes the focus (helpers/form-field.js ownInvalid).
+    this._invalidListener = ownInvalid(this, this._onInvalid);
     this.addEventListener('focusout', this._onFocusOut);
   }
 
@@ -246,7 +248,7 @@ class SfImageField extends FormField(ImageFieldElement) {
     coarseQuery()?.removeEventListener?.('change', this._onCoarse);
     this._phoneQuery?.removeEventListener?.('change', this._onPhone);
     this._phoneQuery = null;
-    this.removeEventListener('invalid', this._onInvalid);
+    this.removeEventListener('invalid', this._invalidListener, true);
     this.removeEventListener('focusout', this._onFocusOut);
     this._upload?.controller?.abort();
   }

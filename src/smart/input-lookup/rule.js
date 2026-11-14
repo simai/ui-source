@@ -24,5 +24,7 @@ SF.RuleLoader['cl-input-lookup'] = {
     // The sheet under lg: its back arrow, named «Готово» (C139 (7)),
     // as sf-search's sheet on a phone.
     { name: 'cl-button-icon' },
+    // The «?» after the label (help, owner decision C153 (8)) is sf-help-mark: fetched with the field.
+    { name: 'cl-help-mark' },
   ],
 };

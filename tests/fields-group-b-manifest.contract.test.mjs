@@ -108,7 +108,7 @@ for (const [folder, spec] of Object.entries(COMPONENTS)) {
 
 test('sf-input-country: the host is the form control; the inner tel input carries no name and joins no form (§17.1)', () => {
   const source = read('src/smart/input-country/index.js');
-  assert.match(source, /class SfCountryCode extends FormField\(CountryCodeElement\)/u);
+  assert.match(source, /class SfCountryCode extends ShownValidity\(FormField\(CountryCodeElement\)\)/u);
   assert.match(source, /controlName: this\.sfInternals \? '' : this\.name/u);
   assert.match(source, /controlForm: this\.sfInternals \? '' : this\.getAttribute\('form'\)/u);
   const manifest = json('src/smart/input-country/component.json');
@@ -121,7 +121,7 @@ test('sf-input-color: shown is the base value; the painted colour is effective-v
   const source = read('src/smart/input-color/index.js');
   assert.doesNotMatch(source, /\n {4}get shown\(\) \{/u, 'the component no longer shadows the base value shown');
   assert.match(source, /\n {4}get effectiveValue\(\) \{/u);
-  assert.match(source, /class SfColor extends FormField\(ColorElement\)/u);
+  assert.match(source, /class SfColor extends ShownValidity\(FormField\(ColorElement\)\)/u);
   assert.match(source, /base: InheritedValueField\(SfBaseElement\)/u);
   const manifest = json('src/smart/input-color/component.json');
   // theme and checks: the brand colour variants' theme and its checks (C84).
@@ -221,7 +221,7 @@ test('sf-file-upload: each entry is a stream (§10.8); the colon names follow th
 
 test('sf-input-date: a leaf with outcome actions; the form gets the ISO date; the panel id from the path (§4.4, §7.1.1, §17.1)', () => {
   const source = read('src/smart/input-date/index.js');
-  assert.match(source, /class SfDatepicker extends FormField\(DatepickerElement\)/u);
+  assert.match(source, /class SfDatepicker extends ShownValidity\(FormField\(DatepickerElement\)\)/u);
   for (const method of ['openPanel', 'closePanel', 'togglePanel', 'choosePreset', 'chooseCustomRange']) {
     assert.doesNotMatch(source, new RegExp(`\\n {4}${method}\\(`, 'u'), `${method} is generated from the manifest's action`);
   }

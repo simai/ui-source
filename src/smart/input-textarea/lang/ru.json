@@ -3,7 +3,9 @@
   "runtime": {
     "value-missing": "Заполните поле",
     "count-text": "{count} / {max}",
-    "too-long": "Не больше {max} знаков"
+    "too-long": "Не больше {max} знаков",
+    "too-short": "Не меньше {min} знаков",
+    "help": "Подробнее: {label}"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",

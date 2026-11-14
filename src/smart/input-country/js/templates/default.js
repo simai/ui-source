@@ -1,4 +1,5 @@
 import { html, nothing } from 'lit';
+import {renderFieldHelp} from '../../../helpers/field-help';
 import { createFieldContract } from '../../../../component/field-contract';
 
 // A flag of the list is the browser's own lazy image: the address is written
@@ -108,7 +109,8 @@ export function renderCountryCodeTemplate(context) {
         ? html`
           <span class="sf-country-code-label flex">
             <span class="sf-country-code-text">${label}</span>
-            ${required ? html`<span class="sf-country-code-required">*</span>` : ''}
+            ${required ? html`<span class="sf-country-code-required" aria-hidden="true">*</span>` : ''}
+            ${renderFieldHelp({help: context.help, label, size, className: 'sf-country-code-help', component: context.component})}
           </span>`
         : ''}
 
