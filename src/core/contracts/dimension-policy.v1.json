@@ -258,6 +258,14 @@
       "reason": "Owner decision C136 (1): a text skeleton bar is as tall as the capitals of the text it stands for, Inter's capital height 0.727 em rounded to an even pixel with the size ladder's 2 px step, centred in the line (the glyph box's middle, 0.6055 em from its top). These are font metrics relative to the text, not sizes; the @supports test only asks whether round() parses. sf-modal's loading skeleton (C159 (9)) draws the same bar."
     },
     {
+      "id": "form-field-width-steps",
+      "category": "style-review",
+      "filePattern": "^smart/form/scss/_smart__form\\.scss$",
+      "contextPattern": "^\\s*max-inline-size: (?:8|16)rem;$",
+      "status": "accepted-owner-decision",
+      "reason": "C182 (4), owner 2026-11-14: a short form field's width steps are s 8rem and m 16rem of the control; the decision gives the values, no other component reads them."
+    },
+    {
       "id": "documentation-prose",
       "category": [
         "script-data-template-review",

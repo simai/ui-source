@@ -100,6 +100,8 @@ const FOLDERS = {
   'list-timeline': 'smart/list-timeline',
   // The moment with its tooltip (2026-11-10, C40): a sheet of its own.
   time: 'smart/time',
+  // The form from field descriptions (2026-11-14, C182): a sheet of its own.
+  form: 'smart/form',
   // «before → after» as text (2026-11-10, C40): a sheet of its own.
   change: 'smart/change',
   // The group heading of block list (2026-11-10, C40): a class, CSS only.

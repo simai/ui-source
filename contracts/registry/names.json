@@ -24,6 +24,7 @@
         "dropdown",
         "empty",
         "file",
+        "form",
         "gallery",
         "header",
         "help",
@@ -156,6 +157,10 @@
         },
         {
           "element": "sf-file-upload",
+          "status": "released"
+        },
+        {
+          "element": "sf-form",
           "status": "released"
         },
         {

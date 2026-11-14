@@ -1,0 +1,483 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Две группы, «Сохранить» и «Отмена» под полями",
+      "settings": {
+        "label": "Кнопка в письме",
+        "groups": [
+          {
+            "key": "content",
+            "label": "Содержимое"
+          },
+          {
+            "key": "look",
+            "label": "Оформление"
+          }
+        ],
+        "fields": [
+          {
+            "key": "text",
+            "label": "Текст",
+            "propertyType": "string",
+            "required": true,
+            "group": "content",
+            "hint": "Не длиннее 30 знаков"
+          },
+          {
+            "key": "url",
+            "label": "Ссылка",
+            "propertyType": "string",
+            "required": true,
+            "group": "content",
+            "placeholder": "https://"
+          },
+          {
+            "key": "tone",
+            "label": "Тон",
+            "propertyType": "choice",
+            "group": "look",
+            "width": "m",
+            "options": [
+              {
+                "value": "accent",
+                "label": "Акцент"
+              },
+              {
+                "value": "quiet",
+                "label": "Тихая"
+              }
+            ]
+          },
+          {
+            "key": "radius",
+            "label": "Скругление, px",
+            "propertyType": "integer",
+            "group": "look",
+            "width": "s",
+            "min": 0,
+            "max": 24,
+            "help": "Только для залитой кнопки"
+          },
+          {
+            "key": "blank",
+            "label": "Открывать в новой вкладке",
+            "propertyType": "boolean",
+            "required": true,
+            "group": "look"
+          },
+          {
+            "key": "note",
+            "label": "Описание",
+            "propertyType": "text",
+            "group": "look",
+            "width": "full"
+          }
+        ],
+        "value": {
+          "text": "Подробнее",
+          "url": "https://simai.io",
+          "tone": "accent",
+          "radius": 8,
+          "blank": true,
+          "note": ""
+        }
+      },
+      "studio": {
+        "title": "form reference",
+        "scenario": {
+          "assertions": [
+            "upgraded",
+            "no-console-error"
+          ]
+        }
+      },
+      "first-paint": {
+        "max-bytes": 12288,
+        "why": "a whole form, two groups of four fields with their labels, «*», «?», hint and the buttons: every field holds its row before any code, so the form does not grow as the controls arrive"
+      }
+    },
+    {
+      "name": "labels-start",
+      "title": "labels=\"start\": подпись сбоку от 40rem",
+      "settings": {
+        "label": "Кнопка",
+        "labels": "start",
+        "fields": [
+          {
+            "key": "text",
+            "label": "Текст",
+            "propertyType": "string",
+            "required": true,
+            "group": "content",
+            "hint": "Не длиннее 30 знаков"
+          },
+          {
+            "key": "url",
+            "label": "Ссылка",
+            "propertyType": "string",
+            "required": true,
+            "group": "content",
+            "placeholder": "https://"
+          },
+          {
+            "key": "tone",
+            "label": "Тон",
+            "propertyType": "choice",
+            "group": "look",
+            "width": "m",
+            "options": [
+              {
+                "value": "accent",
+                "label": "Акцент"
+              },
+              {
+                "value": "quiet",
+                "label": "Тихая"
+              }
+            ]
+          },
+          {
+            "key": "blank",
+            "label": "Открывать в новой вкладке",
+            "propertyType": "boolean",
+            "required": true,
+            "group": "look"
+          }
+        ],
+        "value": {
+          "text": "Подробнее",
+          "url": "https://simai.io",
+          "tone": "accent",
+          "radius": 8,
+          "blank": true,
+          "note": ""
+        }
+      }
+    },
+    {
+      "name": "view",
+      "title": "Просмотр: значения текстом и «Изменить»",
+      "settings": {
+        "label": "Кнопка",
+        "mode": "view",
+        "fields": [
+          {
+            "key": "text",
+            "label": "Текст",
+            "propertyType": "string",
+            "required": true,
+            "group": "content",
+            "hint": "Не длиннее 30 знаков"
+          },
+          {
+            "key": "url",
+            "label": "Ссылка",
+            "propertyType": "string",
+            "required": true,
+            "group": "content",
+            "placeholder": "https://"
+          },
+          {
+            "key": "tone",
+            "label": "Тон",
+            "propertyType": "choice",
+            "group": "look",
+            "width": "m",
+            "options": [
+              {
+                "value": "accent",
+                "label": "Акцент"
+              },
+              {
+                "value": "quiet",
+                "label": "Тихая"
+              }
+            ]
+          },
+          {
+            "key": "blank",
+            "label": "Открывать в новой вкладке",
+            "propertyType": "boolean",
+            "required": true,
+            "group": "look"
+          }
+        ],
+        "value": {
+          "text": "Подробнее",
+          "url": "https://simai.io",
+          "tone": "accent",
+          "radius": 8,
+          "blank": true,
+          "note": ""
+        }
+      }
+    },
+    {
+      "name": "instant",
+      "title": "apply=\"instant\": без кнопок, «да / нет» — переключатель",
+      "settings": {
+        "label": "Параметры кнопки",
+        "apply": "instant",
+        "fields": [
+          {
+            "key": "text",
+            "label": "Текст",
+            "propertyType": "string",
+            "required": true,
+            "group": "content",
+            "hint": "Не длиннее 30 знаков"
+          },
+          {
+            "key": "tone",
+            "label": "Тон",
+            "propertyType": "choice",
+            "group": "look",
+            "width": "m",
+            "options": [
+              {
+                "value": "accent",
+                "label": "Акцент"
+              },
+              {
+                "value": "quiet",
+                "label": "Тихая"
+              }
+            ]
+          },
+          {
+            "key": "blank",
+            "label": "Открывать в новой вкладке",
+            "propertyType": "boolean",
+            "required": true,
+            "group": "look"
+          }
+        ],
+        "value": {
+          "text": "Подробнее",
+          "url": "https://simai.io",
+          "tone": "accent",
+          "radius": 8,
+          "blank": true,
+          "note": ""
+        }
+      }
+    },
+    {
+      "name": "sticky",
+      "title": "footer=\"sticky\": кнопки в полосе внизу места",
+      "settings": {
+        "label": "Настройки",
+        "footer": "sticky",
+        "groups": [
+          {
+            "key": "content",
+            "label": "Содержимое"
+          },
+          {
+            "key": "look",
+            "label": "Оформление"
+          }
+        ],
+        "fields": [
+          {
+            "key": "text",
+            "label": "Текст",
+            "propertyType": "string",
+            "required": true,
+            "group": "content",
+            "hint": "Не длиннее 30 знаков"
+          },
+          {
+            "key": "url",
+            "label": "Ссылка",
+            "propertyType": "string",
+            "required": true,
+            "group": "content",
+            "placeholder": "https://"
+          },
+          {
+            "key": "tone",
+            "label": "Тон",
+            "propertyType": "choice",
+            "group": "look",
+            "width": "m",
+            "options": [
+              {
+                "value": "accent",
+                "label": "Акцент"
+              },
+              {
+                "value": "quiet",
+                "label": "Тихая"
+              }
+            ]
+          },
+          {
+            "key": "radius",
+            "label": "Скругление, px",
+            "propertyType": "integer",
+            "group": "look",
+            "width": "s",
+            "min": 0,
+            "max": 24,
+            "help": "Только для залитой кнопки"
+          },
+          {
+            "key": "blank",
+            "label": "Открывать в новой вкладке",
+            "propertyType": "boolean",
+            "required": true,
+            "group": "look"
+          },
+          {
+            "key": "note",
+            "label": "Описание",
+            "propertyType": "text",
+            "group": "look",
+            "width": "full"
+          }
+        ],
+        "value": {
+          "text": "Подробнее",
+          "url": "https://simai.io",
+          "tone": "accent",
+          "radius": 8,
+          "blank": true,
+          "note": ""
+        }
+      },
+      "first-paint": {
+        "max-bytes": 12288,
+        "why": "a whole form, two groups of four fields with their labels, «*», «?», hint and the buttons: every field holds its row before any code, so the form does not grow as the controls arrive"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-form against component.json (standard simai.smart-component 1.3.15 §12, gate 20; owner decision C182)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main style=\"inline-size: 60rem; max-inline-size: 100%\">",
+          "  <button id=\"before\" type=\"button\">До</button>",
+          "  <sf-form id=\"f\" label=\"Кнопка в письме\"><script type=\"application/json\" data-sf-settings>{\"groups\": [{\"key\": \"content\", \"label\": \"Содержимое\"}, {\"key\": \"look\", \"label\": \"Оформление\"}], \"fields\": [{\"key\": \"text\", \"label\": \"Текст\", \"propertyType\": \"string\", \"required\": true, \"group\": \"content\", \"hint\": \"Не длиннее 30 знаков\"}, {\"key\": \"url\", \"label\": \"Ссылка\", \"propertyType\": \"string\", \"required\": true, \"group\": \"content\", \"placeholder\": \"https://\"}, {\"key\": \"tone\", \"label\": \"Тон\", \"propertyType\": \"choice\", \"group\": \"look\", \"width\": \"m\", \"options\": [{\"value\": \"accent\", \"label\": \"Акцент\"}, {\"value\": \"quiet\", \"label\": \"Тихая\"}]}, {\"key\": \"radius\", \"label\": \"Скругление, px\", \"propertyType\": \"integer\", \"group\": \"look\", \"width\": \"s\", \"min\": 0, \"max\": 24, \"help\": \"Только для залитой кнопки\"}, {\"key\": \"blank\", \"label\": \"Открывать в новой вкладке\", \"propertyType\": \"boolean\", \"required\": true, \"group\": \"look\"}, {\"key\": \"note\", \"label\": \"Описание\", \"propertyType\": \"text\", \"group\": \"look\", \"width\": \"full\"}], \"value\": {\"text\": \"Подробнее\", \"url\": \"https://simai.io\", \"tone\": \"accent\", \"radius\": 8, \"blank\": true, \"note\": \"\"}}</script></sf-form>",
+          "  <div style=\"inline-size: 30rem\"><sf-form id=\"e\" label=\"Заявка\"><script type=\"application/json\" data-sf-settings>{\"fields\": [{\"key\": \"text\", \"label\": \"Текст\", \"propertyType\": \"string\", \"required\": true, \"group\": \"content\", \"hint\": \"Не длиннее 30 знаков\"}, {\"key\": \"url\", \"label\": \"Ссылка\", \"propertyType\": \"string\", \"required\": true, \"group\": \"content\", \"placeholder\": \"https://\"}, {\"key\": \"tone\", \"label\": \"Тон\", \"propertyType\": \"choice\", \"group\": \"look\", \"width\": \"m\", \"options\": [{\"value\": \"accent\", \"label\": \"Акцент\"}, {\"value\": \"quiet\", \"label\": \"Тихая\"}]}]}</script></sf-form></div>",
+          "  <div style=\"inline-size: 30rem\"><sf-form id=\"one\" label=\"Одна ошибка\"><script type=\"application/json\" data-sf-settings>{\"fields\": [{\"key\": \"text\", \"label\": \"Текст\", \"propertyType\": \"string\", \"required\": true, \"group\": \"content\", \"hint\": \"Не длиннее 30 знаков\"}, {\"key\": \"tone\", \"label\": \"Тон\", \"propertyType\": \"choice\", \"group\": \"look\", \"width\": \"m\", \"options\": [{\"value\": \"accent\", \"label\": \"Акцент\"}, {\"value\": \"quiet\", \"label\": \"Тихая\"}]}]}</script></sf-form></div>",
+          "  <sf-form id=\"v\" label=\"Просмотр\" mode=\"view\"><script type=\"application/json\" data-sf-settings>{\"fields\": [{\"key\": \"text\", \"label\": \"Текст\", \"propertyType\": \"string\", \"required\": true, \"group\": \"content\", \"hint\": \"Не длиннее 30 знаков\"}, {\"key\": \"url\", \"label\": \"Ссылка\", \"propertyType\": \"string\", \"required\": true, \"group\": \"content\", \"placeholder\": \"https://\"}, {\"key\": \"tone\", \"label\": \"Тон\", \"propertyType\": \"choice\", \"group\": \"look\", \"width\": \"m\", \"options\": [{\"value\": \"accent\", \"label\": \"Акцент\"}, {\"value\": \"quiet\", \"label\": \"Тихая\"}]}, {\"key\": \"blank\", \"label\": \"Открывать в новой вкладке\", \"propertyType\": \"boolean\", \"required\": true, \"group\": \"look\"}], \"value\": {\"text\": \"Подробнее\", \"url\": \"https://simai.io\", \"tone\": \"accent\", \"radius\": 8, \"blank\": true, \"note\": \"\"}}</script></sf-form>",
+          "  <sf-form id=\"i\" label=\"Сразу\" apply=\"instant\"><script type=\"application/json\" data-sf-settings>{\"fields\": [{\"key\": \"text\", \"label\": \"Текст\", \"propertyType\": \"string\", \"required\": true, \"group\": \"content\", \"hint\": \"Не длиннее 30 знаков\"}, {\"key\": \"tone\", \"label\": \"Тон\", \"propertyType\": \"choice\", \"group\": \"look\", \"width\": \"m\", \"options\": [{\"value\": \"accent\", \"label\": \"Акцент\"}, {\"value\": \"quiet\", \"label\": \"Тихая\"}]}, {\"key\": \"blank\", \"label\": \"Открывать в новой вкладке\", \"propertyType\": \"boolean\", \"required\": true, \"group\": \"look\"}], \"value\": {\"text\": \"Подробнее\", \"url\": \"https://simai.io\", \"tone\": \"accent\", \"radius\": 8, \"blank\": true, \"note\": \"\"}}</script></sf-form>",
+          "  <sf-form id=\"s\" label=\"Сбоку\" labels=\"start\"><script type=\"application/json\" data-sf-settings>{\"fields\": [{\"key\": \"text\", \"label\": \"Текст\", \"propertyType\": \"string\", \"required\": true, \"group\": \"content\", \"hint\": \"Не длиннее 30 знаков\"}, {\"key\": \"url\", \"label\": \"Ссылка\", \"propertyType\": \"string\", \"required\": true, \"group\": \"content\", \"placeholder\": \"https://\"}], \"value\": {\"text\": \"Подробнее\", \"url\": \"https://simai.io\", \"tone\": \"accent\", \"radius\": 8, \"blank\": true, \"note\": \"\"}}</script></sf-form>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-frame",
+          "title": "C182 (3), (5), (7): a native form named by label; two groups as fieldsets with legends; each field a label row over the field renderers' control; «* — обязательные поля»; «Сохранить» then «Отмена» under the fields",
+          "covers": "settings.fields, settings.groups, settings.label, accessibility",
+          "steps": [
+            {
+              "check": "(() => { const f = document.querySelector('#f form.sf-form'); const sets = f.querySelectorAll('fieldset.sf-form-group'); const legends = [...f.querySelectorAll('legend')].map((l) => l.textContent.trim()); const labels = [...f.querySelectorAll('.sf-form-label-text')].map((l) => l.textContent.trim()); const buttons = [...f.querySelectorAll('.sf-form-actions sf-button')].map((b) => b.textContent.trim() || b.getAttribute('text')); return f.getAttribute('aria-label') === 'Кнопка в письме' && f.noValidate && sets.length === 2 && legends.join('|') === 'Содержимое|Оформление' && labels[0] === 'Текст*' && f.querySelector('.sf-form-note').textContent.trim() === '* — обязательные поля' && f.querySelector('[data-key=\"text\"] sf-input') && f.querySelector('[data-key=\"blank\"] sf-checkbox') && !f.querySelector('[data-key=\"blank\"] .sf-form-label') && buttons.join('|') === 'Сохранить|Отмена'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-summary",
+          "title": "C182 (6): «Сохранить» with two empty required fields shows each field's error, a summary role alert with a link per error and takes the focus; a link moves the focus to its field",
+          "covers": "events.invalid, accessibility",
+          "steps": [
+            {
+              "script": "(window.__inv = null, document.querySelector('#e').addEventListener('sf-form-invalid', (e) => { window.__inv = e.detail.fields.join(','); }), document.querySelector('#e .sf-form-submit button').click(), true)",
+              "wait": 250,
+              "check": "(() => { const s = document.querySelector('#e .sf-form-summary'); return window.__inv === 'text,url' && s && s.getAttribute('role') === 'alert' && document.activeElement === s && s.querySelectorAll('a').length === 2 && s.textContent.includes('Исправьте 2 поля') && document.querySelector('#e [data-key=\"text\"] sf-input').hasAttribute('invalid') && document.querySelector('#e [data-key=\"text\"] sf-input').getAttribute('error-message') === 'Заполните поле «Текст»'; })()"
+            },
+            {
+              "script": "(document.querySelector('#e .sf-form-summary a:nth-of-type(1)'), document.querySelectorAll('#e .sf-form-summary a')[1].click(), true)",
+              "wait": 150,
+              "check": "document.querySelector('#e [data-key=\"url\"]').contains(document.activeElement)"
+            }
+          ]
+        },
+        {
+          "id": "p3-one-error",
+          "title": "C182 (6): one error -- no summary, the focus on that field",
+          "covers": "accessibility.focus",
+          "steps": [
+            {
+              "script": "(document.querySelector('#one .sf-form-submit button').click(), true)",
+              "wait": 250,
+              "check": "!document.querySelector('#one .sf-form-summary') && document.querySelector('#one [data-key=\"text\"]').contains(document.activeElement)"
+            }
+          ]
+        },
+        {
+          "id": "p4-dirty",
+          "title": "C182 (7): a change shows «Есть несохранённые изменения» under the buttons; «Сохранить» submits the value and the note goes",
+          "covers": "values.dirty, events.submit, events.input",
+          "steps": [
+            {
+              "script": "(window.__sub = null, document.querySelector('#f').addEventListener('sf-form-submit', (e) => { window.__sub = e.detail.value; }), document.querySelector('#f').fields.find((x) => x.key === 'radius') && document.querySelector('#f sf-checkbox input, #f sf-checkbox [role=\"checkbox\"]').click(), true)",
+              "wait": 250,
+              "check": "document.querySelector('#f').dirty === true && document.querySelector('#f .sf-form-state').textContent.trim() === 'Есть несохранённые изменения' && document.querySelector('#f').hasAttribute('data-dirty')"
+            },
+            {
+              "script": "(document.querySelector('#f .sf-form-submit button').click(), true)",
+              "wait": 250,
+              "check": "window.__sub && window.__sub.blank === false && window.__sub.text === 'Подробнее' && document.querySelector('#f').dirty === false && document.querySelector('#f .sf-form-state').textContent.trim() === ''"
+            }
+          ]
+        },
+        {
+          "id": "p5-view",
+          "title": "C182 (8): view draws the values as text and «Изменить»; «Изменить» opens edit with the focus on the first field, «Отмена» returns to view",
+          "covers": "values.mode, events.cancel",
+          "steps": [
+            {
+              "check": "(() => { const v = document.querySelector('#v'); return !v.querySelector('sf-input') && v.querySelector('.sf-form-edit') && v.querySelector('[data-key=\"text\"] .sf-form-control').textContent.includes('Подробнее') && !v.querySelector('.sf-form-note'); })()"
+            },
+            {
+              "script": "(document.querySelector('#v .sf-form-edit button').click(), true)",
+              "wait": 300,
+              "check": "document.querySelector('#v sf-input') && document.querySelector('#v [data-key=\"text\"]').contains(document.activeElement)"
+            },
+            {
+              "script": "(document.querySelector('#v .sf-form-cancel button').click(), true)",
+              "wait": 300,
+              "check": "document.querySelector('#v').mode === 'view' && !document.querySelector('#v sf-input') && document.activeElement === document.querySelector('#v .sf-form-edit button')"
+            }
+          ]
+        },
+        {
+          "id": "p6-instant",
+          "title": "C182 (9): apply instant -- no buttons, no required note, a required yes/no is a switch, a change sends sf-form-change {key, value}",
+          "covers": "settings.apply, events.change",
+          "steps": [
+            {
+              "script": "(window.__chg = null, document.querySelector('#i').addEventListener('sf-form-change', (e) => { window.__chg = e.detail.key + '=' + e.detail.value; }), document.querySelector('#i sf-switch input').click(), true)",
+              "wait": 250,
+              "check": "!document.querySelector('#i .sf-form-footer') && !document.querySelector('#i .sf-form-note') && document.querySelector('#i [data-key=\"blank\"] sf-switch') && window.__chg === 'blank=false'"
+            }
+          ]
+        },
+        {
+          "id": "p7-actions",
+          "title": "§17.4: valid and value; check-validity refused while wrong; set-errors shows the host's message; reset takes the errors away",
+          "covers": "actions.check-validity, actions.reset, actions.set-errors, values.valid, values.value",
+          "steps": [
+            {
+              "script": "(document.querySelector('#s').setErrors({errors: {url: 'Адрес уже занят'}}), true)",
+              "wait": 250,
+              "check": "document.querySelector('#s [data-key=\"url\"] sf-input').getAttribute('error-message') === 'Адрес уже занят' && document.querySelector('#s').valid === false"
+            },
+            {
+              "script": "(window.__r = document.querySelector('#s').reset(), true)",
+              "wait": 200,
+              "check": "window.__r.outcome === 'applied' && !document.querySelector('#s [data-key=\"url\"] sf-input').hasAttribute('invalid') && document.querySelector('#s').valid === true && document.querySelector('#s').checkValidity().outcome === 'applied' && document.querySelector('#s').value.url === 'https://simai.io'"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
