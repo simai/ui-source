@@ -19,7 +19,7 @@
     "src/component/dropdown/scss/_css__list.scss",
     "src/component/dropdown/scss/index.scss"
   ],
-  "content_sha256": "cab5b9aa974d6945fc175ff6be1e9a4ede616cbc38b6bb42cbe37cbecf9caeae",
+  "content_sha256": "934553e816c4b6b9cc381176a8d94723e25e152e8648681975f58ca1df159ee1",
   "dependencies": [
     {
       "id": "component.context-menu",
@@ -44,6 +44,10 @@
     {
       "id": "tokens.border",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.1"
     },
     {
       "id": "tokens.colour",

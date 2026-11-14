@@ -1,5 +1,6 @@
 @use '../../context-menu/scss/panel';
 @use '../../inputs/scss/field-action';
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 
 @layer sf.components {
 .sf-dropdown {
@@ -573,7 +574,7 @@
     --sf-dropdown--inset: var(--sf-space-1);
     --sf-dropdown--line-radius: min(var(--sf-dropdown-radius, var(--sf-dropdown--radius, var(--sf-radius--ui))), var(--sf-ui-2--control-height) / 2);
 
-    @media (min-width: 60rem) {
+    @media (min-width: bp.$breakpoint-desktop) {
       --sf-dropdown--inset: var(--sf-space-2);
     }
   }

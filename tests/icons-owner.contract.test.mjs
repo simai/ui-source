@@ -27,7 +27,7 @@ test('ordinary Icons has valid semantic defaults and token geometry', async () =
     assert.ok(styles.includes(`'${size}': (var(--sf-text-height-${step}), var(--sf-text-height-${step}))`), size);
   }
   assert.match(styles, /'5': \(var\(--sf-icon-size-4\), var\(--sf-icon-size-5\)\)/);
-  assert.match(styles, /@media \(min-width: 60rem\)/);
+  assert.match(styles, /@media \(min-width: bp\.\$breakpoint-desktop\)/);
   assert.doesNotMatch(styles, /--sf-icon--optical-size:\s*inherit/);
   assert.doesNotMatch(styles, /(?<![-\w])\d+(?:\.\d+)?(?:px|rem|em)(?![-\w])/);
 });

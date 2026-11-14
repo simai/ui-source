@@ -15,11 +15,15 @@
     "src/component/icons/scss/_var__icons.scss",
     "src/component/icons/scss/index.scss"
   ],
-  "content_sha256": "b169970b4f96e06c0c60e14bbcf7263f16da3c1668347d3ac98b68977f9239e1",
+  "content_sha256": "7f932f4f87482516361b2d61bda4036068519daad720f2481949ff858a1e8ff3",
   "dependencies": [
     {
       "id": "icons.material-symbols",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.0.1"
     },
     {
       "id": "tokens.size",

@@ -1,4 +1,5 @@
 @use 'sass:list';
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @use 'var__icons' as *;
 @use 'sf_icon_rotate' as *;
 
@@ -29,7 +30,7 @@ $sf-icon-steps: (
   $desktop: list.nth($steps, 2);
   @each $p in $props { #{$p}: #{$phone}; }
   @if $phone != $desktop {
-    @media (min-width: 60rem) {
+    @media (min-width: bp.$breakpoint-desktop) {
       @each $p in $props { #{$p}: #{$desktop}; }
     }
   }
