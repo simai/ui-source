@@ -75,6 +75,13 @@ export const FAMILIES = [
   ['figma_space.scss', (s) => `--sf-space-${s}`, SPACE_STEPS],
 ];
 
+// The role tokens that read a step density moves (role-tokens.v1.json,
+// density: true).
+function roleTokenNames() {
+  const data = JSON.parse(readFileSync(join(root, 'src/core/contracts/role-tokens.v1.json'), 'utf8'));
+  return data.tokens.filter((token) => token.density).map((token) => token.name);
+}
+
 // Declared on :root from the step variables: a custom property is resolved
 // where it is declared, so these would keep the root's values in a region
 // unless declared again there. Read from their files, written as they are.
@@ -83,6 +90,10 @@ const DERIVED = [
   ['figma_text_body_text_height.scss', CONTROL_STEPS.map((s) => `--sf-text-height-${s}`)],
   ['figma_ui_control_height.scss', CONTROL_STEPS.map((s) => `--sf-ui-${s}--control-height`)],
   ['figma_typography_roles.scss', ['--sf-text-small--size', '--sf-text-small--height', '--sf-text-medium--size', '--sf-text-medium--height', '--sf-text-large--size', '--sf-text-large--height']],
+  // The role tokens on a step (C173): declared again in each region, or a
+  // compact region would read the root's step (RT-15). Written by
+  // scripts/generate-role-tokens.mjs from src/core/contracts/role-tokens.v1.json.
+  ['figma_role_tokens.scss', roleTokenNames()],
 ];
 
 // The popup widths, declared on :root in the size tokens.

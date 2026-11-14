@@ -151,7 +151,7 @@
     .sf-toast:not(.sf-toast--actions-under):not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-container:has(> .sf-toast-bottom) {
       flex-direction: row;
       align-items: center;
-      column-gap: var(--sf-space-1);
+      column-gap: var(--sf-gap--groups);
       padding-block-end: 0;
     }
 

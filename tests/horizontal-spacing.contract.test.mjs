@@ -6,7 +6,8 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
 /* Horizontal spacing (owner decision C105, research
    ui-control/control/research/2026-11-12-horizontal-spacing.md): six roles on
-   existing tokens, no new variable names. These tests hold the mechanism of
+   existing tokens (role tokens over them since C173, which replaced «no new
+   variable names»: tests/role-tokens.contract.test.mjs). These tests hold the mechanism of
    each role in the sheets that draw it, and the role table in the geometry
    standard; the acceptance probe measures the result. */
 

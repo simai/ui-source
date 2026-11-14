@@ -48,7 +48,7 @@
      stand --sf-space-1/4 from the panel's edge, and the scrollbar stands in
      that inset (C07). */
   --sf-lookup--panel-padding: var(--sf-space-1\/4);
-  --sf-lookup--chip-row-gap: var(--sf-space-1\/4);
+  --sf-lookup--chip-row-gap: var(--sf-gap--tags);
   /* The remove cross, a small step by the chip's tag (owner decision C132,
      the cross row: tags 1/3 and 1/2 → 8, 1 and 2 → 12); its target stays at
      least --sf-c2 whatever the chip (LS-3). It was the tag's text step, 10. */

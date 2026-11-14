@@ -104,7 +104,7 @@
   .sf-alert-wrap:has(> .sf-alert-buttons) {
     flex-direction: row;
     align-items: center;
-    column-gap: var(--sf-space-1);
+    column-gap: var(--sf-gap--groups);
     padding-block-end: 0;
   }
 
@@ -135,7 +135,7 @@
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-alert-buttons--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-alert .sf-alert-buttons {
   --sf-alert-buttons--background-color: transparent;
-  --sf-alert-buttons--gap: var(--sf-space-1\/3);
+  --sf-alert-buttons--gap: var(--sf-gap--actions);
   background-color: var(--sf-alert-buttons--background-color);
   gap: var(--sf-alert-buttons--gap);
 }

@@ -196,7 +196,7 @@
    edge), and a group ends at its separator line with --sf-space-1/4 on each
    side of the line. */
 .sf-rich-text .sf-rich-text-toolbar {
-  gap: var(--sf-space-1\/4);
+  gap: var(--sf-gap--toolbar);
   padding: var(--sf-space-1\/4);
   border-block-end: var(--sf-px) solid var(--sf-outline-variant);
 }
@@ -268,7 +268,7 @@
 .sf-rich-text .sf-rich-text-link-actions {
   flex-wrap: nowrap;
   justify-content: flex-start;
-  gap: var(--sf-space-1\/3);
+  gap: var(--sf-gap--actions);
 }
 
 /* On a phone (below the md breakpoint, 44rem) the link editor is a form, so

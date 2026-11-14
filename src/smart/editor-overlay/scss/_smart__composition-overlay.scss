@@ -122,7 +122,7 @@
         position: fixed;
         z-index: 2;
         display: flex;
-        gap: var(--sf-composition-overlay-toolbar-gap, var(--sf-space-1\/4));
+        gap: var(--sf-composition-overlay-toolbar-gap, var(--sf-gap--toolbar));
         margin-block-end: var(--sf-space-1\/4);
         padding: var(--sf-space-1\/4);
         border-radius: var(--sf-composition-overlay-toolbar-radius, var(--sf-radius-1));

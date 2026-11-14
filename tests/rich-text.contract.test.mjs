@@ -270,8 +270,8 @@ test('1.3.0: the toolbar, the headings and the link editor are drawn by the syst
   const actions = sheet.match(/\.sf-rich-text \.sf-rich-text-link-actions \{([^}]*)\}/u)[1];
   assert.match(actions, /flex-wrap: nowrap;/u);
   assert.match(actions, /justify-content: flex-start;/u);
-  // C105 H5: the two buttons are one group, --sf-space-1/3 apart.
-  assert.match(actions, /gap: var\(--sf-space-1\\\/3\);/u);
+  // C105 H5: the two buttons are one group, --sf-space-1/3 apart (C173: its role token).
+  assert.match(actions, /gap: var\(--sf-gap--actions\);/u);
   // OV-11 (C144): toolbar icon buttons of one group stand --sf-space-1/4 apart, not edge to edge.
   const group = sheet.match(/\.sf-rich-text \.sf-rich-text-group \{([^}]*)\}/u)[1];
   assert.match(group, /gap: var\(--sf-space-1\\\/4\);/u);

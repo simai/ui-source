@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.content-divider",
   "kind": "component",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "owner": "simai/ui-source",
   "files": [
     "src/component/contentDivider/index.js",
@@ -14,7 +14,7 @@
     "src/component/contentDivider/scss/_var__contentDivider.scss",
     "src/component/contentDivider/scss/index.scss"
   ],
-  "content_sha256": "9b5609b1a0d57ca85ca8dfd321fb5ea72ad32fc6eaa536d152097f275f919f6d",
+  "content_sha256": "cb668230edf8c020ee879e423f85a88dc4a1f27336835187b7aaad2ab8838b49",
   "dependencies": [
     {
       "id": "tokens.border",
