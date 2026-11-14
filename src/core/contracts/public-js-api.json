@@ -1296,7 +1296,9 @@
         "textOffset",
         "INLINE_EVENTS",
         "INLINE_EVENTS_LEGACY",
-        "INLINE_TOOLBAR_MODES"
+        "INLINE_TOOLBAR_MODES",
+        "INLINE_ENTER_MODES",
+        "linkProblem"
       ]
     },
     {

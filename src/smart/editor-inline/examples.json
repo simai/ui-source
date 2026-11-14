@@ -201,6 +201,25 @@
               "check": "!document.querySelector('#p1').hasAttribute('data-sf-inline-editing') && document.querySelectorAll('#p1 br').length === 0"
             }
           ]
+        },
+        {
+          "id": "p5-enter-new-block",
+          "title": "enter: 'new-block' (owner decision C172 (2), a block editor's «Enter — новый блок»): Enter commits the text before the caret and gives the text after it as next",
+          "covers": "actions.edit options.enter, events.change next, keyboard Enter, lang runtime.editing-block",
+          "steps": [
+            {
+              "script": "(window.__nextBlock = [], document.querySelector('#p1').addEventListener('sf-editor-inline-change', (event) => window.__nextBlock.push(event.detail), {once: true}), document.querySelector('#ed').edit(document.querySelector('#p1'), {nodeId: 'p1', label: 'Абзац', enter: 'new-block'}), (() => { const text = document.querySelector('#p1').firstChild; getSelection().collapse(text, 5); })(), true)"
+            },
+            {
+              "check": "document.querySelector('#p1').getAttribute('aria-label') === 'Абзац: редактирование. Enter — новый блок, Escape — отменить.'"
+            },
+            {
+              "user": "keyboard:Enter"
+            },
+            {
+              "check": "window.__nextBlock.length === 1 && JSON.stringify(window.__nextBlock[0].content) === JSON.stringify([{type: 'text', value: 'Текст'}]) && JSON.stringify(window.__nextBlock[0].next) === JSON.stringify([{type: 'text', value: ' '}, {type: 'text', value: 'абзаца', marks: ['strong']}]) && !document.querySelector('#p1').hasAttribute('data-sf-inline-editing')"
+            }
+          ]
         }
       ]
     }
