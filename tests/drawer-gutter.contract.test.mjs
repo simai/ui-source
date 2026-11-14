@@ -14,7 +14,8 @@ test('drawer gutter: one gutter for head and body, declared', async () => {
   // edge, the panel's edge counted inside it, no stable scrollbar gutter.
   assert.match(styles, /--sf-drawer--inset: var\(--sf-drawer-gutter, var\(--sf-space-2\)\);/);
   assert.match(styles, /--sf-drawer--inset-start: calc\(var\(--sf-drawer--inset\) - var\(--sf-drawer--edge-start\)\);/);
-  assert.equal((styles.match(/padding-inline: var\(--sf-drawer--inset-start\) var\(--sf-drawer--inset-end\);/g) || []).length, 2);
+  // Head, body and the pinned foot (owner decision C157 (3)) on one axis.
+  assert.equal((styles.match(/padding-inline: var\(--sf-drawer--inset-start\) var\(--sf-drawer--inset-end\);/g) || []).length, 3);
   assert.doesNotMatch(styles, /scrollbar-gutter: stable/);
   const source = await read('src/smart/drawer/index.js');
   assert.match(source, /gutter: \{default: ''\}/);

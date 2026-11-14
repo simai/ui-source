@@ -175,6 +175,7 @@
     "src/core/js/runtime.js",
     "src/core/js/sanitize.js",
     "src/core/js/sets.js",
+    "src/core/js/sheet-swipe.js",
     "src/core/js/smart-base.js",
     "src/core/js/stableHash.js",
     "src/core/js/tag-aliases.generated.js",
@@ -224,7 +225,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "3d26c5fa3bf9c13111488cee99230f7257bce6b2e587439ad46ca20e4d15eb44",
+  "content_sha256": "9213ac3045160fb0c5729a5f5e7bedd74f4350ead9d138a8e13740e457d5c9ec",
   "dependencies": [
     {
       "id": "core.styles",

@@ -79,9 +79,9 @@
       "id": "smart-overlay-measured-geometry",
       "category": "runtime-review",
       "filePattern": "^smart/drawer/index\\.js$",
-      "contextPattern": "(?:Math\\.max|sides\\[side\\])",
+      "contextPattern": "(?:Math\\.max|sides\\[side\\]|\\$\\{room\\}px)",
       "status": "accepted-runtime-geometry",
-      "reason": "The drawer's scroll-lock gutters and its bottom sheet's drag offset are derived from the current viewport, rendered boxes and the pointer."
+      "reason": "The drawer's scroll-lock gutters, its bottom sheet's drag offset and the head's room for the edge controls of a full-screen panel are derived from the current viewport, rendered boxes and the pointer."
     },
     {
       "id": "smart-drag-measured-geometry",
@@ -260,11 +260,11 @@
     {
       "id": "text-bar-capital-height",
       "category": "style-review",
-      "filePattern": "^(?:core/scss/_sf_css__placeholder\\.scss|component/skeleton/scss/_skeleton\\.scss)$",
+      "filePattern": "^(?:core/scss/_sf_css__placeholder\\.scss|component/skeleton/scss/_skeleton\\.scss|component/modal/scss/_css__modal_custom\\.scss)$",
       "contextPattern": "(?:@supports \\(block-size: round\\(nearest, 1em, 1em\\)\\)|--sf-first-paint-bar--(?:height|top):)",
       "textPattern": "^\\d*\\.?\\d+em$",
       "status": "accepted-owner-decision",
-      "reason": "Owner decision C136 (1): a text skeleton bar is as tall as the capitals of the text it stands for, Inter's capital height 0.727 em rounded to an even pixel with the size ladder's 2 px step, centred in the line (the glyph box's middle, 0.6055 em from its top). These are font metrics relative to the text, not sizes; the @supports test only asks whether round() parses."
+      "reason": "Owner decision C136 (1): a text skeleton bar is as tall as the capitals of the text it stands for, Inter's capital height 0.727 em rounded to an even pixel with the size ladder's 2 px step, centred in the line (the glyph box's middle, 0.6055 em from its top). These are font metrics relative to the text, not sizes; the @supports test only asks whether round() parses. sf-modal's loading skeleton (C159 (9)) draws the same bar."
     },
     {
       "id": "documentation-prose",
@@ -326,10 +326,10 @@
     {
       "id": "measured-runtime-geometry",
       "category": "runtime-review",
-      "filePattern": "^(?:component/(?:country-code/js/_country_code|menu/js/_menu|range-slider/js/_range_slider|scrollbar/js/_scrollbar|textarea/js/_textarea|tooltip/js/_tooltip)\\.js|core/js/(?:code-copy|effects|float-anchor|layer-stack|position)\\.js|core/js/composition/(?:inline-editor|overlay|sortable-inserter|sortable)\\.mjs|smart/(?:menu|menu-context|profile-picker|resizer|segmented)/index\\.js|smart/tree/js/templates/default\\.js)$",
+      "filePattern": "^(?:component/(?:country-code/js/_country_code|menu/js/_menu|range-slider/js/_range_slider|scrollbar/js/_scrollbar|textarea/js/_textarea|tooltip/js/_tooltip)\\.js|core/js/(?:code-copy|effects|float-anchor|layer-stack|position|sheet-swipe)\\.js|core/js/composition/(?:inline-editor|overlay|sortable-inserter|sortable)\\.mjs|smart/(?:menu|menu-context|profile-picker|resizer|segmented)/index\\.js|smart/tree/js/templates/default\\.js)$",
       "contextPattern": ".*",
       "status": "accepted-runtime-geometry",
-      "reason": "Coordinates and sizes measured from the rendered page or the pointer (a floating panel's place, a drag ghost, a virtual list's spacer, a tooltip tail); the browser reports them in CSS pixels."
+      "reason": "Coordinates and sizes measured from the rendered page or the pointer (a floating panel's place, a drag ghost, a sheet or side panel following a finger (C157), a virtual list's spacer, a tooltip tail); the browser reports them in CSS pixels."
     },
     {
       "id": "drawer-dock-default",

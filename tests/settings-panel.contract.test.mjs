@@ -84,7 +84,10 @@ test('the panel is not the action menu: a dialog popup or a group, its own closi
   assert.match(source, /closePanel\(\{restoreFocus: false, reason: 'api'\}\)/u, 'Tab out closes it');
   assert.match(source, /panel\.toggleAttribute\('data-sf-sheet', sheet\)/u);
   assert.match(source, /aria-haspopup', 'dialog'/u);
-  assert.match(css, /\.sf-settings-panel\[data-sf-sheet\] \{[^}]*position: fixed;[^}]*max-inline-size: var\(--sf-h1\);/su);
+  // The one sheet (owner decision C157 (5)): drawn from the core sheet mixin.
+  assert.match(css, /\.sf-settings-panel\[data-sf-sheet\] \{[^}]*@include sheet\.sheet-surface;/su);
+  const mixin = readFileSync(new URL('../src/core/scss/mix/_mix__sheet.scss', import.meta.url), 'utf8');
+  assert.match(mixin, /@mixin sheet-surface \{[^}]*position: fixed;[^}]*max-inline-size: var\(--sf-h1\);/su);
 });
 
 test('a list is one Tab stop with the arrows inside; Alt+arrows move a row and say its place (DP-4, C106 (6))', () => {

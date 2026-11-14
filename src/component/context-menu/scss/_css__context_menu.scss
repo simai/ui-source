@@ -1,5 +1,6 @@
 @use 'panel';
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__sheet' as sheet;
 
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-d4) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
@@ -967,16 +968,27 @@
    of the shadow system (C20: --sf-shadow-modal, the scrim at black 64).
    sf-menu-context marks the surface data-sf-sheet and does not anchor it.
    The content keeps clear of a phone's home indicator (safe area). */
+/* The one sheet (owner decision C157 (5), core mix/_mix__sheet.scss): the
+   sheet's box, and its grab bar (24 x 4 in the quiet ink) in a handle row on
+   the sheet's own surface above the content; a swipe down from that row
+   closes it (sf-menu-context reads it). The form had no bar. */
 .sf-context-menu[data-sf-sheet] {
   --sf-context-menu--box-shadow: var(--sf-shadow-modal);
-  position: fixed;
-  inset: auto 0 0;
-  inline-size: 100%;
-  max-inline-size: var(--sf-h1);
-  margin-inline: auto;
-  max-block-size: calc(100dvh - var(--sf-space-4));
-  border-end-end-radius: 0;
-  border-end-start-radius: 0;
+  @include sheet.sheet-surface;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--sf-context-menu-background-color, var(--sf-surface-popup));
+  border-block-start: var(--sf-context-menu-border-width, var(--sf-px)) solid var(--sf-context-menu-border-color, var(--sf-outline-variant));
+  touch-action: none;
+}
+
+.sf-context-menu[data-sf-sheet].is-dragging {
+  transition: none;
+}
+
+.sf-context-menu[data-sf-sheet]::before {
+  @include sheet.sheet-bar-row;
 }
 
 .sf-context-menu[data-sf-sheet]::backdrop {
@@ -992,11 +1004,9 @@
 .sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width] {
   inline-size: 100%;
   max-inline-size: none;
-  max-block-size: calc(100dvh - var(--sf-space-4));
-  border-end-end-radius: 0;
-  border-end-start-radius: 0;
-  border-block-end-width: 0;
-  border-inline-width: 0;
+  max-block-size: calc(100dvh - var(--sf-space-4) - var(--sf-ui-1\/2--control-height));
+  border-radius: 0;
+  border-width: 0;
   padding-bottom: calc(var(--sf-context-menu-content--padding-bottom) + env(safe-area-inset-bottom, var(--sf-a0)));
 }
 

@@ -19,9 +19,11 @@ function overlayClasses(context) {
 
 export function renderModalTemplate(context) {
     const isInline = context.display === 'inline';
-    // A question window (size="question", decision C39): its own width, frame
-    // and title; see component/modal/scss/_css__modal_custom.scss.
-    const isQuestion = context.size === 'question';
+    // The window's size by name (decision C159 (1)): question (its own frame
+    // and title too, C39), form -- the default -- wide, full; see
+    // component/modal/scss/_css__modal_custom.scss.
+    const size = ['question', 'form', 'wide', 'full'].includes(context.size) ? context.size : 'form';
+    const isQuestion = size === 'question';
     const hasRemoteContent =
         Boolean(context.src) &&
         (context.mode === 'ajax' || context.mode === 'iframe');
@@ -62,7 +64,7 @@ export function renderModalTemplate(context) {
                         // Legacy alias: the misspelt class the modal wrote before;
                         // kept until contracts/changes/journal.json removes it.
                         `sf-modal--positon-${context.position}`,
-                        isQuestion && 'sf-modal--size-question',
+                        `sf-modal--size-${size}`,
                         isInline
                                 ? 'sf-modal--inline inline-block w-full'
                                 : 'fixed top-0 inline-start-0 w-full h-full z-9 p-3 items-cross-center content-main-center',
@@ -79,7 +81,7 @@ export function renderModalTemplate(context) {
                 aria-labelledby=${accessibleLabel ? nothing : titleId}
                 data-sf-modal-id=${context.modalId}
                 data-sf-modal-position=${context.position}
-                data-sf-modal-size=${context.size || 'auto'}
+                data-sf-modal-size=${size}
                 data-sf-modal-fullscreen=${String(context.fullscreen)}
                 data-sf-modal-display=${context.display}
                 data-sf-modal-state=${isInline ? 'inline' : context.modalState}
@@ -144,23 +146,17 @@ export function renderModalTemplate(context) {
                                             : nothing}
                                     ${context.showClose
                                             ? html`
-                                                <button
-                                                        type="button"
-                                                        class=${joinClasses(
-                                                                'sf-icon-button sf-modal-header-action sf-modal-close-button sf-modal-close-button--inline-end sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1/3 m-0',
+                                                <sf-button-close
+                                                        size="1/3"
+                                                        class="sf-modal-close"
+                                                        root-class=${joinClasses(
+                                                                'sf-modal-header-action sf-modal-close-button sf-modal-close-button--inline-end m-0',
                                                                 context.closeClass,
                                                         )}
                                                         aria-label=${context.closeText}
                                                         data-sf-modal-close=${context.modalId}
                                                         @click=${context.onCloseClick}
-                                                >
-                          <span
-                                  class="sf-close sf-close--size-1/3 flex justify-center items-center"
-                                  aria-hidden="true"
-                          >
-                            <span class="sf-close-icon"></span>
-                          </span>
-                                                </button>
+                                                ></sf-button-close>
                                             `
                                             : nothing}
                                 </header>
@@ -177,7 +173,7 @@ export function renderModalTemplate(context) {
                         >
                             <div
                                     class=${joinClasses(
-                                            'sf-modal-body-scroll h-full min-w-0 overflow-y-auto flex flex-col gap-1 p-1/4',
+                                            'sf-modal-body-scroll h-full min-w-0 overflow-y-auto flex flex-col gap-1',
                                             context.bodyClass,
                                     )}
                                     data-sf-modal-body-scroll

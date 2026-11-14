@@ -507,7 +507,7 @@ class Modal extends ComponentObserver {
 
     const bodyScroll = document.createElement('div');
     bodyScroll.className = joinClasses(
-      'sf-modal-body-scroll h-full min-w-0 overflow-y-auto flex flex-col gap-1 p-1/4',
+      'sf-modal-body-scroll h-full min-w-0 overflow-y-auto flex flex-col gap-1',
       params.bodyClass,
     );
     bodyScroll.setAttribute('data-sf-modal-body-scroll', '');

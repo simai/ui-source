@@ -58,7 +58,7 @@ test('header site C104: the head adds the row container centring offset, held in
   assert.match(collapsed, /--sf-site-header--axis-inset: min\(\n      calc\(var\(--sf-site-header--gutter\) \+ var\(--sf-site-header--centring\)\),\n      calc\(var\(--sf-site-header--sheet-size\) - var\(--sf-site-header--control-height\) - var\(--sf-site-header--gutter\)\)\n    \);/u);
   // The panel and its head read one width.
   assert.match(collapsed, /inline-size: var\(--sf-site-header--sheet-size\);/u);
-  assert.match(sheet, /--sf-site-header--sheet-size: var\(--sf-site-header-sheet-inline-size, min\(90vw, var\(--sf-g1\)\)\);/u);
+  assert.match(sheet, /--sf-site-header--sheet-size: var\(--sf-site-header-sheet-inline-size, min\(90vw, var\(--sf-g0\)\)\);/u);
 });
 
 test('header site C104 MP-6: while open the scrim and panel stand above the bar parts', () => {
@@ -99,6 +99,7 @@ test('header site C104: the docs name both settings and the version is a minor',
   assert.match(docs, /menu-placement="inline-end"/u);
   assert.match(docs, /data-header-site="toggle"/u);
   assert.match(docs, /aria-controls="site-header"/u);
-  assert.equal(component.version, '1.9.0');
+  // 1.10.1: the panel moved to the 20rem step (owner decision C157 (2)).
+  assert.equal(component.version, '1.10.1');
   assert.ok(component['x-decisions'].some((line) => line.startsWith('version 1.9.0 (2026-11-12, owner decision C104')));
 });

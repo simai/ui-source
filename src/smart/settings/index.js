@@ -32,6 +32,7 @@ import {densityOf} from '../../core/js/density.js';
 import BundledPosition from '../../core/js/position.js';
 import {holdOpenSurfaceMark} from '../../core/js/open-surface-mark';
 import {focusablesIn} from '../../core/js/layer-stack.js';
+import {swipeToClose} from '../../core/js/sheet-swipe.js';
 import {PanelScrollbar} from '../../component/panel-scrollbar.js';
 import {
   APPLY, LOOKS, OWN_COLOR, SIZES, applyCount, colorCode, entriesFor, findItem, itemValue, matches, movedField, panelGroups, panelLayout,
@@ -908,6 +909,12 @@ class SfSettings extends SettingsElement {
       panel.setAttribute('popover', 'manual');
       if (!panel.matches(':popover-open')) panel.showPopover();
     }
+    // The one sheet (owner decision C157 (5)): a swipe down from its handle
+    // row closes it, as Escape does.
+    owned.unswipe = swipeToClose(panel, {
+      when: () => owned.sheet && this._open === owned,
+      onDismiss: () => this.closePanel({reason: 'close'}),
+    });
     const place = (sheet) => {
       owned.position?.stop();
       owned.position = null;
@@ -971,6 +978,7 @@ class SfSettings extends SettingsElement {
     holdOpenSurfaceMark(this, false);
     const panel = this.panel;
     if (panel) {
+      owned.unswipe?.();
       if (panel.matches?.(':popover-open')) panel.hidePopover();
       panel.removeAttribute('popover');
       panel.removeAttribute('data-sf-sheet');

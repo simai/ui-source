@@ -5,10 +5,11 @@ import { applied, refused, elementFromManifest } from "../../core/js/element-man
 import { noteDeprecated } from "../../core/js/deprecations";
 import { instancePath, partId } from "../../core/js/instance-path";
 import { renderModalTemplate } from "./js/templates/default";
-import { focusModalInitial, trapModalFocus } from "../../component/modal/js/_focus";
+import {
+  focusModalInitial, trapModalFocus, windowFields, isOneLineField, holdFieldsReadOnly,
+} from "../../component/modal/js/_focus";
 import { freezeModalContent } from "../../component/modal/js/_closing";
 import { scheduleModalClose, scheduleModalFrame } from "../../component/modal/js/_motion";
-import { createInlineSpinner } from "../../component/spinner/js/_spinner-draw";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
 import en from "./lang/en.json";
@@ -25,10 +26,25 @@ const OVERLAY_CONTAINER = "[data-sf-overlay-container], [data-sf-drawer-containe
 // The questions a window holds that a reopening puts again (sf-confirm's
 // answeredNo: it declined, or its decline is on its way and no outcome came).
 const QUESTIONS = "sf-confirm, sf-confirm-change";
+// The window sizes by name (decision C159 (1)); anything else, `auto` among
+// them, is the default, a form.
+const SIZES = ["question", "form", "wide", "full"];
+// The ways a person closes a window; with unsaved changes in its fields they
+// ask first (C159 (6)). A script's close (api) and an accepted answer do not.
+const PERSON_CLOSES = ["escape", "close", "cancelled", "outside"];
+// At most two windows, the second only a question (C159 (7)).
+const STACK_LIMIT = 2;
 import { getTopModalLayer, getModalLayerIndex, updateModalLayers, addModalLayer,
   removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus,
   isTopModalLayer } from "../../component/modal/js/_stack";
 import { carryLayerOrigin, layerZIndexAt, lockPageScroll, startClosedLayerContent } from "../../core/js/layer-stack";
+import { inHandleRow, startsOnControl, trackSwipe } from "../../core/js/sheet-swipe";
+
+// A side window or a sheet is sf-drawer's (owner decision C157 (1),
+// 2026-11-14): sf-modal position="inline-start|inline-end|left|right|bottom"
+// is its old name until this date, noted once per value.
+const EDGE_POSITIONS = ["inline-start", "inline-end", "left", "right", "bottom"];
+const EDGE_POSITIONS_UNTIL = "2027-01-01";
 import { breakpointMedia } from "../../core/js/breakpoints.js";
 
 // sf-modal from its component.json (standard simai.smart-component 1.3.8 §3,
@@ -213,6 +229,7 @@ class SfModal extends ModalElement {
     this._answer = null;
     this.onKeyDown = this.onKeyDown.bind(this);
     this.handleOverlayClick = this.handleOverlayClick.bind(this);
+    this.handleSheetPointerDown = this.handleSheetPointerDown.bind(this);
     this.handleCloseClick = this.handleCloseClick.bind(this);
     this.handleHideClick = this.handleHideClick.bind(this);
   }
@@ -238,19 +255,87 @@ class SfModal extends ModalElement {
     if (!query || this._phoneQuery) return;
     this._phoneQuery = query;
     this._onPhoneChange = () => {
-      if (this.size === "question") this.requestComponentUpdate("phone");
+      if (this.display !== "inline") this.requestComponentUpdate("phone");
     };
     query.addEventListener?.("change", this._onPhoneChange);
   }
 
-  // The position the window stands in: the page's, except that a question
-  // window left at the centre opens as a bottom sheet on a phone.
+  // The window's size by name (C159 (1)): question, form, wide or full; no
+  // size, or `auto`, is a form.
+  get windowSize() {
+    const size = String(this.size || "").trim().toLowerCase();
+    return SIZES.includes(size) ? size : "form";
+  }
+
+  // On a phone (below sm) a window left at the centre (decision C159 (2)):
+  // a question and a form stand as a sheet at the bottom, full width, the
+  // answers sharing the row; a wide or full window and a form of more than
+  // three fields take the whole screen. A question was the only sheet (C39).
+  get onPhone() {
+    return this.display !== "inline" && Boolean(this._phoneQuery?.matches);
+  }
+
+  get phoneFullScreen() {
+    if (!this.onPhone || this.position !== "center") return false;
+    const size = this.windowSize;
+    return size === "wide" || size === "full" || (size === "form" && this.contentFields().length > 3);
+  }
+
+  // The position the window stands in: the page's, except that a window left
+  // at the centre opens as a bottom sheet on a phone (above).
   get shownPosition() {
     const position = this.position;
-    if (this.size === "question" && position === "center" && this.display !== "inline" && this._phoneQuery?.matches) {
+    if (position === "center" && this.onPhone && !this.phoneFullScreen) {
       return "bottom";
     }
     return position;
+  }
+
+  get shownFullscreen() {
+    return Boolean(this.fullscreen) || this.windowSize === "full" || this.phoneFullScreen;
+  }
+
+  // The window's content fields (component/modal/js/_focus.js): drawn, or
+  // still the page's nodes before the first drawing.
+  contentFields() {
+    const body = this._root()?.querySelector("[data-sf-modal-body-scroll]");
+    if (body) return windowFields(body);
+    // Before the first drawing: the page's content nodes, each under a
+    // detached holder of its own so the node itself counts too.
+    const fields = [];
+    for (const node of this._liveSlotNodes?.get("content") || []) {
+      if (node.nodeType !== Node.ELEMENT_NODE) continue;
+      const holder = { querySelectorAll: () => [node, ...node.querySelectorAll("*")] };
+      fields.push(...windowFields(holder));
+    }
+    return fields;
+  }
+
+  // A question -- size="question", or a window holding sf-confirm -- is not
+  // a form: its typed name confirms, and it closes as a question does.
+  get isQuestionWindow() {
+    return this.windowSize === "question" || Boolean(this._renderTarget?.querySelector?.(QUESTIONS));
+  }
+
+  // A window with fields is one form (C159 (6), (9)).
+  get hasFields() {
+    return !this.isQuestionWindow && this.contentFields().length > 0;
+  }
+
+  // The footer's main answer (C159 (4), (9)): its first answer that is not
+  // quiet (ghost or link: «Отмена») and not the record's own apart action.
+  mainAnswer() {
+    const footer = this._root()?.querySelector(".sf-modal-footer");
+    if (!footer) return null;
+    for (const node of footer.querySelectorAll("sf-button, button, a[href], input[type=\"submit\"]")) {
+      if (node.localName !== "sf-button" && node.closest("sf-button")) continue;
+      // sf-button hands its data-* attributes and its look to its button.
+      const drawn = node.localName === "sf-button" ? node.querySelector(":scope > button, :scope > a") : node;
+      if (node.closest("[data-apart]") || drawn?.matches?.("[data-apart]")) continue;
+      if (["ghost", "link"].includes(node.getAttribute("appearance")) || drawn?.matches?.(".sf-button--ghost, .sf-button--link")) continue;
+      return node;
+    }
+    return null;
   }
 
   // A reopened window puts its question again: an sf-confirm in it that took
@@ -527,32 +612,28 @@ class SfModal extends ModalElement {
     }
 
     if (this._isLoadingRemote) {
-      // The Framework's one spinner, in the page's look (simai/ui-source#11),
-      // kept across renders so its motion does not restart; the modal sheet
-      // draws its slot. The words are the page's language's, and the state
-      // is a status region named by them, so it is announced, not only seen.
+      // A skeleton of text lines in the window's own width (decision C159
+      // (9)): the window keeps its size while the content comes, where a
+      // spinner in a box of its own made it jump (209 x 240, then 194 x 132).
+      // The words are the page's language's, and the state is a status
+      // region named by them, so it is announced, not only seen.
       const loading = this.sfWord("loading");
       return html`
         <div
-          class="sf-modal-loading flex flex-col gap-2 items-cross-center content-main-center p-4"
+          class="sf-modal-loading sf-modal-skeleton"
           data-sf-modal-state="loading"
           role="status"
           aria-label=${loading}
+          aria-busy="true"
         >
-          ${this._loadingSpinnerNode()}
-          <p class="m-0 text-2 color-on-surface-variant">${loading}</p>
+          <span class="sf-modal-skeleton-line" aria-hidden="true"></span>
+          <span class="sf-modal-skeleton-line" aria-hidden="true"></span>
+          <span class="sf-modal-skeleton-line" aria-hidden="true"></span>
         </div>
       `;
     }
 
     return nothing;
-  }
-
-  _loadingSpinnerNode() {
-    if (!this._loadingSpinner) {
-      this._loadingSpinner = createInlineSpinner({ className: "sf-modal-spinner" });
-    }
-    return this._loadingSpinner;
   }
 
   templateContext() {
@@ -577,9 +658,11 @@ class SfModal extends ModalElement {
       rootId: this.id === this.modalId ? "" : this.modalId,
       open: this.renderOpenState,
       modalState: this.renderModalState,
-      // A question window opens as a bottom sheet on a phone (C39).
+      // A window at the centre opens as a bottom sheet or full screen on a
+      // phone (C39, C159 (2)); its size is one of the named four (C159 (1)).
       position: this.shownPosition,
-      size: this.size === "question" ? "question" : "auto",
+      size: this.windowSize,
+      fullscreen: this.shownFullscreen,
       animate: this._animatePanel && this.display !== "inline",
       modalZIndex: this.modalZIndex,
       hide: this.minimizable,
@@ -779,6 +862,7 @@ class SfModal extends ModalElement {
     carryLayerOrigin(this._portalRoot, this, { variables: MODAL_VARIABLES, area: true, except: ["--sf-modal-"] });
     this._renderTarget = this._portalRoot;
     this.listenForAnswers(this._portalRoot);
+    this.listenForFields(this._portalRoot);
     return this._portalRoot;
   }
 
@@ -798,6 +882,136 @@ class SfModal extends ModalElement {
     };
     target.addEventListener("sf-confirm-answer", this._onAnswer);
     this._answersTarget = target;
+  }
+
+  // The window as a form (decision C159 (6), (9)), read where it draws:
+  // - a change in a field marks the window edited, so closing it asks first;
+  // - Enter in a one-line field presses the main answer, and the main answer
+  //   submits the <form> of the content, if there is one;
+  // - while the main answer shows loading (sf-button loading, set by the
+  //   page as it saves) the window saves: its fields are read-only and only
+  //   a script closes it.
+  listenForFields(target) {
+    if (!target || this._fieldsTarget === target) return;
+    if (this._fieldsTarget) {
+      for (const [type, listener] of this._fieldListeners) this._fieldsTarget.removeEventListener(type, listener);
+      this._savingObserver?.disconnect();
+    }
+    const inBody = (node) => Boolean(node?.closest?.("[data-sf-modal-body-scroll]"));
+    const edited = (event) => {
+      if (this._isOpen && !this._saving && inBody(event.target) && !this.isQuestionWindow) this._edited = true;
+    };
+    const keydown = (event) => {
+      if (event.key !== "Enter" || event.defaultPrevented || event.isComposing || event.shiftKey ||
+          event.ctrlKey || event.altKey || event.metaKey || !this._isOpen) return;
+      const field = event.composedPath?.()[0] || event.target;
+      if (!isOneLineField(field) || !inBody(field) || field.getAttribute("aria-expanded") === "true") return;
+      if (!this.hasFields) return;
+      const main = this.mainAnswer();
+      if (!main) return;
+      event.preventDefault();
+      if (this._saving) return;
+      const control = main.localName === "sf-button" ? main.querySelector("button, a") : main;
+      control?.click();
+    };
+    const click = (event) => {
+      const main = this.mainAnswer();
+      if (!main || !this._isOpen || !main.contains(event.target) || !this.hasFields) return;
+      const control = event.target.closest("button, a, input");
+      if (control?.type === "submit" && control.form) return;
+      const form = this._root()?.querySelector("[data-sf-modal-body-scroll] form");
+      if (form && !event.defaultPrevented) form.requestSubmit();
+    };
+    this._fieldListeners = [["input", edited], ["change", edited], ["keydown", keydown], ["click", click]];
+    for (const [type, listener] of this._fieldListeners) target.addEventListener(type, listener);
+    this._savingObserver = new MutationObserver(() => this.syncSaving());
+    this._savingObserver.observe(target, { subtree: true, attributes: true, attributeFilter: ["loading"] });
+    this._fieldsTarget = target;
+  }
+
+  // The window saves while its main answer shows loading (C159 (9); the
+  // button keeps its colour, C36).
+  syncSaving() {
+    const saving = Boolean(this._isOpen && this.hasFields && this.mainAnswer()?.hasAttribute("loading"));
+    if (saving === Boolean(this._saving)) return;
+    this._saving = saving;
+    const root = this._root();
+    if (saving) {
+      this._releaseSaving = holdFieldsReadOnly(this.contentFields());
+      root?.setAttribute("aria-busy", "true");
+    } else {
+      this._releaseSaving?.();
+      this._releaseSaving = null;
+      root?.removeAttribute("aria-busy");
+    }
+  }
+
+  // the discard question, lang discard-heading (decision C159 (6), with C25 and C39): a
+  // question window over this one -- «Не сохранять», red, first; «Продолжить
+  // правку», quiet, with the focus. Not saving closes this window for the
+  // reason it was asked; continuing gives the focus back to the field.
+  askDiscard(reason) {
+    let question = this._discardQuestion;
+    if (!question?.isConnected) {
+      question = document.createElement("sf-modal");
+      question.setAttribute("size", "question");
+      question.setAttribute("initial-focus", "safe");
+      question.setAttribute("data-sf-modal-discard", "");
+      question.setAttribute("heading", this.sfWord("discard-heading"));
+      const footer = document.createElement("div");
+      footer.setAttribute("slot", "footer");
+      const discard = document.createElement("sf-button");
+      discard.setAttribute("status", "danger");
+      discard.setAttribute("text", this.sfWord("discard"));
+      discard.setAttribute("data-sf-modal-discard-answer", "");
+      const keep = document.createElement("sf-button");
+      keep.setAttribute("appearance", "ghost");
+      keep.setAttribute("scheme", "on-surface");
+      keep.setAttribute("text", this.sfWord("keep-editing"));
+      keep.setAttribute("data-sf-modal-close", "");
+      footer.append(discard, keep);
+      question.append(footer);
+      discard.addEventListener("click", () => {
+        const asked = this._discardReason || "cancelled";
+        question.addEventListener("sf-modal-closed", () => {
+          this._discardAgreed = true;
+          this.close({ reason: asked });
+        }, { once: true });
+        question.close({ reason: "api" });
+      });
+      question.setAttribute("open", "");
+      this._discardReason = reason;
+      this._discardQuestion = question;
+      this.overlayHome.append(question);
+      return;
+    }
+    this._discardReason = reason;
+    question.open();
+  }
+
+  // The body's edges (decision C159 (3)): a hairline over the body while text
+  // is above what shows, under it while text is below.
+  watchBodyEdges() {
+    const root = this._root();
+    const body = root?.querySelector("[data-sf-modal-body-scroll]");
+    if (!body) return;
+    const update = () => {
+      const top = body.scrollTop > 0;
+      const end = body.scrollTop + body.clientHeight < body.scrollHeight - 1;
+      root.toggleAttribute("data-sf-modal-more-start", top);
+      root.toggleAttribute("data-sf-modal-more-end", end);
+    };
+    if (this._edgesBody !== body) {
+      this._edgesObserver?.disconnect();
+      this._edgesBody?.removeEventListener("scroll", this._onEdgesScroll);
+      this._onEdgesScroll = update;
+      body.addEventListener("scroll", update, { passive: true });
+      this._edgesObserver = typeof ResizeObserver === "function" ? new ResizeObserver(update) : null;
+      this._edgesObserver?.observe(body);
+      for (const child of body.children) this._edgesObserver?.observe(child);
+      this._edgesBody = body;
+    }
+    update();
   }
 
   // The box the modal is rendered into: the end of the body, above the page --
@@ -867,6 +1081,11 @@ class SfModal extends ModalElement {
 
     root.style.setProperty("--sf-modal-stack-index", String(index));
     root.style.zIndex = String(this.modalZIndex);
+    // One scrim (decision C159 (7)): a window over another open window lays
+    // none of its own.
+    const at = SfModal.stack.indexOf(this);
+    root.toggleAttribute("data-sf-modal-stacked", SfModal.stack.slice(0, Math.max(0, at))
+      .some((modal) => modal.openState && !modal.hiddenState));
     return this;
   }
 
@@ -886,6 +1105,17 @@ class SfModal extends ModalElement {
       return asked ? this.waitForAnswer(signal) : applied();
     }
 
+    // At most two windows, and the second only a question (decision C159
+    // (7)): a third window, or a second that is not a question, is refused.
+    if (!wasClosing && this.display !== "inline") {
+      const below = SfModal.stack.filter((modal) => modal !== this && modal.openState &&
+        !modal.hiddenState && modal._modalState !== "closing");
+      if (below.length >= STACK_LIMIT || (below.length && this.windowSize !== "question")) {
+        console.warn(`sf-modal "${this.modalId}": not opened -- at most two windows, the second only a question (size="question"), SIMAI Framework decision C159 (7).`);
+        return refused("stacked");
+      }
+    }
+
     if (!this.emitModalEvent("open", { cancelable: true, phase: "before-open" })) {
       return refused("prevented");
     }
@@ -901,6 +1131,8 @@ class SfModal extends ModalElement {
     }
 
     this._isOpen = true;
+    this._edited = false;
+    this._discardAgreed = false;
     this.reopenQuestions();
     this._closeReason = "";
     this._answer = null;
@@ -982,11 +1214,28 @@ class SfModal extends ModalElement {
     }
 
     const reason = typeof options?.reason === "string" ? options.reason : "api";
+    // While the window saves (its main answer shows loading), only a script
+    // closes it: Escape, x and «Отмена» wait (decision C159 (9)).
+    if (this._saving && reason !== "api") {
+      return refused("busy");
+    }
+    const unsaved = Boolean(this.unsaved) || Boolean(this._edited);
     if (!this.emitModalEvent("close", {
-      cancelable: true, phase: "before-close", reason, unsaved: Boolean(this.unsaved),
+      cancelable: true, phase: "before-close", reason, unsaved,
     })) {
       this._answer = null;
       return refused("prevented");
+    }
+    // Changes in a window with fields are not lost on Escape, x, «Отмена»
+    // or a press outside: the Framework's discard question (lang discard-heading)
+    // comes first (decision C159 (6)), unless the page took the request
+    // above. The main answer, an accepted answer and a script close as asked.
+    const pressedMain = this._mainPressed;
+    this._mainPressed = false;
+    if (unsaved && PERSON_CLOSES.includes(reason) && !pressedMain && !this._answer?.accepted &&
+        !this._discardAgreed && this.hasFields) {
+      this.askDiscard(reason);
+      return refused("unsaved");
     }
     this._closeReason = reason;
 
@@ -1112,6 +1361,11 @@ class SfModal extends ModalElement {
       restoreModalLayerFocus(wasTop, this._lastActive, this._focusReturnAncestors);
     }
 
+    this._edited = false;
+    this._discardAgreed = false;
+    this._releaseSaving?.();
+    this._releaseSaving = null;
+    this._saving = false;
     this.requestComponentUpdate("after-close");
     const reason = this._closeReason || "api";
     this.emitModalEvent("closed", { phase: "after-close", reason, accepted: Boolean(this._answer?.accepted) });
@@ -1198,6 +1452,7 @@ class SfModal extends ModalElement {
     }
 
     this.applyStackPosition();
+    if (this.display !== "inline") this.watchBodyEdges();
     // Projection can replace the panel while an existing layer remains open.
     updateModalLayers();
 
@@ -1226,6 +1481,41 @@ class SfModal extends ModalElement {
 
     root.removeEventListener("click", this.handleOverlayClick);
     root.addEventListener("click", this.handleOverlayClick);
+    root.removeEventListener("pointerdown", this.handleSheetPointerDown);
+    root.addEventListener("pointerdown", this.handleSheetPointerDown);
+    this.noteEdgePosition();
+  }
+
+  // The old name of a side panel or a sheet (C157 (1)): written by the page,
+  // not the phone's own sheet of a centred window (shownPosition).
+  noteEdgePosition() {
+    const position = this.getAttribute("position") || "";
+    if (!EDGE_POSITIONS.includes(position)) return;
+    noteDeprecated({
+      component: "sf-modal", tag: "sf-modal", kind: "value", attribute: "position", from: position,
+      to: position === "bottom" ? "sf-drawer placement=\"bottom\"" : "sf-drawer",
+      since: "2026-11-14", remove_after: EDGE_POSITIONS_UNTIL,
+    });
+  }
+
+  // A window at the bottom is the one sheet (owner decision C157 (5)): a
+  // swipe down from its handle row closes it as the x does -- a window with
+  // changed fields asks first (C159 (6)), a saving one waits.
+  handleSheetPointerDown(event) {
+    if (event.button !== 0 || !this._isOpen || this.shownPosition !== "bottom" || this.shownFullscreen) return;
+    const root = this._root();
+    const surface = root?.querySelector("[data-sf-modal-surface]");
+    const panel = root?.querySelector("[data-sf-modal-panel]");
+    if (!surface || !panel || !surface.contains(event.target) || startsOnControl(event.target)) return;
+    if (!inHandleRow(event, surface)) return;
+    trackSwipe(event, {
+      surface: panel,
+      direction: "down",
+      variable: "--sf-sheet--drag",
+      onEnd: ({ dismiss }) => {
+        if (dismiss && this.dismissible) this.close({ reason: "close" });
+      },
+    });
   }
 
   bindSlotEventHandlers() {
@@ -1251,7 +1541,8 @@ class SfModal extends ModalElement {
       event.target ===
       this._root()?.querySelector("[data-sf-modal-overlay]");
     // A press outside is the top layer's only.
-    if (isOverlay && this.closeOnOverlay && this.dismissible && SfModal.isTopModal(this)) {
+    // A window with fields never closes on its scrim (C159 (6)).
+    if (isOverlay && this.closeOnOverlay && this.dismissible && !this.hasFields && SfModal.isTopModal(this)) {
       this.close({ reason: "outside" });
     }
   }
@@ -1489,6 +1780,12 @@ class SfModal extends ModalElement {
 
   teardownModal() {
     const wasTop = SfModal.isTopModal(this);
+    this._discardQuestion?.remove();
+    this._discardQuestion = null;
+    this._edgesObserver?.disconnect();
+    this._savingObserver?.disconnect();
+    this._fieldsTarget = null;
+    this._edgesBody = null;
     this.abortRemoteContent();
     this.cancelCloseTransition();
 
@@ -1604,8 +1901,12 @@ class SfModal extends ModalElement {
         closeEl.getAttribute("data-sf-modal-close") ||
         closeEl.closest(".sf-modal")?.getAttribute("data-sf-modal-id");
       // The window's own close button closed it already, as `close`; a page
-      // control that closes it is a cancel.
-      SfModal.registry.get(id)?.close({ reason: "cancelled" });
+      // control that closes it is a cancel -- unless it is the window's main
+      // answer, which does not ask about unsaved changes (C159 (6)).
+      const modal = SfModal.registry.get(id);
+      const main = modal?.mainAnswer?.();
+      if (modal && main && (main === closeEl || main.contains(closeEl) || closeEl.contains(main))) modal._mainPressed = true;
+      modal?.close({ reason: "cancelled" });
     });
 
     SfModal.globalBound = true;

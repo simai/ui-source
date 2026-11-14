@@ -7,6 +7,7 @@ import { holdOpenSurfaceMark } from "../../core/js/open-surface-mark";
 import { tagSelector } from "../../core/js/tag-aliases.js";
 import { noteDeprecated } from "../../core/js/deprecations.js";
 import { PanelScrollbar } from "../../component/panel-scrollbar.js";
+import { swipeToClose } from "../../core/js/sheet-swipe.js";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
 import en from "./lang/en.json";
@@ -1060,6 +1061,12 @@ class SfContextMenu extends ContextMenuElement {
       });
     };
     placeAt(sheet);
+    // The one sheet (owner decision C157 (5)): a swipe down from its handle
+    // row closes the form, as Escape does.
+    owned.unswipe = swipeToClose(surface, {
+      when: () => owned.sheet && this._owned === owned,
+      onDismiss: () => this.close({reason: "close"}),
+    });
     // A form stays what the screen makes it: opened wide and the window
     // narrowed to a phone, it becomes the sheet; widened, it is anchored again.
     if (FORM_KINDS.has(kind)) {
@@ -1122,6 +1129,7 @@ class SfContextMenu extends ContextMenuElement {
     holdOpenSurfaceMark(this, false);
     const surface = this.surface();
     if (surface) {
+      owned.unswipe?.();
       if (surface.matches?.(":popover-open")) surface.hidePopover();
       surface.removeAttribute("popover");
       surface.classList.remove("sf-context-menu--open");

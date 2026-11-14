@@ -3192,7 +3192,7 @@
           "name": "--sf-site-header-sheet-inline-size",
           "role": "inline-size",
           "summary": "The open side panel's width.",
-          "default": "min(90vw, var(--sf-g1))",
+          "default": "min(90vw, var(--sf-g0))",
           "state": "open",
           "since": "2026-10-28"
         },

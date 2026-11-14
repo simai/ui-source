@@ -2,7 +2,7 @@
   "$comment": "The source of sf-modal's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/modal (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.modal",
   "tag": "sf-modal",
-  "version": "1.7.2",
+  "version": "1.10.0",
   "kind": "leaf",
   "family": "modal",
   "settings": {
@@ -64,7 +64,7 @@
     "close-on-overlay": {
       "type": "boolean",
       "default": true,
-      "summary": "A press on the scrim closes the top window, while it is dismissible."
+      "summary": "A press on the scrim closes the top window, while it is dismissible -- never a window with fields (owner decision C159 (6))."
     },
     "initial-focus": {
       "type": "enum",
@@ -75,7 +75,7 @@
         "panel"
       ],
       "default": "auto",
-      "summary": "Where the focus goes when the window opens (decisions C25, C39): auto -- the page's [autofocus], else in a question window (one holding a dangerous answer or an sf-confirm) its safe answer «Отмена», else the panel; safe -- the safe answer whenever there is one; first -- the first control of its content (the header's × excluded); panel -- the panel."
+      "summary": "Where the focus goes when the window opens (decisions C25, C39): auto -- the page's [autofocus], else in a question window (one holding a dangerous answer or an sf-confirm) its safe answer «Отмена», else in a window with fields its first field (C159 (9)), else the panel; safe -- the safe answer whenever there is one; first -- the first control of its content (the header's × excluded); panel -- the panel."
     },
     "preserve-scroll-gap": {
       "type": "boolean",
@@ -94,17 +94,20 @@
         "bottom"
       ],
       "default": "center",
-      "summary": "Where the window stands: center, a side panel at inline-start or inline-end (following the document direction), top or bottom; left and right are the physical forms."
+      "summary": "Where the window stands: center, or top. A side window (inline-start, inline-end; left and right their physical forms) and a sheet at the bottom are sf-drawer's (owner decision C157 (1)): those values are its old names until 2027-01-01 -- they still work, are noted in SF.deprecations, and draw as the drawer does: a side window takes the drawer's step 1 (24rem), a sheet the one sheet (44rem at most, the grab bar, a swipe down closes it)."
     },
     "size": {
       "type": "enum",
       "values": [
-        "auto",
-        "question"
+        "form",
+        "question",
+        "wide",
+        "full",
+        "auto"
       ],
-      "default": "auto",
+      "default": "form",
       "x-scale": "width",
-      "summary": "The window's kind of size (decision C39). auto: as wide as its content or width says. question: a question window -- --sf-popup-question-width (28rem, compact 26rem), the frame --sf-space-3, the title at text step 2 in bold, the title, the content and the footer on one start line, the × on the padding's corner, the footer's answers at the start and --sf-space-3 after the content; on a phone (below sm, 32rem) a window left at the centre opens as a bottom sheet. width, when given, still wins."
+      "summary": "The window's width by name (owner decision C159 (1); C39 for the question). form, the default: 36rem (compact 32rem) -- a short task, up to five to seven fields; question: 28rem (compact 26rem), the frame, title, content and footer on one start line, the x on the frame's corner, the answers at the start; wide: 48rem (compact 44rem) -- reading, a table, a comparison; full: the whole screen. auto is the default's old name. On a phone (below sm, 32rem) a window left at the centre is a bottom sheet the screen's width, at most the screen less one step, its answers sharing the row; wide, full and a form of more than three fields take the whole screen (C159 (2)). width, when given, still wins; a side panel (position inline-*) keeps its own width -- side windows are sf-drawer's."
     },
     "mode": {
       "type": "enum",
@@ -223,7 +226,7 @@
     "unsaved": {
       "type": "boolean",
       "default": false,
-      "summary": "Something in the window is unsaved: the close request (sf-modal-close) carries it as detail.unsaved, so a page can ask before it lets the window close."
+      "summary": "Something in the window is unsaved; a change a person makes in its fields marks it too. The close request (sf-modal-close) carries it as detail.unsaved; unless a listener refuses the request, a window with fields asks the Framework question «Закрыть без сохранения?» (owner decision C159 (6)) before Escape, the x, «Отмена» or a press outside close it: «Не сохранять», red, first, closes it; «Продолжить правку», quiet, with the focus, keeps it. Its main answer, an accepted answer and close() from a script do not ask."
     },
     "dismissible": {
       "type": "boolean",
@@ -462,6 +465,12 @@
     },
     {
       "name": "icon-buttons"
+    },
+    {
+      "name": "cl-button-close",
+      "$comment": [
+        "The close button: sf-button-close (owner decision C14)."
+      ]
     },
     {
       "name": "spinner",
@@ -778,6 +787,7 @@
     "events modal:ready, modal:update retire (§4.1, §16.13); readers getModalRoot, getSlotHtml retire (§4.4, §16.13)"
   ],
   "x-decisions": [
+    "version 1.10.0 (2026-11-14, owner decision C157 (1), (2), (5)): a minor. position=\"inline-start|inline-end|left|right|bottom\" is the old name of an sf-drawer until 2027-01-01, noted once per value (SF.deprecations, kind value, to sf-drawer). A side window stands at the drawer's step 1, 24rem (--sf-modal-drawer-width still wins); it was its text's width. A window at the bottom -- a question or a form on a phone (C159 (2)) or the old position=\"bottom\" -- is the one sheet of core mix/_mix__sheet.scss: at most 44rem, centred, the grab bar (24 x 4, on-surface-variant) in a handle row on top, and a swipe down from that row closes it as the x does (a window with changed fields asks first, C159 (6); a saving one waits).",
     "own-verb-words: minimize is a verb of vocabulary §5 (modal `hide`), so minimize/minimized are not own verbs; content-upload and content-uploaded stay own verbs with their words in lang events.<verb>.label (§8, vocabulary §5.1).",
     "alias-conflict: vocabulary 1.1.5 decides. modal:after-hide → sf-modal-minimized and modal:after-show → sf-modal-expanded (the facts of minimize and expand, vocabulary §4; `change` reports a person's value change only, §8), modal:before-show → sf-modal-expand (the table's sf-modal-minimize is the reverse act), the content events → sf-modal-content-upload(ed) (loading is not a value change). The converter's sf-modal-hidden/-shown/-hide/-show never shipped and get no rows.",
     "detail-adapter: §8 takes page elements out of detail, so the new names carry {modalId, phase, …} only; each old modal:* name keeps its old detail (component, modal, root added) through a split row and the element's detail adapter (sfAliasAdapters), sent after the new name with one shared cancel.",
@@ -803,7 +813,9 @@
     "version 1.7.0 also (2026-11-11, DEV navigation acceptance D1, through component.modal 1.3.0): one start line in every window (C39). The body scrolls inside a 1/4 inset that keeps the focus rings whole; that inset stood the content 1/4 right of the title. The scroll box now stands out into the frame by the same 1/4, so the title, the content and the footer answers start on the frame's line (24 / 16), and the rings still fit. A question window keeps its own arrangement (the inset taken out of the frame); a page's surface-padding keeps its body where it put it. Settings, values, events and keys unchanged. Also: loose content goes through the base's slot hold (holdSlotNode), as slotted content does; sf-modal does not hold its children, so nothing changes. Also: a slotted child the base still holds is not taken a second time as loose content. Also (DEV acceptance 2026-11-11, N2): the window drawn in its portal stays out of view (the style gate, data-sf-style-pending) until the sheets it draws with are applied, at most styleReadyTimeout; under held-back sheets an open window painted for a moment as a card in the page flow. A window that opened meanwhile takes its first focus once it shows. Also (N3): the first-paint sheet list no longer names utility/title (the title is sf-modal-title since C39).",
     "version 1.7.0 also (2026-11-11, modal follow-ups, items a and b): the page's children stay in the document until the window draws. Slotted and loose, they were taken out when the window connected and placed when it drew, one or more tasks later; a page that looked its sf-menu up by id once sf-modal was defined found nothing on 20 of 20 loads. The window now holds them (static holdsSlotNodesUntilDrawn, smart-base holdSlotNode) and its drawing takes them out and places them in the same task (releaseHeldSlotNodes before the drawing). And a closed window's content starts while it is closed: the Loader leaves a Smart element inside the closed (inert) root until it opens, so a page that waited for customElements.whenDefined('sf-menu') before opening the window waited for ever. Once the page has loaded and the browser is idle, the window asks for the tags in it (SF.Loader.ensure, core layer-stack startClosedLayerContent), and they draw inside the closed root, which shows nothing; a closed container inside the window keeps its own deferral. The portal's style gate moved to the base (holdPortalUntilStyled). Settings, values, events, keys and the drawing unchanged; tests/browser/layer-closed-content.browser.mjs. The early start starts the content's code, not its data: a component that fetches its own data (sf-include) waits for the window to open, and content the page adds to the closed layer later starts the same way (the layer watches its closed root). It costs a page that never opens the window the code and sheets its content needs, fetched after the load event when the browser is idle (about 515 KB uncompressed for an sf-menu). SF_BOOT_CONFIG.startClosedLayerContent = false keeps the old timing (ui-control evidence 2026-11-11-modal-followups-2-accept, M1, M2, L1, L2).",
     "version 1.7.1 (2026-11-13): a patch, through component.modal 1.3.1, after 1.7.0 was released (written as \"1.7.0 also\" on fix/modal-lows and fix/modal-title-line). The pair next 2 follow-ups (2026-11-11, DEV's acceptance L1, L2; owner decision C56, variant B): a side panel (left, right, inline-start, inline-end) stands flush to its edge of the screen as the bottom sheet does -- square corners and no border on the screen's edge, top and bottom, the inner corners keep the window's radius and the inner side its border, and on a phone (below md) the panel is the whole screen with no radius and no border; the body's outset into the frame is never more than --sf-modal-padding-inline, so a page's frame below 1/4 keeps the scroll box inside the window; the window's portal waits for its sheets themselves (at most portalStyleTimeout, 15 s), not the host gate's 3 s. And (dispatcher, 2026-11-11): a question window's title stands on the h4 step's own line, --sf-heading-4--height (20 on 24 on a desktop, 16 on 18 on a phone); it was --sf-title--height-6, 40 on a desktop and 28 on a phone, a step of the title ladder, so the header stood 16 px taller than its title. And (owner decision C79, 2026-11-12, through core/js/layer-stack.js): a window with an explicit size opened from a compact region (data-sf-density=\"compact\") now carries that density to its portal and comes down one ladder step, as a window without a size does; it took the normal ladder before, because the size attribute on the host answered \"normal\". data-sf-density=\"normal\" on the host or a region around it keeps the normal steps. Settings, values, events and keys unchanged.",
-    "version 1.7.2 (2026-11-13, owner decision C105, role H6; spacing audit D1, through component.modal 1.3.2): a patch. Every window's frame, the question window's included, is --sf-space-2 with the window's 1 px edge counted inside it: the title, the content and the answers start 20 from the outer edge on a desktop and 16 in compact density and on a phone. It was --sf-space-3 outside the edge (25 / 21 / 17), from the docs pre-check of 2026-11-10, which C105 (2026-11-12: «24 was a slip of the record») supersedes (dispatcher ruling). A side a window draws no edge on -- a side panel's screen edge, top and bottom, every side of a side panel on a phone, a bottom sheet's bottom -- takes the whole --sf-space-2. --sf-modal-padding-block and --sf-modal-padding-inline, when a page sets them, are the padding itself; surface-padding still wins. The body's outset into the frame reads the same frame. The class window (component.modal's own surface, new Modal(...)) takes the same frame: its p-3 utility gave way to a rule in sf.base, so a padding utility in surfaceClass still wins. A question window opened as a bottom sheet keeps the whole step below its answers (no bottom edge). Markup, first-paint snapshots, settings, values, events and keys unchanged."
+    "version 1.8.0 (2026-11-14, drawer study DR-2 and modal study MD-1, MD-2, MD-3; dispatcher ruling): a minor. The header's close is sf-button-close (owner decision C14), at the 1/3 step as before; its button keeps the classes sf-modal-header-action and sf-modal-close-button (and close-class), its host (class sf-modal-close) data-sf-modal-close; the rule loads cl-button-close, and the question window's safe answer never counts that host. With component.modal 1.3.4: a window is never taller than the screen -- the header and the footer stay, the body scrolls (a 40-paragraph window stood 2588 px at a 900 px screen, its title and answers off screen); the footer's actions are a button group's gap apart, --sf-space-1/3 (8, compact 4; C144). Before its code a closed window's content stands out of the page flow (core.styles placeholder rule; inline windows keep their box). Settings, values, events and keys unchanged; the footer's order and alignment are unchanged.",
+    "version 1.7.2 (2026-11-13, owner decision C105, role H6; spacing audit D1, through component.modal 1.3.2): a patch. Every window's frame, the question window's included, is --sf-space-2 with the window's 1 px edge counted inside it: the title, the content and the answers start 20 from the outer edge on a desktop and 16 in compact density and on a phone. It was --sf-space-3 outside the edge (25 / 21 / 17), from the docs pre-check of 2026-11-10, which C105 (2026-11-12: «24 was a slip of the record») supersedes (dispatcher ruling). A side a window draws no edge on -- a side panel's screen edge, top and bottom, every side of a side panel on a phone, a bottom sheet's bottom -- takes the whole --sf-space-2. --sf-modal-padding-block and --sf-modal-padding-inline, when a page sets them, are the padding itself; surface-padding still wins. The body's outset into the frame reads the same frame. The class window (component.modal's own surface, new Modal(...)) takes the same frame: its p-3 utility gave way to a rule in sf.base, so a padding utility in surfaceClass still wins. A question window opened as a bottom sheet keeps the whole step below its answers (no bottom edge). Markup, first-paint snapshots, settings, values, events and keys unchanged.",
+    "version 1.9.0 (2026-11-14, owner decision C159, all nine points; owner report R242; role-token study RT-6, RT-7, RT-12): a minor. (1) size names question 28rem, form 36rem (the default; auto is its old name), wide 48rem and full, compact one step narrower (26, 32, 44rem: core --sf-popup--window-form-width and --sf-popup--window-wide-width, internal, generated by density like C32's popups); it grew with its text (294 to 1043 px). (2) on a phone a window at the centre is a bottom sheet (question and form) or the whole screen (wide, full, a form of more than three fields). (3) a hairline over the body while text is above it, under it while text is below (data-sf-modal-more-start / -more-end on the drawn window). (4) the footer of every window starts at the start: main answer first, «Отмена» last, data-apart at the far end; halves on a phone (core mix/_mix__window-footer.scss, shared with sf-drawer). (5) every title on the h4 step in bold (20 on 24, phone 16 on 18); it was h3 (24 on 28) but in the question. (6) a window with fields never closes on its scrim; Escape, x, «Отмена» or a press outside with changes ask «Закрыть без сохранения?» («Не сохранять» danger first, «Продолжить правку» quiet with the focus; words in lang ru/en, DEV's localization study LC-9). (7) one scrim: a window over another lays none; at most two windows, the second only a question (open() refuses others with reason stacked and a console warning). (8) closing --sf-duration-fast on the exit curve (it was 300 ms), opening as before on the enter curve; less motion is a short fade. (9) a window with fields is one form: Enter in a one-line field presses the footer's main answer (its first answer that is not quiet and not apart), the main answer submits the content's <form>; the first field takes the focus; while the main answer shows loading (sf-button loading, set by the page) the fields are read-only, the window is aria-busy and only close() from a script closes it; content on its way is a skeleton of three text lines in the window's width, not a spinner. R242 (DEV's focus-clipping audit): the body's scroll box keeps core's ring room inside it (--sf-focus-room, 4 px for a ring of 2 + 1; padding, scroll-padding and the frame's compensating margin) and nothing between it and the window clips (body and viewport overflow visible, the footer outside the scroll box), so no ring of a field or an answer is cut; the same room now stands in sf-drawer's panel, sf-popover's surface, sf-workspace's regions and .table-frame, and segmented tracks draw their rings inside. RT-6/RT-7: the frame stays --sf-space-2 with the edge inside it (20 / 16 / 16). RT-12: the scrim is the shared --sf-scrim-color."
   ],
   "x-registry": {
     "state": {

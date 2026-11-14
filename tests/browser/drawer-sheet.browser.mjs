@@ -26,7 +26,8 @@ if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'component/component/icon-buttons/css/icon-buttons.css',
   'component/component/close/css/close.css', 'smart/smart/drawer/css/drawer.css'].map((p) => join(out, p));
-const modules = ['core/core/js/smart-base.js', 'smart/smart/drawer/js/drawer.js'].map((p) => join(out, p));
+// The close is sf-button-close (C14): its element draws the button.
+const modules = ['core/core/js/smart-base.js', 'smart/smart/drawer/js/drawer.js', 'smart/smart/button-close/js/button-close.js'].map((p) => join(out, p));
 const absent = [...styles, ...modules].filter((path) => !existsSync(path));
 if (absent.length) throw new Error(`${absent.length} build asset(s) not found under ${out}: ${absent.join(', ')}`);
 

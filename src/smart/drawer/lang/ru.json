@@ -2,6 +2,7 @@
   "title": "Панель",
   "runtime": {
     "close-label": "Закрыть панель",
-    "handle-label": "Изменить высоту панели"
+    "handle-label": "Изменить высоту панели",
+    "back-label": "Назад"
   }
 }
