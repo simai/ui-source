@@ -144,23 +144,17 @@ export function renderModalTemplate(context) {
                                             : nothing}
                                     ${context.showClose
                                             ? html`
-                                                <button
-                                                        type="button"
-                                                        class=${joinClasses(
-                                                                'sf-icon-button sf-modal-header-action sf-modal-close-button sf-modal-close-button--inline-end sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1/3 m-0',
+                                                <sf-button-close
+                                                        size="1/3"
+                                                        class="sf-modal-close"
+                                                        root-class=${joinClasses(
+                                                                'sf-modal-header-action sf-modal-close-button sf-modal-close-button--inline-end m-0',
                                                                 context.closeClass,
                                                         )}
                                                         aria-label=${context.closeText}
                                                         data-sf-modal-close=${context.modalId}
                                                         @click=${context.onCloseClick}
-                                                >
-                          <span
-                                  class="sf-close sf-close--size-1/3 flex justify-center items-center"
-                                  aria-hidden="true"
-                          >
-                            <span class="sf-close-icon"></span>
-                          </span>
-                                                </button>
+                                                ></sf-button-close>
                                             `
                                             : nothing}
                                 </header>

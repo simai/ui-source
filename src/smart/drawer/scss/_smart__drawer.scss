@@ -1,4 +1,6 @@
+@use 'sass:map';
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @property --sf-drawer-stack-offset {
   syntax: "<length>";
   inherits: true;
@@ -44,6 +46,14 @@
 
   .sf-drawer-overlay[hidden] {
     display: none !important;
+  }
+
+  /* One scrim (C16, C20; study DR-8): under a modal drawer opened above this
+     one, this one's scrim fades out as the top one's fades in, so a nested
+     panel stands over one scrim at 64, not two (about 87). */
+  .sf-drawer[data-sf-drawer-covered] .sf-drawer-overlay {
+    opacity: var(--sf-0);
+    pointer-events: none;
   }
 
   /* A stacked drawer stands depth × offset in from its edge, so the drawer below
@@ -342,6 +352,29 @@
     position: static;
   }
 
+  /* A phone (below md, where the forms in popups are sheets, C32): a side
+     panel is the whole screen, without a radius and without a border
+     (owner decision C56, as sf-modal's side panel; study DR-5). Every step
+     of the ladder stood a strip of page beside it (size 1 was 384 of 390,
+     radius 8). A docked panel without the room floats, and is the same. Its
+     edge controls come inside, along the top, as at size full. */
+  @media not all and (min-width: map.get(bp.$breakpoint-array, md)) {
+    .sf-drawer:not([data-sf-drawer-placement='bottom']):not([data-sf-drawer-column='true']) .sf-drawer-panel {
+      --sf-drawer-width: 100%;
+      --sf-drawer--edge-start: calc(var(--sf-px) * 0);
+      --sf-drawer--edge-end: calc(var(--sf-px) * 0);
+      inline-size: 100%;
+      max-inline-size: 100%;
+      border-width: 0;
+      border-radius: 0;
+    }
+
+    .sf-drawer:not([data-sf-drawer-placement='bottom']):not([data-sf-drawer-column='true']) .sf-drawer-edge {
+      inset-inline: var(--sf-space-1) auto;
+      flex-direction: row;
+    }
+  }
+
   /* Docked drawers are modeless page columns: no scrim, square edges. One
      without the room floats over the page and is modal: it keeps its scrim. */
   .sf-drawer[data-sf-drawer-docked='true'][data-sf-drawer-modal='false'] .sf-drawer-overlay {
@@ -379,7 +412,11 @@
     inset-block: auto 0;
     inset-inline: 0;
     width: 100%;
-    max-width: 100%;
+    /* The sheet's width stops at 44rem (--sf-h1, the md step), centred, as
+       sf-settings' phone sheet (C106 (8), C32); on a desktop it stretched to
+       the window's width (study DR-10). The screen's width below that. */
+    max-width: var(--sf-h1);
+    margin-inline: auto;
     max-block-size: calc(var(--sf-drawer-sheet-room) - var(--sf-space-3));
     border-block-start: var(--sf-px) solid var(--sf-outline-variant);
     border-end-start-radius: var(--sf-0);

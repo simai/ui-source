@@ -293,10 +293,18 @@ corners and draws no bottom edge; one whose frame is its own (no
   placed after the slotted content
 - `footer`
 
+## Long content
+
+A window is never taller than the screen: the header and the footer stay in
+view and only the body scrolls. A window drawn in the page
+(`display="inline"`) grows with its content. The close button in the header is
+`sf-button-close` (decision C14); its button keeps the class
+`sf-modal-close-button`.
+
 ## Footer actions
 
 The footer puts its actions at the end of the row, as a dialog does, with
-`--sf-modal-footer-gap` (`var(--sf-space-1/2)`, a step of the ladder) between
+`--sf-modal-footer-gap` (`var(--sf-space-1/3)`, a button group's gap: 8, compact 4; C144) between
 them; they wrap onto a second line when the row is too narrow. Put the
 actions in the slot directly, each with `slot="footer"`, the primary action
 last. A wrapper element in the slot stands at the end as one item and keeps
