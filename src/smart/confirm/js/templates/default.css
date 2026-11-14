@@ -165,17 +165,18 @@
     cursor: text;
   }
 
-  /* The answers first, at the start; the status line after them. No row gap:
+  /* The answers first, at the start; the status line after them, a button
+     group's gap apart as inline (C105 H5, C144; it was 1/2). No row gap:
      the empty status line takes no room under the answers on a phone. */
   .sf-confirm--window .sf-confirm__footer {
     justify-content: flex-start;
-    column-gap: var(--sf-space-1\/2);
+    column-gap: var(--sf-space-1\/3);
     row-gap: 0;
   }
 
   .sf-confirm--window .sf-confirm__actions {
     order: -1;
-    gap: var(--sf-space-1\/2);
+    gap: var(--sf-space-1\/3);
   }
 
   /* On a narrow screen the two answers share the width equally (a media query,
