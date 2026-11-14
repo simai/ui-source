@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tag",
-  "version": "1.5.0",
+  "version": "1.7.0",
   "title": "Tags",
   "summary": "Compact static, selectable and removable labels with one explicit interaction owner.",
   "kind": "smart",
@@ -29,6 +29,7 @@
       "component.dot",
       "component.icon-buttons",
       "component.tags",
+      "component.tooltip",
       "smart.button-close",
       "smart.icon"
     ],
@@ -422,7 +423,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tag/index.js",
-        "sha256": "6b914cb349538e9cf3423e3f9793148b15aabf7b54df9149fd93062a3660d8ab"
+        "sha256": "47aa9678bbdcb0f11b3b66f6818f874618ddf59e5f7806889f1d17fbf5390c0a"
       }
     ],
     "generated_runtime": [

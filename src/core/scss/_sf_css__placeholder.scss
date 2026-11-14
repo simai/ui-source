@@ -152,6 +152,84 @@
     * (var(--sf-input--box-line) + var(--sf-input--box-gap)));
 }
 
+/* sf-tag before it draws (tags study TG-15: a bare tag was 0 px for 120-140
+   ms, then the whole tag, and the line it stood in jumped). Its box is known
+   from its attributes, on the ladder the tag sheet draws with: one control of
+   its size high (a status that is neither pressed nor removed is the tonal
+   badge, 24), its label one line of the size's text, written from the `text`
+   attribute, between the size's edges (C76); a check square or a picture
+   before it (tag - 8, C58) and a cross after it (C132) at the part gap
+   (C69). At most 20rem and its container, as the tag. Static markup printed
+   inside (data-sf-static) is its own box, so nothing is reserved then. A
+   label given in a slot, a count and the compact edges are what the
+   attributes cannot tell. */
+:where(sf-tag:not(:defined)) {
+  --sf-tag--box-control: var(--sf-ui-1\/2--control-height);
+  --sf-tag--box-text: var(--sf-text-size-1\/2);
+  --sf-tag--box-edge: var(--sf-b2);
+  --sf-tag--box-gap: var(--sf-ui-1\/2--text-space-x);
+  --sf-tag--box-cross: var(--sf-micro--cross-1\/2);
+  --sf-tag--box-lead: var(--sf-text-height-1\/2);
+  --sf-tag--box-line: var(--sf-text-height-1\/2);
+  --sf-tag--box-lead-on: 1;
+  --sf-tag--box-cross-on: 0;
+}
+
+:where(sf-tag[size="1/3"]:not(:defined)) { --sf-tag--box-control: var(--sf-ui-1\/3--control-height); --sf-tag--box-text: var(--sf-text-size-1\/3); --sf-tag--box-edge: var(--sf-a8); --sf-tag--box-gap: var(--sf-ui-1\/3--text-space-x); --sf-tag--box-cross: var(--sf-micro--cross-1\/3); --sf-tag--box-lead: var(--sf-text-height-1\/3); --sf-tag--box-line: var(--sf-text-height-1\/3); }
+:where(sf-tag[size="1"]:not(:defined)) { --sf-tag--box-control: var(--sf-ui-1--control-height); --sf-tag--box-text: var(--sf-text-size-1); --sf-tag--box-edge: var(--sf-b6); --sf-tag--box-gap: var(--sf-ui-1--text-space-x); --sf-tag--box-cross: var(--sf-micro--cross-1); --sf-tag--box-lead: var(--sf-text-height-1); --sf-tag--box-line: var(--sf-text-height-1); }
+:where(sf-tag[size="2"]:not(:defined)) { --sf-tag--box-control: var(--sf-ui-2--control-height); --sf-tag--box-text: var(--sf-text-size-2); --sf-tag--box-edge: var(--sf-c0); --sf-tag--box-gap: var(--sf-ui-2--text-space-x); --sf-tag--box-cross: var(--sf-micro--cross-2); --sf-tag--box-lead: var(--sf-text-height-2); --sf-tag--box-line: var(--sf-text-height-2); }
+:where(sf-tag[size="3"]:not(:defined)) { --sf-tag--box-control: var(--sf-ui-3--control-height); --sf-tag--box-text: var(--sf-text-size-3); --sf-tag--box-edge: var(--sf-ui-3--space-x); --sf-tag--box-gap: var(--sf-ui-3--text-space-x); --sf-tag--box-cross: var(--sf-micro--cross-3); --sf-tag--box-lead: var(--sf-text-height-3); --sf-tag--box-line: var(--sf-text-height-3); }
+/* A picture is the tag less 4 above and below; a plain label has none. */
+:where(sf-tag:is([kind="icon"], [kind="avatar"], [kind="color"], [type="icon"], [type="avatar"], [type="color"]):not(:defined)) { --sf-tag--box-lead: calc(var(--sf-tag--box-control) - 2 * var(--sf-space-1\/4)); --sf-tag--box-cross-on: 1; }
+:where(sf-tag:is([kind="default"], [kind="quantity"], [type="default"], [type="quantity"]):not(:defined)) { --sf-tag--box-lead-on: 0; }
+:where(sf-tag[closable]:not([closable="false"]):not(:defined)) { --sf-tag--box-cross-on: 1; }
+:where(sf-tag[closable="false"]:not(:defined)) { --sf-tag--box-cross-on: 0; }
+/* A compact region on a desktop moves each edge one step down, as the tag
+   sheet does (C76): 8 / 8 / 12 / 16 at 1/3, 1/2, 1, 2. */
+@media (min-width: 60rem) {
+  :where([data-sf-density="compact"] sf-tag:not(:defined):not([data-sf-density="normal"] *)) { --sf-tag--box-edge: var(--sf-a8); }
+  :where([data-sf-density="compact"] sf-tag[size="1"]:not(:defined):not([data-sf-density="normal"] *)) { --sf-tag--box-edge: var(--sf-b2); }
+  :where([data-sf-density="compact"] sf-tag[size="2"]:not(:defined):not([data-sf-density="normal"] *)) { --sf-tag--box-edge: var(--sf-b6); }
+}
+
+/* On a text line (line="..."): the tag is that line high, one size down, with
+   the small inline step at its ends and its picture the line (LK-06). */
+:where(sf-tag[line]:not([line=""]):not(:defined)) { --sf-tag--box-edge: var(--sf-space-1\/3); --sf-tag--box-gap: var(--sf-space-1\/3); }
+:where(sf-tag[line="1/2"]:not(:defined)) { --sf-tag--box-control: var(--sf-text-height-1\/2); --sf-tag--box-line: var(--sf-text-height-1\/2); --sf-tag--box-text: var(--sf-text-size-1\/3); --sf-tag--box-lead: var(--sf-text-height-1\/2); }
+:where(sf-tag[line="1"]:not(:defined)) { --sf-tag--box-control: var(--sf-text-height-1); --sf-tag--box-line: var(--sf-text-height-1); --sf-tag--box-text: var(--sf-text-size-1\/2); --sf-tag--box-lead: var(--sf-text-height-1); }
+:where(sf-tag[line="2"]:not(:defined)) { --sf-tag--box-control: var(--sf-text-height-2); --sf-tag--box-line: var(--sf-text-height-2); --sf-tag--box-text: var(--sf-text-size-1); --sf-tag--box-lead: var(--sf-text-height-2); }
+/* A status that is neither pressed nor removed is the tonal badge (C140 (6)). */
+:where(sf-tag[status]:not([status=""]):not([interactive]):not([closable]):not(:defined)) {
+  --sf-tag--box-control: var(--sf-c2);
+  --sf-tag--box-text: var(--sf-text-size-1\/3);
+  --sf-tag--box-line: var(--sf-text-height-1\/3);
+  --sf-tag--box-edge: var(--sf-a8);
+  --sf-tag--box-lead-on: 0;
+  --sf-tag--box-cross-on: 0;
+}
+
+:where(sf-tag:not(:defined)):not(:has(> [data-sf-static])) {
+  display: inline-block;
+  box-sizing: border-box;
+  block-size: var(--sf-tag--box-control);
+  /* The label's line in the middle, so the box stands on the line by the
+     label's baseline, as the drawn tag does. */
+  padding-block: calc((var(--sf-tag--box-control) - var(--sf-tag--box-line)) / 2);
+  max-inline-size: min(var(--sf-g0), 100%);
+  padding-inline-start: calc(var(--sf-tag--box-edge) + var(--sf-tag--box-lead-on) * (var(--sf-tag--box-lead) + var(--sf-tag--box-gap)));
+  padding-inline-end: calc(var(--sf-tag--box-edge) + var(--sf-tag--box-cross-on) * (var(--sf-tag--box-cross) + var(--sf-tag--box-gap)));
+}
+
+:where(sf-tag:not(:defined)):not(:has(> [data-sf-static]))::before {
+  content: attr(text);
+  display: block;
+  font-size: var(--sf-tag--box-text);
+  line-height: var(--sf-tag--box-line);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Its menu waits for its own code in the parts the element drew: an empty
    undefined sf-menu-context would stand in the row as one more item, a gap
    wider than the trigger, until it upgrades into its popup. */
