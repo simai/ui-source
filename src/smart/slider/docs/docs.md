@@ -159,3 +159,32 @@ The arrows say «Предыдущий слайд» and «Следующий сл
 Public variables: `--sf-slider-gap`, `--sf-slider-arrow-offset-inline`,
 `--sf-slider-dots-offset-block`, `--sf-slider-thumbnail-size`,
 `--sf-slider-thumbnail-radius`.
+
+## One slider (decision C143, 1.3.0)
+
+sf-slider is the one content slider; the class block `sf-carousel` is an old
+name until 2027-01-01 (noted once in `SF.deprecations.list()`).
+
+- **Pictures** (the default): the arrows, the dots and the pause button stand
+  over the picture on popup plates with the overlay shadow
+  (`--sf-surface-popup`, `--sf-shadow-overlay`). An arrow with nowhere to go
+  dims its glyph and keeps its plate.
+- **Cards** (`root-class="sf-slider--content"`: news, reviews, products): one
+  row under the cards, a control high — the position at the start, the quiet
+  grey arrows at the end, 8 apart (`--sf-space-1/3`, 4 when dense; C105 H5),
+  the groups `--sf-space-1` apart (H6). The next card's edge shows: 1.15 cards
+  in view on a phone, 2.2 from the sm step; `data-slides-per-view` sets your
+  own count, and the last stop shows the last card whole.
+- **Dots**: 8 px, the current one a 24 × 8 pill; from eight slides a counter
+  «2 / 12» stands in their place. The dots are one Tab stop: ArrowLeft and
+  ArrowRight, Home and End move the slide and the focus.
+- **Autoplay** is off. `data-autoplay="true"` draws a pause button first in
+  the Tab order and turns the slides only while it is shown; the button stops
+  and starts them («Остановить прокрутку» / «Запустить прокрутку», words
+  `pause`, `play`), a keyboard focus inside stops them, the pointer over the
+  slider and a hidden tab hold them. Reduced motion: no autoplay, no button.
+- **Frame** (`ratio`, `16/9` by default; `4/3`, `3/2`, `1/1`, `21/9`, `auto`):
+  a picture slider keeps the ratio from the first frame — core.css holds the
+  box of an `sf-slider` whose code has not come yet (the first slide in the
+  ratio box; cards in their row with room for the controls) — so nothing
+  jumps when the code arrives. A `dots-type` you write keeps its plate.

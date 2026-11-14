@@ -18,7 +18,7 @@ function renderSliderNode(context, type = 'inline') {
       button-type=${context.buttonType}
       button-size=${context.buttonSize}
       dots=${String(context.dots)}
-      dots-type=${context.dotsType}
+      dots-type=${context.component?.hasAttribute?.('dots-type') ? context.dotsType : nothing}
       dots-size=${context.dotsSize}
       thumbs=${String(context.thumbs)}
       thumbs-class=${context.thumbsClass}
@@ -28,6 +28,7 @@ function renderSliderNode(context, type = 'inline') {
       space-between=${authoredSpaceBetween ? String(context.spaceBetween) : nothing}
       speed=${authoredSpeed ? String(context.speed) : nothing}
       slide-class=${context.slideClass}
+      ratio=${isInline ? nothing : 'auto'}
     ></sf-slider>
   `;
 }

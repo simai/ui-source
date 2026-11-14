@@ -24,3 +24,15 @@ and lifecycle methods without an external runtime dependency.
   `a11y.itemRoleDescriptionMessage` and `a11y.slideRole` name and describe the
   slides, as Swiper's own options do.
 
+
+## Pagination, peek, resize (1.1.0, decision C143)
+
+- `pagination.type: 'fraction'` writes «2 / 12» into the element
+  (`currentClass`, `totalClass`) instead of bullets.
+- `pagination.keyboard: true` makes the bullets one Tab stop (the current one
+  takes it) paged by ArrowLeft / ArrowRight, Home and End, mirrored right to
+  left; the focus follows the current bullet.
+- A fractional `slidesPerView` (2.2) shows a part of the next slide; the last
+  stop lays the last slide whole at the end.
+- With `breakpoints` the engine reads them again when the window changes width
+  and emits `breakpoint` and `resize`; `update` is emitted after each update.

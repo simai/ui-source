@@ -18,7 +18,7 @@
     "src/component/slider/scss/_var__slider.scss",
     "src/component/slider/scss/index.scss"
   ],
-  "content_sha256": "2c1d524f8e1b263878e3cada9e7d12b992d73db2246b884bc7c6ac3cfed9434f",
+  "content_sha256": "97b4655ef379beda59b69692c9a1c266cf34420e2266f74456456a0238ce8569",
   "dependencies": [
     {
       "id": "component.swiper",
@@ -51,6 +51,10 @@
     {
       "id": "tokens.space",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.typography",
+      "range": "^1.7.0"
     }
   ]
 }

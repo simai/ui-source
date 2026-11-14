@@ -30,8 +30,19 @@ function getButtonOptions(type = 'secondary') {
 // The dots' plate by its colour role (sf-slider 1.2.0, docs precheck Q4). The
 // former words are dated aliases until 2027-01-01 (the shim rewrites them on
 // the host); they stay here for a value handed to the template directly.
-function getDotsClasses(type = 'primary-container', size = '2') {
+function getDotsClasses(type = 'primary-container', size = '2', place = '') {
   const normalizedType = normalizeOption(type);
+  // The dots' place when the page chose no plate (C143 (2), (3)): over a
+  // picture a popup plate with its shadow, under cards no plate at all.
+  if (place) {
+    return joinClasses(
+      'sf-slider-dots',
+      `sf-slider-dots--${place}`,
+      `sf-slider-dots--size-${size || '2'}`,
+      'flex',
+      'sf-slider-pagination',
+    );
+  }
   const typeClasses = {
     'primary-container': ['sf-slider-dots--primary', 'sf-slider-dots--dark'],
     primary: ['sf-slider-dots--primary', 'sf-slider-dots--light'],
@@ -144,14 +155,22 @@ function renderThumbSlides(context) {
   );
 }
 
+// Over a picture the quiet arrows stand on popup plates with the overlay
+// shadow (C143 (2)): a ghost button on the plate, so its hover tints the plate
+// and an arrow with nowhere to go dims its glyph and keeps its plate.
+function isPlated(context) {
+  return !context.content && normalizeOption(context.buttonType || 'secondary') === 'secondary';
+}
+
 function renderArrows(context) {
   if (!context.arrows) return '';
 
-  const buttonOptions = getButtonOptions(context.buttonType);
+  const plated = isPlated(context);
+  const buttonOptions = plated ? { type: 'ghost', scheme: 'on-surface' } : getButtonOptions(context.buttonType);
   const buttonSize = context.buttonSize || '1';
 
   return html`
-    <div class="sf-slider-arrows sf-slider-arrows--size-2">
+    <div class=${joinClasses('sf-slider-arrows sf-slider-arrows--size-2', plated && 'sf-slider-arrows--plate')}>
       <sf-button-icon
         root-class="sf-slider-button-prev"
         icon="keyboard_arrow_left"
@@ -172,7 +191,40 @@ function renderArrows(context) {
   `;
 }
 
+// The pause button (C143 (6)): drawn only when the page asks for autoplay,
+// first in the Tab order; the slider turns only while it is shown.
+function renderRotation(context) {
+  if (!context.autoplay) return nothing;
+  const plated = !context.content;
+  return html`
+    <div class=${joinClasses('sf-slider-rotation-place', plated && 'sf-slider-arrows--plate')}>
+      <sf-button-icon
+        root-class="sf-slider-rotation sf-slider-button-rotation"
+        icon="pause"
+        size=${context.buttonSize || '1'}
+        appearance=${plated ? 'ghost' : 'tonal'}
+        scheme="on-surface"
+        aria-label=${context.pauseLabel}
+      ></sf-button-icon>
+    </div>
+  `;
+}
+
+function renderPosition(context) {
+  if (!context.dots) return nothing;
+  const authored = context.component?.hasAttribute?.('dots-type');
+  const place = authored ? '' : (context.content ? 'bare' : 'plate');
+  return html`<div class=${getDotsClasses(context.dotsType, context.dotsSize, place)}></div>`;
+}
+
+const RATIOS = new Set(['16/9', '4/3', '3/2', '1/1', '21/9', 'auto']);
+
 export function renderSliderTemplate(context) {
+  context = {
+    ...context,
+    content: /(^|\s)sf-slider--content(\s|$)/.test(context.rootClass || ''),
+  };
+  const ratio = String(context.ratio || '16/9').replace(/\s+/g, '');
   const rootClasses = joinClasses('sf-slider', context.rootClass);
   const authoredSpaceBetween = context.component?.hasAttribute('space-between');
   const authoredSpeed = context.component?.hasAttribute('speed');
@@ -185,6 +237,9 @@ export function renderSliderTemplate(context) {
       data-label=${context.regionLabel || nothing}
       data-slide-label=${context.slideLabel || nothing}
       data-slide-roledescription=${context.slideRoleDescription || nothing}
+      data-ratio=${RATIOS.has(ratio) ? ratio : '16/9'}
+      data-pause-label=${context.pauseLabel || nothing}
+      data-play-label=${context.playLabel || nothing}
       data-loop=${String(!!context.loop)}
       data-space-between=${authoredSpaceBetween ? String(context.spaceBetween) : nothing}
       data-speed=${authoredSpeed ? String(context.speed) : nothing}
@@ -205,13 +260,13 @@ export function renderSliderTemplate(context) {
           `
         : nothing}
 
-      ${context.arrows || context.dots
+      ${context.arrows || context.dots || context.autoplay
         ? html`
             <div class="sf-slider-controls">
-              ${renderArrows(context)}
-              ${context.dots
-                ? html`<div class=${getDotsClasses(context.dotsType, context.dotsSize)}></div>`
-                : ''}
+              ${renderRotation(context)}
+              ${context.content
+                ? html`${renderPosition(context)}${renderArrows(context)}`
+                : html`${renderArrows(context)}${renderPosition(context)}`}
             </div>
           `
         : ''}

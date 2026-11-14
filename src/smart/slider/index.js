@@ -74,6 +74,12 @@ class SfSlider extends SliderElement {
       regionRoleDescription: this.sfWord('carousel'),
       slideRoleDescription: this.sfWord('slide'),
       slideLabel: this.sfWord('position'),
+      // Autoplay is off unless the page asks (data-autoplay); then the pause
+      // button is drawn and named by what it does (C143 (6)).
+      autoplay: ['1', 'true', 'yes', 'on'].includes(String(this.getAttribute('data-autoplay') || '').toLowerCase()),
+      pauseLabel: this.sfWord('pause'),
+      playLabel: this.sfWord('play'),
+      ratio: this.ratio,
     });
   }
 

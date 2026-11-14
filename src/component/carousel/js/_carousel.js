@@ -1,3 +1,11 @@
+import { noteDeprecated } from '../../../core/js/deprecations.js';
+
+// One slider (decision C143 (1), owner 2026-11-14): sf-slider took this
+// block's region name and its mandatory pause button. .sf-carousel keeps
+// working as an old name until 2027-01-01 and is noted once in
+// SF.deprecations (journal class-sf-carousel-to-sf-slider).
+const DEPRECATED = { since: '2026-11-14', remove_after: '2027-01-01' };
+
 const CAROUSEL_SELECTOR = '.sf-carousel';
 const BOUND_FLAG = 'sfCarouselBound';
 const WAITING_FLAG = 'sfCarouselWaiting';
@@ -185,6 +193,7 @@ function bindCarousel(root) {
 
   const { main, next, previous, pagination, rotation } = getCarouselParts(root);
   if (!(main instanceof HTMLElement)) return null;
+  noteDeprecated({ component: 'sf-carousel', kind: 'class', from: 'sf-carousel', to: 'sf-slider', ...DEPRECATED });
   const autoplayRequested = normalizeBoolean(root.dataset.autoplay, false);
   const autoplayAllowed = autoplayRequested
     && rotation instanceof HTMLButtonElement

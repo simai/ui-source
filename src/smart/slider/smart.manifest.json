@@ -48,7 +48,7 @@
       "button-type": {
         "type": "string",
         "default": "secondary",
-        "description": "The arrows' look: secondary (the default, the soft grey icon buttons, tonal on-surface: paging is no main action, decision C116), primary (filled primary), dark (filled on-surface), light (ghost on-surface)."
+        "description": "The arrows' look: secondary (the default, the quiet grey icon buttons: paging is no main action, decision C116; over a picture they stand on popup plates with the overlay shadow, under cards they are tonal on-surface, decision C143), primary (filled primary), dark (filled on-surface), light (ghost on-surface)."
       },
       "button-size": {
         "type": "string",
@@ -69,7 +69,7 @@
       "dots-type": {
         "type": "string",
         "default": "primary-container",
-        "description": "The dots' plate by its colour role: primary-container (the default; a primary-container plate with on-primary-container dots), primary (a primary plate with on-primary dots), surface-container (a raised neutral plate with on-surface dots), surface-inverse (an inverse plate with on-surface-inverse dots). Former words, dated aliases until 2027-01-01: primary-dark is primary-container, primary-light is primary, light and clear are surface-container, dark is surface-inverse.",
+        "description": "The dots' plate by its colour role. Not written (decision C143): over a picture a popup plate with the overlay shadow, under cards no plate; the dots are 8 px, the current one a 24 x 8 pill, and from eight slides a counter «2 / 12» stands in their place. Written: primary-container (a primary-container plate with on-primary-container dots), primary (a primary plate with on-primary dots), surface-container (a raised neutral plate with on-surface dots), surface-inverse (an inverse plate with on-surface-inverse dots). Former words, dated aliases until 2027-01-01: primary-dark is primary-container, primary-light is primary, light and clear are surface-container, dark is surface-inverse.",
         "enum": [
           "primary-container",
           "primary",
@@ -122,6 +122,19 @@
       "slide-class": {
         "type": "string",
         "default": ""
+      },
+      "ratio": {
+        "type": "string",
+        "default": "16/9",
+        "description": "The frame of a picture slider (decision C143 (8)): the slides' box keeps this ratio from the first frame, before the code arrives, so the page does not jump. auto: the slides' own height. A card slider (root-class sf-slider--content) takes its cards' height and ignores it.",
+        "enum": [
+          "16/9",
+          "4/3",
+          "3/2",
+          "1/1",
+          "21/9",
+          "auto"
+        ]
       },
       "aria-label": {
         "type": "string",
@@ -333,7 +346,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/slider/index.js",
-        "sha256": "746e1ea2c0a548c3fd34938a6c17b22943ec96c7912cebe5b43e1cee461d9b0a"
+        "sha256": "9b336c9649891e951da8b2fa11417c6a0f703e98eadc9ae005b84bab34cfd602"
       }
     ],
     "generated_runtime": [

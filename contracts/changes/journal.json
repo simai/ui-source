@@ -11950,6 +11950,30 @@
       },
       "owner": "ui-source",
       "source": "src/core/scss/mix/_mix__places.scss (sf-place-glass-accent); src/core/scss/_sf_css__surface_places.scss; ui-control control/docs-review/decisions.md C70"
+    },
+    {
+      "id": "class-sf-carousel-to-sf-slider",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "One slider (owner decision C143 (1), study ui-control control/research/2026-11-14-content-slider.md): sf-slider took the carousel's region name and its mandatory pause button, so the class block .sf-carousel is an old name. It keeps working as it did and is noted once in SF.deprecations until remove_after; write sf-slider (Smart) or the .sf-slider class block with an .sf-slider-rotation pause button for autoplay.",
+      "items": [
+        {
+          "component": "sf-carousel",
+          "from": "sf-carousel",
+          "to": "sf-slider"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Replace the .sf-carousel markup with <sf-slider> (its slides as children, aria-label for the region name); for autoplay write data-autoplay, and the slider draws its own pause button. A class-block page writes .sf-slider with .sf-slider-main.swiper and a .sf-slider-rotation button.",
+      "examples": {
+        "before": "<div class=\"sf-carousel\" data-label=\"Новости\">…</div>",
+        "after": "<sf-slider aria-label=\"Новости\">…</sf-slider>"
+      },
+      "owner": "ui-source",
+      "source": "src/component/carousel/js/_carousel.js"
     }
   ]
 }

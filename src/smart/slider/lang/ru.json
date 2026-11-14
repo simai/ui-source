@@ -6,6 +6,8 @@
     "label": "Слайды",
     "carousel": "карусель",
     "slide": "слайд",
-    "position": "{n} из {count}"
+    "position": "{n} из {count}",
+    "pause": "Остановить прокрутку",
+    "play": "Запустить прокрутку"
   }
 }

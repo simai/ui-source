@@ -6,6 +6,8 @@
     "label": "Slides",
     "carousel": "carousel",
     "slide": "slide",
-    "position": "{n} of {count}"
+    "position": "{n} of {count}",
+    "pause": "Stop slides",
+    "play": "Start slides"
   }
 }

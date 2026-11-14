@@ -106,3 +106,27 @@ Several slides in view stand `--sf-slider--space-between` apart, by default
 thumbnails take the small-part radius `--sf-radius--ui` (C18) instead of a
 square corner and stand `--sf-slider-thumbnails--space-between` apart.
 
+
+## Decision C143 (1.2.0)
+
+- From eight slides (`.swiper-slide` in the strip) the pagination element is
+  a counter «2 / 12» (`.sf-slider-dots--count`, drawn only, `aria-hidden`);
+  up to seven it is dots: one Tab stop, ArrowLeft / ArrowRight / Home / End
+  page and move the focus.
+- Dots are 8 px in both sizes, the current one a 24 × 8 pill
+  (`--sf-slider-dots-dot--active-width`). `.sf-slider-dots--plate` is the
+  popup plate over a picture, `.sf-slider-dots--bare` the row start under
+  cards; both draw filled on-surface-variant dots and a primary pill.
+- `.sf-slider-arrows--plate` sets ghost arrows on popup plates with the
+  overlay shadow; the button's state fill lies over the plate.
+- `sf-slider--content` peeks the next card (1.15 per view, 2.2 from sm)
+  unless `data-slides-per-view`, `data-swiper-slides-per-view` or options set
+  the count; its controls are one row, arrows `--sf-space-1/3` apart.
+- `data-ratio` (`16/9`, `4/3`, `3/2`, `1/1`, `21/9`) keeps the strip of a
+  picture slider in that ratio.
+- `data-autoplay` turns the slides only with a shown pause button,
+  `.sf-slider-rotation` (a button, or an sf-button-icon whose button carries
+  the class); `data-pause-label` / `data-play-label` name it, else «Остановить
+  прокрутку» / «Запустить прокрутку». Without one the slider does not turn,
+  and a pause button with nothing to pause is hidden. The thumbnails never
+  autoplay.

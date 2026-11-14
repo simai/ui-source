@@ -26,6 +26,24 @@
   width: 100%;
 }
 
+/* The frame of a picture slider (C143 (8), setting ratio): the strip keeps
+   the ratio and the slides fill it, so the box the page saw before the code
+   (core's sf-slider rule) is the box it keeps. A card slider takes its cards'
+   height. */
+.sf-slider[data-ratio="16/9"] { --sf-slider--ratio: 16 / 9; }
+.sf-slider[data-ratio="4/3"] { --sf-slider--ratio: 4 / 3; }
+.sf-slider[data-ratio="3/2"] { --sf-slider--ratio: 3 / 2; }
+.sf-slider[data-ratio="1/1"] { --sf-slider--ratio: 1 / 1; }
+.sf-slider[data-ratio="21/9"] { --sf-slider--ratio: 21 / 9; }
+
+.sf-slider:not(.sf-slider--content):not([data-ratio="auto"])[data-ratio] > .sf-slider-main.swiper {
+  aspect-ratio: var(--sf-slider--ratio);
+}
+
+.sf-slider:not(.sf-slider--content):not([data-ratio="auto"])[data-ratio] > .sf-slider-main.swiper > .swiper-wrapper {
+  block-size: 100%;
+}
+
 .sf-slider .sf-slider-thumbnails.swiper {
   margin-inline: auto;
   max-width: 100%;
@@ -124,6 +142,14 @@
   transform: translateX(-50%);
 }
 
+/* The pause button over a picture: the top end corner, on its plate. */
+.sf-slider .sf-slider-controls .sf-slider-rotation-place {
+  inset-block-start: var(--sf-slider-arrow-offset-inline, var(--sf-space-1));
+  inset-inline-end: var(--sf-slider-arrow-offset-inline, var(--sf-space-1));
+  pointer-events: auto;
+  position: absolute;
+}
+
 .sf-slider .sf-slider-dots.swiper-pagination-lock,
 .sf-slider .sf-slider-arrows .sf-icon-button.swiper-button-lock {
   display: none;
@@ -138,19 +164,26 @@
 .sf-slider--content .sf-slider-controls {
   position: static;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  justify-content: center;
+  /* One row under the cards (C143 (3)): the pause button and the position
+     at the start, the arrows at the end; groups stand --sf-space-1 apart
+     (C105 H6), the row is a control high. */
+  justify-content: flex-start;
   gap: var(--sf-slider-gap, var(--sf-slider--gap, var(--sf-space-1)));
+  min-block-size: var(--sf-ui-1--control-height);
 }
 
 .sf-slider--content .sf-slider-controls .sf-slider-arrows {
   display: flex;
   align-items: center;
-  gap: var(--sf-space-1);
+  /* Buttons of one group (C105 H5). */
+  gap: var(--sf-space-1\/3);
+  margin-inline-start: auto;
 }
 
 .sf-slider--content .sf-slider-controls .sf-slider-arrows,
+.sf-slider--content .sf-slider-controls .sf-slider-rotation-place,
 .sf-slider--content .sf-slider-controls .sf-slider-arrows .sf-icon-button,
 .sf-slider--content .sf-slider-controls .sf-slider-dots,
 .sf-slider--content .sf-slider-controls .sf-slider-pagination {
@@ -169,6 +202,42 @@
   opacity: 0.4;
 }
 
+/* From eight slides a counter «2 / 12» stands in the dots' place (C143 (4)),
+   on the same plate or at the same row start; the figures do not move as
+   they change. */
+.sf-slider-dots.sf-slider-dots--count {
+  align-items: center;
+  color: var(--sf-slider-dots-dot--color);
+  font-size: var(--sf-text-size-1\/2);
+  font-variant-numeric: tabular-nums;
+  gap: 0;
+  line-height: var(--sf-text-height-1\/2);
+  min-block-size: var(--sf-slider-dots-dot--target-size);
+  padding-block: 0;
+  padding-inline: var(--sf-space-1\/2);
+  white-space: pre;
+}
+
+.sf-slider-dots.sf-slider-dots--plate.sf-slider-dots--count {
+  color: var(--sf-on-surface);
+}
+
+.sf-slider-dots.sf-slider-dots--bare.sf-slider-dots--count {
+  padding-inline: 0;
+}
+
+/* Plates over a picture (C143 (2)): the popup surface and the overlay shadow
+   of the system (C16), under a ghost button. The button's own state fill
+   (hover, press) lies over the plate, so the plate never goes see-through;
+   an edge arrow keeps its plate and dims only its glyph. */
+.sf-slider .sf-slider-arrows--plate .sf-icon-button {
+  box-shadow: var(--sf-shadow-overlay);
+}
+
+.sf-slider .sf-slider-arrows--plate .sf-icon-button.swiper-button-disabled {
+  opacity: 1;
+}
+
 .sf-slider .sf-slider-thumbnails .swiper-slide {
   cursor: pointer;
   flex: 0 0 auto;
@@ -182,4 +251,11 @@
 .sf-slider .sf-slider-thumbnails .swiper-slide-thumb-active {
   opacity: var(--sf-slider-thumbnails-slide-active--opacity, 1);
 }
+}
+
+@layer sf.states {
+  .sf-slider .sf-slider-arrows--plate .sf-icon-button {
+    background-color: var(--sf-surface-popup);
+    background-image: linear-gradient(var(--sf-icon-button--background-color), var(--sf-icon-button--background-color));
+  }
 }

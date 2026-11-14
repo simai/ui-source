@@ -14,7 +14,12 @@ test('Slider disables autoplay and transition motion for reduced-motion users', 
 test('Slider pauses owned autoplay while focus is inside or the document is hidden', () => {
   assert.match(source, /root\.addEventListener\('focusin', onFocusIn\)/);
   assert.match(source, /document\.addEventListener\('visibilitychange', onVisibilityChange\)/);
-  assert.match(source, /resumeOwned/);
+  // The rotation is the person's (C143 (6)): a stop by the pause button or a
+  // keyboard focus holds; the pointer and a hidden tab only hold while they last.
+  assert.match(source, /const holds = new Set\(\)/);
+  assert.match(source, /:focus-visible/);
+  assert.match(source, /findRotationButton\(root\)/);
+  assert.match(source, /delete sliderOptions\.autoplay/);
 });
 
 test('Only active or visible slides remain keyboard reachable and cleanup restores authored inert', () => {

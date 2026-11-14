@@ -9,7 +9,7 @@
     "button-type": {
       "type": "string",
       "default": "secondary",
-      "summary": "The arrows' look: secondary (the default, the soft grey icon buttons, tonal on-surface: paging is no main action, decision C116), primary (filled primary), dark (filled on-surface), light (ghost on-surface)."
+      "summary": "The arrows' look: secondary (the default, the quiet grey icon buttons: paging is no main action, decision C116; over a picture they stand on popup plates with the overlay shadow, under cards they are tonal on-surface, decision C143), primary (filled primary), dark (filled on-surface), light (ghost on-surface)."
     },
     "button-size": {
       "type": "string",
@@ -23,7 +23,7 @@
     "dots-type": {
       "type": "string",
       "default": "primary-container",
-      "summary": "The dots' plate by its colour role: primary-container (the default; a primary-container plate with on-primary-container dots), primary (a primary plate with on-primary dots), surface-container (a raised neutral plate with on-surface dots), surface-inverse (an inverse plate with on-surface-inverse dots). Former words, dated aliases until 2027-01-01: primary-dark is primary-container, primary-light is primary, light and clear are surface-container, dark is surface-inverse."
+      "summary": "The dots' plate by its colour role. Not written (decision C143): over a picture a popup plate with the overlay shadow, under cards no plate; the dots are 8 px, the current one a 24 x 8 pill, and from eight slides a counter «2 / 12» stands in their place. Written: primary-container (a primary-container plate with on-primary-container dots), primary (a primary plate with on-primary dots), surface-container (a raised neutral plate with on-surface dots), surface-inverse (an inverse plate with on-surface-inverse dots). Former words, dated aliases until 2027-01-01: primary-dark is primary-container, primary-light is primary, light and clear are surface-container, dark is surface-inverse."
     },
     "dots-size": {
       "type": "string",
@@ -61,6 +61,19 @@
     "slide-class": {
       "type": "string",
       "default": ""
+    },
+    "ratio": {
+      "type": "enum",
+      "values": [
+        "16/9",
+        "4/3",
+        "3/2",
+        "1/1",
+        "21/9",
+        "auto"
+      ],
+      "default": "16/9",
+      "summary": "The frame of a picture slider (decision C143 (8)): the slides' box keeps this ratio from the first frame, before the code arrives, so the page does not jump. auto: the slides' own height. A card slider (root-class sf-slider--content) takes its cards' height and ignores it."
     }
   },
   "values": {},
@@ -118,7 +131,11 @@
   },
   "keyboard": {
     "host": {
-      "Tab": "reach"
+      "Tab": "reach",
+      "ArrowLeft": "previous slide (on the dots)",
+      "ArrowRight": "next slide (on the dots)",
+      "Home": "first slide (on the dots)",
+      "End": "last slide (on the dots)"
     }
   },
   "relations": [
@@ -149,7 +166,7 @@
     "keys": {
       "Tab": "reach"
     },
-    "$comment": "The block is a region named by the page's aria-label, else the word Слайды / Slides, described as a carousel (aria-roledescription from the language file: карусель / carousel); each slide is a group described as a slide (слайд / slide) and named by its position (1 из 5 / 1 of 5); the strip is aria-live polite, off while autoplay turns it. The arrows are named from the language file (Предыдущий слайд, Следующий слайд). With data-swiper-keyboard on, ArrowLeft and ArrowRight page from anywhere in the block, mirrored in a right-to-left block. Tab reaches the arrows and the dots, which are buttons."
+    "$comment": "The block is a region named by the page's aria-label, else the word Слайды / Slides, described as a carousel (aria-roledescription from the language file: карусель / carousel); each slide is a group described as a slide (слайд / slide) and named by its position (1 из 5 / 1 of 5); the strip is aria-live polite, off while autoplay turns it. The arrows are named from the language file (Предыдущий слайд, Следующий слайд). With data-swiper-keyboard on, ArrowLeft and ArrowRight page from anywhere in the block, mirrored in a right-to-left block. Tab reaches the pause button (with autoplay, first), the arrows and the dots, which are one stop: the current dot holds it and ArrowLeft / ArrowRight, Home and End move the slide and the focus (decision C143 (5)). From eight slides the counter «2 / 12» replaces the dots and is not read (the slides say their position). Autoplay (data-autoplay) turns only while the pause button is shown; it stops for good on the button or on a keyboard focus inside, and holds while the pointer is over the slider or the tab is hidden; the button is named by what it does next (Остановить прокрутку / Запустить прокрутку), never aria-pressed (C12)."
   },
   "css-variables": {
     "--sf-slider-gap": {
@@ -276,7 +293,7 @@
     "version 1.1.10 (2026-11-10, pair ui-a0370c0c99fb acceptance, F3): a patch. The arrows of buttons=\"light\" are asked for appearance ghost, not link, its former name, which counted as the page's own use of sf-button-icon appearance link in SF.deprecations. Drawn the same.",
     "version 1.1.11 (2026-11-11): an arrow with nowhere to go is a disabled button, out of the tab order, and an arrow that holds the focus hands it to the other one (component.slider 1.1.2, docs pre-check 2026-11-10 SL-04). The dots were already 24 px targets (their ::before) and are unchanged.",
     "version 1.2.0 (2026-11-10, docs precheck Q4): a minor. dots-type names the dots' plate by its colour role: primary-container (the default), primary, surface-container, surface-inverse. primary-dark, primary-light, light, clear and dark are dated value aliases until 2027-01-01 (journal value-slider-dots-type-to-roles) and draw as before. One word changes what it draws: primary, which drew as primary-dark, is now the primary plate (primary-light's look), the role it names; no page in ui-doc, larena-ui, ui-pro or ui-admin writes it.",
-    "version 1.3.0 (2026-11-14, ui-control research 2026-11-14-content-slider): a minor. The arrows default to button-type secondary, the soft grey icon buttons (decision C116: paging is no main action; SL-11); primary stays a value. The block is a named region described as a carousel and its slides as slides, «1 из 5» (SL-5; words label, carousel, slide, position in lang/). A finger, a pen or the mouse drags the slides and pages past 15 % of a slide or with a flick; a vertical move scrolls the page; reduced motion settles without travel (SL-2, component.swiper 1.1.0). With data-swiper-keyboard on, ArrowLeft and ArrowRight page wherever the focus is in the block, mirrored right to left (SL-3). change carries previousIndex (SL-7). Several slides in view stand --sf-space-1/2 apart (SL-8); thumbnails take the small-part radius --sf-radius--ui (SL-12) and stand that far apart too (component.slider 1.2.0). Settings, values, events and keys unchanged otherwise."
+    "version 1.3.0 (2026-11-14, ui-control research 2026-11-14-content-slider): a minor. The arrows default to button-type secondary, the soft grey icon buttons (decision C116: paging is no main action; SL-11); primary stays a value. The block is a named region described as a carousel and its slides as slides, «1 из 5» (SL-5; words label, carousel, slide, position in lang/). A finger, a pen or the mouse drags the slides and pages past 15 % of a slide or with a flick; a vertical move scrolls the page; reduced motion settles without travel (SL-2, component.swiper 1.1.0). With data-swiper-keyboard on, ArrowLeft and ArrowRight page wherever the focus is in the block, mirrored right to left (SL-3). change carries previousIndex (SL-7). Several slides in view stand --sf-space-1/2 apart (SL-8); thumbnails take the small-part radius --sf-radius--ui (SL-12) and stand that far apart too (component.slider 1.2.0). Decision C143 (owner 2026-11-14, all eight by recommendation), in the same unreleased minor: (1) one slider: sf-slider takes sf-carousel's region name and its mandatory pause button; the class block sf-carousel is an old name until 2027-01-01 (component.carousel 1.3.0, journal class-sf-carousel-to-sf-slider). (2) Over a picture the default arrows and the dots stand on popup plates (--sf-surface-popup, --sf-shadow-overlay); an edge arrow dims its glyph and keeps its plate. (3) Under cards one row: the position at the start, the quiet grey arrows at the end, --sf-space-1/3 between them (C105 H5), --sf-space-1 between the groups (H6). (4) Dots 8 px, the current a 24 x 8 pill; from eight slides a counter «2 / 12» (component.slider). (5) The dots are one Tab stop paged by the arrow keys, Home and End (component.swiper). (6) Autoplay stays off by default and turns only with a shown pause button, which the template draws first when data-autoplay is set (words pause, play). (7) A card slider shows the next card's edge: 1.15 cards in view on a phone, 2.2 from the sm step, unless the page sets how many. (8) New setting ratio (16/9 by default): a picture slider keeps its frame from the first frame (core.styles holds sf-slider's box before its code), no more 1907 -> 381 px. A dots-type the page writes keeps its plate; dots-size no longer changes the dot (8 px in both steps)."
   ],
   "x-registry": {
     "ownership": {

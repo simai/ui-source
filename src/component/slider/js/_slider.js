@@ -1,5 +1,6 @@
 import { tagSelector } from '../../../core/js/tag-aliases.js';
 import { pageText } from '../../../core/js/page-language';
+import { BREAKPOINTS } from '../../../core/js/breakpoints.js';
 
 // The words a slider says about itself (SL-5), for the class block; sf-slider
 // hands its own from lang/ through the root's attributes, which win. A product
@@ -10,16 +11,27 @@ const SLIDER_TEXT = {
     carousel: 'carousel',
     slide: 'slide',
     position: '{n} of {count}',
+    pause: 'Stop slides',
+    play: 'Start slides',
   },
   ru: {
     label: 'Слайды',
     carousel: 'карусель',
     slide: 'слайд',
     position: '{n} из {count}',
+    pause: 'Остановить прокрутку',
+    play: 'Запустить прокрутку',
   },
 };
 
 const SLIDER_SELECTOR = '.sf-slider';
+// Up to seven slides are dots; from eight a counter «2 / 12» stands in their
+// place (C143 (4), as sf-gallery counts pictures, C97).
+const DOTS_LIMIT = 7;
+// Cards (sf-slider--content: news, reviews, products) show the next card's
+// edge (C143 (7)): 1.15 cards on a phone, 2.2 from the sm step up.
+const PEEK_PER_VIEW = 1.15;
+const PEEK_PER_VIEW_WIDE = 2.2;
 const SLIDER_BOUND_FLAG = 'sfSliderBound';
 const SLIDER_WAITING_FLAG = 'sfSliderWaiting';
 const SWIPER_NESTED_OPTION_PREFIXES = [
@@ -215,16 +227,44 @@ function normalizeAutoplayOptions(options = {}) {
   return options;
 }
 
-function createPaginationOptions(paginationEl) {
+function createPaginationOptions(paginationEl, slidesCount) {
   if (!paginationEl) return undefined;
 
+  // From eight slides the dots give way to a counter; the slides' own names
+  // («2 из 12») and the live strip say it to a reader, so the counter is
+  // only drawn.
+  if (slidesCount > DOTS_LIMIT) {
+    paginationEl.classList.add('sf-slider-dots--count');
+    paginationEl.setAttribute('aria-hidden', 'true');
+    return {
+      el: paginationEl,
+      type: 'fraction',
+      currentClass: 'sf-slider-dots-current',
+      totalClass: 'sf-slider-dots-total',
+    };
+  }
+  paginationEl.classList.remove('sf-slider-dots--count');
+  paginationEl.removeAttribute('aria-hidden');
   return {
     el: paginationEl,
     bulletActiveClass: 'active',
     bulletClass: 'sf-slider-dots-dot',
     bulletElement: 'button',
     clickable: true,
+    // One Tab stop for all the dots; the arrow keys page (C143 (5)).
+    keyboard: true,
   };
+}
+
+function isContentSlider(root) {
+  return root.classList.contains('sf-slider--content');
+}
+
+// Cards peek (C143 (7)) unless the page chose how many are in view.
+function hasAuthoredPerView(root, element) {
+  return getOption(root, element, 'slidesPerView') !== undefined
+    || [root, element].some((node) => node?.dataset?.swiperSlidesPerView !== undefined
+      || /slidesPerView|breakpoints/.test(node?.dataset?.swiperOptions || ''));
 }
 
 function createNavigationOptions(prevEl, nextEl) {
@@ -314,6 +354,9 @@ function createAutoplayOptions(root, element) {
 }
 
 function createBaseOptions(root, element, fallbackSlidesPerView = 1) {
+  const peek = element instanceof Element && !element.classList.contains('sf-slider-thumbnails')
+    && isContentSlider(root)
+    && !hasAuthoredPerView(root, element);
   let options = {
     centeredSlides: toBoolean(getOption(root, element, 'centeredSlides'), false),
     loop: toBoolean(getOption(root, element, 'loop'), false),
@@ -331,6 +374,12 @@ function createBaseOptions(root, element, fallbackSlidesPerView = 1) {
     ),
     watchSlidesProgress: true,
   };
+  if (peek) {
+    options.slidesPerView = PEEK_PER_VIEW;
+    // From the sm step of the Framework's ladder (rem, as the sheets write it).
+    const from = Number.parseFloat(BREAKPOINTS.sm) * 16;
+    options.breakpoints = { [from]: { slidesPerView: PEEK_PER_VIEW_WIDE } };
+  }
   const autoplay = createAutoplayOptions(root, element);
 
   if (autoplay) {
@@ -413,42 +462,99 @@ function createArrowStateGuard(slider, prevEl, nextEl) {
   return () => events.forEach((name) => slider.off?.(name, sync));
 }
 
-function createAutoplayGuard(root, slider) {
-  if (!slider?.autoplay || prefersReducedMotion()) return () => {};
+// Autoplay turns the slides only with a pause button the person can see
+// (C143 (6), WCAG 2.2.2, as sf-carousel required): .sf-slider-rotation, a
+// button or an sf-button-icon host whose button carries it. Without one the
+// slider does not turn.
+function findRotationButton(root) {
+  const marked = root.querySelector('.sf-slider-rotation');
+  if (!(marked instanceof HTMLElement)) return null;
+  const button = marked.matches('button') ? marked : marked.querySelector('button');
+  return button instanceof HTMLButtonElement ? button : null;
+}
 
-  const pauseReasons = new Set();
-  let resumeOwned = false;
+function isShown(element) {
+  if (typeof element.checkVisibility === 'function') {
+    return element.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true });
+  }
+  return element.getClientRects().length > 0;
+}
 
-  const pause = (reason) => {
-    pauseReasons.add(reason);
-    if (!slider.autoplay.running) return;
-    resumeOwned = true;
-    slider.autoplay.stop();
+// The rotation is the person's: the pause button stops and starts it, and a
+// keyboard focus inside the slider stops it until the button starts it again
+// (APG carousel). The pointer over the slider and a hidden tab only hold it
+// while they last. The button is named by what it does next (C12: no
+// aria-pressed on a toggle whose name changes).
+function createAutoplayGuard(root, slider, rotationButton) {
+  if (!slider?.autoplay || !slider.params?.autoplay || prefersReducedMotion()) return () => {};
+
+  const holds = new Set();
+  let stopped = false;
+  let applying = false;
+  const host = rotationButton?.closest?.(tagSelector('sf-button-icon')) || null;
+  const label = (key) => (key === 'pause' ? root.dataset.pauseLabel : root.dataset.playLabel) || sliderWord(root, key);
+
+  const paint = () => {
+    if (!rotationButton) return;
+    const key = stopped ? 'play' : 'pause';
+    rotationButton.removeAttribute('aria-pressed');
+    if (host) {
+      host.setAttribute('icon', stopped ? 'play_arrow' : 'pause');
+      host.setAttribute('aria-label', label(key));
+    } else {
+      rotationButton.setAttribute('aria-label', label(key));
+    }
+    root.dataset.rotation = stopped ? 'stopped' : 'playing';
   };
-  const resume = (reason) => {
-    pauseReasons.delete(reason);
-    if (!resumeOwned || pauseReasons.size || !root.isConnected) return;
-    resumeOwned = false;
-    slider.autoplay.start();
+  const apply = () => {
+    const run = !stopped && holds.size === 0 && root.isConnected;
+    if (run === slider.autoplay.running) return;
+    applying = true;
+    if (run) slider.autoplay.start();
+    else slider.autoplay.stop();
+    applying = false;
   };
-  const onFocusIn = () => pause('focus');
-  const onFocusOut = (event) => {
-    if (!root.contains(event.relatedTarget)) resume('focus');
+  const stop = () => { stopped = true; paint(); apply(); };
+  const start = () => { stopped = false; paint(); apply(); };
+  const hold = (reason) => { holds.add(reason); apply(); };
+  const release = (reason) => { holds.delete(reason); apply(); };
+
+  // The engine stops by itself on a swipe (disableOnInteraction): that is the
+  // person's stop too, and the button says so.
+  const onEngineStop = () => { if (!applying) { stopped = true; paint(); } };
+  const onRotation = (event) => {
+    event.preventDefault();
+    if (stopped) start();
+    else stop();
   };
+  const onFocusIn = (event) => {
+    if (event.target === rotationButton) return;
+    if (event.target instanceof Element && event.target.matches(':focus-visible')) stop();
+  };
+  const onPointerEnter = () => hold('pointer');
+  const onPointerLeave = () => release('pointer');
   const onVisibilityChange = () => {
-    if (document.hidden) pause('visibility');
-    else resume('visibility');
+    if (document.hidden) hold('visibility');
+    else release('visibility');
   };
 
+  slider.on?.('autoplayStop', onEngineStop);
+  rotationButton?.addEventListener('click', onRotation);
   root.addEventListener('focusin', onFocusIn);
-  root.addEventListener('focusout', onFocusOut);
+  root.addEventListener('pointerenter', onPointerEnter);
+  root.addEventListener('pointerleave', onPointerLeave);
   document.addEventListener('visibilitychange', onVisibilityChange);
   onVisibilityChange();
+  paint();
 
   return () => {
+    slider.off?.('autoplayStop', onEngineStop);
+    rotationButton?.removeEventListener('click', onRotation);
     root.removeEventListener('focusin', onFocusIn);
-    root.removeEventListener('focusout', onFocusOut);
+    root.removeEventListener('pointerenter', onPointerEnter);
+    root.removeEventListener('pointerleave', onPointerLeave);
     document.removeEventListener('visibilitychange', onVisibilityChange);
+    delete root.dataset.rotation;
   };
 }
 
@@ -589,6 +695,8 @@ function bindSlider(root) {
       slideToClickedSlide: false,
       // A thumbnail is pressed, not dragged: the strip is as wide as they are.
       allowTouchMove: false,
+      // The thumbnails never turn by themselves; data-autoplay is the slides'.
+      autoplay: false,
     });
   }
 
@@ -596,7 +704,18 @@ function bindSlider(root) {
     ...createBaseOptions(root, mainEl, 1),
   };
   const navigation = createNavigationOptions(prevEl, nextEl);
-  const pagination = createPaginationOptions(paginationEl);
+  const pagination = createPaginationOptions(paginationEl, getSlidesCount(mainEl));
+  const rotationButton = findRotationButton(root);
+  if (sliderOptions.autoplay && !(rotationButton && isShown(rotationButton))) {
+    delete sliderOptions.autoplay;
+  }
+  // A pause button with nothing to pause (no autoplay, or reduced motion) is
+  // not shown.
+  const rotationHost = rotationButton?.closest?.(tagSelector('sf-button-icon')) || rotationButton;
+  if (rotationHost && !sliderOptions.autoplay) {
+    rotationHost.hidden = true;
+    root._sfSliderRotationHidden = rotationHost;
+  }
 
   if (navigation) {
     sliderOptions.navigation = navigation;
@@ -627,7 +746,7 @@ function bindSlider(root) {
   const slider = new window.Swiper(mainEl, sliderOptions);
   root._sfSliderCleanup = [
     createSlideInteractivityGuard(slider),
-    createAutoplayGuard(root, slider),
+    createAutoplayGuard(root, slider, rotationButton),
     createArrowStateGuard(slider, prevEl, nextEl),
     linkThumbnails(slider, thumbs),
     createLiveRegionGuard(slider, mainEl),
@@ -674,6 +793,8 @@ function unbindSlider(root) {
     if (authored === null) element.removeAttribute('aria-label');
     else element.setAttribute('aria-label', authored);
   });
+  if (root._sfSliderRotationHidden) root._sfSliderRotationHidden.hidden = false;
+  delete root._sfSliderRotationHidden;
   restoreRegionSemantics(root, root._sfSliderRegion);
   delete root._sfSliderRegion;
   delete root._sfSliderNavigationLabels;

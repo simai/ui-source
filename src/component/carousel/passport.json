@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.carousel",
   "kind": "component",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/carousel/index.js",
@@ -14,11 +14,15 @@
     "src/component/carousel/scss/_var__carousel.scss",
     "src/component/carousel/scss/index.scss"
   ],
-  "content_sha256": "f2eee5d2a0c6bf5ac6807c8d243dad3c9b97d5b52c97dedf456357c0adbf5757",
+  "content_sha256": "26b6302d1189d7a81cf86b4d2629b8953b6320a509bacfdd89e603f96f8da780",
   "dependencies": [
     {
       "id": "component.swiper",
       "range": "^1.0.0"
+    },
+    {
+      "id": "core.runtime",
+      "range": "^1.55.0"
     },
     {
       "id": "tokens.border",

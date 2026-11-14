@@ -55,6 +55,7 @@ class SimaiSlider {
     this.attachControls();
     this.attachKeyboard();
     this.attachPointer();
+    this.attachResize();
     root.swiper = this;
     root.classList.add('swiper-initialized', 'swiper-horizontal');
     this.update();
@@ -195,8 +196,35 @@ class SimaiSlider {
     return Math.max(1, numeric(this.params.slidesPerView, 1));
   }
 
+  // With a part of the next slide in view (slidesPerView 2.2, C143 (7)) the
+  // last stop lays the last slide whole at the end: one stop more than whole
+  // slides would give, and that stop moves the strip only as far as it can go.
   lastIndex() {
-    return Math.max(0, this.slides.length - Math.ceil(this.perView()));
+    return Math.max(0, Math.ceil(this.slides.length - this.perView() - 1e-6));
+  }
+
+  // The strip's offset in slides: the active index, short of the end.
+  offsetSlides() {
+    return Math.min(this.activeIndex, Math.max(0, this.slides.length - this.perView()));
+  }
+
+  // Responsive settings (breakpoints) are read again when the window changes
+  // width; nothing listened before, so a slider kept the count of the width it
+  // was started at.
+  attachResize() {
+    this._resizeFrame = 0;
+    this._resize = () => {
+      if (this._resizeFrame || this.destroyed) return;
+      this._resizeFrame = window.requestAnimationFrame(() => {
+        this._resizeFrame = 0;
+        if (this.destroyed) return;
+        const before = this.perView();
+        this.update();
+        if (this.perView() !== before) this.emit('breakpoint');
+        this.emit('resize');
+      });
+    };
+    if (this.originalParams.breakpoints) window.addEventListener('resize', this._resize);
   }
 
   gap() {
@@ -215,9 +243,10 @@ class SimaiSlider {
     const perView = this.perView();
     const gap = this.gap();
     const direction = this.isRtl() ? 1 : -1;
-    const shift = gap && this.activeIndex
-      ? `calc(${direction * this.activeIndex} * (100% + ${gap}px) / ${perView})`
-      : `${direction * this.activeIndex * (100 / perView)}%`;
+    const offset = this.offsetSlides();
+    const shift = gap && offset
+      ? `calc(${direction * offset} * (100% + ${gap}px) / ${perView})`
+      : `${direction * offset * (100 / perView)}%`;
     this.wrapperEl.style.transform = dragX
       ? `translate3d(calc(${shift} + ${dragX}px), 0, 0)`
       : `translate3d(${shift}, 0, 0)`;
@@ -293,14 +322,28 @@ class SimaiSlider {
     this.renderPagination();
     this.sync();
     if (this.params.autoplay && !this.autoplay.running) this.autoplay.start();
+    this.emit('update');
     return this;
   }
 
+  // Pagination: bullets (a button per slide) or, with type 'fraction', the
+  // words «2 / 12» (C143 (4): many slides are counted, not dotted). With
+  // keyboard on, the bullets are one Tab stop: the current one takes the
+  // focus, ArrowLeft / ArrowRight, Home and End move the slide and the focus
+  // with it (C143 (5), the APG tabbed carousel's picker), mirrored right to
+  // left.
   renderPagination() {
     const root = this.pagination.el;
     if (!root) return;
     const options = this.params.pagination || {};
     root.replaceChildren();
+    root.removeEventListener('keydown', this._paginationKeys || (() => {}));
+    if (options.type === 'fraction') {
+      root.append(Object.assign(document.createElement('span'), {className: options.currentClass || 'swiper-pagination-current'}));
+      root.append(document.createTextNode(' / '));
+      root.append(Object.assign(document.createElement('span'), {className: options.totalClass || 'swiper-pagination-total'}));
+      return;
+    }
     this.slides.forEach((_, index) => {
       const bullet = document.createElement(options.bulletElement || 'span');
       bullet.className = options.bulletClass || 'swiper-pagination-bullet';
@@ -309,15 +352,40 @@ class SimaiSlider {
       if (options.clickable) bullet.addEventListener('click', () => this.slideTo(index));
       root.append(bullet);
     });
+    if (options.keyboard) {
+      this._paginationKeys = (event) => {
+        if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || !this.enabled) return;
+        const rtl = this.isRtl();
+        const last = this.slides.length - 1;
+        const moves = {
+          ArrowRight: rtl ? -1 : 1,
+          ArrowLeft: rtl ? 1 : -1,
+        };
+        let next;
+        if (event.key in moves) next = this.activeIndex + moves[event.key];
+        else if (event.key === 'Home') next = 0;
+        else if (event.key === 'End') next = last;
+        else return;
+        event.preventDefault();
+        // The picker's own keys: the strip's keyboard option does not page twice.
+        event.stopPropagation();
+        if (this.params.loop) next = ((next % (last + 1)) + last + 1) % (last + 1);
+        this.slideTo(clamp(next, 0, last));
+        root.children[this.activeIndex]?.focus?.();
+      };
+      root.addEventListener('keydown', this._paginationKeys);
+    }
   }
 
   sync() {
     const slides = this.slides;
     const slidesPerView = this.perView();
-    const lastVisibleIndex = this.activeIndex + Math.ceil(slidesPerView) - 1;
+    // In view: every slide the window shows a part of, from the offset (short
+    // of the end at the last stop) to offset + slidesPerView.
+    const offset = this.offsetSlides();
     slides.forEach((slide, index) => {
       const active = index === this.activeIndex;
-      const visible = index >= this.activeIndex && index <= lastVisibleIndex;
+      const visible = index + 1 > offset + 1e-6 && index < offset + slidesPerView - 1e-6;
       slide.classList.toggle('swiper-slide-active', active);
       slide.classList.toggle('swiper-slide-visible', visible);
       slide.setAttribute('aria-hidden', String(!visible));
@@ -330,11 +398,21 @@ class SimaiSlider {
     const looping = Boolean(this.params.loop);
     this.navigation.prevEl?.classList.toggle(disabledClass, !looping && this.activeIndex === 0);
     this.navigation.nextEl?.classList.toggle(disabledClass, !looping && this.activeIndex === this.lastIndex());
-    const activeClass = this.params.pagination?.bulletActiveClass || 'swiper-pagination-bullet-active';
+    const pagination = this.params.pagination || {};
+    if (pagination.type === 'fraction' && this.pagination.el) {
+      const current = this.pagination.el.querySelector(`.${pagination.currentClass || 'swiper-pagination-current'}`);
+      const total = this.pagination.el.querySelector(`.${pagination.totalClass || 'swiper-pagination-total'}`);
+      if (current) current.textContent = String(this.activeIndex + 1);
+      if (total) total.textContent = String(slides.length);
+      return this;
+    }
+    const activeClass = pagination.bulletActiveClass || 'swiper-pagination-bullet-active';
     [...(this.pagination.el?.children || [])].forEach((bullet, index) => {
-      bullet.classList.toggle(activeClass, index === this.activeIndex);
-      if (index === this.activeIndex) bullet.setAttribute('aria-current', 'true');
+      const active = index === this.activeIndex;
+      bullet.classList.toggle(activeClass, active);
+      if (active) bullet.setAttribute('aria-current', 'true');
       else bullet.removeAttribute('aria-current');
+      if (pagination.keyboard) bullet.tabIndex = active ? 0 : -1;
     });
     return this;
   }
@@ -373,6 +451,9 @@ class SimaiSlider {
     this.navigation.prevEl?.removeEventListener('click', this._previous);
     this.navigation.nextEl?.removeEventListener('click', this._next);
     this.keyboardEl?.removeEventListener('keydown', this._keyboard);
+    if (this._paginationKeys) this.pagination.el?.removeEventListener('keydown', this._paginationKeys);
+    window.removeEventListener('resize', this._resize);
+    if (this._resizeFrame) window.cancelAnimationFrame(this._resizeFrame);
     this.el.removeEventListener('pointerdown', this._pointerDown);
     this.el.removeEventListener('pointermove', this._pointerMove);
     this.el.removeEventListener('pointerup', this._pointerUp);
