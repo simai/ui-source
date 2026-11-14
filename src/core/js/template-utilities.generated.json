@@ -90,6 +90,10 @@
     "position/default",
     "width/default"
   ],
+  "cl-display-settings": [
+    "font-family/default",
+    "text-decoration/default"
+  ],
   "cl-drawer": [
     "display/default",
     "justify-content/default",
