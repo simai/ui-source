@@ -1,0 +1,27 @@
+{
+  "title": "Keyboard key",
+  "runtime": {
+    "command": "Command",
+    "control": "Control",
+    "option": "Option",
+    "shift": "Shift",
+    "ctrl": "Ctrl",
+    "alt": "Alt",
+    "win": "Windows",
+    "enter": "Enter",
+    "escape": "Escape",
+    "tab": "Tab",
+    "space": "Space",
+    "backspace": "Backspace",
+    "delete": "Delete",
+    "up": "Up Arrow",
+    "down": "Down Arrow",
+    "left": "Left Arrow",
+    "right": "Right Arrow",
+    "home": "Home",
+    "end": "End",
+    "pageup": "Page Up",
+    "pagedown": "Page Down",
+    "plus": "Plus"
+  }
+}
