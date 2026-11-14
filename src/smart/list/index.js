@@ -672,17 +672,24 @@ class SfList extends ListElement {
         this.unwatchEnd();
         this._edge = sentinel;
         // Inside the box that scrolls the list, so the margin reaches ahead there.
+        // watchEdge reports the end coming into reach; its first report, before
+        // any scroll, says only that it is there already (reached). The first
+        // scroll then asks if the end is still in reach -- no new report comes
+        // for an end that never left; an end that comes into reach later is
+        // the watch's own report, asked once.
         const root = scrollerOf(sentinel);
         const scroller = root ?? this.ownerDocument;
         let moved = false;
+        let reached = false;
         const onScroll = () => {
             moved = true;
             scroller.removeEventListener("scroll", onScroll);
-            if (endInReach(sentinel, root)) this.requestMore();
+            if (reached && endInReach(sentinel, root)) this.requestMore();
         };
         scroller.addEventListener("scroll", onScroll, {passive: true});
         const stopEdge = watchEdge(sentinel, () => {
             if (moved) this.requestMore();
+            else reached = true;
         }, {root});
         this._stopEdge = () => {
             stopEdge();
