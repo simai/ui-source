@@ -4,7 +4,10 @@
 rounded field and a separate results card under it, over the scrim every
 window of the Framework draws (core `--sf-scrim-color`, `--sf-scrim-opacity`). A
 button in the header opens it, and so do Command/Control+K and `/`. On a phone
-it is a full-screen sheet with the field on top and a back arrow.
+it is a full-screen sheet with the field on top and a back arrow: the window
+reads its portal's width, below the container step g6 (32rem; 1.9.1). The
+portal covers the screen; one held in an overlay container is that
+container's width.
 
 The trigger is the page's own element, so the header looks the same before
 the code arrives and after it. The results come from a host through the port

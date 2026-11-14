@@ -1,5 +1,4 @@
-@use "sass:map";
-@use "../../../core/scss/vars/sf_var__breakpoint" as bp;
+@use "../../../core/scss/mix/mix__breakpoint" as mq;
 
 @layer sf.components {
 /* The page row's box, published so a page can hold the room of a list and
@@ -464,13 +463,30 @@
   text-decoration: none;
 }
 
-/* A narrow screen keeps the page row a row that wraps (PG-05). It used to turn
+/* A narrow place keeps the page row a row that wraps (PG-05). It used to turn
    it into a column -- the count alone, the arrows centred on a line of their
    own, «На странице:» above a full-width select -- four lines, 217 to 225
    pixels tall in a frame 390 pixels wide. Now the range and «По 20 ▾» share
    the first line and the field ends the next one: two lines of controls at
-   most. */
-@media (max-width: map.get(bp.$breakpoint-array, md)) {
+   most.
+   The pagination's own width decides, not the screen's (C181 (2)): up to the
+   container step h1 (the md step it read from the screen before, the same
+   width), so
+   a footer in a narrow column of a wide page draws its narrow row too. The
+   root is the container only where the rule has something to change -- a
+   footer with the pages label or the bulk band -- so a pagination standing
+   in a row of a toolbar keeps its own width. The rule styles parts inside
+   the root, never the root (a container query cannot style its container).
+   A container takes no width from its content, so the root fills its place: in a
+   flex row or column it was as wide as its content and would have folded to
+   nothing (in a box as wide as its content it still does). */
+.sf-pagination:has(.sf-pagination-pages-label, .sf-pagination-bottom) {
+  container: sf-pagination / inline-size;
+  box-sizing: border-box;
+  inline-size: 100%;
+}
+
+@container sf-pagination (max-width: #{mq.container-step(h1)}) {
   /* The label repeats what the row already is. A narrow screen used to drop
      the edge pages as well; it cannot, they are the way to the ends. */
   .sf-pagination .sf-pagination-pages-label {

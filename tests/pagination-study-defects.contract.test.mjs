@@ -177,9 +177,12 @@ test('PG-10: page-in-title adds the page to the title and gives it back', () => 
   assert.equal(document.title, 'Новости', 'a removed element gives the title back');
 });
 
-test('PG-05: a narrow screen keeps the page row a wrapping row, not a column', () => {
-  const narrow = sheet.slice(sheet.indexOf('@media (max-width: map.get(bp.$breakpoint-array, md))'));
-  assert.ok(narrow.length > 0);
+test('PG-05: a narrow place keeps the page row a wrapping row, not a column', () => {
+  // The pagination's own width up to the container step h1 (C181 (2); it was
+  // the md step of the screen, the same 44rem).
+  const narrow = sheet.slice(sheet.indexOf('@container sf-pagination (max-width: #{mq.container-step(h1)})'));
+  assert.ok(narrow.length > 0 && sheet.includes('@container sf-pagination'));
+  assert.match(sheet, /\.sf-pagination:has\(\.sf-pagination-pages-label, \.sf-pagination-bottom\) \{\s*container: sf-pagination \/ inline-size;/u);
   assert.doesNotMatch(narrow, /\.sf-pagination-main \{[^}]*flex-direction: column/u, 'the row is not stacked');
   assert.doesNotMatch(narrow, /\.sf-pagination-count[^{]*\{[^}]*flex-direction: column/u, 'the page size keeps its label beside it');
   assert.doesNotMatch(narrow, /inline-size: 100%/u, 'no part takes a line of its own by width');

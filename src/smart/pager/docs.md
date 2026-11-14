@@ -26,8 +26,10 @@ step is valid, loading the next record and keeping a course's progress.
 
 - `cards` (the default) — two cards, «‹ Назад / title» and «Далее › /
   title», under a documentation page. A missing side keeps its place: on
-  the first page the «Далее» card stays in the second column. On a phone
-  (below the sm step) the cards stack, the previous one first.
+  the first page the «Далее» card stays in the second column. Cards
+  narrower than the container step g6 (32rem: a phone, a card, a side
+  column of a wide page) stack, the previous one first (1.3.3; it read the
+  screen's sm step before).
 - `row` — the previous and the next article by their titles, at the two
   ends, each whole up to two lines: under a post, a news item, a product. A
   row narrower than the sm step (a phone, a card, a side column) stacks, the
