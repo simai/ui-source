@@ -140,19 +140,10 @@
       "id": "notice-frame-in-container-step",
       "category": "condition-review",
       "filePattern": "^component/(?:alerts/scss/_css__alerts|toast/scss/_css__toast)\\.scss$",
-      "contextPattern": "^\\s*@container sf-(?:alert|toast) \\(min-width: calc\\(",
+      "contextPattern": "^\\s*@container sf-(?:alert|toast) \\(min-width: #\\{mq\\.container-step\\([a-i]\\d, \\$frame: 2 \\* ",
       "textPattern": "^(?:1rem|2px)$",
       "status": "accepted-size-step",
-      "reason": "Owner decision C115 (layout L3a): the notice's actions go into the row from 36 / 48 rem (a toast 20 rem) of the notice's whole width. A container query reads the content box and cannot read a variable, so the step takes off the notice's frame as written lengths: its two inline paddings (1rem each, --sf-space-1) and its two borders (1px each, --sf-px)."
-    },
-    {
-      "id": "file-row-retry-under-text",
-      "category": "condition-review",
-      "filePattern": "^component/file-preview/scss/_css__file_preview\\.scss$",
-      "contextPattern": "^\\s*@container \\(max-width: 22\\.5",
-      "textPattern": "^22\\.5rem$",
-      "status": "accepted-size-step",
-      "reason": "Owner decision C88: in a column narrower than 360 px «Повторить» goes under the text of a failed file row. sf-file-download measures the same 22.5rem in script (js/error-fit.js NARROW_BELOW_REM); sf-file-preview's failed row reads it with a container query, which cannot read a variable."
+      "reason": "Owner decision C115 (layout L3a): the notice's actions go into the row from 36 / 48 rem (a toast 20 rem) of the notice's whole width, steps of the C181 container ladder (container-step()). A container query reads the content box and cannot read a variable, so the step takes off the notice's frame as a written length: its two inline insets (1rem each, --sf-space-1, the border inside them)."
     },
     {
       "id": "breakpoint-and-container-steps",

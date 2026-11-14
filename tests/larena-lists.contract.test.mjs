@@ -57,7 +57,7 @@ test('sf-list-description: a dl of label and value, the columns a subgrid, stack
   assert.match(sheet, /grid-template-columns: subgrid;/u);
   assert.match(sheet, /\.sf-list-description-part \{\s*display: grid;\s*grid-column: 1 \/ -1;\s*grid-template-columns: subgrid;/u);
   assert.match(sheet, /font-variant-numeric: tabular-nums;/u);
-  assert.match(sheet, /@container \(max-width: 24rem\)/u);
+  assert.match(sheet, /@container \(max-width: #\{mq\.container-step\(g2\)\}\)/u);
   // A one-line row is the rung's control height: the block inset is (H - L) / 2.
   assert.match(sheet, /--sf-list-description--padding-block: calc\(\(var\(--sf-list-description--control\) - var\(--sf-list-description--line\)\) \/ 2\);/u);
   const source = code('src/smart/list-description/index.js');

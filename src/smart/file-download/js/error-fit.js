@@ -4,7 +4,8 @@
 // module, so a contract reads it.
 //
 // narrow -- «Повторить» goes under the text, from the text's edge: in a
-//   column narrower than 22.5rem (360 px, C88), and also wherever the name's
+//   column narrower than 24rem (384 px; C88, on the container step g2 of
+//   C181 as sf-file-preview's failed row; it was 22.5rem), and also wherever the name's
 //   column beside the button with its words would hold fewer than 16
 //   characters (ch) at the name's own text size (F2). The width alone did not
 //   fit sizes 2 and 3: at 360 px their wide button left the name 90.7 and
@@ -18,7 +19,7 @@
 //   and 3 the button's padding is the wider one, and the plate would cross the
 //   frame (0.8 px past a 200 px box at 390, measured).
 
-export const NARROW_BELOW_REM = 22.5;
+export const NARROW_BELOW_REM = 24;
 export const NAME_KEEPS_CHARS = 16;
 
 /**

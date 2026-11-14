@@ -16,7 +16,7 @@
     "src/core/scss/mix/_mix__breakpoint.scss",
     "src/core/scss/vars/_sf_var__breakpoint.scss"
   ],
-  "content_sha256": "0c67b383ffac1281c774c7e8dc5ff1ede7069c2ff14ffd754dc04ac59820d69e",
+  "content_sha256": "291af4ed1184e91c3d8d8b87b0cb430c44c70050b788ae056d50ebeff48b97ee",
   "dependencies": [
     {
       "id": "tokens.size",
