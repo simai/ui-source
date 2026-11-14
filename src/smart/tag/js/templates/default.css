@@ -18,9 +18,47 @@
         font: inherit;
         gap: var(--sf-tag--gap, var(--sf-a1));
         cursor: pointer;
-        /* The ring is drawn by the tag around it, so the bare control does not
-           draw a second one. Paired with the :focus-visible rule below. */
+        /* The ring is drawn by the box after it (below), so the bare control
+           does not draw a second one. Paired with the :focus-visible rule below. */
         outline: none;
+        position: relative;
+    }
+
+    /* The ring belongs to the part that takes the focus (R242: one inner ring
+       of 2 px, no outer ring; focus-clipping audit point 6). Before, the whole
+       chip drew an outer ring while the focus was on its label alone, and the
+       remove button and its glyph drew two outer rings round the cross.
+       The label and the remove button split the chip: the label's part runs
+       from the chip's start, top and bottom edges into the gap before the
+       cross, the button's part from there to the chip's end, so either ring
+       stands inside the chip and its line falls in the middle of the gap,
+       clear of the last letter and of the cross. Both boxes are drawn by
+       pseudo-elements over the chip's insets: nothing moves, no target grows. */
+    .sf-tag {
+        --sf-tag--close-gap: calc(var(--sf-px) * 0);
+        --sf-tag--ring-split: calc(var(--sf-tag--close-gap) / 2 + var(--sf-focus--width) / 2);
+    }
+
+    /* The gap between the label and the cross: the remove button's start
+       margin of the rule further down (the --sf-c2 target less the cross,
+       halved), given where a label action stands before it. */
+    .sf-tag:not(.sf-tag--inline):has(> .sf-tag-action) {
+        --sf-tag--close-gap: max(calc(var(--sf-px) * 0), calc((var(--sf-c2) - var(--sf-tag--close-size, calc(var(--sf-tag--font-size) * 0.7))) / 2));
+    }
+
+    .sf-tag .sf-tag-action::after {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+        inset-block-start: calc(-1 * var(--sf-tag--block, var(--sf-tag-padding-block, var(--sf-tag--padding-top))));
+        inset-block-end: calc(-1 * var(--sf-tag--block, var(--sf-tag-padding-block, var(--sf-tag--padding-bottom))));
+        inset-inline-start: calc(-1 * var(--sf-tag--inline-start, var(--sf-tag-padding-inline, var(--sf-tag--padding-inline-start))));
+        inset-inline-end: calc(-1 * var(--sf-tag--ring-split));
+        border-radius: var(--sf-tag-radius, var(--sf-radius--ui));
+    }
+
+    .sf-tag:not(.sf-tag--removable) > .sf-tag-action::after {
+        inset-inline-end: calc(-1 * var(--sf-tag--inline-end, var(--sf-tag-padding-inline, var(--sf-tag--padding-inline-end))));
     }
 
     .sf-tag .sf-tag-action:disabled {
@@ -45,16 +83,15 @@
         flex-shrink: 0;
     }
 
-    .sf-tag--interactive:has(> .sf-tag-action:focus-visible) {
+    .sf-tag .sf-tag-action:focus-visible::after {
         outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-        outline-offset: var(--sf-focus--offset);
+        outline-offset: calc(var(--sf-focus--width) * -1);
     }
 
     @media (forced-colors: active) {
-        .sf-tag--interactive:has(> .sf-tag-action:focus-visible) {
+        .sf-tag .sf-tag-action:focus-visible::after {
             outline: var(--sf-focus-outline-width) solid currentColor;
-            outline-offset: var(--sf-focus-outline-width);
-            box-shadow: none;
+            outline-offset: calc(var(--sf-focus-outline-width) * -1);
         }
     }
 }
@@ -133,6 +170,44 @@
     .sf-tag:not(.sf-tag--inline):has(> .sf-tag-action) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close,
     .sf-tag:not(.sf-tag--inline):has(> .sf-tag-action) > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close {
         margin-inline-start: max(calc(var(--sf-px) * 0), calc((var(--sf-c2) - var(--sf-tag--close-size, calc(var(--sf-tag--font-size) * 0.7))) / 2));
+    }
+
+    /* The remove button's ring (R242): inside the button's part of the chip
+       (above), drawn by ::before (::after is the --sf-c2 target); the button
+       and its glyph draw none of their own. The part: from the middle of the
+       gap to the chip's end, the chip's height (the cross stands centred on
+       the label's line). */
+    .sf-tag > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close:not(:disabled):focus-visible,
+    .sf-tag > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close:not(:disabled):focus-visible,
+    .sf-tag > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close:not(:disabled):focus-visible .sf-close,
+    .sf-tag > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close:not(:disabled):focus-visible .sf-close {
+        outline: none;
+    }
+
+    .sf-tag > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close::before,
+    .sf-tag > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close::before {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+        inset-inline-start: calc(-1 * var(--sf-tag--ring-split));
+        inset-inline-end: calc(-1 * var(--sf-tag--inline-end, var(--sf-tag-padding-inline, var(--sf-tag--padding-inline-end))));
+        inset-block-start: calc((var(--sf-tag--close-size, calc(var(--sf-tag--font-size) * 0.7)) - var(--sf-tag--line-height)) / 2 - var(--sf-tag--block, var(--sf-tag-padding-block, var(--sf-tag--padding-top))));
+        inset-block-end: calc((var(--sf-tag--close-size, calc(var(--sf-tag--font-size) * 0.7)) - var(--sf-tag--line-height)) / 2 - var(--sf-tag--block, var(--sf-tag-padding-block, var(--sf-tag--padding-bottom))));
+        border-radius: var(--sf-tag-radius, var(--sf-radius--ui));
+    }
+
+    .sf-tag > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close:not(:disabled):focus-visible::before,
+    .sf-tag > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close:not(:disabled):focus-visible::before {
+        outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+        outline-offset: calc(var(--sf-focus--width) * -1);
+    }
+
+    @media (forced-colors: active) {
+        .sf-tag > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close:not(:disabled):focus-visible::before,
+        .sf-tag > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close:not(:disabled):focus-visible::before {
+            outline: var(--sf-focus-outline-width) solid currentColor;
+            outline-offset: calc(var(--sf-focus-outline-width) * -1);
+        }
     }
 
     .sf-tag.sf-tag--inline.sf-tag--inline > :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--close,

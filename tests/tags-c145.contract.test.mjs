@@ -101,13 +101,13 @@ test('C145 amendment R238: the first tag in a field stands 4 from its start edge
   assert.match(read('src/component/dropdown/scss/_css__custom.scss'), /\.sf-dropdown\.sf-dropdown\.sf-dropdown--tag > \.sf-dropdown-field\.sf-dropdown-field \{[^}]*--sf-dropdown-field--padding-inline-start: calc\(var\(--sf-space-1\\\/4\) - var\(--sf-px\)\);/u);
 });
 
-test('versions: sf-tag 1.8.0, component.tags 1.7.0, sf-tag-group 1.0.0, sf-dropdown 1.12.0, component.dropdown 1.10.0, sf-input-lookup 1.12.1', () => {
+test('versions: sf-tag 1.9.0 (R242), component.tags 1.7.0, sf-tag-group 1.0.0, sf-dropdown 1.12.0, component.dropdown 1.10.0, sf-input-lookup 1.12.1', () => {
   assert.equal(json('src/smart/dropdown/component.json').version, '1.12.0');
   assert.equal(json('src/component/dropdown/passport.json').version, '1.10.0');
   assert.equal(json('src/smart/input-lookup/component.json').version, '1.12.1');
   assert.equal(json('src/smart/input-lookup/smart.manifest.json').version, '1.12.1');
-  assert.equal(json('src/smart/tag/component.json').version, '1.8.0');
-  assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.8.0');
+  assert.equal(json('src/smart/tag/component.json').version, '1.9.0');
+  assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.9.0');
   assert.equal(json('src/component/tags/passport.json').version, '1.7.0');
   assert.equal(json('src/smart/tag-group/smart.manifest.json').version, '1.0.0');
 });
