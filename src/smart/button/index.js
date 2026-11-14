@@ -723,12 +723,14 @@ class SfButton extends ButtonElement {
     return this;
   }
 
+  // No weight is written (1.16.0, owner decision C151 point 4): the icon takes
+  // its label's, medium beside a label (component.buttons), regular alone.
   // A pressed toggle draws its icons filled (1.6.0, rule C12): the filled
   // attribute, not the sheet's FILL alone, so the Loader's icon subset holds
   // the filled glyph -- a FILL set by a rule drew the outlined one from it.
   createIcon(name, filled = false) {
     if (!name) return "";
-    return html`<sf-icon icon="${name}" ?filled=${filled} root-class="pointer-event-none" weight="400" aria-hidden="true"></sf-icon>`;
+    return html`<sf-icon icon="${name}" ?filled=${filled} root-class="pointer-event-none" aria-hidden="true"></sf-icon>`;
   }
 
   set value(nextValue) {
