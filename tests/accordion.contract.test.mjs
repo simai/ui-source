@@ -85,10 +85,11 @@ test('accordion keeps interaction states neutral and keyboard-visible', async ()
   assert.match(styles, /prefers-reduced-motion: reduce/);
   assert.match(styles, /var\(--sf-duration-fast\) var\(--sf-animation\)/);
   assert.match(styles, /\.sf-accordion\.sf-accordion--legacy/);
-  assert.match(styles, /\[aria-expanded='true'\] \.sf-icon/);
+  // C154 (1): closed down, open up; down and up need no right-to-left turn.
+  assert.match(styles, /\[aria-expanded='true'\] \.sf-icon:not\(\.sf-accordion-lead\)/);
   assert.match(styles, /transform: rotate\(90deg\)/);
-  assert.match(styles, /\[dir='rtl'\].*\[aria-expanded='false'\]/s);
-  assert.match(styles, /transform: rotate\(180deg\)/);
+  assert.match(styles, /transform: rotate\(-90deg\)/);
+  assert.doesNotMatch(styles, /\[dir='rtl'\]/);
   assert.match(styles, /\.sf-accordion\.sf-accordion--plus-minus/);
   assert.match(styles, /transform: none/);
   assert.doesNotMatch(styles, /--sf-primary-container|--sf-on-primary/);

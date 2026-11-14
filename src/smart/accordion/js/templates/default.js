@@ -29,8 +29,9 @@ function renderContent(context, section) {
 }
 
 // What stands in the header: an icon before the title, the title, a badge
-// after it, then the class accordion's marker. The badge is tonal, grey (owner
-// decision C140): it took sf-badge's former default, the dark grey fill.
+// after it, a short summary at the end (C154 (3)), then the class
+// accordion's marker. The badge is tonal, grey (owner decision C140): it took
+// sf-badge's former default, the dark grey fill.
 function renderHeaderContent(context, section, open) {
   return html`
     ${section.icon ? html`<i class="sf-icon sf-accordion-lead" aria-hidden="true">${section.icon}</i>` : nothing}
@@ -39,6 +40,7 @@ function renderHeaderContent(context, section, open) {
       ? html`<sf-badge class="sf-accordion-badge" appearance="tonal" size=${BADGE_SIZE[context.size] || '1/3'}
           line=${BADGE_LINE[context.size] || nothing} text=${section.badge}></sf-badge>`
       : nothing}
+    ${section.summary ? html`<span class="sf-accordion-summary">${section.summary}</span>` : nothing}
     ${context.isStatic ? nothing : html`<i class="sf-icon" aria-hidden="true">${markerGlyph(context.marker, open)}</i>`}
   `;
 }
@@ -58,13 +60,30 @@ function renderSection(context, section, index) {
                    aria-expanded=${open ? 'true' : 'false'} aria-controls=${panelId}
                    ?disabled=${section.disabled}>${renderHeaderContent(context, section, open)}</button>`;
 
+  // With link the section's id is its address (C154 (5)): #id opens it.
   return html`
-    <article class=${sectionClasses(context, section, open)} data-sf-accordion-init="1" data-sf-accordion-id=${section.id}>
+    <article class=${sectionClasses(context, section, open)} id=${context.link ? section.id : nothing}
+             data-sf-accordion-init="1" data-sf-accordion-id=${section.id}>
       <div class="sf-accordion-heading" role="heading" aria-level=${context.headingLevel}>${header}</div>
       <div class="sf-accordion-content" id=${panelId}
            role=${region ? 'region' : nothing} aria-labelledby=${region ? triggerId : nothing}
-           ?hidden=${!open}>${renderContent(context, section)}</div>
+           hidden=${open ? nothing : 'until-found'}>${renderContent(context, section)}</div>
     </article>
+  `;
+}
+
+// «Развернуть все» over the sections (C154 (7)): a ghost button at the end of
+// the row, «Свернуть все» once every section that can open is open.
+function renderExpandAll(context) {
+  if (!context.expandAllShown) return nothing;
+  const all = context.allOpen;
+  return html`
+    <div class="sf-accordion-all">
+      <sf-button class="sf-accordion-all-button" appearance="ghost" scheme="on-surface"
+                 size=${context.size || nothing}
+                 icon-start=${all ? 'unfold_less' : 'unfold_more'}
+                 text=${all ? context.collapseAllText : context.expandAllText}></sf-button>
+    </div>
   `;
 }
 
@@ -74,6 +93,7 @@ function renderSection(context, section, index) {
 export function renderAccordionTemplate(context) {
   const flush = context.appearance === 'flush';
   return html`
+    ${renderExpandAll(context)}
     <div class=${joinClasses('sf-accordion-group', 'sf-smart-accordion', 'flex', 'flex-col', flush ? '' : 'gap-2', context.rootClass)}
          style=${context.rootStyle || nothing}
          data-mode=${context.single ? 'single' : nothing}
