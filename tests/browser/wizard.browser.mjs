@@ -178,7 +178,7 @@ for (const width of [1440, 390]) {
       const invalid = await tab.evaluate(() => ({
         sent: window.__invalid,
         marked: document.querySelector('sf-input[name="title"]').sfErrorShown === true,
-        message: (document.querySelector('sf-input[name="title"] [id$="-error"]')?.textContent || '').trim(),
+        message: (document.querySelector('sf-input[name="title"] [id$="--message"]')?.textContent || '').trim(),
         focused: document.querySelector('sf-input[name="title"]').contains(document.activeElement),
         still: document.getElementById('w').querySelector('.sf-wizard-title').textContent.trim(),
       }));
