@@ -180,6 +180,13 @@
     outline: none;
   }
 
+  /* One ring, on the card: the link inside draws none of its own, also where
+     a page shows focus with the focus-visible class (a docs example), which
+     core rings on any element. */
+  .sf-reference-link :where(.sf-reference-link__link, .sf-reference-link-left > a):focus-visible {
+    outline: none;
+  }
+
   .sf-reference-link:has(:where(.sf-reference-link__link, .sf-reference-link-left > a):focus-visible) {
     outline-color: var(--sf-focus);
     outline-offset: var(--sf-focus--offset);

@@ -112,6 +112,15 @@ function getChevronIcon(item) {
   );
 }
 
+// The type icon of a row (C102 (1)): a branch is folder/folder_open, as on
+// sf-tree. It is its own part beside the toggle, never the toggle itself.
+function getNodeIcon(item) {
+  const container = getItemContainer(item);
+  const node = container?.querySelector?.(':scope > .sf-tree-node-icon') || null;
+  if (!node) return null;
+  return node.classList.contains('sf-icon') ? node : node.querySelector?.('.sf-icon') || null;
+}
+
 function getOpenIcon(item) {
   return item.getAttribute('data-open-icon') || 'folder_open';
 }
@@ -176,11 +185,21 @@ function syncTreeItem(item) {
     button.toggleAttribute('disabled', !branch);
   }
 
-  setIconText(getButtonIcon(item), activeOpen ? getOpenIcon(item) : getClosedIcon(item));
-  setIconText(
-    getChevronIcon(item),
-    activeOpen ? 'keyboard_arrow_down' : 'chevron_right',
-  );
+  // The toggle is the chevron (owner decision C102 (4), as on sf-tree): the
+  // button or the sf-tree-chevron shows keyboard_arrow_down / chevron_right.
+  // The folder used to be written into the toggle button, so the type icon
+  // acted as the toggle. A branch's type icon follows the state only while it
+  // shows one of the folder pair (data-open-icon / data-closed-icon, default
+  // folder_open / folder); any other type icon the page wrote stays.
+  const chevron = activeOpen ? 'keyboard_arrow_down' : 'chevron_right';
+  setIconText(getButtonIcon(item), chevron);
+  setIconText(getChevronIcon(item), chevron);
+
+  const nodeIcon = getNodeIcon(item);
+  const folderPair = [getOpenIcon(item), getClosedIcon(item)];
+  if (branch && nodeIcon && folderPair.includes(nodeIcon.textContent.trim())) {
+    setIconText(nodeIcon, activeOpen ? getOpenIcon(item) : getClosedIcon(item));
+  }
 }
 
 function syncTree(root) {
