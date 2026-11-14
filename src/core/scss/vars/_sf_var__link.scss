@@ -3,14 +3,18 @@
 
 // LINK VARIABLES
 
+// The pointer and press steps of a link. Visited is not a step every link
+// takes: a page opts in with data-sf-visited="on" (owner decision C186 (2)).
+//
+// On a strong place (bg-<c>, glass) a link is the place's ink, not the theme's
+// link blue (C186 (5), C42 (4), C126): --sf-place--ink is the hook a strong
+// place declares and an opaque place takes back (core/scss/mix/_mix__places.scss).
 $link-color-array: (
-	hover: var(--sf-link-hover),
-	active: var(--sf-link-active),
-	visited: var(--sf-link-visited),
+	hover: var(--sf-place--ink, var(--sf-link-hover)),
+	active: var(--sf-place--ink, var(--sf-link-active)),
 );
 
 $link-underline-array: (
-	hover: var(--sf-link-hover),
-	active: var(--sf-link-active),
-	visited: var(--sf-link-visited),
+	hover: var(--sf-place--ink, var(--sf-link-hover)),
+	active: var(--sf-place--ink, var(--sf-link-active)),
 );

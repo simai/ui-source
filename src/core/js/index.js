@@ -37,6 +37,9 @@ import './copy-feedback.js';
 // Copy on click for code in running text, where a container opts in with
 // data-sf-code-copy (owner, 2026-11-07, R024): SF.codeCopy.
 import './code-copy.js';
+// A link that opens a new tab shows arrow_outward and says «(откроется в
+// новой вкладке)» to a screen reader (owner decision C186 (3)): SF.newTabLink.
+import './new-tab-link.js';
 // The reading position of a scrolling column (duplication audit 2026-11-03,
 // A-6): SF.readingPosition, which sf-list-feed and sf-list keep a place by.
 import './reading-position.js';

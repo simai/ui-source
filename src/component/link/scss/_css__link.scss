@@ -1,7 +1,7 @@
 @layer sf.components {
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
   .sf-link {
-    --sf-link--color: var(--sf-link);
+    --sf-link--color: var(--sf-place--ink, var(--sf-link));
     --sf-link--background-color: var(--sf-transparent);
     --sf-link--gap: var(--sf-space-1\/3);
     --sf-link--font-family: var(--sf-text--family);
@@ -23,8 +23,17 @@
     font-weight: var(--sf-link--font-weight);
     line-height: var(--sf-link--line-height);
     text-decoration-line: var(--sf-link--text-decoration);
-    text-decoration-color: currentColor;
+    /* The line at rest is the link's colour at ink 48, full under the pointer
+       (owner decision C186 (1)), as core draws a link in text. */
+    text-decoration-color: color-mix(in srgb, currentColor var(--sf-link--underline-ink, 48%), transparent);
+    text-decoration-thickness: var(--sf-link--underline-weight, var(--sf-px));
     text-underline-offset: var(--sf-a3);
+  }
+
+  /* In navigation, a menu or a table the link is the item's own word: no
+     line until the pointer or the keyboard comes to it (C186 (1), C147 (3)). */
+  :where(nav, menu, [role='navigation'], [role='menu'], [role='menubar'], [role='tablist'], table, [role='table'], [role='grid'], [role='treegrid']) .sf-link {
+    --sf-link--text-decoration: none;
   }
 
   .sf-link :where(.sf-link__content, .sf-link-content) {
@@ -33,6 +42,13 @@
     font: inherit;
     overflow-wrap: anywhere;
     text-decoration: inherit;
+  }
+
+  /* The new-tab sign core puts after the words (C186 (3)) stands 4 from
+     them; in an sf-link without a content part it is a flex item, so the
+     link's own gap is taken back from it. */
+  .sf-link > [data-sf-new-tab='mark'] {
+    margin-inline-start: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
   }
 
   .sf-link :where(.sf-link__icon, .sf-link-icon) {
@@ -46,28 +62,42 @@
 }
 
 @layer sf.states {
-  .sf-link:visited:not(.disabled):not([aria-disabled='true']) {
-    --sf-link--color: var(--sf-link-visited);
+  /* A visited colour only where the page asks for it (C186 (2)):
+     data-sf-visited="on" on a region or on <html>, as core's link. */
+  :where([data-sf-visited='on']) .sf-link:visited:not(.disabled):not([aria-disabled='true']) {
+    --sf-link--color: var(--sf-place--ink, var(--sf-link-visited));
   }
 
+  /* Under the pointer and pressed the line stays and takes the full colour
+     (C186 (1)); it was dropped there, the reverse of every link in text. */
   .sf-link:hover:not(.disabled):not([aria-disabled='true']) {
-    --sf-link--color: var(--sf-link-hover);
-    --sf-link--text-decoration: none;
+    --sf-link--color: var(--sf-place--ink, var(--sf-link-hover));
+    --sf-link--text-decoration: underline;
+
+    text-decoration-color: currentColor;
   }
 
   .sf-link:active:not(.disabled):not([aria-disabled='true']) {
-    --sf-link--color: var(--sf-link-active);
-    --sf-link--text-decoration: none;
+    --sf-link--color: var(--sf-place--ink, var(--sf-link-active));
+    --sf-link--text-decoration: underline;
+
+    text-decoration-color: currentColor;
+  }
+
+  .sf-link:focus-visible:not(.disabled):not([aria-disabled='true']) {
+    --sf-link--text-decoration: underline;
   }
 
   .sf-link:focus {
     outline: none;
   }
 
+  /* The ring of a link (C186 (4)): 2px --sf-focus, two pixels off the
+     words, the UI's corner (4). */
   .sf-link:focus-visible {
     border-radius: var(--sf-radius--ui);
     outline-color: var(--sf-focus);
-    outline-offset: var(--sf-focus--offset);
+    outline-offset: var(--sf-a2);
     outline-style: var(--sf-focus--style);
     outline-width: var(--sf-focus--width);
   }
