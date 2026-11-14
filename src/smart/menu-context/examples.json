@@ -87,6 +87,47 @@
       "from": "studio.scenario.json"
     },
     {
+      "name": "right-click",
+      "title": "Правый щелчок по строке",
+      "markup": "<div class=\"flex flex-col gap-1/4\" role=\"list\" aria-label=\"Файлы\"><div role=\"listitem\" tabindex=\"0\" class=\"p-1/2 radius-1\" oncontextmenu=\"event.preventDefault(); var point = document.createElement('span'); point.style.cssText = 'position: fixed; left: ' + event.clientX + 'px; top: ' + event.clientY + 'px'; document.body.append(point); var menu = document.querySelector('sf-menu-context[aria-label=&quot;Действия с файлом&quot;]'); menu.addEventListener('sf-menu-context-closed', function () { point.remove(); }, {once: true}); menu.openFor(point);\">Отчёт за ноябрь.pdf</div><div role=\"listitem\" tabindex=\"0\" class=\"p-1/2 radius-1\" oncontextmenu=\"event.preventDefault(); var point = document.createElement('span'); point.style.cssText = 'position: fixed; left: ' + event.clientX + 'px; top: ' + event.clientY + 'px'; document.body.append(point); var menu = document.querySelector('sf-menu-context[aria-label=&quot;Действия с файлом&quot;]'); menu.addEventListener('sf-menu-context-closed', function () { point.remove(); }, {once: true}); menu.openFor(point);\">Договор № 77.docx</div></div>",
+      "settings": {
+        "popup": true,
+        "aria-label": "Действия с файлом",
+        "entries": [
+          {
+            "id": "open",
+            "text": "Открыть",
+            "icon": "open_in_new"
+          },
+          {
+            "id": "rename",
+            "text": "Переименовать",
+            "shortcut": "f2"
+          },
+          {
+            "id": "copy",
+            "text": "Копировать",
+            "icon": "content_copy",
+            "shortcut": "mod+c"
+          },
+          {
+            "type": "separator"
+          },
+          {
+            "id": "delete",
+            "text": "Удалить",
+            "icon": "delete",
+            "shortcut": "delete",
+            "danger": true
+          }
+        ]
+      },
+      "expect": {
+        "name": "Действия с файлом"
+      },
+      "x-note": "The page opens the menu itself: a right-click (or the menu key, Shift+F10) on a row places a point of no size at the pointer and calls openFor(point). The menu's corner is the pointer, its density is the row's, and Escape or a choice gives the focus back to the row."
+    },
+    {
       "name": "checks",
       "title": "Флажки",
       "settings": {

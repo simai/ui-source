@@ -103,8 +103,10 @@ test('Smart drawings mark the sizes they give as relative', () => {
   const menu = read('src/smart/menu-context/index.js');
   assert.match(menu, /followDensity\(child, this\.surface\(\) \?\? this\)/u);
   // A menu opened for a control is drawn in that control's density, a menu
-  // the page gave a size too (C79).
-  assert.match(menu, /this\._owned\.density = surface\.getAttribute\("data-sf-density"\);\n\s*surface\.setAttribute\("data-sf-density", densityOf\(anchor\) \?\? "normal"\);/u);
+  // the page gave a size too (C79); opened at a point, in the density of what
+  // stands under the point (sf-menu-context 1.18.0).
+  assert.match(menu, /const place = point\?\.under \?\? anchor;/u);
+  assert.match(menu, /this\._owned\.density = surface\.getAttribute\("data-sf-density"\);\n\s*surface\.setAttribute\("data-sf-density", densityOf\(place\) \?\? "normal"\);/u);
   assert.doesNotMatch(menu, /hasAttribute\(RELATIVE\)/u);
 });
 

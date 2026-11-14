@@ -63,10 +63,47 @@
 кнопке. Выбор на любом уровне приходит одним событием `sf-context-menu-select`;
 чтобы меню осталось открытым, отмените событие или задайте пункту `keepOpen`.
 
+### Правый щелчок
+
+Меню открывается и у указателя: страница слушает `contextmenu` на строке или
+объекте, ставит в место щелчка точку без размера и вызывает `openFor(точка)`.
+Угол меню встаёт ровно в точку (у нижнего края экрана меню открывается вверх,
+его низ — в точке), плотность меню — плотность строки под указателем, а Escape и
+выбор возвращают фокус этой строке. Клавиша меню и Shift+F10 на строке с фокусом
+присылают то же событие.
+
+```html
+<div role="list" aria-label="Файлы">
+  <div role="listitem" tabindex="0" class="file">Отчёт за ноябрь.pdf</div>
+</div>
+<sf-menu-context id="fileMenu" popup aria-label="Действия с файлом"></sf-menu-context>
+<script>
+  fileMenu.entries = [
+    {id: 'open', text: 'Открыть', icon: 'open_in_new'},
+    {id: 'rename', text: 'Переименовать', shortcut: 'f2'},
+    {type: 'separator'},
+    {id: 'delete', text: 'Удалить', icon: 'delete', shortcut: 'delete', danger: true},
+  ];
+  for (const row of document.querySelectorAll('.file')) {
+    row.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+      const point = document.createElement('span');
+      point.style.cssText = `position: fixed; left: ${event.clientX}px; top: ${event.clientY}px`;
+      document.body.append(point);
+      fileMenu.addEventListener('sf-menu-context-closed', () => point.remove(), {once: true});
+      fileMenu.openFor(point);
+    });
+  }
+</script>
+```
+
 ### Размер, ширина и подвал
 
-Меню бывает двух размеров. `size="1/2"`, размер по умолчанию, даёт строки 32px.
-`size="1"` даёт строки 40px. От размера зависят текст, иконки, отступы, поиск и
+Размер меню — ступень линейки области, как у строк `sf-menu`. По умолчанию
+`size="1"`: на обычной странице строки 40px и текст 16px, в компактной области
+(`data-sf-density="compact"`) — 32px и 14px, на телефоне — телефонная линейка
+(строки не ниже 44px под пальцем, текст 14px). `size="1/2"` — ступенью ниже
+(32/14, компактно 28/12). От размера зависят текст, иконки, отступы, поиск и
 подвал. Подменю получает размер родителя.
 
 Ширину задаёт атрибут `width` или параметр `openFor(кнопка, {width})`. Ширина

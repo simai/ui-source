@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu-context",
-  "version": "1.16.5",
+  "version": "1.18.0",
   "title": "Context Menu",
   "summary": "The Framework's action menu and its settings panel: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, and the value rows a setting needs (switch, range, choice, a group of rows or tiles) with one change event and the set-value, set-all, reset and show actions, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
   "kind": "smart",
@@ -126,8 +126,8 @@
       },
       "size": {
         "type": "string",
-        "default": "1/2",
-        "description": "The menu's size: rows as tall as a field of that size (32px at 1/2, 40px at 1), its text, insets, search and footer. A submenu takes its parent's size.",
+        "default": "1",
+        "description": "The menu's size, a step on the region's ladder as sf-menu's rows are (decisions C22, C79): rows as tall as a field of that size and its text, insets, search and footer. 1, the default, is 40px rows and 16px text on a page, 32 and 14 in a compact region, the phone's ladder on a phone (rows at least 44 under a finger); 1/2 is a step below (32/14, compact 28/12). A submenu takes its parent's size.",
         "enum": [
           "1/2",
           "1"
@@ -951,7 +951,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu-context/index.js",
-        "sha256": "2da65707267a8be1964fc10777d323cd0321a0f59ddb78851d4b204db7ab0cc5"
+        "sha256": "6a1f346b8433f21c8c5c7be5dbf27572752d63f2b5d4e8417db7646d34435cf7"
       },
       {
         "path": "src/smart/menu-context/js/templates/default.js",

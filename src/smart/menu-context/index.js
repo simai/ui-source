@@ -30,6 +30,40 @@ const ContextMenuElement = elementFromManifest(manifest, {
 // Prefer the helper Core published; a bundle loaded without core.js still
 // positions with its own copy.
 const position = () => globalThis.SF?.Position || BundledPosition;
+
+// What a point anchor stands for (sf-menu-context 1.18.0). An anchor is a
+// point when it draws a box of no size: a fixed span at the pointer of a
+// right-click. A host that draws no box of its own (display: contents, as
+// sf-button) or a hidden element is not one. Answers null for any other
+// anchor, else {under, focusable, lent}: the page's element under the point
+// (never the anchor or the menu), and what takes the focus back when the
+// menu closes and nothing held it before (CM-2): the nearest focusable
+// element from it up, else the element itself, lent a tabindex.
+const FOCUSABLE = "button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]";
+function pointOf(anchor, menu) {
+  if (!anchor.getClientRects?.().length) return null;
+  const rect = anchor.getBoundingClientRect();
+  if (rect.width !== 0 || rect.height !== 0) return null;
+  const document = anchor.ownerDocument;
+  const under = (document.elementsFromPoint?.(rect.left, rect.top) ?? [])
+    .find((element) => element !== anchor && !menu.contains(element) && element !== document.documentElement && element !== document.body);
+  if (!under) return {under: null, focusable: null, lent: false};
+  const near = under.closest(FOCUSABLE);
+  return near && near !== document.body ? {under, focusable: near, lent: false} : {under, focusable: under, lent: true};
+}
+
+// Focus to an element that may not take it: lent a tabindex of -1 (focusable
+// from script, never a Tab stop) until it loses the focus.
+function focusLent(element, options) {
+  if (!element.hasAttribute("tabindex")) {
+    element.setAttribute("tabindex", "-1");
+    element.addEventListener("blur", () => {
+      if (element.getAttribute("tabindex") === "-1") element.removeAttribute("tabindex");
+    }, {once: true});
+  }
+  element.focus(options);
+}
+
 const TYPEAHEAD_MS = 500;
 
 // How wide a popup is by what it holds (owner decision C32, 2026-11-09): the
@@ -932,6 +966,15 @@ class SfContextMenu extends ContextMenuElement {
     await this.whenRendered();
     const surface = this.surface();
     if (!surface) return {outcome: "unavailable", reason: "no-surface"};
+    // An anchor the size of nothing is a point: where a right-click was (a
+    // host's contextmenu, SF.Effects). The menu's corner is the point itself,
+    // not --sf-space-1/4 below it (CM-5, as system menus open), and what
+    // stands under the point is the place the menu belongs to: its density
+    // (C22/C79) and where the focus goes back (CM-2). A point appended to
+    // <body> had neither, so the menu came out normal in a compact table and
+    // the focus fell to <body>.
+    const point = pointOf(anchor, this);
+    const place = point?.under ?? anchor;
     // Focus goes back where it was, or to the control that opened the menu
     // when it was nowhere -- a press on an sf-button leaves it on the body in
     // some browsers, and the menu returned it there. A host element is not
@@ -944,7 +987,8 @@ class SfContextMenu extends ContextMenuElement {
       anchor, parentMenu,
       returnTo: active instanceof HTMLElement && active !== document.body && active !== document.documentElement
         ? active
-        : focusable(anchor),
+        : point ? point.focusable : focusable(anchor),
+      lent: Boolean(point?.lent) && !(active instanceof HTMLElement && active !== document.body && active !== document.documentElement),
       expanded: anchor.getAttribute("aria-expanded"),
       haspopup: anchor.getAttribute("aria-haspopup"),
     };
@@ -956,7 +1000,7 @@ class SfContextMenu extends ContextMenuElement {
     // compact page drew at two sizes. A size the page gave the menu is a step
     // on that region's ladder too (C79), so every menu takes it.
     this._owned.density = surface.getAttribute("data-sf-density");
-    surface.setAttribute("data-sf-density", densityOf(anchor) ?? "normal");
+    surface.setAttribute("data-sf-density", densityOf(place) ?? "normal");
     // The top layer, where the platform has it: above every stacking context
     // and every clipping box, so a menu in a scrolled card is never cut and
     // never under the table it belongs to.
@@ -996,7 +1040,7 @@ class SfContextMenu extends ContextMenuElement {
     // A form on a phone is not anchored: it is a sheet at the bottom of the
     // screen (the sheet's rules are the class sheet's).
     const owned = this._owned;
-    const place = (asSheet) => {
+    const placeAt = (asSheet) => {
       owned.position?.stop();
       owned.position = null;
       owned.sheet = asSheet;
@@ -1007,7 +1051,7 @@ class SfContextMenu extends ContextMenuElement {
       surface.removeAttribute("data-sf-sheet");
       owned.position = position().anchor(anchor, surface, {
         side, align, alignmentOffset, flip: true, shift: true, fitHeight: true, matchWidth: width === "trigger",
-        ...(offset === undefined || offset === null || offset === "" ? {} : {offset}),
+        ...(offset === undefined || offset === null || offset === "" ? (point ? {offset: 0} : {}) : {offset}),
         // The trigger may change its width while the menu is open (a field
         // that grows): the width the kinds read follows it.
         onPosition: () => {
@@ -1015,12 +1059,12 @@ class SfContextMenu extends ContextMenuElement {
         },
       });
     };
-    place(sheet);
+    placeAt(sheet);
     // A form stays what the screen makes it: opened wide and the window
     // narrowed to a phone, it becomes the sheet; widened, it is anchored again.
     if (FORM_KINDS.has(kind)) {
       owned.onResize = () => {
-        if (this._owned === owned && onPhone() !== owned.sheet) place(onPhone());
+        if (this._owned === owned && onPhone() !== owned.sheet) placeAt(onPhone());
       };
       window.addEventListener("resize", owned.onResize);
     }
@@ -1094,7 +1138,10 @@ class SfContextMenu extends ContextMenuElement {
     else anchor.setAttribute("aria-haspopup", owned.haspopup);
     if (owned.expanded === null) anchor.setAttribute("aria-expanded", "false");
     else anchor.setAttribute("aria-expanded", owned.expanded);
-    if (restoreFocus) (owned.returnTo?.isConnected ? owned.returnTo : anchor)?.focus?.({preventScroll: true});
+    if (restoreFocus) {
+      if (owned.lent && owned.returnTo?.isConnected) focusLent(owned.returnTo, {preventScroll: true});
+      else (owned.returnTo?.isConnected ? owned.returnTo : anchor)?.focus?.({preventScroll: true});
+    }
     this.sfEmit("closed", {reason});
     return true;
   }
@@ -1315,8 +1362,11 @@ class SfContextMenu extends ContextMenuElement {
       role: { default: "menu" },
       contentClass: { default: "" },
       rootClass: { default: "" },
-      // The menu's size: "1/2" (32px rows, the default) or "1" (40px rows).
-      size: { default: "1/2" },
+      // The menu's size, a step on the region's ladder like sf-menu's rows
+      // (C22/C79, CM-3): "1" by default -- 40px rows and 16px text on a page,
+      // 32 and 14 in a compact region, the phone's ladder on a phone -- or
+      // "1/2", a step below.
+      size: { default: "1" },
       // How wide the menu opens: "content" (its longest line, the default),
       // "trigger" (exactly the control that opened it), a kind of decision
       // C32 ("list", "panel", "form", "form-wide") or a CSS length.
