@@ -14,7 +14,10 @@ test('Card gives a card and a figure inside it the nested corner', async () => {
   const figure = css.match(/:where\(\.sf-card:not\(\.sf-card--plain\)\) \.sf-figure > \.sf-figure-media \{[^}]*\}/u)?.[0] || '';
   const caption = css.match(/> \.sf-figure-media \+ \.sf-figure-caption \{[^}]*\}/u)?.[0] || '';
 
-  assert.ok(nested.includes(`border-radius: var(--sf-card-radius, ${formula})`), nested);
+  // C188 (2): the card's corner is the private --sf-card--radius, so a picture
+  // at a nested card's edge reads the nested corner too.
+  assert.ok(nested.includes(`--sf-card--radius: var(--sf-card-radius, ${formula})`), nested);
+  assert.match(css, /border-radius: var\(--sf-card--radius\);/u);
   assert.ok(figure.includes(`border-radius: var(--sf-figure-radius, ${formula})`), figure);
   assert.ok(caption.includes(`border-end-end-radius: var(--sf-figure-radius, ${formula})`), caption);
   // The Framework reads public variables, it never sets them.

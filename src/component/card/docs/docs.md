@@ -34,6 +34,45 @@ inset, never under 4 px. With the surface radius (8) and the card's inset (20,
 16 on a phone) that is 4 px at every width (1.6.1). A plain card has no frame,
 so what it holds keeps its own corner.
 
+## Actions row
+
+A card has no footer or subtitle part (owner decision C188 (1)). Its buttons
+stand in the core's `.sf-actions` row as the card's last block: one group,
+8 px apart (4 in compact density), the main action first. As the last block
+the row stands at the card's foot, so the rows of a grid of cards of one
+height line up.
+
+```html
+<div class="sf-card">
+  <h4>Оплата</h4>
+  <p>Карта, счёт для юрлиц и оплата при получении.</p>
+  <div class="sf-actions">
+    <sf-button text="Сохранить"></sf-button>
+    <sf-button appearance="outline" text="Отмена"></sf-button>
+  </div>
+</div>
+```
+
+## Picture at the edge
+
+An `.sf-figure` as the card's first block goes to the card's edge (owner
+decision C188 (2), 1.7.0): the card's inset is taken back above and beside
+it, its top corners are the card's (the card's corner less its edge, 7 px),
+its lower corners square, and its caption keeps the card's inset. The ratio
+is the figure's own list (C188 (6)): `sf-figure--ratio-1x1`, `-4x3`, `-3x2`,
+`-16x9`, `-21x9`, or none for the picture's own shape. Every other rounded
+part inside the card follows the nested corner below.
+
+```html
+<div class="sf-card">
+  <figure class="sf-figure sf-figure--ratio-16x9">
+    <div class="sf-figure-media"><img src="/store.webp" alt="" width="1280" height="720"></div>
+  </figure>
+  <h4>Новый склад</h4>
+  <p>Открыли 12 ноября, принимает с 8 утра.</p>
+</div>
+```
+
 `sf-card--plain` keeps the column and drops the surface: no fill, no edge, no
 padding. Use it inside a grid of cards that needs no frames.
 

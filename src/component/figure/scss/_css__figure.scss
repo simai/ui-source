@@ -26,10 +26,14 @@
 // it flat.
 
 @layer sf.components {
+  // The caption stands 8 under its picture at every width (owner decision
+  // C188 (5), the gallery's gap of C150 (3); 4 in compact density): it holds
+  // to its own picture. It was 12 on a desktop. A credit follows in the same
+  // line after « · ».
   .sf-figure {
     display: flex;
     flex-direction: column;
-    gap: var(--sf-figure-gap, var(--sf-space-1\/2));
+    gap: var(--sf-figure-gap, var(--sf-space-1\/3));
     box-sizing: border-box;
     min-inline-size: 0;
     margin: var(--sf-0);
@@ -58,7 +62,9 @@
     display: contents;
   }
 
-  // A named ratio: the box keeps it and the media fills it.
+  // A named ratio: the box keeps it and the media fills it. One list for the
+  // figure, the gallery and a card's picture (owner decision C188 (6)): 1:1,
+  // 4:3, 3:2, 16:9, 21:9, and auto -- no ratio class, the picture's own shape.
   .sf-figure--ratio-1x1 { --sf-figure--ratio: 1 / 1; }
   .sf-figure--ratio-4x3 { --sf-figure--ratio: 4 / 3; }
   .sf-figure--ratio-3x2 { --sf-figure--ratio: 3 / 2; }

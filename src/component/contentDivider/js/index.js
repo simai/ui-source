@@ -6,5 +6,5 @@
             * - Base function component (_component_name.js)
             */
         
-            import './_contentDivider';
+            import './_contentDivider.js';
             
