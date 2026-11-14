@@ -184,6 +184,10 @@ $ramp: 'var(--sf-gradient--scrim-ramp, calc(var(--sf-space-4) * 4))';
     --sf-on-primary-container: var(--sf-white);
     --sf-place--plate: var(--sf-white);
     --sf-place--on-plate: var(--sf-gradient--from);
+    // The status containers' ink, the link and the focus ring are white, the plate's
+    // ink, as on a strong place (places states PS-A, PS-B).
+    @include places.sf-place-container-ink(var(--sf-white));
+    @include places.sf-place-link-ring(var(--sf-white), var(--sf-primary-hover), var(--sf-primary-active), var(--sf-white--alfa-80));
 }
 .gradient-cover {
     --sf-gradient--from: #{tone('c', 90, 30, 'primary')};

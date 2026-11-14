@@ -156,6 +156,62 @@ $sf-place-glass-link-roles: (
 );
 $sf-place-glass-accent-roles: map.merge($sf-place-accent-roles, $sf-place-glass-link-roles);
 
+// The ink on a status container (places states PS-B, 2026-11-14). A tonal
+// badge, tag or button of a status or colour other than the accent lays the
+// theme's container (the colour at 12/16/20, dark 24/28/32) over its place and
+// writes its label in the colour's tone 10 (dark 90). On a strong colour that
+// ink is dark on blue -- 2.43-2.73:1 light, 1.62-1.76 dark on bg-primary -- and
+// on glass in the light theme dark on black, 1.12-1.14. A strong place and
+// glass re-declare the ink, not the fill: the label and its graphic (a status
+// dot, an icon) are the place's ink, as every other control's ink there
+// (sf-place-strong), and the fill keeps its hue, so a tonal error stays a red
+// tint on a blue banner. The accent's own container ink is the accent's
+// (sf-place-strong-accent); its graphic is listed here. The theme's values are
+// the fallback of the take-back (sf-place-back-on-colour).
+$sf-place-container-ink-roles: (
+  'on-primary-container-graphic': 'light-dark(var(--sf-primary-50), var(--sf-primary-60))',
+  'on-secondary-container': 'light-dark(var(--sf-secondary-10), var(--sf-secondary-90))',
+  'on-secondary-container-graphic': 'light-dark(var(--sf-secondary-50), var(--sf-secondary-60))',
+  'on-tertiary-container': 'light-dark(var(--sf-tertiary-10), var(--sf-tertiary-90))',
+  'on-tertiary-container-graphic': 'light-dark(var(--sf-tertiary-50), var(--sf-tertiary-60))',
+  'on-info-container': 'light-dark(var(--sf-info-10), var(--sf-info-90))',
+  'on-info-container-graphic': 'light-dark(var(--sf-info-50), var(--sf-info-60))',
+  'on-success-container': 'light-dark(var(--sf-success-10), var(--sf-success-90))',
+  'on-success-container-graphic': 'light-dark(var(--sf-success-50), var(--sf-success-60))',
+  'on-warning-container': 'light-dark(var(--sf-warning-10), var(--sf-warning-90))',
+  'on-warning-container-graphic': 'light-dark(var(--sf-warning-50), var(--sf-warning-60))',
+  'on-error-container': 'light-dark(var(--sf-error-10), var(--sf-error-90))',
+  'on-error-container-graphic': 'light-dark(var(--sf-error-50), var(--sf-error-60))',
+  'on-neutral-container': 'light-dark(var(--sf-neutral-10), var(--sf-neutral-90))',
+  'on-neutral-container-graphic': 'light-dark(var(--sf-neutral-50), var(--sf-neutral-60))',
+);
+
+// The status containers' ink as the place's ink, on the children of a strong
+// place, on glass's children and on the duo gradient plate.
+@mixin sf-place-container-ink($ink) {
+  @each $role, $value in $sf-place-container-ink-roles {
+    --sf-#{$role}: #{$ink};
+  }
+}
+
+// The link and the focus ring on a strong place (places states PS-A,
+// 2026-11-14): the theme's link is primary 40 (dark 80) and its ring primary
+// 50 (dark 90), 1.00-1.20:1 and 1.31-1.45:1 against every strong colour, so a
+// text link on a banner could not be read and a focused control showed no
+// ring. As on glass (C70, which took them from the strong place's accent) the
+// link is the place's ink with the accent's hover and press steps, a visited
+// link the place's dim ink (80), and the ring the place's ink;
+// --sf-focus--color, resolved at the root, is re-declared with it. The roles
+// and their theme values are $sf-place-glass-link-roles.
+@mixin sf-place-link-ring($ink, $hover, $active, $visited) {
+  --sf-link: #{$ink};
+  --sf-link-hover: #{$hover};
+  --sf-link-active: #{$active};
+  --sf-link-visited: #{$visited};
+  --sf-focus: #{$ink};
+  --sf-focus--color: var(--sf-focus);
+}
+
 // The seven colours that are places.
 $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warning', 'error');
 
@@ -207,6 +263,11 @@ $sf-place-coloured-selectors: list.join(list.join($sf-place-strong-selectors, sf
     @each $role, $value in $sf-place-accent-roles {
       --sf-#{$role}: var(--sf-place--outer-#{$role}, #{string.unquote($value)});
     }
+    // The status containers' ink and the ring (PS-A, PS-B).
+    @each $role, $value in map.merge($sf-place-container-ink-roles, $sf-place-glass-link-roles) {
+      --sf-#{$role}: var(--sf-place--outer-#{$role}, #{string.unquote($value)});
+    }
+    --sf-focus--color: var(--sf-place--outer-focus--color, var(--sf-focus));
     --sf-place--plate: initial;
     --sf-place--on-plate: initial;
     --sf-place--fill-placeholder: initial;
@@ -216,6 +277,10 @@ $sf-place-coloured-selectors: list.join(list.join($sf-place-strong-selectors, sf
   // On glass (C70): the accent, the link and the ring the page had there.
   :where(.sf-surface-media) & {
     @each $role, $value in $sf-place-glass-accent-roles {
+      --sf-#{$role}: var(--sf-place--outer-#{$role}, #{string.unquote($value)});
+    }
+    // The status containers' ink (PS-B).
+    @each $role, $value in $sf-place-container-ink-roles {
       --sf-#{$role}: var(--sf-place--outer-#{$role}, #{string.unquote($value)});
     }
     --sf-focus--color: var(--sf-place--outer-focus--color, var(--sf-focus));
@@ -588,6 +653,12 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
   @each $role, $value in $sf-place-accent-roles {
     --sf-place--outer-#{$role}: var(--sf-#{$role});
   }
+  // The status containers' ink and the ring it found (PS-A, PS-B), re-declared
+  // on its children (sf-place-strong-accent).
+  @each $role, $value in map.merge($sf-place-container-ink-roles, $sf-place-glass-link-roles) {
+    --sf-place--outer-#{$role}: var(--sf-#{$role});
+  }
+  --sf-place--outer-focus--color: var(--sf-focus--color);
   // Inside bg-surface-4 the place paints and hands down the accent the step
   // found, not the step's (M3): bg-primary there is primary-40 again.
   @include sf-place-step-4-accent-back;
@@ -652,12 +723,19 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
   // on the place is unchanged.
   --sf-place--control-hover: light-dark(var(--sf-white--alfa-8), var(--sf-#{$c}-20--alfa-16));
   --sf-place--control-active: light-dark(var(--sf-white--alfa-4), var(--sf-#{$c}-20--alfa-20));
+  // The status containers' ink, the link and the ring are the place's ink
+  // (PS-A, PS-B), from the tones, as the accent above: the link's hover and
+  // press are the accent's steps, a visited link the place's dim ink (80).
+  @include sf-place-container-ink(light-dark(var(--sf-white), var(--sf-#{$c}-20)));
+  @include sf-place-link-ring(light-dark(var(--sf-white), var(--sf-#{$c}-20)),
+    light-dark(var(--sf-#{$c}-95), var(--sf-#{$c}-25)), light-dark(var(--sf-#{$c}-90), var(--sf-#{$c}-30)),
+    #{sf-ink($c, 80)});
 }
 
 // Glass keeps the accent it found (C70), for an opaque place on it to take
 // back; declared on the glass, which re-declares none of these roles itself.
 @mixin sf-place-glass-outer {
-  @each $role, $value in $sf-place-glass-accent-roles {
+  @each $role, $value in map.merge($sf-place-glass-accent-roles, $sf-place-container-ink-roles) {
     --sf-place--outer-#{$role}: var(--sf-#{$role});
   }
   --sf-place--outer-focus--color: var(--sf-focus--color);
@@ -683,4 +761,6 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
   // The ring reads --sf-focus--color, resolved where it is declared (the
   // root): it is re-declared with the ring colour, or the ring stays blue.
   --sf-focus--color: var(--sf-focus);
+  // The status containers' ink (PS-B): white, the glass's ink.
+  @include sf-place-container-ink(var(--sf-white));
 }
