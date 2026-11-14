@@ -59,8 +59,10 @@ test('C178 families: core declares each survivor with a value and each former na
   for (const {from, to} of byFamily['focus width'].tokens.concat(byFamily.weight.tokens.filter(({from}) => from.startsWith('--sf-font-weight-')))) {
     assert.deepEqual([...new Set(declarations(core, from))], [`var(${to})`], `${from} reads ${to}`);
   }
-  // the numbered weights come out of one loop over the nine steps
-  assert.match(core, /--sf-text--font-weight-#\{\$font-weight-name\}: var\(--sf-weight--#\{\$weight-step\}\);/u);
+  // the numbered weights 1-9 read the nine steps in order
+  ['thin', 'extra-light', 'light', 'regular', 'medium', 'semi-bold', 'bold', 'extra-bold', 'black'].forEach((step, i) => {
+    assert.deepEqual([...new Set(declarations(core, `--sf-text--font-weight-${i + 1}`))], [`var(--sf-weight--${step})`]);
+  });
   for (const {name, value} of filters) assert.deepEqual([...new Set(declarations(core, name))], [value], `${name} keeps blur() of the survivor`);
 });
 

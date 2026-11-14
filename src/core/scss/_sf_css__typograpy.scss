@@ -139,9 +139,15 @@
 
     // Former names of the weight family, numbered 1-9 (owner decision C178,
     // 2026-11-14): each reads its --sf-weight--* step until 2027-01-01.
-    @each $font-weight-name, $weight-step in (1: thin, 2: extra-light, 3: light, 4: regular, 5: medium, 6: semi-bold, 7: bold, 8: extra-bold, 9: black) {
-      --sf-text--font-weight-#{$font-weight-name}: var(--sf-weight--#{$weight-step});
-    }
+    --sf-text--font-weight-1: var(--sf-weight--thin);
+    --sf-text--font-weight-2: var(--sf-weight--extra-light);
+    --sf-text--font-weight-3: var(--sf-weight--light);
+    --sf-text--font-weight-4: var(--sf-weight--regular);
+    --sf-text--font-weight-5: var(--sf-weight--medium);
+    --sf-text--font-weight-6: var(--sf-weight--semi-bold);
+    --sf-text--font-weight-7: var(--sf-weight--bold);
+    --sf-text--font-weight-8: var(--sf-weight--extra-bold);
+    --sf-text--font-weight-9: var(--sf-weight--black);
 
     // Text tracking utilities variables
     @each $tracking-name, $tracking-value in letterSpacingVars.$letter-spacing-array {
