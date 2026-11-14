@@ -574,7 +574,9 @@
      and the head keeps their room (--sf-drawer-edge-room, measured by the
      drawer), so the title never runs under them. */
   .sf-drawer[data-sf-drawer-whole]:not([data-sf-drawer-column='true']) .sf-drawer-edge {
-    inset-inline: auto var(--sf-drawer--inset-end);
+    /* The panel's gutter (the edge is the panel's sibling, so it reads the
+       gutter, not the panel's own inset). */
+    inset-inline: auto var(--sf-drawer-gutter, var(--sf-space-2));
     inset-block-start: var(--sf-space-1);
     block-size: var(--sf-ui-2--control-height);
     flex-direction: row;
