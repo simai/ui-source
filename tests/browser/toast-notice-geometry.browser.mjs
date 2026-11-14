@@ -13,11 +13,20 @@
 //   - the title and its text are one block (0); text to the action plate is
 //     --sf-space-1/2 (12 / 8 / 8); two actions of a class toast stand
 //     --sf-space-1/3 apart;
-//   - the inline padding is one --sf-space-1 on both sides (16 / 12 / 12): the
-//     status icon's start edge, a toast without an icon its text, and the
-//     close's cross all stand on it; the block padding is --sf-space-1/2;
+//   - the inline inset is one --sf-space-1 on both sides (16 / 12 / 12) with
+//     the 1 px border inside it (C105 H4, the C77 edge: the padding is the
+//     step less the border): the status icon's start edge, a toast without an
+//     icon its text, and the close's cross all stand 16 / 12 / 12 from the
+//     outer edge; the block padding is --sf-space-1/2;
 //   - the action plate starts at the text edge; the icon and the close are
 //     centred on the first line; the icon is the line's size (24 / 20 / 20);
+//   - a toast with one action at 20rem of its width and more holds it in the
+//     row with the text (C115, L3a): centred on the text block, the action
+//     plate --sf-space-1 after the text (C105 H6, between groups);
+//   - with the actions under the text, the space under the last button equals
+//     the space above the status icon's ink, within 1 px (C193, refining
+//     C114 (5)): the ink as the decision measured it on the prototype, the
+//     icon box top + 1/8 of the box;
 //   - a one-line toast is 56 / 44 / 44 plus its border;
 //   - a declined sf-confirm says nothing: no «Отменено» anywhere.
 //
@@ -125,12 +134,14 @@ const MEASURE = () => {
     const result = {
       height: r(toastBox.height), inner: r(inner.bottom - inner.top), border: r(parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth)),
       padTop: r(parseFloat(style.paddingTop)), padStart: r(parseFloat(style.paddingInlineStart)), padEnd: r(parseFloat(style.paddingInlineEnd)),
+      borderStart: r(parseFloat(style.borderLeftWidth)), borderEnd: r(parseFloat(style.borderRightWidth)),
       textSize: r(parseFloat(getComputedStyle(title).fontSize)), line: r(line),
       textStart: r(titleBox.left - inner.left),
     };
     if (icon) {
       const b = box(icon);
-      Object.assign(result, {icon: r(b.height), iconStart: r(b.left - inner.left), iconToText: r(titleBox.left - b.right), iconCentre: r(centre(b) - firstLine)});
+      Object.assign(result, {icon: r(b.height), iconStart: r(b.left - inner.left), iconToText: r(titleBox.left - b.right), iconCentre: r(centre(b) - firstLine),
+        aboveInk: r(b.top - inner.top + b.height / 8)});
     }
     if (close) {
       const b = box(close);
@@ -141,8 +152,12 @@ const MEASURE = () => {
     if (actions.length) {
       const a = box(actions[0]);
       const last = text ? box(text) : titleBox;
+      const wrap = box(root.querySelector('.sf-toast-wrap'));
+      const lowest = Math.max(...actions.map((one) => box(one).bottom));
+      const row = getComputedStyle(root.querySelector('.sf-toast-container')).flexDirection === 'row';
       Object.assign(result, {action: r(a.height), actionLabel: r(parseFloat(getComputedStyle(actions[0].querySelector('.sf-button-text-container') ?? actions[0]).fontSize)),
-        textToAction: r(a.top - last.bottom), actionEdge: r(a.left - titleBox.left), actionToBottom: r(inner.bottom - a.bottom - parseFloat(style.paddingBottom))});
+        row, textToAction: r(a.top - last.bottom), actionEdge: r(a.left - titleBox.left), underActions: r(inner.bottom - lowest),
+        rowGap: r(a.left - wrap.right), rowCentre: r(centre(a) - centre(wrap))});
       if (actions[1]) result.betweenActions = r(box(actions[1]).left - a.right);
     }
     return result;
@@ -183,6 +198,7 @@ const EXPECT = {
 const failures = [];
 const report = {};
 const near = (a, b) => typeof a === 'number' && Math.abs(a - b) <= 0.5;
+const r2 = (value) => Math.round(value * 100) / 100;
 const browser = await chromium.launch();
 try {
   for (const [width, label] of [[1440, 'desktop'], [390, 'phone']]) {
@@ -242,29 +258,40 @@ try {
         for (const name of ['stack', 'line', 'plain', 'two']) {
           const t = at[name];
           if (!t) { failures.push(`${key} ${zone}: ${name} not drawn`); continue; }
-          check(`${name} inline padding start`, t.padStart, want.padX);
-          check(`${name} inline padding end`, t.padEnd, want.padX);
+          // C105 H4: the inset is the step with the border inside it.
+          check(`${name} inline inset start (padding + border, C105 H4)`, r2(t.padStart + t.borderStart), want.padX);
+          check(`${name} inline inset end (padding + border, C105 H4)`, r2(t.padEnd + t.borderEnd), want.padX);
           check(`${name} block padding`, t.padTop, want.padY);
           check(`${name} close`, t.close, want.close);
           check(`${name} close centre - first line centre`, t.closeCentre, 0);
-          check(`${name} cross end inset`, t.crossEnd, want.padX);
+          check(`${name} cross end inset from the outer edge (C35, C105 H4)`, r2(t.crossEnd + t.borderEnd), want.padX);
           if (t.icon !== undefined) {
             check(`${name} icon`, t.icon, want.icon);
             check(`${name} icon = line`, t.icon, t.line);
-            check(`${name} icon start inset`, t.iconStart, want.padX);
+            check(`${name} icon start inset from the outer edge (C35, C105 H4)`, r2(t.iconStart + t.borderStart), want.padX);
             check(`${name} icon to text`, t.iconToText, want.gap);
             check(`${name} icon centre - first line centre`, t.iconCentre, 0);
           } else {
-            check(`${name} text start (no icon)`, t.textStart, want.padX);
+            check(`${name} text start from the outer edge, no icon (C35, C105 H4)`, r2(t.textStart + t.borderStart), want.padX);
           }
           if (t.titleToText !== undefined) check(`${name} title to text`, t.titleToText, 0);
           if (t.action !== undefined) {
             check(`${name} action height`, t.action, want.action);
             check(`${name} action label = text`, t.actionLabel, t.textSize);
             check(`${name} action label`, t.actionLabel, want.label);
-            check(`${name} text to action plate`, t.textToAction, want.gap);
-            check(`${name} action plate - text edge`, t.actionEdge, 0);
-            check(`${name} action to padding`, t.actionToBottom, 0);
+            if (t.row) {
+              // C115 (L3a): one action in the row, centred on the text block,
+              // --sf-space-1 after it (C105 H6).
+              if (name !== 'stack') failures.push(`${key} ${zone}: ${name} action in the row (C115: only one action, from 20rem)`);
+              check(`${name} action centre - text block centre (C115)`, t.rowCentre, 0);
+              check(`${name} text block to action plate (C105 H6)`, t.rowGap, at.tokens.space1);
+            } else {
+              // C35: under the text from its start, --sf-space-1/2 after it.
+              check(`${name} text to action plate (C35)`, t.textToAction, want.gap);
+              check(`${name} action plate - text edge (C35, C114 (5))`, t.actionEdge, 0);
+              // C193 (refining C114 (5)): under the last button = above the icon ink, within 1 px.
+              if (t.aboveInk !== undefined && Math.abs(t.underActions - t.aboveInk) > 1) failures.push(`${key} ${zone}: ${name} under the last button ${t.underActions}, above the icon ink ${t.aboveInk} (C193: within 1)`);
+            }
           }
           if (t.betweenActions !== undefined) check(`${name} between actions`, t.betweenActions, want.between);
         }

@@ -431,10 +431,11 @@
    the same. The
    inset is the edge: a narrow bar has no page column to line up with.
 
-   Even bottom (C114 (5), NS-8): with the actions under the text, the inset
-   under the last button is what the eye sees above the first line -- the
-   block inset, the control's inset above the text, and the room above the
-   capitals inside the line, (line - 1cap) / 2 (1cap is the font's own cap
+   Even bottom (owner decision C193, refining C114 (5), NS-8; as sf-alert
+   and sf-toast): with the actions under the text, the inset under the last
+   button is the space above the status icon's ink -- the block inset, the
+   control's inset above the icon, and a quarter of the room around the
+   capitals inside the line, (line - 1cap) / 4 (1cap is the font's own cap
    height, so it follows the rung and the density by itself). */
 @container sf-alert-bar (max-width: 38rem) {
   .sf-alert-bar-row {
@@ -447,7 +448,7 @@
   }
 
   .sf-alert-bar-row:has(> .sf-alert-bar-actions) {
-    padding-block-end: calc(var(--sf-alert-bar--padding-block) + (var(--sf-alert-bar--control) - var(--sf-alert-bar--line)) / 2 + (var(--sf-alert-bar--line) - 1cap) / 2);
+    padding-block-end: calc(var(--sf-alert-bar--padding-block) + (var(--sf-alert-bar--control) - var(--sf-alert-bar--line)) / 2 + (var(--sf-alert-bar--line) - 1cap) / 4);
   }
 
   .sf-alert-bar-row > .sf-alert-bar-icon {
@@ -512,7 +513,7 @@
 
   /* A row of the open list does what the bar row does: the icon, the text
      and the close (or its kept place) on the first line, the actions under
-     the text from its start, the even bottom (C114 (5)). */
+     the text from its start, the even bottom (C114 (5), C193). */
   .sf-alert-bar-item {
     display: grid;
     grid-template-columns: var(--sf-alert-bar--line) minmax(0, 1fr) auto;
@@ -523,7 +524,7 @@
   }
 
   .sf-alert-bar-item:has(> .sf-alert-bar-item-actions) {
-    padding-block-end: calc(var(--sf-alert-bar--padding-block) + (var(--sf-alert-bar--control) - var(--sf-alert-bar--line)) / 2 + (var(--sf-alert-bar--line) - 1cap) / 2);
+    padding-block-end: calc(var(--sf-alert-bar--padding-block) + (var(--sf-alert-bar--control) - var(--sf-alert-bar--line)) / 2 + (var(--sf-alert-bar--line) - 1cap) / 4);
   }
 
   .sf-alert-bar-item > .sf-alert-bar-item-icon {

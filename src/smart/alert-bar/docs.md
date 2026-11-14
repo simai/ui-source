@@ -116,8 +116,8 @@ width for its column and keeps 16 from the edge.
 Up to 608 px (38rem, the size step g9) of the bar's own width the icon, the
 text and the close share the first line. The actions go under the text and
 start where the text starts, 12 under it (8 on a phone); «Ещё N» stands at
-the line's end. The space under the last button equals what the eye sees
-above the first line, the top of its capitals.
+the line's end. The space under the last button equals the space above the
+status icon's ink, as on sf-alert and sf-toast (1.6.4, owner decision C193).
 
 The action is a tonal surface button (`tonal on-surface`); acknowledge,
 «Ещё N» and close are ghost, as on sf-alert and sf-toast; in the list of the
