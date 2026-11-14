@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button-copy",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "title": "Copy button",
   "summary": "Copies a value or a target's text, confirms with a check and a polite announcement, and selects the text for Ctrl+C when the browser refuses the clipboard.",
   "kind": "smart",
@@ -72,7 +72,7 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "The control ladder's step: 1 by default, the step of a field and a button beside it (decision C22). A compact region (data-sf-density=\"compact\") moves it down a step by itself; never a smaller size by hand.",
+        "description": "The control ladder's step: 1 by default, the step of a field and a button beside it (decision C22). Beside a value in a line of text, give it the line's step (size=\"1/2\" beside text 1/2: 32, icon 20; size 1 beside text 1: 40, icon 24); in a row of buttons or a field it takes their size; density moves it with the row (decision C103).",
         "enum": [
           "1/3",
           "1/2",
@@ -370,7 +370,7 @@
       },
       {
         "path": "src/smart/button-copy/docs.md",
-        "sha256": "271dde5fc9ff5b3de34c4b7187f7f0fb68a735aa570b9a8df997416ed0c1406f"
+        "sha256": "705fe368aa9c39da50460ad5e7534de21172bd836891014548de8cad49d15ea0"
       }
     ],
     "generated_runtime": []

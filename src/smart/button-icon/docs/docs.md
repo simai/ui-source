@@ -31,7 +31,11 @@ Main attributes:
 
 - `template`
 - `kind="icon|close"`
-- `size`
+- `size` — the icon and the control's step on the ladder, `1` by default.
+  Beside a value in a line of text, give it the line's step (decision C103):
+  `size="1/2"` beside text 1/2 (32, icon 20), `size="1"` beside text 1 (40,
+  icon 24). In a row of buttons or a field it takes their size; density moves
+  it with the row.
 - `height="low|default|high|highest"` (1.8.0, decisions C27 and C35) — the
   control height separate from the size, as on `sf-button`: the size's
   tightness steps on the UI height ladder, the icon keeping the size. The
