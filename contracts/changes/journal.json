@@ -12237,6 +12237,43 @@
       "manual": "Listen for sf-input-quantity-remove where a page listened for sf-quantity-remove; the detail and the cancel are the same.",
       "owner": "ui-source",
       "source": "src/smart/input-quantity/aliases.json, src/smart/input-quantity/smart.manifest.json events.sf-quantity-remove"
+    },
+    {
+      "id": "value-icon-one-family",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-icon draws one family, outlined (icons study IC-4, control/research/2026-11-14-icons.md). type rounded and sharp (and the older shape) still work until remove_after and draw outlined; each use is noted in SF.deprecations. Their Material Symbols fonts were never in the Framework: the subset service answered them with the outlined font and every load fell back to the old Material Icons Round / Sharp font with a console warning. The class markup families .sf-icon-rounded / .sf-icon-shape stay for hosts that ship those fonts themselves.",
+      "items": [
+        {
+          "component": "sf-icon",
+          "attribute": "type",
+          "from": "rounded",
+          "to": "outlined"
+        },
+        {
+          "component": "sf-icon",
+          "attribute": "type",
+          "from": "sharp",
+          "to": "outlined"
+        },
+        {
+          "component": "sf-icon",
+          "attribute": "type",
+          "from": "shape",
+          "to": "outlined"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove type from sf-icon (or write outlined): every sf-icon is the outlined family. A page that wants rounded or sharp glyphs ships their font and uses the class markup (.sf-icon.sf-icon-rounded).",
+      "examples": {
+        "before": "<sf-icon icon=\"star\" type=\"rounded\"></sf-icon>",
+        "after": "<sf-icon icon=\"star\"></sf-icon>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/icon/component.json aliases, src/smart/icon/aliases.json"
     }
   ]
 }

@@ -6,14 +6,36 @@
   "aliases": [
     {
       "from": "shape",
-      "to": "sharp",
+      "to": "outlined",
       "kind": "value",
       "setting": "type",
       "component": "sf-icon",
       "since": "2026-10-27",
       "remove_after": "2026-12-01",
       "section": "§16 item 20",
-      "note": "the family's old name; the attribute is written with sharp"
+      "note": "the family's old name; sharp itself is a former value since 1.2.0, so shape draws outlined"
+    },
+    {
+      "from": "rounded",
+      "to": "outlined",
+      "kind": "value",
+      "setting": "type",
+      "component": "sf-icon",
+      "since": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20; icons study IC-4",
+      "note": "journal value-icon-one-family: the family's font was never shipped; the value draws outlined until the date"
+    },
+    {
+      "from": "sharp",
+      "to": "outlined",
+      "kind": "value",
+      "setting": "type",
+      "component": "sf-icon",
+      "since": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20; icons study IC-4",
+      "note": "journal value-icon-one-family: the family's font was never shipped; the value draws outlined until the date"
     }
   ]
 }

@@ -1,5 +1,39 @@
+@use 'sass:list';
 @use 'var__icons' as *;
 @use 'sf_icon_rotate' as *;
+
+// size -> (phone, desktop): a step variable each. A button rung's text step
+// already holds its phone, compact and desktop values, so both are the same.
+$sf-icon-steps: (
+  '1/4': (var(--sf-icon-size-1\/4), var(--sf-icon-size-1\/4)),
+  '1/3': (var(--sf-icon-size-1\/4), var(--sf-icon-size-1\/3)),
+  '1/2': (var(--sf-icon-size-1\/3), var(--sf-icon-size-1\/2)),
+  '1': (var(--sf-text-height-1\/3), var(--sf-text-height-1\/3)),
+  '2': (var(--sf-text-height-1\/2), var(--sf-text-height-1\/2)),
+  '3': (var(--sf-text-height-1), var(--sf-text-height-1)),
+  '4': (var(--sf-text-height-2), var(--sf-text-height-2)),
+  '5': (var(--sf-icon-size-4), var(--sf-icon-size-5)),
+  '6': (var(--sf-icon-size-5), var(--sf-icon-size-6)),
+  '7': (var(--sf-icon-size-6), var(--sf-icon-size-7)),
+);
+
+@function icon-step-class($size) {
+  @if $size == '1/4' { @return '1\\/4'; }
+  @if $size == '1/3' { @return '1\\/3'; }
+  @if $size == '1/2' { @return '1\\/2'; }
+  @return $size;
+}
+
+@mixin icon-step($size, $steps, $props: ('--sf-icon--font-size', '--sf-icon--width', '--sf-icon--height')) {
+  $phone: list.nth($steps, 1);
+  $desktop: list.nth($steps, 2);
+  @each $p in $props { #{$p}: #{$phone}; }
+  @if $phone != $desktop {
+    @media (min-width: 60rem) {
+      @each $p in $props { #{$p}: #{$desktop}; }
+    }
+  }
+}
 /* fallback */
 
 @font-face {
@@ -26,7 +60,7 @@
   font-family: var(--sf-icon--font-family, 'Material Symbols Outlined');
   font-weight: var(--sf-icon-weight, var(--sf-icon--weight));
   font-style: normal;
-  font-size: var(--sf-icon-glyph-size, var(--sf-icon--font-size, var(--sf-icon-size-3)));
+  font-size: var(--sf-icon-glyph-size, var(--sf-icon--font-size, var(--sf-text-height-1)));
   line-height: var(--sf-icon-line-height, var(--sf-icon--line-height, 1));
   letter-spacing: normal;
   text-transform: none;
@@ -39,8 +73,8 @@
   -webkit-font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
   vertical-align: bottom;
-  height: var(--sf-icon-glyph-size, var(--sf-icon--height, var(--sf-icon-size-3)));
-  width: var(--sf-icon-glyph-size, var(--sf-icon--width, var(--sf-icon-size-3)));
+  height: var(--sf-icon-glyph-size, var(--sf-icon--height, var(--sf-text-height-1)));
+  width: var(--sf-icon-glyph-size, var(--sf-icon--width, var(--sf-text-height-1)));
   &:not(.hidden) {
     display: inline-flex;
   }
@@ -52,56 +86,17 @@
     -webkit-text-fill-color: transparent;
     overflow: hidden;
   }
-  &--size {
-    &-1\/4 {
-      --sf-icon--font-size: var(--sf-icon-size-1\/4);
-      --sf-icon--width: var(--sf-icon-size-1\/4);
-      --sf-icon--height: var(--sf-icon-size-1\/4);
-    }
-    &-1\/3 {
-      --sf-icon--font-size: var(--sf-icon-size-1\/3);
-      --sf-icon--width: var(--sf-icon-size-1\/3);
-      --sf-icon--height: var(--sf-icon-size-1\/3);
-    }
-    &-1\/2 {
-      --sf-icon--font-size: var(--sf-icon-size-1\/2);
-      --sf-icon--width: var(--sf-icon-size-1\/2);
-      --sf-icon--height: var(--sf-icon-size-1\/2);
-    }
-    &-1 {
-      --sf-icon--font-size: var(--sf-icon-size-1);
-      --sf-icon--width: var(--sf-icon-size-1);
-      --sf-icon--height: var(--sf-icon-size-1);
-    }
-    &-2 {
-      --sf-icon--font-size: var(--sf-icon-size-2);
-      --sf-icon--width: var(--sf-icon-size-2);
-      --sf-icon--height: var(--sf-icon-size-2);
-    }
-    &-3 {
-      --sf-icon--font-size: var(--sf-icon-size-3);
-      --sf-icon--width: var(--sf-icon-size-3);
-      --sf-icon--height: var(--sf-icon-size-3);
-    }
-    &-4 {
-      --sf-icon--font-size: var(--sf-icon-size-4);
-      --sf-icon--width: var(--sf-icon-size-4);
-      --sf-icon--height: var(--sf-icon-size-4);
-    }
-    &-5 {
-      --sf-icon--font-size: var(--sf-icon-size-5);
-      --sf-icon--width: var(--sf-icon-size-5);
-      --sf-icon--height: var(--sf-icon-size-5);
-    }
-    &-6 {
-      --sf-icon--font-size: var(--sf-icon-size-6);
-      --sf-icon--width: var(--sf-icon-size-6);
-      --sf-icon--height: var(--sf-icon-size-6);
-    }
-    &-7 {
-      --sf-icon--font-size: var(--sf-icon-size-7);
-      --sf-icon--width: var(--sf-icon-size-7);
-      --sf-icon--height: var(--sf-icon-size-7);
+  // Each step's glyph (IC-2, C01/C18): the steps a button also draws
+  // (1 = the icon of a size-1/3 button, 2 of 1/2, 3 of 1, 4 of 2) read that
+  // button's icon step, --sf-text-height-<rung>, so they come down with the
+  // button on a phone and in a compact region (16 / 16 / 20 / 24 on a phone).
+  // The steps no button draws (1/4, 1/3, 1/2, 5, 6, 7) go one icon step down
+  // on a phone, as the compact region already moves them (C22); 12 is the
+  // floor (C132). The names keep their desktop sizes: what a name means is
+  // the open owner question #q-names (control/research/2026-11-14-icons.md).
+  @each $size, $steps in $sf-icon-steps {
+    &--size-#{icon-step-class($size)} {
+      @include icon-step($size, $steps);
     }
   }
 }
@@ -138,7 +133,7 @@
     /* One glyph wide while the font loads or when it cannot load: the name's
        letters would otherwise widen rows and scroll pages sideways
        (menu-smart, 2026-11-04). */
-    inline-size: var(--sf-icon-glyph-size, var(--sf-icon--font-size, var(--sf-icon-size-3)));
+    inline-size: var(--sf-icon-glyph-size, var(--sf-icon--font-size, var(--sf-text-height-1)));
     overflow: hidden;
     white-space: nowrap;
   }
@@ -169,26 +164,13 @@
 sf-icon:not(:defined) {
   display: inline-flex;
   flex: none;
-  width: var(--sf-icon--width, var(--sf-icon-size-3));
-  height: var(--sf-icon--height, var(--sf-icon-size-3));
+  width: var(--sf-icon--width, var(--sf-text-height-1));
+  height: var(--sf-icon--height, var(--sf-text-height-1));
   vertical-align: bottom;
 }
 
-sf-icon[size="1/4"]:not(:defined) {
-  --sf-icon--width: var(--sf-icon-size-1\/4);
-  --sf-icon--height: var(--sf-icon-size-1\/4);
-}
-sf-icon[size="1/3"]:not(:defined) {
-  --sf-icon--width: var(--sf-icon-size-1\/3);
-  --sf-icon--height: var(--sf-icon-size-1\/3);
-}
-sf-icon[size="1/2"]:not(:defined) {
-  --sf-icon--width: var(--sf-icon-size-1\/2);
-  --sf-icon--height: var(--sf-icon-size-1\/2);
-}
-@each $size in (1, 2, 3, 4, 5, 6, 7) {
+@each $size, $steps in $sf-icon-steps {
   sf-icon[size="#{$size}"]:not(:defined) {
-    --sf-icon--width: var(--sf-icon-size-#{$size});
-    --sf-icon--height: var(--sf-icon-size-#{$size});
+    @include icon-step($size, $steps, ('--sf-icon--width', '--sf-icon--height'));
   }
 }

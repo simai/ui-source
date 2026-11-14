@@ -26,14 +26,21 @@ button because the control owns the action.
 
 ## Families and axes
 
-- `type="outlined|rounded|sharp"` selects a Material Symbols family. The old
-  value `shape` is a dated alias of `sharp` until 2026-12-01: the attribute is
-  written with `sharp` and the use is noted in `SF.deprecations`.
+- `type="outlined"` is the one Material Symbols family sf-icon draws (1.2.0).
+  `rounded`, `sharp` and the older `shape` are dated aliases of `outlined`
+  until 2027-01-01: the attribute is written with `outlined` and the use is
+  noted in `SF.deprecations` (their fonts were never shipped; every load fell
+  back to the old Material Icons font with a console warning).
 - `filled` selects the filled state.
 - `weight="100|200|300|400|500|600|700"` selects a Framework-supported weight.
 - `grade="-50..200"` adjusts emphasis without changing the component scale.
 - `optical-size="20..48"` selects the source font optical axis.
-- `size="1/4|1/3|1/2|1|2|3|4|5|6|7"` uses the Framework icon-size tokens.
+- `size="1/4|1/3|1/2|1|2|3|4|5|6|7"` picks the glyph's step. 1, 2, 3 and 4
+  are the icons of a size 1/3, 1/2, 1 and 2 button and follow them down on a
+  phone and in a compact region (16 / 20 / 24 / 28, phone 16 / 16 / 20 / 24);
+  1/4, 1/3, 1/2, 5, 6 and 7 (12, 12, 14, 32, 36, 40) go one icon step down on a
+  phone. Without a size the glyph takes the size the component around it
+  gives, otherwise a size-1 button's icon (24, phone 20).
 - `badge-count`, `badge-dot`, `badge-cap` (99) and `badge-label` put a count or
   a dot on the icon (simai/ui-source#12). The glyph then stands in a
   `.sf-badge-anchor` of its own box; the badge's step follows `size` (1/4 to 1:

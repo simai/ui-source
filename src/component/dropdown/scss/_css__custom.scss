@@ -565,9 +565,17 @@
     --sf-dropdown--value-inset: calc(var(--sf-dropdown--inset) + max(calc(var(--sf-px) * 0), var(--sf-dropdown--line-radius) - var(--sf-radius-1\/2)) / 2);
   }
 
+  /* Size 2 is 20 on a desktop and 16 in a compact region (intent acceptance
+     2026-11-12); on a phone every size is 12 (C77 «телефон 12»), as
+     sf-input's field ladder (text inputs TI-2): --sf-space-1 is 12 there, and
+     --sf-space-2 kept a phone size 2 at 16. */
   .sf-dropdown.sf-dropdown--size-2 {
-    --sf-dropdown--inset: var(--sf-space-2);
+    --sf-dropdown--inset: var(--sf-space-1);
     --sf-dropdown--line-radius: min(var(--sf-dropdown-radius, var(--sf-dropdown--radius, var(--sf-radius--ui))), var(--sf-ui-2--control-height) / 2);
+
+    @media (min-width: 60rem) {
+      --sf-dropdown--inset: var(--sf-space-2);
+    }
   }
 
   /* Size 1/2 never goes below 12 (--sf-b2): on a phone, and in a compact
