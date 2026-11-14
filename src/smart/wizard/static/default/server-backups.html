@@ -57,12 +57,13 @@
 
 
 <div class="sf-wizard-live" data-sf-live><sf-wizard-step name="address" label="Адрес панели" type="form" href="?step=address" state="done" description="По этому адресу вы будете открывать панель. Нужен домен, который указывает на этот сервер." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="notify" label="Уведомления" type="form" optional href="?step=notify" state="skipped" description="Куда присылать письма об ошибках, копиях и обновлениях. Можно настроить позже." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="protection" label="Защита" type="action" href="?step=protection" state="done" action-text="Выпустить сертификат" description="Сертификат Let’s Encrypt для адреса панели: без него браузер покажет предупреждение." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="backups" label="Копии" type="form" href="?step=backups" description="Как часто сохранять копии сайтов и сколько их хранить." style="display: contents;"><form method="post" action="?step=backups" id="sf-wizard-server-backups-2"><sf-input name="keep" label="Хранить копий" input-type="number" default-value="7" required style="display: contents;">
-<label class="sf-input  sf-input--size-1 sf-input--bordered   flex flex-col" data-mask="false" data-mask-pattern data-mask-lazy data-mask-placeholder-char data-mask-options data-sf-input-bound="1" for="sf-wizard-server-backups-4" data-sf-static>
+<label class="sf-input  sf-input--size-1 sf-input--bordered    flex flex-col" data-mask="false" data-mask-pattern data-mask-lazy data-mask-placeholder-char data-mask-options data-sf-input-bound="1" for="sf-wizard-server-backups-4" data-sf-static>
 
 <span class="sf-input-label flex">
 
 <span class="sf-input-text" id="sf-wizard-server-backups-3">Хранить копий</span>
-<span class="sf-input-required">*</span>
+<span class="sf-input-required" aria-hidden="true">*</span>
+
 
 </span>
 
@@ -83,6 +84,7 @@
 
 </span>
 
+
 </label>
 </sf-input><sf-checkbox name="daily" label="Каждую ночь в 03:00" value="1" style="display: contents;">
 <label class="sf-checkbox sf-checkbox--size-1 flex cursor-pointer sf-checkable sf-checkable--size-1 sf-checkable--text" for="sf-wizard-server-backups-5" data-sf-static>
@@ -95,7 +97,6 @@
 
 </label>
 </sf-checkbox></form></sf-wizard-step><sf-wizard-step name="check" label="Проверка" type="review" href="?step=check" action-text="Применить" description="Что панель изменит на сервере. Проверьте и примените." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="finish" label="Готово" type="result" href="?step=finish" description="Сервер настроен." style="display: contents;" hidden></sf-wizard-step></div>
-
 </div>
 </div>
 <div class="sf-wizard-footer">
@@ -123,5 +124,6 @@
 </sf-button>
 </span>
 </div>
+
 <div class="sf-wizard-announce sr-only" role="status"></div>
 </div></sf-wizard>

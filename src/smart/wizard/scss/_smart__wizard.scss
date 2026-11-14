@@ -1,4 +1,6 @@
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
+@use 'sass:map';
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @layer sf.components {
 /* sf-wizard (standard simai.smart-component 1.3.14 §6). One rung of the
    ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2 with
@@ -21,14 +23,24 @@
   --sf-wizard--font-size: var(--sf-text-size-1);
   --sf-wizard--small-line: var(--sf-text-height-1\/2);
   --sf-wizard--small-font-size: var(--sf-text-size-1\/2);
-  /* Rung 3, the step the heading-4 role held before the content heading
-     ladder moved it to the body size (R022). */
-  --sf-wizard--title-size: var(--sf-text--size-3);
-  --sf-wizard--title-line: var(--sf-title--height-3);
+  /* The names (owner decision C179 (2)): the wizard's name is the page's or
+     the window's title, the h4 step (20 on 24, 16 on a phone; C159 (5),
+     C161 (2)); the step's title one step under it, h5 (16) in medium. A
+     window draws the name in its own header. Headings do not follow the
+     density (C44). */
+  --sf-wizard--name-size: var(--sf-heading-4--size);
+  --sf-wizard--name-line: var(--sf-heading-4--height);
+  --sf-wizard--title-size: var(--sf-heading-5--size);
+  --sf-wizard--title-line: var(--sf-heading-5--height);
   --sf-wizard--control: var(--sf-ui-1--control-height);
   --sf-wizard--space-x: var(--sf-ui-1--space-x);
   --sf-wizard--text-space-x: var(--sf-ui-1--text-space-x);
   --sf-wizard--related: var(--sf-space-1);
+  /* The footer's buttons are one group (owner decisions C105 H5, C173 (2)):
+     the C173 role --sf-gap--actions (--sf-space-1/3), 8 and 4 in compact density, the gap of the shared window
+     footer (core mix/_mix__window-footer.scss) -- not the button's space-x
+     (16, 14 on a phone; study WZ-1). */
+  --sf-wizard--actions-gap: var(--sf-gap--actions);
   /* A step of the list (the column, or the list under the head) is a row,
      not a control (C105): its mark stands H2 before its label (--sf-space-1/2,
      12 · 8 · 8) and the row's edge H4 before its mark, the list inset of C77
@@ -68,17 +80,20 @@
   --sf-wizard--font-size: var(--sf-text-size-1\/2);
   --sf-wizard--small-line: var(--sf-text-height-1\/3);
   --sf-wizard--small-font-size: var(--sf-text-size-1\/3);
-  --sf-wizard--title-size: var(--sf-heading-5--size);
-  --sf-wizard--title-line: var(--sf-heading-5--height);
+  /* One step down at 1/2: the name h5, the step's title the rung's text. */
+  --sf-wizard--name-size: var(--sf-heading-5--size);
+  --sf-wizard--name-line: var(--sf-heading-5--height);
+  --sf-wizard--title-size: var(--sf-text-size-1);
+  --sf-wizard--title-line: var(--sf-text-height-1);
   --sf-wizard--control: var(--sf-ui-1\/2--control-height);
   --sf-wizard--space-x: var(--sf-ui-1\/2--space-x);
   --sf-wizard--text-space-x: var(--sf-ui-1\/2--text-space-x);
   --sf-wizard--row-inset: max(var(--sf-space-1\/2), var(--sf-b2));
 }
 
-/* In a window the frame is the window's surface: no edge, no fill and no
-   inset of its own (the window's padding is the inset). */
-.sf-wizard.sf-wizard--place-modal {
+/* In a window or a side panel the frame is its surface: no edge, no fill and
+   no inset of its own (the window's padding is the inset). */
+.sf-wizard.sf-wizard--window {
   padding: var(--sf-wizard-padding, 0);
   border: 0;
   border-radius: 0;
@@ -107,9 +122,9 @@
   flex: 1 1 auto;
   margin: 0;
   color: var(--sf-on-surface);
-  font-size: var(--sf-wizard--font-size);
-  font-weight: 600;
-  line-height: var(--sf-wizard--line);
+  font-size: var(--sf-wizard--name-size);
+  font-weight: var(--sf-font-weight-bold);
+  line-height: var(--sf-wizard--name-line);
 }
 
 .sf-wizard-position {
@@ -160,6 +175,14 @@
    position gives way. */
 .sf-wizard--progress-count .sf-wizard-top .sf-wizard-position,
 .sf-wizard--progress-column .sf-wizard-top .sf-wizard-position {
+  display: none;
+}
+
+/* A top line with neither a name nor «Продолжить позже» (in a window the
+   name is the window's title, C179 (2)) holds only the position; where the
+   compact line says it, the empty line goes, not a control's height of
+   nothing. */
+.sf-wizard--progress-count .sf-wizard-top--bare {
   display: none;
 }
 
@@ -303,7 +326,7 @@
   margin: 0;
   color: var(--sf-on-surface);
   font-size: var(--sf-wizard--title-size);
-  font-weight: 600;
+  font-weight: var(--sf-font-weight-medium);
   line-height: var(--sf-wizard--title-line);
   outline: none;
 }
@@ -395,7 +418,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sf-gap--actions);
+  gap: var(--sf-wizard--actions-gap);
   padding-block-start: var(--sf-wizard--gap);
   border-block-start: var(--sf-px) solid var(--sf-wizard--border-color);
 }
@@ -405,8 +428,81 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: var(--sf-gap--actions);
+  gap: var(--sf-wizard--actions-gap);
   margin-inline-start: auto;
+}
+
+/* The draft is kept (C179 (6)): a quiet line under the footer, the rung's
+   small text, its picture the line's height. */
+.sf-wizard-saved {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1\/4);
+  margin: 0;
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-wizard--small-font-size);
+  line-height: var(--sf-wizard--small-line);
+}
+
+.sf-wizard-saved .sf-icon {
+  --sf-icon--font-size: var(--sf-wizard--small-line);
+  --sf-icon--width: var(--sf-wizard--small-line);
+  --sf-icon--height: var(--sf-wizard--small-line);
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+/* On a phone a window or a side panel takes the whole screen (C159 (2),
+   C157 (4), C179 (4)) and the footer stays at its bottom while the step
+   scrolls: it sticks to the end of the window's scroll box on the window's
+   surface. Back keeps the start and the main the end (C179 (1)); the two
+   halves share the row (C179 (4)). */
+@media not all and (min-width: map.get(bp.$breakpoint-array, sm)) {
+  /* The frame fills the screen-high window: its holder (the window's
+     content box) and the frame grow, the step's body takes the room, so a
+     short step leaves the footer at the screen's bottom too. */
+  :where(.sf-modal-content):has(> .sf-wizard-window) {
+    flex: 1 1 auto;
+  }
+
+  .sf-wizard-window:has(> .sf-wizard--window) {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-block-size: 100%;
+  }
+
+  .sf-wizard--window {
+    flex: 1 1 auto;
+  }
+
+  .sf-wizard--window > .sf-wizard-main {
+    flex: 1 1 auto;
+  }
+
+  .sf-wizard--window .sf-wizard-footer {
+    position: sticky;
+    inset-block-end: 0;
+    z-index: 1;
+    flex-wrap: nowrap;
+    padding-block-end: var(--sf-focus-room);
+    background-color: var(--sf-modal-surface-bg, var(--sf-surface-popup));
+  }
+
+  .sf-wizard--window .sf-wizard-footer-end {
+    flex: 1 1 0;
+    flex-wrap: nowrap;
+  }
+
+  .sf-wizard--window .sf-wizard-footer > .sf-wizard-back,
+  .sf-wizard--window .sf-wizard-footer > .sf-wizard-back > :is(button, a) {
+    flex: 1 1 0;
+  }
+
+  .sf-wizard--window .sf-wizard-footer-end > sf-button,
+  .sf-wizard--window .sf-wizard-footer-end > sf-button > :is(button, a) {
+    flex: 1 1 0;
+    min-inline-size: 0;
+  }
 }
 
 /* ---------------------------------------------------------------- widths */
@@ -471,6 +567,10 @@
   }
 
   .sf-wizard .sf-wizard-top .sf-wizard-position {
+    display: none;
+  }
+
+  .sf-wizard .sf-wizard-top--bare {
     display: none;
   }
 

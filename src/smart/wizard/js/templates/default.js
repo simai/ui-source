@@ -18,7 +18,9 @@ import {html, nothing} from 'lit';
 //     .sf-wizard-footer    Back · (Skip) · one primary
 //     a visually hidden status region that says where a move went
 //
-// Place modal draws the same frame inside an sf-modal. Place pages makes the
+// Place modal draws the same frame inside an sf-modal, place drawer inside an
+// sf-drawer; under the footer a quiet line says when the draft was kept
+// (C179 (6)). Place pages makes the
 // primary and Skip native submit buttons of the step's form (sf-button
 // 1.5.0 form, name, value) and Back a link.
 
@@ -77,7 +79,7 @@ function compact(context) {
 function head(context) {
   const {heading, words, offerLater, laterHref, size, shape, listOpen, component} = context;
   return html`<div class="sf-wizard-head">
-    <div class="sf-wizard-top">
+    <div class=${heading || offerLater ? 'sf-wizard-top' : 'sf-wizard-top sf-wizard-top--bare'}>
       ${heading ? html`<p class="sf-wizard-heading">${heading}</p>` : nothing}
       <span class="sf-wizard-position">${words.position}</span>
       ${offerLater ? html`<sf-button class="sf-wizard-later" size=${size === '1' ? '1/2' : '1/3'} appearance="ghost" scheme="on-surface-variant"
@@ -96,7 +98,7 @@ function result(step) {
 }
 
 function body(context) {
-  const {step, level, words, busy, id, component, asking, stepNodes, size} = context;
+  const {step, level, words, busy, id, stepNodes, size} = context;
   return html`<div class="sf-wizard-body" aria-busy=${busy ? 'true' : nothing}>
     <div class="sf-wizard-step-head">
       <div class="sf-wizard-title" id=${`${id}-title`} role="heading" aria-level=${String(level)} tabindex="-1">${step?.heading ?? ''}</div>
@@ -107,9 +109,6 @@ function body(context) {
     </div>` : nothing}
     ${result(step)}
     <div class="sf-wizard-live" data-sf-live>${stepNodes}</div>
-    ${asking ? html`<sf-confirm class="sf-wizard-confirm" appearance="card" destructive
-      question=${words.question} accept-text=${words.accept} decline-text=${words.decline}
-      @sf-confirm-answer=${(event) => component.answer(event)}></sf-confirm>` : nothing}
   </div>`;
 }
 
@@ -148,6 +147,7 @@ function frame(context) {
     `sf-wizard--size-${size === '1' ? '1' : 'half'}`,
     `sf-wizard--progress-${shape}`,
     `sf-wizard--place-${place}`,
+    place === 'modal' || place === 'drawer' ? 'sf-wizard--window' : '',
     busy ? 'sf-wizard--busy' : '',
     context.rootClass,
   ].filter(Boolean).join(' ');
@@ -160,14 +160,32 @@ function frame(context) {
       ${body(context)}
     </div>
     ${footer(context)}
+    ${context.saved ? html`<p class="sf-wizard-saved"><i class="sf-icon" aria-hidden="true">cloud_done</i><span>${context.saved}</span></p>` : nothing}
     <div class="sf-wizard-announce sr-only" role="status">${announce}</div>
   </div>`;
 }
 
 export function renderWizardTemplate(context) {
-  if (context.place !== 'modal') return frame(context);
+  const {place, name} = context;
+  if (place === 'drawer') {
+    // Place drawer (owner decision C179 (3)): a short wizard of two to four
+    // steps in a side panel 30rem wide (sf-drawer size 2, C157 (2)) at the
+    // end edge; the panel's title is the wizard's name, its × closes it
+    // (= continue later, C179 (6)). On a phone the panel takes the screen
+    // (C157 (4)).
+    return html`<sf-drawer class="sf-wizard-drawer" heading=${name} size="2" placement="inline-end">
+      <div class="sf-wizard-window" slot="content">${frame({...context, heading: ''})}</div>
+    </sf-drawer>`;
+  }
+  if (place !== 'modal') return frame(context);
   // Place modal: the frame in an sf-modal; closed, nothing is drawn of it.
-  return html`<sf-modal class="sf-wizard-modal" heading=${context.name} show-header="false" width="min(48rem, 100%)">
-    <div class="sf-wizard-window" slot="content">${frame(context)}</div>
+  // A window of the Framework (owner decisions C159, C179 (3), (4)): a size
+  // by name -- form, 36rem (32rem compact), wide 48rem only with the column
+  // of steps, the whole screen on a phone -- and the window's header with
+  // the wizard's name as its title on the h4 step (C159 (5), C179 (2)) and
+  // the ×; the frame draws no name of its own inside (heading: '').
+  const size = context.phone ? 'full' : context.shape === 'column' ? 'wide' : 'form';
+  return html`<sf-modal class="sf-wizard-modal" heading=${name} size=${size}>
+    <div class="sf-wizard-window" slot="content">${frame({...context, heading: ''})}</div>
   </sf-modal>`;
 }

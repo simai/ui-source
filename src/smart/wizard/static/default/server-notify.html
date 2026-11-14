@@ -57,11 +57,12 @@
 
 
 <div class="sf-wizard-live" data-sf-live><sf-wizard-step name="address" label="Адрес панели" type="form" href="?step=address" state="done" description="По этому адресу вы будете открывать панель. Нужен домен, который указывает на этот сервер." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="notify" label="Уведомления" type="form" optional href="?step=notify" description="Куда присылать письма об ошибках, копиях и обновлениях. Можно настроить позже." style="display: contents;"><form method="post" action="?step=notify" id="sf-wizard-server-notify-2"><sf-input name="email" label="Почта для уведомлений" input-type="email" placeholder="admin@example.ru" style="display: contents;">
-<label class="sf-input  sf-input--size-1 sf-input--bordered   flex flex-col" data-mask="false" data-mask-pattern data-mask-lazy data-mask-placeholder-char data-mask-options data-sf-input-bound="1" for="sf-wizard-server-notify-4" data-sf-static>
+<label class="sf-input  sf-input--size-1 sf-input--bordered    flex flex-col" data-mask="false" data-mask-pattern data-mask-lazy data-mask-placeholder-char data-mask-options data-sf-input-bound="1" for="sf-wizard-server-notify-4" data-sf-static>
 
 <span class="sf-input-label flex">
 
 <span class="sf-input-text" id="sf-wizard-server-notify-3">Почта для уведомлений</span>
+
 
 
 </span>
@@ -83,9 +84,9 @@
 
 </span>
 
+
 </label>
 </sf-input></form></sf-wizard-step><sf-wizard-step name="protection" label="Защита" type="action" href="?step=protection" action-text="Выпустить сертификат" description="Сертификат Let’s Encrypt для адреса панели: без него браузер покажет предупреждение." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="backups" label="Копии" type="form" href="?step=backups" description="Как часто сохранять копии сайтов и сколько их хранить." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="check" label="Проверка" type="review" href="?step=check" action-text="Применить" description="Что панель изменит на сервере. Проверьте и примените." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="finish" label="Готово" type="result" href="?step=finish" description="Сервер настроен." style="display: contents;" hidden></sf-wizard-step></div>
-
 </div>
 </div>
 <div class="sf-wizard-footer">
@@ -122,5 +123,6 @@
 </sf-button>
 </span>
 </div>
+
 <div class="sf-wizard-announce sr-only" role="status"></div>
 </div></sf-wizard>

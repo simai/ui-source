@@ -875,6 +875,56 @@
   display: none;
 }
 
+/* sf-wizard before it draws (wizard study WZ-7: without a printed picture
+   the raw steps stood in the page, then the frame came 300 px taller and
+   everything below it jumped). A wizard in a window or a side panel (place
+   modal, drawer) is a window's content: out of the flow, as above. A wizard
+   in the page holds its frame from what the markup tells, on the steps the
+   frame draws with (sf-wizard 1.3.0): the frame's edge and inset (C105 H6),
+   the head -- the top line and the row of steps, a control each, related
+   apart -- the step's title (h5, C179 (2)) and its «why» when the first
+   step has a description, then the first step's body, its form a column
+   the frame's gap apart, and the footer (a hairline and a control). The
+   other steps wait out of the flow. Printed markup (data-sf-static) is its
+   own box. */
+:where(sf-wizard:not(:defined):is([place="modal"], [place="drawer"])):not(:has(> [data-sf-static])) {
+  display: none;
+}
+
+:where(sf-wizard:not(:defined):not([place="modal"], [place="drawer"])):not(:has(> [data-sf-static])) {
+  --sf-wizard--box-frame: calc(var(--sf-space-2) - var(--sf-px));
+  --sf-wizard--box-gap: var(--sf-space-3);
+  --sf-wizard--box-control: var(--sf-ui-1--control-height);
+  --sf-wizard--box-related: var(--sf-space-1);
+  --sf-wizard--box-why: calc(var(--sf-px) * 0);
+  display: block;
+  box-sizing: border-box;
+  padding: var(--sf-wizard--box-frame);
+  padding-block-start: calc(var(--sf-wizard--box-frame) + var(--sf-wizard--box-control) * 2 + var(--sf-wizard--box-related) + var(--sf-wizard--box-gap) + var(--sf-heading-5--height) + var(--sf-wizard--box-why) + var(--sf-wizard--box-gap));
+  padding-block-end: calc(var(--sf-wizard--box-gap) * 2 + var(--sf-px) + var(--sf-wizard--box-control) + var(--sf-wizard--box-frame));
+  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-radius: var(--sf-radius--surface);
+}
+
+:where(sf-wizard:not(:defined):not([place="modal"], [place="drawer"]):has(> sf-wizard-step:first-of-type[description]:not([description=""]))) {
+  --sf-wizard--box-why: calc(var(--sf-wizard--box-related) + var(--sf-text-height-1));
+}
+
+:where(sf-wizard:not(:defined):not([place="modal"], [place="drawer"])):not(:has(> [data-sf-static])) > sf-wizard-step:not(:first-of-type) {
+  display: none;
+}
+
+:where(sf-wizard:not(:defined):not([place="modal"], [place="drawer"])):not(:has(> [data-sf-static])) > sf-wizard-step > :is(p, ul, ol) {
+  margin: 0;
+}
+
+:where(sf-wizard:not(:defined):not([place="modal"], [place="drawer"])):not(:has(> [data-sf-static])) > sf-wizard-step > form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-wizard--box-gap);
+  margin: 0;
+}
+
 }
 
 @layer sf.base {

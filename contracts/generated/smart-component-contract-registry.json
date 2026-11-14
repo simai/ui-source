@@ -3450,7 +3450,7 @@
           "component.scrollbar",
           "smart.alert",
           "smart.button",
-          "smart.confirm",
+          "smart.drawer",
           "smart.icon",
           "smart.modal",
           "smart.progress-bar",
@@ -3468,13 +3468,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/wizard/smart.manifest.json",
-      "manifest_sha256": "4d54e54518e9d64ef6a8dba2881585065e822909ae2f4174204afa5c12d91a03",
+      "manifest_sha256": "d3bd837b6f097f3fe5f7f90d5880d0f91a1468fdb811d46252350fd40390f5a6",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "The universal step-by-step wizard: a frame of sf-wizard-step children with the progress on top (a row up to 7 steps, «Шаг 4 из 12» and a bar above, a column inside the frame as an option, the current step and a bar on a phone), the step's title, «why» and body, and one footer: Back, Skip, one primary action. Step types info, form, action, review, result; states not started, done, skipped, running, error; navigation linear, free or visited; places inline, modal and pages (the server's page per step, its form posting). Continue later, a question before closing with unsaved input, and one value of all answers.",
+      "summary": "The universal step-by-step wizard: a frame of sf-wizard-step children with the progress on top (a row up to 7 steps, «Шаг 4 из 12» and a bar above, a column inside the frame as an option, the current step and a bar on a phone), the step's title, «why» and body, and one footer: Back, Skip, one primary action. Step types info, form, action, review, result; states not started, done, skipped, running, error; navigation linear, free or visited; places inline, modal (36rem, wide with the column), drawer (a side panel 30rem) and pages (the server's page per step, its form posting). The wizard's name is the page's or window's title (h4), the step's title one step under it (h5); on a phone a window takes the screen with the footer at its bottom. The draft is kept by the wizard itself, closing is continue later, and one value of all answers.",
       "tags": [
         "wizard",
         "steps",

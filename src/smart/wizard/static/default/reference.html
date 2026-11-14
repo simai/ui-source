@@ -48,12 +48,13 @@
 
 
 <div class="sf-wizard-live" data-sf-live><sf-wizard-step name="name" label="Название" type="form" description="Так сайт будет называться в панели и в заголовке страниц." style="display: contents;"><form><sf-input name="title" label="Название сайта" placeholder="Мой магазин" required style="display: contents;">
-<label class="sf-input  sf-input--size-1 sf-input--bordered   flex flex-col" data-mask="false" data-mask-pattern data-mask-lazy data-mask-placeholder-char data-mask-options data-sf-input-bound="1" for="sf-wizard-reference-3" data-sf-static>
+<label class="sf-input  sf-input--size-1 sf-input--bordered    flex flex-col" data-mask="false" data-mask-pattern data-mask-lazy data-mask-placeholder-char data-mask-options data-sf-input-bound="1" for="sf-wizard-reference-3" data-sf-static>
 
 <span class="sf-input-label flex">
 
 <span class="sf-input-text" id="sf-wizard-reference-2">Название сайта</span>
-<span class="sf-input-required">*</span>
+<span class="sf-input-required" aria-hidden="true">*</span>
+
 
 </span>
 
@@ -74,13 +75,15 @@
 
 </span>
 
+
 </label>
 </sf-input><sf-input name="domain" label="Адрес" placeholder="shop.example.ru" hint="Можно поменять позже." pattern="[a-z0-9.-]+" style="display: contents;">
-<label class="sf-input  sf-input--size-1 sf-input--bordered   flex flex-col" data-mask="false" data-mask-pattern data-mask-lazy data-mask-placeholder-char data-mask-options data-sf-input-bound="1" for="sf-wizard-reference-5" data-sf-static>
+<label class="sf-input  sf-input--size-1 sf-input--bordered    flex flex-col" data-mask="false" data-mask-pattern data-mask-lazy data-mask-placeholder-char data-mask-options data-sf-input-bound="1" for="sf-wizard-reference-5" data-sf-static>
 
 <span class="sf-input-label flex">
 
 <span class="sf-input-text" id="sf-wizard-reference-4">Адрес</span>
+
 
 
 </span>
@@ -102,9 +105,9 @@
 
 </span>
 <span class="sf-input-hint-text-wrap" id="sf-wizard-reference-6" data-field-message="hint">Можно поменять позже.</span>
+
 </label>
 </sf-input></form></sf-wizard-step><sf-wizard-step name="template" label="Шаблон" type="info" description="С чего начнётся сайт." style="display: contents;" hidden><p>Шаблон «Магазин»: каталог, корзина и оплата уже настроены. Остальные шаблоны можно поставить позже из раздела «Пакеты».</p></sf-wizard-step><sf-wizard-step name="done" label="Готово" type="result" description="Всё готово к работе." style="display: contents;" hidden><p>Сайт создан. Откройте его или вернитесь к списку сайтов.</p></sf-wizard-step></div>
-
 </div>
 </div>
 <div class="sf-wizard-footer">
@@ -123,5 +126,6 @@
 </sf-button>
 </span>
 </div>
+
 <div class="sf-wizard-announce sr-only" role="status"></div>
 </div></sf-wizard>

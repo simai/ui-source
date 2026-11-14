@@ -30,7 +30,7 @@
     },
     {
       "id": "p2-invalid",
-      "title": "Next with an empty required field: invalid, the field shows its message and takes focus, the step stays",
+      "title": "Next with an empty required field: invalid, the field shows its own message (C153 (3)) and takes focus, the step stays",
       "covers": "events.invalid, validation",
       "steps": [
         {
@@ -50,7 +50,7 @@
               }
             ]
           },
-          "check": "(() => { const w = document.querySelector('#three'); const field = w.querySelector('sf-input[name=\"title\"]'); return field.hasAttribute('invalid') && w.current !== 'template' && document.activeElement === field.querySelector('input'); })()"
+          "check": "(() => { const w = document.querySelector('#three'); const field = w.querySelector('sf-input[name=\"title\"]'); return field.sfErrorShown === true && !field.hasAttribute('invalid') && w.current !== 'template' && document.activeElement === field.querySelector('input'); })()"
         }
       ]
     },

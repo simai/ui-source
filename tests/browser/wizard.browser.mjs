@@ -13,8 +13,11 @@
 //   pages    a page per step served here: the primary posts the step's form
 //            with wizard-action=next and the fields, Skip posts skip without
 //            validation, an action step posts run and shows running;
-//   modal    the window opens from its trigger; Escape with unsent input asks
-//            first; the whole import ends in completed with one value;
+//   modal    the window opens from its trigger, a window of C159 (its header
+//            with the name and the ×, size form); Escape with unsent input
+//            closes without a question and keeps the draft (C179 (6)), the
+//            reopened window shows it; the whole import ends in completed
+//            with one value;
 //   touch    under a coarse pointer the footer's buttons are at least 44 px.
 // No sideways scroll, no page errors, no failed requests. With a screenshot
 // folder, each case is saved there as a PNG.
@@ -174,15 +177,15 @@ for (const width of [1440, 390]) {
       await tab.waitForTimeout(300);
       const invalid = await tab.evaluate(() => ({
         sent: window.__invalid,
-        marked: document.querySelector('sf-input[name="title"]').hasAttribute('invalid'),
-        message: document.querySelector('sf-input[name="title"]').getAttribute('error-message'),
+        marked: document.querySelector('sf-input[name="title"]').sfErrorShown === true,
+        message: (document.querySelector('sf-input[name="title"] [id$="--message"]')?.textContent || '').trim(),
         focused: document.querySelector('sf-input[name="title"]').contains(document.activeElement),
         still: document.getElementById('w').querySelector('.sf-wizard-title').textContent.trim(),
       }));
-      ok(`${tag}: an empty required field is marked, focused and invalid is sent`, invalid.sent === 1 && invalid.marked && invalid.message === 'Заполните это поле.' && invalid.focused && invalid.still === 'Название', JSON.stringify(invalid));
+      ok(`${tag}: an empty required field is marked, focused and invalid is sent`, invalid.sent === 1 && invalid.marked && invalid.message === 'Заполните поле' && invalid.focused && invalid.still === 'Название', JSON.stringify(invalid));
       await tab.locator('sf-input[name="title"] input').fill('Магазин');
       await tab.waitForTimeout(100);
-      const unmarked = await tab.evaluate(() => !document.querySelector('sf-input[name="title"]').hasAttribute('invalid'));
+      const unmarked = await tab.evaluate(() => document.querySelector('sf-input[name="title"]').sfErrorShown === false);
       ok(`${tag}: editing the field takes the mark off`, unmarked);
       await tab.evaluate(() => { window.__change = null; document.getElementById('w').addEventListener('sf-wizard-change', (event) => { window.__change = event.detail; }); });
       await tab.locator('#w .sf-wizard-primary button').click();
@@ -256,14 +259,18 @@ for (const scheme of ['light', 'dark']) {
   await settle(tab);
   const opened = await tab.evaluate(() => Boolean(document.querySelector('.sf-wizard-window .sf-wizard')) && document.getElementById('w').hasAttribute('open'));
   ok(`${tag}: the trigger opens the window`, opened);
+  const window = await tab.evaluate(() => { const root = document.querySelector('.sf-modal:has(.sf-wizard-window)'); return {size: root?.getAttribute('data-sf-modal-size'), title: root?.querySelector('.sf-modal-title')?.textContent.trim(), close: Boolean(root?.querySelector('.sf-modal-close-button'))}; });
+  ok(`${tag}: a window of C159, its header the name and the ×, size form`, window.size === 'form' && Boolean(window.title) && window.close, JSON.stringify(window));
   await tab.locator('sf-input[name="file"] input').fill('contacts.csv');
   await tab.keyboard.press('Escape');
-  await tab.waitForTimeout(400);
-  const asked = await tab.evaluate(() => ({ask: Boolean(document.querySelector('.sf-wizard-confirm')), open: document.getElementById('w').hasAttribute('open')}));
-  ok(`${tag}: Escape with unsent input asks first`, asked.ask && asked.open, JSON.stringify(asked));
-  await shot(tab, `${tag}-ask`);
-  await tab.locator('.sf-wizard-confirm button', {hasText: 'Остаться'}).click();
-  await tab.waitForTimeout(300);
+  await tab.waitForTimeout(500);
+  const left = await tab.evaluate(() => ({ask: Boolean(document.querySelector('.sf-wizard-confirm')), open: document.getElementById('w').hasAttribute('open')}));
+  ok(`${tag}: Escape with unsent input closes without a question (continue later, C179 (6))`, !left.ask && !left.open, JSON.stringify(left));
+  await tab.locator('#open button').click();
+  await settle(tab);
+  const kept = await tab.evaluate(() => document.querySelector('.sf-wizard-window sf-input[name="file"] input')?.value);
+  ok(`${tag}: the reopened window keeps the draft`, kept === 'contacts.csv', String(kept));
+  await shot(tab, `${tag}-draft`);
   for (let press = 0; press < 3; press += 1) {
     await tab.locator('.sf-wizard-window .sf-wizard-primary button').click();
     await tab.waitForTimeout(400);
