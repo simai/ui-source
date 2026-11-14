@@ -378,10 +378,10 @@
             {
               "user": "keyboard:Shift+F10",
               "wait": 400,
-              "check": "document.querySelector('#l .sf-list__menu').isOpen === true && document.querySelector('#l .sf-list__menu').entries.map((entry) => entry.id).join(',') === 'rename,action:delete'"
+              "check": "document.querySelector('[data-sf-menu-shared]').isOpen === true && document.querySelector('[data-sf-menu-shared]').entries.map((entry) => entry.id).join(',') === 'rename,action:delete'"
             },
             {
-              "script": "(document.querySelector('#l .sf-list__menu').dispatchEvent(new CustomEvent('sf-menu-context-select', {bubbles: true, detail: {id: 'action:delete'}})), document.querySelector('#l .sf-list__menu').close({restoreFocus: true}), true)",
+              "script": "(document.querySelector('[data-sf-menu-shared]').dispatchEvent(new CustomEvent('sf-menu-context-select', {bubbles: true, detail: {id: 'action:delete'}})), document.querySelector('[data-sf-menu-shared]').close({restoreFocus: true}), true)",
               "expect": {
                 "events": [
                   {

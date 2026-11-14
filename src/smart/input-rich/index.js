@@ -3,6 +3,7 @@ import {elementFromManifest} from '../../core/js/element-manifest';
 import {ladderSize} from '../../component/field-size';
 import {FormField, ShownRequired} from '../helpers/form-field';
 import {charCount, countAnnouncement} from '../helpers/char-count';
+import {roving} from '../../core/js/roving.js';
 import {renderRichTextTemplate} from './js/templates/default';
 import {richTextFromPlainText, richTextHref, sanitizeRichText} from './js/rich-text-html.mjs';
 import manifest from './component.json';
@@ -68,7 +69,9 @@ const HISTORY_LIMIT = 100;
 const TYPING_GROUP_MS = 1000;
 
 // The toolbar, in its order. `pressed` names the state that presses it;
-// `unavailable` greys it out (aria-disabled, still reachable by the arrows).
+// `unavailable` greys it out (aria-disabled, still reachable by the arrows)
+// and `reason` is the word that says why, as its tooltip (owner decision
+// C184 (2)).
 //
 // The four block levels are drawn as text, not glyphs: the Framework's icon
 // font is Material Icons, which has no paragraph or heading-level icon
@@ -76,18 +79,18 @@ const TYPING_GROUP_MS = 1000;
 // missing ligature prints its own name on the button. P, H2, H3 and H4 are
 // read in both page languages; the button's name is the word, as everywhere.
 const TOOLS = Object.freeze([
-  {id: 'paragraph', word: 'paragraph', text: 'P', pressed: 'p', unavailable: (state) => state.inList},
-  {id: 'heading-2', word: 'heading-2', text: 'H2', pressed: 'h2', unavailable: (state) => state.inList},
-  {id: 'heading-3', word: 'heading-3', text: 'H3', pressed: 'h3', unavailable: (state) => state.inList},
-  {id: 'heading-4', word: 'heading-4', text: 'H4', pressed: 'h4', unavailable: (state) => state.inList},
+  {id: 'paragraph', word: 'paragraph', text: 'P', pressed: 'p', unavailable: (state) => state.inList, reason: 'not-in-list'},
+  {id: 'heading-2', word: 'heading-2', text: 'H2', pressed: 'h2', unavailable: (state) => state.inList, reason: 'not-in-list'},
+  {id: 'heading-3', word: 'heading-3', text: 'H3', pressed: 'h3', unavailable: (state) => state.inList, reason: 'not-in-list'},
+  {id: 'heading-4', word: 'heading-4', text: 'H4', pressed: 'h4', unavailable: (state) => state.inList, reason: 'not-in-list'},
   {id: 'bold', word: 'bold', icon: 'format_bold', pressed: 'strong', key: 'B', shortcut: 'Control+B Meta+B'},
   {id: 'italic', word: 'italic', icon: 'format_italic', pressed: 'em', key: 'I', shortcut: 'Control+I Meta+I'},
   {id: 'link', word: 'link', icon: 'link', pressed: 'link', key: 'K', shortcut: 'Control+K Meta+K', popup: 'dialog'},
   {id: 'bulleted-list', word: 'bulleted-list', icon: 'format_list_bulleted', pressed: 'ul'},
   {id: 'numbered-list', word: 'numbered-list', icon: 'format_list_numbered', pressed: 'ol'},
   {id: 'quote', word: 'quote', icon: 'format_quote', pressed: 'blockquote'},
-  {id: 'undo', word: 'undo', icon: 'undo', key: 'Z', shortcut: 'Control+Z Meta+Z', unavailable: (state) => !state.canUndo},
-  {id: 'redo', word: 'redo', icon: 'redo', key: 'Shift+Z', shortcut: 'Control+Shift+Z Meta+Shift+Z Control+Y', unavailable: (state) => !state.canRedo},
+  {id: 'undo', word: 'undo', icon: 'undo', key: 'Z', shortcut: 'Control+Z Meta+Z', unavailable: (state) => !state.canUndo, reason: 'nothing-to-undo'},
+  {id: 'redo', word: 'redo', icon: 'redo', key: 'Shift+Z', shortcut: 'Control+Shift+Z Meta+Shift+Z Control+Y', unavailable: (state) => !state.canRedo, reason: 'nothing-to-redo'},
 ]);
 
 // ------------------------------------------------------------ the caret
@@ -373,6 +376,7 @@ class SfRichText extends ShownRequired(FormField(RichTextElement)) {
   }
 
   afterRender() {
+    this._toolbarKeys()?.refresh();
     const editor = this.editor;
     if (!editor) return;
     if (editor.__sfRichText !== this) this._bindEditor(editor);
@@ -1288,38 +1292,30 @@ class SfRichText extends ShownRequired(FormField(RichTextElement)) {
 
   // ---------------------------------------------------------- toolbar
 
-  _tools() {
-    return [...this.querySelectorAll('.sf-rich-text-toolbar button.sf-rich-text-tool:not([disabled])')];
+  // The toolbar's keys are core's roving helper (owner decision C184 (1)-(3)):
+  // one Tab stop that comes back to the tool the person left, the arrows in
+  // the row's direction (right-to-left too), Home and End, the walk wrapping;
+  // an unavailable tool stays in the walk with its reason.
+  _toolbarKeys() {
+    const bar = this.querySelector('.sf-rich-text-toolbar');
+    if (!bar) return null;
+    if (this._toolbarRow?.bar !== bar) {
+      this._toolbarRow?.keys.destroy();
+      const keys = roving(bar, {
+        items: 'button.sf-rich-text-tool',
+        onMove: (button) => { this._roving = button.dataset.sfTool; },
+      });
+      const remembered = bar.querySelector(`button.sf-rich-text-tool[data-sf-tool="${this._roving}"]`);
+      if (remembered && !remembered.disabled) keys.set(remembered);
+      this._toolbarRow = {bar, keys};
+    }
+    return this._toolbarRow.keys;
   }
 
   _setRoving(button) {
     if (!button) return;
     this._roving = button.dataset.sfTool;
-    for (const other of this.querySelectorAll('.sf-rich-text-toolbar button.sf-rich-text-tool')) {
-      other.setAttribute('tabindex', other === button ? '0' : '-1');
-    }
-  }
-
-  onToolbarKeydown(event) {
-    const button = event.target?.closest?.('button.sf-rich-text-tool');
-    if (!button) return;
-    const tools = this._tools();
-    const index = tools.indexOf(button);
-    if (index < 0) return;
-    let next = null;
-    if (event.key === 'ArrowRight') next = tools[(index + 1) % tools.length];
-    else if (event.key === 'ArrowLeft') next = tools[(index - 1 + tools.length) % tools.length];
-    else if (event.key === 'Home') next = tools[0];
-    else if (event.key === 'End') next = tools[tools.length - 1];
-    if (!next) return;
-    event.preventDefault();
-    this._setRoving(next);
-    next.focus();
-  }
-
-  onToolbarFocusIn(event) {
-    const button = event.target?.closest?.('button.sf-rich-text-tool');
-    if (button) this._setRoving(button);
+    this._toolbarKeys()?.set(button);
   }
 
   // A press on a tool keeps the caret and the selection in the text.

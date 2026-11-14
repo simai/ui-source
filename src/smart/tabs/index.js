@@ -7,6 +7,7 @@ import { followDensity, RELATIVE } from '../../core/js/density.js';
 import { breakpointMedia } from '../../core/js/breakpoints.js';
 import { noteDeprecated } from '../../core/js/deprecations';
 import { fitInOrder, fitBesideMore, rowRoom, standardMenu, triggerExtra } from '../../core/js/overflow-row.js';
+import { menuOpen } from '../../core/js/menu-open.js';
 import { renderTabsTemplate, errorBadgeClasses } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -1173,12 +1174,10 @@ class SfTabs extends TabsElement {
       value: item.count === null || item.count === undefined ? undefined : String(item.count),
     }));
     if (!entries.length) return;
-    const menu = await this.standardMenu('_moreMenu', (id) => this.activate(Number(id), null, { person: true }));
-    menu.setAttribute('aria-label', this.text('more'));
-    menu.setAttribute('size', this.menuSize());
-    followDensity(menu, this);
-    menu.entries = entries;
-    menu.toggleFor(anchor);
+    // The page's one menu (core SF.menu.open, owner decision C184 (4)); a
+    // second press on «Ещё» closes it.
+    const choice = await menuOpen({anchor, entries, label: this.text('more'), size: this.menuSize()});
+    if (choice?.id != null && this.isConnected) this.activate(Number(choice.id), null, { person: true });
   }
 
   // The standard menu «Ещё» and the settings open (core/js/overflow-row.js).

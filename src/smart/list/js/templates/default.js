@@ -6,7 +6,8 @@ import {avatarPicture} from "../../../avatar/js/picture";
 // The list, drawn in the component's light DOM on the Framework's plain list
 // surface (the class unit .sf-list): the rows in their groups, the end of the
 // list («Show more» and the sentinel the next page is asked by), the empty
-// state, and one context menu shared by every row.
+// state. The row actions open in the page's one menu (core SF.menu.open,
+// owner decision C184 (4)), not in a menu of the list's own.
 //
 // A row is the Framework's row, sf-list-item, interactive: the rows of the
 // whole list -- every group -- are one Tab stop, the arrows move between them
@@ -246,14 +247,6 @@ export function renderListTemplate(context) {
                 <span class="sr-only" role="status">${context.loadingMore ? context.loadingMoreText : ""}</span>
                 <span class="sf-list__end" aria-hidden="true"></span>
             </div>
-            <sf-menu-context
-                    class="sf-list__menu"
-                    popup
-                    @sf-menu-context-select=${(event) => {
-                        event.stopPropagation();
-                        component.onMenu(event.detail);
-                    }}
-            ></sf-menu-context>
         </div>
     `;
 }

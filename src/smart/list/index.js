@@ -42,6 +42,7 @@ import SfBaseElement from "../../core/js/smart-base";
 import {elementFromManifest} from "../../core/js/element-manifest";
 import {calendarDayOffset, formatRelativeDay, msUntilNextDay, toDate} from "../../core/js/format.js";
 import {scrollerOf, watchEdge} from "../../core/js/reading-position.js";
+import {menuOpen} from "../../core/js/menu-open.js";
 import {renderListTemplate} from "./js/templates/default.js";
 import manifest from "./component.json";
 import en from "./lang/en.json";
@@ -302,25 +303,34 @@ class SfList extends ListElement {
     openMenu(params, anchorGiven = null) {
         const id = String(params?.id ?? params ?? "");
         const item = this._items.find((one) => one.id === id);
-        const menu = this.menu;
-        if (!item || !menu) return refused("unknown");
+        if (!item) return refused("unknown");
         const entries = this.menuEntries(item);
         if (!entries.length) return refused("no-actions");
         const row = this.rowFor(id);
         const anchor = anchorGiven instanceof Element ? anchorGiven : row?.closest(".sf-list__row")?.querySelector(".sf-list__actions") ?? row ?? this;
         this._menuFor = id;
-        menu.setAttribute("aria-label", this.sfWord("actions-label", {vars: {text: item.text || this.sfWord("untitled-text")}}));
-        menu.entries = entries;
-        // The Loader brings sf-menu-context when it is first needed (a lazy
-        // relation); a press before that waits for it.
-        customElements.whenDefined("sf-menu-context").then(() => menu.toggleFor(anchor));
+        // The page's one menu (core SF.menu.open, owner decision C184 (4)),
+        // fetched by the Loader the first time: the «⋯» and Shift+F10 open the
+        // same list, and the focus goes back to the row.
+        const opening = menuOpen({
+            anchor,
+            entries,
+            label: this.sfWord("actions-label", {vars: {text: item.text || this.sfWord("untitled-text")}}),
+            returnTo: row ?? null,
+        });
+        this._menuOpening = opening;
+        opening.then((choice) => {
+            if (this._menuOpening === opening) this._menuOpening = null;
+            if (choice) this.onMenu({id: choice.id, entry: choice.entry}, id);
+        });
         return applied();
     }
 
     // ── words and what is drawn ──────────────────────────────────────────────
 
+    // The page's one menu while it holds this list's actions (C184 (4)).
     get menu() {
-        return this.querySelector(":scope > .sf-list__frame > .sf-list__menu");
+        return this.ownerDocument.querySelector("[data-sf-menu-shared]");
     }
 
     // The menu of one row: «Rename» when the list renames, then the host's
@@ -713,8 +723,8 @@ class SfList extends ListElement {
         }
     }
 
-    onMenu(detail = {}) {
-        const id = this._menuFor;
+    onMenu(detail = {}, forId = null) {
+        const id = forId ?? this._menuFor;
         const choice = String(detail.id ?? detail.entry?.id ?? "");
         if (!id || !choice) return;
         if (choice === "rename") setTimeout(() => this.rename(id), 0);
@@ -724,7 +734,7 @@ class SfList extends ListElement {
 
     closeMenu() {
         const menu = this.menu;
-        if (menu?.isOpen) menu.close({restoreFocus: false, reason: "api"});
+        if (this._menuOpening && menu?.isOpen) menu.close({restoreFocus: false, reason: "api"});
     }
 
     finishRename(keep, input) {

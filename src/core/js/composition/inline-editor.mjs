@@ -1,5 +1,6 @@
 import { pageText } from '../page-language.js';
 import { defineTagAliases } from '../tag-aliases.js';
+import { roving } from '../roving.js';
 import { INLINE_COMPONENTS, INLINE_MARKS, INLINE_OBJECT, breakSegment, fromSegments, inlineComponentView, inlineExtensions, inlineLength, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark } from './inline-model.mjs';
 
 // In-place editor for the Composition inline content model. The host starts
@@ -444,6 +445,10 @@ export function startInlineEdit(element, options = {}) {
     toolbar.append(button, linkForm);
   }
   doc.body.append(toolbar);
+  // The toolbar's keys (owner decision C184 (1)-(3), TL-4): one Tab stop that
+  // comes back to the tool left, the arrows in the row's direction, Home and
+  // End; the link form's own buttons are not tools.
+  const toolbarKeys = roving(toolbar, { items: () => [...buttons.values()] });
   let savedSelection = [0, 0];
 
   // The box of the text between two offsets: the first line's top, the last
@@ -549,6 +554,7 @@ export function startInlineEdit(element, options = {}) {
   function teardown() {
     finished = true;
     connection.abort();
+    toolbarKeys.destroy();
     toolbar.remove();
     element.innerHTML = original.html;
     for (const [name, value] of original.attributes) {

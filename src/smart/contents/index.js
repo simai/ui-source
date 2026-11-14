@@ -26,8 +26,8 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {breakpointMedia} from '../../core/js/breakpoints.js';
-import {fitInOrder, fitBesideMore, rowRoom, standardMenu, triggerExtra} from '../../core/js/overflow-row.js';
-import {followDensity} from '../../core/js/density.js';
+import {fitInOrder, fitBesideMore, rowRoom, triggerExtra} from '../../core/js/overflow-row.js';
+import {menuOpen} from '../../core/js/menu-open.js';
 import {renderContentsTemplate} from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -692,12 +692,14 @@ class SfContents extends ContentsElement {
     const entries = this._overflowed.map((id) => this._sections.find((section) => section.id === id)).filter(Boolean)
       .map((section) => ({id: section.id, text: section.text}));
     if (!entries.length) return;
-    const menu = await standardMenu(this, '_moreMenu', (id) => this.jumpTo(String(id)));
-    menu.setAttribute('aria-label', this.sfWord('more'));
-    menu.setAttribute('size', this.size === '1' ? '1' : '1/2');
-    followDensity(menu, this);
-    menu.entries = entries;
-    menu.toggleFor(anchor?.querySelector?.(':scope > button') ?? anchor);
+    // The page's one menu (core SF.menu.open, owner decision C184 (4)).
+    const choice = await menuOpen({
+      anchor: anchor?.querySelector?.(':scope > button') ?? anchor,
+      entries,
+      label: this.sfWord('more'),
+      size: this.size === '1' ? '1' : '1/2',
+    });
+    if (choice?.id != null && this.isConnected) this.jumpTo(String(choice.id));
   }
 
   templateContext() {
