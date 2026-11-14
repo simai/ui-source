@@ -208,8 +208,9 @@ Each meaningful item returned by the shared `slide` slot is cloned into the
 inline and lightbox sliders. Formatting whitespace and comments do not create
 slides or increment the current index. Empty elements and meaningful text are
 preserved. A node with only `slot="slide"` is a container whose children are
-items; an attributed node (for example `figure slot="slide" class="p-2"`)
-is retained whole. Keep a composite card inside one item, not separate sibling
+items; an attributed node (for example `div slot="slide" class="p-2"`) is
+retained whole, and so is a `figure`, a `picture` or any node holding a
+`figcaption`, with or without other attributes. Keep a composite card inside one item, not separate sibling
 heading/text/link nodes. Template and setSlot input use the same boundaries.
 
 ## Actions
@@ -221,6 +222,30 @@ Each answers an outcome, `{outcome: "applied"}` or `{outcome: "refused", reason}
 - `close()` — refused (`closed`) when the lightbox is closed
 - `toggle(index)`
 - `goTo(index)`, `next()`, `prev()`
+
+## Frame, keys and loading (1.2.2)
+
+- The inline pictures keep one frame from the first paint: `ratio="auto"`
+  (the default) takes the first picture's `width` and `height` attributes,
+  else 16/9; `ratio="1/1"` (or another `w/h`) sets it. Every picture is shown
+  whole in the frame (`object-fit: contain`, `--sf-gallery-object-fit`): a
+  product photo is not cropped. Before the code arrives the page's first
+  picture already stands in that frame, with room for the thumbnails.
+- The arrows are the slider's quiet ones on plates (`button-type`
+  `secondary`); the place is shown on a plate: dots up to seven pictures, a
+  counter «3 / 12» from eight (`dots`, on by default). The thumbnails are
+  buttons, one Tab stop, paged by the arrow keys.
+- A caption under a picture (`figure` + `figcaption`) is small and
+  on-surface-variant. `<figure slot="slide"><img><figcaption>` is one slide
+  (core.runtime: a figure is never unwrapped).
+- In the lightbox ArrowLeft / ArrowRight, Home and End page, and a swipe
+  pages; a press on the empty field around the picture closes it. On close
+  the focus goes back to the picture that opened it (to the picture now
+  shown, when the person paged).
+- Only the first shown picture loads at once; the others load as they come
+  near the view (`loading="lazy"`, `decoding="async"`, unless the page wrote
+  its own). Give the page's own pictures after the first `loading="lazy"`
+  too: the browser fetches what the page itself writes.
 
 ## Events
 

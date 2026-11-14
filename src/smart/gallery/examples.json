@@ -8,7 +8,7 @@
         "current": 1
       },
       "children": [
-        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%233b82f6%22/%3E%3C/svg%3E\" alt=\"Синий\">"
+        "<img slot=\"slide\" src=\"/_docara/examples/components/file-preview/thumbnail/assets/photo.jpg\" width=\"1000\" height=\"750\" alt=\"Натюрморт: красная ваза и листья\">"
       ],
       "expect": {
         "values": {
@@ -55,9 +55,9 @@
         "thumbs": false
       },
       "children": [
-        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%233b82f6%22/%3E%3C/svg%3E\" alt=\"Синий\">",
-        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%2310b981%22/%3E%3C/svg%3E\" alt=\"Зелёный\">",
-        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23f59e0b%22/%3E%3C/svg%3E\" alt=\"Жёлтый\">"
+        "<img slot=\"slide\" src=\"/_docara/examples/components/file-preview/thumbnail/assets/photo.jpg\" width=\"1000\" height=\"750\" alt=\"Натюрморт: красная ваза и листья\">",
+        "<img slot=\"slide\" src=\"/_docara/examples/utilities/background/background-size/assets/scenic-background.jpg\" width=\"1200\" height=\"675\" loading=\"lazy\" alt=\"Пейзаж: горы у озера\">",
+        "<img slot=\"slide\" src=\"/_docara/examples/utilities/filters/filter-blur/assets/color-study.jpg\" width=\"1000\" height=\"750\" loading=\"lazy\" alt=\"Натюрморт со стеклянным шаром\">"
       ],
       "script": [
         {
@@ -84,13 +84,12 @@
       "name": "inline-only",
       "title": "Без лайтбокса",
       "settings": {
-        "lightbox": false,
-        "dots": true
+        "lightbox": false
       },
       "children": [
-        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%233b82f6%22/%3E%3C/svg%3E\" alt=\"Синий\">",
-        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%2310b981%22/%3E%3C/svg%3E\" alt=\"Зелёный\">",
-        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23f59e0b%22/%3E%3C/svg%3E\" alt=\"Жёлтый\">"
+        "<img slot=\"slide\" src=\"/_docara/examples/components/file-preview/thumbnail/assets/photo.jpg\" width=\"1000\" height=\"750\" alt=\"Натюрморт: красная ваза и листья\">",
+        "<img slot=\"slide\" src=\"/_docara/examples/utilities/background/background-size/assets/scenic-background.jpg\" width=\"1200\" height=\"675\" loading=\"lazy\" alt=\"Пейзаж: горы у озера\">",
+        "<img slot=\"slide\" src=\"/_docara/examples/utilities/filters/filter-blur/assets/color-study.jpg\" width=\"1000\" height=\"750\" loading=\"lazy\" alt=\"Натюрморт со стеклянным шаром\">"
       ]
     },
     {
@@ -101,9 +100,9 @@
         "heading": "Фотографии"
       },
       "children": [
-        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%233b82f6%22/%3E%3C/svg%3E\" alt=\"Синий\">",
-        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%2310b981%22/%3E%3C/svg%3E\" alt=\"Зелёный\">",
-        "<img slot=\"slide\" src=\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23f59e0b%22/%3E%3C/svg%3E\" alt=\"Жёлтый\">"
+        "<img slot=\"slide\" src=\"/_docara/examples/components/file-preview/thumbnail/assets/photo.jpg\" width=\"1000\" height=\"750\" alt=\"Натюрморт: красная ваза и листья\">",
+        "<img slot=\"slide\" src=\"/_docara/examples/utilities/background/background-size/assets/scenic-background.jpg\" width=\"1200\" height=\"675\" loading=\"lazy\" alt=\"Пейзаж: горы у озера\">",
+        "<img slot=\"slide\" src=\"/_docara/examples/utilities/filters/filter-blur/assets/color-study.jpg\" width=\"1000\" height=\"750\" loading=\"lazy\" alt=\"Натюрморт со стеклянным шаром\">"
       ],
       "script": [
         {

@@ -23,6 +23,22 @@
   }
 }
 
+/* The strip takes horizontal drags (the script pages on them); a vertical
+   move stays the page's scroll, and pinch zoom stays the browser's. */
+.swiper-touch {
+  touch-action: pan-y pinch-zoom;
+}
+
+/* While a drag pulls the strip, it follows the pointer without travelling and
+   the text under it is not selected. */
+.swiper-dragging {
+  user-select: none;
+}
+
+.swiper-dragging > .swiper-wrapper {
+  transition-duration: 0s;
+}
+
 .swiper-slide {
   flex: 0 0 100%;
   inline-size: 100%;

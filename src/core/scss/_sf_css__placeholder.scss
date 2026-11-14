@@ -1,3 +1,5 @@
+@use 'mix/mix__breakpoint' as bpMixin;
+
 /* One bar centred in each row of the given height, as wide as the share. */
 @function placeholder-bars($row, $bar) {
   @return repeating-linear-gradient(to bottom,
@@ -327,6 +329,116 @@
    wider than the trigger, until it upgrades into its popup. */
 :where(sf-language .sf-language-parts > :is(sf-menu-context, sf-context-menu)[popup]:not(:defined)) {
   display: none;
+}
+
+/* sf-slider before it draws (decision C143 (8)). Its slides are the page's
+   children, so before the code they stood one under another: five pictures
+   1907 px high at 1440, then 381 when the slider drew (CLS 0.47). The
+   element knows its frame from its attributes alone, so it holds it here
+   (core.css is the one sheet a page links before any code; the slider's own
+   sheet comes with it): a picture slider is the box of its ratio (16/9 by
+   default, ratio="auto" none) showing its first slide; a card slider
+   (root-class sf-slider--content) lays its cards in a row as it will, 1.15
+   in view on a phone and 2.2 from the sm step, and keeps room for the
+   controls row under them. A printed first paint (data-sf-static) is its
+   own box. */
+:where(sf-slider:not(:defined)):not(:has(> [data-sf-static])) {
+  display: block;
+  overflow: hidden;
+  box-sizing: content-box;
+}
+
+:where(sf-slider:not(:defined):not([root-class~="sf-slider--content"]):not([ratio="auto"])):not(:has(> [data-sf-static])) {
+  aspect-ratio: 16 / 9;
+}
+
+:where(sf-slider:not(:defined)[ratio="4/3"]):not(:has(> [data-sf-static])) { aspect-ratio: 4 / 3; }
+:where(sf-slider:not(:defined)[ratio="3/2"]):not(:has(> [data-sf-static])) { aspect-ratio: 3 / 2; }
+:where(sf-slider:not(:defined)[ratio="1/1"]):not(:has(> [data-sf-static])) { aspect-ratio: 1 / 1; }
+:where(sf-slider:not(:defined)[ratio="21/9"]):not(:has(> [data-sf-static])) { aspect-ratio: 21 / 9; }
+
+:where(sf-slider:not(:defined):not([root-class~="sf-slider--content"]):not([ratio="auto"])):not(:has(> [data-sf-static])) > * {
+  block-size: 100%;
+}
+
+:where(sf-slider:not(:defined):not([root-class~="sf-slider--content"])):not(:has(> [data-sf-static])) > :not(:first-child) {
+  display: none;
+}
+
+:where(sf-slider:not(:defined)[root-class~="sf-slider--content"]):not(:has(> [data-sf-static])) {
+  --sf-slider--peek: 1.15;
+  display: flex;
+  gap: var(--sf-space-1\/2);
+}
+
+@include bpMixin.media-breakpoint-up(sm) {
+  :where(sf-slider:not(:defined)[root-class~="sf-slider--content"]):not(:has(> [data-sf-static])) {
+    --sf-slider--peek: 2.2;
+  }
+}
+
+:where(sf-slider:not(:defined)[root-class~="sf-slider--content"]):not(:has(> [data-sf-static])) > * {
+  flex: 0 0 calc((100% - (var(--sf-slider--peek) - 1) * var(--sf-space-1\/2)) / var(--sf-slider--peek));
+  min-inline-size: 0;
+}
+
+:where(sf-slider:not(:defined)[root-class~="sf-slider--content"]:not([arrows="false"][dots="false"])):not(:has(> [data-sf-static])) {
+  padding-block-end: calc(var(--sf-space-1) + var(--sf-ui-1--control-height));
+}
+
+:where(sf-slider:not(:defined)[thumbs]:not([thumbs="false"])):not(:has(> [data-sf-static])) {
+  padding-block-end: calc(var(--sf-space-1) + var(--sf-d2));
+}
+
+/* sf-gallery before it draws (GL-7, decision C143 (8)). Its pictures are the
+   page's children, so before the code they stood one under another: six
+   pictures 4400 px high, then 0 while the slider measured, then 1081. The
+   element knows its frame from its markup alone, so it holds it here: the
+   first picture, whole (contain), in the gallery's ratio -- its own width and
+   height attributes when ratio is auto (the default), else the ratio the
+   page wrote, else 16/9 -- with its caption small and muted under it, and
+   room for the thumbnails under that (thumbs is on by default). The gallery
+   draws the same box (--sf-gallery--ratio), so the first frame is the final
+   one. A lightbox-only gallery shows nothing on the page. */
+:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) {
+  display: block;
+}
+:where(sf-gallery:not(:defined):not([thumbs="false"])):not(:has(> [data-sf-static])) {
+  padding-block-end: calc(var(--sf-space-1) + var(--sf-d2));
+}
+:where(sf-gallery:not(:defined)[inline="false"]:not([lightbox="false"])):not(:has(> [data-sf-static])) {
+  display: none;
+}
+:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > :not(:first-child) {
+  display: none;
+}
+:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > :first-child {
+  display: block;
+  inline-size: 100%;
+  margin: 0;
+}
+:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > :first-child :where(img),
+:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > img:first-child {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  object-fit: contain;
+}
+:where(sf-gallery:not(:defined):is(:not([ratio]), [ratio="auto"])):not(:has(> [data-sf-static])) > :first-child :where(img:not([width][height])),
+:where(sf-gallery:not(:defined):is(:not([ratio]), [ratio="auto"])):not(:has(> [data-sf-static])) > img:first-child:not([width][height]) {
+  aspect-ratio: 16 / 9;
+}
+@each $w, $h in (16, 9), (4, 3), (3, 2), (1, 1), (21, 9), (3, 4), (2, 3) {
+  :where(sf-gallery:not(:defined)[ratio="#{$w}/#{$h}"]):not(:has(> [data-sf-static])) > :first-child :where(img),
+  :where(sf-gallery:not(:defined)[ratio="#{$w}/#{$h}"]):not(:has(> [data-sf-static])) > img:first-child {
+    aspect-ratio: #{$w} / #{$h};
+  }
+}
+:where(sf-gallery:not(:defined)):not(:has(> [data-sf-static])) > :first-child :where(figcaption) {
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+  margin-block-start: var(--sf-space-1\/4);
 }
 
 }
