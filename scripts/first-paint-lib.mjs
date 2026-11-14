@@ -296,18 +296,34 @@ const TYPES = new Map([
 ]);
 
 /**
- * Serves <output>/{core,component,utility,smart} under /distr/ and the pages
- * put in `pages` (path -> html). `onRequest(path)` hears every request;
- * `delay(path)` holds a response back (ms). Port 0: never a fixed port.
+ * Whether a root is a distribution (the published `distr/` of a pair:
+ * core/js/core.js, rule/, component/, utility/, smart/ side by side) rather
+ * than a build output (ui-builder's core/core, core/rule, component/component,
+ * utility/utility, smart/smart).
  */
-export async function serveOutput(out, {pages = new Map(), onRequest = () => {}, delay = () => 0, packages = config.packages, fonts = 'measured'} = {}) {
-  const mounts = [
+export const isDistribution = (root) => existsSync(join(root, 'core', 'js', 'core.js')) && existsSync(join(root, 'smart'));
+
+/** The /distr/ mounts of a build output or of a distribution. */
+export function outputMounts(out) {
+  if (isDistribution(out)) return ['core', 'rule', 'component', 'utility', 'smart'].map((part) => [`/distr/${part}/`, join(out, part)]);
+  return [
     ['/distr/core/', join(out, 'core', 'core')],
     ['/distr/rule/', join(out, 'core', 'rule')],
     ['/distr/component/', join(out, 'component', 'component')],
     ['/distr/utility/', join(out, 'utility', 'utility')],
     ['/distr/smart/', join(out, 'smart', 'smart')],
   ];
+}
+
+/**
+ * Serves <output>/{core,component,utility,smart} under /distr/ (or a
+ * distribution's core/, rule/, component/, utility/, smart/; isDistribution) and the pages
+ * put in `pages` (path -> html). `onRequest(path)` hears every request;
+ * `delay(path)` holds a response back (ms). Port 0 by default: never a fixed
+ * port unless the caller names one (`port`).
+ */
+export async function serveOutput(out, {pages = new Map(), onRequest = () => {}, delay = () => 0, packages = config.packages, fonts = 'measured', port = 0} = {}) {
+  const mounts = outputMounts(out);
   for (const [, path] of mounts) if (!existsSync(path)) throw new Error(`${path} not found: the build output root holds core/, component/, utility/, smart/`);
   // The declared packages, after the free output (never in its place).
   for (const {base, output} of Object.values(packages)) mounts.push([base, output]);
@@ -340,7 +356,7 @@ export async function serveOutput(out, {pages = new Map(), onRequest = () => {},
     const bytes = readFileSync(file);
     response.end(type === 'text/css' && fonts === 'measured' ? measuredFonts(bytes.toString('utf8')) : bytes);
   });
-  await new Promise((settle) => server.listen(0, '127.0.0.1', settle));
+  await new Promise((settle, fail) => { server.once('error', fail); server.listen(port, '127.0.0.1', settle); });
   return {server, origin: `http://127.0.0.1:${server.address().port}`, close: () => new Promise((settle) => server.close(settle))};
 }
 
@@ -383,6 +399,72 @@ export const fontsReady = async (selector = '#stage') => {
   }
   return used.length;
 };
+
+// ---------- taking a first paint in the browser ----------
+// Shared by scripts/snapshot-first-paint.mjs (a component's examples) and
+// tools/first-paint/print.mjs (a page's own markup): the same page, the same
+// settling, the same serializer (first-paint-page.js).
+
+/** The browser context of a first-paint page. */
+export const PAGE_CONTEXT = {viewport: {width: 1280, height: 800}, reducedMotion: 'reduce'};
+
+const pause = (ms) => new Promise((settle) => setTimeout(settle, ms));
+
+/**
+ * Watches a page's requests: `sheets` collects the path of every stylesheet
+ * it asks for, `quiet(until)` waits until nothing is in flight and nothing was
+ * asked for in 600 ms (or `until`, a Date.now() deadline).
+ */
+export function watchRequests(page) {
+  const net = {inflight: 0, last: Date.now(), sheets: []};
+  page.on('request', (request) => {
+    net.inflight += 1;
+    net.last = Date.now();
+    const url = new URL(request.url());
+    if (url.pathname.endsWith('.css')) net.sheets.push(url.pathname);
+  });
+  const settle = () => { net.inflight -= 1; net.last = Date.now(); };
+  page.on('requestfinished', settle);
+  page.on('requestfailed', settle);
+  net.quiet = async (until) => {
+    while ((net.inflight > 0 || Date.now() - net.last < 600) && Date.now() < until) await pause(50);
+  };
+  return net;
+}
+
+/**
+ * The drawn page's first paint (window.__sfFirstPaintSerialize), once it has
+ * settled: Inter loaded (measuredFonts), the network quiet, and three
+ * serializations 250 ms apart agree (a measured style, such as the
+ * composition overlay's clip-path, takes a while on a loaded machine).
+ */
+export async function serializeSettled(page, net, prefix) {
+  // Measured in Inter, never the fallback (measuredFonts).
+  await page.evaluate(fontsReady);
+  await net.quiet(Date.now() + 15000);
+  let html = '';
+  let agreed = 0;
+  for (let tries = 0; tries < 16 && agreed < 2; tries += 1) {
+    await page.evaluate(() => new Promise((settle) => requestAnimationFrame(() => requestAnimationFrame(settle))));
+    const next = await page.evaluate((prefix) => window.__sfFirstPaintSerialize({prefix}), prefix);
+    agreed = next === html ? agreed + 1 : 0;
+    html = next;
+    await page.waitForTimeout(250);
+  }
+  return html;
+}
+
+/**
+ * A sheet the Loader asks for a moment later (a utility its idle scan finds)
+ * belongs to the first paint too: the list is taken once the page has been
+ * idle and then quiet again.
+ */
+export async function settleSheets(page, net) {
+  const settled = Date.now() + 10000;
+  await page.evaluate(() => new Promise((settle) => requestIdleCallback(() => requestIdleCallback(settle, {timeout: 3000}), {timeout: 3000})));
+  await pause(400);
+  await net.quiet(settled);
+}
 
 /** The boot of a page with the Framework: core.css, the theme class, core.js. */
 export const BOOT_CONFIG = {
