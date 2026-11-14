@@ -282,14 +282,17 @@ test('striped, hovered and active table cells are fills of their accent (C43 D3,
     read('src/utility/table-stripe/default/scss/_sf_css__table_stripe.scss'),
   ]);
   const fill = /@include places\.sf-place-fill\(var\(#\{\$prefix\}accent-bg\)\);/gu;
-  assert.equal(active.match(fill)?.length, 1, 'table-active');
+  // table-active, and an active row on a stripe (C185 (3): 12).
+  assert.equal(active.match(fill)?.length, 2, 'table-active and the active stripe');
   assert.equal(hover.match(fill)?.length, 2, 'table-hover and hovered stripe');
   // table-stripe, table-stripe-col, and a hovered stripe of either: every
   // .table has the row under the pointer (C146 (4)).
-  assert.equal(stripe.match(fill)?.length, 3, 'table-stripe, table-stripe-col and the hovered stripes');
-  // The row under the pointer is the one fill of the table itself (C146 (4));
-  // a cell at rest declares nothing.
-  assert.equal(table.match(fill)?.length, 1, 'the hovered row');
+  // A selected stripe of either too (C185 (3)).
+  assert.equal(stripe.match(fill)?.length, 4, 'table-stripe, table-stripe-col, the hovered and the selected stripes');
+  // The row under the pointer and the selected row (aria-selected, C185 (3))
+  // are the fills of the table itself (C146 (4)); a cell at rest declares
+  // nothing.
+  assert.equal(table.match(fill)?.length, 2, 'the hovered and the selected row');
   assert.match(table, /> tbody > tr:where\(:hover\) > \* \{\s*#\{\$prefix\}accent-bg: var\(#\{\$prefix\}hover-bg\);/u);
 });
 

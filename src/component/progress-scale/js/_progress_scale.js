@@ -22,6 +22,30 @@ function normalizeProgressScaleStep(value) {
   return Math.floor(normalizeProgressScaleValue(value) / 10 + 1e-9) * 10;
 }
 
+// A level of N (owner decision C185 (5)): the scale draws 2 to 10 steps, 10
+// when none is given. A scale given its steps is a level -- «4 из 5», a
+// password's strength -- and says so at the end of its row.
+const STEPS_DEFAULT = 10;
+
+function normalizeProgressScaleSteps(value) {
+  const parsed = Math.trunc(Number(value));
+  if (!Number.isFinite(parsed)) return STEPS_DEFAULT;
+  return Math.max(2, Math.min(10, parsed));
+}
+
+// The steps a value lights, rounded down as the tenths are (PG-12): 79 % of
+// 5 steps lights 3, not 4.
+function progressScaleLit(value, steps) {
+  return Math.floor((normalizeProgressScaleValue(value) / 100) * steps + 1e-9);
+}
+
+// «4 из 5» in the page's language: the scale's own words, as the Smart
+// element's (lang/*.json «of-steps»).
+function levelWords(lit, steps) {
+  const lang = String(globalThis.document?.documentElement?.lang || '').toLowerCase();
+  return lang.startsWith('ru') ? `${lit} из ${steps}` : `${lit} of ${steps}`;
+}
+
 function normalizeProgressScaleSize(value) {
   const normalized = String(value || '').toLowerCase();
   return SIZE_VALUES.includes(normalized) ? normalized : '1';
@@ -38,22 +62,25 @@ function normalizeBoolean(value, fallback = true) {
   return !['false', '0', 'no', 'off'].includes(String(value).toLowerCase());
 }
 
-function ensureScaleStructure(root) {
+function ensureScaleStructure(root, steps = STEPS_DEFAULT) {
   let container = root.querySelector('.sf-progress-scale-container');
   if (!container) {
     container = document.createElement('div');
-    container.className = 'sf-progress-scale-container grid grid-col-10 overflow-hidden';
+    container.className = 'sf-progress-scale-container grid overflow-hidden';
     root.prepend(container);
   }
   container.setAttribute('aria-hidden', 'true');
+  // Ten steps keep the grid utility they always had; any other count lays
+  // its blocks out by the component's own columns (one per block).
+  container.classList.toggle('grid-col-10', steps === STEPS_DEFAULT);
 
   const blocks = [...container.querySelectorAll('.sf-progress-scale-block')];
-  for (let index = blocks.length; index < 10; index += 1) {
+  for (let index = blocks.length; index < steps; index += 1) {
     const block = document.createElement('div');
     block.className = 'sf-progress-scale-block';
     container.append(block);
   }
-  blocks.slice(10).forEach((block) => block.remove());
+  blocks.slice(steps).forEach((block) => block.remove());
 }
 
 function ensureScaleText(root) {
@@ -80,19 +107,26 @@ function syncScaleClasses(root, step, size, tone) {
 
 function renderProgressScale(root) {
   if (!root) return false;
-  ensureScaleStructure(root);
+  // A level scale is one given its steps (C185 (5)).
+  const level = root.dataset.steps !== undefined && root.dataset.steps !== '';
+  const steps = level ? normalizeProgressScaleSteps(root.dataset.steps) : STEPS_DEFAULT;
+  ensureScaleStructure(root, steps);
 
   const value = normalizeProgressScaleValue(root.dataset.value);
-  const step = normalizeProgressScaleStep(value);
+  const lit = progressScaleLit(value, steps);
+  // The class lights the first n blocks (sf-progress-scale--<n*10>).
+  const step = lit * 10;
   const size = normalizeProgressScaleSize(root.dataset.size);
   const tone = normalizeProgressScaleTone(root.dataset.tone);
   const showText = normalizeBoolean(root.dataset.showText, true);
 
-  // A scale on a text line lays its track and value out in a row; any other
-  // scale stands its value under the track.
-  const onLine = /(^|\s)sf-progress-scale--line-/.test(root.className);
-  root.classList.add('sf-progress-scale', 'flex', onLine ? 'flex-row' : 'flex-col');
-  if (onLine) root.classList.remove('flex-col');
+  // A scale on a text line, and a level scale, lay their track and value out
+  // in a row, the value at the row's end (C185 (5)); any other scale stands
+  // its value under the track.
+  const onRow = level || /(^|\s)sf-progress-scale--line-/.test(root.className);
+  root.classList.add('sf-progress-scale', 'flex', onRow ? 'flex-row' : 'flex-col');
+  root.classList.remove(onRow ? 'flex-col' : 'flex-row');
+  root.classList.toggle('sf-progress-scale--level', level);
   syncScaleClasses(root, step, size, tone);
   root.dataset.value = String(value);
   root.dataset.size = size;
@@ -100,16 +134,18 @@ function renderProgressScale(root) {
   root.dataset.showText = String(showText);
   // Meter (C131 (7)): an amount within a known range, not a task's progress.
   root.setAttribute('role', root.dataset.meter === 'true' ? 'meter' : 'progressbar');
+  // A level is read in its steps: «4 из 5», or the page's level word.
+  const words = level ? levelWords(lit, steps) : '';
   root.setAttribute('aria-valuemin', '0');
-  root.setAttribute('aria-valuemax', '100');
-  root.setAttribute('aria-valuenow', String(value));
+  root.setAttribute('aria-valuemax', level ? String(steps) : '100');
+  root.setAttribute('aria-valuenow', level ? String(lit) : String(value));
 
   if (root.dataset.label) root.setAttribute('aria-label', root.dataset.label);
-  if (root.dataset.valueText) root.setAttribute('aria-valuetext', root.dataset.valueText);
+  if (root.dataset.valueText || words) root.setAttribute('aria-valuetext', root.dataset.valueText || words);
   else root.removeAttribute('aria-valuetext');
 
   const text = ensureScaleText(root);
-  text.textContent = `${value}%`;
+  text.textContent = level ? (root.dataset.valueText || words) : `${value}%`;
   text.hidden = !showText;
   return true;
 }
@@ -168,6 +204,10 @@ function setProgressScaleState(target, state = {}) {
     if (state.meter) root.dataset.meter = 'true';
     else delete root.dataset.meter;
   }
+  if (Object.prototype.hasOwnProperty.call(state, 'steps')) {
+    if (state.steps === null || state.steps === undefined || state.steps === '') delete root.dataset.steps;
+    else root.dataset.steps = String(normalizeProgressScaleSteps(state.steps));
+  }
 
   return renderProgressScale(root);
 }
@@ -186,6 +226,7 @@ function getProgressScaleState(target) {
     label: root.getAttribute('aria-label') || '',
     valueText: root.getAttribute('aria-valuetext') || '',
     meter: root.dataset.meter === 'true',
+    steps: root.dataset.steps ? normalizeProgressScaleSteps(root.dataset.steps) : null,
   };
 }
 
@@ -197,7 +238,7 @@ class ProgressScale extends ComponentObserver {
     super(props);
     const {
       size = '1', value = 0, status, tone = '', showText = true,
-      label = '', valueText = '', meter = false,
+      label = '', valueText = '', meter = false, steps = null,
     } = this.params || {};
     const root = document.createElement('div');
     root.className = 'sf-progress-scale flex flex-col';
@@ -208,6 +249,7 @@ class ProgressScale extends ComponentObserver {
     if (String(label).trim()) root.dataset.label = String(label).trim();
     if (String(valueText).trim()) root.dataset.valueText = String(valueText).trim();
     if (meter) root.dataset.meter = 'true';
+    if (steps !== null && steps !== undefined && steps !== '') root.dataset.steps = String(normalizeProgressScaleSteps(steps));
     this.template = root;
   }
 
@@ -250,4 +292,6 @@ export {
   getProgressScaleState,
   normalizeProgressScaleValue,
   normalizeProgressScaleStep,
+  normalizeProgressScaleSteps,
+  progressScaleLit,
 };

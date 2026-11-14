@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.dot",
   "kind": "component",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/dot/index.scss",
@@ -11,7 +11,7 @@
     "src/component/dot/scss/_css_dot.scss",
     "src/component/dot/scss/index.scss"
   ],
-  "content_sha256": "debfdcf56bdf0eccaefec30ea04084d8abcc6c1a5c05e3ec84b97154aa94396d",
+  "content_sha256": "72b21cabf6fd1c851fbf6915b68eef80a3c4c7c6b134370d6430b3d9e5e2f6b7",
   "dependencies": [
     {
       "id": "tokens.colour",

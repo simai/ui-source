@@ -12,12 +12,12 @@ states belong to `sf-view-table` (SIMAI Pro), not to these classes.
 
 | Class | What it does |
 | --- | --- |
-| `.table` | The table: rows on size 1 of the ladder, the head the same height, lines between rows, the row under the pointer on the hover state layer, a quiet head, the caption under the table in the supporting text. |
-| `.table-sm`, `.table-small` | The dense table: rows on size 1/2. |
+| `.table` | The table: rows on size 1 of the ladder, the head the same height (40, 32 in a `data-sf-density="compact"` area, 36 / 32 on a phone; C185 (2)), lines between rows, the row under the pointer on the select state layer (8 %, 12 % over a stripe; C185 (3)), a quiet head, the caption under the table in the supporting text. A row with `aria-selected="true"` is selected: the select layer and a primary line at its start. |
+| `.table-sm`, `.table-small` | Former words (C185 (2), until 2027-01-01, journal `class-table-sm-to-density`): rows on size 1/2. The loader notes each use in `SF.deprecations`. A table's rows follow the density of its area: set `data-sf-density="compact"` on the area instead. |
 | `.table-frame` | A wrapper (`<div class="table-frame"><table class="table">`): a bordered, rounded surface that scrolls sideways under a first column that stands still, with gridlines. Docara draws its Markdown tables in it. |
-| `.table-stripe`, `.table-stripe-col` | A zebra, only where the author of a wide read-only report wants one: odd rows (even columns) on the lightest state layer. |
+| `.table-stripe`, `.table-stripe-col` | A zebra, only where the author of a wide read-only report wants one: odd rows (even columns) on the lightest state layer (4 %). The row under the pointer and the selected row are states over it: 8 %, 12 % on a stripe (C185 (3)). |
 | `.table-hover` | Kept for old markup: every `.table` has the row under the pointer now. |
-| `.table-active` | A selected (active) row or cell on the select state layer. |
+| `.table-active` | A selected (active) row or cell on the select state layer (12 % on a stripe); a selected row also gets a primary line at its start (C185 (3)). |
 | `.table-border` | Lines between the columns too. |
 | `.table-fixed`, `.table-auto` | `table-layout`. |
 | `.table-numeric` (inside `.table`) | The number column type: end aligned in the head and the cells, tabular digits, no wrap. |

@@ -12237,6 +12237,35 @@
       "manual": "Listen for sf-input-quantity-remove where a page listened for sf-quantity-remove; the detail and the cancel are the same.",
       "owner": "ui-source",
       "source": "src/smart/input-quantity/aliases.json, src/smart/input-quantity/smart.manifest.json events.sf-quantity-remove"
+    },
+    {
+      "id": "class-table-sm-to-density",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "utility.table 1.6.0: a table's row follows the density of its area (owner decision C185 (2)): 40 in a normal area, 32 in a data-sf-density=\"compact\" one (36 / 32 on a phone). .table-sm and .table-small are former words for a row of the size-1/2 step and keep drawing it until remove_after; the loader notes each use in SF.deprecations (kind class). The documentation does not call them a compact table (C134).",
+      "items": [
+        {
+          "component": "table",
+          "from": "table-sm",
+          "to": "data-sf-density=\"compact\""
+        },
+        {
+          "component": "table",
+          "from": "table-small",
+          "to": "data-sf-density=\"compact\""
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<table class=\"table table-sm\">",
+        "after": "<div data-sf-density=\"compact\"><table class=\"table\"></table></div>"
+      },
+      "manual": "Remove table-sm (or table-small) from the table. Where the rows must be 32 in a normal page, set data-sf-density=\"compact\" on the table's area (the table or an ancestor); elsewhere the table takes the density of its page.",
+      "owner": "ui-source",
+      "source": "src/utility/table/default/scss/_sf_css__table.scss; src/core/js/loader.js FORMER_CLASSES; ui-control control/docs-review/decisions.md C185; control/research/2026-11-14-plain-group-2.md TU-9"
     }
   ]
 }

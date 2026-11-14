@@ -29,5 +29,23 @@ $prefix: --sf-table-;
         // active row, a striped one).
         @include places.sf-place-fill(var(#{$prefix}accent-bg));
     }
+
+    // The select state is drawn over a stripe (C185 (3)): the stripe's 4 and
+    // the state's 8 stack to 12.
+    .table-stripe > tbody > tr.table-active:nth-of-type(odd) > :nth-child(n),
+    .table-stripe-col > :not(caption) > tr.table-active > :nth-child(2n) {
+        #{$prefix}accent-bg: #{$table-active-stripe-bg};
+        @include places.sf-place-fill(var(#{$prefix}accent-bg));
+    }
+
+    // An active row is a selected row (C185 (3)): a line of the primary
+    // colour at the row's start.
+    tr.table-active > :first-child {
+        box-shadow: inset $table-selected-line-width 0 0 $table-selected-line-color;
+
+        &:dir(rtl) {
+            box-shadow: inset calc(-1 * #{$table-selected-line-width}) 0 0 $table-selected-line-color;
+        }
+    }
 // }
 }

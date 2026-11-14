@@ -1,3 +1,6 @@
 {
-  "title": "Шкала прогресса"
+  "title": "Шкала прогресса",
+  "runtime": {
+    "of-steps": "{value} из {total}"
+  }
 }

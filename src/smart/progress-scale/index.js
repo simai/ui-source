@@ -89,6 +89,19 @@ class SfProgressScale extends ProgressScaleElement {
     return this.getProp('status');
   }
 
+  // A level of N (C185 (5)): the steps the page gave, 2..10, or none (a
+  // percent scale of ten).
+  get levelSteps() {
+    if (!this.hasAttribute('steps')) return null;
+    const parsed = Math.trunc(Number(this.getAttribute('steps')));
+    return Number.isFinite(parsed) ? Math.max(2, Math.min(10, parsed)) : 10;
+  }
+
+  // «4 из 5» in the element's language.
+  levelWords(lit, steps) {
+    return this.sfWord('of-steps', {vars: {value: lit, total: steps}});
+  }
+
   // A threshold holds only where the page set it.
   threshold(attribute) {
     if (!this.hasAttribute(attribute)) return null;
@@ -121,6 +134,8 @@ class SfProgressScale extends ProgressScaleElement {
       line: this.line,
       label: this.accessibleLabel,
       value: normalizeProgressValue(props.value),
+      steps: this.levelSteps,
+      levelWords: (lit, steps) => this.levelWords(lit, steps),
     });
   }
 
@@ -137,6 +152,7 @@ class SfProgressScale extends ProgressScaleElement {
       status: this.status,
       drawnStatus: this.drawnStatus,
       meter: Boolean(this.meter),
+      steps: this.levelSteps,
       label: this.label,
       valueText: this.valueText,
     };
@@ -165,13 +181,17 @@ class SfProgressScale extends ProgressScaleElement {
     const root = this.querySelector('.sf-progress-scale');
     if (!root) return false;
     this.sfHostState('data-status', this.drawnStatus);
+    // A level reads in the element's own words, not the page's (C185 (5)).
+    const steps = this.levelSteps;
+    const lit = steps ? Math.floor((this.value / 100) * steps + 1e-9) : 0;
     return setProgressScaleState(root, {
       value: this.value,
       showText: this.showText,
       tone: this.drawnStatus,
       meter: Boolean(this.meter),
       label: this.accessibleLabel,
-      valueText: this.valueText,
+      valueText: this.valueText || (steps ? this.levelWords(lit, steps) : ''),
+      steps,
     });
   }
 }

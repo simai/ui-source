@@ -50,6 +50,13 @@ const sfProgressScaleMeta = {
       "minimum": 0,
       "maximum": 100
     },
+    "steps": {
+      "kind": "custom",
+      "valueType": "number",
+      "minimum": 2,
+      "maximum": 10,
+      "description": "A level of N (owner decision C185 (5)): the scale draws this many steps, 2 to 10, and lights the steps the value reaches, rounded down (80 of 5 steps lights 4). Unset, the scale draws ten and shows the percent under the track. Set, the value reads «4 из 5» (or value-text, a level's word) at the end of the row, and aria-valuemax and aria-valuenow count steps."
+    },
     "show-text": {
       "kind": "boolean",
       "values": [

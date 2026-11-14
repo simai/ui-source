@@ -28,6 +28,13 @@ high percentage is not success.
   threshold reached, and says which on the host as `data-status`.
 - `meter` (1.2.0) — an amount within a known range, not a
   task's progress: role `meter`.
+- `steps="2..10"` (1.3.0, owner decision C185 (5)) — a level of N: the scale
+  draws that many steps and lights the ones the value reaches, rounded down
+  (`value="80" steps="5"` lights 4). Its value stands at the end of the row:
+  `value-text` (a level's word, «Средний») or «4 из 5» in the element's
+  language; `aria-valuemax` is the steps and `aria-valuenow` the steps lit.
+  With `meter` it is a meter (a rating, a password's strength). Unset, the
+  scale draws ten and shows the percent under the track.
 
 The application owns `aria-busy`, task lifecycle, completion and error
 messages. The component never receives focus. Shared `root-class` and
@@ -46,6 +53,11 @@ Dated aliases until 2026-12-01 (`aliases.json`): the attribute `tone` is
 `getProgress()` retires: read `value`.
 
 ## Example
+
+```html
+<sf-progress-scale label="Оценка" value="80" steps="5" meter></sf-progress-scale>
+<sf-progress-scale label="Надёжность пароля" value="50" steps="4" meter status="warning" value-text="Средний"></sf-progress-scale>
+```
 
 ```html
 <sf-progress-scale

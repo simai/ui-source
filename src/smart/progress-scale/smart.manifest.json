@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-scale",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "title": "Progress Scale",
   "summary": "Segmented determinate progress with exact accessible value, explicit semantic tone and ten visual steps.",
   "kind": "smart",
@@ -74,6 +74,12 @@
         "minimum": 0,
         "maximum": 100,
         "pattern": "^(?:100|[1-9]?[0-9])(?:\\.[0-9]+)?$"
+      },
+      "steps": {
+        "type": "number",
+        "description": "A level of N (owner decision C185 (5)): the scale draws this many steps, 2 to 10, and lights the steps the value reaches, rounded down (80 of 5 steps lights 4). Unset, the scale draws ten and shows the percent under the track. Set, the value reads «4 из 5» (or value-text, a level's word) at the end of the row, and aria-valuemax and aria-valuenow count steps.",
+        "minimum": 2,
+        "maximum": 10
       },
       "show-text": {
         "type": "boolean",
