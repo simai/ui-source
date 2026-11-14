@@ -79,9 +79,9 @@
       "id": "smart-overlay-measured-geometry",
       "category": "runtime-review",
       "filePattern": "^smart/drawer/index\\.js$",
-      "contextPattern": "(?:Math\\.max|sides\\[side\\])",
+      "contextPattern": "(?:Math\\.max|sides\\[side\\]|\\$\\{room\\}px)",
       "status": "accepted-runtime-geometry",
-      "reason": "The drawer's scroll-lock gutters and its bottom sheet's drag offset are derived from the current viewport, rendered boxes and the pointer."
+      "reason": "The drawer's scroll-lock gutters, its bottom sheet's drag offset and the head's room for the edge controls of a full-screen panel are derived from the current viewport, rendered boxes and the pointer."
     },
     {
       "id": "smart-drag-measured-geometry",

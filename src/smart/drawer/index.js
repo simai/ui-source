@@ -823,7 +823,7 @@ class SfDrawer extends DrawerElement {
     // the look of a control over a picture (C14 (3), the core glass role --
     // a dark round plate, a white cross, the same in both themes). In the
     // theme's grey it stood on the scrim at about 1:1 and could not be seen.
-    const outside = context.closePlacement === 'outside';
+    const outside = context.closePlacement === 'outside' && !this._drawnWhole;
     const closeButton = context.showClose
       ? html`<sf-button-close
           size="1/3"
@@ -1185,13 +1185,35 @@ class SfDrawer extends DrawerElement {
     const rest = scroller ? scroller.scrollHeight - scroller.clientHeight - scroller.scrollTop : 0;
     root.toggleAttribute('data-sf-drawer-more-start', top > 1);
     root.toggleAttribute('data-sf-drawer-more-end', rest > 1);
+    this.noteWhole(root, panel);
+  }
+
+  // A side panel that fills the screen -- a phone (C56, C157 (4)) or size
+  // full -- has no outside: its edge controls (an outside close, «Открыть
+  // полностью») come into the head's row at its end, on the panel, not on a
+  // scrim (no glass plate), and the head keeps their room
+  // (data-sf-drawer-whole, --sf-drawer-edge-room). Placed along the top they
+  // covered the title.
+  noteWhole(root, panel) {
+    const edge = root.querySelector('[data-sf-drawer-edge]');
+    const whole = Boolean(panel && this.openState && !this.sheet && !(this.docked && this.dockColumn)
+      && panel.getBoundingClientRect().width >= globalThis.innerWidth - 1);
+    root.toggleAttribute('data-sf-drawer-whole', whole);
+    const room = whole && edge && edge.childElementCount ? Math.ceil(edge.getBoundingClientRect().width) : 0;
+    if (room) root.style.setProperty('--sf-drawer-edge-room', `${room}px`);
+    else root.style.removeProperty('--sf-drawer-edge-room');
+    if (whole !== Boolean(this._drawnWhole)) {
+      this._drawnWhole = whole;
+      // The outside close changes its look with it.
+      if (this.closePlacement === 'outside') this.requestComponentUpdate('whole');
+    }
   }
 
   observeScrollEdges(root) {
     if (typeof ResizeObserver !== 'function') return;
     if (!this._edgeObserver) this._edgeObserver = new ResizeObserver(() => this.onPanelScroll());
     this._edgeObserver.disconnect();
-    for (const area of ['[data-sf-drawer-panel]', '[data-sf-drawer-body]']) {
+    for (const area of ['[data-sf-drawer-panel]', '[data-sf-drawer-body]', '[data-sf-drawer-edge]']) {
       const node = root.querySelector(area);
       if (node) this._edgeObserver.observe(node);
     }

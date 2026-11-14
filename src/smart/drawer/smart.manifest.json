@@ -885,6 +885,7 @@
           "modal is a setting, not a deprecated mode: everything at an edge is sf-drawer (owner decision C157 (1)); sf-modal position=\"inline-*|bottom\" is its old name until 2027-01-01.",
           "slot=\"footer\": a pinned foot, the actions at its start, the main one first, 8 apart (compact 4), halves on a phone (C157 (3)).",
           "The title is on the window title's step (h4, bold), not heading 6 (C157 (7)).",
+          "A closed drawer's edge controls are hidden with its panel; a panel that fills the screen (a phone, size full) shows its outside close and edge controls in the head's row at its end, without the scrim plate.",
           "slot=\"header-action\": one action in the head before the close; the head's buttons are 8 apart (compact 4); under a finger the close and «Назад» press across 44 (study view-property-base VB-1, VB-4).",
           "A panel opened from a floating panel at the same edge is drawn inside it with «Назад» in its head; the panel under it hides; its close, the scrim and a swipe close the whole panel, «Назад» and Escape the top one; stack-offset no longer applies between them (C157 (6)).",
           "On a phone a side panel closes with a swipe toward its edge (C157 (4)); the bottom sheet's grab bar is 24 x 4 in on-surface-variant on every screen (C157 (5)).",
@@ -899,11 +900,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",
-        "sha256": "46f6f82de9a8a15d80284a437eaf2a1c5101abdc789e03a3c6efcc746d33edae"
+        "sha256": "37bec735acbb3a2efc1ed24e480a6d14853a15ccfc39fba197c954a837bb952d"
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",
-        "sha256": "648cbca8fedd3f3ca27c13fd9cd7bfa5f3b2771ebc8d935f85f1e97d2f64c126"
+        "sha256": "8ae862b8d443b444dd04f055cc79188d46f7eaed86f7d3c4ef15b70dba3584a2"
       },
       {
         "path": "src/smart/drawer/rule.js",
