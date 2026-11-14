@@ -20,7 +20,7 @@
 import {existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {BUILT_IN, FALLBACK, ROOT, folderGaps, languageFolders} from './language-coverage.mjs';
+import {BUILT_IN, FALLBACK, ROOT, folderGaps, languageFolders, runtimeWords} from './language-coverage.mjs';
 
 export const FORMAT = 'simai.language-pack';
 export const INDEX_FORMAT = 'simai.language-pack-index';
@@ -107,8 +107,8 @@ export function buildPack(code, {root = ROOT, delivery = 'framework', headers} =
     translated += gaps.words - gaps.missing.length;
     for (const gap of gaps.gaps) problems.push(`${folder.id}: ${gap}`);
     if (!gaps.file) continue;
-    const english = readJson(path.join(folder.dir, `${FALLBACK}.json`)).runtime ?? {};
-    const own = readJson(path.join(folder.dir, `${code}.json`)).runtime ?? {};
+    const english = runtimeWords(readJson(path.join(folder.dir, `${FALLBACK}.json`)));
+    const own = runtimeWords(readJson(path.join(folder.dir, `${code}.json`)));
     if (!words.has(id)) words.set(id, {});
     const target = words.get(id);
     for (const key of Object.keys(english)) {

@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
   "coverage": {
-    "words": 964,
-    "translated": 963,
+    "words": 979,
+    "translated": 978,
     "share": 99.9
   },
   "words": {
@@ -166,6 +166,9 @@
       "handle-label": "Панель биіктігін өзгерту"
     },
     "sf-dropdown": {
+      "inherited": "мұраланады",
+      "reset": "Мұраланған мәнге қайтару",
+      "described": "Мұраланған: {value}",
       "search": "Іздеу",
       "empty": "Таңдалмаған",
       "value-missing": "Нұсқаны таңдаңыз",
@@ -374,6 +377,9 @@
       "retry": "Қайталау"
     },
     "sf-input": {
+      "inherited": "мұраланады",
+      "reset": "Мұраланған мәнге қайтару",
+      "described": "Мұраланған: {value}",
       "value-missing": "Өрісті толтырыңыз",
       "clear": "Тазалау",
       "reveal": "Құпиясөзді көрсету",
@@ -624,6 +630,9 @@
       "help": "Толығырақ: {label}"
     },
     "sf-input-quantity": {
+      "inherited": "мұраланады",
+      "reset": "Мұраланған мәнге қайтару",
+      "described": "Мұраланған: {value}",
       "decrement": "Мәнді азайту",
       "increment": "Мәнді көбейту",
       "range-underflow": "Мән кемінде {min} болуы керек",
@@ -660,6 +669,9 @@
       "help": "Толығырақ: {label}"
     },
     "sf-input-textarea": {
+      "inherited": "мұраланады",
+      "reset": "Мұраланған мәнге қайтару",
+      "described": "Мұраланған: {value}",
       "value-missing": "Өрісті толтырыңыз",
       "count-text": "{count} / {max}",
       "too-long": "{max} таңбадан аспауы керек",
@@ -1082,6 +1094,9 @@
       "goToSlide": "{n}-слайдқа өту"
     },
     "sf-switch": {
+      "inherited": "мұраланады",
+      "reset": "Мұраланған мәнге қайтару",
+      "described": "Мұраланған: {value}",
       "off": "өшірулі",
       "on": "қосулы",
       "help": "Толығырақ: {label}"

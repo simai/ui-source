@@ -255,12 +255,12 @@ export function localeText(dictionary, key, locale, component) {
   for (const candidate of order) {
     const added = component ? wordsOf(component)?.get(candidate)?.[key] : undefined;
     if (added !== undefined) {
-      if (candidate === 'en') warnFallback(order, component, key);
+      if (candidate === 'en' && added !== '') warnFallback(order, component, key);
       return added;
     }
     const shipped = dictionary?.[candidate]?.[key];
     if (shipped !== undefined) {
-      if (candidate === 'en') warnFallback(order, component, key);
+      if (candidate === 'en' && shipped !== '') warnFallback(order, component, key);
       return shipped;
     }
   }
@@ -353,7 +353,7 @@ export function pageWord(dictionary, key, node, {component, source = '', count, 
     const word = added !== undefined ? added : dictionary?.[candidate]?.[key];
     if (word === undefined || word === null) continue;
     if (candidate === sourceLanguage && !chain(locale).includes(candidate)) warnWord(owner, key, locale, candidate);
-    if (candidate === 'en') warnFallback(chain(locale), owner, key);
+    if (candidate === 'en' && word !== '') warnFallback(chain(locale), owner, key);
     if (typeof word === 'object') {
       let form = 'other';
       if (count !== undefined) {

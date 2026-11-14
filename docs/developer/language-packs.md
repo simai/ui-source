@@ -106,8 +106,12 @@ number formats or plural rules of its own (see «Numbers and dates»).
   `sf-input-country` (country-code), `download-file`;
 - shared core words: `sf-file-size` (the four size units `b`, `kb`, `mb`, `gb`).
 
-The keys are the keys of the component's `lang/en.json` → `runtime`. A key
-English does not have is an error; a key the pack lacks is only less coverage.
+The keys are the keys of the component's `lang/en.json` → `runtime`, and the
+words of a trait the component opts into (`x-trait-words` → `words`, for
+example `inherited`, `reset`, `described` of `field-inherit@1`): they are looked
+up under the component's own name. A key English does not have is an error; a
+key the pack lacks is only less coverage. A word English leaves empty on
+purpose (`"placeholder": ""`) has nothing to translate and is never missing.
 Studio and documentation words (`title`, `events`, `settings`) are not runtime
 words and are never in a pack.
 

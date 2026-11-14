@@ -15,5 +15,13 @@
     "bad-input": "Сан енгізіңіз",
     "count-text": "{count} / {max}",
     "help": "Толығырақ: {label}"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "мұраланады",
+      "reset": "Мұраланған мәнге қайтару",
+      "described": "Мұраланған: {value}"
+    }
   }
 }

@@ -77,6 +77,10 @@ test('C177 (7): the Kazakh pilot - draft, nearly whole, 11-14 KB, the gaps named
   // The one word left out on purpose: sf-change reads «A to B» as three
   // pieces, which Kazakh cannot say without endings on the values (C177 (9)).
   assert.deepEqual(coverage.folders.map((folder) => [folder.id, folder.missing]), [['smart/change', ['to-text']]]);
+  // A trait's words (x-trait-words, field-inherit@1) are the component's own words and ride the pack.
+  for (const id of ['sf-input', 'sf-dropdown', 'sf-switch', 'sf-input-textarea', 'sf-input-quantity']) {
+    assert.deepEqual(Object.keys(pack.words[id] ?? {}).filter((key) => ['inherited', 'reset', 'described'].includes(key)).sort(), ['described', 'inherited', 'reset'], id);
+  }
   const gzip = gzipSync(readFileSync(new URL('../src/core/lang/kk.json', import.meta.url)), {level: 9}).length;
   assert.ok(gzip >= 9000 && gzip <= 14336, `kk.json gzip ${gzip}`);
   // Kazakh nouns stay singular after a number: one and other say the same.
@@ -170,6 +174,10 @@ test('C177 (1)(4): core fetches one pack, only for a language that has one; a mi
     const node = {closest: () => ({getAttribute: () => 'kk'}), tagName: 'SF-CHANGE'};
     // The word the pack lacks: English, one warning, listed by SF.language.missing().
     assert.equal(pageWord({en: {'to-text': 'to'}, ru: {'to-text': 'на'}}, 'to-text', node), 'to');
+    assert.deepEqual(language.missing('kk'), ['sf-change|to-text']);
+    // An English word that is empty on purpose (a placeholder left blank) has nothing to translate.
+    const country = {closest: () => ({getAttribute: () => 'kk'}), tagName: 'SF-INPUT-COUNTRY'};
+    assert.equal(pageWord({en: {placeholder: ''}, ru: {placeholder: ''}}, 'placeholder', country), '');
     assert.deepEqual(language.missing('kk'), ['sf-change|to-text']);
     assert.ok(warnings.some((text) => text.includes('"kk": words missing')));
     assert.equal(pageWord({en: {'show-text': 'Show changes'}, ru: {}}, 'show-text', node), 'Өзгерістерді көрсету');
