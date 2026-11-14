@@ -207,6 +207,9 @@ export class SfResizer extends ResizerElement {
     this._wanted = Number(value) || readStored(this.storageKey) || null;
     this._folded = this.collapsible && (value === '0' || (value === null && readFolded(this.storageKey)));
     this._restore = this._wanted;
+    // A panel that folds shows the «Показать» button on its edge: its code is
+    // asked for now, so the button draws whole the first time it is needed.
+    if (this.collapsible) globalThis.SF?.Loader?.ensure?.(['sf-button-icon']);
     if (this.target()) {
       this.control();
       this.layout();
@@ -297,34 +300,45 @@ export class SfResizer extends ResizerElement {
   }
 
   // The «Показать» button on the folded panel's edge (C158 (2)), made the
-  // first time the panel folds: an sf-button-icon in the panel, shown only
-  // while it is folded. The glyph shows the side the panel opens from.
+  // first time the panel folds: an sf-button-icon in a holder of its own in
+  // the panel (the holder stays where the button may redraw itself), shown
+  // only while the panel is folded. The glyph shows the side the panel opens
+  // from.
   unfoldButton() {
     const target = this.target();
     if (!target) return null;
-    let button = this._unfold;
-    if (!button || button.parentElement !== target) {
-      button = document.createElement('sf-button-icon');
-      button.setAttribute(UNFOLD, '');
-      button.setAttribute('size', '1/2');
-      button.setAttribute('appearance', 'ghost');
-      button.setAttribute('scheme', 'on-surface');
-      button.addEventListener('click', (event) => {
+    let holder = this._unfold;
+    if (!holder || holder.parentElement !== target) {
+      holder?.remove();
+      holder = document.createElement('span');
+      holder.setAttribute(UNFOLD, '');
+      holder.addEventListener('click', (event) => {
+        if (!event.target?.closest?.('button, sf-button-icon')) return;
         event.stopPropagation();
         this.fold(false, 'end');
         this.focus({preventScroll: true});
       });
-      target.append(button);
-      this._unfold = button;
+      target.append(holder);
+      this._unfold = holder;
     }
     const rtl = getComputedStyle(this).direction === 'rtl';
     const startEdge = this.getAttribute('edge') === 'inline-start';
     // A panel whose edge is on its right stands on the left of the page.
-    button.setAttribute('icon', rtl === startEdge ? 'left_panel_open' : 'right_panel_open');
+    const icon = rtl === startEdge ? 'left_panel_open' : 'right_panel_open';
     const word = this.sfWord('show');
-    button.setAttribute('aria-label', word);
-    button.title = word;
-    return button;
+    const key = `${icon} ${word}`;
+    if (holder.__sfKey !== key) {
+      holder.__sfKey = key;
+      const button = document.createElement('sf-button-icon');
+      button.setAttribute('size', '1/2');
+      button.setAttribute('appearance', 'ghost');
+      button.setAttribute('scheme', 'on-surface');
+      button.setAttribute('icon', icon);
+      button.setAttribute('aria-label', word);
+      button.setAttribute('title', word);
+      holder.replaceChildren(button);
+    }
+    return holder;
   }
 
   // Folds the panel to its edge (on) or gives back the width it had (off).
