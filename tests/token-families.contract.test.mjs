@@ -92,7 +92,7 @@ test('C178 families: in the built core sheet every former name is still there an
 // after core moved its own reads to the survivors).
 // Every read keeps working through the alias; a source moves to the survivor
 // at its next change. The count may only fall: a new read of a former name
-// fails here, and a count that fell is lowered in the same commit.
+// fails here; a count that fell is lowered when it is seen (a diagnostic).
 const READS_LEFT = {
   '--sf-font-weight-light': 0,
   '--sf-font-weight-regular': 103,
@@ -104,7 +104,7 @@ const READS_LEFT = {
   '--sf-ui-blur-medium': 7,
 };
 
-test('C178 families: the sources read a former name no more than they did, and no former shadow at all', () => {
+test('C178 families: the sources read a former name no more than they did, and no former shadow at all', (context) => {
   const sources = files(resolve(root, 'src'), ['.scss', '.css', '.js', '.mjs']).map((path) => readFileSync(path, 'utf8')).join('\n');
   const grown = [];
   const fell = [];
@@ -115,6 +115,8 @@ test('C178 families: the sources read a former name no more than they did, and n
     if (count < left) fell.push(`${name}: ${count} (lower READS_LEFT)`);
   }
   assert.deepEqual(grown, [], 'a new read of a former name');
-  assert.deepEqual(fell, [], 'a source moved to the survivor: lower the count');
+  // A count that fell is a source that moved: a reminder to lower it, not a
+  // failure, so a merge of two branches that each moved one stays green.
+  if (fell.length) context.diagnostic(`lower READS_LEFT: ${fell.join(', ')}`);
   assert.deepEqual(shadowFormer.filter((name) => reads(sources, name)), [], 'the shadows are the four places (C20)');
 });
