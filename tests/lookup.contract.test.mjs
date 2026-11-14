@@ -39,7 +39,7 @@ const vera = {value: 'u3', label: 'Vera', caption: 'Support'};
 test('the manifest declares the settings, the value, the events and the form of the design draft', () => {
   assert.equal(component.id, 'smart.input-lookup');
   assert.equal(component.tag, 'sf-input-lookup');
-  assert.equal(component.family, 'field');
+  assert.equal(component.family, 'input', 'the family is the first word of the tag (C174, NM-5)');
   for (const name of ['name', 'label', 'placeholder', 'hint', 'multiple', 'max-items', 'min-length', 'max-results', 'debounce',
     'maxlength', 'options', 'exclude', 'provider', 'required', 'disabled', 'readonly', 'invalid', 'error-message', 'size', 'appearance']) {
     assert.ok(component.settings[name], `setting ${name}`);

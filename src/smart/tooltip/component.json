@@ -4,7 +4,7 @@
   "tag": "sf-tooltip",
   "version": "1.2.0",
   "kind": "leaf",
-  "family": "hint",
+  "family": "tooltip",
   "settings": {
     "appearance": {
       "type": "enum",

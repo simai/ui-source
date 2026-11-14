@@ -4,7 +4,7 @@
   "tag": "sf-reference-link",
   "version": "1.0.5",
   "kind": "leaf",
-  "family": "link",
+  "family": "reference",
   "settings": {
     "appearance": {
       "type": "enum",

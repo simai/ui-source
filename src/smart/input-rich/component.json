@@ -4,7 +4,7 @@
   "tag": "sf-input-rich",
   "version": "1.3.2",
   "kind": "leaf",
-  "family": "field",
+  "family": "input",
   "settings": {
     "size": {
       "type": "enum",

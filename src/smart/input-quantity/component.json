@@ -4,7 +4,7 @@
   "tag": "sf-input-quantity",
   "version": "1.4.0",
   "kind": "leaf",
-  "family": "field",
+  "family": "input",
   "traits": [
     "field-inherit@1"
   ],

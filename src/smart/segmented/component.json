@@ -4,7 +4,7 @@
   "tag": "sf-segmented",
   "version": "1.6.0",
   "kind": "leaf",
-  "family": "button",
+  "family": "segmented",
   "settings": {
     "items": {
       "type": "list",

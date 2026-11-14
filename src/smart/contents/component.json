@@ -4,7 +4,7 @@
   "tag": "sf-contents",
   "version": "1.4.3",
   "kind": "leaf",
-  "family": "navigation",
+  "family": "contents",
   "settings": {
     "layout": {
       "type": "enum",
