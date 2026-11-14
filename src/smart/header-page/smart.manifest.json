@@ -242,7 +242,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-page/index.js",
-        "sha256": "b7bee8d7e768553992b3e3efa79941f91119da1084489b7bc6ac06d6a15d7d8e"
+        "sha256": "f80a45ad0ca69e4556519d6f21e26de4d9d27431551588460056d6e043a63910"
       },
       {
         "path": "src/smart/header-page/js/templates/default.js",

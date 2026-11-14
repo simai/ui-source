@@ -616,6 +616,12 @@
     flex-wrap: nowrap;
   }
 
+  /* Nothing in the row shrinks: a separator squeezed to nothing measured 0
+     and the row counted room it did not have. */
+  .sf-rich-text .sf-rich-text-toolbar--more > * {
+    flex: none;
+  }
+
   .sf-rich-text .sf-rich-text-toolbar--more:not([data-sf-row-laid]) {
     overflow: clip;
   }

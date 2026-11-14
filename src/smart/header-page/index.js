@@ -148,7 +148,10 @@ class SfPageHeader extends PageHeaderElement {
       return {element, rank, pin: pin || isMainAction(element) || isPressed(element), group: 0};
     });
     const line = row.parentElement;
-    let laid = layoutActionRow({row, units, more, outClass: 'sf-page-header-out', room: this.roomBesideTitle(line, row)});
+    // The line's wrap has no tolerance: a row half a pixel over the room
+    // beside the title moves to a line of its own, so the room is taken a
+    // pixel short.
+    let laid = layoutActionRow({row, units, more, outClass: 'sf-page-header-out', room: this.roomBesideTitle(line, row) - 1});
     // The ones that must stay do not fit beside the title: the row takes a
     // line of its own (the line wraps it there), as wide as the line.
     if (!laid.fits) laid = layoutActionRow({row, units, more, outClass: 'sf-page-header-out', room: rowRoomOf(line)});

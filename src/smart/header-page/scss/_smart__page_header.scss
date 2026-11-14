@@ -69,6 +69,13 @@
   flex-wrap: nowrap;
 }
 
+/* Nothing in the row shrinks (an sf-button host is display: contents, so its
+   button is the row's item): what it measures is what it draws. */
+.sf-page-header-actions--more > *,
+.sf-page-header-actions--more > * > :is(button, a) {
+  flex: none;
+}
+
 .sf-page-header-actions--more:not([data-sf-row-laid]) {
   overflow: clip;
 }

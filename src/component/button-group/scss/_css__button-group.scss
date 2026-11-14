@@ -625,6 +625,12 @@
     overflow: visible;
   }
 
+  /* Nothing in the row shrinks (an sf-button host is display: contents, so its
+     button is the row's item): what it measures is what it draws. */
+  .sf-button-group[overflow='more'] > sf-button > :is(button, a) {
+    flex: none;
+  }
+
   .sf-button-group > .sf-button-group-out {
     display: none !important;
   }
