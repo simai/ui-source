@@ -22,10 +22,10 @@ const ContextMenuElement = elementFromManifest(manifest, {
   lang: { en, ru },
   source: "ru",
   aliases,
-  // openFor(anchor, options), toggleFor(anchor, options) and chooseTab(index)
+  // openFor(anchor, options), toggleFor(anchor, options), openAt(x, y, options) and chooseTab(index)
   // take their fields in order; the runtime gives them the object form of
   // §4.4 as well: openFor({anchor, options}), chooseTab({index}).
-  positional: ["open-for", "toggle-for", "choose-tab"],
+  positional: ["open-for", "toggle-for", "open-at", "choose-tab"],
 });
 
 // Prefer the helper Core published; a bundle loaded without core.js still
@@ -54,6 +54,24 @@ const TABBABLE = 'input:not([type="hidden"]), select, textarea, button, a[href],
 // not walked here.
 const ROW_MARK = 'input[type="checkbox"], [role="checkbox"], [role="switch"]';
 const editable = (element) => Boolean(element?.matches?.('input, select, textarea, [contenteditable=""], [contenteditable="true"]'));
+
+// ─── the menu of an object (owner decision C164, 2026-11-14) ───────────────
+// `for` names the page's areas -- a list, a table, a tree, a canvas -- whose
+// objects open this menu by the right button, the menu key (Shift+F10 too)
+// and a long press on a touch screen: one setting, one menu, the same list
+// the object's «⋯» opens (C164 (1), (2)). The object is the row the event
+// came from: a table body's row, an element with a row, option, tree item or
+// list item role, or a list item; an area without rows is one object itself.
+const TARGETS = 'tbody > tr, [role="row"]:not(:has(> [role="columnheader"])), [role="option"], [role="treeitem"], [role="listitem"], li';
+// Where the browser's own menu stays: a link, a field and text being edited,
+// selected text and the right button with Shift (C164 (1)).
+const BROWSER_KEEPS = 'a[href], input, select, textarea, [contenteditable=""], [contenteditable="true"]';
+// A long press: half a second, the finger still within ten pixels (the
+// platforms' own slop); a move further is a scroll.
+const LONG_PRESS_MS = 500;
+const LONG_PRESS_SLOP = 10;
+const ids = (value) => String(value ?? "").trim().split(/\s+/u).filter(Boolean);
+const selected = (element) => element?.getAttribute?.("aria-selected") === "true";
 
 // ─── drilling (1.5.0) ────────────────────────────────────────────────────────
 // A row's path in the tree, the way the template writes it into the markup:
@@ -197,6 +215,8 @@ function pathOf(entries, id, prefix = "") {
 // the controls that are not rows -- a range's slider keeps its own slider role
 // and its side arrows, so it is a stop rather than an item.
 const STOPS = ".sf-context-menu-item, .sf-context-menu-stop";
+// The page's events the areas named by `for` open the menu by (C164).
+const AREA_EVENTS = ["contextmenu", "keydown", "pointerdown", "pointermove", "pointerup", "pointercancel", "click"];
 
 const POSITION_ALIASES = {
   start: "inline-start",
@@ -236,6 +256,10 @@ class SfContextMenu extends ContextMenuElement {
     this.addEventListener("keydown", this.handleOwnedKeyDown);
     this.addEventListener("click", this.handleEntryClick);
     this.addEventListener("pointerover", this.handleEntryHover);
+    // The objects of the areas named by `for` (C164): the page's events,
+    // heard on the document while the menu is in the page.
+    this._onAreaEvent = (event) => this.handleAreaEvent(event);
+    this._press = null;
     this._owned = null;
     this._typeahead = {text: "", at: 0};
     // The way down a drilling panel: the paths of the rows it was opened
@@ -331,7 +355,16 @@ class SfContextMenu extends ContextMenuElement {
     this._scrollbar.watch(area, name);
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    for (const type of AREA_EVENTS) document.addEventListener(type, this._onAreaEvent, type === "click");
+  }
+
   disconnectedCallback() {
+    for (const type of AREA_EVENTS) document.removeEventListener(type, this._onAreaEvent, type === "click");
+    this.cancelPress();
+    this._point?.remove();
+    this._point = null;
     // Taken out of the page, it closes without asking: nothing is left to keep.
     if (this._owned) this.close({restoreFocus: false, ask: false});
     this._itemObserver.disconnect();
@@ -357,9 +390,14 @@ class SfContextMenu extends ContextMenuElement {
     });
   }
 
+  // A row the menu drew from a disabled entry is dimmed but stays in the
+  // walk, so its reason -- the caption -- is read (owner decision C164 (4);
+  // APG: disabled menu items are focusable but cannot be activated). It is
+  // aria-disabled, never disabled, and a press on it does nothing.
   availableMenuItems() {
     return this.menuItems().filter(item => !item.matches(":disabled") &&
-      !item.closest('[hidden], [inert], [aria-disabled="true"], sf-button[disabled]') &&
+      (item.matches(".sf-context-menu-item--disabled") || !item.closest('[aria-disabled="true"]')) &&
+      !item.closest('[hidden], [inert], sf-button[disabled]') &&
       item.getClientRects().length > 0 && getComputedStyle(item).visibility !== "hidden");
   }
 
@@ -830,6 +868,11 @@ class SfContextMenu extends ContextMenuElement {
   handleEntryClick(event) {
     const row = event.target?.closest?.(".sf-context-menu-item");
     if (!row || !this.contains(row) || row.matches(":disabled")) return;
+    // A dimmed row is read, not chosen (C164 (4)).
+    if (row.getAttribute("aria-disabled") === "true") {
+      event.preventDefault();
+      return;
+    }
     const entry = this.entryOf(row);
     if (!entry) return;
     if (row.dataset.sfOption !== undefined) {
@@ -886,7 +929,7 @@ class SfContextMenu extends ContextMenuElement {
       if (this._hoverRow !== row || !this._owned) return;
       if (this.drill) return;
       const entry = this.entryOf(row);
-      if (entry && submenuOf(entry) && !row.matches(":disabled")) {
+      if (entry && submenuOf(entry) && !row.matches(':disabled, [aria-disabled="true"]')) {
         this.openSubmenu(row, entry, {focus: "none"});
       } else {
         this.closeSubmenu({restoreFocus: false});
@@ -911,6 +954,154 @@ class SfContextMenu extends ContextMenuElement {
     return Boolean(this._owned);
   }
 
+  // Open with the menu's corner exactly at a point of the screen -- the
+  // pointer's -- with no gap (CM-5), flipping at the edges. `target` is the
+  // object it acts on: the focus goes back to it, and on a phone the menu is
+  // the sheet at the bottom (C164 (6)). The options are openFor()'s.
+  openAt(x, y, options = {}) {
+    if (!Number.isFinite(Number(x)) || !Number.isFinite(Number(y))) return Promise.resolve({outcome: "refused", reason: "invalid"});
+    if (!this._point) {
+      this._point = document.createElement("span");
+      this._point.setAttribute("aria-hidden", "true");
+      this._point.className = "sf-context-menu-point";
+    }
+    // Where the menu is, so a dialog's top layer holds it as it holds the menu.
+    (this.closest("dialog[open]") || document.body).append(this._point);
+    // The point is drawn by the menu's sheet (.sf-context-menu-point): a
+    // zero box fixed to the screen; only where it stands is set here.
+    this._point.style.left = `${Number(x)}px`;
+    this._point.style.top = `${Number(y)}px`;
+    return this.openFor(this._point, {side: "block-end", align: "start", offset: "0px", ...options});
+  }
+
+  // ─── the areas named by `for` (C164) ─────────────────────────────────────
+  areas() {
+    return ids(this.getAttribute("for") ?? this.for).map((id) => document.getElementById(id)).filter(Boolean);
+  }
+
+  // The object a node of the page stands in: {area, target}, or null outside
+  // every area.
+  targetOf(node) {
+    if (!(node instanceof Element)) return null;
+    for (const area of this.areas()) {
+      if (!area.contains(node)) continue;
+      const row = node.closest(TARGETS);
+      return {area, target: row && row !== area && area.contains(row) ? row : area};
+    }
+    return null;
+  }
+
+  // Which objects the menu acts on (C164 (3)): every selected row of the
+  // area when the row is selected (aria-selected="true"); a row that can be
+  // selected and is not is selected alone first (`select` lists the rows
+  // that lose their selection); any other object is acted on alone.
+  selectionOf({area, target}) {
+    if (!area || target === area) return {targets: [target], select: null};
+    const rows = Array.from(area.querySelectorAll(TARGETS));
+    if (selected(target)) {
+      const all = rows.filter(selected);
+      return {targets: all.length ? all : [target], select: null};
+    }
+    if (target.hasAttribute("aria-selected")) return {targets: [target], select: rows.filter((row) => row !== target && selected(row))};
+    return {targets: [target], select: null};
+  }
+
+  // The rows the open menu acts on (empty when it is not open for an object).
+  get targets() {
+    return this._targets ?? [];
+  }
+
+  // The right button with Shift, a link, a field and selected text keep the
+  // browser's own menu (C164 (1)).
+  browserKeeps(event, target) {
+    if (event.shiftKey && event.type === "contextmenu" && event.button === 2) return true;
+    if (event.target?.closest?.(BROWSER_KEEPS) && target.contains(event.target.closest(BROWSER_KEEPS))) return true;
+    const selection = document.getSelection?.();
+    return Boolean(selection && !selection.isCollapsed && String(selection).trim()
+      && selection.anchorNode && target.contains(selection.anchorNode));
+  }
+
+  // The menu at an object opened from the keyboard: under its start.
+  openAtTarget(target, options = {}) {
+    const rect = target.getBoundingClientRect();
+    const rtl = getComputedStyle(target).direction === "rtl";
+    return this.openAt(rtl ? rect.right : rect.left, Math.min(rect.bottom, window.innerHeight), {...options, target});
+  }
+
+  cancelPress() {
+    if (this._press?.timer) clearTimeout(this._press.timer);
+    this._press = null;
+  }
+
+  handleAreaEvent(event) {
+    const {type} = event;
+    if (type === "pointermove") {
+      const press = this._press;
+      if (press && !press.fired && Math.hypot(event.clientX - press.x, event.clientY - press.y) > LONG_PRESS_SLOP) this.cancelPress();
+      return;
+    }
+    if (type === "pointerup" || type === "pointercancel") {
+      if (this._press && !this._press.fired) this.cancelPress();
+      return;
+    }
+    if (type === "click") {
+      // The lift after a long press is not a press on the row.
+      if (this._press?.fired) {
+        const {at} = this._press;
+        this._press = null;
+        if (Date.now() - at < 2000) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      }
+      return;
+    }
+    // The menu's own rows, when the page placed the menu inside its area,
+    // are not objects of the area.
+    if (event.defaultPrevented || this.contains(event.target)) return;
+    const found = this.targetOf(event.target);
+    if (!found) return;
+    if (type === "pointerdown") {
+      this.cancelPress();
+      if (event.pointerType !== "touch" || event.button > 0 || !event.isPrimary) return;
+      if (event.target.closest?.(BROWSER_KEEPS)) return;
+      const press = {x: event.clientX, y: event.clientY, fired: false, at: 0};
+      press.timer = setTimeout(() => {
+        if (this._press !== press) return;
+        press.fired = true;
+        press.at = Date.now();
+        this.openAt(press.x, press.y, {target: found.target});
+      }, LONG_PRESS_MS);
+      this._press = press;
+      return;
+    }
+    if (type === "keydown") {
+      if (event.key !== "ContextMenu" && !(event.shiftKey && event.key === "F10")) return;
+      if (event.target.closest?.(BROWSER_KEEPS)) return;
+      event.preventDefault();
+      this._keyAt = Date.now();
+      this.openAtTarget(found.target);
+      return;
+    }
+    // contextmenu: a long press that opened the menu already, a key the
+    // keydown answered, the right button, or a phone's own long press.
+    if (this._press?.fired || Date.now() - (this._keyAt ?? 0) < 500) {
+      event.preventDefault();
+      return;
+    }
+    if (this.browserKeeps(event, found.target)) return;
+    event.preventDefault();
+    this.cancelPress();
+    if (event.pointerType === "touch") {
+      this._press = {fired: true, at: Date.now()};
+      this.openAt(event.clientX, event.clientY, {target: found.target});
+    } else if (event.button === 2) {
+      this.openAt(event.clientX, event.clientY, {target: found.target});
+    } else {
+      this.openAtTarget(found.target);
+    }
+  }
+
   surface() {
     return this.querySelector(":scope > .sf-context-menu");
   }
@@ -924,12 +1115,31 @@ class SfContextMenu extends ContextMenuElement {
   // or the trigger, whichever is wider), "form" and "form-wide" (the form's
   // steps; on a phone a sheet at the bottom, the screen's width). The
   // attribute gives the default.
-  async openFor(anchor, {side = "block-end", align = "start", focus = "first", parentMenu = null, alignmentOffset = 0, offset = undefined, width = this.width} = {}) {
+  async openFor(anchor, {side = "block-end", align = "start", focus = "first", parentMenu = null, alignmentOffset = 0, offset = undefined, width = this.width, target = undefined} = {}) {
     if (!(anchor instanceof Element)) return {outcome: "refused", reason: "invalid"};
     if (this._owned) this.close({restoreFocus: false, ask: false});
+    // The object the menu acts on (C164): the row of an area named by `for`
+    // that holds the anchor -- the row's «⋯» opens the same menu the right
+    // button does -- or the one openAt() was given; on a selected row every
+    // selected row of its area (C164 (3)).
+    const found = target instanceof Element ? (this.targetOf(target) ?? {area: null, target}) : this.targetOf(anchor);
+    const selection = found ? this.selectionOf(found) : null;
     // The request first (§19, vocabulary §4): a listener that prevents it keeps
-    // the menu closed.
-    if (!this.sfEmit("open", {}, {cancelable: true})) return {outcome: "refused", reason: "prevented"};
+    // the menu closed. It names the object and the objects, so the host gives
+    // the entries for them, in one place for every way in (C164 (2)).
+    if (!this.sfEmit("open", {target: found?.target ?? null, targets: selection?.targets ?? []}, {cancelable: true})) {
+      return {outcome: "refused", reason: "prevented"};
+    }
+    // An unselected row is selected alone before the menu acts on it (C164 (3)).
+    if (selection?.select) {
+      for (const row of selection.select) row.setAttribute("aria-selected", "false");
+      found.target.setAttribute("aria-selected", "true");
+    }
+    const targets = selection?.targets ?? [];
+    if (targets.length || this._targets?.length) {
+      this._targets = targets;
+      this.requestComponentUpdate("targets");
+    }
     await this.whenRendered();
     const surface = this.surface();
     if (!surface) return {outcome: "unavailable", reason: "no-surface"};
@@ -941,11 +1151,17 @@ class SfContextMenu extends ContextMenuElement {
       ? element
       : element?.querySelector?.("button, a[href], input, select, textarea, [tabindex]") ?? element);
     const active = document.activeElement;
+    const somewhere = active instanceof HTMLElement && active !== document.body && active !== document.documentElement;
+    // Opened at a point, the focus goes back to the object it acted on --
+    // where it was inside it, or the object's own control (CM-2: it fell to
+    // the page).
+    const point = anchor === this._point;
     this._owned = {
       anchor, parentMenu,
-      returnTo: active instanceof HTMLElement && active !== document.body && active !== document.documentElement
-        ? active
-        : focusable(anchor),
+      target: found?.target ?? null,
+      returnTo: point && found
+        ? (somewhere && found.target.contains(active) ? active : focusable(found.target))
+        : somewhere ? active : focusable(anchor),
       expanded: anchor.getAttribute("aria-expanded"),
       haspopup: anchor.getAttribute("aria-haspopup"),
     };
@@ -980,7 +1196,10 @@ class SfContextMenu extends ContextMenuElement {
       else content.removeAttribute("data-sf-width");
       this._owned.kindContent = content;
     }
-    const sheet = FORM_KINDS.has(kind) && onPhone();
+    // A form, and the menu of an object (C164 (6)), is the one sheet on a
+    // phone (C157 (5)): a long press, the right button or the row's «⋯».
+    const sheets = FORM_KINDS.has(kind) || Boolean(found);
+    const sheet = sheets && onPhone();
     const sized = width && width !== "content" && !kind;
     if (sized && content) {
       // A display: contents trigger (sf-button-icon, sf-button) is as wide as
@@ -1025,7 +1244,7 @@ class SfContextMenu extends ContextMenuElement {
     });
     // A form stays what the screen makes it: opened wide and the window
     // narrowed to a phone, it becomes the sheet; widened, it is anchored again.
-    if (FORM_KINDS.has(kind)) {
+    if (sheets) {
       owned.onResize = () => {
         if (this._owned === owned && onPhone() !== owned.sheet) place(onPhone());
       };
@@ -1103,6 +1322,10 @@ class SfContextMenu extends ContextMenuElement {
     if (owned.expanded === null) anchor.setAttribute("aria-expanded", "false");
     else anchor.setAttribute("aria-expanded", owned.expanded);
     if (restoreFocus) (owned.returnTo?.isConnected ? owned.returnTo : anchor)?.focus?.({preventScroll: true});
+    if (this._targets?.length) {
+      this._targets = [];
+      this.requestComponentUpdate("targets");
+    }
     this.sfEmit("closed", {reason});
     return true;
   }
@@ -1248,7 +1471,7 @@ class SfContextMenu extends ContextMenuElement {
       return;
     }
     const entry = this.entryOf(event.target);
-    if (event.key === inward && (this.drill ? drillable(entry) : submenuOf(entry))) {
+    if (event.key === inward && (this.drill ? drillable(entry) : submenuOf(entry)) && event.target.getAttribute?.("aria-disabled") !== "true") {
       event.preventDefault();
       const row = event.target.closest(".sf-context-menu-item");
       if (this.drill) this.drillInto(row);
@@ -1441,6 +1664,9 @@ class SfContextMenu extends ContextMenuElement {
       size: this.size,
       component: this,
       rootClass: this.getRootClass(),
+      // On a selection the menu acts on every selected row and says how many
+      // (C164 (3)).
+      selectionLabel: this.targets.length > 1 ? this.sfWord("selected", {vars: {count: this.targets.length}}) : "",
     });
   }
 

@@ -82,6 +82,17 @@
   overflow: visible;
 }
 
+/* The point a menu opened at the pointer hangs from (sf-menu-context
+   openAt(), owner decision C164): a zero box fixed to the screen, which
+   nothing sees or presses; the menu sets where it stands. */
+.sf-context-menu-point {
+  position: fixed;
+  inline-size: 0;
+  block-size: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 /* ─── entries: the standard rows ───────────────────────────────────────── */
 
 .sf-context-menu--entries .sf-context-menu-content {
@@ -150,7 +161,7 @@
   padding-block: calc((var(--sf-context-menu--row-step, var(--sf-context-menu--row-height)) - var(--sf-context-menu--line)) / 2);
 }
 
-.sf-context-menu-item:not(:disabled):hover,
+.sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):hover,
 .sf-context-menu-item[aria-expanded="true"] {
   /* One row hover for every list and menu (C42 (5), owner 2026-11-10): the
      select state, 8. It was the plate's hover, 20 before C41. A translucent
@@ -184,18 +195,18 @@
   @include places.sf-place-fill(var(--sf-primary-container));
 }
 
-.sf-context-menu-item--chosen:not(:disabled):hover {
+.sf-context-menu-item--chosen:not(:disabled, .sf-context-menu-item--disabled):hover {
   background-color: var(--sf-primary-container-hover);
   @include places.sf-place-fill(var(--sf-primary-container-hover));
 }
 
-.sf-context-menu-item:disabled {
+.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) {
   color: var(--sf-on-surface-disabled);
   --sf-icon--color: var(--sf-on-surface-disabled);
   cursor: default;
 }
 
-.sf-context-menu-item--danger:not(:disabled) {
+.sf-context-menu-item--danger:not(:disabled, .sf-context-menu-item--disabled) {
   color: var(--sf-error);
   --sf-icon--color: var(--sf-error);
 }
@@ -245,7 +256,7 @@
   --sf-icon--color: var(--sf-on-surface-variant);
 }
 
-.sf-context-menu-item--danger:not(:disabled) .sf-context-menu-item-icon {
+.sf-context-menu-item--danger:not(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-icon {
   --sf-icon--color: var(--sf-error);
 }
 
@@ -284,8 +295,8 @@
   line-height: var(--sf-text-height-1\/3);
 }
 
-.sf-context-menu-item:disabled .sf-context-menu-item-caption,
-.sf-context-menu-item:disabled .sf-context-menu-item-value {
+.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-caption,
+.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-value {
   color: inherit;
 }
 
@@ -340,7 +351,7 @@
   text-overflow: ellipsis;
 }
 
-.sf-context-menu-item:disabled .sf-context-menu-item-under {
+.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-under {
   color: inherit;
 }
 
@@ -506,7 +517,7 @@
   --sf-icon--height: var(--sf-context-menu--inner-line);
 }
 
-.sf-context-menu-choice-option.sf-context-menu-item:not(:disabled):hover {
+.sf-context-menu-choice-option.sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):hover {
   color: var(--sf-on-surface);
   background-color: var(--sf-surface-state-select);
   @include places.sf-place-fill(var(--sf-surface-state-select));
@@ -600,12 +611,12 @@
   --sf-context-menu-switch--direction: -1;
 }
 
-.sf-context-menu-item:disabled > .sf-context-menu-item-switch {
+.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) > .sf-context-menu-item-switch {
   border-color: var(--sf-outline-disabled);
   background-color: transparent;
 }
 
-.sf-context-menu-item:disabled .sf-context-menu-item-switch-thumb {
+.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-switch-thumb {
   background-color: var(--sf-on-surface-disabled);
 }
 
@@ -686,7 +697,7 @@
   white-space: normal;
 }
 
-.sf-context-menu-tile.sf-context-menu-item:not(:disabled):hover {
+.sf-context-menu-tile.sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):hover {
   background-color: var(--sf-surface-container-hover);
   @include places.sf-place-fill(var(--sf-surface-container-hover));
 }
@@ -722,7 +733,7 @@
   color: var(--sf-on-primary-container);
 }
 
-.sf-context-menu-tile--on.sf-context-menu-item:not(:disabled):hover {
+.sf-context-menu-tile--on.sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):hover {
   background-color: var(--sf-primary-container-hover);
   @include places.sf-place-fill(var(--sf-primary-container-hover));
 }
@@ -733,8 +744,8 @@
   --sf-icon--color: var(--sf-on-primary-container);
 }
 
-.sf-context-menu-tile.sf-context-menu-item:disabled .sf-context-menu-tile-icon,
-.sf-context-menu-tile.sf-context-menu-item:disabled .sf-context-menu-tile-name {
+.sf-context-menu-tile.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-tile-icon,
+.sf-context-menu-tile.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-tile-name {
   color: var(--sf-on-surface-disabled);
   --sf-icon--color: var(--sf-on-surface-disabled);
 }
@@ -988,6 +999,9 @@
   @include sheet.sheet-surface;
   display: flex;
   flex-direction: column;
+  /* The handle row stands right on the content: the menu's own gap (--sf-d4,
+     56) stood between the grab bar and the first row (C164 probe). */
+  gap: 0;
   overflow: hidden;
   background-color: var(--sf-context-menu-background-color, var(--sf-surface-popup));
   border-block-start: var(--sf-context-menu-border-width, var(--sf-px)) solid var(--sf-context-menu-border-color, var(--sf-outline-variant));
@@ -1012,13 +1026,30 @@
   min-inline-size: 0;
 }
 
-.sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width] {
+/* The menu of an object is the same sheet on a phone (owner decision C164
+   (6)): its rows the whole width, as a form's are. */
+.sf-context-menu[data-sf-sheet] .sf-context-menu-content {
   inline-size: 100%;
   max-inline-size: none;
   max-block-size: calc(100dvh - var(--sf-space-4) - var(--sf-ui-1\/2--control-height));
   border-radius: 0;
   border-width: 0;
   padding-bottom: calc(var(--sf-context-menu-content--padding-bottom) + env(safe-area-inset-bottom, var(--sf-a0)));
+}
+
+/* On the sheet the heading on top names the object the menu acts on, or
+   «Выбрано N» (C164 (6), study #q-phone B): the sheet's text and ink, a row's
+   height (44 under a finger), a line under it as a head has. */
+.sf-context-menu[data-sf-sheet] .sf-context-menu-content > .sf-context-menu-heading:first-child,
+.sf-context-menu[data-sf-sheet] .sf-context-menu-list > .sf-context-menu-heading:first-child {
+  padding-block: calc((var(--sf-context-menu--row-step, var(--sf-context-menu--row-height)) - var(--sf-context-menu--line)) / 2);
+  border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+  color: var(--sf-on-surface);
+  font-size: var(--sf-context-menu--text-size);
+  line-height: var(--sf-context-menu--line);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* The head is a row of its own, as tall as a control and a step of space

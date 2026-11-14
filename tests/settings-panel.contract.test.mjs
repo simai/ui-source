@@ -135,7 +135,10 @@ test('the popup panel sends sf-menu-context\'s open/close events: open asks, ope
   // The same names and details as sf-menu-context's.
   const own = JSON.parse(read('src/smart/settings/component.json')).events;
   const menu = JSON.parse(read('src/smart/menu-context/component.json')).events;
-  for (const name of ['open', 'opened', 'close', 'closed']) assert.deepEqual(own[name].carries, menu[name].carries, name);
+  for (const name of ['opened', 'close', 'closed']) assert.deepEqual(own[name].carries, menu[name].carries, name);
+  // The menu's open names the object it is opened for (C164 (2)); the panel has no object.
+  assert.deepEqual(own.open.carries, {});
+  assert.deepEqual(Object.keys(menu.open.carries), ['target', 'targets']);
 });
 
 test('the menu\'s panel head chooses a tab on sf-tabs-change and only stops the former sf-tab-change (C106 follow-up 3)', () => {

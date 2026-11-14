@@ -4,7 +4,8 @@
     "close": "Close",
     "back": "Back",
     "on": "On",
-    "off": "Off"
+    "off": "Off",
+    "selected": "{count} selected"
   },
   "events": {
     "search": {

@@ -161,7 +161,7 @@ test('a generated action called positionally names only the parameters given', (
 test('the elements name their positional methods (sf-tabs, sf-menu-context, sf-editor-overlay, sf-editor-inline)', () => {
   const read = (path) => readFileSync(new URL(`../src/smart/${path}`, import.meta.url), 'utf8');
   assert.match(read('tabs/index.js'), /positional: \['set-data', 'set-panels'\]/u);
-  assert.match(read('menu-context/index.js'), /positional: \["open-for", "toggle-for", "choose-tab"\]/u);
+  assert.match(read('menu-context/index.js'), /positional: \["open-for", "toggle-for", "open-at", "choose-tab"\]/u);
   assert.match(read('editor-inline/index.js'), /positional: \['edit'\]/u);
   const overlay = read('editor-overlay/index.js');
   const declared = JSON.parse(read('editor-overlay/component.json')).actions;
@@ -169,7 +169,7 @@ test('the elements name their positional methods (sf-tabs, sf-menu-context, sf-e
   const listed = JSON.parse(overlay.match(/const positional = (\[[^\]]*\])/u)[1].replaceAll("'", '"'));
   assert.deepEqual(listed, withFields, 'every overlay action with parameters');
   // A positional name the element does not declare would wrap nothing.
-  for (const [folder, names] of [['tabs', ['set-data', 'set-panels']], ['menu-context', ['open-for', 'toggle-for', 'choose-tab']]]) {
+  for (const [folder, names] of [['tabs', ['set-data', 'set-panels']], ['menu-context', ['open-for', 'toggle-for', 'open-at', 'choose-tab']]]) {
     const actions = JSON.parse(read(`${folder}/component.json`)).actions;
     for (const name of names) assert.ok(actions[name]?.with, `${folder} ${name}`);
   }
