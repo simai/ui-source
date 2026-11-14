@@ -137,10 +137,12 @@ $sf-place-accent-roles: (
 // glass in the light theme). Glass is dark in both themes, so the values are
 // one: white, hover and press one and two steps down (neutral 95, 90), the
 // label of a white button black (the glass's opaque base), the tonal fill
-// white at 12 under white. Its hover and press go down, 8 and 4, as on a strong
-// place in the light theme (D2b): more white under a label that darkens lost
-// it (an outline, ghost or link button pressed over a coloured photo read 4.49
-// with 16 and 20, C70 measurement 2026-11-12). Beyond the strong place's accent it
+// white at 12 under white. Its hover and press go up the fill family, 16 and
+// 20, as the neutral tonal on the same glass does (C113; dispatcher
+// 2026-11-13, the prototype's --sf-primary-container-hover/-active): the
+// accent and the neutral tonal no longer move in opposite directions on one
+// glass. The ink stays white over the black-48 glass, and a press reads
+// as a stronger plate, not a weaker one. Beyond the strong place's accent it
 // re-declares the link and the focus ring too: on glass the theme's link
 // (primary 40) and ring (primary 50) are blue on black. A visited link is the
 // glass's dim ink (white at 80), still told apart from an unvisited one.
@@ -182,8 +184,12 @@ $sf-place-colours: ('primary', 'secondary', 'tertiary', 'info', 'success', 'warn
 // The inverse places re-declare the accent and the boundary line as well
 // (sf-place-inverse), so an opaque place on them takes both back.
 $sf-place-inverse-selectors: ('.bg-surface-inverse', '.bg-surface-inverse-fixed');
-$sf-place-strong-selectors: list.join(list.join(sf-place-selector-list(), sf-place-alert-bar-selectors(), $separator: comma),
-  $sf-place-inverse-selectors, $separator: comma);
+// The duo gradient plate (utility/gradient) is a strong coloured place too:
+// white ink and a white accent on its own colour, so a card or a popup on it
+// takes the theme's roles and accent back (C65 acceptance, 2026-11-13).
+$sf-place-gradient-selectors: ('.gradient-duo',);
+$sf-place-strong-selectors: list.join(list.join(list.join(sf-place-selector-list(), sf-place-alert-bar-selectors(), $separator: comma),
+  $sf-place-inverse-selectors, $separator: comma), $sf-place-gradient-selectors, $separator: comma);
 $sf-place-coloured-selectors: list.join(list.join($sf-place-strong-selectors, sf-place-selector-list('-container'), $separator: comma),
   ('.sf-surface-media',), $separator: comma);
 
@@ -484,6 +490,13 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
   --sf-surface-place: #{$surface};
   --sf-surface-place-solid: #{$surface};
   --sf-surface-place-ground: #{$surface};
+  // The place hooks (code highlighting, variant C; fix/highlight-place-roles
+  // deviation 2): the place's own inks, read where they are declared, so a
+  // hue of code on the inverse is the other theme's ink, not the page's hue
+  // (every role read 1.13-1.94:1 there), and no container fill is laid twice.
+  --sf-place--ink-variant: var(--sf-on-surface-container-variant);
+  --sf-place--ink: var(--sf-on-surface);
+  --sf-place--fill-surface: initial;
   @each $role, $value in $sf-place-theme-roles {
     @if $role == 'outline' and not $fixed {
       --sf-outline: light-dark(var(--sf-neutral-90--alfa-48), var(--sf-neutral-50));
@@ -659,8 +672,8 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
   --sf-primary-active: var(--sf-neutral-90);
   --sf-on-primary: var(--sf-black);
   --sf-primary-container: var(--sf-white--alfa-12);
-  --sf-primary-container-hover: var(--sf-white--alfa-8);
-  --sf-primary-container-active: var(--sf-white--alfa-4);
+  --sf-primary-container-hover: var(--sf-white--alfa-16);
+  --sf-primary-container-active: var(--sf-white--alfa-20);
   --sf-on-primary-container: var(--sf-white);
   --sf-link: var(--sf-white);
   --sf-link-hover: var(--sf-neutral-95);

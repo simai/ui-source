@@ -49,6 +49,10 @@ try {
     // The window (C83): the product's colours are its first swatches.
     color.querySelector('.sf-color-trigger').click();
     await settle();
+    // An own colour (here the inherited #336699) opens the window on «Своё»
+    // (C83), where the product swatches are not drawn: read them on «Палитра».
+    color.showView('palette');
+    await settle();
     const swatches = [...color.querySelectorAll('.sf-color-options--product .sf-color-option')].map((button) => button.getAttribute('aria-label'));
     // «Своё»: the code field's own input and change stay inside the window.
     color.showView('own');

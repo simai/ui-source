@@ -27,7 +27,7 @@
    variant C): a tinted head. Primary tone 50 at 16 (dark 24, the fill steps)
    fading down to nothing by the head's foot -- never past a fixed length, so a
    head that wraps tall has no long coloured tail -- in a padded, rounded
-   field. A head narrower than the g6 step (32rem) takes no tint: on a narrow
+   field. A head narrower than the g5 step (30rem, R164 variant C) takes no tint: on a narrow
    column the colour adds nothing and the words decide. Off unless the
    expressive setting or data-sf-style="expressive" above it says so; the
    nearest data-sf-style wins, strict being the default. The switch is a number
@@ -52,9 +52,9 @@
     light-dark(var(--sf-primary-50--alfa-16), var(--sf-primary-50--alfa-24)) 0,
     transparent min(100%, calc(var(--sf-space-4) * 6)));
   background-repeat: no-repeat;
-  /* No tint under the g6 step: the image is as wide as the head past it, and
+  /* No tint under the g5 step: the image is as wide as the head past it, and
      nothing below it; off, it has no size at all. */
-  background-size: calc(clamp(0px, (100% - var(--sf-g6)) * 1000, 100%) * var(--sf-page-header--on)) 100%;
+  background-size: calc(clamp(0px, (100% - var(--sf-g5)) * 1000, 100%) * var(--sf-page-header--on)) 100%;
 }
 
 @media (forced-colors: active) {

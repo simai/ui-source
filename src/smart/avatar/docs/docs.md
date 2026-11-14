@@ -21,9 +21,11 @@ Loading model:
   yellow | lime | green | teal | cyan | sky | blue | indigo | violet | purple |
   pink | brown | gray` -- see "Hues"
 - `expressive`: the decorative level (owner decision C91, level 2): initials
-  at `size="3"` with a hue stand on a cover of that hue: the plate stepping
-  into a second container step towards the far corner, the ink unchanged. Smaller sizes, a photo, the
-  placeholder and the neutral look stay flat. Off by default;
+  with a hue on an avatar of 64 px or more (C65: covers only on placeholders
+  from 64) stand on a cover of that hue: the plate stepping into a second
+  container step towards the far corner, the ink unchanged. The size ladder
+  ends at `size="3"` (56 px), so its avatars stay flat; a photo, the
+  placeholder and the neutral look stay flat too. Off by default;
   `data-sf-style="expressive"` on the root or a container turns it on for every
   avatar under it, `data-sf-style="strict"` turns it off again
 - `tone`: the former name of `hue` until 2027-01-01, read when `hue` is empty;
@@ -72,8 +74,13 @@ size (owner decision C17: an avatar has no colours of its own):
 
 - Empty (the default) is the neutral look.
 - Only initials take a hue: an avatar with `image-url` shows the image with no
-  fill, and the placeholder icon stays neutral. The `card` template draws no
-  initials, so it takes none.
+  fill, and the placeholder icon stays neutral.
+- The `card` template without `image-url` (owner decision C124) draws the
+  initials of the name on its hue, 36 % of the media box width in the medium
+  weight; `auto` is the card's default when `hue` is empty, a named hue is
+  kept. With no name it draws the person glyph at 45 % of the box on the
+  neutral fill. The media box keeps its ratio (square 1:1, portrait 9:16), so
+  a photo arriving later moves nothing. Round avatars are unchanged.
 - `--sf-avatar-background-color` and `--sf-avatar-color` still win.
 - The plain classes are `sf-avatar--text sf-hue-<name>`: `sf-hue-<name>` gives
   the element the hue's roles (`--sf-hue-container`, `--sf-on-hue-container`

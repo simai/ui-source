@@ -123,34 +123,64 @@ $ramp: 'var(--sf-gradient--scrim-ramp, calc(var(--sf-space-4) * 4))';
     // A strong coloured place (C42): what stands on the plate takes white ink
     // on the alpha scale and the accent turns white with the plate's colour
     // for its label, so a filled button is a white button. White in both
-    // themes, as on glass over media (the same white role set: fill 12/16/20, disabled 8, C113):
-    // the dark plate is a deep tone, not tone 80 under tone-20 ink.
+    // themes, as on glass over media, and the same white role set as there
+    // (_sf_css__surface_places.scss): the dark plate is a deep tone, not
+    // tone 80 under tone-20 ink.
     --sf-surface-place: var(--sf-gradient--from);
     --sf-surface-place-solid: var(--sf-gradient--from);
     --sf-surface-place-ground: var(--sf-gradient--from);
     --sf-surface-underlay: initial;
+    --sf-surface-place-fill: initial;
+    // The place hooks (mix/_mix__places.scss): white, as on a strong place.
+    --sf-place--ink-variant: var(--sf-white);
+    --sf-place--ink: var(--sf-white);
+    --sf-place--fill-surface: initial;
     --sf-on-surface: var(--sf-white);
+    // The icon role (C107): no half step between white and white at 80 on
+    // the alpha scale, so a control's glyph on the plate is the plate's ink
+    // (the theme's neutral 25 read 1.73-2.02:1 on the blue).
+    --sf-on-surface-icon: var(--sf-white);
+    // Hovered and pressed ink (C107 item 5): white; the state shows in the fill.
+    --sf-on-surface-hover: var(--sf-white);
+    --sf-on-surface-active: var(--sf-white);
     --sf-on-surface-variant: var(--sf-white--alfa-80);
     --sf-on-surface-container-variant: var(--sf-white--alfa-80);
+    // States 4/8/12; the neutral fill 12/16/20 and the disabled plate 8
+    // (the fill family, C113).
     --sf-surface-state-hover: var(--sf-white--alfa-4);
     --sf-surface-state-select: var(--sf-white--alfa-8);
     --sf-surface-state-active: var(--sf-white--alfa-12);
     --sf-surface-container: var(--sf-white--alfa-12);
     --sf-surface-container-hover: var(--sf-white--alfa-16);
     --sf-surface-container-active: var(--sf-white--alfa-20);
+    // A neutral button's hover and press (tonal, outline, ghost on-surface):
+    // the strong place's steps under white ink (R190 AA-10, D2b;
+    // sf-place-strong-accent), a step down, white 8 and 4 under the tonal
+    // plate's 12, so the white label gains contrast. In both themes: the
+    // plate is white ink on a colour in both (tone 40, dark tone 30); the fill
+    // family's 16 and 20 took a white label to 4.11 light and an accent
+    // label to 3.17 dark when pressed.
+    --sf-place--control-hover: var(--sf-white--alfa-8);
+    --sf-place--control-active: var(--sf-white--alfa-4);
     --sf-outline: var(--sf-white--alfa-64);
     --sf-outline-variant: var(--sf-white--alfa-24);
+    --sf-place--container-outline: var(--sf-outline);
     --sf-surface-disabled: var(--sf-white--alfa-8);
     --sf-on-surface-disabled: var(--sf-white--alfa-64);
     --sf-on-surface-muted: var(--sf-on-surface-disabled);
     @include aliases.sf-role-aliases(places.$sf-place-aliased);
     --sf-primary: var(--sf-white);
-    --sf-primary-hover: var(--sf-gradient--c-90, var(--sf-primary-90));
-    --sf-primary-active: var(--sf-gradient--c-80, var(--sf-primary-80));
+    // A white button's hover and press one and two five-tone steps towards
+    // the plate, as on a strong place (95 / 90 light): 90 / 80 left its label
+    // at 3.82:1 pressed in the light theme. The dark plate is tone 30.
+    --sf-primary-hover: light-dark(var(--sf-gradient--c-95, var(--sf-primary-95)), var(--sf-gradient--c-90, var(--sf-primary-90)));
+    --sf-primary-active: light-dark(var(--sf-gradient--c-90, var(--sf-primary-90)), var(--sf-gradient--c-80, var(--sf-primary-80)));
     --sf-on-primary: var(--sf-gradient--from);
+    // The tonal accent: white 12 at rest, its hover and press the neutral
+    // button's steps above (8 / 4).
     --sf-primary-container: var(--sf-white--alfa-12);
-    --sf-primary-container-hover: var(--sf-white--alfa-8);
-    --sf-primary-container-active: var(--sf-white--alfa-4);
+    --sf-primary-container-hover: var(--sf-place--control-hover);
+    --sf-primary-container-active: var(--sf-place--control-active);
     --sf-on-primary-container: var(--sf-white);
     --sf-place--plate: var(--sf-white);
     --sf-place--on-plate: var(--sf-gradient--from);
