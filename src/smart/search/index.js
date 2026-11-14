@@ -1306,6 +1306,14 @@ class SfSearch extends SearchElement {
     let state = null;
     const asking = this.asksMore(query);
     const waiting = asking && this.status === 'loading';
+    // «Уточнить» (C175 (8)): the operators the host reads and the field does
+    // not hold yet, each a row that starts it in the field.
+    const refine = (except = '') => {
+      const used = new Set([except, ...this.tokens.map((token) => token.id)]);
+      const rows = this.operators().filter((operator) => !used.has(operator.id)).map((operator) => add({kind: 'refine', operator,
+        title: [`${operator.word}: ${this.sfWord(`operator-${operator.id}-hint`)}`, '', ''], path: '', icon: OPERATOR_ICON[operator.id], shortcut: '', url: ''}));
+      if (rows.length) sections.push({kind: 'refine', id: `${this._id}-refine`, label: this.sfWord('refine-label'), rows});
+    };
     if (step) {
       // A command's next step (C175 (7)): its options under the command's
       // name, chosen, not opened.
@@ -1322,6 +1330,7 @@ class SfSearch extends SearchElement {
         const rowsOf = found.map((item) => add({kind: 'token', item, token: {id: draft.id, value: text(item.id), label: text(item.title)},
           title: highlight(text(item.title), draft.value), path: text(item.path), icon: text(item.icon) || OPERATOR_ICON[draft.id], avatar: item.avatar ?? null, shortcut: '', url: ''}));
         if (rowsOf.length) sections.push({kind: 'results', id: `${this._id}-results`, groups: [{label: this.sfWord(`operator-${draft.id}-label`), captionId: `${this._id}-suggest`, rows: rowsOf}]});
+        refine(draft.id);
       } else if (draft.value) {
         const row = add({kind: 'token', token: {id: draft.id, value: draft.value, label: draft.value}, title: [`${draft.word}: ${draft.value}`, '', ''],
           path: '', icon: OPERATOR_ICON[draft.id], shortcut: '', url: ''});
@@ -1345,14 +1354,7 @@ class SfSearch extends SearchElement {
       if (actions.length) {
         sections.push({kind: 'actions', id: `${this._id}-actions`, label: this.sfWord('actions-label'), rows: actions.map(resultRow)});
       }
-      // «Уточнить» (C175 (8)): the operators the host reads, each a row that
-      // starts it in the field.
-      const known = this.operators();
-      if (known.length && !this.tokens.length) {
-        sections.push({kind: 'refine', id: `${this._id}-refine`, label: this.sfWord('refine-label'),
-          rows: known.map((operator) => add({kind: 'refine', operator, title: [`${operator.word}: ${this.sfWord(`operator-${operator.id}-hint`)}`, '', ''],
-            path: '', icon: OPERATOR_ICON[operator.id], shortcut: '', url: ''}))});
-      }
+      refine();
       if (!sections.length && !asking) message = this.sfWord('start-text');
     } else {
       const answer = this.answer;

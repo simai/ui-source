@@ -69,12 +69,14 @@ function rowEnd(context, row) {
 }
 
 // The row's picture (C175 (2)): the glyph 20 of menu and list rows, an
-// avatar for a person or a chat.
+// avatar for a person or a chat. sf-avatar draws a button; in a row it is a
+// picture, so the host is inert: no Tab stop, nothing read, a press falls to
+// the row.
 function rowLead(row) {
   const avatar = row.avatar ?? row.item?.avatar;
   if (avatar && (avatar.name || avatar.image)) {
     return html`<sf-avatar class="sf-search-row-avatar" size="1/2" heading=${avatar.name || nothing} image-url=${avatar.image || nothing}
-      hue="auto" aria-hidden="true"></sf-avatar>`;
+      hue="auto" inert></sf-avatar>`;
   }
   return row.icon ? glyph(row.icon, 'sf-search-row-icon') : nothing;
 }
