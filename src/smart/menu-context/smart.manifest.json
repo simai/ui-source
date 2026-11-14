@@ -127,7 +127,7 @@
       "size": {
         "type": "string",
         "default": "1/2",
-        "description": "The menu's size: rows as tall as a field of that size (32px at 1/2, 40px at 1), its text, insets, search and footer. A submenu takes its parent's size.",
+        "description": "The menu's size, a step on the region's ladder (decisions C79, C134): rows as tall as a field of that size and its text, insets, search and footer. 1/2, the default, is 32px rows and 14px text on a page, 28 and 12 in a compact region, rows of at least 44 under a finger on a phone; 1 is a step above (40/16, compact 32/14). The density is the one of the control that opens the menu, or of what stands under the point it opens at. A submenu takes its parent's size.",
         "enum": [
           "1/2",
           "1"
@@ -1018,7 +1018,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu-context/index.js",
-        "sha256": "09be618278bfc6478204574b9b574047c35b2ee02c27c5b7587d5c981af2fadd"
+        "sha256": "b74b9705c409919934330a7d4a1332474df306bcc7f5299e1ea360375cfb5cc2"
       },
       {
         "path": "src/smart/menu-context/js/templates/default.js",

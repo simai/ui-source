@@ -24,7 +24,9 @@ test('C164 (1): one setting binds the right button, the menu key and a long pres
   assert.match(source, /const LONG_PRESS_SLOP = 10;/);
   // The corner exactly at the pointer (CM-5) and the focus back to the object (CM-2).
   assert.match(source, /offset: "0px"/);
-  assert.match(source, /point && found\s*\n?\s*\? \(somewhere && found\.target\.contains\(active\) \? active : focusable\(found\.target\)\)/);
+  assert.match(source, /const forObject = anchor === this\._point && Boolean\(found\);/);
+  assert.match(source, /const back = forObject && !\(somewhere && found\.target\.contains\(active\)\);/);
+  assert.match(source, /lent: back \? !found\.target\.matches\(FOCUSABLE\)/);
   // The browser keeps its menu on links, fields, selected text and with Shift.
   assert.match(source, /const BROWSER_KEEPS = 'a\[href\], input, select, textarea/);
 });
