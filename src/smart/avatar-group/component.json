@@ -2,7 +2,7 @@
   "$comment": "The source of sf-avatar-group's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/avatars (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.avatar-group",
   "tag": "sf-avatar-group",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "kind": "leaf",
   "family": "avatar",
   "settings": {
@@ -60,20 +60,23 @@
       "type": "list",
       "of": {
         "image-url": "string",
-        "text": "string"
+        "text": "string",
+        "name": "string",
+        "status": "string",
+        "hue": "string"
       },
       "default": [],
-      "summary": "The group's avatars: an image, else its text (initials); the attribute takes the list as JSON text too"
+      "summary": "The group's people (owner decision C152 (6)): each an image (over its initials), its initials (text), its name -- which names the avatar, gives the initials and the hue of the name and shows in a tooltip -- a presence status (online, away) and a named hue. Up to four are shown; with more than four the fifth place is «+N», a button that opens the list of everyone. The attribute takes the list as JSON text too."
     },
     "avatars-more": {
       "type": "string",
       "default": "",
-      "summary": "The group template's last avatar: a number (drawn +N) or a short text for the people not shown."
+      "summary": "The people the group stands for beyond the avatars list: a number adds to «+N» (and to the group's name «Участники: N»); with no list behind it «+N» is text. A short text instead of a number is drawn as is."
     },
     "round-size": {
       "type": "string",
       "default": "",
-      "summary": "The avatars' size step in the group template (and in the default one when given)."
+      "summary": "The avatars' size step in the group template (and in the default one when given). The avatars overlap by 4 px up to size 1 and 8 px at 2 and 3; the cut-out between them is the presence point's ring, 2 px from 1/2 (C132)."
     },
     "label-size": {
       "type": "string",
@@ -106,6 +109,20 @@
       "name": "cl-icon",
       "$comment": [
         "The placeholder's glyph is an sf-icon element (avatar study AV-8)."
+      ]
+    },
+    {
+      "name": "cl-popover",
+      "lazy": true,
+      "$comment": [
+        "«+N» opens the list of everyone in an sf-popover (C152 (6)), fetched when a group has one."
+      ]
+    },
+    {
+      "name": "tooltip",
+      "lazy": true,
+      "$comment": [
+        "A member's name in a tooltip (C152 (7)), fetched when a group draws names."
       ]
     }
   ],
@@ -143,9 +160,13 @@
   "docs": "docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "Pictures beside visible text: each avatar is a span whose image has alt=\"\" and is hidden from assistive technology; the visible text (name, label, the remainder) names the person or the group. Nothing takes focus.",
-    "role": "none",
-    "name": "none"
+    "$comment": "The group template is a group named «Участники: N» (owner decision C152 (6)); each member a picture, role img named by the person (name, else initials), with the name in a tooltip on hover (C152 (7)); «+N» with the list behind it a native button named «Ещё N участников» that opens the list in an sf-popover, without a list text. The other templates draw pictures beside visible text: the image has alt=\"\" and the visible text names the person. Nothing else takes focus.",
+    "role": "group",
+    "name": {
+      "from": [
+        "lang:group-label"
+      ]
+    }
   },
   "css-variables": {
     "--sf-avatar-background-color": {
@@ -236,7 +257,8 @@
     "version 1.2.6 (written on fix/content-precheck as 1.2.4; 2026-11-10, docs precheck AV-06): a patch. The group prints its overlap in the size names, sf-avatar-group--size-1/4, -1/3 and -1/2 (the --sf-space step of the overlap), in place of xs, sm and md, which stay dated aliases in component.avatars 1.4.0 until 2027-01-01 (journal class-avatar-group-overlap-size-names). Every setting has its summary. Every template draws sf-avatar's own parts (docs precheck smart content AG-01 measured on this pair: default 48, group 40, label 48, profile 56, user 40, all round). Drawn the same; settings, values, events and keys unchanged.",
     "version 1.2.7 (2026-11-13, docs precheck smart content SC-S02): a patch, nothing drawn differently. active has its summary.",
     "version 1.2.8 (2026-11-13, first-paint study R222, integration-fix/first-paint-5 af52cd76; the note is written by group build 3, the branch moved the number without one): a patch, nothing drawn differently once the data is in. avatars often arrives from the host after the first paint, so the component declares it late (presentation.skeleton.late) and the build derives its skeletons (static/default/<example>.skeleton.html), which hold the box until the data comes (standard 1.3.8 §5.4). Settings, values, events and keys unchanged.",
-    "version 1.3.0 (2026-11-14, avatar study AV-6 ring, AV-8, AV-9; control/research/2026-11-14-avatar.md): a minor. The avatars are js/picture.js of sf-avatar, the one avatar drawing; the placeholder's glyph is an sf-icon element (cl-icon relation). The cut-out between the avatars of a group is the presence point's ring of their size (component.avatars 1.8.0, owner decision C132 «одинаковая обводка»: 1 px at 1/4 and 1/3, 2 px from 1/2), not 1 px at every size. The examples draw no picture in a raw colour (owner decisions C124, C18): the reference, user, profile and online examples show the person placeholder, the group's third avatar its initials."
+    "version 1.3.0 (2026-11-14, avatar study AV-6 ring, AV-8, AV-9; control/research/2026-11-14-avatar.md): a minor. The avatars are js/picture.js of sf-avatar, the one avatar drawing; the placeholder's glyph is an sf-icon element (cl-icon relation). The cut-out between the avatars of a group is the presence point's ring of their size (component.avatars 1.8.0, owner decision C132 «одинаковая обводка»: 1 px at 1/4 and 1/3, 2 px from 1/2), not 1 px at every size. The examples draw no picture in a raw colour (owner decisions C124, C18): the reference, user, profile and online examples show the person placeholder, the group's third avatar its initials.",
+    "version 1.4.0 (2026-11-14, owner decision C152 (6), (7)): the group template. Up to four avatars, the fifth place «+N» with the exact number of the others: with more than four people in avatars it is a native button of the avatars' size and shape opening the list of everyone (picture and name) in an sf-popover; with only avatars-more it stays text. The group is role group named «Участники: N» («Members: N»), the button «Ещё N участников» («N more members», plural forms in the language files). A member takes name, status and hue in the list: the name names it (role img), gives its initials and the hue of the name (hue auto, C17) and shows in the Framework's tooltip on hover. The overlap is 4 up to size 1 and 8 at 2 and 3 (was 4/4/8/12/12: 12 at size 1 covered the second letter); the cut-out stays the point's ring (1.3.0). Photos stand over their initials and fade in (sf-avatar 1.7.0's drawing). Relations cl-popover and tooltip, both lazy."
   ],
   "x-rule": {
     "regex": "/<sf-avatar-group\\b/i"

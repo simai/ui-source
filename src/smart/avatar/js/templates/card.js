@@ -6,7 +6,7 @@ import { html } from "lit";
 // name a person glyph on the neutral fill. The heading beside it already
 // names the person, so the box is decoration for assistive technology.
 function cardPlaceholder(context) {
-  if (context.isText) {
+  if (context.isCardText) {
     const hue = context.resolvedHue ? ` sf-hue-${context.resolvedHue}` : "";
 
     return html`<div

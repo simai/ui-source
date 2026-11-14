@@ -1,4 +1,5 @@
 import {html, nothing} from "lit";
+import {keyed} from "lit/directives/keyed.js";
 import {getInitials} from "../../helpers/text";
 import {resolveAvatarHue} from "./tone.mjs";
 
@@ -20,6 +21,16 @@ export const AVATAR_SIZES = Object.freeze(["1/4", "1/3", "1/2", "1", "2", "3"]);
 /** The glyph of a placeholder: a person, unless the host names another. */
 export const AVATAR_PLACEHOLDER_ICON = "person";
 
+// The letters a step holds (owner decision C152 (3), 2026-11-14): two from
+// 1/3 up, one at 1/4 (16 px holds one letter of a readable size, two were
+// 10 px each). Only letters are cut: «+5» or a number stays whole.
+export function avatarStepText(text, size) {
+    const value = String(text ?? "");
+    if (String(size ?? "") !== "1/4") return value;
+    const letters = value.match(/^(\p{L}\p{M}*)\p{L}/u);
+    return letters ? letters[1] : value;
+}
+
 /**
  * The drawing context of one avatar picture, from what a host knows: the photo,
  * the initials or the name they are taken from, the hue, the placeholder's
@@ -30,14 +41,17 @@ export function avatarPictureContext(options = {}) {
     const name = String(options.name ?? "").trim();
     const explicitText = String(options.text ?? "").trim();
     const namedIcon = String(options.icon ?? "").trim();
+    const size = AVATAR_SIZES.includes(String(options.size ?? "")) ? String(options.size) : "";
     // The initials: the host's own, else those of the name -- unless the host
-    // names a glyph (a bot, a system), which stands in for them.
-    const text = imageUrl || namedIcon ? explicitText : explicitText || getInitials(name);
+    // names a glyph (a bot, a system), which stands in for them. With a photo
+    // they stand under it until it comes and when it fails (C152 (2)).
+    const text = avatarStepText(namedIcon ? explicitText : explicitText || getInitials(name), size);
     const isImage = Boolean(imageUrl);
-    const isText = !isImage && Boolean(text);
+    // isText: the initials are drawn (alone, or under the photo).
+    const isText = Boolean(text);
     const icon = namedIcon || AVATAR_PLACEHOLDER_ICON;
     return {
-        size: AVATAR_SIZES.includes(String(options.size ?? "")) ? String(options.size) : "",
+        size,
         line: String(options.line ?? ""),
         shape: options.shape === "square" ? "square" : "circle",
         imageUrl,
@@ -76,10 +90,6 @@ export function avatarClasses(context, options = {}) {
         layout ? layout.inline : "",
     ].filter(Boolean);
 
-    if (context.isImage && layout) {
-        classes.push(layout.center);
-    }
-
     if (context.isText) {
         classes.push("sf-avatar--text");
         if (layout) classes.push(layout.center);
@@ -91,7 +101,7 @@ export function avatarClasses(context, options = {}) {
         }
     }
 
-    if (!context.isImage && !context.isText) {
+    if (!context.isText) {
         classes.push("sf-avatar--placeholder");
         if (layout) classes.push(layout.center);
     }
@@ -129,28 +139,41 @@ export function avatarClasses(context, options = {}) {
     return classes.join(" ");
 }
 
+// The photo says when it has come or failed (C152 (2)): the sheet fades it
+// in over the initials when loaded and drops it on an error, so the avatar is
+// never an empty circle or the browser's broken-image glyph. The state is
+// the runtime mark data-sf-loaded ("true" or "error"), which the template
+// does not bind, so a redraw keeps it, and which a first-paint snapshot
+// leaves out (it depends on the network); a new address is a new element
+// (keyed), which starts transparent again.
+function onImageLoad(event) {
+    event.currentTarget.dataset.sfLoaded = "true";
+}
+
+function onImageError(event) {
+    event.currentTarget.dataset.sfLoaded = "error";
+}
+
 /**
- * What the circle holds: the photo, the initials, or the placeholder glyph as
- * an sf-icon element, so its name reaches the icon font request (a bare
- * <i class="sf-icon"> drawn after the page's scan stayed blank: buttons
- * review 2026-11-09).
+ * What the circle holds: the initials, or the placeholder glyph as an sf-icon
+ * element, so its name reaches the icon font request (a bare <i class="sf-icon">
+ * drawn after the page's scan stayed blank: buttons review 2026-11-09); with a
+ * photo, the photo over them (owner decision C152 (2)).
  */
 export function avatarContent(context) {
-    if (context.isText) {
-        return html`<span class="sf-avatar-text">${context.text}</span>`;
-    }
+    const under = context.isText
+        ? html`<span class="sf-avatar-text">${context.text}</span>`
+        : html`<sf-icon icon=${context.icon || AVATAR_PLACEHOLDER_ICON} aria-hidden="true"></sf-icon>`;
 
-    if (context.isImage) {
-        return html`<img class="sf-avatar-image" src=${context.imageUrl} alt="" loading=${context.lazy ? "lazy" : nothing} decoding=${context.lazy ? "async" : nothing} />`;
-    }
+    if (!context.isImage) return under;
 
-    return html`<sf-icon icon=${context.icon || AVATAR_PLACEHOLDER_ICON} aria-hidden="true"></sf-icon>`;
+    return html`${under}${keyed(context.imageUrl, html`<img class="sf-avatar-image" src=${context.imageUrl} alt="" loading=${context.lazy ? "lazy" : nothing} decoding=${context.lazy ? "async" : nothing} @load=${onImageLoad} @error=${onImageError} />`)}`;
 }
 
 /** The icon names a picture draws (for a host's icon preload). */
 export function avatarPictureIcons(options = {}) {
     const context = avatarPictureContext(options);
-    return context.isImage || context.isText ? [] : [context.icon];
+    return context.isText ? [] : [context.icon];
 }
 
 /**

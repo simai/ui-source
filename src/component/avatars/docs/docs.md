@@ -19,10 +19,21 @@ a real destination or action.
   / 40 / 48, no step skipped. An explicit size or a `data-sf-density="normal"`
   region inside it takes the normal ladder back. The phone ladder (16 / 20 /
   28 / 36 / 44 / 52) does not change under compact;
-- shape: circular by default or `.sf-avatar--square` with the UI radius;
+- shape: circular by default (a person) or `.sf-avatar--square` (an
+  organisation, a project, a group, a bot, an app) whose corner grows with
+  the step: 4 px at 1/4 and 1/3, 8 at 1/2 and 1, 12 at 2 and 3 (owner
+  decision C152 (4)); without a size step it keeps the UI radius;
+- photo over initials: put the initials (`.sf-avatar-text`) or the glyph
+  first and the `<img class="sf-avatar-image">` after them; the image stays
+  transparent until it carries `data-sf-loaded="true"` and is not drawn with
+  `data-sf-loaded="error"` (sf-avatar sets both, C152 (2)). Initials are in the
+  medium weight;
 - composition: `.sf-avatar-label-group`, `.sf-avatar-group` and
   `.sf-avatar-card`;
-- state: online/offline indicator and company/verification badge. The
+- state: online indicator (`.sf-online-indicator--online`), away
+  (`.sf-online-indicator--away`, a hollow ring of the place's dim ink, owner
+  decision C152 (5); sf-avatar draws no point for offline), and
+  company/verification badge. The
   indicator's coloured disc is the small step of the avatar's size, 6 / 6 / 8 /
   12 / 12 / 16 px at 1/4 to 3, the same as the anchored badge's dot, and its
   ring of the place colour is drawn outside the disc (1 px at 1/4 and 1/3,
@@ -87,6 +98,8 @@ in its ink, 36 % of the box width in the medium weight; with
 - Online, offline and verification state must also appear in visible text or in
   the accessible name of the native action; color alone is insufficient.
 - Focus and hover affordance belongs only to native interactive avatar roots.
+- A standalone avatar with no visible name is `role="img"` with the person's
+  name (`aria-label`), as sf-avatar draws it by default (C152 (1)).
 
 All dimensions, typography, borders, colors and layers are token driven. Brand
 artwork inside a badge is content and may retain its exact brand colors.

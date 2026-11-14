@@ -10,5 +10,9 @@ SF.RuleLoader['cl-avatar-group'] = {
     { name: 'icons' },
     // The placeholder's glyph is an sf-icon element (avatar study AV-8).
     { name: 'cl-icon' },
+    // «+N» opens the list of everyone in an sf-popover (C152 (6)), fetched when a group has one.
+    { name: 'cl-popover', lazy: true },
+    // A member's name in a tooltip (C152 (7)), fetched when a group draws names.
+    { name: 'tooltip', lazy: true },
   ],
 };

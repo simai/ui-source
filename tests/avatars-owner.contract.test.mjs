@@ -142,7 +142,9 @@ test('Avatar card without a photo draws initials on the hue, else the glyph', as
     read('src/smart/avatar/js/picture.js'),
   ]);
 
-  assert.match(card, /context\.isText/);
+  // The card's own photo-or-placeholder test (sf-avatar 1.7.0: isText is the
+  // initials drawn alone or under a photo).
+  assert.match(card, /context\.isCardText/);
   assert.match(card, /sf-avatar-card-placeholder--text\$\{hue\}/);
   assert.match(card, /` sf-hue-\$\{context\.resolvedHue\}`/);
   assert.match(card, /<span class="sf-avatar-card-initials">\$\{context\.text\}<\/span>/);

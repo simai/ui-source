@@ -125,7 +125,8 @@ test('the element takes a hue only for initials, and the default draws no hue cl
   const element = read('src/smart/avatar/index.js');
   // The picture's classes are the one avatar drawing (js/picture.js, AV-8).
   const shared = read('src/smart/avatar/js/picture.js');
-  assert.match(element, /if \(!this\.isText\) \{\s*return "";/u);
+  // The initials drawn alone or under a photo take the hue (C152 (2)).
+  assert.match(element, /if \(!this\.drawnText\) \{\s*return "";/u);
   assert.match(element, /resolvedHue: this\.resolvedHue/u);
   // The card without a photo takes auto when no hue is set (C124); the round
   // avatar's default stays neutral.

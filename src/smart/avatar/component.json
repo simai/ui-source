@@ -2,7 +2,7 @@
   "$comment": "The source of sf-avatar's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/avatar (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.avatar",
   "tag": "sf-avatar",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "kind": "leaf",
   "family": "avatar",
   "settings": {
@@ -17,7 +17,7 @@
         "3"
       ],
       "default": "1",
-      "summary": "The avatar's size on the ladder: 1/4 and 1/3 for a mark beside small text, 1 the default, 2 and 3 for a profile. On a desktop 20 / 24 / 32 / 40 / 48 / 56 px for 1/4 to 3; in a compact region (data-sf-density=\"compact\") every step moves one down the avatar's ladder, 16 / 20 / 24 / 32 / 40 / 48; the phone ladder is 20 / 20 / 28 / 36 / 44 / 52."
+      "summary": "The avatar's size on the ladder: 1/4 and 1/3 for a mark beside small text, 1 the default, 2 and 3 for a profile. On a desktop 20 / 24 / 32 / 40 / 48 / 56 px for 1/4 to 3; in a compact region (data-sf-density=\"compact\") every step moves one down the avatar's ladder, 16 / 20 / 24 / 32 / 40 / 48; the phone ladder is 20 / 20 / 28 / 36 / 44 / 52. Initials are two letters from 1/3 up and one at 1/4 (owner decision C152 (3))."
     },
     "line": {
       "type": "enum",
@@ -37,12 +37,17 @@
         "square"
       ],
       "default": "circle",
-      "summary": "circle (the default) for a person, square for a company, a group or a project."
+      "summary": "circle (the default) for a person; square for an organisation, a project, a group or a channel, a bot or an app (owner decision C152 (4)). The square's corner grows with the step: 4 px at 1/4 and 1/3, 8 at 1/2 and 1, 12 at 2 and 3."
+    },
+    "href": {
+      "type": "string",
+      "default": "",
+      "summary": "Makes the avatar a link to this address (a profile): one Tab stop, named by the person (owner decision C152 (1)). Without it the avatar is a picture -- role img with the name, no Tab stop, no hover ring -- unless it has an action of its own: the trigger of a menu or a popover (slot=\"trigger\", or aria-haspopup on the host) is a button."
     },
     "image-url": {
       "type": "string",
       "default": "",
-      "summary": "The picture's address. Empty: the initials of text (or of heading), else the placeholder glyph (icon, person by default)."
+      "summary": "The picture's address. The initials of text (or of heading), else the placeholder glyph, stand under it: the photo fades in over them when it has come and is dropped when it fails (owner decision C152 (2)). Empty: the initials, else the glyph (icon, person by default)."
     },
     "image-alt": {
       "type": "string",
@@ -57,7 +62,7 @@
     "text": {
       "type": "string",
       "default": "",
-      "summary": "The initials drawn when there is no picture; empty takes them from heading."
+      "summary": "The initials drawn when there is no picture, and under a picture until it comes; empty takes them from heading (legal forms, titles and name particles skipped; an address gives the first letter before «@»). At size 1/4 one letter is drawn."
     },
     "icon": {
       "type": "icon",
@@ -116,12 +121,13 @@
       "values": [
         "none",
         "online",
+        "away",
         "offline",
         "company",
         "verified"
       ],
       "default": "none",
-      "summary": "A mark at the corner: online, offline, the company badge or the verified badge; none draws nothing. Online and offline join the accessible name in the page's language («в сети», «не в сети»)."
+      "summary": "A mark at the corner: online is a point; away a hollow ring, drawn when the host asks for it; offline draws nothing (owner decision C152 (5): grey dots in a long list read as «something here»); company and verified their badges; none nothing. Online, away and offline join the accessible name in the page's language («в сети», «отошёл», «не в сети»)."
     },
     "heading": {
       "type": "string",
@@ -200,6 +206,13 @@
       "$comment": [
         "The placeholder's glyph is an sf-icon element, so its name reaches the icon font request (avatar study AV-8)."
       ]
+    },
+    {
+      "name": "tooltip",
+      "lazy": true,
+      "$comment": [
+        "The name over a link or button avatar (C152 (7)): the tooltip composition, fetched when such an avatar draws."
+      ]
     }
   ],
   "templates": {
@@ -220,8 +233,8 @@
   "docs": "docs/docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "The avatar is a native button (every template draws one), named by the host's aria-label, else its heading, else its text, else «Аватар» / \"Avatar\", with the presence word (online, offline) and the badge phrase after it.",
-    "role": "button",
+    "$comment": "By default the avatar is a picture (owner decision C152 (1), 2026-11-14): role img named by the host's aria-label, else its heading, else its text, else «Аватар» / \"Avatar\", with the presence word (online, away, offline) and the badge phrase after it; no Tab stop. With href it is a link and as the trigger of a menu (slot=\"trigger\" or aria-haspopup) a native button, named the same way, with the name in a tooltip (C152 (7)). In the label template the picture beside the printed heading is hidden from assistive technology: the name is read once. Tab reaches a link or a button avatar only.",
+    "role": "img",
     "name": {
       "from": [
         "aria-label",
@@ -285,7 +298,7 @@
       }
     ]
   },
-  "x-summary": "Shows a person or organisation as a photo or initials, with an optional availability or verification mark. The default and label templates render a native button whose aria-label names its action; the card template is static and adds a title, description and meta line.",
+  "x-summary": "Shows a person or organisation as a photo or initials, with an optional presence point or verification mark. By default a picture (role img with the name); a link with href, a native button as a menu's trigger; the card template is static and adds a title, description and meta line.",
   "x-source": {
     "package": "framework",
     "folder": "avatar",
@@ -301,7 +314,7 @@
     "settings.title → heading: \"title\" is a property of HTMLElement.prototype (§3.1, §16 item 26), alias dated"
   ],
   "x-decisions": [
-    "a11y-role: button -- every template draws the avatar as a native button (Enter and Space press it, Tab reaches it). The name is the host's aria-label, the language file's runtime aria-label («Аватар», \"Avatar\") when unset, with the badge phrase after it (§4.8); the label and card templates print the heading beside it.",
+    "a11y-role: img by default (owner decision C152 (1), sf-avatar 1.7.0) -- a picture named by the person, no Tab stop; a link with href; a native button as the trigger of a menu (slot=\"trigger\" or aria-haspopup on the host). It was a button in every template (Enter and Space pressed it, Tab reached it). The name is the host's aria-label, else heading, else text, else the language file's runtime aria-label («Аватар», \"Avatar\"), with the presence word and the badge phrase after it (§4.8); the label and card templates print the heading beside it.",
     "title -> heading: title is a property of every element (§3.1, §16 item 26), so the setting is heading and title its dated setting alias (aliases.json, until 2026-12-01). The browser's own title property is left alone (the component no longer overrides it); the attribute still maps. Initials fall back to the heading.",
     "version 1.1.0: a renamed member behind a dated alias is a minor (§4.10, §16.20).",
     "words: the default name is runtime aria-label of the language files, read with sfWord; AVATAR_TEXT is gone. The element keeps answering el.ariaLabel with that word, as it did.",
@@ -322,7 +335,8 @@
     "version 1.4.1 (2026-11-13, C65/C91 acceptance; one number above the unreleased 1.4.0 it joins): a patch. The cover follows the decided C65 rule, placeholders from 64 px (component.avatars 1.4.1): 1.4.0 gave it to size 3 (56 px, 52 on a phone), which is under 64, so the ladder's avatars are flat again under the expressive setting, and an avatar sized to 64 px or more takes the cover. Settings, values, events and keys unchanged. Same patch, the card without a photo (owner remark R212, defect AP-2 of control/research/2026-11-13-avatar-placeholder.md): template=\"card\" without image-url drew its media box 0 px tall (192 x 0), because the square and portrait ratios were set on the img alone; the media box itself now keeps the ratio (square 1:1, portrait 9:16), so the empty card shows its placeholder fill at full size and a card with a photo stands at its size before the photo loads. The look of the empty media (initials or a glyph) is not part of this patch.",
     "version 1.5.0 (2026-11-13, owner decision C124; research control/research/2026-11-13-avatar-placeholder.md, prototype prototypes/avatar-placeholder.html; one number above the unreleased 1.4.1 it joins): a minor, a look change. The card template without image-url draws its media box instead of an empty grey block: with a name (heading, else aria-label, else text) the initials on the hue of the name -- auto is the card's default when neither hue nor tone is set, a named hue is kept -- in the hue's container and ink, as the round avatar with hue=\"auto\" draws them; with no name the person glyph on the neutral fill (surface-container, on-surface-container-variant), the round placeholder's colours. The initials are 36 % of the media box width in the medium weight, the glyph 45 % of it (container query units, the media exception of C18), centred; the box keeps its ratio (1.4.1), so a photo arriving later shifts nothing. Round avatars unchanged. component.avatars 1.5.0 carries the sheet (.sf-avatar-card-placeholder--text, --icon, .sf-avatar-card-initials). Settings, values, events and keys unchanged.",
     "version 1.5.1 (written on fix/content-precheck as 1.3.3; 2026-11-10, docs precheck smart content AV-01): a patch. With component.avatars 1.4.0 the label group may be narrower than its text, so no-wrap lines end in an ellipsis (the group took the text's whole width, 499 in a 300 frame). Every setting has its summary. Settings, values, events and keys unchanged.",
-    "version 1.6.0 (2026-11-14, avatar study defects AV-2, AV-4, AV-5, AV-8; control/research/2026-11-14-avatar.md): a minor. (1) The accessible name is the host's aria-label, else heading, else text, else the language word: heading named nobody (the button read «Аватар»). el.ariaLabel answers as before. (2) Online and offline join the name after it, before the count, in the page's language (lang runtime status-online, status-offline: «в сети», «не в сети»; «online», «offline»). (3) The icon setting: the placeholder's glyph for a bot, a system or a service, drawn when there is no picture and no text in place of the initials of the name (person when empty and nameless); the glyph is an sf-icon element (cl-icon relation) and is asked for before the avatar draws. (4) The picture's classes and content are one drawing, js/picture.js, which sf-avatar-group, sf-tag, sf-list-item, sf-dropdown, sf-input-lookup, sf-menu-context and sf-list's signs draw too; sf-avatar's own markup keeps its utility classes (they stay in js/templates/shared.js, where the template-utilities table reads them), a host's picture writes none and takes the same box from component.avatars 1.8.0 (.sf-avatar--picture, in sf.base), so no host asks the Loader for a utility it did not ask for before. (5) core.styles holds the avatar's box before its code (sf-avatar:not(:defined)): the default template is a circle of its size step from the first frame, the label template the taller of the avatar and its heading and description lines (one text line of the size each). Look unchanged."
+    "version 1.6.0 (2026-11-14, avatar study defects AV-2, AV-4, AV-5, AV-8; control/research/2026-11-14-avatar.md): a minor. (1) The accessible name is the host's aria-label, else heading, else text, else the language word: heading named nobody (the button read «Аватар»). el.ariaLabel answers as before. (2) Online and offline join the name after it, before the count, in the page's language (lang runtime status-online, status-offline: «в сети», «не в сети»; «online», «offline»). (3) The icon setting: the placeholder's glyph for a bot, a system or a service, drawn when there is no picture and no text in place of the initials of the name (person when empty and nameless); the glyph is an sf-icon element (cl-icon relation) and is asked for before the avatar draws. (4) The picture's classes and content are one drawing, js/picture.js, which sf-avatar-group, sf-tag, sf-list-item, sf-dropdown, sf-input-lookup, sf-menu-context and sf-list's signs draw too; sf-avatar's own markup keeps its utility classes (they stay in js/templates/shared.js, where the template-utilities table reads them), a host's picture writes none and takes the same box from component.avatars 1.8.0 (.sf-avatar--picture, in sf.base), so no host asks the Loader for a utility it did not ask for before. (5) core.styles holds the avatar's box before its code (sf-avatar:not(:defined)): the default template is a circle of its size step from the first frame, the label template the taller of the avatar and its heading and description lines (one text line of the size each). Look unchanged.",
+    "version 1.7.0 (2026-11-14, owner decision C152, all eight points; research control/research/2026-11-14-avatar.md, prototype prototypes/avatar-study.html): a minor, a look and behaviour change. (1) A picture by default: role img with the name, no Tab stop, no hover ring; the href setting makes it a link; slot=\"trigger\" or aria-haspopup on the host make it a native button (the user menu). The label template hides the picture beside its printed heading. (2) The initials (or the glyph) stand under a photo; the photo fades in when it has come and is dropped when it fails. (3) Initials in the medium weight, two letters from 1/3 and one at 1/4; legal forms, titles and name particles are skipped and an address gives the first letter before «@» (helpers/text.js getInitials, module.smart-helpers). (4) The square's corner grows with the step: 4 at 1/4 and 1/3, 8 at 1/2 and 1, 12 at 2 and 3 (component.avatars 1.9.0). (5) Only online draws a point; away (new status value) a hollow ring; offline draws nothing; the word joins the name («отошёл», \"away\"). (7) A link or button avatar of the default template shows the name (heading, else aria-label) in the Framework's tooltip on hover and keyboard focus (tooltip relation, lazy). (6) and (8) are sf-avatar-group 1.4.0 and sf-progress-ring's sheet."
   ],
   "x-rule": {
     "$comment-after": [

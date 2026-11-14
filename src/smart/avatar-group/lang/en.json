@@ -1,3 +1,10 @@
 {
-  "title": "Avatars"
+  "title": "Avatars",
+  "runtime": {
+    "group-label": "Members: {n}",
+    "more-label": {
+      "one": "{n} more member",
+      "other": "{n} more members"
+    }
+  }
 }

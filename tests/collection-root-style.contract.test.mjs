@@ -21,7 +21,11 @@ test('all Avatar variants bind style once; Label does not repeat it on its neste
   assert.match(template, /style=\$\{options.rootStyle \|\| nothing\}/);
   assert.match(template, /\$\{avatar\(\{ size, imageUrl, component: context.component \}\)\}/);
   const code = template.replace(/^\s*\/\/.*$/gmu, '');
-  assert.doesNotMatch(code, /sf-avatar-round|sf-avatar--image|sf-avatar-cir|sf-avatar-check|<button/);
+  // The one button is «+N» with the list of everyone (owner decision C152
+  // (6)): no avatar is a button.
+  assert.equal((code.match(/<button/g) || []).length, 1);
+  assert.match(code, /<button slot="trigger" type="button" class=\$\{avatarClasses\(plus\)\}/);
+  assert.doesNotMatch(code, /sf-avatar-round|sf-avatar--image|sf-avatar-cir|sf-avatar-check/);
 });
 
 // The tree's row is one markup, drawn by sf-tree for every entry and by a

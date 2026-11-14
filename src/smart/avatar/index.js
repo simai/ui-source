@@ -8,7 +8,7 @@ import { getInitials } from "../helpers/text";
 import { resolveAvatarHue } from "./js/tone.mjs";
 import {elementBadge, nameWithBadge} from "../helpers/anchored-badge";
 import {preloadControlIcons} from "../helpers/cycle";
-import {avatarPictureIcons} from "./js/picture";
+import {avatarPictureIcons, avatarStepText} from "./js/picture";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
 import en from "./lang/en.json";
@@ -26,6 +26,9 @@ const AvatarElement = elementFromManifest(manifest, {
   aliases,
 });
 
+
+// The tooltips' ids, one per element on the page (stable across renders).
+let sequence = 0;
 
 const TEMPLATE_RENDERERS = {
   default: renderDefaultTemplate,
@@ -90,8 +93,32 @@ class SfAvatar extends AvatarElement {
   // marks are not presence and add nothing.
   get presenceWord() {
     if (this.status === "online") return this.sfWord("status-online");
+    if (this.status === "away") return this.sfWord("status-away");
     if (this.status === "offline") return this.sfWord("status-offline");
     return "";
+  }
+
+  // What the avatar is (owner decision C152 (1), 2026-11-14): a link with
+  // href; a button where it has an action of its own -- the trigger of a
+  // popover or a menu (slot="trigger"), or a host that says it opens one
+  // (aria-haspopup); otherwise a picture, role img with the name, no Tab
+  // stop and no hover ring. It was always a button: five avatars in a row
+  // were five Tab stops, and products hid them with aria-hidden and inert.
+  get mode() {
+    if (String(this.href ?? "").trim()) return "link";
+    if (this.getAttribute("slot") === "trigger" || this.hasAttribute("aria-haspopup")) {
+      return "button";
+    }
+    return "picture";
+  }
+
+  // The name over an avatar whose name is not printed (C152 (7)): a link or
+  // a button of the default template -- the user menu in a header, a link to
+  // a profile. A picture's name is printed beside it in a row, a card or a
+  // label, so it takes none; a group shows its members' names itself.
+  get tooltipText() {
+    if (this.templateName !== "default" || this.mode === "picture") return "";
+    return String(this.heading ?? "").trim() || this.getAttribute("aria-label") || "";
   }
 
   get spokenName() {
@@ -154,6 +181,16 @@ class SfAvatar extends AvatarElement {
     );
   }
 
+  // The letters drawn: the initials with a photo too (they stand under it
+  // until it comes and when it fails, C152 (2)), one letter at 1/4 (C152 (3)).
+  get drawnText() {
+    if (String(this.icon ?? "").trim() && !this.text) return "";
+    const own = this.text || getInitials(
+      this.heading || (this.hasAttribute("aria-label") ? this.ariaLabel : ""),
+    );
+    return avatarStepText(own, this.size);
+  }
+
   // The hue the initials are drawn in (C17): the named one, or for auto the
   // one of the name, the words the initials stand for rather than the two
   // letters, so two people with the same initials differ. Only initials take a
@@ -162,7 +199,7 @@ class SfAvatar extends AvatarElement {
   // without a photo draws the initials on the hue of the name when no hue is
   // set (owner decision C124): auto is the card's default.
   get resolvedHue() {
-    if (!this.isText) {
+    if (!this.drawnText) {
       return "";
     }
 
@@ -179,6 +216,10 @@ class SfAvatar extends AvatarElement {
   templateContext() {
     const props = this.getPropsContext();
     const badge = elementBadge(this);
+    if (!this._uid) this._uid = `sf-avatar-${++sequence}`;
+    const tipText = this.tooltipText;
+    // The tooltip relation is lazy: asked for when such an avatar draws.
+    if (tipText) globalThis.SF?.Loader?.ensurePlugin?.("tooltip");
 
     return this.createTemplateContext({
       ...props,
@@ -197,9 +238,16 @@ class SfAvatar extends AvatarElement {
       badge,
       component: this,
       isImage: this.isImage,
-      isText: this.isText,
+      // The initials are drawn alone or under the photo (C152 (2)); the card
+      // keeps its own photo-or-placeholder media (isCardText).
+      isText: Boolean(this.drawnText),
+      isCardText: this.isText,
       resolvedHue: this.resolvedHue,
-      text: this.displayText,
+      text: this.templateName === "card" ? this.displayText : this.drawnText,
+      mode: this.mode,
+      href: String(this.href ?? "").trim(),
+      tipText,
+      tipId: tipText ? `${this._uid}-tip` : "",
       rootClass: this.getRootClass(),
       rootStyle: this.getRootStyle(),
     });
@@ -237,7 +285,8 @@ class SfAvatar extends AvatarElement {
   updateDom(changedAttributes = []) {
     const button = this.querySelector(".sf-avatar");
 
-    if (!button) {
+    // Only a button takes disabled in place; a link or a picture draws again.
+    if (!button || button.localName !== "button") {
       return false;
     }
 
@@ -265,6 +314,7 @@ class SfAvatar extends AvatarElement {
       tone: this.tone,
       status: this.status,
       icon: this.icon,
+      href: this.href,
       ariaLabel: this.ariaLabel,
       heading: this.heading,
       description: this.description,

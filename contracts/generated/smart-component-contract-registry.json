@@ -136,6 +136,7 @@
         "uses": [
           "component.avatars",
           "component.badges",
+          "component.tooltip",
           "smart.icon"
         ]
       },
@@ -148,13 +149,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/avatar/smart.manifest.json",
-      "manifest_sha256": "352fd883af117af623d0763484014b504034ed307de17ade26829374ffc47f55",
+      "manifest_sha256": "ba7ec2b0b3d793f173b1c7e71375d4046d2b1fc6e080338e96b1dcc60def7858",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "Shows a person or organisation as a photo or initials, with an optional availability or verification mark. The default and label templates render a native button whose aria-label names its action; the card template is static and adds a title, description and meta line.",
+      "summary": "Shows a person or organisation as a photo or initials, with an optional presence point or verification mark. By default a picture (role img with the name); a link with href, a native button as a menu's trigger; the card template is static and adds a title, description and meta line.",
       "tags": [
         "avatar"
       ],
@@ -172,7 +173,9 @@
         "uses": [
           "component.avatars",
           "component.icons",
-          "smart.icon"
+          "component.tooltip",
+          "smart.icon",
+          "smart.popover"
         ]
       },
       "contract_schema": {
@@ -184,7 +187,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/avatar-group/smart.manifest.json",
-      "manifest_sha256": "90bfc196315a25944eca2001abb9e7eb84451402c3fa9ec1bb89f7896d3b757b",
+      "manifest_sha256": "de23e7ac2f4017bc386a89da41ad5c9b36cac6161dfbb37872f29de6091a8580",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2390,7 +2393,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-ring/smart.manifest.json",
-      "manifest_sha256": "7fc7b3cb3dfa58dea23646ad22fd27ddd8f3f49367ed814d0e6b38b25c523228",
+      "manifest_sha256": "4cd3282c94606f9d31513e594889f94dff4039b2a05c77929660348e25b024aa",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

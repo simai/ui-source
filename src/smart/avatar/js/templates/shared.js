@@ -76,7 +76,11 @@ export function onlineIndicator(context) {
         return context.component.getSlotContent("online-indicator");
     }
 
-    if (!["online", "offline"].includes(context.status)) {
+    // Only «online» is drawn, and «away» as a hollow ring when the host
+    // asks for it (owner decision C152 (5), 2026-11-14): grey offline dots in
+    // a long list read as «something here». Offline draws nothing; its word
+    // still joins the name (index.js presenceWord).
+    if (!["online", "away"].includes(context.status)) {
         return nothing;
     }
 
@@ -117,16 +121,65 @@ export function statusBadge(context) {
     }
 }
 
+// The name in a tooltip where no name is visible (owner decision C152 (7)):
+// the Framework's tooltip composition (component.tooltip) -- an anchor holding
+// the avatar (data-tooltip naming the surface) and a dark tooltip of size 1/3
+// with its tail pointing down. The controller shows it on hover and keyboard
+// focus and hides it on Escape and a press. The surface is hidden in the
+// markup and only the controller shows it, so a redraw never fights it.
+export function withNameTooltip(trigger, tipText, tipId) {
+    if (!tipText || !tipId) return trigger;
+    return html`<span class="sf-avatar-anchor sf-tooltip-anchor">${trigger}<span
+        class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-tooltip--arrow-bottom-center sf-avatar-tooltip"
+        id=${tipId} hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${tipText}</span><span
+        class="sf-tooltip-tail" aria-hidden="true"></span></span></span></span>`;
+}
+
+// What the avatar is (owner decision C152 (1), 2026-11-14): a picture by
+// default -- role img named by the person, no Tab stop, no hover ring --,
+// a link with href, a button only where it has an action of its own (the
+// trigger of a menu: slot="trigger" or aria-haspopup on the host). Beside
+// a printed name (options.nameShown) the picture is hidden from assistive
+// technology: the name is read once, from the text.
 export function avatarButton(context, options = {}) {
-    return html`
+    const style = options.includeRootStyle === false ? "" : context.rootStyle || "";
+    const label = context.buttonLabel ?? context.ariaLabel;
+    const inner = html`${avatarContent(context)} ${statusBadge(context)} ${renderAnchoredBadge(context.badge)}`;
+    const mode = context.mode || "button";
+
+    if (mode === "link") {
+        const link = html`<a
+                class="${avatarClasses(context, {...options, disabled: context.disabled})}"
+                style=${style || nothing}
+                href=${context.disabled ? nothing : context.href}
+                aria-disabled=${context.disabled ? "true" : nothing}
+                aria-label=${label}
+                data-tooltip=${context.tipId && context.tipText ? context.tipId : nothing}
+        >${inner}</a>`;
+        return withNameTooltip(link, context.tipText, context.tipId);
+    }
+
+    if (mode === "picture") {
+        return html`<span
+                class="${avatarClasses(context, {...options, disabled: context.disabled})}"
+                style=${style || nothing}
+                role=${options.nameShown ? nothing : "img"}
+                aria-label=${options.nameShown ? nothing : label}
+                aria-hidden=${options.nameShown ? "true" : nothing}
+        >${inner}</span>`;
+    }
+
+    const button = html`
         <button
                 class="${avatarClasses(context, options)}"
-                style=${options.includeRootStyle === false ? "" : context.rootStyle || ""}
-                aria-label=${context.buttonLabel ?? context.ariaLabel}
+                style=${style}
+                aria-label=${label}
                 ?disabled=${context.disabled}
                 type="button"
+                data-tooltip=${context.tipId && context.tipText ? context.tipId : nothing}
         >
-            ${avatarContent(context)} ${statusBadge(context)} ${renderAnchoredBadge(context.badge)}
+            ${inner}
         </button>
     `;
+    return withNameTooltip(button, context.tipText, context.tipId);
 }
