@@ -3,6 +3,7 @@
 // which item is the current page, and which branches lead to it. Kept apart
 // from the element so the contract tests can run them in Node, as
 // sf-accordion's sections.mjs is.
+import {chooseBeside, fitInOrder, spanOf} from '../../core/js/overflow-row.js';
 
 // The class menu's orientations: a column for a side panel, a row for a page
 // header (sf-menu--horizontal, the first level only).
@@ -320,23 +321,17 @@ export function withoutGroups(items) {
 // holds the current page) first of all -- unless it does not fit beside the
 // button either. Widths are each item's own, `gap` the row's gap. Answers the
 // indexes that stay, in order; none means the button alone, then «Меню».
+// Since sf-menu 1.10.0 (owner decision C155 (1)) this is the Framework's one
+// row engine (core/js/overflow-row.js), the rule sf-tabs and sf-contents lay
+// their rows out by: the items in order up to the first that does not fit,
+// the current section put back in while the last others give way to it.
 export function fitRow(widths, moreWidth, available, gap = 0, keep = -1) {
-  const count = widths.length;
-  const all = widths.reduce((sum, width) => sum + width, 0) + gap * Math.max(0, count - 1);
-  if (all <= available + 0.5) return widths.map((_, index) => index);
-  const stays = [];
-  let used = moreWidth;
-  if (keep >= 0 && keep < count && used + gap + widths[keep] <= available + 0.5) {
-    used += gap + widths[keep];
-    stays.push(keep);
-  }
-  for (let index = 0; index < count; index += 1) {
-    if (index === keep) continue;
-    if (used + gap + widths[index] > available + 0.5) break;
-    used += gap + widths[index];
-    stays.push(index);
-  }
-  return stays.sort((a, b) => a - b);
+  if (!fitInOrder(widths, gap, available)) return widths.map((_, index) => index);
+  const room = available - moreWidth - (widths.length ? gap : 0);
+  // The current section stays only while it fits beside «Ещё» itself; when
+  // it does not, the row is the items that fit in order.
+  const must = keep >= 0 && keep < widths.length && spanOf(widths, gap, [keep]) <= room + 0.5 ? [keep] : [];
+  return chooseBeside({widths, gap, available: room, must, current: -1});
 }
 
 // Search in a column (C30 amended 2026-11-09, R071 a). Words are compared

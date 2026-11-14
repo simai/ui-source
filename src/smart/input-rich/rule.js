@@ -15,5 +15,9 @@ SF.RuleLoader['cl-input-rich'] = {
     { name: 'cl-popover' },
     { name: 'cl-input' },
     { name: 'cl-button' },
+    // The levels menu and ⋯ «Ещё» open the standard menu (core/js/overflow-row.js, owner decision C155).
+    { name: 'cl-menu-context', lazy: true },
+    // The text levels are the class markup of a ghost button with its word and ▾ (C155 (5)).
+    { name: 'buttons' },
   ],
 };

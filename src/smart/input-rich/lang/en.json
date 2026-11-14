@@ -22,6 +22,8 @@
     "link-remove": "Remove link",
     "value-missing": "Fill in this field",
     "count-text": "{count} / {max}",
-    "too-long": "At most {max} characters"
+    "too-long": "At most {max} characters",
+    "text-level": "Text level",
+    "more": "More"
   }
 }

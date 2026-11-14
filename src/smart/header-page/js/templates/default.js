@@ -38,7 +38,17 @@ export function renderPageHeaderTemplate(context) {
               @click=${() => component.toggleStar()}></sf-button-icon>`
           : nothing}
       </div>
-      ${hasHostSlot('actions') ? html`<div class="sf-page-header-actions flex items-cross-center">${hostSlot('actions')}</div>` : nothing}
+      ${hasHostSlot('actions')
+        // overflow more (owner decision C155 (7)): one row, and ⋯ at its end
+        // for what does not fit -- the actions' rung, the toolbar's quiet
+        // look, «Ещё» its name and tooltip. It is drawn out of the row
+        // (sf-page-header-out) until the row is laid out and something left.
+        ? html`<div class=${context.overflow === 'more' ? 'sf-page-header-actions sf-page-header-actions--more flex items-cross-center' : 'sf-page-header-actions flex items-cross-center'}>${hostSlot('actions')}${context.overflow === 'more'
+            ? html`<sf-button-icon class="sf-page-header-more sf-page-header-out" icon="more_horiz" appearance="ghost" scheme="on-surface"
+                size=${context.moreSize || '1'} aria-label=${text('more')} title=${text('more')} aria-haspopup="menu"
+                @click=${(event) => component.openActionsMore(event)}></sf-button-icon>`
+            : nothing}</div>`
+        : nothing}
     </div>
   </header>`;
 }

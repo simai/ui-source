@@ -58,6 +58,25 @@
   gap: var(--sf-page-header-actions-gap, var(--sf-space-1\/3));
 }
 
+/* overflow="more" (the default since 1.4.0, owner decision C155 (7), C161
+   (4)): the actions keep one row, and what does not fit leaves for ⋯ at its
+   end (core/js/overflow-row.js). Until the row is laid out it does not wrap
+   and clips at the line's edge, so the first frame never draws every action
+   on rows of its own; an action that left, and ⋯ while nothing did, are out
+   of the row (an sf-button host writes an inline display: contents, hence the
+   weight). */
+.sf-page-header-actions--more {
+  flex-wrap: nowrap;
+}
+
+.sf-page-header-actions--more:not([data-sf-row-laid]) {
+  overflow: clip;
+}
+
+.sf-page-header-actions > .sf-page-header-out {
+  display: none !important;
+}
+
 /* The decorative level (owner decisions C91 level 2 and C65 round 2, R164,
    variant C): a tinted head. Primary tone 50 at 16 (dark 24, the fill steps)
    fading down to nothing by the head's foot -- never past a fixed length, so a

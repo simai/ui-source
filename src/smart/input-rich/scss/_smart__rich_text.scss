@@ -603,3 +603,38 @@
     line-height: max(var(--sf-heading-5--height), var(--sf-rich-text--h4-height), var(--sf-rich-text--touch-line, var(--sf-rich-text--h4-height)));
   }
 }
+
+/* Owner decision C155 (2026-11-14, R233; study control/research/2026-11-14-toolbar-overflow.md). */
+@layer sf.components {
+  /* overflow="more" (the default): one row, never wrapped; until the element
+     has laid it out it clips at the frame's edge, so the first frame never
+     draws the tools on two rows. A group that left, its separator, and ⋯ with
+     its separator while nothing left are out of the row: an emptied group
+     takes no place and adds no gap (the study's prototype left zero-wide
+     groups whose gaps added up to 12). */
+  .sf-rich-text .sf-rich-text-toolbar--more {
+    flex-wrap: nowrap;
+  }
+
+  .sf-rich-text .sf-rich-text-toolbar--more:not([data-sf-row-laid]) {
+    overflow: clip;
+  }
+
+  .sf-rich-text .sf-rich-text-toolbar > .sf-rich-text-out {
+    display: none !important;
+  }
+
+  /* (5) The text levels: one ghost menu button with the current level's word
+     and ▾, on the toolbar's rung (the icon buttons' height); the word is the
+     rung's text, the chevron the rung's icon. */
+  .sf-rich-text .sf-rich-text-levels {
+    flex: none;
+    white-space: nowrap;
+  }
+
+  .sf-rich-text .sf-rich-text-levels[aria-disabled='true'] {
+    --sf-icon--color: var(--sf-on-surface-disabled);
+    color: var(--sf-on-surface-disabled);
+    cursor: default;
+  }
+}

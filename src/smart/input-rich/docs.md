@@ -87,10 +87,17 @@ again with the same subset: a request can be written by anyone.
   dropping panel's inset.
 - The toolbar stays at the top of the visible part of the field while the
   page scrolls a long text (C141 (3)). Its groups stand in the order of
-  importance (`data-sf-priority`: text levels, bold, italic, link first); the
-  «More» control for what does not fit is still to come (R233), so a narrow
-  field wraps the row. Icon buttons of one group stand `--sf-space-1/4` apart,
-  with the same step on each side of a group's separator line (C105 H5, C144).
+  importance (`data-sf-priority`: text levels, bold, italic, link first). The
+  text levels are one button with the current level, «Абзац ▾», first in the
+  row: it opens a menu where one level is chosen (C155 (5)). The toolbar is
+  always one row (`overflow="more"`, the default since 1.5.0, C155, R233):
+  what does not fit leaves for ⋯ «Ещё» at its end — whole groups with their
+  separator, undo and redo first, then the lists and the quote; the levels and
+  bold, italic, link stay. ⋯ opens a menu with the tools that left, each with
+  its icon, name and shortcut, a pressed one checked; ⋯ itself is never
+  pressed. `overflow="wrap"` lets the row wrap as before. Icon buttons of one
+  group stand `--sf-space-1/4` apart, with the same step on each side of a
+  group's separator line (C105 H5, C144).
 - `appearance="bordered|filled"` -- sf-textarea's two boxes (filled with its
   bottom line in `--sf-outline`, C52).
 - `rows` -- the fewest lines shown (6); the field grows with its text.
@@ -120,8 +127,10 @@ nothing.
 
 - Tab reaches the toolbar (one stop) and then the text; Tab in the text
   leaves the field and never inserts a tab.
-- In the toolbar, ArrowLeft and ArrowRight move between the buttons, Home
-  and End go to the first and the last; Enter or Space presses one.
+- In the toolbar, ArrowLeft and ArrowRight move between the buttons the row
+  shows (in a right-to-left page ArrowRight goes back), Home and End go to the
+  first and the last; Enter or Space presses one. On «Абзац ▾» and ⋯ Enter,
+  Space or ArrowDown open the menu; Escape closes it and gives the focus back.
 - Ctrl+B / Cmd+B bold, Ctrl+I / Cmd+I italic, Ctrl+K / Cmd+K the link
   editor, Ctrl+Z / Cmd+Z undo, Ctrl+Shift+Z / Cmd+Shift+Z and Ctrl+Y redo.
 - Bold and Italic say the marks of the text, not how it looks: a heading is

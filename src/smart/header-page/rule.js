@@ -11,5 +11,7 @@ SF.RuleLoader['cl-header-page'] = {
     { name: 'cl-badge' },
     { name: 'cl-button-icon' },
     { name: 'cl-icon' },
+    // ⋯ «Ещё» opens the standard menu with the actions that left the row (core/js/overflow-row.js, owner decision C155).
+    { name: 'cl-menu-context', lazy: true },
   ],
 };

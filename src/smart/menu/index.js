@@ -20,6 +20,7 @@ import {instancePath, partId} from '../../core/js/instance-path';
 import BundledPosition from '../../core/js/position.js';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 import {breakpointMedia} from '../../core/js/breakpoints.js';
+import {rowRoom} from '../../core/js/overflow-row.js';
 import {noteDeprecated} from '../../core/js/deprecations.js';
 import {renderMenuTemplate} from './js/templates/default';
 import {
@@ -1133,7 +1134,11 @@ class SfSmartMenu extends MenuElement {
     const currentId = this.currentId;
     const above = currentId ? [currentId, ...(pathTo(this.menuItems, currentId) || [])] : [];
     const keep = ids.findIndex((id) => above.includes(id));
-    const stays = new Set(fitRow(widths, moreWidth, nav.clientWidth, gap, keep));
+    // The room in fractional pixels (the row engine's rowRoom; clientWidth
+    // is a whole pixel, the C54 return), the arithmetic the shared engine's
+    // (fitRow, owner decision C155 (1)).
+    const room = rowRoom(nav);
+    const stays = new Set(fitRow(widths, moreWidth, room, gap, keep));
     this.setOverflowHidden(ids.filter((_, at) => !stays.has(at)), nav.clientWidth);
   }
 
