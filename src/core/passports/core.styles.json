@@ -28,7 +28,7 @@
     "src/core/scss/mix/_mix__notice-link.scss",
     "src/core/scss/vars/_sf_var__display.scss"
   ],
-  "content_sha256": "c3968b961cd27ee2b86549907c0a7098acbbcfb78f2119b891ea8f91572869f9",
+  "content_sha256": "fb483756edc699ff12d0c62e21f689dcaaf42c966ff3c1b4feacb9f112a1e5e2",
   "dependencies": [
     {
       "id": "font.inter",

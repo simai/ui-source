@@ -8,6 +8,11 @@
     "error-text": "Not uploaded",
     "error-line": "Not uploaded: {message}",
     "retry-text": "Retry",
-    "retry-label": "Retry {name}"
+    "retry-label": "Retry {name}",
+    "delete-label": "Delete {name}",
+    "delete-question": "Delete “{name}”?",
+    "delete-text": "Delete",
+    "viewer-previous": "Previous file",
+    "viewer-next": "Next file"
   }
 }

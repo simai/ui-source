@@ -26,6 +26,12 @@
     "utility/transition-property/default/css/default.min.css"
   ],
   "examples": {
+    "chip": [
+      "component/file-preview/css/file-preview.min.css",
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css"
+    ],
     "compact": [
       "component/file-preview/css/file-preview.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
@@ -73,6 +79,12 @@
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
     ],
+    "meta": [
+      "component/file-preview/css/file-preview.min.css",
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css"
+    ],
     "reference": [
       "component/file-preview/css/file-preview.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
@@ -80,6 +92,12 @@
       "core/css/core.css",
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
+    ],
+    "tile": [
+      "component/file-preview/css/file-preview.min.css",
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "core/css/core.css"
     ],
     "uploading": [
       "component/file-preview/css/file-preview.min.css",

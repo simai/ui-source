@@ -169,6 +169,27 @@
   block-size: var(--sf-ui-3--control-height);
 }
 
+/* The chip and the tile (decision C149 (1)): a chip is 48 high and at most
+   --sf-f8 (288) wide in the line of attachments; a tile is its 4:3 picture, the
+   one-line name and the meta line beside its size 1/2 buttons. */
+:where(sf-file-preview[appearance="chip"]:not(:defined)):not(:has(> [data-sf-static])) {
+  display: inline-block;
+  vertical-align: middle;
+  inline-size: min(100%, var(--sf-f8));
+  block-size: var(--sf-ui-2--control-height);
+}
+
+:where(sf-file-preview[appearance="tile"]:not(:defined)):not(:has(> [data-sf-static])) {
+  block-size: auto;
+  padding-block-end: calc(2 * var(--sf-space-1\/4) + var(--sf-ui-1\/2--control-height) + var(--sf-text-height-1\/2));
+}
+
+:where(sf-file-preview[appearance="tile"]:not(:defined)):not(:has(> [data-sf-static]))::before {
+  content: "";
+  display: block;
+  aspect-ratio: 4 / 3;
+}
+
 :where(sf-file-preview[compact]:not([compact="false"]):not(:defined)):not(:has(> [data-sf-static])) {
   display: inline-block;
   vertical-align: middle;

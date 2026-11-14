@@ -3,11 +3,16 @@
   "runtime": {
     "aria-label": "Файл",
     "download-label": "Скачать {name}",
-    "remove-label": "Удалить {name}",
+    "remove-label": "Убрать {name}",
     "uploading-label": "Загрузка {name}",
     "error-text": "Не загрузился",
     "error-line": "Не загрузился: {message}",
     "retry-text": "Повторить",
-    "retry-label": "Повторить {name}"
+    "retry-label": "Повторить {name}",
+    "delete-label": "Удалить {name}",
+    "delete-question": "Удалить «{name}»?",
+    "delete-text": "Удалить",
+    "viewer-previous": "Предыдущий файл",
+    "viewer-next": "Следующий файл"
   }
 }
