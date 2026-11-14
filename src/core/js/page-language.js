@@ -244,30 +244,22 @@ export function localeText(dictionary, key, locale, component) {
 
 // A language the Framework does not ship (owner decision C177 (4)) may come
 // partly translated: a word it lacks is said in the fallback language,
-// English, and that is shown, not silent (localization study LC-6). Once per
-// page and language, naming the first word missed, so a page that draws a
-// hundred rows prints one line; the full list is the coverage check's
-// (tests/language-files.contract.test.mjs, languageCoverage()). The marks
-// are kept on the shared global, because every bundle carries this module.
+// English, and that is shown, not silent (localization study LC-6). One
+// warning per page and language (de-AT and de are one), naming the first word
+// missed; every word missed is kept by language for SF.language.missing(),
+// and the language files' coverage is scripts/language-coverage.mjs. Kept on
+// the shared global, because every bundle carries this module.
 function warnFallback(order, owner, key) {
-  // The language, not the region: de-AT and de are one warning.
   const wanted = String(order[0] || '').split('-')[0];
   if (!wanted || wanted === 'en') return;
-  noteMissing(wanted, owner, key);
-  const root = typeof globalThis !== 'undefined' ? globalThis : {};
-  if (!(root.__sfFallbackWarnings instanceof Set)) root.__sfFallbackWarnings = new Set();
-  if (root.__sfFallbackWarnings.has(wanted)) return;
-  root.__sfFallbackWarnings.add(wanted);
-  globalThis.console?.warn?.(`[SIMAI Framework] language "${wanted}": some words are missing and shown in English (first: ${owner || 'component'} "${key}"). Add them with SF.language.register(component, '${wanted}', words); SF.language.missing('${wanted}') lists the words missed so far.`);
-}
-
-// Every word the page said in English for want of one in its language, by
-// language: what SF.language.missing() answers. Shared like the marks.
-function noteMissing(wanted, owner, key) {
-  const root = typeof globalThis !== 'undefined' ? globalThis : {};
+  const root = globalThis;
   if (!(root.__sfMissingWords instanceof Map)) root.__sfMissingWords = new Map();
-  if (!root.__sfMissingWords.has(wanted)) root.__sfMissingWords.set(wanted, new Set());
-  root.__sfMissingWords.get(wanted).add(`${owner || 'component'}|${key}`);
+  const seen = root.__sfMissingWords;
+  if (!seen.has(wanted)) {
+    seen.set(wanted, new Set());
+    root.console?.warn?.(`[SIMAI Framework] "${wanted}": words missing, said in English (first: ${owner || 'component'} "${key}"); SF.language.missing('${wanted}') lists them`);
+  }
+  seen.get(wanted).add(`${owner || 'component'}|${key}`);
 }
 
 // Missing words are said once per component, word and language: a page that
@@ -425,10 +417,9 @@ export const language = {
    * `['sf-pagination|pages-label', ...]`; every language's when none is named.
    */
   missing(value) {
-    const root = typeof globalThis !== 'undefined' ? globalThis : {};
-    const seen = root.__sfMissingWords instanceof Map ? root.__sfMissingWords : new Map();
+    const seen = globalThis.__sfMissingWords instanceof Map ? globalThis.__sfMissingWords : new Map();
     if (value === undefined) return Object.fromEntries([...seen].map(([code, words]) => [code, [...words]]));
-    return [...(seen.get(normalise(value)) ?? [])];
+    return [...(seen.get(normalise(value).split('-')[0]) ?? [])];
   },
 
   /** Every component something has been registered for. */

@@ -76,7 +76,6 @@ test('LC-6: a word said in English for want of one in the page language warns on
   const warn = console.warn;
   console.warn = (...args) => said.push(args.join(' '));
   try {
-    delete globalThis.__sfFallbackWarnings;
     delete globalThis.__sfMissingWords;
     const words = { en: { a: 'A', b: 'B' }, ru: { a: 'А', b: 'Б' } };
     assert.equal(localeText(words, 'a', 'de', 'sf-x'), 'A');
@@ -86,8 +85,8 @@ test('LC-6: a word said in English for want of one in the page language warns on
     assert.equal(localeText(words, 'a', 'en-GB', 'sf-x'), 'A', 'English is not a fallback for English');
     assert.equal(localeText(words, 'a', 'fr', 'sf-x'), 'A');
     assert.equal(said.length, 2, said.join('\n'));
-    assert.match(said[0], /language "de": some words are missing and shown in English \(first: sf-x "a"\)/u);
-    assert.match(said[1], /language "fr"/u);
+    assert.match(said[0], /"de": words missing, said in English \(first: sf-x "a"\); SF\.language\.missing\('de'\) lists them/u);
+    assert.match(said[1], /"fr"/u);
     assert.deepEqual(language.missing('de').sort(), ['sf-x|a', 'sf-x|b', 'sf-y|a']);
     language.register('sf-x', 'de', { a: 'Ä' });
     assert.equal(localeText(words, 'a', 'de', 'sf-x'), 'Ä', 'a registered word is no fallback');
