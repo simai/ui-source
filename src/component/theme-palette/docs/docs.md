@@ -33,6 +33,17 @@ SF.Loader.ready('theme-palette', (palette) => {
 });
 ```
 
+`applyTheme(theme, target)` writes the theme on `target` (the page's root by
+default). The semantic roles are declared on the theme classes, so a target
+below the page takes the class of the scheme it stands in (its nearest themed
+ancestor's `theme-light` / `theme-dark`, else the system's) and follows a
+switch of the page, a section or the system until the returned function takes
+the theme off and gives the target its own classes back (C84): an area on a
+dark page has the dark theme's roles. An area meant to keep a scheme of its own
+stands inside an element with that class. A rule from `themeToCss(theme,
+selector)` for an area needs the same: the area's roles are read on a theme
+class.
+
 An element with `data-sf-theme-palette` on the page loads it too. The
 `theme-palette:ready` window event carries the same object in `detail`.
 
