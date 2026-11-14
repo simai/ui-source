@@ -244,6 +244,7 @@
   "cl-input-textarea": [
     "display/default",
     "flex-direction/default",
+    "resize/default",
     "transition-property/default"
   ],
   "cl-language": [
@@ -427,6 +428,7 @@
     "display/default",
     "flex-direction/default",
     "flex-wrap/default",
+    "justify-content/default",
     "min-width/default",
     "place-items/default"
   ],
