@@ -511,11 +511,11 @@
       },
       {
         "path": "src/smart/wizard/js/templates/default.js",
-        "sha256": "aa17e9b4162337120e406ec88af267fe97ce21700d119d1383b1b6158ae6d49c"
+        "sha256": "ee39f53954ea478dc9211566427f5e4fc417b2fb7bd09059f34e46cdec8bc1d9"
       },
       {
         "path": "src/smart/wizard/scss/_smart__wizard.scss",
-        "sha256": "b01aca754fd02ebe9bb9984cd0e2b680fc66c91dcf8458e1ec646a0ab842931a"
+        "sha256": "bd744d7458249fe4e6e1b3a74f5eb267cb508ec12c33c265681b5c2199a55256"
       },
       {
         "path": "src/smart/wizard/rule.js",

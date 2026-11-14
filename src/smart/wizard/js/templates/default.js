@@ -79,7 +79,7 @@ function compact(context) {
 function head(context) {
   const {heading, words, offerLater, laterHref, size, shape, listOpen, component} = context;
   return html`<div class="sf-wizard-head">
-    <div class="sf-wizard-top">
+    <div class=${heading || offerLater ? 'sf-wizard-top' : 'sf-wizard-top sf-wizard-top--bare'}>
       ${heading ? html`<p class="sf-wizard-heading">${heading}</p>` : nothing}
       <span class="sf-wizard-position">${words.position}</span>
       ${offerLater ? html`<sf-button class="sf-wizard-later" size=${size === '1' ? '1/2' : '1/3'} appearance="ghost" scheme="on-surface-variant"

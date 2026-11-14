@@ -177,6 +177,14 @@
   display: none;
 }
 
+/* A top line with neither a name nor «Продолжить позже» (in a window the
+   name is the window's title, C179 (2)) holds only the position; where the
+   compact line says it, the empty line goes, not a control's height of
+   nothing. */
+.sf-wizard--progress-count .sf-wizard-top--bare {
+  display: none;
+}
+
 .sf-wizard-compact-line {
   display: flex;
   align-items: center;
@@ -555,6 +563,10 @@
   }
 
   .sf-wizard .sf-wizard-top .sf-wizard-position {
+    display: none;
+  }
+
+  .sf-wizard .sf-wizard-top--bare {
     display: none;
   }
 

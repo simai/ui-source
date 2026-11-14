@@ -244,6 +244,7 @@
   "cl-input-textarea": [
     "display/default",
     "flex-direction/default",
+    "resize/default",
     "transition-property/default"
   ],
   "cl-language": [
