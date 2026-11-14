@@ -14,6 +14,8 @@ SF.RuleLoader['cl-button-icon'] = {
     { name: 'badges' },
     // The spinner a loading icon button shows, fetched after the page is ready.
     { name: 'spinner', lazy: true },
+    // The tooltip controller and sheet the button's own name tooltip uses (C160 (1)), fetched on the first hover, focus or long press.
+    { name: 'tooltip', lazy: true },
   ],
 };
 

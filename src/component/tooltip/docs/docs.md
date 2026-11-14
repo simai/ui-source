@@ -63,7 +63,14 @@ so a tail carries the same shadow as the window.
 - a shortcut after the words: a `<kbd class="sf-kbd--group
   sf-tooltip-shortcut">` with a `<kbd>` per key inside `.sf-tooltip-text`,
   drawn plain and quiet by the kbd component;
-- sizes: `1/3`, `1/2`, `1`, `2`, `3`;
+- one size (owner decision C160 (3), 1.4.0): text 12/16 (`--sf-text--size-1/3`),
+  padding 4 x 8; the former `sf-tooltip--size-*` classes draw nothing of their
+  own and are kept in markup harmlessly;
+- at most two lines (C160 (2)): longer text is cut after the second line and a
+  linked tooltip says so once per page in the console -- an explanation that
+  long belongs in a «?» (sf-help-mark) beside the control;
+- placement (C160 (4)): a linked tooltip with no tail stands below its control
+  (4 px away) and flips above at the bottom edge of the window;
 - logical tails: `none`, `top-center`, `bottom-center`,
   `inline-start`, `inline-end`, `bottom-inline-start`,
   `bottom-inline-end`.

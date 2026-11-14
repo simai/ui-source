@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button-icon",
-  "version": "1.10.1",
+  "version": "1.11.0",
   "title": "Icon Buttons",
   "summary": "Native icon-only action with token geometry, accessible naming and shared loading semantics.",
   "kind": "smart",
@@ -25,6 +25,7 @@
       "component.badges",
       "component.icon-buttons",
       "component.spinner",
+      "component.tooltip",
       "smart.button-close",
       "smart.icon"
     ],
@@ -223,6 +224,11 @@
         "type": "string",
         "default": "",
         "description": "The accessible name while the toggle is on, for a toggle whose name changes («Добавить в избранное» → «Убрать из избранного»). Set, the name says the state and aria-pressed is not written; the pressed look still follows pressed. Empty: aria-label stays the name and aria-pressed says the state"
+      },
+      "tooltip": {
+        "type": "string",
+        "default": "",
+        "description": "The icon button shows its name as a Framework tooltip by itself (owner decision C160 (1)): under a resting pointer after 0.5 s, at once on keyboard focus, on a long press by touch, below the button and flipping above at the window's bottom edge; Escape and a press hide it. The text is the name (aria-label, the pressed name of a toggle, a cycle's current and next value) or, when the page wrote one, the host's title, which then draws no browser tooltip of its own. The tooltip is made on the first hover, focus or long press, not before; a button whose page linked a tooltip of its own (data-tooltip) keeps that one. \"off\": no tooltip -- for a button whose name stands next to it, or one that opens its own explanation (the «?» of sf-help-mark)."
       },
       "theme-cycle": {
         "type": "string",
@@ -635,7 +641,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button-icon/index.js",
-        "sha256": "1973b500e3b2b6ce958e26a0958aac6b87cd4b126e1dcc6b0e10663a1028ce9a"
+        "sha256": "ee3f3b33eb6c9a9f8098002a38e1ff777221bee473eafc529e8d5b3a7ca7d528"
       }
     ],
     "generated_runtime": [

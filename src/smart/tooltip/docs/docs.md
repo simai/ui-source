@@ -33,9 +33,12 @@ the surface and the tail together. A shortcut is written with `shortcut`
 (`mod+s`), never as plain text in `supporting-text`: the kbd component draws
 the keys (glyphs on a Mac, words joined by «+» elsewhere).
 
-Long text wraps within the containing block without ellipsis or clipping.
-The default is the plain tooltip: `size="1/3"` (the small text step, 12/16
-on desktop), regular weight, padding `--sf-space-1/4` by `--sf-space-1/3`
+A tooltip holds at most two lines (owner decision C160 (2)): a linked tooltip
+cuts the text after the second line and says so once per page in the console;
+an explanation that long belongs in a «?» (sf-help-mark) beside the control.
+There is one size (C160 (3), 1.3.0): the small text step, 12/16 on desktop;
+`size` is a former name that changes nothing and is noted as deprecated until
+2027-01-01. The plain tooltip has regular weight, padding `--sf-space-1/4` by `--sf-space-1/3`
 (4 x 8), radius `--sf-radius--ui`, and `appearance="dark"`, the inverse
 surface (`--sf-surface-inverse`, light in a dark theme). A rich tooltip -- text
 with `supporting-text` -- keeps its first line bold as its title. Tail placement is logical
@@ -56,7 +59,7 @@ Loading model:
 Main attributes:
 
 - `template`
-- `size`
+- `size` (former name, ignored; removed after 2027-01-01)
 - `arrow`
 - `text`
 - `supporting-text`
@@ -87,7 +90,7 @@ Supported light-DOM slot names:
 Example:
 
 ```html
-<sf-tooltip size="1">
+<sf-tooltip>
   <span slot="text">Custom title</span>
   <span slot="supporting-text">Custom description</span>
 </sf-tooltip>

@@ -184,10 +184,31 @@ Close variant:
 ></sf-button-icon>
 ```
 
+## Name tooltip
+
+An icon button shows its own name as a tooltip (owner decision C160 (1),
+1.11.0): hover for 0.5 s, keyboard focus at once, a long press on touch. The
+text is the host's `title` if one is written, else the cycle's tooltip, else
+the pressed label, else `aria-label`. The native `title` tooltip is not drawn
+(the button carries `title=""`), and the text describes the button
+(`aria-describedby`) when it differs from its name. The tooltip is the shared
+one (`data-tooltip`, component tooltip), made on the first hover or focus: it
+stands below the button and flips above at the bottom edge.
+
+- `tooltip="off"` -- no name tooltip; a written `title` stays the native one.
+- A page that links its own tooltip (`data-tooltip` on the host) keeps it.
+
+```html
+<sf-button-icon icon="format_bold" aria-label="Полужирный"></sf-button-icon>
+<sf-button-icon icon="close" aria-label="Закрыть" title="Закрыть без сохранения"></sf-button-icon>
+<sf-button-icon icon="help" aria-label="Справка" tooltip="off"></sf-button-icon>
+```
+
 ## Host attributes
 
 Attributes the component does not own are copied to the native `<button>` it
-renders, so an author's `aria-*` or `title` reach the real control.
+renders, so an author's `aria-*` reach the real control (`title` and `tooltip`
+are the name tooltip's, above).
 
 A `data-*` is **moved, not copied** — the same rule as `<sf-button>`. It ends
 up on the native button, which is the one element that has a box, paints, takes

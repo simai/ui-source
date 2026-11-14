@@ -58,7 +58,7 @@
       "size": {
         "type": "string",
         "default": "1/3",
-        "description": "Framework typography and spacing scale; 1/3, the default, is the plain tooltip: the small text step, regular, 4 x 8.",
+        "description": "A former name that draws nothing (owner decision C160 (3), until 2027-01-01): every tooltip is one size, the text 12/16, padding 4 x 8. A size other than 1/3 is noted in SF.deprecations.",
         "enum": [
           "1/3",
           "1/2",
@@ -209,7 +209,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tooltip/index.js",
-        "sha256": "630b8c096942bdc99f7087443ee6e46ef3ed38db7d9a721313013d93b0c6fa0b"
+        "sha256": "a3a287ac6f48d11b174f0fb569ac597b3d138ba71feeb00017f8382272d6f54e"
       }
     ],
     "generated_runtime": [
