@@ -38,7 +38,12 @@
     display: flex;
     flex: 1 1 auto;
     align-items: center;
-    gap: var(--sf-reference-link--main-gap, var(--sf-space-1\/3));
+    /* Icon to label (owner C105): a card is a row, H2 --sf-space-1/2 (12;
+       compact and phone 8); a sized reference stands in a row of fields or a
+       cell, the same H2; a reference on a line is a link in text, H3
+       --sf-space-1/4 (4), set below. It was --sf-space-1/3 and the size's
+       button step (6-10), neither role (RL-8). */
+    gap: var(--sf-reference-link--main-gap, var(--sf-space-1\/2));
     min-inline-size: var(--sf-0);
     color: var(--sf-on-surface);
     font-family: var(--sf-text--family);
@@ -68,6 +73,10 @@
     inline-size: var(--sf-reference-link--line-height, var(--sf-text-height-1));
     color: var(--sf-reference-link--accent);
     font-size: var(--sf-reference-link--line-height, var(--sf-text-height-1));
+    /* The glyph is a ligature word (arrow_forward): selecting the reference
+       copied it with the label (RL-10). The icon is a picture, not text. */
+    user-select: none;
+    -webkit-user-select: none;
     /* The icon component sizes itself from these, so the line is passed on. */
     --sf-icon--font-size: var(--sf-reference-link--line-height, var(--sf-text-height-1));
     --sf-icon--height: var(--sf-reference-link--line-height, var(--sf-text-height-1));
@@ -83,6 +92,26 @@
     line-height: var(--sf-reference-link--line-height, var(--sf-text-height-1));
     overflow-wrap: anywhere;
     text-align: end;
+  }
+
+  /* The route stands above the link's overlay (RL-11): under it the route
+     could not be selected and a drag on it dragged the link. A press on it
+     still follows the link unless the reader has selected text there (the
+     Smart element forwards the click; see smart/reference-link). */
+  .sf-reference-link:has(:where(.sf-reference-link__link, .sf-reference-link-left > a)) :where(.sf-reference-link__meta, .sf-reference-link-text) {
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  /* The default arrow points the way the text runs (RL-17): in a
+     right-to-left page it points left. Only the arrow glyphs turn; any other
+     icon is a picture and keeps its drawing. */
+  :where(sf-reference-link:not([icon]), sf-reference-link:is([icon="arrow_forward"], [icon="arrow_back"], [icon="arrow_right_alt"], [icon="east"], [icon="west"], [icon="chevron_right"], [icon="chevron_left"]))
+    .sf-reference-link:dir(rtl) :where(.sf-reference-link__icon) {
+    transform: scaleX(-1);
   }
 }
 
@@ -117,7 +146,8 @@
     --sf-reference-link--border-color: transparent;
   }
 
-  .sf-reference-link:not(.sf-reference-link--plain):has(:where(.sf-reference-link__link, .sf-reference-link-left > a):hover) {
+  .sf-reference-link:not(.sf-reference-link--plain):has(:where(.sf-reference-link__link, .sf-reference-link-left > a):hover),
+  .sf-reference-link:not(.sf-reference-link--plain):has(:where(.sf-reference-link__link, .sf-reference-link-left > a)):has(:where(.sf-reference-link__meta, .sf-reference-link-text):hover) {
     --sf-reference-link--background-color: var(--sf-surface-container-hover);
     --sf-reference-link--border-color: var(--sf-primary-outline);
     --sf-reference-link--link: var(--sf-link-hover);
@@ -125,11 +155,20 @@
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
 
-  .sf-reference-link:not(.sf-reference-link--plain):has(:where(.sf-reference-link__link, .sf-reference-link-left > a):active) {
+  .sf-reference-link:not(.sf-reference-link--plain):has(:where(.sf-reference-link__link, .sf-reference-link-left > a):active),
+  .sf-reference-link:not(.sf-reference-link--plain):has(:where(.sf-reference-link__link, .sf-reference-link-left > a)):has(:where(.sf-reference-link__meta, .sf-reference-link-text):active) {
     --sf-reference-link--background-color: var(--sf-surface-container-active);
     --sf-reference-link--link: var(--sf-link-active);
     --sf-reference-link--accent: var(--sf-primary-active);
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+
+  /* A reference on a line is a link in text: no card, so no card fill or
+     frame behind the words on hover or press either (RL-9; the plain fix
+     above covered --plain only). The inks still step. */
+  .sf-reference-link:is(.sf-reference-link--line-1\/2, .sf-reference-link--line-1, .sf-reference-link--line-2):has(:where(.sf-reference-link__link, .sf-reference-link-left > a, .sf-reference-link__meta, .sf-reference-link-text):is(:hover, :active)) {
+    --sf-reference-link--background-color: transparent;
+    --sf-reference-link--border-color: transparent;
   }
 
   .sf-reference-link :where(.sf-reference-link__link, .sf-reference-link-left > a):focus {
@@ -190,7 +229,6 @@
     --sf-reference-link--padding-block: calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px));
     --sf-reference-link--padding-inline: var(--sf-ui-1\/2--space-x);
     --sf-reference-link--gap: var(--sf-ui-1\/2--text-space-x);
-    --sf-reference-link--main-gap: var(--sf-ui-1\/2--text-space-x);
     --sf-reference-link--font-size: var(--sf-text-size-1\/2);
     --sf-reference-link--line-height: var(--sf-text-height-1\/2);
   }
@@ -199,7 +237,6 @@
     --sf-reference-link--padding-block: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px));
     --sf-reference-link--padding-inline: var(--sf-ui-1--space-x);
     --sf-reference-link--gap: var(--sf-ui-1--text-space-x);
-    --sf-reference-link--main-gap: var(--sf-ui-1--text-space-x);
     --sf-reference-link--font-size: var(--sf-text-size-1);
     --sf-reference-link--line-height: var(--sf-text-height-1);
   }
@@ -208,7 +245,6 @@
     --sf-reference-link--padding-block: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px));
     --sf-reference-link--padding-inline: var(--sf-ui-2--space-x);
     --sf-reference-link--gap: var(--sf-ui-2--text-space-x);
-    --sf-reference-link--main-gap: var(--sf-ui-2--text-space-x);
     --sf-reference-link--font-size: var(--sf-text-size-2);
     --sf-reference-link--line-height: var(--sf-text-height-2);
   }
@@ -222,7 +258,7 @@
     --sf-reference-link--padding-block: calc(var(--sf-px) * 0);
     --sf-reference-link--padding-inline: calc(var(--sf-px) * 0);
     --sf-reference-link--gap: var(--sf-ui-1\/2--text-space-x);
-    --sf-reference-link--main-gap: var(--sf-ui-1\/2--text-space-x);
+    --sf-reference-link--main-gap: var(--sf-space-1\/4);
     --sf-reference-link--font-size: var(--sf-text-size-1\/2);
     --sf-reference-link--line-height: var(--sf-text-height-1\/2);
     border-width: 0;
@@ -233,7 +269,7 @@
     --sf-reference-link--padding-block: calc(var(--sf-px) * 0);
     --sf-reference-link--padding-inline: calc(var(--sf-px) * 0);
     --sf-reference-link--gap: var(--sf-ui-1--text-space-x);
-    --sf-reference-link--main-gap: var(--sf-ui-1--text-space-x);
+    --sf-reference-link--main-gap: var(--sf-space-1\/4);
     --sf-reference-link--font-size: var(--sf-text-size-1);
     --sf-reference-link--line-height: var(--sf-text-height-1);
     border-width: 0;
@@ -244,7 +280,7 @@
     --sf-reference-link--padding-block: calc(var(--sf-px) * 0);
     --sf-reference-link--padding-inline: calc(var(--sf-px) * 0);
     --sf-reference-link--gap: var(--sf-ui-2--text-space-x);
-    --sf-reference-link--main-gap: var(--sf-ui-2--text-space-x);
+    --sf-reference-link--main-gap: var(--sf-space-1\/4);
     --sf-reference-link--font-size: var(--sf-text-size-2);
     --sf-reference-link--line-height: var(--sf-text-height-2);
     border-width: 0;
@@ -255,11 +291,11 @@
      on a phone the link wrapped to two lines inside the line's box, the path
      broke mid-word and both ran over the next line. The link and the path
      stay on the line and end in an ellipsis; the link gives way last. */
-  .sf-reference-link:is(.sf-reference-link--line-1\/2, .sf-reference-link--line-1, .sf-reference-link--line-2) {
+  .sf-reference-link:is(.sf-reference-link--line-1\/2, .sf-reference-link--line-1, .sf-reference-link--line-2, .sf-reference-link--size-1\/2, .sf-reference-link--size-1, .sf-reference-link--size-2) {
     overflow: hidden;
   }
 
-  .sf-reference-link:is(.sf-reference-link--line-1\/2, .sf-reference-link--line-1, .sf-reference-link--line-2)
+  .sf-reference-link:is(.sf-reference-link--line-1\/2, .sf-reference-link--line-1, .sf-reference-link--line-2, .sf-reference-link--size-1\/2, .sf-reference-link--size-1, .sf-reference-link--size-2)
     :where(.sf-reference-link__link, .sf-reference-link-left > a, .sf-reference-link__meta, .sf-reference-link-text) {
     overflow: hidden;
     overflow-wrap: normal;
@@ -267,7 +303,7 @@
     white-space: nowrap;
   }
 
-  .sf-reference-link:is(.sf-reference-link--line-1\/2, .sf-reference-link--line-1, .sf-reference-link--line-2)
+  .sf-reference-link:is(.sf-reference-link--line-1\/2, .sf-reference-link--line-1, .sf-reference-link--line-2, .sf-reference-link--size-1\/2, .sf-reference-link--size-1, .sf-reference-link--size-2)
     :where(.sf-reference-link__meta, .sf-reference-link-text) {
     flex: 0 100 auto;
     /* The path gives way first, but not to nothing: it keeps one control
@@ -280,5 +316,13 @@
        plain floor of one control height (the line before). */
     min-inline-size: var(--sf-ui-1--control-height);
     min-inline-size: calc-size(max-content, min(size, var(--sf-ui-1--control-height)));
+  }
+}
+
+@layer sf.components {
+  /* A reference on a line or plain is a link in text: its icon stands H3 of
+     C105 before the words, --sf-space-1/4 (4), at every size (RL-8). */
+  .sf-reference-link:is(.sf-reference-link--plain, .sf-reference-link--line-1\/2, .sf-reference-link--line-1, .sf-reference-link--line-2) {
+    --sf-reference-link--main-gap: var(--sf-space-1\/4);
   }
 }

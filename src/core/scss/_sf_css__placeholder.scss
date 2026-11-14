@@ -1,3 +1,6 @@
+@use "sass:map";
+@use "vars/sf_var__breakpoint" as bp;
+
 /* One bar centred in each row of the given height, as wide as the share. */
 @function placeholder-bars($row, $bar) {
   @return repeating-linear-gradient(to bottom,
@@ -150,6 +153,47 @@
   block-size: calc(var(--sf-input--box-control)
     + (var(--sf-input--box-label) + var(--sf-input--box-message))
     * (var(--sf-input--box-line) + var(--sf-input--box-gap)));
+}
+
+/* sf-reference-link before it draws (RL-18: a bare tag was 0 px for about
+   100 ms, then the 56 px card pushed the page down). Its box is known from its
+   attributes alone, from the same ladder its sheet draws with: as wide as its
+   container; a card one control of size 3 high; a size one control of that
+   step; a line, or plain, one line of the text of its step. On a phone a card
+   stacks: the label line, the card's gap and the route line when there is a
+   route, the card's --sf-space-1 above and below and its border. Static markup
+   printed inside (data-sf-static) is its own box, so nothing is reserved then.
+   A label that wraps in a card is the one thing the attributes cannot tell. */
+:where(sf-reference-link:not(:defined)) {
+  --sf-reference-link--box: var(--sf-ui-3--control-height);
+  --sf-reference-link--box-line: var(--sf-text-height-1);
+  --sf-reference-link--box-pad: calc(2 * var(--sf-space-1) + 2 * var(--sf-px));
+  --sf-reference-link--box-route: 0;
+}
+
+:where(sf-reference-link[size]:not([size=""]):not(:defined)) { --sf-reference-link--box: var(--sf-ui-1--control-height); }
+:where(sf-reference-link:is([size="1/2"], [size="1/3"]):not(:defined)) { --sf-reference-link--box: var(--sf-ui-1\/2--control-height); }
+:where(sf-reference-link:is([size="2"], [size="3"]):not(:defined)) { --sf-reference-link--box: var(--sf-ui-2--control-height); }
+:where(sf-reference-link[appearance="plain"]:not([size]):not(:defined)),
+:where(sf-reference-link[appearance="plain"][size=""]:not(:defined)) { --sf-reference-link--box: var(--sf-text-height-1); --sf-reference-link--box-pad: calc(var(--sf-px) * 0); }
+:where(sf-reference-link[appearance="plain"][size]:not([size=""]):not(:defined)) { --sf-reference-link--box: calc(var(--sf-ui-1--control-height) - 2 * var(--sf-px)); }
+:where(sf-reference-link[appearance="plain"]:is([size="1/2"], [size="1/3"]):not(:defined)) { --sf-reference-link--box: calc(var(--sf-ui-1\/2--control-height) - 2 * var(--sf-px)); }
+:where(sf-reference-link[appearance="plain"]:is([size="2"], [size="3"]):not(:defined)) { --sf-reference-link--box: calc(var(--sf-ui-2--control-height) - 2 * var(--sf-px)); }
+:where(sf-reference-link[line]:not([line=""]):not(:defined)) { --sf-reference-link--box: var(--sf-text-height-1); }
+:where(sf-reference-link[line]:is([line="1/2"], [line="1/3"]):not(:defined)) { --sf-reference-link--box: var(--sf-text-height-1\/2); }
+:where(sf-reference-link[line]:is([line="2"], [line="3"]):not(:defined)) { --sf-reference-link--box: var(--sf-text-height-2); }
+:where(sf-reference-link[text]:not([text=""]):not(:defined)) { --sf-reference-link--box-route: 1; }
+
+:where(sf-reference-link:not(:defined)):not(:has(> [data-sf-static])) {
+  display: block;
+  block-size: var(--sf-reference-link--box);
+}
+
+@media (width < map.get(bp.$breakpoint-array, sm)) { // below sm: the card stacks, as its sheet draws it
+  :where(sf-reference-link:not(:defined):not([line]:not([line=""])):not([size]:not([size=""]))):not(:has(> [data-sf-static])) {
+    block-size: calc(var(--sf-reference-link--box-pad) + var(--sf-reference-link--box-line)
+      + var(--sf-space-1) + var(--sf-reference-link--box-route) * var(--sf-reference-link--box-line));
+  }
 }
 
 /* Its menu waits for its own code in the parts the element drew: an empty

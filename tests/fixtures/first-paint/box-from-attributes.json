@@ -8,6 +8,10 @@
     "language": {
       "holds": "height",
       "reads": "size and mode: one control of the size step high; as wide as high only for mode menu and search, the switch and auto take the width of their labels (Docara, 2026-11-07)"
+    },
+    "reference-link": {
+      "holds": "box",
+      "reads": "appearance, size (1/2, 1, 2; retired 1/3 and 3 as their kept steps), line and text: as wide as its container; a card one control of size 3, a size one control of its step, a line or plain one line of its text; on a phone a card stacks to the label line, the card gap and a route line when text is set, with the card's padding and border (RL-18, 2026-11-14)"
     }
   }
 }

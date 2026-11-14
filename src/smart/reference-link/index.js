@@ -79,6 +79,7 @@ class SfReferenceLink extends ReferenceLinkElement {
 
   handleRootClick = (event) => {
     if (!this.disabled) {
+      this.followFromRoute(event);
       return;
     }
 
@@ -88,6 +89,37 @@ class SfReferenceLink extends ReferenceLinkElement {
       event.stopImmediatePropagation();
     }
   };
+
+  // The route stands above the link's overlay so it can be selected (RL-11).
+  // A press on it still follows the link, unless the reader has just selected
+  // text: then the press was a selection, not a choice.
+  followFromRoute(event) {
+    const route = event.target?.closest?.('.sf-reference-link__meta');
+    const link = route?.closest('.sf-reference-link')?.querySelector('.sf-reference-link__link');
+    if (!route || !link || event.defaultPrevented) {
+      return;
+    }
+
+    const selection = globalThis.getSelection?.();
+    if (selection && !selection.isCollapsed && String(selection).trim()) {
+      return;
+    }
+
+    // One click reaches the page: the link's, as if the press had been on it.
+    event.preventDefault();
+    event.stopPropagation();
+    link.dispatchEvent(new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+      composed: true,
+      view: globalThis,
+      button: event.button,
+      ctrlKey: event.ctrlKey,
+      metaKey: event.metaKey,
+      shiftKey: event.shiftKey,
+      altKey: event.altKey,
+    }));
+  }
 
   onClick(handler, options) {
     if (typeof handler === 'function') {
