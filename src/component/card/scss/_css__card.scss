@@ -116,8 +116,16 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
     border-radius: var(--sf-card-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2))));
   }
 
-  :where(.sf-card:not(.sf-card--plain)) .sf-figure {
-    --sf-figure-radius: max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2)));
+  // The figure's picture and a caption laid over it take the same corner;
+  // a page's --sf-figure-radius still wins (the Framework sets no public
+  // variable, it reads it).
+  :where(.sf-card:not(.sf-card--plain)) .sf-figure > .sf-figure-media {
+    border-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2))));
+  }
+
+  :where(.sf-card:not(.sf-card--plain)) .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-media + .sf-figure-caption {
+    border-end-start-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2))));
+    border-end-end-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2))));
   }
 
   .sf-card--plain {

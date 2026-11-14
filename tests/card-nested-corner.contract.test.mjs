@@ -11,8 +11,12 @@ test('Card gives a card and a figure inside it the nested corner', async () => {
   const css = await read('src/component/card/scss/_css__card.scss');
   const formula = 'max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2)))';
   const nested = css.match(/:where\(\.sf-card:not\(\.sf-card--plain\)\) \.sf-card:not\(\.sf-card--plain\) \{[^}]*\}/u)?.[0] || '';
-  const figure = css.match(/:where\(\.sf-card:not\(\.sf-card--plain\)\) \.sf-figure \{[^}]*\}/u)?.[0] || '';
+  const figure = css.match(/:where\(\.sf-card:not\(\.sf-card--plain\)\) \.sf-figure > \.sf-figure-media \{[^}]*\}/u)?.[0] || '';
+  const caption = css.match(/> \.sf-figure-media \+ \.sf-figure-caption \{[^}]*\}/u)?.[0] || '';
 
   assert.ok(nested.includes(`border-radius: var(--sf-card-radius, ${formula})`), nested);
-  assert.ok(figure.includes(`--sf-figure-radius: ${formula}`), figure);
+  assert.ok(figure.includes(`border-radius: var(--sf-figure-radius, ${formula})`), figure);
+  assert.ok(caption.includes(`border-end-end-radius: var(--sf-figure-radius, ${formula})`), caption);
+  // The Framework reads public variables, it never sets them.
+  assert.doesNotMatch(css, /(^|[;{\s])--sf-figure-radius\s*:/mu);
 });
