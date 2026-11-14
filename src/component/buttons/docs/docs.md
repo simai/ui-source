@@ -79,6 +79,17 @@ the Smart `sf-button` projection.
   at the ink family's 64 step, 3.4:1 light and 5.1:1 dark on the page, the
   same red as its hover plate; the primary and on-surface outlines keep the
   shared grey `--sf-outline`, and a disabled danger outline greys as they do;
+- on a place with its own ink (1.14.0, places states 2026-11-14) -- a strong
+  coloured place (`bg-primary` ... `bg-error`, a strong alert bar), the duo
+  gradient, glass (`sf-surface-media`) or an inverse place: the `outline`,
+  `surface` and `ghost` secondary and danger buttons write their label and
+  icons in the place's ink in every state (the hue read 1.00:1 on a colour);
+  the fill and the danger edge keep their hue. A filled `on-surface` button
+  there is the place's ink with the place's accent label (`--sf-on-primary`:
+  the place's colour, black on glass), not `--sf-on-surface-inverse`, which
+  read 1.29:1 on the white. A card or a popup on such a place takes the
+  theme's look back. A pressed filled secondary takes `--sf-secondary-active`
+  (it took primary's pressed step before);
 - size: `size-1\/3`, `size-1\/2`, `size-1`, `size-2`, `size-3`;
 - density (deprecated, decision C27, until 2027-01-01; journal
   class-c27-button-spacing-to-height): the default, `spacing-compact`,

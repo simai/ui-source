@@ -155,14 +155,27 @@
 
   .sf-button.sf-button--default.sf-button--on-surface {
     --sf-button--background-color: var(--sf-button-background-color, var(--sf-on-surface));
+    /* The label of the plate on a place with its own ink (places states,
+       2026-11-14). The plate is --sf-on-surface, which a strong coloured
+       place, the duo gradient, glass and an inverse place re-declare as their
+       ink; the theme's label, --sf-on-surface-inverse, they cannot re-declare
+       (a tooltip reads it with --sf-surface-inverse), and it read 1.29-1.31:1
+       on the place's white. There the plate is the accent the place made of
+       its ink (--sf-primary), so its label is the accent's label,
+       --sf-on-primary: the place's colour on a strong place and the duo
+       gradient, black on glass. Only where the place declares its ink
+       (--sf-place--ink): elsewhere -- the page, a card, a popup, which take
+       it back (initial) -- this name is invalid (the 0 % mix reads the hook
+       and nothing of it) and the theme's label stays. */
+    --sf-button--on-place-ink: color-mix(in srgb, var(--sf-on-primary), var(--sf-place--ink) 0%);
   }
 
   .sf-button.sf-button--default.sf-button--on-surface :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--default.sf-button--on-surface:not(:has(> *)) {
-    --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-surface-inverse));
+    --sf-button-text-container--color: var(--sf-button-color, var(--sf-button--on-place-ink, var(--sf-on-surface-inverse)));
   }
 
   .sf-button.sf-button--default.sf-button--on-surface .sf-icon {
-    --sf-icon--color: var(--sf-on-surface-inverse);
+    --sf-icon--color: var(--sf-button--on-place-ink, var(--sf-on-surface-inverse));
   }
 
   .sf-button.sf-button--tonal.sf-button--secondary {
@@ -659,11 +672,11 @@
      fell back to the plain ink -- black in light, white in dark (buttons
      review 2026-11-09). */
   .sf-button.sf-button--surface:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--surface:is(.sf-button--danger, .sf-button--error):not(:has(> *)) {
-    --sf-button-text-container--color: var(--sf-button-color, var(--sf-error));
+    --sf-button-text-container--color: var(--sf-button-color, var(--sf-place--ink, var(--sf-error)));
   }
 
   .sf-button.sf-button--surface:is(.sf-button--danger, .sf-button--error) .sf-icon {
-    --sf-icon--color: var(--sf-error);
+    --sf-icon--color: var(--sf-place--ink, var(--sf-error));
   }
 }
 
@@ -742,8 +755,16 @@
     --sf-icon--color: light-dark(var(--sf-on-surface-hover), var(--sf-on-surface));
   }
 
-  .sf-button.sf-button--default.sf-button--primary:not(:disabled):not(.disabled):active, .sf-button.sf-button--default.sf-button--primary:not(:disabled):not(.disabled).active, .sf-button.sf-button--default.sf-button--secondary:not(:disabled):not(.disabled):active, .sf-button.sf-button--default.sf-button--secondary:not(:disabled):not(.disabled).active {
+  .sf-button.sf-button--default.sf-button--primary:not(:disabled):not(.disabled):active, .sf-button.sf-button--default.sf-button--primary:not(:disabled):not(.disabled).active {
     --sf-button--background-color: var(--sf-primary-active);
+  }
+
+  /* Secondary pressed steps along its own ladder, as its hover does
+     (places states, 2026-11-14): it shared primary's rule and took
+     --sf-primary-active, a primary plate under the secondary label, 1.29:1
+     on a strong place (the accent there is the place's light ink). */
+  .sf-button.sf-button--default.sf-button--secondary:not(:disabled):not(.disabled):active, .sf-button.sf-button--default.sf-button--secondary:not(:disabled):not(.disabled).active {
+    --sf-button--background-color: var(--sf-secondary-active);
   }
 
   .sf-button.sf-button--default.sf-button--on-surface:not(:disabled):not(.disabled):active, .sf-button.sf-button--default.sf-button--on-surface:not(:disabled):not(.disabled).active {
@@ -806,7 +827,7 @@
   }
 
   .sf-button.sf-button--default.sf-button--on-surface {
-    --sf-button--focus-ink: var(--sf-on-surface-inverse, var(--sf-surface-page));
+    --sf-button--focus-ink: var(--sf-button--on-place-ink, var(--sf-on-surface-inverse, var(--sf-surface-page)));
   }
 
   @media (forced-colors: active) {
@@ -961,14 +982,24 @@
     --sf-button--border-color: var(--sf-button-border-color, color-mix(in srgb, var(--sf-error) 64%, transparent));
   }
 
+  /* On a place with its own ink -- a strong coloured place, the duo
+     gradient, glass, an inverse place, which declare it as --sf-place--ink --
+     the label and the icons are that ink in every state, as the status
+     containers' ink is there (places states, 2026-11-14): a hue on a colour
+     is that colour or near it (secondary and error read 1.00-2.05:1 on the
+     strong places and the inverse, 1.74-1.95 on glass over a light picture;
+     only the duo gradient's dark secondary and glass over a dark picture
+     passed 4.5, so no place keeps a hue in every theme and picture). The
+     page and every opaque place (initial) keep the hue and its steps. The
+     fill and the edge keep their hue. */
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
   .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:has(> *)) {
-    --sf-button-text-container--color: var(--sf-button-color, var(--sf-error));
+    --sf-button-text-container--color: var(--sf-button-color, var(--sf-place--ink, var(--sf-error)));
   }
 
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error) .sf-icon,
   .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) .sf-icon {
-    --sf-icon--color: var(--sf-error);
+    --sf-icon--color: var(--sf-place--ink, var(--sf-error));
   }
 
   .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error),
@@ -1047,12 +1078,12 @@
 
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut),
   .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover:not(:has(> *)) {
-    --sf-button-text-container--color: var(--sf-error-hover);
+    --sf-button-text-container--color: var(--sf-place--ink, var(--sf-error-hover));
   }
 
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover .sf-icon,
   .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):hover .sf-icon {
-    --sf-icon--color: var(--sf-error-hover);
+    --sf-icon--color: var(--sf-place--ink, var(--sf-error-hover));
   }
 
   .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):active,
@@ -1076,14 +1107,14 @@
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut),
   .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut),
   .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):active:not(:has(> *)), .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).active:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):active:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).active:not(:has(> *)) {
-    --sf-button-text-container--color: var(--sf-error-active);
+    --sf-button-text-container--color: var(--sf-place--ink, var(--sf-error-active));
   }
 
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):active .sf-icon,
   .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).active .sf-icon,
   .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):active .sf-icon,
   .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).active .sf-icon {
-    --sf-icon--color: var(--sf-error-active);
+    --sf-icon--color: var(--sf-place--ink, var(--sf-error-active));
   }
 
   .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error) {
