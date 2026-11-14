@@ -57,7 +57,12 @@ test('sf-input-textarea forwards the host aria-label and aria-labelledby (#30 it
 test('the class accordion hides a closed panel with the attribute from the first paint (#30 item 2)', () => {
   const source = read('src/component/accordion/js/_accordion.js');
   const init = source.slice(source.indexOf('  init() {'), source.indexOf('  isSingle() {'));
-  assert.match(init, /this\.content\.hidden = true;/u);
+  assert.match(init, /this\.hideContent\(\);/u);
+  // A panel the page wrote hidden="until-found" keeps that value (accordion
+  // study AC-8); every other closed panel gets the attribute.
+  const hide = source.slice(source.indexOf('  hideContent() {'), source.indexOf('  handleKeydown(event) {'));
+  assert.match(hide, /this\.content\.setAttribute\('hidden', UNTIL_FOUND\);/u);
+  assert.match(hide, /this\.content\.hidden = true;/u);
 });
 
 test('the field renderers read a date in the page\'s language and a phone by its dial code (#34)', () => {

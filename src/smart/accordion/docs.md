@@ -117,8 +117,8 @@ End — к первому и последнему; выключенный раз
 | `--sf-accordion-border-width` | Толщина рамки, линии и разделителя под открытым заголовком | `var(--sf-px)` |
 | `--sf-accordion-radius` | Скругление раздела; `flush` остаётся прямоугольным | `var(--sf-radius--surface)` |
 | `--sf-accordion-title-color` | Цвет заголовка раздела | `var(--sf-on-surface)` |
-| `--sf-accordion-content-color` | Цвет текста раздела | `var(--sf-on-surface-variant)` |
-| `--sf-accordion-icon-color` | Цвет шеврона (плюса и минуса) и иконки перед заголовком | `var(--sf-on-surface-variant)` |
+| `--sf-accordion-content-color` | Цвет текста раздела | `var(--sf-on-surface)` |
+| `--sf-accordion-icon-color` | Цвет шеврона (плюса и минуса) и иконки перед заголовком | `var(--sf-on-surface-icon)` |
 | `--sf-accordion-divider-color` | Цвет линии под открытым заголовком | `var(--sf-outline-variant)` |
 
 Наведение, нажатие, фокус и выключенный раздел рисуются своими цветами и
