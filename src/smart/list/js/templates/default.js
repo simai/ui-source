@@ -40,24 +40,31 @@ import {avatarPicture} from "../../../avatar/js/picture";
 // badge take the row's line (sf-badge line), so they never make a row taller.
 const BADGE_STATUS = {neutral: nothing, info: "info", success: "success", warning: "warning", error: "error"};
 
-// hue auto picks the initials' hue from the row's title (sf-avatar reads its
-// aria-label), so a conversation keeps its colour whatever its initials.
+// hue auto picks the initials' hue from the row's title, so a conversation
+// keeps its colour whatever its initials.
+//
+// The avatar is a picture of the row, not a control of its own (list item
+// study LI-10): sf-avatar's one drawing (avatar js/picture.js) in a span
+// hidden from assistive technology, the row's title naming the person. It was
+// an sf-avatar element, which draws a button: hidden from a screen reader but
+// still a Tab stop, so a list of conversations was one stop per avatar plus
+// the list's own. An avatar with its own action is the page's to place.
 const leadContent = (context, item) => {
     const avatar = context.avatarOf(item);
     const size = context.size;
     const wide = Boolean(context.leading?.wide) && Boolean(item.supporting);
     if (avatar?.kind === "avatar") {
-        return html`<sf-avatar
-                aria-hidden="true"
-                aria-label=${String(item.text ?? "") || nothing}
-                hue="auto"
-                size=${wide ? size : "1"}
-                line=${wide ? nothing : size}
-                shape=${avatar.shape}
-                image-url=${avatar.imageUrl || nothing}
-                text=${avatar.text || nothing}
-                ?disabled=${item.disabled === true}
-        ></sf-avatar>`;
+        return avatarPicture({
+            size: wide ? size : "1",
+            line: wide ? "" : size,
+            shape: avatar.shape,
+            imageUrl: avatar.imageUrl,
+            text: avatar.text,
+            name: String(item.text ?? ""),
+            hue: "auto",
+            lazy: true,
+            disabled: item.disabled === true,
+        });
     }
     if (avatar?.kind === "sign") {
         // sf-avatar's placeholder with the sign's glyph (avatar js/picture.js,
@@ -80,12 +87,15 @@ const metaContent = (context, item) => {
     const line = context.size;
     // A row is a dense place: its badge and count keep the tight side room
     // (sf-badge tight), so the wider default of sf-badge 1.3.0 does not push
-    // the row's text aside.
+    // the row's text aside. The count is a quantity: sf-badge tonal, grey
+    // (owner decision C140 (3); list item study LI-8). It was sf-badge scheme
+    // primary, the filled blue count; the filled look is the attention
+    // count's alone (red), which a list row does not draw.
     return html`${badge
         ? html`<sf-badge class="sf-list__badge" line=${line} appearance="tonal" tight
                          status=${BADGE_STATUS[badge.tone]} text=${badge.text}></sf-badge>`
         : nothing}${count
-        ? html`<sf-badge class="sf-list__count" line=${line} scheme="primary" tight
+        ? html`<sf-badge class="sf-list__count" line=${line} appearance="tonal" tight
                          text=${count > context.countCap ? `${context.countCap}+` : String(count)}
                          aria-label=${context.countLabel(count)}></sf-badge>`
         : nothing}`;

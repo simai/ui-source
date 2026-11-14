@@ -3880,8 +3880,8 @@
         {
           "name": "--sf-list-current-background-color",
           "role": "background",
-          "summary": "The open row (selected).",
-          "default": "var(--sf-primary-container-active)",
+          "summary": "The open row (selected): the selected role's one fill, 12 light / 24 dark, as a standalone selected row (C31; sf-list 1.9.0, LI-7).",
+          "default": "var(--sf-primary-container)",
           "since": "2026-11-05"
         },
         {

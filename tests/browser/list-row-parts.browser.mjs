@@ -122,9 +122,9 @@ try {
           list.setItems(items);
         }
       }, {data, size});
-      await tab.waitForFunction(() => customElements.get('sf-avatar') && customElements.get('sf-badge')
+      await tab.waitForFunction(() => customElements.get('sf-badge')
         && document.querySelectorAll('.sf-list__count .sf-badge, .sf-list__count.sf-badge, sf-badge.sf-list__count > .sf-badge').length >= 4
-        && document.querySelectorAll('#one sf-avatar > *').length >= 2, null, {timeout: 20000});
+        && document.querySelectorAll('#one .sf-list__lead .sf-avatar').length >= 2, null, {timeout: 20000});
       await tab.evaluate(() => document.fonts.ready);
       await tab.waitForTimeout(250);
 
@@ -147,7 +147,7 @@ try {
           const item = row.querySelector('.sf-list-item');
           const title = row.querySelector('.sf-list-item-title') || row.querySelector('.sf-list-item-container');
           const lead = row.querySelector('.sf-list__lead');
-          const avatar = drawn(row.querySelector('.sf-list__lead sf-avatar')) || row.querySelector('.sf-list__sign');
+          const avatar = row.querySelector('.sf-list__lead .sf-avatar:not(.sf-list__sign)') || row.querySelector('.sf-list__sign');
           const count = drawn(row.querySelector('sf-badge.sf-list__count'));
           const badge = drawn(row.querySelector('sf-badge.sf-list__badge'));
           const dots = row.querySelector('.sf-list__actions');

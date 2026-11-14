@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.8.0'], ['list-feed', 'sf-list-feed', '1.1.2']]) {
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.9.0'], ['list-feed', 'sf-list-feed', '1.1.2']]) {
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -75,12 +75,15 @@ test('sf-list 1.1.0: avatar, count, badge and pinned are bounded row data drawn 
   for (const name of ['cl-avatar', 'cl-badge', 'cl-list-item']) assert.ok(relations.includes(name), name);
   assert.match(read('src/smart/list/rule.js'), /\{ name: 'cl-avatar' \},\n\s+\{ name: 'cl-badge' \}/u);
   const template = read('src/smart/list/js/templates/default.js');
-  // The parts are the Framework's: sf-avatar, sf-badge; no renderer a host hands in.
-  assert.match(template, /<sf-avatar\n/u);
-  assert.match(template, /<sf-badge class="sf-list__count" line=\$\{line\} scheme="primary"/u);
+  // The parts are the Framework's: sf-avatar's drawing, sf-badge; no renderer a host hands in.
+  // The avatar is a picture, not an sf-avatar element (a button, a Tab stop; LI-10).
+  assert.doesNotMatch(template, /<sf-avatar\b/u);
+  assert.match(template, /avatarPicture\(\{[^}]*hue: "auto"/su);
+  // The count is a quantity, grey tonal (C140 (3); LI-8).
+  assert.match(template, /<sf-badge class="sf-list__count" line=\$\{line\} appearance="tonal"/u);
   assert.match(template, /<sf-badge class="sf-list__badge" line=\$\{line\} appearance="tonal"/u);
   // A row is a dense place: both keep the tight side room (sf-badge 1.3.0).
-  assert.match(template, /class="sf-list__count" line=\$\{line\} scheme="primary" tight/u);
+  assert.match(template, /class="sf-list__count" line=\$\{line\} appearance="tonal" tight/u);
   assert.match(template, /class="sf-list__badge" line=\$\{line\} appearance="tonal" tight/u);
   assert.doesNotMatch(read('src/smart/list/index.js'), /render(Row|Item|er)\s*[:=(]/u);
   // The slot elements are the row template's own, never a value of it: the

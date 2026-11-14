@@ -6,7 +6,8 @@
 //   - geometry, at 1440px and 390px, light and dark, sizes 1/3, 1/2, 1, 2 and
 //     3: a one-line row is exactly the control height of its size (the
 //     sf-button of that size); a two-line row is the control height plus one
-//     line of the step below; the title keeps the one-line row's text;
+//     line of the step below, and from size 1/2 up at least the C49 caption
+//     row (1/2 control step + a 1/3 line); the title keeps the one-line row's text;
 //   - states: hover, selected and plain rows have three different fills, in
 //     both themes;
 //   - an sf-sortable list of rows: one Tab stop for the whole list; ArrowDown,
@@ -117,7 +118,13 @@ try {
           const two = group.querySelector('[data-two] > .sf-list-item');
           const button = group.querySelector('sf-button button').getBoundingClientRect().height;
           const font = (element) => [parseFloat(getComputedStyle(element).fontSize), parseFloat(getComputedStyle(element).lineHeight)];
-          return {size, button, one: one.getBoundingClientRect().height, two: two.getBoundingClientRect().height,
+          const step = document.createElement('span');
+          step.style.blockSize = 'var(--sf-ui-1\\/2--control-height)';
+          step.style.display = 'block';
+          document.body.append(step);
+          const caption = step.getBoundingClientRect().height + lineOf('1/3');
+          step.remove();
+          return {size, button, caption, one: one.getBoundingClientRect().height, two: two.getBoundingClientRect().height,
             below: lineOf(below[size]), oneText: font(one.querySelector('.sf-list-item-container')),
             twoTitle: font(two.querySelector('.sf-list-item-title')), supporting: font(two.querySelector('.sf-list-item-supporting'))};
         });
@@ -126,7 +133,10 @@ try {
       for (const row of geometry) {
         const at = `${theme} ${width}px size ${row.size}`;
         check(`${at}: a one-line row is the control height`, near(row.one, row.button), row);
-        check(`${at}: a two-line row is the control height and a line of the step below`, near(row.two, row.button + row.below), row);
+        // C49: from size 1/2 up a name + caption row is at least the 1/2 control
+        // step and a caption line (48 at 1440, 44 compact).
+        const twoWant = row.size === '1/3' ? row.button + row.below : Math.max(row.button + row.below, row.caption);
+        check(`${at}: a two-line row is the control height and a line of the step below, at least the C49 caption row`, near(row.two, twoWant), row);
         check(`${at}: the title of a two-line row keeps the row's text`, row.twoTitle[0] === row.oneText[0] && row.twoTitle[1] === row.oneText[1], row);
         check(`${at}: the supporting line is a line of the step below`, near(row.supporting[1], row.below), row);
       }

@@ -97,17 +97,29 @@ for a Dropdown option, so options are unchanged.
 
 | Attribute | What it does |
 | --- | --- |
-| `supporting` (or a `slot="supporting"` child) | A second line under the title, one step of the ladder smaller (1/3 and 1/2 rows: 1/3; 1: 1/2; 2: 1; 3: 2). A two-line row is the control height plus that line. Kinds `text`, `icon` and `checkbox`. |
-| `interactive` | A row a person acts on: hover, keyboard focus and `selected` states, a pointer cursor, and `sf-list-item-open` (`detail: {id, trigger}`, vocabulary 1.1.5 `open`, `id` being `value`) on click or Enter. The former `sf-list-item-activate` (`{value, item, trigger}`) follows until 2026-12-01. A click on a control inside the row (a trailing action) is that control's, not the row's. |
+| `supporting` (or a `slot="supporting"` child) | A second line under the title, one step of the ladder smaller (1/3 and 1/2 rows: 1/3; 1: 1/2; 2: 1; 3: 2). A two-line row is the next size's control height, never lower than a menu row with a caption (owner decision C49): one control of step 1/2 plus the caption's line -- 48 on a desktop, 44 in a compact region, 60 under a finger (the step is then the 44 touch target). Size 2 stays 56. Kinds `text`, `icon`, `checkbox` and `avatar` (an avatar row outside a dropdown draws the picture, then the title and the supporting line). |
+| `interactive` | A row a person acts on: hover, keyboard focus and `selected` states, a pointer cursor, and `sf-list-item-open` (`detail: {id, trigger}`, vocabulary 1.1.5 `open`, `id` being `value`) on click or Enter. The former `sf-list-item-activate` (`{value, item, trigger}`) follows until 2027-01-01; each use is noted in `SF.deprecations`. A click on a control inside the row (a trailing action) is that control's, not the row's. |
 | `sortable-item="<id>"` | The row is an item of the surrounding `sf-sortable` list: the row's own box carries `data-sf-sortable-item` (the host is boxless, so the attribute does not go on the host) and a drag handle stands in a slot before the content. |
 | `pinned` | A row of the list that does not move: no handle and not an item of the list, so it cannot be dragged or picked up. It keeps the handle's slot empty, so its text starts where the other rows' text does. |
+
+**A row without a picture among rows with one** (owner decision C105) keeps the
+picture's place: in a list (`sf-sortable`, `[role="list"]`, `[role="listbox"]`,
+`[data-sf-list]`) whose rows have an icon or an avatar, a text row's text starts
+where theirs does -- a pinned text row of an `sf-sortable` list too.
+
+**Before the code.** Until the element is defined, core holds the row's box --
+one control of its size, the caption row with `supporting` -- and draws its
+`text` and `supporting` attributes at the row's inset, so nothing under a list
+of rows moves when the code arrives and the words are there from the first
+frame. The picture, the divider and the trailing part come with the code.
 
 **One Tab stop per list.** Interactive and sortable rows are one stop of their
 list -- the nearest `sf-sortable`, `[role="listbox"]`, `[role="list"]` or
 `[data-sf-list]`, else the row's parent. The row that last had the focus takes
 Tab (else the selected one, else the first); ArrowDown, ArrowUp, Home and End
 move between rows and skip disabled ones. While a row is picked up for a
-keyboard reorder the arrows belong to `sf-sortable`. A control in the trailing
+keyboard reorder the arrows belong to `sf-sortable`. The trailing slot stands at the row's end edge: the text block takes the
+row's free width. A control in the trailing
 slot is a Tab stop of its own; for one stop per list give it `tabindex="-1"`
 and offer it another way (a context menu on the row).
 
