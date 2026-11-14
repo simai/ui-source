@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "tokens.border",
   "kind": "tokens",
-  "version": "1.0.0",
+  "version": "1.2.1",
   "owner": "simai/ui-source",
   "summary": "Border widths, border roles and the focus ring.",
   "includes": [

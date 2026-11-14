@@ -2,7 +2,7 @@
   "$comment": "The source of sf-settings' element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: compact settings of the owner decision of 2026-11-06 (Federation bus msg-cbe15ae81eab468fbbe8), composed over sf-menu-context.",
   "id": "smart.settings",
   "tag": "sf-settings",
-  "version": "1.2.1",
+  "version": "1.4.1",
   "kind": "leaf",
   "family": "settings",
   "settings": {
@@ -406,7 +406,8 @@
     "version 1.2.0 also carries (2026-11-12, C106 follow-up 6): the popup panel of look=\"panel\" sends sf-menu-context's open/close events under its own tag, with the same names and details: sf-settings-open (cancelable, no detail) before it is drawn, sf-settings-opened when drawn, sf-settings-close (cancelable, {reason: close|escape|outside|api, unsaved}) and sf-settings-closed ({reason}). unsaved is true when a draft of apply=\"button\" holds a value the items do not. A prevented open keeps it closed (show() answers cancelled); a prevented close keeps it open; leaving the page closes without asking. The other looks keep the inner sf-menu-context's events.",
     "version 1.2.0, also (written on the branch as 1.1.1; 2026-11-13, defect BT-2, rules C15 / CB-01): a patch, nothing drawn differently. The popup example, the probe and the docs give the trigger sf-button-icon appearance=\"ghost\", the name of the no-fill look, where they wrote link, its former name (an alias until 2027-01-01). Settings, values, events and keys unchanged.",
     "version 1.2.0 also (2026-11-13, owner decision C106 (9)): the example «Панель: колонки и вид списка» (columns) -- a list's columns to check, order and pin, with its view in a second group, opened by a button: the panel example the context menu's page held (sf-menu-context 1.16.3). Nothing drawn or done differently.",
-    "version 1.2.1 (2026-11-13, owner decision C105 H4, spacing audit C2): a patch. The panel look's 1 px border is inside its inline inset: the head, the search and the body start --sf-space-1/4 less the border from the border's inner edge, so the rows, the title and the search icon stand one pixel nearer the outer edge (a size 1/2 row's text 16 from it, compact and phone 12, not 17 and 13); a handle keeps its step into the inset. The scrollbar's gap on either side of its thumb stays the whole inset (C106). Settings, values, events and keys unchanged."
+    "version 1.2.1 (2026-11-13, owner decision C105 H4, spacing audit C2): a patch. The panel look's 1 px border is inside its inline inset: the head, the search and the body start --sf-space-1/4 less the border from the border's inner edge, so the rows, the title and the search icon stand one pixel nearer the outer edge (a size 1/2 row's text 16 from it, compact and phone 12, not 17 and 13); a handle keeps its step into the inset. The scrollbar's gap on either side of its thumb stays the whole inset (C106). Settings, values, events and keys unchanged.",
+    "version 1.4.1 (2026-11-14, group build 5; numbered above 1.4.0 on origin/fix/settings-menu-c176): a patch, its own code unchanged: 2 first-paint snapshot file(s) follow the merged markup (fix/icons-c151)."
   ],
   "x-registry": {
     "capabilities": [
