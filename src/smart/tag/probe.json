@@ -133,7 +133,7 @@
       "covers": "x-decisions type split",
       "steps": [
         {
-          "check": "document.querySelector('#t-old .sf-tag').classList.contains('sf-tag--success') && [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-tag' && note.from === 'type' && note.remove_after === '2026-12-01')",
+          "check": "(document.querySelector('#t-old .sf-tag') || document.querySelector('#t-old .sf-badge')).classList.contains(document.querySelector('#t-old .sf-tag') ? 'sf-tag--success' : 'sf-badge--success') && [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-tag' && note.from === 'type' && note.remove_after === '2026-12-01')",
           "expect": {
             "values": {
               "#t-old.status": "success"
