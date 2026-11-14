@@ -1,7 +1,9 @@
 {
   "title": "Text area",
   "runtime": {
-    "value-missing": "Fill in this field"
+    "value-missing": "Fill in this field",
+    "count-text": "{count} / {max}",
+    "too-long": "At most {max} characters"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",
