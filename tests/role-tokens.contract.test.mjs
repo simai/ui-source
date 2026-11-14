@@ -110,7 +110,7 @@ test('C173 (9): the check reads a row of buttons, a toolbar and a row of tags, a
 
 test('C173: the Framework rows of buttons, toolbars and tags read their role tokens', async () => {
   const rows = [
-    ['src/component/modal/scss/_css__modal_custom.scss', 'gap: var(--sf-modal-footer-gap, var(--sf-gap--actions));'],
+    ['src/component/modal/scss/_css__modal_custom.scss', "window-footer.window-footer('.sf-modal-footer', var(--sf-modal-footer-gap, var(--sf-gap--actions)))"], // the shared window footer (C159, group build 6)
     ['src/component/alerts/scss/_css__alerts.scss', '--sf-alert-buttons--gap: var(--sf-gap--actions);'],
     ['src/component/contentDivider/scss/_css__contentDivider.scss', '--sf-divider-buttons--gap: var(--sf-gap--actions);'],
     ['src/component/placeholder/scss/_css__placeholder.scss', '--sf-placeholder-actions--gap: var(--sf-gap--actions);'],

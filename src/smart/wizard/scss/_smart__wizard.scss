@@ -123,7 +123,7 @@
   margin: 0;
   color: var(--sf-on-surface);
   font-size: var(--sf-wizard--name-size);
-  font-weight: var(--sf-font-weight-bold);
+  font-weight: var(--sf-weight--bold);
   line-height: var(--sf-wizard--name-line);
 }
 
@@ -326,7 +326,7 @@
   margin: 0;
   color: var(--sf-on-surface);
   font-size: var(--sf-wizard--title-size);
-  font-weight: var(--sf-font-weight-medium);
+  font-weight: var(--sf-weight--medium);
   line-height: var(--sf-wizard--title-line);
   outline: none;
 }

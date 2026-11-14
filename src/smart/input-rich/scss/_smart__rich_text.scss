@@ -425,7 +425,7 @@
   @media (forced-colors: active) {
     .sf-rich-text:has(.sf-rich-text-editor:focus) .sf-rich-text-frame {
       outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: calc(-1 * var(--sf-focus-outline-width));
+      outline-offset: calc(-1 * var(--sf-focus--width));
     }
 
     .sf-rich-text .sf-rich-text-tool[aria-pressed='true'] {

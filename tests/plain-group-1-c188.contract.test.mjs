@@ -57,7 +57,7 @@ test('C188 (4): buttons on the line are sf-button 1/2 outline 8 apart; the divid
     read('src/component/contentDivider/rule.js'),
     read('contracts/changes/journal.json'),
   ]);
-  assert.match(block(css, '  .sf-divider-buttons'), /--sf-divider-buttons--gap: var\(--sf-space-1\\\/3\)/u);
+  assert.match(block(css, '  .sf-divider-buttons'), /--sf-divider-buttons--gap: var\((?:--sf-space-1\\\/3|--sf-gap--actions)\)/u);
   assert.match(css, /sf-button size="1\/2" appearance="outline"/u);
   assert.match(script, /'sf-divider-button': 'sf-button'/u);
   assert.match(script, /remove_after: '2027-01-01'/u);

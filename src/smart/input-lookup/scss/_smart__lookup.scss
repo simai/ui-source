@@ -649,7 +649,7 @@
   @media (forced-colors: active) {
     .sf-lookup:has(.sf-lookup-input:focus) .sf-lookup-frame {
       outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: calc(-1 * var(--sf-focus-outline-width));
+      outline-offset: calc(-1 * var(--sf-focus--width));
     }
 
     .sf-lookup .sf-lookup-panel {

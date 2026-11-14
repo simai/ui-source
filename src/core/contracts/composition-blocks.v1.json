@@ -1004,6 +1004,10 @@
             "default": false,
             "type": "boolean"
           },
+          "controls": {
+            "default": "",
+            "type": "string"
+          },
           "description": {
             "default": "",
             "type": "string"
@@ -1738,7 +1742,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.switch",
-      "version": "1.5.3"
+      "version": "1.6.0"
     }
   },
   "parameter_sets": {

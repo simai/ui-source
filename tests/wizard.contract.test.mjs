@@ -153,7 +153,7 @@ test('C105: the step list is a row list and the frame a window inset', () => {
 // C179 (1)-(4) and the study's defects WZ-1, WZ-3, WZ-4, WZ-6.
 test('C179: footer gap, names, window sizes, the phone footer and the Framework words', () => {
   // (1), (7), WZ-1: one group of buttons, 8 (4 compact), Back first, the main last.
-  assert.match(sheet, /--sf-wizard--actions-gap: var\(--sf-space-1\\\/3\);/u);
+  assert.match(sheet, /--sf-wizard--actions-gap: var\((?:--sf-space-1\\\/3|--sf-gap--actions)\);/u);
   for (const rule of ['.sf-wizard-footer {', '.sf-wizard-footer-end {']) {
     const body = sheet.slice(sheet.indexOf(rule), sheet.indexOf('}', sheet.indexOf(rule)));
     assert.match(body, /gap: var\(--sf-wizard--actions-gap\);/u, rule);

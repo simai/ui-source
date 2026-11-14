@@ -421,7 +421,7 @@
   @media (forced-colors: active) {
     .sf-textarea textarea:not(:disabled):not(.disabled):focus {
       outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: calc(-1 * var(--sf-focus-outline-width));
+      outline-offset: calc(-1 * var(--sf-focus--width));
       --sf-textarea-textarea--box-shadow: none;
     }
   }

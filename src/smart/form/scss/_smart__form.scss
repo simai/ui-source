@@ -1,3 +1,5 @@
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
+
 @layer sf.components {
 /* sf-form (standard simai.smart-component 1.3.15 §6; owner decision C182,
    prototype prototypes/form-study.html). The frame around the controls the
@@ -71,7 +73,7 @@
 
 .sf-form-summary-title {
   margin: 0;
-  font-weight: var(--sf-font-weight-medium);
+  font-weight: var(--sf-weight--medium);
 }
 
 .sf-form-summary-list {
@@ -111,7 +113,7 @@
   padding: 0 0 var(--sf-form--field-gap);
   color: var(--sf-on-surface);
   font-size: var(--sf-text-size-1);
-  font-weight: var(--sf-font-weight-medium);
+  font-weight: var(--sf-weight--medium);
   line-height: var(--sf-text-height-1);
 }
 
@@ -187,7 +189,7 @@
 
 /* C182 (4): from 44rem of the form's own width the fields without a width
    pair; s, m and full take a row of their own. */
-@container (min-width: 44rem) {
+@container (min-width: #{mq.container-step(h1)}) {
   .sf-form:not([data-labels="start"]) .sf-form-fields {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: var(--sf-space-2);
@@ -201,7 +203,7 @@
 /* C182 (5): labels="start" from 40rem (its rows do not pair: the label
    takes the room a second column would) -- the label in a third of the row,
    on the control's line; the control, the hint and the error in the rest. */
-@container (min-width: 40rem) {
+@container (min-width: #{mq.container-step(h0)}) {
   .sf-form[data-labels="start"] .sf-form-field {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
@@ -233,7 +235,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sf-space-1\/3);
+  gap: var(--sf-gap--actions);
 }
 
 .sf-form-state {

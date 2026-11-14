@@ -53,6 +53,7 @@ const SCREEN_QUERIES = {
   'src/smart/alert-bar': 'page frame: a site bar lines up with the page column (.container) at each window step',
   'src/smart/contents': 'page frame: below md the open list is a bottom sheet of the screen',
   'src/component/modal': 'page frame: below md a window is a sheet of the screen',
+  'src/smart/wizard': 'page frame (group build 6, to confirm): below sm the wizard\'s window or side panel is the whole screen (C159 (2), C157 (4), C179 (4)) and its footer stays at the screen\'s bottom',
   'src/smart/drawer': 'page frame: below md a side panel is the whole screen (C157 (4)), below sm its foot\'s buttons share the row (C157 (3))',
   'src/smart/confirm': 'a dialog on a narrow screen; containing its inline size would collapse a card as wide as its content',
   'src/smart/confirm-change': 'a dialog on a narrow screen; containing its inline size would collapse a card as wide as its content',

@@ -88,13 +88,21 @@ test('the page language picks the value: the same code, else the same primary la
 test('it composes the Framework\'s parts and keeps their events inside', () => {
   assert.match(template, /<sf-segmented[\s\S]*appearance="track"/u);
   assert.match(template, /<sf-button\n[\s\S]*icon-start="translate"[\s\S]*icon-end="expand_more"[\s\S]*scheme="on-surface"/u);
-  assert.match(template, /slot="text" class="sf-language-code" style="display: inline-grid"/u, 'every code in one grid cell: one width');
+  assert.match(template, /slot="text" class="sf-language-code" style=\$\{wide \? 'display: inline-grid; inline-size: auto; grid-template-columns: auto' : 'display: inline-grid'\}/u, 'every code in one grid cell: one width; only a list with a longer code sizes the cell to it');
   assert.doesNotMatch(template, /<sf-button-icon/u);
   assert.match(template, /<sf-menu-context[\s\S]*popup/u);
   assert.match(template, /@sf-button-group-change=\$\{stop\}/u);
   assert.match(source, /onGroupChange\(event\) \{\n {4}event\.stopPropagation\(\);/u);
   assert.match(source, /onMenuSelect\(event\) \{\n {4}event\.stopPropagation\(\);/u);
   assert.doesNotMatch(template, /flag|public|globe/u);
+});
+
+test('the trigger\'s code slot is the width core holds before the code (C130)', () => {
+  const placeholder = read('src/core/scss/_sf_css__placeholder.scss');
+  assert.match(placeholder, /:where\(sf-language \.sf-language-code\) \{\n  inline-size: var\(--sf-language--line\);\n  min-inline-size: var\(--sf-language--line\);\n  grid-template-columns: minmax\(0, 1fr\);\n  justify-items: center;/u);
+  const narrow = new RegExp(template.match(/const NARROW_CODE = \/(.+)\/u;/u)[1], 'u');
+  for (const code of ['RU', 'EN', 'KK', 'MN', 'PT', 'ΕΛ', 'ՀՅ', 'ქა', 'Ру']) assert.ok(narrow.test(code), code);
+  for (const code of ['PT-BR', '简体', '繁體', 'Қаз', '', 'ع']) assert.ok(!narrow.test(code), code);
 });
 
 test('a choice asks first, then remembers through SF.Preferences and applies or follows', () => {

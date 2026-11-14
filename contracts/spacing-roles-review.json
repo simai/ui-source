@@ -191,6 +191,17 @@
       "owner": "sf-wizard (Smart)",
       "task": "C178 found defect: the owner component moves to the role step at its next change",
       "reason": "24 is no step of the role table: C105 (corrected 2026-11-12) puts a surface's inset and the gap between groups at --sf-space-2 / --sf-space-1. The geometry standard's H6 row still named --sf-space-3 (the typo C105 corrected) until fix/role-tokens-c173 rewrites the row; from then this is found."
+    },
+    {
+      "file": "src/smart/form/scss/_smart__form.scss",
+      "role": "table",
+      "property": "--sf-form--group-gap",
+      "step": "--sf-space-3",
+      "count": 1,
+      "status": "defect",
+      "owner": "sf-form (fix/form-c182)",
+      "task": "group build 6: listed by the integrator; the sf-form owner moves to the role step or the owner keeps C52 at acceptance",
+      "reason": "24 is no step of the role table: C105 (corrected 2026-11-12) puts the gap between groups at --sf-space-2 / --sf-space-1 (--sf-gap--groups). fix/form-c182 took --sf-space-3 from C52 (a group over a line before the buttons), as sf-wizard did; the sf-form owner decides"
     }
   ]
 }

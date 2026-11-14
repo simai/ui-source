@@ -50,13 +50,13 @@ test('C182 (7): the buttons under the fields, «Сохранить» first and n
   assert.ok(footer.indexOf('sf-form-submit') < footer.indexOf('sf-form-cancel'));
   assert.doesNotMatch(footer.slice(footer.indexOf('sf-form-submit'), footer.indexOf('sf-form-cancel')), /disabled/u);
   assert.match(footer, /class="sf-form-state" role="status"/u);
-  assert.match(sheet, /\.sf-form-actions \{[^}]*gap: var\(--sf-space-1\\\/3\);/u);
+  assert.match(sheet, /\.sf-form-actions \{[^}]*gap: var\((?:--sf-space-1\\\/3|--sf-gap--actions)\);/u);
   assert.match(sheet, /\.sf-form-footer\[data-sticky\] \{[^}]*position: sticky;/u);
 });
 
 test('C182 (4), (5), C52: one column, pairs from 44rem, labels beside from 40rem, gaps from the space system', () => {
-  assert.match(sheet, /@container \(min-width: 44rem\)/u);
-  assert.match(sheet, /@container \(min-width: 40rem\)/u);
+  assert.match(sheet, /@container \(min-width: #\{mq\.container-step\(h1\)\}\)/u);
+  assert.match(sheet, /@container \(min-width: #\{mq\.container-step\(h0\)\}\)/u);
   assert.match(sheet, /--sf-form--field-gap: var\(--sf-form-field-gap, var\(--sf-space-1\)\);/u);
   assert.match(sheet, /--sf-form--group-gap: var\(--sf-form-group-gap, var\(--sf-space-3\)\);/u);
   // No raw pixel value anywhere in the sheet.

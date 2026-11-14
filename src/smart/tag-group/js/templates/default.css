@@ -6,7 +6,7 @@
        not fit leave it for «+N» --; layout wrap wraps (a form). */
     sf-tag-group {
         align-items: center;
-        column-gap: var(--sf-space-1\/4);
+        column-gap: var(--sf-gap--tags);
         flex-wrap: nowrap;
         min-inline-size: 0;
         row-gap: var(--sf-space-1\/4);

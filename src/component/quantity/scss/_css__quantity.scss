@@ -600,7 +600,7 @@
   @media (forced-colors: active) {
     .sf-quantity:has(input:not(:disabled):not(.disabled):focus) .sf-quantity-wrap {
       outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: calc(-1 * var(--sf-focus-outline-width));
+      outline-offset: calc(-1 * var(--sf-focus--width));
       --sf-quantity-wrap--box-shadow: none;
     }
     .sf-quantity:not(.sf-quantity--pointer-focus) .sf-icon-button.sf-quantity-count:not(:disabled):focus-visible {

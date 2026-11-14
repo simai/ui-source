@@ -476,7 +476,7 @@
   @media (forced-colors: active) {
     .sf-input:has(input:not(:disabled):not(.disabled):focus) .sf-input-field {
       outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: calc(-1 * var(--sf-focus-outline-width));
+      outline-offset: calc(-1 * var(--sf-focus--width));
       --sf-input-field--box-shadow: none;
     }
   }
@@ -651,7 +651,7 @@
     align-items: center;
     color: var(--sf-on-surface-variant);
     font-family: var(--sf-text--family);
-    font-weight: var(--sf-font-weight-regular);
+    font-weight: var(--sf-weight--regular);
     white-space: nowrap;
   }
 
@@ -702,7 +702,7 @@
     margin-inline-start: auto;
     color: var(--sf-on-surface-variant);
     font-family: var(--sf-text--family);
-    font-weight: var(--sf-font-weight-regular);
+    font-weight: var(--sf-weight--regular);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
