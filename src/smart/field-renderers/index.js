@@ -788,7 +788,9 @@ function renderUserCell(field, value) {
     if (!value || typeof value !== 'object' || !value.label) return null;
 
     return [
-        {component: {type: 'avatar', props: {line: CELL_LINE, text: value.avatarText || ''}}},
+        // The person's name is the avatar's heading: its accessible name and
+        // the source of its initials (sf-avatar 1.6.0; avatar study AV-2).
+        {component: {type: 'avatar', props: {line: CELL_LINE, text: value.avatarText || '', heading: String(value.label)}}},
         value.href ? referenceLink(value) : String(value.label),
     ];
 }
@@ -2367,7 +2369,7 @@ function renderUserView(field, value) {
 
     return html`
         <span class="sf-field-view flex items-cross-center gap-1/3">
-            <sf-avatar line=${VIEW_LINE} text=${value.avatarText || ''}></sf-avatar>
+            <sf-avatar line=${VIEW_LINE} text=${value.avatarText || ''} heading=${String(value.label)}></sf-avatar>
             ${value.href
                 ? html`<sf-reference-link appearance="plain" icon="" line=${VIEW_LINE}
                         label=${String(value.label)} href=${String(value.href)}></sf-reference-link>`

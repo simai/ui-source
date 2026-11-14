@@ -6,6 +6,7 @@
     "theme-dark"
   ],
   "sheets": [
+    "component/avatars/css/avatars.min.css",
     "component/badges/css/badges.min.css",
     "component/button-group/css/button-group.min.css",
     "component/buttons/css/buttons.min.css",
@@ -35,6 +36,7 @@
   ],
   "examples": {
     "five": [
+      "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
       "component/button-group/css/button-group.min.css",
       "component/buttons/css/buttons.min.css",
@@ -135,6 +137,7 @@
       "utility/text-align/default/css/default.min.css"
     ],
     "twelve": [
+      "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
       "component/button-group/css/button-group.min.css",
       "component/buttons/css/buttons.min.css",

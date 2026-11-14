@@ -36,6 +36,12 @@ test('initials: a letter is a whole grapheme, surrogate pairs and combining mark
 
 test('the context menu draws a header\'s initials by the one rule', () => {
   const template = readFileSync(new URL('../src/smart/menu-context/js/templates/default.js', import.meta.url), 'utf8');
-  assert.match(template, /import \{getInitials\} from "\.\.\/\.\.\/\.\.\/helpers\/text"/u);
+  // The header's picture is the one avatar drawing (avatar js/picture.js,
+  // AV-8), which takes the initials of the name by helpers/text.js.
+  assert.match(template, /import \{avatarPicture\} from "\.\.\/\.\.\/\.\.\/avatar\/js\/picture"/u);
+  assert.match(template, /avatarPicture\(\{[^}]*name: entry\.text,/u);
   assert.doesNotMatch(template, /function initials\(/u);
+  const picture = readFileSync(new URL('../src/smart/avatar/js/picture.js', import.meta.url), 'utf8');
+  assert.match(picture, /import \{getInitials\} from "\.\.\/\.\.\/helpers\/text"/u);
+  assert.match(picture, /explicitText \|\| getInitials\(name\)/u);
 });

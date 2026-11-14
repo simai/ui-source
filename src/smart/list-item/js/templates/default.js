@@ -1,6 +1,6 @@
 import { html, nothing } from "lit";
 import { nearestFieldSize } from "../../../../component/field-size";
-import { cssUrl } from "../../../../core/js/css-url";
+import { avatarPicture } from "../../../avatar/js/picture";
 
 // The mark in a row's box is bound as a property, not as an attribute. A press
 // anywhere in the row reaches the label that holds this input and flips its live
@@ -102,25 +102,23 @@ export function renderListItemTemplate(context) {
     }
 
     if (context.type === "avatar") {
-      const avatarClasses = [
-        "sf-avatar",
-        `sf-avatar--size-${context.sizeGroup.item === "1/3" || context.sizeGroup.item === "1/2" ? "1/3" : context.sizeGroup.item === "1" ? "1/2" : context.sizeGroup.item === "2" ? "1" : "2"}`,
-        "bg-cover",
-        context.disabled ? "disabled" : "",
-      ].filter(Boolean);
+      // sf-avatar's own drawing (js/picture.js, avatar study AV-8): the photo
+      // an <img>, else the initials of the title on the neutral plate, else
+      // the person glyph. It was a background image, and with no photo an
+      // empty circle.
+      const avatarSize = context.sizeGroup.item === "1/3" || context.sizeGroup.item === "1/2" ? "1/3" : context.sizeGroup.item === "1" ? "1/2" : context.sizeGroup.item === "2" ? "1" : "2";
 
       return html`
         <div
           class="sf-avatar-label-group sf-avatar-label-group--size-${context
             .sizeGroup.avatarGroup} flex items-cross-center"
         >
-          <span
-            class=${avatarClasses.join(" ")}
-            aria-hidden="true"
-            style=${context.avatarImageUrl
-              ? `background-image: ${cssUrl(context.avatarImageUrl)};`
-              : nothing}
-          ></span>
+          ${avatarPicture({
+            size: avatarSize,
+            imageUrl: context.avatarImageUrl,
+            name: context.avatarTitle,
+            disabled: context.disabled,
+          })}
           <div class="sf-avatar-label-group-container flex flex-col">
             <div class="sf-avatar-label-group-title">
               ${context.avatarTitle}

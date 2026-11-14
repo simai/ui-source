@@ -6,6 +6,7 @@
     "theme-dark"
   ],
   "sheets": [
+    "component/avatars/css/avatars.min.css",
     "component/buttons/css/buttons.min.css",
     "component/context-menu/css/context-menu.min.css",
     "component/icons/css/icons.min.css",
@@ -25,6 +26,7 @@
   ],
   "examples": {
     "menu": [
+      "component/avatars/css/avatars.min.css",
       "component/buttons/css/buttons.min.css",
       "component/context-menu/css/context-menu.min.css",
       "component/icons/css/icons.min.css",

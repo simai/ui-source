@@ -6,6 +6,7 @@
     "theme-dark"
   ],
   "sheets": [
+    "component/avatars/css/avatars.min.css",
     "component/badges/css/badges.min.css",
     "component/buttons/css/buttons.min.css",
     "component/close/css/close.min.css",
@@ -32,6 +33,7 @@
   ],
   "examples": {
     "columns": [
+      "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
       "component/buttons/css/buttons.min.css",
       "component/close/css/close.min.css",
@@ -56,6 +58,7 @@
       "utility/text-decoration/default/css/default.min.css"
     ],
     "large": [
+      "component/avatars/css/avatars.min.css",
       "component/buttons/css/buttons.min.css",
       "component/context-menu/css/context-menu.min.css",
       "component/icons/css/icons.min.css",
@@ -74,6 +77,7 @@
       "utility/text-decoration/default/css/default.min.css"
     ],
     "long": [
+      "component/avatars/css/avatars.min.css",
       "component/buttons/css/buttons.min.css",
       "component/context-menu/css/context-menu.min.css",
       "component/icons/css/icons.min.css",
@@ -92,6 +96,7 @@
       "utility/text-decoration/default/css/default.min.css"
     ],
     "popup": [
+      "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
       "component/buttons/css/buttons.min.css",
       "component/close/css/close.min.css",
@@ -117,6 +122,7 @@
       "utility/text-decoration/default/css/default.min.css"
     ],
     "reference": [
+      "component/avatars/css/avatars.min.css",
       "component/buttons/css/buttons.min.css",
       "component/context-menu/css/context-menu.min.css",
       "component/icons/css/icons.min.css",
@@ -135,6 +141,7 @@
       "utility/text-decoration/default/css/default.min.css"
     ],
     "rows": [
+      "component/avatars/css/avatars.min.css",
       "component/buttons/css/buttons.min.css",
       "component/context-menu/css/context-menu.min.css",
       "component/icons/css/icons.min.css",
@@ -153,6 +160,7 @@
       "utility/text-decoration/default/css/default.min.css"
     ],
     "tiles": [
+      "component/avatars/css/avatars.min.css",
       "component/buttons/css/buttons.min.css",
       "component/context-menu/css/context-menu.min.css",
       "component/icons/css/icons.min.css",

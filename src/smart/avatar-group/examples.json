@@ -5,8 +5,6 @@
       "title": "Команда проекта",
       "settings": {
         "template": "label",
-        "image-url": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"96\" height=\"96\"%3E%3Crect width=\"96\" height=\"96\" rx=\"48\" fill=\"%233b82f6\"/%3E%3C/svg%3E",
-        "avatar-url": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"96\" height=\"96\"%3E%3Crect width=\"96\" height=\"96\" rx=\"48\" fill=\"%233b82f6\"/%3E%3C/svg%3E",
         "avatar-size": "2",
         "label-text": "Команда проекта",
         "label-second-text": "5 участников"
@@ -17,7 +15,6 @@
       "studio": {
         "props": {
           "template": "label",
-          "image-url": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"96\" height=\"96\"%3E%3Crect width=\"96\" height=\"96\" rx=\"48\" fill=\"%233b82f6\"/%3E%3Ctext x=\"48\" y=\"58\" text-anchor=\"middle\" font-size=\"30\" fill=\"white\"%3EAZ%3C/text%3E%3C/svg%3E",
           "avatar-size": "2",
           "label-text": "Команда проекта",
           "label-second-text": "5 участников"
@@ -30,7 +27,6 @@
       "title": "Человек и источник",
       "settings": {
         "template": "user",
-        "image-url": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"96\" height=\"96\"%3E%3Crect width=\"96\" height=\"96\" rx=\"48\" fill=\"%233b82f6\"/%3E%3C/svg%3E",
         "name": "Анна Захарова",
         "source": "simai.ru",
         "avatar-size": "1"
@@ -54,7 +50,7 @@
             "text": "БИ"
           },
           {
-            "image-url": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"96\" height=\"96\"%3E%3Crect width=\"96\" height=\"96\" rx=\"48\" fill=\"%233b82f6\"/%3E%3C/svg%3E"
+            "text": "ВП"
           }
         ]
       },
@@ -67,7 +63,6 @@
       "title": "Профиль",
       "settings": {
         "template": "profile",
-        "image-url": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"96\" height=\"96\"%3E%3Crect width=\"96\" height=\"96\" rx=\"48\" fill=\"%233b82f6\"/%3E%3C/svg%3E",
         "profile-size": "big"
       },
       "expect": {
@@ -78,7 +73,6 @@
       "name": "online",
       "title": "В сети",
       "settings": {
-        "image-url": "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"96\" height=\"96\"%3E%3Crect width=\"96\" height=\"96\" rx=\"48\" fill=\"%233b82f6\"/%3E%3C/svg%3E",
         "round-size": "2",
         "active": true
       },

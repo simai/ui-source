@@ -101,7 +101,6 @@
   "cl-dropdown": [
     "align-items/default",
     "background-color/default",
-    "background-size/default",
     "cursor/default",
     "display/default",
     "flex-direction/default",
@@ -222,7 +221,6 @@
     "flex-direction/default",
     "flex-wrap/default",
     "flex/default",
-    "justify-content/default",
     "overflow/default"
   ],
   "cl-input-quantity": [
@@ -274,7 +272,6 @@
   "cl-list-item": [
     "align-items/default",
     "background-color/default",
-    "background-size/default",
     "cursor/default",
     "display/default",
     "flex-direction/default",
@@ -427,11 +424,9 @@
     "visibility/default"
   ],
   "cl-tag": [
-    "background-size/default",
     "display/default",
     "flex-direction/default",
     "flex-wrap/default",
-    "justify-content/default",
     "min-width/default",
     "place-items/default"
   ],

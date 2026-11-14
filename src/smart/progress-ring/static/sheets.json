@@ -8,6 +8,7 @@
   "sheets": [
     "component/avatars/css/avatars.min.css",
     "component/badges/css/badges.min.css",
+    "component/icons/css/icons.min.css",
     "component/progress-ring/css/progress-ring.min.css",
     "core/css/core.css",
     "utility/align-items/default/css/default.min.css",
@@ -16,6 +17,7 @@
     "utility/element-position/default/css/default.min.css",
     "utility/flex-direction/default/css/default.min.css",
     "utility/flex/default/css/default.min.css",
+    "utility/font-weight/default/css/default.min.css",
     "utility/height/default/css/default.min.css",
     "utility/justify-content/default/css/default.min.css",
     "utility/overflow/default/css/default.min.css",
@@ -36,6 +38,7 @@
     "avatar": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/icons/css/icons.min.css",
       "component/progress-ring/css/progress-ring.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -44,6 +47,7 @@
       "utility/element-position/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
       "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
       "utility/height/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
       "utility/overflow/default/css/default.min.css",

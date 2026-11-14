@@ -135,7 +135,8 @@
         "public_parts": [],
         "uses": [
           "component.avatars",
-          "component.badges"
+          "component.badges",
+          "smart.icon"
         ]
       },
       "contract_schema": {
@@ -147,7 +148,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/avatar/smart.manifest.json",
-      "manifest_sha256": "a36480f5c8d0757ac7db998bfc79d493f61b48e793b17382a0d5f7e178537c30",
+      "manifest_sha256": "352fd883af117af623d0763484014b504034ed307de17ade26829374ffc47f55",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -170,7 +171,8 @@
         "public_parts": [],
         "uses": [
           "component.avatars",
-          "component.icons"
+          "component.icons",
+          "smart.icon"
         ]
       },
       "contract_schema": {
@@ -182,7 +184,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/avatar-group/smart.manifest.json",
-      "manifest_sha256": "e412eafecccd017b771e4c292da0480f1249113c070041a7de26b44e8d2411d3",
+      "manifest_sha256": "90bfc196315a25944eca2001abb9e7eb84451402c3fa9ec1bb89f7896d3b757b",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -737,7 +739,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/dropdown/smart.manifest.json",
-      "manifest_sha256": "69b29ee72c9b647f524c696aa7fd449d6a22d757c2cd7d04d6571caf358e4d87",
+      "manifest_sha256": "c62229f778783c3514cce6e1b424d25ed4b7f543a6fe1c4cd2705373e8cee56b",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1569,7 +1571,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-lookup/smart.manifest.json",
-      "manifest_sha256": "22b2e1055892d238bade1bb2f863dbfca102d98c0d4bdae2be6c6b3b5acc17f9",
+      "manifest_sha256": "a30a3b173937ff37ef96c43cbe45a3dbe69c3e811138a2bbd1bd60ac9d238a78",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1800,7 +1802,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list/smart.manifest.json",
-      "manifest_sha256": "7010771ed7a130a64eedf7a99219885dfb1f75fc37827982fdbcffda45ef09d9",
+      "manifest_sha256": "6c9a042cabcbc890454f9e629871999074307e9a4c08fa7a27ad2d6f837b3f6e",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1979,7 +1981,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list-item/smart.manifest.json",
-      "manifest_sha256": "de8f8b035562dc17e13ba9b8c51c286e19d6cd8531a2e87f0959d52dba2bdf44",
+      "manifest_sha256": "799ec70b86d9970a8efc41b882f515366c9e78c7aa25443101ede15139783f11",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2097,10 +2099,12 @@
       "composition": {
         "public_parts": [],
         "uses": [
+          "component.avatars",
           "component.context-menu",
           "component.kbd",
           "smart.button",
           "smart.button-icon",
+          "smart.icon",
           "smart.tabs"
         ]
       },
@@ -2113,7 +2117,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/menu-context/smart.manifest.json",
-      "manifest_sha256": "f8a7ea71860f69b95330afd4fb282249e1c1de7de893e5d9032dd81b290d3f98",
+      "manifest_sha256": "7ebe1a9f2d5011e27af15363fb69b03ed9706bd423f0c66c581deec5f8aa057f",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3069,7 +3073,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tag/smart.manifest.json",
-      "manifest_sha256": "80258c369643686c8a3e4048b3ec5d8c2e50f478a80989fa4b474dfcf19d481a",
+      "manifest_sha256": "d1babeeb08a998f926753c1c73843a85d9cc8e5e73c2f929ee6d29d75b1a8347",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

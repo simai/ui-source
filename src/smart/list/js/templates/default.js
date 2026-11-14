@@ -1,6 +1,7 @@
 import {html, nothing} from "lit";
 import {repeat} from "lit/directives/repeat.js";
 import "./default.css";
+import {avatarPicture} from "../../../avatar/js/picture";
 
 // The list, drawn in the component's light DOM on the Framework's plain list
 // surface (the class unit .sf-list): the rows in their groups, the end of the
@@ -59,8 +60,15 @@ const leadContent = (context, item) => {
         ></sf-avatar>`;
     }
     if (avatar?.kind === "sign") {
-        return html`<span class="sf-list__sign sf-avatar ${wide ? `sf-avatar--size-${size}` : `sf-avatar--size-1 sf-avatar--line-${size}`} sf-avatar--placeholder ${avatar.shape === "square" ? "sf-avatar--square" : ""} inline-flex flex-none items-cross-center content-main-center"
-                          aria-hidden="true"><sf-icon icon=${avatar.icon} aria-hidden="true"></sf-icon></span>`;
+        // sf-avatar's placeholder with the sign's glyph (avatar js/picture.js,
+        // the one avatar drawing; avatar study AV-8).
+        return avatarPicture({
+            size: wide ? size : "1",
+            line: wide ? "" : size,
+            shape: avatar.shape,
+            icon: avatar.icon,
+            extraClass: "sf-list__sign",
+        });
     }
     const icon = typeof item.icon === "string" && item.icon.trim() ? item.icon.trim() : "";
     return icon ? html`<sf-icon class="sf-list__glyph" icon=${icon} aria-hidden="true"></sf-icon>` : nothing;

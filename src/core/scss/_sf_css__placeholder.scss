@@ -1,3 +1,5 @@
+@use "vars/sf_var__size" as size;
+
 /* One bar centred in each row of the given height, as wide as the share. */
 @function placeholder-bars($row, $bar) {
   @return repeating-linear-gradient(to bottom,
@@ -150,6 +152,68 @@
   block-size: calc(var(--sf-input--box-control)
     + (var(--sf-input--box-label) + var(--sf-input--box-message))
     * (var(--sf-input--box-line) + var(--sf-input--box-gap)));
+}
+
+/* sf-avatar before it draws (avatar study AV-5, 2026-11-14: the host drew
+   nothing for 123-151 ms, then a 40 px circle pushed its row). Its box is
+   known from its attributes alone, on the ladder the avatars sheet draws
+   with: the default template is a circle of its size step (16 at 1/4; 1/3
+   and 1/2 a step of the phone's ladder below 60rem and the desktop's above;
+   1 to 3 a control height, compact moving with the region's tokens), or the
+   text line of a form size with line; the label template holds its
+   height (below), its width being its text's. Only the box: nothing is
+   drawn in it, so a photo that arrives is not preceded by a plate it does
+   not have. The card template's box is its container's. Static markup
+   printed inside (data-sf-static) is its own box. Here, not in the avatars
+   sheet, because core.css is the one sheet a page links before any code. */
+:where(sf-avatar:not(:defined)) {
+  --sf-avatar--box: var(--sf-ui-1--control-height);
+}
+
+:where(sf-avatar[size="1/4"]:not(:defined)) { --sf-avatar--box: #{size.small-step(16)}; }
+:where(sf-avatar[size="1/3"]:not(:defined)) { --sf-avatar--box: calc(var(--sf-text-height-1\/3) + 2 * var(--sf-ui-1\/3--space-y-tightness-low)); }
+:where(sf-avatar[size="1/2"]:not(:defined)) { --sf-avatar--box: var(--sf-ui-1\/2--control-height); }
+:where(sf-avatar[size="2"]:not(:defined)) { --sf-avatar--box: var(--sf-ui-2--control-height); }
+:where(sf-avatar[size="3"]:not(:defined)) { --sf-avatar--box: var(--sf-ui-3--control-height); }
+
+@media (min-width: 60rem) {
+  :where(sf-avatar[size="1/3"]:not(:defined)) { --sf-avatar--box: var(--sf-icon-size-3); }
+  :where(sf-avatar[size="1/2"]:not(:defined)) { --sf-avatar--box: calc(var(--sf-text-height-1\/2) + var(--sf-space-1\/2)); }
+}
+
+:where(sf-avatar[line="1/2"]:not(:defined)) { --sf-avatar--box: var(--sf-text-height-1\/2); }
+:where(sf-avatar[line="1"]:not(:defined)) { --sf-avatar--box: var(--sf-text-height-1); }
+:where(sf-avatar[line="2"]:not(:defined)) { --sf-avatar--box: var(--sf-text-height-2); }
+
+:where(sf-avatar:not([template]):not(:defined), sf-avatar[template=""]:not(:defined), sf-avatar[template="default"]:not(:defined)):not(:has(> [data-sf-static])) {
+  display: inline-block;
+  flex: none;
+  vertical-align: middle;
+  inline-size: var(--sf-avatar--box);
+  block-size: var(--sf-avatar--box);
+}
+
+/* The label template: the avatar beside its heading and description, each one
+   text line of the size step (the avatars sheet's label group), so the box is
+   the taller of the avatar and those lines. A heading that wraps is the one
+   thing the attributes cannot tell. */
+:where(sf-avatar[template="label"]:not(:defined)) {
+  --sf-avatar--box-line: var(--sf-text-height-1);
+  --sf-avatar--box-heading: 0;
+  --sf-avatar--box-description: 0;
+}
+
+:where(sf-avatar[template="label"][size="1/4"]:not(:defined)) { --sf-avatar--box-line: var(--sf-text-height-1\/4); }
+:where(sf-avatar[template="label"][size="1/3"]:not(:defined)) { --sf-avatar--box-line: var(--sf-text-height-1\/3); }
+:where(sf-avatar[template="label"][size="1/2"]:not(:defined)) { --sf-avatar--box-line: var(--sf-text-height-1\/2); }
+:where(sf-avatar[template="label"][size="2"]:not(:defined)) { --sf-avatar--box-line: var(--sf-text-height-2); }
+:where(sf-avatar[template="label"][size="3"]:not(:defined)) { --sf-avatar--box-line: var(--sf-text-height-3); }
+:where(sf-avatar[template="label"]:is([heading]:not([heading=""]), [title]:not([title=""])):not(:defined)) { --sf-avatar--box-heading: 1; }
+:where(sf-avatar[template="label"][description]:not([description=""]):not(:defined)) { --sf-avatar--box-description: 1; }
+
+:where(sf-avatar[template="label"]:not(:defined)):not(:has(> [data-sf-static])) {
+  display: block;
+  min-block-size: max(var(--sf-avatar--box), calc((var(--sf-avatar--box-heading) + var(--sf-avatar--box-description)) * var(--sf-avatar--box-line)));
 }
 
 /* Its menu waits for its own code in the parts the element drew: an empty
