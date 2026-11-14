@@ -12732,6 +12732,49 @@
       "source": "src/smart/tag/js/templates/default.js; ui-control control/docs-review/decisions.md C140"
     },
     {
+      "id": "class-featured-icon-look-aliases",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.featured-icon 1.2.0: one name per look, the name the documentation uses (DEV letter on plain group 1, IR-2): soft, medium, solid, elevated, neutral. Their second names -- light, mid, dark, modern, clear -- draw the same look until remove_after, and the component's script notes each one once in SF.deprecations.",
+      "items": [
+        {
+          "component": "featured-icon",
+          "from": "sf-featured-icon--light",
+          "to": "sf-featured-icon--soft"
+        },
+        {
+          "component": "featured-icon",
+          "from": "sf-featured-icon--mid",
+          "to": "sf-featured-icon--medium"
+        },
+        {
+          "component": "featured-icon",
+          "from": "sf-featured-icon--dark",
+          "to": "sf-featured-icon--solid"
+        },
+        {
+          "component": "featured-icon",
+          "from": "sf-featured-icon--modern",
+          "to": "sf-featured-icon--elevated"
+        },
+        {
+          "component": "featured-icon",
+          "from": "sf-featured-icon--clear",
+          "to": "sf-featured-icon--neutral"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<div class=\"sf-featured-icon sf-featured-icon--light sf-featured-icon--clear\">",
+        "after": "<div class=\"sf-featured-icon sf-featured-icon--soft sf-featured-icon--neutral\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/featured-icon/scss/_css_featured-icon.scss; src/component/featured-icon/js/_featured-icon.js; ui-control control/research/2026-11-14-plain-group-1.md (IR-2)"
+    },
+    {
       "id": "behaviour-tile-metric-money-whole",
       "recorded_on": "2026-11-14",
       "stage": "compat",
