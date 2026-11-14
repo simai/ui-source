@@ -1,5 +1,4 @@
-@use 'sass:map';
-@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
 @use '../../../core/scss/mix/mix__places' as places;
 
 @layer sf.components {
@@ -36,6 +35,9 @@
   inset: 0;
   display: block;
   color: var(--sf-on-surface);
+  /* The window's narrow form reads the portal's width (below), the screen's
+     own when the portal covers the screen. */
+  container: sf-search / inline-size;
 }
 
 /* In an overlay container (a documentation example) the window stays in the
@@ -499,9 +501,14 @@
 }
 
 /* A phone: a full-screen sheet, the field on top with a back arrow at its
-   start; the X only clears (the arrow closes). A media rule, so the first
-   frame the window draws is right. */
-@media not all and (min-width: map.get(bp.$breakpoint-array, sm)) {
+   start; the X only clears (the arrow closes). The portal's width decides,
+   not the screen's (C181 (2)): below the container step g6 (32rem, the sm
+   step it read from the screen before). The portal covers the screen, so on
+   a page it is the screen's width less a classic scrollbar; a portal held in
+   an overlay container (a documentation example) is that container's width,
+   and a narrow one draws the sheet. A container rule holds on the first frame
+   the window draws, as the media rule did. */
+@container sf-search (width < #{mq.container-step(g6)}) {
   .sf-search-window {
     inset: 0;
     inline-size: auto;

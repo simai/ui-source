@@ -1,5 +1,6 @@
 @use "sass:map";
 @use "../../../core/scss/vars/sf_var__breakpoint" as bp;
+@use "../../../core/scss/mix/mix__breakpoint" as mq;
 
 @layer sf.components {
 /* sf-pager (standard simai.smart-component 1.3.13 §6). One ladder
@@ -368,16 +369,22 @@
   white-space: nowrap;
 }
 
-/* A phone stacks cards (PR-05, decision C97): side by side at 390 pixels each
-   side had about 170 pixels and the titles were cut. The previous card comes
-   first. The row stacks by its own width (above). */
-@media not all and (min-width: map.get(bp.$breakpoint-array, sm)) {
-  .sf-pager--cards {
-    grid-template-columns: minmax(0, 1fr);
-  }
+/* A narrow place stacks cards (PR-05, decision C97): side by side at 390
+   pixels each side had about 170 pixels and the titles were cut. The previous
+   card comes first. The row stacks by its own width (above).
+   The cards' own width decides, not the screen's (C181 (2)): below the
+   container step g6 (32rem, the sm step it read from the screen before), so
+   cards in a narrow column of a wide page stack too. A container query cannot
+   style its container, so the grid keeps its two columns and each card spans
+   both: one card to a row, the previous one first, as one column drew it. */
+.sf-pager--cards {
+  container: sf-pager / inline-size;
+}
 
+@container sf-pager (width < #{mq.container-step(g6)}) {
+  .sf-pager--cards .sf-pager-side--prev,
   .sf-pager--cards .sf-pager-side--next {
-    grid-column: 1;
+    grid-column: 1 / -1;
   }
 }
 

@@ -103,7 +103,9 @@ test("Pagination geometry uses semantic tokens and keyboard-only focus", async (
   assert.match(pageNumber, /transition-property: background-color, border-color, box-shadow, color/);
   assert.match(pageNumber, /prefers-reduced-motion: reduce/);
   assert.match(pageNumber, /forced-colors: active/);
-  assert.match(pagination, /map\.get\(bp\.\$breakpoint-array, md\)/);
+  // The narrow row follows the pagination's own width at the container step
+  // h1 (C181 (2); it read the md step of the screen, the same 44rem).
+  assert.match(pagination, /@container sf-pagination \(max-width: #\{mq\.container-step\(h1\)\}\)/);
   assert.doesNotMatch(styles, /\b\d+(?:\.\d+)?(?:px|rem|em)\b/);
 });
 

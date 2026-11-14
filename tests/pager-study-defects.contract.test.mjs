@@ -19,8 +19,8 @@ const rule = (selector, from = sheet) => {
 
 // 1.3.0 (C97 point 7) narrows the looks to cards, row and counter; steps and
 // course stay values until 2027-01-01 (tests/pager-c97.contract.test.mjs).
-test('version 1.3.2: the five values still parse, three are the component\'s looks', () => {
-  assert.equal(component.version, '1.3.2');
+test('version 1.3.3: the five values still parse, three are the component\'s looks', () => {
+  assert.equal(component.version, '1.3.3');
   assert.deepEqual(component.settings.appearance.values, ['cards', 'row', 'steps', 'course', 'counter']);
 });
 
@@ -60,11 +60,14 @@ test('PR-04 return: a row narrower than sm stacks, side by side only from sm', (
   assert.doesNotMatch(sheet, /margin-inline-start: auto/u);
 });
 
-test('PR-05: cards and row stack on a phone', () => {
-  const phone = sheet.slice(sheet.indexOf('@media not all and (min-width: map.get(bp.$breakpoint-array, sm))'));
-  assert.ok(phone.length > 0, 'a phone query below the sm step');
-  assert.match(rule('.sf-pager--cards', phone), /grid-template-columns: minmax\(0, 1fr\);/u);
-  assert.match(rule('.sf-pager--cards .sf-pager-side--next', phone), /grid-column: 1;/u);
+test('PR-05: cards and row stack in a narrow place', () => {
+  // The cards' own width below the container step g6 (C181 (2); it was the
+  // sm step of the screen, the same 32rem): each card spans both columns.
+  assert.match(sheet, /\.sf-pager--cards \{\s*container: sf-pager \/ inline-size;\s*\}/u);
+  const narrow = sheet.slice(sheet.indexOf('@container sf-pager (width < #{mq.container-step(g6)})'));
+  assert.ok(narrow.length > 0 && sheet.includes('@container sf-pager'), 'a container query below the g6 step');
+  assert.match(narrow, /\.sf-pager--cards \.sf-pager-side--prev,\s*\.sf-pager--cards \.sf-pager-side--next \{\s*grid-column: 1 \/ -1;/u);
+  assert.doesNotMatch(sheet, /@media[^{]*breakpoint-array/u, 'the pager reads no screen width');
   // The row stacks by its own width, which on a phone is below sm (PR-04 return).
   assert.match(sheet, /@use "\.\.\/\.\.\/\.\.\/core\/scss\/vars\/sf_var__breakpoint" as bp;/u);
 });

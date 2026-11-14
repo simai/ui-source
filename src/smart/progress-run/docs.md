@@ -111,6 +111,9 @@ confirmation around it (a change sheet) are the page's composition.
   is a link that sends `report`.
 - `errors` — `[{where?, key?, text}]`, the first errors; the summary shows
   five. `errors-total` says how many there are; «Ещё N ошибок» sends `report`.
+  In a run narrower than the container step g6 (32rem) the error key goes
+  under the row number (1.4.4: the run's own width, the screen's sm step
+  before).
 - `output` — the output so far, plain text (never markup); with no output
   the toggle is not drawn, and the first `chunk` brings it; `output-open`
   opens the pane (a person toggles it; a page may open it on a failure);
