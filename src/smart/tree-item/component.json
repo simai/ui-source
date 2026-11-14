@@ -2,7 +2,7 @@
   "$comment": "The source of sf-tree-item's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/tree-item (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.tree-item",
   "tag": "sf-tree-item",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "kind": "leaf",
   "family": "tree",
   "settings": {
@@ -387,7 +387,8 @@
     "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
     "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
     "version 1.2.0, has-children (TR-5): the setting and the entry field mark a branch whose children are not loaded yet; the node shows the chevron, expand applies and toggle is sent. Inside sf-tree the attribute is read as the entry's has-children. The getter that said whether the node can open is isBranch now: hasChildren is the setting's property.",
-    "version 1.3.0 (owner decision C102, 2026-11-12): a minor. kind takes the twelve words of core file-types (folder, file, page, document, image, code, data, table, archive, video, audio, link) and has no default: children make a folder, none a leaf -- a node without children drew a closed folder (TR-1). icon is a name (false still none; it was a yes/no), and the node's icon follows icon → kind → the name's extension → folder or file; a node's own open-icon / closed-icon still name its glyph. The row it draws is the one sf-tree draws (row.js): it now also carries a note, mark, more, a hidden page's word, a check box and the rows of a lazy branch, which sf-tree uses."
+    "version 1.3.0 (owner decision C102, 2026-11-12): a minor. kind takes the twelve words of core file-types (folder, file, page, document, image, code, data, table, archive, video, audio, link) and has no default: children make a folder, none a leaf -- a node without children drew a closed folder (TR-1). icon is a name (false still none; it was a yes/no), and the node's icon follows icon → kind → the name's extension → folder or file; a node's own open-icon / closed-icon still name its glyph. The row it draws is the one sf-tree draws (row.js): it now also carries a note, mark, more, a hidden page's word, a check box and the rows of a lazy branch, which sf-tree uses.",
+    "version 1.3.2 (2026-11-15, group build 6; numbered above 1.3.1 on refs/remotes/origin/fix/accordion-c154): a patch, nothing drawn or done differently by this unit: only its on-screen words ship in the bundle, the rest of lang/*.json stays for the Studio and the docs (LC-2, fix/localization-lc); its Kazakh words ride lang/kk.json (C177 (7) pilot draft, fix/languages-c177)."
   ],
   "x-rule": {
     "$comment": [
