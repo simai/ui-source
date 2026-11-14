@@ -24,7 +24,7 @@ test('sf-alert: one action in the row from 36rem, two from 48rem of the notice\'
   assert.match(alerts, /@container sf-alert \(min-width: calc\(48rem - 2 \* 1rem\)\) \{\s*\.sf-alert:not\(\.sf-alert--actions-under\) \{/u);
   // In the row: centred on the text block, the plate overhanging the line by
   // the low button's block padding, as the close does (C35).
-  assert.match(alerts, /flex-direction: row;\s*align-items: center;\s*column-gap: var\(--sf-space-1\);\s*padding-block-end: 0;/u);
+  assert.match(alerts, /flex-direction: row;\s*align-items: center;\s*column-gap: var\(--sf-gap--groups\);\s*padding-block-end: 0;/u); // C173: the role of --sf-space-1
   assert.match(alerts, /margin-block: calc\(-1 \* var\(--sf-ui-1--space-y-tightness-low\)\);/u);
 });
 

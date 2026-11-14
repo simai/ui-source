@@ -198,7 +198,7 @@ sf-profile-picker {
 
 .sf-profile-picker-actions {
   display: flex;
-  gap: var(--sf-space-1\/3); /* Rename · Delete: a button group (C105 H5) */
+  gap: var(--sf-gap--actions); /* Rename · Delete: a button group (C105 H5) */
   opacity: 0;
 }
 
@@ -326,7 +326,7 @@ sf-profile-picker {
 
 .sf-profile-picker-buttons {
   display: flex;
-  gap: var(--sf-space-1\/3);
+  gap: var(--sf-gap--actions);
 }
 
 .sf-profile-picker-buttons > * {

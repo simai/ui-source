@@ -146,17 +146,19 @@ Every horizontal distance between two parts is one of six roles, each on an
 existing token (owner decision C105, 2026-11-12; research
 ui-control `control/research/2026-11-12-horizontal-spacing.md`). A token is
 one name with three numbers: a compact region (`data-sf-density`, C22/C79) and
-the phone move it themselves. There are no role variables: a component reads
-the role's token through its own variable, and acceptance measures it.
+the phone move it themselves. Where a role has a role token (owner decision
+C173, 2026-11-14, which replaces C105's «no new variable names»; §5.1), a
+component reads the role token through its own variable; acceptance measures
+it.
 
 | Role | Between | Where | Token | normal · compact · phone |
 | --- | --- | --- | --- | --- |
 | H1 | picture → label inside a **control** | sf-button, tag, tab, segment, button link | `--sf-ui-S--text-space-x` (the button's own step, C76) | 1/2: 7 · 6 · 6; 1: 8 · 7 · 6; 2: 10 · 8 · 8 |
-| H2 | picture → text in a **row** | list, menu column, dropdown options, field with a picture, notice, table cell, card row, tree row | `--sf-space-1/2` | 12 · 8 · 8 |
-| H3 | picture → text **inside running text** | breadcrumbs, link with an icon, help mark | `--sf-space-1/4` | 4 · 4 · 4 |
+| H2 | picture → text in a **row** | list, menu column, dropdown options, field with a picture, notice, table cell, card row, tree row | `--sf-space-1/2` = `--sf-gap--icon-text` | 12 · 8 · 8 |
+| H3 | picture → text **inside running text** | breadcrumbs, link with an icon, help mark | `--sf-space-1/4` = `--sf-gap--icon-inline` | 4 · 4 · 4 |
 | H4 | edge → content of a **value container** | field, dropdown and its options, list, menu, contents | C77: 1/2 `--sf-space-1/2` (never below 12), 1 `--sf-space-1`, 2 `--sf-space-2`, the border inside; in a panel a plate `--sf-space-1/4` + the row's inset less 4 | 1/2: 12 · 12 · 12; 1: 16 · 12 · 12; 2: 20 · 16 · 16 |
-| H5 | between **neighbours** | buttons of one group; tags and plates; tabs | buttons `--sf-space-1/3`; tags and plates `--sf-space-1/4`; tabs 0, edge to edge (C99) | 8 · 4 · 8; 4; 0 |
-| H6 | between **groups**; a **surface's** inset | group ↔ group, field ↔ button; notice, table cell; card, dialog | groups and cells `--sf-space-1`; card and dialog padding 24 (`--sf-space-3`) | 16 · 12 · 12; 24 · 20 · 16 |
+| H5 | between **neighbours** | buttons of one group; toolbar buttons; tags and plates; tabs | buttons `--sf-space-1/3` = `--sf-gap--actions`; toolbar `--sf-space-1/4` = `--sf-gap--toolbar` (C144); tags and plates `--sf-space-1/4` = `--sf-gap--tags`; tabs 0, edge to edge (C99) | 8 · 4 · 8; 4; 4; 0 |
+| H6 | between **groups**; a **surface's** inset | group ↔ group, field ↔ button; notice, table cell; card, dialog | groups and cells `--sf-space-1` = `--sf-gap--groups`; card, window and notice padding `--sf-space-2` = `--sf-inset--panel` (C105 as corrected 2026-11-12) | 16 · 12 · 12; 20 · 16 · 16 |
 
 A **control** is one compact object a person presses (button, tag, tab,
 segment, icon button); a **row** is a line of content in a container (list,
@@ -184,6 +186,58 @@ Rules that go with the roles:
    follows the font):
 
        <td><span class="inline-flex items-cross-center gap-1/2"><i class="sf-icon" aria-hidden="true">description</i><span>Report.pdf</span></span></td>
+
+### 5.1 Role tokens (C173)
+
+A role token is a name for a role, `--sf-<area>--<role>` like
+`--sf-radius--ui`, and its value is a reference to an existing step, never a
+number of its own (owner decision C173, 2026-11-14, refining C156; research
+ui-control `control/research/2026-11-14-role-tokens.md`). People and AI pick a
+role by its name instead of guessing a step, and a role changes in one place.
+The list, its values and the cap are `src/core/contracts/role-tokens.v1.json`;
+`scripts/generate-role-tokens.mjs` writes `src/core/figma_variables/figma_role_tokens.scss`.
+
+| Token | Role | Step | normal · compact · phone |
+| --- | --- | --- | --- |
+| `--sf-gap--actions` | buttons of one group (a footer, a confirmation, a page header's actions) | `--sf-space-1/3` | 8 · 4 · 8 |
+| `--sf-gap--toolbar` | toolbar buttons; a toolbar separator's margins (C144) | `--sf-space-1/4` | 4 · 4 · 4 |
+| `--sf-gap--tags` | tags and chips side by side | `--sf-space-1/4` | 4 · 4 · 4 |
+| `--sf-gap--groups` | between groups and cells | `--sf-space-1` | 16 · 12 · 12 |
+| `--sf-gap--icon-text` | picture → text in a row (H2) | `--sf-space-1/2` | 12 · 8 · 8 |
+| `--sf-gap--icon-inline` | icon inside running text (H3) | `--sf-space-1/4` | 4 · 4 · 4 |
+| `--sf-inset--panel` | padding of a card, window, drawer, notice | `--sf-space-2` | 20 · 16 · 16 |
+| `--sf-inset--plate` | underlay of a popup panel or scroll area | `--sf-space-1/4` | 4 · 4 · 4 |
+| `--sf-radius--inner` | corner inside a host: host corner − inset, never below 4 | formula | 4 (surface host, plate) |
+| `--sf-line--border` | frames, dividers | `--sf-px` | 1 |
+| `--sf-line--indicator` | the chosen tab's line, a chosen frame (C99) | 2 × `--sf-px` | 2 |
+| `--sf-hit--min` | the smallest press area (C76, WCAG 2.5.8) | `--sf-c2` | 24 |
+| `--sf-hit--touch` | the press area on a touch screen (C49) | `--sf-d1` | 44 |
+
+`--sf-radius--ui` (4) and `--sf-radius--surface` (8) stay. Five layer roles
+(`--sf-layer--sticky` … `--sf-layer--tooltip`) come in a later group. Control
+heights, icon sizes, shadows, motion and focus do not get role names: the
+ladder, the host (C151) and the existing names are the roles there. At most 17
+role names in all.
+
+Rules:
+
+1. A row of buttons of one group is `.sf-actions` (flex, wrapping, centred,
+   gap `--sf-gap--actions`); `.sf-actions--end` pushes it to the end.
+2. A role token is declared by the core only. A custom property resolves
+   where it is declared, so the core declares each step-dependent role again
+   in every scope that redefines the steps (both density regions); a role on
+   `:root` alone would keep the root's step in a compact region (RT-15).
+3. `--sf-radius--inner` is one formula, `max(var(--sf-a4), calc(<host corner>
+   - <inset>))`; the root value is for a surface host with a plate underlay, a
+   host with another corner or inset declares the same formula on itself.
+4. A component variable that names a role keeps its name and defaults to the
+   role token (`--sf-modal-footer-gap`, `--sf-page-header-actions-gap`,
+   `--sf-alert-buttons--gap` …), so a page can still move one component.
+5. `node scripts/check-role-tokens.mjs` checks the sources: the names, the
+   density scopes, that a gap of a row of buttons, a toolbar or a row of tags
+   reads its role token and never a step (known departures in
+   `src/core/contracts/role-tokens.baseline.v1.json`, each with its defect),
+   and that a scrim reads `--sf-scrim-color`.
 
 ## 6. One row, one rung (C103)
 

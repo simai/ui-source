@@ -11,8 +11,10 @@
     "src/core/figma_variables/"
   ],
   "files": [
+    "src/core/figma_variables/figma_role_tokens.scss",
     "src/core/figma_variables/img.png",
     "src/core/scss/_base.scss",
+    "src/core/scss/_sf_css__actions.scss",
     "src/core/scss/_sf_css__composition.scss",
     "src/core/scss/_sf_css__density.scss",
     "src/core/scss/_sf_css__loader.scss",
@@ -28,7 +30,7 @@
     "src/core/scss/mix/_mix__notice-link.scss",
     "src/core/scss/vars/_sf_var__display.scss"
   ],
-  "content_sha256": "914200aa780a230329e1ff3095dfcceaaa5792d9a2b738749626ae9705024c5e",
+  "content_sha256": "058fa0fbb9575cf30a2492d0480b2c747f7d474cbecd273b8c37dcda22ae92a3",
   "dependencies": [
     {
       "id": "font.inter",

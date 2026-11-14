@@ -16,7 +16,7 @@ const sheet = read('src/smart/alert-bar/scss/_smart__alert-bar.scss');
 test('the manifest: a leaf of block alert with items, four events and the close action', () => {
   assert.equal(manifest.tag, 'sf-alert-bar');
   assert.equal(manifest.family, 'alert');
-  assert.equal(manifest.version, '1.6.1');
+  assert.equal(manifest.version, '1.6.2');
   assert.deepEqual(Object.keys(manifest.settings), ['items', 'size', 'label']);
   assert.deepEqual(manifest.settings.items.schema.items.properties.level.enum, ['error', 'warning', 'info']);
   assert.deepEqual(manifest.settings.items.schema.items.required, ['id', 'level', 'text']);
@@ -102,7 +102,7 @@ test('the sheet: one rung, the theme status roles, the narrow container and redu
   assert.match(sheet, /--sf-alert-bar--edge: var\(--sf-space-1\);/u);
   assert.match(sheet, /--sf-alert-bar--gap: var\(--sf-alert-bar-gap, var\(--sf-space-1\)\);/u);
   assert.match(sheet, /--sf-alert-bar--icon-gap: var\(--sf-space-1\\\/2\);/u);
-  assert.match(sheet, /--sf-alert-bar--between: var\(--sf-space-1\\\/3\);/u);
+  assert.match(sheet, /--sf-alert-bar--between: var\(--sf-gap--actions\);/u); // C173: the role of --sf-space-1/3
   // The page column of a site bar (AA-16): the .container inset per step.
   assert.match(sheet, /\(100cqi - var\(--sf-breakpoint-#\{\$step\}\)\) \/ 2/u);
   // Narrow: actions from the text start (AA-17) and an even bottom (NS-8).

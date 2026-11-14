@@ -50,7 +50,7 @@
   --sf-alert-bar--padding-inline: var(--sf-alert-bar-padding-inline, var(--sf-alert-bar--column-inset));
   --sf-alert-bar--gap: var(--sf-alert-bar-gap, var(--sf-space-1));
   --sf-alert-bar--icon-gap: var(--sf-space-1\/2);
-  --sf-alert-bar--between: var(--sf-space-1\/3);
+  --sf-alert-bar--between: var(--sf-gap--actions);
   /* Text to the actions when they stand under it (C115, the vertical
      standard): 12, phone 8. */
   --sf-alert-bar--under-gap: var(--sf-space-1\/2);
