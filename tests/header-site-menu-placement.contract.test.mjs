@@ -99,7 +99,7 @@ test('header site C104: the docs name both settings and the version is a minor',
   assert.match(docs, /menu-placement="inline-end"/u);
   assert.match(docs, /data-header-site="toggle"/u);
   assert.match(docs, /aria-controls="site-header"/u);
-  // 1.9.2: the panel moved to the 20rem step (owner decision C157 (2)).
-  assert.equal(component.version, '1.9.2');
+  // 1.10.1: the panel moved to the 20rem step (owner decision C157 (2)).
+  assert.equal(component.version, '1.10.1');
   assert.ok(component['x-decisions'].some((line) => line.startsWith('version 1.9.0 (2026-11-12, owner decision C104')));
 });
