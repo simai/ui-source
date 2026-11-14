@@ -1551,6 +1551,7 @@
           "component.avatars",
           "component.icons",
           "smart.button",
+          "smart.button-icon",
           "smart.icon",
           "smart.spinner",
           "smart.tag"
@@ -1565,7 +1566,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-lookup/smart.manifest.json",
-      "manifest_sha256": "8b7099237b693e49c9daf839c4c81e9e48acf7222e1d4d091e553c46fe841e6c",
+      "manifest_sha256": "3fe27442a21be835859c663506652169bfac1cccce4066384e4c2ab931795463",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

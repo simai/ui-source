@@ -40,6 +40,7 @@
       "component.avatars",
       "component.icons",
       "smart.button",
+      "smart.button-icon",
       "smart.icon",
       "smart.spinner",
       "smart.tag"
@@ -129,6 +130,11 @@
         "default": 2,
         "description": "The fewest characters the provider is asked with; below it the list shows the hint and nothing is asked. Inline options are searched at any length."
       },
+      "suggest": {
+        "type": "boolean",
+        "default": false,
+        "description": "The host answers an empty query (owner decision C139 (3)): focus in an empty field asks the provider with '' at once and shows what it answers -- the person's recent items, the usual choices. min-length 0 does the same. Without either, focus in an empty field searched by the provider shows the min-length hint at once."
+      },
       "max-results": {
         "type": "number",
         "default": 20,
@@ -143,6 +149,11 @@
         "type": "number",
         "default": 0,
         "description": "The most characters the search box takes; 0 is no limit."
+      },
+      "create": {
+        "type": "string",
+        "default": "",
+        "description": "PROVISIONAL value names. Offer to create what is typed (owner decision C139 (2)): present (or \"item\"), the list ends in a row «Создать «text»» whenever no row and no chosen item is the query exactly; \"email\" offers «Добавить адрес text» for a mail address only. Choosing the row raises create with the text; the host answers through detail.respond() with the new item, which is chosen as a row is, or with an error, the field's visible polite line. Absent or \"false\": no row."
       },
       "required": {
         "type": "boolean",
@@ -177,7 +188,7 @@
       "options": {
         "type": "array",
         "default": [],
-        "description": "A short list given whole, [{value, label, caption?, avatar?}]: searched in place, the provider never asked. A property, or the data-sf-settings island."
+        "description": "A short list given whole, [{value, label, caption?, avatar?, icon?}]: searched in place, the provider never asked. A property, or the data-sf-settings island. The part of a name or caption the query matched is in the medium weight (C139 (8))."
       },
       "exclude": {
         "type": "array",
@@ -187,7 +198,7 @@
       "provider": {
         "type": "object",
         "default": null,
-        "description": "The search: async function (query, {cursor, limit, signal}) answering {items: [{value, label, caption?, avatar?: {src} | {initials}}], nextCursor?, notice?} or {status: 'unavailable'}; notice is a line of the host's own under the rows (first 20 shown, narrow your search); a thrown error or a rejected promise is the error state. The previous call is aborted through signal and its late answer dropped. A property only."
+        "description": "The search: async function (query, {cursor, limit, signal}) answering {items: [{value, label, caption?, avatar?: {src} | {initials}, icon?, match?: {label?, caption?: [[start, end]]}}], nextCursor?, notice?} or {status: 'unavailable'}; notice is a line of the host's own under the rows (first 20 shown, narrow your search); a thrown error or a rejected promise is the error state. The previous call is aborted through signal and its late answer dropped. A property only. An item's match ranges, when the host returns them, mark the matched part of its name and caption in the medium weight (C139 (8)); inline options are marked by the field itself."
       },
       "value": {
         "type": "object",
@@ -269,7 +280,7 @@
       }
     },
     "change": {
-      "summary": "The value changed by the person, once per choice or removal, as a select's: detail.value is the new value, detail.item the item chosen or removed, detail.action added, removed or replaced. A value set from code, a form reset and a restore say nothing.",
+      "summary": "The value changed by the person, once per choice or removal, as a select's: detail.value is the new value, detail.item the item chosen or removed, detail.action added, removed or replaced. A value set from code, a form reset and a restore say nothing. A created item says created: true beside the action.",
       "payload": {
         "type": "object",
         "required": [
@@ -290,6 +301,40 @@
         },
         "additionalProperties": true
       }
+    },
+    "sf-input-lookup-create": {
+      "summary": "The person chose the create row (C139 (2)): detail.text is what they typed (trimmed), detail.kind item or email. Answer with detail.respond(answer) -- at once or later, the answer or a promise of it: the new item {value, label, caption?, avatar?, icon?}, which the field chooses as it does a row (input and change follow, action added or replaced, created true), or {error: message}, an Error or a message, shown as the field's polite line («Не удалось создать» without a message). Until it answers the row does not create twice.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "text",
+          "kind",
+          "respond"
+        ],
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "item",
+              "email"
+            ]
+          },
+          "respond": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      },
+      "canonical": true
+    },
+    "sf-lookup-create": {
+      "summary": "Dated alias of sf-input-lookup-create until 2027-01-01 (same-detail).",
+      "payload": {
+        "type": "object"
+      },
+      "alias_of": "sf-input-lookup-create"
     }
   },
   "state": {
@@ -420,27 +465,27 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-lookup/index.js",
-        "sha256": "448684fcc12165c5782afeddd03ca50a154ba0c2bf6879da0b6a57bf92afa6d9"
+        "sha256": "5faf0b7416f6f89519f459611b7a122cbe9fdf4fd26a41e014954c071e7eef4f"
       },
       {
         "path": "src/smart/input-lookup/js/templates/default.js",
-        "sha256": "1f87940228290c5d81d6d97a3b547f6ee751ac11fdaeb2d75f699e9a9769a581"
+        "sha256": "2978d4b2e0b9fb87ed62374c09d71e71932b087397c1290f7ca7d57ac5d7a722"
       },
       {
         "path": "src/smart/input-lookup/js/lookup-model.mjs",
-        "sha256": "d1f97508a853a1903a6c5f03aeeba441b078fed8092bcca3cf4f680eb7f15a64"
+        "sha256": "fb7b12b307d85004619d743aec5adfbe52627b11de6eae334c6577a9d04e1a7d"
       },
       {
         "path": "src/smart/input-lookup/scss/_smart__lookup.scss",
-        "sha256": "1ce3e01fe0d5d417783eb0961e3860f47ac91da88e0b18621ed720f18c71c29c"
+        "sha256": "7fa775ef5c51f32c58f070c7a405b04c2754f032f9422455fb784a0dbe66c58f"
       },
       {
         "path": "src/smart/input-lookup/rule.js",
-        "sha256": "7982f51e0e88235db39ce8c90e674dd37750561e9b01ebd4262c78235bd7b84f"
+        "sha256": "1337247c2b8a26ed340e578d8a7723cf0eb5865df6862f4a0bbdd79bbf6dd256"
       },
       {
         "path": "src/smart/input-lookup/docs.md",
-        "sha256": "c7d9a2fe53591391d6a0a58be3650372495da5fe751984ff707e3c57ce1132ad"
+        "sha256": "931639b92bf45a9d327e067b9fd5f422b8235f56e665a75938e15aa406bdfde0"
       }
     ],
     "generated_runtime": []

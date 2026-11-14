@@ -18,6 +18,14 @@ import {
   sameValue,
   searchPlan,
   withoutExcluded,
+  createKind,
+  createOffer,
+  isEmailAddress,
+  matchRanges,
+  normaliseMatch,
+  readCreated,
+  splitByRanges,
+  withoutMatch,
 } from '../src/smart/input-lookup/js/lookup-model.mjs';
 
 // sf-lookup, the people and object picker: its manifest and the pure parts of
@@ -53,7 +61,11 @@ test('the manifest declares the settings, the value, the events and the form of 
   assert.equal(component.settings['max-results'].default, DEFAULTS.maxResults);
   assert.equal(component.settings.debounce.default, DEFAULTS.debounce);
   assert.equal(component.settings.provider.type, 'object');
-  assert.deepEqual(Object.keys(component.events).sort(), ['change', 'input']);
+  assert.deepEqual(Object.keys(component.events).sort(), ['change', 'create', 'input']);
+  // C139 (2), (3): create offers a row, suggest asks the host with an empty query.
+  assert.equal(component.settings.create.default, null);
+  assert.equal(component.settings.suggest.type, 'boolean');
+  assert.deepEqual(component.events.create.carries.kind.values, ['item', 'email']);
   assert.equal(component.form.submits, 'value');
   assert.equal(component.accessibility.role, 'combobox');
   assert.equal(manifest.id, 'smart.input-lookup');
@@ -222,4 +234,62 @@ test('the examples hold a studio example and a conformance page of checks', () =
   assert.ok(page.checks.length >= 8);
   const probe = json('src/smart/input-lookup/probe.json');
   assert.ok(probe);
+});
+
+test('C139 words: create rows, the refusal, the chip position and Done, in both languages', () => {
+  for (const key of ['create-item', 'create-email', 'create-error', 'chip-position', 'done']) {
+    assert.ok(en[key], `en ${key}`);
+    assert.ok(ru[key], `ru ${key}`);
+  }
+  assert.equal(ru['create-item'], 'Создать «{text}»');
+  assert.equal(ru['create-email'], 'Добавить адрес {text}');
+  assert.equal(ru['chip-position'], '{label}, {position} из {total}, Delete — убрать');
+  assert.equal(ru.done, 'Готово');
+});
+
+test('C139 (2) create: off, item or email; offered last only without an exact match', () => {
+  assert.equal(createKind(null), '');
+  assert.equal(createKind('false'), '');
+  assert.equal(createKind(''), 'item');
+  assert.equal(createKind('email'), 'email');
+  assert.equal(createOffer('Новый', {kind: ''}), null);
+  assert.equal(createOffer('  ', {kind: 'item'}), null);
+  assert.deepEqual(createOffer(' Новый ', {kind: 'item', items: [anna]}), {text: 'Новый', kind: 'item'});
+  assert.equal(createOffer('anna', {kind: 'item', items: [anna]}), null);
+  assert.equal(createOffer('design', {kind: 'item', items: [anna]}), null);
+  assert.equal(createOffer('Vera', {kind: 'item', chosen: [vera]}), null);
+  assert.equal(createOffer('ann', {kind: 'email'}), null);
+  assert.deepEqual(createOffer('ann@example.com', {kind: 'email'}), {text: 'ann@example.com', kind: 'email'});
+  assert.equal(createOffer('a@b.com', {kind: 'email', items: [{value: 'a@b.com', label: 'A'}]}), null);
+  assert.ok(isEmailAddress('team@mail.example.org'));
+  assert.ok(!isEmailAddress('team@example'));
+  assert.ok(!isEmailAddress('team example@x.com'));
+});
+
+test('C139 (2) the host answers a create with an item or a refusal', () => {
+  assert.deepEqual(readCreated({value: 'n1', label: 'Новый'}), {item: {value: 'n1', label: 'Новый'}});
+  assert.deepEqual(readCreated({item: {value: 'n1', label: 'Новый'}}).item.value, 'n1');
+  assert.deepEqual(readCreated({error: 'Нельзя'}), {error: 'Нельзя'});
+  assert.deepEqual(readCreated(new Error('Сбой')), {error: 'Сбой'});
+  assert.deepEqual(readCreated('Нет'), {error: 'Нет'});
+  assert.deepEqual(readCreated(undefined), {error: ''});
+});
+
+test('C139 (5) an item keeps an icon only without an avatar', () => {
+  assert.equal(normaliseItem({value: 'r1', label: 'Договор', icon: 'description'}).icon, 'description');
+  assert.equal(normaliseItem({value: 'r1', label: 'Договор', icon: 'bad name!'}).icon, undefined);
+  assert.equal(normaliseItem({...anna, icon: 'person'}).icon, undefined);
+});
+
+test('C139 (8) the matched part: folded in place, or the ranges the host sent', () => {
+  assert.deepEqual(matchRanges('Анна Петрова', 'пет'), [[5, 8]]);
+  assert.deepEqual(matchRanges('Ёлка', 'ел'), [[0, 2]]);
+  assert.deepEqual(matchRanges('Café', 'cafe'), [[0, 4]]);
+  assert.deepEqual(matchRanges('Anna', 'x'), []);
+  assert.deepEqual(splitByRanges('Anna', [[1, 3]]), [{text: 'A', match: false}, {text: 'nn', match: true}, {text: 'a', match: false}]);
+  const item = {value: 'u1', label: 'Anna', caption: 'Design'};
+  assert.deepEqual(normaliseMatch([[0, 2]], item), {label: [[0, 2]]});
+  assert.deepEqual(normaliseMatch({caption: [[0, 3], [2, 6]]}, item), {caption: [[0, 6]]});
+  assert.equal(normaliseMatch({label: [[3, 9]]}, item), null);
+  assert.equal(withoutMatch({...item, match: {label: [[0, 1]]}}).match, undefined);
 });

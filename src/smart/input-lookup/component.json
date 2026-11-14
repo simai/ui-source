@@ -71,6 +71,11 @@
       "default": 2,
       "summary": "The fewest characters the provider is asked with; below it the list shows the hint and nothing is asked. Inline options are searched at any length."
     },
+    "suggest": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The host answers an empty query (owner decision C139 (3)): focus in an empty field asks the provider with '' at once and shows what it answers -- the person's recent items, the usual choices. min-length 0 does the same. Without either, focus in an empty field searched by the provider shows the min-length hint at once."
+    },
     "max-results": {
       "type": "number",
       "default": 20,
@@ -89,7 +94,7 @@
     "options": {
       "type": "list",
       "default": [],
-      "summary": "A short list given whole, [{value, label, caption?, avatar?}]: searched in place, the provider never asked. A property, or the data-sf-settings island."
+      "summary": "A short list given whole, [{value, label, caption?, avatar?, icon?}]: searched in place, the provider never asked. A property, or the data-sf-settings island. The part of a name or caption the query matched is in the medium weight (C139 (8))."
     },
     "exclude": {
       "type": "list",
@@ -99,7 +104,12 @@
     "provider": {
       "type": "object",
       "default": null,
-      "summary": "The search: async function (query, {cursor, limit, signal}) answering {items: [{value, label, caption?, avatar?: {src} | {initials}}], nextCursor?, notice?} or {status: 'unavailable'}; notice is a line of the host's own under the rows (first 20 shown, narrow your search); a thrown error or a rejected promise is the error state. The previous call is aborted through signal and its late answer dropped. A property only."
+      "summary": "The search: async function (query, {cursor, limit, signal}) answering {items: [{value, label, caption?, avatar?: {src} | {initials}, icon?, match?: {label?, caption?: [[start, end]]}}], nextCursor?, notice?} or {status: 'unavailable'}; notice is a line of the host's own under the rows (first 20 shown, narrow your search); a thrown error or a rejected promise is the error state. The previous call is aborted through signal and its late answer dropped. A property only. An item's match ranges, when the host returns them, mark the matched part of its name and caption in the medium weight (C139 (8)); inline options are marked by the field itself."
+    },
+    "create": {
+      "type": "string",
+      "default": null,
+      "summary": "PROVISIONAL value names. Offer to create what is typed (owner decision C139 (2)): present (or \"item\"), the list ends in a row «Создать «text»» whenever no row and no chosen item is the query exactly; \"email\" offers «Добавить адрес text» for a mail address only. Choosing the row raises create with the text; the host answers through detail.respond() with the new item, which is chosen as a row is, or with an error, the field's visible polite line. Absent or \"false\": no row."
     },
     "required": {
       "type": "boolean",
@@ -152,7 +162,25 @@
         "item": "object",
         "action": "string"
       },
-      "summary": "The value changed by the person, once per choice or removal, as a select's: detail.value is the new value, detail.item the item chosen or removed, detail.action added, removed or replaced. A value set from code, a form reset and a restore say nothing."
+      "summary": "The value changed by the person, once per choice or removal, as a select's: detail.value is the new value, detail.item the item chosen or removed, detail.action added, removed or replaced. A value set from code, a form reset and a restore say nothing. A created item says created: true beside the action."
+    },
+    "create": {
+      "carries": {
+        "text": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "enum",
+          "values": [
+            "item",
+            "email"
+          ]
+        },
+        "respond": {
+          "type": "function"
+        }
+      },
+      "summary": "The person chose the create row (C139 (2)): detail.text is what they typed (trimmed), detail.kind item or email. Answer with detail.respond(answer) -- at once or later, the answer or a promise of it: the new item {value, label, caption?, avatar?, icon?}, which the field chooses as it does a row (input and change follow, action added or replaced, created true), or {error: message}, an Error or a message, shown as the field's polite line («Не удалось создать» without a message). Until it answers the row does not create twice."
     }
   },
   "actions": {},
@@ -179,7 +207,10 @@
       "End": "focus:last",
       "Enter": "select",
       "Escape": "close",
-      "Backspace": "remove"
+      "Backspace": "remove",
+      "ArrowLeft": "focus:prev",
+      "ArrowRight": "focus:next",
+      "Delete": "remove"
     }
   },
   "relations": [
@@ -219,6 +250,13 @@
         "The clear of a single field holding a value: the field layer's action",
         "(owner decision C123), an sf-icon glyph without a plate."
       ]
+    },
+    {
+      "name": "cl-button-icon",
+      "$comment": [
+        "The sheet under lg: its back arrow, named «Готово» (C139 (7)),",
+        "as sf-search's sheet on a phone."
+      ]
     }
   ],
   "templates": {
@@ -231,7 +269,7 @@
   "docs": "docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "The combobox pattern with a list popup: the search box is role combobox with aria-autocomplete list, aria-expanded, aria-controls the listbox and aria-activedescendant the active row; it is named by the label (aria-labelledby) or the host's aria-label and described by the hint or error. The list is role listbox (aria-multiselectable when multiple), its rows role option with aria-selected; the state line under it (hint, searching, nothing found, unavailable, error, the max-items refusal) is role status, polite. ArrowDown and ArrowUp move, Home and End go to the ends while the list is open, Enter chooses, Escape closes and a second Escape clears the query; Backspace in the empty box removes the last chip. Chips are sf-tag with a remove button named Remove <label>.",
+    "$comment": "The combobox pattern with a list popup: the search box is role combobox with aria-autocomplete list, aria-expanded, aria-controls the listbox and aria-activedescendant the active row; it is named by the label (aria-labelledby) or the host's aria-label and described by the hint or error. The list is role listbox (aria-multiselectable when multiple), its rows role option with aria-selected; the state line under it (hint, searching, nothing found, unavailable, error, the max-items refusal) is role status, polite. ArrowDown and ArrowUp move, Home and End go to the ends while the list is open, Enter chooses, Escape closes and a second Escape clears the query; Backspace in the empty box removes the last chip. Chips are sf-tag with a remove button named Remove <label>. C139 (6): the field is one Tab stop -- a chip's remove button is not a stop; ArrowLeft from the start of the search box steps onto the last chip, ArrowLeft and ArrowRight walk the chips (past the last back to the box), Delete or Backspace removes the chip stood on; each step is said in a polite live line, «Анна Петрова, 1 из 3, Delete — убрать» (lang runtime chip-position). The focus stays in the box, the chip wears the focus ring. Under lg the list is a sheet (role dialog, aria-modal) with its own search box on top and a back arrow named «Готово»; Escape clears a typed query, then closes it.",
     "role": "combobox",
     "name": {
       "from": [
@@ -247,7 +285,10 @@
       "End": "focus:last",
       "Enter": "select",
       "Escape": "close",
-      "Backspace": "remove"
+      "Backspace": "remove",
+      "ArrowLeft": "focus:prev",
+      "ArrowRight": "focus:next",
+      "Delete": "remove"
     }
   },
   "css-variables": {
@@ -331,8 +372,9 @@
     "version 1.7.0 (written on the branch as 1.6.0; 2026-11-11): a minor (C55 acceptance F1: one form reads as one). A required field left empty shows its required error once the form's check fails -- the host's invalid event on a submit attempt, checkValidity() or reportValidity() -- as sf-dropdown 1.9.0 does: the error border (filled: the error fill), its own «Выберите значение.» (lang runtime value-missing) under the field in the field-message type, aria-invalid and aria-errormessage on the control; the person's input that fills it, or form.reset(), clears it. Before, only the browser's bubble said it. The bubble and the browser's focus on the first invalid field are unchanged; the page's invalid and error-message win over it (helpers/form-field.js ShownRequired). R2 (DEV acceptance 2026-11-11, D1): the shown required error goes whenever the value stops being missing, whatever set it -- the person's input or change, a value set from script, a value attribute -- as sf-dropdown 1.9.0 (ShownRequired clears in the form sync every one of them ends in, not on input/change only). The required word has no full stop, as the other fields': «Выберите значение» / «Choose a value».",
     "version 1.7.1 (2026-11-13, R214 in passing): a patch. A value set from script as a bare value («u1», or a list of them) before the options arrived kept the value as its label for good: the setter resolved it against the options once. The setter and the form restore now keep the value as given and the getter reads it against the current options, as the value attribute always was, so the label comes whenever the options do: set before or after, as a property, in the data-sf-settings island or before the upgrade. options stays a property or the island (a list setting is property-only, core/js/element-manifest.js): an options attribute is not read, so a bare value beside one keeps the value as its label. Settings, values, events and keys unchanged.",
     "version 1.8.0 (2026-11-13, owner decision C123; R214): a minor, a look. The clear of a single field holding a value is the field layer's action (component.inputs 1.6.0, .sf-field-action) in place of sf-button-close plain: the close glyph the field's leading-picture size (24 / 20 / 28 at 1, 1/2, 2; it was 16), its end on the plain inset, no plate, on-surface-variant at rest and on-surface under the pointer, the ring round the glyph, its hit area the field's inner height (it was a 28 box); the search text keeps half an inset before it. Still named «Очистить», still a Tab stop; the relation cl-button-close gives way to cl-icon. Chips and their remove buttons unchanged. Settings, values, events and keys unchanged.",
+    "version 1.8.1 (2026-11-13, C43 D3 and D4 follow-up; numbered above the 1.8.0 a field-actions branch claims): a patch. An option under the pointer and the chosen option are translucent fills, as a menu's rows: each names its fill to core mix sf-place-fill, so the badge on the option's line keeps its own tone (the chosen option shifted a tonal badge by up to 28 per channel light, 37 dark; the hovered one by 5 and 6) and an anchored badge rings with the option. Settings, values, events and keys unchanged.",
     "version 1.9.0 (2026-11-14, fields ladder; R222 groundwork): a minor. size takes the field ladder's five steps, 1/3, 1/2, 1, 2, 3 (component/field-size.js FIELD_LADDER), as sf-input: at 1/3 and 3 the field is 28 / 56 high at 1440 (24 / 48 compact, 24 / 52 on a phone), its value on the step's text, its label, help and error a step below, its inset sf-input's at those steps; it drew 1/3 and 3 at 32 / 48. Chips at 1/3 and 3 are inline sf-tag 1/3 and 2, the clear and the spinner a step to match. The sheet reads its steps from the shared field ladder (component/inputs/scss/_field-ladder.scss). 1/2, 1 and 2 unchanged; settings, values, events and keys unchanged.",
-    "version 1.10.0 (2026-11-14, lookup study control/research/2026-11-14-lookup.md, LS-1..LS-5, LS-15, LS-16): a minor, a look under existing decisions. LS-1: a chip is the field less --sf-space-1/4 above and below (owner decision C58), told to sf-tag as its line: 32 / 24 / 40 / 48 / 20 at 1, 1/2, 2, 3, 1/3 on a desktop (28 and 20 at 1 and 1/2 on a phone, 24 at compact 1); it stood on the text line, 24 / 20 / 28. The frame pads chips by that inset less the hairline and the search box is the chip high, so a row of chips keeps the field's height; rows and chips 4 apart. LS-2: an avatar in a chip is the chip less 8 (24 in 32); it was the chip. LS-3: the remove box is the chip high and at most --sf-c2 wide, its target at least 24 square everywhere (20 and 16 on a phone before); the cross a small step of C132, 8 at 1/3..1, 12 at 2 and 3 (it was the text step, 10 / 12 / 14). Long names end in an ellipsis, the chip at most 20rem. LS-4: chips=\"row\" (PROVISIONAL name, the public name to the owner): one row and a «+N» chip naming the rest; the focus coming in, or a press on «+N», opens the field to every chip, leaving closes it; the count follows the width (a ResizeObserver). The default, wrap, is unchanged. LS-5: a running search keeps the last answer's rows; «Поиск…» and the spinner come after 1 s (C130 (8), sf-spinner's delay; SEARCH_LINE_DELAY), and nothing is drawn for a first search inside it; it showed 130-150 ms after a key whatever the server. LS-16: the spinner is label-hidden (C138), one word on the line, and every state line is a row of the list high (C05): 40 at size 1 on a desktop; the searching line was 52 with «Загрузка…» under the spinner, the other lines 28. LS-15: the empty search box beside chips takes no room at rest (out of the flow, still reached by Tab and a press), room for the caret when focused and 4ch when typed into; it took 4ch always and dropped to an empty row whenever the chips left less (56 in place of 32). Values, events and keys unchanged; the setting chips is new."
+    "version 1.10.0 (2026-11-14, lookup study control/research/2026-11-14-lookup.md, LS-1..LS-5, LS-15, LS-16): a minor, a look under existing decisions. LS-1: a chip is the field less --sf-space-1/4 above and below (owner decision C58), told to sf-tag as its line: 32 / 24 / 40 / 48 / 20 at 1, 1/2, 2, 3, 1/3 on a desktop (28 and 20 at 1 and 1/2 on a phone, 24 at compact 1); it stood on the text line, 24 / 20 / 28. The frame pads chips by that inset less the hairline and the search box is the chip high, so a row of chips keeps the field's height; rows and chips 4 apart. LS-2: an avatar in a chip is the chip less 8 (24 in 32); it was the chip. LS-3: the remove box is the chip high and at most --sf-c2 wide, its target at least 24 square everywhere (20 and 16 on a phone before); the cross a small step of C132, 8 at 1/3..1, 12 at 2 and 3 (it was the text step, 10 / 12 / 14). Long names end in an ellipsis, the chip at most 20rem. LS-4: chips=\"row\" (PROVISIONAL name, the public name to the owner): one row and a «+N» chip naming the rest; the focus coming in, or a press on «+N», opens the field to every chip, leaving closes it; the count follows the width (a ResizeObserver). The default, wrap, is unchanged. LS-5: a running search keeps the last answer's rows; «Поиск…» and the spinner come after 1 s (C130 (8), sf-spinner's delay; SEARCH_LINE_DELAY), and nothing is drawn for a first search inside it; it showed 130-150 ms after a key whatever the server. LS-16: the spinner is label-hidden (C138), one word on the line, and every state line is a row of the list high (C05): 40 at size 1 on a desktop; the searching line was 52 with «Загрузка…» under the spinner, the other lines 28. LS-15: the empty search box beside chips takes no room at rest (out of the flow, still reached by Tab and a press), room for the caret when focused and 4ch when typed into; it took 4ch always and dropped to an empty row whenever the chips left less (56 in place of 32). Owner decision C139 (2026-11-14, all eight; prototype prototypes/lookup-study.html): (1) one job, one component: the field renderers edit user, relation, record and a paged lookup with sf-input-lookup (module.smart-field-renderers 1.9.0); sf-dropdown stays for a short list given whole. (2) create (PROVISIONAL value names): a last row «Создать «text»» while no row is the query exactly, «Добавить адрес text» for create=\"email\" and a mail address only; choosing it raises create {text, kind, respond}, the host answers with the item (chosen as a row) or an error (the polite line). (3) Focus in an empty field: with suggest or min-length 0 the provider is asked '' at once (recent items); else a provider's field shows the min-length hint at once. (4) A running search keeps the last answer's rows a step paler (name on-surface-variant, caption on-surface-disabled, aria-busy); «Поиск…» with the spinner after 1 s, also on a first search; no skeleton. (5) A single value shows its avatar or icon (item.icon, new) before the name, the text line high, --sf-space-1/2 before the text (C105 H2), at the plain inset; it goes while typing; the caption is the box's tooltip, not in the field. (6) The field is one Tab stop: chips' remove buttons are out of the Tab order; ArrowLeft / ArrowRight walk the chips, Delete / Backspace removes, a polite live line says «Name, 1 of N, Delete to remove»; the cross under the mouse is unchanged; a single field's clear stays a stop. (7) Under lg (60rem) the list is a sheet over the page, sf-search's on a phone: the viewport on the popup surface, the field's frame with its own search box on top beside a back arrow named «Готово», a hairline under it; a layer of the shared stack (page lock, Tab kept, Escape clears then closes); a blur to nowhere (the phone keyboard closing) keeps it; a single choice, «Готово» or Escape closes it and gives the focus back to the field. (8) The matched part of a name and a caption is in the medium weight: found by the field in the options; for a provider's answer only where it returns match ranges. LS-14 (dispatcher): a row with a caption is a menu's caption row (C49), 48 desktop, 44 compact, 60 under a coarse pointer (at sizes 2 and 3 it grows to its lines: 56 and 68 on a desktop); a one-line row under a coarse pointer at least 44, as a menu's. Carried from integration-fix/badge-rows-5 (1.8.1): the option fills through sf-place-fill. Values unchanged; the settings chips, create and suggest, the event create (with the old tag's name sf-lookup-create until 2027-01-01), the item fields icon and match, and the keys ArrowLeft, ArrowRight, Delete are new."
   ],
   "x-registry": {
     "inputs": {
@@ -520,6 +562,16 @@
         "since-version": "1.2.0",
         "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
         "note": "the element is sf-input-lookup; sf-lookup is a subclass defined beside it until the date"
+      },
+      {
+        "from": "sf-lookup-create",
+        "to": "sf-input-lookup-create",
+        "kind": "event",
+        "since": "2026-11-03",
+        "remove_after": "2027-01-01",
+        "mode": "same-detail",
+        "section": "§8",
+        "note": "the event name carries the tag; the event is new in 1.10.0 (owner decision C139 (2)), its old-tag name kept with the tag's until the date"
       }
     ]
   }

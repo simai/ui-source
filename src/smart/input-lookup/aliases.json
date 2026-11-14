@@ -13,6 +13,17 @@
       "remove_after": "2027-01-01",
       "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
       "note": "the element is sf-input-lookup; sf-lookup is a subclass defined beside it until the date"
+    },
+    {
+      "from": "sf-lookup-create",
+      "to": "sf-input-lookup-create",
+      "kind": "event",
+      "component": "sf-input-lookup",
+      "since": "2026-11-03",
+      "remove_after": "2027-01-01",
+      "mode": "same-detail",
+      "section": "§8",
+      "note": "the event name carries the tag; the event is new in 1.10.0 (owner decision C139 (2)), its old-tag name kept with the tag's until the date"
     }
   ]
 }

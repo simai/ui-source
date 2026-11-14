@@ -21,5 +21,8 @@ SF.RuleLoader['cl-input-lookup'] = {
     // The clear of a single field holding a value: the field layer's action
     // (owner decision C123), an sf-icon glyph without a plate.
     { name: 'cl-icon' },
+    // The sheet under lg: its back arrow, named «Готово» (C139 (7)),
+    // as sf-search's sheet on a phone.
+    { name: 'cl-button-icon' },
   ],
 };

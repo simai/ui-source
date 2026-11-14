@@ -22,6 +22,11 @@
     "more-chips": {
       "one": "{n} more: {names}",
       "other": "{n} more: {names}"
-    }
+    },
+    "create-item": "Create «{text}»",
+    "create-email": "Add the address {text}",
+    "create-error": "Could not create it",
+    "chip-position": "{label}, {position} of {total}, Delete to remove",
+    "done": "Done"
   }
 }

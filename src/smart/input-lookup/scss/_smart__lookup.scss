@@ -430,15 +430,80 @@
   color: var(--sf-on-surface);
 }
 
-/* A row with a caption (LK-05, owner decision C49 read literally, the
-   whole-lines rule): the one-line row plus the caption's line, its text as
-   far inside it as a one-line row's, (row - line) / 2: 60 = 8 + 24 + 20 + 8
-   at size 1 on a desktop, 48 = 6 + 20 + 16 + 6 at size 1/2, 72 at size 2, 52
-   on a phone. A one-line row keeps the row step (40 at size 1); the height is
-   the row's own, so no row changes height while the answers change. Before,
-   a caption row was 52 at size 1 (44 on a phone): 4 + 24 + 20 + 4. */
+/* A row with a caption is a menu's row with a caption (owner decision C49;
+   dispatcher ruling LS-14, C139): one height for every «name + caption» row,
+   the menu's row step (a control of 1/2) and the menu caption's line, 48 on a
+   desktop, 44 compact, 60 under a coarse pointer (below), its text centred in
+   it and at least --sf-a2 from its edges, as a menu row's; a larger size whose
+   two lines need more grows by them (56 at 2, 68 at 3). A one-line row keeps the
+   row step (40 at size 1). It was the whole-lines reading of LK-05: 60 at
+   size 1 on a desktop, 52 on a phone, 72 at size 2. */
+.sf-lookup {
+  --sf-lookup--caption-row: calc(var(--sf-ui-1\/2--control-height) + var(--sf-text-height-1\/3));
+}
+
 .sf-lookup .sf-lookup-option.sf-lookup-option--caption {
-  min-block-size: calc(var(--sf-lookup--row-height) + var(--sf-lookup--caption-height));
+  min-block-size: var(--sf-lookup--caption-row);
+  padding-block: var(--sf-a2);
+}
+
+/* The matched part of a name or a caption (owner decision C139 (8)): the
+   medium weight; the colour stays the text's. */
+.sf-lookup .sf-lookup-match {
+  font-weight: var(--sf-font-weight-medium);
+}
+
+/* A search runs over the rows of the last answer (C139 (4)): they stay, a
+   step paler -- the name on on-surface-variant, the caption on
+   on-surface-disabled -- until the answer replaces them. */
+.sf-lookup .sf-lookup-list.sf-lookup-list--stale .sf-lookup-option-label {
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-lookup .sf-lookup-list.sf-lookup-list--stale .sf-lookup-option-caption {
+  color: var(--sf-on-surface-disabled);
+}
+
+/* The create row (C139 (2)): last, the add icon in the picture's place,
+   parted from the rows above by the menu's separator. */
+.sf-lookup .sf-lookup-divider {
+  flex: none;
+  block-size: var(--sf-px);
+  margin-block: var(--sf-a4);
+  background-color: var(--sf-outline-variant);
+}
+
+.sf-lookup .sf-lookup-option > .sf-lookup-icon,
+.sf-lookup .sf-lookup-frame > .sf-lookup-icon {
+  display: inline-flex;
+  --sf-icon--font-size: var(--sf-lookup--line-height);
+  --sf-icon--width: var(--sf-lookup--line-height);
+  --sf-icon--height: var(--sf-lookup--line-height);
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+/* A single chosen value's picture (C139 (5)): the row's, the field's text
+   line high, --sf-space-1/2 before the name (C105 H2: 12, compact and phone
+   8), the frame's own gap counted in; it stands at the plain inset, as the
+   first chip does. */
+.sf-lookup .sf-lookup-frame > .sf-lookup-value-picture {
+  --sf-avatar--height: var(--sf-lookup--line-height);
+  --sf-avatar--width: var(--sf-lookup--line-height);
+  --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-lookup--line-height) / 2));
+  --sf-avatar--line-height: var(--sf-lookup--line-height);
+  margin-inline-end: calc(var(--sf-space-1\/2) - var(--sf-space-1\/4));
+}
+
+/* sf-icon's host is display: contents: its margin is its glyph's. */
+.sf-lookup .sf-lookup-frame > sf-icon.sf-lookup-value-picture > .sf-icon {
+  margin-inline-end: calc(var(--sf-space-1\/2) - var(--sf-space-1\/4));
+}
+
+/* The chip the arrows stand on (C139 (6)): the focus ring round it, the
+   search box keeping the focus. */
+.sf-lookup .sf-lookup-chip.sf-lookup-chip--active > .sf-tag {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
 }
 
 /* A row's picture is the field's text line, as the chip's on the field's line
@@ -454,12 +519,16 @@
 
 .sf-lookup .sf-lookup-option:hover {
   background-color: var(--sf-surface-state-hover);
+  /* A translucent fill, as a menu's row (C43 D3, D4): the badge on the
+     option's line keeps its own tone, hovered or chosen. */
+  @include places.sf-place-fill(var(--sf-surface-state-hover));
 }
 
 .sf-lookup .sf-lookup-option.sf-lookup-option--chosen {
   background-color: var(--sf-primary-container);
   color: var(--sf-on-primary-container);
   --sf-on-surface-variant: var(--sf-on-primary-container);
+  @include places.sf-place-fill(var(--sf-primary-container));
 }
 
 /* The active row is where Enter chooses: the focus ring, drawn inside it. */
@@ -670,6 +739,72 @@
     --sf-tag--border-top-right-radius: var(--sf-lookup--chip-radius);
     --sf-tag--border-bottom-left-radius: var(--sf-lookup--chip-radius);
     --sf-tag--border-bottom-right-radius: var(--sf-lookup--chip-radius);
+  }
+}
+
+/* C139 (5): a single value's picture is the frame's first thing, as a chip
+   is: it stands at the plain inset. */
+@layer sf.components {
+  .sf-lookup:has(.sf-lookup-value-picture) .sf-lookup-frame {
+    padding-inline-start: var(--sf-lookup-padding-inline, calc(var(--sf-lookup--inset) - var(--sf-px)));
+  }
+}
+
+/* C139 (7): under lg the list is a sheet over the page, sf-search's sheet on
+   a phone: the whole viewport on the popup surface, the search on top with
+   the back arrow («Готово») at its start and a hairline under it, the rows
+   below at the panel's inset. The panel is already in the top layer; the
+   shared layer stack holds the page and Tab. */
+@layer sf.components {
+  .sf-lookup.sf-lookup--open .sf-lookup-panel.sf-lookup-panel--sheet {
+    inset: 0;
+    inline-size: auto;
+    block-size: auto;
+    max-inline-size: none;
+    max-block-size: none;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    visibility: visible;
+  }
+
+  .sf-lookup .sf-lookup-panel--sheet > :is(.sf-lookup-list, .sf-lookup-state, .sf-lookup-actions) {
+    margin-inline: var(--sf-lookup--panel-padding);
+  }
+
+  .sf-lookup .sf-lookup-panel--sheet > .sf-lookup-list {
+    margin-block-start: var(--sf-lookup--panel-padding);
+  }
+
+  .sf-lookup .sf-lookup-sheet-head {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 1;
+    flex: none;
+    gap: var(--sf-space-1\/2);
+    padding: var(--sf-space-1\/2);
+    border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+    background-color: var(--sf-lookup-list-background-color, var(--sf-surface-popup));
+  }
+
+  .sf-lookup .sf-lookup-sheet-head > .sf-lookup-frame {
+    flex: 1 1 auto;
+    inline-size: auto;
+  }
+}
+
+/* A row is a touch target of at least 44px under a coarse pointer, as a
+   menu's row is (simai/ui-source#25), and a caption row the menu's 60 there
+   (C49, LS-14): the touch step and the caption's line. */
+@media (pointer: coarse) {
+  @layer sf.states {
+    .sf-lookup {
+      --sf-lookup--caption-row: calc(max(var(--sf-ui-1\/2--control-height), var(--sf-d1)) + var(--sf-text-height-1\/3));
+    }
+
+    .sf-lookup .sf-lookup-option:not(.sf-lookup-option--caption) {
+      min-block-size: max(var(--sf-lookup--row-height), var(--sf-d1));
+    }
   }
 }
 
