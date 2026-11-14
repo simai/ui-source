@@ -169,8 +169,9 @@ try {
             caption: row.querySelector('.sf-list-item-supporting') ? box(row.querySelector('.sf-list-item-supporting')) : null,
             meta: meta && meta.children.length ? box(meta) : null,
             // C47 (sf-list 1.5.0): a narrow list puts a row's badge and count
-            // under its text, at the text's start.
-            narrow: row.closest('.sf-list__frame').hasAttribute('data-sf-list-narrow'),
+            // under its text, at the text's start. 1.14.0: below 20rem by the
+            // sheet's container query, the mark only for a squeezed title.
+            narrow: ((frame) => { const s = getComputedStyle(frame); return frame.hasAttribute('data-sf-list-narrow') || (s.containerType === 'inline-size' && frame.clientWidth - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight) < 20 * parseFloat(getComputedStyle(document.documentElement).fontSize)); })(row.closest('.sf-list__frame')),
           };
         });
         return {

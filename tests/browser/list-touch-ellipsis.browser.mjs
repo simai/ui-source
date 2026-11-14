@@ -172,11 +172,12 @@ try {
                 parts: parts.map((node) => ({...box(node), natural: node.scrollWidth})),
                 dots: dots ? {...box(dots), opacity: dotsStyle.opacity, visibility: dotsStyle.visibility, display: dotsStyle.display} : null,
                 colour: getComputedStyle(container).color,
-                // C47 (sf-list 1.5.0): a narrow list puts a one-line row's badge
-                // and count under the text; the row grows by the band step and
-                // their height. A two-line row keeps them in its end column
-                // and its height (owner decision C148 (2), sf-list 1.10.0).
-                under: row.closest('.sf-list__frame').hasAttribute('data-sf-list-narrow') && Boolean(meta && meta.children.length) && !item.classList.contains('sf-list-item--two-line'),
+                // C47 (sf-list 1.5.0): a narrow list puts the badge and count
+                // under the text; the row grows by the band step and their height.
+                // 1.14.0: below 20rem by the container query, the mark only
+                // for a squeezed title. A two-line row keeps them in its end
+                // column (owner decision C148 (2), sf-list 1.10.0).
+                under: ((frame) => { const s = getComputedStyle(frame); return frame.hasAttribute('data-sf-list-narrow') || (s.containerType === 'inline-size' && frame.clientWidth - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight) < 20 * parseFloat(getComputedStyle(document.documentElement).fontSize)); })(row.closest('.sf-list__frame')) && Boolean(meta && meta.children.length) && !item.classList.contains('sf-list-item--two-line'),
                 meta: meta && meta.children.length ? box(meta) : null,
                 // Where the title's text starts: a one-line row's text is the
                 // container's own, after its inline padding.

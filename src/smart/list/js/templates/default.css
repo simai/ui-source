@@ -147,17 +147,79 @@
   .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > *,
   .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > sf-badge > * { grid-row: 2; }
 
-  /* A narrow list (owner decision C47, 2026-11-10, option A; the list sets
-     data-sf-list-narrow on its frame below 20rem of its own width): a
-     one-line row with a badge or a count (a two-line row keeps its end
-     column, C148 (2)) lays out as «picture | text», and the meta goes
-     under the second line, at the text's start, so the title keeps the
-     row's width and the badge stays whole. The row grows by whole bands
-     (geometry standard, multi-line rows): the band step --sf-space-1/4 and
-     the badge's own height, the row's line -- 52 + 4 + 20 = 76 on a phone at
-     size 1. Rows without a meta keep their layout and their height; the
-     picture place is one width in every row, so all titles start on one
-     line. */
+  /* A narrow list (owner decision C47, 2026-11-10, option A): a row with a
+     badge or a count lays out as «picture | text», and the meta goes under
+     the second line, at the text's start, so the title keeps the row's width
+     and the badge stays whole. The row grows by whole bands (geometry
+     standard, multi-line rows): the band step --sf-space-1/4 and the badge's
+     own height, the row's line -- 52 + 4 + 20 = 76 on a phone at size 1.
+     Rows without a meta keep their layout and their height; the picture
+     place is one width in every row, so all titles start on one line.
+     1.14.0: the list is narrow below 20rem of its frame's own width by a
+     container query (the frame is the container sf-list), not by the code,
+     so a printed first paint lays out narrow before any script (ui-chat's
+     chat-threads at 390: rows 52 -> 76 when the code adopted, CLS 0.09).
+     20rem is the size step g0, the C47 width; the condition cannot read a
+     variable. The frame keeps data-sf-list-narrow for what CSS cannot know
+     (a row's title squeezed by a long badge, measured by the code, index.js
+     measureNarrow), and the same mark written by hand still makes it
+     narrow. A two-line row keeps its badge and count in its end column
+     (owner decision C148 (2), sf-list 1.10.0), in the query and by the
+     mark alike. */
+  .sf-list__frame {
+    container: sf-list / inline-size;
+  }
+
+  /* A frame in a shrink-to-fit place (a popover, an auto-width flex item or
+     grid track) takes its width from its rows, which an inline-size
+     container cannot give: the code finds that and takes the frame out of
+     the query (data-sf-list-fit), and decides narrow by measuring, as
+     before 1.14.0. */
+  .sf-list__frame[data-sf-list-fit] {
+    container-type: normal;
+  }
+
+  /* As strong as the marked rules below (the frame's two classes). */
+  @container sf-list (inline-size < 20rem) {
+    .sf-list__frame.sf-list .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      row-gap: var(--sf-space-1\/4);
+    }
+
+    .sf-list__frame.sf-list .sf-list__row .sf-list-item--text:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* The picture: the leading place, or sf-icon's own glyph (its host is
+       display: contents). */
+    .sf-list__frame.sf-list .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > :first-child:not(.sf-list-item-container, sf-icon),
+    .sf-list__frame.sf-list .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > sf-icon:first-child > * {
+      grid-column: 1;
+      grid-row: 1;
+      align-self: center;
+    }
+
+    .sf-list__frame.sf-list .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > .sf-list-item-container {
+      grid-column: -2;
+      grid-row: 1;
+      justify-self: stretch;
+      min-inline-size: 0;
+      max-inline-size: 100%;
+      margin: 0;
+    }
+
+    .sf-list__frame.sf-list .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list__meta:not(:empty) {
+      grid-column: -2;
+      grid-row: 2;
+      justify-self: start;
+      /* The text's start: the title has no inset of its own (C77, C105 H2),
+         so the meta stands on the title's first letter. */
+      margin-inline-start: 0;
+      padding-inline-start: 0;
+    }
+  }
+
   .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);

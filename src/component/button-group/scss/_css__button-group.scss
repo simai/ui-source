@@ -450,12 +450,17 @@
      option; then it stands under it and the option itself is clear. A new
      choice slides it (data-plate="moving", 0.2 s), never under
      prefers-reduced-motion. The plate starts at the track's inline start and
-     the element measures the offset from there, in either direction. */
+     the element measures the offset from there, in either direction.
+     A printed first paint (data-sf-static on the track) keeps the mark but
+     not the measured place (a size the code measured is the measuring
+     page's): there the selected option paints the plate itself, as before
+     the element measures, so the highlight is in the first frame and the
+     plate takes over under it without a shift. */
   .sf-button-group--segmented > .sf-button-group-plate {
     display: none;
   }
 
-  .sf-button-group--segmented[data-plate] > .sf-button-group-plate {
+  .sf-button-group--segmented[data-plate]:not([data-sf-static]) > .sf-button-group-plate {
     display: block;
     position: absolute;
     inset-block-start: 0;
@@ -483,7 +488,7 @@
     }
   }
 
-  .sf-button-group--segmented[data-plate] > .sf-button-group-segment.active {
+  .sf-button-group--segmented[data-plate]:not([data-sf-static]) > .sf-button-group-segment.active {
     --sf-button--background-color: transparent;
     --sf-button--box-shadow: none;
   }
@@ -539,7 +544,7 @@
     color: var(--sf-button-group-plate-color, var(--sf-black));
   }
 
-  .sf-button-group--segmented.sf-button-group--backdrop-media[data-plate] > .sf-button-group-segment.active {
+  .sf-button-group--segmented.sf-button-group--backdrop-media[data-plate]:not([data-sf-static]) > .sf-button-group-segment.active {
     --sf-button--background-color: transparent;
   }
 
@@ -584,7 +589,7 @@
 
     /* The selected option paints the system Highlight itself (below); the
        plate element would be forced to Canvas over nothing. */
-    .sf-button-group--segmented[data-plate] > .sf-button-group-plate {
+    .sf-button-group--segmented[data-plate]:not([data-sf-static]) > .sf-button-group-plate {
       display: none;
     }
 
