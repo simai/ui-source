@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.include",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "title": "Include",
   "summary": "Loads a part of the page from an address: a skeleton while it loads, the server's HTML in its place when it arrives (the Loader starts the components in it), an error with Retry when it does not. load=\"view\" waits until the part nears the viewport.",
   "kind": "smart",
@@ -247,15 +247,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/include/index.js",
-        "sha256": "bf17fbe4d395199ef36637e5f8a876f7b3ad2a30f4d045c3fbde41b81005f171"
+        "sha256": "c8307ed70d28106b20e8aa6e37022da83eb039b0db549a9aa70998284d239b99"
       },
       {
         "path": "src/smart/include/js/templates/default.js",
-        "sha256": "1f0f41a5c53d4850697b91bb5ab4ded48450d73f4af396ea21381de881cf3cc2"
+        "sha256": "0218ef9bfd1cd8ab26bae093347cd8497f31a7aa2b29a866b395c0242fc41a78"
       },
       {
         "path": "src/smart/include/scss/_smart__include.scss",
-        "sha256": "cba45aa1a9bd33e5962017f178bd38c5f59261a137d2be7b5cadfec240aa7dce"
+        "sha256": "29ddf406eabca5d0b5539bf7a2e5f4b033ba64d8581d568eb24b0106332629f0"
       },
       {
         "path": "src/smart/include/rule.js",
@@ -263,7 +263,7 @@
       },
       {
         "path": "src/smart/include/docs.md",
-        "sha256": "6ac393f99deb311cdad397731c4039ea3ed42e91c4f4846be9f9e407c905ba7d"
+        "sha256": "eafdc8dbe4e32e290fb004d41de393f2303c64641f33adcd0bfd9412576aed62"
       }
     ],
     "generated_runtime": []

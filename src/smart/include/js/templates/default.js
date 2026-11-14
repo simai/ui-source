@@ -9,7 +9,9 @@ import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 // - ready: the part the server answered, cleaned of scripts by the element
 //   (index.js partFrom) and drawn as markup; the Loader starts what is in it.
 // - error: an icon, the message in a polite status and Retry, an outline
-//   on-surface sf-button at rung 1 of the ladder that calls refresh().
+//   on-surface sf-button at rung 1 of the ladder that calls refresh(); the
+//   icon and its colour tell the reason (C120 (3)): error, or offline when
+//   the network is gone (then the part loads again by itself once it is back).
 //
 // The region is the element's box (the host lays out as display: contents),
 // so load="view" watches it, and tabindex -1 lets focus land on it after a
@@ -23,10 +25,20 @@ function placeholder(context) {
   </div>`;
 }
 
+// The reason's icon and colour are the empty states' (owner decision C120
+// (3)): «error» in the error colour; with the network gone, «cloud_off» in the
+// warning colour and the words that say the part comes back by itself
+// (C120 (5): index.js retries when the window is online again).
+const REASONS = {
+  error: {icon: 'error', tone: 'error'},
+  offline: {icon: 'cloud_off', tone: 'warning'},
+};
+
 function failure(context) {
-  return html`<div class="sf-include-error">
-    <i class="sf-icon sf-include-error-icon" aria-hidden="true">error</i>
-    <span class="sf-include-message" role="status">${context.words.failed}</span>
+  const reason = REASONS[context.reason] ?? REASONS.error;
+  return html`<div class=${`sf-include-error sf-include-error--${reason.tone}`}>
+    <i class="sf-icon sf-include-error-icon" aria-hidden="true">${reason.icon}</i>
+    <span class="sf-include-message" role="status">${context.reason === 'offline' ? context.words.offline : context.words.failed}</span>
     <sf-button class="sf-include-retry" size="1" appearance="outline" scheme="on-surface" icon-start="refresh"
       text=${context.words.retry} @click=${() => context.component.retry()}></sf-button>
   </div>`;

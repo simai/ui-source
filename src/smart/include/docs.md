@@ -43,8 +43,15 @@ instead, in the slot `placeholder`:
 ```
 
 The placeholder shows again while a part reloads (`refresh()`, a new `src`).
-Give the region a height with `--sf-include-min-block-size` when the part's
-height is known, so the page does not move when it arrives.
+When the part's height is known, give it as the box of the first paint, so
+nothing moves when the part arrives: before the code arrives core holds it,
+and the placeholder holds it while the part loads.
+
+```html
+<sf-include src="/parts/news/" data-sf-skeleton="line" style="--sf-skeleton-block-size: 9rem"></sf-include>
+```
+
+`--sf-include-min-block-size` sets the same box for the placeholder alone.
 
 ## What is inserted
 
@@ -74,10 +81,17 @@ and removing the element aborts it too.
 ## The error state
 
 A network failure, a CORS refusal or an answer outside 200–299 shows one row:
-an icon, «Не удалось загрузить эту часть страницы.» / «Could not load this part
-of the page.» in a polite status, so a screen reader announces it, and the
-outline button «Повторить» / «Retry», which calls `refresh()`. Focus that was
-on Retry stays in the region while the part loads again.
+the icon «error» in the error colour, «Не удалось загрузить эту часть
+страницы.» / «Could not load this part of the page.» in a polite status, so a
+screen reader announces it, and the outline button «Повторить» / «Retry»,
+which calls `refresh()`; the words wrap beside Retry. Focus that was on Retry
+stays in the region while the part loads again.
+
+When the request failed because the network is gone (the browser is offline),
+the row says so: the icon «cloud_off» in the warning colour and «Нет связи.
+Загрузим сами, когда сеть вернётся.» / «No connection. It loads by itself when
+the network is back.» When the window is online again the part loads by itself;
+Retry still works at once.
 
 ## Events
 
@@ -109,8 +123,8 @@ document.querySelector('#news').addEventListener('sf-include-load-failed', (even
 
 ## Public CSS variables
 
-- `--sf-include-min-block-size` — the placeholder's minimum block size (0 by
-  default).
+- `--sf-include-min-block-size` — the placeholder's minimum block size (by
+  default the first paint's `--sf-skeleton-block-size`, else 0).
 - `--sf-include-gap` — the space between the error's icon, message and Retry.
 - `--sf-include-padding` — the error row's inset.
 - `--sf-include-border-color` — the error row's edge.
