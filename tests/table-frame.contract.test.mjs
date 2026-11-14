@@ -41,7 +41,9 @@ test('the frame is the scroll area and the only outer edge', () => {
   assert.match(source, />\s*\.table\s*\{[\s\S]*?border-radius:\s*0/u);
   // The last column and the last row leave their edge to the frame.
   assert.match(source, /\*:last-child\s*\{\s*border-inline-end-width:\s*var\(--sf-0\)/u);
-  assert.match(source, /:last-child\s*>\s*tr:last-child\s*>\s*\*\s*\{\s*border-block-end-width:\s*var\(--sf-0\)/u);
+  // The last row's line is unpainted but keeps its room, so the row stands on
+  // the ladder like the others (TB-2).
+  assert.match(source, /:last-child\s*>\s*tr:last-child\s*>\s*\*\s*\{\s*border-block-end-color:\s*transparent/u);
 });
 
 test('every number comes from the ladder, through a public variable', () => {
@@ -63,11 +65,20 @@ test('every number comes from the ladder, through a public variable', () => {
   // and as a fallback, so a value set on the frame still reaches the head.
   assert.doesNotMatch(source, /--sf-table-frame-head-background:/u);
   assert.match(source, /background-color:\s*var\(--sf-table-frame-head-background, var\(--sf-surface-container\)\)/u);
-  // Nine public variables, each defaulting to a token of the kit: no number is
-  // typed into the rule.
+  // Nine public variables, each defaulting to a token of the kit or the
+  // ladder formula of a row (C49): no number is typed into the rule.
+  const ladderPadding = (step) => `calc((var(--sf-ui-${step}--control-height) - var(--sf-text-height-1) - var(--sf-px)) / 2)`;
   for (const [name, value] of declared) {
+    if (name === 'head-padding-block' || name === 'cell-padding-block') continue;
     assert.match(value, /^var\(--sf-[a-z0-9\\/-]+(,\s*var\(--sf-[a-z0-9\\/-]+\))?\)$/u, `${name} is ${value}`);
   }
+  // The head stands on step 3 and a body row on step 2 (C18, TB-2: the
+  // nearest steps to the 57 and 49 the space steps drew).
+  assert.equal(Object.fromEntries(declared)['head-padding-block'], ladderPadding(3));
+  assert.equal(Object.fromEntries(declared)['cell-padding-block'], ladderPadding(2));
+  // The frame's border is inside the edge inset (C77): 16 from the outer edge.
+  assert.match(source, /:first-child\s*\{\s*padding-inline-start:\s*calc\(var\(--sf-table-frame-cell-padding-inline\) - var\(--sf-px\)\)/u);
+  assert.match(source, /:last-child\s*\{\s*padding-inline-end:\s*calc\(var\(--sf-table-frame-cell-padding-inline\) - var\(--sf-px\)\)/u);
   assert.doesNotMatch(source, /:\s*\d+(\.\d+)?(px|rem|em)/u);
 });
 
@@ -81,4 +92,29 @@ test('the full utility and RuleLoader entrypoints include table-frame', () => {
   assert.ok(pattern.test('table-frame'));
   assert.ok(!pattern.test('table-frame-head'));
   assert.ok(!pattern.test('table-border'));
+});
+
+// The plain table classes stand on the size ladder (C18, C49; TB-2, TB-3) and
+// keep a list row's inset at the table's edge (C77, C105 H4; TB-4).
+test('the .table classes take their cells from the ladder and the space system', () => {
+  const vars = read('src/utility/table/default/scss/_sf_var__table.scss');
+  const css = read('src/utility/table/default/scss/_sf_css__table.scss');
+  const value = (name) => vars.match(new RegExp(`\\$${name}:\\s*([^;]+);`, 'u'))?.[1].trim();
+  assert.equal(value('table-line-height'), 'var(--sf-text-height-1)');
+  assert.equal(value('table-cell-padding-y'), 'calc((var(--sf-ui-1--control-height) - #{$table-line-height} - var(--sf-px)) / 2)');
+  assert.equal(value('table-cell-padding-y-sm'), 'calc((var(--sf-ui-1\\/2--control-height) - #{$table-line-height} - var(--sf-px)) / 2)');
+  assert.equal(value('table-cell-padding-x'), 'calc(var(--sf-space-1) / 2)');
+  assert.equal(value('table-cell-padding-x-sm'), 'calc(var(--sf-space-1\\/2) / 2)');
+  // The same inset as sf-list-item's rows of the step (C77).
+  assert.equal(value('table-cell-inset'), 'var(--sf-space-1)');
+  assert.equal(value('table-cell-inset-sm'), 'max(var(--sf-space-1\\/2), var(--sf-b2))');
+  // No fixed length of the size atoms and no number in the cells.
+  assert.doesNotMatch(vars, /--sf-a[0-9]/u);
+  assert.doesNotMatch(vars + css, /:\s*-?\d*\.?\d+(px|rem|em)\b/u);
+  // The edge rules weigh less than a frame's or a host's cell padding.
+  assert.match(css, /> :not\(caption\) > \* > :where\(:first-child\) \{\s*padding-inline-start: \$table-cell-inset;/u);
+  assert.match(css, /> :not\(caption\) > \* > :where\(:last-child\) \{\s*padding-inline-end: \$table-cell-inset;/u);
+  assert.match(css, /> :not\(caption\) > \* > :where\(:first-child\) \{\s*padding-inline-start: \$table-cell-inset-sm;/u);
+  // A caption only a screen reader reads: sr-only, without the caption's padding.
+  assert.match(css, /> caption\.sr-only \{\s*padding: 0;/u);
 });
