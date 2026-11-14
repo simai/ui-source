@@ -15,7 +15,7 @@
     "src/component/button-group/scss/_css__button-group.scss",
     "src/component/button-group/scss/index.scss"
   ],
-  "content_sha256": "167bcfb7cc870ce7c24c196886be92d530a40e78ccbd3b4f55b02fbd79aa0710",
+  "content_sha256": "943564b5a102a28d1cef6081200e1263acdf8993253f700c9cd5c7feadfaa12c",
   "dependencies": [
     {
       "id": "core.runtime",

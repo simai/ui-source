@@ -36,7 +36,7 @@
     "src/core/scss/vars/_sf_var__max_container.scss",
     "src/core/scss/vars/_sf_var__size.scss"
   ],
-  "content_sha256": "9a014ae748c6da4205e759f45a809243846069a084df2be39c46ecbde40ce6f2",
+  "content_sha256": "a71bfadbc21b08a5c70e791444019da622b91790d4b9524c05cd5fa0f7b36ed2",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

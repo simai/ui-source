@@ -1,6 +1,7 @@
 @use 'sass:map';
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/vars/sf_var__breakpoint' as bp;
+@use '../../../core/scss/mix/mix__window-footer' as window-footer;
 @layer sf.components {
 .sf-modal-focus-guard {
   position: fixed;
@@ -94,12 +95,16 @@
   gap: var(--sf-modal-header-gap);
 }
 
-/* The title takes the third step of the heading ladder (C21), which density
-   does not move (owner decision C44, 2026-11-11): a compact region, on <html>
-   or a container, keeps the title at its size. */
+/* The title of every window stands on the h4 step of the heading ladder
+   (owner decision C159 (5), 2026-11-14, = C157 (7)): 20 on 24 on a desktop,
+   16 on a phone, in bold -- a caption of the task, not a page's heading, as
+   the question window's already was (C39). It was the h3 step (24 on 28)
+   in every window but the question. Headings do not follow density (C44):
+   a compact region keeps the title at its size. */
 .sf-modal-title {
-  font-size: var(--sf-heading-3--size);
-  line-height: var(--sf-heading-3--height);
+  font-size: var(--sf-heading-4--size);
+  line-height: var(--sf-heading-4--height);
+  font-weight: var(--sf-font-weight-bold);
 }
 
 .sf-modal-surface {
@@ -147,7 +152,7 @@
 .sf-modal [data-sf-modal-overlay] {
   background-color: var(--sf-modal-overlay-background);
   opacity: var(--sf-modal-overlay-opacity);
-  transition: opacity var(--sf-duration-normal) var(--sf-animation);
+  transition: opacity var(--sf-duration-normal) var(--sf-ease-enter);
 }
 
 .sf-modal[data-sf-modal-state='opening'] [data-sf-modal-overlay] {
@@ -183,8 +188,8 @@
 
 .sf-modal.animate [data-sf-modal-panel] {
   transition:
-          transform var(--sf-duration-normal) var(--sf-animation),
-          opacity var(--sf-duration-normal) var(--sf-animation);
+          transform var(--sf-duration-normal) var(--sf-ease-enter),
+          opacity var(--sf-duration-normal) var(--sf-ease-enter);
   will-change: transform, opacity;
 }
 
@@ -410,6 +415,12 @@
   }
 }
 
+/* A sheet is never taller than the screen less one step at the top, so the
+   page shows above it (decision C159 (2)). */
+.sf-modal[data-sf-modal-position='bottom']:not([data-sf-modal-fullscreen='true']) {
+  padding-block-start: var(--sf-space-3);
+}
+
 .sf-modal[data-sf-modal-position='bottom'] [data-sf-modal-surface]:not([data-sf-modal-own-padding]) {
   padding-block-end: calc(var(--sf-modal--padding-end, var(--sf-modal-padding-block, var(--sf-modal--frame))) + env(safe-area-inset-bottom, 0px));
 }
@@ -444,6 +455,10 @@
    the inset back from its frame below, and a page's surface-padding (the
    gallery's lightbox has 0) keeps its body where it put it. */
 [data-sf-modal-surface] {
+  /* The scroll box's inset is core's ring room (--sf-focus-room, 4 px for
+     a ring of 2 + 1): this rule is the first instance of the shared room
+     every scroll container keeps (owner report R242). */
+  --sf-modal--body-inset: var(--sf-focus-room);
   --sf-modal--body-outset: 0;
 }
 
@@ -452,13 +467,25 @@
      below 1/4 would put the scroll box past the window's edge (DEV's
      acceptance 2026-11-11, L1). */
   --sf-modal--body-outset: max(
-    calc(var(--sf-space-1\/4) * -1),
+    calc(var(--sf-modal--body-inset) * -1),
     calc(var(--sf-modal--frame-inline) * -1)
   );
 }
 
 [data-sf-modal-surface] [data-sf-modal-body-scroll] {
   margin-inline: var(--sf-modal--body-outset);
+  padding: var(--sf-modal--body-inset);
+  /* Keyboard focus stops the ring room short of the clip edge (R242). */
+  scroll-padding: var(--sf-focus-room);
+}
+
+/* Nothing between the scroll box and the window clips (R242): the body and
+   its viewport stay overflow visible, so a ring of the footer's answers and
+   of a field reaches its whole width; only the scroll box scrolls, and its
+   inset holds the rings inside it. */
+.sf-modal [data-sf-modal-body],
+.sf-modal [data-sf-modal-body-viewport] {
+  overflow: visible;
 }
 
 /* A question window (sf-modal size="question", decision C39; ui-control
@@ -477,21 +504,37 @@
   max-inline-size: 100%;
 }
 
+/* Widths by name (owner decision C159 (1), 2026-11-14): question 28rem,
+   form 36rem, wide 48rem, full the whole screen; compact one step narrower
+   (26, 32, 44rem: core --sf-popup--window-*-width, moved by the density
+   like C32's popups); no size is a form. A window grew with its text (294 to
+   1043 px of 1440). A page's width still wins; a side panel keeps its own
+   (side windows are sf-drawer's). */
+.sf-modal--size-form:not([data-sf-modal-position='left'], [data-sf-modal-position='right'], [data-sf-modal-position='inline-start'], [data-sf-modal-position='inline-end']) [data-sf-modal-panel] {
+  inline-size: var(--sf-popup--window-form-width);
+  max-inline-size: 100%;
+}
+
+.sf-modal--size-wide:not([data-sf-modal-position='left'], [data-sf-modal-position='right'], [data-sf-modal-position='inline-start'], [data-sf-modal-position='inline-end']) [data-sf-modal-panel] {
+  inline-size: var(--sf-popup--window-wide-width);
+  max-inline-size: 100%;
+}
+
 .sf-modal--size-question [data-sf-modal-surface] {
   --sf-modal--question-block: var(--sf-modal--frame-block);
   --sf-modal--question-inline: var(--sf-modal--frame-inline);
-  --sf-modal--padding-end: max(0px, calc(var(--sf-modal--question-block) - var(--sf-space-1\/4)));
-  --sf-modal-surface-padding: var(--sf-modal--question-block) max(0px, calc(var(--sf-modal--question-inline) - var(--sf-space-1\/4))) var(--sf-modal--padding-end);
-  --sf-modal-surface-gap: calc(var(--sf-modal-gap, var(--sf-space-1)) - var(--sf-space-1\/4));
+  --sf-modal--padding-end: max(0px, calc(var(--sf-modal--question-block) - var(--sf-modal--body-inset)));
+  --sf-modal-surface-padding: var(--sf-modal--question-block) max(0px, calc(var(--sf-modal--question-inline) - var(--sf-modal--body-inset))) var(--sf-modal--padding-end);
+  --sf-modal-surface-gap: calc(var(--sf-modal-gap, var(--sf-space-1)) - var(--sf-modal--body-inset));
 }
 
 /* A question sheet draws no bottom edge: its bottom frame is the whole step. */
 .sf-modal--size-question[data-sf-modal-position='bottom'] [data-sf-modal-surface] {
-  --sf-modal--padding-end: max(0px, calc(var(--sf-modal-padding-block, var(--sf-modal--frame)) - var(--sf-space-1\/4)));
+  --sf-modal--padding-end: max(0px, calc(var(--sf-modal-padding-block, var(--sf-modal--frame)) - var(--sf-modal--body-inset)));
 }
 
 .sf-modal--size-question .sf-modal-header {
-  padding-inline: var(--sf-space-1\/4);
+  padding-inline: var(--sf-modal--body-inset);
 }
 
 .sf-modal--size-question .sf-modal-header-content {
@@ -501,13 +544,13 @@
 }
 
 .sf-modal--size-question [data-sf-modal-body] {
-  gap: calc(var(--sf-space-3) - var(--sf-space-1\/4));
+  gap: calc(var(--sf-space-3) - var(--sf-modal--body-inset));
 }
 
 .sf-modal--size-question .sf-modal-footer {
   justify-content: flex-start;
-  padding-inline: var(--sf-space-1\/4);
-  padding-block-end: var(--sf-space-1\/4);
+  padding-inline: var(--sf-modal--body-inset);
+  padding-block-end: var(--sf-modal--body-inset);
 }
 
 /* A window's own title (decision C39 by dispatcher decision d, docs
@@ -526,26 +569,92 @@
   overflow-wrap: anywhere;
 }
 
-/* A question window's title (C39): C21's h4 step in bold, on the h4 step's
-   own line (20 on 24 on a desktop, 16 on 18 on a phone), where every other
-   window's title is the heading-3 step above (C44). Headings do not follow
-   density (dispatcher, pair next 2): both are the heading ladder's, the same
-   in a compact region, so a compact question keeps its title. The line was
-   --sf-title--height-6, a step of the title ladder that is 40 on a desktop
-   (dispatcher 2026-11-11: a defect). Scoped to the question size: a
-   page-wide rule here outranked C44's and drew every window's title at 20
-   (compact 16). */
-.sf-modal--size-question .sf-modal-title {
-  font-size: var(--sf-heading-4--size);
-  line-height: var(--sf-heading-4--height);
-  font-weight: var(--sf-font-weight-bold);
+/* Motion (owner decision C159 (8), 2026-11-14): a window opens as before,
+   --sf-duration-normal, on the enter curve; it closes faster,
+   --sf-duration-fast on the exit curve, so closing does not hold the page
+   back; a sheet slides from the bottom (position bottom, above). Closing
+   took the same 300 ms as opening. */
+.sf-modal[data-sf-modal-state='closing'] [data-sf-modal-panel],
+.sf-modal[data-sf-modal-state='closing'] [data-sf-modal-overlay] {
+  transition-duration: var(--sf-duration-fast);
+  transition-timing-function: var(--sf-ease-exit);
 }
 
+/* Less motion is a short fade, not nothing (C159 (8)): no slide and no
+   growth, the window and the scrim fade in and out in --sf-duration-fast.
+   It appeared in one frame. */
 @media (prefers-reduced-motion: reduce) {
   .sf-modal.animate [data-sf-modal-panel],
   .sf-modal [data-sf-modal-overlay] {
-    transition: none;
+    transition: opacity var(--sf-duration-fast) linear;
     will-change: auto;
+  }
+
+  .sf-modal[data-sf-modal-state] [data-sf-modal-panel] {
+    transform: none;
+  }
+}
+
+/* Window over window (owner decision C159 (7), 2026-11-14): one scrim. The
+   window above another lays no scrim of its own -- the first window stays
+   in view under it, the page stays at one dim (64, C16) -- and still takes
+   the presses outside it. Two scrims stood at about 87 %. */
+.sf-modal[data-sf-modal-stacked] [data-sf-modal-overlay] {
+  background-color: transparent;
+}
+
+/* The body's edge (owner decision C159 (3), 2026-11-14): a hairline over the
+   body only while text is above it, under the body only while text is
+   below it -- a short window draws none. The window marks which (sf-modal
+   reads its scroll box). */
+.sf-modal[data-sf-modal-more-start] .sf-modal-header {
+  box-shadow: 0 var(--sf-px) 0 var(--sf-outline-variant);
+}
+
+.sf-modal[data-sf-modal-more-end] .sf-modal-footer {
+  box-shadow: 0 calc(-1 * var(--sf-px)) 0 var(--sf-outline-variant);
+}
+
+/* Content on its way (owner decision C159 (9), 2026-11-14): a skeleton of
+   text lines in the window's own width (its size), not a spinner in a box
+   of its own -- the window does not jump when the content comes. The bars
+   are the core skeleton's: the place's neutral fill, as tall as the
+   capitals and rounded at the control's radius (C130, C136), pulsing
+   together. */
+.sf-modal-skeleton {
+  --sf-skeleton-base: var(--sf-surface-container);
+  --sf-modal-skeleton--bar: calc(var(--sf-text-size-1) * 0.727);
+  display: flex;
+  flex-direction: column;
+  animation: sf-placeholder-pulse calc(var(--sf-duration-slow) * 3) var(--sf-animation) infinite;
+}
+
+@supports (block-size: round(nearest, 1em, 1em)) {
+  .sf-modal-skeleton {
+    --sf-modal-skeleton--bar: round(nearest, calc(var(--sf-text-size-1) * 0.727), var(--sf-a2));
+  }
+}
+
+.sf-modal-skeleton-line {
+  display: block;
+  block-size: var(--sf-text-height-1);
+}
+
+.sf-modal-skeleton-line::before {
+  content: '';
+  display: block;
+  block-size: var(--sf-modal-skeleton--bar);
+  margin-block-start: calc((var(--sf-text-height-1) - var(--sf-modal-skeleton--bar)) / 2);
+  border-radius: var(--sf-radius--ui);
+  background-color: var(--sf-skeleton-base);
+}
+
+.sf-modal-skeleton-line:nth-child(2)::before { inline-size: 90%; }
+.sf-modal-skeleton-line:nth-child(3)::before { inline-size: 60%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-modal-skeleton {
+    animation: none;
   }
 }
 }
@@ -583,15 +692,14 @@
   }
 }
 
-/* The footer's actions stand at the end, as a dialog's do, a button group's
-   gap apart (C105 H5: --sf-space-1/3, 8 and 4 compact; it was 1/2, R236) (simai/ui-source#26, ui-mail P-12): the footer was a
-   wrapping row with justify left at its default, so slotted actions sat at the
-   start with a wide gap. In sf.base, so a utility in footer-class (the
-   alignment of a footer that also holds a checkbox, say) still wins. */
+/* The footer of every window (owner decision C159 (4); core
+   mix/_mix__window-footer.scss, shared with sf-drawer): the main answer
+   first at the start, the others after it, «Отмена» last, a data-apart
+   action of the record at the far end; a button group's gap between them
+   (C105 H5: --sf-space-1/3, 8 and 4 compact; it was 1/2, R236); halves on a
+   phone. It stood at the end (simai/ui-source#26), the question window
+   alone at the start (C39). In sf.base, so a utility in footer-class still
+   wins. */
 @layer sf.base {
-  .sf-modal-footer {
-    align-items: center;
-    justify-content: flex-end;
-    gap: var(--sf-modal-footer-gap, var(--sf-gap--actions));
-  }
+  @include window-footer.window-footer('.sf-modal-footer', var(--sf-modal-footer-gap, var(--sf-gap--actions)));
 }

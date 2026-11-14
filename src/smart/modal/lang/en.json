@@ -2,7 +2,10 @@
   "title": "Modal",
   "runtime": {
     "close": "Close",
+    "discard": "Don't save",
+    "discard-heading": "Close without saving?",
     "frame-failed": "Failed to load iframe content",
+    "keep-editing": "Keep editing",
     "load-failed": "Failed to load content",
     "loading": "Loading…",
     "minimize": "Minimize",

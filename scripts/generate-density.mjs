@@ -106,6 +106,8 @@ export const WIDTHS = [
   '--sf-popup-form-width',
   '--sf-popup-form-wide-width',
   '--sf-popup-question-width',
+  '--sf-popup--window-form-width',
+  '--sf-popup--window-wide-width',
 ];
 
 const esc = (name) => name.replaceAll('/', '\\/');

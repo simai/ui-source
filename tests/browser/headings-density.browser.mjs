@@ -85,9 +85,9 @@ const MEASURE = () => {
 };
 
 const HEADINGS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'page', 'empty-1', 'empty-1/2', 'empty-2', 'card', 'drawer', 'modal', 'modal-question'];
-// The desktop steps (C21): a window's title is heading 3, a question
-// window's heading 4; both in every placement.
-const DESKTOP_SIZE = {modal: 24, 'modal-question': 20};
+// The desktop steps: every window's title is heading 4 (owner decision C159
+// (5), 2026-11-14; it was heading 3, C21), in every placement.
+const DESKTOP_SIZE = {modal: 20, 'modal-question': 20};
 const failures = [];
 const report = {};
 const consoleErrors = [];

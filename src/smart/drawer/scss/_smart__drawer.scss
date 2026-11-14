@@ -95,6 +95,8 @@
        inset. A stable gutter on both edges kept an empty 14 px on each side of
        every panel and stood the content 15 px past the window inset. */
     scrollbar-gutter: auto;
+    /* Keyboard focus stops core's ring room short of the clip edge (R242). */
+    scroll-padding: var(--sf-focus-room);
     pointer-events: auto;
     border-radius: var(--sf-drawer-radius, var(--sf-radius--surface));
     color: var(--sf-drawer-color, var(--sf-on-surface));
@@ -122,6 +124,7 @@
   .sf-drawer-panel:has(> .sf-drawer-body > sf-resizer) > .sf-drawer-body {
     overflow: hidden auto;
     scrollbar-gutter: auto;
+    scroll-padding: var(--sf-focus-room);
   }
 
   /* A floating panel is the modal place (C20): the popup surface, the modal
@@ -275,6 +278,16 @@
     flex-direction: column;
     padding-block: var(--sf-space-1\/2) var(--sf-space-3);
     padding-inline: var(--sf-drawer--inset-start) var(--sf-drawer--inset-end);
+  }
+
+  /* In the panel the body keeps its content's height (it still grows to pin a
+     foot): shrunk below it, the panel scrolled the content flush to its end,
+     so the body's end padding and the ring of the last control lay outside
+     the scroll range (owner report R242, DEV's audit 2026-11-14). Content that
+     owns its own scroller inside a drawer gives it a block size of its own.
+     Not where the body is the scroller (a panel with a resizer, below). */
+  .sf-drawer-panel:not(:has(> .sf-drawer-body > sf-resizer)) > .sf-drawer-body {
+    flex-shrink: 0;
   }
 
   /* One child fills it; several keep the order they were written in. */

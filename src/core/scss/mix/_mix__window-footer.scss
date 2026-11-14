@@ -1,0 +1,45 @@
+// The footer of every window (owner decision C159 (4), 2026-11-14, the same
+// rule as C157 (3) for the side panel; ui-control
+// control/research/2026-11-14-modal.md #q-order): the main answer first at
+// the start of the line, then the others, the quiet «Отмена» last -- the
+// order is the author's, the line starts at the start; an action of the
+// record itself («Удалить раздел»), marked data-apart, stands apart at the
+// far end. A button group's gap between them (C105 H5, C144: --sf-space-1/3,
+// 8 and 4 in compact density). On a phone (below sm) the answers share the
+// row in equal parts, the main one first, and take a row each when a label
+// does not fit (C39 phone). One mixin, so sf-modal and sf-drawer draw one
+// footer.
+//
+//   @include window-footer.window-footer('.sf-modal-footer', var(--sf-modal-footer-gap, var(--sf-space-1\/3)));
+@use 'sass:map';
+@use '../vars/sf_var__breakpoint' as bp;
+
+@mixin window-footer($footer, $gap) {
+  #{$footer} {
+    align-items: center;
+    justify-content: flex-start;
+    gap: $gap;
+  }
+
+  // An sf-button's host draws no box (display: contents): its button is the
+  // footer's item, so the apart action is read on either.
+  #{$footer} :is([data-apart], [data-apart] > :is(button, a)) {
+    margin-inline-start: auto;
+  }
+
+  @media not all and (min-width: map.get(bp.$breakpoint-array, sm)) {
+    #{$footer} {
+      flex-wrap: wrap;
+    }
+
+    #{$footer} > :is(button, a),
+    #{$footer} > :not(button, a) > :is(button, a) {
+      flex: 1 1 0;
+      min-inline-size: max-content;
+    }
+
+    #{$footer} :is([data-apart], [data-apart] > :is(button, a)) {
+      margin-inline-start: 0;
+    }
+  }
+}

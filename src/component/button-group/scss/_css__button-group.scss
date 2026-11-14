@@ -10,6 +10,14 @@
     scrollbar-width: thin;
   }
 
+  /* A segmented track clips its own segments (it scrolls sideways), so a
+     segment draws its ring inside, as a tab or a menu row does: the 2 px ring
+     was cut at the track's bottom (owner report R242, DEV's audit 2026-11-14). */
+  .sf-button-group--segmented :focus-visible,
+  .sf-button-group--segmented .focus-visible {
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+
   .sf-button-group > sf-button,
   .sf-button-group > .sf-button {
     flex: 0 0 auto;

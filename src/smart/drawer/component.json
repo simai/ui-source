@@ -507,6 +507,7 @@
     "events drawer:ready, drawer:update retire (vocabulary §5.1, §16.13)"
   ],
   "x-decisions": [
+    "version 1.11.1 (2026-11-14, owner report R242; DEV's focus-clipping audit): a patch. In a panel that scrolls, the body keeps its content's height (flex-shrink 0; it still grows to pin a foot): shrunk below it, the panel scrolled the content flush to its end, so the body's end padding and the ring of the last control (the last «Сохранить», a link) lay outside the scroll range. Content that owns its own scroller inside a drawer gives it a block size of its own; a panel with a resizer, whose body scrolls, is unchanged. The panel and that body scroll with scroll-padding of core's --sf-focus-room.",
     "alias-conflict: vocabulary §5.1 decides drawer:snap → sf-drawer-snapped, a fact of the component (the alias table's sf-drawer-snap is the bare verb of a request the drawer never waits on); the converter's sf-drawer-snap never shipped and gets no row.",
     "detail-adapter: §8 takes page elements out of detail, so the new names carry {drawerId, …} only; each old drawer:* name keeps its old detail (component, drawer, root added) through a split row and the element's detail adapter (sfAliasAdapters). Larena and bx-simai.main listen to drawer:after-open and drawer:after-close (vocabulary §9.2).",
     "version: 1.6.0 → 1.7.0, a minor while the renamed members hold dated aliases (§4.10); added unsaved, dismissible and the snapped detail field.",

@@ -1,3 +1,77 @@
+// The fields of a window (owner decision C159, 2026-11-14): a window that
+// holds fields is one form -- a press on its scrim never closes it (6), it
+// asks before its changes go (6), its main answer submits it and Enter in a
+// one-line field presses that answer (9), its first field takes the focus
+// (9), and on a phone a form of more than three fields takes the whole
+// screen (2). Shared by sf-modal and the class modal, and by sf-drawer. They live here,
+// beside the first focus that reads them, so the focus module stays one file
+// with no imports (the unit tests load it as one module).
+//
+// A field is a native control a person types or picks in, or a Framework
+// field element (sf-input*, sf-dropdown, sf-checkbox, sf-switch, sf-radio)
+// whether it has drawn its control yet or not; a field element counts once,
+// whatever it draws inside.
+
+const NATIVE_FIELD = [
+  'input:not([type="hidden"], [type="button"], [type="submit"], [type="reset"], [type="image"])',
+  'select', 'textarea', '[contenteditable=""]', '[contenteditable="true"]',
+].join(', ');
+const FIELD_ELEMENTS = new Set(['sf-dropdown', 'sf-checkbox', 'sf-switch', 'sf-radio', 'sf-segmented']);
+const isFieldElement = (node) => node.localName?.startsWith('sf-input') || FIELD_ELEMENTS.has(node.localName);
+// One-line fields: Enter in them presses the main answer (9).
+const ONE_LINE = new Set(['', 'text', 'search', 'email', 'tel', 'url', 'password', 'number', 'date',
+  'datetime-local', 'month', 'time', 'week']);
+
+// The outermost field element a node stands in, under `root`.
+function fieldElementOf(node, root) {
+  let host = null;
+  for (let at = node; at && at !== root; at = at.parentElement) {
+    if (isFieldElement(at)) host = at;
+  }
+  return host;
+}
+
+// The window's fields in document order, each once.
+function windowFields(root) {
+  if (!root?.querySelectorAll) return [];
+  const units = [];
+  const seen = new Set();
+  for (const node of root.querySelectorAll('*')) {
+    if (!isFieldElement(node) && !node.matches(NATIVE_FIELD)) continue;
+    if (node.closest('[hidden]')) continue;
+    const unit = fieldElementOf(node, root) || node;
+    if (seen.has(unit)) continue;
+    seen.add(unit);
+    units.push(unit);
+  }
+  return units;
+}
+
+function isOneLineField(node) {
+  return node?.localName === 'input' && ONE_LINE.has((node.getAttribute('type') || '').toLowerCase());
+}
+
+// Makes the fields read-only while the window saves (9) and answers the undo:
+// only what it changed goes back.
+function holdFieldsReadOnly(fields) {
+  const changed = [];
+  for (const unit of fields) {
+    if (unit.localName?.startsWith('sf-')) {
+      if (!unit.hasAttribute('readonly')) { unit.setAttribute('readonly', ''); changed.push(() => unit.removeAttribute('readonly')); }
+      continue;
+    }
+    if ('readOnly' in unit && !unit.readOnly && unit.localName !== 'select') {
+      unit.readOnly = true;
+      changed.push(() => { unit.readOnly = false; });
+    } else if (unit.localName === 'select' && !unit.hasAttribute('aria-readonly')) {
+      unit.setAttribute('aria-readonly', 'true');
+      unit.inert = true;
+      changed.push(() => { unit.removeAttribute('aria-readonly'); unit.inert = false; });
+    }
+  }
+  return () => changed.forEach((undo) => undo());
+}
+
 const FOCUSABLE_SELECTOR = [
   'a[href]', 'area[href]', 'button', 'input', 'select', 'textarea',
   'iframe', 'summary', 'audio[controls]', 'video[controls]',
@@ -103,7 +177,9 @@ function trapModalFocus(panel, event) {
 //   `autofocus` attribute, as a native <dialog> does; else, in a question
 //   window -- one whose answers hold a dangerous one (an sf-button with
 //   status="danger", its drawn .sf-button--danger, or an sf-confirm) -- its
-//   safe answer, «Отмена»; else the panel, as before. Only answers count: a red
+//   safe answer, «Отмена»; else, in a window with fields, its first field
+//   (owner decision C159 (9), 2026-11-14, as WAI-ARIA's dialog pattern
+//   advises); else the panel, as before. Only answers count: a red
 //   sf-badge or an error message in the body does not make a window a question;
 // - safe: the safe answer whenever there is one;
 // - first: the first control of the window's content (the header's buttons,
@@ -154,7 +230,11 @@ function firstFocus(panel, mode) {
   if (mode === 'auto') {
     const marked = panel.querySelector('[autofocus]');
     if (marked && !marked.closest('[inert], [hidden]')) return takesFocus(marked) || panel;
-    if (!panel.querySelector(DANGER_SELECTOR)) return panel;
+    if (!panel.querySelector(DANGER_SELECTOR)) {
+      const body = panel.querySelector('[data-sf-modal-body-scroll]') || panel;
+      const field = windowFields(body)[0];
+      return (field && takesFocus(field)) || panel;
+    }
   }
   return safeAnswer(panel) || panel;
 }
@@ -182,4 +262,7 @@ function focusModalInitial(panel, mode = 'auto') {
   return doc.activeElement === target ? target : panel;
 }
 
-export { getModalTabStops, trapModalFocus, syncModalFocusGuards, focusModalInitial, INITIAL_FOCUS };
+export {
+  getModalTabStops, trapModalFocus, syncModalFocusGuards, focusModalInitial, INITIAL_FOCUS,
+  windowFields, isFieldElement, isOneLineField, holdFieldsReadOnly,
+};

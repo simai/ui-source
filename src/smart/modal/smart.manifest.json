@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.modal",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "title": "Modal",
   "summary": "A dialog window over the page in the shared modal stack: centered or at a side, top or bottom edge, with header, content and footer slots, focus trap, scroll lock and focus return. It can also be minimized, load its content by Ajax or into an iframe, or render inline in the page flow.",
   "kind": "smart",
@@ -104,12 +104,12 @@
       "close-on-overlay": {
         "type": "boolean",
         "default": true,
-        "description": "A press on the scrim closes the top window, while it is dismissible."
+        "description": "A press on the scrim closes the top window, while it is dismissible -- never a window with fields (owner decision C159 (6))."
       },
       "initial-focus": {
         "type": "string",
         "default": "auto",
-        "description": "Where the focus goes when the window opens (decisions C25, C39): auto -- the page's [autofocus], else in a question window (one holding a dangerous answer or an sf-confirm) its safe answer «Отмена», else the panel; safe -- the safe answer whenever there is one; first -- the first control of its content (the header's × excluded); panel -- the panel.",
+        "description": "Where the focus goes when the window opens (decisions C25, C39): auto -- the page's [autofocus], else in a question window (one holding a dangerous answer or an sf-confirm) its safe answer «Отмена», else in a window with fields its first field (C159 (9)), else the panel; safe -- the safe answer whenever there is one; first -- the first control of its content (the header's × excluded); panel -- the panel.",
         "enum": [
           "auto",
           "safe",
@@ -138,11 +138,14 @@
       },
       "size": {
         "type": "string",
-        "default": "auto",
-        "description": "The window's kind of size (decision C39). auto: as wide as its content or width says. question: a question window -- --sf-popup-question-width (28rem, compact 26rem), the frame --sf-space-3, the title at text step 2 in bold, the title, the content and the footer on one start line, the × on the padding's corner, the footer's answers at the start and --sf-space-3 after the content; on a phone (below sm, 32rem) a window left at the centre opens as a bottom sheet. width, when given, still wins.",
+        "default": "form",
+        "description": "The window's width by name (owner decision C159 (1); C39 for the question). form, the default: 36rem (compact 32rem) -- a short task, up to five to seven fields; question: 28rem (compact 26rem), the frame, title, content and footer on one start line, the x on the frame's corner, the answers at the start; wide: 48rem (compact 44rem) -- reading, a table, a comparison; full: the whole screen. auto is the default's old name. On a phone (below sm, 32rem) a window left at the centre is a bottom sheet the screen's width, at most the screen less one step, its answers sharing the row; wide, full and a form of more than three fields take the whole screen (C159 (2)). width, when given, still wins; a side panel (position inline-*) keeps its own width -- side windows are sf-drawer's.",
         "enum": [
-          "auto",
-          "question"
+          "form",
+          "question",
+          "wide",
+          "full",
+          "auto"
         ]
       },
       "mode": {
@@ -262,7 +265,7 @@
       "unsaved": {
         "type": "boolean",
         "default": false,
-        "description": "Something in the window is unsaved: the close request (sf-modal-close) carries it as detail.unsaved, so a page can ask before it lets the window close."
+        "description": "Something in the window is unsaved; a change a person makes in its fields marks it too. The close request (sf-modal-close) carries it as detail.unsaved; unless a listener refuses the request, a window with fields asks the Framework question «Закрыть без сохранения?» (owner decision C159 (6)) before Escape, the x, «Отмена» or a press outside close it: «Не сохранять», red, first, closes it; «Продолжить правку», quiet, with the focus, keeps it. Its main answer, an accepted answer and close() from a script do not ask."
       },
       "dismissible": {
         "type": "boolean",
@@ -1455,7 +1458,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/modal/index.js",
-        "sha256": "91082c7e4df14f73c3f7f125a12bad902c45fa26a938a27b1ead75e5da8dc7d5"
+        "sha256": "f5ea39c39c84c744ce8f08740893bccf3db8882d0bb86315fc1f5167aec3abf9"
       }
     ],
     "generated_runtime": [

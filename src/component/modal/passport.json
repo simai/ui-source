@@ -18,7 +18,7 @@
     "src/component/modal/scss/_css__modal_custom.scss",
     "src/component/modal/scss/index.scss"
   ],
-  "content_sha256": "c585a28c45b2f3a2f48e2681a064507ec7a1d5c97d83090e2f5b21443e0acaec",
+  "content_sha256": "6c05c0f28a0d775aabbd7bfa78bcf2d3dda6466680f22181038106c9f7fc45de",
   "dependencies": [
     {
       "id": "component.close",
@@ -35,6 +35,10 @@
     {
       "id": "core.runtime",
       "range": "^1.0.0"
+    },
+    {
+      "id": "core.styles",
+      "range": "^1.12.0"
     },
     {
       "id": "module.component-shared",

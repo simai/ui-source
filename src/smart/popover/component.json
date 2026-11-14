@@ -308,6 +308,7 @@
     "events sf-popover-open, sf-popover-close: were facts sent after the state changed; by §19.3 and vocabulary §4 they are the cancelable requests now, and the facts are sf-popover-opened and sf-popover-closed"
   ],
   "x-decisions": [
+    "version 1.6.1 (2026-11-14, owner report R242; DEV's focus-clipping audit): a patch. The surface scrolls, so it clips at its edge: it keeps core's ring room inside it (padding --sf-focus-room, 4 px, in sf.base so a padding utility on the content or the page's own rule still sets it) and scrolls with scroll-padding of it. A control on the surface's edge lost 3 px of its focus ring.",
     "events: a layer asks before it closes (§19.3): sf-popover-close {reason, unsaved} is the cancelable request and sf-popover-closed {reason} the fact; sf-popover-open and sf-popover-opened likewise. The old names were facts with the same DOM names, so no alias can carry them: a listener of sf-popover-close now hears it just before the surface closes, without the element in detail (§8). No Framework code listened to them.",
     "key-effects: the trigger is the page's own control; Enter and Space press it and toggle the surface (toggle:open); Escape closes while dismissible; Tab leaves it (the surface does not trap focus).",
     "version: 1.0.0 → 1.1.0: the attribute role is a dated alias of surface-role; added unsaved and the facts.",

@@ -38,6 +38,9 @@
 
         inline-size: 100%;
         overflow: auto;
+        // Keyboard focus stops core's ring room short of the frame's clip
+        // edge, so a scrolled-to control in a cell keeps its ring (R242).
+        scroll-padding: var(--sf-focus-room);
         border: var(--sf-px) solid var(--sf-table-frame-border-color);
         border-radius: var(--sf-table-frame-radius);
         background-color: var(--sf-table-frame-background);
