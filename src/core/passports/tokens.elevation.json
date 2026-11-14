@@ -20,7 +20,7 @@
     "src/core/scss/_sf_css__shadow.scss",
     "src/core/scss/mix/_mix__shadow.scss"
   ],
-  "content_sha256": "8538158456fa9339a7b918883bff51a8db4c0463b08534d7ddd53fd996246970",
+  "content_sha256": "ac3d1c9921e46e11613d2f90429a808da5ceeb2b5bfa342abef5bfcb539dc312",
   "dependencies": [
     {
       "id": "tokens.border",
