@@ -46,6 +46,17 @@ $prefix: --sf-table-;
             background-image: linear-gradient(var(#{$prefix}accent-bg), var(#{$prefix}accent-bg));
         }
 
+        // The table's edge: the first and the last cell take a list row's
+        // inset (C77). Low in weight (:where), so a frame or a host that sets
+        // its own cell padding keeps it.
+        > :not(caption) > * > :where(:first-child) {
+            padding-inline-start: $table-cell-inset;
+        }
+
+        > :not(caption) > * > :where(:last-child) {
+            padding-inline-end: $table-cell-inset;
+        }
+
         > tbody {
             vertical-align: inherit;
         }
@@ -72,6 +83,14 @@ $prefix: --sf-table-;
             text-align: start;
         }
 
+        // A caption only a screen reader reads (the table's name when the
+        // page already shows a heading): the caption stays the table's
+        // accessible name, and sr-only takes it out of view without this
+        // rule's padding.
+        > caption.sr-only {
+            padding: 0;
+        }
+
         // A column of numbers lines up on its digits: end aligned, tabular.
         .table-numeric {
             font-variant-numeric: tabular-nums;
@@ -83,6 +102,14 @@ $prefix: --sf-table-;
     .table-small {
         > :not(caption) > * > * {
             padding: $table-cell-padding-y-sm $table-cell-padding-x-sm;
+        }
+
+        > :not(caption) > * > :where(:first-child) {
+            padding-inline-start: $table-cell-inset-sm;
+        }
+
+        > :not(caption) > * > :where(:last-child) {
+            padding-inline-end: $table-cell-inset-sm;
         }
     }
 // }

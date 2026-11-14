@@ -24,8 +24,15 @@
         // The place it stands on (C16): a card, a popup, a coloured block.
         --sf-table-frame-background: var(--sf-surface-place);
         --sf-table-frame-head-color: var(--sf-on-surface);
-        --sf-table-frame-head-padding-block: var(--sf-space-1);
-        --sf-table-frame-cell-padding-block: var(--sf-space-1\/2);
+        // A row and the head stand on the size ladder (C18, table study
+        // 2026-11-14 TB-2): a body row is size 2 (48 at 1440, 40 compact, 44
+        // on a phone), the head size 3 (56, 48, 52) -- the steps nearest to
+        // the 49 and 57 the space steps drew. The padding is the step less
+        // the line of the text and the row's line, halved (C49). Which
+        // heights a table takes is an open owner question (q-height); these
+        // are the nearest steps, not a new look.
+        --sf-table-frame-head-padding-block: calc((var(--sf-ui-3--control-height) - var(--sf-text-height-1) - var(--sf-px)) / 2);
+        --sf-table-frame-cell-padding-block: calc((var(--sf-ui-2--control-height) - var(--sf-text-height-1) - var(--sf-px)) / 2);
         --sf-table-frame-cell-padding-inline: var(--sf-space-1);
         --sf-table-frame-cell-min-inline-size: var(--sf-e0);
 
@@ -59,6 +66,18 @@
                 vertical-align: top;
             }
 
+            // The frame's border is inside the table's edge inset (C77,
+            // C105 H4, as a bordered menu row's): the first and the last
+            // cell's text stand 16 from the frame's outer edge (12 compact
+            // and on a phone), not 17.
+            > :not(caption) > * > :first-child {
+                padding-inline-start: calc(var(--sf-table-frame-cell-padding-inline) - var(--sf-px));
+            }
+
+            > :not(caption) > * > :last-child {
+                padding-inline-end: calc(var(--sf-table-frame-cell-padding-inline) - var(--sf-px));
+            }
+
             // A column aligned otherwise carries the text-align utility on its
             // cells (Composition content.table, 2026-11-10: a class, not a
             // style attribute). The frame's start rule is more specific than
@@ -73,13 +92,15 @@
             }
 
             // The frame draws the outer edge, so the last column and the last
-            // row leave theirs off; a table with a foot ends on the foot.
+            // row leave theirs off; a table with a foot ends on the foot. The
+            // last row keeps its line's room, unpainted, so it stands on the
+            // ladder like the others.
             > :not(caption) > * > *:last-child {
                 border-inline-end-width: var(--sf-0);
             }
 
             > :last-child > tr:last-child > * {
-                border-block-end-width: var(--sf-0);
+                border-block-end-color: transparent;
             }
 
             > thead > tr > * {
