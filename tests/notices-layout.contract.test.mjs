@@ -43,9 +43,9 @@ test('sf-alert and sf-toast: the border is inside the inline inset', () => {
   }
 });
 
-test('under the text, the inset under the last button is the inset above the capitals', () => {
-  assert.match(alerts, /\.sf-alert \.sf-alert-wrap:has\(> \.sf-alert-buttons\) \{[^}]*padding-block-end: calc\(var\(--sf-alert--lead\) \+ \(var\(--sf-text-height-1\) - 1cap\) \/ 2\);/u);
-  assert.match(toast, /\.sf-toast \.sf-toast-container:has\(> \.sf-toast-bottom\) \{[^}]*padding-block-end: calc\(var\(--sf-toast--lead\) \+ \(var\(--sf-text-height-1\) - 1cap\) \/ 2\);/u);
+test('under the text, the inset under the last button is the inset above the icon ink (C193)', () => {
+  assert.match(alerts, /\.sf-alert \.sf-alert-wrap:has\(> \.sf-alert-buttons\) \{[^}]*padding-block-end: calc\(var\(--sf-alert--lead\) \+ \(var\(--sf-text-height-1\) - 1cap\) \/ 4\);/u);
+  assert.match(toast, /\.sf-toast \.sf-toast-container:has\(> \.sf-toast-bottom\) \{[^}]*padding-block-end: calc\(var\(--sf-toast--lead\) \+ \(var\(--sf-text-height-1\) - 1cap\) \/ 4\);/u);
 });
 
 test('an error or a warning toast stays until a person closes it; success may leave', () => {

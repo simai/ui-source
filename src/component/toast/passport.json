@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.toast",
   "kind": "component",
-  "version": "1.4.0",
+  "version": "1.4.6",
   "owner": "simai/ui-source",
   "files": [
     "src/component/toast/dismiss.js",
@@ -15,7 +15,7 @@
     "src/component/toast/scss/_css__toast.scss",
     "src/component/toast/scss/index.scss"
   ],
-  "content_sha256": "f116294a0bdb59233a1ccfae3f8e7c54ae4d944343b33aeaed7420b657ebe447",
+  "content_sha256": "de4928bc4e4ef11e72d0039a5eb0db070e06153b8d3f50506d98570503bc1c54",
   "dependencies": [
     {
       "id": "core.runtime",
