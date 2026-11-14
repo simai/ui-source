@@ -153,6 +153,7 @@
     "src/core/js/layer-stack.js",
     "src/core/js/loader.js",
     "src/core/js/mask.js",
+    "src/core/js/menu-open.js",
     "src/core/js/notify.js",
     "src/core/js/on-view.js",
     "src/core/js/open-surface-mark.js",
@@ -170,6 +171,7 @@
     "src/core/js/reading-position.js",
     "src/core/js/ready.js",
     "src/core/js/region-navigation.js",
+    "src/core/js/roving.js",
     "src/core/js/rule.js",
     "src/core/js/rule.src.js",
     "src/core/js/runtime.js",
@@ -224,7 +226,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "3d26c5fa3bf9c13111488cee99230f7257bce6b2e587439ad46ca20e4d15eb44",
+  "content_sha256": "912b3c469df31c10b596bbc3b290236ef3a5edf3c27b7c273b9e759e4a54a2ef",
   "dependencies": [
     {
       "id": "core.styles",

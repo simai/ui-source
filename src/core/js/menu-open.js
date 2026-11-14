@@ -40,6 +40,9 @@ const SHARED = 'data-sf-menu-shared';
 function installMenuOpen() {
   let pending = null;
   let point = null;
+  // The opening the menu belongs to now, kept past its answer: a choice
+  // answers before the menu closes, and the focus goes back on closing.
+  let shown = null;
 
   const settle = (value) => {
     const waiting = pending;
@@ -61,14 +64,19 @@ function installMenuOpen() {
       });
       menu.addEventListener('sf-menu-context-closed', (event) => {
         if (event.target !== menu) return;
-        const waiting = settle(null);
-        const back = waiting?.returnTo;
+        settle(null);
+        const opening = shown;
+        shown = null;
+        const back = opening?.returnTo;
         if (!back?.isConnected) return;
         // After the menu's own return: the row the person acted on, when the
-        // focus fell to the page or stayed in the closed menu.
+        // focus fell to the page, stayed in the closed menu or went back to
+        // the «⋯» that opened it (a pointer's control, not a Tab stop).
+        const anchor = opening.anchor;
         setTimeout(() => {
           const active = doc.activeElement;
-          if (!active || active === doc.body || active === doc.documentElement || menu.contains(active)) {
+          if (!active || active === doc.body || active === doc.documentElement || menu.contains(active)
+            || (anchor && (active === anchor || anchor.contains?.(active)))) {
             back.focus?.({preventScroll: true});
           }
         }, 0);
@@ -111,6 +119,7 @@ function installMenuOpen() {
     }
     if (menu.isOpen) {
       settle(null);
+      shown = null;
       menu.close({restoreFocus: false, reason: 'api', ask: false});
     }
     if (label) menu.setAttribute('aria-label', label);
@@ -127,6 +136,7 @@ function installMenuOpen() {
     menu.entries = Array.isArray(entries) ? entries : [];
     return new Promise((resolve) => {
       pending = {resolve, anchor, returnTo: returnTo instanceof Element ? returnTo : null};
+      shown = pending;
       const mine = pending;
       const opening = atPoint
         ? (typeof menu.openAt === 'function'

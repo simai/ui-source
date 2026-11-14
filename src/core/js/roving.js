@@ -49,6 +49,7 @@ export function roving(container, {
   memory = true,
   out = OUT,
   onMove = null,
+  observe = true,
 } = {}) {
   let current = null;
 
@@ -144,6 +145,18 @@ export function roving(container, {
   container.addEventListener('keydown', onKeydown);
   container.addEventListener('focusin', onFocusIn);
   container.addEventListener('focusout', onFocusOut);
+  // Items drawn later -- a host that draws its <button> on its own schedule
+  // (sf-button-icon), a row added -- join the walk with tabindex -1 at once:
+  // the row stays one Tab stop whatever draws when.
+  let queued = false;
+  const watcher = observe && typeof MutationObserver === 'function'
+    ? new MutationObserver(() => {
+      if (queued) return;
+      queued = true;
+      queueMicrotask(() => { queued = false; refresh(); });
+    })
+    : null;
+  watcher?.observe(container, {childList: true, subtree: true});
   refresh();
 
   return {
@@ -152,6 +165,7 @@ export function roving(container, {
     items,
     get current() { return current; },
     destroy() {
+      watcher?.disconnect();
       container.removeEventListener('keydown', onKeydown);
       container.removeEventListener('focusin', onFocusIn);
       container.removeEventListener('focusout', onFocusOut);
