@@ -323,7 +323,7 @@
 
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-dropdown.sf-dropdown--tag .sf-dropdown-tag-container {
-  --sf-dropdown-tag-container--gap: var(--sf-space-1\/3);
+  --sf-dropdown-tag-container--gap: var(--sf-space-1\/4); /* tags, C105 H5 */
 }
 }
 

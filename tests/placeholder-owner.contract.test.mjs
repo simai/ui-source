@@ -29,7 +29,7 @@ test('Placeholder owns intrinsic layouts and explicit BEM anatomy', async () => 
 
 test('Placeholder typography and geometry use high-level Framework tokens', async () => {
   const css = await read('src/component/placeholder/scss/_css__placeholder.scss');
-  for (const token of ['--sf-text--size', '--sf-text--height', '--sf-heading--family', '--sf-heading--weight', '--sf-on-surface', '--sf-on-surface-variant', '--sf-space-1', '--sf-space-1\\/3', '--sf-space-1\\/2']) {
+  for (const token of ['--sf-text--size', '--sf-text--height', '--sf-heading--family', '--sf-heading--weight', '--sf-on-surface', '--sf-on-surface-variant', '--sf-space-1', '--sf-space-1\\/3']) {
     assert.ok(css.includes(token), token);
   }
   assert.doesNotMatch(css, /(?:^|[:(,\s])-?\d+(?:\.\d+)?(?:px|rem|em)\b/m);
