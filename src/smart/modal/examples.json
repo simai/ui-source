@@ -184,8 +184,8 @@
           "</main>",
           "<div id=\"area\"><sf-modal id=\"m1\" heading=\"Письмо\" minimizable>",
           "  <div slot=\"content\"><input id=\"m1-field\" aria-label=\"Тема\"><button id=\"m1-open-second\" data-sf-action=\"m2.open\">Ещё окно</button></div>",
-          "  <button slot=\"footer\" id=\"m1-cancel\" data-sf-modal-close=\"m1\">Отмена</button>",
           "  <button slot=\"footer\" id=\"m1-ok\" data-sf-action=\"m1.confirm\">Готово</button>",
+          "  <button slot=\"footer\" id=\"m1-cancel\" data-sf-modal-close=\"m1\">Отмена</button>",
           "</sf-modal></div>",
           "<sf-modal id=\"m2\" heading=\"Второе окно\"><p slot=\"content\">Поверх первого</p></sf-modal>",
           "<sf-modal id=\"m-old\" modal-id=\"m-old\" title=\"Старое окно\" blur=\"small\" hide><p slot=\"content\">Старые имена</p></sf-modal>",
@@ -194,7 +194,7 @@
           "<sf-modal id=\"m3\" heading=\"Над панелью\"><p slot=\"content\">Окно над панелью</p></sf-modal>",
           "<script>",
           "  // An assembly that asks a person (§19.4): its rule opens the confirm layer and waits for the answer. Defined once sf-modal is, so the part's interface is there.",
-          "  customElements.whenDefined('sf-modal').then(() => SF.Assembly.define({tag: 't-ask', kind: 'assembly', values: {answer: {type: 'object', value: 'answer'}}, actions: {ask: {}}, keys: {answer: {type: 'object', writer: 'logic', initial: null}}, roles: {dialog: {part: 'sf-modal', settings: {heading: 'Удалить запись?'}}}, rules: [{id: 'r-ask', on: 'outside.ask', steps: [{ask: 'dialog.open', answer: 'answer'}]}]}, {layouts: {default: '<x-role name=\"dialog\"><p slot=\"content\">Запись удалится.</p><button slot=\"footer\" id=\"ask-no\" data-sf-modal-close>Отмена</button><button slot=\"footer\" id=\"ask-yes\" data-sf-action=\"page/a1/dialog.confirm\">Удалить</button></x-role>'}}));",
+          "  customElements.whenDefined('sf-modal').then(() => SF.Assembly.define({tag: 't-ask', kind: 'assembly', values: {answer: {type: 'object', value: 'answer'}}, actions: {ask: {}}, keys: {answer: {type: 'object', writer: 'logic', initial: null}}, roles: {dialog: {part: 'sf-modal', settings: {heading: 'Удалить запись?'}}}, rules: [{id: 'r-ask', on: 'outside.ask', steps: [{ask: 'dialog.open', answer: 'answer'}]}]}, {layouts: {default: '<x-role name=\"dialog\"><p slot=\"content\">Запись удалится.</p><button slot=\"footer\" id=\"ask-yes\" data-sf-action=\"page/a1/dialog.confirm\">Удалить</button><button slot=\"footer\" id=\"ask-no\" data-sf-modal-close>Отмена</button></x-role>'}}));",
           "</script>"
         ]
       },

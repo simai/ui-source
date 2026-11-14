@@ -261,6 +261,16 @@ $sf-workspace-wide-default: h6;
 // Logical properties stand in the base rules, never inside the step loops: the
 // build writes each one out for both directions, and a dozen steps of them cost
 // 45 KB of core.css (candidate wslayout2). The steps say only what is not logical.
+// A region clips at its own edge, so it keeps core's ring room inside it: the
+// ring of a control on the region's edge was cut (owner report R242). In
+// sf.base, so a padding utility on a region (p-2) or the page's own rule still
+// sets it: in sf.components the room would win over both.
+@layer sf.base {
+    .sf-workspace > * {
+        padding: var(--sf-focus-room);
+    }
+}
+
 @layer sf.components {
     .sf-workspace {
         container: sf-workspace / inline-size;
@@ -284,6 +294,10 @@ $sf-workspace-wide-default: h6;
         min-block-size: 0;
         overflow: auto;
         overscroll-behavior: contain;
+        // Keyboard focus stops core's ring room short of the region's clip
+        // edge (owner report R242, DEV's audit 2026-11-14); the room itself
+        // is the region's padding, in sf.base above.
+        scroll-padding: var(--sf-focus-room);
     }
 
     /* sf-focus-ring: none — a region takes focus only programmatically, when

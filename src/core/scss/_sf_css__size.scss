@@ -79,6 +79,12 @@
 		// the consequences, a field or a checkbox and two answers, 28rem;
 		// compact 26rem by the same rule.
 		--sf-popup-question-width: var(--sf-g4);
+		// The other named window widths (owner decision C159 (1), 2026-11-14;
+		// ui-control control/research/2026-11-14-modal.md): sf-modal size="form",
+		// the default, 36rem, and size="wide" 48rem; compact one step narrower
+		// by the same rule (32rem, 44rem). Read by sf-modal only, so internal.
+		--sf-popup--window-form-width: var(--sf-g8);
+		--sf-popup--window-wide-width: var(--sf-h2);
 	}
 }
 

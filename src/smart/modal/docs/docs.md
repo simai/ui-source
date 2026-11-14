@@ -18,7 +18,8 @@ window opens is `initial-focus` (decisions C25, C39):
   answer: the declining answer of the `sf-confirm`, or the page's own answer
   that closes the window (`data-sf-modal-close`, the header's × excluded),
   «Отмена». A stray Enter or Space then only closes the question. Otherwise
-  the panel takes it;
+  the first field of the content takes it (decision C159 (9)), and a window
+  with no field gives it to the panel;
 - `safe`: the safe answer whenever the window has one;
 - `first`: the first control of the content (the header's × excluded);
 - `panel`: the panel.
@@ -173,7 +174,10 @@ remain on the separate compact-control radius contract.
 - `src` — URL для загрузки или DOM-селектор (`#id`)
 - `preload` — предзагрузка контента (по умолчанию `true` для `mode="ajax"`)
 - `fullscreen`
-- `size` — `auto` (default) or `question` (see «Question window»)
+- `size` — `question` (28rem), `form` (36rem, the default), `wide` (48rem)
+  or `full` (the whole screen); one step narrower in a compact region (26, 32,
+  44rem). `auto` is the old name of `form`. A side panel is `sf-drawer`'s
+  (decision C159 (1); see «Sizes and the phone»)
 - `width`
 - `height`
 - `blur`
@@ -254,7 +258,7 @@ Decision C39: the window of a dangerous question. `size="question"` gives it
 the core's question width, `--sf-popup-question-width` (28rem, 26rem in a
 compact region; `--sf-modal-question-width` retunes it, `width` still wins),
 the window frame (C105: `--sf-space-2`, 20 on a desktop and 16 in compact
-density and on a phone, the window's edge counted inside it) and a title at text step 2 in bold. The body's small
+density and on a phone, the window's edge counted inside it) and the title every window has (C159 (5): heading step 4 in bold, 20 on 24, 16 on 18 on a phone). The body's small
 scroll inset is taken out of the frame, so the title, the content and the
 footer start on one line and the × stands on the frame's corner. The title is
 `--sf-space-1` above the content; a footer's answers stand at the start,
@@ -286,6 +290,47 @@ Every window at the bottom edge (`position="bottom"`) now rounds only its top
 corners and draws no bottom edge; one whose frame is its own (no
 `surface-padding`) keeps the home-indicator area clear.
 
+## Sizes and the phone
+
+Decision C159 (1, 2): a window is named by what it holds, not measured.
+`size="question"` asks one thing, `form` (the default) holds a short form,
+`wide` a table or a long form, `full` takes the screen. `width` still wins
+for a window that needs its own.
+
+Below sm (32rem) a window at the centre up to `form` is a bottom sheet of
+the screen's whole width (top corners only, the home-indicator area kept
+clear); a `wide` window and a form of more than three fields take the whole
+screen.
+
+The body's edge draws a hairline only while text is under it: over the body
+while text is above it, under it while text is below (C159 (3)).
+
+## A window with fields
+
+Decision C159 (6, 7, 9). A window whose content holds a field (an input, a
+select, a text area, an `sf-input*`, `sf-dropdown`, `sf-checkbox`,
+`sf-switch`, `sf-radio` or `sf-segmented`) is one form:
+
+- the first field takes the focus when the window opens;
+- the footer's main answer -- its first answer that is not quiet (`ghost`,
+  `link`) and not set apart (`data-apart`) -- submits the content's `<form>`,
+  and Enter in a one-line field presses it;
+- while the main answer shows `loading` (set it on the `sf-button`), the
+  fields are read-only, the window is `aria-busy` and Escape, the × and the
+  scrim wait; only `close()` from a script closes it;
+- it never closes on its scrim. Escape, the × or «Отмена» after a change ask
+  «Закрыть без сохранения?»: «Не сохранять» (danger) first, «Продолжить
+  правку» quiet, with the focus. The words are the component's
+  (`lang/ru.json`, `lang/en.json`).
+
+One scrim: a window opened over another lays none. At most two windows are
+open, and the second is only a question (`size="question"`); `open()` refuses
+any other with the reason `stacked` and a console warning.
+
+A window closes in `--sf-duration-fast` on the exit curve, the sheet slides
+down; with less motion it is a short fade. Content on its way (`mode="ajax"`)
+is a skeleton of three text lines in the window's width.
+
 ## Slots
 
 - `header`
@@ -303,24 +348,25 @@ view and only the body scrolls. A window drawn in the page
 
 ## Footer actions
 
-The footer puts its actions at the end of the row, as a dialog does, with
-`--sf-modal-footer-gap` (`var(--sf-space-1/3)`, a button group's gap: 8, compact 4; C144) between
-them; they wrap onto a second line when the row is too narrow. Put the
-actions in the slot directly, each with `slot="footer"`, the primary action
-last. A wrapper element in the slot stands at the end as one item and keeps
-its own layout. The defaults sit under the utilities, so a utility in
-`footer-class` still wins -- `content-main-between` for a footer that also
-holds a checkbox at the start (simai/ui-source#26).
+Decision C159 (4), every window: the footer starts at the start. The main
+answer stands first, then the others, the quiet «Отмена» last; an action of
+its own kind (print, delete the record) takes `data-apart` and stands at the
+far end. On a phone the answers share the row in halves, the main one first,
+and the apart action takes its own row. The gap is `--sf-modal-footer-gap`
+(`var(--sf-space-1/3)`: 8, compact 4). The rule is core's
+`mix/_mix__window-footer.scss`, shared with `sf-drawer`. Put the actions in
+the slot directly, each with `slot="footer"`. The defaults sit under the
+utilities, so a utility in `footer-class` still wins (simai/ui-source#26).
 
 A dangerous question (decision C25): the action is a filled danger button,
 «Отмена» is quiet and takes the focus when the window opens, so a stray Enter
 or Space only closes the window; Escape closes it too.
 
 ```html
-<sf-modal id="delete-letter" title="Удалить письмо?">
+<sf-modal id="delete-letter" title="Удалить письмо?" size="question">
   <p slot="content">Письмо нельзя будет восстановить.</p>
-  <sf-button slot="footer" text="Отмена" appearance="ghost" scheme="on-surface" autofocus data-sf-modal-close="delete-letter"></sf-button>
   <sf-button slot="footer" text="Удалить" status="danger"></sf-button>
+  <sf-button slot="footer" text="Отмена" appearance="ghost" scheme="on-surface" autofocus data-sf-modal-close="delete-letter"></sf-button>
 </sf-modal>
 ```
 
