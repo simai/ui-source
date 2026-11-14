@@ -12403,6 +12403,129 @@
       },
       "owner": "ui-source",
       "source": "src/smart/tag/js/templates/default.js; ui-control control/docs-review/decisions.md C140"
+    },
+    {
+      "id": "token-c178-one-family-names",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "One family per kind of value (C178, owner 2026-11-14): the weights are --sf-weight--thin ... --sf-weight--black (the four --sf-font-weight-* short names and the numbered --sf-text--font-weight-1..9 read them), the focus width is --sf-focus--width (--sf-focus-outline-width reads it). Each former name is var() of its successor on the root; the values do not change.",
+      "items": [
+        {
+          "from": "--sf-font-weight-light",
+          "to": "--sf-weight--light",
+          "match": "--sf-font-weight-light(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-font-weight-regular",
+          "to": "--sf-weight--regular",
+          "match": "--sf-font-weight-regular(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-font-weight-medium",
+          "to": "--sf-weight--medium",
+          "match": "--sf-font-weight-medium(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-font-weight-bold",
+          "to": "--sf-weight--bold",
+          "match": "--sf-font-weight-bold(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-text--font-weight-1",
+          "to": "--sf-weight--thin",
+          "match": "--sf-text--font-weight-1(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-text--font-weight-2",
+          "to": "--sf-weight--extra-light",
+          "match": "--sf-text--font-weight-2(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-text--font-weight-3",
+          "to": "--sf-weight--light",
+          "match": "--sf-text--font-weight-3(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-text--font-weight-4",
+          "to": "--sf-weight--regular",
+          "match": "--sf-text--font-weight-4(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-text--font-weight-5",
+          "to": "--sf-weight--medium",
+          "match": "--sf-text--font-weight-5(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-text--font-weight-6",
+          "to": "--sf-weight--semi-bold",
+          "match": "--sf-text--font-weight-6(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-text--font-weight-7",
+          "to": "--sf-weight--bold",
+          "match": "--sf-text--font-weight-7(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-text--font-weight-8",
+          "to": "--sf-weight--extra-bold",
+          "match": "--sf-text--font-weight-8(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-text--font-weight-9",
+          "to": "--sf-weight--black",
+          "match": "--sf-text--font-weight-9(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-focus-outline-width",
+          "to": "--sf-focus--width",
+          "match": "--sf-focus-outline-width(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-token",
+      "examples": {
+        "before": "font-weight: var(--sf-font-weight-medium); outline-width: var(--sf-focus-outline-width);",
+        "after": "font-weight: var(--sf-weight--medium); outline-width: var(--sf-focus--width);"
+      },
+      "owner": "ui-source",
+      "source": "src/core/scss/_sf_css__typograpy.scss, src/core/figma_variables/figma_typography_styles.scss, src/core/figma_variables/figma_focus.scss, src/core/scss/_sf_css__border.scss, src/core/contracts/token-aliases.v1.json (families)"
+    },
+    {
+      "id": "token-c178-blur-filter-values",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "The blur family is --sf-blur-none/small/medium/large (C178, owner 2026-11-14). The filter values --sf-ui-blur-small/-medium/-large/-surface-overlay were blur() of it; they keep their value until remove_after and a rule writes the filter itself.",
+      "items": [
+        {
+          "from": "--sf-ui-blur-small",
+          "to": "blur(var(--sf-blur-small))"
+        },
+        {
+          "from": "--sf-ui-blur-medium",
+          "to": "blur(var(--sf-blur-medium))"
+        },
+        {
+          "from": "--sf-ui-blur-large",
+          "to": "blur(var(--sf-blur-large))"
+        },
+        {
+          "from": "--sf-ui-blur-surface-overlay",
+          "to": "blur(var(--sf-surface-overlay--blur))"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write the filter: backdrop-filter: blur(var(--sf-blur-medium)) for var(--sf-ui-blur-medium), and so on; --sf-ui-blur-surface-overlay is blur(var(--sf-surface-overlay--blur)).",
+      "examples": {
+        "before": "backdrop-filter: var(--sf-ui-blur-medium);",
+        "after": "backdrop-filter: blur(var(--sf-blur-medium));"
+      },
+      "owner": "ui-source",
+      "source": "src/core/figma_variables/figma_layer_styles.scss, src/core/contracts/token-aliases.v1.json (families)"
     }
   ]
 }
