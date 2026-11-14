@@ -5,6 +5,7 @@
 @use 'var__alerts' as *;
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__notice-link' as notice-link;
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/2) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 /* The notice's geometry, the toast's numbers (owner decision C35, remarks
    R066 and R079; DEV acceptance D3: C35 covers every notice), in tokens, so a
@@ -120,13 +121,13 @@
   }
 }
 
-@container sf-alert (min-width: calc(36rem - 2 * 1rem)) {
+@container sf-alert (min-width: #{mq.container-step(g8, $frame: 2 * 1rem)}) {
   .sf-alert:not(.sf-alert--actions-under):not(:has(.sf-alert-buttons > :nth-child(2))) {
     @include sf-alert-actions-in-row;
   }
 }
 
-@container sf-alert (min-width: calc(48rem - 2 * 1rem)) {
+@container sf-alert (min-width: #{mq.container-step(h2, $frame: 2 * 1rem)}) {
   .sf-alert:not(.sf-alert--actions-under) {
     @include sf-alert-actions-in-row;
   }

@@ -16,7 +16,7 @@ import {html, nothing} from 'lit';
 // - With several items, «Ещё N» (the others, not the shown one) opens the
 //   list of the others under the bar, in the page flow (C114 (3) as shown
 //   expanded, layout Р1, NS-12); open, the button reads «Свернуть список».
-//   On a narrow bar (38rem) the open button keeps the place of «Ещё N» at
+//   On a narrow bar (40rem) the open button keeps the place of «Ещё N» at
 //   the end of the action line: it shows the collapse glyph only, its name
 //   still «Свернуть список» (aria-label, title), so the longer label never
 //   wraps to a line of its own. Wide, the glyph is not drawn (scss/).

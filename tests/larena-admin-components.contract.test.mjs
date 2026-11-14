@@ -96,7 +96,7 @@ test('sf-list-attention: ordered by severity, nothing when empty, navigate and a
   assert.doesNotMatch(sheet, /sf-list-attention\[data-empty\]/u);
   assert.match(code('src/smart/list-attention/js/templates/default.js'), /if \(empty !== 'line'\) return nothing;/u);
   // A narrow row puts the action under the text.
-  assert.match(sheet, /@container \(max-width: 30rem\)/u);
+  assert.match(sheet, /@container \(max-width: #\{mq\.container-step\(g5\)\}\)/u);
   // C45 (1.3.0): in that column the summary is one meta line under the
   // heading and the quiet line two lines with an icon recheck; both forms
   // are drawn and the container shows one. The action stays visible.
@@ -105,7 +105,7 @@ test('sf-list-attention: ordered by severity, nothing when empty, navigate and a
   assert.match(template, /<span class="sf-list-attention-quiet-title">\$\{context\.quietTitle\}<\/span>/u);
   assert.match(template, /sf-list-attention-recheck sf-list-attention-recheck--narrow/u);
   assert.match(source, /summaryLine: STATUSES\.filter\(\(one\) => counts\[one\]\)\.map\(\(one\) => this\.sfWord\(`summary-\$\{one\}`, \{count: counts\[one\]\}\)\)\.join\(' · '\)/u);
-  const narrow = sheet.slice(sheet.indexOf('@container (max-width: 30rem)'), sheet.indexOf('@container (max-width: 40rem)'));
+  const narrow = sheet.slice(sheet.indexOf('@container (max-width: #{mq.container-step(g5)})'), sheet.indexOf('@container (max-width: #{mq.container-step(h0)})'));
   assert.match(narrow, /\.sf-list-attention-head \.sf-list-attention-summary,\s*\.sf-list-attention-head \.sf-list-attention-spacer \{\s*display: none;/u);
   assert.match(narrow, /padding-block: calc\(\(var\(--sf-list-attention--row\) - var\(--sf-list-attention--line\) - var\(--sf-list-attention--meta-line\)\) \/ 2\);/u);
   assert.match(narrow, /\.sf-list-attention-quiet-line,\s*\.sf-list-attention-recheck-text,\s*\.sf-list-attention-recheck-text > \* \{\s*display: none;/u);

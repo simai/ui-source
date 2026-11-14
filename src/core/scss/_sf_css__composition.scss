@@ -7,6 +7,7 @@
 /* sf-focus-ring: editor — the editing canvas marks what is being edited in its
    own colour, which is part of the editor's language rather than the product's
    focus colour. Width and style stay the system's. */
+@use 'mix/mix__breakpoint' as mq;
 @layer sf.components {
     .sf-composition-regions {
         --sf-composition-region-side: minmax(0, var(--sf-f6));
@@ -51,7 +52,7 @@
         background: var(--sf-surface-area, Canvas);
     }
 
-    @container (min-width: 48rem) {
+    @container (min-width: #{mq.container-step(h2)}) {
         .sf-composition-regions-grid:has(> [data-sf-region-placement="start"]) {
             grid-template-columns: var(--sf-composition-region-side) minmax(0, 1fr);
         }

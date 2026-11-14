@@ -1,3 +1,4 @@
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
 @layer sf.components {
 /* sf-input-image: one image in a form -- as a row (the thumbnail, the file
    name and size, then «Заменить…» and the remove icon) or as a preview (the
@@ -504,7 +505,7 @@
    32rem is where a thumbnail, a name of sixteen characters with its size line
    and the three buttons of a filled field (replace, edit, remove) stop fitting
    on one line; under it the name would be cut and the size line broken. */
-@container sf-image-field (inline-size < 32rem) {
+@container sf-image-field (inline-size < #{mq.container-step(g6)}) {
   .sf-image-field-well {
     grid-template-columns: auto minmax(0, 1fr);
     grid-template-areas: "thumb body" "thumb actions";

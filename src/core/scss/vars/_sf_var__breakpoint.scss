@@ -9,6 +9,7 @@
 // while the variables said 704/768/1152/1536px; only lg agreed (owner,
 // 2026-10-13). tests/breakpoint-ladder.contract.test.mjs holds the two together.
 @use "sass:map";
+@use "sf_var__size" as size;
 $breakpoint-array: (
 	xs: 0,
 	sm: 32rem,  // g6, 512px
@@ -27,4 +28,33 @@ $breakpoint-desktop: map.get($breakpoint-array, lg);
 $breakpoint-device-array: (
 	mobile: 0,
 	desktop: $breakpoint-desktop
+);
+
+// Container thresholds (owner decision C181 (2), 2026-11-14; ui-control
+// control/research/2026-11-14-standards-tokens-utilities.md, demo
+// prototypes/foundation-names-demo.html). A component adapts to the width of
+// its own place with @container, at a step of this one ladder; a query on the
+// screen's width is for the page frame (and the size system's one density
+// breakpoint, lg). Every step is a step of the size scale and is named by it:
+// the component steps 20 · 24 · 30 · 36 · 40 · 48 rem (g0, g2, g5, g8, h0,
+// h2) -- the owner's own steps among them: 36 and 48 for a notice's actions
+// (C115), 30 for three choice tiles to a row (C28) -- and the four screen
+// breakpoints sm · md · lg · xl (g6, h1, h5, h8), which the cq-*
+// utilities read as container conditions -- one ladder for both. A container
+// condition cannot read a custom property, so the steps are Sass constants,
+// not CSS variables: a component writes container-step(<step>) from
+// mix/_mix__breakpoint.scss, never a length of its own.
+// tests/container-ladder-c181.contract.test.mjs holds the ladder and lints
+// every @container and @media of the sources.
+$container-step-array: (
+	g0: map.get(size.$size-array, g, 0), // 20rem, 320 px
+	g2: map.get(size.$size-array, g, 2), // 24rem, 384 px
+	g5: map.get(size.$size-array, g, 5), // 30rem, 480 px
+	g6: map.get(size.$size-array, g, 6), // 32rem, 512 px, sm
+	g8: map.get(size.$size-array, g, 8), // 36rem, 576 px
+	h0: map.get(size.$size-array, h, 0), // 40rem, 640 px
+	h1: map.get(size.$size-array, h, 1), // 44rem, 704 px, md
+	h2: map.get(size.$size-array, h, 2), // 48rem, 768 px
+	h5: map.get(size.$size-array, h, 5), // 60rem, 960 px, lg
+	h8: map.get(size.$size-array, h, 8), // 72rem, 1152 px, xl
 );

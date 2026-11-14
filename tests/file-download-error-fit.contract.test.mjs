@@ -38,10 +38,13 @@ test('F2: «Повторить» stays beside the name only while the name keeps
   for (const s of [1, 2, 3]) assert.equal(fit(s, 720).narrow, false);
 });
 
-test('C88 keeps its 360 px bound: below it the button is always under the text', () => {
+// C88's bound stands on the container step g2 of C181 (24rem, 384 px; it was
+// 22.5rem, 360 px), as sf-file-preview's failed row.
+test('C88 / C181 keeps its 384 px bound: below it the button is always under the text', () => {
   const wide = {gap: 8, retryWidth: 80, reach: 8, padEnd: 7, chars: 100};
-  assert.equal(errorFit({width: 359, rem: 16, textColumn: 320, ...wide}).narrow, true);
-  assert.equal(errorFit({width: 360, rem: 16, textColumn: 320, ...wide}).narrow, false);
+  assert.equal(NARROW_BELOW_REM, 24);
+  assert.equal(errorFit({width: 383, rem: 16, textColumn: 344, ...wide}).narrow, true);
+  assert.equal(errorFit({width: 384, rem: 16, textColumn: 344, ...wide}).narrow, false);
 });
 
 test('F1: the icon alone only when the worded button does not fit under the text', () => {

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.file-preview",
   "kind": "component",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/file-preview/index.js",
@@ -11,11 +11,15 @@
     "src/component/file-preview/scss/_css__file_preview.scss",
     "src/component/file-preview/scss/index.scss"
   ],
-  "content_sha256": "8e0ad3c6487d45a42021c104cc360a189e417b2fb39e63d4f6de367efb8b271d",
+  "content_sha256": "2a03e9a2c41b21bedda282f991ab44cad8840d581d49d2d7def1fc285ee088fb",
   "dependencies": [
     {
       "id": "tokens.border",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.1.0"
     },
     {
       "id": "tokens.colour",

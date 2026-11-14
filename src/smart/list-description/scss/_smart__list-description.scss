@@ -1,3 +1,4 @@
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
 @layer sf.components {
 /* sf-list-description (standard simai.smart-component 1.3.14 §6). One rung S
    of the ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2
@@ -370,7 +371,7 @@ sf-list-description {
   white-space: nowrap;
 }
 
-@container (max-width: 24rem) {
+@container (max-width: #{mq.container-step(g2)}) {
   .sf-list-description--layout-auto .sf-list-description-list {
     grid-template-columns: minmax(0, 1fr);
   }

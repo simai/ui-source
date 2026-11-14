@@ -20,7 +20,7 @@ const code = source.split('\n').filter((line) => !line.trimStart().startsWith('/
 test('the manifest: places, navigation, progress, one value, seven events, four actions', () => {
   assert.equal(manifest.tag, 'sf-wizard');
   assert.equal(manifest.family, 'wizard');
-  assert.equal(manifest.version, '1.3.1');
+  assert.equal(manifest.version, '1.3.2');
   assert.deepEqual(manifest.settings.place.values, ['inline', 'modal', 'pages']);
   assert.deepEqual(manifest.settings.navigation.values, ['linear', 'free', 'visited']);
   assert.deepEqual(manifest.settings.progress.values, ['auto', 'row', 'count', 'column']);
@@ -107,8 +107,8 @@ test('accessibility: a named region, aria-current, a focusable title, a status l
 });
 
 test('the sheet: one rung, the container widths, 44px under a coarse pointer, theme roles only', () => {
-  assert.match(sheet, /@container sf-wizard \(min-width: 40rem\)/u);
-  assert.match(sheet, /@container sf-wizard \(max-width: 39\.99rem\)/u);
+  assert.match(sheet, /@container sf-wizard \(min-width: #\{mq\.container-step\(h0\)\}\)/u);
+  assert.match(sheet, /@container sf-wizard \(width < #\{mq\.container-step\(h0\)\}\)/u);
   assert.match(sheet, /@media \(pointer: coarse\) \{\n\s+@layer sf\.states \{/u);
   assert.match(sheet, /min-block-size: var\(--sf-d1\);/u);
   for (const name of ['gap', 'padding', 'background', 'border-color', 'radius', 'max-width']) {

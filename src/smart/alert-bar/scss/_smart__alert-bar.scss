@@ -230,7 +230,7 @@
    is display: contents (set on the element) and the glyph's display is the
    icon sheet's, outside the layers, so the glyph is taken out of the flow
    and out of sight instead (it is aria-hidden). */
-@container sf-alert-bar (width > 38rem) {
+@container sf-alert-bar (width > #{mq.container-step(h0)}) {
   .sf-alert-bar-row .sf-alert-bar-all > button > sf-icon > .sf-icon {
     position: absolute;
     visibility: hidden;
@@ -424,8 +424,8 @@
   }
 }
 
-/* Narrow (the bar's own width up to g9, 608 px; a container query cannot
-   read a variable, so the step is written in rem): the icon, the text and the
+/* Narrow (the bar's own width up to 40rem, 640 px, the container step h0
+   of C181; it was g9, 608 px, no step of the ladder): the icon, the text and the
    close share the first line; the actions go under the text from its start
    (AA-17, C114 (5)), «Ещё N» at the line's end; the open list's rows do
    the same. The
@@ -436,7 +436,7 @@
    block inset, the control's inset above the text, and the room above the
    capitals inside the line, (line - 1cap) / 2 (1cap is the font's own cap
    height, so it follows the rung and the density by itself). */
-@container sf-alert-bar (max-width: 38rem) {
+@container sf-alert-bar (max-width: #{mq.container-step(h0)}) {
   .sf-alert-bar-row {
     display: grid;
     grid-template-columns: var(--sf-alert-bar--line) minmax(0, 1fr) auto;
