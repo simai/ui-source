@@ -159,7 +159,8 @@
 }
 
 .sf-search-input {
-  flex: 1 1 6rem;
+  /* Room for a few words beside the tags before the input wraps under them. */
+  flex: 1 1 var(--sf-e2);
   min-inline-size: 0;
   block-size: var(--sf-search--row);
   margin: 0;

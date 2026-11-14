@@ -32,10 +32,15 @@
     "uses": [
       "component.icons",
       "component.kbd",
+      "smart.avatar",
+      "smart.badge",
       "smart.button-icon",
       "smart.empty-state",
       "smart.icon",
-      "smart.spinner"
+      "smart.spinner",
+      "smart.tag",
+      "smart.tag-group",
+      "smart.time"
     ],
     "public_parts": []
   },
@@ -419,11 +424,11 @@
       },
       {
         "path": "src/smart/search/scss/_smart__search.scss",
-        "sha256": "bb4e0e3537696d812efd07b7d0065a056a8b8936b863e72071f92e78cd57c983"
+        "sha256": "29ef3cbd16c6f4ce637de0acb3dd20dfb98bcff29cb6e03bfb1bbf6373ac78f3"
       },
       {
         "path": "src/smart/search/rule.js",
-        "sha256": "c9b048cb30d8c018dbc8619f7f18407e489d1251bc7cc4de685fcf31e6bf6205"
+        "sha256": "636e6a18a7ae3da500bb73ac3c62a6609ee6eed0e66d4ea8d628525262e1530a"
       },
       {
         "path": "src/smart/search/docs.md",
