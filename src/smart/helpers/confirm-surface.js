@@ -366,16 +366,20 @@ export function confirmSurface(Base, {kind, block, answerId = "answerId"} = {}) 
 // question's «Отмена», is always the quiet one, ghost on-surface (decision
 // C116, #q-cancel: «Отмена» is quiet everywhere), so the two are told apart by
 // more than the red of a word. A surface whose declining answer is a decision
-// of its own weight rather than a cancel -- sf-confirm-change's «Отклонить» --
-// asks for `declineAppearance: "outline"`. Both stand on the element's size
+// of its own weight rather than a cancel asks for `declineAppearance:
+// "outline"`; a surface whose accepting answer is the main one (sf-confirm-change
+// 1.9.0, owner decision C183 (6): «Подтвердить» filled primary, «Отклонить»
+// quiet) for `acceptAppearance: "default"`. Both stand on the element's size
 // (context.size, 1 unless the page gives one); a size a template gives is
 // relative, so a compact region (data-sf-density, C22) moves them down a step.
 //
 // In a window (sf-confirm appearance="window", decision C39) the answers come
 // before the status line, at the start; the declining one is ghost there too
 // (C116; it was tonal, the window's quiet answer).
-// `formerBlock` writes a renamed surface's former class beside each part's.
-export function renderConfirmFooter(context, block, {acceptStatus = "", window = false, declineAppearance = "ghost", formerBlock = ""} = {}) {
+// `formerBlock` writes a renamed surface's former class beside each part's;
+// `statusLast` puts the status line after the answers in the markup as well
+// as on screen (the deadline under the answers, C183 (6)).
+export function renderConfirmFooter(context, block, {acceptStatus = "", window = false, acceptAppearance = "outline", declineAppearance = "ghost", formerBlock = "", statusLast = false} = {}) {
     const {component} = context;
     // A surface whose class was renamed writes its former block beside the
     // new one until the alias date, so a page selector that reached it still
@@ -383,23 +387,25 @@ export function renderConfirmFooter(context, block, {acceptStatus = "", window =
     const part = (name) => (formerBlock ? `${block}__${name} ${formerBlock}__${name}` : `${block}__${name}`);
     const danger = acceptStatus === "danger" || acceptStatus === "error";
     const size = context.size || "1";
-    return html`
-            <footer class=${part("footer")}>
-                <!-- Always in the page, empty while there is nothing to say: a live
-                     region that appears together with its words is not heard. -->
+    // Always in the page, empty while there is nothing to say: a live region
+    // that appears together with its words is not heard. With statusLast it
+    // follows the answers in the markup too (sf-confirm-change 1.9.0: the
+    // deadline under the answers, an sf-time that may take a Tab after them).
+    const status = html`
                 <p class=${part("status")} role="status" tabindex="-1">
                     ${context.statusText
                         ? html`<sf-icon icon=${context.statusIcon} size="1" aria-hidden="true"></sf-icon>
                             <span>${context.statusText}</span>`
                         : nothing}
-                </p>
-                <!-- While the answer is applied (pending) the answers stay where they
-                     were: the pressed one busy, with the button's own spinner and
-                     aria-busy, the other disabled, so the card does not jump and
-                     the person sees which answer is on its way. -->
+                </p>`;
+    // While the answer is applied (pending) the answers stay where they were:
+    // the pressed one busy, with the button's own spinner and aria-busy, the
+    // other disabled, so the card does not jump and the person sees which
+    // answer is on its way.
+    const actions = html`
                 <div class=${part("actions")} ?hidden=${!context.open && !context.pending}>
                     <sf-button
-                            appearance=${danger ? "default" : "outline"}
+                            appearance=${danger ? "default" : acceptAppearance}
                             scheme="primary"
                             status=${danger ? "danger" : nothing}
                             size=${size}
@@ -419,6 +425,8 @@ export function renderConfirmFooter(context, block, {acceptStatus = "", window =
                             ?disabled=${context.answersLocked && context.pressed !== false}
                             @click=${() => component.cancel()}
                     ></sf-button>
-                </div>
+                </div>`;
+    return html`
+            <footer class=${part("footer")}>${statusLast ? html`${actions}${status}` : html`${status}${actions}`}
             </footer>`;
 }

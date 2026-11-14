@@ -54,6 +54,11 @@ const pageScript = readFileSync(join(here, 'first-paint-page.js'), 'utf8');
 
 const pages = new Map([['/first-paint-page.js', pageScript]]);
 const site = await serveOutput(out, {pages});
+// Every snapshot is taken on one clock: sf-time prints the zone it writes in
+// (owner decision C183 (3): «…, Москва (UTC+3)»), so a snapshot taken on a
+// machine elsewhere would differ by its zone. Moscow, as the manifest probes
+// (fix/time-probes-tz).
+const SNAPSHOT_TIME_ZONE = 'Europe/Moscow';
 const browser = await chromium.launch();
 const results = {written: [], stale: [], missing: [], failed: [], tooLarge: [], unchanged: 0, sheetDrift: []};
 
@@ -68,7 +73,7 @@ ${coreScript}
 </body></html>`);
   // The sheets this page asks for: the first paint needs every one.
   const sheets = [];
-  const context = await browser.newContext({viewport: {width: 1280, height: 800}, reducedMotion: 'reduce'});
+  const context = await browser.newContext({viewport: {width: 1280, height: 800}, reducedMotion: 'reduce', timezoneId: SNAPSHOT_TIME_ZONE});
   const page = await context.newPage();
   await freezeClock(page, example);
   const errors = [];
@@ -149,7 +154,7 @@ ${coreScript}
 ${assemblyModule(assembly)}
 </body></html>`);
   const sheets = [];
-  const context = await browser.newContext({viewport: {width: 1280, height: 800}, reducedMotion: 'reduce'});
+  const context = await browser.newContext({viewport: {width: 1280, height: 800}, reducedMotion: 'reduce', timezoneId: SNAPSHOT_TIME_ZONE});
   const page = await context.newPage();
   await freezeClock(page, example);
   const errors = [];

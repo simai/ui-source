@@ -29,6 +29,8 @@ const modules = [
   // The values are sf-change's list (sf-confirm-change 1.7.0, C40): the Loader
   // brings it on a real page; here it is added like the others.
   'smart/smart/change/js/change.js',
+  // The deadline is an sf-time (1.9.0, C183; relation cl-time).
+  'smart/smart/time/js/time.js',
   'smart/smart/confirm-change/js/confirm-change.js',
 ].map((p) => join(out, p));
 const absent = [...styles, ...modules].filter((path) => !existsSync(path));
@@ -78,7 +80,12 @@ try {
       state: card.querySelector('.sf-change-confirm').dataset.state,
       attribute: card.getAttribute('state'),
       // The words, not the glyph's ligature beside them.
-      status: (card.querySelector('.sf-change-confirm__status > span')?.textContent ?? '').replace(/\s+/g, ' ').trim(),
+      // The visible words: an sf-time deadline's tooltip text is not read.
+      status: (() => {
+        const span = card.querySelector('.sf-change-confirm__status > span')?.cloneNode(true);
+        span?.querySelectorAll('.sf-tooltip').forEach((tip) => tip.remove());
+        return (span?.textContent ?? '').replace(/\s+/g, ' ').trim();
+      })(),
       actions: !card.querySelector('.sf-change-confirm__actions').hidden,
       buttons: [...card.querySelectorAll('.sf-change-confirm__actions button')].map((node) => ({
         busy: node.getAttribute('aria-busy') === 'true', disabled: node.disabled,
@@ -112,7 +119,8 @@ try {
     if (JSON.stringify(shape[key]) !== JSON.stringify(value)) note({case: `what is read: ${key}`, got: shape[key], expected: value});
   }
   const weights = await page.evaluate(() => [...document.querySelectorAll('#card .sf-change-confirm__actions button')].map((node) => getComputedStyle(node).backgroundColor));
-  if (weights[0] !== weights[1]) note({case: 'both answers weigh the same', got: weights});
+  // C183 (6), 1.9.0: «Подтвердить» filled primary, «Отклонить» quiet (no fill).
+  if (weights[0] === 'rgba(0, 0, 0, 0)' || weights[1] !== 'rgba(0, 0, 0, 0)') note({case: 'C183: the accepting answer filled, the declining one quiet', got: weights});
 
   // 2. Confirm: pending, focus on the status, the host's outcome.
   await page.click('#card [data-action="accept"]');

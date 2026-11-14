@@ -103,10 +103,11 @@ const MEASURE = () => {
     probe.remove();
     return result;
   };
-  // The words a person reads: the text outside tooltips (a time's full moment).
+  // The words a person reads: the text outside tooltips (a time's full moment)
+  // and outside visually hidden text (a list time's full moment, C183 (2)).
   const words = (element) => {
     if (!element) return '';
-    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {acceptNode: (node) => (node.parentElement.closest('.sf-tooltip') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT)});
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {acceptNode: (node) => (node.parentElement.closest('.sf-tooltip, sf-time .sr-only') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT)});
     let text = '';
     for (let node = walker.nextNode(); node; node = walker.nextNode()) text += node.textContent;
     return text.replace(/\s+/gu, ' ').trim();

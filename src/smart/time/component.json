@@ -2,7 +2,7 @@
   "$comment": "The source of sf-time's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.15 and vocabulary 1.1.5: owner decision C40 (2026-11-09; research ui-control control/research/2026-11-09-timeline-parts.md §5, prototype prototypes/timeline-parts.html#time).",
   "id": "smart.time",
   "tag": "sf-time",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "text",
   "settings": {
@@ -21,7 +21,7 @@
         "relative"
       ],
       "default": "auto",
-      "summary": "auto: within threshold of now relative («28 минут назад»), today the time («14:32»), yesterday «вчера, 19:40», a later day its date and time («15 ноября, 10:00»), this year the day and month («5 ноября»), older the date with the year («30 декабря 2025 г.»); time: «14:32»; date: «9 ноября», the year when it is not this one; datetime: the full moment («9 ноября 2026 г. в 14:32»); relative: always relative. Every word is Intl's in the page language («gestern, 19:40» on a German page)"
+      "summary": "auto: within threshold of now relative («28 минут назад», «через 20 минут»; under a minute past «только что», under a minute ahead the language's «сейчас», never seconds), today the time («14:32») or, later today, «сегодня, 14:00», yesterday «вчера, 19:40», tomorrow «завтра, 10:00», a later day its date and time («17 ноября, 10:00»), this year the day and month («5 ноября»), older the date with the year («30 декабря 2025 г.»); time: «14:32»; date: «9 ноября», the year when it is not this one; datetime: the full moment («9 ноября 2026 г. в 14:32»); relative: always relative («только что» under a minute). Every word is Intl's in the page language («gestern, 19:40» on a German page) but «только что», which is the component's (ru, en, and what a product registers; another language says its own «now»)"
     },
     "now": {
       "type": "string",
@@ -33,6 +33,11 @@
       "default": "PT1H",
       "summary": "For auto: how long from now the moment stays relative, an ISO 8601 duration (PT1H, PT15M, P1D). Past it auto says the time or the date"
     },
+    "time-zone": {
+      "type": "string",
+      "default": "",
+      "summary": "The time zone the moment is written in, an IANA name (Europe/Moscow), for a product that knows the person's zone from their profile; empty or a name the browser does not know: the reader's own zone. The tooltip names the zone either way («…, Москва (UTC+3)»), and today, yesterday and tomorrow are that zone's days (owner decision C183 (3))"
+    },
     "tooltip": {
       "type": "enum",
       "values": [
@@ -40,7 +45,7 @@
         "none"
       ],
       "default": "auto",
-      "summary": "auto: when the text is not the full moment, the full date and time show in a tooltip on hover and on keyboard focus (Escape hides it), and the element is a Tab stop unless it stands inside a link or a button; none: no tooltip and no Tab stop (a day heading's date, a place that already says the moment)"
+      "summary": "auto: when the text is not the full moment, the full date and time with the zone named («13 ноября 2026 г. в 19:40, Москва (UTC+3)») show in a tooltip on hover and on keyboard focus (Escape hides it). The element is a Tab stop when it stands alone; inside a link, a button, a list item or a feed it is not, and the full moment is then a visually hidden part of the row's text, so a screen reader hears it with the row (owner decision C183 (2)); none: no tooltip and no Tab stop (a day heading's date, a place that already says the moment)"
     }
   },
   "values": {},
@@ -67,7 +72,7 @@
   "docs": "docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "A time element: datetime is the exact moment (ISO), its text what the place needs. With a tooltip the full moment is the time element's description (aria-describedby, the tooltip controller) and the element takes keyboard focus (tabindex 0) unless it is inside a link or a button, so the moment is one Tab and one hover away; Escape hides the tooltip. No title attribute (a title is out of reach of the keyboard and many screen readers) and no micro forms («5м» reads as five metres).",
+    "$comment": "A time element: datetime is the exact moment (ISO), its text what the place needs. With a tooltip the full moment and its zone are the time element's description (aria-describedby, the tooltip controller). Standing alone the element takes keyboard focus (tabindex 0), so the moment is one Tab and one hover away; Escape hides the tooltip. Inside a link, a button, a list item (li, role listitem) or a feed (role feed, role log) it takes none -- a list of fifty events is not fifty more Tab stops (owner decision C183 (2)) -- and the full moment follows the visible words as visually hidden text, so the row's accessible text says it. No title attribute (a title is out of reach of the keyboard and many screen readers) and no micro forms («5м» reads as five metres).",
     "role": "time",
     "name": {
       "from": [
@@ -105,7 +110,7 @@
       "state": "default"
     }
   },
-  "x-summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», then the date, relative within the first hour, with the full date and time in a tooltip on hover and keyboard focus, inside a time element. The words are the platform's (Intl) in the page language; the element draws itself again when its words change, on one timer for the page.",
+  "x-summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», tomorrow «завтра, 10:00», then the date, relative within the first hour («только что» under a minute), with the full date, time and zone in a tooltip on hover and keyboard focus, inside a time element; in a list or a feed no Tab stop, the moment in the row's text. The words are the platform's (Intl) in the page language; the element draws itself again when its words change, on one timer for the page.",
   "x-source": {
     "package": "framework",
     "folder": "time",
@@ -124,7 +129,8 @@
     "css-variables: five public variables (§6) -- the colour, the focus ring colour, the ring's corner, the numerals and the wrap -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
     "version 1.1.0 (2026-11-14, owner decision C160 (3), (4); DEV change-time study CT-1, CT-2): a minor. The full-moment tooltip has no tail and opens below the time, flipping above at the window's bottom edge (it opened above with a tail pointing down; C59: no arrow by default), and is one size whatever the density (it was 24 high, 20 in a compact region: the tooltip's padding now takes the base steps). Settings, values, events and keys unchanged.",
     "first paint (DEV change-time study CT-7): the host's own text is the server's first paint -- «<sf-time datetime=\"…\">14:32</sf-time>», or the static markup of standard §5.4 -- and the first render replaces it in the same task (clearLightDomBeforeFirstRender), so the line keeps its width. A host with nothing inside holds the width of a time («00:00» in tabular numerals, hidden) from core's first-paint sheet (_sf_css__placeholder.scss) until it is defined; a text longer than a time still widens the line then.",
-    "version 1.2.0 (2026-11-14, DEV change-time study CT-5, CT-7, CT-9, CT-10, CT-11): a minor. The words change when they should: «1 минуту назад» becomes «2 минуты назад» at 1 min 30 s (the rounding of the words), not at the next whole minute of the clock, and seconds tick each second while they are shown (the wording under a minute waits for the owner's question q-ct-seconds); one timer serves every sf-time on the page and waits while the page is hidden. auto's yesterday is the language's own word from Intl.RelativeTimeFormat («gestern, 19:40» on a German page, where it read «yesterday, 19:40»); the language file only joins the day and the time (yesterday-at «{day}, {time}»). Older dates take the one long form of format date («30 декабря 2025 г.», it was «30 дек. 2025 г.»). A later day keeps its time («15 ноября, 10:00», it was «15 ноября»; new word date-at). The host's own text holds the line until the first render (first paint), and an empty host holds a time's width from core's sheet. Settings, values, events and keys unchanged."
+    "version 1.2.0 (2026-11-14, DEV change-time study CT-5, CT-7, CT-9, CT-10, CT-11): a minor. The words change when they should: «1 минуту назад» becomes «2 минуты назад» at 1 min 30 s (the rounding of the words), not at the next whole minute of the clock, and seconds tick each second while they are shown (the wording under a minute waits for the owner's question q-ct-seconds); one timer serves every sf-time on the page and waits while the page is hidden. auto's yesterday is the language's own word from Intl.RelativeTimeFormat («gestern, 19:40» on a German page, where it read «yesterday, 19:40»); the language file only joins the day and the time (yesterday-at «{day}, {time}»). Older dates take the one long form of format date («30 декабря 2025 г.», it was «30 дек. 2025 г.»). A later day keeps its time («15 ноября, 10:00», it was «15 ноября»; new word date-at). The host's own text holds the line until the first render (first paint), and an empty host holds a time's width from core's sheet. Settings, values, events and keys unchanged.",
+    "version 1.3.0 (2026-11-14, owner decision C183, research ui-control control/research/2026-11-14-change-time.md §6, prototype prototypes/change-time-study.html): a minor. (1) Under a minute there are no seconds: a moment just past is «только что» (new word just-now, ru and en; a page language the component has no word in says Intl's «now»: «jetzt»), one about to come Intl's «сейчас»; the words then change at the minute («1 минуту назад» at 59.5 s). (2) In a list or a feed (an li, role listitem, role feed, role log around it) the time is no Tab stop; the full moment is a visually hidden line after the words, so the row's text carries it; hover still shows the tooltip. A time standing alone stays a stop. (3) The tooltip names the zone: «13 ноября 2026 г. в 19:40, Москва (UTC+3)» -- the zones of Russia by their city from the language files (words zone-<iana id>, ru and en: Chrome carries no city names in other languages and says «Moscow» on a Russian page), any other zone by Intl's long generic name in the page language («Центральная Европа (UTC+1)»), and the offset from UTC (only the offset where there is no name); new setting time-zone (IANA name) for a product that knows the person's zone, the days counted on that zone's clock (core format-date: formatDate, calendarDayOffset and msUntilNextDay take timeZone). (4) The future mirrors the past: «через 20 минут», later today «сегодня, 14:00», tomorrow «завтра, 10:00», then the date and the time; the past of today stays «09:05». (5) A page's date (Docara «Обновлено 11 ноября»): format date with the tooltip -- «11 ноября», the exact moment and the zone on hover and focus; nothing new was needed. Values, events and keys unchanged; the setting is added."
   ],
   "x-registry": {
     "capabilities": [

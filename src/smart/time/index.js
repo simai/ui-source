@@ -28,8 +28,10 @@
 // the language files' and SF.format's.
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
-import {formatDate, calendarDayOffset, msUntilNextDay, toDate} from '../../core/js/format-date.js';
+import {formatDate, calendarDayOffset, knownTimeZone, msUntilNextDay, timeZoneOffset, toDate} from '../../core/js/format-date.js';
 import {formatRelativeDay, formatRelativeTime} from '../../core/js/format-relative.js';
+import {formatLocale, intlFormatter} from '../../core/js/format-intl.js';
+import {language} from '../../core/js/page-language.js';
 import {renderTimeTemplate} from './js/templates/default';
 import manifest from './component.json';
 import en from './lang/en.json';
@@ -45,6 +47,11 @@ const LONGEST_WAIT = 24 * 24 * HOUR;
 // A wake a little after the change, so the words read on waking are the new ones.
 const MARGIN = 50;
 const DURATION = /^P(?:(\d+(?:[.,]\d+)?)W)?(?:(\d+(?:[.,]\d+)?)D)?(?:T(?:(\d+(?:[.,]\d+)?)H)?(?:(\d+(?:[.,]\d+)?)M)?(?:(\d+(?:[.,]\d+)?)S)?)?$/iu;
+
+// Where a time is one of many (C183 (2)): a list's item, a feed or a log of
+// entries (sf-list, sf-list-timeline, sf-list-attention, sf-alert-bar,
+// sf-list-feed).
+export const IN_LIST = 'li, [role="listitem"], [role="feed"], [role="log"]';
 
 // The tooltips' ids, one per element on the page (stable across renders).
 let sequence = 0;
@@ -73,6 +80,9 @@ export function momentOf(value) {
 // The words formatRelativeTime gives for a span, as a key: [unit, value].
 // The same steps and rounding (format-relative.js), so the key changes
 // exactly when the words do.
+// Under a minute there are no seconds (owner decision C183 (1)): a moment
+// that has just passed is «только что», one about to come the language's
+// «сейчас»; neither changes until the minute.
 const RELATIVE_STEPS = [['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400], ['hour', 3600], ['minute', 60]];
 
 function relativeKey(spanMs) {
@@ -80,7 +90,68 @@ function relativeKey(spanMs) {
   for (const [unit, size] of RELATIVE_STEPS) {
     if (Math.abs(seconds) >= size) return `${unit}:${Math.round(seconds / size)}`;
   }
-  return `second:${seconds}`;
+  return seconds > 0 ? 'soon' : 'just';
+}
+
+/**
+ * Relative words for a moment from `now`: «только что» under a minute past
+ * (`justNow`, the component's word; null where the page language has none,
+ * and then the language's own «now»), the language's «now» under a minute
+ * ahead, else formatRelativeTime's («5 минут назад», «через 20 минут»).
+ */
+export function relativeWords(at, {now = new Date(), node = null, justNow = null} = {}) {
+  const moment = momentOf(at);
+  const base = momentOf(now);
+  if (!moment || !base) return '';
+  const key = relativeKey(moment.getTime() - base.getTime());
+  if (key === 'just' || key === 'soon') {
+    const own = key === 'just' && typeof justNow === 'function' ? justNow() : justNow;
+    if (key === 'just' && own) return String(own);
+    return intlFormatter('RelativeTimeFormat', formatLocale({node}), {numeric: 'auto'}).format(0, 'second');
+  }
+  return formatRelativeTime(moment, {now: base, node});
+}
+
+/** The IANA name of a zone: `timeZone` when the platform knows it, else the reader's. */
+export function zoneId(timeZone = '') {
+  if (knownTimeZone(timeZone)) return String(timeZone).trim();
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+  } catch {
+    return '';
+  }
+}
+
+/** The language-file key of a zone's own name: zone-europe-moscow. */
+export const zoneWordKey = (id) => `zone-${String(id).toLowerCase().replace(/[/_]/gu, '-')}`;
+
+/**
+ * The zone a moment is written in, as its tooltip names it (owner decision
+ * C183 (3)): the zone's name and its offset from UTC -- «Москва (UTC+3)»,
+ * «Центральная Европа (UTC+1)», «Индия (UTC+5:30)»; only the offset where
+ * there is no name («UTC»). The name is `name(id)` when it gives one (the
+ * component's words for the zones of Russia: browsers carry no city names in
+ * other languages, Chrome says «Moscow» on a Russian page), else the
+ * platform's generic name in the page language (Intl, longGeneric).
+ * `timeZone` is an IANA name; empty or unknown, the reader's own.
+ */
+export function zoneLabel(at, {timeZone = '', node = null, name = null} = {}) {
+  const moment = momentOf(at);
+  if (!moment) return '';
+  const minutes = timeZoneOffset(moment, {timeZone});
+  const hours = Math.trunc(Math.abs(minutes) / 60);
+  const rest = Math.abs(minutes) % 60;
+  const offset = minutes === 0 ? 'UTC' : `UTC${minutes > 0 ? '+' : '\u2212'}${hours}${rest ? `:${String(rest).padStart(2, '0')}` : ''}`;
+  let said = typeof name === 'function' ? name(zoneId(timeZone)) : null;
+  if (!said) {
+    try {
+      const options = {timeZoneName: 'longGeneric', ...(knownTimeZone(timeZone) ? {timeZone} : {})};
+      said = intlFormatter('DateTimeFormat', formatLocale({node}), options).formatToParts(moment).find((part) => part.type === 'timeZoneName')?.value ?? '';
+    } catch {
+      said = '';
+    }
+  }
+  return !said || /^(?:GMT|UTC)/u.test(said) ? offset : `${said} (${offset})`;
 }
 
 /**
@@ -111,46 +182,57 @@ const joinWords = (said, day, time) => (typeof said === 'function'
   : String(said ?? '{day}, {time}').replace(/\{(?:day|date)\}/u, day).replace('{time}', time));
 
 /**
- * What the element says: {iso, shown, full, relative, kind} for a moment, or
- * null. `node` gives the page language. The words are Intl's; `words.yesterdayAt`
- * and `words.dateAt` only join a day and a time: a pattern «{day}, {time}» or a
- * function (day, time). A pattern without {day} (a product's own «вчера в
- * {time}») is used as it is.
+ * What the element says: {iso, shown, full, tip, relative, kind} for a
+ * moment, or null. `node` gives the page language, `timeZone` (IANA) the
+ * clock the moment is written on, the reader's own when empty. The words are
+ * Intl's; `words.yesterdayAt` and `words.dateAt` only join a day and a time:
+ * a pattern «{day}, {time}» or a function (day, time). A pattern without
+ * {day} (a product's own «вчера в {time}») is used as it is.
+ * `words.justNow` is the word under a minute past (C183 (1)). `tip` is the
+ * full moment with its zone named (C183 (3)): «13 ноября 2026 г. в 19:40,
+ * Москва (UTC+3)».
  */
-export function describeTime(value, {format = 'auto', now = new Date(), threshold = HOUR, node = null, words = {}} = {}) {
+export function describeTime(value, {format = 'auto', now = new Date(), threshold = HOUR, node = null, words = {}, timeZone = ''} = {}) {
   const at = momentOf(value);
   if (!at) return null;
   const kind = FORMATS.includes(format) ? format : 'auto';
   const base = momentOf(now) ?? new Date();
-  const time = () => formatDate(at, {date: null, time: 'short', node});
+  const zone = knownTimeZone(timeZone) ? timeZone : '';
+  const time = () => formatDate(at, {date: null, time: 'short', timeZone: zone, node});
   // One form of a date in every format (CT-10): the day and the long month,
   // the year when it is not this one.
-  const dayAndMonth = () => formatDate(at, {intl: {day: 'numeric', month: 'long', ...(at.getFullYear() === base.getFullYear() ? {} : {year: 'numeric'})}, node});
-  const full = formatDate(at, {date: 'long', time: 'short', node});
+  const dayAndMonth = () => formatDate(at, {intl: {day: 'numeric', month: 'long', ...(at.getFullYear() === base.getFullYear() ? {} : {year: 'numeric'})}, timeZone: zone, node});
+  const full = formatDate(at, {date: 'long', time: 'short', timeZone: zone, node});
+  const relativeNow = () => relativeWords(at, {now: base, node, justNow: words.justNow});
   let shown;
   let relative = false;
   if (kind === 'time') shown = time();
   else if (kind === 'date') shown = dayAndMonth();
   else if (kind === 'datetime') shown = full;
   else if (kind === 'relative') {
-    shown = formatRelativeTime(at, {now: base, node});
+    shown = relativeNow();
     relative = true;
   } else if (Math.abs(base.getTime() - at.getTime()) < threshold) {
-    shown = formatRelativeTime(at, {now: base, node});
+    shown = relativeNow();
     relative = true;
   } else {
-    const day = calendarDayOffset(at, {now: base});
-    if (day === 0) shown = time();
-    // «вчера» is the language's own (Intl.RelativeTimeFormat, numeric auto):
-    // «yesterday», «gestern», «أمس» (CT-9).
-    else if (day === -1) shown = joinWords(words.yesterdayAt, formatRelativeDay(at, {now: base, weekday: false, node}), time());
-    // A later day keeps its time: a deadline tomorrow at 10:00 is «15 ноября,
-    // 10:00», not «15 ноября» (CT-11; the wording of the future itself is the
-    // owner's question q-ct-future).
-    else if (day > 0) shown = joinWords(words.dateAt, dayAndMonth(), time());
+    const day = calendarDayOffset(at, {now: base, timeZone: zone});
+    const ahead = at.getTime() > base.getTime();
+    // The future mirrors the past (owner decision C183 (4)): later today is
+    // «сегодня, 14:00» (the past of today stays «09:05»), tomorrow «завтра,
+    // 10:00», then the date and the time. «сегодня», «завтра» and «вчера» are
+    // the language's own (Intl.RelativeTimeFormat, numeric auto): «gestern»,
+    // «morgen», «أمس» (CT-9).
+    const relativeDay = () => formatRelativeDay(at, {now: base, weekday: false, timeZone: zone, node});
+    if (day === 0) shown = ahead ? joinWords(words.dateAt, relativeDay(), time()) : time();
+    else if (day === -1) shown = joinWords(words.yesterdayAt, relativeDay(), time());
+    else if (day === 1) shown = joinWords(words.dateAt, relativeDay(), time());
+    // A later day keeps its time: «17 ноября, 10:00» (CT-11).
+    else if (day > 1) shown = joinWords(words.dateAt, dayAndMonth(), time());
     else shown = dayAndMonth();
   }
-  return {iso: at.toISOString(), shown, full, relative, kind};
+  const where = zoneLabel(at, {timeZone: zone, node, name: words.zoneName});
+  return {iso: at.toISOString(), shown, full, tip: where ? `${full}, ${where}` : full, relative, kind};
 }
 
 // One timer for every sf-time on the page (CT-5): each element says when its
@@ -220,12 +302,12 @@ const clock = {
 };
 
 /** Milliseconds until the words of a said moment change, with the reader's clock; Infinity when they never do. */
-export function msUntilWordsChange(said, {now = Date.now(), threshold = HOUR} = {}) {
+export function msUntilWordsChange(said, {now = Date.now(), threshold = HOUR, timeZone = ''} = {}) {
   if (!said || (said.kind !== 'auto' && said.kind !== 'relative')) return Infinity;
   const at = Date.parse(said.iso);
   const base = momentOf(now)?.getTime() ?? Date.now();
   if (said.kind === 'relative') return msUntilRelativeChange(at, base);
-  const midnight = msUntilNextDay(new Date(base)) + 1000;
+  const midnight = msUntilNextDay(new Date(base), {timeZone}) + 1000;
   if (said.relative) {
     // Past moments leave the relative words at the threshold; a coming one
     // stays relative until it is past by the threshold.
@@ -273,15 +355,42 @@ class SfTime extends TimeElement {
     return durationMs(this.threshold) ?? HOUR;
   }
 
+  // The zone the moment is written on (C183 (3)): the time-zone setting when
+  // the platform knows it, else the reader's own.
+  get zone() {
+    return knownTimeZone(this.timeZone) ? String(this.timeZone).trim() : '';
+  }
+
+  // «только что» is the component's word, in the languages it has words for
+  // (its files and what a product registered); another page language says its
+  // own «now» (Intl) rather than a Russian or an English word.
+  justNow() {
+    const wanted = formatLocale({node: this}).toLowerCase();
+    const known = ['ru', 'en', ...language.known('sf-time')];
+    const has = known.includes(wanted) || known.includes(wanted.split('-')[0]);
+    return has ? this.sfWord('just-now') : null;
+  }
+
+  // A zone's own name where the component has one in the page language (the
+  // zones of Russia in ru and en), else null and the platform names it.
+  zoneName(id) {
+    const shipped = {ru, en}[formatLocale({node: this}).toLowerCase().split('-')[0]];
+    const key = zoneWordKey(id);
+    return id && shipped?.runtime?.[key] ? this.sfWord(key) : null;
+  }
+
   describe() {
     return describeTime(this.datetime, {
       format: this.format,
       now: this.moment,
       threshold: this.thresholdMs,
       node: this,
+      timeZone: this.zone,
       words: {
         yesterdayAt: (day, time) => this.sfWord('yesterday-at', {vars: {day, time}}),
         dateAt: (date, time) => this.sfWord('date-at', {vars: {date, time}}),
+        justNow: () => this.justNow(),
+        zoneName: (id) => this.zoneName(id),
       },
     });
   }
@@ -295,7 +404,7 @@ class SfTime extends TimeElement {
       this.stopTimer();
       return;
     }
-    const wait = msUntilWordsChange(said, {threshold: this.thresholdMs});
+    const wait = msUntilWordsChange(said, {threshold: this.thresholdMs, timeZone: this.zone});
     if (!Number.isFinite(wait)) {
       this.stopTimer();
       return;
@@ -317,12 +426,18 @@ class SfTime extends TimeElement {
     // hasTip, not tooltip: the tooltip prop keeps its own value (auto) in the context.
     const hasTip = Boolean(said) && this.tooltip !== 'none' && said.kind !== 'datetime';
     const nested = Boolean(this.parentElement?.closest?.('a[href], button, summary, [role="button"], [role="link"]'));
+    // In a list or a feed the time is no Tab stop (owner decision C183 (2)):
+    // fifty rows are not fifty more stops. The row's own text carries the
+    // exact moment (a visually hidden line), the tooltip still shows on
+    // hover. A time that stands alone stays a stop.
+    const inList = Boolean(this.parentElement?.closest?.(IN_LIST));
     return this.createTemplateContext({
       ...this.getPropsContext(),
       component: this,
       said,
       hasTip,
-      focusable: hasTip && !nested,
+      focusable: hasTip && !nested && !inList,
+      spoken: hasTip && (nested || inList),
       tipId: `${this._uid}-tip`,
       rootClass: this.getRootClass(),
     });

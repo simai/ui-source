@@ -41,6 +41,8 @@ import {elementFromManifest} from "../../core/js/element-manifest";
 import {noteDeprecated} from "../../core/js/deprecations";
 import {confirmSurface} from "../helpers/confirm-surface.js";
 import {renderChangeConfirmTemplate} from "./js/templates/default.js";
+import {calendarDayOffset} from "../../core/js/format-date.js";
+import {html} from "lit";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
 import en from "./lang/en.json";
@@ -111,6 +113,20 @@ class SfChangeConfirm extends ConfirmSurface {
 
     template() {
         return renderChangeConfirmTemplate(this.templateContext());
+    }
+
+    // The deadline is an sf-time (DEV change-time study CT-12; owner decision
+    // C183 (4)): «Подтвердить можно до 23:30» today, «… до завтра, 10:00»,
+    // «… до 17 ноября, 10:00» later, with the exact moment and its zone in
+    // the tooltip. The words around the time are the language file's
+    // until-text; the time stands where its {time} is.
+    statusText(shown) {
+        const until = this.getAttribute("expires-at");
+        if (shown !== "open" || !until || !Number.isFinite(Date.parse(until))) return super.statusText(shown);
+        const [before, after = ""] = this.sfWord("until-text", {vars: {time: "\u0000"}}).split("\u0000");
+        const today = calendarDayOffset(until) === 0;
+        return html`${before}<sf-time class="sf-confirm-change__until" datetime=${until}
+            format=${today ? "time" : "auto"} threshold="PT0S"></sf-time>${after}`;
     }
 
     // answer("accept") and answer("decline") were the 1.0 form; read until the

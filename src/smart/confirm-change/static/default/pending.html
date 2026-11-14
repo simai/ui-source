@@ -10,15 +10,9 @@
 </div>
 
 <footer class="sf-confirm-change__footer sf-change-confirm__footer">
-
-<p role="status" tabindex="-1" class="sf-confirm-change__status sf-change-confirm__status">
-<sf-icon size="1" aria-hidden="true" icon="schedule" style="display: contents;" data-sf-size-relative><i class="sf-icon sf-icon--size-1 sf-icon--weight-regular" style="--sf-icon--grade:0;--sf-icon--optical-size:24" aria-hidden="true" data-sf-static>schedule</i></sf-icon>
-<span>Применяется…</span>
-</p>
-
 <div class="sf-confirm-change__actions sf-change-confirm__actions">
-<sf-button scheme="primary" appearance="outline" size="1" text="Подтвердить" disabled style="display: contents;" data-sf-size-relative>
-<button type="button" class="sf-button sf-button--size-1 sf-button--outline sf-button--primary flex items-cross-center" disabled data-action="accept" data-sf-static>
+<sf-button scheme="primary" appearance="default" size="1" text="Подтвердить" disabled style="display: contents;" data-sf-size-relative>
+<button type="button" class="sf-button sf-button--size-1 sf-button--default sf-button--primary flex items-cross-center" disabled data-action="accept" data-sf-static>
 
 
 <span class="sf-button-text-container text-center pointer-event-none flex-1">
@@ -27,8 +21,8 @@
 
 </button>
 </sf-button>
-<sf-button scheme="on-surface" appearance="outline" size="1" text="Отклонить" disabled style="display: contents;" data-sf-size-relative>
-<button type="button" class="sf-button sf-button--size-1 sf-button--outline sf-button--on-surface flex items-cross-center" disabled data-action="decline" data-sf-static>
+<sf-button scheme="on-surface" appearance="ghost" size="1" text="Отклонить" disabled style="display: contents;" data-sf-size-relative>
+<button type="button" class="sf-button sf-button--size-1 sf-button--ghost sf-button--link sf-button--on-surface flex items-cross-center" disabled data-action="decline" data-sf-static>
 
 
 <span class="sf-button-text-container text-center pointer-event-none flex-1">
@@ -38,6 +32,10 @@
 </button>
 </sf-button>
 </div>
+<p role="status" tabindex="-1" class="sf-confirm-change__status sf-change-confirm__status">
+<sf-icon size="1" aria-hidden="true" icon="schedule" style="display: contents;" data-sf-size-relative><i class="sf-icon sf-icon--size-1 sf-icon--weight-regular" style="--sf-icon--grade:0;--sf-icon--optical-size:24" aria-hidden="true" data-sf-static>schedule</i></sf-icon>
+<span>Применяется…</span>
+</p>
 </footer>
 </section>
 </sf-confirm-change>

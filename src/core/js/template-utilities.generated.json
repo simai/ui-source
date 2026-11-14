@@ -441,7 +441,8 @@
   ],
   "cl-time": [
     "display/default",
-    "position/default"
+    "position/default",
+    "sr-only/default"
   ],
   "cl-toast": [
     "align-items/default",

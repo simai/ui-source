@@ -13,8 +13,12 @@ import {html, nothing} from 'lit';
 //   keyboard focus show it, Escape and a press hide it, aria-describedby
 //   names it. The surface is hidden in the markup and only the controller
 //   shows it, so a redraw never fights it.
-// - The time element is a Tab stop only with a tooltip and outside a link
-//   or a button (index.js focusable).
+// - The time element is a Tab stop only with a tooltip, outside a link or a
+//   button and outside a list or a feed (index.js focusable; owner decision
+//   C183 (2)). Where it is no stop, the full moment with its zone is a
+//   visually hidden line after it (spoken), so the row's text carries it.
+// - The tooltip names the zone: «13 ноября 2026 г. в 19:40, Москва (UTC+3)»
+//   (said.tip, C183 (3)).
 
 export function renderTimeTemplate(context) {
   const {said} = context;
@@ -26,5 +30,6 @@ export function renderTimeTemplate(context) {
   return html`<span class="sf-time-anchor sf-tooltip-anchor"><time class=${classes} datetime=${said.iso}
       tabindex=${context.focusable ? '0' : nothing} data-tooltip=${context.tipId}>${said.shown}</time><span
       class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-time-tooltip"
-      id=${context.tipId} hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${said.full}</span></span></span></span>`;
+      id=${context.tipId} hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${said.tip}</span></span></span>${context.spoken
+      ? html`<span class="sr-only">, ${said.tip}</span>` : nothing}</span>`;
 }
