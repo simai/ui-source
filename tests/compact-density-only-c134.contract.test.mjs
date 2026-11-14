@@ -25,7 +25,7 @@ const record = (id) => journal.find((entry) => entry.id === id);
 
 test('C134 sf-language: labels name|code replaces the boolean compact, read in code and noted with its dates', () => {
   const manifest = json('src/smart/language/component.json');
-  assert.ok(['1.3.0', '1.4.0'].includes(manifest.version), manifest.version);
+  assert.ok(['1.3.0', '1.4.0', '1.4.2'].includes(manifest.version), manifest.version); // 1.4.2: group build 5 patch
   assert.ok(!('compact' in manifest.settings), 'compact leaves the settings');
   assert.deepEqual(manifest.settings.labels.values, ['name', 'code']);
   assert.equal(manifest.settings.labels.default, 'name');

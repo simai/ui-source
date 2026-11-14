@@ -119,7 +119,7 @@ test('the sheet: one rung, the container widths, 44px under a coarse pointer, th
 
 test('sf-steps 1.4.1 (C101, C105): the wizard row is a row, its reachable steps buttons, the states in today\'s words', () => {
   const steps = json('src/smart/steps/component.json');
-  assert.equal(steps.version, '1.4.1');
+  assert.equal(steps.version, '1.4.2'); // group build 5 patch
   assert.deepEqual(steps.settings.items.of.state.values, ['done', 'ahead', 'skipped', 'running', 'error', 'completed', 'default']);
   const template = read('src/smart/wizard/js/templates/default.js');
   assert.match(template, /layout="row" navigation="free"/u);
