@@ -275,20 +275,20 @@
      pressed on a popup (C113 follow-up). */
   .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut),
   .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):hover:not(:has(> *)) {
-    --sf-button-text-container--color: var(--sf-secondary-hover);
+    --sf-button-text-container--color: var(--sf-place--ink, var(--sf-secondary-hover));
   }
 
   .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):hover .sf-icon {
-    --sf-icon--color: var(--sf-secondary-hover);
+    --sf-icon--color: var(--sf-place--ink, var(--sf-secondary-hover));
   }
 
   .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):is(:active, .active) :is(.sf-button-text-container, .sf-button-shortcut),
   .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):is(:active, .active):not(:has(> *)) {
-    --sf-button-text-container--color: var(--sf-secondary-active);
+    --sf-button-text-container--color: var(--sf-place--ink, var(--sf-secondary-active));
   }
 
   .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):is(:active, .active) .sf-icon {
-    --sf-icon--color: var(--sf-secondary-active);
+    --sf-icon--color: var(--sf-place--ink, var(--sf-secondary-active));
   }
 }
 
@@ -317,13 +317,21 @@
      pressed. Before, these three looks of secondary had no rule at all: no
      padding, shorter than the size's control height, the browser's text colour. Filled
      (default) and tonal secondary are unchanged. */
+  /* On a place with its own ink -- a strong coloured place, the duo
+     gradient, glass, an inverse place, which declare it as --sf-place--ink --
+     the label and the icons are that ink in every state, as the status
+     containers' ink is there (places states, 2026-11-14): a hue on a colour
+     is that colour or near it (secondary and error read 1.00:1 on bg-primary,
+     1.36 on glass), and no strong place leaves a hue 4.5:1. The page and
+     every opaque place (initial) keep the hue and its steps. The fill and
+     the edge keep their hue. */
   .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
   .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:has(> *)) {
-    --sf-button-text-container--color: var(--sf-button-color, var(--sf-secondary));
+    --sf-button-text-container--color: var(--sf-button-color, var(--sf-place--ink, var(--sf-secondary)));
   }
 
   .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary .sf-icon {
-    --sf-icon--color: var(--sf-secondary);
+    --sf-icon--color: var(--sf-place--ink, var(--sf-secondary));
   }
 
   /* A shortcut (sf-button shortcut): the keys at the end of the button, in a
