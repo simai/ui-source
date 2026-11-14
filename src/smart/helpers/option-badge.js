@@ -53,10 +53,12 @@ export function nearestPaletteHue(hex) {
 // The fill of a hue: tone 50 at the fill step 24 (C43: no new tones or steps;
 // the alpha scale's fill family), over the place in both themes, as the 24 %
 // mix of the data's hex was. The text stays on the surface colour, so the
-// label reads the same in both themes. Written to the badge's own variables:
-// the public ones are the page's, never set by the Framework.
+// label reads the same in both themes. Written to the badge's public
+// variables, --sf-badge-background-color and --sf-badge-color (owner decision
+// C140 (2), BG-7): a colour from data reaches the badge only through them and
+// only as a palette step, never the author's hex.
 const paletteStyle = (hue) =>
-    `--sf-badge--background-color: var(--sf-${hue}-50--alfa-24); --sf-badge--color: var(--sf-on-surface)`;
+    `--sf-badge-background-color: var(--sf-${hue}-50--alfa-24); --sf-badge-color: var(--sf-on-surface)`;
 
 /**
  * Badge look for a filter option with optionRenderer 'badge'. option.color is

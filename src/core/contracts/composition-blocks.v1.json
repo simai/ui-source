@@ -520,7 +520,7 @@
             "type": "string"
           },
           "appearance": {
-            "default": "main",
+            "default": "tonal",
             "enum": [
               "main",
               "tonal",

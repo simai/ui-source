@@ -29,13 +29,14 @@ function renderContent(context, section) {
 }
 
 // What stands in the header: an icon before the title, the title, a badge
-// after it, then the class accordion's marker.
+// after it, then the class accordion's marker. The badge is tonal, grey (owner
+// decision C140): it took sf-badge's former default, the dark grey fill.
 function renderHeaderContent(context, section, open) {
   return html`
     ${section.icon ? html`<i class="sf-icon sf-accordion-lead" aria-hidden="true">${section.icon}</i>` : nothing}
     <span class="sf-accordion-title">${section.title}</span>
     ${section.badge
-      ? html`<sf-badge class="sf-accordion-badge" size=${BADGE_SIZE[context.size] || '1/3'}
+      ? html`<sf-badge class="sf-accordion-badge" appearance="tonal" size=${BADGE_SIZE[context.size] || '1/3'}
           line=${BADGE_LINE[context.size] || nothing} text=${section.badge}></sf-badge>`
       : nothing}
     ${context.isStatic ? nothing : html`<i class="sf-icon" aria-hidden="true">${markerGlyph(context.marker, open)}</i>`}

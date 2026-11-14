@@ -42,7 +42,8 @@ test('C134 sf-language: labels name|code replaces the boolean compact, read in c
 
 test('C134 sf-menu: appearance rail, compact a dated value alias; the rail writes both classes and the class sheet draws either', () => {
   const manifest = json('src/smart/menu/component.json');
-  assert.equal(manifest.version, '1.7.1');
+  // 1.7.1: C134; 1.8.0: the counter's and the text badge's looks (C140).
+  assert.match(manifest.version, /^1\.(7\.[1-9]\d*|([8-9]|\d{2,})\.\d+)$/u);
   assert.deepEqual(manifest.settings.appearance.values, ['default', 'documentation-tree', 'rail', 'navigation']);
   assert.deepEqual([...MENU_APPEARANCES], manifest.settings.appearance.values);
   const row = json('src/smart/menu/aliases.json').aliases.find((alias) => alias.kind === 'value' && alias.from === 'compact');
@@ -62,7 +63,8 @@ test('C134 sf-menu: appearance rail, compact a dated value alias; the rail write
 
 test('C134 sf-contents: layout sheet, compact a dated value alias; the sheet writes both classes and the sheet rule draws either', () => {
   const manifest = json('src/smart/contents/component.json');
-  assert.equal(manifest.version, '1.7.0');
+  // 1.7.0: C134; 1.7.1: the status mark writes icon-only and is tonal (C134, C140).
+  assert.match(manifest.version, /^1\.(7\.\d+|([8-9]|\d{2,})\.\d+)$/u);
   assert.deepEqual(manifest.settings.layout.values, ['auto', 'column', 'sheet', 'rail', 'bar']);
   const row = json('src/smart/contents/aliases.json').aliases.find((alias) => alias.kind === 'value' && alias.from === 'compact');
   assert.deepEqual({to: row.to, setting: row.setting, since: row.since, remove_after: row.remove_after}, {to: 'sheet', setting: 'layout', since: '2026-11-13', remove_after: '2027-01-01'});

@@ -20,7 +20,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "type": "string"
         },
         "appearance": {
-          "default": "main",
+          "default": "tonal",
           "enum": [
             "main",
             "tonal",

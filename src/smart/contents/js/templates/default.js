@@ -18,7 +18,9 @@ import {html, nothing} from 'lit';
 // entries outside the current branch; an entry with a count or a status
 // carries a badge on the line of its text (sf-badge line="text") and says it
 // in its name; the sheet view's veil stands behind the open list, which is a
-// bottom sheet on a phone.
+// bottom sheet on a phone. The badge is tonal whatever it says (owner decision
+// C140; C96 (6): an error in a label stays tonal red): the status mark drew
+// the filled look, which is the attention count's alone.
 const STATUSES = ['error', 'warning', 'success'];
 const STATUS_ICONS = {error: 'error', warning: 'warning', success: 'check_circle'};
 
@@ -94,7 +96,7 @@ export function renderContentsTemplate(context) {
           aria-label=${marked ? component.markedName(section.text, {count, status}) : nothing}
           data-status=${status || nothing}
           @click=${(event) => component.choose(event, section.id)}><span class="sf-contents-mark" aria-hidden="true"></span><span class="sf-contents-text">${section.text}</span>${marked ? html`<sf-badge class="sf-contents-count" line="text"
-            status=${status || nothing} appearance=${status ? 'main' : 'tonal'} text=${count ? String(count) : nothing}
+            status=${status || nothing} appearance="tonal" text=${count ? String(count) : nothing}
             icon=${!count && status ? STATUS_ICONS[status] : nothing} icon-only=${!count && status ? '' : nothing}
             aria-hidden="true"></sf-badge>` : nothing}</a>
       </li>`;

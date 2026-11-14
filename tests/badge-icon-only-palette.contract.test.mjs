@@ -61,11 +61,12 @@ test('BG-7: a hex from data is drawn as a palette step; no raw colour reaches th
   for (const [hex, hue] of Object.entries(cases)) {
     const props = optionBadgeProps({color: hex});
     assert.equal(props.scheme, 'neutral');
-    assert.equal(props.rootStyle, `--sf-badge--background-color: var(--sf-${hue}-50--alfa-24); --sf-badge--color: var(--sf-on-surface)`, hex);
-    assert.doesNotMatch(props.rootStyle, /#[0-9a-f]{3,8}|color-mix|--sf-badge-(background-)?color:/iu);
+    // C140 (2): through the public variables, a palette step only.
+    assert.equal(props.rootStyle, `--sf-badge-background-color: var(--sf-${hue}-50--alfa-24); --sf-badge-color: var(--sf-on-surface)`, hex);
+    assert.doesNotMatch(props.rootStyle, /#[0-9a-f]{3,8}|color-mix|--sf-badge--/iu);
   }
-  assert.equal(optionBadgeProps({color: 'Teal'}).rootStyle, '--sf-badge--background-color: var(--sf-teal-50--alfa-24); --sf-badge--color: var(--sf-on-surface)');
-  assert.equal(optionBadgeProps({color: 'brown'}).rootStyle, '--sf-badge--background-color: var(--sf-brown-50--alfa-24); --sf-badge--color: var(--sf-on-surface)');
+  assert.equal(optionBadgeProps({color: 'Teal'}).rootStyle, '--sf-badge-background-color: var(--sf-teal-50--alfa-24); --sf-badge-color: var(--sf-on-surface)');
+  assert.equal(optionBadgeProps({color: 'brown'}).rootStyle, '--sf-badge-background-color: var(--sf-brown-50--alfa-24); --sf-badge-color: var(--sf-on-surface)');
   assert.deepEqual(optionBadgeProps({color: 'danger'}), {scheme: 'error', rootStyle: ''});
   assert.deepEqual(optionBadgeProps({scheme: 'success'}), {scheme: 'success', rootStyle: ''});
   assert.deepEqual(optionBadgeProps({color: 'url(x)'}), {scheme: 'neutral', rootStyle: ''});

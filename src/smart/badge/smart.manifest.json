@@ -68,8 +68,8 @@
       },
       "appearance": {
         "type": "string",
-        "default": "main",
-        "description": "How the badge looks: the most visible fill, a calmer tonal one, or an outline.",
+        "default": "tonal",
+        "description": "How the badge looks: tonal (the default, a calm fill of its colour), outline (a mark beside a title: a version, a type), or main, the filled look, which belongs to the attention count alone (with status error). main with any other colour draws tonal; that spelling is noted in SF.deprecations until 2027-01-01 (owner decision C140).",
         "enum": [
           "main",
           "tonal",
@@ -155,7 +155,7 @@
       },
       "type": {
         "type": "string",
-        "default": "main",
+        "default": "tonal",
         "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json.",
         "enum": [
           "main",
@@ -284,7 +284,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/badge/index.js",
-        "sha256": "4010f7f5f73754b3b331a457e81d07d0b7bab518fbe37111191b1430805c983e"
+        "sha256": "5c25e0d6c39dbe6490ee7406ace41d8b0adf971439fe1f8f65da889b676278de"
       }
     ],
     "generated_runtime": [

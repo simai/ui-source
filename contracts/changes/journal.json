@@ -11952,52 +11952,6 @@
       "source": "src/core/scss/mix/_mix__places.scss (sf-place-glass-accent); src/core/scss/_sf_css__surface_places.scss; ui-control control/docs-review/decisions.md C70"
     },
     {
-      "id": "attribute-badge-compact-to-icon-only",
-      "recorded_on": "2026-11-14",
-      "stage": "compat",
-      "kind": "attribute",
-      "summary": "sf-badge 1.6.0: the word compact means density only (owner decision C134). The badge that shows its icon alone -- the text a visually hidden copy that stays the name, the box a square -- is the boolean icon-only; compact is its dated alias, mapped by the shim (attribute and property), drawn the same and noted in SF.deprecations until remove_after. icon-only is the name sf-segmented's items already use for the same thing.",
-      "items": [
-        {
-          "component": "sf-badge",
-          "from": "compact",
-          "to": "icon-only"
-        }
-      ],
-      "deprecated_on": "2026-11-14",
-      "remove_after": "2027-01-01",
-      "rewrite": "rename-attribute",
-      "examples": {
-        "before": "<sf-badge activity=\"failed\" compact></sf-badge>",
-        "after": "<sf-badge activity=\"failed\" icon-only></sf-badge>"
-      },
-      "owner": "ui-source",
-      "source": "src/smart/badge/component.json aliases; ui-control control/docs-review/decisions.md C134; control/research/2026-11-13-navigation-density.md D5, Q1; control/research/2026-11-14-badges.md"
-    },
-    {
-      "id": "class-badges-compact-to-icon-only",
-      "recorded_on": "2026-11-14",
-      "stage": "compat",
-      "kind": "class",
-      "summary": "component.badges 1.8.0: the class of a badge that shows its icon alone is sf-badge--icon-only (owner decision C134: the word compact means density only); sf-badge--compact is its former name and is drawn by the same rule until remove_after. sf-badge with icon-only writes both classes until then, so a page selector that reached sf-badge--compact still does.",
-      "items": [
-        {
-          "component": "sf-badge",
-          "from": "sf-badge--compact",
-          "to": "sf-badge--icon-only"
-        }
-      ],
-      "deprecated_on": "2026-11-14",
-      "remove_after": "2027-01-01",
-      "rewrite": "rename-class",
-      "examples": {
-        "before": "<span class=\"sf-badge sf-badge--tonal sf-badge--error sf-badge--compact\">",
-        "after": "<span class=\"sf-badge sf-badge--tonal sf-badge--error sf-badge--icon-only\">"
-      },
-      "owner": "ui-source",
-      "source": "src/component/badges/scss/_css__badges.scss; src/smart/badge/js/templates/default.js; ui-control control/docs-review/decisions.md C134; control/research/2026-11-14-badges.md"
-    },
-    {
       "id": "value-spinner-one-look",
       "recorded_on": "2026-11-13",
       "stage": "compat",
@@ -12283,6 +12237,106 @@
       "manual": "Listen for sf-input-quantity-remove where a page listened for sf-quantity-remove; the detail and the cancel are the same.",
       "owner": "ui-source",
       "source": "src/smart/input-quantity/aliases.json, src/smart/input-quantity/smart.manifest.json events.sf-quantity-remove"
+    },
+    {
+      "id": "attribute-badge-compact-to-icon-only",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-badge 1.6.0: the word compact means density only (owner decision C134). The badge that shows its icon alone -- the text a visually hidden copy that stays the name, the box a square -- is the boolean icon-only; compact is its dated alias, mapped by the shim (attribute and property), drawn the same and noted in SF.deprecations until remove_after. icon-only is the name sf-segmented's items already use for the same thing.",
+      "items": [
+        {
+          "component": "sf-badge",
+          "from": "compact",
+          "to": "icon-only"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-attribute",
+      "examples": {
+        "before": "<sf-badge activity=\"failed\" compact></sf-badge>",
+        "after": "<sf-badge activity=\"failed\" icon-only></sf-badge>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/badge/component.json aliases; ui-control control/docs-review/decisions.md C134; control/research/2026-11-13-navigation-density.md D5, Q1; control/research/2026-11-14-badges.md"
+    },
+    {
+      "id": "class-badges-compact-to-icon-only",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.badges 1.8.0: the class of a badge that shows its icon alone is sf-badge--icon-only (owner decision C134: the word compact means density only); sf-badge--compact is its former name and is drawn by the same rule until remove_after. sf-badge with icon-only writes both classes until then, so a page selector that reached sf-badge--compact still does.",
+      "items": [
+        {
+          "component": "sf-badge",
+          "from": "sf-badge--compact",
+          "to": "sf-badge--icon-only"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<span class=\"sf-badge sf-badge--tonal sf-badge--error sf-badge--compact\">",
+        "after": "<span class=\"sf-badge sf-badge--tonal sf-badge--error sf-badge--icon-only\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/badges/scss/_css__badges.scss; src/smart/badge/js/templates/default.js; ui-control control/docs-review/decisions.md C134; control/research/2026-11-14-badges.md"
+    },
+    {
+      "id": "value-badge-appearance-main-to-tonal",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-badge 1.6.0, component.badges 1.8.0 (owner decision C140 (4)): the filled look is the attention count's alone, appearance=\"main\" with status error. main with any other colour or status draws tonal -- the element writes sf-badge--tonal, and the class markup sf-badge--main with such a colour draws as tonal -- and each element's use is noted once in SF.deprecations (sf-badge, value appearance main -> tonal) until remove_after. Not a shim alias: an alias would rewrite main error too. The default appearance is tonal (C140 (1)).",
+      "items": [
+        {
+          "component": "sf-badge",
+          "from": "appearance=\"main\" (with a colour other than error)",
+          "to": "appearance=\"tonal\" (or no appearance: tonal is the default)"
+        },
+        {
+          "component": "badges",
+          "from": "sf-badge--main sf-badge--<colour other than error>",
+          "to": "sf-badge--tonal sf-badge--<colour>"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a badge is the attention count (unread, needs action), keep appearance=\"main\" status=\"error\". Everywhere else drop appearance=\"main\" (tonal is the default) or write appearance=\"tonal\"; a mark beside a title (a version, a type) is appearance=\"outline\".",
+      "examples": {
+        "before": "<sf-badge appearance=\"main\" scheme=\"primary\" text=\"Новое\"></sf-badge>",
+        "after": "<sf-badge text=\"Новое\" scheme=\"primary\"></sf-badge>"
+      },
+      "owner": "ui-source",
+      "source": "src/component/badges/js/contract.js; src/smart/badge/index.js; src/component/badges/scss/_css__badges.scss; ui-control control/docs-review/decisions.md C140; control/research/2026-11-14-badges.md"
+    },
+    {
+      "id": "behaviour-tag-status-without-interaction-is-a-badge",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-tag 1.5.0 (owner decision C140 (6), badges study BG-6): a status belongs to a tag a person presses or removes. A tag with status that is neither interactive nor closable draws the tonal badge of that status (sf-badge sf-badge--tonal sf-badge--<status>, class sf-tag-badge) in place of a tag with a status dot. Interactive and closable status tags are unchanged.",
+      "items": [
+        {
+          "component": "sf-tag",
+          "attribute": "status",
+          "from": "<sf-tag status=\"…\"> without interactive or closable (a tag with a status dot)",
+          "to": "<sf-badge appearance=\"tonal\" status=\"…\">"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write the badge where the page meant a status mark: <sf-badge status=\"success\" text=\"…\"></sf-badge>. Keep sf-tag status for a filter (interactive) or a chosen value a person removes (closable). A page that styled .sf-tag--success and its kin on a passive tag styles .sf-tag-badge.",
+      "examples": {
+        "before": "<sf-tag kind=\"default\" status=\"success\" text=\"Опубликовано\"></sf-tag>",
+        "after": "<sf-badge status=\"success\" text=\"Опубликовано\"></sf-badge>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/tag/js/templates/default.js; ui-control control/docs-review/decisions.md C140"
     }
   ]
 }

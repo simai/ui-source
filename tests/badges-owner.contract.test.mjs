@@ -193,7 +193,8 @@ test('a tonal badge on a translucent fill lays its tone over the solid place (C4
   ]);
   // The badge: its tone over the role, as a background image only; the
   // background-color stays its tone, so off a fill nothing changes.
-  assert.match(css, /\.sf-badge\.sf-badge--tonal \{\s*background-image: linear-gradient\(var\(--sf-badge--background-color\), var\(--sf-badge--background-color\)\), linear-gradient\(var\(--sf-surface-underlay\), var\(--sf-surface-underlay\)\);\s*\}/u);
+  // C140 (4): every badge drawn tonal -- tonal, main on a colour but error, no look.
+  assert.match(css, /\.sf-badge:where\(\.sf-badge--tonal, \.sf-badge--main:not\(\.sf-badge--error, \.sf-badge--danger\), :not\(\.sf-badge--main, \.sf-badge--tonal, \.sf-badge--outline\)\):not\(\.sf-badge--anchored\) \{\s*background-image: linear-gradient\(var\(--sf-badge--background-color\), var\(--sf-badge--background-color\)\), linear-gradient\(var\(--sf-surface-underlay\), var\(--sf-surface-underlay\)\);\s*\}/u);
   assert.match(css, /\.sf-badge \{[^}]*background-color: var\(--sf-badge--background-color\);/u);
   // The role is guaranteed invalid on the page and on every place.
   assert.match(theme, /\s--sf-surface-underlay: initial;/u);

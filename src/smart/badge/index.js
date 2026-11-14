@@ -2,10 +2,13 @@ import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { fieldSize } from '../../component/field-size';
 import {
+  BADGE_MAIN_TONAL,
   BADGE_SCHEMES,
   BADGE_SIZES,
+  isRetiredMain,
   normalizeBadgeContract,
 } from '../../component/badges/js/contract';
+import { noteDeprecated } from '../../core/js/deprecations.js';
 import { renderBadgeTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -103,6 +106,15 @@ class SfBadge extends BadgeElement {
   }
 
 
+  // appearance="main" is the attention count's (owner decision C140 (4)): with
+  // any colour but error it draws tonal, and the spelling is noted once per
+  // badge until 2027-01-01 (journal value-badge-appearance-main-to-tonal).
+  noteRetiredMain() {
+    if (this._sfMainNoted || !isRetiredMain({type: this.getProp('appearance'), scheme: this.paintedScheme})) return;
+    this._sfMainNoted = true;
+    noteDeprecated({component: 'sf-badge', tag: 'sf-badge', kind: 'value', attribute: 'appearance', from: 'main', to: 'tonal', ...BADGE_MAIN_TONAL});
+  }
+
   get appearance() {
     return normalizeBadgeContract({
       type: this.getProp('appearance'),
@@ -167,6 +179,7 @@ class SfBadge extends BadgeElement {
   }
 
   templateContext() {
+    this.noteRetiredMain();
     const props = this.getPropsContext();
     const variant = normalizeBadgeContract(props);
 

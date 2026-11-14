@@ -49,8 +49,8 @@ const sfBadgeMeta = {
         "tonal",
         "outline"
       ],
-      "default": "main",
-      "description": "How the badge looks: the most visible fill, a calmer tonal one, or an outline."
+      "default": "tonal",
+      "description": "How the badge looks: tonal (the default, a calm fill of its colour), outline (a mark beside a title: a version, a type), or main, the filled look, which belongs to the attention count alone (with status error). main with any other colour draws tonal; that spelling is noted in SF.deprecations until 2027-01-01 (owner decision C140)."
     },
     "scheme": {
       "kind": "enum",
@@ -149,7 +149,7 @@ const sfBadgeMeta = {
         "tonal",
         "outline"
       ],
-      "default": "main",
+      "default": "tonal",
       "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json."
     },
     "icon-left": {
