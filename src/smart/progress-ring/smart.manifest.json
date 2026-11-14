@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-ring",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "title": "Progress Ring",
   "summary": "A value from 0 to 100, or an unknown one, drawn as a ring on the control ladder, with the percentage or a picture in the middle.",
   "kind": "smart",
@@ -265,7 +265,7 @@
       },
       {
         "path": "src/smart/progress-ring/js/templates/default.js",
-        "sha256": "81e5f32e126418d9d71f3a079732623dc11b1825822c0f98df8de75c9b9b4744"
+        "sha256": "6bb82830b588f17747c08f9d379af3db22afdd80ff64136e0d46da541cd5ef8d"
       },
       {
         "path": "src/smart/progress-ring/rule.js",
@@ -273,7 +273,7 @@
       },
       {
         "path": "src/smart/progress-ring/docs.md",
-        "sha256": "97dcd2ffca01fa009ba8a1f024476fdeffb499817b21c5f1a7c22b5b20c93672"
+        "sha256": "a9f0f5f6d3d1532fc29dd82516a2e93f9afab2db6303e89fab2393a21595d227"
       }
     ],
     "generated_runtime": []
@@ -286,7 +286,8 @@
       "Do not omit a localized accessible label",
       "Do not infer semantic status from the percentage",
       "Do not make the progress indicator focusable",
-      "Do not use the ring for a long task in a page's body; use sf-progress-bar"
+      "Do not use the ring for a long task in a page's body; use sf-progress-bar",
+      "Do not put an account's quota or tariff remainder in a ring around the header's avatar; use a meter row in the person menu (owner decision C191 (4))"
     ],
     "required_reads": [
       "inputs",

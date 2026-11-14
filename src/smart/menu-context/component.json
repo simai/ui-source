@@ -2,7 +2,7 @@
   "$comment": "The source of sf-menu-context's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/context-menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.menu-context",
   "tag": "sf-menu-context",
-  "version": "1.19.0",
+  "version": "1.24.0",
   "kind": "leaf",
   "family": "menu",
   "settings": {
@@ -190,6 +190,21 @@
         "view": {
           "type": "string",
           "optional": true
+        },
+        "value-text": {
+          "type": "string",
+          "optional": true,
+          "summary": "A meter row's words (type meter, owner decision C191 (5)): what the amount means as people say it, such as the remainder «Осталось 1,7 из 10 ГБ», shown over the bar and said by it; without it the percentage. Written valueText in a script."
+        },
+        "warning-at": {
+          "type": "number",
+          "optional": true,
+          "summary": "A meter row's warning threshold in per cent of the share used (C131 (7)): from it on the bar is a warning. Written warningAt in a script."
+        },
+        "error-at": {
+          "type": "number",
+          "optional": true,
+          "summary": "A meter row's error threshold in per cent of the share used (C131 (7)), above warning-at. Written errorAt in a script."
         }
       },
       "summary": "The menu as data (set as a property, or JSON in the attribute). See item_contract. When present, it replaces items and the content slot."
@@ -601,6 +616,14 @@
       "$comment": [
         "The picture's placeholder glyph is an sf-icon element."
       ]
+    },
+    {
+      "name": "cl-progress-bar",
+      "lazy": true,
+      "$comment": [
+        "A meter row (type meter, owner decision C191 (4)) is sf-progress-bar's meter: fetched after the",
+        "page is ready, as the tabs are, and only a menu with a meter draws one."
+      ]
     }
   ],
   "templates": {
@@ -909,7 +932,8 @@
     "version 1.16.5 (2026-11-13, owner decision C105 H4, spacing audit C2; component.context-menu 1.9.3; 1.16.4 is held by another branch): a patch. The panel's 1 px border is inside its inline inset: the rows' plates, a search header, a drilling head, the footer and a panel's body start the inset less --sf-context-menu-border-width from the border's inner edge, so a row's icon or text stands 16 from the panel's outer edge (compact and phone 12), not 17 (13). The scrollbar's gap on either side of its thumb stays the whole inset (C07, C106). Settings, values, events and keys unchanged.",
     "version 1.17.0 (2026-11-14): a minor (owner decision C142 (7), ui-control control/docs-review/decisions.md; sf-language 1.4.0). An entry with a submenu may give the submenu's width, entry.width, read as the menu's width setting (content, list, panel, form, trigger or a length): sf-language's app menu row (SfLanguage.menuEntry) opens its language rows at decision C32's panel width, so the name in the page's language beside each name is not cut (it was the content width, «английск…»). Without it a submenu is as before. Settings otherwise, values, events and keys unchanged.",
     "version 1.18.0 (2026-11-14, owner decisions C79 and C134, ui-control research 2026-11-14-context-menu CM-2, CM-5, CM-6, CM-9; 1.17.0 is held by fix/language-g4; component.kbd 1.3.3): a minor. (1) The size default stays 1/2 (owner decision C134, newer than C22/C79; an earlier commit of this version made it 1 and was taken back): rows 32 on a page, 28 in a compact region, 44 under a finger on a phone, where the 1/2 step's text is 12. (2) An anchor of no size is a point (a right-click's pointer): the corner opens at the point itself (no --sf-space-1/4 gap; flipped up, its bottom is the point), the density is the one of the element under the point, and when nothing held the focus before, Escape and a choice give it to that element -- its nearest focusable ancestor, else the element itself lent tabindex -1 until it loses the focus. (3) An example opens the menu on a right-click over a list row. (4) The shortcut delete reads ⌦ on a Mac (component.kbd 1.3.3), Del elsewhere. Settings other than the size's default, values, events and keys unchanged.",
-    "version 1.19.0 (2026-11-14, avatar study AV-8, 2026-11-14; control/research/2026-11-14-avatar.md; above the unreleased 1.17.0 of fix/language-g4 and the context-menu work in progress): a minor, a picture change. A row's picture and the header's are sf-avatar's own drawing (smart avatar js/picture.js; avatars and cl-icon relations): the photo, the initials on the neutral plate (surface-container, its container ink, regular weight) or the person glyph; the row's stays square and the row's line, the header's the d0 circle (component.context-menu 1.11.0 keeps the geometry only). They were the menu's own classes on the secondary container in the medium weight. Settings, events and keys unchanged."
+    "version 1.19.0 (2026-11-14, avatar study AV-8, 2026-11-14; control/research/2026-11-14-avatar.md; above the unreleased 1.17.0 of fix/language-g4 and the context-menu work in progress): a minor, a picture change. A row's picture and the header's are sf-avatar's own drawing (smart avatar js/picture.js; avatars and cl-icon relations): the photo, the initials on the neutral plate (surface-container, its container ink, regular weight) or the person glyph; the row's stays square and the row's line, the header's the d0 circle (component.context-menu 1.11.0 keeps the geometry only). They were the menu's own classes on the secondary container in the medium weight. Settings, events and keys unchanged.",
+    "version 1.24.0 (2026-11-15, owner decision C191 (4)-(6), control/research/2026-11-14-recipe-parts.md #q-ar-where, #q-ar-direction; above 1.23.0 of fix/menu-opener-size): a meter row, entry {type: 'meter', text, value, value-text, warning-at, error-at}: an amount within a known range, such as the account's tariff remainder in a person menu, where it stands instead of a ring on the header's avatar (4). A block between rows, not a row (no focus, not in the arrow walk, not narrowed by a search; role none): the name and the words on one line, aria-hidden, over an sf-progress-bar meter (size 1, text-position none) named by text, valued by value (the share used, clamped 0..100, so the thresholds fire, (5)) and said by value-text (the remainder in words, (5)-(6)); without value-text the line shows the percentage. Insets the note's and the header's, 4 between the line and the bar (component.context-menu 1.16.0). Relation cl-progress-bar (lazy). Other entries, settings, events and keys unchanged."
   ],
   "x-registry": {
     "item_contract": {
@@ -1011,6 +1035,16 @@
           "fields": {
             "type": "'note'",
             "text": "string, a line of explanation"
+          }
+        },
+        "meter": {
+          "fields": {
+            "type": "'meter'",
+            "text": "string, the amount's name («Место»), the bar's accessible name",
+            "value": "number 0..100, the share used (clamped), so the thresholds fire; the bar is sf-progress-bar's meter",
+            "valueText": "string, the words over the bar and the bar's aria-valuetext, as people say it: the remainder («Осталось 1,7 из 10 ГБ», owner decision C191 (5)); without it the percentage",
+            "warningAt": "number, per cent of the share used from which the bar is a warning (C131 (7))",
+            "errorAt": "number, per cent from which the bar is an error, above warningAt"
           }
         }
       }

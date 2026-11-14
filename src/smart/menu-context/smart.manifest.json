@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu-context",
-  "version": "1.19.0",
+  "version": "1.24.0",
   "title": "Context Menu",
   "summary": "The Framework's action menu and its settings panel: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, and the value rows a setting needs (switch, range, choice, a group of rows or tiles) with one change event and the set-value, set-all, reset and show actions, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
   "kind": "smart",
@@ -28,6 +28,7 @@
       "smart.button",
       "smart.button-icon",
       "smart.icon",
+      "smart.progress-bar",
       "smart.tabs"
     ],
     "public_parts": []
@@ -287,6 +288,16 @@
         "fields": {
           "type": "'note'",
           "text": "string, a line of explanation"
+        }
+      },
+      "meter": {
+        "fields": {
+          "type": "'meter'",
+          "text": "string, the amount's name («Место»), the bar's accessible name",
+          "value": "number 0..100, the share used (clamped), so the thresholds fire; the bar is sf-progress-bar's meter",
+          "valueText": "string, the words over the bar and the bar's aria-valuetext, as people say it: the remainder («Осталось 1,7 из 10 ГБ», owner decision C191 (5)); without it the percentage",
+          "warningAt": "number, per cent of the share used from which the bar is a warning (C131 (7))",
+          "errorAt": "number, per cent from which the bar is an error, above warningAt"
         }
       }
     }
@@ -957,11 +968,11 @@
       },
       {
         "path": "src/smart/menu-context/js/templates/default.js",
-        "sha256": "9fd48de66a63b444ebe63bd65bafaffa91bc024c9f5d418448379c2a0b19b38b"
+        "sha256": "eea4815a17bcae56582d41b67b75560ac23cad0a5f3aed3045af8f4b3047e418"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",
-        "sha256": "8164c4907386c4bb452fd5a75edca1bf15537699d117b013ada808f9f431646c"
+        "sha256": "47e0994f8a46351a2c9bd71dec072707225c1cfccd213878faf167425812cf3b"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu_custom.scss",

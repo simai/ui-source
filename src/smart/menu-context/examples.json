@@ -328,6 +328,47 @@
       "expect": {
         "name": "Вид"
       }
+    },
+    {
+      "name": "profile-meter",
+      "title": "Меню человека с остатком тарифа",
+      "settings": {
+        "aria-label": "Анна Белова",
+        "entries": [
+          {
+            "type": "header",
+            "text": "Анна Белова",
+            "caption": [
+              "anna@example.com",
+              "Тариф «Команда»"
+            ]
+          },
+          {
+            "type": "meter",
+            "text": "Место",
+            "value": 83,
+            "valueText": "Осталось 1,7 из 10 ГБ",
+            "warningAt": 80,
+            "errorAt": 95
+          },
+          {
+            "type": "separator"
+          },
+          {
+            "id": "profile",
+            "text": "Профиль",
+            "icon": "person"
+          },
+          {
+            "id": "sign-out",
+            "text": "Выйти",
+            "icon": "logout"
+          }
+        ]
+      },
+      "expect": {
+        "name": "Анна Белова"
+      }
     }
   ],
   "pages": [

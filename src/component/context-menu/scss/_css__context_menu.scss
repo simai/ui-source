@@ -736,6 +736,42 @@
   white-space: normal;
 }
 
+/* A meter row (owner decision C191 (4)): the tariff's remainder in a person
+   menu. The name and the words on one line over the bar, as the bar's own
+   «top» text (C131 (4)): the name in the rows' ink, the words in the quiet
+   ink with tabular figures; 4 between the line and the bar, as the bar's.
+   The insets are the note's and the header's, so the text stands on the
+   rows' axis. */
+.sf-context-menu-meter {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--sf-space-1\/4);
+  padding: var(--sf-context-menu--space-y) var(--sf-context-menu--inset-end) var(--sf-context-menu--space-y) var(--sf-context-menu--inset-start);
+}
+
+.sf-context-menu-meter-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sf-space-1\/2);
+  min-inline-size: 0;
+}
+
+.sf-context-menu-meter-name {
+  min-inline-size: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sf-context-menu-meter-value {
+  flex: none;
+  color: var(--sf-on-surface-variant);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
 /* The search is the panel's header, not a boxed field (owner C06, R029): no
    frame and no fill; as tall as a row and the inset above and below it; its
    icon and its text stand exactly over the rows' icon and text -- the inset and

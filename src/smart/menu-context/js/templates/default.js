@@ -123,6 +123,37 @@ function renderHeader(entry) {
     </div>`;
 }
 
+// A meter row (owner decision C191 (4)-(6)): an amount within a known range,
+// such as the account's tariff remainder in a person menu -- read, not
+// chosen, so it is a block between rows, not a row. The bar is
+// sf-progress-bar's meter and shows the share used, so the page's thresholds
+// fire (warning-at, error-at; C131 (7)); the words over it are the page's
+// value-text (the remainder: «Осталось 1,7 из 10 ГБ»), else the percentage,
+// on one line with the name as the bar's own «top» text (C131 (4)). That line
+// is aria-hidden: the bar says the name and the words once.
+function renderMeter(entry) {
+    const number = Number(entry.value);
+    const value = Number.isFinite(number) ? Math.max(0, Math.min(100, number)) : 0;
+    const words = entry.valueText ?? entry["value-text"] ?? "";
+    const warningAt = entry.warningAt ?? entry["warning-at"];
+    const errorAt = entry.errorAt ?? entry["error-at"];
+    return html`<div class="sf-context-menu-meter" role="none">
+        <div class="sf-context-menu-meter-head" aria-hidden="true">
+            <span class="sf-context-menu-meter-name">${entry.text ?? ""}</span>
+            <span class="sf-context-menu-meter-value">${words || `${value}%`}</span>
+        </div>
+        <sf-progress-bar
+                class="sf-context-menu-meter-bar"
+                meter
+                value=${String(value)}
+                label=${entry.text || nothing}
+                value-text=${words || nothing}
+                warning-at=${warningAt ?? nothing}
+                error-at=${errorAt ?? nothing}
+        ></sf-progress-bar>
+    </div>`;
+}
+
 // The text of a row: its label, the value under it where the row shows one (a
 // drilling row), and the caption. A long label wraps and a long value is cut
 // with the whole of it in `title`, so neither widens the panel.
@@ -331,6 +362,7 @@ function renderEntry(entry, path, lead, context, query) {
     if (entry?.type === "note") {
         return html`<p class="sf-context-menu-note">${entry.text ?? ""}</p>`;
     }
+    if (entry?.type === "meter") return renderMeter(entry);
     if (entry?.type === "separator") {
         return html`<div class="sf-context-menu-separator" role="separator"></div>`;
     }
@@ -385,7 +417,7 @@ function renderEntry(entry, path, lead, context, query) {
 // row since 1.5.0 (the quiet form, owner 2026-10-30): it has a lead, a label
 // and a value of its own, so it keeps the level's leading column and a search
 // narrows to it. A group holds rows, so it counts as rows.
-const BLOCKS = new Set(["separator", "heading", "header", "note"]);
+const BLOCKS = new Set(["separator", "heading", "header", "note", "meter"]);
 
 const ROWS = (entry) => entry && !BLOCKS.has(entry.type);
 

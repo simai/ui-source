@@ -278,6 +278,7 @@ menu.addEventListener('sf-context-menu-change', async (event) => {
 ```js
 menu.entries = [
   {type: 'header', text: 'Анна Белова', caption: ['anna@example.com', 'Администратор']},
+  {type: 'meter', text: 'Место', value: 83, valueText: 'Осталось 1,7 из 10 ГБ', warningAt: 80, errorAt: 95},
   {type: 'separator'},
   {type: 'choice', id: 'theme', text: 'Тема', options: [
     {id: 'light', text: 'Светлая', icon: 'light_mode', checked: true},
@@ -294,6 +295,16 @@ menu.entries = [
   {id: 'sign-out', text: 'Выйти', icon: 'logout', danger: true},
 ];
 ```
+
+Строка-шкала `{type: 'meter'}` (1.24.0, решение владельца C191) — остаток
+тарифа или места: имя и слова одной строкой над полосой. Это строка меню
+человека, а не кольцо вокруг аватара в шапке: кольцо вокруг аватара остаётся
+для своего, личного — заполненности профиля и загрузки фото
+(sf-progress-ring). Полоса — `sf-progress-bar` с ролью «объём» (`meter`) и
+показывает израсходованную долю (`value`, 0–100), поэтому пороги `warningAt` и
+`errorAt` срабатывают; слова `valueText` говорят остаток («Осталось 1,7 из
+10 ГБ»), их же произносит полоса. Без `valueText` над полосой процент. Строку
+читают, а не выбирают: она не получает фокус, стрелки и поиск её пропускают.
 
 ### Список, который ищет хост
 

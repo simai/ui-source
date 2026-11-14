@@ -36,6 +36,13 @@ export function renderProgressRingTemplate(context) {
   // (aria-valuenow), so a screen reader still says it; the eye reads the arc.
   const text = on(context.showText) && !unknown && !TEXTLESS.has(size) ? `${value}%` : '';
   const content = context.content && context.content !== nothing ? context.content : null;
+  // A ring around a picture is about something of the person's own -- a
+  // profile filled in, a photo being sent (owner decision C191 (4)). At 100 %
+  // nothing is left to do, so the ring goes away (C191 (7) #q-ar-done): no
+  // line and no value to say, the picture alone, in the same box so nothing
+  // around it moves. A meter (an amount used) and an unknown value keep the
+  // ring: a quota at 100 % is the news, not the end of it.
+  const done = Boolean(content) && !meter && !unknown && value >= 100;
 
   const rootClasses = [
     'sf-progress-ring',
@@ -48,7 +55,7 @@ export function renderProgressRingTemplate(context) {
 
   return html`
     <div class=${rootClasses} style=${style} data-value=${String(value)} data-status=${status}>
-      <span
+      ${done ? nothing : html`<span
         class="sf-progress-ring-indicator"
         role=${role}
         aria-label=${context.label || nothing}
@@ -56,7 +63,7 @@ export function renderProgressRingTemplate(context) {
         aria-valuemax="100"
         aria-valuenow=${unknown ? nothing : String(value)}
         aria-valuetext=${unknown ? nothing : (context.valueText || nothing)}
-      ></span>
+      ></span>`}
       ${content
         ? html`<span class="sf-progress-ring-content">${content}</span>`
         : text
