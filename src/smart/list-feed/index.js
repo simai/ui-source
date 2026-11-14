@@ -238,12 +238,26 @@ class SfListFeed extends FeedElement {
             hasMore: this.hasMore,
             loadingEarlier: this._loadingEarlier,
             empty: this._items.size === 0,
-            emptyContent: this.hasSlotContent("empty") ? this.getSlotContent("empty") : null,
+            ...this.emptyState(),
         };
     }
 
     template() {
         return renderListFeedTemplate(this.templateContext());
+    }
+
+    // The empty feed (owner decision C120 (3), study LF-5): the empty state
+    // of the Framework, sf-empty-state no-data. The page's empty slot wins:
+    // markup with an element inside is its own state, drawn whole; words alone
+    // (a <p> of text) are the heading of the feed's state, so a slot written
+    // as plain words is not drawn as bare text at the start of the box.
+    emptyState() {
+        if (!this.hasSlotContent("empty")) return {emptyContent: null, emptyHeading: this.sfWord("empty-text")};
+        const content = this.getSlotContent("empty");
+        const nodes = (Array.isArray(content) ? content : [content]).filter((node) => node && typeof node === "object" && "nodeType" in node);
+        const wordsOnly = nodes.length > 0 && nodes.every((node) => node.nodeType === 3 || (node.nodeType === 1 && node.childElementCount === 0));
+        const words = wordsOnly ? nodes.map((node) => node.textContent).join(" ").replace(/\s+/gu, " ").trim() : "";
+        return words ? {emptyContent: null, emptyHeading: words} : {emptyContent: content, emptyHeading: ""};
     }
 
     afterRender(changed) {

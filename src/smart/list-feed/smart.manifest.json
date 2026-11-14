@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-feed",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "title": "Feed",
   "summary": "A feed: a scrolling column of entries read from the newest at the end -- a conversation, comments, an activity history, an audit log. Keeps the reading place while history is added above, follows the end only when the reader is there, «to the latest», asks once for earlier history, announces what is new once, draws a growing entry in place. The host draws each entry.",
   "kind": "composite",
@@ -28,7 +28,8 @@
   "composition": {
     "uses": [
       "smart.button",
-      "smart.button-icon"
+      "smart.button-icon",
+      "smart.empty-state"
     ],
     "public_parts": []
   },
@@ -146,7 +147,7 @@
       "properties": {
         "empty": {
           "type": "string",
-          "description": "Shown instead of the column while there are no entries (a greeting, an empty state)."
+          "description": "Shown instead of the column while there are no entries: the page's own markup whole (an sf-empty-state, a greeting); words alone (no element inside) become the heading of the feed's own empty state. Without it the feed draws sf-empty-state no-data, heading «Записей пока нет» (empty-text)."
         }
       }
     },
@@ -824,11 +825,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-feed/index.js",
-        "sha256": "4b879b0e4d884fc21e9b6258cc9c4287aa0aa1c99d45105708f945518337e7e6"
+        "sha256": "5f19b60538467e916ba3418adfc1246d1f6275109ac472f4606968be5bc5a030"
       },
       {
         "path": "src/smart/list-feed/js/templates/default.js",
-        "sha256": "2e52a3bccd14223a3a39452227e2643a6f3b497f86a43fbde0a804061cc6fbea"
+        "sha256": "4edb3df0dd18e1e8e16c7ec503e17051b67519c13fc9d506ef04361f2c25411b"
       },
       {
         "path": "src/smart/list-feed/js/templates/default.css",
@@ -836,23 +837,23 @@
       },
       {
         "path": "src/smart/list-feed/rule.js",
-        "sha256": "3494726b09174ddfe745d3d78cabf36d451aae3c28ad5f6b5aa99808c390faca"
+        "sha256": "31aa7d64a962c7b728b0841dcabe0604f86a4aa4a8771e9a24f404d421f8ec64"
       },
       {
         "path": "src/smart/list-feed/docs.md",
-        "sha256": "cab76f61a5c5229532ec21b1a3096f3918ab6c47221ac860115f58469ef1894d"
+        "sha256": "9d9988b310c8fccff684d9e8fbb5606de5dc19fd736cc91ab97caf204890a133"
       },
       {
         "path": "src/smart/list-feed/component.json",
-        "sha256": "056867fd2c2bc48a794a200e175dcc42a4081113a2d8e30260b64e75f01f6b2c"
+        "sha256": "e51aac42a3734aebb7593ac2b8f15282cc512924579c324fda97ad1201d28d04"
       },
       {
         "path": "src/smart/list-feed/lang/en.json",
-        "sha256": "13abaa6b3e75557cb6d250289912af81589eb3925bfaabc48d3e19a8f5fb54c0"
+        "sha256": "036ae45889cb6b5a4406710262d0aba6c46038e45f068b1ce6dee97c2a753d0a"
       },
       {
         "path": "src/smart/list-feed/lang/ru.json",
-        "sha256": "a3cf9b521b7633cd2703a2e2dd023c59a46061123cc3b2464c3d181f788ebdc0"
+        "sha256": "d56521a10e04949be49a8970b88b0f684a81775bb94661c2785b8988c8509ae6"
       }
     ],
     "generated_runtime": []

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list",
-  "version": "1.11.0",
+  "version": "1.12.0",
   "title": "List",
   "summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
   "kind": "smart",
@@ -86,12 +86,12 @@
       "has-more": {
         "type": "boolean",
         "default": false,
-        "description": "A next page exists: «Показать ещё» shows, and the end coming into reach asks for it."
+        "description": "A next page exists: «Показать ещё» shows, and the end brought into reach by a person's scroll asks for it (an end in reach on load waits for the button or the first scroll)."
       },
       "loading": {
         "type": "boolean",
         "default": false,
-        "description": "The first page is on its way: the rows' shape instead of words."
+        "description": "The first page is on its way: three skeleton rows of the list's size, each as tall as the row that replaces it (the caption row until rows were shown, then the shape of the rows shown), their words core's pulsing first-paint bars (C130, C136)."
       },
       "size": {
         "type": "string",
@@ -620,7 +620,7 @@
       }
     },
     "sf-list-load-more": {
-      "summary": "The next page is asked for: the end came into reach, or «Показать ещё»: {direction: after, after}. Cancelling it is moreFailed().",
+      "summary": "The next page is asked for: a person's scroll brought the end into reach, or «Показать ещё»: {direction: after, after}. Never on load by itself. Cancelling it is moreFailed().",
       "payload": {
         "type": "object",
         "required": [
@@ -754,15 +754,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/list/index.js",
-        "sha256": "9f6e03080e2c1c440dbd6c3ef95f6d21fa26972303b5cad23fa8c32ff874d97a"
+        "sha256": "71b4d66454982bea82ab27e1655d6b713b40195207cfc55dda7a3cd3327228ee"
       },
       {
         "path": "src/smart/list/js/templates/default.js",
-        "sha256": "7d52abe365c4627a95bc9c13645089c324d2d9cf62bf70266f210cb9d04b4204"
+        "sha256": "055632826d48db8fddb8bbf3f287ce0cabdd4e8f8e7aee71a9ce15efe94c89ce"
       },
       {
         "path": "src/smart/list/js/templates/default.css",
-        "sha256": "9f28ab6217102930b6ad636280a842f6f071b583424f0dcf6abd464af798910e"
+        "sha256": "bc0dacc8a03456d6ed18adf149e6ad43b3c4f44357f28fef721bc03ceaeda705"
       },
       {
         "path": "src/smart/list/rule.js",
@@ -770,11 +770,11 @@
       },
       {
         "path": "src/smart/list/docs.md",
-        "sha256": "ff5e93b2b9681d5e7ab844375048c0087ad5f324c08eb7473fe452cb8c45f1aa"
+        "sha256": "6ec046eb02cbe44c4de7743ae7702483557d188cd0b43d290161052c8184739e"
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "aafdc1386f93d835cbe529843d2d21b679a25f31874f53ce0175c36d70ed44ee"
+        "sha256": "b9cbdb5990dc58f61fa836accc5e6873adf5580fcedf0ab4029a353ca64e008d"
       },
       {
         "path": "src/smart/list/lang/en.json",

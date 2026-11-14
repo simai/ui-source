@@ -1806,7 +1806,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list/smart.manifest.json",
-      "manifest_sha256": "e9a3347c6e9a2175322aed95f4e57a7edd1692398def9e30912121aa0ec718de",
+      "manifest_sha256": "cea2f1cf516225afd3b2472e994b6628497478766809d77bfb908bb5ab7e945d",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1926,7 +1926,8 @@
         "public_parts": [],
         "uses": [
           "smart.button",
-          "smart.button-icon"
+          "smart.button-icon",
+          "smart.empty-state"
         ]
       },
       "contract_schema": {
@@ -1938,7 +1939,7 @@
       "kind": "composite",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list-feed/smart.manifest.json",
-      "manifest_sha256": "fd5bad4cf81fdf5534a0b7f03cf255245e7790faabf0b5d2caec1b93358cb778",
+      "manifest_sha256": "041690a9251a6559dcd38241388d5b85f9ead9336341d115db9a8a8f976a3e2b",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

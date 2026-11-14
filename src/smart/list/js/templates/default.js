@@ -193,6 +193,38 @@ const rows = (context, items, labelled) => html`
     </ul>
 `;
 
+// The rows on their way (owner decision C130; list and feed study LF-2): the
+// list's own rows, sf-list-item of the list's size, so a skeleton row is as
+// tall as the row that replaces it -- one line, or the caption row (C49: 48,
+// compact 44, 60 under a finger) -- and nothing moves when the rows arrive.
+// The words are core's first-paint bars (C136: as tall as the capitals, in the
+// middle of the line, the control radius at the ends, the skeleton fill and
+// its pulse, C130 (3), (4)); the title a shorter bar than its caption line.
+// Until a page has shown rows the list draws the caption row, the shape of
+// the lists it serves (conversations, letters, files, versions); a list that
+// has shown rows keeps their shape. aria-hidden: the status beside it says
+// the wait.
+const SKELETON_ROWS = 3;
+
+const skeleton = (context) => {
+    const {twoLine} = context.skeleton;
+    const bar = (part) => html`<span class=${`sf-first-paint-bar sf-list__bar sf-list__bar--${part}`}>\u00a0</span>`;
+    return html`
+        <ul class="sf-list__rows sf-list__skeleton" aria-hidden="true">
+            ${Array.from({length: SKELETON_ROWS}, () => html`
+                <li class="sf-list__row sf-list__row--skeleton">
+                    <sf-list-item
+                            kind="text"
+                            size=${context.size}
+                            text="\u00a0"
+                            supporting=${twoLine ? "\u00a0" : nothing}
+                    ><span slot="text">${bar("title")}</span>${twoLine
+                        ? html`<span slot="supporting">${bar("supporting")}</span>`
+                        : nothing}</sf-list-item>
+                </li>`)}
+        </ul>`;
+};
+
 export function renderListTemplate(context) {
     const {component} = context;
     return html`
@@ -202,8 +234,7 @@ export function renderListTemplate(context) {
              aria-busy=${context.loading ? "true" : "false"}>
             <span class="sf-list__width" aria-hidden="true"></span>
             ${context.loading
-                ? html`<div class="sf-list__skeleton" aria-hidden="true"><span></span><span></span><span></span></div>
-                       <p class="sr-only" role="status">${context.loadingText}</p>`
+                ? html`${skeleton(context)}<p class="sr-only" role="status">${context.loadingText}</p>`
                 : nothing}
             <div class="sf-list__body"
                  data-sf-list
