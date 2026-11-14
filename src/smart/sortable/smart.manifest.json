@@ -428,7 +428,7 @@
       },
       {
         "path": "src/core/js/composition/sortable-inserter.mjs",
-        "sha256": "af4d83272becafc30465c26ae3468a7272c9f8b826e16d08c05bfd9b6a9796af"
+        "sha256": "a28c6c9c77aa9756d40592eb7a1e801f89c2b4c734e2d86a2dc305c5314ade95"
       },
       {
         "path": "src/core/js/composition/sortable-move-menu.mjs",
