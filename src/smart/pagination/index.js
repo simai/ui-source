@@ -554,11 +554,18 @@ class SfPagination extends PaginationElement {
   // that takes the move in place (it loads the rows itself) cancels
   // sf-pagination-change, and the link is not followed. A press with a
   // modifier (a new tab, a new window) is the browser's alone.
+  // The address is read before the move: the move draws the arrows of the
+  // new page at once, and the browser reads a link's href only after the
+  // press is handled, so «next» showing page 4 opened page 5 (PG-10). A
+  // followed link is therefore opened here, by the address it showed.
   followLink(event, page) {
     if (event?.defaultPrevented) return this;
     if (event && (event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) return this;
+    const address = this.pageHref(page);
     const outcome = this.goToPage(page, { link: true });
-    if (outcome.taken) event?.preventDefault?.();
+    if (outcome.outcome !== "applied") return this;
+    event?.preventDefault?.();
+    if (!outcome.taken && address) globalThis.location?.assign?.(address);
 
     return this;
   }

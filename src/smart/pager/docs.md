@@ -29,8 +29,9 @@ step is valid, loading the next record and keeping a course's progress.
   the first page the «Далее» card stays in the second column. On a phone
   (below the sm step) the cards stack, the previous one first.
 - `row` — the previous and the next article by their titles, at the two
-  ends, each whole up to two lines: under a post, a news item, a product. On
-  a phone the sides stack, the next one at the end of the line below.
+  ends, each whole up to two lines: under a post, a news item, a product. A
+  row narrower than the sm step (a phone, a card, a side column) stacks, the
+  next side at the end of the line below (1.3.2).
 - `counter` — «‹ 3 из 240 ›» in a record card: the record's place in the
   list it was opened from. With `total` the place is in the whole list, so
   the arrows cross the list's pages: a move past the records the page holds

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.pager",
-  "version": "1.3.0",
+  "version": "1.3.2",
   "title": "Pager",
   "summary": "Navigation to the neighbouring document by meaning (decision C97): the previous and the next documentation page as two cards, the previous and the next article as one row of titles, or a record's place in its list («‹ 3 из 240 ›»). Not list paging: sf-pagination keeps 1, 2, 3 ….",
   "kind": "smart",
@@ -381,7 +381,7 @@
       },
       {
         "path": "src/smart/pager/scss/_smart__pager.scss",
-        "sha256": "b9d94b28fcefc94244f9bb8d05e9cb0cbcfd1fc63bf0824a9a09954972efe5f8"
+        "sha256": "baa66137b0abdf047a8e2e6893df25005791095dbe1635804b4c3d84fcbe42a6"
       },
       {
         "path": "src/smart/pager/rule.js",
@@ -389,7 +389,7 @@
       },
       {
         "path": "src/smart/pager/docs.md",
-        "sha256": "2582e05bd1d77826eb5b7d13b1cf0b5d98f2ca7e6bf07e1767a2bfc1b53cc767"
+        "sha256": "af4c50dcf91c93c13933d0be9d9943b351d7f594429181858f11f15cfddd2670"
       }
     ],
     "generated_runtime": []

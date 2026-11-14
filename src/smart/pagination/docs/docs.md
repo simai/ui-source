@@ -122,7 +122,8 @@ Three settings, all off by default (1.4.0):
   next with `rel="prev"` / `rel="next"`; a page typed in the field is opened
   by its address. A press is still reported as `sf-pagination-change`,
   cancelable for a link: a listener that loads the rows itself calls
-  `preventDefault()` and the link is not followed. A press with a modifier
+  `preventDefault()` and the link is not followed. A followed link opens
+  the page its address showed (1.5.1). A press with a modifier
   (new tab) is the browser's alone. At an end a link keeps its place with
   no address (`aria-disabled`).
 - `page-param="page"` — the page lives in the address's query: it is read

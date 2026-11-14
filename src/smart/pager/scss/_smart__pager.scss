@@ -157,10 +157,15 @@
 /* ── row: the two titles at the two ends, each whole up to two lines (PR-04,
    decision C97: the full title). It cut each title to one line with an
    ellipsis, one of two already in a card 440 pixels wide. The arrow stands on the
-   title's first line. ── */
+   title's first line. Two columns stand side by side only while the row is
+   at least sm wide; a narrower row (a card, a side column, a phone) stacks, the
+   previous side first and the next one at the end of the line below it. Side by
+   side in a card 440 pixels wide each side had 199 pixels, and a title of 46
+   letters was still cut after two lines. A missing side's column folds away. ── */
 .sf-pager--row {
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, calc((#{map.get(bp.$breakpoint-array, sm)} - var(--sf-pager--gap)) / 2)), 1fr));
+  align-items: start;
   gap: var(--sf-pager--gap);
   min-block-size: var(--sf-pager--line);
 }
@@ -168,8 +173,9 @@
 .sf-pager--row .sf-pager-side {
   display: inline-flex;
   align-items: flex-start;
+  justify-self: start;
   gap: var(--sf-pager--text-space);
-  max-inline-size: calc(50% - var(--sf-pager--gap) / 2);
+  max-inline-size: 100%;
   min-inline-size: 0;
   padding: 0;
 }
@@ -192,7 +198,8 @@
 }
 
 .sf-pager--row .sf-pager-side--next {
-  margin-inline-start: auto;
+  grid-column: -2;
+  justify-self: end;
 }
 
 .sf-pager--row .sf-pager-icon {
@@ -357,9 +364,9 @@
   white-space: nowrap;
 }
 
-/* A phone stacks cards and row (PR-05, decision C97): side by side at 390 pixels
-   each side had about 170 pixels and the titles were cut. The previous side comes
-   first, the next one holds the end of the line below it. */
+/* A phone stacks cards (PR-05, decision C97): side by side at 390 pixels each
+   side had about 170 pixels and the titles were cut. The previous card comes
+   first. The row stacks by its own width (above). */
 @media not all and (min-width: map.get(bp.$breakpoint-array, sm)) {
   .sf-pager--cards {
     grid-template-columns: minmax(0, 1fr);
@@ -367,19 +374,6 @@
 
   .sf-pager--cards .sf-pager-side--next {
     grid-column: 1;
-  }
-
-  .sf-pager--row {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .sf-pager--row .sf-pager-side {
-    max-inline-size: 100%;
-  }
-
-  .sf-pager--row .sf-pager-side--next {
-    align-self: flex-end;
   }
 }
 
