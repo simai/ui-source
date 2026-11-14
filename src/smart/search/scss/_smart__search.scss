@@ -280,10 +280,58 @@
   line-height: var(--sf-text-height-1\/3);
 }
 
+/* The match (owner decision C139 (8), as sf-input-lookup's): the medium
+   weight on the row's own colour, no fill -- the fill was the selected row's
+   colour too (C16). A page that sets --sf-search-mark-color still gets that
+   fill behind the match. */
 .sf-search-mark {
-  border-radius: var(--sf-a2);
-  background: var(--sf-search-mark-color, var(--sf-primary-container));
+  background: var(--sf-search-mark-color, transparent);
   color: inherit;
+  font-weight: var(--sf-font-weight-medium);
+}
+
+/* A search runs over the rows of the last answer (C139 (4)): they stay, a
+   step paler -- titles on on-surface-variant, paths and pictures on
+   on-surface-disabled -- until the answer replaces them. */
+.sf-search-body--stale .sf-search-row:not(.sf-search-row--selected) {
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-search-body--stale .sf-search-row-path {
+  color: var(--sf-on-surface-disabled);
+}
+
+.sf-search-body--stale .sf-search-row-icon {
+  --sf-icon--color: var(--sf-on-surface-disabled);
+}
+
+/* The «Поиск…» line (C139 (4), C130 (8)): a row of the list, the spinner in
+   the rows' square column and the words where the titles start. It is drawn
+   after the wait delay itself, so its spinner shows with it, not a second
+   later (sf-spinner's own delay is for a spinner drawn at once). */
+.sf-search-wait {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-search--row-gap);
+  min-block-size: var(--sf-ui-1--control-height);
+  padding-inline: var(--sf-search--row-pad);
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-text-size-1);
+  line-height: var(--sf-text-height-1);
+}
+
+.sf-search-spinner {
+  --sf-loader--delay: 0s;
+  display: inline-flex;
+  flex: none;
+  justify-content: center;
+  inline-size: var(--sf-search--square);
+}
+
+/* Nothing found and a failure: the inline empty state on the rows' inset
+   (C120 (3), (5)), the popular queries under it. */
+.sf-search-state {
+  padding: var(--sf-space-1\/3) var(--sf-search--row-pad) 0;
 }
 
 .sf-search-go {
@@ -392,6 +440,22 @@
   color: var(--sf-on-surface-variant);
 }
 
+/* The filter in force has a check before its name (owner decision C145 (2)):
+   the glyph as tall as the pill's text line, the chip's icon gap after it
+   (C105 H2, 4). */
+.sf-search-scope[aria-pressed='true'] {
+  --sf-icon--color: var(--sf-on-primary-container);
+  --sf-icon--font-size: var(--sf-text-height-1\/2);
+  --sf-icon--width: var(--sf-text-height-1\/2);
+  --sf-icon--height: var(--sf-text-height-1\/2);
+}
+
+.sf-search-scope-check,
+.sf-search-scope > sf-icon:not(:defined) {
+  flex: none;
+  margin-inline-end: var(--sf-space-1\/4);
+}
+
 .sf-search-notice {
   padding: var(--sf-space-1\/3) var(--sf-search--row-pad);
   color: var(--sf-on-surface-variant);
@@ -462,11 +526,6 @@
   font-size: var(--sf-text-size-1);
   line-height: var(--sf-text-height-1);
   text-align: center;
-}
-
-.sf-search-message + .sf-search-pills {
-  justify-content: center;
-  padding-block-end: var(--sf-space-1\/2);
 }
 
 /* The keys: arrows to select, Enter to open, Escape to clear or close. */

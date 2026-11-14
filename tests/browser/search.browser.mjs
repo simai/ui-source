@@ -15,8 +15,13 @@
 //   by its X and the list is cleared by «Очистить»;
 // - the field's X clears a filled field and keeps the focus, then closes the
 //   empty window; Escape does the same; focus goes back to the trigger;
-// - a provider: a loading message while the first answer is awaited, a stale
-//   request aborted;
+// - a provider: while an answer is awaited the rows on screen stay (paler,
+//   aria-busy) and a «Поиск…» line with a spinner comes after 1 s (C139 (4));
+//   nothing found and a failure are inline sf-empty-states, «Повторить» asks
+//   again (C120); a stale request aborted; a cut title is the row's tooltip;
+// - the match is medium weight without a fill (C139 (8)); the scope in force
+//   has a check (C145 (2)); a window opened by a key with nothing focused gives
+//   the focus back to its trigger (SR-7);
 // - geometry on the ladder: the field 48 px, a result row 48 px, a one-line
 //   row 40 px, the icon square 32 px; the field's glyph and the rows' squares
 //   on one axis, the field's text where the titles start, the X over the go
@@ -109,7 +114,10 @@ document.getElementById('p').provider = (query, {signal}) => new Promise((settle
   const call = {query, aborted: false};
   window.calls.push(call);
   signal.addEventListener('abort', () => { call.aborted = true; });
-  setTimeout(() => settle({items: query ? [{id: 'x', title: 'Ответ на ' + query, path: 'Где-то', href: '#x'}] : []}), query ? 600 : 0);
+    if (query === 'fail') return setTimeout(() => settle(Promise.reject(new Error('down'))), 50);
+  if (query === 'none') return setTimeout(() => settle({items: [], popular: ['кнопка']}), 50);
+  const title = query === 'long' ? 'Ответ с очень длинным названием раздела документации, которое никак не помещается в одну строку окна поиска' : 'Ответ на ' + query;
+  setTimeout(() => settle({items: query ? [{id: 'x', title, path: 'Где-то', href: '#x'}] : [], popular: ['кнопка']}), query === 'slow' ? 2500 : query ? 600 : 0);
 });
 </script>`),
 };
@@ -222,8 +230,10 @@ try {
     await typeQuery(tab, 'таб');
     const typed = await tab.evaluate(() => ({
       captions: [...document.querySelectorAll('.sf-search-group .sf-search-caption')].map((n) => n.textContent.trim()),
-      scopes: [...document.querySelectorAll('.sf-search-scope')].map((n) => n.textContent.replace(/\s+/gu, ' ').trim()),
-      pressed: document.querySelector('.sf-search-scope[aria-pressed="true"]')?.textContent.trim(),
+      scopes: [...document.querySelectorAll('.sf-search-scope')].map((n) => [...n.childNodes].filter((c) => c.nodeType !== 8 && c.localName !== 'sf-icon').map((c) => c.textContent).join('').replace(/\s+/gu, ' ').trim()),
+      pressed: [...(document.querySelector('.sf-search-scope[aria-pressed="true"]')?.childNodes ?? [])].filter((c) => c.nodeType !== 8 && c.localName !== 'sf-icon').map((c) => c.textContent).join('').trim(),
+      checks: [...document.querySelectorAll('.sf-search-scope')].map((n) => n.querySelector('.sf-search-scope-check')?.textContent.trim() ?? ''),
+      mark: (() => { const m = document.querySelector('.sf-search-row mark'); const cs = m && getComputedStyle(m); return m && {weight: cs.fontWeight, fill: cs.backgroundColor}; })(),
       status: document.querySelector('.sf-search-window [role="status"]')?.textContent.trim(),
       xLabel: document.querySelector('.sf-search-clear button')?.getAttribute('aria-label') ?? document.querySelector('.sf-search-clear')?.getAttribute('aria-label'),
       active: document.querySelector('.sf-search-input').getAttribute('aria-activedescendant'),
@@ -232,6 +242,8 @@ try {
     expect('results-grouped-marked', rows.length === 3 && rows[0].title === 'Таблица в рамке' && rows[0].mark === 'Таб' && rows[0].selected
       && typed.active === rows[0].id && typed.captions.join('|') === 'Страницы|Компоненты' && typed.status === '3 результата' && typed.xLabel === 'Очистить', {rows, typed});
     expect('scopes-with-counts', typed.scopes.join('|') === 'Все3|Страницы2|Компоненты1' && typed.pressed?.startsWith('Все'), typed);
+    expect('scope-in-force-checked', typed.checks.join('|') === 'check||', typed.checks);
+    expect('match-medium-no-fill', typed.mark?.weight === '500' && typed.mark?.fill === 'rgba(0, 0, 0, 0)', typed.mark);
 
     // Arrows move the selection, wrapping.
     await tab.keyboard.press('ArrowDown');
@@ -255,7 +267,7 @@ try {
     const scoped = await tab.evaluate(() => ({
       rows: [...document.querySelectorAll('.sf-search-row-title')].map((n) => n.textContent.trim()),
       captions: document.querySelectorAll('.sf-search-group .sf-search-caption').length,
-      scopes: [...document.querySelectorAll('.sf-search-scope')].map((n) => `${n.textContent.replace(/\s+/gu, '')}:${n.getAttribute('aria-pressed')}`),
+      scopes: [...document.querySelectorAll('.sf-search-scope')].map((n) => `${[...n.childNodes].filter((c) => c.nodeType !== 8 && c.localName !== 'sf-icon').map((c) => c.textContent).join('').replace(/\s+/gu, '')}:${n.getAttribute('aria-pressed')}`),
       focused: document.activeElement === document.querySelector('.sf-search-input'),
     }));
     expect('scope-filters', scoped.rows.join('|') === 'sf-view-table' && scoped.captions === 0 && scoped.scopes.join('|') === 'Все3:false|Страницы2:false|Компоненты1:true' && scoped.focused, scoped);
@@ -393,6 +405,15 @@ try {
     expect('tab-trapped', trapped, trapped);
     await tab.keyboard.press('Escape');
 
+    // SR-7: opened by the key with nothing focused, Escape gives the focus to
+    // the trigger, not to the body.
+    await tab.evaluate(() => document.activeElement?.blur());
+    await tab.keyboard.press('Control+k');
+    await tab.waitForSelector(WINDOW);
+    await tab.keyboard.press('Escape');
+    const byKey = await tab.evaluate(() => ({open: Boolean(document.querySelector('.sf-search-window')), focus: document.activeElement?.id || document.activeElement?.localName}));
+    expect('key-open-focus-back-to-trigger', !byKey.open && byKey.focus === 't', byKey);
+
     expect('no-console-errors', errors.length === 0, errors);
     await tab.close();
   }
@@ -406,13 +427,52 @@ try {
     await tab.waitForSelector(WINDOW);
     await tab.keyboard.type('a');
     await tab.waitForTimeout(250);
-    const loading = await tab.evaluate(() => ({message: document.querySelector('.sf-search-message')?.textContent.trim(), busy: document.querySelector('.sf-search-card').getAttribute('aria-busy')}));
+    const loading = await tab.evaluate(() => ({message: document.querySelector('.sf-search-message')?.textContent.trim() ?? null,
+      line: Boolean(document.querySelector('.sf-search-wait')), busy: document.querySelector('.sf-search-card').getAttribute('aria-busy')}));
     await tab.keyboard.type('b');
     await tab.waitForFunction(() => document.querySelector('.sf-search-row-title')?.textContent.includes('ab'), null, {timeout: 5000}).catch(() => {});
     const answered = await tab.evaluate(() => ({calls: window.calls.map((call) => `${call.query}:${call.aborted}`), title: document.querySelector('.sf-search-row-title')?.textContent.trim(),
       busy: document.querySelector('.sf-search-card').getAttribute('aria-busy')}));
-    expect('provider-loading', loading.message === 'Ищем…' && loading.busy === 'true', loading);
+    expect('provider-waits-quietly', loading.message === null && !loading.line && loading.busy === 'true', loading);
     expect('provider-aborts-stale', answered.calls.join('|') === ':false|a:true|ab:false' && answered.title === 'Ответ на ab' && answered.busy === 'false', answered);
+
+    // A slow answer: the last rows stay paler, the «Поиск…» line after 1 s.
+    const fill = async (text) => {
+      await tab.evaluate((value) => { const input = document.querySelector('.sf-search-input'); input.value = value; input.dispatchEvent(new Event('input', {bubbles: true})); }, text);
+    };
+    await fill('slow');
+    await tab.waitForTimeout(400);
+    const early = await tab.evaluate(() => ({rows: document.querySelectorAll('.sf-search-row').length, stale: Boolean(document.querySelector('.sf-search-body--stale')),
+      line: Boolean(document.querySelector('.sf-search-wait'))}));
+    await tab.waitForTimeout(900);
+    const late = await tab.evaluate(() => ({rows: document.querySelectorAll('.sf-search-row').length, line: document.querySelector('.sf-search-wait > span')?.textContent.trim(),
+      spinner: Boolean(document.querySelector('.sf-search-wait sf-spinner')), status: document.querySelector('.sf-search-window [role="status"]')?.textContent.trim()}));
+    expect('provider-rows-stay-paler', early.rows === 1 && early.stale && !early.line, early);
+    expect('provider-wait-line-after-1s', late.rows === 1 && late.line === 'Поиск…' && late.spinner && late.status === 'Поиск…', late);
+    await tab.waitForFunction(() => !document.querySelector('.sf-search-wait'), null, {timeout: 5000}).catch(() => {});
+
+    // Nothing found and a failure: inline empty states (C120).
+    await fill('none');
+    await tab.waitForTimeout(400);
+    const none = await tab.evaluate(() => ({kind: document.querySelector('.sf-search-card sf-empty-state')?.getAttribute('kind'),
+      pills: [...document.querySelectorAll('.sf-search-pills .sf-search-pill')].map((n) => n.textContent.trim())}));
+    expect('provider-nothing-found-state', none.kind === 'nothing-found' && none.pills.join('|') === 'кнопка', none);
+    await fill('fail');
+    await tab.waitForTimeout(400);
+    const failed = await tab.evaluate(() => ({kind: document.querySelector('.sf-search-card sf-empty-state')?.getAttribute('kind'),
+      retry: document.querySelector('.sf-search-card sf-empty-state button')?.textContent.trim()}));
+    expect('provider-error-state', failed.kind === 'error' && failed.retry === 'Повторить', failed);
+    const asked = await tab.evaluate(() => window.calls.length);
+    await tab.click('.sf-search-card sf-empty-state button');
+    await tab.waitForTimeout(300);
+    expect('provider-retry-asks-again', (await tab.evaluate(() => window.calls.length)) === asked + 1 && (await tab.evaluate(() => window.calls.at(-1).query)) === 'fail', asked);
+
+    // A cut title is the row's tooltip.
+    await fill('long');
+    await tab.waitForFunction(() => document.querySelector('.sf-search-row'), null, {timeout: 5000}).catch(() => {});
+    await tab.hover('.sf-search-row');
+    const tip = await tab.evaluate(() => document.querySelector('.sf-search-row')?.getAttribute('title') ?? '');
+    expect('cut-title-tooltip', tip.startsWith('Ответ с очень длинным') && tip.endsWith('Где-то'), tip);
     await tab.close();
   }
 

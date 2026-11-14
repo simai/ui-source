@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.search",
-  "version": "1.7.5",
+  "version": "1.8.0",
   "title": "Site search",
   "summary": "Site search in a window: a large rounded field and a separate results card under it over the shared scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. The panel asks a host through simai.search-port and draws what the host announces it can answer: grouped results, scopes, recent and popular queries, commands, a correction and a preview beside the list. Each block is also a setting, so the capability says what is possible and the setting says what is wanted. A page with no host of its own gets the built-in ones: a static JSON index (index) or a provider function.",
   "kind": "smart",
@@ -32,7 +32,10 @@
     "uses": [
       "component.icons",
       "component.kbd",
-      "smart.button-icon"
+      "smart.button-icon",
+      "smart.empty-state",
+      "smart.icon",
+      "smart.spinner"
     ],
     "public_parts": []
   },
@@ -408,23 +411,23 @@
     "source_artifacts": [
       {
         "path": "src/smart/search/index.js",
-        "sha256": "c19e91b5e687ee39f75dcb9e21750bc841775b61f997de9ce8207de87ed939a7"
+        "sha256": "19f9a91bd849ed2c82e88635304a092f6b4f7d789b63de70a37bebb1958fadd0"
       },
       {
         "path": "src/smart/search/js/templates/default.js",
-        "sha256": "8f9ef934195776ccc64c354d725d767b35db27fc37995b5eeb3a9a8f315e5f2e"
+        "sha256": "eb499643277d63d2c5f8ad9f92fb1d778d9564dc9d6e730ce415682b6c64c821"
       },
       {
         "path": "src/smart/search/scss/_smart__search.scss",
-        "sha256": "9973a46997460a0a8d06f660a1515242db3634d91c1ea43d1dbeb4ba86f9ece1"
+        "sha256": "8d5019e4a6acfe0078e7f7112b5a81f09c085980f8d399f4d2093e3b92994a11"
       },
       {
         "path": "src/smart/search/rule.js",
-        "sha256": "52ed9d3dad88d61c6d1a14cc96e98a2663221c8a364d2c491a0c70820dd9f1b6"
+        "sha256": "c9b048cb30d8c018dbc8619f7f18407e489d1251bc7cc4de685fcf31e6bf6205"
       },
       {
         "path": "src/smart/search/docs.md",
-        "sha256": "34168216650d5c951db28301403cdf54589b110fad56867e5a6cda49bbeba41a"
+        "sha256": "4a045d16883ceef2ea4d7df298ae02bc5ed6243c876adb42b16e81b5af242e2f"
       }
     ],
     "generated_runtime": []

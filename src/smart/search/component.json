@@ -2,7 +2,7 @@
   "$comment": "The source of sf-search's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). Made against standard simai.smart-component 1.3.13 and vocabulary 1.1.5; the design is variant 1 «Прожектор» of ui-control prototypes/search-and-settings.html, approved by the owner as it is on 2026-10-30. 1.1.0 asks a host through simai.search-port 1.0.0 (§4.9): the capability says what is possible and the setting says what is wanted.",
   "id": "smart.search",
   "tag": "sf-search",
-  "version": "1.7.5",
+  "version": "1.8.0",
   "kind": "leaf",
   "family": "search",
   "settings": {
@@ -245,6 +245,27 @@
     },
     {
       "name": "kbd"
+    },
+    {
+      "name": "cl-icon",
+      "$comment": [
+        "The check before the name of the scope in force (owner decision C145 (2)):",
+        "an sf-icon element, so its name joins the icon request when the window draws."
+      ]
+    },
+    {
+      "name": "cl-spinner",
+      "$comment": [
+        "The spinner of the «Поиск…» line while a search takes longer than 1 s",
+        "(owner decisions C139 (4), C130 (8))."
+      ]
+    },
+    {
+      "name": "cl-empty-state",
+      "$comment": [
+        "Nothing found and a failure, inline (owner decision C120 (3), (5)):",
+        "search_off with the popular queries under it, the error glyph with «Повторить»."
+      ]
     }
   ],
   "templates": {
@@ -367,7 +388,8 @@
     "version 1.7.4 (2026-11-11): a patch, nothing drawn differently. The sheet reads the C16 roles by their current names where it read the former ones, which are var() of them wherever they are declared (src/core/contracts/token-aliases.v1.json, sf-role-aliases): --sf-on-surface-container--variant → --sf-on-surface-container-variant ×2; --sf-surface-transparent-active → --sf-surface-state-active; --sf-surface-transparent-hover → --sf-surface-state-hover. Settings, values, events and keys unchanged.",
     "version 1.7.4, also (2026-11-11, C41 inverse places): a patch; its built sheet is a place (sf-place) and takes the theme's accent and boundary line back on the inverse places too (bg-surface-inverse, bg-surface-inverse-fixed; DEV 2026-11-10, form backgrounds study): nothing in the component changed.",
     "version 1.7.5 (2026-11-12; written on the branch as 1.7.4): a patch; nothing in the component changed. Its built sheet is a place (sf-place) and, with C43 later (2026-11-12), takes back the core role --sf-surface-place-fill as well, with one line, --sf-surface-place-fill: initial, so an anchored badge inside it reads the fill of its own rows only and not of a selected row further out. Nothing is drawn differently outside an anchored badge's ring.",
-    "version 1.7.5, also (2026-11-13, defect BT-2, rules C15 / CB-01): a patch, nothing drawn differently. The trigger example gives sf-button-icon appearance=\"ghost\", the name of the no-fill look, where it wrote link, its former name (an alias until 2027-01-01). Settings, values, events and keys unchanged."
+    "version 1.7.5, also (2026-11-13, defect BT-2, rules C15 / CB-01): a patch, nothing drawn differently. The trigger example gives sf-button-icon appearance=\"ghost\", the name of the no-fill look, where it wrote link, its former name (an alias until 2027-01-01). Settings, values, events and keys unchanged.",
+    "version 1.8.0 (2026-11-14, owner decisions C139 (4), (8), C130 (8), C120 (3), (5), C145 (2); search study control/research/2026-11-14-search.md SR-1..SR-4, SR-7, SR-8): a minor, looks. SR-1: the match is medium weight on the row's own colour, no fill, as sf-input-lookup marks it (--sf-search-mark-color still paints a fill when a page sets it). SR-2: while a query is awaited the rows on screen stay -- the last answer's, or the empty field's recent queries and commands -- a step paler (aria-busy on their lists), and after 1 s a «Поиск…» line with sf-spinner stands over them; before, the card emptied at once for «Ищем…» without a spinner. The polite status says «Поиск…» only once the line shows. SR-3: nothing found is an inline sf-empty-state (search_off) with «Часто ищут» and the popular queries under it; a host that is unavailable is the error state with «Повторить», which asks again; forbidden is the no-access state; a refusal such as a query too short stays the host's sentence. SR-4: the scope in force has a check before its name (sf-icon), the selected fill kept. SR-7: a window opened by a key with nothing focused gives the focus back to its trigger (when the trigger is shown) instead of the body. SR-8: a row whose title or path is cut shows the whole of them as its tooltip. New words empty-advice-text; loading-text reads «Поиск…». Relations cl-icon, cl-spinner, cl-empty-state. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

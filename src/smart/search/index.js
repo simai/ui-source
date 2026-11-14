@@ -45,6 +45,10 @@ import ru from './lang/ru.json';
 import './scss/index.scss';
 
 const DEBOUNCE = 120;
+// A search that takes longer than this draws the «Поиск…» line with the
+// spinner over the rows it keeps (owner decisions C139 (4), C130 (8): the
+// spinner after 1 s, no skeleton); a faster answer replaces the rows at once.
+export const WAIT_LINE_DELAY = 1000;
 const OVERLAY_CONTAINER = '[data-sf-overlay-container], [data-sf-drawer-container]';
 // The port's three answers (no revision travels here, so nothing conflicts).
 const ANSWERS = ['applied', 'refused', 'unavailable'];
@@ -168,6 +172,12 @@ class SfSearch extends SearchElement {
     this._portal = null;
     this._controller = null;
     this._timer = 0;
+    // The «Поиск…» line: its timer and whether it is drawn (C139 (4)).
+    this._waitTimer = 0;
+    this.waitShown = false;
+    // What kind of failure the last query met: error (the host is
+    // unavailable, «Повторить»), no-access (forbidden) or a plain refusal.
+    this.statusKind = '';
     // The port: what the page handed (sfPort, the base action) is asked first;
     // the built-in host is made from index/provider/recent-key and remade when
     // one of them changes.
@@ -290,7 +300,7 @@ class SfSearch extends SearchElement {
       return applied();
     }
     if (!this.sfEmit('open', {}, {cancelable: true})) return refused('prevented');
-    this._returnTo = document.activeElement;
+    this._returnTo = this.opener();
     this._returnAncestors = landmarksAround(this._returnTo);
     this.isOpen = true;
     this.query = '';
@@ -298,6 +308,8 @@ class SfSearch extends SearchElement {
     this.selected = 0;
     this.status = 'idle';
     this.statusMessage = '';
+    this.statusKind = '';
+    this.stopWait();
     this.notice = '';
     this.answer = null;
     this.previewOf = null;
@@ -333,6 +345,21 @@ class SfSearch extends SearchElement {
     return applied();
   }
 
+  // Where the focus goes back when the window closes (SR-7): what had it when
+  // the window opened, or -- when nothing had (a key pressed on the page, the
+  // body active) -- the trigger that opens the window, if the person can see
+  // it. The body was given back before, and the next Tab started from the
+  // top of the page.
+  opener() {
+    const active = document.activeElement;
+    if (active && active !== document.body && active !== document.documentElement) return active;
+    const trigger = this.focusDelegate();
+    // checkVisibility with the property also refuses visibility: hidden.
+    const shown = trigger?.isConnected && trigger.checkVisibility?.({visibilityProperty: true})
+      && !trigger.closest?.('[inert], [hidden]');
+    return shown ? trigger : active;
+  }
+
   runClose({reason = 'api', restoreFocus = true} = {}) {
     if (!this.isOpen) return refused('closed');
     if (!this.sfEmit('close', {reason}, {cancelable: true})) return refused('prevented');
@@ -343,6 +370,7 @@ class SfSearch extends SearchElement {
   finishClose({reason = 'api', emit = true, restoreFocus = true} = {}) {
     this.isOpen = false;
     clearTimeout(this._timer);
+    this.stopWait();
     this._controller?.abort();
     this._controller = null;
     this.sfHostState('data-open', false);
@@ -483,6 +511,27 @@ class SfSearch extends SearchElement {
     this.scope = id;
     this.selected = 0;
     this.renderWindow();
+    this.focusField();
+    this.askQuery(this.query.trim());
+  }
+
+  // A row whose title or path is cut by its ellipsis shows the whole of them
+  // as its tooltip (SR-8, as a list row's C148 (5)): measured when the
+  // pointer comes to the row, so a row that is not cut has none.
+  markCut(row) {
+    if (!(row instanceof Element)) return;
+    const title = row.querySelector('.sf-search-row-title');
+    const path = row.querySelector('.sf-search-row-path');
+    const cut = (el) => Boolean(el) && el.scrollWidth > el.clientWidth + 1;
+    const words = (el) => (el?.textContent || '').replace(/\s+/gu, ' ').trim();
+    if (cut(title) || cut(path)) row.title = [words(title), words(path)].filter(Boolean).join(' · ');
+    else row.removeAttribute('title');
+  }
+
+  // «Повторить» of the error state asks the same question again (C120 (5)).
+  onStateAction(event) {
+    event.stopPropagation();
+    if (event.detail?.id !== 'retry') return;
     this.focusField();
     this.askQuery(this.query.trim());
   }
@@ -730,10 +779,35 @@ class SfSearch extends SearchElement {
       this._controller = null;
       this.answer = null;
       this.statusMessage = '';
+      this.statusKind = '';
       this.status = 'ready';
+      this.stopWait();
       return;
     }
+    // The wait starts with the keystroke, not after the debounce: the rows on
+    // screen stay, a step paler, until the answer replaces them (C139 (4)).
+    this.startWait();
     this._timer = setTimeout(() => this.askQuery(query), DEBOUNCE);
+  }
+
+  // The wait of a query (C139 (4), C130 (8)): the card keeps the rows it shows
+  // a step paler at once, and after WAIT_LINE_DELAY a «Поиск…» line with the
+  // spinner stands over them. An answer, a failure or an empty field ends it.
+  startWait() {
+    this.status = 'loading';
+    if (this._waitTimer || this.waitShown) return;
+    this._waitTimer = setTimeout(() => {
+      this._waitTimer = 0;
+      if (!this.isOpen || this.status !== 'loading') return;
+      this.waitShown = true;
+      this.renderWindow();
+    }, WAIT_LINE_DELAY);
+  }
+
+  stopWait() {
+    clearTimeout(this._waitTimer);
+    this._waitTimer = 0;
+    this.waitShown = false;
   }
 
   /**
@@ -748,7 +822,7 @@ class SfSearch extends SearchElement {
     this._controller = controller;
     const asked = ++this._querySequence;
     if (query) {
-      this.status = 'loading';
+      this.startWait();
       this.renderWindow();
     }
     const answer = await this.raise('query.change', {sequence: asked, query,
@@ -773,6 +847,8 @@ class SfSearch extends SearchElement {
         };
         this.status = results.length ? 'ready' : 'empty';
         this.statusMessage = '';
+        this.statusKind = '';
+        this.stopWait();
       } else {
         this.emptyAnswer = {results, scopes};
       }
@@ -784,6 +860,12 @@ class SfSearch extends SearchElement {
       this.answer = null;
       this.status = 'error';
       this.statusMessage = this.answerWords(answer, 'refused-text');
+      // The host could not answer: an error with «Повторить» (C120 (3), (5));
+      // forbidden: no access; any other refusal (a query too short) is the
+      // host's sentence alone.
+      const reason = text(answer.reason);
+      this.statusKind = answer.answer === 'unavailable' ? 'error' : reason === 'forbidden' ? 'no-access' : '';
+      this.stopWait();
     }
     this.renderWindow();
     this.askPreview();
@@ -853,8 +935,12 @@ class SfSearch extends SearchElement {
     let scopes = [];
     let correction = null;
     let message = '';
-    let messagePills = [];
-    if (!query) {
+    let state = null;
+    const waiting = Boolean(query) && this.status === 'loading';
+    // A first query waits over what the empty field showed (the recent
+    // queries, the commands): those rows stay, a step paler, until the answer
+    // replaces them (C139 (4)); before, the card emptied at once for «Ищем…».
+    if (!query || (waiting && !this.answer)) {
       if (this.shows('recent') && this.recentList.length) {
         sections.push({kind: 'recent', id: `${this._id}-recent`, label: this.sfWord('recent-label'),
           rows: this.recentList.map((entry) => add({kind: 'recent', text: entry, title: [entry, '', ''], path: '', icon: 'history',
@@ -865,7 +951,7 @@ class SfSearch extends SearchElement {
       if (actions.length) {
         sections.push({kind: 'actions', id: `${this._id}-actions`, label: this.sfWord('actions-label'), rows: actions.map(resultRow)});
       }
-      if (!sections.length) message = this.sfWord('start-text');
+      if (!sections.length && !query) message = this.sfWord('start-text');
     } else {
       const answer = this.answer;
       const items = (answer?.results ?? []).filter((item) => commands || item.kind !== 'action');
@@ -911,11 +997,21 @@ class SfSearch extends SearchElement {
           count: Number.isInteger(answer.correction.total) ? answer.correction.total : null,
           text: this.sfWord('correction-text', {vars: {query: text(answer.correction.query)}})};
       }
-      if (!answer && this.status === 'loading') message = this.sfWord('loading-text');
-      else if (this.status === 'error') message = this.statusMessage || this.sfWord('error-text');
-      else if (!rows.length && answer) {
-        message = this.sfWord('empty-text', {vars: {query}});
-        if (this.shows('popular')) messagePills = this.popularList.slice(0, 3);
+      // Nothing found and a failure are an inline sf-empty-state (owner
+      // decision C120 (3), (5)): search_off with the popular queries under it,
+      // the error glyph with «Повторить»; a refusal that is not a failure (a
+      // query too short) stays the host's sentence. A search running over
+      // them takes them away at once, as a new answer would.
+      if (waiting) {
+        // The rows of the last answer stay (paler); an old state goes.
+      } else if (this.status === 'error') {
+        const words = this.statusMessage || this.sfWord('error-text');
+        if (this.statusKind) state = {kind: this.statusKind, text: words};
+        else message = words;
+      } else if (!rows.length && answer) {
+        const popular = this.shows('popular') ? this.popularList.slice(0, 3) : [];
+        state = {kind: 'nothing-found', text: this.sfWord(popular.length ? 'empty-advice-text' : 'empty-text', {vars: {query}})};
+        if (popular.length) sections.push({kind: 'popular', texts: popular});
       }
     }
     if (this.selected >= rows.length) this.selected = Math.max(0, rows.length - 1);
@@ -932,14 +1028,18 @@ class SfSearch extends SearchElement {
       pane: this.showsPreview(),
       notice: this.notice,
       message,
-      messagePills,
+      state,
+      // The rows on screen belong to the last answer while a new one is
+      // awaited; the «Поиск…» line comes after WAIT_LINE_DELAY.
+      stale: waiting && rows.length > 0,
+      waiting: waiting && this.waitShown,
       activeId: rows.length ? `${this._id}-option-${this.selected}` : '',
     };
   }
 
   statusText(view) {
     if (!this.query.trim()) return '';
-    if (this.status === 'loading' && !this.answer) return this.sfWord('loading-text');
+    if (this.status === 'loading') return this.waitShown ? this.sfWord('loading-text') : '';
     if (this.status === 'error') return this.statusMessage || this.sfWord('error-text');
     if (!view.rowCount) return this.answer ? this.sfWord('empty-text', {vars: {query: this.query.trim()}}) : '';
     return this.sfWord('count-text', {count: view.rowCount});
@@ -962,6 +1062,7 @@ class SfSearch extends SearchElement {
       keyOpen: this.sfWord('key-open-label'),
       keyClear: this.sfWord('key-clear-label'),
       keyClose: this.sfWord('key-close-label'),
+      loading: this.sfWord('loading-text'),
     };
     this.drawInto(renderSearchWindow({
       component: this,

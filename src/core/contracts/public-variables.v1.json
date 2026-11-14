@@ -3244,8 +3244,8 @@
         {
           "name": "--sf-search-mark-color",
           "role": "background",
-          "summary": "The fill of the matched text in a result's title.",
-          "default": "var(--sf-primary-container)",
+          "summary": "A fill behind the matched text in a result's title; none by default, the match is medium weight (owner decision C139 (8), sf-search 1.8.0).",
+          "default": "transparent",
           "state": "open",
           "since": "2026-10-30"
         },

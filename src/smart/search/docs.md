@@ -88,8 +88,14 @@ document.querySelector('sf-search').provider = async (query, {scope, signal}) =>
   and other text as written; the keys are the kbd component's plain glyphs),
   `text` (matched by the static index, not shown).
 
-While the first answer is awaited the card says so; an error says the search
-is unavailable; no entries say «Ничего не нашлось по «…»».
+While an answer is awaited the rows on screen stay, a step paler -- the last
+answer's, or on a first query the recent queries and commands -- and after
+1 s a «Поиск…» line with a spinner stands over them (owner decisions C139 (4),
+C130 (8)); a faster answer simply replaces them. No entries draw the inline
+empty state «Ничего не нашлось по «…»» (search_off) with the popular queries
+under it; a host that is unavailable draws the error state with «Повторить»,
+which asks again; a forbidden answer draws the no-access state (owner decision
+C120). A refusal such as a query too short is the host's sentence alone.
 
 ### A host
 
@@ -152,7 +158,7 @@ capability of the same name where the table says so:
 
 | Setting | Block |
 | --- | --- |
-| `scopes` | Filter pills: all, then one per result group, with counts |
+| `scopes` | Filter pills: all, then one per result group, with counts; the pill in force has a check and the selected fill (C145 (2)) |
 | `recent` | Recent queries, each with a remove button, and «Очистить» |
 | `popular` | Popular queries on an empty field and under an empty result |
 | `actions` | Results that run a command, with their shortcut hint |
@@ -166,6 +172,10 @@ browser as `localStorage` `sf-pref:sf-search/site`, and by a host that keeps
 preferences for its user. Give each search of a site its own key. An empty
 `recent-key`, or a browser that refuses storage, keeps them for the page's
 life.
+
+The part of a title that matches the query is drawn in medium weight on the
+row's own colour (owner decision C139 (8), as `sf-input-lookup`). A title or
+path cut by its ellipsis shows the whole of them as the row's tooltip.
 
 ## Choosing a result
 
@@ -195,7 +205,7 @@ the field, and a polite status says how many results there are.
 | `Command/Control+K`, `/` | Opens the window; in an open window, selects the field's text |
 | `↓` `↑` | Moves the selection |
 | `Enter` | Opens the selected result; a recent query is put into the field |
-| `Escape` | Clears a filled field; closes an empty window and gives focus back |
+| `Escape` | Clears a filled field; closes an empty window and gives focus back -- to what had it, or to the trigger when the window was opened by a key with nothing focused |
 | `Tab` | Moves through the window's buttons only |
 
 The X in the field does the same as Escape: it clears a filled field and keeps
@@ -232,7 +242,7 @@ locked.
 | `--sf-search-inset-block-start` | The distance from the top of the window (4rem) |
 | `--sf-search-background-color` | The field's and the card's surface |
 | `--sf-search-scrim-color` | The scrim, a colour with its own transparency (by default the shared scrim) |
-| `--sf-search-mark-color` | The fill of the matched text |
+| `--sf-search-mark-color` | A fill behind the matched text (none by default: the match is medium weight) |
 | `--sf-search-radius` | The results card's corners |
 | `--sf-search-list-max-block-size` | The card's greatest height |
 

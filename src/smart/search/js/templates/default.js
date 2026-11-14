@@ -11,7 +11,8 @@ export function renderSearchTemplate(context) {
 }
 
 // One part of a title, the match marked (the first place a term of the query
-// stands in it).
+// stands in it): medium weight on the row's own colour (owner decision C139
+// (8), as sf-input-lookup marks it), no fill.
 const marked = ([before, match, after]) => (match ? html`${before}<mark class="sf-search-mark">${match}</mark>${after}` : before);
 
 const glyph = (name, extra = '') => html`<i class=${`sf-icon ${extra}`.trim()} aria-hidden="true">${name}</i>`;
@@ -32,6 +33,7 @@ function renderRow(context, row) {
     trailing = glyph('arrow_forward', 'sf-search-go');
   }
   return html`<div class=${classes} role="option" id=${ids.option(row.index)} aria-selected=${isSelected ? 'true' : 'false'}
+    @pointerenter=${(event) => component.markCut(event.currentTarget)}
     @pointermove=${() => component.hover(row.index)} @click=${() => component.choose(row.index)}>
     <span class="sf-search-row-icon">${glyph(row.icon)}</span>
     <span class="sf-search-row-text">
@@ -57,7 +59,7 @@ function renderSection(context, section) {
     </div>`;
   }
   if (section.kind === 'results') {
-    return html`<div class="sf-search-list" role="listbox" id=${section.id} aria-label=${words.results}>
+    return html`<div class="sf-search-list" role="listbox" id=${section.id} aria-label=${words.results} aria-busy=${context.view.stale ? 'true' : nothing}>
       ${section.groups.map((group) => html`<div class="sf-search-group" role="group" aria-labelledby=${group.captionId || nothing}
         aria-label=${group.captionId ? nothing : group.label}>
         ${group.captionId ? html`<div class="sf-search-caption" role="presentation"><span id=${group.captionId}>${group.label}</span></div>` : nothing}
@@ -73,7 +75,7 @@ function renderSection(context, section) {
       ${section.kind === 'recent' ? html`<button class="sf-search-caption-action" type="button"
         @click=${() => component.clearRecent()}>${words.recentClear}</button>` : nothing}
     </div>
-    <div class="sf-search-list" role="listbox" id=${section.id} aria-labelledby=${captionId}>
+    <div class="sf-search-list" role="listbox" id=${section.id} aria-labelledby=${captionId} aria-busy=${context.view.stale ? 'true' : nothing}>
       ${section.rows.map((row) => renderRow(context, row))}
     </div>
   </div>`;
@@ -88,10 +90,19 @@ export function renderSearchWindow(context) {
   const listIds = view.sections.filter((section) => section.kind !== 'popular').map((section) => section.id).join(' ');
   const scopes = view.scopes;
   const {correction, notice, pane, preview} = view;
-  const body = html`<div class="sf-search-body">
+  // The «Поиск…» line over the rows it keeps (C139 (4), C130 (8)): drawn
+  // after the wait delay, so its spinner shows with it; the words say the
+  // wait once (the spinner's label is for a screen reader and is not drawn).
+  // Nothing found and a failure: an inline sf-empty-state (C120), which the
+  // window's own status announces (live off).
+  const body = html`<div class=${`sf-search-body${view.stale ? ' sf-search-body--stale' : ''}`}>
+        ${view.waiting ? html`<div class="sf-search-wait" aria-hidden="true">
+          <sf-spinner class="sf-search-spinner" size="1/2" label=${words.loading} label-hidden></sf-spinner><span>${words.loading}</span>
+        </div>` : nothing}
+        ${view.state ? html`<div class="sf-search-state"><sf-empty-state kind=${view.state.kind} layout="inline" size="1/2" live="off"
+          text=${view.state.text} @sf-empty-state-action=${(event) => component.onStateAction(event)}></sf-empty-state></div>` : nothing}
         ${view.sections.map((section) => renderSection(context, section))}
         ${view.message ? html`<div class="sf-search-message">${view.message}</div>` : nothing}
-        ${view.messagePills?.length ? renderPills(context, view.messagePills) : nothing}
       </div>`;
   return html`<div class="sf-search-scrim" aria-hidden="true" @click=${() => component.close({reason: 'outside'})}></div>
   <div class=${`sf-search-window${pane ? ' sf-search-window--pane' : ''}`} id=${ids.dialog} role="dialog" aria-modal="true" aria-label=${label}>
@@ -109,7 +120,10 @@ export function renderSearchWindow(context) {
     <div class="sf-search-card" aria-busy=${busy ? 'true' : 'false'} @mousedown=${(event) => component.keepFocus(event)}>
       ${scopes.length > 1 ? html`<div class="sf-search-scopes" role="group" aria-label=${words.scopes}>
         ${scopes.map((scope) => html`<button class="sf-search-pill sf-search-scope" type="button" aria-pressed=${scope.pressed ? 'true' : 'false'}
-          @click=${() => component.setScope(scope.id)}>${scope.label}<span class="sf-search-count">${scope.count}</span></button>`)}
+          @click=${() => component.setScope(scope.id)}>${scope.pressed
+            // The filter in force: a check before its name on the selected
+            // fill (owner decision C145 (2)); the others have no empty box.
+            ? html`<sf-icon root-class="sf-search-scope-check" icon="check" aria-hidden="true"></sf-icon>` : nothing}${scope.label}<span class="sf-search-count">${scope.count}</span></button>`)}
       </div>` : nothing}
       ${notice ? html`<div class="sf-search-notice" role="alert">${notice}</div>` : nothing}
       ${correction ? html`<button class="sf-search-correction" type="button"

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.profile-picker",
-  "version": "1.4.6",
+  "version": "1.5.0",
   "title": "Profile picker",
   "summary": "One way to choose, make, rename, remove and reset a profile: a field-like button naming the profile in use, and a panel where every act happens inline. The profiles and the rights are the host's; the component says what was asked.",
   "kind": "smart",
@@ -25,7 +25,9 @@
   "composition": {
     "uses": [
       "smart.button",
-      "smart.icon"
+      "smart.button-icon",
+      "smart.icon",
+      "smart.segmented"
     ],
     "public_parts": []
   },
@@ -53,7 +55,8 @@
       },
       "size": {
         "type": "string",
-        "default": "1/2",
+        "default": "1",
+        "description": "The step of the trigger, the rows and the panel: 1 by default, so a compact admin gets its smaller step from data-sf-density and a phone from the ladder (owner decision C22: no hand-written 1/2 for compactness); 1/2 is still drawn as asked.",
         "enum": [
           "1/2",
           "1"
@@ -463,23 +466,23 @@
     "source_artifacts": [
       {
         "path": "src/smart/profile-picker/index.js",
-        "sha256": "b7fb349765dd96f2d5a7bde40c630b57515523345083dcb309188305881dc952"
+        "sha256": "e292321a975a1b870b5a93e9d79651d7c79ee33065446f8abe77afe96eea806c"
       },
       {
         "path": "src/smart/profile-picker/js/templates/default.js",
-        "sha256": "d1ebfb3ce53abd78db89098e6a00848f7909aab21dcff1a5a1cd3abeb1282f56"
+        "sha256": "34dd95cae3cb895ee8bd355e0bc0fc436f7704a633761f00d65ca039b13fb57e"
       },
       {
         "path": "src/smart/profile-picker/scss/_smart__profile_picker.scss",
-        "sha256": "58beea4890afe84124c6b5203ac7fe6b26b5a9afa21c4e8b83e08ddbd718d34b"
+        "sha256": "1c227198c860ff53be7abb8216f8672e90ba6e63c36ee470c361be8ee98894d4"
       },
       {
         "path": "src/smart/profile-picker/rule.js",
-        "sha256": "1a0e0d695df15469a4f21444ec1fc20efc7fc1fa7ece452bea071845144e42a4"
+        "sha256": "a7ec7aea3ab6473b7e696860a668059bf646d8203a7c4046a69a6617468f0a3c"
       },
       {
         "path": "src/smart/profile-picker/docs.md",
-        "sha256": "4d1c4407f9a691d389400f5c2cb9dc65738ac8dace29a9c9377c59097446c74a"
+        "sha256": "0e29678dfc9fb43ef2d17c7692aa62c9e8855c3dfb80a89016f68e935fed69f1"
       }
     ],
     "generated_runtime": []

@@ -20,6 +20,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import {applied, elementFromManifest} from '../../core/js/element-manifest';
 import BundledPosition from '../../core/js/position.js';
 import {holdOpenSurfaceMark} from '../../core/js/open-surface-mark';
+import {focusablesIn} from '../../core/js/layer-stack';
 import {PanelScrollbar} from '../../component/panel-scrollbar';
 import {renderProfilePickerTemplate} from './js/templates/default';
 import manifest from './component.json';
@@ -36,6 +37,17 @@ const ProfilePickerElement = elementFromManifest(manifest, {
 });
 
 const position = () => globalThis.SF?.Position || BundledPosition;
+// On a phone -- below the md breakpoint, where core declares
+// --sf-breakpoint-md -- the panel is a sheet at the bottom of the screen
+// (owner decisions C32, C106 (8): a panel holding a form is a bottom sheet on
+// a phone), as sf-settings' panel is.
+const onPhone = () => !getComputedStyle(document.documentElement).getPropertyValue('--sf-breakpoint-md').trim();
+// The row's buttons are reached by the arrows' F2 and Delete, not by Tab: the
+// menu is one stop (sf-button-icon draws its native button late, so it is
+// tamed as it appears).
+const tameButtons = (panel) => {
+  for (const button of panel?.querySelectorAll('.sf-profile-picker-actions button') ?? []) button.tabIndex = -1;
+};
 
 // The template names its words in camelCase; the language files in kebab-case.
 const kebab = (key) => String(key).replace(/[A-Z]/gu, (letter) => `-${letter.toLowerCase()}`);
@@ -45,7 +57,7 @@ class SfProfilePicker extends ProfilePickerElement {
     super();
     this._profiles = [];
     this._rights = {};
-    this.state = {open: false, mode: null, target: null, draft: {name: '', shared: false}};
+    this.state = {open: false, sheet: false, mode: null, target: null, draft: {name: '', shared: false}};
   }
 
   static get props() {
@@ -80,8 +92,11 @@ class SfProfilePicker extends ProfilePickerElement {
     this.requestComponentUpdate('rights');
   }
 
+  // Size 1 by default (owner decision C22): a compact admin gets its smaller
+  // step from data-sf-density, a phone from the ladder; 1/2 was the default
+  // and made a phone's trigger 24 high. size="1/2" is still drawn as asked.
   get size() {
-    return this.getAttribute('size') === '1' ? '1' : '1/2';
+    return this.getAttribute('size') === '1/2' ? '1/2' : '1';
   }
 
   set size(value) {
@@ -127,7 +142,7 @@ class SfProfilePicker extends ProfilePickerElement {
   async open() {
     if (this.disabled) return {outcome: 'refused', reason: 'disabled'};
     if (this.state.open) return applied();
-    this.state = {...this.state, open: true, mode: null, target: null};
+    this.state = {...this.state, open: true, sheet: onPhone(), mode: null, target: null};
     this.requestComponentUpdate('open');
     await this.whenRendered?.();
     // Closed or taken out while it drew (§7.7): nothing is started, or the
@@ -141,9 +156,18 @@ class SfProfilePicker extends ProfilePickerElement {
       panel.setAttribute('popover', 'manual');
       if (!panel.matches(':popover-open')) panel.showPopover();
     }
-    // At least the trigger's width, wider for a long name.
-    panel.style.minInlineSize = `${Math.round(trigger.getBoundingClientRect().width)}px`;
-    this._position = position().anchor(trigger, panel, {side: 'block-end', align: 'start', flip: true, shift: true, fitHeight: true});
+    this.place();
+    this._onResize = () => {
+      if (this.state.open && onPhone() !== this.state.sheet) {
+        this.state = {...this.state, sheet: onPhone()};
+        this.requestComponentUpdate('sheet');
+        this.whenRendered?.().then(() => this.place());
+      }
+    };
+    window.addEventListener('resize', this._onResize);
+    tameButtons(panel);
+    this._tamer = typeof MutationObserver === 'function' ? new MutationObserver(() => tameButtons(this.panel())) : null;
+    this._tamer?.observe(panel, {childList: true, subtree: true});
     // The scrollbar stands in the panel's inline-end inset while it takes
     // room (owner C07, docs review R029).
     this._scrollbar ??= new PanelScrollbar();
@@ -155,16 +179,52 @@ class SfProfilePicker extends ProfilePickerElement {
     holdOpenSurfaceMark(this, true, {
       root: () => this.panel(),
       onOutsidePress: () => this.close({restoreFocus: false}),
+      // A sheet covers the page, so Tab goes round inside it.
+      onTab: (event) => {
+        if (!this.state.sheet) return;
+        const controls = focusablesIn(this.panel());
+        if (!controls.length) return;
+        const first = controls[0];
+        const last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      },
     });
     (panel.querySelector('.sf-profile-picker-row[aria-checked="true"]') ?? panel.querySelector('.sf-profile-picker-row'))?.focus({preventScroll: true});
     return applied();
   }
 
-  close({restoreFocus = true} = {}) {
-    if (!this.state.open) return {outcome: 'refused', reason: 'closed'};
-    this.state = {...this.state, open: false, mode: null, target: null};
+  // Anchored under the trigger, at least its width; a sheet at the bottom of
+  // the screen on a phone (the stylesheet's sf-profile-picker-panel--sheet).
+  place() {
+    const panel = this.panel();
+    const trigger = this.trigger();
     this._position?.stop();
     this._position = null;
+    if (!panel || !trigger) return;
+    if (this.state.sheet) {
+      panel.style.removeProperty('min-inline-size');
+      for (const property of ['top', 'left', 'right', 'bottom', 'inset', 'translate', 'transform', 'max-block-size', 'max-height']) panel.style.removeProperty(property);
+      return;
+    }
+    // At least the trigger's width, wider for a long name.
+    panel.style.minInlineSize = `${Math.round(trigger.getBoundingClientRect().width)}px`;
+    this._position = position().anchor(trigger, panel, {side: 'block-end', align: 'start', flip: true, shift: true, fitHeight: true});
+  }
+
+  close({restoreFocus = true} = {}) {
+    if (!this.state.open) return {outcome: 'refused', reason: 'closed'};
+    this.state = {...this.state, open: false, sheet: false, mode: null, target: null};
+    this._position?.stop();
+    this._position = null;
+    window.removeEventListener('resize', this._onResize);
+    this._tamer?.disconnect();
+    this._tamer = null;
     this._scrollbar?.disconnect();
     holdOpenSurfaceMark(this, false);
     const panel = this.panel();
