@@ -179,7 +179,14 @@ a copy button), then an indicator (a dropdown's chevron).
   setting, in place of the browser's own.
 - `input-type="password"` draws the reveal: a toggle button «Показать пароль»
   («Show password») with `aria-pressed`; the eye, crossed out while the password
-  shows. `form.reset()` hides the password again.
+  shows. `form.reset()` and sending the form (the submit button, Enter,
+  `requestSubmit()`) hide the password again, before the page's own submit
+  handler runs. On a touch screen (`pointer: coarse`) the eye's hit area is a
+  square of the field's inner height; the glyph keeps its size. While the field
+  has the focus and Caps Lock is on, «Включён Caps Lock» («Caps Lock is on»)
+  stands under the field in the hint's place and type, and is said once through
+  a polite live region; it goes when the field loses the focus or Caps Lock is
+  turned off.
 - An `sf-button-copy` placed in the field (the `end` slot or the class markup's
   `.sf-input-field`) draws the same glyph and shows its check after a copy.
 

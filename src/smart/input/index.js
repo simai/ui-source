@@ -51,6 +51,27 @@ class SfInput extends ShownRequired(FormField(InputElement)) {
     // The clear shows while the field holds a value: typing, a paste or the
     // page's own input event say so (C123 (6)).
     this.addEventListener('input', () => this.syncClearAction());
+    // The Caps Lock hint of a password field (C191 (3)): every key, on its way
+    // down and up, and a click in the field say whether Caps Lock is on
+    // (getModifierState); leaving the field takes the hint away.
+    this._capsLock = false;
+    const capsFrom = (event) => this.syncCapsLock(event);
+    this.addEventListener('keydown', capsFrom);
+    this.addEventListener('keyup', capsFrom);
+    this.addEventListener('click', capsFrom);
+    this.addEventListener('focusout', (event) => {
+      if (event.target === this.getInputElement()) this.setCapsLock(false);
+    });
+    // A revealed password hides again when its form is sent (C191 (1)),
+    // whether the page lets the browser send it or sends it itself.
+    this._hideOnSubmit = (event) => this.hideRevealOnSubmit(event);
+  }
+
+  onConnected() {
+    super.onConnected?.();
+    // Captured on the document: the form owner may be named by the form
+    // attribute, and the page's own submit handler may stop the event.
+    document.addEventListener('submit', this._hideOnSubmit, true);
   }
 
   // The clear (C123 (6)): empties the field the way a reset does -- input,
@@ -74,6 +95,35 @@ class SfInput extends ShownRequired(FormField(InputElement)) {
     if (this.disabled) return;
     this._revealed = !this._revealed;
     this.requestComponentUpdate('revealed');
+  }
+
+  // C191 (1): the form this field belongs to is being sent -- the password
+  // goes back to dots before the browser takes the page (and a password
+  // manager reads the field), so the type changes at once, not at the next
+  // drawing.
+  hideRevealOnSubmit(event) {
+    if (!this._revealed) return;
+    const form = this.sfInternals?.form || this.closest('form');
+    if (!form || event.target !== form) return;
+    this._revealed = false;
+    const input = this.getInputElement();
+    if (input && input.type !== 'password') input.type = 'password';
+    this.requestComponentUpdate('revealed');
+  }
+
+  // C191 (3): Caps Lock while a password is typed. Only the native input's
+  // own events count, so the hint is there only while the field has the focus.
+  syncCapsLock(event) {
+    const input = this.getInputElement();
+    if (!input || event.target !== input || typeof event.getModifierState !== 'function') return;
+    this.setCapsLock(event.getModifierState('CapsLock'));
+  }
+
+  setCapsLock(on) {
+    const next = Boolean(on) && this.inputType === 'password' && !this.disabled;
+    if (next === this._capsLock) return;
+    this._capsLock = next;
+    this.requestComponentUpdate('capsLock');
   }
 
   syncClearAction() {
@@ -224,11 +274,14 @@ class SfInput extends ShownRequired(FormField(InputElement)) {
       inheritedText: this.inheritedText,
       resetLabel: this.resetLabel,
       revealed: this._revealed && props.inputType === 'password',
+      capsLock: this._capsLock && props.inputType === 'password' && !props.disabled,
       component: this,
     });
   }
 
   onDisconnected() {
+    document.removeEventListener('submit', this._hideOnSubmit, true);
+    this._capsLock = false;
     if (this._boundRoot) {
       unbindInput(this._boundRoot);
       this._boundRoot = null;

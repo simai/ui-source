@@ -3,7 +3,8 @@
   "runtime": {
     "value-missing": "Fill in this field",
     "clear": "Clear",
-    "reveal": "Show password"
+    "reveal": "Show password",
+    "caps-lock": "Caps Lock is on"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",
