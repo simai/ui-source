@@ -31,6 +31,16 @@
       "utility/position/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
+    "code": [
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/textarea/css/textarea.min.css",
+      "core/css/core.css",
+      "smart/input-textarea/css/input-textarea.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/transition-property/default/css/default.min.css"
+    ],
     "disabled": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
@@ -90,6 +100,16 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/transition-property/default/css/default.min.css"
+    ],
+    "limit": [
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/textarea/css/textarea.min.css",
+      "core/css/core.css",
+      "smart/input-textarea/css/input-textarea.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "readonly": [

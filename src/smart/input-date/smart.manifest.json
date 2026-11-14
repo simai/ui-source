@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-date",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "title": "Datepicker",
   "summary": "Accessible date, date-and-time, time and date-range picker with popup and inline presentation, calendar and time navigation and host-owned values.",
   "kind": "composite",
@@ -181,11 +181,13 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "Form size of the field.",
+        "description": "The field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the field is an sf-input of this size.",
         "enum": [
+          "1/3",
           "1/2",
           "1",
-          "2"
+          "2",
+          "3"
         ]
       },
       "input-size": {
@@ -193,9 +195,11 @@
         "default": "1",
         "description": "Legacy name for size, still honoured; size wins when both are set. See contracts/public-api-axes.json.",
         "enum": [
+          "1/3",
           "1/2",
           "1",
-          "2"
+          "2",
+          "3"
         ]
       },
       "input-name": {
@@ -743,7 +747,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-date/index.js",
-        "sha256": "b6c12b1791db56c6575c3f76e6709316e46dbbfffacdff08cc7fa4fcfe9c8899"
+        "sha256": "60a30db06855916d8229d58ea831eb7f24ef908a512bebcf941f19fa9255ac4b"
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",
@@ -755,7 +759,7 @@
       },
       {
         "path": "src/smart/input-date/docs/smart-datepicker-guide.md",
-        "sha256": "182e3d12cbfae9bb95af793de906c37ebe760066688530da19ec9a86afd27635"
+        "sha256": "924974edbe054a073e7b000f8ce6b93591a5418cd440cd1f846388d653ebe35d"
       }
     ],
     "generated_runtime": [

@@ -19,7 +19,13 @@ const AVATAR_CLASS_SIZE = '1/4';
 // The clear is the field layer's action (owner decision C123, which takes
 // C14's plain close further): a glyph without a plate, the size of the
 // field's leading picture, its hit area the field's height.
-const BUTTON_SIZE = {'1/2': '1/3', '1': '1/2', '2': '1'};
+const BUTTON_SIZE = {'1/3': '1/3', '1/2': '1/3', '1': '1/2', '2': '1', '3': '2'};
+// A chip stands on the field's text line, a tag one size down (sf-tag line).
+// sf-tag's line names the kept sizes; at the outer steps of the field ladder
+// the chip says its tag itself, an inline tag one size down where the ladder
+// has one: 1/3 the 1/3 tag on its own line (16 on a desktop, the field's line
+// at 1/3), 3 the tag of size 2.
+const CHIP_TAG = {'1/3': {size: '1/3', inline: true}, '3': {size: '2', inline: true}};
 
 function avatar(item, size, extraClass = '') {
   if (!item.avatar) return nothing;
@@ -36,7 +42,9 @@ function chip(context, item) {
   return html`<sf-tag
       class="sf-lookup-chip"
       kind=${item.avatar ? 'avatar' : 'default'}
-      line=${size}
+      line=${CHIP_TAG[size] ? nothing : size}
+      size=${CHIP_TAG[size]?.size || nothing}
+      ?inline=${Boolean(CHIP_TAG[size]?.inline)}
       text=${label}
       title=${item.caption ? `${label} — ${item.caption}` : label}
       avatar-image-url=${item.avatar?.src || nothing}
@@ -66,7 +74,7 @@ function row(context, item, index) {
       </span></div>`;
 }
 
-const SPINNER_SIZE = {'1/2': '1/3', '1': '1/3', '2': '1/2'};
+const SPINNER_SIZE = {'1/3': '1/3', '1/2': '1/3', '1': '1/3', '2': '1/2', '3': '1'};
 
 function spinner(context) {
   return html`<sf-spinner class="sf-lookup-spinner flex-none" size=${SPINNER_SIZE[context.size] || '1/3'} aria-hidden="true"></sf-spinner>`;

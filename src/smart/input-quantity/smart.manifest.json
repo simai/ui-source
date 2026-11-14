@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-quantity",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "title": "Quantity",
   "summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
   "kind": "smart",
@@ -128,11 +128,13 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "Field size: 1/2, 1 or 2, as every form field.",
+        "description": "The field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the frame, the steppers and the number of the same size.",
         "enum": [
+          "1/3",
           "1/2",
           "1",
-          "2"
+          "2",
+          "3"
         ]
       },
       "required": {
@@ -654,7 +656,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-quantity/index.js",
-        "sha256": "863b46aacc69620eb6ef7380285aba86c4251b9fc7bf79a84955600bedc4fa0a"
+        "sha256": "bf8e6d7323555765b2a49ec6b85b64933ab79590385ddb65d82109a379c84fe4"
       },
       {
         "path": "src/smart/input-quantity/value.mjs",
@@ -662,7 +664,7 @@
       },
       {
         "path": "src/smart/input-quantity/js/templates/default.js",
-        "sha256": "db49e1142a1b6bb8c9069ad1816e2a69cab2e104df411636ee4f826e7b8f6e77"
+        "sha256": "a68919c95ec49b285fc7eed691fe5647d9679da1f841c712d8be66557722e540"
       },
       {
         "path": "src/smart/input-quantity/rule.js",
@@ -670,7 +672,7 @@
       },
       {
         "path": "src/smart/input-quantity/docs.md",
-        "sha256": "8c0d19749481485ae09be81753464b0d7ccba7fcda43b0b7fa11c5d6e4a083d9"
+        "sha256": "7e80c3e9fc05149e495def5d735fbf5ffc322417e072ad9e8a9e8f14c7f29291"
       }
     ],
     "generated_runtime": []

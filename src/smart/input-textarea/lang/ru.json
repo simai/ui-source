@@ -1,7 +1,9 @@
 {
   "title": "Многострочное поле",
   "runtime": {
-    "value-missing": "Заполните поле"
+    "value-missing": "Заполните поле",
+    "count-text": "{count} / {max}",
+    "too-long": "Не больше {max} знаков"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",

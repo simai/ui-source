@@ -47,7 +47,7 @@ test('the manifest declares the settings, the value, the events and the form of 
   // No allow-custom and no groups in v1 (consumer answers, 2026-10-30).
   assert.equal(component.settings['allow-custom'], undefined);
   assert.equal(component.settings.groups, undefined);
-  assert.deepEqual(component.settings.size.values, ['1/2', '1', '2']);
+  assert.deepEqual(component.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.deepEqual(component.settings.appearance.values, ['bordered', 'filled']);
   assert.equal(component.settings['min-length'].default, DEFAULTS.minLength);
   assert.equal(component.settings['max-results'].default, DEFAULTS.maxResults);
