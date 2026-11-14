@@ -64,15 +64,19 @@ export function trackSwipe(event, {surface, direction = 'down', variable = '--sf
   let delta = 0;
   const along = (e) => (spec.axis === 'y' ? e.clientY - start.y : e.clientX - start.x);
   const across = (e) => (spec.axis === 'y' ? e.clientX - start.x : e.clientY - start.y);
+  // The moves are heard on the document, not the grip: a pointer that leaves
+  // the grip before it is captured (a quick drag off a handle row) still
+  // reports to it.
+  const doc = grip.ownerDocument || document;
   const clear = () => {
-    grip.removeEventListener('pointermove', move);
-    grip.removeEventListener('pointerup', end);
-    grip.removeEventListener('pointercancel', end);
+    doc.removeEventListener('pointermove', move, true);
+    doc.removeEventListener('pointerup', end, true);
+    doc.removeEventListener('pointercancel', end, true);
     surface.classList.remove('is-dragging');
     surface.style.removeProperty(variable);
   };
   const move = (e) => {
-    if (given) return;
+    if (given || e.pointerId !== event.pointerId) return;
     const a = along(e);
     if (!moved) {
       if (Math.abs(a) < SLOP && Math.abs(across(e)) < SLOP) return;
@@ -91,19 +95,24 @@ export function trackSwipe(event, {surface, direction = 'down', variable = '--sf
     onMove?.(toward);
   };
   function end(e) {
+    if (e.pointerId !== event.pointerId) return;
     clear();
     if (given || !moved || e.type === 'pointercancel') return;
     // A drag that ends on the grip is not also a press of it.
-    grip.addEventListener('click', (click) => click.stopImmediatePropagation(), {capture: true, once: true});
+    // The click, if any, comes in the same task as the release; one that
+    // never comes must not eat a later press.
+    const swallow = (click) => click.stopImmediatePropagation();
+    grip.addEventListener('click', swallow, {capture: true, once: true});
+    setTimeout(() => grip.removeEventListener('click', swallow, {capture: true}));
     const toward = delta * physical;
     const speed = toward / Math.max(1, e.timeStamp - start.t);
     const dismiss = toward > size * SWIPE_SHARE || speed > SWIPE_SPEED;
     const back = !dismiss && (-toward > size * SWIPE_SHARE || speed < -SWIPE_SPEED);
     onEnd?.({dismiss, back, distance: toward});
   }
-  grip.addEventListener('pointermove', move);
-  grip.addEventListener('pointerup', end);
-  grip.addEventListener('pointercancel', end);
+  doc.addEventListener('pointermove', move, true);
+  doc.addEventListener('pointerup', end, true);
+  doc.addEventListener('pointercancel', end, true);
   return clear;
 }
 
