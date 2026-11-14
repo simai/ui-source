@@ -577,8 +577,10 @@
     /* The panel's gutter (the edge is the panel's sibling, so it reads the
        gutter, not the panel's own inset). */
     inset-inline: auto var(--sf-drawer-gutter, var(--sf-space-2));
+    /* The head's content box: its row less its block padding, so the
+       controls stand on the title's centre line. */
     inset-block-start: var(--sf-space-1);
-    block-size: var(--sf-ui-2--control-height);
+    block-size: calc(var(--sf-ui-2--control-height) - var(--sf-space-1) - var(--sf-space-1\/2));
     flex-direction: row;
     align-items: center;
     gap: var(--sf-space-1\/3);
