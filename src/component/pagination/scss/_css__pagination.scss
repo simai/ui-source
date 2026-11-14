@@ -273,7 +273,9 @@
 }
 
 .sf-pagination .sf-pagination-list {
-  gap: var(--sf-pagination-container--gap);
+  /* The list spaces its own numbers and arrows (C105 H5, 8): written without
+     the sf-pagination-container wrapper it had no gap and they touched. */
+  gap: var(--sf-pagination-container--gap, var(--sf-pagination-gap, var(--sf-space-1\/3)));
   list-style: none;
   margin: 0;
   min-inline-size: 0;
