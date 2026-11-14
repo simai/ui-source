@@ -5,6 +5,7 @@
 @use '../../utility/line-height/default/scss/sf_var__line_height' as lineHeightVars;
 @use '../../utility/letter-spacing/default/scss/sf_var__letter_spacing' as letterSpacingVars;
 @use '../../utility/text-max-width/default/scss/sf_var__text_measure' as textMeasureVars;
+@use 'mix/mix__breakpoint' as mq;
 @use '../figma_variables/figma_input_floating_the_others.scss';
 @use '../figma_variables/figma_input_floating_active.scss';
 @use "../figma_variables/figma_icon_sizes";
@@ -238,7 +239,8 @@
     }
   }
 
-  @container (max-width: 40rem) {
+  // 40rem is the container step h0 of the one ladder (C181; group build 6).
+  @container (max-width: #{mq.container-step(h0)}) {
     :where(p, li, dd, blockquote, figcaption) {
       -webkit-hyphens: auto;
       hyphens: auto;

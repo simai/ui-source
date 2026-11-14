@@ -80,7 +80,7 @@ test('C186 (5): on a strong place a link is the place ink, underlined', () => {
 
 test('C186 (6): hyphenation in narrow running text and text-hyphens; never headings, code, names, addresses', () => {
   assert.match(typography, /@media not all and \(min-width: 60rem\) \{\s*:where\(p, li, dd, blockquote, figcaption\) \{\s*-webkit-hyphens: auto;\s*hyphens: auto;/u);
-  assert.match(typography, /@container \(max-width: 40rem\) \{\s*:where\(p, li, dd, blockquote, figcaption\) \{\s*-webkit-hyphens: auto;\s*hyphens: auto;/u);
+  assert.match(typography, /@container \(max-width: #\{mq\.container-step\(h0\)\}\) \{\s*:where\(p, li, dd, blockquote, figcaption\) \{\s*-webkit-hyphens: auto;\s*hyphens: auto;/u);
   const manual = /:where\(([^)]*(?:\([^)]*\)[^)]*)*)\) \{\s*-webkit-hyphens: manual;\s*hyphens: manual;/u.exec(typography);
   assert.ok(manual, 'the exclusions are manual');
   for (const part of ['h1', 'h6', '.sf-h-1', 'code', 'pre', 'address', "a[href^='mailto:']", "[translate='no']"]) assert.ok(manual[1].includes(part), `${part} is never hyphenated`);
