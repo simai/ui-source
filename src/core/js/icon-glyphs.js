@@ -202,6 +202,30 @@ function warnMissing(name) {
   });
 }
 
+// A glyph is judged only once the face that draws it is in: marked loaded,
+// its family can still be on its way (font-display: block draws the name
+// unseen at the fallback's width, as wide as letters). Until then the check
+// waits for the face, twice at most; a face that never comes is judged as it
+// draws.
+const fontWaits = new WeakMap();
+
+function faceOnItsWay(glyph, name) {
+  const fonts = glyph.ownerDocument?.fonts;
+  const view = glyph.ownerDocument?.defaultView;
+  if (!fonts?.check || !view?.getComputedStyle) return null;
+  const waits = fontWaits.get(glyph) || 0;
+  if (waits >= 2) return null;
+  const style = view.getComputedStyle(glyph);
+  const font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+  try {
+    if (fonts.check(font, name || 'a')) return null;
+  } catch {
+    return null;
+  }
+  fontWaits.set(glyph, waits + 1);
+  return Promise.resolve(fonts.load(font, name || 'a')).catch(() => null);
+}
+
 // Called when a glyph is marked loaded; the reads are taken together in one
 // frame for every glyph that loaded since the last one.
 export function checkIconGlyph(el) {
@@ -227,6 +251,11 @@ export function checkIconGlyph(el) {
       // A ligature is one glyph, one box wide; letters are several.
       const missing = text > box * 1.5;
       if (missing) {
+        const face = faceOnItsWay(glyph, name);
+        if (face) {
+          face.then(() => checkIconGlyph(glyph));
+          continue;
+        }
         if (!glyph.hasAttribute('data-sf-icon-missing')) glyph.setAttribute('data-sf-icon-missing', '');
         if (name) warnMissing(name);
       } else if (glyph.hasAttribute('data-sf-icon-missing')) {
