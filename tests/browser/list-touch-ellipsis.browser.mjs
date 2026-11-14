@@ -8,8 +8,10 @@
 // coarse pointer (hasTouch: the page's (pointer: coarse) is checked, not
 // assumed), light and dark, at each step of the ladder (1/2, 1, 2):
 // - a fine pointer keeps the ladder: a one-line row is the control height of
-//   its step, a two-line row the control height and one line of the step
-//   below (as 1.1.1 drew them), the «⋯» the icon button of the step;
+//   its step, a two-line row the next step's control height (C31, LI-03) and
+//   never lower than a menu row with a caption (owner decision C49: the 1/2
+//   step and a 1/3 line, 48, 44 compact, 60 under a finger), the «⋯» the
+//   icon button of the step;
 // - a coarse pointer: every row is at least --sf-d1 (44px), a step whose
 //   control height is taller keeps it; the row's content stays on its centre
 //   line; the «⋯» is at least 44 x 44 and inside its row; the rename field and
@@ -126,6 +128,7 @@ try {
           const got = await tab.evaluate(({size}) => {
             const esc = size.replace('/', '\\/');
             const below = {'1/2': '1\\/3', 1: '1\\/2', 2: '1'}[size];
+            const above = {'1/2': '1', 1: '2', 2: '3'}[size];
             const probe = document.createElement('div');
             document.body.append(probe);
             const length = (value) => { probe.style.width = value; return parseFloat(getComputedStyle(probe).width); };
@@ -133,6 +136,8 @@ try {
               control: length(`var(--sf-ui-${esc}--control-height)`),
               line: length(`var(--sf-text-height-${esc})`),
               lineBelow: length(`var(--sf-text-height-${below})`),
+              // C31 / LI-03: a two-line row is the next step's control height.
+              controlAbove: length(`var(--sf-ui-${above}--control-height)`),
               d1: length('var(--sf-d1)'),
               band: length('var(--sf-space-1\\/4)'),
               // C49: a name + caption row is at least the 1/2 control step
@@ -196,7 +201,11 @@ try {
           const {tokens} = got;
           const touch = pointer === 'coarse';
           const one = touch ? Math.max(tokens.control, tokens.d1) : tokens.control;
-          const two = Math.max(tokens.control + tokens.lineBelow,
+          // C49: the next step's control height, never under the caption row
+          // (the 1/2 step, --sf-d1 under a finger, and a 1/3 line). A row that
+          // grows (a narrow row's badge under its text) keeps that row's
+          // padding and adds whole lines (C18, C47).
+          const two = Math.max(tokens.controlAbove,
             (touch ? Math.max(tokens.captionStep, tokens.d1) : tokens.captionStep) + tokens.captionLine);
           ok(`${label}: the page's pointer is ${pointer}`, got.coarse === touch, got.coarse);
           ok(`${label}: --sf-d1 is 44px`, near(tokens.d1, 44), tokens);
@@ -210,7 +219,7 @@ try {
               if (fits) {
                 const lines = row.twoLine ? two : tokens.control;
                 const want = row.under ? Math.max(lines + tokens.band + row.meta.h, touch ? tokens.d1 : 0) : row.twoLine ? (touch ? Math.max(two, tokens.d1) : two) : one;
-                ok(`${where} is ${want}px high`, near(row.row.h, want), {h: row.row.h, want, tokens});
+                ok(`${where} is ${want}px high (C49${row.under ? ', C47' : ''})`, near(row.row.h, want), {h: row.row.h, want, tokens});
               } else {
                 ok(`${where}: a long title wraps without no-wrap`, row.title.h > row.title.lineHeight * 1.5 && row.row.h > (row.twoLine ? two : one), {title: row.title, row: row.row});
               }

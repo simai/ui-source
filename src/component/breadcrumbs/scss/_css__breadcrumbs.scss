@@ -33,6 +33,18 @@
     --sf-breadcrumbs--target: var(--sf-ui-1\/3--control-height);
   }
 
+  /* core.css holds a drawn trail at its one row, clipped, its list out of
+     view, until this sheet arrives (RG-S2-5, the first paint without printed
+     markup); with the sheet the trail is as tall as its rows. */
+  .sf-breadcrumbs {
+    block-size: auto;
+    overflow: visible;
+  }
+
+  .sf-breadcrumbs > * {
+    visibility: inherit;
+  }
+
   @media (min-width: 60rem) {
     .sf-breadcrumbs,
     [data-sf-density="compact"] [data-sf-density="normal"] .sf-breadcrumbs {

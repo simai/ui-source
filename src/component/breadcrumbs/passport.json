@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.breadcrumbs",
   "kind": "component",
-  "version": "1.1.4",
+  "version": "1.1.7",
   "owner": "simai/ui-source",
   "files": [
     "src/component/breadcrumbs/docs/docs.md",
@@ -16,7 +16,7 @@
     "src/component/breadcrumbs/scss/_var__breadcrumbs.scss",
     "src/component/breadcrumbs/scss/index.scss"
   ],
-  "content_sha256": "aee11f3b359cc3e1ed7896357b514d8fc392a0023d9ce64e38aa461e05a26a00",
+  "content_sha256": "88ee446ee54794c0ca668aadc774f43c060803a1bba4941be4c6ca90deacb6ab",
   "dependencies": [
     {
       "id": "core.runtime",
