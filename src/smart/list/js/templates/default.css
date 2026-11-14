@@ -338,6 +338,7 @@
 
   .sf-list__bar--supporting { inline-size: 70%; }
 
+  /* Skeleton rows take no pointer, so the row hover never reaches them. */
   .sf-list__row--skeleton { pointer-events: none; }
 }
 
@@ -367,7 +368,7 @@
   /* The pointer over the row or over its «⋯»: one tint for both, the token
      the row itself takes under the pointer. A translucent fill, as the open
      row (C43 D4). */
-  .sf-list__row:not(.sf-list__row--current):not(.sf-list__row--editing):not(.sf-list__row--skeleton):hover { background-color: var(--sf-list--hover); --sf-surface-underlay: var(--sf-surface-place-solid); --sf-surface-place-fill: var(--sf-list--hover); }
+  .sf-list__row:not(.sf-list__row--current):not(.sf-list__row--editing):hover { background-color: var(--sf-list--hover); --sf-surface-underlay: var(--sf-surface-place-solid); --sf-surface-place-fill: var(--sf-list--hover); }
 
   /* The open row is told by more than a tint: in forced colours it is marked
      by the system highlight at its start. */
