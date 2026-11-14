@@ -255,6 +255,14 @@
      (C43; core mix sf-place-fill, written out because this sheet is not Sass). */
   .sf-list__row--current { background-color: var(--sf-list--current); --sf-surface-underlay: var(--sf-surface-place-solid); --sf-surface-place-fill: var(--sf-list--current); }
 
+  /* An unread row (owner decision C167 (3), 2026-11-14): a row with a count
+     -- the item's count is its unread (count-label «3 непрочитанных») -- has
+     its title semibold beside the grey count (C140 (3)), so unread is read
+     before the number. The second line stays regular. */
+  .sf-list__row--unread > sf-list-item > .sf-list-item .sf-list-item-title {
+    font-weight: var(--sf-text--font-weight-6);
+  }
+
   .sf-list__actions { margin-inline-end: var(--sf-space-1\/4); }
 
   .sf-list__actions:focus-visible { outline-offset: calc(-1 * var(--sf-focus--width)); }

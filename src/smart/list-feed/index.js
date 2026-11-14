@@ -639,16 +639,20 @@ class SfListFeed extends FeedElement {
         else item.node.replaceChildren(node);
     }
 
-    // Without a renderer an entry is its author and its text: enough for a
-    // feed of people, and the shape a renderer replaces. Text only; a host
-    // that has markup draws it itself, with its own sanitiser.
+    // Without a renderer an entry is a comment (owner decision C167 (4),
+    // 2026-11-14; C40): its author over the first entry of a run -- one's own
+    // too, as «Вы» -- and the text under it, with no fill, at the column's
+    // start: comments on a task, a record's history, a journal. Capsules are
+    // a conversation's look, the host's renderer (SIMAI Pro sf-chat-message).
+    // Text only; a host that has markup draws it itself, with its own
+    // sanitiser.
     renderDefault(entry, {first, own}) {
         const doc = this.ownerDocument;
         const article = doc.createElement("article");
         article.className = "sf-list-feed__entry";
         const name = own ? this.sfWord("you-text") : authorName(entry);
         if (name) article.setAttribute("aria-label", name);
-        if (first && name && !own) {
+        if (first && name) {
             const author = doc.createElement("p");
             author.className = "sf-list-feed__author";
             author.textContent = name;
