@@ -438,7 +438,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tag/index.js",
-        "sha256": "c460da9a4ff79a626db35f800312c35e94125244e086c8c303d002cc8c8c1c45"
+        "sha256": "9a5479ac52c583d0bad592aa8d1f933c3800095daa518b3c333ecec526bef38c"
       }
     ],
     "generated_runtime": [

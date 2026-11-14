@@ -353,6 +353,9 @@ class SfTag extends TagElement {
     // The row the tag stands in shows what fits and «+N», and walks closable
     // tags in a field by keys (js/tag-row.js).
     if (!this.hasAttribute('data-sf-tag-more')) tagInRow(this);
+    // A group's «+N» stands in its popover; its button exists only once it
+    // drew, so the group walks it from then on (one Tab stop, C145 (4)).
+    else this.closest('sf-tag-group')?.sfTagDrew?.();
     this._sfRow = this.parentElement;
     return result;
   }
