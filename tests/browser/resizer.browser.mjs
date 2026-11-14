@@ -200,7 +200,60 @@ try {
     note({case: 'the page language names the handle, and a live switch renames it', got: words});
   }
 
-  console.log(JSON.stringify({handle, during, capped, floored, stepped, shifted, end, kept, phases, restored, reset, valued, dragged, ended, log, words}));
+  // The resizer study (control/research/2026-11-14-resizer.md): the strip is
+  // the hit zone 24 (RS-1); a disabled handle is no Tab stop (RS-6); the
+  // arrows of an RTL page move the edge the way they point (RS-5); a panel
+  // that scrolls keeps the whole strip on its edge, scrolled or not (RS-2);
+  // the content beside a panel keeps min (RS-9).
+  const study = await again.evaluate(async () => {
+    document.body.insertAdjacentHTML('beforeend', `
+      <div id="study" style="display:flex; inline-size:600px; block-size:160px; margin-top:20px">
+        <nav id="s-rtl-box" dir="rtl" style="display:flex; flex:0 0 auto"><nav id="s-rtl" style="inline-size:var(--rw, 240px); block-size:160px; background:#eee"><sf-resizer id="s-rtl-h" min="200px" max="400px" property="--rw"></sf-resizer></nav></nav>
+        <nav id="s-off" style="inline-size:240px; block-size:160px; background:#eee"><sf-resizer id="s-off-h" disabled></sf-resizer></nav>
+      </div>
+      <div style="display:flex; inline-size:600px; block-size:160px">
+        <nav id="s-scroll" style="inline-size:240px; overflow:auto; background:#eee"><div style="block-size:600px"></div><sf-resizer id="s-scroll-h" min="200px" max="400px"></sf-resizer></nav>
+        <main style="flex:1">Страница</main>
+      </div>
+      <div style="display:flex; inline-size:400px; block-size:100px">
+        <nav id="s-room" style="inline-size:var(--room, 160px); background:#eee"><sf-resizer id="s-room-h" min="120px" max="400px" property="--room"></sf-resizer></nav>
+        <main style="flex:1 1 auto; min-inline-size:0">Текст рядом</main>
+      </div>`);
+    await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
+    const at = (id) => document.getElementById(id);
+    const hit = Math.round(at('s-rtl-h').getBoundingClientRect().width);
+    const off = {tabIndex: at('s-off-h').tabIndex, tabindex: at('s-off-h').getAttribute('tabindex'), disabled: at('s-off-h').getAttribute('aria-disabled')};
+    const scroller = at('s-scroll');
+    const caught = () => {
+      const strip = at('s-scroll-h').getBoundingClientRect();
+      const box = scroller.getBoundingClientRect();
+      const y = box.top + box.height / 2;
+      return [0.1, 0.5, 0.9].map((k) => document.elementFromPoint(strip.left + strip.width * k, y)?.id === 's-scroll-h').filter(Boolean).length
+        + '/' + Math.round(strip.left + strip.width / 2 - box.right);
+    };
+    scroller.scrollIntoView({block: 'center'});
+    await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
+    const before = caught();
+    scroller.scrollTop = 300;
+    await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
+    const scrolled = caught();
+    return {hit, off, before, scrolled, sideways: scroller.scrollWidth - scroller.clientWidth,
+      roomMax: at('s-room-h').getAttribute('aria-valuemax')};
+  });
+  await again.focus('#s-rtl-h');
+  const rtl0 = await again.evaluate(() => Math.round(document.getElementById('s-rtl').getBoundingClientRect().width));
+  await again.keyboard.press('ArrowLeft');
+  study.rtlArrowLeft = (await again.evaluate(() => Math.round(document.getElementById('s-rtl').getBoundingClientRect().width))) - rtl0;
+  await again.focus('#s-room-h');
+  await again.keyboard.press('End');
+  study.roomEnd = await again.evaluate(() => Math.round(document.getElementById('s-room').getBoundingClientRect().width));
+  if (study.hit !== 24) note({case: 'the strip is the hit zone 24', got: study.hit});
+  if (study.off.tabIndex !== -1 || study.off.disabled !== 'true') note({case: 'a disabled handle is no Tab stop', got: study.off});
+  if (study.rtlArrowLeft !== 16) note({case: 'ArrowLeft moves an RTL end edge left: wider', got: study.rtlArrowLeft});
+  if (study.before !== '3/0' || study.scrolled !== '3/0' || study.sideways !== 0) note({case: 'a scrolling panel keeps the whole strip on its edge', got: study});
+  if (study.roomMax !== '280' || study.roomEnd !== 280) note({case: 'the content beside keeps min', got: study});
+
+  console.log(JSON.stringify({handle, during, capped, floored, stepped, shifted, end, kept, phases, restored, reset, valued, dragged, ended, log, words, study}));
 } finally {
   await browser.close();
 }

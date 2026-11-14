@@ -2,7 +2,7 @@
   "$comment": "The source of sf-resizer's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/resizer (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.resizer",
   "tag": "sf-resizer",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "resizer",
   "settings": {
@@ -194,6 +194,7 @@
     "skeleton: none; the handle has no data of its own: the target's width is the page's first paint, restored after layout.",
     "side-effects: none outside its target: it writes the width (inline-size or the named custom property) on the panel it stands in, which is its job, and marks html[data-sf-resizer-active] while dragging.",
     "css-variables: five public variables read by its own sheet (src/core/contracts/public-variables.v1.json).",
+    "version 1.2.0 (resizer study control/research/2026-11-14-resizer.md, dispatcher ruling): (RS-1, C76/C58, D21) the strip a pointer finds is 24 (--sf-c2), 44 under a coarse pointer (--sf-d1), centred on the edge; the line it draws is unchanged; --sf-resizer-hit-size still overrides both. (RS-2) a target that clips its overflow (overflow other than visible: a scrolling panel, every .sf-workspace region) cut the strip in half and scrolled it away; the handle now stands outside the clip, positioned against an ancestor of the target (the target is no longer made relative) or, when the page positioned the target itself, against the viewport, at the target's edge as measured (data-sf-resizer-outside absolute|fixed, private --sf-resizer--x/--y/--h), followed on resize and scroll; a target that clips nothing is as before. (RS-5) ArrowLeft and ArrowRight move the edge the way they point in both writing directions: the engine applied the writing direction twice, so an RTL page ran its arrows against the edge (SF.Resizer.attach callers get the same fix: direction() is applied once). (RS-6) a disabled handle leaves the Tab order (its own tabindex is removed; a tabindex the page wrote becomes -1 and comes back on enable) and says aria-disabled. (RS-7) keyboard focus is the system ring around the strip, turned inwards, with the line in the focus colour; the hover line waits --sf-duration-normal before it shows (a pointer crossing the edge no longer flashes it), at once while dragging and on focus. (RS-8) the kept width (value, then SF.Preferences) is written while the element connects, not a frame later: the handle never shows a frame of the old width after it is defined; with the bundle on the page before the first paint the first frame has the kept width (a lazily loaded bundle still arrives after it). (RS-9) max also stops where the in-flow content beside the panel (a sibling on the same row) would be left narrower than min: the handle never takes the content's width; a stylesheet or page width over that room is narrowed while it lasts and given back when the room returns, never remembered. A page-written width is read as a length (16rem was read as 16 px when clamped).",
     "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
   ],
   "x-registry": {
@@ -327,7 +328,7 @@
         "Enter",
         "Space"
       ],
-      "focus": "The handle is in the tab order with role separator, aria-orientation vertical and aria-valuenow/min/max in pixels. Arrows change the width by a step (Shift: four), Home and End set a limit, Enter, Space and a double click restore the stylesheet's width."
+      "focus": "The handle (unless disabled) is in the tab order with role separator, aria-orientation vertical and aria-valuenow/min/max in pixels. Arrows move the edge the way they point by a step (Shift: four), Home and End set a limit, Enter, Space and a double click restore the stylesheet's width."
     },
     "alias-events": {
       "sf-resize": {

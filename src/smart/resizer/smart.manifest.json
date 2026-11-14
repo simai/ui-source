@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.resizer",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "title": "Resizer",
   "summary": "A handle on a panel's edge that changes the panel's width by a drag, the keyboard or a double click back to the default, within limits; optionally remembered in the browser.",
   "kind": "smart",
@@ -223,7 +223,7 @@
       "Enter",
       "Space"
     ],
-    "focus": "The handle is in the tab order with role separator, aria-orientation vertical and aria-valuenow/min/max in pixels. Arrows change the width by a step (Shift: four), Home and End set a limit, Enter, Space and a double click restore the stylesheet's width."
+    "focus": "The handle (unless disabled) is in the tab order with role separator, aria-orientation vertical and aria-valuenow/min/max in pixels. Arrows move the edge the way they point by a step (Shift: four), Home and End set a limit, Enter, Space and a double click restore the stylesheet's width."
   },
   "presentation": {
     "themes": [
@@ -291,11 +291,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/resizer/index.js",
-        "sha256": "02f0982fd607bce9a68fd4a8b5d1aec1d6e79ac5b281e18f65a5fa442f89ac51"
+        "sha256": "24a7b827ed6f3916f7f44dba40c7e8a1521ce1489af089a7fe1f934948bb184a"
       },
       {
         "path": "src/smart/resizer/scss/_smart__resizer.scss",
-        "sha256": "c93c1c168e81f87dc55cc28d9aac87db96e0e9301a2c216e41b7b87374eb7513"
+        "sha256": "b12ed7b2e797b4db3336ac60f0058063c6cbc9ea5293fcce66beb47cc9f23df7"
       },
       {
         "path": "src/smart/resizer/rule.js",
@@ -303,11 +303,11 @@
       },
       {
         "path": "src/smart/resizer/docs.md",
-        "sha256": "6564d3a42b65f127576cb6923855472ef20079695e353b7c8d90e3c637911751"
+        "sha256": "c0de5e36a9e13c0983a44a0a5ff883e6cc12e01dc7c75051d43841e610e17b08"
       },
       {
         "path": "src/smart/resizer/engine.mjs",
-        "sha256": "258b529502181cd1241530e7594faeea9893390571d829fe3c54ae883a138b74"
+        "sha256": "d7286295dd21d5ce0ce11cbc305ac68048ea48601e93502985579afcbd305d02"
       }
     ],
     "generated_runtime": []

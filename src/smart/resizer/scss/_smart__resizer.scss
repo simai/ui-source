@@ -1,8 +1,11 @@
 @layer sf.components {
 /* A strip on the panel's edge, wider than it looks so a pointer finds it: the
-   line it draws on hover, focus and drag is a hairline in the middle. */
+   line it draws on hover, focus and drag is a hairline in the middle. The
+   strip is the system's hit zone, 24 (C76, C58), and the touch place, 44, under
+   a finger (D21; --sf-d1 as the list and the menus take it): it was 8, also on
+   a phone (study RS-1, 2026-11-14). The line does not change. */
 sf-resizer {
-  --sf-resizer--hit: var(--sf-resizer-hit-size, var(--sf-a8));
+  --sf-resizer--hit: var(--sf-resizer-hit-size, var(--sf-c2));
   position: absolute;
   inset-block: 0;
   inset-inline-end: calc(-1 * var(--sf-resizer--hit) / 2);
@@ -17,9 +20,31 @@ sf-resizer {
   outline: 0;
 }
 
+@media (pointer: coarse) {
+  sf-resizer {
+    --sf-resizer--hit: var(--sf-resizer-hit-size, var(--sf-d1));
+  }
+}
+
 sf-resizer[edge="inline-start"] {
   inset-inline-start: calc(-1 * var(--sf-resizer--hit) / 2);
   inset-inline-end: auto;
+}
+
+/* A target that clips its overflow (a scrolling panel, every .sf-workspace
+   region) would cut the strip in half: the handle stands outside the clip, at
+   the edge its script measured (data-sf-resizer-outside: absolute against an
+   ancestor, fixed against the viewport), physical left and top in both
+   directions. */
+sf-resizer[data-sf-resizer-outside] {
+  inset: auto;
+  left: var(--sf-resizer--x, var(--sf-0));
+  top: var(--sf-resizer--y, var(--sf-0));
+  block-size: var(--sf-resizer--h, var(--sf-0));
+}
+
+sf-resizer[data-sf-resizer-outside="fixed"] {
+  position: fixed;
 }
 
 sf-resizer::after {
@@ -44,21 +69,40 @@ html[data-sf-resizer-active] * {
 }
 
 @layer sf.states {
-  sf-resizer:not([aria-disabled="true"]):hover::after,
+  /* The line waits for a pointer that stays: crossing the edge on the way
+     somewhere else flashed it (study RS-7, 2026-11-14). A drag and the
+     keyboard show it at once; it goes at once. */
+  sf-resizer:not([aria-disabled="true"]):hover::after {
+    background-color: var(--sf-resizer-hover-line-color, var(--sf-primary));
+    transition-delay: var(--sf-duration-normal);
+  }
+
   sf-resizer[data-sf-resizing]::after {
     background-color: var(--sf-resizer-hover-line-color, var(--sf-primary));
+    transition-delay: 0s;
+  }
+
+  /* Keyboard focus is the system's ring around the strip, turned inwards
+     (the strip is flush with the panel and its neighbour), with the line in
+     the focus colour: it was the hover line alone, in almost the same blue. */
+  sf-resizer:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
   }
 
   sf-resizer:focus-visible::after {
     background-color: var(--sf-focus--color);
     inline-size: var(--sf-focus--width);
     inset-inline-start: calc(50% - var(--sf-focus--width) / 2);
+    transition-delay: 0s;
   }
 }
 
+/* Without motion the line still waits for a pointer that stays; it only
+   does not fade. */
 @media (prefers-reduced-motion: reduce) {
   sf-resizer::after {
-    transition: none;
+    transition-duration: 0s;
   }
 }
 
@@ -67,5 +111,9 @@ html[data-sf-resizer-active] * {
   sf-resizer:focus-visible::after,
   sf-resizer[data-sf-resizing]::after {
     background-color: Highlight;
+  }
+
+  sf-resizer:focus-visible {
+    outline-color: Highlight;
   }
 }
