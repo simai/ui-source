@@ -80,7 +80,8 @@ test('the password renderers never put the value into markup and write only type
   assert.match(source, /const VIEW_RENDERERS = \{\n    string: renderStringView,/u);
   assert.match(source, /string: renderStringCell,/u);
   for (const key of ['passwordSet', 'passwordUnset', 'passwordKeep']) {
-    assert.equal((source.match(new RegExp(`^        ${key}: '`, 'gmu')) ?? []).length, 2, `${key} in en and ru`);
+    // The set's words are its language files (localization study LC-5).
+    for (const code of ['en', 'ru']) assert.equal(typeof JSON.parse(readFileSync(join(root, `src/smart/field-renderers/lang/${code}.json`), 'utf8')).runtime[key], 'string', `${key} in ${code}`);
   }
 });
 

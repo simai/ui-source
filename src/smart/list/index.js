@@ -55,8 +55,12 @@ function endInReach(sentinel, root) {
 import {renderListTemplate} from "./js/templates/default.js";
 import {watchLongPress} from "../list-item/js/long-press.js";
 import manifest from "./component.json";
-import en from "./lang/en.json";
-import ru from "./lang/ru.json";
+import enFile from "./lang/en.json";
+import ruFile from "./lang/ru.json";
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // A text longer than this is not a name; the rename field stops there, as the
 // server that stores it most likely does.

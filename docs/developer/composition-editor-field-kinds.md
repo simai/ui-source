@@ -48,6 +48,19 @@ const ru = SF.Composition.editorFieldMessages(manifest, {locale: 'ru'});
 // With no manifest it answers every built-in one.
 ```
 
+The words are not part of every page's `core.min.js` (localization study LC-1,
+2026-11-14): they are the core chunk `core-editor-words`, fetched once by
+`SF.Composition.loadEditorWords()`. `sf-editor-inline` and `sf-editor-overlay`
+fetch it when they are defined; a host form on a page without them awaits it
+first. Until the words are on the page, `editorFieldMessages` answers with the
+registered words only, starts the fetch, and the page's components are told
+when the words arrive, as for a registered language:
+
+```js
+await SF.Composition.loadEditorWords();
+const messages = SF.Composition.editorFieldMessages(manifest, {node: form});
+```
+
 The words belong to the registry owner `sf-composition` (`SF.Composition.EDITOR_WORDS_OWNER`),
 so a product adds a language or corrects one word as for any component:
 

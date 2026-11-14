@@ -12,12 +12,15 @@
     "src/component/country-code/js/_country_code.js",
     "src/component/country-code/js/index.js",
     "src/component/country-code/json/country-code.utility.json",
+    "src/component/country-code/lang/en.json",
+    "src/component/country-code/lang/index.mjs",
+    "src/component/country-code/lang/ru.json",
     "src/component/country-code/rule.js",
     "src/component/country-code/scss/_css_country_code.scss",
     "src/component/country-code/scss/_css_country_code_custom.scss",
     "src/component/country-code/scss/index.scss"
   ],
-  "content_sha256": "fa3e4f2d1a6c6df6a6ae9a1d53c86e45b99f93dd93bf5aa7fb023e5fa07a7207",
+  "content_sha256": "a15a36a18fc766463244d00f69ed2406171d22e57c74dbbdf3f0ae2b7e74e30c",
   "dependencies": [
     {
       "id": "component.inputs",

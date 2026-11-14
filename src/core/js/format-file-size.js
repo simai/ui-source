@@ -3,18 +3,39 @@
 // composition/file-size.mjs and SF.format.fileSize.
 import {formatLocale, intlFormatter} from './format-intl.js';
 
-// The four words of a size, in the languages the SIMAI Framework ships; any
-// other language reads the English words with its own digits. A component
-// with words of its own passes them as `units`.
+// The four words of a size live in core's language files
+// (core/js/lang/file-size, localization study LC-3): ru and en ship; any
+// other language takes the words a product registers for `sf-file-size`
+// (SF.language.register('sf-file-size', 'de', {b, kb, mb, gb})), else the
+// English words with its own digits. A component with words of its own passes
+// them as `units`. The registry is read from the shared global the page
+// language keeps (core/js/page-language.js), so this module still runs
+// nothing on load.
+import UNIT_WORDS from './lang/file-size/index.mjs';
+
+const UNIT_KEYS = /* @__PURE__ */ Object.freeze(['b', 'kb', 'mb', 'gb']);
+function unitsOf(words) {
+  return Object.freeze(UNIT_KEYS.map((key) => words[key]));
+}
+
 export const FILE_SIZE_UNITS = /* @__PURE__ */ Object.freeze({
-  en: /* @__PURE__ */ Object.freeze(['B', 'KB', 'MB', 'GB']),
-  ru: /* @__PURE__ */ Object.freeze(['Б', 'КБ', 'МБ', 'ГБ']),
+  en: /* @__PURE__ */ unitsOf(UNIT_WORDS.en),
+  ru: /* @__PURE__ */ unitsOf(UNIT_WORDS.ru),
 });
 
-/** The unit words for a locale: its language's, else English. */
+function registeredUnits(code) {
+  const words = globalThis.__sfPageLanguage?.registered?.get?.('sf-file-size')?.get?.(code);
+  return words && UNIT_KEYS.every((key) => typeof words[key] === 'string') ? unitsOf(words) : null;
+}
+
+/** The unit words for a locale: registered for it, its own, its language's, else English. */
 export function fileSizeUnits(locale = 'en') {
-  const language = String(locale || 'en').toLowerCase().split('-')[0];
-  return Object.hasOwn(FILE_SIZE_UNITS, language) ? FILE_SIZE_UNITS[language] : FILE_SIZE_UNITS.en;
+  const wanted = String(locale || 'en').trim().toLowerCase().replace('_', '-');
+  for (const code of [...new Set([wanted, wanted.split('-')[0]])]) {
+    const units = registeredUnits(code) ?? (Object.hasOwn(FILE_SIZE_UNITS, code) ? FILE_SIZE_UNITS[code] : null);
+    if (units) return units;
+  }
+  return registeredUnits('en') ?? FILE_SIZE_UNITS.en;
 }
 
 /**

@@ -1,18 +1,12 @@
 import registerComponent from "../../register-helper";
 import { pageText } from '../../../core/js/page-language';
+// The words live in the component's language files (localization study LC-4):
+// one place for every language, as the Smart components keep them.
+import LANG_WORDS from '../lang/index.mjs';
 // Every word this part says. A product adds a language with
 // SF.language.register('sf-admin-menu', code, words); a ternary on «ru» allowed two
 // and no more.
-const ADMIN_MENU_ITEM_TEXT = {
-  en: {
-    collapse: 'Collapse',
-    expand: 'Expand',
-  },
-  ru: {
-    collapse: 'Свернуть',
-    expand: 'Развернуть',
-  },
-};
+const ADMIN_MENU_ITEM_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 
 
 const SMART_TAG = 'SF-ADMIN-MENU';

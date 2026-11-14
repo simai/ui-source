@@ -448,7 +448,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/settings/index.js",
-        "sha256": "7121dd6a435b5ab35930fad5d4fc04869cf48369873b309177ade5a1bffae6dd"
+        "sha256": "c10b386f69770ee390e4f60a21490d1c08602ca9cfe480fc5ba42d37182e7b4c"
       },
       {
         "path": "src/smart/settings/js/templates/default.js",

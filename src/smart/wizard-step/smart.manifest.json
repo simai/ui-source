@@ -215,7 +215,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/wizard-step/index.js",
-        "sha256": "8bce19e9780f32c842be9832da758b4468a76d534903b083fbdf5ccf9e12efb6"
+        "sha256": "6e8804b6a2df156f9ef4b70b40c42cc68d26019f560e3120b955b8ebd46f13fd"
       },
       {
         "path": "src/smart/wizard-step/js/templates/default.js",

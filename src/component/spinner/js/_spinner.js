@@ -2,6 +2,9 @@ import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { pageText } from '../../../core/js/page-language';
 import { noteDeprecated } from '../../../core/js/deprecations.js';
+// The words live in the component's language files (localization study LC-4):
+// one place for every language, as the Smart components keep them.
+import LANG_WORDS from '../lang/index.mjs';
 import {
   SPINNER_DOTS,
   SPINNER_DOTS_FILLED,
@@ -11,7 +14,7 @@ import {
   createSvgNode,
 } from './_spinner-draw';
 
-const SPINNER_TEXT = { en: { label: 'Loading…' }, ru: { label: 'Загрузка…' } };
+const SPINNER_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 
 const SPINNER_SELECTOR = '.sf-loader-container';
 const SPINNER_BOUND_FLAG = 'sfSpinnerBound';

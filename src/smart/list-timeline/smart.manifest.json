@@ -318,7 +318,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-timeline/index.js",
-        "sha256": "45e272805da21a670d3d1e7a5583b265cd9c73b013fa17d380b3c211cfcbca99"
+        "sha256": "4e7b76a8e3748db5978d273019c638dc391ce4c708062a738b7a77dd2dd447c8"
       },
       {
         "path": "src/smart/list-timeline/js/templates/default.js",

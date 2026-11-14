@@ -408,7 +408,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/sortable/index.js",
-        "sha256": "c807f90dfbc0064c497bf43aae9238eb7c19e2d7114c0828cff6b436cc34cf34"
+        "sha256": "f6668495ae570295d608c8be60d18e09148d32db749bd81f6d8c47b0f3606ab7"
       },
       {
         "path": "src/smart/sortable/scss/_smart__sortable.scss",

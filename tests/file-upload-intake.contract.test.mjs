@@ -12,6 +12,7 @@ import {acceptFormats, acceptsFile, fileRejection, positiveLimit} from '../src/c
 
 const source = await readFile(new URL('../src/component/file-upload/js/_file_upload.js', import.meta.url), 'utf8');
 const words = source.slice(source.indexOf('const FILE_UPLOAD_ITEM_TEXT'), source.indexOf('const FILE_UPLOAD_SELECTOR'));
+const langWords = Object.fromEntries(await Promise.all(['en', 'ru'].map(async (code) => [code, JSON.parse(await readFile(new URL(`../src/component/file-upload/lang/${code}.json`, import.meta.url), 'utf8')).runtime])));
 const helpers = source.slice(source.indexOf('function toBoolean'), source.indexOf('function bindFileUpload'));
 
 function fill(text, vars = {}) {
@@ -63,6 +64,8 @@ function load() {
     document: {querySelector: () => null},
     Element: class Element {},
     fieldSize: (value) => String(value || '1'),
+    // The words are its language files' since LC-4 (lang/index.mjs).
+    LANG_WORDS: langWords,
     fileIcon,
     acceptFormats,
     acceptsFile,

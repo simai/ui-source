@@ -46,8 +46,12 @@ import {elementFromManifest} from "../../core/js/element-manifest";
 import {readingPosition} from "../../core/js/reading-position.js";
 import {renderListFeedTemplate} from "./js/templates/default.js";
 import manifest from "./component.json";
-import en from "./lang/en.json";
-import ru from "./lang/ru.json";
+import enFile from "./lang/en.json";
+import ruFile from "./lang/ru.json";
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // A finished entry is announced whole only up to this length; a screen
 // reader reading a long answer in one breath is not a summary of it.

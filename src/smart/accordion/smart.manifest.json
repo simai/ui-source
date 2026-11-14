@@ -496,7 +496,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/accordion/index.js",
-        "sha256": "d2e466e56252ee561a8c1fe2f3237fdb80975b8f22d770bbae8093e5106fe866"
+        "sha256": "01fef741753c65b6a9311dd8cfe1b4bbd1667a95b839dd237918e556a900357a"
       },
       {
         "path": "src/smart/accordion/sections.mjs",

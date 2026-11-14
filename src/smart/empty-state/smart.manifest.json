@@ -281,7 +281,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/empty-state/index.js",
-        "sha256": "4024205279717fa4199cd3519bd0c26fb6f7d9890cfe4d06788934781b1c45db"
+        "sha256": "0403da736f1ada5df4e4e4a486a6e9b3c3ac9836b0a9437db1eaeeee2149b7d7"
       },
       {
         "path": "src/smart/empty-state/js/templates/default.js",

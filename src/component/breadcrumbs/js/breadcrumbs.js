@@ -1,5 +1,8 @@
 import { pageText } from '../../../core/js/page-language';
 import { collapseRange, menuEntries, nextFit, starvedFit, trailOverflows, trailStarved } from './_trail';
+// The words live in the component's language files (localization study LC-4):
+// one place for every language, as the Smart components keep them.
+import LANG_WORDS from '../lang/index.mjs';
 
 // The ordinary runtime of the class markup a server prints (nav.sf-breadcrumbs):
 // it folds a long trail behind one «…» button and opens it again in place.
@@ -12,10 +15,7 @@ import { collapseRange, menuEntries, nextFit, starvedFit, trailOverflows, trailS
 //     crumb with the separator before it (none in the first);
 //   - the flat form: nav.sf-breadcrumbs > crumb, separator, crumb ...
 const ROOT_SELECTOR = '.sf-breadcrumbs';
-const BREADCRUMBS_TEXT = {
-  en: { expandLabel: 'Show hidden breadcrumbs' },
-  ru: { expandLabel: 'Показать скрытые крошки' },
-};
+const BREADCRUMBS_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 const ITEM_SELECTOR = '.sf-breadcrumbs-item';
 const GENERATED_SELECTOR = '[data-sf-breadcrumbs-generated="ellipsis"]';
 const BOUND_KEY = '__sfBreadcrumbsBound';

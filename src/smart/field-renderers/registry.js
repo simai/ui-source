@@ -13,74 +13,81 @@
 // candidates from the host, not from `options`; a constraint other than a
 // choice's options is the host's to enforce, not a renderer's.
 
+// The names of the types and variants live in the set's language files
+// (localization study LC-5); `label` keeps its {ru, en} shape for the hosts
+// that read it.
+import LANG_WORDS from './lang/index.mjs';
+
+const typeLabel = (key) => ({ru: LANG_WORDS.ru[key], en: LANG_WORDS.en[key]});
+
 export const PROPERTY_TYPES = Object.freeze([
-    {type: 'string', label: {ru: 'Строка', en: 'String'},
+    {type: 'string', label: typeLabel('type-string'),
         // password: write-only. The host never sends the password; the value it
         // sends is {set: true} or {set: false} (null reads as not set), and the
         // set shows only «задан»/«не задан». An edit writes the typed text through
         // setFieldValue and writes nothing for a field nobody typed in.
-        variants: [{id: 'phone', label: {ru: 'Телефон', en: 'Phone'}},
-            {id: 'password', label: {ru: 'Пароль', en: 'Password'}, writeOnly: true}],
+        variants: [{id: 'phone', label: typeLabel('variant-string-phone')},
+            {id: 'password', label: typeLabel('variant-string-password'), writeOnly: true}],
         // mask (property-view port 1.16.0): the Framework mask grammar of
         // sf-input's mask-pattern; the value is the text as shown, fixed parts
         // included, and an incomplete one is reported, not written as a value.
         // nullable: false makes a cleared masked field write "" instead of null.
         // Read by the plain string alone: phone and password keep their controls.
         params: ['placeholder', 'mask', 'nullable', 'required', 'readonly']},
-    {type: 'text', label: {ru: 'Текст', en: 'Text'},
+    {type: 'text', label: typeLabel('type-text'),
         variants: [],
         params: ['placeholder', 'required', 'readonly']},
     // html (property-view port 1.17.0): formatted text, an HTML string of
     // sf-input-rich's subset. Edited with sf-input-rich, shown cleaned by that
     // component's own rule, a cell its text on one line, filtered as text.
-    {type: 'html', label: {ru: 'Форматированный текст', en: 'Formatted text'},
+    {type: 'html', label: typeLabel('type-html'),
         variants: [],
         params: ['placeholder', 'required', 'readonly']},
     // stepper: edited with sf-quantity, «−» and «+» and the arrow keys; min,
     // max and step (and a number's precision) are read by that variant alone.
-    {type: 'integer', label: {ru: 'Целое число', en: 'Integer'},
-        variants: [{id: 'stepper', label: {ru: 'Кнопками «−» и «+»', en: 'With steppers'}}],
+    {type: 'integer', label: typeLabel('type-integer'),
+        variants: [{id: 'stepper', label: typeLabel('variant-integer-stepper')}],
         params: ['unit', 'min', 'max', 'step', 'required', 'readonly']},
-    {type: 'number', label: {ru: 'Число', en: 'Number'},
-        variants: [{id: 'scale', label: {ru: 'Шкала 0–100', en: 'Scale 0–100'}},
-            {id: 'stepper', label: {ru: 'Кнопками «−» и «+»', en: 'With steppers'}}],
+    {type: 'number', label: typeLabel('type-number'),
+        variants: [{id: 'scale', label: typeLabel('variant-number-scale')},
+            {id: 'stepper', label: typeLabel('variant-number-stepper')}],
         params: ['unit', 'min', 'max', 'step', 'precision', 'required', 'readonly']},
-    {type: 'date', label: {ru: 'Дата', en: 'Date'},
+    {type: 'date', label: typeLabel('type-date'),
         variants: [],
         params: ['required', 'readonly']},
     // datetime and time: sf-input-date in mode datetime and time (1.4.0). min
     // and max bound the value -- an ISO date or date and time for a datetime,
     // hh:mm for a time -- and step is the minute step, 1 to 60.
-    {type: 'datetime', label: {ru: 'Дата и время', en: 'Date and time'},
+    {type: 'datetime', label: typeLabel('type-datetime'),
         variants: [],
         params: ['min', 'max', 'step', 'required', 'readonly']},
-    {type: 'time', label: {ru: 'Время', en: 'Time'},
+    {type: 'time', label: typeLabel('type-time'),
         variants: [],
         params: ['min', 'max', 'step', 'required', 'readonly']},
-    {type: 'boolean', label: {ru: 'Да или нет', en: 'Yes or no'},
+    {type: 'boolean', label: typeLabel('type-boolean'),
         variants: [],
         params: ['trueText', 'falseText', 'required', 'readonly']},
     // buttons (property-view port 1.16.0): one segmented button group, a
     // button per option, sized by `size` on the ladder ("1/2", "1", "2"; absent,
     // the field's); pressing the chosen one again clears a field that is not
     // required. The dropdown stays the default.
-    {type: 'choice', label: {ru: 'Одно из списка', en: 'One of a list'},
-        variants: [{id: 'buttons', label: {ru: 'Кнопками', en: 'As buttons'}}],
+    {type: 'choice', label: typeLabel('type-choice'),
+        variants: [{id: 'buttons', label: typeLabel('variant-choice-buttons')}],
         params: ['options', 'badgeAppearance', 'size', 'required', 'readonly']},
-    {type: 'choices', label: {ru: 'Несколько из списка', en: 'Several of a list'},
+    {type: 'choices', label: typeLabel('type-choices'),
         // badges: the view; checklist and select: the edit control (a list of
         // 13 or more is a checklist unless select is asked for).
-        variants: [{id: 'badges', label: {ru: 'Значками', en: 'As badges'}},
-            {id: 'checklist', label: {ru: 'Флажками', en: 'As a checklist'}},
-            {id: 'select', label: {ru: 'Выпадающим списком', en: 'As a dropdown'}}],
+        variants: [{id: 'badges', label: typeLabel('variant-choices-badges')},
+            {id: 'checklist', label: typeLabel('variant-choices-checklist')},
+            {id: 'select', label: typeLabel('variant-choices-select')}],
         params: ['options', 'badgeAppearance', 'required', 'readonly']},
-    {type: 'user', label: {ru: 'Пользователь', en: 'User'},
+    {type: 'user', label: typeLabel('type-user'),
         variants: [],
         params: ['placeholder', 'searchPlaceholder', 'required', 'readonly']},
-    {type: 'record', label: {ru: 'Запись', en: 'Record'},
+    {type: 'record', label: typeLabel('type-record'),
         variants: [],
         params: ['placeholder', 'searchPlaceholder', 'required', 'readonly']},
-    {type: 'relation', label: {ru: 'Связь', en: 'Relation'},
+    {type: 'relation', label: typeLabel('type-relation'),
         variants: [],
         params: ['placeholder', 'searchPlaceholder', 'required', 'readonly']},
     // lookup: a value chosen from a reference list the host keeps -- a country,
@@ -89,22 +96,22 @@ export const PROPERTY_TYPES = Object.freeze([
     // `options` and are chosen from in place; anything larger is paged and
     // searched by the host, from the source the field names (`source`, which the
     // host reads and no renderer does).
-    {type: 'lookup', label: {ru: 'Из справочника', en: 'From a reference list'},
+    {type: 'lookup', label: typeLabel('type-lookup'),
         variants: [],
         params: ['options', 'multiple', 'placeholder', 'searchPlaceholder', 'required', 'readonly']},
-    {type: 'file', label: {ru: 'Файл', en: 'File'},
+    {type: 'file', label: typeLabel('type-file'),
         variants: [
-            {id: 'image', label: {ru: 'Изображение', en: 'Image'}},
-            {id: 'image-card', label: {ru: 'Изображение карточкой', en: 'Image card'}},
-            {id: 'image-list', label: {ru: 'Изображения списком', en: 'Image list'}},
+            {id: 'image', label: typeLabel('variant-file-image')},
+            {id: 'image-card', label: typeLabel('variant-file-image-card')},
+            {id: 'image-list', label: typeLabel('variant-file-image-list')},
         ],
         // required: read by the image variant alone, whose control is
         // sf-image-field -- a required, empty one keeps its form from submitting.
         params: ['accept', 'multiple', 'formats', 'uploadText', 'uploadSupportingText', 'uploadHint', 'required', 'readonly']},
-    {type: 'color', label: {ru: 'Цвет', en: 'Colour'},
+    {type: 'color', label: typeLabel('type-color'),
         variants: [],
         params: ['swatches', 'required', 'readonly']},
-    {type: 'include', label: {ru: 'Код', en: 'Code'},
+    {type: 'include', label: typeLabel('type-include'),
         variants: [],
         params: ['language', 'required', 'readonly']},
     // The types a component set draws (property-view port 1.18.0; Larena
@@ -114,19 +121,19 @@ export const PROPERTY_TYPES = Object.freeze([
     // (money and percent as numbers, items by its number of rows). `params` are
     // the keys the type reads, in the set's renderers and in these. Every
     // number is a decimal string, never a float.
-    {type: 'money', label: {ru: 'Деньги', en: 'Money'}, set: 'view',
+    {type: 'money', label: typeLabel('type-money'), set: 'view',
         variants: [],
         params: ['currency', 'min', 'max', 'required', 'readonly']},
-    {type: 'percent', label: {ru: 'Процент', en: 'Percent'}, set: 'view',
+    {type: 'percent', label: typeLabel('type-percent'), set: 'view',
         variants: [],
         params: ['min', 'max', 'required', 'readonly']},
-    {type: 'items', label: {ru: 'Строки', en: 'Rows'}, set: 'view',
+    {type: 'items', label: typeLabel('type-items'), set: 'view',
         variants: [],
         params: ['columns', 'minRows', 'maxRows', 'required', 'readonly']},
-    {type: 'compound', label: {ru: 'Составное', en: 'Compound'}, set: 'view',
+    {type: 'compound', label: typeLabel('type-compound'), set: 'view',
         variants: [],
         params: ['parts', 'required', 'readonly']},
-    {type: 'ru.requisites', label: {ru: 'Реквизиты', en: 'Requisites (Russia)'}, set: 'view',
+    {type: 'ru.requisites', label: typeLabel('type-ru.requisites'), set: 'view',
         variants: [],
         params: ['parts', 'required', 'readonly']},
 ]);

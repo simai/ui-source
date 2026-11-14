@@ -1,6 +1,9 @@
 import { pageText } from '../../../core/js/page-language';
+// The words live in the component's language files (localization study LC-4):
+// one place for every language, as the Smart components keep them.
+import LANG_WORDS from '../lang/index.mjs';
 
-const SCROLLBAR_TEXT = { en: { scroll: 'Scroll' }, ru: { scroll: 'Прокрутка' } };
+const SCROLLBAR_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 const ROOT_SELECTOR = '.sf-scrollbar';
 const VIEWPORT_SELECTOR = '.sf-scrollbar__viewport';
 const TRACK_CLASS = 'sf-scrollbar__track';

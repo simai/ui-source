@@ -195,7 +195,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/time/index.js",
-        "sha256": "a2150c59a6c5b31f1d802fc623b33b00fcea287798c52e7cbd9425cca0ca8a0e"
+        "sha256": "eed8f418f4237849979f7c360404e890ae859c02356b395d46d1204f63abaa04"
       },
       {
         "path": "src/smart/time/js/templates/default.js",

@@ -6,8 +6,12 @@ import { bindCheckableReset } from '../helpers/checkableReset';
 import { FormField } from '../helpers/form-field';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // sf-radio from its component.json (standard simai.smart-component 1.3.8 §3,
 // §4, §17.1, §17.2). The settings and the value checked are made by

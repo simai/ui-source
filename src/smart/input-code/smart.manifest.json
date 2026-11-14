@@ -404,7 +404,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-code/index.js",
-        "sha256": "6c3449c970e9a17cfd4f8e3d017e1ee4a9a047095c32af43d55b247522e33e35"
+        "sha256": "2bad5c7340da15cc129aaea787f1587ca43d97233daa63362f2f605c9d90797a"
       },
       {
         "path": "src/smart/input-code/code.mjs",

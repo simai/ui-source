@@ -62,7 +62,8 @@ test('a lookup reads as its label and opens nothing', () => {
   assert.match(view, /<span class="sf-field-view">\$\{items\[0\]\.label\}<\/span>/u);
   assert.match(body('renderLookupCell'), /items\.map\(\(item\) => item\.label\)\.join\(', '\)/u);
   for (const key of ['pickFromList']) {
-    assert.equal((source.match(new RegExp(`^        ${key}: '`, 'gmu')) ?? []).length, 2, `${key} in en and ru`);
+    // The set's words are its language files (localization study LC-5).
+    for (const code of ['en', 'ru']) assert.equal(typeof JSON.parse(readFileSync(new URL(`../src/smart/field-renderers/lang/${code}.json`, import.meta.url), 'utf8')).runtime[key], 'string', `${key} in ${code}`);
   }
 });
 

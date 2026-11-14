@@ -195,6 +195,15 @@ function within(target, node) {
   return false;
 }
 
+/**
+ * Tell the page's components that words changed without a registration: the
+ * composition editor words arrive in a chunk of their own (LC-1) and the
+ * forms drawn before them draw again.
+ */
+export function refreshLanguage() {
+  announce();
+}
+
 export function isRussianPage(node) {
   return pageLanguage(node) === 'ru';
 }
@@ -217,13 +226,40 @@ export function pageText(dictionary, key, node, component) {
  * the language without its region and English -- and the key last.
  */
 export function localeText(dictionary, key, locale, component) {
-  for (const candidate of chain(locale || 'en')) {
+  const order = chain(locale || 'en');
+  for (const candidate of order) {
     const added = component ? wordsOf(component)?.get(candidate)?.[key] : undefined;
-    if (added !== undefined) return added;
+    if (added !== undefined) {
+      if (candidate === 'en') warnFallback(order, component, key);
+      return added;
+    }
     const shipped = dictionary?.[candidate]?.[key];
-    if (shipped !== undefined) return shipped;
+    if (shipped !== undefined) {
+      if (candidate === 'en') warnFallback(order, component, key);
+      return shipped;
+    }
   }
   return key;
+}
+
+// A language the Framework does not ship (owner decision C177 (4)) may come
+// partly translated: a word it lacks is said in the fallback language,
+// English, and that is shown, not silent (localization study LC-6). One
+// warning per page and language (de-AT and de are one), naming the first word
+// missed; every word missed is kept by language for SF.language.missing(),
+// and the language files' coverage is scripts/language-coverage.mjs. Kept on
+// the shared global, because every bundle carries this module.
+function warnFallback(order, owner, key) {
+  const wanted = String(order[0] || '').split('-')[0];
+  if (!wanted || wanted === 'en') return;
+  const root = globalThis;
+  if (!(root.__sfMissingWords instanceof Map)) root.__sfMissingWords = new Map();
+  const seen = root.__sfMissingWords;
+  if (!seen.has(wanted)) {
+    seen.set(wanted, new Set());
+    root.console?.warn?.(`[SIMAI Framework] "${wanted}": words missing, said in English (first: ${owner || 'component'} "${key}"); SF.language.missing('${wanted}') lists them`);
+  }
+  seen.get(wanted).add(`${owner || 'component'}|${key}`);
 }
 
 // Missing words are said once per component, word and language: a page that
@@ -290,6 +326,7 @@ export function pageWord(dictionary, key, node, {component, source = '', count, 
     const word = added !== undefined ? added : dictionary?.[candidate]?.[key];
     if (word === undefined || word === null) continue;
     if (candidate === sourceLanguage && !chain(locale).includes(candidate)) warnWord(owner, key, locale, candidate);
+    if (candidate === 'en') warnFallback(chain(locale), owner, key);
     if (typeof word === 'object') {
       let form = 'other';
       if (count !== undefined) {
@@ -372,6 +409,17 @@ export const language = {
   /** The languages something has registered words for. */
   known(component) {
     return [...(wordsOf(component ?? '')?.keys() ?? [])];
+  },
+
+  /**
+   * The words the page has said in English so far for want of one in
+   * `value` (C177 (4): a language may ship partly; what it lacks is visible).
+   * `['sf-pagination|pages-label', ...]`; every language's when none is named.
+   */
+  missing(value) {
+    const seen = globalThis.__sfMissingWords instanceof Map ? globalThis.__sfMissingWords : new Map();
+    if (value === undefined) return Object.fromEntries([...seen].map(([code, words]) => [code, [...words]]));
+    return [...(seen.get(normalise(value).split('-')[0]) ?? [])];
   },
 
   /** Every component something has been registered for. */

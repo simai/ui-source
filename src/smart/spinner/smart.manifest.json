@@ -288,7 +288,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/spinner/index.js",
-        "sha256": "9aae97d24d1329b8597edbb4ef62f3f54016c8543ae776627a3c1a9d26113022"
+        "sha256": "df5e59db13133cfdc24c54aad2ce36c84214a139f8de236dbe85929491451421"
       },
       {
         "path": "src/smart/spinner/js/templates/default.js",

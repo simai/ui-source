@@ -4,6 +4,7 @@ import test from 'node:test';
 import vm from 'node:vm';
 
 import { BREAKPOINTS } from '../src/core/js/breakpoints.js';
+import { editorFieldMessages } from '../src/core/js/composition/editor-words.mjs';
 import {
   BUILTIN_CATALOGUE,
   BUILTIN_EDITOR_MANIFESTS,
@@ -464,7 +465,7 @@ test('parameter sets: each set\'s classes are SIMAI Framework utilities, its fie
     }
     const fields = parameterSetFields({ parameter_sets: [name] });
     assert.equal(fields.length, set.fields.length);
-    const words = Composition.editorFieldMessages({ fields });
+    const words = editorFieldMessages({ fields });
     for (const field of fields) assert.notEqual(words[field.label_key], undefined, field.label_key);
   }
   // A type that names a set gets its props through a registry; the stored manifest keeps the names.

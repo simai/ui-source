@@ -9,6 +9,9 @@ import {maskPattern, maskState} from "./mask.js";
 import {cleanHtml, htmlText} from "./html.js";
 import {noteDeprecated} from "../../core/js/deprecations.js";
 import {formatMoney, formatPercent, fractionDigits, readDecimal} from "./decimal.js";
+// The set's words and the property types' names live in its language files
+// (localization study LC-5), as a Smart component keeps them.
+import LANG_WORDS from './lang/index.mjs';
 
 // The Framework's field renderers, addressed by a property type and a template
 // rather than by a control name.
@@ -1695,73 +1698,7 @@ function renderChoicesEdit(field, value, host) {
 // the host supplies them and the Russian is only the fallback -- the same
 // arrangement as `booleanWords`, and the same reason. A host that passes nothing
 // keeps exactly what was published.
-const SET_TEXT = {
-    en: {
-        yes: 'Yes',
-        no: 'No',
-        searchInList: 'Find in the list',
-        // A text filter is a text the value contains, not a list to search.
-        containsText: 'Contains…',
-        fileKind_image: 'Images',
-        fileKind_document: 'Documents',
-        fileKind_archive: 'Archives',
-        fileKind_other: 'Other files',
-        operator: 'Operator',
-        rangeFrom: 'From',
-        rangeTo: 'To',
-        loadingOptions: 'Loading the options',
-        optionsError: 'The options could not be loaded',
-        pickRecord: 'Choose a record',
-        pickFromList: 'Choose from the list',
-        searchRecords: 'Find a record',
-        loadingRecords: 'Loading records',
-        recordsError: 'The records could not be loaded',
-        retry: 'Try again',
-        loadMore: 'Load more',
-        removeFile: 'Remove',
-        fileRemoved: 'File removed',
-        undo: 'Undo',
-        passwordSet: 'Set',
-        passwordUnset: 'Not set',
-        passwordKeep: 'Set; type a new one to replace it',
-        maskIncomplete: 'Complete the field',
-        notNumber: 'Enter a number',
-        precisionMax: 'At most {n} digits after the point',
-        rowCount: {one: '{n} row', other: '{n} rows'},
-    },
-    ru: {
-        yes: 'Да',
-        no: 'Нет',
-        searchInList: 'Найти в списке',
-        containsText: 'Содержит…',
-        fileKind_image: 'Изображения',
-        fileKind_document: 'Документы',
-        fileKind_archive: 'Архивы',
-        fileKind_other: 'Прочие файлы',
-        operator: 'Оператор',
-        rangeFrom: 'От',
-        rangeTo: 'До',
-        loadingOptions: 'Загрузка вариантов',
-        optionsError: 'Не удалось загрузить варианты',
-        pickRecord: 'Выберите запись',
-        pickFromList: 'Выберите из списка',
-        searchRecords: 'Найти запись',
-        loadingRecords: 'Загрузка записей',
-        recordsError: 'Не удалось загрузить записи',
-        retry: 'Повторить',
-        loadMore: 'Загрузить ещё',
-        removeFile: 'Убрать',
-        fileRemoved: 'Файл убран',
-        undo: 'Вернуть',
-        passwordSet: 'Задан',
-        passwordUnset: 'Не задан',
-        passwordKeep: 'Задан; введите новый, чтобы заменить',
-        maskIncomplete: 'Заполните поле полностью',
-        notNumber: 'Введите число',
-        precisionMax: 'Не больше {n} знаков после запятой',
-        rowCount: {one: '{n} строка', few: '{n} строки', many: '{n} строк', other: '{n} строки'},
-    },
-};
+const SET_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 
 // The host's word wins, as it always did; the set's own fallback now follows
 // the page's language instead of being Russian whatever the page is. `host` is

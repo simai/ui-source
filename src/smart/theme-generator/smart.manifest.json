@@ -471,7 +471,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/theme-generator/index.js",
-        "sha256": "85b6799971c165f7061afa549d281d34796084cec01ae9bffba9b01670f2572b"
+        "sha256": "66c49481ad41d581677fa6d8cb877b727766b231495cc391cc2877c9c3f618f8"
       },
       {
         "path": "src/smart/theme-generator/js/templates/default.js",

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.badges",
   "kind": "component",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/badges/docs/docs.md",
@@ -14,13 +14,16 @@
     "src/component/badges/js/contract.js",
     "src/component/badges/js/index.js",
     "src/component/badges/json/badge.utility.json",
+    "src/component/badges/lang/en.json",
+    "src/component/badges/lang/index.mjs",
+    "src/component/badges/lang/ru.json",
     "src/component/badges/rule.js",
     "src/component/badges/scss/_anchored-geometry.scss",
     "src/component/badges/scss/_css__badges.scss",
     "src/component/badges/scss/_css__badges_anchored.scss",
     "src/component/badges/scss/index.scss"
   ],
-  "content_sha256": "a778c74c81aa63ad7fdc5f2f2574978ca06c1caa0024a3932a09f81f0528a26b",
+  "content_sha256": "4bbf07320db26da36615e6fa155638c9b25831b4dcc4317bad111343b62a1eb8",
   "dependencies": [
     {
       "id": "core.runtime",

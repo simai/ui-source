@@ -11,11 +11,14 @@
     "src/component/download-file/js/_download-file.js",
     "src/component/download-file/js/index.js",
     "src/component/download-file/json/download-file.utility.json",
+    "src/component/download-file/lang/en.json",
+    "src/component/download-file/lang/index.mjs",
+    "src/component/download-file/lang/ru.json",
     "src/component/download-file/rule.js",
     "src/component/download-file/scss/_css_download-file.scss",
     "src/component/download-file/scss/index.scss"
   ],
-  "content_sha256": "f8c6cac1ac0233e56055db7a68d955c8c0990a092fc672ed92c0fcc42d51241d",
+  "content_sha256": "edcb074f38f9cc17bef1ad97b962ca9546e10839160575d53f7e1d97e75ce39b",
   "dependencies": [
     {
       "id": "core.runtime",

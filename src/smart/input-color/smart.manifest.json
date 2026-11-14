@@ -483,7 +483,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-color/index.js",
-        "sha256": "397b52a7ed8c38955f37e92b66e805e5176d03e89ab92cfebabd038e28608690"
+        "sha256": "6aedc4e457e3f504aaaa96094617fbdc321c7747f33b0b87b401bc59e63a2ce4"
       },
       {
         "path": "src/smart/input-color/rule.js",

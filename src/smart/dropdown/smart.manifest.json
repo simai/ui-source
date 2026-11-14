@@ -495,7 +495,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "8ee7bb308e276bed005fe024de2408047baec23487497614e5db8f5d9bcec075"
+        "sha256": "f0839e22a9c5e0dfb666634f42a1b3eea53207444a969d07444345124412a6c1"
       },
       {
         "path": "src/smart/dropdown/rule.js",

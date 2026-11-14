@@ -3,18 +3,21 @@
   "schema_version": 1,
   "id": "component.admin-menu",
   "kind": "component",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/admin-menu/index.js",
     "src/component/admin-menu/js/_admin_menu.js",
     "src/component/admin-menu/js/index.js",
     "src/component/admin-menu/json/admin-menu.utility.json",
+    "src/component/admin-menu/lang/en.json",
+    "src/component/admin-menu/lang/index.mjs",
+    "src/component/admin-menu/lang/ru.json",
     "src/component/admin-menu/rule.js",
     "src/component/admin-menu/scss/_css__admin_menu.scss",
     "src/component/admin-menu/scss/index.scss"
   ],
-  "content_sha256": "b05c2902ea75c50028e48d27e44dcd184ad530b3bd1b354a1fdd68dc3a8936f8",
+  "content_sha256": "ed3a074b2d77c00511a0566c52813b305525af664350a53da903ee4652ca82a1",
   "dependencies": [
     {
       "id": "component.badges",

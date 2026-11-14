@@ -284,7 +284,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/badge/index.js",
-        "sha256": "5c25e0d6c39dbe6490ee7406ace41d8b0adf971439fe1f8f65da889b676278de"
+        "sha256": "7e65db4c6037bed09ef7eaa3f07b17d7fe23f25efedf1387b554c6659507a0b3"
       }
     ],
     "generated_runtime": [

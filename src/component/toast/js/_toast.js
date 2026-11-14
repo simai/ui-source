@@ -2,8 +2,11 @@ import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { dismissToastElement } from '../dismiss';
 import { pageText } from '../../../core/js/page-language';
+// The words live in the component's language files (localization study LC-4):
+// one place for every language, as the Smart components keep them.
+import LANG_WORDS from '../lang/index.mjs';
 
-const TOAST_TEXT = { en: { close: 'Close message' }, ru: { close: 'Закрыть сообщение' } };
+const TOAST_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 
 const TOAST_SELECTOR = '.sf-toast';
 const TOAST_BOUND_FLAG = 'sfToastBound';

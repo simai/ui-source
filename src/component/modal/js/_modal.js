@@ -14,6 +14,9 @@ import { getTopModalLayer, getModalLayerIndex, updateModalLayers, addModalLayer,
   removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus,
   isTopModalLayer } from './_stack';
 import { layerZIndexAt, lockPageScroll } from '../../../core/js/layer-stack';
+// The words live in the component's language files (localization study LC-4):
+// one place for every language, as the Smart components keep them.
+import LANG_WORDS from '../lang/index.mjs';
 
 function joinClasses(...parts) {
   return parts.filter(Boolean).join(' ').trim();
@@ -82,22 +85,7 @@ function normalizeDisplay(value) {
 // The loading state and its failure speak the page's language too: they said
 // "Loading..." and "Failed to load content" on every page (simai/ui-source#11
 // follow-up). The words are sf-modal's, so one registration covers both.
-const UNTITLED = {
-  en: {
-    title: 'Dialog',
-    close: 'Close',
-    loading: 'Loading…',
-    loadFailed: 'Failed to load content',
-    frameFailed: 'Failed to load iframe content',
-  },
-  ru: {
-    title: 'Окно',
-    close: 'Закрыть',
-    loading: 'Загрузка…',
-    loadFailed: 'Не удалось загрузить содержимое',
-    frameFailed: 'Не удалось загрузить встроенную страницу',
-  },
-};
+const UNTITLED = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 // The node the words are looked up from: the modal once it is on the page,
 // else the document, which is where a modal not yet attached will be.
 const modalText = (key, node) => pageText(UNTITLED, key, node?.isConnected ? node : document.documentElement, 'sf-modal');
@@ -698,7 +686,7 @@ class Modal extends ComponentObserver {
         if (!this._fetchController || this._fetchController === controller) {
           this._finishLoading();
         }
-        return; // Загрузка отменена — не показываем ошибку
+        return; // The load was cancelled: no error is shown
       }
       this._contentError = error.message;
       this._finishLoading();

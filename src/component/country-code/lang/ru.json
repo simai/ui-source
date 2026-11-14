@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "phoneLabel": "Телефон",
+    "phoneRequired": "Введите номер телефона.",
+    "countryLabel": "Код страны",
+    "countryUnknown": "Код страны не узнан. Выбрать страну",
+    "searchPlaceholder": "Страна или код",
+    "frequent": "Часто выбирают",
+    "allCountries": "Все страны",
+    "nothingFound": "Ничего не найдено"
+  }
+}

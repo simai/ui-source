@@ -742,7 +742,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu/index.js",
-        "sha256": "411f2f4b3d9f47a31dd4f008c84d745e0e527304563cdd71970311508b7acd47"
+        "sha256": "51113c4d0d6e740ab6391ea96437560195a7c4e0273794362143ecc42759815a"
       },
       {
         "path": "src/smart/menu/items.mjs",

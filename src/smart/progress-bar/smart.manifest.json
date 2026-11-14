@@ -318,7 +318,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-bar/index.js",
-        "sha256": "f427ff4ca47e2fd9e7f260a67f6dea41c5aa58bb3a0e6fd30907ef1dcc74dcf5"
+        "sha256": "036ac355af8eabb583a14b526c87dd23757ca173fa0bf31f08f636b5edc78c4a"
       },
       {
         "path": "src/smart/progress-bar/js/templates/default.js",

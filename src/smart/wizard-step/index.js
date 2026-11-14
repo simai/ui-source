@@ -16,8 +16,12 @@ import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {renderWizardStepTemplate} from './js/templates/default';
 import manifest from './component.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // The attributes the wizard reads; a change of one is the wizard's to draw.
 export const STEP_ATTRIBUTES = ['name', 'label', 'heading', 'description', 'type', 'optional', 'href', 'action-text', 'message', 'state'];

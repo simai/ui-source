@@ -373,7 +373,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/pager/index.js",
-        "sha256": "5788b62b71a143b167263ae58e8af188e83cb396415c9e343d2c1f819aae5008"
+        "sha256": "dec2caf12fa3b66bec990b60fce29dfa55d395f1f3649e12d9c525b6ea6b48b7"
       },
       {
         "path": "src/smart/pager/js/templates/default.js",

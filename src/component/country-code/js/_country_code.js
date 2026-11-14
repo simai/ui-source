@@ -9,31 +9,13 @@ import { ladderSize } from '../../field-size';
 import { pageLanguage, pageText } from '../../../core/js/page-language';
 import { holdOpenSurfaceMark } from '../../../core/js/open-surface-mark';
 import { tagSelector } from '../../../core/js/tag-aliases.js';
+// The words live in the component's language files (localization study LC-4):
+// one place for every language, as the Smart components keep them.
+import LANG_WORDS from '../lang/index.mjs';
 // Every word this part says. A product adds a language with
 // SF.language.register('sf-input-country', code, words); the locale here is
 // also what the number itself is formatted by, which is why it stays.
-const COUNTRY_CODE_TEXT = {
-  en: {
-    phoneLabel: 'Phone number',
-    phoneRequired: 'Enter a phone number.',
-    countryLabel: 'Country code',
-    countryUnknown: 'Country code not recognised. Choose a country',
-    searchPlaceholder: 'Country or code',
-    frequent: 'Frequently chosen',
-    allCountries: 'All countries',
-    nothingFound: 'Nothing found',
-  },
-  ru: {
-    phoneLabel: 'Телефон',
-    phoneRequired: 'Введите номер телефона.',
-    countryLabel: 'Код страны',
-    countryUnknown: 'Код страны не узнан. Выбрать страну',
-    searchPlaceholder: 'Страна или код',
-    frequent: 'Часто выбирают',
-    allCountries: 'Все страны',
-    nothingFound: 'Ничего не найдено',
-  },
-};
+const COUNTRY_CODE_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 
 
 // Prefer the helper Core published; an isolated bundle uses its own copy.

@@ -7,8 +7,12 @@ import { MasonryPlacement } from './js/masonry.js';
 import { normalizeSlideContent } from '../../component/slider/js/_slide-content';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // sf-gallery 1.3.0 from its component.json (standard simai.smart-component
 // 1.3.8 §3, §4, §8), owner decision C150 (2026-11-14): a set of pictures is a
