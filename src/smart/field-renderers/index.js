@@ -7,6 +7,7 @@ import {PROPERTY_TYPES, modesOf} from "./registry.js";
 import {composeDateTime, composeTime, normalizeTime, splitDateTime as readDateTime, splitTime} from "./datetime.js";
 import {maskPattern, maskState} from "./mask.js";
 import {cleanHtml, htmlText} from "./html.js";
+import {noteDeprecated} from "../../core/js/deprecations.js";
 import {formatMoney, formatPercent, fractionDigits, readDecimal} from "./decimal.js";
 
 // The Framework's field renderers, addressed by a property type and a template
@@ -860,9 +861,9 @@ export function renderCellField(field = {}, value, host) {
 let EDIT_SIZE = '1';
 
 const EDIT_RENDERERS = {
-    record: renderRecordPicker,
-    relation: renderRecordPicker,
-    user: renderRecordPicker,
+    record: renderRecordLookup,
+    relation: renderRecordLookup,
+    user: renderRecordLookup,
     lookup: renderLookupEdit,
     string: renderTextEdit,
     text: renderTextAreaEdit,
@@ -918,14 +919,10 @@ function renderPhoneEdit(field, value, host) {
 // Clearing a set password is not offered: an empty field means «keep».
 //
 // The typed text lives in the input and nowhere else: no `value` attribute on
-// sf-input, no data-*, no text node, no log. «Показать пароль» is an icon button
-// that switches the input's type and says what it will do next by its name and
-// icon: «Показать пароль» (visibility) while hidden, «Скрыть пароль»
-// (visibility_off) while shown. A toggle whose name changes is not a pressed
-// toggle (rule C12, point 3): it carries no aria-pressed and no pressed look,
-// or a reader would hear «Скрыть пароль, нажата». It changes the DOM directly,
-// so a host's re-render (its attributes are static in the template) leaves the
-// person's choice as it is.
+// sf-input, no data-*, no text node, no log. The eye that shows the password is
+// sf-input's own (C123 (4): a glyph inside the field, the crossed eye after a
+// press); the set drew a second one beside the field until the text inputs
+// study (TI-7), so a record card showed two.
 function isPasswordField(field) {
     return String(field.variant ?? '') === 'password';
 }
@@ -937,16 +934,6 @@ function passwordIsSet(value) {
 
 function passwordState(host, value) {
     return setText(host, passwordIsSet(value) ? 'passwordSet' : 'passwordUnset');
-}
-
-function togglePasswordShown(event, host) {
-    const button = event.currentTarget;
-    const input = button?.closest?.('.sf-field-password')?.querySelector?.('sf-input');
-    if (!input) return;
-    const shown = input.getAttribute('input-type') !== 'text';
-    input.setAttribute('input-type', shown ? 'text' : 'password');
-    button.setAttribute('aria-label', setText(host, shown ? 'hidePassword' : 'showPassword'));
-    button.setAttribute('icon', shown ? 'visibility_off' : 'visibility');
 }
 
 function renderPasswordEdit(field, value, host) {
@@ -974,14 +961,6 @@ function renderPasswordEdit(field, value, host) {
                     @input=${write}
                     @change=${write}
             ></sf-input>
-            <sf-button-icon
-                    size=${EDIT_SIZE}
-                    appearance="ghost"
-                    scheme="on-surface"
-                    icon="visibility"
-                    aria-label=${setText(host, 'showPassword')}
-                    @click=${(event) => togglePasswordShown(event, host)}
-            ></sf-button-icon>
         </span>
     `;
 }
@@ -1739,8 +1718,6 @@ const SET_TEXT = {
         passwordSet: 'Set',
         passwordUnset: 'Not set',
         passwordKeep: 'Set; type a new one to replace it',
-        showPassword: 'Show password',
-        hidePassword: 'Hide password',
         maskIncomplete: 'Complete the field',
         notNumber: 'Enter a number',
         precisionMax: 'At most {n} digits after the point',
@@ -1771,8 +1748,6 @@ const SET_TEXT = {
         passwordSet: 'Задан',
         passwordUnset: 'Не задан',
         passwordKeep: 'Задан; введите новый, чтобы заменить',
-        showPassword: 'Показать пароль',
-        hidePassword: 'Скрыть пароль',
         maskIncomplete: 'Заполните поле полностью',
         notNumber: 'Введите число',
         precisionMax: 'Не больше {n} знаков после запятой',
@@ -1792,6 +1767,131 @@ function setText(host, key) {
     return host?.getFieldText?.(key) ?? pageText(SET_TEXT, key, host ?? null, SET_NAME);
 }
 
+// One job, one component (owner decision C139 (1), 2026-11-14): a record, a
+// relation, a user and a paged lookup are chosen with sf-input-lookup -- the
+// search the host answers, its rows with a picture and a caption, its states
+// and its chips -- where they were a searchable sf-dropdown beside a status
+// line of the set's own. sf-dropdown stays for a short list given whole (an
+// inline lookup). The dropdown path is kept until 2027-01-01 for a host that
+// asks renderEditField(…, {picker: 'dropdown'}); it is noted as deprecated.
+const DROPDOWN_PICKER_UNTIL = '2027-01-01';
+let EDIT_PICKER = '';
+
+function dropdownPicker() {
+    if (EDIT_PICKER !== 'dropdown') return false;
+    noteDeprecated({component: 'sf-field-renderers', kind: 'value', attribute: 'picker', from: 'dropdown', to: null,
+        since: '2026-11-14', remove_after: DROPDOWN_PICKER_UNTIL});
+    return true;
+}
+
+// An item the lookup shows, from what the host's page holds: a user's
+// avatarText is the avatar's initials, an item's own avatar ({src} or
+// {initials}), icon, caption and match ranges travel as they are.
+function lookupItem(item) {
+    if (!item || typeof item !== 'object') return null;
+    const avatar = item.avatar && typeof item.avatar === 'object' ? item.avatar
+        : item.avatarText ? {initials: String(item.avatarText)} : undefined;
+    return {
+        value: item.value,
+        label: String(item.label ?? item.text ?? item.value ?? ''),
+        ...(item.caption ? {caption: String(item.caption)} : {}),
+        ...(avatar ? {avatar} : {}),
+        ...(item.icon ? {icon: String(item.icon)} : {}),
+        ...(item.match ? {match: item.match} : {}),
+    };
+}
+
+// The lookup's provider over the host's page interface (getFieldOptionsPage,
+// loadFieldOptions, getFieldOptionSearch, setFieldOptionSearch): a query is
+// one host search, a cursor its next page. The page the host already holds
+// for the same query answers at once (a record view asks the first page as
+// its group opens). A host that loads without answering a promise answers on
+// its next drawing: the page is read again until it is no longer loading.
+function hostProvider(field, host) {
+    return async (query, {cursor = null, signal} = {}) => {
+        const text = String(query ?? '');
+        const held = host.getFieldOptionsPage(field) || null;
+        const sameSearch = (host.getFieldOptionSearch?.(field) ?? '') === text;
+        let page = held;
+        let from = 0;
+        let before = [];
+        if (cursor === null && sameSearch && held?.status === 'ready') {
+            page = held;
+        } else {
+            before = cursor === null || !Array.isArray(held?.items) ? [] : held.items;
+            host.setFieldOptionSearch?.(field, text);
+            await host.loadFieldOptions(field, {cursor, search: text});
+            page = host.getFieldOptionsPage(field) || null;
+            for (let wait = 0; page?.status === 'loading' && wait < 100 && !signal?.aborted; wait += 1) {
+                await new Promise((done) => setTimeout(done, 50));
+                page = host.getFieldOptionsPage(field) || null;
+            }
+        }
+        if (signal?.aborted) return {items: []};
+        // A host may join the next page to the ones it holds, or replace them
+        // with it: only what is new is answered.
+        const now = Array.isArray(page?.items) ? page.items : [];
+        if (before.length && now.length > before.length && now[0]?.value === before[0]?.value) from = before.length;
+        if (page?.status === 'unsupported') return {status: 'unavailable'};
+        if (!page || page.status === 'error' || page.status === 'loading') throw new Error(setText(host, 'recordsError'));
+        const items = (Array.isArray(page.items) ? page.items : []).slice(from).map(lookupItem).filter(Boolean);
+        return {items, nextCursor: page.nextCursor ?? null};
+    };
+}
+
+// The page a host pages answers a hundred at most: the lookup cuts an answer
+// to max-results, and a host page is the host's own size.
+const HOST_PAGE_MOST = 100;
+
+function renderHostLookup(field, value, host, {multiple, placeholder}) {
+    // What the lookup says it chose, in the shape the set writes: {value,
+    // label}, or a list of them when multiple.
+    const resolved = (item) => ({value: item.value, label: String(item.label ?? item.value)});
+    const write = (event) => {
+        if (event.target !== event.currentTarget) return;
+        const next = event.detail?.value ?? event.target?.value;
+        if (multiple) {
+            host.setFieldValue(field, (Array.isArray(next) ? next : []).map(resolved));
+            return;
+        }
+        host.setFieldValue(field, next && typeof next === 'object' ? resolved(next) : null);
+    };
+    return html`
+        <div class="sf-field-picker flex flex-col gap-1/3" data-field-picker=${field.key || nothing}>
+            <sf-input-lookup
+                    size=${EDIT_SIZE}
+                    ?multiple=${multiple}
+                    suggest
+                    min-length="1"
+                    max-results=${String(HOST_PAGE_MOST)}
+                    name=${fieldName(field)}
+                    ?required=${Boolean(field.required)}
+                    ?disabled=${EDIT_DISABLED}
+                    placeholder=${field.placeholder || placeholder}
+                    aria-label=${field.label || field.key || ''}
+                    .value=${value ?? (multiple ? [] : null)}
+                    .provider=${hostProvider(field, host)}
+                    @change=${write}
+            ></sf-input-lookup>
+        </div>
+    `;
+}
+
+// The record picker: a record, a relation or a user, one value, searched and
+// paged by the host (C139 (1)).
+function renderRecordLookup(field, value, host) {
+    if (dropdownPicker()) return renderRecordPicker(field, value, host);
+    if (!host.loadFieldOptions || !host.getFieldOptionsPage) return null;
+    const page = host.getFieldOptionsPage(field) || null;
+    // A host that refused this field's candidates has none to give: the field
+    // falls back to its value, read-only, as the dropdown path did.
+    if (page?.status === 'unsupported') return null;
+    const chosen = value && typeof value === 'object' ? value : null;
+    return renderHostLookup(field, chosen, host, {multiple: false, placeholder: setText(host, 'pickRecord')});
+}
+
+// DEPRECATED until 2027-01-01 (C139 (1)): the record picker as a searchable
+// sf-dropdown, for a host that asks {picker: 'dropdown'}.
 function renderRecordPicker(field, value, host) {
     if (!host.loadFieldOptions || !host.getFieldOptionsPage) return null;
 
@@ -1905,6 +2005,12 @@ function renderLookupEdit(field, value, host) {
     // A list the host pages needs a host that pages; without one the field falls
     // back to its value, read-only, as a record does.
     if (!inline && (!host.loadFieldOptions || !host.getFieldOptionsPage)) return null;
+    // A paged list is the lookup's (C139 (1)); a short list given whole stays
+    // the dropdown's, and so does the deprecated dropdown path.
+    if (!inline && !dropdownPicker()) {
+        if (host.getFieldOptionsPage(field)?.status === 'unsupported') return null;
+        return renderHostLookup(field, value, host, {multiple, placeholder: setText(host, 'pickFromList')});
+    }
 
     const page = inline ? null : host.getFieldOptionsPage(field) || null;
     if (page?.status === 'unsupported') return null;
@@ -2163,13 +2269,18 @@ export function renderEditField(field = {}, value, host, options = {}) {
 
     const outer = EDIT_SIZE;
     const outerDisabled = EDIT_DISABLED;
+    const outerPicker = EDIT_PICKER;
     EDIT_SIZE = sizeOption(options);
     EDIT_DISABLED = disabled;
+    // `options.picker: 'dropdown'`: the record, relation, user and paged lookup
+    // fields drawn as before C139, a searchable sf-dropdown (until 2027-01-01).
+    EDIT_PICKER = options?.picker === 'dropdown' ? 'dropdown' : '';
     try {
         return renderer(field, value, host);
     } finally {
         EDIT_SIZE = outer;
         EDIT_DISABLED = outerDisabled;
+        EDIT_PICKER = outerPicker;
     }
 }
 

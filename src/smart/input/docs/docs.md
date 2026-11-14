@@ -152,8 +152,9 @@ Quantity (`sf-input-quantity`).
 <sf-input name="limit" label="Лимит" input-type="number" min="1" max="100" step="1" inputmode="numeric" value="10"></sf-input>
 ```
 
-`size` is limited to `1/3`, `1/2`, `1`, `2` and `3` (the other fields keep
-`1/2`, `1` and `2`). Visible presentation is
+`size` is limited to `1/3`, `1/2`, `1`, `2` and `3`, the field ladder
+sf-input-lookup, -quantity, -date, -code, -color and -country share (the
+textarea, the dropdown and the file fields keep `1/2`, `1` and `2`). Visible presentation is
 `bordered` or `filled`. `hidden` is preserved for compatibility but is not a
 visible control and should not replace a native hidden field in new markup.
 Bordered is the default on every place. Filled is for a search or filter field

@@ -22,6 +22,17 @@
       "many": "{n} результатов",
       "other": "{n} результата"
     },
-    "value-missing": "Выберите значение"
+    "value-missing": "Выберите значение",
+    "more-chips": {
+      "one": "Ещё {n}: {names}",
+      "few": "Ещё {n}: {names}",
+      "many": "Ещё {n}: {names}",
+      "other": "Ещё {n}: {names}"
+    },
+    "create-item": "Создать «{text}»",
+    "create-email": "Добавить адрес {text}",
+    "create-error": "Не удалось создать",
+    "chip-position": "{label}, {position} из {total}, Delete — убрать",
+    "done": "Готово"
   }
 }

@@ -2,6 +2,9 @@
 // them, and they could not hold a field's own pictures, tags and targets. A
 // page written for a retired size keeps rendering at the nearest kept size, and
 // says so once in the console so the markup can be updated.
+//
+// The fields of the field ladder below are the exception: they stand on all
+// five steps, as sf-input does.
 import { noteDeprecated } from '../core/js/deprecations.js';
 
 export const FIELD_SIZES = Object.freeze(['1/2', '1', '2']);
@@ -33,15 +36,27 @@ export function fieldSize(value, component = 'field', fallback = '1') {
   return fallback;
 }
 
-// A text field keeps the ladder's outer steps (actions block item 4,
-// 2026-11-08): a plain sf-input holds no pictures or tags, and a toolbar
-// search or a hero search stands beside buttons of 1/3 and 3. Every other
-// field keeps the three sizes.
-export const INPUT_SIZES = Object.freeze(['1/3', ...FIELD_SIZES, '3']);
+// The field ladder (fields ladder, 2026-11-14): one height per step for every
+// field that stands on it, the control ladder sf-button and sf-button-icon
+// stand on (--sf-ui-<size>--control-height: 28 / 32 / 40 / 48 / 56 on a
+// desktop). A text field kept the outer steps first (actions block item 4,
+// 2026-11-08: a toolbar search or a hero search stands beside buttons of 1/3
+// and 3); sf-input-lookup, -quantity, -date, -code, -color and -country drew
+// 32 / 48 or 40 at 1/3 and 3 beside it, so they take the same five steps and
+// the stylesheets size their parts from the same steps
+// (component/inputs/scss/_field-ladder.scss). The other fields (textarea,
+// dropdown, file upload, image, rich text) keep the three sizes for now.
+export const FIELD_LADDER = Object.freeze(['1/3', ...FIELD_SIZES, '3']);
+export const INPUT_SIZES = FIELD_LADDER;
+
+/** A size on the field ladder: one of the five steps, else the fallback. */
+export function ladderSize(value, fallback = '1') {
+  const size = String(value ?? '').trim().toLowerCase();
+  return FIELD_LADDER.includes(size) ? size : fallback;
+}
 
 export function inputSize(value, fallback = '1') {
-  const size = String(value ?? '').trim().toLowerCase();
-  return INPUT_SIZES.includes(size) ? size : fieldSize(size, 'sf-input', fallback);
+  return ladderSize(value, fallback);
 }
 
 // Markup written by hand carries its size as a class, so the binder moves a

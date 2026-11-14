@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-country",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "title": "Country Code",
   "summary": "A telephone field with a country picker: a button opens a searchable listbox of countries, and the chosen country sets the dial code, flag and, optionally, the input mask of the native tel input.",
   "kind": "smart",
@@ -47,10 +47,13 @@
       "size": {
         "type": "string",
         "default": "1",
+        "description": "The field ladder step, as sf-input's (1/3, 1/2, 1, 2, 3): the frame, the flag and the number of the same size.",
         "enum": [
+          "1/3",
           "1/2",
           "1",
-          "2"
+          "2",
+          "3"
         ]
       },
       "label": {
@@ -70,6 +73,16 @@
       "hint": {
         "type": "string",
         "default": ""
+      },
+      "invalid": {
+        "type": "boolean",
+        "default": false,
+        "description": "The error state: the edge and the line under the field take the error colour and the number field carries aria-invalid."
+      },
+      "error-message": {
+        "type": "string",
+        "default": "",
+        "description": "The error shown under the field in place of the hint while the field is invalid."
       },
       "placeholder": {
         "type": "string"
@@ -327,7 +340,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-country/index.js",
-        "sha256": "33e23a7f577a83d55f66d3f7c829c3b5dd4e7bd6646e9b2db979d7c663db6e37"
+        "sha256": "f4fc0669ec71f2f06691df52764ad963a3937063a9cd9ed362b166ea2df08545"
       }
     ],
     "generated_runtime": [

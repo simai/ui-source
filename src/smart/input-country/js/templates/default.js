@@ -1,4 +1,5 @@
 import { html, nothing } from 'lit';
+import { createFieldContract } from '../../../../component/field-contract';
 
 // A flag of the list is the browser's own lazy image: the address is written
 // with the row, and the browser fetches it when the row comes near the view (a
@@ -64,8 +65,19 @@ export function renderCountryCodeTemplate(context) {
     ariaLabel,
   } = context;
 
+  // The line under the field is sf-input's (fields ladder, 2026-11-14): the
+  // help, or the error in its place while the field is invalid and says why.
+  const field = createFieldContract(context.component, {
+    prefix: 'sf-input-country',
+    invalid: context.invalid,
+    hint,
+    errorMessage: context.errorMessage,
+  });
+  const messageIsError = Boolean(field.invalid && context.errorMessage);
+
   const rootClasses = ['sf-country-code', `sf-country-code--size-${size}`, 'flex', 'flex-col'];
   if (context.rootClass) rootClasses.push(context.rootClass);
+  if (field.invalid) rootClasses.push('error');
   if (disabled) rootClasses.push('disabled');
   if (open) rootClasses.push('open');
 
@@ -119,6 +131,8 @@ export function renderCountryCodeTemplate(context) {
           placeholder=${placeholder}
           ?disabled=${disabled}
           aria-label=${!label && ariaLabel ? ariaLabel : nothing}
+          aria-invalid=${field.invalid ? 'true' : nothing}
+          aria-errormessage=${messageIsError ? field.messageId : nothing}
         />
       </span>
 
@@ -151,7 +165,10 @@ export function renderCountryCodeTemplate(context) {
           `
         : ''}
 
-      ${hint ? html`<span class="sf-country-code-hint">${hint}</span>` : ''}
+      ${field.message
+        ? html`<span class="sf-country-code-hint" id=${field.messageId}
+                     data-field-message=${messageIsError ? 'error' : 'hint'}>${field.message}</span>`
+        : ''}
     </label>
   `;
 }
