@@ -91,7 +91,9 @@ the accordion or any ancestor: `--sf-accordion-background-color`,
 `--sf-accordion-radius`, `--sf-accordion-title-color`,
 `--sf-accordion-content-color`, `--sf-accordion-icon-color` and
 `--sf-accordion-divider-color`. Each falls back to the value the accordion
-drew before it; hover, pressed and focus keep their own.
+drew before it; hover, pressed and focus keep their own. The content is body
+text (`--sf-on-surface`) and the header icons take the control icon role
+(`--sf-on-surface-icon`, the title colour on hover).
 
 Also set on the accordion: `--sf-accordion--trigger-padding-block`,
 `--sf-accordion--trigger-padding-inline`, `--sf-accordion--content-padding`,

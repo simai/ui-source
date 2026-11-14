@@ -1395,14 +1395,14 @@
           "name": "--sf-accordion-content-color",
           "role": "color",
           "summary": "The colour of a section's content text.",
-          "default": "var(--sf-on-surface-variant)",
+          "default": "var(--sf-on-surface)",
           "since": "2026-10-25"
         },
         {
           "name": "--sf-accordion-icon-color",
           "role": "color",
           "summary": "The colour of the marker (the chevron, or plus and minus) and of an icon before the title; a disabled section keeps its own.",
-          "default": "var(--sf-on-surface-variant)",
+          "default": "var(--sf-on-surface-icon)",
           "since": "2026-10-25"
         },
         {
