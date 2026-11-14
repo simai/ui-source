@@ -21,12 +21,6 @@
     {
       "type": "native-attribute",
       "target": "textarea",
-      "name": "maxlength",
-      "value": "500"
-    },
-    {
-      "type": "native-attribute",
-      "target": "textarea",
       "name": "spellcheck",
       "value": "true"
     },

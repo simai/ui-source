@@ -62,6 +62,16 @@
       "optional": true,
       "summary": "The most lines before the text scrolls inside. Unset means no cap; a value below rows is rows."
     },
+    "maxlength": {
+      "type": "number",
+      "optional": true,
+      "summary": "The most characters the text should have, its markup not counted (C141 (1), sf-input-textarea's rule). The count shows from 80 % of it; past it the count and the frame turn to the error colour and the field is invalid (too-long), so the form is not sent. The text is never cut. Unset: no limit, no count."
+    },
+    "counter": {
+      "type": "boolean",
+      "default": false,
+      "summary": "With maxlength: the count shows always, not only from 80 % of the limit (C141 (1))."
+    },
     "disabled": {
       "type": "boolean",
       "default": false,
@@ -112,6 +122,7 @@
     "readonly": "readonly",
     "validity": [
       "value-missing",
+      "too-long",
       "custom-error"
     ]
   },
@@ -215,6 +226,10 @@
     "--sf-rich-text-invalid-border-color": {
       "type": "color",
       "state": "invalid"
+    },
+    "--sf-rich-text-sticky-top": {
+      "type": "length",
+      "state": "default"
     }
   },
   "x-summary": "A form field for formatted text: paragraphs, headings 2 to 4, bold, italic, links, bulleted and numbered lists and quotes, with a toolbar, undo and redo. Its value is HTML of that subset and nothing else: the value it is given, every paste and drop and every edit are cleaned to it.",
@@ -254,7 +269,7 @@
     "version 1.3.2, also (2026-11-11, IME follow-ups and the rich toolbar square; written on the branch's 1.3.1): a patch. Text composed with an IME (compositionend) takes the pending marks as typed text does (acceptance R1: the composed text stayed plain). The IME follow-ups (acceptance M1-M4, E1): a composition keeps the pending marks while it runs, so Bold and Italic stay pressed, and a cancelled one (no text, the caret back) keeps them for the next typing; every composition that changed the text is followed by exactly one input that is not composing, marks or none (a browser that says the commit itself is that one); plain text pasted at the caret takes the pending marks as typing does, rich text keeps its own; a caret on a mark's end edge (at the block's level right after a bold run, or at the start of the text after it) goes to the end of the mark's text, where the browser types, so Bold reads the place the text goes (C12). The link editor stands on the toolbar's rung (owner review R121): its address field, the field's label and hint, and Apply / Remove take the link button's size (1/3, 1/2, 1 at the field sizes 1/2, 1, 2; they were the field's size capped at 1), so the form is the toolbar's scale. While the link editor is open the link tool is the only one that looks active: the other tools draw at rest, with no pressed, hover or focus fill and no filled glyph, and keep aria-pressed. Settings, values, events and keys unchanged.",
     "version 1.3.2, also (2026-11-11, owner decision C52 with C41's 8 % fill): appearance=\"filled\" draws its bottom edge in --sf-outline at rest (--sf-rich-text-border-color colours it too); hover colours the line with the border, focus turns the whole border --sf-outline as before; error and disabled have no line.",
     "version 1.3.2, also (2026-11-10, composition review F1.4; written as 1.2.1, which is never released): a patch. Cleaning a value is idempotent: a run of only white space (&nbsp;) beside a line break at a block's edge hid the break from the first pass, so <p>&nbsp;<br>a</p> was stored as <p><br>a</p> and became <p>a</p> on the next load-and-save with no edit. The edges are now trimmed until stable; the value is the old second pass at once. Every other value is the same bytes (corpus tests/fixtures/html1-break-corpus.json). Settings, values, events and keys unchanged.",
-    "version 1.4.0 (2026-11-14, fields ladder; study control/research/2026-11-14-textarea-rich-text.md TR-1, TR-3, TR-15): a minor (1.3.3 is taken by integration-fix/reds-4). size takes the field ladder's five steps, 1/3, 1/2, 1, 2, 3 (toolbar buttons 1/3 at 1/3 and 2 at 3, the link editor on the toolbar's rung). The text starts where sf-input-textarea's does (C77): 12 / 16 / 20 from the frame's outer edge at 1/2, 1, 2 (12 / 12 / 16 compact, 12 / 12 / 16 on a phone; 19 / 37 at 1/3 and 3, as sf-input), where it drew 22 / 25 / 31 (phone 19 / 21 / 27); the frame takes the textarea's corner rule. On a touch phone the text and the headings are at least 16px on at least the size-1 line, so iOS does not zoom into the field (it drew 12 and 14px). A required field left empty shows its required error once the form's check fails, as sf-input-textarea 1.8.0 (C55 F1): the error frame, aria-invalid and «Заполните поле» under it, gone once there is text; the word value-missing is the textarea's («Заполните поле» / «Fill in this field»; it was «Введите текст.»). Settings, values, events and keys unchanged."
+    "version 1.4.0 (2026-11-14, fields ladder; study control/research/2026-11-14-textarea-rich-text.md TR-1, TR-3, TR-15): a minor (1.3.3 is taken by integration-fix/reds-4). size takes the field ladder's five steps, 1/3, 1/2, 1, 2, 3 (toolbar buttons 1/3 at 1/3 and 2 at 3, the link editor on the toolbar's rung). The text starts where sf-input-textarea's does (C77): 12 / 16 / 20 from the frame's outer edge at 1/2, 1, 2 (12 / 12 / 16 compact, 12 / 12 / 16 on a phone; 19 / 37 at 1/3 and 3, as sf-input), where it drew 22 / 25 / 31 (phone 19 / 21 / 27); the frame takes the textarea's corner rule. On a touch phone the text and the headings are at least 16px on at least the size-1 line, so iOS does not zoom into the field (it drew 12 and 14px). A required field left empty shows its required error once the form's check fails, as sf-input-textarea 1.8.0 (C55 F1): the error frame, aria-invalid and «Заполните поле» under it, gone once there is text; the word value-missing is the textarea's («Заполните поле» / «Fill in this field»; it was «Введите текст.»). Settings, values, events and keys unchanged. Owner decision C141 (2026-11-14; study TR-4, TR-6, TR-7, TR-9, TR-10) in the same minor: (1) the new maxlength and counter count the text a person reads (the value without its markup) with sf-input-textarea's rule (src/smart/helpers/char-count.js, sf-chat-composer's): the count at the end of the message line from 80 % of the limit (always with counter), past the limit the count and the frame in the error colour and the host invalid (too-long), the text kept whole, a polite line at a threshold. (3) The toolbar sticks to the top of the visible part of the field (position sticky, --sf-rich-text-sticky-top, opaque on the field's fill over the place's solid surface). (4) The toolbar's groups stand in the order of importance and carry data-sf-priority 1 (text levels; bold, italic, link), 2 (lists, quote), 3 (undo, redo); the «More» control for what does not fit waits for its study (R233), so the row still wraps. (5) A read-only field draws no toolbar: the text stands in the read-only frame (a record card already shows the value as text, module.smart-field-renderers). (6) The link editor: the address field and both buttons are size 1/2 at every field size (they followed the toolbar's rung: 1/3 at 1/2, 1 at 2, 2 at 3), the buttons in one row from the start edge, «Применить» first, the panel's inset and the room above the buttons --sf-space-1/2 (the dropping panel's, C106; they were --sf-space-1). (7) Headings in the text stand one level below the page's (h2 the page's h3, h3 its h4, h4 its h5) and never below the field's own climb from its text. In the same minor, OV-11 (C105 H5, dispatcher ruling C144; study control/research/2026-11-14-toolbar-overflow.md): the toolbar's icon buttons of one group stand --sf-space-1/4 apart (4), where they stood edge to edge, with --sf-space-1/4 on each side of a group's separator line as before; the link editor's two buttons stand --sf-space-1/3 apart (8; 4 compact), one group (C105 H5)."
   ],
   "x-registry": {
     "reuse_mode": "whole",

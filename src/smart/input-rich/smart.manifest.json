@@ -113,6 +113,15 @@
         "type": "number",
         "description": "The most lines before the text scrolls inside. Unset means no cap; a value below rows is rows."
       },
+      "maxlength": {
+        "type": "number",
+        "description": "The most characters the text should have, its markup not counted (C141 (1), sf-input-textarea's rule). The count shows from 80 % of it; past it the count and the frame turn to the error colour and the field is invalid (too-long), so the form is not sent. The text is never cut. Unset: no limit, no count."
+      },
+      "counter": {
+        "type": "boolean",
+        "default": false,
+        "description": "With maxlength: the count shows always, not only from 80 % of the limit (C141 (1))."
+      },
       "disabled": {
         "type": "boolean",
         "default": false,
@@ -323,11 +332,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-rich/index.js",
-        "sha256": "0444874381f1f18376040a0a6ea68c07da794c4b16f081a30bafb2634865f4af"
+        "sha256": "d0d644893b1b32efa34860f77b7b28830b0993e80ba684dfce0838acb7510a11"
       },
       {
         "path": "src/smart/input-rich/js/templates/default.js",
-        "sha256": "613f0862ec095c113a75e2426c3b75f21b1631f956f85db503866c04ac5065b4"
+        "sha256": "5d5b34c3390d8e082ef3a400869bf63ae85736fa33045b4c109c6e48459e8bac"
       },
       {
         "path": "src/smart/input-rich/js/rich-text-html.mjs",
@@ -339,7 +348,7 @@
       },
       {
         "path": "src/smart/input-rich/scss/_smart__rich_text.scss",
-        "sha256": "614be6e1d9ee09b91e0c786a6b6f5c9d80448a7358f59aee1ac0006da8c75f46"
+        "sha256": "be7061c6f7708d0aebba574e6158754fef69b428233396faa2ade6d28268e199"
       },
       {
         "path": "src/smart/input-rich/rule.js",
@@ -347,7 +356,7 @@
       },
       {
         "path": "src/smart/input-rich/docs.md",
-        "sha256": "7a3c8d6c501ea2b7d63993b7377989b6f31c634913ed011194b98870513968de"
+        "sha256": "338b2791a2295c7e62fe49ce779200966d4c1c011c594a73c7bb3082c459d328"
       }
     ],
     "generated_runtime": []

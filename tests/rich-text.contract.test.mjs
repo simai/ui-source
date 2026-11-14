@@ -186,7 +186,7 @@ test('the manifest: a form field of the field family, its settings, events and w
   assert.equal(component.id, 'smart.input-rich');
   assert.equal(component.family, 'field');
   assert.deepEqual(Object.keys(component.settings).sort(), [
-    'appearance', 'disabled', 'error-message', 'hint', 'invalid', 'label', 'max-rows', 'name', 'placeholder', 'readonly', 'required', 'rows', 'size',
+    'appearance', 'counter', 'disabled', 'error-message', 'hint', 'invalid', 'label', 'max-rows', 'maxlength', 'name', 'placeholder', 'readonly', 'required', 'rows', 'size',
   ]);
   assert.deepEqual(component.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.deepEqual(component.values.value, {...component.values.value, type: 'string', default: ''});
@@ -194,7 +194,7 @@ test('the manifest: a form field of the field family, its settings, events and w
   for (const event of Object.values(component.events)) assert.equal(event.carries, 'native');
   assert.equal(component.form.value, 'value');
   assert.equal(component.form.reset, 'default');
-  assert.deepEqual(component.form.validity, ['value-missing', 'custom-error']);
+  assert.deepEqual(component.form.validity, ['value-missing', 'too-long', 'custom-error']);
   assert.equal(component.accessibility.role, 'textbox');
   for (const key of ['Mod+B', 'Mod+I', 'Mod+K', 'Mod+Z', 'Mod+Shift+Z', 'Mod+Y']) assert.ok(component.keyboard.host[key], key);
   // The generated registry entry says the same.
@@ -223,6 +223,7 @@ test('the element makes no server call and puts no string on the page uncleaned'
   // Every innerHTML written is the cleaner's output or a history entry of it.
   const writes = [...source.matchAll(/innerHTML = ([^;]+);/gu)].map((match) => match[1].trim());
   assert.deepEqual(writes, [
+    "sanitizeRichText(source, {mode: 'value'})",
     "sanitizeRichText(String(html ?? ''), {mode: 'editor'})",
     'clean',
     'clean',
@@ -258,15 +259,26 @@ test('1.3.0: the toolbar, the headings and the link editor are drawn by the syst
   }
   assert.match(source, /--sf-breakpoint-md/u);
   assert.match(source, /SF\?\.Position\?\.liftToTopLayer\?\.\(surface\)/u);
-  // R121: the link form is one rung (field, its hint and the buttons) and one spacing step.
+  // R121, C141 (6): the link form is one rung (field, its hint and the buttons) and one spacing step,
+  // the dropping panel's.
   for (const part of ['sf-rich-text-link-input', 'sf-rich-text-link-apply', 'sf-rich-text-link-remove']) {
     assert.match(template, new RegExp(`class="${part}" size=\\$\\{linkSize\\}`, 'u'), part);
   }
   const panel = sheet.match(/\.sf-rich-text \.sf-rich-text-link-panel \{([^}]*)\}/u)[1];
-  assert.match(panel, /gap: var\(--sf-space-1\);/u);
-  assert.match(panel, /padding: var\(--sf-space-1\);/u);
-  // R121 (owner review 2026-11-11): the form is the toolbar's rung, the link button's size.
-  assert.match(template, /const linkSize = buttonSize;/u);
+  assert.match(panel, /gap: var\(--sf-space-1\\\/2\);/u);
+  assert.match(panel, /padding: var\(--sf-space-1\\\/2\);/u);
+  const actions = sheet.match(/\.sf-rich-text \.sf-rich-text-link-actions \{([^}]*)\}/u)[1];
+  assert.match(actions, /flex-wrap: nowrap;/u);
+  assert.match(actions, /justify-content: flex-start;/u);
+  // C105 H5: the two buttons are one group, --sf-space-1/3 apart.
+  assert.match(actions, /gap: var\(--sf-space-1\\\/3\);/u);
+  // OV-11 (C144): toolbar icon buttons of one group stand --sf-space-1/4 apart, not edge to edge.
+  const group = sheet.match(/\.sf-rich-text \.sf-rich-text-group \{([^}]*)\}/u)[1];
+  assert.match(group, /gap: var\(--sf-space-1\\\/4\);/u);
+  // C141 (6) (owner 2026-11-14): the field and both buttons are size 1/2 at every field size,
+  // «Применить» first.
+  assert.match(template, /const linkSize = '1\/2';/u);
+  assert.ok(template.indexOf('sf-rich-text-link-apply') < template.indexOf('sf-rich-text-link-remove'));
   // While the link editor is open only the link tool looks active: the others rest, glyph unfilled.
   assert.match(sheet, /:has\(sf-popover\.sf-rich-text-link\[data-open='true'\]\) \.sf-icon-button\.sf-icon-button\.sf-icon-button\.sf-icon-button\.sf-rich-text-tool:not\(\[data-sf-tool='link'\]\)[^{]*\{\s*--sf-icon-button--background-color: transparent;/u);
   assert.match(sheet, /\[aria-pressed='true'\] \.sf-icon \{\s*--sf-icon--fill: 0;/u);

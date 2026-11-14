@@ -2,6 +2,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {ladderSize} from '../../component/field-size';
 import {FormField, ShownRequired} from '../helpers/form-field';
+import {charCount, countAnnouncement} from '../helpers/char-count';
 import {renderRichTextTemplate} from './js/templates/default';
 import {richTextFromPlainText, richTextHref, sanitizeRichText} from './js/rich-text-html.mjs';
 import manifest from './component.json';
@@ -203,6 +204,15 @@ class SfRichText extends ShownRequired(FormField(RichTextElement)) {
     this._link = {value: '', error: '', existing: false, selection: null, pending: null, placement: 'bottom-start'};
     this._dragFromSelf = false;
     this._sheet = null;
+    this._countLevel = '';
+    this._countSaid = '';
+    this._countDrawn = null;
+    // The count follows the text (C141 (1)): with a limit, an edit redraws
+    // the count and, at a threshold, the frame. The editing surface is never
+    // drawn by the template, so the redraw leaves the text and the caret.
+    this.addEventListener('input', () => {
+      if (this.maxlength) this.requestComponentUpdate('count');
+    });
   }
 
   // ---------------------------------------------------------- settings
@@ -242,7 +252,35 @@ class SfRichText extends ShownRequired(FormField(RichTextElement)) {
 
   fieldValidity() {
     const missing = Boolean(this.required) && !this.effectiveDisabled && this.value === '';
-    return {valueMissing: missing, message: missing ? this.sfWord('value-missing') : '', anchor: this.editor};
+    // Past the limit the field is too long (C141 (1)): the form is not sent,
+    // and the text is kept whole.
+    const count = this.sfCount();
+    const over = !missing && count.over && !this.effectiveDisabled;
+    const message = missing ? this.sfWord('value-missing') : over ? this.sfTooLongMessage(count) : '';
+    return {valueMissing: missing, tooLong: over, message, anchor: this.editor};
+  }
+
+  // ---------------------------------------------------------- the count
+
+  /** The characters of the text a person reads: the value without its markup. */
+  textLength() {
+    const editor = this.editor;
+    if (editor && this._loaded) return editor.textContent.length;
+    const source = this.getAttribute('value') || '';
+    if (!source) return 0;
+    const template = this.ownerDocument.createElement('template');
+    template.innerHTML = sanitizeRichText(source, {mode: 'value'});
+    return template.content.textContent.length;
+  }
+
+  // The count against maxlength (helpers/char-count.js, sf-chat-composer's
+  // rule): shown from 80 % of the limit or always with `counter`.
+  sfCount() {
+    return charCount(this.textLength(), this.maxlength, {always: Boolean(this.counter)});
+  }
+
+  sfTooLongMessage(count) {
+    return this.sfWord('too-long', {vars: {max: count.limit}});
   }
 
   // form.reset(): the default back, without events.
@@ -258,6 +296,13 @@ class SfRichText extends ShownRequired(FormField(RichTextElement)) {
 
   templateContext() {
     const props = this.getPropsContext();
+    const count = this.sfCount();
+    this._countDrawn = count.length;
+    const said = countAnnouncement(count, this._countLevel, this._countSaid, (state) => (
+      state.over ? this.sfTooLongMessage(state) : this.sfWord('count-text', {vars: {count: state.length, max: state.limit}})
+    ));
+    this._countLevel = said.level;
+    this._countSaid = said.said;
     return this.createTemplateContext({
       ...props,
       size: this.size,
@@ -270,7 +315,7 @@ class SfRichText extends ShownRequired(FormField(RichTextElement)) {
       required: Boolean(this.required),
       // The page's error, or the required one a failed form check shows
       // (ShownRequired, C55 F1 / TR-15: as sf-input-textarea 1.8.0).
-      invalid: this.sfShownInvalid(this.invalid),
+      invalid: this.sfShownInvalid(this.invalid) || count.over,
       errorMessage: this.sfShownMessage(this.invalid, props.errorMessage),
       rows: this.rows,
       maxRows: this.maxRows,
@@ -282,6 +327,10 @@ class SfRichText extends ShownRequired(FormField(RichTextElement)) {
       linkExisting: this._link.existing,
       linkPlacement: this._link.placement,
       ariaLabel: this.getAttribute('aria-label') || '',
+      count: count.shown ? this.sfWord('count-text', {vars: {count: count.length, max: count.limit}}) : '',
+      countOver: count.over,
+      countSaid: this._countSaid,
+      counted: Boolean(count.limit),
       component: this,
     });
   }
@@ -372,6 +421,8 @@ class SfRichText extends ShownRequired(FormField(RichTextElement)) {
     this._committed = this.value;
     this._syncEmpty();
     this._updateState();
+    // A value from code or a reset says no input: the count follows it here.
+    if (this.maxlength && this._countDrawn !== editor.textContent.length) this.requestComponentUpdate('count');
   }
 
   _syncEmpty() {

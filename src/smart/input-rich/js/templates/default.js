@@ -69,6 +69,10 @@ export function renderRichTextTemplate(context) {
     rows,
     maxRows,
     ariaLabel,
+    count = '',
+    countOver = false,
+    countSaid = '',
+    counted = false,
   } = context;
   const field = createFieldContract(component, {
     prefix: 'sf-rich-text',
@@ -81,12 +85,14 @@ export function renderRichTextTemplate(context) {
   const toolbarId = `${field.base}--toolbar`;
   const linkId = `${field.base}--link`;
   const message = field.invalid && errorMessage ? errorMessage : hint;
+  const countId = `${field.messageId}-count`;
+  const describedBy = [message ? field.messageId : '', count ? countId : ''].filter(Boolean).join(' ');
   const buttonSize = BUTTON_SIZE[size] || '1/2';
-  // The link editor is one small form on one rung (R121, owner review
-  // 2026-11-11): its address field, the field's own label and hint, and
-  // Apply / Remove stand on the toolbar's rung -- the rung of the link button
-  // that opens it -- so the form is the toolbar's scale, not the field's.
-  const linkSize = buttonSize;
+  // The link editor is one small form on one rung (R121; owner decision
+  // C141 (6)): its address field, with its label and hint, and both buttons
+  // are size 1/2 whatever the field's size -- the toolbar's rung of the
+  // ordinary field.
+  const linkSize = '1/2';
   const rootClasses = [
     'sf-rich-text',
     `sf-rich-text--size-${size}`,
@@ -94,6 +100,7 @@ export function renderRichTextTemplate(context) {
     field.invalid ? 'error' : '',
     disabled ? 'sf-rich-text--disabled' : '',
     readonly ? 'sf-rich-text--readonly' : '',
+    countOver ? 'sf-rich-text--over' : '',
     'flex',
     'flex-col',
     context.rootClass,
@@ -111,7 +118,7 @@ export function renderRichTextTemplate(context) {
           <sf-input class="sf-rich-text-link-input" size=${linkSize} label=${component.sfWord('link-address')}
             hint=${component.sfWord('link-hint')} .value=${linkValue} ?invalid=${Boolean(linkError)}
             error-message=${linkError || nothing} autocomplete="url" inputmode="url"></sf-input>
-          <div class="sf-rich-text-link-actions flex flex-wrap items-cross-center">
+          <div class="sf-rich-text-link-actions flex items-cross-center">
             <sf-button class="sf-rich-text-link-apply" size=${linkSize} @click=${() => component.applyLinkFromPanel()}>${component.sfWord('link-apply')}</sf-button>
             ${linkExisting
               ? html`<sf-button class="sf-rich-text-link-remove" size=${linkSize} appearance="outline" @click=${() => component.removeLinkFromPanel()}>${component.sfWord('link-remove')}</sf-button>`
@@ -120,7 +127,20 @@ export function renderRichTextTemplate(context) {
         </div>
       </sf-popover>`;
   });
+  // The toolbar's groups stand in the order of importance (owner decision
+  // C141 (4)): the text levels, then bold, italic and link (priority 1), then
+  // the lists and the quote (2), then undo and redo (3). What does not fit one
+  // row is to go to a «More» control at the end -- everywhere, not only on a
+  // phone (R233). TODO(R233): the shared «More» overflow waits for its own
+  // study; until it lands the row still wraps, and data-sf-priority is the
+  // hook it will read (the highest number leaves first).
   const separator = html`<span class="sf-rich-text-separator" aria-hidden="true"></span>`;
+  // The message line: the hint, or the error in its place; with the count
+  // (C141 (1)) they share one row, the count at the end.
+  const messageNode = message
+    ? html`<span id=${field.messageId} class="sf-rich-text-hint-text-wrap"
+        data-field-message=${field.invalid && errorMessage ? 'error' : 'hint'}>${message}</span>`
+    : '';
 
   return html`
     <div class=${rootClasses.join(' ')} style=${context.rootStyle || nothing}
@@ -134,21 +154,21 @@ export function renderRichTextTemplate(context) {
         : ''}
       <div class="sf-rich-text-frame flex flex-col"
         style=${`--sf-rich-text--rows: ${rows};${maxRows ? ` --sf-rich-text--max-rows: ${maxRows};` : ''}`}>
-        <div class="sf-rich-text-toolbar flex flex-wrap items-cross-center" role="toolbar" id=${toolbarId}
+        ${readonly ? '' : html`<div class="sf-rich-text-toolbar flex flex-wrap items-cross-center" role="toolbar" id=${toolbarId}
           aria-label=${component.sfWord('toolbar')} aria-controls=${field.controlId}
           aria-disabled=${disabled || readonly ? 'true' : nothing}
           @keydown=${(event) => component.onToolbarKeydown(event)}
           @mousedown=${(event) => component.onToolbarMouseDown(event)}
           @click=${(event) => component.onToolbarClick(event)}
           @focusin=${(event) => component.onToolbarFocusIn(event)}>
-          <div class="sf-rich-text-group flex items-cross-center" role="group">${group(['paragraph', 'heading-2', 'heading-3', 'heading-4'])}</div>
+          <div class="sf-rich-text-group flex items-cross-center" role="group" data-sf-priority="1">${group(['paragraph', 'heading-2', 'heading-3', 'heading-4'])}</div>
           ${separator}
-          <div class="sf-rich-text-group flex items-cross-center" role="group">${group(['bold', 'italic', 'link'])}</div>
+          <div class="sf-rich-text-group flex items-cross-center" role="group" data-sf-priority="1">${group(['bold', 'italic', 'link'])}</div>
           ${separator}
-          <div class="sf-rich-text-group flex items-cross-center" role="group">${group(['bulleted-list', 'numbered-list', 'quote'])}</div>
+          <div class="sf-rich-text-group flex items-cross-center" role="group" data-sf-priority="2">${group(['bulleted-list', 'numbered-list', 'quote'])}</div>
           ${separator}
-          <div class="sf-rich-text-group flex items-cross-center" role="group">${group(['undo', 'redo'])}</div>
-        </div>
+          <div class="sf-rich-text-group flex items-cross-center" role="group" data-sf-priority="3">${group(['undo', 'redo'])}</div>
+        </div>`}
         <div
           class="sf-rich-text-editor"
           id=${field.controlId}
@@ -166,14 +186,13 @@ export function renderRichTextTemplate(context) {
           aria-readonly=${readonly ? 'true' : nothing}
           aria-disabled=${disabled ? 'true' : nothing}
           aria-invalid=${field.invalid ? 'true' : nothing}
-          aria-describedby=${message ? field.messageId : nothing}
+          aria-describedby=${describedBy || nothing}
           aria-errormessage=${field.invalid && errorMessage ? field.messageId : nothing}
         ></div>
       </div>
-      ${message
-        ? html`<span id=${field.messageId} class="sf-rich-text-hint-text-wrap"
-            data-field-message=${field.invalid && errorMessage ? 'error' : 'hint'}>${message}</span>`
-        : ''}
+      ${count
+        ? html`<span class="sf-rich-text-message flex">${messageNode}<span id=${countId} class="sf-rich-text-count">${count}</span></span>`
+        : messageNode}${counted ? html`<span class="sf-rich-text-count-said" aria-live="polite">${countSaid}</span>` : ''}
     </div>
   `;
 }

@@ -191,6 +191,10 @@
 
 /* The toolbar: one row of icon buttons a rung below the field, in groups
    that keep together when a narrow field wraps the row. */
+/* The toolbar's steps (OV-11, dispatcher ruling C144 on C105 H5): icon
+   buttons of one group stand --sf-space-1/4 apart (4; they stood edge to
+   edge), and a group ends at its separator line with --sf-space-1/4 on each
+   side of the line. */
 .sf-rich-text .sf-rich-text-toolbar {
   gap: var(--sf-space-1\/4);
   padding: var(--sf-space-1\/4);
@@ -198,7 +202,7 @@
 }
 
 .sf-rich-text .sf-rich-text-group {
-  gap: 0;
+  gap: var(--sf-space-1\/4);
 }
 
 .sf-rich-text .sf-rich-text-separator {
@@ -249,17 +253,22 @@
   display: none;
 }
 
-/* One spacing step in the whole form (R121): the edge of the surface and the
-   room between the address field and the actions are both --sf-space-1, so
-   the form keeps one rhythm at every density. */
+/* One spacing step in the whole form (R121), the dropping panel's (owner
+   decision C141 (6); C106, as sf-settings' panel footer): the edge of the
+   surface and the room between the address field and the actions are
+   --sf-space-1/2. The two buttons are one group, --sf-space-1/3 apart (C105
+   H5: 8, 4 compact). They stand in one row from the start edge, the main
+   «Применить» first, «Убрать ссылку» after it. */
 .sf-rich-text .sf-rich-text-link-panel {
-  gap: var(--sf-space-1);
-  padding: var(--sf-space-1);
+  gap: var(--sf-space-1\/2);
+  padding: var(--sf-space-1\/2);
   color: var(--sf-on-surface);
 }
 
 .sf-rich-text .sf-rich-text-link-actions {
-  gap: var(--sf-space-1);
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: var(--sf-space-1\/3);
 }
 
 /* On a phone (below the md breakpoint, 44rem) the link editor is a form, so
@@ -500,16 +509,97 @@
       }
 
       .sf-rich-text:not(.sf-rich-text--size-3) .sf-rich-text-editor h2 {
-        font-size: max(var(--sf-rich-text--h2-size), 16px);
+        font-size: max(var(--sf-heading-3--size), var(--sf-rich-text--h2-size), 16px);
       }
 
       .sf-rich-text:not(.sf-rich-text--size-3) .sf-rich-text-editor h3 {
-        font-size: max(var(--sf-rich-text--h3-size), 16px);
+        font-size: max(var(--sf-heading-4--size), var(--sf-rich-text--h3-size), 16px);
       }
 
       .sf-rich-text:not(.sf-rich-text--size-3) .sf-rich-text-editor h4 {
-        font-size: max(var(--sf-rich-text--h4-size), 16px);
+        font-size: max(var(--sf-heading-5--size), var(--sf-rich-text--h4-size), 16px);
       }
     }
+  }
+}
+
+/* Owner decision C141 (2026-11-14; study control/research/2026-11-14-textarea-rich-text.md). */
+@layer sf.components {
+  /* (3) The toolbar stays at the top of the visible part of the field while
+     the page scrolls the field past it (--sf-rich-text-sticky-top below the
+     top of the view, for a page with a fixed header). It is opaque: the
+     field's own fill over the place's solid surface, so the text runs under
+     it unseen; its top corners are the frame's. */
+  .sf-rich-text .sf-rich-text-toolbar {
+    position: sticky;
+    inset-block-start: var(--sf-rich-text-sticky-top, var(--sf-0));
+    z-index: 1;
+    border-start-start-radius: calc(var(--sf-rich-text--radius) - var(--sf-px));
+    border-start-end-radius: calc(var(--sf-rich-text--radius) - var(--sf-px));
+    background:
+      linear-gradient(var(--sf-rich-text--background-color), var(--sf-rich-text--background-color)),
+      var(--sf-surface-place-solid, var(--sf-surface-page));
+  }
+
+  /* (1) The count at the end of the message line: the message's text and
+     colour, digits of one width; past the limit the error colour (the frame
+     is the field's error frame). The polite line is read, not seen. */
+  .sf-rich-text .sf-rich-text-message {
+    align-items: flex-start;
+    gap: var(--sf-space-1\/2);
+  }
+
+  .sf-rich-text .sf-rich-text-message .sf-rich-text-hint-text-wrap {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .sf-rich-text .sf-rich-text-count {
+    flex: none;
+    margin-inline-start: auto;
+    color: var(--sf-on-surface-variant);
+    font-family: var(--sf-text--family);
+    font-weight: var(--sf-font-weight-regular);
+    font-size: var(--sf-rich-text--label-size);
+    line-height: var(--sf-rich-text--label-height);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .sf-rich-text.sf-rich-text--over .sf-rich-text-count {
+    color: var(--sf-error);
+  }
+
+  .sf-rich-text .sf-rich-text-count-said {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    margin: calc(-1 * var(--sf-px));
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* (7) Headings in a field stand one level below the page's: h2 is the
+     page's h3, h3 the page's h4, h4 the page's h5 (the heading roles, which
+     do not follow density, C44). They never fall below the field's own climb
+     from its text (h4 the text, h3 a rung above, h2 two; C21: no heading
+     smaller than the text), so a large field keeps its order. The page as it
+     will look is the page editor's (C74), not a form field's. */
+  .sf-rich-text .sf-rich-text-editor h2 {
+    font-size: max(var(--sf-heading-3--size), var(--sf-rich-text--h2-size));
+    line-height: max(var(--sf-heading-3--height), var(--sf-rich-text--h2-height), var(--sf-rich-text--touch-line, var(--sf-rich-text--h2-height)));
+  }
+
+  .sf-rich-text .sf-rich-text-editor h3 {
+    font-size: max(var(--sf-heading-4--size), var(--sf-rich-text--h3-size));
+    line-height: max(var(--sf-heading-4--height), var(--sf-rich-text--h3-height), var(--sf-rich-text--touch-line, var(--sf-rich-text--h3-height)));
+  }
+
+  .sf-rich-text .sf-rich-text-editor h4 {
+    font-size: max(var(--sf-heading-5--size), var(--sf-rich-text--h4-size));
+    line-height: max(var(--sf-heading-5--height), var(--sf-rich-text--h4-height), var(--sf-rich-text--touch-line, var(--sf-rich-text--h4-height)));
   }
 }

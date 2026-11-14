@@ -75,7 +75,12 @@
     "maxlength": {
       "type": "number",
       "optional": true,
-      "summary": "The most characters the text may have, as the native maxlength: the field takes no more. Unset: no limit."
+      "summary": "The most characters the text should have (C141 (1)). The count shows from 80 % of it; past it the count and the frame turn to the error colour and the field is invalid (too-long), so the form is not sent. The text is never cut, as the native maxlength would. Unset: no limit, no count."
+    },
+    "counter": {
+      "type": "boolean",
+      "default": false,
+      "summary": "With maxlength: the count shows always, not only from 80 % of the limit (C141 (1))."
     },
     "spell-check": {
       "type": "boolean",
@@ -91,6 +96,15 @@
       "default": "soft",
       "summary": "How the text is sent: soft sends it as typed; hard also sends the line breaks the field draws at its width, as the native wrap."
     },
+    "text": {
+      "type": "enum",
+      "values": [
+        "plain",
+        "code"
+      ],
+      "default": "plain",
+      "summary": "What kind of text the field holds (C141 (8)). plain: words. code: a snippet of code or configuration (a counter's script, robots.txt, JSON) -- the code font of the type system, no spelling check, no autocorrection, and the lines as typed: no wrapping, the field scrolls sideways inside. Not a code editor: no highlighting or completion."
+    },
     "hint": {
       "type": "string",
       "default": "",
@@ -104,22 +118,27 @@
     "rows": {
       "type": "number",
       "default": 3,
-      "summary": "How many lines of text the field shows; longer text scrolls inside. Ignored with auto-grow."
+      "summary": "How many lines a field of fixed height shows; longer text scrolls inside. Given without auto-grow it fixes the height (no growing); given with auto-grow it is the fewest rows when min-rows is not."
     },
     "auto-grow": {
       "type": "boolean",
-      "default": false,
-      "summary": "The field follows its text between min-rows and max-rows and scrolls inside past max-rows. CSS field-sizing where supported, a script fallback elsewhere; rows is then ignored."
+      "default": true,
+      "summary": "The field follows its text between min-rows and max-rows and scrolls inside past max-rows (C141 (2): a form field grows from 3 to 10 rows). On unless auto-grow=\"false\", or rows is given without auto-grow (a fixed height), or the field is flush (a composite sizes it: then it grows only with auto-grow, from 1 row and uncapped unless min-rows and max-rows say). CSS field-sizing where supported, a script fallback elsewhere."
     },
     "min-rows": {
       "type": "number",
-      "default": 1,
-      "summary": "With auto-grow: the fewest rows the field shows. One row is the height of an input of the same size."
+      "default": 3,
+      "summary": "The fewest rows a growing field shows: unset, rows when given, else 3 (a flush field 1). One row is the height of an input of the same size."
     },
     "max-rows": {
       "type": "number",
-      "optional": true,
-      "summary": "With auto-grow: the most rows before the field scrolls inside. Unset means no cap; a value below min-rows is min-rows."
+      "summary": "The most rows a growing field shows before it scrolls inside: unset, 10 (a flush field no cap); a value below min-rows is min-rows.",
+      "default": 10
+    },
+    "resize": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Draws the browser's grip that changes the height, on a field of fixed height (rows, or auto-grow=\"false\"). Off by default (C141 (2)); never drawn on a touch screen, and a growing field has none."
     },
     "disabled": {
       "type": "boolean",
@@ -367,7 +386,7 @@
     "version 1.7.4 (2026-11-09): a patch; nothing in the component changed. A shared sheet it draws with moved in the next block (src/smart/helpers/inherited-value.css, the C27 inherited-value reset), so the component takes a patch with it.",
     "version 1.7.5 (2026-11-10): a patch (TA-07, DEV precheck forms A). Every setting has its words: the 20 settings and the value that had none (size, label, required, placeholder, autocomplete, inputmode, minlength, maxlength, spell-check, wrap, hint, name, rows, disabled, readonly, invalid, error-message, mask, mask-pattern, mask-options, value) say what they do in the reference. The class sheet it draws with (component.textarea 1.1.1, FA-08) keeps a filled field's placeholder on the quiet ink, on-surface-variant; only the text is on-surface.",
     "version 1.8.0 (2026-11-11): a minor (C55 acceptance F1: one form reads as one). A required field left empty shows its required error once the form's check fails -- the host's invalid event on a submit attempt, checkValidity() or reportValidity() -- as sf-dropdown 1.9.0 does: the error border (filled: the error fill), «Заполните поле» (lang runtime value-missing; en «Fill in this field») under the field in the field-message type, aria-invalid and aria-errormessage on the control; the person's input that fills it, or form.reset(), clears it. Before, only the browser's bubble said it. The bubble and the browser's focus on the first invalid field are unchanged; the page's invalid and error-message win over it (helpers/form-field.js ShownRequired). R2 (DEV acceptance 2026-11-11, D1): the shown required error goes whenever the value stops being missing, whatever set it -- the person's input or change, a value set from script, a value attribute -- as sf-dropdown 1.9.0 (ShownRequired clears in the form sync every one of them ends in, not on input/change only). D2: form.reset() puts back the declared value (the value attribute), never the live text: the template bound .defaultValue to the current value, so the render that cleared the error on the first keystroke made that character the default and reset kept it (FormData sent it).",
-    "version 1.9.0 (2026-11-14, fields ladder; study control/research/2026-11-14-textarea-rich-text.md TR-2): a minor. size takes the field ladder's five steps, 1/3, 1/2, 1, 2, 3, as sf-input and the six fields of the fields ladder: at 1/3 and 3 one row is 28 / 56 high at 1440 (24 / 48 compact, 24 / 52 on a phone), the text the step's, the label, hint and error a step below, the value where sf-input's starts at those steps (19 / 37 from the outer edge at 1440); it drew 1/3 and 3 at 1/2 and 2 with a console note (component.textarea 1.4.0 no longer retires the size class). On a touch phone, where the core lifts the text to 16px, the lines stand on at least the size-1 line (20px): a 1/2 field drew 16px text on 16px lines and its lines touched; a fixed one-row field keeps its control height. 1/2, 1 and 2 on a desktop unchanged; settings, values, events and keys unchanged."
+    "version 1.9.0 (2026-11-14, fields ladder; study control/research/2026-11-14-textarea-rich-text.md TR-2): a minor. size takes the field ladder's five steps, 1/3, 1/2, 1, 2, 3, as sf-input and the six fields of the fields ladder: at 1/3 and 3 one row is 28 / 56 high at 1440 (24 / 48 compact, 24 / 52 on a phone), the text the step's, the label, hint and error a step below, the value where sf-input's starts at those steps (19 / 37 from the outer edge at 1440); it drew 1/3 and 3 at 1/2 and 2 with a console note (component.textarea 1.4.0 no longer retires the size class). On a touch phone, where the core lifts the text to 16px, the lines stand on at least the size-1 line (20px): a 1/2 field drew 16px text on 16px lines and its lines touched; a fixed one-row field keeps its control height. 1/2, 1 and 2 on a desktop unchanged; settings, values, events and keys unchanged. Owner decision C141 (2026-11-14; study TR-4, TR-5, #q-code) in the same minor: (1) maxlength no longer reaches the native textarea, which cut a paste; the field counts the text itself with the shared rule of src/smart/helpers/char-count.js (sf-chat-composer's): the count stands at the end of the message line from 80 % of the limit (always with the new counter), and past the limit the count and the frame are the error colour and the host is invalid (too-long, the word too-long), so the form is not sent; the text is kept whole; a polite line speaks a threshold once. (2) A form field grows with its text from 3 to 10 rows by default (auto-grow on, min-rows 3, max-rows 10); rows given without auto-grow keeps a fixed height, and flush keeps its old behaviour (grows only with auto-grow, from 1 row, uncapped); the browser's grip is gone unless the new resize asks for it on a fixed field, and is never drawn on a touch screen (component.textarea 1.4.0). (8) text=\"code\": the type system's code font, spell-check off, no autocorrection, no wrapping (the field scrolls sideways); text is the setting's name because it says what kind of text the field holds, as inputmode says which keyboard, and leaves «code» alone to sf-input-code (one-time codes)."
   ],
   "x-rule": {
     "$comment": [

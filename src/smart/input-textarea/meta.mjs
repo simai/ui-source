@@ -94,7 +94,16 @@ const sfInputTextareaMeta = {
     "maxlength": {
       "kind": "custom",
       "valueType": "number",
-      "description": "The most characters the text may have, as the native maxlength: the field takes no more. Unset: no limit."
+      "description": "The most characters the text should have (C141 (1)). The count shows from 80 % of it; past it the count and the frame turn to the error colour and the field is invalid (too-long), so the form is not sent. The text is never cut, as the native maxlength would. Unset: no limit, no count."
+    },
+    "counter": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "With maxlength: the count shows always, not only from 80 % of the limit (C141 (1))."
     },
     "spell-check": {
       "kind": "boolean",
@@ -114,6 +123,15 @@ const sfInputTextareaMeta = {
       "default": "soft",
       "description": "How the text is sent: soft sends it as typed; hard also sends the line breaks the field draws at its width, as the native wrap."
     },
+    "text": {
+      "kind": "enum",
+      "values": [
+        "plain",
+        "code"
+      ],
+      "default": "plain",
+      "description": "What kind of text the field holds (C141 (8)). plain: words. code: a snippet of code or configuration (a counter's script, robots.txt, JSON) -- the code font of the type system, no spelling check, no autocorrection, and the lines as typed: no wrapping, the field scrolls sideways inside. Not a code editor: no highlighting or completion."
+    },
     "hint": {
       "kind": "custom",
       "valueType": "string",
@@ -130,7 +148,7 @@ const sfInputTextareaMeta = {
       "kind": "custom",
       "valueType": "number",
       "default": 3,
-      "description": "How many lines of text the field shows; longer text scrolls inside. Ignored with auto-grow."
+      "description": "How many lines a field of fixed height shows; longer text scrolls inside. Given without auto-grow it fixes the height (no growing); given with auto-grow it is the fewest rows when min-rows is not."
     },
     "auto-grow": {
       "kind": "boolean",
@@ -138,19 +156,29 @@ const sfInputTextareaMeta = {
         "true",
         "false"
       ],
-      "default": "false",
-      "description": "The field follows its text between min-rows and max-rows and scrolls inside past max-rows. CSS field-sizing where supported, a script fallback elsewhere; rows is then ignored."
+      "default": "true",
+      "description": "The field follows its text between min-rows and max-rows and scrolls inside past max-rows (C141 (2): a form field grows from 3 to 10 rows). On unless auto-grow=\"false\", or rows is given without auto-grow (a fixed height), or the field is flush (a composite sizes it: then it grows only with auto-grow, from 1 row and uncapped unless min-rows and max-rows say). CSS field-sizing where supported, a script fallback elsewhere."
     },
     "min-rows": {
       "kind": "custom",
       "valueType": "number",
-      "default": 1,
-      "description": "With auto-grow: the fewest rows the field shows. One row is the height of an input of the same size."
+      "default": 3,
+      "description": "The fewest rows a growing field shows: unset, rows when given, else 3 (a flush field 1). One row is the height of an input of the same size."
     },
     "max-rows": {
       "kind": "custom",
       "valueType": "number",
-      "description": "With auto-grow: the most rows before the field scrolls inside. Unset means no cap; a value below min-rows is min-rows."
+      "default": 10,
+      "description": "The most rows a growing field shows before it scrolls inside: unset, 10 (a flush field no cap); a value below min-rows is min-rows."
+    },
+    "resize": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "Draws the browser's grip that changes the height, on a field of fixed height (rows, or auto-grow=\"false\"). Off by default (C141 (2)); never drawn on a touch screen, and a growing field has none."
     },
     "disabled": {
       "kind": "boolean",

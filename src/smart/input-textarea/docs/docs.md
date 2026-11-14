@@ -144,6 +144,33 @@ own bubble and its focus on the first invalid field stay as they are. Typing
 that fills the field, or `form.reset()`, clears it. The page's `invalid` with
 `error-message` wins over it.
 
+## Height, the count and code (C141)
+
+A form field follows its text from 3 to 10 rows and then scrolls inside
+(`auto-grow` is on, `min-rows` 3, `max-rows` 10). `rows` given without
+`auto-grow` keeps a fixed height; `auto-grow="false"` turns growing off. A
+`flush` field -- part of a composite such as a chat composer -- grows only with
+`auto-grow`, from 1 row, uncapped, as before. The browser's grip is drawn only
+with `resize` on a field of fixed height, and never on a touch screen.
+
+With `maxlength` the field counts its text with the rule `sf-chat-composer`
+keeps (`src/smart/helpers/char-count.js`): the count «131 / 160» stands at the
+end of the message line from 80 % of the limit (always with `counter`); past
+the limit the count and the frame are the error colour and the field is
+invalid (too-long, «Не больше 160 знаков»), so the form is not sent. The text
+is never cut. A polite line speaks once when a threshold is crossed.
+
+`text="code"` is for a snippet of code or configuration (a counter's script,
+robots.txt, JSON): the type system's code font, no spelling check or
+autocorrection, and the lines as typed -- no wrapping, the field scrolls
+sideways. It is not a code editor (no highlighting or completion).
+
+```html
+<sf-input-textarea label="Описание для поисковиков" maxlength="160"
+  hint="Поисковики показывают около 160 знаков"></sf-input-textarea>
+<sf-input-textarea label="Код счётчика" text="code" rows="4"></sf-input-textarea>
+```
+
 ## State and lifecycle
 
 `element.value` reads current native text; assignment updates the visible

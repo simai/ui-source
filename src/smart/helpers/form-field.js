@@ -77,10 +77,11 @@ export function syncFieldValidity(component, control, own = {}) {
 
 /**
  * The host's validity from what the component says itself (fieldValidity()):
- * value-missing and the custom error the page set; `anchor`, when it is a part
- * of the host, is where the browser points.
+ * value-missing, too-long (a counted field past its limit, helpers/char-count.js)
+ * and the custom error the page set; `anchor`, when it is a part of the host,
+ * is where the browser points.
  */
-export function syncOwnValidity(component, {valueMissing = false, message = '', anchor = null} = {}) {
+export function syncOwnValidity(component, {valueMissing = false, tooLong = false, message = '', anchor = null} = {}) {
   const internals = component?.sfInternals;
   if (!internals) return;
   const custom = component.sfCustomError || '';
@@ -93,6 +94,10 @@ export function syncOwnValidity(component, {valueMissing = false, message = '', 
   if (valueMissing) {
     flags.valueMissing = true;
     text ||= message || 'value-missing';
+  }
+  if (tooLong) {
+    flags.tooLong = true;
+    text ||= message || 'too-long';
   }
   try {
     if (Object.keys(flags).length) {

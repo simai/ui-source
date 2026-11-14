@@ -7,7 +7,8 @@ import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { ladderSize } from '../../component/field-size';
 import { InheritedValueField } from '../helpers/inherited-value';
-import { FormField, ShownRequired, innerControlName } from '../helpers/form-field';
+import { FormField, ShownRequired, innerControlName, syncFieldValidity } from '../helpers/form-field';
+import { charCount, countAnnouncement } from '../helpers/char-count';
 import { renderTextareaTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -46,6 +47,14 @@ class SfTextarea extends ShownRequired(FormField(TextareaElement)) {
   constructor() {
     super();
     this._boundRoot = null;
+    this._countLevel = '';
+    this._countSaid = '';
+    // The count follows the text (C141 (1)): with a limit, every edit redraws
+    // the count and, at a threshold, the frame. The redraw keeps the caret:
+    // the textarea's value is the text it already holds.
+    this.addEventListener('input', () => {
+      if (this.maxlength !== null) this.requestComponentUpdate?.('count');
+    });
   }
 
   get size() {
@@ -115,6 +124,64 @@ class SfTextarea extends ShownRequired(FormField(TextareaElement)) {
     return value > 0 ? Math.max(value, this.minRows) : null;
   }
 
+  // C141 (2): a form field follows its text from 3 to 10 rows. It grows unless
+  // the page says auto-grow="false", or fixes the height with rows (and no
+  // auto-grow), or the field is flush -- a part of a composite that sizes it
+  // (the chat composer), which grows only when asked, from 1 row, uncapped,
+  // as before. A growing form field starts at min-rows, else rows, else 3,
+  // and stops at max-rows, else 10, then scrolls inside.
+  get growing() {
+    if (this.hasAttribute('auto-grow')) return Boolean(this.autoGrow);
+    if (this.appearance === 'flush') return false;
+    return !this.hasAttribute('rows');
+  }
+
+  get growMinRows() {
+    if (this.appearance === 'flush' || this.hasAttribute('min-rows')) return this.minRows;
+    return this.hasAttribute('rows') ? this.rows : 3;
+  }
+
+  get growMaxRows() {
+    const value = Math.trunc(this.getNumberAttr('maxRows', null));
+    if (value > 0) return Math.max(value, this.growMinRows);
+    return this.appearance === 'flush' ? null : Math.max(10, this.growMinRows);
+  }
+
+  // The count against maxlength (C141 (1), helpers/char-count.js): shown from
+  // 80 % of the limit or always with `counter`; past the limit the field is
+  // invalid and draws the error frame, and the text is kept whole.
+  sfCount() {
+    return charCount(this.value.length, this.maxlength, { always: Boolean(this.counter) });
+  }
+
+  // What the template draws of the count, and the polite line, which changes
+  // only when a threshold is crossed.
+  sfCountView() {
+    const count = this.sfCount();
+    const words = (state) => this.sfWord('count-text', { vars: { count: state.length, max: state.limit } });
+    const said = countAnnouncement(count, this._countLevel, this._countSaid, (state) => (
+      state.over ? this.sfTooLongMessage(state) : words(state)
+    ));
+    this._countLevel = said.level;
+    this._countSaid = said.said;
+    return { over: count.over, text: count.shown ? words(count) : '', said: said.said };
+  }
+
+  sfTooLongMessage(count) {
+    return this.sfWord('too-long', { vars: { max: count.limit } });
+  }
+
+  // The native textarea's validity, and too-long past the limit: the native
+  // maxlength would cut the text, so the field counts itself. Without
+  // ElementInternals the textarea is the form control and carries it.
+  sfSyncValidity() {
+    const anchor = this.sfValidityAnchor();
+    const count = this.sfCount();
+    const message = count.over ? this.sfTooLongMessage(count) : '';
+    if (!this.sfInternals && anchor?.setCustomValidity) anchor.setCustomValidity(message);
+    syncFieldValidity(this, anchor, count.over ? { tooLong: message } : {});
+  }
+
   // The inherited-value seam: the native textarea is the value, the focus and
   // what carries the description.
   inheritedFocusTarget() {
@@ -141,6 +208,8 @@ class SfTextarea extends ShownRequired(FormField(TextareaElement)) {
   templateContext() {
     const props = this.getPropsContext();
     const textarea = this.querySelector('textarea');
+    const count = this.sfCountView();
+    const code = this.text === 'code';
 
     return this.createTemplateContext({
       ...props,
@@ -156,17 +225,27 @@ class SfTextarea extends ShownRequired(FormField(TextareaElement)) {
       // so the textarea carries no name (§17.1 item 6).
       controlName: innerControlName(this, props.name),
       // The page's error, or the required one a failed form check shows
-      // (ShownRequired, C55 acceptance F1: as sf-dropdown 1.9.0).
-      invalid: this.sfShownInvalid(props.invalid),
+      // (ShownRequired, C55 acceptance F1: as sf-dropdown 1.9.0), or a text
+      // past the limit (C141 (1)).
+      invalid: this.sfShownInvalid(props.invalid) || count.over,
       error: false,
       errorMessage: this.sfShownMessage(props.invalid, props.errorMessage),
       // Resolved names the template reads (contracts/template-context.json).
       type: this.appearance,
       minlength: this.minlength,
       maxlength: this.maxlength,
-      autoGrow: this.autoGrow,
-      minRows: this.minRows,
-      maxRows: this.maxRows,
+      autoGrow: this.growing,
+      minRows: this.growMinRows,
+      maxRows: this.growMaxRows,
+      // The grip only on request, never on a touch screen (the sheet says it).
+      resize: Boolean(this.resize),
+      // The count: its words when shown, over the limit; the polite line.
+      count: count.text,
+      countOver: count.over,
+      countSaid: count.said,
+      // C141 (8): code -- the code font, no spelling, no wrapping.
+      code,
+      spellCheck: code ? false : props.spellCheck,
       inheritedValue: this.inheritedValue,
       inheritedText: this.inheritedText,
       resetLabel: this.resetLabel,

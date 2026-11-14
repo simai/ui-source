@@ -61,20 +61,36 @@ again with the same subset: a request can be written by anyone.
   error as sf-input-textarea does (red frame, «Заполните поле» under it),
   gone once there is text.
 - `disabled`, `readonly` -- as on sf-textarea: a disabled field is not
-  focusable and not sent; a read-only one is read and selected, its toolbar
-  disabled, its value sent.
+  focusable and not sent; a read-only one is read and selected in the
+  read-only frame with no toolbar (C141 (5)), its value sent. A record card
+  shows a read-only value as text on the page, without a frame
+  (module.smart-field-renderers).
+- `maxlength`, `counter` -- the limit of the text a person reads (markup not
+  counted), with sf-input-textarea's rule (C141 (1)): the count «131 / 160» at
+  the end of the message line from 80 % of the limit (always with `counter`);
+  past it the count and the frame are the error colour and the field is
+  invalid (`too-long`), so the form is not sent. The text is never cut.
 - `size="1/3|1/2|1|2|3"` -- the field ladder, as sf-input's; the frame,
   padding and text are sf-input-textarea's of the same size and the text
   starts where the textarea's does (C77: 12 / 16 / 20 from the outer edge,
   12 in a compact region and on a phone), the toolbar's buttons a rung below
   (1/3 at 1/3)
   (ghost on-surface icon buttons; the block levels P, H2, H3, H4 in the same
-  square). Headings in the text climb the text ladder from the field's
-  text: h4 is the field's text, h3 a rung above, h2 two rungs above, all
-  bold, so no heading is smaller than the text. On a touch phone the text
-  and the headings are at least 16px, on at least the size-1 line, so iOS
-  does not zoom in. The link editor is one rung, the toolbar's: its address
-  field, hint and buttons are one size.
+  square). Headings in the text stand one level below the page's (C141 (7)):
+  h2 is the page's h3, h3 its h4, h4 its h5, all bold, and never below the
+  field's climb from its text (h4 the text, h3 a rung above, h2 two), so no
+  heading is smaller than the text. On a touch phone the text and the
+  headings are at least 16px, on at least the size-1 line, so iOS does not
+  zoom in. The link editor is size 1/2 at every field size (C141 (6)): the
+  address field and «Применить», then «Убрать ссылку» for an existing link,
+  in one row from the start edge, `--sf-space-1/3` apart (C105 H5), the
+  dropping panel's inset.
+- The toolbar stays at the top of the visible part of the field while the
+  page scrolls a long text (C141 (3)). Its groups stand in the order of
+  importance (`data-sf-priority`: text levels, bold, italic, link first); the
+  «More» control for what does not fit is still to come (R233), so a narrow
+  field wraps the row. Icon buttons of one group stand `--sf-space-1/4` apart,
+  with the same step on each side of a group's separator line (C105 H5, C144).
 - `appearance="bordered|filled"` -- sf-textarea's two boxes (filled with its
   bottom line in `--sf-outline`, C52).
 - `rows` -- the fewest lines shown (6); the field grows with its text.
@@ -135,4 +151,5 @@ Colours are role tokens, in light and dark.
 `--sf-rich-text-color`, `--sf-rich-text-radius`,
 `--sf-rich-text-padding-inline`, `--sf-rich-text-padding-block`,
 `--sf-rich-text-invalid-border-color` -- sf-textarea's set under this
-component's name.
+component's name. `--sf-rich-text-sticky-top` -- how far below the top of
+the view the toolbar sticks (a page with a fixed header); 0 by default.

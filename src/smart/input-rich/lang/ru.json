@@ -20,6 +20,8 @@
     "link-invalid": "Укажите адрес https:, mailto: или tel: либо путь на этом сайте, начинающийся с /.",
     "link-apply": "Применить",
     "link-remove": "Убрать ссылку",
-    "value-missing": "Заполните поле"
+    "value-missing": "Заполните поле",
+    "count-text": "{count} / {max}",
+    "too-long": "Не больше {max} знаков"
   }
 }

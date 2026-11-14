@@ -79,7 +79,8 @@
   padding-inline-end: var(--sf-textarea-textarea--padding-inline-end);
   padding-inline-start: var(--sf-textarea-textarea--padding-inline-start);
   padding-top: var(--sf-textarea-textarea--padding-top);
-  resize: var(--sf-resize, vertical);
+  /* C141 (2): no grip unless the field asks for one (.sf-textarea--resize). */
+  resize: var(--sf-resize, none);
   transition-duration: var(--sf-duration-fast);
   transition-property: background-color, border-color, box-shadow, color;
   transition-timing-function: var(--sf-animation);
@@ -557,6 +558,83 @@
       .sf-textarea.sf-textarea--auto-grow:not(.sf-textarea--size-3) textarea {
         --sf-textarea--touch-line: var(--sf-text-height-1);
       }
+    }
+  }
+}
+
+/* C141 (owner 2026-11-14; study control/research/2026-11-14-textarea-rich-text.md).
+   (2) The grip only on request: .sf-textarea--resize (sf-input-textarea's
+   `resize`) draws the browser's vertical grip on a field of fixed height;
+   a growing field has none, and a touch screen never has one -- a finger
+   cannot hold a corner of a few pixels. (1) The count stands at the end of
+   the message line, in the message's text and colour, digits of one width;
+   past the limit it is the error colour (the frame is the field's error
+   frame). The polite line that speaks a threshold is read, not seen. (8) Code:
+   the code font of the type system, the line as typed -- no wrapping, the
+   field scrolls sideways inside. */
+@layer sf.components {
+  @media not all and (pointer: coarse) {
+    .sf-textarea.sf-textarea--resize:not(.sf-textarea--auto-grow):not(.sf-textarea--flush) textarea {
+      resize: var(--sf-resize, vertical);
+    }
+  }
+
+  .sf-textarea .sf-textarea-message {
+    align-items: flex-start;
+    gap: var(--sf-space-1\/2);
+  }
+
+  .sf-textarea .sf-textarea-message .sf-textarea-hint-text-wrap {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .sf-textarea .sf-textarea-count {
+    flex: none;
+    margin-inline-start: auto;
+    color: var(--sf-on-surface-variant);
+    font-family: var(--sf-text--family);
+    font-weight: var(--sf-font-weight-regular);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  @each $size in ladder.$sizes {
+    .sf-textarea.#{ladder.size-class('sf-textarea', $size)} .sf-textarea-count {
+      font-size: #{ladder.label-size($size)};
+      line-height: #{ladder.label-height($size)};
+    }
+  }
+
+  .sf-textarea.sf-textarea--over .sf-textarea-count {
+    color: var(--sf-error);
+  }
+
+  .sf-textarea-count-said {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    margin: calc(-1 * var(--sf-px));
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .sf-textarea.sf-textarea--code textarea {
+    font-family: var(--sf-code-font-family, var(--sf-code--font-family));
+    font-variant-ligatures: none;
+    white-space: pre;
+    overflow-wrap: normal;
+    overflow-x: auto;
+  }
+}
+
+@media (pointer: coarse) {
+  @layer sf.components {
+    .sf-textarea.sf-textarea textarea {
+      resize: none;
     }
   }
 }

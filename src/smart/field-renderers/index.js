@@ -1023,6 +1023,8 @@ function renderIncludeView(field, value) {
     `;
 }
 
+// The include editor is code (C141 (8)): sf-input-textarea's text="code" --
+// the code font, spelling off, no wrapping -- at a fixed eight rows.
 function renderIncludeEdit(field, value, host) {
     return html`
         <sf-input-textarea
@@ -1032,7 +1034,7 @@ function renderIncludeEdit(field, value, host) {
                 name=${fieldName(field)}
                 value=${scalarValue(value) ?? ''}
                 rows="8"
-                spell-check="false"
+                text="code"
                 ?required=${Boolean(field.required)}
                 aria-label=${field.label || field.key || ''}
                 ?disabled=${field.readonly === true}

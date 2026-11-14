@@ -1469,12 +1469,16 @@
             "type": "string"
           },
           "auto-grow": {
-            "default": false,
+            "default": true,
             "type": "boolean"
           },
           "autocomplete": {
             "default": "",
             "type": "string"
+          },
+          "counter": {
+            "default": false,
+            "type": "boolean"
           },
           "disabled": {
             "default": false,
@@ -1532,13 +1536,14 @@
             "type": "string"
           },
           "max-rows": {
+            "default": 10,
             "type": "number"
           },
           "maxlength": {
             "type": "number"
           },
           "min-rows": {
-            "default": 1,
+            "default": 3,
             "type": "number"
           },
           "minlength": {
@@ -1564,6 +1569,10 @@
             "default": "",
             "type": "string"
           },
+          "resize": {
+            "default": false,
+            "type": "boolean"
+          },
           "rows": {
             "default": 3,
             "type": "number"
@@ -1583,6 +1592,14 @@
             "default": true,
             "type": "boolean"
           },
+          "text": {
+            "default": "plain",
+            "enum": [
+              "plain",
+              "code"
+            ],
+            "type": "string"
+          },
           "value": {
             "default": "",
             "type": "string"
@@ -1600,7 +1617,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.input-textarea",
-      "version": "1.7.5"
+      "version": "1.9.0"
     },
     "sf-switch": {
       "inputs": {
