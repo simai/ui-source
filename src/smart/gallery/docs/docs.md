@@ -106,7 +106,8 @@ Full screen and black in both themes (pictures are judged on black):
 
 - the bar: «3 / 12» (and the file's name when it has one) at the start; the
   zoom, download, open-in-a-tab and «Закрыть» buttons at the end, 8 apart;
-- arrows at the sides; none on a phone, where a horizontal swipe pages;
+- arrows at the sides; none when the viewer is narrower than 44rem (a phone),
+  where a horizontal swipe pages;
 - the caption under the picture;
 - keys: ← → page (mirrored right to left), Home and End go to the first and
   the last, + and − zoom, the arrow keys pan a zoomed picture, Escape first
