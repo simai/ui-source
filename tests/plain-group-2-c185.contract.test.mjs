@@ -17,11 +17,21 @@ test('C185 (1), (2): the row follows the density; table-sm and table-small are d
   ]);
   // Row and head are the size-1 control height, which the density sets.
   assert.match(table, /\$table-row-block-size: var\(--sf-ui-1--control-height\);/u);
+  // One table of retired class names (group build 6: C185's loader list
+  // joined the C187 table, src/core/js/retired-classes.table.js), which the
+  // Loader reads for every class token of the page.
+  const {default: retired} = await import(new URL('src/core/js/retired-classes.table.js', root));
+  const {retiredClassName} = await import(new URL('src/core/js/utility-class-aliases.js', root));
+  const row = retired.records.find((item) => item.journal === 'class-table-sm-to-density');
+  assert.ok(row, 'the retired-classes table holds the C185 record');
+  assert.deepEqual([row.component, row.since, row.remove_after], ['table', '2026-11-14', '2027-01-01']);
   for (const name of ['table-sm', 'table-small']) {
-    assert.match(loader, new RegExp(`'${name}': Object\\.freeze\\(\\{component: 'table', to: 'data-sf-density="compact"', since: '2026-11-14', remove_after: '2027-01-01'\\}\\)`, 'u'), name);
+    assert.equal(row.names[name], 'data-sf-density="compact"', name);
+    const found = retiredClassName(name);
+    assert.deepEqual([found.found.component, found.to], ['table', 'data-sf-density="compact"'], name);
   }
-  assert.match(loader, /classTokens\.forEach\(\(token\) => \{\n\s*noteFormerClass\(token\);/u);
-  assert.match(loader, /noteDeprecated\(\{component, kind: 'class', from: token, to, since, remove_after: removeAfter/u);
+  assert.doesNotMatch(loader, /FORMER_CLASSES|noteFormerClass/u);
+  assert.match(loader, /noteUtilityClassAlias\(token\);/u);
   const record = JSON.parse(journal).records.find((row) => row.id === 'class-table-sm-to-density');
   assert.ok(record, 'journal record');
   assert.equal(record.kind, 'class');

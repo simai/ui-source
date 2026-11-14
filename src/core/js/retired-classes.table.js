@@ -8,6 +8,18 @@ export default {
   "summary": "The one table of retired class names (owner decision C187 (1), 2026-11-14). A retired class keeps drawing what it drew until remove_after: its sheet stays in the distribution and in utility.full.css, and the Loader notes the first use of each name on a page in SF.deprecations (src/core/js/utility-class-aliases.js reads this table). Each record names its change-journal entry (contracts/changes/journal.json) and retires names (an exact class), patterns (a family of classes; to may refer to the pattern's groups as $1) or sheets (every class of a utility folder, at every breakpoint and state). A variant prefix (md:, hover:, focus-visible:) is kept on both sides. to is the name to write instead, or null where the job leaves the utilities (the record's note says where it went). extended lists the names that stay but are documented on one «extended» page instead of a page each. Nothing here is deleted before remove_after, and nothing is deleted without checking the built sheets, the ui-doc examples, the products and the Loader's Tailwind-name conversion.",
   "records": [
     {
+      "journal": "class-table-sm-to-density",
+      "decision": "C185 (2)",
+      "component": "table",
+      "since": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "note": "A table's row follows the density of its area: data-sf-density=\"compact\" on the table or an ancestor. table-sm and table-small keep drawing a row of the size-1/2 step until the date (utility.table 1.6.0).",
+      "names": {
+        "table-sm": "data-sf-density=\"compact\"",
+        "table-small": "data-sf-density=\"compact\""
+      }
+    },
+    {
       "journal": "class-text-flow-utility-aliases",
       "decision": "C186 (8)",
       "component": "utility",
