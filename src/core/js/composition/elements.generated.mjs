@@ -554,7 +554,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.checkbox",
-    "version": "1.3.1"
+    "version": "1.4.1"
   },
   "sf-divider": {
     "component": "component.content-divider",
@@ -974,7 +974,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input",
-    "version": "1.9.1"
+    "version": "1.10.1"
   },
   "sf-input-textarea": {
     "inputs": {
@@ -1146,7 +1146,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input-textarea",
-    "version": "1.9.0"
+    "version": "1.10.1"
   },
   "sf-switch": {
     "inputs": {
