@@ -684,18 +684,22 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
     }
 
     /**
-     * Whether the element keeps its printed skeleton (§5.4, §7.3 phase 3):
-     * the host was printed with data-sf-first-paint="skeleton" and a setting
-     * declared late (presentation.skeleton.late) has not arrived. The first
-     * render waits for it, so the skeleton turns into content in one frame.
-     * A list given explicitly, even empty, has arrived: an empty list is
-     * data (the empty state), not data still to come. Only a list nobody set
-     * -- its default -- keeps the skeleton waiting.
-     * A component whose data comes another way (a port) overrides this.
+     * The late lists a printed skeleton still holds (§5.4, §7.3 phase 3).
+     * A skeleton names the late lists it stands for in data-sf-late (printed
+     * when a component declares more than one): a job printed without steps
+     * holds only its counters, and never waits for steps that are not
+     * coming. A skeleton that names none holds every declared late list, as
+     * before. Each list releases its own hold when it arrives: a list given
+     * explicitly, even empty, has arrived -- an empty list is data (the empty
+     * state), not data still to come. Only a list nobody set -- its default
+     * -- is still held.
      */
-    sfAwaitingData() {
-      if (!late.length || this.getAttribute('data-sf-first-paint') !== 'skeleton') return false;
-      return late.some((member) => {
+    sfLateHeld() {
+      if (!late.length || this.getAttribute('data-sf-first-paint') !== 'skeleton') return [];
+      const named = this.getAttribute('data-sf-late');
+      const words = named === null ? null : named.split(/\s+/u).filter(Boolean);
+      const held = words ? late.filter((member) => words.includes(member.name)) : late;
+      return held.filter((member) => {
         if (member.attribute && this.hasAttribute(member.attribute)) return false;
         const store = this.__sfManifestData;
         if (!member.attribute && store && Object.prototype.hasOwnProperty.call(store, member.name)) {
@@ -705,7 +709,18 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
         // Read through the property: a component may keep the setting itself.
         const value = this[member.property];
         return value === undefined || value === null || (Array.isArray(value) && !value.length);
-      });
+      }).map((member) => member.name);
+    }
+
+    /**
+     * Whether the element keeps its printed skeleton (§5.4, §7.3 phase 3):
+     * the host was printed with data-sf-first-paint="skeleton" and a late
+     * list it holds (sfLateHeld) has not arrived. The first render waits for
+     * every one, so the skeleton turns into content in one frame.
+     * A component whose data comes another way (a port) overrides this.
+     */
+    sfAwaitingData() {
+      return this.sfLateHeld().length > 0;
     }
 
     /** §4.1: the element has a box in an opened container. */

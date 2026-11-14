@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-run",
-  "version": "1.4.0",
+  "version": "1.4.2",
   "title": "Progress",
   "summary": "A long job as a person sees it, in one of three looks (C34): full -- title and state badge, the overall bar with «N из M · %» and the time left, the counts as one line, the first errors, the steps with states, times and a log each, Pause/Continue, Cancel, Minimize, and once ended the summary with Retry and Hide; row -- a table row's bar or badge; notice -- a corner panel's row. The host drives it; it polls nothing.",
   "kind": "smart",
@@ -564,7 +564,7 @@
       },
       {
         "path": "src/smart/progress-run/docs.md",
-        "sha256": "f6177ec24507f63fea9278f9ef50f40f1b7df691089718f17093430e2b2ca1e9"
+        "sha256": "427472f8ec175c2c1cee21e53fab2112e2b084d9f96458580c96d38bc59aace3"
       }
     ],
     "generated_runtime": []

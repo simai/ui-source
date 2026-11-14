@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {existsSync, readFileSync} from 'node:fs';
 import {join} from 'node:path';
 import test from 'node:test';
-import {components, assemblies, exampleFiles, givesLateData} from '../scripts/first-paint-lib.mjs';
+import {components, assemblies, exampleFiles, givesLateData, lateGiven} from '../scripts/first-paint-lib.mjs';
 
 // The first paint of every Smart component, as committed build snapshots
 // (standard simai.smart-component 1.3.8 §5.4, §7.3, gate 24; owner decision
@@ -35,7 +35,15 @@ test('every component has a snapshot per example, and the sheets it needs', () =
       // A skeleton exactly where the example gives late data.
       const late = givesLateData(component, example);
       assert.equal(existsSync(files.skeleton), late, `${component.folder}/${example.name}: skeleton ${late ? 'missing' : 'not wanted'}`);
-      if (late) assert.match(readFileSync(files.skeleton, 'utf8'), /data-sf-first-paint="skeleton" aria-busy="true"/u);
+      if (late) {
+        const skeleton = readFileSync(files.skeleton, 'utf8');
+        assert.match(skeleton, /data-sf-first-paint="skeleton" aria-busy="true"/u);
+        // A component with more than one late list names the ones this
+        // skeleton holds (element-manifest.js sfLateHeld); one with a single
+        // late list names none.
+        const named = skeleton.match(/^<[\w-]+[^>]*? data-sf-late="([^"]*)"/mu)?.[1] ?? null;
+        assert.equal(named, component.late.length > 1 ? lateGiven(component, example).join(' ') : null, `${component.folder}/${example.name}: data-sf-late`);
+      }
     }
   }
 });
@@ -66,7 +74,7 @@ test('late data is declared, the old shape hints are gone', () => {
   assert.deepEqual(late, {
     'avatar-group': ['avatars'], change: ['changes'], 'confirm-change': ['changes'], 'file-upload': ['items'],
     list: ['items'], 'list-attention': ['items'], 'list-description': ['items'], 'list-feed': ['items'], 'list-timeline': ['items'],
-    menu: ['items'], 'profile-picker': ['profiles'], 'progress-run': ['steps'], tree: ['items'],
+    menu: ['items'], 'profile-picker': ['profiles'], 'progress-run': ['steps', 'counters'], tree: ['items'],
   });
 });
 

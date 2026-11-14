@@ -166,9 +166,24 @@ export function describe(root, folder) {
  * box for: its first paint is its static markup, and it has no skeleton.
  */
 export function givesLateData(component, example) {
+  return lateGiven(component, example).length > 0;
+}
+
+/** The late settings an example gives (a value, not an empty list). */
+export function lateGiven(component, example) {
   const settings = example.settings ?? {};
-  return component.late.some((name) => name in settings && settings[name] !== null && settings[name] !== undefined
+  return component.late.filter((name) => name in settings && settings[name] !== null && settings[name] !== undefined
     && !(Array.isArray(settings[name]) && !settings[name].length));
+}
+
+/**
+ * The late lists a skeleton names in data-sf-late (element-manifest.js
+ * sfLateHeld): only for a component with more than one late list, so a job
+ * printed without steps holds its counters alone. A component with one late
+ * list prints none -- its skeleton holds that list, as it always did.
+ */
+export function lateHeld(component, names) {
+  return component.late.length > 1 ? component.late.filter((name) => names.includes(name)) : [];
 }
 
 /**

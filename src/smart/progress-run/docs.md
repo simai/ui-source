@@ -225,6 +225,11 @@ pressed one's place, so the next key goes on from there.
 
 ## Changes
 
+- 1.4.2 (2026-11-14) — `counters` arrive late too, each list on its own: a
+  job printed before its numbers are known keeps the counters' line in its
+  skeleton until they come, and a job with counters and no steps no longer
+  waits for steps that never come. Nothing drawn differently once the data is
+  in.
 - 1.4.0 (2026-11-13) — the recipe prototypes' defects and decision C134: a run
   of steps with no `total` draws the indeterminate bar while it runs; a polite
   live region says the count every 10 s at most; no «Вывод» toggle without

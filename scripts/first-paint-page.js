@@ -350,7 +350,12 @@
       inner += html.replace(/^<([\w-]+)/u, '<$1 data-sf-held');
     }
     const extra = [];
-    if (hosts.includes(el) && mode.skeleton) extra.push(['data-sf-first-paint', 'skeleton'], ['aria-busy', 'true']);
+    if (hosts.includes(el) && mode.skeleton) {
+      extra.push(['data-sf-first-paint', 'skeleton'], ['aria-busy', 'true']);
+      // The late lists this skeleton stands for, when the component has
+      // more than one (element-manifest.js sfLateHeld).
+      if (spec.lateHeld?.length) extra.push(['data-sf-late', spec.lateHeld.join(' ')]);
+    }
     return `${open(el, extra)}${inner}${close(el)}`.replace(/ data-sf-snap-page="\d+"/g, '');
   }
 

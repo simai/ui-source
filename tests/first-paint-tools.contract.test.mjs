@@ -3,8 +3,9 @@ import {mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import test from 'node:test';
-import {components, assemblies, exampleFiles, givesLateData, measuredFonts, portOf, FAKE_PORT, readConfig, serveOutput, sizeProblem, SNAPSHOT_MAX_BYTES, clockOf, FIRST_PAINT_NOW} from '../scripts/first-paint-lib.mjs';
+import {components, assemblies, exampleFiles, givesLateData, lateGiven, lateHeld, measuredFonts, portOf, FAKE_PORT, readConfig, serveOutput, sizeProblem, SNAPSHOT_MAX_BYTES, clockOf, FIRST_PAINT_NOW} from '../scripts/first-paint-lib.mjs';
 import {fillSkeleton, repeatCount} from '../scripts/first-paint-skeleton.mjs';
+import {HOST_RUNTIME_MARKS} from '../src/core/js/host-runtime-marks.js';
 
 // The first-paint tools themselves (scripts/first-paint-*.mjs,
 // scripts/snapshot-first-paint.mjs, tests/browser/first-paint-gate.browser.mjs):
@@ -81,6 +82,51 @@ test('3. an explicitly empty list is data: the skeleton leaves, and no skeleton 
   }
   const page = readFileSync(join(root, 'scripts/first-paint-page.js'), 'utf8');
   assert.match(page, /hasOwnProperty\.call\(store, name\)/u, 'the assembly composer reads late data as the element does');
+});
+
+test('3b. each late list holds on its own: a skeleton waits only for the lists it names', () => {
+  const Late = elementFromManifest({id: 'smart.late-two', tag: 'sf-late-two', version: '1.0.0', kind: 'leaf',
+    settings: {steps: {type: 'list', default: []}, counters: {type: 'list', default: []}},
+    presentation: {skeleton: {late: ['steps', 'counters']}}}, {base: FakeBase});
+  const printed = (named) => {
+    const one = new Late();
+    one.setAttribute('data-sf-first-paint', 'skeleton');
+    if (named !== undefined) one.setAttribute('data-sf-late', named);
+    return one;
+  };
+  // A skeleton that names none holds every late list, as before.
+  const old = printed();
+  assert.deepEqual(old.sfLateHeld(), ['steps', 'counters']);
+  old.counters = [{id: 'a', label: 'A'}];
+  assert.deepEqual(old.sfLateHeld(), ['steps']);
+  assert.equal(old.sfAwaitingData(), true);
+  // A counters-only job: it holds its counters alone, never steps.
+  const counters = printed('counters');
+  assert.deepEqual(counters.sfLateHeld(), ['counters']);
+  assert.equal(counters.sfAwaitingData(), true);
+  counters.counters = [{id: 'a', label: 'A'}];
+  assert.equal(counters.sfAwaitingData(), false, 'its one list arrived: it draws, no steps awaited');
+  // Both named: each list releases its own hold, the first render waits for both.
+  const both = printed('steps counters');
+  both.steps = [{id: 's', title: 'S'}];
+  assert.deepEqual(both.sfLateHeld(), ['counters'], 'steps released, counters still held');
+  assert.equal(both.sfAwaitingData(), true);
+  both.counters = [];
+  assert.equal(both.sfAwaitingData(), false, 'an empty list is data: released');
+  // A name it does not declare is no hold; no skeleton, no hold.
+  assert.equal(printed('items').sfAwaitingData(), false);
+  const drawn = new Late();
+  drawn.setAttribute('data-sf-late', 'steps');
+  assert.equal(drawn.sfAwaitingData(), false);
+
+  // The build names them only for a component with more than one late list.
+  assert.deepEqual(lateHeld({late: ['steps', 'counters']}, ['counters']), ['counters']);
+  assert.deepEqual(lateHeld({late: ['steps', 'counters']}, ['counters', 'steps']), ['steps', 'counters']);
+  assert.deepEqual(lateHeld({late: ['items']}, ['items']), []);
+  assert.deepEqual(lateGiven({late: ['steps', 'counters']}, {settings: {steps: [], counters: [1]}}), ['counters']);
+  assert.ok(HOST_RUNTIME_MARKS.has('data-sf-late'), 'a runtime mark, never the author\'s data');
+  const base = readFileSync(join(root, 'src/core/js/smart-base.js'), 'utf8');
+  assert.match(base, /removeAttribute\("data-sf-late"\)/u, 'the first paint ends with its mark');
 });
 
 test('4a. a package declares its output and its base; the server serves it after the free output', async () => {

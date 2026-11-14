@@ -3156,6 +3156,7 @@ class SfBaseElement extends HTMLElement {
       this.removeAttribute("aria-busy");
     }
     this.removeAttribute("data-sf-first-paint");
+    this.removeAttribute("data-sf-late");
     Array.from(this.children).forEach((child) => child.removeAttribute("data-sf-held"));
     // A host printed as a static node of another's picture and adopted live
     // (sf-view takes its printed sf-view-table and sf-pagination as its
