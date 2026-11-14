@@ -27,16 +27,14 @@
       }
     },
     {
-      "name": "filled-rounded",
-      "title": "Заливка, скруглённый",
+      "name": "filled",
+      "title": "Заливка",
       "settings": {
         "icon": "favorite",
-        "filled": true,
-        "type": "rounded"
+        "filled": true
       },
       "expect": {
-        "filled": true,
-        "type": "rounded"
+        "filled": true
       }
     },
     {
