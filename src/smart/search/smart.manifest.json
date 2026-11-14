@@ -411,11 +411,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/search/index.js",
-        "sha256": "1893de33283bd503de6dee40e118b4e2fcca69b301d7df65ba4c438db76ca12f"
+        "sha256": "f8cda0b86169fe4a15f9820a30ef82c8487c522c178ac77f309367df9212c5e5"
       },
       {
         "path": "src/smart/search/js/templates/default.js",
-        "sha256": "a0320be2aeaa0a1db7be41c559151b8a44eb3a45f90b36a90bd235372a887f9d"
+        "sha256": "9dc439b7c847edc12a9cd6645439f2416b50106fd6a881ed03435e5b5d854d47"
       },
       {
         "path": "src/smart/search/scss/_smart__search.scss",
