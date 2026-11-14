@@ -351,7 +351,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button/smart.manifest.json",
-      "manifest_sha256": "3d19acb54ea81755522d3727b1654e38f93917fd19273468d87a989e6ee03d05",
+      "manifest_sha256": "78686ac846e51ef3a992fee9c8a98e09304d571c77c0679514064ff74e06c767",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1158,7 +1158,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/icon/smart.manifest.json",
-      "manifest_sha256": "5c3cb0360772bf95d44dccc07f320275ec24daca5b5c6bf6b144147079f9f4ce",
+      "manifest_sha256": "26f48dcdcc8f6e2915453bc69360723c6a1f3123ed1c2e62b025e15626d22fbb",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
