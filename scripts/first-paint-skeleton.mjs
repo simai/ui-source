@@ -25,7 +25,7 @@
 // its attributes, its JSON island without the late settings, and
 // data-sf-first-paint="skeleton" aria-busy="true".
 import {readFileSync} from 'node:fs';
-import {esc, hostSpec, islandText} from './first-paint-lib.mjs';
+import {esc, hostSpec, islandText, lateGiven, lateHeld} from './first-paint-lib.mjs';
 
 const valueOf = (component, settings, name) => {
   if (settings[name] !== undefined) return settings[name];
@@ -86,18 +86,21 @@ export function fillSkeleton(component, settings, template) {
   }).trim();
 }
 
-const printHost = (tag, attributes, island, inner) => {
-  const attrs = attributes.filter(([name]) => name !== 'data-sf-first-paint' && name !== 'aria-busy')
+const printHost = (tag, attributes, island, inner, held = []) => {
+  const attrs = attributes.filter(([name]) => !['data-sf-first-paint', 'aria-busy', 'data-sf-late'].includes(name))
     .map(([name, value]) => (value === '' ? ` ${name}` : ` ${name}="${esc(value)}"`)).join('');
   const json = Object.keys(island).length ? `<script type="application/json" data-sf-settings>${islandText(island)}</script>` : '';
-  return `<${tag}${attrs} data-sf-first-paint="skeleton" aria-busy="true">${json}${inner}</${tag}>`;
+  // The late lists it stands for (element-manifest.js sfLateHeld).
+  const late = held.length ? ` data-sf-late="${esc(held.join(' '))}"` : '';
+  return `<${tag}${attrs} data-sf-first-paint="skeleton" aria-busy="true"${late}>${json}${inner}</${tag}>`;
 };
 
 /** The skeleton of a leaf's example: skeleton.html filled from the example's settings. */
 export function renderSkeletonTemplate(component, example) {
   const template = readFileSync(component.skeletonFile, 'utf8');
   const spec = hostSpec(component, example, {drop: component.late});
-  return printHost(spec.tag, spec.attributes, spec.island, fillSkeleton(component, example.settings ?? {}, template));
+  return printHost(spec.tag, spec.attributes, spec.island, fillSkeleton(component, example.settings ?? {}, template),
+    lateHeld(component, lateGiven(component, example)));
 }
 
 /**
@@ -113,5 +116,6 @@ export function renderPartSkeleton(component, {attributes, island, late}) {
   const settings = Object.fromEntries(attributes);
   Object.assign(settings, island);
   const kept = Object.fromEntries(Object.entries(island).filter(([name]) => !late.includes(name)));
-  return printHost(component.tag, attributes, kept, fillSkeleton(component, settings, readFileSync(component.skeletonFile, 'utf8')));
+  return printHost(component.tag, attributes, kept, fillSkeleton(component, settings, readFileSync(component.skeletonFile, 'utf8')),
+    lateHeld(component, late));
 }
