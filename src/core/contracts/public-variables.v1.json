@@ -2885,29 +2885,29 @@
         {
           "name": "--sf-profile-picker-background-color",
           "role": "background",
-          "summary": "The folded trigger's fill.",
-          "default": "transparent",
+          "summary": "The trigger's fill at rest (an sf-button ghost since 1.6.0; hover and focus stay the button's); the button's own when unset.",
+          "default": "var(--sf-button-background-color, transparent)",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-profile-picker-border-color",
           "role": "border-color",
-          "summary": "The folded trigger's border at rest; open keeps its own.",
-          "default": "var(--sf-outline-variant)",
+          "summary": "The trigger's border colour at rest (seen with --sf-button-border-width); the button's own when unset.",
+          "default": "var(--sf-button-border-color, transparent)",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-profile-picker-radius",
           "role": "radius",
-          "summary": "The folded trigger's corners.",
-          "default": "var(--sf-radius--ui)",
+          "summary": "The trigger's corners; the button's own when unset.",
+          "default": "var(--sf-button-radius, var(--sf-radius--ui))",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-profile-picker-color",
           "role": "color",
-          "summary": "The trigger's words.",
-          "default": "var(--sf-on-surface)",
+          "summary": "The trigger's words at rest; the button's own when unset.",
+          "default": "var(--sf-button-color, var(--sf-on-surface))",
           "since": "2026-10-27"
         },
         {

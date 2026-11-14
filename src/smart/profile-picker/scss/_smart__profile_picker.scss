@@ -2,7 +2,8 @@
 @use '../../../core/scss/mix/mix__places' as places;
 
 @layer sf.components {
-/* The profile picker (owner, 2026-10-14): a field-like button, and a panel
+/* The profile picker (owner, 2026-10-14): the standard button (sf-button ghost
+   with a chevron, owner decision C163 (2)), and a panel
    with the standard menu's surface -- elevation 3, a hairline, the inset,
    8px corners -- whose rows are a dropping panel's (owner C05-C07, docs review
    R029, 2026-11-07; the geometry is the context menu's,
@@ -36,45 +37,36 @@ sf-profile-picker {
   --sf-profile-picker--row-height: var(--sf-ui-1--control-height);
 }
 
-.sf-profile-picker-trigger {
-  display: flex;
-  align-items: center;
-  gap: var(--sf-space-1\/2);
-  inline-size: 100%;
-  min-block-size: calc(var(--sf-profile-picker--line) + 2 * var(--sf-profile-picker--space-y));
-  padding-inline: var(--sf-profile-picker--space-x);
-  border: var(--sf-px) solid var(--sf-profile-picker-border-color, var(--sf-outline-variant));
-  border-radius: var(--sf-profile-picker-radius, var(--sf-radius--ui));
-  background-color: var(--sf-profile-picker-background-color, transparent);
-  color: var(--sf-profile-picker-color, var(--sf-on-surface));
-  font: inherit;
-  text-align: start;
-  cursor: pointer;
+/* The trigger is sf-button ghost on-surface (C163 (2)): its height, padding,
+   states and focus ring are the button's, as its toolbar neighbours'. The
+   picker only keeps it inside its box: a long profile name ends in an
+   ellipsis instead of widening the toolbar. */
+/* The picker's four trigger variables reach the button's resting look (the
+   button's internal steps, in this layer; hover, focus and disabled are the
+   button's sf.states and still show). Unset, each falls back to the
+   button's own public variable, so the button looks as any sf-button. */
+.sf-profile-picker .sf-profile-picker-trigger > .sf-button.sf-button--ghost {
+  --sf-button--radius: var(--sf-profile-picker-radius, var(--sf-button-radius, var(--sf-radius--ui)));
+  --sf-button--background-color: var(--sf-profile-picker-background-color, var(--sf-button-background-color, transparent));
+  --sf-button--border-color: var(--sf-profile-picker-border-color, var(--sf-button-border-color, transparent));
 }
 
-.sf-profile-picker-trigger[aria-expanded="true"] {
-  border-color: var(--sf-primary);
+.sf-profile-picker .sf-profile-picker-trigger > .sf-button.sf-button--ghost .sf-button-text-container {
+  --sf-button-text-container--color: var(--sf-profile-picker-color, var(--sf-button-color, var(--sf-on-surface)));
 }
 
-.sf-profile-picker-trigger:disabled {
-  color: var(--sf-on-surface-disabled);
-  cursor: default;
+.sf-profile-picker-trigger > button {
+  max-inline-size: 100%;
 }
 
-.sf-profile-picker-name {
-  flex: 1 1 auto;
+.sf-profile-picker-trigger .sf-button-text-container {
   min-inline-size: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.sf-profile-picker-name b {
-  font-weight: var(--sf-font-weight-medium);
-}
-
-.sf-profile-picker-kind,
-.sf-profile-picker-chevron {
+.sf-profile-picker-kind {
   --sf-icon--color: var(--sf-on-surface-variant);
 }
 
@@ -122,6 +114,25 @@ sf-profile-picker {
 
 .sf-profile-picker-panel[hidden] {
   display: none;
+}
+
+/* On a phone the panel's content stands in the Framework's bottom sheet
+   (sf-drawer placement=bottom; owner decisions C163 (4), C157 (5)): the
+   drawer is the surface, its head the title and the close button, its body
+   the gutter. The rows keep the menu's geometry: their fill reaches
+   --sf-space-1/2 into the gutter, so a row's icon and text start on the
+   title's axis. */
+.sf-profile-picker-panel.sf-profile-picker-panel--in-sheet {
+  position: static;
+  inline-size: auto;
+  max-inline-size: none;
+  margin-inline: calc(-1 * var(--sf-space-1\/2));
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  box-shadow: none;
+  overflow: visible;
 }
 
 /* A phone (owner decisions C32, C106 (8); PP-4): a sheet at the bottom of the
@@ -239,7 +250,6 @@ sf-profile-picker {
 
 .sf-profile-picker-actions {
   display: flex;
-  gap: var(--sf-space-1\/3); /* Rename · Delete: a button group (C105 H5) */
   opacity: 0;
 }
 
@@ -346,11 +356,15 @@ sf-profile-picker {
     .sf-profile-picker-row:has(.sf-profile-picker-caption) {
       min-block-size: calc(var(--sf-profile-picker--caption-step) + var(--sf-text-height-1\/3));
     }
+
+    /* A finger has no hover: a row's «⋯» is always shown (C163 (3)). */
+    .sf-profile-picker-actions {
+      opacity: 1;
+    }
   }
 }
 
 @layer sf.states {
-  .sf-profile-picker-trigger:focus-visible,
   .sf-profile-picker-row:focus-visible,
   .sf-profile-picker-field:focus-visible {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
