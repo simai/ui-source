@@ -82,7 +82,9 @@ function measure() {
     }
     return true;
   };
-  const NOT_LADDER = /(^|[-_\s])(help-mark|tag|tags|badge|badges|chip|chips|checkbox|radio|switch|toggle|menu-item|option|tab|tabs|kbd)([-_\s]|$)/u;
+  // A picture tile (sf-figure-media in a gallery grid or masonry) is content
+  // drawn at its picture's height, not a control on the ladder.
+  const NOT_LADDER = /(^|[-_\s])(help-mark|tag|tags|badge|badges|chip|chips|checkbox|radio|switch|toggle|menu-item|option|tab|tabs|kbd|figure)([-_\s]|$)/u;
   const outOfLadder = (el) => {
     for (let node = el; node && node.id !== 'stage'; node = parentOf(node)) {
       const name = `${node.localName} ${typeof node.className === 'string' ? node.className : ''}`;
