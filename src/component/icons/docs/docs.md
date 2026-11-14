@@ -7,11 +7,18 @@ decorative case. A standalone informative glyph uses `role="img"` with a short
 
 The ordinary primitive uses BEM modifiers:
 
-- `sf-icon--rounded` and `sf-icon--sharp` select a source family;
+- `sf-icon--rounded` and `sf-icon--sharp` select a source family whose font
+  the host ships itself (Docara's icon catalogue does); the Framework ships
+  only the outlined font, and Smart `sf-icon` draws only it (its `type`
+  rounded and sharp are former values until 2027-01-01);
 - `sf-icon--filled` enables fill;
 - `sf-icon--weight-thin|extra-light|light|regular|medium|semi-bold|bold` selects
   a supported weight;
-- `sf-icon--size-1/4|1/3|1/2|1|2|3|4|5|6|7` uses the Framework icon scale;
+- `sf-icon--size-1/4|1/3|1/2|1|2|3|4|5|6|7` uses the Framework icon scale:
+  1, 2, 3 and 4 are the icons of a size 1/3, 1/2, 1 and 2 button (16, 20, 24,
+  28 on a desktop; 16, 16, 20, 24 on a phone and in a compact region), the
+  other steps go one icon step down on a phone; without a size the icon is a
+  size-1 button's (24, phone 20);
 - `sf-icon--rotate-45` through `sf-icon--rotate-315` rotates in 45-degree steps.
 
 Old unseparated family, fill and weight classes remain compatibility aliases.

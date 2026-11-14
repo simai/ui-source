@@ -7,8 +7,6 @@ function getIconData(context) {
     icon,
     size,
     filled,
-    rounded,
-    sharp,
     weightClass,
     loaded,
     rootClass,
@@ -24,8 +22,6 @@ function getIconData(context) {
     size ? `sf-icon--size-${size}` : "",
     loaded ? "sf-icon-loaded" : "",
     weightClass ? `sf-icon--weight-${weightClass}` : "",
-    rounded ? "sf-icon--rounded" : "",
-    sharp ? "sf-icon--sharp" : "",
     filled ? "sf-icon--filled" : "",
     rootClass,
   ]

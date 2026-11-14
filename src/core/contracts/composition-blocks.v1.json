@@ -1253,9 +1253,7 @@
             "default": "",
             "enum": [
               "",
-              "outlined",
-              "rounded",
-              "sharp"
+              "outlined"
             ],
             "type": "string"
           },
@@ -1270,7 +1268,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.icon",
-      "version": "1.1.8"
+      "version": "1.2.0"
     },
     "sf-input": {
       "inputs": {

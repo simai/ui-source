@@ -753,9 +753,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "enum": [
             "",
-            "outlined",
-            "rounded",
-            "sharp"
+            "outlined"
           ],
           "type": "string"
         },
@@ -770,7 +768,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.icon",
-    "version": "1.1.8"
+    "version": "1.2.0"
   },
   "sf-input": {
     "inputs": {
