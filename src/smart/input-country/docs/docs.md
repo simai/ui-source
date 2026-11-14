@@ -124,3 +124,21 @@ empty value shows the recent choices alone. The group holds six rows at most.
 
 Below the `md` breakpoint the list opens as a bottom sheet over the page instead
 of a dropdown under the field.
+
+## Sizes and messages (1.6.0)
+
+`size` takes the field ladder's five steps, `1/3`, `1/2`, `1`, `2` and `3`, as
+`sf-input`: the field is as tall as `sf-input` of the same size (28 / 32 / 40 /
+48 / 56 on a desktop). Under the field stands one message line a step below the
+field's text: `hint` while the field is valid, `error-message` once `invalid` is
+set, with the error border, `aria-invalid` and `aria-errormessage`.
+
+## Label, help, errors and focus (C153)
+
+Since 1.7.0 (owner decision C153) sf-input-country follows sf-input: `help` draws a «?» (`sf-help-mark`) after the label and its «*», a step below the value, the label row keeping its height, named «Подробнее: <label>». The field
+shows its own errors in the page's language -- a failed submit shows every
+wrong field and focuses the first, a changed field is checked on leaving, a
+shown error goes the moment the value is right -- and the browser's bubble
+never shows. See sf-input «Errors the field shows itself». The label is in the text ink, the «*» in the label's
+ink; hover draws the border in the text ink and focus a 2 px primary edge
+inside the field, with no ring outside it.

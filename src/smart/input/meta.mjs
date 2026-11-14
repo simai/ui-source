@@ -31,7 +31,7 @@ const sfInputMeta = {
         "3"
       ],
       "default": "1",
-      "description": "The step of the control ladder the field stands on, the height of sf-button and sf-button-icon of the same size. sf-input keeps the outer steps 1/3 and 3 (a compact toolbar search, a hero search); the other fields stay on 1/2, 1 and 2."
+      "description": "The step of the control ladder the field stands on, the height of sf-button and sf-button-icon of the same size. sf-input and the fields of the field ladder (lookup, quantity, date, code, colour, phone) stand on all five steps; textarea, dropdown, file upload, image and rich text stay on 1/2, 1 and 2."
     },
     "radius": {
       "kind": "enum",
@@ -58,7 +58,7 @@ const sfInputMeta = {
       "kind": "custom",
       "valueType": "string",
       "default": "",
-      "description": "The visible label above the field; it names the native control. Without it, give aria-label."
+      "description": "The visible label above the field, in the text ink a step below the value (14 beside a 16 value, 14 on a phone too; C153 (1)); it names the native control. Without it, give aria-label."
     },
     "required": {
       "kind": "boolean",
@@ -67,7 +67,7 @@ const sfInputMeta = {
         "false"
       ],
       "default": "false",
-      "description": "The field must hold a value: the label gets the required mark and the native control the required constraint."
+      "description": "The field must hold a value: the label gets the required mark, «*» in the label's ink (C153 (2); the form says once what it means, «* — обязательные поля»), and the native control the required constraint."
     },
     "placeholder": {
       "kind": "custom",
@@ -87,7 +87,7 @@ const sfInputMeta = {
         "number"
       ],
       "default": "text",
-      "description": "The kind of text the field takes, the native input type: text, email, password, search, tel, url or number (with min, max and step)."
+      "description": "The kind of text the field takes, the native input type: text, email, password, search, tel, url or number (with min, max and step). A number field draws no browser arrows and digits of one width (C153 (7)); exact numbers with a unit or steps belong to sf-input-quantity (steppers=\"none\")."
     },
     "autocomplete": {
       "kind": "custom",
@@ -121,7 +121,16 @@ const sfInputMeta = {
       "kind": "custom",
       "valueType": "string",
       "default": "",
-      "description": "The most characters the value may have, as the native maxlength: the field takes no more. Empty: no limit."
+      "description": "The most characters the value should have (C153 (10), C141 (1)). The count shows from 80 % of it at the end of the message line; past it the count and the frame turn to the error colour and the field is invalid (too-long), so the form is not sent. The text is never cut, as the native maxlength would; a masked field keeps the native limit. Empty: no limit, no count."
+    },
+    "counter": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "With maxlength: the count shows always, not only from 80 % of the limit (C153 (10), C141 (1))."
     },
     "pattern": {
       "kind": "custom",
@@ -153,6 +162,12 @@ const sfInputMeta = {
       "default": "",
       "description": "The help line under the field; on an error the error message takes its place."
     },
+    "help": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label, --sf-space-1/4 after its last word; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
+    },
     "default-value": {
       "kind": "custom",
       "valueType": "string",
@@ -170,6 +185,12 @@ const sfInputMeta = {
       "valueType": "string",
       "default": "",
       "description": "The name of an icon drawn at the start of the field, before the value (a search glass, an envelope). Empty: no icon."
+    },
+    "text-start": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "A short text drawn at the start of the field, before the value, the twin of text-end (C153 (9)): «https://», «@», «+7». In the hint's ink, on the C77 inset, not part of the value; the native control is described by it. Empty: no text."
     },
     "text-end": {
       "kind": "custom",
@@ -214,7 +235,7 @@ const sfInputMeta = {
         "false"
       ],
       "default": "false",
-      "description": "A clear button (×) at the field's end while the field holds a value: a glyph inside the field (C123), named «Очистить»; a press empties the field, says so with input and change and gives the focus back to it. A search field (input-type search) has it without the setting, in place of the browser's own."
+      "description": "A clear glyph (×) at the field's end while the field holds a value (C123), named «Очистить»: a press empties the field, says so with input and change and gives the focus back to it. It is no Tab stop (C153 (6)): Escape in the field empties it instead, and an empty field lets Escape go on. A search field (input-type search) has both without the setting, in place of the browser's own."
     },
     "invalid": {
       "kind": "boolean",
@@ -223,7 +244,7 @@ const sfInputMeta = {
         "false"
       ],
       "default": "false",
-      "description": "Marks the value as wrong: the error border, aria-invalid on the native control and error-message under the field."
+      "description": "Marks the value as wrong from the page: the error border, aria-invalid on the native control and error-message under the field. Without it the field shows its own errors (C153 (3)): after a failed submit on every wrong field (the first takes the focus), then on leaving a field the person changed, gone the moment the value is right, in the component's words; never the browser's bubble."
     },
     "error-message": {
       "kind": "custom",

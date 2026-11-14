@@ -73,9 +73,16 @@ height. Measured on the light theme at 1000px:
 
 | size | one row (control height) | block padding | each further row |
 | ---- | ------------------------ | ------------- | ---------------- |
+| 1/3  | 28px                     | 5px           | 16px             |
 | 1/2  | 32px                     | 6px           | 20px             |
 | 1    | 40px                     | 8px           | 24px             |
 | 2    | 48px                     | 10px          | 28px             |
+| 3    | 56px                     | 9px           | 36px             |
+
+On a touch phone the text of a field is lifted to 16px so iOS does not zoom
+in; the lines of a textarea then stand on at least the size-1 line (20px on a
+phone), so the lines of a 1/2 field no longer touch. A fixed one-row field
+keeps its control height.
 
 With `auto-grow` and `max-rows="8"` a field of size 1 is 40px empty and
 208px at eight rows, then scrolls inside. `min-rows`, `max-rows` and the
@@ -137,6 +144,33 @@ own bubble and its focus on the first invalid field stay as they are. Typing
 that fills the field, or `form.reset()`, clears it. The page's `invalid` with
 `error-message` wins over it.
 
+## Height, the count and code (C141)
+
+A form field follows its text from 3 to 10 rows and then scrolls inside
+(`auto-grow` is on, `min-rows` 3, `max-rows` 10). `rows` given without
+`auto-grow` keeps a fixed height; `auto-grow="false"` turns growing off. A
+`flush` field -- part of a composite such as a chat composer -- grows only with
+`auto-grow`, from 1 row, uncapped, as before. The browser's grip is drawn only
+with `resize` on a field of fixed height, and never on a touch screen.
+
+With `maxlength` the field counts its text with the rule `sf-chat-composer`
+keeps (`src/smart/helpers/char-count.js`): the count «131 / 160» stands at the
+end of the message line from 80 % of the limit (always with `counter`); past
+the limit the count and the frame are the error colour and the field is
+invalid (too-long, «Не больше 160 знаков»), so the form is not sent. The text
+is never cut. A polite line speaks once when a threshold is crossed.
+
+`text="code"` is for a snippet of code or configuration (a counter's script,
+robots.txt, JSON): the type system's code font, no spelling check or
+autocorrection, and the lines as typed -- no wrapping, the field scrolls
+sideways. It is not a code editor (no highlighting or completion).
+
+```html
+<sf-input-textarea label="Описание для поисковиков" maxlength="160"
+  hint="Поисковики показывают около 160 знаков"></sf-input-textarea>
+<sf-input-textarea label="Код счётчика" text="code" rows="4"></sf-input-textarea>
+```
+
 ## State and lifecycle
 
 `element.value` reads current native text; assignment updates the visible
@@ -147,3 +181,13 @@ rebinds field, reset and Mask hooks without duplicate listeners.
 Use Smart Textarea for free text that may contain multiple lines. Use Input for
 single-line values, and a specialized editor for rich text or code. Keep a
 visible accessible label and a repair-oriented error message.
+
+## Label, help, errors and focus (C153)
+
+Since 1.10.0 (owner decision C153) sf-input-textarea follows sf-input: `help` draws a «?» (`sf-help-mark`) after the label and its «*», a step below the value, the label row keeping its height, named «Подробнее: <label>». The field
+shows its own errors in the page's language -- a failed submit shows every
+wrong field and focuses the first, a changed field is checked on leaving, a
+shown error goes the moment the value is right -- and the browser's bubble
+never shows. See sf-input «Errors the field shows itself». The label is in the text ink, the «*» in the label's
+ink; hover draws the border in the text ink and focus a 2 px primary edge
+inside the field, with no ring outside it.

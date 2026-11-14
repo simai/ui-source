@@ -1,7 +1,7 @@
 import {ComponentObserver} from "../../../core/js/ComponentObserver";
 import badgeUtility from '../json/badge.utility.json';
 import registerComponent from "../../register-helper";
-import {BADGE_SCHEME_ALIASES, normalizeBadgeContract} from './contract';
+import {BADGE_MAIN_TONAL, BADGE_SCHEME_ALIASES, isRetiredMain, normalizeBadgeContract} from './contract';
 import {noteDeprecated} from '../../../core/js/deprecations.js';
 
 class Badges extends ComponentObserver {
@@ -31,6 +31,11 @@ class Badges extends ComponentObserver {
                 from: formerScheme,
                 to: BADGE_SCHEME_ALIASES[formerScheme],
             });
+        }
+        // main is the attention count's (C140 (4)): on any colour but error it
+        // draws tonal, and the spelling is noted until 2027-01-01.
+        if (isRetiredMain({type: params.appearance ?? params.type, scheme: requestedScheme})) {
+            noteDeprecated({component: 'badges', kind: 'value', attribute: 'appearance', from: 'main', to: 'tonal', ...BADGE_MAIN_TONAL});
         }
         const {size, type, scheme} = normalizeBadgeContract({
             type: params.appearance ?? params.type,

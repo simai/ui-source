@@ -1,3 +1,5 @@
+@use '../../inputs/scss/field-ladder' as ladder;
+
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) */
 .sf-quantity {
@@ -16,7 +18,8 @@
 }
 
 .sf-quantity .sf-quantity-text {
-  --sf-quantity-text--color: var(--sf-on-surface-variant);
+  /* C153 (1): the label in the text ink. */
+  --sf-quantity-text--color: var(--sf-on-surface);
   --sf-quantity-text--font-family: var(--sf-text--family);
   --sf-quantity-text--font-weight: var(--sf-font-weight-regular);
   color: var(--sf-quantity-text--color);
@@ -58,7 +61,8 @@
 }
 
 .sf-quantity .sf-quantity-required {
-  --sf-quantity-required--color: var(--sf-error);
+  /* C153 (2): the mark in the label's ink. */
+  --sf-quantity-required--color: var(--sf-on-surface);
   --sf-quantity-required--font-family: var(--sf-text--family);
   --sf-quantity-required--font-weight: var(--sf-font-weight-regular);
   color: var(--sf-quantity-required--color);
@@ -349,16 +353,19 @@
 }
 
 .sf-quantity:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):hover) .sf-quantity-wrap {
-  --sf-quantity-wrap--border-color: var(--sf-primary-hover);
+  /* C153 (4): hover in the text ink. */
+  --sf-quantity-wrap--border-color: var(--sf-on-surface);
 }
 
 .sf-quantity:has(input:enabled:not(:disabled):not(.disabled):active) .sf-quantity-wrap input::placeholder {
   --sf-quantity-placeholder--color: var(--sf-on-surface);
 }
 
-.sf-quantity:not(.sf-quantity--pointer-focus):has(input:not(:disabled):not(.disabled):focus-visible) .sf-quantity-wrap {
+/* C153 (4), R242: focus by mouse or keys draws a 2 px edge of the focus colour
+   inside the wrap, over its border; no ring outside, nothing moves. */
+.sf-quantity:has(input:not(:disabled):not(.disabled):focus) .sf-quantity-wrap {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-  outline-offset: var(--sf-focus--offset);
+  outline-offset: calc(-1 * var(--sf-focus--width));
 }
 
 /* The ring belongs to the wrap, so the bare control gives its own up -- the same
@@ -591,9 +598,9 @@
     outline-offset: calc(var(--sf-focus--width) * -1);
   }
   @media (forced-colors: active) {
-    .sf-quantity:not(.sf-quantity--pointer-focus):has(input:not(:disabled):not(.disabled):focus-visible) .sf-quantity-wrap {
+    .sf-quantity:has(input:not(:disabled):not(.disabled):focus) .sf-quantity-wrap {
       outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: var(--sf-focus-outline-width);
+      outline-offset: calc(-1 * var(--sf-focus-outline-width));
       --sf-quantity-wrap--box-shadow: none;
     }
     .sf-quantity:not(.sf-quantity--pointer-focus) .sf-icon-button.sf-quantity-count:not(:disabled):focus-visible {
@@ -607,4 +614,99 @@
       transition-duration: 0s;
     }
   }
+}
+
+/* The outer steps of the field ladder (inputs/scss/_field-ladder.scss): at
+   1/3 and 3 the box is as tall as sf-input of the size (28 / 56 on a
+   desktop); it drew the neighbouring kept size, 32 / 48. The number is the
+   text of the size, the label, help and error a step below, the stepper a
+   rung below the field as at the kept sizes: the control of size 2 inside a
+   size 3 box; inside a 1/3 box, where the ladder has no control below, the
+   1/2 text line (20), which leaves the box's block padding round it. */
+@layer sf.components {
+  @each $size, $stepper in ('1/3': var(--sf-text-height-1\/2), '3': var(--sf-ui-2--control-height)) {
+    $class: ladder.size-class('sf-quantity', $size);
+
+    .sf-quantity.#{$class} .sf-quantity-text,
+    .sf-quantity.#{$class} .sf-quantity-required {
+      --sf-quantity-text--font-size: #{ladder.label-size($size)};
+      --sf-quantity-text--line-height: #{ladder.label-height($size)};
+      --sf-quantity-required--font-size: #{ladder.label-size($size)};
+      --sf-quantity-required--line-height: #{ladder.label-height($size)};
+    }
+
+    .sf-quantity.#{$class} .sf-quantity-hint-text-wrap {
+      --sf-quantity-hint-text-wrap--font-size: #{ladder.label-size($size)};
+      --sf-quantity-hint-text-wrap--line-height: #{ladder.label-height($size)};
+    }
+
+    .sf-quantity.#{$class} {
+      --sf-quantity--number-height: #{$stepper};
+    }
+
+    .sf-quantity.#{$class} .sf-quantity-wrap {
+      --sf-quantity-wrap--block-size: #{ladder.height($size)};
+      --sf-quantity-wrap--padding-bottom: var(--sf-quantity-padding-block, #{ladder.padding-block($size)});
+      --sf-quantity-wrap--padding-top: var(--sf-quantity-padding-block, #{ladder.padding-block($size)});
+      --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc((#{ladder.height($size)} - #{$stepper}) / 2 - var(--sf-px)));
+      --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((#{ladder.height($size)} - #{$stepper}) / 2 - var(--sf-px)));
+      --sf-quantity-input--font-size: #{ladder.text-size($size)};
+      --sf-quantity-input--line-height: #{ladder.text-height($size)};
+      --sf-quantity-input--font-family: var(--sf-text--family);
+      --sf-quantity-input--font-weight: var(--sf-font-weight-regular);
+    }
+
+    .sf-quantity.#{$class} .sf-quantity-count {
+      --sf-icon-button--padding-bottom: calc((#{$stepper} - #{ladder.text-height($size)}) / 2);
+      --sf-icon-button--padding-inline-end: calc((#{$stepper} - #{ladder.text-height($size)}) / 2);
+      --sf-icon-button--padding-inline-start: calc((#{$stepper} - #{ladder.text-height($size)}) / 2);
+      --sf-icon-button--padding-top: calc((#{$stepper} - #{ladder.text-height($size)}) / 2);
+    }
+
+    .sf-quantity.#{$class} .sf-icon,
+    .sf-quantity.#{$class} .sf-icon-button.sf-quantity-count.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
+      --sf-icon--font-size: #{ladder.text-height($size)};
+      --sf-icon--height: #{ladder.text-height($size)};
+      --sf-icon--width: #{ladder.text-height($size)};
+    }
+
+    .sf-quantity.#{$class} input {
+      --sf-quantity-input--padding-inline-end: var(--sf-space-1\/4);
+      --sf-quantity-input--padding-inline-start: var(--sf-space-1\/4);
+    }
+
+    .sf-quantity.#{$class} .sf-quantity-wrap input::placeholder {
+      --sf-quantity-placeholder--font-size: #{ladder.text-size($size)};
+      --sf-quantity-placeholder--line-height: #{ladder.text-height($size)};
+    }
+
+    .sf-quantity.#{$class}:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-quantity-wrap {
+      --sf-quantity-wrap--border-color: var(--sf-primary-active);
+    }
+
+    .sf-quantity.sf-quantity--steppers-none.#{$class} .sf-quantity-wrap {
+      --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc(#{ladder.ui($size, space-x)} + #{ladder.ui($size, text-space-x)} - var(--sf-space-1\/4)));
+      --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc(#{ladder.ui($size, space-x)} + #{ladder.ui($size, text-space-x)} - var(--sf-space-1\/4)));
+    }
+  }
+}
+
+/* C153 (1): at size 1 the label stays 14 on a phone (below 60rem), as
+   sf-input's. (2) A disabled field's mark goes with its label. */
+@media not all and (min-width: 60rem) {
+  .sf-quantity.sf-quantity.sf-quantity--size-1 .sf-quantity-text,
+  .sf-quantity.sf-quantity.sf-quantity--size-1 .sf-quantity-required {
+    --sf-quantity-text--font-size: var(--sf-text-size-1);
+    --sf-quantity-text--line-height: var(--sf-text-height-1);
+    --sf-quantity-required--font-size: var(--sf-text-size-1);
+    --sf-quantity-required--line-height: var(--sf-text-height-1);
+  }
+}
+
+.sf-quantity:has(input:disabled) .sf-quantity-required {
+  --sf-quantity-required--color: var(--sf-on-surface-disabled);
+}
+
+.sf-quantity:has(input:disabled) .sf-quantity-text {
+  --sf-quantity-text--color: var(--sf-on-surface-disabled);
 }

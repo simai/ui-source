@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-date",
-  "version": "1.6.1",
+  "version": "1.8.0",
   "title": "Datepicker",
   "summary": "Accessible date, date-and-time, time and date-range picker with popup and inline presentation, calendar and time navigation and host-owned values.",
   "kind": "composite",
@@ -181,11 +181,13 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "Form size of the field.",
+        "description": "The field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the field is an sf-input of this size.",
         "enum": [
+          "1/3",
           "1/2",
           "1",
-          "2"
+          "2",
+          "3"
         ]
       },
       "input-size": {
@@ -193,9 +195,11 @@
         "default": "1",
         "description": "Legacy name for size, still honoured; size wins when both are set. See contracts/public-api-axes.json.",
         "enum": [
+          "1/3",
           "1/2",
           "1",
-          "2"
+          "2",
+          "3"
         ]
       },
       "input-name": {
@@ -237,6 +241,11 @@
         "type": "string",
         "default": "",
         "description": "The helper text under the field, read to the control as its description, as on sf-input. An error-message takes its place while the field is invalid and it comes back when invalid is removed."
+      },
+      "help": {
+        "type": "string",
+        "default": "",
+        "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
       },
       "icon-start": {
         "type": "string",
@@ -743,11 +752,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-date/index.js",
-        "sha256": "b6c12b1791db56c6575c3f76e6709316e46dbbfffacdff08cc7fa4fcfe9c8899"
+        "sha256": "f2fc3183c3e2ecbf55109c5f4fa9608bfa981c921c5a3fc6924a031eadbc1d7c"
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",
-        "sha256": "357908e72f70c4f9e65b2fc08d6af3b6a9d01335b9c382a9983471c4a1f30554"
+        "sha256": "4ccf23b3d0986172fc4c5701a72dbea14c7a926172d9b199d5aeb519b060621d"
       },
       {
         "path": "src/smart/input-date/rule.js",
@@ -755,7 +764,7 @@
       },
       {
         "path": "src/smart/input-date/docs/smart-datepicker-guide.md",
-        "sha256": "182e3d12cbfae9bb95af793de906c37ebe760066688530da19ec9a86afd27635"
+        "sha256": "09b6933f847d543307f1070aa8e8569cfce92f1663ff18023774a58c52a5560a"
       }
     ],
     "generated_runtime": [

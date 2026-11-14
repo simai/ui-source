@@ -1,8 +1,8 @@
 import SfBaseElement, {toNumber} from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
-import {fieldSize} from '../../component/field-size';
-import {FormField} from '../helpers/form-field';
+import {ladderSize} from '../../component/field-size';
+import {FormField, ShownValidity} from '../helpers/form-field';
 import {render} from 'lit';
 import {renderDatepickerTemplate} from './js/templates/default';
 import {renderDatepickerRibbon} from './js/templates/ribbon.js';
@@ -479,7 +479,7 @@ const DatepickerElement = elementFromManifest(manifest, {
     },
 });
 
-class SfDatepicker extends FormField(DatepickerElement) {
+class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
     constructor() {
         super();
         this._input = null;
@@ -1001,7 +1001,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
     // `size` is the canonical name, as on every field; `input-size` is its
     // legacy name and still honoured. The canonical name wins when both are set.
     get size() {
-        return fieldSize(this.getAttribute('size') || this.getAttribute('input-size') || '1', 'sf-input-date');
+        return ladderSize(this.getAttribute('size') || this.getAttribute('input-size'));
     }
 
     get inputSize() {
@@ -2752,8 +2752,9 @@ class SfDatepicker extends FormField(DatepickerElement) {
             valueLocked: this.valueLocked,
             disabled: this.disabled,
             required: this.required,
-            invalid: this.invalid,
-            errorMessage: this.errorMessage,
+            // C153 (3): the page's error, or the one the field shows itself (ShownValidity).
+            invalid: this.sfShownInvalid(this.invalid),
+            errorMessage: this.sfShownMessage(this.invalid, this.errorMessage),
             // The field's own words and marker, as on sf-input: the helper text
             // under the control (which the field reads to it as its
             // description) and the marker at the field's end. The settings

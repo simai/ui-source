@@ -6,7 +6,10 @@
     "range-underflow": "The value must be at least {min}",
     "range-overflow": "The value must be at most {max}",
     "step-mismatch": "The value must be a multiple of {step}",
-    "remove": "Remove"
+    "remove": "Remove",
+    "value-missing": "Fill in this field",
+    "bad-input": "Enter a number",
+    "help": "More about: {label}"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",

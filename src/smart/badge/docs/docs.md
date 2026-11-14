@@ -28,7 +28,7 @@ Main attributes:
 - `scheme`
 - `status`
 - `activity`
-- `compact`
+- `icon-only`
 - `line`
 - `text`
 - `icon`
@@ -43,11 +43,13 @@ the values `danger` (status error), `left` and `right` (icon-position start
 and end). The shim writes the new attribute and notes each use in
 `SF.deprecations`. A status word written as `scheme` still reaches `status`.
 
-Supported `appearance` values:
+Supported `appearance` values (owner decision C140: five jobs, five looks):
 
-- `main`
-- `tonal`
-- `outline`
+- `tonal` — the default: a status or a value in its colour, a quantity in grey
+- `outline` — a mark beside a title (a version, a type)
+- `main` — the attention count alone, with `status="error"`; with any other
+  colour it draws `tonal`, and that spelling is noted in `SF.deprecations`
+  until 2027-01-01 (journal `value-badge-appearance-main-to-tonal`)
 
 Supported `scheme` values:
 
@@ -67,33 +69,26 @@ Supported `size` values:
 - `1/2` — medium metadata using the `1/2` token profile
 - `1` — standard metadata using the `1` token profile
 
-The profiles are adaptive rather than fixed pixel promises. The three computed
-sizes must remain strictly increasing in every supported breakpoint.
+The three heights are 24 · 28 · 32 on the desktop and on the phone (C140 (5):
+a badge is a mark, it does not shrink with the phone ladder); the phone keeps
+its text size 12 · 12 · 14. A compact region on the desktop draws 24 · 24 · 28.
+The three computed sizes must remain increasing in every supported breakpoint.
 
 ## Variant contract
 
-The Figma source defines 42 supported combinations:
+57 combinations are drawn (C140 (4)): `tonal` and `outline` in every colour —
+`neutral`, `primary`, `secondary`, `tertiary`, `on-surface`, `info`,
+`success`, `warning` and `error` (`danger` is its former name) — in all three
+sizes, and `main` with `error` alone, the attention count. All colours are
+resolved through theme-aware semantic tokens.
 
-- `neutral`, `primary`, `secondary` and `tertiary`: `main`, `tonal` and
-  `outline`, each in all three sizes;
-- `on-surface`: `main` and `outline`, each in all three sizes.
+`tonal + on-surface` draws the grey tonal badge. Unknown type, scheme and size
+values fall back to `tonal`, `neutral` and `1/3` respectively.
 
-SIMAI Framework adds 36 semantic combinations for status-oriented interfaces:
-
-- `info`, `success`, `warning` and `danger` support `main`, `tonal` and
-  `outline`, each in all three sizes;
-- all colors are resolved through theme-aware semantic tokens; `danger` maps
-  to the Framework `error` token family.
-
-`tonal + on-surface` is not a designed variant. If it is supplied, the
-component resolves it to `main + on-surface`. Unknown type, scheme and size
-values fall back to `main`, `neutral` and `1/3` respectively.
-
-The dark semantic badge from the UI Kit is `main + on-surface`; it is not an
-additional `inverse` scheme:
+A mark beside a title is `outline + on-surface`:
 
 ```html
-<sf-badge appearance="main" scheme="on-surface" size="1/2" text="PHP 8.2"></sf-badge>
+<sf-badge appearance="outline" scheme="on-surface" size="1/2" text="PHP 8.2"></sf-badge>
 ```
 
 When no text or `text` slot is supplied, the text container is omitted. This
@@ -110,8 +105,9 @@ policy because only the application knows whether an update must be announced.
 
 Every badge of one size has one height and one side room, whatever its
 appearance: the outline's border is drawn inside the size. By default the text
-sits `--sf-space-1/2` from the edges at every size; `tight` keeps the size's
-own narrow inset for dense places -- a table, a counter, a chip in a row:
+sits `--sf-space-1/2` from the edges at every size; `tight` takes the space
+step under it, `--sf-space-1/3` (8 px, 4 in a compact region, 8 on the phone),
+for dense places -- a table, a counter, a chip in a row:
 
 ```html
 <sf-badge appearance="tonal" text="Черновик"></sf-badge>
@@ -119,8 +115,8 @@ own narrow inset for dense places -- a table, a counter, a chip in a row:
 ```
 
 A badge whose text is one character and that draws no icon -- a single-figure
-count -- carries `sf-badge--figure` and stays round in either room. `compact`
-is unchanged.
+count -- carries `sf-badge--figure`, takes `--sf-space-1/4` at the sides and
+stays round in either room. `icon-only` is unchanged.
 
 ## On the line of a text
 
@@ -171,14 +167,18 @@ input», not a queue.
 - Under `prefers-reduced-motion: reduce` the spinner stands still (its still
   frame, from the spinner sheet).
 
-`compact` shows the icon alone, for a tight list row. The text stays as the
+`icon-only` shows the icon alone, for a tight list row. The text stays as the
 accessible name, the box closes to a square, and `appearance` keeps its own
 meaning. It needs something to show: with no icon, spinner or icon slot the text
 stays visible.
 
 ```html
-<sf-badge activity="failed" compact></sf-badge>
+<sf-badge activity="failed" icon-only></sf-badge>
 ```
+
+The former boolean `compact` draws the same until 2027-01-01 and is noted in
+`SF.deprecations`: the word compact means density only (`data-sf-density`,
+owner decision C134).
 
 ## Slot overrides
 
@@ -193,7 +193,7 @@ The legacy slot names `icon-left` and `icon-right` remain compatible.
 Example:
 
 ```html
-<sf-badge appearance="main" scheme="primary" text="99+">
+<sf-badge appearance="main" status="error" text="99+">
   <span slot="icon-start"><i class="sf-icon">arrow_upward</i></span>
 </sf-badge>
 ```

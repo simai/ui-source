@@ -11,8 +11,8 @@ import {
 } from '../../component/country-code/js/_country_code';
 import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
-import { fieldSize } from '../../component/field-size';
-import { FormField } from '../helpers/form-field';
+import {ladderSize} from '../../component/field-size';
+import { FormField, ShownValidity } from '../helpers/form-field';
 import { noteDeprecated } from '../../core/js/deprecations.js';
 import { renderCountryCodeTemplate } from './js/templates/default';
 import manifest from './component.json';
@@ -35,7 +35,7 @@ const CountryCodeElement = elementFromManifest(manifest, {
 const COUNTRY_CODE_SELECTOR = '.sf-country-code';
 const COUNTRY_ITEMS = Array.isArray(countriesData?.items) ? countriesData.items : [];
 
-class SfCountryCode extends FormField(CountryCodeElement) {
+class SfCountryCode extends ShownValidity(FormField(CountryCodeElement)) {
   static get props() {
     return {
       ...super.props,
@@ -54,7 +54,7 @@ class SfCountryCode extends FormField(CountryCodeElement) {
   }
 
   get size() {
-    return fieldSize(this.getAttribute('size') || '1', 'sf-input-country');
+    return ladderSize(this.getAttribute('size'));
   }
 
   // A telephone inside a field that is already labelled -- a record panel draws
@@ -217,6 +217,9 @@ class SfCountryCode extends FormField(CountryCodeElement) {
 
     return this.createTemplateContext({
       ...props,
+      // C153 (3): the page's error, or the one the field shows itself (ShownValidity).
+      invalid: this.sfShownInvalid(props.invalid),
+      errorMessage: this.sfShownMessage(props.invalid, props.errorMessage),
       open: preserveOpen ? root.classList.contains('open') : this.open,
       disabled: preserveDisabled ? !!root.querySelector('input')?.disabled || root.classList.contains('disabled') : this.disabled,
       countries: this.countries.length

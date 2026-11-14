@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.badge",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "title": "Badges",
   "summary": "A short non-interactive label for a status, a run's state, a category, a version or a count beside an object, drawn in a size, appearance and colour role or status. It adds no keyboard or pointer behaviour.",
   "kind": "smart",
@@ -68,8 +68,8 @@
       },
       "appearance": {
         "type": "string",
-        "default": "main",
-        "description": "How the badge looks: the most visible fill, a calmer tonal one, or an outline.",
+        "default": "tonal",
+        "description": "How the badge looks: tonal (the default, a calm fill of its colour), outline (a mark beside a title: a version, a type), or main, the filled look, which belongs to the attention count alone (with status error). main with any other colour draws tonal; that spelling is noted in SF.deprecations until 2027-01-01 (owner decision C140).",
         "enum": [
           "main",
           "tonal",
@@ -115,15 +115,15 @@
           "queued"
         ]
       },
-      "compact": {
+      "icon-only": {
         "type": "boolean",
         "default": false,
-        "description": "Shows the icon alone, for a tight list row; the text stays as the accessible name. Needs an icon to show: without one the text stays visible. The appearance is untouched."
+        "description": "Shows the icon alone, for a tight list row; the text stays as the accessible name and the box closes to a square. Needs an icon to show: without one the text stays visible. The appearance is untouched. The former boolean compact still draws it until 2027-01-01 (owner decision C134: compact means density only; each use noted in SF.deprecations, journal attribute-badge-compact-to-icon-only)."
       },
       "tight": {
         "type": "boolean",
         "default": false,
-        "description": "Keeps the size's own narrow side room, for dense places: a table, a counter, a chip in a row. By default the text sits --sf-space-1/2 from the badge's edges at every size."
+        "description": "Keeps a narrow side room, for dense places: a table, a counter, a chip in a row -- --sf-space-1/3, one space step under the default --sf-space-1/2 (8 · 4 compact · 8 phone; BG-9: the room is a space step, no longer the button's text inset)."
       },
       "text": {
         "type": "string",
@@ -155,7 +155,7 @@
       },
       "type": {
         "type": "string",
-        "default": "main",
+        "default": "tonal",
         "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json.",
         "enum": [
           "main",
@@ -172,6 +172,11 @@
         "type": "string",
         "default": "",
         "description": "Dated alias of icon-end until 2026-12-01."
+      },
+      "compact": {
+        "type": "boolean",
+        "default": false,
+        "description": "Dated alias of icon-only until 2027-01-01 (owner decision C134: compact means density only), still honoured and noted in SF.deprecations."
       }
     },
     "additionalProperties": false
@@ -279,7 +284,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/badge/index.js",
-        "sha256": "797e9ebb139fa768ebee3de8bd4da630ea2196fbaa53f86c290f4775b5b66c26"
+        "sha256": "5c25e0d6c39dbe6490ee7406ace41d8b0adf971439fe1f8f65da889b676278de"
       }
     ],
     "generated_runtime": [

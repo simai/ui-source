@@ -161,12 +161,17 @@ test('code input: the class markup, one native input, the class runtime kept off
   assert.match(template, /<span class="sf-verification-cells" aria-hidden="true">/u);
   // The cells are drawn empty; the element writes the code into them.
   assert.match(template, /: html`<span class="sf-verification-cell"><\/span>`/u);
-  // Every size is one the class sheet draws, and the field sizes are sf-input's.
+  // Every size is one the class sheet draws, and the field sizes are sf-input's:
+  // the kept steps in the class sheet, the outer steps (1/3, 3) from the shared
+  // field ladder in the custom sheet (fields ladder, 2026-11-14).
+  const customSheet = read('src/component/verification/scss/_css__verification_custom.scss');
   for (const size of manifest.inputs.properties.size.enum) {
+    if (size === '1/3' || size === '3') continue;
     assert.ok(classSheet.includes(`.sf-verification--size-${size.replace('/', '\\/')}`), size);
   }
-  assert.deepEqual(manifest.inputs.properties.size.enum, ['1/2', '1', '2']);
-  assert.match(source, /fieldSize\(this\.getAttribute\('size'\) \|\| '1', 'sf-input-code'\)/u);
+  assert.match(customSheet, /@each \$size in ladder\.\$outer \{\n    \.sf-verification\.#\{ladder\.size-class\('sf-verification', \$size\)\}/u);
+  assert.deepEqual(manifest.inputs.properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
+  assert.match(source, /ladderSize\(this\.getAttribute\('size'\)\)/u);
   // The class runtime binds nothing to a field another owner draws.
   assert.match(template, /data-sf-verification-owner="smart"/u);
   assert.match(classRuntime, /function ownedElsewhere\(root\) \{\n  return Boolean\(root\?\.dataset\?\.sfVerificationOwner\);/u);

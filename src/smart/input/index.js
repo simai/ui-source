@@ -6,7 +6,8 @@ import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { inputSize } from '../../component/field-size';
 import { InheritedValueField } from '../helpers/inherited-value';
-import { FormField, ShownRequired, innerControlName } from '../helpers/form-field';
+import { FormField, ShownValidity, innerControlName, syncFieldValidity } from '../helpers/form-field';
+import { charCount, countAnnouncement } from '../helpers/char-count';
 import { renderInputTemplate } from './js/templates/default';
 import { preloadControlIcons } from '../helpers/cycle';
 import manifest from './component.json';
@@ -21,6 +22,7 @@ import ru from './lang/ru.json';
 // and so is the trait's old event sf-field:reset (sf-field-reset). The host is
 // the form control through ElementInternals: it submits the text, reports the
 // native input's validity, and the native input carries no name (§17.1).
+
 const InputElement = elementFromManifest(manifest, {
   base: InheritedValueField(SfBaseElement),
   lang: { en, ru },
@@ -28,7 +30,7 @@ const InputElement = elementFromManifest(manifest, {
   aliases,
 });
 
-class SfInput extends ShownRequired(FormField(InputElement)) {
+class SfInput extends ShownValidity(FormField(InputElement)) {
   static get props() {
     return {
       ...super.props,
@@ -50,7 +52,75 @@ class SfInput extends ShownRequired(FormField(InputElement)) {
     this._revealed = false;
     // The clear shows while the field holds a value: typing, a paste or the
     // page's own input event say so (C123 (6)).
-    this.addEventListener('input', () => this.syncClearAction());
+    this.addEventListener('input', () => {
+      this.syncClearAction();
+      // The count follows the text (C153 (10), C141 (1)): every edit of a
+      // field with a limit redraws the count and, at a threshold, the frame.
+      if (this.countLimit !== null) this.requestComponentUpdate?.('count');
+    });
+    // Escape empties a field that can be cleared -- clearable, or a search
+    // field -- when it holds a value (C153 (6)): the clear glyph is no Tab
+    // stop, so the key is the keyboard's way to it. An empty field lets the
+    // key go on (a window closes, a list folds).
+    this.addEventListener('keydown', (event) => this.clearFromKey(event));
+    this._countLevel = '';
+    this._countSaid = '';
+  }
+
+  clearFromKey(event) {
+    if (event.key !== 'Escape' || event.defaultPrevented || event.isComposing) return;
+    if (event.target !== this.getInputElement()) return;
+    if (this.disabled || this.readonly) return;
+    if (!(this.clearable || this.inputType === 'search')) return;
+    if (!(this.getInputElement()?.value || '')) return;
+    event.preventDefault();
+    event.stopPropagation();
+    this.clearOwnValue();
+    this.syncClearAction();
+  }
+
+  // The limit the field counts against (C153 (10)): maxlength, counted and
+  // never cut, as sf-input-textarea's (C141 (1)). A masked field keeps the
+  // native limit: the mask decides its length.
+  get countLimit() {
+    if (this.mask) return null;
+    const value = Math.trunc(Number(this.getAttribute('maxlength')));
+    return Number.isFinite(value) && value > 0 ? value : null;
+  }
+
+  sfCount() {
+    return charCount((this.getInputElement()?.value ?? this.getAttribute('value') ?? '').length, this.countLimit, { always: Boolean(this.counter) });
+  }
+
+  // What the template draws of the count, and the polite line, which changes
+  // only when a threshold is crossed.
+  sfCountView() {
+    const count = this.sfCount();
+    const words = (state) => this.sfWord('count-text', { vars: { count: state.length, max: state.limit } });
+    const said = countAnnouncement(count, this._countLevel, this._countSaid, (state) => (
+      state.over ? this.sfTooLongMessage(state) : words(state)
+    ));
+    this._countLevel = said.level;
+    this._countSaid = said.said;
+    return { over: count.over, text: count.shown ? words(count) : '', said: said.said };
+  }
+
+  sfTooLongMessage(count) {
+    return this.sfWord('too-long', { vars: { max: count.limit } });
+  }
+
+  get maxlength() {
+    return this.countLimit;
+  }
+
+  // The native input's validity, and too-long past the counted limit: the
+  // native maxlength would cut the text, so the field counts itself.
+  sfSyncValidity() {
+    const anchor = this.sfValidityAnchor();
+    const count = this.sfCount();
+    const message = count.over ? this.sfTooLongMessage(count) : '';
+    if (!this.sfInternals && anchor?.setCustomValidity) anchor.setCustomValidity(message);
+    syncFieldValidity(this, anchor, count.over ? { tooLong: message } : {});
   }
 
   // The clear (C123 (6)): empties the field the way a reset does -- input,
@@ -135,6 +205,10 @@ class SfInput extends ShownRequired(FormField(InputElement)) {
     return this.getAttribute('text-end') ?? '';
   }
 
+  get textStart() {
+    return this.getAttribute('text-start') ?? '';
+  }
+
   get maskLazy() {
     return this.hasAttribute('mask-lazy')
       ? this.getBooleanAttr('mask-lazy', true)
@@ -196,6 +270,7 @@ class SfInput extends ShownRequired(FormField(InputElement)) {
     const props = this.getPropsContext();
     const hasControlledValue = this.hasAttribute('value');
     const input = this.getInputElement();
+    const count = this.sfCountView();
 
     return this.createTemplateContext({
       ...props,
@@ -211,7 +286,7 @@ class SfInput extends ShownRequired(FormField(InputElement)) {
       maskLazy: this.maskLazy,
       // The page's error, or the required one a failed form check shows
       // (ShownRequired, C55 acceptance F1: as sf-dropdown 1.9.0).
-      invalid: this.sfShownInvalid(props.invalid || props.error),
+      invalid: this.sfShownInvalid(props.invalid || props.error) || count.over,
       error: false,
       errorMessage: this.sfShownMessage(props.invalid || props.error, props.errorMessage),
       // The host is the form control where the browser has ElementInternals,
@@ -224,6 +299,15 @@ class SfInput extends ShownRequired(FormField(InputElement)) {
       inheritedText: this.inheritedText,
       resetLabel: this.resetLabel,
       revealed: this._revealed && props.inputType === 'password',
+      // The «?» after the label (C153 (8), helpers/field-help.js).
+      help: props.help || '',
+      textStart: this.textStart || '',
+      // The count (C153 (10)): its words when shown, over the limit (the
+      // error frame), the polite line.
+      countable: this.countLimit !== null,
+      count: count.text,
+      countOver: count.over,
+      countSaid: count.said,
       component: this,
     });
   }
@@ -250,7 +334,7 @@ class SfInput extends ShownRequired(FormField(InputElement)) {
       // cleared the message while the red border and aria-invalid="true" came
       // back (Larena acceptance, 2026-10-22: the datetime's time field after
       // «Укажите время» and then 10:30).
-      const invalid = this.sfShownInvalid(this.invalid);
+      const invalid = this.sfShownInvalid(this.invalid) || this.sfCount().over;
       this._boundRoot.classList.toggle('error', invalid);
       this.getInputElement()?.classList.toggle('error', invalid);
       bindInput(this._boundRoot);

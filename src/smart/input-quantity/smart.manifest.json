@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-quantity",
-  "version": "1.5.0",
+  "version": "1.7.0",
   "title": "Quantity",
   "summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
   "kind": "smart",
@@ -30,7 +30,8 @@
     "uses": [
       "component.icon-buttons",
       "component.icons",
-      "component.quantity"
+      "component.quantity",
+      "smart.help-mark"
     ],
     "public_parts": []
   },
@@ -66,6 +67,11 @@
         "type": "string",
         "default": "",
         "description": "Help text under the field; slot `hint` takes markup instead."
+      },
+      "help": {
+        "type": "string",
+        "default": "",
+        "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
       },
       "placeholder": {
         "type": "string",
@@ -128,11 +134,13 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "Field size: 1/2, 1 or 2, as every form field.",
+        "description": "The field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the frame, the steppers and the number of the same size.",
         "enum": [
+          "1/3",
           "1/2",
           "1",
-          "2"
+          "2",
+          "3"
         ]
       },
       "required": {
@@ -654,7 +662,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-quantity/index.js",
-        "sha256": "863b46aacc69620eb6ef7380285aba86c4251b9fc7bf79a84955600bedc4fa0a"
+        "sha256": "f098f6b8a7c933be6330ef43c651481e4d0f433774fe340d4ff295e2cf90cb6b"
       },
       {
         "path": "src/smart/input-quantity/value.mjs",
@@ -662,15 +670,15 @@
       },
       {
         "path": "src/smart/input-quantity/js/templates/default.js",
-        "sha256": "db49e1142a1b6bb8c9069ad1816e2a69cab2e104df411636ee4f826e7b8f6e77"
+        "sha256": "da8a64821e019578e6a52f767fd60e35ea9d45ba389d3de8ae2030fef744716b"
       },
       {
         "path": "src/smart/input-quantity/rule.js",
-        "sha256": "94f813277eb02c9007f5acb45d65fda587433e59fa7dcaf0b0725716e03339f0"
+        "sha256": "df5b4d8725c1e9396f78c1969ae6d86279cdadb94e39f42de69c1e2d3523d8cf"
       },
       {
         "path": "src/smart/input-quantity/docs.md",
-        "sha256": "8c0d19749481485ae09be81753464b0d7ccba7fcda43b0b7fa11c5d6e4a083d9"
+        "sha256": "5c8f1d3ff400523a31018ad4c18df437b917cab3cd58164d4b24a1710f2296fe"
       }
     ],
     "generated_runtime": []

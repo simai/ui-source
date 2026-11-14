@@ -13,7 +13,7 @@ import {
   roundTo,
   stepFrom,
 } from '../src/smart/input-quantity/value.mjs';
-import {FIELD_SIZES} from '../src/component/field-size.js';
+import {FIELD_LADDER} from '../src/component/field-size.js';
 
 // sf-quantity (owner, 2026-10-25): a number field with «−» and «+» over the class
 // component quantity, for the integer fields of the property and data views.
@@ -79,7 +79,7 @@ test('quantity: it is a form field like sf-input, with the inherited value', () 
   // Built from its component.json (standard 1.3.8 §4): the settings are the
   // manifest's, `error` is a dated alias of `invalid` (§17.2).
   assert.match(source, /base: InheritedValueField\(SfBaseElement\),/u);
-  assert.match(source, /class SfQuantity extends FormField\(QuantityElement\)/u);
+  assert.match(source, /class SfQuantity extends ShownValidity\(FormField\(QuantityElement\)\)/u);
   const declared = JSON.parse(read('src/smart/input-quantity/component.json'));
   for (const prop of ['label', 'hint', 'placeholder', 'required', 'disabled', 'readonly', 'invalid', 'error-message', 'min', 'max', 'step', 'precision']) {
     assert.ok(declared.settings[prop], prop);
@@ -87,8 +87,8 @@ test('quantity: it is a form field like sf-input, with the inherited value', () 
   assert.ok(JSON.parse(read('src/smart/input-quantity/aliases.json')).aliases.some((row) => row.from === 'error' && row.to === 'invalid'));
   assert.match(source, /inheritedValue: \{attribute: 'inherited-value', default: ''\}/u);
   assert.match(source, /ariaLabel: \{attribute: 'aria-label', default: ''\}/u);
-  assert.match(source, /get size\(\) \{ return fieldSize\(this\.getAttribute\('size'\) \|\| '1', 'sf-input-quantity'\); \}/u);
-  assert.deepEqual(manifest.inputs.properties.size.enum, [...FIELD_SIZES]);
+  assert.match(source, /get size\(\) \{ return ladderSize\(this\.getAttribute\('size'\)\); \}/u);
+  assert.deepEqual(manifest.inputs.properties.size.enum, [...FIELD_LADDER]);
   assert.match(source, /createFieldContract\(this, \{\n      prefix: 'sf-quantity',/u);
   // The seams the inherited-value mixin asks for.
   for (const seam of ['inheritedOwnValue()', 'inheritedDisplayValue()', 'inheritedFocusTarget()', 'clearOwnValue()']) {
@@ -190,7 +190,7 @@ test('quantity: the loader knows it and asks for what it draws with', () => {
   assert.match(rule, /SF\.RuleLoader\['cl-input-quantity'\] = \{\n  tags: \['sf-input-quantity', 'sf-quantity'\],/u);
   assert.match(rule, /\{ name: 'quantity' \},\n    \{ name: 'icons' \},\n    \{ name: 'icon-buttons' \},/u);
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/input-quantity\/rule\.js';/u);
-  assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.icons', 'component.quantity']);
+  assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.icons', 'component.quantity', 'smart.help-mark']);
 });
 
 // The public variables (2026-10-25): nine on the class sheet, each read with the

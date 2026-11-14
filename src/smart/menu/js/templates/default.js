@@ -23,13 +23,20 @@ function branchGlyph(context, level, open) {
 
 // A count is the class counter: a .sf-badge with data-count, which the badges
 // runtime caps at 99+, hides at 0 and names after the label. Any other badge
-// is a short label in the same place.
+// is a short label in the same place. Each names its look (owner decision C140
+// (3)): a count is a quantity, grey tonal, unless the item's status is error --
+// then it is the attention count, the one filled look, red; a label is grey
+// tonal. Both drew the badge without a look, the dark grey fill. In the rail
+// the count sits on the icon as an anchored badge, red, as before.
+const ATTENTION = 'sf-badge--main sf-badge--error';
+const QUANTITY = 'sf-badge--tonal sf-badge--neutral';
+
 function renderBadge(item) {
   if (!item.badge) return nothing;
   const count = badgeCount(item.badge);
   return count !== null
-    ? html`<span class="sf-badge" data-count=${count}></span>`
-    : html`<span class="sf-badge sf-badge--tight">${item.badge}</span>`;
+    ? html`<span class=${`sf-badge ${item.status === 'error' ? ATTENTION : QUANTITY}`} data-count=${count}></span>`
+    : html`<span class="sf-badge sf-badge--tonal sf-badge--neutral sf-badge--tight">${item.badge}</span>`;
 }
 
 // An item's status: the class dot of its tone at the row's end, before the

@@ -3,7 +3,19 @@
   "runtime": {
     "value-missing": "Fill in this field",
     "clear": "Clear",
-    "reveal": "Show password"
+    "reveal": "Show password",
+    "type-mismatch": "Check the value",
+    "type-mismatch-email": "Enter the whole address, for example ivan@clinic.ru",
+    "type-mismatch-url": "Enter the whole address, for example https://clinic.ru",
+    "pattern-mismatch": "Check the format",
+    "too-short": "At least {min} characters",
+    "too-long": "At most {max} characters",
+    "range-underflow": "At least {min}",
+    "range-overflow": "At most {max}",
+    "step-mismatch": "Use steps of {step}",
+    "bad-input": "Enter a number",
+    "count-text": "{count} / {max}",
+    "help": "More about: {label}"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",

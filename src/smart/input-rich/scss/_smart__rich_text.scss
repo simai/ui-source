@@ -1,3 +1,5 @@
+@use '../../../component/inputs/scss/field-ladder' as ladder;
+
 @layer sf.components {
 /* sf-input-rich (standard simai.smart-component 1.3.11 §6). The frame is
    sf-input-textarea's: the same hairline, radius, fill, padding and focus ring at
@@ -17,7 +19,6 @@
 .sf-rich-text {
   min-inline-size: 0;
   gap: var(--sf-space-1\/4);
-  --sf-rich-text--radius: var(--sf-rich-text-radius, var(--sf-radius--ui));
   --sf-rich-text--font-size: var(--sf-text-size-1);
   --sf-rich-text--line-height: var(--sf-text-height-1);
   --sf-rich-text--label-size: var(--sf-text-size-1\/2);
@@ -31,7 +32,6 @@
   --sf-rich-text--h4-size: var(--sf-text-size-1);
   --sf-rich-text--h4-height: var(--sf-text-height-1);
   --sf-rich-text--padding-block: var(--sf-rich-text-padding-block, calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px)));
-  --sf-rich-text--padding-inline: var(--sf-rich-text-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x)));
 }
 
 .sf-rich-text.sf-rich-text--size-2 {
@@ -48,7 +48,6 @@
   --sf-rich-text--h4-size: var(--sf-text-size-2);
   --sf-rich-text--h4-height: var(--sf-text-height-2);
   --sf-rich-text--padding-block: var(--sf-rich-text-padding-block, calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px)));
-  --sf-rich-text--padding-inline: var(--sf-rich-text-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--text-space-x)));
 }
 
 .sf-rich-text.sf-rich-text--size-1\/2 {
@@ -65,7 +64,6 @@
   --sf-rich-text--h4-size: var(--sf-text-size-1\/2);
   --sf-rich-text--h4-height: var(--sf-text-height-1\/2);
   --sf-rich-text--padding-block: var(--sf-rich-text-padding-block, calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px)));
-  --sf-rich-text--padding-inline: var(--sf-rich-text-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--text-space-x)));
 }
 
 /* The label row and the message line: sf-input-textarea's. */
@@ -83,12 +81,17 @@
   line-height: var(--sf-rich-text--label-height);
 }
 
+/* C153 (1), (2): the label and its mark in the text ink; the hint keeps the
+   hint ink. */
 .sf-rich-text .sf-rich-text-text,
+.sf-rich-text .sf-rich-text-required {
+  color: var(--sf-on-surface);
+}
+
 .sf-rich-text .sf-rich-text-hint-text-wrap {
   color: var(--sf-on-surface-variant);
 }
 
-.sf-rich-text .sf-rich-text-required,
 .sf-rich-text.error .sf-rich-text-hint-text-wrap {
   color: var(--sf-error);
 }
@@ -122,7 +125,8 @@
 }
 
 .sf-rich-text:not(.error):not(.sf-rich-text--disabled):not(.sf-rich-text--readonly) .sf-rich-text-frame:hover {
-  --sf-rich-text--border-color: var(--sf-primary-hover);
+  /* C153 (4): hover in the text ink. */
+  --sf-rich-text--border-color: var(--sf-on-surface);
 }
 
 /* The filled field's bottom line (C52, owner 2026-11-10; as sf-input): at rest
@@ -149,11 +153,12 @@
   --sf-rich-text--border-color: var(--sf-outline);
 }
 
-/* The keyboard ring is the frame's, around the text and its toolbar; a click
-   into the text draws none, as on sf-input-textarea. */
-.sf-rich-text:not(.sf-rich-text--pointer-focus):has(.sf-rich-text-editor:focus-visible) .sf-rich-text-frame {
+/* C153 (4): focus by mouse or keys draws a 2 px edge of the focus colour
+   inside the frame, around the text and its toolbar; no ring outside,
+   nothing moves. */
+.sf-rich-text:has(.sf-rich-text-editor:focus) .sf-rich-text-frame {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-  outline-offset: var(--sf-focus--offset);
+  outline-offset: calc(-1 * var(--sf-focus--width));
 }
 
 /* !important: a page's unlayered :focus-visible rule beats any layered one, and
@@ -193,6 +198,10 @@
 
 /* The toolbar: one row of icon buttons a rung below the field, in groups
    that keep together when a narrow field wraps the row. */
+/* The toolbar's steps (OV-11, dispatcher ruling C144 on C105 H5): icon
+   buttons of one group stand --sf-space-1/4 apart (4; they stood edge to
+   edge), and a group ends at its separator line with --sf-space-1/4 on each
+   side of the line. */
 .sf-rich-text .sf-rich-text-toolbar {
   gap: var(--sf-space-1\/4);
   padding: var(--sf-space-1\/4);
@@ -200,7 +209,7 @@
 }
 
 .sf-rich-text .sf-rich-text-group {
-  gap: 0;
+  gap: var(--sf-space-1\/4);
 }
 
 .sf-rich-text .sf-rich-text-separator {
@@ -251,17 +260,22 @@
   display: none;
 }
 
-/* One spacing step in the whole form (R121): the edge of the surface and the
-   room between the address field and the actions are both --sf-space-1, so
-   the form keeps one rhythm at every density. */
+/* One spacing step in the whole form (R121), the dropping panel's (owner
+   decision C141 (6); C106, as sf-settings' panel footer): the edge of the
+   surface and the room between the address field and the actions are
+   --sf-space-1/2. The two buttons are one group, --sf-space-1/3 apart (C105
+   H5: 8, 4 compact). They stand in one row from the start edge, the main
+   «Применить» first, «Убрать ссылку» after it. */
 .sf-rich-text .sf-rich-text-link-panel {
-  gap: var(--sf-space-1);
-  padding: var(--sf-space-1);
+  gap: var(--sf-space-1\/2);
+  padding: var(--sf-space-1\/2);
   color: var(--sf-on-surface);
 }
 
 .sf-rich-text .sf-rich-text-link-actions {
-  gap: var(--sf-space-1);
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: var(--sf-space-1\/3);
 }
 
 /* On a phone (below the md breakpoint, 44rem) the link editor is a form, so
@@ -296,14 +310,17 @@
   min-inline-size: 0;
   padding-block: var(--sf-rich-text--padding-block);
   padding-inline: var(--sf-rich-text--padding-inline);
-  min-block-size: calc(var(--sf-rich-text--rows, 6) * var(--sf-rich-text--line-height) + 2 * var(--sf-rich-text--padding-block));
-  max-block-size: calc(var(--sf-rich-text--max-rows) * var(--sf-rich-text--line-height) + 2 * var(--sf-rich-text--padding-block));
+  /* The line: the size's, on a touch phone at least the touch line (TR-3,
+     below); the rows count the line drawn. */
+  --sf-rich-text--line: max(var(--sf-rich-text--line-height), var(--sf-rich-text--touch-line, var(--sf-rich-text--line-height)));
+  min-block-size: calc(var(--sf-rich-text--rows, 6) * var(--sf-rich-text--line) + 2 * var(--sf-rich-text--padding-block));
+  max-block-size: calc(var(--sf-rich-text--max-rows) * var(--sf-rich-text--line) + 2 * var(--sf-rich-text--padding-block));
   overflow-y: auto;
   overflow-wrap: anywhere;
   font-family: var(--sf-text--family);
   font-size: var(--sf-rich-text--font-size);
   font-weight: var(--sf-font-weight-regular);
-  line-height: var(--sf-rich-text--line-height);
+  line-height: var(--sf-rich-text--line);
   color: inherit;
   cursor: text;
 }
@@ -333,17 +350,17 @@
 
 .sf-rich-text .sf-rich-text-editor h2 {
   font-size: var(--sf-rich-text--h2-size);
-  line-height: var(--sf-rich-text--h2-height);
+  line-height: max(var(--sf-rich-text--h2-height), var(--sf-rich-text--touch-line, var(--sf-rich-text--h2-height)));
 }
 
 .sf-rich-text .sf-rich-text-editor h3 {
   font-size: var(--sf-rich-text--h3-size);
-  line-height: var(--sf-rich-text--h3-height);
+  line-height: max(var(--sf-rich-text--h3-height), var(--sf-rich-text--touch-line, var(--sf-rich-text--h3-height)));
 }
 
 .sf-rich-text .sf-rich-text-editor h4 {
   font-size: var(--sf-rich-text--h4-size);
-  line-height: var(--sf-rich-text--h4-height);
+  line-height: max(var(--sf-rich-text--h4-height), var(--sf-rich-text--touch-line, var(--sf-rich-text--h4-height)));
 }
 
 .sf-rich-text .sf-rich-text-editor :is(p, ul, ol, blockquote, h2, h3, h4):first-child {
@@ -406,9 +423,9 @@
   }
 
   @media (forced-colors: active) {
-    .sf-rich-text:not(.sf-rich-text--pointer-focus):has(.sf-rich-text-editor:focus-visible) .sf-rich-text-frame {
+    .sf-rich-text:has(.sf-rich-text-editor:focus) .sf-rich-text-frame {
       outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: var(--sf-focus-outline-width);
+      outline-offset: calc(-1 * var(--sf-focus-outline-width));
     }
 
     .sf-rich-text .sf-rich-text-tool[aria-pressed='true'] {
@@ -425,4 +442,185 @@
    link editor is open (R121); outside the layers, as the icon button's fill rule is. */
 .sf-rich-text .sf-rich-text-toolbar:has(sf-popover.sf-rich-text-link[data-open='true']) .sf-rich-text-tool:not([data-sf-tool='link'])[aria-pressed='true'] .sf-icon {
   --sf-icon--fill: 0;
+}
+
+/* C77 (owner 2026-11-11, TR-1): the value inset of sf-input-textarea, so the
+   two fields of one family start their text at one place. The text starts
+   --sf-space-1/2, --sf-space-1 or --sf-space-2 from the frame's outer edge,
+   the border counted inside it (1/2 never below 12: on a phone and in a
+   compact region); at the outer steps 1/3 and 3 where sf-input's value
+   starts. The frame takes the corner of the single-line field of its size
+   (at most half its height), and a rounder corner moves the text in by half
+   of what it adds over the control radius. The text drew 25 / 22 / 31 from
+   the edge (phone 21 / 19 / 27) with the picture-to-label step added. */
+@layer sf.components {
+  .sf-rich-text {
+    --sf-rich-text--inset: var(--sf-space-1);
+    --sf-rich-text--radius: min(var(--sf-rich-text-radius, var(--sf-radius--ui)), var(--sf-ui-1--control-height) / 2);
+    --sf-rich-text--value-inset: calc(var(--sf-rich-text--inset) + max(calc(var(--sf-px) * 0), var(--sf-rich-text--radius) - var(--sf-radius-1\/2)) / 2);
+    --sf-rich-text--padding-inline: var(--sf-rich-text-padding-inline, calc(var(--sf-rich-text--value-inset) - var(--sf-px)));
+  }
+
+  .sf-rich-text.sf-rich-text--size-2 {
+    --sf-rich-text--inset: var(--sf-space-2);
+    --sf-rich-text--radius: min(var(--sf-rich-text-radius, var(--sf-radius--ui)), var(--sf-ui-2--control-height) / 2);
+  }
+
+  .sf-rich-text.sf-rich-text--size-1\/2 {
+    --sf-rich-text--inset: max(var(--sf-space-1\/2), var(--sf-b2));
+    --sf-rich-text--radius: min(var(--sf-rich-text-radius, var(--sf-radius--ui)), var(--sf-ui-1\/2--control-height) / 2);
+  }
+}
+
+/* The outer steps of the field ladder (inputs/scss/_field-ladder.scss, as
+   sf-input-textarea): at 1/3 and 3 the text is the size's, the label, the
+   hint and the error a step below, the block padding the size's; the
+   toolbar's buttons and a block level's short text stand a rung below the
+   field as at the kept sizes (3: size 2), at 1/3 on the smallest button
+   rung, 1/3, as the 1/2 field's; the headings climb from the field's text
+   as at the kept sizes. The field drew 1/3 and 3 at 1/2 and 2 before. */
+@layer sf.components {
+  @each $size, $tool, $h3, $h2 in ('1/3', '1/3', '1/2', '1'), ('3', '2', '4', '5') {
+    .sf-rich-text.#{ladder.size-class('sf-rich-text', $size)} {
+      --sf-rich-text--font-size: #{ladder.text-size($size)};
+      --sf-rich-text--line-height: #{ladder.text-height($size)};
+      --sf-rich-text--label-size: #{ladder.label-size($size)};
+      --sf-rich-text--label-height: #{ladder.label-height($size)};
+      --sf-rich-text--tool-size: #{ladder.text-size($tool)};
+      --sf-rich-text--tool-height: #{ladder.text-height($tool)};
+      --sf-rich-text--h2-size: var(--sf-text-size-#{$h2});
+      --sf-rich-text--h2-height: var(--sf-text-height-#{$h2});
+      --sf-rich-text--h3-size: #{ladder.text-size($h3)};
+      --sf-rich-text--h3-height: #{ladder.text-height($h3)};
+      --sf-rich-text--h4-size: #{ladder.text-size($size)};
+      --sf-rich-text--h4-height: #{ladder.text-height($size)};
+      --sf-rich-text--padding-block: var(--sf-rich-text-padding-block, #{ladder.padding-block($size)});
+      @include ladder.inset(--sf-rich-text--inset, $size);
+      --sf-rich-text--radius: min(var(--sf-rich-text-radius, var(--sf-radius--ui)), #{ladder.height($size)} / 2);
+    }
+  }
+}
+
+/* TR-3: on a touch phone a field's text is never below 16px, or iOS zooms the
+   page into it when it takes focus (core/scss/_sf_css__touch_fields.scss
+   lifts input, textarea and select; the editing surface is neither). The
+   text and the headings take the same floor, so no heading is smaller than
+   the text, on at least the text line of size 1, as sf-input-textarea's
+   lifted lines (TR-2). Size 3 is not lifted, as in the core rule. */
+@media (hover: none) and (pointer: coarse) {
+  @media not all and (min-width: 60rem) {
+    @layer sf.components {
+      .sf-rich-text:not(.sf-rich-text--size-3) .sf-rich-text-editor {
+        --sf-rich-text--touch-line: var(--sf-text-height-1);
+        font-size: max(var(--sf-rich-text--font-size), 16px);
+      }
+
+      .sf-rich-text:not(.sf-rich-text--size-3) .sf-rich-text-editor h2 {
+        font-size: max(var(--sf-heading-3--size), var(--sf-rich-text--h2-size), 16px);
+      }
+
+      .sf-rich-text:not(.sf-rich-text--size-3) .sf-rich-text-editor h3 {
+        font-size: max(var(--sf-heading-4--size), var(--sf-rich-text--h3-size), 16px);
+      }
+
+      .sf-rich-text:not(.sf-rich-text--size-3) .sf-rich-text-editor h4 {
+        font-size: max(var(--sf-heading-5--size), var(--sf-rich-text--h4-size), 16px);
+      }
+    }
+  }
+}
+
+/* Owner decision C141 (2026-11-14; study control/research/2026-11-14-textarea-rich-text.md). */
+@layer sf.components {
+  /* (3) The toolbar stays at the top of the visible part of the field while
+     the page scrolls the field past it (--sf-rich-text-sticky-top below the
+     top of the view, for a page with a fixed header). It is opaque: the
+     field's own fill over the place's solid surface, so the text runs under
+     it unseen; its top corners are the frame's. */
+  .sf-rich-text .sf-rich-text-toolbar {
+    position: sticky;
+    inset-block-start: var(--sf-rich-text-sticky-top, var(--sf-0));
+    z-index: 1;
+    border-start-start-radius: calc(var(--sf-rich-text--radius) - var(--sf-px));
+    border-start-end-radius: calc(var(--sf-rich-text--radius) - var(--sf-px));
+    background:
+      linear-gradient(var(--sf-rich-text--background-color), var(--sf-rich-text--background-color)),
+      var(--sf-surface-place-solid, var(--sf-surface-page));
+  }
+
+  /* (1) The count at the end of the message line: the message's text and
+     colour, digits of one width; past the limit the error colour (the frame
+     is the field's error frame). The polite line is read, not seen. */
+  .sf-rich-text .sf-rich-text-message {
+    align-items: flex-start;
+    gap: var(--sf-space-1\/2);
+  }
+
+  .sf-rich-text .sf-rich-text-message .sf-rich-text-hint-text-wrap {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .sf-rich-text .sf-rich-text-count {
+    flex: none;
+    margin-inline-start: auto;
+    color: var(--sf-on-surface-variant);
+    font-family: var(--sf-text--family);
+    font-weight: var(--sf-font-weight-regular);
+    font-size: var(--sf-rich-text--label-size);
+    line-height: var(--sf-rich-text--label-height);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .sf-rich-text.sf-rich-text--over .sf-rich-text-count {
+    color: var(--sf-error);
+  }
+
+  .sf-rich-text .sf-rich-text-count-said {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    margin: calc(-1 * var(--sf-px));
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* (7) Headings in a field stand one level below the page's: h2 is the
+     page's h3, h3 the page's h4, h4 the page's h5 (the heading roles, which
+     do not follow density, C44). They never fall below the field's own climb
+     from its text (h4 the text, h3 a rung above, h2 two; C21: no heading
+     smaller than the text), so a large field keeps its order. The page as it
+     will look is the page editor's (C74), not a form field's. */
+  .sf-rich-text .sf-rich-text-editor h2 {
+    font-size: max(var(--sf-heading-3--size), var(--sf-rich-text--h2-size));
+    line-height: max(var(--sf-heading-3--height), var(--sf-rich-text--h2-height), var(--sf-rich-text--touch-line, var(--sf-rich-text--h2-height)));
+  }
+
+  .sf-rich-text .sf-rich-text-editor h3 {
+    font-size: max(var(--sf-heading-4--size), var(--sf-rich-text--h3-size));
+    line-height: max(var(--sf-heading-4--height), var(--sf-rich-text--h3-height), var(--sf-rich-text--touch-line, var(--sf-rich-text--h3-height)));
+  }
+
+  .sf-rich-text .sf-rich-text-editor h4 {
+    font-size: max(var(--sf-heading-5--size), var(--sf-rich-text--h4-size));
+    line-height: max(var(--sf-heading-5--height), var(--sf-rich-text--h4-height), var(--sf-rich-text--touch-line, var(--sf-rich-text--h4-height)));
+  }
+}
+
+/* C153 (1), (2): a disabled field's label and mark take the disabled ink. */
+.sf-rich-text.sf-rich-text--disabled .sf-rich-text-text,
+.sf-rich-text.sf-rich-text--disabled .sf-rich-text-required {
+  color: var(--sf-on-surface-disabled);
+}
+
+/* C153 (1): at size 1 the label stays 14 on a phone (below 60rem), as sf-input's. */
+@media not all and (min-width: 60rem) {
+  .sf-rich-text.sf-rich-text--size-1 {
+    --sf-rich-text--label-size: var(--sf-text-size-1);
+    --sf-rich-text--label-height: var(--sf-text-height-1);
+  }
 }

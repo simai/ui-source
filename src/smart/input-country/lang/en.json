@@ -10,6 +10,9 @@
     "phone-required": "Enter a phone number.",
     "placeholder": "",
     "search-placeholder": "Country or code",
-    "value-missing": "Enter a phone number."
+    "value-missing": "Enter a phone number.",
+    "pattern-mismatch": "Enter the whole number",
+    "too-short": "Enter the whole number",
+    "help": "More about: {label}"
   }
 }

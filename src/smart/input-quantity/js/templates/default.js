@@ -1,4 +1,5 @@
 import {html, nothing} from 'lit';
+import {renderFieldHelp} from '../../../helpers/field-help';
 import {renderInheritedSlot} from '../../../helpers/inherited-value';
 
 // The class component's markup (component/quantity), so its sheet draws the
@@ -64,7 +65,7 @@ export function renderQuantityTemplate(context) {
     : context.label
       ? html`<span class="sf-quantity-text" id=${labelId}>${context.label}</span>${field.required
         ? html`<span class="sf-quantity-required" aria-hidden="true">*</span>`
-        : nothing}`
+        : nothing}${renderFieldHelp({help: context.help, label: context.label, size: context.size, className: 'sf-quantity-help', component})}`
       // No label, no label row: the panel that prints the label beside the
       // field names the control through aria-label instead.
       : nothing;

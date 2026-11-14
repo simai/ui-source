@@ -16,6 +16,7 @@
     "utility/flex-direction/default/css/default.min.css",
     "utility/isolate/default/css/default.min.css",
     "utility/position/default/css/default.min.css",
+    "utility/resize/default/css/default.min.css",
     "utility/transition-property/default/css/default.min.css"
   ],
   "examples": {
@@ -29,6 +30,18 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/resize/default/css/default.min.css",
+      "utility/transition-property/default/css/default.min.css"
+    ],
+    "code": [
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/textarea/css/textarea.min.css",
+      "core/css/core.css",
+      "smart/input-textarea/css/input-textarea.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/resize/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "disabled": [
@@ -41,6 +54,7 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/resize/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "filled": [
@@ -53,6 +67,7 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/resize/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "flush": [
@@ -65,6 +80,7 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/resize/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "inherited": [
@@ -78,6 +94,7 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/resize/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "invalid": [
@@ -90,6 +107,18 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/resize/default/css/default.min.css",
+      "utility/transition-property/default/css/default.min.css"
+    ],
+    "limit": [
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/textarea/css/textarea.min.css",
+      "core/css/core.css",
+      "smart/input-textarea/css/input-textarea.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/resize/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "readonly": [
@@ -102,6 +131,7 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/resize/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "reference": [
@@ -114,6 +144,7 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/resize/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "size-2": [
@@ -126,6 +157,7 @@
       "utility/flex-direction/default/css/default.min.css",
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/resize/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ]
   }

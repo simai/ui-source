@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-rich",
-  "version": "1.3.3",
+  "version": "1.5.0",
   "title": "Rich text",
   "summary": "A form field for formatted text: paragraphs, headings 2 to 4, bold, italic, links, bulleted and numbered lists and quotes, with a toolbar, undo and redo. Its value is HTML of that subset and nothing else: the value it is given, every paste and drop and every edit are cleaned to it.",
   "kind": "smart",
@@ -35,6 +35,7 @@
       "component.icon-buttons",
       "component.icons",
       "smart.button",
+      "smart.help-mark",
       "smart.input",
       "smart.popover"
     ],
@@ -61,11 +62,13 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "The field ladder, as sf-textarea's: the frame, the padding and the text of the same size; the toolbar's buttons a rung below.",
+        "description": "The field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the frame, the padding and the text of the same size; the toolbar's buttons a rung below (1/3 at 1/3).",
         "enum": [
+          "1/3",
           "1/2",
           "1",
-          "2"
+          "2",
+          "3"
         ]
       },
       "appearance": {
@@ -97,6 +100,11 @@
         "default": "",
         "description": "The line under the field; it describes the editing surface."
       },
+      "help": {
+        "type": "string",
+        "default": "",
+        "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
+      },
       "name": {
         "type": "string",
         "default": "",
@@ -110,6 +118,15 @@
       "max-rows": {
         "type": "number",
         "description": "The most lines before the text scrolls inside. Unset means no cap; a value below rows is rows."
+      },
+      "maxlength": {
+        "type": "number",
+        "description": "The most characters the text should have, its markup not counted (C141 (1), sf-input-textarea's rule). The count shows from 80 % of it; past it the count and the frame turn to the error colour and the field is invalid (too-long), so the form is not sent. The text is never cut. Unset: no limit, no count."
+      },
+      "counter": {
+        "type": "boolean",
+        "default": false,
+        "description": "With maxlength: the count shows always, not only from 80 % of the limit (C141 (1))."
       },
       "disabled": {
         "type": "boolean",
@@ -321,11 +338,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-rich/index.js",
-        "sha256": "c9069dc5dd4b13d2759cda3ada3816712ebb86743286bb4cecc33dba05f22a01"
+        "sha256": "d0d644893b1b32efa34860f77b7b28830b0993e80ba684dfce0838acb7510a11"
       },
       {
         "path": "src/smart/input-rich/js/templates/default.js",
-        "sha256": "98525c7e1778aeebd8a2552c3b31ac945cf81bebb551af95420dd6c5dcfc4291"
+        "sha256": "75d91abb52752918a899926cd522148ae7ea1dfa50f273f3a79b16fa59225223"
       },
       {
         "path": "src/smart/input-rich/js/rich-text-html.mjs",
@@ -337,15 +354,15 @@
       },
       {
         "path": "src/smart/input-rich/scss/_smart__rich_text.scss",
-        "sha256": "e41a164b54ef1da9e07ea9a39c019068e983c289bccd87569d092ef3557bf5e6"
+        "sha256": "f96467c14d1619306c4d5b2b7d13e34b1cecd5bec8fc3a42d50e4837de6b2d6f"
       },
       {
         "path": "src/smart/input-rich/rule.js",
-        "sha256": "2085d412b36c30cbef4d13ac7a713ae26b5f027af0a1ed611912ce384e3edc82"
+        "sha256": "c79ebecdf05bdad8b617e331690fb29acd757a069dbab3850696507ac63b0361"
       },
       {
         "path": "src/smart/input-rich/docs.md",
-        "sha256": "f030405893465fa7223ce94ad1e9b35e27eb96d27dcfe680adbc75e0e9446f2f"
+        "sha256": "90481e200115d5f8d6227bb4b7543a96b307556d76ab5117528284e2a5cf4357"
       }
     ],
     "generated_runtime": []

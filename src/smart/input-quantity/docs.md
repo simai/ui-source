@@ -169,7 +169,7 @@ cart.addEventListener('sf-input-quantity-remove', (event) => {
   `steppers`, `unit`, `digits` — см. выше.
 - `removable`, `remove-label` — режим удаления строки корзины, см. выше
   (имена предварительные).
-- `size` — `1/2`, `1` (по умолчанию), `2`, как у всех полей формы. Поле
+- `size` — `1/3`, `1/2`, `1` (по умолчанию), `2`, `3`, как у `sf-input`. Поле
   стоит на общей шкале размеров: его высота — высота элемента управления того
   же размера, ровно как у `sf-input`, и число стоит на одной строке с текстом
   `sf-input` рядом. «−» и «+» — кнопки на ступень мельче поля (у поля размера
@@ -233,3 +233,13 @@ cart.addEventListener('sf-input-quantity-remove', (event) => {
   --sf-quantity-stepper-radius: var(--sf-radius-circle);
 }
 ```
+
+## Label, help, errors and focus (C153)
+
+Since 1.7.0 (owner decision C153) sf-input-quantity follows sf-input: `help` draws a «?» (`sf-help-mark`) after the label and its «*», a step below the value, the label row keeping its height, named «Подробнее: <label>». The field
+shows its own errors in the page's language -- a failed submit shows every
+wrong field and focuses the first, a changed field is checked on leaving, a
+shown error goes the moment the value is right -- and the browser's bubble
+never shows. See sf-input «Errors the field shows itself». The label is in the text ink, the «*» in the label's
+ink; hover draws the border in the text ink and focus a 2 px primary edge
+inside the field, with no ring outside it.

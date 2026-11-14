@@ -8,7 +8,7 @@ import { openDropdownPortal, closeDropdownPortal, alignDropdownInPlace, scrolled
 import { holdOpenSurfaceMark } from '../../core/js/open-surface-mark';
 import { PanelScrollbar } from '../../component/panel-scrollbar';
 import { InheritedValueField } from '../helpers/inherited-value';
-import { FormField, innerControlName } from '../helpers/form-field';
+import { FormField, innerControlName, ownInvalid } from '../helpers/form-field';
 import { instancePath, partId } from '../../core/js/instance-path.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -185,7 +185,9 @@ class SfDropdown extends FormField(DropdownElement) {
     // holds a value or the form is reset.
     this._missingShown = false;
     this._messageRef = '';
-    this.addEventListener('invalid', () => {
+    // C153 (3): never the browser's bubble; the first wrong field of a
+    // submit takes the focus (helpers/form-field.js ownInvalid).
+    ownInvalid(this, () => {
       if (!this.validity?.valueMissing || this._missingShown) return;
       this._missingShown = true;
       this.requestComponentUpdate('invalid');

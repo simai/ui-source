@@ -282,6 +282,10 @@ one closes. Tab out of the field and the panel closes the panel.
 
 ## Visual contract
 
+The field stands on the field ladder (1.7.0): `size` takes `1/3`, `1/2`, `1`,
+`2` and `3`, and the field is as tall as `sf-input` of the same size (28 / 32 /
+40 / 48 / 56 on a desktop).
+
 The popup is a large surface and therefore uses `--sf-radius--surface`. Days,
 month cells and year cells are compact controls and use `--sf-radius--ui`.
 Spacing, typography, focus and z-order use semantic Framework tokens. The
@@ -294,3 +298,11 @@ Listen to `change`, the name every form value control uses. Its detail
 contains the ISO value, formatted value, range flag and format.
 `sf-datepicker-change` and `sf-change` are legacy names for the same change
 and are still emitted.
+
+## Label, help, errors and focus (C153)
+
+Since 1.8.0 (owner decision C153) sf-input-date follows sf-input: the `help` setting is passed to the date field's sf-input, which draws the «?». The field
+shows its own errors in the page's language -- a failed submit shows every
+wrong field and focuses the first, a changed field is checked on leaving, a
+shown error goes the moment the value is right -- and the browser's bubble
+never shows. See sf-input «Errors the field shows itself».

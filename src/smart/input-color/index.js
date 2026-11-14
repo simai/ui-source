@@ -3,7 +3,7 @@ import {elementFromManifest} from '../../core/js/element-manifest';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 import BundledPosition from '../../core/js/position.js';
 import {InheritedValueField} from '../helpers/inherited-value';
-import {FormField} from '../helpers/form-field';
+import {FormField, ShownValidity} from '../helpers/form-field';
 import {renderColorTemplate} from './js/templates/default';
 import {
     PALETTE, FORMATS, clamp, darkInk, formatColour, hsvToRgb, isPaletteName, normaliseHex, parseColour,
@@ -75,7 +75,7 @@ const normalise = (value) => {
     return normaliseHex(text.startsWith("#") ? text : `#${text}`);
 };
 
-class SfColor extends FormField(ColorElement) {
+class SfColor extends ShownValidity(FormField(ColorElement)) {
     static get props() {
         return {
             ...super.props,
@@ -906,6 +906,9 @@ class SfColor extends FormField(ColorElement) {
         const open = Boolean(this._open);
         return this.createTemplateContext({
             ...this.getPropsContext(),
+            // C153 (3): the page's error, or the one the field shows itself (ShownValidity).
+            invalid: this.sfShownInvalid(this.invalid),
+            errorMessage: this.sfShownMessage(this.invalid, this.errorMessage),
             component: this,
             value: this.value,
             painted: this.effectiveValue,

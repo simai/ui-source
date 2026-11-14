@@ -1,8 +1,27 @@
 import { html, nothing } from 'lit';
+import { renderFieldHelp } from '../../../helpers/field-help';
 import { createFieldContract } from '../../../../component/field-contract';
 import { renderInheritedSlot } from '../../../helpers/inherited-value';
 import { ariaKeyShortcuts, parseShortcut, shortcutView } from '../../../../component/kbd/js/shortcut';
 import './default.css'
+
+// A label written into the label slot keeps the label's look (text inputs
+// study 2026-11-14, TI-24): its words stand in .sf-input-text, as the label
+// setting's do, so they take the label's step, line and ink rather than the
+// page's (16 on 24 in the text ink, the row 4 taller at size 1). A help mark
+// written beside them stays a child of the label row, where the C33 / C133
+// rules place it after the last word.
+function isHelpMark(node) {
+  return node?.nodeType === 1 && (node.localName === 'sf-help-mark' || node.classList?.contains('sf-help-mark'));
+}
+
+function slottedLabel(content) {
+  const nodes = (Array.isArray(content) ? content : [content]).filter((node) => node != null && node !== nothing);
+  const text = nodes.filter((node) => !isHelpMark(node));
+  const marks = nodes.filter(isHelpMark);
+  return html`${text.length ? html`<span class="sf-input-text">${text}</span>` : nothing}${marks}`;
+}
+
 export function renderInputTemplate(context) {
   const {
     size,
@@ -45,6 +64,12 @@ export function renderInputTemplate(context) {
     shortcut,
     clearable,
     revealed,
+    help,
+    textStart,
+    count = '',
+    countOver = false,
+    countSaid = '',
+    countable = false,
   } = context;
   // The shortcut's keys (C04, C38): the kbd component's, read in this
   // platform's words; the field draws them at its end and never styles them.
@@ -81,6 +106,7 @@ export function renderInputTemplate(context) {
           class="sf-field-action sf-input-clear"
           data-action="clear"
           aria-label=${clearWord}
+          tabindex="-1"
           ?hidden=${!String(value ?? '')}
           @click=${(event) => context.component?.clearFromButton?.(event)}
         ><sf-icon icon="close" aria-hidden="true"></sf-icon></button>`
@@ -109,6 +135,7 @@ export function renderInputTemplate(context) {
       field.invalid ? 'error' : '',
     `sf-input--size-${size}`,
     `sf-input--${appearance ?? type}`,
+    countOver ? 'sf-input--over' : '',
     radius && radius !== 'default' ? `sf-input--radius-${radius}` : '',
       rootClass,
     'flex',
@@ -130,13 +157,18 @@ export function renderInputTemplate(context) {
               data-mask-options=${maskOptions || ''}
       />`
   }
+  // The «?» after the label (C153 (8), C133's look, helpers/field-help.js):
+  // the help setting's text behind sf-help-mark, a step below the value as the
+  // label is; the label row keeps its height.
+  const helpMark = renderFieldHelp({help, label, size, className: 'sf-input-help', component: context.component});
   const labelContent =
     context.component?.hasSlotContent?.('label')
-      ? context.component.getSlotContent('label')
+      ? slottedLabel(context.component.getSlotContent('label'))
       : label
         ? html`
             <span class="sf-input-text">${label}</span>
-            ${required ? html`<span class="sf-input-required">*</span>` : ''}
+            ${required ? html`<span class="sf-input-required" aria-hidden="true">*</span>` : ''}
+            ${helpMark}
           `
         // No label, no label row. A lone star above a control names nothing --
         // the control's own `required` is what tells a reader and assistive
@@ -150,9 +182,11 @@ export function renderInputTemplate(context) {
       ? context.component.getSlotContent('start')
       : context.component?.hasSlotContent?.('left')
       ? context.component.getSlotContent('left')
-      : leftIcon
+      : html`${leftIcon
         ? html`<span class="sf-input-left flex"><sf-icon icon="${leftIcon}"></sf-icon></span>`
-        : '';
+        : ''}${textStart
+        ? html`<span class="sf-input-start" aria-hidden="true">${textStart}</span>`
+        : ''}`;
 
   const rightContent =
     context.component?.hasSlotContent?.('end')
@@ -181,6 +215,23 @@ export function renderInputTemplate(context) {
   // the native input. Both at once would make the name say one thing and the
   // page another.
   const accessibleName = !labelContent && ariaLabel ? ariaLabel : nothing;
+  // The count stands at the end of the message line (C153 (10), C141 (1)), so
+  // the line is drawn for it alone too; the input is described by both. The
+  // start text is said with the value's description, not read as typed text.
+  const countId = `${field.messageId}-count`;
+  const startId = `${field.messageId}-start`;
+  const describedBy = [
+    textStart && !context.component?.hasSlotContent?.('start') && !context.component?.hasSlotContent?.('left') ? startId : '',
+    messageContent ? field.messageId : '',
+    count ? countId : '',
+  ].filter(Boolean).join(' ');
+  const messageNode = messageContent
+    ? html`<span
+        id=${field.messageId}
+        class="sf-input-hint-text-wrap"
+        data-field-message=${field.invalid && errorContent ? 'error' : 'hint'}
+      >${messageContent}</span>`
+    : '';
 
   return html`
     <label
@@ -210,7 +261,7 @@ export function renderInputTemplate(context) {
                 autocomplete=${autocomplete || nothing}
                 inputmode=${inputmode || nothing}
                 minlength=${minlength === '' ? nothing : minlength}
-                maxlength=${maxlength === '' ? nothing : maxlength}
+                maxlength=${maxlength === '' || countable ? nothing : maxlength}
                 pattern=${pattern || nothing}
                 min=${numberMin}
                 max=${numberMax}
@@ -225,7 +276,7 @@ export function renderInputTemplate(context) {
                 aria-label=${accessibleName}
                 aria-keyshortcuts=${keyShortcuts || nothing}
                 aria-invalid=${field.invalid ? 'true' : nothing}
-                aria-describedby=${messageContent ? field.messageId : nothing}
+                aria-describedby=${describedBy || nothing}
                 aria-errormessage=${field.invalid && errorContent ? field.messageId : nothing}
                 data-mask=${String(mask)}
                 data-mask-pattern=${maskPattern || ''}
@@ -241,7 +292,7 @@ export function renderInputTemplate(context) {
                 autocomplete=${autocomplete || nothing}
                 inputmode=${inputmode || nothing}
                 minlength=${minlength === '' ? nothing : minlength}
-                maxlength=${maxlength === '' ? nothing : maxlength}
+                maxlength=${maxlength === '' || countable ? nothing : maxlength}
                 pattern=${pattern || nothing}
                 min=${numberMin}
                 max=${numberMax}
@@ -256,7 +307,7 @@ export function renderInputTemplate(context) {
                 aria-label=${accessibleName}
                 aria-keyshortcuts=${keyShortcuts || nothing}
                 aria-invalid=${field.invalid ? 'true' : nothing}
-                aria-describedby=${messageContent ? field.messageId : nothing}
+                aria-describedby=${describedBy || nothing}
                 aria-errormessage=${field.invalid && errorContent ? field.messageId : nothing}
                 data-mask=${String(mask)}
                 data-mask-pattern=${maskPattern || ''}
@@ -269,13 +320,12 @@ export function renderInputTemplate(context) {
         ${rightContent}
       </span>
 
-      ${messageContent
-        ? html`<span
-            id=${field.messageId}
-            class="sf-input-hint-text-wrap"
-            data-field-message=${field.invalid && errorContent ? 'error' : 'hint'}
-          >${messageContent}</span>`
-        : ''}
-    </label>
+      ${count
+        ? html`<span class="sf-input-message flex">${messageNode}<span id=${countId} class="sf-input-count">${count}</span></span>`
+        : messageNode}
+      ${textStart ? html`<span id=${startId} class="sf-input-said" hidden>${textStart}</span>` : ''}
+    </label>${countable
+      ? html`<span class="sf-input-count-said" aria-live="polite">${countSaid}</span>`
+      : ''}
   `;
 }

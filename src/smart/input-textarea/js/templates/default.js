@@ -1,4 +1,5 @@
 import { html, nothing } from 'lit';
+import {renderFieldHelp} from '../../../helpers/field-help';
 import { createFieldContract } from '../../../../component/field-contract';
 import { renderInheritedSlot } from '../../../helpers/inherited-value';
 
@@ -34,6 +35,11 @@ export function renderTextareaTemplate(context) {
     maxRows,
     ariaLabel,
     labelledBy,
+    resize,
+    count = '',
+    countOver = false,
+    countSaid = '',
+    code = false,
   } = context;
   const field = createFieldContract(context.component, {
     prefix: 'sf-textarea',
@@ -51,6 +57,10 @@ export function renderTextareaTemplate(context) {
       ? context.component.getSlotContent('hint')
       : hint;
   const messageContent = field.invalid && errorContent ? errorContent : hintContent;
+  // The count stands at the end of the message line (C141 (1)), so the line
+  // is drawn for it alone too; the textarea is described by both.
+  const countId = `${field.messageId}-count`;
+  const describedBy = [messageContent ? field.messageId : '', count ? countId : ''].filter(Boolean).join(' ');
 
   const rootClasses = [
     'sf-textarea',
@@ -58,6 +68,9 @@ export function renderTextareaTemplate(context) {
     `sf-textarea--${appearance ?? type}`,
     field.invalid ? 'error' : '',
     autoGrow ? 'sf-textarea--auto-grow' : '',
+    resize && !autoGrow ? 'sf-textarea--resize' : '',
+    code ? 'sf-textarea--code' : '',
+    countOver ? 'sf-textarea--over' : '',
     'flex',
     'flex-col',
     context.rootClass,
@@ -66,7 +79,8 @@ export function renderTextareaTemplate(context) {
   const labelContent = label
     ? html`
         <span class="sf-textarea-text">${label}</span>
-        ${required ? html`<span class="sf-textarea-required">*</span>` : ''}
+        ${required ? html`<span class="sf-textarea-required" aria-hidden="true">*</span>` : ''}
+        ${renderFieldHelp({help: context.help, label, size, className: 'sf-textarea-help', component: context.component})}
       `
     // A label row with nothing but a star names nothing: see sf-input.
     : '';
@@ -76,6 +90,16 @@ export function renderTextareaTemplate(context) {
   // lands (simai/ui-source#30).
   const accessibleName = !labelContent && ariaLabel ? ariaLabel : nothing;
   const accessibleLabelledBy = labelledBy || nothing;
+
+  // The message line: the hint, or the error in its place. With the count it
+  // shares one row, the count at the end; without it the markup is as it was.
+  const messageNode = messageContent
+    ? html`<span
+        id=${field.messageId}
+        class="sf-textarea-hint-text-wrap"
+        data-field-message=${field.invalid && errorContent ? 'error' : 'hint'}
+      >${messageContent}</span>`
+    : '';
 
   return html`
     <label
@@ -100,9 +124,11 @@ export function renderTextareaTemplate(context) {
         autocomplete=${autocomplete || nothing}
         inputmode=${inputmode || nothing}
         minlength=${minlength ?? nothing}
-        maxlength=${maxlength ?? nothing}
         .spellcheck=${spellCheck}
-        wrap=${wrap}
+        wrap=${code ? 'off' : wrap}
+        autocapitalize=${code ? 'off' : nothing}
+        autocorrect=${code ? 'off' : nothing}
+        translate=${code ? 'no' : nothing}
         .value=${value}
         .defaultValue=${defaultValue}
         name=${controlName || nothing}
@@ -113,7 +139,7 @@ export function renderTextareaTemplate(context) {
         aria-label=${accessibleName}
         aria-labelledby=${accessibleLabelledBy}
         aria-invalid=${field.invalid ? 'true' : nothing}
-        aria-describedby=${messageContent ? field.messageId : nothing}
+        aria-describedby=${describedBy || nothing}
         aria-errormessage=${field.invalid && errorContent ? field.messageId : nothing}
         data-mask=${String(mask)}
         data-mask-pattern=${maskPattern || ''}
@@ -129,13 +155,11 @@ export function renderTextareaTemplate(context) {
         className: 'sf-textarea-inherited',
       })}
 
-      ${messageContent
-        ? html`<span
-            id=${field.messageId}
-            class="sf-textarea-hint-text-wrap"
-            data-field-message=${field.invalid && errorContent ? 'error' : 'hint'}
-          >${messageContent}</span>`
-        : ''}
-    </label>
+      ${count
+        ? html`<span class="sf-textarea-message flex">${messageNode}<span id=${countId} class="sf-textarea-count">${count}</span></span>`
+        : messageNode}
+    </label>${maxlength !== null && maxlength !== undefined
+      ? html`<span class="sf-textarea-count-said" aria-live="polite">${countSaid}</span>`
+      : ''}
   `;
 }
