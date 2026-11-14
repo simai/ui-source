@@ -552,8 +552,10 @@ class SfSearch extends SearchElement {
       // Ctrl or Command with Enter: a page in a new tab (C175 (6)).
       if (event.ctrlKey || event.metaKey) this.openInNewTab(this.selected);
       else this.choose(this.selected);
-    } else if (event.key === 'ArrowRight' && this.atFieldEnd() && this.rowActions().length) {
-      // To the selected row's buttons (C148 (3)); ← or Escape comes back.
+    } else if (event.key === (getComputedStyle(this._portal).direction === 'rtl' ? 'ArrowLeft' : 'ArrowRight')
+      && this.atFieldEnd() && this.rowActions().length) {
+      // To the selected row's buttons (C148 (3)), toward the row's end: →,
+      // ← in a right-to-left page; the other arrow or Escape comes back.
       event.preventDefault();
       this.rowActions()[0].focus();
     } else if (event.key === 'Backspace' && !event.target.value && event.target.selectionStart === 0) {
