@@ -16,7 +16,8 @@
 //     apply(width, phase): writes it, returns the width written
 //     commit(width): the width a drag or a key ended at
 //     reset(): back to the default (Enter, Space, a double click)
-//     direction(): +1 when a pointer moving right widens, -1 otherwise
+//     direction(): +1 when a pointer (or ArrowRight) moving right widens,
+//                  -1 otherwise; it holds the writing direction and the edge
 //     step: pixels an arrow moves (default 16)
 //     start(), end(): around a drag
 //   } -- or null, when this handle does not resize now.
@@ -90,10 +91,12 @@ export function attachResizer(root, options = {}) {
     if (!session) return;
     const {min, max} = session.limits();
     const now = session.measure();
-    const rtl = getComputedStyle(handle).direction === 'rtl';
-    const sign = session.direction?.() ?? 1;
+    // ArrowRight moves the edge to the right and ArrowLeft to the left, as a
+    // pointer does: direction() already holds the writing direction and the
+    // edge, so it is applied once. Flipped again for RTL here, the arrows of
+    // an RTL page ran against the edge (study RS-5, 2026-11-14).
+    const right = session.direction?.() ?? 1;
     const step = (session.step ?? 16) * (event.shiftKey ? 4 : 1);
-    const right = (rtl ? -1 : 1) * sign;
     let next = null;
     if (event.key === 'ArrowRight') next = now + step * right;
     else if (event.key === 'ArrowLeft') next = now - step * right;
