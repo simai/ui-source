@@ -1,4 +1,8 @@
-@use '../../../../core/scss/sf_ext__common' as *;
+// This sheet once began with @use of core's sf_ext__common, which emitted a
+// second copy of core's .bg-surface-overlay into it (C186 HD-2): the only
+// rule in the sheet that was not a heading. Nothing here extends it, so the
+// sheet now holds the heading sizes alone, as core does (h1-h6, .sf-h-1..6
+// are the only heading look; C186 (14)).
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io

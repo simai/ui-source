@@ -78,6 +78,7 @@ ${declarations("desktop", "      ")}
 function renderSemanticRoles()
 {
     const declarations = [];
+    const desktop = [];
     const roleTokenPrefix = {
         body: "text",
         display: "display",
@@ -103,10 +104,20 @@ function renderSemanticRoles()
             const heightFamily = ["heading", "display"].includes(group)
                 ? "title--height"
                 : "text--height";
+            // A role with a phone line of its own (mobileHeight) takes it at
+            // the root and its own line from the desktop up.
+            const narrowHeight = definition.mobileHeight ?? definition.height;
             declarations.push(
+                ...renderNote(definition.note ?? [], "    "),
                 `    --sf-${prefix}-${role}--size: var(--sf-text--size-${escapedRole(definition.size)});`,
-                `    --sf-${prefix}-${role}--height: var(--sf-${heightFamily}-${escapedRole(definition.height)});`,
+                `    --sf-${prefix}-${role}--height: var(--sf-${heightFamily}-${escapedRole(narrowHeight)});`,
             );
+            if (narrowHeight !== definition.height)
+            {
+                desktop.push(
+                    `      --sf-${prefix}-${role}--height: var(--sf-${heightFamily}-${escapedRole(definition.height)});`,
+                );
+            }
         }
     }
 
@@ -124,11 +135,21 @@ function renderSemanticRoles()
         "    --sf-heading--margin: var(--sf-heading--space-top);",
     );
 
+    const desktopBlock = desktop.length
+        ? `
+
+  ${desktopMedia} {
+    :root {
+${desktop.join("\n")}
+    }
+  }`
+        : "";
+
     return `${header}
 @layer sf.base {
   :root {
 ${declarations.join("\n")}
-  }
+  }${desktopBlock}
 }
 `;
 }

@@ -11,9 +11,12 @@
     @include breakpoint-media(xs) {
         $infix: breakpoint-infix(xs, $breakpoint-array);
 
-        // Font size
-        // For size use text size variables
-        // Atention! Text variables have different size for mobile and destop devices
+        // A text size, not a heading (owner decision C186 (14), 2026-11-14):
+        // .title-N is step N of the text ladder on its title line, with no
+        // weight, family or margins. A heading look is .sf-h-1..6 alone (C21,
+        // C44). .title-7..12 are larger than h1: the display rung, for a
+        // banner or a hero, not for a heading of the page.
+        // The text steps are smaller on a phone than on a desktop.
         @each $size in $title-array {
             .#{$infix}title-#{$size} {
                 font-size: var(--sf-text--size-#{$size});

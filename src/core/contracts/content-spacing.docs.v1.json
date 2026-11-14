@@ -3,7 +3,7 @@
   "source": {
     "contract_id": "simai.vertical-sizing",
     "contract_version": "1.7.0",
-    "contract_sha256": "70458f051464210070cf3e914f84c0cef0dfacbd8e3f6dc6e0c9ad546e1f44d3"
+    "contract_sha256": "d95e89178fa873eae6eeba4f2f2a52eff67393fc91b42ce95b1b64691ae5b299"
   },
   "ownership": {
     "token_values": "simai/ui-source",
