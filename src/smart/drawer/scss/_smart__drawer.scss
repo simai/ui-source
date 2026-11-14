@@ -276,11 +276,11 @@
      44 (C173 (6), C49): the close and «Назад» stay the 1/3 step in sight
      (24 on a phone) and press wider round it (study VB-1: 24 was all). */
   @media (pointer: coarse) {
-    .sf-drawer-head :is(sf-button-close, sf-close, sf-button-icon, sf-icon-button) button {
+    .sf-drawer-head :is(:is(sf-button-close, sf-close), :is(sf-button-icon, sf-icon-button)) button {
       position: relative;
     }
 
-    .sf-drawer-head :is(sf-button-close, sf-close, sf-button-icon, sf-icon-button) button::after {
+    .sf-drawer-head :is(:is(sf-button-close, sf-close), :is(sf-button-icon, sf-icon-button)) button::after {
       content: '';
       position: absolute;
       inset: calc((100% - var(--sf-d1)) / 2);
