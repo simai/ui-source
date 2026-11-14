@@ -2,7 +2,7 @@
   "$comment": "The source of sf-time's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.15 and vocabulary 1.1.5: owner decision C40 (2026-11-09; research ui-control control/research/2026-11-09-timeline-parts.md §5, prototype prototypes/timeline-parts.html#time).",
   "id": "smart.time",
   "tag": "sf-time",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "text",
   "settings": {
@@ -21,12 +21,12 @@
         "relative"
       ],
       "default": "auto",
-      "summary": "auto: within threshold of now relative («28 минут назад»), today the time («14:32»), yesterday «вчера, 19:40», this year the day and month («5 ноября»), older the date with the year («30 дек. 2025 г.»); time: «14:32»; date: «9 ноября»; datetime: the full moment («9 ноября 2026 г. в 14:32»); relative: always relative"
+      "summary": "auto: within threshold of now relative («28 минут назад»), today the time («14:32»), yesterday «вчера, 19:40», a later day its date and time («15 ноября, 10:00»), this year the day and month («5 ноября»), older the date with the year («30 декабря 2025 г.»); time: «14:32»; date: «9 ноября», the year when it is not this one; datetime: the full moment («9 ноября 2026 г. в 14:32»); relative: always relative. Every word is Intl's in the page language («gestern, 19:40» on a German page)"
     },
     "now": {
       "type": "string",
       "default": "",
-      "summary": "The moment auto and relative count from, ISO 8601; empty: the reader's clock, and the element draws itself again each minute while it is relative and at the reader's midnight. A fixed now is for tests and documentation"
+      "summary": "The moment auto and relative count from, ISO 8601; empty: the reader's clock, and the element draws itself again when its words change («1 минуту назад» → «2 минуты назад»), at its threshold and at the reader's midnight, on one timer for the whole page that waits while the page is hidden. A fixed now is for tests and documentation"
     },
     "threshold": {
       "type": "string",
@@ -105,7 +105,7 @@
       "state": "default"
     }
   },
-  "x-summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», then the date, relative within the first hour, with the full date and time in a tooltip on hover and keyboard focus, inside a time element. The words are core's SF.format; the element draws itself again while relative and at midnight.",
+  "x-summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», then the date, relative within the first hour, with the full date and time in a tooltip on hover and keyboard focus, inside a time element. The words are the platform's (Intl) in the page language; the element draws itself again when its words change, on one timer for the page.",
   "x-source": {
     "package": "framework",
     "folder": "time",
@@ -114,15 +114,17 @@
   "x-words": [],
   "x-decisions": [
     "name: sf-time, family text (C40). The tag names the HTML element it draws, as sf-button draws a button.",
-    "words: core's SF.format only (format-date.js, format-relative.js) in the page language of the element, nothing counted here. auto: |now - moment| < threshold relative (formatRelativeTime); calendar day 0 the time (date null, time short); day -1 the language's yesterday-at («вчера, {time}»); the same year day and month long; else the medium date with the year. The calendar day is the reader's (calendarDayOffset), so 23:59 yesterday is «вчера» at 00:01.",
+    "words: core's SF.format only (format-date.js, format-relative.js) in the page language of the element, nothing counted here. auto: |now - moment| < threshold relative (formatRelativeTime); calendar day 0 the time (date null, time short); day -1 the language's «yesterday» (formatRelativeDay, Intl.RelativeTimeFormat numeric auto) and the time, joined by the language file's yesterday-at («{day}, {time}»); a later day the date and the time, joined by date-at («{date}, {time}»); else the date in one form, day numeric and month long with the year when it is not this one (the format date's form). The calendar day is the reader's (calendarDayOffset), so 23:59 yesterday is «вчера» at 00:01. A product's yesterday-at without {day} («вчера в {time}») is used as it is.",
     "threshold: an ISO 8601 duration of days, hours, minutes and seconds (PnDTnHnMnS, weeks as PnW); one that is not read as PT1H. GitHub's relative-time idea with a smaller default (P30D there): in a list and a table relative times cannot be compared by eye.",
     "tooltip: the Framework's tooltip composition (.sf-tooltip-anchor, data-tooltip, .sf-tooltip--dark, no arrow: below the time, flipping above at the bottom edge, C160), so hover, :focus-visible, Escape, the placement and the description link are the tooltip controller's (component.tooltip). Shown when the text is not the full moment (format datetime has none). The tooltip text is the full moment, date long and time short.",
     "focus: tabindex 0 on the time element only with a tooltip and only when the element is not inside a link, a button or a summary (those are the Tab stop; a nested stop would be a second one).",
-    "live: with the reader's clock, one timer per element: to the next minute while relative, to the reader's midnight (msUntilNextDay plus a second) otherwise in auto and relative; none for time, date and datetime, none with a fixed now, and none off the page. A hidden document draws again when it shows.",
+    "live: with the reader's clock, one timer for every sf-time on the page (the module's clock): each element says when its words change next (msUntilWordsChange: relative words when their rounding gives new ones, the same steps as formatRelativeTime; auto also at its threshold, a coming moment when it is the threshold away, and the reader's midnight plus a second), and the clock wakes once at the earliest. None for time, date and datetime, none with a fixed now, and none off the page. While the document is hidden the clock does not run; when it shows, every element draws once.",
     "empty: a datetime that is no date draws nothing (gap) and sets data-empty.",
     "geometry: inline text in the place's type and line; tabular numerals and no wrap by default (--sf-time-font-variant-numeric, --sf-time-white-space), so a column of times lines up and «14:32» never breaks. The colour is inherited unless --sf-time-color is set. The focus ring is the Framework's two-pixel primary ring.",
     "css-variables: five public variables (§6) -- the colour, the focus ring colour, the ring's corner, the numerals and the wrap -- listed in src/core/contracts/public-variables.v1.json; the Framework never sets one.",
-    "version 1.1.0 (2026-11-14, owner decision C160 (3), (4); DEV change-time study CT-1, CT-2): a minor. The full-moment tooltip has no tail and opens below the time, flipping above at the window's bottom edge (it opened above with a tail pointing down; C59: no arrow by default), and is one size whatever the density (it was 24 high, 20 in a compact region: the tooltip's padding now takes the base steps). Settings, values, events and keys unchanged."
+    "version 1.1.0 (2026-11-14, owner decision C160 (3), (4); DEV change-time study CT-1, CT-2): a minor. The full-moment tooltip has no tail and opens below the time, flipping above at the window's bottom edge (it opened above with a tail pointing down; C59: no arrow by default), and is one size whatever the density (it was 24 high, 20 in a compact region: the tooltip's padding now takes the base steps). Settings, values, events and keys unchanged.",
+    "first paint (DEV change-time study CT-7): the host's own text is the server's first paint -- «<sf-time datetime=\"…\">14:32</sf-time>», or the static markup of standard §5.4 -- and the first render replaces it in the same task (clearLightDomBeforeFirstRender), so the line keeps its width. A host with nothing inside holds the width of a time («00:00» in tabular numerals, hidden) from core's first-paint sheet (_sf_css__placeholder.scss) until it is defined; a text longer than a time still widens the line then.",
+    "version 1.2.0 (2026-11-14, DEV change-time study CT-5, CT-7, CT-9, CT-10, CT-11): a minor. The words change when they should: «1 минуту назад» becomes «2 минуты назад» at 1 min 30 s (the rounding of the words), not at the next whole minute of the clock, and seconds tick each second while they are shown (the wording under a minute waits for the owner's question q-ct-seconds); one timer serves every sf-time on the page and waits while the page is hidden. auto's yesterday is the language's own word from Intl.RelativeTimeFormat («gestern, 19:40» on a German page, where it read «yesterday, 19:40»); the language file only joins the day and the time (yesterday-at «{day}, {time}»). Older dates take the one long form of format date («30 декабря 2025 г.», it was «30 дек. 2025 г.»). A later day keeps its time («15 ноября, 10:00», it was «15 ноября»; new word date-at). The host's own text holds the line until the first render (first paint), and an empty host holds a time's width from core's sheet. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

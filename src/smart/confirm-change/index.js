@@ -28,7 +28,10 @@
 // core/js/element-manifest.js, its words are lang/<locale>.json, the actions
 // answer outcomes, and the person's answer is the vocabulary's `answer {id,
 // accepted}`; the old names sf-change-confirm-accept, -decline and -expire
-// follow until 2026-12-01 (aliases.json). It is a confirm surface in the §19.4
+// follow until 2026-12-01 (aliases.json). Since 1.8.0 its classes carry its
+// own name, .sf-confirm-change__*, and its public variables
+// --sf-confirm-change-*; the former .sf-change-confirm* classes are written
+// beside them and the former variables read under them until 2027-01-01. It is a confirm surface in the §19.4
 // sense: an assembly's `ask` opens it and waits for the answer.
 //
 // It renders into its own light DOM, like every Smart component: a document
@@ -52,7 +55,7 @@ const ChangeConfirmElement = elementFromManifest(manifest, {
 
 const ConfirmSurface = confirmSurface(ChangeConfirmElement, {
     kind: "sf-confirm-change",
-    block: "sf-change-confirm",
+    block: "sf-confirm-change",
     answerId: "changeId",
 });
 
@@ -99,6 +102,10 @@ class SfChangeConfirm extends ConfirmSurface {
             beforeText: this.sfWord("before-text"),
             afterText: this.sfWord("after-text"),
             emptyValueText: this.sfWord("empty-value-text"),
+            // What the acceptance does (decision C25, DEV change-time study
+            // CT-4): status="danger" for a delete or anything that cannot be
+            // undone, as sf-confirm's setting.
+            danger: this.getAttribute("status") === "danger",
         };
     }
 

@@ -1,6 +1,7 @@
 {
   "title": "Время",
   "runtime": {
-    "yesterday-at": "вчера, {time}"
+    "date-at": "{date}, {time}",
+    "yesterday-at": "{day}, {time}"
   }
 }

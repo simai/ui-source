@@ -22,8 +22,15 @@ test('the confirm surface applies nothing and keeps the question open when the h
   assert.match(surface, /declineAppearance = "ghost"/u);
   assert.match(surface, /appearance=\$\{declineAppearance\}\s+scheme="on-surface"\s+size=\$\{size\}\s+text=\$\{context\.declineText\}/u);
   // sf-confirm-change's «Отклонить» is a decision of the same weight, not a
-  // cancel: it keeps the outline.
-  assert.match(read('src/smart/confirm-change/js/templates/default.js'), /renderConfirmFooter\(context, "sf-change-confirm", \{declineAppearance: "outline"\}\)/u);
+  // cancel: it keeps the outline -- unless the change is dangerous
+  // (status="danger", 1.8.0, CT-4), where it is the quiet answer of C25.
+  // The former block's classes ride beside the new ones (CT-13).
+  assert.match(read('src/smart/confirm-change/js/templates/default.js'), /renderConfirmFooter\(context, "sf-confirm-change", \{\s*acceptStatus: context\.danger \? "danger" : "",\s*declineAppearance: context\.danger \? "ghost" : "outline",\s*formerBlock: "sf-change-confirm",\s*\}\)/u);
+  // The answers at the start, the accepting one first, 8 apart (C166, CT-3).
+  const changeSheet = read('src/smart/confirm-change/js/templates/default.css');
+  assert.match(changeSheet, /\.sf-confirm-change__footer \{[^}]*justify-content: flex-start;/u);
+  assert.match(changeSheet, /\.sf-confirm-change__actions \{\s*display: flex;\s*order: -1;\s*gap: var\(--sf-space-1\\\/3\);/u);
+  assert.doesNotMatch(changeSheet, /space-between/u);
   assert.doesNotMatch(surface, /"tonal"/u);
   assert.match(surface, /status=\$\{danger \? "danger" : nothing\}/u);
   // The answers stand on the element's size (default 1), never a fixed 1/2
@@ -46,19 +53,19 @@ test('the confirm surface applies nothing and keeps the question open when the h
     assert.deepEqual(Object.keys(contract.actions).sort(), ['answer', 'cancel', 'confirm', 'open'], folder);
     assert.equal(contract.family, 'confirm', folder);
     assert.match(read(`src/smart/${folder}/index.js`), /from "\.\.\/helpers\/confirm-surface\.js"/u, folder);
-    assert.match(read(`src/smart/${folder}/js/templates/default.js`), /renderConfirmFooter\(context, "sf-(?:confirm|change-confirm)"/u, folder);
+    assert.match(read(`src/smart/${folder}/js/templates/default.js`), /renderConfirmFooter\(context, "sf-(?:confirm|confirm-change)"/u, folder);
   }
 });
 
 test('sf-confirm-change keeps its tag, API and former tag after the move from package pro', () => {
   const contract = json('src/smart/confirm-change/component.json');
   assert.equal(contract.tag, 'sf-confirm-change');
-  assert.equal(contract.version, '1.7.4');
+  assert.equal(contract.version, '1.8.0');
   // 1.7.0 (C40): the values are sf-change's list, which it fetches.
   assert.ok(contract.relations.some(({name}) => name === 'cl-change'));
-  assert.match(read('src/smart/confirm-change/js/templates/default.js'), /<sf-change class="sf-change-confirm__list" layout="list" \.changes=/u);
+  assert.match(read('src/smart/confirm-change/js/templates/default.js'), /<sf-change class="sf-confirm-change__list sf-change-confirm__list" layout="list" \.changes=/u);
   assert.deepEqual(Object.keys(contract.settings).sort(),
-    ['accept-text', 'change-id', 'changes', 'decline-text', 'disabled', 'expires-at', 'heading', 'heading-level', 'state']);
+    ['accept-text', 'change-id', 'changes', 'decline-text', 'disabled', 'expires-at', 'heading', 'heading-level', 'state', 'status']);
   const tags = json('src/smart/confirm-change/aliases.json').aliases.filter((row) => row.kind === 'tag');
   assert.deepEqual(tags.map((row) => [row.from, row.remove_after]), [['sf-change-confirm', '2027-01-01']]);
   // The Framework rule lists it; the package references no longer do.

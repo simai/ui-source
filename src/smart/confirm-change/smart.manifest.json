@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm-change",
-  "version": "1.7.4",
+  "version": "1.8.0",
   "title": "Change confirmation",
   "summary": "A prepared change put to a person: each value as it was and as it will be, two answers of equal weight, until when it can be answered, and then only the outcome. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -93,6 +93,15 @@
         "type": "boolean",
         "default": false,
         "description": "The answers are shown and cannot be pressed (a send is in flight elsewhere)."
+      },
+      "status": {
+        "type": "string",
+        "default": "",
+        "description": "What the acceptance does (decision C25, as sf-confirm's setting): danger, a delete or anything that cannot be undone. The accepting answer is then a filled danger button and the declining one quiet; without it both answers stay outlined and of equal weight.",
+        "enum": [
+          "",
+          "danger"
+        ]
       },
       "accept-text": {
         "type": "string",
@@ -483,15 +492,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/confirm-change/index.js",
-        "sha256": "f2a671ad97506da386ca47cf9dcd80109693c10d85483a64375002725cb1b8ae"
+        "sha256": "0aa97d17b4c386ef6e5ef7bff5e1da736ca61e9fbaa0885c79500ce45c4b30df"
       },
       {
         "path": "src/smart/confirm-change/js/templates/default.js",
-        "sha256": "3b40f4feca106bc4cb3597a99d10ea46e3ce51d69169db4768515eeed0054a13"
+        "sha256": "24f39115474befcb963151645278e789d5d85cae63555a069cfa3f8772820b1b"
       },
       {
         "path": "src/smart/confirm-change/js/templates/default.css",
-        "sha256": "2ca0d44596a18f473cdde4a74a4cd7761689a4e5926a02701585ff65b5802903"
+        "sha256": "2fb410abf52f5f2ccad2158bb8674ade13cddae30b9d98163878d51af36c6e22"
       },
       {
         "path": "src/smart/confirm-change/rule.js",
@@ -499,11 +508,11 @@
       },
       {
         "path": "src/smart/confirm-change/docs.md",
-        "sha256": "90a992a220db77bc774cb12b65d4fba9b96defc8e1f5b17803785d74678e796e"
+        "sha256": "eaddae6339e34f0d5969c0e93a3132acd0af864fffd2abded6f62d18927125f0"
       },
       {
         "path": "src/smart/confirm-change/component.json",
-        "sha256": "eecbe1381ddcb05e3ff22ddeba931a48af6eb88a7a3314508552d976d3a7faf3"
+        "sha256": "e33c4116d955399ec6fde5de36fb08dc476ce3d67763b645cd113125ba99f6a7"
       },
       {
         "path": "src/smart/confirm-change/aliases.json",

@@ -20,7 +20,7 @@
       "covers": "settings.datetime, settings.format auto, settings.now",
       "steps": [
         {
-          "check": "(() => { const t = (id) => document.querySelector(`#${id} time`); return t('rel').textContent === '28 минут назад' && t('today').textContent === '09:12' && t('yday').textContent === 'вчера, 19:40' && t('year').textContent === '5 ноября' && /^30 дек\\.? 2025/u.test(t('old').textContent) && t('rel').getAttribute('datetime') === '2026-11-09T11:32:00.000Z' && document.querySelector('#rel').hasAttribute('data-relative') && !document.querySelector('#today').hasAttribute('data-relative'); })()"
+          "check": "(() => { const t = (id) => document.querySelector(`#${id} time`); return t('rel').textContent === '28 минут назад' && t('today').textContent === '09:12' && t('yday').textContent === 'вчера, 19:40' && t('year').textContent === '5 ноября' && t('old').textContent === '30 декабря 2025 г.' && t('rel').getAttribute('datetime') === '2026-11-09T11:32:00.000Z' && document.querySelector('#rel').hasAttribute('data-relative') && !document.querySelector('#today').hasAttribute('data-relative'); })()"
         }
       ]
     },

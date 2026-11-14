@@ -616,7 +616,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/confirm-change/smart.manifest.json",
-      "manifest_sha256": "10b452c57db486518c3a25750b5cdc79d7852a3c3c710aa5ab6a12a48811cad8",
+      "manifest_sha256": "c339b2858f6880f2b11bc6ab50edde0d11b243b2c9b7eb0d1d26a2c239b48631",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3192,13 +3192,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/time/smart.manifest.json",
-      "manifest_sha256": "71bc40cf987072cd0ba5ae3b1761d3c823503d0b0b715edb3772fb57f38d6012",
+      "manifest_sha256": "0a593b39cb41dd46b6bc57209ecec13604d865690fddb418ad0a648e463d1dea",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», then the date, relative within the first hour, with the full date and time in a tooltip on hover and keyboard focus, inside a time element. The words are core's SF.format; the element draws itself again while relative and at midnight.",
+      "summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», then the date, relative within the first hour, with the full date and time in a tooltip on hover and keyboard focus, inside a time element. The words are the platform's (Intl) in the page language; the element draws itself again when its words change, on one timer for the page.",
       "tags": [
         "time",
         "date",

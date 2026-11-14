@@ -152,6 +152,20 @@
     * (var(--sf-input--box-line) + var(--sf-input--box-gap)));
 }
 
+/* sf-time before it draws (DEV change-time study CT-7: an empty line for
+   216-262 ms, then 38-43 px of text pushed the rest of it). Text the server
+   printed inside the host is the first paint and holds the line itself
+   (sf-time 1.2.0 replaces it in the same task). A host with nothing inside
+   holds the width of a time: «00:00» in the place's type and tabular
+   numerals, hidden, until the element is defined. A date or relative words
+   are longer; only the server's text knows them. */
+:where(sf-time[datetime]:not([datetime=""]):not(:defined)):empty::before {
+  content: "00:00";
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  visibility: hidden;
+}
+
 /* Its menu waits for its own code in the parts the element drew: an empty
    undefined sf-menu-context would stand in the row as one more item, a gap
    wider than the trigger, until it upgrades into its popup. */

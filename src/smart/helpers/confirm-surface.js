@@ -374,15 +374,20 @@ export function confirmSurface(Base, {kind, block, answerId = "answerId"} = {}) 
 // In a window (sf-confirm appearance="window", decision C39) the answers come
 // before the status line, at the start; the declining one is ghost there too
 // (C116; it was tonal, the window's quiet answer).
-export function renderConfirmFooter(context, block, {acceptStatus = "", window = false, declineAppearance = "ghost"} = {}) {
+// `formerBlock` writes a renamed surface's former class beside each part's.
+export function renderConfirmFooter(context, block, {acceptStatus = "", window = false, declineAppearance = "ghost", formerBlock = ""} = {}) {
     const {component} = context;
+    // A surface whose class was renamed writes its former block beside the
+    // new one until the alias date, so a page selector that reached it still
+    // does (sf-confirm-change 1.8.0: .sf-change-confirm__* until 2027-01-01).
+    const part = (name) => (formerBlock ? `${block}__${name} ${formerBlock}__${name}` : `${block}__${name}`);
     const danger = acceptStatus === "danger" || acceptStatus === "error";
     const size = context.size || "1";
     return html`
-            <footer class="${block}__footer">
+            <footer class=${part("footer")}>
                 <!-- Always in the page, empty while there is nothing to say: a live
                      region that appears together with its words is not heard. -->
-                <p class="${block}__status" role="status" tabindex="-1">
+                <p class=${part("status")} role="status" tabindex="-1">
                     ${context.statusText
                         ? html`<sf-icon icon=${context.statusIcon} size="1" aria-hidden="true"></sf-icon>
                             <span>${context.statusText}</span>`
@@ -392,7 +397,7 @@ export function renderConfirmFooter(context, block, {acceptStatus = "", window =
                      were: the pressed one busy, with the button's own spinner and
                      aria-busy, the other disabled, so the card does not jump and
                      the person sees which answer is on its way. -->
-                <div class="${block}__actions" ?hidden=${!context.open && !context.pending}>
+                <div class=${part("actions")} ?hidden=${!context.open && !context.pending}>
                     <sf-button
                             appearance=${danger ? "default" : "outline"}
                             scheme="primary"

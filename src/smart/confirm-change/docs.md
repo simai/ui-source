@@ -1,7 +1,7 @@
 # sf-confirm-change
 
 Подготовленное изменение, которое ждёт «да» или «нет» человека: каждое значение как
-было и как станет, два равноценных ответа, срок, до которого можно ответить, а после
+было и как станет, два ответа (равноценных, а у удаления — красный и тихий), срок, до которого можно ответить, а после
 ответа — только итог. Карточка родилась в `simai/ui-chat` как предложение ассистента
 (`renderProposal`) и стала элементом (решение владельца 2026-10-25): тот же вопрос
 задают и вне ассистента — правка коллеги в чате simai.chat, очередь модерации,
@@ -66,9 +66,22 @@ card.addEventListener('sf-confirm-change-answer', async (event) => {
 | `expires-at` | — | ISO 8601 date. Past it an open card reads as expired. |
 | `change-id` | `""` | The host's name for the change, carried back in every event. |
 | `disabled` | `false` | The answers are shown and cannot be pressed. |
+| `status` | `""` | `danger` for a delete or anything that cannot be undone (1.8.0, decision C25): the accepting answer is a filled danger button, the declining one quiet. Without it both answers are outlined and weigh the same. |
 | `accept-text` | «Подтвердить» / «Confirm» | The accepting answer. |
 | `decline-text` | «Отклонить» / «Decline» | The declining answer («Отменить» for an assistant's offer). |
 | `changes` | `[]` | The values as JSON, for markup; the `changes` property wins. |
+
+## The answers
+
+The answers stand at the start of the footer, the accepting one first, 8 apart
+(4 in a compact region), and the status line («Подтвердить можно до …») after
+them — one rule for every question (decisions C166, C157 (3), C159 (4); 1.8.0).
+Below the sm breakpoint (32rem) the two answers share the row in halves.
+
+```html
+<sf-confirm-change heading="Удалить раздел «Архив 2019»" status="danger"
+                   accept-text="Удалить" decline-text="Оставить"></sf-confirm-change>
+```
 
 ## The change
 
@@ -118,15 +131,17 @@ Public variables, set on the card or any ancestor; the component never sets them
 
 | Variable | Default |
 |:---|:---|
-| `--sf-change-confirm-radius` | `var(--sf-radius-2)` |
-| `--sf-change-confirm-inset` | `var(--sf-space-1\/2) var(--sf-space-1)` |
-| `--sf-change-confirm-gap` | `var(--sf-space-1\/2)` |
-| `--sf-change-confirm-before-background-color` | `transparent` (1.7.0; before it `var(--sf-surface-container)`) |
-| `--sf-change-confirm-after-background-color` | `transparent` (1.7.0; before it `var(--sf-primary-container)`) |
-| `--sf-change-confirm-after-color` | the new value colour of `sf-change` (1.7.0; before it `var(--sf-on-primary-container)`) |
+| `--sf-confirm-change-radius` | `var(--sf-radius-2)` |
+| `--sf-confirm-change-inset` | `var(--sf-space-1\/2) var(--sf-space-1)` |
+| `--sf-confirm-change-gap` | `var(--sf-space-1\/2)` |
+| `--sf-confirm-change-before-background-color` | `transparent` (1.7.0; before it `var(--sf-surface-container)`) |
+| `--sf-confirm-change-after-background-color` | `transparent` (1.7.0; before it `var(--sf-primary-container)`) |
+| `--sf-confirm-change-after-color` | the new value colour of `sf-change` (1.7.0; before it `var(--sf-on-primary-container)`) |
 
-The 1.0 hooks `--sf-change-confirm--radius`, `--inset`, `--gap`, `--before-fill`,
-`--after-fill` and `--after-ink` stay the internal layer these feed.
+Until 1.8.0 they were named after the former tag, `--sf-change-confirm-<name>`;
+those names are read under the new ones until 2027-01-01 (see «Former names»).
+The 1.0 hooks `--sf-change-confirm--before-fill`, `--after-fill` and
+`--after-ink` are still read where they were.
 
 ## Words
 
@@ -146,4 +161,31 @@ use is noted once in `SF.deprecations`. Write the new tag in new markup.
 Every event keeps its former name beside the new one, with the same detail:
 `sf-change-confirm-answer`, `sf-change-confirm-expired`.
 
-The public CSS variables (`--sf-change-confirm-*`) and the class names keep the former name.
+## Former names
+
+Since 1.8.0 the classes and the public variables carry the element's name too
+(DEV change-time study CT-13). Until 2027-01-01 the former ones keep working:
+the card writes each former class beside its new one, and each former variable
+is read under its new name. Write the new names in new code.
+
+| Former name | New name |
+|:---|:---|
+| `.sf-change-confirm` | `.sf-confirm-change` |
+| `.sf-change-confirm--open`, `--pending`, `--accepted`, `--declined`, `--expired` | `.sf-confirm-change--open`, … |
+| `.sf-change-confirm__heading` | `.sf-confirm-change__heading` |
+| `.sf-change-confirm__description` | `.sf-confirm-change__description` |
+| `.sf-change-confirm__changes` | `.sf-confirm-change__changes` |
+| `.sf-change-confirm__list` | `.sf-confirm-change__list` |
+| `.sf-change-confirm__footer` | `.sf-confirm-change__footer` |
+| `.sf-change-confirm__status` | `.sf-confirm-change__status` |
+| `.sf-change-confirm__actions` | `.sf-confirm-change__actions` |
+| `--sf-change-confirm-radius`, `-inset`, `-gap` | `--sf-confirm-change-radius`, `-inset`, `-gap` |
+| `--sf-change-confirm-before-background-color` | `--sf-confirm-change-before-background-color` |
+| `--sf-change-confirm-after-background-color` | `--sf-confirm-change-after-background-color` |
+| `--sf-change-confirm-after-color` | `--sf-confirm-change-after-color` |
+
+## Changes
+
+- 1.8.0 (2026-11-14) — the answers at the start, the accepting one first, 8
+  apart (C166; CT-3); `status="danger"` (C25; CT-4); the classes and the public
+  variables carry the element's name, the former ones until 2027-01-01 (CT-13).

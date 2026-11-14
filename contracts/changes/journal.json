@@ -12237,6 +12237,138 @@
       "manual": "Listen for sf-input-quantity-remove where a page listened for sf-quantity-remove; the detail and the cancel are the same.",
       "owner": "ui-source",
       "source": "src/smart/input-quantity/aliases.json, src/smart/input-quantity/smart.manifest.json events.sf-quantity-remove"
+    },
+    {
+      "id": "class-confirm-change-block-names",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "sf-confirm-change 1.8.0 (DEV change-time study CT-13): the card's classes carry the element's name, not its former tag's: .sf-confirm-change, .sf-confirm-change--<state> and .sf-confirm-change__heading, __description, __changes, __list, __footer, __status and __actions. The element writes each former .sf-change-confirm* class beside its new one until remove_after, so a page selector that reached the former class still does.",
+      "items": [
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm",
+          "to": "sf-confirm-change",
+          "match": "(?<![a-z0-9-])sf-change-confirm(?![a-z0-9_-])"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm--open",
+          "to": "sf-confirm-change--open"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm--pending",
+          "to": "sf-confirm-change--pending"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm--accepted",
+          "to": "sf-confirm-change--accepted"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm--declined",
+          "to": "sf-confirm-change--declined"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm--expired",
+          "to": "sf-confirm-change--expired"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm__heading",
+          "to": "sf-confirm-change__heading"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm__description",
+          "to": "sf-confirm-change__description"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm__changes",
+          "to": "sf-confirm-change__changes"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm__list",
+          "to": "sf-confirm-change__list"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm__footer",
+          "to": "sf-confirm-change__footer"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm__status",
+          "to": "sf-confirm-change__status"
+        },
+        {
+          "component": "sf-confirm-change",
+          "from": "sf-change-confirm__actions",
+          "to": "sf-confirm-change__actions"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": ".chat .sf-change-confirm__actions { }",
+        "after": ".chat .sf-confirm-change__actions { }"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/confirm-change/js/templates/default.js, src/smart/helpers/confirm-surface.js renderConfirmFooter formerBlock"
+    },
+    {
+      "id": "token-confirm-change-variable-names",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "sf-confirm-change's six public variables carry the element's name, not its former tag's (DEV change-time study CT-13): --sf-change-confirm-radius is --sf-confirm-change-radius, and so on for -inset, -gap, -before-background-color, -after-background-color and -after-color. The sheet reads the new name first and the former one under it, so a page that sets the former name draws as before.",
+      "items": [
+        {
+          "from": "--sf-change-confirm-radius",
+          "to": "--sf-confirm-change-radius",
+          "match": "--sf-change-confirm-radius(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-change-confirm-inset",
+          "to": "--sf-confirm-change-inset",
+          "match": "--sf-change-confirm-inset(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-change-confirm-gap",
+          "to": "--sf-confirm-change-gap",
+          "match": "--sf-change-confirm-gap(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-change-confirm-before-background-color",
+          "to": "--sf-confirm-change-before-background-color",
+          "match": "--sf-change-confirm-before-background-color(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-change-confirm-after-background-color",
+          "to": "--sf-confirm-change-after-background-color",
+          "match": "--sf-change-confirm-after-background-color(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-change-confirm-after-color",
+          "to": "--sf-confirm-change-after-color",
+          "match": "--sf-change-confirm-after-color(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-token",
+      "examples": {
+        "before": ".chat { --sf-change-confirm-radius: var(--sf-radius-1); }",
+        "after": ".chat { --sf-confirm-change-radius: var(--sf-radius-1); }"
+      },
+      "owner": "ui-source",
+      "source": "src/core/contracts/public-variables.v1.json, src/smart/confirm-change/js/templates/default.css"
     }
   ]
 }
