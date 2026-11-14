@@ -800,7 +800,8 @@
         "waitForStylesBeforeRenderReady",
         "styleReadyTimeout",
         "holdsSlotNodesUntilDrawn",
-        "styleReadinessCssId"
+        "styleReadinessCssId",
+        "portalStyleTimeout"
       ],
       "kind": "class",
       "loaded_by": "smart-base",
@@ -1618,7 +1619,9 @@
       "members": [
         "show",
         "create",
-        "dismiss"
+        "dismiss",
+        "pause",
+        "resume"
       ]
     },
     {

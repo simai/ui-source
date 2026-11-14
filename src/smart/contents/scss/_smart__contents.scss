@@ -4,7 +4,7 @@
 
 @layer sf.components {
 /* The page's table of contents (standard simai.smart-component 1.3.11 §6):
-   one list of in-page links drawn as a column, a compact button, a rail of
+   one list of in-page links drawn as a column, a sheet button, a rail of
    strokes or a row of tabs. Every length is a token of the one ladder
    (docs/foundation-composition-geometry.md); every colour a theme role. The
    public variables are read with the role or token as their fallback and are
@@ -116,13 +116,13 @@ sf-contents[data-empty] > .sf-contents {
 }
 
 /* expand current (C95 point 3, CT-11): the deeper entries of the other
-   branches are folded away in the column and the compact list; the rail and
+   branches are folded away in the column and the sheet's list; the rail and
    the bar keep every entry. */
 .sf-contents--expand-current:not(.sf-contents--layout-rail):not(.sf-contents--layout-bar) .sf-contents-folded {
   display: none;
 }
 
-/* The compact view's veil (a phone's bottom sheet, below); nowhere else. */
+/* The sheet view's veil (a phone's bottom sheet, below); nowhere else. */
 .sf-contents-veil {
   display: none;
 }
@@ -138,7 +138,7 @@ sf-contents[data-empty] > .sf-contents {
   display: none;
 }
 
-/* A deeper level, in the column and the compact list: its name steps in by
+/* A deeper level, in the column and the sheet's list: its name steps in by
    the indent, once for the next level and twice for any below it; the row,
    its bar and its hover keep the full width. Written once for every layout
    (the rail's names and the bar's tabs do not step in), so the sheet holds
@@ -231,9 +231,9 @@ sf-contents[data-empty] > .sf-contents {
   }
 }
 
-/* Compact: the button with the current section and the reading progress
+/* Sheet: the button with the current section and the reading progress
    under it; the list opens under them as a raised panel. */
-@mixin compact {
+@mixin sheet {
   position: relative;
 
   /* Sticky, the button travels with the reader. The page scrolls under it, so
@@ -325,6 +325,9 @@ sf-contents[data-empty] > .sf-contents {
 
   .sf-contents-link:hover {
     background-color: var(--sf-surface-container-hover);
+    /* A translucent fill, as a menu's row (C43 D4): the count's tonal badge
+       keeps its own tone under the pointer. */
+    @include places.sf-place-fill(var(--sf-surface-container-hover));
   }
 
   /* The current section (C95 point 2): the surface's ink at medium weight
@@ -580,8 +583,11 @@ sf-contents[data-empty] > .sf-contents {
   @include column;
 }
 
-.sf-contents--layout-compact {
-  @include compact;
+/* sheet; sf-contents--layout-compact is its former class (layout="compact"),
+   drawn the same until 2027-01-01 (owner decision C134: the word compact
+   means density only; journal value-contents-layout-compact-to-sheet). */
+:is(.sf-contents--layout-sheet, .sf-contents--layout-compact) {
+  @include sheet;
 }
 
 .sf-contents--layout-rail {
@@ -592,7 +598,7 @@ sf-contents[data-empty] > .sf-contents {
   @include bar;
 }
 
-/* auto: the column at and above the step, compact below it -- a media rule per
+/* auto: the column at and above the step, the sheet below it -- a media rule per
    step, so the printed markup is right before the script arrives. */
 @each $step in (sm, md, lg, xl) {
   @media (min-width: map.get(bp.$breakpoint-array, $step)) {
@@ -603,12 +609,12 @@ sf-contents[data-empty] > .sf-contents {
 
   @media not all and (min-width: map.get(bp.$breakpoint-array, $step)) {
     .sf-contents--layout-auto.sf-contents--collapse-#{$step} {
-      @include compact;
+      @include sheet;
     }
   }
 }
 
-/* A finger (pointer coarse): a row of the open compact list is at least the
+/* A finger (pointer coarse): a row of the open sheet's list is at least the
    touch target, as sf-menu-context's rows (simai/ui-source#25). */
 @media (pointer: coarse) {
   .sf-contents--open:not(.sf-contents--layout-rail) .sf-contents-list .sf-contents-link {

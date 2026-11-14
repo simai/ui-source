@@ -4,14 +4,21 @@
      crumbs' boxes are declared here, so printed class markup needs no utility
      sheet to stand in one line. The list form (BC-09) is nav.sf-breadcrumbs >
      ol > li, one crumb per entry with its separator before it; the flat form
-     (nav.sf-breadcrumbs > crumb, separator, crumb) stays valid markup. */
-  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/wrap (.flex-wrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+     (nav.sf-breadcrumbs > crumb, separator, crumb) stays valid markup.
+
+     The trail is one row: it never wraps, so a line never starts with a
+     separator «›» (L2 of the C93 review). The page's own entry takes the rest
+     of the row and its name wraps by words there (C93 item 6); the ancestors
+     shrink and are cut. A row that has no room left folds (the runtime,
+     _trail.js, C93 item 1). Only a trail opened in place (data-sf-breadcrumbs-
+     expanded, every crumb asked for) wraps. */
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
   .sf-breadcrumbs {
     display: flex;
     align-items: center;
     min-inline-size: 0;
     max-inline-size: 100%;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     background-color: var(--sf-breadcrumbs--background-color, transparent);
     gap: var(--sf-breadcrumbs-gap, var(--sf-breadcrumbs--gap, var(--sf-space-1\/3)));
     overscroll-behavior-inline: contain;
@@ -39,11 +46,12 @@
     }
   }
 
-  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/wrap (.flex-wrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
   .sf-breadcrumbs > :is(ol, ul) {
     display: flex;
-    align-items: center;
-    flex-wrap: wrap;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    flex: 1 1 auto;
     min-inline-size: 0;
     margin: 0;
     padding: 0;
@@ -57,6 +65,109 @@
     align-items: center;
     min-inline-size: 0;
     gap: inherit;
+  }
+
+  /* «…» never gives up its room (N1 of the nav-4b acceptance): its entry keeps
+     the separator and the whole button, so the next separator is never drawn
+     under it. A crumb squeezed instead below a few letters folds (_trail.js
+     starvedFit). The siblings button (C128) stays in its crumb's entry. */
+  .sf-breadcrumbs > :is(ol, ul) > li:has(> .sf-breadcrumbs-item[aria-expanded]:not([data-sf-breadcrumb-siblings])) {
+    flex: none;
+  }
+
+  /* The flat form is its own row. */
+  .sf-breadcrumbs:not(:has(> ol)):not(:has(> ul)) {
+    align-items: flex-start;
+  }
+
+  /* The row's entries stand at its top, so a page name of two lines keeps its
+     first line beside the crumbs. Every entry is a box of the target's height
+     with its words in the middle: one line of the trail reads the same with or
+     without a link in it. */
+  .sf-breadcrumbs > :is(ol, ul) > li,
+  .sf-breadcrumbs:not(:has(> ol)):not(:has(> ul)) > .sf-breadcrumbs-item {
+    min-block-size: var(--sf-breadcrumbs--target);
+  }
+
+  /* The page's entry (L2): the rest of the row, at least its longest word;
+     its name wraps by words. The separator before it stays beside the first
+     line. A trail of parents only (current="none") has no such entry. */
+  .sf-breadcrumbs > :is(ol, ul) > li:has(> .sf-breadcrumbs-item[aria-current]),
+  .sf-breadcrumbs:not(:has(> ol)):not(:has(> ul)) > .sf-breadcrumbs-item[aria-current] {
+    flex: 1 1 0;
+    align-items: flex-start;
+    min-inline-size: min-content;
+  }
+
+  .sf-breadcrumbs > :is(ol, ul) > li:has(> .sf-breadcrumbs-item[aria-current]) > .sf-breadcrumbs-item--separator {
+    min-block-size: var(--sf-breadcrumbs--target);
+  }
+
+  .sf-breadcrumbs .sf-breadcrumbs-item[aria-current] {
+    box-sizing: border-box;
+    min-block-size: var(--sf-breadcrumbs--target);
+    padding-block: calc((var(--sf-breadcrumbs--target) - var(--sf-breadcrumbs--text-height)) / 2);
+  }
+
+  /* Its narrowest is its longest word: the words break between them, not
+     inside (a page's word-break: break-word would let the entry shrink to a
+     letter and never ask the row for room). */
+  .sf-breadcrumbs .sf-breadcrumbs-item[aria-current] > .sf-breadcrumbs-item-container {
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+
+  /* A trail opened in place shows every crumb and may take more lines. */
+  .sf-breadcrumbs[data-sf-breadcrumbs-expanded="true"],
+  .sf-breadcrumbs[data-sf-breadcrumbs-expanded="true"] > :is(ol, ul) {
+    flex-wrap: wrap;
+  }
+
+  /* On the phone ladder (below lg, 60rem) the trail is one line (owner
+     decision C93 item 2). A trail that fits stays whole; one that does not
+     folds by room down to «… › parent › current» (the runtime, _trail.js, L1
+     of the C93 review); what that tail still lacks is cut with an ellipsis,
+     never wrapped. The row is a grid of one column per entry, each as wide as its
+     content at most and nothing at least: the room is shared out equally, so
+     the shorter of the parent and the page keeps its whole name and the longer
+     one is cut (C93 item 6: the runtime gives a cut crumb its whole name as
+     the tooltip). «…», a separator or a siblings button is narrower than its
+     share and keeps its size. On a wider screen the page's name still wraps
+     (C93 item 6). */
+  @media not all and (min-width: 60rem) {
+    .sf-breadcrumbs > :is(ol, ul),
+    .sf-breadcrumbs:not(:has(> ol)):not(:has(> ul)) {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, max-content);
+      justify-content: start;
+    }
+
+    .sf-breadcrumbs > :is(ol, ul) {
+      flex: 0 1 auto;
+    }
+
+    .sf-breadcrumbs > :is(ol, ul) > li:has(> .sf-breadcrumbs-item[aria-current]),
+    .sf-breadcrumbs:not(:has(> ol)):not(:has(> ul)) > .sf-breadcrumbs-item[aria-current] {
+      min-inline-size: 0;
+    }
+
+    .sf-breadcrumbs[data-sf-breadcrumbs-expanded="true"] > :is(ol, ul),
+    .sf-breadcrumbs[data-sf-breadcrumbs-expanded="true"]:not(:has(> ol)):not(:has(> ul)) {
+      display: flex;
+    }
+
+    .sf-breadcrumbs .sf-breadcrumbs-item[aria-current],
+    .sf-breadcrumbs .sf-breadcrumbs-item[aria-current] > .sf-breadcrumbs-item-container {
+      min-inline-size: 0;
+    }
+
+    .sf-breadcrumbs .sf-breadcrumbs-item[aria-current] > .sf-breadcrumbs-item-container > span {
+      min-inline-size: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 
   .sf-breadcrumbs > :is(ol, ul) > li[hidden],

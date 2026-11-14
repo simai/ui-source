@@ -108,10 +108,18 @@
   --sf-modal-surface-border-style: solid;
   --sf-modal-surface-border-width: var(--sf-modal-border-width, var(--sf-border-width, var(--sf-px)));
   --sf-modal-surface-gap: var(--sf-modal-gap, var(--sf-space-1));
-  /* The frame is the question window's (decision C39; dispatcher decision,
-     docs pre-check 2026-11-10): --sf-space-3, 24 on a desktop and 16 on a
-     phone; it was --sf-space-2. */
-  --sf-modal-surface-padding: var(--sf-modal-padding-block, var(--sf-space-3)) var(--sf-modal-padding-inline, var(--sf-space-3));
+  /* The frame is a window's inset, role H6 of the horizontal-spacing
+     standard (owner decision C105, 2026-11-12, which supersedes the
+     --sf-space-3 of the docs pre-check of 2026-11-10): --sf-space-2, 20 on a
+     desktop and 16 in compact density and on a phone, the window's edge
+     counted inside it, as a field's is (C77). The text stood 25 · 21 · 17
+     from the outer edge (spacing audit D1). A side without an edge (a panel
+     at the screen's edge, a sheet's bottom) takes the whole step, below. A
+     page's --sf-modal-padding-* is the padding itself. */
+  --sf-modal--frame: var(--sf-space-2);
+  --sf-modal--frame-block: var(--sf-modal-padding-block, calc(var(--sf-modal--frame) - var(--sf-modal-surface-border-width)));
+  --sf-modal--frame-inline: var(--sf-modal-padding-inline, calc(var(--sf-modal--frame) - var(--sf-modal-surface-border-width)));
+  --sf-modal-surface-padding: var(--sf-modal--frame-block) var(--sf-modal--frame-inline);
   --sf-modal-surface-radius: var(--sf-modal-radius, var(--sf-radius--surface));
   --sf-modal-surface-shadow: var(--sf-shadow-flat);
 
@@ -403,7 +411,26 @@
 }
 
 .sf-modal[data-sf-modal-position='bottom'] [data-sf-modal-surface]:not([data-sf-modal-own-padding]) {
-  padding-block-end: calc(var(--sf-modal--padding-end, var(--sf-modal-padding-block, var(--sf-space-3))) + env(safe-area-inset-bottom, 0px));
+  padding-block-end: calc(var(--sf-modal--padding-end, var(--sf-modal-padding-block, var(--sf-modal--frame))) + env(safe-area-inset-bottom, 0px));
+}
+
+/* The sides a panel draws no edge on take the whole frame (C105 H6): the
+   screen's edge, the top and the bottom; the inner side keeps its edge
+   inside the frame. On a phone the panel has no edge at all. */
+.sf-modal:not(.sf-modal--size-question):is([data-sf-modal-position='right'], [data-sf-modal-position='inline-end']) > [data-sf-modal-panel] > [data-sf-modal-surface]:not([data-sf-modal-own-padding]) {
+  padding-block: var(--sf-modal-padding-block, var(--sf-modal--frame));
+  padding-inline-end: var(--sf-modal-padding-inline, var(--sf-modal--frame));
+}
+
+.sf-modal:not(.sf-modal--size-question):is([data-sf-modal-position='left'], [data-sf-modal-position='inline-start']) > [data-sf-modal-panel] > [data-sf-modal-surface]:not([data-sf-modal-own-padding]) {
+  padding-block: var(--sf-modal-padding-block, var(--sf-modal--frame));
+  padding-inline-start: var(--sf-modal-padding-inline, var(--sf-modal--frame));
+}
+
+@media not all and (min-width: map.get(bp.$breakpoint-array, md)) {
+  .sf-modal:not(.sf-modal--size-question):is([data-sf-modal-position='left'], [data-sf-modal-position='right'], [data-sf-modal-position='inline-start'], [data-sf-modal-position='inline-end']) > [data-sf-modal-panel] > [data-sf-modal-surface]:not([data-sf-modal-own-padding]) {
+    padding-inline: var(--sf-modal-padding-inline, var(--sf-modal--frame));
+  }
 }
 
 /* One start line in every window (decision C39, DEV's navigation acceptance
@@ -426,7 +453,7 @@
      acceptance 2026-11-11, L1). */
   --sf-modal--body-outset: max(
     calc(var(--sf-space-1\/4) * -1),
-    calc(var(--sf-modal-padding-inline, var(--sf-space-3)) * -1)
+    calc(var(--sf-modal--frame-inline) * -1)
   );
 }
 
@@ -436,7 +463,8 @@
 
 /* A question window (sf-modal size="question", decision C39; ui-control
    control/research/2026-11-09-modal-look.md, round 2, option 1). The steps
-   grow towards the answers: the frame --sf-space-3, the title --sf-space-1
+   grow towards the answers: the frame (C105 H6, --sf-space-2 with the edge
+   inside it; C39 had --sf-space-3), the title --sf-space-1
    above the content, the content's own steps (sf-confirm's window form:
    --sf-space-2 to a field or a checkbox), --sf-space-3 to the answers.
    The body scrolls inside a 1/4 inset that keeps its focus rings whole; that
@@ -444,20 +472,22 @@
    the title, the content and the answers start on one line and the × stands
    on the frame's corner. The width is the core's question step (C32 moves it
    with the density); a page's width still wins. */
-.sf-modal--size-question {
-  --sf-modal--question-block: var(--sf-modal-padding-block, var(--sf-space-3));
-  --sf-modal--question-inline: var(--sf-modal-padding-inline, var(--sf-space-3));
-}
-
 .sf-modal--size-question [data-sf-modal-panel] {
   inline-size: var(--sf-modal-question-width, var(--sf-popup-question-width));
   max-inline-size: 100%;
 }
 
 .sf-modal--size-question [data-sf-modal-surface] {
+  --sf-modal--question-block: var(--sf-modal--frame-block);
+  --sf-modal--question-inline: var(--sf-modal--frame-inline);
   --sf-modal--padding-end: max(0px, calc(var(--sf-modal--question-block) - var(--sf-space-1\/4)));
   --sf-modal-surface-padding: var(--sf-modal--question-block) max(0px, calc(var(--sf-modal--question-inline) - var(--sf-space-1\/4))) var(--sf-modal--padding-end);
   --sf-modal-surface-gap: calc(var(--sf-modal-gap, var(--sf-space-1)) - var(--sf-space-1\/4));
+}
+
+/* A question sheet draws no bottom edge: its bottom frame is the whole step. */
+.sf-modal--size-question[data-sf-modal-position='bottom'] [data-sf-modal-surface] {
+  --sf-modal--padding-end: max(0px, calc(var(--sf-modal-padding-block, var(--sf-modal--frame)) - var(--sf-space-1\/4)));
 }
 
 .sf-modal--size-question .sf-modal-header {
@@ -541,8 +571,20 @@
   }
 }
 
-/* The footer's actions stand at the end, as a dialog's do, with a step of the
-   ladder between them (simai/ui-source#26, ui-mail P-12): the footer was a
+/* The class window (component.modal's own surface, utility classes, no
+   .sf-modal-surface) takes the same window inset (C105 H6): --sf-space-2
+   with its 1 px edge inside it. It was the p-3 utility outside the edge
+   (25 · 21 · 17). In sf.base, so a padding utility in surfaceClass still
+   wins; the body's outset into the frame reads the same value. */
+@layer sf.base {
+  [data-sf-modal-surface]:not(.sf-modal-surface) {
+    --sf-modal--frame-inline: var(--sf-modal-padding-inline, calc(var(--sf-space-2) - var(--sf-px)));
+    padding: var(--sf-modal-padding-block, calc(var(--sf-space-2) - var(--sf-px))) var(--sf-modal--frame-inline);
+  }
+}
+
+/* The footer's actions stand at the end, as a dialog's do, a button group's
+   gap apart (C105 H5: --sf-space-1/3, 8 and 4 compact; it was 1/2, R236) (simai/ui-source#26, ui-mail P-12): the footer was a
    wrapping row with justify left at its default, so slotted actions sat at the
    start with a wide gap. In sf.base, so a utility in footer-class (the
    alignment of a footer that also holds a checkbox, say) still wins. */
@@ -550,6 +592,6 @@
   .sf-modal-footer {
     align-items: center;
     justify-content: flex-end;
-    gap: var(--sf-modal-footer-gap, var(--sf-space-1\/2));
+    gap: var(--sf-modal-footer-gap, var(--sf-space-1\/3));
   }
 }

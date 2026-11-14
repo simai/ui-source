@@ -91,19 +91,20 @@
         "format": "ui-source tests/browser/manifest-probes.browser.mjs (stand 15 format: given, one trigger, expect)",
         "checks": [
           {
-            "id": "host-submits-the-tel-text",
-            "covers": "form.value, form.submits, §17.1 items 1 and 6",
+            "id": "host-submits-the-number-in-e164",
+            "covers": "form.value (E.164 since 1.5.0: the box shows +7 999 123-45-67, the form gets +79991234567), form.submits, §17.1 items 1, 2 and 6",
             "field": "<sf-input-country name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-67\"></sf-input-country>",
             "form": "submit",
             "expect": {
               "submitted": true,
               "formData": {
-                "phone": "+7 999 123-45-67"
+                "phone": "+79991234567"
               },
               "evaluate": {
                 "el.querySelector('input[type=tel]').hasAttribute('name')": false,
                 "el.form === form": true,
-                "[...form.elements].includes(el)": true
+                "[...form.elements].includes(el)": true,
+                "el.value": "+7 999 123-45-67"
               }
             }
           },
@@ -155,7 +156,7 @@
           },
           {
             "id": "typing-reaches-the-form",
-            "covers": "events.input, events.change (native), the current value (§4.3); the dial code the class script re-detects while typing is its own (seen: +7 typed to the end reads +61, on the old pair too)",
+            "covers": "events.input, events.change (native), the current value (§4.3) and the form value in E.164 (since 1.5.0); the dial code the class script re-detects while typing is its own (seen: +7 typed to the end reads +61, on the old pair too)",
             "field": "<sf-input-country name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-6\"></sf-input-country>",
             "given": [
               {
@@ -165,8 +166,8 @@
             "expect": {
               "evaluate": {
                 "el.value === el.querySelector(\"input[type=tel]\").value": true,
-                "new FormData(form).get(\"phone\") === el.value": true,
-                "el.value.endsWith(\"999 123-45-67\")": true
+                "el.value.endsWith(\"999 123-45-67\")": true,
+                "new FormData(form).get(\"phone\") === \"+79991234567\"": true
               },
               "events": [
                 {
@@ -178,7 +179,7 @@
           },
           {
             "id": "reset-returns-the-default",
-            "covers": "form.reset (§17.1 item 4)",
+            "covers": "form.reset (§17.1 item 4): the default text comes back, the form gets it in E.164",
             "field": "<sf-input-country name=\"phone\" label=\"Телефон\" value=\"+7 999 123-45-67\"></sf-input-country>",
             "given": [
               {
@@ -190,7 +191,7 @@
             "expect": {
               "value": "+7 999 123-45-67",
               "formData": {
-                "phone": "+7 999 123-45-67"
+                "phone": "+79991234567"
               }
             }
           },
@@ -260,7 +261,7 @@
           },
           {
             "id": "list-home-end-arrow-up",
-            "covers": "keyboard.panel End focus:last, Home focus:first, ArrowUp focus:prev; keyboard.host ArrowUp open",
+            "covers": "keyboard.host ArrowUp open (focus in the search, C87 point 7); keyboard.panel ArrowDown from the search to the rows, End focus:last, ArrowUp focus:prev, Home focus:first",
             "field": "<sf-input-country name=\"phone\" label=\"Телефон\" max-items=\"5\"></sf-input-country>",
             "given": [
               {
@@ -271,6 +272,7 @@
               }
             ],
             "user": [
+              "keyboard:ArrowDown",
               "keyboard:End",
               "keyboard:ArrowUp",
               "keyboard:Home"
@@ -278,7 +280,8 @@
             "expect": {
               "evaluate": {
                 "el.querySelector(\".sf-country-code\").classList.contains(\"open\")": true,
-                "document.activeElement === el.querySelector(\".sf-country-code-item\")": true
+                "document.activeElement === el.querySelector(\".sf-country-code-item\")": true,
+                "document.activeElement.classList.contains(\"sf-country-code-item\")": true
               }
             }
           },

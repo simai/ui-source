@@ -1,3 +1,11 @@
+@use 'sass:list';
+@use '../../../core/scss/vars/sf_var__hue' as *;
+
+$sf-avatar-card-hue-classes: ();
+@each $hue in list.join($sf-static-hues, $sf-theme-hues) {
+  $sf-avatar-card-hue-classes: list.append($sf-avatar-card-hue-classes, '.sf-hue-#{$hue}', $separator: comma);
+}
+
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-avatar-card {
@@ -42,5 +50,47 @@
   font-size: var(--sf-avatar-card-title--font-size, var(--sf-text-size-1));
   font-weight: var(--sf-avatar-card-title--font-weight, var(--sf-font-weight-medium));
   line-height: var(--sf-avatar-card-title--line-height, var(--sf-text-height-1));
+}
+
+
+/* The media box without a photo (owner decision C124, 2026-11-13; research
+   control/research/2026-11-13-avatar-placeholder.md, variants B and A).
+   With a name: the initials on the person's hue -- sf-avatar's hue="auto"
+   rule, the hue's plate and ink (core .sf-hue-<name>) -- as the round avatar
+   draws them. Without a name: the person glyph on the neutral fill in the
+   round placeholder's colours. The glyph (45 % of the box) and the initials
+   (36 % of its width) are a share of the media box, container query units:
+   the media exception of C18, sized by the box rather than a ladder step. */
+.sf-avatar-card .sf-avatar-card-placeholder {
+  container-type: inline-size;
+  overflow: hidden;
+  background-color: var(--sf-surface-container);
+  /* The container text role, as on the round placeholder (C124 "the round
+     placeholder's colours"): dimmed text inside reads the container ink. */
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  color: var(--sf-on-surface-container-variant);
+}
+
+.sf-avatar-card .sf-avatar-card-placeholder--text:is(#{$sf-avatar-card-hue-classes}) {
+  background-color: var(--sf-hue-container);
+  color: var(--sf-on-hue-container);
+}
+
+.sf-avatar-card .sf-avatar-card-initials {
+  font-family: var(--sf-text--family);
+  font-size: 36cqi;
+  font-weight: var(--sf-font-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* The icon sheet sizes .sf-icon outside the layers, so the glyph takes its
+   size through the icon's own size variables (the author's
+   --sf-icon-glyph-size still wins). */
+.sf-avatar-card .sf-avatar-card-placeholder .sf-icon {
+  --sf-icon--font-size: 45cqi;
+  --sf-icon--height: 45cqi;
+  --sf-icon--width: 45cqi;
+  color: inherit;
 }
 }

@@ -1,6 +1,7 @@
 @use 'sass:map';
 @use 'sass:string';
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__notice-link' as notice-link;
 /* The status words are the shared vocabulary: neutral, info, success, warning,
    error. The component renders the canonical class, and the two words this
    component used before — default and primary — are matched beside it so
@@ -10,8 +11,11 @@
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/2) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
   /* The notice's geometry (owner decision C35, remarks R066 and R079), in
      tokens, so a compact region (data-sf-density) moves every step itself:
-     - one inline padding on both sides, --sf-space-1 (16; compact and phone
-       12); the block padding --sf-space-1/2 (12; compact and phone 8);
+     - one inline inset on both sides, --sf-space-1 (16; compact and phone
+       12) with the 1 px border inside it (owner decision C105 H4/H6, as the
+       fields' C77 inset: the padding is the step less the border, so the
+       icon and the letters stand 16 from the outer edge, not 17); the block
+       padding --sf-space-1/2 (12; compact and phone 8);
      - the first line stands in the box of a low size-1 control (the line +
        2 x --sf-ui-1--space-y-tightness-low: 32; compact and phone 28), the
        status icon, the text's first line and the close centred in it; the
@@ -35,8 +39,8 @@
     border-start-start-radius: var(--sf-toast-radius, var(--sf-toast--border-top-left-radius, var(--sf-radius--surface)));
     gap: var(--sf-toast-gap, var(--sf-toast--gap, var(--sf-space-1\/2)));
     padding-bottom: var(--sf-toast-padding-block, var(--sf-toast--padding-bottom, var(--sf-space-1\/2)));
-    padding-inline-end: var(--sf-toast-padding-inline, var(--sf-toast--padding-right, var(--sf-space-1)));
-    padding-inline-start: var(--sf-toast-padding-inline, var(--sf-toast--padding-left, var(--sf-space-1)));
+    padding-inline-end: var(--sf-toast-padding-inline, var(--sf-toast--padding-right, calc(var(--sf-space-1) - var(--sf-toast-border-width, var(--sf-px)))));
+    padding-inline-start: var(--sf-toast-padding-inline, var(--sf-toast--padding-left, calc(var(--sf-space-1) - var(--sf-toast-border-width, var(--sf-px)))));
     padding-top: var(--sf-toast-padding-block, var(--sf-toast--padding-top, var(--sf-space-1\/2)));
     /* A toast floats over the page, and the status containers are
        translucent fills: painted alone they let the table under a toast read
@@ -116,8 +120,51 @@
     padding-block: var(--sf-toast--lead);
   }
 
+  /* Even bottom (owner decision C114 (5), NS-10): with the action under the
+     text, the space under it is what the eye sees above the first line -- the
+     lead and the room above the capitals inside the line, (line - 1cap) / 2.
+     1cap is the font's own cap height; the container takes the text's font so
+     1cap is the text's. */
   .sf-toast .sf-toast-container:has(> .sf-toast-bottom) {
-    padding-block-end: 0;
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1);
+    padding-block-end: calc(var(--sf-toast--lead) + (var(--sf-text-height-1) - 1cap) / 2);
+  }
+
+  /* Where the action stands (owner decision C115, layout L3a; AA-7, AA-8): a
+     toast with one action puts it in the row with the text from 20rem of the
+     toast's own width (every toast of the notification area, 28rem), centred
+     on the text block, its plate overhanging the line by the low button's
+     block padding, as the close does (C35); narrower, or with two actions,
+     under the text from its start. The toast with an action is the query
+     container; the step is the toast's whole width, so the query (which reads
+     the content box) takes off its frame: two inline insets (--sf-space-1,
+     16, the border inside them). The author's switch (owner 2026-11-13,
+     #q-layout-override): the modifier .sf-toast--actions-under (sf-toast
+     actions-layout="under") keeps the action under the text at every width,
+     with the same gap and the even bottom. */
+  .sf-toast:has(> .sf-toast-container > .sf-toast-bottom) {
+    container: sf-toast / inline-size;
+  }
+
+  @container sf-toast (min-width: calc(20rem - 2 * 1rem)) {
+    .sf-toast:not(.sf-toast--actions-under):not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-container:has(> .sf-toast-bottom) {
+      flex-direction: row;
+      align-items: center;
+      column-gap: var(--sf-space-1);
+      padding-block-end: 0;
+    }
+
+    .sf-toast:not(.sf-toast--actions-under):not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-wrap {
+      flex: 1 1 0;
+      min-inline-size: var(--sf-0);
+    }
+
+    .sf-toast:not(.sf-toast--actions-under):not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-bottom {
+      flex: none;
+      flex-wrap: nowrap;
+      margin-block: calc(-1 * var(--sf-ui-1--space-y-tightness-low));
+    }
   }
 
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
@@ -304,28 +351,10 @@
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-success-container));
   }
 
-  /* One light navigation action: a link at the end of the text (owner
-     decision C50), in the text's own colour on every status container, told
-     apart by its weight and underline. */
-  .sf-toast .sf-toast-link {
-    color: inherit;
-    font-weight: var(--sf-font-weight-medium);
-    text-decoration: underline;
-    text-underline-offset: var(--sf-a3);
-  }
-
-  .sf-toast .sf-toast-link:focus {
-    outline: none;
-  }
-
-  /* The ring of every focusable SIMAI Framework part (as .sf-link). */
-  .sf-toast .sf-toast-link:focus-visible {
-    border-radius: var(--sf-radius--ui);
-    outline-color: var(--sf-focus);
-    outline-offset: var(--sf-focus--offset);
-    outline-style: var(--sf-focus--style);
-    outline-width: var(--sf-focus--width);
-  }
+  /* A link in the toast's text is help only, in the text's ink, underlined
+     (owner decision C126; core mix/_mix__notice-link.scss). The action is a
+     button. */
+  @include notice-link.sf-notice-link('.sf-toast .sf-toast-wrap');
 
   @media (prefers-reduced-motion: reduce) {
     .sf-toast {
@@ -340,11 +369,42 @@
   }
 }
 
+/* The action's label under the pointer in the dark theme (C113 follow-up,
+   DEV overlays acceptance 2026-11-13). The toast is a popup place, lighter
+   than the page in the dark theme, and the neutral tonal and ghost plates
+   step up the fill family over it (12 / 16 / 20, C113 (2)), so the dark
+   theme's label, --sf-on-surface (neutral 90, kept under the pointer by the
+   buttons' own rule), fell to 4.38:1 hovered and 4.01:1 pressed on a neutral
+   toast and to 4.43-4.72 pressed on the levels. Under the pointer the label
+   and its icon take the ink family's full step, the alpha scale's base
+   (--sf-alpha-base: white in the dark theme; the 48 / 64 / 80 inks and the
+   cross's 64, C112, are its steps), so the plates keep C113's steps and the
+   label holds 4.5:1 in every state and level: tonal 5.64-6.71 hovered and
+   5.16-6.08 pressed, ghost 5.65-8.06 and 5.17-7.77. The light theme keeps the
+   buttons' stepped inks (--sf-on-surface-hover / -active). In sf.states, as
+   the buttons' rule. */
+@layer sf.states {
+  .sf-toast .sf-toast-bottom .sf-button:is(.sf-button--tonal, .sf-button--ghost, .sf-button--link).sf-button--on-surface:not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--color: light-dark(var(--sf-on-surface-hover), var(--sf-alpha-base));
+  }
+
+  .sf-toast .sf-toast-bottom .sf-button:is(.sf-button--tonal, .sf-button--ghost, .sf-button--link).sf-button--on-surface:not(:disabled):not(.disabled):hover .sf-icon {
+    --sf-icon--color: light-dark(var(--sf-on-surface-hover), var(--sf-alpha-base));
+  }
+
+  .sf-toast .sf-toast-bottom .sf-button:is(.sf-button--tonal, .sf-button--ghost, .sf-button--link).sf-button--on-surface:not(:disabled):not(.disabled):is(:active, .active) :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--color: light-dark(var(--sf-on-surface-active), var(--sf-alpha-base));
+  }
+
+  .sf-toast .sf-toast-bottom .sf-button:is(.sf-button--tonal, .sf-button--ghost, .sf-button--link).sf-button--on-surface:not(:disabled):not(.disabled):is(:active, .active) .sf-icon {
+    --sf-icon--color: light-dark(var(--sf-on-surface-active), var(--sf-alpha-base));
+  }
+}
+
 /* The page's notification area (core/js/notify.js, SF.notify): one place at an
-   edge of the window, in the top layer. The area itself takes no clicks; its
-   toasts do. A popover is otherwise a small centred box with the browser's
-   own border, fill and padding. Its messages are a stack (data-layout=stack,
-   the default, owner decision C50) or a list with a gap (data-layout=list). */
+   edge of the window, in the top layer, where messages stack with a gap. The
+   area itself takes no clicks; its toasts do. A popover is otherwise a small
+   centred box with the browser's own border, fill and padding. */
 @layer sf.components {
   .sf-notifications {
     position: fixed;
@@ -374,21 +434,6 @@
   .sf-notifications[data-placement^="top"] { inset-block-start: var(--sf-space-1); }
   .sf-notifications[data-placement^="bottom"] { inset-block-end: var(--sf-space-1); }
 
-  /* The live copy every message is said through (notify.js announce): out of
-     sight, in the tree, whatever slot the message takes. */
-  .sf-notifications > .sf-notifications-live {
-    position: absolute;
-    inline-size: var(--sf-px);
-    block-size: var(--sf-px);
-    margin: calc(-1 * var(--sf-px));
-    padding: 0;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-    border: 0;
-    pointer-events: none;
-  }
-
   /* The same message shown again counts up rather than stacking twice. */
   .sf-notifications .sf-toast[data-count] {
     position: relative;
@@ -404,65 +449,5 @@
     color: var(--sf-surface-page);
     font-size: var(--sf-text-size-1\/3);
     line-height: var(--sf-text-height-1\/3);
-  }
-
-  /* The stack (C50). SF.notify draws the class toast, a box of its own, so the
-     size and the place are the toast's: a Smart sf-toast host is display:
-     contents and would hold neither. Every message stands on the area's edge;
-     notify.js moves each one away from it (translateY), narrows the ones
-     behind (scale, from the edge away from the window's) and clips them to the
-     front one's height; the area's height is what the stack covers. The gap
-     between open messages is the peek of a closed one: --sf-space-1/2, 12,
-     compact and phone 8. */
-  .sf-notifications[data-layout="stack"] {
-    display: block;
-  }
-  /* Open, the area still takes no pointer: the gaps between the messages
-     would swallow the page's clicks under them (C50 call). notify.js keeps
-     the stack open while the pointer crosses a gap. */
-  .sf-notifications[data-layout="stack"] > .sf-toast {
-    position: absolute;
-    inset-inline: 0;
-    margin: 0;
-    transition:
-      opacity var(--sf-duration-normal) var(--sf-ease-enter),
-      transform var(--sf-duration-normal) var(--sf-ease-enter),
-      clip-path var(--sf-duration-normal) var(--sf-ease-enter);
-  }
-  .sf-notifications[data-layout="stack"][data-placement^="bottom"] > .sf-toast {
-    inset-block-end: 0;
-    transform-origin: 50% 0;
-  }
-  .sf-notifications[data-layout="stack"][data-placement^="top"] > .sf-toast {
-    inset-block-start: 0;
-    transform-origin: 50% 100%;
-  }
-  .sf-notifications[data-layout="stack"] > .sf-toast > * {
-    transition: opacity var(--sf-duration-normal) var(--sf-ease-enter);
-  }
-  /* Behind the front one a message shows its edge alone: its content is out
-     of sight and out of reach, so a tap on the edge opens the stack. */
-  .sf-notifications[data-layout="stack"] > .sf-toast[data-stack-layer] > *,
-  .sf-notifications[data-layout="stack"] > .sf-toast[data-stack-layer]::before {
-    opacity: 0;
-    pointer-events: none;
-  }
-  .sf-notifications[data-layout="stack"] > .sf-toast[data-stack-layer="hidden"] {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-  .sf-notifications[data-layout="stack"] > .sf-toast[data-stack-entering] {
-    opacity: 0;
-  }
-  .sf-notifications[data-layout="stack"] > .sf-toast.closing {
-    opacity: 0;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .sf-notifications[data-layout="stack"] > .sf-toast,
-    .sf-notifications[data-layout="stack"] > .sf-toast > * {
-      transition: none;
-    }
   }
 }

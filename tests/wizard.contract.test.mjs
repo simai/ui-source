@@ -20,7 +20,7 @@ const code = source.split('\n').filter((line) => !line.trimStart().startsWith('/
 test('the manifest: places, navigation, progress, one value, seven events, four actions', () => {
   assert.equal(manifest.tag, 'sf-wizard');
   assert.equal(manifest.family, 'wizard');
-  assert.equal(manifest.version, '1.2.6');
+  assert.equal(manifest.version, '1.2.8');
   assert.deepEqual(manifest.settings.place.values, ['inline', 'modal', 'pages']);
   assert.deepEqual(manifest.settings.navigation.values, ['linear', 'free', 'visited']);
   assert.deepEqual(manifest.settings.progress.values, ['auto', 'row', 'count', 'column']);
@@ -117,9 +117,9 @@ test('the sheet: one rung, the container widths, 44px under a coarse pointer, th
   assert.doesNotMatch(sheet, /#[0-9a-f]{3,8}\b|rgb\(/iu);
 });
 
-test('sf-steps 1.4.0 (C101): the wizard row is a row, its reachable steps buttons, the states in today\'s words', () => {
+test('sf-steps 1.4.1 (C101, C105): the wizard row is a row, its reachable steps buttons, the states in today\'s words', () => {
   const steps = json('src/smart/steps/component.json');
-  assert.equal(steps.version, '1.4.0');
+  assert.equal(steps.version, '1.4.1');
   assert.deepEqual(steps.settings.items.of.state.values, ['done', 'ahead', 'skipped', 'running', 'error', 'completed', 'default']);
   const template = read('src/smart/wizard/js/templates/default.js');
   assert.match(template, /layout="row" navigation="free"/u);
@@ -130,4 +130,17 @@ test('sf-steps 1.4.0 (C101): the wizard row is a row, its reachable steps button
 test('the conformance probe covers the frame, validation, moves, the post and go-to-step', () => {
   const probe = json('src/smart/wizard/probe.json');
   assert.deepEqual(probe.probes.map((one) => one.id), ['p1-frame', 'p2-invalid', 'p3-next', 'p4-back', 'p5-pages-submit', 'p6-go-to-step']);
+});
+
+// C105 (spacing audit W1, W2, W3): the list of steps is a row list -- mark → label
+// H2, row edge → mark H4 (C77) -- and the frame is a window's H6 inset, the edge inside.
+test('C105: the step list is a row list and the frame a window inset', () => {
+  assert.match(sheet, /--sf-wizard--row-gap: var\(--sf-space-1\\\/2\);/);
+  assert.match(sheet, /--sf-wizard--row-inset: var\(--sf-space-1\);/);
+  assert.match(sheet, /--sf-wizard--row-inset: max\(var\(--sf-space-1\\\/2\), var\(--sf-b2\)\);/);
+  const step = sheet.match(/\.sf-wizard-list-step \{[^}]*\}/)[0];
+  assert.match(step, /gap: var\(--sf-wizard--row-gap\);/);
+  assert.match(step, /padding-inline: var\(--sf-wizard--row-inset\);/);
+  assert.doesNotMatch(step, /space-x/);
+  assert.equal((sheet.match(/--sf-wizard--padding: var\(--sf-wizard-padding, calc\(var\(--sf-space-2\) - var\(--sf-px\)\)\);/g) || []).length, 2);
 });

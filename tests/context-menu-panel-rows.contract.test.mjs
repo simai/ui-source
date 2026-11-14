@@ -8,6 +8,7 @@ import test from 'node:test';
 const css = readFileSync(new URL('../src/component/context-menu/scss/_css__context_menu.scss', import.meta.url), 'utf8');
 const source = readFileSync(new URL('../src/smart/menu-context/index.js', import.meta.url), 'utf8');
 const docs = readFileSync(new URL('../src/smart/menu-context/docs/docs.md', import.meta.url), 'utf8');
+const core = readFileSync(new URL('../src/core/js/element-manifest.js', import.meta.url), 'utf8');
 
 const rule = (selector) => {
   const at = css.indexOf(`\n${selector} {`);
@@ -54,17 +55,21 @@ test('a list of checkable rows is one Tab stop with arrows inside', () => {
 });
 
 // DP-2: a label around a form-associated sf-radio clicks the host, not the
-// radio inside; the menu passes the host's own press on to its control.
-test('a press on a row reaches a form-associated mark', () => {
-  const click = source.slice(source.indexOf('  handleRowClick(event) {'), source.indexOf('  handleEntryClick(event) {'));
-  assert.match(click, /host\?\.constructor\?\.formAssociated/);
-  assert.match(click, /closest\?\.\("\.sf-context-menu-row"\)/);
-  assert.match(click, /control\.click\(\);/);
-  assert.ok(source.indexOf('this.addEventListener("click", this.handleRowClick)') < source.indexOf('this.addEventListener("click", this.handleEntryClick)'));
+// radio inside. The core passes the host's press on to its control (RD-1,
+// element-manifest.js activateFromLabel, tests/label-activates-form-host); the
+// menu keeps no row click of its own, which would reach a row's mark twice.
+test('a press on a row reaches a form-associated mark through the core alone', () => {
+  assert.doesNotMatch(source, /handleRowClick/);
+  assert.match(core, /function activateFromLabel\(event\)/);
 });
 
-// DP-2: one of several is a radio group, never checkboxes.
-test('the docs teach one choice as a radio group and the list keys', () => {
-  assert.match(docs, /<sf-radio name="view" value="table" checked><\/sf-radio>/);
-  assert.match(docs, /одна остановка `Tab`/);
+// Owner decision C106 (9): the context menu's page teaches actions only. The
+// panel with tabs (its rows, the radio group of DP-2, the list keys) left the
+// page: a list's view settings are sf-settings look="panel", and tabs is
+// named a former name. It taught the panel's rows here before.
+test('the docs teach actions only and send view settings to sf-settings', () => {
+  assert.doesNotMatch(docs, /tabs="[^"]*"/);
+  assert.doesNotMatch(docs, /## Панель с вкладками/);
+  assert.match(docs, /`sf-settings` с `look="panel"`/);
+  assert.match(docs, /Атрибут `tabs` у `sf-menu-context`[\s\S]*прежнее имя: до 2027-01-01/);
 });

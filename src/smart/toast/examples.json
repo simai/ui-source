@@ -67,6 +67,20 @@
       }
     },
     {
+      "name": "action-under",
+      "title": "Действие всегда под текстом",
+      "settings": {
+        "heading": "Запись удалена",
+        "action-text": "Вернуть",
+        "action": "undo",
+        "status": "info",
+        "actions-layout": "under"
+      },
+      "expect": {
+        "name": "Запись удалена"
+      }
+    },
+    {
       "name": "notice",
       "title": "Уведомление: значок, текст и действие",
       "settings": {
@@ -83,7 +97,7 @@
     },
     {
       "name": "link",
-      "title": "Действие-ссылка в конце текста",
+      "title": "Действие-ссылка: кнопка на месте действия",
       "settings": {
         "heading": "Отчёт готов",
         "supporting-text": "Выгрузка за ноябрь собрана.",
@@ -331,14 +345,14 @@
         },
         {
           "id": "p10-link-action",
-          "title": "one light navigation action is a link at the end of the text, never beside buttons; its press is sf-toast-action {action} and the link is followed (owner decision C50)",
+          "title": "one light navigation action is the action button drawn as a link, in the action's place; its press is sf-toast-action {action} and the link is followed (owner decisions C50, C126 (1))",
           "covers": "settings.action-href, events.action",
           "steps": [
             {
-              "check": "(() => { const t = document.getElementById('t-link'); const a = t.querySelector('.sf-toast-supporting-text > a.sf-toast-link'); return Boolean(a) && a.getAttribute('href') === '#report' && a.textContent === 'Открыть' && a.parentElement.textContent === 'Выгрузка собрана. Открыть' && !t.querySelector('.sf-toast-bottom'); })()"
+              "check": "(() => { const t = document.getElementById('t-link'); const a = t.querySelector('.sf-toast-bottom > a.sf-button[data-toast-action]'); return Boolean(a) && a.getAttribute('href') === '#report' && a.textContent.trim() === 'Открыть' && t.querySelectorAll('.sf-toast-bottom [data-toast-action]').length === 1 && !t.querySelector('.sf-toast-wrap a'); })()"
             },
             {
-              "user": "click:#t-link a.sf-toast-link",
+              "user": "click:#t-link .sf-toast-bottom > a.sf-button",
               "expect": {
                 "events": [
                   {
@@ -363,7 +377,7 @@
           "covers": "settings.secondary-action-text, settings.secondary-action",
           "steps": [
             {
-              "check": "(() => { const t = document.getElementById('t-two'); const b = [...t.querySelectorAll('.sf-toast-bottom button[data-toast-action]')]; return b.length === 2 && b[0].dataset.action === 'undo' && b[1].dataset.action === 'trash' && !t.querySelector('a.sf-toast-link'); })()"
+              "check": "(() => { const t = document.getElementById('t-two'); const b = [...t.querySelectorAll('.sf-toast-bottom button[data-toast-action]')]; return b.length === 2 && b[0].dataset.action === 'undo' && b[1].dataset.action === 'trash' && !t.querySelector('a[data-toast-action]'); })()"
             },
             {
               "user": "click:#t-two .sf-toast-bottom button[data-action=\"trash\"]",

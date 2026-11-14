@@ -69,6 +69,15 @@
     min-inline-size: 0;
   }
 
+  /* The field holds its control's height from the first paint (C83
+     acceptance, 2026-11-13): a printed snapshot or a host that has not
+     upgraded yet drew a shorter row (40 px against the field's 56), and the
+     page moved when the element took over. The frame is that height anyway,
+     so the upgraded field is unchanged. */
+  .sf-color-field > .sf-color {
+    min-block-size: var(--sf-color--control-height);
+  }
+
   /* One height in the row (CO-03): the frame is the control of the field's
      size, and the swatch, the value, the inherited marker or reset and the
      chevron all stand inside it. The product colours moved into the window,

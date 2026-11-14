@@ -40,14 +40,15 @@ test('sf-tag draws its remove button in the Smart markup', async () => {
 
 test('sf-tag draws its remove cross from the cross ladder, plain (C14)', async () => {
   const tags = await read('component/tags/scss/_css__tags.scss');
-  // Half the step's picture (C76: 8 / 10 / 12 / 14 at 1/3, 1/2, 1, 2 on a
-  // desktop, 8 thin at 1/3); size 3 keeps the ladder cross of C14.
-  for (const [size, mark] of [['1\\/3', 'calc(var(--sf-text-height-1\\/3) / 2)'], ['1\\/2', 'calc(var(--sf-text-height-1\\/2) / 2)'], ['1', 'calc(var(--sf-text-height-1) / 2)'], ['2', 'calc(var(--sf-text-height-2) / 2)'], ['3', 'var(--sf-text-size-1)']]) {
+  // Core's cross table (C132, newer than C76 below 24): 8 / 8 / 12 / 12 at
+  // 1/3 ... 2, 16 at 3 on a desktop and 12 in compact and on a phone.
+  for (const size of ['1\\/3', '1\\/2', '1', '2', '3']) {
     const start = tags.indexOf(`.sf-tag.sf-tag--size-${size} {\n    --sf-tag--font-size:`);
     assert.ok(start >= 0, size);
-    assert.ok(tags.slice(start, tags.indexOf('}', start)).includes(`--sf-tag--close-size: ${mark};`), size);
+    assert.ok(tags.slice(start, tags.indexOf('}', start)).includes(`--sf-tag--close-size: var(--sf-micro--cross-${size});`), size);
   }
-  assert.match(tags, /\.sf-tag\.sf-tag--size-1\\\/3 > :is\(sf-button-close, sf-close\) > \.sf-icon-button\.sf-icon-button--close > \.sf-close > \.sf-close-icon \{\n  --sf-close-icon--mask-image: url\("data:image\/svg\+xml,[^"]*stroke-width=%271\.5%27/u, 'the 8 cross is drawn with a 1.5 line (C76)');
+  // Every 8 cross (1/3 and, since C132, 1/2) is drawn with a 1.5 line (C76; group build 3).
+  assert.match(tags, /\.sf-tag\.sf-tag--size-1\\\/3 > :is\(sf-button-close, sf-close\) > \.sf-icon-button\.sf-icon-button--close > \.sf-close > \.sf-close-icon,\n\.sf-tag\.sf-tag--size-1\\\/2 > \.sf-icon-button[^{]*\.sf-tag\.sf-tag--size-1\\\/2 > :is\(sf-button-close, sf-close\) > \.sf-icon-button\.sf-icon-button--close > \.sf-close > \.sf-close-icon \{\n  --sf-close-icon--mask-image: url\("data:image\/svg\+xml,[^"]*stroke-width=%271\.5%27/u, 'the 8 cross is drawn with a 1.5 line (C76)');
   assert.doesNotMatch(tags, /\* 0\.7\)/u, 'no cross scaled from the label');
   const css = await read('smart/tag/js/templates/default.css');
   assert.match(css, /--sf-close-icon--background-color: color-mix\(in srgb, var\(--sf-tag-color, var\(--sf-on-surface\)\) 64%, transparent\);/u);

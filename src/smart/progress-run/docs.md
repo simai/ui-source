@@ -10,8 +10,12 @@ tag in three looks (`look`, owner decision C34):
   Pause/Continue, Cancel and Minimize. Once the job ended the same card is the
   summary: the result, the counts, the first five errors, «Ещё N ошибок»,
   Retry and Hide.
-- `compact` — one line for a table row: a thin bar and «62 % · 3 мин» while
-  it runs, the state badge once it stopped, icon actions.
+- `row` — one line for a table row: a thin bar and «62 % · 3 мин» while
+  it runs, the state badge once it stopped, icon actions. `look="compact"`,
+  its former name, is a dated alias of `row` until 2027-01-01, noted in
+  `SF.deprecations`; the row writes the class `sf-progress-run--view-compact`
+  beside `sf-progress-run--view-row` until then. The word compact means
+  density only (`data-sf-density`, owner decision C134).
 - `notice` — one row for a corner panel: the ring in the icon field, the
   name, a line of figures and Expand. The panel itself (where it stands,
   several runs in it) is the page's composition.
@@ -55,7 +59,8 @@ confirmation around it (a change sheet) are the page's composition.
 
 ## Settings
 
-- `look` `full|compact|notice` — the look; the data are the same in all.
+- `look` `full|row|notice` — the look; the data are the same in all
+  (`compact` is a dated alias of `row`).
   (`view` and `started` are names the element runtime keeps for itself, so the
   settings are `look` and `started-at`.)
 - `label` — the job's name: the title and the region's name.
@@ -69,8 +74,10 @@ confirmation around it (a change sheet) are the page's composition.
   `unit` holds the plural forms separated by `|` in the order of the page
   language's plural categories (`товар|товара|товаров`, `item|items`). The
   percentage is floored, so it reads 100 % only at the end. Without `total`
-  the bar runs (indeterminate) and shows the elapsed time; once `total` is set
-  the same bar fills, once.
+  the bar runs (indeterminate) while the job runs or is paused, with steps or
+  without, and shows the elapsed time; once `total` is set the same bar
+  fills, once. A run of steps alone that waits or has ended draws no overall
+  bar: its steps say it.
 - `remaining` — the time left in milliseconds when the host knows it. Without
   it the run works it out from the rate of `value` over the last 30 s, hidden
   («оцениваем время…») until the rate settles (5 s of change) and always
@@ -87,10 +94,12 @@ confirmation around it (a change sheet) are the page's composition.
   `started` counts up each second. Written `m:ss`, `h:mm:ss` over an hour.
 - `run-state` `auto|running|paused|done|partial|failed|cancelled` — `auto`
   (the default) works it out from the steps: failed when one failed, running
-  while one runs, done when every step is done or skipped — partial when
-  `errors-total` or an error counter is above 0 — else waiting (drawn as
-  queued). `paused`, `cancelled` and the others come from the host. The state
-  drawn is the host state `data-state`.
+  while one runs, done when every step is done or skipped, else waiting
+  (drawn as queued). A run with no steps and a `total` is running while
+  `value` is below it and done once `value` reached it. Done with
+  `errors-total` or an error counter above 0 is partial («С ошибками»), in
+  every look. `paused`, `cancelled` and the others come from the host. The
+  state drawn is the host state `data-state`.
 - `result-text` — the result in words once the job ended. Without it:
   «Готово», «Готово с ошибками», «Не удалось», «Отменено».
 - `counters` — `[{id, label, value, status?, zero?}]`: the counts as one line
@@ -102,7 +111,8 @@ confirmation around it (a change sheet) are the page's composition.
   is a link that sends `report`.
 - `errors` — `[{where?, key?, text}]`, the first errors; the summary shows
   five. `errors-total` says how many there are; «Ещё N ошибок» sends `report`.
-- `output` — the output so far, plain text (never markup); `output-open`
+- `output` — the output so far, plain text (never markup); with no output
+  the toggle is not drawn, and the first `chunk` brings it; `output-open`
   opens the pane (a person toggles it; a page may open it on a failure);
   `output-label` names its toggle («Вывод»); `file-name` (`output.txt`) is
   what download saves.
@@ -193,13 +203,18 @@ inset). The Framework never sets them.
 
 ## Accessibility
 
-A region named by its label (a group in the compact and notice looks); the
+A region named by its label (a group in the row and notice looks); the
 title is a heading of `heading-level`. The steps are an ordered list; each
 says its state in words after its title, and the running one is
 `aria-current="step"`; a step with a log is a button with `aria-expanded`
-and `aria-controls`. The result line is the one status live region: it says
-the result when the job ends and the state changes (paused, going on) —
-never each percent; the figures and the time are not live. The overall bar
+and `aria-controls`. The result line is the status live region: it says the
+result when the job ends and the state changes (paused, going on). A second
+region, polite and visually hidden, says the count while the job runs —
+«4 812 из 12 000 товаров, 40 %», or «1 240 строк» with no size — never at
+the first paint, at most once every 10 s and only when it changed; a pause or
+the end empties it. The notice look has it too; a table row (`row`) has none,
+so a table of runs does not talk over itself. The figures line and the time
+are not live. The overall bar
 is `sf-progress-bar` named by the label; indeterminate, it says no value;
 paused, its value text says so. The error count is a link to the error list.
 The output toggle has `aria-expanded` and `aria-controls`; the output is a
@@ -209,6 +224,13 @@ Minimize for the notice's Expand), focus moves to the button that took the
 pressed one's place, so the next key goes on from there.
 
 ## Changes
+
+- 1.4.0 (2026-11-13) — the recipe prototypes' defects and decision C134: a run
+  of steps with no `total` draws the indeterminate bar while it runs; a polite
+  live region says the count every 10 s at most; no «Вывод» toggle without
+  output; a run with no steps is done (partial with errors) once `value`
+  reached `total`; `look="row"` for the table row, `compact` a dated alias
+  until 2027-01-01.
 
 - 1.3.2 (2026-11-10) — internal: the template context no longer reuses the
   name `look` for the state's badge and bar; nothing drawn differently.

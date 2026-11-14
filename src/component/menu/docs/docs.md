@@ -36,13 +36,29 @@ a vertical drawer instead of shrinking the horizontal menu into several rows.
 
 Use `aria-current="page"` on the current link. The documentation tree preset
 marks it with the navigation plate (C23), leaves an open branch unfilled and
-gives a closed branch that holds it a medium label (C30 amended, R065 a). A disabled disclosure uses a
+gives a closed branch that holds it a medium label (C30 amended, R065 a).
+Every row of the tree stands on the size 1 step -- 40, 32 compact, 36 on a
+phone -- whether it is a link, a split row or words: the tree draws the step
+inside the words' box (the wrap's padding, `--sf-menu--wrap-padding-block`),
+so the link is the whole row. Each level steps one `--sf-space-1` (16;
+12 compact and on a phone, C109): the words stand at 16, 32, 48, 64. Every
+chevron -- a split row's button and a branch's trailing glyph -- is centred on
+a square of the row's step at the row's end, so they stand on one line. A
+disabled disclosure uses a
 disabled button and cannot be toggled. Prefer removing unavailable navigation
 destinations over presenting a disabled link.
 
 Framework still recognizes existing server markup with a supplied icon button
 or `div[role="button"]`. New generated branches use a native button. Context
 Menu, Admin Menu and Smart Admin Menu have separate behavior contracts.
+
+## The border inside the inset (1.8.1, owner decision C105 H4)
+
+A bordered row (the default look) gives its 1 px border up from its inline
+padding, as it already does from its block padding and as the fields' C77
+inset does: the icon or the first letters stand 16 from the row's outer edge
+(compact and phone 12), not 17 (13). Rows without a border (navigation, the
+documentation tree) are unchanged.
 
 ## Header navigation
 
@@ -114,7 +130,13 @@ the two-level limit of C24). In a horizontal navigation row (C30, R057-R060):
 A section that is a page and has subsections is a split row: the link and
 a native button beside it (`aria-expanded`, `aria-controls`, named
 «<section>: подразделы»); under a coarse pointer the button is a whole
-control wide.
+control wide. Under a fine pointer the button keeps the row's height (the
+whole height of the row at the chevron presses it), and its plate -- hover,
+press and focus ring -- is a square of the row's step, centred on the row:
+40 x 40 for a size 1 row, 32 x 32 compact, the row's own height for a row
+shorter than its step (R219). The glyph stays over the plain branches'
+glyphs; the square takes the row's end padding and the gap before the link,
+so the row's layout does not move.
 
 A row's icon, branch indicator and counter sit inside the row's line height:
 the icon and the split-row disclosure take `--sf-menu-element--line-height`,
@@ -139,15 +161,17 @@ may end with a `.sf-menu-region-foot` row. Smart Menu draws it from a
 </nav>
 ```
 
-## Compact menu and counters
+## Rail and counters
 
 A row's counter is a `.sf-badge` with `data-count` inside
 `.sf-menu-element-wrap`, after `.sf-menu-element-text`; it stands at the row's
 end, capped at 99+, hidden at 0, and its phrase ends the row's name. Add
-`sf-menu--compact` to the root `sf-menu` for a rail of top-level destinations:
+`sf-menu--rail` to the root `sf-menu` for a rail of top-level destinations:
 each row shows its icon or avatar alone, its words stay in its name out of
 sight, and the counter moves onto the icon's top end corner with the anchored
-badge's geometry and ring (step 1). Branches do not open in a compact menu.
+badge's geometry and ring (step 1). Branches do not open in the rail.
+`sf-menu--compact`, the rail's former class, draws the same until 2027-01-01:
+the word compact means density only (`data-sf-density`, owner decision C134).
 The row that is the current page takes the navigation plate; a row whose
 hidden list holds the current page, or one marked
 `sf-menu-element--holds-current`, takes the path's 2 px line on the rail's

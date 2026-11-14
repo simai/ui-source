@@ -45,4 +45,10 @@ test('dropdown tags: the chevron in a tag field is no taller than the line', asy
   const rule = css.slice(start, css.indexOf('}', start));
   assert.match(rule, /block-size: var\(--sf-dropdown-tag-line--box\);/);
   assert.match(rule, /padding: 0;/);
+  // C123: the field action keeps a 24 hit area, its margins give back what
+  // passes the line, so the box in the line stays the line's height.
+  const actionStart = css.indexOf('.sf-dropdown.sf-dropdown--tag > .sf-dropdown-field > button.sf-field-action {');
+  const action = css.slice(actionStart, css.indexOf('}', actionStart));
+  assert.match(action, /block-size: max\(var\(--sf-dropdown-tag-line--box\), var\(--sf-c2\)\);/);
+  assert.match(action, /margin-block: calc\(\(var\(--sf-dropdown-tag-line--box\) - max\(var\(--sf-dropdown-tag-line--box\), var\(--sf-c2\)\)\) \/ 2\);/);
 });

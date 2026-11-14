@@ -437,15 +437,17 @@ class Modal extends ComponentObserver {
     }
 
     // The window's frame is the question window's (decision C39; dispatcher
-    // decision d, docs pre-check 2026-11-10): the frame --sf-space-3, the
+    // decision d, docs pre-check 2026-11-10): the frame -- since C105 a
+    // window's inset, --sf-space-2 with the edge inside it, drawn by the
+    // sheet (sf.base, so a surfaceClass padding utility still wins) -- the
     // title --sf-space-1 above the content, no line under the header, and the
     // close button on the frame's corner, the title centred on its line. The
     // frame was --sf-space-2 with a line under the header.
     const surface = document.createElement('div');
     surface.className = joinClasses(
       isInline
-        ? 'bg-surface border border-outline-variant radius-surface p-3 flex flex-col gap-1 min-w-0'
-        : 'bg-surface border border-outline-variant radius-surface shadow-modal p-3 flex flex-col gap-1 min-w-0',
+        ? 'bg-surface border border-outline-variant radius-surface flex flex-col gap-1 min-w-0'
+        : 'bg-surface border border-outline-variant radius-surface shadow-modal flex flex-col gap-1 min-w-0',
       params.surfaceClass,
     );
     surface.setAttribute('data-sf-modal-surface', '');

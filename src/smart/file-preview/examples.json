@@ -5,11 +5,8 @@
       "title": "Файл",
       "settings": {
         "file-name": "Техническое задание.pdf",
-        "file-size": "2,4 МБ",
-        "icon": "description",
-        "href": "#",
-        "download-label": "Скачать файл",
-        "remove-label": "Удалить файл"
+        "file-size": "2516582",
+        "href": "#"
       },
       "expect": {
         "role": "group",
@@ -76,6 +73,32 @@
       },
       "expect": {
         "name": "old.pdf"
+      }
+    },
+    {
+      "name": "uploading",
+      "title": "Загружается",
+      "settings": {
+        "file-name": "Устав.pdf",
+        "state": "uploading",
+        "value": 40
+      },
+      "expect": {
+        "role": "group",
+        "name": "Устав.pdf"
+      }
+    },
+    {
+      "name": "error",
+      "title": "Не загрузился",
+      "settings": {
+        "file-name": "Устав.pdf",
+        "state": "error",
+        "error-text": "нет связи с сервером"
+      },
+      "expect": {
+        "role": "group",
+        "name": "Устав.pdf"
       }
     }
   ],

@@ -43,6 +43,8 @@ export function renderInputTemplate(context) {
     maskOptions,
     ariaLabel,
     shortcut,
+    clearable,
+    revealed,
   } = context;
   // The shortcut's keys (C04, C38): the kbd component's, read in this
   // platform's words; the field draws them at its end and never styles them.
@@ -61,6 +63,39 @@ export function renderInputTemplate(context) {
   const shownPlaceholder = context.inheritedValue || placeholder;
   const inheritedSlot = renderInheritedSlot(context.component, {size, disabled: disabled || readonly});
   const inputValue = hasControlledValue ? value : defaultValue;
+  // The actions inside the field (owner decision C123): glyphs without a plate,
+  // the field layer's .sf-field-action, from the text to the edge: clear, then
+  // the password reveal. A search field's clear is the Framework's in place of
+  // the browser's own; any other field has it with clearable. Neither is drawn
+  // where the person cannot change the value.
+  const editable = !disabled && !readonly;
+  const isPassword = inputType === 'password';
+  const showClear = editable && (clearable || inputType === 'search');
+  const nativeType = isPassword && revealed ? 'text' : inputType;
+  const clearWord = context.component?.sfWord?.('clear') || 'Clear';
+  const revealWord = context.component?.sfWord?.('reveal') || 'Show password';
+  const actionsContent = html`
+    ${showClear
+      ? html`<button
+          type="button"
+          class="sf-field-action sf-input-clear"
+          data-action="clear"
+          aria-label=${clearWord}
+          ?hidden=${!String(value ?? '')}
+          @click=${(event) => context.component?.clearFromButton?.(event)}
+        ><sf-icon icon="close" aria-hidden="true"></sf-icon></button>`
+      : nothing}
+    ${isPassword && !disabled
+      ? html`<button
+          type="button"
+          class="sf-field-action sf-input-reveal"
+          data-action="reveal"
+          aria-label=${revealWord}
+          aria-pressed=${revealed ? 'true' : 'false'}
+          @click=${(event) => context.component?.toggleReveal?.(event)}
+        ><sf-icon icon=${revealed ? 'visibility_off' : 'visibility'} aria-hidden="true"></sf-icon></button>`
+      : nothing}
+  `;
   const field = createFieldContract(context.component, {
     prefix: 'sf-input',
     required,
@@ -121,11 +156,12 @@ export function renderInputTemplate(context) {
 
   const rightContent =
     context.component?.hasSlotContent?.('end')
-      ? context.component.getSlotContent('end')
+      ? html`${actionsContent}${context.component.getSlotContent('end')}`
       : context.component?.hasSlotContent?.('right')
-      ? context.component.getSlotContent('right')
+      ? html`${actionsContent}${context.component.getSlotContent('right')}`
       : html`
           ${rightText ? html`<span class="sf-input-right"><span class="sf-input-text">${rightText}</span></span>` : ''}
+          ${actionsContent}
           ${shortcutKeys.length ? html`<span class="sf-input-right sf-input-shortcut" aria-hidden="true"><kbd class="sf-kbd--group">${shortcutKeys.map((key, at) => html`${at && shortcutJoin ? html`<span class="sf-kbd-join">+</span>` : nothing}<kbd class=${key.square ? 'sf-kbd--square' : nothing}>${key.text}</kbd>`)}</kbd></span>` : ''}
           ${hintIcon ? html`<span class="sf-input-hint flex"><sf-icon icon="${hintIcon}"></sf-icon></span>` : ''}
         `;
@@ -170,7 +206,7 @@ export function renderInputTemplate(context) {
           ? html`
               <input
                 id=${field.controlId}
-                type=${inputType}
+                type=${nativeType}
                 autocomplete=${autocomplete || nothing}
                 inputmode=${inputmode || nothing}
                 minlength=${minlength === '' ? nothing : minlength}
@@ -201,7 +237,7 @@ export function renderInputTemplate(context) {
           : html`
               <input
                 id=${field.controlId}
-                type=${inputType}
+                type=${nativeType}
                 autocomplete=${autocomplete || nothing}
                 inputmode=${inputmode || nothing}
                 minlength=${minlength === '' ? nothing : minlength}

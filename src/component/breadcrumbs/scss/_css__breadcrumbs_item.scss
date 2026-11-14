@@ -34,6 +34,7 @@
   .sf-breadcrumbs-item[aria-expanded] {
     justify-content: center;
     min-inline-size: var(--sf-breadcrumbs--target);
+    flex: none;
   }
 
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-breadcrumbs-item-container--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */

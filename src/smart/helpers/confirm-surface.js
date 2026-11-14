@@ -361,20 +361,22 @@ export function confirmSurface(Base, {kind, block, answerId = "answerId"} = {}) 
 // two answers. `block` is the drawn surface's class; `acceptStatus` "danger"
 // marks a destructive acceptance (a delete, decision C13).
 //
-// The answers (decision C25): a plain question offers two outlined answers of
-// one weight. A dangerous one fills the accepting answer with the danger
-// colour and leaves the declining one quiet (ghost, no frame), so the two are
-// told apart by more than the red of a word. Both stand on the element's size
+// The answers (decision C25): a plain question's accepting answer is outlined;
+// a dangerous one fills it with the danger colour. The declining answer, the
+// question's «Отмена», is always the quiet one, ghost on-surface (decision
+// C116, #q-cancel: «Отмена» is quiet everywhere), so the two are told apart by
+// more than the red of a word. A surface whose declining answer is a decision
+// of its own weight rather than a cancel -- sf-confirm-change's «Отклонить» --
+// asks for `declineAppearance: "outline"`. Both stand on the element's size
 // (context.size, 1 unless the page gives one); a size a template gives is
 // relative, so a compact region (data-sf-density, C22) moves them down a step.
 //
-// In a window (sf-confirm appearance="window", decision C39) the declining
-// answer of a dangerous question is tonal, the window's quiet answer beside
-// the filled one, and the answers come before the status line, at the start.
-export function renderConfirmFooter(context, block, {acceptStatus = "", window = false} = {}) {
+// In a window (sf-confirm appearance="window", decision C39) the answers come
+// before the status line, at the start; the declining one is ghost there too
+// (C116; it was tonal, the window's quiet answer).
+export function renderConfirmFooter(context, block, {acceptStatus = "", window = false, declineAppearance = "ghost"} = {}) {
     const {component} = context;
     const danger = acceptStatus === "danger" || acceptStatus === "error";
-    const quiet = window ? "tonal" : "ghost";
     const size = context.size || "1";
     return html`
             <footer class="${block}__footer">
@@ -403,7 +405,7 @@ export function renderConfirmFooter(context, block, {acceptStatus = "", window =
                             @click=${() => component.confirm()}
                     ></sf-button>
                     <sf-button
-                            appearance=${danger ? quiet : "outline"}
+                            appearance=${declineAppearance}
                             scheme="on-surface"
                             size=${size}
                             text=${context.declineText}

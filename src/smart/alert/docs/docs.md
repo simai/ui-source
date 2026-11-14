@@ -1,8 +1,10 @@
 # sf-alert
 
-A persistent inline notice: a status, a heading, a supporting text, up to two
-actions and an optional close button. It is not a replacement for the
-transient Toast. The default template applies the shared `root-class`, `style`
+A persistent inline notice: the state of this page or section (owner decision
+C114 (1)), with a status, a heading, a supporting text, up to two actions and
+an optional close button. The state of the whole product is `sf-alert-bar`, a
+short reply to an action is a toast (`SF.notify`), a decision is
+`sf-confirm`. The default template applies the shared `root-class`, `style`
 and `root-style` settings to its root; the outer Smart host stays boxless.
 
 ## Basic Usage
@@ -22,12 +24,17 @@ and `root-style` settings to its root; the outer Smart host stays boxless.
 ## Settings
 
 - `status="neutral|info|success|warning|error"`
-- `appearance="default|outlined|flat"`
+- `appearance="default|outlined|flat"` — the three looks (owner decision
+  C110): `outlined` the border only, `default` the border and the status fill,
+  `flat` the status fill without a border, with the card's shadow
+  (`--sf-shadow-raised`; 1.4.0, component.alerts 1.3.0)
 - `icon` — `none` hides the leading status icon
 - `heading`
 - `supporting-text`
 - `action-text`, `action` — the first action's words and the value its event carries
 - `secondary-action-text`, `secondary-action`
+- `actions-layout="auto|under"` — where the actions stand: `auto` (the
+  default) by the alert's width, `under` under the text at every width
 - `closable`
 - `close-label` — the close button's accessible name; the language file's
   «Закрыть сообщение» / «Close alert» when unset
@@ -65,6 +72,70 @@ stands in the box of the low control, so the icon, the first line of text and
 the close share one centre; the first action's plate starts at the text edge;
 the close's plate hangs out over the inline padding, so its cross stands where
 the status icon stands on the other side.
+
+### Where the actions stand (1.3.0, owner decision C115)
+
+The actions stand in the row with the text while the alert is wide enough --
+one action from 36rem (576 px) of its own width, two from 48rem (768 px) --
+and under the text from its start when it is narrower (a container query on
+the alert, layout L3a). In the row they are centred on the text block; with a
+one-line text the button's label stands on the title line, with the icon and
+the close. Under the text, the space under the last button equals the space
+above the capitals of the first line (C114 (5)).
+
+| One action, title and text | 320 | 480 | 640 | 800 |
+|---|---|---|---|---|
+| height at 1440 (border included) | 204 | 156 | 102 (row) | 78 (row) |
+
+`actions-layout="under"` (owner 2026-11-13, #q-layout-override) keeps the
+actions under the text at every width, with the same gap and the even bottom;
+the sheet cannot count the text's lines, so a long text is the author's call.
+In the row a three-line text with two actions is taller than under it (174
+against 146 at 800). `auto`, the default, is the layout above; any other word
+is `auto`. The class form is the modifier `sf-alert--actions-under`.
+
+```html
+<sf-alert status="warning" actions-layout="under"
+  heading="Оплата не прошла"
+  supporting-text="Банк отклонил платёж. Проверьте данные карты или выберите другой способ, затем повторите оплату. Заказ хранится 24 часа."
+  action-text="Повторить" action="retry"
+  secondary-action-text="Сменить способ" secondary-action="method"></sf-alert>
+```
+
+### Callout
+
+Guidance before an action is a recipe of this element, not a component of its
+own (owner decision C114 (7)): `status="info" appearance="outlined"`, without
+`closable` and without actions.
+
+```html
+<sf-alert status="info" appearance="outlined"
+  supporting-text="Новый адрес получат все письма сайта."></sf-alert>
+```
+
+## Help link (1.3.1, owner decision C126)
+
+A link in the alert's text leads to help only -- «Узнать больше», the page
+that explains the message. Every action is a button (`action-text`,
+`secondary-action-text`), never a link in the text. Put the text with its link
+in the `supporting-text` slot:
+
+```html
+<sf-alert status="info" heading="Доступ по ссылке включён"
+  action-text="Скопировать ссылку" action="copy">
+  <span slot="supporting-text">Открыть страницу сможет любой, у кого есть
+    ссылка. <a href="/help/sharing">Узнать больше</a></span>
+</sf-alert>
+```
+
+The link is the alert's own text ink -- on-surface on a neutral or outlined
+alert, on-`<status>`-container on a status container -- not the theme's link
+blue, so it holds the text's contrast on every status and look (4.5:1 and
+more). It is underlined at the theme's link weight (1 px), the line doubles
+under the pointer, and its keyboard ring is the same ink (3:1 and more against
+every fill, light and dark). A notice has no saturated look (white text on a
+strong status colour): the three looks stay, and the action stays tonal
+surface on every status (C110 E).
 
 ## Accessibility
 

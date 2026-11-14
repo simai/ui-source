@@ -13,16 +13,22 @@ a real destination or action.
   `bg-cover` fills the whole circle once, centred, ring included; a
   non-square picture (a flag) is cut to the circle, never tiled. A coloured
   ring (hover, `--sf-avatar-border-color`) is drawn over the picture's edge;
-- size: `1/4`, `1/3`, `1/2`, `1`, `2` or `3`: 20 / 24 / 32 / 40 / 48 / 56 on
-  a desktop. In a `data-sf-density="compact"` region every size moves one
+- size: `1/4`, `1/3`, `1/2`, `1`, `2` or `3`: 16 / 24 / 32 / 40 / 48 / 56 on
+  a desktop; 1/4 is 16 px on every screen (owner decision C132). In a `data-sf-density="compact"` region every size moves one
   step down the avatar's own ladder, the bottom steps too: 16 / 20 / 24 / 32
   / 40 / 48, no step skipped. An explicit size or a `data-sf-density="normal"`
-  region inside it takes the normal ladder back. The phone ladder (20 / 20 /
+  region inside it takes the normal ladder back. The phone ladder (16 / 20 /
   28 / 36 / 44 / 52) does not change under compact;
 - shape: circular by default or `.sf-avatar--square` with the UI radius;
 - composition: `.sf-avatar-label-group`, `.sf-avatar-group` and
   `.sf-avatar-card`;
 - state: online/offline indicator and company/verification badge. The
+  indicator's coloured disc is the small step of the avatar's size, 6 / 6 / 8 /
+  12 / 12 / 16 px at 1/4 to 3, the same as the anchored badge's dot, and its
+  ring of the place colour is drawn outside the disc (1 px at 1/4 and 1/3,
+  2 px from 1/2 on; owner decision C132). The company and verification badge
+  is a small step of the avatar's size too: 8 px at 1/4 and 1/3, 12 px at 1/2
+  and 1, 16 px at 2 and 3, on every screen. The
   offline dot is the dim ink of the place the avatar stands on
   (`--sf-on-surface-variant`), at least 3:1 against the place and the avatar
   (since 2026-11-11; the disabled ink it had before was under 3:1). The dot
@@ -50,17 +56,27 @@ a real destination or action.
   tokens `--sf-tone-<name>-container` and `--sf-on-tone-<name>-container`
   draw the same until 2027-01-01.
 - cover, the decorative level (owner decision C91, level 2):
-  `.sf-avatar--text.sf-avatar--size-3.sf-hue-<name>` under
+  `.sf-avatar--text.sf-hue-<name>` of 64 px or more under
   `.sf-avatar--expressive`, or under `data-sf-style="expressive"` on the root or
   a container, stands on a cover of its hue -- the `--sf-hue-container` plate
   with a second container step laid over it towards the far corner, mixed in
   OKLab, roles only -- in the same ink. C65 gives covers to placeholders from
-  64 px; size 3 (56 px, 52 on a phone) is the largest step of the ladder, so it
-  is the only one. Strict, the default, keeps the plate flat; the nearest
+  64 px (the d6 step); size 3 (56 px, 52 on a phone) is the largest step of the
+  ladder, so the ladder's avatars stay flat and only an avatar sized to 64 px
+  or more takes it. Strict, the default, keeps the plate flat; the nearest
   `data-sf-style` wins.
 
 Use `.sf-avatar-card--square` and `.sf-avatar-card--portrait` for new card
 markup. The older classes without the BEM modifier separator remain compatible.
+
+A card without a photo (owner decision C124) puts
+`.sf-avatar-card-placeholder` in `.sf-avatar-card-image`: with
+`.sf-avatar-card-placeholder--text sf-hue-<name>` and an
+`.sf-avatar-card-initials` span it draws the initials on the hue's container
+in its ink, 36 % of the box width in the medium weight; with
+`.sf-avatar-card-placeholder--icon` and an `.sf-icon` it draws the glyph at
+45 % of the box on the neutral fill. Both are shares of the media box
+(container query units), and the box keeps its ratio without a photo.
 
 ## Semantics and accessibility
 

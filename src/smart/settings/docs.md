@@ -12,7 +12,7 @@
 
 ```html
 <sf-settings look="drill" label="Настройки чтения">
-  <sf-button-icon icon="tune" appearance="link" scheme="on-surface" size="1/2" aria-label="Настройки чтения"></sf-button-icon>
+  <sf-button-icon icon="tune" appearance="ghost" scheme="on-surface" size="1/2" aria-label="Настройки чтения"></sf-button-icon>
   <script type="application/json" data-sf-settings>
     {"items": [
       {"id": "theme", "type": "choice", "text": "Тема", "icon": "contrast", "value": "system", "options": [
@@ -172,6 +172,15 @@ green, teal, sky, blue, violet, pink, gray. `custom: false` убирает «С�
 
 Без кнопки и без `for` панель стоит открытой в потоке страницы — в боковой
 колонке или на странице настроек.
+
+## Рамка входит в отступ
+
+С 1.2.1 (решение владельца C105 H4) рамка панели `look="panel"` входит в её
+отступ по горизонтали: шапка, поиск и тело стоят на `--sf-space-1/4` минус
+рамка от её внутреннего края, и строки, заголовок и значок поиска на 1 px
+ближе к внешнему краю (текст строки размера 1/2 — в 16 px, плотно и на
+телефоне 12, а не 17 и 13). Ручка перетаскивания по-прежнему заходит в отступ
+на свой шаг; промежутки по сторонам ползунка — весь отступ.
 
 ## Ширина и размер
 

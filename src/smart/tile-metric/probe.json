@@ -14,6 +14,7 @@
       "    <sf-tile-metric id=\"wait\" label=\"Очередь\" loading></sf-tile-metric>",
       "    <sf-tile-metric id=\"none\"></sf-tile-metric>",
       "    <sf-tile-metric id=\"chart\" label=\"Запросы\" value=\"320\"><span slot=\"chart\" id=\"spark\">график</span></sf-tile-metric>",
+      "    <sf-tile-metric id=\"quota\" label=\"Место\" value=\"83\" max=\"100\" format=\"integer\" unit=\"%\" warning-at=\"80\" error-at=\"95\"></sf-tile-metric>",
       "  </div>",
       "</main>"
     ]
@@ -93,6 +94,26 @@
       "steps": [
         {
           "check": "(() => { const el = document.querySelector('#chart'); const spark = document.getElementById('spark'); return spark && el.querySelector('.sf-tile-metric-chart').contains(spark) && !el.querySelector('.sf-tile-metric-chart').hidden; })()"
+        }
+      ]
+    },
+    {
+      "id": "p6-status-word",
+      "title": "a threshold that fired without hint shows the status word beside the icon («Внимание», «Ошибка»), not the icon alone",
+      "covers": "settings.hint unset, settings.warning-at, settings.error-at",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#quota'); const line = el.querySelector('.sf-tile-metric-status'); const hint = line.querySelector('.sf-tile-metric-hint'); return el.getAttribute('data-status') === 'warning' && line.querySelector('.sf-tile-metric-status-icon').textContent === 'warning' && hint && hint.textContent === 'Внимание' && hint.getClientRects().length > 0 && !line.querySelector('.sr-only'); })()"
+        },
+        {
+          "script": "(document.querySelector('#quota').value = 97, true)",
+          "wait": 150,
+          "check": "(() => { const el = document.querySelector('#quota'); return el.getAttribute('data-status') === 'error' && el.querySelector('.sf-tile-metric-hint').textContent === 'Ошибка'; })()"
+        },
+        {
+          "script": "(document.querySelector('#quota').value = 40, true)",
+          "wait": 150,
+          "check": "(() => { const el = document.querySelector('#quota'); return el.getAttribute('data-status') === 'neutral' && !el.querySelector('.sf-tile-metric-status'); })()"
         }
       ]
     }

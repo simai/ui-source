@@ -8,11 +8,12 @@
 // header (sf-menu--horizontal, the first level only).
 export const MENU_ORIENTATIONS = Object.freeze(['vertical', 'horizontal']);
 // The class menu's presentations by name: default, the documentation tree
-// (sf-menu--documentation-tree), the compact rail (sf-menu--compact) and the
+// (sf-menu--documentation-tree), the rail (sf-menu--rail; appearance compact
+// and the class sf-menu--compact are its dated aliases until 2027-01-01) and the
 // header navigation (sf-menu--navigation). The tree and the rail are columns:
 // with them the menu is vertical. The navigation is a row or a column, as
 // orientation says, like the default.
-export const MENU_APPEARANCES = Object.freeze(['default', 'documentation-tree', 'compact', 'navigation']);
+export const MENU_APPEARANCES = Object.freeze(['default', 'documentation-tree', 'rail', 'navigation']);
 // The presentations that can stand in a row.
 export const ROW_APPEARANCES = Object.freeze(['default', 'navigation']);
 // When a row of links that does not fit becomes a button that opens them as a
@@ -307,7 +308,7 @@ export function itemsFromList(list) {
     });
 }
 
-// The items as a row or a compact rail draws them: a group gives its items
+// The items as a row or the rail draws them: a group gives its items
 // to the first level, in its place, and draws no heading.
 export function withoutGroups(items) {
   return items.flatMap((item) => (item.group ? item.children : [item]));

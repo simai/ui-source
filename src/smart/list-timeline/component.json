@@ -2,7 +2,7 @@
   "$comment": "The source of sf-list-timeline's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the activity timeline the Larena admin screens asked for (Federation bus msg-993e1e39151942c19b23 item 7), a variant of block list beside sf-list-attention and sf-list-feed.",
   "id": "smart.list-timeline",
   "tag": "sf-list-timeline",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "list",
   "settings": {
@@ -291,6 +291,14 @@
       "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
     }
   },
+  "presentation": {
+    "skeleton": {
+      "$comment": "The steps arrive as items after the first paint when the host loads them: the derived skeleton (static/default/<example>.skeleton.html) holds their box until they do (standard 1.3.8 §5.4; first-paint study R222).",
+      "late": [
+        "items"
+      ]
+    }
+  },
   "examples": "examples.json",
   "docs": "docs.md",
   "lang": "lang/",
@@ -371,7 +379,9 @@
     "version 1.1.1 (2026-11-11, C40 follow-up, acceptance notes 2 and 4): a patch. The 1.1.0 collapse note above now says the rule as it is (the first collapse events shown, the rest folded, a rest of one drawn, actorless events and steps never folded); the collapse rule (foldRuns) lives in js/fold-runs.mjs, held by a node test (tests/list-timeline-collapse.contract.test.mjs). The reference example's first-paint snapshot is retaken for sf-change 1.0.1's .sf-change__whole. Settings, values, events and keys unchanged.",
     "version 1.1.1, C61 (owner 2026-11-11, variant A of prototypes/timeline-stage-dot-state.html): a step without an icon tells its state by the shape, as the icon steps do -- done a solid dot in --sf-primary, current the same dot ringed through a 2 px gap (2 px ring), upcoming an empty dot with a 2 px --sf-on-surface-variant ring (6.47:1 on white; --sf-outline-variant would be lost on the dot). A status tone (success, warning, error) still wins. Settings, values, events and keys unchanged.",
     "version 1.2.0 (2026-11-11, C61 follow-up, owner decision C61: one logic for steps with and without an icon): a step with an icon follows the dot's states -- done the solid primary circle, current the same solid circle ringed through a gap (a 2 px --sf-primary ring and a 2 px gap in the list's ground, drawn inside the circle so the marker keeps its size), upcoming an empty circle with its glyph and a 2 px ring in --sf-on-surface-variant (it had a --sf-outline-variant ring, and current was the soft primary circle). A status tone (error, warning, success) now wins over the step with an icon too, as on a dot. In high contrast (forced-colors) the steps keep their shape in the system colours: done filled CanvasText, current filled and outlined through a gap, upcoming Canvas with a 2 px ring; the markers drop their normal-mode box-shadows there (forced-color-adjust: none had kept them), so no theme colour or ground is drawn. Settings, values, events and keys unchanged.",
-    "version 1.2.0, C61 round 4 (DEV acceptance, 2026-11-12): the shape shows the progress, the colour the status. A step with a status tone (success, warning, error) keeps its shape in that colour -- done a solid dot or circle, current the same ringed through a gap, upcoming an empty ring (an upcoming step with an error was a solid error dot, the shape of a done one); an icon step with a status is a step too (it was a plain soft status circle). One ring rule: the current step's ring sits outside the marker through a 2 px gap in the list's ground, for the dot and the icon circle alike (the icon's ring was inside the circle); the icon marker keeps its size on the rail, the ring overhangs it by 4 px. In high contrast every step keeps its shape whatever its status. The visually hidden word of a step with a status says both (\"Впереди, ошибка\"). Settings, values, events and keys unchanged."
+    "version 1.2.0, C61 round 4 (DEV acceptance, 2026-11-12): the shape shows the progress, the colour the status. A step with a status tone (success, warning, error) keeps its shape in that colour -- done a solid dot or circle, current the same ringed through a gap, upcoming an empty ring (an upcoming step with an error was a solid error dot, the shape of a done one); an icon step with a status is a step too (it was a plain soft status circle). One ring rule: the current step's ring sits outside the marker through a 2 px gap in the list's ground, for the dot and the icon circle alike (the icon's ring was inside the circle); the icon marker keeps its size on the rail, the ring overhangs it by 4 px. In high contrast every step keeps its shape whatever its status. The visually hidden word of a step with a status says both (\"Впереди, ошибка\"). Settings, values, events and keys unchanged.",
+    "version 1.2.1 (2026-11-13, first-paint study R222, integration-fix/first-paint-5; the note is written by group build 3, the branch moved the number without one): a patch, nothing drawn differently once the steps are in. The steps arrive as items after the first paint when the host loads them, so the component declares items late (presentation.skeleton.late) and the build derives its skeletons (static/default/<example>.skeleton.html), which hold their box until they do (standard 1.3.8 §5.4). Settings, values, events and keys unchanged.",
+    "version 1.3.0 (2026-11-14, owner decision C132, small steps 4 / 6 / 8 / 12 / 16 below 24): a step without an icon takes its dot from core's dot table by the rung -- 6 at 1/2, 8 at 1 and 8 at 2 (it was 10 at 2). Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

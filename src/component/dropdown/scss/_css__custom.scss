@@ -1,4 +1,5 @@
 @use '../../context-menu/scss/panel';
+@use '../../inputs/scss/field-action';
 
 @layer sf.components {
 .sf-dropdown {
@@ -127,7 +128,8 @@
    IC-3): --sf-on-surface-variant, as the field's own icons beside it. It is
    an sf-icon-button of the on-surface scheme, whose icon is the control role
    (--sf-on-surface-icon); here, more specific, the field's mark. Under a
-   pointer it takes --sf-on-surface with every neutral icon button. */
+   pointer it takes --sf-on-surface with every neutral icon button. The class
+   markup keeps this; sf-dropdown draws the field action below (C123). */
 .sf-dropdown .sf-dropdown-field > .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--icon {
   --sf-icon--color: var(--sf-on-surface-variant);
 }
@@ -138,6 +140,40 @@
      share an axis. The button's own padding is given back. */
   inset-inline-end: calc(var(--sf-dropdown-field--padding-inline-end) - var(--sf-icon-button--padding-inline-end, 0px));
   position: absolute;
+}
+
+/* C123 (3) (owner 2026-11-13; prototypes/field-icon-actions.html#q-chevron):
+   the chevron is the field's indicator, the field layer's action
+   (inputs/scss/field-action.scss): no plate in any state, the leading
+   picture's size (24 / 20 / 28 at 1, 1/2, 2), the field's inner height. Its
+   glyph ends on the field's padding (the inset), where an option's check ends
+   in the open list: the last action gives back the quarter inset its hit area
+   stands out, as a margin, so the inset is the padding itself. The whole
+   field opens the list, so the glyph takes the text's ink while the field is
+   under the pointer, and the field's ring is its focus ring: the glyph draws
+   none of its own. The value keeps half an inset before the glyph. */
+.sf-dropdown {
+  --sf-field-action--inset: var(--sf-dropdown--inset);
+  --sf-field-action--glyph: var(--sf-text-height-1);
+  --sf-field-action--height: var(--sf-ui-1--control-height);
+}
+
+.sf-dropdown.sf-dropdown--size-1\/2 {
+  --sf-field-action--glyph: var(--sf-text-height-1\/2);
+  --sf-field-action--height: var(--sf-ui-1\/2--control-height);
+}
+
+.sf-dropdown.sf-dropdown--size-2 {
+  --sf-field-action--glyph: var(--sf-text-height-2);
+  --sf-field-action--height: var(--sf-ui-2--control-height);
+}
+
+.sf-dropdown .sf-dropdown-field > .sf-field-action {
+  inset-inline-end: var(--sf-dropdown-field--padding-inline-end);
+}
+
+.sf-dropdown.sf-dropdown--text .sf-dropdown-field:has(> .sf-field-action) > input:not([type="hidden"]) {
+  --sf-dropdown-input--padding-inline-end: calc(var(--sf-field-action--glyph) + var(--sf-field-action--inset) / 2);
 }
 
 .sf-dropdown.sf-dropdown--tag > .sf-dropdown-field > button {
@@ -155,6 +191,16 @@
   min-block-size: 0;
   min-inline-size: 0;
   padding: 0;
+}
+
+/* C123: in a field of tags the chevron is the field action, in flow beside
+   them: its hit area the field action's width and never under 24 high, its
+   box no taller than the field's text line (the margins give the rest back),
+   so a field holding tags stays as tall as one holding text. */
+.sf-dropdown.sf-dropdown--tag > .sf-dropdown-field > button.sf-field-action {
+  inline-size: var(--sf-field-action--hit-inline);
+  block-size: max(var(--sf-dropdown-tag-line--box), var(--sf-c2));
+  margin-block: calc((var(--sf-dropdown-tag-line--box) - max(var(--sf-dropdown-tag-line--box), var(--sf-c2))) / 2);
 }
 
 .sf-dropdown .sf-list {
@@ -194,6 +240,23 @@
 
 .sf-list[data-sf-portal]:not(.sf-list--free-width) {
   max-inline-size: var(--sf-popup-list-max-width);
+}
+
+/* A list in place has the anchored list's height (R171 follow-up,
+   2026-11-12): the room the screen gives it, less the panel's edge padding,
+   which the dropdown measures on opening (--sf-dropdown-available-block-size,
+   component/dropdown/portal.js); unmeasured, the screen less that padding on
+   both sides. Only the rows scroll, as anchored (C06); the scrollbar is the
+   shared panel's (C106). Without a cap sixty options stood 2.4k px tall and
+   the wheel scrolled the page. */
+.sf-dropdown .sf-list:not([data-sf-portal]) {
+  display: flex;
+  flex-direction: column;
+  max-block-size: var(--sf-dropdown-available-block-size, calc(100dvh - 2 * var(--sf-space-1\/2)));
+}
+
+.sf-dropdown .sf-list:not([data-sf-portal]) > .sf-list-container-wrap {
+  overflow-y: auto;
 }
 
 .sf-dropdown .sf-list:has(.sf-list-container--grid),
@@ -551,5 +614,28 @@
 @layer sf.states {
   .sf-dropdown.sf-dropdown .sf-list .sf-list-item {
     --sf-list-item--padding-inline-start: calc(var(--sf-dropdown--inset, var(--sf-space-1)) - var(--sf-space-1\/4) + max(calc(var(--sf-px) * 0), var(--sf-dropdown--line-radius, var(--sf-radius-1\/2)) - var(--sf-radius-1\/2)) / 2);
+  }
+}
+
+/* C123: the field layer's action rules, for the class markup's chevron and
+   sf-dropdown's alike (the inputs sheet carries the same rules). */
+@include field-action.rules('.sf-dropdown-field');
+
+@layer sf.states {
+  /* The whole field is the target: under the pointer the chevron takes the
+     text's ink with it (C107 (4)). */
+  .sf-dropdown .sf-dropdown-field:hover > .sf-field-action:not(:disabled) {
+    --sf-field-action--ink: var(--sf-on-surface);
+  }
+
+  /* The field's ring is the indicator's: the glyph draws none of its own. */
+  .sf-dropdown .sf-dropdown-field > .sf-field-action--indicator:focus-visible .sf-icon {
+    outline: none;
+  }
+
+  /* A disabled filled field of text shows no chevron, as before (the class
+     markup's rule above). */
+  .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-field-action {
+    --sf-field-action--ink: transparent;
   }
 }

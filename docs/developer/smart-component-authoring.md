@@ -260,12 +260,19 @@ the next one.
   `tests/fixtures/first-paint/document-browser` is the test assembly.
 - **Gate 24** (`tests/browser/first-paint-gate.browser.mjs`): every snapshot
   is printed with its sheets, Core in `<head>`, the components' code held
-  back; at 1280 and 390 px the element's box (each part's, for an assembly)
+  back; at 1440, 1280 and 390 px the element's box (each part's, for an assembly)
   is the same once the sheets are in, once the code adopted and once the late
   data arrived, the text below never moves and no layout shift is recorded.
   A shift before any code while nothing moved, or of text alone while no box
   moved, is a font arriving and is reported apart. Known exceptions, each
   with its reason: `tests/fixtures/first-paint/gate-known.json`.
+  **24b**: the bare tag (the example as a page writes it, core.css alone)
+  keeps its settled box before its code for every component core holds a box
+  for (`tests/fixtures/first-paint/box-from-attributes.json`, the rule in
+  `src/core/scss/_sf_css__placeholder.scss`); every other component's bare
+  jump is reported, not failed. **24d**: a printed snapshot with the sheets
+  of its `static/sheets.json` gets no other sheet from the Loader before the
+  element draws.
 
 - **A Smart element in a closed container loads when it opens** (§7.2.1,
   simai/ui-source#47). Inside `[hidden]`, `[inert]`, a closed `<details>` (past

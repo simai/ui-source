@@ -4,13 +4,15 @@
 //
 // sf-alert-bar on the built bytes with the real Loader, above a mock admin
 // header, at 1440 and 390 px, light and dark: one warning, three items (the
-// error colour, «‹ 1 из 3 ›» wide, two lines narrow) and a minimized error
-// bar. Measured on the ladder (rung 1/2): the text the rung's line, the icon
-// that line, every button the rung's control height, the bar's block inset
-// (H − L) / 2 and its inline inset the rung's space-x; wide, the icon, the
-// text and the buttons on one centre; narrow, the icon, the text's first line
-// and the close on one line with the actions under the text, no arrows and
-// «Все 3» at the end; the strip the control height of the rung below. The
+// error colour, no paging arrows (C114 (3)), two lines narrow) and a
+// minimized error bar. Measured on the ladder (rung 1/2): the text the rung's
+// line, the icon that line, every button the rung's low control height H
+// (C117: height low, L + 2 × the rung's low tightness step), the bar's
+// block inset (H − L) / 2 and its inline inset the edge, --sf-space-1 (C105;
+// an admin bar's page column is the whole width); wide, the icon, the text
+// and the buttons on one centre; narrow, the icon, the text's first line and
+// the close on one line with the actions under the text from its start
+// (AA-17) and «Все 3» at the end; the strip the control height of the rung below. The
 // fills are the theme's status roles with their on- ink, at least 4.5:1, and
 // the list of all opens under the bar. No sideways scroll, no page errors.
 // With a screenshot folder, each case is saved there as a PNG.
@@ -44,8 +46,8 @@ const base = `http://127.0.0.1:${server.address().port}`;
 
 const minutesAgo = (minutes) => new Date(Date.now() - minutes * 60000).toISOString();
 const ITEMS = {
-  backup: {id: 'backup', level: 'warning', text: 'Последняя копия demo-owned.test не удалась.', source: 'Сайт demo-owned.test', time: minutesAgo(330), action: {label: 'Открыть копии', href: '#backups'}, acknowledge: {label: 'Отметить, что видели'}},
-  swap: {id: 'swap', level: 'warning', text: 'Подкачка занята на 92%: серверу не хватает памяти, сайты замедляются.', source: 'Сервер', time: minutesAgo(5), action: {label: 'Посмотреть память', href: '#memory'}, acknowledge: {label: 'Отметить, что видели'}},
+  backup: {id: 'backup', level: 'warning', text: 'Последняя копия demo-owned.test не удалась.', source: 'Сайт demo-owned.test', time: minutesAgo(330), action: {label: 'Открыть копии', href: '#backups'}, acknowledge: {label: 'Прочитано'}},
+  swap: {id: 'swap', level: 'warning', text: 'Подкачка занята на 92%: серверу не хватает памяти, сайты замедляются.', source: 'Сервер', time: minutesAgo(5), action: {label: 'Посмотреть память', href: '#memory'}, acknowledge: {label: 'Прочитано'}},
   disk: {id: 'disk', level: 'error', text: 'Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.', source: 'Сервер', time: minutesAgo(2), action: {label: 'Освободить место', href: '#disk'}},
   update: {id: 'update', level: 'info', text: 'Доступна новая версия панели 0.3.1.', source: 'Обновление', action: {label: 'Посмотреть', href: '#update'}},
 };
@@ -99,14 +101,16 @@ async function open(name, {width, theme}) {
   return {tab, context, errors};
 }
 
-// The ladder of a rung, measured from its tokens.
+// The ladder of a rung, measured from its tokens: control is the rung's
+// default control height (the strip's), low its low step (the bar's buttons,
+// C117).
 const LADDER = (rung) => {
   const r = rung.replace('/', '\\/');
   const probe = document.createElement('div');
-  probe.style.cssText = `position:absolute;inline-size:var(--sf-ui-${r}--control-height);block-size:var(--sf-text-height-${r});padding-inline:var(--sf-ui-${r}--space-x);column-gap:var(--sf-ui-${r}--text-space-x)`;
+  probe.style.cssText = `position:absolute;inline-size:var(--sf-ui-${r}--control-height);block-size:var(--sf-text-height-${r});padding-inline:var(--sf-ui-${r}--space-x);padding-block:var(--sf-space-1);column-gap:var(--sf-ui-${r}--text-space-x);min-block-size:calc(var(--sf-text-height-${r}) + 2 * var(--sf-ui-${r}--space-y-tightness-low))`;
   document.body.append(probe);
   const s = getComputedStyle(probe);
-  const value = {control: parseFloat(s.inlineSize), line: parseFloat(s.blockSize), spaceX: parseFloat(s.paddingLeft), textSpaceX: parseFloat(s.columnGap)};
+  const value = {control: parseFloat(s.inlineSize), line: parseFloat(s.blockSize), spaceX: parseFloat(s.paddingLeft), textSpaceX: parseFloat(s.columnGap), edge: parseFloat(s.paddingTop), low: parseFloat(s.minBlockSize)};
   probe.remove();
   return value;
 };
@@ -163,17 +167,19 @@ for (const theme of ['light', 'dark']) {
         ok(`${label}: the strip is the control height of the rung below, with the count`, near(g.bar.height, below.control) && g.stripText.includes('Важных уведомлений: 3'), JSON.stringify({h: g.bar.height, below, text: g.stripText}));
       } else {
         ok(`${label}: the text is the rung's line, the icon that line`, near(g.line, ladder.line) && near(g.icon[0], ladder.line) && near(g.icon[1], ladder.line), JSON.stringify({line: g.line, icon: g.icon, ladder}));
-        ok(`${label}: every button the rung's control height`, g.controls.length > 0 && g.controls.every((c) => near(c.h, ladder.control)), JSON.stringify(g.controls.map((c) => c.h)));
-        ok(`${label}: the block inset (H − L) / 2, the inline inset the rung's space-x`, near(g.padTop, (ladder.control - ladder.line) / 2) && near(g.padLeft, ladder.spaceX), JSON.stringify({padTop: g.padTop, padLeft: g.padLeft, ladder}));
+        ok(`${label}: every button the rung's low control height (C117)`, g.controls.length > 0 && g.controls.every((c) => near(c.h, ladder.low)), JSON.stringify(g.controls.map((c) => c.h)));
+        ok(`${label}: the block inset (H − L) / 2, the inline inset the edge (C105)`, near(g.padTop, (ladder.low - ladder.line) / 2) && near(g.padLeft, ladder.edge), JSON.stringify({padTop: g.padTop, padLeft: g.padLeft, ladder}));
         if (width >= 600) {
           const centre = g.icon[2];
-          ok(`${label}: wide, one row: icon, text and buttons on one centre`, near(g.bar.height, ladder.control + (ladder.control - ladder.line), 1) && g.controls.every((c) => near(c.mid, centre, 1)), JSON.stringify({h: g.bar.height, centre, mids: g.controls.map((c) => c.mid)}));
-          if (name === 'three') ok(`${label}: wide, «‹ 1 из 3 ›» is drawn`, g.pager !== 'none' && g.position === '1 из 3', `${g.pager} ${g.position}`);
+          ok(`${label}: wide, one row: icon, text and buttons on one centre`, near(g.bar.height, ladder.low + (ladder.low - ladder.line), 1) && g.controls.every((c) => near(c.mid, centre, 1)), JSON.stringify({h: g.bar.height, centre, mids: g.controls.map((c) => c.mid)}));
+          if (name === 'three') ok(`${label}: wide, no paging arrows (C114 (3))`, g.pager === null && g.position === null, `${g.pager} ${g.position}`);
         } else {
           const end = g.controls.find((c) => /sf-alert-bar-(close|minimize)/u.test(c.cls));
           const all = g.controls.find((c) => /sf-alert-bar-all/u.test(c.cls));
           ok(`${label}: narrow, icon, text and close on the first line, the actions under the text`, end && near(end.mid, g.icon[2], 1) && g.actions.top >= g.text.bottom - 0.5 && near(g.messageTop + ladder.line / 2, g.icon[2], 1), JSON.stringify({end, icon: g.icon, text: g.text, actions: g.actions, messageTop: g.messageTop}));
-          if (name === 'three') ok(`${label}: narrow, no arrows, «Все 3» at the line's end`, g.pager === 'none' && all && near(all.right, g.bar.right - g.padLeft, 1), JSON.stringify({pager: g.pager, all, bar: g.bar}));
+          const first = g.controls.find((c) => /sf-alert-bar-action\b/u.test(c.cls));
+          ok(`${label}: narrow, the actions start at the text start (AA-17)`, first && near(first.left, g.text.left, 1), JSON.stringify({first, text: g.text}));
+          if (name === 'three') ok(`${label}: narrow, no arrows, «Все 3» at the line's end`, g.pager === null && all && near(all.right, g.bar.right - g.padLeft, 1), JSON.stringify({pager: g.pager, all, bar: g.bar}));
         }
       }
       if (shots) await tab.screenshot({path: join(shots, `alert-bar-${name}-${width}-${theme}.png`), clip: {x: 0, y: 0, width, height: 260}});

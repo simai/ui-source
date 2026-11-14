@@ -2,12 +2,15 @@
 /* sf-wizard (standard simai.smart-component 1.3.14 §6). One rung of the
    ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2 with
    size="1/2": the progress, the buttons and the texts are that rung; the
-   step's title is heading-4 (heading-5 at 1/2); the frame's inset is the
-   space ladder (space-3, space-2 at 1/2). The public variables are read with
+   step's title is heading-4 (heading-5 at 1/2); the frame's inset is a
+   window's, role H6 of the horizontal-spacing standard (owner decision C105):
+   --sf-space-2, 20 on a desktop and 16 in compact density and on a phone,
+   its 1 px edge counted inside it (it was --sf-space-3 outside the edge,
+   25 · 21 · 17; spacing audit W3). The public variables are read with
    the role token as their fallback and never set here. */
 .sf-wizard {
   --sf-wizard--gap: var(--sf-wizard-gap, var(--sf-space-3));
-  --sf-wizard--padding: var(--sf-wizard-padding, var(--sf-space-3));
+  --sf-wizard--padding: var(--sf-wizard-padding, calc(var(--sf-space-2) - var(--sf-px)));
   --sf-wizard--background: var(--sf-wizard-background-color, var(--sf-wizard-background, var(--sf-surface-area)));
   --sf-wizard--border-color: var(--sf-wizard-border-color, var(--sf-outline-variant));
   --sf-wizard--radius: var(--sf-wizard-radius, var(--sf-radius--surface));
@@ -25,6 +28,13 @@
   --sf-wizard--space-x: var(--sf-ui-1--space-x);
   --sf-wizard--text-space-x: var(--sf-ui-1--text-space-x);
   --sf-wizard--related: var(--sf-space-1);
+  /* A step of the list (the column, or the list under the head) is a row,
+     not a control (C105): its mark stands H2 before its label (--sf-space-1/2,
+     12 · 8 · 8) and the row's edge H4 before its mark, the list inset of C77
+     (--sf-space-1 at size 1, 16 · 12 · 12; size 1/2 keeps 12). It read the
+     button's space-x and text-space-x (16 / 8, compact 14 / 7; audit W1, W2). */
+  --sf-wizard--row-gap: var(--sf-space-1\/2);
+  --sf-wizard--row-inset: var(--sf-space-1);
   /* The column of steps: eleven lines of the rung, a label of two or three
      words beside its mark. */
   --sf-wizard--column: calc(var(--sf-wizard--line) * 11);
@@ -52,7 +62,7 @@
 
 .sf-wizard.sf-wizard--size-half {
   --sf-wizard--gap: var(--sf-wizard-gap, var(--sf-space-2));
-  --sf-wizard--padding: var(--sf-wizard-padding, var(--sf-space-2));
+  --sf-wizard--padding: var(--sf-wizard-padding, calc(var(--sf-space-2) - var(--sf-px)));
   --sf-wizard--line: var(--sf-text-height-1\/2);
   --sf-wizard--font-size: var(--sf-text-size-1\/2);
   --sf-wizard--small-line: var(--sf-text-height-1\/3);
@@ -62,6 +72,7 @@
   --sf-wizard--control: var(--sf-ui-1\/2--control-height);
   --sf-wizard--space-x: var(--sf-ui-1\/2--space-x);
   --sf-wizard--text-space-x: var(--sf-ui-1\/2--text-space-x);
+  --sf-wizard--row-inset: max(var(--sf-space-1\/2), var(--sf-b2));
 }
 
 /* In a window the frame is the window's surface: no edge, no fill and no
@@ -178,12 +189,12 @@
 .sf-wizard-list-step {
   display: flex;
   align-items: center;
-  gap: var(--sf-wizard--text-space-x);
+  gap: var(--sf-wizard--row-gap);
   box-sizing: border-box;
   inline-size: 100%;
   min-block-size: var(--sf-wizard--control);
   padding-block: calc((var(--sf-wizard--control) - var(--sf-wizard--line)) / 2);
-  padding-inline: var(--sf-wizard--space-x);
+  padding-inline: var(--sf-wizard--row-inset);
   border: 0;
   border-radius: var(--sf-radius--ui, var(--sf-radius-1));
   background: transparent;
@@ -376,11 +387,14 @@
 
 /* ---------------------------------------------------------------- footer */
 
+/* Back · (Skip) · the primary: one button group, --sf-space-1/3 apart (C105
+   H5, C144; 8 and 4 compact). It was the button's space-x (16, 12 at 1/2). */
+
 .sf-wizard-footer {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sf-wizard--space-x);
+  gap: var(--sf-space-1\/3);
   padding-block-start: var(--sf-wizard--gap);
   border-block-start: var(--sf-px) solid var(--sf-wizard--border-color);
 }
@@ -390,7 +404,7 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: var(--sf-wizard--space-x);
+  gap: var(--sf-space-1\/3);
   margin-inline-start: auto;
 }
 

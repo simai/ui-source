@@ -1,6 +1,6 @@
 import { createDropdownInteraction, syncDropdownCheckbox } from '../interaction';
 import { bindFormReset } from '../../form-reset-helper';
-import { openDropdownPortal, positionDropdownPortal, closeDropdownPortal, alignDropdownInPlace } from '../portal';
+import { openDropdownPortal, positionDropdownPortal, closeDropdownPortal, alignDropdownInPlace, scrolledInside } from '../portal';
 import { retireFieldSizeClass } from '../../field-size';
 import { holdOpenSurfaceMark } from '../../../core/js/open-surface-mark';
 
@@ -100,7 +100,7 @@ function getHiddenInput(root) {
 }
 
 function getToggleIcon(root) {
-  return root.querySelector(".sf-dropdown-field .sf-icon-button .sf-icon");
+  return root.querySelector(".sf-dropdown-field :is(.sf-icon-button, .sf-field-action) .sf-icon");
 }
 
 function getListWrap(root) {
@@ -138,7 +138,9 @@ function ensurePortalList(root) {
     list.addEventListener('keydown',onRootKeydown);
   }
   if (!root.__sfDropdownPortalOnViewportChange) {
-    root.__sfDropdownPortalOnViewportChange=()=>{
+    root.__sfDropdownPortalOnViewportChange=(event)=>{
+      // The list's own scroll moves nothing (owner R171).
+      if(scrolledInside(getList(root),event))return;
       if(root.classList.contains('sf-dropdown--open'))positionPortalList(root);
     };
   }
@@ -508,7 +510,7 @@ function syncDisabledState(root) {
   const field = getField(root);
   const triggerInput = getTriggerInput(root);
   const searchInput = getSearchInput(root);
-  const toggleButton = root.querySelector(".sf-dropdown-field .sf-icon-button");
+  const toggleButton = root.querySelector(".sf-dropdown-field > :is(.sf-icon-button, .sf-field-action)");
 
   root.removeAttribute("aria-disabled");
   // A native button trigger says it is disabled through its own attribute.

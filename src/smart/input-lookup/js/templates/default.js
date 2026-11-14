@@ -16,10 +16,9 @@ import {createFieldContract} from '../../../../component/field-contract';
 // standard: every picture of a size is its line; LK-06). The stylesheet sizes
 // it; the class is the avatar ladder's smallest step, for its initials.
 const AVATAR_CLASS_SIZE = '1/4';
-// The clear is sf-button-close, plain (owner decision C14: a field's clear),
-// the icon button's square box a rung below the field: 28 on a desktop and 24
-// on a phone at size 1, steps of the height ladder (LK-08).
-const CLEAR_SIZE = {'1/2': '1/3', '1': '1/3', '2': '1/2'};
+// The clear is the field layer's action (owner decision C123, which takes
+// C14's plain close further): a glyph without a plate, the size of the
+// field's leading picture, its hit area the field's height.
 const BUTTON_SIZE = {'1/2': '1/3', '1': '1/2', '2': '1'};
 
 function avatar(item, size, extraClass = '') {
@@ -193,14 +192,11 @@ export function renderLookupTemplate(context) {
           @focus=${(event) => component.onQueryFocus(event)}
         >
         ${single && editable
-          ? html`<sf-button-close
-              size=${CLEAR_SIZE[size] || '1/3'}
-              appearance="plain"
-              root-class="sf-lookup-clear flex-none"
+          ? html`<button type="button"
+              class="sf-field-action sf-lookup-clear"
               aria-label=${component.sfWord('clear')}
-              title=${component.sfWord('clear')}
               @click=${(event) => component.onClearClick(event)}
-            ></sf-button-close>`
+            ><sf-icon icon="close" aria-hidden="true"></sf-icon></button>`
           : nothing}
       </div>
       ${message

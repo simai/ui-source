@@ -55,6 +55,12 @@ try {
       prev: Boolean(element.querySelector('.sf-pagination-direction--prev')),
       next: Boolean(element.querySelector('.sf-pagination-direction--next')),
       last: Boolean(element.querySelector('.sf-pagination-direction--last')),
+      // An end that cannot be taken is disabled, not removed (C97 (4)).
+      off: Object.fromEntries(['first', 'prev', 'next', 'last'].map((kind) => {
+        const control = element.querySelector(`.sf-pagination-direction--${kind} :is(button, a)`);
+        return [kind, Boolean(control && (control.disabled || control.getAttribute('aria-disabled') === 'true' || (control.localName === 'a' && !control.hasAttribute('href'))))];
+      })),
+      rowWidth: Math.round(list.getBoundingClientRect().width * 10) / 10,
       // The row of numbers was replaced by the page field on 2026-10-05, so
       // what has to stay readable is the number in the field: the row's width
       // now follows the digits, by the owner's own request.
@@ -68,26 +74,40 @@ try {
     };
   }, current);
 
+  const widths = new Set();
   for (const current of [1, 2, 5, 20, 45]) {
     const shown = await look(current);
+    widths.add(shown.rowWidth);
     if (shown.numbers.length) {
       note({case: `window on page ${current}`, got: shown.numbers, expected: 'no row of numbers'});
     }
     if (shown.field !== String(current) || shown.fieldFits !== true || !shown.betweenArrows) {
       note({case: `field on page ${current}`, got: shown, expected: 'the page in a field between the arrows, and the number fits it'});
     }
-    if (current === 1 && (shown.first || shown.prev)) {
-      note({case: 'ends', expected: 'no first and no back on the first page'});
+    // Owner decision C97 (4): the buttons at the ends dim, they do not go
+    // away, and the row keeps its width (they were removed on the first and
+    // the last page before).
+    if (!(shown.first && shown.prev && shown.next && shown.last)) {
+      note({case: `ends on page ${current}`, got: shown, expected: 'first, back, forward and last are all drawn'});
     }
-    if (current > 1 && !(shown.first && shown.prev)) {
-      note({case: `ends on page ${current}`, expected: 'first and back appear'});
+    if (current === 1 && !(shown.off.first && shown.off.prev)) {
+      note({case: 'ends', got: shown.off, expected: 'first and back disabled on the first page'});
     }
-    if (current === 45 && (shown.next || shown.last)) {
-      note({case: 'ends', expected: 'no forward and no last on the last page'});
+    if (current > 1 && (shown.off.first || shown.off.prev)) {
+      note({case: `ends on page ${current}`, got: shown.off, expected: 'first and back enabled'});
     }
-    if (current < 45 && !(shown.next && shown.last)) {
-      note({case: `ends on page ${current}`, expected: 'forward and last appear'});
+    if (current === 45 && !(shown.off.next && shown.off.last)) {
+      note({case: 'ends', got: shown.off, expected: 'forward and last disabled on the last page'});
     }
+    if (current < 45 && (shown.off.next || shown.off.last)) {
+      note({case: `ends on page ${current}`, got: shown.off, expected: 'forward and last enabled'});
+    }
+  }
+  // Neither the ends nor the page's digits change the row (the field is as
+  // wide as the last page's number).
+  const rows = [...widths];
+  if (Math.max(...rows) - Math.min(...rows) > 0.5) {
+    note({case: 'row width', got: rows, expected: 'the row keeps its width over the pages (C97 (4))'});
   }
 
 

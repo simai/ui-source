@@ -2,7 +2,7 @@
   "$comment": "The source of sf-tile-metric's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the metric tile the Larena admin screens asked for (Federation bus msg-993e1e39151942c19b23 item 1, owner-approved panel prototype 2026-11-02), planned in the reply msg-05e76ea0bc0746a690b8 as sf-tile-metric of the free SIMAI Framework.",
   "id": "smart.tile-metric",
   "tag": "sf-tile-metric",
-  "version": "1.2.4",
+  "version": "1.3.0",
   "kind": "leaf",
   "family": "tile",
   "settings": {
@@ -105,7 +105,7 @@
     "hint": {
       "type": "string",
       "default": "",
-      "summary": "A short line beside the status: «серверу не хватает памяти»"
+      "summary": "A short line beside the status: «серверу не хватает памяти». Without it a status other than neutral shows its word there («Внимание», «Ошибка»; words status-*)"
     },
     "href": {
       "type": "string",
@@ -179,7 +179,7 @@
   "docs": "docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "Without href or openable the tile is a group named by its label. With href it is one link, with openable one native button; nothing interactive is inside either, so every part is phrasing content. The change says its direction in words beside the arrow, the status its word beside the icon, so colour is never the only sign. The limit is a meter (role meter, valuemin 0, valuemax max, valuenow, valuetext the limit's words); the progress bar under it is a picture of it.",
+    "$comment": "Without href or openable the tile is a group named by its label. With href it is one link, with openable one native button; nothing interactive is inside either, so every part is phrasing content. The change says its direction in words beside the arrow, the status its word beside the icon (visible as the line's text when there is no hint, said before the hint when there is), so colour is never the only sign. The limit is a meter (role meter, valuemin 0, valuemax max, valuenow, valuetext the limit's words); the progress bar under it is a picture of it.",
     "role": "group",
     "name": {
       "from": [
@@ -257,7 +257,9 @@
     "version 1.2.1 (2026-11-09): the tile stands on --sf-surface-card and declares a card place (C16, the background system, owner 2026-11-08).",
     "version 1.2.2 (2026-11-10): a patch; nothing in the component changed. Its built sheet is a place (sf-place) and, with C43 (component.badges 1.5.0, tokens.colour 1.8.0), takes back the core role --sf-surface-underlay with one line, --sf-surface-underlay: initial, so a tonal badge inside it lays its tone over its own surface and not over a row further out. Nothing is drawn differently outside a selected row. Settings, values, events and keys unchanged.",
     "version 1.2.3 (2026-11-11): a patch; its built sheet is a place (sf-place) and takes the theme's accent and boundary line back on the inverse places too (bg-surface-inverse, bg-surface-inverse-fixed; DEV 2026-11-10, form backgrounds study): nothing in the component changed.",
-    "version 1.2.4 (2026-11-12; written on the branch as 1.2.3): a patch; nothing in the component changed. Its built sheet is a place (sf-place) and, with C43 later (2026-11-12), takes back the core role --sf-surface-place-fill as well, with one line, --sf-surface-place-fill: initial, so an anchored badge inside it reads the fill of its own rows only and not of a selected row further out. Nothing is drawn differently outside an anchored badge's ring."
+    "version 1.2.4 (2026-11-12; written on the branch as 1.2.3): a patch; nothing in the component changed. Its built sheet is a place (sf-place) and, with C43 later (2026-11-12), takes back the core role --sf-surface-place-fill as well, with one line, --sf-surface-place-fill: initial, so an anchored badge inside it reads the fill of its own rows only and not of a selected row further out. Nothing is drawn differently outside an anchored badge's ring.",
+    "version 1.2.5 (2026-11-13, owner decision C131 (1), sf-progress-bar 1.4.0): a neutral tile's limit bar passes no status, so it draws the theme's primary as before (neutral is grey since sf-progress-bar 1.4.0); a status or a threshold still colours it. Settings, values, events and keys unchanged.",
+    "version 1.3.0 (2026-11-13, recipe prototype ui-control prototypes/recipe-quota-usage.html at 1cb805c5): a minor. A status other than neutral without hint -- a threshold that fired on a tile whose page gave no hint -- shows the status word (status-warning «Внимание», status-error «Ошибка», status-success, status-info; en Warning, Error, OK, Info) as the line's text beside the icon, in the hint's look (sf-tile-metric-hint); before, the icon stood alone and the word was visually hidden. With a hint nothing changes: the word is said before it, visually hidden. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

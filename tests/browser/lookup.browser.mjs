@@ -507,6 +507,43 @@ try {
       if (typeof value === 'number') check(`${theme}: ${part} contrast ${value} >= 4.5`, value >= 4.5, {value});
     }
   }
+
+  // ---- a bare value takes its option's label, whichever comes first ----------
+  // (sf-input-lookup 1.7.1, R214 in passing): a value set as a code from script
+  // before the options arrive showed the code («u1») for good -- the setter
+  // resolved it once. The value attribute, the island and a property set
+  // before the upgrade resolved already; all are held here.
+  {
+    const opts = [{value: 'u1', label: 'Anna Petrova'}, {value: 'u2', label: 'Boris Ivanov'}];
+    await open(page, 'theme-light', `
+      <sf-input-lookup id="b-attr-island" label="A" value="u1">${island({options: opts})}</sf-input-lookup>
+      <sf-input-lookup id="b-attr-late" label="B" value="u2"></sf-input-lookup>
+      <sf-input-lookup id="b-prop-first" label="C"></sf-input-lookup>
+      <sf-input-lookup id="b-prop-late" label="D"></sf-input-lookup>
+      <sf-input-lookup id="b-pre" label="E"></sf-input-lookup>
+      <script>(() => { const el = document.getElementById('b-pre'); el.value = 'u2'; el.options = ${JSON.stringify(opts)}; })();</script>
+      <sf-input-lookup id="b-multi" label="F" multiple></sf-input-lookup>`, 6);
+    await page.evaluate(async (list) => {
+      const tick = () => new Promise((settle) => setTimeout(settle, 50));
+      document.getElementById('b-attr-late').options = list;
+      const first = document.getElementById('b-prop-first'); first.options = list; first.value = 'u2';
+      const late = document.getElementById('b-prop-late'); late.value = 'u1'; await tick(); late.options = list;
+      const multi = document.getElementById('b-multi'); multi.value = ['u2', 'u1']; await tick(); multi.options = list;
+    }, opts);
+    await page.waitForTimeout(300);
+    const shown = await page.evaluate(() => Object.fromEntries([...document.querySelectorAll('sf-input-lookup')].map((el) => [el.id, {
+      box: el.querySelector('.sf-lookup-input').value,
+      label: Array.isArray(el.value) ? el.value.map((one) => one.label) : el.value?.label,
+      chips: [...el.querySelectorAll('sf-tag')].map((tag) => tag.getAttribute('text')),
+    }])));
+    evidence.bareValue = shown;
+    check('bare value: attribute, options in the island', shown['b-attr-island'].box === 'Anna Petrova', shown['b-attr-island']);
+    check('bare value: attribute, options set later', shown['b-attr-late'].box === 'Boris Ivanov', shown['b-attr-late']);
+    check('bare value: property after the options', shown['b-prop-first'].box === 'Boris Ivanov', shown['b-prop-first']);
+    check('bare value: property before the options', shown['b-prop-late'].box === 'Anna Petrova' && shown['b-prop-late'].label === 'Anna Petrova', shown['b-prop-late']);
+    check('bare value: properties set before the upgrade', shown['b-pre'].box === 'Boris Ivanov', shown['b-pre']);
+    check('bare values, multiple: chips take the labels in order', JSON.stringify(shown['b-multi'].chips) === JSON.stringify(['Boris Ivanov', 'Anna Petrova']), shown['b-multi']);
+  }
 } finally {
   await browser.close();
   server.close();

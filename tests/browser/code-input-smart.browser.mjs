@@ -240,7 +240,11 @@ try {
   });
   check('K2 drag: cells 2-5 selected and painted, not collapsed by the click', dragged.caret === 1 && dragged.caretEnd === 5
     && dragged.selected === '011110' && dragged.current === -1 && paint.cell === paint.want, {dragged, paint});
-  check('K2: the input is transparent, not opacity 0', paint.opacity === '1' && paint.text === 'rgba(0, 0, 0, 0)', {paint});
+  // Transparent is any colour at alpha 0: the sheet's transparent fill colour
+  // is computed as rgba(255, 255, 255, 0), which draws the same as
+  // rgba(0, 0, 0, 0).
+  const clear = (colour) => colour === 'transparent' || /^rgba\([^)]*,\s*0\)$/u.test(colour);
+  check('K2: the input is transparent, not opacity 0', paint.opacity === '1' && clear(paint.text), {paint});
   const copied = await page.evaluate(() => {
     const data = new DataTransfer();
     document.querySelector('#basic input').dispatchEvent(new ClipboardEvent('copy', {clipboardData: data, bubbles: true, cancelable: true}));
@@ -267,7 +271,12 @@ try {
   // fill's hover step, without a border.
   const hoverOver = async (selector, index) => {
     const point = await page.evaluate(({css, at}) => {
-      const rect = document.querySelector(css).querySelectorAll('.sf-verification-cell')[at].getBoundingClientRect();
+      // The filled row sits below the first screen: bring the cell into view
+      // at once (the page may scroll smoothly), or the pointer lands outside
+      // the page and no cell is hovered.
+      const cell = document.querySelector(css).querySelectorAll('.sf-verification-cell')[at];
+      cell.scrollIntoView({block: 'center', inline: 'center', behavior: 'instant'});
+      const rect = cell.getBoundingClientRect();
       return {x: rect.left + rect.width / 2, y: rect.top + rect.height / 2};
     }, {css: selector, at: index});
     await page.mouse.move(point.x, point.y);
@@ -289,7 +298,7 @@ try {
   const filledHover = await hoverOver('[data-row="1"] sf-input-code[data-appearance="filled"]', 2);
   check('K4 filled: one cell on the fill\'s hover step, the others on the fill, no border', filledHover.hovered === '001000'
     && filledHover.fills[2] === filledHover.want.fillHover && filledHover.fills.filter((colour) => colour === filledHover.want.fill).length === 5
-    && filledHover.borders.every((colour) => colour === 'rgba(0, 0, 0, 0)'), {filledHover});
+    && filledHover.borders.every(clear), {filledHover});
   await page.mouse.move(0, 0);
   await settle();
   await page.keyboard.press('Tab');

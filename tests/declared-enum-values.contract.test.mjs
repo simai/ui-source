@@ -81,16 +81,13 @@ test('no first-party source asks a component for a value it does not declare', (
   assert.deepEqual([...new Set(wrong)].sort(), KNOWN, 'these values are not among the ones the component declares');
 });
 
-// What is still wrong and is not this round's subject. sf-tabs asks its buttons
-// for appearance="primary" (type="primary" until 2026-10-13), which is not one of the six appearances either; the tabs
-// look right because an unknown appearance falls back to default, which is what
-// they want anyway. Changing it would change how tabs draw, so it is recorded
-// here rather than fixed in a round about the property view (owner, 2026-10-09).
+// What is still wrong and is not this round's subject. Nothing: sf-tabs asked
+// its buttons for appearance="primary" (type="primary" until 2026-10-13) with
+// the tabs scheme in the button's scheme, two values outside their lists; since
+// sf-tabs 1.1.18 (defect BT-1, 2026-11-13) the look goes to appearance and the
+// colour is primary.
 const KNOWN_ATTRIBUTES = [];
-const KNOWN = [
-  'src/smart/tabs/js/templates/default.js: <sf-button appearance="primary"> — default, ghost, outline, surface, tonal',
-  'src/smart/tabs/js/templates/default.js: <sf-button-icon appearance="primary"> — default, ghost, outline, tonal',
-];
+const KNOWN = [];
 
 // And an attribute a component does not declare is the same mistake wearing a
 // different hat: the folded bin's chevron was written <sf-icon name="…">, where

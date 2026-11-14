@@ -31,19 +31,19 @@ const sfFilePreviewMeta = {
       "kind": "custom",
       "valueType": "string",
       "default": "",
-      "description": "The file's size as text, for example 12 KB."
+      "description": "The file's size: a number of bytes (2457600), drawn in the page's language and units by the core's size format (2,3 МБ; decision C25) and said with the unit as a word (2,3 мегабайта; C51); text a host already wrote (12 KB) is drawn as written."
     },
     "icon": {
       "kind": "custom",
       "valueType": "string",
       "default": "description",
-      "description": "The glyph in the holder when no picture is shown (a Material Symbols name)."
+      "description": "The glyph in the holder when no picture is shown (a Material Symbols name). Unset: the glyph of the file's type -- from mime-type, else from the name's extension (PDF, a sheet, slides, an archive, ... each its own; decision C81), else description."
     },
     "href": {
       "kind": "custom",
       "valueType": "string",
       "default": "",
-      "description": "The file's address: the name links to it and the download action opens it. Empty: the row is not a link and the download action does nothing."
+      "description": "The file's address: the name is a link to it (decision C51; it downloads in the same tab, or opens in target when download is false) and the download action fetches it. Empty: the name is text and the download action does nothing."
     },
     "kind": {
       "kind": "enum",
@@ -127,15 +127,38 @@ const sfFilePreviewMeta = {
       "default": "false",
       "description": "Makes the row unavailable: the actions do nothing and the row takes the disabled look."
     },
+    "state": {
+      "kind": "enum",
+      "values": [
+        "ready",
+        "uploading",
+        "error"
+      ],
+      "default": "ready",
+      "description": "The file's state, as the upload core's rows (decision C81). ready: the file is there -- the name is its link, the size under it, download and remove. uploading: the name as text, under it the upload row's bar with its per cent at the end (value; no value: the bar runs), aria-busy; remove stays (the host cancels), download is not offered. error: the name as text, under it «Не загрузился» and error-text in the error colour, «Повторить» (the retry event) at the end of the row -- under the text in a narrow row, where decision C88 places it -- and remove."
+    },
+    "value": {
+      "kind": "custom",
+      "valueType": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "While uploading: the share sent, per cent (0 to 100, clamped), drawn by the bar and its per cent. Absent: the bar runs without a share."
+    },
+    "error-text": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "Why the file did not upload, after «Не загрузился:» in a failed row (state error)."
+    },
     "download-label": {
       "kind": "custom",
       "valueType": "string",
-      "description": "Empty: the text of the page's language (\"Download file\" in English)."
+      "description": "Empty: the text of the page's language with the file's name («Скачать Отчёт.pdf», \"Download Report.pdf\" in English; decision C51)."
     },
     "remove-label": {
       "kind": "custom",
       "valueType": "string",
-      "description": "Empty: the text of the page's language (\"Remove file\" in English)."
+      "description": "Empty: the text of the page's language with the file's name («Удалить Отчёт.pdf», \"Remove Report.pdf\" in English; decision C51)."
     },
     "compact": {
       "kind": "boolean",

@@ -57,7 +57,7 @@
       "note": "the old attribute writes precision, the name sf-input-quantity gives the same setting (S1); the class component still reads data-decimals until the date"
     },
     {
-      "from": "label=\"none|text|tooltip\"",
+      "from": "label",
       "to": "value-display",
       "kind": "attribute",
       "component": "sf-slider-range",

@@ -37,7 +37,7 @@ export function renderRadioTemplate(context) {
 
   const control = html`
     <label class=${rootClasses.filter(Boolean).join(' ')} style=${context.rootStyle || nothing} @click=${keepHelpOutOfLabel}>
-      <span class="sf-radio-button-box transition flex items-cross-center content-main-center">
+      <span class="sf-radio-button-box flex items-cross-center content-main-center">
         <input
           type="radio"
           name=${controlName || nothing}

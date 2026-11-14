@@ -6,7 +6,7 @@
     "lang": "ru",
     "body": [
       "<main>",
-      "  <div id=\"area\"><sf-tooltip id=\"t1\" text=\"Сохранить черновик\" supporting-text=\"Ctrl+S\" arrow=\"top-center\"></sf-tooltip></div>",
+      "  <div id=\"area\"><sf-tooltip id=\"t1\" text=\"Сохранить черновик\" supporting-text=\"Изменения не потеряются\" arrow=\"top-center\"></sf-tooltip></div>",
       "  <sf-tooltip id=\"t-dark\" text=\"Тёмная\" appearance=\"dark\"></sf-tooltip>",
       "  <sf-tooltip id=\"t-old\" text=\"Старое имя\" type=\"dark\"></sf-tooltip>",
       "  <sf-tooltip id=\"t-slot\"><span slot=\"text\" id=\"slot-text\">Из слота</span></sf-tooltip>",
@@ -21,7 +21,7 @@
       "covers": "settings.text, settings.supporting-text",
       "steps": [
         {
-          "check": "document.querySelector('#t1 .sf-tooltip-text').textContent === 'Сохранить черновик' && document.querySelector('#t1 .sf-tooltip-supporting-text').textContent === 'Ctrl+S' && Boolean(document.querySelector('#t1 .sf-tooltip-tail'))"
+          "check": "document.querySelector('#t1 .sf-tooltip-text').textContent === 'Сохранить черновик' && document.querySelector('#t1 .sf-tooltip-supporting-text').textContent === 'Изменения не потеряются' && Boolean(document.querySelector('#t1 .sf-tooltip-tail'))"
         }
       ]
     },

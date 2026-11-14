@@ -99,6 +99,9 @@
           "  <sf-progress-scale id=\"p1\" label=\"Загрузка файлов\" value=\"65\"></sf-progress-scale>",
           "  <sf-progress-scale id=\"p2\" aria-label=\"Копирование\" value=\"40\" status=\"success\"></sf-progress-scale>",
           "  <sf-progress-scale id=\"p-old\" label=\"Старое имя\" value=\"20\" tone=\"warning\"></sf-progress-scale>",
+          "  <sf-progress-scale id=\"p-floor\" label=\"Округление\" value=\"61\"></sf-progress-scale>",
+          "  <sf-progress-scale id=\"p7\" label=\"Квота\" value=\"83\" warning-at=\"80\" error-at=\"95\" meter></sf-progress-scale>",
+          "  <sf-progress-scale id=\"p8\" label=\"Серая\" value=\"50\" status=\"neutral\"></sf-progress-scale>",
           "</main>"
         ]
       },
@@ -211,6 +214,51 @@
                   }
                 ]
               }
+            }
+          ]
+        },
+        {
+          "id": "p6-floor",
+          "title": "the blocks round down: 61 % lights 6, 9 % none, 99 % nine, 100 % ten (PG-12)",
+          "covers": "values.value",
+          "steps": [
+            {
+              "script": "(async () => { const el = document.getElementById('p-floor'); const out = []; for (const v of [61, 9, 10, 99, 100, 0]) { el.setAttribute('value', String(v)); await el.updateComplete; await new Promise((r) => requestAnimationFrame(r)); const root = el.querySelector('.sf-progress-scale'); const step = [...root.classList].map((c) => c.match(/^sf-progress-scale--(\\d+)$/)).filter(Boolean).map((m) => Number(m[1])); out.push(step.length ? step[0] / 10 : 0); } return out; })()",
+              "expect": {
+                "returns": [
+                  6,
+                  0,
+                  1,
+                  9,
+                  10,
+                  0
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "p7-meter-thresholds",
+          "title": "meter gives role meter; warning-at and error-at turn the scale a warning or an error by itself (C131 (7))",
+          "covers": "settings.meter, settings.warning-at, settings.error-at, host-states data-status",
+          "steps": [
+            {
+              "check": "(() => { const a = document.querySelector('#p7'); const r = a.querySelector('.sf-progress-scale'); return r.getAttribute('role') === 'meter' && r.getAttribute('aria-valuenow') === '83' && a.getAttribute('data-status') === 'warning' && r.classList.contains('sf-progress-scale--warning'); })()"
+            },
+            {
+              "script": "(document.querySelector('#p7').value = 96, true)",
+              "wait": 100,
+              "check": "(() => { const a = document.querySelector('#p7'); return a.getAttribute('data-status') === 'error' && a.querySelector('.sf-progress-scale').classList.contains('sf-progress-scale--error'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p8-status-default",
+          "title": "no status carries no class (primary); neutral is grey (C131 (1))",
+          "covers": "settings.status",
+          "steps": [
+            {
+              "check": "(() => { const a = document.querySelector('#p1 .sf-progress-scale'); return !/sf-progress-scale--(neutral|primary|info|success|warning|error)\\b/.test(a.className) && document.querySelector('#p8 .sf-progress-scale').classList.contains('sf-progress-scale--neutral'); })()"
             }
           ]
         }

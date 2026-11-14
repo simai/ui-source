@@ -33,7 +33,9 @@ test('the Loader asks for adopted glyphs and marks them when their font is in', 
   // A glyph of an sf-icon element is the element's own.
   assert.match(body, /if \(el\.closest\?\.\("sf-icon"\)\) return;/u);
   assert.match(body, /added \+= this\.trackIconDescriptor\(tracked\.icon, tracked\.attrs\);/u);
-  assert.match(body, /if \(this\.isTrackedIconLoaded\(tracked\)\) \{\s*el\.classList\.add\("sf-icon-loaded"\);/u);
+  // The glyph itself is passed (fix/icon-loaded-document-fonts): a glyph drawn
+  // in a face the page brought counts as loaded once that face is.
+  assert.match(body, /if \(this\.isTrackedIconLoaded\(tracked, el\)\) \{\s*el\.classList\.add\("sf-icon-loaded"\);/u);
   assert.match(body, /window\.addEventListener\("sf-icons-subset:ready", settle\);/u);
   assert.match(body, /if \(added > 0\) this\.mutate\(\(\) => this\.loadFonts\(\)\);/u);
 });

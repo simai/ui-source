@@ -37,6 +37,7 @@ import {readingPosition} from '../../core/js/reading-position';
 import {tagSelector} from '../../core/js/tag-aliases.js';
 import {renderProgressRunTemplate} from './js/templates/default';
 import manifest from './component.json';
+import aliases from './aliases.json';
 import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
@@ -48,7 +49,10 @@ let sequence = 0;
 export const STEP_STATES = ['waiting', 'running', 'done', 'failed', 'skipped'];
 export const RUN_STATES = ['waiting', 'running', 'paused', 'done', 'partial', 'failed', 'cancelled'];
 export const ENDED = ['done', 'partial', 'failed', 'cancelled'];
-export const VIEWS = ['full', 'compact', 'notice'];
+// row is the table row's look; compact, its former name, is a dated value
+// alias of row until 2027-01-01 (aliases.json; owner decision C134: the word
+// compact means density only).
+export const VIEWS = ['full', 'row', 'notice'];
 // sf-steps' state glyphs (sf-steps 1.2.0, sf-wizard); waiting is an empty ring.
 export const ICONS = {waiting: 'radio_button_unchecked', running: 'progress_activity', done: 'check_circle', failed: 'error', skipped: 'do_not_disturb_on', cancelled: 'cancel', partial: 'warning', paused: 'pause_circle'};
 // The output a run keeps: the oldest lines leave past this many characters.
@@ -59,12 +63,19 @@ export const ERRORS_SHOWN = 5;
 // of this length (NN/g, Apple HIG: no estimate before it means something).
 export const RATE_SETTLE_MS = 5000;
 export const RATE_WINDOW_MS = 30000;
+// The progress a screen reader hears from the run's polite live region: the
+// count in words («4 812 из 12 000 товаров, 40 %»), at most once in this
+// many ms and only when it changed, never at the first paint.
+export const ANNOUNCE_MS = 10000;
 
 // One state, one look in every look (C34, R073): the badge of sf-badge 1.4.0
-// and the status of the overall bar (sf-progress-bar 1.3.0).
+// and the status of the overall bar (sf-progress-bar 1.3.0). A job waiting or
+// running has no status: its bar is the theme's primary, as before (since
+// sf-progress-bar 1.4.0, owner decision C131 (1), neutral is grey); a
+// cancelled job's bar is that grey.
 export const STATE_LOOK = {
-  waiting: {activity: 'queued', bar: 'neutral'},
-  running: {activity: 'running', bar: 'neutral'},
+  waiting: {activity: 'queued', bar: ''},
+  running: {activity: 'running', bar: ''},
   paused: {activity: 'paused', bar: 'warning'},
   done: {activity: 'done', bar: 'success'},
   partial: {status: 'warning', icon: 'warning', bar: 'warning'},
@@ -271,6 +282,7 @@ const ProgressRunElement = elementFromManifest(manifest, {
   base: SfBaseElement,
   lang: {en, ru},
   source: 'ru',
+  aliases,
   actions: {
     chunk(args = {}) {
       const more = typeof args === 'string' ? args : args?.text;
@@ -336,6 +348,13 @@ class SfProgressRun extends ProgressRunElement {
     this._seenEnd = 0;
     this._lastState = '';
     this._resumed = false;
+    // What the polite live region says now, and when that reached the page
+    // (stamped after the render that drew it: a render overtaken by the next
+    // one never drew its text, and a stamp taken before it let two changes
+    // land 9 s apart).
+    this._spoken = '';
+    this._spokenAt = 0;
+    this._spokenDrawn = false;
   }
 
   onConnected() {
@@ -387,18 +406,25 @@ class SfProgressRun extends ProgressRunElement {
     return counter ? number(counter.value) ?? 0 : 0;
   }
 
-  // The job's state: the host's run-state, else worked out from the steps
-  // (finished with errors is partial).
+  // The job's state: the host's run-state, else worked out from the steps,
+  // or, with no steps, from its numbers: running while value is below total,
+  // done once it reached it. Finished with errors (errors-total or an error
+  // counter above 0) is partial.
   get drawnState() {
     const given = this.runState;
     if (given && given !== 'auto' && RUN_STATES.includes(given)) return given;
-    const worked = runState(this.list);
+    let worked = runState(this.list);
+    if (worked === 'waiting' && !this.list.length && this.whole !== null) {
+      worked = (this.done ?? 0) >= this.whole ? 'done' : 'running';
+    }
     if (worked === 'done' && this.errorsCount > 0) return 'partial';
-    if (worked === 'waiting' && !this.list.length && this.whole !== null) return 'running';
     return worked;
   }
 
   get drawnView() {
+    // The shim rewrites look compact to row; a value set as a property after
+    // the element drew is read the same (C134).
+    if (this.look === 'compact') return 'row';
     return VIEWS.includes(this.look) ? this.look : 'full';
   }
 
@@ -559,6 +585,39 @@ class SfProgressRun extends ProgressRunElement {
 
   // ---------------------------------------------------------------- drawing
 
+  // What the polite live region says while the job runs: the count as the
+  // figures line says it, in words («4 812 из 12 000 товаров, 40 %»; with no
+  // size «1 240 строк»). It changes at most once in ANNOUNCE_MS, never at the
+  // first paint and never in a table row (a table of runs would talk over
+  // itself); a pause or the end empties it (the status region says those).
+  spokenProgress(state, view, value, total, now) {
+    if (state !== 'running' || view === 'row') {
+      this._spoken = '';
+      this._spokenAt = 0;
+      this._spokenDrawn = false;
+      return '';
+    }
+    const locale = this.locale;
+    const forms = text(this.unit);
+    let next = '';
+    if (total !== null) {
+      next = this.sfWord('announce-progress', {vars: {
+        value: formatNumber(value ?? 0, locale),
+        total: formatNumber(total, locale),
+        unit: forms ? ` ${pluralForm(forms, total, locale)}` : '',
+        percent: percentOf(value ?? 0, total),
+      }});
+    } else if (value) {
+      next = this.sfWord('announce-count', {vars: {value: formatNumber(value, locale), unit: forms ? ` ${pluralForm(forms, value, locale)}` : ''}});
+    }
+    if (!this._spokenAt) this._spokenAt = now;
+    else if (!this._spokenDrawn && next !== this._spoken && now - this._spokenAt >= ANNOUNCE_MS) {
+      this._spoken = next;
+      this._spokenDrawn = true;
+    }
+    return this._spoken;
+  }
+
   // «4 812 из 12 000 товаров · 40 %», the count so far, or nothing.
   figures(value, total, unit, {short = false} = {}) {
     const locale = this.locale;
@@ -597,7 +656,10 @@ class SfProgressRun extends ProgressRunElement {
     const value = this.done;
     const total = this.whole;
     const indeterminate = total === null && (state === 'running' || state === 'paused');
-    const showBar = total !== null || !list.length;
+    // The overall bar: whenever the size is known, and while a job of unknown
+    // size runs or is paused (indeterminate), with steps or without. A run of
+    // steps alone that has not started or has ended has none: its steps say it.
+    const showBar = total !== null || !list.length || indeterminate;
     const percent = percentOf(value ?? 0, total);
     const barValue = total !== null ? (state === 'done' ? 100 : percentOf(value ?? 0, total)) : (ended ? 100 : 0);
 
@@ -676,6 +738,7 @@ class SfProgressRun extends ProgressRunElement {
       moreErrors: errorsTotal > errors.length && ended ? errorsTotal - errors.length : 0,
       resultShown,
       announcement,
+      spoken: this.spokenProgress(state, view, value, total, now),
       outputShown: this.outputText,
       outputOpen: Boolean(this.outputOpen),
       outputLabel: this.outputLabel,
@@ -695,7 +758,6 @@ class SfProgressRun extends ProgressRunElement {
         hide: word('hide'),
         copy: word('copy'),
         download: word('download'),
-        emptyOutput: word('empty-output'),
         pause: word('pause'),
         resume: word('resume'),
         minimize: word('minimize'),
@@ -758,6 +820,12 @@ class SfProgressRun extends ProgressRunElement {
 
   afterRender() {
     super.afterRender?.();
+    // The count the live region now holds reached the page: the next one waits
+    // ANNOUNCE_MS from here.
+    if (this._spokenDrawn) {
+      this._spokenDrawn = false;
+      this._spokenAt = Date.now();
+    }
     this.restoreFocus();
     this.syncTimer();
     const pane = this.querySelector('.sf-progress-run-output');

@@ -142,7 +142,9 @@ const read = () => {
     iconActionHeight: buttonHeight('#row-failed .sf-progress-run-retry'),
     errorsShown: document.querySelectorAll('#sum .sf-progress-run-error').length,
     moreErrors: document.querySelector('#sum .sf-progress-run-more')?.textContent.replace(/\s+/gu, ' ').trim() || null,
-    statusRegions: document.querySelectorAll('#sum [role="status"], #sum [aria-live="polite"], #sum [aria-live="assertive"]').length,
+    statusRegions: document.querySelectorAll('#sum [role="status"], #sum [aria-live="assertive"]').length,
+    // 1.4.0: the run's own polite region for the count, apart from the status region.
+    politeRegions: document.querySelectorAll('#sum .sf-progress-run-live[aria-live="polite"]:not([role])').length,
     liveFigures: document.querySelectorAll('.sf-progress-run-figures[aria-live], .sf-progress-run-figures [aria-live], .sf-progress-run-done[role="status"]').length,
     horizontalScroll: document.documentElement.scrollWidth > innerWidth + 1,
     logInside: (() => {
@@ -159,16 +161,17 @@ const EXPECTED_STATES = {
   done: {state: 'done', activity: 'done', bar: 'success'},
   cnl: {state: 'cancelled', activity: 'stopped', bar: 'neutral'},
   fail: {state: 'failed', activity: 'failed'},
-  ind: {state: 'running', activity: 'running', bar: 'neutral', barIndeterminate: true},
-  'row-run': {state: 'running', bar: 'neutral', barIndeterminate: false},
+  // A running job's bar and ring have no status since 1.3.4 (C131 (1): primary; neutral is grey).
+  ind: {state: 'running', activity: 'running', bar: null, barIndeterminate: true},
+  'row-run': {state: 'running', bar: null, barIndeterminate: false},
   'row-paused': {state: 'paused', bar: 'warning', barPaused: true},
   'row-queued': {state: 'waiting', activity: 'queued'},
   'row-done': {state: 'done', activity: 'done'},
   'row-partial': {state: 'partial', status: 'warning'},
   'row-failed': {state: 'failed', activity: 'failed'},
   'row-cancelled': {state: 'cancelled', activity: 'stopped'},
-  'ntc-run': {state: 'running', ring: 'neutral'},
-  'ntc-ind': {state: 'running', ring: 'neutral'},
+  'ntc-run': {state: 'running', ring: null},
+  'ntc-ind': {state: 'running', ring: null},
   'ntc-partial': {state: 'partial'},
 };
 const COUNTS = ['Добавлено 9 214', 'Обновлено 2 746', '40 ошибок'];
@@ -225,6 +228,7 @@ try {
           check(facts.logInside === true, `${label}: the failed step's log runs past the card`);
           check(!/меньше/u.test(facts.importTime), `${label}: a run at 0 with no rate yet says «${facts.importTime}», wanted the estimating words`);
           check(facts.statusRegions === 1, `${label}: ${facts.statusRegions} status regions in a run, wanted 1`);
+          check(facts.politeRegions === 1, `${label}: ${facts.politeRegions} polite count regions in a run, wanted 1`);
           check(facts.liveFigures === 0, `${label}: the figures are live`);
           if (shots && load === 1) await tab.screenshot({path: join(shots, `${device}-${theme}-${density}.png`), fullPage: true});
           await context.close();

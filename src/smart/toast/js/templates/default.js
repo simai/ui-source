@@ -13,40 +13,40 @@ function joinClasses(...tokens) {
 const TOAST_ACTION_CLASSES = 'sf-button sf-button--tonal sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center';
 const TOAST_CLOSE_CLASSES = 'sf-icon-button sf-icon-button--close sf-icon-button--variant-close sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 sf-icon-button--height-low flex items-cross-center';
 
-// The actions (owner decision C50, the model of SF.Toast.create): one light
-// navigation action -- action-text with action-href and no secondary action --
-// is a link at the end of the text; undo, retry, extend and two actions are
-// buttons under the text (C35, C46). Never both.
+// The actions (owner decisions C50 and C126 (1), the model of
+// SF.Toast.create): every action is a button. One light navigation action --
+// action-text with action-href and no secondary action -- is the one action
+// button drawn as a link, an <a href> in the button's classes, in the action's
+// place (C115); undo, retry, extend and two actions are buttons (C35, C46).
+// A link in the text leads to help only (C126; the notice-link rule).
 export function toastActions(context) {
   const first = String(context.actionText ?? '').trim();
   const second = String(context.secondaryActionText ?? '').trim();
   const href = String(context.actionHref ?? '').trim();
-  if (first && href && !second) return { link: { text: first, href, action: context.action || 'action' }, buttons: [] };
   const buttons = [];
-  if (first) buttons.push({ text: first, action: context.action || 'action' });
-  if (second) buttons.push({ text: second, action: context.secondaryAction || 'secondary' });
-  return { link: null, buttons };
+  if (first) buttons.push({ text: first, action: context.action || 'action', href: href && !second ? href : '' });
+  if (second) buttons.push({ text: second, action: context.secondaryAction || 'secondary', href: '' });
+  return { buttons };
 }
 
-// A no-break space keeps the link with the text's last word: after a plain
-// space a full line sent the link alone onto a line of its own (T2, C50
-// acceptance r3). It is written into the text's own node, not a node of its
-// own: a text node of white space alone is the template's indentation to the
-// first-paint snapshot, which prints it as one plain space (group build
-// 2026-11-12, toast/link).
-const LINK_SPACE = '\u00a0';
-
-function renderLink(link) {
-  return html`<a
-    class="sf-toast-link"
-    href=${link.href}
-    data-action=${link.action}
-    data-toast-action=${link.action}
-  >${link.text}</a>`;
+function renderAction(button) {
+  return button.href
+    ? html`<a
+        class=${TOAST_ACTION_CLASSES}
+        href=${button.href}
+        data-action=${button.action}
+        data-toast-action=${button.action}
+      ><span class="sf-button-text-container">${button.text}</span></a>`
+    : html`<button
+        type="button"
+        class=${TOAST_ACTION_CLASSES}
+        data-action=${button.action}
+        data-toast-action=${button.action}
+      ><span class="sf-button-text-container">${button.text}</span></button>`;
 }
 
 export function renderToastTemplate(context) {
-  const { link, buttons } = toastActions(context);
+  const { buttons } = toastActions(context);
   const rootClasses = joinClasses(
     'sf-toast',
     // The component normalises the legacy words, so the template sees only the
@@ -54,6 +54,9 @@ export function renderToastTemplate(context) {
     `sf-toast--${['neutral', 'info', 'success', 'warning', 'error'].includes(context.status ?? context.type)
       ? (context.status ?? context.type)
       : 'neutral'}`,
+    // The author's switch (owner 2026-11-13, #q-layout-override): the action
+    // under the text at every width; auto (and any other word) is layout L3a.
+    context.actionsLayout === 'under' ? 'sf-toast--actions-under' : '',
     'flex',
     'items-cross-start',
     context.rootClass,
@@ -78,26 +81,17 @@ export function renderToastTemplate(context) {
       <div class="sf-toast-container flex flex-col flex-1">
         <div class="sf-toast-wrap flex flex-col">
           ${context.title
-            ? html`<div class="sf-toast-text">${link && !context.supportingText ? `${context.title}${LINK_SPACE}` : context.title}${link && !context.supportingText ? renderLink(link) : nothing}</div>`
+            ? html`<div class="sf-toast-text">${context.title}</div>`
             : nothing}
-          ${context.supportingText || (link && !context.title)
-            ? html`<div class="sf-toast-supporting-text">${link && context.supportingText ? `${context.supportingText}${LINK_SPACE}` : context.supportingText}${link ? renderLink(link) : nothing}</div>`
+          ${context.supportingText
+            ? html`<div class="sf-toast-supporting-text">${context.supportingText}</div>`
             : nothing}
         </div>
 
         ${buttons.length
           ? html`
               <div class="sf-toast-bottom flex items-center">
-                ${buttons.map((button) => html`
-                  <button
-                    type="button"
-                    class=${TOAST_ACTION_CLASSES}
-                    data-action=${button.action}
-                    data-toast-action=${button.action}
-                  >
-                    <span class="sf-button-text-container">${button.text}</span>
-                  </button>
-                `)}
+                ${buttons.map(renderAction)}
               </div>
             `
           : nothing}

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.background-color",
   "kind": "utility",
-  "version": "1.4.1",
+  "version": "1.4.3",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/background-color/default/index.js",

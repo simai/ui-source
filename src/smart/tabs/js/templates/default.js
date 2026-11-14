@@ -118,17 +118,22 @@ function renderIconLink(item, context) {
       aria-current=${item.selected ? 'page' : nothing}
       aria-disabled=${item.disabled ? 'true' : nothing}
       data-sf-tab-index=${String(item.index)}
-      data-tab=${String(item.index)}
       data-tab-label=${item.label}
       data-tooltip=${item.hint ? hintId(item, context) : nothing}
     ><sf-icon root-class="pointer-event-none" icon=${item.iconStart || item.icon || item.iconEnd || nothing}
       weight="400" aria-hidden="true"></sf-icon></a>`;
 }
 
-// data-tab (R193 DP-11) is a former name of data-sf-tab-index: written for
-// one minor (1.2.x) so a page that read it keeps working, dropped in 1.3.0.
-// Unprefixed, a page selector [data-tab] caught these buttons. Nothing in
-// the component reads it.
+// A tab is marked data-sf-tab-index only (R193 DP-11): the unprefixed
+// data-tab, its former name, was written for one minor (1.2.x) and is not
+// written from 1.3.0 -- a page selector [data-tab] caught these buttons.
+
+// The tab buttons are asked on their own axes (BT-1, C15): appearance="default"
+// scheme="primary". sf-tabs draws one look per type whatever its retired scheme
+// (owner decision C96 item 1), so the look is not taken from scheme. Before,
+// the template wrote appearance="primary" scheme=<the tabs scheme>, two values
+// outside sf-button's lists, and every tab fell back to default primary --
+// the same classes it draws now.
 function renderTab(item, context) {
   const tabContent = context.component?.hasSlotContent?.(item.tabSlotName)
     ? context.component.getSlotContent(item.tabSlotName)
@@ -137,7 +142,6 @@ function renderTab(item, context) {
     return html`
       <span
         data-sf-tab-index=${String(item.index)}
-        data-tab=${String(item.index)}
         role="tab"
         aria-label=${item.label}
         aria-selected=${item.selected ? 'true' : 'false'}
@@ -179,9 +183,9 @@ function renderTab(item, context) {
   if(context.variant !== 'icons') {
       return html`
           <sf-button
-                  appearance="primary"
+                  appearance="default"
                   size=${context.size}
-                  scheme=${context.scheme}
+                  scheme="primary"
                   text-position=${vertical ? 'start' : nothing}
                   href=${context.links ? item.href : nothing}
                   ?disabled=${Boolean(context.links && item.disabled)}
@@ -191,7 +195,6 @@ function renderTab(item, context) {
                   icon-end=${item.iconRight || nothing}
                   root-class=${tabClasses(item)}
                   data-sf-tab-index=${String(item.index)}
-                  data-tab=${String(item.index)}
                   data-tooltip=${item.hint ? hintId(item, context) : nothing}
           >
               ${tabContent === nothing ? counted : html`<span slot="text">${tabContent}</span>`}
@@ -206,14 +209,13 @@ function renderTab(item, context) {
       // button-icon default `add` on every tab).
       return html`
           <sf-button-icon
-                  appearance="primary"
+                  appearance="default"
                   size=${context.size}
-                  scheme=${context.scheme}
+                  scheme="primary"
                   icon=${item.iconStart || item.icon || item.iconEnd || nothing}
                   data-tab-label=${item.label}
                   root-class=${tabClasses(item)}
                   data-sf-tab-index=${String(item.index)}
-                  data-tab=${String(item.index)}
                   data-tooltip=${item.hint ? hintId(item, context) : nothing}
           >
           </sf-button-icon>

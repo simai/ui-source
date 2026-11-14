@@ -23,7 +23,17 @@ function normalizeType(value) {
   return TOAST_TYPES.has(status) ? status : 'neutral';
 }
 
+// An error or a warning never leaves by itself (owner decision C114 (6),
+// NS-2; WCAG 2.2.1): it stays until a person closes it, whatever data-duration
+// it carries. A success, an info and a neutral message keep their time.
+const STAYING_TOAST_TYPES = new Set(['warning', 'error']);
+
+function staysUntilClosed(root) {
+  return [...STAYING_TOAST_TYPES].some((status) => root.classList?.contains(`sf-toast--${status}`));
+}
+
 function readDuration(root) {
+  if (staysUntilClosed(root)) return 0;
   const duration = Number(root.getAttribute('data-duration'));
   return Number.isFinite(duration) && duration > 0 ? duration : 0;
 }
@@ -207,16 +217,20 @@ function createToastElement(options = {}) {
     closeLabel = pageText(TOAST_TEXT, 'close', document.documentElement),
     duration = 0,
     role = '',
+    actionsLayout = 'auto',
   } = options;
 
   const root = document.createElement('div');
   root.className = joinClasses(
     'sf-toast',
     `sf-toast--${normalizeType(status ?? type)}`,
+    // The author's switch (owner 2026-11-13): the action under the text at
+    // every width; auto is layout L3a (C115).
+    actionsLayout === 'under' ? 'sf-toast--actions-under' : '',
     'flex',
     'items-cross-start',
   );
-  if (Number.isFinite(Number(duration)) && Number(duration) > 0) {
+  if (!STAYING_TOAST_TYPES.has(normalizeType(status ?? type)) && Number.isFinite(Number(duration)) && Number(duration) > 0) {
     root.dataset.duration = String(Number(duration));
   }
   if (role === 'status' || role === 'alert') root.setAttribute('role', role);
@@ -242,38 +256,23 @@ function createToastElement(options = {}) {
     wrap.append(titleNode);
   }
 
-  // One light navigation action is a link at the end of the text (owner
-  // decision C50); buttons under the text are for undo, retry, extend and two
-  // actions (C35, C46). A notice never mixes the two: a link takes the place
-  // of the buttons.
+  // Every action is a button (owner decision C126 (1)): one light
+  // navigation action (C50, `link`) is the one action button drawn as a link,
+  // an <a href> in the button's classes, in the action's place (C115). Undo,
+  // retry, extend and two actions are buttons (C35, C46). With `link` the
+  // other actions do not apply.
   const linkText = String(link?.text ?? '').trim();
-  if (supportingText || (linkText && !title)) {
+  if (supportingText) {
     const supportingTextNode = document.createElement('div');
     supportingTextNode.className = 'sf-toast-supporting-text';
     supportingTextNode.textContent = supportingText;
     wrap.append(supportingTextNode);
   }
 
-  if (linkText) {
-    const anchor = document.createElement('a');
-    anchor.className = 'sf-toast-link';
-    anchor.href = link.href || '#';
-    if (link.target) anchor.target = link.target;
-    anchor.setAttribute('data-action', link.action || 'action');
-    anchor.setAttribute('data-toast-action', link.action || 'action');
-    anchor.textContent = linkText;
-    const line = wrap.querySelector('.sf-toast-supporting-text') ?? wrap.lastElementChild;
-    // A no-break space keeps the link with the text's last word: after a plain
-    // space a full line sent the link alone onto a line of its own (T2, C50
-    // acceptance r3).
-    if (line.textContent) line.append('\u00a0');
-    line.append(anchor);
-  }
-
   container.append(wrap);
 
   const buttons = linkText
-    ? []
+    ? [{ text: linkText, action: link.action || 'action', href: link.href || '#', target: link.target }]
     : (Array.isArray(actions) ? actions : [{ text: actionText, action }])
       .filter((one) => String(one?.text ?? '').trim())
       .slice(0, 2);
@@ -282,8 +281,13 @@ function createToastElement(options = {}) {
     bottom.className = 'sf-toast-bottom flex items-center';
 
     buttons.forEach((one) => {
-      const actionButton = document.createElement('button');
-      actionButton.type = 'button';
+      const actionButton = document.createElement(one.href ? 'a' : 'button');
+      if (one.href) {
+        actionButton.href = one.href;
+        if (one.target) actionButton.target = one.target;
+      } else {
+        actionButton.type = 'button';
+      }
       // The notice's action (owner decision C35; C110 variant E): an unsized
       // low button, tonal surface (tonal on-surface), its label the notice's
       // text size (as the Smart sf-toast).

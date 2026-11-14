@@ -26,6 +26,10 @@ import en from './lang/en.json';
 import ru from './lang/ru.json';
 import './scss/index.scss';
 
+// The fields whose actions are glyphs (C123): sf-input's field and the class
+// markup of the inputs component.
+const IN_FIELD = '.sf-input-field';
+
 // Prefer the placement helper Core published; an isolated bundle uses its own copy.
 const positioning = () => globalThis.SF?.Position || BundledPosition;
 
@@ -132,7 +136,8 @@ class SfCopyButton extends CopyButtonElement {
     const result = this.querySelector(':scope .sf-copy-button-result');
     // The drawn control, under its current tag or an old one in its window.
     const hosts = [tagSelector('sf-button'), tagSelector('sf-button-icon')].join(', ');
-    const control = this.querySelector(`:scope .sf-copy-button > :is(${hosts})`)?.querySelector('.sf-button, .sf-icon-button');
+    const control = this.querySelector(':scope .sf-copy-button > .sf-field-action')
+      || this.querySelector(`:scope .sf-copy-button > :is(${hosts})`)?.querySelector('.sf-button, .sf-icon-button');
     if (!result || result.hidden || !control) {
       this.stopResult();
       return;
@@ -163,6 +168,10 @@ class SfCopyButton extends CopyButtonElement {
       phase: this.state.phase,
       message: this.state.message,
       rootClass: this.getRootClass(),
+      // Standing in a field (C123), the button is the field's action. Read
+      // on every drawing: the host is drawn again when it is moved, and a
+      // field's end slot moves it into the field.
+      inField: Boolean(this.closest(IN_FIELD)),
     });
   }
 

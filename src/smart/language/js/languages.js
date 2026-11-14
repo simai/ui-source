@@ -78,7 +78,7 @@ export function nameIn(code, language) {
   return displayName(code, language);
 }
 
-/** The code as a compact label shows it: RU, EN, PT-BR. */
+/** The code as a code label (labels="code") shows it: RU, EN, PT-BR. */
 export function shortLabel(code) {
   return code.toUpperCase();
 }

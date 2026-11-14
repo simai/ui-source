@@ -232,9 +232,10 @@ test('the appearances are part of the public API, and documented', () => {
   // has one source. If the two ever drift, Studio and the runtime would disagree
   // about what exists. Since decision C15 (sf-button 1.9.0, sf-button-icon
   // 1.6.0) ghost is the quiet appearance and link its dated alias; the icon
-  // button retired surface (drawn as tonal on-surface), the button keeps it.
+  // button retired surface (drawn as tonal on-surface), and since decision C116
+  // (sf-button 1.14.0) the button too: a former name drawn as tonal on-surface.
   const expected = {
-    button: ['default', 'tonal', 'outline', 'ghost', 'surface'],
+    button: ['default', 'tonal', 'outline', 'ghost'],
     'button-icon': ['default', 'tonal', 'outline', 'ghost'],
   };
   for (const [component, values] of Object.entries(expected)) {
@@ -245,7 +246,7 @@ test('the appearances are part of the public API, and documented', () => {
     const docs = read(`src/smart/${component}/docs/docs.md`);
     assert.ok(docs.includes(`appearance="${values.join('|')}"`), `${component}: the docs name the list`);
   }
-  assert.match(read('src/smart/button/docs/docs.md'), /alpha ramp/u, 'sf-button says what surface is built on');
+  assert.match(read('src/smart/button/docs/docs.md'), /`surface` is a former name until 2027-01-01/u, 'sf-button says surface is a former name (C116)');
   for (const component of ['button', 'button-icon']) {
     assert.ok(JSON.parse(read(`src/smart/${component}/smart.manifest.json`)).compatibility.aliases.includes('appearance=link'), component);
   }

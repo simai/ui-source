@@ -9,9 +9,12 @@ function normalizeProgressValue(value) {
   return Math.max(0, Math.min(100, parsed));
 }
 
+// The blocks never show more than is done (PG-12): 61 % lights 6 of 10, not 7;
+// a block lights only once its tenth is reached. The epsilon keeps a value
+// that is a whole tenth in decimal (70) from falling a block short in binary.
 function normalizeScaleStep(value) {
   const normalized = normalizeProgressValue(value);
-  return Math.ceil(normalized / 10) * 10;
+  return Math.floor(normalized / 10 + 1e-9) * 10;
 }
 
 function normalizeSize(value) {
@@ -20,23 +23,27 @@ function normalizeSize(value) {
 }
 
 // The component normalises the legacy words, so the template sees the shared
-// vocabulary. `neutral` carries no class of its own, exactly as `primary` did.
+// vocabulary (owner decision C131 (1)): no status (empty) draws the theme's
+// primary and carries no class; neutral is grey, as in sf-dot and sf-badge.
 function normalizeStatus(value) {
   const normalized = String(value || '').toLowerCase();
   return ['neutral', 'info', 'success', 'warning', 'error'].includes(normalized)
     ? normalized
-    : 'neutral';
+    : '';
 }
+
+const on = (value) => value === true || value === '' || value === 'true';
 
 export function renderProgressScaleTemplate(context) {
   const size = normalizeSize(context.size);
   const value = normalizeProgressValue(context.value);
   const step = normalizeScaleStep(value);
-  const tone = normalizeStatus(context.status ?? context.tone);
+  const tone = normalizeStatus(context.drawnStatus ?? context.status ?? context.tone);
+  const meter = on(context.meter);
   const rootClasses = [
     'sf-progress-scale',
     `sf-progress-scale--size-${size}`,
-    `sf-progress-scale--${tone}`,
+    tone ? `sf-progress-scale--${tone}` : '',
     // On a text line the track and the value share the line; otherwise the
     // value stands under the track.
     ...(context.line ? [`sf-progress-scale--line-${context.line}`, 'flex', 'flex-row', 'items-cross-center'] : ['flex', 'flex-col']),
@@ -53,11 +60,12 @@ export function renderProgressScaleTemplate(context) {
       style=${context.rootStyle || nothing}
       data-value=${String(value)}
       data-size=${size}
-      data-tone=${tone}
+      data-tone=${tone || nothing}
+      data-meter=${meter ? 'true' : nothing}
       data-show-text=${String(Boolean(context.showText))}
       data-label=${context.label || nothing}
       data-value-text=${context.valueText || nothing}
-      role="progressbar"
+      role=${meter ? 'meter' : 'progressbar'}
       aria-label=${context.label || nothing}
       aria-valuemin="0"
       aria-valuemax="100"

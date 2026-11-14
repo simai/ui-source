@@ -27,7 +27,7 @@ const ITEMS = [
 test('the manifest: a leaf of family settings with items, look, apply, search, size, for, remember, label; change, changed, reset, open, opened, close, closed; four actions', () => {
   assert.equal(manifest.tag, 'sf-settings');
   assert.equal(manifest.family, 'settings');
-  assert.equal(manifest.version, '1.2.0');
+  assert.equal(manifest.version, '1.2.1');
   assert.deepEqual(Object.keys(manifest.settings), ['items', 'look', 'apply', 'search', 'size', 'for', 'remember', 'label']);
   // C106: the panel is a value of look (the setting «вид»); view is reserved (standard §3.1).
   assert.deepEqual(manifest.settings.look.values, ['drill', 'rows', 'tiles', 'panel']);

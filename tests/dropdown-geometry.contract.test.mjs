@@ -17,5 +17,6 @@ test('dropdown tag layout reserves the toggle and keeps a long tag on one line',
   assert.ok(source.includes('max-inline-size: 100%'));
   assert.match(source,/\[role="option"\] \.sf-list-item-container\s*\{\s*overflow-wrap: anywhere;/);
   const template=await read('src/smart/dropdown/js/templates/default.js');
-  assert.ok(template.includes('sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-${iconButtonSize}"'));
+  // C123 (3): the chevron is the field layer's action, the field's indicator.
+  assert.ok(template.includes('class="sf-field-action sf-field-action--indicator sf-dropdown-chevron"'));
 });

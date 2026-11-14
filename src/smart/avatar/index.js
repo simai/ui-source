@@ -103,14 +103,19 @@ class SfAvatar extends AvatarElement {
   // one of the name, the words the initials stand for rather than the two
   // letters, so two people with the same initials differ. Only initials take a
   // hue: a picture covers the fill and the placeholder stays neutral. The
-  // former tone setting is read when hue is empty (rose is pink).
+  // former tone setting is read when hue is empty (rose is pink). A card
+  // without a photo draws the initials on the hue of the name when no hue is
+  // set (owner decision C124): auto is the card's default.
   get resolvedHue() {
     if (!this.isText) {
       return "";
     }
 
+    const cardDefault =
+      this.templateName === "card" && !this.hue && !this.tone ? "auto" : "";
+
     return resolveAvatarHue(
-      this.hue,
+      this.hue || cardDefault,
       this.heading || this.getAttribute("aria-label") || this.text,
       this.tone,
     );

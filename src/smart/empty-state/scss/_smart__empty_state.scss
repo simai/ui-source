@@ -115,6 +115,39 @@ sf-empty-state {
   }
 }
 
+/* processing (owner decision C120): a spinner in the icon's circle, in the
+   glyph's ink (the spinner draws in its current colour), at the featured
+   icon's size step (the template), so the circle, its tone and its size stay
+   those of every other reason. */
+.sf-empty-state-spinner {
+  display: inline-flex;
+  line-height: 0;
+  color: var(--sf-featured-icon--foreground-color);
+}
+
+/* processing with a known share (owner decision C120 (2)): an
+   sf-progress-ring at the featured icon's size step (the template), whose
+   box is the circle's (both --sf-ui-<step>--control-height), so the circle
+   loses its padding and the ring is the circle. The track is the circle's own
+   fill, the arc and the percentage the glyph's ink -- the spinner's ink --
+   so the share reads as the same grey circle as every other reason. Only the
+   ring's internal roles are given (the Framework sets no public variable); a
+   page's --sf-progress-ring-* still wins. */
+.sf-empty-state .sf-empty-state-icon--ring {
+  padding: 0;
+}
+
+.sf-empty-state-ring {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.sf-empty-state-icon--ring .sf-progress-ring {
+  --sf-progress-ring--track: var(--sf-progress-ring-track-color, var(--sf-featured-icon--container));
+  --sf-progress-ring--fill: var(--sf-progress-ring-fill-color, var(--sf-featured-icon--foreground-color));
+  color: var(--sf-progress-ring-color, var(--sf-featured-icon--foreground-color));
+}
+
 /* The inline form: one line at a list row's height and inset, so it sits in
    a menu, a dropdown or a search without a frame of its own. The icon is the
    text's size, in the muted icon role; the words are muted ink. */
@@ -138,6 +171,10 @@ sf-empty-state {
   flex: none;
   color: var(--sf-on-surface-variant);
   font-size: var(--sf-text-small--height);
+}
+
+.sf-empty-state--inline .sf-empty-state-spinner {
+  color: var(--sf-on-surface-variant);
 }
 
 .sf-empty-state--inline .sf-empty-state-line {

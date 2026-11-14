@@ -155,6 +155,36 @@ function createSpinnerDotsSvg({
   return svg;
 }
 
+const ONE_LOOK = {since: '2026-11-13', remove_after: '2027-01-01'};
+
+function noteFormerLook(root, named) {
+  const smart = root.closest?.('sf-spinner');
+  if (named && named !== 'arc') {
+    noteDeprecated({
+      component: smart ? 'sf-spinner' : 'spinner',
+      kind: 'value',
+      attribute: smart ? 'kind' : 'data-variant',
+      from: named,
+      to: 'arc',
+      ...ONE_LOOK,
+    });
+  }
+  const page = root.closest?.('[data-sf-spinner]')?.getAttribute('data-sf-spinner');
+  if (page && page !== 'arc') {
+    noteDeprecated({component: 'spinner', kind: 'attribute', attribute: 'data-sf-spinner', from: 'data-sf-spinner', to: null, ...ONE_LOOK});
+  }
+}
+
+// The show delay (owner decision C130 (8); setting delay, its name final by C138):
+// milliseconds, written as data-delay; 0 shows at once. The sheet hides the
+// spinner for --sf-loader--delay, 1 s by default.
+function delayOf(root) {
+  const raw = root.dataset.delay;
+  if (raw === undefined || raw === '') return null;
+  const parsed = Number.parseFloat(raw);
+  return Number.isFinite(parsed) ? clamp(parsed, 0, 60000) : null;
+}
+
 function getSpinnerConfig(root) {
   const indicator = root.querySelector('.sf-loader--loading-indicator');
   const circles = root.querySelector('.sf-loader--circles');
@@ -200,13 +230,16 @@ function getSpinnerConfig(root) {
     ['clockwise', 'counterclockwise'],
     'clockwise',
   );
-  // The look is the page's (data-sf-spinner on an ancestor) unless the spinner
-  // names its own in data-variant; the sheet resolves both. Markup that brought
-  // its own .sf-loader--circles part and no variant was a dots spinner, and
-  // says so now that every look is drawn in the one indicator.
-  const variant = root.dataset.variant
+  // One look, the arc (owner decision C130 (5)). A former look named by the
+  // spinner (data-variant: breathing, comet, dots, or the .sf-loader--circles
+  // part of old dots markup) or by the page (data-sf-spinner on an ancestor)
+  // draws the arc and is noted until the journal's date
+  // (value-spinner-one-look); the sheet draws the arc whatever the name.
+  const named = root.dataset.variant
     ? normalizeChoice(root.dataset.variant, SPINNER_LOOKS, 'arc')
     : circles ? 'dots' : '';
+  noteFormerLook(root, named);
+  const variant = named ? 'arc' : '';
 
   return {
     pixel,
@@ -222,6 +255,9 @@ function getSpinnerConfig(root) {
     hasExplicitHeight,
     infinite: root.dataset.infinite === 'true',
     announce: root.dataset.announce === 'true',
+    // The words are said, not shown (SP-07; label-hidden, its name final by C138):
+    // the label stays in the drawing for a screen reader and leaves the eye.
+    labelHidden: root.dataset.labelHidden === 'true',
     label:
       root.dataset.label !== undefined
         ? root.dataset.label
@@ -295,6 +331,14 @@ function renderSpinner(root) {
   // A spinner drawn in pixels keeps the pixel strokes it had; one on the ladder
   // strokes on the icon grid.
   root.classList.toggle('sf-loader--pixel-geometry', config.pixel);
+  const delay = delayOf(root);
+  if (delay === null) root.style.removeProperty('--sf-loader--delay');
+  else root.style.setProperty('--sf-loader--delay', `${delay}ms`);
+  // A label that is said but not shown (SP-07): label="" took the words from
+  // the eye and from the screen reader alike, so a spinner that wanted to stay
+  // quiet on the page lost its name. The text keeps its node, the sheet hides
+  // it visually.
+  root.classList.toggle('sf-loader--label-hidden', config.labelHidden && Boolean(config.label));
 
   if (config.variant && root.dataset.variant !== config.variant) {
     root.dataset.variant = config.variant;
@@ -377,6 +421,8 @@ class Spinner extends ComponentObserver {
       dotRadius = null,
       infinite = false,
       announce = false,
+      labelHidden = false,
+      delay = 1000,
       direction = 'clockwise',
     } = this.params || {};
 
@@ -412,6 +458,11 @@ class Spinner extends ComponentObserver {
     }
     this.template.dataset.infinite = String(infinite);
     this.template.dataset.announce = String(announce);
+    // A spinner made by SF.Spinner waits as sf-spinner does (C130 (8)).
+    this.template.dataset.delay = String(delay ?? 1000);
+    if (labelHidden === true || labelHidden === 'true' || labelHidden === '') {
+      this.template.dataset.labelHidden = 'true';
+    }
     this.template.dataset.direction = String(direction);
     if (dotRadius !== null && dotRadius !== undefined) {
       this.template.dataset.dotRadius = String(dotRadius);

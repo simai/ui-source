@@ -36,7 +36,44 @@ export function showChunk(element, done, total) {
   return { outcome: 'applied' };
 }
 
+// The status drawn (owner decision C131 (7), as sf-progress-bar 1.2.0): the
+// more serious of the page's status and the threshold the value reached. The
+// thresholds are the page's, in per cent like the value; unset is none.
+const RANK = { warning: 1, error: 2 };
+export function drawnStatus(status, value, warningAt, errorAt) {
+  const number = Number(value);
+  let reached = '';
+  if (Number.isFinite(number)) {
+    if (Number.isFinite(errorAt) && number >= errorAt) reached = 'error';
+    else if (Number.isFinite(warningAt) && number >= warningAt) reached = 'warning';
+  }
+  return (RANK[reached] ?? 0) > (RANK[status] ?? 0) ? reached : status;
+}
+
 class SfProgressRing extends ProgressRingElement {
+  static get props() {
+    return {
+      ...super.props,
+      // No status (empty) is the theme's primary; neutral is grey (C131 (1)).
+      status: {default: '', values: ['', 'neutral', 'info', 'success', 'warning', 'error'], valueAliases: {'': ['primary']}},
+    };
+  }
+
+  get status() {
+    return this.getProp('status');
+  }
+
+  // A threshold holds only where the page set it.
+  threshold(attribute) {
+    if (!this.hasAttribute(attribute)) return null;
+    const number = Number(this.getAttribute(attribute));
+    return Number.isFinite(number) ? number : null;
+  }
+
+  get drawnStatus() {
+    return drawnStatus(this.status, this.value, this.threshold('warning-at'), this.threshold('error-at'));
+  }
+
   // The accessible name: label, else the host's aria-label (§3.1, §4.8).
   get accessibleLabel() {
     return this.label || this.getAttribute('aria-label') || '';
@@ -47,8 +84,11 @@ class SfProgressRing extends ProgressRingElement {
   }
 
   templateContext() {
+    const status = this.drawnStatus;
+    this.sfHostState('data-status', status);
     return this.createTemplateContext({
       ...this.getPropsContext(),
+      drawnStatus: status,
       label: this.accessibleLabel,
       content: this.hasSlotContent?.('content') ? this.getSlotContent('content') : null,
       rootClass: this.getRootClass(),

@@ -116,7 +116,9 @@
     cursor: pointer;
   }
 
-  .sf-tree:not(.sf-tree--static) .sf-tree-item:not([aria-disabled='true']):hover > .sf-tree-item-container {
+  .sf-tree:not(.sf-tree--static) .sf-tree-item:not([aria-disabled='true']):not([aria-current='page']):hover > .sf-tree-item-container {
+    /* The current page keeps its plate under the pointer, as the menu's
+       current row does (C129: the tree and the menu behave alike). */
     background: var(--sf-surface-container-hover);
     /* On hover the glyphs catch up with the name's ink (C107 point 4). */
     --sf-tree-item-icon--color: currentColor;

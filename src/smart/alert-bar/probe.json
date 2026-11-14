@@ -6,55 +6,45 @@
     "lang": "ru",
     "body": [
       "<main>",
-      "  <sf-alert-bar id=\"many\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"swap\", \"level\": \"warning\", \"text\": \"Подкачка занята на 92%: серверу не хватает памяти, сайты замедляются.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:55:00Z\", \"action\": {\"label\": \"Посмотреть память\", \"href\": \"#memory\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}, {\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}, {\"id\": \"disk\", \"level\": \"error\", \"text\": \"Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:58:00Z\", \"action\": {\"label\": \"Освободить место\", \"href\": \"#disk\"}}, {\"id\": \"down\", \"level\": \"error\", \"text\": \"demo-php.test не отвечает уже 12 минут.\", \"source\": \"Сайт demo-php.test\", \"time\": \"2026-10-27T08:48:00Z\", \"action\": {\"label\": \"Открыть сайт\", \"href\": \"#site\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}, {\"id\": \"cert\", \"level\": \"warning\", \"text\": \"Сертификат demo-static.test истекает через 6 дней.\", \"source\": \"Сайт demo-static.test\", \"action\": {\"label\": \"Продлить\", \"href\": \"#cert\"}}]}</script></sf-alert-bar>",
-      "  <sf-alert-bar id=\"one\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}]}</script></sf-alert-bar>",
+      "  <sf-alert-bar id=\"many\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"swap\", \"level\": \"warning\", \"text\": \"Подкачка занята на 92%: серверу не хватает памяти, сайты замедляются.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:55:00Z\", \"action\": {\"label\": \"Посмотреть память\", \"href\": \"#memory\"}, \"acknowledge\": {\"label\": \"Прочитано\"}}, {\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Прочитано\"}}, {\"id\": \"disk\", \"level\": \"error\", \"text\": \"Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:58:00Z\", \"action\": {\"label\": \"Освободить место\", \"href\": \"#disk\"}}, {\"id\": \"down\", \"level\": \"error\", \"text\": \"demo-php.test не отвечает уже 12 минут.\", \"source\": \"Сайт demo-php.test\", \"time\": \"2026-10-27T08:48:00Z\", \"action\": {\"label\": \"Открыть сайт\", \"href\": \"#site\"}, \"acknowledge\": {\"label\": \"Прочитано\"}}, {\"id\": \"cert\", \"level\": \"warning\", \"text\": \"Сертификат demo-static.test истекает через 6 дней.\", \"source\": \"Сайт demo-static.test\", \"action\": {\"label\": \"Продлить\", \"href\": \"#cert\"}}]}</script></sf-alert-bar>",
+      "  <sf-alert-bar id=\"one\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Прочитано\"}}]}</script></sf-alert-bar>",
       "  <sf-alert-bar id=\"info\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"update\", \"level\": \"info\", \"text\": \"Доступна новая версия панели 0.3.1.\", \"source\": \"Обновление\", \"action\": {\"label\": \"Посмотреть\", \"href\": \"#update\"}}]}</script></sf-alert-bar>",
-      "  <sf-alert-bar id=\"danger\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"disk\", \"level\": \"error\", \"text\": \"Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:58:00Z\", \"action\": {\"label\": \"Освободить место\", \"href\": \"#disk\"}}, {\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}]}</script></sf-alert-bar>",
+      "  <sf-alert-bar id=\"danger\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"disk\", \"level\": \"error\", \"text\": \"Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:58:00Z\", \"action\": {\"label\": \"Освободить место\", \"href\": \"#disk\"}}, {\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Прочитано\"}}]}</script></sf-alert-bar>",
       "  <sf-alert-bar id=\"live\"></sf-alert-bar>",
-      "  <div style=\"inline-size: 390px\"><sf-alert-bar id=\"narrow\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"swap\", \"level\": \"warning\", \"text\": \"Подкачка занята на 92%: серверу не хватает памяти, сайты замедляются.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:55:00Z\", \"action\": {\"label\": \"Посмотреть память\", \"href\": \"#memory\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}, {\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}, {\"id\": \"disk\", \"level\": \"error\", \"text\": \"Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:58:00Z\", \"action\": {\"label\": \"Освободить место\", \"href\": \"#disk\"}}]}</script></sf-alert-bar></div>",
-      "  <div lang=\"en\"><sf-alert-bar id=\"en\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Отметить, что видели\"}}, {\"id\": \"update\", \"level\": \"info\", \"text\": \"Доступна новая версия панели 0.3.1.\", \"source\": \"Обновление\", \"action\": {\"label\": \"Посмотреть\", \"href\": \"#update\"}}]}</script></sf-alert-bar></div>",
+      "  <div style=\"inline-size: 390px\"><sf-alert-bar id=\"narrow\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"swap\", \"level\": \"warning\", \"text\": \"Подкачка занята на 92%: серверу не хватает памяти, сайты замедляются.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:55:00Z\", \"action\": {\"label\": \"Посмотреть память\", \"href\": \"#memory\"}, \"acknowledge\": {\"label\": \"Прочитано\"}}, {\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Прочитано\"}}, {\"id\": \"disk\", \"level\": \"error\", \"text\": \"Диск заполнен на 98%: сайты перестанут сохранять файлы и базы.\", \"source\": \"Сервер\", \"time\": \"2026-10-27T08:58:00Z\", \"action\": {\"label\": \"Освободить место\", \"href\": \"#disk\"}}]}</script></sf-alert-bar></div>",
+      "  <div lang=\"en\"><sf-alert-bar id=\"en\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"id\": \"backup\", \"level\": \"warning\", \"text\": \"Последняя копия demo-owned.test не удалась.\", \"source\": \"Сайт demo-owned.test\", \"time\": \"2026-10-27T00:30:00Z\", \"action\": {\"label\": \"Открыть копии\", \"href\": \"#backups\"}, \"acknowledge\": {\"label\": \"Прочитано\"}}, {\"id\": \"update\", \"level\": \"info\", \"text\": \"Доступна новая версия панели 0.3.1.\", \"source\": \"Обновление\", \"action\": {\"label\": \"Посмотреть\", \"href\": \"#update\"}}]}</script></sf-alert-bar></div>",
       "</main>"
     ]
   },
   "probes": [
     {
       "id": "p1-order-and-colour",
-      "title": "the items are sorted error, warning, info, the newest first; the bar takes the first one's colour and shows it with «1 из 5»",
+      "title": "the items are sorted error, warning, info, the newest first; the bar takes the first one's colour and shows it, with no paging arrows",
       "covers": "settings.items, host-states data-level, accessibility.role region, settings.label",
       "steps": [
         {
-          "check": "(() => { const el = document.querySelector('#many'); const root = el.querySelector(':scope > .sf-alert-bar'); return el.getAttribute('data-level') === 'error' && root.getAttribute('role') === 'region' && root.getAttribute('aria-label') === 'Важные уведомления' && el.querySelector('.sf-alert-bar-message').textContent.includes('Диск заполнен') && el.querySelector('.sf-alert-bar-position').textContent.trim() === '1 из 5' && getComputedStyle(el.querySelector('.sf-alert-bar-row')).backgroundColor !== 'rgba(0, 0, 0, 0)'; })()"
+          "check": "(() => { const el = document.querySelector('#many'); const root = el.querySelector(':scope > .sf-alert-bar'); return el.getAttribute('data-level') === 'error' && root.getAttribute('role') === 'region' && root.getAttribute('aria-label') === 'Важные уведомления' && el.querySelector('.sf-alert-bar-message').textContent.includes('Диск заполнен') && !el.querySelector('.sf-alert-bar-pager, .sf-alert-bar-prev, .sf-alert-bar-next, .sf-alert-bar-position') && getComputedStyle(el.querySelector('.sf-alert-bar-row')).backgroundColor !== 'rgba(0, 0, 0, 0)'; })()"
         }
       ]
     },
     {
-      "id": "p2-paging",
-      "title": "the arrows page through the items and wrap; a warning in an error bar says its level",
-      "covers": "paging, settings.items order",
+      "id": "p2-one-button-family",
+      "title": "several items: the most serious is shown with no arrows; the action is tonal surface, acknowledge and «Ещё 4» ghost (C114 (3), AA-15)",
+      "covers": "settings.items order, one button family",
       "steps": [
         {
-          "user": "click:#many .sf-alert-bar-next button",
-          "check": "(() => { const el = document.querySelector('#many'); return el.querySelector('.sf-alert-bar-position').textContent.trim() === '2 из 5' && el.querySelector('.sf-alert-bar-message').textContent.includes('не отвечает'); })()"
-        },
-        {
-          "user": "click:#many .sf-alert-bar-next button",
-          "check": "(() => { const el = document.querySelector('#many'); return el.querySelector('.sf-alert-bar-prefix')?.textContent === 'Предупреждение: ' && el.querySelector('.sf-alert-bar-message').textContent.includes('Подкачка') && el.querySelector('.sf-alert-bar-close'); })()"
-        },
-        {
-          "script": "(document.querySelector('#many .sf-alert-bar-prev button').click(), document.querySelector('#many .sf-alert-bar-prev button').click(), document.querySelector('#many .sf-alert-bar-prev button').click(), true)",
-          "wait": 200,
-          "check": "document.querySelector('#many .sf-alert-bar-position').textContent.trim() === '5 из 5'"
+          "check": "(() => { const el = document.querySelector('#many'); const all = el.querySelector('.sf-alert-bar-all'); const action = el.querySelector('.sf-alert-bar-row .sf-alert-bar-action'); const looks = [...el.querySelectorAll('.sf-alert-bar-row sf-button, .sf-alert-bar-row sf-button-icon')].map((one) => one.getAttribute('appearance')); return !el.querySelector('.sf-alert-bar-pager') && all.getAttribute('appearance') === 'ghost' && action.getAttribute('appearance') === 'tonal' && looks.filter((look) => look !== 'ghost').length === 1 && all.textContent.includes('Ещё 4'); })()"
         }
       ]
     },
     {
       "id": "p3-list-of-all",
-      "title": "«Все 5» opens the list of all under the bar, each item with its own controls; Escape closes it and returns focus to the toggle",
+      "title": "«Ещё 4» opens the list of the other four under the bar, each row the bar row's composition (level icon, text, action, acknowledge, close; an error row keeps the close's place, no badge); Escape closes it and returns focus to the toggle (NS-12)",
       "covers": "the list, keyboard Escape, accessibility expanded",
       "steps": [
         {
           "user": "click:#many .sf-alert-bar-all button",
-          "check": "(() => { const el = document.querySelector('#many'); const list = el.querySelector('.sf-alert-bar-list'); const toggle = el.querySelector('.sf-alert-bar-all button'); return list && list.querySelectorAll(':scope > li').length === 5 && toggle.getAttribute('aria-expanded') === 'true' && toggle.getAttribute('aria-controls') === list.id && toggle.textContent.includes('Свернуть список') && list.querySelectorAll('.sf-alert-bar-item[data-level=\"error\"] .sf-alert-bar-item-close').length === 0 && list.querySelectorAll('.sf-alert-bar-item[data-level=\"warning\"] .sf-alert-bar-item-close').length === 3; })()"
+          "check": "(() => { const el = document.querySelector('#many'); const list = el.querySelector('.sf-alert-bar-list'); const toggle = el.querySelector('.sf-alert-bar-all button'); return list && list.querySelectorAll(':scope > li').length === 4 && !list.querySelector('.sf-alert-bar-item[data-id=\"disk\"]') && !list.querySelector('sf-badge') && list.querySelectorAll('.sf-alert-bar-item-icon').length === 4 && list.querySelectorAll('.sf-alert-bar-item[data-level=\"error\"] .sf-alert-bar-item-end').length === 1 && toggle.getAttribute('aria-expanded') === 'true' && toggle.getAttribute('aria-controls') === list.id && toggle.textContent.includes('Свернуть список') && list.querySelectorAll('.sf-alert-bar-item[data-level=\"error\"] .sf-alert-bar-item-close').length === 0 && list.querySelectorAll('.sf-alert-bar-item[data-level=\"warning\"] .sf-alert-bar-item-close').length === 3 && list.querySelectorAll('.sf-alert-bar-item [tabindex]').length === 0 && toggle.getAttribute('aria-label') === 'Свернуть список'; })()"
         },
         {
           "user": "keyboard:Escape",
@@ -165,14 +155,14 @@
     },
     {
       "id": "p7-acknowledge",
-      "title": "acknowledge asks sf-alert-bar-acknowledge with the id; the item leaves the bar",
+      "title": "acknowledge («Прочитано») asks sf-alert-bar-acknowledge with the id; the item leaves the bar and its list",
       "covers": "events.acknowledge",
       "steps": [
         {
-          "user": "click:#many .sf-alert-bar-next button"
+          "user": "click:#many .sf-alert-bar-all button"
         },
         {
-          "user": "click:#many .sf-alert-bar-acknowledge button",
+          "user": "click:#many .sf-alert-bar-item[data-id=\"down\"] .sf-alert-bar-acknowledge button",
           "wait": 250,
           "expect": {
             "events": [
@@ -186,7 +176,7 @@
               }
             ]
           },
-          "check": "(() => { const el = document.querySelector('#many'); return el.querySelector('.sf-alert-bar-position').textContent.trim().endsWith('из 4') && !el.querySelector('.sf-alert-bar-message').textContent.includes('не отвечает'); })()"
+          "check": "(() => { const el = document.querySelector('#many'); return el.querySelectorAll('.sf-alert-bar-list > li').length === 3 && !el.querySelector('.sf-alert-bar-item[data-id=\"down\"]') && document.activeElement === el.querySelector('.sf-alert-bar-list > li .sf-alert-bar-action :is(a, button)') && el.querySelector('.sf-alert-bar-all').textContent.includes('Ещё 3'); })()"
         }
       ]
     },
@@ -314,11 +304,11 @@
     },
     {
       "id": "p11-narrow",
-      "title": "under 600 px the icon, the text and the close share the first line, the actions go under the text, no arrows, «Все 3» at the end",
+      "title": "up to 38rem the icon, the text and the close share the first line, the actions go under the text from its start, «Ещё 2» at the end",
       "covers": "responsive container query",
       "steps": [
         {
-          "check": "(() => { const el = document.querySelector('#narrow'); const r = (s) => el.querySelector(s).getBoundingClientRect(); const icon = r('.sf-alert-bar-row > .sf-alert-bar-icon'); const text = r('.sf-alert-bar-text'); const end = r('.sf-alert-bar-row > .sf-alert-bar-minimize > button'); const actions = r('.sf-alert-bar-actions'); const all = r('.sf-alert-bar-all > button'); const bar = r('.sf-alert-bar-row'); return getComputedStyle(el.querySelector('.sf-alert-bar-pager')).display === 'none' && icon.top < text.bottom && end.top < text.bottom && actions.top >= text.bottom - 1 && Math.abs(all.right - (bar.right - parseFloat(getComputedStyle(el.querySelector('.sf-alert-bar-row')).paddingRight))) < 1.5; })()"
+          "check": "(() => { const el = document.querySelector('#narrow'); const r = (s) => el.querySelector(s).getBoundingClientRect(); const icon = r('.sf-alert-bar-row > .sf-alert-bar-icon'); const text = r('.sf-alert-bar-text'); const end = r('.sf-alert-bar-row > .sf-alert-bar-minimize > button'); const actions = r('.sf-alert-bar-actions'); const all = r('.sf-alert-bar-all > button'); const bar = r('.sf-alert-bar-row'); const first = r('.sf-alert-bar-actions > sf-button > :is(a, button)'); return !el.querySelector('.sf-alert-bar-pager') && Math.abs(first.left - text.left) < 1 && icon.top < text.bottom && end.top < text.bottom && actions.top >= text.bottom - 1 && Math.abs(all.right - (bar.right - parseFloat(getComputedStyle(el.querySelector('.sf-alert-bar-row')).paddingRight))) < 1.5; })()"
         }
       ]
     },
@@ -328,7 +318,7 @@
       "covers": "lang en",
       "steps": [
         {
-          "check": "(() => { const el = document.querySelector('#en'); return el.querySelector(':scope > .sf-alert-bar').getAttribute('aria-label') === 'Important notices' && el.querySelector('.sf-alert-bar-position').textContent.trim() === '1 of 2' && el.querySelector('.sf-alert-bar-all').textContent.includes('All 2') && el.querySelector('.sf-alert-bar-close button').getAttribute('aria-label') === 'Hide for a day'; })()"
+          "check": "(() => { const el = document.querySelector('#en'); return el.querySelector(':scope > .sf-alert-bar').getAttribute('aria-label') === 'Important notices' && el.querySelector('.sf-alert-bar-all').textContent.includes('1 more') && el.querySelector('.sf-alert-bar-close button').getAttribute('aria-label') === 'Hide for a day'; })()"
         }
       ]
     }

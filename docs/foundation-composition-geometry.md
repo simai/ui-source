@@ -25,18 +25,54 @@ At size 1 on desktop that is a 24px line and 24px pictures in a 40px control.
 A part never takes a size of its own to fit: if the ladder size does not fit,
 the padding is wrong, not the part.
 
-### Indicator sizes
+### Small steps below the ladder (indicators and marks)
 
 A non-interactive indicator is not a control: nothing is pressed, so it has
-no control height and may stand below the ladder's lowest rung. Its sizes are
-still steps of the size scale, never raw lengths, and they are listed here so
-the exception has one place (DEV decision on the docs pre-check, 2026-11-10):
+no control height and may stand below the ladder's lowest rung. Below 24 a
+mark takes one of five **small steps, 4 · 6 · 8 · 12 · 16** (owner decision
+C132, 2026-11-13), the same on a desktop, on a phone and in a compact region.
+Nothing is drawn below 4; 4 is only for ticks and separators, and a coloured
+mark is never under 6. 16 is the main ladder's step 1/4 (avatar 1/4); 4 to 12
+have no public name. The author sets only the host's size: the component
+derives each mark from its host's step through one table in core
+(`src/core/scss/vars/_sf_var__size.scss`, emitted as the internal
+`--sf-micro--*` properties, not public):
 
-| Indicator | Sizes | Why it is below the ladder |
-| --- | --- | --- |
-| status dot `sf-dot` | 4 / 6 / 8 / 10 (`--sf-a4`, `--sf-a6`, `--sf-a8`, `--sf-b0`) at sizes 1/3, 1/2, 1, 2; the same on a phone | a mark beside a label, read by its colour, not a picture of the row |
-| inline or anchored badge (`sf-badge--line-1/2`, a counter on an icon or an avatar) | `sf-badge--line-1/2` 20 on a desktop, 16 on a phone; an anchored counter 16 or 20 | it sits inside a text line or on the corner of another part and must not raise it |
-| progress tracks: `sf-progress-bar`, `sf-progress-scale` | the track is `--sf-text-size-1/7` … `--sf-text-size-1/3`; with the value line the block is the track plus that line | a track is a rule, not a control; only its value line is text of the ladder |
+| Mark | 1/4 | 1/3 | 1/2 | 1 | 2 | 3 |
+| --- | --- | --- | --- | --- | --- | --- |
+| status point on an avatar, «something new» dot (one table) | 6 | 6 | 8 | 12 | 12 | 16 |
+| count on an avatar or an icon button | — | dot | dot | 16 | 16 | 16 |
+| dot: `sf-dot`, a status tag, a timeline step | — | 6 | 6 | 8 | 8 | 12 |
+| remove cross of a tag or a chip | — | 8 | 8 | 12 | 12 | 16 (12 in compact and on a phone) |
+| company / «verified» badge on an avatar | 8 | 8 | 12 | 12 | 16 | 16 |
+| tick, separator | 4 | 4 | 4 | 4 | 4 | 4 |
+
+The surface ring of a point is drawn outside its coloured disc (1 px on 1/4
+and 1/3, 2 px from 1/2), so the coloured diameter is the step. The tag cross
+is half the tag's text line rounded down to a small step. A badge with text
+(`sf-badge`, `sf-badge--line-1/2`) is not a mark: it stays on the main ladder.
+A progress track (`sf-progress-bar`, `sf-progress-scale`) is a rule, not a
+mark; only its value line is text of the ladder.
+
+**Outside the small steps** (C132 #q-icons, C18). These parts below 24 belong
+to the icon row or to the internals of a control, not to marks, and keep their
+own sizes until the icon-row study. Nothing else below 24 may take a size off
+4 · 6 · 8 · 12 · 16 or a main-ladder step:
+
+| Part | Sizes below 24 |
+| --- | --- |
+| icon row `sf-icon` (and a glyph a control takes from it) | 14 at 1/2, 20 at 2; 18 / 22 glyphs in controls |
+| spinner | 20 / 28 / 36 |
+| checkbox | box 20 / 28; check glyph 14 / 18 / 22 |
+| radio button | dot 10 / 14 |
+| slider | thumb inner 10 / 14 |
+| switch | knob |
+| close button cross (`sf-button-close`, an icon button's close, alert, toast) | 14 / 16 / 18 / 20, the glyph of its icon-button step |
+| «?» of `sf-help-mark` | glyph 20 at 1/2 (an icon) |
+
+A tag's remove cross is a mark, not a close button: it takes the table above.
+A box of the main ladder (20 on a phone or in a compact region) is a ladder
+step, not a small step.
 
 A colour dot that stands for a picture inside a control (a list row's colour,
 a swatch in a field) is a part of that control and takes `L`, as in the table

@@ -150,11 +150,11 @@
     },
     {
       "id": "p8-danger-looks",
-      "title": "error reads as danger, link as ghost, secondary as on-surface-variant, surface as tonal on-surface; surface with danger is red, not grey",
+      "title": "error reads as danger, link as ghost, secondary as on-surface-variant, surface as tonal on-surface; surface with danger is a red outline (C116), not grey",
       "covers": "settings.status danger, settings.appearance ghost, settings.scheme, aliases.json error, link, secondary; retired surface",
       "steps": [
         {
-          "check": "(() => { const c = (id) => document.querySelector(id + ' button').classList; return c('#ib-err').contains('sf-icon-button--danger') && c('#ib-err').contains('sf-icon-button--error') && c('#ib-surface').contains('sf-icon-button--tonal') && c('#ib-surface').contains('sf-icon-button--on-surface') && c('#ib-surface-err').contains('sf-icon-button--tonal') && c('#ib-surface-err').contains('sf-icon-button--danger') && c('#ib-old-looks').contains('sf-icon-button--link') && c('#ib-old-looks').contains('sf-icon-button--on-surface-variant'); })()",
+          "check": "(() => { const c = (id) => document.querySelector(id + ' button').classList; return c('#ib-err').contains('sf-icon-button--danger') && c('#ib-err').contains('sf-icon-button--error') && c('#ib-surface').contains('sf-icon-button--tonal') && c('#ib-surface').contains('sf-icon-button--on-surface') && c('#ib-surface-err').contains('sf-icon-button--outline') && c('#ib-surface-err').contains('sf-icon-button--danger') && c('#ib-old-looks').contains('sf-icon-button--link') && c('#ib-old-looks').contains('sf-icon-button--on-surface-variant'); })()",
           "expect": {
             "values": {
               "#ib-err.status": "danger",
@@ -166,10 +166,10 @@
           }
         },
         {
-          "check": "(() => { const b = document.querySelector('#ib-surface-err button'); const fill = getComputedStyle(b).backgroundColor; const probe = document.createElement('i'); probe.style.color = 'var(--sf-error-container)'; document.body.append(probe); const want = getComputedStyle(probe).color; probe.remove(); return fill === want; })()"
+          "check": "(() => { const b = document.querySelector('#ib-surface-err button'); const fill = getComputedStyle(b).backgroundColor; const probe = document.createElement('i'); probe.style.color = 'var(--sf-error-container)'; document.body.append(probe); const want = getComputedStyle(probe).color; probe.remove(); return fill !== want; })()"
         },
         {
-          "check": "['error', 'link', 'secondary', 'surface'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-button-icon' && note.from === from && note.remove_after === '2027-01-01'))"
+          "check": "['error', 'link', 'secondary', 'surface', 'surface (status danger)'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-button-icon' && note.from === from && note.remove_after === '2027-01-01'))"
         }
       ]
     },

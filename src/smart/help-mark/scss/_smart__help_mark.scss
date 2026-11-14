@@ -37,6 +37,81 @@ sf-help-mark {
   align-self: center;
 }
 
+/* The mark's own button keeps its whole target (HM-01, C58: at least 24, the
+   smallest icon button: 28 at size 1/3 on a desktop, 24 on a phone and in a
+   compact region). It stands out of its zero-height box into the lines above
+   and below; in running text those lines' words were painted after it and
+   took the press -- 18.5 of 24 px reached the mark. Lifted over its own
+   paragraph's text (a stacking order, not a size), the press anywhere on the
+   button is the mark's. The glyph and the layout do not change. */
+.sf-help-mark-button > button {
+  position: relative;
+  z-index: 1;
+}
+
+/* The «?» is an icon, not a button (owner decision C133, 2026-11-13): the look
+   of an action inside a field (C123 (1), variant A) -- a glyph without a plate
+   in any state, the explanation's ink (on-surface-variant) at rest and the
+   text's ink (on-surface) under the pointer and on a press, the keyboard ring
+   round the glyph. The button keeps its whole target (HM-01, above): only the
+   plate goes. C123 (7) keeps plates on buttons outside fields; the «?» is the
+   exception, as it stands in a line of text at its label, not on a panel.
+   The values are those of C123's shared field-action rule
+   (src/component/inputs/scss/_field-action.scss on integration-fix/field-actions-c123),
+   repeated here because that branch is not in this one: whoever merges the two
+   may point this rule at the shared one. The class is repeated to outrank the
+   icon button's state rules (four classes and states, sf.states), as its own
+   pressed rule does. */
+.sf-help-mark .sf-help-mark-button > .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button {
+  --sf-help-mark--ink: var(--sf-on-surface-variant);
+  --sf-icon-button--background-color: transparent;
+  --sf-icon-button--border-color: transparent;
+  --sf-icon-button--focus-inset: 0 0 transparent;
+  --sf-icon-button--box-shadow: 0 0 transparent;
+  --sf-icon--color: var(--sf-help-mark--ink);
+  background-image: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sf-help-mark .sf-help-mark-button > .sf-icon-button .sf-icon {
+  color: var(--sf-help-mark--ink);
+  border-radius: var(--sf-radius--ui);
+}
+}
+
+@layer sf.states {
+.sf-help-mark .sf-help-mark-button > .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button {
+  --sf-icon-button--background-color: transparent;
+  --sf-icon-button--focus-inset: 0 0 transparent;
+  --sf-icon--color: var(--sf-help-mark--ink);
+  background-image: none;
+}
+
+.sf-help-mark .sf-help-mark-button > .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:not(:disabled):not(.disabled):is(:hover, :active, .active) {
+  --sf-help-mark--ink: var(--sf-on-surface);
+}
+
+/* The ring is the glyph's, 1 px out from it. !important: a page's unlayered
+   :focus-visible beats every layered rule and drew a second frame round the
+   whole target (as C123's field action). */
+.sf-help-mark .sf-help-mark-button > .sf-icon-button:focus-visible {
+  outline: none !important;
+}
+
+.sf-help-mark .sf-help-mark-button > .sf-icon-button:focus-visible .sf-icon {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-px);
+}
+
+@media (forced-colors: active) {
+  .sf-help-mark .sf-help-mark-button > .sf-icon-button:focus-visible .sf-icon {
+    outline-color: Highlight;
+  }
+}
+}
+
+@layer sf.components {
+
 .sf-help-mark-panel {
   position: fixed;
   inset: auto;
@@ -46,7 +121,10 @@ sf-help-mark {
   gap: var(--sf-help-mark-gap, var(--sf-a4));
   max-inline-size: min(var(--sf-help-mark-max-width, var(--sf-g0)), 100vw);
   padding: var(--sf-help-mark-padding-block, var(--sf-space-1\/3)) var(--sf-help-mark-padding-inline, var(--sf-space-1\/2));
-  border: var(--sf-px) solid var(--sf-help-mark-border-color, var(--sf-outline-variant));
+  /* A window has a shadow, no frame (C59, owner 2026-11-11): the border is
+     transparent unless a page names a colour (--sf-help-mark-border-color), so
+     the window keeps its size and one look with sf-popover. */
+  border: var(--sf-px) solid var(--sf-help-mark-border-color, transparent);
   border-radius: var(--sf-help-mark-radius, var(--sf-radius--surface));
   background-color: var(--sf-help-mark-background-color, var(--sf-surface-popup));
   @include places.sf-place(var(--sf-help-mark-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));

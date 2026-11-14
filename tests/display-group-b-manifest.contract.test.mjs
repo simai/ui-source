@@ -50,11 +50,13 @@ test('every display component of group B is made from its component.json, langua
     const {rows} = readAliasTable(table, {tag: manifest.tag});
     // The migration's rows keep its dates; a later rename carries its own
     // (sf-slider/sf-gallery 1.2.0 dots-type words, journal
-    // value-slider-dots-type-to-roles: 2026-11-10 to 2027-01-01).
+    // value-slider-dots-type-to-roles: 2026-11-10 to 2027-01-01; sf-spinner's
+    // former looks, C130 (5): 2026-11-13 to 2027-01-01).
+    const allowed = [['2026-10-27', '2026-12-01'], ['2026-11-10', '2027-01-01'], ['2026-11-13', '2027-01-01']];
     for (const row of rows) {
       const dates = [row.since, row.remove_after];
       assert.ok(
-        (dates[0] === '2026-10-27' && dates[1] === '2026-12-01') || (dates[0] === '2026-11-10' && dates[1] === '2027-01-01'),
+        allowed.some(([since, until]) => dates[0] === since && dates[1] === until),
         `${folder}: ${row.from} ${dates.join(' to ')}`,
       );
     }
@@ -63,7 +65,8 @@ test('every display component of group B is made from its component.json, langua
 
 test('the events take the tag and the vocabulary (§8, vocabulary 1.1.5 §5, §7)', () => {
   const names = (folder) => Object.values(readManifest(json(`src/smart/${folder}/component.json`)).events).map((event) => event.name);
-  assert.deepEqual(names('file-preview'), ['sf-file-preview-download', 'sf-file-preview-detach']);
+  // retry: «Повторить» in a row that did not upload (sf-file-preview 1.3.0, C81 states).
+  assert.deepEqual(names('file-preview'), ['sf-file-preview-download', 'sf-file-preview-detach', 'sf-file-preview-retry']);
   assert.deepEqual(names('profile-picker'), ['sf-profile-picker-select', 'sf-profile-picker-create', 'sf-profile-picker-rename', 'sf-profile-picker-delete', 'sf-profile-picker-reset']);
   assert.deepEqual(names('gallery'), ['change', 'sf-gallery-opened', 'sf-gallery-closed', 'sf-gallery-select']);
   assert.deepEqual(names('slider'), ['change']);

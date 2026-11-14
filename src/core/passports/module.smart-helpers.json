@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "module.smart-helpers",
   "kind": "module",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "owner": "simai/ui-source",
   "summary": "The helpers the Smart components import (src/smart/helpers); not a component itself.",
   "includes": [
@@ -11,6 +11,7 @@
   ],
   "files": [
     "src/smart/helpers/anchored-badge.js",
+    "src/smart/helpers/button-set.js",
     "src/smart/helpers/checkable-row.css",
     "src/smart/helpers/checkable-row.js",
     "src/smart/helpers/checkableReset.js",
@@ -27,7 +28,7 @@
     "src/smart/helpers/refs.js",
     "src/smart/helpers/text.js"
   ],
-  "content_sha256": "01c6a9ef1707ab65d9da53c1a3a27234af97958c801cf0cb820b2ac90ba5e706",
+  "content_sha256": "a7f1a86e2ac5e06f35eb2164fd12d4a42c51ca60d616b5a3b66a713434189c70",
   "dependencies": [
     {
       "id": "component.badges",

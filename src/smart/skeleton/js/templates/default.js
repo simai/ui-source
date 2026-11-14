@@ -32,6 +32,19 @@ function styleMap(style = {}) {
     .join('; ');
 }
 
+// True for a circle, square or rounded skeleton given no width (other than
+// the default 100 %) and no height: the sheet draws it as the square box of
+// its step (C130 (1)).
+function isShapeBox(variant, type, widths, heights) {
+  if (type === 'icon' || !['circle', 'square', 'rounded'].includes(variant)) return false;
+  const ownWidth = widths.some((value) => {
+    const resolved = resolveSize(value);
+    return resolved && resolved !== '100%';
+  });
+  const ownHeight = heights.some((value) => resolveSize(value));
+  return !ownWidth && !ownHeight;
+}
+
 export function renderSkeletonTemplate(context) {
   const {
     size,
@@ -69,8 +82,16 @@ export function renderSkeletonTemplate(context) {
     || ((variant === 'circle' || variant === 'square') && ownWidths.length === 0);
   const widths = normalizeList(width, ['100%']);
   const heights = normalizeList(height);
+  // A shape with no size of its own is the square box of its step (owner
+  // decision C130 (1)): the sheet sizes it, so it is written with no width
+  // and its root does not stretch. "Of its own" is a width other than the
+  // setting's default 100 % or any height.
+  const box = isShapeBox(variant, type, widths, heights);
+  // Group build 3: a box (C130 (1)) and equal sides (SK-01: a circle or a
+  // square with a height but no width of its own is that height square) both
+  // take no stretching width; everything else is the row's bar.
   const rootClasses = ['sf-skeleton', 'flex'];
-  if (!equalSides) {
+  if (!equalSides && !box) {
     rootClasses.push('flex-1');
   }
   if (animation) {
@@ -81,7 +102,7 @@ export function renderSkeletonTemplate(context) {
   }
 
   const rootStyle =
-    !equalSides && widths.length
+    !equalSides && !box && widths.length
       ? styleMap({
           'inline-size': resolveSize(widths[0]),
         })
@@ -106,12 +127,17 @@ export function renderSkeletonTemplate(context) {
           itemClasses.push(`sf-skeleton-${type}`);
         }
 
-        const resolvedWidth = widths[index % widths.length] || '';
+        // Several lines of text with one width: even lines and a short last
+        // one, 60 % (owner decision C136 (3), (4)): the end of a paragraph
+        // reads at once. A list of widths is the page's and is kept.
+        const shortLast = variant === 'text' && type !== 'icon' && !box
+          && widths.length === 1 && itemsCount > 1 && index === itemsCount - 1;
+        const resolvedWidth = shortLast ? '60%' : (widths[index % widths.length] || '');
         const resolvedHeight = heights[index % heights.length] || '';
         // Equal sides take a given height on both sides.
         const sideHeight = equalSides && resolvedHeight ? resolveSize(resolvedHeight) : '';
         const itemStyle =
-          !equalSides
+          !equalSides && !box
             ? styleMap({
                 'inline-size': resolveSize(resolvedWidth || '100%'),
                 'block-size': resolvedHeight ? resolveSize(resolvedHeight) : '',

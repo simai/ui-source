@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.progress-scale",
   "kind": "component",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/progress-scale/index.js",
@@ -13,7 +13,7 @@
     "src/component/progress-scale/scss/_css__progress_scale.scss",
     "src/component/progress-scale/scss/index.scss"
   ],
-  "content_sha256": "4a1f868ea3d39cb34d9b52bc1098a66da2a8ff8ee552458f5a69e5e703d8e29d",
+  "content_sha256": "7bf23a0940e47a99392f7acb86aaf985e3889a79ce949a9ea8c5bb2efb7609dc",
   "dependencies": [
     {
       "id": "core.runtime",
@@ -24,12 +24,12 @@
       "range": "^1.0.0"
     },
     {
-      "id": "tokens.border",
+      "id": "tokens.colour",
       "range": "^1.0.0"
     },
     {
-      "id": "tokens.colour",
-      "range": "^1.0.0"
+      "id": "tokens.radius",
+      "range": "^1.1.0"
     },
     {
       "id": "tokens.space",

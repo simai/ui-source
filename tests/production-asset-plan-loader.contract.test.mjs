@@ -54,7 +54,7 @@ test('an undefined Smart icon reserves its final control geometry', () => {
 test('an unbound flat menu has the same level-one geometry as the bound menu', () => {
   assert.match(
     menuElementStyles,
-    /padding-inline-start: var\(--sf-menu-element--padding-inline-start, var\(--sf-space-1\)\)/,
+    /padding-inline-start: calc\(var\(--sf-menu-element--padding-inline-start, var\(--sf-space-1\)\) - var\(--sf-menu-element--border-width\)\)/,
   );
   assert.match(
     menuElementStyles,

@@ -46,6 +46,8 @@ Main attributes:
 - `hint-icon`
 - `root-class`
 - `root-style`
+- `clearable` — a clear (×) at the field's end while it holds a value (1.9.0); a
+  search field has it without the setting
 - `disabled`
 - `error`
 - `invalid`
@@ -158,6 +160,29 @@ Bordered is the default on every place. Filled is for a search or filter field
 over a table or a list, on the page, a card or a popup (C52): at rest it draws
 a thin bottom line in `--sf-outline` under its 8 % fill (C41), and a state
 that colours the border (hover, press) colours the line with it.
+
+## Actions inside the field
+
+Since 1.9.0 (owner decision C123) the actions inside the field are glyphs
+without a plate, the field layer's `.sf-field-action` (component.inputs): quiet
+(`--sf-on-surface-variant`) at rest, the text's ink under the pointer and on a
+press, the keyboard ring round the glyph inside the field. The glyph is the
+leading icon's size (24 / 20 / 28 at sizes 1, 1/2, 2 on a desktop), its end on
+the field's inset; the hit area is invisible, the field's height and never under
+24. From the text to the edge: the clear, then the action (the password reveal,
+a copy button), then an indicator (a dropdown's chevron).
+
+- `clearable` draws the clear, «Очистить» («Clear»), while the field holds a
+  value and can be changed. A press empties the field with `input` and `change`
+  and gives the focus back to it. `input-type="search"` has it without the
+  setting, in place of the browser's own.
+- `input-type="password"` draws the reveal: a toggle button «Показать пароль»
+  («Show password») with `aria-pressed`; the eye, crossed out while the password
+  shows. `form.reset()` hides the password again.
+- An `sf-button-copy` placed in the field (the `end` slot or the class markup's
+  `.sf-input-field`) draws the same glyph and shows its check after a copy.
+
+Buttons outside fields (toolbars, table rows, window headers) keep their plates.
 
 ## Required: the error after a submit attempt
 

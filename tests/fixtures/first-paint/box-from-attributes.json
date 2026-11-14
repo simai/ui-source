@@ -1,0 +1,13 @@
+{
+  "$comment": "The Smart components whose bare tag keeps its box before its code from a core rule (src/core/scss/_sf_css__placeholder.scss): what the rule holds (box: width and height; height: the height and the top, the width being its text's) and the attributes it reads. Gate 24b (tests/browser/first-paint-gate.browser.mjs) fails a bare tag of these that moves when its code arrives; every other component's bare jump is reported, not failed. A component joins the list in the same change as its core rule (first-paint study R222, 2026-11-13).",
+  "components": {
+    "input": {
+      "holds": "box",
+      "reads": "size (1/3, 1/2, 1, 2, 3), label, hint, invalid with error-message, appearance=hidden: one control of the size step as wide as its container, plus one line of the text a step below and the field's gap for a label and for a message (pilot of R222, 2026-11-13)"
+    },
+    "language": {
+      "holds": "height",
+      "reads": "size and mode: one control of the size step high; as wide as high only for mode menu and search, the switch and auto take the width of their labels (Docara, 2026-11-07)"
+    }
+  }
+}

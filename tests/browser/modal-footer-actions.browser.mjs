@@ -6,7 +6,7 @@
 // at the start with a wide gap). On the built bytes, through the loader, at
 // 1280px:
 //   - actions slotted directly: the last one ends where the footer's content
-//     ends, the gap between them is --sf-space-1/2, they keep their order
+//     ends, the gap between them is --sf-space-1/3 (C105 H5), they keep their order
 //     and stand on one centre line;
 //   - the audit's repro, a wrapper div in the slot: it stands at the end;
 //   - right to left: the actions stand at the left end;
@@ -87,7 +87,7 @@ try {
       };
       const rect = (element) => { const r = element.getBoundingClientRect(); return {left: r.left, right: r.right, top: r.top, bottom: r.bottom, text: element.textContent.trim()}; };
       const step = document.createElement('div');
-      step.style.inlineSize = 'var(--sf-space-1\\/2)';
+      step.style.inlineSize = 'var(--sf-space-1\\/3)';
       document.body.append(step);
       const ladder = step.getBoundingClientRect().width;
       step.remove();
@@ -102,7 +102,7 @@ try {
     const [first, last] = [m.actions[0], m.actions.at(-1)];
     if (name === 'direct') {
       check('direct: the last action ends where the footer\'s content ends', near(last.right, m.content.right), m);
-      check('direct: the gap between the actions is space-1/2', m.ladder > 0 && near(m.actions[1].left - m.actions[0].right, m.ladder, 0.5) && m.gap === `${m.ladder}px`, m);
+      check('direct: the gap between the actions is space-1/3', m.ladder > 0 && near(m.actions[1].left - m.actions[0].right, m.ladder, 0.5) && m.gap === `${m.ladder}px`, m);
       check('direct: the actions keep their order, the primary last', first.text === 'Отмена' && last.text === 'Удалить', m);
       check('direct: they stand on one centre line', near((first.top + first.bottom) / 2, (last.top + last.bottom) / 2, 0.5), m);
     }

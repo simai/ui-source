@@ -2,7 +2,12 @@
   "title": "File Preview",
   "runtime": {
     "aria-label": "File",
-    "download-label": "Download file",
-    "remove-label": "Remove file"
+    "download-label": "Download {name}",
+    "remove-label": "Remove {name}",
+    "uploading-label": "Uploading {name}",
+    "error-text": "Not uploaded",
+    "error-line": "Not uploaded: {message}",
+    "retry-text": "Retry",
+    "retry-label": "Retry {name}"
   }
 }

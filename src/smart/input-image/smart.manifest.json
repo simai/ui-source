@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.input-image",
-  "version": "1.4.0",
+  "version": "1.5.1",
   "title": "Image field",
-  "summary": "A form field for one image: a row (thumbnail, name and size, the buttons) or a preview (the picture in its frame, the row under it); a file chosen, dropped or pasted, or a picture from the page's library or an address; the upload core's checks with the reason under the field; the description and «Декоративная», the frame and the focal point inside the field; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File, or sends it through the page's uploader.",
+  "summary": "A form field for one image: a row (thumbnail, name and size, the buttons) or a preview (the picture in its frame, the row under it); a file chosen, dropped or pasted, or a picture from the page's library or an address; the upload core's checks with the reason under the field; the description and «Декоративная» inside the field, the frame and the focal point in a window over the page; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File, or sends it through the page's uploader.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -33,6 +33,7 @@
       "smart.icon",
       "smart.input",
       "smart.menu-context",
+      "smart.modal",
       "smart.progress-ring",
       "smart.switch"
     ],
@@ -136,7 +137,7 @@
       "sources": {
         "type": "string",
         "default": "device",
-        "description": "Where a picture may come from, comma separated: device (the file dialog), library (the page's library: the field sends library and the page calls setValue()), url (an address typed in the field). One source: «Выбрать…» / «Заменить…» goes there; more: «Заменить ▾» opens a menu of them (C94 point 5)."
+        "description": "Where a picture may come from, a list separated by commas or spaces: device (the file dialog), library (the page's library: the field sends library and the page calls setValue()), url (an address typed in the field). One source: «Выбрать…» / «Заменить…» goes there; more: «Заменить ▾» opens a menu of them (C94 point 5)."
       },
       "library-label": {
         "type": "string",
@@ -146,7 +147,7 @@
       "edit": {
         "type": "string",
         "default": "",
-        "description": "What the person may edit on the picture, comma separated: crop (the frame in `aspect`, with zoom and position), focus (the focal point). «Изменить» opens the editor in the field; «Готово» writes crop {aspect, zoom, x, y} and focus {x, y} into the value. The original is never cut (C94 point 3)."
+        "description": "What the person may edit on the picture, a list separated by commas or spaces: crop (the frame in `aspect`, with zoom and position), focus (the focal point). «Изменить» opens the editor in a window over the page (sf-modal; the whole screen under md, C125); «Готово» writes crop {aspect, zoom, x, y} and focus {x, y} into the value, «Отмена», Escape, the scrim and the × leave it, and focus returns to «Изменить». The original is never cut (C94 point 3)."
       },
       "alt": {
         "type": "string",
@@ -679,7 +680,7 @@
       "Enter",
       "Space"
     ],
-    "focus": "A group named by the field label and described by the help or error text. «Выбрать…», «Заменить…» (or «Заменить ▾» with a menu of sources), «Изменить» and the remove icon are real buttons named for what they act on («Заменить изображение «logo.png»»); the thumbnail's alt is the description the person wrote (empty for a decorative picture or none). The drop target takes no focus, so it is never a stop or a trap; a paste lands while any of its buttons has focus. After a removal focus goes to «Выбрать…». A choice, a removal, a refused file and a transfer's end are announced in a polite status. The editor's stage takes focus: the arrows move the frame or the point, + and − zoom, Enter finishes, Escape cancels."
+    "focus": "A group named by the field label and described by the help or error text. «Выбрать…», «Заменить…» (or «Заменить ▾» with a menu of sources), «Изменить» and the remove icon are real buttons named for what they act on («Заменить изображение «logo.png»»); the thumbnail's alt is the description the person wrote (empty for a decorative picture or none). The drop target takes no focus, so it is never a stop or a trap; a paste lands while any of its buttons has focus. After a removal focus goes to «Выбрать…». A choice, a removal, a refused file and a transfer's end are announced in a polite status. «Изменить» opens the editor's window (sf-modal, C125) and its stage takes focus: the arrows move the frame or the point, + and − zoom, Enter finishes; Escape, «Отмена», the scrim and the × cancel. When the window closes focus returns to «Изменить»."
   },
   "presentation": {
     "themes": [
@@ -754,11 +755,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-image/index.js",
-        "sha256": "b1c09de83360fe1d4dde23e07da7d0741b5da6e7eaaeb9ec51e71449795d3ee2"
+        "sha256": "9c6840eb6b265ceba298f2ae8ffb2f96f2fc2e847ff8959d367c3d1315a5b609"
       },
       {
         "path": "src/smart/input-image/value.mjs",
-        "sha256": "19c833f975b2479df43e971b3bb143c784bbc8b4a09988acf9ab5a4928824da3"
+        "sha256": "52eb087649dbe757f23bafb42d6bddafea0e258c5145c0287f0da7daa893678e"
       },
       {
         "path": "src/core/js/composition/file-size.mjs",
@@ -766,19 +767,19 @@
       },
       {
         "path": "src/smart/input-image/js/templates/default.js",
-        "sha256": "7a4a0053b5ce8a74884d00d38f4f429fc6e2fb2ca38f8f01ba3b08421ab12663"
+        "sha256": "09de608e992e80c265497397c1a98a1915ad553e9a053eabacaedb4088b531f0"
       },
       {
         "path": "src/smart/input-image/scss/_smart__image_field.scss",
-        "sha256": "5e84487af93e05ec014aab2cb8892f9f953f73cefa402302385f560ab0148b3a"
+        "sha256": "03e4e4092a6aaa5c751aff7abd55d4373d79714a2be47c268e90d9fa0234ea4e"
       },
       {
         "path": "src/smart/input-image/rule.js",
-        "sha256": "b6c2bed4076190ddeee001ba298f468a6cddd2ac89e3614b76be9c549f43c269"
+        "sha256": "a820c4e604c88fe0f0871640a504da177222d966b14c7b430e832b5c5b270971"
       },
       {
         "path": "src/smart/input-image/docs.md",
-        "sha256": "3ee5f3d6ae8395f064af40a420c591bd8aa5b54c1befa59762d631725be6720e"
+        "sha256": "55b63dcb7cdac2ba8fc9850aaa06918df729669dd34cc86ec7ea74b52785df50"
       }
     ],
     "generated_runtime": []

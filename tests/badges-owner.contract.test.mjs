@@ -161,7 +161,10 @@ test('Badge draws its border inside its size and offers tight side room', async 
 
   // 1.5.0: a tonal badge on a translucent fill lays its tone over the place (C43).
   // 1.6.0: sf-badge--line-text, the line of the text beside it (C95 point 6).
-  assert.equal(passport.version, '1.6.0');
+  // 1.6.1: docs only (C134: the rail's class is sf-menu--rail), riding 1.7.x.
+  // 1.7.0: the anchored dot and count take core's small steps (C132);
+  // 1.7.1: the small steps' internal names are --sf-micro--*.
+  assert.equal(passport.version, '1.7.1');
   for (const side of ['block-start', 'block-end', 'inline-start', 'inline-end']) {
     assert.match(css, new RegExp(`padding-${side}: max\\(var\\(--sf-a0\\), calc\\(`), `padding-${side} gives up the border`);
   }
@@ -225,9 +228,14 @@ test('a tonal badge on a translucent fill lays its tone over the solid place (C4
     ['src/component/tree/scss/_css__tree.scss', /\[aria-selected='true'\] > \.sf-tree-item-container \{[^}]*@include places\.sf-place-fill\(/u],
     ['src/component/menu/scss/_css__menu.scss', /@mixin current-plate \{[^}]*@include places\.sf-place-fill\(/u],
     ['src/smart/list/js/templates/default.css', /\.sf-list__row--current \{[^}]*--sf-surface-underlay: var\(--sf-surface-place-solid\); --sf-surface-place-fill: var\(--sf-list--current\);/u],
-    ['src/smart/input-choice/scss/_smart__choice.scss', /\.sf-choice \.sf-choice-card--checked:hover \{[^}]*@include places\.sf-place-fill\(/u],
   ];
   for (const [path, pattern] of rows) assert.match(await read(path), pattern, path);
+  // A checked choice card is not such a row (input-choice audit 2026-11-11):
+  // its tonal badge stacks over the card's fill, so the plate shows (C28).
+  const checked = await read('src/smart/input-choice/scss/_smart__choice.scss');
+  const rule = checked.slice(checked.indexOf('.sf-choice .sf-choice-card--checked:hover {'), checked.indexOf('}', checked.indexOf('.sf-choice .sf-choice-card--checked:hover {')));
+  assert.ok(rule.includes('border-color: var(--sf-choice--selected-border-color);'), 'the checked rule found');
+  assert.doesNotMatch(rule, /sf-place-fill|--sf-surface-underlay/u);
 });
 
 // C43 D3 and D4 (2026-11-11): the anchored badge's ring on a translucent row is
@@ -278,4 +286,31 @@ test('striped, hovered and active table cells are fills of their accent (C43 D3,
   assert.equal(hover.match(fill)?.length, 2, 'table-hover and hovered stripe');
   assert.equal(stripe.match(fill)?.length, 2, 'table-stripe and table-stripe-col');
   assert.doesNotMatch(table, /sf-place-fill/u, 'a cell at rest');
+});
+
+// C43 D3 and D4, the rows the first round left out (badge-rows-5, 2026-11-13):
+// a context menu's panel row (hovered, checked, checked and hovered), a lookup
+// option (hovered, chosen) and the compact contents list's entry under the
+// pointer are translucent fills too, each named to the mix with its own fill.
+test('panel rows, lookup options and contents entries are fills of their own colour (C43 D3, D4)', async () => {
+  const [cm, lookup, contents] = await Promise.all([
+    read('src/component/context-menu/scss/_css__context_menu.scss'),
+    read('src/smart/input-lookup/scss/_smart__lookup.scss'),
+    read('src/smart/contents/scss/_smart__contents.scss'),
+  ]);
+  const rule = (css, selector, fill) => {
+    const at = css.indexOf(`${selector} {`);
+    assert.ok(at >= 0, selector);
+    const body = css.slice(at, css.indexOf('}', at));
+    assert.match(body, /background-color: var\(--sf-[a-z-]+\);/u, `${selector}: paints a fill`);
+    assert.ok(body.includes(`background-color: var(${fill});`), `${selector}: paints ${fill}`);
+    assert.ok(body.includes(`@include places.sf-place-fill(var(${fill}));`), `${selector}: names ${fill} to the mix`);
+  };
+  const checked = '.sf-context-menu-row:has(> :is(sf-checkbox, sf-radio, input) :checked, > input:checked)';
+  rule(cm, '.sf-context-menu-row:hover', '--sf-surface-state-select');
+  rule(cm, checked, '--sf-primary-container');
+  rule(cm, `${checked}:hover`, '--sf-primary-container-hover');
+  rule(lookup, '.sf-lookup .sf-lookup-option:hover', '--sf-surface-state-hover');
+  rule(lookup, '.sf-lookup .sf-lookup-option.sf-lookup-option--chosen', '--sf-primary-container');
+  rule(contents, '  .sf-contents-link:hover', '--sf-surface-container-hover');
 });

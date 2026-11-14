@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-attention",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "title": "Needs attention",
   "summary": "The problems that need a person, in a card: a heading with a badge per severity, then each problem with a filled status icon, its title, what · how long · where, one quiet action and a «⋯» to snooze or dismiss it (undone from the notice), at most five and «Все проблемы (N)», when the checks ran and a recheck. With none, one quiet line «Всё в порядке · проверено …». group=\"severity\" is the full checks page with a closed «Пройдено».",
   "kind": "smart",

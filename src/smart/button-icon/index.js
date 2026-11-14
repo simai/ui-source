@@ -6,6 +6,7 @@ import { ANCHORED_BADGE_ATTRIBUTES, elementBadge, nameWithBadge } from '../helpe
 import { cycleState, hasCycle, parseCycle, preloadSwitchIcons, pressCycle, themeCycleFollow, warnCycleToggle } from '../helpers/cycle';
 import { noteDeprecated } from '../../core/js/deprecations';
 import { warnUnknownControlStatus } from '../helpers/control-status';
+import { dangerLook, sayButtonSetFormers } from '../helpers/button-set';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -114,7 +115,16 @@ class SfIconButton extends IconButtonElement {
     return (this.getAttribute('appearance') ?? this.getAttribute('type')) === RETIRED_APPEARANCE;
   }
 
+  // A danger icon button is filled, outline or ghost (decision C116,
+  // #q-danger-looks): tonal, and the retired surface, with status danger draw
+  // as outline until 2027-01-01 (helpers/button-set.js, change journal
+  // value-button-set-c116).
+  get dangerFormer() {
+    return dangerLook(this.getAttribute('appearance') ?? this.getAttribute('type'), this.getAttribute('status')).former;
+  }
+
   get appearance() {
+    if (this.dangerFormer) return 'outline';
     if (this.retiredSurface) {
       noteDeprecated({component: 'sf-button-icon', tag: 'sf-button-icon', kind: 'value', attribute: 'appearance', from: 'surface', to: 'tonal', since: '2026-11-08', remove_after: '2027-01-01'});
       return 'tonal';
@@ -191,6 +201,9 @@ class SfIconButton extends IconButtonElement {
     if (cycle) warnCycleToggle(this, ['pressed', 'label-pressed']);
     // success, warning, info: no such icon buttons (C13, BS-1); said once per page.
     warnUnknownControlStatus('sf-button-icon', this.getAttribute('status'));
+    // A danger tonal or surface (C116); said once per page.
+    const dangerFormer = this.dangerFormer;
+    if (dangerFormer) sayButtonSetFormers('sf-button-icon', [{attribute: 'appearance', from: dangerFormer, to: 'outline', danger: true, drawn: 'appearance="outline" status="danger" (a danger icon button is filled, outline or ghost)'}]);
     const announce = Boolean(cycle && this.__sfCycleAnnounce);
     this.__sfCycleAnnounce = false;
     // The icons a press can show, asked for before the press (R074).

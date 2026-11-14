@@ -34,7 +34,7 @@
     --sf-icon--width: var(--sf-text-height-1);
   }
 
-  .sf-checkbox:not(.error):has(input:checked):not(:has(input:disabled)) > .sf-checkbox-box > sf-icon > .sf-icon, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active):not(:has(sf-help-mark:active, [slot="help"]:active)) > .sf-checkbox-box > sf-icon > .sf-icon {
+  .sf-checkbox:not(.error):has(input:checked):not(:has(input:disabled)) > .sf-checkbox-box > sf-icon > .sf-icon {
     --sf-icon--color: var(--sf-on-primary);
   }
 

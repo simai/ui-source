@@ -17,6 +17,9 @@ import {renderConfirmFooter} from "../../../helpers/confirm-surface.js";
 //
 // Both answers are outlined and weigh the same: a change is decided, not
 // nudged, and a filled «Confirm» beside a quiet «Decline» is a nudge.
+// «Отклонить» is that decision, not a cancel, so it stays outlined when every
+// «Отмена» is quiet (decision C116 #q-cancel; the shared footer's
+// declineAppearance).
 //
 // The status line is a polite live region and also the place focus goes when
 // the button that had it disappears (index.js, answer()).
@@ -42,7 +45,7 @@ export function renderChangeConfirmTemplate(context) {
             <div class="sf-change-confirm__changes" role="group" aria-label=${context.changesLabel}>
                 <sf-change class="sf-change-confirm__list" layout="list" .changes=${context.changes}></sf-change>
             </div>
-            ${renderConfirmFooter(context, "sf-change-confirm")}
+            ${renderConfirmFooter(context, "sf-change-confirm", {declineAppearance: "outline"})}
         </section>
     `;
 }

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-toast's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/toast (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.toast",
   "tag": "sf-toast",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "kind": "leaf",
   "family": "toast",
   "settings": {
@@ -35,7 +35,7 @@
     "action-text": {
       "type": "string",
       "default": "",
-      "summary": "Visible label of the first optional action: a link at the end of the text when action-href is set and there is no secondary action, a button under the text otherwise (owner decision C50)."
+      "summary": "Visible label of the first optional action, always a button (owner decision C126 (1)): with action-href and no secondary action the button is a link to that address (owner decision C50)."
     },
     "action": {
       "type": "string",
@@ -45,7 +45,7 @@
     "action-href": {
       "type": "string",
       "default": "",
-      "summary": "An address for the one light navigation action («Открыть», «Посмотреть», «Подробнее»): with it and without a secondary action, action-text is a link at the end of the text, followed as a link and reported in sf-toast-action. Undo, retry, extend and two actions stay buttons; a toast never shows both (owner decision C50)."
+      "summary": "An address for the one light navigation action («Открыть», «Посмотреть», «Подробнее»): with it and without a secondary action, the action button is a link to it (an <a> in the button's classes, in the action's place), followed as a link and reported in sf-toast-action (owner decisions C50, C126 (1): every action is a button; a link in the text is help only)."
     },
     "secondary-action-text": {
       "type": "string",
@@ -56,6 +56,15 @@
       "type": "string",
       "default": "secondary",
       "summary": "Stable secondary action value emitted in sf-toast-action."
+    },
+    "actions-layout": {
+      "type": "enum",
+      "values": [
+        "auto",
+        "under"
+      ],
+      "default": "auto",
+      "summary": "Where the action stands: auto puts it in the row with the text while the toast is wide enough and under the text when narrower (layout L3a); under keeps it under the text at every width, for a long text. Any other word is auto."
     },
     "closable": {
       "type": "boolean",
@@ -336,7 +345,11 @@
     "version 1.2.1 (2026-11-10): a patch (component.toast 1.2.4). The status icon is an sf-icon element, as sf-alert draws its own, and the toast asks the Loader for its glyph when it draws (smart/helpers/cycle.js preloadControlIcons, R074). The bare <i class=\"sf-icon\"> it printed was found only by the Loader's page scan, so a toast drawn where the scan does not look -- a data-sf-observer=\"ignore\" region, a shadow root -- kept an empty box for a glyph the page had not asked for (delete beside warning). The toast sheet places the glyph inside the sf-icon (display: contents) and the sf-icon before it is defined, so size, colour and position are unchanged (tests/browser/toast-status-glyph.browser.mjs). Settings, events and keys are unchanged.",
     "version 1.3.0 (2026-11-11): the actions of owner decision C50, the model of SF.Toast.create (component.toast 1.3.0). action-href (a new public name, the <purpose>-href pattern of more-href, prev-href and later-href) turns the one light navigation action into a link at the end of the text, a.sf-toast-link in the text's own ink; secondary-action-text and secondary-action (sf-alert's names) add a second button under the text. With a secondary action both are buttons and action-href does not apply: a toast never mixes a link and buttons. The link and both buttons carry data-action, so sf-toast-action reports which one was pressed; a link with action-href=\"#\" does not jump.",
     "version 1.3.1 (2026-11-12): a patch (component.toast 1.3.1). The link keeps to the last word of the text it ends: a no-break space stands before it where a plain space did, so a full line no longer sends the link alone onto a line of its own (T2, C50 acceptance r3; 72 of 336 toasts). Settings, events and keys unchanged.",
-    "version 1.3.1, also (2026-11-12, group build 2026-11-12): nothing drawn or done differently. The no-break space before the link is written into the text's own node (the title's or the supporting text's), not a node of its own: snapshot-first-paint prints a text node of white space alone as one plain space, so the «link» first paint lost its &nbsp; on the group build. The page DOM is the same text."
+    "version 1.3.1, also (2026-11-12, group build 2026-11-12): nothing drawn or done differently. The no-break space before the link is written into the text's own node (the title's or the supporting text's), not a node of its own: snapshot-first-paint prints a text node of white space alone as one plain space, so the «link» first paint lost its &nbsp; on the group build. The page DOM is the same text.",
+    "version 1.4.0 (written on the branch as 1.3.0; 2026-11-13, owner decisions C114 and C115; component.toast 1.3.0): a minor. The job is a short reply to an action (C114 (1)). An error or a warning never leaves by itself (C114 (6), NS-2): duration is 0 for them whatever the attribute says, here and in the class toast's timer and in SF.notify (they left after 10 s and 8 s). With one action, the action stands in the row with the text from 20rem of the toast's own width (C115, layout L3a: every toast of the notification area), else under the text from its start with an even bottom inset (C114 (5), NS-10). Events and keys unchanged. A new setting actions-layout (owner 2026-11-13, #q-layout-override): auto (the default) is L3a, under keeps the action under the text at every width with the same gap and the even bottom; the template adds the class form sf-toast--actions-under (the class toast takes actionsLayout); any other word is auto, as every enum setting; no alias. Also (C113 follow-up, DEV overlays acceptance 2026-11-13, through component.toast 1.3.0): in the dark theme the action's label and icon under the pointer take the ink family's full step, --sf-alpha-base (white), on the neutral tonal and ghost plates of a toast; the buttons' --sf-on-surface read 4.38:1 hovered and 4.01:1 pressed on a neutral toast (4.43-4.72 pressed on the levels) over the popup place; now tonal 5.64-6.71 hovered and 5.16-6.08 pressed, ghost 5.65-8.06 and 5.17-7.77. The plates keep C113's 12 / 16 / 20; the light theme is unchanged.",
+    "version 1.4.0, also (written on the branch as 1.3.2; 2026-11-13, owner decision C126; component.toast 1.3.2; one number above the unreleased 1.3.1 of the group build): a patch. A link in the toast's text is help only («Узнать больше»), every action a button; the link is the text's own ink on every level, underlined at the link weight, the line doubled under the pointer, its keyboard ring the same ink (core mix/_mix__notice-link.scss, shared with sf-alert and sf-alert-bar). Settings, values, events and keys unchanged.",
+    "version 1.4.0, also (written on the branch as 1.3.3; 2026-11-13, owner decision C105 H4/H6, spacing audit O1; component.toast 1.3.3): a patch. The 1 px border stands inside the inline inset, as the fields' C77 inset: the padding is --sf-space-1 less the border, so the status icon, the letters and the cross stand 16 from the outer edge (compact and phone 12), not 17 (13). The action threshold of C115 stays the whole width (20rem). Settings, values, events and keys unchanged.",
+    "version 1.4.0, also (2026-11-14, group build 3; owner decision C126 (1) over C50's link, the merge note control/evidence/2026-11-13-alert-bar-narrow/toast-merge-note.md): a minor with the two above, the light action changes. The one light navigation action (action-text with action-href, no secondary action) is no longer a.sf-toast-link at the end of the text: it is the one action button (the tonal low button of C110 E) drawn as an <a href> in the button's classes, in the C115 place, with data-action and data-toast-action; action-href=\"#\" still does not jump. The no-break space before the link (1.3.1) goes with it. action-href, secondary-action-text, secondary-action, two actions, the timer pause and the SF.notify stack of C50 are kept; the C126 notice-link rule draws every help link in the text. Settings and events unchanged."
   ],
   "x-registry": {
     "contracts": {

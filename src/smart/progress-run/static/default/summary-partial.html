@@ -22,7 +22,8 @@
 </div>
 <div class="sf-progress-run-progress">
 <sf-progress-bar text-position="none" class="sf-progress-run-bar" value="100" status="warning" label="Импорт товаров из «Прайс_ноябрь.xlsx»" style="display: contents;" data-status="warning">
-<div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="sf-progress-bar sf-progress-bar--size-1 sf-progress-bar--warning flex" data-value="100" data-position="none" data-tone="warning" data-label="Импорт товаров из «Прайс_ноябрь.xlsx»" aria-label="Импорт товаров из «Прайс_ноябрь.xlsx»" aria-valuenow="100" data-sf-progress-bar-bound="1" data-sf-static>
+<div aria-valuemin="0" aria-valuemax="100" class="sf-progress-bar sf-progress-bar--size-1 sf-progress-bar--warning flex" data-value="100" data-position="none" data-tone="warning" data-label="Импорт товаров из «Прайс_ноябрь.xlsx»" role="progressbar" aria-label="Импорт товаров из «Прайс_ноябрь.xlsx»" aria-valuenow="100" data-sf-progress-bar-bound="1" data-sf-static>
+
 <div class="sf-progress-bar-main">
 <div class="sf-progress-bar-progress transition" style="width: 100%;"></div>
 </div>
@@ -82,22 +83,7 @@
 <span class="sf-progress-run-time">16:50</span>
 
 </li></ol>
-<div class="sf-progress-run-output-block">
-<div class="sf-progress-run-output-bar">
-<sf-button class="sf-progress-run-toggle" appearance="ghost" size="1/2" text="Вывод" icon-end="expand_more" expanded="false" aria-controls="sf-progress-run-output-1" style="display: contents;" data-sf-size-relative>
-<button type="button" class="sf-button sf-button--size-1/2 sf-button--ghost sf-button--link sf-button--primary flex items-cross-center" aria-expanded="false" aria-controls="sf-progress-run-output-1" data-sf-static>
 
-
-<span class="sf-button-text-container text-center pointer-event-none">
-Вывод
-</span>
-<sf-icon root-class="pointer-event-none" weight="400" aria-hidden="true" icon="expand_more" style="display: contents;"><i class="sf-icon sf-icon--weight-regular pointer-event-none" style="--sf-icon--grade:0;--sf-icon--optical-size:24" aria-hidden="true" data-sf-static>expand_more</i></sf-icon>
-</button>
-</sf-button>
-
-</div>
-
-</div>
 <div class="sf-progress-run-actions">
 <sf-button class="sf-progress-run-more" appearance="ghost" size="1/2" text="Ещё 35 ошибок" style="display: contents;" data-sf-size-relative>
 <button type="button" class="sf-button sf-button--size-1/2 sf-button--ghost sf-button--link sf-button--primary flex items-cross-center" data-sf-static>
@@ -134,4 +120,5 @@
 </button>
 </sf-button>
 </div>
+<div class="sf-progress-run-live sr-only" aria-live="polite" aria-atomic="true"></div>
 </section></sf-progress-run>

@@ -32,8 +32,10 @@ ships with the component:
 - the search finds a language by its own name, its English name, its name in
   the page's language and its code: «нем», «German» and «de» all find Deutsch.
 
-`compact` makes the switch show codes (RU · EN); each segment keeps the name
-as its accessible name.
+`labels="code"` makes the switch show codes (RU · EN); each segment keeps the
+name as its accessible name. The boolean `compact` that did this before is a
+dated alias of `labels="code"` until 2027-01-01, noted in `SF.deprecations`:
+the word compact means density only (`data-sf-density`, owner decision C134).
 
 To name a language yourself, give `items` instead, as a property or in the
 JSON island; when it holds a language, `languages` is not read:
@@ -50,7 +52,7 @@ JSON island; when it holds a language, `languages` is not read:
 |---|---|---|
 | `code` | required | The language's BCP 47 code. |
 | `label` | | Replaces the name the browser gives. |
-| `short` | | Replaces the compact label (the code in capitals). |
+| `short` | | Replaces the code label (`labels="code"`; the code in capitals). |
 | `href` | | The address of the site in this language. |
 
 ## Thresholds
@@ -197,7 +199,7 @@ rungs: its rows are 32 px up to `1/2`, 40 px from `1`.
 | `mode` | `auto` `inline` `menu` `search` | `auto` | The look. |
 | `inline-max` | integer | `3` | The most languages in a switch (auto). |
 | `search-from` | integer | `8` | The count from which the menu searches (auto). |
-| `compact` | boolean | `false` | Codes instead of names in the switch. |
+| `labels` | `name` `code` | `name` | Names or codes in the switch. `compact` (boolean) is its dated alias until 2027-01-01. |
 | `size` | `1/3` `1/2` `1` `2` `3` | `1` | The ladder rung. |
 | `apply` | `page` `none` | `page` | Apply a language without an href to the page. |
 | `remember` | string | `""` | A name to keep the choice under (`SF.Preferences` `sf-language/<name>`). |

@@ -23,11 +23,12 @@ const badge = JSON.parse(read('src/smart/badge/component.json'));
 const badgeSource = read('src/smart/badge/index.js');
 const method = (name, next) => source.slice(source.indexOf(`  ${name}`), source.indexOf(`  ${next}`));
 
-test('C95 versions: contents 1.6.x (1.6.1: HS-12), sf-badge 1.5.0, component.badges 1.6.0', () => {
-  assert.match(manifest.version, /^1\.6\.\d+$/u);
+test('C95 versions: contents 1.6.x or later (1.6.1: HS-12; 1.7.0: C134), sf-badge 1.5.0, component.badges 1.6.0 or later (1.7.x: C132)', () => {
+  assert.match(manifest.version, /^1\.([6-9]|\d{2,})\.\d+$/u);
   assert.equal(generated.version, manifest.version);
   assert.equal(badge.version, '1.5.0');
-  assert.equal(JSON.parse(read('src/component/badges/passport.json')).version, '1.6.0');
+  // 1.6.1: docs only (C134, the rail's class sf-menu--rail in the example); 1.7.x: C132.
+  assert.match(JSON.parse(read('src/component/badges/passport.json')).version, /^1\.7\.\d+$/u);
 });
 
 test('C95.1 CT-01: line="own|edge|none"; edge draws no line and keeps the mark on the edge', () => {
