@@ -37,7 +37,7 @@ test('(2) the colour frame spaces its value and its reset by H5, not by the icon
   // 1.11.0 (owner decision C123): the reset is a field action and the frame
   // keeps the half inset round its glyph (tests/input-color-reset-c123.*); the
   // frame's own gap stays H5's.
-  assert.equal(json('src/smart/input-color/component.json').version, '1.12.0');
+  assert.equal(json('src/smart/input-color/component.json').version, '1.12.1');
 });
 
 test('(3) the brand clear has words of its own; the field keeps the inherited ones', () => {

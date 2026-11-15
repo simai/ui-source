@@ -37,7 +37,7 @@ test('(1) the frame reset is a field action named by the variant', () => {
 
 test('(2) the field layer rules are loaded and the frame says its step', () => {
   const manifest = json('src/smart/input-color/component.json');
-  assert.equal(manifest.version, '1.12.0');
+  assert.equal(manifest.version, '1.12.1');
   assert.ok(manifest.relations.some((relation) => relation.name === 'inputs'), 'relation inputs');
   assert.match(read('src/smart/input-color/rule.js'), /\{ name: 'inputs' \}/u);
   assert.ok(json('src/smart/input-color/smart.manifest.json').composition.uses.includes('component.inputs'));
@@ -50,7 +50,8 @@ test('(2) the field layer rules are loaded and the frame says its step', () => {
 
 test('(3) half an inset round the glyph; the chevron is the glyph size', () => {
   const gap = rule(css, '.sf-color-frame:has(> .sf-field-action, > .sf-field-inherited-slot > .sf-field-action:not([hidden]))');
-  assert.match(gap, /gap: calc\(var\(--sf-field-action--inset\) \/ 2 - \(max\(var\(--sf-field-action--glyph\) \+ var\(--sf-field-action--inset\) \/ 2, var\(--sf-c2\)\) - var\(--sf-field-action--glyph\)\) \/ 2\);/u);
+  // 1.12.1: the field layer's value step (component.inputs field-action.scss), not a copy of its formula.
+  assert.match(gap, /gap: var\(--sf-field-action--value-space\);/u);
   const chevron = rule(css, '.sf-color-chevron');
   for (const name of ['font-size', 'height', 'width']) assert.match(chevron, new RegExp(`--sf-icon--${name}: var\\(--sf-color--text-height\\);`, 'u'));
 });

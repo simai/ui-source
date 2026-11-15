@@ -140,7 +140,8 @@
   box-sizing: border-box;
   inline-size: 100%;
   min-inline-size: 0;
-  gap: var(--sf-lookup--chip-row-gap) var(--sf-space-1\/4);
+  --sf-lookup--column-gap: var(--sf-space-1\/4);
+  gap: var(--sf-lookup--chip-row-gap) var(--sf-lookup--column-gap);
   padding-block: var(--sf-lookup--padding-block);
   padding-inline: var(--sf-lookup--padding-inline);
   border: var(--sf-px) solid;
@@ -358,13 +359,21 @@
 /* The clear is the field layer's action (C123; it was sf-button-close plain,
    C14): a glyph without a plate, its hit area the field's inner height. It
    stands over the frame's block padding by what it passes the text line, so a
-   value never grows the field; the value keeps half an inset before it. */
+   value never grows the field; the value keeps half an inset before its glyph
+   (C123 (6)): the field layer's --sf-field-action--value-space of its own,
+   the rest is what the hit area stands out past the glyph. The frame's column
+   gap (it spaces the chips) is given back between the value and the clear;
+   with it the value stood a quarter step further, 12 for 8 at size 1. */
 .sf-lookup .sf-lookup-frame > .sf-field-action {
   margin-block: calc(-1 * var(--sf-lookup--padding-block));
 }
 
 .sf-lookup .sf-lookup-frame > .sf-lookup-input:has(+ .sf-field-action) {
-  padding-inline-end: calc(var(--sf-field-action--inset) / 4);
+  padding-inline-end: var(--sf-field-action--value-space);
+}
+
+.sf-lookup .sf-lookup-frame > .sf-lookup-input + .sf-field-action {
+  margin-inline-start: calc(-1 * var(--sf-lookup--column-gap));
 }
 
 /* The list: sf-dropdown's menu surface, in the top layer under the frame. */

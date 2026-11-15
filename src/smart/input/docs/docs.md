@@ -186,7 +186,11 @@ press, the keyboard ring round the glyph inside the field. The glyph is the
 leading icon's size (24 / 20 / 28 at sizes 1, 1/2, 2 on a desktop), its end on
 the field's inset; the hit area is invisible, the field's height and never under
 24. From the text to the edge: the clear, then the action (the password reveal,
-a copy button), then an indicator (a dropdown's chevron).
+a copy button), then an indicator (a dropdown's chevron). The value keeps half
+the field's inset to the first glyph and two glyphs stand half an inset apart
+at every size (C123 (6)), also where the 24 floor makes the hit area wider than
+the glyph (1/3, and 1/2 in the compact density and on a phone: 6, not 7 and 8);
+two hit areas then overlap, each still 24 wide (component.inputs 1.7.1).
 
 - `clearable` draws the clear, «Очистить» («Clear»), while the field holds a
   value and can be changed. A press empties the field with `input` and `change`

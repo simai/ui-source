@@ -143,7 +143,8 @@ leaves while the person types (C139 (5)).
 The clear of a single field holding a value is a glyph without a plate (owner
 decision C123, 1.8.0): the field layer's `.sf-field-action`, the size of the
 field's leading picture (24 / 20 / 28 at 1, 1/2, 2), quiet at rest and the
-text's ink under the pointer, its hit area the field's height.
+text's ink under the pointer, its hit area the field's height. The value keeps
+half the field's inset before its glyph at every size (C123 (6), 1.13.2).
 
 ### Chips
 

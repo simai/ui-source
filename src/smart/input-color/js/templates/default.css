@@ -189,7 +189,7 @@
   }
 
   .sf-color-frame:has(> .sf-field-action, > .sf-field-inherited-slot > .sf-field-action:not([hidden])) {
-    gap: calc(var(--sf-field-action--inset) / 2 - (max(var(--sf-field-action--glyph) + var(--sf-field-action--inset) / 2, var(--sf-c2)) - var(--sf-field-action--glyph)) / 2);
+    gap: var(--sf-field-action--value-space);
   }
 
   /* The chevron is the field's indicator glyph (C123 (3)): the field's text

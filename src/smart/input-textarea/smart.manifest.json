@@ -528,7 +528,7 @@
       },
       {
         "path": "src/smart/helpers/inherited-value.css",
-        "sha256": "5492bc5cf780bad57c563bbca0b8aeb73a972003713c8ca8e6421505575491b0"
+        "sha256": "02a3d017c309094057bfb19f94ef588ee6ae2c6e3c0758cda318dfc857436452"
       }
     ],
     "generated_runtime": [
