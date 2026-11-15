@@ -79,7 +79,11 @@ try {
     const node = frame.contentDocument.querySelector('[data-b="one"]').getBoundingClientRect();
     const inFrame = frame.getBoundingClientRect();
     const want = {top: inFrame.top + node.top, left: inFrame.left + node.left};
-    const box = drawn?.getBoundingClientRect();
+    // The frame's line stands 2 clear of the block since 1.9.0 (owner decision
+    // C170 (2b)): the block is the frame's content box, inside its border and padding.
+    const outer = drawn?.getBoundingClientRect();
+    const style = drawn ? getComputedStyle(drawn) : null;
+    const box = outer ? {left: outer.left + parseFloat(style.borderLeftWidth) + parseFloat(style.paddingLeft), top: outer.top + parseFloat(style.borderTopWidth) + parseFloat(style.paddingTop)} : null;
     return {
       contained: keep,
       drawn: Boolean(box),

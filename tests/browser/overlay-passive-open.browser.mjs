@@ -114,7 +114,7 @@ try {
   await page.evaluate(() => {
     const overlay = document.getElementById('ov');
     overlay.setDocument({schema: 'simai.composition.document.v1', id: 'd', profile: 'ui-layout', root: {id: 'root', type: 'layout.section', slots: {default: [{id: 'a', type: 'content.paragraph'}, {id: 'b', type: 'content.outlet'}, {id: 'c', type: 'content.paragraph'}]}}}, {describe: (node) => ({label: node.id})});
-    overlay.setActions([{id: 'up', label: 'Выше'}, {id: 'remove', label: 'Удалить'}]);
+    overlay.setActions([{id: 'up', label: 'Выше', icon: 'arrow_upward'}, {id: 'remove', label: 'Удалить', icon: 'delete'}]);
   });
   await listen(page);
   await settle(page);

@@ -9,5 +9,7 @@ SF.RuleLoader['cl-editor-overlay'] = {
     { name: 'cl-sortable' },
     { name: 'cl-button-icon' },
     { name: 'cl-tooltip' },
+    // ⋯ «Ещё» of the toolbar opens the standard menu (core/js/overflow-row.js, owner decisions C155 and C170 (1)).
+    { name: 'cl-menu-context', lazy: true },
   ],
 };

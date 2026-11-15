@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.editor-overlay",
-  "version": "1.9.1",
+  "version": "1.10.0",
   "title": "Composition overlay",
   "summary": "The editor's layer over a rendered Composition Document: hover and selection frames, a toolbar of the node's actions, insertion places, moves by pointer and keyboard and a structure tree; the canvas is never changed and the host performs every change.",
   "kind": "smart",
@@ -26,6 +26,7 @@
   "composition": {
     "uses": [
       "smart.button-icon",
+      "smart.menu-context",
       "smart.sortable",
       "smart.tooltip"
     ],
@@ -86,7 +87,7 @@
       "actions": {
         "type": "array",
         "default": [],
-        "description": "The selected node's actions: up to 16 {id, label} with optional icon, shortcut, disabled and tone; written through the same check as setActions"
+        "description": "The selected node's actions: up to 16 {id, label} with optional icon, shortcut, disabled, tone and priority; written through the same check as setActions. The toolbar shows up to five icon actions in groups (neighbours of one priority; the grip drag_indicator alone); the rest and every action without an icon are under ⋯ «Ещё». priority is C155's: a whole number from 1 (a bigger number leaves for «Ещё» sooner; none leaves first) or \"pin\" (never leaves)"
       },
       "messages": {
         "type": "object",
@@ -138,6 +139,17 @@
             "type": "string",
             "enum": [
               "danger"
+            ]
+          },
+          "priority": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "const": "pin"
+              }
             ]
           }
         },
@@ -935,19 +947,19 @@
       },
       {
         "path": "src/smart/editor-overlay/scss/_smart__composition-overlay.scss",
-        "sha256": "a572c86acbc251cb65511d798413ef17a36704a5d80333a805d60d57dd201409"
+        "sha256": "acb3d52ca52ca75bdf2e162a193ba2cae0eae4b3175a5ddf14902a4a1c0515a5"
       },
       {
         "path": "src/smart/editor-overlay/rule.js",
-        "sha256": "9d3ac5228b1ba97fb462a0fa9570a9265fd4391ef5938648b71142fb41bdec83"
+        "sha256": "bab10d6a011c95957294342fa5a6212384e77c5431f422b920b4d39abc4d16e2"
       },
       {
         "path": "src/smart/editor-overlay/docs.md",
-        "sha256": "87ded8e0180d50aa906cbcc743001f64c9374a8b93c8f8b20127a2fc00d43625"
+        "sha256": "a664892c15115f9e980df59f9c0ce33897c704a00ce2447f3e513b89a0f8b827"
       },
       {
         "path": "src/core/js/composition/overlay.mjs",
-        "sha256": "b7a7e3433c4c7a31b2d8e9495ef9cf4440f711802269e7294255b79a68337cf8"
+        "sha256": "fbd7d1d04d91f58308d59f26bf0a4129d06b9868608944f561a9640a27cd854f"
       },
       {
         "path": "src/core/js/composition/sortable.mjs",

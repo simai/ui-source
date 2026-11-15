@@ -813,6 +813,7 @@
         "public_parts": [],
         "uses": [
           "smart.button-icon",
+          "smart.menu-context",
           "smart.sortable",
           "smart.tooltip"
         ]
@@ -826,7 +827,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/editor-overlay/smart.manifest.json",
-      "manifest_sha256": "5579ca033859104114e4fe29e8c822009e4d6caa7ef596d1e5da1e2ff46413f2",
+      "manifest_sha256": "92d1a9e33331c425a5bbb3b2f2cb7272ead9413fb67c7fa7c3ce58fc2f8579de",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
