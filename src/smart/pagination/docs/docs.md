@@ -35,11 +35,22 @@ way between pages and nothing else.
   `current` is the number of portions shown. Under it «Показано 40 из 240»
   and a thin bar. When everything is shown the button goes and the line
   stays. Never in one row with the arrows.
+  The end of a list is this appearance (C167 (1)): the line's words are
+  `shown-label` (`{shown}`, `{total}`; default «Показано {shown} из {total}»),
+  and `load` says how the next portion is asked for: `button` (default), a
+  press; `auto`, also when a person's scroll brings the button into reach
+  (never on load by itself), for side panels and pickers. The button stays
+  in both, for the keyboard. The line is a polite status, heard once the
+  portion has loaded; the focus stays on the button, and goes to the line
+  when the last portion removes it.
 
 In every appearance a control at an end is **disabled, not removed**, so the
 row keeps its width while a person pages.
 
 ```html
+<!-- The end of a list in a side panel: loads as the button comes into view -->
+<sf-pagination appearance="more" current="2" total="240" page-size="20" load="auto"></sf-pagination>
+
 <!-- A dense admin table -->
 <sf-pagination appearance="field" size="1/2" current="3" total="240" page-size="20"></sf-pagination>
 

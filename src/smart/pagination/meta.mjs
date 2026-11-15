@@ -302,6 +302,20 @@ const sfPaginationMeta = {
       "default": "false",
       "description": "Mark the Show more control as working while the host fetches the next portion; it is disabled and shows a loader."
     },
+    "shown-label": {
+      "kind": "custom",
+      "valueType": "string",
+      "description": "The line under the more button (decision C167 (1)): {shown} for the records shown, {total} for all of them. Empty: the text of the page's language («Показано {shown} из {total}», \"Showing {shown} of {total}\" in English). It is a polite status, so a screen reader hears it once a portion has loaded."
+    },
+    "load": {
+      "kind": "enum",
+      "values": [
+        "button",
+        "auto"
+      ],
+      "default": "button",
+      "description": "How the more appearance asks for the next portion (decision C167 (1)): button, a person presses «Показать ещё 20»; auto, also when a person's scroll brings the button into reach (never on load by itself), for side panels and pickers. The button stays in both, for the keyboard and for a browser without IntersectionObserver; either way the request is sf-pagination-load-more."
+    },
     "size": {
       "kind": "enum",
       "values": [
