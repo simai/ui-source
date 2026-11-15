@@ -570,8 +570,10 @@
   column-gap: var(--sf-space-1);
 }
 
-/* In a narrow field (a phone) a row is a column again (C165 (3)). */
-@container sf-choice (inline-size < 30rem) {
+/* In a narrow field (a phone: below the container step g2, 24rem, 384 px)
+   a row is a column again (C165 (3)); a form's half column (28rem and up)
+   keeps the row. */
+@container sf-choice (inline-size < 24rem) {
   .sf-choice--list[data-layout='row'] .sf-choice-options {
     flex-direction: column;
   }

@@ -78,7 +78,7 @@
       "layout": {
         "type": "string",
         "default": "tile",
-        "description": "How the cards stand (owner decision C28). tile: cards in the grid, the control at the end of the name line, name, description and price on one left edge, the price at the foot after a divider (plans, modules). list: one frame of rows divided by lines, the control at the start, price and term a column at the end of the name line (delivery, payment); columns does not apply. picture: tiles whose image runs to the edges, the caption under it and the control at the end of the caption's name line; in a field narrower than 30rem (a phone) each tile is a row, the image at its start. Under appearance list (C165 (3)) the rows' layout: auto -- a row for up to three short options (a name of at most 20 characters, no caption), else a column; row -- side by side, --sf-space-1 apart (C105 H6), wrapping where they do not fit and a column in a field narrower than 30rem (a phone); column -- one under another. A cards value there is auto, and auto, row or column under cards is tile.",
+        "description": "How the cards stand (owner decision C28). tile: cards in the grid, the control at the end of the name line, name, description and price on one left edge, the price at the foot after a divider (plans, modules). list: one frame of rows divided by lines, the control at the start, price and term a column at the end of the name line (delivery, payment); columns does not apply. picture: tiles whose image runs to the edges, the caption under it and the control at the end of the caption's name line; in a field narrower than 30rem (a phone) each tile is a row, the image at its start. Under appearance list (C165 (3)) the rows' layout: auto -- a row for up to three short options (a name of at most 20 characters, no caption), else a column; row -- side by side, --sf-space-1 apart (C105 H6), wrapping where they do not fit and a column in a field narrower than 24rem (a phone; the container step g2); column -- one under another. A cards value there is auto, and auto, row or column under cards is tile.",
         "enum": [
           "tile",
           "list",
@@ -352,7 +352,7 @@
       },
       {
         "path": "src/smart/input-choice/scss/_smart__choice.scss",
-        "sha256": "52062b32a64992e71add8a1adda20a65e3abf352ab09cbf59ec4e95b11d7365c"
+        "sha256": "8403de753fa3c5c9c41ccabd282e0d43701b85cb094b4b0ecc570f907b26480d"
       },
       {
         "path": "src/smart/input-choice/rule.js",
@@ -360,7 +360,7 @@
       },
       {
         "path": "src/smart/input-choice/docs.md",
-        "sha256": "71c20e270344a1e358eefbe1c4f8ed652c033fc81966115da9581e5ee89097c2"
+        "sha256": "c5c85be90f0f2eb98961c027b1e2576b25550a59abd16d81c5845b71970d8b5d"
       }
     ],
     "generated_runtime": []
