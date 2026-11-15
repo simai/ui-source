@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.steps",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "title": "Steps",
   "summary": "Where a person is in an ordered process of their own: a list of steps, each a marker (number or dot) and a label joined by a progress line, drawn as a row, a column or a «Step N of M» line by its own width. Passive by default; navigation makes the reachable steps buttons.",
   "kind": "smart",
@@ -108,7 +108,7 @@
       },
       "ahead-label": {
         "type": "string",
-        "description": "The word a screen reader hears after a not yet started step's label. Empty: the text of the page's language (\"Not started\" in English)."
+        "description": "The word a screen reader hears after a not yet started step's label. Empty: the text of the page's language (\"Upcoming\" in English)."
       },
       "error-label": {
         "type": "string",

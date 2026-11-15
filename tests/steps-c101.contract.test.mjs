@@ -24,10 +24,10 @@ const rule = (css, selector) => {
   return css.slice(at, css.indexOf('}', at));
 };
 
-test('versions: smart.steps 1.4.1, component.step 1.3.1', () => {
-  assert.equal(component.version, '1.4.2'); // group build 5 patch
-  assert.equal(json('src/smart/steps/smart.manifest.json').version, '1.4.2');
-  assert.equal(json('src/component/step/passport.json').version, '1.3.1');
+test('versions: smart.steps 1.4.3, component.step 1.3.2', () => {
+  assert.equal(component.version, '1.4.3');
+  assert.equal(json('src/smart/steps/smart.manifest.json').version, '1.4.3');
+  assert.equal(json('src/component/step/passport.json').version, '1.3.2');
 });
 
 test('C101 (1) role: an ordered process of a person; a server job is sf-progress-run, tasks in any order are not steps', () => {
@@ -197,10 +197,12 @@ test('ST-1..ST-14: each defect of the study is closed or named', () => {
   assert.match(read('src/smart/wizard/js/templates/default.js'), /layout="row" navigation="free"/);
 });
 
-// C105 H2 (spacing audit S1): the marker stands --sf-space-1/2 before its label
-// in the row and in the column -- one value, on the step's body.
+// C105 H2 (spacing audit S1) as a role (C61 round 5): the marker's ink stands
+// 8 before its label in the row and in the column at every width -- one value,
+// on the step's body: the current ring's reach (2 x ring) plus 8.
 test('C105 H2: one marker → label gap for the row and the column', () => {
-  assert.match(stepCss, /\.sf-step \.sf-step-body \{\s*display: inline-flex;\s*align-items: center;\s*gap: var\(--sf-space-1\\\/2\);/);
+  assert.match(stepCss, /\.sf-step \.sf-step-body \{\s*display: inline-flex;\s*align-items: center;\s*gap: calc\(var\(--sf-a8\) \+ var\(--sf-step--ring\) \* 2\);/);
+  assert.match(stepCss, /--sf-step--ring: calc\(var\(--sf-px\) \* 2\);/);
   assert.doesNotMatch(stepsCss, /column-gap: var\(--sf-space-1\\\/2\)/);
   assert.doesNotMatch(stepCss, /\.sf-step-body \{[^}]*--sf-space-1\\\/3/);
 });

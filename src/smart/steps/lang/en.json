@@ -4,7 +4,7 @@
     "aria-label": "Steps",
     "completed-label": "Completed",
     "current-label": "Current",
-    "ahead-label": "Not started",
+    "ahead-label": "Upcoming",
     "error-label": "Error",
     "skipped-label": "Skipped",
     "running-label": "In progress",
