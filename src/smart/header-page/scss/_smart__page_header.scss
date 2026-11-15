@@ -245,8 +245,10 @@
 
 /* An action whose code has not come yet and that has no printed markup is no
    box: the line holds the actions' control height core worked out from their
-   size, on a phone with their own line under the heading as core's box does,
-   until every action has drawn. A printed action (its markup inside it,
+   size, beside the heading at every width as core's box does (1.8.1: the
+   phone's guess of a line of their own under the heading is gone, since C161
+   (4) and the narrow fold keep a phone's actions beside the heading), until
+   every action has drawn. A printed action (its markup inside it,
    data-sf-static) is its own box already and stands where the line's wrap
    puts it, beside the heading when it fits, as the code lays it, so a line
    with printed actions is not held (1.7.1: holding a phone's line for actions
@@ -255,12 +257,6 @@
    the two conditions on the line. */
 .sf-page-header-line:has(> .sf-page-header-actions > :not(:defined)):not(:has(> .sf-page-header-actions > :not(:defined) > [data-sf-static])) {
   min-block-size: max(var(--sf-ui-1\/2--control-height), var(--sf-page-header--box-actions, var(--sf-ui-1--control-height)));
-}
-
-@media (width < map.get(bp.$breakpoint-array, sm)) {
-  .sf-page-header-line:has(> .sf-page-header-actions > :not(:defined)):not(:has(> .sf-page-header-actions > :not(:defined) > [data-sf-static])) {
-    min-block-size: calc(var(--sf-page-header--box-line, var(--sf-heading-4--height)) + var(--sf-page-header-line-gap, var(--sf-space-1)) + var(--sf-page-header--box-actions, var(--sf-ui-1--control-height)));
-  }
 }
 
 /* The icon button's schemes set the glyph's ink on its button, so the
