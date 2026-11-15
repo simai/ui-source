@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-color's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/color (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/color/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.input-color",
   "tag": "sf-input-color",
-  "version": "1.14.0",
+  "version": "1.15.0",
   "kind": "leaf",
   "family": "input",
   "traits": [
@@ -59,7 +59,7 @@
     "custom": {
       "type": "boolean",
       "default": true,
-      "summary": "Whether the window offers «Своё», an own colour: the shade area, the eyedropper where the browser has one, the hue strip and the code row «format | code». custom=\"false\" keeps the palette only (task labels, chart series). Without a palette «Своё» is always offered."
+      "summary": "Whether the window offers «Своё», an own colour: the shade area, the eyedropper where the browser has one, the hue strip and the bottom row «code | Применить». custom=\"false\" keeps the palette only (task labels, chart series). Without a palette «Своё» is always offered."
     },
     "alpha": {
       "type": "boolean",
@@ -240,6 +240,20 @@
       "$comment": [
         "cl-segmented: the window's «Палитра / Своё» switch, drawn only once the window opens, fetched after the page is ready."
       ]
+    },
+    {
+      "name": "cl-button",
+      "lazy": true,
+      "$comment": [
+        "cl-button: «Применить» at the bottom of «Своё» (owner decision C209), drawn only once the window opens."
+      ]
+    },
+    {
+      "name": "cl-button-copy",
+      "lazy": true,
+      "$comment": [
+        "cl-button-copy: the copy action at the end of the code field in «Своё» (C209 (4), a field action, C123), drawn only once the window opens."
+      ]
     }
   ],
   "templates": {
@@ -321,7 +335,7 @@
       }
     ]
   },
-  "x-summary": "A colour field: a swatch, the value and a chevron that open the Framework's own compact window -- the static palette first, the product's own colours, recent own colours and «Своё» (shade area, eyedropper, hue and alpha strips, a code in Hex, RGB, HSL or HSB) -- and a way back to an inherited colour. The value is a palette name or a code. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
+  "x-summary": "A colour field: a swatch, the value and a chevron that open the Framework's own compact window -- the static palette first, the product's own colours, recent own colours and «Своё» (shade area, eyedropper, hue and alpha strips, a hex code with «Применить») -- and a way back to an inherited colour. The value is a palette name or a code. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
   "x-source": {
     "package": "framework",
     "folder": "color",
@@ -368,13 +382,15 @@
     "version 1.12.0 (2026-11-15, owner decision C123 (1), (2), (6); R214; DEV question on C105 H5 for group build 7; one number above the 1.10.1 it builds on; written on the branch as 1.11.0): a minor, a look. The reset inside the frame -- the restore of the brand colour, the reset to the inherited colour -- is the field layer's action (component.inputs, .sf-field-action, the glyph sf-input's clear and reveal draw) in place of a ghost sf-button-icon with its plate: no plate in any state, on-surface-variant at rest and on-surface under the pointer and on a press, the keyboard ring round the glyph inside the frame; the glyph is the field's text line, the swatch's size (16 / 20 / 24 / 28 / 36 at sizes 1/3, 1/2, 1, 2, 3 on a desktop; it was 16 / 20 / 20 / 24 / 28 in a 28 / 32 / 32 / 40 / 48 plate); its hit area is invisible, the frame's inner height and the glyph plus half the inset wide, never under 24. Between the value and the glyph and between the glyph and the chevron, half the frame's plain inset (C123 (6): 6 / 7 / 8 / 10 / 12 at those sizes on a desktop, 7 at size 1 in the compact density and on a phone; it was 14 to 18 to the plate's glyph), not the C105 H5 group gap of 1.10.1. The chevron is the same glyph (C123 (3)): it read the text line through font-size and box size only, which the icon's own size overrode, so it drew 24 (20 compact and on a phone) at every step; it now names the icon's size variables. Its name is unchanged: «Вернуть цвет SIMAI» / «Restore SIMAI colour» in the brand variant, «Вернуть унаследованный» / «Use the inherited colour» in the field variant (aria-label and title). New relation inputs (the field layer's rules). The theme variant's reset beside the circle stands outside a field and keeps its plate (C123 (7)). Settings, values, events and keys unchanged.",
     "version 1.13.0 (2026-11-15, owner decision C123 (1), (2), (6); R214; one number above the unreleased 1.11.0 of fix/input-color-reset-c123 it builds on; written on the branch as 1.12.0): a minor, a look. The reset to the inherited value (the shared inherited-value slot, src/smart/helpers/inherited-value.js) is the field layer's action (component.inputs, .sf-field-action, the glyph sf-input's clear and reveal draw) in place of a link icon button of the step below: no plate in any state, on-surface-variant at rest and on-surface under the pointer and on a press, the keyboard ring round the glyph; the glyph is the field's text line (the leading icon's size: 16 / 20 / 24 / 28 / 36 at sizes 1/3, 1/2, 1, 2, 3 on a desktop; it was the step-below button's 16-24 glyph in a 28-40 button); the hit area is invisible and never under 24. In the frame the hit area is the frame's inner height; value -> glyph and glyph -> chevron are half the frame's inset, the steps the frame's own clear took in 1.11.0 (C123 (6)). Its name is unchanged: «Сбросить к наследуемому» / «Reset to inherited» (reset-label), aria-label and title; Tab reaches it after the value. The «наследуется» marker is unchanged. Settings, values, events and keys unchanged.",
     "version 1.13.1 (2026-11-15, owner decision C123 (6); above 1.12.0 of fix/inherited-reset-c123, the highest on any branch; written on the branch as 1.12.1): a patch, no change on screen. The frame's gap while it holds an action (the reset of the inherited colour, or of clearable) is the field layer's --sf-field-action--value-space (component.inputs 1.7.1, field-action.scss: half the inset less what the hit area stands out past the glyph, the 24 floor counted in), in place of the same formula written here; sf-input-color's frame is one of the layer's field frames. Value -> glyph and glyph -> chevron read the same at every size, density and on a phone (control/evidence/2026-11-15-field-action-gaps-c123).",
-    "version 1.14.0 (2026-11-15, owner decision C123 (3), (6); above 1.12.1 of fix/field-action-gaps-c123, the highest on any branch; written on the branch as 1.13.0): a minor, a look. Without an action in the frame the value -> chevron step is half the frame's inset, `calc(var(--sf-color--space-x) / 2)`: 6 / 7 / 8 / 10 / 12 at 1/3, 1/2, 1, 2, 3 on a desktop (compact and phone by their insets), the step C123 (6) gives from a field's text to its first glyph; the chevron is the field's indicator glyph (C123 (3)). It stood the C105 H5 group gap (--sf-space-1/3: 8, 4 in the compact density), which matched half an inset at size 1 on a desktop only. While the frame holds an action the gap stays the field layer's --sf-field-action--value-space (1.12.1). Nothing else changes."
+    "version 1.14.0 (2026-11-15, owner decision C123 (3), (6); above 1.12.1 of fix/field-action-gaps-c123, the highest on any branch; written on the branch as 1.13.0): a minor, a look. Without an action in the frame the value -> chevron step is half the frame's inset, `calc(var(--sf-color--space-x) / 2)`: 6 / 7 / 8 / 10 / 12 at 1/3, 1/2, 1, 2, 3 on a desktop (compact and phone by their insets), the step C123 (6) gives from a field's text to its first glyph; the chevron is the field's indicator glyph (C123 (3)). It stood the C105 H5 group gap (--sf-space-1/3: 8, 4 in the compact density), which matched half an inset at size 1 on a desktop only. While the frame holds an action the gap stays the field layer's --sf-field-action--value-space (1.12.1). Nothing else changes.",
+    "version 1.15.0 (2026-11-15, owner decision C209, prototype ui-control prototypes/colour-field-study.html #q-cf-simple B, research control/research/2026-11-15-colour-field.md; defect CF-1; above 1.14.0, the highest on any branch): a minor, a look. «Своё»: (1) the code is always hex and the format menu is gone (Hex / RGB / HSL / HSB of 1.7.0, R170): the format was private state of the window, never a setting, attribute or event, so nothing public needs an alias; the code field still reads any CSS colour typed or pasted (rgb(), hsl(), oklch(), a colour name, a hex with or without #), the field and the form take it at once as hex while the text stays as typed, and Enter, leaving the field or «Применить» commit it; bare numbers («30, 90%, 95%») are no longer read as the chosen format's channels. oklch(), lab() and color() typed or pasted were read as nothing on the released pair (their computed style is not rgb(), so the window kept the old colour; measured 18/18 loads): they are read through a one-pixel canvas now, clipped to sRGB as the page paints them. (2) «Применить» (sf-button size 1/2, new relation cl-button, lazy) right of the code field, --sf-space-1/3 apart (C105 H5): it applies the typed code and closes the window, the focus back on the field; after a move by pointer, keys or the eyedropper the colour is already the value and the press only closes; an unreadable code keeps the window open, says «Не похоже на цвет» under the row and marks the field's edge as an error. Esc, a press outside and a second press on the field are unchanged. (3) The shade area, the eyedropper left of the hue strip and the hue strip stay (the alpha strip and the % with alpha); the bottom row is the code field and «Применить». With alpha the code, its copy action and the % do not fit beside «Применить» in the 304 window (the code kept 44 px, 12 in the compact density), so the code field takes the whole row and «Применить» wraps under it at the end -- a fallback, the prototype has no alpha (owner question). (4) The copy action at the end of the code field: sf-button-copy (new relation cl-button-copy, lazy) inside the field frame draws the field layer's .sf-field-action (C123): the glyph content_copy, check for 1.2 s after a copy (duration 1200), its name «Скопировать код» / «Copy the code»; it copies the code upper case (#RRGGBB, #RRGGBBAA while translucent). The code starts and the glyph ends on the 1/2 field inset (--sf-ui-1/2--space-x; the code started at --sf-space-1/2). (5) The window stays on --sf-surface-popup (white in the light theme, as before); no hint line under the code. CF-1: Tab from the window's last control closes it and the focus goes on to the next control of the page; Shift+Tab inside the window and back to the field keeps it open; a focus that goes nowhere keeps it (as sf-input-date's calendar). Public parts: format and format-menu are gone, copy and apply are new. Words: copy, apply new; code-in, format, format-current gone; not-a-colour without {format}. Settings, values and events unchanged."
   ],
   "x-rule": {
     "$comment": [
       "The colour control loads on demand like any other Smart element. Its relations are",
       "the icons, the icon button of the reset and the eyedropper, and the segmented",
-      "switch of its own window (lazy: drawn only once the window opens)."
+      "switch, the button «Применить» and the copy action of its own window (lazy: drawn",
+      "only once the window opens)."
     ]
   },
   "x-registry": {
@@ -399,8 +415,8 @@
       "area",
       "strip",
       "code-row",
-      "format",
-      "format-menu",
+      "copy",
+      "apply",
       "dot"
     ],
     "state": {

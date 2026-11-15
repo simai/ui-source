@@ -33,7 +33,10 @@ field that reads as a colour), `change` once when it is committed; both carry
 A press on the field, `Enter` or `Space` opens the window under the field: 304
 px wide on a desktop, never taller than the room it has, following the field
 when the page scrolls; on a phone (below 44rem) a sheet at the bottom of the
-screen. `Escape` closes it and focus returns to the field.
+screen. `Escape` closes it and focus returns to the field; a press outside or
+a second press on the field closes it too. `Tab` moves through the field and
+the window, and `Tab` from the window's last control closes it and goes on to
+the next control of the page.
 
 - «Палитра / Своё» is the standard `sf-segmented`. The window opens on the view
   the value comes from.
@@ -43,10 +46,14 @@ screen. `Escape` closes it and focus returns to the field.
   chooses and closes the window.
 - «Своё»: the shade area (saturation across, brightness up), the eyedropper
   (only where the browser has `EyeDropper`; elsewhere it is shown disabled with
-  the reason), the hue strip, the alpha strip with `alpha`, and one row
-  «format ▾ | code | %». The formats are Hex, RGB, HSL and HSB; any CSS colour
-  may be pasted (`oklch(…)`, a name) and is shown back in the chosen format.
-  Arrows move the area and the strips by one, `Shift` by ten.
+  the reason), the hue strip, the alpha strip with `alpha`, and at the bottom
+  one row: the code field and «Применить». The code is always hex; any CSS
+  colour may be typed or pasted (`rgb(…)`, `hsl(…)`, `oklch(…)`, a name) and the
+  field takes it at once as hex. The copy action at the end of the code field
+  copies the code (a check for a moment after it); with `alpha` the % follows
+  it. «Применить» applies the typed code and closes the window; after a move
+  by pointer the colour is already chosen and the press only closes. Arrows
+  move the area and the strips by one, `Shift` by ten.
 
 Recent own colours are one list for every colour field of the site (a view
 preference, `SF.Preferences` key `sf-color-recent`; the browser keeps it as

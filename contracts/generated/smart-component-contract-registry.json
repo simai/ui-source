@@ -1484,13 +1484,15 @@
           "area",
           "strip",
           "code-row",
-          "format",
-          "format-menu",
+          "copy",
+          "apply",
           "dot"
         ],
         "uses": [
           "component.icons",
           "component.inputs",
+          "smart.button",
+          "smart.button-copy",
           "smart.button-icon",
           "smart.icon",
           "smart.segmented"
@@ -1505,13 +1507,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-color/smart.manifest.json",
-      "manifest_sha256": "2fbf0dee71843127d557fbc74d7a24702b75ca64f438462a79f3ffa7ebbc8137",
+      "manifest_sha256": "13ec53564cc58b0ca7c305b8d02c899e2e21095a3477148e933a962c24284e39",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A colour field: a swatch, the value and a chevron that open the Framework's own compact window -- the static palette first, the product's own colours, recent own colours and «Своё» (shade area, eyedropper, hue and alpha strips, a code in Hex, RGB, HSL or HSB) -- and a way back to an inherited colour. The value is a palette name or a code. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
+      "summary": "A colour field: a swatch, the value and a chevron that open the Framework's own compact window -- the static palette first, the product's own colours, recent own colours and «Своё» (shade area, eyedropper, hue and alpha strips, a hex code with «Применить») -- and a way back to an inherited colour. The value is a palette name or a code. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
       "tags": [
         "input",
         "color",

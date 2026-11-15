@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.input-color",
-  "version": "1.14.0",
+  "version": "1.15.0",
   "title": "Color",
-  "summary": "A colour field: a swatch, the value and a chevron that open the Framework's own compact window -- the static palette first, the product's own colours, recent own colours and «Своё» (shade area, eyedropper, hue and alpha strips, a code in Hex, RGB, HSL or HSB) -- and a way back to an inherited colour. The value is a palette name or a code. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
+  "summary": "A colour field: a swatch, the value and a chevron that open the Framework's own compact window -- the static palette first, the product's own colours, recent own colours and «Своё» (shade area, eyedropper, hue and alpha strips, a hex code with «Применить») -- and a way back to an inherited colour. The value is a palette name or a code. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
   "kind": "smart",
   "reuse_mode": "both",
   "lifecycle": "experimental",
@@ -26,6 +26,8 @@
     "uses": [
       "component.icons",
       "component.inputs",
+      "smart.button",
+      "smart.button-copy",
       "smart.button-icon",
       "smart.icon",
       "smart.segmented"
@@ -45,8 +47,8 @@
       "area",
       "strip",
       "code-row",
-      "format",
-      "format-menu",
+      "copy",
+      "apply",
       "dot"
     ]
   },
@@ -118,7 +120,7 @@
       "custom": {
         "type": "boolean",
         "default": true,
-        "description": "Whether the window offers «Своё», an own colour: the shade area, the eyedropper where the browser has one, the hue strip and the code row «format | code». custom=\"false\" keeps the palette only (task labels, chart series). Without a palette «Своё» is always offered."
+        "description": "Whether the window offers «Своё», an own colour: the shade area, the eyedropper where the browser has one, the hue strip and the bottom row «code | Применить». custom=\"false\" keeps the palette only (task labels, chart series). Without a palette «Своё» is always offered."
       },
       "alpha": {
         "type": "boolean",
@@ -484,19 +486,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-color/index.js",
-        "sha256": "def86017f0f65bbc6dbbd1b7238f6f08a218ab591dbdddb1b264f36c8f5c92b8"
+        "sha256": "fb2cc6d1a9ac6771ddf66832ac592178a733d37d2ae56c87980ec322f854c2d6"
       },
       {
         "path": "src/smart/input-color/rule.js",
-        "sha256": "adaaa0b4b7f5e3d39ce044a0ab219ee29c68f68d4e22e0d74a6eb076f667daa5"
+        "sha256": "e03f4620e85e58c4779d62a266dfbd43dab47a1ce368fbc9629aa3bd134c8e47"
       },
       {
         "path": "src/smart/input-color/js/templates/default.js",
-        "sha256": "2d5a37489cb6571db0a9108e9aa76401fc43fb7dec33f62d0ff6e8a7d93e4d4d"
+        "sha256": "b8516c77a7db4f862ae6ba1a15a002d1a343d0465cda462a4c1217ad4b77eba2"
       },
       {
         "path": "src/smart/input-color/js/templates/default.css",
-        "sha256": "f0b0a6f4104d984f863fc7e7af8df776f34104a21ff8c1f6b92c8e709c96addc"
+        "sha256": "f86750f5a5845a2cc210d53d3be5a67e7a505176b9543584683369d6abd0fe62"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
