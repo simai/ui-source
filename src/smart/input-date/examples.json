@@ -157,6 +157,39 @@
         },
         "form": "09:30"
       }
+    },
+    {
+      "name": "holidays",
+      "title": "Праздники и переносы",
+      "settings": {
+        "input": false,
+        "value": "2026-04-21",
+        "locale": "ru",
+        "holidays": [
+          {
+            "date": "2026-04-20",
+            "kind": "day-off",
+            "name": "Выходной, перенос с 25 апреля"
+          },
+          {
+            "date": "2026-04-21",
+            "kind": "holiday",
+            "name": "Радуница"
+          },
+          {
+            "date": "2026-04-25",
+            "kind": "working-day",
+            "name": "Рабочая суббота, за 20 апреля"
+          }
+        ]
+      },
+      "expect": {
+        "role": "group"
+      },
+      "first-paint": {
+        "max-bytes": 16384,
+        "why": "inline mode draws the calendar open on the page: the month grid of six weeks and the day line are the first paint"
+      }
     }
   ],
   "pages": [

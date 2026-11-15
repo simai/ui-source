@@ -44,8 +44,11 @@ test('the grid reads the days off from the setting, not a fixed pair', () => {
   const source = read('src/smart/input-date/index.js');
   assert.doesNotMatch(source, /\[0, 6\]\.includes/u, 'Saturday and Sunday are no longer hard-coded');
   assert.match(source, /const daysOff = this\.weekendDays;/u);
-  assert.match(source, /const weekend = daysOff\.has\(date\.getDay\(\)\);/u);
-  assert.match(source, /label: weekend\s*\?\s*`\$\{getDateLabel\(date, this\.locale\)\}, \$\{this\.sfWord\('day-off'\)\}`/u);
+  // One place reads a day (dayFacts, since sf-input-date 1.11.0): a special day of the site
+  // (C198) wins, else the week's days off; a day off says «выходной» in its name.
+  assert.match(source, /const weekend = special \? special\.kind !== 'working-day' : daysOff\.has\(date\.getDay\(\)\);/u);
+  assert.match(source, /if \(weekend\) parts\.push\(this\.sfWord\('day-off'\)\);/u);
+  assert.equal((source.match(/this\.dayFacts\(date, value, daysOff/gu) || []).length, 2, 'the popup grid and the phone ribbon read days alike');
   const manifest = JSON.parse(read('src/smart/input-date/component.json'));
   assert.equal(manifest.settings.weekend.type, 'string');
   assert.equal(manifest.settings.weekend.default, '');

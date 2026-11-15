@@ -11,7 +11,7 @@ function renderRibbonDay(day, context) {
     const classes = joinClasses('sf-datepicker-day', day.weekend ? 'sf-datepicker-day-off' : '',
         day.selected ? 'active' : '', day.rangeStart ? 'sf-datepicker-day-start' : '',
         day.rangeSelected ? 'sf-datepicker-day-selected' : '', day.rangeEnd ? 'sf-datepicker-day-end' : '',
-        day.disabled ? 'disabled' : '');
+        day.special ? 'sf-datepicker-day-special' : '', day.disabled ? 'disabled' : '');
     return html`
         <button class=${classes} type="button" role="gridcell" ?disabled=${day.disabled}
             data-date=${day.value} aria-label=${day.label}

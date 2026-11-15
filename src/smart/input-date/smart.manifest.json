@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-date",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "title": "Datepicker",
   "summary": "Accessible date, date-and-time, time and date-range picker with popup and inline presentation, calendar and time navigation and host-owned values.",
   "kind": "composite",
@@ -249,12 +249,12 @@
       },
       "icon-start": {
         "type": "string",
-        "default": "calendar_today",
-        "description": "The icon at the start of the field; the canonical name for left-icon. Defaults to calendar_today, schedule in time mode."
+        "default": "",
+        "description": "An icon at the start of the field that says what the date is (a meaning icon, as search is for a search field); the canonical name for left-icon. None by default: the calendar (a clock in time mode) is the field's indicator at its end, after clear (owner decision C197)."
       },
       "left-icon": {
         "type": "string",
-        "default": "calendar_today",
+        "default": "",
         "description": "Legacy name for icon-start, still honoured; icon-start wins when both are set."
       },
       "hint-icon": {
@@ -333,6 +333,11 @@
         "type": "array",
         "default": [],
         "description": "Quick ranges, range mode only; the attribute keeps its comma list of built-in ids"
+      },
+      "holidays": {
+        "type": "array",
+        "default": [],
+        "description": "The site's special days (owner decision C198): a list of {date: 'YYYY-MM-DD', kind, name?}, the property or JSON in the attribute. holiday and day-off (a moved day off) take the day-off ink, working-day (a moved working Saturday) the weekday's; each listed day gets a dot under its number, its name joins the day's accessible name, and a line under the grid names the day under the pointer, with the focus or chosen. Empty: plain weekends, as before. The Framework ships no country calendar."
       }
     },
     "additionalProperties": false
@@ -752,11 +757,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-date/index.js",
-        "sha256": "9adb485b86efcae5da441d4375db191516f56dfe180720dbc701fea5777bb40f"
+        "sha256": "31de2949a1a2af673ca0b580e99654b47c6677fe1b0318aa54df0bf6bd76b714"
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",
-        "sha256": "41e8d00ac83fb1892aa351f3d13f60022d92ec2725658e86e6738424c9df48d7"
+        "sha256": "cfb5bc450c1eb101b3c23d96b409e356f701898a34cc334d40d91a8e70b660d0"
       },
       {
         "path": "src/smart/input-date/rule.js",
@@ -764,7 +769,7 @@
       },
       {
         "path": "src/smart/input-date/docs/smart-datepicker-guide.md",
-        "sha256": "575c0cbc00a71687023561e6afcfe38debeeb08b65ecd25f1a516fc249c50416"
+        "sha256": "79777d9100abf7f881c9f70713c5b83070b0c253146d6304dd1d64c59a07f824"
       }
     ],
     "generated_runtime": [
