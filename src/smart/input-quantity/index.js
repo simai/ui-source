@@ -75,9 +75,9 @@ const REPEAT_INTERVAL = 60;
 // PageUp and PageDown move this many steps unless the field names its own.
 const PAGE_STEPS = 10;
 
-// The remove mode for a cart line (owner decision C122). PROVISIONAL NAMES:
-// the setting, its label and the event are the research's proposal and wait
-// for the owner's word. The code reads them from here only, so a rename is
+// The remove mode for a cart line (owner decision C122). The names of the
+// setting, its label and the event are the owner's (agreed 2026-11-13). The
+// code reads them from here only, so a rename is
 // this map plus the keys of component.json and lang/*.json (`events.<event>`),
 // then generate-component-files. The DOM name of the event follows §8:
 // `sf-input-quantity-<event>`.

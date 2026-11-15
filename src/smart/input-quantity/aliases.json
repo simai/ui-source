@@ -56,7 +56,7 @@
       "mode": "same-detail",
       "cancelable": true,
       "section": "§8",
-      "note": "the event name carries the tag: the remove event (1.5.0, provisional name) keeps the old tag's name while sf-quantity is defined, as tag rename R0 asks of every tagged event"
+      "note": "the event name carries the tag: the remove event (1.5.0) keeps the old tag's name while sf-quantity is defined, as tag rename R0 asks of every tagged event"
     }
   ]
 }
