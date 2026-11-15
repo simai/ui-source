@@ -739,7 +739,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/dropdown/smart.manifest.json",
-      "manifest_sha256": "c62229f778783c3514cce6e1b424d25ed4b7f543a6fe1c4cd2705373e8cee56b",
+      "manifest_sha256": "4fd724eb4e35a9fe0e28d3f176bf0b9219a84bfb73b2f3dc6d7d92bb03988e31",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1248,7 +1248,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input/smart.manifest.json",
-      "manifest_sha256": "32a8741948e6fa706560490884d4a1e43bf0bf7c21370cee93e1169d59d0c49a",
+      "manifest_sha256": "8a31f805d3e7d105add2d7c386d076712cb937dce7fd86378a0a6af6a798bad9",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1394,7 +1394,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-color/smart.manifest.json",
-      "manifest_sha256": "83df45da0eed49e3b86e340d138a794466a9012d9613035d0b43c478b37be84c",
+      "manifest_sha256": "8af1f3edc27250b628c36401171bc0f83a3d166ba7b25dd23531ba3135c67f28",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1608,6 +1608,7 @@
         "uses": [
           "component.icon-buttons",
           "component.icons",
+          "component.inputs",
           "component.quantity"
         ]
       },
@@ -1620,7 +1621,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-quantity/smart.manifest.json",
-      "manifest_sha256": "18acccb9f6fe45689dfe018a83c645d757c167feb942453c311f081d9b2dda0a",
+      "manifest_sha256": "ce4871a9f9acf521e64885363f1cd126c9e8769f2a27da716222782b6ba3dec5",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1700,6 +1701,7 @@
         "uses": [
           "component.icon-buttons",
           "component.icons",
+          "component.inputs",
           "component.textarea"
         ]
       },
@@ -1712,7 +1714,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-textarea/smart.manifest.json",
-      "manifest_sha256": "f0a3b59ea8237c2a8dbb6efe2f353e76ee81add755f1581b3e0f10a379cce451",
+      "manifest_sha256": "27f5af623941c8e8c3e663aa476ad2246fca9a42740db58b22fc7c757e96aad1",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2980,6 +2982,7 @@
         "uses": [
           "component.icon-buttons",
           "component.icons",
+          "component.inputs",
           "component.switch",
           "smart.help-mark"
         ]
@@ -2993,7 +2996,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/switch/smart.manifest.json",
-      "manifest_sha256": "e9cda5620df94b1b8ebee7882ae0ff3ac72c2f17fdf1b1461ee703ead855d3ba",
+      "manifest_sha256": "98c6e75447aef71659b404cc7d37945163631f967798def5f30b6714fe410fea",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
