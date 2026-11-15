@@ -24,10 +24,10 @@ const rule = (css, selector) => {
   return css.slice(at, css.indexOf('}', at));
 };
 
-test('versions: smart.steps 1.4.1, component.step 1.3.1', () => {
+test('versions: smart.steps 1.4.2, component.step 1.3.3', () => {
   assert.equal(component.version, '1.4.2'); // group build 5 patch
   assert.equal(json('src/smart/steps/smart.manifest.json').version, '1.4.2');
-  assert.equal(json('src/component/step/passport.json').version, '1.3.1');
+  assert.equal(json('src/component/step/passport.json').version, '1.3.3'); // docs batch B, FW-B-8: size 1 named
 });
 
 test('C101 (1) role: an ordered process of a person; a server job is sf-progress-run, tasks in any order are not steps', () => {

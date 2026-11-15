@@ -180,6 +180,13 @@
   overflow-wrap: normal;
 }
 
+/* Size 1 is named too (docs batch B, FW-B-8): the template writes
+   sf-steps--size-1; the values are the defaults above. */
+.sf-steps.sf-steps--size-1 .sf-steps-count-line {
+  font-size: var(--sf-text-size-1);
+  line-height: var(--sf-text-height-1);
+}
+
 .sf-steps.sf-steps--size-1\/2 .sf-steps-count-line {
   font-size: var(--sf-text-size-1\/2);
   line-height: var(--sf-text-height-1\/2);
