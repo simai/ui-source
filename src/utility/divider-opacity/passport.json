@@ -3,16 +3,17 @@
   "schema_version": 1,
   "id": "utility.divider-opacity",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/divider-opacity/default/index.js",
     "src/utility/divider-opacity/default/index.scss",
     "src/utility/divider-opacity/default/rule.js",
     "src/utility/divider-opacity/default/scss/_sf_css__divider_opacity.scss",
+    "src/utility/divider-opacity/default/scss/_sf_var__divider_opacity.scss",
     "src/utility/divider-opacity/default/scss/index.scss"
   ],
-  "content_sha256": "36e87fcb734d9210de17eda69d1f23af2571ec11e0ec29e85e401c25f4d07d5a",
+  "content_sha256": "792d29e21514fa8fc056185adc019fc5067d58810a7886cf8fb25d949415c511",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
