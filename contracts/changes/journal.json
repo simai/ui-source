@@ -12244,6 +12244,56 @@
       "source": "src/smart/input-quantity/aliases.json, src/smart/input-quantity/smart.manifest.json events.sf-quantity-remove"
     },
     {
+      "id": "behaviour-header-page-overflow-more",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-header-page 1.4.0 keeps its actions on one row with overflow=\"more\" by default: what does not fit leaves for ⋯ «Ещё» at the row's end, the main (filled) action, a pressed toggle and priority=\"pin\" never (owner decision C155 (7), C161 (4)). The row wrapped onto further rows before (OV-2); a page that wants that writes overflow=\"wrap\".",
+      "items": [
+        {
+          "component": "sf-header-page",
+          "attribute": "overflow",
+          "from": "wrap (no setting; the row wrapped)",
+          "to": "more (the default); wrap written out"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a page relied on the wrapping actions row, write overflow=\"wrap\" on the sf-header-page. Nothing is needed for the new behaviour; give an action priority=\"1\" (or pin) to keep it in the row longer.",
+      "examples": {
+        "before": "<sf-header-page heading=\"Заказы\"><sf-button slot=\"actions\" …></sf-header-page> (the actions wrap)",
+        "after": "<sf-header-page heading=\"Заказы\" overflow=\"wrap\">…</sf-header-page>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/header-page/index.js"
+    },
+    {
+      "id": "behaviour-input-rich-overflow-more",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-input-rich 1.6.0 keeps its toolbar on one row with overflow=\"more\" by default: groups that do not fit leave whole for ⋯ «Ещё» (owner decision C155, R233); the four text-level buttons are one «Абзац ▾» menu button (C155 (5)). The toolbar wrapped before; a page that wants that writes overflow=\"wrap\".",
+      "items": [
+        {
+          "component": "sf-input-rich",
+          "attribute": "overflow",
+          "from": "wrap (no setting; the toolbar wrapped)",
+          "to": "more (the default); wrap written out"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a page relied on the wrapping toolbar, write overflow=\"wrap\" on the sf-input-rich. A test that pressed the P, H2, H3, H4 buttons ([data-sf-tool=\"heading-2\"]) presses «Абзац ▾» ([data-sf-tool=\"levels\"]) and picks the level in its menu, or calls runCommand('heading-2').",
+      "examples": {
+        "before": "<sf-input-rich label=\"Описание\"></sf-input-rich> (the toolbar wraps)",
+        "after": "<sf-input-rich label=\"Описание\" overflow=\"wrap\"></sf-input-rich>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/input-rich/index.js"
+    },
+    {
       "id": "class-confirm-change-block-names",
       "recorded_on": "2026-11-14",
       "stage": "compat",

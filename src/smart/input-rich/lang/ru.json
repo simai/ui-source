@@ -23,6 +23,8 @@
     "value-missing": "Заполните поле",
     "count-text": "{count} / {max}",
     "too-long": "Не больше {max} знаков",
-    "help": "Подробнее: {label}"
+    "help": "Подробнее: {label}",
+    "text-level": "Уровень текста",
+    "more": "Ещё"
   }
 }

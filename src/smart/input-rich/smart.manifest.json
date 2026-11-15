@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-rich",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "title": "Rich text",
   "summary": "A form field for formatted text: paragraphs, headings 2 to 4, bold, italic, links, bulleted and numbered lists and quotes, with a toolbar, undo and redo. Its value is HTML of that subset and nothing else: the value it is given, every paste and drop and every edit are cleaned to it.",
   "kind": "smart",
@@ -32,11 +32,13 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.buttons",
       "component.icon-buttons",
       "component.icons",
       "smart.button",
       "smart.help-mark",
       "smart.input",
+      "smart.menu-context",
       "smart.popover"
     ],
     "public_parts": []
@@ -78,6 +80,15 @@
         "enum": [
           "bordered",
           "filled"
+        ]
+      },
+      "overflow": {
+        "type": "string",
+        "default": "more",
+        "description": "What the toolbar does when its tools do not fit one row (owner decision C155, R233): more (the default) keeps one row and puts whole groups, with their separator, under ⋯ «Ещё» at its end -- undo and redo first, then the lists and the quote; the text levels and bold, italic, link stay; wrap lets the row wrap as before 1.6.0.",
+        "enum": [
+          "more",
+          "wrap"
         ]
       },
       "label": {
@@ -338,11 +349,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-rich/index.js",
-        "sha256": "ec20b440a3395dea091be91fd3e69f2a166c5db5ce21264dfef7e2a73121b899"
+        "sha256": "1bc79ee79d8930c1bdcf960765d423a8f24a28063bc390f023973aa42bb9773c"
       },
       {
         "path": "src/smart/input-rich/js/templates/default.js",
-        "sha256": "75d91abb52752918a899926cd522148ae7ea1dfa50f273f3a79b16fa59225223"
+        "sha256": "4ed401cd1536f7ac4a0490a80c86ef43f592c33255e30f29db35f5b46820a39a"
       },
       {
         "path": "src/smart/input-rich/js/rich-text-html.mjs",
@@ -354,15 +365,15 @@
       },
       {
         "path": "src/smart/input-rich/scss/_smart__rich_text.scss",
-        "sha256": "43b8ee59985a52c7b20f4e80f5be4b43bd6745133fdb95837de98faa44007fac"
+        "sha256": "45fc913740b4bb558fe79d4c60e91982875b145dd0dc35c7c9d5fddded7ddad9"
       },
       {
         "path": "src/smart/input-rich/rule.js",
-        "sha256": "c79ebecdf05bdad8b617e331690fb29acd757a069dbab3850696507ac63b0361"
+        "sha256": "52c46678bb1b3b3c12957e99e29b1d675c3ca05056d6d3f3c40d8ed50017f073"
       },
       {
         "path": "src/smart/input-rich/docs.md",
-        "sha256": "90481e200115d5f8d6227bb4b7543a96b307556d76ab5117528284e2a5cf4357"
+        "sha256": "d4b94c9204f551663af25caa4e7e74178e1029cc8cbd18ec059662268f33c518"
       }
     ],
     "generated_runtime": []

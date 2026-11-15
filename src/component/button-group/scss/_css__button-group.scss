@@ -622,3 +622,55 @@
     }
   }
 }
+
+/* overflow="more" (owner decision C155 (1), (8)): a horizontal group keeps one
+   row and puts what does not fit under ⋯ «Ещё», its last segment
+   (core/js/overflow-row.js). It does not scroll: until laid out it clips at its
+   box, then nothing overflows it and the focus ring is whole. A button that
+   left, and ⋯ while nothing did, are out of the row (an sf-button host writes
+   an inline display: contents, hence the weight). */
+@layer sf.components {
+  .sf-button-group[overflow='more'] {
+    overflow: clip;
+  }
+
+  .sf-button-group[overflow='more'][data-sf-row-laid] {
+    overflow: visible;
+  }
+
+  /* Nothing in the row shrinks (an sf-button host is display: contents, so its
+     button is the row's item): what it measures is what it draws. */
+  .sf-button-group[overflow='more'] > sf-button > :is(button, a) {
+    flex: none;
+  }
+
+  .sf-button-group > .sf-button-group-out {
+    display: none !important;
+  }
+}
+
+@layer sf.override {
+  /* The joins follow the segments the group gives the buttons that stand in
+     the row, not the markup's first and last child: a button out of the row
+     is still a child (four classes and an attribute above the position rules
+     of a scheme segment). */
+  .sf-button-group[overflow='more'][data-sf-row-laid]:not([data-orientation='vertical']) > sf-button[segment]:not(.sf-button-group-out) > .sf-button.segment-start[class*='segment-'] {
+    --sf-button--border-inline-start-width: var(--sf-px);
+    border-inline-start-width: var(--sf-px);
+    border-start-start-radius: var(--sf-button--radius);
+    border-end-start-radius: var(--sf-button--radius);
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  .sf-button-group[overflow='more'][data-sf-row-laid]:not([data-orientation='vertical']) > sf-button[segment]:not(.sf-button-group-out) > .sf-button.segment-middle[class*='segment-'] {
+    border-radius: 0;
+  }
+
+  .sf-button-group[overflow='more'][data-sf-row-laid]:not([data-orientation='vertical']) > sf-button[segment]:not(.sf-button-group-out) > .sf-button.segment-end[class*='segment-'] {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-start-end-radius: var(--sf-button--radius);
+    border-end-end-radius: var(--sf-button--radius);
+  }
+}

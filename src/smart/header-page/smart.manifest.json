@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.header-page",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "title": "Page header",
   "summary": "The head of an admin page: path, heading, count, favourite star, install mark and main action. Replaces the admin top bar together with sf-admin-menu.",
   "kind": "smart",
@@ -27,7 +27,8 @@
     "uses": [
       "smart.badge",
       "smart.button-icon",
-      "smart.icon"
+      "smart.icon",
+      "smart.menu-context"
     ],
     "public_parts": []
   },
@@ -72,6 +73,15 @@
         "type": "boolean",
         "default": false,
         "description": "The decorative level (owner decision C91, level 2): a tinted head, primary tone 50 at 16 (dark 24) fading down to nothing, in a padded rounded field; a head narrower than 30rem (the g5 step) stays plain. Off by default; data-sf-style=\"expressive\" on the root or a container turns it on for every head under it, data-sf-style=\"strict\" turns it off again."
+      },
+      "overflow": {
+        "type": "string",
+        "default": "more",
+        "description": "What the actions do when they do not fit their line (owner decision C155 (7), C161 (4)): more (the default) keeps one row and puts what does not fit under ⋯ «Ещё» at its end -- from the end, by an action's priority attribute where the page gives one (1 the most important; pin never leaves), the main (filled) action and a pressed toggle never; wrap lets the row wrap onto further rows of its own (OV-2).",
+        "enum": [
+          "more",
+          "wrap"
+        ]
       },
       "star": {
         "type": "boolean",
@@ -232,11 +242,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-page/index.js",
-        "sha256": "b9f883f38c04b6a492ecc9a89f32f519e00315bebf6dd7cb62bbc0dfd84dda0d"
+        "sha256": "17f786496749e2c90591507efa75cd6b0d1aceebdf11c29247e0b2acd5014b46"
       },
       {
         "path": "src/smart/header-page/js/templates/default.js",
-        "sha256": "12a0d46a1908ba24e6630258961898d8d597234c442f2f1e10e7f9e43339be44"
+        "sha256": "8cc73b2d9f1f7fed19b8116e4e67df943c81f66ff0fee0508b9626db0c989057"
       }
     ],
     "generated_runtime": [

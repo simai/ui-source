@@ -17,5 +17,9 @@ SF.RuleLoader['cl-input-rich'] = {
     { name: 'cl-button' },
     // The «?» after the label (help, owner decision C153 (8)) is sf-help-mark: fetched with the field.
     { name: 'cl-help-mark' },
+    // The levels menu and ⋯ «Ещё» open the standard menu (core/js/overflow-row.js, owner decision C155).
+    { name: 'cl-menu-context', lazy: true },
+    // The text levels are the class markup of a ghost button with its word and ▾ (C155 (5)).
+    { name: 'buttons' },
   ],
 };

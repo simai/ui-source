@@ -131,11 +131,42 @@ export function renderRichTextTemplate(context) {
   // The toolbar's groups stand in the order of importance (owner decision
   // C141 (4)): the text levels, then bold, italic and link (priority 1), then
   // the lists and the quote (2), then undo and redo (3). What does not fit one
-  // row is to go to a «More» control at the end -- everywhere, not only on a
-  // phone (R233). TODO(R233): the shared «More» overflow waits for its own
-  // study; until it lands the row still wraps, and data-sf-priority is the
-  // hook it will read (the highest number leaves first).
+  // row leaves for ⋯ «Ещё» at its end -- everywhere, not only on a phone
+  // (R233, owner decision C155): whole groups with their separator, the
+  // highest data-sf-priority first; the groups of priority 1 stay
+  // (core/js/overflow-row.js, laid out by the element). overflow="wrap" keeps
+  // the row that wraps.
   const separator = html`<span class="sf-rich-text-separator" aria-hidden="true"></span>`;
+  const more = context.overflow === 'more';
+  // The text levels are one menu button with the current level and a radio
+  // menu (owner decision C155 (5)): «Абзац ▾», first in the row.
+  const level = context.level || 'paragraph';
+  const levelsUnavailable = Boolean(context.state?.inList);
+  const levels = html`<button
+      type="button"
+      class="sf-rich-text-tool sf-rich-text-levels sf-button sf-button--size-${buttonSize} sf-button--ghost sf-button--on-surface flex items-cross-center"
+      data-sf-tool="levels"
+      tabindex=${context.roving === 'levels' ? '0' : '-1'}
+      aria-haspopup="menu"
+      aria-expanded="false"
+      aria-label=${`${component.sfWord('text-level')}: ${component.sfWord(level)}`}
+      title=${component.sfWord('text-level')}
+      aria-disabled=${levelsUnavailable ? 'true' : nothing}
+      ?disabled=${disabled || readonly}
+    ><span class="sf-button-text-container" aria-hidden="true">${component.sfWord(level)}</span><i class="sf-icon" aria-hidden="true">expand_more</i></button>`;
+  const moreTool = more
+    ? html`<span class="sf-rich-text-separator sf-rich-text-more-separator sf-rich-text-out" aria-hidden="true"></span><button
+        type="button"
+        class="sf-rich-text-tool sf-rich-text-more sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-${buttonSize} flex items-cross-center sf-rich-text-out"
+        data-sf-tool="more"
+        tabindex=${context.roving === 'more' ? '0' : '-1'}
+        aria-haspopup="menu"
+        aria-expanded="false"
+        aria-label=${component.sfWord('more')}
+        title=${component.sfWord('more')}
+        ?disabled=${disabled || readonly}
+      ><i class="sf-icon" aria-hidden="true">more_horiz</i></button>`
+    : nothing;
   // The message line: the hint, or the error in its place; with the count
   // (C141 (1)) they share one row, the count at the end.
   const messageNode = message
@@ -156,20 +187,21 @@ export function renderRichTextTemplate(context) {
         : ''}
       <div class="sf-rich-text-frame flex flex-col"
         style=${`--sf-rich-text--rows: ${rows};${maxRows ? ` --sf-rich-text--max-rows: ${maxRows};` : ''}`}>
-        ${readonly ? '' : html`<div class="sf-rich-text-toolbar flex flex-wrap items-cross-center" role="toolbar" id=${toolbarId}
+        ${readonly ? '' : html`<div class=${more ? 'sf-rich-text-toolbar sf-rich-text-toolbar--more flex items-cross-center' : 'sf-rich-text-toolbar flex flex-wrap items-cross-center'} role="toolbar" id=${toolbarId}
           aria-label=${component.sfWord('toolbar')} aria-controls=${field.controlId}
           aria-disabled=${disabled || readonly ? 'true' : nothing}
           @keydown=${(event) => component.onToolbarKeydown(event)}
           @mousedown=${(event) => component.onToolbarMouseDown(event)}
           @click=${(event) => component.onToolbarClick(event)}
           @focusin=${(event) => component.onToolbarFocusIn(event)}>
-          <div class="sf-rich-text-group flex items-cross-center" role="group" data-sf-priority="1">${group(['paragraph', 'heading-2', 'heading-3', 'heading-4'])}</div>
+          <div class="sf-rich-text-group flex items-cross-center" role="group" data-sf-priority="1">${levels}</div>
           ${separator}
           <div class="sf-rich-text-group flex items-cross-center" role="group" data-sf-priority="1">${group(['bold', 'italic', 'link'])}</div>
           ${separator}
           <div class="sf-rich-text-group flex items-cross-center" role="group" data-sf-priority="2">${group(['bulleted-list', 'numbered-list', 'quote'])}</div>
           ${separator}
           <div class="sf-rich-text-group flex items-cross-center" role="group" data-sf-priority="3">${group(['undo', 'redo'])}</div>
+          ${moreTool}
         </div>`}
         <div
           class="sf-rich-text-editor"

@@ -2,6 +2,7 @@
   "title": "Page header",
   "runtime": {
     "all-sites": "for all sites",
+    "more": "More",
     "star": "Add to favourites",
     "unstar": "Remove from favourites"
   }

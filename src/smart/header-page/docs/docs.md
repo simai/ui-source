@@ -33,10 +33,28 @@ Slots:
 
 - `path` — where the page is, usually an `sf-breadcrumbs` starting at the site.
 - `start` — the start of the line, for a phone's ☰.
-- `actions` — the main action, at the end of the line. The actions stand 8
-  apart (C105 H5); a row of actions wider than the line moves to a line of its
-  own and wraps there, so the page never scrolls sideways. Moved or wrapped,
-  the actions stay at the end of the line.
+- `actions` — the page's actions, the main one (a filled `sf-button`) last,
+  at the end of the line, 8 apart (C105 H5). What does not fit leaves for ⋯
+  «Ещё» at the row's end (`overflow="more"`, the default since 1.4.0, owner
+  decision C155 (7), C161 (4)): ⋯ is an icon button of the actions' size,
+  quiet (ghost), named and titled «Ещё»; it opens a menu with the actions
+  that left, each with its icon and words, a pressed toggle checked, and a
+  menu row presses the action itself. The actions leave from the end; an
+  action's `priority` orders them — `priority="1"` is the most important, a
+  bigger number leaves sooner, an action without one leaves first —
+  `priority="pin"` keeps one in the row, and the main action and a pressed
+  toggle never leave. The row keeps the line beside the heading while the
+  heading has its room and takes a line of its own only when the actions that
+  must stay do not fit there. `overflow="wrap"` keeps the former row that
+  wraps onto further rows. Either way the page never scrolls sideways.
+
+```html
+<sf-header-page heading="Заказы">
+  <sf-button slot="actions" appearance="outline" icon-start="upload" text="Импорт" priority="2"></sf-button>
+  <sf-button slot="actions" appearance="outline" icon-start="download" text="Экспорт"></sf-button>
+  <sf-button slot="actions" icon-start="add" text="Создать"></sf-button>
+</sf-header-page>
+```
 
 Event:
 

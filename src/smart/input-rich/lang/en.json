@@ -23,6 +23,8 @@
     "value-missing": "Fill in this field",
     "count-text": "{count} / {max}",
     "too-long": "At most {max} characters",
-    "help": "More about: {label}"
+    "help": "More about: {label}",
+    "text-level": "Text level",
+    "more": "More"
   }
 }

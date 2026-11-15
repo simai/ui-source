@@ -3,6 +3,7 @@ import {elementFromManifest} from '../../core/js/element-manifest';
 import {ladderSize} from '../../component/field-size';
 import {FormField, ShownRequired} from '../helpers/form-field';
 import {charCount, countAnnouncement} from '../helpers/char-count';
+import {layoutActionRow, openRowMenu} from '../../core/js/overflow-row.js';
 import {renderRichTextTemplate} from './js/templates/default';
 import {richTextFromPlainText, richTextHref, sanitizeRichText} from './js/rich-text-html.mjs';
 import manifest from './component.json';
@@ -201,7 +202,8 @@ class SfRichText extends ShownRequired(FormField(RichTextElement)) {
     this._lastTyping = 0;
     this._muted = false;
     this._dispatching = false;
-    this._roving = 'paragraph';
+    this._roving = 'levels';
+    this._toolsOut = [];
     this._state = {canUndo: false, canRedo: false};
     this._lastSelection = null;
     this._committed = '';
@@ -325,6 +327,8 @@ class SfRichText extends ShownRequired(FormField(RichTextElement)) {
       maxRows: this.maxRows,
       tools: this.toolList(),
       state: this._state,
+      overflow: this.overflowMore ? 'more' : 'wrap',
+      level: Object.keys(BLOCK_TAGS).find((id) => this._state[BLOCK_TAGS[id]]) || 'paragraph',
       roving: this._roving,
       linkValue: this._link.value,
       linkError: this._link.error,
@@ -374,9 +378,101 @@ class SfRichText extends ShownRequired(FormField(RichTextElement)) {
 
   onDisconnected() {
     this._lowerLinkPanel();
+    this._toolbarObserver?.disconnect();
+    this._toolbarObserver = null;
+    this._toolbarObserved = null;
+  }
+
+  // ─── «Ещё» (owner decision C155, R233) ────────────────────────────────────
+  // overflow="more" (the default): the toolbar keeps one row and its groups
+  // leave for ⋯ at its end when they do not fit -- whole, with their
+  // separator, the highest data-sf-priority first (undo and redo, then the
+  // lists and the quote); the text levels and bold, italic, link stay. ⋯
+  // lists the tools that left with their icons, names and shortcuts, a
+  // pressed one checked (C155 (6)); ⋯ itself is never pressed.
+  get overflowMore() {
+    return this.getAttribute('overflow') !== 'wrap';
+  }
+
+  _observeToolbar(bar) {
+    if (!bar || !this.overflowMore || typeof ResizeObserver === 'undefined') {
+      this._toolbarObserver?.disconnect();
+      this._toolbarObserved = null;
+      return;
+    }
+    if (this._toolbarObserved === bar) return;
+    this._toolbarObserver ??= new ResizeObserver(() => this._layoutToolbar());
+    this._toolbarObserver.disconnect();
+    // The frame's width is the row's room; the groups' boxes widen when the
+    // icon face or the sheet arrives later.
+    this._toolbarObserver.observe(bar.parentElement);
+    for (const group of bar.querySelectorAll(':scope > .sf-rich-text-group')) this._toolbarObserver.observe(group);
+    this._toolbarObserved = bar;
+  }
+
+  _layoutToolbar() {
+    const bar = this.querySelector('.sf-rich-text-toolbar');
+    const more = bar?.querySelector(':scope > .sf-rich-text-more');
+    if (!bar || !more) return;
+    const groups = [...bar.querySelectorAll(':scope > .sf-rich-text-group')];
+    const separators = [...bar.querySelectorAll(':scope > .sf-rich-text-separator:not(.sf-rich-text-more-separator)')];
+    const units = groups.map((element, at) => {
+      const rank = Number(element.dataset.sfPriority) || at + 1;
+      return {element, rank, pin: rank <= 1, group: at};
+    });
+    const {out} = layoutActionRow({
+      row: bar,
+      units,
+      more,
+      moreSeparator: bar.querySelector(':scope > .sf-rich-text-more-separator'),
+      separators: separators.map((element, at) => ({element, after: at})),
+      outClass: 'sf-rich-text-out',
+    });
+    this._toolsOut = out.flatMap((at) => [...groups[at].querySelectorAll('button.sf-rich-text-tool')].map((button) => button.dataset.sfTool));
+    bar.setAttribute('data-sf-row-laid', '');
+    // The roving stop stays on a tool the row shows.
+    const shown = this._tools();
+    if (!shown.some((button) => button.dataset.sfTool === this._roving)) this._setRoving(shown[0]);
+  }
+
+  // A menu button of the toolbar (the levels, ⋯): the standard menu under it.
+  _openToolMenu(button) {
+    const id = button.dataset.sfTool;
+    const state = this._state;
+    const size = ({'1/3': '1/2', '1/2': '1/2'})[this.size] || '1';
+    if (id === 'levels') {
+      const current = Object.keys(BLOCK_TAGS).find((level) => state[BLOCK_TAGS[level]]) || 'paragraph';
+      const entries = Object.keys(BLOCK_TAGS).map((level) => ({
+        id: level, text: this.sfWord(level), kind: 'radio', checked: level === current, disabled: Boolean(state.inList) || undefined,
+      }));
+      return openRowMenu(this, {anchor: button, entries, label: this.sfWord('text-level'), size, select: (level) => this.runCommand(level)});
+    }
+    const tools = this.toolList();
+    const entries = [];
+    let lastGroup = null;
+    for (const toolId of this._toolsOut) {
+      const tool = tools.find((one) => one.id === toolId);
+      const element = this.querySelector(`.sf-rich-text-toolbar button.sf-rich-text-tool[data-sf-tool="${toolId}"]`);
+      if (!tool || !element) continue;
+      const group = element.closest('.sf-rich-text-group');
+      if (lastGroup && group !== lastGroup) entries.push({type: 'separator'});
+      lastGroup = group;
+      const entry = {id: tool.id, text: this.sfWord(tool.word), icon: tool.icon};
+      if (tool.key) entry.shortcut = `mod+${tool.key.toLowerCase()}`;
+      if (tool.pressed) {
+        entry.kind = 'check';
+        entry.checked = Boolean(state[tool.pressed]);
+      }
+      if (tool.unavailable?.(state)) entry.disabled = true;
+      entries.push(entry);
+    }
+    return openRowMenu(this, {anchor: button, entries, label: this.sfWord('more'), size, select: (toolId) => this.runCommand(toolId)});
   }
 
   afterRender() {
+    const bar = this.querySelector('.sf-rich-text-toolbar');
+    this._observeToolbar(bar);
+    if (bar && this.overflowMore) this._layoutToolbar();
     const editor = this.editor;
     if (!editor) return;
     if (editor.__sfRichText !== this) this._bindEditor(editor);
@@ -1292,8 +1388,10 @@ class SfRichText extends ShownRequired(FormField(RichTextElement)) {
 
   // ---------------------------------------------------------- toolbar
 
+  // The tools a person reaches: not disabled, not out of the row (C155).
   _tools() {
-    return [...this.querySelectorAll('.sf-rich-text-toolbar button.sf-rich-text-tool:not([disabled])')];
+    return [...this.querySelectorAll('.sf-rich-text-toolbar button.sf-rich-text-tool:not([disabled])')]
+      .filter((button) => !button.closest('.sf-rich-text-out'));
   }
 
   _setRoving(button) {
@@ -1311,8 +1409,20 @@ class SfRichText extends ShownRequired(FormField(RichTextElement)) {
     const index = tools.indexOf(button);
     if (index < 0) return;
     let next = null;
-    if (event.key === 'ArrowRight') next = tools[(index + 1) % tools.length];
-    else if (event.key === 'ArrowLeft') next = tools[(index - 1 + tools.length) % tools.length];
+    // A menu button (the levels, ⋯) opens its menu with the down arrow too,
+    // as a menu button does (APG).
+    if ((event.key === 'ArrowDown' || event.key === 'ArrowUp') && button.getAttribute('aria-haspopup') === 'menu') {
+      event.preventDefault();
+      if (button.getAttribute('aria-disabled') !== 'true') this._openToolMenu(button);
+      return;
+    }
+    // Right goes on in the reading order, left back: in a right-to-left row
+    // the reading order runs leftwards.
+    const rtl = getComputedStyle(button).direction === 'rtl';
+    const forward = rtl ? 'ArrowLeft' : 'ArrowRight';
+    const back = rtl ? 'ArrowRight' : 'ArrowLeft';
+    if (event.key === forward) next = tools[(index + 1) % tools.length];
+    else if (event.key === back) next = tools[(index - 1 + tools.length) % tools.length];
     else if (event.key === 'Home') next = tools[0];
     else if (event.key === 'End') next = tools[tools.length - 1];
     if (!next) return;
@@ -1339,6 +1449,10 @@ class SfRichText extends ShownRequired(FormField(RichTextElement)) {
     // The link button is the popover's trigger: the popover opens itself.
     if (id === 'link') return;
     if (button.getAttribute('aria-disabled') === 'true') return;
+    if (id === 'levels' || id === 'more') {
+      this._openToolMenu(button);
+      return;
+    }
     this.runCommand(id);
   }
 

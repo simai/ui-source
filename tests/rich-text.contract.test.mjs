@@ -186,8 +186,11 @@ test('the manifest: a form field of the input family, its settings, events and w
   assert.equal(component.id, 'smart.input-rich');
   assert.equal(component.family, 'input', 'the family is the first word of the tag (C174, NM-5)');
   assert.deepEqual(Object.keys(component.settings).sort(), [
-    'appearance', 'counter', 'disabled', 'error-message', 'help', 'hint', 'invalid', 'label', 'max-rows', 'maxlength', 'name', 'placeholder', 'readonly', 'required', 'rows', 'size',
+    'appearance', 'counter', 'disabled', 'error-message', 'help', 'hint', 'invalid', 'label', 'max-rows', 'maxlength', 'name', 'overflow', 'placeholder', 'readonly', 'required', 'rows', 'size',
   ]);
+  // C155: the toolbar keeps one row by default, what does not fit under ⋯ «Ещё».
+  assert.deepEqual(component.settings.overflow.values, ['more', 'wrap']);
+  assert.equal(component.settings.overflow.default, 'more');
   assert.deepEqual(component.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.deepEqual(component.values.value, {...component.values.value, type: 'string', default: ''});
   assert.deepEqual(Object.keys(component.events).sort(), ['change', 'input']);
@@ -205,7 +208,7 @@ test('the manifest: a form field of the input family, its settings, events and w
   // The words: one key set in both languages, every toolbar word among them.
   assert.deepEqual(Object.keys(ru.runtime).sort(), Object.keys(en.runtime).sort());
   for (const key of ['toolbar', 'paragraph', 'heading-2', 'heading-3', 'heading-4', 'bold', 'italic', 'link', 'bulleted-list',
-    'numbered-list', 'quote', 'undo', 'redo', 'link-address', 'link-invalid', 'link-apply', 'link-remove', 'value-missing']) {
+    'numbered-list', 'quote', 'undo', 'redo', 'link-address', 'link-invalid', 'link-apply', 'link-remove', 'value-missing', 'text-level', 'more']) {
     assert.ok(en.runtime[key] && ru.runtime[key] && en.runtime[key] !== ru.runtime[key], key);
   }
   // The rule is registered and the bundle has its own sheet.
