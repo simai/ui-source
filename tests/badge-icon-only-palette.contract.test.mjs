@@ -31,7 +31,7 @@ test('C134 sf-badge: icon-only replaces the boolean compact, a dated setting ali
   const sheet = read('src/component/badges/scss/_css__badges.scss');
   assert.match(sheet, /\n\.sf-badge:is\(\.sf-badge--icon-only, \.sf-badge--compact\) \{/u, 'one class of specificity more than .sf-badge, as before');
   assert.doesNotMatch(sheet, /\.sf-badge\.sf-badge--compact/u);
-  assert.equal(json('src/component/badges/passport.json').version, '1.8.1'); // 1.8.1: the words in lang files (LC-4)
+  assert.equal(json('src/component/badges/passport.json').version, '1.10.0'); // 1.10.0: the script's layout in the sheet (RG-B-53); 1.8.1: the words in lang files (LC-4)
   assert.deepEqual(record('attribute-badge-compact-to-icon-only').items, [{component: 'sf-badge', from: 'compact', to: 'icon-only'}]);
   assert.equal(record('attribute-badge-compact-to-icon-only').remove_after, '2027-01-01');
   assert.deepEqual(record('class-badges-compact-to-icon-only').items, [{component: 'sf-badge', from: 'sf-badge--compact', to: 'sf-badge--icon-only'}]);
