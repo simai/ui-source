@@ -1,8 +1,9 @@
 @use '../../../core/scss/mix/mix__places' as places;
 // In-place inline editor (startInlineEdit). The edited element shows a
-// visible editing state; the formatting toolbar floats above it. The public
-// variables (standard 1.3.8 §6): the edited element's outline, the toolbar's
-// fill, radius, gap and padding.
+// visible editing state; the formatting toolbar floats over the selected
+// text, or stands above the screen keyboard on a phone; the link window is a
+// panel of its own. The public variables (standard 1.3.8 §6): the edited
+// element's outline, the toolbar's fill, radius, gap and padding.
 /* sf-focus-ring: editor — the editing canvas marks what is being edited in its
    own colour, which is part of the editor's language rather than the product's
    focus colour. Width and style stay the system's. */
@@ -13,55 +14,132 @@
         cursor: text;
     }
 
+    /* The toolbar (owner decisions C141 (4), C144, C155, C172; C173 (2): the
+       toolbar gap is 4): one row of ghost icon buttons on the 1/2 rung, 4
+       apart inside a group, a 1 px separator with 4 on each side between
+       groups, ⋯ «Ещё» at the end for what does not fit. It floats over the
+       page: the popup surface with the overlay shadow (C20). */
     .sf-inline-editor-toolbar {
         position: fixed;
         z-index: var(--sf-composition-overlay-z-index, var(--sf-layer--popover, 90));
         display: flex;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         align-items: center;
-        gap: var(--sf-inline-editor-toolbar-gap, var(--sf-space-1));
-        padding: var(--sf-inline-editor-toolbar-padding, var(--sf-space-1));
-        border-radius: var(--sf-inline-editor-toolbar-radius, var(--sf-radius-1));
-        /* A toolbar floats over the page: step 2's surface and shadow. */
+        gap: var(--sf-inline-editor-toolbar-gap, var(--sf-gap--toolbar, var(--sf-space-1\/4)));
+        padding: var(--sf-inline-editor-toolbar-padding, var(--sf-space-1\/4));
+        box-sizing: border-box;
+        max-inline-size: 100vw;
+        border-radius: var(--sf-inline-editor-toolbar-radius, var(--sf-radius--ui));
         background: var(--sf-inline-editor-toolbar-background-color, var(--sf-surface-popup, Canvas));
         @include places.sf-place(var(--sf-inline-editor-toolbar-background-color, var(--sf-surface-popup, Canvas)), var(--sf-on-surface-popup-variant));
         color: var(--sf-on-surface, CanvasText);
         box-shadow: var(--sf-shadow-overlay);
     }
 
-    .sf-inline-editor-button,
-    .sf-inline-editor-url {
-        padding: var(--sf-space-1) var(--sf-space-2);
-        border: 1px solid var(--sf-outline, GrayText);
-        border-radius: var(--sf-radius-1);
-        background: var(--sf-surface-area, Canvas);
-        color: var(--sf-on-surface, CanvasText);
-        font: inherit;
+    /* Nothing in the row shrinks: the row engine measures every part. */
+    .sf-inline-editor-toolbar > * {
+        flex: none;
     }
 
-    .sf-inline-editor-button[aria-pressed="true"] {
-        background: var(--sf-primary, Highlight);
-        color: var(--sf-on-primary, HighlightText);
-    }
-
-    .sf-inline-editor-button:focus-visible,
-    .sf-inline-editor-url:focus-visible {
-        outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-primary, Highlight);
-        outline-offset: 2px;
-    }
-
-    .sf-inline-editor-link {
+    .sf-inline-editor-group {
         display: flex;
-        flex-wrap: wrap;
-        gap: var(--sf-space-1);
+        align-items: center;
+        gap: var(--sf-inline-editor-toolbar-gap, var(--sf-gap--toolbar, var(--sf-space-1\/4)));
+    }
+
+    .sf-inline-editor-separator {
+        align-self: stretch;
+        inline-size: var(--sf-px);
+        margin-block: var(--sf-space-1\/4);
+        background-color: var(--sf-outline-variant);
+    }
+
+    /* The icon button class markup (the sheet of icon-buttons draws it); the
+       row lays it out itself, without the flex utilities. The pressed look is
+       the icon button's own (aria-pressed, C12). */
+    .sf-inline-editor-toolbar .sf-icon-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sf-inline-editor-toolbar .sf-inline-editor-out {
+        display: none !important;
+    }
+
+    /* (3) On a phone: a strip of icons on the touch rung above the screen
+       keyboard, the width of the screen (C172 (3)); the editor sets its top
+       from the visual viewport. */
+    .sf-inline-editor-toolbar.sf-inline-editor-toolbar--dock {
+        inset-inline: 0;
+        inline-size: 100%;
+        padding-block: var(--sf-space-1\/4);
+        padding-inline: var(--sf-space-1\/2);
+        border-radius: 0;
+    }
+
+    /* The link window (C141 (6), as sf-input-rich's): the drop-down panels'
+       padding and one step between the field and the actions, the wide form's
+       width (C32), never wider than the screen; the buttons in a row from the
+       start, 8 apart (C105 H5, 4 compact). */
+    .sf-inline-editor-link {
+        position: fixed;
+        z-index: var(--sf-composition-overlay-z-index, var(--sf-z-index-8, 80));
+        display: flex;
+        flex-direction: column;
+        gap: var(--sf-space-1\/2);
+        box-sizing: border-box;
+        inline-size: var(--sf-popup-form-wide-width, var(--sf-g1));
+        max-inline-size: 100vw;
+        padding: var(--sf-space-1\/2);
+        border-radius: var(--sf-radius--surface);
+        background: var(--sf-surface-popup, Canvas);
+        @include places.sf-place(var(--sf-surface-popup, Canvas), var(--sf-on-surface-popup-variant));
+        color: var(--sf-on-surface, CanvasText);
+        box-shadow: var(--sf-shadow-overlay);
+    }
+
+    .sf-inline-editor-link sf-input {
+        display: block;
+    }
+
+    .sf-inline-editor-link-actions {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: center;
+        gap: var(--sf-gap--actions, var(--sf-space-1\/3));
+    }
+
+    /* On a phone the link window is a form, so a sheet at the bottom of the
+       screen (C32, as sf-input-rich's), standing on the screen keyboard: the
+       screen's width up to 44rem, the top corners rounded, the modal shadow
+       and the scrim. */
+    .sf-inline-editor-link[data-sf-sheet] {
+        z-index: var(--sf-z-index-9);
+        inset-inline: 0;
+        inline-size: 100%;
+        max-inline-size: var(--sf-h1);
+        margin-inline: auto;
+        border-end-end-radius: 0;
+        border-end-start-radius: 0;
+        box-shadow: var(--sf-shadow-modal), 0 0 0 100vmax var(--sf-scrim-color, var(--sf-black--alfa-64));
     }
 
     .sf-inline-editor-link[hidden],
-    .sf-inline-editor-toolbar[hidden] {
+    .sf-inline-editor-toolbar[hidden],
+    .sf-inline-editor-link sf-button[hidden] {
         display: none;
     }
 
+    /* The reason a link is refused is shown by the field in its hint's
+       place; this copy only says it to a screen reader as it appears. */
     .sf-inline-editor-error {
-        color: var(--sf-error);
+        position: absolute;
+        inline-size: var(--sf-px);
+        block-size: var(--sf-px);
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
     }
 }

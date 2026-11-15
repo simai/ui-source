@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-// Browser acceptance for the inline editor's toolbar option (simai/ui-source#67):
-// toolbar 'session' (the default) keeps the bar for the whole edit, over the
-// element; 'selection' shows it only while text is selected and places it
-// over the selection. Drives the inline editor lab
+// Browser acceptance for the inline editor's toolbar option (simai/ui-source#67,
+// owner decision C172 (1)): 'selection' (the default since 1.9.0) shows the
+// bar only while text is selected and places it over the selection; 'session'
+// keeps the bar for the whole edit, over the element. Below the md breakpoint
+// the bar is a strip above the screen keyboard for the whole edit (C172 (3)). Drives the inline editor lab
 // (tests/fixtures/composition-inline-editor-lab.html).
 // Usage: PLAYWRIGHT_MODULE=… node composition-inline-toolbar.browser.mjs <lab> <distr> <smart-root> <output-dir>
 import { createHash } from 'node:crypto';
@@ -59,6 +60,11 @@ const state = () => page.evaluate(async () => {
     active: document.activeElement?.className || document.activeElement?.tagName,
     strong: document.querySelector('.sf-inline-editor-button--strong')?.getAttribute('aria-pressed'),
     linkOpen: document.querySelector('.sf-inline-editor-link') ? !document.querySelector('.sf-inline-editor-link').hidden : null,
+    inField: Boolean(document.activeElement?.closest?.('.sf-inline-editor-url')),
+    dock: bar.classList.contains('sf-inline-editor-toolbar--dock'),
+    gaps: (() => { const shown = [...bar.querySelectorAll('button')].filter((button) => button.getClientRects().length).map((button) => button.getBoundingClientRect()); return shown.slice(1).map((box, at) => Math.round(box.left - shown[at].right)); })(),
+    buttonHeight: Math.round(bar.querySelector('button')?.getBoundingClientRect().height || 0),
+    innerHeight,
   };
 });
 const visible = (value) => value.bar && !value.bar.hidden && value.bar.display !== 'none' && value.bar.width > 0;
@@ -66,11 +72,18 @@ const shiftLeft = async (count) => { for (let index = 0; index < count; index +=
 
 await open();
 
-// The default is unchanged: the bar for the whole edit, over the element.
+// The default (C172 (1)): no bar until text is selected.
 await start(null);
 let now = await state();
+observations.defaultStart = now;
+check(now.bar?.mode === 'selection' && !visible(now), 'selection is the default: no bar while nothing is selected', now);
+await page.keyboard.press('Escape');
+
+// session: the bar for the whole edit, over the element.
+await start('session');
+now = await state();
 observations.session = now;
-check(visible(now) && now.bar.mode === 'session', 'session (the default): the bar shows from the start of the edit', now);
+check(visible(now) && now.bar.mode === 'session', 'session: the bar shows from the start of the edit', now);
 check(now.bar.bottom <= now.element.top && Math.abs(now.bar.left - now.element.left) <= 1, 'session: the bar sits above the element at its inline start', now);
 await page.keyboard.press('Escape');
 check((await state()).bar === null, 'the bar leaves with the edit', null);
@@ -89,6 +102,8 @@ await shiftLeft(3);
 now = await state();
 observations.selected = now;
 check(visible(now), 'selection: selecting text shows the bar', now);
+// C144 / C173 (2), RT-4: icon buttons 1/2, 4 apart in a group, 4 + 1 px + 4 between groups.
+check(now.buttonHeight === 32 && JSON.stringify(now.gaps) === JSON.stringify([4, 4, 9]), 'the bar is icon buttons 1/2, 4 apart, a separator before the link', now);
 if (visible(now) && now.selected) {
   const centre = (now.selected.left + now.selected.right) / 2;
   const barCentre = (now.bar.left + now.bar.right) / 2;
@@ -109,10 +124,10 @@ check(JSON.stringify(value.at(-1)) === JSON.stringify({ type: 'text', value: 'е
 await page.keyboard.press('ControlOrMeta+k');
 now = await state();
 observations.link = now;
-check(visible(now) && now.active === 'sf-inline-editor-url', 'selection: the link field opens in the bar and keeps it', now);
+check(visible(now) && now.linkOpen && now.inField, 'selection: the link window opens and keeps the bar', now);
 await page.keyboard.press('Escape');
 now = await state();
-check(visible(now) && now.active !== 'sf-inline-editor-url', 'selection: closing the link field returns to the selection, the bar stays', now);
+check(visible(now) && !now.linkOpen && !now.inField, 'selection: closing the link window returns to the selection, the bar stays', now);
 
 // Collapsing the selection takes the bar away again.
 await page.keyboard.press('ArrowRight');
@@ -137,9 +152,13 @@ const refused = await page.evaluate(() => {
 });
 check(refused.thrown === 'inline_toolbar_unknown: always' && refused.same && refused.bars === 0, 'an unknown toolbar mode is refused before anything is drawn', refused);
 
-// Dark, narrow, RTL: the bar over a selection stays inside the viewport.
+// Dark, narrow, RTL: on a phone the bar is a strip above the keyboard for
+// the whole edit, on the touch rung (C172 (3)).
 await open({ theme: 'dark', width: 390, dir: 'rtl' });
 await start('selection');
+now = await state();
+observations.phoneStart = now;
+check(visible(now) && now.dock && Math.abs(now.bar.bottom - now.innerHeight) <= 1 && now.bar.left === 0 && Math.abs(now.bar.right - now.viewport) <= 1 && now.buttonHeight >= 44, 'phone: the strip stands at the bottom from the start of the edit', now);
 await page.keyboard.press('ControlOrMeta+a');
 now = await state();
 observations.narrowDarkRtl = now;

@@ -769,7 +769,13 @@
       ],
       "composition": {
         "public_parts": [],
-        "uses": []
+        "uses": [
+          "component.icon-buttons",
+          "component.icons",
+          "smart.button",
+          "smart.input",
+          "smart.menu-context"
+        ]
       },
       "contract_schema": {
         "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
@@ -780,7 +786,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/editor-inline/smart.manifest.json",
-      "manifest_sha256": "54423e673dfde1ebefbcd8a1e0fc7aa55ae34dbe8a5809ecb69a7d5ee90bf139",
+      "manifest_sha256": "dc7c945d267b39e892e820deee3665418d6f7c573e8c18439bd7f82dc6b4e90c",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

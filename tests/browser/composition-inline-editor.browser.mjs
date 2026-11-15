@@ -54,11 +54,13 @@ const opened = await page.evaluate(() => {
   const element = document.querySelector('[data-sf-composition-id="body"]');
   const toolbar = document.querySelector('.sf-inline-editor-toolbar').getBoundingClientRect();
   const box = element.getBoundingClientRect();
-  return { editable: element.getAttribute('contenteditable'), role: element.getAttribute('role'), label: element.getAttribute('aria-label'), outline: getComputedStyle(element).outlineStyle, focused: document.activeElement === element, toolbarAbove: toolbar.bottom <= box.top };
+  const bar = document.querySelector('.sf-inline-editor-toolbar');
+  return { editable: element.getAttribute('contenteditable'), role: element.getAttribute('role'), label: element.getAttribute('aria-label'), outline: getComputedStyle(element).outlineStyle, focused: document.activeElement === element, toolbarAbove: toolbar.bottom <= box.top, toolbarHidden: bar.hidden && getComputedStyle(bar).display === 'none' };
 });
 observations.opened = opened;
 check(opened.editable === 'true' && opened.role === 'textbox' && opened.label.startsWith('Абзац: редактирование') && opened.outline === 'solid' && opened.focused, 'double click opens an accessible, visibly editing textbox', opened);
-check(opened.toolbarAbove, 'formatting toolbar sits above the text', opened);
+// Owner decision C172 (1): the toolbar shows only while text is selected.
+check(opened.toolbarHidden, 'the formatting toolbar waits for a selection', opened);
 await page.keyboard.press('Escape');
 check(await settledHtml('#canvas') === renderedBefore && (await lab()).cancels === 1, 'Escape restores the exact rendered HTML', null);
 
@@ -83,11 +85,16 @@ check(JSON.stringify(value[0]) === JSON.stringify({ type: 'text', value: 'Пер
 await page.keyboard.press('End');
 await shiftLeft(5);
 await page.keyboard.press('ControlOrMeta+k');
-check(await page.evaluate(() => document.activeElement?.classList.contains('sf-inline-editor-url')), 'Ctrl+K opens the link address field', null);
+await page.waitForFunction(() => document.activeElement?.closest?.('.sf-inline-editor-url'));
+check(await page.evaluate(() => Boolean(document.activeElement?.closest('.sf-inline-editor-url'))), 'Ctrl+K opens the link address field', null);
+// C172 (4): the hint under the field says what an address may be.
+check(await page.evaluate(() => document.querySelector('.sf-inline-editor-link').innerText.includes('mailto:')), 'the link field has its hint under it', null);
 await page.keyboard.type('javascript:alert(1)');
 await page.keyboard.press('Enter');
-const refusedLink = await page.evaluate(() => ({ error: document.querySelector('.sf-inline-editor-error').textContent, invalid: document.querySelector('.sf-inline-editor-url').getAttribute('aria-invalid') }));
-check(refusedLink.error === 'Недопустимый адрес ссылки' && refusedLink.invalid === 'true', 'an unsafe link is refused with an accessible error', refusedLink);
+await page.waitForFunction(() => document.querySelector('.sf-inline-editor-url input')?.getAttribute('aria-invalid') === 'true');
+const refusedLink = await page.evaluate(() => ({ error: document.querySelector('.sf-inline-editor-error').textContent, shown: document.querySelector('.sf-inline-editor-url').getAttribute('error-message'), invalid: document.querySelector('.sf-inline-editor-url input').getAttribute('aria-invalid') }));
+// C172 (4): the error names the reason, in the hint's place, and is said once.
+check(refusedLink.error === 'Такой адрес нельзя: начните с https://, mailto: или tel:' && refusedLink.shown === refusedLink.error && refusedLink.invalid === 'true', 'an unsafe link is refused with an accessible error naming the reason', refusedLink);
 await page.keyboard.press('ControlOrMeta+a');
 await page.keyboard.type('https://simai.ru/');
 await page.keyboard.press('Enter');

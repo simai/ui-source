@@ -1,6 +1,7 @@
 import { pageText } from '../page-language.js';
+import { actionEntry, layoutActionRow, openRowMenu } from '../overflow-row.js';
 import { defineTagAliases } from '../tag-aliases.js';
-import { INLINE_COMPONENTS, INLINE_MARKS, INLINE_OBJECT, breakSegment, fromSegments, inlineComponentView, inlineExtensions, inlineLength, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark } from './inline-model.mjs';
+import { INLINE_COMPONENTS, INLINE_LIMITS, INLINE_MARKS, INLINE_OBJECT, breakSegment, fromSegments, inlineComponentView, inlineExtensions, inlineLength, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark } from './inline-model.mjs';
 
 // In-place editor for the Composition inline content model. The host starts
 // it on a rendered heading or paragraph element; the editor exposes only
@@ -33,8 +34,10 @@ export const INLINE_EVENTS_LEGACY = Object.freeze({
   cancel: 'sf-inline-edit-cancel',
 });
 
-function emitInline(element, key, id, content) {
-  const detail = content === undefined ? { id } : { id, content };
+// next: the text after the caret when Enter starts a new block (enter:
+// 'new-block', C172 (2)); the former names' details never carry it.
+function emitInline(element, key, id, content, next) {
+  const detail = content === undefined ? { id } : next === undefined ? { id, content } : { id, content, next };
   const legacy = content === undefined ? { node_id: id } : { node_id: id, content };
   const frozen = Object.freeze(detail);
   element.dispatchEvent(new globalThis.CustomEvent(INLINE_EVENTS[key], { bubbles: true, composed: true, detail: frozen }));
@@ -118,11 +121,28 @@ function atomEntry(element) {
 }
 
 const format = (template, values) => template.replace(/\{(\w+)\}/gu, (_, key) => String(values[key] ?? ''));
+// The words of sf-editor-inline's language files (lang/<locale>.json,
+// runtime), given by its bundle (useInlineEditorWords): the words this module
+// does not carry in MESSAGES -- the link window's hint and reasons, «Ещё»,
+// the new-block label (owner decision C172) -- live only there.
+let shippedWords = null;
+export function useInlineEditorWords(lang) {
+  shippedWords = lang && typeof lang === 'object' ? lang : null;
+}
+const dictionary = () => {
+  if (!shippedWords) return MESSAGES;
+  const merged = {};
+  for (const locale of new Set([...Object.keys(MESSAGES), ...Object.keys(shippedWords)])) merged[locale] = { ...(MESSAGES[locale] || {}), ...(shippedWords[locale]?.runtime || {}) };
+  return merged;
+};
 // Words in the page's language through pageText, as every component takes
 // them: the editor read <html lang> alone and offered only English or Russian,
 // so SF.language.use() and a product's own dictionary never reached it
 // (documentation trial, 2026-10-12).
-const words = (node) => Object.fromEntries(Object.keys(MESSAGES.en).map((key) => [key, pageText(MESSAGES, key, node, 'sf-editor-inline')]));
+const words = (node) => {
+  const all = dictionary();
+  return Object.fromEntries(Object.keys(all.en || MESSAGES.en).map((key) => [key, pageText(all, key, node, 'sf-editor-inline')]));
+};
 
 /** Reads inline content from any DOM subtree; foreign markup and styles are dropped. */
 export function readInlineDom(root, { marks = INLINE_MARKS, links = true, collapse = false } = {}) {
@@ -327,22 +347,76 @@ function setSelection(root, anchor, focus = anchor) {
   selection.setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
 }
 
-// When the formatting toolbar shows: for the whole edit, over the element
-// (session, the default), or only while text is selected, over the selection
-// (selection: a flow editor where every paragraph is an edit, and a bar over
-// the element would cover the line being typed; simai/ui-source#67).
-export const INLINE_TOOLBAR_MODES = Object.freeze(['session', 'selection']);
+// When the formatting toolbar shows (owner decision C172 (1), 2026-11-14):
+// only while text is selected, over the selection (selection, the default
+// since sf-editor-inline 1.9.0), or for the whole edit, over the element
+// (session, the default before it, kept for a host that asks for it;
+// simai/ui-source#67). On a phone the toolbar is a strip of icons above the
+// screen keyboard for the whole edit, whatever the mode (C172 (3)).
+export const INLINE_TOOLBAR_MODES = Object.freeze(['selection', 'session']);
+
+// What Enter does (owner decision C172 (2)): save, the default, commits the
+// edit; new-block -- a block editor's setting «Enter — новый блок» -- commits
+// the text before the caret and gives the text after it as next, for the
+// host to make the next block of. Shift+Enter is a line break in both, focus
+// leaving saves in both.
+export const INLINE_ENTER_MODES = Object.freeze(['save', 'new-block']);
+
+const MARK_ICONS = Object.freeze({ strong: 'format_bold', em: 'format_italic', code: 'code', strike: 'strikethrough_s' });
+// The toolbar's rungs: icon buttons 1/2 over the page (C141 (4), C144); on a
+// phone the strip's buttons are 2, the touch rung.
+const BAR_SIZE = Object.freeze({ float: '1/2', dock: '2' });
+// The link window is one small form on one rung (C141 (6)): its field and
+// both buttons are 1/2.
+const LINK_SIZE = '1/2';
+// A row unit that left for «Ещё» (core/js/overflow-row.js, C155).
+const OUT = 'sf-inline-editor-out';
+// Below the md breakpoint core.css does not declare --sf-breakpoint-md: a
+// phone, as sf-input-rich reads it.
+const onPhone = (doc) => !doc.defaultView?.getComputedStyle(doc.documentElement).getPropertyValue('--sf-breakpoint-md').trim();
+const ICON_BUTTON = ['sf-icon-button', 'sf-icon-button--icon', 'sf-icon-button--ghost', 'sf-icon-button--on-surface'];
+
+// Why a link address is refused, as the link window says it under the field
+// (owner decision C172 (4)): the word of the reason, which names what to
+// change, or null when the address is accepted (safeHref).
+export function linkProblem(value) {
+  const text = String(value ?? '');
+  if (!text) return 'link-empty';
+  if (safeHref(text)) return null;
+  if (text.length > INLINE_LIMITS.maxHrefLength) return 'link-long';
+  if (/\s/u.test(text)) return 'link-spaces';
+  if (text.startsWith('//') || text.includes('\\')) return 'link-slashes';
+  if (/^[a-z][a-z0-9+.-]*:/iu.test(text)) return 'link-scheme';
+  return 'link-start';
+}
+
+// The word around an offset (letters, digits, joiners inside a word), as
+// [start, end], or null in a space or beside an atom: Ctrl/⌘+K with no
+// selection links the word under the caret (C172 (4), IE-3).
+export function wordAround(content, offset) {
+  const text = toSegments(content).map((segment) => (segment.node || segment.break ? '\u0000' : segment.text)).join('');
+  const inWord = (at) => at >= 0 && at < text.length && /[\p{L}\p{N}\p{M}_'’-]/u.test(text[at]);
+  let start = offset;
+  let end = offset;
+  while (inWord(start - 1)) start -= 1;
+  while (inWord(end)) end += 1;
+  while (start < end && /[-'’_]/u.test(text[start])) start += 1;
+  while (end > start && /[-'’_]/u.test(text[end - 1])) end -= 1;
+  return start < end ? [start, end] : null;
+}
 
 /**
  * Starts in-place editing of a rendered heading or paragraph element.
- * options: {content, nodeId, label, marks, links, messages, toolbar}
+ * options: {content, nodeId, label, marks, links, messages, toolbar, enter}
  * Returns {commit(), cancel(), value(), element}.
  */
 export function startInlineEdit(element, options = {}) {
   if (!(element instanceof globalThis.Element)) throw new TypeError('Inline editing needs an element');
   if (element.hasAttribute('data-sf-inline-editing')) throw new TypeError('inline_edit_active');
-  const toolbarMode = options.toolbar ?? 'session';
+  const toolbarMode = options.toolbar ?? 'selection';
   if (!INLINE_TOOLBAR_MODES.includes(toolbarMode)) throw new TypeError(`inline_toolbar_unknown: ${toolbarMode}`);
+  const enterMode = options.enter ?? 'save';
+  if (!INLINE_ENTER_MODES.includes(enterMode)) throw new TypeError(`inline_enter_unknown: ${enterMode}`);
   const doc = element.ownerDocument;
   const text = { ...words(element), ...(options.messages || {}) };
   // options.marks: the marks the field allows and offers; without it every
@@ -395,66 +469,162 @@ export function startInlineEdit(element, options = {}) {
   };
 
   // Toolbar ----------------------------------------------------------------
+  // One row of icon buttons in groups (owner decisions C141 (4), C144, C172):
+  // the marks, a separator, the link; 4 apart inside a group, a 1 px line with
+  // 4 on each side between groups. What does not fit the row leaves for
+  // ⋯ «Ещё» at its end, a whole group with its separator, the link first
+  // (core/js/overflow-row.js, C155); the marks stay.
   const toolbar = doc.createElement('div');
   toolbar.className = 'sf-inline-editor-toolbar';
   toolbar.setAttribute('role', 'toolbar');
   toolbar.setAttribute('aria-label', text.toolbar);
   toolbar.dataset.sfToolbar = toolbarMode;
-  if (toolbarMode === 'selection') toolbar.hidden = true;
+  toolbar.hidden = toolbarMode === 'selection';
   const buttons = new Map();
-  for (const mark of offered) {
+  const tools = [];
+  const toolButton = (id, icon, label) => {
     const button = doc.createElement('button');
     button.type = 'button';
-    button.className = `sf-inline-editor-button sf-inline-editor-button--${mark}`;
+    button.classList.add('sf-inline-editor-button', `sf-inline-editor-button--${id}`, ...ICON_BUTTON);
+    button.dataset.sfTool = id;
+    button.setAttribute('aria-label', label);
+    button.title = label;
+    const glyph = doc.createElement('i');
+    glyph.className = 'sf-icon';
+    glyph.setAttribute('aria-hidden', 'true');
+    glyph.textContent = icon;
+    button.append(glyph);
+    tools.push(button);
+    return button;
+  };
+  const group = (priority) => {
+    const box = doc.createElement('div');
+    box.className = 'sf-inline-editor-group';
+    box.setAttribute('role', 'group');
+    box.dataset.sfPriority = String(priority);
+    return box;
+  };
+  const separator = (...extra) => {
+    const line = doc.createElement('span');
+    line.className = ['sf-inline-editor-separator', ...extra].join(' ');
+    line.setAttribute('aria-hidden', 'true');
+    return line;
+  };
+  const groups = [];
+  const separators = [];
+  const marksGroup = group(1);
+  for (const mark of offered) {
+    const button = toolButton(mark, MARK_ICONS[mark] || 'format_clear', text[mark]);
     button.dataset.mark = mark;
-    button.textContent = text[mark];
     button.setAttribute('aria-pressed', 'false');
     if (SHORTCUTS[mark]) button.setAttribute('aria-keyshortcuts', `Control+${SHORTCUTS[mark].toUpperCase()} Meta+${SHORTCUTS[mark].toUpperCase()}`);
     buttons.set(mark, button);
-    toolbar.append(button);
+    marksGroup.append(button);
   }
-  const linkForm = doc.createElement('div');
-  linkForm.className = 'sf-inline-editor-link';
-  linkForm.hidden = true;
-  const linkInput = doc.createElement('input');
-  linkInput.type = 'url';
+  if (marksGroup.childElementCount) groups.push(marksGroup);
+  if (links) {
+    const linkGroup = group(2);
+    const button = toolButton('link', 'link', text.link);
+    button.dataset.link = 'toggle';
+    button.setAttribute('aria-pressed', 'false');
+    button.setAttribute('aria-haspopup', 'dialog');
+    button.setAttribute('aria-expanded', 'false');
+    button.setAttribute('aria-keyshortcuts', 'Control+K Meta+K');
+    buttons.set('link', button);
+    linkGroup.append(button);
+    groups.push(linkGroup);
+  }
+  groups.forEach((box, at) => {
+    if (at) {
+      const line = separator();
+      separators.push(line);
+      toolbar.append(line);
+    }
+    toolbar.append(box);
+  });
+  const moreSeparator = separator('sf-inline-editor-more-separator', OUT);
+  const moreButton = toolButton('more', 'more_horiz', text.more);
+  moreButton.classList.add(OUT);
+  moreButton.setAttribute('aria-haspopup', 'menu');
+  moreButton.setAttribute('aria-expanded', 'false');
+  toolbar.append(moreSeparator, moreButton);
+  doc.body.append(toolbar);
+  let toolsOut = [];
+  let docked = false;
+  let savedSelection = [0, 0];
+  let lastSelection = null;
+
+  // The link window (C141 (6), C172 (4)): its own panel under the selected
+  // text -- the address field with its hint under it, then «Применить» and,
+  // on a link, «Убрать ссылку» in a row from the start -- and a sheet at the
+  // bottom of the screen on a phone (C32), above the keyboard. A refused
+  // address says why in the hint's place.
+  const linkPanel = doc.createElement('div');
+  linkPanel.className = 'sf-inline-editor-link';
+  linkPanel.setAttribute('role', 'dialog');
+  linkPanel.setAttribute('aria-label', text.link);
+  linkPanel.hidden = true;
+  const linkInput = doc.createElement('sf-input');
   linkInput.className = 'sf-inline-editor-url';
-  linkInput.setAttribute('aria-label', text.url);
-  const linkApply = doc.createElement('button');
-  linkApply.type = 'button';
-  linkApply.className = 'sf-inline-editor-button';
-  linkApply.textContent = text.apply;
-  const linkRemove = doc.createElement('button');
-  linkRemove.type = 'button';
-  linkRemove.className = 'sf-inline-editor-button';
-  linkRemove.textContent = text.unlink;
+  linkInput.setAttribute('size', LINK_SIZE);
+  linkInput.setAttribute('label', text.url);
+  linkInput.setAttribute('hint', text['link-hint']);
+  linkInput.setAttribute('autocomplete', 'url');
+  linkInput.setAttribute('inputmode', 'url');
+  const linkActions = doc.createElement('div');
+  linkActions.className = 'sf-inline-editor-link-actions';
+  const linkApply = doc.createElement('sf-button');
+  linkApply.className = 'sf-inline-editor-apply';
+  linkApply.setAttribute('size', LINK_SIZE);
+  linkApply.setAttribute('text', text.apply);
+  const linkRemove = doc.createElement('sf-button');
+  linkRemove.className = 'sf-inline-editor-unlink';
+  linkRemove.setAttribute('size', LINK_SIZE);
+  linkRemove.setAttribute('appearance', 'outline');
+  linkRemove.setAttribute('text', text.unlink);
+  linkActions.append(linkApply, linkRemove);
+  // The reason, said once to a screen reader as it appears; the field shows it.
   const linkError = doc.createElement('span');
   linkError.className = 'sf-inline-editor-error';
   linkError.setAttribute('role', 'alert');
-  linkForm.append(linkInput, linkApply, linkRemove, linkError);
-  if (links) {
-    const button = doc.createElement('button');
-    button.type = 'button';
-    button.className = 'sf-inline-editor-button sf-inline-editor-button--link';
-    button.dataset.link = 'toggle';
-    button.textContent = text.link;
-    button.setAttribute('aria-pressed', 'false');
-    button.setAttribute('aria-keyshortcuts', 'Control+K Meta+K');
-    buttons.set('link', button);
-    toolbar.append(button, linkForm);
-  }
-  doc.body.append(toolbar);
-  let savedSelection = [0, 0];
+  linkPanel.append(linkInput, linkActions, linkError);
+  if (links) doc.body.append(linkPanel);
+
+  const inside = (node) => Boolean(node) && (element.contains(node) || toolbar.contains(node) || linkPanel.contains(node) || Boolean(toolbar._sfRowMoreMenu?.contains?.(node)) || node === toolbar._sfRowMoreMenu);
+  const fieldControl = () => linkInput.querySelector('input');
+  const linkValue = () => String(fieldControl()?.value ?? linkInput.value ?? '');
+  const setLinkValue = (value) => {
+    linkInput.value = value;
+    const control = fieldControl();
+    if (control) control.value = value;
+  };
+  const clearError = () => {
+    linkInput.removeAttribute('invalid');
+    linkInput.removeAttribute('error-message');
+    linkError.textContent = '';
+  };
+  const showError = (problem) => {
+    const message = format(text[problem] ?? text.invalid, { max: INLINE_LIMITS.maxHrefLength });
+    linkInput.setAttribute('invalid', '');
+    linkInput.setAttribute('error-message', message);
+    linkError.textContent = message;
+  };
 
   // The box of the text between two offsets: the first line's top, the last
-  // line's bottom, the span between the leftmost and rightmost edge.
+  // line's bottom, the span between the leftmost and rightmost edge; for a
+  // caret, its line.
   function rangeBox(start, end) {
-    if (start === end) return null;
     const range = doc.createRange();
     range.setStart(...locate(element, Math.min(start, end)));
     range.setEnd(...locate(element, Math.max(start, end)));
     const lines = [...range.getClientRects()].filter((rect) => rect.width > 0 || rect.height > 0);
-    if (!lines.length) return null;
+    if (!lines.length) {
+      if (start !== end) return null;
+      const box = range.getBoundingClientRect();
+      if (box.height > 0) return { top: box.top, bottom: box.bottom, left: box.left, right: box.right };
+      const own = element.getBoundingClientRect();
+      return { top: own.top, bottom: own.bottom, left: own.left, right: own.right };
+    }
     return {
       top: Math.min(...lines.map((rect) => rect.top)),
       bottom: Math.max(...lines.map((rect) => rect.bottom)),
@@ -462,43 +632,124 @@ export function startInlineEdit(element, options = {}) {
       right: Math.max(...lines.map((rect) => rect.right)),
     };
   }
+  // The room between the text and what floats by it: the toolbar's own gap
+  // (--sf-space-1/4 through its sheet).
+  const gap = () => parseFloat(globalThis.getComputedStyle(toolbar).columnGap) || 4;
+  // The bottom of what the person sees: above the screen keyboard where the
+  // browser says where it is (visualViewport).
+  const keyboardEdge = () => {
+    const view = globalThis.visualViewport;
+    return view ? view.offsetTop + view.height : globalThis.innerHeight;
+  };
 
   // The selection mode's place: above the selected text, centred on it,
   // below it when there is no room above, kept inside the viewport. While the
-  // link form is open the selection is in its field, so the saved one counts.
+  // link window is open the selection is in its field, so the saved one counts.
   function positionOverSelection() {
-    if (toolbar.hidden) return;
-    const box = rangeBox(...(linkForm.hidden ? selectionOffsets() : savedSelection));
+    const [start, end] = linkPanel.hidden ? selectionOffsets() : savedSelection;
+    if (start === end && linkPanel.hidden) return;
+    const box = rangeBox(start, end);
     if (!box) return;
     const bar = toolbar.getBoundingClientRect();
-    const above = box.top - bar.height - 4;
-    const top = above >= 0 ? above : Math.min(globalThis.innerHeight - bar.height, box.bottom + 4);
+    const above = box.top - bar.height - gap();
+    const top = above >= 0 ? above : Math.min(globalThis.innerHeight - bar.height, box.bottom + gap());
     const left = (box.left + box.right) / 2 - bar.width / 2;
-    Object.assign(toolbar.style, { top: `${top}px`, left: `${Math.max(0, Math.min(left, globalThis.innerWidth - bar.width))}px` });
+    Object.assign(toolbar.style, { top: `${top}px`, left: `${Math.max(0, Math.min(left, doc.documentElement.clientWidth - bar.width))}px` });
   }
 
   function positionToolbar() {
-    if (toolbarMode === 'selection') {
-      positionOverSelection();
+    if (finished) return;
+    if (!toolbar.hidden) {
+      if (docked) {
+        const bar = toolbar.getBoundingClientRect();
+        Object.assign(toolbar.style, { top: `${keyboardEdge() - bar.height}px`, left: '' });
+      } else if (toolbarMode === 'selection') positionOverSelection();
+      else {
+        const box = element.getBoundingClientRect();
+        const bar = toolbar.getBoundingClientRect();
+        const rtl = globalThis.getComputedStyle(element).direction === 'rtl';
+        const above = box.top - bar.height - gap();
+        const top = above >= 0 ? above : Math.min(globalThis.innerHeight - bar.height, box.bottom + gap());
+        const start = rtl ? box.right - bar.width : box.left;
+        Object.assign(toolbar.style, { top: `${top}px`, left: `${Math.max(0, Math.min(start, doc.documentElement.clientWidth - bar.width))}px` });
+      }
+    }
+    placeLinkPanel();
+  }
+
+  // The link window under the selected text (above the toolbar when there is
+  // no room below), from its start edge, inside the viewport; on a phone a
+  // sheet standing on the keyboard.
+  function placeLinkPanel() {
+    if (linkPanel.hidden) return;
+    if (docked) {
+      linkPanel.setAttribute('data-sf-sheet', '');
+      linkPanel.style.left = '';
+      linkPanel.style.top = `${keyboardEdge() - linkPanel.getBoundingClientRect().height}px`;
       return;
     }
-    const box = element.getBoundingClientRect();
-    const bar = toolbar.getBoundingClientRect();
+    linkPanel.removeAttribute('data-sf-sheet');
+    const box = rangeBox(...savedSelection);
+    if (!box) return;
+    const panel = linkPanel.getBoundingClientRect();
+    const bar = toolbar.hidden ? null : toolbar.getBoundingClientRect();
+    const space = gap();
+    const barBelow = bar && bar.top >= box.bottom - 1;
+    let top = (barBelow ? bar.bottom : box.bottom) + space;
+    if (top + panel.height > globalThis.innerHeight) {
+      const above = (bar && !barBelow ? bar.top : box.top) - space - panel.height;
+      top = above >= 0 ? above : Math.max(0, globalThis.innerHeight - panel.height);
+    }
     const rtl = globalThis.getComputedStyle(element).direction === 'rtl';
-    const above = box.top - bar.height - 4;
-    const top = above >= 0 ? above : Math.min(globalThis.innerHeight - bar.height, box.bottom + 4);
-    const start = rtl ? box.right - bar.width : box.left;
-    Object.assign(toolbar.style, { top: `${top}px`, left: `${Math.max(0, Math.min(start, globalThis.innerWidth - bar.width))}px` });
+    const start = rtl ? box.right - panel.width : box.left;
+    Object.assign(linkPanel.style, { top: `${top}px`, left: `${Math.max(0, Math.min(start, doc.documentElement.clientWidth - panel.width))}px` });
+  }
+
+  // The row: the groups that fit, the rest in ⋯ (C155 (3), (4)). A floating
+  // toolbar's room is the viewport's width less its own padding; the strip's
+  // is its own width.
+  function layoutBar() {
+    if (finished || toolbar.hidden) return;
+    let room = null;
+    if (!docked) {
+      const style = globalThis.getComputedStyle(toolbar);
+      const chrome = ['paddingLeft', 'paddingRight', 'borderLeftWidth', 'borderRightWidth'].reduce((sum, edge) => sum + (parseFloat(style[edge]) || 0), 0);
+      room = doc.documentElement.clientWidth - chrome;
+    }
+    const units = groups.map((box, at) => ({ element: box, rank: at + 1, pin: at === 0, group: at }));
+    const { out } = layoutActionRow({ row: toolbar, units, more: moreButton, moreSeparator, separators: separators.map((line, at) => ({ element: line, after: at })), outClass: OUT, room });
+    toolsOut = out.flatMap((at) => [...groups[at].querySelectorAll('button')]);
+    toolbar.setAttribute('data-sf-row-laid', '');
+  }
+
+  // A phone takes the strip above the keyboard with buttons on the touch
+  // rung; wider, the floating toolbar on the 1/2 rung.
+  function followScreen() {
+    const next = onPhone(doc);
+    if (next === docked && toolbar.hasAttribute('data-sf-size')) return;
+    docked = next;
+    toolbar.classList.toggle('sf-inline-editor-toolbar--dock', docked);
+    const size = docked ? BAR_SIZE.dock : BAR_SIZE.float;
+    toolbar.dataset.sfSize = size;
+    for (const button of tools) {
+      for (const name of [...button.classList]) if (name.startsWith('sf-icon-button--size-')) button.classList.remove(name);
+      button.classList.add(`sf-icon-button--size-${size}`);
+    }
   }
 
   function updateToolbar() {
-    const [start, end] = selectionOffsets();
+    if (finished) return;
+    const [start, end] = linkPanel.hidden ? selectionOffsets() : savedSelection;
+    if (linkPanel.hidden && element.contains(doc.getSelection()?.anchorNode)) lastSelection = [start, end];
     const state = marksIn(read(), start, end === start ? Math.max(0, start - 1) : end);
     for (const mark of offered) buttons.get(mark).setAttribute('aria-pressed', state.marks.includes(mark) ? 'true' : 'false');
     buttons.get('link')?.setAttribute('aria-pressed', state.href ? 'true' : 'false');
+    const wasHidden = toolbar.hidden;
     // Selection mode: the bar is there while text is selected or a link is
-    // being written, and nowhere while the caret only stands in the text.
-    if (toolbarMode === 'selection') toolbar.hidden = start === end && linkForm.hidden;
+    // being written, and nowhere while the caret only stands in the text --
+    // except on a phone, where the strip stays for the whole edit.
+    toolbar.hidden = !docked && toolbarMode === 'selection' && start === end && linkPanel.hidden;
+    if (wasHidden && !toolbar.hidden) layoutBar();
     positionToolbar();
   }
 
@@ -515,41 +766,109 @@ export function startInlineEdit(element, options = {}) {
     apply(replaceRange(content, start, end, [breakSegment(at?.marks || [], at?.href || null)]), start + 1, start + 1);
   }
 
+  // The field takes the focus once sf-input has drawn it.
+  function focusField() {
+    const ready = globalThis.customElements?.get('sf-input') ? null : globalThis.SF?.Loader?.ensure?.(['sf-input', 'sf-button']);
+    Promise.resolve(ready).then(() => linkInput.updateComplete).then(() => {
+      if (finished || linkPanel.hidden) return;
+      const control = fieldControl();
+      if (control) {
+        control.focus({ preventScroll: true });
+        control.select?.();
+      } else linkInput.focus?.({ preventScroll: true });
+      placeLinkPanel();
+    });
+  }
+
   function openLink() {
-    savedSelection = selectionOffsets();
-    if (savedSelection[0] === savedSelection[1]) return;
-    linkForm.hidden = false;
-    linkError.textContent = '';
-    linkInput.value = marksIn(read(), ...savedSelection).href || '';
-    linkInput.focus();
-    positionToolbar();
+    if (!links || finished) return;
+    let [start, end] = selectionOffsets();
+    // No selection: the word under the caret; none there, the address
+    // becomes the link's text where the caret stands.
+    if (start === end) {
+      const word = wordAround(read(), start);
+      if (word) {
+        [start, end] = word;
+        setSelection(element, start, end);
+      }
+    }
+    savedSelection = [start, end];
+    const href = start === end ? '' : (marksIn(read(), start, end).href || '');
+    linkRemove.hidden = !href;
+    clearError();
+    setLinkValue(href);
+    linkPanel.hidden = false;
+    buttons.get('link')?.setAttribute('aria-expanded', 'true');
+    updateToolbar();
+    focusField();
   }
 
   function closeLink(focusEditor = true) {
-    linkForm.hidden = true;
-    if (focusEditor) {
-      element.focus();
+    if (linkPanel.hidden) return;
+    linkPanel.hidden = true;
+    linkPanel.removeAttribute('data-sf-sheet');
+    buttons.get('link')?.setAttribute('aria-expanded', 'false');
+    clearError();
+    if (focusEditor && !finished) {
+      element.focus({ preventScroll: true });
       setSelection(element, ...savedSelection);
     }
-    if (toolbarMode === 'selection' && !finished) updateToolbar();
+    if (!finished) updateToolbar();
   }
 
   function applyLink(href) {
-    if (href !== null && !safeHref(href)) {
-      linkError.textContent = text.invalid;
-      linkInput.setAttribute('aria-invalid', 'true');
-      return;
+    if (href !== null) {
+      const problem = linkProblem(href);
+      if (problem) {
+        showError(problem);
+        return;
+      }
     }
-    linkInput.removeAttribute('aria-invalid');
     closeLink();
-    apply(setLink(read(), ...savedSelection, href), ...savedSelection);
+    const [start, end] = savedSelection;
+    if (href !== null && start === end) {
+      // Nothing selected and no word: the address is the link's text.
+      const shown = href.replace(/^(mailto|tel):/u, '');
+      apply(replaceRange(read(), start, end, [{ text: shown, marks: [], href }]), start + shown.length, start + shown.length);
+    } else apply(setLink(read(), start, end, href), start, end);
+  }
+
+  // A tool of the toolbar or of its «Ещё»: from the menu the text gets the
+  // focus and its selection back first.
+  function runTool(id, fromMenu = false) {
+    if (finished) return;
+    if (fromMenu) {
+      element.focus({ preventScroll: true });
+      if (lastSelection) setSelection(element, ...lastSelection);
+    }
+    if (id === 'link') (linkPanel.hidden ? openLink() : closeLink());
+    else if (offered.includes(id)) toggle(id);
+  }
+
+  async function openMore() {
+    const entries = [];
+    let last = null;
+    for (const button of toolsOut) {
+      const box = button.closest('.sf-inline-editor-group');
+      if (last && box !== last) entries.push({ type: 'separator' });
+      last = box;
+      const entry = actionEntry(button, button.dataset.sfTool);
+      const key = button.dataset.mark ? SHORTCUTS[button.dataset.mark] : button.dataset.link ? 'k' : null;
+      if (key) entry.shortcut = `mod+${key}`;
+      entries.push(entry);
+    }
+    await openRowMenu(toolbar, { anchor: moreButton, entries, label: text.more, size: docked ? '1' : '1/2', select: (id) => runTool(id, true) });
   }
 
   // Lifecycle --------------------------------------------------------------
+  let observer = null;
   function teardown() {
     finished = true;
     connection.abort();
+    observer?.disconnect();
+    toolbar._sfRowMoreMenu?.remove?.();
     toolbar.remove();
+    linkPanel.remove();
     element.innerHTML = original.html;
     for (const [name, value] of original.attributes) {
       if (value === null) element.removeAttribute(name);
@@ -566,6 +885,19 @@ export function startInlineEdit(element, options = {}) {
     return content;
   }
 
+  // Enter in a block editor (enter: 'new-block'): the text before the caret
+  // is saved, the text after it (the selection dropped) goes as next.
+  function commitNewBlock() {
+    if (finished) return null;
+    const [start, end] = selectionOffsets();
+    const content = read();
+    const before = normalizeInline(sliceInline(content, 0, start));
+    const next = normalizeInline(sliceInline(content, end, inlineLength(content)));
+    teardown();
+    emitInline(element, 'commit', options.nodeId ?? null, before, next);
+    return before;
+  }
+
   function cancel() {
     if (finished) return;
     teardown();
@@ -578,7 +910,7 @@ export function startInlineEdit(element, options = {}) {
   element.setAttribute('contenteditable', 'true');
   element.setAttribute('role', 'textbox');
   element.setAttribute('aria-multiline', 'false');
-  element.setAttribute('aria-label', format(text.editing, { label: options.label || '' }).replace(/^: /u, ''));
+  element.setAttribute('aria-label', format(enterMode === 'new-block' ? text['editing-block'] : text.editing, { label: options.label || '' }).replace(/^: /u, ''));
   element.replaceChildren(renderInlineDom(doc, initial));
   element.focus();
   setSelection(element, inlineLength(initial));
@@ -691,8 +1023,10 @@ export function startInlineEdit(element, options = {}) {
       event.preventDefault();
       insertBreak();
     } else if (event.key === 'Enter' && !event.shiftKey) {
+      // Enter saves (C172 (2)); in a block editor it starts the next block.
       event.preventDefault();
-      commit();
+      if (enterMode === 'new-block') commitNewBlock();
+      else commit();
     } else if (event.key === 'Escape') {
       event.preventDefault();
       cancel();
@@ -720,29 +1054,79 @@ export function startInlineEdit(element, options = {}) {
   toolbar.addEventListener('click', (event) => {
     const button = event.target.closest('button');
     if (!button) return;
-    if (button.dataset.mark) toggle(button.dataset.mark);
-    else if (button.dataset.link) (linkForm.hidden ? openLink() : closeLink());
-    else if (button === linkApply) applyLink(linkInput.value.trim());
-    else if (button === linkRemove) applyLink(null);
+    if (button === moreButton) openMore();
+    else runTool(button.dataset.sfTool);
   }, signal);
-  linkInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') { event.preventDefault(); applyLink(linkInput.value.trim()); }
+  // A toolbar is one Tab stop's worth of arrows: Left/Right/Home/End move
+  // between its shown buttons; Escape goes back to the text.
+  toolbar.addEventListener('keydown', (event) => {
+    const shown = tools.filter((button) => button.getClientRects().length);
+    const at = shown.indexOf(doc.activeElement);
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      element.focus({ preventScroll: true });
+      if (lastSelection) setSelection(element, ...lastSelection);
+      return;
+    }
+    if (at < 0) return;
+    const rtl = globalThis.getComputedStyle(toolbar).direction === 'rtl';
+    const step = { ArrowRight: rtl ? -1 : 1, ArrowLeft: rtl ? 1 : -1 }[event.key];
+    const to = step ? (at + step + shown.length) % shown.length : event.key === 'Home' ? 0 : event.key === 'End' ? shown.length - 1 : -1;
+    if (to < 0) return;
+    event.preventDefault();
+    shown[to].focus();
+  }, signal);
+  linkPanel.addEventListener('keydown', (event) => {
+    if (event.isComposing) return;
+    if (event.key === 'Enter' && !event.target.closest?.('sf-button')) { event.preventDefault(); applyLink(linkValue().trim()); }
     if (event.key === 'Escape') { event.preventDefault(); closeLink(); }
   }, signal);
+  // The reason goes as soon as the address changes (C153 (3)).
+  linkPanel.addEventListener('input', () => { if (linkInput.hasAttribute('invalid')) clearError(); }, signal);
+  linkPanel.addEventListener('click', (event) => {
+    if (event.target.closest('.sf-inline-editor-apply')) applyLink(linkValue().trim());
+    else if (event.target.closest('.sf-inline-editor-unlink')) applyLink(null);
+  }, signal);
+  // On a phone the sheet stands over a scrim: a press outside it closes it
+  // and keeps the edit.
+  doc.addEventListener('pointerdown', (event) => {
+    if (!docked || linkPanel.hidden || linkPanel.contains(event.target)) return;
+    event.preventDefault();
+    closeLink();
+  }, { ...signal, capture: true });
   const onFocusOut = (event) => {
-    const next = event.relatedTarget;
-    if (next && (element.contains(next) || toolbar.contains(next))) return;
-    // Let a click inside the toolbar land before deciding to commit.
+    if (inside(event.relatedTarget)) return;
+    // Let a click inside the toolbar or the link window land before deciding to commit.
     globalThis.setTimeout(() => {
-      if (!finished && !element.contains(doc.activeElement) && !toolbar.contains(doc.activeElement)) commit();
+      if (!finished && !inside(doc.activeElement)) commit();
     }, 0);
   };
   element.addEventListener('focusout', onFocusOut, signal);
   toolbar.addEventListener('focusout', onFocusOut, signal);
+  linkPanel.addEventListener('focusout', onFocusOut, signal);
   doc.addEventListener('selectionchange', () => { if (element.contains(doc.getSelection()?.anchorNode)) updateToolbar(); }, signal);
+  const onResize = () => {
+    const was = docked;
+    followScreen();
+    if (was !== docked) toolbar.removeAttribute('data-sf-row-laid');
+    layoutBar();
+    positionToolbar();
+  };
   globalThis.addEventListener('scroll', positionToolbar, { ...signal, passive: true, capture: true });
-  globalThis.addEventListener('resize', positionToolbar, { ...signal, passive: true });
+  globalThis.addEventListener('resize', onResize, { ...signal, passive: true });
+  globalThis.visualViewport?.addEventListener('resize', positionToolbar, { ...signal, passive: true });
+  globalThis.visualViewport?.addEventListener('scroll', positionToolbar, { ...signal, passive: true });
+  // The groups widen when the icon face arrives: the row is laid out again.
+  if (typeof globalThis.ResizeObserver === 'function') {
+    observer = new globalThis.ResizeObserver(() => { layoutBar(); positionToolbar(); });
+    for (const box of groups) observer.observe(box);
+    // The link window grows when a reason takes two lines: it is placed again.
+    if (links) observer.observe(linkPanel);
+  }
+  followScreen();
   updateToolbar();
+  layoutBar();
+  positionToolbar();
 
   return Object.freeze({ element, commit, cancel, value: () => normalizeInline(read()) });
 }
@@ -775,4 +1159,4 @@ export function defineInlineEditor(registry = globalThis.customElements, { base 
   return SfInlineEditor;
 }
 
-export default { INLINE_EVENTS, INLINE_EVENTS_FORMER_TAG, INLINE_EVENTS_LEGACY, INLINE_TOOLBAR_MODES, defineInlineEditor, readInlineDom, renderInlineDom, startInlineEdit, textOffset };
+export default { INLINE_ENTER_MODES, INLINE_EVENTS, INLINE_EVENTS_FORMER_TAG, INLINE_EVENTS_LEGACY, INLINE_TOOLBAR_MODES, defineInlineEditor, linkProblem, readInlineDom, renderInlineDom, startInlineEdit, textOffset, useInlineEditorWords, wordAround };

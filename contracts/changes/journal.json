@@ -12294,6 +12294,31 @@
       "source": "src/smart/input-rich/index.js"
     },
     {
+      "id": "behaviour-editor-inline-toolbar-selection",
+      "recorded_on": "2026-11-14",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-editor-inline 1.9.0 shows its formatting toolbar only while text is selected, over the selection: the edit option toolbar defaults to selection (owner decision C172 (1)); it was session, the bar for the whole edit over the element. On a phone the toolbar is a strip of icons above the screen keyboard for the whole edit (C172 (3)). The toolbar is icon buttons now (its buttons keep the classes sf-inline-editor-button--<mark>, link, more), and the link window is a panel of its own (.sf-inline-editor-link, an sf-input .sf-inline-editor-url) instead of a field inside the toolbar (C141 (6), C172 (4)).",
+      "items": [
+        {
+          "component": "sf-editor-inline",
+          "attribute": "edit options.toolbar",
+          "from": "session (the default)",
+          "to": "selection (the default); session written out"
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a host relied on the bar for the whole edit, pass {toolbar: 'session'} to edit()/startInlineEdit(). A test that focused input.sf-inline-editor-url finds the field as .sf-inline-editor-url input; the refused address's words are the reason (runtime.link-*), not «Недопустимый адрес ссылки».",
+      "examples": {
+        "before": "SF.Composition.startInlineEdit(element, {content, nodeId}) (the bar over the element for the whole edit)",
+        "after": "SF.Composition.startInlineEdit(element, {content, nodeId, toolbar: 'session'})"
+      },
+      "owner": "ui-source",
+      "source": "src/core/js/composition/inline-editor.mjs"
+    },
+    {
       "id": "class-confirm-change-block-names",
       "recorded_on": "2026-11-14",
       "stage": "compat",
