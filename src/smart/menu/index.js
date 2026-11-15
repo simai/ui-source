@@ -19,7 +19,7 @@ import {elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
 import BundledPosition from '../../core/js/position.js';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
-import {breakpointMedia} from '../../core/js/breakpoints.js';
+import {BREAKPOINTS, breakpointMedia} from '../../core/js/breakpoints.js';
 import {rowRoom} from '../../core/js/overflow-row.js';
 import {noteDeprecated} from '../../core/js/deprecations.js';
 import {renderMenuTemplate} from './js/templates/default';
@@ -191,10 +191,12 @@ class SfSmartMenu extends MenuElement {
     window.addEventListener('popstate', this._onLocation);
     window.addEventListener('hashchange', this._onLocation);
     // The phone's width, as the sheets switch on it (core/js/breakpoints).
+    // Inside sf-header-site the bar's own width stands for the window's (see
+    // readNarrow), so the bar and its row read one width (C104, C181 (2)).
     this._narrowMedia = breakpointMedia('md', {below: true});
-    this._narrow = this._narrowMedia?.matches === true;
+    this._narrow = this.readNarrow();
     this._onNarrow = () => {
-      const narrow = this._narrowMedia?.matches === true;
+      const narrow = this.readNarrow();
       if (narrow === this._narrow) return;
       this._narrow = narrow;
       if (this.collapse === 'narrow') this.requestComponentUpdate('narrow');
@@ -209,6 +211,7 @@ class SfSmartMenu extends MenuElement {
       }
     };
     this._narrowMedia?.addEventListener?.('change', this._onNarrow);
+    this.watchFrame();
     // The words of a row change their width when the font arrives: «Ещё» is
     // measured again then.
     this._onFonts = () => this.measureFit();
@@ -222,6 +225,9 @@ class SfSmartMenu extends MenuElement {
     window.removeEventListener('hashchange', this._onLocation);
     this._narrowMedia?.removeEventListener?.('change', this._onNarrow);
     this._narrowMedia = null;
+    this._frameObserver?.disconnect();
+    this._frameObserver = null;
+    this._frame = null;
     document.fonts?.removeEventListener?.('loadingdone', this._onFonts);
     for (const timer of this._hoverTimers.values()) clearTimeout(timer);
     this._hoverTimers.clear();
@@ -1073,7 +1079,38 @@ class SfSmartMenu extends MenuElement {
 
   // A row that does not fit the width it is given becomes the button; it is
   // a row again once the width it needed is there.
+  // The width the phone's step is read on. A row in sf-header-site reads the
+  // bar's own width: the bar collapses on it (a container condition), and a
+  // row that read the window instead stayed a wide row of «Ещё» in a bar
+  // narrower than the window -- a column, a card, an example frame -- where
+  // its «Меню» branch ran over the bar's actions (C104). Elsewhere the window.
+  readNarrow() {
+    const frame = this.closest?.('.sf-site-header');
+    const width = frame?.getBoundingClientRect?.().width;
+    if (frame && width > 0) {
+      const rem = Number.parseFloat(globalThis.getComputedStyle?.(document.documentElement).fontSize) || 16;
+      return width < Number.parseFloat(BREAKPOINTS.md) * rem;
+    }
+    return this._narrowMedia?.matches === true;
+  }
+
+  // The bar the row stands in, watched while it is there: the menu is placed
+  // into the bar's nav after the bar draws, so each drawing looks again.
+  watchFrame() {
+    const frame = this.closest?.('.sf-site-header') || null;
+    if (frame === this._frame) return;
+    this._frameObserver?.disconnect();
+    this._frameObserver = null;
+    this._frame = frame;
+    if (frame && typeof ResizeObserver !== 'undefined') {
+      this._frameObserver = new ResizeObserver(() => this._onNarrow?.());
+      this._frameObserver.observe(frame);
+    }
+    this._onNarrow?.();
+  }
+
   observeWidth() {
+    this.watchFrame();
     const nav = this.querySelector(':scope > nav.sf-smart-menu');
     if (!nav || typeof ResizeObserver === 'undefined') return;
     if (this._observed !== nav) {
