@@ -55,7 +55,7 @@ test('C183: sf-time 1.3.0 -- just now, the time-zone setting, list times off the
 
 test('C183: sf-confirm-change 1.9.0 -- the main answer filled, the deadline an sf-time under the answers', () => {
   const manifest = json('src/smart/confirm-change/component.json');
-  assert.equal(manifest.version, '1.9.0');
+  assert.equal(manifest.version, '1.9.1');
   assert.ok(manifest.relations.some((relation) => relation.name === 'cl-time'));
   assert.match(read('src/smart/confirm-change/rule.js'), /\{ name: 'cl-time' \}/u);
   const source = read('src/smart/confirm-change/index.js');
