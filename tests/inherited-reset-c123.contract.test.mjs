@@ -1,0 +1,60 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+
+// Owner decision C123 (variant A; R214; prototype prototypes/field-icon-actions.html) for the shared reset to the
+// inherited value (src/smart/helpers/inherited-value.js): every field that draws it -- sf-input, sf-input-textarea,
+// sf-dropdown, sf-input-color, sf-switch, sf-input-quantity -- draws the field layer's action, a glyph without a
+// plate, not a link icon button. The browser probe tests/browser/inherited-reset-c123.browser.mjs measures it.
+const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
+const helper = read('src/smart/helpers/inherited-value.js');
+const sheet = read('src/smart/helpers/inherited-value.css');
+const FIELDS = ['input', 'input-textarea', 'dropdown', 'input-color', 'switch', 'input-quantity'];
+const rule = (css, selector) => {
+  const at = css.indexOf(`${selector} {`);
+  assert.ok(at >= 0, `${selector} is in the sheet`);
+  return css.slice(at, css.indexOf('}', at));
+};
+
+test('(1) the reset is the field layer\'s action, its name unchanged', () => {
+  assert.match(helper, /<button\s+type="button"\s+class="sf-field-action sf-field-reset"\s+data-inherited-reset\s+aria-label=\$\{component\.resetLabel\}\s+title=\$\{component\.resetLabel\}/u);
+  assert.match(helper, /<i class="sf-icon" aria-hidden="true">restart_alt<\/i><\/button>/u);
+  assert.doesNotMatch(helper, /sf-icon-button/u);
+  assert.doesNotMatch(sheet, /\.sf-field-reset \{[^}]*--sf-icon-button--/u, 'no icon-button variables left for the reset');
+});
+
+test('(1) every field that draws it loads the field layer (component.inputs)', () => {
+  for (const folder of FIELDS) {
+    assert.match(read(`src/smart/${folder}/js/templates/default.js`), /renderInheritedSlot\(/u, folder);
+    assert.match(read(`src/smart/${folder}/rule.js`), /\{ name: 'inputs' \}/u, `${folder} loads inputs`);
+  }
+});
+
+test('(2) the glyph is the field\'s text line outside a box too; the hit area never under 24', () => {
+  for (const size of ['1\\/3', '1\\/2', '1', '2', '3']) {
+    const sizes = rule(sheet, `:is(.sf-textarea-inherited, .sf-switch-inherited, .sf-quantity-inherited).sf-field-inherited-slot--size-${size}`);
+    assert.match(sizes, new RegExp(`--sf-field-action--glyph: var\\(--sf-text-height-${size.replace('\\', '\\\\')}\\);`, 'u'));
+  }
+  assert.match(rule(sheet, '.sf-textarea-inherited > .sf-field-action,\n  .sf-switch-inherited > .sf-field-action'), /--sf-field-action--hit-block: var\(--sf-field-action--hit-inline\);/u);
+  // sf-input-quantity's own glyph rule gives the reset back the field action's ink and size.
+  assert.match(rule(sheet, '.sf-quantity .sf-quantity-row > .sf-quantity-inherited.sf-field-inherited-slot > .sf-field-action.sf-field-reset .sf-icon'), /--sf-icon--color: var\(--sf-field-action--ink\);/u);
+});
+
+test('(6) half an inset from the value and to the next glyph; the last glyph on the inset', () => {
+  assert.match(rule(sheet, ':is(.sf-input, .sf-dropdown)'), /--sf-field-inherited-slot--value-space: calc\(var\(--sf-field-action--inset\) \/ 2 - \(max\(var\(--sf-field-action--glyph\) \+ var\(--sf-field-action--inset\) \/ 2, var\(--sf-c2\)\) - var\(--sf-field-action--glyph\)\) \/ 2\);/u);
+  assert.match(rule(sheet, '.sf-field-inherited-slot:has(+ .sf-field-action:not([hidden])) > .sf-field-action:not([hidden])'), /margin-inline-end: calc\(var\(--sf-field-action--inset\) \/ 2 - \(var\(--sf-field-action--hit-inline\) - var\(--sf-field-action--glyph-size\)\)\);/u);
+  assert.match(rule(sheet, '.sf-dropdown .sf-dropdown-field:has(> .sf-field-inherited-slot > .sf-field-action:not([hidden]))'), /--sf-dropdown-field--gap: calc\(var\(--sf-px\) \* 0\);/u);
+  assert.match(rule(sheet, '.sf-dropdown .sf-dropdown-field:has(> .sf-field-inherited-slot) > button.sf-field-action:last-child'), /margin-inline-end: calc\(\(var\(--sf-field-action--glyph-size\) - var\(--sf-field-action--hit-inline\)\) \/ 2\);/u);
+  assert.match(read('src/smart/input-color/js/templates/default.css'), /\.sf-color-frame:has\(> \.sf-field-action, > \.sf-field-inherited-slot > \.sf-field-action:not\(\[hidden\]\)\) \{/u);
+  assert.doesNotMatch(sheet, /#[0-9a-f]{3,8}\b/iu, 'no literal colours');
+});
+
+test('the versions move with the look', () => {
+  const want = {input: '1.12.0', 'input-textarea': '1.11.0', dropdown: '1.15.0', 'input-color': '1.12.0', switch: '1.7.0', 'input-quantity': '1.8.0'};
+  for (const [folder, version] of Object.entries(want)) {
+    const component = JSON.parse(read(`src/smart/${folder}/component.json`));
+    assert.equal(component.version, version, folder);
+    assert.match(component['x-decisions'].at(-1), new RegExp(`^version ${version.replaceAll('.', '\\.')} \\(2026-11-15, owner decision C123`, 'u'));
+  }
+  assert.equal(JSON.parse(read('src/core/passports/module.smart-helpers.json')).version, '1.12.0');
+});
