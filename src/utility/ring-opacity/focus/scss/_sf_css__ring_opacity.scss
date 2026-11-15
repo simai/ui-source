@@ -10,7 +10,7 @@ $infix: focus;
 // @include layer-priority(utility,$infix) {
     @each $opacity-name, $opacity-value in $opacity-array {
         .#{$infix}\:ring-opacity-#{$opacity-name}:#{$infix} {
-            --sf-ring--alfa: #{$opacity-value};
+            --sf-ring--alpha: #{$opacity-value};
         }
     }
 // }

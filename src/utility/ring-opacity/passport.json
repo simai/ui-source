@@ -27,7 +27,7 @@
     "src/utility/ring-opacity/hover/scss/_sf_css__ring_opacity.scss",
     "src/utility/ring-opacity/hover/scss/index.scss"
   ],
-  "content_sha256": "95374c93582b8f324fff2a23c82cf1efe37374f199f172d9f26d693d5013c62c",
+  "content_sha256": "03b923d1867b7964ffef0e972380d629b6345b7c8fe8e98516e96576f85508c1",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
