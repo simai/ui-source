@@ -507,7 +507,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/wizard/index.js",
-        "sha256": "d9d600221f9ad865e66bf0af7ff6472fbae8e0ada832bea2c11d7b49c6eb54e6"
+        "sha256": "a98048bfad9eb71993cedca6221a31c6e10bbcac1ef7386923a053041d9e9584"
       },
       {
         "path": "src/smart/wizard/js/templates/default.js",

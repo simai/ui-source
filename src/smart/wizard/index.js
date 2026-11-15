@@ -41,8 +41,10 @@ export const STATES = ['done', 'skipped', 'running', 'error'];
 // The progress draws a row up to this many steps, the count above (owner);
 // auto also draws the count where the row does not fit (C101 (4), fitProgress).
 export const ROW_LIMIT = 7;
-// A pixel of slack: a row that fits exactly is a row (as sf-steps' checkFit).
-const FIT_SLACK = 1;
+// Rounding slack only: the row's steps do not shrink, so a row wider than its
+// place by half a pixel already cuts its last label (measured at the switch
+// point: 717.53 in 717 cut «Готово» by 0.53 px).
+const FIT_SLACK = 0.05;
 // sf-steps' word for each state of a step.
 export const STAGES = {done: 'completed', skipped: 'skipped', running: 'running', error: 'error', '': 'default'};
 // The place kept for remember: SF.Preferences under sf-wizard/<key> (the
