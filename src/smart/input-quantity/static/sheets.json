@@ -8,6 +8,7 @@
   "sheets": [
     "component/icon-buttons/css/icon-buttons.min.css",
     "component/icons/css/icons.min.css",
+    "component/inputs/css/inputs.min.css",
     "component/quantity/css/quantity.min.css",
     "core/css/core.css",
     "smart/input-quantity/css/input-quantity.min.css",
@@ -25,6 +26,7 @@
     "at-max": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/quantity/css/quantity.min.css",
       "core/css/core.css",
       "smart/input-quantity/css/input-quantity.min.css",
@@ -40,6 +42,7 @@
     "disabled": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/quantity/css/quantity.min.css",
       "core/css/core.css",
       "smart/input-quantity/css/input-quantity.min.css",
@@ -55,6 +58,7 @@
     "exact": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/quantity/css/quantity.min.css",
       "core/css/core.css",
       "smart/input-quantity/css/input-quantity.min.css",
@@ -69,6 +73,7 @@
     "inherited": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/quantity/css/quantity.min.css",
       "core/css/core.css",
       "smart/input-quantity/css/input-quantity.min.css",
@@ -85,6 +90,7 @@
     "invalid": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/quantity/css/quantity.min.css",
       "core/css/core.css",
       "smart/input-quantity/css/input-quantity.min.css",
@@ -100,6 +106,7 @@
     "price": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/quantity/css/quantity.min.css",
       "core/css/core.css",
       "smart/input-quantity/css/input-quantity.min.css",
@@ -115,6 +122,7 @@
     "readonly": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/quantity/css/quantity.min.css",
       "core/css/core.css",
       "smart/input-quantity/css/input-quantity.min.css",
@@ -130,6 +138,7 @@
     "reference": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/quantity/css/quantity.min.css",
       "core/css/core.css",
       "smart/input-quantity/css/input-quantity.min.css",
@@ -145,6 +154,7 @@
     "removable": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/quantity/css/quantity.min.css",
       "core/css/core.css",
       "smart/input-quantity/css/input-quantity.min.css",
@@ -159,6 +169,7 @@
     "size-2": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/quantity/css/quantity.min.css",
       "core/css/core.css",
       "smart/input-quantity/css/input-quantity.min.css",
@@ -174,6 +185,7 @@
     "unit": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/quantity/css/quantity.min.css",
       "core/css/core.css",
       "smart/input-quantity/css/input-quantity.min.css",

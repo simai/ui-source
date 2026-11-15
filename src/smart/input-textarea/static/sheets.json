@@ -8,6 +8,7 @@
   "sheets": [
     "component/icon-buttons/css/icon-buttons.min.css",
     "component/icons/css/icons.min.css",
+    "component/inputs/css/inputs.min.css",
     "component/textarea/css/textarea.min.css",
     "core/css/core.css",
     "smart/input-textarea/css/input-textarea.min.css",
@@ -23,6 +24,7 @@
     "auto-grow": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/textarea/css/textarea.min.css",
       "core/css/core.css",
       "smart/input-textarea/css/input-textarea.min.css",
@@ -36,6 +38,7 @@
     "code": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/textarea/css/textarea.min.css",
       "core/css/core.css",
       "smart/input-textarea/css/input-textarea.min.css",
@@ -47,6 +50,7 @@
     "disabled": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/textarea/css/textarea.min.css",
       "core/css/core.css",
       "smart/input-textarea/css/input-textarea.min.css",
@@ -60,6 +64,7 @@
     "filled": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/textarea/css/textarea.min.css",
       "core/css/core.css",
       "smart/input-textarea/css/input-textarea.min.css",
@@ -73,6 +78,7 @@
     "flush": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/textarea/css/textarea.min.css",
       "core/css/core.css",
       "smart/input-textarea/css/input-textarea.min.css",
@@ -86,6 +92,7 @@
     "inherited": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/textarea/css/textarea.min.css",
       "core/css/core.css",
       "smart/input-textarea/css/input-textarea.min.css",
@@ -100,6 +107,7 @@
     "invalid": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/textarea/css/textarea.min.css",
       "core/css/core.css",
       "smart/input-textarea/css/input-textarea.min.css",
@@ -113,6 +121,7 @@
     "limit": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/textarea/css/textarea.min.css",
       "core/css/core.css",
       "smart/input-textarea/css/input-textarea.min.css",
@@ -124,6 +133,7 @@
     "readonly": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/textarea/css/textarea.min.css",
       "core/css/core.css",
       "smart/input-textarea/css/input-textarea.min.css",
@@ -137,6 +147,7 @@
     "reference": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/textarea/css/textarea.min.css",
       "core/css/core.css",
       "smart/input-textarea/css/input-textarea.min.css",
@@ -150,6 +161,7 @@
     "size-2": [
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/inputs/css/inputs.min.css",
       "component/textarea/css/textarea.min.css",
       "core/css/core.css",
       "smart/input-textarea/css/input-textarea.min.css",
