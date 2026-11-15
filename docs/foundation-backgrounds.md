@@ -43,6 +43,24 @@ Each colour has the same family: `--sf-<colour>-state-*`,
 state layers now (`--sf-info-state-*`, `--sf-info-container-strong`); it had
 none.
 
+### What changed with docs batch B (2026-11-15)
+
+The example contrast gate of the documentation (owner decision C192) and the
+contrast matrix (C178) found where a correct role and a correct place gave an
+unreadable pair. `tests/browser/contrast-markup-cases.mjs` holds each case;
+the matrix runs them over the built sheets in both themes.
+
+- **The on-colour a child names (FW-B-1).** A strong place's accent (C42 (4))
+  re-declares `--sf-on-primary` as the place's colour on its children, so a
+  filled button there is white with a label in the place's colour. A child
+  that names the role itself (`color-on-primary`, and its `hover:`, `focus:`,
+  `active:` forms) drew blue on blue on `bg-primary` (1:1, both themes) and
+  the plate's colour on every other strong place (1:1). On such a child the
+  role is the on-primary the place found, white in the light theme and tone
+  20 in the dark (6.43-6.49:1 light, 7.68-7.72:1 dark on the seven places),
+  so `bg-primary` with `color-on-primary` -- the role pair C192 teaches --
+  works as on one element.
+
 ### What changed with C113 (2026-11-13)
 
 - **The neutral fill weighs as much as the coloured ones.** The study of tonal

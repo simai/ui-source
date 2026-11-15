@@ -30,7 +30,12 @@
 //                      written as the colour of text in the sources (an error
 //                      message, a link, a status word): on every opaque surface;
 //   glass              --sf-surface-media (the place over a picture) over a
-//                      white and a black picture, with its own ink.
+//                      white and a black picture, with its own ink;
+//   markup             text and glyphs as a page writes them with the
+//                      utilities and the components (contrast-markup-cases.mjs,
+//                      docs batch B FW-B-1..6, C192): an on-colour on its strong
+//                      plate, ... measured over the built core, utility and
+//                      component sheets.
 //
 // AA: text 4.5:1 (1.4.3), an icon or a graphic part 3:1 (1.4.11). Disabled
 // ink is exempt (1.4.3 inactive components) and only reported. A pair below
@@ -42,6 +47,7 @@ import {readFileSync, writeFileSync} from 'node:fs';
 import {dirname, join, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {chromium} from 'playwright';
+import {measureMarkup} from './contrast-markup-cases.mjs';
 
 const args = process.argv.slice(2);
 if (!args[0] || args[0].startsWith('--')) throw new Error('Build output root is required');
@@ -173,12 +179,15 @@ try {
     }, pairs());
     for (const one of measured) matrix.push({theme, ...one});
     await page.close();
+    for (const one of await measureMarkup(browser, out, theme)) {
+      matrix.push({theme, ink: one.ink, surface: one.case, base: null, threshold: one.need, required: true, group: 'markup', back: one.ground, front: one.ink, ratio: one.ratio});
+    }
   }
 } finally {
   await browser.close();
 }
 
-const keyOf = (one) => `${one.theme} ${one.ink} on ${one.surface}${one.base ? ` over ${one.base}` : ''}`;
+const keyOf = (one) => (one.group === 'markup' ? `${one.theme} markup: ${one.surface}` : `${one.theme} ${one.ink} on ${one.surface}${one.base ? ` over ${one.base}` : ''}`);
 const failures = [];
 const known = [];
 const covered = new Map(KNOWN.map((rule) => [rule, 0]));

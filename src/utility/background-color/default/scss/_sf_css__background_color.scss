@@ -157,6 +157,15 @@
         .bg-#{$c} > * {
             @include places.sf-place-strong-accent($c);
         }
+        // color-on-primary and its state forms name the role: they get the
+        // on-primary the place found, not the place's colour (FW-B-1, C192).
+        // More specific than the accent above, in the same layer.
+        .bg-#{$c} .color-on-primary,
+        .bg-#{$c} .hover\:color-on-primary,
+        .bg-#{$c} .focus\:color-on-primary,
+        .bg-#{$c} .active\:color-on-primary {
+            @include places.sf-place-strong-named-ink;
+        }
     }
     // The accent on the darkest light step, on its children (contrast lows);
     // a bg-primary block among them paints the primary it found. Without

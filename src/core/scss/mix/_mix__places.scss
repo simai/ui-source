@@ -732,6 +732,20 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
     #{sf-ink($c, 80)});
 }
 
+// A child that asks for the on-colour by name keeps it (FW-B-1, docs batch B
+// 2026-11-15; C192 (1) against C42 (4)): the accent above re-declares
+// --sf-on-primary as the place's colour on every child of a strong place, so
+// color-on-primary on bg-primary -- the role pair C192 teaches -- drew blue on
+// blue, 1:1 in both themes, and on any other strong place the plate's own
+// colour, 1:1 again. The text utility reads the role; on the element that
+// names it the role is the on-primary the place found (the place keeps it as
+// --sf-place--outer-on-primary), white in the light theme and tone 20 in the
+// dark on bg-primary. A filled button and a checked box on the place still
+// take the place's colour as their label: they do not name the utility.
+@mixin sf-place-strong-named-ink {
+  --sf-on-primary: var(--sf-place--outer-on-primary);
+}
+
 // Glass keeps the accent it found (C70), for an opaque place on it to take
 // back; declared on the glass, which re-declares none of these roles itself.
 @mixin sf-place-glass-outer {
