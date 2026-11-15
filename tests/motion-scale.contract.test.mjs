@@ -38,6 +38,7 @@ test('motion: the transition utility takes its duration and curve from the scale
    named, so adding a second has to be a decision rather than a slip. */
 const EXEMPT = new Set([
   'core/scss/_sf_css__loader.scss',              // бесконечный отскок 2.2s, шкала так далеко не идёт
+  'core/scss/_sf_css__display.scss',             // «Остановить движение» (C196): 0.01ms, so transitionend still fires
 ]);
 test('motion: no new literal duration appears outside the named exceptions', async () => {
   const found = [];

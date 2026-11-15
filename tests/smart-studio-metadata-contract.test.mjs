@@ -86,6 +86,6 @@ test('all owner reference fixtures use declared component inputs and meaningful 
   // 69 with sf-list and sf-list-feed (block list, 2026-11-05); 70 with sf-language (2026-11-06); 71 with sf-settings (2026-11-06);
   // 73 with sf-wizard and sf-wizard-step (2026-11-06); 76 with sf-tile-metric, sf-list-attention and sf-progress-run (2026-11-07);
   // 79 with sf-input-choice, sf-list-description and sf-list-timeline (2026-11-08); 80 with sf-time and 81 with sf-change (C40, 2026-11-10); 82 with sf-tag-group (C145, 2026-11-14);
-  // 83 with sf-form (C182, 2026-11-14).
-  assert.equal(fixtureCount, 83);
+  // 83 with sf-form (C182, 2026-11-14); 84 with sf-display-settings (C196, 2026-11-15).
+  assert.equal(fixtureCount, 84);
 });

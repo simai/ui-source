@@ -26,6 +26,9 @@
 // the elements that leave are disconnected, so their routes and listeners go
 // with them.
 
+// The device's reduced motion or the site's «остановить движение» (C196).
+import {reducedMotion} from './motion.js';
+
 const SKELETON_DELAY_MS = 150;
 const TIMEOUT_MS = 15000;
 
@@ -241,7 +244,7 @@ export async function navigate(url, {history = 'push', scroll = 0} = {}) {
     if (typeof answer.title === 'string' && answer.title) globalThis.document.title = answer.title;
   };
   const transition = typeof globalThis.document.startViewTransition === 'function'
-    && !globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    && !reducedMotion()
     ? globalThis.document.startViewTransition(swap)
     : null;
   if (transition) await transition.updateCallbackDone.catch(() => {});

@@ -47,3 +47,6 @@
 @use 'sf_css__composition';
 @use 'sf_css__placeholder';
 @use 'sf_css__touch_fields';
+// Display settings and the device's contrast and transparency (C196): last,
+// so a scheme re-declares the roles every partial above declares.
+@use 'sf_css__display';

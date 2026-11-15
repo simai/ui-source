@@ -20,6 +20,7 @@
         "checkbox",
         "confirm",
         "contents",
+        "display",
         "drawer",
         "dropdown",
         "empty",
@@ -125,6 +126,10 @@
         },
         {
           "element": "sf-contents",
+          "status": "released"
+        },
+        {
+          "element": "sf-display-settings",
           "status": "released"
         },
         {

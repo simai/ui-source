@@ -4655,6 +4655,47 @@
       ]
     },
     {
+      "component": "display-settings",
+      "selector": "sf-display-settings, .sf-display-settings",
+      "variables": [
+        {
+          "name": "--sf-display-settings-background",
+          "role": "background",
+          "summary": "The panel's surface.",
+          "default": "var(--sf-surface-card)",
+          "since": "2026-11-15"
+        },
+        {
+          "name": "--sf-display-settings-border-color",
+          "role": "border-color",
+          "summary": "The panel's edge.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-15"
+        },
+        {
+          "name": "--sf-display-settings-label-color",
+          "role": "color",
+          "summary": "The groups' words («Текст», «Цвет», …) and the notes.",
+          "default": "var(--sf-on-surface-variant)",
+          "since": "2026-11-15"
+        },
+        {
+          "name": "--sf-display-settings-gap",
+          "role": "gap",
+          "summary": "Between the groups.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-11-15"
+        },
+        {
+          "name": "--sf-display-settings-group-gap",
+          "role": "gap",
+          "summary": "Inside a group: the word and the buttons; also the trigger and the panel.",
+          "default": "var(--sf-space-1\\/3)",
+          "since": "2026-11-15"
+        }
+      ]
+    },
+    {
       "component": "group-heading",
       "selector": ".sf-group-heading",
       "variables": [

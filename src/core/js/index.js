@@ -23,6 +23,9 @@ installLanguagePacks();
 import './assembly/index.mjs';
 import './position.js';
 import './preferences.js';
+// What a person asked this site to look like (owner decision C196): the root
+// attributes, the motion mark and the skip link, before anything draws.
+import './display-settings.js';
 import './region-navigation.js';
 import './workspace.js';
 import './effects.js';

@@ -1,0 +1,14 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "russian",
+  "component": "smart.display-settings",
+  "title": "display-settings russian",
+  "summary": "Deterministic reference fixture for sf-display-settings.",
+  "locale": "ru",
+  "props": {
+    "label": "Версия для слабовидящих",
+    "open": true
+  },
+  "children": [],
+  "state": "default"
+}
