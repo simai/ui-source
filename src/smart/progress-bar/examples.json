@@ -127,6 +127,24 @@
         "name": "Резервная копия",
         "valuetext": "35 %, на паузе"
       }
+    },
+    {
+      "name": "inline",
+      "title": "В конце строки: «Контекст 86 %»",
+      "settings": {
+        "label": "Контекст",
+        "value": 86,
+        "inline": true,
+        "meter": true,
+        "warning-at": 80,
+        "error-at": 95
+      },
+      "expect": {
+        "name": "Контекст",
+        "role": "meter",
+        "valuenow": 86,
+        "valuetext": "86 %"
+      }
     }
   ],
   "pages": [
@@ -150,6 +168,7 @@
           "  <sf-progress-bar id=\"p13\" label=\"Место\" value=\"74\" meter text-position=\"inline-end\"></sf-progress-bar>",
           "  <sf-progress-bar id=\"p14\" label=\"Нейтральная\" value=\"50\" status=\"neutral\"></sf-progress-bar>",
           "  <sf-progress-bar id=\"p15\" label=\"Прежнее\" value=\"50\" status=\"primary\"></sf-progress-bar>",
+          "  <div class=\"srow\" style=\"display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center\"><span>Контекст</span><sf-progress-bar id=\"p16\" label=\"Контекст\" value=\"86\" inline meter warning-at=\"80\" error-at=\"95\" text-position=\"top\"></sf-progress-bar></div>",
           "</main>"
         ]
       },
@@ -296,7 +315,7 @@
             {
               "script": "(() => { document.querySelector('#p8').indeterminate = false; return true; })()",
               "wait": 100,
-              "check": "(() => { const r = document.querySelector('#p8 .sf-progress-bar'); return !r.classList.contains('sf-progress-bar--indeterminate') && r.getAttribute('aria-valuenow') === '30' && r.querySelector('.sf-progress-bar-text').textContent.trim() === '30%'; })()"
+              "check": "(() => { const r = document.querySelector('#p8 .sf-progress-bar'); return !r.classList.contains('sf-progress-bar--indeterminate') && r.getAttribute('aria-valuenow') === '30' && r.querySelector('.sf-progress-bar-text').textContent === '30 %'; })()"
             }
           ]
         },
@@ -311,7 +330,7 @@
             {
               "script": "(() => { document.querySelector('#p9').paused = false; return true; })()",
               "wait": 100,
-              "check": "(() => { const a = document.querySelector('#p9'); return !a.hasAttribute('data-status') && !a.querySelector('.sf-progress-bar').hasAttribute('aria-valuetext'); })()"
+              "check": "(() => { const a = document.querySelector('#p9'); return !a.hasAttribute('data-status') && a.querySelector('.sf-progress-bar').getAttribute('aria-valuetext') === '35 %'; })()"
             }
           ]
         },
@@ -321,7 +340,7 @@
           "covers": "settings.text-position, aliases value bottom",
           "steps": [
             {
-              "check": "(() => { const r = document.querySelector('#p11 .sf-progress-bar'); const h = r.firstElementChild; const o = document.querySelector('#p12 .sf-progress-bar'); return r.dataset.position === 'top' && h.classList.contains('sf-progress-bar-head') && h.getAttribute('aria-hidden') === 'true' && h.querySelector('.sf-progress-bar-label').textContent.trim() === 'Загрузка' && h.querySelector('.sf-progress-bar-text').textContent.trim() === '42%' && h.nextElementSibling.classList.contains('sf-progress-bar-main') && o.dataset.position === 'top' && o.querySelector('.sf-progress-bar-head'); })()"
+              "check": "(() => { const r = document.querySelector('#p11 .sf-progress-bar'); const h = r.firstElementChild; const o = document.querySelector('#p12 .sf-progress-bar'); return r.dataset.position === 'top' && h.classList.contains('sf-progress-bar-head') && h.getAttribute('aria-hidden') === 'true' && h.querySelector('.sf-progress-bar-label').textContent.trim() === 'Загрузка' && h.querySelector('.sf-progress-bar-text').textContent === '42 %' && h.nextElementSibling.classList.contains('sf-progress-bar-main') && o.dataset.position === 'top' && o.querySelector('.sf-progress-bar-head'); })()"
             }
           ]
         },
@@ -347,6 +366,26 @@
           "steps": [
             {
               "check": "(() => { const a = document.querySelector('#p1 .sf-progress-bar'); const n = document.querySelector('#p14 .sf-progress-bar'); const o = document.querySelector('#p15 .sf-progress-bar'); const none = (r) => !/sf-progress-bar--(neutral|primary|info|success|warning|error)/.test(r.className); return none(a) && none(o) && n.classList.contains('sf-progress-bar--neutral') && document.querySelector('#p14').getAttribute('data-status') === 'neutral' && !document.querySelector('#p1').hasAttribute('data-status'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p16-inline",
+          "title": "inline: the row-end look -- a 64 track of its own in an auto column, 4 thick, the number «86 %» before it in the warning colour, aria-valuetext the same per cent; text-position does not apply (C203)",
+          "covers": "settings.inline, css-variables --sf-progress-bar-track-size",
+          "steps": [
+            {
+              "check": "(() => { const r = document.querySelector('#p16 .sf-progress-bar'); const m = r.querySelector('.sf-progress-bar-main'); const t = r.querySelector('.sf-progress-bar-text'); const mb = m.getBoundingClientRect(); const tb = t.getBoundingClientRect(); return r.classList.contains('sf-progress-bar--inline') && r.dataset.position === 'inline-end' && !r.querySelector('.sf-progress-bar-head') && Math.round(mb.width) === 64 && Math.round(mb.height) === 4 && t.textContent === '86\\u00a0%' && tb.right <= mb.left && getComputedStyle(t).color === getComputedStyle(r.querySelector('.sf-progress-bar-progress')).backgroundColor && r.getAttribute('role') === 'meter' && r.getAttribute('aria-valuetext') === '86\\u00a0%'; })()"
+            },
+            {
+              "script": "(() => { const h = document.querySelector('#p16'); h.style.setProperty('--sf-progress-bar-track-size', '96px'); h.value = 40; return true; })()",
+              "wait": 100,
+              "check": "(() => { const r = document.querySelector('#p16 .sf-progress-bar'); const t = r.querySelector('.sf-progress-bar-text'); return Math.round(r.querySelector('.sf-progress-bar-main').getBoundingClientRect().width) === 96 && t.textContent === '40\\u00a0%' && !r.classList.contains('sf-progress-bar--warning') && getComputedStyle(t).color !== getComputedStyle(r.querySelector('.sf-progress-bar-progress')).backgroundColor; })()"
+            },
+            {
+              "script": "(() => { document.querySelector('#p16').inline = false; return true; })()",
+              "wait": 100,
+              "check": "(() => { const r = document.querySelector('#p16 .sf-progress-bar'); return !r.classList.contains('sf-progress-bar--inline') && r.dataset.position === 'top'; })()"
             }
           ]
         }

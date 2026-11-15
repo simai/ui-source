@@ -47,5 +47,5 @@ test('C168 (4): in a narrow place the 1/2 tiles stand two in a row, sizes 1 and 
   assert.match(sheet, /--sf-tile-metric-grid--narrow: clamp\(0px, \(#\{mq\.container-step\(g6\)\} - 100%\) \* 1000, \(100% - var\(--sf-tile-metric-grid--gap\)\) \/ 2\);/u);
   assert.match(sheet, /@container sf-tile-metric-grid \(width < #\{mq\.container-step\(g6\)\}\) \{[\s\S]*?\.sf-tile-metric-grid > sf-tile-metric:not\(\[size="1\/2"\]\) > \.sf-tile-metric \{\n\s*grid-column: 1 \/ -1;/u);
   assert.match(sheet, /--sf-tile-metric-grid--gap: var\(--sf-space-1\);[\s\S]*?\n\s*gap: var\(--sf-tile-metric-grid--gap\);/u, 'the cells keep C105 H6');
-  assert.ok(['1.5.1'].includes(json('src/smart/tile-metric/component.json').version));
+  assert.ok(['1.5.1', '1.5.2'].includes(json('src/smart/tile-metric/component.json').version));
 });

@@ -1,5 +1,6 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
+import { percentText } from '../../../core/js/format-number.js';
 
 const PROGRESS_SCALE_SELECTOR = '.sf-progress-scale';
 const BOUND_FLAG = 'sfProgressScaleBound';
@@ -145,7 +146,8 @@ function renderProgressScale(root) {
   else root.removeAttribute('aria-valuetext');
 
   const text = ensureScaleText(root);
-  text.textContent = level ? (root.dataset.valueText || words) : `${value}%`;
+  // «72 %»: one spelling of a per cent (owner decision C203 (3)); a level keeps its words (C185 (5)).
+  text.textContent = level ? (root.dataset.valueText || words) : percentText(value, root);
   text.hidden = !showText;
   return true;
 }

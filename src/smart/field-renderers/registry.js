@@ -50,6 +50,9 @@ export const PROPERTY_TYPES = Object.freeze([
         params: ['unit', 'min', 'max', 'step', 'required', 'readonly']},
     {type: 'number', label: typeLabel('type-number'),
         variants: [{id: 'scale', label: typeLabel('variant-number-scale')},
+            // meter (owner decision C203 (5)): a share of a limit, 0..100, as
+            // the inline sf-progress-bar meter; the scale stays for levels.
+            {id: 'meter', label: typeLabel('variant-number-meter')},
             {id: 'stepper', label: typeLabel('variant-number-stepper')}],
         params: ['unit', 'min', 'max', 'step', 'precision', 'required', 'readonly']},
     {type: 'date', label: typeLabel('type-date'),

@@ -1,6 +1,7 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { noteDeprecated } from '../../../core/js/deprecations.js';
+import { percentText } from '../../../core/js/format-number.js';
 
 const PROGRESS_BAR_SELECTOR = '.sf-progress-bar';
 const PROGRESS_BAR_BOUND_FLAG = 'sfProgressBarBound';
@@ -85,7 +86,10 @@ function ensureTextNode(root) {
 }
 
 function syncRootLayout(root, textPosition = 'none') {
-  root.classList.add('sf-progress-bar', 'flex');
+  // The inline look is an inline box (its sheet: inline-flex), so it leaves
+  // the block-level flex utility off.
+  root.classList.add('sf-progress-bar');
+  root.classList.toggle('flex', !isInline(root));
   root.classList.remove('flex-col', 'flex-row', 'items-cross-end', 'items-cross-center');
 
   if (textPosition === 'top') {
@@ -118,6 +122,13 @@ function isMeter(root) {
   return root.dataset.meter === 'true';
 }
 
+// Inline (owner decision C203): the row-end look -- a track of its own width,
+// the number before it and always shown. The text stands at inline-end in the
+// markup; the sheet puts it before the track.
+function isInline(root) {
+  return root.dataset.inline === 'true';
+}
+
 function syncProgressAccessibility(root, value) {
   root.setAttribute('role', isMeter(root) ? 'meter' : 'progressbar');
   root.setAttribute('aria-valuemin', '0');
@@ -130,7 +141,9 @@ function syncProgressAccessibility(root, value) {
     root.setAttribute('aria-label', label);
   }
 
-  const valueText = root.dataset.valueText;
+  // What a screen reader hears: the page's value text, else the per cent the
+  // bar shows, «72 %» (C203 (3)); nothing while the size is not known.
+  const valueText = root.dataset.valueText || (isIndeterminate(root) ? '' : percentText(value, root));
   if (valueText) {
     root.setAttribute('aria-valuetext', valueText);
   } else {
@@ -155,7 +168,10 @@ function renderProgressBar(root) {
   if (!progress || !main) return false;
 
   const value = normalizeValue(root.dataset.value ?? root.getAttribute('data-value') ?? 0);
-  const textPosition = normalizeTextPosition(
+  // An inline bar always shows its number (C203 (3)): at inline-end in the
+  // markup, before the track on screen.
+  const inline = isInline(root);
+  const textPosition = inline ? 'inline-end' : normalizeTextPosition(
     root.dataset.position ?? root.dataset.textPosition ?? root.getAttribute('data-text-position'),
     detectTextPosition(root),
   );
@@ -163,6 +179,7 @@ function renderProgressBar(root) {
 
   syncRootLayout(root, textPosition);
   syncTone(root, tone);
+  root.classList.toggle('sf-progress-bar--inline', inline);
   const indeterminate = isIndeterminate(root);
   root.classList.toggle('sf-progress-bar--indeterminate', indeterminate);
   root.classList.toggle('sf-progress-bar--paused', isPaused(root));
@@ -204,7 +221,8 @@ function renderProgressBar(root) {
         textNode.className = 'sf-progress-bar-text';
         head.append(textNode);
       }
-      if (textNode.textContent !== `${value}%`) textNode.textContent = `${value}%`;
+      const shown = percentText(value, root);
+      if (textNode.textContent !== shown) textNode.textContent = shown;
     }
     root.querySelectorAll(':scope > .sf-progress-bar-text').forEach((node) => node.remove());
     return true;
@@ -221,7 +239,8 @@ function renderProgressBar(root) {
   }
 
   const textNode = ensureTextNode(root);
-  if (textNode.textContent !== `${value}%`) textNode.textContent = `${value}%`;
+  const shown = percentText(value, root);
+  if (textNode.textContent !== shown) textNode.textContent = shown;
   textNode.setAttribute('aria-hidden', 'true');
 
   return true;
@@ -292,6 +311,11 @@ function setProgressBarState(target, state = {}) {
     else delete root.dataset.meter;
   }
 
+  if (Object.prototype.hasOwnProperty.call(state, 'inline')) {
+    if (state.inline) root.dataset.inline = 'true';
+    else delete root.dataset.inline;
+  }
+
   if (Object.prototype.hasOwnProperty.call(state, 'paused')) {
     if (state.paused) root.dataset.paused = 'true';
     else delete root.dataset.paused;
@@ -329,6 +353,7 @@ function getProgressBarState(target) {
     indeterminate: isIndeterminate(root),
     paused: isPaused(root),
     meter: isMeter(root),
+    inline: isInline(root),
   };
 }
 
@@ -350,6 +375,7 @@ class ProgressBar extends ComponentObserver {
       indeterminate = false,
       paused = false,
       meter = false,
+      inline = false,
     } = this.params || {};
 
     const className = this.attrs.class || this.attrs.className;
@@ -375,6 +401,7 @@ class ProgressBar extends ComponentObserver {
     if (indeterminate) root.dataset.indeterminate = 'true';
     if (paused) root.dataset.paused = 'true';
     if (meter) root.dataset.meter = 'true';
+    if (inline) root.dataset.inline = 'true';
 
     const main = document.createElement('div');
     main.className = 'sf-progress-bar-main';

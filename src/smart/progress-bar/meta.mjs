@@ -92,7 +92,7 @@ const sfProgressBarMeta = {
         "false"
       ],
       "default": "false",
-      "description": "The work is paused: the bar is a warning (unless its status or a threshold says error) and says so to a screen reader: the value text reads «35 %, на паузе» / «35%, paused» when the page gives no value-text (C34). The page sets it where the work really stopped."
+      "description": "The work is paused: the bar is a warning (unless its status or a threshold says error) and says so to a screen reader: the value text reads «35 %, на паузе» / «35 %, paused» when the page gives no value-text (C34). The page sets it where the work really stopped."
     },
     "meter": {
       "kind": "boolean",
@@ -102,6 +102,15 @@ const sfProgressBarMeta = {
       ],
       "default": "false",
       "description": "The value is an amount within a known range (a quota used, a disk filled), not a task's progress: role meter instead of progressbar (owner decision C131 (7)). A meter always has a value, so it is never indeterminate. The look does not change. The name is final (owner decision C138)"
+    },
+    "inline": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "The row-end look of a meter (owner decision C203, 2026-11-15): a settings row, a table cell, the end of a list row. The track has its own width, 64 (--sf-progress-bar-track-size sets another), which the number does not take; it is 4 thick at every size, density and width; the number stands before it, always shown, «72 %», and takes the status colour at a threshold. text-position does not apply. Use it with meter; full-width bars keep C131."
     },
     "label": {
       "kind": "custom",
