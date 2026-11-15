@@ -107,7 +107,8 @@ test('the browser colour dialog is gone; the window is the Framework\'s own (C83
     assert.match(template, /<sf-segmented size="1\/2"/u, '«Палитра / Своё» is the standard segmented control');
     assert.match(template, /role="radiogroup"/u);
     assert.match(template, /role="slider"/u);
-    assert.match(template, /role="menuitemradio"/u);
+    // C209: the format menu is gone; the code is always hex.
+    assert.doesNotMatch(template, /role="menuitemradio"/u);
     assert.match(element, /position\(\)\.anchor\(anchor, panel/u, 'anchored by core\'s positioning');
     assert.match(element, /data-sf-sheet/u, 'a sheet on a phone');
     assert.match(element, /holdOpenSurfaceMark\(this, true/u, 'a layer of the document stack');
@@ -116,7 +117,7 @@ test('the browser colour dialog is gone; the window is the Framework\'s own (C83
 
 test('the manifest declares the window\'s settings and words', () => {
     const manifest = json(`${base}/component.json`);
-    assert.equal(manifest.version, '1.14.0'); // group build 7: the integrated number (the branch wrote 1.13.0)
+    assert.equal(manifest.version, '1.15.0'); // C209 (fix/input-color-c209), above group build 7's 1.14.0
     assert.equal(manifest.settings.palette.default, true);
     assert.equal(manifest.settings.custom.default, true);
     assert.equal(manifest.settings.alpha.default, false);
