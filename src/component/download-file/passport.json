@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.download-file",
   "kind": "component",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "owner": "simai/ui-source",
   "files": [
     "src/component/download-file/docs/docs.md",

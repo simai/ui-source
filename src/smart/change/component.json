@@ -2,7 +2,7 @@
   "$comment": "The source of sf-change's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.15 and vocabulary 1.1.5: owner decision C40 (2026-11-09; research ui-control control/research/2026-11-09-timeline-parts.md §5, prototype prototypes/timeline-parts.html#change).",
   "id": "smart.change",
   "tag": "sf-change",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "kind": "leaf",
   "family": "change",
   "settings": {
@@ -167,7 +167,8 @@
     "version 1.0.1 (2026-11-11, C40 follow-up, acceptance note 1, dispatcher decision): a patch, a small look fix. A value of up to 20 characters (a number and its unit «4,6 кг», a phone number «+7 900 000-00-00», a name) stays whole on one line (.sf-change__whole), in a sentence and in a list; only a longer value wraps (overflow-wrap anywhere, as 1.0.0). At 390 1.0.0 read «4,6 / кг», «+7 900 / 000-00-00». Whole is made by the text, not by nowrap (C40 follow-up, acceptance return 1): the template trims a value, writes a short one's spaces as no-break spaces and puts a word joiner (U+2060) after each hyphen and dash, so a short value stays on one line where it fits and still wraps inside a frame narrower than itself (nowrap pushed «Санкт-Петербург, Мир» 19.6 px past a 180 px frame and left the arrow alone on the line above). A screen reader reads the same words; copied text carries the no-break spaces and the joiners. Settings, values, events and keys unchanged.",
     "version 1.0.2 (2026-11-13): a patch, nothing drawn or done differently. The first-paint snapshots are retaken (fix/first-paint-nbsp): a text node of only a no-break space (the one before the new value) keeps it, where the snapshot dropped it.",
     "version 1.0.3 (2026-11-13, first-paint study R222, integration-fix/first-paint-5 af52cd76; the note is written by group build 3, the branch moved the number without one): a patch, nothing drawn differently once the data is in. changes often arrives from the host after the first paint, so the component declares it late (presentation.skeleton.late) and the build derives its skeletons (static/default/<example>.skeleton.html), which hold the box until the data comes (standard 1.3.8 §5.4). Settings, values, events and keys unchanged.",
-    "version 1.0.4 (2026-11-14, owner decision C181 (2)): a patch, no look. The list's label stands over its pair under 24rem, now the container step g2 of the one ladder, written container-step(). Markup, settings, values, events and keys unchanged."
+    "version 1.0.4 (2026-11-14, owner decision C181 (2)): a patch, no look. The list's label stands over its pair under 24rem, now the container step g2 of the one ladder, written container-step(). Markup, settings, values, events and keys unchanged.",
+    "version 1.0.5 (2026-11-15, group build 7; numbered above 1.0.4 on origin/fix/checkbox-hit-b4): a patch, nothing drawn or done differently by this unit: only its on-screen words ship in the bundle, the rest of lang/*.json stays for the Studio and the docs (LC-2, fix/localization-lc); its Kazakh words ride lang/kk.json (C177 (7) pilot draft, fix/languages-c177-kk and the group build 7 words)."
   ],
   "x-registry": {
     "capabilities": [
