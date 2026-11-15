@@ -298,6 +298,13 @@
     font-weight: var(--sf-weight--semi-bold);
   }
 
+  /* 1.15.0: a one-line row has no title element of its own -- its text is
+     the container (sf-list-item) -- so its unread title was regular: the
+     container takes the weight there. */
+  .sf-list__row--unread > sf-list-item > .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list-item-container {
+    font-weight: var(--sf-weight--semi-bold);
+  }
+
   .sf-list__actions { margin-inline-end: var(--sf-space-1\/4); }
 
   .sf-list__actions:focus-visible { outline-offset: calc(-1 * var(--sf-focus--width)); }

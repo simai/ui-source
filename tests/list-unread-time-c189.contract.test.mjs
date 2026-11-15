@@ -45,6 +45,8 @@ test('the sheet: the time on the title\'s line of the end column, dim, main ink 
   const sheet = read('src/smart/list/js/templates/default.css');
   assert.match(sheet, /\.sf-list-item--two-line > \.sf-list-item-wrap > \.sf-list__meta > \.sf-list__time \{\n\s*grid-row: 1;\n\s*grid-column: 1 \/ -1;\n\s*justify-self: end;/u);
   assert.match(sheet, /\.sf-list__row--unread > sf-list-item > \.sf-list-item:not\(\.disabled\) > \.sf-list-item-wrap > \.sf-list__meta > \.sf-list__time \{\n\s*color: var\(--sf-on-surface\);/u);
+  // A one-line row's text is its container: the unread weight reaches it too.
+  assert.match(sheet, /\.sf-list__row--unread > sf-list-item > \.sf-list-item:not\(\.sf-list-item--two-line\) > \.sf-list-item-wrap > \.sf-list-item-container \{\n\s*font-weight: var\(--sf-weight--semi-bold\);/u);
   assert.match(sheet, /\.sf-list__meta:not\(:empty\):not\(:has\(> :not\(\.sr-only\)\)\) \{ display: contents; \}/u);
   // Values only from the systems: no pixel or raw colour in the new rules.
   const added = sheet.slice(sheet.indexOf('1.15.0: the end part'), sheet.indexOf('/* A two-line row\'s meta'));
