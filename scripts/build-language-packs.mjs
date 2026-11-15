@@ -20,7 +20,7 @@
 import {existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {BUILT_IN, FALLBACK, ROOT, folderGaps, languageFolders, runtimeWords} from './language-coverage.mjs';
+import {BUILT_IN, FALLBACK, ROOT, folderGaps, languageFolders, placeholderGaps, runtimeWords} from './language-coverage.mjs';
 
 export const FORMAT = 'simai.language-pack';
 export const INDEX_FORMAT = 'simai.language-pack-index';
@@ -91,7 +91,8 @@ function defaultHeader(code) {
 
 /**
  * One language's pack: {pack, problems}. A problem is a word that cannot ship
- * (a plural form or a {name} missing, a key English does not have, two
+ * (a plural form or a {name} missing, other placeholders than its Russian
+ * word, a key English does not have, two
  * folders of one component disagreeing); a word missing is not a problem,
  * only less coverage.
  */
@@ -120,6 +121,12 @@ export function buildPack(code, {root = ROOT, delivery = 'framework', headers} =
       }
       target[key] = word;
     }
+  }
+  // A word that says other placeholders than its Russian word cannot ship
+  // (said once: a {name} English has and the word lacks is already above).
+  for (const gap of placeholderGaps(root)) {
+    if (gap.code !== code || problems.some((problem) => problem.startsWith(`${gap.id}: ${gap.key}: `))) continue;
+    problems.push(`${gap.id}: ${gap.key}: {${gap.word.join('}, {')}} where ru says {${gap.ru.join('}, {')}}`);
   }
   const headerFile = path.join(headers ?? path.join(root, 'src/core/lang/headers'), `${code}.json`);
   const header = {...defaultHeader(code), ...(existsSync(headerFile) ? readJson(headerFile) : {})};

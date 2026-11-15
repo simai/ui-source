@@ -121,9 +121,13 @@ A word is a string. Braces are filled by the component:
 
 - `{n}` — a number, written in the page language's digits and separators by
   `Intl.NumberFormat`;
-- `{name}`, `{count}`, `{label}`, `{time}`, … — text the component gives. The
-  pack must keep every placeholder English has (the build fails otherwise), and
-  may put it anywhere: `"Uploading {name}"` is `"{name} жүктелуде"` in Kazakh.
+- `{name}`, `{count}`, `{label}`, `{time}`, … — text the component gives. A
+  word says the placeholders of its Russian word, no fewer and no more, in
+  English and in every pack (the build and `language-coverage.mjs` fail
+  otherwise), and may put them anywhere: `"Uploading {name}"` is
+  `"Жүктелуде: {name}"` or `"{name} жүктелуде"` in Kazakh. When a component's
+  Russian word gains a placeholder (`"Скачать файл"` becomes `"Скачать {name}"`),
+  every language of that word follows in the same change.
 
 Write the punctuation of the language: quotes `«…»` or `„…“`, the decimal sign
 of `input-color`'s `decimal` key, a space before `%` where the language wants it.
@@ -222,6 +226,11 @@ node scripts/language-coverage.mjs           # ru and en: every word, every plur
 node scripts/language-coverage.mjs kk        # kk: share and the words missing, by component
 node scripts/language-coverage.mjs kk --json
 ```
+
+Every run also compares each word's placeholders with its Russian word, in
+every folder and every language (`placeholderGaps()` in the same script), and
+exits 1 when one differs:
+`smart/time: yesterday-at: {time} where ru says {day}, {time}`.
 
 On a page, `SF.language.missing('kk')` lists the words said in English so far
 (`["sf-change|to-text"]`), and the console warns once per language:
