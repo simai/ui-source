@@ -577,8 +577,19 @@
      size 1/2. */
   .sf-color-bottom {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    justify-content: flex-end;
     gap: var(--sf-space-1\/3);
+  }
+
+  /* With `alpha` the code, its copy action and the % do not fit beside
+     «Применить» in a 304 window (the code had 44 px, 12 in the compact
+     density): the code field takes the whole row and «Применить» the next,
+     at its end. The prototype of C209 has no alpha; this is the fallback
+     until the owner chooses (evidence 2026-11-15-input-color-c209). */
+  .sf-color-code-row:has(.sf-color-percent) {
+    flex-basis: 100%;
   }
 
   .sf-color-apply {
@@ -597,7 +608,7 @@
     --sf-field-action--height: var(--sf-ui-1\/2--control-height);
     box-sizing: border-box;
     display: flex;
-    flex: 1 1 auto;
+    flex: 1 1 0;
     align-items: center;
     gap: var(--sf-field-action--value-space);
     min-inline-size: 0;

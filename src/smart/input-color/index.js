@@ -519,7 +519,28 @@ class SfColor extends ShownValidity(FormField(ColorElement)) {
         this.append(probe);
         const read = doc.defaultView?.getComputedStyle(probe).color || "";
         probe.remove();
-        return cssRgb(read);
+        return cssRgb(read) || this._canvasRgb(read);
+    }
+
+    // A computed colour the page keeps in its own space -- oklch(), lab(),
+    // color(display-p3 …) stay so in a computed style -- read back as sRGB
+    // through a one-pixel canvas, which clips it to the screen's gamut as the
+    // page paints it (C209 (1): oklch() typed into the code became nothing).
+    _canvasRgb(text) {
+        if (!text) return null;
+        try {
+            const canvas = this.ownerDocument.createElement("canvas");
+            canvas.width = 1;
+            canvas.height = 1;
+            const paint = canvas.getContext("2d", {willReadFrequently: true});
+            if (!paint) return null;
+            paint.fillStyle = text;
+            paint.fillRect(0, 0, 1, 1);
+            const [r, g, b, a] = paint.getImageData(0, 0, 1, 1).data;
+            return {rgb: [r, g, b], a: a / 255};
+        } catch {
+            return null;
+        }
     }
 
     // The tone the field paints (50 light, 70 dark), or with `seed` tone 50 in

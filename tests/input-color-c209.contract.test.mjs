@@ -66,6 +66,8 @@ test('(1) the code is always hex; the format menu is gone', () => {
   parseColour('oklch(0.6 0.15 250)', 'hex', (text) => (asked.push(text), null));
   parseColour('rebeccapurple', 'hex', (text) => (asked.push(text), null));
   assert.deepEqual(asked, ['rgb(21, 101, 192)', 'oklch(0.6 0.15 250)', 'rebeccapurple']);
+  // oklch(), lab(), color() stay so in a computed style: read through a canvas.
+  assert.match(element, /return cssRgb\(read\) \|\| this\._canvasRgb\(read\);/u);
 });
 
 test('(2) «Применить» applies the typed code and closes; after a move it only closes', () => {

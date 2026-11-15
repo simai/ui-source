@@ -486,7 +486,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-color/index.js",
-        "sha256": "03a573646c37299526654538dce9befffc03dc1fc4c3d5d1f901520f74769fe9"
+        "sha256": "fb2cc6d1a9ac6771ddf66832ac592178a733d37d2ae56c87980ec322f854c2d6"
       },
       {
         "path": "src/smart/input-color/rule.js",
@@ -498,7 +498,7 @@
       },
       {
         "path": "src/smart/input-color/js/templates/default.css",
-        "sha256": "cf09d4f3e32e0464590383212fd9658456713aec21ce38e9895f72019b3bdc73"
+        "sha256": "f86750f5a5845a2cc210d53d3be5a67e7a505176b9543584683369d6abd0fe62"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
