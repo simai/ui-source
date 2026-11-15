@@ -47,7 +47,7 @@ test('C165 (3): flow auto puts up to three short options in a row, more in a col
   assert.equal(manifest.settings.flow.default, 'auto');
   assert.deepEqual(manifest.settings.layout.values, ['tile', 'list', 'picture']);
   // No own loading skeleton (owner route msg-be707cc5).
-  assert.equal(manifest['x-registry'].presentation.skeleton, undefined);
+  assert.deepEqual(manifest['x-registry'].presentation.skeleton, {shape: 'none', while_loading: 'none'});
 });
 
 test('C165 (3): the row is the groups gap apart and a column in a narrow field; rows of the step', () => {
