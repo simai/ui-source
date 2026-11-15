@@ -1,10 +1,12 @@
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
-import {existsSync, readFileSync, readdirSync} from 'node:fs';
+import {existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
 import test from 'node:test';
 import {gzipSync} from 'node:zlib';
 import {LEGACY_IDS, buildPack, componentId, packLanguages} from '../scripts/build-language-packs.mjs';
-import {languageCoverage, languageFolders} from '../scripts/language-coverage.mjs';
+import {languageCoverage, languageFolders, placeholderGaps} from '../scripts/language-coverage.mjs';
 
 // Owner decision C177 (2026-11-14): every language but ru and en is one file
 // per language and delivery, fetched only by a page in that language; a
@@ -99,6 +101,33 @@ test('C177 (5): no shared dictionary; one component in two folders says each wor
   assert.equal(ids.get('core/file-size'), 'sf-file-size');
   const {problems} = buildPack('kk');
   assert.deepEqual(problems, []);
+});
+
+test('C177: every word in every language says the placeholders of its Russian word, in every component', () => {
+  // Group build 6 (2026-11-15): the Russian words of sf-file-preview gained
+  // {name} and sf-time's «yesterday at» {day}, and three Kazakh words kept the
+  // old text, so a name or a day was never said. One check over every folder
+  // and every language file beside ru.
+  const gaps = placeholderGaps().map((gap) => `${gap.id} ${gap.code}.json ${gap.key}: {${gap.word.join('}, {')}} where ru says {${gap.ru.join('}, {')}}`);
+  assert.deepEqual(gaps, []);
+  // The check sees a placeholder lost, one added and one in a plural form.
+  const root = mkdtempSync(path.join(tmpdir(), 'sf-placeholders-'));
+  try {
+    const dir = path.join(root, 'src/smart/sample/lang');
+    mkdirSync(dir, {recursive: true});
+    const write = (code, runtime) => writeFileSync(path.join(dir, `${code}.json`), JSON.stringify({runtime}));
+    write('ru', {download: 'Скачать {name}', day: '{day}, {time}', more: {one: 'Ещё {n} файл', few: 'Ещё {n} файла', many: 'Ещё {n} файлов', other: 'Ещё {n} файла'}, plain: 'Файл', blank: ''});
+    write('en', {download: 'Download {name}', day: '{day}, {time}', more: {one: '{n} more file', other: '{n} more files'}, plain: 'File', blank: ''});
+    write('kk', {download: 'Файлды жүктеп алу', day: 'кеше, {time}', more: {one: 'Тағы файл', other: 'Тағы файл'}, plain: '{name} файлы', blank: ''});
+    assert.deepEqual(placeholderGaps(root).map(({code, key, ru, word}) => [code, key, ru.join(), word.join()]), [
+      ['kk', 'download', 'name', ''],
+      ['kk', 'day', 'day,time', 'time'],
+      ['kk', 'more', 'n', ''],
+      ['kk', 'plain', '', 'name'],
+    ]);
+  } finally {
+    rmSync(root, {recursive: true, force: true});
+  }
 });
 
 test('C177 (9): every word of a legacy component is looked up under the name its pack uses', () => {

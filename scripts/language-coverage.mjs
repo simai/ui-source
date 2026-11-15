@@ -11,6 +11,9 @@
 //   node scripts/language-coverage.mjs            the built-in check (exit 1 on a gap)
 //   node scripts/language-coverage.mjs de         coverage of de: share and the words missing
 //   node scripts/language-coverage.mjs de --json  the same as JSON
+//
+// Every run also checks that each word of the language says the placeholders
+// of its Russian word ({name}, {day}, {n}...): exit 1 when one does not.
 import {existsSync, readFileSync, readdirSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -76,6 +79,35 @@ export function folderGaps(dir, code) {
   return {file: true, words: Object.keys(fallback).length, missing, gaps};
 }
 
+/**
+ * Every word whose placeholders are not those of its Russian word, over every
+ * folder and every language beside Russian: [{id, code, key, ru, word}], the
+ * names sorted. Russian is the source of the words (C177), so a {name} or a
+ * {day} it says must be said in English and in every pack too, and a word
+ * must not ask for a value its Russian word does not give. A plural word
+ * counts every form together; a word left empty on purpose has none; a key
+ * Russian does not have is the coverage check's (folderGaps).
+ */
+export function placeholderGaps(root = ROOT) {
+  const gaps = [];
+  for (const {id, dir} of languageFolders(root)) {
+    const russian = readRuntime(dir, 'ru');
+    if (!russian) continue;
+    for (const file of readdirSync(dir).sort()) {
+      const match = /^([a-z]{2,3}(?:-[a-z0-9]{2,8})*)\.json$/u.exec(file);
+      if (!match || match[1] === 'ru') continue;
+      const words = readRuntime(dir, match[1]) ?? {};
+      for (const [key, word] of Object.entries(words)) {
+        if (!(key in russian) || word === null || (typeof word === 'string' && !word.trim())) continue;
+        const want = placeholders(russian[key]);
+        const have = placeholders(word);
+        if (want.join() !== have.join()) gaps.push({id, code: match[1], key, ru: want, word: have});
+      }
+    }
+  }
+  return gaps;
+}
+
 /** Coverage of one language over every folder. */
 export function languageCoverage(code, root = ROOT) {
   const folders = languageFolders(root).map(({id, dir}) => ({id, ...folderGaps(dir, code)}));
@@ -110,6 +142,9 @@ if (isMain) {
       }
     }
     if (report.built_in && report.folders.length) failed = true;
+    const mismatched = placeholderGaps().filter((gap) => gap.code === code);
+    if (!json) for (const gap of mismatched) process.stdout.write(`  ${gap.id}: ${gap.key}: {${gap.word.join('}, {')}} where ru says {${gap.ru.join('}, {')}}\n`);
+    if (mismatched.length) failed = true;
   }
   process.exitCode = failed ? 1 : 0;
 }
