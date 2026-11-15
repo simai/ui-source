@@ -60,6 +60,17 @@ inset does: the icon or the first letters stand 16 from the row's outer edge
 (compact and phone 12), not 17 (13). Rows without a border (navigation, the
 documentation tree) are unchanged.
 
+## A current section with subsections takes the line (1.8.2, owner decision C30)
+
+In a header row (`sf-menu--navigation sf-menu--horizontal`) the current
+section is the 2 px primary line on the header's bottom edge and a medium
+label; `sf-menu--indicator-fill` draws the C23 plate instead. A section with
+subsections is a split row -- the link that carries `aria-current` sits inside
+the row -- and its rule nested one `:has()` in another, which is invalid CSS:
+the browser dropped it, so such a section kept the plate and drew no line.
+The row's link is now found by a child combinator inside the one `:has()`.
+A current section without subsections was right and is unchanged.
+
 ## Header navigation
 
 Add `sf-menu--navigation` to the root `sf-menu` for a site's sections as a

@@ -89,8 +89,12 @@ $path-any: ".sf-menu-item:has(> .sf-menu :is([aria-current='page'], [aria-curren
 }
 
 /* The first-level item of a header row that is the current page or holds it
-   (C30, R060). */
-$row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true']))), :has(> :is(.sf-menu, .sf-menu-region) :is([aria-current='page'], [aria-current='true'])), :has(> .sf-menu-element.sf-menu-element--holds-current))";
+   (C30, R060). A section with subsections is a split row: its link, which
+   carries aria-current, sits inside the row (div.sf-menu-element > a). That
+   case is a child combinator inside the one :has -- a :has nested in :has is
+   invalid CSS, and the browser dropped every rule it was in, so a current
+   section with subsections lost its line and kept the C23 plate. */
+$row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page'], [aria-current='true'])), :has(> .sf-menu-element > :is([aria-current='page'], [aria-current='true'])), :has(> :is(.sf-menu, .sf-menu-region) :is([aria-current='page'], [aria-current='true'])), :has(> .sf-menu-element.sf-menu-element--holds-current))";
 
 /* line (the default): a 2 px primary line under the whole control lying ON
    the header's bottom border, as the sf-tabs indicator -- it takes that
