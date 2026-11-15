@@ -277,3 +277,16 @@
 .sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]) .sf-icon {
   --sf-icon--fill: 1;
 }
+
+/* The glyph inside an icon button keeps the bottom alignment (1.9.1, owner
+   decision C151 point 5 and its group-build-5 return). C151 puts an icon in
+   running text on the middle of the line; inside an icon button the glyph is
+   the whole content, and a button laid out without flex -- sf-file-preview's
+   actions, class markup without .flex -- would hang it on its own strut and
+   grow off the ladder (28.55 for 28 at size 1/2, compact and on a phone). At
+   bottom the line box is the glyph's, as the spinner's slot above keeps it.
+   Unlayered, as the icon's own rule is, so it wins over it. */
+.sf-icon-button .sf-icon,
+.sf-icon-button sf-icon {
+  vertical-align: bottom;
+}
