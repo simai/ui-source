@@ -118,6 +118,60 @@ const NARROW = 'data-sf-resizer-narrow';
 const SPLIT_STEP = 'var(--sf-h0)';
 let panelIds = 0;
 
+// The split a panel stands in, whose width the split step reads (C158 (4)):
+// the nearest box around the panel whose width does not come from the panels
+// it holds. A box that only wraps them -- display contents, an inline-level
+// box, a float, a width of max-content, min-content or fit-content, a flex
+// item that does not grow and takes its basis from its content -- is as wide
+// as the columns, so the split is the box it stands in, and so on up: an
+// admin menu's navigation (max-content, a flex item of the page row) wraps
+// its two columns, and the split is the page row beside its main area. A
+// container (container-type) is a split of its own. Two columns on a wide
+// page keep their handles; a narrow split, or a phone, hides them.
+const CONTENT_WIDTH = new Set(['max-content', 'min-content', 'fit-content', '-webkit-fit-content', '-moz-fit-content']);
+function keyword(box, property) {
+  try {
+    const value = box.computedStyleMap?.().get(property);
+    return value && 'value' in value && typeof value.value === 'string' ? value.value : null;
+  } catch {
+    return null;
+  }
+}
+// The box a box is laid out in: its parent, past boxes of display contents.
+function layoutParent(box) {
+  let outer = box.parentElement;
+  while (outer && outer !== box.ownerDocument.body && getComputedStyle(outer).display === 'contents') outer = outer.parentElement;
+  return outer;
+}
+function wrapsItsContent(box, style) {
+  if (style.display === 'contents' || style.display.startsWith('inline') || style.float !== 'none') return true;
+  const width = keyword(box, 'width');
+  if (width && CONTENT_WIDTH.has(width)) return true;
+  if (style.position === 'absolute' || style.position === 'fixed') return false;
+  const outer = layoutParent(box);
+  if (!outer) return false;
+  const outerStyle = getComputedStyle(outer);
+  const flexRow = outerStyle.display.includes('flex') && !outerStyle.flexDirection.includes('column');
+  if (!flexRow || Number.parseFloat(style.flexGrow) > 0) return false;
+  // Where the browser says the specified width (Typed OM), a flex item of a
+  // length (flex: 0 0 18rem, or inline-size 18rem) is a split of its own;
+  // elsewhere a flex item that does not grow is read as its content's width.
+  const basis = keyword(box, 'flex-basis');
+  if (box.computedStyleMap) return (width === null || width === 'auto') && (basis === 'auto' || basis === 'content');
+  return true;
+}
+function splitPlace(target) {
+  const body = target.ownerDocument.body;
+  let place = target.parentElement;
+  while (place && place !== body && place.parentElement) {
+    const style = getComputedStyle(place);
+    if (style.containerType && style.containerType !== 'normal') break;
+    if (!wrapsItsContent(place, style)) break;
+    place = place.parentElement;
+  }
+  return place ?? target.parentElement;
+}
+
 // The handle placed outside a target that clips: absolute (against an
 // ancestor) or fixed (against the viewport); the measured place it is given.
 const OUTSIDE = 'data-sf-resizer-outside';
@@ -227,6 +281,8 @@ export class SfResizer extends ResizerElement {
       const target = this.target();
       if (target) this._observer.observe(target);
       if (target?.parentElement) this._observer.observe(target.parentElement);
+      // The split, read by the first layout, when it is not the parent.
+      if (this._place && this._place !== target?.parentElement) this._observer.observe(this._place);
     }
     this.schedule();
   }
@@ -278,7 +334,8 @@ export class SfResizer extends ResizerElement {
   // handle is not there: the layout shows one panel at a time, and the width
   // the person chose waits for a wide screen. A region of .sf-workspace says
   // its layout itself (--sf-workspace--layout); any other panel is measured
-  // against the width of its container.
+  // against the width of its split (splitPlace): the box the panel and its
+  // neighbours share, past wrappers as wide as the panels.
   narrowCheck() {
     const target = this.target();
     let narrow = false;
@@ -289,8 +346,14 @@ export class SfResizer extends ResizerElement {
         : '';
       if (layout) narrow = layout === 'narrow';
       else {
-        const width = parent.getBoundingClientRect().width;
-        const step = pixels(SPLIT_STEP, parent) ?? 0;
+        const place = splitPlace(target);
+        if (place !== this._place) {
+          if (this._place && this._place !== parent) this._observer?.unobserve(this._place);
+          this._place = place;
+          if (place !== parent) this._observer?.observe(place);
+        }
+        const width = place.getBoundingClientRect().width;
+        const step = pixels(SPLIT_STEP, place) ?? 0;
         narrow = width > 0 && width < step;
       }
     }
@@ -408,6 +471,7 @@ export class SfResizer extends ResizerElement {
     this._languageOff = null;
     this._observer?.disconnect();
     this._observer = null;
+    this._place = null;
     globalThis.removeEventListener('resize', this._onWindowResize);
     document.removeEventListener?.('scroll', this._onScroll, {capture: true});
   }
