@@ -993,9 +993,9 @@ class SfWizard extends WizardElement {
    * the wizard's own width, else the count line «Шаг N из M» over the bar.
    * The row is laid out at its one-line width for a moment (data-sf-measure
    * on the frame and on sf-steps' root, in the same task, never painted) and
-   * compared with the room the head gives it; the frame is marked
-   * data-sf-progress-fit="row|count" and the sheet draws the one or the
-   * other. The row stays in the markup, out of view, so a wider wizard
+   * compared with the room the head gives it; where it is wider the frame
+   * is marked data-sf-progress-fit="count" and the sheet draws the count
+   * line (the mark goes when the row fits). The row stays in the markup, out of view, so a wider wizard
    * measures it again. Measured after each drawing of the wizard and of its
    * sf-steps (before the first paint of the row: sf-steps' after-render), when
    * the fonts are in, and when the wizard's own width changes (a
@@ -1024,8 +1024,14 @@ class SfWizard extends WizardElement {
     this._fitWidth = frame.getBoundingClientRect().width;
     // Not laid out (a closed window, display none): nothing to decide.
     if (!room) return;
+    // Only the count is marked: a row that fits is the frame as drawn, so a
+    // printed first paint (snapshot) carries nothing measured.
     const fit = need > room + FIT_SLACK ? 'count' : 'row';
-    if (frame.getAttribute('data-sf-progress-fit') !== fit) frame.setAttribute('data-sf-progress-fit', fit);
+    if (fit === 'count') {
+      if (frame.getAttribute('data-sf-progress-fit') !== fit) frame.setAttribute('data-sf-progress-fit', fit);
+    } else {
+      frame.removeAttribute('data-sf-progress-fit');
+    }
   }
 
   observeFit(frame) {

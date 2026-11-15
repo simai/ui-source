@@ -187,6 +187,8 @@ test('progress auto: the row while it fits the wizard\'s own width, else the cou
   assert.match(code, /root\.setAttribute\('data-sf-measure', ''\);/u);
   assert.match(code, /const fit = need > room \+ FIT_SLACK \? 'count' : 'row';/u);
   assert.match(code, /frame\.setAttribute\('data-sf-progress-fit', fit\)/u);
+  // Only the count is marked, so a printed first paint carries nothing measured.
+  assert.match(code, /frame\.removeAttribute\('data-sf-progress-fit'\);\n    \}/u);
   assert.match(code, /new ResizeObserver\(/u);
   assert.match(code, /addEventListener\('sf-after-render', this\._onStepsDrawn\)/u);
   // Only auto measures: an explicit row stays a row.
