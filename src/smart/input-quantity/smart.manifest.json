@@ -30,6 +30,7 @@
     "uses": [
       "component.icon-buttons",
       "component.icons",
+      "component.inputs",
       "component.quantity"
     ],
     "public_parts": []

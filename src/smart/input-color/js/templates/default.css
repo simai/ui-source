@@ -180,14 +180,15 @@
      of what it is wider than the glyph (a quarter inset, more where the 24
      floor widens it), so the frame keeps the rest of the half inset while it
      holds the action. It stood the C105 H5 group gap (--sf-space-1/3) apart
-     as a plated sf-button-icon. */
+     as a plated sf-button-icon. The reset to the inherited colour (the shared
+     inherited-value slot) is the same action and keeps the same steps. */
   .sf-color-frame {
     --sf-field-action--inset: var(--sf-color--space-x);
     --sf-field-action--glyph: var(--sf-color--text-height);
     --sf-field-action--height: var(--sf-color--control-height);
   }
 
-  .sf-color-frame:has(> .sf-field-action) {
+  .sf-color-frame:has(> .sf-field-action, > .sf-field-inherited-slot > .sf-field-action:not([hidden])) {
     gap: calc(var(--sf-field-action--inset) / 2 - (max(var(--sf-field-action--glyph) + var(--sf-field-action--inset) / 2, var(--sf-c2)) - var(--sf-field-action--glyph)) / 2);
   }
 

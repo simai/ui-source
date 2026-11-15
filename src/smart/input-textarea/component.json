@@ -247,6 +247,12 @@
     },
     {
       "name": "icon-buttons"
+    },
+    {
+      "name": "inputs",
+      "$comment": [
+        "inputs: the field layer's .sf-field-action rules (owner decision C123), which the shared reset to the inherited value takes, as sf-input's clear and reveal do."
+      ]
     }
   ],
   "templates": {

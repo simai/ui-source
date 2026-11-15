@@ -24,6 +24,7 @@
     "uses": [
       "component.icon-buttons",
       "component.icons",
+      "component.inputs",
       "component.textarea"
     ],
     "public_parts": [
