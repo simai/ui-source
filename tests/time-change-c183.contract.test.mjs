@@ -28,7 +28,7 @@ test('C183 (3): core formats and counts days on a named zone\'s clock', () => {
 
 test('C183: sf-time 1.3.0 -- just now, the time-zone setting, list times off the Tab order, the future mirrors the past', () => {
   const manifest = json('src/smart/time/component.json');
-  assert.equal(manifest.version, '1.3.0');
+  assert.equal(manifest.version, '1.7.0');
   assert.deepEqual(manifest.settings['time-zone'], {type: 'string', default: '', summary: manifest.settings['time-zone'].summary});
   const ru = json('src/smart/time/lang/ru.json').runtime;
   const en = json('src/smart/time/lang/en.json').runtime;
@@ -41,7 +41,7 @@ test('C183: sf-time 1.3.0 -- just now, the time-zone setting, list times off the
   // (1) no seconds: under a minute past «только что», ahead the language's «now».
   assert.match(source, /return seconds > 0 \? 'soon' : 'just';/u);
   // (2) a list item, a feed or a log: no Tab stop, the full moment spoken.
-  assert.match(source, /export const IN_LIST = 'li, \[role="listitem"\], \[role="feed"\], \[role="log"\]';/u);
+  assert.match(source, /export const IN_LIST = 'li, \[role="listitem"\], \[role="feed"\], \[role="log"\], td, th, \[role="cell"\], \[role="gridcell"\], \[role="rowheader"\], \[role="columnheader"\]';/u);
   assert.match(source, /focusable: hasTip && !nested && !inList,/u);
   assert.match(read('src/smart/time/js/templates/default.js'), /<span class="sr-only">, \$\{said\.tip\}<\/span>/u);
   // (3) the tooltip names the zone.
