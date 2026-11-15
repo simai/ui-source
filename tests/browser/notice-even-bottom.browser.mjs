@@ -11,7 +11,11 @@
 //   - sf-alert with one action and with two (under the text in a 28rem
 //     column), the class alert as the docs write it, and sf-alert
 //     actions-layout="under" in a wide column;
-//   - sf-toast actions-layout="under" and the class toast with two actions.
+//   - sf-toast actions-layout="under" and the class toast with two actions;
+//   - sf-alert-bar narrow (a 28rem column at 1440, the window at 390), its
+//     actions under the text (C114 (5), NS-8), at rung 1/2 (an admin bar) and
+//     at size 1 (a site bar): the bar row and a row of its open list (Р1,
+//     NS-12), which ends the same way (sf-alert-bar 1.6.4).
 //
 // space under = the notice's inner bottom (inside the border) - the last
 // button's plate bottom; space above = the icon's ink edge - the notice's
@@ -39,6 +43,15 @@ const reportOnly = process.argv.includes('--report');
 const jsonAt = process.argv.indexOf('--json');
 const jsonFile = jsonAt > 0 ? process.argv[jsonAt + 1] : '';
 const parts = {core: join(out, 'core', 'core'), rule: join(out, 'core', 'rule'), component: join(out, 'component', 'component'), smart: join(out, 'smart', 'smart'), utility: join(out, 'utility', 'utility')};
+
+// The bar's items: the shown one with an action and acknowledge, the others
+// (the open list's rows) with an action each; no time, so nothing on the
+// page moves with the clock.
+const BAR_ITEMS = JSON.stringify({items: [
+  {id: 'swap', level: 'warning', text: 'Подкачка занята на 92%: сайты замедляются.', source: 'Сервер', action: {label: 'Посмотреть', href: '#memory'}, acknowledge: {label: 'Прочитано'}},
+  {id: 'update', level: 'info', text: 'Доступна новая версия панели.', source: 'Обновление', action: {label: 'Обновить', href: '#update'}},
+  {id: 'backup', level: 'info', text: 'Резервная копия готова.', source: 'Копии', action: {label: 'Открыть', href: '#backup'}},
+]});
 
 const block = (id) => `
 <section class="zone" id="${id}">
@@ -69,6 +82,10 @@ const block = (id) => `
     </div>
   </div>
 </section>
+<section class="bars" id="${id}-bars">
+  <sf-alert-bar data-k="bar-half"><script type="application/json" data-sf-settings>${BAR_ITEMS}</script></sf-alert-bar>
+  <sf-alert-bar data-k="bar-one" size="1"><script type="application/json" data-sf-settings>${BAR_ITEMS}</script></sf-alert-bar>
+</section>
 <section class="wide" id="${id}-wide">
   <sf-alert data-k="alert-under-wide" status="success" heading="Изменения сохранены" supporting-text="Их увидят все участники проекта."
     action-text="Открыть" action="open" actions-layout="under" closable></sf-alert>
@@ -77,7 +94,7 @@ const block = (id) => `
 const page = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8">
 <script>window.SF_BOOT_CONFIG={theme:false};window.sfPath='/distr/';window.sfSmartPath='/distr/';</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">
-<style>.zone,.wide{display:flex;flex-direction:column;gap:16px;margin:16px;max-inline-size:28rem}.wide{max-inline-size:60rem}</style>
+<style>.zone,.wide,.bars{display:flex;flex-direction:column;gap:16px;margin:16px;max-inline-size:28rem}.wide{max-inline-size:60rem}</style>
 <script src="/distr/core/js/core.js"></script></head><body class="bg-surface">
 ${block('normal')}
 <div data-sf-density="compact">${block('compact')}</div>
@@ -102,7 +119,8 @@ const server = createServer((request, response) => {
 }).listen(0, '127.0.0.1');
 await new Promise((settle) => server.once('listening', settle));
 
-const KEYS = ['alert-one', 'alert-two', 'alert-class', 'alert-under-wide', 'toast-under', 'toast-class'];
+const KEYS = ['alert-one', 'alert-two', 'alert-class', 'alert-under-wide', 'toast-under', 'toast-class',
+  'bar-half-row', 'bar-half-item', 'bar-one-row', 'bar-one-item'];
 
 // Boxes in CSS pixels of the page (scrolled to the top, full-page shot).
 const BOXES = (keys) => {
@@ -110,17 +128,21 @@ const BOXES = (keys) => {
   for (const density of ['normal', 'compact']) {
     const scope = density === 'normal' ? document.body : document.querySelector('[data-sf-density="compact"]');
     for (const key of keys) {
-      const host = [...scope.querySelectorAll(`[data-k="${key}"]`)].find((node) => (density === 'compact') === Boolean(node.closest('[data-sf-density="compact"]')));
-      const root = host?.matches('.sf-alert, .sf-toast') ? host : host?.querySelector(':scope > .sf-alert, :scope > .sf-toast');
+      // A bar key names the bar and its part: its row, or the first row of
+      // its open list.
+      const bar = key.match(/^(bar-[a-z]+)-(row|item)$/u);
+      const host = [...scope.querySelectorAll(`[data-k="${bar ? bar[1] : key}"]`)].find((node) => (density === 'compact') === Boolean(node.closest('[data-sf-density="compact"]')));
+      const root = bar ? host?.querySelector(bar[2] === 'row' ? '.sf-alert-bar-row' : '.sf-alert-bar-item')
+        : host?.matches('.sf-alert, .sf-toast') ? host : host?.querySelector(':scope > .sf-alert, :scope > .sf-toast');
       if (!root) { out.push({density, key, missing: true}); continue; }
       const b = root.getBoundingClientRect();
       const s = getComputedStyle(root);
       const inner = {top: b.top + scrollY + parseFloat(s.borderTopWidth), bottom: b.bottom + scrollY - parseFloat(s.borderBottomWidth),
         left: b.left + parseFloat(s.borderLeftWidth), right: b.right - parseFloat(s.borderRightWidth)};
       const icon = root.querySelector(':scope > .sf-icon, :scope > sf-icon > .sf-icon');
-      const buttons = [...root.querySelectorAll('.sf-alert-buttons .sf-button, .sf-toast-bottom .sf-button')];
+      const buttons = [...root.querySelectorAll(bar ? ':scope > :is(.sf-alert-bar-actions, .sf-alert-bar-item-actions) .sf-button' : '.sf-alert-buttons .sf-button, .sf-toast-bottom .sf-button')];
       const last = buttons.reduce((low, one) => (!low || one.getBoundingClientRect().bottom > low.getBoundingClientRect().bottom ? one : low), null);
-      const title = root.querySelector('.sf-alert-text, .sf-toast-text');
+      const title = root.querySelector('.sf-alert-text, .sf-toast-text, .sf-alert-bar-message, .sf-alert-bar-item-message');
       const i = icon.getBoundingClientRect();
       const t = title.getBoundingClientRect();
       const fontSize = parseFloat(getComputedStyle(title).fontSize);
@@ -196,6 +218,12 @@ try {
           && document.querySelectorAll('sf-toast > .sf-toast').length === 2
           && document.querySelectorAll('sf-alert .sf-alert-buttons .sf-button, sf-toast .sf-toast-bottom .sf-button').length === 10, null, {timeout: 30000})
           .catch(() => failures.push(`${view} load ${load}: the page never drew its notices`));
+        // Each bar opens its list (the others), as a person does.
+        await tab.waitForFunction(() => document.querySelectorAll('sf-alert-bar .sf-alert-bar-row .sf-alert-bar-all button').length === 4, null, {timeout: 30000})
+          .catch(() => failures.push(`${view} load ${load}: the bars never drew «Ещё N»`));
+        for (const toggle of await tab.$$('sf-alert-bar .sf-alert-bar-row .sf-alert-bar-all button')) await toggle.click();
+        await tab.waitForFunction(() => document.querySelectorAll('sf-alert-bar .sf-alert-bar-item .sf-alert-bar-item-actions .sf-button').length === 8, null, {timeout: 30000})
+          .catch(() => failures.push(`${view} load ${load}: the bars never opened their lists`));
         // The status icon is a ligature of the icon font: wait until a face of
         // it is in, or the glyph is a word or nothing.
         await tab.waitForFunction(() => [...document.fonts].some((face) => face.family.replace(/["']/gu, '').startsWith('Material Symbols') && face.status === 'loaded'), null, {timeout: 30000})
@@ -249,4 +277,4 @@ if (failures.length) {
   console.error(failures.join('\n'));
   process.exit(1);
 }
-console.log(`notice-even-bottom: ${Object.keys(report).length} views x 2 densities x 6 notices x 3 loads, under the last button = above the icon ink within 1`);
+console.log(`notice-even-bottom: ${Object.keys(report).length} views x 2 densities x ${KEYS.length} notices x 3 loads, under the last button = above the icon ink within 1`);
