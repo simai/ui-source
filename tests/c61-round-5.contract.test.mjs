@@ -57,10 +57,10 @@ test('(3) one upcoming word: «Впереди» / «Upcoming» in sf-steps and s
   assert.doesNotMatch(JSON.stringify(json('src/smart/steps/smart.manifest.json')), /Not started/u);
 });
 
-test('versions: sf-list-timeline 1.3.2, sf-steps 1.4.3, component.step 1.3.2', () => {
-  assert.equal(json('src/smart/list-timeline/component.json').version, '1.3.2');
-  assert.equal(json('src/smart/list-timeline/smart.manifest.json').version, '1.3.2');
+test('versions: sf-list-timeline 1.4.0 (C204; 1.3.2 for C61 round 5), sf-steps 1.4.3, component.step 1.3.2', () => {
+  assert.equal(json('src/smart/list-timeline/component.json').version, '1.4.0');
+  assert.equal(json('src/smart/list-timeline/smart.manifest.json').version, '1.4.0');
   assert.equal(json('src/smart/steps/component.json').version, '1.4.3');
   assert.equal(json('src/component/step/passport.json').version, '1.3.3'); // group build 7: the integrated number (the branch wrote 1.3.2)
-  assert.match(json('src/smart/list-timeline/component.json')['x-decisions'].at(-1), /^version 1\.3\.2 /u);
+  assert.ok(json('src/smart/list-timeline/component.json')['x-decisions'].some((note) => /^version 1\.3\.2 /u.test(note)));
 });
