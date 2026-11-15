@@ -57,6 +57,16 @@ FIXTURES.push(...['primary', 'secondary', 'tertiary'].flatMap((role) => [
   </div>
 </div>`)));
 
+// FW-B-5: inline code on a plate takes the plate's ink and a fill of the
+// plate (C192 (2)); its tokens resolved on the root, the page's ink on grey.
+FIXTURES.push(...ROLES.map((role) => `
+<div class="bg-${role} color-on-${role}"><p>Text and <code data-case="FW-B-5 code on bg-${role}" data-need="4.5">code</code></p></div>
+<div class="bg-${role}-container color-on-${role}-container"><p>Text and <code data-case="FW-B-5 code on bg-${role}-container" data-need="4.5">code</code></p></div>`), `
+<div class="bg-primary color-on-primary"><div class="bg-surface-card color-on-surface"><p>Card: <code data-case="FW-B-5 code on a card on bg-primary" data-need="4.5">code</code></p></div></div>
+<div class="bg-surface-inverse color-on-surface-inverse"><p>Inverse: <code data-case="FW-B-5 code on bg-surface-inverse" data-need="4.5">code</code></p></div>
+<div class="bg-surface-inverse-fixed color-on-surface-inverse-fixed"><p>Inverse: <code data-case="FW-B-5 code on bg-surface-inverse-fixed" data-need="4.5">code</code></p></div>
+<p>Page: <code data-case="FW-B-5 code on the page" data-need="4.5">code</code></p>`);
+
 // The sheets a case needs, from the build output root.
 export function markupSheets(out) {
   return [

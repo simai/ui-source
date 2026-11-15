@@ -70,6 +70,19 @@ the matrix runs them over the built sheets in both themes.
   (`bg-surface-page`, `bg-surface-card`); without one, its text is the other
   theme's ink on this theme's ground.
 
+- **Inline code takes its place's ink (FW-B-5, C192 (2)).** The code tokens
+  (`--sf-code--color`, `--sf-code--background`) are declared on the root, so
+  a word of code on `bg-primary` kept the page's dark ink on a grey fill over
+  blue: 2.62-2.77:1 light and 1.27-1.29:1 dark on the seven strong places,
+  1.48 and 1:1 on the inverse. Every place re-declares them from its own
+  roles (`sf-place-code`): a strong place its ink on its ink at 12 (the fill
+  family's first step on a colour; 4.87-5.42:1 light, 6.22-6.38:1 dark), a
+  soft place its paired ink `on-<c>-container` on its own container
+  (12.30-13.03:1 light, 8.52-8.98:1 dark), the inverse the other theme's ink
+  and fill (7.37 and 11.80:1), an opaque place the theme's again (code in a
+  card on a colour is ordinary code). A site's `--sf-code-color` and
+  `--sf-code-background` still win.
+
 ### What changed with C113 (2026-11-13)
 
 - **The neutral fill weighs as much as the coloured ones.** The study of tonal
