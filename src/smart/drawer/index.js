@@ -638,10 +638,14 @@ class SfDrawer extends DrawerElement {
     const frame = this.closest(OVERLAY_CONTAINER)?.getBoundingClientRect()
       || {left: 0, width: globalThis.innerWidth || document.documentElement.clientWidth};
     const onLeft = seen.left + seen.width / 2 < frame.left + frame.width / 2;
-    const edgeLeft = this.stackEdge === 'left';
-    if (onLeft !== edgeLeft) return '';
     const rtl = getComputedStyle(this).direction === 'rtl';
-    return edgeLeft !== rtl ? 'start' : 'end';
+    // A panel as wide as its frame (a phone, size full) stands over both
+    // sides: the close goes to the switch's side, wherever the panel came
+    // from.
+    const box = this.panelBox();
+    const whole = Boolean(box && box.width >= frame.width - 1);
+    if (!whole && onLeft !== (this.stackEdge === 'left')) return '';
+    return onLeft !== rtl ? 'start' : 'end';
   }
 
   // After a drawing or a resize: what the head drew still holds (the opener
@@ -681,9 +685,10 @@ class SfDrawer extends DrawerElement {
     const axis = seen.left + seen.width / 2;
     const width = close.getBoundingClientRect().width;
     const panelStyle = getComputedStyle(box.panel);
-    const edgeLeft = this.stackEdge === 'left';
-    const border = parseFloat(edgeLeft ? panelStyle.borderLeftWidth : panelStyle.borderRightWidth) || 0;
-    const fromEdge = (edgeLeft ? axis - box.left : box.right - axis) - border;
+    // The panel's edge on the close's side, physical.
+    const onLeft = (side === 'start') !== (panelStyle.direction === 'rtl');
+    const border = parseFloat(onLeft ? panelStyle.borderLeftWidth : panelStyle.borderRightWidth) || 0;
+    const fromEdge = (onLeft ? axis - box.left : box.right - axis) - border;
     const headStyle = getComputedStyle(head);
     const other = parseFloat(side === 'start' ? headStyle.paddingInlineEnd : headStyle.paddingInlineStart) || 0;
     const limit = box.width - border - width - other;

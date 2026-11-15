@@ -24,8 +24,8 @@ test('drawer C104 (4): the close is drawn first in the head when its side is the
   assert.match(source, /context\.closePlacement === 'inside' && context\.closeAxis === 'start' \? closeButton : nothing/u);
   assert.match(source, /context\.closePlacement === 'inside' && context\.closeAxis !== 'start' \? closeButton : nothing/u);
   assert.match(source, /if \(this\.sheet \|\| this\.closePlacement === 'outside' \|\| \(this\.docked && this\._dockColumn\)\) return '';/u);
-  assert.match(sheet, /\[data-sf-drawer-close-axis='start'\] \.sf-drawer-head \{\s*padding-inline-start: var\(--sf-drawer--close-axis, var\(--sf-drawer--inset-start\)\);/u);
-  assert.match(sheet, /\[data-sf-drawer-close-axis='end'\] \.sf-drawer-head \{\s*padding-inline-end: var\(--sf-drawer--close-axis, var\(--sf-drawer--inset-end\)\);/u);
+  assert.match(sheet, /\[data-sf-drawer-close-axis='start'\] \.sf-drawer-panel > \.sf-drawer-head \{\s*padding-inline-start: var\(--sf-drawer--close-axis, var\(--sf-drawer--inset-start\)\);/u);
+  assert.match(sheet, /\[data-sf-drawer-close-axis='end'\]:not\(:has\(\.sf-drawer-edge > \*\)\) \.sf-drawer-panel > \.sf-drawer-head \{\s*padding-inline-end: var\(--sf-drawer--close-axis, var\(--sf-drawer--inset-end\)\);/u);
 });
 
 test('drawer C104: a panel covering its switch is not «switch on screen» and draws a close', () => {
