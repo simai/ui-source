@@ -13,7 +13,8 @@ import {renderConfirmFooter} from "../../../helpers/confirm-surface.js";
 // The answers call the actions confirm and cancel, which a page reaches as
 // data-sf-action="<id>.confirm" and "<id>.cancel" (§8, §19.4). A dangerous
 // acceptance (status="danger") is a filled danger answer (decision C25), a
-// plain one outlined; «Отмена» beside it is always quiet (ghost, C116).
+// plain one the filled primary main answer (C183, C176; sf-confirm 1.3.6);
+// «Отмена» beside it is always quiet (ghost, C116).
 export function renderConfirmTemplate(context) {
     if (context.appearance === "window") return renderConfirmWindow(context);
     return html`
@@ -31,7 +32,7 @@ export function renderConfirmTemplate(context) {
             ${context.hasDescription
                 ? html`<div class="sf-confirm__description">${context.descriptionContent}</div>`
                 : nothing}
-            ${renderConfirmFooter(context, "sf-confirm", {acceptStatus: context.danger ? "danger" : ""})}
+            ${renderConfirmFooter(context, "sf-confirm", {acceptStatus: context.danger ? "danger" : "", acceptAppearance: "default"})}
         </section>
     `;
 }
@@ -81,7 +82,7 @@ function renderConfirmWindow(context) {
                     ></sf-input>
                 </div>`
                 : nothing}
-            ${renderConfirmFooter(context, "sf-confirm", {acceptStatus: context.danger ? "danger" : "", window: true})}
+            ${renderConfirmFooter(context, "sf-confirm", {acceptStatus: context.danger ? "danger" : "", acceptAppearance: "default", window: true})}
         </section>
     `;
 }

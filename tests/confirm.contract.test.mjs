@@ -20,6 +20,10 @@ test('the confirm surface applies nothing and keeps the question open when the h
   // quiet, ghost on-surface, in a card and in the window alike (C116, #q-cancel).
   assert.match(surface, /acceptAppearance = "outline"/u);
   assert.match(surface, /appearance=\$\{danger \? "default" : acceptAppearance\}/u);
+  // sf-confirm 1.3.7 (written on the branch as 1.3.6; C183, C176; DEV msg-68999d65): a plain question's
+  // accepting answer is the main answer, filled primary, in every form.
+  const confirmTemplate = read('src/smart/confirm/js/templates/default.js');
+  assert.equal([...confirmTemplate.matchAll(/renderConfirmFooter\(context, "sf-confirm", \{acceptStatus: context\.danger \? "danger" : "", acceptAppearance: "default"/gu)].length, 2);
   assert.match(surface, /declineAppearance = "ghost"/u);
   assert.match(surface, /appearance=\$\{declineAppearance\}\s+scheme="on-surface"\s+size=\$\{size\}\s+text=\$\{context\.declineText\}/u);
   // C183 (6), sf-confirm-change 1.9.0: «Подтвердить» the main answer, filled
@@ -95,7 +99,7 @@ test('sf-confirm: a group named by its question, Escape declines, a dangerous ac
   assert.deepEqual(contract.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.equal(contract.settings.size.default, '1');
   assert.match(contract.settings.destructive.summary, /2027-01-01/u);
-  assert.equal(contract.version, '1.3.6');
+  assert.equal(contract.version, '1.3.7');
   assert.ok(contract.slots.description['x-summary']);
   for (const [name, variable] of Object.entries(contract['css-variables'])) assert.ok(variable['x-summary'], name);
   const source = read('src/smart/confirm/index.js');
