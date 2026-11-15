@@ -132,7 +132,8 @@ for (const view of VIEWS) for (const theme of ['light', 'dark']) for (const lang
     tab.on('console', (m) => { if (m.type() === 'error') errors.push(`console ${m.text()}`); });
     tab.on('requestfailed', (r) => errors.push(`requestfailed ${r.url()}`));
     await tab.goto(`${origin}/?lang=${lang}&theme=${theme}&density=${view.density}`, {waitUntil: 'load'});
-    await tab.waitForFunction((ids) => ids.every((id) => document.getElementById(id)?.querySelector('[data-inherited-reset]')), FIELDS.map((f) => f.id), {timeout: 20000});
+    // Drawn and shown (the slot is first drawn before the field knows its own value).
+    await tab.waitForFunction((ids) => ids.every((id) => { const b = document.getElementById(id)?.querySelector('[data-inherited-reset]'); return b && !b.hidden && b.getBoundingClientRect().width > 0; }), FIELDS.map((f) => f.id), {timeout: 20000});
     await tab.evaluate(() => document.fonts.ready); await tab.waitForTimeout(500);
     const tokens = await tab.evaluate(TOKENS);
     const name = `${view.width} ${view.density} ${theme} ${lang} #${load}`;
