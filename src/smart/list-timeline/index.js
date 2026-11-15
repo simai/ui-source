@@ -18,6 +18,14 @@
 // events and fold the rest into «Ещё N», revealed in place; state done|current|upcoming draws steps. The list keeps the
 // host's order, and stores and loads nothing.
 //
+// 1.4 (owner decision C204, route study R226): a step list's line is the one
+// sf-steps draws (C101): passed a 2 px primary line, ahead the quiet
+// hairline; the kind of a segment (walk, bus) is the event's icon, never the
+// line. An event may hold its own sub-events (items) under a quiet
+// disclosure row (summary, else «Ещё N событий»): folded until pressed,
+// drawn in place a rung smaller; the same folds the middle of a long log.
+// An event's slot names host content placed under its meta line.
+//
 // From its component.json (standard simai.smart-component 1.3.15 §3, §4,
 // §8): the settings are made by core/js/element-manifest.js, the words are
 // the language files'.
@@ -47,6 +55,8 @@ export const TONES = {error: 'error', warning: 'warning', success: 'success'};
 const DENSITY_REMOVE_AFTER = '2027-01-01';
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
+// How deep sub-events nest (C204 (2)): an event's items, theirs, and theirs.
+export const MAX_DEPTH = 3;
 
 /** An event's status: the five words; danger is read as error, anything else as neutral. */
 export function statusOf(value) {
@@ -76,11 +86,11 @@ export function changesOf(value) {
 /**
  * The events as given, made safe, in the host's order: an event without an
  * id or a title, or with an id seen before, is left out; a time that is no
- * date is none.
+ * date is none. An event's sub-events (items) are made safe the same way,
+ * their ids unique across the whole list, down to MAX_DEPTH levels.
  */
-export function normalizeItems(value) {
+export function normalizeItems(value, seen = new Set(), depth = 0) {
   const list = Array.isArray(value) ? value : [];
-  const seen = new Set();
   const items = [];
   for (const item of list) {
     if (!item || typeof item !== 'object') continue;
@@ -102,6 +112,9 @@ export function normalizeItems(value) {
       icon: text(item.icon) || KIND_ICONS[kind] || '',
       href: text(item.href),
       changes: changesOf(item.changes ?? item.change),
+      summary: text(item.summary),
+      slot: text(item.slot),
+      items: depth + 1 < MAX_DEPTH ? normalizeItems(item.items, seen, depth + 1) : [],
     });
   }
   return items;
@@ -136,6 +149,8 @@ class SfListTimeline extends ListTimelineElement {
     this._uid = `sf-list-timeline-${++sequence}`;
     this._timer = 0;
     this._opened = new Set();
+    // The events whose sub-events are shown (C204 (2)), by id.
+    this._unfolded = new Set();
     this._focusRun = null;
   }
 
@@ -209,6 +224,14 @@ class SfListTimeline extends ListTimelineElement {
     this.requestComponentUpdate('expand');
   }
 
+  // An event's sub-events (C204 (2)): the disclosure shows them in place
+  // under the event, or folds them again; the focus stays on the button.
+  toggle(item) {
+    if (this._unfolded.has(item.id)) this._unfolded.delete(item.id);
+    else this._unfolded.add(item.id);
+    this.requestComponentUpdate('toggle');
+  }
+
   // What sf-time is asked for: the time under a day heading, auto without.
   timeFormatFor(grouped) {
     const asked = this.timeFormat;
@@ -228,6 +251,17 @@ class SfListTimeline extends ListTimelineElement {
     this.sfHostState('data-loading', loading);
     const decorate = (item) => ({
       ...item,
+      // Sub-events (C204 (2)): folded until the disclosure is pressed; the
+      // row says the host's summary, else «Ещё N событий».
+      open: item.items.length > 0 && this._unfolded.has(item.id),
+      summaryText: item.items.length
+        ? item.summary || this.sfWord('run-events', {count: item.items.length, vars: {n: item.items.length}})
+        : '',
+      subSteps: item.items.some((one) => one.state),
+      items: item.items.map(decorate),
+      subId: `${this._uid}-sub-${item.id}`,
+      // Host content under the event (C204 (3)): the slot the event names.
+      slotted: Boolean(item.slot) && Boolean(this.hasSlotContent?.(item.slot)),
       iso: item.at ? item.at.toISOString() : '',
       tone: TONES[item.status] ?? 'neutral',
       // A step says its state, and its status when it has a tone (C61 round 4:
