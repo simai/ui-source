@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.12.0'], ['list-feed', 'sf-list-feed', '1.3.0']]) {
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.15.0'], ['list-feed', 'sf-list-feed', '1.3.0']]) {
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -32,7 +32,7 @@ test('both are the Framework\'s, family list, registered and in the rule', () =>
 test('sf-list: rows are sf-list-item, one Tab stop, one shared menu, the next page by the core edge watch', () => {
   const contract = json('src/smart/list/component.json');
   assert.deepEqual(Object.keys(contract.settings).sort(),
-    ['actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings']);
+    ['actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings', 'time-format']);
   assert.deepEqual(contract.settings['group-by'].enum ?? contract.settings['group-by'].values, ['none', 'day', 'key']);
   assert.deepEqual(Object.keys(contract.events).sort(), ['apply', 'load-more', 'open', 'rename']);
   assert.equal(contract.events.rename.cancelable, true);
@@ -62,10 +62,10 @@ test('sf-list 1.1.0: avatar, count, badge and pinned are bounded row data drawn 
   const contract = json('src/smart/list/component.json');
   const of = contract.settings.items.of;
   assert.deepEqual(Object.keys(of).sort(),
-    ['actions', 'avatar', 'badge', 'count', 'date', 'disabled', 'group', 'icon', 'id', 'pinned', 'supporting', 'text']);
+    ['actions', 'avatar', 'badge', 'count', 'date', 'disabled', 'group', 'icon', 'id', 'pinned', 'supporting', 'text', 'unread']);
   // Additions only: no setting, event or action of 1.0.0 changed (1.2.0 adds no-wrap).
   assert.deepEqual(Object.keys(contract.settings).sort(),
-    ['actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings']);
+    ['actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings', 'time-format']);
   const item = contract['x-registry'].contracts.item.properties;
   assert.deepEqual(item.avatar.properties.shape.enum, ['circle', 'square']);
   // The badge's tone is the Framework's status vocabulary.
@@ -88,7 +88,7 @@ test('sf-list 1.1.0: avatar, count, badge and pinned are bounded row data drawn 
   assert.doesNotMatch(read('src/smart/list/index.js'), /render(Row|Item|er)\s*[:=(]/u);
   // The slot elements are the row template's own, never a value of it: the
   // row takes its slot nodes once (smart-base captureSlotTemplates).
-  assert.match(template, /><span slot="leading" class="sf-list__lead">\$\{leadContent\(context, item\)\}<\/span><span\n\s+slot="trailing" class="sf-list__meta">\$\{metaContent\(context, item\)\}<\/span><\/sf-list-item>`/u);
+  assert.match(template, /><span slot="leading" class="sf-list__lead">\$\{leadContent\(context, item\)\}<\/span><span\n\s+slot="trailing" class="sf-list__meta">\$\{metaContent\(context, item, group\)\}<\/span><\/sf-list-item>`/u);
   assert.equal([...template.matchAll(/slot="trailing" class="sf-list__meta"/gu)].length, 2);
   // Pinned leads; the words in both languages, the count in plural forms.
   const source = read('src/smart/list/index.js');

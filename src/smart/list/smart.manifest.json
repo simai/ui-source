@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list",
-  "version": "1.12.0",
+  "version": "1.15.0",
   "title": "List",
   "summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
   "kind": "smart",
@@ -113,6 +113,17 @@
         "default": false,
         "description": "An inset line under every row but the last of its group, from the row's text to the list's edge under the «⋯» (sf-list-item divided, owner decision C148 (4)); off, the rows have no lines and the groups are told apart by their headings (C40)"
       },
+      "time-format": {
+        "type": "string",
+        "default": "none",
+        "description": "The row's time at its end, from the item's date, drawn by sf-time (C40) without a tooltip or a Tab stop of its own (the row is the list's one stop): on the title's line of a two-line row, above the count and the badge (sf-list-item's end column, C148 (2)), in the caption's type and dim ink, the main ink on an unread row. none (the default): no time. auto: under a day heading (group-by day) the clock time («11:20»), since the heading names the day; elsewhere -- ungrouped, by key, the pinned group -- sf-time auto («28 минут назад», «11:20», «вчера, 19:40», «5 ноября»). relative: always relative. exact: the clock time under a day heading, the date and time elsewhere. The values are sf-list-timeline's time-format, plus none.",
+        "enum": [
+          "none",
+          "auto",
+          "relative",
+          "exact"
+        ]
+      },
       "label": {
         "type": "string",
         "description": "The list's accessible name; empty is «List» in the page's language."
@@ -218,6 +229,10 @@
         "count": {
           "type": "number",
           "description": "A count at the row's end (unread); 0 draws nothing, above 99 «99+»."
+        },
+        "unread": {
+          "type": "boolean",
+          "description": "Unread without a count: the title semibold and the word «не прочитано» for a screen reader."
         },
         "badge": {
           "type": "object",
@@ -759,15 +774,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/list/index.js",
-        "sha256": "9464c9a651ee74b1e9f37ea51f102d9dc950b7adb1e916061e29486f28a2c2ce"
+        "sha256": "6a937a1860ae2cc8b37826233e9fb319fc36c17396e564ae7a7433316df7764a"
       },
       {
         "path": "src/smart/list/js/templates/default.js",
-        "sha256": "c0ed4bba9eb420c8daf6654f9a0acd31ac9e200f92dcc3634b00093e49642001"
+        "sha256": "3bfe23e97b7ab89d36583c09927aa74b7f13ddf320c5c271b2619e1d079c5af9"
       },
       {
         "path": "src/smart/list/js/templates/default.css",
-        "sha256": "e42e6b1ffbdb87563e8ab2906aff50a229247da051abf229665b1986577c0a94"
+        "sha256": "703180a42b9714daf0ea8d32481fecaeb0839e06a915b38a9a3dd0ad3791c845"
       },
       {
         "path": "src/smart/list/rule.js",
@@ -775,19 +790,19 @@
       },
       {
         "path": "src/smart/list/docs.md",
-        "sha256": "70a24bc79a4de04cb0233899a622da8588b70a79a4c7bac64e00d590f400722c"
+        "sha256": "befa8175c58a23e813c4f3b6161bb9ff46b6e4e5722de1587c0e283a7133886b"
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "1a37c4309d7598a1d6b5fed0c9271f912fdbbbb6762ab471d324604c4dc87117"
+        "sha256": "e4f3e4d07a5394b2de49927c4828e9fc12bf6a2527e4be7695cc35b7a99d0ef7"
       },
       {
         "path": "src/smart/list/lang/en.json",
-        "sha256": "e415f13db35686dbd53b9f663292479f53816f451473c6f524678d4dc65cbb47"
+        "sha256": "ee058b8d31d3dfebbc992d2fea9a9b3b586367eb2e07bbf9c82db08c8a9e615c"
       },
       {
         "path": "src/smart/list/lang/ru.json",
-        "sha256": "ca074425d5bd25ad7293f7ec3de83743db738cd51e2e806fc0c32fc33f6cf123"
+        "sha256": "ad87273e42a7d86a8c2a3d98bac2f7932ff196c525662e413eb99754fdf79454"
       }
     ],
     "generated_runtime": []

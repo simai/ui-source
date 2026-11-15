@@ -138,6 +138,33 @@
 
   .sf-list__meta:empty { display: none; }
 
+  /* 1.15.0: the end part of an unread row with nothing else at its end holds
+     only the screen-reader word (unread-text): it takes no place, so the row
+     lays out as a row with no end part. */
+  .sf-list__meta:not(:empty):not(:has(> :not(.sr-only))) { display: contents; }
+
+  /* The row's time (1.15.0, time-format; owner decision C189 (8)): sf-time,
+     inline in the end part. On a one-line row it stands centred on the row,
+     in the caption's type and dim ink, before the badge and the count; on a
+     two-line row the end column (below) gives it the caption's type and ink
+     and the title's line. An unread row's time takes the main ink, as its
+     title is semibold; a disabled row's stays the disabled ink. */
+  .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list__meta > .sf-list__time {
+    color: var(--sf-list-item-supporting-color, var(--sf-on-surface-variant));
+    font-size: var(--sf-list-item-supporting--font-size);
+    line-height: var(--sf-list-item-supporting--line-height);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .sf-list-item.disabled:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list__meta > .sf-list__time {
+    color: var(--sf-on-surface-disabled);
+  }
+
+  .sf-list__row--unread > sf-list-item > .sf-list-item:not(.disabled) > .sf-list-item-wrap > .sf-list__meta > .sf-list__time {
+    color: var(--sf-on-surface);
+  }
+
   /* A two-line row's meta is sf-list-item's end column (owner decision C148
      (2)): the badge and the count on the caption's line, under the title's
      line, so the row keeps its height and its title its width. The step
@@ -146,6 +173,14 @@
      item. */
   .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > *,
   .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > sf-badge > * { grid-row: 2; }
+
+  /* The time is the column's first line, the title's (C148 (2)), across the
+     column's width and at its end, above the badge and the count. */
+  .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > .sf-list__time {
+    grid-row: 1;
+    grid-column: 1 / -1;
+    justify-self: end;
+  }
 
   /* A narrow list (owner decision C47, 2026-11-10, option A; the list sets
      data-sf-list-narrow on its frame below 20rem of its own width): a

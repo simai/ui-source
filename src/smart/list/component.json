@@ -2,7 +2,7 @@
   "$comment": "The source of sf-list's element plumbing (core/js/element-manifest.js); standard simai.smart-component 1.3.8, vocabulary 1.1.5. The main member of block list (duplication audit 2026-11-03 A-7): rows from data drawn as sf-list-item; sf-list-feed is the block's feed variant.",
   "id": "smart.list",
   "tag": "sf-list",
-  "version": "1.12.0",
+  "version": "1.15.0",
   "kind": "leaf",
   "family": "list",
   "settings": {
@@ -51,6 +51,11 @@
           "min": 0,
           "optional": true,
           "summary": "A count at the row's end (unread), a quantity drawn as sf-badge tonal, grey (owner decision C140 (3)); 0 or none draws nothing, above 99 it reads «99+»; its words are count-label («3 непрочитанных»). A row with a count is unread: its title is semibold (owner decision C167 (3))."
+        },
+        "unread": {
+          "type": "boolean",
+          "optional": true,
+          "summary": "The row is unread without a count (a letter): its title semibold, as a row with a count is (owner decisions C167 (3), C189 (8)), the row's time in the main ink, and for a screen reader the word unread-text («не прочитано») at the row's end. A count says unread already; unread: false does not take it back. A number above 0 (sf-chat-threads' spelling of an unread count) is read as true and draws no number: the count is count."
         },
         "badge": {
           "type": "object",
@@ -146,6 +151,17 @@
       "type": "boolean",
       "default": false,
       "summary": "An inset line under every row but the last of its group, from the row's text to the list's edge under the «⋯» (sf-list-item divided, owner decision C148 (4)); off, the rows have no lines and the groups are told apart by their headings (C40)"
+    },
+    "time-format": {
+      "type": "enum",
+      "values": [
+        "none",
+        "auto",
+        "relative",
+        "exact"
+      ],
+      "default": "none",
+      "summary": "The row's time at its end, from the item's date, drawn by sf-time (C40) without a tooltip or a Tab stop of its own (the row is the list's one stop): on the title's line of a two-line row, above the count and the badge (sf-list-item's end column, C148 (2)), in the caption's type and dim ink, the main ink on an unread row. none (the default): no time. auto: under a day heading (group-by day) the clock time («11:20»), since the heading names the day; elsewhere -- ungrouped, by key, the pinned group -- sf-time auto («28 минут назад», «11:20», «вчера, 19:40», «5 ноября»). relative: always relative. exact: the clock time under a day heading, the date and time elsewhere. The values are sf-list-timeline's time-format, plus none."
     },
     "label": {
       "type": "string",
@@ -645,7 +661,8 @@
     "version 1.9.0 (2026-11-14, list item study control/research/2026-11-14-list-item.md, LI-7, LI-8, LI-10; above 1.8.0 of fix/avatar-defects-g4 and 1.7.0 of fix/badges-g4): a minor, a look. A row's avatar is a picture, sf-avatar's one drawing (smart avatar js/picture.js) hidden from assistive technology, not an sf-avatar element: sf-avatar draws a button, so a list of conversations was a Tab stop per avatar beside the list's one. The open row's fill is the selected role's primary-container, 12 light and 24 dark (owner decision C31, C16), as a standalone selected row; it was the pressed step, 20 / 32 (--sf-list-current-background-color still overrides it). The count is a quantity, sf-badge tonal, grey (owner decision C140 (3)); it was the filled blue scheme primary. Settings, values, events and keys unchanged.",
     "version 1.10.0 (2026-11-14, owner decision C148, list item study; above 1.9.0 of fix/list-item-g4): a minor, a setting and the keyboard. divided (boolean, off) passes sf-list-item's inset line to every row, the line running on under the row's «⋯»; none under the last row of a group. A two-line row's badge and count stand in sf-list-item's end column, on the caption's line (sf-badge line text), so the row keeps its height and its title its width; the narrow layout (C47) is the one-line rows' alone. ArrowRight (ArrowLeft in RTL) goes from a row to its «⋯», the other arrow, Escape, ArrowUp and ArrowDown back; the «⋯» stays no Tab stop. Under a finger a long press (0.5 s) on a row with actions opens its menu, as the «⋯» and Shift+F10 do, and its release does not open the row. A row's title and second line are one line each whatever no-wrap says (C148 (5)); no-wrap keeps the whole text as the row's tooltip. Events unchanged.",
     "version 1.11.0 (2026-11-14, owner decision C167 (3), list and feed study control/research/2026-11-14-list-feed.md, prototype prototypes/list-feed-study.html#q-unread; above 1.10.0 of fix/list-item-c148): a minor, a look. An unread row -- a row with a count, the item's count being its unread (count-label «3 непрочитанных») -- has its title semibold (--sf-text--font-weight-6) beside the grey tonal count (C140 (3)); the second line stays regular. Points (1) (the end of the list as sf-pagination appearance more with «Показано X из Y», loading by itself only by a setting) and (5) (several rows chosen by the C150 (9) rule) wait for their names: the list knows no total and no page size, and selected is the open row. Settings, values, events and keys unchanged.",
-    "version 1.12.0 (2026-11-14, list and feed study control/research/2026-11-14-list-feed.md LF-2, LF-8; owner decisions C130 (2)-(4), C136): a minor, a look and a fix. Loading draws three rows of the list itself, sf-list-item of the list's size, so a skeleton row is exactly as tall as the row that replaces it -- the caption row (C49: 48, compact 44, 60 under a finger) until the list has shown rows, then the shape of the rows shown; their words are core's first-paint bars (.sf-first-paint-bar: as tall as the capitals in the middle of the line, the control radius at the ends, the 12 % skeleton fill, the pulse; still under reduced motion). They were three 40 / 44 px slabs 4 apart without a pulse: the list jumped 8 to 40 px when the rows came. The next page is asked for when a person's scroll brings the end into reach: a list whose end showed on load asked for its second page at once with «Показать ещё» on screen as well; now the first scroll after a page arms the watch, and «Показать ещё» stays the way without a scroll. Settings, values, events and keys unchanged."
+    "version 1.12.0 (2026-11-14, list and feed study control/research/2026-11-14-list-feed.md LF-2, LF-8; owner decisions C130 (2)-(4), C136): a minor, a look and a fix. Loading draws three rows of the list itself, sf-list-item of the list's size, so a skeleton row is exactly as tall as the row that replaces it -- the caption row (C49: 48, compact 44, 60 under a finger) until the list has shown rows, then the shape of the rows shown; their words are core's first-paint bars (.sf-first-paint-bar: as tall as the capitals in the middle of the line, the control radius at the ends, the 12 % skeleton fill, the pulse; still under reduced motion). They were three 40 / 44 px slabs 4 apart without a pulse: the list jumped 8 to 40 px when the rows came. The next page is asked for when a person's scroll brings the end into reach: a list whose end showed on load asked for its second page at once with «Показать ещё» on screen as well; now the first scroll after a page arms the watch, and «Показать ещё» stays the way without a scroll. Settings, values, events and keys unchanged.",
+    "version 1.15.0 (2026-11-15, owner decisions C189 (8) and C167 (3), recipe «mail-chat-list» prototypes/recipe-mail-chat-list.html#q-mail-chat-list-unread, names by the dispatcher; above 1.14.1 of fix/register-smart-2 and 1.14.0 of fix/first-paint-fp): a minor, additions. New item field unread (boolean): a letter unread without a count has its title semibold, as a row with a count has since 1.11.0, and the screen-reader word unread-text («не прочитано», «unread») at its end; a row with a count stays unread as before, its count saying it. New setting time-format (none|auto|relative|exact, default none): the row's time from its date, drawn by sf-time in the row's end part -- in a two-line row on the title's line above the count and the badge (sf-list-item's end column, C148 (2)), in the caption's type and dim ink, the main ink on an unread row; under a day heading the clock time, elsewhere sf-time auto. sf-time draws without a tooltip, so the row stays the list's one Tab stop (C148 (3)). A list without the new field and setting draws as 1.12.0."
   ],
   "x-rule": {
     "$comment": [
@@ -756,6 +773,10 @@
           "count": {
             "type": "number",
             "description": "A count at the row's end (unread); 0 draws nothing, above 99 «99+»."
+          },
+          "unread": {
+            "type": "boolean",
+            "description": "Unread without a count: the title semibold and the word «не прочитано» for a screen reader."
           },
           "badge": {
             "type": "object",
