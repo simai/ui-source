@@ -376,7 +376,9 @@ test('C96 6 (T7): a per-tab error count is said with the name; go-to-error opens
 
 test('C96 7: two to four tabs share the phone row (fit); overflow stays More', () => {
   const fits = new Function('count', `${method('fitsEqually', 'count').replace(/^[^{]*\{/u, '').replace(/\}\s*$/u, '')}`);
-  const at = (attributes, narrow, count) => fits.call({fit: getter('fit').call(host(attributes)), look: getter('look').call(host(attributes, {_narrow: narrow})), _narrow: narrow}, count);
+  // narrowPlace: the row's own width below the h1 step (C181 (2)), read
+  // from the sheet; the vertical look still folds by the screen (_narrow).
+  const at = (attributes, narrow, count) => fits.call({fit: getter('fit').call(host(attributes)), look: getter('look').call(host(attributes, {_narrow: narrow})), _narrow: narrow, narrowPlace: () => narrow}, count);
   assert.equal(at({}, true, 3), true);
   assert.equal(at({}, true, 5), false, 'five on the phone go to More');
   assert.equal(at({}, false, 3), false, 'auto: only on the phone');
@@ -386,6 +388,22 @@ test('C96 7: two to four tabs share the phone row (fit); overflow stays More', (
   assert.equal(manifest.settings.fit.default, 'auto');
   assert.match(source, /container\?\.setAttribute\('data-sf-tabs-fit', ''\);/u);
   assert.match(sheet, /\.sf-tabs-top-container\[data-sf-tabs-fit\] > \.sf-tabs-top \{/u);
+});
+
+test('C96 7 by C181 (2): the sheet shares a narrow row, so the printed first frame is the laid row', () => {
+  // The row of «Ещё» is a container; below the h1 step of its own width two
+  // to four tabs share it in the sheet, and the code reads the same condition.
+  assert.match(sheet, /\.sf-tabs--overflow-more:not\(\.sf-tabs--vertical\) > \.sf-tabs-top-container \{\s*container: sf-tabs-row \/ inline-size;/u);
+  assert.match(sheet, /@container sf-tabs-row \(width < #\{tabs-container-step\(h1\)\}\) \{\s*\.sf-tabs-top-container > \.sf-tabs-top \{\s*--sf-tabs--narrow: 1;/u);
+  assert.match(sheet, /:not\(\[fit="never"\]\) > \.sf-tabs--overflow-more:not\(\.sf-tabs--vertical\) > \.sf-tabs-top-container:not\(\[data-sf-tabs-own\]\) > \.sf-tabs-top:has\(> :nth-child\(2\)\):not\(:has\(> :nth-child\(5\)\)\) \{\s*flex: 1 1 auto;/u);
+  assert.match(sheet, /> \.sf-tabs-top:has\(> :nth-child\(2\)\):not\(:has\(> :nth-child\(5\)\)\) > :first-child > \.sf-button,[^{]*\{\s*--sf-button--padding-inline-start: var\(--sf-tabs--padding-inline\);/u);
+  assert.match(method('narrowPlace'), /getPropertyValue\('--sf-tabs--narrow'\)\.trim\(\) === '1'/u);
+  // A narrow row whose tabs keep their own widths says so; a shared or a wide
+  // one does not, so a snapshot printed at the desktop width carries nothing.
+  const lay = method('layoutOverflow');
+  assert.match(lay, /this\.layoutRow\(\);/u);
+  assert.match(lay, /if \(container\.hasAttribute\('data-sf-tabs-fit'\) \|\| !this\.narrowPlace\(\)\) container\.removeAttribute\('data-sf-tabs-own'\);\s*else container\.setAttribute\('data-sf-tabs-own', ''\);/u);
+  assert.match(method('layoutRow'), /container\?\.removeAttribute\('data-sf-tabs-fit'\);\s*container\?\.setAttribute\('data-sf-tabs-own', ''\);/u);
 });
 
 test('T13: the JSON form of items is in the manifest summary and the docs', () => {

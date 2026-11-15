@@ -396,7 +396,8 @@ class SfTabs extends TabsElement {
 
   connectedCallback() {
     // The phone's width (core/js/breakpoints, md): vertical tabs become a row
-    // with «Ещё», and fit auto shares the row (C96 items 5 and 7).
+    // with «Ещё» (C96 item 5). fit auto reads the row's own width instead
+    // (narrowPlace).
     if (!this._narrowMedia) {
       this._narrowMedia = breakpointMedia('md', { below: true });
       this._narrow = this._narrowMedia?.matches === true;
@@ -845,11 +846,13 @@ class SfTabs extends TabsElement {
     }
   }
 
-  // fit: the tabs share the row equally (C96 item 7).
+  // fit: the tabs share the row equally (C96 item 7); auto on a narrow place,
+  // the row's own width below the h1 step (C181 (2)), as the sheet shares a
+  // printed row.
   fitsEqually(count) {
     const fit = this.fit;
     if (fit === 'never' || this.look === 'vertical') return false;
-    return fit === 'always' ? count > 1 : Boolean(this._narrow) && count >= 2 && count <= 4;
+    return fit === 'always' ? count > 1 : this.narrowPlace() && count >= 2 && count <= 4;
   }
 
   get overflow() {
@@ -1031,6 +1034,24 @@ class SfTabs extends TabsElement {
   }
 
   layoutOverflow() {
+    this.layoutRow();
+    // The sheet shares a narrow row of two to four tabs by itself, so the
+    // printed first frame is the laid row (C96 item 7 by C181 (2)); a narrow
+    // row whose tabs keep their own widths says so with data-sf-tabs-own.
+    const container = this.tabList?.parentElement;
+    if (!container) return;
+    if (container.hasAttribute('data-sf-tabs-fit') || !this.narrowPlace()) container.removeAttribute('data-sf-tabs-own');
+    else container.setAttribute('data-sf-tabs-own', '');
+  }
+
+  // The row is narrow when the sheet says so: below the h1 step of the row's
+  // own width (component.tabs, @container sf-tabs-row), not the screen's.
+  narrowPlace() {
+    const list = this.tabList;
+    return Boolean(list) && getComputedStyle(list).getPropertyValue('--sf-tabs--narrow').trim() === '1';
+  }
+
+  layoutRow() {
     const list = this.tabList;
     const more = this.querySelector(':scope > .sf-tabs > .sf-tabs-top-container > .sf-tabs-more');
     if (!list) return;
@@ -1040,6 +1061,7 @@ class SfTabs extends TabsElement {
     const container = list.parentElement;
     // The tabs are measured at their own widths; fit shares the row after.
     container?.removeAttribute('data-sf-tabs-fit');
+    container?.setAttribute('data-sf-tabs-own', '');
     const showMore = (shown) => {
       if (shown) container?.setAttribute('data-sf-tabs-more', '');
       else container?.removeAttribute('data-sf-tabs-more');
