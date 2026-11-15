@@ -84,9 +84,10 @@ has none of its own, and no axes or captions.
 
 The class `sf-tile-metric-grid` on the tiles' parent is a grid of columns at
 least `--sf-tile-metric-min-width` (14rem, the size step f4) wide that wraps;
-tiles in a row share their height. On a phone (below the `sm` step, 32rem)
-the tiles of size 1/2 stand two in a row and sizes 1 and 2 take the whole
-row. The gap is the one between cells (`--sf-space-1`: 16 on a computer, 12
+tiles in a row share their height. In a narrow place (the grid narrower than
+the container step g6, 32rem: a phone, or a narrow column of a wide page) the
+tiles of size 1/2 stand two in a row and sizes 1 and 2 take the whole row; the
+grid's own width decides, not the screen's (C181 (2)). The gap is the one between cells (`--sf-space-1`: 16 on a computer, 12
 compact and on a phone).
 
 ## Geometry
@@ -114,6 +115,10 @@ it is its picture. The change and the status say their meaning in words
 beside the arrow and the icon, so colour is never the only sign.
 
 ## Changes
+
+- 1.5.1 (2026-11-15, C181 (2)) — the row of tiles pairs its 1/2 tiles by its
+  own width (below 32rem), not the screen's: a narrow column of a wide page
+  too.
 
 - 1.4.0 (2026-11-14, owner decision C168) — no change is the words «без
   изменений», not a «− 0» badge; money whole by default (`decimal-2` for the

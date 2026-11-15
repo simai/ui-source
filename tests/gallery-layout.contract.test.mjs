@@ -3,20 +3,20 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 const read = (p) => readFile(new URL('../' + p, import.meta.url), 'utf8');
 const source = await read('src/smart/gallery/index.js');
-const css = await read('src/smart/gallery/js/templates/default.css');
+const css = await read('src/smart/gallery/js/templates/default.scss');
 const template = await read('src/smart/gallery/js/templates/default.js');
 const rule = await read('src/smart/gallery/rule.js');
 
 test('Gallery draws from its sheet and never writes the geometry of the media', () => {
   assert.doesNotMatch(source, /image\.style\.|caption\.style\.|node\.style\.(?!objectPosition)/);
-  assert.match(template, /import '\.\/default\.css'/);
+  assert.match(template, /import '\.\/default\.scss'/);
   assert.match(rule, /css: true/);
 });
 
 test('Gallery values come from the systems: no raw lengths, colours or !important', () => {
-  // A media query cannot read a variable: the phone break is the system's
-  // md breakpoint written out (group build 5: below md, C181's screen query); a zero length in a fallback is no value.
-  const sheet = css.replace(/\/\*[\s\S]*?\*\//g, '').replace(/@media not all and \(min-width: 44rem\)/g, '').replace(/\b0px\b/g, '');
+  // The phone break is a step of the one container ladder, container-step(h1)
+  // (C181 (2), DEV GB5 answers), never a length; a zero length in a fallback is no value.
+  const sheet = css.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\b0px\b/g, '');
   assert.doesNotMatch(sheet, /\b\d+(?:\.\d+)?(?:px|rem|em)\b|#[0-9a-f]{3,8}\b|!important/);
 });
 

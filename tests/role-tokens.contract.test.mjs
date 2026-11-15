@@ -99,12 +99,19 @@ test('C173 (9): the check reads a row of buttons, a toolbar and a row of tags, a
     .x-buttons { gap: var(--sf-x-buttons-gap); }
     .x-modal-footer { gap: var(--sf-x-footer-gap, var(--sf-gap--actions)); }
     // .x-actions { gap: 12px; }
+    .x-chips { gap: var(--sf-space-1\\/3); }
+    .x-lookup { --sf-x--chip-row-gap: var(--sf-space-1\\/3); }
+    .x-preview.x-preview--chip { --sf-x--gap: var(--sf-x-gap, var(--sf-space-1\\/3)); }
   `;
   const found = roleStepFindingsIn(sheet, 'x.scss').map((finding) => [finding.selector, finding.role, finding.expected]);
+  // A row of chips is a row of tags; one chip's inner room is not (DEV GB5
+  // answers: sf-file-preview's chip inset, GB5-RT-1 dropped).
   assert.deepEqual(found, [
     ['.x-footer', 'actions', '--sf-gap--actions'],
     ['.x-toolbar', 'toolbar', '--sf-gap--toolbar'],
     ['.x-tags', 'tags', '--sf-gap--tags'],
+    ['.x-chips', 'tags', '--sf-gap--tags'],
+    ['.x-lookup', 'tags', '--sf-gap--tags'],
   ]);
 });
 

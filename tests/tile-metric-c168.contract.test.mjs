@@ -39,10 +39,13 @@ test('C168 (3): an svg names a slot; the chart is the tile\'s width, 32 high, in
   assert.match(sheet, /\.sf-tile-metric-chart > \* \{[^}]*inline-size: 100%;[^}]*block-size: var\(--sf-c6\);/u);
 });
 
-test('C168 (4): on a phone the 1/2 tiles stand two in a row, sizes 1 and 2 take the row', () => {
+test('C168 (4): in a narrow place the 1/2 tiles stand two in a row, sizes 1 and 2 take the row', () => {
   const sheet = read('src/smart/tile-metric/scss/_smart__tile-metric.scss');
-  assert.match(sheet, /@media not all and \(min-width: map\.get\(bp\.\$breakpoint-array, sm\)\) \{\n\s*\.sf-tile-metric-grid \{\n\s*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/u);
-  assert.match(sheet, /\.sf-tile-metric-grid > sf-tile-metric:not\(\[size="1\/2"\]\) > \.sf-tile-metric \{\n\s*grid-column: 1 \/ -1;/u);
-  assert.match(sheet, /\.sf-tile-metric-grid \{\n\s*display: grid;[^}]*gap: var\(--sf-space-1\);/u, 'the cells keep C105 H6');
-  assert.ok(['1.4.0', '1.5.0'].includes(json('src/smart/tile-metric/component.json').version));
+  // The grid's own width at the container step g6, not the screen (C181 (2), DEV GB5 answers).
+  assert.doesNotMatch(sheet, /@media[^{]*(?:width|breakpoint)/u);
+  assert.match(sheet, /\.sf-tile-metric-grid \{[\s\S]*?container: sf-tile-metric-grid \/ inline-size;\n\s*display: grid;\n\s*inline-size: 100%;/u);
+  assert.match(sheet, /--sf-tile-metric-grid--narrow: clamp\(0px, \(#\{mq\.container-step\(g6\)\} - 100%\) \* 1000, \(100% - var\(--sf-tile-metric-grid--gap\)\) \/ 2\);/u);
+  assert.match(sheet, /@container sf-tile-metric-grid \(width < #\{mq\.container-step\(g6\)\}\) \{[\s\S]*?\.sf-tile-metric-grid > sf-tile-metric:not\(\[size="1\/2"\]\) > \.sf-tile-metric \{\n\s*grid-column: 1 \/ -1;/u);
+  assert.match(sheet, /--sf-tile-metric-grid--gap: var\(--sf-space-1\);[\s\S]*?\n\s*gap: var\(--sf-tile-metric-grid--gap\);/u, 'the cells keep C105 H6');
+  assert.ok(['1.5.1'].includes(json('src/smart/tile-metric/component.json').version));
 });

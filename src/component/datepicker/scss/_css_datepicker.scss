@@ -141,8 +141,12 @@
     grid-template-columns: auto minmax(0, 1fr) auto;
   }
 
+  /* The month and the year are two buttons of one group (C105 H5): the
+     actions role, 8 (4 compact). They stood 4 apart (gap-1/4 in the
+     template), the step of tags and toolbars (DEV GB5 answers, spacing gate). */
   .sf-datepicker .sf-datepicker-period {
     min-inline-size: 0;
+    gap: var(--sf-gap--actions);
   }
 
   .sf-datepicker .sf-datepicker-weekday {

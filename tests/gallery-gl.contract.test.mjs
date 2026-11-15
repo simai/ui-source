@@ -11,7 +11,7 @@ const manifest = JSON.parse(await read('src/smart/gallery/component.json'));
 const gallery = await read('src/smart/gallery/index.js');
 const viewer = await read('src/smart/gallery/js/viewer.js');
 const template = await read('src/smart/gallery/js/templates/default.js');
-const css = await read('src/smart/gallery/js/templates/default.css');
+const css = await read('src/smart/gallery/js/templates/default.scss');
 const figure = await read('src/component/figure/scss/_css__figure.scss');
 const core = await read('src/core/scss/_sf_css__placeholder.scss');
 const ru = JSON.parse(await read('src/smart/gallery/lang/ru.json')).runtime;
@@ -71,7 +71,10 @@ test('C150 (7): the full-screen black viewer: «3 / 12» at the start, zoom and 
   assert.match(viewer, /dialog\.addEventListener\('cancel', this\._onCancel\)/);
   assert.match(viewer, /Math\.abs\(dx\) > PAGE_SWIPE && Math\.abs\(dx\) > Math\.abs\(dy\)/);
   assert.match(viewer, /dy > CLOSE_SWIPE && dy > Math\.abs\(dx\)/);
-  assert.match(css, /@media not all and \(min-width: 44rem\) \{[\s\S]*?\.sf-gallery-viewer-side \{\s*display: none;/);
+  // The viewer's own width, not the screen's (C181 (2), DEV GB5 answers).
+  assert.match(css, /\.sf-gallery-viewer \{\s*container: sf-gallery-viewer \/ inline-size;/);
+  assert.match(css, /@container sf-gallery-viewer \(width < #\{mq\.container-step\(h1\)\}\) \{[\s\S]*?\.sf-gallery-viewer-side \{\s*display: none;/);
+  assert.doesNotMatch(css, /@media[^{]*width/);
   assert.match(gallery, /_returnTarget\(opener\)/);
 });
 

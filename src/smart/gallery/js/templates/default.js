@@ -1,5 +1,5 @@
 import { html, nothing } from 'lit';
-import './default.css';
+import './default.scss';
 
 // sf-gallery draws its pictures as the one picture tile of the Framework
 // (component.figure 1.3.0: .sf-figure--tile in a .sf-figure-grid, owner

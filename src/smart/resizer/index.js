@@ -122,6 +122,30 @@ const NARROW = 'data-sf-resizer-narrow';
 const SPLIT_STEP = 'var(--sf-h0)';
 let panelIds = 0;
 
+// The place a panel's columns stand in, whose width the split step reads
+// (C158 (4) on the columns' wrapper, DEV GB5 answers 2026-11-15): the panel's
+// parent, unless that box only wraps the columns and takes its width from
+// them -- an item of a flex row that does not grow, an inline box or a float
+// (two resizable columns in one wrapper, as an admin menu's) -- then the box
+// it stands in, and so on up. A container (container-type) is a place of its
+// own. Two columns side by side on a wide page keep their handles; a narrow
+// place, or a phone, hides them.
+function columnsPlace(parent) {
+  let box = parent;
+  while (box.parentElement && box.parentElement !== box.ownerDocument.documentElement) {
+    const style = getComputedStyle(box);
+    if (style.containerType && style.containerType !== 'normal') break;
+    const outer = getComputedStyle(box.parentElement);
+    const flexRow = /flex/u.test(outer.display) && !/column/u.test(outer.flexDirection);
+    // An inline-level box (inline-block, -flex, -grid) is as wide as its content.
+    const wraps = style.display.startsWith('inline-') || style.float !== 'none'
+      || (flexRow && Number(style.flexGrow) === 0 && style.position !== 'absolute' && style.position !== 'fixed');
+    if (!wraps) break;
+    box = box.parentElement;
+  }
+  return box;
+}
+
 // The handle placed outside a target that clips: absolute (against an
 // ancestor) or fixed (against the viewport); the measured place it is given.
 const OUTSIDE = 'data-sf-resizer-outside';
@@ -282,7 +306,8 @@ export class SfResizer extends ResizerElement {
   // handle is not there: the layout shows one panel at a time, and the width
   // the person chose waits for a wide screen. A region of .sf-workspace says
   // its layout itself (--sf-workspace--layout); any other panel is measured
-  // against the width of its container.
+  // against the width of its place (columnsPlace): the columns' wrapper,
+  // never the page (C181 (2), DEV GB5 answers).
   narrowCheck() {
     const target = this.target();
     let narrow = false;
@@ -293,8 +318,13 @@ export class SfResizer extends ResizerElement {
         : '';
       if (layout) narrow = layout === 'narrow';
       else {
-        const width = parent.getBoundingClientRect().width;
-        const step = pixels(SPLIT_STEP, parent) ?? 0;
+        const place = columnsPlace(parent);
+        if (place !== this._place) {
+          this._place = place;
+          if (place !== parent) this._observer?.observe(place);
+        }
+        const width = place.getBoundingClientRect().width;
+        const step = pixels(SPLIT_STEP, place) ?? 0;
         narrow = width > 0 && width < step;
       }
     }
@@ -412,6 +442,7 @@ export class SfResizer extends ResizerElement {
     this._languageOff = null;
     this._observer?.disconnect();
     this._observer = null;
+    this._place = null;
     globalThis.removeEventListener('resize', this._onWindowResize);
     document.removeEventListener?.('scroll', this._onScroll, {capture: true});
   }

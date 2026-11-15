@@ -60,7 +60,11 @@ down from size 1/3 up on a wide screen (`size="1/4"`, 16 px, in a ring of 1/3,
 24 px) and from 1/2 up on a phone and in a compact region, where a ring of 1/3
 is 20 px and its middle 12, below the smallest avatar. Size 1/4 has no avatar
 step below its 16 px: its middle is 8 px, so it holds neither an avatar nor the
-percentage -- put a ring of 1/4 beside the avatar, not around it.
+percentage -- put a ring of 1/4 beside the avatar, not around it. The
+avatar's box is the middle box at every size and density, and its initials
+take their size from it: at most half the box, the avatar's own size where the
+box is as large as its step (a size 1/3 avatar in a ring of 1/2 has 8 px
+letters in a compact region, where the middle is 16 px).
 
 A slotted avatar's presence point (`status="online"` or `away`) stands on the
 ring itself at 45 degrees, towards the bottom end corner, at the ring's own

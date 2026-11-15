@@ -287,10 +287,18 @@
   /* ── chip (C149 (1)): a message attachment. 48 high (the size 2 control),
      at most --sf-f8 (288, the popup ceiling of C32); the 32 holder (size
      1/2), the name in one line a step smaller, type · size under it, «×»
-     size 1/2; a framed plate. ── */
+     size 1/2; a framed plate.
+     The chip's inset (DEV GB5 answers, C105 / C145): the room between the
+     plate's edge and the holder, the same on every side -- the chip's height
+     less the holder's, halved (8; 6 compact) -- and the same room again from
+     the holder to the name, which keeps no padding of its own. It was 4 at
+     the start and 8 above the holder. The block padding stays 4: the plate
+     is the size 2 control's height and centres its row. ── */
   .sf-file-preview.sf-file-preview--chip {
-    --sf-file-preview--gap: var(--sf-file-preview-gap, var(--sf-space-1\/3));
-    --sf-file-preview--padding: var(--sf-file-preview-padding, var(--sf-space-1\/4));
+    --sf-file-preview--inset: calc((var(--sf-ui-2--control-height) - var(--sf-ui-1\/2--control-height)) / 2);
+    --sf-file-preview--gap: var(--sf-file-preview-gap, var(--sf-file-preview--inset));
+    --sf-file-preview--padding: var(--sf-file-preview-padding, var(--sf-file-preview--inset));
+    --sf-file-preview--padding-block: var(--sf-file-preview-padding, var(--sf-space-1\/4));
     --sf-file-preview--background-color: var(--sf-file-preview-background-color, var(--sf-surface-page));
 
     display: inline-grid;

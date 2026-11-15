@@ -1,6 +1,5 @@
-@use 'sass:map';
 @use '../../../core/scss/mix/mix__places' as places;
-@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
 
 // A tile is a place (C16): a cut-out and the dim ink on it take the card's.
 // In sf.base, so a utility on the tile still wins.
@@ -257,21 +256,34 @@ sf-tile-metric {
 }
 
 /* A row of tiles that wraps: columns at least min-width wide; the gap is the
-   one between cells (C105 H6, --sf-space-1). On a phone (below the sm step)
-   the small tiles go two in a row and sizes 1 and 2 take the whole row
-   (owner C168 (4), 2026-11-14). */
+   one between cells (C105 H6, --sf-space-1). In a narrow place (below the
+   container step g6, 32rem, the sm step it read from the screen before) the
+   small tiles go two in a row and sizes 1 and 2 take the whole row (owner
+   C168 (4), 2026-11-14). The grid's own width decides, not the screen's
+   (C181 (2), DEV GB5 answers): tiles in a narrow column of a wide page pair
+   up too.
+   A container query cannot style its container, so the grid's columns read
+   its own width (100%) in the track size: the switch is the page header's
+   clamp(0px, (100% - step) * 1000, ...) form, a column min-width wide at
+   and above the step and half the grid less half the gap below it. The grid
+   is the container its tiles' span reads; a container takes no width from
+   its content, so it fills its place (inline-size 100%, the width a block
+   grid already had). */
 .sf-tile-metric-grid {
+  --sf-tile-metric-grid--min: var(--sf-tile-metric-min-width, var(--sf-f4));
+  --sf-tile-metric-grid--gap: var(--sf-space-1);
+  --sf-tile-metric-grid--wide: clamp(0px, (100% - #{mq.container-step(g6)}) * 1000 + var(--sf-tile-metric-grid--min), var(--sf-tile-metric-grid--min));
+  --sf-tile-metric-grid--narrow: clamp(0px, (#{mq.container-step(g6)} - 100%) * 1000, (100% - var(--sf-tile-metric-grid--gap)) / 2);
+
+  container: sf-tile-metric-grid / inline-size;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--sf-tile-metric-min-width, var(--sf-f4))), 1fr));
-  gap: var(--sf-space-1);
+  inline-size: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(var(--sf-tile-metric-grid--wide), var(--sf-tile-metric-grid--narrow))), 1fr));
+  gap: var(--sf-tile-metric-grid--gap);
   align-items: stretch;
 }
 
-@media not all and (min-width: map.get(bp.$breakpoint-array, sm)) {
-  .sf-tile-metric-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
+@container sf-tile-metric-grid (width < #{mq.container-step(g6)}) {
   /* The host is display: contents once drawn: its tile is the grid item. */
   .sf-tile-metric-grid > :not(sf-tile-metric, [size="1/2"]),
   .sf-tile-metric-grid > sf-tile-metric:not([size="1/2"]),
