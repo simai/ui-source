@@ -75,11 +75,15 @@ long text is the author's call.
 </div>
 ```
 
-With the actions under the text, the space under the last button equals what
-the eye sees above the first line, the top of its capitals (C114 (5), NS-9):
-`.sf-alert-wrap` ends with `--sf-alert--lead + (--sf-text-height-1 - 1cap) / 2`
-under the buttons. Measured at 1440: 21.7 above the capitals, 22.8 under the
-button; on a phone 17.2 and 17.6.
+With the actions under the text, the space under the last button equals the
+space above the status icon's ink (1.3.4, owner decision C193, refining
+C114 (5), NS-9): `.sf-alert-wrap` ends with
+`--sf-alert--lead + (--sf-text-height-1 - 1cap) / 4` under the buttons. The
+icon's ink starts above the capitals, so the half room of 1.3.0 (`/ 2`, under
+the button as much as above the capitals) left the bottom deeper than the top
+the eye reads. Measured inside the border at 1440: 19 above the icon's ink,
+19.1 under the button (it was 22.2); compact and on a phone 14.5 and 14.5 (it
+was 16.9).
 
 ## Help link (1.2.1, owner decision C126)
 
@@ -174,3 +178,11 @@ Smart Alert keeps ownership of its own root without duplicate events.
 The line-size rule for icons reaches only the alert's own status icon, as its
 status colour does: an icon button inside the alert keeps its own glyph size
 (review R-N1, 2026-11-11).
+
+## Version notes (1.3.4, owner decision C193)
+
+- With the actions under the text, the wrap ends with a quarter of the room
+  around the capitals instead of a half: the space under the last button is the
+  space above the status icon's ink, 19 at 1440 and 14.5 compact and on a phone
+  (22.2 and 16.9 before). Nothing else moves; the row with the actions beside
+  the text keeps no inset under them.

@@ -51,7 +51,10 @@ of the toast's own width -- every toast of the notification area, which is
 on the title line, with the icon and the close. Narrower, or with two
 actions, the action stands under the text from its start, at
 `--sf-space-1/2` (12, phone 8), and the space under it equals the space above
-the capitals of the first line (C114 (5), NS-10). A toast with an action is a
+the status icon's ink (1.4.6, owner decision C193, refining C114 (5), NS-10):
+the container ends with `--sf-toast--lead + (--sf-text-height-1 - 1cap) / 4`,
+19.1 at 1440 and 14.5 compact and on a phone (it was 22.2 and 16.9, the space
+above the capitals). A toast with an action is a
 size query container (`container: sf-toast`). A title-only toast with one
 action is 58 at 1440 (46 on a phone); it was 98 (78).
 
@@ -252,3 +255,10 @@ status colour does: an icon button inside the toast keeps its own glyph size
   action is a button-link (C126 (1)), errors and warnings stay (C114 (6)), the
   action stands in the C115 place. C50's two actions, `data-action`, the timer
   pause and the SF.notify stack are kept.
+
+## Version notes (1.4.6, owner decision C193)
+
+- With the action under the text, the container ends with a quarter of the
+  room around the capitals instead of a half: the space under the action is
+  the space above the status icon's ink, as on sf-alert (19 at 1440, 14.5
+  compact and on a phone; 22.2 and 16.9 before).
