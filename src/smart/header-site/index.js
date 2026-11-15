@@ -4,8 +4,8 @@
 //
 // The bar is a frame. Its brand, navigation, actions and tools are the page's
 // own markup in slots, drawn with the Framework's components; the bar gives
-// them one row on the container's width and, below the `collapse` breakpoint,
-// a menu button that opens the navigation and the actions as a side panel.
+// them one row on the container's width and, below the `collapse` step of
+// its own width (a container condition, C181 (2)), a menu button that opens the navigation and the actions as a side panel.
 //
 // The side panel is a layer of the shared stack (standard simai.smart-component
 // 1.3.11 §19, core/js/layer-stack.js), registered the way sf-drawer registers:
@@ -112,6 +112,11 @@ class SfSiteHeader extends SiteHeaderElement {
     this.isOpen = false;
     this._media = null;
     this._onMedia = () => this.syncCollapsed();
+    // The bar's own width decides (the sheet's container condition); the
+    // observer tells the script when it changed. undefined: not answered yet.
+    this._collapsedNow = undefined;
+    this._sizeObserver = null;
+    this._observedHeader = null;
     this._outsideSwitch = false;
     this._switchFrame = 0;
     this._onResize = () => {
@@ -152,13 +157,21 @@ class SfSiteHeader extends SiteHeaderElement {
     bindSwitches();
     if (typeof globalThis.addEventListener === 'function') globalThis.addEventListener('resize', this._onResize, {passive: true});
     this._offSwitches?.();
-    this._offSwitches = this.onAfterRender(() => this.syncSwitches(), {once: false});
+    this._offSwitches = this.onAfterRender(() => {
+      this.observeSize();
+      this.syncCollapsed();
+      this.syncSwitches();
+    }, {once: false});
   }
 
   disconnectedCallback() {
     if (this.isOpen) this.finishClose({emit: false, restoreFocus: false});
     this._media?.removeEventListener?.('change', this._onMedia);
     this._media = null;
+    this._sizeObserver?.disconnect();
+    this._sizeObserver = null;
+    this._observedHeader = null;
+    this._collapsedNow = undefined;
     this.unwatchScroll();
     if (typeof globalThis.removeEventListener === 'function') globalThis.removeEventListener('resize', this._onResize);
     if (this._switchFrame) globalThis.cancelAnimationFrame?.(this._switchFrame);
@@ -170,31 +183,59 @@ class SfSiteHeader extends SiteHeaderElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     super.attributeChangedCallback(name, oldValue, newValue);
-    if (name === 'collapse' && oldValue !== newValue && this._isMounted) this.watchCollapse();
+    if (name === 'collapse' && oldValue !== newValue && this._isMounted) {
+      this._collapsedNow = undefined;
+      this.watchCollapse();
+    }
     if (name === 'sticky' && oldValue !== newValue && this._isMounted) this.watchScroll();
   }
 
-  // Whether the bar is collapsed now: the same answer as the sheet's media rule.
+  // Whether the bar is collapsed now: the sheet's own answer. The bar is the
+  // container of its parts, and below the `collapse` step of its width the
+  // sheet's container condition gives the row --sf-site-header--collapsed: 1
+  // (C181 (2), C104): the bar and the sf-menu in it read one width, the bar's,
+  // so a bar narrower than the window -- a column, a card, an example frame --
+  // collapses with its nav instead of leaving the nav to fold into its own
+  // button over the actions. Before the row is drawn, the window's step is the
+  // guess (core/js/breakpoints.js): a full-width bar gives the same answer.
   get collapsed() {
     if (this.collapse === 'always') return true;
     if (this.collapse === 'none') return false;
+    const row = this.header()?.querySelector(':scope > .sf-site-header-row');
+    if (row && typeof globalThis.getComputedStyle === 'function') {
+      return globalThis.getComputedStyle(row).getPropertyValue('--sf-site-header--collapsed').trim() === '1';
+    }
     return this._media ? !this._media.matches : false;
   }
 
   watchCollapse() {
     this._media?.removeEventListener?.('change', this._onMedia);
-    // Collapsed below the Framework's step (core/js/breakpoints.js, the sheet's
-    // own ladder; reuse audit 2026-11-02, finding 6); none has no step.
+    // The guess before the row is drawn, and a wake-up when the window
+    // crosses the step (the bar's width moves with it); none has no step.
     this._media = breakpointMedia(this.collapse);
     this._media?.addEventListener?.('change', this._onMedia);
     this.syncCollapsed();
   }
 
-  // The window crossed the breakpoint: the host says so, a horizontal sf-menu
-  // in the nav turns into a column while it stands in the panel, and an open
-  // panel the wide bar no longer has closes.
+  // The bar's width is watched where it is drawn: the <header> is the
+  // container the sheet's condition reads.
+  observeSize() {
+    const header = this.header();
+    if (!header || header === this._observedHeader || typeof ResizeObserver === 'undefined') return;
+    this._sizeObserver?.disconnect();
+    this._sizeObserver = new ResizeObserver(() => this.syncCollapsed());
+    this._sizeObserver.observe(header);
+    this._observedHeader = header;
+  }
+
+  // The bar crossed its step: the host says so, a horizontal sf-menu in the
+  // nav turns into a column while it stands in the panel, and an open panel
+  // the wide bar no longer has closes. Only a change acts, so the observer,
+  // the drawing and the window can all ask.
   syncCollapsed() {
     const collapsed = this.collapsed;
+    if (collapsed === this._collapsedNow) return;
+    this._collapsedNow = collapsed;
     this.sfHostState('data-collapsed', collapsed);
     // The settings among the tools stand in the bar or in the panel by the
     // bar's form: a change of form draws them again in their place.

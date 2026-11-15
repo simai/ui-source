@@ -86,10 +86,10 @@ test('header site C104: the bar keeps aria-expanded on the switch and draws no b
   assert.match(source, /&& !panel\?\.contains\(element\)\n\s+&& element\.getClientRects\(\)\.length > 0/u);
   assert.match(source, /ownMenuButton: !this\._outsideSwitch,/u);
   // Checked after every drawing, on resize (a frame, or at once without one), on open and on close.
-  assert.match(source, /this\._offSwitches = this\.onAfterRender\(\(\) => this\.syncSwitches\(\), \{once: false\}\);/u);
+  assert.match(source, /this\._offSwitches = this\.onAfterRender\(\(\) => \{\n\s+this\.observeSize\(\);\n\s+this\.syncCollapsed\(\);\n\s+this\.syncSwitches\(\);\n\s+\}, \{once: false\}\);/u);
   assert.match(source, /globalThis\.addEventListener\('resize', this\._onResize, \{passive: true\}\);/u);
   assert.match(source, /globalThis\.removeEventListener\('resize', this\._onResize\);/u);
-  assert.equal((source.match(/this\.syncSwitches\(\);/gu) || []).length, 4);
+  assert.equal((source.match(/this\.syncSwitches\(\);/gu) || []).length, 5);
   // Focus goes back to the switch when the bar drew no button.
   assert.match(source, /const button = this\.menuButton\(\) \?\? this\.outsideSwitch\(\);/u);
   assert.match(source, /return this\.collapsed \? \(this\.menuButton\(\) \?\? this\.outsideSwitch\(\)\) : null;/u);
@@ -103,4 +103,22 @@ test('header site C104: the docs name both settings and the version is a minor',
   const [major, minor] = component.version.split('.').map(Number);
   assert.ok(major === 1 && minor >= 9, component.version);
   assert.ok(component['x-decisions'].some((line) => line.startsWith('version 1.9.0 (2026-11-12, owner decision C104')));
+});
+
+test('header site C104 / C181 (2): collapse is a container step of the bar, and the script reads the sheet\'s answer', () => {
+  // The <header> is the container; no screen query collapses the bar any more.
+  assert.match(sheet, /container: sf-site-header \/ inline-size;/u);
+  assert.match(sheet, /@each \$step, \$container-step in \(sm: g6, md: h1, lg: h5, xl: h8\) \{\n  @container sf-site-header \(width < #\{mq\.container-step\(\$container-step\)\}\) \{\n    \.sf-site-header--collapse-#\{\$step\} \{\n      @include collapsed;/u);
+  assert.doesNotMatch(sheet, /@media not all and \(min-width/u);
+  assert.equal((sheet.match(/--sf-site-header--collapsed: 1;/gu) || []).length, 2, 'collapse-always and each step publish the answer');
+  // Every rule of the collapsed state styles a part inside the container, never the container itself.
+  for (const [, selector] of collapsed.matchAll(/^  (&[^{\n]*)\{/gmu)) assert.match(selector, /^&[^ ]* \S/u, `${selector} styles a part of the bar`);
+  assert.match(source, /getPropertyValue\('--sf-site-header--collapsed'\)\.trim\(\) === '1'/u);
+  assert.match(source, /this\._sizeObserver = new ResizeObserver\(\(\) => this\.syncCollapsed\(\)\);/u);
+  assert.match(source, /if \(collapsed === this\._collapsedNow\) return;/u);
+  assert.match(component.settings.collapse.summary, /own width/u);
+  // Below xl the row's gutter is the step the bar is at (the .container utility's own inset).
+  assert.match(sheet, /@each \$from, \$to, \$step in \(g6 h1 sm, h1 h5 md, h5 h8 lg\) \{\n  \$space: map\.get\(container\.\$container-array, \$step\);/u);
+  assert.match(sheet, /--sf-container--inset: var\(--sf-container-gutter, var\(--sf-space-#\{\$space\}\)\);/u);
+  assert.match(sheet, /@container sf-site-header \(width >= #\{mq\.container-step\(h8\)\}\) \{\n  \.sf-site-header-row \{\n    --sf-container--inset: initial;/u);
 });

@@ -49,7 +49,7 @@ const DENSITY = SCREEN.lg;
 // Components adapting to the screen, at a step of the breakpoint ladder, and why.
 const SCREEN_QUERIES = {
   // The page frame.
-  'src/smart/header-site': 'page frame: the site header',
+  'src/smart/header-site': 'page frame: the row\'s gutter and centring line up with the page column (.container) at each window step; the collapse itself is a container step of the bar (C104, C181 (2))',
   'src/smart/alert-bar': 'page frame: a site bar lines up with the page column (.container) at each window step',
   'src/smart/contents': 'page frame: below md the open list is a bottom sheet of the screen',
   'src/component/modal': 'page frame: below md a window is a sheet of the screen',
