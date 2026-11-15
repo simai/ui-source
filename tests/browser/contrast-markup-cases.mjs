@@ -67,6 +67,13 @@ FIXTURES.push(...ROLES.map((role) => `
 <div class="bg-surface-inverse-fixed color-on-surface-inverse-fixed"><p>Inverse: <code data-case="FW-B-5 code on bg-surface-inverse-fixed" data-need="4.5">code</code></p></div>
 <p>Page: <code data-case="FW-B-5 code on the page" data-need="4.5">code</code></p>`);
 
+// FW-B-6: the dim ink on the popup steps, as the utilities write it and as a
+// page writes the raw roles (the docs gate's static pairs): 4.07:1 on the
+// nested popup of the pair before C178 (step 5); the popup's step since.
+FIXTURES.push(...['popup', 'popup-nested'].map((place) => `
+<div class="bg-surface-${place}"><span class="color-on-surface-variant" data-case="FW-B-6 color-on-surface-variant on bg-surface-${place}" data-need="4.5">Dim text</span></div>
+<div style="background: var(--sf-surface-${place})"><span style="color: var(--sf-on-surface-variant)" data-case="FW-B-6 --sf-on-surface-variant on --sf-surface-${place}" data-need="4.5">Dim text</span></div>`));
+
 // The sheets a case needs, from the build output root.
 export function markupSheets(out) {
   return [

@@ -14,8 +14,11 @@
 //                      opaque surface role (page, area, well, card, raised,
 //                      popup, popup-nested, paper, inverse); a place with a
 //                      variant of its own (card, raised, popup, popup-nested)
-//                      is read with that variant; the generic variant there is
-//                      measured and reported, not required (C16 places);
+//                      is read with that variant, and the generic variant is
+//                      required there too (docs batch B FW-B-6: a page that
+//                      paints a popup step with the role and writes the
+//                      generic dim ink reads it, 4.07:1 on the nested popup
+//                      of the pair before C178);
 //   ink on a fill      the container fills (rest, hover, pressed, strong) are
 //                      translucent: each is laid over every opaque neutral
 //                      surface, and the ink, the container variant and the
@@ -99,7 +102,7 @@ function pairs() {
     add('--sf-on-surface-hover', surface, null, 4.5, true, 'ink on a surface');
     add('--sf-on-surface-active', surface, null, 4.5, true, 'ink on a surface');
     add('--sf-on-surface-icon', surface, null, 3, true, 'icon on a surface');
-    add('--sf-on-surface-variant', surface, null, 4.5, !OWN_VARIANT[place], 'ink on a surface');
+    add('--sf-on-surface-variant', surface, null, 4.5, true, 'ink on a surface');
     if (OWN_VARIANT[place]) add(`--sf-on-surface-${OWN_VARIANT[place]}`, surface, null, 4.5, true, 'ink on a surface');
     add('--sf-on-surface-disabled', surface, null, 4.5, false, 'disabled (exempt)');
     for (const fill of FILLS) {
