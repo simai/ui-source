@@ -1138,9 +1138,10 @@ class SfPagination extends PaginationElement {
     return this;
   }
 
-  // The more button's own control (sf-button draws a native button inside).
+  // The more button's own control: sf-button's host is display: contents (no
+  // box to observe or focus), so the native button it draws inside.
   moreButton() {
-    return this.querySelector(".sf-pagination-more .sf-pagination-more-button");
+    return this.querySelector(".sf-pagination-more .sf-pagination-more-button")?.querySelector("button, a") ?? null;
   }
 
   // load="auto": the more button asks for the next portion when a person
@@ -1201,7 +1202,7 @@ class SfPagination extends PaginationElement {
       this._moreFocus = false;
       return;
     }
-    const button = this.moreButton()?.querySelector("button, a");
+    const button = this.moreButton();
     const line = this.querySelector(".sf-pagination-more .sf-pagination-shown");
     if (button && !button.disabled) {
       this._moreFocus = false;
@@ -1209,7 +1210,19 @@ class SfPagination extends PaginationElement {
     } else if (!button && line) {
       this._moreFocus = false;
       line.focus({ preventScroll: true });
+    } else if (button) {
+      // sf-button draws its enabled state a frame after this element: ask
+      // again then, a few frames at most.
+      this._moreFocusTries = (this._moreFocusTries ?? 0) + 1;
+      if (this._moreFocusTries > 10) {
+        this._moreFocus = false;
+        this._moreFocusTries = 0;
+        return;
+      }
+      globalThis.requestAnimationFrame?.(() => this.keepMoreFocus());
+      return;
     }
+    this._moreFocusTries = 0;
   }
 
   // The action show-more (§4.4), vocabulary §5 load-more {direction: after}.
