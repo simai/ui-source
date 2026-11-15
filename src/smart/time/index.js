@@ -55,7 +55,9 @@ const DURATION = /^P(?:(\d+(?:[.,]\d+)?)W)?(?:(\d+(?:[.,]\d+)?)D)?(?:T(?:(\d+(?:
 // Where a time is one of many (C183 (2)): a list's item, a feed or a log of
 // entries (sf-list, sf-list-timeline, sf-list-attention, sf-alert-bar,
 // sf-list-feed).
-export const IN_LIST = 'li, [role="listitem"], [role="feed"], [role="log"]';
+// A table's cell is one of many too (C204, C183 (2) for tables): a column of
+// fifty times is not fifty more stops.
+export const IN_LIST = 'li, [role="listitem"], [role="feed"], [role="log"], td, th, [role="cell"], [role="gridcell"], [role="rowheader"], [role="columnheader"]';
 
 // The tooltips' ids, one per element on the page (stable across renders).
 let sequence = 0;
