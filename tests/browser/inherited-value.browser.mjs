@@ -151,10 +151,19 @@ try {
     await settle();
     await page.locator('#select .sf-list-item[data-value="kazan"]').click();
     await page.evaluate(() => {
+      // The colour field's native picker gave way to its own window (C84);
+      // where it is still there, a person's pick goes through it, otherwise
+      // through the field's value, as the window's pick does.
       const picker = document.querySelector('#color .sf-color-input');
-      picker.value = '#aa0000';
-      picker.dispatchEvent(new Event('input', {bubbles: true}));
-      picker.dispatchEvent(new Event('change', {bubbles: true}));
+      const host = document.getElementById('color');
+      if (picker) {
+        picker.value = '#aa0000';
+        picker.dispatchEvent(new Event('input', {bubbles: true}));
+        picker.dispatchEvent(new Event('change', {bubbles: true}));
+      } else {
+        host.value = '#aa0000';
+        host.dispatchEvent(new Event('change', {bubbles: true}));
+      }
     });
     await page.locator('#toggle .sf-switch-inner').click();
     await settle();
@@ -234,12 +243,16 @@ try {
           const g = button.querySelector('.sf-icon').getBoundingClientRect();
           probe.style.blockSize = '';
           button.append(probe);
+          probe.style.position = 'absolute';
           probe.style.inlineSize = 'var(--sf-field-action--inset)';
           const inset = probe.getBoundingClientRect().width;
           probe.style.inlineSize = '';
+          probe.style.position = '';
           document.body.append(probe);
           const border = parseFloat(getComputedStyle(field).borderTopWidth);
-          const chevron = kind === 'dropdown' ? host.querySelector('.sf-dropdown-field > button').getBoundingClientRect() : null;
+          // The chevron's glyph, not its hit area: two field actions side by side
+          // may overlap their invisible hit areas where the 24 floor widens both.
+          const chevron = kind === 'dropdown' ? host.querySelector('.sf-dropdown-field > button .sf-icon').getBoundingClientRect() : null;
           // The chevron's glyph keeps its axis: where it ends, from the field's
           // end, is what it is on the same dropdown without the state.
           const glyphEnd = (node) => node.querySelector('.sf-dropdown-field > button .sf-icon').getBoundingClientRect().right
@@ -253,7 +266,7 @@ try {
             inner: f.height - 2 * border,
             above: b.top - f.top - border, below: f.bottom - b.bottom - border,
             after: kind === 'input' ? f.right - g.right : null,
-            clearOfChevron: chevron ? b.right <= chevron.left + 0.5 : true,
+            clearOfChevron: chevron ? g.right <= chevron.left + 0.5 : true,
             inside: b.left >= f.left && b.right <= f.right + 0.5,
             axis: kind === 'dropdown' ? [glyphEnd(host), glyphEnd(plain)] : null,
           });
