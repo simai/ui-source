@@ -43,6 +43,20 @@ FIXTURES.push(...['light', 'dark'].map((inner) => `
   <span data-case="FW-B-2 text in theme-${inner} inside the other theme" data-need="4.5">Nested twice</span>
 </div></div>`));
 
+// FW-B-3: a slider arrow over its slide holds 3:1. The arrows of --light are
+// light circles with dark arrows in either theme; the ghost arrow (the former
+// link) drew no circle, its dark glyph on a dark slide. The glyph stands on
+// the slide (data-ground), not on an ancestor.
+FIXTURES.push(...['primary', 'secondary', 'tertiary'].flatMap((role) => [
+  ['light', 'ghost'], ['light', 'link'], ['dark', 'default'], ['', 'ghost'],
+].map(([look, button]) => `
+<div style="position: relative; block-size: 6rem">
+  <div id="slide-${role}-${look || 'bare'}-${button}" class="bg-${role}-container color-on-${role}-container" style="position: absolute; inset: 0">Slide</div>
+  <div class="sf-slider-arrows${look ? ` sf-slider-arrows--${look}` : ''}" style="position: absolute; inset-block-start: 1rem; inset-inline-start: 1rem">
+    <button type="button" class="sf-icon-button sf-icon-button--${button} sf-icon-button--on-surface sf-icon-button--icon sf-icon-button--size-1" aria-label="Next"><i class="sf-icon" aria-hidden="true" data-case="FW-B-3 arrow ${look || 'bare'} ${button} over bg-${role}-container" data-need="3" data-ground="#slide-${role}-${look || 'bare'}-${button}">keyboard_arrow_right</i></button>
+  </div>
+</div>`)));
+
 // The sheets a case needs, from the build output root.
 export function markupSheets(out) {
   return [

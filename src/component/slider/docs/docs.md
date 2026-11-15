@@ -138,3 +138,14 @@ square corner and stand `--sf-slider-thumbnails--space-between` apart.
 - With thumbnails, the controls over a picture stand over the slides only:
   the arrows are centred on the picture and the position sits at its bottom,
   not over the thumbnails.
+
+## The light circle of --light (1.2.1)
+
+- `.sf-slider-arrows--light` draws light circles with dark arrows in either
+  theme. The circle was the fill of a link icon button only; the arrows are
+  ghost buttons since sf-slider 1.1.10 (the former link), so a ghost arrow
+  had no circle and its dark glyph lay on the slide: 1.30-1.32:1 over a dark
+  slide in the dark theme (docs batch B, FW-B-3), under the 3:1 a control's
+  glyph needs. A ghost or link icon button in `--light` stands on the light
+  page surface, with the button's hover and press fill laid over it (as on
+  `--plate`): 11.17:1 in both themes.
