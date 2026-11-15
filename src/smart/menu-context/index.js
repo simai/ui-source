@@ -1187,7 +1187,9 @@ class SfContextMenu extends ContextMenuElement {
     // stands under the point is the place the menu belongs to: its density
     // (C22/C79) and where the focus goes back (CM-2). A point appended to
     // <body> had neither, so the menu came out normal in a compact table and
-    // the focus fell to <body>.
+    // the focus fell to <body>. Where it does not fit, core positioning
+    // turns it to the other side of the point (C164 (1)): left of it at the
+    // right edge, above it at the bottom edge.
     const point = pointOf(anchor, this);
     const place = point?.under ?? anchor;
     // Focus goes back where it was, or to the control that opened the menu
