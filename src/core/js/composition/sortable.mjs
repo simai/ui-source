@@ -29,6 +29,16 @@ function nextHelpId() {
 }
 const DRAG_THRESHOLD = 4;
 const EDGE = 32;
+/**
+ * The drop line: one line two pixels thick for every place something lands --
+ * a list's gap, a grid cell's side, a canvas seam of the editor overlay (owner
+ * C171 (4), 2026-11-14: the overlay drew three). Its look is one rule,
+ * .sf-sortable-indicator, in sf-sortable's sheet, which the overlay's rule
+ * loads with it.
+ */
+export const SORTABLE_DROP_LINE = 2;
+const LINE = SORTABLE_DROP_LINE;
+const HALF = SORTABLE_DROP_LINE / 2;
 
 const MESSAGES = {
   ru: {
@@ -108,7 +118,7 @@ function scrollContainer(element) {
 }
 
 function indicator() {
-  let line = globalThis.document.querySelector('.sf-sortable-indicator');
+  let line = globalThis.document.querySelector('.sf-sortable-indicator:not([data-sf-drop-line-owner])');
   if (!line) {
     line = globalThis.document.createElement('div');
     line.className = 'sf-sortable-indicator';
@@ -247,13 +257,13 @@ function wrappedIndicatorRect(list, all, index) {
   const after = all[index - 1];
   if (before) {
     const target = before.getBoundingClientRect();
-    return { left: target.left - 1, top: target.top, width: 2, height: target.height };
+    return { left: target.left - HALF, top: target.top, width: LINE, height: target.height };
   }
   if (after) {
     const target = after.getBoundingClientRect();
-    return { left: target.right - 1, top: target.top, width: 2, height: target.height };
+    return { left: target.right - HALF, top: target.top, width: LINE, height: target.height };
   }
-  return { left: box.left, top: box.top, width: 2, height: box.height };
+  return { left: box.left, top: box.top, width: LINE, height: box.height };
 }
 
 function listIndicatorRect(list, all, index, horizontal) {
@@ -262,10 +272,10 @@ function listIndicatorRect(list, all, index, horizontal) {
   const after = all[index - 1];
   if (horizontal) {
     const x = before ? before.getBoundingClientRect().left : after ? after.getBoundingClientRect().right : box.left;
-    return { left: x - 1, top: box.top, width: 2, height: box.height };
+    return { left: x - HALF, top: box.top, width: LINE, height: box.height };
   }
   const y = before ? before.getBoundingClientRect().top : after ? after.getBoundingClientRect().bottom : box.top;
-  return { left: box.left, top: y - 1, width: box.width, height: 2 };
+  return { left: box.left, top: y - HALF, width: box.width, height: LINE };
 }
 
 // An sf-sortable list sends the new name and its aliases.json sends the old
@@ -759,11 +769,11 @@ export function attachSortable(container, options = {}) {
       if (index > session.originalIndex && after) left = after.right - width;
       else left = before ? before.left : (after ? after.right - width : extent.left);
     } else {
-      left = (before ? before.left : after ? after.right : extent.left) - 1;
+      left = (before ? before.left : after ? after.right : extent.left) - HALF;
     }
     Object.assign(outline().style, {
       left: `${left}px`, top: `${extent.top}px`,
-      width: preview === 'column' ? `${width}px` : '2px', height: `${extent.height}px`,
+      width: preview === 'column' ? `${width}px` : `${LINE}px`, height: `${extent.height}px`,
     });
   };
 
@@ -854,4 +864,4 @@ export function attachSortable(container, options = {}) {
   };
 }
 
-export default { SORTABLE_MOVE_EVENT, activeSortableSession, attachSortable, defineSortable, registerSortableDropTarget, sortableIndexAt };
+export default { SORTABLE_DROP_LINE, SORTABLE_MOVE_EVENT, activeSortableSession, attachSortable, defineSortable, registerSortableDropTarget, sortableIndexAt };
