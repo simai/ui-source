@@ -117,9 +117,9 @@ test('the sheet: one rung, the container widths, 44px under a coarse pointer, th
   assert.doesNotMatch(sheet, /#[0-9a-f]{3,8}\b|rgb\(/iu);
 });
 
-test('sf-steps 1.4.1 (C101, C105): the wizard row is a row, its reachable steps buttons, the states in today\'s words', () => {
+test('sf-steps 1.4.3 (C101, C105, C61 round 5): the wizard row is a row, its reachable steps buttons, the states in today\'s words', () => {
   const steps = json('src/smart/steps/component.json');
-  assert.equal(steps.version, '1.4.1');
+  assert.equal(steps.version, '1.4.3');
   assert.deepEqual(steps.settings.items.of.state.values, ['done', 'ahead', 'skipped', 'running', 'error', 'completed', 'default']);
   const template = read('src/smart/wizard/js/templates/default.js');
   assert.match(template, /layout="row" navigation="free"/u);
