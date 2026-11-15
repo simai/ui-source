@@ -560,10 +560,10 @@
   }
 }
 
-/* layout row (C165 (3)): side by side, the groups' gap between them (C105
+/* flow row (C165 (3)): side by side, the groups' gap between them (C105
    H6, --sf-space-1: 16, compact and phone 12); a row that does not fit
    wraps. */
-.sf-choice--list[data-layout='row'] .sf-choice-options {
+.sf-choice--list[data-flow='row'] .sf-choice-options {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: flex-start;
@@ -572,9 +572,10 @@
 
 /* In a narrow field (a phone: below the container step g2, 24rem, 384 px)
    a row is a column again (C165 (3)); a form's half column (28rem and up)
-   keeps the row. */
+   keeps the row. Written as the number: this line has no container-step()
+   yet; the group build writes #{mq.container-step(g2)}. */
 @container sf-choice (inline-size < 24rem) {
-  .sf-choice--list[data-layout='row'] .sf-choice-options {
+  .sf-choice--list[data-flow='row'] .sf-choice-options {
     flex-direction: column;
   }
 }

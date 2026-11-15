@@ -78,11 +78,18 @@
       "layout": {
         "type": "string",
         "default": "tile",
-        "description": "How the cards stand (owner decision C28). tile: cards in the grid, the control at the end of the name line, name, description and price on one left edge, the price at the foot after a divider (plans, modules). list: one frame of rows divided by lines, the control at the start, price and term a column at the end of the name line (delivery, payment); columns does not apply. picture: tiles whose image runs to the edges, the caption under it and the control at the end of the caption's name line; in a field narrower than 30rem (a phone) each tile is a row, the image at its start. Under appearance list (C165 (3)) the rows' layout: auto -- a row for up to three short options (a name of at most 20 characters, no caption), else a column; row -- side by side, --sf-space-1 apart (C105 H6), wrapping where they do not fit and a column in a field narrower than 24rem (a phone; the container step g2); column -- one under another. A cards value there is auto, and auto, row or column under cards is tile.",
+        "description": "How the cards stand (owner decision C28). tile: cards in the grid, the control at the end of the name line, name, description and price on one left edge, the price at the foot after a divider (plans, modules). list: one frame of rows divided by lines, the control at the start, price and term a column at the end of the name line (delivery, payment); columns does not apply. picture: tiles whose image runs to the edges, the caption under it and the control at the end of the caption's name line; in a field narrower than 30rem (a phone) each tile is a row, the image at its start.",
         "enum": [
           "tile",
           "list",
-          "picture",
+          "picture"
+        ]
+      },
+      "flow": {
+        "type": "string",
+        "default": "auto",
+        "description": "How the rows of appearance list stand (C165 (3)); read only under list, layout stays the cards'. auto -- a row for up to three short options (a name of at most 20 characters, no caption), else a column; row -- side by side, --sf-space-1 apart (C105 H6), wrapping where they do not fit and a column in a field narrower than 24rem (the container step g2: a phone, while a form's half column keeps the row); column -- one under another.",
+        "enum": [
           "auto",
           "row",
           "column"
@@ -292,11 +299,7 @@
     "responsive": [
       "desktop",
       "mobile"
-    ],
-    "skeleton": {
-      "shape": "block",
-      "while_loading": "none"
-    }
+    ]
   },
   "adapter": {
     "kind": "generic",
@@ -340,19 +343,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-choice/index.js",
-        "sha256": "4bc1b08631ab4544bd6750aa29600bf308291c2c5c93aa68981d3d3300cda080"
+        "sha256": "afec2b7ef4d6ec6bf9d9cb614acea51413abd10d3fcf6d1ba305d6bc2dd20025"
       },
       {
         "path": "src/smart/input-choice/js/templates/default.js",
-        "sha256": "00576c24bfd686cbc40d90c45643019afec5ad86d6f97e7bf722b2ce3e7966f0"
+        "sha256": "6f7ba1e37505074ca2932039817dcb77e37e2ec8f96f360a807c44c871731a0b"
       },
       {
         "path": "src/smart/input-choice/js/choice-model.mjs",
-        "sha256": "484998807742ef285580166bda3c5fb864e45db2633cb55bb04f06a1e1b33de2"
+        "sha256": "7abf240b6297e650ef03382b82c043b60b8233f65d9c898e08cf9fcb8aa1e848"
       },
       {
         "path": "src/smart/input-choice/scss/_smart__choice.scss",
-        "sha256": "8403de753fa3c5c9c41ccabd282e0d43701b85cb094b4b0ecc570f907b26480d"
+        "sha256": "6c8fe6c6932315b19da4609c451a07764a2298964d968fd139351e5bde272af5"
       },
       {
         "path": "src/smart/input-choice/rule.js",
@@ -360,7 +363,7 @@
       },
       {
         "path": "src/smart/input-choice/docs.md",
-        "sha256": "c5c85be90f0f2eb98961c027b1e2576b25550a59abd16d81c5845b71970d8b5d"
+        "sha256": "9e1bb8689e945cffb7943f4125fef7d817ac7da1f09b7f244c721b21d6984a71"
       }
     ],
     "generated_runtime": []

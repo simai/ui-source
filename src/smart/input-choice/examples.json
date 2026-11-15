@@ -427,7 +427,7 @@
         "required": true,
         "invalid": true,
         "error-message": "Выберите хотя бы один способ.",
-        "layout": "column",
+        "flow": "column",
         "items": [
           {
             "value": "mail",

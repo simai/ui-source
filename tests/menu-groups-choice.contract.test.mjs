@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {currentItemId, itemsFromList, normaliseItems, openBranches, withoutGroups} from '../src/smart/menu/items.mjs';
-import {CHOICE_LAYOUTS, CHOICE_LIST_LAYOUTS, applyChoice, formatValue, normaliseItems as choiceItems, orderValues, parseValue} from '../src/smart/input-choice/js/choice-model.mjs';
+import {CHOICE_LAYOUTS, applyChoice, formatValue, normaliseItems as choiceItems, orderValues, parseValue} from '../src/smart/input-choice/js/choice-model.mjs';
 
 // Larena's section navigation (msg-993e1e39 item 4) on sf-menu 1.3.0 and its
 // choice cards (item 3) as sf-input-choice 1.0.0: the data halves, in Node.
@@ -93,7 +93,7 @@ test('sf-input-choice 1.1.0 (C28): price, term and image; three layouts', () => 
   assert.deepEqual([one.caption, one.price, one.term, one.image, one.badge], ['Больше 2 000 пунктов', '150 ₽', '1–2 дня', '/t.svg', 'Выгодно']);
   assert.deepEqual([...CHOICE_LAYOUTS], ['tile', 'list', 'picture']);
   const manifest = JSON.parse(read('src/smart/input-choice/component.json'));
-  assert.deepEqual(manifest.settings.layout.values, [...CHOICE_LAYOUTS, ...CHOICE_LIST_LAYOUTS]);
+  assert.deepEqual(manifest.settings.layout.values, [...CHOICE_LAYOUTS]);
   assert.equal(manifest.settings.layout.default, 'tile');
   const template = read('src/smart/input-choice/js/templates/default.js');
   // The real controls: the class radio and checkbox at size 1, sf-badge, no drawn ring.

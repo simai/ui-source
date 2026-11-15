@@ -109,7 +109,7 @@ function renderCard(context, item, index) {
 // control/research/2026-11-14-checks.md, prototype checks-study.html#q-group
 // and #q-inline): the ready group of checks or radios.
 //
-//   div.sf-choice[data-appearance=list][data-layout=row|column]
+//   div.sf-choice[data-appearance=list][data-flow=row|column]
 //     div.sf-choice-heading           the heading (text 1, medium), «*», «?»
 //     span.sf-choice-hint             the hint under the heading
 //     div.sf-choice-options           role radiogroup (single) or group (multiple)
@@ -161,7 +161,7 @@ function renderListTemplate(context) {
   const error = context.invalid && context.errorMessage ? context.errorMessage : '';
   const described = [context.hint ? hintId : '', error ? messageId : ''].filter(Boolean).join(' ');
   return html`<div class=${joinClasses('sf-choice', 'sf-choice--list', context.multiple ? 'sf-choice--multiple' : '', context.invalid ? 'sf-choice--invalid' : '', context.fieldDisabled ? 'sf-choice--disabled' : '', context.rootClass)}
-                   style=${context.rootStyle || nothing} data-appearance="list" data-layout=${context.layout}>
+                   style=${context.rootStyle || nothing} data-appearance="list" data-flow=${context.flow}>
     ${context.label
       ? html`<div class="sf-choice-heading"><span class="sf-choice-heading-text" id=${labelId}>${context.label}${context.required
         ? html`<span class="sf-choice-required" aria-hidden="true">*</span>`

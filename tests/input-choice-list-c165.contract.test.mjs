@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {CHOICE_APPEARANCES, CHOICE_LIST_LAYOUTS, ROW_MOST, SHORT_OPTION_LENGTH, listLayout} from '../src/smart/input-choice/js/choice-model.mjs';
+import {CHOICE_APPEARANCES, CHOICE_FLOWS, ROW_MOST, SHORT_OPTION_LENGTH, listFlow} from '../src/smart/input-choice/js/choice-model.mjs';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const manifest = JSON.parse(read('src/smart/input-choice/component.json'));
@@ -30,25 +30,30 @@ test('C165 (1): appearance cards (default) or list; help after the heading', () 
   assert.match(list, /aria-describedby=\$\{described \|\| nothing\}/u);
 });
 
-test('C165 (3): layout auto puts up to three short options in a row, more in a column', () => {
-  assert.deepEqual([...CHOICE_LIST_LAYOUTS], ['auto', 'row', 'column']);
+test('C165 (3): flow auto puts up to three short options in a row, more in a column', () => {
+  assert.deepEqual([...CHOICE_FLOWS], ['auto', 'row', 'column']);
   assert.equal(ROW_MOST, 3);
   const short = (n) => Array.from({length: n}, (_, i) => ({label: `Вариант ${i}`}));
-  assert.equal(listLayout('auto', short(2)), 'row');
-  assert.equal(listLayout('auto', short(3)), 'row');
-  assert.equal(listLayout('auto', short(4)), 'column');
-  assert.equal(listLayout('auto', [{label: 'Да'}, {label: 'Нет', caption: 'пояснение'}]), 'column');
-  assert.equal(listLayout('auto', [{label: 'x'.repeat(SHORT_OPTION_LENGTH + 1)}, {label: 'Нет'}]), 'column');
-  assert.equal(listLayout('row', short(5)), 'row');
-  assert.equal(listLayout('column', short(2)), 'column');
-  // A cards value under list is auto.
-  assert.equal(listLayout('tile', short(2)), 'row');
+  assert.equal(listFlow('auto', short(2)), 'row');
+  assert.equal(listFlow('auto', short(3)), 'row');
+  assert.equal(listFlow('auto', short(4)), 'column');
+  assert.equal(listFlow('auto', [{label: 'Да'}, {label: 'Нет', caption: 'пояснение'}]), 'column');
+  assert.equal(listFlow('auto', [{label: 'x'.repeat(SHORT_OPTION_LENGTH + 1)}, {label: 'Нет'}]), 'column');
+  assert.equal(listFlow('row', short(5)), 'row');
+  assert.equal(listFlow('column', short(2)), 'column');
+  // Anything else is auto.
+  assert.equal(listFlow('', short(2)), 'row');
+  assert.deepEqual(manifest.settings.flow.values, [...CHOICE_FLOWS]);
+  assert.equal(manifest.settings.flow.default, 'auto');
+  assert.deepEqual(manifest.settings.layout.values, ['tile', 'list', 'picture']);
+  // No own loading skeleton (owner route msg-be707cc5).
+  assert.equal(manifest['x-registry'].presentation.skeleton, undefined);
 });
 
 test('C165 (3): the row is the groups gap apart and a column in a narrow field; rows of the step', () => {
   const sheet = read('src/smart/input-choice/scss/_smart__choice.scss');
-  assert.match(sheet, /\.sf-choice--list\[data-layout='row'\] \.sf-choice-options \{[^}]*column-gap: var\(--sf-space-1\);/u);
-  assert.match(sheet, /@container sf-choice \(inline-size < (?:24rem|#\{mq\.container-step\(g2\)\})\) \{\s*\.sf-choice--list\[data-layout='row'\] \.sf-choice-options \{\s*flex-direction: column;/u);
+  assert.match(sheet, /\.sf-choice--list\[data-flow='row'\] \.sf-choice-options \{[^}]*column-gap: var\(--sf-space-1\);/u);
+  assert.match(sheet, /@container sf-choice \(inline-size < (?:24rem|#\{mq\.container-step\(g2\)\})\) \{\s*\.sf-choice--list\[data-flow='row'\] \.sf-choice-options \{\s*flex-direction: column;/u);
   assert.match(sheet, /--sf-choice--row-pad: calc\(\(var\(--sf-ui-1--control-height\) - var\(--sf-text-height-1\)\) \/ 2\);/u);
   assert.match(sheet, /max\(var\(--sf-ui-1--control-height\), var\(--sf-d1\)\)/u);
 });

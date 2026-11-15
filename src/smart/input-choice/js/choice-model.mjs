@@ -21,12 +21,12 @@ export const CHOICE_LAYOUTS = Object.freeze(['tile', 'list', 'picture']);
 // and the error under the last row.
 export const CHOICE_APPEARANCES = Object.freeze(['cards', 'list']);
 
-// How the rows of appearance list stand (C165 (3)): row -- side by side, 16
-// apart (C105 H6), a column again in a narrow field (a phone); column -- one
-// under another; auto -- a row for up to three short options, else a column.
-// The layout setting holds these beside the cards' tile, list and picture:
-// the two sets do not overlap, and each appearance reads its own.
-export const CHOICE_LIST_LAYOUTS = Object.freeze(['auto', 'row', 'column']);
+// How the rows of appearance list stand: the flow setting (C165 (3); name by
+// the dispatcher 2026-11-15, read only under appearance list; layout stays
+// the cards' tile, list and picture). row -- side by side, 16 apart (C105 H6),
+// a column again in a narrow field (a phone); column -- one under another;
+// auto -- a row for up to three short options, else a column.
+export const CHOICE_FLOWS = Object.freeze(['auto', 'row', 'column']);
 
 // «Short» for auto (C165 (3), prototype checks-study.html#q-inline: «Да /
 // Нет», «Физлицо / Организация»): an option of one name line, no
@@ -34,9 +34,9 @@ export const CHOICE_LIST_LAYOUTS = Object.freeze(['auto', 'row', 'column']);
 export const SHORT_OPTION_LENGTH = 20;
 export const ROW_MOST = 3;
 
-// The layout a list draws: row or column as asked; auto a row for up to three
-// short options (no description, a short name), else a column.
-export function listLayout(asked, items) {
+// The flow a list draws: row or column as asked; auto (or anything else) a row
+// for up to three short options (no description, a short name), else a column.
+export function listFlow(asked, items) {
   if (asked === 'row' || asked === 'column') return asked;
   const list = Array.isArray(items) ? items : [];
   const short = list.length > 0 && list.length <= ROW_MOST

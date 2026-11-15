@@ -4,7 +4,7 @@ import {html} from 'lit';
 // (owner decision C165 (1): «sf-form рисует поля выбора через неё», names by
 // the dispatcher 2026-11-14): sf-input-choice appearance="list". A choice of
 // one is a column of radios, a choice of several a column of checks, up to
-// three short options in a row (layout auto, C165 (3)). The form keeps its own
+// three short options in a row (flow auto, C165 (3)). The form keeps its own
 // label row (label, «*», «?») and hint over and under the field, as for every
 // other field; the group is named by the same words (aria-label) and says its
 // error itself under its last row (sf-input-choice is one of the speaking
