@@ -67,7 +67,7 @@ test('C177 (8): the pack is what the public schema says', () => {
   }
 });
 
-test('C177 (7): the Kazakh pilot - draft, nearly whole, 11-14 KB, the gaps named', () => {
+test('C177 (7): the Kazakh pilot - draft, nearly whole, 11-16 KB, the gaps named', () => {
   const pack = json('src/core/lang/kk.json');
   assert.equal(pack.lang, 'kk');
   assert.equal(pack.status, 'draft', 'a machine draft until a native speaker reads it');
@@ -84,7 +84,8 @@ test('C177 (7): the Kazakh pilot - draft, nearly whole, 11-14 KB, the gaps named
     assert.deepEqual(Object.keys(pack.words[id] ?? {}).filter((key) => ['inherited', 'reset', 'described'].includes(key)).sort(), ['described', 'inherited', 'reset'], id);
   }
   const gzip = gzipSync(readFileSync(new URL('../src/core/lang/kk.json', import.meta.url)), {level: 9}).length;
-  assert.ok(gzip >= 9000 && gzip <= 14336, `kk.json gzip ${gzip}`);
+  // 16 KB since group build 7 (its branches add 116 words; the languages-kk evidence asked to raise the cap or split the pack).
+  assert.ok(gzip >= 9000 && gzip <= 16384, `kk.json gzip ${gzip}`);
   // Kazakh nouns stay singular after a number: one and other say the same.
   for (const words of Object.values(pack.words)) {
     for (const word of Object.values(words)) {

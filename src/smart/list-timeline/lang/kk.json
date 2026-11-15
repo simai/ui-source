@@ -13,6 +13,9 @@
     "state-done": "Өтті",
     "state-current": "Қазір",
     "state-upcoming": "Алда",
+    "step-status-success": "сәтті",
+    "step-status-warning": "ескертумен",
+    "step-status-error": "қатемен",
     "run-changes": {
       "one": "Тағы {n} өзгеріс",
       "other": "Тағы {n} өзгеріс"

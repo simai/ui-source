@@ -1,6 +1,7 @@
 {
   "runtime": {
     "close-label": "Панельді жабу",
-    "handle-label": "Панель биіктігін өзгерту"
+    "handle-label": "Панель биіктігін өзгерту",
+    "back-label": "Артқа"
   }
 }

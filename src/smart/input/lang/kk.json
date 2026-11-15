@@ -14,7 +14,8 @@
     "step-mismatch": "Мән қадамы — {step}",
     "bad-input": "Сан енгізіңіз",
     "count-text": "{count} / {max}",
-    "help": "Толығырақ: {label}"
+    "help": "Толығырақ: {label}",
+    "caps-lock": "Caps Lock қосулы"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",

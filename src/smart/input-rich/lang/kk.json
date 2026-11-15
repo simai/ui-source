@@ -13,6 +13,9 @@
     "quote": "Дәйексөз",
     "undo": "Болдырмау",
     "redo": "Қайтару",
+    "not-in-list": "Тізімде қолжетімсіз",
+    "nothing-to-undo": "Болдырмайтын ештеңе жоқ",
+    "nothing-to-redo": "Қайталайтын ештеңе жоқ",
     "link-dialog": "Сілтеме",
     "link-address": "Сілтеме мекенжайы",
     "link-hint": "https://…, mailto:, tel: немесе осы сайттағы жол, мысалы /about",
@@ -22,6 +25,8 @@
     "value-missing": "Өрісті толтырыңыз",
     "count-text": "{count} / {max}",
     "too-long": "{max} таңбадан аспауы керек",
-    "help": "Толығырақ: {label}"
+    "help": "Толығырақ: {label}",
+    "text-level": "Мәтін деңгейі",
+    "more": "Тағы"
   }
 }

@@ -36,6 +36,7 @@ export const LEGACY_IDS = Object.freeze({
   'component/country-code': 'sf-input-country',
   'component/download-file': 'download-file',
   'component/file-upload': 'sf-file-upload',
+  'component/kbd': 'sf-kbd',
   'component/highlight': 'sf-highlight',
   'component/modal': 'sf-modal',
   'component/quantity': 'sf-quantity',

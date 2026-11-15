@@ -21,6 +21,8 @@
     "retry": "Қайталау",
     "loadMore": "Тағы жүктеу",
     "removeFile": "Жою",
+    "fileRemoved": "Файл алып тасталды",
+    "undo": "Қайтару",
     "passwordSet": "Орнатылған",
     "passwordUnset": "Орнатылмаған",
     "passwordKeep": "Орнатылған; ауыстыру үшін жаңасын енгізіңіз",

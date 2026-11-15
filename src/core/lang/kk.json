@@ -9,9 +9,9 @@
   "status": "draft",
   "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
   "coverage": {
-    "words": 1073,
-    "translated": 979,
-    "share": 91.2
+    "words": 1192,
+    "translated": 1191,
+    "share": 99.9
   },
   "words": {
     "download-file": {
@@ -37,6 +37,10 @@
         "other": "терабайт"
       }
     },
+    "sf-accordion": {
+      "expandAll": "Барлығын ашу",
+      "collapseAll": "Барлығын жию"
+    },
     "sf-admin-menu": {
       "collapse": "Жию",
       "expand": "Ашу"
@@ -61,7 +65,17 @@
       "count": "Маңызды хабарламалар: {count}"
     },
     "sf-avatar": {
-      "aria-label": "Аватар"
+      "aria-label": "Аватар",
+      "status-online": "желіде",
+      "status-away": "уақытша жоқ",
+      "status-offline": "желіде емес"
+    },
+    "sf-avatar-group": {
+      "group-label": "Қатысушылар: {n}",
+      "more-label": {
+        "one": "Тағы {n} қатысушы",
+        "other": "Тағы {n} қатысушы"
+      }
     },
     "sf-badge": {
       "activity-running": "Орындалуда",
@@ -161,9 +175,46 @@
       "status-warning": "ескертулер бар",
       "status-success": "дайын"
     },
+    "sf-display-settings": {
+      "label-text": "Көрсету баптаулары",
+      "text-label": "Мәтін",
+      "text-smaller": "Мәтінді кішірейту",
+      "text-larger": "Мәтінді үлкейту",
+      "text-smaller-mark": "А−",
+      "text-larger-mark": "А+",
+      "text-value": "{value} %",
+      "colour-label": "Түс",
+      "scheme-site": "Сайттағыдай",
+      "scheme-black-on-white": "Ақ фонда қара",
+      "scheme-white-on-black": "Қара фонда ақ",
+      "scheme-yellow-on-black": "Қара фонда сары",
+      "scheme-blue-on-sky": "Көгілдір фонда көк",
+      "scheme-brown-on-cream": "Кремді фонда қоңыр",
+      "colour-system": "Түстерді жүйе береді",
+      "spacing-label": "Аралықтар",
+      "spacing-normal": "Қалыпты",
+      "spacing-wide": "Кеңірек",
+      "images-label": "Суреттер",
+      "images-colour": "Түрлі түсті",
+      "images-grey": "Ақ-қара",
+      "images-hide": "Жасыру",
+      "motion-label": "Қозғалыс",
+      "motion-system": "Жүйедегідей",
+      "motion-reduce": "Тоқтату",
+      "motion-device": "Құрылғы қозғалысты онсыз да азайтады",
+      "font-label": "Қаріп",
+      "site-font": "Сайттікі",
+      "sans-font": "Кертіксіз",
+      "serif-font": "Кертікті",
+      "links-label": "Сілтемелер",
+      "underline-links": "Астын сызу",
+      "reset-text": "Қалыпты нұсқа",
+      "skip-link-text": "Мазмұнға өту"
+    },
     "sf-drawer": {
       "close-label": "Панельді жабу",
-      "handle-label": "Панель биіктігін өзгерту"
+      "handle-label": "Панель биіктігін өзгерту",
+      "back-label": "Артқа"
     },
     "sf-dropdown": {
       "inherited": "мұраланады",
@@ -178,9 +229,18 @@
       "apply": "Қолдану",
       "code": "Код",
       "editing": "{label}: өңделуде. Enter — сақтау, Escape — болдырмау.",
+      "editing-block": "{label}: өңдеу. Enter — жаңа блок, Escape — болдырмау.",
       "em": "Курсив",
       "invalid": "Сілтеме мекенжайы жарамсыз",
       "link": "Сілтеме",
+      "link-empty": "Сілтеме мекенжайын енгізіңіз",
+      "link-hint": "https://…, mailto:, tel: немесе осы сайттағы жол, мысалы /about",
+      "link-long": "Мекенжай {max} таңбадан ұзын",
+      "link-scheme": "Мұндай мекенжайға болмайды: https://, mailto: немесе tel: арқылы бастаңыз",
+      "link-slashes": "Осы сайттағы мекенжай бір қиғаш сызықпен / басталады",
+      "link-spaces": "Бос орындарды алып тастаңыз: мекенжайда олар болмайды",
+      "link-start": "Мекенжайдың басы жоқ: https:// немесе осы сайт беті үшін /",
+      "more": "Тағы",
       "strong": "Қалың",
       "toolbar": "Пішімдеу",
       "unlink": "Сілтемені алып тастау",
@@ -188,9 +248,12 @@
     },
     "sf-editor-overlay": {
       "cancelled": "Жылжыту болдырылмады.",
+      "dropped": "Жылжытылды: {label}. {place}.",
       "editing": "Өңделуде: {label}. Enter — сақтау, Escape — болдырмау.",
       "insert": "Кірістіру",
+      "insert-after": "«{label}» кейін кірістіру",
       "insert-at": "«{slot}» ішіне кірістіру, орны: {index}",
+      "more": "Тағы",
       "picked": "Жылжытылуда: {label}. Орынды бағыт пернелерімен таңдаңыз, Enter — қою, Escape — болдырмау.",
       "position": "{total} ішінен {index}",
       "selected": "Таңдалды: {label}",
@@ -238,6 +301,8 @@
       "retry": "Қайталау",
       "loadMore": "Тағы жүктеу",
       "removeFile": "Жою",
+      "fileRemoved": "Файл алып тасталды",
+      "undo": "Қайтару",
       "passwordSet": "Орнатылған",
       "passwordUnset": "Орнатылмаған",
       "passwordKeep": "Орнатылған; ауыстыру үшін жаңасын енгізіңіз",
@@ -306,8 +371,18 @@
     },
     "sf-file-preview": {
       "aria-label": "Файл",
-      "download-label": "Файлды жүктеп алу",
-      "remove-label": "Файлды жою"
+      "download-label": "{name} жүктеп алу",
+      "remove-label": "Алып тастау: {name}",
+      "uploading-label": "Жүктелуде: {name}",
+      "error-text": "Жүктелмеді",
+      "error-line": "Жүктелмеді: {message}",
+      "retry-text": "Қайталау",
+      "retry-label": "Қайталау: {name}",
+      "delete-label": "Жою: {name}",
+      "delete-question": "«{name}» жойылсын ба?",
+      "delete-text": "Жою",
+      "viewer-previous": "Алдыңғы файл",
+      "viewer-next": "Келесі файл"
     },
     "sf-file-size": {
       "b": "Б",
@@ -347,18 +422,56 @@
       "uploading-name": "{name} жүктелуде",
       "linkText": "Файлды таңдаңыз"
     },
+    "sf-form": {
+      "required-note": "* — міндетті өрістер",
+      "submit": "Сақтау",
+      "cancel": "Болдырмау",
+      "edit": "Өзгерту",
+      "unsaved": "Сақталмаған өзгерістер бар",
+      "errors-title": {
+        "one": "{n} өрісті түзетіңіз",
+        "other": "{n} өрісті түзетіңіз"
+      },
+      "value-missing": "«{label}» өрісін толтырыңыз",
+      "help-label": "Толығырақ: {label}"
+    },
     "sf-gallery": {
-      "heading": "Галерея"
+      "heading": "Галерея",
+      "open-picture": "{total} ішінен {n}-суретті ашу",
+      "open-picture-named": "{total} ішінен {n}-суретті ашу: {alt}",
+      "show-picture": "{n}-суретті көрсету",
+      "show-picture-named": "{n}-суретті көрсету: {alt}",
+      "pick-picture": "{n}-суретті таңдау",
+      "pick-picture-named": "{n}-суретті таңдау: {alt}",
+      "count": "{n} / {total}",
+      "selection": "Таңдау",
+      "selected-count": "Таңдалды: {count}",
+      "clear-selection": "Таңдауды алып тастау",
+      "viewer-label": "Қарау",
+      "viewer-count": "{n} / {total}",
+      "viewer-count-words": "{total} ішінен {n}",
+      "viewer-zoom-in": "Үлкейту",
+      "viewer-zoom-out": "Кішірейту",
+      "viewer-close": "Жабу",
+      "viewer-previous": "Алдыңғы сурет",
+      "viewer-next": "Келесі сурет",
+      "viewer-download": "{name} жүктеп алу",
+      "viewer-open-tab": "Жаңа қойындыда ашу",
+      "viewer-document": "Құжат"
     },
     "sf-header-page": {
       "all-sites": "барлық сайттар үшін",
+      "more": "Тағы",
       "star": "Таңдаулыларға қосу",
       "unstar": "Таңдаулылардан алып тастау"
     },
     "sf-header-site": {
       "label": "Мәзір",
       "menu-label": "Мәзірді ашу",
-      "close-label": "Мәзірді жабу"
+      "close-label": "Мәзірді жабу",
+      "settings": "Баптаулар",
+      "language": "Тіл",
+      "theme": "Тақырып"
     },
     "sf-help-mark": {
       "label": "Толығырақ"
@@ -374,6 +487,7 @@
     },
     "sf-include": {
       "failed": "Беттің бұл бөлігін жүктеу мүмкін болмады.",
+      "offline": "Байланыс жоқ. Желі қалпына келгенде өзі жүктеледі.",
       "retry": "Қайталау"
     },
     "sf-input": {
@@ -394,7 +508,8 @@
       "step-mismatch": "Мән қадамы — {step}",
       "bad-input": "Сан енгізіңіз",
       "count-text": "{count} / {max}",
-      "help": "Толығырақ: {label}"
+      "help": "Толығырақ: {label}",
+      "caps-lock": "Caps Lock қосулы"
     },
     "sf-input-choice": {
       "value-missing": "Нұсқаны таңдаңыз."
@@ -415,6 +530,7 @@
       "value-missing": "Түс таңдаңыз.",
       "theme": "Тақырып түсі",
       "theme-reset": "Тақырыптың бастапқы түсін қайтару",
+      "brand-reset": "SIMAI түсін қайтару",
       "how": "Түсті қалай таңдау",
       "palette": "Палитра",
       "own": "Өз түсіңіз",
@@ -657,6 +773,9 @@
       "quote": "Дәйексөз",
       "undo": "Болдырмау",
       "redo": "Қайтару",
+      "not-in-list": "Тізімде қолжетімсіз",
+      "nothing-to-undo": "Болдырмайтын ештеңе жоқ",
+      "nothing-to-redo": "Қайталайтын ештеңе жоқ",
       "link-dialog": "Сілтеме",
       "link-address": "Сілтеме мекенжайы",
       "link-hint": "https://…, mailto:, tel: немесе осы сайттағы жол, мысалы /about",
@@ -666,7 +785,9 @@
       "value-missing": "Өрісті толтырыңыз",
       "count-text": "{count} / {max}",
       "too-long": "{max} таңбадан аспауы керек",
-      "help": "Толығырақ: {label}"
+      "help": "Толығырақ: {label}",
+      "text-level": "Мәтін деңгейі",
+      "more": "Тағы"
     },
     "sf-input-textarea": {
       "inherited": "мұраланады",
@@ -677,6 +798,30 @@
       "too-long": "{max} таңбадан аспауы керек",
       "too-short": "Кемінде {min} таңба",
       "help": "Толығырақ: {label}"
+    },
+    "sf-kbd": {
+      "command": "Command",
+      "control": "Control",
+      "option": "Option",
+      "shift": "Shift",
+      "ctrl": "Ctrl",
+      "alt": "Alt",
+      "win": "Windows",
+      "enter": "Енгізу",
+      "escape": "Escape",
+      "tab": "Tab",
+      "space": "Бос орын",
+      "backspace": "Backspace",
+      "delete": "Delete",
+      "up": "Жоғары көрсеткі",
+      "down": "Төмен көрсеткі",
+      "left": "Сол көрсеткі",
+      "right": "Оң көрсеткі",
+      "home": "Home",
+      "end": "End",
+      "pageup": "Page Up",
+      "pagedown": "Page Down",
+      "plus": "Плюс"
     },
     "sf-language": {
       "label": "Тіл",
@@ -701,6 +846,7 @@
       "rename-text": "Атын өзгерту",
       "undated-text": "Күні жоқ",
       "ungrouped-text": "Басқа",
+      "unread-text": "оқылмаған",
       "untitled-text": "Атаусыз"
     },
     "sf-list-attention": {
@@ -771,6 +917,7 @@
     },
     "sf-list-feed": {
       "earlier-text": "Алдыңғыларын көрсету",
+      "empty-text": "Әзірге жазбалар жоқ",
       "latest-label": "Соңғы жазбаға",
       "loading-earlier-text": "Алдыңғы жазбалар жүктелуде",
       "log-label": "Жазбалар",
@@ -791,6 +938,9 @@
       "state-done": "Өтті",
       "state-current": "Қазір",
       "state-upcoming": "Алда",
+      "step-status-success": "сәтті",
+      "step-status-warning": "ескертумен",
+      "step-status-error": "қатемен",
       "run-changes": {
         "one": "Тағы {n} өзгеріс",
         "other": "Тағы {n} өзгеріс"
@@ -818,7 +968,8 @@
       "close": "Жабу",
       "back": "Артқа",
       "on": "Қосулы",
-      "off": "Өшірулі"
+      "off": "Өшірулі",
+      "selected": "{count} таңдалды"
     },
     "sf-modal": {
       "close": "Жабу",
@@ -884,10 +1035,13 @@
       "total-label": "Барлығы:"
     },
     "sf-profile-picker": {
+      "actions": "Әрекеттер",
       "builtin": "стандартты",
       "cancel": "Болдырмау",
+      "close": "Жабу",
       "copy-of": "«{name}» профилінің көшірмесі.",
       "create": "Жасау",
+      "kind": "Профильді кім көреді",
       "label": "Профиль",
       "locked": "Өзгертуге құқығыңыз жоқ",
       "name": "Профиль атауы",
@@ -896,6 +1050,7 @@
       "personal": "Жеке",
       "personal-taken": "Жеке профиліңіз бар",
       "remove": "Жою",
+      "remove-ask": "Жою…",
       "remove-question": "«{name}» жойылсын ба?",
       "remove-shared": "Ол сайттағы барлық адамнан жойылады.",
       "rename": "Атын өзгерту",
@@ -970,6 +1125,9 @@
       "counts": "Қорытынды",
       "figures-plain": "{value} / {total}"
     },
+    "sf-progress-scale": {
+      "of-steps": "{total} ішінен {value}"
+    },
     "sf-quantity": {
       "decrement": "Мәнді азайту",
       "increment": "Мәнді көбейту"
@@ -977,9 +1135,18 @@
     "sf-radio": {
       "help": "Толығырақ: {label}"
     },
+    "sf-reference-link": {
+      "new-tab-text": "(жаңа қойындыда ашылады)",
+      "copy-label": "Сілтемені көшіру",
+      "missing-text": "жойылған",
+      "forbidden-text": "рұқсат жоқ"
+    },
     "sf-resizer": {
       "hint": "Сүйреңіз немесе бағыт пернелерін басыңыз; екі рет басу енін қайтарады.",
-      "label": "Енін өзгерту"
+      "label": "Енін өзгерту",
+      "value": "{n} %",
+      "folded": "Жиылған",
+      "show": "Көрсету"
     },
     "sf-scrollbar": {
       "scroll": "Айналдыру"
@@ -1002,6 +1169,7 @@
       "loading-text": "Іздеп жатырмыз…",
       "error-text": "Іздеу қазір қолжетімсіз",
       "empty-text": "«{query}» бойынша ештеңе табылмады",
+      "empty-advice-text": "«{query}» бойынша ештеңе табылмады. Сөзді тексеріңіз немесе жиі сұрауды таңдаңыз",
       "count-text": {
         "one": "{n} нәтиже",
         "other": "{n} нәтиже"
@@ -1016,7 +1184,35 @@
       "action-text": "Пәрмен орындалмады",
       "short-text": "Тағы біраз енгізіңіз",
       "forbidden-text": "Бұған рұқсатыңыз жоқ",
-      "not-found-text": "Бұл енді жоқ"
+      "not-found-text": "Бұл енді жоқ",
+      "step-placeholder": "Нұсқаны таңдаңыз",
+      "new-tab-label": "Жаңа қойындыда ашу (Ctrl+↵)",
+      "copy-link-label": "Сілтемені көшіру",
+      "copied-text": "Сілтеме көшірілді",
+      "copy-failed-text": "Сілтемені көшіру мүмкін болмады",
+      "remove-tag-label": "Тегті алып тастау",
+      "refine-label": "Нақтылау",
+      "more-text": "Барлық нәтижелер: {count}",
+      "search-all-label": "Барлығынан іздеу",
+      "options-text": {
+        "one": "{n} нұсқа",
+        "other": "{n} нұсқа"
+      },
+      "key-apply-label": "қолдану",
+      "key-tag-label": "тег қосу",
+      "key-back-label": "артқа",
+      "operator-from": "кімнен",
+      "operator-subject": "тақырып",
+      "operator-has": "бар",
+      "operator-date": "күні",
+      "operator-from-label": "Жіберуші",
+      "operator-subject-label": "Тақырып",
+      "operator-has-label": "Бар",
+      "operator-date-label": "Күні",
+      "operator-from-hint": "адам",
+      "operator-subject-hint": "тақырыптағы сөздер",
+      "operator-has-hint": "тіркеме",
+      "operator-date-hint": "кезең"
     },
     "sf-segmented": {
       "dark": "Қараңғы",
@@ -1027,7 +1223,6 @@
     },
     "sf-settings": {
       "label": "Баптаулар",
-      "tiles": "Жылдам баптаулар",
       "hue-red": "Қызыл",
       "hue-orange": "Сарғылт",
       "hue-amber": "Кәріптас",
@@ -1058,7 +1253,13 @@
     },
     "sf-slider": {
       "next": "Келесі слайд",
-      "previous": "Алдыңғы слайд"
+      "previous": "Алдыңғы слайд",
+      "label": "Слайдтар",
+      "carousel": "карусель",
+      "slide": "слайд",
+      "position": "{count} ішінен {n}",
+      "pause": "Айналдыруды тоқтату",
+      "play": "Айналдыруды бастау"
     },
     "sf-slider-range": {
       "from": "бастап",
@@ -1072,9 +1273,15 @@
       "inserted": "Кірістірілді: {item}, «{list}» ішіндегі орны {index}.",
       "instructions": "Бос орын немесе Enter — алу, бағыт пернелері — жылжыту, Бос орын немесе Enter — қою, Escape — болдырмау.",
       "menu": "Кірістіру",
+      "move-down": "Төменірек",
+      "move-first": "Басына",
+      "move-last": "Соңына",
+      "move-menu": "«{item}» жылжыту",
+      "move-up": "Жоғарырақ",
       "moved": "«{list}» ішінде {total} ішінен {index}-орын.",
       "picked": "Алынды: {item}. «{list}» ішінде {total} ішінен {index}-орын.",
       "point": "Кірістіру: {total} ішінен {index}-орын",
+      "roledescription": "жылжытылатын",
       "search": "Табу",
       "target": "Мақсат: {target}."
     },
@@ -1177,7 +1384,35 @@
       "status-error": "Қате"
     },
     "sf-time": {
-      "yesterday-at": "кеше, {time}"
+      "date-at": "{date}, {time}",
+      "just-now": "жаңа ғана",
+      "yesterday-at": "{day}, {time}",
+      "zone-asia-anadyr": "Анадырь",
+      "zone-asia-barnaul": "Барнаул",
+      "zone-asia-chita": "Чита",
+      "zone-asia-irkutsk": "Иркутск",
+      "zone-asia-kamchatka": "Петропавл-Камчатский",
+      "zone-asia-khandyga": "Хандыга",
+      "zone-asia-krasnoyarsk": "Красноярск",
+      "zone-asia-magadan": "Магадан",
+      "zone-asia-novokuznetsk": "Новокузнецк",
+      "zone-asia-novosibirsk": "Новосібір",
+      "zone-asia-omsk": "Омбы",
+      "zone-asia-sakhalin": "Сахалин",
+      "zone-asia-srednekolymsk": "Среднеколымск",
+      "zone-asia-tomsk": "Томск",
+      "zone-asia-ust-nera": "Усть-Нера",
+      "zone-asia-vladivostok": "Владивосток",
+      "zone-asia-yakutsk": "Якутск",
+      "zone-asia-yekaterinburg": "Екатеринбург",
+      "zone-europe-astrakhan": "Астрахан",
+      "zone-europe-kaliningrad": "Калининград",
+      "zone-europe-kirov": "Киров",
+      "zone-europe-moscow": "Мәскеу",
+      "zone-europe-samara": "Самара",
+      "zone-europe-saratov": "Саратов",
+      "zone-europe-ulyanovsk": "Ульяновск",
+      "zone-europe-volgograd": "Волгоград"
     },
     "sf-toast": {
       "close-label": "Хабарламаны жабу",
