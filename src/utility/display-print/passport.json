@@ -13,7 +13,7 @@
     "src/utility/display-print/default/scss/_sf_var__display_print.scss",
     "src/utility/display-print/default/scss/index.scss"
   ],
-  "content_sha256": "0ec63b375456636b3e6f3fbddd0f4a7a2e814cf991f4fe78c67a62eb948c3180",
+  "content_sha256": "c08090483f46eeffcf6bd23a7aea3cbc4f4913231fae34256fe85be25d61e6dc",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

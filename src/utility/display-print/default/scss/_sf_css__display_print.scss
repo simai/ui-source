@@ -27,9 +27,15 @@ $infix: xs;
             @media print { visibility: visible; }
         }
 
+        // Owner decision C212 (6), dispatcher 2026-11-16: print-hidden removes
+        // the element on paper, as hidden does on screen; print-invisible keeps
+        // its room.
+        .#{$infix}print-hidden {
+            @media print { display: none; }
+        }
+
         // print-visible-none is deprecated until 2027-01-01 (C212 (6)): write
         // print-invisible.
-        .#{$infix}print-hidden,
         .#{$infix}print-invisible,
         .#{$infix}print-visible-none {
             @media print { visibility: hidden; }

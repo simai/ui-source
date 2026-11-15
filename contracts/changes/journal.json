@@ -13737,7 +13737,7 @@
       "recorded_on": "2026-11-16",
       "stage": "compat",
       "kind": "class",
-      "summary": "Owner decision C212 (6): one set to hide -- hidden (display), invisible (visibility), sr-only with not-sr-only (now in the core sheet, there at the first paint) and on paper print-hidden, print-only, print-invisible. The six display-print classes print-block, print-inline, print-inline-block, print-flex, print-inline-flex and print-table hid an element on screen and set its display on paper; print-only hides it on screen and leaves on paper the display its own classes give it. print-visible-none is the second name of print-invisible (invisible on paper, its room kept). The old names keep drawing what they drew until remove_after, and the Loader notes each one once in SF.deprecations (core/js/retired-classes.table.js). utility.display-print 1.1.0.",
+      "summary": "Owner decision C212 (6): one set to hide -- hidden (display), invisible (visibility), sr-only with not-sr-only (now in the core sheet, there at the first paint) and on paper print-hidden, print-only, print-invisible. The six display-print classes print-block, print-inline, print-inline-block, print-flex, print-inline-flex and print-table hid an element on screen and set its display on paper; print-only hides it on screen and leaves on paper the display its own classes give it. print-visible-none is the second name of print-invisible (invisible on paper, its room kept). Behaviour change (dispatcher decision on C212 (6)): print-hidden now removes the element on paper (display: none), as hidden does on screen; printed pages that used it lose the empty space, and a print-visible element inside it no longer shows -- use print-invisible to keep the space. The old names keep drawing what they drew until remove_after, and the Loader notes each one once in SF.deprecations (core/js/retired-classes.table.js). utility.display-print 1.1.0.",
       "items": [
         {
           "component": "utility",
@@ -13785,7 +13785,7 @@
       "deprecated_on": "2026-11-16",
       "remove_after": "2027-01-01",
       "rewrite": "manual",
-      "manual": "Write print-only for print-block, print-inline, print-inline-block, print-flex, print-inline-flex and print-table; when the element must take a display on paper other than its own, set it in a page rule under @media print. Write print-invisible for print-visible-none.",
+      "manual": "Write print-only for print-block, print-inline, print-inline-block, print-flex, print-inline-flex and print-table; when the element must take a display on paper other than its own, set it in a page rule under @media print. Write print-invisible for print-visible-none. print-hidden removes the element on paper now: where the empty space or a print-visible element inside it must stay, use print-invisible to keep the space.",
       "owner": "ui-source",
       "source": "src/utility/display-print/default/scss/_sf_css__display_print.scss; src/core/scss/_sf_css__hide.scss; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-utilities-sprawl.md; control/docs-review/decisions.md C212"
     }

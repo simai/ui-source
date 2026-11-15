@@ -46,7 +46,7 @@ test('C212 (6): sr-only and not-sr-only are in the core sheet, drawn as the sr-o
   assert.ok(passport.files.includes('src/core/scss/_sf_css__hide.scss'));
 });
 
-test('C212 (6): the print set loads; print-only hides on screen only, print-invisible is invisible on paper', () => {
+test('C212 (6): the print set loads; print-only hides on screen only, print-hidden removes on paper, print-invisible keeps the room', () => {
   const rule = ruleOf('display-print');
   for (const name of ['print-hidden', 'print-only', 'print-invisible', 'print-visible', ...Object.keys(OLD_PRINT)]) {
     assert.ok(rule.test(name), `${name} loads`);
@@ -54,7 +54,9 @@ test('C212 (6): the print set loads; print-only hides on screen only, print-invi
   assert.ok(!rule.test('print-onlyx') && !rule.test('print-invisiblex'));
   const css = read('src/utility/display-print/default/scss/_sf_css__display_print.scss');
   assert.match(css, /\.#\{\$infix\}print-only \{\s*@media not print \{ display: none; \}\s*\}/u);
-  assert.match(css, /\.#\{\$infix\}print-hidden,\s*\.#\{\$infix\}print-invisible,\s*\.#\{\$infix\}print-visible-none \{\s*@media print \{ visibility: hidden; \}/u);
+  // print-hidden removes the element on paper, as hidden does on screen (dispatcher decision on C212 (6)).
+  assert.match(css, /\.#\{\$infix\}print-hidden \{\s*@media print \{ display: none; \}\s*\}/u);
+  assert.match(css, /\.#\{\$infix\}print-invisible,\s*\.#\{\$infix\}print-visible-none \{\s*@media print \{ visibility: hidden; \}/u);
   assert.equal(JSON.parse(read('src/utility/display-print/passport.json')).version, '1.1.0');
 });
 
