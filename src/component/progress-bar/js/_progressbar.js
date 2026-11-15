@@ -75,6 +75,26 @@ function detectTextPosition(root) {
   return 'inline-end';
 }
 
+// Writes a text into a node of the bar without taking out what a renderer
+// keeps there. The Smart element draws the label and the value with Lit, which
+// marks each text with a comment and writes later values into its own text
+// node; textContent removed both, so the element's next drawing wrote into a
+// removed node and failed («Cannot set properties of null (setting 'data')»,
+// RG-R-53, three bars of sf-file-upload in the file-upload recipe). The text
+// goes into the node's one text node; a node without one (class markup) takes
+// textContent as before.
+function writeText(node, text) {
+  if (node.textContent === text) return;
+  const texts = Array.from(node.childNodes).filter((child) => child.nodeType === Node.TEXT_NODE);
+  const kept = Array.from(node.childNodes).some((child) => child.nodeType === Node.COMMENT_NODE);
+  if (kept && texts.length >= 1) {
+    texts[0].data = text;
+    texts.slice(1).forEach((child) => { child.data = ''; });
+    return;
+  }
+  node.textContent = text;
+}
+
 function ensureTextNode(root) {
   let textNode = getTextNode(root);
   if (textNode) return textNode;
@@ -208,7 +228,7 @@ function renderProgressBar(root) {
         labelNode.className = 'sf-progress-bar-label';
         head.prepend(labelNode);
       }
-      if (labelNode.textContent !== label) labelNode.textContent = label;
+      writeText(labelNode, label);
     } else if (labelNode) {
       labelNode.remove();
     }
@@ -221,8 +241,7 @@ function renderProgressBar(root) {
         textNode.className = 'sf-progress-bar-text';
         head.append(textNode);
       }
-      const shown = percentText(value, root);
-      if (textNode.textContent !== shown) textNode.textContent = shown;
+      writeText(textNode, percentText(value, root));
     }
     root.querySelectorAll(':scope > .sf-progress-bar-text').forEach((node) => node.remove());
     return true;
@@ -239,8 +258,7 @@ function renderProgressBar(root) {
   }
 
   const textNode = ensureTextNode(root);
-  const shown = percentText(value, root);
-  if (textNode.textContent !== shown) textNode.textContent = shown;
+  writeText(textNode, percentText(value, root));
   textNode.setAttribute('aria-hidden', 'true');
 
   return true;

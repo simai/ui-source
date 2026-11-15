@@ -1,6 +1,5 @@
 import {
   bindProgressBar,
-  setProgressBarState,
   unbindProgressBar,
 } from '../../component/progress-bar/js/_progressbar';
 import SfBaseElement from '../../core/js/smart-base';
@@ -189,35 +188,13 @@ class SfProgressBar extends ProgressBarElement {
     return this;
   }
 
-  resolveUpdateMode(changedAttributes = []) {
-    const directPatchAttributes = ['value', 'text-position', 'status', 'tone', 'warning-at', 'error-at', 'label', 'value-text', 'aria-label', 'indeterminate', 'paused', 'meter', 'inline'];
-    if (
-      changedAttributes.length > 0 &&
-      changedAttributes.every((attr) => directPatchAttributes.includes(attr))
-    ) {
-      return 'dom';
-    }
-
-    return 'lit';
-  }
-
-  updateDom() {
-    const root = this.querySelector('.sf-progress-bar');
-    if (!root) return false;
-    const status = this.drawnStatus;
-    this.sfHostState('data-status', status);
-    return setProgressBarState(root, {
-      value: this.value,
-      textPosition: this.textPosition,
-      tone: status,
-      label: this.accessibleLabel,
-      valueText: this.spokenValueText,
-      indeterminate: Boolean(this.indeterminate),
-      paused: Boolean(this.paused),
-      meter: Boolean(this.meter),
-      inline: Boolean(this.inline),
-    });
-  }
+  // Every change is drawn by the template (RG-R-53). The bar patched value,
+  // label, position, status and the rest straight into the drawn markup
+  // through the class (setProgressBarState), so Lit's text and parts no longer
+  // matched the page: its next drawing wrote into a removed text node, and a
+  // part the class added (the value text, the head) stood beside Lit's own.
+  // A drawing is one small template; afterRender hands the root to the class,
+  // which only sets the fill's width and checks what the template wrote.
 
   afterRender() {
     if (this._boundRoot) {
