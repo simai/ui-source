@@ -9,6 +9,7 @@
     "value-missing": "Choose a colour.",
     "theme": "Theme colour",
     "theme-reset": "Use the original theme colour",
+    "brand-reset": "Restore SIMAI colour",
     "how": "How to choose the colour",
     "palette": "Palette",
     "own": "Custom",

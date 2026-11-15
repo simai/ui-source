@@ -102,6 +102,9 @@ The brand colour is a mode of this field (C84; `sf-theme-generator` leaves on
   whose buttons get a readable tone instead, a colour near a status (error,
   warning, success, info -- info stays blue under every brand, C90 and C100), a grey.
   The lines are a polite status region; with nothing to say it takes no room.
+  With `clearable` its button says «Вернуть цвет SIMAI» / "Restore SIMAI
+  colour" (1.10.1; `clear-label` still names it): an empty brand colour is
+  SIMAI's own, not an inherited one.
 - `variant="theme"`: the circle of a site header (below).
 
 Both store a code, take no alpha and put the theme -- the four dynamic

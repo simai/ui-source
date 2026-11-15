@@ -20,6 +20,11 @@ phone or in a narrow column of a wide page (1.4.4; it read the screen's md
 step before) -- secondary labels and omitted-range indicators may be hidden,
 but the page controls remain on one line.
 
+The controls of one row are one group of buttons (C105 H5): they stand
+`--sf-space-1/3` apart -- 8, 4 in the compact density of a desktop (1.4.5;
+outside the compatible footer the row had no gap before and its edge buttons
+touched their neighbours). `--sf-pagination-gap` still sets it.
+
 ## The row's box
 
 The page row's height is published on `:root`, one value per step of the size

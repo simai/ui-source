@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-color",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "title": "Color",
   "summary": "A colour field: a swatch, the value and a chevron that open the Framework's own compact window -- the static palette first, the product's own colours, recent own colours and «Своё» (shade area, eyedropper, hue and alpha strips, a code in Hex, RGB, HSL or HSB) -- and a way back to an inherited colour. The value is a palette name or a code. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
   "kind": "smart",
@@ -164,7 +164,7 @@
       },
       "clear-label": {
         "type": "string",
-        "description": "The words on the control that returns to the inherited colour. Unset, it follows the page's language; with variant theme the default is the theme words (\"Use the original theme colour\")."
+        "description": "The words on the control that returns to the inherited colour. Unset, it follows the page's language; with variant theme the default is the theme words (\"Use the original theme colour\"), with variant brand the brand words (\"Restore SIMAI colour\", «Вернуть цвет SIMAI»)."
       },
       "value": {
         "type": "string",
@@ -483,7 +483,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-color/index.js",
-        "sha256": "6aedc4e457e3f504aaaa96094617fbdc321c7747f33b0b87b401bc59e63a2ce4"
+        "sha256": "def86017f0f65bbc6dbbd1b7238f6f08a218ab591dbdddb1b264f36c8f5c92b8"
       },
       {
         "path": "src/smart/input-color/rule.js",
@@ -495,7 +495,7 @@
       },
       {
         "path": "src/smart/input-color/js/templates/default.css",
-        "sha256": "d0697138f9f0f8df48bb34ddaadc76379297c10d126929fd67314020b71a70f0"
+        "sha256": "99ef8340a2cefcd5859e5cf3e8ee57e7de918db3d5b216ce74812236711f3734"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
