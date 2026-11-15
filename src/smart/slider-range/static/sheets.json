@@ -7,6 +7,8 @@
   ],
   "sheets": [
     "component/range-slider/css/range-slider.min.css",
+    "component/slider/css/slider.min.css",
+    "component/swiper/css/swiper.min.css",
     "component/tooltip/css/tooltip.min.css",
     "core/css/core.css",
     "utility/align-items/default/css/default.min.css",
@@ -28,6 +30,17 @@
       "utility/isolate/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
+    ],
+    "field": [
+      "component/range-slider/css/range-slider.min.css",
+      "component/slider/css/slider.min.css",
+      "component/swiper/css/swiper.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css"
     ],
     "reference": [
       "component/range-slider/css/range-slider.min.css",
