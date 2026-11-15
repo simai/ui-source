@@ -61,8 +61,6 @@ const SCREEN_QUERIES = {
   // progress-run and search moved; these three wait for a choice).
   'src/component/reference-link': 'to move: the card stacks below sm and the rule styles the card itself; class markup has no element around the card to be the container',
   'src/component/admin-menu': 'page frame (to confirm): below sm the panel fills a phone screen; the root stands in the application shell, where a contained root would collapse',
-  // Group build 7 (fix/register-smart-2 RG-S2-5, to confirm): mirrors core's placeholder box, a screen query.
-  'src/smart/header-page': 'first paint (to confirm): an action whose code has not come yet holds the line as core\'s placeholder box does (core/scss/_sf_css__placeholder.scss), which reads the screen because no container exists before the element draws',
   'src/component/download-file': 'to move: the card is as wide as its text (C51), so it cannot be its own container; the narrow form follows a place the card does not own',
 };
 // Container conditions that are a page frame of their own: the workspace's
