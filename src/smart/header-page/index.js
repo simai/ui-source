@@ -154,18 +154,23 @@ class SfPageHeader extends PageHeaderElement {
     return row ? [...row.children].filter((child) => !child.classList.contains('sf-page-header-more')) : [];
   }
 
-  // The line and every action are watched: a sheet or a face arriving later
-  // widens an action without resizing the line. The observer's callback runs
-  // after layout and before paint, so the row is never drawn whole first.
+  // The line, the title and every action are watched: a sheet or a face
+  // arriving later widens an action or the heading without resizing the line
+  // (1.7.0: the title too; a heading that took its face late left a phone's
+  // row laid for the wider fallback, on a line of its own). The observer's
+  // callback runs after layout and before paint, so the row is never drawn
+  // whole first.
   observeActionRow() {
     const row = this.actionRow();
-    if (!row || !this.overflowMore || typeof ResizeObserver === 'undefined') {
+    if (!row || typeof ResizeObserver === 'undefined') {
       this._rowObserver?.disconnect();
       this._rowObserved = null;
       return;
     }
     this._rowObserver ??= new ResizeObserver(() => this.layoutActions());
-    const boxes = [row.parentElement, ...this.actionItems(row).map((item) => {
+    // overflow="wrap" watches the line alone: the star follows its wrap.
+    const title = row.parentElement.querySelector(':scope > .sf-page-header-title');
+    const boxes = [row.parentElement, title, ...(this.overflowMore ? this.actionItems(row) : []).map((item) => {
       let box = item;
       while (box && getComputedStyle(box).display === 'contents') box = box.firstElementChild;
       return box;
@@ -190,7 +195,11 @@ class SfPageHeader extends PageHeaderElement {
       if (child.classList.contains('sf-page-header-title')) {
         const heading = child.querySelector(':scope > .sf-page-header-heading');
         const titleGap = parseFloat(getComputedStyle(child).columnGap) || 0;
-        const parts = [...child.children].filter((part) => part !== heading).map((part) => drawnBox(part).width);
+        // The star is counted at the actions' rung, the size it takes when
+        // the actions keep the line beside it (C103): the room is the same
+        // whichever size it has now, so the row never moves for the star.
+        const parts = [...child.children].filter((part) => part !== heading)
+          .map((part) => (part.classList.contains('sf-page-header-star') ? Math.max(drawnBox(part).width, this.actionsRungSide(row)) : drawnBox(part).width));
         const words = (heading?.scrollWidth || 0) + parts.reduce((sum, width) => sum + width + titleGap, 0);
         const basis = parseFloat(getComputedStyle(child).flexBasis);
         room -= Math.min(words, Number.isFinite(basis) ? basis : words) + gap;
@@ -202,6 +211,55 @@ class SfPageHeader extends PageHeaderElement {
   }
 
   layoutActions() {
+    this.placeActions();
+    this.syncStarRung();
+  }
+
+  // The side of the actions' controls: the drawn height of the first one
+  // (an icon button on that rung is as wide as it is tall).
+  actionsRungSide(row = this.actionRow()) {
+    const first = row ? this.actionItems(row).find((item) => !item.classList.contains('sf-page-header-out')) : null;
+    return first ? drawnBox(controlOf(first)).height : 0;
+  }
+
+  // The star stands on the rung of the controls in its row (owner decision
+  // C103: one row, one rung): the actions' size while they keep the line
+  // beside the title, else the start slot's control («назад», a phone's menu
+  // button) beside it, else the half step it has alone with the heading
+  // (32). A phone's actions on a line of their own under the heading leave
+  // the star at the half step. Whether the actions keep the line is the
+  // line's own arithmetic, not where they stand now: the room beside the
+  // title with the star at the actions' rung (roomBesideTitle) against the
+  // row's width. It does not depend on the star's size, so a star that grows
+  // never moves the row and never swings back.
+  syncStarRung() {
+    const line = this.querySelector(':scope > .sf-page-header > .sf-page-header-line');
+    const star = line?.querySelector(':scope > .sf-page-header-title > .sf-page-header-star');
+    if (!star) return;
+    const title = star.parentElement;
+    const row = this.actionRow();
+    const sizeOf = (element) => element?.getAttribute('size') || '1';
+    const first = row ? this.actionItems(row).find((item) => !item.classList.contains('sf-page-header-out')) : null;
+    const start = [...line.children].find((child) => child !== title && child !== row && child.nodeType === 1);
+    // Not laid yet: the line before its sheet, an action before its code.
+    if (getComputedStyle(line).display !== 'flex' || (first && !drawnBox(controlOf(first)).height)) return;
+    let want = '1/2';
+    if (first) {
+      // The line's wrap has no tolerance (placeActions takes the room a
+      // pixel short); the row's drawn width with what left for ⋯ out.
+      if (this.roomBesideTitle(line, row) - 1 >= row.getBoundingClientRect().width) want = sizeOf(first);
+    } else if (start) {
+      const box = title.getBoundingClientRect();
+      const drawn = drawnBox(controlOf(start) || start);
+      const middle = (drawn.top + drawn.bottom) / 2;
+      if (drawn.height > 0 && middle > box.top && middle < box.bottom) want = sizeOf(start);
+    }
+    if (want === (star.getAttribute('size') || '1/2')) return;
+    this._starRung = want;
+    star.setAttribute('size', want);
+  }
+
+  placeActions() {
     const row = this.actionRow();
     const more = row?.querySelector(':scope > .sf-page-header-more');
     if (!row || !more) return;
@@ -312,6 +370,7 @@ class SfPageHeader extends PageHeaderElement {
       rootClass: this.getRootClass(),
       overflow: this.overflowMore ? 'more' : 'wrap',
       moreSize: this.actionMoreSize(),
+      starSize: this._starRung ?? this.starSize(),
       moreLook: this.actionMoreLook(),
       text: (key) => this.sfWord(key),
       hostSlot: (name) => this.getSlotContent(name),
@@ -324,6 +383,18 @@ class SfPageHeader extends PageHeaderElement {
     const nodes = this._liveSlotNodes?.get?.('actions') || [];
     const first = nodes.find((node) => node.nodeType === 1);
     return first?.getAttribute('size') || '1';
+  }
+
+  // The star's rung before the line is laid (syncStarRung then follows the
+  // line): the size the page gave its first action (1 when it gave none), as
+  // ⋯ takes; with no actions the start slot control's size; alone with the
+  // heading the half step (32).
+  starSize() {
+    for (const name of ['actions', 'start']) {
+      const first = (this._liveSlotNodes?.get?.(name) || []).find((node) => node.nodeType === 1);
+      if (first) return first.getAttribute('size') || '1';
+    }
+    return '1/2';
   }
 
   template() {
