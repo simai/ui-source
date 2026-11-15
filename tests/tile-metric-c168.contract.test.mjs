@@ -44,5 +44,5 @@ test('C168 (4): on a phone the 1/2 tiles stand two in a row, sizes 1 and 2 take 
   assert.match(sheet, /@media not all and \(min-width: map\.get\(bp\.\$breakpoint-array, sm\)\) \{\n\s*\.sf-tile-metric-grid \{\n\s*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/u);
   assert.match(sheet, /\.sf-tile-metric-grid > sf-tile-metric:not\(\[size="1\/2"\]\) > \.sf-tile-metric \{\n\s*grid-column: 1 \/ -1;/u);
   assert.match(sheet, /\.sf-tile-metric-grid \{\n\s*display: grid;[^}]*gap: var\(--sf-space-1\);/u, 'the cells keep C105 H6');
-  assert.ok(['1.4.0', '1.5.0'].includes(json('src/smart/tile-metric/component.json').version));
+  assert.ok(['1.4.0', '1.5.0', '1.5.2'].includes(json('src/smart/tile-metric/component.json').version));
 });

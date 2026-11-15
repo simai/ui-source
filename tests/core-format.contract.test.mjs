@@ -110,7 +110,8 @@ test('numbers: integer, decimal, percent, compact, currency, in two languages', 
   both(1234.5, 'number', '1 234,5', '1,234.5');
   both(1234.5, 'integer', '1 235', '1,235');
   both(1234.5, 'decimal-2', '1 234,50', '1,234.50');
-  both(0.123, 'percent', '12,3 %', '12.3%');
+  // One spelling of a per cent (C203 (3)): a no-break space in English too.
+  both(0.123, 'percent', '12,3 %', '12.3 %');
   both(1234, 'compact', '1,2 тыс.', '1.2K');
   both(1234.5, 'currency-RUB', '1 234,50 ₽', 'RUB 1,234.50');
   both(2026, 'integer', '2026', '2026', {grouping: false});

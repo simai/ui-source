@@ -113,7 +113,7 @@ test('the new cases raise declared payloads with decimal strings', () => {
   const money = kase('1.18.0', 'money-and-percent-are-saved-as-decimal-strings').when.payload.values;
   assert.equal(readDecimal(money.price.amount).value, '2499.99');
   assert.equal(formatMoney(money.price, {}, 'en'), '$2,499.99');
-  assert.equal(formatPercent(money.discount, 'en'), '12.5%');
+  assert.equal(formatPercent(money.discount, 'en'), '12.5\u00a0%');
   const items = kase('1.18.0', 'an-items-field-is-saved-as-rows');
   const field = items.given.fields[0];
   assert.ok(items.when.payload.values.items.length >= field.minRows && items.when.payload.values.items.length <= field.maxRows);
