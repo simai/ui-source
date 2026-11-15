@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.textarea",
   "kind": "component",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/textarea/docs/docs.md",
@@ -13,9 +13,10 @@
     "src/component/textarea/json/textarea.utility.json",
     "src/component/textarea/rule.js",
     "src/component/textarea/scss/_css__textarea.scss",
+    "src/component/textarea/scss/_css__utility_hint_layout.scss",
     "src/component/textarea/scss/index.scss"
   ],
-  "content_sha256": "e7e2c8dd444067985049f565d4f75c7d4bf07aefed17191629dc4b893f6526d6",
+  "content_sha256": "d855ed86fa3ff66657acba6c800a26165b2d29008186675ef54b3ed930320db5",
   "dependencies": [
     {
       "id": "component.inputs",
