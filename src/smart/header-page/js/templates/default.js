@@ -32,7 +32,10 @@ export function renderPageHeaderTemplate(context) {
           // из избранного»), so it says the state too and carries no
           // aria-pressed (1.2.2, rule C12): both at once read «Убрать из
           // избранного, нажата». The filled glyph in its own colour shows it.
-          ? html`<sf-button-icon size="1/2" appearance="ghost" scheme="on-surface"
+          // It stands on its row's rung (C103, 1.7.0): the actions' size while
+          // they keep the line beside it, else the start control's, else the
+          // half step (index.js syncStarRung).
+          ? html`<sf-button-icon size=${context.starSize || '1/2'} appearance="ghost" scheme="on-surface"
               class=${on ? 'sf-page-header-star sf-page-header-star--on' : 'sf-page-header-star'}
               icon="star"
               ?filled=${on}

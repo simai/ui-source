@@ -10,9 +10,11 @@
 }
 
 /* The line holds the star's height whether the star is drawn or not: the
-   star (a size 1/2 icon button) arrives with the host's data, and a line that
-   grew with it moved everything below (stand 24, F3: 3.5 px at 1280, 7 px at
-   390). */
+   star arrives with the host's data, and a line that grew with it moved
+   everything below (stand 24, F3: 3.5 px at 1280, 7 px at 390). Alone with
+   the heading the star is a size 1/2 icon button; beside the actions or a
+   start control on its line it takes their rung (C103, 1.7.0), and they hold
+   the line at that height already. */
 .sf-page-header-line {
   gap: var(--sf-page-header-line-gap, var(--sf-space-1));
   min-block-size: var(--sf-ui-1\/2--control-height);

@@ -45,8 +45,6 @@ const KNOWN = {
   // error: the retry link button is height-low (32) beside the size 1 icon
   // actions (40).
   'file-preview': 1,
-  // path-and-action: a size 1/2 icon button (32) beside a size 1 button (40).
-  'header-page': 1,
 };
 
 const pageScript = readFileSync(join(repo, 'scripts', 'instance-scope-page.js'), 'utf8');

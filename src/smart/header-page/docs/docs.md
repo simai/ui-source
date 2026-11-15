@@ -29,6 +29,11 @@ Attributes:
   сайтов», the same mark the menu puts under the install root.
 - `star` — an optional boolean: absent draws no star; `false` (or `off`) and
   `true` (or `on`) draw it in that state. Present and empty is `true`.
+  The star stands on its row's rung (one row, one rung, C103): while the
+  actions keep the line beside it, it takes their size (the first action's,
+  1 when the page gives none); else the size of the `start` control beside
+  it; alone with the heading — no actions, or a phone's actions on a line of
+  their own — the half step (32).
 - `expressive` — the decorative level (owner decision C91, level 2): a tinted
   head, primary tone 50 at 16 (dark 24) fading down to nothing by the head's
   foot, in a padded field with the surface radius. A head narrower than 30rem
