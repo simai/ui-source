@@ -259,6 +259,15 @@
   min-block-size: max(var(--sf-ui-1\/2--control-height), var(--sf-page-header--box-actions, var(--sf-ui-1--control-height)));
 }
 
+/* Tabs whose code has not come and that have no printed markup are no box
+   either: the tabs row holds the strip core's box counts for them (their
+   size's control height, --sf-page-header--box-tabs-strip) until they draw
+   (1.8.1: the bare tag's head stood 52 at 1440 with its sheet and no tabs,
+   then 92). Printed tabs are their own box. */
+.sf-page-header-tabs:has(> :not(:defined)):not(:has(> :not(:defined) > [data-sf-static])) {
+  min-block-size: var(--sf-page-header--box-tabs-strip, var(--sf-ui-1--control-height));
+}
+
 /* The icon button's schemes set the glyph's ink on its button, so the
    favourite's colour is given to the glyph itself. */
 .sf-page-header-star--on .sf-icon {
