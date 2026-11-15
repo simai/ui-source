@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm-change",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "title": "Change confirmation",
   "summary": "A change someone else proposes (an assistant, a colleague, an import), put to a person: each value as it was and as it will be, «Подтвердить» first and filled, «Отклонить» quiet, until when it can be answered under them, and then only the outcome. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -83,7 +83,7 @@
       "expires-at": {
         "type": "string",
         "default": "",
-        "description": "ISO 8601. Until then the line under the answers says until when, the time an sf-time («Подтвердить можно до 23:30», «… до завтра, 10:00»; the exact moment and its zone in its tooltip). Past it an open card reads as expired and says so once with sf-change-confirm-expired."
+        "description": "ISO 8601. Until then the line under the answers says until when, the time an sf-time («Подтвердить можно до 23:30», «… до завтра, 10:00»; the exact moment and its zone in its tooltip). Past it an open card reads as expired and says so once with sf-confirm-change-expired."
       },
       "change-id": {
         "type": "string",
@@ -513,7 +513,7 @@
       },
       {
         "path": "src/smart/confirm-change/component.json",
-        "sha256": "e0e539f764236723191e6f0c3c4bc91078ef638a5939086e3e05bc400f03a623"
+        "sha256": "034816d90dfcb227ea6b604ab453c12e124040bd234bf207d2e5d6be991df5ee"
       },
       {
         "path": "src/smart/confirm-change/aliases.json",
