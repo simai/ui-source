@@ -648,7 +648,27 @@ class SfDrawer extends DrawerElement {
     const box = this.panelBox();
     const whole = Boolean(box && box.width >= frame.width - 1);
     if (!whole && onLeft !== (this.stackEdge === 'left')) return '';
+    // The switch is the outermost control of its row on that side, as a
+    // menu button at the edge of a bar is: a second button of a toolbar
+    // («Свойства» after «Структура») would pull the close into the middle of
+    // the head.
+    if (!this.outermostInRow(opener, seen, onLeft)) return '';
     return onLeft !== rtl ? 'start' : 'end';
+  }
+
+  // No control of the page stands in the switch's row between it and the
+  // frame's edge on its side (the layer stack's list of what takes focus).
+  outermostInRow(opener, seen, onLeft) {
+    const root = this.getDrawerRoot();
+    const axis = seen.left + seen.width / 2;
+    return !focusablesIn(document.body).some((node) => {
+      if (opener.contains(node) || node.contains(opener) || root?.contains(node) || this.contains(node)) return false;
+      const box = node.getBoundingClientRect();
+      const middle = box.top + box.height / 2;
+      if (middle < seen.top || middle > seen.bottom) return false;
+      const centre = box.left + box.width / 2;
+      return onLeft ? centre < axis : centre > axis;
+    });
   }
 
   // After a drawing or a resize: what the head drew still holds (the opener

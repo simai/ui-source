@@ -31,7 +31,11 @@ const check = (name, pass, detail = {}) => { measured += 1; if (!pass) failures.
 const CASES = [
   {id: 'start switch, start panel', bar: 'start', placement: 'inline-start', expect: 'axis'},
   {id: 'end switch, end panel', bar: 'end', placement: 'inline-end', expect: 'axis'},
-  {id: 'start switch, end panel', bar: 'start', placement: 'inline-end', expect: 'end'},
+  // A panel as wide as the screen (390) stands over both sides: the close
+  // goes to the switch's side.
+  {id: 'start switch, end panel', bar: 'start', placement: 'inline-end', expect: 'end', phone: 'axis'},
+  // Not the outermost control of its row: the close keeps its place.
+  {id: 'second button of a toolbar', bar: 'start', placement: 'inline-start', expect: 'end', before: true},
   {id: 'press with no focus', bar: 'start', placement: 'inline-start', expect: 'axis', nofocus: true},
   {id: 'controlled over the bar', bar: 'start', placement: 'inline-start', attrs: 'controlled', expect: 'axis'},
   {id: 'controlled under the bar', bar: 'start', placement: 'inline-start', attrs: 'controlled block-start="56px"', expect: 'none'},
@@ -41,7 +45,7 @@ const CASES = [
 
 const html = (c, dir) => `<!doctype html><html lang="ru" dir="${dir}" class="theme-light"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"></head><body style="margin:0">
-<header style="display:flex;align-items:center;gap:8px;block-size:56px;padding-inline:16px;box-sizing:border-box">${c.bar === 'end' ? '<span style="flex:1">Сайт</span>' : ''}<sf-button-icon id="burger" icon="menu" aria-label="Разделы" aria-controls="dr" data-drawer="toggle"></sf-button-icon>${c.bar === 'start' ? '<span style="flex:1">Сайт</span>' : ''}</header>
+<header style="display:flex;align-items:center;gap:8px;block-size:56px;padding-inline:16px;box-sizing:border-box">${c.bar === 'end' ? '<span style="flex:1">Сайт</span>' : ''}${c.before ? '<button type="button">Структура</button>' : ''}<sf-button-icon id="burger" icon="menu" aria-label="Разделы" aria-controls="dr" data-drawer="toggle"></sf-button-icon>${c.bar === 'start' ? '<span style="flex:1">Сайт</span>' : ''}</header>
 <sf-drawer id="dr" placement="${c.placement}" heading="Разделы" ${c.attrs || ''}><p>Разделы</p>${c.own ? '<button type="button" data-drawer="close">Закрыть</button>' : ''}</sf-drawer>
 </body></html>`;
 
@@ -57,6 +61,7 @@ try {
     for (const path of modules) await page.addScriptTag({path});
     await page.waitForFunction(() => customElements.get('sf-drawer') && document.querySelector('#burger button') && document.querySelector('[data-sf-drawer-root]'));
     const where = `${width} ${dir} ${c.id}`;
+    const expect = phone && c.phone ? c.phone : c.expect;
     const press = async () => {
       if (c.nofocus) await page.evaluate(() => document.querySelector('#burger button').click());
       else await page.click('#burger button');
@@ -76,10 +81,10 @@ try {
         headEnd: getComputedStyle(panel).direction === 'rtl' ? head.left + parseFloat(style.paddingLeft) : head.right - parseFloat(style.paddingRight),
         closeEnd: x && x.width ? (getComputedStyle(panel).direction === 'rtl' ? x.left : x.right) : null};
     });
-    if (c.expect === 'none') check(`${where}: no close`, m.close === null, m);
+    if (expect === 'none') check(`${where}: no close`, m.close === null, m);
     else check(`${where}: a close`, m.close !== null, m);
-    if (c.expect === 'axis' && m.close !== null) check(`${where}: on the switch's axis`, Math.abs(m.close - m.opener) <= 0.5, m);
-    if (c.expect === 'end' && m.close !== null) check(`${where}: at the head's end`, Math.abs(m.closeEnd - m.headEnd) <= 0.5, m);
+    if (expect === 'axis' && m.close !== null) check(`${where}: on the switch's axis`, Math.abs(m.close - m.opener) <= 0.5, m);
+    if (expect === 'end' && m.close !== null) check(`${where}: at the head's end`, Math.abs(m.closeEnd - m.headEnd) <= 0.5, m);
     await page.keyboard.press('Escape');
     await page.waitForTimeout(400);
     const focus = () => page.evaluate(() => ({open: document.getElementById('dr').hasAttribute('open'),

@@ -908,7 +908,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",
-        "sha256": "af24a9fed7f908c9bebc2662450226e684ed9155415f1ff2373b9afece92cfca"
+        "sha256": "f9591e529e7b4aee86cac260ea9bafef383745aea00059b20e0c621d6614ad4f"
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",
@@ -920,7 +920,7 @@
       },
       {
         "path": "src/smart/drawer/docs.md",
-        "sha256": "a5a87611a5d6950bdba842b346f97cada1187e2d1d2246df43988fe9b45ec256"
+        "sha256": "fed0eb033f7acaf1f63e5c1132cf386d369fd28830f00b345adf638fa9636123"
       }
     ],
     "generated_runtime": [
