@@ -12,12 +12,14 @@ const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf
 const helper = read('src/smart/helpers/inherited-value.js');
 const sheet = read('src/smart/helpers/inherited-value.css');
 
+// The reset is the field layer's action (owner decision C123): every control
+// that draws it loads component.inputs, which carries .sf-field-action.
 const CONTROLS = {
-  input: {tag: 'sf-input', relation: /name: 'icon-buttons'/u},
-  'input-textarea': {tag: 'sf-input-textarea', relation: /name: 'icon-buttons'/u},
-  dropdown: {tag: 'sf-dropdown', relation: /name: 'icon-buttons'/u},
-  'input-color': {tag: 'sf-input-color', relation: /name: 'cl-button-icon'/u},
-  switch: {tag: 'sf-switch', relation: /name: 'icon-buttons'/u},
+  input: {tag: 'sf-input', relation: /name: 'inputs'/u},
+  'input-textarea': {tag: 'sf-input-textarea', relation: /name: 'inputs'/u},
+  dropdown: {tag: 'sf-dropdown', relation: /name: 'inputs'/u},
+  'input-color': {tag: 'sf-input-color', relation: /name: 'inputs'/u},
+  switch: {tag: 'sf-switch', relation: /name: 'inputs'/u},
 };
 
 test('the shared state names one cancellable event and draws one slot', () => {
@@ -34,8 +36,9 @@ test('the shared state names one cancellable event and draws one slot', () => {
   // Announced: the control carries the value; the marker is not read twice.
   assert.match(helper, /setAttribute\('aria-description', this\.inheritedDescription\(\)\)/u);
   assert.match(helper, /data-inherited-marker\s+aria-hidden="true"/u);
-  // The reset is a real button with a name, one step down the ladder.
-  assert.match(helper, /<button\s+type="button"\s+class="sf-field-reset sf-icon-button[^"]*sf-icon-button--size-\$\{step\}"/u);
+  // The reset is a real button with a name, the field's own action (C123);
+  // the marker stays one step down the ladder.
+  assert.match(helper, /<button\s+type="button"\s+class="sf-field-action sf-field-reset"/u);
   assert.match(helper, /aria-label=\$\{component\.resetLabel\}/u);
   assert.match(helper, /STEP_DOWN = Object\.freeze\(\{'1\/3': '1\/3', '1\/2': '1\/3', '1': '1\/2', '2': '1', '3': '2'\}\)/u);
   // The words, in both shipped languages.
@@ -49,6 +52,10 @@ test('the slot takes its sizes from the ladder and its ink from the roles', () =
     assert.ok(sheet.includes(`.sf-field-inherited-slot--size-${size} {\n    --sf-field-inherited-slot--inset: calc((var(--sf-ui-${size}--control-height)`), size);
   }
   assert.match(sheet, /\.sf-field-inherited \{\s*color: var\(--sf-on-surface-variant\);/u);
+  // The reset is the field layer's action, not an icon button (C123).
+  assert.match(helper, /class="sf-field-action sf-field-reset"/u);
+  assert.doesNotMatch(helper, /sf-icon-button--link/u);
+  assert.match(sheet, /\.sf-field-inherited-slot:has\(> \.sf-field-action:not\(\[hidden\]\)\) \{\s*gap: 0;/u);
   // The dropdown's chevron joins the row without growing the field.
   assert.match(sheet, /:has\(> \.sf-field-inherited-slot\) > button \{\s*position: static;/u);
   assert.doesNotMatch(sheet, /#[0-9a-f]{3,8}\b/iu, 'no literal colours');

@@ -110,6 +110,8 @@ The reset is a native button named by `reset-label` («Сбросить к на�
 fires `sf-field-reset` on the host -- bubbling, composed and **cancellable** --
 before anything changes:
 
+The reset is the field's own action (owner decision C123), as a clear is: a glyph without a plate in any state, in the hint's ink at rest and the text's ink under the pointer, the size of the field's text line, with an invisible hit area never under 24 px; the keyboard ring goes round the glyph.
+
 ```js
 field.addEventListener('sf-field-reset', (event) => {
   const {value, inheritedValue, name} = event.detail; // value: the own value being dropped

@@ -20,10 +20,11 @@
 //   is empty, inherited again, and focus is back on the control;
 // - a host that calls preventDefault on sf-field:reset keeps the value;
 // - geometry: in sf-input and sf-dropdown at 1/2, 1 and 2 the reset is the
-//   control height of one step down, stands with the same gap above, below and
-//   after it, and the field keeps the height of the same field without the
-//   state; the marker is one text step down; nothing leaves the field and the
-//   page does not scroll sideways.
+//   field's action (owner decision C123): its glyph is the field's text line,
+//   its hit area the field's inner height, centred; in sf-input the glyph ends
+//   on the field's inset; the field keeps the height of the same field without
+//   the state; the marker is one text step down; nothing leaves the field and
+//   the page does not scroll sideways.
 import {resolve, join} from 'node:path';
 import {existsSync, readFileSync} from 'node:fs';
 import {chromium} from 'playwright';
@@ -215,7 +216,6 @@ try {
 
     // Geometry on the ladder.
     const geometry = await page.evaluate(() => {
-      const STEP = {'1/2': '1/3', '1': '1/2', '2': '1'};
       const probe = document.createElement('div');
       document.body.append(probe);
       const length = (name) => { probe.style.blockSize = `var(${name})`; return probe.getBoundingClientRect().height; };
@@ -231,6 +231,13 @@ try {
           const button = host.querySelector('[data-inherited-reset]');
           const f = field.getBoundingClientRect();
           const b = button.getBoundingClientRect();
+          const g = button.querySelector('.sf-icon').getBoundingClientRect();
+          probe.style.blockSize = '';
+          button.append(probe);
+          probe.style.inlineSize = 'var(--sf-field-action--inset)';
+          const inset = probe.getBoundingClientRect().width;
+          probe.style.inlineSize = '';
+          document.body.append(probe);
           const border = parseFloat(getComputedStyle(field).borderTopWidth);
           const chevron = kind === 'dropdown' ? host.querySelector('.sf-dropdown-field > button').getBoundingClientRect() : null;
           // The chevron's glyph keeps its axis: where it ends, from the field's
@@ -240,14 +247,15 @@ try {
           rows.push({
             kind, size,
             field: f.height, plainField: plainField.getBoundingClientRect().height,
-            button: b.height, buttonWidth: b.width, // At 1/2 the reset is an inner part on the icon ladder (C19): 24, not the
-            // 1/3 control height, which C27 moved to 28 on desktop.
-            ladder: length(size === '1/2' ? '--sf-icon-size-3' : `--sf-ui-${STEP[size].replace('/', '\\/')}--control-height`),
+            button: b.height, buttonWidth: b.width, glyph: g.width, inset,
+            // C123: the glyph is the field's text line (the leading icon's size).
+            line: length(`--sf-text-height-${size.replace('/', '\\/')}`),
+            inner: f.height - 2 * border,
             above: b.top - f.top - border, below: f.bottom - b.bottom - border,
-            after: kind === 'input' ? f.right - b.right - border : null,
+            after: kind === 'input' ? f.right - g.right : null,
             clearOfChevron: chevron ? b.right <= chevron.left + 0.5 : true,
             inside: b.left >= f.left && b.right <= f.right + 0.5,
-            glyph: kind === 'dropdown' ? [glyphEnd(host), glyphEnd(plain)] : null,
+            axis: kind === 'dropdown' ? [glyphEnd(host), glyphEnd(plain)] : null,
           });
         }
       }
@@ -259,12 +267,13 @@ try {
     });
     for (const row of geometry.rows) {
       const name = `${width} ${row.kind} ${row.size}`;
-      check(`${name}: the reset is one step down the ladder`, Math.abs(row.button - row.ladder) < 0.5, row);
+      check(`${name}: the reset's glyph is the field's text line (C123)`, Math.abs(row.glyph - row.line) < 0.5, row);
+      check(`${name}: the reset's hit area is the field's inner height`, Math.abs(row.button - Math.max(row.inner, 24)) < 0.5, row);
       check(`${name}: the field keeps its height`, Math.abs(row.field - row.plainField) < 0.5, row);
-      check(`${name}: the same gap above and below`, Math.abs(row.above - row.below) < 0.75, row);
-      if (row.after !== null) check(`${name}: the same gap after as above`, Math.abs(row.after - row.above) < 0.75, row);
+      check(`${name}: the hit area is centred`, Math.abs(row.above - row.below) < 0.75, row);
+      if (row.after !== null) check(`${name}: the glyph ends on the field's inset`, Math.abs(row.after - row.inset) < 0.75, row);
       check(`${name}: the reset stays inside the field and clear of the chevron`, row.inside && row.clearOfChevron, row);
-      if (row.glyph) check(`${name}: the chevron keeps its axis`, Math.abs(row.glyph[0] - row.glyph[1]) < 0.5, row);
+      if (row.axis) check(`${name}: the chevron keeps its axis`, Math.abs(row.axis[0] - row.axis[1]) < 0.5, row);
     }
     check(`${width}: the marker is one text step down`, Math.abs(geometry.markerSize - geometry.markerLadder) < 0.5, geometry);
     check(`${width}: the page does not scroll sideways`, geometry.scroll <= 0, geometry);
