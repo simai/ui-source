@@ -2367,7 +2367,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-bar/smart.manifest.json",
-      "manifest_sha256": "23f36aa773fec85d59b8c54e71b90b580fbf0b82c9e4c0a310480121431dc373",
+      "manifest_sha256": "6a79d615d99ebebf659bbe33c0618e745ab040a0574b76de0fc0dddd00bb4bac",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2403,7 +2403,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-ring/smart.manifest.json",
-      "manifest_sha256": "4cd3282c94606f9d31513e594889f94dff4039b2a05c77929660348e25b024aa",
+      "manifest_sha256": "e3ff26cf69ec0a52bbbc89ac5b82426b5baa2973a099245c010dfd3e73ef97ba",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2446,7 +2446,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-run/smart.manifest.json",
-      "manifest_sha256": "1ba8eaf585fbcf3c6b6c72d4b24059ce112ba27d81f0276f66c08eaddfd38a60",
+      "manifest_sha256": "64636233c550c51283d0ef62bb796e70dd7d2418fb65962e326c98aba78a5b3b",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2494,7 +2494,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-scale/smart.manifest.json",
-      "manifest_sha256": "feb47e1e7721f0b8f124009307c7956bab8ca2377206e7d69ac1dc14bfa0edf2",
+      "manifest_sha256": "68b475a7726ac0584f4c47b82202d64bf6b4d9863a34b34fb30d0dc7843adb18",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3168,7 +3168,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tile-metric/smart.manifest.json",
-      "manifest_sha256": "5139845ae98d89f01cfa5e8d19e218c27b91097ca0ade4fc70a2fe64b5478dfc",
+      "manifest_sha256": "65914b437051392baccc4a224adfadc8cff587f0ac25ac404ebab71a3e549eff",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
