@@ -93,22 +93,19 @@ arrow cursor; focus and its ring stay. The stripes are gone;
 `--sf-icon-button-loading-stripe` is read until 2026-12-01 (journal
 `token-button-loading-stripe`). A two-state action -- bold in an editor's
 toolbar, wrap lines in a code block -- keeps one name and says its state with
-`aria-pressed`. Pressed, it wears the pressed look (1.3.0, owner decision
-2026-11-07, rule C12) whatever its emphasis or scheme: the primary container
-fill, the icon in `--sf-on-primary-container` and filled (`FILL 1`) -- two
-cues, not colour alone -- and no visible edge (the border keeps its width and
-is transparent over the fill, so the height does not move). Hover and press
-step the container. A tonal (or surface) toggle (1.6.1, TB-3), whose resting
-plate is already a container, takes the container's pressed step when pressed
-(`--sf-primary-container-active`, 20 % light / 32 % dark), so the fill differs
-from its unpressed plate; hover and press over it lay the surface's state
-layer (`--sf-surface-state-hover` / `-active`) on that fill. A neutral
-toggle (tonal or surface, on-surface or secondary) rests on the neutral fill,
-which the dark theme draws as a light tone, so the pressed container alone
-barely differs from it: pressed, it also carries the selected state's layer
-(`--sf-surface-state-select`, 8); hover over it takes the press layer (12)
-and press adds the hover layer (12 and 4). Focus draws the
-ring; disabled wears the disabled look.
+`aria-pressed`. Only a toggle is drawn pressed (1.13.0, owner decision C211
+(1)): an `outline` or ghost (`link`) icon button in the neutral scheme
+(`on-surface`, its quiet `on-surface-variant`, the former `secondary`).
+Pressed, it wears the pressed look (1.3.0, owner decision 2026-11-07, rule
+C12): the primary container fill, the icon in `--sf-on-primary-container` and
+filled (`FILL 1`) -- two cues, not colour alone -- and no visible edge (the
+border keeps its width and is transparent over the fill, so the height does
+not move). Hover and press step the container. Focus draws the ring; disabled
+wears the disabled look. A `default`, `tonal`, `surface` or danger icon
+button, or a primary one, keeps its own look under `aria-pressed`, and the
+runtime says once per button in the console that it is no toggle (the tonal
+toggle looks of 1.6.1 are gone with it). A choice of one among several -- a
+view, a width, a theme -- is not a set of toggles: write `sf-segmented`.
 `sf-icon-button--pressed` draws the same look without `aria-pressed`, for an
 action whose name changes with the state («Добавить в избранное» → «Убрать из
 избранного»): its name says the state, so it carries no `aria-pressed`

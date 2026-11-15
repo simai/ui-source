@@ -59,17 +59,24 @@ the Smart `sf-button` projection.
 ## Public axes
 
 - emphasis: `sf-button--default`, `sf-button--tonal`,
-  `sf-button--outline`, `sf-button--ghost`, `sf-button--surface`;
+  `sf-button--outline`, `sf-button--ghost`;
   `sf-button--link` is the former name of `ghost` (decision C15), drawn the
   same until 2027-01-01 (journal `class-button-link-to-ghost`); the Smart
-  `sf-button` writes both until then;
-- scheme: `primary`, `on-surface` and `secondary` for every emphasis.
-  `default` and `tonal` secondary have a secondary fill of their own;
-  `outline`, `surface` and `ghost` secondary are the on-surface button --
-  edge, fill, padding, height, hover, press and disabled -- with the label and
-  the icons in `--sf-secondary` (1.4.0, owner decision 2026-11-07; before,
-  these three had no rule: no padding, about 32px at size 1 and the browser's
-  text colour);
+  `sf-button` writes both until then. `sf-button--surface` is deprecated
+  (1.17.0, owner decision C116 (6)): write `sf-button--tonal
+  sf-button--on-surface` instead -- the soft grey button. Until 2027-01-01 a
+  surface button of any scheme but danger is drawn exactly as tonal
+  on-surface, in every state; a danger surface keeps its former look (a
+  faint neutral fill, a hairline edge, the error ink) until then;
+- scheme: `primary` and `on-surface` for every emphasis.
+  `sf-button--secondary` is deprecated (1.17.0, owner decision C116 (3)):
+  write `sf-button--on-surface` instead. Until 2027-01-01 a secondary button
+  is drawn exactly as the on-surface button of the same emphasis -- fill,
+  edge, label, icons, hover, press, focus and disabled; before, default and
+  tonal secondary had a secondary fill and the others a secondary label. The
+  secondary colour stays in the core for badges, tabs and segments. Both
+  former classes are noted once in `SF.deprecations` (journal
+  `class-button-set-c116`);
 - status: `sf-button--danger` for a destructive button, in every emphasis
   (decision C13: danger is what the control does, error is a message's
   status); `sf-button--error` is its former name on a button, the same rules,
@@ -81,15 +88,14 @@ the Smart `sf-button` projection.
   shared grey `--sf-outline`, and a disabled danger outline greys as they do;
 - on a place with its own ink (1.14.0, places states 2026-11-14) -- a strong
   coloured place (`bg-primary` ... `bg-error`, a strong alert bar), the duo
-  gradient, glass (`sf-surface-media`) or an inverse place: the `outline`,
-  `surface` and `ghost` secondary and danger buttons write their label and
-  icons in the place's ink in every state (the hue read 1.00:1 on a colour);
-  the fill and the danger edge keep their hue. A filled `on-surface` button
+  gradient, glass (`sf-surface-media`) or an inverse place: the `outline`
+  and `ghost` danger buttons write their label and icons in the place's ink
+  in every state (the hue read 1.00:1 on a colour); the fill and the danger
+  edge keep their hue. A filled `on-surface` button
   there is the place's ink with the place's accent label (`--sf-on-primary`:
   the place's colour, black on glass), not `--sf-on-surface-inverse`, which
   read 1.29:1 on the white. A card or a popup on such a place takes the
-  theme's look back. A pressed filled secondary takes `--sf-secondary-active`
-  (it took primary's pressed step before);
+  theme's look back;
 - size: `size-1\/3`, `size-1\/2`, `size-1`, `size-2`, `size-3`;
 - density (deprecated, decision C27, until 2027-01-01; journal
   class-c27-button-spacing-to-height): the default, `spacing-compact`,
@@ -217,3 +223,23 @@ fill the same, so a `default` or `tonal` button draws a one-pixel border in
 `ButtonText` (`GrayText` when disabled) and stays distinguishable next to an
 `outline` one. The border is inside the control height: the button does not
 grow. Probe: `tests/browser/button-forced-colors-edge.browser.mjs`.
+
+The button set's former words and the toggle (1.17.0, owner decisions C116
+(3), (6) and C211, 2026-11-16; RG-B-54, -55, -57, -58):
+
+- `sf-button--secondary` draws as `sf-button--on-surface` and
+  `sf-button--surface` (but danger) as `sf-button--tonal
+  sf-button--on-surface`, in every state; both are noted in `SF.deprecations`
+  and leave after 2027-01-01 (journal `class-button-set-c116`).
+- The pressed look (`aria-pressed="true"` or `sf-button--pressed`, C12) is a
+  toggle's alone: `outline` or `ghost` in `on-surface`. A `default`, `tonal`
+  or danger button, or another scheme, keeps its own look under
+  `aria-pressed`, and the runtime says once per button in the console that it
+  is no toggle. A choice of one among several -- a view, a width, a theme --
+  is not a set of toggles: write `sf-segmented` (the chosen segment takes a
+  soft fill and keeps its regular icon).
+- A button with an icon and no label (no `.sf-button-text-container`, or an
+  empty one) is square, as `sf-icon-button` of the same size and height
+  (size 1: 40 x 40 on desktop; it was 56 x 40): its side padding is its block
+  padding, in the sheet, so the first frame is square. It needs `aria-label`;
+  without one the runtime says so once in the console.

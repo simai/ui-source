@@ -13731,6 +13731,35 @@
       },
       "owner": "ui-source",
       "source": "src/utility/ring-width/default/scss/_sf_var__ring_width.scss; src/utility/ring-opacity"
+    },
+    {
+      "id": "class-button-set-c116",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.buttons 1.17.0 (owner decision C116 (3), (6); RG-B-54, RG-B-55): the class button follows the Smart button's set (value-button-set-c116). sf-button--secondary is drawn exactly as sf-button--on-surface of the same emphasis, and sf-button--surface of any scheme but danger exactly as sf-button--tonal sf-button--on-surface, the soft grey button, in every state; a danger surface keeps its former look. Both classes are aliases until remove_after; the component's script notes each once in SF.deprecations. The secondary colour stays in core for badges, tabs and segments.",
+      "items": [
+        {
+          "component": "sf-button",
+          "from": "sf-button--secondary",
+          "to": "sf-button--on-surface"
+        },
+        {
+          "component": "sf-button",
+          "from": "sf-button--surface",
+          "to": "sf-button--tonal sf-button--on-surface"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Replace sf-button--secondary with sf-button--on-surface. Replace sf-button--surface and its scheme class (primary, on-surface, secondary, on-surface-variant) with sf-button--tonal sf-button--on-surface; a danger surface button becomes sf-button--outline sf-button--danger (as the Smart button draws it).",
+      "examples": {
+        "before": "<button class=\"sf-button sf-button--surface sf-button--primary sf-button--size-1\">",
+        "after": "<button class=\"sf-button sf-button--tonal sf-button--on-surface sf-button--size-1\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/buttons/scss/_css__buttons.scss; src/component/buttons/js/button-checks.js; ui-control control/docs-review/decisions.md C116 (3), (6)"
     }
   ]
 }
