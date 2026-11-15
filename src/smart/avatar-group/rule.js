@@ -7,6 +7,8 @@ SF.RuleLoader['cl-avatar-group'] = {
   js: true,
   relation: [
     { name: 'avatars' },
+    // A member's presence point is the Framework's one dot, .sf-dot (owner decision C185 (8)): the dot sheet.
+    { name: 'dot' },
     { name: 'icons' },
     // The placeholder's glyph is an sf-icon element (avatar study AV-8).
     { name: 'cl-icon' },
