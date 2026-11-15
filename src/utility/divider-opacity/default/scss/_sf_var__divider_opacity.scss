@@ -1,0 +1,26 @@
+// SIMAI Framework
+// https://simai.io
+
+// DIVIDER OPACITY
+
+@use "sass:map";
+@use "sass:math";
+@use '../../../opacity/default/scss/sf_var__opacity' as *;
+
+// The divider colour (utility/divider-color) reads its strength channel as a
+// number from 0 to 1 and multiplies it by 100% for the colour-mix share, as
+// every --sf-*--alfa channel does. The opacity
+// ladder's tokens are percentages (--sf-opacity-50 is 50%), and 50% * 100% is
+// not a share a colour mix takes, so the border-color declaration was invalid
+// at computed-value time and the line fell back to currentColor, the text
+// colour (C187 follow-up, 2026-11-15, the same defect as ring-opacity).
+// The utility therefore writes the ladder step as the number it names:
+// divide-opacity-5 is 0.5, divide-opacity-full is 1, divide-opacity-0 is 0.
+// C187 (4) retires divide-opacity-* through an alias; it still draws until
+// 2027-01-01.
+$divider-opacity-array: ();
+@each $opacity-name, $opacity-value in $opacity-array {
+    $divider-opacity-array: map.merge($divider-opacity-array, (
+        $opacity-name: if($opacity-name == full, 1, math.div($opacity-name, 10)),
+    ));
+}
