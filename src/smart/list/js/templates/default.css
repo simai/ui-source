@@ -174,15 +174,21 @@
   .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > *,
   .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > sf-badge > * { grid-row: 2; }
 
-  /* The time is the column's first line, the title's (C148 (2)), across the
-     column's width and at its end, above the badge and the count. sf-time's
-     host may be display: contents: its time element is then the column's
-     item. */
+  /* The time is the column's first line, the title's (C148 (2)), at the
+     column's end, above the badge and the count. sf-time's host may be
+     display: contents: its time element is then the column's item. The
+     column has no declared tracks, so a line of a badge and a count -- two
+     tracks -- is spanned by name of its parts. */
   .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > .sf-list__time,
   .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > .sf-list__time > * {
     grid-row: 1;
-    grid-column: 1 / -1;
+    grid-column: 1;
     justify-self: end;
+  }
+
+  .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta:has(> .sf-list__badge):has(> .sf-list__count) > .sf-list__time,
+  .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta:has(> .sf-list__badge):has(> .sf-list__count) > .sf-list__time > * {
+    grid-column: 1 / span 2;
   }
 
   /* A narrow list (owner decision C47, 2026-11-10, option A; the list sets

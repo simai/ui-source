@@ -782,7 +782,7 @@
       },
       {
         "path": "src/smart/list/js/templates/default.css",
-        "sha256": "4f0146397147e66c55e29e6491ec474416b111e537a7e232b06b4a95db5a2fae"
+        "sha256": "c89cd1edc816bc88560fab7f402a7904edd990dd560ec4cfe79f235164fd8102"
       },
       {
         "path": "src/smart/list/rule.js",

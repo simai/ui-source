@@ -43,7 +43,8 @@ test('the format: the clock time under a day heading, sf-time auto elsewhere, no
 
 test('the sheet: the time on the title\'s line of the end column, dim, main ink when unread; a word-only end part takes no place', () => {
   const sheet = read('src/smart/list/js/templates/default.css');
-  assert.match(sheet, /\.sf-list-item--two-line > \.sf-list-item-wrap > \.sf-list__meta > \.sf-list__time,\n\s*\.sf-list-item--two-line > \.sf-list-item-wrap > \.sf-list__meta > \.sf-list__time > \* \{\n\s*grid-row: 1;\n\s*grid-column: 1 \/ -1;\n\s*justify-self: end;/u);
+  assert.match(sheet, /\.sf-list-item--two-line > \.sf-list-item-wrap > \.sf-list__meta > \.sf-list__time,\n\s*\.sf-list-item--two-line > \.sf-list-item-wrap > \.sf-list__meta > \.sf-list__time > \* \{\n\s*grid-row: 1;\n\s*grid-column: 1;\n\s*justify-self: end;/u);
+  assert.match(sheet, /:has\(> \.sf-list__badge\):has\(> \.sf-list__count\) > \.sf-list__time > \* \{\n\s*grid-column: 1 \/ span 2;/u);
   assert.match(sheet, /\.sf-list__row--unread > sf-list-item > \.sf-list-item:not\(\.disabled\) > \.sf-list-item-wrap > \.sf-list__meta > \.sf-list__time \{\n\s*color: var\(--sf-on-surface\);/u);
   // A one-line row's text is its container: the unread weight reaches it too.
   assert.match(sheet, /\.sf-list__row--unread > sf-list-item > \.sf-list-item:not\(\.sf-list-item--two-line\) > \.sf-list-item-wrap > \.sf-list-item-container \{\n\s*font-weight: var\(--sf-weight--semi-bold\);/u);
