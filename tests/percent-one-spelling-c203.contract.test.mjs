@@ -65,7 +65,7 @@ test('sf-progress-bar: the script, the sheet and the words follow the same spell
   assert.match(sheet, /\.sf-progress-bar--inline \.sf-progress-bar-text \{\s*order: -1;/u);
   // The number's box holds the widest value, «100 %», at every size: three
   // tabular figures and the space with the sign, so 0 % and 100 % stand alike.
-  assert.match(sheet, /min-inline-size: calc\(3ch \+ 1\.3em\);/u);
+  assert.match(sheet, /min-inline-size: calc\(3ch \+ 1\.4em\);/u);
   assert.match(sheet, /\.sf-progress-bar--inline\.sf-progress-bar--error \.sf-progress-bar-text \{\s*color: var\(--sf-progress-bar-color, var\(--sf-error\)\);/u);
   // IM-5: no number below the 1/3 text step; IM-4: compact moves the thickness.
   assert.match(sheet, /--size-1\\\/3 \{\s*--sf-progress-bar--font-size: var\(--sf-text-size-1\\\/3\);/u);

@@ -216,10 +216,10 @@
   order: -1;
   /* The box of the widest value, «100 %»: three tabular figures (3ch, the
      figure 0 is as wide as every tabular figure) and the no-break space with
-     the per cent sign (1.3em: 1.26em in Inter, rounded up). It follows the
-     number's own size, so 0 %, 72 % and 100 % stand at one width at every
-     size, density and width. */
-  min-inline-size: calc(3ch + 1.3em);
+     the per cent sign (1.4em: 1.26em in Inter, 1.31em in Inter Fallback while
+     the font loads). It follows the number's own size, so 0 %, 72 % and
+     100 % stand at one width at every size, density and width. */
+  min-inline-size: calc(3ch + 1.4em);
   text-align: end;
 }
 
