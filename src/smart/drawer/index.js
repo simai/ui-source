@@ -559,7 +559,10 @@ class SfDrawer extends DrawerElement {
     this._openerRechecks = 0;
     const nowhere = !(this._lastActive instanceof HTMLElement) || this._lastActive === document.body
       || this._lastActive === document.documentElement;
-    if (nowhere && opener) this._lastActive = focusTarget(opener) || this._lastActive;
+    // A page's own button that calls toggle() from a press that gave it no
+    // focus: the switch naming the panel on screen is the one pressed.
+    const back = opener || (nowhere ? this.knownOpener() : null);
+    if (nowhere && back) this._lastActive = focusTarget(back) || this._lastActive;
   }
 
   // The switch the close stands on the axis of: the one that opened the

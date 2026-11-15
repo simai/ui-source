@@ -17,7 +17,7 @@ test('drawer C104 (4): the opener is a switch naming the drawer, noted on every 
   assert.match(source, /if \(drawer && operation !== 'close'\) drawer\._openerHint = trigger;/u);
   assert.equal((source.match(/this\.noteOpener\(\);/gu) || []).length, 3);
   // Where a press gave no focus, the focus goes back to the switch.
-  assert.match(source, /if \(nowhere && opener\) this\._lastActive = focusTarget\(opener\) \|\| this\._lastActive;/u);
+  assert.match(source, /if \(nowhere && back\) this\._lastActive = focusTarget\(back\) \|\| this\._lastActive;/u);
 });
 
 test('drawer C104 (4): the close is drawn first in the head when its side is the start', () => {
