@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-quantity",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "title": "Quantity",
   "summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
   "kind": "smart",
@@ -180,11 +180,11 @@
       "removable": {
         "type": "boolean",
         "default": false,
-        "description": "The remove mode for a cart line (owner decision C122, names agreed by the owner 2026-11-13): on the lower bound «−» becomes a trash in the same button and the same grey, in the Tab order; pressing it, or typing «0» and Enter while 0 is below `min`, sends the cancelable `remove` event. A held «−» stops on the bound: removal takes a new press. The field never removes itself: the page removes the line and offers «Вернуть» (C25). Needs a lower bound; off by default."
+        "description": "The remove mode for a cart line (owner decision C122; name agreed by the owner 2026-11-13): on the lower bound «−» becomes a trash in the same button and the same grey, in the Tab order; pressing it, or typing «0» and Enter while 0 is below `min`, sends the cancelable `remove` event. A held «−» stops on the bound: removal takes a new press. The field never removes itself: the page removes the line and offers «Вернуть» (C25). Needs a lower bound; off by default."
       },
       "remove-label": {
         "type": "string",
-        "description": "The accessible name of the trash in the remove mode (C122). Unset, it follows the page's language («Удалить», «Remove»); a cart writes «Удалить из корзины»."
+        "description": "The accessible name of the trash in the remove mode (owner decision C122). Unset, it follows the page's language («Удалить», «Remove»); a cart writes «Удалить из корзины»."
       },
       "aria-label": {
         "type": "string",
@@ -475,7 +475,7 @@
       "canonical": true
     },
     "sf-input-quantity-remove": {
-      "summary": "C122. A request to remove the line the field counts, in the remove mode: the trash was pressed, or «0» was typed and committed with Enter. The field changes nothing itself; the page removes the line. Not cancelled after a typed «0», the typing is taken back; cancelled, the «0» is committed as any number past the bound (kept, with its error).",
+      "summary": "Owner decision C122. A request to remove the line the field counts, in the remove mode: the trash was pressed, or «0» was typed and committed with Enter. The field changes nothing itself; the page removes the line. Not cancelled after a typed «0», the typing is taken back; cancelled, the «0» is committed as any number past the bound (kept, with its error).",
       "payload": {
         "type": "object",
         "required": [
@@ -663,7 +663,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-quantity/index.js",
-        "sha256": "63d8f82ad7df752a91ad0dd505bd85a357465a03ac7baf6a941386341b21b730"
+        "sha256": "53e43104552196062504042d7ef1f0e7ddc5afa179abe1ad2eb8234cf259b407"
       },
       {
         "path": "src/smart/input-quantity/value.mjs",
@@ -679,7 +679,7 @@
       },
       {
         "path": "src/smart/input-quantity/docs.md",
-        "sha256": "cf53bc8361efebbbfd9f53f7b6275c5950fd3644a3f345d51e123629b6c6847f"
+        "sha256": "dfe53929b61eb94adef0279b6dc6f712bf151f6ceea0e481bbb2e194a9c478b2"
       }
     ],
     "generated_runtime": []
