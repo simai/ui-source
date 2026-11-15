@@ -10,6 +10,8 @@ SF.RuleLoader['cl-input-color'] = {
   css: true,
   relation: [
     { name: 'icons' },
+    // inputs: the field layer's .sf-field-action rules (owner decision C123), which the reset inside the frame takes, as sf-input's clear and reveal do.
+    { name: 'inputs' },
     { name: 'cl-icon' },
     { name: 'cl-button-icon' },
     // cl-segmented: the window's «Палитра / Своё» switch, drawn only once the window opens, fetched after the page is ready.
