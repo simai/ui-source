@@ -193,8 +193,9 @@ test('FU-3: a chosen file is ready -- not a transfer at 0 % -- until the host or
   assert.equal('progress' in item, false);
   assert.equal(api.normalizeItemState(item), 'ready');
   const template = await readFile(new URL('../src/smart/file-upload/js/templates/default.js', import.meta.url), 'utf8');
-  // Both renderers draw the bar for process alone.
-  assert.match(template, /\$\{state === 'process'\s*\?\s*html`\s*<sf-progress-bar/u, 'the Smart row draws a bar for process alone');
+  // Both renderers draw the bar for process alone: the Smart row is
+  // sf-file-preview, whose bar is its uploading state (C81).
+  assert.match(template, /PREVIEW_STATES = Object\.freeze\(\{ready: 'ready', done: 'ready', process: 'uploading', error: 'error'\}\)/u, 'the Smart row is uploading for process alone');
   assert.match(source, /if \(state === 'process'\) \{\s*const progressBar/u, 'the class row draws a bar for process alone');
 });
 
@@ -204,9 +205,10 @@ test('FU-4: a sent file says so, keeps Remove and has no 100 % bar', async () =>
   assert.equal(row.state, 'done');
   assert.equal(row.line, '1 МБ · загружен');
   const template = await readFile(new URL('../src/smart/file-upload/js/templates/default.js', import.meta.url), 'utf8');
-  const top = template.slice(template.indexOf('sf-upload-progress-top'), template.indexOf("state === 'error'"));
-  assert.match(top, /data-action="remove"/u, 'Remove is outside the state branch');
-  assert.doesNotMatch(top, /: html`\s*<button/u, 'Remove is not the alternative of the check');
+  // The Smart row (sf-file-preview) keeps its remove action in every state:
+  // the template never turns it off.
+  assert.match(template, /<sf-file-preview/u);
+  assert.doesNotMatch(template, /remove-action=/u, 'Remove is not tied to the state');
 });
 
 test('FU-5: an error says its message on its own line; Retry is the retry word, not the reason', () => {
@@ -237,7 +239,7 @@ test('FU-12: the row glyph is in the on-surface-variant role and the list keeps 
   assert.doesNotMatch(rows, /--sf-icon--color: var\(--sf-primary\)/u);
   assert.match(rows, /color: var\(--sf-icon--color, var\(--sf-on-surface-variant\)\)/u);
   const zone = await readFile(new URL('../src/component/file-upload/scss/_css__file_upload.scss', import.meta.url), 'utf8');
-  assert.match(zone, /\.sf-file-upload ~ \.sf-file-upload-files:has\(> \.sf-upload-progress\) \{\s*margin-block-start: var\(--sf-file-upload-files--gap, var\(--sf-space-1\)\);/u);
+  assert.match(zone, /\.sf-file-upload ~ \.sf-file-upload-files:has\(> \.sf-upload-progress, > \.sf-file-upload-item\) \{\s*margin-block-start: var\(--sf-file-upload-files--gap, var\(--sf-space-1\)\);/u);
 });
 
 test('FU-10: Remove and Retry are named with their file; every glyph is out of the accessible text', async () => {
@@ -261,10 +263,11 @@ test('FU-10: Remove and Retry are named with their file; every glyph is out of t
   const root = area();
   root.nextElementSibling = {
     classList: {contains: (name) => name === 'sf-file-upload-files'},
-    querySelectorAll: (selector) => (selector.startsWith('button') ? [remove, retry] : []),
+    querySelectorAll: (selector) => (selector.includes('button[data-action') ? [remove, retry] : []),
   };
   api.syncFileUploadInteraction(root);
-  assert.equal(remove.getAttribute('aria-label'), 'Удалить Скан.pdf');
+  // «Убрать»: the file leaves the list, nothing is erased (C149 (8)).
+  assert.equal(remove.getAttribute('aria-label'), 'Убрать Скан.pdf');
   assert.equal(retry.getAttribute('aria-label'), 'Повторить Скан.pdf');
 
   for (const path of ['../src/component/file-upload/js/_file_upload.js', '../src/smart/file-upload/js/templates/default.js']) {

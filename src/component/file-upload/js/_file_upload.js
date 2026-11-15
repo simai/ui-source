@@ -159,7 +159,9 @@ function syncFileUploadInteraction(root) {
   if (disabled && root.classList.contains('dragover')) root.classList.remove('dragover');
 
   const files = getFilesContainer(root);
-  files?.querySelectorAll('button[data-action="remove"], button[data-action="retry"]').forEach(button => {
+  // The class rows only: a Smart area's rows are sf-file-preview, which names
+  // its own buttons («Убрать <имя>», «Повторить <имя>»).
+  files?.querySelectorAll('.sf-upload-progress button[data-action="remove"], .sf-upload-progress button[data-action="retry"]').forEach(button => {
     let previous = state.buttons.get(button);
     if (!previous) {
       previous = {disabled: button.disabled, managedDisabled: false, label: null};
@@ -337,7 +339,9 @@ function createUploadProgressItem(item, size = '1', owner = null) {
   const removeIcon = document.createElement('i');
   removeIcon.className = 'sf-icon';
   removeIcon.setAttribute('aria-hidden', 'true');
-  removeIcon.textContent = 'delete';
+  // «×» «Убрать <имя>»: the file leaves the list, nothing is erased (C149
+  // (8)); the trash is a stored file's, in sf-file-preview.
+  removeIcon.textContent = 'close';
   removeButton.append(removeIcon);
   top.append(removeButton);
   content.append(top);
@@ -501,7 +505,10 @@ function normalizeFileItems(files = [], root = null) {
   }));
 }
 
-function removeFileUploadItem(root, index) {
+// options.action says how the file left: remove («×», taken out of the list)
+// or delete (a stored file the person chose to erase; C149 (8)). detach
+// carries it, so the page knows which one to answer.
+function removeFileUploadItem(root, index, options = {}) {
   if (!root) return false;
 
   const currentItems = Array.from(root.__sfFileUploadItems || []);
@@ -523,6 +530,7 @@ function removeFileUploadItem(root, index) {
         item: removed || null,
         index: normalizedIndex,
         items: currentItems,
+        action: options?.action === 'delete' ? 'delete' : 'remove',
       },
     }),
   );
@@ -1092,6 +1100,7 @@ export {
   setFileUploadItems,
   clearFileUpload,
   retryFileUploadItem,
+  removeFileUploadItem,
   takeFiles,
   formatAcceptWords,
   normalizeItemState,

@@ -1,4 +1,5 @@
 import {html, nothing} from 'lit';
+import {repeat} from 'lit/directives/repeat.js';
 import {fieldSize} from '../../../../component/field-size';
 import {describeUploadItem} from '../../../../component/file-upload/js/_file_upload';
 
@@ -6,59 +7,46 @@ function normalizeSize(value) {
     return fieldSize(value, 'sf-file-upload');
 }
 
-// The row is the class row (describeUploadItem): ready, process, done and
-// error say the same words and offer the same buttons in both.
-function renderUploadItem(item, size, index, owner) {
+// A row is the family's file row, sf-file-preview (owner decisions C81 and
+// C149): one row height with sf-file-preview, sf-file-download and the image
+// field; the picture of a photo (the chosen file itself, or the host's
+// imageUrl) and the type's glyph and word for anything else. The upload
+// states map onto the row's: a chosen file and a sent one are there (ready;
+// a sent one with its address is a link), a file on its way is uploading with
+// the bar, a failed one is error with its reason and «Повторить». Remove is
+// «×» «Убрать <имя>» at once, given back by «Вернуть» (C25, C149 (8)); a
+// stored file the host marks stored is the trash «Удалить <имя>», asked first.
+const PREVIEW_STATES = Object.freeze({ready: 'ready', done: 'ready', process: 'uploading', error: 'error'});
+
+function renderUploadItem(item, index, context) {
+    const owner = context.component;
     const row = describeUploadItem(item, owner, 'process');
     const {state} = row;
+    const bytes = Number(item?.file?.size ?? item?.size);
+    const fileSize = Number.isFinite(bytes) && (item?.file || (item?.size !== undefined && item?.size !== null && item?.size !== ''))
+        ? String(bytes)
+        : row.size;
+    const mime = String(item?.file?.type || item?.mime || '');
+    const href = state === 'done' && item?.href ? String(item.href) : '';
+    const picture = owner?.pictureOf?.(item) || '';
 
     return html`
-        <div
-                class="sf-upload-progress sf-upload-progress--size-${size} sf-upload-progress--${state} flex items-main-start items-cross-start"
-                data-index=${String(index)}
-        >
-            <i class="sf-icon" aria-hidden="true">${row.icon}</i>
-            <div class="sf-upload-progress-content flex flex-col flex-1">
-                <div class="sf-upload-progress-top flex content-main-between">
-                    <div class="sf-upload-progress-left flex flex-col">
-                        <div class="sf-upload-progress-name">${row.name}</div>
-                        <div class="sf-upload-progress-text">${row.line}</div>
-                    </div>
-
-                    ${state === 'done'
-                            ? html`<i class="sf-icon sf-icon-solid sf-upload-progress-mark" aria-hidden="true">check_circle</i>`
-                            : nothing}
-                    <button
-                            type="button"
-                            class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-${size} flex items-cross-center content-main-center self-cross-start"
-                            data-action="remove"
-                    >
-                        <i class="sf-icon" aria-hidden="true">delete</i>
-                    </button>
-                </div>
-
-                ${state === 'error'
-                        ? html`
-                            <button
-                                    type="button"
-                                    class="sf-upload-progress-repeat self-cross-start"
-                                    data-action="retry"
-                            >
-                                ${row.retryText}
-                            </button>
-                        `
-                        : nothing}
-                ${state === 'process'
-                        ? html`
-                            <sf-progress-bar
-                                    size=${size}
-                                    value=${row.progress === null ? nothing : String(row.progress)}
-                                    ?indeterminate=${row.progress === null}
-                                    text-position="inline-end"
-                            ></sf-progress-bar>
-                        `
-                        : nothing}
-            </div>
+        <div class="sf-file-upload-item" role="listitem" data-index=${String(index)}>
+            <sf-file-preview
+                    file-name=${row.name}
+                    file-size=${fileSize || nothing}
+                    mime-type=${mime || nothing}
+                    image-url=${picture || nothing}
+                    href=${href || nothing}
+                    state=${PREVIEW_STATES[state] || 'ready'}
+                    value=${state === 'process' && row.progress !== null ? String(row.progress) : nothing}
+                    error-text=${state === 'error' && row.message ? row.message : nothing}
+                    download-action=${href ? 'true' : 'false'}
+                    ?stored=${item?.stored === true}
+                    ?disabled=${context.disabled}
+                    @sf-file-preview-detach=${(event) => owner?.handleRowDetach?.(event, index)}
+                    @sf-file-preview-retry=${(event) => owner?.handleRowRetry?.(event, index)}
+            ></sf-file-preview>
         </div>
     `;
 }
@@ -119,9 +107,9 @@ export function renderFileUploadTemplate(context) {
 
         <div class="sf-file-upload-message" role="status" hidden></div>
 
-        <div class="sf-file-upload-files grid grid-col-1 gap-1 w-full">
+        <div class="sf-file-upload-files grid grid-col-1 gap-1/2 w-full" role="list">
             ${Array.isArray(context.items)
-                    ? context.items.map((item, index) => renderUploadItem(item, size, index, context.component))
+                    ? repeat(context.items, (item, index) => context.keyOf(item, index), (item, index) => renderUploadItem(item, index, context))
                     : nothing}
         </div>
     `;

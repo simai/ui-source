@@ -7,7 +7,8 @@ SF.RuleLoader['cl-file-upload'] = {
   relation: [
     { name: 'file-upload' },
     { name: 'featured-icon' },
-    { name: 'cl-progress-bar' },
+    // Each file's row is sf-file-preview (owner decisions C81, C149): asked for when the first file is listed.
+    { name: 'cl-file-preview', lazy: true },
     { name: 'icon-buttons' },
   ],
 };

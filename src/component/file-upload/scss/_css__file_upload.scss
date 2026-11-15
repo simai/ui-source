@@ -232,8 +232,10 @@ sf-file-upload[data-dragged-over] > .sf-file-upload:not([disabled]):not(.disable
 }
 
 /* The list stood flush under the area (gap 0, FU-12): it keeps the rows' own
-   distance from the area, and from the message when there is one. */
-.sf-file-upload ~ .sf-file-upload-files:has(> .sf-upload-progress) {
+   distance from the area, and from the message when there is one. The rows
+   are the class rows (.sf-upload-progress) or a Smart area's sf-file-preview
+   rows (.sf-file-upload-item, C81). */
+.sf-file-upload ~ .sf-file-upload-files:has(> .sf-upload-progress, > .sf-file-upload-item) {
   margin-block-start: var(--sf-file-upload-files--gap, var(--sf-space-1));
 }
 

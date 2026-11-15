@@ -118,7 +118,8 @@ test('progress bar reads right as inline-end', async () => {
   const [component, template, fileUpload] = await Promise.all([
     read('src/component/progress-bar/js/_progressbar.js'),
     read('src/smart/progress-bar/js/templates/default.js'),
-    read('src/smart/file-upload/js/templates/default.js'),
+    // The file-upload row is sf-file-preview since C81; its bar is the preview's.
+    read('src/smart/file-preview/js/templates/default.js'),
   ]);
 
   // right is the former word for inline-end until 2027-01-01 (C131 (4)).
