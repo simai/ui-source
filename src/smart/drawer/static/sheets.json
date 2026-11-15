@@ -26,6 +26,7 @@
     "utility/position/default/css/default.min.css",
     "utility/resize/default/css/default.min.css",
     "utility/sr-only/default/css/default.min.css",
+    "utility/text-max-width/default/css/default.min.css",
     "utility/visibility/default/css/default.min.css"
   ],
   "examples": {
@@ -50,6 +51,7 @@
       "utility/position/default/css/default.min.css",
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
+      "utility/text-max-width/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
     "outside-close": [
@@ -73,6 +75,7 @@
       "utility/position/default/css/default.min.css",
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
+      "utility/text-max-width/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
     "reference": [
@@ -96,6 +99,7 @@
       "utility/position/default/css/default.min.css",
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
+      "utility/text-max-width/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
     "sheet": [
@@ -119,6 +123,7 @@
       "utility/position/default/css/default.min.css",
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
+      "utility/text-max-width/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
     "toggled": [
@@ -142,6 +147,7 @@
       "utility/position/default/css/default.min.css",
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
+      "utility/text-max-width/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
     "unsaved": [
@@ -165,6 +171,7 @@
       "utility/position/default/css/default.min.css",
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
+      "utility/text-max-width/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ]
   }
