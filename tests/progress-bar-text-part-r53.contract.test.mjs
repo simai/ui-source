@@ -61,7 +61,8 @@ test('the class writes the value and the label only through writeText', () => {
   assert.doesNotMatch(ordinary, /labelNode\.textContent\s*=/);
   assert.doesNotMatch(ordinary, /textNode\.textContent\s*=/);
   assert.match(ordinary, /writeText\(labelNode, label\)/);
-  assert.match(ordinary, /writeText\(textNode, `\$\{value\}%`\)/);
+  // The per cent text is C203's one spelling (percentText), written through writeText.
+  assert.match(ordinary, /writeText\(textNode, percentText\(value, root\)\)/);
 });
 
 test('sf-progress-bar draws every change with its template, never by patching the drawn markup', () => {

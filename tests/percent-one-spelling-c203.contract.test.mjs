@@ -79,7 +79,7 @@ test('sf-progress-ring shows and says «72 %»', () => {
 
 test('sf-progress-scale shows «72 %»', async () => {
   assert.deepEqual(percents(renderProgressScaleTemplate({value: 72, showText: true})), [`72${NBSP}%`]);
-  assert.match(await read('src/component/progress-scale/js/_progress_scale.js'), /text\.textContent = percentText\(value, root\);/u);
+  assert.match(await read('src/component/progress-scale/js/_progress_scale.js'), /text\.textContent = (?:level \? \(root\.dataset\.valueText \|\| words\) : )?percentText\(value, root\);/u);
 });
 
 test('sf-tile-metric and sf-progress-run write the per cent with the no-break space', async () => {
