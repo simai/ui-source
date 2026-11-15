@@ -1,4 +1,4 @@
-import { ariaKeyShortcuts, parseShortcut } from '../../kbd/js/shortcut';
+import { ariaKeyShortcuts, parseShortcut } from '../../kbd/js/shortcut.js';
 
 // A tooltip that shows its trigger's shortcut (sf-tooltip shortcut="mod+b")
 // says it on the trigger too: aria-keyshortcuts in the WAI-ARIA words of this

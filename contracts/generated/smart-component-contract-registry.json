@@ -137,6 +137,7 @@
         "uses": [
           "component.avatars",
           "component.badges",
+          "component.dot",
           "component.tooltip",
           "smart.icon"
         ]
@@ -150,7 +151,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/avatar/smart.manifest.json",
-      "manifest_sha256": "28dbd52c9a24a7a38623f20d402f02c3c035afc059628e9bac2e2112beb7c457",
+      "manifest_sha256": "e881f9c20a89888a612c21895456a8e60cd10ecde978b743c691beb1da079009",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -173,6 +174,7 @@
         "public_parts": [],
         "uses": [
           "component.avatars",
+          "component.dot",
           "component.icons",
           "component.tooltip",
           "smart.icon",
@@ -188,7 +190,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/avatar-group/smart.manifest.json",
-      "manifest_sha256": "00dddb03dd60f15b0ffea6908ba915d571abe8628374c8c9d0001586450d7779",
+      "manifest_sha256": "689f98dd59232be6ad1cbabd648b83e8266ec5bae5520feafb77bdb90750e7ec",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -454,6 +456,7 @@
         "public_parts": [],
         "uses": [
           "component.badges",
+          "component.dot",
           "component.icon-buttons",
           "component.spinner",
           "component.tooltip",
@@ -470,7 +473,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-icon/smart.manifest.json",
-      "manifest_sha256": "090627312c06a6cfeaea4c908c071375e433005c328d2db395a58464d79d9296",
+      "manifest_sha256": "9275dddb65054b29646fe3ebea61c32fdd34e9ddbfb6955c1f1c066ae2fe0d02",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1259,6 +1262,7 @@
         "public_parts": [],
         "uses": [
           "component.badges",
+          "component.dot",
           "component.icons"
         ]
       },
@@ -1271,7 +1275,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/icon/smart.manifest.json",
-      "manifest_sha256": "851b8d7b3e232fc6eaa941ba7ba12fc105fad0235589a9e5f494fda01533a5c7",
+      "manifest_sha256": "ed99117903078db6b7c53047919027008e98b67ba7aa883b71a09e508f9197a3",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2520,7 +2524,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-ring/smart.manifest.json",
-      "manifest_sha256": "7d7921eba4be16da785e43ca9f6deb0a0af7b2f9c24df94d5e1fd28402ae0ed1",
+      "manifest_sha256": "34830dae60133d7c2659c36149aea791aa4b9bf61685cef8981d3b6c1c66f426",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3456,7 +3460,7 @@
       "kind": "smart",
       "lifecycle": "released",
       "manifest_path": "src/smart/tooltip/smart.manifest.json",
-      "manifest_sha256": "8e9b15f9b5223640ae71b1a4b287cc0624f128f3df73016ee32524aa9ce4e867",
+      "manifest_sha256": "897544b27e9c3cba72a35b18f7d5344186d2f11b8ec9b4fd9a211e6d7c55ef70",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

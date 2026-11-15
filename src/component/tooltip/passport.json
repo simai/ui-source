@@ -16,7 +16,7 @@
     "src/component/tooltip/scss/_css__tooltip_custom.scss",
     "src/component/tooltip/scss/index.scss"
   ],
-  "content_sha256": "bd4324a81347233a6df512dd5fd59d388f8b5f1e79d5c0d49edce3d581ceb236",
+  "content_sha256": "a0a226281c56edc1f2fd75e25129e249a0f2e9fb1f609711985470c0971ab02c",
   "dependencies": [
     {
       "id": "component.kbd",
