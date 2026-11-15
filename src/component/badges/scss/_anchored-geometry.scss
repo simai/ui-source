@@ -123,7 +123,11 @@ $diagonal: 0.29289; // 1 - 1/sqrt(2)
   & > .sf-dot {
     --sf-dot-item--size: var(--sf-badge--anchored-dot);
     --sf-dot-item--background-color: var(--sf-badge--background-color);
-    display: inline-flex;
+    // Over the whole box, the disc centred: the hidden digits of a count
+    // and the badge's gap move nothing.
+    position: absolute;
+    inset: 0;
+    display: flex;
   }
 
   @media (forced-colors: active) {

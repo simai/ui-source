@@ -137,9 +137,16 @@
     background-image: none;
   }
 
+  // The box holds the disc; zero specificity, so a page's position wins.
+  :where(.sf-badge.sf-badge--dot:not(.sf-badge--anchored)) {
+    position: relative;
+  }
+
   .sf-badge.sf-badge--dot:not(.sf-badge--anchored) > .sf-dot {
     --sf-dot-item--background-color: var(--sf-badge--background-color);
-    display: inline-flex;
+    position: absolute;
+    inset: 0;
+    display: flex;
   }
 
   // A count kept by the runtime draws its figures at one width.
