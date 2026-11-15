@@ -1,5 +1,6 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
+import { effectiveStatus, readThreshold } from '../../progress-threshold';
 
 const PROGRESS_SCALE_SELECTOR = '.sf-progress-scale';
 const BOUND_FLAG = 'sfProgressScaleBound';
@@ -118,6 +119,14 @@ function renderProgressScale(root) {
   const step = lit * 10;
   const size = normalizeProgressScaleSize(root.dataset.size);
   const tone = normalizeProgressScaleTone(root.dataset.tone);
+  // The thresholds (C131 (7)), as sf-progress-scale's warning-at and
+  // error-at: from data-warning-at on the scale is a warning by itself, from
+  // data-error-at an error; the more serious of that and data-tone is drawn.
+  // The page's tone stays in data-tone, so a value that falls back below the
+  // threshold draws it again.
+  const drawn = normalizeProgressScaleTone(
+    effectiveStatus(tone, value, readThreshold(root.dataset.warningAt), readThreshold(root.dataset.errorAt)),
+  );
   const showText = normalizeBoolean(root.dataset.showText, true);
 
   // A scale on a text line, and a level scale, lay their track and value out
@@ -127,7 +136,7 @@ function renderProgressScale(root) {
   root.classList.add('sf-progress-scale', 'flex', onRow ? 'flex-row' : 'flex-col');
   root.classList.remove(onRow ? 'flex-col' : 'flex-row');
   root.classList.toggle('sf-progress-scale--level', level);
-  syncScaleClasses(root, step, size, tone);
+  syncScaleClasses(root, step, size, drawn);
   root.dataset.value = String(value);
   root.dataset.size = size;
   root.dataset.tone = tone;
@@ -185,6 +194,13 @@ function setProgressScaleState(target, state = {}) {
   if (Object.prototype.hasOwnProperty.call(state, 'showText')) {
     root.dataset.showText = String(normalizeBoolean(state.showText, true));
   }
+  // The thresholds in per cent; null or an empty value takes one away.
+  [['warningAt', 'warningAt'], ['errorAt', 'errorAt']].forEach(([key, data]) => {
+    if (!Object.prototype.hasOwnProperty.call(state, key)) return;
+    const threshold = readThreshold(state[key]);
+    if (threshold === null) delete root.dataset[data];
+    else root.dataset[data] = String(threshold);
+  });
   if (Object.prototype.hasOwnProperty.call(state, 'label')) {
     const label = String(state.label || '').trim();
     if (label) {
@@ -222,6 +238,15 @@ function getProgressScaleState(target) {
     size: normalizeProgressScaleSize(root.dataset.size),
     status: normalizeProgressScaleTone(root.dataset.tone),
     tone: normalizeProgressScaleTone(root.dataset.tone),
+    // The status drawn: the tone, or the threshold the value reached.
+    drawnStatus: normalizeProgressScaleTone(effectiveStatus(
+      normalizeProgressScaleTone(root.dataset.tone),
+      normalizeProgressScaleValue(root.dataset.value),
+      readThreshold(root.dataset.warningAt),
+      readThreshold(root.dataset.errorAt),
+    )),
+    warningAt: readThreshold(root.dataset.warningAt),
+    errorAt: readThreshold(root.dataset.errorAt),
     showText: normalizeBoolean(root.dataset.showText, true),
     label: root.getAttribute('aria-label') || '',
     valueText: root.getAttribute('aria-valuetext') || '',
@@ -239,6 +264,7 @@ class ProgressScale extends ComponentObserver {
     const {
       size = '1', value = 0, status, tone = '', showText = true,
       label = '', valueText = '', meter = false, steps = null,
+      warningAt = null, errorAt = null,
     } = this.params || {};
     const root = document.createElement('div');
     root.className = 'sf-progress-scale flex flex-col';
@@ -250,6 +276,8 @@ class ProgressScale extends ComponentObserver {
     if (String(valueText).trim()) root.dataset.valueText = String(valueText).trim();
     if (meter) root.dataset.meter = 'true';
     if (steps !== null && steps !== undefined && steps !== '') root.dataset.steps = String(normalizeProgressScaleSteps(steps));
+    if (readThreshold(warningAt) !== null) root.dataset.warningAt = String(readThreshold(warningAt));
+    if (readThreshold(errorAt) !== null) root.dataset.errorAt = String(readThreshold(errorAt));
     this.template = root;
   }
 

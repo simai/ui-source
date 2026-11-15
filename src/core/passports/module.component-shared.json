@@ -3,9 +3,9 @@
   "schema_version": 1,
   "id": "module.component-shared",
   "kind": "module",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "owner": "simai/ui-source",
-  "summary": "The modules the class components share from the top of src/component: field contract and size, mask service, form reset and registration.",
+  "summary": "The modules the class components share from the top of src/component: field contract and size, mask service, form reset and registration, and the progress thresholds (warning-at, error-at) the progress bar and scales read.",
   "includes": [
     "src/component/"
   ],
@@ -16,10 +16,11 @@
     "src/component/form-reset-helper.js",
     "src/component/mask-service.js",
     "src/component/panel-scrollbar.js",
+    "src/component/progress-threshold.js",
     "src/component/register-helper.js",
     "src/component/register.js"
   ],
-  "content_sha256": "15304e6b4eb6436746120e17e3532a32ebc23dbc34276074fa22bb81dfe19ee2",
+  "content_sha256": "396b6367e347ef8d3d350f200dd43f6d173e1ffbab7ceba6fc4b1828667fbe6d",
   "dependencies": [
     {
       "id": "component.badges",

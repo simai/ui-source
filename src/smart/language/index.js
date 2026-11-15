@@ -29,6 +29,7 @@ import {noteDeprecated} from '../../core/js/deprecations.js';
 import {pageLocale} from '../../core/js/page-language';
 import BundledPreferences from '../../core/js/preferences.js';
 import {tagSelector} from '../../core/js/tag-aliases.js';
+import {instancePath, partId} from '../../core/js/instance-path.js';
 import {FormField} from '../helpers/form-field';
 import {renderLanguageTemplate} from './js/templates/default';
 import {SIZES, canonicalCode, languageRows, lookFor, matchLanguage, normalizeLanguages, useNames} from './js/languages';
@@ -455,6 +456,9 @@ class SfLanguage extends FormField(LanguageElement) {
       value: current?.code ?? '',
       label,
       triggerLabel: current ? this.sfWord('trigger', {vars: {label, name: current.native}}) : label,
+      // The trigger's name tooltip (C160 (1)): its surface's id, from the
+      // element's path (§7.1.1).
+      tipId: look === 'menu' || look === 'search' ? partId(instancePath(this, {kind: 'sf-language'}), 'tooltip') : '',
       entries: look === 'menu' || look === 'search' ? this.menuEntries(list, current, look === 'search' ? this._query : '') : [],
       search: look === 'search' ? this.searchOptions() : null,
       // The field look (C142 (8)): sf-dropdown on its own ladder (1/2, 1, 2),
@@ -483,6 +487,12 @@ class SfLanguage extends FormField(LanguageElement) {
     if (menu) {
       const search = this.look === 'search' ? this.searchOptions() : null;
       if (JSON.stringify(menu.search) !== JSON.stringify(search)) menu.search = search;
+    }
+    // The trigger's name tooltip (C160 (1)): the controller is a lazy
+    // relation, asked for once a trigger with its tooltip is drawn.
+    if (!this._tipAsked && this.querySelector('.sf-language-tooltip')) {
+      this._tipAsked = true;
+      globalThis.SF?.Loader?.ensurePlugin?.('tooltip');
     }
     this.sfSyncFormState();
   }
