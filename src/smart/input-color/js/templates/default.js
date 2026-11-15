@@ -94,12 +94,17 @@ export function renderColorTemplate(context) {
                             ? renderInheritedSlot(context.component, {size, disabled, className: 'sf-color-inherited-slot'})
                             : nothing}
                     ${context.clearable && isSet && !context.hasInheritedValue
+                            // The reset is an action inside the field (owner
+                            // decision C123): the field layer's .sf-field-action
+                            // (component.inputs), the glyph sf-input's clear and
+                            // reveal draw -- no plate in any state, the quiet ink
+                            // at rest and the text's ink under the pointer, the
+                            // ring round the glyph, an invisible hit area the
+                            // field's inner height. Its name is the variant's
+                            // reset words (clearLabel).
                             ? html`
-                                <sf-button-icon
-                                        appearance="ghost"
-                                        scheme="on-surface"
-                                        size=${({'1/3': '1/3', '2': '1', '3': '2'})[size] || '1/2'}
-                                        icon="restart_alt"
+                                <button type="button"
+                                        class="sf-field-action sf-color-reset"
                                         data-action="clear"
                                         aria-label=${context.clearLabel}
                                         title=${context.clearLabel}
@@ -108,7 +113,7 @@ export function renderColorTemplate(context) {
                                             event.stopPropagation();
                                             component.clear();
                                         }}
-                                ></sf-button-icon>`
+                                ><sf-icon icon="restart_alt" aria-hidden="true"></sf-icon></button>`
                             : nothing}
                     <sf-icon icon=${open ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}
                              root-class="sf-color-chevron"

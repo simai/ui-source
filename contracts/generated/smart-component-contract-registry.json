@@ -1379,6 +1379,7 @@
         ],
         "uses": [
           "component.icons",
+          "component.inputs",
           "smart.button-icon",
           "smart.icon",
           "smart.segmented"
@@ -1393,7 +1394,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-color/smart.manifest.json",
-      "manifest_sha256": "18fe7cc0681e4507f2457484c4b76c17b9ff3850f7978ee1cd7d84f7ce27121c",
+      "manifest_sha256": "83df45da0eed49e3b86e340d138a794466a9012d9613035d0b43c478b37be84c",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

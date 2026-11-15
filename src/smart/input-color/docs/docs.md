@@ -91,6 +91,15 @@ prevented, the colour empties with `input` and `change`, the inherited colour
 shows again and focus returns to the field. `element.resetToInherited()` does
 the same from code.
 
+The button `clearable` adds inside the frame (1.11.0, owner decision C123) is
+an action inside the field, the glyph sf-input's clear and reveal draw (the
+field layer's `.sf-field-action`): no plate in any state, the quiet ink at
+rest and the text's ink under the pointer, the keyboard ring round the glyph,
+an invisible hit area the frame's height. The glyph is the swatch's and the
+chevron's size, half the frame's inset from the value and from the chevron.
+The theme variant's reset beside the circle stands outside a field and keeps
+its plate.
+
 ## Brand colour (`variant="brand"` and `variant="theme"`)
 
 The brand colour is a mode of this field (C84; `sf-theme-generator` leaves on

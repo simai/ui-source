@@ -169,7 +169,36 @@
     align-self: center;
   }
 
+  /* The reset is an action inside the field (owner decision C123, variant A):
+     the field layer's .sf-field-action (component.inputs, the rules sf-input's
+     clear and reveal take). The frame says its step through the three
+     variables the rules read: the glyph is the swatch's and the chevron's size
+     (the field's text line, 24 / 20 / 28 at 1, 1/2, 2), the hit area the
+     frame's inner height, the inset the frame's plain inset (C77). Between the
+     value and the glyph, and between the glyph and the chevron, half an inset
+     (C123 (6)): the hit area stands out past each side of the glyph by half
+     of what it is wider than the glyph (a quarter inset, more where the 24
+     floor widens it), so the frame keeps the rest of the half inset while it
+     holds the action. It stood the C105 H5 group gap (--sf-space-1/3) apart
+     as a plated sf-button-icon. */
+  .sf-color-frame {
+    --sf-field-action--inset: var(--sf-color--space-x);
+    --sf-field-action--glyph: var(--sf-color--text-height);
+    --sf-field-action--height: var(--sf-color--control-height);
+  }
+
+  .sf-color-frame:has(> .sf-field-action) {
+    gap: calc(var(--sf-field-action--inset) / 2 - (max(var(--sf-field-action--glyph) + var(--sf-field-action--inset) / 2, var(--sf-c2)) - var(--sf-field-action--glyph)) / 2);
+  }
+
+  /* The chevron is the field's indicator glyph (C123 (3)): the field's text
+     line, the swatch's and the reset's size. It read the text line through
+     font-size and box size only, which the icon's own --sf-icon-- size
+     overrode, so it drew the icon's 24 (20 compact) at every step. */
   .sf-color-chevron {
+    --sf-icon--font-size: var(--sf-color--text-height);
+    --sf-icon--height: var(--sf-color--text-height);
+    --sf-icon--width: var(--sf-color--text-height);
     flex: none;
     color: var(--sf-on-surface-variant);
     font-size: var(--sf-color--text-height);

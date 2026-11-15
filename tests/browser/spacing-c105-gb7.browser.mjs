@@ -16,7 +16,8 @@
 //       appearances field, numbers, arrows and cursor;
 //   (2) sf-input-color: the value and the reset beside it in the frame stand
 //       --sf-space-1/3 apart, at sizes 1 and 1/2, in the field and the brand
-//       variant;
+//       variant, while the reset is a plated button (before 1.11.0; since then
+//       a C123 field action, tests/browser/input-color-reset-c123.browser.mjs);
 //   (3) the brand field's reset is named «Вернуть цвет SIMAI» / «Restore SIMAI
 //       colour»; the field's keeps «Вернуть унаследованный» / «Use the
 //       inherited colour»;
@@ -120,7 +121,7 @@ const MEASURE = () => {
     const trigger = frame?.querySelector('.sf-color-trigger');
     const clear = frame?.querySelector('[data-action="clear"]');
     const button = clear?.querySelector('button') || clear;
-    colour[element.id] = trigger && button ? {gap: round(button.getBoundingClientRect().left - trigger.getBoundingClientRect().right), word: button.getAttribute('aria-label') || clear.getAttribute('aria-label'), title: button.getAttribute('title') || clear.getAttribute('title')} : null;
+    colour[element.id] = trigger && button ? {fieldAction: button.classList.contains('sf-field-action'), gap: round(button.getBoundingClientRect().left - trigger.getBoundingClientRect().right), word: button.getAttribute('aria-label') || clear.getAttribute('aria-label'), title: button.getAttribute('title') || clear.getAttribute('title')} : null;
   }
   return {unit, pagination, colour, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth};
 };
@@ -158,7 +159,11 @@ for (const width of [1440, 390]) {
             }
             for (const [id, reading] of Object.entries(measure.colour)) {
               if (!reading) { problems.push(`${view}: ${id} drew no reset`); continue; }
-              if (Math.abs(reading.gap - measure.unit) > 0.5) problems.push(`${view}: ${id} value -> reset ${reading.gap}, H5 wants ${measure.unit}`);
+              // Since sf-input-color 1.11.0 the reset is a field action (owner
+              // decision C123): value -> glyph is half the frame's inset, read by
+              // tests/browser/input-color-reset-c123.browser.mjs. A plated reset
+              // (before 1.11.0) still stands H5 apart.
+              if (!reading.fieldAction && Math.abs(reading.gap - measure.unit) > 0.5) problems.push(`${view}: ${id} value -> reset ${reading.gap}, H5 wants ${measure.unit}`);
               const want = WORDS[lang][id.startsWith('c-brand') ? 'brand' : 'field'];
               if (reading.word !== want || reading.title !== want) problems.push(`${view}: ${id} reset says «${reading.word}» / «${reading.title}», wants «${want}»`);
             }
