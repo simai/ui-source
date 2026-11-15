@@ -7,10 +7,13 @@ decorative and uses `aria-hidden="true"`.
 
 ## Public axes
 
-- emphasis: `default`, `tonal`, `outline` and the ghost look, drawn by
-  `sf-icon-button--link` (sf-button-icon calls it `ghost`, decision C15);
-  `surface` is kept for markup written before and draws as `tonal` does with
-  the destructive status;
+- emphasis: `default`, `tonal`, `outline` or `ghost` (decision C15). The
+  former `sf-icon-button--surface` and `sf-icon-button--link` draw exactly
+  as `tonal` and `ghost` until 2027-01-01 (1.14.0, RG-IB-2): the runtime says
+  so once per button in the console and notes each in `SF.deprecations`
+  (journals `class-icon-button-retired-looks-c15`,
+  `class-icon-button-link-to-ghost`); the Framework's own markup writes the
+  new words;
 - scheme: `primary`, `on-surface`, or `on-surface-variant` (written beside
   `on-surface`); `secondary` is kept for older markup;
 - status: `sf-icon-button--danger` for a destructive control, in every
@@ -30,19 +33,21 @@ decorative and uses `aria-hidden="true"`.
   there), its edge and state fills keep their hue. A card or a popup on such
   a place takes the theme's look back;
 - size: `1/3`, `1/2`, `1`, `2`, or `3`;
-- density: default, `spacing-compact`, `spacing-comfortable`, or
-  `spacing-spacious`; `tightness-low`, `tightness-high` and `tightness-highest`
-  are the same steps under older names that read backwards. Density moves
-  the side padding only (1.2.0): an icon button of a size is as tall at every
-  density, so a compact one is narrower than it is tall and a spacious one
-  wider;
+- density: none (1.14.0, owner decision C213). Size and height change an
+  icon button and keep it square; `spacing-compact`, `spacing-comfortable`,
+  `spacing-spacious` and the older `tightness-low`, `tightness-high`,
+  `tightness-highest` moved its side padding only (32 x 40 ... 80 x 56). They
+  draw nothing now and the runtime says so once per button and notes them in
+  `SF.deprecations` until 2027-01-01 (journal
+  `class-icon-button-density-c213`); the constructor's `spacing` and
+  `tightness` options are noted the same way. `sf-button` keeps density;
 - height (1.5.0, decisions C27 and C35): the default,
   `sf-icon-button--height-low`, `sf-icon-button--height-high` or
   `sf-icon-button--height-highest` -- the size's tightness step on all four
   sides, so the button stays square and stands at the size's line + 2 x the
   step (size 1 on desktop 32 / 40 / 48 / 56; compact 28 / 32 / 40 / 48; phone
   28 / 36 / 44 / 52); the icon keeps the size. A close takes the same heights.
-  The constructor's option is `height`. Declared after the density classes;
+  The constructor's option is `height`;
 - radius: the normal control radius `--sf-radius--ui`, or explicit
   `radius-square` and `radius-rounded` overrides.
 
@@ -52,11 +57,21 @@ inside a button the glyph is the whole content. A button laid out without flex
 -- `sf-file-preview`'s actions, class markup without `.flex` -- stays on its
 ladder height (28 at size 1/2 compact and on a phone, not 28.55).
 
-`surface` takes its colour from the neutral alpha ramp instead of a scheme, so a
-toolbar or a row action reads the same on any background and in both themes: a
-faint fill and a hairline boundary. `tonal primary` tints with the primary
-container role, as on the button. `ghost` was identical to `link` at rest and
-differed only by a fainter hover, so it now reads as `link`.
+The glyph is the ink of `sf-button`'s label in the same look and scheme
+(1.14.0, RG-IB-1): ghost primary `--sf-primary` and ghost danger
+`--sf-error` (they took the darker pressed step, `-active`). A quiet
+neutral glyph is `--sf-on-surface-variant` on every look, tonal included:
+one scheme, one ink. The tonal plate does not turn it to the container's
+variant -- that rule is for text (4.5:1), and the glyph asks 3:1 (C107 (2));
+the page role measures 4.17:1 and more on the plate, and stays quieter than
+the plain neutral glyph in both themes (RG-IB-1 b). The plain neutral glyph stays
+`--sf-on-surface-icon`, the icon of a button with text (owner decision C107
+(1), (3)). Under a pointer it follows the label: neutral tonal, outline and
+ghost -- plain and quiet alike -- take on-surface's hover and press steps
+(`--sf-on-surface-hover` / `-active` in the light theme, `--sf-on-surface` in
+the dark one; RG-IB-3: a quiet tonal glyph used to stay put); outline and
+ghost primary and danger step to `-hover` and `-active`. `tonal primary`
+tints with the primary container role, as on the button.
 
 `radius-default` is the control radius `--sf-radius--ui`, the same as no
 radius class; it stays for the Smart `radius="default"` value. The utility
@@ -94,7 +109,7 @@ arrow cursor; focus and its ring stay. The stripes are gone;
 `token-button-loading-stripe`). A two-state action -- bold in an editor's
 toolbar, wrap lines in a code block -- keeps one name and says its state with
 `aria-pressed`. Only a toggle is drawn pressed (1.13.0, owner decision C211
-(1)): an `outline` or ghost (`link`) icon button in the neutral scheme
+(1)): an `outline` or `ghost` icon button in the neutral scheme
 (`on-surface`, its quiet `on-surface-variant`, the former `secondary`).
 Pressed, it wears the pressed look (1.3.0, owner decision 2026-11-07, rule
 C12): the primary container fill, the icon in `--sf-on-primary-container` and

@@ -50,8 +50,10 @@ Main attributes:
   console notes it until 2027-01-01.
 - `scheme="primary|on-surface|on-surface-variant"` — which colour
   family the control takes (`secondary` is retired and drawn as
-  `on-surface-variant` until 2027-01-01). A ghost or outline `on-surface-variant`
-  glyph darkens to `--sf-on-surface` under the pointer. `on-surface-variant` is `on-surface` one step
+  `on-surface-variant` until 2027-01-01). Under the pointer a tonal, outline
+  or ghost neutral glyph takes the hover ink of `sf-button`'s label
+  (component.icon-buttons 1.14.0); ghost draws with `sf-icon-button--ghost`
+  (`link` is the class's former name too). `on-surface-variant` is `on-surface` one step
   quieter: the same fill and edge, the glyph in `--sf-on-surface-variant`.
   That is what a quiet trigger wants — beside a field, in a panel's head,
   next to a row — and `sf-button` says it the same way. A filled
@@ -84,7 +86,6 @@ Main attributes:
   <sf-button-icon size="1/2" appearance="ghost" scheme="on-surface-variant" icon="download"
     href="/files/invoice-1043.pdf" download="Счёт 1043.pdf" aria-label="Скачать Счёт 1043.pdf"></sf-button-icon>
   ```
-- `spacing="compact|normal|comfortable|spacious"`
 - `radius="default|square|rounded"`
 - `root-class`
 - `loading` — the spinner in place of the icon, at its size; `aria-busy` and
@@ -117,7 +118,11 @@ The old names are dated aliases until 2026-12-01 (`aliases.json`): `type` for
 `appearance`, `variant` for `kind`, and `tightness="low|high|highest"` for
 `spacing="compact|comfortable|spacious"`. The shim writes the new attribute and
 notes each use in `SF.deprecations`. Until 2027-01-01: `link` (ghost), `secondary`
-(on-surface-variant) and `error` (danger).
+(on-surface-variant) and `error` (danger). `spacing` (and `tightness`) is
+retired (owner decision C213, 2026-11-16): an icon button has no density --
+`size` and `height` change it and keep it square -- so it draws nothing, is
+noted in `SF.deprecations` and said once per button in the console until
+2027-01-01.
 
 - `button-attributes` — an object (a property) for an external project
   template; the built-in template does not read it.
@@ -178,7 +183,7 @@ Close variant:
 <sf-button-icon
   variant="close"
   size="1/3"
-  type="link"
+  appearance="ghost"
   scheme="on-surface"
   aria-label="Close"
 ></sf-button-icon>

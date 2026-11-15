@@ -49,7 +49,7 @@ test('PG-11: the last-page button is drawn only where the jump can be answered',
 });
 
 test('PG-10: three settings, all off by default, and the word of the title', () => {
-  assert.equal(component.version, '1.6.2');
+  assert.equal(component.version, '1.7.1'); // fix/icon-button-ink-ib1 (RG-IB-1, RG-IB-2, C213)
   assert.deepEqual(
     [component.settings.href.type, component.settings.href.default],
     ['string', ''],
@@ -72,7 +72,7 @@ test('PG-10: with href the arrows are links, prev and next say rel', () => {
   assert.match(markup, /<a\s[\s\S]*?href=\$\{href \|\| nothing\}[\s\S]*?aria-disabled=\$\{href \? nothing : "true"\}[\s\S]*?rel=\$\{href && \(kind === "prev" \|\| kind === "next"\) \? kind : nothing\}/u);
   assert.match(markup, /@click=\$\{\(event\) => \(href \? context\.component\.followLink\(event, page\) : event\.preventDefault\(\)\)\}/u);
   // The link wears the ghost, on-surface icon button that sf-button-icon draws.
-  assert.match(markup, /sf-icon-button sf-icon-button--size-\$\{size\} sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface/u);
+  assert.match(markup, /sf-icon-button sf-icon-button--size-\$\{size\} sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface/u);
   assert.match(sheet, /\.sf-pagination a\.sf-pagination-link \{\s*text-decoration: none;/u);
 });
 

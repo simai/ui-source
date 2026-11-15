@@ -332,7 +332,7 @@ function createUploadProgressItem(item, size = '1', owner = null) {
   const removeButton = document.createElement('button');
   removeButton.type = 'button';
   removeButton.className =
-    `sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-${normalizedSize} flex items-cross-center content-main-center self-cross-start`;
+    `sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--ghost sf-icon-button--size-${normalizedSize} flex items-cross-center content-main-center self-cross-start`;
   removeButton.dataset.action = 'remove';
   const removeIcon = document.createElement('i');
   removeIcon.className = 'sf-icon';

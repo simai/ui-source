@@ -212,7 +212,7 @@ function renderPresets(context) {
 // A stepper beside a time part: the class markup of an icon button at the
 // field's size 1, out of the tab order as the APG spinbutton has its buttons --
 // the arrow keys already do what it does. Still a real, named button.
-const TIME_STEPPER = 'sf-datepicker-time-step sf-icon-button sf-icon-button--size-1 sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface flex items-cross-center content-main-center';
+const TIME_STEPPER = 'sf-datepicker-time-step sf-icon-button sf-icon-button--size-1 sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface flex items-cross-center content-main-center';
 
 function renderTimeStepper(context, part, direction) {
     const labels = context.labels;

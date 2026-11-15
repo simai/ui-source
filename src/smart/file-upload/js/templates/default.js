@@ -30,7 +30,7 @@ function renderUploadItem(item, size, index, owner) {
                             : nothing}
                     <button
                             type="button"
-                            class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-${size} flex items-cross-center content-main-center self-cross-start"
+                            class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--ghost sf-icon-button--size-${size} flex items-cross-center content-main-center self-cross-start"
                             data-action="remove"
                     >
                         <i class="sf-icon" aria-hidden="true">delete</i>

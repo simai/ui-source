@@ -9,7 +9,7 @@ function renderAction({icon, label, disabled, action, size, onClick}) {
   return html`
     <button
       type="button"
-      class="sf-icon-button sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-${size}"
+      class="sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-${size}"
       data-action=${action}
       ?disabled=${disabled}
       aria-label=${label}

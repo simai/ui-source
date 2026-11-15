@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button-icon",
-  "version": "1.11.0",
+  "version": "1.13.0",
   "title": "Icon Buttons",
   "summary": "Native icon-only action with token geometry, accessible naming and shared loading semantics.",
   "kind": "smart",
@@ -135,7 +135,7 @@
       "spacing": {
         "type": "string",
         "default": "normal",
-        "description": "Semantic internal spacing profile.",
+        "description": "Retired (owner decision C213, 2026-11-16): an icon button has no density; size and height change it and keep it square. Read and noted until 2027-01-01, it draws nothing.",
         "enum": [
           "compact",
           "normal",
@@ -641,7 +641,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button-icon/index.js",
-        "sha256": "ee3f3b33eb6c9a9f8098002a38e1ff777221bee473eafc529e8d5b3a7ca7d528"
+        "sha256": "e015272af023789eb739cd279edfefdc39c59a22f1dea406f181dc6e58bb5f80"
       }
     ],
     "generated_runtime": [

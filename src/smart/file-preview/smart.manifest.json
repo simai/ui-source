@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.file-preview",
-  "version": "1.4.2",
+  "version": "1.4.4",
   "title": "File Preview",
   "summary": "Accessible Smart projection of the ordinary File Preview row.",
   "kind": "smart",
@@ -494,7 +494,7 @@
       },
       {
         "path": "src/smart/file-preview/js/templates/default.js",
-        "sha256": "2a3c2b97ae9b8a595abe5fefc660324bcc4826011010bf99224aac6ff7a4914e"
+        "sha256": "332aec112d963a971f60ddbea270fa94aaba1402f6061decddbd2327e0ff3df5"
       }
     ],
     "generated_runtime": []

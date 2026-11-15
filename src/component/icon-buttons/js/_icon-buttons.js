@@ -1,7 +1,8 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import iconButtonUtility from '../json/icon-button.utility.json';
 import registerComponent from "../../register-helper";
-import { watchButtons } from '../../buttons/js/button-checks.js';
+import { watchButtons, ICON_BUTTON_CLASS_ALIASES } from '../../buttons/js/button-checks.js';
+import { noteDeprecated } from '../../../core/js/deprecations.js';
 import { createInlineSpinner } from '../../spinner/js/_spinner-draw';
 
 class IconButtons extends ComponentObserver {
@@ -29,22 +30,27 @@ class IconButtons extends ComponentObserver {
     if (this.id) {
       this.button.id = this.id;
     }
+    // The looks are default, tonal, outline and ghost (1.14.0, RG-IB-2): the
+    // former `surface` and `link` draw as tonal and ghost until 2027-01-01,
+    // so the constructor writes the new class and notes the old value.
+    const formerClass = ICON_BUTTON_CLASS_ALIASES[`sf-icon-button--${type}`];
+    if (formerClass) {
+      noteDeprecated({component: 'icon-buttons', kind: 'value', attribute: 'type', from: type, to: formerClass.replace('sf-icon-button--', ''), since: '2026-11-16', remove_after: '2027-01-01'});
+    }
     this.button.classList.add(
       'sf-icon-button',
       'sf-icon-button--icon',
       `sf-icon-button--size-${size}`,
-      `sf-icon-button--${type}`,
+      formerClass || `sf-icon-button--${type}`,
       `sf-icon-button--${scheme}`,
     );
-    // The readable names for the same steps: compact, comfortable, spacious.
-    // `normal` is the default and needs no class. When both options are given,
-    // `spacing` wins, as it does on the Smart element (control-spacing.js), so
-    // one control never carries two different steps.
-    const hasSpacing = ['normal', 'compact', 'comfortable', 'spacious'].includes(spacing);
-    if (hasSpacing && spacing !== 'normal') {
-      this.button.classList.add(`spacing-${spacing}`);
-    } else if (!hasSpacing && tightness) {
-      this.button.classList.add(`tightness-${tightness}`);
+    // An icon button has no density (1.14.0, owner decision C213): size and
+    // height change it and keep it square. `spacing` and `tightness` draw
+    // nothing and are noted until 2027-01-01.
+    for (const [attribute, value] of [['spacing', spacing], ['tightness', tightness]]) {
+      if (value && value !== 'normal') {
+        noteDeprecated({component: 'icon-buttons', kind: 'value', attribute, from: String(value), to: null, since: '2026-11-16', remove_after: '2027-01-01'});
+      }
     }
     // The control height (1.5.0, decisions C27 and C35): the size's
     // tightness step on all four sides; default needs no class.

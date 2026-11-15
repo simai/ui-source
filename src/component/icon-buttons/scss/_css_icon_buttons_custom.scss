@@ -142,8 +142,8 @@
   /* on-surface-variant (sf-button-icon scheme): the on-surface family one step
      quieter. The control carries sf-icon-button--on-surface as well, so its
      fill and edge are on-surface's; here the glyph takes
-     --sf-on-surface-variant (a tonal control has already turned that role to
-     its container's variant). A filled (default) control keeps on-surface's
+     --sf-on-surface-variant, the page's role on every look (a tonal control
+     no longer turns it to its container's variant: RG-IB-1 b). A filled (default) control keeps on-surface's
      inverse glyph: on a dark fill there is no quieter step. Hover, press and
      disabled are the states' (sf.states), as for on-surface. */
   /* The colours are set on the control, as every other scheme rule sets them,
@@ -163,22 +163,60 @@
 
 @layer sf.states {
   /* The quiet neutral meets the plain one under a pointer (decision C15,
-     docs review R033): a glyph without a fill in --sf-on-surface-variant
-     darkens to --sf-on-surface on hover and press, as Material 3 and GitHub
-     do, so the state layer and the ink say the same thing. */
-  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active, .active) {
-    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface));
-  }
-
-  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active, .active) .sf-close-icon {
+     docs review R033): the cross of a quiet close darkens to --sf-on-surface
+     on hover and press, a tonal one too (1.14.0, RG-IB-3); the quiet glyph
+     takes the neutral steps below. */
+  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active, .active) .sf-close-icon {
     --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface));
   }
 
-  /* The plain neutral icon catches the label's ink up under a pointer (C107
-     (4)): at rest --sf-on-surface-icon, hovered and pressed --sf-on-surface,
-     as the quiet neutral above. A filled control keeps its inverse glyph. */
-  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--icon:not(.sf-icon-button--on-surface-variant):not(.sf-icon-button--default):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active, .active) {
-    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface));
+  /* Under a pointer the glyph takes the ink sf-button's label takes in the
+     same look and scheme (1.14.0, RG-IB-1, RG-IB-3; C107 (4)): the neutral
+     glyph -- plain or quiet, tonal, outline or ghost -- the label's hover and
+     press steps of on-surface (the dark theme keeps --sf-on-surface); before,
+     outline and ghost took --sf-on-surface and a quiet tonal one stayed
+     where it rested. An outline or ghost primary or danger glyph steps as
+     the label does, -hover then -active (the place's ink on a place with
+     one). A filled or tonal coloured control keeps its glyph, as the
+     button's label does. */
+  .sf-icon-button:is(.sf-icon-button--on-surface, .sf-icon-button--secondary):is(.sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
+    --sf-icon--color: var(--sf-icon-button-color, light-dark(var(--sf-on-surface-hover), var(--sf-on-surface)));
+  }
+
+  .sf-icon-button:is(.sf-icon-button--on-surface, .sf-icon-button--secondary):is(.sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:active, .active) {
+    --sf-icon--color: var(--sf-icon-button-color, light-dark(var(--sf-on-surface-active), var(--sf-on-surface)));
+  }
+
+  .sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-primary-hover));
+  }
+
+  .sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):hover .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-primary-hover));
+  }
+
+  .sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:active, .active) {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-primary-active));
+  }
+
+  .sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:active, .active) .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-primary-active));
+  }
+
+  .sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error-hover)));
+  }
+
+  .sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):hover .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error-hover)));
+  }
+
+  .sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:active, .active) {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error-active)));
+  }
+
+  .sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:active, .active) .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error-active)));
   }
 
   /* A disabled icon button's spinner (disabled and loading) takes the disabled

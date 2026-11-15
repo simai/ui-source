@@ -301,7 +301,7 @@
   border-start-start-radius: var(--sf-icon-button--border-start-start-radius);
 }
 
-.sf-pagination .sf-pagination-main .sf-pagination-container .sf-icon-button.sf-icon-button--link:not(:disabled):not(.disabled) > .sf-icon {
+.sf-pagination .sf-pagination-main .sf-pagination-container .sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link):not(:disabled):not(.disabled) > .sf-icon {
   --sf-icon--color: var(--sf-on-surface-variant);
   color: var(--sf-icon--color);
 }

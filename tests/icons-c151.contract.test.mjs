@@ -92,7 +92,7 @@ test('C151 point 5: the glyph inside an icon button keeps the bottom alignment, 
   for (const char of styles.slice(0, at)) depth += char === '{' ? 1 : char === '}' ? -1 : 0;
   assert.equal(depth, 0, 'the rule is unlayered, as the icon\'s own vertical-align is');
   const passport = JSON.parse(read('src/component/icon-buttons/passport.json'));
-  assert.equal(passport.version, '1.13.0'); // C211 (fix/buttons-c116-b54) over group build 7's 1.10.0
+  assert.equal(passport.version, '1.14.0'); // fix/icon-button-ink-ib1 (RG-IB-1, RG-IB-2, C213); // C211 (fix/buttons-c116-b54) over group build 7's 1.10.0
 });
 
 test('C151 point 6: SF.icons.register draws a product glyph in every icon slot', () => {

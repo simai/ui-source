@@ -25,8 +25,8 @@ test('(1) the pagination list is one group of buttons: --sf-space-1/3 behind the
   const css = read('src/component/pagination/scss/_css__pagination.scss');
   const list = rule(css, '.sf-pagination .sf-pagination-list');
   assert.match(list, /gap: var\(--sf-pagination-container--gap, var\(--sf-pagination-gap, var\(--sf-space-1\\\/3\)\)\);/u);
-  assert.equal(json('src/component/pagination/passport.json').version, '1.4.5');
-  assert.equal(json('src/smart/pagination/component.json').version, '1.6.2'); // group build 7: the integrated number (the branch wrote 1.6.1)
+  assert.equal(json('src/component/pagination/passport.json').version, '1.4.7'); // fix/icon-button-ink-ib1 (RG-IB-1, RG-IB-2, C213)
+  assert.equal(json('src/smart/pagination/component.json').version, '1.7.1'); // fix/icon-button-ink-ib1; group build 7: the integrated number (the branch wrote 1.6.1)
 });
 
 test('(2) the colour frame spaces its value and its glyphs by C123, not by the icon-to-text space', () => {

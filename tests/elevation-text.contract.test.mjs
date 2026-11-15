@@ -163,7 +163,10 @@ test('whatever paints itself with a raised surface carries the matching text rol
 // dark theme 4.0:1). Tracks of indicators carry no text and keep the role of
 // the page their labels stand on. sf-pager's container fill is its steps
 // track and its lesson dots, beside the place line, never under it.
-const CONTAINER_TRACKS = ['spinner/', 'progress-bar/', 'progress-ring/', 'progress-scale/', 'range-slider/', 'slider/', 'toggle/', 'flag/', 'admin-menu/', 'pager/'];
+// sf-icon-button's tonal plate carries a glyph and no text: the glyph asks
+// 3:1 (C107 (2)) and keeps the page's quiet role, as outline and ghost do
+// (RG-IB-1 b, 2026-11-16; measured in icon-button-ink-ib1.contract.test.mjs).
+const CONTAINER_TRACKS = ['spinner/', 'progress-bar/', 'progress-ring/', 'progress-scale/', 'range-slider/', 'slider/', 'toggle/', 'flag/', 'admin-menu/', 'pager/', 'icon-buttons/'];
 
 test('whatever lays a container fill under text carries the container text role', () => {
   const offenders = [];

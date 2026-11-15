@@ -72,7 +72,7 @@ function renderDirection(context, {kind, icon, label, page, go, disabled = false
         <a
           class=${joinClasses(
             `sf-pagination-direction sf-pagination-direction--${kind} sf-pagination-link`,
-            `sf-icon-button sf-icon-button--size-${size} sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface flex items-cross-center`,
+            `sf-icon-button sf-icon-button--size-${size} sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface flex items-cross-center`,
             href ? "" : "disabled",
           )}
           href=${href || nothing}

@@ -48,7 +48,9 @@ test('IP: a filled neutral icon button reads the place accent label only where t
 });
 
 test('IP: an outline, ghost or link danger icon button writes the place ink, the hue elsewhere', () => {
-  for (const hue of ['error', 'error-active']) {
+  // RG-IB-1 (component.icon-buttons 1.14.0): the ghost glyph is the hue itself, as sf-button's label.
+  assert.doesNotMatch(icon, /var\(--sf-place--ink, var\(--sf-error-active\)\)\);\n/u);
+  for (const hue of ['error']) {
     assert.ok(icon.includes(`--sf-icon--color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-${hue})));`), hue);
     assert.ok(icon.includes(`--sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-${hue})));`), hue);
   }

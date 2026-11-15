@@ -3,7 +3,9 @@ import test from 'node:test';
 import {readFile} from 'node:fs/promises';
 
 const read = (path) => readFile(new URL(`../src/${path}`, import.meta.url), 'utf8');
-const SHEETS = ['component/buttons/scss/_css__buttons.scss', 'component/icon-buttons/scss/_css_icon_buttons.scss'];
+// The icon button has no density (owner decision C213): only sf-button's sheet
+// carries the density selectors.
+const SHEETS = ['component/buttons/scss/_css__buttons.scss'];
 
 /* `tightness-low` is the least inner space and `tightness-highest` the most, so
    the names read backwards and the documentation translated them the wrong way
@@ -28,11 +30,27 @@ test('spacing classes: every density selector takes the readable name too', asyn
 });
 
 test('spacing classes: the constructors accept the readable option', async () => {
-  for (const file of ['component/buttons/js/_buttons.js', 'component/icon-buttons/js/_icon-buttons.js']) {
+  for (const file of ['component/buttons/js/_buttons.js']) {
     const source = await read(file);
     assert.match(source, /\['normal', 'compact', 'comfortable', 'spacious'\]\.includes\(spacing\)/, file);
     assert.match(source, /classList\.add\(`spacing-\$\{spacing\}`\)/, file);
     // spacing wins: the legacy class is written only when no valid spacing is given
     assert.match(source, /else if \(!hasSpacing && tightness\)/, file);
   }
+});
+
+/* C213 (2026-11-16): an icon button has no density. Its sheet draws nothing
+   for spacing-* / tightness-*, its constructor writes no density class and
+   notes the option, the runtime says the classes once per button. */
+test('C213: no density on the icon button', async () => {
+  const css = (await read('component/icon-buttons/scss/_css_icon_buttons.scss')).replace(/\/\*[\s\S]*?\*\//g, '');
+  assert.doesNotMatch(css, /\.(?:spacing-(?:compact|comfortable|spacious)|tightness-(?:low|high|highest))(?![-\w])/u);
+  const constructor = await read('component/icon-buttons/js/_icon-buttons.js');
+  assert.doesNotMatch(constructor, /classList\.add\(`(?:spacing|tightness)-/u);
+  assert.match(constructor, /noteDeprecated\(\{component: 'icon-buttons', kind: 'value', attribute,/u);
+  const checks = await read('component/buttons/js/button-checks.js');
+  assert.match(checks, /ICON_BUTTON_DENSITY_CLASSES = Object\.freeze\(\[\s*'spacing-compact', 'spacing-comfortable', 'spacing-spacious',\s*'tightness-low', 'tightness-high', 'tightness-highest',\s*\]\)/u);
+  const template = await read('smart/button-icon/js/templates/default.js');
+  assert.doesNotMatch(template, /`tightness-\$\{tightness\}`/u);
+  assert.match(await read('smart/button-icon/index.js'), /noteIconButtonDensity\(this\);/u);
 });

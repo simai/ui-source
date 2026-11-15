@@ -276,7 +276,7 @@ function createTagNode(root, item) {
   const closeButton = document.createElement("button");
   closeButton.type = "button";
   closeButton.className =
-    "sf-icon-button sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1/3";
+    "sf-icon-button sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-1/3";
   closeButton.setAttribute("aria-label", `Remove ${label}`);
   closeButton.dataset.role = "remove-tag";
   closeButton.dataset.value = value;

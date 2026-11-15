@@ -14,12 +14,32 @@ import {noteDeprecated} from '../../../core/js/deprecations.js';
 // - the set's former classes sf-button--secondary and sf-button--surface
 //   (C116 (3), (6)): drawn as on-surface and as tonal on-surface until
 //   2027-01-01, noted in SF.deprecations (journal class-button-set-c116).
+// - the icon button's former looks sf-icon-button--surface and
+//   sf-icon-button--link (component.icon-buttons 1.14.0, RG-IB-2): drawn
+//   exactly as tonal and ghost until 2027-01-01, said once per button in the
+//   console and noted in SF.deprecations (journals
+//   class-icon-button-retired-looks-c15, class-icon-button-link-to-ghost).
+// - density on an icon button (owner decision C213): spacing-compact,
+//   -comfortable, -spacious and the older tightness-low, -high, -highest draw
+//   nothing on sf-icon-button; said once per button, noted until 2027-01-01
+//   (journal class-icon-button-density-c213).
 
 const DEPRECATED = Object.freeze({since: '2026-11-16', remove_after: '2027-01-01'});
 export const BUTTON_CLASS_ALIASES = Object.freeze({
   'sf-button--secondary': 'sf-button--on-surface',
   'sf-button--surface': 'sf-button--tonal sf-button--on-surface',
 });
+
+const ICON_DEPRECATED = Object.freeze({since: '2026-11-16', remove_after: '2027-01-01'});
+export const ICON_BUTTON_CLASS_ALIASES = Object.freeze({
+  'sf-icon-button--surface': 'sf-icon-button--tonal',
+  'sf-icon-button--link': 'sf-icon-button--ghost',
+});
+
+export const ICON_BUTTON_DENSITY_CLASSES = Object.freeze([
+  'spacing-compact', 'spacing-comfortable', 'spacing-spacious',
+  'tightness-low', 'tightness-high', 'tightness-highest',
+]);
 
 export const BUTTON_TOGGLE = ':is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary)';
 export const ICON_BUTTON_TOGGLE = ':is(.sf-icon-button--outline, .sf-icon-button--ghost, .sf-icon-button--link):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary)';
@@ -86,6 +106,20 @@ export function checkButton(element, block) {
   if (block === 'sf-button') {
     for (const [from, to] of Object.entries(BUTTON_CLASS_ALIASES)) {
       if (element.classList.contains(from)) noteDeprecated({component: 'buttons', kind: 'class', from, to, ...DEPRECATED});
+    }
+  }
+  if (block === 'sf-icon-button') {
+    for (const [from, to] of Object.entries(ICON_BUTTON_CLASS_ALIASES)) {
+      if (!element.classList.contains(from)) continue;
+      noteDeprecated({component: 'icon-buttons', kind: 'class', from, to, ...ICON_DEPRECATED});
+      sayOnce(element, from, `[SIMAI Framework] ${block}: ${nameOf(element)} writes ${from}, a former look drawn exactly as ${to} until ${ICON_DEPRECATED.remove_after}; write ${to} (component.icon-buttons 1.14.0).`);
+    }
+    const density = ICON_BUTTON_DENSITY_CLASSES.filter((name) => element.classList.contains(name));
+    for (const from of density) {
+      noteDeprecated({component: 'icon-buttons', kind: 'class', from, to: null, ...ICON_DEPRECATED});
+    }
+    if (density.length) {
+      sayOnce(element, 'density', `[SIMAI Framework] ${block}: ${nameOf(element)} writes ${density.join(' ')}: an icon button has no density (owner decision C213) and these classes draw nothing; size and height (sf-icon-button--height-low|high|highest) change it and keep it square. Remove them before ${ICON_DEPRECATED.remove_after}.`);
     }
   }
 }

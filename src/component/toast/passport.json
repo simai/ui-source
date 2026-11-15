@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.toast",
   "kind": "component",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "owner": "simai/ui-source",
   "files": [
     "src/component/toast/dismiss.js",

@@ -133,7 +133,7 @@ export function renderModalTemplate(context) {
                                                 <button
                                                         type="button"
                                                         class=${joinClasses(
-                                                                'sf-icon-button sf-icon-button--icon sf-modal-header-action sf-modal-hide-button sf-modal-hide-button--inline-end sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1/3 m-0',
+                                                                'sf-icon-button sf-icon-button--icon sf-modal-header-action sf-modal-hide-button sf-modal-hide-button--inline-end sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-1/3 m-0',
                                                                 context.hideModifier,
                                                         )}
                                                         aria-label=${context.minimizeText}
