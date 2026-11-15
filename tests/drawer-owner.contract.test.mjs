@@ -71,7 +71,7 @@ test('Smart Drawer: bottom sheet, app bar offset and controlled close (simai/ui-
   // A sheet is never a page column.
   assert.match(source, /getBooleanAttr\('docked', false\) && !this\.sheet/);
   // The close button stands down only while the outside switch is on screen.
-  assert.match(source, /showClose: this\.showClose && !this\._switchVisible/);
+  assert.match(source, /showClose: \(this\.showClose && !this\._switchVisible\) \|\| coveredWithoutClose/);
   assert.match(styles, /inset-block: var\(--sf-drawer-block-start, 0\) 0/);
   assert.match(styles, /var\(--sf-drawer-dock-block-start, var\(--sf-drawer-block-start, 0\)\)/);
   assert.match(styles, /env\(safe-area-inset-bottom, 0\)/);

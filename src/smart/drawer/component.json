@@ -2,7 +2,7 @@
   "$comment": "The source of sf-drawer's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/drawer (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.drawer",
   "tag": "sf-drawer",
-  "version": "1.12.1",
+  "version": "1.13.0",
   "kind": "leaf",
   "family": "drawer",
   "settings": {
@@ -73,12 +73,12 @@
     "show-close": {
       "type": "boolean",
       "default": true,
-      "summary": "Draws the close button (not while a controlled panel's outside switch is on screen)."
+      "summary": "Draws the close button (not while a controlled panel's outside switch is on screen). A panel that covers the switch that opened it draws one anyway unless its content holds a close of its own (C104)."
     },
     "controlled": {
       "type": "boolean",
       "default": false,
-      "summary": "An outside switch (an element naming the drawer in aria-controls) opens and closes the panel: no close button while that switch is on screen."
+      "summary": "An outside switch (an element naming the drawer in aria-controls) opens and closes the panel: no close button while that switch is on screen and not under the open panel."
     },
     "close-placement": {
       "type": "enum",
@@ -519,6 +519,7 @@
     "events drawer:ready, drawer:update retire (vocabulary §5.1, §16.13)"
   ],
   "x-decisions": [
+    "version 1.13.0 (2026-11-15, owner decision C104 (4), recipe admin-frame): a minor. The close stands on the axis of the switch that opened the panel, as sf-header-site's: a switch naming the drawer (aria-controls -- a data-drawer button, a header's menu button, a page's own button calling toggle() -- or data-sf-drawer-open/-toggle), noted on every opening (the drawer's own press handler passes the pressed switch, so a press that gives no focus, Safari, counts too), else the first such switch drawn; when it stands on the panel's side of the frame (the window or the overlay container), or anywhere over a panel as wide as its frame (a phone), and is the outermost control of its row on that side (a bar's menu button; not a toolbar's second button), the close is drawn on that side of the head -- first, before the title, when that side is the start -- and the head's padding there is measured to the switch's axis (data-sf-drawer-close-axis, --sf-drawer--close-axis, held inside the panel); RTL mirrors. Otherwise, and for a bottom sheet, a nested panel, a docked column and an outside close, the close keeps its place. A switch under the open panel is not on screen for controlled, and a panel that covers the switch that opened it with show-close=\"false\" draws a close unless its content holds one (data-drawer=\"close\"): a phone-wide panel over its menu button had no close at all. The focus goes back to the switch when the press gave it none. No setting, value, event or key changes.",
     "version 1.12.0 (2026-11-14, owner decision C157, all seven points; study VP-16): a minor. (1) modal is a setting, not a deprecated mode: everything at an edge is sf-drawer; sf-modal position=\"inline-*|bottom\" is noted as an old name until 2027-01-01. (2) Widths stay the three steps 20 · 24 · 30rem and full; nothing else changes (sf-view-properties' width is under study). (3) slot=\"footer\" fills a pinned foot drawn by core's window-footer mixin (as sf-modal's, C159 (4)): actions at the start, the main one first, --sf-space-1/3 apart (8, compact 4), data-apart at the far end, halves on a phone; the head and the foot draw a hairline only while content is under them (data-sf-drawer-more-start/-end, as C159 (3)). (4) On a phone a side panel follows a touch swipe toward its edge and closes past a quarter of its width or on a flick (core/js/sheet-swipe.js; touch-action pan-y keeps the vertical scroll). (5) The bottom sheet's grab bar is core's sheet bar, 24 x 4 in on-surface-variant on every screen (it was the outline's colour and 16 wide on a phone); the swipe is core's. (6) A drawer opened from a floating drawer at the same edge is nested: it draws «Назад» (sf-button-icon arrow_back, words back-label: «Назад» / «Back») in its head, the drawer under it hides at once (data-sf-drawer-under), nested panels come and go without a slide; «Назад» and Escape close the top one, the close, the scrim and a swipe close the chain; the stack's depth offset no longer applies between them. (7) The title is the h4 step, bold, as sf-modal's. With DEV letter msg-5b4919fe (study view-property-base VB-1..VB-7): the close is sf-button-close at the 1/3 step whose press area under a coarse pointer is 44 (C173 (6), C49), as «Назад»'s; slot=\"header-action\" holds one action before the close; the head's buttons are --sf-space-1/3 apart; one head height at every step. A closed drawer's edge is hidden as its panel is (its controls stood over the page). A panel that fills the screen (a phone, size full; data-sf-drawer-whole) takes its edge controls into the head's row at its end, without the scrim plate, and the head keeps their room (--sf-drawer-edge-room); along the top they covered the title. VP-16: the outside close is sf-button-close appearance=\"media\" (C14 (3)); the edge beside a floating panel declares the core glass roles (white ink, the glass's white focus ring) and its icon buttons take the glass plate (--sf-surface-media 48 / 64 / 80). The rule loads cl-button-icon for «Назад».",
     "version 1.11.1 (2026-11-14, owner report R242; DEV's focus-clipping audit): a patch. In a panel that scrolls, the body keeps its content's height (flex-shrink 0; it still grows to pin a foot): shrunk below it, the panel scrolled the content flush to its end, so the body's end padding and the ring of the last control (the last «Сохранить», a link) lay outside the scroll range. Content that owns its own scroller inside a drawer gives it a block size of its own; a panel with a resizer, whose body scrolls, is unchanged. The panel and that body scroll with scroll-padding of core's --sf-focus-room.",
     "alias-conflict: vocabulary §5.1 decides drawer:snap → sf-drawer-snapped, a fact of the component (the alias table's sf-drawer-snap is the bare verb of a request the drawer never waits on); the converter's sf-drawer-snap never shipped and gets no row.",
@@ -720,6 +721,14 @@
             "A panel opened from a floating panel at the same edge is drawn inside it with «Назад» in its head; the panel under it hides; its close, the scrim and a swipe close the whole panel, «Назад» and Escape the top one; stack-offset no longer applies between them (C157 (6)).",
             "On a phone a side panel closes with a swipe toward its edge (C157 (4)); the bottom sheet's grab bar is 24 x 4 in on-surface-variant on every screen (C157 (5)).",
             "The outside close stands on the scrim as sf-button-close appearance=\"media\"; icon buttons in the edge slot take the same plate (study VP-16)."
+          ]
+        },
+        {
+          "from": "1.12.0",
+          "to": "1.13.0",
+          "changes": [
+            "The close stands on the axis of the switch that opened the panel (owner decision C104 (4)); nothing to change in a page.",
+            "A panel that covers the switch that opened it always offers a close (controlled, show-close=\"false\" without a close of the page's own)."
           ]
         }
       ]
