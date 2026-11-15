@@ -43,6 +43,9 @@ export const PROPERTY_TYPES = Object.freeze([
         params: ['unit', 'min', 'max', 'step', 'required', 'readonly']},
     {type: 'number', label: {ru: 'Число', en: 'Number'},
         variants: [{id: 'scale', label: {ru: 'Шкала 0–100', en: 'Scale 0–100'}},
+            // meter (owner decision C203 (5)): a share of a limit, 0..100, as
+            // the inline sf-progress-bar meter; the scale stays for levels.
+            {id: 'meter', label: {ru: 'Доля предела', en: 'Share of a limit'}},
             {id: 'stepper', label: {ru: 'Кнопками «−» и «+»', en: 'With steppers'}}],
         params: ['unit', 'min', 'max', 'step', 'precision', 'required', 'readonly']},
     {type: 'date', label: {ru: 'Дата', en: 'Date'},

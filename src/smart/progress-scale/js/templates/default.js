@@ -1,4 +1,5 @@
 import { html, nothing } from 'lit';
+import { percentText } from '../../../../core/js/format-number.js';
 
 function normalizeProgressValue(value) {
   const parsed = Number(value);
@@ -76,7 +77,7 @@ export function renderProgressScaleTemplate(context) {
         ${Array.from({ length: 10 }, () => html`<div class="sf-progress-scale-block"></div>`)}
       </div>
       ${context.showText
-        ? html`<div class="sf-progress-scale-text">${value}%</div>`
+        ? html`<div class="sf-progress-scale-text">${percentText(value, context.component ?? null)}</div>`
         : nothing}
     </div>
   `;

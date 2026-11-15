@@ -88,9 +88,11 @@
 }
 
 /* utility-hint: align-items/flex-end (.items-end) */
+/* The smallest number stands on the text ladder's smallest page step, 12 --
+   the step of 1/2 -- not 10 (IM-5 of control/research/2026-11-15-inline-meter.md). */
 .sf-progress-bar.sf-progress-bar--size-1\/3 {
-  --sf-progress-bar--font-size: var(--sf-text-size-1\/4);
-  --sf-progress-bar--line-height: var(--sf-text-height-1\/4);
+  --sf-progress-bar--font-size: var(--sf-text-size-1\/3);
+  --sf-progress-bar--line-height: var(--sf-text-height-1\/3);
 }
 
 /* utility-hint: flex/1 (.flex-1) */
@@ -119,6 +121,21 @@
 
 .sf-progress-bar--size-1\/3, .sf-progress-bar--size-1\/2 {
   --sf-progress-bar--gap: var(--sf-progress-bar-gap, var(--sf-space-1\/4));
+}
+
+/* Density (owner decision C79 with C131 (3), IM-4): a compact region moves
+   the bar a whole step down, the thickness with the text -- size 1 is the
+   1/2 step's 4, size 3 the size 2 step's 8 (2 and 1 stay 8, 1/2 and 1/3 4).
+   An island of data-sf-density="normal" keeps the normal steps; desktop only,
+   as density itself. The inline look has its own thickness. */
+@media (min-width: 60rem) {
+  [data-sf-density="compact"] .sf-progress-bar--size-1:not(.sf-progress-bar--inline):not([data-sf-density="normal"] *) .sf-progress-bar-main {
+    --sf-progress-bar-main--height: var(--sf-a4);
+  }
+
+  [data-sf-density="compact"] .sf-progress-bar--size-3:not(.sf-progress-bar--inline):not([data-sf-density="normal"] *) .sf-progress-bar-main {
+    --sf-progress-bar-main--height: var(--sf-a8);
+  }
 }
 }
 
@@ -165,5 +182,47 @@
 .sf-progress-bar[data-position="inline-end"] {
   flex-direction: row;
   align-items: center;
+}
+
+/* Inline (owner decision C203, control/research/2026-11-15-inline-meter.md,
+   prototypes/inline-meter-study.html): the row-end look of a meter -- a
+   settings row, a table cell, the end of a list row. The track has a width of
+   its own, 64 (--sf-d6 of the length scale: a space step would shrink in a
+   compact region and on a phone, the track must not), which the number does
+   not take from it (IM-1, IM-2); --sf-progress-bar-track-size sets another.
+   Thickness 4 at every size, density and width (C203 (2)). The number stands
+   before the track and is always shown, end-aligned in a box of one width for
+   every value, so bars in a column line up (C203 (3)); 8 from the track (4
+   compact), the bar's own gap. At a threshold the number takes the bar's
+   colour (C203 (4)). Full-width bars keep C131. */
+.sf-progress-bar.sf-progress-bar--inline {
+  --sf-progress-bar--track-size: var(--sf-d6);
+  --sf-progress-bar--gap: var(--sf-progress-bar-gap, var(--sf-space-1\/3));
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  width: auto;
+  max-inline-size: 100%;
+  vertical-align: middle;
+}
+
+.sf-progress-bar.sf-progress-bar--inline .sf-progress-bar-main {
+  --sf-progress-bar-main--height: var(--sf-a4);
+  flex: none;
+  width: var(--sf-progress-bar-track-size, var(--sf-progress-bar--track-size));
+}
+
+.sf-progress-bar.sf-progress-bar--inline .sf-progress-bar-text {
+  order: -1;
+  min-inline-size: var(--sf-space-5);
+  text-align: end;
+}
+
+.sf-progress-bar.sf-progress-bar--inline.sf-progress-bar--warning .sf-progress-bar-text {
+  color: var(--sf-progress-bar-color, var(--sf-warning));
+}
+
+.sf-progress-bar.sf-progress-bar--inline.sf-progress-bar--error .sf-progress-bar-text {
+  color: var(--sf-progress-bar-color, var(--sf-error));
 }
 }

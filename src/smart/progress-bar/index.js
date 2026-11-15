@@ -7,6 +7,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { noteDeprecated } from '../../core/js/deprecations';
 import { renderProgressBarTemplate } from './js/templates/default';
+import { percentText } from '../../core/js/format-number.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import en from './lang/en.json';
@@ -112,12 +113,15 @@ class SfProgressBar extends ProgressBarElement {
   }
 
   // What a screen reader hears beside the value: the page's value text, else
-  // for a paused bar the value with the word paused (C34).
+  // for a paused bar the value with the word paused (C34), else the per cent
+  // the bar shows, «72 %» (owner decision C203 (3)); nothing while the size of
+  // the work is not known.
   get spokenValueText() {
     if (this.valueText) return this.valueText;
-    if (!this.paused) return '';
-    if (this.indeterminate) return this.sfWord('paused');
+    const unknown = this.indeterminate && !this.meter;
     const value = Math.max(0, Math.min(100, Number(this.value) || 0));
+    if (!this.paused) return unknown ? '' : percentText(value, this);
+    if (unknown) return this.sfWord('paused');
     return this.sfWord('paused-value').replace('{value}', String(Math.round(value * 100) / 100));
   }
 
@@ -143,6 +147,7 @@ class SfProgressBar extends ProgressBarElement {
       indeterminate: Boolean(this.indeterminate),
       paused: Boolean(this.paused),
       meter: Boolean(this.meter),
+      inline: Boolean(this.inline),
       component: this,
     });
   }
@@ -163,6 +168,7 @@ class SfProgressBar extends ProgressBarElement {
       indeterminate: Boolean(this.indeterminate),
       paused: Boolean(this.paused),
       meter: Boolean(this.meter),
+      inline: Boolean(this.inline),
     };
   }
 
@@ -180,7 +186,7 @@ class SfProgressBar extends ProgressBarElement {
   }
 
   resolveUpdateMode(changedAttributes = []) {
-    const directPatchAttributes = ['value', 'text-position', 'status', 'tone', 'warning-at', 'error-at', 'label', 'value-text', 'aria-label', 'indeterminate', 'paused', 'meter'];
+    const directPatchAttributes = ['value', 'text-position', 'status', 'tone', 'warning-at', 'error-at', 'label', 'value-text', 'aria-label', 'indeterminate', 'paused', 'meter', 'inline'];
     if (
       changedAttributes.length > 0 &&
       changedAttributes.every((attr) => directPatchAttributes.includes(attr))
@@ -205,6 +211,7 @@ class SfProgressBar extends ProgressBarElement {
       indeterminate: Boolean(this.indeterminate),
       paused: Boolean(this.paused),
       meter: Boolean(this.meter),
+      inline: Boolean(this.inline),
     });
   }
 

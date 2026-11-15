@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.progress-bar",
   "kind": "component",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/progress-bar/index.js",

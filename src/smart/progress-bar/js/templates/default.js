@@ -1,4 +1,5 @@
 import { html, nothing } from 'lit';
+import { percentText } from '../../../../core/js/format-number.js';
 
 function normalizeValue(value) {
   const parsed = Number(value);
@@ -37,20 +38,25 @@ export function renderProgressBarTemplate(context) {
   const size = normalizeSize(context.size);
   const tone = normalizeStatus(context.drawnStatus ?? context.status ?? context.tone);
   const normalizedValue = normalizeValue(value);
-  const normalizedPosition = normalizePosition(textPosition);
+  // Inline (owner decision C203): the row-end look. Its number is always
+  // shown, at inline-end in the markup and before the track on screen (the
+  // sheet's order), so the position setting does not apply to it.
+  const inline = on(context.inline);
+  const normalizedPosition = inline ? 'inline-end' : normalizePosition(textPosition);
 
   // A meter (C131 (7)) shows an amount within a known range: it always has a
   // value, so it is never indeterminate.
   const meter = on(context.meter);
   const indeterminate = Boolean(context.indeterminate) && !meter;
   const paused = Boolean(context.paused);
-  const rootClasses = ['sf-progress-bar', `sf-progress-bar--size-${size}`, tone ? `sf-progress-bar--${tone}` : '', indeterminate ? 'sf-progress-bar--indeterminate' : '', paused ? 'sf-progress-bar--paused' : '', 'flex', context.rootClass].filter(Boolean);
+  const rootClasses = ['sf-progress-bar', `sf-progress-bar--size-${size}`, tone ? `sf-progress-bar--${tone}` : '', indeterminate ? 'sf-progress-bar--indeterminate' : '', paused ? 'sf-progress-bar--paused' : '', inline ? 'sf-progress-bar--inline' : 'flex', context.rootClass].filter(Boolean);
   if (normalizedPosition === 'inline-end') {
     rootClasses.push('flex-row', 'items-cross-center');
   } else if (normalizedPosition === 'top') {
     rootClasses.push('flex-col');
   }
-  const valueText = `${normalizedValue}%`;
+  // «72 %»: the number, a no-break space and the sign (C203 (3)).
+  const valueText = percentText(normalizedValue, context.component ?? null);
 
   return html`
     <div
@@ -64,6 +70,7 @@ export function renderProgressBarTemplate(context) {
       data-indeterminate=${indeterminate ? 'true' : nothing}
       data-paused=${paused ? 'true' : nothing}
       data-meter=${meter ? 'true' : nothing}
+      data-inline=${inline ? 'true' : nothing}
       role=${meter ? 'meter' : 'progressbar'}
       aria-label=${context.label || nothing}
       aria-valuemin="0"
