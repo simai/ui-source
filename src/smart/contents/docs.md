@@ -243,6 +243,12 @@ holds only the contents can hide itself with
 `aside:has(> sf-contents[data-empty])`. The printed markup is hidden by the
 sheet as well, before the script counts.
 
+So a layout should not reserve the contents' column for a page with one
+heading: the column would stand empty. A site that knows the page's headings
+when it builds the page leaves the column, its toggle and the phone's
+contents out below two entries -- the threshold the component uses -- and a
+layout that cannot know hides the column by `data-empty` as above.
+
 ## Accessibility
 
 The element draws a `<nav>` named by its heading (`aria-labelledby`): a
