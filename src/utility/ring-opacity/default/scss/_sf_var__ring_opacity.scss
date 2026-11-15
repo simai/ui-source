@@ -1,0 +1,22 @@
+// SIMAI Framework
+// https://simai.io
+
+// RING OPACITY
+
+@use "sass:map";
+@use "sass:math";
+@use '../../../opacity/default/scss/sf_var__opacity' as *;
+
+// The ring reads its strength as a number from 0 to 1 and turns it into the
+// colour-mix share itself (calc(var(--sf-ring--alpha) * 100%), utility/
+// ring-width), as every --sf-*--alfa channel does. The opacity ladder's tokens
+// are percentages (--sf-opacity-50 is 50%), and 50% * 100% is not a length a
+// colour mix takes, so the whole ring was dropped (C187 follow-up, 2026-11-15).
+// The utility therefore writes the ladder step as the number it names:
+// ring-opacity-5 is 0.5, ring-opacity-full is 1, ring-opacity-0 is 0.
+$ring-opacity-array: ();
+@each $opacity-name, $opacity-value in $opacity-array {
+    $ring-opacity-array: map.merge($ring-opacity-array, (
+        $opacity-name: if($opacity-name == full, 1, math.div($opacity-name, 10)),
+    ));
+}
