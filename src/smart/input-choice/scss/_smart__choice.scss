@@ -573,7 +573,7 @@
 /* In a narrow field (a phone: below the container step g2, 24rem, 384 px)
    a row is a column again (C165 (3)); a form's half column (28rem and up)
    keeps the row. Written as the number: this line has no container-step()
-   yet; the group build writes #{mq.container-step(g2)}. */
+   yet; the group build writes it as mq.container-step(g2). */
 @container sf-choice (inline-size < 24rem) {
   .sf-choice--list[data-flow='row'] .sf-choice-options {
     flex-direction: column;
